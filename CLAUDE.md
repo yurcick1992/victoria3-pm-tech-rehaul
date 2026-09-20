@@ -155,6 +155,47 @@ OUTPUT-goods penalty on the 1836 recipes to raise prices at the anchor. ⇒ SUPE
 persistent-hoarding tests, §10.82's ceilings and §10.82.1's plateau test, F114's TARGET bands (the bands remain the divergence test) and the 2026-09-14 1.3×
 stop (the fallback only). Their scripts (`capital_flags.mjs`, `majors_workers.mjs`, `major_series.mjs`, `alignment_check.mjs`) stay as diagnostics.
 
+## ⭐⭐⭐ REPORT TRUE PROFITS; PREDICT THE WAGE FROM THE ECONOMY AND THE DECADE (user-ruled 2026-09-20, GOVERNING — BALANCE_FRAMEWORK §10.87, FINDINGS F152)
+
+**The user, 2026-09-20:** *"in reports, always report true profits, not margins (= value added / input value)"* and *"in predictions, try
+assuming the actual wage share by estimating individual wages and applying profession multipliers. Note that an industry tier doesn't have a
+'predicted wage', the decade and the economy does (e.g. 'stalling GBR in 1920')."* Both name the same defect: **we were quoting a RATIO whose
+wage term was either assumed (a flat `wage_pct` of 0.25) or unreconcilable (F92's identity, which mixed market and base prices).**
+
+1. **REPORTS QUOTE PROFIT IN £** — per week, with the annual and per-staffed-level figures where they help. A margin may sit BESIDE it, never
+   instead of it, and never as the headline. ⚠ A tool that cannot compute a UNIT-CORRECT margin prints NO margin rather than the old one:
+   `rung_econ.mjs` and `slid_vs_unslid.mjs` aggregate one rung over EVERY market at every price, so there is no single output price to re-value
+   `va_out` at, and a wrong number is worse than an absent one.
+2. ⭐⭐ **THE WAGE MODEL IS `tools/lib_wage_model.mjs`, ONE implementation**: `W = wage(tag, year) × Σ(employees × wage_weight) × staffed levels`.
+   The weights are vanilla's, read live from `common/pop_types`. **THE UNIT IS IN THE DEFINES** — the engine's wage rate is *weekly £ per
+   `POP_SIZE_PACKAGE` employees*, so **£/employee/week = a save summary's `base_wage` ÷ 10,000** (GBR 1840 reads 0.0610, against F26's
+   independently measured 0.0610 Austrian / 0.0796 Belgian). `config/measured_base_wages.json` is the committed path per tag per year, median
+   over the vanilla n=16 baseline. ⭐ **A BUILDING PAYS 1.52× the country's NORMAL rate** (`WAGE_PREMIUM`; p10 1.22, p90 1.85, flat across the
+   century, and 1.54 on a mod arm — an engine property, not a book property), so a prediction without it understates wages by half again.
+   ⚠⚠ The flat 25% is **below vanilla's own wage share of total cost in every decade** (54.6% at 1840 → 29.7% at 1935) and worst where a
+   building's cost is nearly all labour: `tierEmployment()` charges the ART ACADEMY the 9,500 wage units of its OWNERSHIP PMG, where its empty
+   `employment` had given it zero. ⚠ `wage_pct` survives ONLY as the config-side accounting convention `make_ab_config`'s `target_be` and
+   `lint_solvency.mjs` (L18) use; re-basing those two is OPEN and needs its own ruling.
+3. ⭐⭐ **THE MARGIN IDENTITY IS REPAIRED.** `va_out`/`va_in` are BASE-priced and `profit` is MARKET-priced, so F92's
+   `profit ÷ (va_out − profit)` mixed them (F150). The repair re-prices value added with the building's own goods mix:
+   **`margin = profit ÷ (R − profit)`, `R = va_out × (market price ÷ base)`** — the implied wage bill is then positive in 490 of 520 priced
+   vanilla entries, against 26% of entries and 45% of LEVELS negative before. ⚠ It is **UNDEFINED, not approximate**, for a building with no
+   goods flows (financial districts, manor houses, company HQs: GBR 1900 alone is £2.75M/wk of unscoreable profit) — those report profit only.
+   ⭐ **F92's 25.8% 1836 anchor STANDS**: at 1836 prices sit at 0.943 of base, so like-for-like the repair reads 30.5% against 30.9%, and the
+   gap to 25.8% is a SAMPLE difference (the 7 instrumented markets are the rich ones), which `vanilla_margins.mjs` now prints both ways.
+
+## ⭐⭐ THE INSTRUMENTED TAG LIST IS ELEVEN, AND THE POOL, THE MAJORS AND THE PRICE-TRACKED MARKETS ARE ONE FILE (user-ruled 2026-09-20)
+
+**GBR · FRA · USA · PRU · NGF · GER · NET · BEL · UNL · RUS · JAP.** The user: *"add NGF and United Netherlands (NET+BEL, I'm not sure which tag
+in game terms) into both shortlist of reported countries, shortest list of high-tech majors, and the list of price-tracked markets."* The tag is
+**UNL**. `tools/testbed/ledger/lib_markets.mjs` is the ONE definition of all three lists, for nine readers.
+⭐ **UNL IS NOT HYPOTHETICAL AND IT WAS COSTING US MEMBERS**: vanilla's own formation rules (`ai_will_do = always`) put it in **2 of the 16
+vanilla baseline seeds from 1876** and in **run 2 of `20260920_114003`**, where NET and BEL do not exist and UNL holds **£201M of GDP at 1935** —
+every pool listed NET and BEL and not UNL, so those seeds silently reported a smaller, poorer shortlist. ⚠ `UNL_ADJ` is **"Dutch"**, so its
+market is still "Dutch Market": the market NAME does not identify its leader, which is why prices are keyed by TAG and the tag resolved per run
+(the German market reads Prussian → North German → German for the same reason). ⚠⚠ **PI/PP are read on the INTERSECTION of the arm's markets and
+vanilla's, and the basis is printed** — the new German and Belgian prices enter the register the day a vanilla baseline carries them, not before.
+
 ## ⭐⭐⭐ THERE IS ONE CANON, AND THE SIX-RUNG BOOK IS RETIRED FOR GOOD (user-ruled 2026-09-16)
 
 **The user, 2026-09-16:** *"We likely won't return to the six-rung for UI bloat reasons, even if it worked not that
@@ -165,12 +206,24 @@ the reason it is closed is the UI, which has to render a rung per era per indust
 ⇒ Nothing may describe it as the canon, the shipped book, or the current method. Where an old banner below still
 reads that way it has been corrected in place; the headings that follow are HISTORY.
 
-## ⭐⭐⭐ THE CANON IS `canon-c19-in12` SINCE 2026-09-18 (user-delegated: "Any point in canonizing some newer config before we run? If yes, do it")
+## ⭐⭐⭐ THE CANON IS `canon-c19-in12-elec` SINCE 2026-09-20 — `canon-c19-in12` PLUS THE URBAN-CENTRE ELECTRICITY OVERRIDE, AND NOTHING ELSE
 
-`config/mod_config.json` is a VERBATIM copy of `config/mod_config.canon-c19-in12.json`; **`config/tech_tree_options.json` needed no change —
-the incumbent's twin was already byte-identical to it**, so the canonization moved exactly one file. Built and deployed 2026-09-18 14:41 local
-(every linter, L31, preflight, MOD CHECKS). The previous canon (`canon4v-hai3`, 2026-09-06) is backed up at
-`config/mod_config.pre_c19_canon_backup.json` and remains reachable as `config/mod_config.canon4v-hai3.json`.
+`config/mod_config.json` is a VERBATIM copy of `config/mod_config.canon-c19-in12-elec.json` (+ its tech-tree twin). It is
+`canon-c19-in12` — the book canonized 2026-09-18 and described below — regenerated through the vanilla-only pipeline so that it
+carries the two keys BALANCE_FRAMEWORK **§10.43.0** ruled canonical on their own: urban centres are an electricity **SOURCE**
+(`pm_goods` 2 coal in → 10 services + 1 electricity out; `pm_employment` 250 engineers) instead of vanilla's 3-electricity SINK.
+**The diff was PROVED to be those two keys**: not one industry, rung, recipe, `building_cost`, `ai_value`, technology or define
+moved, and the tech-tree twin came back with zero field diffs (the rest of the diff is 12 `_ab` flags going absent → explicit
+`null`, and the book's own name and stamp). Built and deployed 2026-09-20; every linter, L18, L31, MOD CHECKS, PREFLIGHT.
+⚠ **`config/mod_config.canon-c19-in12.json` is NOT the canon and keeps its own bytes** — it is the record of the arm F131
+measured over four seeds, and those seeds ran WITHOUT the override. A named book is the record of what it measured.
+⚠ **Nothing has measured the override's economic effect.** The canon's own century runs (`20260917_132449` / `20260917_161410`)
+predate it, so an arm read against them carries it as a second difference until a century batch runs on this book.
+
+**(the 2026-09-18 canonization, which everything below describes)** — user-delegated: *"Any point in canonizing some newer config
+before we run? If yes, do it"*. `config/tech_tree_options.json` needed no change then either. The previous canon
+(`canon4v-hai3`, 2026-09-06) is backed up at `config/mod_config.pre_c19_canon_backup.json` and remains reachable as
+`config/mod_config.canon4v-hai3.json`.
 
 **What it is:** the A/B book at **A 2.2 / B 1.5**, **building_cost = the vanilla anchor × 1.9^era** (600 / 1,140 / 2,166 / 4,115 and
 800 / 1,520 / 2,888 / 5,487), rung 0's **input value × 1.2** with the ladder anchored on it, ai_value 1,000 × 3^era, the pool cost-divisor
@@ -190,17 +243,15 @@ vanilla's and the pop-goods index in wage units 1.04 → 0.83 (F94's price decli
 frontier margin ladder real (e0 26% against e3 46%, where every earlier book ran flat). ⚠ Under the DIRECTIONAL ruling (§10.83.7) the 8.0-point
 gap over the old canon is not a significance test — the case is the monotone arc across four books and 43 runs, not the gap.
 
-⚠⚠ **THE CANON SHIPS THREE KNOWN DEFECTS, all recorded, none a reason to keep the older book:**
-0. ⭐⭐ **IT LACKS THE URBAN-CENTRE ELECTRICITY OVERRIDE, AND THAT OVERRIDE IS RULED CANONICAL ON ITS OWN (user, 2026-09-19 —
-   BALANCE_FRAMEWORK **§10.43.0**, ROADMAP step 8 **P2**).** Every four-rung book from `canon4v` to this one shipped with urban
-   centres running VANILLA's `pm_electric_streetlights` — **electricity 3 IN**, 200 laborers + 50 engineers, an electricity SINK —
-   where §10.43 rules a SOURCE (+1 electricity out, 2 coal in, 250 engineers). The 2026-09-04 rebuild-from-vanilla dropped the two
-   config keys with everything else it deliberately does not carry. **FIXED IN THE GENERATOR** — the override now lives in
-   `tools/lib_tier4_spec.mjs` (`PM_GOODS_RULED` / `PM_EMPLOYMENT_RULED`) and `make_tier4_config.mjs` emits it into every generated
-   book, byte-identical to the six-rung book's — but **`config/mod_config.json` has NOT been regenerated**, so the shipped canon
-   still lacks it. ⚠ The ruling is FREE-STANDING: whatever book becomes the canon next carries this, regardless of whether any
-   other experiment is adopted. The owed action is to regenerate the canon and re-canonize, a provable **two-key diff**.
-   ⚠ Until then, any arm read against the canon's own century runs carries the override as a SECOND difference.
+⚠⚠ **THE CANON SHIPS TWO KNOWN DEFECTS, both recorded, neither a reason to keep the older book:**
+0. ✅ **THE URBAN-CENTRE ELECTRICITY OVERRIDE — FIXED AND CANONIZED 2026-09-20** (user-ruled 2026-09-19, BALANCE_FRAMEWORK
+   **§10.43.0**, ROADMAP step 8 **P2**). Every four-rung book from `canon4v` to `canon-c19-in12` shipped with urban centres
+   running VANILLA's `pm_electric_streetlights` — **electricity 3 IN**, 200 laborers + 50 engineers, an electricity SINK — where
+   §10.43 rules a SOURCE (+1 electricity out, 2 coal in, 250 engineers). The 2026-09-04 rebuild-from-vanilla dropped the two
+   config keys with everything else it deliberately does not carry; the generator was fixed 2026-09-19
+   (`tools/lib_tier4_spec.mjs`'s `PM_GOODS_RULED` / `PM_EMPLOYMENT_RULED`, emitted by `make_tier4_config.mjs` into every book) and
+   the CANON was regenerated 2026-09-20 as `canon-c19-in12-elec`, the diff proved to be those two keys (the banner above).
+   ⚠ The override's ECONOMIC effect is still unmeasured, and the canon's own century runs predate it.
    ⚠ The power-plant industry is NOT part of this and must not be reopened (ruled the same day): it stays vanilla, no tiering, no
    other change, now or deferred; the dam megaproject is a polishing-phase item.
 1. **The hoard.** Pool H 4.17× vanilla's — the one line that went BACKWARDS across the arc. One seed of four broke the capital-abundance hard
@@ -1222,11 +1273,16 @@ config/tech_tree_options.json GENERATED by tools/tech_tree_spec.mjs and COMMITTE
                         INDUSTRY TECH TREES (ROADMAP step 1) — every technology with its era, date, prerequisites,
                         dependents and the buildings it unlocks, for all three trees (production/military/society).
                         A design input under review, not yet emitted to the mod; NOTHING reads it but the viewer
-config/mod_config.json      ⭐⭐⭐ THE CANON = canon-c19-in12 SINCE 2026-09-18 (the banner near the top of this file) — a VERBATIM copy of
-                        config/mod_config.canon-c19-in12.json: A 2.2 / B 1.5, building_cost = the vanilla anchor × 1.9^era, rung 0's input value ×1.2 with
-                        the ladder anchored on it, ai_value 1000×3^era, divisor 0.000125, the §10.75 defines, the 24-month research bar. Its tech-tree twin
-                        was already byte-identical to config/tech_tree_options.json, so the promotion moved ONE file; the previous canon is backed up at
-                        config/mod_config.pre_c19_canon_backup.json. Loss 8.40 against the old canon's 16.39 on the same register (§10.83.7), monotone on
+config/mod_config.json      ⭐⭐⭐ THE CANON = canon-c19-in12-elec SINCE 2026-09-20 (the banner near the top of this file) — a VERBATIM copy of
+                        config/mod_config.canon-c19-in12-elec.json (+ its tech-tree twin), which is canon-c19-in12 regenerated so that it carries the
+                        URBAN-CENTRE ELECTRICITY OVERRIDE §10.43.0 rules canonical on its own (pm_goods + pm_employment on pm_electric_streetlights:
+                        a SOURCE, +1 electricity out / 2 coal in / 250 engineers, in place of vanilla's 3-electricity SINK). PROVED a two-key diff —
+                        no industry, rung, recipe, building_cost, ai_value, technology or define moved, and the tree twin had zero field diffs.
+                        Otherwise unchanged: A 2.2 / B 1.5, building_cost = the vanilla anchor × 1.9^era, rung 0's input value ×1.2 with the ladder
+                        anchored on it, ai_value 1000×3^era, divisor 0.000125, the §10.75 defines, the 24-month research bar.
+                        ⚠ config/mod_config.canon-c19-in12.json is NOT the canon and keeps its own bytes — it is the record of the arm F131 measured
+                        over four seeds, and those seeds ran WITHOUT the override. ⚠ The override's ECONOMIC effect is unmeasured.
+                        Loss 8.40 against the old canon's 16.39 on the same register (§10.83.7), monotone on
                         every goal column over 43 runs; ⚠ it ships the hoard defect (pool H 4.17×, one seed of four in capital abundance) and the surviving
                         consumer-chain rung 0 (F136). The entry below is the SUPERSEDED record of the 2026-09-06 canon:
 config/mod_config.json      ⭐⭐ (SUPERSEDED 2026-09-18) THE CANON = canon4v-hai3 FROM 2026-09-06 TO 2026-09-18 — canon4v + ai_value 1000×3^era on all 17 industries + the
@@ -1257,6 +1313,13 @@ config/measured_1836_professions.json GENERATED (tools/testbed/melted_pops_by_pr
                         second save-derived definition of it would drift silently. ⚠ A pop's size here is
                         `workforce + dependents`; measured_1836.json's `by_pop_type` holds WORKFORCE, about a
                         quarter of it — they are different quantities, do not substitute one for the other
+config/measured_base_wages.json GENERATED by `tools/measure_wage_share.mjs --write-wages` and COMMITTED: the country
+                        NORMAL WAGE RATE in £ per employee per week (a save summary's `base_wage` ÷ POP_SIZE_PACKAGE,
+                        the engine's own unit), per tag per year, median over the vanilla n=16 baseline's seeds with
+                        the seed min/max and n beside it. 17 tags including **UNL**. It is the "the decade and the
+                        economy" half of the 2026-09-20 ruling (§10.87) — GBR runs 0.0610 → 0.0915 across 1840…1935.
+                        ⚠ It is NOT what buildings pay: apply `lib_wage_model.WAGE_PREMIUM` (1.52, measured). ⚠ It is
+                        VANILLA's path; a mod arm's own wages are read from that arm's summaries
 config/measured_1836.json    GENERATED (tools/extract_measured.ps1, from a testbed session) and COMMITTED: the things the game FILES cannot answer — per market TRADE (imports/exports per good), SoL per stratum, MILITARY building levels, urban-centre levels as a cross-check, and per market **WAGES** (`-WagesOnly`, a MERGE-only mode that rewrites just the `wages` block and leaves every other field untouched, because a wages session carries none of the other metrics and a full run over it would blank them). The wages block holds **`base_weekly_wage`** — the UI's base £/wk knob, measured, on the F26 basis: **laborers + farmers + machinists, EMPLOYED pops only** (the three professions actually paid a building's market wage; state-salaried and owner professions are excluded, and an unemployed pop would put workers in the wage-unit denominator with nothing in the numerator). Beside it: `base_weekly_labour` on the **superseded** 11-profession basis, kept only for continuity with earlier findings and **not** to be fed to a scenario; the per-profession spread; the game's own per-state average annual wage (mean/median/min/max); the workforce ratio; and a per-pop-type table. Read by extract_presets.ps1; optional (a clone without it still builds, just without those). ⚠ Regenerate after a game patch — a stale table is silently wrong, not obviously missing
 tools/                  dev tooling — NOT shipped in the mod
   build.ps1             builder: config → generates all mod/ files + all-language loc + ladder_tiers.txt + 1836 start, then lints
@@ -1525,7 +1588,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         vanilla's 2,125), ai_value, target_be. Read-only; the eyeballing tool for the era pass (HANDOVER §N+1)
   ladder_options.mjs    ⭐⭐ THE LADDER OPTION TABLE — what a candidate (A, B, cost, in0) does to the THREE things that
                         fight each other (2026-09-19, FINDINGS F141, BALANCE_FRAMEWORK §10.86.4). Read-only. Per book:
-                        the MARGIN per era at base (the money printer, a RATIO out_e ÷ in_e); F97's DEATH TEST (a rung two
+                        ⭐⭐ **PROFIT IN £ PER LEVEL PER WEEK** and the margin beside it, with the wage bill taken from the
+                        ECONOMY AND THE DECADE (`--economy GBR@1920`, user-ruled 2026-09-20, §10.87) instead of the flat
+                        `wage_pct` 0.25 it used to charge — which is below vanilla's own wage share of cost in every decade
+                        and charged the art academy almost nothing. At GBR@1920 on the canon's ladder that turns era 0 from
+                        near break-even to **−£294/level/wk in 15 of 17 industries**; the frontier still earns 211–519%.
+                        Then F97's DEATH TEST (a rung two
                         back must hold < 0.20 of the frontier's value added per worker — a DIFFERENCE out_e − in_e, which
                         is why it and the margin cannot be flattened by the same move); CAPITAL per unit of output; and
                         ⭐ THE 1836 ANCHOR ERROR (F137) computed EXACTLY — each rung's output against THAT RUNG'S OWN
@@ -1549,24 +1617,48 @@ tools/                  dev tooling — NOT shipped in the mod
                         value added, which the penalty subtracts one-for-one, and the input goods whose price the extra demand
                         moves); and `--century` the same rung across all 12 dump dates. `--lifts 1.0,1.2,1.4,1.6 --levels
                         -0.1,-0.2,-0.3 --date 1836.2.1 --config <book> --dead -0.20 --detail --markets a,b`.
+                        ⭐⭐ ITS WAGES ARE THE ECONOMY’S AND THE DECADE’S SINCE 2026-09-20 (§10.87): each market leader’s own
+                        measured normal rate at the date × the 1.52× premium, in place of the seven-entry hardcoded table it
+                        carried — which was derived from F92’s identity, the mixed-units ratio F150 condemned. British wages
+                        go 0.0600 → 0.0878, and vanilla’s own 1836 recipe reads **26 insolvent cells (37%) at a median +7%**
+                        against the old **22 (31%) at +21%**. ⚠ **F140’s census FIGURES are superseded by that**; its SHAPE
+                        (1.40 as the raw-input maximum, the ordering of the options) is not, because every column moved together.
                         ⚠ BASE METHOD ONLY (no secondaries, no throughput) on both sides, so differences are exact and levels
                         are a few points pessimistic; prices are held at vanilla’s while the recipe changes, which is the
                         comparison’s point and also its limit
+  lib_wage_model.mjs    ⭐⭐⭐ THE WAGE MODEL AND THE REPAIRED MARGIN IDENTITY — ONE implementation, because the
+                        alternative is what F150 found: three tools quoting a ratio whose wage term was assumed and
+                        whose units did not match (user-ruled 2026-09-20; CLAUDE.md's own governing section above,
+                        BALANCE_FRAMEWORK §10.87, FINDINGS F152). `W = wage(tag, year) × Σ(employees × wage_weight)
+                        × staffed levels`, with the weights and POP_SIZE_PACKAGE read LIVE from the game and
+                        **£/employee/week = a summary's `base_wage` ÷ 10,000** (the engine's own unit, stated in
+                        `common/defines` on NORMAL_WAGE_RATE_FALLBACK). Exports `economyWage(tag, year)` — the
+                        measured normal rate × the measured **1.52× premium buildings actually pay** —
+                        `tierEmployment()` (the ART ACADEMY fix: a tier with no `employment` of its own falls back to
+                        its industry's secondary PMGs' base methods, 9,500 wage units a level), `priceMultiplier()`
+                        and **`trueMargin(profit, R)`**, which returns NULL rather than a number when it cannot be
+                        computed. ⚠ `TAG_FAMILY` resolves GER→NGF→PRU and NET→UNL, so a wage path does not break
+                        where a country changes tag
+  measure_wage_share.mjs ⭐⭐ WHAT DOES THE SAVE'S `profit` CONTAIN, AND WHAT IS THE WAGE SHARE OF AN ECONOMY IN A
+                        DECADE? Read-only; the instrument behind F152 and the calibration the library ships.
+                        Per (country × year) it re-prices value added to MARKET with the building's own active-method
+                        goods mix and reads the implied wage bill `R − I − profit` against the modelled one. Excluded
+                        by name and for a stated reason: shipyards (naval-construction income is not in the goods
+                        flows), subsistence (its own wage rules), subsidised levels, and anything more than 2%
+                        unpriced. `--write-wages` regenerates config/measured_base_wages.json.
+                        `--run <session/run> [--run …] [--years …] [--detail]`
   vanilla_margins.mjs   ⭐⭐ WHAT MARGIN DOES A VANILLA BUILDING ACTUALLY RUN AT? (FINDINGS F92) —
                         the anchor the design margin sits on. Read-only. Sources save summaries at
                         v6+ (the first schema carrying per-building-type `va_out`/`va_in`) and reports
-                        the margin per building type, class and the whole map.
-                        ⭐ IT NEEDS NO WAGE MODEL, which is why it can be trusted: our margin is
-                        (revenue − inputs − wages)/(inputs + wages) and total cost IS revenue minus
-                        profit, so it collapses to **margin = profit / (va_out − profit)** on two
-                        numbers the save already carries. The wage-derived column beside it is a
-                        printed CROSS-CHECK only.
-                        ⚠ It rests on the game's `profit` being revenue − inputs − wages and nothing
-                        else. The cross-check says close but not exact — the implied wage rate has the
-                        right magnitude (country medians 0.045–0.080 against the measured 0.0796
-                        Belgian / 0.0610 Austrian) but a cv of 0.5–0.7 WITHIN one country, which pays
-                        one base wage. Read class aggregates as solid, a single building type as
-                        approximate.
+                        the **PROFIT in £** and, beside it, the margin per building type, class and the whole map.
+                        ⚠⚠ ITS OLD COLLAPSE `margin = profit / (va_out − profit)` WAS A MIXED-UNITS RATIO (F150):
+                        `va_out` is priced at BASE cost and `profit` at MARKET. Since 2026-09-20 it re-prices value
+                        added with the building's own goods mix at that country's market's prices and reports
+                        `profit / (R − profit)`; `--legacy-margin` prints the old one for comparison. It needs
+                        INSTRUMENTED markets, so it scores 507 of 4,002 entries and says so.
+                        ⭐ **THE PUBLISHED 25.8% ANCHOR STANDS**: at 1836 the output price sits at 0.943 of base, so
+                        like-for-like the repair reads 30.5% against the legacy 30.9% — the gap to 25.8% is a SAMPLE
+                        difference (the seven instrumented markets are the rich ones), which it now prints both ways.
                         ⚠ Classification is by vanilla `building_group` EXACTLY, never a regex over
                         it — the first cut regexed and put every wheat farm in "manufacturing".
                         Result at 1836.2.1 (5 vanilla runs): manufacturing 25.8% level-weighted
@@ -2130,7 +2222,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         the consensus of the intact runs (a divergent pair owes a third run); W, U*, H, Y, GDP, T0…T3 by the rung's ERA from the run's own config, the
                         price groups PI / PP / PM from markets.tsv and the summaries' base wages; THE LOSS per run and per consensus, and with several `--arm`s the
                         RANKING (§10.83.4). `--arm <session[,session]>[:<setup>] [--arm …] [--config <book>] [--van …] [--end 1932-1936] [--weights k=v,…] [--soft-pen 10]
-                        [--json out] [--quiet]`. The report, the iterator and the stop watcher read THIS; the older readers below are diagnostics
+                        [--json out] [--quiet]`. The report, the iterator and the stop watcher read THIS; the older readers below are diagnostics.
+                        ⭐ Its POOL, MEMBER and market lists come from `lib_markets.mjs` since 2026-09-20 (UNL added, the German and Low-Country
+                        families resolved per run), and PI/PP are read on the arm's markets ∩ VANILLA's, with the basis PRINTED beside the index —
+                        an arm on the eleven-tag list has German and Belgian prices the n=16 vanilla baseline does not, and averaging different
+                        baskets on the two sides of a ratio is not a comparison
   testbed/ledger/capital_flags.mjs  ⚠ SUPERSEDED AS A CRITERION 2026-09-17 by §10.83 (a diagnostic printer now) — ⭐ THE HOARD SPLIT AND THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15): per usable run at a year, the
                         investment-pool hoard ÷ GDP for the WORLD and the SHORTLIST (GBR, USA, FRA, GER — NGF, then PRU, standing in for an unformed
                         Germany) and TOTAL UNEMPLOYMENT INCLUDING PEASANTS ((unemployed + peasants) ÷ workforce) beside the strict figure, each
@@ -2186,6 +2282,17 @@ tools/                  dev tooling — NOT shipped in the mod
                         dump dates. ⚠ The CONTROL arm borrows a mod arm's key map (an era-0 rung's key IS the vanilla
                         building's), so vanilla's own shedding is the baseline; its OUTPUT column is suppressed,
                         because a borrowed map carries the mod's output_qty
+  testbed/ledger/lib_markets.mjs  ⭐⭐ THE SHORTLIST, THE MAJORS AND THE PRICE-TRACKED MARKETS — ONE
+                        definition, because they were nine (user-ruled 2026-09-20; the governing section above).
+                        `POOL` (GBR USA FRA NET BEL **UNL** PRU NGF GER), `MEMBER_FAMILY` / `resolveMembers()` (a
+                        row per STATE, each resolving its live tag: the German one PRU → NGF → GER, and UNL its
+                        own row so it is never counted twice), `MARKET_NAMES` (tag → the display name(s)
+                        markets.tsv can carry — the German market reads Prussian → North German → German and
+                        `UNL_ADJ` is "Dutch", so a NAME does not identify its leader), `PRICE_TAGS` and
+                        `TELEMETRY_TAGS` (the eleven a new schedule carries).
+                        ⚠ UNL is ONE country and it REPLACES NET and BEL where it forms — it stands in 2 of the
+                        16 vanilla baseline seeds and in run 2 of 20260920_114003, so a pool without it silently
+                        lost both members and a £201M economy (F152 §7)
   testbed/ledger/lib_runs.mjs  ⭐ WHICH RUNS OF A SESSION MAY BE COUNTED — one implementation, because
                         two analyses of one batch that disagree about n give two incomparable answers.
                         `usableRuns(root, session)` DISCOVERS the run folders and keeps only those that

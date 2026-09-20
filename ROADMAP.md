@@ -1572,10 +1572,16 @@ recorded to be checked rather than assumed: the dominant effect is **player CONV
 on arranging supply for it first, so the player is not switching methods state by state as the grid arrives — with a real but
 **small** economic effect. Nothing has measured either half yet; the anchor probes could not (the method is technology-gated and
 unreachable in 1836–1838), and `20260919_224153_anch-in12-century-n3` is the first century run carrying it.
-⚠⚠ **STILL OWED: the canon itself.** `config/mod_config.json` has NOT been regenerated and does not carry it, so any arm read
-against the canon's own century runs (`20260917_132449` / `20260917_161410`) carries the fix as a SECOND difference. The action this
-ruling names is to regenerate the canon through the vanilla-only pipeline and re-canonize — a **two-key diff**, and it should be
-provable as exactly that.
+✅⭐ **AND THE CANON CARRIES IT SINCE 2026-09-20 — CLOSED.** Regenerated through the vanilla-only pipeline and canonized as
+**`canon-c19-in12-elec`** (`config/mod_config.json` is a verbatim copy). The diff against the shipped book was PROVED to be the
+two keys: no industry, rung, recipe, `building_cost`, `ai_value`, technology or define moved, and the tech-tree twin came back
+with **zero** field diffs (the rest is 12 `_ab` flags going absent → explicit `null`, plus the book's own name and stamp). Built
+and deployed; every linter, L18, L31, MOD CHECKS, PREFLIGHT.
+⚠ **`config/mod_config.canon-c19-in12.json` keeps its own bytes and is NOT the canon** — it is the record of the arm F131
+measured over four seeds, which ran WITHOUT the override. A named book is the record of what it measured.
+⚠ **The second-difference warning still applies in the other direction**: the canon's own century runs (`20260917_132449` /
+`20260917_161410`) predate the override, so an arm read against them still carries it as a second difference until a century
+batch runs on this book. Nothing has measured its economic effect.
 ⚠ **The power chain around it is deliberately NOT restored** (user-ruled the same day): the regular power-plant industry stays
 vanilla — no tiering, no other change, now or deferred — and the dam megaproject is a polishing-phase item. So this book has both
 the municipal electricity source and vanilla's own Early Power Plant, where §10.43's six-rung design had the municipal source
@@ -1867,7 +1873,7 @@ next configuration change does not move it unnoticed — it is not an aim today 
 | 1 | **P3** the BE label | emitter, 2 lines | minutes | improves P4's text for free |
 | 2 | **P4** JE units | emitter + script values | a few hours | eased by P3 |
 | 3 | **P7** the minted rung's locked secondary | generator + a new landmine detector | hours | none |
-| 4 | **P2** the electricity override | config, 2 keys | minutes — **but needs the power-chain ruling first** | — |
+| ✅ | **P2** the electricity override | config, 2 keys | ✅ **DONE 2026-09-20** — canonized as canon-c19-in12-elec, the two-key diff proved | its economic effect is still unmeasured |
 | 5 | **P6** the 1836 supply anchor | converter or generator | a day + a batch | **blocks P1 fix (c)** |
 | 6 | **P8** e3 build time | the cost ladder, or owning `13_construction.txt` | a campaign — **it is the same dial as P1 and the hoard** | see the convergence below |
 | 7 | **P1** the ladder | generator + a config sweep | the next measurement campaign | needs P6 for (c); (a)/(b) can go first |
@@ -1880,8 +1886,8 @@ Neither is free (F135 measured the cost axis at 1.73% of hoard per 1% of world G
 points AND goods so build TIME stays flat while capital COST keeps rising — is the one move that buys P8 without spending GDP. **One campaign
 that moves both dials with (b) compensating is the coherent next experiment, not six separate ones.**
 
-P3, P4 and P2 are cosmetic-to-local and can be done in one pass without a measurement batch (P2 changes the economy slightly and should be read
-in the next batch, not on its own). P6 and P1 are the real work and belong to one campaign, because P6 changes the 1836 prices that P1's recipes
+P3 and P4 are cosmetic-to-local and can be done in one pass without a measurement batch. **P2 IS DONE** (2026-09-20) and its slight economic
+effect should be read in the next batch, not chased on its own. P6 and P1 are the real work and belong to one campaign, because P6 changes the 1836 prices that P1's recipes
 would be designed against. ⚠ Nothing in this list may be built or deployed while a playthrough is live.
 
 ## ⭐⭐⭐ STEP 9 — THE MARGIN-COMPRESSION CAMPAIGN (the user's steer, 2026-09-18: "I really want to decrease margins across the board, in both early tiers (a bit) and the late tiers (a lot)")

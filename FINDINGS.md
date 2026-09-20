@@ -15321,3 +15321,124 @@ missing e1 rung (F143 §2).
   Belgium was never instrumented — so the true-margin table covers GBR, USA and NET only. The tag list is ten from the next
   batch onward.
 - `ai_value` does not slide with `--anchor-cost`; a slid e3 keeping ai_value 27,000 while costing 2,166 is unexamined.
+
+## F152 — ⭐⭐ THE IDENTITY REPAIR AND THE WAGE MODEL: `profit` IS revenue − inputs − wages at MARKET prices, and F92's ratio was mixing those prices with base-priced value added. The repair `margin = profit ÷ (R − profit)` takes the negative implied wage bill from **26% of entries to 30 of 520**. The wage a building actually pays is **1.52× the country's normal rate** (p10 1.22, p90 1.85, flat across the century), and the wage share of TOTAL COST is a property of the **decade**, running **54.6% at 1840 → 29.7% at 1935** — never the flat 25% the design tools charged (measured read-only, 2026-09-20)
+
+**Why it was measured.** HANDOVER §0, user-ruled the same day, in two parts: *"in reports, always report true profits, not
+margins"* and *"in predictions, try assuming the actual wage share by estimating individual wages and applying profession
+multipliers. Note that an industry tier doesn't have a 'predicted wage', the decade and the economy does (e.g. 'stalling GBR
+in 1920')"*. F150 had left a third thing open — what the save's `profit` actually contains — and a prediction cannot be built
+on a wage model until that is settled, because the two are the same arithmetic seen from opposite ends.
+
+**Arm and instrument.** An ENGINE question, so the VANILLA arm: `20260821_131149_vanilla-baseline-n16` (n=16, the pinned
+baseline) and `20260821_125917_vanilla-1836-refresh-1311` (n=5), with `20260920_114003_anch-costslide-century` run 1 as the
+mod-side check. `tools/measure_wage_share.mjs` (new, read-only) is the instrument; `tools/lib_wage_model.mjs` is the one
+implementation everything else now calls.
+
+### 1. ⭐⭐ THE ENGINE'S WAGE RATE HAS A UNIT, AND IT IS IN THE DEFINES
+
+`common/defines` states it twice — `NORMAL_WAGE_RATE_FALLBACK = 500.0` and `MINIMUM_WAGE_RATE = 10.0`, both commented
+*"weekly £ per POP_SIZE_PACKAGE employees"*, with `POP_SIZE_PACKAGE = 10000`. A save summary's per-country `base_wage` is
+that rate, so
+
+> **£ per employee per week = `base_wage` ÷ 10,000.**
+
+Checked against the independent per-pop measurement of F26: GBR at 1840 reads **0.0610**, where F26 measured 0.0610 for the
+Austrian market and 0.0796 for the Belgian off the telemetry. Both numbers are now read live (the define and
+`common/pop_types`' `wage_weight`), so a patch cannot leave either quietly wrong.
+
+`config/measured_base_wages.json` is the committed path: the normal rate per tag per year, median over the vanilla baseline's
+seeds, 17 tags including **UNL**. GBR runs 0.0610 → 0.0640 → 0.0677 → 0.0738 → 0.0760 → 0.0915 across 1840…1935.
+
+### 2. ⭐⭐ WHAT `profit` CONTAINS — CONFIRMED, AND F150 §2's READING IS RIGHT
+
+For a production building, `profit = revenue − inputs − wages`, all at MARKET prices. The test is the residual
+`R − I − profit`, which must be a positive wage bill:
+
+| | before the repair (F150, 1935 endpoint) | after the repair (vanilla 1836, priced entries) |
+|---|---|---|
+| implied wage bill NEGATIVE | 1,845 of 7,067 — **26% of entries, 45% of LEVELS** | **30 of 520** |
+
+The 30 that remain are not noise and are not a defect in the repair — they are **shipyards** (income from naval ship
+construction is not in the goods flows at all, the same fact the era solver's −30pp shipyard handicap exists for) and
+**subsistence** (its own wage rules: `STARTING_WAGE_RATE_SUBSISTENCE_MULTIPLIER` 0.5 and
+`SUBSISTENCE_OUTPUT_AVERAGE_WAGE_RATE_FACTOR` counting output as wage). Both are excluded by name, with the reason stated.
+
+⚠ **Buildings with NO goods flows cannot be scored by any margin, and that is the durable half of F150.** GBR 1900 alone
+holds 12 such building types — financial districts, manor houses, company headquarters — with `va_out = va_in = 0` and
+**£2.75M of weekly profit** between them. `trueMargin()` returns null there and the report prints the profit.
+
+### 3. THE REPAIR, AND WHAT IT DOES TO THE PUBLISHED ANCHOR
+
+    R = va_out × Σ_g share_g × (price_g ÷ base_g)     the goods mix of the ACTIVE methods, at that market's prices
+    margin = profit ÷ (R − profit)                    because R − profit ≡ inputs + wages, by definition
+
+At **1836** the output price sits at **0.943 of base** (p10 0.603, p90 1.277), so the repair is nearly a no-op in aggregate:
+on the same 145 priced manufacturing entries it reads **30.5% repaired against 30.9% legacy**. Per entry it is not small —
+median +1.9pp but p10 **−40.4pp** and p90 **+89.5pp**.
+
+⚠⚠ **F92's published 25.8% manufacturing anchor is NOT restated by this.** The 30.5% above is over the **507 priced**
+entries — the seven instrumented markets, which are the rich ones — while 25.8% was over all **4,002**. That is a
+SAMPLE difference, not a definition one, and the tool now prints both so the two can never be confused again.
+⇒ **The 1836 anchor stands.** What does not stand is any margin quoted at a date where prices have left base, which is
+every century endpoint, and worst exactly where the mod's price decline works.
+
+### 4. ⭐⭐ THE WAGE PREMIUM: BUILDINGS PAY 1.52× THE COUNTRY'S NORMAL RATE, AND IT IS FLAT ACROSS THE CENTURY
+
+`base_wage` is the country's *normal* rate, not what a building pays — a building sets its own and raises it when profitable
+(`BUILDING_RAISE_WAGES_TARGET_WEALTH_MULT` and the rest of that define block). Measured as
+`implied wage bill ÷ modelled wage bill` over 74 (country × decade) cells of the vanilla baseline:
+
+| | 1840 | 1860 | 1880 | 1900 | 1920 | 1935 | all |
+|---|---|---|---|---|---|---|---|
+| premium | 1.44 | 1.56 | 1.47 | 1.54 | 1.60 | 1.49 | **1.52** (p10 1.22, p90 1.85) |
+| wage share of total cost | 54.6% | 50.2% | 42.9% | 38.4% | 34.4% | **29.7%** | 41.7% (p10 29.7, p90 61.1) |
+
+⭐ **The premium is an ENGINE property, not a book property**: the anchor-slide mod arm reads **1.54** over its own 38 cells,
+within noise of vanilla's 1.52. That is what makes it usable as a prediction constant. Its own wage share of cost runs
+**52.4% → 41.1%**, i.e. our book carries MORE labour per pound of cost late than vanilla does — consistent with a design
+whose output prices fall while employment per level stays vanilla's.
+
+⚠ **A flat `wage_pct` of 0.25 is below vanilla's own wage share in every decade of the century**, and it is worst where a
+building's cost is nearly all labour. The **ART ACADEMY** is the loud case: its jobs live in its OWNERSHIP production-method
+group, so `t.employment` is empty and 25%-of-goods charged it almost nothing — its base-price margin read +108% / +313%
+(F143 §1a). Charged its real 9,500 wage units per level (1,000 academics at weight 4, 3,000 clerks at 1.5, 1,000 laborers at
+1), against textile's 6,000, it becomes the WORST era-0 rung in the book.
+
+### 5. WHAT THE REPAIR AND THE WAGE MODEL MOVE, MEASURED
+
+- **`ladder_options.mjs`** at GBR@1920 on the canon's ladder: era-0 profit is **−£294/level/wk for textile and negative in
+  15 of 17 industries**, where the flat share had rung 0 near break-even; the frontier still earns 211–519% (P1's money
+  printer, now honestly charged). Wage share of cost by era **42 / 33 / 27 / 19%**.
+- **`era0_solvency.mjs`** on the 1836 map, vanilla's own recipe: insolvent (industry × market) cells **22 (31%) → 26 (37%)**
+  and the median margin **+21% → +7%**, because the British market's wage went from the hardcoded 0.0600 to the measured
+  0.0578 × 1.5 = **0.0878**. ⇒ **F140's census figures are superseded**; its *shape* (1.4 as the raw-input maximum, the
+  ordering of the options) is not touched, because every column moved together.
+- **The register** is unaffected: `criteria.mjs` never used the margin.
+
+### 6. WHAT IT DOES NOT SAY
+
+- It does not measure a single building type's wage rate. The premium's p10–p90 is 1.22–1.85 **across country-decades**;
+  WITHIN one cell the per-type spread is wider still (urban centres 1.0, mines 1.9–2.5, glassworks below 1). Use it for an
+  economy, which is what the ruling asks for, not for one building.
+- The base-method-only design tools stay a few points pessimistic by construction: no secondary methods, no throughput.
+- The repair needs per-market prices, so it is available only for INSTRUMENTED markets. That is the second reason the tag
+  list grew (§7) and the reason `rung_econ.mjs` and `slid_vs_unslid.mjs` now print PROFIT and **no repaired margin at all** —
+  they aggregate a rung across every market at every price, so there is no single price to re-value `va_out` at, and a wrong
+  number is worse than an absent one.
+
+### 7. ⭐ THE UNITED NETHERLANDS WAS SILENTLY DROPPING OUT OF THE SHORTLIST
+
+Found while adding NGF and UNL to the pool by ruling. **UNL** (`common/country_formation`: Holland + Flanders + Wallonia +
+Friesland + Gelre, `required_states_fraction = 1`, `ai_will_do = always`) stands in **2 of the 16 vanilla baseline seeds
+from 1876**, and in **run 2 of `20260920_114003_anch-costslide-century`** — where NET and BEL do not exist at all and UNL
+holds **£201M of GDP at 1935**. Every pool in the ledger listed NET and BEL and not UNL, so in those seeds the shortlist
+silently lost both members. F151 §4 recorded the symptom (*"NET and BEL do not exist in run 2 at 1935, so the pool's
+composition genuinely differs by seed"*); this is the cause.
+
+⚠ `UNL_ADJ` is **"Dutch"**, so its market is still called "Dutch Market" — the market NAME does not identify its leader,
+which is why `lib_markets.mjs` keys prices by tag and resolves the tag per run.
+
+**Measured effect on the register**, `20260920_114003` run 1 (which has NET and BEL, not UNL): pool H 3.49 → **3.54**, pool
+GDP 1.23 → **1.21**, loss 5.50 → **5.53**. The arm's own numbers did not move at all — what moved is VANILLA's pool
+reference, which now counts the Low Countries in the two seeds where they had unified instead of dropping them.

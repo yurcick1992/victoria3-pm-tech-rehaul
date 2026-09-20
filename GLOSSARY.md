@@ -31,11 +31,11 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | name | who |
 |---|---|
 | **the world** | every country in the save |
-| **the SHORTLIST POOL** (usually just "the pool", or "the shortlist") | **GBR · USA · FRA · NET · BEL · PRU · NGF · GER**, summed and read as ONE economy. Ratios internal to it survive territory moving between members |
-| **the MAJORS** | the same eight. "Majors" is *not* a prestige rank and never means RUS / CHI / TUR / SPA, however successful a seed makes them |
-| **MEMBER** (per-country lines) | GBR · USA · FRA · GER · BEL · NET, where GER = GER, else NGF, else PRU — the German state through its three names |
-| **the scoped markets** | British · American · French · Dutch — the four the price indices are read in |
-| **the seven markets** | British · American · French · Prussian · Russian · Japanese · Dutch — the markets telemetry instruments, used by the price and recipe censuses |
+| **the SHORTLIST POOL** (usually just "the pool", or "the shortlist") | **GBR · USA · FRA · NET · BEL · UNL · PRU · NGF · GER**, summed and read as ONE economy. Ratios internal to it survive territory moving between members. **UNL** = the United Netherlands, which REPLACES NET and BEL where it forms (2 of the 16 vanilla seeds, from 1876) |
+| **the MAJORS** | the same nine. "Majors" is *not* a prestige rank and never means RUS / CHI / TUR / SPA, however successful a seed makes them |
+| **MEMBER** (per-country lines) | GBR · USA · FRA · GER · NET · BEL · UNL, where GER = GER, else NGF, else PRU — the German state through its three names. UNL gets its OWN row rather than resolving into NET and BEL, so it is never counted twice |
+| **the scoped markets** | the markets the price indices are read in: the ARM's markets **intersected with** VANILLA's, printed with the index. Vanilla carries British · American · French · Dutch today, so that is the basis; an arm instrumented since 2026-09-20 also has German and Belgian prices, and they enter the day a vanilla baseline carries them |
+| **the instrumented markets** | whatever a schedule's telemetry tag list names. **ELEVEN since 2026-09-20**: GBR · FRA · USA · PRU · NGF · GER · NET · BEL · UNL · RUS · JAP. Older sessions carry **the seven** (British · American · French · Prussian · Russian · Japanese · Dutch) and so hold no German prices after 1870 and no Belgian ever. ⚠ A market is named for its LEADER's adjective, so the German one reads Prussian → North German → German and the United Netherlands' is still "Dutch Market" — a market NAME does not identify its leader |
 
 ## 3. TIME
 
@@ -83,11 +83,14 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **base price** | the good's price in `tools/goods_prices.tsv` — the game's own reference, never what anything actually sells for |
 | **realised price** | what the market produced. Off base by ±60 pp across markets at 1836 and ±50 pp across seeds by 1900 (§10.86.2) |
 | **the band** | the engine's price range, **25–175% of base**. A good at either edge can no longer signal scarcity |
-| **margin** (unqualified) | **(output − inputs − wages) ÷ (inputs + wages)**, all at current prices — F92's definition, the sheet's, and the register's |
+| **PROFIT** | ⭐ the game's own weekly bottom line for a building, in £: revenue − inputs − wages at MARKET prices, confirmed by measurement (F152). **This is what a report quotes** (user-ruled 2026-09-20, §10.87); a margin may sit beside it, never instead of it |
+| **margin** (unqualified) | **(output − inputs − wages) ÷ (inputs + wages)**, all at current prices — the sheet's definition. Read off a SAVE it is `profit ÷ (R − profit)` where R = `va_out` re-priced from base to market. ⚠ F92's `profit ÷ (va_out − profit)` is that with the units BROKEN — `va_out` is base-priced and `profit` market-priced — and is retired; it is UNDEFINED, not approximate, where `va_out` is 0 (ownership buildings) |
 | **goods margin** | the same without wages. Always say which |
 | **value added** | outputs − inputs at market prices. **GDP = 52 × weekly value added** (F45); pops and trade are on neither side |
-| **wage units** | Σ (employees × `wage_weight`); a building's wage bill is `base wage × wage units`. Model-only — never emitted |
-| **wage_pct** | the wage fraction of TOTAL cost in the design arithmetic (default 0.25). A modelling layer, not a game field |
+| **wage units** | Σ (employees × `wage_weight`); a building's wage bill is `wage × wage units × staffed levels`. Model-only — never emitted |
+| **the NORMAL wage rate** | a country's reference wage — the save's own `base_wage`, **in the engine's unit: weekly £ per 10,000 employees**, so £ per employee per week = `base_wage ÷ 10,000`. The committed path per tag per year is `config/measured_base_wages.json` |
+| **the WAGE PREMIUM** | **1.52×** — what buildings actually pay over the normal rate (p10 1.22, p90 1.85, flat across the century and the same on mod arms). A prediction that omits it understates wages by about half again |
+| **wage_pct** | the flat wage fraction of TOTAL cost, 0.25. ⚠ **RETIRED FROM PREDICTIONS** (§10.87): vanilla's own share runs 54.6% at 1840 to 29.7% at 1935, so 25% is below its range in every decade. It survives only as the config-side convention behind `target_be` and `lint_solvency` (L18) |
 | **throughput** | a per-building multiplier on inputs *and* outputs, so it raises the full margin but not the goods margin |
 
 ## 7. PROCESS
