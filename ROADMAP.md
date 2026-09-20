@@ -2046,9 +2046,17 @@ higher t0 input penalty to ensure that t0 industry can't work at base prices, re
 
 ### 2. WHAT IS NOT SETTLED, AND IT IS THE IMPORTANT HALF
 
-⚠⚠ **NOTHING HERE HAS BEEN RUN FOR A CENTURY.** Two in-game years cannot see obsolescence, the price decline, the money printer or the hoard — the four
-things the project is actually for. F143 §1's case for the penalty is paper arithmetic over ANOTHER book's prices, and F139 is the standing warning
-that a designed ladder is not the realised one.
+⚠⚠ **THE GRADED PENALTY HAS NEVER BEEN RUN FOR A CENTURY** — and that, not the penalty as such, is the open question. Say which is which, because the
+loose form of this line ("nothing in step 10 has been run for a century") was flagged by the user on 2026-09-20 and is WRONG as stated:
+- **`in0` 1.2 FLAT has a century of evidence and is in the SHIPPED CANON.** Every book from `canon-flat-in12` (F110) through the cost-slope sweep, the
+  canon `canon-c19-in12` itself and last session's `probe-anch-costslide` carries it. It is the incumbent, not an open probe.
+- **`in0` 1.3 FLAT was run for a century and is CLOSED as a lever** — F118 (`canon-c19-in13`, n=1: the dip removed, then a runaway to 1.44×) and F119
+  (`canon-c205-in13`, n=2: a stall at 0.71 / 0.74×). The lift pushes construction to the frontier; it does not kill the old rung, at either slope.
+- **`in0` 1.4 flat, and THE GRADED PENALTY (`--in0-stage` for what an industry BUYS + `--in0-supplier` for what it SELLS), have only ever seen 21 months.**
+  Two in-game years cannot see obsolescence, the price decline, the money printer or the hoard — the four things the project is actually for. F143 §1's
+  case for the graded shape is paper arithmetic over ANOTHER book's prices, and F139 is the standing warning that a designed ladder is not the realised one.
+⚠ A second, separate blocker on the graded shape: the generator currently REFUSES `--anchor-for` together with `--in0-stage`, so the graded penalty cannot
+be combined with the anchor slide the working book now carries. Lifting that conflict comes before any century run of it.
 ⚠ **The supplier weights are a 1836-derived number knowingly applied to every rung** (§10.86.7). At 1910 the same measure reads steel 0.31 against
 1836's 1.00. The late game is deferred by ruling, not answered.
 ⚠ Only `k = 0.5` and only the `map` variant have been tested; `any` and `share` remain in the generator, unrun.

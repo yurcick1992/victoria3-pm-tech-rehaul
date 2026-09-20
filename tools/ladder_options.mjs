@@ -32,8 +32,12 @@
 //      stands in for produces its OWN quantity, so the 1836 map over-produces by out_e / (that method's output). Measured EXACTLY here — per industry,
 //      per rung, weighted by the LEVELS the emitted 1836 history actually places on that rung — not by F137's flat 1.33^e approximation.
 //
-// A ladder is given as either a ratio (geometric, `A=2.2`) or an explicit per-era list (`out=1,2,3.6,6`), which is what "more complex than
-// anchor*A^era" means and what `make_ab_config --cost-ladder` already does for cost.
+// A ladder is given as either a ratio (geometric, `A=2.2`) or an explicit per-era list, which is what "more complex than anchor*A^era" means and
+// what `make_ab_config --cost-ladder` (cost) and `--in-ladder` (input value) do. ⚠ THE LIST IS `/`-SEPARATED, NOT COMMA-SEPARATED — the fields of a
+// --book spec are themselves comma-separated, so `in=1,1.5,2.6,4.7` does not parse and throws on `undefined.trim()`. Write `in=1/1.5/2.6/4.7`.
+// ⚠⚠ THIS TOOL DOES NOT MODEL `--anchor-for`. A book carrying the anchor slide is scored here as if unslid, so the ABSOLUTE margins are one rung
+// high for the slid industries. Comparisons BETWEEN candidates are still exact (identical treatment, and the slide is a pure level shift that
+// leaves every ratio between rungs alone) — but quote a slid book's own margins from the book, not from here.
 //
 // usage: node tools/ladder_options.mjs [--book "name:out=<A|list>,in=<B|list>,cost=<C|list>,in0=<x>" ...] [--config <book>]
 //                                      [--industry textile] [--economy GBR@1920] [--wage-premium 1.0] [--profit-wage-share 0]

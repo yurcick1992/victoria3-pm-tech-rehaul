@@ -8335,6 +8335,42 @@ half, and takes the labour absorption and world GDP back down toward the aim fro
 the batch after it, not beside it** — it is the sharper instrument for the top rungs and it needs its own seed pair, because combining it with a changed
 A would make the result unreadable.
 
+#### 10.86.4.4 — ⭐⭐ THE ACCELERATING INPUT LADDER IS BUILT (2026-09-20): `make_ab_config --in-ladder`, and the candidate `probe-accel-slide`
+
+§10.86.4.3 closes by saying the accelerating-B ladder "is the batch after it, not beside it … it needs its own seed pair". It now exists as a flag and
+as a book. **`--in-ladder m1,m2,m3`** is the exact counterpart of `--cost-ladder`: it replaces `B^k` with an explicit per-era list, still ONE list for
+every industry, so it exercises the non-geometric freedom the 2026-09-19 ruling opened without reopening the per-industry level the same ruling closed.
+`--B` becomes optional and `_ab.B` is then **null** rather than a stamp that lies; `_ab.in_ladder` carries the ladder and **L31 re-derives input value
+from it**, taught rather than bypassed. Proven both ways by sabotage: stripping `_ab.in_ladder` from a copy fails 22 rungs, and hand-editing one e3
+input fails that rung by name (`steel e3: input value £16530, the era rule says £14100 … 4.700 at ladder index 3`). Below the anchor (`k < 0` under
+`--anchor-for`) the list is extended geometrically from its own first step, `m_1^k`, which is identically `B^k` for a geometric ladder — so a slid
+industry's lowest rung is treated the same either way and no existing book moves (L31 still passes on the canon and on `probe-anch-costslide`).
+
+**The candidate: `probe-accel-slide` = `probe-anch-costslide` with the input ladder `1 / 1.5 / 2.6 / 4.7` in place of `1 / 1.5 / 2.25 / 3.375`.** One
+lever; the economic field diff is `inputs` on 22 rungs and nothing else. Measured **from the books themselves**, slide included — ⚠ NOT from
+`ladder_options`, which does not model `--anchor-for` and so reads a slid book one rung high:
+
+| book | F97 death test | value added per top-rung level | ÷ working | paper e3 margin | unslid e3 median |
+|---|---|---|---|---|---|
+| `probe-anch-costslide` (B 1.5) | 24/24 | £10,892 | 1.000 | 426% | 360% |
+| `probe-b16-slide` (flat B 1.6) | 24/24 | £10,210 | 0.937 | 333% | 279% |
+| **`probe-accel-slide` (1/1.5/2.6/4.7)** | **24/24** | **£9,789** | **0.899** | **277%** | **230%** |
+
+⭐ **The death test does not move at all**, which is the property §10.86.4 predicted and the reason this instrument is preferred to a lower A: raising
+the top rung's inputs moves the value-added numerator and denominator together. `building_cost` is untouched, so capital per unit of output and ROADMAP
+step 8's **P8** build-time complaint are unchanged; e0 and e1 input value are identical, so **F137's 1836 anchor error is exactly as before (+27.3%)**
+and T0's economics do not move.
+
+⭐ **Why it lands on paper, without being a per-industry lever.** The anchor slide put the eight industries whose 1836 mass sits on e1 one ladder index
+lower, so their top rung reads index 2 (×2.6) while the unslid nine read index 3 (×4.7). Input value moves **×1.000 / ×1.000 / ×1.155 / ×1.393** for the
+unslid set against **×1.000 / ×1.000 / ×1.000 / ×1.156** for the slid one. The acceleration therefore falls on exactly the industries that were never
+shifted down and whose top rungs stayed fattest — paper, the art academy, arms, motor, explosives — which is what the user asked for on 2026-09-20
+("paper needs nerfing stronger") arrived at by a uniform rule rather than by naming paper.
+
+⚠ **The numbers above are DESIGN COORDINATES, not predictions** (§10.86.2). F139 measured the market compressing a designed 5/55/127/233 into a realised
+26/31/47/46, so the designed cuts will not appear as realised ones. The column that carries the GDP expectation is value added per frontier level
+(×0.899), and the standing warning is F128: a base-price gain match UNDERSTATES the price channel, and B 1.8 gain-matched STALLED at 0.70.
+
 #### 10.86.5 — INSOLVENCY IS NOT A BINARY: THE READING IS HOW MUCH OF THE 1836 INDUSTRY SURVIVES THE ADJUSTMENT (user-ruled 2026-09-19)
 
 **The user, on the era-0 penalty census:** *"It's important to understand the total output or employment of the 1836.1.1 insolvent industry. Shedding

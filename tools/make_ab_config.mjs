@@ -38,6 +38,7 @@
 // usage: node tools/make_ab_config.mjs --A 2.5 --B 2.5 --suffix ab1 [--base config/mod_config.tier4.json]
 //        [--ai-base 1000] [--divisor <s>] [--ai-steep glass,tooling:3] [--ai-defines K=V,K=V]
 //        [--in0 1.2] [--in0-only] [--cost-flat | --cost-ratio 1.6 | --cost-ladder 1.9,3.083,6.859] [--ai-ladder 1000,2000,3000,4000]
+//        [--in-ladder 1.5,2.6,4.7]   (the input ladder as an explicit per-era list, in place of B^e — see its own header)
 //        [--bar-months 24] [--variant "name|base|ruled_by|delta"]        (writes config/mod_config.<suffix>.json + tech_tree_options twin)
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { tierEmployment, wageUnits, eraReferenceWage } from './lib_wage_model.mjs';
@@ -122,6 +123,23 @@ const COST_RATIO = (() => { const v = arg('--cost-ratio', ''); if (!v) return nu
 //   point held at the found book's (FINDINGS F127: canon-b18-gm). Exclusive with --cost-flat and --cost-ratio; recorded as
 //   `_ab.cost_ladder`, which tools/lint_tier_eras.mjs (L31) reads when it recomputes cost.
 const COST_LADDER = (() => { const v = arg('--cost-ladder', ''); if (!v) return null; if (COST_FLAT || COST_RATIO != null) throw new Error('--cost-ladder is exclusive with --cost-flat and --cost-ratio'); const a = v.split(',').map(Number); if (a.length < 3 || a.some(x => !(x > 0))) throw new Error('--cost-ladder m1,m2,m3 (one multiplier per era ABOVE era 0, era 1 first; era 0 is always 1)'); return [1, ...a]; })();
+// ⭐⭐ --in-ladder m1,m2,m3 (2026-09-20) — THE INPUT LADDER AS AN EXPLICIT PER-ERA LIST, the exact counterpart of
+//   --cost-ladder, and the axis the user's 2026-09-19 ruling OPENED: *"vanilla values + uniform ladders and penalties
+//   stay, although ladders can be more complex than anchor*A^era"*. It replaces `B^k` with `m_k` — still UNIFORM across
+//   industries (every industry gets the same list), so it does not reopen the per-industry axis the same ruling closed.
+//   WHY IT EXISTS: BALANCE_FRAMEWORK §10.86.4 / FINDINGS F141 measured that an ACCELERATING input ladder is the only
+//   lever that cuts the FRONTIER's margin without touching F97's death test — the test is a ratio of VALUE ADDED
+//   between rungs two apart, and raising the top rung's inputs moves the numerator and denominator together, where a
+//   lower A moves only the numerator. Measured on `ladder_options` at GBR@1905: 1/1.5/2.6/4.7 takes the median margin
+//   1 / 62 / 148 / 284% → 1 / 62 / 118 / 187% with the death test unchanged at 16/17 and the 1836 anchor untouched.
+//   ⚠ BELOW THE ANCHOR (k < 0, i.e. a rung under --anchor-for's origin) the list has no entry, so it is extended
+//   GEOMETRICALLY from its own FIRST STEP: m_k = m_1^k. For a geometric ladder that is exactly B^k, so a slid
+//   industry's lowest rung is treated identically either way. Recorded as `_ab.in_ladder`, which L31 reads.
+const IN_LADDER = (() => { const v = arg('--in-ladder', ''); if (!v) return null; const a = v.split(',').map(Number); if (a.length < 3 || a.some(x => !(x > 0))) throw new Error('--in-ladder m1,m2,m3 (one multiplier per era ABOVE era 0, era 1 first; era 0 is always 1)'); return [1, ...a]; })();
+// the input multiplier at ladder index k — the ONE definition, shared by the generator and quoted to L31 through `_ab`.
+const inMul = k => IN_LADDER
+  ? (k >= 0 ? IN_LADDER[k] : Math.pow(IN_LADDER[1], k))
+  : Math.pow(B, k);
 // --ai-ladder v0,v1,v2,v3 (user-ruled 2026-09-10): ai_value BY ERA INDEX (t.era, 0-based), an explicit list — "upward but not
 //   exponential", e.g. 1000,2000,3000,4000 — instead of AI_BASE × A^era. --ai-steep still overrides for the industries it names.
 const AI_LADDER = (() => { const v = arg('--ai-ladder', ''); if (!v) return null; const a = v.split(',').map(Number); if (a.length < 4 || a.some(x => !(x > 0))) throw new Error('--ai-ladder v0,v1,v2,v3 (one value per era, era 0 first)'); return a; })();
@@ -204,7 +222,9 @@ const BAR_MONTHS = (() => { const v = arg('--bar-months', ''); if (!v) return nu
 // --variant "name|base|ruled_by|delta" (2026-09-13): the `_variant` record the measured books carried by hand — what this
 //   book is a variant OF and in what; the exact regenerating command is recorded beside it automatically.
 const VARIANT = (() => { const v = arg('--variant', ''); if (!v) return null; const [name, base, ruled_by, delta] = v.split('|').map(s => s.trim()); if (!name) throw new Error('--variant "name|base|ruled_by|delta"'); return { name, base: base || null, ruled_by: ruled_by || null, delta: delta || null }; })();
-if (!(A > 1) || !(B > 0) || !SFX) throw new Error('usage: --A <n> --B <n> --suffix <name>');
+// ⚠ --B is required UNLESS --in-ladder supplies the input ladder outright; recording a B the book does not use
+//   would be a stamp that lies, so `_ab.B` is null in that case and `_ab.in_ladder` carries the truth.
+if (!(A > 1) || (!IN_LADDER && !(B > 0)) || !SFX) throw new Error('usage: --A <n> (--B <n> | --in-ladder m1,m2,m3) --suffix <name>');
 
 const PRICE = {};
 for (const l of readFileSync(join(REPO, 'tools/goods_prices.tsv'), 'utf8').split(/\r?\n/)) {
@@ -339,7 +359,8 @@ for (const ind of cfg.industries) {
     const k = e - ORIGIN;
     const baseLift = (IN0_ANCHORED != null && aEra != null) ? IN0_ANCHORED : IN0;   // --in0-anchored: the SLID set's own lift
     const lift = (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (k === 0 ? baseLift : 1) : baseLift);
-    const Ve = I0 * lift * (TF ? TF.in[e] : Math.pow(B, k));
+    if (IN_LADDER && k >= IN_LADDER.length) throw new Error(`--in-ladder: ${ind.id} reaches ladder index ${k} (e${e}), the ladder has ${IN_LADDER.length - 1} multipliers above era 0`);
+    const Ve = I0 * lift * (TF ? TF.in[e] : inMul(k));
     const inputs = {};
     for (const [g, q] of Object.entries(mixRec.in)) { const share = q * (PRICE[g] || 0) / mixVal; const qty = r1(share * Ve / PRICE[g]); if (qty > 0) inputs[g] = qty; }
     const Ai = A_FOR[ind.id] || A;   // this industry's own output ratio (--A-for), else the book's A
@@ -391,9 +412,9 @@ cfg.ai_defines = { ...(cfg.ai_defines || {}), PRODUCTION_BUILDING_AUTONOMOUS_INV
 const EXTRA_DEFINES = (() => { const v = arg('--ai-defines', ''); if (!v) return {}; const o = {}; for (const kv of v.split(',')) { const [k, x] = kv.split('='); if (!k || !Number.isFinite(+x)) throw new Error('--ai-defines K=V[,K=V]: bad entry ' + kv); o[k.trim()] = +x; } return o; })();
 Object.assign(cfg.ai_defines, EXTRA_DEFINES);
 cfg.company_target_gate = process.argv.includes('--company-gate');   // emit_companies opt-in; OFF by default (see its header)
-cfg._ab = { A, B, A_for: Object.keys(A_FOR).length ? A_FOR : null, tiers_for: Object.keys(TIERS_FOR).length ? TIERS_FOR : null, ai_base: AI_BASE, ai_steep: STEEP ? { industries: [...STEEP.inds], ratio: STEEP.ratio } : null, cost_divisor_scaling: s, company_target_gate: cfg.company_target_gate, base: BASE, generated: new Date().toISOString() };
+cfg._ab = { A, B: IN_LADDER ? null : B, A_for: Object.keys(A_FOR).length ? A_FOR : null, tiers_for: Object.keys(TIERS_FOR).length ? TIERS_FOR : null, ai_base: AI_BASE, ai_steep: STEEP ? { industries: [...STEEP.inds], ratio: STEEP.ratio } : null, cost_divisor_scaling: s, company_target_gate: cfg.company_target_gate, base: BASE, generated: new Date().toISOString() };
 cfg._ab.ai_defines_extra = Object.keys(EXTRA_DEFINES).length ? EXTRA_DEFINES : null;
-cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_stage = IN0_STAGE; cfg._ab.in0_supplier = IN0_SUPPLIER; cfg._ab.in0_supplier_mode = IN0_SUPPLIER != null ? IN0_SUPPLIER_MODE : null; cfg._ab.downstream_weight = IN0_SUPPLIER != null ? DOWNSTREAM : null; cfg._ab.good_stage = IN0_STAGE ? STAGE : null; cfg._ab.industry_stage = IN0_STAGE ? IND_STAGE : null; cfg._ab.in0_per_industry = (IN0_LEVEL != null || IN0_STAGE) ? LEVELLED : null; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.cost_ratio = COST_RATIO; cfg._ab.cost_ladder = COST_LADDER; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
+cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_stage = IN0_STAGE; cfg._ab.in0_supplier = IN0_SUPPLIER; cfg._ab.in0_supplier_mode = IN0_SUPPLIER != null ? IN0_SUPPLIER_MODE : null; cfg._ab.downstream_weight = IN0_SUPPLIER != null ? DOWNSTREAM : null; cfg._ab.good_stage = IN0_STAGE ? STAGE : null; cfg._ab.industry_stage = IN0_STAGE ? IND_STAGE : null; cfg._ab.in0_per_industry = (IN0_LEVEL != null || IN0_STAGE) ? LEVELLED : null; cfg._ab.in0_only = IN0_ONLY; cfg._ab.cost_flat = COST_FLAT; cfg._ab.cost_ratio = COST_RATIO; cfg._ab.cost_ladder = COST_LADDER; cfg._ab.in_ladder = IN_LADDER; cfg._ab.ai_ladder = AI_LADDER; cfg._ab.bar_months = BAR_MONTHS;
 // ⭐ the book records that it is era-keyed, and the command that made it — the era pass (2026-09-13) is what a
 //   reader of an older book has to check for: a book without `keyed_by: 'era'` was keyed on the rung index
 cfg._ab.in0_anchored = IN0_ANCHORED;

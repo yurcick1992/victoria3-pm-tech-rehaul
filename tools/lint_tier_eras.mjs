@@ -92,6 +92,12 @@ for (const ind of cfg.industries || []) {
   // ---- 2. the era-keyed book ----------------------------------------------------------------------------------
   if (!AB) continue;
   const A = +AB.A, B = +AB.B, lift = +(AB.in0 ?? 1), in0only = !!AB.in0_only;
+  // ⭐ --in-ladder (2026-09-20): the input ladder may be an explicit per-era LIST (`_ab.in_ladder`) instead of B^k,
+  //   exactly as cost may be (`_ab.cost_ladder`). Below the anchor (k < 0) the list is extended geometrically from
+  //   its own first step — the same rule the generator uses, and identical to B^k for a geometric ladder.
+  //   ⚠ Taught the field rather than bypassed: without it every rung of such a book fails, which is the guard working.
+  const inL = Array.isArray(AB.in_ladder) ? AB.in_ladder : null;
+  const inMul = k => inL ? (k >= 0 ? inL[Math.min(k, inL.length - 1)] : Math.pow(inL[1], k)) : Math.pow(B, k);
   // ⭐ --in0-level (2026-09-18): the era-0 input LEVEL is per industry, not one scalar, so the rule this linter
   //   recomputes is `vanilla × lift_i × B^era` with lift_i from _ab.in0_per_industry. Without this the lint FAILS on
   //   every rung of a levelled book, which is the guardrail working - it must be taught the field, never bypassed.
@@ -119,8 +125,8 @@ for (const ind of cfg.industries || []) {
     if (Math.abs(t.output_qty - wantOut) > 0.051 + 0.002 * wantOut) faults.push(`${ind.id} e${e}: output ${t.output_qty}, the era rule says ${wantOut} (vanilla ${out0} × ${A}^${k}) — keyed on something other than the era`);
     // --in0-anchored: the SLID set (named in _ab.anchor_for) carries its own lift; everything else the scalar in0
     const liftI = perInd && perInd[ind.id] != null ? +perInd[ind.id] : ((AB.in0_anchored != null && aEra != null) ? +AB.in0_anchored : lift);
-    const wantIn = I0 * (in0only ? (k === 0 ? liftI : 1) : liftI) * Math.pow(B, k); const gotIn = val(t.inputs);
-    if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${lift} × ${B}^${k})`);
+    const wantIn = I0 * (in0only ? (k === 0 ? liftI : 1) : liftI) * inMul(k); const gotIn = val(t.inputs);
+    if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${lift} × ${inL ? inMul(k).toFixed(3) + ' at ladder index ' + k : B + '^' + k})`);
     // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of
     // 2026-09-14) and A by default (capacity-priced, the canon)
     // ... or anchor × m_era from an explicit per-era list (`_ab.cost_ladder`, 2026-09-16 — one era's cost moved on its own, or a changed A/B gain-matched per era)
