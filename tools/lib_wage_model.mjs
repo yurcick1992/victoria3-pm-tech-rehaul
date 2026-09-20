@@ -250,6 +250,27 @@ export function trueMargin(profit, revenueAtMarket) {
   return profit / cost;
 }
 
+/**
+ * ⭐⭐ THE CONFIG-SIDE REFERENCE WAGE, PER NARRATIVE ERA — what `target_be` and landmine L18 are priced at
+ * (user-ruled 2026-09-20). A config carries ONE number per rung, so it needs ONE wage per rung; the era rule
+ * already says what a rung's era means, so a rung is priced at **its own era's anchor year**:
+ * e0 → 1836, e1 → 1875, e2 → 1905, e3 → 1940 (`era_anchor_years` from the book, defaulted here).
+ * The economy is the MEDIAN over the shortlist's own tags at that year — one country would make the whole
+ * cost book hostage to one seed's history.
+ * Returns a function `(era) => £ per employee-week`. ⚠ 1940 is past the measured window, so it takes the
+ * nearest year the table has (1936); `economyWage` reports which year it used.
+ */
+export const BE_REFERENCE_TAGS = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'GER'];
+export function eraReferenceWage(anchorYears = [1836, 1875, 1905, 1940], tags = BE_REFERENCE_TAGS) {
+  const med = a => { const s = a.slice().sort((x, y) => x - y); return s.length % 2 ? s[s.length >> 1] : (s[(s.length >> 1) - 1] + s[s.length >> 1]) / 2; };
+  const w = anchorYears.map(y => {
+    const v = tags.map(t => { try { return economyWage(t, y).wage; } catch { return NaN; } }).filter(Number.isFinite);
+    if (!v.length) throw new Error('no measured wage for any of ' + tags.join('/') + ' near ' + y);
+    return med(v);
+  });
+  return era => w[Math.max(0, Math.min(w.length - 1, era | 0))];
+}
+
 /** The old F92 ratio, kept ONLY so a tool can print what it used to say beside the repair. Never the headline. */
 export function legacyMargin(profit, vaOut) {
   const c = vaOut - profit;

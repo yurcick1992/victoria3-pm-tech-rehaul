@@ -40,6 +40,8 @@
 //        [--in0 1.2] [--in0-only] [--cost-flat | --cost-ratio 1.6 | --cost-ladder 1.9,3.083,6.859] [--ai-ladder 1000,2000,3000,4000]
 //        [--bar-months 24] [--variant "name|base|ruled_by|delta"]        (writes config/mod_config.<suffix>.json + tech_tree_options twin)
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
+import { tierEmployment, wageUnits, eraReferenceWage } from './lib_wage_model.mjs';
+import { readVanilla } from './lib_vanilla_ladder.mjs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -224,6 +226,10 @@ const ANCH = { construction_cost_low: 200, construction_cost_medium: 400, constr
 const r1 = x => Math.round(x * 10) / 10;
 
 const cfg = JSON.parse(readFileSync(join(REPO, BASE), 'utf8'));
+// ⭐ the config-side reference wage per era, and the live game the ART ACADEMY's ownership-PMG employment is read from
+const BE_WAGE_FLAT = arg('--be-wage', 'economy') === 'flat';
+const VLAD = BE_WAGE_FLAT ? null : readVanilla(GAME);
+const eraWage = BE_WAGE_FLAT ? (() => 0) : eraReferenceWage(cfg.era_anchor_years);
 const rows = []; let cmax = 0;
 const LEVELLED = {};   // --in0-level / --in0-stage: the per-industry lift actually used, recorded in _ab
 // ---- --in0-stage: the goods' manufacturing STAGE, derived from the recipe book itself
@@ -346,7 +352,20 @@ for (const ind of cfg.industries) {
     t.building_cost = Math.round(anchor * (COST_FLAT ? 1 : (TF ? TF.cost[e] : COST_LADDER ? COST_LADDER[Math.min(ce, COST_LADDER.length - 1)] : Math.pow(COST_RATIO ?? Ai, ce))));   // --cost-flat: §10.61's flat book; --cost-ratio: anchor × C^era; --cost-ladder: anchor × m_era
     t.ai_value = (AI_LADDER && !(STEEP && STEEP.inds.has(ind.id))) ? Math.round(AI_LADDER[Math.min(e, AI_LADDER.length - 1)]) : Math.round(AI_BASE * Math.pow(STEEP && STEEP.inds.has(ind.id) ? STEEP.ratio : Ai, e));
     const Obase = t.output_qty * PRICE[outGood]; const Ibase = val(inputs); const wp = t.wage_pct != null ? +t.wage_pct : 0.25;
-    t.target_be = Math.round(Ibase / ((1 - wp) * Obase) * 100);
+    // ⭐⭐ target_be IS WAGE-INCLUSIVE ON THE MEASURED WAGE, not a flat share of cost (user-ruled 2026-09-20, §10.87).
+    // W = the reference wage at THIS RUNG'S OWN ERA ANCHOR YEAR × its profession-weighted employment, so an e0 rung is
+    // priced at 1836 wages and an e3 rung at 1940's — which is what the era rule already says a rung's era means.
+    // ⭐ It is what finally charges the ART ACADEMY properly: its jobs live in its ownership PMG, so `t.employment` is
+    // empty and a share OF GOODS gave it almost nothing (its e2 reads 22 → 31, wage share 25% → 46%).
+    // `--be-wage flat` restores the old `Ibase / ((1 − wage_pct) × Obase)`.
+    const Wbe = BE_WAGE_FLAT ? Ibase * wp / (1 - wp) : eraWage(e) * wageUnits(tierEmployment(t, ind, VLAD));
+    // ⭐ STORE IT AS THE RUNG'S OWN `wage_pct` — the wage fraction of TOTAL cost, which is exactly what that field has
+    // always meant, only measured instead of assumed. Everything downstream already reads it (lint_profitability.awk,
+    // lint_solvency's L18 gate, the balance UI's wages row), so the whole chain moves to the measured wage with no
+    // second implementation and no new field. A book generated before this — or the six-rung one — carries no per-tier
+    // value and falls back to the flat 0.25, which is why nothing older breaks.
+    if (!BE_WAGE_FLAT) t.wage_pct = Math.round(Wbe / (Ibase + Wbe) * 10000) / 10000;
+    t.target_be = Math.round((Ibase + Wbe) / Obase * 100);   // ≡ Ibase / ((1 − wage_pct) × Obase) × 100 at that wage_pct
     cmax = Math.max(cmax, t.building_cost);
     rows.push({ ind: ind.id, era: e, key: t.key, out: t.output_qty, inputs, cost: t.building_cost, aiv: t.ai_value, be: t.target_be, va: Obase - Ibase, share: Ibase / Obase, emp: Object.values(t.employment || {}).reduce((s, x) => s + x, 0) || 5000 });
   });

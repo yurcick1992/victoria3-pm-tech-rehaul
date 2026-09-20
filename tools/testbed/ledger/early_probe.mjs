@@ -64,7 +64,8 @@ function readRun(rel) {
     const B = {};   // building type → {profit, vaOut, vaIn, staffing, levels}
     for (const c of Object.values(C)) { if (!+((j.world || {}).gdp)) gdp += +c.gdp || 0; pool += +c.investment_pool || 0;
       for (const [k, b] of Object.entries(c.buildings || {})) { const r = (B[k] ||= { profit: 0, vaOut: 0, vaIn: 0, staffing: 0, levels: 0 });
-        r.profit += +b.profit || 0; r.vaOut += +b.va_out || 0; r.vaIn += +b.va_in || 0; r.staffing += +b.staffing || 0; r.levels += +b.levels || 0; } }
+        r.profit += +b.profit || 0; r.vaOut += +b.va_out || 0; r.vaIn += +b.va_in || 0; r.staffing += +b.staffing || 0; r.levels += +b.levels || 0;
+        if (b.goods_sales !== undefined) { r.gs = (r.gs || 0) + b.goods_sales; r.gc = (r.gc || 0) + b.goods_cost; r.v9 = true; } } }
     // keep the LAST summary of each year (the probe writes four)
     years.set(y, { date, gdp, pool, B });
   }
@@ -117,8 +118,10 @@ for (const y of YEARS) {
     const eraP = [0, 1, 2, 3].map(e => med(rs.map(r => { if (!r.map) return NaN; let p = 0;
       for (const [k, b] of Object.entries(r.years.get(y).B)) { const t = r.map.tier[k]; if (!t || t.era !== e) continue; p += b.profit; }
       return p; })));
-    const eraM = [0, 1, 2, 3].map(e => med(rs.map(r => { if (!r.map) return NaN; let p = 0, o = 0;
-      for (const [k, b] of Object.entries(r.years.get(y).B)) { const t = r.map.tier[k]; if (!t || t.era !== e) continue; p += b.profit; o += b.vaOut; }
+    // ⭐ v9 first: profit% WAGES-INCLUSIVE and exact, wages = goods_sales − goods_cost − profit. Else F92's base-priced ratio.
+    const eraM = [0, 1, 2, 3].map(e => med(rs.map(r => { if (!r.map) return NaN; let p = 0, o = 0, gs = 0, gc = 0, v9 = false;
+      for (const [k, b] of Object.entries(r.years.get(y).B)) { const t = r.map.tier[k]; if (!t || t.era !== e) continue; p += b.profit; o += b.vaOut; if (b.v9) { gs += b.gs; gc += b.gc; v9 = true; } }
+      if (v9 && gs > 0) { const w = gs - gc - p; return (gc + w) > 0 ? p / (gc + w) : NaN; }
       return (o - p) > 0 ? p / (o - p) : NaN; })));
     const neg = med(rs.map(r => { if (!r.map) return NaN; let n = 0; for (const [k, b] of Object.entries(r.years.get(y).B)) { if (!r.map.tier[k] || !(b.staffing > 0)) continue; if (b.profit < 0) n++; } return n; }));
     const tot = med(rs.map(r => { if (!r.map) return NaN; let n = 0; for (const [k, b] of Object.entries(r.years.get(y).B)) { if (!r.map.tier[k] || !(b.staffing > 0)) continue; n++; } return n; }));

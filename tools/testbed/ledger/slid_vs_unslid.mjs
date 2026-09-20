@@ -69,8 +69,9 @@ function harvest(stamps, setup, rung) {
         const inPool = POOL.includes(tag);
         for (const [key, b] of Object.entries(c.buildings || {})) {
           if (!rung[key]) continue;
-          const a = acc[key] || (acc[key] = { lv: 0, st: 0, prof: 0, vo: 0, vi: 0, plv: 0, pst: 0, pprof: 0, pvo: 0 });
+          const a = acc[key] || (acc[key] = { lv: 0, st: 0, prof: 0, vo: 0, vi: 0, plv: 0, pst: 0, pprof: 0, pvo: 0, gs: 0, gc: 0, pgs: 0, pgc: 0, v9: false });
           a.lv += b.levels || 0; a.st += b.staffing || 0; a.prof += b.profit || 0; a.vo += b.va_out || 0; a.vi += b.va_in || 0;
+          if (b.goods_sales !== undefined) { a.gs += b.goods_sales || 0; a.gc += b.goods_cost || 0; a.v9 = true; if (inPool) { a.pgs += b.goods_sales || 0; a.pgc += b.goods_cost || 0; } }
           if (inPool) { a.plv += b.levels || 0; a.pst += b.staffing || 0; a.pprof += b.profit || 0; a.pvo += b.va_out || 0; }
         }
       }
@@ -88,9 +89,13 @@ if (!arm.length) { console.error('no usable runs in the arm at ' + YEAR); proces
 
 console.log(`SLID vs UNSLID at ${YEAR} — ${ARM_S}${ARM_SET ? ':' + ARM_SET : ''} · ${arm.length} run(s)`);
 console.log(`slid (ladder anchored on e1): ${[...armBook.slid].sort().join(', ') || '(none)'}`);
-console.log('PROFIT in £/week is the headline (user-ruled 2026-09-20). ⚠ THE MARGIN COLUMN IS F92’s `profit ÷ (va_out − profit)`, which mixes a');
-console.log('MARKET-priced numerator with a BASE-priced denominator (F150). It cannot be repaired here: these totals aggregate one rung across');
-console.log('EVERY market at every price, so there is no single output price to re-value `va_out` at. Read the profit; read the margin as indicative.\n');
+const anyV9 = arm.some(({ acc }) => Object.values(acc).some(a => a.v9));
+console.log('PROFIT in £/week is the headline, and the profit% beside it is WAGES-INCLUSIVE — profit ÷ (inputs + wages) (user-ruled 2026-09-20).');
+console.log(anyV9
+  ? '  EXACT (save-summary v9): wages = goods_sales − goods_cost − profit, both already at market prices, so a rung summed over every market is still exact.'
+  : '  ⚠ PRE-v9 summary: the column falls back to F92’s `profit ÷ (va_out − profit)`, which mixes a MARKET-priced numerator with a BASE-priced\n' +
+    '    denominator (F150) and CANNOT be repaired here — these totals aggregate one rung across every market at every price. Read the profit.');
+console.log('');
 
 // ---- 1. PROFIT AND MARGIN BY ERA, SLID vs UNSLID
 console.log('=== 1. REALISED PROFIT (£/wk) AND MARGIN BY ERA — median over runs ===');
@@ -100,13 +105,17 @@ for (const era of [0, 1, 2, 3]) {
   const both = (isSlid, pool) => {
     const P = [], M = [];
     for (const { acc } of arm) {
-      let prof = 0, vo = 0;
+      let prof = 0, vo = 0, gs = 0, gc = 0, v9 = false;
       for (const [key, a] of Object.entries(acc)) {
         const g = armBook.rung[key];
         if (!g || g.era !== era || g.slid !== isSlid) continue;
         prof += pool ? a.pprof : a.prof; vo += pool ? a.pvo : a.vo;
+        if (a.v9) { gs += pool ? a.pgs : a.gs; gc += pool ? a.pgc : a.gc; v9 = true; }
       }
-      P.push(prof); M.push((vo - prof) > 0 ? prof / (vo - prof) : null);
+      P.push(prof);
+      // ⭐ v9: profit% WAGES-INCLUSIVE and exact, and summable across markets — which is what this table could not do before
+      if (v9 && gs > 0) { const w = gs - gc - prof; M.push((gc + w) > 0 ? prof / (gc + w) : null); }
+      else M.push((vo - prof) > 0 ? prof / (vo - prof) : null);
     }
     return { p: median(P), m: median(M) };
   };
