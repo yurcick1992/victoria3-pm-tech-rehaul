@@ -1509,9 +1509,20 @@ function Test-LmL36 {
     foreach ($f in Get-ChildItem $dir -Filter *.json -File) {
         try { $j = Get-Content $f.FullName -Raw | ConvertFrom-Json } catch { continue }
         $lists = @()
-        if ($j.defaults -and $j.defaults.metrics) { $lists += ,@('defaults', $j.defaults.metrics) }
-        if ($j.setups) { foreach ($p in $j.setups.PSObject.Properties) { if ($p.Value.metrics) { $lists += ,@("setup $($p.Name)", $p.Value.metrics) } } }
-        if ($j.runs) { foreach ($r in $j.runs) { if ($r.metrics) { $lists += ,@('a run', $r.metrics) } } }
+        # ⚠ StrictMode-safe property access, and it is NOT optional: run_schedule.ps1 sets StrictMode and
+        # that propagates into this script through '&', where a missing property THROWS instead of
+        # yielding $null. The first version used '$j.defaults.metrics' and threw '(detector error)' for
+        # every schedule without a metrics list - which BLOCKED A LAUNCH: a guardrail inside the
+        # guardrail register, exactly the L14/L15 shape. It passed standalone because nothing there
+        # sets StrictMode.
+        $prop = { param($o, $n) if ($null -eq $o) { return $null }; $pp = $o.PSObject.Properties[$n]; if ($pp) { return $pp.Value }; return $null }
+        $dfl = & $prop $j 'defaults'
+        $m = & $prop $dfl 'metrics'
+        if ($m) { $lists += ,@('defaults', $m) }
+        $setups = & $prop $j 'setups'
+        if ($setups) { foreach ($sp in $setups.PSObject.Properties) { $sm = & $prop $sp.Value 'metrics'; if ($sm) { $lists += ,@("setup $($sp.Name)", $sm) } } }
+        $runs = & $prop $j 'runs'
+        if ($runs) { foreach ($r in $runs) { $rm = & $prop $r 'metrics'; if ($rm) { $lists += ,@('a run', $rm) } } }
         foreach ($pair in $lists) {
             foreach ($name in @($pair[1])) {
                 if (-not $valid.Contains([string]$name)) { $bad += "$($f.Name) [$($pair[0])]: '$name'" }
