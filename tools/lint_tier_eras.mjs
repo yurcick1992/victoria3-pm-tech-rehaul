@@ -124,7 +124,8 @@ for (const ind of cfg.industries || []) {
     // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of
     // 2026-09-14) and A by default (capacity-priced, the canon)
     // ... or anchor × m_era from an explicit per-era list (`_ab.cost_ladder`, 2026-09-16 — one era's cost moved on its own, or a changed A/B gain-matched per era)
-    if (anchor) { const C = AB.cost_ratio ?? A; const L = Array.isArray(AB.cost_ladder) ? AB.cost_ladder : null; const wantCost = AB.cost_flat ? anchor : L ? Math.round(anchor * L[Math.min(e, L.length - 1)]) : Math.round(anchor * Math.pow(C, e)); if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor} × ${L ? L[e] + ' by era' : C + '^' + e})`); }
+    if (anchor) { const ce = (AB.anchor_cost && aEra != null) ? (e - ORIGIN) : e;   // --anchor-cost: the cost exponent follows the anchor
+      const C = AB.cost_ratio ?? A; const L = Array.isArray(AB.cost_ladder) ? AB.cost_ladder : null; const wantCost = AB.cost_flat ? anchor : L ? Math.round(anchor * L[Math.min(ce, L.length - 1)]) : Math.round(anchor * Math.pow(C, ce)); if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor} × ${L ? L[e] + ' by era' : C + '^' + e})`); }
     const steep = AB.ai_steep && AB.ai_steep.industries.includes(ind.id) ? AB.ai_steep.ratio : null;
     const wantAiv = (AB.ai_ladder && !steep) ? Math.round(AB.ai_ladder[Math.min(e, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steep || A, e));
     if (t.ai_value !== wantAiv) faults.push(`${ind.id} e${e}: ai_value ${t.ai_value}, the era rule says ${wantAiv}`);

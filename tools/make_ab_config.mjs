@@ -177,6 +177,25 @@ const ANCHOR_FOR = (() => { const v = arg('--anchor-for', ''); const o = {}; if 
 //   31.5 → 36.8 a level at 1.4), so the demand-side pressure on steel remains. Which half dominates is the measurement.
 const IN0_ANCHORED = (() => { const v = arg('--in0-anchored', ''); if (v === '') return null; const m = +v;
   if (!(m > 0)) throw new Error('--in0-anchored <mult> must be > 0'); return m; })();
+// ⭐⭐ --anchor-cost (user-ruled 2026-09-20, "go with C^era"): building_cost FOLLOWS the anchor, i.e. a slid rung pays
+//   `anchor × C^(era − a)` — the same exponent its OUTPUT and INPUT already use — instead of staying on the absolute era.
+//   WHY (the century run 20260919_224153, n=3, all three BROKEN BY STALL at world GDP 0.55 / 0.65 / 0.64×): `--anchor-for`
+//   alone halves what a rung produces and leaves its price alone, so capital per unit of output DOUBLES for the slid set —
+//   measured at 1935, slid e3 ran 0.42 construction points per £ of realised value added against the unslid 0.21 and the
+//   canon's own 0.21. Each building makes half the value, so GDP per building halves, so construction, tax and the
+//   investment pool are all proportionally smaller (pool £331M against the canon's £2,365M at the same 0.61 construction
+//   levels per £M of GDP), so fewer buildings are built, and JOBS ∝ BUILDINGS because employment per level is vanilla's and
+//   untouched. The result was productivity 1.28× vanilla and productive workers per capita 0.53×.
+//   ⚠ IT IS NOT A MARGIN FIX AND MUST NOT BE SOLD AS ONE: the slid group's realised margins were already HIGH (e2 90%,
+//   e3 51% against the unslid 41% and 30%), so profitability was never the constraint. Cost enters neither output nor
+//   inputs, so this cannot move the 1836 anchor error, the base-price margin ladder or F97's death test.
+//   ⚠ Payback, computed STATICALLY on the prices that run recorded (an UPPER BOUND — a cheaper building gets built more,
+//   which moves supply and shrinks the profit in the denominator): the slid frontier goes from 9.5 to 5.0 years at 1935,
+//   with automotive and electrics at 2.9–3.4. That is faster than anything in the book bar the art academy, and the
+//   runaway risk is real — the register's hard ceiling is 1.38× and the canon sits at 1.09× with this capital efficiency.
+//   ⚠ ai_value deliberately does NOT slide with it, so this stays one lever. A slid e3 keeping ai_value 27,000 while
+//   costing 2,166 is unusually attractive; that is a thing to watch in the result, not to pre-empt.
+const ANCHOR_COST = process.argv.includes('--anchor-cost');
 // --bar-months N (2026-09-13): research_events.industry_bar_months — the 24-month bar of canon-je24 and every book since
 //   (§10.76) used to be a hand edit after generation; a book is regenerable by ONE command or it is not regenerable.
 const BAR_MONTHS = (() => { const v = arg('--bar-months', ''); if (!v) return null; if (!(+v > 0)) throw new Error('--bar-months <months>'); return +v; })();
@@ -322,7 +341,9 @@ for (const ind of cfg.industries) {
     t.inputs = inputs;
     delete t.input_ratio;
     if (COST_LADDER && e >= COST_LADDER.length) throw new Error(`--cost-ladder: ${ind.id} reaches e${e}, the ladder has ${COST_LADDER.length - 1} multipliers above era 0`);
-    t.building_cost = Math.round(anchor * (COST_FLAT ? 1 : (TF ? TF.cost[e] : COST_LADDER ? COST_LADDER[e] : Math.pow(COST_RATIO ?? Ai, e))));   // --cost-flat: §10.61's flat book; --cost-ratio: anchor × C^era; --cost-ladder: anchor × m_era
+    // --anchor-cost: the cost exponent follows the anchor, like output and input; otherwise it stays on the absolute era
+    const ce = (ANCHOR_COST && aEra != null) ? k : e;
+    t.building_cost = Math.round(anchor * (COST_FLAT ? 1 : (TF ? TF.cost[e] : COST_LADDER ? COST_LADDER[Math.min(ce, COST_LADDER.length - 1)] : Math.pow(COST_RATIO ?? Ai, ce))));   // --cost-flat: §10.61's flat book; --cost-ratio: anchor × C^era; --cost-ladder: anchor × m_era
     t.ai_value = (AI_LADDER && !(STEEP && STEEP.inds.has(ind.id))) ? Math.round(AI_LADDER[Math.min(e, AI_LADDER.length - 1)]) : Math.round(AI_BASE * Math.pow(STEEP && STEEP.inds.has(ind.id) ? STEEP.ratio : Ai, e));
     const Obase = t.output_qty * PRICE[outGood]; const Ibase = val(inputs); const wp = t.wage_pct != null ? +t.wage_pct : 0.25;
     t.target_be = Math.round(Ibase / ((1 - wp) * Obase) * 100);
@@ -334,6 +355,7 @@ if (BAR_MONTHS != null) { if (!cfg.research_events) throw new Error('--bar-month
 if (STEEP) for (const id of STEEP.inds) if (!cfg.industries.some(i => i.id === id)) throw new Error(`--ai-steep: unknown industry ${id}`);
 for (const id of Object.keys(A_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--A-for: unknown or disabled industry ${id}`);
 for (const id of Object.keys(ANCHOR_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--anchor-for: unknown or disabled industry ${id}`);
+if (ANCHOR_COST && !Object.keys(ANCHOR_FOR).length) throw new Error('--anchor-cost needs --anchor-for: it makes the COST exponent follow the anchor, and nothing is anchored');
 if (IN0_ANCHORED != null && !Object.keys(ANCHOR_FOR).length) throw new Error('--in0-anchored needs --anchor-for: it is the lift for the SLID set, and nothing is slid');
 if (IN0_ANCHORED != null && (IN0_LEVEL != null || IN0_STAGE)) throw new Error('--in0-anchored with --in0-level / --in0-stage: both decide an industry\'s lift; give one');
 if (Object.keys(ANCHOR_FOR).length) {
@@ -356,6 +378,7 @@ cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_stage = IN0_STAGE;
 // ⭐ the book records that it is era-keyed, and the command that made it — the era pass (2026-09-13) is what a
 //   reader of an older book has to check for: a book without `keyed_by: 'era'` was keyed on the rung index
 cfg._ab.in0_anchored = IN0_ANCHORED;
+cfg._ab.anchor_cost = ANCHOR_COST || null;
 cfg._ab.anchor_for = Object.keys(ANCHOR_FOR).length ? ANCHOR_FOR : null;
 cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';
 cfg._ab.command = 'node tools/make_ab_config.mjs ' + process.argv.slice(2).map(a => /[\s|"]/.test(a) ? JSON.stringify(a) : a).join(' ');

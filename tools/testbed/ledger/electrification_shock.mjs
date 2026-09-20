@@ -52,7 +52,7 @@ for (const r of runs) {
   const d = join(root, r, 'save_summaries');
   if (!existsSync(d)) continue;
   const years = {};
-  for (const f of readdirSync(d).filter(x => x.endsWith('.json.gz'))) {
+  for (const f of readdirSync(d).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.'))) {
     let j;
     try { j = JSON.parse(gunzipSync(readFileSync(join(d, f)))); } catch { continue; }
     const y = +String((j.provenance || {}).date || '').split('.')[0];
