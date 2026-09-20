@@ -13,10 +13,16 @@
 //     own recipe, which is why the vanilla column is like-for-like and not a different model.
 //   • Prices are the MEDIAN over the vanilla baseline's sixteen seeds, per market, per good, at a dump date (default 1836.2.1 — the
 //     anchor; `--date 1840.1.1` for the settled early game). Seven markets are instrumented.
-//   • Wages are W = wage × Σ(employees × wage_weight), the sheet's own model. ⭐ THE WAGE IS THE ECONOMY'S AND THE DECADE'S
-//     (user-ruled 2026-09-20): the market leader's own NORMAL WAGE RATE at this date, median over the vanilla seeds
-//     (config/measured_base_wages.json), × the measured 1.5× premium buildings pay over it — through tools/lib_wage_model.mjs.
-//     It was a seven-entry hardcoded table derived from F92's identity, which F150 showed to be a mixed-units ratio.
+//   • ⭐ THE WAGE IS THE ECONOMY'S AND THE DECADE'S (user-ruled 2026-09-20): the market leader's own NORMAL WAGE RATE at this date,
+//     median over the vanilla seeds (config/measured_base_wages.json), × the measured **1.19×** premium — through
+//     tools/lib_wage_model.mjs. It was a seven-entry hardcoded table derived from F92's identity, which F150 showed to be a
+//     mixed-units ratio.
+//     ⭐⭐ AND THE WAGE ANSWERS BACK (F152 §8): the measured bill is `1.19 × the normal-rate bill + 0.30 × the building's own
+//     profit`, because the engine raises a building's wage where it can afford to and lowers it where it cannot
+//     (`BUILDING_PROFIT_TARGET_TO_RAISE_WAGES` 0.25 / `..._TO_LOWER_WAGES` 0.15). So the profit is the closed form
+//     `(O − I − Wn) ÷ 1.30`, applied identically to the base, throughput, ÷3 and ceiling cases — a loss-making rung is charged
+//     LESS wage, which is the engine's own behaviour and makes this census slightly LESS eager to call things dead than a
+//     fixed wage did. `--profit-wage-share 0` restores the fixed-wage reading.
 //     ⭐ Employment comes from `tierEmployment`, so the ART ACADEMY is charged the 9,500 wage units of its OWNERSHIP PMG
 //     instead of the zero its empty `employment` used to give it (F143 §1a).
 //   • PROFIT in £ per level per week is the reported quantity (user-ruled 2026-09-20); margin = (O − I − W) ÷ (I + W) beside it.
@@ -38,7 +44,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readVanilla } from './lib_vanilla_ladder.mjs';
-import { tierEmployment, wageUnits, economyWage } from './lib_wage_model.mjs';
+import { tierEmployment, wageUnits, economyWage, PROFIT_WAGE_SHARE } from './lib_wage_model.mjs';
 import { MARKET_NAMES } from './testbed/ledger/lib_markets.mjs';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
@@ -49,6 +55,7 @@ const DATE = argOf('--date', '1836.2.1');
 const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16');
 const CFG = argOf('--config', 'config/mod_config.json');
 const DEAD = +argOf('--dead', '-0.20');
+const PSHARE = +argOf('--profit-wage-share', PROFIT_WAGE_SHARE);
 const DETAIL = process.argv.includes('--detail');
 const ONLY = (argOf('--markets', '') || '').split(',').filter(Boolean);
 
@@ -104,7 +111,8 @@ const MK = {}; for (const [mk, gs] of Object.entries(acc)) { MK[mk] = {}; for (c
 // table "the wage rate F92 implies" — i.e. derived from the identity F150 found to be a mixed-units ratio, so it was
 // wrong by whatever the market's price level was. Now it is the market leader's own NORMAL WAGE RATE from
 // config/measured_base_wages.json (the save's `base_wage` ÷ POP_SIZE_PACKAGE, median over the vanilla seeds) × the
-// measured 1.5× premium buildings actually pay over it. The table grows with the instrumented markets: add a tag to
+// measured 1.19× premium (the wage bill's first term; the second is 0.30 × the profit, applied in `read()` below). The
+// table grows with the instrumented markets: add a tag to
 // lib_markets.MARKET_NAMES and it appears here.
 const YEAR = +String(DATE).split('.')[0];
 const WAGE = {}, WAGE_SRC = {};
@@ -124,12 +132,19 @@ function read(i, mk, lift) {
   const P = MK[mk], out = P[i.og]; if (!out || !(out.prod > 0)) return null;   // not on this market's 1836 map
   const inp = recipeAt(i, lift); let I = 0;
   for (const [g, q] of Object.entries(inp)) { const p = P[g] && P[g].price; if (!(p > 0)) return null; I += q * p; }
-  const O = i.out0 * out.price, W = i.units * WAGE[mk];
-  const margin = (O - I - W) / (I + W), goods = (O - I) / I, thr = (1.2 * (O - I) - W) / (1.2 * I + W);
+  // ⭐ THE WAGE ANSWERS BACK (F152 §8): W = the normal-rate bill × 1.19 + 0.30 × the profit itself, so the
+  // profit is the closed form `(O − I − Wn) ÷ 1.30` and not `O − I − a fixed W`. Wn is the normal-rate part;
+  // WAGE[mk] already carries the 1.19. A LOSS-MAKING rung is charged LESS wage, which is the engine's own
+  // lower-wages rule and is why the closed form must be used on both sides of every comparison here.
+  const O = i.out0 * out.price, Wn = i.units * WAGE[mk];
+  const at = (rev, inp, mult = 1) => { const P = (rev - inp - Wn) / (1 + PSHARE); const w = rev - inp - P; return { P, w, m: (inp + w) > 0 ? P / (inp + w) : NaN }; };
+  const base = at(O, I);
+  const W = base.w, margin = base.m, goods = (O - I) / I;
+  const thr = at(1.2 * O, 1.2 * I).m;
   const p3 = Math.max(0.25 * PRICE[i.og], Math.min(1.75 * PRICE[i.og], priceOf(PRICE[i.og], out.buy, out.sell / 3)));
-  const m3 = (i.out0 * p3 - I - W) / (I + W);
-  const mCap = (i.out0 * 1.75 * PRICE[i.og] - I - W) / (I + W);
-  return { margin, goods, thr, m3, mCap, O, I, W, price: out.price, pShare: out.price / PRICE[i.og], p3, prod: out.prod };
+  const m3 = at(i.out0 * p3, I).m;
+  const mCap = at(i.out0 * 1.75 * PRICE[i.og], I).m;
+  return { margin, goods, thr, m3, mCap, O, I, W, Wn, profit: base.P, price: out.price, pShare: out.price / PRICE[i.og], p3, prod: out.prod };
 }
 
 // ---- the option set
@@ -143,8 +158,10 @@ const pc0 = x => Number.isFinite(x) ? (100 * x).toFixed(0) + '%' : '—';
 const seeds = MK[MARKETS[0]] ? MK[MARKETS[0]][Object.keys(MK[MARKETS[0]])[0]].n : 0;
 console.log('ERA-0 SOLVENCY CENSUS — ' + CFG.replace(/^config\//, '') + ' | prices = the median of ' + VAN + ' at ' + DATE + ' (n=' + seeds + ' seeds) | ' + MARKETS.length + ' markets');
 console.log('margin = (O - I - W)/(I + W), base method only. VERY DEAD = margin < ' + pc0(DEAD) + ' AND still negative with the output sell orders / 3.');
-console.log('WAGES: each market leader\'s measured normal rate at ' + YEAR + ' x the 1.5x premium buildings pay (F152) — '
-  + MARKETS.map(m => m.split(' ')[0] + ' GBP' + WAGE[m].toFixed(4) + (WAGE_SRC[m] && WAGE_SRC[m].year !== YEAR ? '@' + WAGE_SRC[m].year : '')).join(' · ') + '\n');
+console.log('WAGES: each market leader\'s measured normal rate at ' + YEAR + ' x the 1.19x premium (F152 §8) — '
+  + MARKETS.map(m => m.split(' ')[0] + ' GBP' + WAGE[m].toFixed(4) + (WAGE_SRC[m] && WAGE_SRC[m].year !== YEAR ? '@' + WAGE_SRC[m].year : '')).join(' · '));
+console.log('   ...and the wage ANSWERS BACK: the bill is that + ' + PSHARE + ' x the profit itself, so profit = (O - I - W_normal) / '
+  + (1 + PSHARE).toFixed(2) + ' in every case below (--profit-wage-share 0 for the fixed-wage reading)\n');
 
 // ---- 1. the book side
 console.log('=== 1. THE RECIPES - what each option asks of the OUTPUT PRICE (target_be = the % of base at which the rung breaks even) ===');

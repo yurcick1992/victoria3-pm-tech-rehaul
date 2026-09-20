@@ -8466,9 +8466,23 @@ replace it and may never be the headline. Implemented in `e0_survivors.mjs`, `ru
   measured 0.0610 Austrian / 0.0796 Belgian.
 - `config/measured_base_wages.json` is the committed path — the normal rate per tag per year, median over the vanilla n=16
   baseline, 17 tags. Regenerate with `tools/measure_wage_share.mjs --write-wages`.
-- ⭐⭐ **A BUILDING PAYS 1.52× THE COUNTRY'S NORMAL RATE** (`WAGE_PREMIUM`; p10 1.22, p90 1.85, flat across the century at
-  1.44 / 1.56 / 1.47 / 1.54 / 1.60 / 1.49, and **1.54 on the mod arm** — an engine property, not a book property). A
-  prediction that omits it understates wages by about half again. FINDINGS **F152**.
+- ⭐⭐ **THE WAGE BILL HAS TWO TERMS, AND THE SECOND ONE IS THE BUILDING'S OWN PROFIT** (F152 §8, measured on 3,289
+  observations; it supersedes the flat 1.52× of F152 §4 as the shipped constant):
+
+      W = 1.19 × (the normal rate × wage units)  +  0.30 × the building's own profit
+
+  The engine RAISES a building's wage where it can afford to and lowers it where it cannot
+  (`BUILDING_PROFIT_TARGET_TO_RAISE_WAGES` 0.25, `..._TO_LOWER_WAGES` 0.15). The split is identified (weighted
+  collinearity 0.76) and stable across all seven instrumented countries (a 1.01–1.26, b 0.18–0.65), and it predicts a
+  building's own profit at 26.5% median error against the flat premium's 38.7%, with the bias gone (+0.1% against +5.2%).
+  ⚠ A second reading survives the same data and cannot be separated from it — if `profit` is reported NET of owner
+  distributions then `b` is the dividend share, not a wage response. The arithmetic is identical; only the label differs.
+  ⭐⭐ **THE DESIGN CONSEQUENCE IS LARGER THAN THE ARITHMETIC: A RECIPE CANNOT SET A BUILDING'S MARGIN.** Solving the line
+  above gives `P = (R − I − 1.19·Wm) ÷ 1.30`, so **every designed margin is damped by 1/1.30 before a single price moves** —
+  a second, purely mechanical compression channel beside the price one, and one mechanism behind F139's designed
+  5 / 55 / 127 / 233 realising as 26 / 31 / 47 / 46. It sharpens §10.86.2 rather than contradicting it.
+  ⚠ Vanilla's per-profession weights are directionally right and imperfect in detail (a refit gives shopkeepers 5.65 against
+  3, machinists 1.03 against 1.5) — NOT adopted: it buys 0.394 → 0.338 of scatter and returns −11.5 for clergymen.
 
 ⚠⚠ **THE FLAT `wage_pct` = 0.25 IS RETIRED FROM EVERY PREDICTION**, and it was never merely imprecise: **vanilla's own wage
 share of TOTAL COST runs 54.6% at 1840 → 29.7% at 1935**, i.e. 25% is below vanilla's range in every decade of the century.

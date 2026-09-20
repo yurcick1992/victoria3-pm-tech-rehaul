@@ -89,7 +89,8 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **value added** | outputs − inputs at market prices. **GDP = 52 × weekly value added** (F45); pops and trade are on neither side |
 | **wage units** | Σ (employees × `wage_weight`); a building's wage bill is `wage × wage units × staffed levels`. Model-only — never emitted |
 | **the NORMAL wage rate** | a country's reference wage — the save's own `base_wage`, **in the engine's unit: weekly £ per 10,000 employees**, so £ per employee per week = `base_wage ÷ 10,000`. The committed path per tag per year is `config/measured_base_wages.json` |
-| **the WAGE PREMIUM** | **1.52×** — what buildings actually pay over the normal rate (p10 1.22, p90 1.85, flat across the century and the same on mod arms). A prediction that omits it understates wages by about half again |
+| **the WAGE PREMIUM** | **1.19×** the normal rate — the first of the wage bill's TWO terms (per country 1.01–1.26). ⚠ Not 1.52: that was the whole residual before the second term was separated out |
+| **the PROFIT-WAGE SHARE** | **0.30** — the second term. `W = 1.19 × the normal-rate bill + 0.30 × the building's own profit`, because the engine raises a building's wage where it can afford to. ⭐ **So the wage ANSWERS BACK and a recipe cannot set a margin**: `P = (R − I − 1.19·Wm) ÷ 1.30`, a designed margin damped by 1/1.30 before any price moves |
 | **wage_pct** | the flat wage fraction of TOTAL cost, 0.25. ⚠ **RETIRED FROM PREDICTIONS** (§10.87): vanilla's own share runs 54.6% at 1840 to 29.7% at 1935, so 25% is below its range in every decade. It survives only as the config-side convention behind `target_be` and `lint_solvency` (L18) |
 | **throughput** | a per-building multiplier on inputs *and* outputs, so it raises the full margin but not the goods margin |
 

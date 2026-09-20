@@ -13,6 +13,14 @@
 // and which charged the ART ACADEMY almost nothing, because its jobs live in its ownership PMG and `t.employment` is empty (F143 §1a).
 // ⭐ AND THE HEADLINE IS PROFIT IN £ PER LEVEL PER WEEK, not the margin (the same ruling's first half).
 //
+// ⭐⭐ THE WAGE ANSWERS BACK, so the profit is a CLOSED FORM and not `O − I − a fixed W` (F152 §8). The engine
+// raises a building's wage where it can afford to (`BUILDING_PROFIT_TARGET_TO_RAISE_WAGES` 0.25), and the
+// measured bill is `W = 1.19 × the normal-rate bill + 0.30 × the building's own profit`, so
+// `P = (O − I − 1.19·Wm) ÷ 1.30`. ⚠⚠ **A RECIPE THEREFORE CANNOT SET A MARGIN**: every designed margin is
+// damped by 1/1.30 before a single price moves, which is one mechanism behind F139's compression of a designed
+// 5/55/127/233 ladder into a realised 26/31/47/46. It also makes the wage share of cost RISE up the ladder
+// (35 / 35 / 41 / 49% on the canon at GBR@1920) where a fixed wage made it fall.
+//
 // The three quantities a ladder has to satisfy at once, all computed at BASE prices from the book's own arithmetic (⚠ §10.86.2: base-price margins
 // are a design coordinate, NOT a prediction of what a building earns — F139 measured the market compressing a designed 5/55/127/233 into a realised
 // 26/31/47/46):
@@ -29,12 +37,12 @@
 // anchor*A^era" means and what `make_ab_config --cost-ladder` already does for cost.
 //
 // usage: node tools/ladder_options.mjs [--book "name:out=<A|list>,in=<B|list>,cost=<C|list>,in0=<x>" ...] [--config <book>]
-//                                      [--industry textile] [--economy GBR@1920] [--wage-premium 1.5]
+//                                      [--industry textile] [--economy GBR@1920] [--wage-premium 1.19] [--profit-wage-share 0.30]
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readVanilla } from './lib_vanilla_ladder.mjs';
-import { tierEmployment, wageUnits, economyWage, WAGE_PREMIUM } from './lib_wage_model.mjs';
+import { tierEmployment, wageUnits, economyWage, predictProfit, WAGE_PREMIUM, PROFIT_WAGE_SHARE } from './lib_wage_model.mjs';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const argAll = k => process.argv.reduce((a, v, i) => (v === k && process.argv[i + 1] ? [...a, process.argv[i + 1]] : a), []);
@@ -60,6 +68,7 @@ const ANCH = { construction_cost_low: 200, construction_cost_medium: 400, constr
 const VAN = readVanilla(GAME);
 const [ECON_TAG, ECON_YEAR] = (argOf('--economy', 'GBR@1920') + '@1920').split('@');
 const PREMIUM = +argOf('--wage-premium', WAGE_PREMIUM);
+const PSHARE = +argOf('--profit-wage-share', PROFIT_WAGE_SHARE);
 const ECON = economyWage(ECON_TAG, +ECON_YEAR, { premium: PREMIUM });
 const cfg = JSON.parse(readFileSync(join(REPO, CFG), 'utf8'));
 const IND = [];
@@ -103,7 +112,9 @@ console.log('LADDER OPTIONS — designed at BASE prices (a design coordinate, ne
 console.log('book = out/in/cost ladders (a ratio = geometric, or a /-separated per-era list) and the era-0 input penalty in0');
 console.log('WAGES are the ECONOMY\'s and the DECADE\'s (user-ruled 2026-09-20), not a flat share: ' + ECON.tag + ' @ ' + ECON.year
   + ' — normal rate £' + ECON.normal.toFixed(4) + '/employee/wk × the measured ' + PREMIUM + '× buildings actually pay = £' + ECON.wage.toFixed(4)
-  + '  (vanilla n=' + ECON.n + ' seeds; --economy TAG@YEAR to move it)\n');
+  + '  (vanilla n=' + ECON.n + ' seeds; --economy TAG@YEAR to move it)');
+console.log('and the wage ANSWERS BACK (F152 §8): W = that × wage units + ' + PSHARE + ' × the profit itself, so profit = (O − I − W_normal) ÷ '
+  + (1 + PSHARE).toFixed(2) + ' — a designed margin is damped by that before any price moves\n');
 
 for (const B of BOOKS) {
   const out = ladder(B.out, ERAS), inn = ladder(B.in, ERAS), cost = ladder(B.cost, ERAS), in0 = +B.in0;
@@ -116,8 +127,10 @@ for (const B of BOOKS) {
     for (let e = 0; e < ERAS; e++) { const O = i.O0 * out[e], I = i.I0 * in0 * inn[e], C = i.anchor * cost[e];
       // the rung at this era if the industry has one, else its nearest — the profession mix, not a flat share
       const ue = i.units[e] != null ? i.units[e] : i.units[eras.reduce((a, b) => Math.abs(b - e) < Math.abs(a - e) ? b : a)];
-      const W = ECON.wage * ue;
-      wg[e] = W; inp[e] = I; pr[e] = O - I - W; m[e] = (I + W) > 0 ? (O - I - W) / (I + W) : NaN; va[e] = O - I; cap[e] = C / (O / i.O0); be[e] = (I + W) / O * 100; }
+      // ⭐ the wage ANSWERS BACK: W = premium × normal-rate bill + PROFIT_WAGE_SHARE × profit (F152 §8), so the
+      // profit is the closed form, not O − I − a fixed W. A design margin is damped by 1/1.30 before any price moves.
+      const P = predictProfit({ revenue: O, inputs: I, employment: { laborers: ue }, wage: ECON.wage, profitShare: PSHARE });
+      wg[e] = P.wages; inp[e] = I; pr[e] = P.profit; m[e] = P.margin; va[e] = O - I; cap[e] = C / (O / i.O0); be[e] = (I + P.wages) / O * 100; }
     const top = Math.max(...i.rungs.map(r => r.era));
     rows.push({ id: i.id, m, va, be, pr, wg, inp, top, d2: va[Math.max(0, top - 2)] / va[top], d3: top >= 3 ? va[top - 3] / va[top] : NaN });
     // the 1836 anchor: levels x our output vs levels x that rung's own vanilla method output

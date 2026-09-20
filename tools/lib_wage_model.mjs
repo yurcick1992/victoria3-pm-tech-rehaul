@@ -22,11 +22,29 @@
 // so **£ per employee per week = base_wage ÷ 10,000** — GBR 1840 reads 0.0610, which is the magnitude F26
 // measured per-pop off the telemetry (Austrian market 0.0610, Belgian 0.0796). Both numbers are read live.
 //
-// ⚠⚠ `base_wage` IS THE COUNTRY'S NORMAL RATE, NOT WHAT BUILDINGS PAY. A building sets its own rate and
-// raises it when profitable, so the realised bill runs ABOVE the normal-rate bill. Measured (F152, the
-// vanilla n=16 baseline, 74 country×decade cells): the premium is **1.52 median, p10 1.22, p90 1.85**, and
-// flat across the century (1.44 / 1.56 / 1.47 / 1.54 / 1.60 / 1.49 at 1840…1935). `WAGE_PREMIUM` is that
-// median and a prediction that does not apply it understates wages by about half again.
+// ⚠⚠ `base_wage` IS THE COUNTRY'S NORMAL RATE, NOT WHAT BUILDINGS PAY, AND THE GAP IS TWO THINGS, NOT ONE
+// (F152 §8, measured on 3,289 observations over the vanilla baseline; it corrects F152 §4's flat 1.52×).
+// A building sets its own rate, and the engine RAISES IT WHERE THE BUILDING CAN AFFORD TO —
+// `BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.25`, `..._TO_LOWER_WAGES = 0.15` in `common/defines`. Regressing
+// the actual wage bill on both terms:
+//
+//     W = 1.19 × (normal rate × wage units)  +  0.30 × the building's own profit
+//
+// and the split is IDENTIFIED (the two regressors' weighted collinearity is 0.76, well under the 0.95 danger
+// line) and STABLE across all seven instrumented countries (a 1.01–1.26, b 0.18–0.65). ⇒ **the pure premium
+// is ~1.2×, not 1.5×; the rest of the old flat figure was the profit-responsive half.**
+// ⭐⭐ THE CONSEQUENCE FOR DESIGN IS BIGGER THAN THE ARITHMETIC: **a recipe cannot set a building's margin,
+// because the wage answers back.** Solving the line above for profit gives the closed form `predictProfit()`
+// uses, and a design margin is damped by 1/1.30 before any price moves at all — one mechanism behind F139's
+// compression of a designed 5/55/127/233 ladder into a realised 26/31/47/46.
+// ⚠ A SECOND READING survives the same data and cannot be separated from it: if the save's `profit` is
+// reported NET of owner distributions, then `revenue − inputs − profit` is wages PLUS dividends and b is the
+// dividend share. Both readings give the same arithmetic here; only the LABEL on b differs. Nothing rests on
+// which it is, so nothing claims to know.
+// Measured against the building's own reported profit, the forms rank:
+//     two-term (this one)  median |err| 26.5%   p90  89%   bias  +0.1%
+//     flat 1.52            median |err| 38.7%   p90 149%   bias  +5.2%
+//     no premium at all    median |err| 52.2%   p90 141%   bias +44.3%
 //
 // ⭐ WHY THIS REPLACES THE FLAT `wage_pct` 0.25. The wage share of TOTAL COST (inputs + wages) is a property
 // of the economy and the decade, exactly as the ruling says: vanilla's own runs 54.6% at 1840 → 29.7% at 1935
@@ -88,9 +106,14 @@ export const WAGE_WEIGHT = (() => {
   return w;
 })();
 
-// ⭐ the measured premium of what buildings actually pay over the country's normal rate (F152)
-export const WAGE_PREMIUM = 1.5;
-export const WAGE_PREMIUM_BAND = [1.22, 1.85];
+// ⭐ THE TWO MEASURED COEFFICIENTS (F152 §8): W = WAGE_PREMIUM × normal-rate bill + PROFIT_WAGE_SHARE × profit
+export const WAGE_PREMIUM = 1.19;            // per-country 1.01–1.26 over the seven instrumented markets
+export const WAGE_PREMIUM_BAND = [1.01, 1.26];
+export const PROFIT_WAGE_SHARE = 0.30;       // per-country 0.18–0.65
+export const PROFIT_WAGE_SHARE_BAND = [0.18, 0.65];
+// The flat coefficient F152 §4 published before the profit term was separated out. Kept so a tool can
+// reproduce the older reading on purpose; never the default.
+export const WAGE_PREMIUM_FLAT = 1.52;
 
 /** Σ (employees × wage_weight) for ONE level. An unknown profession weighs 1 and is reported by the caller. */
 export function wageUnits(employment = {}) {
@@ -159,10 +182,30 @@ export function economyWage(tag, year, { premium = WAGE_PREMIUM, table = null } 
   throw new Error('no measured base wage for ' + tag + ' near ' + year + ' — add the tag to tools/measure_wage_share.mjs TAGS and regenerate');
 }
 
-/** The weekly wage bill in £ for `levels` staffed levels of a building whose per-level employment is `employment`. */
-export function wageBill({ employment, levels = 1, wage = null, tag = null, year = null, premium = WAGE_PREMIUM }) {
+/**
+ * The weekly wage bill in £ for `levels` staffed levels of a building whose per-level employment is
+ * `employment`. `profit` adds the profit-responsive half; omit it for the normal-rate part alone.
+ */
+export function wageBill({ employment, levels = 1, wage = null, tag = null, year = null, premium = WAGE_PREMIUM, profit = 0, profitShare = PROFIT_WAGE_SHARE }) {
   const w = wage != null ? wage : economyWage(tag, year, { premium }).wage;
-  return w * wageUnits(employment) * levels;
+  return w * wageUnits(employment) * levels + profitShare * (profit || 0);
+}
+
+/**
+ * ⭐⭐ PREDICT A BUILDING'S PROFIT, with the wage answering back.
+ *   W = a·Wm + b·P  and  P = R − I − W   ⇒   P = (R − I − a·Wm) ÷ (1 + b)
+ * Returns { profit, wages, wagesNormalRate, margin, wageShareOfCost } — all £/week for the levels given.
+ * `revenue` and `inputs` are at whatever prices the caller is working in; the coefficients do not care.
+ * Measured on the vanilla baseline: median |error| 26.5% of the building's own profit, bias +0.1%.
+ */
+export function predictProfit({ revenue, inputs, employment, levels = 1, wage = null, tag = null, year = null,
+                                premium = WAGE_PREMIUM, profitShare = PROFIT_WAGE_SHARE }) {
+  const w = wage != null ? wage : economyWage(tag, year, { premium }).wage;
+  const wm = w * wageUnits(employment) * levels;          // the normal-rate part, premium already in `w`
+  const profit = (revenue - inputs - wm) / (1 + profitShare);
+  const wages = revenue - inputs - profit;                // ≡ wm + profitShare × profit
+  const cost = inputs + wages;
+  return { profit, wages, wagesNormalRate: wm, margin: cost > 0 ? profit / cost : NaN, wageShareOfCost: cost > 0 ? wages / cost : NaN };
 }
 
 /**

@@ -15399,6 +15399,10 @@ within noise of vanilla's 1.52. That is what makes it usable as a prediction con
 **52.4% → 41.1%**, i.e. our book carries MORE labour per pound of cost late than vanilla does — consistent with a design
 whose output prices fall while employment per level stays vanilla's.
 
+⚠⚠ **§8 BELOW SPLITS THIS 1.52 IN TWO AND SUPERSEDES IT AS A SHIPPED CONSTANT.** The figure above is sound as what it
+measures — the residual per modelled wage unit — but it is NOT all a wage-rate premium: about a third of it is a term
+proportional to the building's own PROFIT. `WAGE_PREMIUM` is **1.19**, not 1.52.
+
 ⚠ **A flat `wage_pct` of 0.25 is below vanilla's own wage share in every decade of the century**, and it is worst where a
 building's cost is nearly all labour. The **ART ACADEMY** is the loud case: its jobs live in its OWNERSHIP production-method
 group, so `t.employment` is empty and 25%-of-goods charged it almost nothing — its base-price margin read +108% / +313%
@@ -15442,3 +15446,73 @@ which is why `lib_markets.mjs` keys prices by tag and resolves the tag per run.
 **Measured effect on the register**, `20260920_114003` run 1 (which has NET and BEL, not UNL): pool H 3.49 → **3.54**, pool
 GDP 1.23 → **1.21**, loss 5.50 → **5.53**. The arm's own numbers did not move at all — what moved is VANILLA's pool
 reference, which now counts the Low Countries in the two seeds where they had unified instead of dropping them.
+
+### ⭐⭐ F152 §8 — CORRECTION, SAME DAY: THE 1.52× IS TWO THINGS, AND THE SECOND ONE MEANS **A RECIPE CANNOT SET A BUILDING'S MARGIN**
+
+**How it surfaced.** The user asked whether the model takes workforce composition into account — *"basically the economy state
+and the decade dictate base wages, but actual wages are higher, as buildings are not filled with labourers."* Testing that
+properly, rather than answering it, split the flat premium in half.
+
+**Composition IS handled, and the test says so.** Within a (country × year) — one country, one normal rate — the implied wage
+is TIGHTER per WAGE-UNIT than per HEAD in **40 of 41 cells** (median cv 0.449 against 0.512). Applying vanilla's
+`wage_weight` is the right model, not an embellishment.
+
+**But the premium slopes with composition, which it should not if composition were fully handled:**
+
+| the building's mean wage weight | 1.00–1.15 | 1.15–1.25 | 1.25–1.40 | 1.40–1.70 | 1.70–3.00 |
+|---|---|---|---|---|---|
+| median "premium" | 1.06 | 1.35 | 1.46 | 1.75 | **1.93** |
+
+**The decomposition, on 3,289 (country × year × building type) observations of the vanilla baseline.** Regressing the actual
+wage bill on both candidate terms:
+
+> **W = 1.19 × (normal rate × wage units) + 0.30 × the building's own profit**
+
+- The split is **IDENTIFIED**: the two regressors' weighted collinearity is **0.76**, well under the 0.95 line at which a
+  two-variable fit stops meaning anything.
+- It is **STABLE ACROSS ALL SEVEN** instrumented countries — a 1.01–1.26, b 0.18–0.65 (GBR 1.13/0.26 · USA 1.26/0.31 ·
+  FRA 1.24/0.45 · NET 1.01/0.65 · PRU 1.15/0.53 · RUS 1.16/0.37 · JAP 1.20/0.18), against one-variable fits of 1.40–1.80.
+- **It predicts the building's own profit far better**, which is the test that matters:
+
+| form | median abs. error | p90 | bias |
+|---|---|---|---|
+| **two-term (shipped)** | **26.5%** | **89%** | **+0.1%** |
+| flat 1.52 | 38.7% | 149% | +5.2% |
+| flat 1.20 | 42.8% | 131% | +29.3% |
+| no premium at all | 52.2% | 141% | +44.3% |
+
+⇒ `WAGE_PREMIUM` is **1.19** and `PROFIT_WAGE_SHARE` is **0.30**. Solving `W = a·Wm + b·P` and `P = R − I − W` gives the
+closed form `lib_wage_model.predictProfit()` uses: **`P = (R − I − 1.19·Wm) ÷ 1.30`**.
+
+⭐⭐ **WHAT IT MEANS, AND IT IS BIGGER THAN THE ARITHMETIC.** The engine raises a building's wage where it can afford to and
+lowers it where it cannot — `BUILDING_PROFIT_TARGET_TO_RAISE_WAGES = 0.25` and `..._TO_LOWER_WAGES = 0.15` in
+`common/defines`, with a whole block of supporting rules. So **the wage answers back**, and a designed margin is damped by
+**1/1.30** before a single price moves. That is a second, purely mechanical compression channel beside the price one, and it
+is one mechanism behind F139's finding that a designed 5 / 55 / 127 / 233 ladder realised as 26 / 31 / 47 / 46.
+⇒ It sharpens §10.86.2 rather than contradicting it: a base-price margin is not a prediction, and now we know part of why.
+
+**⚠ A SECOND READING SURVIVES THE SAME DATA AND CANNOT BE SEPARATED FROM IT.** If the save's `profit` is reported NET of
+owner distributions, then `revenue − inputs − profit` is wages PLUS dividends and `b` is the dividend share, not a
+wage response. The arithmetic and the closed form are identical either way; only the LABEL on `b` differs. Nothing in the
+model or in any tool rests on which it is, and nothing claims to know. The wage-response reading is the parsimonious one —
+it needs no assumption beyond the defines already quoted — which is why it is the one the comments state, with this caveat.
+
+**⚠ The per-profession weights are directionally right and imperfect in detail.** Fitting an effective multiplier per
+profession (same data, no profit term) gives, relative to laborers: shopkeepers **5.65** against vanilla's 3, engineers
+**4.47** against 3, academics **5.15** against 4 — and machinists **1.03** against 1.5, clerks **0.91** against 1.5,
+farmers **1.47** against 2. So the skilled end is underpaid by the weights and the middle overpaid. **It is NOT adopted**:
+it buys only 0.394 → 0.338 of mean |log| scatter, and the same fit returns **−11.5 for clergymen**, an impossible number
+that says the design matrix is not clean enough to trust coefficient by coefficient. Recorded as the model's known limit
+and as the explanation for the per-building scatter §4 already flagged.
+
+**What moves.** `ladder_options` on the canon at GBR@1920: the frontier's base-price margin falls from 211–519% to
+**127–163%** and the wage share of total cost now **RISES** up the ladder (35 / 35 / 41 / 49%) where a fixed wage made it
+fall (42 / 33 / 27 / 19%) — the frontier's designed surplus is partly paid out as wages. `era0_solvency` on vanilla's own
+1836 recipe reads **21 insolvent cells (30%) at a median +14%**, between the old hardcoded table's 22 / +21% and the
+intermediate flat-1.52 reading's 26 / +7%: a loss-making rung is now charged LESS wage, which is the engine's own
+lower-wages rule. `--profit-wage-share 0` restores the fixed-wage reading in both tools.
+
+**What it does NOT say.** It does not identify a single building's wage rate (p90 of the prediction error is still 89% of
+profit), it does not distinguish the two readings of `b`, and it is measured on VANILLA only — the mod arm was not re-fitted
+separately, so the coefficients are assumed transferable on the same grounds §4's premium was (the flat premium read 1.52
+vanilla against 1.54 on the mod arm).
