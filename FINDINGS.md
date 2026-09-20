@@ -15195,11 +15195,129 @@ profitability, and **45% of levels are on the wrong side of that line**. F92 its
 exact" and that a single building type was "approximate" — this is a different and larger problem, and it is not random: it is
 concentrated exactly where ownership income is.
 
-⇒ **Owed, before any further margin is quoted** (HANDOVER §0.3): establish what `profit` contains — the melted-save readers can
-see the fields the summary aggregates — and either repair the identity (e.g. margin from `va_out`, `va_in` and a MODELLED wage
-bill) or retire it. Meanwhile `profit` in £ remains the building's own bottom line and is what the user has ruled reports must
-quote.
+### ⭐⭐ F150 §2 — CORRECTION, SAME DAY: THE CAUSE IS A UNITS MISMATCH, AND §1's "INVESTMENT INCOME" READING IS ONLY HALF OF IT
+
+**The user challenged the arithmetic** — *"Surely, at least for profitable industries not on subsidies, profit = revenue −
+inputs − wages − dividends?"* — and that is the right objection: subtracting dividends makes profit SMALLER than value added,
+so the residual would be POSITIVE, which cannot explain a negative one. Reading the code that writes the fields settles it.
+
+**`tools/testbed/save_state_summary.mjs` line 65, its own schema note: "per-building-type VALUE ADDED (va_out/va_in), PRICED
+at base cost"** — and `GOODS_PRICE` is the `cost =` field from `common/goods`, i.e. the BASE price. **`profit` is the game's
+own figure at MARKET prices.** So `va_out − va_in − profit` is not a wage bill at all: it is a **mixed-units subtraction**,
+and F92's identity puts a market-price numerator over a base-price denominator.
+
+Two mechanisms follow, and both were measured:
+
+1. **Ownership buildings have no goods flows whatsoever.** GBR financial district reads `va_out 0, va_in 0, profit 7,964,993`;
+   manor house `0, 0, 2,597,442`; Bolckow Vaughan `0, 0, 3,059,747`. For these the identity is not approximate, it is
+   **undefined** — `profit ÷ (0 − profit)` is −1 whatever the building does.
+2. **Production buildings are hit by the price gap.** Motor's base-priced value added is 56 against a profit of 1,429 — and
+   that is the book working: F151 measured engines at 96% of base and **steel at 69%**, so a building that buys cheap steel
+   and sells dear engines earns far more than its base-priced value added implies.
+   ⚠⚠ **THE BETTER THE PRICE DECLINE WORKS, THE MORE WRONG THE MARGIN GETS** — which is why it bites hardest in exactly the
+   chains the design is succeeding in.
+
+⭐ **The repair needs no wage model.** Revenue at market = `va_out × (market price ÷ base price)` of the rung's own output
+good, and `revenue − profit ≡ inputs + wages` by definition, so **`margin = profit ÷ (R_market − profit)`** is F92's identity
+with the units fixed. Applied to the e0 census the correction runs BOTH ways and by up to 14 points: GBR motor 28% → **34%**
+and furniture 17% → 21% where output sells below base; USA food 50% → **36%** and the Dutch academy 20% → **14%** where it
+sells above. The direction is set entirely by the output price ratio.
+⚠ It still fails for ownership buildings (`va_out` = 0) and it needs per-market prices, which `markets.tsv` carries only for
+instrumented tags — the reason GER and BEL could not be computed for 2026-09-20's census and the reason the tag list is now ten.
+
+⇒ **Owed, before any further margin is quoted** (HANDOVER §0.3): repair the identity along the lines above, or retire it.
+Meanwhile `profit` in £ remains the building's own bottom line and is what the user has ruled reports must quote.
 
 ⚠ **What it does NOT overturn.** Quantities — levels, staffed levels, workers, production volumes, prices, order books — are
 untouched, so F149's price decline, the T0 census, the obsolescence readings and every GDP figure stand. It is specifically the
 MARGIN column, wherever the residual is negative.
+
+## F151 — ⭐⭐ THE COST SLIDE FIXES THE STALL AND THE CONFIG IS STILL OUT: making `building_cost` follow the anchor takes world GDP **0.56 → 0.97×** and productive workers per capita **0.49 → 0.64×**, the best single register reading the project has produced (**loss 5.50** against the incumbent canon's 8.40) — and its second seed is **BROKEN BY RUNOFF**, Britain at 0.6% U* with a hoard of 3.13× its own GDP. The lever is right, the book runs the developed world out of labour (2 runs of 1836→1936, DIVERGENT, 2026-09-20)
+
+**Arm and evidence.** `20260920_114003_anch-costslide-century`, n=2, 1836→1936, both reaching 1936.1.1, `preflight -Session`
+PASSED. The book is `probe-anch-costslide`: the eight-industry e1 anchor slide of F149 at `in0` 1.2, plus the new
+`--anchor-cost` so a slid rung pays `anchor × C^(era−1)` — the same exponent its output and input already use (user-ruled
+2026-09-20, *"go with C^era"*; the slid e0 rungs going 600 → 316 was raised and confirmed intended). Field diff against the
+stalled arm: `building_cost` on 21 rungs, nothing else. ⭐ It is also the first book carrying the restored urban-centre
+electricity override (§10.43.0), so it is NOT cleanly comparable to the canon's own century runs, which lack it.
+
+### 1. ⭐⭐ THE CAPITAL DIAGNOSIS WAS RIGHT, AND THE FIX IS LARGE
+
+| ÷ vanilla, run 1 | the stalled arm (F149) | **the cost slide** |
+|---|---|---|
+| world GDP | 0.56× | **0.97×** |
+| pool GDP | 0.74× | **1.23×** |
+| productive workers per capita | 0.49× | **0.64×** |
+| GDP per productive worker | 1.21× | 1.40× |
+
+⚠⚠ **AND IT CORRECTS F149's OWN VERDICT.** That verdict attributed the stall to the slide cutting MARGINS (`B ÷ A = 0.68` at
+every rung). The margin data refutes it: the slid group's realised e2 margin was **90%** and e3 **51%**, against the unslid
+41% and 30%. Profitability was never the constraint. The real mechanism is capital: the slide halves what a rung produces and
+left its price alone, so **capital per unit of output doubled** — slid e3 ran **0.42 construction points per £ of realised
+value added against the unslid 0.21 and the canon's own 0.21**. GDP per building halved, so construction, tax and the
+investment pool were all proportionally smaller (pool £331M against the canon's £2,365M at the *same* 0.61 construction levels
+per £M of GDP), so fewer buildings were built — and **jobs ∝ buildings**, because employment per level is vanilla's and
+untouched. Restoring cost parity removed the stall, which is the diagnosis confirming itself.
+
+### 2. ⭐ THE REGISTER — run 1 is the best single reading the project has
+
+world GDP **0.97×** · pool GDP 1.23× · pool W 0.69 · pool U* 2.09 · world W 0.64 · PP 0.64 · PI 0.85 · **T0 ÷ rest 0.03** ·
+T3 ÷ rest 0.65 · pool H 3.49 · world H 1.98. **Loss 5.50** = T0 1.97 + poolH 1.38 + worldH 0.87 + T3 0.65 + PI 0.64, against
+the incumbent canon's 8.40. Seven of the twelve lines sit AT THE AIM.
+
+### 3. ⛔ AND THE CONFIG IS OUT — run 2, BROKEN BY RUNOFF
+
+> **GBR (77M) in CAPITAL ABUNDANCE: U\* under 5% in six consecutive years 1931–1936 at a mean hoard of 2.46 of its own GDP.**
+
+| GBR, run 2 | 1931 | 1932 | 1933 | 1934 | 1935 | 1936 |
+|---|---|---|---|---|---|---|
+| U* | 4.7% | 4.3% | 3.7% | 3.4% | 1.7% | **0.6%** |
+| hoard ÷ own GDP | 1.88 | 2.04 | 2.23 | 2.55 | 2.93 | **3.13** |
+
+Six years where five are required, 2.46 where 1.5 is required. **One broken run ends a config**, so the tie-breaker was
+stopped (session `20260920_170737`, aborted at ~1836).
+⚠ Run 1 misses the identical line by ONE year — four consecutive years under 5% at a mean hoard of 1.82.
+
+⭐⭐ **TWO PATHOLOGIES, NOT ONE.** Germany in run 2 also reaches **0% peasants and 0% U\*** over six years — but its hoard is
+**0.07**. It spends everything it earns and still runs out of people, so it is flagged SOFT, not hard. Britain hoards AND runs
+out of labour; Germany only runs out of labour. Both are the register's "full depeasantation" by different routes, and the
+peasant series shows it is not a late artifact: GBR 27 → 14 → 5 → 1% and GER 24 → 9 → 6 → **0%** across 1910 → 1936.
+
+### 4. THE PAIR IS DIVERGENT, AND CHINA IS NOT WHY
+
+| | GDP ÷ van | band | workers/capita | band |
+|---|---|---|---|---|
+| run 1 | 0.938 | target | 0.639 | target |
+| run 2 | 1.208 | noticeably above | 0.759 | noticeably above |
+
+⚠ **Checked and excluded: China.** The seeds' Chinas are qualitatively different — run 1's holds together to 1930 and peaks at
+**£360M** before fragmenting into 16 markets (£171M by 1935); run 2's fragments by **1920** and never grows (£97M at 1920).
+Run 2 is nonetheless the RICHER seed: excluding China entirely the gap *widens* from ×1.29 to ×1.31. ⇒ the divergence is in the
+developed world. ⚠ **NET and BEL do not exist in run 2 at 1935**, so the pool's composition genuinely differs by seed.
+⭐ Method note: a tag's GDP series is dominated by borders, so "China" here is the 43 states Qing held in 1836 and thereafter
+whoever owns them (`region_gdp.mjs`), which makes fragmentation cancel. Read that way the 1890 dip in the paired arm is a
+Taiping civil war (population falls WITH GDP and GDP per head RISES) and only the warlord split is economic — one 466M-person
+market becoming seventeen ~25M ones costs 37–53% of regional GDP and never recovers.
+
+### 5. THE e0 CENSUS — the slide killed exactly what it aimed at
+
+At 1935, per market, e0 rungs both staffed ≥ 0.5 levels and profitable: GBR 3 · USA 5 · GER 5 · NET 2 · BEL 2.
+⭐ **Not one SLID consumer industry survives in any of the five markets** — no textile, no tooling, essentially no glass or
+furniture. What survives is **motor** (24.1 staffed levels in BEL, 19.2 in GER, 6.5 in GBR — unslid, with the ladder hole at
+e1 and sole source of engines for sixty years), **the art academy** (22.3 levels in GBR) and **paper / food**. All e0 across
+the five markets earns **£2.8M a year and motor alone is £1.76M — 63%** of it.
+⇒ The two levers that would move this are known and are NOT anchor questions: the academy's wage treatment and motor's
+missing e1 rung (F143 §2).
+
+### 6. WHAT IT DOES NOT SAY
+
+- **n=1 intact.** The canon's own seeds spanned 6.9–29.6 on this loss, so 5.50 does not separate books — and the config is out
+  on the hard line regardless of how good that run looks.
+- **The anchor slide still needs a BALANCE_FRAMEWORK ruling** before a book of this shape could go canon.
+- ⚠ **Every MARGIN in this finding inherits F150**: `va_out`/`va_in` are base-priced, `profit` is market-priced, so the old
+  identity is a mixed-units ratio. Quantities, prices, GDP, the T0 census and the employment series are untouched. The
+  unit-consistent margins for the e0 census were recomputed as `profit ÷ (revenue at market − profit)`.
+- **GER and BEL market prices do not exist in this run** — the Prussian market drops out of the telemetry after 1870 and
+  Belgium was never instrumented — so the true-margin table covers GBR, USA and NET only. The tag list is ten from the next
+  batch onward.
+- `ai_value` does not slide with `--anchor-cost`; a slid e3 keeping ai_value 27,000 while costing 2,166 is unexamined.
