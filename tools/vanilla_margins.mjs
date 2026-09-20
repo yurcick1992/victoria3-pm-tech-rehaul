@@ -29,6 +29,12 @@
 //
 //   node tools/vanilla_margins.mjs [--session <dir>] [--date 1836.2.1] [--markets GBR,FRA,...]
 //                                  [--min-levels 4] [--json <path>] [--legacy-margin]
+//
+// ⚠ `config/vanilla_margins_1836.json` (committed 2026-08-29, rendered by build_ui2.mjs) was written by the
+// LEGACY definition and over the whole sample. Regenerating it with `--json` would restate every number on the
+// repaired definition AND on the smaller priced sample at once; the ui2 sheet it feeds is the retired
+// derivation's. Left as it is, deliberately — the difference at 1836 is 0.4pp like for like, and the sample
+// change is the larger half. If it is ever regenerated, say which of the two moved the numbers.
 // ============================================================================================
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
