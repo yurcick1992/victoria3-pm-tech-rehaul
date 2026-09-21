@@ -4390,6 +4390,19 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
      0–4 a run in vanilla and in ten earlier four-rung runs, but 7,336 / 4,308 in canon4v-hai3-n2 and 1,304 in
      run 9 of the 60-run batch — if it recurs across many runs of the ai_value-3^era arms, it may say those arms
      field armies too small to spawn battles; judge it per batch, not per run.
+     ⚠ **A SEVENTH (identified 2026-09-21): the ENGINE LOC-STRING data errors, `pdx_data_localize.cpp:136 Data error
+     in loc string '<KEY>'`** — seen as `DIPLOMATIC_ACCEPTANCE_DIFFERENT_RELIGION_BUT_SAME_TRAIT` (230 lines in the
+     first third of a run) and `BATTLE_SHIPS_BREAKDOWN_*`, the latter always paired with
+     `pdx_data_factory.cpp:1662 Invalid promote 'NAVAL_BATTLE'(0)`. **They are VANILLA's**, and the naval pair is
+     easy to confirm (3,004–6,766 lines in each of the pinned seeds). ⚠⚠ **THE DIPLOMATIC ONE IS THE TRAP: it is
+     ZERO in all 16 pinned vanilla seeds**, so the usual "compare against the baseline" check reports a class the
+     reference has never produced and it reads as a regression. It is elsewhere in the corpus on VANILLA arms —
+     `20260803_030101_wages-n3/run002_vanilla` 130, `20260803_220658_vanilla-percapita-n3/run002_vanilla` 296,
+     `20260807_005246_popsplit-debut-vanilla/run001_vanilla` 296 — i.e. playthrough-dependent like the navy-model
+     and Div/0 classes, firing only when the AI renders that tooltip for a pair with different religion and a shared
+     trait. ⇒ **When a class is absent from the pinned sixteen, sweep EVERY session before calling it ours**, and
+     check the decisive thing directly: `grep -c zzz_pm_rehaul <error.log>` — our emitted files are all `zzz_pm_rehaul*`,
+     so a **0** there means no error in the file names anything we wrote, whatever the totals look like.
      ⚠⚠ **READING A LIVE RUN'S FILES USED TO BE ABLE TO KILL THE RUN (fixed 2026-09-07, landmine L29).** The observer
      wrote every tick to `run.log` with an unguarded `Add-Content` under `Stop` preference, which throws "Stream was
      not readable" while another process holds the file open — a heartbeat's `tail -1 run.log` landed inside the
