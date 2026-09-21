@@ -227,6 +227,52 @@ hand on a major patch.
    **cross-reference** (land `CRITICAL_THRESHOLD` above the ship `EXCESSIVE_THRESHOLD` invalidates the latter), so a value that was
    valid alone can be rejected beside a sibling we changed.
 
+7. **THE TRADE SURFACE — read off the files 2026-09-21 for the trade experiment (FINDINGS F155).** Nothing here is
+   emitted by the mod today, so a patch cannot break a build; it can silently invalidate the design the experiment
+   rests on. Re-check all five after a major patch:
+   - **The trade-quantity production methods, `common/production_methods/11_private_infrastructure.txt`.** Today
+     `pm_trade_center_trade_quantity_limited / normal / high / very_high` carry merchant marine **3 / 4 / 5 / 6 per
+     level** (`building_modifiers`, `workforce_scaled`) against `state_trade_quantity_mult` **−0.5 / — / +0.5 / +1.0**
+     (`state_modifiers`, `unscaled`), gated on `hydraulic_cranes` and `floating_harbor`. ⚠ **The whole lever rests on
+     the merchant-marine input being PER LEVEL rather than per unit traded** — if a patch ever makes it scale with
+     volume, raising traded quantity stops being free and the experiment's premise is gone. `pm_trade_center` and its
+     power-bloc twin carry `state_weekly_trades_add = 1` + `state_trade_capacity_add = 10` per staffed level.
+   - **`traded_quantity` in `common/goods/00_goods.txt`.** The per-good volume per unit of Trade Capacity. Its design
+     constant is `cost × traded_quantity ≈ £200–300` (median 240) on every tradeable good, and `tools/goods_prices.tsv`
+     mirrors only the `cost` half — so a re-tune of `traded_quantity` alone is invisible to every check we have.
+     Four goods omit it (services, transportation, electricity, gold) and all four are `local` or `tradeable = no`,
+     which is why `GOODS_DEFAULT_TRADE_QUANTITY = 10` is a dead define; **if a patch makes a tradeable good omit the
+     field, that define stops being dead.**
+   - **`convoy_cost_multiplier` in the same file, and what charges it.** Today it is a **shipping-lane / military**
+     field (`goods.md`: *"when this good is shipped as military supply or materiel"*; the exe exposes it as
+     `Goods.GetShippingConvoyCostMultiplier`) and world-market trade does not pay per unit at all — the convoy bill is
+     `REQUIRED_CONVOYS_BREAKDOWN`'s three components: **port connections, supply routes, goods transfers**. If a patch
+     adds a world-market-trade line to that breakdown, trade volume starts costing convoys and every lever below
+     changes sign.
+   - **The trade modifier types, `common/modifier_type_definitions/00_modifier_types.txt`.** The set a mod can use
+     without owning a vanilla data file: `state_trade_capacity_add` / `_mult`, **`state_trade_quantity_mult`**,
+     `state_market_access_price_impact`, `state_weekly_trades_add`, `state_trade_advantage_mult`,
+     `state_trade_advantage_same_religion_add`, `state_trade_advantage_from_capacity_add`,
+     `state_max_trade_advantage_from_capacity_add`, `state_import_advantage_mult`, `state_export_advantage_mult`,
+     `state_tariff_import_add` / `_export_add`, `state_subvention_import_add` / `_export_add`,
+     `power_bloc_trade_advantage_add`, `state_trade_center_max_limit_add`. ⚠ `state_trade_quantity_mult` has **three
+     users in the whole game** (the three non-default PMs above), so a vanilla collision is currently impossible —
+     re-check that after a patch before assuming a clean lever.
+   - **The trade defines, `common/defines/00_defines.txt` (`NEconomy`).** `TRADE_CENTER_ADVANTAGE_PRICE_MULTIPLIER`
+     0.25 (the price-convergence dial: 0 would price every trade at the world-market price),
+     `TRADE_CENTER_ADVANTAGE_BASE` 100, `MINIMUM_GOODS_TRADED_QUANTITY` 0.5, `WORLD_MARKET_GOODS_DEMAND_BUFFER` 10,
+     `GOODS_DEFAULT_MERCHANT_MARINE_COST_MULTIPLIER` 1 (live — 21 goods omit the field),
+     `SHIPPING_LANE_MERCHANT_MARINE_COST_SCALING` 0.15, `OVERSEAS_INFRASTRUCTURE_MERCHANT_MARINE_COST_MULTIPLIER` 0.1,
+     and ⚠⚠ **`AUTO_DOWNSIZE_BUILDING_MIN_UNUSED_TRADE_CAPACITY` 20 with `..._FRACTION` 0.1**, which is what makes a
+     capacity multiplier self-defeating (idle capacity makes trade centres downsize) while a quantity multiplier is
+     not. In `common/defines/00_ai.txt`: `TRADE_CENTER_MINIMUM_GDP_MARKET_CAPITAL` 100,000 /
+     `_NON_MARKET_CAPITAL` 500,000, **× `(1 + years since 1836 × TRADE_CENTER_MINIMUM_GDP_PASSED_YEARS_MULT 0.02)`** —
+     a 3× harder bar in 1936 than in 1836.
+   - **`base_values` in `common/static_modifiers/00_code_static_modifiers.txt`** is the engine's always-applied block
+     and already carries state modifiers, so it is the candidate global hook. Owning that 1,029-line file freezes it
+     against the next patch; if we ever do, it joins the whole-file-replacement list in §"Automated" and must be
+     re-diffed on every update.
+
 ---
 
 ## Testbed (`tools/testbed/run_observer.ps1`) — engine couplings to re-verify

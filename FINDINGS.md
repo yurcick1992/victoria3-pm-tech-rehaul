@@ -15959,3 +15959,289 @@ decades later — so the gain F153 describes is realised for **BEL only** at thi
 spending a slot on a second control. Post-run `preflight.ps1 -Session` PASSED, 4 of 4 runs usable, 13 minutes.
 
 ⇒ **GO.** `20260921_094143_accel-slide-n2` launched the same morning, with `stop_watch.ps1` armed.
+
+### 5. ⭐⭐ A by-catch from reading that century arm: THE FRENCH COMMUNE WAS SILENTLY COSTING US FRANCE, IN THE PINNED BASELINE TOO
+
+Reading run 1 of the century batch, the register's price basis came back with **three** markets — American, British,
+German — where the eleven-tag list should have widened it. Two of the losses were real history in that seed (the
+Netherlands and Belgium lose their markets after 1860). The third was not: **France was still there, and its market
+had been renamed.**
+
+A market is named after its leader's **adjective**, so a change of government normally keeps the name, and a country
+that keeps its name keeps its series for free. France going communard is the exception — "French Market" becomes
+**"Communard Market"** on an **unchanged tag** — and `MARKET_FAMILY` mapped only the former, so the series ended
+mid-century and France dropped out of PI/PP.
+
+⚠⚠ **It is not an arm-side quirk, and that is the part worth keeping.** Counted over every `markets.tsv` in the repo:
+
+| session | Communard rows | French rows |
+|---|---|---|
+| `20260821_131149_vanilla-baseline-n16` — **THE PINNED REFERENCE** | run003 **171** · run004 46 · run006 44 · run008 45 · run011 46 | 338 / 487 / 472 / 478 / 485 |
+| `20260823_113218_vanilla-baseline-extra-n2` | run002 139 | 342 |
+| `20260920_225047_schedule` (the eleven-tag vanilla) | run001 258 | 252 |
+| `20260919_224153_anch-in12-century-n3` | 271 | — |
+| `20260921_094143_accel-slide-n2` | 134 | — |
+
+**5 of the 16 pinned seeds**, one of them for about a third of its instrumented French life. So **both sides** of the
+PI/PP ratio were dropping the same country, unevenly, seed by seed.
+
+⭐ **Republics lose nothing** — checked rather than assumed, over the same corpus: British Republic → "British Market"
+(93,344 rows), Russian Republic → "Russian Market", Republic of Japan / Japanese Taikunate / Empire of Japan /
+Tokugawa Shogunate → "Japanese Market", French Republic and French Empire → "French Market", Germany / German Empire →
+"German Market", United Belgian States → "Belgian Market", United Netherlands → "Dutch Market". **The Commune is the
+only same-state rename in the whole corpus**, which is what makes a bespoke entry the right size of fix
+(user-ruled 2026-09-21: *"A bespoke solution would be OK"*).
+
+⚠ **Civil-war REVOLT markets are deliberately NOT merged** — "Modernist British Market", "Radical British Market",
+"British Proletarian Revolt Market", "Japanese Proletarian Revolt Market", "Imperial Japanese Market", "Communist
+Dutch Market", "Socialist Belgian Market", "Positivist Belgian Market". The continuity ruling is about SUCCESSION,
+and a revolt can coexist with its parent, so folding one in would merge two live economies. They stand alone, as
+`seriesOf` leaves any unknown name. ⚠ Separately, "British Market" is also **British West Africa's** market name — a
+genuine pre-existing collision, since names are not unique; nothing here fixes that.
+
+**What it changed.** The arm's basis, not the reference: run 1's basis went three markets → **four** (American,
+British, French, German), PI 1.02 → 1.01, PP 0.91 → 0.92, PM 0.76 → 0.83, loss 18.52 → 18.20 — **the verdict is
+unmoved**, PI still sits at the soft line. Vanilla's own PI median stays **1.02** (the Commune arrives late, in a
+minority of seeds, and a median is robust). Of the decision-relevant arms only `20260919_224153` carried Communard
+rows, and it was already out on the world-GDP hard line, so **no past decision moves**. A further consequence by
+design: the French family is now two names, so `marketCollisions` flags a run holding both at once — correct, since
+that means a live French civil war and an ambiguous pick.
+
+---
+
+## F155 — ⭐⭐ THE TRADE LEVERS, READ OFF THE 1.13 FILES AND THE MEASURED BASELINE: world-market trade moves **3.6–6.4% of market demand by value** in vanilla AND in the canon; the quantity a trade moves is **`traded_quantity × (1 + state_trade_quantity_mult)` per unit of Trade Capacity**, and a trade centre's merchant-marine bill is **per LEVEL, not per unit traded** — so raising traded quantity is a volume lever that costs **zero** convoys. ⚠⚠ `convoy_cost_multiplier` is NOT charged on world-market trade at all, and its "discount" goes to the CHEAP BULK staples, the opposite of the premise it is usually quoted for (read off the game files, the exe string pool and 16 vanilla + 3 mod century runs, read-only, 2026-09-21)
+
+**Arm:** none — this is a file read plus re-analysis of existing sessions. Vanilla `20260821_131149_vanilla-baseline-n16`
+(n=16, 7 then 6 instrumented markets); mod `20260917_132449_canon-c19-in12-confirm-n2` (the canon, n=1 usable for the
+century series) and `20260920_114003_anch-costslide-century` (n=2). Game 1.13. Nothing was built or launched.
+
+### 1. The mechanism, stated once
+
+Two quantities do all the work, and vanilla's own concept text defines both:
+
+- **Trade Capacity** — *"generated by Trade Center levels and used to conduct trade with the world market. The quantity
+  of goods traded per Trade Capacity varies per good."*
+- **Traded Quantity** — *"the amount of a good that is imported or exported with each Trade Capacity used."*
+
+So **volume of a good traded = (Trade Capacity spent on it) × traded_quantity(good) × (1 + `state_trade_quantity_mult`)**,
+and the tooltip `STATE_IMPORT_EXPORT_GOOD_TOOLTIP` gives the profit side in the same units, verbatim: *"profit for each
+Trade Capacity (… price difference plus … subventions minus … tariffs, multiplied by the traded quantity of …)"*.
+
+⇒ **Traded quantity scales volume and profit-per-capacity by the same factor.** That is the single most important
+consequence for a design that wants more trade: the dial is not neutral on the AI's incentives, it doubles them too.
+
+Trade Capacity comes from ONE place — `pm_trade_center` / `pm_trade_center_principle_external_trade_2`, both
+`state_modifiers { workforce_scaled { state_weekly_trades_add = 1  state_trade_capacity_add = 10 } }` — i.e.
+**10 capacity and 1 weekly trade per STAFFED trade-centre level**, times `state_trade_capacity_mult`.
+
+### 2. The trade-quantity production methods, in full (`common/production_methods/11_private_infrastructure.txt`)
+
+| PM | gate | merchant marine (workforce_scaled, per level) | `state_trade_quantity_mult` (unscaled) |
+|---|---|---|---|
+| `pm_trade_center_trade_quantity_limited` | — (`low_pop_method = yes`) | 3 | **−0.5** |
+| `pm_trade_center_trade_quantity_normal` | — (`is_default = yes`) | 4 | — (×1) |
+| `pm_trade_center_trade_quantity_high` | `hydraulic_cranes` | 5 | **+0.5** |
+| `pm_trade_center_trade_quantity_very_high` | `floating_harbor` | 6 | **+1.0** |
+
+⭐⭐ **This settles the contradiction the wiki poses.** The merchant-marine input is a `building_modifiers`
+`goods_input_merchant_marine_add`, **workforce-scaled per level** — it does not know how much is traded. Vanilla's own
+top rung therefore buys **×2 the traded quantity for ×1.5 the convoys**, and a *modifier* that raises traded quantity
+buys it for **×1.0** — no extra convoys whatsoever. `state_trade_quantity_mult` has exactly **three users in the whole
+game**, the three PMs above; nothing else in `common/` touches it.
+
+### 3. `convoy_cost_multiplier` is a military/shipping-lane field, and its sign is the opposite of the folklore
+
+The game's own schema doc `common/goods/goods.md` says it verbatim:
+
+- `traded_quantity` — *"how many units of this good are moved per 'trade' on the world market, also determines convoy
+  cost for goods transfer treaties (1 merchant marine per traded_quantity transferred), default
+  GOODS_DEFAULT_TRADE_QUANTITY (10)"*
+- `convoy_cost_multiplier` — *"multiplier on merchant marine cost when this good is shipped **as military supply or
+  materiel**, default GOODS_DEFAULT_MERCHANT_MARINE_COST_MULTIPLIER (1)"*
+
+Four independent corroborations, because a shipped doc is not evidence on its own (the §10.34 rule):
+
+1. **The convoy bill has three named components and world-market trade is not one of them.** `REQUIRED_CONVOYS_BREAKDOWN`
+   in `interfaces_l_english.yml`: *"… from port connections … from supply routes … from goods transfer"*.
+2. **The per-unit convoy line belongs to the goods-transfer lane**: `SHIPPING_LANE_CONVOY_COST_GOOD_ENTRY` reads
+   *"… from … [Goods.GetName] (1 per … traded)"*, which is `traded_quantity`'s sentence, not the multiplier's.
+3. **The exe string pool names it `GetShippingConvoyCostMultiplier`** — "shipping", i.e. lanes — and places it inside the
+   **Goods** function block (between `GetPriceTrend` and `GetNeedLevelsContainingThisDesc`).
+4. **Nothing in `common/` reads it** but `00_goods.txt` itself, and **the measured import shares do not track it** (§5).
+
+⚠⚠ **And the discount runs the other way from the premise.** The goods that get `convoy_cost_multiplier` well below 1
+are the cheap bulk staples — `merchant_marine` 0.05, **grain / fish / fabric / wood / clippers / steamers 0.15**,
+groceries / clothes / furniture / paper 0.25 — while `tanks` and `aeroplanes` pay **1.5** and 21 goods (steel, tools,
+iron, oil, glass, fertilizer, silk, dye, sulfur, lead, hardwood, rubber, telephones, radios, fine_art, ammunition,
+small_arms, and the three `local` goods plus gold) omit the field and take the default **1**. So "not bulky goods get a
+convoy discount" is false twice over: the field is not world-market trade, and the discount is the bulk staples'.
+
+### 4. The goods table — the design constant nobody states, and what it implies
+
+Across all 49 tradeable, non-`local` goods, **`cost × traded_quantity` lands in £200–300, median £240**, and the vanilla
+file's own trailing comments are literally that product (`traded_quantity = 12 # 240`). A sample:
+
+| good | cost | traded_qty | cost×tq | convoy mult |
+|---|---|---|---|---|
+| grain | 20 | 12 | 240 | 0.15 |
+| fabric | 20 | 10 | 200 | 0.15 |
+| coal | 30 | 7 | 210 | 0.5 |
+| clothes | 30 | 8 | 240 | 0.25 |
+| steel | 50 | 4 | 200 | (1) |
+| tools | 40 | 5 | 200 | (1) |
+| engines | 60 | 4 | 240 | 1 |
+| automobiles | 100 | 3 | 300 | 1 |
+| fine_art | 200 | 1.5 | 300 | (1) |
+
+⇒ **One unit of Trade Capacity moves about £240 of ANY good.** Profit per capacity is therefore
+`price gap in % × ~£240`, which is why the AI's allocation between goods is driven by the price gap alone and not by
+which good it is. **A uniform multiplier on traded quantity does not re-rank goods**; differential effects require
+breaking the £240 line per good, which is a per-good edit to `00_goods.txt`.
+
+⚠ Four goods omit `traded_quantity` and take the define's 10: **services, transportation, electricity** (all
+`local = yes`, so they cannot be traded) and **gold** (`tradeable = no`). ⇒ **`GOODS_DEFAULT_TRADE_QUANTITY` is a dead
+define for our purposes** — changing it moves nothing at all. `MINIMUM_GOODS_TRADED_QUANTITY = 0.5` is a floor that
+binds on nothing today (the lowest live value is fine_art's 1.5, which the `limited` PM takes to 0.75).
+
+### 5. The measured baseline — trade is SMALL, and the mod is not short of it
+
+Summed over the instrumented markets, median over runs. `imp%` is import VALUE ÷ market buy-order VALUE at realised
+prices; `MM` is the merchant_marine good's own buy and sell orders.
+
+| date | vanilla n=16 imports (£) | vanilla imp% | canon imp% | costslide imp% | vanilla MM buy | MM sell | sell÷buy |
+|---|---|---|---|---|---|---|---|
+| 1836.2.1 | 236,689 | 4.4% | 4.5% | 4.4% | 976 | 1,187 | 1.22 |
+| 1850.1.1 | 332,721 | 3.6% | 3.7% | 4.2% | 1,668 | 1,799 | 1.08 |
+| 1870.1.1 | 619,285 | 4.2% | 4.6% | 4.3% | 3,251 | 3,836 | 1.18 |
+| 1890.1.1 | 1,230,923 | 5.5% | 4.2% | 6.1% | 5,512 | 7,784 | 1.41 |
+| 1900.1.1 | 1,774,610 | 6.4% | 4.2% | 5.0% | 7,059 | 10,169 | 1.44 |
+| 1920.1.1 | 3,126,483 | 5.8% | 6.5% | 5.2% | 13,270 | 18,276 | 1.38 |
+| 1935.1.1 | 4,748,911 | 5.2% | 6.2% | 6.6% | 19,318 | 30,809 | 1.59 |
+
+⭐ **Three things worth stating plainly.** (a) **Trade is a 4–6% phenomenon** in this game — that bounds what any trade
+lever can do to GDP through volume alone, and pushes the case for the experiment onto price convergence and
+specialisation instead. (b) **The mod is not trade-starved**: the canon's import share sits on vanilla's and ends
+ABOVE it. (c) **Merchant marine is in SURPLUS**, 1.2–1.6 sell per buy from 1870 on, so a lever that raised convoy
+demand would have headroom — but the lever in §2 does not need any.
+
+**Imports by convoy band** (median per good over the 16 vanilla runs, import units ÷ buy units):
+
+| band | 1836 | 1900 |
+|---|---|---|
+| convoy mult ≤ 0.25 (10–11 goods) | 1.3% | 3.4% |
+| convoy mult = 0.5 (13 goods) | 5.9% | 7.1% |
+| convoy mult ≥ 1 (20–23 goods) | 3.2% | 3.3% |
+
+The middle band leads on both dates, and it is the **colonial basket** (sugar 22.8%, tea 28.3%, coffee 21.4%, tobacco,
+fruit, wine) — geography, not shipping cost. The top import lines at 1836 are fabric 650, sugar 608, tea 575, coffee
+375, silk 305, wood 300, dye 280; at 1900 fabric 4,040, coal 2,958, sugar 2,160, tea 1,663, silk 1,623, tools 1,500,
+engines 1,480. ⇒ **no convoy-cost signal in the import pattern**, as §3 predicts.
+
+### 6. The trade-centre series, and the merchant-marine arithmetic the question asks for
+
+From the canon's own yearly save summaries (`pms` per building type, v8+), GBR / FRA / USA:
+
+| year | tag | levels | staffed | MM input (units) | MM ÷ staffed level | profit £/wk | quantity PM |
+|---|---|---|---|---|---|---|---|
+| 1840 | GBR | 62 | 53 | 245 | 4.62 | 19,085 | normal |
+| 1850 | GBR | 103 | 69 | 483 | 7.04 | 23,923 | high |
+| 1900 | GBR | 311 | 245 | 1,709 | 6.96 | 26,884 | very_high |
+| 1935 | GBR | 510 | 492 | 3,731 | 7.59 | 359,327 | very_high |
+| 1935 | FRA | 686 | 673 | 5,240 | 7.79 | 382,860 | very_high |
+| 1935 | USA | 775 | 775 | 6,546 | 8.45 | 341,452 | very_high |
+
+⭐ **By 1935 every major is already on `very_high`, i.e. vanilla's own ladder has ALREADY doubled traded quantity** —
+which is the baseline any further multiplier stacks onto. MM per staffed level runs ~1.2–1.4× the PM's stated 3/4/5/6,
+which is throughput; `bg_trade` carries `economy_of_scale = no`, so it is not scale.
+
+**The answer to "what does it do to merchant-marine demand at 1836 and 1900 volumes": nothing.** Doubling traded
+quantity leaves GBR's 245 MM at 1840 and 1,709 MM at 1900 exactly where they are, and leaves the seven-market MM buy
+orders at 976 (1836) and 7,059 (1900) exactly where they are, because the bill is `per level × throughput`. Only
+switching a trade centre to a *later quantity PM* costs convoys, and that costs +1 MM per level per step.
+
+⭐ Trade capacity, logged directly (`TRADE|` line, canon run 1, GBR): **485 at 1836 on 46 levels → 6,117 at 1935 on 510
+levels** — i.e. ~10 per level plus ~20% of mults, and it tracks STAFFED levels (1860 reads 355 capacity on 94 levels,
+because the trade centres were 29% staffed). It can also be estimated from `markets.tsv` as
+`Σ_goods (imports + exports) ÷ traded_quantity ÷ (1 + quantity mult)` — the British market reads 664 at 1836 and
+~9,700 at 1935 against GBR's own 485 and 6,117, the excess being the other market members' capacity.
+
+### 6b. ⭐⭐ CAPACITY IS 98.5% CONSUMED — the constraint is real, and it is not logged anywhere
+
+`trade_capacity` and **`trade_capacity_usage` are persisted PER STATE in the savegame** (confirmed by melting
+`20260920_114003_anch-costslide-century/run001/saves/0101_…_autosave.v3`, the 1936 endpoint of an anchored-costslide
+arm). Neither is in `save_state_summary.mjs`'s `states` block (which carries only `infrastructure` /
+`infrastructure_usage`), so nothing we have ever read has seen it. Over the 475 state records that carry the field:
+
+| | value |
+|---|---|
+| world trade capacity | **51,911** |
+| world trade capacity **used** | **51,139** |
+| **usage ÷ capacity** | **0.985** |
+| the 62 states holding 84% of world capacity | **0.992** |
+| active states (n = 217), median usage ÷ capacity | **1.00** (p10 0.83, max 1.50) |
+| top states by capacity | 3828/3828 · 2989/2989 · 2901/2903 · 2051/2053 · 1715/1715 · 1663/1663 |
+
+⇒ **Every state that matters spends all of its Trade Capacity.** The engine is not declining to trade; it is out of
+capacity. That is what makes a trade experiment worth running at all — and it also means the
+`AUTO_DOWNSIZE_BUILDING_MIN_UNUSED_TRADE_CAPACITY` rule is **dormant today** (nothing is idle) rather than a hazard
+already in play. ⚠ It becomes live the moment a capacity lever outruns the supply of profitable trades, which is
+exactly what a capacity multiplier does once the price gaps it is closing have closed. How far the AI can absorb extra
+capacity before that happens is **unmeasured**.
+
+### 7. The lever list, ranked — and the trap in the obvious choice
+
+| lever | where | uniform? | per-good? | MM cost | verdict |
+|---|---|---|---|---|---|
+| `state_trade_quantity_mult` | modifier, on the 4 trade-centre PMs today | yes | no | **none** | ⭐ the clean dial |
+| `traded_quantity` | `common/goods/00_goods.txt` | yes if scaled | **yes** | none | the differentiating dial; owns a vanilla file |
+| `state_trade_capacity_add` / `_mult` | modifier | yes | no | none | works today (capacity is 98.5% used) — ⚠ self-limiting, see below |
+| `state_weekly_trades_add` | modifier | yes | no | none | re-allocation RATE, not volume |
+| `TRADE_CENTER_ADVANTAGE_PRICE_MULTIPLIER` (0.25) | define, additive override | yes | no | none | ⭐ the **price-convergence** dial |
+| `state_market_access_price_impact` | modifier | yes | no | none | how hard market price pulls local price |
+| `state_import_advantage_mult` / `_export_` / `state_trade_advantage_mult` | modifier | yes | no | none | who trades, not how much |
+| `GOODS_DEFAULT_TRADE_QUANTITY` (10) | define | — | — | — | ❌ **dead** — only untradeable goods omit the field |
+| `convoy_cost_multiplier` | `00_goods.txt` | — | yes | — | ❌ not world-market trade at all (§3) |
+
+⚠⚠ **THE TWO VOLUME LEVERS DIFFER IN HOW THEY FAIL, and §6b is what decides between them.** Both convert into volume
+today, because capacity is 98.5% consumed. The difference is what happens as the price gaps close:
+- **`state_trade_quantity_mult`** leaves capacity USAGE unchanged in capacity units and multiplies the goods moved.
+  Profit per capacity rises by the same factor, so trade centres become more attractive and expand. It can never idle
+  capacity, so `AUTO_DOWNSIZE_BUILDING_MIN_UNUSED_TRADE_CAPACITY = 20` / `..._FRACTION = 0.1` — *"A Trade Center must
+  have at least this much unused Trade Capacity … to consider auto downsizing"* — stays dormant. ⚠ Its cost is
+  **granularity**: each trade is chunkier, so the marginal trade overshoots the gap it is closing by more.
+- **`state_trade_capacity_mult`** adds trades at unchanged granularity, which is the better shape for price
+  CONVERGENCE — but it is **self-limiting and then self-reversing**: once the added capacity outruns the supply of
+  profitable trades, the idle fraction crosses both downsize thresholds and trade centres shrink, undoing the lever.
+⇒ **`state_trade_quantity_mult` is the safer dial; `state_trade_capacity_mult` is the better-shaped one.** Neither is
+measured. A first arm should move ONE of them, and the quantity lever is the one whose failure mode is understood.
+
+⭐ **The uniform delivery route, if one is wanted:** `base_values` in `common/static_modifiers/00_code_static_modifiers.txt`
+is the engine's always-applied block and **already carries state modifiers** (`state_tax_capacity_add = 100`,
+`state_infrastructure_add = 3`), so one line there is a truly global dial — at the price of owning a 1,029-line vanilla
+file. The cheaper route is to own `common/production_methods/11_private_infrastructure.txt` (578 lines) and shift the
+four-rung ladder of §2, which keeps vanilla's shape and rides whichever PM the AI picks.
+
+⚠ **Two AI gates sit upstream of all of it.** `TRADE_CENTER_MINIMUM_GDP_MARKET_CAPITAL = 100000` /
+`_NON_MARKET_CAPITAL = 500000`, **× `(1 + years_since_1836 × TRADE_CENTER_MINIMUM_GDP_PASSED_YEARS_MULT 0.02)`** — so
+the bar to build a trade centre anywhere is **3× higher in 1936 than in 1836**, and a poorer world clears it in fewer
+states. Vanilla's own comment warns that lowering these hurts performance.
+
+### 8. What it does NOT say
+
+- ⚠ **No measurement of any lever.** Nothing here has been run. Every number above is either a file value or a
+  re-reading of sessions that changed no trade setting.
+- ⚠ **The exact goods-transfer convoy formula is not settled from files** — `goods.md` attributes it to
+  `traded_quantity` and the loc says "1 per N traded", but whether `convoy_cost_multiplier` also divides into that N
+  cannot be read off script; it is engine-side. It does not matter for world-market trade, which is the subject.
+- ⚠ **`GetMarketImports` may be net of that market's own exports** (TESTBED_METRICS §2.5's open point), so the import
+  shares in §5 are a consistent series but possibly a slight understatement of gross flow. Both sides of every
+  comparison use the same field.
+- ⚠ **The market count drops 7 → 6 mid-century** in the older sessions (the tag-continuity problem F153 §6 fixed for
+  the reader, not for the instrument), so the absolute £ columns are not strictly like-for-like across dates. The
+  `imp%` column is a ratio inside the same basket and is.
+- ⚠ **n is 16 vanilla but 1–2 per mod arm** on the century series, so the mod-vs-vanilla import-share comparison is
+  directional only (§10.83.7).
+- ⚠⚠ **Trade centres book `va_out = 0` with `va_in > 0`** (GBR 1935: va_in 185,596, profit £234k/wk) — their income is
+  a trade margin, not a goods flow. So **any value-added sector split counts a trade centre as negative value added**,
+  and an arm that trades more will look worse in `sector_split.mjs` while the engine's own GDP rises. The register's
+  world-GDP line reads the engine's number and is unaffected.

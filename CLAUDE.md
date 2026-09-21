@@ -215,6 +215,22 @@ vanilla's, and the basis is printed** — the new German and Belgian prices ente
    continuation of PRU'"*; and *"UNL not forming should not be a blocker"*). Implemented as `MARKET_FAMILY` / `seriesOf()` / `groupBySeries()` in
    `lib_markets.mjs`, and **`criteria.mjs` intersects the price basis on SERIES, not market NAMES**, keeping ONE name per intersecting series.
    ⚠ **Belgium is its own series** — the ruling names only "UNL is the same as NET", so where UNL stands the Belgian series ENDS.
+   ⭐⭐ **EXTENDED 2026-09-21 TO THE FRENCH COMMUNE, THE ONE STATE THAT RENAMES ITS OWN MARKET** (user: *"For the future, fix the
+   communard/french discontinuity too"*, and *"The French Commune is unique in many things, including in how often it can appear.
+   A bespoke solution would be OK"*). A market is named after its leader's ADJECTIVE, so a change of government normally keeps the
+   name and the series for free; France going communard makes it the **Communard Market** on an unchanged TAG, and the series
+   simply ended. `MARKET_NAMES.FRA` now carries both names. ⚠⚠ **It was never an arm-side quirk — it is in the PINNED BASELINE:**
+   5 of the 16 seeds of `20260821_131149` carry Communard rows (run003 171 against 338 French, about a third of that seed's
+   instrumented French life), so BOTH sides of PI/PP were losing the same country, unevenly, seed by seed.
+   ⭐ **Republics lose nothing, verified over every `markets.tsv` this repo has written**: British Republic, Russian Republic,
+   Republic of Japan, Japanese Taikunate, French Republic, French Empire, Germany, United Belgian States and United Netherlands
+   all keep their parent's market name. The Commune is the only same-state rename in the whole corpus.
+   ⚠ **Civil-war REVOLT states are deliberately NOT merged** ("Modernist British Market", "Japanese Proletarian Revolt Market",
+   "Socialist Belgian Market", …): the ruling is about SUCCESSION, and a revolt can coexist with its parent, so folding one in
+   would merge two live economies. They stand alone.
+   ⚠ **What it changed**: the arm's basis, not the reference — vanilla's PI median stays 1.02 (the Commune arrives late and in a
+   minority of seeds, and a median is robust). Of the decision-relevant arms only `20260919_224153` (already out on world GDP)
+   carried Communard rows; the incumbent canon's sessions and `anch-costslide` carry none, so no past decision moves.
    ⚠ **It changed no measured number** (`20260920_114003` re-scores to PI 0.87 / PP 0.69 / loss 7.97, identical) and it does NOT rescue the end state:
    an arm instrumented on PRU alone simply stops logging its German market when Prussia becomes the NGF, and continuity cannot recover a series that was
    never recorded. What it buys is the case nobody had hit — an arm whose Germany is still the NGF at 1935 against vanilla's German Empire, which by NAME

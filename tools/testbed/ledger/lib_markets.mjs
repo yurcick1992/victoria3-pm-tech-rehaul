@@ -56,6 +56,41 @@ export const MARKET_NAMES = {
   RUS: ['Russian Market'], JAP: ['Japanese Market'],
 };
 
+// ⭐⭐ THE FRENCH COMMUNE IS THE ONE STATE THAT RENAMES ITS OWN MARKET, AND IT WAS SILENTLY COSTING US FRANCE
+//   (user-ruled 2026-09-21: *"For the future, fix the communard/french discontinuity too"* and *"The French Commune
+//   is unique in many things, including in how often it can appear. A bespoke solution would be OK."*).
+//
+// A market is named after its leader's ADJECTIVE, so a country that changes government usually keeps its market's
+// name — and a country that keeps its name keeps its series for free. France going communard is the exception: the
+// adjective becomes "Communard", the market becomes the **Communard Market**, the TAG never changes, and the price
+// series ended there. In run 1 of 20260921_094143_accel-slide-n2 that took France out of the PI/PP basis entirely,
+// leaving three markets.
+//
+// ⚠⚠ **AND IT IS IN THE PINNED VANILLA BASELINE TOO, so this was never an arm-side quirk**: 5 of the 16 seeds of
+//   20260821_131149 carry Communard rows (run003 171 of them against 338 French, i.e. about a third of that seed's
+//   instrumented French life), plus 1 of 2 in the 20260823 extra pair and the 2026-09-20 eleven-tag run. Both SIDES
+//   of the ratio were losing the same country, unevenly, seed by seed.
+//
+// ⭐ VERIFIED EMPIRICALLY over every markets.tsv this repo has ever written, which is what says a bespoke entry is
+//   enough rather than a general rule: **a revolution into a REPUBLIC loses nothing.** British Republic → "British
+//   Market" (93,344 rows), Russian Republic → "Russian Market", Republic of Japan / Japanese Taikunate / Empire of
+//   Japan / Tokugawa Shogunate → "Japanese Market", French Republic / French Empire → "French Market", Germany /
+//   German Empire → "German Market", United Belgian States → "Belgian Market", United Netherlands → "Dutch Market"
+//   (the last already covered as UNL). The Commune is the only same-state rename in the whole corpus.
+//
+// ⚠ DELIBERATELY NOT MERGED: the CIVIL-WAR REVOLT states, which are different countries holding part of the
+//   territory, not successors — "British Proletarian Revolt Market", "Modernist British Market", "Radical British
+//   Market", "Japanese Proletarian Revolt Market", "Modernist Japanese Market", "Imperial Japanese Market",
+//   "Communist Dutch Market", "Socialist Belgian Market", "Positivist Belgian Market". The 2026-09-21 ruling is
+//   about SUCCESSION ("GER is the continuation of PRU"); a revolt can coexist with its parent, so folding it in
+//   would merge two live economies. They stand alone, as `seriesOf` leaves any unknown name.
+// ⚠ Also not merged, and a genuine pre-existing name COLLISION rather than a gap: "British Market" is also the
+//   market name of **British West Africa**, a different country. Names are not unique; nothing here fixes that.
+// ⚠ A consequence worth knowing: the French family is now two names, so `marketCollisions` will flag a run holding
+//   the French and Communard markets at ONCE. That is correct — it means a live French civil war and an ambiguous
+//   pick — and it is the graceful-degradation contract below doing its job, not a false alarm.
+MARKET_NAMES.FRA.push('Communard Market');
+
 /** The tags whose markets the register reads prices in (PI / PP). The shortlist's own markets. */
 export const PRICE_TAGS = ['GBR', 'USA', 'FRA', 'NET', 'UNL', 'BEL', 'PRU', 'NGF', 'GER'];
 
