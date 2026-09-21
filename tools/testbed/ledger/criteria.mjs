@@ -78,7 +78,7 @@ import { gunzipSync } from 'node:zlib';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { usableRuns, reportDropped } from './lib_runs.mjs';
-import { POOL, MEMBER, MEMBER_FAMILY, MARKET_NAMES, PRICE_TAGS, TAG_OF_MARKET } from './lib_markets.mjs';
+import { POOL, MEMBER, MEMBER_FAMILY, MARKET_FAMILY, MARKET_NAMES, PRICE_TAGS, TAG_OF_MARKET, seriesOf, groupBySeries } from './lib_markets.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SES = join(HERE, '..', 'sessions');
 const REPO = resolve(HERE, '..', '..', '..');
@@ -188,7 +188,10 @@ for (const scope of ['world', 'pool']) for (const q of ['gdp', 'W', 'U', 'H', 'Y
 // INTERSECTION of its own markets with this — so an arm instrumented with the ten-tag list of 2026-09-20 (which adds
 // the German and Belgian markets) is still compared against vanilla like for like. Those markets enter PI/PP the day
 // a vanilla baseline carries them and not before; the basis is printed so a reader always knows which it was.
-const VANBASIS = {}; for (const y of PYEARS) VANBASIS[y] = new Set(vanRuns.flatMap(r => [...marketsIn(r.P, y)]));
+// ⭐ SERIES, not names — a state's market is one series across its tag changes (user-ruled 2026-09-21;
+//   lib_markets MARKET_FAMILY). Without this an arm on the Prussian Market and a vanilla run on the German
+//   Market intersect to NOTHING purely because the state renamed itself — which is what made F153 read four.
+const VANBASIS = {}; for (const y of PYEARS) VANBASIS[y] = new Set(vanRuns.flatMap(r => [...marketsIn(r.P, y)]).map(seriesOf));
 setRef('PI', vanRuns.map(r => priceIdx(r.P, r.wage, 1935, GI, 'base'))); setRef('PP', vanRuns.map(r => priceIdx(r.P, r.wage, 1935, GP, 'wage'))); setRef('PM', vanRuns.map(r => priceIdx(r.P, r.wage, 1935, GM, 'base')));
 for (const y of PYEARS) ref['PI.' + y] = med(vanRuns.map(r => priceIdx(r.P, r.wage, y, GI, 'base')));
 // ⭐⭐ THE W HARD BOUNDS (user-ruled 2026-09-19: "the hard boundaries were meant to be for W. H is hardly comparable with vanilla anyway")
@@ -227,8 +230,21 @@ function scoreRun(rel, tier) {
   r.gdpW = winMean(years, 'world', 'gdp') / ref['world.gdp']; r.gdp35 = at(years, 1935, 'world', 'gdp') / med(vanRuns.map(v => at(v.years, 1935, 'world', 'gdp'))); r.gdpP = winMean(years, 'pool', 'gdp') / ref['pool.gdp'];
   for (const s of ['world', 'pool']) for (const q of ['W', 'U', 'H', 'Y']) { r[s + q] = winMean(years, s, q) / ref[s + '.' + q]; r[s + q + '_abs'] = winMean(years, s, q); }
   // the price basis: this run's markets ∩ vanilla's, per year (see VANBASIS)
-  const bas = {}; for (const y of PYEARS) { const mine = marketsIn(P, y); bas[y] = new Set([...mine].filter(n => VANBASIS[y].has(n))); }
-  r.basis = [...bas[1935]].sort(); r.basisDropped = [...marketsIn(P, 1935)].filter(n => !VANBASIS[1935].has(n)).sort();
+  const bas = {};
+  for (const y of PYEARS) {
+    // ONE name per intersecting series — this run's own highest-priority form at that date, so a series can
+    // never be counted twice if a run somehow carries two of its members.
+    const g = groupBySeries(marketsIn(P, y)); const keep = new Set();
+    for (const [ser, names] of Object.entries(g)) {
+      if (!VANBASIS[y].has(ser)) continue;
+      const fam = MARKET_FAMILY[ser];
+      const pick = fam ? (fam.flatMap(t => MARKET_NAMES[t] || []).find(n => names.includes(n)) || names[0]) : names[0];
+      keep.add(pick);
+    }
+    bas[y] = keep;
+  }
+  r.basis = [...bas[1935]].map(seriesOf).sort();
+  r.basisDropped = [...new Set([...marketsIn(P, 1935)].map(seriesOf))].filter(ser => !VANBASIS[1935].has(ser)).sort();
   r.PI = priceIdx(P, wage, 1935, GI, 'base', bas[1935]) / ref.PI; r.PI_abs = priceIdx(P, wage, 1935, GI, 'base', bas[1935]); r.PP = priceIdx(P, wage, 1935, GP, 'wage', bas[1935]) / ref.PP; r.PM = priceIdx(P, wage, 1935, GM, 'base', bas[1935]) / ref.PM;
   r.PIpath = PYEARS.map(y => priceIdx(P, wage, y, GI, 'base', bas[y])); r.PIfalling = r.PIpath.every((v, i, a) => i === 0 || !(Number.isFinite(v) && Number.isFinite(a[i - 1])) || v <= a[i - 1]);
   if (tier) {

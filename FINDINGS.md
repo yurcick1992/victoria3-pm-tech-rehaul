@@ -15779,3 +15779,55 @@ the tool a separate price reference, or grow this batch toward n=16 so it can re
 **High on what ran** (three complete centuries, no resumes, the guardrail walk passing but for the scoped L28)
 and **high on the intersection result**, which is a direct comparison of two sessions' market sets and one
 printed basis line, not an inference. The v9 reference is **n=3**, and that is its whole limit.
+
+### 6. ⭐⭐ ADDENDUM 2026-09-21 — MARKET CONTINUITY IS RULED, AND IT DOES NOT RESCUE THE END STATE
+
+**The user, 2026-09-21:** *"While this is not guaranteed, assume continuity: GER is not a different market than NGF
+or PRU, and UNL is the same as NET. We don't need separate references, just a priority set: 'if GER exists in 1935,
+it is assumed to be the continuation of PRU'."* Plus: *"UNL not forming should not be a blocker."*
+
+**Implemented** as `MARKET_FAMILY` / `seriesOf()` / `groupBySeries()` in `lib_markets.mjs` (the one definition), and
+`criteria.mjs` now intersects the price basis on **SERIES rather than market NAMES**, keeping one name per
+intersecting series so a run holding two forms cannot double-count. Belgium is deliberately its OWN series: the
+ruling names only "UNL is the same as NET", so where UNL stands the Belgian series ENDS.
+
+⚠ **It changes no number measured so far.** Re-scored, `20260920_114003_anch-costslide-century` reads PI 0.87×,
+PP 0.69×, loss 7.97 — identical to the reading before the change, and the 1935 basis is still the same four markets.
+
+**And the measurement says why, which is the part worth keeping.** Per dump date, the German family across the two
+sessions:
+
+| date | vanilla (union of 3 runs) | the arm |
+|---|---|---|
+| 1836 – 1860 | Prussia | Prussia |
+| 1870 | Prussia / North German Federation / German Empire | Prussia |
+| 1880 – 1935 | Prussia / German Empire → German Empire | **— nothing** |
+
+The arm was instrumented on **PRU alone**, so when Prussia became the North German Federation the arm's German
+market simply stopped being logged. Continuity cannot recover a series that was never recorded. For 1836–1870 both
+sides said "Prussian Market" and already intersected by name, so the ruling is a **no-op on every existing arm**.
+
+⇒ **§2's headline stands unchanged for the END STATE**, which is what PI/PP read: four markets, and the German and
+Belgian series remain forward-only.
+
+⇒ **What the ruling actually buys is the case nobody had hit yet**: an arm and a vanilla run sitting in DIFFERENT
+forms of the same state at the same date — an arm whose Germany is still the North German Federation at 1935
+against vanilla's German Empire. By name those intersect to nothing; by series they are one market. That would have
+been a silent hole the first time an eleven-tag arm's Germany failed to unify.
+
+⇒ **And it names why the eleven-tag list works**: it lists PRU, NGF *and* GER, so whichever form the run is in gets
+logged. A seven-tag arm carrying only PRU can never have a German end-state price no matter how the basis is
+computed. The tag list, not the intersection rule, was the binding constraint.
+
+**UNL:** not a blocker by ruling. It formed in none of the three seeds, so `Dutch Market` resolved through NET
+throughout and the UNL half of the family is **implemented but still unexercised by any data**.
+
+### 7. ⭐ THE REPORTING RULE FOR THE TWO BASELINES (user-ruled 2026-09-21)
+
+*"Mostly rely on the original set with higher n. When needed to compare using the other runs with lower n (because
+the job dictates the need to use, say, NGF), highlight that explicitly when telling the result."*
+
+⇒ The pinned **n=16 `20260821_131149`** is the default reference for everything. The eleven-tag n=3 session is used
+only when the question needs a market the pinned one lacks — and **any result taken from it must say so in the
+report, at the point the number is quoted**, not in a footnote. No tool change: the discipline is the fix, which
+also retires the proposal to teach `criteria.mjs` a second `--van`.

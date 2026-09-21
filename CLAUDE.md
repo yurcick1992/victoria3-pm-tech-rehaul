@@ -209,6 +209,22 @@ market is still "Dutch Market": the market NAME does not identify its leader, wh
 (the German market reads Prussian → North German → German for the same reason). ⚠⚠ **PI/PP are read on the INTERSECTION of the arm's markets and
 vanilla's, and the basis is printed** — the new German and Belgian prices enter the register the day a vanilla baseline carries them, not before.
 
+⭐⭐ **AMENDED 2026-09-21 — MARKET CONTINUITY, AND WHICH BASELINE A REPORT MAY QUOTE.** Two rulings, both recorded in FINDINGS **F153 §6–§7**:
+1. **A STATE'S MARKET IS ONE SERIES ACROSS ITS TAG CHANGES** (user: *"while this is not guaranteed, assume continuity: GER is not a different market
+   than NGF or PRU, and UNL is the same as NET. We don't need separate references, just a priority set: 'if GER exists in 1935, it is assumed to be the
+   continuation of PRU'"*; and *"UNL not forming should not be a blocker"*). Implemented as `MARKET_FAMILY` / `seriesOf()` / `groupBySeries()` in
+   `lib_markets.mjs`, and **`criteria.mjs` intersects the price basis on SERIES, not market NAMES**, keeping ONE name per intersecting series.
+   ⚠ **Belgium is its own series** — the ruling names only "UNL is the same as NET", so where UNL stands the Belgian series ENDS.
+   ⚠ **It changed no measured number** (`20260920_114003` re-scores to PI 0.87 / PP 0.69 / loss 7.97, identical) and it does NOT rescue the end state:
+   an arm instrumented on PRU alone simply stops logging its German market when Prussia becomes the NGF, and continuity cannot recover a series that was
+   never recorded. What it buys is the case nobody had hit — an arm whose Germany is still the NGF at 1935 against vanilla's German Empire, which by NAME
+   intersects to nothing. ⇒ **the TAG LIST, not the intersection rule, is the binding constraint**: the eleven-tag list works because it names PRU, NGF
+   AND GER, so whichever form a run is in gets logged.
+2. **THE PINNED n=16 BASELINE IS THE DEFAULT REFERENCE; THE ELEVEN-TAG n=3 ONE IS USED ONLY WHERE THE JOB NEEDS A MARKET IT ALONE CARRIES — AND ANY
+   RESULT TAKEN FROM IT MUST SAY SO WHERE THE NUMBER IS QUOTED** (user: *"mostly rely on the original set with higher n … when needed to compare using
+   the other runs with lower n (because the job dictates the need to use, say, NGF), highlight that explicitly when telling the result"*). The discipline
+   is the fix — this RETIRES the proposal to teach `criteria.mjs` a second `--van`.
+
 ## ⭐⭐⭐ THERE IS ONE CANON, AND THE SIX-RUNG BOOK IS RETIRED FOR GOOD (user-ruled 2026-09-16)
 
 **The user, 2026-09-16:** *"We likely won't return to the six-rung for UI bloat reasons, even if it worked not that

@@ -59,6 +59,48 @@ export const MARKET_NAMES = {
 /** The tags whose markets the register reads prices in (PI / PP). The shortlist's own markets. */
 export const PRICE_TAGS = ['GBR', 'USA', 'FRA', 'NET', 'UNL', 'BEL', 'PRU', 'NGF', 'GER'];
 
+// ⭐⭐ MARKET CONTINUITY — A STATE'S MARKET IS ONE SERIES ACROSS ITS TAG CHANGES (user-ruled 2026-09-21):
+//   *"assume continuity: GER is not a different market than NGF or PRU, and UNL is the same as NET. We don't need
+//   separate references, just a priority set: 'if GER exists in 1935, it is assumed to be the continuation of PRU'."*
+//
+// So the price basis intersects SERIES, not market NAMES. Without this an arm carrying the Prussian Market and a
+// vanilla run carrying the German Market share a German price series and intersect to NOTHING, purely because the
+// state renamed itself — which is what made F153's basis read four markets.
+//
+// ⚠ The ruling is an ASSUMPTION and says so ("while this is not guaranteed"). It treats a successor state's market
+//   as the same economy, which is right for PRU → NGF → GER and for NET → UNL, and is NOT claimed for anything else.
+// ⚠ **BELGIUM IS ITS OWN SERIES AND IS NOT FOLDED INTO THE DUTCH ONE.** UNL forms out of NET *and* BEL, but the
+//   ruling names only "UNL is the same as NET", so where UNL stands the Belgian series simply ENDS. That is the
+//   honest reading: the country stopped existing. It does mean Belgian prices are unevenly covered across seeds.
+// ⚠ Priority is first-match, so a run holding two members at one date (it should not) takes the LATER form.
+export const MARKET_FAMILY = {
+  'British Market':  ['GBR'],
+  'American Market': ['USA'],
+  'French Market':   ['FRA'],
+  'Dutch Market':    ['UNL', 'NET'],
+  'Belgian Market':  ['BEL'],
+  'German Market':   ['GER', 'NGF', 'PRU'],
+};
+
+/** market display name -> the SERIES label it belongs to (its family key), or the name itself if unfamilied. */
+export const SERIES_OF_MARKET = (() => {
+  const out = {};
+  for (const [series, tags] of Object.entries(MARKET_FAMILY)) {
+    for (const t of tags) for (const n of (MARKET_NAMES[t] || [])) out[n] = series;
+  }
+  return out;
+})();
+
+/** the series a market name belongs to; unknown names stand alone so nothing is silently merged. */
+export const seriesOf = name => SERIES_OF_MARKET[name] || name;
+
+/** { series -> [names present] } for a set/iterable of market names seen in one run at one date. */
+export function groupBySeries(names) {
+  const out = {};
+  for (const n of names) (out[seriesOf(n)] = out[seriesOf(n)] || []).push(n);
+  return out;
+}
+
 /** The telemetry `tags` a new schedule should carry (HANDOVER §0.4 + the 2026-09-20 ruling). */
 export const TELEMETRY_TAGS = ['GBR', 'FRA', 'USA', 'PRU', 'NGF', 'GER', 'NET', 'BEL', 'UNL', 'RUS', 'JAP'];
 
