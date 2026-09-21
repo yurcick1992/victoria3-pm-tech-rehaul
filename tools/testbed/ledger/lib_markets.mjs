@@ -101,6 +101,59 @@ export function groupBySeries(names) {
   return out;
 }
 
+// ⭐⭐ THE PRIORITY SET ASSUMES A CLEAN SUCCESSION, AND THE GAME DOES NOT GUARANTEE ONE (user, 2026-09-21):
+//   *"in theory, other countries can form NGF, GER or UNL. Only AUS forming GER is somewhat likely (with or without
+//   consuming PRU in the process), but other stuff could happen. Or after forming, a sub-country could be released
+//   (say, PRU from existing GER). These are all rare events and correctly calculating everything in case of them is
+//   not worth it. However, this all shouldn't just drop dead on these events."*
+//
+// ⇒ THE CONTRACT IS GRACEFUL DEGRADATION, NOT CORRECTNESS. Nothing here throws, nothing drops a run, and the
+//   priority pick still decides — but where the assumption is VIOLATED the run says so, because a silent wrong
+//   pick is the exact failure this file was written to close (a pool listing NET and BEL silently lost both the
+//   day UNL formed). Handling the event properly is deliberately NOT attempted.
+//
+// WHAT IT CATCHES: two members of one family alive at once — AUS forming GER while Prussia survives, PRU released
+//   from an existing GER, UNL beside a surviving NET.
+// ⚠⚠ WHAT IT CANNOT CATCH, and this is a real blind spot rather than an oversight: a family with exactly ONE
+//   member present that is not the state we mean — AUS forms GER *after* consuming Prussia, and the German series
+//   silently continues into a country that never was Prussia. Distinguishing that needs the formation history,
+//   which markets.tsv does not carry. Ruled not worth chasing; recorded so nobody reads a clean run as proof.
+function collisions(families, present) {
+  const have = new Set(present), out = [];
+  for (const [key, members] of Object.entries(families)) {
+    const live = members.filter(m => have.has(m));
+    if (live.length > 1) out.push({ key, live });
+  }
+  return out;
+}
+
+// ⚠ The continuity check needs its OWN table, not MEMBER_FAMILY's. MEMBER deliberately keeps NET, BEL and UNL as
+//   SEPARATE rows so that UNL is never counted twice — so a surviving NET beside a formed UNL is invisible there,
+//   while the 2026-09-21 ruling ("UNL is the same as NET") makes it exactly the anomaly worth flagging. This table
+//   mirrors the RULING; MEMBER_FAMILY mirrors the reporting rows. Keeping them apart is the point.
+//   ⚠ BEL is absent by the same ruling: Belgium is its own series, so UNL beside BEL is not flagged here.
+const CONTINUITY = {
+  'the German state': ['GER', 'NGF', 'PRU'],
+  'the Low Countries': ['UNL', 'NET'],
+};
+
+/** tags of one continuity family alive together, e.g. [{ key:'the German state', live:['GER','PRU'] }]. */
+export const memberCollisions = tags => collisions(CONTINUITY, tags);
+
+/**
+ * market NAMES of one series alive together, e.g. [{ key:'German Market', live:['German Market','Prussian Market'] }].
+ * ⚠⚠ THE MEMBER LIST MUST BE DE-DUPLICATED, and forgetting it cried wolf on every run: **NET and UNL share the one
+ *    display name "Dutch Market"**, so the raw family list is `['Dutch Market','Dutch Market']` and matched ITSELF
+ *    against a single present market — every arm reported a Dutch succession anomaly at five dates.
+ * ⚠ The consequence of that collapse is real and unfixable here: **a surviving NET beside a formed UNL is invisible
+ *   on the MARKET side**, because markets.tsv carries only the name and both are "Dutch Market". `memberCollisions`
+ *   catches it on the TAG side, where they differ. Use that one when the question is which state is which.
+ */
+export const marketCollisions = names => collisions(
+  Object.fromEntries(Object.entries(MARKET_FAMILY)
+    .map(([s, tags]) => [s, [...new Set(tags.flatMap(t => MARKET_NAMES[t] || []))]])),
+  names);
+
 /** The telemetry `tags` a new schedule should carry (HANDOVER §0.4 + the 2026-09-20 ruling). */
 export const TELEMETRY_TAGS = ['GBR', 'FRA', 'USA', 'PRU', 'NGF', 'GER', 'NET', 'BEL', 'UNL', 'RUS', 'JAP'];
 

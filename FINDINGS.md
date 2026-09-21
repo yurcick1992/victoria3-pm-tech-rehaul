@@ -15831,3 +15831,58 @@ the job dictates the need to use, say, NGF), highlight that explicitly when tell
 only when the question needs a market the pinned one lacks — and **any result taken from it must say so in the
 report, at the point the number is quoted**, not in a footnote. No tool change: the discipline is the fix, which
 also retires the proposal to teach `criteria.mjs` a second `--van`.
+
+### 8. ⭐ THE PRIORITY SET MUST DEGRADE, NOT DIE (user-ruled 2026-09-21)
+
+**The user:** *"in theory, other countries can form NGF, GER or UNL. Only AUS forming GER is somewhat likely (with
+or without consuming PRU in the process), but other stuff could happen. Or after forming, a sub-country could be
+released (say, PRU from existing GER). These are all rare events and correctly calculating everything in case of
+them is not worth it. However, this all shouldn't just drop dead on these events."*
+
+**Nothing dropped dead before the change** — `POOL` is a flat tag list, so two live forms of one state are simply
+both summed, and the priority pick never throws. The hazard was the **silent pick**: `seriesOf` would fold a
+surviving Prussia into an Austrian-formed German Empire and report one market, which is precisely the failure this
+library was written to close (a pool listing NET and BEL lost both the day UNL formed).
+
+⇒ **`memberCollisions()` / `marketCollisions()`** in `lib_markets.mjs`, printed by `criteria.mjs` as a
+`⚠ SUCCESSION ANOMALY` line beside the price basis. The priority pick still decides; the run now SAYS when the
+assumption behind it is violated. Correctness is deliberately not attempted.
+
+Verified against the four named scenarios:
+
+| scenario | tags alive | detected |
+|---|---|---|
+| clean succession | PRU | — (silent) |
+| AUS forms GER, Prussia survives | GER + PRU | ✅ the German state |
+| PRU released from an existing GER | GER + NGF + PRU | ✅ the German state |
+| UNL formed, NET survives | UNL + NET | ✅ the Low Countries |
+
+⚠ **The continuity check needs its OWN table, not `MEMBER_FAMILY`'s.** MEMBER keeps NET, BEL and UNL as separate
+ROWS so UNL is never double-counted, which makes a surviving NET beside a formed UNL invisible there — while the
+continuity ruling makes it exactly the anomaly worth flagging. `CONTINUITY` mirrors the RULING, `MEMBER_FAMILY`
+mirrors the reporting rows, and keeping them apart is the point. BEL is absent from it by the same ruling.
+
+⚠⚠ **TWO BLIND SPOTS, both real and both accepted:**
+1. **A family with exactly ONE member present that is not the state we mean** — AUS forms GER *after* consuming
+   Prussia, and the German series silently continues into a country that never was Prussia. Distinguishing that
+   needs formation history, which `markets.tsv` does not carry. Not chased; recorded so a clean run is not read as
+   proof that it did not happen.
+2. **NET and UNL share the one display name "Dutch Market"**, so their coexistence is undetectable on the MARKET
+   side by construction. `memberCollisions` catches it on the TAG side, where they differ — use that when the
+   question is which state is which.
+
+⚠ **The first cut cried wolf on every run** and is worth recording as the shape of the mistake: the market family
+list was built by flattening tags to names WITHOUT de-duplicating, so the Dutch family read
+`['Dutch Market','Dutch Market']` and matched itself against a single present market — every arm reported a Dutch
+anomaly at five dates. A detector that fires on healthy data is worse than none, because it teaches people to
+ignore the line.
+
+**Swept over every session on disk: 470 `markets.tsv` files, ZERO anomalies.** So none of these events has occurred
+in any measured run to date, and the detector is silent on all historical data.
+
+⚠⚠ **A TRAP FOUND WHILE DOING THIS, and it cost two wrong analyses in one session: `markets.tsv`'s HEADER IS
+MISLABELLED.** It reads `run · dump_date · tag · market · good · …`, but the column called **`tag` holds the MARKET
+NAME** ("British Market") and the column called **`market` holds the OWNER** ("owner=Great Britain"). `criteria.mjs`
+is correct — it reads `c[2]` — but any ad-hoc script that selects by header name gets owners where it expects
+markets. §1's market list in this finding is written in OWNER names for that reason; the conclusions are unaffected
+(owner and market map 1:1 at a date), but **read `markets.tsv` by POSITION, or fix the header.**

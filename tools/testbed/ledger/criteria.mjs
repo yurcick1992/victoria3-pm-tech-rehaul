@@ -78,7 +78,7 @@ import { gunzipSync } from 'node:zlib';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { usableRuns, reportDropped } from './lib_runs.mjs';
-import { POOL, MEMBER, MEMBER_FAMILY, MARKET_FAMILY, MARKET_NAMES, PRICE_TAGS, TAG_OF_MARKET, seriesOf, groupBySeries } from './lib_markets.mjs';
+import { POOL, MEMBER, MEMBER_FAMILY, MARKET_FAMILY, MARKET_NAMES, PRICE_TAGS, TAG_OF_MARKET, seriesOf, groupBySeries, memberCollisions, marketCollisions } from './lib_markets.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SES = join(HERE, '..', 'sessions');
 const REPO = resolve(HERE, '..', '..', '..');
@@ -226,7 +226,7 @@ const ci = {}; for (let y = 1836; y <= 1845; y++) { const v = vanRuns.map(r => a
 
 // ---- an arm's runs
 function scoreRun(rel, tier) {
-  const { years, wage } = readRun(rel, tier); const P = readPrices(rel); const r = { rel, hard: [], soft: [], side: [] };
+  const { years, wage } = readRun(rel, tier); const P = readPrices(rel); const r = { rel, hard: [], soft: [], side: [], famWarn: [] };
   r.gdpW = winMean(years, 'world', 'gdp') / ref['world.gdp']; r.gdp35 = at(years, 1935, 'world', 'gdp') / med(vanRuns.map(v => at(v.years, 1935, 'world', 'gdp'))); r.gdpP = winMean(years, 'pool', 'gdp') / ref['pool.gdp'];
   for (const s of ['world', 'pool']) for (const q of ['W', 'U', 'H', 'Y']) { r[s + q] = winMean(years, s, q) / ref[s + '.' + q]; r[s + q + '_abs'] = winMean(years, s, q); }
   // the price basis: this run's markets ∩ vanilla's, per year (see VANBASIS)
@@ -242,6 +242,10 @@ function scoreRun(rel, tier) {
       keep.add(pick);
     }
     bas[y] = keep;
+    // ⚠ the priority set assumes a clean succession; where two forms of one state are alive at once it is
+    //   VIOLATED. We still pick, and we say so (user-ruled 2026-09-21: rare, not worth calculating, must not
+    //   drop dead). A silent pick is the failure this library exists to prevent.
+    for (const c of marketCollisions(marketsIn(P, y))) r.famWarn.push(y + ' ' + c.key + ': ' + c.live.join(' + '));
   }
   r.basis = [...bas[1935]].map(seriesOf).sort();
   r.basisDropped = [...new Set([...marketsIn(P, 1935)].map(seriesOf))].filter(ser => !VANBASIS[1935].has(ser)).sort();
@@ -354,6 +358,8 @@ if (!QUIET) {
     for (const r of a.runs) { console.log('  ' + r.rel.split('/').slice(-2).join('/').padEnd(64) + (r.broken ? '⛔ BROKEN BY ' + r.broken.toUpperCase() : '✅ intact') + '  [anchor ' + r.anchor.viol + ' y out; pooled U* ' + pc(r.poolU_abs) + '; world GDP ' + f2(r.gdpW) + '×' + (r.loss ? '; loss ' + f2(r.loss.L, 1) : '') + ']'); for (const h of r.hard) console.log('        ⛔ ' + h); for (const s of r.soft) console.log('        ⚠ soft: ' + s); }
     const C = a.C; console.log('--- CONSENSUS: ' + C.note + ' ---'); if (!C.intact) continue;
     const b0 = a.runs.find(r => r.basis && r.basis.length);
+    if (b0 && b0.famWarn && b0.famWarn.length) console.log('  ⚠ SUCCESSION ANOMALY — two forms of one state alive at once, the priority set picked the later: '
+      + [...new Set(b0.famWarn)].join(' | ') + '  (rare by ruling, not corrected for — read the affected market with care)');
     if (b0) console.log('  price basis (PI/PP, arm ∩ vanilla): ' + (b0.basis.join(', ') || 'NONE')
       + (b0.basisDropped.length ? '   ⚠ this arm also carries ' + b0.basisDropped.join(', ') + ', which the vanilla reference does not — NOT in the index, or the two sides would average different baskets' : ''));
     console.log('  SHORTLIST (' + POOL.join('/') + ' pooled)');
