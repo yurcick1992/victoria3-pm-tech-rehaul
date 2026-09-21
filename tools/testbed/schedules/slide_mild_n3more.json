@@ -1,0 +1,49 @@
+{
+  "schedule_version": 1,
+  "label": "slide-mild-n3more",
+  "_why": "THREE MORE SEEDS OF THE SAME BOOK (user-ruled 2026-09-21: \"Add another n=3 on the same config\"). `probe-slide-mild` read 2/0 intact with nothing beyond a soft boundary, but its two seeds disagree violently on the metric the design cares most about: **GBR total unemployment incl. peasants ends at 1.5% in run 1 and 10.0% in run 2**, a 6.7x spread on one book, and world GDP 1.28 / 1.16. n=2 cannot characterise that. Pooled with the existing pair this batch gives **n=5**, which is the largest sample any single book of this family has had except the canon.",
+  "_what_it_is_for": "NOT a new hypothesis — the config is byte-identical to 20260921_154722_slide-mild-n2's. The question is the DISTRIBUTION: where the median of five actually falls on world GDP against the user's 0.8-1.1 band, and whether Britain's depeasantation is the rule or run 1's accident. Read the five together with `criteria.mjs --arm 20260921_154722_slide-mild-n2,<this session>:probe-slide-mild`.",
+  "_the_config": "config/mod_config.probe-slide-mild.json = probe-anch-costslide + the MILD spending set (TOO_LARGE_INVESTMENT_POOL_FACTOR 0.95, CRITICAL 1.0, EXCESSIVE 2.0) and nothing else; industries, rungs, recipes, building_cost and ai_value proved byte-identical to the parent. Unchanged since the first batch — do not regenerate it.",
+  "_the_stop_rule_is_DELIBERATELY_OVERRIDDEN": "⚠⚠ THE RUN-LEVEL STOP ALREADY FIRED ON THIS CONFIG. `alignment_check` reads run 1 at 1.31x vanilla's 1936 GDP median (n=16, £4,514M), above the 1.3 threshold, and the 2026-09-14 rule says the config stops there \"whatever the alignment says\". The user has asked for three more runs regardless, which is their call on their own rule and is recorded here so nobody later reads this batch as a rule violation. ⚠ The two tools disagree on the denominator — `stop_watch` reads 1.299 on an n=18 median (£4,544M, pooling the 20260823 pair) — so run 1 sits either side of 1.3 depending on which is used; that is a second reason not to treat the fallback as decisive here.",
+  "_the_watcher": "ARMED as usual, because the REGISTER's hard lines still apply and a hard break genuinely ends a config — if seed 3 breaks, seeds 4 and 5 buy nothing and the watcher saves ~6h. ⚠ BUT the GDP FALLBACK is raised to `-Threshold 1.4` for this batch only: the fallback fires only when criteria.mjs cannot be read, and at its default 1.3 a tooling failure would kill a batch the user explicitly asked for, on a config whose first run already reads 1.30-1.31. 1.4 approximates the register's own hard ceiling (1.38) instead of the superseded 2026-09-14 rule.",
+  "_predictions": {
+    "_basis": "The existing pair (world GDP 1.28 / 1.16, GBR U* 1.5% / 10.0%) and the register's fixed within-config sigma for world GDP, 0.228. Stated before launch.",
+    "world_gdp_median_of_five": "1.10-1.25. The two banked seeds average 1.22, and sigma 0.228 means three more seeds move the median by roughly 0.1 either way. ⭐ THE QUESTION THIS BATCH SETTLES: whether the median clears the user's 1.1 ceiling. A median at or under 1.1 makes the config acceptable as it stands; above it, the prepared C 1.95 branch is the answer.",
+    "spread": "PREDICT the five span at least 0.9-1.35 on world GDP — i.e. the pair's 0.12 gap understates it, because one sigma is 0.228 and two draws rarely show it.",
+    "GBR_depeasantation": "PREDICT at least one more seed under 5% U* at 1936 (run 1's shape) and at least one above 8% (run 2's). If four or five of five land under 5%, Britain's full depeasantation is a PROPERTY of the book and the pooled U* aim cannot be met on this base.",
+    "hard_lines": "PREDICT no run broken. Britain's hoard is the exposure: run 1's crosses 1.5 in 1935-36 on a rising path and its window mean is 1.12, so a seed that industrialises Britain slightly earlier could carry a window mean over 1.5 and break by runoff.",
+    "obsolescence": "PREDICT T0 stays at or near the aim and T0 / rest near 0.015 in every seed — no recipe, cost or ai_value differs between seeds, so a seed-to-seed swing here would be a surprise worth chasing."
+  },
+  "_third_run": "N/A — this batch is a fixed three, not a 2+1. No tie-breaker logic applies.",
+  "_watch": [
+    "run 1 at ~5 min: marker, version, error window BY POSITION, clock, queue_mix",
+    "each endpoint: capital_flags for GBR's hoard and U*, then criteria.mjs for the HARD lines",
+    "at the end: criteria.mjs over ALL FIVE runs pooled, and the GBR U* yearly series per seed",
+    "post-batch: preflight -Session, VERDICT.md, the SESSION_VERDICTS row, FINDINGS"
+  ],
+  "_cost": "3 runs x 1836->1936 at ~3h each: about 9 hours.",
+  "_caveats": [
+    "This adds seeds, not information about a new lever. It cannot move the config's central tendency, only measure it.",
+    "The runs are on the same machine on the same day as the first pair, so nothing here tests build-to-build reproducibility.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent.",
+    "Arm the watcher with the session NAME, not a path, and confirm tools/testbed/sessions/<stamp>/stop_watch.log exists ~90s later (the 2026-09-21 landmine)."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "probe-slide-mild": {
+      "kind": "config",
+      "config": "config/mod_config.probe-slide-mild.json"
+    }
+  },
+  "runs": [
+    { "setup": "probe-slide-mild", "until": "1936.1.1" },
+    { "setup": "probe-slide-mild", "until": "1936.1.1" },
+    { "setup": "probe-slide-mild", "until": "1936.1.1" }
+  ]
+}
