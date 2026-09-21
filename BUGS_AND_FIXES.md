@@ -13,6 +13,45 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-09-21 — the run-level STOP watcher died on its first tick and nothing said so: `-Session` takes a session NAME, and a PATH doubled its root
+
+**Symptom.** None, and that is the entire problem. The accel-slide century batch was launched and
+`stop_watch.ps1` armed on it through `launch_detached.ps1`, which reported the child alive and outside any job
+object — the success signal the L30 procedure is built around. Four minutes later a census of running processes
+showed the scheduler, the observer, the archiver, the harvester and the waiter, and **no watcher**. The batch had
+been running unguarded, while every visible signal said it was guarded.
+
+**Root cause.** `stop_watch.mjs` takes a session **NAME** (`node stop_watch.mjs 20260921_094143_accel-slide-n2`),
+which its own usage line says and CLAUDE.md's invocation did not: it computed
+`ROOT = join(<repo>/tools/testbed/sessions, argv[0])`, so passing the path
+`tools\testbed\sessions\20260921_094143_accel-slide-n2` produced a **doubled** root —
+`…/tools/testbed/sessions/tools/testbed/sessions/20260921_…`. Nothing validated it. The arming line still printed
+(the vanilla median it reports is read from two *hardcoded* baseline sessions, which resolve fine), and then
+`readdirSync(ROOT)` on the first tick threw `ENOENT` and killed the process.
+
+**Why it left no trace at all.** Three things lined up. The watcher runs `-Hidden`, so the uncaught throw went to
+a console nobody sees. Its own `stop_watch.log` is written *inside* `ROOT` — the bogus one — and `log()` wraps that
+write in an empty `catch`, so the failure swallowed its own record. And `launch_detached` can only report what it
+knows: the child was created, job-free, correctly. ⇒ **a watcher that looks armed is worse than one that was never
+armed** — F151 cost 2.5 hours to a tie-breaker that ran after a hard break because no watcher was on, and that at
+least was known at the time.
+
+**Fix.** In `stop_watch.mjs`, between parsing the arguments and building `ROOT`: normalise the argument to its last
+path segment (so either form works) and **refuse with exit 2, naming the path it looked in**, when that session
+does not exist. `NAME` then feeds the arming line and the `criteria.mjs --arm` call, which a path form would also
+have broken. Proven three ways: the path form now arms into the *right* folder and walks the runs, a wrong name
+exits 2 with the message, and no argument exits 2. `preflight.ps1 -RepoOnly` re-run afterwards, since the edit
+landed while a batch was playing and the scheduler rebuilds before every run.
+
+**How to detect it next time.** `tools/testbed/sessions/<stamp>/stop_watch.log` is the **only** proof the watcher
+is really on — check for it after arming, not for the launcher's success line. It takes ~90 s to appear, because
+the watcher medians vanilla's eighteen 1936 endpoints before it logs anything, so an immediate check reads as a
+failure. Recorded in CLAUDE.md beside the invocation. **General form: a guard that is launched hidden must write
+its own liveness somewhere the launcher does not control, and an argument it cannot validate must be fatal, not
+silently wrong.**
+
+---
+
 ## 2026-09-13 — every secondary production method kept VANILLA input quantities on every rung: the emitter's input regex had lost its backslashes (and the negative-goods linter flagged floating-point noise on non-integer ladders)
 
 **Symptom.** None that failed, twice over. (1) In every four-rung build since 2026-09-01 the per-tier secondaries minted by

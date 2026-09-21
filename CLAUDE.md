@@ -2358,6 +2358,16 @@ tools/                  dev tooling — NOT shipped in the mod
                         it after the register changes (a running watcher keeps the code it loaded). THE RUN-LEVEL STOP between the runs of a live 2+1 batch (2026-09-14, from the scratchpad): polls the
                         session's save summaries and drops tools/testbed/STOP once a completed run's 1936 GDP exceeds ×1.3 of the vanilla median — armed after
                         every launch through `launch_detached.ps1 -File 'tools\testbed\stop_watch.ps1' -ArgumentList '-Session','<session>','-Poll','30' -Hidden`
+                        ⚠⚠ **`-Session` TAKES THE SESSION *NAME*, NOT A PATH, AND A PATH USED TO KILL THE WATCHER
+                        SILENTLY** (2026-09-21, BUGS_AND_FIXES): `tools\testbed\sessions\<stamp>` made the watcher's
+                        ROOT a DOUBLED path, so it printed its arming line and then threw on the first tick — invisible,
+                        because it runs `-Hidden` and its own `stop_watch.log` was being written into that same bogus
+                        folder. `launch_detached` had already reported success, so the batch ran believing it was
+                        guarded, which is worse than F151's unarmed watcher. Fixed both ways: the script now NORMALISES
+                        a path to its last segment and REFUSES with exit 2 on a session that does not exist.
+                        ⇒ **After arming, confirm `tools/testbed/sessions/<stamp>/stop_watch.log` exists** — that file
+                        is the only proof the watcher is really on, and it takes ~90 s to appear (it medians vanilla's
+                        eighteen 1936 endpoints first)
   testbed/ledger/good_market.mjs  ⭐⭐ ONE GOOD'S ORDER BOOK ACROSS ARMS — buy, sell, PRODUCTION and the producing
                         industry's size, not price alone (2026-09-19, FINDINGS F147 §1a). Written because price could
                         not settle a reading and had already produced a wrong one: F147 reported "engines consumed
