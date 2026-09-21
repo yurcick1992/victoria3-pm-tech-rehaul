@@ -16338,3 +16338,95 @@ The schedule's pre-registered `stalled_below_0.85` branch is `config/mod_config.
 value added per top level ×0.937, paper e3 333%), generated, dry-run built clean, with its own schedule. **Not
 launched** — and this result is an argument for scepticism about it rather than for it: if ×0.899 stalls, ×0.937 is
 a small step back along the same axis, and §2 says the axis is spending employment it never earns back.
+
+---
+
+## F157 — ⭐⭐ THE HOARD IS A ONE-COUNTRY PROBLEM AND THE SPENDING SET CURES IT: three defines take Britain's hoard **2.93 → 1.06 / 0.66**, break the capital-abundance conjunction, and give the **first post-anchor-slide book with no broken run** — plus, unpredicted, **T0 AT THE AIM for the first time** (0.67 → 0.27M workers, falling every decade). The price is world GDP at **1.22**, above the 0.8–1.1 band asked for (2 runs of 1836→1936, ALIGNED, 2026-09-21)
+
+**Session `20260921_154722_slide-mild-n2`**, `config/mod_config.probe-slide-mild.json` = `probe-anch-costslide`
+plus the **MILD spending set** and nothing else: `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR`
+0.9 → 0.95, `CRITICAL` 0.9 → 1.0, `EXCESSIVE` 1.5 → 2.0. Industries, rungs, recipes, `building_cost` and
+`ai_value` were proved byte-identical to the parent before launch.
+
+### 1. ⭐⭐ The diagnosis that chose the lever: the hard line is a CONJUNCTION, and one half is cheap to break
+
+`anch-costslide` (F151) died on the capital-abundance line, and `capital_flags` says it is **one country**: GBR at
+5.4% / 1.7% total unemployment with a hoard of **2.38 / 2.93** of its own GDP, while FRA (69.5% / 54.5%), GER
+(63.7% / 0.5%) and USA (57.9% / 65.1%) all sat at hoards of **0.00–0.15**. The world hoard was 0.60; the
+shortlist's 1.21 was Britain by itself.
+
+⭐ The line needs a 50M+ member under 5% U* for five consecutive years **AND** a mean hoard ≥ 1.5 GDP — and the
+parent's own run 2 proves the halves separate: **Germany sits at 0.5% U* with a hoard of 0.06 and does not trip.**
+⇒ breaking either half clears it, and the hoard is the half that moves without touching the design.
+
+### 2. It worked, and the GDP was not the thing that needed moving
+
+| | run 1 | run 2 | consensus | parent |
+|---|---|---|---|---|
+| verdict | ✅ intact | ✅ intact | **2/0 — the first post-slide book with no broken run** | 1 intact / 1 **runoff** |
+| **GBR hoard** | **1.06** | **0.66** | — | 2.38 / 2.93 |
+| pool H · world H | — | — | 2.25 · 1.56 | 3.54 · 0.61 |
+| world GDP | 1.28 | 1.16 | **1.22** | 0.97 |
+| pool W · world W | — | — | 0.75 · 0.82 | 0.69 · 0.64 |
+| PI | — | — | **0.84, falling by decade** | 0.85 |
+| PP | — | — | 1.07 | 0.64 |
+| T0 ÷ rest · T3 ÷ rest | — | — | **0.015** · 0.57 | 0.033 · 0.647 |
+| LOSS | 8.0 | 6.0 | **6.90** | 5.53 |
+
+Nothing beyond a soft boundary on either run; aligned under F114 (0.12 apart on world GDP, under the 0.15
+threshold), so no third run is owed. Run 1 keeps the labour half of the conjunction — GBR under 5% U* in **12
+consecutive years, 1925–1936** — and is intact anyway because the mean hoard over that window is 1.06.
+
+### 3. ⭐ Obsolescence improved, and that was NOT predicted
+
+The pre-registered prediction was *"obsolescence UNCHANGED — no recipe, cost or ai_value moves"*. Two lines moved,
+both the right way:
+
+- **T0 is AT THE AIM for the first time on any post-slide book** — 0.38, falling decade over decade:
+  **0.67M → 0.54M → 0.47M → 0.27M** workers on the oldest rung. Not thinning; dying.
+- **T0 ÷ rest 0.015 — the lowest of any book this project has measured** (incumbent canon 0.030, parent 0.033).
+- **PI 0.84 and falling decade over decade**, which is the register's own aim wording and which the parent did not
+  satisfy.
+
+⚠ **The mechanism is willingness, not design**: no recipe changed, so this is the spending lever pushing
+construction toward the frontier. It says a hoard lever is also an obsolescence lever, which nothing had measured.
+
+### 4. Why it still misses, and what that costs
+
+**World GDP 1.22 (1.28 / 1.16) against the 0.8–1.1 the user asked for.** It sits inside the register's own soft
+range (0.75–1.33) and well inside the hard band (0.66–1.38), so the register calls it intact — it is simply not
+what was asked for. ⚠ The **run-level stop** also fired: `alignment_check` reads run 1 at **1.31×** vanilla's 1936
+median, above the 1.3 threshold, so the config stops there whatever the alignment says. Both runs had finished, so
+nothing was wasted. ⚠ The two tools disagree on the denominator — `stop_watch` reads **1.299** on an n=18 median
+(£4,544M, pooling the 20260823 pair) against `alignment_check`'s **1.31** on the pinned n=16 (£4,514M). Same
+verdict either way, and worth knowing before quoting either number.
+
+⚠ **PP is now the largest single loss term** (1.73 of 6.90): pop goods in wage units 1.07 against the parent's
+0.64 — a richer world buys more, and the index is a ratio to vanilla.
+
+⚠ **Britain is not comfortably clear.** Its hoard at the 1935 *point* is 1.57 in run 1; the register uses the
+*mean* over the flagged window (1.06), and that is the ruled criterion (§10.83 — `capital_flags` has been a
+diagnostic printer since 2026-09-17). One seed of two this close to the line is a warning, not a pass.
+
+### 5. What it does NOT say
+
+- ⚠ **n=2.** Under the directional ruling (§10.83.7) the case here is the mechanism — hoard down, conjunction
+  broken, GDP up — not the 6.90 against the parent's 5.53. Note also that the loss went **up** while the config
+  went from broken to intact: the loss does not score brokenness, which the ranking's separate intact/broken
+  column is for.
+- ⚠ **Nothing here re-measures the anchor slide itself.** Recipes, costs and ai_value are the parent's exactly, so
+  the 1936 margin ladder (textile e0 16% at 20% staffed, glass e0 18% at 25%, tooling e0 14% at 8%) should be the
+  parent's; it was not re-read.
+- ⚠ **The mild set has now been measured once, on one base.** Whether it behaves the same on a dearer slope is the
+  open question, and it is exactly the pre-registered branch.
+
+### 6. Instrument
+
+⭐ **The price basis reads FIVE markets — American, British, Dutch, French, German** — the widest this project has
+had, with Belgian correctly excluded because the vanilla reference lacks it. The eleven-tag list (2026-09-20) and
+the Commune fix (F154 §5) both paying off on the same arm.
+
+⚠ **L28 FAIL on run 2's `debug.log` mirror** (one false rotation), so raw line counts off that mirror over-read.
+**Data verified clean** — zero duplicate `(date, market, good)` keys and zero conflicts in both runs' `markets.tsv`,
+100 / 101 summaries. Same shape as F153's. **L33 passed in-session**: no define rejected at load, which mattered
+because this was the mild set's first launch anywhere.
