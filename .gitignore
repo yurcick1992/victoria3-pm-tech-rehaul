@@ -216,3 +216,5 @@ tools/testbed/ledger/cost_drivers_pool.json
 # THE SUPPLIER-SIDE TERM probe book (2026-09-19): grad-a plus --in0-supplier 0.5, the 1836 weights.
 !config/mod_config.probe-gradsup.json
 !config/tech_tree_options.probe-gradsup.json
+!config/mod_config.probe-slide-mild.json
+!config/tech_tree_options.probe-slide-mild.json

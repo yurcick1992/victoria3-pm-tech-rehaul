@@ -1,0 +1,56 @@
+{
+  "schedule_version": 1,
+  "label": "slide-mild-n2",
+  "_why": "THE SWEET-SPOT SEARCH IN THE POST-ANCHOR-SLIDE GROUP (user-ruled 2026-09-21: \"Let's have another 2+1 to try find the sweet spot in the post-slide broader group. Anything between 0.8 and 1.1 on median (without any run breaking hard barriers) will go\"). The post-slide group has run three century books: anch-in12 (0/3, ALL broken by stall at 0.55-0.65), anch-costslide (1 intact / 1 broken, loss 5.53 - the best register reading the project has produced) and accel-slide (1 intact / 1 broken by stall, loss 18.20). ⭐ THE TARGET IS NOT GDP: anch-costslide already reads 0.94 / 1.21, i.e. a median of ~1.08, INSIDE the user's 0.8-1.1 band. The single thing that broke it is the CAPITAL-ABUNDANCE hard line, and it is ONE COUNTRY.",
+  "_the_diagnosis": "capital_flags on 20260920_114003: GBR 5.4% / 1.7% total unemployment (incl. peasants) at a hoard of 2.38 / 2.93 of its own GDP, while FRA 69.5% / 54.5%, GER 63.7% / 0.5% and USA 57.9% / 65.1% all sit at hoards of 0.00-0.15. The WORLD hoard is 0.60 and the shortlist's 1.21 is Britain by itself; no persistent hoarding by either §10.79 test and no plateau by §10.82.1. ⭐⭐ THE HARD LINE IS A CONJUNCTION - a 50M+ member under 5% U* for five consecutive years AND a mean hoard >= 1.5 GDP - and run002's GERMANY proves the halves separate: it sits at 0.5% U* with a hoard of 0.06 and does NOT trip. ⇒ breaking either half clears it, and the hoard half is the one that can be moved without touching the design.",
+  "_the_lever": "THE MILD SPENDING SET, three defines and nothing else: MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR 0.9 -> 0.95, CRITICAL 0.9 -> 1.0, EXCESSIVE 1.5 -> 2.0. It is the set prepared as canon-c19-in12-mild on 2026-09-18 and never launched - between the canon set and the full eager set (0.99 / 1.25 / 3.0), and the first spending book whose arm IS its book: the land CRITICAL is held UNDER vanilla's own ship EXCESSIVE (1.05), so no define is rejected at load (landmine L33 PASSES, checked).",
+  "_delta": "Against config/mod_config.probe-anch-costslide.json: `ai_defines` on three keys and NOTHING else. PROVED by walking both books - industries, rungs, recipes, building_cost and ai_value are byte-identical. ⚠ `target_be` and `wage_pct` also differ, and neither is economics: probe-anch-costslide predates the measured-wage basis of 2026-09-20 (§10.87), so this book computes wage_pct from the wage model and restates target_be, which is emitted only into the building NAME. Same artefact the accel_slide_n2 schedule documented.",
+  "_why_this_lever_and_not_the_others": "The obvious alternatives all move GDP, which does NOT need moving. (a) A dearer cost slope absorbs the pool but F135's regression costs ~1.73% of hoard per 1% of world GDP, so taking Britain from 2.93 to under 1.5 would cost ~28% of world GDP - from 0.97 to ~0.70, under the user's band and near the 0.66 stall floor. (b) Cutting the frontier's margin is what accel-slide did, and it stalled the world at 0.67 / 0.62 (F156); its milder sibling probe-b16-slide sits on the same axis at ×0.937 against accel's ×0.899 and would also pull GDP down out of the band, at the cost of the obsolescence that is the whole reason for the slide. (c) The FULL eager set is the same lever as this one but stronger - measured on canon-c195-in12 it took pool H to 0.53 and world GDP from 0.80 to 1.23, i.e. +0.43, which applied to costslide's 0.97-1.21 risks the 1.38 runoff ceiling. ⇒ the mild set is the same mechanism at a fraction of the push, which is exactly what the user's own under-side ruling of 2026-09-15 asks for.",
+  "_predictions": {
+    "_basis": "THE CRITERIA REGISTER (§10.83) and capital_flags on 20260920_114003. Stated before launch, as the no-ceteris-paribus rule requires. ⚠ These are DIRECTIONS with magnitudes, and the magnitudes are the weak half: the mild set has NEVER been run, on any base.",
+    "the_key_line": "NO shortlist member of 50M+ under 5% U* for five consecutive years ending by 1936 at a mean hoard >= 1.5 GDP. Concretely: GBR's end-state hoard BELOW 1.5 of its own GDP, against 2.38 / 2.93. That is the whole point of the batch.",
+    "pool_H": "1.5-2.8 shortlist (was 3.54 on the register's pooled basis; GBR 2.38 / 2.93 individually). ⚠ If it lands ABOVE 2.5 the mild set is too weak and the branch is the full eager set.",
+    "world_gdp": "0.95-1.25, i.e. UP a little from 0.97 / 1.21 - spending the pool converts it into jobs by identity (F135). The median must stay in 0.8-1.1 to satisfy the user's band, and NO run may reach 1.38 (RUNOFF) or fall to 0.66 (STALL).",
+    "pool_W": "0.69-0.80, UP - more construction means more depeasantation. ⚠ THIS IS THE RISK THAT CUTS BOTH WAYS: it pushes Britain's U* DOWN, which is the other half of the conjunction. If GBR's U* falls below 5% AND its hoard stays above 1.5, the batch fails for the same reason as its parent.",
+    "obsolescence": "UNCHANGED - no recipe, cost or ai_value moves. T0 ÷ rest near 0.033, T3 ÷ rest near 0.647, and the 1936 margin ladder as measured (textile e0 16% at 20% staffed, glass e0 18% at 25%, tooling e0 14% at 8%). A material move here would mean the build is not what the diff says.",
+    "loss": "4.5-7.0 against the parent's 5.53. The hoard is the parent's largest single loss term."
+  },
+  "_stop_rule": "THE RUN-LEVEL STOP applies (2+1 batch). stop_watch.ps1 armed at launch — it reads the register's HARD lines, and F151's lesson is to read those BEFORE alignment_check, because one broken run ends the config however well the seeds agree. ⚠ Arm it with the session NAME, not a path, and confirm tools/testbed/sessions/<stamp>/stop_watch.log exists ~90s later (the 2026-09-21 landmine).",
+  "_third_run": "only on divergence under F114's bands (world GDP >= 0.15 apart AND in different bands, or workers >= 0.10 apart AND in different bands).",
+  "_branches": {
+    "hoard_still_above_2.5": "the FULL eager set (0.99 / 1.25 / 3.0) on this same base — the same mechanism at full strength, measured to take pool H to 0.53 elsewhere. ⚠ generate at 0.99, never 1.0: the engine's validator range is [0,1) and 1.0 is silently discarded back to vanilla's 0.75 (landmine L33).",
+    "runoff_on_gdp": "the same mild set on a dearer slope — C 1.95 with --anchor-cost — which is the under-side rule of 2026-09-15 applied to this pair.",
+    "britain_still_capital_abundant_with_a_small_hoard": "the conjunction's OTHER half is then the binding one, and the lever is labour, not capital. That is a different axis and needs its own ruling."
+  },
+  "_watch": [
+    "run 1 at ~5 min: the PM_TECH_REHAUL marker, the game version, the error window BY POSITION, the clock, queue_mix",
+    "L33 in the run's own error.log — no define rejected at load (this is the first launch of the mild set anywhere)",
+    "FIRST at the endpoint: capital_flags — GBR's hoard and its U*",
+    "then criteria.mjs for the HARD lines, and only then alignment_check",
+    "post-batch: preflight -Session, VERDICT.md, the SESSION_VERDICTS row, FINDINGS"
+  ],
+  "_cost": "2 runs × 1836→1936 at ~3h each, +1 on divergence.",
+  "_caveats": [
+    "THE MILD SET HAS NEVER BEEN RUN, on any base. Its magnitude is a guess bracketed by the canon set below it and the full eager set above it.",
+    "Its parent is n=1 intact, so the reference for every non-broken metric is a single seed.",
+    "Spending the pool raises depeasantation, which pushes Britain toward the OTHER half of the hard line it is meant to clear. The batch can fail by curing the hoard and deepening the labour exhaustion.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "probe-slide-mild": {
+      "kind": "config",
+      "config": "config/mod_config.probe-slide-mild.json"
+    }
+  },
+  "runs": [
+    { "setup": "probe-slide-mild", "until": "1936.1.1" },
+    { "setup": "probe-slide-mild", "until": "1936.1.1" }
+  ]
+}
