@@ -16245,3 +16245,86 @@ states. Vanilla's own comment warns that lowering these hurts performance.
   a trade margin, not a goods flow. So **any value-added sector split counts a trade centre as negative value added**,
   and an arm that trades more will look worse in `sector_split.mjs` while the engine's own GDP rises. The register's
   world-GDP line reads the engine's number and is unaffected.
+
+---
+
+## F156 — ⛔ THE ACCELERATING INPUT LADDER STALLS THE WORLD: it takes the hoard **3.49 → 0.77** — past its own aim — and pays for it with **employment, not productivity**, holding £ per productive worker at 0.97–1.06× vanilla for forty years while workers per capita fall to 0.57×. One run BROKEN BY STALL at 0.62×, the other at the hard floor at 0.67×, **PI 1.01 crossing the schedule's own pre-registered overshoot line** (2 runs of 1836→1936, 2026-09-21)
+
+**Session `20260921_094143_accel-slide-n2`**, `config/mod_config.probe-accel-slide.json`: `probe-anch-costslide`
+with **one lever moved** — the input ladder as the explicit per-era list **1 / 1.5 / 2.6 / 4.7** in place of
+geometric B 1.5^era. Economic field diff: `inputs` on 22 rungs and nothing else. Gated by the 1836→1838 anchor
+probe of the same morning (**F154**), which returned the pre-registered null it was written to test, so the book
+is known to emit what its arithmetic says.
+
+### 1. The result
+
+| | run 1 | run 2 | predicted | predecessor `anch-costslide` |
+|---|---|---|---|---|
+| world GDP (1932–36 mean) | **0.67×** | **0.62× ⛔** | 0.88–1.05 | 0.97 / 1.22 |
+| verdict | ✅ intact | ⛔ **BROKEN BY STALL** | — | 1 intact / 1 runoff |
+| pool GDP · pool W | 0.70 · 0.55 | — | — · 0.62–0.72 | 1.23 · 0.69 |
+| pool H | **0.77×** | — | 2.2–3.0 | 3.49 |
+| PI | **1.01×** | — | 0.82–0.92 | 0.85 |
+| LOSS | **18.20** | — | — | 5.50 |
+
+Run 2 is below the **0.66× hard floor** (vanilla's 95% CI −20%), and one broken run ends the config. Run 1 clears
+that floor by a single point and is beyond the SOFT line on world GDP, pool GDP, PI and T0. ⚠ A broken run records
+only its binary outcome, so nothing else of run 2 is reported.
+
+### 2. ⭐⭐ The lever hit its target — and the bill came in employment, not productivity
+
+The batch existed to cut the hoard. It did, and then some: **pool H 3.49 → 0.77**, world H 0.71 — *past* the
+register's `< 1` aim, into the range where the pool is small because the economy is. F135's identity in reverse.
+
+The decomposition is unusually clean, and the two seeds agree within 0.02 at every decade:
+
+| year | world GDP ÷ van | productive workers/capita ÷ van | **£ per productive worker ÷ van** |
+|---|---|---|---|
+| 1880 | 0.77 (0.75 / 0.79) | 0.80 | **0.99** |
+| 1900 | 0.60 (0.63 / 0.57) | 0.71 | **0.97** |
+| 1920 | 0.61 (0.61 / 0.61) | 0.57 | **1.06** |
+| 1935 | 0.67 / 0.62 | 0.58 | 1.19 |
+
+⭐⭐ **£ per productive worker sits at 0.97–1.06× vanilla for forty years.** Every other book in this family buys
+its deficit in employment and is repaid in output per worker (the found configuration 1.61×, the predecessor
+1.57×). This one is *not repaid at all* until the final decade — it simply employs fewer people. That is the
+difference between a design and a stall, and it is visible without any reference to the loss.
+
+### 3. ⭐ PI is the fingerprint, and the schedule had pre-registered the exact line it crossed
+
+The schedule's own prediction read: *"Dearer inputs per unit of output raise building-input demand, which pushes PI
+UP; **above 1.0 the lever has overshot**."* It read **1.01** (against the predecessor's 0.85) and is **not** falling
+decade over decade. The chain is direct — dearer inputs per unit of output → more building-input demand → fewer
+levels affordable → less employment → a smaller economy.
+
+⇒ **This is F128's lesson repeating on the input axis.** A base-price gain match UNDERSTATES the price channel: B
+1.8 gain-matched planned 0.77–0.80 per frontier level, realised 0.54–0.91, and **stalled at 0.70**. This ladder
+planned a deliberately far milder **×0.899** and landed at **0.67 / 0.62** — the same place. **An accelerating
+input ladder is not a gentler B increase; at the end state it behaves like a stronger one.**
+
+### 4. What it does NOT say
+
+- ⚠ **It does not refute §10.86.4 / F141.** At base prices the accelerating ladder still cuts the frontier's margin
+  without touching F97's death test (24/24 in both books), and F154 proved the emitted book is exactly that. What
+  this measures is that the design coordinate does not survive realised prices — **§10.86.2 in action, not a
+  contradiction of it.** The arithmetic was right about what it computed and silent about what it did not.
+- ⚠ **The realised frontier margins were never the fat thing the base-price book described.** Run 1 at 1935,
+  wages-inclusive and exact from save-summary v9: arms e3 **30%**, explosives e3 59%, glass e3 55%, food e2 39%,
+  furniture e2 31% — nothing like the 230–360% base-price coordinates the lever was sized against.
+  ⭐ **The one real money printer is the ART ACADEMY — e2 148%, e3 188%** (ROADMAP step 8 P1, untouched by this
+  lever and plainly visible again).
+- ⚠ **Obsolescence splits exactly where F136 said it does**: arms e0 −14% at 4% staffed and artillery e0 −57% at
+  1%, against furniture e0 at 14% staffed and glass e0 at 24%. The lever moved neither side.
+- ⚠ **T0 rose** — 0.35M → 0.51M workers across the decades, 1.56× and beyond the soft line — while T0 ÷ rest is a
+  very low 0.054: a small share growing in absolute terms inside a shrinking economy.
+- ⚠ **No tie-breaker is owed and none would help.** The seeds do not diverge, and a third cannot un-break a hard
+  line (**F151**), which is why the register's hard lines were read before `alignment_check`.
+- ⚠ **n=2, and the two runs are one config on one machine on one afternoon.** Under the directional ruling
+  (§10.83.7) the case here is the mechanism — PI up, employment down, productivity flat — not the loss gap.
+
+### 5. Where it leaves the axis
+
+The schedule's pre-registered `stalled_below_0.85` branch is `config/mod_config.probe-b16-slide.json` (flat B 1.6,
+value added per top level ×0.937, paper e3 333%), generated, dry-run built clean, with its own schedule. **Not
+launched** — and this result is an argument for scepticism about it rather than for it: if ×0.899 stalls, ×0.937 is
+a small step back along the same axis, and §2 says the axis is spending employment it never earns back.
