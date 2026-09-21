@@ -15886,3 +15886,76 @@ NAME** ("British Market") and the column called **`market` holds the OWNER** ("o
 is correct — it reads `c[2]` — but any ad-hoc script that selects by header name gets owners where it expects
 markets. §1's market list in this finding is written in OWNER names for that reason; the conclusions are unaffected
 (owner and market map 1:1 at a date), but **read `markets.tsv` by POSITION, or fix the header.**
+
+---
+
+## F154 — ⭐ THE ACCELERATING INPUT LADDER CANNOT TOUCH THE 1836 ANCHOR, AND MEASUREMENT CONFIRMS IT: of the 22 rungs whose input value it moves, **not one stands on the 1836 map**, and against its own one-lever control the book is indistinguishable on world product, on margins by era and on which types run negative (4 runs of 1836→1838, 2026-09-21)
+
+**Session `20260921_092723_accel-slide-probe`** — the gate the user asked for before the ~6h century 2+1
+(*"We'll probe first, and then run a full 2+1 run"*, 2026-09-21). Two arms, back to back, n=2 each:
+**`probe-accel-slide`** (the accelerating input ladder **1 / 1.5 / 2.6 / 4.7**) against
+**`probe-anch-costslide`** (the identical book on geometric **B 1.5^era**). The economic field diff is `inputs`
+on 22 rungs and nothing else.
+
+### 1. Why the prediction was arithmetic rather than a guess
+
+The accelerating ladder is **identical to the geometric one at ladder indices 0 and 1** (×1 and ×1.5) and departs
+only at index 2 (2.6 against 2.25, ×1.156) and index 3 (4.7 against 3.375, ×1.393). Computed from the two
+**emitted** books against `config/start_baseline.json`, input value moves on exactly 22 rungs — and every one of
+them is **e2 or e3**:
+
+| industry | rungs whose input value moves | its 1836 map |
+|---|---|---|
+| food | e2 | e0 20, e1 12 |
+| textile · furniture · glass | e3 | e0 73/39/30, e1 21/18/12 |
+| tooling | e3 | e0 10, e1 16, **e2 9** |
+| paper | e2, e3 | e0 45, e1 10 |
+| fertilizer · explosives · steel · motor · arms · artillery · art_academy | e2, e3 | e0 only |
+| automotive | e3 | none |
+
+⭐ **The intersection is empty.** The only e2 presence in the entire 1836 start is tooling's 9 levels, and tooling
+is one of the eight **slid** industries, so its changed rung is e3, not e2. ⇒ F137's +27.3% anchor
+over-production, and every e0 and e1 recipe, are unchanged **by construction**. The probe was therefore a
+falsification test of the generator and the emission — a pre-registered **null** — not a measurement of the lever.
+
+### 2. What it read
+
+| | accel-slide (n=2) | anch-costslide (n=2) | vanilla (n=2) | anch-in12 (n=3) |
+|---|---|---|---|---|
+| world GDP ÷ vanilla, 1836 / 1837 | **0.97 / 0.96** | **0.98 / 0.95** | 1.00 / 1.00 | 0.98 / 0.96 |
+| per-run £M at 1837 | 415 / 403 | 403 / 400 | 420 / 429 | 408 / 407 / 406 |
+| era margins 1836, e0 / e1 / e2 | 20% / 30% / 16% | 19% / 29% / 15% | 28% / 15% / — | 21% / 29% / 13% |
+| era margins 1837, e0 / e1 / e2 | 21% / 31% / 16% | 21% / 31% / 15% | 33% / 16% / — | 26% / 31% / 11% |
+| negative tiered types, 1836 | 1 of 21 (1% of staffed lv) | 1 of 21 (1%) | 0 of 14 | 1 of 21 (1%) |
+| negative tiered types, 1837 | 0 of 21 | 0 of 21 | 0 of 14 | 0 of 21 |
+| workforce in a type shedding > half | 9% | 8% | 0% | 8% |
+| anything shedding > 80% | 0% | 0% | 0% | 0% |
+
+The two arms' per-run world-product ranges **overlap** (403 appears in both); the median gap is 1.8% against an
+own-arm spread of 3%. Both land on `probe-anch-in12`'s reading and inside the pre-registered 0.95–1.00 band. e3
+profit is £0 in both arms, as it must be — no e3 rung is on the map and none is built in 21 months. The single
+negative type is the same one in both (**tooling e0**, 6–7 staffed levels).
+
+### 3. What it does NOT say
+
+- ⚠⚠ **Nothing whatever about the lever.** The frontier's margin, the hoard, obsolescence and the price decline
+  are the entire reason the accelerating ladder exists (BALANCE_FRAMEWORK §10.86.4 / F141), and all four need the
+  century. A null here says the book emits what its arithmetic claims, and no more.
+- ⚠ **n=2 per arm, and agreement was the prediction**, so this is weak evidence in the usual way: a real
+  separation smaller than the seed spread would not appear.
+- ⚠ The small differences that do appear run **in both directions on byte-identical recipes** — accel's tooling e0
+  reads worse (34% retained at −12%, against 51% at −2%) while accel's glass e0 reads better (41% against 35%).
+  That is the noise signature, not a lever. `probe-anch-in12` reads tooling e0 WOUNDED too (47%, −2%).
+- ⚠ **Furniture is the one persistent price gap**: the British path runs 99–105% of base in the accel arm against
+  106–120% in the control, with iron and steel ~15pp apart at the last dump. Not separable from seed at n=2 over
+  21 months; watch it in the century rather than reading it here.
+
+### 4. Instrument
+
+⭐ **The first MOD arm on the eleven-tag list** (2026-09-20's ruling): **eight markets logged, including the
+Belgian**, against the seven of every earlier arm. NGF, GER and UNL logged nothing, which is expected — they form
+decades later — so the gain F153 describes is realised for **BEL only** at this span. Dump dates were kept at the
+2026-09-19 probe family's, which is what makes vanilla and every anchor arm of that day reusable here without
+spending a slot on a second control. Post-run `preflight.ps1 -Session` PASSED, 4 of 4 runs usable, 13 minutes.
+
+⇒ **GO.** `20260921_094143_accel-slide-n2` launched the same morning, with `stop_watch.ps1` armed.

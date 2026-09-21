@@ -1,0 +1,99 @@
+{
+ "schedule_version": 1,
+ "label": "accel-slide-probe",
+ "_why": "THE ANCHOR PROBE BEFORE THE ACCEL-SLIDE 2+1 (user-ruled 2026-09-21: \"We'll probe first, and then run a full 2+1 run\"). probe-accel-slide is probe-anch-costslide with ONE lever moved - the input ladder becomes the explicit per-era list 1 / 1.5 / 2.6 / 4.7 in place of geometric B 1.5^era - and its century batch (accel_slide_n2.json) costs ~6h. This 1836->1838 batch asks the one question a two-year span CAN answer: does the accelerating ladder wreck the 1836 anchor? The arithmetic says it CANNOT, and the probe is the falsification test of that claim rather than a measurement of the lever.",
+ "_the_null_prediction_and_why_it_is_exact": "The accel ladder is IDENTICAL to the geometric one at ladder indices 0 and 1 (x1 and x1.5) and departs only at index 2 (2.6 vs 2.25, x1.156) and index 3 (4.7 vs 3.375, x1.393). Computed from the two emitted books against config/start_baseline.json: input VALUE moves on exactly 22 rungs, and NOT ONE OF THEM STANDS ON THE 1836 MAP. Every changed rung is e2 or e3; the only e2 presence in the whole 1836 start is tooling's 9 levels, and tooling is a SLID industry so its changed rung is e3, not e2. Per industry - food e2 only (map e0/e1), textile/furniture/glass/tooling e3 only (map e0/e1, tooling e0/e1/e2), paper/fertilizer/explosives/steel/motor/arms/artillery/art_academy e2+e3 (map e0, paper e0/e1), automotive e3 only (no 1836 presence). So F137's +27.3% anchor over-production is unchanged BY CONSTRUCTION, and so is every e0 and e1 recipe.",
+ "_what_this_probe_can_and_cannot_answer": "CAN: whether the emitted book behaves as its arithmetic says at the anchor - world product, realised margins by era, which tiered types run negative and how many staffed levels they hold, and the British input-price path. CANNOT: the whole point of the lever - the frontier's margin, the hoard, obsolescence, the price decline - all of which need the century (ROADMAP step 10's standing warning, F142). A pass here is a GO for the 2+1, never evidence for the lever.",
+ "_arms": {
+  "probe-accel-slide": "THE BOOK UNDER TEST. config/mod_config.probe-accel-slide.json - A 2.2, the eight-industry e1 anchor slide, --anchor-cost, in0 1.2, C 1.9, ai_value 1000x3^era, the 10.75 defines, the 24-month bar, and the input ladder 1 / 1.5 / 2.6 / 4.7.",
+  "probe-anch-costslide": "THE ONE-LEVER CONTROL, and the reason this batch is 4 runs rather than 2. It is the identical book on geometric B 1.5, so the pair isolates the input ladder exactly. It has NEVER been probed at this span - its only runs are the two century sessions 20260920_114003 and 20260920_170737 - so without it the nearest probed relative is probe-anch-in12 (20260919_190944), which differs by --anchor-cost as well and is therefore a two-lever comparison."
+ },
+ "_delta": "Between the two arms: `inputs` on 22 rungs and nothing else economic. `target_be` and `wage_pct` also differ, but only because probe-accel-slide is generated on the measured-wage basis of 2026-09-20 (10.87) while probe-anch-costslide predates it - target_be is emitted only into the building NAME and wage_pct is model-only, so neither is economics. building_cost, ai_value, the technologies, the defines and the tech-tree twins are identical.",
+ "_predictions": {
+  "_basis": "The emitted books' own arithmetic (the zero-overlap census above) and the probe family of 2026-09-19, read at the same span and the same dump dates. Stated before launch, as the no-ceteris-paribus rule requires.",
+  "world_product": "PREDICT the two arms INDISTINGUISHABLE at 1836 and 1837 - within the 0.02 per-run spread the family shows - and both at 0.95-1.00 of the vanilla control. probe-anch-in12 read 0.98 / 0.96 at n=3 (per-run 408 / 407 / 406 at 1837), and --anchor-cost barely bites over 21 months because almost nothing is built (F142). ⚠ IF THE ARMS SEPARATE ON WORLD PRODUCT AT THE ANCHOR, the book is not what the arithmetic says it is, and that - not the size of the gap - is the finding.",
+  "margins_by_era": "PREDICT the e0 and e1 columns identical between the arms to within seed noise, near probe-anch-in12's e0 21% -> 26% and e1 29% -> 31%. The e2 column MAY separate slightly as the first e2 levels are built; e3 stays at zero on both (no e3 rung exists on the 1836 map and none will be built in 21 months).",
+  "the_dead": "PREDICT the same negative-margin set in both arms and no NEW e0 or e1 type in the accel arm - probe-anch-in12 read 1 of 21 types negative at 1836 (tooling e0, 7 staffed levels, 1% of tiered staffed levels) and 0 of 21 at 1837. A negative e0 or e1 type present in the accel arm and absent in the costslide one would be the falsification, because no e0 or e1 recipe differs between them.",
+  "input_prices": "PREDICT the British paths for fabric, wood, iron, coal, sulfur and tools within a couple of points between the arms. The accel ladder raises e2/e3 input demand, but there are no e2/e3 rungs on the map to exert it, so at the anchor the channel is closed and only opens as buildings arrive."
+ },
+ "_go_no_go": "GO for accel_slide_n2.json if the two arms are indistinguishable on world product and the dead set, and the accel arm sits in the family's 0.95-1.00 band against vanilla. NO-GO, and investigate the generator or the emission before spending 6h, if the accel arm separates from its one-lever control at the anchor, or if a negative e0/e1 type appears in it alone, or if world product falls below 0.90 of the control at 1837.",
+ "_comparison": "The vanilla control and the canon in 20260919_132049_in0-early-probe (n=2 vanilla, n=3 probe-in12 = canon-c19-in12), and the mixed-anchor arms of 20260919_190944 / _193440 - all at this span and these dump dates. ⭐ NO VANILLA ARM IS RUN HERE: 20260919_132049 measured one on the same machine, game version, span and dump dates, so a slot spent on a second would buy nothing. That slot buys the one-lever control instead.",
+ "_instrumentation_note": "The eleven tags and the six metrics of accel_slide_n2.json, not the probe family's seven and five, so this batch instruments EXACTLY as the century arm it gates (landmine L36's second half: a reference must instrument what the arms it is divided into do). The tag list is a SUPERSET of the control's, so the price basis intersects on those seven; of the four added, only BEL exists in 1836 - NGF, GER and UNL form decades later and will log nothing here, which is expected and not a fault. The dump dates are the probe family's unchanged, which is what keeps every 2026-09-19 arm reusable as a reference.",
+ "_watch": [
+  "run 1 at ~3 min: the PM_TECH_REHAUL marker, the game version, the error window BY POSITION (not by a time-shaped pattern), the clock advancing",
+  "FIRST: whether the two arms separate at all - the whole probe is a null test",
+  "any negative e0 or e1 type in the accel arm that its one-lever control does not have",
+  "READ WITH: node tools/testbed/ledger/early_probe.mjs --session <stamp> --also 20260919_132049_in0-early-probe --control vanilla --years 1836,1837",
+  "post-batch: preflight -Session, VERDICT.md, the SESSION_VERDICTS row, then launch accel_slide_n2.json on a GO"
+ ],
+ "_cost": "4 runs x 1836->1838 at ~2.8 min of game each plus two builds and the harvest: about 18 minutes.",
+ "_caveats": [
+  "TWO IN-GAME YEARS IS NOT THE CENTURY. Nothing here speaks to the frontier's margin, the hoard, obsolescence or the price decline - which are the entire reason the lever exists.",
+  "A NULL RESULT IS THE EXPECTED RESULT and is worth exactly what it says: the book emits what its arithmetic claims. It is not evidence that the lever works.",
+  "n=2 per arm. The arms are expected to agree, so a disagreement is the signal; but with n=2 a single divergent seed cannot be told from a real separation, and the answer to that is the century batch, not a third probe run.",
+  "building_cost is identical between the arms but --anchor-cost makes both differ from probe-anch-in12, so the cross-session comparison to that arm is two levers, not one.",
+  "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent."
+ ],
+ "defaults": {
+  "metrics": [
+   "country_state",
+   "population",
+   "tech_log",
+   "treasury",
+   "events",
+   "market_goods_scoped"
+  ],
+  "autosave_interval": "quarteryear",
+  "timeout_minutes": 40,
+  "tags": [
+   "GBR",
+   "FRA",
+   "USA",
+   "PRU",
+   "NGF",
+   "GER",
+   "NET",
+   "BEL",
+   "UNL",
+   "RUS",
+   "JAP"
+  ],
+  "dump_dates": [
+   "1836.2.1",
+   "1836.7.1",
+   "1837.1.1",
+   "1837.7.1",
+   "1837.12.1"
+  ],
+  "_dump_dates_note": "Identical to all six probe sessions of 2026-09-19, which is what makes every earlier arm reusable as a reference."
+ },
+ "setups": {
+  "probe-accel-slide": {
+   "kind": "config",
+   "config": "config/mod_config.probe-accel-slide.json"
+  },
+  "probe-anch-costslide": {
+   "kind": "config",
+   "config": "config/mod_config.probe-anch-costslide.json"
+  }
+ },
+ "runs": [
+  {
+   "setup": "probe-accel-slide",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-accel-slide",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-anch-costslide",
+   "until": "1838.1.1"
+  },
+  {
+   "setup": "probe-anch-costslide",
+   "until": "1838.1.1"
+  }
+ ],
+ "_run_order_note": "Each arm's runs run BACK TO BACK, as the 2026-09-13 ruling requires and as every schedule of the 2026-09-19 probe family does. The book under test goes first, so a catastrophic reading on it can stop the batch before the control is spent."
+}
