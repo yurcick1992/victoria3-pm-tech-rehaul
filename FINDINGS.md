@@ -16404,9 +16404,22 @@ verdict either way, and worth knowing before quoting either number.
 ⚠ **PP is now the largest single loss term** (1.73 of 6.90): pop goods in wage units 1.07 against the parent's
 0.64 — a richer world buys more, and the index is a ratio to vanilla.
 
-⚠ **Britain is not comfortably clear.** Its hoard at the 1935 *point* is 1.57 in run 1; the register uses the
-*mean* over the flagged window (1.06), and that is the ruled criterion (§10.83 — `capital_flags` has been a
-diagnostic printer since 2026-09-17). One seed of two this close to the line is a warning, not a pass.
+⭐⭐ **BRITAIN IS NOT ON AN EDGE, AND A FIRST READING HERE SAID IT WAS — CORRECTED THE SAME EVENING** (the user:
+*"Isn't Britain depeasanted?"*). It is, and **so is vanilla's.** Measured over the pinned n=16 at 1935, vanilla's
+own GBR runs **U\* (incl. peasants) median 1.45%, under 5% in ELEVEN of sixteen seeds and under 2% in nine** — a
+depeasanted Britain is what this game normally produces, and what history did. Our run 1's **1.7% sits at vanilla's
+~56th percentile**, i.e. dead median, and run 2's 12.1% is *less* depeasanted than vanilla's median.
+
+On the other half, vanilla's GBR hoard runs **median 0.85 and ≥ 1.5 in three of sixteen** (1.57, 2.14, 2.91). Our
+run 1's 1935-*point* hoard of **1.57 is exactly vanilla run014's value** and its window mean (1.06) sits between
+vanilla's 0.91 and 1.11; run 2's 0.66 is *below* vanilla's median. ⇒ **this book's Britain is inside vanilla's own
+distribution on BOTH halves**, and the earlier "not comfortably clear" reading was an artefact of judging an
+absolute number against no reference.
+
+⭐ **The general lesson, which bears on the criterion itself**: the U\* half of the capital-abundance line is very
+nearly always true for Britain (11 of 16 in vanilla), so it carries almost no discriminating power — **the hoard
+half does all the work.** That is consistent with the line's own calibration (CLAUDE.md records vanilla breaking it
+in 2 of 16), and it means a Britain flagged on U\* alone is reporting industrialisation, not a defect.
 
 ### 5. What it does NOT say
 
