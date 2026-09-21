@@ -15322,7 +15322,8 @@ missing e1 rung (F143 §2).
   batch onward.
 - `ai_value` does not slide with `--anchor-cost`; a slid e3 keeping ai_value 27,000 while costing 2,166 is unexamined.
 
-## F152 — ⭐⭐ THE IDENTITY REPAIR AND THE WAGE MODEL: `profit` IS revenue − inputs − wages at MARKET prices, and F92's ratio was mixing those prices with base-priced value added. The repair `margin = profit ÷ (R − profit)` takes the negative implied wage bill from **26% of entries to 30 of 520**. The wage a building actually pays is **1.52× the country's normal rate** (p10 1.22, p90 1.85, flat across the century), and the wage share of TOTAL COST is a property of the **decade**, running **54.6% at 1840 → 29.7% at 1935** — never the flat 25% the design tools charged (measured read-only, 2026-09-20)
+## F152 — ⭐⭐ THE IDENTITY REPAIR AND THE WAGE MODEL: `profit` IS revenue − inputs − wages at MARKET prices, and F92's ratio was mixing those prices with base-priced value added. The repair `margin = profit ÷ (R − profit)` takes the negative implied wage bill from **26% of entries to 30 of 520**. The wage bill is **`wage(tag, year) × Σ(employees × wage_weight)` and nothing else** — NO premium, NO profit term (§10, settled against the game's own building panel; it RETIRES §4's 1.52× and §8's `1.19 + 0.30 × profit`, both artefacts of approximating revenue). The wage share of TOTAL COST is a property of the **decade**, running **54.6% at 1840 → 29.7% at 1935** for the WHOLE economy but **15–23% for MANUFACTURING alone** — i.e. BELOW the flat 25% the design tools charged, not above it (measured read-only, 2026-09-20)
+> ⚠ **The heading above was itself stale until 2026-09-21** — it quoted §4's retired 1.52× premium as the finding, while §4 and §8 in the body were already marked RETIRED BY §10. A heading is what a later reader quotes; correct it in the same pass as the body.
 
 **Why it was measured.** HANDOVER §0, user-ruled the same day, in two parts: *"in reports, always report true profits, not
 margins"* and *"in predictions, try assuming the actual wage share by estimating individual wages and applying profession
@@ -15693,3 +15694,88 @@ inferring a quantity the game writes into the save and prints in its own UI. **T
 summary did not carry the fields, so nobody looked at the melt.
 ⇒ When a quantity is about what the ENGINE does, look for it in the engine's own data BEFORE modelling it — and treat a
 fitted coefficient with no mechanism as a signal that something observable has not been read yet.
+
+---
+
+## F153 — ⭐ THE ELEVEN-TAG VANILLA BASELINE EXISTS, AT n=3 AND AT SAVE-SUMMARY v9 — AND IT WIDENS THE PRICE BASIS FOR **NOTHING THAT HAS ALREADY RUN**: PI/PP are read on the INTERSECTION of the arm's markets and vanilla's, so the German and Belgian markets it adds are invisible until a MOD arm carries them too (3 runs of 1836→1936, 2026-09-20/21)
+
+**Session `20260920_225047_schedule`** (arm `control`, `deviates_from_vanilla: []`), the corrected re-run after
+landmine **L36** voided the price half of `20260920_192007_schedule` the same night.
+
+### What ran
+
+| run | reached | wall | resumes | goods rows | summaries |
+|---|---|---|---|---|---|
+| 1 | 1936.1.1 | 182 min | 0 | 3,543 | 100 |
+| 2 | 1936.1.1 | 194 min | 0 | 3,541 | 100 |
+| 3 | 1936.1.1 | 148 min | 0 | 3,725 | 100 |
+
+All self-quit, empty `abandoned_reason`, `markets_not_found: {}`, `usableRuns` = 3, 10,809 rows aggregated.
+Instrumented on the ruled eleven tags (GBR FRA USA PRU NGF GER NET BEL UNL RUS JAP) with the standard six
+metrics `country_state population tech_log treasury events market_goods_scoped`.
+
+### 1. What it establishes
+
+**A vanilla reference at SAVE-SUMMARY v9, n=3** — 300 yearly summaries carrying per-building-type
+`goods_sales`, `goods_cost`, `salary_w` and `taxes`. This is the first vanilla side on which the
+wages-inclusive profit of F152 is **exact** rather than repaired through a price multiplier, and it cannot be
+back-filled onto older sessions because the harvester reaps the `.v3`.
+
+**Vanilla's market coverage on the wide list**, with both dynastic families resolving across the century:
+
+    Great Britain · British Republic · United States of America · France · French Republic · French Commune
+    Prussia · North German Federation · German Empire · Belgium · United Belgian States · Netherlands
+    Russia · Tokugawa Shogunate · Japanese Taikunate · Empire of Japan
+
+The new markets per run (rows / distinct dump dates): **run 1** Belgium 437/11, German Empire 368/8 · **run 2**
+Belgium 250/6, United Belgian States 155/4, German Empire 183/4 · **run 3** Belgium 182/5, German Empire 315/7,
+North German Federation 40/1.
+
+### 2. ⚠⚠ THE HEADLINE, and it is a negative result
+
+**The basis does not widen for any arm that has already run.** `criteria.mjs` computes PI/PP on the
+intersection of the arm's markets with vanilla's, and every mod arm to date was instrumented on the SEVEN-tag
+list. Measured directly against `20260920_114003_anch-costslide-century`:
+
+    intersection:            American, British, Dutch, French      (FOUR — unchanged)
+    in vanilla, not the arm: Belgium, German Empire, North German Federation,
+                             United Belgian States, French Commune, British Republic
+
+and `criteria.mjs --van 20260920_225047_schedule` duly prints
+`price basis (PI/PP, arm ∩ vanilla): American Market, British Market, Dutch Market, French Market`.
+
+⇒ **The gain is forward-only.** It is first realised by an eleven-tag MOD arm; `accel_slide_n2.json` and
+`b16_slide_n2.json` are the first two written that way. The batch was still the half that had to exist first —
+a wide arm against a seven-tag vanilla would intersect to seven just the same — but any claim that this session
+"adds two markets to the register" is wrong until an arm matches it.
+
+### 3. ⚠⚠ It is NOT the vanilla reference for anything except prices
+
+Passing it as `--van` replaces **every** vanilla median and σ with a three-seed estimate: this invocation
+printed world GDP σ 0.23, pool GDP σ 0.44, pool H σ 1.36, PI σ 0.08 — three playthroughs standing in for
+sixteen. The pinned **`20260821_131149` (n=16)** remains the denominator for GDP / W / U* / H and for the
+register's FIXED σ constants (§10.83.7), which exist precisely so a loss is comparable across invocations.
+
+⚠ **`criteria.mjs` takes ONE `--van`**, so prices cannot presently be sourced here and everything else from the
+pinned session. Until that is resolved, a loss computed against this baseline is **not comparable** to one
+computed against the pinned one, and any report must name which it used. Two ways out, neither chosen: teach
+the tool a separate price reference, or grow this batch toward n=16 so it can replace the pinned one outright.
+
+### 4. What it does NOT say
+
+- **Nothing about the mod.** This is the control arm; it carries no config and measures vanilla.
+- **Nothing about seed spread at n=3.** Three runs give a usable median for a price index and nothing more.
+- **Nothing about the Dutch series.** The Netherlands leaves the instrumented set early in run 1 (31 rows, one
+  dump date) and UNL never formed in any of the three; whether the wide list yields a usable Dutch or United
+  Netherlands basis is **untested**, and the ruling that added UNL is not vindicated by this batch.
+- **Nothing about performance.** Run 3 took 148 min against run 2's 194 on the same build and span, unexplained
+  and not chased — pop objects were not compared, so the three wall times are not a row-P reading.
+- ⚠ **Run 1's `error_log_lines` is inflated** by landmine L28 (one false rotation in that run's `error.log`
+  mirror). The DATA is verified clean: every `(dump_date, market, good)` key is unique with zero conflicting
+  duplicates in all three TSVs (3,543 / 3,541 / 3,725 rows against the same counts of distinct keys).
+
+### 5. Confidence
+
+**High on what ran** (three complete centuries, no resumes, the guardrail walk passing but for the scoped L28)
+and **high on the intersection result**, which is a direct comparison of two sessions' market sets and one
+printed basis line, not an inference. The v9 reference is **n=3**, and that is its whole limit.
