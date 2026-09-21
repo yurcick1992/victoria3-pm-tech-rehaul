@@ -2901,6 +2901,21 @@ the game.
 
 ## Working conventions
 
+- ⚠⚠ **COMMIT WITH EXPLICIT PATHS. NEVER `git add -A` / `git add .` — THIS REPO USUALLY HAS ANOTHER SESSION WRITING IN IT.**
+  `ListAgents` routinely shows a couple of dozen peer sessions on this project, and several of them write the SAME
+  shared documents — `FINDINGS.md` above all, plus `ON_GAME_UPDATE.md`, `TESTBED_METRICS.md`, `BALANCE_FRAMEWORK.md`.
+  A blanket add sweeps whatever they have in the tree into YOUR commit, under YOUR message.
+  ⚠ **Nothing fails, and `git status` an hour earlier does not protect you** — the other session writes in between.
+  It happened on 2026-09-21: commit `eb02a4d`, whose message describes only the market-continuity fix, also carries a
+  concurrent session's **F155 (~240 lines), ON_GAME_UPDATE.md +46 and TESTBED_METRICS.md +1**. Nothing was lost or
+  overwritten; the history simply misdescribes that commit, and it is shared, so amending it is not on (see below).
+  ⇒ **`git add <the files you actually wrote>`, then `git status --short` before committing** and account for every
+  staged path. ⚠ **Do NOT force-push or amend to "clean it up"** — the peer may already have pulled; record the
+  provenance and tell them instead.
+  ⭐ **AND CHECK THE FINDINGS NUMBER AT THE MOMENT YOU WRITE IT, not from a `grep` taken earlier in the session** — a
+  peer can mint the next F-number while you work. The same day produced two F155s; mine was renumbered to F156.
+  ⇒ When you find a collision, the number that was committed FIRST stays, and you renumber. Message the peer with
+  `SendMessage` when your change touches data they are analysing.
 - ⚠⚠ **WRITE PROSE WITH THE FILE-EDITING TOOL, NEVER THROUGH BASH — BACKTICKS AND WINDOWS PATHS ARE EATEN SILENTLY.**
   A backtick inside a double-quoted bash string is COMMAND SUBSTITUTION: bash runs whatever is between the backticks and
   substitutes its output, so `` `markets.tsv` `` becomes an empty string and the sentence is left with a hole in it —
