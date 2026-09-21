@@ -16236,9 +16236,19 @@ states. Vanilla's own comment warns that lowering these hurts performance.
 - ⚠ **`GetMarketImports` may be net of that market's own exports** (TESTBED_METRICS §2.5's open point), so the import
   shares in §5 are a consistent series but possibly a slight understatement of gross flow. Both sides of every
   comparison use the same field.
-- ⚠ **The market count drops 7 → 6 mid-century** in the older sessions (the tag-continuity problem F153 §6 fixed for
-  the reader, not for the instrument), so the absolute £ columns are not strictly like-for-like across dates. The
-  `imp%` column is a ratio inside the same basket and is.
+- ⚠ **The instrumented market set is not constant, and the `markets` column in §5 was run 1's count, not a median.**
+  Re-checked over the pinned baseline (2026-09-21, prompted by the Commune fix of F154 §5): across the 16 seeds the
+  number of distinct market names per dump runs **4–7**, not a clean 7 → 6. Run 1 loses the **Prussian Market** at
+  1880 — tag continuity, PRU → NGF/GER, whose markets that 7-tag session never listed (F153 §6). So the absolute £
+  columns are not strictly like-for-like across dates; the `imp%` column is a ratio inside whatever basket the run
+  carried, and is.
+- ✅ **The French Commune does NOT affect any number above, and this was verified rather than assumed.** The
+  Communard rename is on an unchanged tag and **replaces** the French Market in that seed's rows (run 3 reads
+  `French Market` to 1900 and `Communard Market` 1910–1935, with the market count staying at 7); it appears in
+  **5 of the 16 seeds** (runs 3, 4, 6, 8, 11). §5's aggregation sums **every market name present**, with no
+  resolution through `lib_markets` and no `French Market` filter, so those rows were always included. A
+  name-keyed reader would have dropped France in those five seeds — which is exactly the defect F154 §5 fixes on
+  the register side.
 - ⚠ **n is 16 vanilla but 1–2 per mod arm** on the century series, so the mod-vs-vanilla import-share comparison is
   directional only (§10.83.7).
 - ⚠⚠ **Trade centres book `va_out = 0` with `va_in > 0`** (GBR 1935: va_in 185,596, profit £234k/wk) — their income is
