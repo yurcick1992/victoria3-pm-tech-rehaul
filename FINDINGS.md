@@ -16404,22 +16404,26 @@ verdict either way, and worth knowing before quoting either number.
 ⚠ **PP is now the largest single loss term** (1.73 of 6.90): pop goods in wage units 1.07 against the parent's
 0.64 — a richer world buys more, and the index is a ratio to vanilla.
 
-⭐⭐ **BRITAIN IS NOT ON AN EDGE, AND A FIRST READING HERE SAID IT WAS — CORRECTED THE SAME EVENING** (the user:
-*"Isn't Britain depeasanted?"*). It is, and **so is vanilla's.** Measured over the pinned n=16 at 1935, vanilla's
-own GBR runs **U\* (incl. peasants) median 1.45%, under 5% in ELEVEN of sixteen seeds and under 2% in nine** — a
-depeasanted Britain is what this game normally produces, and what history did. Our run 1's **1.7% sits at vanilla's
-~56th percentile**, i.e. dead median, and run 2's 12.1% is *less* depeasanted than vanilla's median.
+⭐⭐ **WHY THE HARD LINE DID NOT TRIP IN RUN 1 — the U\* half DID, and the hoard half failed only on the averaging.**
+GBR yearly, run 1: U\* **3.9 / 3.2 / 2.5 / 2.5 / 2.4 / 2.0 / 2.0 / 1.9 / 1.7 / 1.5%** across 1927–1936 (strict
+unemployment 0.1% → **0.0%**), against a hoard **rising monotonically 0.63 → 1.62**. The rule needs five consecutive
+sub-5% years ending by 1936 **and a MEAN hoard over them ≥ 1.5**: the first half holds in all twelve years from
+1925, and the hoard crosses 1.5 only in **1935–36**, so the window mean is **1.12** and the line is missed.
+⚠ **As a POINT, 1936 satisfies both halves — U\* 1.5% at a hoard of 1.62 — and the series is still climbing.**
+The parent shows the same mechanism from both sides: its intact run never gets five *consecutive* sub-5% years
+ending by 1936 (1935–36 pop back to 5.4 / 5.1%), and its broken run runs 1931–36 under 5% at a mean hoard of 2.46.
 
-On the other half, vanilla's GBR hoard runs **median 0.85 and ≥ 1.5 in three of sixteen** (1.57, 2.14, 2.91). Our
-run 1's 1935-*point* hoard of **1.57 is exactly vanilla run014's value** and its window mean (1.06) sits between
-vanilla's 0.91 and 1.11; run 2's 0.66 is *below* vanilla's median. ⇒ **this book's Britain is inside vanilla's own
-distribution on BOTH halves**, and the earlier "not comfortably clear" reading was an artefact of judging an
-absolute number against no reference.
+⚠⚠ **AND A FIRST READING HERE JUDGED BRITAIN AGAINST THE WRONG YARDSTICK — corrected the same evening** (the user:
+*"We're explicitly aiming at less depeasantation than vanilla. The lack of the hoard, however, makes it a lesser
+problem than otherwise"*). It is true that vanilla's own GBR is depeasanted — over the pinned n=16 at 1935 it reads
+U\* median **1.45%**, under 5% in eleven of sixteen seeds — but **matching vanilla is the FAILURE MODE, not the
+pass**: the register aims for pool U\* **≥ 2× vanilla** and pool W **0.6–0.95×**, i.e. deliberately less
+depeasantation. Run 1's Britain at **1.5% U\* and 0.0% strict** is exactly what the design is trying to prevent, and
+it is why the pooled shortlist U\* reads **1.86×, below the ≥ 2 aim**. The small hoard makes it a LESSER problem, not
+a non-problem. The intermediate reading that called it "inside vanilla's distribution, therefore fine" is withdrawn.
 
-⭐ **The general lesson, which bears on the criterion itself**: the U\* half of the capital-abundance line is very
-nearly always true for Britain (11 of 16 in vanilla), so it carries almost no discriminating power — **the hoard
-half does all the work.** That is consistent with the line's own calibration (CLAUDE.md records vanilla breaking it
-in 2 of 16), and it means a Britain flagged on U\* alone is reporting industrialisation, not a defect.
+⚠ **It is also violently seed-dependent**: run 1 ends at **1.5%** U\* and run 2 at **10.0%**, on one book — a 6.7×
+spread on the metric the design cares most about, which is worth more caution than either number alone.
 
 ### 5. What it does NOT say
 
