@@ -220,3 +220,11 @@ tools/testbed/ledger/cost_drivers_pool.json
 !config/tech_tree_options.probe-slide-mild.json
 !config/mod_config.probe-slide-mild-c195.json
 !config/tech_tree_options.probe-slide-mild-c195.json
+!config/mod_config.probe-sm-b152.json
+!config/tech_tree_options.probe-sm-b152.json
+!config/mod_config.probe-sm-b155.json
+!config/tech_tree_options.probe-sm-b155.json
+!config/mod_config.probe-sm-b158.json
+!config/tech_tree_options.probe-sm-b158.json
+!config/mod_config.probe-sm-b162.json
+!config/tech_tree_options.probe-sm-b162.json
