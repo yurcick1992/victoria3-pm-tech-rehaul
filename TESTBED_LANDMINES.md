@@ -1902,3 +1902,51 @@ invalidated; repaired in place and recorded in the file's `_metric_name_repaired
 
 **Proven both ways (2026-09-20):** setting `accel_slide_n2.json`'s metrics to `markets, country_state` ⇒
 `L36 FAIL … accel_slide_n2.json [defaults]: 'markets'` and `PREFLIGHT FAILED`; restoring the real six ⇒ `L36 PASS`.
+
+## L37 — THE STOP WATCHER GOES BLIND TO THE REGISTER ON ANY MULTI-CONFIG SCHEDULE, AND SAYS SO ONLY IN ITS OWN HIDDEN LOG (found 2026-09-22, session `20260922_084038_b-gradient-4x3`, from run 4 onward)
+
+**What happens.** `tools/testbed/stop_watch.mjs` evaluates the criteria register by shelling out to
+`criteria.mjs --arm <SESSION NAME> --quiet --json …` — the session name **with no `:setup` suffix**. That is correct for a
+single-config batch and wrong for every other kind: the moment a schedule's SECOND setup produces its first run folder,
+`lib_runs.usableRuns` refuses the call by design —
+
+```
+Error: 20260922_084038_b-gradient-4x3 holds 2 arms (probe-sm-b152, probe-sm-b155) — pass a setup name;
+folding two arms into one n averages two different experiments
+    at usableRuns (lib_runs.mjs:58:11)
+```
+
+— and `stop_watch` catches the non-zero status, logs `criteria.mjs failed (status 1): … — falling back to the 1936 GDP
+rule`, and carries on **on the weaker rule for the whole remaining batch**.
+
+⚠⚠ **NOTHING FAILS, AND THE ONE TRACE IS UNREADABLE IN PRACTICE.** The watcher runs `-Hidden`, its log is
+`sessions/<stamp>/stop_watch.log`, and the message is a 300-character stderr TAIL — which on this repo's path
+(`C:\claude-code\victoria 3 PM and tech rehaul`, spaces percent-encoded into the `file:///` URL) truncates to
+`203%20PM%20and%20tech%20rehaul/tools/…:336:19` and a Node stack, with **the actual `Error:` line cut off the front**.
+So the log says the check failed and does not say why. The batch keeps running, the scheduler reports nothing, and every
+later run is guarded only by the GDP threshold.
+
+**What is lost.** The register's hard lines — capital abundance, the stall floor, the 1836 anchor — stop enforcing.
+The fallback only compares 1936 world GDP against `--threshold ×` the vanilla median, i.e. it catches a RUNAWAY and
+nothing else: a **stall** below 0.66 and a **capital-abundance runoff** both pass it. Measured live here: run 3 of
+`probe-sm-b152` broke by runoff (GBR, 17 consecutive years under 5% U\* at a mean hoard of 1.51) and the watcher read
+only its 1.164× GDP, under the 1.4 threshold, and did nothing.
+
+⭐ **In THIS batch the degradation is harmless and arguably right**, which is exactly why it would have gone unnoticed:
+the schedule's own `_the_discard_rule` says *"a run can be BROKEN (stall/runoff) and still be a valid point on the B
+gradient"*, so a config-ending STOP is not wanted here, and the four configs are four experiments that must not stop one
+another. The defect bites on a **single-config** batch that happens to be launched from a multi-setup schedule, and on
+any future multi-config schedule that DOES want the register enforced per config.
+
+**DETECTOR (owed, not yet written — `Test-LmL37`).** Two halves, both cheap:
+1. **Repo-side, gating a launch:** a schedule with more than one entry in `setups` is incompatible with the watcher's
+   current invocation — either the watcher must pass `--arm <session>:<setup>` derived from the run folder it just
+   scored, or the schedule must declare that it does not want per-config stopping.
+2. **Session-side, post-run:** `stop_watch.log` containing `criteria.mjs failed` at all. That string is the whole
+   signal and nothing reads it today.
+
+⚠ **NOT FIXED IN PLACE while the batch runs** — the standing rule forbids editing `tools/testbed/**/*.mjs` mid-batch
+(preflight walks them in every build, L27), and a running watcher keeps the code it loaded, so a fix would need it
+killed and re-armed. The repair is one line: derive the setup from the completed run's folder name and pass
+`--arm ${NAME}:${setup}`.
+
