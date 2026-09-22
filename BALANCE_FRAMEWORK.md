@@ -8138,10 +8138,28 @@ run 1 of `probe-sm-b152` (world GDP **0.67×**, and on the register pool U\* 2.7
 *"'median U\* at the aim because the world is poor' or 'H at the aim because the world is poor' is not a positive result,
 it's a lack of any result on U\* and H."*
 
-⇒ **When world GDP sits below its aim, the labour and hoard lines carry no information about the levers that were supposed
-to move them.** A world that never industrialised keeps its peasants and accumulates no investment pool *by identity* —
-whatever A, B, the cost slope or the spending set are doing. So a report **may not cite U\* or H as met** on any run or
-consensus whose world GDP is under the aim; it states that they are NOT READ, and gives the GDP first.
+⇒ **When world GDP is far enough from its aim, the labour and hoard lines carry no information about the levers that were
+supposed to move them.** A world that never industrialised keeps its peasants and accumulates no investment pool *by
+identity* — whatever A, B, the cost slope or the spending set are doing.
+
+⚠⚠ **THE GATE IS NOT AT THE AIM, AND SAYING SO WAS THE FIRST DRAFT'S ERROR** (corrected by the user within the hour:
+*"It's important not to overdo that. Readings at 20% of median to either side are OK. But 0.6 is not, 0.6 does disqualify
+U\* and H."*). The aim is 1.0 and ±20% is ordinary seed spread — vanilla's own sixteen seeds run 0.823–1.146 of their
+median — so a gate at the aim would void almost every run ever measured. The ruled anchors:
+
+| world GDP ÷ vanilla | U\* and H |
+|---|---|
+| **0.80 – 1.20** | **READ NORMALLY** — inside ±20% of the median, ruled OK |
+| 0.66 – 0.80 and 1.20 – 1.38 | **WEAKENED** — quote them only with the GDP beside them; never "at the aim" unqualified |
+| **≤ 0.60** | **DISQUALIFIED** — ruled outright |
+
+⚠ The exact cut between "weakened" and "disqualified" is **UNRULED**: 0.80 is ruled OK and 0.60 ruled out, and nothing
+says where in between it falls. Report the band a run is in rather than inventing a threshold.
+⭐ **Note that 0.60 sits BELOW the world-product hard floor of 0.66** (§10.86.1), so a run actually reaching 0.60 is
+already *broken by stall* and records only a binary outcome — U\* and H are not reported for it at all. ⇒ **the gate's
+live region for an INTACT run is 0.66–0.80** (and 1.20–1.38 above), which is exactly where run 1 of `probe-sm-b152`
+landed at **0.67**: intact, one notch off the hard floor, and its pool U\* 2.70× / pool H 0.23× are therefore weakened to
+the point of carrying nothing — which is the reading the ruling was made about.
 
 ⚠ **This is stronger than F134's finding that a stall RANKS well.** F134 said the LOSS mis-ranks, which invites a
 re-weighting; this says the underlying READINGS are absent, so no weighting can repair them — only a run with a working
@@ -8149,7 +8167,7 @@ economy can measure U\* or H at all. Nothing in `criteria.mjs` changes: it still
 loss is a residual and this is a rule about what a REPORT may claim.
 
 ⇒ It sharpens the standing priority (world GDP at 1935 > the pool's W × Y > W) into a **GATE**: world GDP is read first,
-and it decides whether the other lines can be read at all.
+and it decides how much weight the other lines can carry — full inside ±20% of the median, none at 0.60.
 
 **RULING 2 — A COUNTRY-LEVEL SHARE IS A READING, EVEN THOUGH COUNTRY-LEVEL LEVELS ARE NOISY.** The user: *"While
 country-level readings are inherently noisy, still, the shares of something (1−U\*, for instance) should not be discarded
