@@ -8131,6 +8131,54 @@ intact seeds between them.
    2.0 soft line) and per-capita **1.85** (inside the 1.9 aim). The report now prints BOTH on the pool GDP line; which one the criterion is on is
    the user's call.
 
+### 10.83.8 — TWO READING RULES (user-ruled 2026-09-22, on the first run of the B-gradient batch)
+
+**RULING 1 — U\* AND H "AT THE AIM" IN A POOR ECONOMY ARE NOT RESULTS; THEY ARE THE ABSENCE OF A READING.** The user, on
+run 1 of `probe-sm-b152` (world GDP **0.67×**, and on the register pool U\* 2.70× "AT THE AIM", pool H 0.23× "AT THE AIM"):
+*"'median U\* at the aim because the world is poor' or 'H at the aim because the world is poor' is not a positive result,
+it's a lack of any result on U\* and H."*
+
+⇒ **When world GDP sits below its aim, the labour and hoard lines carry no information about the levers that were supposed
+to move them.** A world that never industrialised keeps its peasants and accumulates no investment pool *by identity* —
+whatever A, B, the cost slope or the spending set are doing. So a report **may not cite U\* or H as met** on any run or
+consensus whose world GDP is under the aim; it states that they are NOT READ, and gives the GDP first.
+
+⚠ **This is stronger than F134's finding that a stall RANKS well.** F134 said the LOSS mis-ranks, which invites a
+re-weighting; this says the underlying READINGS are absent, so no weighting can repair them — only a run with a working
+economy can measure U\* or H at all. Nothing in `criteria.mjs` changes: it still prints and scores both lines, because the
+loss is a residual and this is a rule about what a REPORT may claim.
+
+⇒ It sharpens the standing priority (world GDP at 1935 > the pool's W × Y > W) into a **GATE**: world GDP is read first,
+and it decides whether the other lines can be read at all.
+
+**RULING 2 — A COUNTRY-LEVEL SHARE IS A READING, EVEN THOUGH COUNTRY-LEVEL LEVELS ARE NOISY.** The user: *"While
+country-level readings are inherently noisy, still, the shares of something (1−U\*, for instance) should not be discarded
+completely."* ⇒ A per-country **level** (GDP, workforce size, building count) moves with territory and is a weak signal;
+a per-country **SHARE** normalises that away and stands on its own.
+
+⭐ **Measured the same day, and it reverses the caveat that produced the ruling.** Britain's U\* = (unemployed + peasants)
+÷ total workforce, six runs of the same base with one B step between them:
+
+| run | 1860 | 1880 | 1900 | 1920 | 1935 | 1935 workforce |
+|---|---|---|---|---|---|---|
+| `probe-sm-b152` r1 (B 1.52) | 70.1% | 70.1% | 67.6% | 59.6% | **44.0%** | 16.9M |
+| `probe-slide-mild` n2r1 (B 1.50) | 69.7% | 53.7% | 19.5% | 4.6% | 1.7% | 19.4M |
+| n2r2 | 59.2% | 55.7% | 35.5% | 23.8% | 12.1% | 21.4M |
+| n3r1 | 63.8% | 65.3% | 58.9% | 35.9% | 5.2% | 20.3M |
+| n3r2 | 61.2% | 58.1% | 42.4% | 18.6% | 3.4% | 20.5M |
+| n3r3 | 63.8% | 53.4% | 24.8% | 25.4% | 8.4% | 29.2M |
+
+The b152 run's Britain was first discounted as territorially confounded (its total population ends at 56.9M against
+81.3M in a base seed). **That discount was wrong**: the WORKFORCE denominators are 16.9M against 19.4–20.5M, ~15% apart
+rather than ~30%, because most of the population gap is dependents and colonial subjects who never enter the denominator
+— and the share normalises precisely what the caveat was worrying about. All six seeds sit together at 59–70% through
+1860–1880; five then fall below 12.1% and one does not. **That is a real reading of a country, at n=1.**
+⚠ It is still ONE seed and cannot yet say whether the cause is the B step or a basin: three b152 seeds near 44% would
+mean the config, a scatter of 5 / 44 / 8 would mean the seed.
+⚠ The identity to use is `U* = (population_unemployed_workforce + peasants) ÷ Σ workforce_by_profession`, which holds
+EXACTLY in the save (salaried + unemployed + peasants = Σ, verified to the pound); putting the unemployed in the
+denominator a second time reads ~5pp low.
+
 ## 10.86 — THE THREE RULINGS OF 2026-09-19: THE WORLD PRODUCT GETS A HARD BAND FROM VANILLA'S OWN 95% CI, PRICES ARE PLANNED FOR BEFORE A CONFIG IS PLANNED, AND THE ERA-0 INPUT PENALTY IS SIZED AGAINST THE 1836 MAP (user-ruled 2026-09-19; GLOSSARY.md is its by-product)
 
 ### 10.86.1 — THE WORLD PRODUCT GETS A DERIVED HARD BAND: VANILLA'S OWN 95% CI ± 10% (user-ruled 2026-09-19), and the terminology sheet the ruling's own history demanded
