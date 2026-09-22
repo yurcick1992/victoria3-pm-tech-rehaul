@@ -16447,3 +16447,45 @@ the Commune fix (F154 §5) both paying off on the same arm.
 **Data verified clean** — zero duplicate `(date, market, good)` keys and zero conflicts in both runs' `markets.tsv`,
 100 / 101 summaries. Same shape as F153's. **L33 passed in-session**: no define rejected at load, which mattered
 because this was the mild set's first launch anywhere.
+
+### 7. ⭐⭐ AT n=5 THE SAME BOOK READS LOSS **3.60** — THE BEST REGISTER READING THIS PROJECT HAS PRODUCED — and every pre-registered prediction held (user-ruled *"Add another n=3 on the same config"*, session `20260921_220915_slide-mild-n3more`, 2026-09-22)
+
+Three more seeds of the **byte-identical** config, pooled with the original pair. **5 usable / 0 broken**, nothing
+beyond a soft boundary in any run, `preflight -Session` clean on all three (including L28, which the first batch
+tripped).
+
+| seed | world GDP (end state) | GBR U\* 1936 | GBR hoard 1936 | run loss |
+|---|---|---|---|---|
+| n2 / r1 | 1.28 | **1.5%** | 1.62 | 8.0 |
+| n2 / r2 | 1.16 | 10.0% | 0.70 | 6.0 |
+| n3 / r1 | 1.20 | 4.5% | 0.01 | 4.5 |
+| n3 / r2 | **0.91** | 2.2% | 0.71 | **2.1** |
+| n3 / r3 | 1.07 | 9.3% | 1.53 | 3.5 |
+| **consensus (median of 5)** | **1.16** | 4.5% | 0.71 | **3.60** |
+
+**Every prediction in the schedule held**: the median of five landed at 1.16 against a predicted 1.10–1.25; the
+five span **0.91–1.28** against a predicted "at least 0.9–1.35"; at least one further seed came in under 5% GBR U\*
+(4.5%, 2.2%) and at least one above 8% (9.3%); no run broke; and T0 stayed at the aim with T0 ÷ rest at 0.015.
+
+⭐ **The register at n=5**: pool W **0.73** and world W **0.75** at the aim, pool GDP **1.29** at the aim, T0
+**0.37 AT THE AIM** (0.66 → 0.59 → 0.48 → 0.30M), T0 ÷ rest **0.015**, T3 ÷ rest 0.61, PI **0.82**, PP **0.81**,
+pool H 1.90, world H 1.14. **Pool U\* 1.97 — a hair under the ≥ 2 aim** (1.86 at n=2).
+
+⚠⚠ **THE LOSS FELL 6.90 → 3.60 ON A CONFIG THAT DID NOT CHANGE, AND MOST OF THAT IS THE ESTIMATOR, NOT THE BOOK.**
+The register's consensus rule is n-dependent — the mean of two, the two closest of three, the **median** of five —
+and the original pair happened to draw the **1st and 3rd highest** of the five seeds (1.28 and 1.16), so its mean
+of 1.22 sat 0.06 above the true median of 1.16. ⇒ **3.60 is NOT comparable to the n=2 losses of the other books in
+the ranking** (`anch-costslide` 5.53 at 1 intact + 1 broken, `c195-in12-eager` 5.14 at n=2, `c19-e0ai500` 4.99 at
+1 + 1, the canon 7.99 at n=3). Comparing them would re-run F134's error of ranking books inside their own noise —
+with the twist that here the *estimator* differs too. What n=5 legitimately buys is a **better-determined centre for
+this book**, not a win over books measured with fewer seeds.
+
+⭐ **What it does settle, and it is the thing the batch was for**: Britain's full depeasantation is **NOT a property
+of the book** — 3 of 5 seeds end under 5% U\* (1.5 / 2.2 / 4.5%) and 2 do not (9.3 / 10.0%), and the hoard that
+would make it a hard break appears in only 2 of 5 (1.62, 1.53). The soft flag moved country between seeds, landing
+on **Germany** in n3/r1 (9 years under 5% U\* at a mean hoard of 0.13). ⇒ the capital-abundance exposure is real,
+seed-dependent and never yet binding on this base.
+
+⛔ **And the config still misses the user's band**, by less than the pair suggested: **world GDP median 1.16 against
+the 0.8–1.1 asked for.** The register itself calls that "inside, above the aim", and the 0.91 seed shows the book
+can reach the band — but its centre does not.
