@@ -2117,6 +2117,12 @@ ladder at all**, which is what these two are.
 2. **BROADER TRADE.** Our scenarios and our books have never touched trade: `trade_center` is deliberately left vanilla,
    the mod ships no trade-route or market-access change, and the balance model assumes NO international trade inside a
    scenario (the amalgamation premise of the anchor principle, rule 6). ⚠ Scope unspecified likewise.
+   ⭐ **The mechanism and a per-good case now exist (PROPOSED, NOT RULED):** FINDINGS **F155** (the levers: traded quantity
+   per unit of Trade Capacity, merchant marine per trade-centre LEVEL, `convoy_cost_multiplier` not a trade mechanic) and
+   **F159** (vanilla sustains a ~25% importer–exporter wedge for EVERY good — historically a bulk wedge — and a five-class
+   ladder of £ moved per unit of capacity, bulk kept at vanilla as the untreated group, the others ×1.41 / ×2 / ×2.83 / ×4,
+   ≈ ×2.3 first-order level). ⚠ Before any trade batch: extend `save_state_summary.mjs` with the per-good trade capacity and
+   the world-market price the save already carries (F159 §1) — the harvester reaps the saves, so this cannot be back-filled.
 
 ### ⭐⭐ THESE TWO ARE NOT LEVERS UNDER EVALUATION — THEY GO IN FOR THEIR OWN REASONS, AND THAT DICTATES WHERE WE START FROM
 

@@ -16564,3 +16564,152 @@ with no `build_state.json`**.
   (§10.83.8)** and carry little; the B 1.58 conclusion does not rest on them.
 
 ⭐ **OUTCOME: `probe-sm-b158` was CANONIZED 2026-09-23** (user-ruled) as `canon-slide-b158`, commit `f0c593a`.
+
+---
+
+## F159 — ⭐⭐ VANILLA PRICES EVERY GOOD'S TRADE AS IF IT WERE GRAIN: one unit of Trade Capacity moves ~£240 of ANY good, the importer–exporter price wedge it sustains is **~25% of base for every good and every decade**, and 25% is historically the BULK-commodity wedge (wheat 16–18%, rice 26%, pig iron 19%, short-haul coal 29% by 1913) against ~0–5% for textiles, jute, copper and the precious goods. Plus two save-side instruments that make the trade experiment measurable without touching telemetry (read-only: 4 melted vanilla saves 1851–1921, the vanilla n=16 baseline, one mod endpoint, the vanilla production methods and the economic-history literature, 2026-09-23)
+
+**Arm:** none run. Vanilla evidence from `tools/testbed/saves_debut` (one VANILLA campaign, melted at 1851.1.1 / 1881.1.1 /
+1901.1.1 / 1921.1.1) and `20260821_131149_vanilla-baseline-n16` (`markets_all.tsv`, 7→6 instrumented markets); the mod
+endpoint is `20260920_114003_anch-costslide-century/run001` at 1936 (F155 §6b). Follows F155, which established the
+mechanism (volume = capacity × `traded_quantity` × (1 + `state_trade_quantity_mult`), merchant marine per LEVEL).
+
+### 1. Two save-side instruments nobody had read
+
+1. ⭐⭐ **Every state record persists its TRADE CAPACITY PER GOOD, SIGNED.** `states.database.<id>.trade = { goods = { <goods
+   index> = { value = <int> } } }`, **+ = export, − = import**, the goods index being the order of `common/goods/00_goods.txt`
+   (0 = ammunition … 52 = fine_art); `traded_goods = { … }` beside it lists the same goods sorted by |value|. **Σ|value| equals
+   the state's `trade_capacity_usage` exactly** — Louisiana 1901 reads 1,189 = 1,189 (clothes +320, steel −270, wood +78,
+   luxury_clothes −71, tea −68, coal −55, …); 175 of 183 trading states agree to within 1. ⇒ traded VOLUME per good per state
+   = value × `traded_quantity` × (1 + the state's trade-centre quantity multiplier).
+2. ⭐ **The WORLD MARKET PRICE per good is persisted too**: `world_market.price_trend.channels.<goods index>.values`, 52 samples
+   one every 28 days (the exe's `Goods.GetWorldPriceTrend`), latest last. Goods nobody trades sit on the ceiling (tanks 140 on
+   a base of 80 = 175%).
+⇒ **Both of the trade experiment's quantity questions are answerable from the SAVE**: capacity and volume per good per
+importer/exporter, and every market's price against one world anchor (per-market prices are already in `markets.tsv`).
+**No telemetry change is needed** — a `save_state_summary.mjs` extension (per-country per-good signed capacity, capacity and
+usage, the world price per good) replaces the `GetWorldMarketBasePrice` column F155's plan proposed. ⚠ It must be in place
+BEFORE the trade batch runs: the harvester reaps every `.v3` but the newest.
+
+### 2. Trade capacity binds all century
+
+| save | world capacity | used | used % | states with ≥ 200 capacity | their share of capacity | their use |
+|---|---|---|---|---|---|---|
+| vanilla 1851.1.1 | 4,884 | 4,411 | **90.3%** | 2 | 11% | 99.0% |
+| vanilla 1881.1.1 | 10,183 | 9,277 | **91.1%** | 11 | 33% | 97.6% |
+| vanilla 1901.1.1 | 21,590 | 19,633 | **90.9%** | 33 | 66% | 91.8% |
+| vanilla 1921.1.1 | 44,982 | 42,799 | **95.1%** | 58 | 83% | 96.2% |
+| mod (anch-costslide) 1936 | 51,911 | 51,139 | **98.5%** | 62 | 84% | 99.2% |
+
+Idle capacity (states using none) is 0.0–0.4% of the world's. ⇒ the AI is out of capacity, not out of trades, so a good's
+share of capacity is decided by competition between goods.
+
+### 3. What vanilla actually trades — the colonial goods, not the big baskets
+
+Share of world trade VALUE (Σ over states of |capacity| × `cost` × `traded_quantity`), the vanilla campaign:
+
+| good | 1851 | 1881 | 1901 | 1921 | | good | 1851 | 1881 | 1901 | 1921 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| tobacco | 6.2 | 6.4 | **8.2** | 6.4 | | coal | 1.0 | 6.2 | 4.3 | 6.7 |
+| tea | 8.7 | 8.7 | 6.9 | 6.7 | | fabric | 4.1 | 4.4 | 4.1 | 2.2 |
+| clothes | 0.8 | 4.4 | 6.9 | 5.0 | | iron | 2.9 | 2.5 | 3.0 | 3.2 |
+| engines | 0.7 | 6.0 | 6.4 | 4.4 | | silk | 3.0 | 2.9 | 3.0 | 3.2 |
+| coffee | 5.6 | 3.3 | 5.2 | 5.8 | | opium | 6.4 | 3.8 | 2.6 | 1.7 |
+| luxury_clothes | **10.0** | 5.7 | 5.1 | 6.2 | | hardwood | **8.3** | 3.2 | 2.4 | 3.5 |
+| tools | 2.1 | 1.9 | 4.8 | 4.6 | | **grain** | **0.4** | **0.5** | **0.5** | **0.3** |
+| steel | 0.3 | 2.7 | 4.7 | 0.5 | | meat / fish | 1.6 / 0.7 | 0.5 / 0.8 | 0.5 / 0.5 | 0.3 / 0.2 |
+
+Against each good's share of market DEMAND (buy orders at base prices, the instrumented markets, median of 16 seeds, 1900):
+tools **9.3%** of demand and 3.0% imported · coal **8.7** / 4.3 · steel **7.3** / 1.2 · iron 5.4 / 2.4 · clothes 4.4 / 4.4 ·
+grain 2.7 / **0.0** — while silk is 1.2% of demand and **34.7%** imported, dye 1.5 / 14.0, coffee 1.7 / 13.9, sugar 1.4 /
+21.7, opium 1.3 / 12.8, hardwood 1.5 / 13.9. ⇒ vanilla's trade is carried by small, geographically concentrated goods; the
+big-basket manufactures and bulk goods are overwhelmingly domestic.
+
+### 4. The wedge vanilla sustains is flat — and it is a bulk wedge
+
+Importer-minus-exporter price among the instrumented markets (the heaviest importer's price minus the heaviest exporter's,
+per good per seed, % of base):
+
+| date | observations | p25 | **median** | p75 |
+|---|---|---|---|---|
+| 1870.1.1 | 534 | 11.7 | **25.5** | 37.6 |
+| 1900.1.1 | 469 | 12.8 | **24.8** | 38.5 |
+| 1930.1.1 | 522 | 14.3 | **25.8** | 37.6 |
+
+No good-type pattern and no trend over sixty years (the historical wedges fell 3–5× over the same span, §5). Inside vanilla
+the wedge does fall as `cost × traded_quantity` (W) rises — **26.5% at W 200–210 (19 goods), 24.0% at 240–245 (16), 23.9% at
+250–300 (9)**, a log-log slope of **−0.59** over 3,204 positive observations against −1 for a perfectly capacity-bound
+allocation. ⚠ W is confounded with good type there (the W-200 goods are raw and intermediate, the W-250+ goods colonial and
+luxury), so it is DIRECTIONAL support for the mechanism, not an estimate of it.
+⭐ **Grain has the smallest cross-market price dispersion of any good** (1900: max–min 26%, MAD 5.9%; fish 33 / 6.1,
+groceries 34 / 7.5) — everyone grows it — so vanilla grain trade is GAP-limited, not W-limited.
+
+### 5. The historical yardstick: trade cost per £ of value
+
+Measured price gaps (verified from O'Rourke & Williamson, NBER w7632, and Collins 1996 as cited there; coal from a DPhil
+thesis on global coal prices, Oxford ORA): wheat Liverpool–Chicago **57.6% (1870) → 17.8% (1895) → 15.6% (1912)** · bacon
+London–Cincinnati **92.5 → 92.3 (1895) → 17.9 (1913)** · raw cotton Liverpool–Bombay **57 (1873) → 20 (1913)**, Egyptian
+cotton 14.7 (1882–89) → 5.3 (1890–99) · jute London–Calcutta **35 → 4** · rice London–Rangoon **93 → 26** (the tramp freight
+alone 73.8% → 18.1% of the Rangoon price, 1882–1914) · cotton textiles Boston–Manchester **13.7 → ~0** · iron bars
+Philadelphia–London 75 → 20.6 and pig iron 85.2 → 19.3 (both carry the US tariff) · copper 32.7 → ~0 · hides 27.7 → 8.7 ·
+wool 59.1 → 27.9 · coal NE England–Hamburg 44.4 (1875/77) → 29 (1911/13), Cardiff–Genoa **168 (1882) → 41 (1894) → 29
+(1912)**, long-haul Cardiff–Colombo / Singapore / Recife 139–174 at the minimum.
+⚠ Goods without a price-gap study (tea, coffee, tobacco, silk, opium, dye, rubber, sugar, machinery …) are placed by
+**unit-value arithmetic** — freight per ton ÷ value per ton ca. 1900 — which is robust in ORDER (freight per ton varies ~3–5×
+between tramp and liner cargo while value per ton varies >100× between coal and silk) and approximate in LEVEL.
+⭐ The ratio is UNIT-FREE (£ of freight per £ of goods), so the game's abstract units never enter it.
+
+### 6. Quality is quantity, read off vanilla's own recipes
+
+Material input per £ of output, base price, across a building's main methods (vanilla `common/production_methods`):
+**clothes 0.59 → 0.44 → 0.40 → 0.29** (fabric per £ of clothes, handsewn → electric sewing machines); furniture 0.59 → 0.41 →
+0.36; paper's wood per paper unit falls 2.5× (30 wood → 40 paper, then → 100). A later method's unit of a MANUFACTURE embodies
+less material, so its trade cost per £ falls over the century; a raw good's unit does not. The canon's A/B ladder does the
+same, steeper: material per unit of output × (B/A)^era = **0.72^era** at A 2.2 / B 1.58 (0.37 at e3).
+⚠ The chain is a cross-check only where inputs are MATERIAL: tooling's and glass's wood is partly fuel, which breaks it.
+
+### 7. THE CASE — proposed relative weights (PROPOSED, NOT RULED)
+
+**Yardstick:** W = `cost × traded_quantity` = base-price £ moved per unit of trade capacity. In a capacity-bound equilibrium
+the surviving price wedge of a good goes as λ ⁄ W, so **W is the in-game reciprocal of the good's trade cost per £** and
+should rank as history's τ does. **Anchor:** vanilla's measured ~25% wedge IS the historical bulk wedge, so the bulk class is
+the one good vanilla already prices right and stays EXACTLY at vanilla (an untreated control group for the experiment);
+every other class gets more £ per capacity. **Ladder:** five classes about 2.4× apart in τ (geometric class centres
+28.7% / 11.4% / 4.86% / 2.14% / 0.68%), weights stepped ×√2 per class (≈ α 0.4 on the class centres) and capped at 4.
+
+| class (τ ≈ 1900–13) | relative W (÷ 240) | goods — vanilla `traded_quantity` → proposed |
+|---|---|---|
+| **E bulk & perishable** (≥ 20%) | **vanilla, unchanged** (0.83–1.00) | coal 7 · wood 10 · iron 5 · fertilizer 7 · meat 8 · fruit 8 · fish 12 · sulfur 4 · grain 12 · oil 6 · furniture 8 |
+| **D semi-bulk** (8–15%) | **1.41** (W 340) | fabric 10→17 · sugar 8→11.3 · lead 5→8.5 · steel 4→6.8 · groceries 9→11.3 · paper 7→11.3 · wine 5→6.8 · hardwood 5→8.5 · glass 5→8.5 · explosives 4→6.8 |
+| **C manufactures & colonial staples** (4–6%) | **2.0** (W 480) | clothes 8→16 · tools 5→12 · engines 4→8 · coffee 5→9.6 · tobacco 5→12 · liquor 8→16 · porcelain 3.5→6.9 · artillery 3.5→6.9 · ammunition 5→9.6 · automobiles 3→4.8 · aeroplanes 3→6 · luxury_furniture 4→8 |
+| **B compact** (1.5–3%) | **2.83** (W 680) | tea 5→13.6 · small_arms 4→11.3 · telephones 4→9.7 · radios 3.5→8.5 · tanks 3→8.5 |
+| **A precious & self-delivering** (≤ 1%) | **4.0** (W 960, capped) | silk 5→24 · opium 5→19.2 · dye 5→24 · rubber 5→24 · luxury_clothes 4→16 · fine_art 1.5→4.8 · clippers 3.5→16 · steamers 3.5→13.7 |
+
+Not moved: **merchant_marine** (it is the good trade centres consume — making it tradable reshapes the capacity supply
+itself; a separate, systemic lever) · the three `local` goods and gold (untradeable) · manowars/ironclads (deprecated).
+**Boundary goods** (within one class of the line): grain (measured 16–18% at the end of the period, 58% at the start), fish,
+fabric, lead, explosives, coffee, tobacco.
+**The level this implies**: at the 1901 vanilla capacity allocation, base-£ moved per unit of capacity rises **223 → 511
+(×2.29)** before any reallocation or new trade centres. Milder compression α 0.25 gives the ladder 1 / 1.26 / 1.56 / 1.91 / 2.55
+and ×1.74; α 0.5 gives 1 / 1.59 / 2.43 / 3.66 / 6.51 and ×3.1; the literal α 1 gives 1 / 2.5 / 5.9 / 13 / 42 and ×12.8.
+A "relative-only" normalisation (capacity-weighted mean W = vanilla) is REJECTED: it puts the bulk class at 0.43 of vanilla,
+i.e. back to an 1870-sized wedge for grain and coal.
+**Design fit:** every tiered industry's output except furniture and fertilizer is raised (PI: dye ×4, tools and engines ×2,
+steel, paper and explosives ×1.41; PP: fine art ×4, telephones/radios ×2.83, clothes and automobiles ×2, groceries and glass
+×1.41) — the goods through which a technology leader's cheaper frontier output can reach a laggard's market (the mod's first
+goal and F94's price path).
+
+### 8. What it does NOT say
+
+- ⚠ **Nothing was run with any of it.** §7 is a design argument resting on §2–§6; the effect on world GDP, on prices and on
+  Britain's U\* is unmeasured, and the ×2.3 level is first-order arithmetic at a fixed allocation, not a prediction (capacity
+  will move toward the raised goods and more trade centres will be built — the no-ceteris-paribus rule applies in full).
+- ⚠ **The historical τ are approximate for every good without a price-gap study** (§5); the case rests on their ORDER, and
+  the classes are 2.4× apart so that most goods would stay in class under a ±50% error.
+- ⚠ **The wedge-vs-W slope (−0.59) is confounded with good type** and is support, not calibration.
+- ⚠ **Price gaps in §5 include tariffs and quality differences** (the US iron and steel gaps above all), so the steel class is
+  a judgement between the measured gap and the unit-value arithmetic.
+- ⚠ **One vanilla campaign** supplies the capacity and allocation series (§2–§3); the wedge and basket figures are the n=16
+  baseline's medians over its instrumented (rich) markets.
+- ⚠ **Granularity**: capacity per good per state is an integer and often 1–10; a high W makes one unit move more, so small
+  markets trade in coarser lumps. The cap at 4 is partly for this.

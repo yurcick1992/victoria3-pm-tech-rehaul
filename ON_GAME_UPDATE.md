@@ -268,6 +268,10 @@ hand on a major patch.
      not. In `common/defines/00_ai.txt`: `TRADE_CENTER_MINIMUM_GDP_MARKET_CAPITAL` 100,000 /
      `_NON_MARKET_CAPITAL` 500,000, **× `(1 + years since 1836 × TRADE_CENTER_MINIMUM_GDP_PASSED_YEARS_MULT 0.02)`** —
      a 3× harder bar in 1936 than in 1836.
+   - ⚠ **The SAVE's goods index is POSITIONAL** (FINDINGS F159 §1): a state's per-good trade capacity
+     (`trade.goods.<n>`) and the world-market price trend (`world_market.price_trend.channels.<n>`) key goods by their
+     order in `common/goods/00_goods.txt` (0 = ammunition … 52 = fine_art today). A patch that inserts, removes or
+     reorders a good shifts every later index silently — any reader must derive the index from the file each time.
    - **`base_values` in `common/static_modifiers/00_code_static_modifiers.txt`** is the engine's always-applied block
      and already carries state modifiers, so it is the candidate global hook. Owning that 1,029-line file freezes it
      against the next patch; if we ever do, it joins the whole-file-replacement list in §"Automated" and must be
