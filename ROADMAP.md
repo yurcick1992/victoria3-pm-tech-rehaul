@@ -2118,17 +2118,34 @@ ladder at all**, which is what these two are.
    the mod ships no trade-route or market-access change, and the balance model assumes NO international trade inside a
    scenario (the amalgamation premise of the anchor principle, rule 6). ⚠ Scope unspecified likewise.
 
-### ⭐ THE PRE-REGISTERED PREDICTION (the user's, stated BEFORE anything is built — record it and score against it)
+### ⭐⭐ THESE TWO ARE NOT LEVERS UNDER EVALUATION — THEY GO IN FOR THEIR OWN REASONS, AND THAT DICTATES WHERE WE START FROM
 
-**World GDP UP; Britain's U\* DOWN (worse).** That is the direction the whole B gradient says these two axes trade along,
-so the interesting question is not the sign but the EXCHANGE RATE: how many points of world GDP per point of British U\*,
-against B's own rate. If trade and tech-finishing buy GDP more cheaply in U\* than B does, they are a strictly better
-lever than re-tuning B and the canon can keep B 1.58; if they buy it at the same rate, they are B in a different costume
-and the pair (B, trade) has one degree of freedom, not two.
-⚠ **This is the same shape as the B-and-C question the user deferred on 2026-09-22** ("Theoretically, higher B and C, if
-mutually tuned, should lead to higher U\* with the same GDP. But that's a question for later"), where the measured answer
-was that B and C are nearly EQUALLY U\*-efficient (−41.3 vs −42.8 pp per unit of world GDP) and therefore trade off to a
-wash. Measure the exchange rate first; do not assume these two are cheaper.
+**The user, correcting a first reading of this step that framed them as levers competing with B (2026-09-23):** *"the point
+isn't whether those two are B in disguise or not. They must be done for other reasons, but this means that the initial
+point we start applying them to should be lower than the target on GDP (which is a more important and less volatile
+target and the primary optimization point)."*
+
+⇒ **Do NOT design a batch to measure their exchange rate against B.** They are going in regardless; what their arrival
+determines is the STARTING POINT they are applied to. ⭐ **This is the UNDER-SIDE RULE of 2026-09-15 applied a second
+time** — the user then: *"more aggressive spend of investment pool money will increase the economy and thus
+depeasantation. So ceteris paribus, the other parts of the config … should be taken from the side that gave values
+slightly under the GDP/depeasantation target, not at the target."* Same logic, new cause.
+
+⭐ **THE CANON IS ALREADY POSITIONED CORRECTLY, ON BOTH AXES.** `canon-slide-b158` reads world GDP **0.87, below the 1.0
+target**, and Britain's U\* **22.2% median, above the 15% target**; the two changes push GDP UP and U\* DOWN, i.e. both
+toward their targets from the side that leaves room. ⇒ **The canon's world-GDP "miss" is not a defect to correct before
+step 11 — it is the headroom step 11 consumes**, and a book sitting on 1.0 today would overshoot the moment these land.
+
+⭐⭐ **WORLD GDP IS THE PRIMARY OPTIMIZATION POINT — more important AND less volatile** (same ruling). The volatility half
+is MEASURED on the B-gradient batch: within-config coefficient of variation averages **19.1% for world GDP against 88.0%
+for British U\***, a **4.6× gap that holds at every one of the five B points** (3.0× / 3.9× / 4.5× / 5.3× / 5.9×).
+⇒ **Tune on world GDP; treat British U\* as a CONSTRAINT that must stay inside its band, never as a quantity to minimise
+or to trade against GDP point-for-point.** A U\* difference between two books is roughly four times more likely to be seed
+noise than the same relative difference in world GDP.
+
+**The pre-registered prediction (the user's, before anything is built):** world GDP UP, Britain's U\* DOWN (worse). Record
+the measured size of both when the batches land — not to judge the changes, which are going in anyway, but to know how
+much headroom they consumed and therefore where the ladder should sit afterwards.
 
 ### Instrument notes for whoever runs it
 

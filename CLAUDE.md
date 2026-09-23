@@ -292,9 +292,18 @@ leave-one-out — and the two LARGEST steps land on the pre-registered model alm
 a three-point reading of this ladder returned a null.
 
 ⚠⚠ **THE KNOWN DEFECTS OF THIS CANON, stated so nothing has to rediscover them:**
-1. **World GDP sits at 0.87 median, below the 1.0 aim** (consensus 0.84). It is inside the soft range 0.75–1.33 and well
-   inside the hard band, but it is the largest single term of the residual. The gradient says the fix is a LOWER B and the
-   evidence says a lower B costs Britain's U\* — that trade is the open question, not a bug.
+1. **World GDP sits at 0.87 median, below the 1.0 aim** (consensus 0.84), the largest single term of the residual.
+   ⚠⚠ **BUT THIS IS THE CORRECT PLACE TO BE, NOT A DEFECT TO FIX — user-ruled 2026-09-23, and it is the UNDER-SIDE RULE
+   of 2026-09-15 applied again.** The next campaign (ROADMAP step 11) adds post-JE tech finishing and broader trade, both
+   of which RAISE the world product and are going in **for their own design reasons, not as levers competing with B** —
+   so *"the initial point we start applying them to should be lower than the target on GDP"*. ⭐ The canon is correctly
+   positioned on BOTH axes for that: world GDP **0.87, below the 1.0 target**, and Britain's U\* **22.2% median, above the
+   15% target** — and the two changes push GDP up and U\* down, i.e. both toward their targets from the side that leaves
+   room. A book sitting ON 1.0 today would overshoot the moment those changes land.
+   ⭐⭐ **WORLD GDP IS THE PRIMARY OPTIMIZATION POINT — more important AND less volatile than U\*** (the same ruling), and
+   the "less volatile" half is MEASURED on this batch: within-config coefficient of variation averages **19.1% for world
+   GDP against 88.0% for British U\*, a 4.6× gap that holds at every one of the five B points** (3.0–5.9×). ⇒ Tune on
+   world GDP; read U\* as the constraint that must stay in its band, never as the thing being minimised.
 2. **Pool U\* 1.84, under the ≥ 2 aim**, and PI 0.89 against an aim of ≤ 0.8.
 3. ⚠ **It differs from the previous canon on FOUR levers at once** (the slide, anchor cost, the mild spending set, B) — it was
    chosen on its measured end state, not by isolating each. No single-lever attribution exists for the combination.
