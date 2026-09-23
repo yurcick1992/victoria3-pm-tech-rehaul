@@ -44,7 +44,7 @@ const die = msg => { throw new Error('emit_tech_finish: ' + msg); };
 if (FB && ('diag' in FB || 'unresearchable' in FB))
   die(`finish_boost carries 'diag'/'unresearchable', keys of the RETIRED JE-stage form (commit 11a5b90, FINDINGS F160). ` +
     `The flat form takes { enabled, threshold, add } only — rebuild such a probe config from that commit if it must be reproduced.`);
-if (!FB || !FB.enabled) { console.log('tech finish: off (research_events.finish_boost absent or not enabled) - nothing emitted'); process.exit(0); }
+if (!FB || (!FB.enabled && !FB.force_test)) { console.log('tech finish: off (research_events.finish_boost absent or not enabled) - nothing emitted'); process.exit(0); }
 if (!(typeof FB.threshold === 'number' && FB.threshold > 0 && FB.threshold <= 1)) die(`finish_boost.threshold must be a fraction in (0, 1] (got ${FB.threshold})`);
 if (!(typeof FB.add === 'number' && FB.add > 0)) die(`finish_boost.add must be a positive number (got ${FB.add})`);
 const MARKER = '# pmr_finish_boost';
@@ -89,6 +89,7 @@ for (const f of readdirSync(VDIR).filter(x => x.endsWith('.txt'))) files[f] = { 
 if (existsSync(MDIR)) for (const f of readdirSync(MDIR).filter(x => x.endsWith('.txt'))) files[f] = { text: read(join(MDIR, f)), owned: true };
 
 const seen = {};
+const researchable = new Set();
 let nBoost = 0, nSkip = 0;
 const skipped = [];
 for (const [f, F] of Object.entries(files)) {
@@ -106,6 +107,8 @@ for (const [f, F] of Object.entries(files)) {
     if (children(m0, b.open + 1, b.close).some(c => c.key === 'can_research') || (cr && !['yes', 'no'].includes(cr[1])))
       die(`${f}: ${b.key} has a CONDITIONAL can_research - decide whether it should be boosted before shipping`);
     if (cr && cr[1] === 'no') { nSkip++; skipped.push(b.key); continue; }
+    researchable.add(b.key);
+    if (!FB.enabled) continue;              // a force_test control arm: parse the tree, patch nothing
     const ins = `${T}${T}${MARKER} — its banked progress covers ${FB.threshold * 100}% of its cost: one tick of research completes it\n` +
       `${T}${T}if = {\n${T}${T}${T}limit = { has_technology_progress = { technology = ${b.key}  progress >= ${FB.threshold} } }\n` +
       `${T}${T}${T}add = ${FB.add}\n${T}${T}}\n`;
@@ -131,7 +134,7 @@ const nTech = Object.keys(seen).length;
 if (nTech < 150) die(`only ${nTech} technologies parsed - the tree files moved or changed shape`);
 
 // verify the artifact: one boost per researchable technology, each naming its own technology
-{
+if (FB.enabled) {
   let blocks = 0;
   for (const f of readdirSync(MDIR).filter(x => x.endsWith('.txt'))) {
     const s = read(join(MDIR, f));
@@ -145,5 +148,78 @@ if (nTech < 150) die(`only ${nTech} technologies parsed - the tree files moved o
   }
   if (blocks !== nBoost || nBoost !== nTech - nSkip) die(`${blocks} boost blocks written, ${nBoost} counted, ${nTech - nSkip} researchable technologies`);
 }
-console.log(`tech finish: +${FB.add} AI weight at has_technology_progress >= ${FB.threshold} on all ${nBoost} researchable technologies ` +
+if (FB.enabled) console.log(`tech finish: +${FB.add} AI weight at has_technology_progress >= ${FB.threshold} on all ${nBoost} researchable technologies ` +
   `(of ${nTech}; skipped as unresearchable: ${skipped.join(', ') || 'none'})`);
+else console.log(`tech finish: boost OFF (force_test control arm) - ${researchable.size} researchable technologies parsed, none patched`);
+
+// ===================================================================================================
+// FORCE TEST (probe builds only) — does the boost change what the AI picks?
+// ===================================================================================================
+// `finish_boost.force_test` {from, to, techs[]}: once, in the monthly pulse between `from` and `to`, each country
+// gets ONE technology — the first of `techs` it can research and is not already researching — pushed to between
+// `threshold` and 100% of its cost. Progress is added in steps until has_technology_progress ITSELF reports the
+// threshold, so the forcing also re-verifies the trigger. ⚠ It must never reach 100%: a grant reaching the cost
+// completes the technology on the spot (F160), which would test nothing. So the fine step is below half of
+// (1 − threshold) of the cheapest candidate's era cost, and the coarse step below half of the last 10%.
+// Every research choice is logged afterwards. Run it with `enabled: true` and `enabled: false` — the only difference
+// between the two arms — and compare whether the next choice after forcing is the forced technology.
+if (FB.force_test) {
+  const ft = FB.force_test;
+  if (!Array.isArray(ft.techs) || !ft.techs.length || !ft.from || !ft.to) die('force_test needs { from, to, techs[] }');
+  for (const t of ft.techs) if (!researchable.has(t)) die(`force_test names ${t}, which is not a researchable technology of this tree`);
+  if (!(typeof FB.threshold === 'number' && FB.threshold < 1)) die('force_test needs finish_boost.threshold < 1 (the band below completion)');
+  const ERACOST = {};
+  for (const f of readdirSync(join(GAME, 'common/technology/eras')))
+    for (const mm of read(join(GAME, 'common/technology/eras', f)).matchAll(/era_(\d+)\s*=\s*\{[^}]*?technology_cost\s*=\s*(\d+)/g)) ERACOST[+mm[1]] = +mm[2];
+  const eraOf = t => +mask(files[seen[t]].text).match(new RegExp(`^${t} = \\{[\\s\\S]*?\\bera = era_(\\d)`, 'm'))[1];
+  const minCost = Math.min(...ft.techs.map(t => ERACOST[eraOf(t)]));   // the penalty only ADDS, so this is the floor
+  const COARSE_TO = 0.9;
+  const coarse = Math.floor((1 - COARSE_TO) * minCost / 2), fine = Math.floor((1 - FB.threshold) * minCost / 2);
+  if (fine < 1) die(`threshold ${FB.threshold} leaves no room below completion for a step on a ${minCost}-point technology`);
+  const name = `[THIS.GetCountry.GetNameNoFormatting]`, date = `[TimeKeeper.GetCurrentDate.GetString]`;
+  const pc = t => `prog=[GetTechnology('${t}').GetProgress(THIS.GetCountry.Self)|0]|cost=[GetTechnology('${t}').GetCost(THIS.GetCountry.Self)|0]`;
+  const hp = (t, p) => `has_technology_progress = { technology = ${t}  progress >= ${p} }`;
+  const branches = ft.techs.map((t, i) =>
+`${T}${T}${T}${i ? 'else_if' : 'if'} = {
+${T}${T}${T}${T}limit = { can_research = ${t}  NOT = { is_researching_technology = ${t} } }
+${T}${T}${T}${T}debug_log = "PMR_FORCE_PRE|${name}|${t}|${pc(t)}|d=${date}"
+${T}${T}${T}${T}while = { limit = { NOT = { ${hp(t, COARSE_TO)} } }  add_technology_progress = { progress = ${coarse}  technology = ${t} } }
+${T}${T}${T}${T}while = { limit = { NOT = { ${hp(t, FB.threshold)} } }  add_technology_progress = { progress = ${fine}  technology = ${t} } }
+${T}${T}${T}${T}debug_log = "PMR_FORCE|${name}|${t}|${pc(t)}|cur=[THIS.GetCountry.GetCurrentlyResearchedTechnology.GetName]|d=${date}"
+${T}${T}${T}}`).join('\n');
+  write('common/on_actions/zzz_pm_rehaul_finish_test.txt',
+`# AUTO-GENERATED by tools/emit_tech_finish.mjs (finish_boost.force_test) - do not edit by hand. PROBE BUILDS ONLY.
+# Registered with \`on_actions = { }\`, never a second \`effect\` (landmine L22: effects do not merge across files).
+on_monthly_pulse_country = {
+${T}on_actions = {
+${T}${T}pmr_finish_test_force
+${T}}
+}
+on_research_technology_started = {
+${T}on_actions = {
+${T}${T}pmr_finish_test_pick
+${T}}
+}
+
+# once per country, in the window: push one technology into [${FB.threshold}, 1) of its cost
+pmr_finish_test_force = {
+${T}effect = {
+${T}${T}if = {
+${T}${T}${T}limit = { NOT = { has_variable = pmr_ft_done }  game_date >= ${ft.from}  game_date < ${ft.to} }
+${T}${T}${T}set_variable = pmr_ft_done
+${branches}
+${T}${T}${T}else = { debug_log = "PMR_FORCE_NONE|${name}|d=${date}" }
+${T}${T}}
+${T}}
+}
+
+# every research choice, the chosen technology read two ways (the second from the country, as a fallback)
+pmr_finish_test_pick = {
+${T}effect = {
+${T}${T}debug_log = "PMR_TPICK|[SCOPE.GetRootScope.GetCountry.GetNameNoFormatting]|[SCOPE.sTechnology('technology').GetNameNoFormatting]|d=${date}"
+${T}${T}debug_log = "PMR_TPICK2|${name}|[THIS.GetCountry.GetCurrentlyResearchedTechnology.GetName]|d=${date}"
+${T}}
+}
+`);
+  console.log(`tech finish: FORCE TEST ON (probe build) - ${ft.techs.length} candidate technologies, window ${ft.from}..${ft.to}, steps ${coarse} to ${COARSE_TO} then ${fine} to ${FB.threshold}`);
+}

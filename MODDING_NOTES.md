@@ -690,6 +690,14 @@ Read this before designing anything that hands a country research (ROADMAP step 
   earlier technology researched, the penalty shrinking) also completes it. The finish boost
   (`tools/emit_tech_finish.mjs`) covers that and every other leftover with one flat test on every
   technology: `has_technology_progress >= 0.99` → `add = 10000` in its ai_weight.
+- ⭐⭐ **A CONDITIONAL `add` IN `ai_weight` DOES STEER THE AI'S RESEARCH CHOICE — measured, not assumed**
+  (F160 §6, forced A/B): with one otherwise-ignored technology pushed to 99% in every country, the next
+  choice took it **52 of 52** times with `if = { limit = { has_technology_progress = { … progress >= 0.99 } }
+  add = 10000 }` and **0 of 42** without, at penalties Σ 0–4. So `has_technology_progress` evaluates in the
+  `ai_weight` context too. ⚠ The AI chooses only when its CURRENT research completes — a boost acts at the
+  next choice, which for a small country can be two years away. ⚠ `while = { limit = { … } <effect> }`
+  works in on_action effects (vanilla uses it); a stepped `add_technology_progress` loop that stops on
+  `has_technology_progress` is how to set progress to a fraction of a cost you cannot read in script.
 - ⭐⭐ **THE AHEAD-OF-TIME PENALTY, EXACTLY** (F160: 76,681 engine readings, 291 countries, 100% match):
   `cost = era_cost × (1 + TECH_AHEAD_OF_TIME_PENALTY_FACTOR × Σ)`, Σ = Σ over the UNRESEARCHED technologies
   of the SAME category in EARLIER eras of (era − their era). Readable per country in loc as

@@ -2463,6 +2463,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⇒ **After arming, confirm `tools/testbed/sessions/<stamp>/stop_watch.log` exists** — that file
                         is the only proof the watcher is really on, and it takes ~90 s to appear (it medians vanilla's
                         eighteen 1936 endpoints first)
+  testbed/ledger/finish_force.mjs  reads the finish boost's FORCE TEST (`finish_boost.force_test`, FINDINGS F160 §6): per arm, the landing
+                        (progress ÷ cost of every forced tech, must sit in [threshold, 1)), the share of NEXT research choices that take the
+                        forced tech, and the wait to acquisition. ⚠ It counts only choices made while the forced tech is still UNACQUIRED —
+                        tech spread finishes the last 1% within weeks when the forced tech is the country's spreading one, and a first
+                        count that missed this read four spread completions as misses. `--session <stamp>` (one arm per setup)
   testbed/ledger/finish_probe.mjs  reads the diagnostics of the finish boost's RETIRED first form (`finish_boost.diag`, commit `11a5b90`;
                         FINDINGS F160): the engine's cost against the penalty reconstruction under both sericulture readings,
                         `has_technology_progress` against progress ÷ cost, the wait from "finishable" to acquired, and the share of research
@@ -2798,9 +2803,14 @@ tools/                  dev tooling — NOT shipped in the mod
                         by hand. `add`, not multiply, because the ahead-of-time divisor applies outside ai_weight; appended LAST because
                         ai_weight evaluates top to bottom. ⚠ It OWNS all three vanilla technology files (regenerated from vanilla each
                         build). ⚠ It THROWS on a doubled boost, on a boost naming the wrong technology, on a CONDITIONAL can_research, and on
-                        a config still carrying the retired form's `diag` / `unresearchable` keys. ⭐ F160: expected to fire rarely — a grant
+                        a config still carrying the retired form's `diag` / `unresearchable` keys. ⭐⭐ VERIFIED TO CHANGE THE AI'S CHOICE (F160 §6,
+                        forced A/B): with one low-weight tech pushed into [0.99, 1) of its cost in every country, the next choice took it
+                        52 of 52 times with the boost and 0 of 42 without, at penalties Σ 0–4. ⭐ F160: expected to fire rarely — a grant
                         reaching the cost completes the technology inside the granting effect, and progress crosses the 99–100% band in about
-                        a week. ⚠ The same day's FIRST form (JE-stage flags + a rebuilt penalty per category and era, with probe diagnostics)
+                        a week. `force_test` {from, to, techs[]} (PROBE BUILDS ONLY) is that A/B's instrument: once in the window each
+                        country gets the first researchable of `techs` stepped into [threshold, 1) — steps derived so it can never reach
+                        100% and auto-complete — and every research choice is logged; it works with `enabled: false` for the control arm.
+                        Read with `testbed/ledger/finish_force.mjs --session <stamp>`. ⚠ The same day's FIRST form (JE-stage flags + a rebuilt penalty per category and era, with probe diagnostics)
                         is commit `11a5b90`; its diagnostic probe is what measured F160
   emit_secondaries.mjs  THE PER-TIER SECONDARY METHODS (user-ruled 2026-09-01): every secondary (cannery, luxury lines, rayon,
                         porcelain, radios, the tank/aeroplane conversions …) is minted per rung with the SAME RATIO to the rung's

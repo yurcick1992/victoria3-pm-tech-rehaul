@@ -16798,3 +16798,30 @@ falling-penalty case. So every researchable technology (181 of 182; sericulture 
 ahead-of-time divisor applies outside `ai_weight`, last because `ai_weight` evaluates top to bottom. The JE stage flags
 and the per-(category, era) penalty values are gone (the first form is commit `11a5b90`). Expected to fire rarely for the
 same reason as before: progress crosses the 99–100% band in about a week unless something interrupts it.
+
+**6. ⭐⭐ THE AI RESPONDS: 52 OF 52 WITH THE BOOST, 0 OF 42 WITHOUT (forced A/B, 2026-09-23).** The user: *"Firing or not
+firing, have you observed different AI propensity for choosing certain techs? Make something fire to check."* — nothing
+had, since no boosted technology had ever met the condition. Session `20260923_211358_finboost-p45-force-ab`, two runs
+1836.1.1 → 1838.1.1 on the canon with `finish_boost.force_test`, identical except `enabled` (ON: the flat boost on all 181
+researchable technologies; OFF: none). Once in February 1836 every country got ONE technology — the first researchable of
+sixteen low-weight era-1/2 technologies the AI chose **0 times in probe 1's 718 choices**, none JE-covered — stepped up
+until `has_technology_progress` ITSELF reported ≥ 0.99. Reader: `tools/testbed/ledger/finish_force.mjs`. Both arms clean.
+
+| | boost ON | boost OFF |
+|---|---|---|
+| countries forced (none had a candidate) | 257 (7) | 257 (7) |
+| landing, engine progress ÷ cost | 0.9900–0.9948, **0 outside [0.99, 1)** | 0.9903–0.9945, 0 outside |
+| next research choice made while the forced tech was unacquired | **52 of 52 took it (100%)** | **0 of 42 (0%)** — Mandatory Service 8, Currency Standards 7, Atmospheric Engine 4, Urban Planning 4, Admiralty 4, … |
+| forced tech completed by spread before the next choice | 4 | 1 |
+| no further choice inside 22 months | 201 | 214 |
+
+The 52 hits span penalties **Σ = 0 (15), 1 (3), 2 (24), 3 (3), 4 (7)** — an AI divisor of up to 1 + 1.25 × 4 = 6 — so
++10000 wins through the penalty. ⇒ **Both pieces of syntax work in `ai_weight`**: `has_technology_progress = { technology = X
+progress >= 0.99 }` evaluates there (the forcing loops also stopped on it, 514 times), and the conditional `add = 10000`
+decides the pick. ⚠ The AI chooses only when its current research completes, and most small countries' research outlasts
+22 months — so the boost acts at the NEXT choice, not instantly; the "201 / 214 made no further choice" rows are that, not
+misses. ⚠ A first read counted 4 ON-arm "misses" (Sokoto, Oyo, Massina, Sidamo picking Democracy/Centralization); all four
+had the forced cotton_gin completed by tech SPREAD within 2–5 weeks, 20 months before their next choice. The reader now
+counts only choices made while the forced technology is unacquired.
+**Confidence:** high for the direction and the size — a 100% / 0% split over 94 choices in two runs sharing everything
+but the boost. **Not measured:** how often the condition arises in a normal campaign (expected rarely, §4).
