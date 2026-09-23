@@ -12,11 +12,6 @@ catalytic_synthesis = {
 	}
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
-		if = {
-			limit = { has_technology_progress = { technology = catalytic_synthesis  progress >= 0.99 } }
-			add = 10000
-		}
 	}
 }
 
@@ -31,11 +26,6 @@ continuous_web_processing = {
 	}
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
-		if = {
-			limit = { has_technology_progress = { technology = continuous_web_processing  progress >= 0.99 } }
-			add = 10000
-		}
 	}
 }
 
@@ -49,10 +39,5 @@ spray_finishing = {
 	}
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
-		if = {
-			limit = { has_technology_progress = { technology = spray_finishing  progress >= 0.99 } }
-			add = 10000
-		}
 	}
 }

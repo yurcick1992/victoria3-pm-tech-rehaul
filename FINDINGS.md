@@ -16825,3 +16825,7 @@ had the forced cotton_gin completed by tech SPREAD within 2–5 weeks, 20 months
 counts only choices made while the forced technology is unacquired.
 **Confidence:** high for the direction and the size — a 100% / 0% split over 94 choices in two runs sharing everything
 but the boost. **Not measured:** how often the condition arises in a normal campaign (expected rarely, §4).
+
+**⚠ STATUS: PARKED OUT OF THE CANON (user-ruled 2026-09-23)** so another session's tests run against the canonized setup
+unchanged. The canon copies and the spec are back at their canonized bytes; the code stays, inert without the key; to be
+re-enabled when the user says those tests are done (CLAUDE.md's canon banner has the exact block).

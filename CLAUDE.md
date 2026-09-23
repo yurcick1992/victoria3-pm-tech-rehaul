@@ -263,10 +263,15 @@ so this canonization changes the recipe book alone.
 **What it is:** A 2.2 · **B 1.58** · `building_cost` = the vanilla anchor × 1.9^era · rung 0's input value × 1.2 with the ladder
 anchored on it · ai_value 1,000 × 3^era · the pool cost-divisor 0.000125 · the 24-month industry research bar · the
 **URBAN-CENTRE ELECTRICITY OVERRIDE** of §10.43.0 (verified present before canonizing: `pm_goods` 2 coal → 10 services +
-1 electricity, `pm_employment` 250 engineers) · ⭐ since 2026-09-23 (user-ruled, after canonization) **`research_events.finish_boost`**
-(the FLAT form: +10000 AI weight on any researchable technology while `has_technology_progress >= 0.99`; `tools/emit_tech_finish.mjs`,
-FINDINGS **F160** — expected to fire rarely, because a grant that reaches the cost completes the technology on the spot; proved a one-key
-diff, sha `128502ee8b2a4827` for both canon copies) — plus the two departures from the previous canon:
+1 electricity, `pm_employment` 250 engineers) · ⚠⚠ **`research_events.finish_boost` IS PARKED, NOT IN THE CANON** (user-ruled
+2026-09-23: *"I want this implemented in all cases going forward EXCEPT for the next tests that the other local session will do, for
+which it needs clean reference, the last canonized setup unchanged"*). Both canon copies and `lib_tier4_spec.mjs` are back at the
+canonized bytes (sha `4ce5890f88be1279`, proven: a fresh build of commit `470825f` equals today's `mod/` but for build stamps); the
+code stays and is inert without the key. **RE-ENABLE when the user says those tests are done**: add
+`"finish_boost": {"enabled": true, "threshold": 0.99, "add": 10000, "_why": …}` to `research_events` in BOTH canon copies (keep them
+byte-identical) and in `lib_tier4_spec.mjs`'s RESEARCH_EVENTS — the exact block is in commit `ad98b46` — then rebuild. It is the FLAT form:
++10000 AI weight on any researchable technology while `has_technology_progress >= 0.99` (`tools/emit_tech_finish.mjs`, FINDINGS **F160**:
+the AI took the boosted tech 52/52 against 0/42 without) — plus the two departures from the previous canon:
 1. ⭐ **THE ANCHOR SLIDE** (`--anchor-for textile,furniture,glass,tooling,munition,synthetics,automotive,electrics:1` with
    **`--anchor-cost`**): eight industries take their ladder origin at **e1** instead of e0, so era e is priced A^(e−1) / B^(e−1)
    over the anchor rung's own vanilla method, and `building_cost` follows the anchor. L31 prints a note per slid industry and
