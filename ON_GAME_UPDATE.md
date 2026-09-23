@@ -269,6 +269,12 @@ hand on a major patch.
      not. In `common/defines/00_ai.txt`: `TRADE_CENTER_MINIMUM_GDP_MARKET_CAPITAL` 100,000 /
      `_NON_MARKET_CAPITAL` 500,000, **× `(1 + years since 1836 × TRADE_CENTER_MINIMUM_GDP_PASSED_YEARS_MULT 0.02)`** —
      a 3× harder bar in 1936 than in 1836.
+   - ⚠ **A book that sets `goods_traded_quantity` OWNS `common/goods/00_goods.txt`** (whole-file replacement by
+     `tools/emit_goods.mjs`, since 2026-09-23 — today only `config/mod_config.canon-slide-b158-trade.json`; the canon
+     sets none). The copy is re-read from vanilla on every build and only the named goods' `traded_quantity` lines are
+     replaced, so a rebuild after a patch picks up everything else — but a build made BEFORE a patch ships the old
+     goods file (costs, new goods, flags) over the new game until it is rebuilt. `make_trade_config.mjs` also derives
+     each traded_quantity from vanilla's `cost`, and THROWS on a new tradeable good until it is classed.
    - ⚠ **The SAVE's goods index is POSITIONAL** (FINDINGS F159 §1): a state's per-good trade capacity
      (`trade.goods.<n>`) and the world-market price trend (`world_market.price_trend.channels.<n>`) key goods by their
      order in `common/goods/00_goods.txt` (0 = ammunition … 52 = fine_art today). A patch that inserts, removes or

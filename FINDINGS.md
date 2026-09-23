@@ -16582,14 +16582,21 @@ mechanism (volume = capacity × `traded_quantity` × (1 + `state_trade_quantity_
    the state's `trade_capacity_usage` exactly** — Louisiana 1901 reads 1,189 = 1,189 (clothes +320, steel −270, wood +78,
    luxury_clothes −71, tea −68, coal −55, …); 175 of 183 trading states agree to within 1. ⇒ traded VOLUME per good per state
    = value × `traded_quantity` × (1 + the state's trade-centre quantity multiplier).
-2. ⭐ **The WORLD MARKET PRICE per good is persisted too**: `world_market.price_trend.channels.<goods index>.values`, 52 samples
-   one every 28 days (the exe's `Goods.GetWorldPriceTrend`), latest last. Goods nobody trades sit on the ceiling (tanks 140 on
-   a base of 80 = 175%).
+2. ⭐ **The WORLD MARKET PRICE per good is persisted too**: `market_manager.world_market.price_trend.channels.<goods
+   index>.values` (the exe's `Goods.GetWorldPriceTrend`). ⚠⚠ **It is a 52-slot RING BUFFER, one slot per WEEK** — `index` is
+   weeks since 1836.1.1 (3389 at 1901.1.1) and the latest price sits at **values[(index − 1) mod 52], not at the end** (the
+   block's `sample_rate=28` does not describe the slot spacing). Measured on two saves 13 weeks apart (1901.1.1 → 1901.4.1,
+   index 3389 → 3402): exactly slots 9–21 were rewritten in place, every other slot byte-identical, in all five goods
+   checked. The first draft of this entry said "one every 28 days, latest last" — both wrong. Goods nobody trades sit on
+   the ceiling (tanks 140 on a base of 80 = 175%).
 ⇒ **Both of the trade experiment's quantity questions are answerable from the SAVE**: capacity and volume per good per
 importer/exporter, and every market's price against one world anchor (per-market prices are already in `markets.tsv`).
 **No telemetry change is needed** — a `save_state_summary.mjs` extension (per-country per-good signed capacity, capacity and
 usage, the world price per good) replaces the `GetWorldMarketBasePrice` column F155's plan proposed. ⚠ It must be in place
 BEFORE the trade batch runs: the harvester reaps every `.v3` but the newest.
+✅ **DONE 2026-09-23 as SAVE_SUMMARY_VERSION 10** (commit `e0337d3`): on the 1901 vanilla save it reproduces this entry's
+independent parse exactly (world capacity 21,590 / used 19,633; Σ per-good capacity 19,587; grain 43 / 50; tobacco 762 /
+1,035; grain's world price 21.995 from slot 8), and with the new fields removed it is byte-identical to v9.
 
 ### 2. Trade capacity binds all century
 
@@ -16713,6 +16720,12 @@ goal and F94's price path).
   baseline's medians over its instrumented (rich) markets.
 - ⚠ **Granularity**: capacity per good per state is an integer and often 1–10; a high W makes one unit move more, so small
   markets trade in coarser lumps. The cap at 4 is partly for this.
+
+⭐ **OUTCOME: IMPLEMENTED AND LAUNCHED 2026-09-23** (user: *"Good. Implement this and go with n=4. Everything except the trade
+changes are current canon."*). The book is `config/mod_config.canon-slide-b158-trade.json` — the canon plus
+`goods_traded_quantity`, `_trade` and `_trade_variant`, no canon key changed — written by `tools/make_trade_config.mjs` (the
+class table's only copy) and emitted by `tools/emit_goods.mjs`; its build differs from a canon build by exactly one added file.
+Batch `20260923_215141_canon-trade-n4`, 4 × 1836→1936, predictions pre-registered in its schedule.
 
 ## F160 — ⭐⭐ A GRANT THAT REACHES A TECHNOLOGY'S COST COMPLETES IT ON THE SPOT, so a "paid-for but unpicked" technology does not exist; the ahead-of-time penalty is EXACTLY `era_cost × (1 + 0.25 × Σ era-distance)` and SKIPS sericulture; `has_technology_progress` reads a FRACTION of the penalised cost. What persists is the MOSTLY-paid technology blocked by the penalty (1 probe run, 1836→1841, 2026-09-23)
 

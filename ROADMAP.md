@@ -2123,6 +2123,10 @@ ladder at all**, which is what these two are.
    ladder of £ moved per unit of capacity, bulk kept at vanilla as the untreated group, the others ×1.41 / ×2 / ×2.83 / ×4,
    ≈ ×2.3 first-order level). ⚠ Before any trade batch: extend `save_state_summary.mjs` with the per-good trade capacity and
    the world-market price the save already carries (F159 §1) — the harvester reaps the saves, so this cannot be back-filled.
+   ✅ **IMPLEMENTED AND LAUNCHED 2026-09-23** (user: *"Implement this and go with n=4. Everything except the trade changes are
+   current canon."*): save summary v10 carries both; `config/mod_config.canon-slide-b158-trade.json` = the canon +
+   `goods_traded_quantity` (via `tools/make_trade_config.mjs` / `tools/emit_goods.mjs`); batch
+   `20260923_215141_canon-trade-n4`, 4 × 1836→1936, predictions for the three questions pre-registered in its schedule.
 
 ### ⭐⭐ THESE TWO ARE NOT LEVERS UNDER EVALUATION — THEY GO IN FOR THEIR OWN REASONS, AND THAT DICTATES WHERE WE START FROM
 
