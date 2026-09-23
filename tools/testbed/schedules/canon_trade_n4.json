@@ -1,0 +1,32 @@
+{
+  "schedule_version": 1,
+  "label": "canon-trade-n4",
+  "_why": "ROADMAP step 11, BROADER TRADE — user-ruled 2026-09-23: \"Good. Implement this and go with n=4. Everything except the trade changes are current canon.\" The arm is the canon (canon-slide-b158, sha 4ce5890f…, the finish boost PARKED as the user ruled for these tests) plus ONE key, goods_traded_quantity: the five-class case of FINDINGS F159 §7. W = cost × traded_quantity (base-price £ moved per unit of trade capacity) is kept at vanilla for the 11 bulk goods (class E, the untreated group) and raised ×√2 / ×2 / ×2√2 / ×4 for semi-bulk / manufactures & colonial staples / compact / precious goods. Proven before launch: the book differs from the canon by exactly three added keys (goods_traded_quantity, _trade, _trade_variant) and no changed key; the built mod differs from a canon build by exactly one added file, common/goods/00_goods.txt, whose 35 changed lines are the traded_quantity values.",
+  "_arm": "{kind: config} — config/mod_config.canon-slide-b158-trade.json (+ its tech-tree twin, byte-identical to the canon's). Regenerate: node tools/make_trade_config.mjs --base config/mod_config.canon-slide-b158.json --suffix canon-slide-b158-trade",
+  "_comparison": "Against the canon's own measured seeds: 20260922_233932_b-gradient-rest setup probe-sm-b158 (runs 2–4; probe-sm-b158 is byte-identical to canon-slide-b158) — FINDINGS F158: world GDP end state 0.87 · 1.02 · 0.82 (median 0.87) × the vanilla n=16 median, GBR U* 22.2 · 12.1 · 24.8%, consensus loss 4.91, 3 intact / 0 broken. Vanilla reference: the pinned n=16 baseline 20260821_131149. Read with `criteria.mjs --arm <this>:canon-slide-b158-trade --arm 20260922_233932_b-gradient-rest:probe-sm-b158`.",
+  "_instrument": "SAVE SUMMARY v10 (2026-09-23, FINDINGS F159 §1): every yearly summary now carries per-country `trade` = {capacity, usage, goods: {good: {imp, exp}}} in TRADE-CAPACITY units (signed state records summed), world `trade`, `trade_goods`, and `world_market_price` {good: {last, mean52}} read from the 52-slot weekly RING BUFFER at (index − 1) mod 52. No telemetry change: markets.tsv (buy/sell/price/imports/exports per market per good) is the canon's own. ⚠ The canon's seeds are v9 — their per-good capacity exists only in each run's kept 1936 .v3 (run save_state_summary on it); the per-year series is this arm's alone.",
+  "_stop_rule": "The standard register rule applies (user-ruled 2026-09-17): stop_watch.ps1 is armed and ONE run broken by stall or by runoff (world GDP end state outside the derived 0.66–1.38 band, pooled shortlist U* < 10%, or the capital-abundance conjunction) ends the batch. Single-config schedule, so landmine L37 does not apply.",
+  "_predictions": {
+    "_basis": "Stated before launch (the no-ceteris-paribus rule). Directions are argued from F155/F159's mechanism; the magnitudes are guesses and are labelled as such. The canon baseline below is its 3 seeds at 1930–1935, the instrumented markets only.",
+    "Q1_quantities": "Import share of market demand VALUE (instrumented markets, 1930–35) rises in every raised class and the ORDER of the rise follows the class: canon A 12–14% · B 12% · C 7–8% · D 4–5% · E 4–5%. PREDICT A 18–30%, B 16–25%, C 11–16%, D 6–8%, and E within ±25% of the canon (it is untreated; it can be crowded out by the raised goods or freed by them, and which wins is not argued). The whole basket: ~6% of demand value → 8–12%. ⚠ Class A's goods are already 12–35% imported and may saturate on demand, in which case their CAPACITY share falls (each unit of capacity moves 4× the £) while their volume barely moves — that is the mechanism working, not a miss.",
+    "Q2_prices": "The importer-minus-exporter price wedge falls in the raised classes by roughly W^−0.59 (the elasticity measured inside vanilla, F159 §4): A ×0.44, B ×0.54, C ×0.66, D ×0.81 of the canon's, E unchanged. Canon 1930–35 wedges: A 19–25 · B 29–37 · C 35–36 · D 35–36 · E 29–36 (pp of base; noisy at n=3). ⚠ RISK TO THE REGISTER, stated in advance: the instrumented markets (GBR/FRA/USA/Germany/Low Countries) are mostly EXPORTERS of manufactures, so convergence can RAISE their manufactured prices toward the world price — PI (canon 0.89, aim ≤ 0.8) and PP (0.78) may go UP. The price FALL is expected on the importers' side: RUS and JAP among the logged markets, and the world-market price per good (v10) as the anchor.",
+    "Q3_gdp": "World GDP end state UP from the canon's 0.87 median (the user's own expectation, 2026-09-23). Magnitude a guess: 0.90–1.05. Britain's U* DOWN from 22% (the user's pre-registered direction). Trade-centre levels and world trade capacity UP (profit per unit of capacity doubles on the raised goods); merchant-marine demand per trade-centre level UNCHANGED (F155), so MM demand rises only through levels.",
+    "what_would_falsify_the_mechanism": "Import shares that do not rank with the class (e.g. E rising as much as C), or wedges that do not fall in the raised classes. Either would say traded_quantity is not the binding term of the allocation, which F159's 90–98.5% capacity use predicts it is."
+  },
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "canon-slide-b158-trade": { "kind": "config", "config": "config/mod_config.canon-slide-b158-trade.json" }
+  },
+  "runs": [
+    { "setup": "canon-slide-b158-trade", "until": "1936.1.1" },
+    { "setup": "canon-slide-b158-trade", "until": "1936.1.1" },
+    { "setup": "canon-slide-b158-trade", "until": "1936.1.1" },
+    { "setup": "canon-slide-b158-trade", "until": "1936.1.1" }
+  ]
+}

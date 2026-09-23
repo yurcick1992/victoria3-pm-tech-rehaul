@@ -1397,6 +1397,13 @@ if ($LASTEXITCODE -ne 0) { throw "emit_tech_finish.mjs failed (exit $LASTEXITCOD
 & node (Join-Path $PSScriptRoot 'emit_companies.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_companies.mjs failed (exit $LASTEXITCODE) - the mod would ship with companies locked to the first rung." }
 
+# --- PER-GOOD TRADE WEIGHT (FINDINGS F155 / F159, ROADMAP step 11) ---------------------------------
+# `goods_traded_quantity` rewrites the traded_quantity of the named goods in a whole-file copy of vanilla's
+# common/goods/00_goods.txt (every other line, and the goods ORDER a save's indices depend on, vanilla's).
+# Absent in the config -> emits nothing and vanilla's goods file stands, which is the canon.
+& node (Join-Path $PSScriptRoot 'emit_goods.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_goods.mjs failed (exit $LASTEXITCODE) - the per-good trade weights would ship broken or not at all." }
+
 
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---
 # Only the canonical build repoints the UI; alternate builds (-DryRun/-SaveTo) leave ui/data.js alone.

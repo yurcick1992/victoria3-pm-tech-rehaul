@@ -60,7 +60,17 @@ import { fileURLToPath } from 'node:url';
 
 // v2 (2026-08-11) adds POP OBJECT COUNTS.  v3, same day, splits them into TOTAL and NON-EMPTY — user
 // ruling, so a later regression can ask which of the two actually predicts tick speed.
-export const SAVE_SUMMARY_VERSION = 9;   // v9 (2026-09-20): + THE BUILDING'S OWN LEDGER per building type per country — goods_sales and goods_cost (revenue and inputs at MARKET prices, so no price-multiplier repair is needed) and salary_w = sum(salary_rate x staffing) (the building's OWN wage rate, not the country's base_wage) and taxes. Wages are then EXACT: goods_sales - goods_cost - profit, verified against the game's own building panel to 0.38%. FINDINGS F152 section 9; it retires the inference F150/F152 needed.
+// v10 (2026-09-23): + TRADE. Per state `trade_capacity` / `trade_capacity_usage`; per country `trade` =
+// { capacity, usage, goods: { <good>: { imp, exp } } } summed over its states from each state record's
+// `trade.goods.<goods index>.value` (the TRADE CAPACITY spent on that good, signed + export / − import, which
+// sums exactly to the state's usage); `world.trade_goods` the same summed world-wide; and
+// `world.world_market_price` = { <good>: { last, mean52 } } from `market_manager.world_market.price_trend`.
+// ⚠ That trend is a 52-slot RING BUFFER, one slot per WEEK (`index` = weeks since 1836.1.1), so the latest
+// price is values[(index − 1) mod 52], NOT the last element — measured on two saves 13 weeks apart, where
+// exactly slots 9..21 were rewritten in place. FINDINGS F159 §1. Both goods indices are POSITIONAL in
+// common/goods/00_goods.txt and are resolved through GOODS, which is read from the game.
+export const SAVE_SUMMARY_VERSION = 10;
+// v9 (2026-09-20): + THE BUILDING'S OWN LEDGER per building type per country — goods_sales and goods_cost (revenue and inputs at MARKET prices, so no price-multiplier repair is needed) and salary_w = sum(salary_rate x staffing) (the building's OWN wage rate, not the country's base_wage) and taxes. Wages are then EXACT: goods_sales - goods_cost - profit, verified against the game's own building panel to 0.38%. FINDINGS F152 section 9; it retires the inference F150/F152 needed.
 // v7 (2026-08-21): + OWNERSHIP — per-building-type `company_levels` (levels held through an `identity={building=}` owner whose own type is building_company_* OR building_regional_company_*), the `companies` register (type, prosperity, charters, regional HQs, resolved to a country via the HQ building), and `ownership_levels` (host-side levels by owner class: state/foreign_country/financial_district/manor_house/company/company_regional/other_building). ROADMAP step 5a: per-year company data cannot be back-filled, and the long vanilla batch is its baseline. Absent field = zero WITHIN v7+; pre-v7 summaries simply cannot answer it.
 // v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), PRICED at base cost, so a tiered-sector GDP is derivable (F74)
 // v5 (2026-08-16): + per-country construction-queue composition (government/private: n, left, speed, by_type)
@@ -123,7 +133,7 @@ const SUBJECT = new Set(['puppet', 'protectorate', 'colony', 'vassal', 'dominion
 const TREND_KEYS = new Map([['gdp', 'gdp'], ['prestige', 'prestige'], ['literacy', 'literacy'], ['avgsoltrend', 'avg_sol']]);
 // Sections we actually walk.  Everything else is skipped in O(1) per line: a top-level section always
 // closes with a `}` in COLUMN 0, so skipping never needs brace arithmetic.
-const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies']);
+const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies', 'market_manager']);
 
 // ---------------------------------------------------------------- collectors
 let saveDate = '';
@@ -205,6 +215,16 @@ let budgetCat = null, budgetSide = null, trendKey = null, trendVals = null, inVa
 let qEl = null;                              // in-flight construction-queue element (v5)
 // states
 let sid = null;
+// v10 trade: per-state capacity / usage / signed capacity per good, and the world-market price ring buffer
+let inStTrade = false, stTradeGood = null;
+const stateTradeCap = new Map(), stateTradeUse = new Map(), stateTradeGoods = new Map();
+let wmIn = false, wmCh = null, wmIdx = null, wmNextVals = false;
+const wmPrice = {};
+const wmTake = vals => {
+  if (wmCh === null || wmIdx === null || !vals.length) return;
+  const g = GOODS[wmCh] ?? ('idx' + wmCh), n = vals.length;
+  wmPrice[g] = { last: +vals[((wmIdx - 1) % n + n) % n].toFixed(3), mean52: +(vals.reduce((a, x) => a + x, 0) / n).toFixed(3) };
+};
 // technology
 let tid = null, tcur = null, inAcq = false, inProg = false;
 // pacts
@@ -406,8 +426,39 @@ for await (const line of rl) {
       else if ((x = /^region="([A-Z_0-9]+)"$/.exec(t))) stateRegion.set(sid, x[1]);
       else if ((x = /^infrastructure=([\-\d.]+)$/.exec(t))) stateInfra.set(sid, +x[1]);
       else if ((x = /^infrastructure_usage=([\-\d.]+)$/.exec(t))) stateInfraUse.set(sid, +x[1]);
+      else if ((x = /^trade_capacity=([\-\d.]+)$/.exec(t))) stateTradeCap.set(sid, +x[1]);
+      else if ((x = /^trade_capacity_usage=([\-\d.]+)$/.exec(t))) stateTradeUse.set(sid, +x[1]);
+      else if (t === 'trade={') { inStTrade = true; stTradeGood = null; }
+    } else if (inStTrade && sid !== null) {
+      // trade={ goods={ <goods index>={ value=<signed capacity> prestige_goods={ … } } } }
+      let x;
+      if (depth === 5 && (x = /^(\d+)=\{$/.exec(t))) stTradeGood = GOODS[+x[1]] ?? ('idx' + x[1]);
+      else if (depth === 6 && stTradeGood && (x = /^value=(-?[\d.]+)$/.exec(t))) {
+        const g = stateTradeGoods.get(sid) || {}; g[stTradeGood] = (g[stTradeGood] || 0) + +x[1]; stateTradeGoods.set(sid, g);
+      }
     }
-    depth += opens - closes; if (depth <= 0) { mode = 'top'; sid = null; }
+    depth += opens - closes;
+    if (inStTrade && depth <= 3) inStTrade = false;
+    if (depth <= 0) { mode = 'top'; sid = null; }
+    continue;
+  }
+
+  if (mode === 'market_manager') {
+    // v10: world_market.price_trend.channels.<goods index> = { date index values={ 52 weekly slots } } — a RING
+    // BUFFER, the latest slot at (index − 1) mod 52 (see the version note at the top).
+    if (depth === 1 && t === 'world_market={') wmIn = true;
+    else if (wmIn) {
+      let x;
+      if (depth === 4 && (x = /^(\d+)=\{$/.exec(t))) { wmCh = +x[1]; wmIdx = null; wmNextVals = false; }
+      else if (depth === 5 && wmCh !== null && (x = /^index=(\d+)$/.exec(t))) wmIdx = +x[1];
+      else if (depth === 5 && t.startsWith('values={')) {
+        const rest = t.slice(8).replace('}', ' ');
+        if (/\d/.test(rest)) wmTake(numsOf(rest)); else wmNextVals = true;
+      } else if (wmNextVals && depth === 6) { wmNextVals = false; wmTake(numsOf(t)); }
+    }
+    depth += opens - closes;
+    if (wmIn && depth <= 1) wmIn = false;
+    if (depth <= 0) mode = 'top';
     continue;
   }
 
@@ -766,6 +817,27 @@ for (const bag of ownClassByCountry.values())
 for (const c of Object.values(countries)) { world.gdp += c.gdp || 0; world.population += Object.values(c.professions).reduce((a, x) => a + x, 0); }
 world.gdp = Math.round(world.gdp); world.population = Math.round(world.population);
 
+// v10 TRADE — per country (summed over the states it owns) and world-wide. `imp`/`exp` are TRADE CAPACITY
+// units, not goods: volume = capacity × traded_quantity × (1 + the state's trade-centre quantity multiplier).
+world.trade = { capacity: 0, usage: 0 };
+world.trade_goods = {};
+const r2 = x => +x.toFixed(2);
+for (const s of new Set([...stateTradeCap.keys(), ...stateTradeGoods.keys()])) {
+  const id = stateCountry.get(s), tag = id != null ? tagOf(id) : null;
+  const c = tag ? countries[tag] : null;
+  const cap = stateTradeCap.get(s) || 0, use = stateTradeUse.get(s) || 0;
+  world.trade.capacity += cap; world.trade.usage += use;
+  if (c) { c.trade ??= { capacity: 0, usage: 0, goods: {} }; c.trade.capacity += cap; c.trade.usage += use; }
+  for (const [g, v] of Object.entries(stateTradeGoods.get(s) || {})) {
+    const k = v < 0 ? 'imp' : 'exp', a = Math.abs(v);
+    const w = world.trade_goods[g] ??= { imp: 0, exp: 0 }; w[k] += a;
+    if (c) { const e = c.trade.goods[g] ??= { imp: 0, exp: 0 }; e[k] += a; }
+  }
+}
+for (const c of Object.values(countries)) if (c.trade) { c.trade.capacity = r2(c.trade.capacity); c.trade.usage = r2(c.trade.usage); }
+world.trade.capacity = r2(world.trade.capacity); world.trade.usage = r2(world.trade.usage);
+world.world_market_price = wmPrice;
+
 const out = {
   save_summary_version: SAVE_SUMMARY_VERSION,
   provenance: {
@@ -789,6 +861,8 @@ const out = {
     region: stateRegion.get(s) ?? null,
     infrastructure: stateInfra.get(s) ?? null,
     infrastructure_usage: stateInfraUse.get(s) ?? null,
+    // v10: absent key in the save = 0 (the engine elides a zero usage), so both are written as numbers
+    ...(stateTradeCap.has(s) ? { trade_capacity: stateTradeCap.get(s), trade_capacity_usage: stateTradeUse.get(s) || 0 } : {}),
   }])),
   top_producers,
 };
