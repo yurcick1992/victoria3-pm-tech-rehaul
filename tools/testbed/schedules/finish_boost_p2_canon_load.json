@@ -1,0 +1,22 @@
+{
+  "schedule_version": 1,
+  "label": "finboost-p2-canon-load",
+  "_why": "PROBE 2 OF AT MOST FIVE for the finish boost (user-ruled 2026-09-23). A LOAD TEST of the canon as it now ships: config/mod_config.json (canon-slide-b158 + research_events.finish_boost {enabled: true, unresearchable: 'skip', add: 10000}). Probe 1 (20260923_203339) ran with the boost OFF, so the patched ai_weight blocks and the newly owned 20_military.txt / 30_society.txt have never been parsed by the game. ARM: {kind: config}, the canon itself.",
+  "_questions": { "Q": "Does the game load the boosted technology files without a single error line naming them, zzz_pm_rehaul_finish_values.txt, or the has_variable / script-value triggers?" },
+  "_predictions": { "Q": "Zero error lines naming 10_production.txt, 20_military.txt, 30_society.txt, zzz_pm_rehaul_techs.txt or zzz_pm_rehaul_finish_values.txt; the technology tree loads (tech_log acquisitions appear)." },
+  "_cost": "1 run x 1836.1.1 -> 1836.4.1, about 3 minutes including the build.",
+  "_caveats": ["Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30)."],
+  "defaults": {
+    "dump_dates": ["1836.2.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "tech_log", "events"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "canon": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "canon", "until": "1836.4.1" }
+  ]
+}

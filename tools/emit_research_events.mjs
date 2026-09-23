@@ -24,6 +24,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { stageVar, stageFlagged } from './lib_tech_finish.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
@@ -40,6 +41,12 @@ const CFGPATH = process.argv[3] || join(REPO, 'config/mod_config.json');
 const CFG = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const RE = CFG.research_events;
 if (!RE || !RE.enabled) { console.log('research events: DISABLED in config - nothing emitted (this is the `techs` arm)'); process.exit(0); }
+// ⭐ THE STAGE FLAGS (2026-09-23): when `research_events.finish_boost` asks for the boost or its diagnostics,
+// each completed stage sets a country variable, INSIDE the same `can_research` guard as the grant — so the flag
+// means "this country received this stage's progress", not merely "the entry completed". emit_tech_finish.mjs
+// reads it in the technology's ai_weight. The name comes from lib_tech_finish.mjs, which both emitters import.
+const FB = RE.finish_boost;
+const STAGE_FLAGS = !!(FB && (FB.enabled || FB.diag));
 
 const TREE_SFX = (() => {
   const raw = process.env.MOD_CONFIG || process.argv[3] || '';
@@ -458,7 +465,9 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       `${T}scripted_progress_bar = ${barName(tech)}\n\n` +
       `${T}complete = {\n${T}${T}scope:journal_entry ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} }\n${T}}\n\n` +
       `${T}on_complete = {\n` +
-      `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n${T}${T}}\n` +
+      `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n` +
+      (STAGE_FLAGS && stageFlagged(si + 1, RE.grant_fraction ?? 0.5, FB.diag) ? `${T}${T}${T}set_variable = ${stageVar(tech, stage)}\n` : '') +
+      `${T}${T}}\n` +
       (next ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_journal_entry = { type = ${jeName(tech, next)} }\n${T}${T}}\n` : '') +
       `${T}${T}debug_log = "PMR_JE|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n` +
       `${T}}\n\n` +

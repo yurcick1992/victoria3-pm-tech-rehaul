@@ -666,8 +666,9 @@ Read this before designing anything that hands a country research (ROADMAP step 
   So the second key is **`progress`**, not `value` — this file previously guessed `value >= <0..1>`, which
   would have failed exactly the way the landmine register describes (trigger returns false, nothing errors).
   The trigger's loc renders `$NUM|%$`, so `progress` is read as a **fraction**, not innovation points.
-  ⚠ Still worth a `pm_tech_rehaul_diag` probe before relying on it: the hint fixes the key names, it does
-  not prove the comparator form or the 0..1 scale.
+  ✅ **PROBED 2026-09-23 (FINDINGS F160): `has_technology_progress = { technology = X progress >= 0.5 }`
+  parses, and `progress` is a FRACTION OF THE PENALISED COST** — it agreed with the engine's own
+  `GetProgress ÷ GetCost` on 219 of 219 readings.
   ⭐ **THE EXE STRING POOL IS A GENERAL INSTRUMENT FOR THIS.** `grep -a -o -E "[a-z_]{6,40} = \{[^}\"]{3,110}\}"
   over `binaries/victoria3.exe` prints the engine's own usage hints for triggers and effects vanilla never
   calls — e.g. `has_employee_slots_filled = { pop_type = X percent = Y }`,
@@ -679,6 +680,30 @@ Read this before designing anything that hands a country research (ROADMAP step 
   that accepts arbitrary triggers in a `limit`, so an industrial technology can raise its own weight
   from the industry the country actually owns — the same condition the event fires on, and no dependence
   on the AI understanding progress at all.
+- ⭐⭐ **A GRANT THAT REACHES THE COST ACQUIRES THE TECHNOLOGY ON THE SPOT** (FINDINGS F160, 2026-09-23). When
+  `add_technology_progress` takes progress to ≥ the cost, `on_acquired_technology` fires INSIDE the same
+  effect — its log line precedes the next `debug_log` of the granting `on_complete`, same second, same game
+  date — whatever the country is researching. So the worry above is half-answered: a grant that COVERS the
+  cost cannot strand anything. A grant that falls SHORT does strand: 2 of 3 research-JE stages at a penalty
+  of Σ = 1 leave a technology at 80% of cost until the next stage (24 months at the canon's bar), and one
+  probe country sat at 67% for 49 months. ⚠ Untested: whether a cost that FALLS below banked progress (an
+  earlier technology researched, the penalty shrinking) also completes it — the finish boost exists for
+  that one case (`tools/emit_tech_finish.mjs`).
+- ⭐⭐ **THE AHEAD-OF-TIME PENALTY, EXACTLY** (F160: 76,681 engine readings, 291 countries, 100% match):
+  `cost = era_cost × (1 + TECH_AHEAD_OF_TIME_PENALTY_FACTOR × Σ)`, Σ = Σ over the UNRESEARCHED technologies
+  of the SAME category in EARLIER eras of (era − their era). Readable per country in loc as
+  `[GetTechnology('X').GetCost(THIS.GetCountry.Self)|0]` (and `.GetProgress(…)`), both verified in `debug_log`.
+  ⭐ **`can_research = no` technologies are NOT counted** — sericulture, the only one, held by eight Asian
+  tags and never by the West: 26,492 of 26,492 differing readings match the skipped reading, 0 the counted.
+  There is NO trigger for the penalty or the cost; `tools/emit_tech_finish.mjs` rebuilds Σ as a script value
+  per (category, era) from the emitted tree.
+- ⭐ **THE AI'S PICK IS max-after-randomisation, and the numbers are pinned** (Dev Diary #59): each choice's
+  score is rolled into `[X / (1 + R), X × (1 + R)]`, R = `TECH_RANDOM_FACTOR` 1.0, i.e. 0.5×–2×, so **a 4×
+  weight advantage guarantees the pick** and anything less is a lottery. The ahead-of-time divisor
+  `1 + TECH_COST_PENALTY_FACTOR × penalty ÷ era_cost` = `1 + 1.25 Σ` applies OUTSIDE `ai_weight`. Vanilla's
+  heaviest technology weight is 101.5 (napoleonic_warfare with je_sick_man_army), the median 1.5.
+  ⚠ `ai_weight` is a SCRIPT VALUE, evaluated left-to-right with NO order of operations — a `multiply`
+  written after an `add` scales the add.
 - ⚠ **A deeper tree makes AI randomness worse.** `TECH_RANDOM_FACTOR = 1.0` scatters the AI across
   whatever is available, and vanilla leans on `value = 1` for most technologies with a handful of 2s and
   3s. On a 100+ technology production tree that near-flat weighting spreads the AI thinner than it does

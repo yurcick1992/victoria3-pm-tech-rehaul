@@ -1378,6 +1378,15 @@ if ($LASTEXITCODE -ne 0) { throw "emit_techs.mjs failed (exit $LASTEXITCODE) - t
 & node (Join-Path $PSScriptRoot 'emit_research_events.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_research_events.mjs failed (exit $LASTEXITCODE) - the mod would ship without its research events." }
 
+# --- FINISH WHAT THE JOURNAL ENTRIES PAID FOR (user-ruled 2026-09-23) ------------------------------
+# `research_events.finish_boost`: a technology whose granted progress already covers its whole cost
+# (base + ahead-of-time penalty) gets a very high AI research weight, so one tick finishes it. It MUST
+# run after both emitters above: it patches the technology files emit_techs.mjs wrote and reads the
+# stage flags emit_research_events.mjs set. The penalty is derived from the EMITTED tree every build.
+# Absent or disabled in the config -> emits nothing.
+& node (Join-Path $PSScriptRoot 'emit_tech_finish.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_tech_finish.mjs failed (exit $LASTEXITCODE) - the finish boost would ship broken or not at all." }
+
 # --- COMPANY CHAIN EXTENSION (ROADMAP step 5, user-ruled 2026-08-23) -----------------------------
 # Rewrites the vanilla company_types files (read LIVE, so a patch flows through) so every company
 # reference to a tiered industry names the WHOLE chain instead of the first rung: building_types /

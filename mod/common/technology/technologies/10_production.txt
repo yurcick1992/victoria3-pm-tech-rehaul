@@ -169,6 +169,16 @@ crystal_glass = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_crystal_glass_implementation  pmr_aot_production_e2 <= 2 }
+					AND = { has_variable = pmr_je_crystal_glass_development  pmr_aot_production_e2 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -195,6 +205,16 @@ intensive_agriculture = {
 				}
 			}
 			add = 2
+		}
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_intensive_agriculture_implementation  pmr_aot_production_e2 <= 2 }
+					AND = { has_variable = pmr_je_intensive_agriculture_development  pmr_aot_production_e2 <= 0 }
+				}
+			}
+			add = 10000
 		}
 	}
 }
@@ -276,6 +296,16 @@ atmospheric_engine = {
 			}
 			add = 2
 		}
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_atmospheric_engine_implementation  pmr_aot_production_e2 <= 2 }
+					AND = { has_variable = pmr_je_atmospheric_engine_development  pmr_aot_production_e2 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -331,6 +361,16 @@ chemical_bleaching = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_chemical_bleaching_implementation  pmr_aot_production_e2 <= 2 }
+					AND = { has_variable = pmr_je_chemical_bleaching_development  pmr_aot_production_e2 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -354,6 +394,16 @@ nitroglycerin = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_nitroglycerin_implementation  pmr_aot_production_e2 <= 2 }
+					AND = { has_variable = pmr_je_nitroglycerin_development  pmr_aot_production_e2 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -377,6 +427,16 @@ bessemer_process = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_bessemer_process_implementation  pmr_aot_production_e2 <= 2 }
+					AND = { has_variable = pmr_je_bessemer_process_development  pmr_aot_production_e2 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -392,6 +452,16 @@ baking_powder = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_baking_powder_implementation  pmr_aot_production_e2 <= 2 }
+					AND = { has_variable = pmr_je_baking_powder_development  pmr_aot_production_e2 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -420,6 +490,16 @@ mechanized_workshops = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_mechanized_workshops_implementation  pmr_aot_production_e2 <= 2 }
+					AND = { has_variable = pmr_je_mechanized_workshops_development  pmr_aot_production_e2 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -436,6 +516,16 @@ mechanical_tools = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_mechanical_tools_implementation  pmr_aot_production_e2 <= 2 }
+					AND = { has_variable = pmr_je_mechanical_tools_development  pmr_aot_production_e2 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -454,6 +544,16 @@ improved_fertilizer = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_improved_fertilizer_implementation  pmr_aot_production_e3 <= 2 }
+					AND = { has_variable = pmr_je_improved_fertilizer_development  pmr_aot_production_e3 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -502,6 +602,16 @@ dynamite = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_dynamite_implementation  pmr_aot_production_e3 <= 2 }
+					AND = { has_variable = pmr_je_dynamite_development  pmr_aot_production_e3 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -629,6 +739,16 @@ aniline = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_aniline_implementation  pmr_aot_production_e3 <= 2 }
+					AND = { has_variable = pmr_je_aniline_development  pmr_aot_production_e3 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -644,6 +764,16 @@ open_hearth_process = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_open_hearth_process_implementation  pmr_aot_production_e3 <= 2 }
+					AND = { has_variable = pmr_je_open_hearth_process_development  pmr_aot_production_e3 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -659,6 +789,16 @@ vulcanization = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_vulcanization_implementation  pmr_aot_production_e4 <= 2 }
+					AND = { has_variable = pmr_je_vulcanization_development  pmr_aot_production_e4 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -859,6 +999,16 @@ electric_railway = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_electric_railway_implementation  pmr_aot_production_e4 <= 2 }
+					AND = { has_variable = pmr_je_electric_railway_development  pmr_aot_production_e4 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -887,6 +1037,16 @@ combustion_engine = {
 				}
 			}
 			add = 1
+		}
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_combustion_engine_implementation  pmr_aot_production_e4 <= 2 }
+					AND = { has_variable = pmr_je_combustion_engine_development  pmr_aot_production_e4 <= 0 }
+				}
+			}
+			add = 10000
 		}
 	}
 }
@@ -927,6 +1087,16 @@ nitrogen_fixation = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_nitrogen_fixation_implementation  pmr_aot_production_e4 <= 2 }
+					AND = { has_variable = pmr_je_nitrogen_fixation_development  pmr_aot_production_e4 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -942,6 +1112,16 @@ electric_arc_process = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_electric_arc_process_implementation  pmr_aot_production_e4 <= 2 }
+					AND = { has_variable = pmr_je_electric_arc_process_development  pmr_aot_production_e4 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -972,6 +1152,16 @@ plastics = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_plastics_implementation  pmr_aot_production_e4 <= 2 }
+					AND = { has_variable = pmr_je_plastics_development  pmr_aot_production_e4 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -998,6 +1188,16 @@ electrical_capacitors = {
 				}
 			}
 			add = 1
+		}
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_electrical_capacitors_implementation  pmr_aot_production_e4 <= 2 }
+					AND = { has_variable = pmr_je_electrical_capacitors_development  pmr_aot_production_e4 <= 0 }
+				}
+			}
+			add = 10000
 		}
 	}
 }
@@ -1030,6 +1230,16 @@ telephone = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_telephone_implementation  pmr_aot_production_e4 <= 2 }
+					AND = { has_variable = pmr_je_telephone_development  pmr_aot_production_e4 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -1115,5 +1325,15 @@ compression_ignition = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_compression_ignition_implementation  pmr_aot_production_e5 <= 2 }
+					AND = { has_variable = pmr_je_compression_ignition_development  pmr_aot_production_e5 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }

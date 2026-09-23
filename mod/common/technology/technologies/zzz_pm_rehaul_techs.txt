@@ -12,6 +12,16 @@ catalytic_synthesis = {
 	}
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_catalytic_synthesis_implementation  pmr_aot_production_e5 <= 2 }
+					AND = { has_variable = pmr_je_catalytic_synthesis_development  pmr_aot_production_e5 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -26,6 +36,16 @@ continuous_web_processing = {
 	}
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_continuous_web_processing_implementation  pmr_aot_production_e5 <= 2 }
+					AND = { has_variable = pmr_je_continuous_web_processing_development  pmr_aot_production_e5 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }
 
@@ -39,5 +59,15 @@ spray_finishing = {
 	}
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		if = {
+			limit = {
+				OR = {
+					AND = { has_variable = pmr_je_spray_finishing_implementation  pmr_aot_production_e5 <= 2 }
+					AND = { has_variable = pmr_je_spray_finishing_development  pmr_aot_production_e5 <= 0 }
+				}
+			}
+			add = 10000
+		}
 	}
 }

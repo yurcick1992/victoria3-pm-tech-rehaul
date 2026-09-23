@@ -16713,3 +16713,79 @@ goal and F94's price path).
   baseline's medians over its instrumented (rich) markets.
 - ⚠ **Granularity**: capacity per good per state is an integer and often 1–10; a high W makes one unit move more, so small
   markets trade in coarser lumps. The cap at 4 is partly for this.
+
+## F160 — ⭐⭐ A GRANT THAT REACHES A TECHNOLOGY'S COST COMPLETES IT ON THE SPOT, so a "paid-for but unpicked" technology does not exist; the ahead-of-time penalty is EXACTLY `era_cost × (1 + 0.25 × Σ era-distance)` and SKIPS sericulture; `has_technology_progress` reads a FRACTION of the penalised cost. What persists is the MOSTLY-paid technology blocked by the penalty (1 probe run, 1836→1841, 2026-09-23)
+
+**Why it ran.** User-ruled 2026-09-23: when the research journal entries have granted enough to finish a technology with
+one tick, the AI should almost surely pick it — case 1 two stages fired and no penalty, case 2 three stages fired and
+the penalty not too high — derived so a tree change re-derives it. Built as `research_events.finish_boost`
+(`tools/emit_tech_finish.mjs`, `tools/lib_tech_finish.mjs`). Before spending probes on the AI's reaction, one probe
+measured what the rule rests on.
+
+**Arm.** `{kind: config}` on `config/mod_config.probe-fin-diag.json` = the canon (canon-slide-b158) with
+`research_events.industry_bar_months` 24 → **6** (so stages complete inside five years) and `finish_boost`
+`{enabled: false, diag: true}` — the boost OFF, the diagnostics ON. Session `20260923_203339_finboost-p1-diag`, one run
+1836.1.1 → 1841.1.1, clean (marker present, version match, zero error lines naming the new files). The diagnostics log,
+per country, the ENGINE's own `GetTechnology(X).GetCost(country)` and `GetProgress(country)` beside the reconstruction.
+Reader: `node tools/testbed/ledger/finish_probe.mjs --session 20260923_203339_finboost-p1-diag`.
+
+**1. The penalty reconstruction is exact.** 76,681 cost readings (every unresearched game-era-2+ technology of 291
+countries, at 1836.2 and 1840.1). The engine's cost equals `era_cost × (1 + 0.25 × Σ)`, Σ = Σ over the unresearched
+same-category technologies of earlier eras of (era − their era), on **100.0%** of military (24,053 + 736) and society
+(23,851 + 736) readings. The 3 readings that match nothing are two log lines interleaved by the mirror, not data.
+
+**2. Sericulture is NOT counted.** It is the only `can_research = no` technology (era 1, production), held only by
+CAM CHI DAI JAP KOR SIA TIB WAL and their successors — `add_era_researched = era_1` does not grant it (vanilla n=16
+and the canon's save summaries: 8 holders at 1837, 8–21 by 1936, never a Western country). On the **26,492** production
+readings where the two readings differ, "skipped" matches **26,492** and "counted" **0**; for the holders both agree
+(810 of 810). ⇒ the engine special-cases unresearchable technologies; sericulture changes nothing for anyone.
+`finish_boost.unresearchable` ships as **'skip'**.
+
+**3. `has_technology_progress = { technology = X progress >= p }` is a FRACTION of the PENALISED cost.** h50 and h100
+agree with `GetProgress ÷ GetCost ≥ 0.5 / ≥ 1` on **219 of 219** readings. The trigger is registered, unused by vanilla,
+and now verified — the `progress >= p` comparator form parses.
+
+**4. ⭐⭐ A grant reaching the cost acquires the technology immediately.** In every case the acquisition line of
+`on_acquired_technology` sits directly BEFORE the journal entry's own `debug_log`, same second, same game date — the
+technology is granted INSIDE the entry's `on_complete`, by `add_technology_progress` itself. Russia:
+
+| game date | line | what |
+|---|---|---|
+| 1837.1.3 | 51674 / 51675 | TECH Intensive Agriculture · PMR_JE development intensive_agriculture |
+| 1837.7.1 | 53633 / 53634 | TECH Percussion Cap · PMR_JE implementation percussion_cap |
+| 1837.7.4 | 53697 / 53698 | TECH Atmospheric Engine · PMR_JE implementation atmospheric_engine |
+| 1839.1.4 | 61928 / 61929 | TECH Rifling · PMR_JE implementation rifling |
+
+Russia was researching other things each time (Intensive Agriculture before, then Empiricism, Mass Communication,
+Banking) and never chose any of the four. Over the whole run, of 49 stage-2/3 completions that left no later reading,
+**35 vanished without the technology ever being picked**; the rest had it as the current research already. The engine
+showed progress ≥ cost at a monthly reading **0 times in 219**.
+⇒ **The state the ruling targets does not persist.** The rule's two cases are exactly "progress ≥ cost", which the
+grant completes by itself; a boost keyed on them has nothing to act on. (Untested: whether the engine also auto-acquires
+when a technology's COST falls below banked progress because an earlier technology was researched. No such case
+occurred — every stuck episode kept a constant Σ.)
+
+**5. What DOES persist: the mostly-paid technology the penalty blocks.** 24 (country, technology) episodes sat with
+stage 2+ banked and progress below cost:
+
+| banked ÷ cost | stages | Σ | episodes | how long they sat |
+|---|---|---|---|---|
+| 0.80 | 2 | 1 | 10 (Russia ×4, Brazil, Tuscany, Mexico, Two Sicilies, Papal States, Carlist Spain) | 6 months each — until the THIRD grant completed them — except Carlist Spain 20 and Russia's general_staff 19 |
+| 0.67 | 2 | 2 | 13 (Qing ×2, Ottomans ×2, Persia, Khalsa Raj, Japan, Siam, Joseon, Burma, Kabul, Khiva, Mascara) | 6–9 months |
+| 0.67 | 3 | 5 | 1 (Sokoto, intensive_agriculture) | **49 months**, still open at the end |
+
+The AI picked none of them while they sat. At the canon's 24-month bar the 2-stage wait is ~24 months, not 6.
+
+**Confidence.** §1–§4 high (tens of thousands of engine readings; §4's ordering is unambiguous and consistent across all
+35 cases). §5 is one seed on a probe-only bar; the SHAPE (80% / 67% plateaux between grants) follows from the arithmetic,
+the counts do not travel.
+
+**What it does NOT say.** Nothing about the AI's response to a boost — no boost ran. Nothing about the canon's research
+pace (the 6-month bar is a probe device). It does not say the ruled boost is harmful — it is inert, not wrong.
+
+**Outcome.** The user: *"What we're combatting is AI not picking an infinitesimally cheap non-zero benefit. If there's
+nothing to combat, no problem."* The boost ships ON in the canon (`finish_boost` {enabled, unresearchable 'skip', add
+10000}) — free when it never fires, and it covers the one untested route to the state (a penalty that falls below
+banked progress). The mostly-paid episodes of §5 are 20–33% of a cost short, not "infinitesimally cheap", so they are
+outside the ruling. A 3-month LOAD TEST of that canon (`20260923_204538_finboost-p2-canon-load`) loaded every patched
+technology file with zero errors; its only 40 warnings (stage-1 flags nobody reads) were removed afterwards.

@@ -46,6 +46,7 @@ je_pmr_aniline_development = {
 		if = {
 			limit = { can_research = aniline }
 			add_technology_progress = { progress = 6250  technology = aniline }
+			set_variable = pmr_je_aniline_development
 		}
 		if = {
 			limit = { can_research = aniline }
@@ -76,6 +77,7 @@ je_pmr_aniline_implementation = {
 		if = {
 			limit = { can_research = aniline }
 			add_technology_progress = { progress = 6250  technology = aniline }
+			set_variable = pmr_je_aniline_implementation
 		}
 		debug_log = "PMR_JE|implementation|aniline|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -135,6 +137,7 @@ je_pmr_atmospheric_engine_development = {
 		if = {
 			limit = { can_research = atmospheric_engine }
 			add_technology_progress = { progress = 5000  technology = atmospheric_engine }
+			set_variable = pmr_je_atmospheric_engine_development
 		}
 		if = {
 			limit = { can_research = atmospheric_engine }
@@ -165,6 +168,7 @@ je_pmr_atmospheric_engine_implementation = {
 		if = {
 			limit = { can_research = atmospheric_engine }
 			add_technology_progress = { progress = 5000  technology = atmospheric_engine }
+			set_variable = pmr_je_atmospheric_engine_implementation
 		}
 		debug_log = "PMR_JE|implementation|atmospheric_engine|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -224,6 +228,7 @@ je_pmr_automatic_machine_guns_development = {
 		if = {
 			limit = { can_research = automatic_machine_guns }
 			add_technology_progress = { progress = 7500  technology = automatic_machine_guns }
+			set_variable = pmr_je_automatic_machine_guns_development
 		}
 		if = {
 			limit = { can_research = automatic_machine_guns }
@@ -254,6 +259,7 @@ je_pmr_automatic_machine_guns_implementation = {
 		if = {
 			limit = { can_research = automatic_machine_guns }
 			add_technology_progress = { progress = 7500  technology = automatic_machine_guns }
+			set_variable = pmr_je_automatic_machine_guns_implementation
 		}
 		debug_log = "PMR_JE|implementation|automatic_machine_guns|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -313,6 +319,7 @@ je_pmr_baking_powder_development = {
 		if = {
 			limit = { can_research = baking_powder }
 			add_technology_progress = { progress = 5000  technology = baking_powder }
+			set_variable = pmr_je_baking_powder_development
 		}
 		if = {
 			limit = { can_research = baking_powder }
@@ -343,6 +350,7 @@ je_pmr_baking_powder_implementation = {
 		if = {
 			limit = { can_research = baking_powder }
 			add_technology_progress = { progress = 5000  technology = baking_powder }
+			set_variable = pmr_je_baking_powder_implementation
 		}
 		debug_log = "PMR_JE|implementation|baking_powder|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -402,6 +410,7 @@ je_pmr_bessemer_process_development = {
 		if = {
 			limit = { can_research = bessemer_process }
 			add_technology_progress = { progress = 5000  technology = bessemer_process }
+			set_variable = pmr_je_bessemer_process_development
 		}
 		if = {
 			limit = { can_research = bessemer_process }
@@ -432,6 +441,7 @@ je_pmr_bessemer_process_implementation = {
 		if = {
 			limit = { can_research = bessemer_process }
 			add_technology_progress = { progress = 5000  technology = bessemer_process }
+			set_variable = pmr_je_bessemer_process_implementation
 		}
 		debug_log = "PMR_JE|implementation|bessemer_process|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -491,6 +501,7 @@ je_pmr_bolt_action_rifles_development = {
 		if = {
 			limit = { can_research = bolt_action_rifles }
 			add_technology_progress = { progress = 7500  technology = bolt_action_rifles }
+			set_variable = pmr_je_bolt_action_rifles_development
 		}
 		if = {
 			limit = { can_research = bolt_action_rifles }
@@ -521,6 +532,7 @@ je_pmr_bolt_action_rifles_implementation = {
 		if = {
 			limit = { can_research = bolt_action_rifles }
 			add_technology_progress = { progress = 7500  technology = bolt_action_rifles }
+			set_variable = pmr_je_bolt_action_rifles_implementation
 		}
 		debug_log = "PMR_JE|implementation|bolt_action_rifles|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -580,6 +592,7 @@ je_pmr_breech_loading_artillery_development = {
 		if = {
 			limit = { can_research = breech_loading_artillery }
 			add_technology_progress = { progress = 6250  technology = breech_loading_artillery }
+			set_variable = pmr_je_breech_loading_artillery_development
 		}
 		if = {
 			limit = { can_research = breech_loading_artillery }
@@ -610,6 +623,7 @@ je_pmr_breech_loading_artillery_implementation = {
 		if = {
 			limit = { can_research = breech_loading_artillery }
 			add_technology_progress = { progress = 6250  technology = breech_loading_artillery }
+			set_variable = pmr_je_breech_loading_artillery_implementation
 		}
 		debug_log = "PMR_JE|implementation|breech_loading_artillery|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -669,6 +683,7 @@ je_pmr_camera_development = {
 		if = {
 			limit = { can_research = camera }
 			add_technology_progress = { progress = 6250  technology = camera }
+			set_variable = pmr_je_camera_development
 		}
 		if = {
 			limit = { can_research = camera }
@@ -699,6 +714,7 @@ je_pmr_camera_implementation = {
 		if = {
 			limit = { can_research = camera }
 			add_technology_progress = { progress = 6250  technology = camera }
+			set_variable = pmr_je_camera_implementation
 		}
 		debug_log = "PMR_JE|implementation|camera|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -758,6 +774,7 @@ je_pmr_catalytic_synthesis_development = {
 		if = {
 			limit = { can_research = catalytic_synthesis }
 			add_technology_progress = { progress = 8750  technology = catalytic_synthesis }
+			set_variable = pmr_je_catalytic_synthesis_development
 		}
 		if = {
 			limit = { can_research = catalytic_synthesis }
@@ -788,6 +805,7 @@ je_pmr_catalytic_synthesis_implementation = {
 		if = {
 			limit = { can_research = catalytic_synthesis }
 			add_technology_progress = { progress = 8750  technology = catalytic_synthesis }
+			set_variable = pmr_je_catalytic_synthesis_implementation
 		}
 		debug_log = "PMR_JE|implementation|catalytic_synthesis|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -847,6 +865,7 @@ je_pmr_chemical_bleaching_development = {
 		if = {
 			limit = { can_research = chemical_bleaching }
 			add_technology_progress = { progress = 5000  technology = chemical_bleaching }
+			set_variable = pmr_je_chemical_bleaching_development
 		}
 		if = {
 			limit = { can_research = chemical_bleaching }
@@ -877,6 +896,7 @@ je_pmr_chemical_bleaching_implementation = {
 		if = {
 			limit = { can_research = chemical_bleaching }
 			add_technology_progress = { progress = 5000  technology = chemical_bleaching }
+			set_variable = pmr_je_chemical_bleaching_implementation
 		}
 		debug_log = "PMR_JE|implementation|chemical_bleaching|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -936,6 +956,7 @@ je_pmr_combustion_engine_development = {
 		if = {
 			limit = { can_research = combustion_engine }
 			add_technology_progress = { progress = 7500  technology = combustion_engine }
+			set_variable = pmr_je_combustion_engine_development
 		}
 		if = {
 			limit = { can_research = combustion_engine }
@@ -966,6 +987,7 @@ je_pmr_combustion_engine_implementation = {
 		if = {
 			limit = { can_research = combustion_engine }
 			add_technology_progress = { progress = 7500  technology = combustion_engine }
+			set_variable = pmr_je_combustion_engine_implementation
 		}
 		debug_log = "PMR_JE|implementation|combustion_engine|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1025,6 +1047,7 @@ je_pmr_compression_ignition_development = {
 		if = {
 			limit = { can_research = compression_ignition }
 			add_technology_progress = { progress = 8750  technology = compression_ignition }
+			set_variable = pmr_je_compression_ignition_development
 		}
 		if = {
 			limit = { can_research = compression_ignition }
@@ -1055,6 +1078,7 @@ je_pmr_compression_ignition_implementation = {
 		if = {
 			limit = { can_research = compression_ignition }
 			add_technology_progress = { progress = 8750  technology = compression_ignition }
+			set_variable = pmr_je_compression_ignition_implementation
 		}
 		debug_log = "PMR_JE|implementation|compression_ignition|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1114,6 +1138,7 @@ je_pmr_continuous_web_processing_development = {
 		if = {
 			limit = { can_research = continuous_web_processing }
 			add_technology_progress = { progress = 8750  technology = continuous_web_processing }
+			set_variable = pmr_je_continuous_web_processing_development
 		}
 		if = {
 			limit = { can_research = continuous_web_processing }
@@ -1144,6 +1169,7 @@ je_pmr_continuous_web_processing_implementation = {
 		if = {
 			limit = { can_research = continuous_web_processing }
 			add_technology_progress = { progress = 8750  technology = continuous_web_processing }
+			set_variable = pmr_je_continuous_web_processing_implementation
 		}
 		debug_log = "PMR_JE|implementation|continuous_web_processing|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1203,6 +1229,7 @@ je_pmr_crystal_glass_development = {
 		if = {
 			limit = { can_research = crystal_glass }
 			add_technology_progress = { progress = 5000  technology = crystal_glass }
+			set_variable = pmr_je_crystal_glass_development
 		}
 		if = {
 			limit = { can_research = crystal_glass }
@@ -1233,6 +1260,7 @@ je_pmr_crystal_glass_implementation = {
 		if = {
 			limit = { can_research = crystal_glass }
 			add_technology_progress = { progress = 5000  technology = crystal_glass }
+			set_variable = pmr_je_crystal_glass_implementation
 		}
 		debug_log = "PMR_JE|implementation|crystal_glass|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1292,6 +1320,7 @@ je_pmr_defense_in_depth_development = {
 		if = {
 			limit = { can_research = defense_in_depth }
 			add_technology_progress = { progress = 7500  technology = defense_in_depth }
+			set_variable = pmr_je_defense_in_depth_development
 		}
 		if = {
 			limit = { can_research = defense_in_depth }
@@ -1322,6 +1351,7 @@ je_pmr_defense_in_depth_implementation = {
 		if = {
 			limit = { can_research = defense_in_depth }
 			add_technology_progress = { progress = 7500  technology = defense_in_depth }
+			set_variable = pmr_je_defense_in_depth_implementation
 		}
 		debug_log = "PMR_JE|implementation|defense_in_depth|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1381,6 +1411,7 @@ je_pmr_dynamite_development = {
 		if = {
 			limit = { can_research = dynamite }
 			add_technology_progress = { progress = 6250  technology = dynamite }
+			set_variable = pmr_je_dynamite_development
 		}
 		if = {
 			limit = { can_research = dynamite }
@@ -1411,6 +1442,7 @@ je_pmr_dynamite_implementation = {
 		if = {
 			limit = { can_research = dynamite }
 			add_technology_progress = { progress = 6250  technology = dynamite }
+			set_variable = pmr_je_dynamite_implementation
 		}
 		debug_log = "PMR_JE|implementation|dynamite|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1470,6 +1502,7 @@ je_pmr_electric_arc_process_development = {
 		if = {
 			limit = { can_research = electric_arc_process }
 			add_technology_progress = { progress = 7500  technology = electric_arc_process }
+			set_variable = pmr_je_electric_arc_process_development
 		}
 		if = {
 			limit = { can_research = electric_arc_process }
@@ -1500,6 +1533,7 @@ je_pmr_electric_arc_process_implementation = {
 		if = {
 			limit = { can_research = electric_arc_process }
 			add_technology_progress = { progress = 7500  technology = electric_arc_process }
+			set_variable = pmr_je_electric_arc_process_implementation
 		}
 		debug_log = "PMR_JE|implementation|electric_arc_process|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1559,6 +1593,7 @@ je_pmr_electric_railway_development = {
 		if = {
 			limit = { can_research = electric_railway }
 			add_technology_progress = { progress = 7500  technology = electric_railway }
+			set_variable = pmr_je_electric_railway_development
 		}
 		if = {
 			limit = { can_research = electric_railway }
@@ -1589,6 +1624,7 @@ je_pmr_electric_railway_implementation = {
 		if = {
 			limit = { can_research = electric_railway }
 			add_technology_progress = { progress = 7500  technology = electric_railway }
+			set_variable = pmr_je_electric_railway_implementation
 		}
 		debug_log = "PMR_JE|implementation|electric_railway|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1648,6 +1684,7 @@ je_pmr_electrical_capacitors_development = {
 		if = {
 			limit = { can_research = electrical_capacitors }
 			add_technology_progress = { progress = 7500  technology = electrical_capacitors }
+			set_variable = pmr_je_electrical_capacitors_development
 		}
 		if = {
 			limit = { can_research = electrical_capacitors }
@@ -1678,6 +1715,7 @@ je_pmr_electrical_capacitors_implementation = {
 		if = {
 			limit = { can_research = electrical_capacitors }
 			add_technology_progress = { progress = 7500  technology = electrical_capacitors }
+			set_variable = pmr_je_electrical_capacitors_implementation
 		}
 		debug_log = "PMR_JE|implementation|electrical_capacitors|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1737,6 +1775,7 @@ je_pmr_film_development = {
 		if = {
 			limit = { can_research = film }
 			add_technology_progress = { progress = 7500  technology = film }
+			set_variable = pmr_je_film_development
 		}
 		if = {
 			limit = { can_research = film }
@@ -1767,6 +1806,7 @@ je_pmr_film_implementation = {
 		if = {
 			limit = { can_research = film }
 			add_technology_progress = { progress = 7500  technology = film }
+			set_variable = pmr_je_film_implementation
 		}
 		debug_log = "PMR_JE|implementation|film|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1826,6 +1866,7 @@ je_pmr_general_staff_development = {
 		if = {
 			limit = { can_research = general_staff }
 			add_technology_progress = { progress = 5000  technology = general_staff }
+			set_variable = pmr_je_general_staff_development
 		}
 		if = {
 			limit = { can_research = general_staff }
@@ -1856,6 +1897,7 @@ je_pmr_general_staff_implementation = {
 		if = {
 			limit = { can_research = general_staff }
 			add_technology_progress = { progress = 5000  technology = general_staff }
+			set_variable = pmr_je_general_staff_implementation
 		}
 		debug_log = "PMR_JE|implementation|general_staff|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -1915,6 +1957,7 @@ je_pmr_improved_fertilizer_development = {
 		if = {
 			limit = { can_research = improved_fertilizer }
 			add_technology_progress = { progress = 6250  technology = improved_fertilizer }
+			set_variable = pmr_je_improved_fertilizer_development
 		}
 		if = {
 			limit = { can_research = improved_fertilizer }
@@ -1945,6 +1988,7 @@ je_pmr_improved_fertilizer_implementation = {
 		if = {
 			limit = { can_research = improved_fertilizer }
 			add_technology_progress = { progress = 6250  technology = improved_fertilizer }
+			set_variable = pmr_je_improved_fertilizer_implementation
 		}
 		debug_log = "PMR_JE|implementation|improved_fertilizer|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2004,6 +2048,7 @@ je_pmr_intensive_agriculture_development = {
 		if = {
 			limit = { can_research = intensive_agriculture }
 			add_technology_progress = { progress = 5000  technology = intensive_agriculture }
+			set_variable = pmr_je_intensive_agriculture_development
 		}
 		if = {
 			limit = { can_research = intensive_agriculture }
@@ -2034,6 +2079,7 @@ je_pmr_intensive_agriculture_implementation = {
 		if = {
 			limit = { can_research = intensive_agriculture }
 			add_technology_progress = { progress = 5000  technology = intensive_agriculture }
+			set_variable = pmr_je_intensive_agriculture_implementation
 		}
 		debug_log = "PMR_JE|implementation|intensive_agriculture|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2093,6 +2139,7 @@ je_pmr_mechanical_tools_development = {
 		if = {
 			limit = { can_research = mechanical_tools }
 			add_technology_progress = { progress = 5000  technology = mechanical_tools }
+			set_variable = pmr_je_mechanical_tools_development
 		}
 		if = {
 			limit = { can_research = mechanical_tools }
@@ -2123,6 +2170,7 @@ je_pmr_mechanical_tools_implementation = {
 		if = {
 			limit = { can_research = mechanical_tools }
 			add_technology_progress = { progress = 5000  technology = mechanical_tools }
+			set_variable = pmr_je_mechanical_tools_implementation
 		}
 		debug_log = "PMR_JE|implementation|mechanical_tools|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2182,6 +2230,7 @@ je_pmr_mechanized_workshops_development = {
 		if = {
 			limit = { can_research = mechanized_workshops }
 			add_technology_progress = { progress = 5000  technology = mechanized_workshops }
+			set_variable = pmr_je_mechanized_workshops_development
 		}
 		if = {
 			limit = { can_research = mechanized_workshops }
@@ -2212,6 +2261,7 @@ je_pmr_mechanized_workshops_implementation = {
 		if = {
 			limit = { can_research = mechanized_workshops }
 			add_technology_progress = { progress = 5000  technology = mechanized_workshops }
+			set_variable = pmr_je_mechanized_workshops_implementation
 		}
 		debug_log = "PMR_JE|implementation|mechanized_workshops|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2271,6 +2321,7 @@ je_pmr_mobile_armor_development = {
 		if = {
 			limit = { can_research = mobile_armor }
 			add_technology_progress = { progress = 8750  technology = mobile_armor }
+			set_variable = pmr_je_mobile_armor_development
 		}
 		if = {
 			limit = { can_research = mobile_armor }
@@ -2301,6 +2352,7 @@ je_pmr_mobile_armor_implementation = {
 		if = {
 			limit = { can_research = mobile_armor }
 			add_technology_progress = { progress = 8750  technology = mobile_armor }
+			set_variable = pmr_je_mobile_armor_implementation
 		}
 		debug_log = "PMR_JE|implementation|mobile_armor|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2360,6 +2412,7 @@ je_pmr_nco_training_development = {
 		if = {
 			limit = { can_research = nco_training }
 			add_technology_progress = { progress = 8750  technology = nco_training }
+			set_variable = pmr_je_nco_training_development
 		}
 		if = {
 			limit = { can_research = nco_training }
@@ -2390,6 +2443,7 @@ je_pmr_nco_training_implementation = {
 		if = {
 			limit = { can_research = nco_training }
 			add_technology_progress = { progress = 8750  technology = nco_training }
+			set_variable = pmr_je_nco_training_implementation
 		}
 		debug_log = "PMR_JE|implementation|nco_training|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2449,6 +2503,7 @@ je_pmr_nitrogen_fixation_development = {
 		if = {
 			limit = { can_research = nitrogen_fixation }
 			add_technology_progress = { progress = 7500  technology = nitrogen_fixation }
+			set_variable = pmr_je_nitrogen_fixation_development
 		}
 		if = {
 			limit = { can_research = nitrogen_fixation }
@@ -2479,6 +2534,7 @@ je_pmr_nitrogen_fixation_implementation = {
 		if = {
 			limit = { can_research = nitrogen_fixation }
 			add_technology_progress = { progress = 7500  technology = nitrogen_fixation }
+			set_variable = pmr_je_nitrogen_fixation_implementation
 		}
 		debug_log = "PMR_JE|implementation|nitrogen_fixation|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2538,6 +2594,7 @@ je_pmr_nitroglycerin_development = {
 		if = {
 			limit = { can_research = nitroglycerin }
 			add_technology_progress = { progress = 5000  technology = nitroglycerin }
+			set_variable = pmr_je_nitroglycerin_development
 		}
 		if = {
 			limit = { can_research = nitroglycerin }
@@ -2568,6 +2625,7 @@ je_pmr_nitroglycerin_implementation = {
 		if = {
 			limit = { can_research = nitroglycerin }
 			add_technology_progress = { progress = 5000  technology = nitroglycerin }
+			set_variable = pmr_je_nitroglycerin_implementation
 		}
 		debug_log = "PMR_JE|implementation|nitroglycerin|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2627,6 +2685,7 @@ je_pmr_open_hearth_process_development = {
 		if = {
 			limit = { can_research = open_hearth_process }
 			add_technology_progress = { progress = 6250  technology = open_hearth_process }
+			set_variable = pmr_je_open_hearth_process_development
 		}
 		if = {
 			limit = { can_research = open_hearth_process }
@@ -2657,6 +2716,7 @@ je_pmr_open_hearth_process_implementation = {
 		if = {
 			limit = { can_research = open_hearth_process }
 			add_technology_progress = { progress = 6250  technology = open_hearth_process }
+			set_variable = pmr_je_open_hearth_process_implementation
 		}
 		debug_log = "PMR_JE|implementation|open_hearth_process|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2716,6 +2776,7 @@ je_pmr_percussion_cap_development = {
 		if = {
 			limit = { can_research = percussion_cap }
 			add_technology_progress = { progress = 5000  technology = percussion_cap }
+			set_variable = pmr_je_percussion_cap_development
 		}
 		if = {
 			limit = { can_research = percussion_cap }
@@ -2746,6 +2807,7 @@ je_pmr_percussion_cap_implementation = {
 		if = {
 			limit = { can_research = percussion_cap }
 			add_technology_progress = { progress = 5000  technology = percussion_cap }
+			set_variable = pmr_je_percussion_cap_implementation
 		}
 		debug_log = "PMR_JE|implementation|percussion_cap|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2805,6 +2867,7 @@ je_pmr_plastics_development = {
 		if = {
 			limit = { can_research = plastics }
 			add_technology_progress = { progress = 7500  technology = plastics }
+			set_variable = pmr_je_plastics_development
 		}
 		if = {
 			limit = { can_research = plastics }
@@ -2835,6 +2898,7 @@ je_pmr_plastics_implementation = {
 		if = {
 			limit = { can_research = plastics }
 			add_technology_progress = { progress = 7500  technology = plastics }
+			set_variable = pmr_je_plastics_implementation
 		}
 		debug_log = "PMR_JE|implementation|plastics|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2894,6 +2958,7 @@ je_pmr_realism_development = {
 		if = {
 			limit = { can_research = realism }
 			add_technology_progress = { progress = 5000  technology = realism }
+			set_variable = pmr_je_realism_development
 		}
 		if = {
 			limit = { can_research = realism }
@@ -2924,6 +2989,7 @@ je_pmr_realism_implementation = {
 		if = {
 			limit = { can_research = realism }
 			add_technology_progress = { progress = 5000  technology = realism }
+			set_variable = pmr_je_realism_implementation
 		}
 		debug_log = "PMR_JE|implementation|realism|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -2983,6 +3049,7 @@ je_pmr_repeaters_development = {
 		if = {
 			limit = { can_research = repeaters }
 			add_technology_progress = { progress = 6250  technology = repeaters }
+			set_variable = pmr_je_repeaters_development
 		}
 		if = {
 			limit = { can_research = repeaters }
@@ -3013,6 +3080,7 @@ je_pmr_repeaters_implementation = {
 		if = {
 			limit = { can_research = repeaters }
 			add_technology_progress = { progress = 6250  technology = repeaters }
+			set_variable = pmr_je_repeaters_implementation
 		}
 		debug_log = "PMR_JE|implementation|repeaters|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3072,6 +3140,7 @@ je_pmr_rifling_development = {
 		if = {
 			limit = { can_research = rifling }
 			add_technology_progress = { progress = 5000  technology = rifling }
+			set_variable = pmr_je_rifling_development
 		}
 		if = {
 			limit = { can_research = rifling }
@@ -3102,6 +3171,7 @@ je_pmr_rifling_implementation = {
 		if = {
 			limit = { can_research = rifling }
 			add_technology_progress = { progress = 5000  technology = rifling }
+			set_variable = pmr_je_rifling_implementation
 		}
 		debug_log = "PMR_JE|implementation|rifling|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3161,6 +3231,7 @@ je_pmr_shell_gun_development = {
 		if = {
 			limit = { can_research = shell_gun }
 			add_technology_progress = { progress = 5000  technology = shell_gun }
+			set_variable = pmr_je_shell_gun_development
 		}
 		if = {
 			limit = { can_research = shell_gun }
@@ -3191,6 +3262,7 @@ je_pmr_shell_gun_implementation = {
 		if = {
 			limit = { can_research = shell_gun }
 			add_technology_progress = { progress = 5000  technology = shell_gun }
+			set_variable = pmr_je_shell_gun_implementation
 		}
 		debug_log = "PMR_JE|implementation|shell_gun|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3250,6 +3322,7 @@ je_pmr_spray_finishing_development = {
 		if = {
 			limit = { can_research = spray_finishing }
 			add_technology_progress = { progress = 8750  technology = spray_finishing }
+			set_variable = pmr_je_spray_finishing_development
 		}
 		if = {
 			limit = { can_research = spray_finishing }
@@ -3280,6 +3353,7 @@ je_pmr_spray_finishing_implementation = {
 		if = {
 			limit = { can_research = spray_finishing }
 			add_technology_progress = { progress = 8750  technology = spray_finishing }
+			set_variable = pmr_je_spray_finishing_implementation
 		}
 		debug_log = "PMR_JE|implementation|spray_finishing|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3339,6 +3413,7 @@ je_pmr_telephone_development = {
 		if = {
 			limit = { can_research = telephone }
 			add_technology_progress = { progress = 7500  technology = telephone }
+			set_variable = pmr_je_telephone_development
 		}
 		if = {
 			limit = { can_research = telephone }
@@ -3369,6 +3444,7 @@ je_pmr_telephone_implementation = {
 		if = {
 			limit = { can_research = telephone }
 			add_technology_progress = { progress = 7500  technology = telephone }
+			set_variable = pmr_je_telephone_implementation
 		}
 		debug_log = "PMR_JE|implementation|telephone|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3428,6 +3504,7 @@ je_pmr_trench_works_development = {
 		if = {
 			limit = { can_research = trench_works }
 			add_technology_progress = { progress = 7500  technology = trench_works }
+			set_variable = pmr_je_trench_works_development
 		}
 		if = {
 			limit = { can_research = trench_works }
@@ -3458,6 +3535,7 @@ je_pmr_trench_works_implementation = {
 		if = {
 			limit = { can_research = trench_works }
 			add_technology_progress = { progress = 7500  technology = trench_works }
+			set_variable = pmr_je_trench_works_implementation
 		}
 		debug_log = "PMR_JE|implementation|trench_works|[THIS.GetCountry.GetNameNoFormatting]"
 	}
@@ -3517,6 +3595,7 @@ je_pmr_vulcanization_development = {
 		if = {
 			limit = { can_research = vulcanization }
 			add_technology_progress = { progress = 7500  technology = vulcanization }
+			set_variable = pmr_je_vulcanization_development
 		}
 		if = {
 			limit = { can_research = vulcanization }
@@ -3547,6 +3626,7 @@ je_pmr_vulcanization_implementation = {
 		if = {
 			limit = { can_research = vulcanization }
 			add_technology_progress = { progress = 7500  technology = vulcanization }
+			set_variable = pmr_je_vulcanization_implementation
 		}
 		debug_log = "PMR_JE|implementation|vulcanization|[THIS.GetCountry.GetNameNoFormatting]"
 	}
