@@ -228,3 +228,8 @@ tools/testbed/ledger/cost_drivers_pool.json
 !config/tech_tree_options.probe-sm-b158.json
 !config/mod_config.probe-sm-b162.json
 !config/tech_tree_options.probe-sm-b162.json
+
+# THE CANON since 2026-09-23 (user-ruled "Canonize the config with 1.58"): byte-identical to probe-sm-b158,
+# which stays as the record of the arm the B gradient measured. config/mod_config.json is a verbatim copy of this.
+!config/mod_config.canon-slide-b158.json
+!config/tech_tree_options.canon-slide-b158.json

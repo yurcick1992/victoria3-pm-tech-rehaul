@@ -1,0 +1,59 @@
+{
+  "schedule_version": 1,
+  "label": "b-gradient-rest",
+  "_why": "THE REMAINING SEVEN RUNS OF THE B GRADIENT (user-ruled 2026-09-22, after 20260922_084038_b-gradient-4x3 aborted at 6/12: \"Proceed and finish all 12 runs. These were not meant to follow our regular 2+1 rules with hard stops, go through the rest.\"). The parent batch ran probe-sm-b152 n=3 and probe-sm-b155 n=2 before its own stop rule fired on a runoff run and killed the session. This completes the ladder: b155's third seed, then b158 and b162 at n=3 each, pooled with the parent session for the five-point read.",
+  "_the_parent": "20260922_084038_b-gradient-4x3 — read the two together with `criteria.mjs --arm 20260922_084038_b-gradient-4x3,20260922_<this>:<setup>`. The configs are the SAME FILES, unchanged and not regenerated. B 1.50's five seeds live in 20260921_154722_slide-mild-n2 + 20260921_220915_slide-mild-n3more.",
+  "_NO_HARD_STOPS_THIS_BATCH": "⚠⚠ THE STOP WATCHER IS DELIBERATELY NOT ARMED, user-ruled. The parent batch died because `stop_watch` dropped the STOP file when run 5 ended at 1.482× vanilla's 1936 GDP (1.45× at the end state, past the register's 1.38× hard ceiling) — correct per the register, and OVER-BROAD IN SCOPE, because the register ends A CONFIG while the STOP file ends THE SESSION. On a multi-config gradient that is the wrong granularity, and this schedule's whole purpose is that a broken run is still a data point. ⇒ CONSEQUENCE, STATED IN ADVANCE: a stall or a runoff will play to 1936 and be recorded as a gradient point rather than stopping anything. Nothing guards this batch except the run timeout (420 min) and the agent's own smoke checks. ⚠ Landmine L37 also applies (the watcher's register check is dead on any multi-setup schedule) and is moot here since it is not armed at all.",
+  "_the_discard_rule_STILL_APPLIES": "USER-RULED 2026-09-22 and unchanged: a run whose Britain disintegrates — British GDP at 1935 below 20% of the vanilla n=16 median, i.e. below £78M — is DISCARDED from the gradient. It has never yet bound; the lowest British endpoint over the ten seeds measured so far is £243M (0.63× vanilla).",
+  "_what_the_parent_already_measured": {
+    "world_gdp_end_state_medians": "B 1.50 (n=5) 1.16 · B 1.52 (n=3) 0.86 · B 1.55 (n=2) 1.22 — NOT MONOTONE, the highest median at the highest B, against the parent model's predicted 1.16 → 1.09 → 0.99.",
+    "within_config_ranges": "0.37 (n=5) · 0.49 (n=3) · 0.46 (n=2) — each EXCEEDS the entire predicted 1.50→1.62 movement of 0.41. That is the parent's pre-registered null firing.",
+    "british_U": "Across all ten seeds of B 1.50–1.55: 1.5 / 10.0 / 4.5 / 2.2 / 9.3 · 43.2 / 2.8 / 0.4 · 1.7 / 1.0%. NINE OF TEN between 0.4% and 10.0%; the sole exception is the seed whose world GDP is 0.67, inside the WEAKENED band of the reading gate (§10.83.8). The 15% target has not been approached by any run whose world economy works.",
+    "breaks": "b152 run 3 broken by runoff (GBR capital abundance, 17 consecutive years under 5% U* at a mean hoard of 1.51 against the 1.50 threshold); b155 run 5 broken by runoff (world GDP 1.45× beyond the 1.38× ceiling)."
+  },
+  "_predictions": {
+    "_basis": "Stated before launch as the no-ceteris-paribus rule requires, and DELIBERATELY DIFFERENT from the parent's — the parent's model has already been falsified on its own first three points, so restating it would be dishonest.",
+    "primary": "PREDICT no detectable monotone fall across the five points. Specifically: b158 and b162 medians land inside 0.80–1.25, i.e. within the envelope B 1.50–1.55 already spans, and a regression of world GDP on ln B over five points returns a slope whose sign is not stable under leave-one-out.",
+    "the_alternative_it_could_return": "⭐ The honest rival: B 1.62 is 8% above the anchor where B 1.52 was 1.3%, so it is the first point with a step large enough to clear the noise. If the parent model's slope (−5.32) is real, b162's median lands near 0.75 and b158's near 0.88, and the five points DO trend. This is what the batch is for.",
+    "british_U_star": "PREDICT Britain stays under 15% in every seed whose world GDP exceeds 0.80. If b162 produces a seed at once above 0.80 world GDP AND above 15% GBR U*, that is the first counter-example in thirteen and the most important single result of the whole line.",
+    "breaks": "PREDICT at least one broken run among the seven — the family has broken 2 of 5 at B 1.52–1.55, both by runoff. With no watcher these now play to 1936 and are recorded.",
+    "hard_lines": "The register's band is 0.66–1.38. At the parent model's slope b162 sits at 0.75 (intact); 30% steeper puts it at 0.63 (broken by stall). Both outcomes are data here, neither stops anything."
+  },
+  "_watch": [
+    "run 1 at ~5 min: marker, version, error window BY POSITION not by a time-shaped pattern, clock, queue_mix",
+    "each endpoint: world GDP ÷ the vanilla median, GBR U* as a SHARE, GBR GDP ÷ £388M (the discard test)",
+    "⚠ NO watcher is armed — the agent's smoke check is the only guard; check the session every waiter heartbeat",
+    "at the end: the five-point regression of world GDP on ln B, jackknifed, and the GBR U* census over all seventeen seeds",
+    "post-batch: preflight -Session, VERDICT.md, the SESSION_VERDICTS row, FINDINGS"
+  ],
+  "_cost": "7 runs × 1836→1936 at ~3h each: about 21 hours.",
+  "_caveats": [
+    "The parent session and this one are different nights on the same machine and game version. Ratios travel between them, absolute £ do not — and every figure here is a ratio to the pinned vanilla n=16 baseline.",
+    "b155's three seeds will span two sessions (runs 4-5 in the parent, run 1 here). That is a pooling of the SAME byte-identical config, which criteria.mjs supports via a comma-separated --arm.",
+    "Nothing here tests build-to-build reproducibility; the configs are rebuilt per run as always, from unchanged files.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); the STOP file must be absent at launch.",
+    "⚠ Do NOT arm stop_watch.ps1 for this batch — that is the ruling, and arming it would reproduce the abort."
+  ],
+  "_run_order": "b155's missing seed first (it completes a config already half-read), then b158 ×3 and b162 ×3 back to back in ascending B — the 2026-09-13 no-alternation ruling.",
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "probe-sm-b155": { "kind": "config", "config": "config/mod_config.probe-sm-b155.json" },
+    "probe-sm-b158": { "kind": "config", "config": "config/mod_config.probe-sm-b158.json" },
+    "probe-sm-b162": { "kind": "config", "config": "config/mod_config.probe-sm-b162.json" }
+  },
+  "runs": [
+    { "setup": "probe-sm-b155", "until": "1936.1.1" },
+    { "setup": "probe-sm-b158", "until": "1936.1.1" },
+    { "setup": "probe-sm-b158", "until": "1936.1.1" },
+    { "setup": "probe-sm-b158", "until": "1936.1.1" },
+    { "setup": "probe-sm-b162", "until": "1936.1.1" },
+    { "setup": "probe-sm-b162", "until": "1936.1.1" },
+    { "setup": "probe-sm-b162", "until": "1936.1.1" }
+  ]
+}

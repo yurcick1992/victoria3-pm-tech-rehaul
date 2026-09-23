@@ -72,7 +72,7 @@ building_textile_mill = {
 		pmg_luxury_building_textile_mill_textile_mill
 		pmg_automation_building_textile_mill
 	}
-	required_construction = 600
+	required_construction = 316
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -90,7 +90,7 @@ building_textile_mill_dye_workshops = {
 		pmg_luxury_building_textile_mill_textile_mill_dye_workshops
 		pmg_automation_building_textile_mill
 	}
-	required_construction = 1140
+	required_construction = 600
 	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -108,7 +108,7 @@ building_textile_mill_sewing_machines = {
 		pmg_luxury_building_textile_mill_textile_mill_sewing_machines
 		pmg_automation_building_textile_mill
 	}
-	required_construction = 2166
+	required_construction = 1140
 	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -126,7 +126,7 @@ building_textile_mill_electric_sewing_machines = {
 		pmg_luxury_building_textile_mill_textile_mill_electric_sewing_machines
 		pmg_automation_building_textile_mill
 	}
-	required_construction = 4115
+	required_construction = 2166
 	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -146,7 +146,7 @@ building_furniture_manufactory = {
 		pmg_luxury_building_furniture_manufactory_furniture_manufactory
 		pmg_automation_building_furniture_manufactory
 	}
-	required_construction = 600
+	required_construction = 316
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -164,7 +164,7 @@ building_furniture_manufactory_lathe = {
 		pmg_luxury_building_furniture_manufactory_furniture_manufactory_lathe
 		pmg_automation_building_furniture_manufactory
 	}
-	required_construction = 1140
+	required_construction = 600
 	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -182,7 +182,7 @@ building_furniture_manufactory_mechanized_workshops = {
 		pmg_luxury_building_furniture_manufactory_furniture_manufactory_mechanized_workshops
 		pmg_automation_building_furniture_manufactory
 	}
-	required_construction = 2166
+	required_construction = 1140
 	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -200,7 +200,7 @@ building_furniture_manufactory_spray_finishing = {
 		pmg_luxury_building_furniture_manufactory_furniture_manufactory_spray_finishing
 		pmg_automation_building_furniture_manufactory
 	}
-	required_construction = 4115
+	required_construction = 2166
 	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -218,7 +218,7 @@ building_glassworks = {
 		pmg_luxury_building_glassworks_glassworks
 		pmg_glassblowing
 	}
-	required_construction = 600
+	required_construction = 316
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -235,7 +235,7 @@ building_glassworks_leaded_glass = {
 		pmg_luxury_building_glassworks_glassworks_leaded_glass
 		pmg_glassblowing
 	}
-	required_construction = 1140
+	required_construction = 600
 	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -252,7 +252,7 @@ building_glassworks_crystal_glass = {
 		pmg_luxury_building_glassworks_glassworks_crystal_glass
 		pmg_glassblowing
 	}
-	required_construction = 2166
+	required_construction = 1140
 	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -269,7 +269,7 @@ building_glassworks_houseware_plastics = {
 		pmg_luxury_building_glassworks_glassworks_houseware_plastics
 		pmg_glassblowing
 	}
-	required_construction = 4115
+	required_construction = 2166
 	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -288,7 +288,7 @@ building_tooling_workshop = {
 		pmg_main_tooling_crude_tools
 		pmg_automation_building_tooling_workshop
 	}
-	required_construction = 600
+	required_construction = 316
 	ai_value = 1000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -305,7 +305,7 @@ building_tooling_workshop_pig_iron = {
 		pmg_main_tooling_pig_iron
 		pmg_automation_building_tooling_workshop
 	}
-	required_construction = 1140
+	required_construction = 600
 	ai_value = 3000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -322,7 +322,7 @@ building_tooling_workshop_steel = {
 		pmg_main_tooling_steel
 		pmg_automation_building_tooling_workshop
 	}
-	required_construction = 2166
+	required_construction = 1140
 	ai_value = 9000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -339,7 +339,7 @@ building_tooling_workshop_rubber_grips = {
 		pmg_main_tooling_rubber_grips
 		pmg_automation_building_tooling_workshop
 	}
-	required_construction = 4115
+	required_construction = 2166
 	ai_value = 27000
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -630,7 +630,7 @@ building_synthetics_plant = {
 		pmg_main_synthetics_dye_production
 		pmg_synthetic_silk_synthetics_plant
 	}
-	required_construction = 1520
+	required_construction = 800
 	possible = {
 		owner = {
 			NOT = {
@@ -875,7 +875,7 @@ building_automotive_industry = {
 		pmg_tanks_automotive_industry
 		pmg_automation_building_automotive_industry
 	}
-	required_construction = 2888
+	required_construction = 1520
 	possible = {
 		owner = {
 			NOT = {
@@ -903,7 +903,7 @@ building_automotive_industry_mass_automobile_production = {
 		pmg_tanks_automotive_industry_mass_automobile_production
 		pmg_automation_building_automotive_industry
 	}
-	required_construction = 5487
+	required_construction = 2888
 	possible = {
 		owner = {
 			NOT = {
@@ -930,7 +930,7 @@ building_electrics_industry = {
 		pmg_main_electrics_telephones
 		pmg_radios_category_electrics_industry
 	}
-	required_construction = 2888
+	required_construction = 1520
 	possible = {
 		owner = {
 			NOT = {
@@ -1098,7 +1098,7 @@ building_munition_plant = {
 		pmg_main_munition_percussion_caps
 		pmg_automation_building_munition_plant
 	}
-	required_construction = 1520
+	required_construction = 800
 	possible = {
 		owner = {
 			NOT = {
@@ -1125,7 +1125,7 @@ building_munition_plant_explosive_shells = {
 		pmg_main_munition_explosive_shells
 		pmg_automation_building_munition_plant
 	}
-	required_construction = 2888
+	required_construction = 1520
 	possible = {
 		owner = {
 			NOT = {

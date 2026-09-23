@@ -18,8 +18,8 @@ pm_main_food_sweeteners = {
 	texture = "gfx/interface/icons/production_method_icons/sweeteners.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_grain_add = 46.1
-			goods_input_sugar_add = 17.3
+			goods_input_grain_add = 48.5
+			goods_input_sugar_add = 18.2
 			goods_output_groceries_add = 99
 		}
 		level_scaled = {
@@ -34,8 +34,8 @@ pm_main_food_baking_powder = {
 	texture = "gfx/interface/icons/production_method_icons/baking_powder.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_grain_add = 69.1
-			goods_input_sugar_add = 25.9
+			goods_input_grain_add = 76.7
+			goods_input_sugar_add = 28.8
 			goods_output_groceries_add = 217.8
 		}
 		level_scaled = {
@@ -51,8 +51,8 @@ pm_main_textile_handsewn_clothes = {
 	texture = "gfx/interface/icons/production_method_icons/handsewn_clothes.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_fabric_add = 48
-			goods_output_clothes_add = 45
+			goods_input_fabric_add = 38
+			goods_output_clothes_add = 27.3
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -65,9 +65,9 @@ pm_main_textile_dye_workshops = {
 	texture = "gfx/interface/icons/production_method_icons/dye_workshops.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_fabric_add = 57.6
-			goods_input_dye_add = 7.2
-			goods_output_clothes_add = 99
+			goods_input_fabric_add = 48
+			goods_input_dye_add = 6
+			goods_output_clothes_add = 60
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -81,10 +81,10 @@ pm_main_textile_sewing_machines = {
 	texture = "gfx/interface/icons/production_method_icons/sewing_machines.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_fabric_add = 72
-			goods_input_dye_add = 12
-			goods_input_tools_add = 6
-			goods_output_clothes_add = 217.8
+			goods_input_fabric_add = 63.2
+			goods_input_dye_add = 10.5
+			goods_input_tools_add = 5.3
+			goods_output_clothes_add = 132
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -99,11 +99,11 @@ pm_main_textile_electric_sewing_machines = {
 	texture = "gfx/interface/icons/production_method_icons/electric_sewing_machines.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_fabric_add = 72
-			goods_input_dye_add = 24
-			goods_input_tools_add = 12
-			goods_input_electricity_add = 12
-			goods_output_clothes_add = 479.2
+			goods_input_fabric_add = 66.6
+			goods_input_dye_add = 22.2
+			goods_input_tools_add = 11.1
+			goods_input_electricity_add = 11.1
+			goods_output_clothes_add = 290.4
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -118,9 +118,9 @@ pm_main_furniture_handcrafted_furniture = {
 	texture = "gfx/interface/icons/production_method_icons/furniture_handicraft.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 36
-			goods_input_fabric_add = 12
-			goods_output_furniture_add = 45
+			goods_input_wood_add = 28.5
+			goods_input_fabric_add = 9.5
+			goods_output_furniture_add = 29.5
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -133,10 +133,10 @@ pm_main_furniture_lathe = {
 	texture = "gfx/interface/icons/production_method_icons/lathes.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 43.2
-			goods_input_fabric_add = 14.4
-			goods_input_tools_add = 7.2
-			goods_output_furniture_add = 99
+			goods_input_wood_add = 36
+			goods_input_fabric_add = 12
+			goods_input_tools_add = 6
+			goods_output_furniture_add = 65
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -156,10 +156,10 @@ pm_main_furniture_mechanized_workshops = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 67.5
-			goods_input_fabric_add = 13.5
-			goods_input_tools_add = 13.5
-			goods_output_furniture_add = 217.8
+			goods_input_wood_add = 59.3
+			goods_input_fabric_add = 11.9
+			goods_input_tools_add = 11.9
+			goods_output_furniture_add = 143
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -179,10 +179,10 @@ pm_main_furniture_spray_finishing = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 101.3
-			goods_input_fabric_add = 20.3
-			goods_input_tools_add = 20.3
-			goods_output_furniture_add = 479.2
+			goods_input_wood_add = 93.6
+			goods_input_fabric_add = 18.7
+			goods_input_tools_add = 18.7
+			goods_output_furniture_add = 314.6
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -197,8 +197,8 @@ pm_main_glass_forest_glass = {
 	texture = "gfx/interface/icons/production_method_icons/forest_glass.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 36
-			goods_output_glass_add = 30
+			goods_input_wood_add = 30.4
+			goods_output_glass_add = 18.2
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -216,9 +216,9 @@ pm_main_glass_leaded_glass = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 27
-			goods_input_lead_add = 13.5
-			goods_output_glass_add = 66
+			goods_input_wood_add = 24
+			goods_input_lead_add = 12
+			goods_output_glass_add = 40
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -237,8 +237,8 @@ pm_main_glass_crystal_glass = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_lead_add = 40.5
-			goods_output_glass_add = 145.2
+			goods_input_lead_add = 37.9
+			goods_output_glass_add = 88
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -258,9 +258,9 @@ pm_main_glass_houseware_plastics = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_oil_add = 24.3
-			goods_input_lead_add = 36.5
-			goods_output_glass_add = 319.4
+			goods_input_oil_add = 24
+			goods_input_lead_add = 35.9
+			goods_output_glass_add = 193.6
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -275,8 +275,8 @@ pm_main_tooling_crude_tools = {
 	texture = "gfx/interface/icons/production_method_icons/crude_tools.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 36
-			goods_output_tools_add = 30
+			goods_input_wood_add = 53.2
+			goods_output_tools_add = 27.3
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -289,9 +289,9 @@ pm_main_tooling_pig_iron = {
 	texture = "gfx/interface/icons/production_method_icons/pig_iron_tools.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 23.1
-			goods_input_iron_add = 15.4
-			goods_output_tools_add = 66
+			goods_input_wood_add = 36
+			goods_input_iron_add = 24
+			goods_output_tools_add = 60
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -305,9 +305,9 @@ pm_main_tooling_steel = {
 	texture = "gfx/interface/icons/production_method_icons/bessemer_process.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 30.4
-			goods_input_steel_add = 20.3
-			goods_output_tools_add = 145.2
+			goods_input_wood_add = 49.8
+			goods_input_steel_add = 33.2
+			goods_output_tools_add = 132
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -322,9 +322,9 @@ pm_main_tooling_rubber_grips = {
 	texture = "gfx/interface/icons/production_method_icons/steel_tools.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_rubber_add = 12.8
-			goods_input_steel_add = 38.4
-			goods_output_tools_add = 319.4
+			goods_input_rubber_add = 22.1
+			goods_input_steel_add = 66.2
+			goods_output_tools_add = 290.4
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -358,8 +358,8 @@ pm_main_paper_sulfite_pulping = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 29.5
-			goods_input_sulfur_add = 9.8
+			goods_input_wood_add = 31
+			goods_input_sulfur_add = 10.3
 			goods_output_paper_add = 88
 		}
 		level_scaled = {
@@ -379,9 +379,9 @@ pm_main_paper_bleached_paper = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 32.4
-			goods_input_sulfur_add = 10.8
-			goods_input_dye_add = 10.8
+			goods_input_wood_add = 35.9
+			goods_input_sulfur_add = 12
+			goods_input_dye_add = 12
 			goods_output_paper_add = 193.6
 		}
 		level_scaled = {
@@ -402,9 +402,9 @@ pm_main_paper_continuous_web_processing = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_wood_add = 48.6
-			goods_input_sulfur_add = 16.2
-			goods_input_dye_add = 16.2
+			goods_input_wood_add = 56.8
+			goods_input_sulfur_add = 18.9
+			goods_input_dye_add = 18.9
 			goods_output_paper_add = 425.9
 		}
 		level_scaled = {
@@ -447,8 +447,8 @@ pm_main_fertilizer_improved_fertilizer = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_sulfur_add = 38
-			goods_input_iron_add = 38
+			goods_input_sulfur_add = 40
+			goods_input_iron_add = 40
 			goods_output_fertilizer_add = 198
 		}
 		level_scaled = {
@@ -469,9 +469,9 @@ pm_main_fertilizer_nitrogen_fixation = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_sulfur_add = 51.3
-			goods_input_oil_add = 25.7
-			goods_input_iron_add = 38.5
+			goods_input_sulfur_add = 56.9
+			goods_input_oil_add = 28.5
+			goods_input_iron_add = 42.7
 			goods_output_fertilizer_add = 435.6
 		}
 		level_scaled = {
@@ -492,9 +492,9 @@ pm_main_fertilizer_catalytic_synthesis = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_sulfur_add = 77
-			goods_input_oil_add = 38.5
-			goods_input_iron_add = 57.7
+			goods_input_sulfur_add = 89.9
+			goods_input_oil_add = 45
+			goods_input_iron_add = 67.4
 			goods_output_fertilizer_add = 958.3
 		}
 		level_scaled = {
@@ -537,9 +537,9 @@ pm_main_explosives_ammonia_soda_process = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_sulfur_add = 32
-			goods_input_fertilizer_add = 32
-			goods_input_paper_add = 10.7
+			goods_input_sulfur_add = 33.7
+			goods_input_fertilizer_add = 33.7
+			goods_input_paper_add = 11.2
 			goods_output_explosives_add = 110
 		}
 		level_scaled = {
@@ -560,9 +560,9 @@ pm_main_explosives_vacuum_evaporation = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_sulfur_add = 45.5
-			goods_input_fertilizer_add = 45.5
-			goods_input_paper_add = 22.7
+			goods_input_sulfur_add = 50.5
+			goods_input_fertilizer_add = 50.5
+			goods_input_paper_add = 25.2
 			goods_output_explosives_add = 242
 		}
 		level_scaled = {
@@ -583,10 +583,10 @@ pm_main_explosives_brine_electrolysis = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_sulfur_add = 51.8
-			goods_input_fertilizer_add = 64.8
-			goods_input_paper_add = 38.9
-			goods_input_electricity_add = 25.9
+			goods_input_sulfur_add = 60.6
+			goods_input_fertilizer_add = 75.7
+			goods_input_paper_add = 45.4
+			goods_input_electricity_add = 30.3
 			goods_output_explosives_add = 532.4
 		}
 		level_scaled = {
@@ -629,8 +629,8 @@ pm_main_steel_bessemer_process = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_iron_add = 81.8
-			goods_input_coal_add = 40.9
+			goods_input_iron_add = 86.2
+			goods_input_coal_add = 43.1
 			goods_output_steel_add = 143
 		}
 		level_scaled = {
@@ -651,8 +651,8 @@ pm_main_steel_open_hearth_process = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_iron_add = 135
-			goods_input_coal_add = 45
+			goods_input_iron_add = 149.8
+			goods_input_coal_add = 49.9
 			goods_output_steel_add = 314.6
 		}
 		level_scaled = {
@@ -673,9 +673,9 @@ pm_main_steel_electric_arc_process = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_iron_add = 174.6
-			goods_input_coal_add = 52.4
-			goods_input_electricity_add = 52.4
+			goods_input_iron_add = 204
+			goods_input_coal_add = 61.2
+			goods_input_electricity_add = 61.2
 			goods_output_steel_add = 692.1
 		}
 		level_scaled = {
@@ -717,8 +717,8 @@ pm_main_motor_electric_engines = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 55.9
-			goods_input_electricity_add = 41.9
+			goods_input_steel_add = 62
+			goods_input_electricity_add = 46.5
 			goods_output_engines_add = 193.6
 		}
 		level_scaled = {
@@ -739,8 +739,8 @@ pm_main_motor_diesel_engines = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 67.5
-			goods_input_oil_add = 67.5
+			goods_input_steel_add = 78.9
+			goods_input_oil_add = 78.9
 			goods_output_engines_add = 425.9
 		}
 		level_scaled = {
@@ -761,10 +761,10 @@ pm_main_automotive_automobile_production = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_engines_add = 27
-			goods_input_rubber_add = 13.5
-			goods_input_oil_add = 13.5
-			goods_output_automobiles_add = 145.2
+			goods_input_engines_add = 19
+			goods_input_rubber_add = 9.5
+			goods_input_oil_add = 9.5
+			goods_output_automobiles_add = 66
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -784,10 +784,10 @@ pm_main_automotive_mass_automobile_production = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_engines_add = 28.9
-			goods_input_rubber_add = 28.9
-			goods_input_oil_add = 28.9
-			goods_output_automobiles_add = 319.4
+			goods_input_engines_add = 21.4
+			goods_input_rubber_add = 21.4
+			goods_input_oil_add = 21.4
+			goods_output_automobiles_add = 145.2
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -818,9 +818,9 @@ pm_main_arms_rifles = {
 	texture = "gfx/interface/icons/production_method_icons/rifles.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 13.1
-			goods_input_hardwood_add = 13.1
-			goods_input_tools_add = 6.5
+			goods_input_steel_add = 13.8
+			goods_input_hardwood_add = 13.8
+			goods_input_tools_add = 6.9
 			goods_output_small_arms_add = 66
 		}
 		level_scaled = {
@@ -835,9 +835,9 @@ pm_main_arms_repeaters = {
 	texture = "gfx/interface/icons/production_method_icons/repeaters.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 24
-			goods_input_hardwood_add = 12
-			goods_input_tools_add = 12
+			goods_input_steel_add = 26.6
+			goods_input_hardwood_add = 13.3
+			goods_input_tools_add = 13.3
 			goods_output_small_arms_add = 145.2
 		}
 		level_scaled = {
@@ -853,10 +853,10 @@ pm_main_arms_bolt_action_rifles = {
 	texture = "gfx/interface/icons/production_method_icons/bolt_action_rifles.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 24.9
-			goods_input_hardwood_add = 12.5
-			goods_input_tools_add = 24.9
-			goods_input_oil_add = 12.5
+			goods_input_steel_add = 29.1
+			goods_input_hardwood_add = 14.6
+			goods_input_tools_add = 29.1
+			goods_input_oil_add = 14.6
 			goods_output_small_arms_add = 319.4
 		}
 		level_scaled = {
@@ -888,8 +888,8 @@ pm_main_artillery_smoothbores = {
 	texture = "gfx/interface/icons/production_method_icons/smoothbores.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_iron_add = 28.1
-			goods_input_hardwood_add = 16.9
+			goods_input_iron_add = 29.6
+			goods_input_hardwood_add = 17.8
 			goods_output_artillery_add = 55
 		}
 		level_scaled = {
@@ -905,9 +905,9 @@ pm_main_artillery_breech_loaders = {
 	texture = "gfx/interface/icons/production_method_icons/breech_loading_artillery_production.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 32.9
-			goods_input_hardwood_add = 13.2
-			goods_input_tools_add = 13.2
+			goods_input_steel_add = 36.5
+			goods_input_hardwood_add = 14.6
+			goods_input_tools_add = 14.6
 			goods_output_artillery_add = 121
 		}
 		level_scaled = {
@@ -923,9 +923,9 @@ pm_main_artillery_recoiled_barrels = {
 	texture = "gfx/interface/icons/production_method_icons/recoil_mechanism_artillery_production.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 50.6
-			goods_input_tools_add = 25.3
-			goods_input_oil_add = 12.7
+			goods_input_steel_add = 59.2
+			goods_input_tools_add = 29.6
+			goods_input_oil_add = 14.8
 			goods_output_artillery_add = 266.2
 		}
 		level_scaled = {
@@ -946,9 +946,9 @@ pm_main_munition_percussion_caps = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_explosives_add = 36
-			goods_input_lead_add = 36
-			goods_output_ammunition_add = 110
+			goods_input_explosives_add = 24
+			goods_input_lead_add = 24
+			goods_output_ammunition_add = 50
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -968,9 +968,9 @@ pm_main_munition_explosive_shells = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_explosives_add = 60.8
-			goods_input_lead_add = 45.6
-			goods_output_ammunition_add = 242
+			goods_input_explosives_add = 42.7
+			goods_input_lead_add = 32
+			goods_output_ammunition_add = 110
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -990,9 +990,9 @@ pm_main_synthetics_dye_production = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_sulfur_add = 36
-			goods_input_fertilizer_add = 54
-			goods_output_dye_add = 176
+			goods_input_sulfur_add = 24
+			goods_input_fertilizer_add = 36
+			goods_output_dye_add = 80
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -1007,11 +1007,11 @@ pm_main_electrics_telephones = {
 	texture = "gfx/interface/icons/production_method_icons/telephones.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_iron_add = 54
-			goods_input_rubber_add = 54
-			goods_input_lead_add = 54
-			goods_input_tools_add = 27
-			goods_output_telephones_add = 290.4
+			goods_input_iron_add = 37.9
+			goods_input_rubber_add = 37.9
+			goods_input_lead_add = 37.9
+			goods_input_tools_add = 19
+			goods_output_telephones_add = 132
 		}
 		level_scaled = {
 			building_employment_shopkeepers_add = 500
@@ -1036,7 +1036,7 @@ pm_main_art_academy_realist_art = {
 	texture = "gfx/interface/icons/production_method_icons/realist_art.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_paper_add = 18
+			goods_input_paper_add = 19
 			goods_output_fine_art_add = 11
 		}
 	}
@@ -1046,8 +1046,8 @@ pm_main_art_academy_photographic_art = {
 	texture = "gfx/interface/icons/production_method_icons/photographic_art.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_paper_add = 15.8
-			goods_input_tools_add = 8.4
+			goods_input_paper_add = 17.5
+			goods_input_tools_add = 9.3
 			goods_output_fine_art_add = 24.2
 		}
 	}
@@ -1057,9 +1057,9 @@ pm_main_art_academy_film_art = {
 	texture = "gfx/interface/icons/production_method_icons/film_art.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_tools_add = 12.2
-			goods_input_paper_add = 18.2
-			goods_input_electricity_add = 6.1
+			goods_input_tools_add = 14.2
+			goods_input_paper_add = 21.3
+			goods_input_electricity_add = 7.1
 			goods_output_fine_art_add = 53.2
 		}
 	}

@@ -251,7 +251,65 @@ the reason it is closed is the UI, which has to render a rung per era per indust
 ⇒ Nothing may describe it as the canon, the shipped book, or the current method. Where an old banner below still
 reads that way it has been corrected in place; the headings that follow are HISTORY.
 
-## ⭐⭐⭐ THE CANON IS `canon-c19-in12-elec` SINCE 2026-09-20 — `canon-c19-in12` PLUS THE URBAN-CENTRE ELECTRICITY OVERRIDE, AND NOTHING ELSE
+## ⭐⭐⭐ THE CANON IS `canon-slide-b158` SINCE 2026-09-23 — THE ANCHOR SLIDE + ANCHOR COST + THE MILD SPENDING SET + **B 1.58**, CHOSEN OFF THE TWELVE-RUN B GRADIENT (user-ruled: *"Canonize the config with 1.58"*)
+
+`config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.canon-slide-b158.json`
++ twin, which are themselves byte-identical to **`config/mod_config.probe-sm-b158.json`** — the book the B gradient actually
+measured (sha256 `4ce5890f88be1279`). The probe-named file is KEPT UNCHANGED as the record of what was measured; the
+`canon-slide-b158` name exists so the canon has a canon-style name, and all three files carry the same bytes.
+⭐ **THE TECH TREE DID NOT MOVE**: `config/tech_tree_options.json` is byte-identical before and after (`c6dabd3db8a72c0d`),
+so this canonization changes the recipe book alone.
+
+**What it is:** A 2.2 · **B 1.58** · `building_cost` = the vanilla anchor × 1.9^era · rung 0's input value × 1.2 with the ladder
+anchored on it · ai_value 1,000 × 3^era · the pool cost-divisor 0.000125 · the 24-month industry research bar · the
+**URBAN-CENTRE ELECTRICITY OVERRIDE** of §10.43.0 (verified present before canonizing: `pm_goods` 2 coal → 10 services +
+1 electricity, `pm_employment` 250 engineers) — plus the two departures from the previous canon:
+1. ⭐ **THE ANCHOR SLIDE** (`--anchor-for textile,furniture,glass,tooling,munition,synthetics,automotive,electrics:1` with
+   **`--anchor-cost`**): eight industries take their ladder origin at **e1** instead of e0, so era e is priced A^(e−1) / B^(e−1)
+   over the anchor rung's own vanilla method, and `building_cost` follows the anchor. L31 prints a note per slid industry and
+   checks them on that basis; every ratio BETWEEN rungs is untouched, so F97's death test is unchanged by the slide.
+2. ⭐ **THE MILD SPENDING SET**: `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` **0.95**, `CRITICAL` **1.0**,
+   `EXCESSIVE` **2.0** (the old canon 0.9 / 0.9 / 1.5; the full eager set 0.99 / 1.25 / 3.0). Held under vanilla's ship
+   `EXCESSIVE` of 1.05, so no define is rejected at load — **L33 clean**.
+
+**Why B 1.58, in the gradient's own numbers** (five B points, 17 runs; the end-state 1932–36 mean, ÷ the pinned vanilla n=16):
+
+| B | n | world GDP per seed | median | GBR U\* per seed | median | Britain in the 10–50% band |
+|---|---|---|---|---|---|---|
+| 1.50 | 5 | 1.28 · 1.16 · 1.20 · 0.91 · 1.07 | 1.16 | 1.8 · 13.1 · 15.4 · 2.3 · 8.7% | 8.7% | 2/5 |
+| 1.52 | 3 | 0.67 · 0.86 · 1.16 | 0.86 | 45.8 · 4.4 · 0.9% | 4.4% | 1/3 |
+| 1.55 | 3 | 0.99 · 1.45 · 1.11 | 1.11 | 4.8 · 1.2 · 1.6% | 1.6% | 0/3 |
+| **1.58** | **3** | **0.87 · 1.02 · 0.82** | **0.87** | **22.2 · 12.1 · 24.8%** | **22.2%** | **3/3** |
+| 1.62 | 3 | 0.72 · 0.86 · 0.53 | 0.72 | 12.4 · 3.6 · 44.4% | 12.4% | 2/3 |
+
+**B 1.58 is the only config of the five with 3 intact / 0 broken AND every seed's Britain inside the band**, at consensus
+**LOSS 4.91**, with pool W 0.73 · pool H 0.92 · pool GDP 1.13 · PP 0.78 · T0 0.71 · world W 0.67 **all AT THE AIM** and
+PI 0.89 **falling decade over decade**. B 1.62 is past the edge: one run **broken by stall** (world GDP 0.53, under the 0.66
+floor), a median under the soft line, and the U\* spread re-opening to 3.6–44.4%.
+⭐ The world-GDP gradient is REAL over the full five points — slope **−4.47** on ln(B/1.5), r −0.743, sign stable under
+leave-one-out — and the two LARGEST steps land on the pre-registered model almost exactly (1.58 predicted 0.88 / measured
+0.87; 1.62 predicted 0.75 / measured 0.72). The two smallest steps (1.52, 1.55) are buried in the seed spread, which is why
+a three-point reading of this ladder returned a null.
+
+⚠⚠ **THE KNOWN DEFECTS OF THIS CANON, stated so nothing has to rediscover them:**
+1. **World GDP sits at 0.87 median, below the 1.0 aim** (consensus 0.84). It is inside the soft range 0.75–1.33 and well
+   inside the hard band, but it is the largest single term of the residual. The gradient says the fix is a LOWER B and the
+   evidence says a lower B costs Britain's U\* — that trade is the open question, not a bug.
+2. **Pool U\* 1.84, under the ≥ 2 aim**, and PI 0.89 against an aim of ≤ 0.8.
+3. ⚠ **It differs from the previous canon on FOUR levers at once** (the slide, anchor cost, the mild spending set, B) — it was
+   chosen on its measured end state, not by isolating each. No single-lever attribution exists for the combination.
+4. ⚠ **The B gradient's U\* slope is DIRECTIONAL ONLY**: +132pp per unit ln B with r = 0.504 and a magnitude that swings 3.4×
+   under leave-one-out (69–233). Do not quote a magnitude for it.
+
+Sessions: `20260922_084038_b-gradient-4x3` (6/12, aborted by its own stop rule) + `20260922_233932_b-gradient-rest` (7/7).
+Regenerate with the `_ab.command` line in the file. Built, linted (LINT / NEGATIVE-GOODS / L18 / tech content / L13 / L31 /
+MOD CHECKS / PREFLIGHT) and deployed 2026-09-23.
+
+⚠ The previous canon is UNCHANGED and reachable at `config/mod_config.canon-c19-in12-elec.json` + twin
+(sha256 `d28b194ddfd0948a`), which was already byte-identical to the outgoing `mod_config.json`, so nothing needed backing up.
+The section below is the record of THAT canon and is kept as history:
+
+## (HISTORY) THE CANON WAS `canon-c19-in12-elec` FROM 2026-09-20 TO 2026-09-23 — `canon-c19-in12` PLUS THE URBAN-CENTRE ELECTRICITY OVERRIDE, AND NOTHING ELSE
 
 `config/mod_config.json` is a VERBATIM copy of `config/mod_config.canon-c19-in12-elec.json` (+ its tech-tree twin). It is
 `canon-c19-in12` — the book canonized 2026-09-18 and described below — regenerated through the vanilla-only pipeline so that it
@@ -1318,7 +1376,16 @@ config/tech_tree_options.json GENERATED by tools/tech_tree_spec.mjs and COMMITTE
                         INDUSTRY TECH TREES (ROADMAP step 1) — every technology with its era, date, prerequisites,
                         dependents and the buildings it unlocks, for all three trees (production/military/society).
                         A design input under review, not yet emitted to the mod; NOTHING reads it but the viewer
-config/mod_config.json      ⭐⭐⭐ THE CANON = canon-c19-in12-elec SINCE 2026-09-20 (the banner near the top of this file) — a VERBATIM copy of
+config/mod_config.canon-slide-b158.json ⭐⭐⭐ THE CANON SINCE 2026-09-23 (+ its tech-tree twin) — byte-identical to
+                        config/mod_config.probe-sm-b158.json, the book the twelve-run B GRADIENT measured (kept unchanged as the record of what
+                        was measured). A 2.2 / B 1.58 / cost = the vanilla anchor × 1.9^era / in0 1.2 / ai_value 3^era / divisor 0.000125 /
+                        the 24-month bar / the urban-centre electricity override, PLUS the anchor slide on eight industries with --anchor-cost
+                        and the MILD spending set (0.95 / 1.0 / 2.0). Chosen because it is the only one of five B points with 3 intact / 0 broken
+                        AND all three seeds' Britain inside the 10–50% U* band (12.1 / 22.2 / 24.8%), consensus loss 4.91, pool W / pool H /
+                        pool GDP / PP / T0 / world W all at the aim. ⚠ Ships world GDP 0.87 median (below the 1.0 aim) and pool U* 1.84 (below ≥2);
+                        ⚠ differs from the previous canon on FOUR levers at once. Sessions 20260922_084038_b-gradient-4x3 + 20260922_233932_b-gradient-rest.
+                        The banner near the top of this file is the record
+config/mod_config.json      ⭐⭐⭐ (SUPERSEDED 2026-09-23 — now a verbatim copy of canon-slide-b158 above) THE CANON = canon-c19-in12-elec FROM 2026-09-20 TO 2026-09-23 — a VERBATIM copy of
                         config/mod_config.canon-c19-in12-elec.json (+ its tech-tree twin), which is canon-c19-in12 regenerated so that it carries the
                         URBAN-CENTRE ELECTRICITY OVERRIDE §10.43.0 rules canonical on its own (pm_goods + pm_employment on pm_electric_streetlights:
                         a SOURCE, +1 electricity out / 2 coal in / 250 engineers, in place of vanilla's 3-electricity SINK). PROVED a two-key diff —
