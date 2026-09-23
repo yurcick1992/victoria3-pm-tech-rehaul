@@ -2088,3 +2088,55 @@ in the order the evidence supports them:
 ⭐ **And an instrument rule earned the hard way (F147 §1c): on a 1836→1838 batch, n=2 is enough for steel (~1,250 units, ~18 levels) and is NOT enough
 for engines, motor, explosives or munition, which are single-digit levels where one seed moving one level is a 30–50% swing.** Two n=2 readings of the
 engine market produced two confident, opposite, wrong answers in one day.
+
+
+## ⭐⭐⭐ STEP 11 — RAISE THE WORLD PRODUCT WITHOUT LOWERING B: POST-JE TECH FINISHING AND BROADER TRADE (user's steer, 2026-09-23, at the close of the B-gradient session)
+
+**The user, in their own words:** *"My expectation is that pushing post-JE tech finishing more efficiently and broadening
+trade will increase the economy some more, improving world GDP (but worsening Britain's U\*). We'll implement those two
+changes and test them over next several sessions."*
+
+⭐⭐ **WHY THIS IS THE RIGHT NEXT MOVE, in the canon's own residual.** `canon-slide-b158` (canonized the same day,
+FINDINGS **F158**) meets almost every line of the register — pool W 0.73 · pool H 0.92 · pool GDP 1.13 · PP 0.78 · T0 0.71 ·
+world W 0.67 all AT THE AIM, PI 0.89 falling decade over decade, 3 intact / 0 broken, Britain 12.1–24.8% U\* in all three
+seeds — and misses on exactly one important line: **world GDP 0.87 median against the 1.0 aim** (consensus 0.84).
+⚠⚠ **AND THE B AXIS CANNOT FIX IT.** F158's five-point gradient is monotone in the wrong direction for this purpose: a
+LOWER B raises world GDP (slope −4.47 on ln(B/1.5)) and the same data shows a lower B collapses Britain's U\* (B 1.55 put
+0 of 3 seeds in the 10–50% band; B 1.58 put 3 of 3). ⇒ **the world product has to come from a lever that is not on the
+ladder at all**, which is what these two are.
+
+### The two changes
+
+1. **POST-JE TECH FINISHING, more efficient.** The research journal entries grant **1.5× each covered technology's whole
+   base cost** across 126 of them (F138), a subsidy added to compensate for a tree-depth increase that never happened —
+   and ROADMAP step 8 **P9** already records the user's registered desire that *the tech tree is a thing to COMPLETE, not
+   to prioritise*. This step is about what happens AFTER a JE fires: how efficiently a country finishes the rest of the
+   tree. ⚠ Scope is NOT yet specified — the candidate levers are the JE grant fraction, the bar months, the per-tree AI
+   research weight (`tech_ai_weight_mult`, at the ruled default 1/1/1 since 2026-08-17) and the spread constants; which
+   of them is "post-JE finishing" needs the user's own reading before anything is generated.
+2. **BROADER TRADE.** Our scenarios and our books have never touched trade: `trade_center` is deliberately left vanilla,
+   the mod ships no trade-route or market-access change, and the balance model assumes NO international trade inside a
+   scenario (the amalgamation premise of the anchor principle, rule 6). ⚠ Scope unspecified likewise.
+
+### ⭐ THE PRE-REGISTERED PREDICTION (the user's, stated BEFORE anything is built — record it and score against it)
+
+**World GDP UP; Britain's U\* DOWN (worse).** That is the direction the whole B gradient says these two axes trade along,
+so the interesting question is not the sign but the EXCHANGE RATE: how many points of world GDP per point of British U\*,
+against B's own rate. If trade and tech-finishing buy GDP more cheaply in U\* than B does, they are a strictly better
+lever than re-tuning B and the canon can keep B 1.58; if they buy it at the same rate, they are B in a different costume
+and the pair (B, trade) has one degree of freedom, not two.
+⚠ **This is the same shape as the B-and-C question the user deferred on 2026-09-22** ("Theoretically, higher B and C, if
+mutually tuned, should lead to higher U\* with the same GDP. But that's a question for later"), where the measured answer
+was that B and C are nearly EQUALLY U\*-efficient (−41.3 vs −42.8 pp per unit of world GDP) and therefore trade off to a
+wash. Measure the exchange rate first; do not assume these two are cheaper.
+
+### Instrument notes for whoever runs it
+
+- ⚠ **Size the spacing against σ, not against the hoped-for effect** — F158's central methodological result. The
+  within-config seed spread on world GDP is **0.37–0.50**, so a step whose whole predicted movement is smaller than that
+  cannot be read at n=3. B 1.52 and B 1.55 were wasted for exactly this reason.
+- ⚠ **The reading gate (§10.83.8) applies**: if a change pushes world GDP outside 0.80–1.20 the U\* and H readings are
+  weakened, and at 0.60 they are disqualified — so a trade change that overshoots cannot be scored on the labour lines.
+- ⚠ **L37 is still live and still owed a fix** — `stop_watch` calls `criteria.mjs --arm <session>` with no `:setup` and
+  therefore goes blind to the register on any multi-config schedule.
+

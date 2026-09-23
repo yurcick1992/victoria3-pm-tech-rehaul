@@ -16489,3 +16489,78 @@ seed-dependent and never yet binding on this base.
 ⛔ **And the config still misses the user's band**, by less than the pair suggested: **world GDP median 1.16 against
 the 0.8–1.1 asked for.** The register itself calls that "inside, above the aim", and the 0.91 seed shows the book
 can reach the band — but its centre does not.
+
+## F158 — THE B GRADIENT EXISTS, B 1.58 IS ITS SWEET SPOT, AND A 1–3% SPACING CANNOT SEE IT (17 runs over five B points, 2026-09-22/23)
+
+**Sessions:** `20260922_084038_b-gradient-4x3` (6/12, aborted by its own stop rule) + `20260922_233932_b-gradient-rest`
+(7/7), pooled with the B 1.50 anchor from `20260921_154722_slide-mild-n2` + `20260921_220915_slide-mild-n3more` (n=5).
+**Arm:** `{kind: config}` throughout — `probe-slide-mild` and the four `probe-sm-b1XX` books, which differ from it and
+from each other ONLY in `inputs` (41 rungs), the derived `wage_pct` and `target_be`. Proved per book before launch:
+`output_qty`, `building_cost`, `ai_value` and `ai_defines` byte-identical across all five. **B is the only variable.**
+**Base (fixed):** the anchor slide on eight industries with `--anchor-cost`, C 1.9, in0 1.2, A 2.2, the MILD spending
+set, the 24-month bar. **Metrics ruled by the user:** world GDP → 1.0 of the vanilla median, British U\* → 15%; a run
+whose Britain falls under 20% of its vanilla GDP median is discarded (never bound — the lowest was 0.63).
+
+### The ladder (end state = the 1932–36 mean, ÷ the pinned vanilla n=16 baseline)
+
+| B | n | world GDP per seed | median | GBR U\* per seed | median | Britain in 10–50% | intact/broken |
+|---|---|---|---|---|---|---|---|
+| 1.50 | 5 | 1.28 · 1.16 · 1.20 · 0.91 · 1.07 | 1.16 | 1.8 · 13.1 · 15.4 · 2.3 · 8.7% | 8.7% | 2/5 | 5/0 |
+| 1.52 | 3 | 0.67 · 0.86 · 1.16 | 0.86 | 45.8 · 4.4 · 0.9% | 4.4% | 1/3 | 2/1 |
+| 1.55 | 3 | 0.99 · 1.45 · 1.11 | 1.11 | 4.8 · 1.2 · 1.6% | 1.6% | 0/3 | 2/1 |
+| **1.58** | 3 | 0.87 · 1.02 · 0.82 | **0.87** | **22.2 · 12.1 · 24.8%** | **22.2%** | **3/3** | **3/0** |
+| 1.62 | 3 | 0.72 · 0.86 · 0.53 | 0.72 | 12.4 · 3.6 · 44.4% | 12.4% | 2/3 | 2/1 |
+
+### ⭐⭐ 1. The world-GDP gradient is real, and the pre-registered slope was close to right
+
+Regression on ln(B/1.5) over the five config medians: **slope −4.47, r = −0.743**, sign **stable under leave-one-out**
+(−3.27 / −6.02 / −4.36 / −4.47 / −3.30). The schedule's pre-registered model was **−5.32**.
+⭐ **The two LARGEST steps land on prediction almost exactly**: B 1.58 predicted 0.88 → measured 0.87; B 1.62
+predicted 0.75 → measured 0.72. The two SMALLEST (1.52 = 1.3% above the anchor, 1.55 = 3.3%) miss in both directions
+(predicted 1.09 / 0.99, measured 0.86 / 1.11).
+⇒ **THE METHODOLOGICAL FINDING: within-config seed spread (0.37–0.50 on world GDP) exceeded the entire predicted
+1.50→1.62 movement (0.41), so at n=3 the fine end of the ladder is unreadable.** A three-point reading of this very
+batch returned "no gradient" and was wrong. ⚠ Size a lever's spacing against the within-config σ (≈0.2 here), not
+against the effect you hope to see.
+
+### ⭐⭐ 2. B 1.58 is the sweet spot on BOTH ruled metrics, and B 1.62 is past the edge
+
+`probe-sm-b158` is the only config of the five with **3 intact / 0 broken AND every seed's Britain inside the
+10–50% band**. Consensus **LOSS 4.91**, with pool W 0.73 · pool H 0.92 · pool GDP 1.13 · PP 0.78 · T0 0.71 ·
+world W 0.67 **all AT THE AIM** and PI 0.89 **falling decade over decade**; residual world GDP 0.84, pool U\* 1.84.
+`probe-sm-b162`: one run **broken by stall** (0.53, under the 0.66 floor), median 0.72 below the soft line, and the
+U\* spread re-opening to 3.6–44.4%. ⇒ **More B does not buy more Britain past ~1.58; it buys variance and a stall.**
+
+### ⭐ 3. The British U\* effect is directional and the separation is the cleanest this line has measured
+
+Fourteen seeds at B ≤ 1.55 produced **two** runs with Britain in the band, both marginal; three seeds at B 1.58
+produced **three, none under 12%**, on a config that broke nothing. ⚠ But the regression is weak: **+132pp per unit
+ln B, r = 0.504, magnitude swinging 3.4× under leave-one-out (69 … 233)**. Direction yes; magnitude no.
+
+### ⭐ 4. The corpus census that reframed the target (census over every four-rung run ever measured)
+
+Of **248 four-rung runs** (139 with an end state), **53** satisfy world GDP 0.9–1.3× AND GBR GDP ≥ 0.5× its vanilla
+median. Britain's U\* across them: **min 0.4% · median 4.7% · mean 6.7% · max 26.1%**; bands 0–5%: 29 · 5–10%: 11 ·
+10–15%: 8 · 15–20%: 3 · 20%+: 2. ⇒ **Britain in the 10–50% band is uncommon (25%) but not rare, and the high tail is
+real.** It clusters in the earlier, milder books (`canon4v-art3` 26.1% and 15.4%, `tier4` 19.3%, `ab3` 12.5%,
+`canon4-je` 10.1%, `canon4v-hai3` 13.4%) and in **`canon-a19-gm` at 21.6%** — the A 1.9 book F129 measured as the
+labour-absorbing lever. Vanilla's own GBR U\* over 16 seeds: median 1.7%, range 0.1–35.4%.
+⚠⚠ **A CLASSIFIER TRAP, found by the user's challenge to a first count of 298:** identifying a run's book by its
+`built_from_config` PATH reads `config/mod_config.json` AS IT IS TODAY — a MOVING TARGET (the six-rung solver2f book
+until 2026-09-05, four-rung after), which wrongly promoted 50 August runs. Identify a book by **`config_sha256`**
+(sha256, first 16 hex, exact for 165 runs); where the file was regenerated since, fall back to the NAME, and for
+`mod_config.json` alone to the canonization date. Correct counts: **248 four-rung · 105 six-rung · 29 control · 50
+with no `build_state.json`**.
+
+### What it does NOT say
+
+- ⚠ **Nothing isolates B from the rest of the base.** The canonized book differs from the previous canon on FOUR
+  levers; this batch varied B alone *within* that base, so only B's gradient is attributed.
+- ⚠ **n=3 per point.** Under the directional ruling (§10.83.7) the case is the pooled shape across the axis, never a
+  pair.
+- ⚠ **The world GDP miss (0.87 against the 1.0 aim) is unresolved**, and the gradient says lowering B fixes it at the
+  cost of Britain's U\*. That trade is the open question the next campaign inherits.
+- ⚠ **The U\* readings of the 0.67 and 0.53 runs sit in the WEAKENED / disqualified bands of the reading gate
+  (§10.83.8)** and carry little; the B 1.58 conclusion does not rest on them.
+
+⭐ **OUTCOME: `probe-sm-b158` was CANONIZED 2026-09-23** (user-ruled) as `canon-slide-b158`, commit `f0c593a`.
