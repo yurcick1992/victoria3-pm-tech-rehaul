@@ -497,6 +497,35 @@ So the net-vs-gross distinction is real, not moot. But it can only matter where 
 which is **0.01 % of rows and 0.2 % of importing rows** — so no import share computed so far moves
 materially. The old "+4.96" discrepancy is still most plausibly the mirror loss.
 
+⭐⭐ **ANSWERED ON THE SAVE SIDE, 2026-09-23 — the market line is the DOMINANT direction at GROSS volume, and the
+minor direction reads ZERO.** Save summary v10 carries each country's trade capacity per good in both directions
+(F159 §1), so the market line can be checked against the capacity behind it. Run 1 of
+`20260923_215141_canon-trade-n4` at 1840.1.1, every instrumented market, the members' capacity summed by the
+summary's `market` index:
+- **155 of 155** (market, good) pairs whose members trade the good in ONE direction report exactly
+  `capacity × traded_quantity` in that direction (the arm's own per-good values, so this also proves the
+  quantities took effect in every market, not only the British one).
+- **9 of 9** pairs whose members hold capacity in BOTH directions report the LARGER direction at its full gross
+  `capacity × traded_quantity` and **0** for the smaller — never the net. Examples: British luxury clothes (import
+  capacity 32, export 56) reads exports 896 = 56 × 16, imports 0; opium (15 / 87) exports 1,670.4 = 87 × 19.2;
+  tea (37 / 7) imports 502.46 = 37 × 13.58.
+- ⭐ **The volume carries the trade centre's QUANTITY multiplier, per member country.** By 1850.1.1 six of the
+  eight markets read a flat ×1.5 (the leaders' centres on the high-quantity method): Britain's fish 4 × 12 × 1.5 = 72,
+  iron 35 × 5 × 1.5 = 262.5. Where members differ (Britain ×1.5, its colonies ×1.0) the line is the sum: fabric
+  33 effective = 20 × 1.5 + 3, hardwood 17.5 = 11 × 1.5 + 1. ⇒ `line = Σ over members of capacity × traded_quantity
+  × (1 + quantity mult)`.
+- ⭐ **"Dominant" is decided on that EFFECTIVE volume, not on capacity**: British luxury clothes at 1850 holds MORE
+  import capacity than export (69 against 59), yet the line reads exports 1,416 = 59 × 1.5 × 16 and imports 0 — the
+  exports ride Britain's ×1.5, the imports the colonies' ×1.0 (69 < 88.5). Tools the same (26 against 23 → exports 414).
+- ⚠ Seven rows of the August sweep above carry BOTH flows, so the rule is not absolute across game versions or
+  market shapes. It is what this build does at these dates (1840 verified pair by pair; 1850 verified on the worked
+  cases above, the rest consistent with per-member multipliers the summary does not itemise). Re-check before
+  relying on it where two-way trade is large.
+⇒ For a market's TRADE VOLUME, read the v10 capacity (`countries.<tag>.trade.goods`) times the traded quantity
+(times the quantity multiplier where the centres run a quantity method), not the market line. The line understates any good the market both buys and sells. Import SHARES read from the
+line are comparable between arms (every arm carries the same rule), but they are a floor, not the gross flow.
+Checker: `dir_check.mjs` in the session scratchpad; it moves into `tools/testbed/ledger/` after the batch.
+
 ⚠ **Superseded — the original open question, kept for the record:** Every total comes back a whole number
 (104 / 105 / 65 / 216 / 130) while the breakdowns are fractional, and Russian tobacco's breakdown exceeds
 its total by 4.96. The likeliest explanation is that `GetMarketImports` nets off that market's own exports
