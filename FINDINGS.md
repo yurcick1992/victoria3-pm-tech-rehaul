@@ -16789,3 +16789,12 @@ nothing to combat, no problem."* The boost ships ON in the canon (`finish_boost`
 banked progress). The mostly-paid episodes of §5 are 20–33% of a cost short, not "infinitesimally cheap", so they are
 outside the ruling. A 3-month LOAD TEST of that canon (`20260923_204538_finboost-p2-canon-load`) loaded every patched
 technology file with zero errors; its only 40 warnings (stage-1 flags nobody reads) were removed afterwards.
+
+**⭐ REPLACED THE SAME DAY BY THE FLAT FORM** (user: *"Does that mean that all we need is a flat condition like …
+has_technology_progress > 99% …"*; *"Yes, rebuild and retest."*). §3 makes the reconstruction unnecessary: the trigger
+already reads the fraction of the PENALISED cost, and it covers every source of progress, including the
+falling-penalty case. So every researchable technology (181 of 182; sericulture skipped) now ends its `ai_weight` in
+`if = { limit = { has_technology_progress = { technology = X  progress >= 0.99 } }  add = 10000 }` — `add` because the
+ahead-of-time divisor applies outside `ai_weight`, last because `ai_weight` evaluates top to bottom. The JE stage flags
+and the per-(category, era) penalty values are gone (the first form is commit `11a5b90`). Expected to fire rarely for the
+same reason as before: progress crosses the 99–100% band in about a week unless something interrupts it.

@@ -687,16 +687,18 @@ Read this before designing anything that hands a country research (ROADMAP step 
   cost cannot strand anything. A grant that falls SHORT does strand: 2 of 3 research-JE stages at a penalty
   of Σ = 1 leave a technology at 80% of cost until the next stage (24 months at the canon's bar), and one
   probe country sat at 67% for 49 months. ⚠ Untested: whether a cost that FALLS below banked progress (an
-  earlier technology researched, the penalty shrinking) also completes it — the finish boost exists for
-  that one case (`tools/emit_tech_finish.mjs`).
+  earlier technology researched, the penalty shrinking) also completes it. The finish boost
+  (`tools/emit_tech_finish.mjs`) covers that and every other leftover with one flat test on every
+  technology: `has_technology_progress >= 0.99` → `add = 10000` in its ai_weight.
 - ⭐⭐ **THE AHEAD-OF-TIME PENALTY, EXACTLY** (F160: 76,681 engine readings, 291 countries, 100% match):
   `cost = era_cost × (1 + TECH_AHEAD_OF_TIME_PENALTY_FACTOR × Σ)`, Σ = Σ over the UNRESEARCHED technologies
   of the SAME category in EARLIER eras of (era − their era). Readable per country in loc as
   `[GetTechnology('X').GetCost(THIS.GetCountry.Self)|0]` (and `.GetProgress(…)`), both verified in `debug_log`.
   ⭐ **`can_research = no` technologies are NOT counted** — sericulture, the only one, held by eight Asian
   tags and never by the West: 26,492 of 26,492 differing readings match the skipped reading, 0 the counted.
-  There is NO trigger for the penalty or the cost; `tools/emit_tech_finish.mjs` rebuilds Σ as a script value
-  per (category, era) from the emitted tree.
+  There is NO trigger for the penalty or the cost — but none is needed to ask "how close to done":
+  `has_technology_progress` already reads the fraction of the PENALISED cost. (A per-(category, era)
+  script-value rebuild of Σ exists in commit `11a5b90` if a raw penalty is ever needed.)
 - ⭐ **THE AI'S PICK IS max-after-randomisation, and the numbers are pinned** (Dev Diary #59): each choice's
   score is rolled into `[X / (1 + R), X × (1 + R)]`, R = `TECH_RANDOM_FACTOR` 1.0, i.e. 0.5×–2×, so **a 4×
   weight advantage guarantees the pick** and anything less is a lottery. The ahead-of-time divisor

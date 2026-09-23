@@ -12,14 +12,9 @@ catalytic_synthesis = {
 	}
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_catalytic_synthesis_implementation  pmr_aot_production_e5 <= 2 }
-					AND = { has_variable = pmr_je_catalytic_synthesis_development  pmr_aot_production_e5 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = catalytic_synthesis  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -36,14 +31,9 @@ continuous_web_processing = {
 	}
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_continuous_web_processing_implementation  pmr_aot_production_e5 <= 2 }
-					AND = { has_variable = pmr_je_continuous_web_processing_development  pmr_aot_production_e5 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = continuous_web_processing  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -59,14 +49,9 @@ spray_finishing = {
 	}
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_spray_finishing_implementation  pmr_aot_production_e5 <= 2 }
-					AND = { has_variable = pmr_je_spray_finishing_development  pmr_aot_production_e5 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = spray_finishing  progress >= 0.99 } }
 			add = 10000
 		}
 	}

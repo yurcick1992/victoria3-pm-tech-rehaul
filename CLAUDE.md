@@ -264,9 +264,9 @@ so this canonization changes the recipe book alone.
 anchored on it · ai_value 1,000 × 3^era · the pool cost-divisor 0.000125 · the 24-month industry research bar · the
 **URBAN-CENTRE ELECTRICITY OVERRIDE** of §10.43.0 (verified present before canonizing: `pm_goods` 2 coal → 10 services +
 1 electricity, `pm_employment` 250 engineers) · ⭐ since 2026-09-23 (user-ruled, after canonization) **`research_events.finish_boost`**
-(+10000 AI weight on a technology the research JEs have paid for in full; `tools/emit_tech_finish.mjs`, FINDINGS **F160** — expected to
-fire rarely, because a grant that reaches the cost completes the technology on the spot; proved a one-key diff, sha `af831ae7d98f8ed0`
-for both canon copies) — plus the two departures from the previous canon:
+(the FLAT form: +10000 AI weight on any researchable technology while `has_technology_progress >= 0.99`; `tools/emit_tech_finish.mjs`,
+FINDINGS **F160** — expected to fire rarely, because a grant that reaches the cost completes the technology on the spot; proved a one-key
+diff, sha `128502ee8b2a4827` for both canon copies) — plus the two departures from the previous canon:
 1. ⭐ **THE ANCHOR SLIDE** (`--anchor-for textile,furniture,glass,tooling,munition,synthetics,automotive,electrics:1` with
    **`--anchor-cost`**): eight industries take their ladder origin at **e1** instead of e0, so era e is priced A^(e−1) / B^(e−1)
    over the anchor rung's own vanilla method, and `building_cost` follows the anchor. L31 prints a note per slid industry and
@@ -2463,11 +2463,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⇒ **After arming, confirm `tools/testbed/sessions/<stamp>/stop_watch.log` exists** — that file
                         is the only proof the watcher is really on, and it takes ~90 s to appear (it medians vanilla's
                         eighteen 1936 endpoints first)
-  testbed/ledger/finish_probe.mjs  reads the finish boost's diagnostics (`finish_boost.diag`, FINDINGS F160): the engine's cost against
-                        the penalty reconstruction under both sericulture readings, `has_technology_progress` against progress ÷ cost,
-                        the wait from "finishable" to acquired, and the share of research choices that take an eligible technology.
-                        `--session <stamp>`. ⚠ The first probe's lines carry no game date — months are counted per country from its
-                        own PMR_RS lines; later builds add `d=`
+  testbed/ledger/finish_probe.mjs  reads the diagnostics of the finish boost's RETIRED first form (`finish_boost.diag`, commit `11a5b90`;
+                        FINDINGS F160): the engine's cost against the penalty reconstruction under both sericulture readings,
+                        `has_technology_progress` against progress ÷ cost, the wait from "finishable" to acquired, and the share of research
+                        choices that take an eligible technology. `--session <stamp>` — today only 20260923_203339 carries such lines; the
+                        current emitter writes no diagnostics. ⚠ Months are counted per country from its own PMR_RS lines
   testbed/ledger/good_market.mjs  ⭐⭐ ONE GOOD'S ORDER BOOK ACROSS ARMS — buy, sell, PRODUCTION and the producing
                         industry's size, not price alone (2026-09-19, FINDINGS F147 §1a). Written because price could
                         not settle a reading and had already produced a wrong one: F147 reported "engines consumed
@@ -2790,25 +2790,18 @@ tools/                  dev tooling — NOT shipped in the mod
                         an event on them could never fire. Current output: 126 technologies (86 industry,
                         40 war) → 378 journal entries, 126 bars, 133 script values, ~1,265 loc keys
                         (was 122/366/115/1103 at the 2026-08-12 first emission; counts track the ladder)
-                        ⭐ With `research_events.finish_boost` present (enabled or diag) each stage's `on_complete` also sets
-                        the country variable `pmr_je_<tech>_<stage>`, INSIDE the same `can_research` guard as the grant —
-                        named by `lib_tech_finish.mjs`, which emit_tech_finish.mjs imports too
-  emit_tech_finish.mjs  ⭐⭐ FINISH WHAT THE JOURNAL ENTRIES PAID FOR (user-ruled 2026-09-23, FINDINGS F160) — runs AFTER emit_techs and
-                        emit_research_events. `research_events.finish_boost` {enabled, unresearchable 'count'|'skip' (REQUIRED), add, diag}:
-                        a JE-covered technology gets `+add` in its ai_weight (appended LAST, after any multiply) when its banked grants cover
-                        its whole cost. Everything is DERIVED: the tree is read AS THE ENGINE LOADS IT (vanilla overlaid by the mod's files),
-                        the penalty Σ is emitted as one script value per (category, era) — `pmr_aot_<cat>_e<N>` — and the threshold after k
-                        stages is Σ ≤ (k × grant ÷ era_cost − 1) ÷ F, i.e. 2 stages Σ ≤ 0, 3 stages Σ ≤ 2 at the shipped 0.5 / 0.25. So an era
-                        move, a new technology or a changed grant re-derives itself on the next build. ⚠ It OWNS 20_military.txt and
-                        30_society.txt whenever they hold a covered technology (regenerated from vanilla each build). ⚠ It re-reads what it
-                        wrote and THROWS on any `pmr_aot*` value read but not defined (an undefined value reads ZERO = "no penalty"), on a
-                        doubled boost, and on a technology with a CONDITIONAL can_research. `diag: true` (probe builds only) logs the engine's
-                        own GetCost/GetProgress beside the reconstruction — read with `testbed/ledger/finish_probe.mjs`.
-                        ⭐⭐ F160 measured the premise: the penalty formula is exact (100% of 76,681 readings), sericulture is SKIPPED by the
-                        engine (hence 'skip'), and a grant reaching the cost acquires the technology inside the same effect — so the
-                        boost is expected to fire rarely if ever; it covers the one untested route (a penalty that falls below banked progress)
-  lib_tech_finish.mjs   the names the two emitters above share (stage variable, penalty value, boost marker) — one definition, because a
-                        flag set under one name and read under another does not error, `has_variable` is just false
+  emit_tech_finish.mjs  ⭐⭐ FINISH WHAT IS ALREADY PAID FOR (user-ruled 2026-09-23, FINDINGS F160) — runs AFTER emit_techs and
+                        emit_research_events. `research_events.finish_boost` {enabled, threshold 0.99, add 10000}: EVERY researchable
+                        technology's ai_weight ends in `if = { limit = { has_technology_progress = { technology = X  progress >= 0.99 } }
+                        add = 10000 }` (181 of 182; sericulture, `can_research = no`, skipped). The trigger reads a FRACTION OF THE PENALISED
+                        cost (verified 219/219), so it covers every source of progress and needs NO reconstruction — tree changes need nothing
+                        by hand. `add`, not multiply, because the ahead-of-time divisor applies outside ai_weight; appended LAST because
+                        ai_weight evaluates top to bottom. ⚠ It OWNS all three vanilla technology files (regenerated from vanilla each
+                        build). ⚠ It THROWS on a doubled boost, on a boost naming the wrong technology, on a CONDITIONAL can_research, and on
+                        a config still carrying the retired form's `diag` / `unresearchable` keys. ⭐ F160: expected to fire rarely — a grant
+                        reaching the cost completes the technology inside the granting effect, and progress crosses the 99–100% band in about
+                        a week. ⚠ The same day's FIRST form (JE-stage flags + a rebuilt penalty per category and era, with probe diagnostics)
+                        is commit `11a5b90`; its diagnostic probe is what measured F160
   emit_secondaries.mjs  THE PER-TIER SECONDARY METHODS (user-ruled 2026-09-01): every secondary (cannery, luxury lines, rayon,
                         porcelain, radios, the tank/aeroplane conversions …) is minted per rung with the SAME RATIO to the rung's
                         main output as vanilla has under the lowest primary method that allows it, its INPUTS following the rung's
@@ -2991,7 +2984,7 @@ mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   common/scripted_progress_bars/zzz_pm_rehaul_research_bars.txt  (generated, ADDITIVE — one bar per covered technology, shared by its three stages, each instance starting at zero. ⚠⚠ **ALL bars are `monthly_progress` — there is NO `weekly_progress` in the emitted file** (war bars were weekly/26 until the 2026-08-18 rebuild). Industry entries carry `max_value` 36; WAR entries carry `max_value` **6** and tick only while `has_variable = pmr_wargate_<tech>`, the expiring variable the wargate on_action sets. **Classify a bar by that variable, never by its cadence** — both kinds are monthly now, so a shape-based check reports "no war bars exist" and a doc-based one reports the wrong span (both happened, 2026-08-18). One tooltipped `add` term per contributing source, so several qualifying industries fill the bar proportionally faster)
   common/technology/technologies/zzz_pm_rehaul_techs.txt (generated by emit_techs.mjs, ADDITIVE — the technologies the mod ADDS (42 at the current tree: 27 production, 14 military, 1 society), each with its era, prerequisites, unlocks and the minted placeholder icon)
   common/defines/01_pm_rehaul_defines.txt                (generated by emit_techs.mjs, ADDITIVE partial override — TECH_AHEAD_OF_TIME_PENALTY_FACTOR. ⚠ ships at 0.25, which IS vanilla's value — currently a NO-OP, flagged on the UI's Mod-changes page: the 0.15 boost was withdrawn by the 2026-08-12 ruling and the emission outlived the setting. ⭐ Since 2026-08-25 it also emits an NAI block from the config's optional top-level **`ai_defines`** map (define key → value; absent/empty ⇒ no NAI block, so the canonical build is unchanged) — built for the INVESTMENT-HOARD levers the user ruled after solver2e measured pools at 47–93% of GDP with peasants unabsorbed: pool-pressure factor 0.75→0.9, wanted-construction thresholds 1.05→1.5 / 0.75→0.9, private-queue cap 0.05→0.10; since 2026-08-26 CANONICAL (§10.65.9 — the solver2f canonization carries them in config/mod_config.json). ⚠⚠ THE LONG-BUILD-TIME THRESHOLDS ARE NOW TAKEN, and this line used to deny it: `PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD` **120** and `..._VERY_LONG_...` **180**, against vanilla’s **40** and **60**. UNITS ARE **WEEKS**, and the raise is a RELAXATION, not a malus: the engine multiplies a building’s AI score by `PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_MULT` **0.5** past the first threshold and **0.25** past the second, and those two MULTs are left at vanilla — so raising the thresholds ×3 keeps an expensive building OUT of the penalty band. ⭐ The ×3 raise vs the tier4 cost ladder’s 1.4³ = **2.744×** top rung is near-exact cover BY COINCIDENCE (k was chosen on payback grounds, the thresholds for the hoard levers) — do not read it as a designed pair. ⚠ The threshold is construction time AT FULL CONSTRUCTION-INDUSTRY USAGE, so it binds on small construction sectors, not on cost alone. Levers still NOT taken: bg_construction strategy weights, AUTONOMOUS_INVESTMENT_UPDATE_COUNT_DIVISOR)
-  common/technology/technologies/{10_production,20_military,30_society}.txt (generated: WHOLE-FILE replacements of vanilla — 20 and 30 ONLY EXIST WHEN THEY CARRY SOMETHING. 10 carries the ERA MOVES + the `aniline` prerequisite swap; **20 carries era moves too** — until 2026-08-12 emit_techs patched 10 alone, so a re-era on a MILITARY technology was written into the spec, drawn by the viewer, and silently dropped on the way to the mod, with nothing failing anywhere; the ladder-era alignment moves three (repeaters, breech_loading_artillery, bolt_action_rifles) and that is what surfaced it. Any file also takes the per-tree `tech_ai_weight_mult` multiply when ≠1 — **at the ruled default 1/1/1 (2026-08-17) 30_society is NOT emitted at all**; its hardcoded ai_weight ×0.8 (2026-08-11) is superseded — no tree is damped or favoured by default, the research JEs being boost enough. Each transform asserts its own match count and THROWS on a no-op. ⭐ SINCE 2026-09-23 the canon's `finish_boost` makes emit_tech_finish.mjs OWN 20_military AND 30_society too (12 and 3 JE-covered technologies), each covered technology's ai_weight ending in one `# pmr_finish_boost` block)
+  common/technology/technologies/{10_production,20_military,30_society}.txt (generated: WHOLE-FILE replacements of vanilla — 20 and 30 ONLY EXIST WHEN THEY CARRY SOMETHING. 10 carries the ERA MOVES + the `aniline` prerequisite swap; **20 carries era moves too** — until 2026-08-12 emit_techs patched 10 alone, so a re-era on a MILITARY technology was written into the spec, drawn by the viewer, and silently dropped on the way to the mod, with nothing failing anywhere; the ladder-era alignment moves three (repeaters, breech_loading_artillery, bolt_action_rifles) and that is what surfaced it. Any file also takes the per-tree `tech_ai_weight_mult` multiply when ≠1 — **at the ruled default 1/1/1 (2026-08-17) 30_society is NOT emitted at all**; its hardcoded ai_weight ×0.8 (2026-08-11) is superseded — no tree is damped or favoured by default, the research JEs being boost enough. Each transform asserts its own match count and THROWS on a no-op. ⭐ SINCE 2026-09-23 the canon's `finish_boost` makes emit_tech_finish.mjs OWN 20_military AND 30_society too, every researchable technology's ai_weight in all four files ending in one `# pmr_finish_boost` block — 56 / 58 / 64 / 3)
   common/scripted_effects/00_starting_inventions.txt     (generated: WHOLE-FILE replacement — the new era-1 production technologies added to the 1836 starting sets. ⚠ `add_era_researched = era_1` is the ONLY era granted at the start, which is exactly why the ladder-era alignment refuses to move anything INTO era 1)
   common/script_values/zzz_pm_rehaul_research_values.txt (generated, ADDITIVE — per-source employment sums, `Σ(level × occupancy) × employment-per-level`. ⚠ occupancy is a WEIGHT, never a `limit` filter: the filter form scores seven half-staffed levels as zero while passing three full ones, which is the opposite of the intent)
   events/zzz_v3tb_probe.txt                              (generated, TESTBED ONLY — the only events/ file the builder ever emits, and only when a telemetry metric asks. Exists because `on_monthly_pulse` is the finest pulse vanilla has: a reading BETWEEN month boundaries is unreachable from an on_action, so a scheduled `trigger_event = { days = N }` is the only route. Never present in a normal build)

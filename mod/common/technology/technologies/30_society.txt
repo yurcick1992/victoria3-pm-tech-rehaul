@@ -15,6 +15,11 @@ urbanization = {
 
 	ai_weight = {
 		value = 3 # Very important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = urbanization  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -36,6 +41,11 @@ urban_planning = {
 
 	ai_weight = {
 		value = 2 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = urban_planning  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -52,6 +62,11 @@ rationalism = {
 
 	ai_weight = {
 		value = 3 # Very important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = rationalism  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -73,6 +88,11 @@ tech_bureaucracy = {
 
 	ai_weight = {
 		value = 3 # Very important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = tech_bureaucracy  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -93,6 +113,11 @@ currency_standards = {
 		if = {
 			limit = { has_journal_entry = je_sick_man_bureaucracy }
 			add = 20
+		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = currency_standards  progress >= 0.99 } }
+			add = 10000
 		}
 	}
 }
@@ -115,6 +140,11 @@ democracy = {
 
 	ai_weight = {
 		value = 3 # Very important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = democracy  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -136,6 +166,11 @@ romanticism = {
 
 	ai_weight = {
 		value = 3 # Very important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = romanticism  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -152,6 +187,11 @@ international_trade = {
 
 	ai_weight = {
 		value = 3 # Very important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = international_trade  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -177,6 +217,11 @@ centralization = {
 			limit = { has_journal_entry = je_age_of_princes }
 			add = 20
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = centralization  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -196,6 +241,11 @@ corporate_charters = {
 
 	ai_weight = {
 		value = 3 # very important tech
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = corporate_charters  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -216,6 +266,11 @@ banking = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = banking  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -235,6 +290,11 @@ academia = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = academia  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -257,6 +317,11 @@ colonization = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = colonization  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -271,6 +336,11 @@ international_relations = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = international_relations  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -291,6 +361,11 @@ law_enforcement = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = law_enforcement  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -309,6 +384,11 @@ stock_exchange = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = stock_exchange  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -328,6 +408,11 @@ medical_degrees = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = medical_degrees  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -347,6 +432,11 @@ mass_communication = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = mass_communication  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -369,6 +459,11 @@ empiricism = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = empiricism  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -425,6 +520,11 @@ egalitarianism = {
 			}
 			add = -0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = egalitarianism  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -445,6 +545,11 @@ pharmaceuticals = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = pharmaceuticals  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -468,6 +573,11 @@ modern_sewerage = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = modern_sewerage  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -513,6 +623,11 @@ quinine = {
 				add = 3
 			}
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = quinine  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -531,6 +646,11 @@ organized_sports = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = organized_sports  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -586,6 +706,11 @@ central_archives = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = central_archives  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -606,6 +731,11 @@ central_banking = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = central_banking  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -626,6 +756,11 @@ joint_stock_companies = {
 
 	ai_weight = {
 		value = 2 # important tech
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = joint_stock_companies  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -646,6 +781,11 @@ dialectics = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = dialectics  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -666,6 +806,11 @@ psychiatry = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = psychiatry  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -685,14 +830,9 @@ realism = {
 
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_realism_implementation  pmr_aot_society_e2 <= 2 }
-					AND = { has_variable = pmr_je_realism_development  pmr_aot_society_e2 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = realism  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -754,6 +894,11 @@ nationalism = {
 			}
 			multiply = 4
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = nationalism  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -800,6 +945,11 @@ labor_movement = {
 			}
 			add = -0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = labor_movement  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -823,6 +973,11 @@ postal_savings = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = postal_savings  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -870,6 +1025,11 @@ human_rights = {
 				}
 			}
 			add = -0.5
+		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = human_rights  progress >= 0.99 } }
+			add = 10000
 		}
 	}
 }
@@ -933,6 +1093,11 @@ feminism = {
 			}
 			add = -0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = feminism  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -955,6 +1120,11 @@ steel_frame_buildings = {
 
 	ai_weight = {
 		value = 2 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = steel_frame_buildings  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -993,6 +1163,11 @@ civilizing_mission = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = civilizing_mission  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1025,6 +1200,11 @@ anarchism = {
 				}
 			}
 			add = -0.5
+		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = anarchism  progress >= 0.99 } }
+			add = 10000
 		}
 	}
 }
@@ -1076,6 +1256,11 @@ socialism = {
 				}
 			}
 			add = 1
+		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = socialism  progress >= 0.99 } }
+			add = 10000
 		}
 	}
 }
@@ -1184,6 +1369,11 @@ corporatism = {
 			}
 			add = 1.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = corporatism  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1223,6 +1413,11 @@ pan-nationalism = {
 			}
 			add = 5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = pan-nationalism  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1244,6 +1439,11 @@ mutual_funds = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = mutual_funds  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1265,6 +1465,11 @@ investment_banks = {
 
 	ai_weight = {
 		value = 2 # important tech
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = investment_banks  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1284,14 +1489,9 @@ camera = {
 
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_camera_implementation  pmr_aot_society_e3 <= 2 }
-					AND = { has_variable = pmr_je_camera_development  pmr_aot_society_e3 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = camera  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -1315,6 +1515,11 @@ philosophical_pragmatism = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = philosophical_pragmatism  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1337,6 +1542,11 @@ identification_documents = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = identification_documents  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1360,6 +1570,11 @@ elevator = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = elevator  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1378,6 +1593,11 @@ zeppelins = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = zeppelins  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1413,6 +1633,11 @@ malaria_prevention = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = malaria_prevention  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1437,6 +1662,11 @@ central_planning = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = central_planning  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1479,6 +1709,11 @@ political_agitation = {
 			}
 			add = -0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = political_agitation  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1500,6 +1735,11 @@ international_exchange_standards = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = international_exchange_standards  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1519,6 +1759,11 @@ corporate_management = {
 
 	ai_weight = {
 		value = 2 # important tech
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = corporate_management  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1540,6 +1785,11 @@ psychoanalysis = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = psychoanalysis  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1559,14 +1809,9 @@ film = {
 
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_film_implementation  pmr_aot_society_e4 <= 2 }
-					AND = { has_variable = pmr_je_film_development  pmr_aot_society_e4 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = film  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -1594,6 +1839,11 @@ multilateral_alliances = {
 			limit = { country_rank >= rank_value:great_power }
 			add = 2
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = multilateral_alliances  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1619,6 +1869,11 @@ mass_surveillance = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = mass_surveillance  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1638,6 +1893,11 @@ antibiotics = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = antibiotics  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1663,6 +1923,11 @@ mass_propaganda = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = mass_propaganda  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1681,6 +1946,11 @@ modern_financial_instruments = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = modern_financial_instruments  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1701,6 +1971,11 @@ macroeconomics = {
 
 	ai_weight = {
 		value = 3 # very important tech
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = macroeconomics  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1721,6 +1996,11 @@ behaviorism = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = behaviorism  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1739,6 +2019,11 @@ analytical_philosophy = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = analytical_philosophy  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1758,5 +2043,10 @@ paved_roads = {
 
 	ai_weight = {
 		value = 2 # Important for those nice-looking roads!
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = paved_roads  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }

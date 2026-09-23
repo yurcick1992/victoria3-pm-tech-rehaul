@@ -8,6 +8,11 @@ standing_army = {
 
 	ai_weight = {
 		value = 3 # Very important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = standing_army  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -21,6 +26,11 @@ navigation = {
 
 	ai_weight = {
 		value = 2 # Important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = navigation  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -42,6 +52,11 @@ drydocks = {
 			limit = { navy_size >= 5 }
 			add = 0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = drydocks  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -62,6 +77,11 @@ mandatory_service = {
 
 	ai_weight = {
 		value = 2 # Important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = mandatory_service  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -78,6 +98,11 @@ gunsmithing = {
 
 	ai_weight = {
 		value = 2 # Important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = gunsmithing  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -94,6 +119,11 @@ artillery = {
 
 	ai_weight = {
 		value = 2 # Important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = artillery  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -112,6 +142,11 @@ military_drill = {
 
 	ai_weight = {
 		value = 1.5 # Important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = military_drill  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -133,6 +168,11 @@ napoleonic_warfare = {
 			limit = { has_journal_entry = je_sick_man_army }
 			add = 100
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = napoleonic_warfare  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -152,6 +192,11 @@ admiralty = {
 
 	ai_weight = {
 		value = 3 # Very important in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = admiralty  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -171,6 +216,11 @@ army_reserves = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = army_reserves  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -187,6 +237,11 @@ line_infantry = {
 
 	ai_weight = {
 		value = 2 # Important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = line_infantry  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -212,6 +267,11 @@ paddle_steamer = {
 			limit = { navy_size >= 20 }
 			add = 0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = paddle_steamer  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -235,6 +295,11 @@ field_works = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = field_works  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -270,6 +335,11 @@ logistics = {
 			}
 			add = 5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = logistics  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -292,6 +362,11 @@ triage = {
 			}
 			add = 8
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = triage  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -307,14 +382,9 @@ shell_gun = {
 
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_shell_gun_implementation  pmr_aot_military_e2 <= 2 }
-					AND = { has_variable = pmr_je_shell_gun_development  pmr_aot_military_e2 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = shell_gun  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -333,14 +403,9 @@ percussion_cap = {
 
 	ai_weight = {
 		value = 2 # Important tech in general
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_percussion_cap_implementation  pmr_aot_military_e2 <= 2 }
-					AND = { has_variable = pmr_je_percussion_cap_development  pmr_aot_military_e2 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = percussion_cap  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -365,14 +430,9 @@ rifling = {
 			}
 			add = 8
 		}
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_rifling_implementation  pmr_aot_military_e2 <= 2 }
-					AND = { has_variable = pmr_je_rifling_development  pmr_aot_military_e2 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = rifling  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -390,14 +450,9 @@ general_staff = {
 
 	ai_weight = {
 		value = 2 # Important tech in general
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_general_staff_implementation  pmr_aot_military_e2 <= 2 }
-					AND = { has_variable = pmr_je_general_staff_development  pmr_aot_military_e2 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = general_staff  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -425,6 +480,11 @@ screw_frigate = {
 			limit = { navy_size >= 20 }
 			add = 0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = screw_frigate  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -445,6 +505,11 @@ power_of_the_purse = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = power_of_the_purse  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -466,6 +531,11 @@ hydraulic_cranes = {
 			limit = { navy_size >= 5 }
 			add = 0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = hydraulic_cranes  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -483,6 +553,11 @@ modern_nursing = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = modern_nursing  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -509,6 +584,11 @@ enlistment_offices = {
 			}
 			add = 8
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = enlistment_offices  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -534,6 +614,11 @@ electric_telegraph = {
 			}
 			add = 8
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = electric_telegraph  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -554,6 +639,11 @@ military_statistics = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = military_statistics  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -570,14 +660,9 @@ repeaters = {
 
 	ai_weight = {
 		value = 1.5 # Important tech in general
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_repeaters_implementation  pmr_aot_military_e3 <= 2 }
-					AND = { has_variable = pmr_je_repeaters_development  pmr_aot_military_e3 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = repeaters  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -605,14 +690,9 @@ breech_loading_artillery = {
 			}
 			add = 8
 		}
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_breech_loading_artillery_implementation  pmr_aot_military_e3 <= 2 }
-					AND = { has_variable = pmr_je_breech_loading_artillery_development  pmr_aot_military_e3 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = breech_loading_artillery  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -635,6 +715,11 @@ handcranked_machine_gun = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = handcranked_machine_gun  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -650,6 +735,11 @@ self_propelled_torpedoes = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = self_propelled_torpedoes  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -676,6 +766,11 @@ monitor_tech = {
 			limit = { navy_size >= 20 }
 			add = 0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = monitor_tech  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -699,6 +794,11 @@ ironclad_tech = {
 			limit = { navy_size >= 20 }
 			add = 2
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = ironclad_tech  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -719,6 +819,11 @@ jeune_ecole = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = jeune_ecole  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -740,6 +845,11 @@ floating_harbor = {
 		if = {
 			limit = { navy_size >= 5 }
 			add = 0.5
+		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = floating_harbor  progress >= 0.99 } }
+			add = 10000
 		}
 	}
 }
@@ -767,6 +877,11 @@ gantry_cranes = {
 			limit = { navy_size >= 5 }
 			add = 1
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = gantry_cranes  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -787,14 +902,9 @@ trench_works = {
 
 	ai_weight = {
 		value = 2 # important for everyone
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_trench_works_implementation  pmr_aot_military_e4 <= 2 }
-					AND = { has_variable = pmr_je_trench_works_development  pmr_aot_military_e4 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = trench_works  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -816,6 +926,11 @@ war_propaganda = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = war_propaganda  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -837,6 +952,11 @@ wargaming = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = wargaming  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -859,14 +979,9 @@ defense_in_depth = {
 
 	ai_weight = {
 		value = 1
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_defense_in_depth_implementation  pmr_aot_military_e4 <= 2 }
-					AND = { has_variable = pmr_je_defense_in_depth_development  pmr_aot_military_e4 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = defense_in_depth  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -885,14 +1000,9 @@ bolt_action_rifles = {
 
 	ai_weight = {
 		value = 2 # important for everyone
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_bolt_action_rifles_implementation  pmr_aot_military_e4 <= 2 }
-					AND = { has_variable = pmr_je_bolt_action_rifles_development  pmr_aot_military_e4 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = bolt_action_rifles  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -912,14 +1022,9 @@ automatic_machine_guns = {
 
 	ai_weight = {
 		value = 1.5 # important for everyone
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_automatic_machine_guns_implementation  pmr_aot_military_e4 <= 2 }
-					AND = { has_variable = pmr_je_automatic_machine_guns_development  pmr_aot_military_e4 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = automatic_machine_guns  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -941,6 +1046,11 @@ submarine = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = submarine  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -956,6 +1066,11 @@ destroyer = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = destroyer  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -971,6 +1086,11 @@ pre_dreadnought_tech = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = pre_dreadnought_tech  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1002,6 +1122,11 @@ dreadnought_tech = {
 			limit = { navy_size >= 20 }
 			add = 0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = dreadnought_tech  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1022,6 +1147,11 @@ sea_lane_strategies = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = sea_lane_strategies  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1042,6 +1172,11 @@ landing_craft = {
 		if = {
 			limit = { navy_size >= 20 }
 			add = 1
+		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = landing_craft  progress >= 0.99 } }
+			add = 10000
 		}
 	}
 }
@@ -1073,6 +1208,11 @@ concrete_dockyards = {
 			limit = { navy_size >= 5 }
 			add = 0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = concrete_dockyards  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1095,14 +1235,9 @@ nco_training = {
 
 	ai_weight = {
 		value = 2 # Important tech in general
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_nco_training_implementation  pmr_aot_military_e5 <= 2 }
-					AND = { has_variable = pmr_je_nco_training_development  pmr_aot_military_e5 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = nco_training  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -1120,6 +1255,11 @@ chemical_warfare = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = chemical_warfare  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1142,6 +1282,11 @@ stormtroopers = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = stormtroopers  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1163,6 +1308,11 @@ concrete_fortifications = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = concrete_fortifications  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1180,14 +1330,9 @@ mobile_armor = {
 
 	ai_weight = {
 		value = 1.5 # Important tech in general
-		# pmr_finish_boost — the research journal entries have paid for this technology; one tick of research completes it
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
-			limit = {
-				OR = {
-					AND = { has_variable = pmr_je_mobile_armor_implementation  pmr_aot_military_e5 <= 2 }
-					AND = { has_variable = pmr_je_mobile_armor_development  pmr_aot_military_e5 <= 0 }
-				}
-			}
+			limit = { has_technology_progress = { technology = mobile_armor  progress >= 0.99 } }
 			add = 10000
 		}
 	}
@@ -1211,6 +1356,11 @@ military_aviation = {
 
 	ai_weight = {
 		value = 1.5 # Important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = military_aviation  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1230,6 +1380,11 @@ flamethrowers = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = flamethrowers  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1250,6 +1405,11 @@ carrier_tech = {
 		if = {
 			limit = { navy_size >= 20 }
 			add = 0.5
+		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = carrier_tech  progress >= 0.99 } }
+			add = 10000
 		}
 	}
 }
@@ -1272,6 +1432,11 @@ battleship_tech = {
 			limit = { navy_size >= 20 }
 			add = 0.5
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = battleship_tech  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1293,5 +1458,10 @@ battlefleet_tactics = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = battlefleet_tactics  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }

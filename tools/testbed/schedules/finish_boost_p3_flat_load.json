@@ -1,0 +1,52 @@
+{
+  "schedule_version": 1,
+  "label": "finboost-p3-flat-load",
+  "_why": "PROBE 3 OF AT MOST FIVE for the finish boost (user-ruled 2026-09-23: \"Yes, rebuild and retest\"). A LOAD TEST of the canon with the FLAT rule that replaced the JE-stage form: every researchable technology's ai_weight ends in `if = { limit = { has_technology_progress = { technology = X  progress >= 0.99 } } add = 10000 }` (181 of 182; sericulture skipped). ARM: {kind: config}, config/mod_config.json itself. The JE stage flags and the penalty script values are gone; 20_military.txt and 30_society.txt are owned again, now carrying 58 and 64 boosts.",
+  "_questions": {
+    "Q": "Does the game load all four technology files with the new blocks without a single error or warning naming them or has_technology_progress?"
+  },
+  "_predictions": {
+    "Q": "Zero error lines naming 10_production.txt, 20_military.txt, 30_society.txt or zzz_pm_rehaul_techs.txt; zero has_technology_progress parse errors (the >= comparator was verified in probe 1); no 'set but never used' warnings, since no variables are set; acquisitions logged as in probe 2 (5,139)."
+  },
+  "_cost": "1 run x 1836.1.1 -> 1836.4.1, about 3 minutes including the build.",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30)."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "tech_log",
+      "events"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 20
+  },
+  "setups": {
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon",
+      "until": "1836.4.1"
+    }
+  ]
+}
