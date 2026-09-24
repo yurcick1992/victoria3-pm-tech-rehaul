@@ -17068,10 +17068,24 @@ never acquired counts as acquired at 1936.1.1 (the user's censoring rule).
 - **58% of the boost arm's second-stage pairs never meet the condition** (281 of 481). The penalty is still on when the grants land:
   F160's mostly-paid technology.
 
+**⭐ THE SHARPER TEST (same day, user-asked: "check whether the tech does fire on second JE 100% of times when there's no ahead of
+time penalty, but doesn't fire if the penalty is cleared later").** Ordered by log position rather than by mapped dates
+(scratchpad `tech_fire.mjs`; a crash-resume's replayed stretch is rolled back):
+- **(a) Σ = 0 when the development line fires:** acquired in the SAME tick, i.e. within ±3 s of wall time of that line, in
+  **160 of 163 (boost) · 236 of 236 (trade) · 123 of 124 (canon)**.
+- **(b) Σ clears later:** acquired on the day it clears (both dates from TECH lines, exact to the day) in
+  **2 of 10 · 2 of 24 · 0 of 20**; within 7 days **4 · 7 · 3**; median wait **4.1 · 7.3 · 18.0 months**.
+- **The clearing technology is the LATHE in 34 of 54.** Without it every game-era-2 production technology carries Σ = 1, so the two
+  grants cover 80% of the cost (F160 §5). The lathe's arrival then drops the cost to exactly the banked progress.
+- **Three (a) anomalies fit neither reading:** Spain's intensive agriculture 18 months late; Ecuador's and Alwar's aniline never
+  acquired. Not investigated.
+
+⇒ **MEASURED: the engine completes a technology when progress is ADDED (a grant, and by the week-later cases a research or spread
+tick), not when its COST FALLS to the banked progress.**
+
 **Measured vs inferred.**
-- **Measured:** case (b)'s timing and its long waits.
-- **Inferred, not observed:** that in case (b) the banked progress covers the unpenalised cost and nothing completes the technology
-  until a tick of research or tech spread adds to it.
+- **Measured:** case (b)'s timing and its long waits; that the cost falling does not complete the technology (above).
+- **Inferred, not observed:** that in case (b) the banked progress equals the unpenalised cost at the moment the penalty clears.
   - The two stage grants are half the era cost each, which F160 measured as exactly the unpenalised cost. So the banked progress
     should EQUAL the cost, not exceed it; a strict completion test would then never fire on its own.
   - No century run carries cost or progress readings.
