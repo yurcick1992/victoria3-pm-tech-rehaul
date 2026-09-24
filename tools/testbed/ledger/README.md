@@ -179,6 +179,18 @@ save summaries, and are parameterised only by the run list at the top of each fi
   the anchor years, mod beside vanilla (VA = the direct v6+ fields; vanilla reads the same 22
   industries through their base buildings — tier-1 key = the vanilla base). Bottom row = the
   sector's absolute £M/wk, because shares are composition and can fall while the industry grows.
+- **`fill_obsolescence.mjs`** — the **Obsolescence panel, in-market vs trade** (`OBS`, tables `t-obs` on the world page
+  and `t-wobs` on the watchlist; user-agreed 2026-09-24, FINDINGS F161 §4/§6, permanent on both pages).
+  `node fill_obsolescence.mjs <outDir> --session <stamp> --setup <setup> --config <book> [--pool 1920,1930,1935] [--override-dir <dir>]`
+  → `obsolescence.json`. Run it BEFORE `fill_assemble`; the manifest makes `OBS` required, so a fill that skips it
+  fails the gate. One metric set for both kinds of competition, from `lib_obsolescence.mjs`. An old rung is IN-MARKET
+  when its own market's supply frontier is two eras above it, TRADE-ONLY when only the world's is. Per industry and
+  regime the panel shows the loss-making share of levels, the true margin, staffed ÷ levels, the world price ÷ the rung's
+  break-even, and the importers' loss share and signed premium ln(local ÷ world). The watchlist mirror shows the
+  selection's SHARES only: its levels come from the selected countries, but a rung's regime is decided by its own
+  market's and the world's frontier, and the caption says so.
+  ⚠ The session's own yearly summaries carry no tariffs before v11. To split the trade-only row by tariff and trade policy,
+  re-summarise the kept saves and pass `--override-dir`; `trade_obsolescence.mjs` prints those splits.
 - **`batch_tables.mjs`** — the F106-layout READING tables for an arm that spans SEVERAL sessions (2026-09-09, F107):
   pools ÷ GDP, the tiered goods' prices (British market + the seven-market pool per dump date, arm beside vanilla, the 1935
   ratio), wage units, British production ÷ vanilla at 1900 and 1935, GDP ÷ vanilla — medians over the USABLE runs pooled across

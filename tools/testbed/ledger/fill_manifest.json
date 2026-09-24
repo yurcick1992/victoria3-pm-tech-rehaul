@@ -211,6 +211,13 @@
       "required": true,
       "minKeys": 3,
       "means": "industry composition of VALUE ADDED: {years, mod, van}, each year {ind, broad, tags} - absolute GBP/wk so the renderer can follow scope + selection; user-required 2026-08-24, permanent, BOTH pages"
+    },
+    {
+      "name": "OBS",
+      "from": "fill_obsolescence.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "obsolescence, in-market vs trade: {session, setup, runs, pool, thr, industries, tags} - per industry the IN-MARKET / TRADE-ONLY / UNCONTESTED rows and the trade-only splits by market position, tariff and trade policy; per tag the regime sums for the selection mirror; user-agreed 2026-09-24 (F161 §4), permanent, BOTH pages"
     }
   ],
   "tables": [
@@ -293,6 +300,16 @@
       "id": "t-tierc2",
       "minRows": 2,
       "means": "build choice, watchlist mirror (world-wide)"
+    },
+    {
+      "id": "t-obs",
+      "minRows": 5,
+      "means": "obsolescence, in-market vs trade (world)"
+    },
+    {
+      "id": "t-wobs",
+      "minRows": 3,
+      "means": "obsolescence, in-market vs trade, selection"
     }
   ],
   "controls": [

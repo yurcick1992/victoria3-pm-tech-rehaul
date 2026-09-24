@@ -69,7 +69,14 @@ import { fileURLToPath } from 'node:url';
 // price is values[(index − 1) mod 52], NOT the last element — measured on two saves 13 weeks apart, where
 // exactly slots 9..21 were rewritten in place. FINDINGS F159 §1. Both goods indices are POSITIONAL in
 // common/goods/00_goods.txt and are resolved through GOODS, which is read from the game.
-export const SAVE_SUMMARY_VERSION = 10;
+// v11 (2026-09-24): + TRADE POLICY. Per country `laws` (every ACTIVE law, from the top-level `laws.database`, whose
+// records carry `law`, `country` (a country_manager id) and `active=yes`), `trade_policy` (the active law of
+// lawgroup_trade_policy, the group read LIVE from common/laws) and `tariffs` = { import: {good: level}, export: {good: level} }
+// from the country record's own `import_tariffs` / `export_tariffs` (goods index → `level=`, one of max_tariffs /
+// high_tariffs / low_tariffs / no_tariffs_or_subventions / low_subventions / …; a good with no entry has no set level).
+// Written for FINDINGS F161's open question: is it tariffs or trade capacity that keeps an importer's price ~×1.4 the
+// world average? ⚠ A state's TRADE ADVANTAGE and its LOCAL goods prices are NOT persisted (searched, 2026-09-24).
+export const SAVE_SUMMARY_VERSION = 11;
 // v9 (2026-09-20): + THE BUILDING'S OWN LEDGER per building type per country — goods_sales and goods_cost (revenue and inputs at MARKET prices, so no price-multiplier repair is needed) and salary_w = sum(salary_rate x staffing) (the building's OWN wage rate, not the country's base_wage) and taxes. Wages are then EXACT: goods_sales - goods_cost - profit, verified against the game's own building panel to 0.38%. FINDINGS F152 section 9; it retires the inference F150/F152 needed.
 // v7 (2026-08-21): + OWNERSHIP — per-building-type `company_levels` (levels held through an `identity={building=}` owner whose own type is building_company_* OR building_regional_company_*), the `companies` register (type, prosperity, charters, regional HQs, resolved to a country via the HQ building), and `ownership_levels` (host-side levels by owner class: state/foreign_country/financial_district/manor_house/company/company_regional/other_building). ROADMAP step 5a: per-year company data cannot be back-filled, and the long vanilla batch is its baseline. Absent field = zero WITHIN v7+; pre-v7 summaries simply cannot answer it.
 // v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), PRICED at base cost, so a tiered-sector GDP is derivable (F74)
@@ -82,6 +89,7 @@ const NOT_CAPTURED = {
   pop_need_purchase_weights: 'per (state, culture, need, good) — tens of thousands of rows. `melted_pop_need_weights.mjs` reads it from a kept save.',
   cultures_and_obsessions: '`melted_cultures.mjs` reads it from a kept save; runtime state, but not per-quarter interesting.',
   technology_acquisition_DATES: 'a save shows what is HELD, never when it arrived. Stays on telemetry (`tech_log`) — the two are complementary, not redundant.',
+  trade_advantage_and_local_prices: 'NOT PERSISTED — a state\'s trade advantage (which sets its import/export price off the world price) and its local goods prices are nowhere in a 1.13.11 save (searched 2026-09-24). A rung\'s realised price is goods_sales ÷ va_out per building type instead.',
 };
 
 const args = process.argv.slice(2);
@@ -128,12 +136,23 @@ if (Object.keys(GOODS_PRICE).length < GOODS.length * 0.9)
 const POP_TYPES = readdirSync(join(GAME, 'common/pop_types')).filter(x => x.endsWith('.txt')).sort()
   .map(x => x.replace(/\.txt$/, ''));
 if (!GOODS.length || !POP_TYPES.length) throw new Error(`game reference tables empty — is --game right? (${GAME})`);
+// v11: law → law group, read live, so `trade_policy` follows the game's own grouping (six laws in 1.13.11)
+const LAW_GROUP = {};
+for (const f of readdirSync(join(GAME, 'common/laws')).filter(x => x.endsWith('.txt')).sort()) {
+  let cur = null;
+  for (const line of strip(readFileSync(join(GAME, 'common/laws', f), 'utf8')).split(/\r?\n/)) {
+    const l = line.replace(/#.*$/, ''); let m;
+    if ((m = /^([a-z][a-z_0-9]*)\s*=\s*\{/.exec(l))) cur = m[1];
+    else if (cur && (m = /^\s*group\s*=\s*([a-z_0-9]+)/.exec(l))) LAW_GROUP[cur] = m[1];
+  }
+}
+if (!Object.values(LAW_GROUP).includes('lawgroup_trade_policy')) throw new Error('no law of lawgroup_trade_policy found in common/laws — the group moved');
 
 const SUBJECT = new Set(['puppet', 'protectorate', 'colony', 'vassal', 'dominion', 'tributary', 'personal_union']);
 const TREND_KEYS = new Map([['gdp', 'gdp'], ['prestige', 'prestige'], ['literacy', 'literacy'], ['avgsoltrend', 'avg_sol']]);
 // Sections we actually walk.  Everything else is skipped in O(1) per line: a top-level section always
 // closes with a `}` in COLUMN 0, so skipping never needs brace arithmetic.
-const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies', 'market_manager']);
+const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies', 'market_manager', 'laws']);
 
 // ---------------------------------------------------------------- collectors
 let saveDate = '';
@@ -225,6 +244,8 @@ const wmTake = vals => {
   const g = GOODS[wmCh] ?? ('idx' + wmCh), n = vals.length;
   wmPrice[g] = { last: +vals[((wmIdx - 1) % n + n) % n].toFixed(3), mean52: +(vals.reduce((a, x) => a + x, 0) / n).toFixed(3) };
 };
+// v11 laws: country_manager id -> [active law keys]
+const lawsByCountry = new Map(); let lawRec = null;
 // technology
 let tid = null, tcur = null, inAcq = false, inProg = false;
 // pacts
@@ -302,7 +323,7 @@ for await (const line of rl) {
               building_budget: { expense: null, income: null, expenses: {}, incomes: {} },
               subsidies: {}, subventions: {},
               strata: {}, professions: {}, workforce_by_profession: {},
-              pop_stats: {},
+              pop_stats: {}, tariffs: { import: {}, export: {} }, tariffGood: null,
               queues: { government: { n: 0, left: 0, speed: 0, by_type: {} }, private: { n: 0, left: 0, speed: 0, by_type: {} } } };
       C.set(cid, cur); path = []; budgetCat = budgetSide = trendKey = null; inValues = false; qEl = null;
     } else if (cur) {
@@ -410,10 +431,37 @@ for await (const line of rl) {
           }
         }
       }
+      // v11: per-good tariff levels — `import_tariffs={ <goods index>={ level=… previous=… last_change=… } … }`
+      if (p0 === 'import_tariffs' || p0 === 'export_tariffs') {
+        let x;
+        if (depth === 4 && (x = /^(\d+)=\{$/.exec(t))) cur.tariffGood = GOODS[+x[1]] ?? ('idx' + x[1]);
+        else if (depth === 5 && cur.tariffGood && (x = /^level=([a-z_]+)$/.exec(t)))
+          cur.tariffs[p0 === 'import_tariffs' ? 'import' : 'export'][cur.tariffGood] = x[1];
+      }
     }
     depth += opens - closes;
     if (depth <= 1 && closes) { /* left a country record */ }
     if (depth <= 0) { mode = 'top'; cid = null; cur = null; }
+    continue;
+  }
+  // v11: laws={ database={ <n>={ law="law_x" country=<country_manager id> active=yes … } } } — only ACTIVE laws are kept
+  if (mode === 'laws') {
+    if (depth === 2 && /^\d+=\{$/.test(t)) lawRec = {};
+    else if (lawRec && depth === 3) {
+      let x;
+      if ((x = /^law="([a-z_0-9]+)"$/.exec(t))) lawRec.law = x[1];
+      else if ((x = /^country=(\d+)$/.exec(t))) lawRec.country = +x[1];
+      else if (t === 'active=yes') lawRec.active = true;
+    }
+    depth += opens - closes;
+    if (lawRec && depth <= 2) {
+      if (lawRec.active && lawRec.law && lawRec.country != null) {
+        if (!lawsByCountry.has(lawRec.country)) lawsByCountry.set(lawRec.country, []);
+        lawsByCountry.get(lawRec.country).push(lawRec.law);
+      }
+      lawRec = null;
+    }
+    if (depth <= 0) mode = 'top';
     continue;
   }
 
@@ -753,6 +801,10 @@ for (const [id, c] of C) {
     technologies: tech ? tech.acquired.length : 0,
     researching: tech?.researching ?? null,
     technologies_held: tech ? tech.acquired : [],
+    // v11: active laws, the trade-policy law, and per-good tariff levels (import / export)
+    laws: lawsByCountry.get(id) ?? [],
+    trade_policy: (lawsByCountry.get(id) ?? []).find(l => LAW_GROUP[l] === 'lawgroup_trade_policy') ?? null,
+    tariffs: c.tariffs,
     pop_objects: popObjByCountry.get(id)?.n ?? 0,
     pop_objects_live: popObjByCountry.get(id)?.live ?? 0,
     foreign_owned_levels: foreignOwned.get(id) ?? 0,

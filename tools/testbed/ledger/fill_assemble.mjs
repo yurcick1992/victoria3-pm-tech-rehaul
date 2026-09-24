@@ -9,6 +9,7 @@ const C = J('consts.json'), EMP = J('emp.json'), PERF = J('perf_panel.json'), RD
 const D2raw = JSON.parse(readFileSync(join(DIR, 'report_data2.json'), 'utf8'));
 const R = J('research.json'); const PB = J('payback.json'); const TIERC = J('tierchoice.json');
 const IDC = J('indecomp.json');
+const OBS = J('obsolescence.json');   // fill_obsolescence.mjs — the in-market vs trade panel (2026-09-24, permanent, BOTH pages)
 D2raw.techsT = R.techsT; D2raw.jeT = R.jeT;   // sections report_data2.mjs does not emit yet
 const D2 = JSON.stringify(D2raw);
 let s = readFileSync('tools/testbed/ledger/ledger_template.html', 'utf8');
@@ -66,6 +67,7 @@ rep(/^const LADDER=\{.*$/m,   'const LADDER=' + JSON.stringify(LADDER) + ';', 'L
 rep(/^const PERF=\{.*$/m,     'const PERF='     + JSON.stringify(PERF)       + ';', 'PERF');
 rep(/^const TIERC=\{.*$/m,    'const TIERC='    + JSON.stringify(TIERC)      + ';', 'TIERC');
 rep(/^const INDECOMP=\{.*$/m, 'const INDECOMP=' + JSON.stringify(IDC)        + ';', 'INDECOMP');
+rep(/^const OBS=\{.*$/m,      'const OBS='      + JSON.stringify(OBS)        + ';', 'OBS');
 rep(/^const VA=\{flat:\{\},.*$/m, 'const VA=' + JSON.stringify(RD.VA) + ';', 'VA');
 s = s.replace('__D2__', () => D2);
 // LADDER is empty -> its loop would throw. Guard it.

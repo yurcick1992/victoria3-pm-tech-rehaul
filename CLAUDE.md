@@ -2329,7 +2329,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         state record's `trade.goods.<index>.value`, which sums exactly to its usage), and
                         `world.world_market_price.<good>.{last, mean52}` — ⚠ read from a 52-slot WEEKLY RING BUFFER at
                         (index − 1) mod 52, never the last element; both goods indices are POSITIONAL in 00_goods.txt,
-
+                        ⭐ LAWS AND TARIFFS (v11, 2026-09-24, FINDINGS F161 §6): per country `laws` (the active law keys),
+                        `trade_policy` (the one in `lawgroup_trade_policy`, resolved through a law → group table read LIVE from
+                        common/laws — it THROWS if that group holds no law) and `tariffs.{import,export}.<good>` = the per-good
+                        LEVEL (max_tariffs / high_tariffs / low_tariffs / no_tariffs_or_subventions / low_subventions / …; a
+                        good with no record is absent, not "none"). ⚠ Trade advantage and each state's local import/export price
+                        are NOT persisted (`not_captured.trade_advantage_and_local_prices`),
                         and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
                         ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and
                         `<id>=none` freed slots sit in the same database (a record test must require the
@@ -2522,6 +2527,39 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ UNL is ONE country and it REPLACES NET and BEL where it forms — it stands in 2 of the
                         16 vanilla baseline seeds and in run 2 of 20260920_114003, so a pool without it silently
                         lost both members and a £201M economy (F152 §7)
+  testbed/ledger/lib_goods.mjs  THE GOODS TABLE, read live from common/goods: name → base price, vanilla traded_quantity,
+                        `local`/`tradeable` and the POSITIONAL index a save uses (F159 §1). `tradedQuantity(cfg)` gives an
+                        arm's own quantities (the book's `goods_traded_quantity` over vanilla's); `tradeClasses(cfg)` reads
+                        F159 §7's five classes from the trade book's own `_trade.classes`, never from a copy
+  testbed/ledger/lib_obsolescence.mjs + trade_obsolescence.mjs  ⭐⭐ OBSOLESCENCE, IN-MARKET vs TRADE — ONE metric set
+                        for both kinds of competition (user-agreed 2026-09-24, FINDINGS F161 §4/§6). Per industry, per rung,
+                        per country and year: the rung is IN-MARKET when its own market's SUPPLY FRONTIER (the highest era with
+                        ≥ 10% of that market's output of the industry, by `va_out`) is two eras above it, TRADE-ONLY when only
+                        the WORLD's is, UNCONTESTED otherwise. Read per regime: the loss-making share of LEVELS, the TRUE margin
+                        profit ÷ (sales − profit) (level-weighted median), staffed ÷ levels, the world's output-weighted
+                        realised price (`goods_sales ÷ va_out`) ÷ the rung's break-even, and the signed importer premium
+                        ln(local ÷ world). Trade-only rungs split by market position (importer / not / no trade), and on v11
+                        summaries by the country's own import TARIFF on the good and its TRADE-POLICY law.
+                        `trade_obsolescence.mjs --arm <session>:<setup>:<book> [--arm …] [--label-<setup> <name>] [--years …]
+                        [--pool …] [--override-dir <dir of re-summarised saves>] [--industries …] [--json out]`.
+                        ⚠ Staffing alone is not death (a profitable building can empty for want of labour); loss share and
+                        margin carry the reading. ⚠ Local purchase prices are not in a save: the premium is a PRODUCER price
+  testbed/ledger/fill_obsolescence.mjs  the ledger's OBS const (the "Obsolescence — in-market vs trade" card on the
+                        world page and its selection mirror on the watchlist): `<outDir> --session --setup --config [--pool]
+                        [--override-dir]` → obsolescence.json; run it BEFORE fill_assemble. Exits 1 if no industry has an
+                        old rung, rather than shipping an empty table
+  testbed/ledger/trade_vs_gdp.mjs  IS THERE MORE TRADE THAN AT THE SAME GDP? (F161 §1) — every complete four-rung MOD
+                        run since `--since` (default 20260905) whose final save survives, re-summarised to v10+ into `--cache`
+                        (`--build-cache` melts the missing ones), trade ÷ world GDP and the classed goods' import share, the arm
+                        against the runs within `--match` (±0.08) of each seed's world GDP. ⚠ Each run is read with ITS OWN book's
+                        traded quantities (`build_state.json` → `deterministic.mod_under_test.built_from_config`; it THROWS where
+                        that book is unreadable) — a first port applied vanilla's to the trade arm and read half its trade.
+                        ⚠ Control arms are excluded by `deterministic.arm`; a first count pooled four vanilla runs in
+  testbed/ledger/market_line_check.mjs  WHAT DOES THE MARKET LINE'S import/export REPORT? (TESTBED_METRICS §2.5) — one
+                        run at one dump date, the `G|` line of each instrumented market against its members' v10 trade capacity ×
+                        the run's own traded quantity: one-way goods match, two-way goods read the DOMINANT direction at gross
+                        effective volume and 0 for the other. The quantity multiplier is estimated per market (the median ratio
+                        over one-way goods). `<runDir> <date> [--config <book>] [--show N]`; book and token from the run itself
   testbed/ledger/lib_runs.mjs  ⭐ WHICH RUNS OF A SESSION MAY BE COUNTED — one implementation, because
                         two analyses of one batch that disagree about n give two incomparable answers.
                         `usableRuns(root, session)` DISCOVERS the run folders and keeps only those that

@@ -414,6 +414,20 @@ function renderPerf(mode){
   </div>
 
   <div class="card tablewrap">
+  <h3>Obsolescence — in-market vs trade (world, <span id="obs-pool">…</span> pooled)</h3>
+  <table id="t-obs"></table>
+  <p class="small">One metric set for both kinds of competition (FINDINGS F161 §4). An old rung is <b>in-market</b> when its own
+  market's supply frontier — the highest era holding at least 10% of that market's output of the industry — is two eras
+  above it, and <b>trade-only</b> when only the WORLD's frontier is. Cells read <b>loss-making share of the rung's levels ·
+  median TRUE margin (wages in) · staffed share</b>, over every country, not only the instrumented markets. <b>World price ÷
+  break-even</b>: the world's output-weighted realised price of the industry against each trade-only rung's own break-even
+  price — below 1, the rung would lose money at the world price. <b>Importers</b>: trade-only rungs in markets that import
+  their good — loss share and the signed premium of their local price over the world price (log; +0.35 ≈ ×1.4). The
+  <b>gap</b> is how far all producers' prices sit from the world price. Obsolescence works between markets when the
+  trade-only row looks like the in-market one.</p>
+  </div>
+
+  <div class="card tablewrap">
   <div class="fighead">
     <h3>Research — technologies held (mean per country, by game era) and journal entries</h3>
     <div class="ctagbar" id="trees-w"></div>
@@ -515,6 +529,15 @@ function renderPerf(mode){
   Same construction as the world panel, summed over the selected tags.</p>
   </div>
 
+  <div class="card tablewrap">
+  <h3>Obsolescence — in-market vs trade — selection</h3>
+  <table id="t-wobs"></table>
+  <p class="small">The world panel's regimes (each rung classed against its own market's and the world's supply frontier),
+  summed over the rungs the selected tags OWN: loss-making share of levels · staffed share · levels. Margins, the price
+  premium and the break-even ratio are medians over cells and do not sum, so this mirror carries the shares only — a
+  stated divergence from the world panel.</p>
+  </div>
+
 <div class="card tablewrap">
   <div class="fighead">
     <h3>Research — technologies held (mean per country, by game era) and journal entries — selection</h3>
@@ -603,6 +626,7 @@ const LADDER={1840:['e1',39,'e2',5.7,'e0',14.8,0.89],1860:['e1',29,'e2',9.4,'e0'
 const WATCH={1840:[1.02,0.38,0.79,0.10,67.0,65.7,76],1860:[1.08,0.56,0.97,0.21,65.2,63.4,72],1880:[1.18,0.82,1.22,0.56,58.1,59.6,73],1900:[1.28,1.25,1.56,1.18,48.8,52.1,48],1920:[2.03,2.02,2.30,1.67,22.0,40.7,51],1935:[1.95,2.44,2.64,2.19,6.3,25.6,52]};
 const TIERC={rows:[],cap:''};
 const INDECOMP={years:[],mod:{},van:{}};
+const OBS={pool:[],industries:{},tags:{}};
 const YEARS=[1840,1860,1880,1900,1920,1935];
 const EYRS=Object.keys(EMP).map(Number);
 // ---------- per-country data (watchlist) ----------
@@ -831,6 +855,35 @@ function renderCompWorld(){
     SCOPE==='tier'?'industry':'sector');
 }
 renderCompWorld();
+// ---- obsolescence, in-market vs trade (FINDINGS F161 §4; fill_obsolescence.mjs) -----------------------------
+const obsPct=x=>x!=null&&isFinite(x)?(100*x).toFixed(0)+'%':'—';
+const obsSig=x=>x!=null&&isFinite(x)?(x>=0?'+':'')+x.toFixed(2):'—';
+function obsIndustries(){return Object.keys(OBS.industries||{}).filter(k=>OBS.industries[k]['IN-MARKET']||OBS.industries[k]['TRADE-ONLY'])
+  .sort((a,b)=>((OBS.industries[b]['IN-MARKET']||{}).loss||0)-((OBS.industries[a]['IN-MARKET']||{}).loss||0));}
+function renderObsWorld(){
+  const el=document.getElementById('t-obs');el.innerHTML='';
+  document.getElementById('obs-pool').textContent=(OBS.pool||[]).join(' + ')||'—';
+  const inds=obsIndustries();
+  if(!inds.length){el.insertRow().innerHTML='<td class="small">No obsolescence data — run fill_obsolescence.mjs and refill.</td>';return;}
+  el.insertRow().innerHTML='<th>industry</th><th class="num">in-market: loss · margin · staffed</th><th class="num">trade-only: loss · margin · staffed</th><th class="num">world price ÷ break-even (trade-only)</th><th class="num">importers: loss · premium</th><th class="num">gap to world</th>';
+  const m=r=>r?obsPct(r.loss)+' · '+(r.marg!=null&&isFinite(r.marg)?(r.marg>=0?'+':'')+(100*r.marg).toFixed(0)+'%':'—')+' · '+obsPct(r.staffed)+' <span class="dim">('+r.lv+' lv)</span>':'—';
+  for(const k of inds){const o=OBS.industries[k],t=o['TRADE-ONLY'],imp=(o.split||{}).imp;
+    el.insertRow().innerHTML='<td>'+k+'</td><td class="num">'+m(o['IN-MARKET'])+'</td><td class="num">'+m(t)+'</td><td class="num">'+(t&&t.wbe!=null?t.wbe.toFixed(2)+' <span class="dim">('+obsPct(t.wbeBelow)+' below 1)</span>':'—')+'</td><td class="num">'+(imp?obsPct(imp.loss)+' · '+obsSig(imp.prem):'—')+'</td><td class="num">'+(o.gap!=null&&isFinite(o.gap)?o.gap.toFixed(2):'—')+'</td>';}
+}
+function renderObsSel(sel){
+  const el=document.getElementById('t-wobs');el.innerHTML='';
+  const inds=obsIndustries();
+  if(!inds.length){el.insertRow().innerHTML='<td class="small">No obsolescence data — run fill_obsolescence.mjs and refill.</td>';return;}
+  el.insertRow().innerHTML='<th>industry</th><th class="num">in-market: loss · staffed (levels)</th><th class="num">trade-only: loss · staffed (levels)</th>';
+  let rows=0;
+  for(const k of inds){const acc={};
+    for(const tg of sel){const t=((OBS.tags||{})[tg]||{})[k];if(!t)continue;for(const [reg,v] of Object.entries(t)){const a=acc[reg]=acc[reg]||{lv:0,st:0,lossLv:0};a.lv+=v.lv;a.st+=v.st;a.lossLv+=v.lossLv;}}
+    const c=a=>a&&a.lv?obsPct(a.lossLv/a.lv)+' · '+obsPct(a.st/a.lv)+' <span class="dim">('+a.lv+')</span>':'—';
+    if(!acc['IN-MARKET']&&!acc['TRADE-ONLY'])continue; rows++;
+    el.insertRow().innerHTML='<td>'+k+'</td><td class="num">'+c(acc['IN-MARKET'])+'</td><td class="num">'+c(acc['TRADE-ONLY'])+'</td>';}
+  if(!rows)el.insertRow().innerHTML='<td class="small" colspan="3">The selected tags own no old rung in either regime in these years.</td>';
+}
+renderObsWorld();
 const wat=document.getElementById('t-watch');
 for(const y of YEARS){
   const w=WATCH[y];
@@ -1138,6 +1191,8 @@ function renderWatch(){
   const sumSel=(arm,y)=>{const o={};for(const tg of sel){const t=((INDECOMP[arm][y]||{}).tags||{})[tg];if(!t)continue;for(const [k,v] of Object.entries(t[kindS]||{}))o[k]=(o[k]||0)+v;}return o;};
   document.getElementById('windecomp-h').textContent='Industry composition of the selection — value added ('+(SCOPE==='tier'?'exact industries':'broad sectors')+')';
   compTable(document.getElementById('t-windecomp'),y=>sumSel('mod',y),y=>sumSel('van',y),SCOPE==='tier'?'industry':'sector');
+  // obsolescence, in-market vs trade — the selection's own rungs (shares only; see the caption)
+  renderObsSel(sel);
   // build choice, mirrored (world-wide — see the caption)
   const tc2=document.getElementById('t-tierc2');
   tc2.innerHTML='';

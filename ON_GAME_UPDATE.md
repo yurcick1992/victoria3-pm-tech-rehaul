@@ -279,6 +279,19 @@ hand on a major patch.
      (`trade.goods.<n>`) and the world-market price trend (`world_market.price_trend.channels.<n>`) key goods by their
      order in `common/goods/00_goods.txt` (0 = ammunition … 52 = fine_art today). A patch that inserts, removes or
      reorders a good shifts every later index silently — any reader must derive the index from the file each time.
+     The v11 tariff blocks (`import_tariffs` / `export_tariffs` on the country record) key goods the same way.
+   - **Save summary v11 reads laws and tariffs** (`tools/testbed/save_state_summary.mjs`, FINDINGS F161 §6). What to re-check:
+     (1) the law → group table is read LIVE from `common/laws`, and the script THROWS if no law carries `lawgroup_trade_policy`
+     (which is also `TARIFF_LAW_GROUP` in `00_defines.txt`). A renamed group fails loudly; a new trade-policy law simply
+     appears. (2) Laws come from the save's top-level `laws.database`, one record per law and country with `law="…"`,
+     `country=<id>` and `active=yes`. A patch that nests or renames those fields empties `laws` and `trade_policy` without
+     an error, so check that a fresh summary still gives most countries a `trade_policy`. (3) The tariff LEVEL vocabulary
+     (max / high / low tariffs, no tariffs or subventions, low / high / max subventions) and its meaning:
+     `TARIFF_LEVEL_EFFECT_*` / `SUBVENTION_LEVEL_EFFECT_*` in `00_defines.txt`, times each law's `state_tariff_import_add`
+     in `common/laws/01_trade_policy.txt` (0.50 under the protective laws, absent under free trade in 1.13.11). F161 §6's
+     "low tariffs = 12.5%" is those numbers multiplied together, so it changes if any of them does. (4) Trade advantage and
+     local import/export prices were NOT in the 1.13.11 save. If a patch starts persisting them, the importer premium can be
+     read directly instead of from producer prices.
    - **`base_values` in `common/static_modifiers/00_code_static_modifiers.txt`** is the engine's always-applied block
      and already carries state modifiers, so it is the candidate global hook. Owning that 1,029-line file freezes it
      against the next patch; if we ever do, it joins the whole-file-replacement list in §"Automated" and must be

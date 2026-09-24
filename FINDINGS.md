@@ -16845,7 +16845,7 @@ re-enabled when the user says those tests are done (CLAUDE.md's canon banner has
 
 ---
 
-## F161 — ⭐⭐ PER-GOOD TRADE WEIGHTS DOUBLE TRADE AND PUT IT WHERE IT WAS AIMED, AND OVERSHOOT AS A GDP LEVER: base-£ traded ×1.9 (bulk flat), trade ÷ world GDP above 110–111 of 111 other four-rung runs, producer prices ~⅓ closer to the world average — and world GDP **0.87 → 1.13** median with Britain's U* under its band in three seeds and one run BROKEN BY RUNOFF. Cross-market obsolescence moves only where in-market obsolescence already works: the chain breaks at the IMPORTER'S OWN PRICE, not at the world price (4 runs of 1836→1936, 2026-09-23/24)
+## F161 — ⭐⭐ PER-GOOD TRADE WEIGHTS DOUBLE TRADE AND PUT IT WHERE IT WAS AIMED, AND OVERSHOOT AS A GDP LEVER: base-£ traded ×1.9 (bulk flat), trade ÷ world GDP above 107–108 of 108 other four-rung runs, producer prices ~⅓ closer to the world average — and world GDP **0.87 → 1.13** median with Britain's U* under its band in three seeds and one run BROKEN BY RUNOFF. Cross-market obsolescence moves only where in-market obsolescence already works: the chain breaks at the IMPORTER'S OWN PRICE, not at the world price (4 runs of 1836→1936, 2026-09-23/24)
 
 **Arm:** `{kind: config, config: config/mod_config.canon-slide-b158-trade.json}` — the canon canon-slide-b158 plus
 `goods_traded_quantity` on 35 goods (F159 §7): the base-price £ one unit of trade capacity moves (W = cost × traded quantity)
@@ -16854,8 +16854,9 @@ kept at vanilla's ~240 for 11 bulk goods (class E) and raised ×√2 (D semi-bul
 Session `20260923_215141_canon-trade-n4`, 4 runs, all to 1936.1.1, game 1.13.11, save summaries v10. A FIXED-n batch by ruling
 (every run plays). **Comparison:** the canon's three seeds (`20260922_233932_b-gradient-rest`, setup probe-sm-b158, byte-identical
 to canon-slide-b158) — their yearly summaries are v9, so their per-good trade comes from v10 re-summaries of their kept 1936 saves —
-and, for the GDP-matched reading, all **111 other complete four-rung century runs** since 2026-09-05 whose final save survives
-(re-summarised the same way); the register against vanilla n=16 (`20260821_131149`). Ledger:
+and, for the GDP-matched reading, all **108 other complete four-rung century runs** since 2026-09-05 whose final save survives
+(re-summarised the same way; ⚠ the first reading pooled four VANILLA eleven-tag control runs of 2026-09-20 in with them, 111 + 1 in
+all — corrected the same day by `tools/testbed/ledger/trade_vs_gdp.mjs`, which keeps mod arms only; no conclusion moved); the register against vanilla n=16 (`20260821_131149`). Ledger:
 https://claude.ai/artifact/787FHZXm44Bdv4YezB1bHF (also the session's REPORT.html).
 
 ### 1. Trade volume — doubled, and in the raised classes (1936.1.1, capacity × traded quantity × base price, one way, £/week)
@@ -16871,9 +16872,9 @@ as it should be. Class A uses less capacity for more value (4.1–7.6k units aga
 ⚠ The quantity multiplier of the trade centres' own production method is NOT in this measure — the same basis in every run.
 
 **Against runs of the same GDP.** A year's traded value ÷ world GDP at 1936: **13.6 / 13.5 / 10.5 / 12.0%** in the four seeds against
-**8.3 / 7.1 / 7.0 / 8.0%** for the four-rung runs within ±0.08 of each seed's world GDP (n = 27 / 20 / 16 / 6); the 111 others span
+**8.6 / 7.1 / 7.0 / 8.4%** for the four-rung runs within ±0.08 of each seed's world GDP (n = 24 / 20 / 16 / 5); the 108 others span
 4.7–11.0% (median 7.9%), independent of GDP. Imports ÷ demand value in the five markets every run logged (British, French/Communard,
-American, Russian, Japanese; 1930 + 1935): **11.6 / 8.6 / 9.1 / 10.3%** against **5.9 / 5.6 / 5.7 / 5.4%**.
+American, Russian, Japanese; 1930 + 1935): **11.6 / 8.6 / 9.1 / 10.3%** against **6.0 / 5.6 / 5.7 / 5.4%**.
 The path over the century (seven instrumented markets): imports 6.1% of demand value at 1836.2 against the canon's 3.5%, fading to
 the canon's level over 1870–1900 while the AI built FEWER trade centres (477 against 536 levels at 1851 — price gaps close with less
 capacity), then 8.5–8.8% against 4.2–4.6% over 1920–35, when the arm built more (5,655 against 5,100 at 1935).
@@ -16892,8 +16893,8 @@ capacity), then 8.5–8.8% against 4.2–4.6% over 1920–35, when the arm built
   E 1.26 vs 1.16; exporters' A 0.83 vs 0.84, B 0.62 vs 0.52, C 0.82 vs 0.75, D 0.81 vs 0.77, E 0.86 vs 0.85 — importers cheaper and exporters
   dearer in A–C, bulk dearer for importers (crowded out of capacity).
 - ⚠ **The per-good dispersion across the five markets is NOT a robust gain**: against each seed's GDP-matched runs, runs 1–2 are tighter in
-  compact goods and manufactures (B 0.159 / 0.094 vs 0.220 / 0.210; C 0.170 / 0.181 vs 0.236) but run 3 is not and run 4 is looser in both
-  (all goods 0.244 vs 0.219). An n=2 reading of "B and C converge clearly" did not survive n=4.
+  compact goods and manufactures (B 0.159 / 0.094 vs 0.223 / 0.210; C 0.170 / 0.181 vs 0.236) but run 3 is not and run 4 is looser in both
+  (all goods 0.244 vs 0.228). An n=2 reading of "B and C converge clearly" did not survive n=4.
 
 ### 3. World GDP and Britain — the overshoot
 
@@ -16946,15 +16947,77 @@ TRUE margin, profit ÷ (sales − profit), level-weighted median; staffed = staf
   loss share in tooling (21% vs 5%), steel (18% vs 7%), glass (18% vs 7%) and arms (87% vs 57%), without closing the premium.
 - ⇒ The lever for cross-market death in the consumer chains is IMPORT VOLUME into laggard markets (uniform trade capacity, or lower
   tariffs) — which of the two binds is not separable until save summary v11 carries each country's trade-policy law.
+  ⭐ **§6 answers it (2026-09-24): tariffs are not what holds the premium up.**
 
 ### 5. Instrument and cost
 - Market telemetry lines report only the dominant trade direction per good, at gross volume including the quantity multiplier
   (TESTBED_METRICS §2.5, measured on this batch) — trade volume here is read from the v10 capacity instead.
 - Wall clock ×0.99 of vanilla in total (median play 163.0 vs 165.0 min), +4.9% pop-matched — PASS. Two CTDs (runs 1 and 2) recovered.
 
-**Confidence:** high that trade doubled and landed in the raised classes (every seed, beyond the whole 111-run distribution); high that
+### 6. Tariffs or capacity? (ADDENDUM 2026-09-24 — save summary v11, both arms' kept 1936.1.1 saves re-summarised)
+Save summary **v11** reads each country's active laws, its trade-policy law and its per-good import and export tariff levels. The trade
+arm's four 1936 saves and the canon's three (probe-sm-b158 of 20260922_233932) were re-summarised to v11, and the trade-only old rungs
+were split by **the import tariff that the country they stand in** sets on their own output good
+(`trade_obsolescence.mjs --override-dir <v11 dir> --years 1936 --pool 1936`).
+
+**How big a tariff can be.** The trade-policy laws carry the tariff RATE (`state_tariff_import_add`): **0.50** under mercantilism,
+protectionism, the Canton system and sakoku, **none at all under free trade**. A good's LEVEL applies a fraction of that rate
+(`TARIFF_LEVEL_EFFECT_LOW` 0.25 / `_HIGH` 0.5 / `_MAXIMUM` 1.0 in `00_defines.txt`). So "low tariffs" is **12.5%** on imports under a
+protective law, and 0 under free trade. That is ln 1.125 = **0.12** in log terms, **less than half** of the +0.30 to +0.37 premium in §4.
+
+**What the AI actually sets** (every import-tariff entry of every country with GDP at 1936; trade / canon):
+
+| level | trade | canon |
+|---|---|---|
+| low tariffs | 61.2% | 58.5% |
+| no tariffs or subventions | 23.2% | 25.1% |
+| low subventions | 15.4% | 16.3% |
+| high tariffs | 0.2% | 0.1% |
+| max tariffs | 0.1% | 0.1% |
+
+**High and max tariffs are essentially never used.** World GDP by trade-policy law: trade arm mercantilism 46.5% · protectionism 31.1% ·
+**free trade 19.7%**; canon 46.3% · 43.5% · 9.3%. The trade arm's larger free-trade share is 4 seeds against 3 and may be seed noise.
+The GDP numbers move a lot when one major changes its law: across the seven saves GBR, USA, FRA, PRU, BEL and NET each appear under both
+free trade and a protective law (mercantilism or protectionism).
+
+**The premium does not follow the tariff level** (trade-only old rungs, trade arm, 1936. Each cell is levels · loss-making share ·
+signed premium ln(local ÷ world)):
+
+| industry | no tariffs | low tariffs | no entry |
+|---|---|---|---|
+| paper | 128 · 7% · **+0.32** | 54 · 15% · +0.20 | 146 · 4% · +0.31 |
+| tooling | 354 · 27% · **+0.30** | 145 · 17% · +0.39 | 115 · 48% · +0.33 |
+| motor | 265 · 11% · **+0.28** | — | 65 · 25% · +0.35 |
+| steel | 52 · 35% · +0.13 | 186 · 24% · +0.22 | 26 · 50% · +0.19 |
+| explosives | 40 · 45% · **+0.28** | 48 · 58% · +0.15 | 12 · 58% · +0.40 |
+| fertilizer | 14 · 43% · +0.21 | 26 · 46% · +0.21 | 6 · 0% · +0.16 |
+| textile | — | 710 · 9% · +0.30 | 20 · 0% · +0.27 |
+| glass | — | 271 · 28% · +0.33 | 7 · 29% · +0.31 |
+
+Markets with **no import tariff** keep an old rung's price ×1.3–1.4 above the world average in paper, tooling, motor and explosives. That
+is the same premium the low-tariff markets carry, and in explosives it is larger. The few free-trade countries show it too (textile +0.31,
+paper +0.33, tooling +0.32, explosives +0.28 on 3–9 levels each; steel −0.02 on 7).
+
+**At a fixed tariff level, extra capacity narrowed the premium**, though not in every industry. Low tariffs: textile **+0.59 → +0.30**
+(381 → 710 levels), glass **+0.52 → +0.33**, furniture +0.57 → +0.55. No tariffs: paper +0.36 → +0.32, tooling +0.31 → +0.30,
+arms +1.63 → +0.92 (canon → trade).
+
+⇒ **Tariffs are not what keeps an importer's price up.** High and max tariffs are almost never set. Low tariffs can explain at most 0.12
+of a 0.30 premium. Tariff-free markets carry the same premium. What holds it up is the SUPPLY SIDE: imports into a short market are
+limited by trade capacity and by the importer's trade advantage, so the local shortage sets the local price. **The lever is capacity.**
+Tariffs would only become a lever if the AI started setting high ones, and at 1936 it does not.
+
+⚠ Limits:
+- The tariff is the building's own COUNTRY's. For a subject in its overlord's market, the rate that binds may be the market leader's.
+- "No entry" is a good with no per-good record in the save. The define's default import level is `low_tariffs`, but whether the save
+  omits entries sitting at that default is not established.
+- Local prices and trade advantage are NOT in the save (TESTBED_METRICS §7½), so the premium is read from realised producer prices
+  (goods_sales ÷ va_out), not from the importer's purchase price.
+- One date, cells pooled over seeds. Directional.
+
+**Confidence:** high that trade doubled and landed in the raised classes (every seed, beyond the whole 108-run distribution); high that
 producer prices moved toward the world price (11 of 13 industries); DIRECTIONAL for the GDP and U* shift (four seeds spanning
 0.83–1.32 against three spanning 0.82–1.02) and for the obsolescence rows (pooled cells, seeds not separated).
 **What it does NOT say:** that the weights are the right size (they overshoot the GDP headroom by design-rule standards); that the five-market
-price dispersion narrowed (not robust); whether capacity or tariffs keep importers' prices high (no trade-law data yet); anything about the
+price dispersion narrowed (not robust); what HIGH tariffs would do (the AI sets them on 0.1–0.3% of entries, so §6 cannot see them); anything about the
 finish boost, which stayed parked; and it does not separate the classes' individual contributions (all five moved at once).
