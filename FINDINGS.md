@@ -16729,6 +16729,10 @@ Batch `20260923_215141_canon-trade-n4`, 4 × 1836→1936, predictions pre-regist
 
 ## F160 — ⭐⭐ A GRANT THAT REACHES A TECHNOLOGY'S COST COMPLETES IT ON THE SPOT, so a "paid-for but unpicked" technology does not exist; the ahead-of-time penalty is EXACTLY `era_cost × (1 + 0.25 × Σ era-distance)` and SKIPS sericulture; `has_technology_progress` reads a FRACTION of the penalised cost. What persists is the MOSTLY-paid technology blocked by the penalty (1 probe run, 1836→1841, 2026-09-23)
 
+⚠ **2026-09-24 — "does not exist" holds only for a GRANT that reaches the cost.** In century runs a technology whose penalty clears
+AFTER its second stage (the cost falls to the progress already banked, no grant firing) waits a median of 7–18 months — the user's
+in-game observation, and F162. This probe's five years contained no such case.
+
 **Why it ran.** User-ruled 2026-09-23: when the research journal entries have granted enough to finish a technology with
 one tick, the AI should almost surely pick it — case 1 two stages fired and no penalty, case 2 three stages fired and
 the penalty not too high — derived so a tree change re-derives it. Built as `research_events.finish_boost`
@@ -17024,3 +17028,61 @@ producer prices moved toward the world price (11 of 13 industries); DIRECTIONAL 
 **What it does NOT say:** that the weights are the right size (they overshoot the GDP headroom by design-rule standards); that the five-market
 price dispersion narrowed (not robust); what HIGH tariffs would do (the AI sets them on 0.1–0.3% of entries, so §6 cannot see them); anything about the
 finish boost, which stayed parked; and it does not separate the classes' individual contributions (all five moved at once).
+
+## F162 — ⭐ THE FINISH GAP IN CENTURY RUNS: a technology whose second research stage lands with NO ahead-of-time penalty is acquired within two weeks (99–100%), but one whose penalty clears LATER waits a median of 7–18 months, and the finish boost does not fix that case (3 + 4 + 3 runs, 2026-09-24)
+
+**Why it ran.** User-asked 2026-09-24: has the finish boost (F160, restored to the canon in `edd69ff`) shortened the gap between
+"the second journal-entry stage has fired AND no ahead-of-time penalty applies" and the technology being researched? A technology
+never acquired counts as acquired at 1936.1.1 (the user's censoring rule).
+
+**Arms** (all read with the same tool):
+- **boost:** `20260924_101627_trade15-bladder-n12`, setup `trade15-b164`, runs 1–3 (the canon + the finish boost + trade weights ×1.5 + B 1.64);
+- **trade, no boost:** `20260923_215141_canon-trade-n4`, n=4 (the canon + trade weights ×1, B 1.58, the boost parked);
+- **canon, no boost:** `20260922_233932_b-gradient-rest`, `probe-sm-b158` runs 2–4.
+
+**Method** (scratchpad `tech_gap3.mjs`, to move into the ledger). Per (country, technology) whose DEVELOPMENT stage completed:
+- **T1** = the later of that completion and the country's acquisition of its last unresearched same-category technology of an earlier
+  era. That is the date F160's Σ reaches 0; sericulture is excluded.
+- **T2** = acquisition from `tech_log`, or 1936.1.1 if never.
+- **Dating the stage:** `PMR_JE` lines carry wall time only and are dated from the nearest `TECH` line of the same run (about one
+  in-game week).
+- **Countries** are keyed by display name, so a renamed country's record splits.
+
+| arm | 2nd-stage pairs | condition never met | acquired while penalised | met | **(a) penalty already 0 at the 2nd grant** | **(b) penalty clears LATER** |
+|---|---|---|---|---|---|---|
+| boost | 481 | 281 | 29 | 171 | 162 · 99% within 2 weeks · max 18.0 mo | **9 · median 7.2 mo** · 44% within 1 mo · max 21.2 |
+| trade, no boost | 646 | 357 | 29 | 260 | 237 · 100% within 2 weeks · max 0.1 | **23 · median 7.2 mo** · 26% within 1 mo · max 64.9 |
+| canon, no boost | 505 | 344 | 17 | 144 | 124 · 99% within 2 weeks · max 18.2 | **20 · median 17.7 mo** · 20% within 1 mo · max 161.6 |
+
+- **The medians are 0 months in every arm**, because case (a) is ~90% of the met pairs, and there F160's mechanism holds: the grant
+  reaches the cost and completes the technology.
+- **Long waits (over 1 month) among the met pairs:** 6 of 171 with the boost, 17 of 260 and 17 of 144 without. The canon's include four
+  technologies Russia never acquired (110–162 months).
+  - The boost's survivors are intensive agriculture (Spain ×3, Two Sicilies, 16–21 months) and Russia (7 and 13 months).
+  - Intensive agriculture also recurs without the boost (Sokoto 20–152 months).
+- **Over ALL second-stage pairs**, second stage → acquisition:
+  - **boost:** mean 12.6 months, p75 0.1
+  - **trade, no boost:** mean 19.3, p75 0.1
+  - **canon, no boost:** mean 22.1, p75 6.0
+  - The median is 0 and the p90 about 24 months everywhere; 24 months is one full stage.
+- **58% of the boost arm's second-stage pairs never meet the condition** (281 of 481). The penalty is still on when the grants land:
+  F160's mostly-paid technology.
+
+**Measured vs inferred.**
+- **Measured:** case (b)'s timing and its long waits.
+- **Inferred, not observed:** that in case (b) the banked progress covers the unpenalised cost and nothing completes the technology
+  until a tick of research or tech spread adds to it.
+  - The two stage grants are half the era cost each, which F160 measured as exactly the unpenalised cost. So the banked progress
+    should EQUAL the cost, not exceed it; a strict completion test would then never fire on its own.
+  - No century run carries cost or progress readings.
+  - The boost acts only at the AI's NEXT research choice, which comes when its current project ends. That fits case (b)'s median wait
+    of months with the boost on.
+- **What would settle it:** a longer probe with F160's diagnostic form (commit `11a5b90`: the engine's own `GetCost` / `GetProgress`
+  per country and month).
+- **The proposed fix:** a token `add_technology_progress` from the implementation stage's monthly pulse when progress ≥ cost. It
+  needs its own probe (does a grant on top of full progress trigger completion?) and is queued for after the batch.
+
+**Confidence:** high that case (a) completes at once; directional for the boost's effect (n=3 against 4 and 3). Case (b) is 9 / 23 /
+20 pairs, and the arms also differ in B and trade ×1.5, both of which change how fast countries research.
+**What it does NOT say:** the mechanism behind case (b); why intensive agriculture waits even in case (a); the boost's effect on the
+58% of pairs that never meet the condition.
