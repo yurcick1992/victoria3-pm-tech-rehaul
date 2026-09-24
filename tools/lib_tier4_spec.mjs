@@ -208,6 +208,12 @@ export const RESEARCH_EVENTS = {
       "implementation"
     ],
     "grant_fraction": 0.5,
+    "finish_boost": {
+      "enabled": true,
+      "threshold": 0.99,
+      "add": 10000,
+      "_why": "User-ruled 2026-09-23 (the FLAT form, replacing the same day's JE-stage + penalty-reconstruction form): every researchable technology gets +add AI research weight while has_technology_progress >= threshold, so the AI takes an infinitesimally cheap benefit. The trigger reads a fraction of the PENALISED cost (verified 219/219, FINDINGS F160), so nothing is reconstructed and tree changes need nothing by hand. Expected to fire rarely: a grant reaching the cost completes the technology on the spot (F160). Emitted by tools/emit_tech_finish.mjs."
+    },
     "industry_bar_months": 60,
     "thresholds_by_era": {
       "0": 25000,

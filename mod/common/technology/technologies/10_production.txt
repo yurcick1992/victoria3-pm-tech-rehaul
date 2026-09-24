@@ -24,6 +24,11 @@ enclosure = {
 
 	ai_weight = {
 		value = 3 # Very important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = enclosure  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -36,6 +41,11 @@ manufacturies = {
 
 	ai_weight = {
 		value = 3 # Very important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = manufacturies  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -52,6 +62,11 @@ shaft_mining = {
 
 	ai_weight = {
 		value = 2 # Important tech in general
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = shaft_mining  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -70,6 +85,11 @@ cotton_gin = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = cotton_gin  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -95,6 +115,11 @@ lathe = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = lathe  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -112,6 +137,11 @@ distillation = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = distillation  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -137,6 +167,11 @@ steelworking = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = steelworking  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -152,6 +187,11 @@ prospecting = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = prospecting  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -169,6 +209,11 @@ crystal_glass = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = crystal_glass  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -196,6 +241,11 @@ intensive_agriculture = {
 			}
 			add = 2
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = intensive_agriculture  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -212,6 +262,11 @@ fractional_distillation = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = fractional_distillation  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -227,6 +282,11 @@ canneries = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = canneries  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -243,6 +303,11 @@ watertube_boiler = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = watertube_boiler  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -275,6 +340,11 @@ atmospheric_engine = {
 				}
 			}
 			add = 2
+		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = atmospheric_engine  progress >= 0.99 } }
+			add = 10000
 		}
 	}
 }
@@ -315,6 +385,11 @@ railways = {
 			}
 			add = 2
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = railways  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -331,6 +406,11 @@ chemical_bleaching = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = chemical_bleaching  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -354,6 +434,11 @@ nitroglycerin = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = nitroglycerin  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -377,6 +462,11 @@ bessemer_process = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = bessemer_process  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -392,6 +482,11 @@ baking_powder = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = baking_powder  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -420,6 +515,11 @@ mechanized_workshops = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = mechanized_workshops  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -436,6 +536,11 @@ mechanical_tools = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = mechanical_tools  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -454,6 +559,11 @@ improved_fertilizer = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = improved_fertilizer  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -480,6 +590,11 @@ steam_donkey = {
 			}
 			add = 2
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = steam_donkey  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -502,6 +617,11 @@ dynamite = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = dynamite  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -528,6 +648,11 @@ rubber_mastication = {
 			}
 			add = 3
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = rubber_mastication  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -543,6 +668,11 @@ rotary_valve_engine = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = rotary_valve_engine  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -562,6 +692,11 @@ reinforced_concrete = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = reinforced_concrete  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -586,6 +721,11 @@ threshing_machine = {
 				}
 			}
 			add = 1
+		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = threshing_machine  progress >= 0.99 } }
+			add = 10000
 		}
 	}
 }
@@ -614,6 +754,11 @@ pumpjacks = {
 			}
 			add = 2
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = pumpjacks  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -629,6 +774,11 @@ aniline = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = aniline  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -644,6 +794,11 @@ open_hearth_process = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = open_hearth_process  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -659,6 +814,11 @@ vulcanization = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = vulcanization  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -674,6 +834,11 @@ vacuum_canning = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = vacuum_canning  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -692,6 +857,11 @@ shift_work = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = shift_work  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -709,6 +879,11 @@ steel_railway_cars = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = steel_railway_cars  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -740,6 +915,11 @@ electrical_generation = {
 			}
 			add = 2
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = electrical_generation  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -767,6 +947,11 @@ mechanized_farming = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = mechanized_farming  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -783,6 +968,11 @@ art_silk = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = art_silk  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -798,6 +988,11 @@ automatic_bottle_blowers = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = automatic_bottle_blowers  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -815,6 +1010,11 @@ conveyors = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = conveyors  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -830,6 +1030,11 @@ pasteurization = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = pasteurization  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -858,6 +1063,11 @@ electric_railway = {
 				}
 			}
 			add = 1
+		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = electric_railway  progress >= 0.99 } }
+			add = 10000
 		}
 	}
 }
@@ -888,6 +1098,11 @@ combustion_engine = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = combustion_engine  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -911,6 +1126,11 @@ pneumatic_tools = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = pneumatic_tools  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -927,6 +1147,11 @@ nitrogen_fixation = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = nitrogen_fixation  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -942,6 +1167,11 @@ electric_arc_process = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = electric_arc_process  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -957,6 +1187,11 @@ steam_turbine = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = steam_turbine  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -972,6 +1207,11 @@ plastics = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = plastics  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -999,6 +1239,11 @@ electrical_capacitors = {
 			}
 			add = 1
 		}
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = electrical_capacitors  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1014,6 +1259,11 @@ radio = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = radio  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1030,6 +1280,11 @@ telephone = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = telephone  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1047,6 +1302,11 @@ dough_rollers = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = dough_rollers  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1063,6 +1323,11 @@ flash_freezing = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = flash_freezing  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1078,6 +1343,11 @@ oil_turbine = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = oil_turbine  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1099,6 +1369,11 @@ arc_welding = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = arc_welding  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }
 
@@ -1115,5 +1390,10 @@ compression_ignition = {
 
 	ai_weight = {
 		value = 1
+		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
+		if = {
+			limit = { has_technology_progress = { technology = compression_ignition  progress >= 0.99 } }
+			add = 10000
+		}
 	}
 }

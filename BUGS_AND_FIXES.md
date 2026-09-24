@@ -13,6 +13,32 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-09-24 — the canonical `mod/` shipped a RETIRED book's start-population seed for three weeks, and no fresh build had it
+
+**Symptom.** None in any measurement, which is how it lasted. `mod/common/history/pops/zzz_pm_rehaul_seed_pops.txt`
+— the workforce `convert_history.ps1` seeds for a start rule's CREATED industry grants (FRA Brittany, NET Holland, …:
+engineers, laborers, machinists, shopkeepers, 20,000–40,000 people a state) — sat in the canonical `mod/` and the
+DEPLOYED mod from 2026-09-04 (tracked since `5783d58`) to 2026-09-24. The canon's start rules have been EMPTY since
+the four-rung switch (`start_exceptions.vanilla.json`), so nothing had written it since. Found while PROVING a build
+clean: a fresh `-SaveTo` build of the canon matched `mod/` in every file but this folder and the build stamps.
+
+**Root cause.** Two correct decisions that together leak. (1) `build.ps1`'s clean step wipes everything under
+`mod/common` EXCEPT `common/history`, on purpose: the converter rewrites it later in the build, and wiping it first
+would leave the game with no starting buildings if the converter then failed. (2) The converter wrote the seed file
+only `if ($popStates.Count -gt 0)` and did nothing otherwise. So once a book stopped seeding, the last seeding book's
+file survived every later canonical build — while every testbed build, which starts from an empty folder, never had
+it. ⇒ **Manual playtests of the deployed mod carried extra pops that no measured run did.**
+
+**Fix.** The converter now has the `else`: nothing to seed ⇒ remove `zzz_pm_rehaul_seed_pops.txt` (and the folder
+if it is left empty), printing `REMOVED a stale …` when it does. Rebuilt: the file is gone from `mod/`, the deploy's
+`robocopy /MIR` removed it from the game's copy, and a fresh `-SaveTo` build of the canon now equals `mod/` exactly
+apart from build stamps.
+
+**Lesson.** A conditional emitter must DELETE its output when its condition goes false, wherever the build does not
+wipe that output for it. The general sweep of the clean step (2026-08-12, the static_modifiers leak) covers every
+folder but `common/history`, so the converter is the one emitter that has to clean up after itself. ⚠ Worth a
+landmine detector: "a file in `mod/` that a fresh build of the same config does not produce" — not built today.
+
 ## 2026-09-21 — the run-level STOP watcher died on its first tick and nothing said so: `-Session` takes a session NAME, and a PATH doubled its root
 
 **Symptom.** None, and that is the entire problem. The accel-slide century batch was launched and

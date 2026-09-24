@@ -263,15 +263,12 @@ so this canonization changes the recipe book alone.
 **What it is:** A 2.2 · **B 1.58** · `building_cost` = the vanilla anchor × 1.9^era · rung 0's input value × 1.2 with the ladder
 anchored on it · ai_value 1,000 × 3^era · the pool cost-divisor 0.000125 · the 24-month industry research bar · the
 **URBAN-CENTRE ELECTRICITY OVERRIDE** of §10.43.0 (verified present before canonizing: `pm_goods` 2 coal → 10 services +
-1 electricity, `pm_employment` 250 engineers) · ⚠⚠ **`research_events.finish_boost` IS PARKED, NOT IN THE CANON** (user-ruled
-2026-09-23: *"I want this implemented in all cases going forward EXCEPT for the next tests that the other local session will do, for
-which it needs clean reference, the last canonized setup unchanged"*). Both canon copies and `lib_tier4_spec.mjs` are back at the
-canonized bytes (sha `4ce5890f88be1279`, proven: a fresh build of commit `470825f` equals today's `mod/` but for build stamps); the
-code stays and is inert without the key. **RE-ENABLE when the user says those tests are done**: add
-`"finish_boost": {"enabled": true, "threshold": 0.99, "add": 10000, "_why": …}` to `research_events` in BOTH canon copies (keep them
-byte-identical) and in `lib_tier4_spec.mjs`'s RESEARCH_EVENTS — the exact block is in commit `ad98b46` — then rebuild. It is the FLAT form:
-+10000 AI weight on any researchable technology while `has_technology_progress >= 0.99` (`tools/emit_tech_finish.mjs`, FINDINGS **F160**:
-the AI took the boosted tech 52/52 against 0/42 without) — plus the two departures from the previous canon:
+1 electricity, `pm_employment` 250 engineers) · ⭐ **`research_events.finish_boost`** (user-ruled 2026-09-23, in the canon since
+2026-09-24 after a day parked so another session could test against the canonized setup unchanged): the FLAT form, +10000 AI weight on
+any researchable technology while `has_technology_progress >= 0.99` (`tools/emit_tech_finish.mjs`, FINDINGS **F160** — the AI took the
+boosted tech 52/52 against 0/42 without; expected to fire rarely, because a grant reaching the cost completes the technology on the spot).
+Both canon copies are the canonized book plus that one key (sha `128502ee8b2a4827`), and `lib_tier4_spec.mjs` carries the same default
+— plus the two departures from the previous canon:
 1. ⭐ **THE ANCHOR SLIDE** (`--anchor-for textile,furniture,glass,tooling,munition,synthetics,automotive,electrics:1` with
    **`--anchor-cost`**): eight industries take their ladder origin at **e1** instead of e0, so era e is priced A^(e−1) / B^(e−1)
    over the anchor rung's own vanilla method, and `building_cost` follows the anchor. L31 prints a note per slid industry and
@@ -2144,6 +2141,9 @@ tools/                  dev tooling — NOT shipped in the mod
   extract_presets.ps1   derives the scenario panel's market PRESETS from the vanilla 1836 start (config/presets.json → ui/presets.js): per country market, its buildings (re-tiered) + the PMs vanilla runs, treaty goods transfers, the population split into consumption classes, and the **measured base wage** for that market (`base_wage` / `base_wage_note`; absent when the market has no per-pop measurement, in which case the UI leaves the sheet wage alone rather than substituting the per-worker state average, which is a different quantity), plus the buy-package / pop-need tables the UI needs; regenerated each build
   audit_pm_refs.ps1     scans vanilla events/JEs/effects for references to main PMs our split relocated → MISSING_PM_REFERENCES.md (diagnostic; not run by build)
   convert_history.ps1   1836 start converter: re-tiers vanilla starting factories, applies start_exceptions.json
+                        ⚠ With NOTHING to seed it REMOVES `common/history/pops/zzz_pm_rehaul_seed_pops.txt` (since 2026-09-24):
+                        build.ps1's clean step never wipes `common/history`, so a retired book's seed survived in `mod/` and the
+                        deployed mod for three weeks while every fresh testbed build lacked it (BUGS_AND_FIXES 2026-09-24)
                         ⚠⚠ A start rule naming a `disabled` industry is SKIPPED AND COUNTED, not a
                         fatal "unknown industry" (§10.67.5) — that error is right for a TYPO and
                         wrong for an industry the book deliberately leaves vanilla; an unknown id

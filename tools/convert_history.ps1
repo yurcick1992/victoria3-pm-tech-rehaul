@@ -372,6 +372,21 @@ if ($popStates.Count -gt 0) {
     [System.IO.File]::WriteAllText((Join-Path $popDir 'zzz_pm_rehaul_seed_pops.txt'), (($out -join "`r`n") + "`r`n"), (New-Object System.Text.UTF8Encoding($true)))
     Write-Output ("  seed workforce: {0} people across {1} state(s), {2} pop(s)" -f `
         $script:popPeople, $popStates.Count, ($popStates.Values | ForEach-Object { $_.Count } | Measure-Object -Sum).Sum)
+} else {
+    # ⚠ NOTHING TO SEED MEANS NO FILE — and an old one must go. build.ps1's clean step deliberately never
+    # wipes `common/history` (a failed conversion must not leave the game with no starting buildings), so a
+    # seed written by an EARLIER book survives every later build unless this removes it. That is exactly
+    # what happened: the retired six-rung book's seed (FRA Brittany, NET Holland, … — engineers, laborers,
+    # machinists, shopkeepers) shipped in the canonical `mod/` and the deployed mod from 2026-09-04 to
+    # 2026-09-24, while every fresh testbed build lacked it, so manual playtests differed from measured runs
+    # (BUGS_AND_FIXES 2026-09-24).
+    $popDir  = Join-Path $Repo (Join-Path $ModDir 'common\history\pops')
+    $popFile = Join-Path $popDir 'zzz_pm_rehaul_seed_pops.txt'
+    if (Test-Path $popFile) {
+        Remove-Item $popFile -Force
+        Write-Output "  seed workforce: none to seed - REMOVED a stale $popFile left by an earlier book"
+    }
+    if ((Test-Path $popDir) -and -not (Get-ChildItem $popDir -Force)) { Remove-Item $popDir -Force }
 }
 
 # A grant that found no home is a silent hole — fail rather than ship a seed that isn't there.

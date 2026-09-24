@@ -16839,9 +16839,9 @@ counts only choices made while the forced technology is unacquired.
 **Confidence:** high for the direction and the size — a 100% / 0% split over 94 choices in two runs sharing everything
 but the boost. **Not measured:** how often the condition arises in a normal campaign (expected rarely, §4).
 
-**⚠ STATUS: PARKED OUT OF THE CANON (user-ruled 2026-09-23)** so another session's tests run against the canonized setup
-unchanged. The canon copies and the spec are back at their canonized bytes; the code stays, inert without the key; to be
-re-enabled when the user says those tests are done (CLAUDE.md's canon banner has the exact block).
+**STATUS: IN THE CANON since 2026-09-24.** Parked for one day (user-ruled 2026-09-23) so another session's tests ran
+against the canonized setup unchanged, then restored on the user's word — both canon copies and the spec byte-identical to
+the verified `ad98b46` versions, all 181 boosts in the deployed mod.
 
 ---
 
