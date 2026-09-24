@@ -2127,6 +2127,14 @@ ladder at all**, which is what these two are.
    current canon."*): save summary v10 carries both; `config/mod_config.canon-slide-b158-trade.json` = the canon +
    `goods_traded_quantity` (via `tools/make_trade_config.mjs` / `tools/emit_goods.mjs`); batch
    `20260923_215141_canon-trade-n4`, 4 × 1836→1936, predictions for the three questions pre-registered in its schedule.
+   ⭐ **MEASURED 2026-09-24 (FINDINGS F161)**: trade ×1.9 in base-£, all of it in the raised classes (bulk flat), producer
+   prices ~⅓ closer to the world average; world GDP **0.87 → 1.13** median (1.10 / 0.83 / 1.16 / 1.32), Britain's U* under
+   its band in three seeds, one run BROKEN BY RUNOFF — the weights alone used up the GDP headroom the canon left for trade
+   AND tech finishing (worth ≈ −0.09 on B, directional). Cross-market obsolescence moved only where in-market obsolescence
+   already works; in the consumer chains the chain breaks at the IMPORTER'S own price (×1.35–1.45 the world average in
+   importing markets). ⇒ OPEN, for the user: scale the weights back, absorb them with B, or add the tech finishing first; and
+   the tracking plan agreed 2026-09-24 (save summary v11 with each country's trade-policy law, a ledger panel "obsolescence —
+   in-market vs trade") before deciding whether uniform trade capacity is the next lever.
 
 ### ⭐⭐ THESE TWO ARE NOT LEVERS UNDER EVALUATION — THEY GO IN FOR THEIR OWN REASONS, AND THAT DICTATES WHERE WE START FROM
 

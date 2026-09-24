@@ -16842,3 +16842,119 @@ but the boost. **Not measured:** how often the condition arises in a normal camp
 **⚠ STATUS: PARKED OUT OF THE CANON (user-ruled 2026-09-23)** so another session's tests run against the canonized setup
 unchanged. The canon copies and the spec are back at their canonized bytes; the code stays, inert without the key; to be
 re-enabled when the user says those tests are done (CLAUDE.md's canon banner has the exact block).
+
+---
+
+## F161 — ⭐⭐ PER-GOOD TRADE WEIGHTS DOUBLE TRADE AND PUT IT WHERE IT WAS AIMED, AND OVERSHOOT AS A GDP LEVER: base-£ traded ×1.9 (bulk flat), trade ÷ world GDP above 110–111 of 111 other four-rung runs, producer prices ~⅓ closer to the world average — and world GDP **0.87 → 1.13** median with Britain's U* under its band in three seeds and one run BROKEN BY RUNOFF. Cross-market obsolescence moves only where in-market obsolescence already works: the chain breaks at the IMPORTER'S OWN PRICE, not at the world price (4 runs of 1836→1936, 2026-09-23/24)
+
+**Arm:** `{kind: config, config: config/mod_config.canon-slide-b158-trade.json}` — the canon canon-slide-b158 plus
+`goods_traded_quantity` on 35 goods (F159 §7): the base-price £ one unit of trade capacity moves (W = cost × traded quantity)
+kept at vanilla's ~240 for 11 bulk goods (class E) and raised ×√2 (D semi-bulk) / ×2 (C manufactures and colonial staples) /
+×2√2 (B compact) / ×4 (A precious). The build differs from a canon build by one added file, `common/goods/00_goods.txt`.
+Session `20260923_215141_canon-trade-n4`, 4 runs, all to 1936.1.1, game 1.13.11, save summaries v10. A FIXED-n batch by ruling
+(every run plays). **Comparison:** the canon's three seeds (`20260922_233932_b-gradient-rest`, setup probe-sm-b158, byte-identical
+to canon-slide-b158) — their yearly summaries are v9, so their per-good trade comes from v10 re-summaries of their kept 1936 saves —
+and, for the GDP-matched reading, all **111 other complete four-rung century runs** since 2026-09-05 whose final save survives
+(re-summarised the same way); the register against vanilla n=16 (`20260821_131149`). Ledger:
+https://claude.ai/artifact/787FHZXm44Bdv4YezB1bHF (also the session's REPORT.html).
+
+### 1. Trade volume — doubled, and in the raised classes (1936.1.1, capacity × traded quantity × base price, one way, £/week)
+
+| run | trade capacity used / held | trade-centre levels | £ moved | world GDP £M |
+|---|---|---|---|---|
+| trade 1 · 2 · 3 · 4 | 62.7k/63.6k · 43.1k/44.5k · 46.3k/49.7k · 68.3k/71.5k | 5,886 · 4,736 · 6,520 · 8,155 | 13.28M · 9.89M · 10.64M · 14.13M | 5,100 · 3,790 · 5,274 · 6,138 |
+| canon 2 · 3 · 4 | 60.5k/61.4k · 56.9k/58.0k · 49.8k/51.9k | 5,336 · 5,419 · 5,100 | 6.81M · 6.36M · 5.57M | 3,971 · 4,758 · 3,799 |
+
+By class, the median over runs (trade vs canon, £M/week): **A precious 2.47 vs 0.91 (×2.7) · B compact 1.38 vs 0.53 (×2.6) ·
+C manufactures 3.82 vs 2.27 (×1.7) · D semi-bulk 2.77 vs 1.16 (×2.4) · E bulk 1.17 vs 1.28 (×0.9)** — the untreated bulk class flat,
+as it should be. Class A uses less capacity for more value (4.1–7.6k units against 6.4–9.4k), which the schedule predicted.
+⚠ The quantity multiplier of the trade centres' own production method is NOT in this measure — the same basis in every run.
+
+**Against runs of the same GDP.** A year's traded value ÷ world GDP at 1936: **13.6 / 13.5 / 10.5 / 12.0%** in the four seeds against
+**8.3 / 7.1 / 7.0 / 8.0%** for the four-rung runs within ±0.08 of each seed's world GDP (n = 27 / 20 / 16 / 6); the 111 others span
+4.7–11.0% (median 7.9%), independent of GDP. Imports ÷ demand value in the five markets every run logged (British, French/Communard,
+American, Russian, Japanese; 1930 + 1935): **11.6 / 8.6 / 9.1 / 10.3%** against **5.9 / 5.6 / 5.7 / 5.4%**.
+The path over the century (seven instrumented markets): imports 6.1% of demand value at 1836.2 against the canon's 3.5%, fading to
+the canon's level over 1870–1900 while the AI built FEWER trade centres (477 against 536 levels at 1851 — price gaps close with less
+capacity), then 8.5–8.8% against 4.2–4.6% over 1920–35, when the arm built more (5,655 against 5,100 at 1935).
+
+### 2. Prices — producer prices converge, the world price level barely moves, and the five-market spread is not robust
+
+- **World market price** (the save's 52-week series, class-weighted by value moved, ÷ base) at 1936: trade A 1.00 / 0.94 / 0.90 / 0.83 ·
+  B 0.74 / 0.85 / 0.75 / 0.70 · C 0.91 / 0.92 / 0.88 / 0.89 · D 0.93 / 0.91 / 0.90 / 0.86 · E 1.05 / 1.00 / 1.03 / 1.06; canon A 0.91 / 1.05 / 1.03 ·
+  B 0.72 / 0.92 / 0.84 · C 0.96 / 0.99 / 0.94 · D 0.86 / 0.89 / 0.91 · E 1.01 / 0.96 / 0.99 — manufactures a few points lower, the rest inside
+  the canon's spread.
+- **Every producing country's realised price** (a rung's goods_sales ÷ va_out) against the world's output-weighted average, level-weighted
+  median of |ln|, 1920/1930/1935 pooled, trade vs canon: textile 0.10 / 0.14 · arms 0.05 / 0.15 · paper 0.10 / 0.15 · tooling 0.07 / 0.11 ·
+  steel 0.07 / 0.10 · motor 0.08 / 0.14 · furniture 0.05 / 0.08 · explosives 0.08 / 0.13 · glass 0.07 / 0.12 · food 0.12 / 0.16 ·
+  art academy 0.08 / 0.12 · artillery 0.14 / 0.13 · fertilizer 0.10 / 0.09 — **closer in 11 of 13, by about a third**.
+- In the five instrumented markets (1920–35 pooled): importers' prices ÷ base A 1.06 vs 1.26, B 0.96 vs 1.04, C 1.05 vs 1.14, D 1.06 vs 1.06,
+  E 1.26 vs 1.16; exporters' A 0.83 vs 0.84, B 0.62 vs 0.52, C 0.82 vs 0.75, D 0.81 vs 0.77, E 0.86 vs 0.85 — importers cheaper and exporters
+  dearer in A–C, bulk dearer for importers (crowded out of capacity).
+- ⚠ **The per-good dispersion across the five markets is NOT a robust gain**: against each seed's GDP-matched runs, runs 1–2 are tighter in
+  compact goods and manufactures (B 0.159 / 0.094 vs 0.220 / 0.210; C 0.170 / 0.181 vs 0.236) but run 3 is not and run 4 is looser in both
+  (all goods 0.244 vs 0.219). An n=2 reading of "B and C converge clearly" did not survive n=4.
+
+### 3. World GDP and Britain — the overshoot
+
+| end state (1932–36 mean) | run 1 | run 2 | run 3 | run 4 | canon 2 · 3 · 4 |
+|---|---|---|---|---|---|
+| world GDP ÷ vanilla | 1.10 | 0.83 | 1.16 | 1.32 | 0.87 · 1.02 · 0.82 |
+| Britain's U* | 7.9% | 57.3% | 9.5% | 3.2% | 22.2 · 12.1 · 24.8% |
+| register | intact | intact | intact | **BROKEN BY RUNOFF** | 3 intact |
+
+Run 4: Britain in capital abundance — U* under 5% in 17 consecutive years 1920–36 at a mean hoard of 2.16 of its GDP (1.56–2.65). The two
+intact seeds closest on world GDP (runs 1 and 3) diverge on the world's W (0.72 / 0.83), so no consensus loss; their shared reading: pool W
+0.89, pool U* 1.30, pool H 1.54, pool GDP 1.38, PI 0.89 (falling), PP 0.92, T0 0.31 of the 1900s, world GDP 1.13, world W 0.77, world H 1.12.
+Path: runs 1 and 3 dip only to 0.88 / 0.83 at 1890 and are at vanilla by 1910; run 2 takes the canon's 1900–1920 trough (0.68–0.72);
+run 4 never dips (1.01 at 1880, 1.48 at 1920). The canon was placed at 0.87 to leave room for trade AND post-JE tech finishing
+(CLAUDE.md's canon banner, 2026-09-23); the trade weights alone took all of it and more.
+**Exchange rate against B** (directional): on F158's gradient (world GDP slope −4.47 per unit ln(B/1.5)) a +0.26 median shift is what
+lowering B from 1.58 to ~1.49 does, i.e. the trade weights are worth about −0.09 on B.
+
+### 4. Obsolescence — in-market and trade-based, one metric set (1920/1930/1935 pooled, all countries)
+
+An old rung is **in-market** when its own market's supply frontier (the highest era holding ≥10% of that market's output of the industry)
+is two eras above it, **trade-only** when only the world's is. Loss-making = share of the rung's LEVELS in loss-making cells; margin = the
+TRUE margin, profit ÷ (sales − profit), level-weighted median; staffed = staffed ÷ levels.
+
+| industry | in-market: loss · margin · staffed (trade / canon) | trade-only: loss · margin · staffed (trade / canon) |
+|---|---|---|
+| arms | 54% · −6% · 3% / 52% · −1% · 4% | 76% · −50% · 8% / 76% · −35% · 9% |
+| artillery | 94% · −55% · 1% / 94% · −57% · 1% | 87% · −64% · 3% / 89% · −53% · 2% |
+| tooling | 66% · −16% · 8% / 64% · −12% · 8% | 25% · +14% · 38% / 19% · +17% · 49% |
+| steel | 56% · −4% · 12% / 58% · −9% · 18% | 23% · +13% · 46% / 31% · +14% · 33% |
+| furniture | 54% · −5% · 14% / 54% · −4% · 12% | 20% · +16% · 54% / 23% · +12% · 44% |
+| explosives | 12% · +18% · 43% / 8% · +18% · 52% | 50% · −2% · 32% / 44% · +9% · 33% |
+| glass | 19% · +16% · 33% / 14% · +17% · 38% | 23% · +16% · 46% / 27% · +16% · 53% |
+| textile | 20% · +16% · 28% / 21% · +16% · 28% | 6% · +18% · 66% / 8% · +18% · 68% |
+| paper | 12% · +18% · 49% / 6% · +18% · 40% | 7% · +18% · 72% / 12% · +18% · 62% |
+| motor | 2% · +18% · 51% / 1% · +18% · 69% | 11% · +18% · 68% / 16% · +19% · 64% |
+| food | 5% · +18% · 62% / 2% · +18% · 58% | 7% · +17% · 58% / 3% · +17% · 63% |
+
+- **In-market obsolescence works in arms, artillery, tooling, steel and furniture and barely in the consumer chains** — F136's split, now
+  on true margins; tooling's e0/e1 died in-market (the user's reading, confirmed: 66% loss-making, 8% staffed). Trade leaves this row alone.
+- **Trade-based obsolescence strengthens only where the in-market kind already works** (arms margin −50% vs −35%, explosives −2% vs +9%,
+  tooling 25% vs 19% loss-making, 38% vs 49% staffed) and **does not move in the consumer chains**.
+- **Where the chain breaks:** at the world's average realised price, 59–88% of those consumer-chain old-rung levels would be below
+  break-even (world price ÷ break-even 0.71–0.95 median) — the world price IS low enough. But in markets that import the good, the old
+  rungs' local price sits **+0.30 to +0.37 in log terms above the world average** (textile +0.37, paper +0.33, motor +0.30, glass +0.37,
+  tooling +0.31, steel +0.36) and they are the MOST profitable (textile 3%, paper 1%, motor 1%, glass 5% loss-making): a market imports
+  because its local supply is short, the imports are capped by capacity, and the shortage keeps the price up. At 1936 (both arms on v10)
+  trade narrowed that importer premium in 8 of 9 industries — textile +0.31 vs +0.51, glass +0.39 vs +0.55, tooling +0.29 vs +0.40, steel
+  +0.33 vs +0.39, explosives +0.31 vs +0.52, arms +0.75 vs +0.87 (motor the exception, +0.28 vs +0.10) — and raised the importers' old-rung
+  loss share in tooling (21% vs 5%), steel (18% vs 7%), glass (18% vs 7%) and arms (87% vs 57%), without closing the premium.
+- ⇒ The lever for cross-market death in the consumer chains is IMPORT VOLUME into laggard markets (uniform trade capacity, or lower
+  tariffs) — which of the two binds is not separable until save summary v11 carries each country's trade-policy law.
+
+### 5. Instrument and cost
+- Market telemetry lines report only the dominant trade direction per good, at gross volume including the quantity multiplier
+  (TESTBED_METRICS §2.5, measured on this batch) — trade volume here is read from the v10 capacity instead.
+- Wall clock ×0.99 of vanilla in total (median play 163.0 vs 165.0 min), +4.9% pop-matched — PASS. Two CTDs (runs 1 and 2) recovered.
+
+**Confidence:** high that trade doubled and landed in the raised classes (every seed, beyond the whole 111-run distribution); high that
+producer prices moved toward the world price (11 of 13 industries); DIRECTIONAL for the GDP and U* shift (four seeds spanning
+0.83–1.32 against three spanning 0.82–1.02) and for the obsolescence rows (pooled cells, seeds not separated).
+**What it does NOT say:** that the weights are the right size (they overshoot the GDP headroom by design-rule standards); that the five-market
+price dispersion narrowed (not robust); whether capacity or tariffs keep importers' prices high (no trade-law data yet); anything about the
+finish boost, which stayed parked; and it does not separate the classes' individual contributions (all five moved at once).
