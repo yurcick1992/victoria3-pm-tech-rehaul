@@ -1,0 +1,45 @@
+{
+  "schedule_version": 1,
+  "label": "trade15-bladder-n12",
+  "_why": "ROADMAP step 11 continued — a B LADDER on the canon with trade raised across the board. User-ruled 2026-09-24: \"OK on general trade correction volume\" (every good's trade weight ×1.5 on top of F159 §7's class table, the bulk class included) and \"Go. In linear order, start with 1.64 on B and go up 0.04 each batch.\" C stays at the canon's 1.9 (user: \"C is 1.9 already … better not to change it\"; the heavy e3 rungs already take 2.6–3.3 years at the per-project construction cap). Why a higher B: the trade arm (F161) took world GDP from 0.87 to 1.13 and broke one run of four by runoff; the finish boost is back in the canon (edd69ff) and raises GDP further; a higher B narrows the output–input step (A ÷ B 1.39 → 1.34 / 1.31 / 1.28 / 1.25), cutting frontier margins and with them the investment pool's inflow — the user's point: B and C raises cost GDP and obsolescence but dampen runoff.",
+  "_arm": "{kind: config}, four books, each = the canon (canon-slide-b158: A 2.2, C 1.9, in0 1.2, the anchor slide, the mild spending set, the 24-month bar, the urban-centre override, the finish boost) at B 1.64 / 1.68 / 1.72 / 1.76, plus goods_traded_quantity from `make_trade_config --scale 1.5` (46 goods). Proven before launch: the canon regenerates byte-exactly at B 1.58 through the same pipeline once config/mod_config.tier4.json was regenerated to carry the restored finish_boost (the only field that moved in it); each book differs from the canon only in the B-dependent fields (inputs on 102 entries / target_be / the accounting-only wage_pct on 41 rungs) and the trade keys; all four dry-run builds pass LINT / NEGATIVE-GOODS / SOLVENCY / TECH CONTENT / L13 / L31 / MOD CHECKS / PREFLIGHT, with the finish boost on 181 technologies and common/goods/00_goods.txt overriding 46 goods. Regenerate each: the `_ab.command` line (with --B and --suffix slide-b1xx), then node tools/make_trade_config.mjs --base config/mod_config.slide-b1xx.json --suffix trade15-b1xx --scale 1.5.",
+  "_comparison": "Within the batch: the B slope of every register line (only B varies across the four books). Against: the trade arm 20260923_215141 (B 1.58, trade ×1 on the class table, no finish boost — F161: world GDP 1.10 / 0.83 / 1.16 / 1.32, run 4 broken by runoff) and the canon's B gradient (F158: B 1.52–1.62 without trade). ⚠ The trade ×1.5 and the finish boost are CONSTANT across the ladder, so neither can be separated from the other; only B is identified. Vanilla reference: the pinned n=16 baseline 20260821_131149. Read with criteria.mjs --arm <session>:trade15-b164 --arm <session>:trade15-b168 --arm <session>:trade15-b172 --arm <session>:trade15-b176.",
+  "_instrument": "Save summary v11 (laws, trade-policy law, per-good tariff levels) on every yearly summary; v10's per-good trade capacity and the world market price; telemetry unchanged from the trade batch (the eleven tags, twelve dump dates).",
+  "_stop_rule": "NONE — a fixed-n batch: every run plays to 1936.1.1 and stop_watch is NOT armed (user-ruled 2026-09-23 for fixed-n batches). A run the register reads as broken is reported as broken and does not end the batch.",
+  "_predictions": {
+    "_basis": "Stated before launch (the no-ceteris-paribus rule). World GDP at B 1.58 with trade ×1.5 and the finish boost is guessed at ~1.30 (the trade arm's 1.13 median, +~0.16 for the extra ×1.5 scaled on the first step's +0.26 per ln 1.9, the finish boost unmeasured and taken as small), then F158's slope of −4.47 per unit ln B. The base guess is uncertain by about ±0.15.",
+    "world_gdp_end_state_median": "B 1.64 ~1.13 · B 1.68 ~1.03 · B 1.72 ~0.92 · B 1.76 ~0.82 — falling with B in the pooled regression over the twelve runs (adjacent steps are inside the seed spread and are not expected to separate at n=3).",
+    "britain_u_star": "RISING with B (directional only: F158 +132pp per unit ln B, r 0.50); the trade arm read 7.9 / 57.3 / 9.5 / 3.2%, mostly under the 10–50% band.",
+    "runoff": "Fewer runs broken by runoff (Britain's capital abundance) at higher B, and a lower pool H — the user's mechanism (lower frontier margins → less pool inflow). The trade arm broke 1 of 4.",
+    "obsolescence": "T0 ÷ rest RISING with B (the B gradient read 0.024 / 0.006 / 0.030 / 0.047 at B 1.52–1.62: a poorer world builds fewer frontier rungs), partly offset by the extra trade (the trade arm halved it at B 1.58, 0.030 → 0.013).",
+    "trade": "Base-£ moved a week above the trade arm's £12.0M median at every B, but by less than ×1.5 (the AI builds fewer trade centres while price gaps are closing, F161 §1); the importer premium (F161 §4) narrower than the trade arm's +0.30 at 1936.",
+    "stall_risk": "The top rung B 1.76 is predicted near 0.82; one seed under the 0.66 world-product floor there would not surprise (B 1.62 without trade stalled 1 of 3)."
+  },
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "trade15-b164": { "kind": "config", "config": "config/mod_config.trade15-b164.json" },
+    "trade15-b168": { "kind": "config", "config": "config/mod_config.trade15-b168.json" },
+    "trade15-b172": { "kind": "config", "config": "config/mod_config.trade15-b172.json" },
+    "trade15-b176": { "kind": "config", "config": "config/mod_config.trade15-b176.json" }
+  },
+  "runs": [
+    { "setup": "trade15-b164", "until": "1936.1.1" },
+    { "setup": "trade15-b164", "until": "1936.1.1" },
+    { "setup": "trade15-b164", "until": "1936.1.1" },
+    { "setup": "trade15-b168", "until": "1936.1.1" },
+    { "setup": "trade15-b168", "until": "1936.1.1" },
+    { "setup": "trade15-b168", "until": "1936.1.1" },
+    { "setup": "trade15-b172", "until": "1936.1.1" },
+    { "setup": "trade15-b172", "until": "1936.1.1" },
+    { "setup": "trade15-b172", "until": "1936.1.1" },
+    { "setup": "trade15-b176", "until": "1936.1.1" },
+    { "setup": "trade15-b176", "until": "1936.1.1" },
+    { "setup": "trade15-b176", "until": "1936.1.1" }
+  ]
+}
