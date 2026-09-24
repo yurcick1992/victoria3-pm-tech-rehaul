@@ -17093,8 +17093,10 @@ tick), not when its COST FALLS to the banked progress.**
     of months with the boost on.
 - **What would settle it:** a longer probe with F160's diagnostic form (commit `11a5b90`: the engine's own `GetCost` / `GetProgress`
   per country and month).
-- **The proposed fix:** a token `add_technology_progress` from the implementation stage's monthly pulse when progress ≥ cost. It
-  needs its own probe (does a grant on top of full progress trigger completion?) and is queued for after the batch.
+- **The proposed fix was DECLINED (user-ruled 2026-09-24):** a token `add_technology_progress` from the implementation stage's monthly
+  pulse when progress ≥ cost. The user: *"This is intended. I don't like the 'micro tick once penalty is low enough/cleared', to be
+  honest. Let's leave as it is."* ⇒ The finish boost acting only at the AI's NEXT research choice is the intended behaviour, and
+  case (b)'s wait of months is accepted. Do not re-propose a completion tick.
 
 **Confidence:** high that case (a) completes at once; directional for the boost's effect (n=3 against 4 and 3). Case (b) is 9 / 23 /
 20 pairs, and the arms also differ in B and trade ×1.5, both of which change how fast countries research.
