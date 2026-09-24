@@ -2890,7 +2890,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         group) · D semi-bulk ×√2 · C manufactures & colonial staples ×2 · B compact ×2√2 · A precious & self-
                         delivering ×4, all × W 240 — and derives traded_quantity from the GAME's base price, so a re-priced good
                         keeps its W and an added tradeable good THROWS until it is classed. merchant_marine is excluded (a
-                        separate, systemic lever)
+                        separate, systemic lever). ⭐ `--scale k` (user-approved 2026-09-24, ×1.5 — "OK on general trade correction
+                        volume"): EVERY good's W × k on top of the class table, the bulk class included (vanilla traded_quantity × k),
+                        recorded as `_trade.scale`; `--ruled-by "…"` sets the variant's ruling line. At k = 1 the output is proven
+                        identical to the measured trade book (on the base it was made from, `433e2ae`)
   emit_companies.mjs    THE COMPANY CHAIN EXTENSION (ROADMAP step 5, user-ruled 2026-08-23: "add all industry
                         tiers to all companies that have the industry") — called by build.ps1, which THROWS if
                         it fails. Reads the vanilla company_types files LIVE (a patch's new companies flow

@@ -23,8 +23,14 @@ const args = process.argv.slice(2);
 const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
 const BASE = argOf('--base', 'config/mod_config.canon-slide-b158.json');
 const SFX = argOf('--suffix', null);
-if (!SFX) { console.error('usage: node tools/make_trade_config.mjs --base <config> --suffix <suffix>'); process.exit(2); }
+if (!SFX) { console.error('usage: node tools/make_trade_config.mjs --base <config> --suffix <suffix> [--scale k] [--ruled-by "…"]'); process.exit(2); }
 const die = m => { throw new Error('make_trade_config: ' + m); };
+// ⭐ --scale k (user-approved 2026-09-24, "OK on general trade correction volume"): EVERY good's W × k, the bulk class
+// included (its vanilla traded_quantity × k), on top of the class table — trade raised across the board. At k = 1 the
+// output is byte-identical to the unscaled book (proven when the flag was added), so the first trade arm stays reproducible.
+const SCALE = +argOf('--scale', '1');
+if (!(SCALE >= 1)) die(`--scale must be >= 1 (got ${argOf('--scale', '1')})`);
+const RULED_BY = argOf('--ruled-by', null);
 
 const W0 = 240;
 const CLASSES = {
@@ -68,8 +74,12 @@ for (const g of tradeable) if (!seen.has(g) && !EXCLUDED[g]) die(`tradeable good
 
 const tq = {};
 for (const [k, c] of Object.entries(CLASSES)) {
-  if (c.weight === null) continue;
-  for (const g of c.goods) tq[g] = +(c.weight * W0 / G[g].cost).toFixed(2);
+  if (c.weight === null) {
+    if (SCALE === 1) continue;                       // the untreated class keeps vanilla's line, and is not written at all
+    for (const g of c.goods) { if (!(G[g].tq > 0)) die(`bulk good '${g}' has no vanilla traded_quantity to scale`); tq[g] = +(G[g].tq * SCALE).toFixed(2); }
+    continue;
+  }
+  for (const g of c.goods) tq[g] = +(c.weight * W0 * SCALE / G[g].cost).toFixed(2);
 }
 
 const basePath = join(REPO, BASE);
@@ -84,14 +94,18 @@ cfg._trade = {
   excluded: EXCLUDED,
   first_order_level: 'x2.29 base-GBP per unit of capacity at the vanilla 1901 allocation, before any reallocation (F159 §7)',
 };
+if (SCALE !== 1) cfg._trade.scale = { k: SCALE, rule: `every good's W x ${SCALE}, the bulk class (E) included: vanilla traded_quantity x ${SCALE}` };
+const cmd = `node tools/make_trade_config.mjs --base ${BASE} --suffix ${SFX}` + (SCALE !== 1 ? ` --scale ${SCALE}` : '') + (RULED_BY ? ` --ruled-by "${RULED_BY}"` : '');
 const baseName = basename(BASE);
 // its own key, so the base's `_variant` (the record of how the base itself was made) survives untouched
 cfg._trade_variant = {
   name: SFX, base: BASE,
   base_sha256: createHash('sha256').update(baseRaw).digest('hex'),
-  ruled_by: 'user 2026-09-23: "Good. Implement this and go with n=4. Everything except the trade changes are current canon."',
-  delta: 'goods_traded_quantity only (35 goods; the 11 bulk goods, merchant_marine and the untradeable/local goods keep vanilla values)',
-  command: `node tools/make_trade_config.mjs --base ${BASE} --suffix ${SFX}`,
+  ruled_by: RULED_BY ?? 'user 2026-09-23: "Good. Implement this and go with n=4. Everything except the trade changes are current canon."',
+  delta: SCALE === 1
+    ? 'goods_traded_quantity only (35 goods; the 11 bulk goods, merchant_marine and the untradeable/local goods keep vanilla values)'
+    : `goods_traded_quantity only (46 goods: the class table x ${SCALE}, the 11 bulk goods at vanilla x ${SCALE}; merchant_marine and the untradeable/local goods keep vanilla values)`,
+  command: cmd,
 };
 const outCfg = join(REPO, 'config', `mod_config.${SFX}.json`);
 writeFileSync(outCfg, JSON.stringify(cfg), 'utf8');
@@ -102,8 +116,8 @@ const twinSrc = join(REPO, 'config', baseTwin);
 if (!existsSync(twinSrc)) die(`the base's tech-tree twin ${baseTwin} does not exist`);
 copyFileSync(twinSrc, join(REPO, 'config', `tech_tree_options.${SFX}.json`));
 
-console.log(`wrote config/mod_config.${SFX}.json (+ config/tech_tree_options.${SFX}.json from ${baseTwin})`);
+console.log(`wrote config/mod_config.${SFX}.json (+ config/tech_tree_options.${SFX}.json from ${baseTwin})${SCALE !== 1 ? `  — every W x ${SCALE}` : ''}`);
 for (const [k, c] of Object.entries(CLASSES)) {
   console.log(`  ${k} ${c.weight === null ? 'vanilla ' : ('x' + c.weight.toFixed(2)).padEnd(8)} ${c.name}`);
-  console.log('     ' + c.goods.map(g => c.weight === null ? `${g} (W ${G[g].cost * G[g].tq})` : `${g} ${tq[g]} (W ${Math.round(tq[g] * G[g].cost)})`).join(' · '));
+  console.log('     ' + c.goods.map(g => tq[g] === undefined ? `${g} (W ${G[g].cost * G[g].tq})` : `${g} ${tq[g]} (W ${Math.round(tq[g] * G[g].cost)})`).join(' · '));
 }
