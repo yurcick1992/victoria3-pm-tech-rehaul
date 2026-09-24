@@ -289,7 +289,7 @@ hand on a major patch.
      (max / high / low tariffs, no tariffs or subventions, low / high / max subventions) and its meaning:
      `TARIFF_LEVEL_EFFECT_*` / `SUBVENTION_LEVEL_EFFECT_*` in `00_defines.txt`, times each law's `state_tariff_import_add`
      in `common/laws/01_trade_policy.txt` (0.50 under the protective laws, absent under free trade in 1.13.11). F161 §6's
-     "low tariffs = 12.5%" is those numbers multiplied together, so it changes if any of them does. (4) Trade advantage and
+     "low tariffs = 12.5% of base price" is those numbers multiplied together, so it changes if any of them does. (4) Trade advantage and
      local import/export prices were NOT in the 1.13.11 save. If a patch starts persisting them, the importer premium can be
      read directly instead of from producer prices.
    - **`base_values` in `common/static_modifiers/00_code_static_modifiers.txt`** is the engine's always-applied block

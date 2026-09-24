@@ -16962,8 +16962,11 @@ were split by **the import tariff that the country they stand in** sets on their
 
 **How big a tariff can be.** The trade-policy laws carry the tariff RATE (`state_tariff_import_add`): **0.50** under mercantilism,
 protectionism, the Canton system and sakoku, **none at all under free trade**. A good's LEVEL applies a fraction of that rate
-(`TARIFF_LEVEL_EFFECT_LOW` 0.25 / `_HIGH` 0.5 / `_MAXIMUM` 1.0 in `00_defines.txt`). So "low tariffs" is **12.5%** on imports under a
-protective law, and 0 under free trade. That is ln 1.125 = **0.12** in log terms, **less than half** of the +0.30 to +0.37 premium in §4.
+(`TARIFF_LEVEL_EFFECT_LOW` 0.25 / `_HIGH` 0.5 / `_MAXIMUM` 1.0 in `00_defines.txt`). So "low tariffs" is **12.5% of the good's BASE
+price** per unit imported under a protective law, and 0 under free trade. ⚠ CORRECTED 2026-09-24 (the user: tariffs are applied at base
+prices; a first draft read 12.5% of the traded price). Against a good trading at p × base the tariff is 0.125 ÷ p of its price, i.e.
+**0.10–0.15 in log terms** for p between 1.25 and 0.75 — still **about half** of the +0.30 to +0.37 premium in §4. The user's reading
+of the size: tariffs matter less than they should (vanilla undershoots here), and they are not the main factor in this question.
 
 **What the AI actually sets** (every import-tariff entry of every country with GDP at 1936; trade / canon):
 
@@ -17002,8 +17005,8 @@ paper +0.33, tooling +0.32, explosives +0.28 on 3–9 levels each; steel −0.02
 (381 → 710 levels), glass **+0.52 → +0.33**, furniture +0.57 → +0.55. No tariffs: paper +0.36 → +0.32, tooling +0.31 → +0.30,
 arms +1.63 → +0.92 (canon → trade).
 
-⇒ **Tariffs are not what keeps an importer's price up.** High and max tariffs are almost never set. Low tariffs can explain at most 0.12
-of a 0.30 premium. Tariff-free markets carry the same premium. What holds it up is the SUPPLY SIDE: imports into a short market are
+⇒ **Tariffs are not what keeps an importer's price up.** High and max tariffs are almost never set. A low tariff, levied on base price,
+can explain at most 0.10–0.15 of a 0.30 premium. Tariff-free markets carry the same premium. What holds it up is the SUPPLY SIDE: imports into a short market are
 limited by trade capacity and by the importer's trade advantage, so the local shortage sets the local price. **The lever is capacity.**
 Tariffs would only become a lever if the AI started setting high ones, and at 1936 it does not.
 
