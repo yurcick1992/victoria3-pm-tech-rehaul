@@ -2736,13 +2736,15 @@ tools/                  dev tooling — NOT shipped in the mod
                         reload and replay subtracted; `report_perf.mjs` reads it by default (`--wall meta` for the observer's own
                         wall_seconds). Written because meta's wall over-counts crash-prone arms by 1.5–2 min per CTD and a killed-and-
                         continued run carries only its last launch. `wall_from_ticks.mjs <session> [--detail]` prints meta / play / overhead per run
-  testbed/ledger/corpus_extract.mjs + corpus_levers.mjs + corpus_early.mjs + lib_corpus_stats.mjs  ⭐ THE WHOLE RUN CORPUS AT ONCE
+  testbed/ledger/corpus_extract.mjs + corpus_levers.mjs + corpus_early.mjs + corpus_depeasant.mjs + lib_corpus_stats.mjs  ⭐ THE WHOLE RUN CORPUS AT ONCE
                         (2026-09-25, FINDINGS **F165**): the extractor writes one line per usable century run of every four-rung A/B book
                         (and the vanilla controls) — the lever vector from the run's own `_ab`, yearly world / pool / GBR GDP, W, U*, H and
                         the pool's tiered workers by era — to the gitignored `corpus_runs.jsonl` (~20 min for ~170 runs; split the session
                         list over parallel processes). `corpus_levers.mjs` fits every end-state line on the levers, prints the EXCHANGE RATE
                         (GBR U* and the hoard per +10% world GDP, per lever) and leave-one-config-out error; `corpus_early.mjs` says how well
-                        a decade's reading predicts the end state across seeds and across configs. The finding that motivates them: A, B, the
+                        a decade's reading predicts the end state across seeds and across configs; `corpus_depeasant.mjs` fits the YEAR Britain's
+                        U* first crosses 30/20/10/5% (right-censored Tobit; `NO_STUCK=1` drops the stuck-Britain runs), which reads the
+                        levers ~2–3× better than end-state U*. The finding that motivates them: A, B, the
                         cost slope and in0 are one axis for GDP / U* / hoard, Britain's U* is seed-dominated (17 pp within a config), and a
                         config's 1900 world GDP ranks configs at r 0.86 for half the wall clock. ⚠ Runs of one config share a lever vector —
                         read the standard errors as optimistic

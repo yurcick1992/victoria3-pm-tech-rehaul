@@ -17206,7 +17206,7 @@ occur): a cost under ~1–2% of a nine-year run is not resolvable at n=5.
 **What it does NOT say:** anything past 1845 (the trade ×1.5 B ladder, F163, ran with the boost on and read 0.98×
 vanilla over the century, which is consistent but not an A/B); anything about what the boost does to research (F160, F162).
 
-## F165 — THE WHOLE CORPUS AT ONCE: the ladder levers (A, B, cost slope, in0) are ONE AXIS for world GDP, Britain's U* and the hoard — every +10% of world GDP costs Britain ~2.5–3.3 pp of U* and raises the pool's hoard ~×1.27, whichever of them buys it, and the SEED moves runs along the same line (residual r −0.74); Britain's end-state U* is bimodal and seed-dominated (within-config sd 17 pp, 40% of runs under 5%), so it cannot be tuned per config at n=3; a config's 1900 world GDP ranks configs at r 0.86 for half the wall clock (145 mod + 16 vanilla century runs, re-read 2026-09-25, no game time)
+## F165 — THE WHOLE CORPUS AT ONCE: the ladder levers (A, B, cost slope, in0) are ONE AXIS for world GDP, Britain's U* and the hoard — every +10% of world GDP costs Britain ~2.5–3.3 pp of U* and raises the pool's hoard ~×1.27, whichever of them buys it, and the SEED moves runs along the same line (residual r −0.74); Britain's END-STATE U* is a weak reading (within-config sd 17 pp) — the YEAR it crosses 10% / 5% explains ~3× the variance, and the apparent bimodality is timing plus a stuck-Britain failure mode (13 of 145 runs, 0 of 16 vanilla); a config's 1900 world GDP ranks configs at r 0.86 for half the wall clock (145 mod + 16 vanilla century runs, re-read 2026-09-25, no game time)
 
 **Claim.** Pooling every usable century run of the four-rung A/B books since 2026-09-02 into one table (lever vector
 from each run's own config, yearly outcomes from its save summaries) answers two process questions. (1) The scalar
@@ -17261,7 +17261,7 @@ levers that buy GDP also thin the old rung. The slide and in0 lower T0 on their 
 pooled mean — the model adds a little; GBR U* **0.118 against 0.112** and ln pool H 0.916 against 0.937 — it adds
 **nothing**: a config's British unemployment and hoard are not predictable from its levers better than from the average.
 
-### 2. Britain's U* is seed-dominated and bimodal
+### 2. Britain's END-STATE U* is seed-dominated (the apparent bimodality is resolved in §4)
 
 The 80 era-rule runs: Britain's end-state U* is **0–5% in 32, 5–10% in 9, 10–50% in 34, over 50% in 5**. The
 within-config seed sd is **17 pp** (ln world GDP 0.224, ln pool H 0.70, T0 share 0.023). Per config with ≥ 3 runs, e.g.
@@ -17292,11 +17292,41 @@ threshold of ≥ 1.10 catches all 7 and flags 3 others.
 **Wall clock**: the yearly save stamps put 1900 at **0.50–0.56** of a century run's time, 1910 at 0.62–0.67 and 1920 at
 0.76–0.80 (three trade15 runs, two vanilla).
 
+### 4. Depeasantation TIMING reads the levers ~2–3× better than end-state U* (`corpus_depeasant.mjs`, user-proposed)
+
+The user's reading, confirmed: *"the bimodality is just us lumping 'depeasanted by 1935', 'by 1930' and 'by 1925'
+together."* Britain's U* is a monotone descent that reaches a frictional floor (after first crossing 5% only 6% of runs
+climb back above 10%), so an end-state U* mostly says WHERE ON THE DESCENT 1935 fell. Per run, the first year Britain's
+U* crosses a threshold, fitted on the same levers by a right-censored (Tobit) regression — a run that has not crossed by
+1936 is censored, not dropped:
+
+| threshold | crossed (mod / vanilla) | vanilla median year | σ with levers / without | variance explained |
+|---|---|---|---|---|
+| 30% | 123/145 / 15/16 | 1893 | 17.7 / 19.4 y | 0.17 |
+| 20% | 113/145 / 15/16 | 1903 | 14.2 / 16.2 y | 0.23 |
+| 10% | 89/145 / 14/16 | 1915 | 11.7 / 14.0 y | **0.31** |
+| 5% | 64/145 / 12/16 | 1919 | 11.1 / 13.9 y | **0.37** |
+| end-state U* (OLS) | | | 16.6 pp | 0.10 |
+
+At the 10% line, per step: B 1.58 → 1.64 **+5.2 years** later; A 2.0 → 2.2 **−14.7**; cost slope 1.9 → 2.05 **+5.0**;
+trade 0 → 1 **−12.4** (t −3.3); spending set and slide nothing. Per +10% world GDP bought (with §1's GDP coefficients),
+Britain crosses 10% earlier by: A 3.5 y · cost slope 4.0 y · trade 4.1 y · B 5.4 y · in0 6.2 y — **the levers still trade
+GDP against depeasantation at similar rates**; trade is no longer the cheap one on this reading.
+
+⭐ **The REAL second mode is a stuck Britain, not a depeasanted one.** 13 of 145 runs keep Britain at U* ≥ 45% in every
+decade 1900–1936, and **0 of 16 vanilla runs do**. They are British stalls: Britain's end-state GDP 0.34–0.79 of vanilla
+against 1.71 for the other runs, world GDP 0.37–0.82, population 51–80M against 79M. Eleven are in books up to 2026-09-16;
+two are recent (canon-slide-b158-trade run 2, trade15-b164 run 2). **Not separable early**: at 1900 their U* (53–74%)
+overlaps 19 of the other 132 runs, at 1880 52 of them. Without them the end-state U* reading improves to R² 0.21 (resid
+10.5 pp) and the timing at 10% to 0.35 (σ 10.6 y) — the timing still carries ~1.7× the signal, and the within-config
+seed spread of the crossing year is still ~10 years (canon-c19-in12: never / 1923 / 1921 / 1934).
+
 **What it says for the process.** (a) Tuning the scalar ladder levers places a book on one GDP–employment–hoard line;
 no combination of them leaves it. The line itself passes close to both aims at once: B 1.58's 0.87 / 22% plus 15%
 of world GDP reads ~18% on it, so the aims are not in conflict on this axis — but the seed spread around the line is wider
 than the distance left to walk along it. (b) Britain's U* can be read
-only as a distribution pooled over many runs, never as a per-config pass/fail at n=3. (c) A sweep truncated at 1900 ranks
+only as a distribution pooled over many runs, never as a per-config pass/fail at n=3 — and it should be read as a
+DEPEASANTATION YEAR (§4), with the stuck-Britain mode counted separately as a failure rate. (c) A sweep truncated at 1900 ranks
 configs on world GDP and the hoard at about half the cost; it cannot rank them on U* or the old rung.
 (d) A runoff stop at 1910 (≥ 1.10 of vanilla) would have ended all seven runoffs early at three false stops.
 
