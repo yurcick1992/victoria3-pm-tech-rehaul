@@ -17102,3 +17102,70 @@ tick), not when its COST FALLS to the banked progress.**
 20 pairs, and the arms also differ in B and trade ×1.5, both of which change how fast countries research.
 **What it does NOT say:** the mechanism behind case (b); why intensive agriculture waits even in case (a); the boost's effect on the
 58% of pairs that never meet the condition.
+
+## F163 — THE TRADE ×1.5 B LADDER: world GDP falls with B at −3.6 per unit ln B and crosses 1.0 near B 1.70; the HOARD is B's clearest effect; B 1.64 scores the lowest loss of any book; the extra trade weight bought almost no extra trade; no steady speed cost (12 runs of 1836→1936, 2026-09-24/25)
+
+**Why it ran.** ROADMAP step 11. The trade weights (F161) took world GDP from 0.87 to 1.13 and broke one run of four by runoff. The finish
+boost was then restored to the canon (`edd69ff`), and the user raised trade across the board ("OK on general trade correction volume") and
+asked for a B ladder with C fixed at 1.9: *"Go. In linear order, start with 1.64 on B and go up 0.04 each batch."* The user's framing:
+B and C raises cost GDP and obsolescence but dampen runoff.
+
+**Arm.** `{kind: config}`, session `20260924_101627_trade15-bladder-n12`, four books `config/mod_config.trade15-b1{64,68,72,76}.json`:
+the canon (A 2.2, C 1.9, in0 1.2, the anchor slide, the mild spending set, the 24-month bar, the urban-centre override, the finish boost)
+regenerated at each B, plus `make_trade_config --scale 1.5` (every good's trade weight ×1.5 on F159 §7's class table, bulk included).
+Three runs per B, fixed-n. References: the trade batch (F161, B 1.58, trade ×1, no boost), the canon's seeds (F158), vanilla n=16.
+
+| B | run | world GDP ÷ van | Britain U\* (1932–36) | shortlist productive ÷ workforce | trade % of world GDP | pop-goods prices ÷ van (wage units) | input prices ÷ van | T0 ÷ rest | pool H ÷ van | Britain H 1936 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1.64 | 1 | 1.11 | 1.7% | 52.7% | 14.3% | 0.71 | 0.87 | 0.010 | 1.89 | 1.12 |
+| 1.64 | 2 | 0.74 | 53.0% | 37.2% | 13.8% | 0.87 | 0.99 | 0.022 | 0.91 | 0.06 |
+| 1.64 | 3 | 1.16 | 1.5% | 49.7% | 8.2% | 0.82 | 0.86 | 0.010 | 2.62 | 1.43 |
+| 1.68 | 4 | 1.07 | 4.6% | 63.8% | 12.6% | 0.90 | 0.96 | 0.057 | 0.69 | 0.44 |
+| 1.68 | 5 | 1.26 | 3.5% | 60.1% | 12.2% | 1.03 | 0.91 | 0.013 | 2.46 | 1.42 |
+| 1.68 | 6 | 1.36 | 1.0% | 67.3% | 13.3% | 1.17 | 0.96 | 0.009 | 1.10 | 1.03 |
+| 1.72 | 7 | 0.99 | 4.5% | 61.2% | 13.8% | 1.14 | 0.95 | 0.020 | 1.33 | 0.76 |
+| 1.72 | 8 | 1.05 | 0.9% | 59.8% | 14.0% | 1.11 | 0.97 | 0.017 | 0.54 | 0.33 |
+| 1.72 | 9 | 0.66 | 34.9% | 35.0% | 8.1% | 0.93 | 1.02 | 0.083 | 0.55 | 0.39 |
+| 1.76 | 10 | 1.03 | 9.3% | 61.5% | 17.3% | 0.70 | 0.90 | 0.010 | 0.85 | 0.46 |
+| 1.76 | 11 | 0.69 | 30.2% | 35.6% | 13.0% | 1.22 | 0.97 | 0.042 | 0.24 | 0.10 |
+| 1.76 | 12 | 0.76 | 23.0% | 53.2% | 12.3% | 0.91 | 0.96 | 0.010 | 1.07 | 0.46 |
+
+Vanilla n=16 medians: Britain U\* 1.7% (end state); shortlist productive ÷ workforce 73.8%; trade 7.6–8.1% of GDP at these GDPs;
+Britain H 0.88 at 1936.
+
+**1. All twelve intact; four weak seeds.** No hard break (the trade batch broke 1 of 4 by runoff). Weak seeds (world GDP ≤ 0.76) come
+1 / 0 / 1 / 2 by B. Run 9 sits exactly on the 0.66 world-product floor; its U\* and H readings are absent, and those of runs 2, 11 and 12
+are weakened (§10.83.8).
+
+**2. The register (consensus loss, lower is better):** B 1.64 **3.58**, the lowest of any book measured (the canon 4.91) · B 1.72 7.38,
+pop-goods prices beyond the soft line · B 1.68 8.86 · B 1.76 10.03, world and pool GDP beyond the soft line. The ranking is directional
+(the σ of one run's loss is ~6.6, §10.83.7).
+
+**3. Slopes pooled over the twelve runs** (per unit ln B; leave-one-out range; directional under §10.83.7):
+- **World GDP −3.60** (r −0.43; −5.71..−2.65, sign stable) — near F158's −4.47 on the book without trade. The fit crosses 1.0 near
+  **B 1.70**. Medians by B: 1.11 / 1.27 / 0.99 / 0.76.
+- **Pool H −16.5** (r −0.60; −21.4..−11.8, stable) — **the clearest B effect**: −0.40 of vanilla's hoard ratio per +0.04 of B.
+  Britain's own hoard at 1936 is 0.06–1.43 of its GDP; the soft "near capital abundance" flag hits Britain in 2 / 2 / 1 / 0 runs by B.
+- **Pop-goods prices +1.92** (r 0.30; 0.85..3.73, stable) and **input prices +0.64** (r 0.37; 0.27..1.04, stable): higher B weakens the
+  price decline. The mechanism is understood: a higher B gives every upper rung more input value per unit of output.
+- **T0 ÷ rest +0.15** (r 0.18; 0.06..0.26, stable): the old rung slightly stronger at higher B.
+- **Britain's U\* shows no B relation** (r 0.11, sign flips). Britain is fully employed (0.9–4.6%) in every non-weak seed up to B 1.72;
+  B 1.76's run 10 held 7.4–11.9% from 1926 to 1936.
+
+**4. Trade ×1.5 bought almost no extra trade.** Median trade is 13.2% of world GDP against the trade batch's 12.8% (×1.03), still ×1.7–2.2
+vanilla's at the same GDP. The AI appears to answer a higher volume per unit of capacity with less capacity (F161 §1 saw fewer trade centres
+while price gaps closed). Run 3's 8.2%: Britain held **0.4k** units of trade capacity under protectionism, against 7.6k and 15.0k in runs 1
+and 10; world capacity was 26k against 44–53k, and trade-centre levels 4,221 against 5,000–5,400.
+
+**5. Wall clock (graded on the total; modelled cost as the diagnostic).** Median play **163 min = 0.98× vanilla** (range 141–190).
+Actual ÷ modelled cost (F72) **1.08× vanilla's** (the trade batch 1.06, the canon 1.09); by B **1.16 / 1.20 / 1.09 / 1.02**. The mid-batch
+reading of +11–20% (runs 1–8) came from the first two B sets; B 1.76 also ran the finish boost and reads 1.02. So the boost carries no
+steady speed cost that this batch can see; a paired probe would still be needed to rule out a small one.
+
+**6. Instrument.** L28 fired on the `error.log` mirrors of runs 6 and 11 only; the telemetry mirrors are clean. Run 5 crashed twice and
+resumed, one campaign (L26 / L32 / L34 PASS). The finish gap of F162 was measured on runs 1–3.
+
+**Confidence:** high that no run broke and that the hoard falls with B; directional for the GDP, price and old-rung slopes (n = 3 per B,
+r 0.2–0.6); weak for the per-B medians (adjacent B steps are inside the seed spread).
+**What it does NOT say:** what separates the trade ×1.5 from the finish boost (both constant across the ladder); whether a B near 1.70
+behaves as the fit predicts (untested); why the AI builds less trade capacity when each unit carries more.
