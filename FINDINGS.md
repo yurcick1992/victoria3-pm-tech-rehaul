@@ -17364,6 +17364,9 @@ only as a distribution pooled over many runs, never as a per-config pass/fail at
 DEPEASANTATION YEAR (§4), with the stuck-Britain mode counted separately as a failure rate. (c) A sweep truncated at 1900 ranks
 configs on world GDP and the hoard at about half the cost; it cannot rank them on U* or the old rung.
 (d) A runoff stop at 1910 (≥ 1.10 of vanilla) would have ended all seven runoffs early at three false stops.
+⚠⚠ **RULED 2026-09-25 (user): "Unconvincing. Full runs it still is."** (c), (d) and §5's "does not need runs to reach
+1936" are NOT adopted: batches keep playing 1836 → 1936, and the standing stop rules are unchanged. The measurements
+stand as measurements; they are not a licence to truncate.
 
 **What it does NOT say.** The standard errors treat runs as independent, but runs of one config share a lever vector
 (effective n nearer 42 than 145), so the stars are optimistic. Levers changed together over the project's history (the
