@@ -223,7 +223,10 @@ ledgers of 2026-09-13 (phase 1, phase 2, the §10.77 book) were rebuilt this way
 1. Run the three data scripts against the batch (now parameterized: `--session <name>` on analyse_gdp_gap, `--mod <sess/run[,sess/run]>` on report_data + report_data2, **`--van` / `--nb` `<sess/run[,...]>` on both since 2026-08-24** — the vanilla-baseline and reference-arm run lists, so a fill can point at the n=18 ensemble instead of the pinned n4 — `--config <arm config>` for the arm cost book, `--out <dir>`; defaults reproduce the flatcost-n1 fill. Historical note - they were hardcoded to
    `20260815_153825_flatcost-n1` + the `20260813_083557` vanilla baseline — parameterize or edit the
    consts at the top; a proper `--session` flag is the known TODO):
-   - `analyse_gdp_gap.mjs` — the world trajectory series (GDP, levels, construction points, labour).
+   - `analyse_gdp_gap.mjs` — the world trajectory series (GDP, levels, construction points, labour). ⚠ It reads EVERY run of
+     `--session`, so a multi-config session needs **`--setup <name>`** (2026-09-25; the trade ×1.5 B ladder holds four books in one
+     session). The other session-level scripts take the same flag (`fill_tierchoice`, `fill_obsolescence`); `report_perf` takes the
+     arm's RUN folders instead of the session; the rest take explicit `--mod` run lists.
    - `report_data.mjs` — era stocks/additions, paybacks, frontier share, panel GDP.
    - `report_data2.mjs` — the per-country dataset (yearly GDP both arms, labour, tier employment,
      anomaly flags) → `report_data2.json`.
@@ -253,7 +256,10 @@ ledgers of 2026-09-13 (phase 1, phase 2, the §10.77 book) were rebuilt this way
 3. Splice the per-country JSON over the `__D2__` token:
    `node -e "...readFileSync(tpl).replace('__D2__', readFileSync('report_data2.json'))..."`
 4. Publish as an Artifact (same URL = same report, updated) AND copy to the session folder as
-   `REPORT.html` — the annotation lives with the data.
+   `REPORT.html` — the annotation lives with the data (`REPORT_<setup>.html` when the session holds several configs).
+   To eyeball it before publishing, the preview config **`ledger`** in `.claude/launch.json` serves this folder read-only on
+   port 8792 (`http://localhost:8792/out_<name>/REPORT.html`): the report is too large for the browser pane's file view, and the
+   pane is not signed in to claude.ai, so the published URL cannot be checked from it.
 
 The vanilla baseline stays pinned to `20260813_083557` (n=4) until a game patch breaks comparability.
 Collection routes for every metric, including the v13 additions (state_access, construction_queue,
@@ -521,6 +527,12 @@ legitimate way to lower it. An earlier pass hedged the pill to `no slowdown`, de
 reading that graded on the pop-matched figure; that reading is corrected and the template was right
 all along. The pop-matched number sits beside it as the **per-unit diagnostic** — it answers "is the
 engine dearer per unit of work?", not "did the batch pass?".
+
+⚠ **The sentence under the per-unit number says WHY the total differs, and it is DERIVED (2026-09-25).** It used to read "most
+of the extra time is a bigger world, not a dearer engine" on every batch — true of the batch it was written on, and printed on
+trade15-b164 beside ×0.97 the live pops and +6.9% of a +8.5% total, i.e. the opposite. It now compares the two numbers: when the
+per-unit figure carries at least half of the total with the same sign, the gap is a dearer (or cheaper) engine; otherwise it is the
+size of the world. Reports assembled before that date carry the old fixed sentence.
 
 ⚠ **`fill_tokens.mjs` hardcodes `__HEALTH__`, and that is a staleness trap.** It carried
 `P −2.9% PASS` from an older batch and would have been republished under a later one had the out-dir

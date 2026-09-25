@@ -42,7 +42,10 @@ const costOf = (k, isMod) => {
   return 400; // fallback for unknown keys
 };
 
-const runs = readdirSync(SESSION).filter(d => /^run\d+_/.test(d));
+// --setup <name>: keep only runNNN_<name> — a multi-config session (the trade ×1.5 B ladder holds four) must name its arm
+const SETUP = (() => { const i = argsG.indexOf('--setup'); return i >= 0 && argsG[i + 1] ? argsG[i + 1] : null; })();
+const runs = readdirSync(SESSION).filter(d => /^run\d+_/.test(d) && (!SETUP || d.replace(/^run\d+_/, '') === SETUP));
+if (SETUP && !runs.length) { console.error(`no run of setup ${SETUP} in ${SESSION}`); process.exit(1); }
 const rows = [];
 for (const run of runs) {
   // a run is the MOD arm unless its setup name says vanilla/control (run001_vancost_nosub is mod)

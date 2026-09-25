@@ -17161,6 +17161,9 @@ and 10; world capacity was 26k against 44–53k, and trade-centre levels 4,221 a
 Actual ÷ modelled cost (F72) **1.08× vanilla's** (the trade batch 1.06, the canon 1.09); by B **1.16 / 1.20 / 1.09 / 1.02**. The mid-batch
 reading of +11–20% (runs 1–8) came from the first two B sets; B 1.76 also ran the finish boost and reads 1.02. So the boost carries no
 steady speed cost that this batch can see; F164's paired probe (a peer session, the same day) found none either.
+Read per arm (the B 1.64 ledger, 2026-09-25): **B 1.64 alone is +8.5% in total** (179.0 against vanilla's 164.9 min, medians) and
+**+6.9% per unit of work** pop-matched (14/14 bins), at ×0.97 vanilla's live pops and ×0.84 its levels — inside the 10% budget, and
+"needs improvement" on the ledger's ≤5 / 5–15 / >15 scale. The batch-wide 0.98× pools the four arms.
 ⭐ **Canonised 2026-09-25 at trade ×1 and B 1.64** (user: *"Canonize trade x1, B 1.64."*): `config/mod_config.canon-b164-trade.json`,
 BALANCE_FRAMEWORK §10.88. That exact combination has not run; this ladder and F161 are its evidence.
 

@@ -22,6 +22,15 @@
         "tools/serve_ui2.mjs"
       ],
       "port": 8791
+    },
+    {
+      "name": "ledger",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "-e",
+        "const h=require('http'),f=require('fs'),p=require('path');const R=p.resolve('tools/testbed/ledger');h.createServer((q,s)=>{const r=decodeURIComponent(q.url.split('?')[0]).replace(/^\\/+/,'');const x=p.resolve(R,r||'.');if(!x.startsWith(R)||!f.existsSync(x)||!f.statSync(x).isFile()){s.writeHead(404);return s.end('not found')}s.writeHead(200,{'content-type':x.endsWith('.html')?'text/html; charset=utf-8':'application/octet-stream'});s.end(f.readFileSync(x))}).listen(8792)"
+      ],
+      "port": 8792
     }
   ]
 }

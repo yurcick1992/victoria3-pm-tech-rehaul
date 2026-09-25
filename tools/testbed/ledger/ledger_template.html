@@ -206,6 +206,12 @@ function renderPerf(mode){
   document.getElementById('v-perf').innerHTML='<b>'+spd(pctTotal)+'</b>'+
     ' <span class="dim">total</span><br><span class="dim" style="font-size:12px">'+spd(pct)+' per unit</span>';
   document.getElementById('v-perfpill').innerHTML='<span class="pill '+cls+'">'+lab+'</span>';
+  // WHY the total differs is DERIVED from the two numbers, never written: this sentence used to say "a bigger world,
+  // not a dearer engine" on every batch, and printed it beside ×0.97 the pops and +6.9% per unit (trade15-b164, 2026-09-25).
+  const why=(Math.abs(pctTotal)<1&&Math.abs(pct)<1)?'the two arms cost about the same at every size'
+    :(Math.sign(pct)===Math.sign(pctTotal)&&pct/pctTotal>=0.5)
+      ?'most of the '+(pctTotal>0?'extra':'saved')+' time is per unit of work &mdash; a <b>'+(pctTotal>0?'dearer':'cheaper')+' engine</b>, not the size of the world'
+      :'most of the '+(pctTotal>0?'extra':'saved')+' time is the <b>'+(pr>=1?'bigger':'smaller')+' world</b>, not the cost per unit of work';
   document.getElementById('perf-head').innerHTML=
     '<div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">'+
       '<div style="flex:1 1 260px"><div class="eyebrow">THE GRADE &mdash; total run time</div>'+
@@ -215,8 +221,8 @@ function renderPerf(mode){
       '<div style="flex:1 1 290px"><div class="eyebrow">Per unit of work &mdash; pop-matched</div>'+
         '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--ink2);margin:6px 0">'+spd(pct)+'</div>'+
         '<div class="small">At equal live pop objects ('+PERF.overlapping+' overlapping bins). The <b>fair arm-vs-arm</b> figure, '+
-        'and the gap to the total is the point: the mod ended with <b>&times;'+pr.toFixed(2)+'</b> the live pop objects, so most of '+
-        'the extra time is a <b>bigger world</b>, not a dearer engine. Both are real \u2014 the player pays the total.</div></div>'+
+        'and the gap to the total is the point: the mod ended with <b>&times;'+pr.toFixed(2)+'</b> the live pop objects, so '+
+        why+'. Both are real \u2014 the player pays the total.</div></div>'+
     '</div>';
 
   const yrs=Object.keys(PERF.byYear.van).map(Number).filter(y=>PERF.byYear.mod[y]!=null).sort((x,y)=>x-y);
