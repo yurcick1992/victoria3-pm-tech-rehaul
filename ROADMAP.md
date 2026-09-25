@@ -2135,6 +2135,12 @@ ladder at all**, which is what these two are.
    importing markets). ⇒ OPEN, for the user: scale the weights back, absorb them with B, or add the tech finishing first; and
    the tracking plan agreed 2026-09-24 (save summary v11 with each country's trade-policy law, a ledger panel "obsolescence —
    in-market vs trade") before deciding whether uniform trade capacity is the next lever.
+   ✅ **DONE 2026-09-24/25:** v11 and the ledger panel shipped; tariffs do not hold the importer premium (F161 §6); the finish boost
+   restored (F160, F162; no wall-clock cost, F164). The trade ×1.5 B ladder (F163) put B 1.64 lowest on the register and showed ×1.5
+   buying only ×1.03 the trade of ×1. ⭐ **CANONISED 2026-09-25: trade ×1 at B 1.64 with the finish boost** (BALANCE_FRAMEWORK §10.88).
+   ⇒ **OPEN:** (1) a century batch on the canon itself (the combination is unmeasured); (2) the consumer-chain old rungs still pay
+   (87–93% of their levels profitable, F163); (3) Britain fully employed in most seeds, with no B relation; (4) uniform trade weight
+   is absorbed by less trade capacity, so price convergence needs another lever (trade capacity itself?).
 
 ### ⭐⭐ THESE TWO ARE NOT LEVERS UNDER EVALUATION — THEY GO IN FOR THEIR OWN REASONS, AND THAT DICTATES WHERE WE START FROM
 

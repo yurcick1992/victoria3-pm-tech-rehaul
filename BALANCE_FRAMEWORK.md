@@ -8654,3 +8654,18 @@ price indices the day a vanilla baseline carries them, and not before — an owe
 **Measured effect on the register**, on the one intact run of the anchor-slide arm: pool H 3.49 → 3.54, pool GDP 1.23 → 1.21,
 loss 5.50 → 5.53. The ARM's own numbers did not move; VANILLA's pool reference did, because it now counts the Low Countries
 in the two seeds where they had unified.
+
+## §10.88 — THE CANON IS TRADE ×1 AT B 1.64, WITH THE FINISH BOOST (user-ruled 2026-09-25)
+
+**The ruling:** *"Canonize trade x1, B 1.64. The research wall clock overhead is solved elsewhere, it's zero."*
+
+1. **The book** (`config/mod_config.canon-b164-trade.json`, copied to `config/mod_config.json`): `canon-slide-b158` regenerated at B 1.64,
+   the finish boost on, plus F159 §7's per-good trade table at ×1. The tech tree is the previous canon's, byte for byte.
+2. **Why these two levers:** F161 showed the trade table doubling trade and lifting world GDP 0.87 → 1.13 at B 1.58. F163's ladder (trade
+   ×1.5, B 1.64–1.76) put B 1.64 lowest on the register (3.58), with the old rung's share of the higher rungs a third of the previous canon's
+   and the price decline equal to it. ×1.5 bought only ×1.03 the trade of ×1, so the scale stays at 1.
+3. **The trade-off the user named**, on F163's pooled slopes: raising B or C costs GDP and obsolescence and dampens runoff. The hoard
+   is B's clearest effect (pool H −16.5 per unit ln B); prices and the old rung move the wrong way with B (directional).
+4. **The finish boost stays:** F164 measured no wall-clock cost, and F163's modelled-cost reading (1.08× vanilla, the previous batches
+   1.06–1.09) agrees. Its completion behaviour is as ruled on 2026-09-24 (F162): it acts at the AI's next research choice; no completion tick.
+5. **Unmeasured as a combination:** trade ×1 at B 1.64 with the boost has not run; F163's slope places it near world GDP 1.05–1.1.

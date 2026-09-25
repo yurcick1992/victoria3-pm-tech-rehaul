@@ -17160,7 +17160,9 @@ and 10; world capacity was 26k against 44–53k, and trade-centre levels 4,221 a
 **5. Wall clock (graded on the total; modelled cost as the diagnostic).** Median play **163 min = 0.98× vanilla** (range 141–190).
 Actual ÷ modelled cost (F72) **1.08× vanilla's** (the trade batch 1.06, the canon 1.09); by B **1.16 / 1.20 / 1.09 / 1.02**. The mid-batch
 reading of +11–20% (runs 1–8) came from the first two B sets; B 1.76 also ran the finish boost and reads 1.02. So the boost carries no
-steady speed cost that this batch can see; a paired probe would still be needed to rule out a small one.
+steady speed cost that this batch can see; F164's paired probe (a peer session, the same day) found none either.
+⭐ **Canonised 2026-09-25 at trade ×1 and B 1.64** (user: *"Canonize trade x1, B 1.64."*): `config/mod_config.canon-b164-trade.json`,
+BALANCE_FRAMEWORK §10.88. That exact combination has not run; this ladder and F161 are its evidence.
 
 **6. Instrument.** L28 fired on the `error.log` mirrors of runs 6 and 11 only; the telemetry mirrors are clean. Run 5 crashed twice and
 resumed, one campaign (L26 / L32 / L34 PASS). The finish gap of F162 was measured on runs 1–3.
