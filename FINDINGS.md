@@ -17205,3 +17205,103 @@ occur): a cost under ~1–2% of a nine-year run is not resolvable at n=5.
 
 **What it does NOT say:** anything past 1845 (the trade ×1.5 B ladder, F163, ran with the boost on and read 0.98×
 vanilla over the century, which is consistent but not an A/B); anything about what the boost does to research (F160, F162).
+
+## F165 — THE WHOLE CORPUS AT ONCE: the ladder levers (A, B, cost slope, in0) are ONE AXIS for world GDP, Britain's U* and the hoard — every +10% of world GDP costs Britain ~2.5–3.3 pp of U* and raises the pool's hoard ~×1.27, whichever of them buys it, and the SEED moves runs along the same line (residual r −0.74); Britain's end-state U* is bimodal and seed-dominated (within-config sd 17 pp, 40% of runs under 5%), so it cannot be tuned per config at n=3; a config's 1900 world GDP ranks configs at r 0.86 for half the wall clock (145 mod + 16 vanilla century runs, re-read 2026-09-25, no game time)
+
+**Claim.** Pooling every usable century run of the four-rung A/B books since 2026-09-02 into one table (lever vector
+from each run's own config, yearly outcomes from its save summaries) answers two process questions. (1) The scalar
+ladder levers do not move the register's three contested lines independently: they trade world GDP against Britain's
+unemployment and the hoard at nearly the same rate. (2) An early reading predicts the end state well enough to rank
+CONFIGS by 1900, but not to classify a single SEED as a stall before 1920.
+
+**Data.** `tools/testbed/ledger/corpus_extract.mjs` over every session from 20260902 on plus the vanilla n=16 baseline
+(`20260821_131149`): 145 mod runs over 42 configs (80 runs / 31 configs since the era rule, 20260913), lib_runs' usable
+rule, until ≥ 1936, ≥ 80 yearly summaries. End state = the 1932–36 mean ÷ the vanilla n=16 median of the same window
+(as the register). U* includes peasants; H = pool ÷ GDP; T0 share = the pool's era-0 rung workers ÷ e1–e3.
+Lever encoding: ln A; effective ln B and ln C (a per-era ladder as its top step's geometric mean; flat cost ln C = 0);
+in0; ln of the ai_value per-era ratio; the spending CRITICAL threshold (0.75 vanilla / 0.9 / 1.0 mild / 1.25 eager);
+trade scale (0 / 1 / 1.5); the anchor slide; the finish boost; the research bar months.
+
+### 1. The pooled lever model (`corpus_levers.mjs`, OLS, run level)
+
+All 145 runs (R² 0.37 on ln world GDP, residual sd 0.258 against a within-config seed sd of 0.224):
+
+| lever | ln world GDP | GBR U* | ln pool H | T0 share |
+|---|---|---|---|---|
+| ln A | +4.16 ± 0.67 | −1.07 ± 0.43 | +12.1 ± 2.0 | −0.14 ± 0.07 |
+| ln B | −2.47 ± 0.36 | +0.70 ± 0.23 | −4.96 ± 1.06 | +0.15 ± 0.04 |
+| ln C | −1.58 ± 0.33 | +0.53 ± 0.21 | −3.98 ± 0.98 | +0.08 ± 0.04 |
+| in0 | −1.08 ± 0.43 | +0.55 ± 0.28 | −4.09 ± 1.28 | −0.12 ± 0.05 |
+| spending CRITICAL | −0.15 ± 0.26 | +0.14 ± 0.17 | **−2.86 ± 0.78** | −0.03 ± 0.03 |
+| trade scale | +0.29 ± 0.14 | +0.04 ± 0.09 | +0.52 ± 0.42 | −0.02 ± 0.02 |
+| anchor slide | −0.07 ± 0.07 | −0.04 ± 0.04 | −0.32 ± 0.20 | −0.013 ± 0.007 |
+| finish boost, bar months, ai_value ratio | inside their errors on every line | | | |
+
+**The exchange rate** — Britain's U* change and the hoard's factor per +10% world GDP bought with a lever:
+
+| lever | all 145 runs | the 80 era-rule runs (since 20260913) |
+|---|---|---|
+| A | −2.5 pp · H ×1.32 | −3.0 pp · H ×1.31 |
+| B | −2.7 pp · H ×1.21 | −2.5 pp · H ×1.28 |
+| cost slope | −3.2 pp · H ×1.27 | −3.3 pp · H ×1.26 |
+| in0 | −4.8 pp · H ×1.44 | −5.0 pp · H ×1.52 |
+| trade | +1.1 pp (U* t 0.4) · H ×1.19 | −1.8 pp (U* t −1.2) · H ×1.23 |
+
+⭐ A, B and the cost slope are **interchangeable** on these three lines — the same GDP bought from any of them costs the
+same U* and the same hoard, within their errors. in0 is the dearest. **Trade is the only lever that reads cheaper**, and
+it is not established: the sign of its U* effect flips between the two samples and rests on 16 runs of two trade books.
+⭐ **The seed runs along the same line**: the residuals of ln world GDP correlate −0.74 with Britain's U* and +0.72 with
+ln pool H. A richer seed is a more employed and more hoarding seed exactly as a richer lever setting is.
+⭐ **The spending set is the one lever that moves the hoard without GDP**: CRITICAL −2.9 ln H per unit (1.0 → 1.25 cuts
+the hoard ×0.49) at no measurable GDP or U* effect — F132's reading, now pooled.
+⭐ **Obsolescence goes WITH GDP, not against it**: T0 share falls with A and rises with B and the cost slope, so the
+levers that buy GDP also thin the old rung. The slide and in0 lower T0 on their own (in0 at a GDP cost).
+
+**Leave-one-config-out** (fit on 41 configs, predict the 42nd's mean): ln world GDP rmse **0.292** against 0.334 for the
+pooled mean — the model adds a little; GBR U* **0.118 against 0.112** and ln pool H 0.916 against 0.937 — it adds
+**nothing**: a config's British unemployment and hoard are not predictable from its levers better than from the average.
+
+### 2. Britain's U* is seed-dominated and bimodal
+
+The 80 era-rule runs: Britain's end-state U* is **0–5% in 32, 5–10% in 9, 10–50% in 34, over 50% in 5**. The
+within-config seed sd is **17 pp** (ln world GDP 0.224, ln pool H 0.70, T0 share 0.023). Per config with ≥ 3 runs, e.g.
+canon-c19-in12 20.3 / 5.6 / 0.8 / 12.0 · trade15-b164 1.7 / 53.0 / 1.5 · canon-je24-a22-in12 29.7 / 3.5 / 64.5 ·
+probe-sm-b158 22.2 / 12.1 / 24.8. With 42% of runs inside the 10–50% band, three of three inside it happens by chance
+**~8%** of the time for any config — B 1.58's 3/3 (the reason it was canonized over its neighbours) is inside what luck
+gives across five B points. The lever effects above are a few pp per 10% GDP: an order of magnitude under one seed's spread.
+
+### 3. Early readings (`corpus_early.mjs`)
+
+World GDP ÷ vanilla at year Y against the end state (ln–ln r):
+
+| year | all runs | within a config (seed) | between configs (means, n ≥ 2) | seed variance explained |
+|---|---|---|---|---|
+| 1860 | 0.36 | 0.43 | 0.42 | 0.18 |
+| 1880 | 0.59 | 0.56 | 0.70 | 0.31 |
+| 1890 | 0.71 | 0.70 | 0.81 | 0.50 |
+| **1900** | 0.80 | 0.75 | **0.86** | 0.56 |
+| 1910 | 0.89 | 0.83 | 0.93 | 0.68 |
+| 1920 | 0.95 | 0.92 | 0.97 | 0.85 |
+
+Vanilla's own sixteen: 0.61 at 1870, 0.72 at 1880, 0.88 at 1900, 0.92 at 1920. Britain's U* at 1900 against its end
+state: r 0.69 (within config 0.71); at 1910 0.80. Early GDP predicts the end-state HOARD (1900: r 0.88) but hardly U*
+(−0.40) or T0 share (−0.20).
+**Screening one seed**: of 145 runs 26 end as stalls (< 0.66) and 7 as runoffs (> 1.38). A 1900 threshold that catches
+every stall (≤ 0.81) also flags 57 healthy runs; at 1920 (≤ 0.71) 16. **Runoffs are catchable early**: at 1910 a
+threshold of ≥ 1.10 catches all 7 and flags 3 others.
+**Wall clock**: the yearly save stamps put 1900 at **0.50–0.56** of a century run's time, 1910 at 0.62–0.67 and 1920 at
+0.76–0.80 (three trade15 runs, two vanilla).
+
+**What it says for the process.** (a) Tuning the scalar ladder levers places a book on one GDP–employment–hoard line;
+no combination of them leaves it. The line itself passes close to both aims at once: B 1.58's 0.87 / 22% plus 15%
+of world GDP reads ~18% on it, so the aims are not in conflict on this axis — but the seed spread around the line is wider
+than the distance left to walk along it. (b) Britain's U* can be read
+only as a distribution pooled over many runs, never as a per-config pass/fail at n=3. (c) A sweep truncated at 1900 ranks
+configs on world GDP and the hoard at about half the cost; it cannot rank them on U* or the old rung.
+(d) A runoff stop at 1910 (≥ 1.10 of vanilla) would have ended all seven runoffs early at three false stops.
+
+**What it does NOT say.** The standard errors treat runs as independent, but runs of one config share a lever vector
+(effective n nearer 42 than 145), so the stars are optimistic. Levers changed together over the project's history (the
+slide arrived with the mild spending set; trade 1.5 only with the finish boost), so those are only partly separable. The
+model is linear in ln levers and U* is bounded and bimodal, so the U* coefficients are averages over two regimes. Nothing
+here measures a mechanism; the one-axis reading is about these levers only, not about levers not yet tried.
