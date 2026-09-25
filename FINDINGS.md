@@ -17373,3 +17373,74 @@ stand as measurements; they are not a licence to truncate.
 slide arrived with the mild spending set; trade 1.5 only with the finish boost), so those are only partly separable. The
 model is linear in ln levers and U* is bounded and bimodal, so the U* coefficients are averages over two regimes. Nothing
 here measures a mechanism; the one-axis reading is about these levers only, not about levers not yet tried.
+
+## F166 — THE STUCK-BRITAIN RUNS ARE F108's BRITISH STALL, STILL PRESENT AT ~5% ON THE CURRENT BOOK FAMILY: Britain's construction sector shrinks after an early peak and never regrows, and its private pool never forms (£11M at 1935 against £462M in the other mod runs and £333M in vanilla); an early British revolt raises the risk ×5, but vanilla recovers from the same shocks every time (0 of 8) and a third of the stuck runs had no shock at all; at 1880 the stuck and the recovered shocked Britains are indistinguishable (145 mod + 16 vanilla century runs, re-read 2026-09-26, no game time)
+
+**Claim.** The 13 runs of F165 §4 in which Britain's U* stays ≥ 45% in every decade 1900–1936 (0 of 16 vanilla runs) are
+one failure mode, the one F108 described on the canon-je24 books: Britain never builds the capital to industrialise. It
+has not gone away: 7 of 65 runs before the era rule, 4 of 40 in the era-rule books of 09-13..18, **2 of 40 in the anchor-
+slide books from 09-19** (canon-slide-b158-trade run 2, trade15-b164 run 2).
+
+**Data.** `tools/testbed/ledger/corpus_gbr_extract.mjs` (Britain's yearly record per run: government, money, credit, pool,
+GDP, population, construction sector, queues, laws where carried) and `stuck_britain.mjs` (the shocks from each run's
+`events.tsv`: a revolt against Great Britain that the revolt side WINS — CIVILWARWON "British … Revolt" — and the East
+India Company losing to "East India … Revolt"), over the F165 corpus.
+
+### 1. What a stuck Britain looks like (medians)
+
+| group | construction levels 1850 / 1860 / 1880 / 1900 / 1920 / 1935 | private pool £M 1880 / 1900 / 1920 / 1935 | Britain's GDP £M 1850 / 1880 / 1900 / 1935 | years at £0 treasury 1860–1936 |
+|---|---|---|---|---|
+| vanilla, all (16) | 34 / 107 / 68 / 99 / 192 / 287 | 3.1 / 20.3 / 108 / 333 | 39 / 99 / 188 / 388 | 43 |
+| vanilla, shocked (8) | 33 / 73 / 46 / 80 / 174 / 260 | 3.5 / 13.8 / 58 / 344 | 36 / 80 / 180 / 381 | 41 |
+| **mod, stuck (13)** | **81 / 96 / 51 / 46 / 51 / 66** | **2.9 / 4.1 / 11.6 / 11.3** | 49 / 84 / **120 / 217** | **67** |
+| mod, shocked but not stuck (43) | 40 / 63 / 56 / 79 / 162 / 352 | 4.8 / 8.7 / 41 / 179 | 40 / 82 / 148 / 552 | 44 |
+| mod, the rest (132) | 50 / 109 / 83 / 140 / 283 / 575 | 7.4 / 17.7 / 94 / 462 | 46 / 105 / 211 / 671 | 36 |
+
+The stuck Britain starts BIGGER — construction 81 levels at 1850 against 34–50, GDP £49M against £36–46M — cuts it
+between 1860 and 1880, and then holds it at ~50 levels for the rest of the century while every other group regrows it
+3–7×. Its private pool is flat from 1880. ⚠ **At 1880 it is indistinguishable from the shocked Britain that recovers**
+(GDP £84M / £82M, construction 51 / 56, pool £2.9M / £4.8M): the fork is 1880–1900, when the pool forms in one and not in
+the other. That matches F165 §4 (not separable by U* before 1900) and F108 ("vanilla's Britain absorbs the shock, the
+mod's does not").
+
+### 2. The shocks raise the risk; they do not decide it
+
+| before 1880 | vanilla | mod stuck | mod rest | ⇒ mod runs stuck given it | vanilla stuck given it |
+|---|---|---|---|---|---|
+| a revolt against Britain WON | 5/16 | 7/13 | 21/132 | **7/28 (25%)** | 0/5 |
+| the EIC lost to a revolt | 3/16 | 3/13 | 27/132 | 3/30 (10%) | 0/3 |
+| either | 8/16 | 8/13 | 43/132 | 8/51 (16%) | 0/8 |
+| neither | 8/16 | 5/13 | 89/132 | **5/94 (5%)** | 0/8 |
+
+A won British revolt makes a stuck Britain five times likelier in the mod, and none of vanilla's eight shocked Britains
+stays stuck. Five of the thirteen stuck runs show no British revolt and no EIC loss before 1880 in their event logs.
+In the two recent ones the shock is plain: canon-slide-b158-trade run 2 lost the EIC to a revolt in 1855 and then Britain
+itself to a socialist revolt in 1870 (a council republic after); trade15-b164 run 2 lost Britain to a proletarian revolt
+in 1844 (Cooperative Ownership from 1850 to 1936).
+Bankruptcy is rare but concentrated: 3 of 13 stuck runs against 4 of 132 others and 0 of 16 vanilla.
+
+### 3. What the cost ladder has to do with it
+
+Stuck runs by the book's effective cost ratio per era: **0 of 15 at ≤ 1.64** (flat cost 0/6, 1.3–1.64 0/9) against
+**13 of 130 at ≥ 1.9** (1.9 3/53, 2.0 4/50, 2.05 2/5, 2.2 3/14, 2.5 1/3; 1.95 0/5). F108 §6's correlation persists over
+twice the runs. ⚠ The low-cost books are all early and few (15 runs), and cost changed together with other levers, so this
+is the same across-books correlation F108 reported, not a controlled test.
+
+### 4. What it is NOT (nulls)
+
+- **An empty treasury**: every British record in every run, vanilla included, shows £0 cash in some year by 1870; only
+  the COUNT of such years differs (above).
+- **India**: whether Britain's subjects still hold India (> 150M people) at 1900 goes with 7 of 67 stuck runs, and India
+  gone with 6 of 78 (`stuck_britain_subjects.mjs`). The EIC exists at 1900 in 8/13 stuck, 70/132 others, 9/16 vanilla.
+  (A first read of subject-population MEDIANS suggested otherwise; the median split a bimodal distribution.)
+- **Government type**: council republics in 5/13 stuck, 24/132 others, 5/16 vanilla; constitutional empires 6/13 against
+  13/132 and 4/16 — a lean, no more.
+- **Laws**: only the twelve trade15 runs carry them (save summary v11), one of them stuck. Not testable.
+  ⚠ The user, 2026-09-26: a law's private-construction allocation multiplier binds only when government and private
+  construction both spend all they can, which is routinely not the case — so a lower allocation is **not** to be read as
+  a GDP effect.
+
+**What it does NOT say.** Why the pool forms in one shocked Britain and not in another after 1880 — the summaries here
+carry no dividend or investment-inflow line per country, and no per-type breakdown of what the small construction sector
+was spent on was taken. Whether a flatter cost ladder would prevent it: the cost correlation is across books, not an A/B.
+The stuck definition (U* ≥ 45% at 1900/1910/1920/1930/1936) is this analysis's own cut.

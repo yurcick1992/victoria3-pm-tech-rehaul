@@ -253,3 +253,4 @@ tools/testbed/ledger/cost_drivers_pool.json
 !config/tech_tree_options.canon-b164-trade.json
 # corpus_extract.mjs output: one line per usable century run, re-derivable from the sessions (FINDINGS F165)
 tools/testbed/ledger/corpus_runs.jsonl
+tools/testbed/ledger/corpus_gbr.jsonl

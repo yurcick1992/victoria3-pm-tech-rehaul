@@ -2746,7 +2746,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         U* first crosses 30/20/10/5% (right-censored Tobit; `NO_STUCK=1` drops the stuck-Britain runs), which reads the
                         levers ~2–3× better than end-state U*; `corpus_depeasant_extrap.mjs` back-tests extrapolating the crossing past
                         the run's end (it does NOT fit better — the censored fit recovers the lever effects within ~0.6 SE from data
-                        ending at 1920–25); the shared Tobit is `lib_depeasant.mjs`. The finding that motivates them: A, B, the
+                        ending at 1920–25); the shared Tobit is `lib_depeasant.mjs`. ⭐ `corpus_gbr_extract.mjs` (Britain's yearly
+                        record per run → the gitignored `corpus_gbr.jsonl`), `stuck_britain.mjs` and `stuck_britain_subjects.mjs` read
+                        the STUCK-BRITAIN mode (FINDINGS **F166**: F108's British stall, ~5% of runs on the current family, 0 of 16 in
+                        vanilla; a won British revolt ×5 the risk; indistinguishable from a recovering Britain at 1880; 0 of 15 runs
+                        at cost ratio ≤ 1.64). The finding that motivates them: A, B, the
                         cost slope and in0 are one axis for GDP / U* / hoard, Britain's U* is seed-dominated (17 pp within a config), and a
                         config's 1900 world GDP ranks configs at r 0.86 for half the wall clock. ⚠ Runs of one config share a lever vector —
                         read the standard errors as optimistic
