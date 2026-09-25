@@ -17169,3 +17169,34 @@ resumed, one campaign (L26 / L32 / L34 PASS). The finish gap of F162 was measure
 r 0.2–0.6); weak for the per-B medians (adjacent B steps are inside the seed spread).
 **What it does NOT say:** what separates the trade ×1.5 from the finish boost (both constant across the ladder); whether a B near 1.70
 behaves as the fit predicts (untested); why the AI builds less trade capacity when each unit carries more.
+
+## F164 — THE FINISH BOOST COSTS NO MEASURABLE WALL CLOCK: median play 544 s with it against 564 s without over 1836→1845, means +0.7%, permutation p 0.96 (5 + 5 runs, alternating, 2026-09-25)
+
+**Claim.** Adding the finish boost's `has_technology_progress` block to every researchable technology's ai_weight
+(181 blocks, FINDINGS F160) does not slow the game at any resolution this instrument has.
+
+**Arms** (user-requested: "n=5 vs n=5 test covering 1836-1845, one with tech finisher, one with vanilla tech ai
+desirability. We measure wall clock only. Go alternating."): `finish` = `config/mod_config.json` (the canon);
+`nofinish` = `config/mod_config.probe-sm-b158.json`, the same book with no `finish_boost` key (a full field diff returns
+that key and nothing else), so every technology keeps vanilla's ai_weight. Runs alternated finish / nofinish, 1836.1.1 →
+1845.1.1, minimal identical telemetry, save harvest held until between runs (`-HarvestWorkers 0`). Session
+`20260925_202118_finboost-wall-ab-n5x2`; all 10 runs complete, one attempt each.
+
+**Metric (user-ruled): PLAY seconds**, landing tick to last tick (`tools/testbed/ledger/lib_wall.mjs`). Totals are not
+used — run 1 loaded in 101 s against 40 s in all nine others, a first-launch artifact.
+
+| arm | play s per run (sorted) | median | mean | sd | s per in-game year, median / mean |
+|---|---|---|---|---|---|
+| finish | 543 · 544 · 544 · 583 · 584 | 544 | 559.6 | 21.8 | 62.7 / 63.58 |
+| nofinish | 524 · 543 · 564 · 564 · 584 | 564 | 555.8 | 22.9 | 63.4 / 63.26 |
+
+In run order: 544 / 543 / 584 / 584 / 544 / 524 / 543 / 564 / 583 / 564 (odd runs = finish).
+Mean difference +3.8 s (+0.7%), +0.32 s per in-game year (+0.5%); Mann-Whitney U 14 of 25 (12.5 = none); exact
+permutation p **0.96** on play, 0.84 on s per year. The distributions interleave completely.
+
+**Confidence.** High that there is no cost of a few percent or more; the pre-registered prediction (under 2%, inside the
+seed spread) holds. ⚠ The observer ticks every ~20 s, so play times are quantized (only 524 / 543–544 / 564 / 583–584
+occur): a cost under ~1–2% of a nine-year run is not resolvable at n=5.
+
+**What it does NOT say:** anything past 1845 (the trade ×1.5 B ladder, F163, ran with the boost on and read 0.98×
+vanilla over the century, which is consistent but not an A/B); anything about what the boost does to research (F160, F162).

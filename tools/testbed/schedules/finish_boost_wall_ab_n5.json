@@ -1,0 +1,41 @@
+{
+  "schedule_version": 1,
+  "label": "finboost-wall-ab-n5x2",
+  "_why": "WALL-CLOCK A/B of the research finish boost (user-requested 2026-09-25: 'n=5 vs n=5 test covering 1836-1845, one with tech finisher, one with vanilla tech ai desirability. We measure wall clock only. Go alternating.'). ARM finish = config/mod_config.json, the canon (canon-slide-b158 + research_events.finish_boost {enabled, threshold 0.99, add 10000}: every researchable technology's ai_weight ends in a has_technology_progress block, all three vanilla technology files owned). ARM nofinish = config/mod_config.probe-sm-b158.json, which is that same book WITHOUT the finish_boost key (verified 2026-09-25: a full field diff of the two configs returns research_events.finish_boost and nothing else), so emit_tech_finish emits nothing and every technology keeps vanilla's ai_weight. Tech-tree twins are byte-identical (c6dabd3db8a72c0d). One lever. Both arms {kind: config}.",
+  "_questions": {
+    "Q": "Does the finish boost cost wall clock? It adds one has_technology_progress evaluation per researchable technology to every ai_weight the AI scores (181 blocks), evaluated whenever a country picks research."
+  },
+  "_predictions": {
+    "Q": "No difference beyond the seed spread: the per-run play time of the two arms overlaps, and the median difference is under 2%. The trigger is a cheap read and research choice is infrequent next to the economic tick."
+  },
+  "_design": "ALTERNATING by user instruction (finish, nofinish, finish, ...), so any drift in machine load over the two hours hits both arms alike. Wall clock is read from the observer's tick lines (tools/testbed/ledger/lib_wall.mjs via report_perf.mjs / wall_from_ticks.mjs): play time only, crash-resume overhead excluded. Telemetry is kept minimal (country_state, two dump dates) and is identical in both arms. Launch with -HarvestWorkers 0 so no melt competes with the game for CPU during play; the drain between runs is not play time.",
+  "_cost": "10 runs x 1836.1.1 -> 1845.1.1, about 11-12 minutes each including the build and load, so about 2 hours.",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Fixed-n batch: play every run, do NOT arm stop_watch.",
+    "The boost is expected to fire rarely (F160/F162), so the arms' economies should be near-identical to 1845; a wall difference would be the trigger's evaluation cost, not a different world."
+  ],
+  "defaults": {
+    "dump_dates": ["1840.1.1", "1844.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "RUS"],
+    "metrics": ["country_state"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 45
+  },
+  "setups": {
+    "finish": { "kind": "config", "config": "config/mod_config.json" },
+    "nofinish": { "kind": "config", "config": "config/mod_config.probe-sm-b158.json" }
+  },
+  "runs": [
+    { "setup": "finish", "until": "1845.1.1" },
+    { "setup": "nofinish", "until": "1845.1.1" },
+    { "setup": "finish", "until": "1845.1.1" },
+    { "setup": "nofinish", "until": "1845.1.1" },
+    { "setup": "finish", "until": "1845.1.1" },
+    { "setup": "nofinish", "until": "1845.1.1" },
+    { "setup": "finish", "until": "1845.1.1" },
+    { "setup": "nofinish", "until": "1845.1.1" },
+    { "setup": "finish", "until": "1845.1.1" },
+    { "setup": "nofinish", "until": "1845.1.1" }
+  ]
+}
