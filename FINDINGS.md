@@ -17321,6 +17321,41 @@ overlaps 19 of the other 132 runs, at 1880 52 of them. Without them the end-stat
 10.5 pp) and the timing at 10% to 0.35 (σ 10.6 y) — the timing still carries ~1.7× the signal, and the within-config
 seed spread of the crossing year is still ~10 years (canon-c19-in12: never / 1923 / 1921 / 1934).
 
+### 5. Extrapolating the crossing past 1936 does NOT fit better; the censored model already uses those runs (`corpus_depeasant_extrap.mjs`, user-proposed)
+
+The question: for a run that has not crossed 10% by 1936, predict the year from its own pace of descent (1940, 1950, …)
+and fit on that. Three tests, threshold 10%, from each run's last ten years of U*:
+
+**Back-test** — cut every run at a date, extrapolate the ones not yet crossed, compare with the year they actually crossed:
+
+| cutoff | runs that crossed later | linear in U*: median error / median \|err\| / p90 \|err\| | log-linear: median \|err\| / p90 |
+|---|---|---|---|
+| 1915 | 75 | +5.2 / 6.7 / **35.9 y** | 18.7 / 61.3 y |
+| 1920 | 62 | +2.7 / 4.0 / 33.7 y | 10.9 / 74.8 y |
+| 1925 | 42 | +1.5 / **2.2** / 8.9 y | 6.0 / 18.0 y |
+
+Linear is good within about a decade and poor beyond it; both are biased LATE (the descent accelerates), log-linear worse.
+
+**Refit** — observed year, else extrapolated from 1926–36 (capped at 2000): R² **0.15** on all runs (median extrapolated
+year 1949, 18 at the cap) and 0.27 without the stuck runs, residual 17–25 y — **worse than the censored Tobit's 0.31
+(σ 11.7 y)**, because a far-out guess adds more noise than it adds information.
+
+**The honest test** — pretend the corpus ends at a cutoff and ask which method recovers the lever effects the full data
+gives (the Tobit censored at 1936; A, B, cost slope, in0, trade), as rms error in the full-data standard errors:
+
+| data to | Tobit censored at the cutoff | extrapolation + OLS (linear / log) |
+|---|---|---|
+| 1920 | **0.64 SE** | 2.70 / 3.11 SE |
+| 1925 | **0.61 SE** | 2.95 / 3.16 SE |
+| 1930 | **0.46 SE** | 2.22 / 3.22 SE |
+
+⇒ **No — censoring is already the right treatment**, and extrapolation biases the lever effects by 2–3 SE.
+⭐ **The by-product is the useful part: the censored fit recovers the century's lever effects within ~0.6 SE from data
+that ends at 1920–1925**, i.e. at 0.76–0.80 of a century run's wall clock (§3). A depeasantation-year sweep does not need
+runs to reach 1936. ⚠ This holds for the POOLED lever effects over 145 runs, not for one config's crossing year.
+A per-run linear extrapolation is fine as a DESCRIPTIVE number when the run is within ~10 years of the line (median error
+~2 y), never as a fitted outcome.
+
 **What it says for the process.** (a) Tuning the scalar ladder levers places a book on one GDP–employment–hoard line;
 no combination of them leaves it. The line itself passes close to both aims at once: B 1.58's 0.87 / 22% plus 15%
 of world GDP reads ~18% on it, so the aims are not in conflict on this axis — but the seed spread around the line is wider
