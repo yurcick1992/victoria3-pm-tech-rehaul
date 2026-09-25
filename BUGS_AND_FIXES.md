@@ -13,6 +13,32 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-09-25 — the research entries never showed their conditions: the emitter wrote them into `_desc`, which the 1.13 journal window does not render
+
+**Symptom (user, reading a live game):** a research journal entry showed only "Our position makes Electric Railways worth pursuing",
+the bar tooltip only "Towards Electric Railways progress", and no condition anywhere — although CLAUDE.md had said since 2026-09-03/04
+that every entry names its sources, their marks and the country's live figure.
+**Root cause:** `tools/emit_research_events.mjs` put the mechanics and the per-source lines (`• $building_motor_industry$: at least 15
+fully staffed levels …; now [ROOT.GetCountry.MakeScope.ScriptValue('pmr_src_…')|0]`) into the `<entry>_desc` loc key. The game's
+`gui/journal_entry.gui` and `gui/journal.gui` render `JournalEntry.GetReason` (the `_reason` key: the body), `GetStatusDesc`,
+`GetGoalDesc` (a tooltip) and `GetCompletionTooltip` — **nothing renders `_desc`**. So the text existed in every loc file and no player
+ever saw it. The bar tooltip lists only the terms adding progress this month, so below every mark it lists nothing.
+**Fix:** the same text is now also the `_reason` key (`_desc` kept, harmless). Vanilla prints live values in `_reason` with the same
+`[ROOT.GetCountry.MakeScope.ScriptValue(…)|D]` form, so the figure should render. ⚠ Not yet confirmed on screen.
+**Prevention:** a claim about what the PLAYER sees needs checking against the game's own GUI files (which data function renders which
+key) or on screen — a loc key's existence proves nothing.
+
+## 2026-09-25 — the two owned building files shipped without a UTF-8 BOM, and the engine's lexer said so on every load
+
+**Symptom:** `lexer.cpp:285: File 'common/buildings/06_urban_center.txt' should be in utf8-bom encoding (will try to use it anyways)`,
+and the same for `01_industry.txt`, 7 lines per run in every batch; the engine loaded both anyway.
+**Root cause:** `tools/emit_secondaries.mjs` reads each owned building file through `rd()`, which strips the BOM, and wrote it back with a
+bare `writeFileSync(path, text)`. The same script's history-file write had been fixed for exactly this on 2026-09-04 (line 317); this
+write was missed. `build.ps1` writes the files correctly; the later rewrite undid it.
+**Fix:** `writeFileSync(path, BOM + text)`. Proven on the rebuilt canon: both files start `EF BB BF`, and each differs from the previous
+build by that first line alone.
+**Prevention:** any writer that reads through a BOM-stripping helper must write the BOM back. Grep for `writeFileSync` beside `rd(`.
+
 ## 2026-09-24 — the canonical `mod/` shipped a RETIRED book's start-population seed for three weeks, and no fresh build had it
 
 **Symptom.** None in any measurement, which is how it lasted. `mod/common/history/pops/zzz_pm_rehaul_seed_pops.txt`

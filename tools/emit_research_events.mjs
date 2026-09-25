@@ -467,10 +467,15 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       `${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
     const nice = (TECH[tech].name || tech).replace(/"/g, '');
     loc.push([key, `${nice}: ${stage.charAt(0).toUpperCase() + stage.slice(1)}`]);
-    loc.push([key + '_desc', a.rule === 'war'
+    // ⚠⚠ THE TEXT THE PLAYER READS IS `_reason`, NOT `_desc` (found 2026-09-24): the 1.13 journal window renders
+    //   JournalEntry.GetReason (the body), GetStatusDesc, GetGoalDesc and GetCompletionTooltip — nothing renders `_desc`.
+    //   Until then the sources, their marks and the live figures sat in `_desc` and no player ever saw them; the body read
+    //   only "Our position makes X worth pursuing." `_desc` keeps the same text, harmless and cheap.
+    const body = a.rule === 'war'
       ? `Hard fighting concentrates the mind. Each month a general of ours holds a front with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions against an enemy who already fields ${nice}, this bar advances by one; three stages of ${span} months each, and each completed stage grants half the technology's base research cost.`
-      : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; three stages of ${span} months each, and each completed stage grants half the technology's base research cost.` + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '')]);
-    loc.push([key + '_reason', `Our position makes ${nice} worth pursuing.`]);
+      : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; three stages of ${span} months each, and each completed stage grants half the technology's base research cost.` + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
+    loc.push([key + '_desc', body]);
+    loc.push([key + '_reason', body]);
   });
 }
 

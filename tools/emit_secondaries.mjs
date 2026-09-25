@@ -265,7 +265,9 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
       text = text.replace(body, newBlock);
     }
   }
-  writeFileSync(path, text);
+  // ⚠ rd() strips the BOM; write it back, as the history write below does, or the engine's lexer logs
+  //   `should be in utf8-bom encoding` for 01_industry.txt and 06_urban_center.txt on every load (seen 2026-09-24)
+  writeFileSync(path, BOM + text);
 }
 
 // `--write` stores the resolved goods on each tier as `secondary_goods`, so the solver and the sheet
