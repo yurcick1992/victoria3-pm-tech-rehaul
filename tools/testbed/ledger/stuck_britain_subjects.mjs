@@ -12,7 +12,7 @@ const want = [1860, 1880, 1890, 1900, 1910, 1920];
 const out = [];
 for (const r of L) { if (r.arm === 'vanilla' && !r.session.startsWith('20260821_131149')) continue;
   const sd = SES + '/' + r.rel + '/save_summaries'; if (!existsSync(sd)) continue; const rec = {};
-  for (const fn of readdirSync(sd).filter(x => x.endsWith('.json.gz')).sort()) { const y0 = null;
+  for (const fn of readdirSync(sd).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()) { const y0 = null;
     const j = JSON.parse(gunzipSync(readFileSync(sd + '/' + fn))); const y = +j.provenance.date.split('.')[0]; if (!want.includes(y) || rec[y]) continue;
     const C = j.countries; const subj = Object.entries(C).filter(([t, c]) => c.overlord === 'GBR');
     const popOf = c => Object.values(c.strata || {}).reduce((a, b) => a + b, 0);

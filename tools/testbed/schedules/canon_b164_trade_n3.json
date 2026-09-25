@@ -1,0 +1,32 @@
+{
+  "schedule_version": 1,
+  "label": "canon-b164-trade-n3",
+  "_why": "The canon canon-b164-trade (canonized 2026-09-25, BALANCE_FRAMEWORK §10.88) has never run: CLAUDE.md lists it as known defect 1 ('the exact combination is UNMEASURED'). User-ruled 2026-09-26: 'Go with n=3 on canon.' Chosen over a graded-penalty sweep, which needs a ruling on how the anchor slide and --in0-stage compose (make_ab_config refuses both). This batch is the reference every later comparison on the current book family needs.",
+  "_arm": "{kind: config}, ONE book: config/mod_config.canon-b164-trade.json + its twin config/tech_tree_options.canon-b164-trade.json, both byte-identical to config/mod_config.json / config/tech_tree_options.json at launch (cmp). A 2.2, B 1.64, C 1.9, in0 1.2, the anchor slide on eight industries with anchor cost, the mild spending set (0.95 / 1.0 / 2.0), the 24-month bar, the urban-centre electricity override, the finish boost, goods_traded_quantity at x1 (F159 §7's class table).",
+  "_comparison": "Against: the pinned vanilla n=16 baseline 20260821_131149; the trade x1.5 B ladder's B 1.64 arm (20260924_101627:trade15-b164, same book but trade x1.5 — F163: world GDP 1.11 / 0.74 / 1.16); the trade arm at B 1.58 without the finish boost (20260923_215141, F161). Read with criteria.mjs --arm <session>:canon-b164-trade --arm 20260924_101627_trade15-bladder-n12:trade15-b164, plus corpus_depeasant.mjs / stuck_britain.mjs after re-extracting the corpus (F165 / F166: read Britain as a DEPEASANTATION YEAR and a stuck/not flag, not by end-state U*).",
+  "_instrument": "Identical to the trade15 ladder: save summary v11 on every yearly summary, the eleven telemetry tags, twelve dump dates. L3: every metric is scoped by the fixed eleven-tag list (market_goods_scoped per tag's market per good), unchanged from the batch that ran it to 1936 cleanly.",
+  "_stop_rule": "NONE — a fixed-n batch: every run plays to 1936.1.1 and stop_watch is NOT armed (user-ruled 2026-09-23 for fixed-n batches; user 2026-09-25: full runs). A run the register reads as broken is reported as broken and does not end the batch.",
+  "_predictions": {
+    "_basis": "Stated before launch. The pooled lever model over 145 century runs (FINDINGS F165, corpus_levers / corpus_depeasant at the canon's lever vector) and the nearest measured book (trade15-b164, trade x1.5, same everything else).",
+    "world_gdp_end_state_median": "0.95–1.10 of vanilla. The pooled model reads 0.94 (a single run's typical miss x/÷1.29); the x1.5-trade twin read 1.11 median and F163 found the extra x0.5 trade bought only x1.03 the trade, so the canon should sit at or a little under it.",
+    "britain_depeasantation": "Britain's U* first under 10% around 1930 (Tobit at the canon levers, σ ~12 y between seeds), under 5% around 1936 — so roughly half the seeds cross 10% by 1936. The end-state U* is NOT predicted: F165 shows it is mostly seed timing.",
+    "stuck_britain": "About 5% a run on this family (F166: 2 of 40 anchor-slide runs), i.e. ~14% that one of three seeds keeps Britain above 45% U* all century.",
+    "hoard": "Pool H near vanilla's (the model reads 0.33 of GDP against vanilla's 0.33), well under the ~0.9 pool H the older canon read.",
+    "broken_runs": "At most one; a runoff (world GDP > 1.38) is less likely than at trade x1.5."
+  },
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "canon-b164-trade": { "kind": "config", "config": "config/mod_config.canon-b164-trade.json" }
+  },
+  "runs": [
+    { "setup": "canon-b164-trade", "until": "1936.1.1" },
+    { "setup": "canon-b164-trade", "until": "1936.1.1" },
+    { "setup": "canon-b164-trade", "until": "1936.1.1" }
+  ]
+}
