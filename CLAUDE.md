@@ -271,9 +271,11 @@ keys, and its trade table is `canon-slide-b158-trade`'s exactly.
 but raised prices and weakened obsolescence. The ×1.5 scale bought only ×1.03 the trade of ×1, so the canon keeps ×1.
 
 ⚠⚠ **THE KNOWN DEFECTS OF THIS CANON:**
-1. **The exact combination is UNMEASURED.** Trade ×1 at B 1.64 with the finish boost has never run. The nearest measured books: trade ×1.5
-   at B 1.64 with the boost (F163: world GDP 1.11 / 0.74 / 1.16) and trade ×1 at B 1.58 without it (F161: 1.10 / 0.83 / 1.16 / 1.32, one run
-   broken by runoff). F163's slope puts this book near 1.05–1.1; a century batch on it is the first open item.
+1. **MEASURED 2026-09-26 (F167, session `20260926_002930_canon-b164-trade-n3`, n=3): three seeds, three regimes, NO register
+   consensus.** World GDP 1.03 / 1.04 / 0.68: run 1 BROKEN BY RUNOFF (Britain U* < 5% 1923–36 at a mean hoard of 1.67 GDP), run 2
+   intact and clean (loss 4.3), run 3 a STUCK Britain after an 1850 revolt (F166). The intact pair diverges, so the canon has no
+   consensus loss; its healthy centre is fine, its two Britain-level tails (a runaway hoard, a Britain that never industrialises) came
+   up in one seed each.
 2. **Britain is fully employed in most seeds** (U\* 1–5% in every non-weak seed of F163 up to B 1.72, against the 10–50% band), and B shows
    no relation to it (r 0.11).
 3. **The old rung survives in the consumer chains** (F136; F163's obsolescence panel: 87–93% of consumer-chain old-rung levels still profitable).

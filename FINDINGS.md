@@ -17444,3 +17444,45 @@ is the same across-books correlation F108 reported, not a controlled test.
 carry no dividend or investment-inflow line per country, and no per-type breakdown of what the small construction sector
 was spent on was taken. Whether a flatter cost ladder would prevent it: the cost correlation is across books, not an A/B.
 The stuck definition (U* ≥ 45% at 1900/1910/1920/1930/1936) is this analysis's own cut.
+
+## F167 — THE CANON MEASURED (canon-b164-trade, n=3): three seeds, three regimes — world GDP 1.03 with Britain BROKEN BY RUNOFF (capital abundance 1923–36, hoard 1.67 GDP), 1.04 intact and clean, 0.68 with a STUCK Britain after an 1850 revolt; no register consensus (the intact pair diverges) (3 runs of 1836→1936, 2026-09-26)
+
+**Claim.** The canon's first measurement (CLAUDE.md canon defect 1). On a healthy seed it does what the design wants: world GDP
+at vanilla's, Britain depeasanted in the 1920s, the shortlist producing with ~0.7× vanilla's workers per head at ~1.5× the output
+each. But both tails F165/F166 describe showed up in three seeds: a Britain that over-accumulates (the register's capital-
+abundance hard line) and a Britain that never industrialises.
+
+**Arm.** `{kind: config}`, `config/mod_config.canon-b164-trade.json` + twin, byte-identical to `config/mod_config.json`. Fixed-n,
+no stop watcher, save summary v11. Session `20260926_002930_canon-b164-trade-n3`, 3/3 to 1936.1.1, no resumes, play 185.6 /
+161.2 / 144.8 min.
+
+| run | world GDP ÷ vanilla (1932–36) | Britain's U* 1860 / 1880 / 1900 / 1910 / 1920 / 1930 / 1935 | Britain under 10% / 5% | Britain's hoard ÷ GDP, end | register |
+|---|---|---|---|---|---|
+| 1 | 1.03 | 58 / 45 / 28 / 17 / 7 / 2 / 1% | 1916 / 1923 | 2.20 | ⛔ BROKEN BY RUNOFF: U* < 5% in 14 years 1923–36 at a mean hoard of 1.67 GDP (0.90–2.46) |
+| 2 | 1.04 | 62 / 48 / 39 / 43 / 18 / 2 / 1% | 1923 / 1927 | 0.14 | intact, loss 4.3 |
+| 3 | 0.68 | 73 / 73 / 70 / 70 / 68 / 73 / 73% | never | 0.00 | intact, loss 11.9 — a stuck Britain |
+
+**Run 1's decomposition at 1935** (÷ vanilla median): world GDP 1.02 = productive workers per head 0.77 × GDP per productive
+worker 1.43 (population 0.91); shortlist GDP 0.97 = 0.66 × 1.54. World GDP dipped to 0.89 at 1880 and climbed from there.
+
+**Run 3** is F166's case exactly: a British proletarian revolt won in February 1850 (Britain's GDP £34M → £4M, 4.9M people that
+year), then £44–114M for 75 years against £611–740M in the other seeds, a council republic from 1885, and a second civil war in the
+1930s (a fascist corporate state; 63M → 25M people, £22M GDP at 1935). World GDP 0.68, just over the 0.66 hard floor.
+
+**The intact pair (runs 2 + 3), NOT a consensus** (divergent under F114): shortlist W 0.72, U* 1.83, H 0.46, GDP 1.30; world GDP
+0.86, W 0.65, H 0.43; PI 0.95 and PP 0.95 (both above their 0.8 aims); T0 share 0.015; T3 34.5% of tiered workers. Beside it, the
+same book at trade ×1.5 (trade15-b164, F163, 3 intact): consensus loss 3.58, world GDP 1.13, pool H 2.26, PP 0.77.
+
+**Against the pre-registered predictions** (schedule `canon_b164_trade_n3.json`, from F165's model): world GDP 0.95–1.10 → runs 1
+and 2 inside, run 3 the stuck seed; Britain under 10% "around 1930 ± 12" → 1916 and 1923, both early (the model's centre sits late for
+this book); "~14% chance of at least one stuck Britain" → one of three; "hoard near vanilla" → true for run 2 (0.14), badly false
+for run 1 (2.20).
+
+**What it says.** The canon's centre is fine and its tails are not: on this evidence and F163's three seeds of the ×1.5 twin
+(1.11 / 0.74 / 1.16), about one seed in three on this book family is either a runaway British hoard or a stuck Britain. Both are
+Britain-level failure modes of the capital channel (F166 §1, F161's run 4, F163's soft capital-abundance flags), and neither
+responds to A/B/cost tuning in a way separable from GDP (F165 §1).
+
+**What it does NOT say.** Where the canon's centre is: three seeds in three regimes measure the spread. Whether trade ×1 or ×1.5
+is better: F163's twin ran in a different session with different seeds. ⚠ L28: run 1's log mirrors carry one duplicated chunk
+each; raw log line counts need de-duplication, the save summaries are unaffected.
