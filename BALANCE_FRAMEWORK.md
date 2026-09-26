@@ -8776,3 +8776,38 @@ which predates the dam and vanilla's Nile trait already gives). Mechanism: `add_
 The electricity line (`goods_output_electricity_mult`) of `state_trait_niagara_falls`, `krka_falls`, `angara_river`,
 `trondhjemsfjorden` and `hardangerfjorden` is commented out in whole-file copies of their four vanilla trait files (every other line
 vanilla's, asserted). The generic power-plant bonuses (an event modifier, seven company prosperity lines) are kept.
+
+### 10.89.9 — THE REDESIGN (user-ruled 2026-09-26 evening; probes p6–p11, FINDINGS F169) — supersedes the stage buildings of §10.89.2 and the owner-queue driver of §10.89.6
+The first century run (`canon-dams-n1`, the §10.89.2 design) is the record of that design. The user then ruled, in order:
+*"I really dislike that stages … are different buildings"*; *"I'd prefer the rich overlord building the megaprojects"*; ownership must
+never evaporate on privatisation, and the dam must be subsidised whoever owns it; concurrent builders should share the levels like a
+deposit (*"no need to invent something very custom"*) but *"a 95% built dam dropped or stalled because someone else beat you … is
+unacceptable"*. What ships now:
+- **ONE building per project**, `building_dam_<id>`, `expandable`, up to `stages` levels (the cap: vanilla's trade-centre idiom
+  `level_after_queued_constructions`, counted over every queued level). `potential` lists it only in the split part holding the anchor
+  province and only once someone in the chain has surveyed it (`<v>_surveyed_any`).
+- **Not government-funded**: the group sits under `bg_private_infrastructure` (a government-funded building cannot be built by another
+  country), `can_build_private = { always = no }` keeps investors out (the skyscraper idiom), and **`can_build_government` reads the
+  builder through `scope:investor_country`** (vanilla's trade-centre trigger — the builder IS visible, §10.89.5's "invisible" was wrong):
+  it must be the anchor owner or above it in the chain, have completed its OWN survey, hold the technology of the next level's class
+  (per level; the dam carries NO `unlocking_technologies`, because `create_building` demands the HOST's technology — p7), and no
+  overlord may be financing the dam at that moment.
+- **Surveys** per country (`<v>_surveyed` on the surveyor); a completed survey sets a two-year global claim during which nobody else may
+  survey; surveying stops once every level is taken.
+- ⭐ **THE OVERLORD FINANCES** (p8–p11): `start_building_construction` queues only for the state OWNER (p6: Britain's starts in Canada
+  and the Oregon Country landed in the subjects' queues and sat forever where they had no construction) and the engine's AI never
+  queues a dam. So an overlord that surveyed a subject's site FINANCES a level: a journal entry pays points × £540 (steel frame, base
+  prices) in monthly instalments over the time a normal build takes at 42 points a week, then `create_building` +
+  `add_ownership` sets the financier's holding to one more level — the level is the OVERLORD's (p8: Britain owns the Columbia in the
+  Oregon Country, Russia Kemi–Oulu in Finland, the Ottomans Tabqa in Egypt). ⚠ `create_building` cannot take `level` with an ownership
+  block (p9, "mutually exclusive" — it then ADDS the levels to the host), and the ownership block's `levels` SETS a holding. While a
+  level is financed nobody else may build the dam, and financing starts only when nothing of the dam is under construction — so no
+  construction is ever wasted. AI overlords finance through the driver; a player overlord through the `<v>_finance_decision`.
+- **The AI driver** (quarterly): one survey, one owner-queue construction where it owns the anchor state and surveyed, and one financed
+  level in a subject's state, within the GDP-scaled slots (financed levels count in them); a subject surveys its own site only when no
+  overlord above holds the technology unburdened.
+- **Ownership and privatisation**: every level is owned by its builder's government (p6: Laissez-faire USA and France included — none
+  offered for sale in four years); `ai_nationalization_desire = 0.75` on every dam (the AI privatises below 0 and nationalises above 1;
+  ⚠ the documented `ai_privatization_deisre` is REJECTED by the engine, p6); `must_have` subsidies in every administrative strategy.
+- ⚠ **What the financed path does not do**: it spends money, not construction points — the overlord's contractors are modelled as a cash
+  outlay at the construction sector's goods price, so it does not compete with the overlord's own construction queue.

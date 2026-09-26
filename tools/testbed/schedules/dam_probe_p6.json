@@ -1,0 +1,53 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probe-p6",
+  "_why": "ENGINE PROBE of the REDESIGNED dams (user, 2026-09-26: one building per project with levels instead of stage buildings; the overlord must be able to build and own the dam in a subject's state; ownership must never evaporate on privatisation; always subsidised; builders share the levels like a deposit). ARM = config/mod_config.canon-dams-probe.json {kind: config}: the canon + the power plant at 1,600 + the dams on the final 159-project table + probe settings (the three class technologies granted to GBR FRA USA RUS PRU AUS SWE SAR SWI TUR at the start, 2-month surveys, level cost x0.05, the USA and France switched to Laissez-faire). Design: group under bg_private_infrastructure (not government-funded), can_build_private always no, can_build_government reads scope:investor_country (chain, its own survey, the next level's class technology), the level cap by level_after_queued_constructions, potential restricted to the anchor's split part, ai_privatization_deisre 1000, must_have subsidies. The AI driver surveys for AI countries and queues levels only where the country OWNS the anchor state.",
+  "_questions": {
+    "Q1": "One building per project: do levels queue, complete and stop at the cap (built lines level k/n)?",
+    "Q2": "Does the engine's government AI build dams on its own now - including an overlord in a subject's state (a built level with no driver stage_start; ownership in the save)?",
+    "Q3": "Is a dam ever in a private queue; who owns dams in the Laissez-faire USA and France (the melted save)?",
+    "Q4": "Any error naming our files; does the anchor-restricted potential hide the dam elsewhere?"
+  },
+  "_predictions": {
+    "Q1": "yes",
+    "Q2": "uncertain - the engine AI ignored the unique buildings; a regular building with ai_value 30000 may be picked",
+    "Q3": "no private construction; government-owned, or a financial district after a sale",
+    "Q4": "none"
+  },
+  "_cost": "1 run x 1836.1.1 -> 1841.1.1, about 7 minutes of play plus build and load.",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe build: techs granted, costs and surveys shrunk - do not read any economic number from it."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1839.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 40
+  },
+  "setups": {
+    "damprobe": {
+      "kind": "config",
+      "config": "config/mod_config.canon-dams-probe.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "damprobe",
+      "until": "1841.1.1"
+    }
+  ]
+}

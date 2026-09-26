@@ -17520,3 +17520,42 @@ _152100 (p3) / _153048 (p4) / _153820 (p5). No economic reading — mechanism on
 **What it does NOT say.** Anything about the economy of dams (probe costs, techs granted in 1836), how many dams the AI builds at real
 technology dates, or whether a player can build them in a subject's state by hand (probably not — the owner-queue limit is the effect's,
 not necessarily the construction UI's; untested).
+
+## F169 — DAM MEGAPROJECTS, THE REDESIGN'S ENGINE PROBES (p6–p11): one building with levels works; the owner queue cannot reach a subject; an OVERLORD can own a level in its subject's state through `create_building` + `add_ownership`, and the financed path built seven such levels without a conflict
+
+**Arms.** Six engine probes on the §10.89.9 redesign (BALANCE_FRAMEWORK), all 1836 → 1839–1841, one run each, sessions
+`20260926_184541` (p6), `185556` (p7), `190011` (p8), `190407` (p9), `190734` (p10), `191332` (p11). Probe book
+`config/mod_config.canon-dams-probe.json`: the dam technologies granted to ten majors, 2-month surveys, level cost × 0.05, the USA and
+France put on Laissez-faire. Mechanism only — nothing here is a balance reading. The first century run of the OLD design
+(`20260926_154538_canon-dams-n1`, world GDP 1.02×, loss 3.7, dams 39% of world electricity at 1935) is recorded in its VERDICT and in
+SESSION_VERDICTS; it predates everything below.
+
+**Established.**
+1. **One building per project with levels works** (p6): 37 levels, every project's queue holding ONE element, the cap counted by
+   `level_after_queued_constructions` (vanilla's trade-centre idiom).
+2. **`start_building_construction` queues for the STATE OWNER only** (p6): Britain's scripted starts in Quebec, the Hudson's Bay Company and
+   the Oregon Country landed in the SUBJECTS' government queues, and where the subject had no construction sector they sat unchanged for
+   three years (HBC 492 / ORG 479 points left) — the waste the user ruled out.
+3. **The engine's own AI never queued a dam** in any probe (every level traces to a script start), with `ai_value` 30,000 and `must_have`
+   subsidies — the quarterly driver is the only AI path.
+4. **`create_building` demands the HOST's unlocking technology** (p7: "must have invented …" for a subject host without it) ⇒ the dam
+   carries no `unlocking_technologies` and checks the BUILDER's technology inside `can_build_government` through `scope:investor_country`.
+5. **`create_building` + `add_ownership = { country = { country = X levels = N } }` gives the level to X** (p8: Britain owns the Columbia in
+   the Oregon Country, Russia Kemi–Oulu in Finland, the Ottomans Tabqa in Egypt). A second identical call does not add a level (asked 2,
+   got 1): the ownership `levels` SETS a holding (p9). `level = N` together with an ownership block is rejected as "mutually exclusive"
+   and then ADDS the levels to the host (p9). ⇒ a financed level is written as a chain on `levels_owned_by_country`, setting held + 1.
+6. **The financed path** (p10–p11): an overlord's journal entry pays points × £540 monthly over the normal build time, then creates the
+   level. Britain financed 7 levels in 3.5 years; the melted 1839.4.1 save reads Columbia GBR × 2, Laurentian GBR × 2, Lower Columbia
+   GBR × 2, Nelson–Winnipeg GBR × 1 — the building's level equals the overlord's holding everywhere. Owner-queue dams (the Austrian
+   Danube AUS × 2, Niagara & Long Sault USA × 2, Tsaritsyn RUS × 2) are owned by their builders. The Ottomans and Russia surveyed subject
+   sites but spent their GDP-scaled slots at home within the span.
+7. **Ownership and privatisation**: every level owned by a government, the Laissez-faire USA and France included — none offered for sale
+   in 3.5–5 years. ⚠ The documented `ai_privatization_deisre` is REJECTED ("Unexpected token"); vanilla's `ai_nationalization_desire`
+   (privatise below 0, nationalise above 1) is accepted, 0.75 ships.
+8. No error-log line in p8–p11 names our files.
+
+**What it does NOT say.** Anything about balance (× 0.05 cost, granted techs, 2-month surveys). Whether a non-British overlord ever
+finances at real dates. What the engine does to an in-progress construction whose `can_build_government` turns false — the design
+avoids the state (financing starts only when nothing of the dam is queued, and blocks every other builder while it runs), it was never
+provoked. That the financed path spends MONEY, not construction points: the overlord's contractors are a cash outlay at the construction
+sector's base goods price, outside its own queue — a modelling choice, not a measured equivalence. Privatisation over a century.

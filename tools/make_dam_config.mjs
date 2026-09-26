@@ -66,7 +66,12 @@ cfg.dams = {
     ],
   },
 };
-if (probe) cfg.dams.probe = { grant_tags: ['GBR', 'FRA', 'USA', 'RUS', 'PRU', 'AUS', 'SWE', 'SAR', 'SWI', 'TUR'], survey_months: 2, cost_mult: 0.05, force_build_every: 0 };
+// ALWAYS SUBSIDISED, like infrastructure (user, 2026-09-26): must_have in every administrative strategy, through the
+// existing building_subsidies machinery (build.ps1 then owns 01_admin_strategies.txt, restating vanilla's own entries)
+if (cfg.building_subsidies && Object.values(cfg.building_subsidies).some(v => v && v !== 'vanilla')) throw new Error('make_dam_config: the base already sets building_subsidies - merge by hand');
+const dp = JSON.parse(readFileSync(join(REPO, cfg.dams.projects_file), 'utf8'));
+cfg.building_subsidies = Object.fromEntries((dp.projects || dp).map(p => [`building_dam_${p.id}`, 'must_have']));
+if (probe) cfg.dams.probe = { grant_tags: ['GBR', 'FRA', 'USA', 'RUS', 'PRU', 'AUS', 'SWE', 'SAR', 'SWI', 'TUR'], survey_months: 2, cost_mult: 0.05, force_build_every: 0, laissez_faire_tags: ['USA', 'FRA'] };
 cfg._dams_variant = {
   name: suffix, base: basename(base),
   ruled_by: 'user 2026-09-26: power plants at 4x construction cost, recipes unchanged; hydro-dam megaprojects (survey decision + staged unique buildings, one project per state)',

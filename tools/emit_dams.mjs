@@ -4,27 +4,26 @@
 //
 // Config `dams` absent or `enabled: false` → emits nothing. Enabled → per project (config/dam_projects.json,
 // one per state; the numbers are tools/lib_dams.mjs's — ONE derivation):
-//   • a SURVEY decision, shown to the country that owns the project's ANCHOR PROVINCE and to every country
-//     above it in its overlord chain (never to a great power as such, never to an investor), once the
-//     project's class technology is researched; it adds a bureaucracy-cost modifier and a counter journal
-//     entry (the vanilla canal pattern, common/decisions/canal_decisions.txt). One survey at a time per
-//     project, world-wide (global variable). A STOP decision cancels it.
-//   • on completion a GLOBAL variable marks the site surveyed. There is NO exclusive right for the
-//     surveyor: a building's `possible`/`ai_value` are evaluated in the STATE's scope and cannot see who is
-//     constructing (common/buildings/buildings.md), so the right to build is the anchor owner's chain as a
-//     whole. The user's "two idle years ⇒ free for all" rule is therefore satisfied from day one.
-//   • STAGES: unique single-level buildings building_dam_<id>_<k>, stage k shown once stage k-1 exists
-//     (the Kaiserforum pattern, common/buildings/08_monuments.txt). `unique` = one level in the world and
-//     never built by private investors; the group is government-funded, so it is never privatised.
-//     Every stage's `possible` requires the building state to be the split part holding the anchor
-//     province (`owner ?= p:<prov>.state.owner`, the Victoria Terminus pattern): only the side of a split
-//     state that owns the site can build.
-//   • the non-power effects (config/dam_projects.json `effects`): arable land and state-trait swaps, fired
-//     from on_building_built when a named stage completes; `start_traits` swapped in at the campaign start.
+//   • ONE building per project, `building_dam_<id>`, with up to `stages` LEVELS (the level cap is vanilla's trade-centre
+//     idiom, `level_after_queued_constructions`). Its group is NOT government-funded (a government-funded building
+//     cannot be built by another country), `can_build_private = { always = no }` keeps the private queue out (the
+//     skyscraper idiom), and `can_build_government` reads the BUILDER through `scope:investor_country`: it must be
+//     the anchor owner or above it in the overlord chain, must have completed its OWN survey, and must hold the
+//     technology of the next level's class. Several such builders share the levels like a deposit: the cap counts
+//     everyone's queued levels, and each owns what it built. An OVERLORD building in a subject's state FINANCES the
+//     level instead (start_building_construction queues only for the state owner, F169): a journal entry pays
+//     points × £540 monthly, then create_building + add_ownership sets the overlord's holding to held + 1; nobody
+//     else may build the dam meanwhile, and it starts only when nothing of the dam is queued. `potential` shows the dam only in the split part of the state holding the ANCHOR PROVINCE.
+//   • a SURVEY decision for the anchor owner and every country above it in its overlord chain — never a great power
+//     as such, never an investor — once the first class's technology is held: a bureaucracy-cost modifier and a
+//     counter journal entry (vanilla's canal pattern). One survey at a time per project; a completed survey is
+//     a two-year claim nobody else may survey through. The AI does not take the decision (F168): it scores every
+//     visible decision in one pass. AI countries survey and build through the quarterly DRIVER below.
+//   • the non-power effects (config/dam_projects.json `effects`): arable land and state-trait swaps, fired from
+//     on_building_built / on_building_expanded when the dam first reaches the named level; `start` at the campaign start.
 //   • the electricity lines of the vanilla hydro-narrative state traits (config `dams.strip_trait_modifiers`)
 //     removed by WHOLE-FILE copies of their vanilla trait files — every other line vanilla's, asserted.
-//   • telemetry: debug.log lines `PMR_DAM|<event>|<project>|<tag>|<date>` for survey start / stop / fail /
-//     complete and every stage built.
+//   • telemetry: debug.log lines `PMR_DAM|<event>|<project>|<country name>|<date>|bur <produced>/<used>` (TESTBED_METRICS).
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { REPO, deriveAll } from './lib_dams.mjs';
@@ -72,11 +71,16 @@ const isOwnerOf = p => `p:${p.anchor_province} ?= { state ?= { owner ?= ROOT } }
 const V = p => `pmr_dam_${p.id}`;     // variable / key stem
 
 // ---------------------------------------------------------------- building group
+// NOT government-funded (user, 2026-09-26): a government-funded group (administration, army) cannot be built by
+// another country, and the overlord must be able to build and own the dam in a subject's state. So the group sits
+// under bg_private_infrastructure like the trade centre, and each dam forbids the private queue itself
+// (can_build_private = { always = no }, vanilla's skyscraper idiom).
 W('common/building_groups/zzz_pm_rehaul_dams.txt', HDR +
 `bg_pmr_hydro_dams = {
-${T}parent_group = bg_infrastructure
+${T}parent_group = bg_private_infrastructure
 ${T}lens = special
-${T}is_government_funded = yes
+${T}is_government_funded = no
+${T}subsidized = yes
 ${T}inheritable_construction = yes
 ${T}economy_of_scale = no
 ${T}urbanization = 10
@@ -86,8 +90,13 @@ ${T}urbanization = 10
 // ---------------------------------------------------------------- buildings, methods, groups
 const bld = [], pms = [], pmgs = [], mods = [], decs = [], jes = [], loc = [], seff = [];
 const surveyOpen = new Map();
+const BKEY = p => `building_dam_${p.id}`;
+// the builder (scope:investor_country, vanilla's trade-centre idiom) is the anchor owner or above it in its overlord chain
+const builderInChain = p => `scope:investor_country ?= {\n${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}this = p:${p.anchor_province}.state.owner\n` +
+  `${T}${T}${T}${T}${T}p:${p.anchor_province}.state.owner ?= { any_overlord_or_above = { this = scope:investor_country } }\n${T}${T}${T}${T}}\n${T}${T}${T}}`;
+const levelsAtLeast = (p, n) => `any_scope_building = { is_building_type = ${BKEY(p)}  level_after_queued_constructions >= ${n} }`;
 for (const p of projects) {
-  const v = V(p);
+  const v = V(p), key = BKEY(p);
   pmgs.push(`pmg_dam_${p.id} = {\n${T}texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"\n${T}ai_selection = most_productive\n${T}production_methods = {\n${T}${T}pm_dam_${p.id}\n${T}}\n}`);
   pms.push(`pm_dam_${p.id} = {\n${T}texture = "gfx/interface/icons/production_method_icons/hydroelectric_plant.dds"\n\n` +
     `${T}building_modifiers = {\n${T}${T}workforce_scaled = {\n` +
@@ -96,70 +105,100 @@ for (const p of projects) {
     Object.entries(p.staff).map(([prof, q]) => `${T}${T}${T}building_employment_${prof}_add = ${q}\n`).join('') +
     `${T}${T}}\n${T}}\n}`);
   loc.push([`pmg_dam_${p.id}`, 'Hydroelectric Station'], [`pm_dam_${p.id}`, `${p.name} Hydroelectric Station`]);
-  for (let k = 1; k <= p.stages; k++) {
-    const key = `building_dam_${p.id}_${k}`;
-    bld.push(`${key} = {\n` +
-      `${T}building_group = bg_pmr_hydro_dams\n` +
-      `${T}icon = "gfx/interface/icons/building_icons/power_plant.dds"\n` +
-      `${T}city_type = city\n${T}levels_per_mesh = 50\n` +
-      `${T}expandable = no\n${T}downsizeable = no\n${T}unique = yes\n` +
-      `${T}required_construction = ${p.stage_points}\n\n` +
-      `${T}unlocking_technologies = {\n${T}${T}${p.stage_techs[k - 1]}\n${T}}\n\n` +
-      `${T}potential = {\n${T}${T}state_region = s:${p.state}\n` +
-      `${T}}\n\n` +
-      `${T}possible = {\n` +
-      `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_anchor_tt\n${T}${T}${T}owner ?= p:${p.anchor_province}.state.owner\n${T}${T}}\n` +
-      `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_surveyed_tt\n${T}${T}${T}has_global_variable = ${v}_surveyed\n${T}${T}}\n` +
-      `${T}}\n\n` +
-      `${T}ai_value = {\n${T}${T}value = ${P.ai.stage_ai_value}\n` +
-      `${T}${T}if = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}owner ?= {\n${T}${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}${T}in_default = yes\n${T}${T}${T}${T}${T}${T}is_at_war = yes\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}\n${T}${T}${T}}\n${T}${T}${T}multiply = 0.1\n${T}${T}}\n${T}}\n\n` +
-      `${T}production_method_groups = {\n${T}${T}pmg_dam_${p.id}\n${T}}\n\n` +
-      `${T}background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"\n}`);
-    loc.push([key, p.stages > 1 ? `${p.name} (stage ${k} of ${p.stages})` : p.name]);
-    loc.push([`${key}_lens_option`, `Construct $${key}$`]);
-  }
-  loc.push([`${v}_anchor_tt`, `The dam site (the province of ${p.name}) lies in this part of the state`],
-    [`${v}_surveyed_tt`, `The survey of ${p.name} has been completed`]);
+  // the technology each LEVEL needs: from the first level of a later class on, the builder must hold that class's technology
+  const classGates = [];
+  p.stage_classes.forEach((c, i) => { if (i > 0 && c !== p.stage_classes[i - 1]) classGates.push({ level: i + 1, tech: P.tech_by_class[c] }); });
+  bld.push(`${key} = {\n` +
+    `${T}building_group = bg_pmr_hydro_dams\n` +
+    `${T}icon = "gfx/interface/icons/building_icons/power_plant.dds"\n` +
+    `${T}city_type = city\n${T}levels_per_mesh = 50\n` +
+    `${T}expandable = yes\n${T}downsizeable = no\n` +
+    `${T}required_construction = ${p.stage_points}\n\n` +
+    // ⚠ NO unlocking_technologies: create_building (the overlord-financed path) demands the HOST's technology (probe p7:
+    // "Columbia District must have invented Steam Turbine"), so the first class's technology is checked on the BUILDER in
+    // can_build_government instead — identical for a country building its own dam.
+    // Only the split part of the state that holds the anchor province LISTS the dam (user, 2026-09-26: Lawpita Falls showed in
+    // three parts of Pegu), and only once someone in the chain has surveyed it (so no state lists it from 1836).
+    `${T}potential = {\n${T}${T}state_region = s:${p.state}\n${T}${T}owner ?= p:${p.anchor_province}.state.owner\n${T}${T}has_global_variable = ${v}_surveyed_any\n${T}}\n\n` +
+    `${T}can_build_government = {\n` +
+    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_builder_tt\n${T}${T}${T}${builderInChain(p)}\n${T}${T}}\n` +
+    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_tech_1_tt\n${T}${T}${T}scope:investor_country ?= { has_technology_researched = ${p.stage_techs[0]} }\n${T}${T}}\n` +
+    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_surveyed_tt\n${T}${T}${T}scope:investor_country ?= { has_variable = ${v}_surveyed }\n${T}${T}}\n` +
+    // the level cap counts EVERY builder's queued levels, so concurrent builders share the project's levels the way
+    // mines share a state's deposit (user, 2026-09-26: "no need to invent something very custom"); each owns what it built
 
-  // survey modifier, decisions, journal entry
+    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_levels_tt\n${T}${T}${T}NOT = { ${levelsAtLeast(p, p.stages)} }\n${T}${T}}\n` +
+    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_not_financing_tt\n${T}${T}${T}NOT = { has_global_variable = ${v}_financing }\n${T}${T}}\n` +
+    classGates.map(g => `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_tech_${g.level}_tt\n${T}${T}${T}OR = {\n${T}${T}${T}${T}NOT = { ${levelsAtLeast(p, g.level - 1)} }\n` +
+      `${T}${T}${T}${T}scope:investor_country ?= { has_technology_researched = ${g.tech} }\n${T}${T}${T}}\n${T}${T}}\n`).join('') +
+    `${T}}\n\n` +
+    `${T}can_build_private = {\n${T}${T}always = no\n${T}}\n\n` +
+    // added to the AI's nationalization_desire: it privatises below NATIONALIZATION_DESIRE_PRIVATIZE_THRESHOLD 0.0 and
+    // nationalises above ..._NATIONALIZE_THRESHOLD 1.0 (vanilla industries ±0.25). 0.75 = never privatised, and never
+    // high enough to nationalise a dam another country owns. ⚠ buildings.md documents `ai_privatization_deisre`: the
+    // engine REJECTS that key (probe p6, "Unexpected token") - the real one is vanilla's `ai_nationalization_desire`.
+    // A law that FORCES privatisation (Laissez-faire) only makes it available for sale to the private investment pool,
+    // i.e. to a real private owner (probe p6/p7 read the ownership from the save)
+    `${T}ai_nationalization_desire = 0.75\n\n` +
+    `${T}ai_value = {\n${T}${T}value = ${P.ai.stage_ai_value}\n` +
+    `${T}${T}if = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}owner ?= {\n${T}${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}${T}in_default = yes\n${T}${T}${T}${T}${T}${T}is_at_war = yes\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}\n${T}${T}${T}}\n${T}${T}${T}multiply = 0.1\n${T}${T}}\n${T}}\n\n` +
+    `${T}production_method_groups = {\n${T}${T}pmg_dam_${p.id}\n${T}}\n\n` +
+    `${T}background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"\n}`);
+  loc.push([key, p.name], [`${key}_lens_option`, `Construct $${key}$`],
+    [`${v}_builder_tt`, `The builder owns the dam site's province, or stands above its owner in the overlord chain`],
+    [`${v}_surveyed_tt`, `The builder has completed its own survey of the ${p.name}`],
+    [`${v}_levels_tt`, `The ${p.name} has at most ${p.stages} level${p.stages > 1 ? 's' : ''}`]);
+  for (const g of classGates) loc.push([`${v}_tech_${g.level}_tt`, `From level ${g.level} on, the builder needs the technology $${g.tech}$`]);
+  loc.push([`${v}_tech_1_tt`, `The builder needs the technology $${p.stage_techs[0]}$`]);
+
+  // survey modifier, scripted effect, decisions, journal entry
   mods.push(`${v}_surveying = {\n${T}icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds\n${T}country_bureaucracy_cost_add = ${p.survey_bureaucracy}\n}`);
   loc.push([`${v}_surveying`, `Surveying: ${p.name}`]);
-  // the survey's start, shared by the player's decision and the AI driver (on_actions below)
   seff.push(`${v}_begin_survey = {\n${T}set_variable = { name = ${v}_months value = 0 }\n${T}set_global_variable = ${v}_surveying\n` +
     `${T}add_modifier = { name = ${v}_surveying }\n${T}add_journal_entry = { type = je_${v}_survey }\n` +
     `${T}if = {\n${T}${T}limit = { NOT = { has_variable = ${ACTIVE} } }\n${T}${T}set_variable = { name = ${ACTIVE} value = 0 }\n${T}}\n${T}change_variable = { name = ${ACTIVE} add = 1 }\n` +
     `${T}debug_log = "PMR_DAM|survey_start|${p.id}|${TAG}|${DATE}|${BUR}"\n}`);
-  // the survey is open (technology, not surveyed, nobody surveying, ROOT in the anchor owner's overlord chain)
-  surveyOpen.set(p.id, `has_technology_researched = ${p.tech}\n${T}${T}NOT = { has_global_variable = ${v}_surveyed }\n${T}${T}NOT = { has_global_variable = ${v}_surveying }\n${T}${T}${chainOf(p)}`);
-  // ⚠ the AI does NOT take this decision (ai_chance 0): it scores every visible decision in one pass, so no weight
-  // or counter can stop it taking several surveys the same day (probes p1-p3). The AI surveys through the driver.
+  // open to ROOT: the first class's technology, ROOT has not surveyed it, nobody is surveying it, no other country's
+  // two-year claim stands, the dam still has a free level, and ROOT is in the anchor owner's overlord chain
+  surveyOpen.set(p.id, `has_technology_researched = ${p.tech}\n${T}${T}NOT = { has_variable = ${v}_surveyed }\n${T}${T}NOT = { has_global_variable = ${v}_surveying }\n` +
+    `${T}${T}NOT = { has_global_variable = ${v}_claim }\n${T}${T}NOT = { p:${p.anchor_province}.state ?= { ${levelsAtLeast(p, p.stages)} } }\n${T}${T}${chainOf(p)}`);
+  // ⚠ the AI does NOT take this decision (ai_chance 0): it scores every visible decision in one pass (F168); it surveys through the driver
   decs.push(`${v}_survey_decision = {\n` +
     `${T}is_shown = {\n${T}${T}${surveyOpen.get(p.id)}\n${T}}\n\n` +
     `${T}possible = {\n${T}${T}produced_bureaucracy > ${p.survey_bureaucracy}\n${T}}\n\n` +
     `${T}when_taken = {\n${T}${T}${v}_begin_survey = yes\n${T}}\n\n` +
     `${T}ai_chance = {\n${T}${T}value = 0\n${T}}\n}`);
   decs.push(`${v}_stop_survey_decision = {\n${T}is_shown = { has_variable = ${v}_months }\n${T}possible = { has_variable = ${v}_months }\n` +
-    // the journal entry's on_invalid does the cleanup (one place, so nothing is undone twice)
     `${T}when_taken = {\n${T}${T}remove_variable = ${v}_months\n` +
     `${T}${T}debug_log = "PMR_DAM|survey_stop|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n` +
-    // like vanilla's canal survey the AI does not cancel for a bureaucracy deficit (probe p2: it cancelled 72
-    // surveys that way); only a default stops it
     `${T}ai_chance = {\n${T}${T}value = 0\n${T}${T}if = {\n${T}${T}${T}limit = { in_default = yes }\n${T}${T}${T}add = 50\n${T}${T}}\n${T}}\n}`);
   loc.push([`${v}_survey_decision`, `Survey the ${p.name}`],
-    [`${v}_survey_decision_desc`, `Commission a ${p.survey_months}-month hydrographic and geological survey of the ${p.name} (${p.stages} stage${p.stages > 1 ? 's' : ''}, about ${p.stage_points} construction points and ${p.stage_units} electricity a week each). Once it is complete, this country and the countries above or below it in the overlord chain may build the dams.`],
+    [`${v}_survey_decision_desc`, `Commission a ${p.survey_months}-month hydrographic and geological survey of the ${p.name} (up to ${p.stages} level${p.stages > 1 ? 's' : ''}, each about ${p.stage_points} construction points and ${p.stage_units} electricity a week). Once it is complete we may build the dams ourselves, in our own state or in a subject's; for two years no other country may survey the site. Countries that have surveyed it share its levels, each owning what it builds.`],
     [`${v}_stop_survey_decision`, `Cancel the ${p.name} survey`],
     [`${v}_stop_survey_decision_desc`, `Abandon the survey of the ${p.name}. Its cost stops; a later attempt starts from scratch.`]);
   jes.push(`je_${v}_survey = {\n${T}icon = "gfx/interface/icons/event_icons/event_map.dds"\n${T}group = je_group_technology\n\n` +
     `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}${T}change_variable = { name = ${v}_months add = 1 }\n${T}${T}${T}${T}debug_log = "PMR_DAM|survey_month|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
     `${T}complete = {\n${T}${T}scope:journal_entry = { is_goal_complete = yes }\n${T}}\n\n` +
-    `${T}on_complete = {\n${T}${T}remove_modifier = ${v}_surveying\n${T}${T}remove_variable = ${v}_months\n${T}${T}remove_global_variable = ${v}_surveying\n${T}${T}set_global_variable = ${v}_surveyed\n${T}${T}change_variable = { name = ${ACTIVE} add = -1 }\n` +
-    // PROBE BUILDS ONLY: is stage 1 constructible at the anchor, and (every n-th project) start it by force
+    `${T}on_complete = {\n${T}${T}remove_modifier = ${v}_surveying\n${T}${T}remove_variable = ${v}_months\n${T}${T}remove_global_variable = ${v}_surveying\n` +
+    `${T}${T}set_variable = ${v}_surveyed\n${T}${T}set_global_variable = ${v}_surveyed_any\n${T}${T}set_global_variable = { name = ${v}_claim days = 730 }\n${T}${T}change_variable = { name = ${ACTIVE} add = -1 }\n` +
     (P.probe ? `${T}${T}p:${p.anchor_province} = {\n${T}${T}${T}state = {\n` +
-      `${T}${T}${T}${T}if = {\n${T}${T}${T}${T}${T}limit = { can_construct_building = building_dam_${p.id}_1 }\n${T}${T}${T}${T}${T}debug_log = "PMR_DAM|probe_can_build|${p.id}|yes|${DATE}"\n${T}${T}${T}${T}}\n` +
-      `${T}${T}${T}${T}else = {\n${T}${T}${T}${T}${T}debug_log = "PMR_DAM|probe_can_build|${p.id}|no|${DATE}"\n${T}${T}${T}${T}}\n` +
-      (P.probe.force_build_every && projects.indexOf(p) % P.probe.force_build_every === 0
-        ? `${T}${T}${T}${T}start_building_construction = building_dam_${p.id}_1\n${T}${T}${T}${T}debug_log = "PMR_DAM|probe_forced|${p.id}|-|${DATE}"\n` : '') +
-      `${T}${T}${T}}\n${T}${T}}\n` : '') +
+      `${T}${T}${T}${T}if = {\n${T}${T}${T}${T}${T}limit = { can_construct_building = ${key} }\n${T}${T}${T}${T}${T}debug_log = "PMR_DAM|probe_can_build|${p.id}|yes|${DATE}"\n${T}${T}${T}${T}}\n` +
+      `${T}${T}${T}${T}else = {\n${T}${T}${T}${T}${T}debug_log = "PMR_DAM|probe_can_build|${p.id}|no|${DATE}"\n${T}${T}${T}${T}}\n${T}${T}${T}}\n${T}${T}}\n` +
+      // RACE TEST: an overlord's survey of a subject's site also marks the subject surveyed, then the overlord starts the
+      // construction itself - whose queue does it land in, and does the subject's driver queue the same level on top?
+      (P.probe.race_test ? `${T}${T}if = {\n${T}${T}${T}limit = { NOT = { ${isOwnerOf(p)} } }\n` +
+        `${T}${T}${T}p:${p.anchor_province}.state.owner ?= { set_variable = ${v}_surveyed }\n` +
+        `${T}${T}${T}p:${p.anchor_province}.state = { start_building_construction = ${key} }\n` +
+        `${T}${T}${T}debug_log = "PMR_DAM|probe_race_overlord_start|${p.id}|${TAG}|${DATE}"\n${T}${T}}\n` : '') +
+      // FINANCE TEST: can an effect create the dam in a subject's state OWNED BY THE OVERLORD, and does a second
+      // create_building add a level? (the overlord-financed construction path)
+      (P.probe.finance_test ? `${T}${T}if = {\n${T}${T}${T}limit = { NOT = { ${isOwnerOf(p)} } }\n` +
+        `${T}${T}${T}save_scope_as = pmr_dam_financier\n` +
+        `${T}${T}${T}p:${p.anchor_province}.state = {\n` +
+        `${T}${T}${T}${T}create_building = {\n${T}${T}${T}${T}${T}building = ${key}\n${T}${T}${T}${T}${T}add_ownership = {\n${T}${T}${T}${T}${T}${T}country = {\n${T}${T}${T}${T}${T}${T}${T}country = scope:pmr_dam_financier\n${T}${T}${T}${T}${T}${T}${T}levels = 1\n${T}${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}\n` +
+        // p8: a second plain create_building did NOT add a level; p9 asks for level = 2 on the existing dam
+        (p.stages > 1 ? `${T}${T}${T}${T}create_building = {\n${T}${T}${T}${T}${T}building = ${key}\n${T}${T}${T}${T}${T}level = 2\n${T}${T}${T}${T}${T}add_ownership = {\n${T}${T}${T}${T}${T}${T}country = {\n${T}${T}${T}${T}${T}${T}${T}country = scope:pmr_dam_financier\n${T}${T}${T}${T}${T}${T}${T}levels = 1\n${T}${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}\n` : '') +
+        `${T}${T}${T}}\n${T}${T}${T}debug_log = "PMR_DAM|probe_finance_create|${p.id}|${TAG}|${DATE}|asked ${p.stages > 1 ? 2 : 1} level(s)"\n${T}${T}}\n` : '') : '') +
     `${T}${T}debug_log = "PMR_DAM|survey_complete|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n\n` +
     `${T}current_value = {\n${T}${T}value = 0\n${T}${T}if = {\n${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}value = root.var:${v}_months\n${T}${T}}\n${T}}\n\n${T}goal_add_value = {\n${T}${T}value = ${p.survey_months}\n${T}}\n\n` +
     `${T}invalid = {\n${T}${T}OR = {\n${T}${T}${T}NOT = { has_variable = ${v}_months }\n${T}${T}${T}NOT = {\n${T}${T}${T}${T}${chainOf(p).replace(/\n/g, `\n${T}${T}`)}\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
@@ -168,16 +207,13 @@ for (const p of projects) {
     `${T}${T}debug_log = "PMR_DAM|survey_ended|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n\n` +
     `${T}progressbar = yes\n${T}weight = 10\n${T}transferable = no\n${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
   loc.push([`je_${v}_survey`, `Surveying the ${p.name}`],
-    [`je_${v}_survey_reason`, `Our engineers are surveying the ${p.name} in ${p.state_name}: river gauging, foundation borings and the reservoir line. When they finish, the site can be built by us or by any country in our overlord chain.`],
+    [`je_${v}_survey_reason`, `Our engineers are surveying the ${p.name} in ${p.state_name}: river gauging, foundation borings and the reservoir line. When they finish we may build the dams, in our own state or in a subject's.`],
     [`je_${v}_survey_goal`, `Await the completion of the #bold ${p.survey_months} month#! survey`]);
 }
 W('common/buildings/zzz_pm_rehaul_dams.txt', HDR + bld.join('\n\n') + '\n');
 W('common/production_methods/zzz_pm_rehaul_dams.txt', HDR + pms.join('\n\n') + '\n');
 W('common/production_method_groups/zzz_pm_rehaul_dams.txt', HDR + pmgs.join('\n\n') + '\n');
 W('common/static_modifiers/zzz_pm_rehaul_dams.txt', HDR + mods.join('\n\n') + '\n');
-W('common/decisions/zzz_pm_rehaul_dams.txt', HDR + decs.join('\n\n') + '\n');
-W('common/journal_entries/zzz_pm_rehaul_dams.txt', HDR + jes.join('\n\n') + '\n');
-W('common/scripted_effects/zzz_pm_rehaul_dams.txt', HDR + seff.join('\n\n') + '\n');
 
 // ---------------------------------------------------------------- traits and effects
 const E = CFG.dams.effects || {};
@@ -199,81 +235,143 @@ const regionEffect = (e) => {
 const start = (E.start || []).map(e => `${T}${T}${regionEffect(e).replace(/\n\t/g, '\n')}`);
 // PROBE BUILDS ONLY: grant the class technologies to named countries at the start, so an 1836 probe exercises
 // the whole chain (config `dams.probe` = { grant_tags: [..], survey_months, cost_mult }).
+// PROBE BUILDS ONLY: switch named countries to Laissez-faire, to see who owns a dam where privatisation is forced
+if (P.probe?.laissez_faire_tags?.length) for (const tag of P.probe.laissez_faire_tags) {
+  if (!/^[A-Z]{3}$/.test(tag)) die(`probe tag ${tag}`);
+  start.push(`${T}${T}if = {\n${T}${T}${T}limit = { exists = c:${tag} }\n${T}${T}${T}c:${tag} = {\n${T}${T}${T}${T}activate_law = law_type:law_laissez_faire\n` +
+    `${T}${T}${T}${T}debug_log = "PMR_DAM|probe_laissez_faire|-|${TAG}|${DATE}"\n${T}${T}${T}}\n${T}${T}}`);
+}
 if (P.probe?.grant_tags?.length) for (const tag of P.probe.grant_tags) {
   if (!/^[A-Z]{3}$/.test(tag)) die(`probe tag ${tag}`);
   start.push(`${T}${T}if = {\n${T}${T}${T}limit = { exists = c:${tag} }\n${T}${T}${T}c:${tag} = {\n` + [...new Set(Object.values(P.tech_by_class))].map(t => `${T}${T}${T}${T}add_technology_researched = ${t}\n`).join('') +
     `${T}${T}${T}${T}debug_log = "PMR_DAM|probe_grant|-|${TAG}|${DATE}"\n${T}${T}${T}}\n${T}${T}}`);
 }
+// on_building_built (a dam's first level) and on_building_expanded (every later level) both land here, root = the building.
+// An effect named for level k fires once, the first time the dam stands at k levels or more; 'last' = at its final level.
 const onBuilt = [];
 for (const p of projects) {
-  for (let k = 1; k <= p.stages; k++) {
-    const key = `building_dam_${p.id}_${k}`;
-    // stages are built in parallel, so 'last' means "every stage of the project stands", fired once
-    const fx = (p.effects || []).filter(e => e.stage !== 'last' && (e.stage || 1) === k);
-    const fxAll = (p.effects || []).filter(e => e.stage === 'last');
-    const allStages = Array.from({ length: p.stages }, (_, i) => `has_building = building_dam_${p.id}_${i + 1}`).join(' ');
-    onBuilt.push(`${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { is_building_type = ${key} }\n` +
-      `${T}${T}${T}${T}owner ?= { debug_log = "PMR_DAM|built|${p.id}|${TAG}|${DATE}|stage ${k}/${p.stages}" }\n` +
-      fx.map(e => `${T}${T}${T}${T}${regionEffect(e)}\n`).join('') +
-      `${T}${T}${T}${T}if = {\n${T}${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}${T}NOT = { has_global_variable = ${V(p)}_complete }\n${T}${T}${T}${T}${T}${T}state = { ${allStages} }\n${T}${T}${T}${T}${T}}\n` +
-      `${T}${T}${T}${T}${T}set_global_variable = ${V(p)}_complete\n${T}${T}${T}${T}${T}owner ?= { debug_log = "PMR_DAM|complete|${p.id}|${TAG}|${DATE}" }\n` +
-      fxAll.map(e => `${T}${T}${T}${T}${T}${regionEffect(e)}\n`).join('') + `${T}${T}${T}${T}}\n${T}${T}${T}}`);
-  }
+  const lvls = Array.from({ length: p.stages }, (_, i) => p.stages - i);   // n .. 1, so the first true branch names the level
+  const fxAt = k => (p.effects || []).filter(e => (e.stage === 'last' ? p.stages : (e.stage || 1)) === k);
+  // building scope: log the level, mark completion, fire each level's effects once. Shared by on_building_built /
+  // on_building_expanded and the overlord-financed completion (create_building does not go through construction).
+  seff.push(`${V(p)}_on_level = {\n` +
+    lvls.map((k, j) => `${T}${j ? 'else_if' : 'if'} = {\n${T}${T}limit = { level >= ${k} }\n` +
+      `${T}${T}owner ?= { debug_log = "PMR_DAM|built|${p.id}|${TAG}|${DATE}|level ${k}/${p.stages}" }\n${T}}\n`).join('') +
+    `${T}if = {\n${T}${T}limit = { level >= ${p.stages}  NOT = { has_global_variable = ${V(p)}_complete } }\n` +
+    `${T}${T}set_global_variable = ${V(p)}_complete\n${T}${T}owner ?= { debug_log = "PMR_DAM|complete|${p.id}|${TAG}|${DATE}" }\n${T}}\n` +
+    Array.from({ length: p.stages }, (_, i) => i + 1).filter(k => fxAt(k).length).map(k =>
+      `${T}if = {\n${T}${T}limit = { level >= ${k}  NOT = { has_global_variable = ${V(p)}_fx_${k} } }\n` +
+      `${T}${T}set_global_variable = ${V(p)}_fx_${k}\n` + fxAt(k).map(e => `${T}${T}${regionEffect(e)}\n`).join('') + `${T}}\n`).join('') + `}`);
+  onBuilt.push(`${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { is_building_type = ${BKEY(p)} }\n${T}${T}${T}${T}${V(p)}_on_level = yes\n${T}${T}${T}}`);
 }
+
+// ---------------------------------------------------------------- OVERLORD-FINANCED construction (probes p6-p9)
+// A scripted start in a subject's state lands in the SUBJECT's queue (and sits forever where it has no construction), and
+// the engine's AI never builds a dam; create_building + add_ownership gives the level to the overlord (p8). So an overlord
+// that surveyed a site in a subject's state FINANCES a level: it pays points × £/point in monthly instalments over the
+// time a normal build takes, then the level is created OWNED BY IT. While it runs nobody else may build the dam, so no
+// construction is ever wasted. AI overlords start it through the driver; a player overlord through the decision.
+// ⚠ create_building cannot take `level` WITH an ownership block ("mutually exclusive", p9 - it then added the levels to the
+// HOST), and the ownership block's `levels` SETS that owner's holding rather than adding to it (p8: a second call with
+// levels = 1 changed nothing). So the financier's holding is set to one more than it holds now.
+const levelChain = (p, owner) => {
+  const ks = Array.from({ length: p.stages - 1 }, (_, i) => p.stages - 1 - i);   // n-1 .. 1: it holds k → set k+1
+  const own = n => `create_building = { building = ${BKEY(p)}  add_ownership = { country = { country = ${owner} levels = ${n} } } }`;
+  return ks.map((k, j) => `${T}${T}${T}${j ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}limit = { any_scope_building = { is_building_type = ${BKEY(p)}  levels_owned_by_country = { target = ${owner} value >= ${k} } } }\n` +
+    `${T}${T}${T}${T}${own(k + 1)}\n${T}${T}${T}}\n`).join('') +
+    `${T}${T}${T}${ks.length ? 'else' : 'if'} = {\n${ks.length ? '' : `${T}${T}${T}${T}limit = { always = yes }\n`}${T}${T}${T}${T}${own(1)}\n${T}${T}${T}}\n`;
+};
+// ROOT (the financier) may start a level: surveyed, in the chain above the owner, not the owner, nothing of this dam under
+// construction or financed, a free level, and the technology of the NEXT level's class
+const financeOpen = p => {
+  const nextTech = p.stage_techs.map((t, i) => i === 0
+    ? `AND = { NOT = { any_scope_building = { is_building_type = ${BKEY(p)} } } ROOT = { has_technology_researched = ${t} } }`
+    : `AND = { any_scope_building = { is_building_type = ${BKEY(p)}  level >= ${i} } NOT = { any_scope_building = { is_building_type = ${BKEY(p)}  level >= ${i + 1} } } ROOT = { has_technology_researched = ${t} } }`).join(' ');
+  return `has_variable = ${V(p)}_surveyed\n${T}${T}NOT = { ${isOwnerOf(p)} }\n${T}${T}${chainOf(p)}\n${T}${T}NOT = { has_global_variable = ${V(p)}_financing }\n` +
+    `${T}${T}p:${p.anchor_province}.state ?= {\n${T}${T}${T}NOT = { any_scope_building = { is_building_type = ${BKEY(p)}  is_under_construction = yes } }\n` +
+    `${T}${T}${T}NOT = { ${levelsAtLeast(p, p.stages)} }\n${T}${T}${T}OR = { ${nextTech} }\n${T}${T}}`;
+};
+for (const p of projects) {
+  const v = V(p);
+  seff.push(`${v}_begin_finance = {\n${T}set_variable = { name = ${v}_fin_months value = 0 }\n${T}set_global_variable = ${v}_financing\n` +
+    `${T}add_journal_entry = { type = je_${v}_finance }\n` +
+    `${T}if = {\n${T}${T}limit = { NOT = { has_variable = pmr_dam_financing } }\n${T}${T}set_variable = { name = pmr_dam_financing value = 0 }\n${T}}\n${T}change_variable = { name = pmr_dam_financing add = 1 }\n` +
+    `${T}debug_log = "PMR_DAM|finance_start|${p.id}|${TAG}|${DATE}|${BUR}|${p.finance_months} months x £${p.finance_monthly}"\n}`);
+  jes.push(`je_${v}_finance = {\n${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n${T}group = je_group_technology\n\n` +
+    `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { has_variable = ${v}_fin_months }\n` +
+    `${T}${T}${T}${T}add_treasury = -${p.finance_monthly}\n${T}${T}${T}${T}change_variable = { name = ${v}_fin_months add = 1 }\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
+    `${T}complete = {\n${T}${T}scope:journal_entry = { is_goal_complete = yes }\n${T}}\n\n` +
+    `${T}on_complete = {\n${T}${T}remove_variable = ${v}_fin_months\n${T}${T}remove_global_variable = ${v}_financing\n${T}${T}change_variable = { name = pmr_dam_financing add = -1 }\n` +
+    `${T}${T}save_scope_as = pmr_dam_financier\n${T}${T}p:${p.anchor_province}.state = {\n${levelChain(p, 'scope:pmr_dam_financier')}` +
+    `${T}${T}${T}every_scope_building = {\n${T}${T}${T}${T}limit = { is_building_type = ${BKEY(p)} }\n${T}${T}${T}${T}${v}_on_level = yes\n${T}${T}${T}}\n${T}${T}}\n` +
+    `${T}${T}debug_log = "PMR_DAM|finance_done|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n\n` +
+    `${T}current_value = {\n${T}${T}value = 0\n${T}${T}if = {\n${T}${T}${T}limit = { has_variable = ${v}_fin_months }\n${T}${T}${T}value = root.var:${v}_fin_months\n${T}${T}}\n${T}}\n\n` +
+    `${T}goal_add_value = {\n${T}${T}value = ${p.finance_months}\n${T}}\n\n` +
+    `${T}invalid = {\n${T}${T}OR = {\n${T}${T}${T}NOT = { has_variable = ${v}_fin_months }\n${T}${T}${T}NOT = {\n${T}${T}${T}${T}${chainOf(p).replace(/\n/g, `\n${T}${T}`)}\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
+    `${T}on_invalid = {\n${T}${T}if = {\n${T}${T}${T}limit = { has_variable = ${v}_fin_months }\n${T}${T}${T}remove_variable = ${v}_fin_months\n${T}${T}}\n` +
+    `${T}${T}remove_global_variable = ${v}_financing\n${T}${T}change_variable = { name = pmr_dam_financing add = -1 }\n` +
+    `${T}${T}debug_log = "PMR_DAM|finance_ended|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n\n` +
+    `${T}progressbar = yes\n${T}weight = 10\n${T}transferable = no\n${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
+  decs.push(`${v}_finance_decision = {\n${T}is_shown = {\n${T}${T}${financeOpen(p)}\n${T}}\n\n${T}when_taken = {\n${T}${T}${v}_begin_finance = yes\n${T}}\n\n${T}ai_chance = {\n${T}${T}value = 0\n${T}}\n}`);
+  loc.push([`${v}_finance_decision`, `Finance a level of the ${p.name}`],
+    [`${v}_finance_decision_desc`, `Our engineers build the next level of the ${p.name} in our subject's state at our expense: £${p.finance_monthly} a month for ${p.finance_months} months. The level will be ours. Nobody else may build the dam meanwhile.`],
+    [`je_${v}_finance`, `Building the ${p.name}`],
+    [`je_${v}_finance_reason`, `We are financing the next level of the ${p.name} in ${p.state_name} at £${p.finance_monthly} a month; when the works are done, the level is ours.`],
+    [`je_${v}_finance_goal`, `Complete the #bold ${p.finance_months} month#! works`],
+    [`${v}_not_financing_tt`, `The ${p.name} is not being built by an overlord`]);
+}
+W('common/decisions/zzz_pm_rehaul_dams.txt', HDR + decs.join('\n\n') + '\n');
+W('common/journal_entries/zzz_pm_rehaul_dams.txt', HDR + jes.join('\n\n') + '\n');
+W('common/scripted_effects/zzz_pm_rehaul_dams.txt', HDR + seff.join('\n\n') + '\n');
 W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
   `on_game_started_after_lobby = {\n${T}on_actions = { pmr_dam_campaign_start }\n}\n\n` +
   `on_building_built = {\n${T}on_actions = { pmr_dam_built }\n}\n\n` +
+  `on_building_expanded = {\n${T}on_actions = { pmr_dam_built }\n}\n\n` +
   `pmr_dam_campaign_start = {\n${T}effect = {\n${T}${T}debug_log = "PMR_DAM|start|${projects.length} projects|-|${DATE}"\n${start.join('\n')}\n${T}}\n}\n\n` +
   `pmr_dam_built = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { is_building_group = bg_pmr_hydro_dams }\n${onBuilt.join('\n')}\n${T}${T}}\n${T}}\n}\n\n` +
-  // the bureaucracy baseline around the survey events (user, 2026-09-26): once a year, every country that
-  // holds the earliest dam technology, with how many dam surveys and dam stages it is running
+  // the bureaucracy baseline around the survey events (user, 2026-09-26)
   `on_yearly_pulse_country = {\n${T}on_actions = { pmr_dam_yearly }\n}\n\n` +
   `pmr_dam_yearly = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { has_technology_researched = ${P.tech_by_class.A} }\n` +
   `${T}${T}${T}debug_log = "PMR_DAM|bur_year|-|${TAG}|${DATE}|${BUR}|surveys [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_active')|0] building [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_building_now')|0]"\n${T}${T}}\n${T}}\n}\n\n` +
-  // THE AI DRIVER (probes p1-p3). The government AI never queued a stage on its own, and it takes every visible decision
-  // in one pass, so AI countries survey and build through this instead: every three months (a country cooldown), an AI
-  // country that is not burdened starts at most ONE survey (while its surveys under way < pmr_dam_survey_slots) and at
-  // most ONE stage (while its dam stages under construction < pmr_dam_build_slots, 1-6 by GDP), taking the first open
-  // project in the table's order (largest first) in its own states or its subjects'. A stage is queued for the state's
-  // OWNER (start_building_construction reaches no other queue). A subject additionally needs debt under 0.1 and a
-  // positive income - "subjects step in if economically feasible"; an overlord only needs to be unburdened.
+  // THE AI DRIVER (F168). Every three months an unburdened AI country starts at most ONE survey and queues at most ONE
+  // dam level. Surveys: the first open project in its chain; a SUBJECT surveys a site in its own state only when no
+  // overlord above it holds the technology unburdened (the rich overlord goes first). Construction: only where it
+  // OWNS the anchor state and has surveyed, since start_building_construction reaches only the owner's queue - an
+  // overlord builds in its subjects through the engine's own government AI, which may build there now that the dams
+  // are not government-funded. A project gets at most one new level a year from the driver.
   `on_monthly_pulse_country = {\n${T}on_actions = { pmr_dam_driver }\n}\n\n` +
   `pmr_dam_driver = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = {\n` +
   `${T}${T}${T}${T}is_player = no\n${T}${T}${T}${T}has_technology_researched = ${P.tech_by_class.A}\n${T}${T}${T}${T}NOT = { has_variable = pmr_dam_driver_cd }\n` +
   `${T}${T}${T}${T}is_at_war = no\n${T}${T}${T}${T}in_default = no\n${T}${T}${T}${T}scaled_debt < 0.5\n` +
   `${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}is_subject = no\n${T}${T}${T}${T}${T}AND = { scaled_debt < 0.1  net_fixed_income > 0 }\n${T}${T}${T}${T}}\n${T}${T}${T}}\n` +
   `${T}${T}${T}set_variable = { name = pmr_dam_driver_cd days = 90 }\n` +
-  // surveys
   `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { pmr_dam_survey_headroom > 0 }\n` +
   projects.map((p, i) => `${T}${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}${T}${surveyOpen.get(p.id).replace(/\n/g, `\n${T}${T}${T}${T}`)}\n` +
-    `${T}${T}${T}${T}${T}${T}produced_bureaucracy > ${p.survey_bureaucracy}\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}${T}${V(p)}_begin_survey = yes\n${T}${T}${T}${T}}\n`).join('') +
+    `${T}${T}${T}${T}${T}${T}produced_bureaucracy > ${p.survey_bureaucracy}\n` +
+    `${T}${T}${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}${T}${T}NOT = { ${isOwnerOf(p)} }\n${T}${T}${T}${T}${T}${T}${T}is_subject = no\n` +
+    `${T}${T}${T}${T}${T}${T}${T}NOT = { any_overlord_or_above = { has_technology_researched = ${p.tech}  is_at_war = no  in_default = no  scaled_debt < 0.5 } }\n${T}${T}${T}${T}${T}${T}}\n` +
+    `${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}${T}${V(p)}_begin_survey = yes\n${T}${T}${T}${T}}\n`).join('') +
   `${T}${T}${T}}\n` +
-  // construction
   `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { pmr_dam_build_headroom > 0 }\n` +
-  projects.map((p, i) => {
-    // a stage is open when it is neither built nor already under construction, and constructible (probe p4: without the
-    // second test the driver re-queued the same stage every quarter where the owner's queue never moved)
-    const stageOk = k => `AND = { NOT = { has_building = building_dam_${p.id}_${k} } NOT = { any_scope_building = { is_building_type = building_dam_${p.id}_${k}  is_under_construction = yes } } can_construct_building = building_dam_${p.id}_${k} }`;
-    const ks = Array.from({ length: p.stages }, (_, j) => j + 1);
-    return `${T}${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}${T}has_global_variable = ${V(p)}_surveyed\n` +
-      // a project just started is passed over for a year, so one stuck project cannot hold a country's queue
-      `${T}${T}${T}${T}${T}${T}NOT = { has_global_variable = ${V(p)}_started_recently }\n` +
-      `${T}${T}${T}${T}${T}${T}${chainOf(p).replace(/\n/g, `\n${T}${T}${T}${T}`)}\n` +
-      `${T}${T}${T}${T}${T}${T}p:${p.anchor_province} = { state = { OR = { ${ks.map(stageOk).join(' ')} } } }\n${T}${T}${T}${T}${T}}\n` +
-      `${T}${T}${T}${T}${T}debug_log = "PMR_DAM|stage_start|${p.id}|${TAG}|${DATE}|${BUR}"\n` +
-      `${T}${T}${T}${T}${T}set_global_variable = { name = ${V(p)}_started_recently days = 365 }\n` +
-      `${T}${T}${T}${T}${T}p:${p.anchor_province} = {\n${T}${T}${T}${T}${T}${T}state = {\n` +
-      ks.map((k, j) => `${T}${T}${T}${T}${T}${T}${T}${j ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}${T}${T}${T}limit = { ${stageOk(k)} }\n` +
-        `${T}${T}${T}${T}${T}${T}${T}${T}start_building_construction = building_dam_${p.id}_${k}\n${T}${T}${T}${T}${T}${T}${T}}\n`).join('') +
-      `${T}${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}\n`;
-  }).join('') +
+  projects.map((p, i) => `${T}${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = {\n` +
+    `${T}${T}${T}${T}${T}${T}has_variable = ${V(p)}_surveyed\n${T}${T}${T}${T}${T}${T}${isOwnerOf(p)}\n` +
+    `${T}${T}${T}${T}${T}${T}NOT = { has_global_variable = ${V(p)}_started_recently }\n` +
+    `${T}${T}${T}${T}${T}${T}p:${p.anchor_province}.state ?= { can_construct_building = ${BKEY(p)} }\n${T}${T}${T}${T}${T}}\n` +
+    `${T}${T}${T}${T}${T}debug_log = "PMR_DAM|stage_start|${p.id}|${TAG}|${DATE}|${BUR}"\n` +
+    `${T}${T}${T}${T}${T}set_global_variable = { name = ${V(p)}_started_recently days = 365 }\n` +
+    `${T}${T}${T}${T}${T}p:${p.anchor_province}.state = { start_building_construction = ${BKEY(p)} }\n${T}${T}${T}${T}}\n`).join('') +
+  `${T}${T}${T}}\n` +
+  // an overlord FINANCES a level of a dam it surveyed in a subject's state (the rich overlord builds and owns it)
+  `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { pmr_dam_build_headroom > 0 }\n` +
+  projects.map((p, i) => `${T}${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}${T}${financeOpen(p).replace(/\n/g, `\n${T}${T}${T}${T}`)}\n` +
+    `${T}${T}${T}${T}${T}${T}NOT = { has_global_variable = ${V(p)}_started_recently }\n${T}${T}${T}${T}${T}}\n` +
+    `${T}${T}${T}${T}${T}set_global_variable = { name = ${V(p)}_started_recently days = 365 }\n${T}${T}${T}${T}${T}${V(p)}_begin_finance = yes\n${T}${T}${T}${T}}\n`).join('') +
   `${T}${T}${T}}\n${T}${T}}\n${T}}\n}\n`);
 const gdpSlots = (tiers) => tiers.map(g => `${T}if = {\n${T}${T}limit = { gdp >= ${g} }\n${T}${T}add = 1\n${T}}\n`).join('');
 W('common/script_values/zzz_pm_rehaul_dams.txt', HDR +
   `pmr_dam_bur_produced = {\n${T}value = produced_bureaucracy\n}\n\npmr_dam_bur_used = {\n${T}value = bureaucracy_usage\n}\n\n` +
   `pmr_dam_active = {\n${T}value = 0\n${T}if = {\n${T}${T}limit = { has_variable = ${ACTIVE} }\n${T}${T}value = var:${ACTIVE}\n${T}}\n}\n\n` +
-  // dam stages under construction in the country's states
-  `pmr_dam_building_now = {\n${T}value = 0\n${T}every_scope_state = {\n${T}${T}every_scope_building = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}is_building_group = bg_pmr_hydro_dams\n${T}${T}${T}${T}is_under_construction = yes\n${T}${T}${T}}\n${T}${T}${T}add = 1\n${T}${T}}\n${T}}\n}\n\n` +
+  `pmr_dam_building_now = {\n${T}value = 0\n${T}every_scope_state = {\n${T}${T}every_scope_building = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}is_building_group = bg_pmr_hydro_dams\n${T}${T}${T}${T}is_under_construction = yes\n${T}${T}${T}}\n${T}${T}${T}add = 1\n${T}${T}}\n${T}}\n${T}if = {\n${T}${T}limit = { has_variable = pmr_dam_financing }\n${T}${T}add = var:pmr_dam_financing\n${T}}\n}\n\n` +
   `pmr_dam_build_slots = {\n${T}value = 1\n${gdpSlots(P.ai.build_slot_gdp)}}\n\n` +
   `pmr_dam_survey_slots = {\n${T}value = 1\n${gdpSlots(P.ai.survey_slot_gdp)}}\n\n` +
   `pmr_dam_build_headroom = {\n${T}value = pmr_dam_build_slots\n${T}subtract = pmr_dam_building_now\n}\n\n` +

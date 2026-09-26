@@ -1,0 +1,47 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probe-p9",
+  "_why": "ENGINE PROBE p7 of the REDESIGNED dams (user, 2026-09-26: one building per project with levels instead of stage buildings; the overlord must be able to build and own the dam in a subject's state; ownership must never evaporate on privatisation; always subsidised; builders share the levels like a deposit). ARM = config/mod_config.canon-dams-probe.json {kind: config}: the canon + the power plant at 1,600 + the dams on the final 159-project table + probe settings (the three class technologies granted to GBR FRA USA RUS PRU AUS SWE SAR SWI TUR at the start, 2-month surveys, level cost x0.05, the USA and France switched to Laissez-faire). Design: group under bg_private_infrastructure (not government-funded), can_build_private always no, can_build_government reads scope:investor_country (chain, its own survey, the next level's class technology), the level cap by level_after_queued_constructions, potential restricted to the anchor's split part, ai_privatization_deisre 1000, must_have subsidies. The AI driver surveys for AI countries and queues levels only where the country OWNS the anchor state. P7 over p6 (20260926_184541): p6 showed a scripted start in a subject state lands in the SUBJECT queue (stuck forever in subjects without construction), the engine AI never queues a dam, every dam is owned by its host government (Laissez-faire USA/France included, no privatisation), and the documented ai_privatization_deisre key is rejected (now ai_nationalization_desire 0.75). P7 replaces the race test with a FINANCE test: at an overlord survey of a subject site, create_building with add_ownership = the overlord (twice for multi-level projects). P8 over p7 (20260926_185556): create_building failed with must have invented <tech> for the HOST (subjects lacked the techs), so p8 drops unlocking_technologies and checks the first class technology on the BUILDER in can_build_government; the dam is listed only once someone in the chain surveyed it. P9 over p8 (20260926_190011): create_building with add_ownership WORKS once the host needs no technology - the overlord owns the level (GBR in the Oregon Country, Quebec, HBC; TUR in Egypt, Serbia; RUS in Finland) - but a second plain create_building did not add a level. P9: the second call asks level = 2.",
+  "_questions": {
+    "Q1": "Does create_building level = 2 on an existing dam give level 2, and whose is the added level?"
+  },
+  "_predictions": {
+    "Q1": "unknown"
+  },
+  "_cost": "1 run x 1836 -> 1838, about 5 minutes",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe build: techs granted, costs and surveys shrunk - do not read any economic number from it."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1839.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 40
+  },
+  "setups": {
+    "damprobe": {
+      "kind": "config",
+      "config": "config/mod_config.canon-dams-probe.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "damprobe",
+      "until": "1838.1.1"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 //
 // A PROJECT is one state's dams (config/dam_projects.json: research rows merged per state, a depersonalised
 // name, the anchor province). This module turns a project + the config's `dams` block into what ships:
-// its STAGES (unique single-level buildings, stage k needs stage k-1), each stage's construction points,
+// its LEVELS (one expandable building per project since §10.89.9 — "stage" below means one level), each level's construction points,
 // electricity, staff and upkeep, the unlocking technology, and the survey's length and bureaucracy cost.
 //
 // ⭐ THE COST MODEL (the user's go-ahead, 2026-09-26):
@@ -65,6 +65,11 @@ export const DAM_DEFAULTS = {
     // high odds let one country take several surveys the same day (probe p2: Britain four on 1836.1.13)
     survey_owner: 3, survey_overlord: 5,          // (unused since probe p3: the AI surveys through the driver)
     stage_ai_value: 30000,
+    // OVERLORD-FINANCED construction (probes p6-p9): a level in a subject's state is paid from the overlord's treasury at
+    // the construction sector's price (steel frame, £540 a point at base) over the time a normal build takes at the
+    // per-project cap, then created OWNED BY THE OVERLORD (create_building + add_ownership)
+    finance_points_per_week: 42,
+    finance_pounds_per_point: 540,
     // the AI driver's concurrency: one slot, plus one per GDP tier passed (game £ a year; the canon's USA ~£660M at 1936)
     build_slot_gdp: [50e6, 100e6, 200e6, 350e6, 500e6],   // 1-6 dam stages under construction at once
     survey_slot_gdp: [100e6, 300e6],                     // 1-3 surveys at once
@@ -137,8 +142,10 @@ export function deriveProject(p, P) {
   if (probe.survey_months) months = probe.survey_months;
   let bur = S.bureaucracy_ref * Math.pow(pts / S.bureaucracy_ref_points, S.bureaucracy_exp);
   bur = Math.min(S.bureaucracy_max, Math.max(S.bureaucracy_min, round(bur, S.bureaucracy_round)));
+  const finMonths = Math.max(1, Math.ceil(stagePts / P.ai.finance_points_per_week / (52 / 12)));
   return {
-    ...p, mw, total_points: Math.round(pts), total_units: Math.round(units), cls, tech: P.tech_by_class[cls],
+    ...p, finance_months: finMonths, finance_monthly: Math.round(stagePts * P.ai.finance_pounds_per_point / finMonths),
+    mw, total_points: Math.round(pts), total_units: Math.round(units), cls, tech: P.tech_by_class[cls],
     stage_classes, stage_techs: stage_classes.map(c => P.tech_by_class[c]),
     stages: n, stage_points: stagePts, stage_units: stageUnits, staff, inputs, survey_months: months,
     survey_bureaucracy: bur,

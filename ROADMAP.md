@@ -1248,8 +1248,13 @@ schedule `canon_dams_n1.json`; ruled and specified in BALANCE_FRAMEWORK **§10.8
 consumer rule; staged unique government-funded buildings anchored to a province; a survey decision for the anchor owner's
 overlord chain; the power plant at 4× construction cost in the same book; irrigation effects on 13 projects and 1836
 maluses on the Nile states; the vanilla hydro-site electricity bonuses removed. AI countries survey and build through a
-quarterly scripted driver (the engine's AI does neither). ⚠ Open: an overlord's survey of a subject's site is built in the
-SUBJECT's queue; what the century run shows about surveys, stages and electricity prices; whether it becomes canonical.
+quarterly scripted driver (the engine's AI does neither).
+⭐ **Update, evening:** the first century run (`20260926_154538_canon-dams-n1`, the stage-building design) ended intact at world
+GDP 1.02× and loss 3.7, dams 39% of world electricity at 1935, electricity not pinned at the ceiling. The user then ruled the
+REDESIGN (BALANCE_FRAMEWORK **§10.89.9**, probes p6–p11 in FINDINGS **F169**): ONE building per project with levels; the OVERLORD
+builds and owns the dams in its subjects (a financed journal entry + `create_building` with `add_ownership`, verified owned by
+the overlord in a melt); no construction wasted under concurrent builders; never privatised into nothing; always subsidised.
+⚠ Open: a century run on the redesign; whether non-British overlords finance at real dates; whether it becomes canonical.
 
 ## Step 7 — VISUALS, PROOFREADING, RELEASE
 
