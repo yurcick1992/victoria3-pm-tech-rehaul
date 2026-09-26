@@ -1,0 +1,76 @@
+{
+  "schedule_version": 1,
+  "label": "canon-dams-v3-n3",
+  "_why": "THE REDESIGNED DAMS WITH THE OWNER CAPACITY GATE, n=3 (user 2026-09-27: after the open work is cleared, go with another n=3). ARM = config/mod_config.canon-dams.json {kind: config} AT COMMIT 4a0fcbe: canon-dams-v2 (BALANCE_FRAMEWORK 10.89.9) + the owner capacity gate (owner levels only at GDP >= 4,000 x points, construction unpaused, government queue draining within 520 weeks; the same GDP floor on surveys of own sites). Bankruptcy losses accepted as vanilla. Fixed n=3: every run plays to 1936, no stop watcher.",
+  "_arm": "config/mod_config.canon-dams.json (+ tech_tree_options.canon-dams.json = the canon twin, byte-identical)",
+  "_comparison": "canon-dams-v2-n1 (20260926_195231: world GDP 0.98, loss 6.8, 90 levels, 16 dam items waiting in government queues at 1935), the stage-design run (20260926_154538), the canon n=3 (20260926_002930) and the pinned vanilla n=16 (20260821_131149). n=3: the register reads the consensus of the intact runs.",
+  "_instrument": "identical to canon_dams_n1: the canon telemetry + PMR_DAM debug.log lines (survey_*, stage_start, built / complete, finance_start / finance_done, bur_year) + yearly save summaries (building_dam_* per country, ownership levels by owner class).",
+  "_stop_rule": "fixed n=3: all three play to 1936, no stop watcher",
+  "_predictions": {
+    "stalls": "no owner-queued dam level older than 6 years at 1936 in any run; dam items in government queues at 1935 at most 8 per run (v2: 16); Japan, Sardinia, Argentina and East Africa start no owner level before their GDP clears 4,000 x points",
+    "construction": "50-110 levels by 1936 per run (v2: 90) - the gate delays poor owners, the majors and the financers carry the total; dam electricity 40-60% of the world at 1935",
+    "financing": "at least three overlords finance at least one level in each run; every financed level owned by its financier",
+    "ownership": "every dam level owned by a country; zero privatised",
+    "economy": "world GDP inside the canon seed spread (0.68-1.04) in every run; no hard break attributable to the dams",
+    "perf": "play time within 5% of the canon (145-186 min) on a quiet machine"
+  },
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "canon-dams": {
+      "kind": "config",
+      "config": "config/mod_config.canon-dams.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon-dams",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon-dams",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon-dams",
+      "until": "1936.1.1"
+    }
+  ]
+}
