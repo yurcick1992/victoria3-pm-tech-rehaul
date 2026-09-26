@@ -8811,7 +8811,15 @@ unacceptable"*. What ships now:
   ⚠ the documented `ai_privatization_deisre` is REJECTED by the engine, p6); `must_have` subsidies in every administrative strategy.
 - ⚠⚠ **MEASURED OVER A CENTURY (FINDINGS F170, n=1): the OWNER path stalls.** Five overlords financed levels at real dates and every
   financed level stayed the financier's, nothing was privatised — but a level queued for a state owner with little government
-  construction sat 10–19 years (Japan, Sardinia, East Africa, Argentina), which is the waste the ruling forbids. OPEN: the driver's
-  one-slot floor ignores the owner's construction capacity; a fix is owed before this book can be judged.
+  construction sat 10–19 years (Japan, Sardinia, East Africa, Argentina), which is the waste the ruling forbids.
+  ⭐ **RULED 2026-09-27 — THE OWNER CAPACITY GATE.** The driver queues an owner level only when the owner's GDP ≥ **4,000 × the
+  level's points** (the level's goods, points × £540, at most ~2.7% of a year's GDP at a five-year pace), its construction is not
+  paused (`is_construction_paused = no`) and its government queue is not stuck (`construction_queue_government_duration < 520`
+  weeks); an AI survey of a site in its OWN state needs the same GDP floor. Poor countries wait until they can build; a subject's
+  site still goes to a surveying overlord's financing. Calibrated on the owner starts of canon-dams-v2-n1 (21 of 27 slow levels
+  blocked, 11 of 47 fast ones delayed; noisy — several levels of one dam queue in series). ⚠ Bankruptcy losses are ACCEPTED as
+  vanilla (user-ruled the same day: a default wipes every government construction, dams included), with no debt gate beyond the
+  driver's standing `in_default = no` / `scaled_debt < 0.5`. Progress lost when a subject's relationship to its financier changes
+  is acceptable (user-ruled). No construction was lost to a builder conflict in canon-dams-v2-n1 (every loss matched a bankruptcy).
 - ⚠ **What the financed path does not do**: it spends money, not construction points — the overlord's contractors are modelled as a cash
   outlay at the construction sector's goods price, so it does not compete with the overlord's own construction queue.

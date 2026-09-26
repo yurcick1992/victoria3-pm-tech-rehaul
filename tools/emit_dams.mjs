@@ -68,6 +68,8 @@ for (const p of projects) {
 // the country in scope (ROOT) owns the anchor province, or sits above its owner in the overlord chain
 const chainOf = p => `p:${p.anchor_province} ?= {\n${T}${T}${T}state ?= {\n${T}${T}${T}${T}owner ?= {\n${T}${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}${T}this = ROOT\n${T}${T}${T}${T}${T}${T}any_overlord_or_above = { this = ROOT }\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}\n${T}${T}${T}}\n${T}${T}}`;
 const isOwnerOf = p => `p:${p.anchor_province} ?= { state ?= { owner ?= ROOT } }`;
+// the owner capacity gate's GDP floor for one level of this project (lib_dams: ai.owner_gdp_per_point, F170)
+const ownerGdp = p => Math.round(p.stage_points * P.ai.owner_gdp_per_point);
 const V = p => `pmr_dam_${p.id}`;     // variable / key stem
 
 // ---------------------------------------------------------------- building group
@@ -332,7 +334,11 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
   // the bureaucracy baseline around the survey events (user, 2026-09-26)
   `on_yearly_pulse_country = {\n${T}on_actions = { pmr_dam_yearly }\n}\n\n` +
   `pmr_dam_yearly = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { has_technology_researched = ${P.tech_by_class.A} }\n` +
-  `${T}${T}${T}debug_log = "PMR_DAM|bur_year|-|${TAG}|${DATE}|${BUR}|surveys [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_active')|0] building [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_building_now')|0]"\n${T}${T}}\n${T}}\n}\n\n` +
+  `${T}${T}${T}debug_log = "PMR_DAM|bur_year|-|${TAG}|${DATE}|${BUR}|surveys [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_active')|0] building [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_building_now')|0]"\n` +
+  // the owner capacity gate's two queue inputs, logged yearly (F170): construction paused, or the government queue not draining
+  `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { is_construction_paused = yes }\n${T}${T}${T}${T}debug_log = "PMR_DAM|gov_paused|-|${TAG}|${DATE}"\n${T}${T}${T}}\n` +
+  `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { construction_queue_government_duration >= ${P.ai.owner_max_backlog_weeks} }\n${T}${T}${T}${T}debug_log = "PMR_DAM|gov_backlog|-|${TAG}|${DATE}|over ${P.ai.owner_max_backlog_weeks} weeks"\n${T}${T}${T}}\n` +
+  `${T}${T}}\n${T}}\n}\n\n` +
   // THE AI DRIVER (F168). Every three months an unburdened AI country starts at most ONE survey and queues at most ONE
   // dam level. Surveys: the first open project in its chain; a SUBJECT surveys a site in its own state only when no
   // overlord above it holds the technology unburdened (the rich overlord goes first). Construction: only where it
@@ -348,13 +354,16 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
   `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { pmr_dam_survey_headroom > 0 }\n` +
   projects.map((p, i) => `${T}${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}${T}${surveyOpen.get(p.id).replace(/\n/g, `\n${T}${T}${T}${T}`)}\n` +
     `${T}${T}${T}${T}${T}${T}produced_bureaucracy > ${p.survey_bureaucracy}\n` +
+    `${T}${T}${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}${T}${T}NOT = { ${isOwnerOf(p)} }\n${T}${T}${T}${T}${T}${T}${T}gdp >= ${ownerGdp(p)}\n${T}${T}${T}${T}${T}${T}}\n` +
     `${T}${T}${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}${T}${T}NOT = { ${isOwnerOf(p)} }\n${T}${T}${T}${T}${T}${T}${T}is_subject = no\n` +
     `${T}${T}${T}${T}${T}${T}${T}NOT = { any_overlord_or_above = { has_technology_researched = ${p.tech}  is_at_war = no  in_default = no  scaled_debt < 0.5 } }\n${T}${T}${T}${T}${T}${T}}\n` +
     `${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}${T}${V(p)}_begin_survey = yes\n${T}${T}${T}${T}}\n`).join('') +
   `${T}${T}${T}}\n` +
-  `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { pmr_dam_build_headroom > 0 }\n` +
+  `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}pmr_dam_build_headroom > 0\n` +
+  `${T}${T}${T}${T}${T}is_construction_paused = no\n${T}${T}${T}${T}${T}construction_queue_government_duration < ${P.ai.owner_max_backlog_weeks}\n${T}${T}${T}${T}}\n` +
   projects.map((p, i) => `${T}${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = {\n` +
     `${T}${T}${T}${T}${T}${T}has_variable = ${V(p)}_surveyed\n${T}${T}${T}${T}${T}${T}${isOwnerOf(p)}\n` +
+    `${T}${T}${T}${T}${T}${T}gdp >= ${ownerGdp(p)}\n` +
     `${T}${T}${T}${T}${T}${T}NOT = { has_global_variable = ${V(p)}_started_recently }\n` +
     `${T}${T}${T}${T}${T}${T}p:${p.anchor_province}.state ?= { can_construct_building = ${BKEY(p)} }\n${T}${T}${T}${T}${T}}\n` +
     `${T}${T}${T}${T}${T}debug_log = "PMR_DAM|stage_start|${p.id}|${TAG}|${DATE}|${BUR}"\n` +

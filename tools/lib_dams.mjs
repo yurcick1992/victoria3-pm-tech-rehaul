@@ -70,6 +70,14 @@ export const DAM_DEFAULTS = {
     // per-project cap, then created OWNED BY THE OVERLORD (create_building + add_ownership)
     finance_points_per_week: 42,
     finance_pounds_per_point: 540,
+    // THE OWNER CAPACITY GATE (user-ruled 2026-09-27, FINDINGS F170: owner-queued levels sat 10-19 years where the government
+    // could not fund construction). The driver queues a level for the state owner, and an AI surveys a site in its OWN state,
+    // only when GDP >= owner_gdp_per_point x the level's points (the level's goods, points x 540, at most ~2.7% of a year's GDP
+    // at a five-year pace); queueing also needs the government's construction unpaused and its queue not stuck
+    // (construction_queue_government_duration below owner_max_backlog_weeks — a queue at speed 0 reads as never draining).
+    // Calibrated on the 94 owner starts of canon-dams-v2-n1: 21 of 27 slow levels blocked, 11 of 47 fast ones delayed.
+    owner_gdp_per_point: 4000,
+    owner_max_backlog_weeks: 520,
     // the AI driver's concurrency: one slot, plus one per GDP tier passed (game £ a year; the canon's USA ~£660M at 1936)
     build_slot_gdp: [50e6, 100e6, 200e6, 350e6, 500e6],   // 1-6 dam stages under construction at once
     survey_slot_gdp: [100e6, 300e6],                     // 1-3 surveys at once

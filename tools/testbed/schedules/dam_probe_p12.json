@@ -1,0 +1,47 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probe-p12",
+  "_why": "ENGINE PROBE of the owner capacity gate (user-ruled 2026-09-27, FINDINGS F170): the driver owner step now requires gdp >= 4000 x the level points, is_construction_paused = no and construction_queue_government_duration < 520; AI surveys of own sites require the same GDP floor; yearly PMR_DAM gov_paused / gov_backlog lines. Arm = config/mod_config.canon-dams-probe.json (probe settings: techs granted to ten majors, 2-month surveys, cost x0.05). Checks: no error.log line names zzz_pm_rehaul_dams (the three triggers parse in on_action context), owner stage_start still fires in big countries, the gov lines appear.",
+  "_questions": {
+    "Q1": "After a second financed level, does the dam stand at 2 levels with 2 owned by the financier?"
+  },
+  "_predictions": {
+    "Q1": "yes"
+  },
+  "_cost": "1 run x 1836 -> 1839.7, about 6 minutes",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe build: techs granted, costs and surveys shrunk - do not read any economic number from it."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1839.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 40
+  },
+  "setups": {
+    "damprobe": {
+      "kind": "config",
+      "config": "config/mod_config.canon-dams-probe.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "damprobe",
+      "until": "1839.1.1"
+    }
+  ]
+}

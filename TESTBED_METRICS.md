@@ -1582,7 +1582,9 @@ with `[THIS.GetCountry.MakeScope.ScriptValue('<sv>')|0]` — e.g. Britain 1836 2
 survey runs), `survey_stop`, `survey_complete`, `survey_ended` (the journal entry invalidated: cancelled, or the anchor left the
 chain), `stage_start` (the AI driver), and `built|…|stage k/n` / `complete` (on_building_built; no bureaucracy field); plus
 `bur_year|-|<country>|<date>|bur …|surveys N building M` once a year for every country holding `electrical_generation`, and
-`start` once at 1836. ⚠ The country is the NAME (no tag function exists), so a join across a country's formation (Prussia → the North
+`start` once at 1836; `finance_start` / `finance_done` / `finance_ended` (the overlord-financed levels, logged by the financier;
+§10.89.9); and since 2026-09-27 `gov_paused` and `gov_backlog|…|over 520 weeks` once a year for a country whose construction is
+paused or whose government queue will not drain within ten years (the owner capacity gate's queue inputs, F170). ⚠ The country is the NAME (no tag function exists), so a join across a country's formation (Prussia → the North
 German Federation → Germany) must go by name history. ⚠ Not token-stamped: filter a shared ring by the run's own time window.
 
 ## Other verified Country data functions
