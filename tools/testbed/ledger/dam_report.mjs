@@ -36,12 +36,14 @@ const ym = d => { const m = /(\w+) (\d+), (\d+)/.exec(d || ''); if (!m) return n
 
 // (1) per country
 const C = {};
-const bump = (c, k) => { (C[c] ??= { survey_start: 0, survey_complete: 0, survey_ended: 0, stage_start: 0, built: 0 })[k]++; };
-for (const x of ev) if (['survey_start', 'survey_complete', 'survey_ended', 'stage_start', 'built'].includes(x.e)) bump(x.c, x.e);
-const rows = Object.entries(C).sort((a, b) => b[1].built - a[1].built || b[1].survey_start - a[1].survey_start);
+// ⚠ 'built' is logged in the BUILDING's scope, so it is credited to the HOST — a level an overlord FINANCED (§10.89.9) is
+// 'built' by its subject; the financier's own levels are the finance columns (finance_start / finance_done, logged by the financier)
+const bump = (c, k) => { (C[c] ??= { survey_start: 0, survey_complete: 0, survey_ended: 0, stage_start: 0, built: 0, finance_start: 0, finance_done: 0 })[k]++; };
+for (const x of ev) if (['survey_start', 'survey_complete', 'survey_ended', 'stage_start', 'built', 'finance_start', 'finance_done'].includes(x.e)) bump(x.c, x.e);
+const rows = Object.entries(C).sort((a, b) => b[1].built + b[1].finance_done - a[1].built - a[1].finance_done || b[1].survey_start - a[1].survey_start);
 console.log(`\nDAM ACTIVITY BY COUNTRY (${run.split(/[\\/]/).slice(-2).join('/')})`);
-console.log('country'.padEnd(34) + 'surveys started / completed / ended-incomplete   stages started / built');
-for (const [c, v] of rows) console.log(c.padEnd(34) + `${v.survey_start} / ${v.survey_complete} / ${v.survey_ended}`.padEnd(47) + `${v.stage_start} / ${v.built}`);
+console.log('country'.padEnd(34) + 'surveys started / completed / ended-incomplete   stages started / built (host)   financed started / done (overlord)');
+for (const [c, v] of rows) console.log(c.padEnd(34) + `${v.survey_start} / ${v.survey_complete} / ${v.survey_ended}`.padEnd(47) + `${v.stage_start} / ${v.built}`.padEnd(34) + `${v.finance_start} / ${v.finance_done}`);
 const first = e => ev.find(x => x.e === e);
 console.log(`\nfirst survey ${first('survey_start')?.d || '-'} (${first('survey_start')?.c || ''}) · first stage built ${first('built')?.d || '-'} (${first('built')?.c || ''}) · ` +
   `projects surveyed ${new Set(ev.filter(x => x.e === 'survey_complete').map(x => x.p)).size} · projects complete ${new Set(ev.filter(x => x.e === 'complete').map(x => x.p)).size} · stages built ${ev.filter(x => x.e === 'built').length}`);
