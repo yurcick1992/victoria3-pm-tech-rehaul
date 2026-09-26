@@ -8809,5 +8809,9 @@ unacceptable"*. What ships now:
 - **Ownership and privatisation**: every level is owned by its builder's government (p6: Laissez-faire USA and France included — none
   offered for sale in four years); `ai_nationalization_desire = 0.75` on every dam (the AI privatises below 0 and nationalises above 1;
   ⚠ the documented `ai_privatization_deisre` is REJECTED by the engine, p6); `must_have` subsidies in every administrative strategy.
+- ⚠⚠ **MEASURED OVER A CENTURY (FINDINGS F170, n=1): the OWNER path stalls.** Five overlords financed levels at real dates and every
+  financed level stayed the financier's, nothing was privatised — but a level queued for a state owner with little government
+  construction sat 10–19 years (Japan, Sardinia, East Africa, Argentina), which is the waste the ruling forbids. OPEN: the driver's
+  one-slot floor ignores the owner's construction capacity; a fix is owed before this book can be judged.
 - ⚠ **What the financed path does not do**: it spends money, not construction points — the overlord's contractors are modelled as a cash
   outlay at the construction sector's goods price, so it does not compete with the overlord's own construction queue.

@@ -17559,3 +17559,56 @@ finances at real dates. What the engine does to an in-progress construction whos
 avoids the state (financing starts only when nothing of the dam is queued, and blocks every other builder while it runs), it was never
 provoked. That the financed path spends MONEY, not construction points: the overlord's contractors are a cash outlay at the construction
 sector's base goods price, outside its own queue — a modelling choice, not a measured equivalence. Privatisation over a century.
+
+## F170 — THE REDESIGNED DAMS OVER A CENTURY (n=1): overlord financing works at real dates for five countries and every financed level stays the financier's; nothing is privatised; but the OWNER QUEUE stalls for a decade or more in countries with little government construction
+
+**Arm.** config/mod_config.canon-dams.json at commit 81d13d5 (the BALANCE_FRAMEWORK 10.89.9 redesign on the canon + the power plant at
+1,600 points), session 20260926_195231_canon-dams-v2-n1, one run 1836.1.1 -> 1936.1.1, reached, no crash. Compared with the stage-design
+run 20260926_154538_canon-dams-n1 (n=1) and the canon n=3 (20260926_002930). DIRECTIONAL (n=1).
+
+**Economy (the register, vanilla n=16).** Intact; world GDP 0.98 (the stage run 1.02); loss 6.8 (the stage run 3.7; the canon's intact seeds
+4.3 / 11.9), carried by T0 (1935 / the 1900s 1.43, beyond the soft line; the stage run 0.22, the canon 0.43), PI 0.97 (not falling every
+decade) and T3 0.40. Pool W 0.79, U* 39.3% (1.85x), H 0.57, GDP 1.22, PP 0.70. Britain U* 35.5 / 25.6 / 12.6% at 1926 / 1931 / 1936, hoard
+0.13 / 0.14 / 0.23. Which of the dams or the seed moved T0 is not separable at n=1.
+
+**Dams.**
+| year | levels standing | dam electricity / world electricity (per week) | power-plant levels |
+|---|---|---|---|
+| 1900 | 5 | 1,650 / 2,707 (61%) | 29 |
+| 1910 | 20 | 5,361 / 8,138 (66%) | 73 |
+| 1920 | 45 | 11,467 / 17,977 (64%) | 161 |
+| 1930 | 72 | 19,377 / 34,396 (56%) | 316 |
+| 1935 | 90 | 23,122 / 44,523 (52%) | 432 |
+79 projects surveyed (first the USA, 1878), 49 complete. The stage run: 81 stages, 54,280 electricity on 566 plants at 1935.
+Electricity prices: never at 175% in a major (the highest the Dutch market at 1.68 in 1930); Russia's at the 25% floor from 1920, its dams
+selling 2,879-3,550 a week against 867-1,436 bought.
+
+**1. Overlord financing at real technology dates, by five countries** (log + the melted 1936 save): Britain 9 levels completed (Canada:
+Laurentian x2, Nechako-Kootenay x2; Australia: Derwent x2, Upper Murray, Waitaki; Ceylon: Laxapana), Sweden 7 (Norway: Western Fjords x4,
+Glommen x2, Aura-Nordland), Austria 4 (Greece: Achelous x2; Moldova: Bistritza; Hungary: Lower Drave), Russia 4 (Finland: Imatra;
+Travancore x2; Carnatic: Nilgiri), Spain 1 (Siak: Asahan-Toba). In the 1936 save every one of those levels is owned by its financier.
+
+**2. Ownership.** 74 dam buildings in the 1936 save; every level owned by a COUNTRY (the host's government or the financier), none by a
+financial district or company, none flagged for privatisation (the USA and France included, whatever their laws).
+
+**3. ⚠ DEFECT — the owner queue stalls.** A level the driver queues for the state owner is built by that country's government construction,
+and the driver gives every country at least one slot whatever that capacity is. Measured points left on the level in the government
+queue: Japan Shinano-Kurobe 7,205 (1890) -> 3,520 (1900), then a second level ~7,700 (1910) -> 7,358 (1920) -> 2,481 (1929), i.e. 18 and
+~19 years a level; Sardinia Maurienne-Tarentaise 3,956 (1910) -> 4,094 (1920) -> 3,628 (1929); East Africa Kafue 7,611 (1929) -> 7,608
+(1935); Argentina Iguazu started 1927, 1932 and 1934, nothing built. At 1935 sixteen dam items sit in government queues; Japan's
+government queue speed read 0 at 1936. This is the "dropped or stalled" waste the user ruled out, in the owner path — the p6 subject case
+was the same mechanism.
+
+**4. A financing lost part-way.** Britain started financing Kafue (East Africa) in 1917 and no completion follows: the journal entry was
+invalidated when the chain changed, and the instalments already paid are lost.
+
+**Watch item (not a dam effect).** Qing leads world GDP 1900-1922 (324M at 1922, GDP per capita 0.767, literacy 0.445). Across 22 vanilla
+and 129 mod runs, Qing leads at 1922 in 3 of 16 vanilla seeds and 10 of 129 mod runs; its per-capita GDP is inside vanilla's range
+(median 0.602, max 0.875; the mod median 0.510) and its literacy too (vanilla max 0.489); Britain was weak at 1922 (256M against the canon's
+483-595M). No Qing dam activity; nothing in the dam book reaches a Chinese state.
+
+**Wall clock: VOID** — external machine load 1865-1895 (play and the harvester's melts slowed ~3x and recovered at the same wall-clock
+moment on a world the size of the comparison runs).
+
+**What it does NOT say.** Anything beyond direction at n=1; whether the loss difference to the stage run is the redesign or the seed; the
+design's performance cost.
