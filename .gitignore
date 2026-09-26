@@ -254,3 +254,8 @@ tools/testbed/ledger/cost_drivers_pool.json
 # corpus_extract.mjs output: one line per usable century run, re-derivable from the sessions (FINDINGS F165)
 tools/testbed/ledger/corpus_runs.jsonl
 tools/testbed/ledger/corpus_gbr.jsonl
+# the dam book (ROADMAP step 6, BALANCE_FRAMEWORK 10.89) and its probe twin, un-ignored as the record of what ran
+!config/mod_config.canon-dams.json
+!config/tech_tree_options.canon-dams.json
+!config/mod_config.canon-dams-probe.json
+!config/tech_tree_options.canon-dams-probe.json

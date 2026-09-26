@@ -8669,3 +8669,110 @@ in the two seeds where they had unified.
 4. **The finish boost stays:** F164 measured no wall-clock cost, and F163's modelled-cost reading (1.08× vanilla, the previous batches
    1.06–1.09) agrees. Its completion behaviour is as ruled on 2026-09-24 (F162): it acts at the AI's next research choice; no completion tick.
 5. **Unmeasured as a combination:** trade ×1 at B 1.64 with the boost has not run; F163's slope places it near world GDP 1.05–1.1.
+
+## §10.89 — HYDRO-DAM MEGAPROJECTS, AND THE POWER PLANT AT 4× CONSTRUCTION COST (user-ruled 2026-09-26; ROADMAP step 6)
+
+**Status: IMPLEMENTED as a test book (`config/mod_config.canon-dams.json`), NOT canonical.** Generator `tools/emit_dams.mjs`, numbers
+`tools/lib_dams.mjs` (ONE derivation), project table `config/dam_projects.json` (from `tools/make_dam_projects.mjs`), book from
+`tools/make_dam_config.mjs`; the power plant's cost by `tools/emit_building_costs.mjs`.
+
+### 10.89.1 — The power plant costs 4 × vanilla (1,600 points), its recipe untouched — REVERSES the 2026-09-19 "power stays vanilla" ruling
+The user, 2026-09-26: *"let's just make vanilla power plants more expensive without changing their recipes. Defer judgement on whether we
+need to improve their consumers' recipes (as electricity will become more scarce and expensive) until tests."* Measured on the canon's
+1936 saves (n=3): electricity is **2.1% of world GDP** (the US 2.3% against ~2.4% historically — the output share is right), but a power
+plant carries **2.3 years of revenue in capital, the same as the average building** (2.2–2.5), where 1930s utilities carried ~4–5 against
+manufacturing's ~1 (recalled, not sourced — a 3–5× range). 4× restores the ratio; the building stands for the whole utility (the game has
+no grid building). ⚠ What it moves is the SPEED of supply, not profitability: with no interest rate every profitable plant pays back, and
+4× only stretches the time (~3 → ~11 years at the 175% ceiling) and quarters the plant levels a construction sector adds per year. The
+AI's private scoring divides by (1 + cost × 0.000125): 1.05 → 1.2, a small dent. ⇒ **The test's signal**: electricity pinned at the ceiling
+in the majors' markets by ~1920 means 3× or softer consumer recipes.
+
+### 10.89.2 — What a dam is
+- **One PROJECT per state** (159), each the research rows (`hydro_1930s_feasible.csv`, 134 projects feasible with 1930s engineering) that
+  fall in it, merged; a border plant belongs to the state that CONSUMED its power ("geography is not paramount"), reviewed case by case
+  (Hoover → California by ruling; Ottawa/Gatineau → Ontario; Susquehanna 2 PA / 1 MD; Iron Gates split Wallachia/E. Serbia; Tabqa → Aleppo;
+  Bhutan → West Bengal; Baluchaung → Pegu; Kainji → Hausaland; Paulo Afonso 2 Bahia / 2 Pernambuco; Cañón del Pato → Lima).
+- **No personal names** (user-ruled): a dam named for a person or a company is renamed for its river, gorge or locality; exceptions are
+  dynasty surnames, "Victoria", and any place name already in use by 1836 (Hoover → Black Canyon, Churchill Falls → Labrador Plateau,
+  Moses–Saunders → Long Sault, Dneproges → Dnieper Rapids, Volgograd → Tsaritsyn, Keokuk → Des Moines Rapids, …).
+- **Anchored to one province**: every stage's `possible` requires the building state to be the split part owning the anchor province
+  (`owner ?= p:<prov>.state.owner`, vanilla's Victoria Terminus pattern) — only the true province owner's side can build (user, 2026-09-26).
+- **STAGES**: unique single-level buildings `building_dam_<id>_<k>` (`unique` = never built by private investors; group
+  `bg_pmr_hydro_dams`, government-funded, so never privatised and always carried by the state), ALL opening when the survey completes so a
+  country with the construction capacity builds them in parallel (a sequential chain would put a 19-stage project at decades).
+
+### 10.89.3 — The cost model (the go-ahead, 2026-09-26)
+`points per MW = 0.4 × (power-plant points ÷ 50) × 1.2 × m × (MW per part ÷ 560)^−0.2`; `electricity per MW = 0.52`.
+- **0.4 electricity per MW of capacity** — vanilla's 1936 world electricity (~49k/wk; the canon ~54k) against ~100–120 GW real: one coal level
+  ≈ 125 MW (per country the ratio runs 65–350 MW a level, so this is the low-middle — NOT an overestimate of the plant).
+- **× 1.3 for output** (0.52) — hydro ran baseload (~50–60% of nameplate) against 1930s steam's ~35–45%.
+- **1.2** — hydro's capital cost per kW over thermal at a Dneproges-class site (1930s: Hoover ~$90/kW, Grand Coulee ~$80, Bonneville ~$170,
+  Conowingo ~$200 against thermal ~$100–125; recalled). An earlier draft used 2.0; the user rejected the result ("five plants combined with
+  hardly any benefits but with added hassle") and the evidence says the giants were the CHEAPEST per kW.
+- **m** — the research's terrain multiplier (Dneproges 1.0, Niagara 0.5, Hoover 1.6, Fort Peck 2.5); **the scale term** — twice the size ≈
+  13% cheaper per MW ("recoup at scale").
+- The power-plant points are read from the book, so dams re-price with the 4× plant: Dneproges ≈ 8,600 points for ~290 electricity/week
+  (5.8 coal plants' output for ~5.4 coal plants' cost, with no fuel).
+- **Stages ≤ 10,000 points** — the user allowed ~+20% construction speed over the technologies' 35–40/week, so ≈ 42/week ⇒ ≤ 4.6 years.
+  Result: 349 stages, median project 2, median stage ~7,500 points (~3.4 years), largest project 19 (the Columbia).
+- **Staff** per 50 electricity: 50 laborers, 100 machinists, 50 engineers (a fifth of a coal plant); **upkeep** 1 tools + 1 engines (no
+  electrical-equipment good exists; engines are the coal plant's own turbine stand-in) — ~7% of revenue.
+- At the user's expected sale price of ~50% of base, a Dneproges-class dam pays back like a coal plant at 100% (~10 years); Niagara-class
+  sites ~5, Hoover ~17, Fort Peck ~26.
+
+### 10.89.4 — The technology classes (per STAGE)
+A falls / high-head / escarpment / lake-outlet → `electrical_generation` (game era 3); B cascades / gorges / mid dams → `steam_turbine`
+(game era 4, the turbine-generator); C large rivers / high dams / lowland earthfill → `arc_welding` (game era 5, welded penstocks). A
+merged project's stages are shared out over its rows' classes in proportion to their points, earliest class first, and the survey opens
+with the earliest class — so Niagara's falls open in era 3 though Long Sault supplies most of the New York project.
+
+### 10.89.5 — The survey (user: ~1,000 bureaucracy, 1–3 years, varying)
+A decision shown to the anchor province's owner and every country above it in its overlord chain — never to a great power as such, never
+to an investor — once the class technology is held; one survey per project world-wide. It adds a `country_bureaucracy_cost_add` modifier
+and a counter journal entry (vanilla's canal pattern). **Length** 12 / 18 / 24 months by class, +6 above 1.5 GW, +6 above 4 GW, ≤ 36;
+**cost** 1,000 × (project points ÷ 20,000)^0.3 in [500, 1,500] (median ~850). On completion a GLOBAL variable opens the stages.
+⚠ **The surveyor has NO exclusive right, and cannot have one**: a building's `possible` and `ai_value` are evaluated in the STATE's scope
+(`common/buildings/buildings.md`) and cannot see who is constructing. So the right to build is the anchor owner's overlord chain as a whole
+from the day the survey completes, which satisfies the user's "two idle years ⇒ free for all" rule trivially.
+
+### 10.89.6 — AI: a quarterly DRIVER, because the engine's AI can do neither half (probes p1–p5, 2026-09-26)
+Two engine facts, each measured, forced this:
+1. **The AI takes every visible decision in one pass** — it scores them all before taking any, so neither a low `ai_chance` nor a
+   "surveys under way" counter stops a country taking several surveys the same day (p1–p3: Britain five, then four; Russia four,
+   twice), and the combined bureaucracy cost drove it into deficit and cancellation (72 in p2).
+2. **The government AI never queues a dam stage on its own** (p1, p2: zero in any queue while force-started stages built and fired
+   their effects), whatever the `ai_value`.
+⇒ The survey decision is the PLAYER's (`ai_chance` 0). AI countries survey and build through `pmr_dam_driver` on
+`on_monthly_pulse_country` with a 90-day cooldown: an AI country holding `electrical_generation`, not at war, not in default, scaled
+debt under 0.5 (a SUBJECT also under 0.1 and at a positive fixed income — "subjects step in if economically feasible"; an overlord
+"always tries unless heavily burdened"), starts per quarter at most ONE survey (while its surveys under way < 1 + one per £100M / £300M
+of GDP) and at most ONE stage (while its dam stages under construction < 1 + one per £50M / 100M / 200M / 350M / 500M of GDP),
+taking the first open project in the table's order (largest first) in its own states or its subjects'. A stage under construction is
+never re-started, and a started project is passed over for a year (p4: otherwise one stuck project held a country's queue).
+⚠ **`start_building_construction` queues for the STATE'S OWNER**, so an overlord's survey of a subject's site is built by the subject
+at the subject's cost — and never, where the subject has no construction (Britain's Columbia in the Oregon Country, retried once a year).
+Vanilla's government AI does build in subjects (`GOVERNMENT_CONSTRUCTION_SUBJECT_INVESTMENT_BIAS = 1.5`), but not these buildings.
+**No electricity-price condition anywhere** (user: *"Dams are a foundation for future industry, not a reaction on high electricity
+demand"*). The stages keep `ai_value` 30,000 (×0.1 at war or in default) in case the engine's AI ever does take them.
+**Cancellation** only in default (vanilla's canal AI never cancels). **Telemetry** (user, 2026-09-26: *"we will need to understand
+which countries went for the surveys"*, and the bureaucracy balance beside it): `PMR_DAM|<event>|<project>|<country name>|<date>|bur
+<produced>/<used>` for survey_start / survey_month / survey_stop / survey_complete / survey_ended and stage_start, `built` / `complete`,
+and a yearly `bur_year` line for every country holding `electrical_generation` with its surveys and stages under way.
+
+### 10.89.7 — Non-power effects (user: "aligned with how much better than the world average the place has become"; "no bonus is about as effective per unit of input and labour as elsewhere")
+The irrigation research found 8 material and 4 marginal cases; **no cotton-specific bonus is justified** (Egypt's lead is the Delta's,
+which predates the dam and vanilla's Nile trait already gives). Mechanism: `add_arable_land` and trait swaps from `on_building_built`
+(the Hokkaido wetlands→plain precedent), targets named explicitly because three dams water another state.
+- **1836 maluses** (the user's "if it was worse and then became average, maluses it is"): Middle and Upper Egypt `Basin Irrigation`
+  (agriculture and plantations −0.1 over vanilla's Nile +0.2); Blue Nile `Rain-fed Plain` (−0.2). Aswan (First Cataract) removes Middle
+  Egypt's (+8 arable); Upper Egypt keeps it (its conversion came only with the High Dam, which is out of scope); Sennar removes Blue Nile's
+  (+12 arable). The Nile trait itself is kept: a vanilla trigger tests for it. Lower Egypt and Dongola untouched.
+- **On completion**: Washington +15 (Columbia Basin), Armenia +8, Elizavetpol +5 / Azerbaijan +4 (Mingachevir), California +5 (Coachella),
+  Taurida +5 and drought impact −0.15 (Kakhovka; fires when the whole project stands), Tennessee flood impact −0.15, Alabama and
+  Kentucky −0.1 (TVA), marginal +3 Pashtunistan, +3 Tajikistan, +1 New South Wales. Flood modifiers do nothing in vanilla's
+  flood-exempt regions (Egypt, Sudan, Central Asia, the Dakotas), so none is placed there.
+
+### 10.89.8 — Vanilla electricity site bonuses removed
+The electricity line (`goods_output_electricity_mult`) of `state_trait_niagara_falls`, `krka_falls`, `angara_river`,
+`trondhjemsfjorden` and `hardangerfjorden` is commented out in whole-file copies of their four vanilla trait files (every other line
+vanilla's, asserted). The generic power-plant bonuses (an event modifier, seven company prosperity lines) are kept.

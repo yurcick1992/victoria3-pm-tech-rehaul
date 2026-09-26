@@ -17486,3 +17486,37 @@ responds to A/B/cost tuning in a way separable from GDP (F165 §1).
 **What it does NOT say.** Where the canon's centre is: three seeds in three regimes measure the spread. Whether trade ×1 or ×1.5
 is better: F163's twin ran in a different session with different seeds. ⚠ L28: run 1's log mirrors carry one duplicated chunk
 each; raw log line counts need de-duplication, the save summaries are unaffected.
+
+## F168 — DAM MEGAPROJECTS, ENGINE PROBES: the AI takes EVERY visible decision in one pass (no weight or counter paces it), the government AI NEVER queues a unique government-funded building on its own, and `start_building_construction` builds into the STATE OWNER's queue — so AI countries survey and build through a scripted driver (5 probe runs of 1836→1839/1841, 2026-09-26)
+
+**Arm.** `config/mod_config.canon-dams-probe.json` {kind: config}: the canon + the power plant at 1,600 points + the dams (BALANCE_FRAMEWORK
+§10.89) + probe settings (the three class technologies granted at the start to GBR FRA USA RUS PRU AUS SWE SAR SWI TUR, 2-month surveys,
+stage cost × 0.05). Sessions 20260926_145556 (p1, first-pass table, placeholder anchors) / _151335 (p2, final table, forced starts) /
+_152100 (p3) / _153048 (p4) / _153820 (p5). No economic reading — mechanism only.
+
+**Measured.**
+1. **Surveys work end to end**, including an OVERLORD for a subject (the Ottoman Empire for Egypt's Blue Nile, Britain for the East India
+   Company's states): the decision is shown to the anchor owner's chain, the counter journal entry completes, the global variable opens the
+   stages. Every surveyed site was constructible (p2: `can_construct_building` yes 63 of 63).
+2. **The AI scores every visible decision before taking any.** With the survey weight at 25 / 10 (p1, p2) and then 5 / 3 (p3), and a
+   "one survey at a time" counter in the weight, countries still took several the same day: Britain five on 1836.1.13 (p1) and four
+   (p2, bureaucracy 2,513 produced / 2,395 used → 8,465 used a week later), Russia four on 1836.1.5 and again on 1837.8.20 (p3). The
+   combined cost drove them into deficit and a "deficit beyond the survey's cost" stop rule cancelled 29 (p1) and 72 (p2) surveys.
+3. **The government AI never queued a dam stage on its own** — zero in any government or private queue in p1's 1837/1838 saves; in p2
+   every one of 23 completions was among the 30 force-started ones — while a stage started by `start_building_construction` built and
+   fired `on_building_built` (the arable-land and trait effects, the `built` / `complete` lines). The stages carried `ai_value` 30,000
+   (vanilla's canals 100,000) throughout.
+4. **`start_building_construction` builds into the state OWNER's queue.** A driver started stages in subjects' states (Egypt, Lower Canada
+   built theirs), and where the subject had no construction the stage never moved: Britain's Columbia project in the Oregon Country was
+   re-queued every quarter (p4) until the driver learned to skip a stage under construction and pass over a started project for a year (p5).
+5. **The quarterly driver (p5) is clean**: 75 surveys started, 74 completed, none cancelled, no same-day takes; 45 stage starts, 28 stages
+   built across eight countries including subjects; no error names our files.
+6. **There is no country-tag data function** (re-confirmed: `[THIS.GetCountry.GetTag]` voids the line with `Could not find data system
+   function 'GetTag'`) — the logs carry `GetNameNoFormatting`; and `[ROOT.GetCountry…]` inside a STATE scope entered from a country
+   on_action resolves to nothing — log from the country scope.
+7. Vanilla script values can read a country's `produced_bureaucracy` and `bureaucracy_usage` (`negotiation_values.txt`), so the log lines
+   carry the bureaucracy balance: `[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]`.
+
+**What it does NOT say.** Anything about the economy of dams (probe costs, techs granted in 1836), how many dams the AI builds at real
+technology dates, or whether a player can build them in a subject's state by hand (probably not — the owner-queue limit is the effect's,
+not necessarily the construction UI's; untested).

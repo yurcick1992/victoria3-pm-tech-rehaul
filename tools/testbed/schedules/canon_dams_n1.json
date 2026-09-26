@@ -1,0 +1,67 @@
+{
+  "schedule_version": 1,
+  "label": "canon-dams-n1",
+  "_why": "THE FIRST CENTURY RUN OF THE HYDRO-DAM MEGAPROJECTS AND THE 4x POWER PLANT (user-ruled 2026-09-26: Go on with the tests. Full 100 years n=1 after all the probes you need. Note that we will need to understand which countries went for the surveys). ARM = config/mod_config.canon-dams.json {kind: config}: the canon (canon-b164-trade, every other key byte-identical) + building_required_construction {building_power_plant: 1600} + dams {enabled; 159 projects, 349 stages; BALANCE_FRAMEWORK 10.89}. No probe settings. Probes p1-p5 (sessions 20260926_145556 / _151335 / _152100 / _153048 / _153820) established the mechanism: surveys, the anchor, construction through a quarterly AI driver, completion effects.",
+  "_arm": "config/mod_config.canon-dams.json (+ tech_tree_options.canon-dams.json = the canon twin, byte-identical)",
+  "_comparison": "the canon n=3 (20260926_002930_canon-b164-trade-n3) and the pinned vanilla n=16 (20260821_131149). n=1, so the comparison is DIRECTIONAL and the canon's own seed spread (world GDP 1.03 / 1.04 / 0.68) bounds what one run can say.",
+  "_instrument": "the canon telemetry (identical metrics, tags and dump dates) + the dam debug.log lines PMR_DAM|event|project|country name|date|bur produced/used: survey_start / survey_month / survey_stop / survey_complete / survey_ended, stage_start (the AI driver), built / complete, and bur_year (every country holding electrical_generation, yearly, with its surveys and stages under way). The yearly save summaries carry the dam buildings (building_dam_*) per country.",
+  "_stop_rule": "fixed n=1: plays to 1936, no stop watcher",
+  "_predictions": {
+    "surveys": "the first surveys follow electrical_generation (game era 3) in the leaders, about 1875-1890; steam_turbine (era 4) projects from about 1900, arc_welding (era 5) from about 1925. By 1936: 40-80 projects surveyed, most by owners; overlord surveys in India, Canada and Egypt.",
+    "construction": "the first stages stand about 1885-1895; by 1936 60-140 of the 349 stages built, 15,000-35,000 electricity a week (0.3-0.6 of the canon world total of about 54,000). Subjects without construction capacity (the Oregon Country kind) never build what their overlord surveyed.",
+    "power_plants": "the 4x cost slows coal-plant supply: world power-plant levels at 1936 below the canon 524-1,085; electricity prices above the canon 1.17-1.32x base in the majors 1900-1920, easing as dams arrive.",
+    "economy": "world GDP inside the canon seed spread (0.68-1.04 of vanilla); no hard break attributable to the dams.",
+    "perf": "play time within 5% of the canon (the quarterly driver and 159 decisions are cheap)"
+  },
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "canon-dams": {
+      "kind": "config",
+      "config": "config/mod_config.canon-dams.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon-dams",
+      "until": "1936.1.1"
+    }
+  ]
+}

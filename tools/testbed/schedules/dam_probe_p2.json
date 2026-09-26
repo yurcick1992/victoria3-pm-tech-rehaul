@@ -1,0 +1,53 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probe-p2",
+  "_why": "ENGINE PROBE of the hydro-dam megaprojects (ROADMAP step 6, BALANCE_FRAMEWORK §10.90, user-ruled 2026-09-26: 'Go on with the tests. Full 100 years n=1 after all the probes you need'). ARM = config/mod_config.canon-dams-probe.json {kind: config}: the canon (canon-b164-trade) + building_required_construction {building_power_plant: 1600} + dams {enabled, the FINAL 159-project table with researched anchor provinces} + dams.probe {the three class technologies granted at the start to GBR FRA USA RUS PRU AUS SWE SAR SWI TUR; surveys 2 months; stage cost x0.05}. The probe settings exist ONLY to make the mechanism fire inside three years; nothing economic is read from this run. P2 over p1 (20260926_145556, FINDINGS to follow): the AI runs one dam survey at a time (p1: five at once drove Britain into bureaucratic deficit and it cancelled all of them), logs carry the country NAME (no tag function exists) and its produced/used bureaucracy, per-stage technology classes, and a probe-only diagnostic: at each survey completion the anchor state logs can_construct_building for stage 1, and every second project is force-started with start_building_construction.",
+  "_questions": {
+    "Q1": "Is stage 1 constructible once surveyed (probe_can_build yes)?",
+    "Q2": "Do force-started stages build to completion and fire on_building_built (built / complete lines, the arable and trait effects)?",
+    "Q3": "Does the government AI queue any unforced stage by 1840?",
+    "Q4": "Do the bureaucracy log lines resolve, and does the one-survey-at-a-time rule stop the cancellation cascade?"
+  },
+  "_predictions": {
+    "Q1": "yes wherever the surveyor chain owns the anchor",
+    "Q2": "yes, ~20 weeks at the probe cost x0.05",
+    "Q3": "uncertain - p1 showed no stage in any queue; governments in 1836-39 build little",
+    "Q4": "yes; survey_stop becomes rare"
+  },
+  "_cost": "1 run x 1836.1.1 -> 1840.1.1, about 6 minutes of play plus the build and load.",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe build: techs granted, costs and surveys shrunk - do not read any economic number from it."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1839.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 40
+  },
+  "setups": {
+    "damprobe": {
+      "kind": "config",
+      "config": "config/mod_config.canon-dams-probe.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "damprobe",
+      "until": "1840.1.1"
+    }
+  ]
+}

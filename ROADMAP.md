@@ -1242,6 +1242,15 @@ output in the thousands** for modest labour and a tools input.
 market model on purpose: small-scale hydro folds into the urban-centre narrative, and large-scale hydro
 is a site-specific megaproject — exactly what this step builds it as.
 
+**Status 2026-09-26: IMPLEMENTED as a test book, the first century run launched** (`config/mod_config.canon-dams.json`,
+schedule `canon_dams_n1.json`; ruled and specified in BALANCE_FRAMEWORK **§10.89**, engine probes in FINDINGS **F168**).
+159 projects, one per state, from a 1930s-feasibility research table (134 sites, 157 GW) placed case by case on the
+consumer rule; staged unique government-funded buildings anchored to a province; a survey decision for the anchor owner's
+overlord chain; the power plant at 4× construction cost in the same book; irrigation effects on 13 projects and 1836
+maluses on the Nile states; the vanilla hydro-site electricity bonuses removed. AI countries survey and build through a
+quarterly scripted driver (the engine's AI does neither). ⚠ Open: an overlord's survey of a subject's site is built in the
+SUBJECT's queue; what the century run shows about surveys, stages and electricity prices; whether it becomes canonical.
+
 ## Step 7 — VISUALS, PROOFREADING, RELEASE
 
 - Per-tier building artwork, so a player reads the tier from the picture instead of a wall of text.

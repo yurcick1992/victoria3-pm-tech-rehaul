@@ -1404,6 +1404,19 @@ if ($LASTEXITCODE -ne 0) { throw "emit_companies.mjs failed (exit $LASTEXITCODE)
 & node (Join-Path $PSScriptRoot 'emit_goods.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_goods.mjs failed (exit $LASTEXITCODE) - the per-good trade weights would ship broken or not at all." }
 
+# --- CONSTRUCTION COST OF PRESERVED VANILLA BUILDINGS (BALANCE_FRAMEWORK §10.89) --------------------
+# `building_required_construction` patches the named buildings' required_construction inside the building
+# files this build owns (the power plant at 4x vanilla); absent -> nothing patched. Throws on a building
+# the build does not own.
+& node (Join-Path $PSScriptRoot 'emit_building_costs.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_building_costs.mjs failed (exit $LASTEXITCODE)." }
+
+# --- HYDRO-DAM MEGAPROJECTS (ROADMAP step 6, BALANCE_FRAMEWORK §10.89) ------------------------------
+# `dams.enabled` emits the survey decisions, journal entries, staged unique dam buildings, the start and
+# completion effects and the stripped vanilla hydro traits (tools/emit_dams.mjs, numbers from lib_dams.mjs).
+& node (Join-Path $PSScriptRoot 'emit_dams.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_dams.mjs failed (exit $LASTEXITCODE) - the dam megaprojects would ship broken or not at all." }
+
 
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---
 # Only the canonical build repoints the UI; alternate builds (-DryRun/-SaveTo) leave ui/data.js alone.

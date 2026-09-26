@@ -1573,7 +1573,17 @@ the *budget* half — how much money each need gets — which the save does not 
 
 ## Verified script-value keywords (country scope)
 
-`gdp` ✅ · `literacy_rate` ✅ (0.53169) · `total_population` ✅ · `money_amount` ❌ · `construction` ❌
+`gdp` ✅ · `literacy_rate` ✅ (0.53169) · `total_population` ✅ · `money_amount` ❌ · `construction` ❌ ·
+`produced_bureaucracy` ✅ · `bureaucracy_usage` ✅ (both verified 2026-09-26 in the dam probes, read through script values and printed
+with `[THIS.GetCountry.MakeScope.ScriptValue('<sv>')|0]` — e.g. Britain 1836 2,513 / 2,395)
+
+### The dam log lines (content, not telemetry — emitted by `tools/emit_dams.mjs` in any build with `dams.enabled`, FINDINGS F168)
+`PMR_DAM|<event>|<project id>|<country NAME>|<date>|bur <produced>/<used>` in debug.log, for `survey_start`, `survey_month` (monthly while a
+survey runs), `survey_stop`, `survey_complete`, `survey_ended` (the journal entry invalidated: cancelled, or the anchor left the
+chain), `stage_start` (the AI driver), and `built|…|stage k/n` / `complete` (on_building_built; no bureaucracy field); plus
+`bur_year|-|<country>|<date>|bur …|surveys N building M` once a year for every country holding `electrical_generation`, and
+`start` once at 1836. ⚠ The country is the NAME (no tag function exists), so a join across a country's formation (Prussia → the North
+German Federation → Germany) must go by name history. ⚠ Not token-stamped: filter a shared ring by the run's own time window.
 
 ## Other verified Country data functions
 

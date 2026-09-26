@@ -119,6 +119,27 @@ that list is for. If a patch adds a fourth such case and does *not* name it, thi
 
 ## Manual — static snapshots that can go stale (NOT automated)
 
+### The hydro-dam megaprojects (BALANCE_FRAMEWORK §10.89, 2026-09-26) — what a patch can break
+- **Anchor provinces and state keys** (`config/dam_projects.json`: `state`, `anchor_province`). `emit_dams.mjs` THROWS if a state or an
+  anchor province stops existing in `map_data/state_regions` — a patch that redraws a region will stop the build, which is the point.
+  The fix is to re-run the placement for that project (a nearby province of the same state), never to drop the check.
+- **The class technologies** `electrical_generation` / `steam_turbine` / `arc_welding` (`tools/lib_dams.mjs` `tech_by_class`) — the
+  emitter throws if one disappears; a patch that moves one to another era moves every dam of its class with it.
+- **The vanilla state traits whose electricity line is commented out** (`dams.strip_trait_modifiers`: niagara_falls, krka_falls,
+  angara_river, trondhjemsfjorden, hardangerfjorden) — the emitter owns WHOLE-FILE copies of `common/state_traits/01_scandinavia`,
+  `03_north_america`, `06_eastern_europe` and `11_far_east_asia_traits.txt`, regenerated each build from vanilla, and THROWS if a named
+  line is gone. A patch that adds a NEW hydro-site electricity bonus is not caught: grep `goods_output_electricity_mult` in
+  `common/state_traits` after a patch.
+- **The Nile start maluses** add traits on top of vanilla's `state_trait_nile_river` in Middle Egypt, Upper Egypt and Blue Nile; a patch
+  that changes that trait's agriculture bonus changes the net 1836 value (the malus is sized against +0.2).
+- **The power plant's cost patch** (`building_required_construction`, `tools/emit_building_costs.mjs`) edits the owned
+  `common/buildings/06_urban_center.txt` and throws unless exactly one `required_construction` line matches inside `building_power_plant`.
+- **Engine facts the design rests on** (FINDINGS F168), to re-probe after a major patch: the government AI does not queue unique
+  government-funded buildings; the AI takes every visible decision in one pass; `start_building_construction` builds into the state
+  owner's queue; no country-tag data function exists.
+
+### Hand-maintained copies of vanilla data
+
 These are hand-maintained copies of vanilla data. Nothing warns you if vanilla changes them — check by
 hand on a major patch.
 
