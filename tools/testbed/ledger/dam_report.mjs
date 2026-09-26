@@ -71,7 +71,7 @@ if (who) {
 // (4) the summaries
 const sd = join(run, 'save_summaries');
 if (existsSync(sd)) {
-  const files = readdirSync(sd).filter(f => f.endsWith('.json.gz') && !f.includes('partial')).sort();
+  const files = readdirSync(sd).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort();
   console.log('\nPER YEAR (save summaries): dam stages standing · dam electricity / all electricity (per week) · power-plant levels · top dam countries');
   for (const f of files) {
     const j = JSON.parse(zlib.gunzipSync(readFileSync(join(sd, f))));
