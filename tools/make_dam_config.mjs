@@ -75,7 +75,10 @@ if (cfg.building_subsidies && Object.values(cfg.building_subsidies).some(v => v 
 const dp = JSON.parse(readFileSync(join(REPO, cfg.dams.projects_file), 'utf8'));
 cfg.building_subsidies = Object.fromEntries((dp.projects || dp).map(p => [`building_dam_${p.id}`, 'must_have']));
 if (aiSelf) cfg.dams.ai = { driver_build: false, driver_finance: false };
+// the ai-self PROBE is the CONTEST probe (user, 2026-09-27): several eligible builders on every subject's site, the level log,
+// and costs x0.25 rather than x0.05 so that constructions overlap in time long enough to collide
 if (probe) cfg.dams.probe ={ grant_tags: ['GBR', 'FRA', 'USA', 'RUS', 'PRU', 'AUS', 'SWE', 'SAR', 'SWI', 'TUR'], survey_months: 2, cost_mult: 0.05, force_build_every: 0, laissez_faire_tags: ['USA', 'FRA'] };
+if (probe && aiSelf) Object.assign(cfg.dams.probe, { contest: true, cost_mult: 0.25 });
 cfg._dams_variant = {
   name: suffix, base: basename(base),
   ruled_by: 'user 2026-09-26: power plants at 4x construction cost, recipes unchanged; hydro-dam megaprojects (survey decision + staged unique buildings, one project per state)',

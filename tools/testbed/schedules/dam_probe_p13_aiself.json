@@ -1,29 +1,36 @@
 {
   "schedule_version": 1,
-  "label": "dam-probe-p13-aiself",
-  "_why": "ENGINE PROBE: does the engine's own AI build dams once they carry ownership_type = self? (user, 2026-09-27: 'For the test, remove scripted queue adds. I suspect that the reason AI never built the dams without them is the same declaration that we just removed.') Every earlier probe (p6-p12) and century run had dams WITHOUT an ownership_type, which the engine treats like an administration (refused in a foreign state, CANNOT_EXPAND_BUILDING_NOT_OWNABLE, found in the user's playtest), and the AI never queued a dam itself (F169). Arm = config/mod_config.canon-dams-aiself-probe.json {kind: config}: the probe book (dam technologies granted to ten majors, 2-month surveys, level cost x0.05, USA/FRA on laissez-faire) with dams.ai.driver_build = false and driver_finance = false - the quarterly driver only SURVEYS; no start_building_construction, no financed level. Any dam level that appears was queued by the engine's AI.",
+  "label": "dam-probe-p13-aiself-contest",
+  "_why": "ENGINE PROBE, two questions in one run. (1) Does the engine's own AI build dams once they carry ownership_type = self? (user, 2026-09-27: 'For the test, remove scripted queue adds. I suspect that the reason AI never built the dams without them is the same declaration that we just removed.') Every earlier probe (p6-p12) and century run had dams WITHOUT an ownership_type, which the engine treats like an administration (refused in a foreign state, CANNOT_EXPAND_BUILDING_NOT_OWNABLE, found in the user's playtest), and the AI never queued a dam itself (F169). (2) THE CONTEST (user, the same day: 'the probes need to have multiple possible investors to check that once one starts building, others got locked out and don't waste a lot of money there'): at the start every dam site whose owner is a SUBJECT is seeded with several eligible builders - the owner and every country above it get the class technologies and a completed survey - and every standing dam logs monthly its built level and its level after all queued constructions. Arm = config/mod_config.canon-dams-aiself-probe.json {kind: config}: the probe book (dam technologies granted to ten majors, 2-month surveys, level cost x0.25 - not x0.05, so constructions overlap in time long enough to collide - USA/FRA on laissez-faire) + dams.probe.contest + dams.ai.driver_build = false and driver_finance = false: the quarterly driver only SURVEYS; no start_building_construction, no financed level. Any dam level that appears was queued by the engine's AI.",
   "_arm": "config/mod_config.canon-dams-aiself-probe.json (+ tech_tree_options twin = the canon's, byte-identical)",
   "_questions": {
-    "Q1": "Does any AI country queue a dam level in its OWN state (a building_dam_* with levels > 0 in its save summary, or in its government construction queue)?",
+    "Q1": "Does any AI country queue a dam level in its OWN state?",
     "Q2": "Does any AI overlord queue a dam level in a SUBJECT's state through its own government queue (a level owned by a foreign country in the host's ownership split)?",
-    "Q3": "Does anything land in a PRIVATE queue, or end up owned by a financial district / company (can_build_private stays always = no)?"
+    "Q3": "Does anything land in a PRIVATE queue, or end up owned by a financial district / company (can_build_private stays always = no; USA and France on laissez-faire)?",
+    "Q4": "Once one country queues a level, are the others locked out? i.e. does a dam ever read more queued levels than its cap (probe_q above N/N), or do two countries hold the SAME dam in their government queues beyond the free levels?",
+    "Q5": "Is money wasted: does a dam construction ever vanish without its level rising (probe_q falling while probe_lvl stays; a queue element present one quarter and gone the next with no level gained)?",
+    "Q6": "Does a poor SUBJECT owner grab a level and sit on it (a dam element in a subject's government queue with little or no speed while its overlord is locked out) - the F170 stall, now without the driver's owner capacity gate?"
   },
   "_predictions": {
-    "Q1": "yes, in at least two of the ten granted majors within three years (ai_value 30,000 and must_have subsidies, at x0.05 cost) - stated with low confidence: F169's null may also have another cause",
+    "Q1": "yes, in at least two of the ten granted majors within three years (ai_value 30,000, must_have subsidies) - low confidence: F169's null may have another cause",
     "Q2": "rarer than Q1 if at all - the government AI's foreign construction is a separate, sparser path",
-    "Q3": "no"
+    "Q3": "no",
+    "Q4": "locked out: the cap counts every builder's queued levels (level_after_queued_constructions, vanilla's trade-centre idiom) - never above N/N",
+    "Q5": "no cancellation - in v3 Britain's own last levels (Lochaber, Galloway) completed while the cap read full, so the game does not re-check can_build_government on a construction under way",
+    "Q6": "yes, somewhere: nothing restrains a poor owner once the driver's capacity gate is gone - if so, the gate belongs in can_build_government"
   },
-  "_read": "save summaries: building_dam_* levels and ownership_levels by owner class per country, yearly; queue_rungs / queue_mix style read of the government and private queues; PMR_DAM survey_* and built lines in debug.log (no stage_start or finance_* lines can appear - the driver emits none).",
-  "_cost": "1 run x 1836 -> 1840.1, about 7 minutes",
+  "_read": "debug.log: PMR_DAM probe_contest_seed (which sites were seeded, by owner), probe_lvl / probe_q per dam per month, survey_* and built lines (no stage_start or finance_* lines can appear - the driver emits none). Save summaries (quarterly): every country's queues.government.by_type / queues.private.by_type building_dam_* (n, points left), building_dam_* levels and ownership_levels by owner class.",
+  "_cost": "1 run x 1836 -> 1842.1, about 10 minutes",
   "_caveats": [
     "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
-    "Probe build: techs granted, costs and surveys shrunk - do not read any economic number from it.",
-    "A null here is NOT conclusive for the canon: at canon costs (x20 dearer) and real technology dates the AI's weighing differs - the century arm canon_dams_aiself_n1 answers that."
+    "Probe build: techs granted, costs and surveys shrunk, subjects' chains seeded - do not read any economic number from it.",
+    "A null on Q1/Q2 is NOT conclusive for the canon: at canon costs and real technology dates the AI's weighing differs - the century arm canon_dams_aiself_n1 answers that."
   ],
   "defaults": {
     "dump_dates": [
       "1837.1.1",
-      "1839.1.1"
+      "1839.1.1",
+      "1841.1.1"
     ],
     "tags": [
       "GBR",
@@ -37,7 +44,7 @@
       "country_state"
     ],
     "autosave_interval": "quarteryear",
-    "timeout_minutes": 40
+    "timeout_minutes": 50
   },
   "setups": {
     "damprobe-aiself": {
@@ -48,7 +55,7 @@
   "runs": [
     {
       "setup": "damprobe-aiself",
-      "until": "1840.1.1"
+      "until": "1842.1.1"
     }
   ]
 }

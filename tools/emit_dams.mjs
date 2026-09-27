@@ -255,6 +255,20 @@ if (P.probe?.grant_tags?.length) for (const tag of P.probe.grant_tags) {
   start.push(`${T}${T}if = {\n${T}${T}${T}limit = { exists = c:${tag} }\n${T}${T}${T}c:${tag} = {\n` + [...new Set(Object.values(P.tech_by_class))].map(t => `${T}${T}${T}${T}add_technology_researched = ${t}\n`).join('') +
     `${T}${T}${T}${T}debug_log = "PMR_DAM|probe_grant|-|${TAG}|${DATE}"\n${T}${T}${T}}\n${T}${T}}`);
 }
+// PROBE BUILDS ONLY — THE CONTEST (user, 2026-09-27: "the probes need to have multiple possible investors to check that once one
+// starts building, others got locked out and don't waste a lot of money there"). At the start every dam site whose owner is a
+// SUBJECT gets several eligible builders at once: the owner and every country above it receive the class technologies and a
+// completed survey. Monthly, every standing dam logs its built level and its level counting every queued construction
+// (probe_lvl / probe_q): queued above the cap = the lock-out failed; queued falling while built stays = a cancelled construction.
+if (P.probe?.contest) {
+  const grant = [...new Set(Object.values(P.tech_by_class))].map(t => `add_technology_researched = ${t}`).join(' ');
+  for (const p of projects) start.push(
+    `${T}${T}p:${p.anchor_province}.state.owner ?= {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { is_subject = yes }\n` +
+    `${T}${T}${T}${T}${grant}\n${T}${T}${T}${T}set_variable = ${V(p)}_surveyed\n` +
+    `${T}${T}${T}${T}every_overlord_or_above = {\n${T}${T}${T}${T}${T}${grant}\n${T}${T}${T}${T}${T}set_variable = ${V(p)}_surveyed\n${T}${T}${T}${T}}\n` +
+    `${T}${T}${T}${T}set_global_variable = ${V(p)}_surveyed_any\n` +
+    `${T}${T}${T}${T}debug_log = "PMR_DAM|probe_contest_seed|${p.id}|${TAG}|${DATE}"\n${T}${T}${T}}\n${T}${T}}`);
+}
 // on_building_built (a dam's first level) and on_building_expanded (every later level) both land here, root = the building.
 // An effect named for level k fires once, the first time the dam stands at k levels or more; 'last' = at its final level.
 const onBuilt = [];
@@ -338,6 +352,16 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
   `on_building_expanded = {\n${T}on_actions = { pmr_dam_built }\n}\n\n` +
   `pmr_dam_campaign_start = {\n${T}effect = {\n${T}${T}debug_log = "PMR_DAM|start|${projects.length} projects|-|${DATE}"\n${start.join('\n')}\n${T}}\n}\n\n` +
   `pmr_dam_built = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { is_building_group = bg_pmr_hydro_dams }\n${onBuilt.join('\n')}\n${T}${T}}\n${T}}\n}\n\n` +
+  // PROBE (contest): every standing dam's built level and its level after every queued construction, monthly. Checked up to
+  // two above the cap, so an over-queue shows. A dam whose first level is only queued already has a (level-0) building record.
+  (P.probe?.contest ? `on_monthly_pulse = {\n${T}on_actions = { pmr_dam_probe_levels }\n}\n\n` +
+    `pmr_dam_probe_levels = {\n${T}effect = {\n` + projects.map(p => {
+      const chain = (trig, tag) => Array.from({ length: p.stages + 3 }, (_, i) => p.stages + 2 - i).map((k, j) =>
+        `${T}${T}${T}${T}${j ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = { ${k ? `${trig} >= ${k}` : 'always = yes'} }\n` +
+        `${T}${T}${T}${T}${T}debug_log = "PMR_DAM|${tag}|${p.id}|${k}/${p.stages}|${DATE}"\n${T}${T}${T}${T}}\n`).join('');
+      return `${T}${T}p:${p.anchor_province}.state ?= {\n${T}${T}${T}random_scope_building = {\n${T}${T}${T}${T}limit = { is_building_type = ${BKEY(p)} }\n` +
+        chain('level', 'probe_lvl') + chain('level_after_queued_constructions', 'probe_q') + `${T}${T}${T}}\n${T}${T}}\n`;
+    }).join('') + `${T}}\n}\n\n` : '') +
   // the bureaucracy baseline around the survey events (user, 2026-09-26)
   `on_yearly_pulse_country = {\n${T}on_actions = { pmr_dam_yearly }\n}\n\n` +
   `pmr_dam_yearly = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { has_technology_researched = ${P.tech_by_class.A} }\n` +

@@ -8837,6 +8837,15 @@ unacceptable"*. What ships now:
   starts and its financing; `make_dam_config --ai-self` writes `canon-dams-aiself` (+ `-probe`), where the driver only surveys. Schedules
   `dam_probe_p13_aiself.json` (1836 → 1840 on the probe book, ~7 min) and `canon_dams_aiself_n1.json` (a century), predictions inside.
   If the engine AI builds dams on its own, the scripted construction paths can go; if not, they stay.
+  ⚠ **AND THE LOCK-OUT MUST BE TESTED WITH SEVERAL BUILDERS AT ONCE** (user, the same day: *"the probes need to have multiple possible
+  investors to check that once one starts building, others got locked out and don't waste a lot of money there"*). No earlier probe
+  had two eligible builders on one site (only the granted majors held the technology, and a completed survey is a two-year claim).
+  The ai-self PROBE is therefore the CONTEST probe (`dams.probe.contest`, cost × 0.25): every subject's site starts with the owner and
+  every country above it holding the technologies and a completed survey, and every standing dam logs monthly its built level and its
+  level after all queued constructions (`PMR_DAM|probe_lvl` / `probe_q`). What is already known: the game does NOT re-check
+  `can_build_government` on a construction under way (canon-dams-v3-n3: Britain's own last levels of Lochaber and Galloway completed
+  while the cap read full). What is not: whether one builder's queued level counts in the cap another builder reads, and whether a
+  poor subject owner grabs a level it cannot fund now that the driver's owner capacity gate no longer stands in front of the AI.
 
 ### 10.89.10 — THE CUTS AND THE CANONIZATION (user-ruled 2026-09-27; FINDINGS F171–F172)
 The gated n=3 put hydro at 43–52% of world electricity at 1935, "slightly overdone … especially considering that Urban Center electricity is
