@@ -10,7 +10,9 @@
 //     skyscraper idiom), and `can_build_government` reads the BUILDER through `scope:investor_country`: it must be
 //     the anchor owner or above it in the overlord chain, must have completed its OWN survey, and must hold the
 //     technology of the next level's class. Several such builders share the levels like a deposit: the cap counts
-//     everyone's queued levels, and each owns what it built. An OVERLORD building in a subject's state FINANCES the
+//     everyone's queued levels, and each owns what it built. `ownership_type = self` lets a PLAYER overlord queue a level
+//     in a subject's state from the ordinary build menu, through its own government queue (the engine refuses a building
+//     with no ownership type in a foreign state). The AI cannot do that from script, so an AI OVERLORD FINANCES the
 //     level instead (start_building_construction queues only for the state owner, F169): a journal entry pays
 //     points × £540 monthly, then create_building + add_ownership sets the overlord's holding to held + 1; nobody
 //     else may build the dam meanwhile, and it starts only when nothing of the dam is queued. `potential` shows the dam only in the split part of the state holding the ANCHOR PROVINCE.
@@ -135,6 +137,11 @@ for (const p of projects) {
       `${T}${T}${T}${T}scope:investor_country ?= { has_technology_researched = ${g.tech} }\n${T}${T}${T}}\n${T}${T}}\n`).join('') +
     `${T}}\n\n` +
     `${T}can_build_private = {\n${T}${T}always = no\n${T}}\n\n` +
+    // ⚠ WITHOUT an ownership_type the engine treats the building like an administration or a monument and refuses it in a
+    // FOREIGN state ("<building> cannot be constructed in a foreign state", CANNOT_EXPAND_BUILDING_NOT_OWNABLE — user's
+    // playtest, 2026-09-27). `self` is what the trade centre, ports and power plant carry, all of which a foreign
+    // government can build: the overlord's own government queue then builds the level in its subject's state
+    `${T}ownership_type = self\n\n` +
     // added to the AI's nationalization_desire: it privatises below NATIONALIZATION_DESIRE_PRIVATIZE_THRESHOLD 0.0 and
     // nationalises above ..._NATIONALIZE_THRESHOLD 1.0 (vanilla industries ±0.25). 0.75 = never privatised, and never
     // high enough to nationalise a dam another country owns. ⚠ buildings.md documents `ai_privatization_deisre`: the

@@ -8823,6 +8823,14 @@ unacceptable"*. What ships now:
   is acceptable (user-ruled). No construction was lost to a builder conflict in canon-dams-v2-n1 (every loss matched a bankruptcy).
 - ⚠ **What the financed path does not do**: it spends money, not construction points — the overlord's contractors are modelled as a cash
   outlay at the construction sector's goods price, so it does not compete with the overlord's own construction queue.
+- ⭐ **A PLAYER OVERLORD BUILDS THROUGH THE ORDINARY BUILD MENU SINCE 2026-09-27** (user's playtest): the dam showed in a subject's
+  state with *"Laxapana Falls cannot be constructed in a foreign state"* — the engine's `CANNOT_EXPAND_BUILDING_NOT_OWNABLE`. A building
+  with NO `ownership_type` is treated like an administration, a barracks or a monument and is refused abroad; the trade centre, the
+  ports and the power plant carry `ownership_type = self` and a foreign government can build them. Every dam now carries it, so an
+  overlord's own government queue can build a level in its subject's state, owned by the overlord. The AI still has no script route to
+  a foreign government queue, so AI overlords keep FINANCING. ⚠ Pending the user's confirmation in play; once confirmed, the player's
+  `<v>_finance_decision` is redundant and is to be hidden from human players. ⚠ Unmeasured whether the field changes anything for the
+  AI (it never queues a dam itself, and no `foreign_investment_ai_factor` is set on the group).
 
 ### 10.89.10 — THE CUTS AND THE CANONIZATION (user-ruled 2026-09-27; FINDINGS F171–F172)
 The gated n=3 put hydro at 43–52% of world electricity at 1935, "slightly overdone … especially considering that Urban Center electricity is

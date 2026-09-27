@@ -478,6 +478,16 @@ crashes unrecoverable (and note a crash before the first autosave has nothing to
   path is fine and needs no asset. A bad path logs an error and shows a fallback/missing icon;
   it does not crash.
 
+## ⭐ A building with no `ownership_type` cannot be built in a FOREIGN state
+
+Found 2026-09-27 (user's playtest, BALANCE_FRAMEWORK §10.89.9). The build menu lists the building in a foreign state (a subject's,
+with investment rights) and refuses it with *"<building> cannot be constructed in a foreign state"* (loc key
+`CANNOT_EXPAND_BUILDING_NOT_OWNABLE`). Vanilla leaves `ownership_type` out on exactly the buildings no foreign country may build —
+military buildings, government administration, universities, monuments, canals, the construction sector — and sets it on everything a
+foreign government can build (`self` on the trade centre, ports, power plant and industry; `other` on financial districts, manor houses
+and company HQs). `is_government_funded = no` on the group is NOT enough. ⇒ A building meant to be buildable abroad needs
+`ownership_type = self`.
+
 ## ⭐⭐ `create_building` IS GATED ON THE STATE OWNER'S TECHNOLOGY — AND FAILS SILENTLY
 
 **Undocumented, measured 2026-08-17 (FINDINGS F68). The single most expensive engine trap this mod has
