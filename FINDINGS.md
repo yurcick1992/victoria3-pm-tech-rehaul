@@ -17646,3 +17646,30 @@ not evaporate. Most likely Austria lost the level when Wallachia left its chain 
 
 **What it does NOT say.** Whether the gate itself moved the economy (the ungated comparison is n=1); how often a financed level ends
 self-owned; anything beyond direction.
+
+## F172 — WHAT THE DAMS DO TO ELECTRICITY CONSUMERS: no more electricity and no richer consumers than the canon at matched world GDP, but consumption MOVES to the dams (big-dam regions hold 29-48% of world use against 4-20% in the canon)
+
+**Arms and matching.** 1935.1.1, every run whose world GDP is within +-10% of the vanilla n=16 median: the dam book 4 runs
+(20260927_001731 runs 1-2, 20260926_195231, 20260926_154538), the canon 2 (20260926_002930 runs 1-2), vanilla 9 (20260821_131149 runs
+1, 2, 4, 5, 6, 10, 12, 14, 16). Country figures from the save summaries (goods_in / goods_out electricity; electricity-using building types
+= those running any of the 35 production methods with an electricity input, vanilla + mod); state figures from the melted final saves
+(1936.1.1) of two runs per arm (dams v3 runs 1-2, canon runs 1-2, vanilla runs 4 and 14), building input/output goods index 17.
+
+**Country level (median over runs).** Electricity produced: dams 51-55k a week, canon 51-52k, vanilla 33-88k (median ~45k) - the dams
+REPLACE coal plants (the power plant costs 4x in the dam book) rather than add electricity. Electricity demanded (building inputs): dams
+54-69k, canon 67-69k, vanilla 39-83k; the unmet part is smaller with dams (dam runs demand 5-27% above production, the canon 30-37%).
+Demand per GBP M of world GDP: dams 12.2-15.5, canon 15.0-15.1, vanilla 8.7-18.4. Electricity-using buildings' share of all building value
+added: dams 19.7-24.7%, canon 24.5-25.5%, vanilla 9.5-15.6% - consumers fare about as the canon's, slightly lower; well above vanilla, whose
+electric methods are poorer. Prices at 1935 in the major markets: British 1.26 (canon 1.29), American 1.22 (1.27), German 1.13 (1.12),
+French 1.24 (0.95); the Russian market at the 25% floor in all three dam runs (dams sell 2,438-3,550 a week against 1,113-1,436 bought).
+
+**State level - the shift.** The 34 regions with a dam producing >= 300 a week in either intact dam run hold 28.9% / 48.1% of world
+electricity use and 24.1% / 32.3% of electricity-using building levels in the two dam runs, against 19.6% / 4.3% and 13.1% / 7.9% for the
+same regions in the canon and 7.3% / 13.2% and 7.8% / 12.3% in vanilla. Examples (use / dam output, dams run 1 | run 2 | canon 1 | canon 2):
+British Columbia 160/233 | 3,143/1,041 | 207 | 185; California 706/867 | 2,725/867 | 0 | 85; Ontario 376/566 | 4,502/1,276 | 783 | 480;
+Tyrol 932/689 | 2,162/697 | 513 | 100; the South Island (NZ) 1,086/1,250 | 1,696/936 | 237 | 28; Newfoundland 73/434 | 578/2,079 | 144 | 95.
+Proposed mechanism (not tested): electricity is a local good, so a dam makes it cheap in its own state and electricity-using construction
+follows it.
+
+**What it does NOT say.** n=2 per arm at state level; whether the shift raises or lowers GDP (world GDP was matched by construction);
+which industries move (by type, not by location); the Russian glut's cause beyond Russia's low industrial demand.
