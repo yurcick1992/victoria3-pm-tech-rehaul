@@ -17673,3 +17673,31 @@ follows it.
 
 **What it does NOT say.** n=2 per arm at state level; whether the shift raises or lowers GDP (world GDP was matched by construction);
 which industries move (by type, not by location); the Russian glut's cause beyond Russia's low industrial demand.
+
+## F173 — DAMS WITH `ownership_type = self`: THE ENGINE AI BUILDS THEM ITSELF, BUT ONLY IN ITS OWN STATES, AND POOR OWNERS GRAB AND STALL THE LEVELS (probe p13, the contest)
+
+**Arm.** Session `20260927_224655_dam-probe-p13-aiself-contest`, 1 run, 1836.1.1 → 1842.1.1. Book `config/mod_config.canon-dams-aiself-probe.json`
+(commit 309fe72): the probe settings (dam technologies granted to ten majors, 2-month surveys, level cost × 0.25, USA/FRA on laissez-faire)
++ `ownership_type = self` on every dam (the engine refused a dam without one in a foreign state — the user's playtest, BALANCE_FRAMEWORK
+§10.89.9) + the quarterly driver's owner-queue starts and financing OFF (it only surveys) + THE CONTEST (31 sites owned by a subject: the
+owner and every overlord above it start with the technologies and a completed survey) + every urban centre buying 1 electricity a level
+from 1836 (`pm_no_public_transport`), so a dam has a market from the first week. Mechanism only — no economic number is readable.
+
+**Established.**
+1. **The engine's own AI builds dams once they carry an ownership type.** 11 dams queued, 2 levels completed (Qing, Yellow River Gorges,
+   1841.1.1; Russia, Kiev-Kanev, 1841.4.16) with no scripted start or financing anywhere. F169's "the AI never queued a dam" was measured
+   on dams with no ownership_type and no electricity market.
+2. **Only in the builder's OWN state.** Every dam element sat in the SITE OWNER's government queue — Travancore, Lower Canada, the Hudson's
+   Bay Company, Ceylon, Croatia-Slavonia, Qing, Russia. Britain and Austria, eligible on every one of their subjects' seeded sites, never
+   queued a dam abroad. Nothing entered a private queue.
+3. **The lock-out holds where it was exercised**: no dam ever read more than one queued level above its built level, none above its cap,
+   and no construction vanished without its level rising (monthly `PMR_DAM|probe_lvl` / `probe_q`). ⚠ Untested in the strong sense —
+   no second builder ever tried, because of 2.
+4. **Poor owners grab the slot and stall it — F170's stall, now at the engine's hand.** Lower Canada's Laurentian level queued 1836.9,
+   1,677 points left at 1842 at queue speed 0; the Hudson's Bay Company 944 left at 5.4 a week; Croatia-Slavonia 866 at 3.2; Ceylon 628
+   at 5.1; Qing queued FIVE dams at once (16.5 a week across seven queue items). The driver's owner capacity gate only ever screened the
+   driver's own starts, so it does not apply to these.
+
+**What it does NOT say.** Anything at canon costs (4 × dearer than here) or at real technology dates; whether an overlord would build
+abroad once poor owners are screened out (it did not build abroad even where nothing blocked it here); how the completed levels are
+owned (the summary's ownership split is by class, not by building type).
