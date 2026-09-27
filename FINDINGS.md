@@ -17612,3 +17612,37 @@ moment on a world the size of the comparison runs).
 
 **What it does NOT say.** Anything beyond direction at n=1; whether the loss difference to the stage run is the redesign or the seed; the
 design's performance cost.
+
+## F171 — THE DAMS WITH THE OWNER CAPACITY GATE, n=3: two intact runs at world GDP 1.03 / 0.94 (consensus loss 5.97), one pre-dam stuck Britain; the gate halves the waiting dam items, and what still stalls comes from events after the queue
+
+**Arm.** config/mod_config.canon-dams.json at commit 4a0fcbe (the BALANCE_FRAMEWORK 10.89.9 redesign + the owner capacity gate: owner
+levels only at GDP >= 4,000 x the level's points, construction unpaused, government queue draining within 520 weeks; the same GDP floor on
+AI surveys of own sites), session 20260927_001731_canon-dams-v3-n3, three runs 1836.1.1 -> 1936.1.1, all reached, one attempt each.
+Compared with the ungated redesign (20260926_195231, n=1), the stage design (20260926_154538, n=1) and the canon n=3 (20260926_002930).
+
+**Register.** Run 1 intact, world GDP 1.03, loss 10.0; run 2 intact, 0.94, loss 2.8; run 3 BROKEN BY STALL at 0.57. Consensus of the
+intact pair: loss 5.97 — world GDP 0.99, world W 0.68, pool W 0.68, pool U* 2.04 (at the aim), pool GDP 1.23, pool H 2.28, PI 0.93 (not
+falling every decade), PP 1.01, T0 1935 / the 1900s 0.53, T3 / rest 0.71. The canon n=3 has no consensus (divergent pair).
+Run 3's stall predates the dams: Britain lost a revolution in 1845-46 (its 1846 summary is a rump: GDP 8M, 924 levels; it returns as a
+constitutional empire) and sat at U* 61-67% through 1890 - F166's stuck-Britain mode; that run's first dam survey is 1885.
+
+**Dams (run 1 / 2 / 3).** Surveyed 84 / 69 / 44 projects; built 101 / 92 / 45 levels, 94 / 88 / 39 standing at 1935; dam electricity
+22,296 / 24,254 / 10,989 a week = 43 / 44 / 52% of the world's; power-plant levels 551 / 496 / 228. Financing completed by 3 / 7 / 5
+overlords (Britain 28 / 15 / 11; Germany 10 in run 2); levels owned by a non-host country at 1936 37 / 33 / 16.
+
+**The gate.** Dam items in government queues at 1935: 8 / 11 / 7 against the ungated run's 16; most are back-to-back levels of one dam.
+Two real stalls, both caused AFTER a gate-passing queue: Prussia's Moldau (queued 1919; Prussia's construction paused every year 1921-1935;
+1,907 points left since 1922) and the Piave (queued by Austria 1913; Venetia passed to the Papal States, which funded nothing 1918-1934).
+The yearly gov_paused / gov_backlog lines fire for small states (the Papal States, Sardinia, Switzerland, Lucca, Puerto Rico), none of which
+queued a level.
+
+**Ownership.** No dam level owned by a financial district, manor house or company. One level SELF-OWNED (run 3: the Iron Gates in Wallachia,
+financed by Austria 1898): the engine's record is identity = the building itself with privatization = yes, which is how it stores EVERY
+self-owned building (manor houses, urban centres, financial districts and company HQs read identically) - so the flag means privately held,
+not "for sale". It stays subsidised, earns ~1,700 a week and pays it out as dividends (taxed 266 a week) to its own workforce: the profit does
+not evaporate. Most likely Austria lost the level when Wallachia left its chain (not traced).
+
+**Play time.** 173 / 148 / 144 min, sum 465 against the canon n=3's 492 (0.95x).
+
+**What it does NOT say.** Whether the gate itself moved the economy (the ungated comparison is n=1); how often a financed level ends
+self-owned; anything beyond direction.
