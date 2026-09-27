@@ -272,6 +272,11 @@ revolution, F166); dams replace coal plants rather than add electricity (51–55
 0.95× the canon. ⚠ **The cuts were ruled AFTER that batch** (12 projects removed, 4 trimmed, one reduced: hydro was 43–52% of world
 electricity at 1935 and remote dams pulled industry into empty places, F172), so **the canon as shipped is unmeasured**; the measured book is
 commit `0ce5324`'s `config/dam_projects.json` (159 projects). Expected: hydro ~40–45%, the Labrador dam (10% of dam output) gone.
+⭐ **ONE OBJECT, ONE IN-GAME PROJECT** (user-ruled 2026-09-27, the same day, §10.89.10's addendum): a physical object feeding two states goes
+to the consumer that takes ≥ 70% of its output (the Hoover ruling), otherwise to where it stands; a tie is ruled case by case. Applied: Paulo
+Afonso into Bahia, the Snowy into NSW, the Iron Gates into Wallachia, the Gatineau split Ontario/Quebec, the Susquehanna hosts swapped (Conowingo
+→ Pennsylvania, Holtwood/Safe Harbor → Maryland), Tabqa → Deir-Ez-Zor. **144 projects / 312 levels / 135.7 GW**; the generator throws on two
+projects in one state. Unmeasured, like the cuts.
 
 ⚠⚠ **THE KNOWN DEFECTS OF THIS CANON:**
 1. **The stuck Britain (F166) is inherited** — one run in three here.
