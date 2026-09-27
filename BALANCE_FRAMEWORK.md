@@ -8823,3 +8823,22 @@ unacceptable"*. What ships now:
   is acceptable (user-ruled). No construction was lost to a builder conflict in canon-dams-v2-n1 (every loss matched a bankruptcy).
 - ⚠ **What the financed path does not do**: it spends money, not construction points — the overlord's contractors are modelled as a cash
   outlay at the construction sector's goods price, so it does not compete with the overlord's own construction queue.
+
+### 10.89.10 — THE CUTS AND THE CANONIZATION (user-ruled 2026-09-27; FINDINGS F171–F172)
+The gated n=3 put hydro at 43–52% of world electricity at 1935, "slightly overdone … especially considering that Urban Center electricity is
+also partially hydro narratively", and F172 showed electricity-using industry following the dams into empty places (the Labrador dam alone
+was 10% of dam output, with Newfoundland drawing up to 578 a week). The user ruled: remove the dams where they make particularly little sense
+— a very low 1836 population and no migration pull because of a bad climate — **Russian and American sites protected**; then, after a
+site-by-site review of Central Asia and Transcaucasia, *"I agree on all counts. Remove everything you suggested and canonize the build."*
+The cuts live in `tools/make_dam_projects.mjs`'s `CUTS` table, each with its reason:
+- **Removed (12):** Labrador Plateau (Churchill Falls), Thjórsá (Iceland), the Iguaçu Falls twice (Paraná, Corrientes/Misiones), Victoria
+  Falls + Kafue (Zambia), Victoria Falls (Zambezi), Kemijoki + Oulujoki (Oulu), the Grijalva (Chiapas), the lower Caroní (Bolívar), the Naryn
+  (Kirghizia), the Vakhsh (Tajikistan, its +3 arable with it), the upper Irtysh (Semireche).
+- **Trimmed (a research row dropped):** the lower Nelson River (Manitoba keeps the Winnipeg River), Manapouri (the South Island keeps the
+  Waitaki and the Clutha), the other Norrland rivers (Norrland keeps the Lule älv), the Vorotan (Armenia keeps the Sevan–Hrazdan cascade);
+  **reduced:** Rion & Ingur from 5 to 2 parts (the Rioni scale).
+- **Kept after review:** Rion & Ingur (populous Georgia, a real 1933 plant), Sevan–Hrazdan, Mingachevir (its irrigation effects), the Chirchik
+  (the Tashkent oasis); the Sulak (Dagestan) as Russian.
+Result: **147 projects / 313 levels / 135.7 GW** (from 159 / 349 / 157.0). The book is THE CANON since the same ruling (CLAUDE.md), built on
+`canon-b164-trade` with no key of it changed. ⚠ No batch has measured the cut table; expected hydro ~40–45% of world electricity at 1935.
+The research sites file the generator reads is committed as `config/dam_sites_research.json` (it lived only in a session scratchpad before).

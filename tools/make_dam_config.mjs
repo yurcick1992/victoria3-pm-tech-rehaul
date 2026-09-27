@@ -1,7 +1,7 @@
 // THE DAM BOOK — a config = a base book + the power plant at 4 × vanilla's cost + the hydro-dam megaprojects
 // (ROADMAP step 6, BALANCE_FRAMEWORK §10.89, user-ruled 2026-09-26). No base key is changed.
 //
-//   node tools/make_dam_config.mjs [--base config/mod_config.json] [--suffix canon-dams] [--probe]
+//   node tools/make_dam_config.mjs [--base config/mod_config.canon-b164-trade.json] [--suffix canon-dams] [--probe]
 //
 // Writes config/mod_config.<suffix>.json and its tech-tree twin (landmine L20: a copy of the base's twin).
 // --probe adds `dams.probe` (1836-probe builds ONLY: the class technologies granted to named countries at the
@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : d; };
-const base = arg('--base', 'config/mod_config.json');
+const base = arg('--base', 'config/mod_config.canon-b164-trade.json');   // the canon the dam book was built on (the dam book IS the canon since 2026-09-27)
 const probe = process.argv.includes('--probe');
 const suffix = arg('--suffix', probe ? 'canon-dams-probe' : 'canon-dams');
 const cfg = JSON.parse(readFileSync(join(REPO, base), 'utf8'));

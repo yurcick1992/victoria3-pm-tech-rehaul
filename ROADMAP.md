@@ -1254,7 +1254,12 @@ GDP 1.02× and loss 3.7, dams 39% of world electricity at 1935, electricity not 
 REDESIGN (BALANCE_FRAMEWORK **§10.89.9**, probes p6–p11 in FINDINGS **F169**): ONE building per project with levels; the OVERLORD
 builds and owns the dams in its subjects (a financed journal entry + `create_building` with `add_ownership`, verified owned by
 the overlord in a melt); no construction wasted under concurrent builders; never privatised into nothing; always subsidised.
-⚠ Open: a century run on the redesign; whether non-British overlords finance at real dates; whether it becomes canonical.
+⭐⭐ **DONE — CANONICAL SINCE 2026-09-27.** The redesign (n=1, F170) and then the owner capacity gate (n=3, F171: 2 intact at world GDP
+1.03 / 0.94, consensus loss 5.97, one pre-dam stuck Britain) were measured; five to seven overlords financed levels at real dates; F172
+found dams replace coal plants and pull electricity-using industry toward them. The user then cut the remote sites (12 removed, 4 trimmed,
+one reduced — BALANCE_FRAMEWORK **§10.89.10**; 147 projects / 313 levels / 135.7 GW) and canonized the book (CLAUDE.md's canon banner).
+⚠ Open: a batch on the canon as cut (unmeasured; expected hydro ~40–45% of world electricity at 1935); the consumers' recipes (deferred by
+the 4× ruling); post-queue stalls and self-owned levels are ruled acceptable.
 
 ## Step 7 — VISUALS, PROOFREADING, RELEASE
 

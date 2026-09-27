@@ -115,7 +115,7 @@ building_power_plant = {
 		pmg_base_building_power_plant
 	}
 
-	required_construction = construction_cost_medium
+	required_construction = 1600 # pm_tech_rehaul: vanilla construction_cost_medium (BALANCE_FRAMEWORK §10.89)
 
 	ai_value = {
 		value = 1000

@@ -251,7 +251,39 @@ the reason it is closed is the UI, which has to render a rung per era per indust
 ⇒ Nothing may describe it as the canon, the shipped book, or the current method. Where an old banner below still
 reads that way it has been corrected in place; the headings that follow are HISTORY.
 
-## ⭐⭐⭐ THE CANON IS `canon-b164-trade` SINCE 2026-09-25 — THE PREVIOUS CANON AT **B 1.64** WITH THE PER-GOOD TRADE WEIGHTS AT ×1 AND THE FINISH BOOST (user-ruled: *"Canonize trade x1, B 1.64."*)
+## ⭐⭐⭐ THE CANON IS `canon-dams` SINCE 2026-09-27 — THE PREVIOUS CANON (`canon-b164-trade`) + THE POWER PLANT AT 4× CONSTRUCTION COST + THE HYDRO-DAM MEGAPROJECTS (user-ruled: *"Remove everything you suggested and canonize the build."*)
+
+`config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.canon-dams.json` + twin
+(sha256 `bf9a94444ec8cb2c`). ⭐ **THE TECH TREE DID NOT MOVE** (the twin is the previous canon's byte for byte) and **no key of the previous
+canon changed**: the book adds `building_required_construction` {building_power_plant: 1600}, `dams` and `building_subsidies` (must_have on
+every dam). Built, linted (LINT / NEGATIVE-GOODS / SOLVENCY / TECH CONTENT / L13 / L31 / MOD CHECKS / PREFLIGHT) and deployed 2026-09-27.
+
+**What it is** (BALANCE_FRAMEWORK §10.89, the redesign §10.89.9, the cuts §10.89.10): **147 dam projects / 313 levels / 135.7 GW**, one expandable
+building per project in its anchor province's state; surveyed by the anchor owner or its overlord chain (a bureaucracy cost, a two-year claim);
+built through the owner's government queue under the OWNER CAPACITY GATE (GDP ≥ 4,000 × the level's points, construction unpaused, government
+queue draining within 520 weeks) or FINANCED by an overlord in its subject's state (paid monthly, the level owned by the overlord); never
+private, always subsidised; irrigation effects on 12 projects and the 1836 Nile maluses; the vanilla hydro-site electricity bonuses removed.
+Regenerate: `node tools/make_dam_projects.mjs` (reads the committed `config/dam_sites_research.json` and applies the ruled CUTS), then
+`node tools/make_dam_config.mjs` (base `config/mod_config.canon-b164-trade.json`), then copy the book and its twin over the canon.
+
+**Why** (FINDINGS F170–F172): the gated n=3 (`20260927_001731_canon-dams-v3-n3`) read 2 intact at world GDP 1.03 / 0.94 with a consensus loss
+of **5.97** (the previous canon's n=3 has no consensus: a runoff, a divergent pair) and one run broken by a PRE-DAM stuck Britain (an 1845
+revolution, F166); dams replace coal plants rather than add electricity (51–55k a week, the canon's 51–52k) and cut the unmet demand; play
+0.95× the canon. ⚠ **The cuts were ruled AFTER that batch** (12 projects removed, 4 trimmed, one reduced: hydro was 43–52% of world
+electricity at 1935 and remote dams pulled industry into empty places, F172), so **the canon as shipped is unmeasured**; the measured book is
+commit `0ce5324`'s `config/dam_projects.json` (159 projects). Expected: hydro ~40–45%, the Labrador dam (10% of dam output) gone.
+
+⚠⚠ **THE KNOWN DEFECTS OF THIS CANON:**
+1. **The stuck Britain (F166) is inherited** — one run in three here.
+2. **Post-queue stalls** (F171): a level queued under the gate can still freeze when the owner later pauses construction for years or loses
+   the state (Prussia 1921–35, the Piave to the Papal States). Ruled acceptable like bankruptcy losses, which are vanilla.
+3. **A financed level can end SELF-OWNED** when the subject leaves the chain (1 of ~180 levels in three runs); its dividends go to its workforce.
+4. **Russian dams have no customers**: Russia's electricity sits at the 25% floor in every dam run.
+5. The previous canon's defects stand (Britain fully employed in most seeds, the old rung alive in the consumer chains, the hoard).
+
+⚠ The previous canon is UNCHANGED and reachable at `config/mod_config.canon-b164-trade.json` + twin. The section below is its record, kept as history:
+
+## (HISTORY) THE CANON WAS `canon-b164-trade` FROM 2026-09-25 TO 2026-09-27 — THE PREVIOUS CANON AT **B 1.64** WITH THE PER-GOOD TRADE WEIGHTS AT ×1 AND THE FINISH BOOST (user-ruled: *"Canonize trade x1, B 1.64."*)
 
 `config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.canon-b164-trade.json` + twin
 (sha256 `d89c33af74d2a47a`). ⭐ **THE TECH TREE DID NOT MOVE**: the twin is the previous canon's tree byte for byte (`c6dabd3db8a72c0d`).
@@ -405,7 +437,7 @@ gap over the old canon is not a significance test — the case is the monotone a
    other change, now or deferred; the dam megaproject is a polishing-phase item.
    ⚠⚠ **PARTLY REVERSED 2026-09-26 (user-ruled, BALANCE_FRAMEWORK §10.89.1):** the power plant's CONSTRUCTION COST goes to 4 × vanilla
    (1,600 points, config `building_required_construction`, `tools/emit_building_costs.mjs`), its recipe, staff and everything else still
-   vanilla, and the consumers' recipes are deferred until tests. Still no tiering. It ships only in the dam book (`canon-dams`) so far.
+   vanilla, and the consumers' recipes are deferred until tests. Still no tiering. It ships in the canon since 2026-09-27 (the dam book `canon-dams` is the canon).
 1. **The hoard.** Pool H 4.17× vanilla's — the one line that went BACKWARDS across the arc. One seed of four broke the capital-abundance hard
    line (Britain, 11 years under 5% U* at 1.80 GDP); a second breached the soft hoard lines. F135 has the mechanism: our realised margins are
    twice vanilla's, so the pool's INFLOW is the source, and the spending lever is one-signed by identity.
@@ -1443,18 +1475,23 @@ config/mod_config.canon-slide-b158-trade.json ⭐⭐ THE TRADE ARM (ROADMAP step
 config/mod_config.trade15-b1{64,68,72,76}.json ⭐ THE TRADE ×1.5 B LADDER (F163, user-ruled 2026-09-24) + tech-tree twins: the canon
                         (finish boost on) regenerated at B 1.64 / 1.68 / 1.72 / 1.76 via its `_ab.command`, plus `make_trade_config --scale
                         1.5`. Batch 20260924_101627_trade15-bladder-n12 (12 runs). The `slide-b1xx` bases stay gitignored. Un-ignored
-config/mod_config.canon-dams.json ⭐ THE DAM BOOK (ROADMAP step 6, BALANCE_FRAMEWORK §10.89, user-ruled 2026-09-26) + its tree twin (the
-                        canon's, byte-identical): the canon + `building_required_construction` {building_power_plant: 1600} + `dams`
-                        (159 projects, 349 stages). Generated by `node tools/make_dam_config.mjs` (`--probe` → canon-dams-probe: techs
-                        granted to ten majors, 2-month surveys, cost × 0.05 — probe builds ONLY). First century run (the OLD stage-building
-                        design): 20260926_154538_canon-dams-n1, world GDP 1.02×, loss 3.7. Redesigned since (§10.89.9). NOT canonical. Un-ignored with its twin
-config/dam_projects.json ⭐ THE DAM PROJECT TABLE, GENERATED by tools/make_dam_projects.mjs from the 2026-09-26 placement research and COMMITTED:
-                        one object per state — the research rows merged/split onto it (parts, MW per part, terrain multiplier, resource
-                        type), a depersonalised name (no person or company names; dynasty surnames, "Victoria" and names in use by 1836
-                        allowed), the anchor province, and the non-power `effects` (arable land, trait swaps, named TARGET states).
-                        Everything numeric that ships is derived from it by tools/lib_dams.mjs
-config/mod_config.canon-b164-trade.json ⭐⭐⭐ THE CANON SINCE 2026-09-25 (+ twin = the previous canon's tree, byte for byte): the previous canon
-                        at B 1.64 + the ×1 trade table. The banner near the top of this file is the record. Un-ignored with its twin
+config/mod_config.canon-dams.json ⭐⭐⭐ THE CANON SINCE 2026-09-27 (config/mod_config.json is a verbatim copy; the banner near the top of this file)
+                        + its tree twin (the previous canon's, byte-identical): canon-b164-trade + `building_required_construction`
+                        {building_power_plant: 1600} + `dams` + must_have dam subsidies — 147 projects / 313 levels since the ruled cuts
+                        (§10.89.10). Generated by `node tools/make_dam_config.mjs` (base canon-b164-trade; `--probe` → canon-dams-probe:
+                        techs granted to ten majors, 2-month surveys, cost × 0.05 — probe builds ONLY). Measured: the stage design
+                        (20260926_154538), the redesign n=1 (20260926_195231), the gated redesign n=3 (20260927_001731) — all on the
+                        159-project table of commit 0ce5324, i.e. BEFORE the cuts. Un-ignored with its twin
+config/dam_sites_research.json THE PLACEMENT RESEARCH'S OUTPUT (2026-09-26, user-reviewed case by case), COMMITTED 2026-09-27: one object per state
+                        with the research rows, the depersonalised name and the anchor province — the input make_dam_projects.mjs reads
+config/dam_projects.json ⭐ THE DAM PROJECT TABLE, GENERATED by tools/make_dam_projects.mjs from config/dam_sites_research.json MINUS THE RULED CUTS
+                        (the `CUTS` table in the script: 12 projects removed, 4 trimmed by a research row, Rion & Ingur cut to 2 parts,
+                        each with its reason) and COMMITTED: one object per state — the research rows merged/split onto it (parts, MW per
+                        part, terrain multiplier, resource type), a depersonalised name (no person or company names; dynasty surnames,
+                        "Victoria" and names in use by 1836 allowed), the anchor province, and the non-power `effects` (arable land, trait
+                        swaps, named TARGET states). Everything numeric that ships is derived from it by tools/lib_dams.mjs
+config/mod_config.canon-b164-trade.json ⭐⭐ THE CANON FROM 2026-09-25 TO 2026-09-27 (+ twin = the previous canon's tree, byte for byte): the previous
+                        canon at B 1.64 + the ×1 trade table; the base the dam book is built on. Un-ignored with its twin
 config/mod_config.json      ⭐⭐⭐ (SUPERSEDED 2026-09-23 — now a verbatim copy of canon-slide-b158 above) THE CANON = canon-c19-in12-elec FROM 2026-09-20 TO 2026-09-23 — a VERBATIM copy of
                         config/mod_config.canon-c19-in12-elec.json (+ its tech-tree twin), which is canon-c19-in12 regenerated so that it carries the
                         URBAN-CENTRE ELECTRICITY OVERRIDE §10.43.0 rules canonical on its own (pm_goods + pm_employment on pm_electric_streetlights:
@@ -2983,8 +3020,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         PMR_DAM log lines carry the country NAME; log from the country scope, never from a state entered from it
   emit_building_costs.mjs  `building_required_construction` {building: points} patched into the building files the build already OWNS
                         (throws on a building it does not own, or ≠ 1 match) — the power plant at 1,600 in the dam book
-  make_dam_projects.mjs / make_dam_config.mjs  the dam table (from the placement research JSON + the irrigation EFFECTS table in the
-                        script) and the dam book (base + power-plant cost + dams; `--probe` for probe builds)
+  make_dam_projects.mjs / make_dam_config.mjs  the dam table (from config/dam_sites_research.json + the irrigation EFFECTS table and the
+                        ruled CUTS table in the script — it THROWS on a cut naming a missing project or row) and the dam book (base
+                        canon-b164-trade + power-plant cost + dams; it THROWS on a base that already carries dams; `--probe` for probe builds)
   emit_goods.mjs        ⭐ THE PER-GOOD TRADE WEIGHT (ROADMAP step 11, FINDINGS F155 / F159) — called by build.ps1, which THROWS if it
                         fails. With a top-level `goods_traded_quantity` {good: traded_quantity} in the config it writes a WHOLE-FILE
                         copy of vanilla's common/goods/00_goods.txt with exactly those goods' traded_quantity changed (each line

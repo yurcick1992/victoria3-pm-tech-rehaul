@@ -15,9 +15,46 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
-const src = process.argv[2];
-if (!src) { console.error('usage: node tools/make_dam_projects.mjs <sites.json>'); process.exit(2); }
+// the placement research's own output is COMMITTED as config/dam_sites_research.json (it used to live only in a session scratchpad)
+const src = process.argv[2] || join(REPO, 'config/dam_sites_research.json');
 const sites = JSON.parse(readFileSync(src, 'utf8'));
+
+// THE RULED CUTS (user-ruled 2026-09-27, FINDINGS F172, BALANCE_FRAMEWORK §10.89.10): hydro stood at 43-52% of world electricity at
+// 1935 and remote dams pulled electricity-using industry into empty places, so the sites with a very low 1836 population and no
+// migration pull were removed or trimmed - Russian and American sites protected. Each entry names the reason.
+const CUTS = {
+  remove: {
+    labrador_plateau: 'Churchill Falls, 1967-74, built for export to Quebec; subarctic, nearly empty',
+    thjorsa_falls: 'Burfell 1969 for an aluminium smelter; Iceland subarctic, 1836 pop ~60k',
+    iguacu_falls: 'never developed (status F); national parks 1934/39; jungle frontier',
+    misiones_iguazu: 'the same falls, never developed; duplicate project',
+    kafue_victoria_falls: 'Victoria Falls only ~8 MW (1938), Kafue Gorge 1971-72; tropical interior, low population',
+    victoria_falls: 'the same falls, never built at this scale; duplicate project',
+    kemi_oulu: 'status L (from 1949); Lapland subarctic and sparse',
+    grijalva_canyon: 'Malpaso 1969 / Angostura 1976 / Chicoasen 1980; remote tropical south',
+    caroni_falls: 'Macagua 1961 / Guri 1968-86 for Guayana heavy industry; jungle and savannah frontier',
+    naryn_gorge: 'Toktogul 1975+, built to export power; remote Tien Shan, nomadic population',
+    vakhsh_gorges: 'Nurek 1972-79 for an aluminium smelter; the 1930s Vakhsh irrigation was a canal, not a dam',
+    upper_irtysh: 'Ust-Kamenogorsk 1952 / Bukhtarma 1960s; Kazakh steppe; placement in Semireche doubtful',
+  },
+  dropRows: {   // project id -> research rows (by project name) removed, the rest kept
+    nelson_winnipeg: { 'Nelson River, lower': '1961+, for nickel mining, long lines south; the Winnipeg River plants (1911-31) stay' },
+    waitaki_southern_lakes: { 'Manapouri': '1971, for an aluminium smelter, in empty Fiordland; Waitaki and Clutha stay' },
+    norrland_rivers: { 'Norrland rivers (other)': 'mostly 1950s-60s transmission south; Lule alv (Porjus 1915) stays' },
+    sevan_zanga_vorotan: { 'Vorotan': '1970-89 in remote Syunik; the Sevan-Hrazdan cascade (1936-62) stays' },
+  },
+  parts: {      // project id -> { research row: parts kept }
+    rion_ingur: { 'Georgia (Rioni, lower Inguri)': [2, 'trimmed to the Rioni scale; Inguri (1,300 MW) is 1978-87'] },
+  },
+};
+const byId0 = new Map(sites.map(s => [s.id, s]));
+for (const id of [...Object.keys(CUTS.remove), ...Object.keys(CUTS.dropRows), ...Object.keys(CUTS.parts)])
+  if (!byId0.has(id)) throw new Error(`make_dam_projects: a cut names ${id}, which is not in the sites`);
+for (const [id, rows] of Object.entries({ ...CUTS.dropRows, ...CUTS.parts })) for (const name of Object.keys(rows))
+  if (!byId0.get(id).rows.some(r => r.project === name)) throw new Error(`make_dam_projects: ${id} has no row '${name}'`);
+const cutSites = sites.filter(s => !(s.id in CUTS.remove)).map(s => ({ ...s, rows: s.rows
+  .filter(r => !(CUTS.dropRows[s.id] && r.project in CUTS.dropRows[s.id]))
+  .map(r => (CUTS.parts[s.id]?.[r.project] ? { ...r, parts_taken: CUTS.parts[s.id][r.project][0] } : r)) }));
 
 // host state -> effects (the dam_agri_effects research; the optional low-confidence ones are left out)
 const EFFECTS = {
@@ -41,13 +78,13 @@ const EFFECTS = {
   STATE_CALIFORNIA: [{ state: 'STATE_CALIFORNIA', arable: 5 }],
   // marginal: Warsak (>=119,000 acres), the Vakhsh headworks, the Snowy's Coleambally area
   STATE_PASHTUNISTAN: [{ state: 'STATE_PASHTUNISTAN', arable: 3 }],
-  STATE_TAJIKISTAN: [{ state: 'STATE_TAJIKISTAN', arable: 3 }],
+  // (the Vakhsh headworks' STATE_TAJIKISTAN +3 left with the project, CUTS below)
   STATE_NEW_SOUTH_WALES: [{ state: 'STATE_NEW_SOUTH_WALES', arable: 1 }],
 };
 
-const byState = new Map(sites.map(s => [s.state, s]));
+const byState = new Map(cutSites.map(s => [s.state, s]));
 for (const host of Object.keys(EFFECTS)) if (!byState.has(host)) throw new Error(`make_dam_projects: effects keyed on ${host}, which has no project`);
-const out = sites.map(s => ({
+const out = cutSites.map(s => ({
   id: s.id, state: s.state, state_name: s.state_name, name: s.name, anchor_province: s.anchor_province,
   owner_1836: s.owner_1836,
   rows: s.rows.map(r => ({ research_id: r.research_id, project: r.project, parts_taken: r.parts_taken, mw_per_part: r.mw_per_part,
@@ -55,5 +92,5 @@ const out = sites.map(s => ({
   ...(EFFECTS[s.state] ? { effects: EFFECTS[s.state] } : {}),
 }));
 const dst = join(REPO, 'config/dam_projects.json');
-writeFileSync(dst, JSON.stringify({ _comment: 'GENERATED by tools/make_dam_projects.mjs from the 2026-09-26 placement research - the hydro-dam projects, one per state (ROADMAP step 6, BALANCE_FRAMEWORK §10.89). Numbers derived from these rows live in tools/lib_dams.mjs.', projects: out }, null, 1) + '\n');
+writeFileSync(dst, JSON.stringify({ _comment: 'GENERATED by tools/make_dam_projects.mjs from the 2026-09-26 placement research (config/dam_sites_research.json) minus the ruled cuts of 2026-09-27 - the hydro-dam projects, one per state (ROADMAP step 6, BALANCE_FRAMEWORK §10.89). Numbers derived from these rows live in tools/lib_dams.mjs.', projects: out }, null, 1) + '\n');
 console.log(`dam_projects: ${out.length} projects, ${out.filter(p => p.effects).length} with non-power effects -> config/dam_projects.json`);
