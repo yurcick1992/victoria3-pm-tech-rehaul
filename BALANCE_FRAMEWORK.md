@@ -8842,3 +8842,10 @@ The cuts live in `tools/make_dam_projects.mjs`'s `CUTS` table, each with its rea
 Result: **147 projects / 313 levels / 135.7 GW** (from 159 / 349 / 157.0). The book is THE CANON since the same ruling (CLAUDE.md), built on
 `canon-b164-trade` with no key of it changed. ⚠ No batch has measured the cut table; expected hydro ~40–45% of world electricity at 1935.
 The research sites file the generator reads is committed as `config/dam_sites_research.json` (it lived only in a session scratchpad before).
+**Addendum, same day — ONE OBJECT, ONE IN-GAME PROJECT (user-ruled).** *"The case of 'one object, two consuming states' must be resolved into one
+in-game object as well. It goes towards the biggest IRL consumer state if it takes up at least 70% of output (see Hoover Dam ruling).
+Otherwise — strictly geographically."* (and: the Russian and American protection was from deletion on irrelevance grounds, not from
+merging). Applied at once to the two unambiguous cases, as `CUTS.merge` in make_dam_projects.mjs: the Paulo Afonso falls (one site, split
+2/2 Bahia/Pernambuco; CHESF sold across the whole Northeast, no state near 70% → Bahia, where the powerhouses stand) and the Snowy Mountains
+(the works stand in NSW; output ~2/3 NSW, ~1/3 Victoria → NSW). **145 projects / 313 levels / 135.7 GW.** The rule's other candidates on the
+list (consumer-rule placements without a verified 70% share, and straddling border objects) are with the user for rulings.

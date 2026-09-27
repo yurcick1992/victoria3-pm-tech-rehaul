@@ -46,15 +46,32 @@ const CUTS = {
   parts: {      // project id -> { research row: parts kept }
     rion_ingur: { 'Georgia (Rioni, lower Inguri)': [2, 'trimmed to the Rioni scale; Inguri (1,300 MW) is 1978-87'] },
   },
+  // ONE OBJECT, ONE IN-GAME PROJECT (user-ruled 2026-09-27): a physical object serving two states goes to its biggest IRL consumer
+  // state if that state took >= 70% of the output (the Hoover ruling), otherwise strictly to where it physically stands.
+  // source project -> [target project, reason]; the source's rows are added to the target's (same research row: parts summed).
+  merge: {
+    sao_francisco_rapids: ['paulo_afonso_falls', 'one site (the Paulo Afonso falls, powerhouses on the Bahia bank); CHESF sold across the whole Northeast, no state near 70% -> geographic: Bahia'],
+    upper_murray: ['snowy_tumut', 'the Snowy works (Tumut, Murray 1-2) stand in NSW; output ~2/3 NSW, ~1/3 Victoria, no 70% consumer -> geographic: NSW'],
+  },
 };
 const byId0 = new Map(sites.map(s => [s.id, s]));
-for (const id of [...Object.keys(CUTS.remove), ...Object.keys(CUTS.dropRows), ...Object.keys(CUTS.parts)])
+for (const id of [...Object.keys(CUTS.remove), ...Object.keys(CUTS.dropRows), ...Object.keys(CUTS.parts),
+  ...Object.keys(CUTS.merge), ...Object.values(CUTS.merge).map(m => m[0])])
   if (!byId0.has(id)) throw new Error(`make_dam_projects: a cut names ${id}, which is not in the sites`);
 for (const [id, rows] of Object.entries({ ...CUTS.dropRows, ...CUTS.parts })) for (const name of Object.keys(rows))
   if (!byId0.get(id).rows.some(r => r.project === name)) throw new Error(`make_dam_projects: ${id} has no row '${name}'`);
-const cutSites = sites.filter(s => !(s.id in CUTS.remove)).map(s => ({ ...s, rows: s.rows
+const cutSites0 = sites.filter(s => !(s.id in CUTS.remove)).map(s => ({ ...s, rows: s.rows
   .filter(r => !(CUTS.dropRows[s.id] && r.project in CUTS.dropRows[s.id]))
   .map(r => (CUTS.parts[s.id]?.[r.project] ? { ...r, parts_taken: CUTS.parts[s.id][r.project][0] } : r)) }));
+const byIdCut = new Map(cutSites0.map(s => [s.id, s]));
+for (const [from, [to]] of Object.entries(CUTS.merge)) {
+  const t = byIdCut.get(to);
+  for (const r of byIdCut.get(from).rows) {
+    const same = t.rows.find(x => x.research_id === r.research_id);
+    if (same) same.parts_taken += r.parts_taken; else t.rows.push({ ...r });
+  }
+}
+const cutSites = cutSites0.filter(s => !(s.id in CUTS.merge));
 
 // host state -> effects (the dam_agri_effects research; the optional low-confidence ones are left out)
 const EFFECTS = {

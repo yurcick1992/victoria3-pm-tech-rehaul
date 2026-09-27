@@ -137,7 +137,7 @@ pmr_dam_adda_lombard_alps_surveying = {
 
 pmr_dam_snowy_tumut_surveying = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds
-	country_bureaucracy_cost_add = 950
+	country_bureaucracy_cost_add = 1000
 }
 
 pmr_dam_yellow_river_gorges_surveying = {
@@ -417,7 +417,7 @@ pmr_dam_high_rhine_baden_surveying = {
 
 pmr_dam_paulo_afonso_falls_surveying = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds
-	country_bureaucracy_cost_add = 750
+	country_bureaucracy_cost_add = 900
 }
 
 pmr_dam_lower_tennessee_cumberland_surveying = {
@@ -433,11 +433,6 @@ pmr_dam_necaxa_tilostoc_surveying = {
 pmr_dam_lower_susquehanna_surveying = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds
 	country_bureaucracy_cost_add = 800
-}
-
-pmr_dam_sao_francisco_rapids_surveying = {
-	icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds
-	country_bureaucracy_cost_add = 750
 }
 
 pmr_dam_lochaber_affric_surveying = {
@@ -498,11 +493,6 @@ pmr_dam_lufira_lualaba_surveying = {
 pmr_dam_niva_tuloma_surveying = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds
 	country_bureaucracy_cost_add = 750
-}
-
-pmr_dam_upper_murray_surveying = {
-	icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds
-	country_bureaucracy_cost_add = 650
 }
 
 pmr_dam_drina_gorge_surveying = {

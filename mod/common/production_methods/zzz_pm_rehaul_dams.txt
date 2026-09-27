@@ -491,15 +491,15 @@ pm_dam_snowy_tumut = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_tools_add = 6.2
-			goods_input_engines_add = 6.2
-			goods_output_electricity_add = 312
+			goods_input_tools_add = 5.5
+			goods_input_engines_add = 5.5
+			goods_output_electricity_add = 277
 		}
 
 		level_scaled = {
-			building_employment_laborers_add = 310
-			building_employment_machinists_add = 620
-			building_employment_engineers_add = 310
+			building_employment_laborers_add = 280
+			building_employment_machinists_add = 550
+			building_employment_engineers_add = 280
 		}
 	}
 }
@@ -1566,24 +1566,6 @@ pm_dam_lower_susquehanna = {
 	}
 }
 
-pm_dam_sao_francisco_rapids = {
-	texture = "gfx/interface/icons/production_method_icons/hydroelectric_plant.dds"
-
-	building_modifiers = {
-		workforce_scaled = {
-			goods_input_tools_add = 5.2
-			goods_input_engines_add = 5.2
-			goods_output_electricity_add = 260
-		}
-
-		level_scaled = {
-			building_employment_laborers_add = 260
-			building_employment_machinists_add = 520
-			building_employment_engineers_add = 260
-		}
-	}
-}
-
 pm_dam_lochaber_affric = {
 	texture = "gfx/interface/icons/production_method_icons/hydroelectric_plant.dds"
 
@@ -1783,24 +1765,6 @@ pm_dam_lufira_lualaba = {
 }
 
 pm_dam_niva_tuloma = {
-	texture = "gfx/interface/icons/production_method_icons/hydroelectric_plant.dds"
-
-	building_modifiers = {
-		workforce_scaled = {
-			goods_input_tools_add = 4.2
-			goods_input_engines_add = 4.2
-			goods_output_electricity_add = 208
-		}
-
-		level_scaled = {
-			building_employment_laborers_add = 210
-			building_employment_machinists_add = 420
-			building_employment_engineers_add = 210
-		}
-	}
-}
-
-pm_dam_upper_murray = {
 	texture = "gfx/interface/icons/production_method_icons/hydroelectric_plant.dds"
 
 	building_modifiers = {

@@ -696,14 +696,6 @@ pmg_dam_lower_susquehanna = {
 	}
 }
 
-pmg_dam_sao_francisco_rapids = {
-	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
-	ai_selection = most_productive
-	production_methods = {
-		pm_dam_sao_francisco_rapids
-	}
-}
-
 pmg_dam_lochaber_affric = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
 	ai_selection = most_productive
@@ -797,14 +789,6 @@ pmg_dam_niva_tuloma = {
 	ai_selection = most_productive
 	production_methods = {
 		pm_dam_niva_tuloma
-	}
-}
-
-pmg_dam_upper_murray = {
-	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
-	ai_selection = most_productive
-	production_methods = {
-		pm_dam_upper_murray
 	}
 }
 

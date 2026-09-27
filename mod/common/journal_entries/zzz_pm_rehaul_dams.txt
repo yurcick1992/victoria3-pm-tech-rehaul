@@ -2090,7 +2090,7 @@ je_pmr_dam_snowy_tumut_survey = {
 	}
 
 	goal_add_value = {
-		value = 12
+		value = 18
 	}
 
 	invalid = {
@@ -6612,82 +6612,6 @@ je_pmr_dam_lower_susquehanna_survey = {
 	should_be_pinned_by_default_uninvolved_or_context = no
 }
 
-je_pmr_dam_sao_francisco_rapids_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_sao_francisco_rapids_months }
-				change_variable = { name = pmr_dam_sao_francisco_rapids_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|sao_francisco_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_sao_francisco_rapids_surveying
-		remove_variable = pmr_dam_sao_francisco_rapids_months
-		remove_global_variable = pmr_dam_sao_francisco_rapids_surveying
-		set_variable = pmr_dam_sao_francisco_rapids_surveyed
-		set_global_variable = pmr_dam_sao_francisco_rapids_surveyed_any
-		set_global_variable = { name = pmr_dam_sao_francisco_rapids_claim days = 730 }
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|sao_francisco_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_sao_francisco_rapids_months }
-			value = root.var:pmr_dam_sao_francisco_rapids_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_sao_francisco_rapids_months }
-			NOT = {
-				p:xC4D392 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_sao_francisco_rapids_months }
-			remove_variable = pmr_dam_sao_francisco_rapids_months
-		}
-		remove_global_variable = pmr_dam_sao_francisco_rapids_surveying
-		remove_modifier = pmr_dam_sao_francisco_rapids_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|sao_francisco_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
 je_pmr_dam_lochaber_affric_survey = {
 	icon = "gfx/interface/icons/event_icons/event_map.dds"
 	group = je_group_technology
@@ -7592,82 +7516,6 @@ je_pmr_dam_niva_tuloma_survey = {
 		remove_modifier = pmr_dam_niva_tuloma_surveying
 		change_variable = { name = pmr_dam_active_surveys add = -1 }
 		debug_log = "PMR_DAM|survey_ended|niva_tuloma|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_upper_murray_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_upper_murray_months }
-				change_variable = { name = pmr_dam_upper_murray_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|upper_murray|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_upper_murray_surveying
-		remove_variable = pmr_dam_upper_murray_months
-		remove_global_variable = pmr_dam_upper_murray_surveying
-		set_variable = pmr_dam_upper_murray_surveyed
-		set_global_variable = pmr_dam_upper_murray_surveyed_any
-		set_global_variable = { name = pmr_dam_upper_murray_claim days = 730 }
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|upper_murray|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_upper_murray_months }
-			value = root.var:pmr_dam_upper_murray_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_upper_murray_months }
-			NOT = {
-				p:xF4CF14 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_upper_murray_months }
-			remove_variable = pmr_dam_upper_murray_months
-		}
-		remove_global_variable = pmr_dam_upper_murray_surveying
-		remove_modifier = pmr_dam_upper_murray_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|upper_murray|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 	}
 
 	progressbar = yes
@@ -13811,7 +13659,7 @@ je_pmr_dam_snowy_tumut_finance = {
 		effect = {
 			if = {
 				limit = { has_variable = pmr_dam_snowy_tumut_fin_months }
-				add_treasury = -96783
+				add_treasury = -97062
 				change_variable = { name = pmr_dam_snowy_tumut_fin_months add = 1 }
 			}
 		}
@@ -13828,6 +13676,10 @@ je_pmr_dam_snowy_tumut_finance = {
 		save_scope_as = pmr_dam_financier
 		p:xC41B96.state = {
 			if = {
+				limit = { any_scope_building = { is_building_type = building_dam_snowy_tumut  levels_owned_by_country = { target = scope:pmr_dam_financier value >= 2 } } }
+				create_building = { building = building_dam_snowy_tumut  add_ownership = { country = { country = scope:pmr_dam_financier levels = 3 } } }
+			}
+			else_if = {
 				limit = { any_scope_building = { is_building_type = building_dam_snowy_tumut  levels_owned_by_country = { target = scope:pmr_dam_financier value >= 1 } } }
 				create_building = { building = building_dam_snowy_tumut  add_ownership = { country = { country = scope:pmr_dam_financier levels = 2 } } }
 			}
@@ -13851,7 +13703,7 @@ je_pmr_dam_snowy_tumut_finance = {
 	}
 
 	goal_add_value = {
-		value = 44
+		value = 39
 	}
 
 	invalid = {
@@ -18574,7 +18426,10 @@ je_pmr_dam_paulo_afonso_falls_finance = {
 		save_scope_as = pmr_dam_financier
 		p:xBAF5ED.state = {
 			if = {
-				limit = { always = yes }
+				limit = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  levels_owned_by_country = { target = scope:pmr_dam_financier value >= 1 } } }
+				create_building = { building = building_dam_paulo_afonso_falls  add_ownership = { country = { country = scope:pmr_dam_financier levels = 2 } } }
+			}
+			else = {
 				create_building = { building = building_dam_paulo_afonso_falls  add_ownership = { country = { country = scope:pmr_dam_financier levels = 1 } } }
 			}
 			every_scope_building = {
@@ -18872,88 +18727,6 @@ je_pmr_dam_lower_susquehanna_finance = {
 		remove_global_variable = pmr_dam_lower_susquehanna_financing
 		change_variable = { name = pmr_dam_financing add = -1 }
 		debug_log = "PMR_DAM|finance_ended|lower_susquehanna|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_sao_francisco_rapids_finance = {
-	icon = "gfx/interface/icons/event_icons/event_industry.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_sao_francisco_rapids_fin_months }
-				add_treasury = -97457
-				change_variable = { name = pmr_dam_sao_francisco_rapids_fin_months add = 1 }
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_variable = pmr_dam_sao_francisco_rapids_fin_months
-		remove_global_variable = pmr_dam_sao_francisco_rapids_financing
-		change_variable = { name = pmr_dam_financing add = -1 }
-		save_scope_as = pmr_dam_financier
-		p:xC4D392.state = {
-			if = {
-				limit = { always = yes }
-				create_building = { building = building_dam_sao_francisco_rapids  add_ownership = { country = { country = scope:pmr_dam_financier levels = 1 } } }
-			}
-			every_scope_building = {
-				limit = { is_building_type = building_dam_sao_francisco_rapids }
-				pmr_dam_sao_francisco_rapids_on_level = yes
-			}
-		}
-		debug_log = "PMR_DAM|finance_done|sao_francisco_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_sao_francisco_rapids_fin_months }
-			value = root.var:pmr_dam_sao_francisco_rapids_fin_months
-		}
-	}
-
-	goal_add_value = {
-		value = 40
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_sao_francisco_rapids_fin_months }
-			NOT = {
-				p:xC4D392 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_sao_francisco_rapids_fin_months }
-			remove_variable = pmr_dam_sao_francisco_rapids_fin_months
-		}
-		remove_global_variable = pmr_dam_sao_francisco_rapids_financing
-		change_variable = { name = pmr_dam_financing add = -1 }
-		debug_log = "PMR_DAM|finance_ended|sao_francisco_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 	}
 
 	progressbar = yes
@@ -19941,88 +19714,6 @@ je_pmr_dam_niva_tuloma_finance = {
 		remove_global_variable = pmr_dam_niva_tuloma_financing
 		change_variable = { name = pmr_dam_financing add = -1 }
 		debug_log = "PMR_DAM|finance_ended|niva_tuloma|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_upper_murray_finance = {
-	icon = "gfx/interface/icons/event_icons/event_industry.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_upper_murray_fin_months }
-				add_treasury = -97889
-				change_variable = { name = pmr_dam_upper_murray_fin_months add = 1 }
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_variable = pmr_dam_upper_murray_fin_months
-		remove_global_variable = pmr_dam_upper_murray_financing
-		change_variable = { name = pmr_dam_financing add = -1 }
-		save_scope_as = pmr_dam_financier
-		p:xF4CF14.state = {
-			if = {
-				limit = { always = yes }
-				create_building = { building = building_dam_upper_murray  add_ownership = { country = { country = scope:pmr_dam_financier levels = 1 } } }
-			}
-			every_scope_building = {
-				limit = { is_building_type = building_dam_upper_murray }
-				pmr_dam_upper_murray_on_level = yes
-			}
-		}
-		debug_log = "PMR_DAM|finance_done|upper_murray|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_upper_murray_fin_months }
-			value = root.var:pmr_dam_upper_murray_fin_months
-		}
-	}
-
-	goal_add_value = {
-		value = 29
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_upper_murray_fin_months }
-			NOT = {
-				p:xF4CF14 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_upper_murray_fin_months }
-			remove_variable = pmr_dam_upper_murray_fin_months
-		}
-		remove_global_variable = pmr_dam_upper_murray_financing
-		change_variable = { name = pmr_dam_financing add = -1 }
-		debug_log = "PMR_DAM|finance_ended|upper_murray|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 	}
 
 	progressbar = yes

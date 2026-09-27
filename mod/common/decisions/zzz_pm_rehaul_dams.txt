@@ -1302,7 +1302,7 @@ pmr_dam_snowy_tumut_survey_decision = {
 		NOT = { has_variable = pmr_dam_snowy_tumut_surveyed }
 		NOT = { has_global_variable = pmr_dam_snowy_tumut_surveying }
 		NOT = { has_global_variable = pmr_dam_snowy_tumut_claim }
-		NOT = { p:xC41B96.state ?= { any_scope_building = { is_building_type = building_dam_snowy_tumut  level_after_queued_constructions >= 2 } } }
+		NOT = { p:xC41B96.state ?= { any_scope_building = { is_building_type = building_dam_snowy_tumut  level_after_queued_constructions >= 3 } } }
 		p:xC41B96 ?= {
 			state ?= {
 				owner ?= {
@@ -1316,7 +1316,7 @@ pmr_dam_snowy_tumut_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 950
+		produced_bureaucracy > 1000
 	}
 
 	when_taken = {
@@ -3990,7 +3990,7 @@ pmr_dam_paulo_afonso_falls_survey_decision = {
 		NOT = { has_variable = pmr_dam_paulo_afonso_falls_surveyed }
 		NOT = { has_global_variable = pmr_dam_paulo_afonso_falls_surveying }
 		NOT = { has_global_variable = pmr_dam_paulo_afonso_falls_claim }
-		NOT = { p:xBAF5ED.state ?= { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  level_after_queued_constructions >= 1 } } }
+		NOT = { p:xBAF5ED.state ?= { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  level_after_queued_constructions >= 2 } } }
 		p:xBAF5ED ?= {
 			state ?= {
 				owner ?= {
@@ -4004,7 +4004,7 @@ pmr_dam_paulo_afonso_falls_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
+		produced_bureaucracy > 900
 	}
 
 	when_taken = {
@@ -4166,54 +4166,6 @@ pmr_dam_lower_susquehanna_stop_survey_decision = {
 	when_taken = {
 		remove_variable = pmr_dam_lower_susquehanna_months
 		debug_log = "PMR_DAM|survey_stop|lower_susquehanna|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-	ai_chance = {
-		value = 0
-		if = {
-			limit = { in_default = yes }
-			add = 50
-		}
-	}
-}
-
-pmr_dam_sao_francisco_rapids_survey_decision = {
-	is_shown = {
-		has_technology_researched = electrical_generation
-		NOT = { has_variable = pmr_dam_sao_francisco_rapids_surveyed }
-		NOT = { has_global_variable = pmr_dam_sao_francisco_rapids_surveying }
-		NOT = { has_global_variable = pmr_dam_sao_francisco_rapids_claim }
-		NOT = { p:xC4D392.state ?= { any_scope_building = { is_building_type = building_dam_sao_francisco_rapids  level_after_queued_constructions >= 1 } } }
-		p:xC4D392 ?= {
-			state ?= {
-				owner ?= {
-					OR = {
-						this = ROOT
-						any_overlord_or_above = { this = ROOT }
-					}
-				}
-			}
-		}
-	}
-
-	possible = {
-		produced_bureaucracy > 750
-	}
-
-	when_taken = {
-		pmr_dam_sao_francisco_rapids_begin_survey = yes
-	}
-
-	ai_chance = {
-		value = 0
-	}
-}
-
-pmr_dam_sao_francisco_rapids_stop_survey_decision = {
-	is_shown = { has_variable = pmr_dam_sao_francisco_rapids_months }
-	possible = { has_variable = pmr_dam_sao_francisco_rapids_months }
-	when_taken = {
-		remove_variable = pmr_dam_sao_francisco_rapids_months
-		debug_log = "PMR_DAM|survey_stop|sao_francisco_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 	}
 	ai_chance = {
 		value = 0
@@ -4790,54 +4742,6 @@ pmr_dam_niva_tuloma_stop_survey_decision = {
 	when_taken = {
 		remove_variable = pmr_dam_niva_tuloma_months
 		debug_log = "PMR_DAM|survey_stop|niva_tuloma|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-	ai_chance = {
-		value = 0
-		if = {
-			limit = { in_default = yes }
-			add = 50
-		}
-	}
-}
-
-pmr_dam_upper_murray_survey_decision = {
-	is_shown = {
-		has_technology_researched = electrical_generation
-		NOT = { has_variable = pmr_dam_upper_murray_surveyed }
-		NOT = { has_global_variable = pmr_dam_upper_murray_surveying }
-		NOT = { has_global_variable = pmr_dam_upper_murray_claim }
-		NOT = { p:xF4CF14.state ?= { any_scope_building = { is_building_type = building_dam_upper_murray  level_after_queued_constructions >= 1 } } }
-		p:xF4CF14 ?= {
-			state ?= {
-				owner ?= {
-					OR = {
-						this = ROOT
-						any_overlord_or_above = { this = ROOT }
-					}
-				}
-			}
-		}
-	}
-
-	possible = {
-		produced_bureaucracy > 650
-	}
-
-	when_taken = {
-		pmr_dam_upper_murray_begin_survey = yes
-	}
-
-	ai_chance = {
-		value = 0
-	}
-}
-
-pmr_dam_upper_murray_stop_survey_decision = {
-	is_shown = { has_variable = pmr_dam_upper_murray_months }
-	possible = { has_variable = pmr_dam_upper_murray_months }
-	when_taken = {
-		remove_variable = pmr_dam_upper_murray_months
-		debug_log = "PMR_DAM|survey_stop|upper_murray|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 	}
 	ai_chance = {
 		value = 0
@@ -7910,8 +7814,8 @@ pmr_dam_snowy_tumut_finance_decision = {
 		NOT = { has_global_variable = pmr_dam_snowy_tumut_financing }
 		p:xC41B96.state ?= {
 			NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut  is_under_construction = yes } }
-			NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level_after_queued_constructions >= 2 } }
-			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut } } ROOT = { has_technology_researched = electrical_generation } } AND = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level >= 1 } NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level >= 2 } } ROOT = { has_technology_researched = electrical_generation } } }
+			NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level_after_queued_constructions >= 3 } }
+			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut } } ROOT = { has_technology_researched = electrical_generation } } AND = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level >= 1 } NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level >= 2 } } ROOT = { has_technology_researched = electrical_generation } } AND = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level >= 2 } NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level >= 3 } } ROOT = { has_technology_researched = electrical_generation } } }
 		}
 	}
 
@@ -9646,8 +9550,8 @@ pmr_dam_paulo_afonso_falls_finance_decision = {
 		NOT = { has_global_variable = pmr_dam_paulo_afonso_falls_financing }
 		p:xBAF5ED.state ?= {
 			NOT = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  is_under_construction = yes } }
-			NOT = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  level_after_queued_constructions >= 1 } }
-			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls } } ROOT = { has_technology_researched = electrical_generation } } }
+			NOT = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  level_after_queued_constructions >= 2 } }
+			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls } } ROOT = { has_technology_researched = electrical_generation } } AND = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  level >= 1 } NOT = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  level >= 2 } } ROOT = { has_technology_researched = electrical_generation } } }
 		}
 	}
 
@@ -9746,37 +9650,6 @@ pmr_dam_lower_susquehanna_finance_decision = {
 
 	when_taken = {
 		pmr_dam_lower_susquehanna_begin_finance = yes
-	}
-
-	ai_chance = {
-		value = 0
-	}
-}
-
-pmr_dam_sao_francisco_rapids_finance_decision = {
-	is_shown = {
-		has_variable = pmr_dam_sao_francisco_rapids_surveyed
-		NOT = { p:xC4D392 ?= { state ?= { owner ?= ROOT } } }
-		p:xC4D392 ?= {
-			state ?= {
-				owner ?= {
-					OR = {
-						this = ROOT
-						any_overlord_or_above = { this = ROOT }
-					}
-				}
-			}
-		}
-		NOT = { has_global_variable = pmr_dam_sao_francisco_rapids_financing }
-		p:xC4D392.state ?= {
-			NOT = { any_scope_building = { is_building_type = building_dam_sao_francisco_rapids  is_under_construction = yes } }
-			NOT = { any_scope_building = { is_building_type = building_dam_sao_francisco_rapids  level_after_queued_constructions >= 1 } }
-			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_sao_francisco_rapids } } ROOT = { has_technology_researched = electrical_generation } } }
-		}
-	}
-
-	when_taken = {
-		pmr_dam_sao_francisco_rapids_begin_finance = yes
 	}
 
 	ai_chance = {
@@ -10149,37 +10022,6 @@ pmr_dam_niva_tuloma_finance_decision = {
 
 	when_taken = {
 		pmr_dam_niva_tuloma_begin_finance = yes
-	}
-
-	ai_chance = {
-		value = 0
-	}
-}
-
-pmr_dam_upper_murray_finance_decision = {
-	is_shown = {
-		has_variable = pmr_dam_upper_murray_surveyed
-		NOT = { p:xF4CF14 ?= { state ?= { owner ?= ROOT } } }
-		p:xF4CF14 ?= {
-			state ?= {
-				owner ?= {
-					OR = {
-						this = ROOT
-						any_overlord_or_above = { this = ROOT }
-					}
-				}
-			}
-		}
-		NOT = { has_global_variable = pmr_dam_upper_murray_financing }
-		p:xF4CF14.state ?= {
-			NOT = { any_scope_building = { is_building_type = building_dam_upper_murray  is_under_construction = yes } }
-			NOT = { any_scope_building = { is_building_type = building_dam_upper_murray  level_after_queued_constructions >= 1 } }
-			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_upper_murray } } ROOT = { has_technology_researched = electrical_generation } } }
-		}
-	}
-
-	when_taken = {
-		pmr_dam_upper_murray_begin_finance = yes
 	}
 
 	ai_chance = {

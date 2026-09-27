@@ -765,7 +765,7 @@
     {
      "research_id": 62,
      "project": "Snowy Mountains",
-     "parts_taken": 3,
+     "parts_taken": 4,
      "mw_per_part": 400,
      "cost_multiplier": 0.8,
      "resource_type": "high_head_diversion",
@@ -1921,7 +1921,7 @@
     {
      "research_id": 125,
      "project": "Paulo Afonso",
-     "parts_taken": 2,
+     "parts_taken": 4,
      "mw_per_part": 250,
      "cost_multiplier": 0.8,
      "resource_type": "falls_diversion",
@@ -2007,25 +2007,6 @@
      "cost_multiplier": 1.1,
      "resource_type": "river_cascade",
      "status": "B"
-    }
-   ]
-  },
-  {
-   "id": "sao_francisco_rapids",
-   "state": "STATE_PERNAMBUCO",
-   "state_name": "Pernambuco",
-   "name": "São Francisco Rapids",
-   "anchor_province": "xC4D392",
-   "owner_1836": "BRZ",
-   "rows": [
-    {
-     "research_id": 125,
-     "project": "Paulo Afonso",
-     "parts_taken": 2,
-     "mw_per_part": 250,
-     "cost_multiplier": 0.8,
-     "resource_type": "falls_diversion",
-     "status": "L"
     }
    ]
   },
@@ -2254,25 +2235,6 @@
      "cost_multiplier": 0.9,
      "resource_type": "river_cascade",
      "status": "B/L"
-    }
-   ]
-  },
-  {
-   "id": "upper_murray",
-   "state": "STATE_VICTORIA",
-   "state_name": "Victoria",
-   "name": "Upper Murray Gorge",
-   "anchor_province": "xF4CF14",
-   "owner_1836": "NSW/KLN/KRI",
-   "rows": [
-    {
-     "research_id": 62,
-     "project": "Snowy Mountains",
-     "parts_taken": 1,
-     "mw_per_part": 400,
-     "cost_multiplier": 0.8,
-     "resource_type": "high_head_diversion",
-     "status": "L"
     }
    ]
   },

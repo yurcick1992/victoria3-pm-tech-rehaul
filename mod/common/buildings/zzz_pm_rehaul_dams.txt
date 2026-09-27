@@ -2008,7 +2008,7 @@ building_dam_snowy_tumut = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
-	required_construction = 7886
+	required_construction = 7010
 
 	potential = {
 		state_region = s:STATE_NEW_SOUTH_WALES
@@ -2036,7 +2036,7 @@ building_dam_snowy_tumut = {
 		}
 		custom_tooltip = {
 			text = pmr_dam_snowy_tumut_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level_after_queued_constructions >= 2 } }
+			NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level_after_queued_constructions >= 3 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_snowy_tumut_not_financing_tt
@@ -6026,7 +6026,7 @@ building_dam_paulo_afonso_falls = {
 		}
 		custom_tooltip = {
 			text = pmr_dam_paulo_afonso_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  level_after_queued_constructions >= 1 } }
+			NOT = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  level_after_queued_constructions >= 2 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_paulo_afonso_falls_not_financing_tt
@@ -6270,77 +6270,6 @@ building_dam_lower_susquehanna = {
 
 	production_method_groups = {
 		pmg_dam_lower_susquehanna
-	}
-
-	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
-}
-
-building_dam_sao_francisco_rapids = {
-	building_group = bg_pmr_hydro_dams
-	icon = "gfx/interface/icons/building_icons/power_plant.dds"
-	city_type = city
-	levels_per_mesh = 50
-	expandable = yes
-	downsizeable = no
-	required_construction = 7219
-
-	potential = {
-		state_region = s:STATE_PERNAMBUCO
-		owner ?= p:xC4D392.state.owner
-		has_global_variable = pmr_dam_sao_francisco_rapids_surveyed_any
-	}
-
-	can_build_government = {
-		custom_tooltip = {
-			text = pmr_dam_sao_francisco_rapids_builder_tt
-			scope:investor_country ?= {
-				OR = {
-					this = p:xC4D392.state.owner
-					p:xC4D392.state.owner ?= { any_overlord_or_above = { this = scope:investor_country } }
-				}
-			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_sao_francisco_rapids_tech_1_tt
-			scope:investor_country ?= { has_technology_researched = electrical_generation }
-		}
-		custom_tooltip = {
-			text = pmr_dam_sao_francisco_rapids_surveyed_tt
-			scope:investor_country ?= { has_variable = pmr_dam_sao_francisco_rapids_surveyed }
-		}
-		custom_tooltip = {
-			text = pmr_dam_sao_francisco_rapids_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_sao_francisco_rapids  level_after_queued_constructions >= 1 } }
-		}
-		custom_tooltip = {
-			text = pmr_dam_sao_francisco_rapids_not_financing_tt
-			NOT = { has_global_variable = pmr_dam_sao_francisco_rapids_financing }
-		}
-	}
-
-	can_build_private = {
-		always = no
-	}
-
-	ai_nationalization_desire = 0.75
-
-	ai_value = {
-		value = 30000
-		if = {
-			limit = {
-				owner ?= {
-					OR = {
-						in_default = yes
-						is_at_war = yes
-					}
-				}
-			}
-			multiply = 0.1
-		}
-	}
-
-	production_method_groups = {
-		pmg_dam_sao_francisco_rapids
 	}
 
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -7193,77 +7122,6 @@ building_dam_niva_tuloma = {
 
 	production_method_groups = {
 		pmg_dam_niva_tuloma
-	}
-
-	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
-}
-
-building_dam_upper_murray = {
-	building_group = bg_pmr_hydro_dams
-	icon = "gfx/interface/icons/building_icons/power_plant.dds"
-	city_type = city
-	levels_per_mesh = 50
-	expandable = yes
-	downsizeable = no
-	required_construction = 5257
-
-	potential = {
-		state_region = s:STATE_VICTORIA
-		owner ?= p:xF4CF14.state.owner
-		has_global_variable = pmr_dam_upper_murray_surveyed_any
-	}
-
-	can_build_government = {
-		custom_tooltip = {
-			text = pmr_dam_upper_murray_builder_tt
-			scope:investor_country ?= {
-				OR = {
-					this = p:xF4CF14.state.owner
-					p:xF4CF14.state.owner ?= { any_overlord_or_above = { this = scope:investor_country } }
-				}
-			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_upper_murray_tech_1_tt
-			scope:investor_country ?= { has_technology_researched = electrical_generation }
-		}
-		custom_tooltip = {
-			text = pmr_dam_upper_murray_surveyed_tt
-			scope:investor_country ?= { has_variable = pmr_dam_upper_murray_surveyed }
-		}
-		custom_tooltip = {
-			text = pmr_dam_upper_murray_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_upper_murray  level_after_queued_constructions >= 1 } }
-		}
-		custom_tooltip = {
-			text = pmr_dam_upper_murray_not_financing_tt
-			NOT = { has_global_variable = pmr_dam_upper_murray_financing }
-		}
-	}
-
-	can_build_private = {
-		always = no
-	}
-
-	ai_nationalization_desire = 0.75
-
-	ai_value = {
-		value = 30000
-		if = {
-			limit = {
-				owner ?= {
-					OR = {
-						in_default = yes
-						is_at_war = yes
-					}
-				}
-			}
-			multiply = 0.1
-		}
-	}
-
-	production_method_groups = {
-		pmg_dam_upper_murray
 	}
 
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
