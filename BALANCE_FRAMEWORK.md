@@ -8831,6 +8831,12 @@ unacceptable"*. What ships now:
   a foreign government queue, so AI overlords keep FINANCING. ⚠ Pending the user's confirmation in play; once confirmed, the player's
   `<v>_finance_decision` is redundant and is to be hidden from human players. ⚠ Unmeasured whether the field changes anything for the
   AI (it never queues a dam itself, and no `foreign_investment_ai_factor` is set on the group).
+  ⭐ **THE TEST THE USER ASKED FOR (2026-09-27):** *"For the test, remove scripted queue adds. I suspect that the reason AI never built the
+  dams without them is the same declaration that we just removed."* — F169's "the engine's AI never queued a dam" was measured only on
+  dams WITHOUT an ownership_type. `dams.ai.driver_build` and `driver_finance` (default true) now switch off the driver's owner-queue
+  starts and its financing; `make_dam_config --ai-self` writes `canon-dams-aiself` (+ `-probe`), where the driver only surveys. Schedules
+  `dam_probe_p13_aiself.json` (1836 → 1840 on the probe book, ~7 min) and `canon_dams_aiself_n1.json` (a century), predictions inside.
+  If the engine AI builds dams on its own, the scripted construction paths can go; if not, they stay.
 
 ### 10.89.10 — THE CUTS AND THE CANONIZATION (user-ruled 2026-09-27; FINDINGS F171–F172)
 The gated n=3 put hydro at 43–52% of world electricity at 1935, "slightly overdone … especially considering that Urban Center electricity is

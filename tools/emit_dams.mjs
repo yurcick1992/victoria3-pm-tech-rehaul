@@ -366,6 +366,7 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
     `${T}${T}${T}${T}${T}${T}${T}NOT = { any_overlord_or_above = { has_technology_researched = ${p.tech}  is_at_war = no  in_default = no  scaled_debt < 0.5 } }\n${T}${T}${T}${T}${T}${T}}\n` +
     `${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}${T}${V(p)}_begin_survey = yes\n${T}${T}${T}${T}}\n`).join('') +
   `${T}${T}${T}}\n` +
+  (P.ai.driver_build === false ? '' :
   `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}pmr_dam_build_headroom > 0\n` +
   `${T}${T}${T}${T}${T}is_construction_paused = no\n${T}${T}${T}${T}${T}construction_queue_government_duration < ${P.ai.owner_max_backlog_weeks}\n${T}${T}${T}${T}}\n` +
   projects.map((p, i) => `${T}${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = {\n` +
@@ -376,13 +377,15 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
     `${T}${T}${T}${T}${T}debug_log = "PMR_DAM|stage_start|${p.id}|${TAG}|${DATE}|${BUR}"\n` +
     `${T}${T}${T}${T}${T}set_global_variable = { name = ${V(p)}_started_recently days = 365 }\n` +
     `${T}${T}${T}${T}${T}p:${p.anchor_province}.state = { start_building_construction = ${BKEY(p)} }\n${T}${T}${T}${T}}\n`).join('') +
-  `${T}${T}${T}}\n` +
+  `${T}${T}${T}}\n`) +
   // an overlord FINANCES a level of a dam it surveyed in a subject's state (the rich overlord builds and owns it)
+  (P.ai.driver_finance === false ? '' :
   `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { pmr_dam_build_headroom > 0 }\n` +
   projects.map((p, i) => `${T}${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}${T}${financeOpen(p).replace(/\n/g, `\n${T}${T}${T}${T}`)}\n` +
     `${T}${T}${T}${T}${T}${T}NOT = { has_global_variable = ${V(p)}_started_recently }\n${T}${T}${T}${T}${T}}\n` +
     `${T}${T}${T}${T}${T}set_global_variable = { name = ${V(p)}_started_recently days = 365 }\n${T}${T}${T}${T}${T}${V(p)}_begin_finance = yes\n${T}${T}${T}${T}}\n`).join('') +
-  `${T}${T}${T}}\n${T}${T}}\n${T}}\n}\n`);
+  `${T}${T}${T}}\n`) +
+  `${T}${T}}\n${T}}\n}\n`);
 const gdpSlots = (tiers) => tiers.map(g => `${T}if = {\n${T}${T}limit = { gdp >= ${g} }\n${T}${T}add = 1\n${T}}\n`).join('');
 W('common/script_values/zzz_pm_rehaul_dams.txt', HDR +
   `pmr_dam_bur_produced = {\n${T}value = produced_bureaucracy\n}\n\npmr_dam_bur_used = {\n${T}value = bureaucracy_usage\n}\n\n` +

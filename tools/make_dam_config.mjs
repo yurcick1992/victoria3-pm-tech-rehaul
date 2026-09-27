@@ -14,7 +14,10 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : d; };
 const base = arg('--base', 'config/mod_config.canon-b164-trade.json');   // the canon the dam book was built on (the dam book IS the canon since 2026-09-27)
 const probe = process.argv.includes('--probe');
-const suffix = arg('--suffix', probe ? 'canon-dams-probe' : 'canon-dams');
+// --ai-self: the driver only SURVEYS; its owner-queue starts and its financing are off, so every dam level is built by the
+// engine's own AI or a player (user, 2026-09-27, the ownership_type test)
+const aiSelf = process.argv.includes('--ai-self');
+const suffix = arg('--suffix', (aiSelf ? 'canon-dams-aiself' : 'canon-dams') + (probe ? '-probe' : ''));
 const cfg = JSON.parse(readFileSync(join(REPO, base), 'utf8'));
 for (const k of ['dams', 'building_required_construction']) if (cfg[k]) throw new Error(`make_dam_config: the base already carries '${k}'`);
 
@@ -71,11 +74,13 @@ cfg.dams = {
 if (cfg.building_subsidies && Object.values(cfg.building_subsidies).some(v => v && v !== 'vanilla')) throw new Error('make_dam_config: the base already sets building_subsidies - merge by hand');
 const dp = JSON.parse(readFileSync(join(REPO, cfg.dams.projects_file), 'utf8'));
 cfg.building_subsidies = Object.fromEntries((dp.projects || dp).map(p => [`building_dam_${p.id}`, 'must_have']));
-if (probe) cfg.dams.probe = { grant_tags: ['GBR', 'FRA', 'USA', 'RUS', 'PRU', 'AUS', 'SWE', 'SAR', 'SWI', 'TUR'], survey_months: 2, cost_mult: 0.05, force_build_every: 0, laissez_faire_tags: ['USA', 'FRA'] };
+if (aiSelf) cfg.dams.ai = { driver_build: false, driver_finance: false };
+if (probe) cfg.dams.probe ={ grant_tags: ['GBR', 'FRA', 'USA', 'RUS', 'PRU', 'AUS', 'SWE', 'SAR', 'SWI', 'TUR'], survey_months: 2, cost_mult: 0.05, force_build_every: 0, laissez_faire_tags: ['USA', 'FRA'] };
 cfg._dams_variant = {
   name: suffix, base: basename(base),
   ruled_by: 'user 2026-09-26: power plants at 4x construction cost, recipes unchanged; hydro-dam megaprojects (survey decision + staged unique buildings, one project per state)',
-  delta: 'building_required_construction + dams' + (probe ? ' (+ PROBE: techs granted, 2-month surveys, cost x0.05)' : ''),
+  delta: 'building_required_construction + dams' + (aiSelf ? ' (+ AI-SELF: the driver only surveys, no scripted construction or financing)' : '') +
+    (probe ? ' (+ PROBE: techs granted, 2-month surveys, cost x0.05)' : ''),
 };
 const dst = join(REPO, `config/mod_config.${suffix}.json`);
 writeFileSync(dst, JSON.stringify(cfg));

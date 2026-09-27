@@ -259,3 +259,8 @@ tools/testbed/ledger/corpus_gbr.jsonl
 !config/tech_tree_options.canon-dams.json
 !config/mod_config.canon-dams-probe.json
 !config/tech_tree_options.canon-dams-probe.json
+# the ownership_type test (2026-09-27): the dam book with the driver's scripted construction and financing off
+!config/mod_config.canon-dams-aiself.json
+!config/tech_tree_options.canon-dams-aiself.json
+!config/mod_config.canon-dams-aiself-probe.json
+!config/tech_tree_options.canon-dams-aiself-probe.json

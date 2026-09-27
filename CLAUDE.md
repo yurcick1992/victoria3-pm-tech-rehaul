@@ -3027,7 +3027,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         (throws on a building it does not own, or ≠ 1 match) — the power plant at 1,600 in the dam book
   make_dam_projects.mjs / make_dam_config.mjs  the dam table (from config/dam_sites_research.json + the irrigation EFFECTS table and the
                         ruled CUTS table in the script — it THROWS on a cut naming a missing project or row) and the dam book (base
-                        canon-b164-trade + power-plant cost + dams; it THROWS on a base that already carries dams; `--probe` for probe builds)
+                        canon-b164-trade + power-plant cost + dams; it THROWS on a base that already carries dams; `--probe` for probe builds;
+                        `--ai-self` → canon-dams-aiself[-probe]: `dams.ai.driver_build` / `driver_finance` false, the quarterly driver
+                        only SURVEYS and every level is the engine AI's own choice — the ownership_type test, user-asked 2026-09-27;
+                        schedules dam_probe_p13_aiself.json + canon_dams_aiself_n1.json. Both switches default true, so the canon is unchanged)
   emit_goods.mjs        ⭐ THE PER-GOOD TRADE WEIGHT (ROADMAP step 11, FINDINGS F155 / F159) — called by build.ps1, which THROWS if it
                         fails. With a top-level `goods_traded_quantity` {good: traded_quantity} in the config it writes a WHOLE-FILE
                         copy of vanilla's common/goods/00_goods.txt with exactly those goods' traded_quantity changed (each line

@@ -78,6 +78,11 @@ export const DAM_DEFAULTS = {
     // Calibrated on the 94 owner starts of canon-dams-v2-n1: 21 of 27 slow levels blocked, 11 of 47 fast ones delayed.
     owner_gdp_per_point: 4000,
     owner_max_backlog_weeks: 520,
+    // THE DRIVER'S TWO BUILD PATHS, switchable (user, 2026-09-27: "for the test, remove scripted queue adds" — the AI may have
+    // never built a dam only because the dams had no ownership_type). false = the driver only SURVEYS and the engine's own
+    // AI is left to build: driver_build drops the owner-queue start_building_construction, driver_finance the financed level
+    driver_build: true,
+    driver_finance: true,
     // the AI driver's concurrency: one slot, plus one per GDP tier passed (game £ a year; the canon's USA ~£660M at 1936)
     build_slot_gdp: [50e6, 100e6, 200e6, 350e6, 500e6],   // 1-6 dam stages under construction at once
     survey_slot_gdp: [100e6, 300e6],                     // 1-3 surveys at once

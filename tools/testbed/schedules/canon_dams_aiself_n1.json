@@ -1,0 +1,67 @@
+{
+  "schedule_version": 1,
+  "label": "canon-dams-aiself-n1",
+  "_why": "THE ENGINE AI BUILDING THE DAMS ITSELF, over a century (user, 2026-09-27: remove the scripted queue adds - the AI may have never built a dam only because the dams lacked an ownership_type). ARM = config/mod_config.canon-dams-aiself.json {kind: config}: the canon (canon-dams, 144 projects / 312 levels) + ownership_type = self on every dam (now in the canon generator too) + dams.ai.driver_build = false and driver_finance = false: the quarterly driver only SURVEYS; no start_building_construction, no financed level. Every dam level is the engine AI own choice. Fixed n=1, plays to 1936, no stop watcher.",
+  "_arm": "config/mod_config.canon-dams-aiself.json (+ tech_tree_options twin = the canon twin, byte-identical)",
+  "_comparison": "canon-dams-v3-n3 (20260927_001731: 92-101 levels built per healthy run, dam electricity 43-44% of the world at 1935, 8-11 dam items in government queues, financing by 3-7 overlords) - but that book had 159 projects and no ownership_type; the shipped canon (144 projects) is itself unmeasured. Pinned vanilla n=16 (20260821_131149) for the register.",
+  "_instrument": "identical to canon_dams_n1: the canon telemetry + PMR_DAM debug.log lines (survey_*, stage_start, built / complete, finance_start / finance_done, bur_year) + yearly save summaries (building_dam_* per country, ownership levels by owner class).",
+  "_stop_rule": "fixed n=1: plays to 1936, no stop watcher",
+  "_predictions": {
+    "construction": "the AI builds dams on its own: at least 20 levels by 1936 (the driver built 92-101); if under 5, the ownership_type was not the cause of F169 and the driver returns",
+    "where": "mostly in the builders own states; levels in a subject state owned by the overlord only if the government AI uses its foreign construction for them",
+    "ownership": "every level owned by a country; none by a financial district or company (can_build_private stays always = no)",
+    "economy": "world GDP inside the canon seed spread (0.68-1.04); fewer dams means more coal plants, not less electricity",
+    "perf": "play time within 5% of the canon on a quiet machine"
+  },
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "canon-dams-aiself": {
+      "kind": "config",
+      "config": "config/mod_config.canon-dams-aiself.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon-dams-aiself",
+      "until": "1936.1.1"
+    }
+  ]
+}
