@@ -78,7 +78,16 @@ if (aiSelf) cfg.dams.ai = { driver_build: false, driver_finance: false };
 // the ai-self PROBE is the CONTEST probe (user, 2026-09-27): several eligible builders on every subject's site, the level log,
 // and costs x0.25 rather than x0.05 so that constructions overlap in time long enough to collide
 if (probe) cfg.dams.probe ={ grant_tags: ['GBR', 'FRA', 'USA', 'RUS', 'PRU', 'AUS', 'SWE', 'SAR', 'SWI', 'TUR'], survey_months: 2, cost_mult: 0.05, force_build_every: 0, laissez_faire_tags: ['USA', 'FRA'] };
-if (probe && aiSelf) Object.assign(cfg.dams.probe, { contest: true, cost_mult: 0.25 });
+if (probe && aiSelf) {
+  Object.assign(cfg.dams.probe, { contest: true, cost_mult: 0.25 });
+  // ELECTRICITY DEMAND FROM 1836 (user, 2026-09-27: "If noone starts building dams, this could well be because there's no electricity
+  // demand. Try adding some."). Nothing buys electricity before ~1880, so a probe AI would see a dam's output unsellable. Every
+  // urban centre runs pm_no_public_transport from 1836 (ungated): it now also takes 1 electricity per level. With no supply the
+  // price sits at the band's 175% edge - the strongest signal the market can send. PROBE ONLY: short of that input, urban centres
+  // lose output.
+  if (cfg.pm_goods?.pm_no_public_transport) throw new Error('make_dam_config: the base already overrides pm_no_public_transport');
+  cfg.pm_goods = { ...(cfg.pm_goods || {}), pm_no_public_transport: { in: { electricity: 1 }, out: { transportation: 2 } } };
+}
 cfg._dams_variant = {
   name: suffix, base: basename(base),
   ruled_by: 'user 2026-09-26: power plants at 4x construction cost, recipes unchanged; hydro-dam megaprojects (survey decision + staged unique buildings, one project per state)',

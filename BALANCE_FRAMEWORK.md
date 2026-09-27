@@ -8846,6 +8846,11 @@ unacceptable"*. What ships now:
   `can_build_government` on a construction under way (canon-dams-v3-n3: Britain's own last levels of Lochaber and Galloway completed
   while the cap read full). What is not: whether one builder's queued level counts in the cap another builder reads, and whether a
   poor subject owner grabs a level it cannot fund now that the driver's owner capacity gate no longer stands in front of the AI.
+  ⚠ **The probe also needs a MARKET** (user: *"If noone starts building dams, this could well be because there's no electricity
+  demand. Try adding some."*): nothing buys electricity before ~1880, so in an 1836 probe a dam's output has no buyer. The contest
+  book's `pm_goods` gives `pm_no_public_transport` (every urban centre, ungated, from 1836) 1 electricity in per level — demand in
+  every market from the first week, the price at the band edge. Probe only; the century arm needs none (its dams unlock with the
+  electrical technologies, when the streetlights and factory electrification already buy electricity).
 
 ### 10.89.10 — THE CUTS AND THE CANONIZATION (user-ruled 2026-09-27; FINDINGS F171–F172)
 The gated n=3 put hydro at 43–52% of world electricity at 1935, "slightly overdone … especially considering that Urban Center electricity is

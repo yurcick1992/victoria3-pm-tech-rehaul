@@ -3030,7 +3030,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         canon-b164-trade + power-plant cost + dams; it THROWS on a base that already carries dams; `--probe` for probe builds;
                         `--ai-self` → canon-dams-aiself[-probe]: `dams.ai.driver_build` / `driver_finance` false, the quarterly driver
                         only SURVEYS and every level is the engine AI's own choice — the ownership_type test, user-asked 2026-09-27;
-                        schedules dam_probe_p13_aiself.json + canon_dams_aiself_n1.json. Both switches default true, so the canon is unchanged. `--ai-self --probe` is the CONTEST probe: `dams.probe.contest` seeds every subject site with the owner and all its overlords as eligible builders and logs each dam monthly, cost x0.25)
+                        schedules dam_probe_p13_aiself.json + canon_dams_aiself_n1.json. Both switches default true, so the canon is unchanged. `--ai-self --probe` is the CONTEST probe: `dams.probe.contest` seeds every subject site with the owner and all its overlords as eligible builders and logs each dam monthly, cost x0.25, and pm_goods makes every urban centre buy 1 electricity a level from 1836 so a dam has a market)
   emit_goods.mjs        ⭐ THE PER-GOOD TRADE WEIGHT (ROADMAP step 11, FINDINGS F155 / F159) — called by build.ps1, which THROWS if it
                         fails. With a top-level `goods_traded_quantity` {good: traded_quantity} in the config it writes a WHOLE-FILE
                         copy of vanilla's common/goods/00_goods.txt with exactly those goods' traded_quantity changed (each line
