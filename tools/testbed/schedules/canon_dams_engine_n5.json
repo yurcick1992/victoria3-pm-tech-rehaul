@@ -1,0 +1,83 @@
+{
+  "schedule_version": 1,
+  "label": "canon-dams-engine-n5",
+  "_why": "THE DAMS BUILT BY THE ENGINE, n=5 (user, 2026-09-28: 'Remove all now-obsolete scripting (of all dam-related JEs and decisions only surveys should still exist) ... No capacity locks / guards yet. Check that the tech locks for building is the same as for surveying ... Go with n=5 on this new setup.'). ARM = config/mod_config.canon-dams.json {kind: config}, THE CANON as shipped 2026-09-28 (BALANCE_FRAMEWORK 10.89.11): 144 projects / 312 levels (the cuts and one-object merges, both unmeasured until now), ownership_type = self on every dam, the quarterly driver only SURVEYS, nothing builds a dam by script (no owner-queue starts, no overlord financing, no owner capacity gate), the survey and level 1 need the same technology (checked equal on all 144), dam ai_value 30,000 (the canon's; p14's 300,000 is NOT carried). Fixed n=5: every run plays to 1936, no stop watcher.",
+  "_arm": "config/mod_config.canon-dams.json (+ tech_tree_options.canon-dams.json = the canon twin, byte-identical); config/mod_config.json is a verbatim copy",
+  "_comparison": "canon-dams-v3-n3 (20260927_001731: the scripted design, 159 projects - 92-101 levels built per healthy run, dam electricity 43-44% of the world at 1935), canon-b164-trade n=3 (20260926_002930, no dams), the pinned vanilla n=16 (20260821_131149). Probes p13/p14 (F173/F174) for the mechanism.",
+  "_instrument": "identical to canon_dams_v3_n3: the canon telemetry + PMR_DAM debug.log lines (survey_*, built / complete, bur_year; NO stage_start or finance_* lines exist any more) + yearly save summaries (building_dam_* per country; who queued which dam from queues.government.by_type).",
+  "_stop_rule": "fixed n=5: all five play to 1936, no stop watcher",
+  "_predictions": {
+    "construction": "the engine builds fewer levels than the script did: 25-80 levels by 1936 per healthy run (v3: 92-101); dam electricity 15-35% of the world at 1935 (v3: 43-44%)",
+    "who": "owners build in their own states; overlords build in their subjects' states in every run, but rarely (a handful of levels)",
+    "stalls": "some dam levels sit in poor owners' queues for years (F173's pattern) - no guard by ruling; counted, not fixed",
+    "economy": "world GDP inside the canon seed spread (0.68-1.04) in every run; no hard break attributable to the dams",
+    "perf": "play time within 5% of the canon on a quiet machine"
+  },
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "canon-dams": {
+      "kind": "config",
+      "config": "config/mod_config.canon-dams.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon-dams",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon-dams",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon-dams",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon-dams",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon-dams",
+      "until": "1936.1.1"
+    }
+  ]
+}

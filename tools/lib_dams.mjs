@@ -65,26 +65,10 @@ export const DAM_DEFAULTS = {
     // high odds let one country take several surveys the same day (probe p2: Britain four on 1836.1.13)
     survey_owner: 3, survey_overlord: 5,          // (unused since probe p3: the AI surveys through the driver)
     stage_ai_value: 30000,
-    // OVERLORD-FINANCED construction (probes p6-p9): a level in a subject's state is paid from the overlord's treasury at
-    // the construction sector's price (steel frame, £540 a point at base) over the time a normal build takes at the
-    // per-project cap, then created OWNED BY THE OVERLORD (create_building + add_ownership)
-    finance_points_per_week: 42,
-    finance_pounds_per_point: 540,
-    // THE OWNER CAPACITY GATE (user-ruled 2026-09-27, FINDINGS F170: owner-queued levels sat 10-19 years where the government
-    // could not fund construction). The driver queues a level for the state owner, and an AI surveys a site in its OWN state,
-    // only when GDP >= owner_gdp_per_point x the level's points (the level's goods, points x 540, at most ~2.7% of a year's GDP
-    // at a five-year pace); queueing also needs the government's construction unpaused and its queue not stuck
-    // (construction_queue_government_duration below owner_max_backlog_weeks — a queue at speed 0 reads as never draining).
-    // Calibrated on the 94 owner starts of canon-dams-v2-n1: 21 of 27 slow levels blocked, 11 of 47 fast ones delayed.
-    owner_gdp_per_point: 4000,
-    owner_max_backlog_weeks: 520,
-    // THE DRIVER'S TWO BUILD PATHS, switchable (user, 2026-09-27: "for the test, remove scripted queue adds" — the AI may have
-    // never built a dam only because the dams had no ownership_type). false = the driver only SURVEYS and the engine's own
-    // AI is left to build: driver_build drops the owner-queue start_building_construction, driver_finance the financed level
-    driver_build: true,
-    driver_finance: true,
-    // the AI driver's concurrency: one slot, plus one per GDP tier passed (game £ a year; the canon's USA ~£660M at 1936)
-    build_slot_gdp: [50e6, 100e6, 200e6, 350e6, 500e6],   // 1-6 dam stages under construction at once
+    // ⚠ NOTHING HERE BUILDS A DAM (user-ruled 2026-09-27, FINDINGS F173/F174): the engine's own AI builds every level, at home
+    // and in its subjects. The overlord financing (finance_*), the owner capacity gate (owner_gdp_per_point / owner_max_backlog_weeks),
+    // the driver's build switches and its build slots are GONE; the driver only surveys (BALANCE_FRAMEWORK §10.89.11).
+    // the AI driver's survey concurrency: one survey, plus one per GDP tier passed (game £ a year)
     survey_slot_gdp: [100e6, 300e6],                     // 1-3 surveys at once
   },
 };
@@ -155,11 +139,12 @@ export function deriveProject(p, P) {
   if (probe.survey_months) months = probe.survey_months;
   let bur = S.bureaucracy_ref * Math.pow(pts / S.bureaucracy_ref_points, S.bureaucracy_exp);
   bur = Math.min(S.bureaucracy_max, Math.max(S.bureaucracy_min, round(bur, S.bureaucracy_round)));
-  const finMonths = Math.max(1, Math.ceil(stagePts / P.ai.finance_points_per_week / (52 / 12)));
+  const stage_techs = stage_classes.map(c => P.tech_by_class[c]);
   return {
-    ...p, finance_months: finMonths, finance_monthly: Math.round(stagePts * P.ai.finance_pounds_per_point / finMonths),
-    mw, total_points: Math.round(pts), total_units: Math.round(units), cls, tech: P.tech_by_class[cls],
-    stage_classes, stage_techs: stage_classes.map(c => P.tech_by_class[c]),
+    // `tech` = the FIRST LEVEL's technology: the one the survey needs AND the one building level 1 needs (user, 2026-09-27: the
+    // build lock must equal the survey lock) — deliberately not the MW-dominant class's, which could differ on a merged project
+    ...p, mw, total_points: Math.round(pts), total_units: Math.round(units), cls, tech: stage_techs[0],
+    stage_classes, stage_techs,
     stages: n, stage_points: stagePts, stage_units: stageUnits, staff, inputs, survey_months: months,
     survey_bureaucracy: bur,
   };

@@ -27,34 +27,6 @@ pmr_dam_building_now = {
 			add = 1
 		}
 	}
-	if = {
-		limit = { has_variable = pmr_dam_financing }
-		add = var:pmr_dam_financing
-	}
-}
-
-pmr_dam_build_slots = {
-	value = 1
-	if = {
-		limit = { gdp >= 50000000 }
-		add = 1
-	}
-	if = {
-		limit = { gdp >= 100000000 }
-		add = 1
-	}
-	if = {
-		limit = { gdp >= 200000000 }
-		add = 1
-	}
-	if = {
-		limit = { gdp >= 350000000 }
-		add = 1
-	}
-	if = {
-		limit = { gdp >= 500000000 }
-		add = 1
-	}
 }
 
 pmr_dam_survey_slots = {
@@ -67,11 +39,6 @@ pmr_dam_survey_slots = {
 		limit = { gdp >= 300000000 }
 		add = 1
 	}
-}
-
-pmr_dam_build_headroom = {
-	value = pmr_dam_build_slots
-	subtract = pmr_dam_building_now
 }
 
 pmr_dam_survey_headroom = {

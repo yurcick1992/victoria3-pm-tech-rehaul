@@ -1580,11 +1580,14 @@ with `[THIS.GetCountry.MakeScope.ScriptValue('<sv>')|0]` — e.g. Britain 1836 2
 ### The dam log lines (content, not telemetry — emitted by `tools/emit_dams.mjs` in any build with `dams.enabled`, FINDINGS F168)
 `PMR_DAM|<event>|<project id>|<country NAME>|<date>|bur <produced>/<used>` in debug.log, for `survey_start`, `survey_month` (monthly while a
 survey runs), `survey_stop`, `survey_complete`, `survey_ended` (the journal entry invalidated: cancelled, or the anchor left the
-chain), `stage_start` (the AI driver), and `built|…|stage k/n` / `complete` (on_building_built; no bureaucracy field); plus
-`bur_year|-|<country>|<date>|bur …|surveys N building M` once a year for every country holding `electrical_generation`, and
-`start` once at 1836; `finance_start` / `finance_done` / `finance_ended` (the overlord-financed levels, logged by the financier;
-§10.89.9); and since 2026-09-27 `gov_paused` and `gov_backlog|…|over 520 weeks` once a year for a country whose construction is
-paused or whose government queue will not drain within ten years (the owner capacity gate's queue inputs, F170). ⚠ The country is the NAME (no tag function exists), so a join across a country's formation (Prussia → the North
+chain), and `built|…|level k/n` / `complete` (on_building_built / on_building_expanded, logged from the HOST's scope; no bureaucracy
+field); plus `bur_year|-|<country>|<date>|bur …|surveys N building M` once a year for every country holding `electrical_generation`
+(M = dam levels under construction in its own states), and `start` once at 1836. PROBE builds add `probe_*` lines (`probe_can_build`,
+`probe_contest_seed`, `probe_sink`, monthly `probe_lvl` / `probe_q`).
+⚠ **Since 2026-09-28 (BALANCE_FRAMEWORK §10.89.11) nothing logs WHO QUEUED a level**: the engine builds every level, so the scripted
+`stage_start` and the financing lines (`finance_start` / `finance_done` / `finance_ended`) are gone, and with the owner capacity gate its
+`gov_paused` / `gov_backlog` lines. Who queued which dam is read from the save summaries (`queues.government.by_type.building_dam_*` per
+country); older sessions keep their lines, which `tools/testbed/ledger/dam_report.mjs` still reads. ⚠ The country is the NAME (no tag function exists), so a join across a country's formation (Prussia → the North
 German Federation → Germany) must go by name history. ⚠ Not token-stamped: filter a shared ring by the run's own time window.
 
 ## Other verified Country data functions

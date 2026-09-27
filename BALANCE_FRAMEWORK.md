@@ -8896,3 +8896,29 @@ Rapides-Farmer 16, Paugan 42, Holtwood 28, Safe Harbor 39, Tabqa 6, Baluchaung 5
 The generator now throws if two projects end up in one state. **144 projects / 312 levels / 135.7 GW**; canon rebuilt and deployed.
 ⚠ Friction (the ruling's point b): the Iron Gates in Wallachia and Tabqa in Deir-Ez-Zor both stand in states whose 1836 owner (an Ottoman
 subject, the Ottomans) is not the historical consumer; the survey goes to whoever holds the anchor in play, so this is accepted as play.
+
+### 10.89.11 — THE ENGINE BUILDS THE DAMS; THE SCRIPT ONLY SURVEYS (user-ruled 2026-09-28; FINDINGS F173–F174) — supersedes the construction halves of §10.89.6 and §10.89.9
+
+*"Remove all now-obsolete scripting (of all dam-related JEs and decisions only surveys should still exist). … No capacity locks / guards
+yet. Check that the tech locks for building is the same as for surveying, this will likely disqualify poor and backward subjects by itself."*
+
+The chain of evidence: the dams had no `ownership_type`, which the engine treats like an administration — refused in a foreign state
+(the user's playtest), and never built by the AI (F169). With `ownership_type = self` the AI builds dams in its own states (F173); with
+local electricity demand and the technologies at the overlord it also builds in its subjects' states (F174: Britain → Ceylon, Qing →
+Joseon, the German Empire → Lombardy-Venetia), and the user queued the Ceylon dam by hand as Britain in a build where Ceylon lacked the
+technology. So every scripted construction path was a workaround for a missing declaration, and all of them go:
+- **Removed**: the driver's owner-queue starts (`start_building_construction`), the overlord FINANCING (its journal entry, its player
+  decision, the `create_building` + `add_ownership` chain, the "no financing running" clause in `can_build_government`), the OWNER CAPACITY
+  GATE (§10.89.9's GDP ≥ 4,000 × points / construction unpaused / queue under 520 weeks, and the GDP floor on surveys of own sites) with its
+  yearly `gov_paused` / `gov_backlog` log lines, the driver's build slots, the `dams.ai.driver_*` switches, and the old race / finance probe
+  tests. `make_dam_config --ai-self` throws.
+- **Kept**: the survey (the player decision, the stop decision, the counter journal entry, the AI driver's survey step with its survey
+  slots and its rule that a subject surveys its own site only when no unburdened overlord above holds the technology), `ownership_type =
+  self`, `can_build_government` (builder in the chain, its own survey, the next level's technology, the level cap), the effects, the
+  subsidies, the probe machinery (`dams.probe`: grants, contest seeding, level log, electricity consumers — probe builds only).
+- **The technology locks are ONE**: the survey needs the first level's technology and building level 1 needs the same — `lib_dams` now
+  DEFINES a project's `tech` as its first level's, and the emitted survey decisions and building rules were checked equal on all 144 dams
+  (64 electrical generation, 47 steam turbine, 33 arc welding). A country that cannot survey cannot build, so a poor, backward subject is
+  kept out until it researches the technology itself — the user's expected substitute for a capacity gate.
+- ⚠ **What is not guarded**: a subject that HAS the technology may still grab a level it cannot fund (F173 §4); no capacity lock stands in
+  front of it, by ruling. The first measurement is the n=5 century batch of 2026-09-28 on the canon as it now ships.

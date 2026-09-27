@@ -1260,6 +1260,10 @@ found dams replace coal plants and pull electricity-using industry toward them. 
 one reduced — BALANCE_FRAMEWORK **§10.89.10**; 147 projects / 313 levels / 135.7 GW; after the one-object rulings 144 / 312) and canonized the book (CLAUDE.md's canon banner).
 ⚠ Open: a batch on the canon as cut (unmeasured; expected hydro ~40–45% of world electricity at 1935); the consumers' recipes (deferred by
 the 4× ruling); post-queue stalls and self-owned levels are ruled acceptable.
+⭐⭐ **2026-09-28 — THE ENGINE BUILDS THE DAMS (BALANCE_FRAMEWORK §10.89.11, FINDINGS F173/F174).** The missing `ownership_type` was why
+the AI never built a dam and could not build abroad; with it (and local electricity demand) the AI builds at home and in its subjects. All
+scripted construction — the owner-queue starts, the overlord financing, the owner capacity gate — is removed; the driver only surveys; the
+survey and level 1 need the same technology. No capacity guard, by ruling. The n=5 century batch of that day is the first measurement.
 
 ## Step 7 — VISUALS, PROOFREADING, RELEASE
 

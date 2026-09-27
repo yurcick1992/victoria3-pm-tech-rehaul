@@ -8,6 +8,8 @@
 // yearly bureaucracy line with its survey and stage events interleaved; (4) per year from the summaries: dam stages standing,
 // dam electricity (va_out ÷ 30, the base price) against all electricity produced, power-plant levels, by country for the top five.
 // ⚠ The log carries country NAMES (no tag function), and a mirror can hold re-read chunks (landmine L28): lines are de-duplicated.
+// ⚠ Since 2026-09-28 (BALANCE_FRAMEWORK §10.89.11) the engine builds every level: runs of that build log no stage_start and no finance_*
+// lines, so those columns read 0 there by construction; who queued a dam is in the save summaries' queues.government.by_type.
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import zlib from 'node:zlib';
