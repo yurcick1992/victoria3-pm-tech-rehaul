@@ -17701,3 +17701,32 @@ from 1836 (`pm_no_public_transport`), so a dam has a market from the first week.
 **What it does NOT say.** Anything at canon costs (4 × dearer than here) or at real technology dates; whether an overlord would build
 abroad once poor owners are screened out (it did not build abroad even where nothing blocked it here); how the completed levels are
 owned (the summary's ownership split is by class, not by building type).
+
+## F174 — WITH A REASON TO, THE AI BUILDS DAMS IN ITS SUBJECTS' STATES ITSELF: no scripted financing needed (probe p14)
+
+**Arm.** Session `20260927_232721_dam-probe-p14-incentives`, 1 run, 1836.1.1 → 1856.1.1. Book `config/mod_config.canon-dams-aiself-probe-p14.json`
+(commit 6cb2b2d): p13's book (F173: `ownership_type = self`, the driver only surveys, costs × 0.25, the ten majors granted the dam
+technologies) with the user's three changes (2026-09-27): **(1)** dam `ai_value` 300,000 (canon 30,000); **(2)** TARGETED electricity demand
+in place of p13's urban-centre demand everywhere — a government-funded consumer (10 electricity a level, sized to one dam level's output) in
+the anchor state of every other project by id: 72 TREATED, 72 CONTROL; **(3)** twenty years. And the technologies at the TOP overlord only
+(`contest_grant = top`): the 31 subject sites keep a completed survey for their whole chain, but no subject holds the technologies — checked
+in the first save (15 independent countries hold them, no subject). Before it, the user queued the Ceylon dam by hand as Britain in the
+Britain-only build (`canon-dams-aiself-probe-gbr`), so the build rules accept an overlord building in a subject.
+
+**Established.**
+1. **Overlords build in their subjects' states on their own** — 4 dams, 5 levels, no scripted start or financing: Britain → Ceylon
+   (Laxapana, queued within the first half-year, done 1837.3), Qing → Joseon (Kaema, 2 levels; Yalu 1 level), and the German Empire (formed
+   by Austria during the run) → Lombardy-Venetia (Piave, 1853). F173's "only in its own states" was a lack of incentive, as the user
+   expected, not a limit of the engine.
+2. **Local demand draws construction.** 19 levels on 14 dams by 1856: **14 in treated states, 5 in control** (the assignment is 50/50);
+   10 of 15 dams started were treated. ⚠ One country dominates: Qing and its subject Joseon account for 13 of the 19 levels, controls
+   included — the treatment effect is carried mostly outside Qing.
+3. **Most technology holders still build nothing.** Britain built only Laxapana in twenty years (none of its 14 other subject sites, neither
+   home dam); Russia, France, the USA, Prussia, Sweden, the Ottomans, Spain, Japan, Persia and Bolivia built none — with 10 × the canon's
+   `ai_value`. ai_value is not the binding lever; demand in the state is (2).
+4. **Lock-out and waste**: no dam ever queued past its cap and no construction vanished without its level rising; no two countries ever
+   queued the same dam. Qing queued two levels of its own Yellow River dam at once (inside the cap) — allowed by the design.
+
+**What it does NOT say.** Which of the two incentives made Britain build Laxapana (ai_value and the treated consumer changed together, and
+Laxapana was treated); anything at canon costs (× 4 dearer) or real technology dates; the poor-owner stall (p13 / F173 §4) — subjects held no
+technology here by design, so it could not recur.
