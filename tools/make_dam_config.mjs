@@ -20,6 +20,9 @@ const aiSelf = process.argv.includes('--ai-self');
 // --grant TAG,TAG (probe): who gets the dam technologies at the start, in place of the ten majors; --contest-grant chain|overlords|none
 // (ai-self probe): who the contest seeding gives the technologies to (emit_dams.mjs). User, 2026-09-27: techs only at the overlord
 const grantTags = arg('--grant', null), contestGrant = arg('--contest-grant', null);
+// --ai-value N: the dams' ai_value (default lib_dams 30,000); --elec-sink PER (ai-self probe): electricity consumers in every other dam
+// state instead of the urban-centre demand everywhere, PER electricity a level (emit_dams.mjs; user, 2026-09-27: "leave some for control")
+const aiValue = arg('--ai-value', null), elecSink = arg('--elec-sink', null);
 const suffix = arg('--suffix', (aiSelf ? 'canon-dams-aiself' : 'canon-dams') + (probe ? '-probe' : ''));
 const cfg = JSON.parse(readFileSync(join(REPO, base), 'utf8'));
 for (const k of ['dams', 'building_required_construction']) if (cfg[k]) throw new Error(`make_dam_config: the base already carries '${k}'`);
@@ -78,6 +81,7 @@ if (cfg.building_subsidies && Object.values(cfg.building_subsidies).some(v => v 
 const dp = JSON.parse(readFileSync(join(REPO, cfg.dams.projects_file), 'utf8'));
 cfg.building_subsidies = Object.fromEntries((dp.projects || dp).map(p => [`building_dam_${p.id}`, 'must_have']));
 if (aiSelf) cfg.dams.ai = { driver_build: false, driver_finance: false };
+if (aiValue) cfg.dams.ai = { ...(cfg.dams.ai || {}), stage_ai_value: +aiValue };
 // the ai-self PROBE is the CONTEST probe (user, 2026-09-27): several eligible builders on every subject's site, the level log,
 // and costs x0.25 rather than x0.05 so that constructions overlap in time long enough to collide
 if (probe) cfg.dams.probe = { grant_tags: ['GBR', 'FRA', 'USA', 'RUS', 'PRU', 'AUS', 'SWE', 'SAR', 'SWI', 'TUR'], survey_months: 2, cost_mult: 0.05, force_build_every: 0, laissez_faire_tags: ['USA', 'FRA'] };
@@ -90,8 +94,11 @@ if (probe && aiSelf) {
   // price sits at the band's 175% edge - the strongest signal the market can send. PROBE ONLY: short of that input, urban centres
   // lose output.
   if (contestGrant) cfg.dams.probe.contest_grant = contestGrant;
-  if (cfg.pm_goods?.pm_no_public_transport) throw new Error('make_dam_config: the base already overrides pm_no_public_transport');
-  cfg.pm_goods = { ...(cfg.pm_goods || {}), pm_no_public_transport: { in: { electricity: 1 }, out: { transportation: 2 } } };
+  if (elecSink) cfg.dams.probe.elec_sink = { per_level: +elecSink };   // targeted demand with a control: no urban-centre demand
+  else {
+    if (cfg.pm_goods?.pm_no_public_transport) throw new Error('make_dam_config: the base already overrides pm_no_public_transport');
+    cfg.pm_goods = { ...(cfg.pm_goods || {}), pm_no_public_transport: { in: { electricity: 1 }, out: { transportation: 2 } } };
+  }
 }
 cfg._dams_variant = {
   name: suffix, base: basename(base),

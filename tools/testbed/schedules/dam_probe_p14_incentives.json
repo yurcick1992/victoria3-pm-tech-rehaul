@@ -1,0 +1,57 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probe-p14-incentives",
+  "_why": "ENGINE PROBE — does the engine AI build dams in its SUBJECTS' states when it has reason to? (user, 2026-09-27, after p13 / F173 showed the AI building dams only in its own states and the user built the Ceylon dam as Britain by hand: 'I still think not building in subjects is either misconfiguration (which needs fixing), or lack of incentives ... Try 1) increasing AI value for dams 2) adding explicit electricity consumers in potential dam states. Leave some for control 3) running a longer probe ... To ensure that the subjects don't start, let's leave the techs only at the overlord.' Arm = config/mod_config.canon-dams-aiself-probe-p14.json {kind: config}: p13's book (ownership_type = self, the driver only surveys, costs x0.25, 2-month surveys, the ten majors granted the dam technologies, USA/FRA on laissez-faire) with (a) the contest seeding giving the TECHNOLOGIES to the TOP overlord only (contest_grant = top: no subject holds them, not even the East India Company, itself a subject; every chain member still holds a completed survey), (b) dam ai_value 300,000 (canon 30,000), (c) targeted electricity demand in place of p13's urban-centre demand everywhere: a government-funded consumer (500 clerks, 10 electricity a level, levels = one dam level's output / 10, capped 60) in the anchor state of every other project by id (72 TREATED, 72 CONTROL, logged PMR_DAM|probe_sink), (d) 20 years, 1836 -> 1856. The vanilla group factor foreign_investment_ai_factor 0.75 is inherited from bg_infrastructure (checked) - not changed.",
+  "_arm": "config/mod_config.canon-dams-aiself-probe-p14.json (+ tech_tree_options twin = the canon's, byte-identical)",
+  "_questions": {
+    "Q1": "Does any AI overlord queue a dam level in a subject's state (a building_dam_* element in the OVERLORD's government queue whose site a subject owns)?",
+    "Q2": "Is dam construction concentrated in TREATED states (local electricity demand) over CONTROL ones - own-state and subject sites separately?",
+    "Q3": "Does any subject get the dam technologies anyway (tech spread) and queue its own site?",
+    "Q4": "Lock-out and waste as p13: never above the cap, no cancelled construction; do the owner-stall patterns repeat?"
+  },
+  "_predictions": {
+    "Q1": "yes, at least once in 20 years among the ~31 subject sites once the subject itself cannot build and a treated state prices electricity at the band edge - low confidence: p13 had no case at all",
+    "Q2": "yes, clearly: most levels in treated states",
+    "Q3": "not before ~1850 (the dam technologies are game eras 3-4)",
+    "Q4": "lock-out holds and nothing is cancelled; own-state stalls repeat in poor countries"
+  },
+  "_read": "debug.log: PMR_DAM probe_sink (treated/control), probe_contest_seed, probe_lvl / probe_q monthly, built / complete. Save summaries (half-yearly): each country's queues.government.by_type building_dam_* (who queued which dam; the site owner from states), technologies_held for the dam technologies (subjects), building_dam_* levels.",
+  "_cost": "1 run x 1836 -> 1856.1, about 25-30 minutes",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe build: techs granted, costs and surveys shrunk, subjects' chains seeded, government electricity consumers placed - do not read any economic number from it.",
+    "ai_value and targeted demand change together: a positive Q1 does not say which of the two did it."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1840.1.1",
+      "1848.1.1",
+      "1855.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "halfyear",
+    "timeout_minutes": 90
+  },
+  "setups": {
+    "damprobe-p14": {
+      "kind": "config",
+      "config": "config/mod_config.canon-dams-aiself-probe-p14.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "damprobe-p14",
+      "until": "1856.1.1"
+    }
+  ]
+}

@@ -261,19 +261,45 @@ if (P.probe?.grant_tags?.length) for (const tag of P.probe.grant_tags) {
 // completed survey. Monthly, every standing dam logs its built level and its level counting every queued construction
 // (probe_lvl / probe_q): queued above the cap = the lock-out failed; queued falling while built stays = a cancelled construction.
 // `contest_grant` says who the seeding gives the TECHNOLOGIES to (the surveys go to the whole chain either way): 'chain' (default, p13)
-// the owner and every overlord; 'overlords' only the countries above the owner (user, 2026-09-27: "to ensure that the subjects don't
+// the owner and every overlord; 'overlords' only the countries above the owner; 'top' only the TOP overlord - no subject at all, since a
+// mid-chain overlord (the East India Company over Travancore) is itself a subject (user, 2026-09-27: "to ensure that the subjects don't
 // start, let's leave the techs only at the overlord"); 'none' nobody (the grant_tags list alone decides)
 if (P.probe?.contest) {
   const mode = P.probe.contest_grant || 'chain';
-  if (!['chain', 'overlords', 'none'].includes(mode)) die(`probe.contest_grant '${mode}'`);
+  if (!['chain', 'overlords', 'top', 'none'].includes(mode)) die(`probe.contest_grant '${mode}'`);
   const grant = [...new Set(Object.values(P.tech_by_class))].map(t => `add_technology_researched = ${t}`).join(' ');
-  const gOwner = mode === 'chain' ? `${grant}\n${T}${T}${T}${T}` : '', gOver = mode === 'none' ? '' : `${grant}\n${T}${T}${T}${T}${T}`;
+  const gOwner = mode === 'chain' ? `${grant}\n${T}${T}${T}${T}` : '';
+  const gOver = ['chain', 'overlords'].includes(mode) ? `${grant}\n${T}${T}${T}${T}${T}` : '';
+  const gTop = mode === 'top' ? `top_overlord ?= { ${grant} }\n${T}${T}${T}${T}` : '';
   for (const p of projects) start.push(
     `${T}${T}p:${p.anchor_province}.state.owner ?= {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { is_subject = yes }\n` +
     `${T}${T}${T}${T}${gOwner}set_variable = ${V(p)}_surveyed\n` +
     `${T}${T}${T}${T}every_overlord_or_above = {\n${T}${T}${T}${T}${T}${gOver}set_variable = ${V(p)}_surveyed\n${T}${T}${T}${T}}\n` +
-    `${T}${T}${T}${T}set_global_variable = ${V(p)}_surveyed_any\n` +
+    `${T}${T}${T}${T}${gTop}set_global_variable = ${V(p)}_surveyed_any\n` +
     `${T}${T}${T}${T}debug_log = "PMR_DAM|probe_contest_seed|${p.id}|${TAG}|${DATE}"\n${T}${T}${T}}\n${T}${T}}`);
+}
+// PROBE BUILDS ONLY — TARGETED ELECTRICITY DEMAND, with a CONTROL (user, 2026-09-27: "adding explicit electricity consumers in potential
+// dam states. Leave some for control"). Electricity is a LOCAL good, so demand has to sit in the dam's own state. `probe.elec_sink` =
+// { per_level } places a government-funded consumer (clerks, electricity in) in the anchor state of every other project (sorted by id:
+// even index = TREATED, odd = CONTROL), sized to take about one dam level's output (levels = stage_units / per_level).
+const sinkPlan = [];
+if (P.probe?.elec_sink) {
+  const per = P.probe.elec_sink.per_level || 10;
+  [...projects].sort((a, b) => a.id.localeCompare(b.id)).forEach((p, i) =>
+    sinkPlan.push({ p, treated: i % 2 === 0, levels: Math.max(1, Math.min(60, Math.round(p.stage_units / per))) }));
+  W('common/building_groups/zzz_pm_rehaul_dam_probe.txt', HDR + `bg_pmr_probe_sink = {\n${T}parent_group = bg_government\n${T}lens = special\n${T}is_government_funded = yes\n${T}economy_of_scale = no\n}\n`);
+  W('common/buildings/zzz_pm_rehaul_dam_probe.txt', HDR + `building_pmr_probe_sink = {\n${T}building_group = bg_pmr_probe_sink\n${T}city_type = city\n${T}levels_per_mesh = 50\n` +
+    `${T}buildable = no\n${T}expandable = no\n${T}downsizeable = no\n${T}required_construction = construction_cost_very_low\n` +
+    `${T}production_method_groups = {\n${T}${T}pmg_pmr_probe_sink\n${T}}\n` +
+    `${T}icon = "gfx/interface/icons/building_icons/power_plant.dds"\n${T}background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"\n}\n`);
+  W('common/production_method_groups/zzz_pm_rehaul_dam_probe.txt', HDR + `pmg_pmr_probe_sink = {\n${T}texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"\n${T}production_methods = {\n${T}${T}pm_pmr_probe_sink\n${T}}\n}\n`);
+  W('common/production_methods/zzz_pm_rehaul_dam_probe.txt', HDR + `pm_pmr_probe_sink = {\n${T}texture = "gfx/interface/icons/production_method_icons/hydroelectric_plant.dds"\n` +
+    `${T}building_modifiers = {\n${T}${T}workforce_scaled = {\n${T}${T}${T}goods_input_electricity_add = ${per}\n${T}${T}}\n${T}${T}level_scaled = {\n${T}${T}${T}building_employment_clerks_add = 500\n${T}${T}}\n${T}}\n}\n`);
+  loc.push(['building_pmr_probe_sink', 'Probe Electricity Consumer'], ['pmg_pmr_probe_sink', 'Probe Consumer'], ['pm_pmr_probe_sink', 'Probe Consumer']);
+  for (const { p, treated, levels } of sinkPlan) start.push(treated
+    ? `${T}${T}p:${p.anchor_province}.state ?= {\n${T}${T}${T}create_building = { building = building_pmr_probe_sink level = ${levels} }\n` +
+      `${T}${T}${T}debug_log = "PMR_DAM|probe_sink|${p.id}|treated|${levels} levels x ${per}|${DATE}"\n${T}${T}}`
+    : `${T}${T}debug_log = "PMR_DAM|probe_sink|${p.id}|control|-|${DATE}"`);
 }
 // on_building_built (a dam's first level) and on_building_expanded (every later level) both land here, root = the building.
 // An effect named for level k fires once, the first time the dam stands at k levels or more; 'last' = at its final level.
