@@ -416,19 +416,6 @@ pmr_dam_inga_rapids_begin_survey = {
 	debug_log = "PMR_DAM|survey_start|inga_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
-pmr_dam_iron_gates_djerdap_begin_survey = {
-	set_variable = { name = pmr_dam_iron_gates_djerdap_months value = 0 }
-	set_global_variable = pmr_dam_iron_gates_djerdap_surveying
-	add_modifier = { name = pmr_dam_iron_gates_djerdap_surveying }
-	add_journal_entry = { type = je_pmr_dam_iron_gates_djerdap_survey }
-	if = {
-		limit = { NOT = { has_variable = pmr_dam_active_surveys } }
-		set_variable = { name = pmr_dam_active_surveys value = 0 }
-	}
-	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|iron_gates_djerdap|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-}
-
 pmr_dam_rion_ingur_begin_survey = {
 	set_variable = { name = pmr_dam_rion_ingur_months value = 0 }
 	set_global_variable = pmr_dam_rion_ingur_surveying
@@ -2305,23 +2292,19 @@ pmr_dam_rhone_isere_on_level = {
 
 pmr_dam_niagara_ottawa_on_level = {
 	if = {
-		limit = { level >= 4 }
-		owner ?= { debug_log = "PMR_DAM|built|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 4/4" }
-	}
-	else_if = {
 		limit = { level >= 3 }
-		owner ?= { debug_log = "PMR_DAM|built|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 3/4" }
+		owner ?= { debug_log = "PMR_DAM|built|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 3/3" }
 	}
 	else_if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/4" }
+		owner ?= { debug_log = "PMR_DAM|built|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/3" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/4" }
+		owner ?= { debug_log = "PMR_DAM|built|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/3" }
 	}
 	if = {
-		limit = { level >= 4  NOT = { has_global_variable = pmr_dam_niagara_ottawa_complete } }
+		limit = { level >= 3  NOT = { has_global_variable = pmr_dam_niagara_ottawa_complete } }
 		set_global_variable = pmr_dam_niagara_ottawa_complete
 		owner ?= { debug_log = "PMR_DAM|complete|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
@@ -2746,15 +2729,23 @@ pmr_dam_hohe_tauern_ziller_on_level = {
 
 pmr_dam_iron_gates_arges_on_level = {
 	if = {
+		limit = { level >= 4 }
+		owner ?= { debug_log = "PMR_DAM|built|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 4/4" }
+	}
+	else_if = {
+		limit = { level >= 3 }
+		owner ?= { debug_log = "PMR_DAM|built|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 3/4" }
+	}
+	else_if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
+		owner ?= { debug_log = "PMR_DAM|built|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/4" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
+		owner ?= { debug_log = "PMR_DAM|built|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/4" }
 	}
 	if = {
-		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_iron_gates_arges_complete } }
+		limit = { level >= 4  NOT = { has_global_variable = pmr_dam_iron_gates_arges_complete } }
 		set_global_variable = pmr_dam_iron_gates_arges_complete
 		owner ?= { debug_log = "PMR_DAM|complete|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
@@ -2773,22 +2764,6 @@ pmr_dam_inga_rapids_on_level = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_inga_rapids_complete } }
 		set_global_variable = pmr_dam_inga_rapids_complete
 		owner ?= { debug_log = "PMR_DAM|complete|inga_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
-	}
-}
-
-pmr_dam_iron_gates_djerdap_on_level = {
-	if = {
-		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|iron_gates_djerdap|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
-	}
-	else_if = {
-		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|iron_gates_djerdap|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
-	}
-	if = {
-		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_iron_gates_djerdap_complete } }
-		set_global_variable = pmr_dam_iron_gates_djerdap_complete
-		owner ?= { debug_log = "PMR_DAM|complete|iron_gates_djerdap|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
@@ -4408,7 +4383,7 @@ pmr_dam_laurentian_rivers_begin_finance = {
 		set_variable = { name = pmr_dam_financing value = 0 }
 	}
 	change_variable = { name = pmr_dam_financing add = 1 }
-	debug_log = "PMR_DAM|finance_start|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]|51 months x £97496"
+	debug_log = "PMR_DAM|finance_start|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]|53 months x £97995"
 }
 
 pmr_dam_norrland_rivers_begin_finance = {
@@ -4528,7 +4503,7 @@ pmr_dam_niagara_ottawa_begin_finance = {
 		set_variable = { name = pmr_dam_financing value = 0 }
 	}
 	change_variable = { name = pmr_dam_financing add = 1 }
-	debug_log = "PMR_DAM|finance_start|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]|44 months x £97114"
+	debug_log = "PMR_DAM|finance_start|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]|50 months x £97697"
 }
 
 pmr_dam_tennessee_valley_begin_finance = {
@@ -4756,7 +4731,7 @@ pmr_dam_iron_gates_arges_begin_finance = {
 		set_variable = { name = pmr_dam_financing value = 0 }
 	}
 	change_variable = { name = pmr_dam_financing add = 1 }
-	debug_log = "PMR_DAM|finance_start|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]|52 months x £97584"
+	debug_log = "PMR_DAM|finance_start|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]|48 months x £98134"
 }
 
 pmr_dam_inga_rapids_begin_finance = {
@@ -4769,18 +4744,6 @@ pmr_dam_inga_rapids_begin_finance = {
 	}
 	change_variable = { name = pmr_dam_financing add = 1 }
 	debug_log = "PMR_DAM|finance_start|inga_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]|39 months x £98128"
-}
-
-pmr_dam_iron_gates_djerdap_begin_finance = {
-	set_variable = { name = pmr_dam_iron_gates_djerdap_fin_months value = 0 }
-	set_global_variable = pmr_dam_iron_gates_djerdap_financing
-	add_journal_entry = { type = je_pmr_dam_iron_gates_djerdap_finance }
-	if = {
-		limit = { NOT = { has_variable = pmr_dam_financing } }
-		set_variable = { name = pmr_dam_financing value = 0 }
-	}
-	change_variable = { name = pmr_dam_financing add = 1 }
-	debug_log = "PMR_DAM|finance_start|iron_gates_djerdap|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]|45 months x £96576"
 }
 
 pmr_dam_rion_ingur_begin_finance = {

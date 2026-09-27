@@ -57,7 +57,7 @@ pmr_dam_rhone_isere_surveying = {
 
 pmr_dam_niagara_ottawa_surveying = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds
-	country_bureaucracy_cost_add = 1150
+	country_bureaucracy_cost_add = 1100
 }
 
 pmr_dam_tennessee_valley_surveying = {
@@ -152,17 +152,12 @@ pmr_dam_hohe_tauern_ziller_surveying = {
 
 pmr_dam_iron_gates_arges_surveying = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds
-	country_bureaucracy_cost_add = 1000
+	country_bureaucracy_cost_add = 1200
 }
 
 pmr_dam_inga_rapids_surveying = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds
 	country_bureaucracy_cost_add = 900
-}
-
-pmr_dam_iron_gates_djerdap_surveying = {
-	icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds
-	country_bureaucracy_cost_add = 950
 }
 
 pmr_dam_rion_ingur_surveying = {

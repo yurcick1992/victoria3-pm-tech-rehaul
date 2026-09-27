@@ -45,6 +45,19 @@ const CUTS = {
   },
   parts: {      // project id -> { research row: parts kept }
     rion_ingur: { 'Georgia (Rioni, lower Inguri)': [2, 'trimmed to the Rioni scale; Inguri (1,300 MW) is 1978-87'] },
+    // the Gatineau plants (70% rule, checked 2026-09-27): Paugan's whole output went to Ontario Hydro (stays Ontario); Chelsea and
+    // Farmer's sold half to Ontario Hydro and half to CIP's Templeton mill (under 70%) -> physical: Quebec (~1 part of 250 MW)
+    niagara_ottawa: { 'Ottawa + Gatineau': [4, 'Des Joachims, Chats, Chenaux, Paugan (Paugan 100% Ontario Hydro)'] },
+    laurentian_rivers: { 'Ottawa + Gatineau': [2, 'Carillon + Chelsea and Farmer\'s (half to Ontario, half to the Templeton mill: physical)'] },
+  },
+  // THE HOST STATE SWAPPED (70% rule): each project keeps its physical objects and takes the other's state and anchor.
+  swapHosts: [
+    ['conowingo_falls', 'lower_susquehanna', 'Conowingo (MD) was Philadelphia Electric\'s own plant, lines to Philadelphia -> Pennsylvania; from 1931 Baltimore\'s Consolidated was entitled to ALL of Penn Water\'s energy from Holtwood and Safe Harbor (and bought 2/3 of Safe Harbor directly; 194 F.2d 89) -> Maryland'],
+  ],
+  // RELOCATED to the physical state (70% rule): no consumer state reached 70%
+  relocate: {
+    tabqa_narrows: { state: 'STATE_DEIR_EZ_ZOR', state_name: 'Deir-Ez-Zor', anchor_province: 'x1ECFDA', owner_1836: 'TUR',
+      why: 'Tabqa (1968-78, 880 MW) fed the Syrian national grid and irrigation, Aleppo nowhere near 70%; it stands 40 km upstream of Raqqa, in Deir-Ez-Zor' },
   },
   // ONE OBJECT, ONE IN-GAME PROJECT (user-ruled 2026-09-27): a physical object serving two states goes to its biggest IRL consumer
   // state if that state took >= 70% of the output (the Hoover ruling), otherwise strictly to where it physically stands.
@@ -52,6 +65,7 @@ const CUTS = {
   merge: {
     sao_francisco_rapids: ['paulo_afonso_falls', 'one site (the Paulo Afonso falls, powerhouses on the Bahia bank); CHESF sold across the whole Northeast, no state near 70% -> geographic: Bahia'],
     upper_murray: ['snowy_tumut', 'the Snowy works (Tumut, Murray 1-2) stand in NSW; output ~2/3 NSW, ~1/3 Victoria, no 70% consumer -> geographic: NSW'],
+    iron_gates_djerdap: ['iron_gates_arges', 'one dam straddling the Danube, output 50/50 Romania/Yugoslavia: a tie, user-ruled to Romania (Wallachia)'],
   },
 };
 const byId0 = new Map(sites.map(s => [s.id, s]));
@@ -71,7 +85,18 @@ for (const [from, [to]] of Object.entries(CUTS.merge)) {
     if (same) same.parts_taken += r.parts_taken; else t.rows.push({ ...r });
   }
 }
+const HOST = ['state', 'state_name', 'anchor_province', 'owner_1836'];
+for (const [a, b] of CUTS.swapHosts) {
+  const A = byIdCut.get(a), B = byIdCut.get(b);
+  if (!A || !B) throw new Error(`make_dam_projects: swapHosts names a missing project (${a}, ${b})`);
+  for (const k of HOST) [A[k], B[k]] = [B[k], A[k]];
+}
+for (const [id, h] of Object.entries(CUTS.relocate)) {
+  const s = byIdCut.get(id); if (!s) throw new Error(`make_dam_projects: relocate names ${id}, which is not in the sites`);
+  for (const k of HOST) s[k] = h[k];
+}
 const cutSites = cutSites0.filter(s => !(s.id in CUTS.merge));
+{ const seen = new Set(); for (const s of cutSites) { if (seen.has(s.state)) throw new Error(`make_dam_projects: two projects in ${s.state} after the cuts`); seen.add(s.state); } }
 
 // host state -> effects (the dam_agri_effects research; the optional low-confidence ones are left out)
 const EFFECTS = {

@@ -100,7 +100,7 @@
     {
      "research_id": 6,
      "project": "Ottawa + Gatineau",
-     "parts_taken": 1,
+     "parts_taken": 2,
      "mw_per_part": 250,
      "cost_multiplier": 1,
      "resource_type": "river_cascade",
@@ -377,7 +377,7 @@
     {
      "research_id": 6,
      "project": "Ottawa + Gatineau",
-     "parts_taken": 5,
+     "parts_taken": 4,
      "mw_per_part": 250,
      "cost_multiplier": 1,
      "resource_type": "river_cascade",
@@ -828,7 +828,7 @@
     {
      "research_id": 84,
      "project": "Iron Gates (Danube)",
-     "parts_taken": 0.5,
+     "parts_taken": 1,
      "mw_per_part": 2100,
      "cost_multiplier": 1.3,
      "resource_type": "large_river_low_head",
@@ -860,25 +860,6 @@
      "mw_per_part": 350,
      "cost_multiplier": 0.8,
      "resource_type": "falls_diversion",
-     "status": "L"
-    }
-   ]
-  },
-  {
-   "id": "iron_gates_djerdap",
-   "state": "STATE_EASTERN_SERBIA",
-   "state_name": "Eastern Serbia",
-   "name": "Iron Gates (Djerdap)",
-   "anchor_province": "x40AF95",
-   "owner_1836": "TUR/SER",
-   "rows": [
-    {
-     "research_id": 84,
-     "project": "Iron Gates (Danube)",
-     "parts_taken": 0.5,
-     "mw_per_part": 2100,
-     "cost_multiplier": 1.3,
-     "resource_type": "large_river_low_head",
      "status": "L"
     }
    ]
@@ -1993,10 +1974,10 @@
   },
   {
    "id": "lower_susquehanna",
-   "state": "STATE_PENNSYLVANIA",
-   "state_name": "Pennsylvania",
+   "state": "STATE_MARYLAND",
+   "state_name": "Maryland",
    "name": "Lower Susquehanna",
-   "anchor_province": "x75195D",
+   "anchor_province": "x0E3435",
    "owner_1836": "USA",
    "rows": [
     {
@@ -2107,11 +2088,11 @@
   },
   {
    "id": "tabqa_narrows",
-   "state": "STATE_ALEPPO",
-   "state_name": "Aleppo",
+   "state": "STATE_DEIR_EZ_ZOR",
+   "state_name": "Deir-Ez-Zor",
    "name": "Tabqa Narrows",
-   "anchor_province": "x68D9E3",
-   "owner_1836": "EGY",
+   "anchor_province": "x1ECFDA",
+   "owner_1836": "TUR",
    "rows": [
     {
      "research_id": 111,
@@ -2694,10 +2675,10 @@
   },
   {
    "id": "conowingo_falls",
-   "state": "STATE_MARYLAND",
-   "state_name": "Maryland",
+   "state": "STATE_PENNSYLVANIA",
+   "state_name": "Pennsylvania",
    "name": "Conowingo Falls",
-   "anchor_province": "x0E3435",
+   "anchor_province": "x75195D",
    "owner_1836": "USA",
    "rows": [
     {

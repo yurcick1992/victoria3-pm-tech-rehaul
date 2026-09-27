@@ -23,15 +23,15 @@ pm_dam_laurentian_rivers = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_tools_add = 7.3
-			goods_input_engines_add = 7.3
-			goods_output_electricity_add = 366
+			goods_input_tools_add = 7.6
+			goods_input_engines_add = 7.6
+			goods_output_electricity_add = 378
 		}
 
 		level_scaled = {
-			building_employment_laborers_add = 370
-			building_employment_machinists_add = 730
-			building_employment_engineers_add = 370
+			building_employment_laborers_add = 380
+			building_employment_machinists_add = 760
+			building_employment_engineers_add = 380
 		}
 	}
 }
@@ -203,15 +203,15 @@ pm_dam_niagara_ottawa = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_tools_add = 6.4
-			goods_input_engines_add = 6.4
-			goods_output_electricity_add = 319
+			goods_input_tools_add = 7.6
+			goods_input_engines_add = 7.6
+			goods_output_electricity_add = 381
 		}
 
 		level_scaled = {
-			building_employment_laborers_add = 320
-			building_employment_machinists_add = 640
-			building_employment_engineers_add = 320
+			building_employment_laborers_add = 380
+			building_employment_machinists_add = 760
+			building_employment_engineers_add = 380
 		}
 	}
 }
@@ -545,38 +545,20 @@ pm_dam_iron_gates_arges = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_tools_add = 6.2
-			goods_input_engines_add = 6.2
-			goods_output_electricity_add = 312
+			goods_input_tools_add = 5.9
+			goods_input_engines_add = 5.9
+			goods_output_electricity_add = 293
 		}
 
 		level_scaled = {
-			building_employment_laborers_add = 310
-			building_employment_machinists_add = 620
-			building_employment_engineers_add = 310
+			building_employment_laborers_add = 290
+			building_employment_machinists_add = 590
+			building_employment_engineers_add = 290
 		}
 	}
 }
 
 pm_dam_inga_rapids = {
-	texture = "gfx/interface/icons/production_method_icons/hydroelectric_plant.dds"
-
-	building_modifiers = {
-		workforce_scaled = {
-			goods_input_tools_add = 5.5
-			goods_input_engines_add = 5.5
-			goods_output_electricity_add = 273
-		}
-
-		level_scaled = {
-			building_employment_laborers_add = 270
-			building_employment_machinists_add = 550
-			building_employment_engineers_add = 270
-		}
-	}
-}
-
-pm_dam_iron_gates_djerdap = {
 	texture = "gfx/interface/icons/production_method_icons/hydroelectric_plant.dds"
 
 	building_modifiers = {

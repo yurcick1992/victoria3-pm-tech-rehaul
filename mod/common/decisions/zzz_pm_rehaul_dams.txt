@@ -534,7 +534,7 @@ pmr_dam_niagara_ottawa_survey_decision = {
 		NOT = { has_variable = pmr_dam_niagara_ottawa_surveyed }
 		NOT = { has_global_variable = pmr_dam_niagara_ottawa_surveying }
 		NOT = { has_global_variable = pmr_dam_niagara_ottawa_claim }
-		NOT = { p:x24691A.state ?= { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level_after_queued_constructions >= 4 } } }
+		NOT = { p:x24691A.state ?= { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level_after_queued_constructions >= 3 } } }
 		p:x24691A ?= {
 			state ?= {
 				owner ?= {
@@ -548,7 +548,7 @@ pmr_dam_niagara_ottawa_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 1150
+		produced_bureaucracy > 1100
 	}
 
 	when_taken = {
@@ -1446,7 +1446,7 @@ pmr_dam_iron_gates_arges_survey_decision = {
 		NOT = { has_variable = pmr_dam_iron_gates_arges_surveyed }
 		NOT = { has_global_variable = pmr_dam_iron_gates_arges_surveying }
 		NOT = { has_global_variable = pmr_dam_iron_gates_arges_claim }
-		NOT = { p:xD28965.state ?= { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level_after_queued_constructions >= 2 } } }
+		NOT = { p:xD28965.state ?= { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level_after_queued_constructions >= 4 } } }
 		p:xD28965 ?= {
 			state ?= {
 				owner ?= {
@@ -1460,7 +1460,7 @@ pmr_dam_iron_gates_arges_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 1000
+		produced_bureaucracy > 1200
 	}
 
 	when_taken = {
@@ -1526,54 +1526,6 @@ pmr_dam_inga_rapids_stop_survey_decision = {
 	when_taken = {
 		remove_variable = pmr_dam_inga_rapids_months
 		debug_log = "PMR_DAM|survey_stop|inga_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-	ai_chance = {
-		value = 0
-		if = {
-			limit = { in_default = yes }
-			add = 50
-		}
-	}
-}
-
-pmr_dam_iron_gates_djerdap_survey_decision = {
-	is_shown = {
-		has_technology_researched = arc_welding
-		NOT = { has_variable = pmr_dam_iron_gates_djerdap_surveyed }
-		NOT = { has_global_variable = pmr_dam_iron_gates_djerdap_surveying }
-		NOT = { has_global_variable = pmr_dam_iron_gates_djerdap_claim }
-		NOT = { p:x40AF95.state ?= { any_scope_building = { is_building_type = building_dam_iron_gates_djerdap  level_after_queued_constructions >= 2 } } }
-		p:x40AF95 ?= {
-			state ?= {
-				owner ?= {
-					OR = {
-						this = ROOT
-						any_overlord_or_above = { this = ROOT }
-					}
-				}
-			}
-		}
-	}
-
-	possible = {
-		produced_bureaucracy > 950
-	}
-
-	when_taken = {
-		pmr_dam_iron_gates_djerdap_begin_survey = yes
-	}
-
-	ai_chance = {
-		value = 0
-	}
-}
-
-pmr_dam_iron_gates_djerdap_stop_survey_decision = {
-	is_shown = { has_variable = pmr_dam_iron_gates_djerdap_months }
-	possible = { has_variable = pmr_dam_iron_gates_djerdap_months }
-	when_taken = {
-		remove_variable = pmr_dam_iron_gates_djerdap_months
-		debug_log = "PMR_DAM|survey_stop|iron_gates_djerdap|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 	}
 	ai_chance = {
 		value = 0
@@ -4134,8 +4086,8 @@ pmr_dam_lower_susquehanna_survey_decision = {
 		NOT = { has_variable = pmr_dam_lower_susquehanna_surveyed }
 		NOT = { has_global_variable = pmr_dam_lower_susquehanna_surveying }
 		NOT = { has_global_variable = pmr_dam_lower_susquehanna_claim }
-		NOT = { p:x75195D.state ?= { any_scope_building = { is_building_type = building_dam_lower_susquehanna  level_after_queued_constructions >= 1 } } }
-		p:x75195D ?= {
+		NOT = { p:x0E3435.state ?= { any_scope_building = { is_building_type = building_dam_lower_susquehanna  level_after_queued_constructions >= 1 } } }
+		p:x0E3435 ?= {
 			state ?= {
 				owner ?= {
 					OR = {
@@ -4422,8 +4374,8 @@ pmr_dam_tabqa_narrows_survey_decision = {
 		NOT = { has_variable = pmr_dam_tabqa_narrows_surveyed }
 		NOT = { has_global_variable = pmr_dam_tabqa_narrows_surveying }
 		NOT = { has_global_variable = pmr_dam_tabqa_narrows_claim }
-		NOT = { p:x68D9E3.state ?= { any_scope_building = { is_building_type = building_dam_tabqa_narrows  level_after_queued_constructions >= 1 } } }
-		p:x68D9E3 ?= {
+		NOT = { p:x1ECFDA.state ?= { any_scope_building = { is_building_type = building_dam_tabqa_narrows  level_after_queued_constructions >= 1 } } }
+		p:x1ECFDA ?= {
 			state ?= {
 				owner ?= {
 					OR = {
@@ -5862,8 +5814,8 @@ pmr_dam_conowingo_falls_survey_decision = {
 		NOT = { has_variable = pmr_dam_conowingo_falls_surveyed }
 		NOT = { has_global_variable = pmr_dam_conowingo_falls_surveying }
 		NOT = { has_global_variable = pmr_dam_conowingo_falls_claim }
-		NOT = { p:x0E3435.state ?= { any_scope_building = { is_building_type = building_dam_conowingo_falls  level_after_queued_constructions >= 1 } } }
-		p:x0E3435 ?= {
+		NOT = { p:x75195D.state ?= { any_scope_building = { is_building_type = building_dam_conowingo_falls  level_after_queued_constructions >= 1 } } }
+		p:x75195D ?= {
 			state ?= {
 				owner ?= {
 					OR = {
@@ -7318,8 +7270,8 @@ pmr_dam_niagara_ottawa_finance_decision = {
 		NOT = { has_global_variable = pmr_dam_niagara_ottawa_financing }
 		p:x24691A.state ?= {
 			NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  is_under_construction = yes } }
-			NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level_after_queued_constructions >= 4 } }
-			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa } } ROOT = { has_technology_researched = electrical_generation } } AND = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level >= 1 } NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level >= 2 } } ROOT = { has_technology_researched = steam_turbine } } AND = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level >= 2 } NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level >= 3 } } ROOT = { has_technology_researched = steam_turbine } } AND = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level >= 3 } NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level >= 4 } } ROOT = { has_technology_researched = steam_turbine } } }
+			NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level_after_queued_constructions >= 3 } }
+			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa } } ROOT = { has_technology_researched = electrical_generation } } AND = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level >= 1 } NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level >= 2 } } ROOT = { has_technology_researched = steam_turbine } } AND = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level >= 2 } NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level >= 3 } } ROOT = { has_technology_researched = steam_turbine } } }
 		}
 	}
 
@@ -7907,8 +7859,8 @@ pmr_dam_iron_gates_arges_finance_decision = {
 		NOT = { has_global_variable = pmr_dam_iron_gates_arges_financing }
 		p:xD28965.state ?= {
 			NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  is_under_construction = yes } }
-			NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level_after_queued_constructions >= 2 } }
-			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges } } ROOT = { has_technology_researched = electrical_generation } } AND = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level >= 1 } NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level >= 2 } } ROOT = { has_technology_researched = arc_welding } } }
+			NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level_after_queued_constructions >= 4 } }
+			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges } } ROOT = { has_technology_researched = electrical_generation } } AND = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level >= 1 } NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level >= 2 } } ROOT = { has_technology_researched = arc_welding } } AND = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level >= 2 } NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level >= 3 } } ROOT = { has_technology_researched = arc_welding } } AND = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level >= 3 } NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level >= 4 } } ROOT = { has_technology_researched = arc_welding } } }
 		}
 	}
 
@@ -7945,37 +7897,6 @@ pmr_dam_inga_rapids_finance_decision = {
 
 	when_taken = {
 		pmr_dam_inga_rapids_begin_finance = yes
-	}
-
-	ai_chance = {
-		value = 0
-	}
-}
-
-pmr_dam_iron_gates_djerdap_finance_decision = {
-	is_shown = {
-		has_variable = pmr_dam_iron_gates_djerdap_surveyed
-		NOT = { p:x40AF95 ?= { state ?= { owner ?= ROOT } } }
-		p:x40AF95 ?= {
-			state ?= {
-				owner ?= {
-					OR = {
-						this = ROOT
-						any_overlord_or_above = { this = ROOT }
-					}
-				}
-			}
-		}
-		NOT = { has_global_variable = pmr_dam_iron_gates_djerdap_financing }
-		p:x40AF95.state ?= {
-			NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_djerdap  is_under_construction = yes } }
-			NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_djerdap  level_after_queued_constructions >= 2 } }
-			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_djerdap } } ROOT = { has_technology_researched = arc_welding } } AND = { any_scope_building = { is_building_type = building_dam_iron_gates_djerdap  level >= 1 } NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_djerdap  level >= 2 } } ROOT = { has_technology_researched = arc_welding } } }
-		}
-	}
-
-	when_taken = {
-		pmr_dam_iron_gates_djerdap_begin_finance = yes
 	}
 
 	ai_chance = {
@@ -9629,8 +9550,8 @@ pmr_dam_necaxa_tilostoc_finance_decision = {
 pmr_dam_lower_susquehanna_finance_decision = {
 	is_shown = {
 		has_variable = pmr_dam_lower_susquehanna_surveyed
-		NOT = { p:x75195D ?= { state ?= { owner ?= ROOT } } }
-		p:x75195D ?= {
+		NOT = { p:x0E3435 ?= { state ?= { owner ?= ROOT } } }
+		p:x0E3435 ?= {
 			state ?= {
 				owner ?= {
 					OR = {
@@ -9641,7 +9562,7 @@ pmr_dam_lower_susquehanna_finance_decision = {
 			}
 		}
 		NOT = { has_global_variable = pmr_dam_lower_susquehanna_financing }
-		p:x75195D.state ?= {
+		p:x0E3435.state ?= {
 			NOT = { any_scope_building = { is_building_type = building_dam_lower_susquehanna  is_under_construction = yes } }
 			NOT = { any_scope_building = { is_building_type = building_dam_lower_susquehanna  level_after_queued_constructions >= 1 } }
 			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_lower_susquehanna } } ROOT = { has_technology_researched = steam_turbine } } }
@@ -9815,8 +9736,8 @@ pmr_dam_upper_ob_finance_decision = {
 pmr_dam_tabqa_narrows_finance_decision = {
 	is_shown = {
 		has_variable = pmr_dam_tabqa_narrows_surveyed
-		NOT = { p:x68D9E3 ?= { state ?= { owner ?= ROOT } } }
-		p:x68D9E3 ?= {
+		NOT = { p:x1ECFDA ?= { state ?= { owner ?= ROOT } } }
+		p:x1ECFDA ?= {
 			state ?= {
 				owner ?= {
 					OR = {
@@ -9827,7 +9748,7 @@ pmr_dam_tabqa_narrows_finance_decision = {
 			}
 		}
 		NOT = { has_global_variable = pmr_dam_tabqa_narrows_financing }
-		p:x68D9E3.state ?= {
+		p:x1ECFDA.state ?= {
 			NOT = { any_scope_building = { is_building_type = building_dam_tabqa_narrows  is_under_construction = yes } }
 			NOT = { any_scope_building = { is_building_type = building_dam_tabqa_narrows  level_after_queued_constructions >= 1 } }
 			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_tabqa_narrows } } ROOT = { has_technology_researched = arc_welding } } }
@@ -10745,8 +10666,8 @@ pmr_dam_first_cataract_finance_decision = {
 pmr_dam_conowingo_falls_finance_decision = {
 	is_shown = {
 		has_variable = pmr_dam_conowingo_falls_surveyed
-		NOT = { p:x0E3435 ?= { state ?= { owner ?= ROOT } } }
-		p:x0E3435 ?= {
+		NOT = { p:x75195D ?= { state ?= { owner ?= ROOT } } }
+		p:x75195D ?= {
 			state ?= {
 				owner ?= {
 					OR = {
@@ -10757,7 +10678,7 @@ pmr_dam_conowingo_falls_finance_decision = {
 			}
 		}
 		NOT = { has_global_variable = pmr_dam_conowingo_falls_financing }
-		p:x0E3435.state ?= {
+		p:x75195D.state ?= {
 			NOT = { any_scope_building = { is_building_type = building_dam_conowingo_falls  is_under_construction = yes } }
 			NOT = { any_scope_building = { is_building_type = building_dam_conowingo_falls  level_after_queued_constructions >= 1 } }
 			OR = { AND = { NOT = { any_scope_building = { is_building_type = building_dam_conowingo_falls } } ROOT = { has_technology_researched = steam_turbine } } }

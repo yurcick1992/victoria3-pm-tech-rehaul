@@ -8848,4 +8848,23 @@ Otherwise — strictly geographically."* (and: the Russian and American protecti
 merging). Applied at once to the two unambiguous cases, as `CUTS.merge` in make_dam_projects.mjs: the Paulo Afonso falls (one site, split
 2/2 Bahia/Pernambuco; CHESF sold across the whole Northeast, no state near 70% → Bahia, where the powerhouses stand) and the Snowy Mountains
 (the works stand in NSW; output ~2/3 NSW, ~1/3 Victoria → NSW). **145 projects / 313 levels / 135.7 GW.** The rule's other candidates on the
-list (consumer-rule placements without a verified 70% share, and straddling border objects) are with the user for rulings.
+list (consumer-rule placements without a verified 70% share, and straddling border objects) went to the user for rulings.
+
+**The second round, same day (user-ruled): *"1. Romania 2. West Bengal 3. When unsure, let's go with physical, if the other candidate states
+are at least 100 km away. If not, check more thoroughly."*** Every remaining case had its other candidate state within 100 km (Chelsea 18 km,
+Rapides-Farmer 16, Paugan 42, Holtwood 28, Safe Harbor 39, Tabqa 6, Baluchaung 57, from the anchor provinces), so each was checked:
+- **Iron Gates** — one dam on the Danube border, output 50/50 → ruled to Romania: `iron_gates_djerdap` merged into Wallachia (`CUTS.merge`).
+- **Bhutan's rivers** stay in West Bengal (ruled; no change).
+- **The Gatineau** — Paugan's whole output went to Ontario Hydro (stays in Ontario); Chelsea and Farmer's sold half to Ontario Hydro and
+  half to CIP's Templeton mill, under 70% → physical, Quebec. `niagara_ottawa`'s Ottawa + Gatineau row 5 → 4 parts, `laurentian_rivers`' 1 → 2.
+- **The Susquehanna** — Conowingo (in Maryland) was Philadelphia Electric's plant with its lines to Philadelphia; from 1931 Baltimore's
+  Consolidated was entitled to all of Penn Water's energy from Holtwood and Safe Harbor (two thirds of Safe Harbor bought directly; the
+  1952 appeal, 194 F.2d 89). Both pass the 70% line in the direction opposite to geography, so the two projects SWAP hosts (`CUTS.swapHosts`):
+  Conowingo → Pennsylvania, the Holtwood/Safe Harbor pair → Maryland.
+- **Tabqa** fed the Syrian national grid and irrigation; nothing puts Aleppo near 70% → physical: Deir-Ez-Zor (the Raqqa hub, `CUTS.relocate`,
+  anchor x1ECFDA, an Ottoman state in 1836).
+- **Lawpita (Baluchaung)** stays in Pegu: its 1960 first stage came with the line to Rangoon, the Mandalay line only in 1963 — Rangoon above
+  70% early, the Hoover case.
+The generator now throws if two projects end up in one state. **144 projects / 312 levels / 135.7 GW**; canon rebuilt and deployed.
+⚠ Friction (the ruling's point b): the Iron Gates in Wallachia and Tabqa in Deir-Ez-Zor both stand in states whose 1836 owner (an Ottoman
+subject, the Ottomans) is not the historical consumer; the survey goes to whoever holds the anchor in play, so this is accepted as play.

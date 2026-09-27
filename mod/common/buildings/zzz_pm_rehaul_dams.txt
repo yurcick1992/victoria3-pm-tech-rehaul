@@ -85,7 +85,7 @@ building_dam_laurentian_rivers = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
-	required_construction = 9208
+	required_construction = 9618
 
 	potential = {
 		state_region = s:STATE_QUEBEC
@@ -837,7 +837,7 @@ building_dam_niagara_ottawa = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
-	required_construction = 7913
+	required_construction = 9046
 
 	potential = {
 		state_region = s:STATE_ONTARIO
@@ -865,7 +865,7 @@ building_dam_niagara_ottawa = {
 		}
 		custom_tooltip = {
 			text = pmr_dam_niagara_ottawa_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level_after_queued_constructions >= 4 } }
+			NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level_after_queued_constructions >= 3 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_niagara_ottawa_not_financing_tt
@@ -2221,7 +2221,7 @@ building_dam_iron_gates_arges = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
-	required_construction = 9397
+	required_construction = 8723
 
 	potential = {
 		state_region = s:STATE_WALLACHIA
@@ -2249,7 +2249,7 @@ building_dam_iron_gates_arges = {
 		}
 		custom_tooltip = {
 			text = pmr_dam_iron_gates_arges_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level_after_queued_constructions >= 2 } }
+			NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level_after_queued_constructions >= 4 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_iron_gates_arges_not_financing_tt
@@ -2358,77 +2358,6 @@ building_dam_inga_rapids = {
 
 	production_method_groups = {
 		pmg_dam_inga_rapids
-	}
-
-	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
-}
-
-building_dam_iron_gates_djerdap = {
-	building_group = bg_pmr_hydro_dams
-	icon = "gfx/interface/icons/building_icons/power_plant.dds"
-	city_type = city
-	levels_per_mesh = 50
-	expandable = yes
-	downsizeable = no
-	required_construction = 8048
-
-	potential = {
-		state_region = s:STATE_EASTERN_SERBIA
-		owner ?= p:x40AF95.state.owner
-		has_global_variable = pmr_dam_iron_gates_djerdap_surveyed_any
-	}
-
-	can_build_government = {
-		custom_tooltip = {
-			text = pmr_dam_iron_gates_djerdap_builder_tt
-			scope:investor_country ?= {
-				OR = {
-					this = p:x40AF95.state.owner
-					p:x40AF95.state.owner ?= { any_overlord_or_above = { this = scope:investor_country } }
-				}
-			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_iron_gates_djerdap_tech_1_tt
-			scope:investor_country ?= { has_technology_researched = arc_welding }
-		}
-		custom_tooltip = {
-			text = pmr_dam_iron_gates_djerdap_surveyed_tt
-			scope:investor_country ?= { has_variable = pmr_dam_iron_gates_djerdap_surveyed }
-		}
-		custom_tooltip = {
-			text = pmr_dam_iron_gates_djerdap_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_djerdap  level_after_queued_constructions >= 2 } }
-		}
-		custom_tooltip = {
-			text = pmr_dam_iron_gates_djerdap_not_financing_tt
-			NOT = { has_global_variable = pmr_dam_iron_gates_djerdap_financing }
-		}
-	}
-
-	can_build_private = {
-		always = no
-	}
-
-	ai_nationalization_desire = 0.75
-
-	ai_value = {
-		value = 30000
-		if = {
-			limit = {
-				owner ?= {
-					OR = {
-						in_default = yes
-						is_at_war = yes
-					}
-				}
-			}
-			multiply = 0.1
-		}
-	}
-
-	production_method_groups = {
-		pmg_dam_iron_gates_djerdap
 	}
 
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"
@@ -6214,8 +6143,8 @@ building_dam_lower_susquehanna = {
 	required_construction = 9927
 
 	potential = {
-		state_region = s:STATE_PENNSYLVANIA
-		owner ?= p:x75195D.state.owner
+		state_region = s:STATE_MARYLAND
+		owner ?= p:x0E3435.state.owner
 		has_global_variable = pmr_dam_lower_susquehanna_surveyed_any
 	}
 
@@ -6224,8 +6153,8 @@ building_dam_lower_susquehanna = {
 			text = pmr_dam_lower_susquehanna_builder_tt
 			scope:investor_country ?= {
 				OR = {
-					this = p:x75195D.state.owner
-					p:x75195D.state.owner ?= { any_overlord_or_above = { this = scope:investor_country } }
+					this = p:x0E3435.state.owner
+					p:x0E3435.state.owner ?= { any_overlord_or_above = { this = scope:investor_country } }
 				}
 			}
 		}
@@ -6640,8 +6569,8 @@ building_dam_tabqa_narrows = {
 	required_construction = 9858
 
 	potential = {
-		state_region = s:STATE_ALEPPO
-		owner ?= p:x68D9E3.state.owner
+		state_region = s:STATE_DEIR_EZ_ZOR
+		owner ?= p:x1ECFDA.state.owner
 		has_global_variable = pmr_dam_tabqa_narrows_surveyed_any
 	}
 
@@ -6650,8 +6579,8 @@ building_dam_tabqa_narrows = {
 			text = pmr_dam_tabqa_narrows_builder_tt
 			scope:investor_country ?= {
 				OR = {
-					this = p:x68D9E3.state.owner
-					p:x68D9E3.state.owner ?= { any_overlord_or_above = { this = scope:investor_country } }
+					this = p:x1ECFDA.state.owner
+					p:x1ECFDA.state.owner ?= { any_overlord_or_above = { this = scope:investor_country } }
 				}
 			}
 		}
@@ -8770,8 +8699,8 @@ building_dam_conowingo_falls = {
 	required_construction = 4963
 
 	potential = {
-		state_region = s:STATE_MARYLAND
-		owner ?= p:x0E3435.state.owner
+		state_region = s:STATE_PENNSYLVANIA
+		owner ?= p:x75195D.state.owner
 		has_global_variable = pmr_dam_conowingo_falls_surveyed_any
 	}
 
@@ -8780,8 +8709,8 @@ building_dam_conowingo_falls = {
 			text = pmr_dam_conowingo_falls_builder_tt
 			scope:investor_country ?= {
 				OR = {
-					this = p:x0E3435.state.owner
-					p:x0E3435.state.owner ?= { any_overlord_or_above = { this = scope:investor_country } }
+					this = p:x75195D.state.owner
+					p:x75195D.state.owner ?= { any_overlord_or_above = { this = scope:investor_country } }
 				}
 			}
 		}
