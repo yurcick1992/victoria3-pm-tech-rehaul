@@ -54,6 +54,8 @@ building_dam_columbia_river = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -139,6 +141,8 @@ building_dam_laurentian_rivers = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -209,6 +213,8 @@ building_dam_norrland_rivers = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -281,6 +287,8 @@ building_dam_lower_columbia = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -351,6 +359,8 @@ building_dam_nelson_winnipeg = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -430,6 +440,8 @@ building_dam_black_canyon_sierra = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -500,6 +512,8 @@ building_dam_western_fjords = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -579,6 +593,8 @@ building_dam_niagara_long_sault = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -649,6 +665,8 @@ building_dam_waitaki_southern_lakes = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -728,6 +746,8 @@ building_dam_grisons_ticino = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -805,6 +825,8 @@ building_dam_rhone_isere = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -884,6 +906,8 @@ building_dam_niagara_ottawa = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -955,6 +979,8 @@ building_dam_tennessee_valley = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -1025,6 +1051,8 @@ building_dam_valais_alps = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -1104,6 +1132,8 @@ building_dam_nechako_kootenay = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -1181,6 +1211,8 @@ building_dam_shinano_kurobe = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -1260,6 +1292,8 @@ building_dam_lower_rhone_durance = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -1331,6 +1365,8 @@ building_dam_missouri_big_bend = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -1401,6 +1437,8 @@ building_dam_austrian_danube = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -1480,6 +1518,8 @@ building_dam_danube_bavarian_alps = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -1550,6 +1590,8 @@ building_dam_kiso_tenryu = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -1622,6 +1664,8 @@ building_dam_douro_gorge_cavado = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -1692,6 +1736,8 @@ building_dam_tsaritsyn_volga = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -1764,6 +1810,8 @@ building_dam_muscle_shoals_coosa = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -1834,6 +1882,8 @@ building_dam_grand_canal_alsace = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -1906,6 +1956,8 @@ building_dam_arribes_duero = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -1976,6 +2028,8 @@ building_dam_adda_lombard_alps = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -2048,6 +2102,8 @@ building_dam_snowy_tumut = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -2119,6 +2175,8 @@ building_dam_yellow_river_gorges = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -2189,6 +2247,8 @@ building_dam_hohe_tauern_ziller = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -2268,6 +2328,8 @@ building_dam_iron_gates_arges = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -2338,6 +2400,8 @@ building_dam_inga_rapids = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -2410,6 +2474,8 @@ building_dam_rion_ingur = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -2480,6 +2546,8 @@ building_dam_yalu_river = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -2552,6 +2620,8 @@ building_dam_maurienne_tarentaise = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -2622,6 +2692,8 @@ building_dam_waikato_river = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -2694,6 +2766,8 @@ building_dam_sevan_zanga_vorotan = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -2764,6 +2838,8 @@ building_dam_dnieper_rapids = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -2836,6 +2912,8 @@ building_dam_glommen_falls = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -2906,6 +2984,8 @@ building_dam_alcantara_gorge = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -2978,6 +3058,8 @@ building_dam_aura_nordland = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -3048,6 +3130,8 @@ building_dam_ossola_dora_baltea = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -3120,6 +3204,8 @@ building_dam_cubatao_escarpment = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -3190,6 +3276,8 @@ building_dam_derwent_great_lake = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -3262,6 +3350,8 @@ building_dam_kaema_plateau = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -3332,6 +3422,8 @@ building_dam_dordogne_gorges = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -3404,6 +3496,8 @@ building_dam_koyna_western_ghats = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -3474,6 +3568,8 @@ building_dam_tone_river = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -3546,6 +3642,8 @@ building_dam_tadami_river = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -3616,6 +3714,8 @@ building_dam_kainji_rapids = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -3688,6 +3788,8 @@ building_dam_segre_lower_ebro = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -3758,6 +3860,8 @@ building_dam_mantaro_canon_del_pato = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -3830,6 +3934,8 @@ building_dam_dal_klar_rivers = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -3900,6 +4006,8 @@ building_dam_travancore_highlands = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -3972,6 +4080,8 @@ building_dam_chirchik_cascade = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -4042,6 +4152,8 @@ building_dam_cheboksary_volga = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -4114,6 +4226,8 @@ building_dam_lower_kama = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -4184,6 +4298,8 @@ building_dam_kiev_kanev = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -4256,6 +4372,8 @@ building_dam_gorodets_volga = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -4326,6 +4444,8 @@ building_dam_perm_kama = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -4398,6 +4518,8 @@ building_dam_zhiguli_volga = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -4468,6 +4590,8 @@ building_dam_balakovo_volga = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -4540,6 +4664,8 @@ building_dam_votkinsk_kama = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -4610,6 +4736,8 @@ building_dam_rybinsk_uglich = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -4682,6 +4810,8 @@ building_dam_irkutsk_angara = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -4752,6 +4882,8 @@ building_dam_xinan_river = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -4831,6 +4963,8 @@ building_dam_mequinenza_aragon_pyrenees = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -4901,6 +5035,8 @@ building_dam_asahan_toba = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -4973,6 +5109,8 @@ building_dam_bhagirathi_upper_ganges = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -5043,6 +5181,8 @@ building_dam_achelous_gorges = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -5115,6 +5255,8 @@ building_dam_moldau_cascade = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -5185,6 +5327,8 @@ building_dam_narenta_drina = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -5257,6 +5401,8 @@ building_dam_sulak_canyon = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -5327,6 +5473,8 @@ building_dam_nepal_hill_rivers = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -5399,6 +5547,8 @@ building_dam_hells_canyon = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -5469,6 +5619,8 @@ building_dam_garrison_missouri = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -5541,6 +5693,8 @@ building_dam_upper_drave = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -5611,6 +5765,8 @@ building_dam_adige_valley = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -5683,6 +5839,8 @@ building_dam_sungari_gorge = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -5753,6 +5911,8 @@ building_dam_malta_valley = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -5825,6 +5985,8 @@ building_dam_bhutan_duars = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -5895,6 +6057,8 @@ building_dam_high_rhine_baden = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -5967,6 +6131,8 @@ building_dam_paulo_afonso_falls = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -6037,6 +6203,8 @@ building_dam_lower_tennessee_cumberland = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -6109,6 +6277,8 @@ building_dam_necaxa_tilostoc = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -6179,6 +6349,8 @@ building_dam_lower_susquehanna = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -6251,6 +6423,8 @@ building_dam_lochaber_affric = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -6321,6 +6495,8 @@ building_dam_galloway_tummel = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -6393,6 +6569,8 @@ building_dam_rhodope_cascades = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -6463,6 +6641,8 @@ building_dam_min_tung_rivers = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -6535,6 +6715,8 @@ building_dam_upper_ob = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -6605,6 +6787,8 @@ building_dam_tabqa_narrows = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -6677,6 +6861,8 @@ building_dam_bigorre_bearn_pyrenees = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -6747,6 +6933,8 @@ building_dam_upper_euphrates = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -6819,6 +7007,8 @@ building_dam_onega_vyg = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -6889,6 +7079,8 @@ building_dam_truyere_gorges = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -6961,6 +7153,8 @@ building_dam_lufira_lualaba = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -7031,6 +7225,8 @@ building_dam_niva_tuloma = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -7103,6 +7299,8 @@ building_dam_drina_gorge = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -7173,6 +7371,8 @@ building_dam_mingechaur_gorge = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -7245,6 +7445,8 @@ building_dam_uryu_ishikari = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -7315,6 +7517,8 @@ building_dam_volkhov_svir = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -7387,6 +7591,8 @@ building_dam_mimi_river = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -7457,6 +7663,8 @@ building_dam_kamianske_dnieper = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -7529,6 +7737,8 @@ building_dam_kremenchug_dnieper = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -7599,6 +7809,8 @@ building_dam_sariyar_gorge = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -7671,6 +7883,8 @@ building_dam_pescara_sangro = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -7741,6 +7955,8 @@ building_dam_guatape_falls = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -7813,6 +8029,8 @@ building_dam_pyramid_canyon = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -7883,6 +8101,8 @@ building_dam_zezere_gorges = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -7955,6 +8175,8 @@ building_dam_sila_plateau = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -8025,6 +8247,8 @@ building_dam_tequendama_falls = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -8097,6 +8321,8 @@ building_dam_savannah_river = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -8167,6 +8393,8 @@ building_dam_lower_karun = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -8239,6 +8467,8 @@ building_dam_nilgiri_hills = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -8309,6 +8539,8 @@ building_dam_bistritza_gorge = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -8381,6 +8613,8 @@ building_dam_lajes_serra_do_mar = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -8451,6 +8685,8 @@ building_dam_santee_saluda = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -8523,6 +8759,8 @@ building_dam_piave_valley = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -8593,6 +8831,8 @@ building_dam_yili_river = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -8665,6 +8905,8 @@ building_dam_first_cataract = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -8735,6 +8977,8 @@ building_dam_conowingo_falls = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -8807,6 +9051,8 @@ building_dam_warsak_gorge = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -8877,6 +9123,8 @@ building_dam_sennar_blue_nile = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -8949,6 +9197,8 @@ building_dam_lower_drave = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -9019,6 +9269,8 @@ building_dam_trollhattan_falls = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -9091,6 +9343,8 @@ building_dam_ariege_aude_pyrenees = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -9161,6 +9415,8 @@ building_dam_agno_gorge = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -9233,6 +9489,8 @@ building_dam_gersoppa_falls = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -9303,6 +9561,8 @@ building_dam_tikves_gorge = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -9375,6 +9635,8 @@ building_dam_missouri_breaks = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -9445,6 +9707,8 @@ building_dam_imatra_rapids = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -9517,6 +9781,8 @@ building_dam_lawpita_falls = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -9587,6 +9853,8 @@ building_dam_laxapana_falls = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -9659,6 +9927,8 @@ building_dam_longxi_river = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -9729,6 +9999,8 @@ building_dam_castelo_do_bode = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -9801,6 +10073,8 @@ building_dam_sun_moon_lake = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -9871,6 +10145,8 @@ building_dam_des_moines_rapids = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -9943,6 +10219,8 @@ building_dam_cachapoal_canyon = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -10013,6 +10291,8 @@ building_dam_lower_yalu = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -10085,6 +10365,8 @@ building_dam_edea_falls = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -10155,6 +10437,8 @@ building_dam_victoria_nile = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
@@ -10227,6 +10511,8 @@ building_dam_rincon_del_bonete = {
 		always = no
 	}
 
+	ownership_type = self
+
 	ai_nationalization_desire = 0.75
 
 	ai_value = {
@@ -10297,6 +10583,8 @@ building_dam_uhl_river = {
 	can_build_private = {
 		always = no
 	}
+
+	ownership_type = self
 
 	ai_nationalization_desire = 0.75
 
