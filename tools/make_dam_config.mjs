@@ -17,6 +17,9 @@ const probe = process.argv.includes('--probe');
 // --ai-self: the driver only SURVEYS; its owner-queue starts and its financing are off, so every dam level is built by the
 // engine's own AI or a player (user, 2026-09-27, the ownership_type test)
 const aiSelf = process.argv.includes('--ai-self');
+// --grant TAG,TAG (probe): who gets the dam technologies at the start, in place of the ten majors; --contest-grant chain|overlords|none
+// (ai-self probe): who the contest seeding gives the technologies to (emit_dams.mjs). User, 2026-09-27: techs only at the overlord
+const grantTags = arg('--grant', null), contestGrant = arg('--contest-grant', null);
 const suffix = arg('--suffix', (aiSelf ? 'canon-dams-aiself' : 'canon-dams') + (probe ? '-probe' : ''));
 const cfg = JSON.parse(readFileSync(join(REPO, base), 'utf8'));
 for (const k of ['dams', 'building_required_construction']) if (cfg[k]) throw new Error(`make_dam_config: the base already carries '${k}'`);
@@ -77,7 +80,8 @@ cfg.building_subsidies = Object.fromEntries((dp.projects || dp).map(p => [`build
 if (aiSelf) cfg.dams.ai = { driver_build: false, driver_finance: false };
 // the ai-self PROBE is the CONTEST probe (user, 2026-09-27): several eligible builders on every subject's site, the level log,
 // and costs x0.25 rather than x0.05 so that constructions overlap in time long enough to collide
-if (probe) cfg.dams.probe ={ grant_tags: ['GBR', 'FRA', 'USA', 'RUS', 'PRU', 'AUS', 'SWE', 'SAR', 'SWI', 'TUR'], survey_months: 2, cost_mult: 0.05, force_build_every: 0, laissez_faire_tags: ['USA', 'FRA'] };
+if (probe) cfg.dams.probe = { grant_tags: ['GBR', 'FRA', 'USA', 'RUS', 'PRU', 'AUS', 'SWE', 'SAR', 'SWI', 'TUR'], survey_months: 2, cost_mult: 0.05, force_build_every: 0, laissez_faire_tags: ['USA', 'FRA'] };
+if (probe && grantTags) cfg.dams.probe.grant_tags = grantTags.split(',');
 if (probe && aiSelf) {
   Object.assign(cfg.dams.probe, { contest: true, cost_mult: 0.25 });
   // ELECTRICITY DEMAND FROM 1836 (user, 2026-09-27: "If noone starts building dams, this could well be because there's no electricity
@@ -85,6 +89,7 @@ if (probe && aiSelf) {
   // urban centre runs pm_no_public_transport from 1836 (ungated): it now also takes 1 electricity per level. With no supply the
   // price sits at the band's 175% edge - the strongest signal the market can send. PROBE ONLY: short of that input, urban centres
   // lose output.
+  if (contestGrant) cfg.dams.probe.contest_grant = contestGrant;
   if (cfg.pm_goods?.pm_no_public_transport) throw new Error('make_dam_config: the base already overrides pm_no_public_transport');
   cfg.pm_goods = { ...(cfg.pm_goods || {}), pm_no_public_transport: { in: { electricity: 1 }, out: { transportation: 2 } } };
 }

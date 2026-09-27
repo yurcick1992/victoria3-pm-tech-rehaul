@@ -260,12 +260,18 @@ if (P.probe?.grant_tags?.length) for (const tag of P.probe.grant_tags) {
 // SUBJECT gets several eligible builders at once: the owner and every country above it receive the class technologies and a
 // completed survey. Monthly, every standing dam logs its built level and its level counting every queued construction
 // (probe_lvl / probe_q): queued above the cap = the lock-out failed; queued falling while built stays = a cancelled construction.
+// `contest_grant` says who the seeding gives the TECHNOLOGIES to (the surveys go to the whole chain either way): 'chain' (default, p13)
+// the owner and every overlord; 'overlords' only the countries above the owner (user, 2026-09-27: "to ensure that the subjects don't
+// start, let's leave the techs only at the overlord"); 'none' nobody (the grant_tags list alone decides)
 if (P.probe?.contest) {
+  const mode = P.probe.contest_grant || 'chain';
+  if (!['chain', 'overlords', 'none'].includes(mode)) die(`probe.contest_grant '${mode}'`);
   const grant = [...new Set(Object.values(P.tech_by_class))].map(t => `add_technology_researched = ${t}`).join(' ');
+  const gOwner = mode === 'chain' ? `${grant}\n${T}${T}${T}${T}` : '', gOver = mode === 'none' ? '' : `${grant}\n${T}${T}${T}${T}${T}`;
   for (const p of projects) start.push(
     `${T}${T}p:${p.anchor_province}.state.owner ?= {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { is_subject = yes }\n` +
-    `${T}${T}${T}${T}${grant}\n${T}${T}${T}${T}set_variable = ${V(p)}_surveyed\n` +
-    `${T}${T}${T}${T}every_overlord_or_above = {\n${T}${T}${T}${T}${T}${grant}\n${T}${T}${T}${T}${T}set_variable = ${V(p)}_surveyed\n${T}${T}${T}${T}}\n` +
+    `${T}${T}${T}${T}${gOwner}set_variable = ${V(p)}_surveyed\n` +
+    `${T}${T}${T}${T}every_overlord_or_above = {\n${T}${T}${T}${T}${T}${gOver}set_variable = ${V(p)}_surveyed\n${T}${T}${T}${T}}\n` +
     `${T}${T}${T}${T}set_global_variable = ${V(p)}_surveyed_any\n` +
     `${T}${T}${T}${T}debug_log = "PMR_DAM|probe_contest_seed|${p.id}|${TAG}|${DATE}"\n${T}${T}${T}}\n${T}${T}}`);
 }
