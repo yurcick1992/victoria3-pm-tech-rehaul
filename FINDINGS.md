@@ -17730,3 +17730,43 @@ Britain-only build (`canon-dams-aiself-probe-gbr`), so the build rules accept an
 **What it does NOT say.** Which of the two incentives made Britain build Laxapana (ai_value and the treated consumer changed together, and
 Laxapana was treated); anything at canon costs (× 4 dearer) or real technology dates; the poor-owner stall (p13 / F173 §4) — subjects held no
 technology here by design, so it could not recur.
+
+## F175 — THE DAMS BUILT BY THE ENGINE, n=5: roughly a third of the scripted design's dams, half of them overlords building in their subjects, almost no stalls, 14% of levels privatised; the register reads as the canon's family (3 intact, one runoff, one pre-dam stuck Britain)
+
+**Arm.** Session `20260928_000616_canon-dams-engine-n5`, 5 runs 1836.1.1 → 1936.1.1, `config/mod_config.canon-dams.json` at commit f0cc3ca —
+THE CANON as shipped 2026-09-28 (BALANCE_FRAMEWORK §10.89.11): 144 projects / 312 levels, `ownership_type = self`, nothing builds a dam by
+script (the driver only surveys), survey and level 1 on the same technology, no capacity guard, dam ai_value 30,000. No crash; play 148 /
+166 / 180 / 147 / 172 min.
+
+**The register** (vanilla n=16): run 1 intact 1.09× world GDP (loss 4.5) · run 2 intact 1.09× (7.5; Germany near capital abundance, soft) ·
+run 3 **broken by runoff** 1.44× (Britain and France near capital abundance, soft) · run 4 **broken by stall** 0.63× — Britain lost a
+revolution around 1866 (GDP 8M in the 1867 save) and sat at 41–44% U* to the end: F166's stuck Britain, fourteen years before the first dam
+survey (~1880) · run 5 intact 0.87× (loss 9.5; Britain U* 28–33%). Consensus (runs 1 + 2) **loss 5.49**: pool W 0.79, H 0.81, GDP 1.36 and
+world W 0.77, H 0.78 at the aim; world GDP 1.09, PI 0.90 (falling), PP 0.89 above it; pool U* 1.58 below; the largest term T0 (1.81 — the
+old rung not falling, 0.93× its 1900s level).
+
+**The dams.**
+| run | levels at 1936 | dam share of world electricity 1935 | queue elements by an overlord in a subject's state | levels privatised |
+|---|---|---|---|---|
+| 1 | 44 | 18% | 17 of 43 | 8 |
+| 2 | 17 | 8% | 9 of 25 | 0 |
+| 3 | 49 | 17% | 17 of 37 | 0 |
+| 4 | 18 | 19% | 10 of 21 | 4 |
+| 5 | 31 | 17% | 14 of 30 | 11 |
+Median 31 levels against the scripted design's 92–101 (canon-dams-v3-n3, 159 projects); 8–19% of world electricity against 43–44%.
+- **Ownership over all 159 levels**: the host country's government 69, an overlord's government 67, a financial district of the host 16, of a
+  foreign country 7. No manor house, company or self-owned level. Privatisation is the dam's `ai_nationalization_desire` 0.75 not holding
+  everywhere: all four American levels in run 1, Sweden's home dams (run 1), and in run 5 nearly all of Germany's dams went to German
+  financial districts. Never private at construction (no dam in any private queue).
+- **Subjects building for themselves** (runs 1–3): 6 levels — Canada 4 and Australia 1 (run 2), Mysore 1 (run 3), all as subjects; 5 more
+  came to a subject's government with a released state (Edea twice, Lufira-Lualaba) or by an untraced transfer (Inga, run 3), and one by
+  Bengal whose status the summary does not record. The shared technology lock keeps poor subjects out: the builders are settler dominions and
+  a princely state. Britain builds most of the rest — Canada, Australia, India, Japan when a subject (run 2), the Congo.
+- **Overlord ownership outlives the relationship**: Germany keeps Piave in an independent Italy (run 1), the Netherlands Asahan in an
+  independent Aceh (run 3).
+- **Stalls**: at most one queue element per run went 2+ years without progress (Nelson-Winnipeg 4 y, Derwent 2 y, Niagara-Ottawa 2 y, the
+  Bavarian Danube 4 y); 12 of 437 queue-years made no progress. F173's poor-owner stall did not recur at canon costs and real dates.
+
+**What it does NOT say.** Whether the dams move world GDP or the stall/runoff tails (n=5 against a family that already shows both); which
+lever sets the lower dam count (ai_value 30,000 was never raised here; p14's 300,000 is untested at canon costs); why privatisation hits some
+countries and not others (their laws were not read).
