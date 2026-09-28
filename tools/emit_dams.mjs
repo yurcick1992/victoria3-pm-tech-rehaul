@@ -180,8 +180,12 @@ for (const p of projects) {
       (DAI && DAI.gate === 'possible' ? `${T}${T}pmr_dam_active < 1\n` : '') +
       // gate 'headroom' (user, 2026-09-28: "the bureaucracy cost is a sufficient gate by itself"): no survey count at all - the country
       // may start a survey only while its spare bureaucracy (produced - used) exceeds this survey's cost
-      (DAI && DAI.gate === 'headroom' ? `${T}${T}pmr_dam_bur_headroom > ${p.survey_bureaucracy}\n` : '') + `${T}}\n\n` +
-    `${T}when_taken = {\n${T}${T}${v}_begin_survey = yes\n${T}}\n\n` +
+      (DAI && DAI.gate === 'headroom' ? `${T}${T}pmr_dam_bur_headroom > ${p.survey_bureaucracy}\n` : '') +
+      // PROBE take_cooldown_days (F176): a survey's bureaucracy cost reaches bureaucracy_usage only at the next recalculation, so one AI
+      // pass sees the old spare for every survey; a short-lived "just took a survey" variable, set on the spot, allows one take per pass
+      (P.probe?.take_cooldown_days ? `${T}${T}NOT = { has_variable = pmr_dam_took_survey }\n` : '') + `${T}}\n\n` +
+    `${T}when_taken = {\n${T}${T}${v}_begin_survey = yes\n` +
+      (P.probe?.take_cooldown_days ? `${T}${T}set_variable = { name = pmr_dam_took_survey  days = ${P.probe.take_cooldown_days} }\n` : '') + `${T}}\n\n` +
     (DAI ? `${T}ai_chance = {\n${T}${T}value = 0\n${T}${T}if = {\n${T}${T}${T}limit = { pmr_dam_bur_headroom > ${Math.round(p.survey_bureaucracy * (DAI.headroom_mult ?? 1))} }\n${T}${T}${T}add = ${DAI.weight ?? 10}\n${T}${T}}\n` +
       (DAI.gate === 'weight' ? `${T}${T}if = {\n${T}${T}${T}limit = { pmr_dam_active > 0 }\n${T}${T}${T}multiply = 0\n${T}${T}}\n` : '') +
       `${T}${T}if = {\n${T}${T}${T}limit = { OR = { is_at_war = yes  is_diplomatic_play_committed_participant = yes  in_default = yes } }\n${T}${T}${T}multiply = 0\n${T}${T}}\n${T}}\n}`
@@ -217,6 +221,11 @@ for (const p of projects) {
 W('common/buildings/zzz_pm_rehaul_dams.txt', HDR + bld.join('\n\n') + '\n');
 W('common/production_methods/zzz_pm_rehaul_dams.txt', HDR + pms.join('\n\n') + '\n');
 W('common/production_method_groups/zzz_pm_rehaul_dams.txt', HDR + pmgs.join('\n\n') + '\n');
+// PROBE bureaucracy_bonus (granted with the probe technologies, below)
+if (P.probe?.bureaucracy_bonus) {
+  mods.push(`pmr_dam_probe_bureaucracy = {\n${T}icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_positive.dds\n${T}country_bureaucracy_add = ${P.probe.bureaucracy_bonus}\n}`);
+  loc.push(['pmr_dam_probe_bureaucracy', 'Probe: dam survey bureaucracy']);
+}
 W('common/static_modifiers/zzz_pm_rehaul_dams.txt', HDR + mods.join('\n\n') + '\n');
 
 // ---------------------------------------------------------------- traits and effects
@@ -248,6 +257,8 @@ if (P.probe?.laissez_faire_tags?.length) for (const tag of P.probe.laissez_faire
 if (P.probe?.grant_tags?.length) for (const tag of P.probe.grant_tags) {
   if (!/^[A-Z]{3}$/.test(tag)) die(`probe tag ${tag}`);
   start.push(`${T}${T}if = {\n${T}${T}${T}limit = { exists = c:${tag} }\n${T}${T}${T}c:${tag} = {\n` + [...new Set(Object.values(P.tech_by_class))].map(t => `${T}${T}${T}${T}add_technology_researched = ${t}\n`).join('') +
+    // PROBE bureaucracy_bonus: a permanent flat bureaucracy grant, so the majors hold room for several surveys from the start
+    (P.probe.bureaucracy_bonus ? `${T}${T}${T}${T}add_modifier = { name = pmr_dam_probe_bureaucracy }\n` : '') +
     `${T}${T}${T}${T}debug_log = "PMR_DAM|probe_grant|-|${TAG}|${DATE}"\n${T}${T}${T}}\n${T}${T}}`);
 }
 // PROBE BUILDS ONLY — THE CONTEST (user, 2026-09-27: "the probes need to have multiple possible investors to check that once one

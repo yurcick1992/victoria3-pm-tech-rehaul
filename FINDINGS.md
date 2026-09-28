@@ -17858,6 +17858,23 @@ Russia in Croatia (Lower Drave 1846); the Ottomans in their subject Serbia (Drin
 or a subject's state, which the probe excludes, or was BUILT WITHIN THE YEAR (Lower Drave queued by 1846.10, built by 1847.7). ⇒ The
 investment-rights case is untested; the one-year arming never caught an unfinished foreign build.
 
+### 4. The take-cooldown works (p27 vs p28), and investment rights in an overlord reach its subjects (p26b)
+
+Session `20260928_190922_dam-probes-p27-p28-p26b` (the user: *"Run both, you have until 20:00 to START any probe"*). p27 and p28 = p19's
+book (spare ≥ cost in `possible`, 2-month surveys) with a flat **+4,000 bureaucracy** for the ten majors (`dams.probe.bureaucracy_bonus`), so
+every major holds room for several surveys at once from 1836; p27 adds `take_cooldown_days` 30 (a "just took a survey" country variable set
+in `when_taken`, required absent in `possible`), p28 does not.
+| | surveys 1836–46 | same-day multiple starts | worst monthly used − produced |
+|---|---|---|---|
+| p28, no cooldown | 89 | **22 days** (Russia up to 3, Britain up to 3) | **Britain +536 (1836.5), Russia +134** |
+| p27, 30-day cooldown | 82 | **none** | **none — every country stayed in surplus** |
+⇒ The cooldown removes the overshoot at a small cost in throughput (82 vs 89 surveys; Russia 22 in both; up to 2 running at once at a year
+end). The user prefers no forced pauses for players: the cooldown can apply to the AI alone (`is_ai = yes` in the same clause).
+**p26b** (p26 with the withdrawal 90 days into a foreign build, 1836 → 1851): NULL again — the foreign builds were Prussia in Sweden (a major,
+excluded) and **Prussia in Norway (Glommen Falls, queued by 1841.1, built by 1842.10) while Norway was SWEDEN'S SUBJECT** — Prussia held
+investment rights with Sweden (p18). ⇒ The engine lets investment rights in an OVERLORD reach its subjects; a construction-rights rule has to
+include "rights in the owner or in any country of its upward chain".
+
 **What it does NOT say.** The money lost when a builder loses its standing mid-build (four releases in p17b/p25, none on a progressing
 element); whether
 the INVESTMENT-RIGHTS case behaves like the subject case (p26 is the direct test: the host withdraws from its investment-rights treaties

@@ -1,0 +1,35 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probes-p27-p28-p26b",
+  "_why": "ENGINE PROBES (user, 2026-09-28 18:18: \"Run both, you have until 20:00 to START any probe that's anticipated to take no more than 20 minutes\"). Two questions left open by FINDINGS F176. (1) p27 / p28: a survey's bureaucracy cost reaches bureaucracy_usage only at the next recalculation, so the spare check in `possible` overshoots when one AI pass takes several surveys (p24). p27 adds a 30-day 'just took a survey' country variable, set in when_taken and required absent in `possible`; p28 is the same book WITHOUT it (the control). Both give the ten majors a flat +4,000 bureaucracy (dams.probe.bureaucracy_bonus) so they hold room for several surveys at once from 1836. Otherwise = config/mod_config.probe-dam-p19.json (the AI takes the survey decision; spare >= cost in possible; 2-month surveys; construction x0.05). (2) p26b: p26 (open builders; the ten majors hold every survey) with the host's withdrawal from its investment-rights treaties 90 days, not a year, into a foreign construction in an independent non-major's state, so the build is caught mid-progress.",
+  "_questions": {
+    "Q1 (p27 vs p28)": "Does the cooldown stop same-day multiple takes and the bureaucracy overshoot, while still letting a major run several surveys at once (one new take a month)?",
+    "Q2 (p26b)": "When the host withdraws from its investment-rights treaties while a foreign government's dam construction in its state is progressing, is the construction cancelled (progress lost, per the wiki's queue rule), kept, or completed?"
+  },
+  "_predictions": {
+    "Q1": "p28: same-day multiples and deficits of 1-3 surveys' cost; p27: none, 2-4 surveys running at once per major within a year",
+    "Q2": "cancelled, as a released subject's construction is (F176 section 2); a null is possible if no foreign build lands in a non-major independent state by 1851"
+  },
+  "_cost": "2 runs x 1836 -> 1846.1 (~12 min each) + 1 run x 1836 -> 1851.1 (~17 min), about 45 minutes",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe builds: technologies and bureaucracy granted, costs shrunk - no economic reading."
+  ],
+  "defaults": {
+    "dump_dates": ["1837.1.1", "1840.1.1"],
+    "tags": ["GBR", "FRA", "USA", "RUS", "PRU", "TUR"],
+    "metrics": ["country_state"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 90
+  },
+  "setups": {
+    "probe-dam-p27": { "kind": "config", "config": "config/mod_config.probe-dam-p27.json" },
+    "probe-dam-p28": { "kind": "config", "config": "config/mod_config.probe-dam-p28.json" },
+    "probe-dam-p26b": { "kind": "config", "config": "config/mod_config.probe-dam-p26b.json" }
+  },
+  "runs": [
+    { "setup": "probe-dam-p27", "until": "1846.1.1" },
+    { "setup": "probe-dam-p28", "until": "1846.1.1" },
+    { "setup": "probe-dam-p26b", "until": "1851.1.1" }
+  ]
+}
