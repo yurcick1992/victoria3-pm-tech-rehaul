@@ -17832,8 +17832,14 @@ p17's release (the script makes a subject independent while a dam in its state i
 | Agno Gorge | Philippines (Spain) | by 1855.9.1 (a level-0 record, queued 1/1) | 1855.9.1 | the record's monthly line stops after September 1855 |
 
 ⇒ **The construction is cancelled when its builder loses its standing** — the engine re-checks `can_build_government` (the chain clause)
-and drops the element. ⚠ Both releases came within a month of queuing, so no progress was at stake and the size of the loss is
-unmeasured; p25 (a one-year delay before the release) is the follow-up.
+and drops the element. ⚠ Both releases came within a month of queuing, so no progress was at stake.
+**p25** (session `20260928_171938`, `config/mod_config.probe-dam-p25.json` = p17b + `release_delay_days` 365: a construction in a subject's
+state is ARMED the first month it is seen, the release waits a year): the Qing queued **Yalu River** (Joseon) by 1847.10 and **Kaema
+Plateau** by 1848.1; Yalu was armed 1847.9.1 and **Joseon released 1848.9.1**; both elements were **gone from every queue by the 1848.10
+summary**. But neither had moved: Yalu read **1,849 points left** and Kaema **1,364** in EVERY quarterly summary from their queuing to the
+release — they sat behind the Qing's other constructions. Construction goods are paid only as points are built, so these cancellations cost
+nothing. ⇒ Cancellation on lost standing is confirmed twice more; **the loss on a HALF-BUILT dam is still unmeasured** — no release in four
+runs has caught an element that was progressing.
 
 ### 3. Without the chain clause a government builds and owns dams in foreign independent states (p18)
 
@@ -17845,8 +17851,15 @@ investment rights PRU ↔ SWE in both directions and none PRU ↔ POR, and Portu
 build's route is unidentified (a lapsed treaty cannot be excluded from the endpoint).
 ⇒ The engine's own foreign-construction rule lets a government queue a dam where it holds investment rights and own the result; the chain
 clause is what keeps the canon's builders to the owner and its overlords.
+**p26** (session `20260928_171938`, = p18 + a host outside the ten majors WITHDRAWING from its investment-rights treaties once a foreign
+construction in its state has stood a year): **NULL — the withdrawal never fired.** Foreign building was common this time — Prussia in
+Russia (Kiev-Kanev 1848, Kremenchug 1855), Sweden (Trollhättan 1845), BIC and its subjects (Uhl River 1850, Koyna 1849, Gersoppa 1852);
+Russia in Croatia (Lower Drave 1846); the Ottomans in their subject Serbia (Drina, queued 1855) — but every one either stood in a major's
+or a subject's state, which the probe excludes, or was BUILT WITHIN THE YEAR (Lower Drave queued by 1846.10, built by 1847.7). ⇒ The
+investment-rights case is untested; the one-year arming never caught an unfinished foreign build.
 
-**What it does NOT say.** The money lost when a builder loses its standing mid-build (both p17b releases were a month into queuing); whether
+**What it does NOT say.** The money lost when a builder loses its standing mid-build (four releases in p17b/p25, none on a progressing
+element); whether
 the INVESTMENT-RIGHTS case behaves like the subject case (p26 is the direct test: the host withdraws from its investment-rights treaties
 a year into a foreign build); the survey rate under the `possible` check over a century with real survey lengths (p24 covers 20 years);
 the AI decision cadence rule.
