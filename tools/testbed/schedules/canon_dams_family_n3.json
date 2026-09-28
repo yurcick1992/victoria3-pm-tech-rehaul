@@ -1,0 +1,69 @@
+{
+  "schedule_version": 1,
+  "label": "canon-dams-family-n3",
+  "_why": "PROD-LIKE BATCH of the ruled dam rules (user, 2026-09-28: a quantitative analysis of how many dams get built, how many stall (queued, not built for over a year, blocking another candidate builder or not) and how many are wasted (partially built then abandoned: investment rights lost / subject status lost / other)). The book: config/mod_config.canon-dams-family.json = the canon canon-dams + dams.rules family + dams.log_levels - construction rights = the owner, its overlord chain, or investment rights in the owner or any of that chain; a survey inside the owners top-overlord family opens the dam to the whole family, an outsider survey to itself; a 12-month block on others surveys from the start of one (lifted if it is abandoned); no survey while a level is queued; no claim; the AI takes the survey decision itself, gated on spare bureaucracy >= cost with a 30-day take cooldown for the AI only; no driver. Probed by p29 (session 20260928_202538). LAUNCH ONLY ON THE USERS EXPLICIT GO-AHEAD.",
+  "_arm": "config/mod_config.canon-dams-family.json (+ tech_tree_options.canon-dams-family.json = the canon twin)",
+  "_comparison": "canon-dams-engine-n5 (20260928_000616, the canon rules: 3 intact / 1 runoff / 1 stall, 17-49 levels per run, 4 abandoned constructions) and the pinned vanilla n=16 (20260821_131149)",
+  "_instrument": "the canon telemetry + PMR_DAM debug.log lines (survey_*, family_survey, built / complete, bur_year, and the MONTHLY probe_lvl / probe_q level log) + QUARTERLY save summaries (who queued which dam and its points left, per quarter)",
+  "_stop_rule": "fixed n=3: all three play to 1936, no stop watcher",
+  "_cost": "3 runs x 1836 -> 1936, about 2.5-3 hours each (quarterly saves add several minutes)",
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "canon-dams-family": {
+      "kind": "config",
+      "config": "config/mod_config.canon-dams-family.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon-dams-family",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon-dams-family",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon-dams-family",
+      "until": "1936.1.1"
+    }
+  ]
+}

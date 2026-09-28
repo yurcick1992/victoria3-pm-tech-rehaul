@@ -273,3 +273,5 @@ tools/testbed/ledger/corpus_gbr.jsonl
 !config/tech_tree_options.probe-dam-p1*.json
 !config/mod_config.probe-dam-p2*.json
 !config/tech_tree_options.probe-dam-p2*.json
+!config/mod_config.canon-dams-family.json
+!config/tech_tree_options.canon-dams-family.json

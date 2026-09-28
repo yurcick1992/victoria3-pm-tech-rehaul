@@ -3032,8 +3032,14 @@ tools/                  dev tooling — NOT shipped in the mod
                         independent while a dam in its state is under construction, `withdraw_rights` = instead, the host leaves its
                         investment-rights treaties, `open_builders` = no chain clause, `open_survey_tags` = majors hold every survey —
                         FINDINGS F176: `possible` is re-checked after every take and `ai_chance` is not, but a survey's bureaucracy cost lands
-                        only at the next recalculation, so a spare-bureaucracy check overshoots in either; a take-cooldown is proposed) and
-                        loc for 11 languages. ⚠ No country-tag data function exists: its PMR_DAM log lines carry the
+                        only at the next recalculation, so a spare-bureaucracy check overshoots in either; a 30-day take-cooldown fixes it,
+                        p27/p28) and loc for 11 languages. ⭐ `dams.rules = "family"` (BALANCE_FRAMEWORK §10.89.12, ruled 2026-09-28, NOT
+                        yet the canon; book config/mod_config.canon-dams-family.json, probed by p29): construction rights = the owner, its
+                        overlord chain, or investment rights in the owner or any of that chain (read from the HOST's treaties — vanilla's
+                        has_treaty_foreign_investment_rights_with is a scripted trigger that breaks under PREV); a family survey opens the
+                        dam to the whole top-overlord family; a 12-month block from a survey's start; no survey while a level is queued; no
+                        claim; the AI takes the decision (spare bureaucracy ≥ cost, a 30-day cooldown for the AI only), no driver.
+                        `dams.log_levels` adds the monthly built/queued level log (PMR_DAM|probe_lvl / probe_q). ⚠ No country-tag data function exists: its PMR_DAM log lines carry the
                         country NAME; log from the country scope, never from a state entered from it
   emit_building_costs.mjs  `building_required_construction` {building: points} patched into the building files the build already OWNS
                         (throws on a building it does not own, or ≠ 1 match) — the power plant at 1,600 in the dam book

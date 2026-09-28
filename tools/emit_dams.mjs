@@ -71,6 +71,30 @@ for (const p of projects) {
 // the country in scope (ROOT) owns the anchor province, or sits above its owner in the overlord chain
 const chainOf = p => `p:${p.anchor_province} ?= {\n${T}${T}${T}state ?= {\n${T}${T}${T}${T}owner ?= {\n${T}${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}${T}this = ROOT\n${T}${T}${T}${T}${T}${T}any_overlord_or_above = { this = ROOT }\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}\n${T}${T}${T}}\n${T}${T}}`;
 const isOwnerOf = p => `p:${p.anchor_province} ?= { state ?= { owner ?= ROOT } }`;
+// ⭐ dams.rules = 'family' (user-ruled 2026-09-28, FINDINGS F176): CONSTRUCTION RIGHTS = the anchor owner, any country above it in the
+// overlord chain, or a country holding foreign investment rights in the owner OR in any country of that chain (p26b: Prussia built in
+// Norway, Sweden's subject, on its rights with Sweden). No siblings, no power-bloc route. WHO is ROOT (a decision, a journal entry)
+// or scope:investor_country (a building).
+// ⚠ NOT vanilla's has_treaty_foreign_investment_rights_with: it is a SCRIPTED trigger that pastes $TARGET$ inside any_scope_treaty,
+// so a TARGET = PREV resolves to the treaty (probe p29: 111,923 "left was 'country', right was 'treaty'" errors in three minutes).
+// The test is written from the HOST's side instead: it holds a treaty binding WHO with an investment-rights article whose TARGET is
+// WHO (vanilla's article: source = the country granting the rights, target = the holder; a treaty binds two countries)
+const hostGrants = WHO => `any_scope_treaty = { binds = ${WHO}  any_scope_article = { has_type = foreign_investment_rights  target_country = ${WHO} } }`;
+const R2 = CFG.dams.rules === 'family';
+// the monthly dam level log (built level / level counting queued constructions, per dam): the contest probe, or dams.log_levels
+// (the prod-like batches read stalls from it; user, 2026-09-28)
+const LOGLV = !!(P.probe?.contest || CFG.dams.log_levels);
+const rightsOf = (p, WHO) => `p:${p.anchor_province} ?= {\n${T}${T}${T}state ?= {\n${T}${T}${T}${T}owner ?= {\n${T}${T}${T}${T}${T}OR = {\n` +
+  `${T}${T}${T}${T}${T}${T}this = ${WHO}\n${T}${T}${T}${T}${T}${T}any_overlord_or_above = { this = ${WHO} }\n` +
+  `${T}${T}${T}${T}${T}${T}${hostGrants(WHO)}\n` +
+  `${T}${T}${T}${T}${T}${T}any_overlord_or_above = { ${hostGrants(WHO)} }\n` +
+  `${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}\n${T}${T}${T}}\n${T}${T}}`;
+// the family survey: a survey completed by a country inside the anchor owner's top-overlord family stores that family's top
+// (global_var:<v>_family); every member of that family with construction rights may then build without its own survey
+const inFamily = (p, WHO) => `${WHO} ?= { OR = { this = global_var:${V(p)}_family  top_overlord ?= { this = global_var:${V(p)}_family } } }`;
+const hasSurvey = (p, WHO) => `OR = {\n${T}${T}${T}${T}${WHO} ?= { has_variable = ${V(p)}_surveyed }\n` +
+  `${T}${T}${T}${T}AND = { has_global_variable = ${V(p)}_family  ${inFamily(p, WHO)} }\n${T}${T}${T}}`;
+if (R2 && (P.probe?.open_builders || P.probe?.decision_ai)) die(`dams.rules = family sets the builders and the AI survey itself - drop probe.open_builders / probe.decision_ai`);
 const V = p => `pmr_dam_${p.id}`;     // variable / key stem
 
 // ---------------------------------------------------------------- building group
@@ -91,7 +115,12 @@ ${T}urbanization = 10
 `);
 
 // PROBE: the AI takes the survey DECISION itself (vanilla's canal pattern) instead of the driver - dams.probe.decision_ai
-const DAI = P.probe?.decision_ai || null;
+// ⭐ dams.rules = 'family': the AI takes the survey decision itself (no driver), gated in `possible` on spare bureaucracy >= the
+// survey's cost, and - FOR THE AI ONLY - on a 30-day "just took a survey" variable (F176 §4: without it one AI pass takes several
+// surveys against one stale bureaucracy reading; the user prefers no forced pause for players)
+const DAI = R2 ? { weight: 10, gate: 'headroom', headroom_mult: 1 } : (P.probe?.decision_ai || null);
+const TCD = R2 ? 30 : P.probe?.take_cooldown_days;
+const TCD_AI_ONLY = R2;
 // PROBE: open builders - no chain requirement in can_build_government, the engine's own rules (investment rights) decide
 const OPEN = !!P.probe?.open_builders;
 // ---------------------------------------------------------------- buildings, methods, groups
@@ -128,9 +157,9 @@ for (const p of projects) {
     // three parts of Pegu), and only once someone in the chain has surveyed it (so no state lists it from 1836).
     `${T}potential = {\n${T}${T}state_region = s:${p.state}\n${T}${T}owner ?= p:${p.anchor_province}.state.owner\n${T}${T}has_global_variable = ${v}_surveyed_any\n${T}}\n\n` +
     `${T}can_build_government = {\n` +
-    (OPEN ? '' : `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_builder_tt\n${T}${T}${T}${builderInChain(p)}\n${T}${T}}\n`) +
+    (OPEN ? '' : `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_builder_tt\n${T}${T}${T}${R2 ? rightsOf(p, 'scope:investor_country') : builderInChain(p)}\n${T}${T}}\n`) +
     `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_tech_1_tt\n${T}${T}${T}scope:investor_country ?= { has_technology_researched = ${p.stage_techs[0]} }\n${T}${T}}\n` +
-    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_surveyed_tt\n${T}${T}${T}scope:investor_country ?= { has_variable = ${v}_surveyed }\n${T}${T}}\n` +
+    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_surveyed_tt\n${T}${T}${T}${R2 ? hasSurvey(p, 'scope:investor_country') : `scope:investor_country ?= { has_variable = ${v}_surveyed }`}\n${T}${T}}\n` +
     // the level cap counts EVERY builder's queued levels, so concurrent builders share the project's levels the way
     // mines share a state's deposit (user, 2026-09-26: "no need to invent something very custom"); each owns what it built
 
@@ -156,8 +185,12 @@ for (const p of projects) {
     `${T}production_method_groups = {\n${T}${T}pmg_dam_${p.id}\n${T}}\n\n` +
     `${T}background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"\n}`);
   loc.push([key, p.name], [`${key}_lens_option`, `Construct $${key}$`],
-    [`${v}_builder_tt`, `The builder owns the dam site's province, or stands above its owner in the overlord chain`],
-    [`${v}_surveyed_tt`, `The builder has completed its own survey of the ${p.name}`],
+    [`${v}_builder_tt`, R2 ? `The builder owns the dam site's province, stands above its owner in the overlord chain, or holds investment rights in the owner or one of its overlords`
+      : `The builder owns the dam site's province, or stands above its owner in the overlord chain`],
+    [`${v}_surveyed_tt`, R2 ? `The builder has surveyed the ${p.name}, or a country of the builder's own overlord family has`
+      : `The builder has completed its own survey of the ${p.name}`],
+    ...(R2 ? [[`${v}_block_tt`, `No other survey of the ${p.name} has started in the last 12 months`],
+      [`${v}_queued_tt`, `No level of the ${p.name} is waiting in a construction queue`]] : []),
     [`${v}_levels_tt`, `The ${p.name} has at most ${p.stages} level${p.stages > 1 ? 's' : ''}`]);
   for (const g of classGates) loc.push([`${v}_tech_${g.level}_tt`, `From level ${g.level} on, the builder needs the technology $${g.tech}$`]);
   loc.push([`${v}_tech_1_tt`, `The builder needs the technology $${p.stage_techs[0]}$`]);
@@ -166,12 +199,18 @@ for (const p of projects) {
   mods.push(`${v}_surveying = {\n${T}icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds\n${T}country_bureaucracy_cost_add = ${p.survey_bureaucracy}\n}`);
   loc.push([`${v}_surveying`, `Surveying: ${p.name}`]);
   seff.push(`${v}_begin_survey = {\n${T}set_variable = { name = ${v}_months value = 0 }\n${T}set_global_variable = ${v}_surveying\n` +
+    (R2 ? `${T}set_global_variable = { name = ${v}_block  days = 365 }\n` : '') +
     `${T}add_modifier = { name = ${v}_surveying }\n${T}add_journal_entry = { type = je_${v}_survey }\n` +
     `${T}if = {\n${T}${T}limit = { NOT = { has_variable = ${ACTIVE} } }\n${T}${T}set_variable = { name = ${ACTIVE} value = 0 }\n${T}}\n${T}change_variable = { name = ${ACTIVE} add = 1 }\n` +
     `${T}debug_log = "PMR_DAM|survey_start|${p.id}|${TAG}|${DATE}|${BUR}"\n}`);
   // open to ROOT: the FIRST LEVEL's technology (the same one can_build_government asks of a builder), ROOT has not surveyed it, nobody is surveying it, no other country's
   // two-year claim stands, the dam still has a free level, and ROOT is in the anchor owner's overlord chain
-  surveyOpen.set(p.id, `has_technology_researched = ${p.stage_techs[0]}\n${T}${T}NOT = { has_variable = ${v}_surveyed }\n${T}${T}NOT = { has_global_variable = ${v}_surveying }\n` +
+  surveyOpen.set(p.id, R2
+    // rules 'family': shown to every country with construction rights that holds the first level's technology and has no survey
+    // of its own or of its family; the 12-month block and a queued level only make it UNAVAILABLE (possible), never hidden
+    ? `has_technology_researched = ${p.stage_techs[0]}\n${T}${T}NOT = { ${hasSurvey(p, 'ROOT')} }\n${T}${T}NOT = { has_variable = ${v}_months }\n` +
+      `${T}${T}NOT = { p:${p.anchor_province}.state ?= { ${levelsAtLeast(p, p.stages)} } }\n${T}${T}${rightsOf(p, 'ROOT')}`
+    : `has_technology_researched = ${p.stage_techs[0]}\n${T}${T}NOT = { has_variable = ${v}_surveyed }\n${T}${T}NOT = { has_global_variable = ${v}_surveying }\n` +
     `${T}${T}NOT = { has_global_variable = ${v}_claim }\n${T}${T}NOT = { p:${p.anchor_province}.state ?= { ${levelsAtLeast(p, p.stages)} } }\n${T}${T}${chainOf(p)}`);
   // ⚠ the AI does NOT take this decision (ai_chance 0): it scores every visible decision in one pass (F168); it surveys through the driver
   decs.push(`${v}_survey_decision = {\n` +
@@ -183,9 +222,15 @@ for (const p of projects) {
       (DAI && DAI.gate === 'headroom' ? `${T}${T}pmr_dam_bur_headroom > ${p.survey_bureaucracy}\n` : '') +
       // PROBE take_cooldown_days (F176): a survey's bureaucracy cost reaches bureaucracy_usage only at the next recalculation, so one AI
       // pass sees the old spare for every survey; a short-lived "just took a survey" variable, set on the spot, allows one take per pass
-      (P.probe?.take_cooldown_days ? `${T}${T}NOT = { has_variable = pmr_dam_took_survey }\n` : '') + `${T}}\n\n` +
+      (TCD ? (TCD_AI_ONLY ? `${T}${T}OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }\n` : `${T}${T}NOT = { has_variable = pmr_dam_took_survey }\n`) : '') +
+      // rules 'family': the 12-month block from the START of anyone's survey (removed at once if that survey is abandoned), and no
+      // survey while a level is queued but not built (user, 2026-09-28: a dam in the construction queue blocks surveys for everyone)
+      (R2 ? `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_block_tt\n${T}${T}${T}NOT = { has_global_variable = ${v}_block }\n${T}${T}}\n` +
+        `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_queued_tt\n${T}${T}${T}NOT = { p:${p.anchor_province}.state ?= { any_scope_building = { is_building_type = ${key}\n` +
+        Array.from({ length: p.stages }, (_, i) => `${T}${T}${T}${T}${i ? '' : 'OR = { '}AND = { level < ${i + 1}  level_after_queued_constructions >= ${i + 1} }\n`).join('') +
+        `${T}${T}${T}} } } }\n${T}${T}}\n` : '') + `${T}}\n\n` +
     `${T}when_taken = {\n${T}${T}${v}_begin_survey = yes\n` +
-      (P.probe?.take_cooldown_days ? `${T}${T}set_variable = { name = pmr_dam_took_survey  days = ${P.probe.take_cooldown_days} }\n` : '') + `${T}}\n\n` +
+      (TCD ? `${T}${T}set_variable = { name = pmr_dam_took_survey  days = ${TCD} }\n` : '') + `${T}}\n\n` +
     (DAI ? `${T}ai_chance = {\n${T}${T}value = 0\n${T}${T}if = {\n${T}${T}${T}limit = { pmr_dam_bur_headroom > ${Math.round(p.survey_bureaucracy * (DAI.headroom_mult ?? 1))} }\n${T}${T}${T}add = ${DAI.weight ?? 10}\n${T}${T}}\n` +
       (DAI.gate === 'weight' ? `${T}${T}if = {\n${T}${T}${T}limit = { pmr_dam_active > 0 }\n${T}${T}${T}multiply = 0\n${T}${T}}\n` : '') +
       `${T}${T}if = {\n${T}${T}${T}limit = { OR = { is_at_war = yes  is_diplomatic_play_committed_participant = yes  in_default = yes } }\n${T}${T}${T}multiply = 0\n${T}${T}}\n${T}}\n}`
@@ -195,22 +240,36 @@ for (const p of projects) {
     `${T}${T}debug_log = "PMR_DAM|survey_stop|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n` +
     `${T}ai_chance = {\n${T}${T}value = 0\n${T}${T}if = {\n${T}${T}${T}limit = { in_default = yes }\n${T}${T}${T}add = 50\n${T}${T}}\n${T}}\n}`);
   loc.push([`${v}_survey_decision`, `Survey the ${p.name}`],
-    [`${v}_survey_decision_desc`, `Commission a ${p.survey_months}-month hydrographic and geological survey of the ${p.name} (up to ${p.stages} level${p.stages > 1 ? 's' : ''}, each about ${p.stage_points} construction points and ${p.stage_units} electricity a week). Once it is complete we may build the dams ourselves, in our own state or in a subject's; for two years no other country may survey the site. Countries that have surveyed it share its levels, each owning what it builds.`],
+    [`${v}_survey_decision_desc`, `Commission a ${p.survey_months}-month hydrographic and geological survey of the ${p.name} (up to ${p.stages} level${p.stages > 1 ? 's' : ''}, each about ${p.stage_points} construction points and ${p.stage_units} electricity a week). ` + (R2
+      ? `Once it is complete we may build the dams, and so may every country of our overlord family with construction rights there. For twelve months after we start, no other country may begin a survey of the site. Builders share its levels, each owning what it builds.`
+      : `Once it is complete we may build the dams ourselves, in our own state or in a subject's; for two years no other country may survey the site. Countries that have surveyed it share its levels, each owning what it builds.`)],
     [`${v}_stop_survey_decision`, `Cancel the ${p.name} survey`],
     [`${v}_stop_survey_decision_desc`, `Abandon the survey of the ${p.name}. Its cost stops; a later attempt starts from scratch.`]);
   jes.push(`je_${v}_survey = {\n${T}icon = "gfx/interface/icons/event_icons/event_map.dds"\n${T}group = je_group_technology\n\n` +
     `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}${T}change_variable = { name = ${v}_months add = 1 }\n${T}${T}${T}${T}debug_log = "PMR_DAM|survey_month|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
     `${T}complete = {\n${T}${T}scope:journal_entry = { is_goal_complete = yes }\n${T}}\n\n` +
     `${T}on_complete = {\n${T}${T}remove_modifier = ${v}_surveying\n${T}${T}remove_variable = ${v}_months\n${T}${T}remove_global_variable = ${v}_surveying\n` +
-    `${T}${T}set_variable = ${v}_surveyed\n${T}${T}set_global_variable = ${v}_surveyed_any\n${T}${T}set_global_variable = { name = ${v}_claim days = 730 }\n${T}${T}change_variable = { name = ${ACTIVE} add = -1 }\n` +
+    `${T}${T}set_variable = ${v}_surveyed\n${T}${T}set_global_variable = ${v}_surveyed_any\n` +
+    (R2
+      // rules 'family': no claim (user: the 12-month head start does its job); a surveyor inside the owner's top-overlord family opens
+      // the dam to the whole family - the family's top is stored, and members with construction rights build without their own survey
+      ? `${T}${T}p:${p.anchor_province}.state.owner ?= {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { is_subject = yes }\n${T}${T}${T}${T}top_overlord = { save_scope_as = pmr_dam_famtop }\n${T}${T}${T}}\n` +
+        `${T}${T}${T}else = { save_scope_as = pmr_dam_famtop }\n${T}${T}}\n` +
+        `${T}${T}if = {\n${T}${T}${T}limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }\n` +
+        `${T}${T}${T}set_global_variable = { name = ${v}_family  value = scope:pmr_dam_famtop }\n` +
+        `${T}${T}${T}debug_log = "PMR_DAM|family_survey|${p.id}|${TAG}|${DATE}"\n${T}${T}}\n`
+      : `${T}${T}set_global_variable = { name = ${v}_claim days = 730 }\n`) +
+    `${T}${T}change_variable = { name = ${ACTIVE} add = -1 }\n` +
     (P.probe ? `${T}${T}p:${p.anchor_province} = {\n${T}${T}${T}state = {\n` +
       `${T}${T}${T}${T}if = {\n${T}${T}${T}${T}${T}limit = { can_construct_building = ${key} }\n${T}${T}${T}${T}${T}debug_log = "PMR_DAM|probe_can_build|${p.id}|yes|${DATE}"\n${T}${T}${T}${T}}\n` +
       `${T}${T}${T}${T}else = {\n${T}${T}${T}${T}${T}debug_log = "PMR_DAM|probe_can_build|${p.id}|no|${DATE}"\n${T}${T}${T}${T}}\n${T}${T}${T}}\n${T}${T}}\n` +
       '' : '') +
     `${T}${T}debug_log = "PMR_DAM|survey_complete|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n\n` +
     `${T}current_value = {\n${T}${T}value = 0\n${T}${T}if = {\n${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}value = root.var:${v}_months\n${T}${T}}\n${T}}\n\n${T}goal_add_value = {\n${T}${T}value = ${p.survey_months}\n${T}}\n\n` +
-    `${T}invalid = {\n${T}${T}OR = {\n${T}${T}${T}NOT = { has_variable = ${v}_months }\n${T}${T}${T}NOT = {\n${T}${T}${T}${T}${chainOf(p).replace(/\n/g, `\n${T}${T}`)}\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
+    `${T}invalid = {\n${T}${T}OR = {\n${T}${T}${T}NOT = { has_variable = ${v}_months }\n${T}${T}${T}NOT = {\n${T}${T}${T}${T}${(R2 ? rightsOf(p, 'ROOT') : chainOf(p)).replace(/\n/g, `\n${T}${T}`)}\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
     `${T}on_invalid = {\n${T}${T}if = {\n${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}remove_variable = ${v}_months\n${T}${T}}\n` +
+    // rules 'family': an abandoned survey (cancelled, or the surveyor lost its construction rights) lifts the 12-month block at once
+    (R2 ? `${T}${T}remove_global_variable = ${v}_block\n` : '') +
     `${T}${T}remove_global_variable = ${v}_surveying\n${T}${T}remove_modifier = ${v}_surveying\n${T}${T}change_variable = { name = ${ACTIVE} add = -1 }\n` +
     `${T}${T}debug_log = "PMR_DAM|survey_ended|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n\n` +
     `${T}progressbar = yes\n${T}weight = 10\n${T}transferable = no\n${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
@@ -373,9 +432,9 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
   `pmr_dam_built = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { is_building_group = bg_pmr_hydro_dams }\n${onBuilt.join('\n')}\n${T}${T}}\n${T}}\n}\n\n` +
   // PROBE (contest): every standing dam's built level and its level after every queued construction, monthly. Checked up to
   // two above the cap, so an over-queue shows. A dam whose first level is only queued already has a (level-0) building record.
-  ((releaseLines.length || P.probe?.contest) ? `on_monthly_pulse = {\n${T}on_actions = { ${[releaseLines.length ? 'pmr_dam_probe_release' : '', P.probe?.contest ? 'pmr_dam_probe_levels' : ''].filter(Boolean).join(' ')} }\n}\n\n` : '') +
+  ((releaseLines.length || LOGLV) ? `on_monthly_pulse = {\n${T}on_actions = { ${[releaseLines.length ? 'pmr_dam_probe_release' : '', LOGLV ? 'pmr_dam_probe_levels' : ''].filter(Boolean).join(' ')} }\n}\n\n` : '') +
   (releaseLines.length ? `pmr_dam_probe_release = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { game_date >= ${P.probe.release_after} }\n` + releaseLines.join('\n') + `\n${T}${T}}\n${T}}\n}\n\n` : '') +
-  (P.probe?.contest ? `` +
+  (LOGLV ? `` +
     `pmr_dam_probe_levels = {\n${T}effect = {\n` + projects.map(p => {
       const chain = (trig, tag) => Array.from({ length: p.stages + 3 }, (_, i) => p.stages + 2 - i).map((k, j) =>
         `${T}${T}${T}${T}${j ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = { ${k ? `${trig} >= ${k}` : 'always = yes'} }\n` +

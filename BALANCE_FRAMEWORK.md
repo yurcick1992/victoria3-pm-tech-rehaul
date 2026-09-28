@@ -8922,3 +8922,28 @@ technology. So every scripted construction path was a workaround for a missing d
   kept out until it researches the technology itself — the user's expected substitute for a capacity gate.
 - ⚠ **What is not guarded**: a subject that HAS the technology may still grab a level it cannot fund (F173 §4); no capacity lock stands in
   front of it, by ruling. The first measurement is the n=5 century batch of 2026-09-28 on the canon as it now ships.
+
+### 10.89.12 — WHO MAY SURVEY AND BUILD, AND HOW THE AI SURVEYS (user-ruled 2026-09-28; FINDINGS F176) — `dams.rules = "family"`, NOT YET THE CANON
+
+The rulings, in the user's words where they were given:
+- **Construction rights** = the state holder and the upward chain to the top overlord; siblings only through investment rights: *"Unless
+  certain power bloc principles are taken or a subject explicitly granted broad within-family investment rights, only the state holder and the
+  upward chain to the top overlord has construction rights, not siblings"*; investment rights in the OWNER or in ANY country of its chain count
+  (*"the case of 'has investment rights in your overlord' should be covered as well"*; p26b saw Prussia build in Norway, Sweden's subject, on its
+  rights with Sweden). The power-bloc route is dropped (*"very rare to make a difference"*; no trigger for "lower rank" was found).
+- **Survey sharing**: *"survey within top-overlord family unlocks the construction for the whole family, and other family members don't
+  re-survey; survey outside the top-overlord family allows only the surveying country to build"*; and *"if the siblings, uncles or nephews can
+  construct, then they don't need their own survey"*.
+- **The 12-month block**: *"starting the survey blocks another starts a 12-month cooldown on surveys of the same dam, preventing other countries
+  from taking it (visibility stays, availability displays the cooldown); instantly removed if the surveying country abandons the survey"*.
+- **No claim**: *"Remove the current claim, it fills the same role, but is not natural to the game."*
+- **A queued dam blocks surveys**: *"while the dam is already in the construction queue, this should block surveys of this dam for everyone"*
+  (unless stalls-then-abandonment turn out common).
+- **Stall threshold**: one year in a queue without progress (the five canon runs: 197 of 198 constructions progress within their first year).
+- **Bureaucracy**: spare bureaucracy ≥ the survey's cost in `possible`, plus a 30-day take cooldown for the AI ONLY (*"I would prefer avoiding
+  forced pauses between survey starts … not critical, especially if the forced pauses only affect the AI"*; p27/p28 measured the cooldown).
+
+Implemented in `tools/emit_dams.mjs` behind `dams.rules = "family"` (the canon's output is byte-identical without it); the AI takes the survey
+decision itself and the quarterly driver is not hooked; `dams.log_levels` adds the monthly built/queued level log. The book is
+`config/mod_config.canon-dams-family.json` (the canon + those two keys), probed by p29 (F176 §5); its prod-like batch
+`tools/testbed/schedules/canon_dams_family_n3.json` waits for the user's go-ahead.

@@ -17875,6 +17875,22 @@ excluded) and **Prussia in Norway (Glommen Falls, queued by 1841.1, built by 184
 investment rights with Sweden (p18). ⇒ The engine lets investment rights in an OVERLORD reach its subjects; a construction-rights rule has to
 include "rights in the owner or in any country of its upward chain".
 
+### 5. The ruled rules work (p29): `dams.rules = family`
+
+The user ruled the rules on 2026-09-28 (BALANCE_FRAMEWORK §10.89.12): construction rights = the owner, its overlord chain, or investment rights
+in the owner or any country of that chain; a family survey opens the dam to the whole top-overlord family, an outsider's to itself; a 12-month
+block from the start of a survey; no survey while a level is queued; no claim; the AI takes the decision, spare bureaucracy ≥ cost, a 30-day
+cooldown for the AI only. Probe p29 (session `20260928_202538`, `config/mod_config.probe-dam-p29.json`: the probe grants, construction ×0.05,
+2-month surveys, +4,000 bureaucracy): **no error line names our files; 131 AI surveys in ten years, ≥ 30 days apart per country, never two on
+one day; no overshoot** (worst reading 6 under production); **86 of 128 completed surveys were FAMILY surveys**; Prussia, holding investment
+rights in Russia, surveyed four Russian dams in 1845 — the outsider route works for surveys, and spends its bureaucracy for nothing once the
+family has surveyed and queued; **24 (builder, dam) pairs queued, all by the owner or an overlord** — a family member building on another's
+survey and a rights-holder building were NOT seen in ten years; the monthly level log reads 1,384 lines over 25 dams and 83 months.
+⚠ Two earlier attempts are void: the first used vanilla's `has_treaty_foreign_investment_rights_with = { TARGET = PREV }`, a SCRIPTED trigger
+that pastes TARGET inside `any_scope_treaty`, so PREV resolved to the treaty (111,923 error lines in three minutes); the test now reads the
+HOST's treaties (`any_scope_treaty = { binds = WHO  any_scope_article = { has_type = foreign_investment_rights  target_country = WHO } }`).
+The second surveyed nothing in 2.5 years for want of spare bureaucracy.
+
 **What it does NOT say.** The money lost when a builder loses its standing mid-build (four releases in p17b/p25, none on a progressing
 element); whether
 the INVESTMENT-RIGHTS case behaves like the subject case (p26 is the direct test: the host withdraws from its investment-rights treaties

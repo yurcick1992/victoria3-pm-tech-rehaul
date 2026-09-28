@@ -1,0 +1,53 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probe-p29-family-rules",
+  "_why": "ENGINE PROBE of the ruled dam rules (user, 2026-09-28: 'Go on with the necessary probes, but not with the overnight runs yet'), before the prod-like batch on config/mod_config.canon-dams-family.json. The book: config/mod_config.probe-dam-p29.json = the probe book of p19 (the dam class technologies granted to the ten majors at the start, 2-month surveys, construction x0.05) with dams.rules = family and dams.log_levels = true, i.e. (1) construction rights = the owner, its overlord chain, or investment rights in the owner or any of that chain; (2) a survey inside the owner's top-overlord family opens the dam to the whole family, an outsider's to itself; (3) a 12-month block on others' surveys from the start of one, lifted if it is abandoned; (4) no survey while a level is queued; (5) the AI takes the survey decision itself, gated on spare bureaucracy >= cost, with a 30-day take cooldown for the AI only; (6) no claim, no driver; plus the monthly dam level log. Quarterly saves (the queue owner and points left). RE-RUN 2026-09-28 20:27 with dams.probe.bureaucracy_bonus 4000 (p27s grant): the first two attempts (sessions 20260928_201612 - trigger errors, fixed; 20260928_202100 - no survey in 2.5 years for want of spare bureaucracy) were stopped.",
+  "_questions": {
+    "Q1": "Does the game accept the new trigger forms (TARGET = PREV inside the rights test, top_overlord, global_var: as a scope)? No error line naming zzz_pm_rehaul_dams.",
+    "Q2": "Do the AI surveys happen through the decision, one per country per month at most, with no bureaucracy overshoot?",
+    "Q3": "Does a family survey open the dam to family members (family_survey lines; a level queued by a country that never surveyed that dam)? Does a rights-holder outside the family build?",
+    "Q4": "Does the monthly level log (probe_lvl / probe_q) appear for every dam with a building record?"
+  },
+  "_predictions": {
+    "Q1": "yes",
+    "Q2": "yes",
+    "Q3": "family builds yes; a rights-holder build possible but not certain in 10 years",
+    "Q4": "yes"
+  },
+  "_cost": "1 run x 1836 -> 1846.1, about 12 minutes",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe build: technologies granted, costs shrunk - no economic reading."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 90
+  },
+  "setups": {
+    "probe-dam-p29": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p29.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "probe-dam-p29",
+      "until": "1846.1.1"
+    }
+  ]
+}
