@@ -17771,7 +17771,7 @@ Median 31 levels against the scripted design's 92–101 (canon-dams-v3-n3, 159 p
 lever sets the lower dam count (ai_value 30,000 was never raised here; p14's 300,000 is untested at canon costs); why privatisation hits some
 countries and not others (their laws were not read).
 
-## F176 — THE SURVEY DECISION TAKEN BY THE AI: the bureaucracy check belongs in `possible` (re-checked after every take), not in the AI weighting (read once per pass); releasing a subject CANCELS the overlord's dam construction in its state; without the chain clause a government builds and owns dams in foreign states it holds investment rights in
+## F176 — THE SURVEY DECISION TAKEN BY THE AI: `possible` is re-checked after every take but a survey's bureaucracy cost lands only at the next recalculation, so a spare-bureaucracy check overshoots in `ai_chance` AND in `possible` (a take-cooldown is the proposed fix); releasing a subject CANCELS the overlord's dam construction in its state; without the chain clause a government builds and owns dams in foreign states it holds investment rights in
 
 **Arm.** Engine probes on PROBE BOOKS built from the canon `canon-dams` with only `dams.probe` changed (the dam class technologies granted
 to the ten majors GBR FRA USA RUS PRU AUS SWE SAR SWI TUR at the start; construction cost ×0.05, or ×0.25 in p17/p18; 2-month surveys unless
@@ -17796,10 +17796,21 @@ default; the quarterly driver not hooked). "Spare" = produced − used bureaucra
 | p21 | weight only: spare ≥ half the survey's cost | 10 (USA) | 1 (USA 1837.1.6, ×2) | 4 |
 | p23 | as p21, REAL survey lengths, 20 years | 37 | 5 days, up to 4 (Russia 1854.10.2) | Russia 2,858 · USA 1,101 · Austria 718 · France 623 |
 
+| p24 | as p19 (spare ≥ cost in `possible`), REAL survey lengths, 20 years | 9 | **2 days, 2 at once each** (British Republic) | British Republic 450 (1849.8: 4,565 / 5,015) |
+
 ⇒ **The AI scores every visible decision against ONE state read before its pass**: a check in `ai_chance` alone lets it take several
-surveys at once and overspend. **`possible` is re-evaluated after each take** (p22: 77 starts, none on a shared day; p19's spare check
-in `possible` never took two at once). ⇒ The design the user asked for is expressible: **spare bureaucracy ≥ the survey's cost IN
-`possible`** — concurrency bounded by spare bureaucracy alone, no overshoot, no survey-count cap.
+surveys at once and overspend. **`possible` IS re-evaluated after each take — but only against state the effect changed ON THE SPOT**:
+p22's survey counter (a variable set in `when_taken`) held (77 starts, none on a shared day), while a SURVEY'S BUREAUCRACY COST reaches
+`bureaucracy_usage` only at the next recalculation, so within one pass every survey still sees the old spare. ⚠⚠ **p24 refutes the first
+reading of p19** (that the spare check in `possible` alone never overshoots): on 1849.7.21 the British Republic took Lawpita Falls and Uhl
+River (500 each) together at 562 spare (4,565 / 4,003) and sat at 4,565 / 5,015 on 1849.8.1; on 1850.11.20 it took Nechako-Kootenay
+(1,100) and Bhutan Duars (750) together at 1,134 spare. p19 never overshot only because its USA never had room for two.
+⇒ **PROPOSED, UNTESTED: the spare check in `possible` PLUS a short-lived "just took a survey" country variable** (set in `when_taken`
+with a lifetime of about a month, required absent in `possible`): one take per recalculation, so the spare check reads true numbers;
+concurrency still bounded by spare bureaucracy alone (a hegemon could start ~12 a year), no survey-count cap.
+p24's 20 years otherwise: the British Republic 6 surveys from 1849, the German Empire 1 (1855), Russia 1 (1855), the USA 1 (1836,
+ENDED unfinished in 1838 — its survey journal entry went invalid, i.e. the anchor left the USA's chain; the USA's produced bureaucracy fell
+2,912 → 2,168 the same year); 6 levels built by the engine, the first 1852 (Lawpita Falls, in the British East India Company's state).
 ⚠ Its catch: majors run within ~100 of their bureaucracy cap early (p19 at 1838: Britain 2,790 / 2,698, France 3,933 / 3,844) against
 survey costs of 500–1,500, so early surveys are rare; only the USA had room in 1836–46. The USA's spare in the canon n=5 (session
 `20260928_000616`, run 1) reads 800 at 1900, −20 at 1910, −625 at 1920, 4,249 at 1930 and 5,862 at 1935, i.e. room for several at once

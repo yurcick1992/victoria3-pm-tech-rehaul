@@ -3031,8 +3031,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         AI takes the survey decision itself in place of the driver, `release_after` [+ `release_delay_days`] = make a subject
                         independent while a dam in its state is under construction, `withdraw_rights` = instead, the host leaves its
                         investment-rights treaties, `open_builders` = no chain clause, `open_survey_tags` = majors hold every survey —
-                        FINDINGS F176: the bureaucracy check belongs in `possible`, which is re-checked after every take, where `ai_chance`
-                        is read once per AI pass) and loc for 11 languages. ⚠ No country-tag data function exists: its PMR_DAM log lines carry the
+                        FINDINGS F176: `possible` is re-checked after every take and `ai_chance` is not, but a survey's bureaucracy cost lands
+                        only at the next recalculation, so a spare-bureaucracy check overshoots in either; a take-cooldown is proposed) and
+                        loc for 11 languages. ⚠ No country-tag data function exists: its PMR_DAM log lines carry the
                         country NAME; log from the country scope, never from a state entered from it
   emit_building_costs.mjs  `building_required_construction` {building: points} patched into the building files the build already OWNS
                         (throws on a building it does not own, or ≠ 1 match) — the power plant at 1,600 in the dam book
