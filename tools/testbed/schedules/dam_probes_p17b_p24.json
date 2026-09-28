@@ -1,0 +1,62 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probes-p17b-p24",
+  "_why": "ENGINE PROBE - WHAT HAPPENS TO A CONSTRUCTION WHEN THE BUILDER LOSES ITS STANDING MID-BUILD (user, 2026-09-28: the concession-loss concern). p14's incentives (the technologies at the TOP overlord only, the contest seeding of every subject site, dam ai_value 300,000, government electricity consumers in every other dam state, costs x0.25) + dams.probe.release_after 1837.1.1: every month from 1837, a SUBJECT whose state holds a dam UNDER CONSTRUCTION is released (make_independent), once per project, logged PMR_DAM|probe_release. In p14 every subject-site construction was the overlord's (subjects held no technology).",
+  "_arm": "config/mod_config.probe-dam-p17.json (+ tech_tree_options twin = the canon's)",
+  "_questions": {
+    "Q1": "After the release, does the former overlord's queue element persist and keep progressing, stall, or vanish (save summaries: queues.government.by_type per country)?",
+    "Q2": "If it completes, who owns the level (the 1856 save: the builder's government, the newly independent host, or another owner)?",
+    "Q3": "Is anything logged in error.log about the construction?"
+  },
+  "_predictions": {
+    "Q1": "unknown - the point of the probe",
+    "Q2": "unknown",
+    "Q3": "no"
+  },
+  "_cost": "1 run x 1836 -> 1856.1, about 25 minutes",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe build: techs granted, costs and surveys shrunk - no economic reading."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "halfyear",
+    "timeout_minutes": 90
+  },
+  "setups": {
+    "probe-dam-p17": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p17.json"
+    },
+    "probe-dam-p24": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p24.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "probe-dam-p17",
+      "until": "1856.1.1"
+    },
+    {
+      "setup": "probe-dam-p24",
+      "until": "1856.1.1"
+    }
+  ],
+  "_rerun": "RE-RUN of p17 (session 20260928_134653 run 4): its release trigger read is_under_construction on the dam building, which stays false while a level is only queued, so no subject was ever released although the Qing built in Korea from 1839. The trigger now reads level_after_queued_constructions above level (emit_dams.mjs). Everything else unchanged.",
+  "_p24": "THE PRODUCTION CANDIDATE: p19 (the survey decision taken by the AI, spare bureaucracy >= this survey cost in POSSIBLE, re-checked after every take per p20 vs p22 of session 20260928_145613) with the REAL survey lengths, 20 years. Q: surveys per major over 20 years, how many at once, and whether bureaucracy ever overshoots. Prediction: no same-day multiples, no deficit beyond ~0, the USA and Britain a handful each, most majors few or none before they grow spare bureaucracy."
+}

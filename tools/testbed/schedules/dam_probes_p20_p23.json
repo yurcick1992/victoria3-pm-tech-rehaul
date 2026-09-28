@@ -1,0 +1,121 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probes-p20-p23",
+  "_why": "ENGINE PROBES, the follow-up set (user, 2026-09-28: \"If there is time and obvious open questions once these probes are done, go on with the next set of probes, designed for these questions\"; \"I think the bureaucracy cost is a sufficient gate by itself. The trick is to make it work for AI.\"). p19/p15/p16 (session 20260928_134653) showed the AI taking the survey DECISION itself when its spare bureaucracy (produced - used) exceeds the survey's cost: only the USA ever had that much spare in 1836-46 (the other majors ran within ~100 of their cap against survey costs of 600-1,500), and its surveys ran one after another, never two at once. Because that check serialises on its own, p15/p16's survey-count gates were never exercised and the same-day question was left open. This set LOOSENS the spare check so several surveys qualify at once. Arm: probe books (the class technologies granted to the ten majors at the start, construction cost x0.05), each = config/mod_config.probe-dam-p19.json with only dams.probe.decision_ai changed (p23 also drops the 2-month survey override, so surveys take their real 6-24 months).",
+  "_parts": {
+    "p20": {
+      "decision_ai": "weight 10, no survey-count gate, headroom_mult 0 (any positive spare bureaucracy)",
+      "_questions": {
+        "Q1": "Does a country start two or more surveys on the SAME DAY (F168's 'every visible decision in one pass')?",
+        "Q2": "How deep a bureaucracy deficit does it run into, and does the AI build government administration to cover it?"
+      },
+      "_predictions": {
+        "Q1": "unknown - the question; if yes, several surveys start the first day a major holds any spare",
+        "Q2": "a deficit of 1-3 surveys' cost, then administration built over a few years"
+      }
+    },
+    "p21": {
+      "decision_ai": "weight 10, no survey-count gate, headroom_mult 0.5 (spare above half the survey's cost)",
+      "_questions": {
+        "Q1": "Surveys per major over the decade against p19's (headroom_mult 1)?",
+        "Q2": "Is the deficit it runs into bounded at about half a survey's cost?"
+      },
+      "_predictions": {
+        "Q1": "a few majors besides the USA survey, 1-3 each",
+        "Q2": "yes, usage at most ~half a survey above production"
+      }
+    },
+    "p22": {
+      "decision_ai": "weight 10, one-survey-at-a-time gate in POSSIBLE, headroom_mult 0",
+      "_questions": {
+        "Q1": "With p20's loose spare check, does a count gate in `possible` stop same-day multiple starts - i.e. is `possible` re-checked after each take within one AI pass?"
+      },
+      "_predictions": {
+        "Q1": "unknown - the question; compare against p20's same-day count"
+      }
+    },
+    "p23": {
+      "decision_ai": "weight 10, no survey-count gate, headroom_mult 0.5, REAL survey months, 20 years",
+      "_questions": {
+        "Q1": "With real survey lengths, how many surveys does a major run at once and how many does it complete in 20 years?",
+        "Q2": "Does the bureaucracy stay near balance (the AI covering the survey cost by building administration), or drift into a sustained deficit?"
+      },
+      "_predictions": {
+        "Q1": "1-2 at once for the USA and Britain, a handful completed",
+        "Q2": "near balance"
+      }
+    },
+    "p18": {
+      "note": "RE-RUN of p18 from session 20260928_134653, whose build was rejected by preflight L1 (its seeded surveys used c:TAG ?= instead of an exists guard; fixed in emit_dams.mjs). Its questions are unchanged: see tools/testbed/schedules/dam_probe_p18_open_builders.json."
+    }
+  },
+  "_cost": "3 runs x 1836 -> 1846.1 + 2 runs x 1836 -> 1856.1, about 90 minutes",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe builds: technologies granted, costs shrunk - no economic reading.",
+    "The survey_start log line reads bureaucracy BEFORE the survey's modifier is applied."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 90
+  },
+  "setups": {
+    "probe-dam-p20": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p20.json"
+    },
+    "probe-dam-p21": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p21.json"
+    },
+    "probe-dam-p22": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p22.json"
+    },
+    "probe-dam-p23": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p23.json"
+    },
+    "probe-dam-p18": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p18.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "probe-dam-p20",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "probe-dam-p22",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "probe-dam-p21",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "probe-dam-p23",
+      "until": "1856.1.1"
+    },
+    {
+      "setup": "probe-dam-p18",
+      "until": "1856.1.1"
+    }
+  ]
+}

@@ -299,14 +299,38 @@ if (P.probe?.elec_sink) {
 // PROBE: dams.probe.release_after = 'Y.M.D' - from that date, every month: a SUBJECT whose state holds a dam under construction is
 // released (make_independent), once per project. Asks what happens to a construction when the builder loses its standing mid-build.
 const releaseLines = [];
-if (P.probe?.release_after) for (const p of projects) releaseLines.push(
-  `${T}${T}p:${p.anchor_province}.state ?= {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}NOT = { has_global_variable = pmr_dam_${p.id}_released }\n` +
-  `${T}${T}${T}${T}${T}owner ?= { is_subject = yes }\n${T}${T}${T}${T}${T}any_scope_building = { is_building_type = ${BKEY(p)}  is_under_construction = yes }\n${T}${T}${T}${T}}\n` +
-  `${T}${T}${T}${T}set_global_variable = pmr_dam_${p.id}_released\n` +
-  `${T}${T}${T}${T}owner = { debug_log = "PMR_DAM|probe_release|${p.id}|${TAG}|${DATE}"  make_independent = yes }\n${T}${T}${T}}\n${T}${T}}`);
+if (P.probe?.release_after) for (const p of projects) {
+  // "under construction" = a level queued above the built one (is_under_construction stays false on a queued level: p17 of
+  // session 20260928_134653 never fired while the Qing built in Korea for five years)
+  // dams.probe.withdraw_rights (with open_builders + open_survey_tags): the host is an INDEPENDENT country outside the surveyed
+  // majors (so the builder is a foreign major holding investment rights, p18), and in place of a release the host withdraws from
+  // every treaty carrying foreign investment rights - the direct form of "the builder loses its standing mid-build"
+  const WR = !!P.probe.withdraw_rights;
+  const who = WR ? `owner ?= { is_subject = no  NOT = { has_variable = pmr_probe_major } }` : `owner ?= { is_subject = yes }`;
+  const act = WR
+    ? `owner = {\n${T}${T}${T}${T}${T}debug_log = "PMR_DAM|probe_withdraw|${p.id}|${TAG}|${DATE}"\n${T}${T}${T}${T}${T}save_scope_as = pmr_host\n` +
+      `${T}${T}${T}${T}${T}every_scope_treaty = {\n${T}${T}${T}${T}${T}${T}limit = { any_scope_article = { has_type = foreign_investment_rights } }\n` +
+      `${T}${T}${T}${T}${T}${T}withdraw = { country = scope:pmr_host }\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}`
+    : `owner = { debug_log = "PMR_DAM|probe_release|${p.id}|${TAG}|${DATE}"  make_independent = yes }`;
+  const building = `${T}${T}${T}${T}${T}${who}\n${T}${T}${T}${T}${T}any_scope_building = {\n${T}${T}${T}${T}${T}${T}is_building_type = ${BKEY(p)}\n` +
+    `${T}${T}${T}${T}${T}${T}OR = {\n` + Array.from({ length: p.stages }, (_, i) => `${T}${T}${T}${T}${T}${T}${T}AND = { level < ${i + 1}  level_after_queued_constructions >= ${i + 1} }\n`).join('') +
+    `${T}${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}${T}}\n`;
+  // dams.probe.release_delay_days: the first month a construction is seen ARMS the dam and starts a timer; the release waits until
+  // the timer has expired with the construction still standing (p17b released within a month of queuing, so no progress was at stake)
+  const D = P.probe.release_delay_days;
+  const arm = D ? `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}NOT = { has_global_variable = pmr_dam_${p.id}_armed }\n` + building + `${T}${T}${T}${T}}\n` +
+    `${T}${T}${T}${T}set_global_variable = pmr_dam_${p.id}_armed\n${T}${T}${T}${T}set_global_variable = { name = pmr_dam_${p.id}_timer  days = ${D} }\n` +
+    `${T}${T}${T}${T}owner = { debug_log = "PMR_DAM|probe_armed|${p.id}|${TAG}|${DATE}" }\n${T}${T}${T}}\n` : '';
+  releaseLines.push(`${T}${T}p:${p.anchor_province}.state ?= {\n` + arm +
+    `${T}${T}${T}if = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}NOT = { has_global_variable = pmr_dam_${p.id}_released }\n` + building +
+    (D ? `${T}${T}${T}${T}${T}has_global_variable = pmr_dam_${p.id}_armed\n${T}${T}${T}${T}${T}NOT = { has_global_variable = pmr_dam_${p.id}_timer }\n` : '') +
+    `${T}${T}${T}${T}}\n${T}${T}${T}${T}set_global_variable = pmr_dam_${p.id}_released\n` +
+    `${T}${T}${T}${T}${act}\n${T}${T}${T}}\n${T}${T}}`);
+}
 // PROBE: dams.probe.open_survey_tags = [TAGS] - those countries hold a completed survey of EVERY project from the start
+// (the exists guard, not `?=`: landmine L1's detector accepts only the explicit form)
 if (P.probe?.open_survey_tags?.length) for (const tag of P.probe.open_survey_tags) start.push(
-  `${T}${T}c:${tag} ?= {\n` + projects.map(p => `${T}${T}${T}set_variable = ${V(p)}_surveyed\n`).join('') + `${T}${T}}\n` +
+  `${T}${T}if = {\n${T}${T}${T}limit = { exists = c:${tag} }\n${T}${T}${T}c:${tag} = {\n${T}${T}${T}${T}set_variable = pmr_probe_major\n` + projects.map(p => `${T}${T}${T}${T}set_variable = ${V(p)}_surveyed\n`).join('') + `${T}${T}${T}}\n${T}${T}}\n` +
   projects.map(p => `${T}${T}set_global_variable = ${V(p)}_surveyed_any`).join('\n'));
 // on_building_built (a dam's first level) and on_building_expanded (every later level) both land here, root = the building.
 // An effect named for level k fires once, the first time the dam stands at k levels or more; 'last' = at its final level.

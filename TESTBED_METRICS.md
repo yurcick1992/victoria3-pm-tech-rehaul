@@ -1583,7 +1583,11 @@ survey runs), `survey_stop`, `survey_complete`, `survey_ended` (the journal entr
 chain), and `built|…|level k/n` / `complete` (on_building_built / on_building_expanded, logged from the HOST's scope; no bureaucracy
 field); plus `bur_year|-|<country>|<date>|bur …|surveys N building M` once a year for every country holding `electrical_generation`
 (M = dam levels under construction in its own states), and `start` once at 1836. PROBE builds add `probe_*` lines (`probe_can_build`,
-`probe_contest_seed`, `probe_sink`, monthly `probe_lvl` / `probe_q`).
+`probe_contest_seed`, `probe_sink`, monthly `probe_lvl` / `probe_q`; since 2026-09-28 `probe_release` (a subject made independent while
+a dam in its state is under construction), `probe_armed` (the first month such a construction is seen, when `release_delay_days` delays
+the release) and `probe_withdraw` (`withdraw_rights`: the host leaves its investment-rights treaties) — FINDINGS F176).
+⚠ The debug.log MIRROR starts with whatever the shared ring held, so a run's own dam lines begin at its `PM_TECH_REHAUL: init OK`
+marker; a reader that counts from the top counts the previous run's surveys too (it nearly happened on 2026-09-28).
 ⚠ **Since 2026-09-28 (BALANCE_FRAMEWORK §10.89.11) nothing logs WHO QUEUED a level**: the engine builds every level, so the scripted
 `stage_start` and the financing lines (`finance_start` / `finance_done` / `finance_ended`) are gone, and with the owner capacity gate its
 `gov_paused` / `gov_backlog` lines. Who queued which dam is read from the save summaries (`queues.government.by_type.building_dam_*` per

@@ -1,0 +1,58 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probes-p25-p26",
+  "_why": "ENGINE PROBE (user, 2026-09-28: the chain rule is a safeguard against the AI dumping money into a half-built dam it never completes because it loses its standing; \"the release mechanism could answer this satisfactorily enough that we will remove all restrictions\"). p17b (session 20260928_162959) showed that releasing the subject CANCELS the overlord's construction in its state (Kaema Plateau 1841, Agno Gorge 1855) - but both releases came within a month of queuing, so no progress was at stake. p25 = p17b with dams.probe.release_delay_days 365: the first month a dam in a subject's state is seen under construction ARMS it and starts a one-year timer; the subject is released only when the timer has expired with the construction still standing. Arm: config/mod_config.probe-dam-p25.json = probe-dam-p17 + that key (contest seeding, class technologies at the top overlords, construction cost x0.25, electricity sinks, release from 1837).",
+  "_questions": {
+    "Q1": "When a subject is released a year into an overlord's dam construction, is the construction cancelled, kept, or completed - and how many construction points had been spent (the queue element's points left in the half-yearly save summaries before and after)?",
+    "Q2": "If kept or completed: who owns the level (the former overlord's government, a financial district, the newly independent host)?"
+  },
+  "_predictions": {
+    "Q1": "cancelled, as in p17b, with the spent points lost",
+    "Q2": "n/a if cancelled"
+  },
+  "_cost": "2 runs x 1836 -> 1856.1, about 50 minutes",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe build: technologies granted, costs shrunk - no economic reading."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 90
+  },
+  "setups": {
+    "probe-dam-p25": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p25.json"
+    },
+    "probe-dam-p26": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p26.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "probe-dam-p25",
+      "until": "1856.1.1"
+    },
+    {
+      "setup": "probe-dam-p26",
+      "until": "1856.1.1"
+    }
+  ],
+  "_p26": "THE DIRECT TEST of losing investment rights mid-build (user, 2026-09-28). config/mod_config.probe-dam-p26.json = probe-dam-p18 (no chain clause, the ten majors holding every survey; p18 saw Prussia build in Portugal and Sweden) + release_after 1837.1.1, release_delay_days 365, withdraw_rights: a dam under construction for a year in an INDEPENDENT host outside the ten majors makes the host WITHDRAW (vanilla effect withdraw = { country }) from every treaty carrying foreign_investment_rights. Q: is the foreign builder construction then cancelled, kept or completed, and with what spent? Caveat: Sweden is one of the ten majors, so a Trollhattan-like case does not qualify; p18 had ONE qualifying build (Portugal), so a null result is possible."
+}

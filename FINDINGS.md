@@ -17770,3 +17770,72 @@ Median 31 levels against the scripted design's 92–101 (canon-dams-v3-n3, 159 p
 **What it does NOT say.** Whether the dams move world GDP or the stall/runoff tails (n=5 against a family that already shows both); which
 lever sets the lower dam count (ai_value 30,000 was never raised here; p14's 300,000 is untested at canon costs); why privatisation hits some
 countries and not others (their laws were not read).
+
+## F176 — THE SURVEY DECISION TAKEN BY THE AI: the bureaucracy check belongs in `possible` (re-checked after every take), not in the AI weighting (read once per pass); releasing a subject CANCELS the overlord's dam construction in its state; without the chain clause a government builds and owns dams in foreign states it holds investment rights in
+
+**Arm.** Engine probes on PROBE BOOKS built from the canon `canon-dams` with only `dams.probe` changed (the dam class technologies granted
+to the ten majors GBR FRA USA RUS PRU AUS SWE SAR SWI TUR at the start; construction cost ×0.05, or ×0.25 in p17/p18; 2-month surveys unless
+noted). No economic reading. Sessions: `20260928_134653_dam-probes-p15-p19` (p19, p15, p16, p17 — p17 void, p18 not built),
+`20260928_145613_dam-probes-p20-p23` (p20, p22, p21, p23, p18), `20260928_162959_dam-probes-p17b-p24` (p17b, p24). The user's steer:
+*"I think the bureaucracy cost is a sufficient gate by itself. The trick is to make it work for AI"*, and on the half-built-dam risk: the
+chain rule is *"a safeguard against AI dumping a lot of money into half-built dam that it never completes because it loses investment rights"*.
+Every reading is taken from each run's own init marker onward (the debug.log mirror starts with earlier runs' lines).
+
+### 1. Where the bureaucracy check sits decides whether the AI overshoots
+
+The AI takes the survey decision itself (vanilla's canal pattern: `ai_chance` 0, +10 when the check passes, ×0 at war / in a play / in
+default; the quarterly driver not hooked). "Spare" = produced − used bureaucracy (`pmr_dam_bur_headroom`).
+
+| probe | the check | surveys | same-day multiple starts | worst year-end deficit (used − produced) |
+|---|---|---|---|---|
+| p19 | spare ≥ this survey's cost in `possible` (and in the weight) | 4 (USA only) | none | 4 (3,041 / 3,037) |
+| p15 | as p19 in the weight + "no survey running" in `possible` | 2 (USA) | none | — |
+| p16 | as p19 in the weight + "no survey running" as a ×0 in the weight | 0 | — | — |
+| p20 | weight only: any spare | 82 | 14 days, up to **5 at once** (Russia 1836.9.9 at 55 spare) | Russia 1,478 · USA 1,029 · Britain 784 · Ottomans 580 |
+| p22 | weight: any spare + "no survey running" in `possible` | 77 | **none** | Ottomans 766 · Russia 716 · Britain 631 (≈ one survey) |
+| p21 | weight only: spare ≥ half the survey's cost | 10 (USA) | 1 (USA 1837.1.6, ×2) | 4 |
+| p23 | as p21, REAL survey lengths, 20 years | 37 | 5 days, up to 4 (Russia 1854.10.2) | Russia 2,858 · USA 1,101 · Austria 718 · France 623 |
+
+⇒ **The AI scores every visible decision against ONE state read before its pass**: a check in `ai_chance` alone lets it take several
+surveys at once and overspend. **`possible` is re-evaluated after each take** (p22: 77 starts, none on a shared day; p19's spare check
+in `possible` never took two at once). ⇒ The design the user asked for is expressible: **spare bureaucracy ≥ the survey's cost IN
+`possible`** — concurrency bounded by spare bureaucracy alone, no overshoot, no survey-count cap.
+⚠ Its catch: majors run within ~100 of their bureaucracy cap early (p19 at 1838: Britain 2,790 / 2,698, France 3,933 / 3,844) against
+survey costs of 500–1,500, so early surveys are rare; only the USA had room in 1836–46. The USA's spare in the canon n=5 (session
+`20260928_000616`, run 1) reads 800 at 1900, −20 at 1910, −625 at 1920, 4,249 at 1930 and 5,862 at 1935, i.e. room for several at once
+only late. ⚠ The AI took surveys roughly every two months per country in p20 (Britain 1836.1.5, 3.6, 5.5, 7.12, 9.10): its decision
+pass has a cadence; the rule is not identified. ⚠ p15/p16 do NOT separate their gate placements — the spare check serialised everything
+first (p16's 0 is the USA's spare sitting at 430–580 all decade against a cheapest survey of 650).
+⭐ The engine AI built what the survey opened with no script (p19: Conowingo surveyed 1836, level 1 built June 1839; 3 of 4 surveyed
+dams built within the decade).
+
+### 2. Releasing a subject cancels the overlord's construction in its state (p17b)
+
+p17's release (the script makes a subject independent while a dam in its state is under construction) first read the building's
+`is_under_construction`, which stays FALSE while a level is only queued — it never fired though the Qing built in Korea from 1839
+(p17, void). Re-run as p17b with "a level queued above the built one" (`level_after_queued_constructions` > `level`):
+
+| dam | host (overlord) | queued | released | afterwards |
+|---|---|---|---|---|
+| Kaema Plateau | Joseon (Qing) | between 1841.1.1 and 1841.2.1, by the Qing | 1841.2.1 | gone from every queue by the 1841.7.1 summary; no dam record in the 1855.7.1 save |
+| Agno Gorge | Philippines (Spain) | by 1855.9.1 (a level-0 record, queued 1/1) | 1855.9.1 | the record's monthly line stops after September 1855 |
+
+⇒ **The construction is cancelled when its builder loses its standing** — the engine re-checks `can_build_government` (the chain clause)
+and drops the element. ⚠ Both releases came within a month of queuing, so no progress was at stake and the size of the loss is
+unmeasured; p25 (a one-year delay before the release) is the follow-up.
+
+### 3. Without the chain clause a government builds and owns dams in foreign independent states (p18)
+
+p18 removes the chain clause from `can_build_government` and gives the ten majors a completed survey of every site from the start.
+Prussia built **Castelo do Bode (Portugal, queued by 1843.7, built by 1844.1)** and **Trollhättan Falls (Sweden, queued by 1845.1,
+built by 1845.7)**; every other dam built in 20 years was its host's own (and Britain's in its subject BIC). At the 1856 save Trollhättan
+is owned by the **Prussian government** and Castelo do Bode by a **Prussian financial district**. The 1856 treaty table holds foreign
+investment rights PRU ↔ SWE in both directions and none PRU ↔ POR, and Portugal was not in Prussia's market in 1843 — so the Portuguese
+build's route is unidentified (a lapsed treaty cannot be excluded from the endpoint).
+⇒ The engine's own foreign-construction rule lets a government queue a dam where it holds investment rights and own the result; the chain
+clause is what keeps the canon's builders to the owner and its overlords.
+
+**What it does NOT say.** The money lost when a builder loses its standing mid-build (both p17b releases were a month into queuing); whether
+the INVESTMENT-RIGHTS case behaves like the subject case (p26 is the direct test: the host withdraws from its investment-rights treaties
+a year into a foreign build); the survey rate under the `possible` check over a century with real survey lengths (p24 covers 20 years);
+the AI decision cadence rule.

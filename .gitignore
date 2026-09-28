@@ -271,3 +271,5 @@ tools/testbed/ledger/corpus_gbr.jsonl
 # the dam engine probes p15-p19 (2026-09-28)
 !config/mod_config.probe-dam-p1*.json
 !config/tech_tree_options.probe-dam-p1*.json
+!config/mod_config.probe-dam-p2*.json
+!config/tech_tree_options.probe-dam-p2*.json
