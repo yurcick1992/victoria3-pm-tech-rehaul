@@ -17765,7 +17765,7 @@ Median 31 levels against the scripted design's 92–101 (canon-dams-v3-n3, 159 p
 - **Overlord ownership outlives the relationship**: Germany keeps Piave in an independent Italy (run 1), the Netherlands Asahan in an
   independent Aceh (run 3).
 - **Stalls**: at most one queue element per run went 2+ years without progress (Nelson-Winnipeg 4 y, Derwent 2 y, Niagara-Ottawa 2 y, the
-  Bavarian Danube 4 y); 12 of 437 queue-years made no progress. F173's poor-owner stall did not recur at canon costs and real dates.
+  Bavarian Danube 4 y); 14 of 527 queue-years made no progress. F173's poor-owner stall did not recur at canon costs and real dates.
 
 **What it does NOT say.** Whether the dams move world GDP or the stall/runoff tails (n=5 against a family that already shows both); which
 lever sets the lower dam count (ai_value 30,000 was never raised here; p14's 300,000 is untested at canon costs); why privatisation hits some
