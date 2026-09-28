@@ -17860,7 +17860,7 @@ investment-rights case is untested; the one-year arming never caught an unfinish
 
 ### 4. The take-cooldown works (p27 vs p28), and investment rights in an overlord reach its subjects (p26b)
 
-Session `20260928_190922_dam-probes-p27-p28-p26b` (the user: *"Run both, you have until 20:00 to START any probe"*). p27 and p28 = p19's
+Session `20260928_190925_dam-probes-p27-p28-p26b` (the user: *"Run both, you have until 20:00 to START any probe"*). p27 and p28 = p19's
 book (spare ≥ cost in `possible`, 2-month surveys) with a flat **+4,000 bureaucracy** for the ten majors (`dams.probe.bureaucracy_bonus`), so
 every major holds room for several surveys at once from 1836; p27 adds `take_cooldown_days` 30 (a "just took a survey" country variable set
 in `when_taken`, required absent in `possible`), p28 does not.
