@@ -1,0 +1,132 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probes-p15-p19",
+  "_why": "FIVE ENGINE PROBES in one session (user, 2026-09-28: \"When the current runs end and reported, go on with any probes needed to disambiguate all this\"). Each run is described by its own schedule file (tools/testbed/schedules/<name>.json: _why, _questions, _predictions): dam_probe_p19_decision_headroom, dam_probe_p15_decision_possible, dam_probe_p16_decision_weight, dam_probe_p17_release, dam_probe_p18_open_builders. p19/p15/p16: can the AI take the survey DECISION itself, paced by spare bureaucracy (p19) or a survey count in possible (p15) or in the weight (p16, F168's form)? p17: what happens to a construction when the subject is released mid-build? p18: does a country outside the overlord chain (investment rights only) build a dam once the chain rule is removed?",
+  "_parts": {
+    "dam_probe_p19_decision_headroom": {
+      "label": "dam-probe-p19-decision-headroom",
+      "_why": "ENGINE PROBE (user, 2026-09-28: F168's \"the AI takes every visible decision in one pass\" is an inference - \"Are you sure there can be no mean_week_to_pick parameter expressable ... How is this done with vanilla canals?\"). The AI takes the SURVEY DECISION itself, vanilla canal style, instead of the quarterly driver (which is not hooked): ai_chance = 0, +10 when produced - used bureaucracy exceeds the survey's cost, x0 at war / in a diplomatic play / in default. NO survey count: `possible` requires the country's spare bureaucracy (produced - used) to exceed THIS survey's cost (user, 2026-09-28: \"I think the bureaucracy cost is a sufficient gate by itself. The trick is to make it work for AI.\"). F168 overshot with possible = produced > cost (Britain 2,395 used -> 8,465 a week later). Paired with the other gate placement: same-day multiple takes under one and not the other tell whether possible is re-checked after each take.",
+      "_questions": {
+        "Q1": "Does a country's bureaucracy usage ever overshoot its production because several surveys were taken at once (same-day starts whose combined cost exceeds the headroom at the first)?",
+        "Q2": "How many surveys does a major run at once, and does it keep starting new ones as the old complete (its spare bureaucracy as the only limit)?"
+      },
+      "_predictions": {
+        "Q1": "unknown - the point: no overshoot if possible is re-checked after each take and the survey modifier counts at once",
+        "Q2": "majors run several at once, bounded by their spare bureaucracy"
+      }
+    },
+    "dam_probe_p15_decision_possible": {
+      "label": "dam-probe-p15-decision-possible",
+      "_why": "ENGINE PROBE (user, 2026-09-28: F168's \"the AI takes every visible decision in one pass\" is an inference - \"Are you sure there can be no mean_week_to_pick parameter expressable ... How is this done with vanilla canals?\"). The AI takes the SURVEY DECISION itself, vanilla canal style, instead of the quarterly driver (which is not hooked): ai_chance = 0, +10 when produced - used bureaucracy exceeds the survey's cost, x0 at war / in a diplomatic play / in default. The \"one survey at a time\" gate (pmr_dam_active, the country's running surveys) sits in POSSIBLE. Probe book: the class technologies granted to the ten majors at the start, 2-month surveys. Paired with the other gate placement: same-day multiple takes under one and not the other tell whether possible is re-checked after each take.",
+      "_questions": {
+        "Q1": "Does any country start two or more dam surveys on the same day?",
+        "Q2": "How often does a country start surveys at all (surveys per country-year while eligible) at weight 10?"
+      },
+      "_predictions": {
+        "Q1": "unknown - the point of the probe: no if possible is re-checked after each take",
+        "Q2": "a few a year for a major holding the technologies"
+      }
+    },
+    "dam_probe_p16_decision_weight": {
+      "label": "dam-probe-p16-decision-weight",
+      "_why": "ENGINE PROBE (user, 2026-09-28: F168's \"the AI takes every visible decision in one pass\" is an inference - \"Are you sure there can be no mean_week_to_pick parameter expressable ... How is this done with vanilla canals?\"). The AI takes the SURVEY DECISION itself, vanilla canal style, instead of the quarterly driver (which is not hooked): ai_chance = 0, +10 when produced - used bureaucracy exceeds the survey's cost, x0 at war / in a diplomatic play / in default. The \"one survey at a time\" gate (pmr_dam_active, the country's running surveys) sits in the WEIGHT (x0) - F168's form. Probe book: the class technologies granted to the ten majors at the start, 2-month surveys. Paired with the other gate placement: same-day multiple takes under one and not the other tell whether possible is re-checked after each take.",
+      "_questions": {
+        "Q1": "Does any country start two or more dam surveys on the same day?",
+        "Q2": "How often does a country start surveys at all (surveys per country-year while eligible) at weight 10?"
+      },
+      "_predictions": {
+        "Q1": "yes (F168)",
+        "Q2": "a few a year for a major holding the technologies"
+      }
+    },
+    "dam_probe_p17_release": {
+      "label": "dam-probe-p17-release",
+      "_why": "ENGINE PROBE - WHAT HAPPENS TO A CONSTRUCTION WHEN THE BUILDER LOSES ITS STANDING MID-BUILD (user, 2026-09-28: the concession-loss concern). p14's incentives (the technologies at the TOP overlord only, the contest seeding of every subject site, dam ai_value 300,000, government electricity consumers in every other dam state, costs x0.25) + dams.probe.release_after 1837.1.1: every month from 1837, a SUBJECT whose state holds a dam UNDER CONSTRUCTION is released (make_independent), once per project, logged PMR_DAM|probe_release. In p14 every subject-site construction was the overlord's (subjects held no technology).",
+      "_questions": {
+        "Q1": "After the release, does the former overlord's queue element persist and keep progressing, stall, or vanish (save summaries: queues.government.by_type per country)?",
+        "Q2": "If it completes, who owns the level (the 1856 save: the builder's government, the newly independent host, or another owner)?",
+        "Q3": "Is anything logged in error.log about the construction?"
+      },
+      "_predictions": {
+        "Q1": "unknown - the point of the probe",
+        "Q2": "unknown",
+        "Q3": "no"
+      }
+    },
+    "dam_probe_p18_open_builders": {
+      "label": "dam-probe-p18-open-builders",
+      "_why": "ENGINE PROBE - CAN A COUNTRY OUTSIDE THE OVERLORD CHAIN (investment rights only) BUILD A DAM, AND DOES THE AI DO IT? (user, 2026-09-28). The build rules' chain clause is REMOVED (dams.probe.open_builders), so only the engine's own rules (investment rights) decide who may build abroad; the ten majors hold the technologies AND a completed survey of EVERY site from the start (open_survey_tags); dam ai_value 300,000; every urban centre buys 1 electricity a level from 1836; costs x0.25. The quarterly driver still surveys for everyone else.",
+      "_questions": {
+        "Q1": "Does any country queue a dam in a state where it is neither the owner nor above the owner in the overlord chain?",
+        "Q2": "If so, whose states, and does the level complete and stay the builder's?"
+      },
+      "_predictions": {
+        "Q1": "rarely if at all: the government AI builds abroad in subjects (F174); investment-rights treaties are few in 1836-1856",
+        "Q2": "unknown"
+      }
+    }
+  },
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 90
+  },
+  "setups": {
+    "probe-dam-p19": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p19.json"
+    },
+    "probe-dam-p15": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p15.json"
+    },
+    "probe-dam-p16": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p16.json"
+    },
+    "probe-dam-p17": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p17.json"
+    },
+    "probe-dam-p18": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p18.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "probe-dam-p19",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "probe-dam-p15",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "probe-dam-p16",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "probe-dam-p17",
+      "until": "1856.1.1"
+    },
+    {
+      "setup": "probe-dam-p18",
+      "until": "1856.1.1"
+    }
+  ]
+}

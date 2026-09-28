@@ -1,0 +1,50 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probe-p18-open-builders",
+  "_why": "ENGINE PROBE - CAN A COUNTRY OUTSIDE THE OVERLORD CHAIN (investment rights only) BUILD A DAM, AND DOES THE AI DO IT? (user, 2026-09-28). The build rules' chain clause is REMOVED (dams.probe.open_builders), so only the engine's own rules (investment rights) decide who may build abroad; the ten majors hold the technologies AND a completed survey of EVERY site from the start (open_survey_tags); dam ai_value 300,000; every urban centre buys 1 electricity a level from 1836; costs x0.25. The quarterly driver still surveys for everyone else.",
+  "_arm": "config/mod_config.probe-dam-p18.json (+ tech_tree_options twin = the canon's)",
+  "_questions": {
+    "Q1": "Does any country queue a dam in a state where it is neither the owner nor above the owner in the overlord chain?",
+    "Q2": "If so, whose states, and does the level complete and stay the builder's?"
+  },
+  "_predictions": {
+    "Q1": "rarely if at all: the government AI builds abroad in subjects (F174); investment-rights treaties are few in 1836-1856",
+    "Q2": "unknown"
+  },
+  "_cost": "1 run x 1836 -> 1856.1, about 25 minutes",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe build: techs granted, costs and surveys shrunk - no economic reading."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "halfyear",
+    "timeout_minutes": 90
+  },
+  "setups": {
+    "probe-dam-p18": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p18.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "probe-dam-p18",
+      "until": "1856.1.1"
+    }
+  ]
+}

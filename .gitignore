@@ -268,3 +268,6 @@ tools/testbed/ledger/corpus_gbr.jsonl
 !config/tech_tree_options.canon-dams-aiself-probe-gbr.json
 !config/mod_config.canon-dams-aiself-probe-p14.json
 !config/tech_tree_options.canon-dams-aiself-probe-p14.json
+# the dam engine probes p15-p19 (2026-09-28)
+!config/mod_config.probe-dam-p1*.json
+!config/tech_tree_options.probe-dam-p1*.json

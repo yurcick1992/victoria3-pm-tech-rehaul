@@ -90,6 +90,10 @@ ${T}urbanization = 10
 }
 `);
 
+// PROBE: the AI takes the survey DECISION itself (vanilla's canal pattern) instead of the driver - dams.probe.decision_ai
+const DAI = P.probe?.decision_ai || null;
+// PROBE: open builders - no chain requirement in can_build_government, the engine's own rules (investment rights) decide
+const OPEN = !!P.probe?.open_builders;
 // ---------------------------------------------------------------- buildings, methods, groups
 const bld = [], pms = [], pmgs = [], mods = [], decs = [], jes = [], loc = [], seff = [];
 const surveyOpen = new Map();
@@ -124,7 +128,7 @@ for (const p of projects) {
     // three parts of Pegu), and only once someone in the chain has surveyed it (so no state lists it from 1836).
     `${T}potential = {\n${T}${T}state_region = s:${p.state}\n${T}${T}owner ?= p:${p.anchor_province}.state.owner\n${T}${T}has_global_variable = ${v}_surveyed_any\n${T}}\n\n` +
     `${T}can_build_government = {\n` +
-    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_builder_tt\n${T}${T}${T}${builderInChain(p)}\n${T}${T}}\n` +
+    (OPEN ? '' : `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_builder_tt\n${T}${T}${T}${builderInChain(p)}\n${T}${T}}\n`) +
     `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_tech_1_tt\n${T}${T}${T}scope:investor_country ?= { has_technology_researched = ${p.stage_techs[0]} }\n${T}${T}}\n` +
     `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_surveyed_tt\n${T}${T}${T}scope:investor_country ?= { has_variable = ${v}_surveyed }\n${T}${T}}\n` +
     // the level cap counts EVERY builder's queued levels, so concurrent builders share the project's levels the way
@@ -172,9 +176,16 @@ for (const p of projects) {
   // ⚠ the AI does NOT take this decision (ai_chance 0): it scores every visible decision in one pass (F168); it surveys through the driver
   decs.push(`${v}_survey_decision = {\n` +
     `${T}is_shown = {\n${T}${T}${surveyOpen.get(p.id)}\n${T}}\n\n` +
-    `${T}possible = {\n${T}${T}produced_bureaucracy > ${p.survey_bureaucracy}\n${T}}\n\n` +
+    `${T}possible = {\n${T}${T}produced_bureaucracy > ${p.survey_bureaucracy}\n` +
+      (DAI && DAI.gate === 'possible' ? `${T}${T}pmr_dam_active < 1\n` : '') +
+      // gate 'headroom' (user, 2026-09-28: "the bureaucracy cost is a sufficient gate by itself"): no survey count at all - the country
+      // may start a survey only while its spare bureaucracy (produced - used) exceeds this survey's cost
+      (DAI && DAI.gate === 'headroom' ? `${T}${T}pmr_dam_bur_headroom > ${p.survey_bureaucracy}\n` : '') + `${T}}\n\n` +
     `${T}when_taken = {\n${T}${T}${v}_begin_survey = yes\n${T}}\n\n` +
-    `${T}ai_chance = {\n${T}${T}value = 0\n${T}}\n}`);
+    (DAI ? `${T}ai_chance = {\n${T}${T}value = 0\n${T}${T}if = {\n${T}${T}${T}limit = { pmr_dam_bur_headroom > ${Math.round(p.survey_bureaucracy * (DAI.headroom_mult ?? 1))} }\n${T}${T}${T}add = ${DAI.weight ?? 10}\n${T}${T}}\n` +
+      (DAI.gate === 'weight' ? `${T}${T}if = {\n${T}${T}${T}limit = { pmr_dam_active > 0 }\n${T}${T}${T}multiply = 0\n${T}${T}}\n` : '') +
+      `${T}${T}if = {\n${T}${T}${T}limit = { OR = { is_at_war = yes  is_diplomatic_play_committed_participant = yes  in_default = yes } }\n${T}${T}${T}multiply = 0\n${T}${T}}\n${T}}\n}`
+      : `${T}ai_chance = {\n${T}${T}value = 0\n${T}}\n}`));
   decs.push(`${v}_stop_survey_decision = {\n${T}is_shown = { has_variable = ${v}_months }\n${T}possible = { has_variable = ${v}_months }\n` +
     `${T}when_taken = {\n${T}${T}remove_variable = ${v}_months\n` +
     `${T}${T}debug_log = "PMR_DAM|survey_stop|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n` +
@@ -285,6 +296,18 @@ if (P.probe?.elec_sink) {
       `${T}${T}${T}debug_log = "PMR_DAM|probe_sink|${p.id}|treated|${levels} levels x ${per}|${DATE}"\n${T}${T}}`
     : `${T}${T}debug_log = "PMR_DAM|probe_sink|${p.id}|control|-|${DATE}"`);
 }
+// PROBE: dams.probe.release_after = 'Y.M.D' - from that date, every month: a SUBJECT whose state holds a dam under construction is
+// released (make_independent), once per project. Asks what happens to a construction when the builder loses its standing mid-build.
+const releaseLines = [];
+if (P.probe?.release_after) for (const p of projects) releaseLines.push(
+  `${T}${T}p:${p.anchor_province}.state ?= {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = {\n${T}${T}${T}${T}${T}NOT = { has_global_variable = pmr_dam_${p.id}_released }\n` +
+  `${T}${T}${T}${T}${T}owner ?= { is_subject = yes }\n${T}${T}${T}${T}${T}any_scope_building = { is_building_type = ${BKEY(p)}  is_under_construction = yes }\n${T}${T}${T}${T}}\n` +
+  `${T}${T}${T}${T}set_global_variable = pmr_dam_${p.id}_released\n` +
+  `${T}${T}${T}${T}owner = { debug_log = "PMR_DAM|probe_release|${p.id}|${TAG}|${DATE}"  make_independent = yes }\n${T}${T}${T}}\n${T}${T}}`);
+// PROBE: dams.probe.open_survey_tags = [TAGS] - those countries hold a completed survey of EVERY project from the start
+if (P.probe?.open_survey_tags?.length) for (const tag of P.probe.open_survey_tags) start.push(
+  `${T}${T}c:${tag} ?= {\n` + projects.map(p => `${T}${T}${T}set_variable = ${V(p)}_surveyed\n`).join('') + `${T}${T}}\n` +
+  projects.map(p => `${T}${T}set_global_variable = ${V(p)}_surveyed_any`).join('\n'));
 // on_building_built (a dam's first level) and on_building_expanded (every later level) both land here, root = the building.
 // An effect named for level k fires once, the first time the dam stands at k levels or more; 'last' = at its final level.
 const onBuilt = [];
@@ -315,7 +338,9 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
   `pmr_dam_built = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { is_building_group = bg_pmr_hydro_dams }\n${onBuilt.join('\n')}\n${T}${T}}\n${T}}\n}\n\n` +
   // PROBE (contest): every standing dam's built level and its level after every queued construction, monthly. Checked up to
   // two above the cap, so an over-queue shows. A dam whose first level is only queued already has a (level-0) building record.
-  (P.probe?.contest ? `on_monthly_pulse = {\n${T}on_actions = { pmr_dam_probe_levels }\n}\n\n` +
+  ((releaseLines.length || P.probe?.contest) ? `on_monthly_pulse = {\n${T}on_actions = { ${[releaseLines.length ? 'pmr_dam_probe_release' : '', P.probe?.contest ? 'pmr_dam_probe_levels' : ''].filter(Boolean).join(' ')} }\n}\n\n` : '') +
+  (releaseLines.length ? `pmr_dam_probe_release = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { game_date >= ${P.probe.release_after} }\n` + releaseLines.join('\n') + `\n${T}${T}}\n${T}}\n}\n\n` : '') +
+  (P.probe?.contest ? `` +
     `pmr_dam_probe_levels = {\n${T}effect = {\n` + projects.map(p => {
       const chain = (trig, tag) => Array.from({ length: p.stages + 3 }, (_, i) => p.stages + 2 - i).map((k, j) =>
         `${T}${T}${T}${T}${j ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}${T}limit = { ${k ? `${trig} >= ${k}` : 'always = yes'} }\n` +
@@ -331,7 +356,7 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
   // THE AI DRIVER (F168) — SURVEYS ONLY since 2026-09-27 (user-ruled: the engine builds every level itself, F173/F174). Every
   // three months an unburdened AI country starts at most ONE survey: the first open project in its chain; a SUBJECT surveys a
   // site in its own state only when no overlord above it holds the technology unburdened (the rich overlord goes first).
-  `on_monthly_pulse_country = {\n${T}on_actions = { pmr_dam_driver }\n}\n\n` +
+  (DAI ? '' : `on_monthly_pulse_country = {\n${T}on_actions = { pmr_dam_driver }\n}\n\n`) +
   `pmr_dam_driver = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = {\n` +
   `${T}${T}${T}${T}is_player = no\n${T}${T}${T}${T}has_technology_researched = ${P.tech_by_class.A}\n${T}${T}${T}${T}NOT = { has_variable = pmr_dam_driver_cd }\n` +
   `${T}${T}${T}${T}is_at_war = no\n${T}${T}${T}${T}in_default = no\n${T}${T}${T}${T}scaled_debt < 0.5\n` +
@@ -348,6 +373,7 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
 const gdpSlots = (tiers) => tiers.map(g => `${T}if = {\n${T}${T}limit = { gdp >= ${g} }\n${T}${T}add = 1\n${T}}\n`).join('');
 W('common/script_values/zzz_pm_rehaul_dams.txt', HDR +
   `pmr_dam_bur_produced = {\n${T}value = produced_bureaucracy\n}\n\npmr_dam_bur_used = {\n${T}value = bureaucracy_usage\n}\n\n` +
+  (DAI ? `pmr_dam_bur_headroom = {\n${T}value = produced_bureaucracy\n${T}subtract = bureaucracy_usage\n}\n\n` : '') +
   `pmr_dam_active = {\n${T}value = 0\n${T}if = {\n${T}${T}limit = { has_variable = ${ACTIVE} }\n${T}${T}value = var:${ACTIVE}\n${T}}\n}\n\n` +
   `pmr_dam_building_now = {\n${T}value = 0\n${T}every_scope_state = {\n${T}${T}every_scope_building = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}is_building_group = bg_pmr_hydro_dams\n${T}${T}${T}${T}is_under_construction = yes\n${T}${T}${T}}\n${T}${T}${T}add = 1\n${T}${T}}\n${T}}\n}\n\n` +
   `pmr_dam_survey_slots = {\n${T}value = 1\n${gdpSlots(P.ai.survey_slot_gdp)}}\n\n` +

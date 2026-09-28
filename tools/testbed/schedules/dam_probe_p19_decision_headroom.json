@@ -1,0 +1,50 @@
+{
+  "schedule_version": 1,
+  "label": "dam-probe-p19-decision-headroom",
+  "_why": "ENGINE PROBE (user, 2026-09-28: F168's \"the AI takes every visible decision in one pass\" is an inference - \"Are you sure there can be no mean_week_to_pick parameter expressable ... How is this done with vanilla canals?\"). The AI takes the SURVEY DECISION itself, vanilla canal style, instead of the quarterly driver (which is not hooked): ai_chance = 0, +10 when produced - used bureaucracy exceeds the survey's cost, x0 at war / in a diplomatic play / in default. NO survey count: `possible` requires the country's spare bureaucracy (produced - used) to exceed THIS survey's cost (user, 2026-09-28: \"I think the bureaucracy cost is a sufficient gate by itself. The trick is to make it work for AI.\"). F168 overshot with possible = produced > cost (Britain 2,395 used -> 8,465 a week later). Paired with the other gate placement: same-day multiple takes under one and not the other tell whether possible is re-checked after each take.",
+  "_arm": "config/mod_config.probe-dam-p19.json (+ tech_tree_options twin = the canon's)",
+  "_questions": {
+    "Q1": "Does a country's bureaucracy usage ever overshoot its production because several surveys were taken at once (same-day starts whose combined cost exceeds the headroom at the first)?",
+    "Q2": "How many surveys does a major run at once, and does it keep starting new ones as the old complete (its spare bureaucracy as the only limit)?"
+  },
+  "_predictions": {
+    "Q1": "unknown - the point: no overshoot if possible is re-checked after each take and the survey modifier counts at once",
+    "Q2": "majors run several at once, bounded by their spare bureaucracy"
+  },
+  "_cost": "1 run x 1836 -> 1846.1, about 10 minutes",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Probe build: techs granted, costs and surveys shrunk - no economic reading."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1837.1.1",
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "RUS",
+      "PRU",
+      "TUR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 90
+  },
+  "setups": {
+    "probe-dam-p19": {
+      "kind": "config",
+      "config": "config/mod_config.probe-dam-p19.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "probe-dam-p19",
+      "until": "1846.1.1"
+    }
+  ]
+}
