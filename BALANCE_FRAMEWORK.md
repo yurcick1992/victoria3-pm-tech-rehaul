@@ -8955,3 +8955,8 @@ built, owners and overlords finish 98–100%. ⇒ **No protection is added again
 rules allow (owner, overlord chain, investment rights in the owner or its chain, family surveys) stays. `config/mod_config.json` + twin are
 `config/mod_config.canon-dams-family.json` + twin verbatim (sha256 `7bf6e9db1cb46b1d`), `dams.log_levels` included, as measured and
 playtested.
+⭐ **AMENDED THE SAME DAY — two more rulings.** (1) The monthly dam log is DROPPED from the canon (*"Drop."*): `config/mod_config.json` is now
+`config/mod_config.canon-dams-family-nolog.json` (sha256 `806c8b3df03b5d61`) — the measured book minus `dams.log_levels`, instrumentation only,
+no gameplay effect; the measured book keeps its bytes as the record. (2) **Owners that queue their own dam and sit on it are LEFT ALONE**
+(*"Leave the stalls sitting on dams."*): F177's two long cases, Canada on Niagara-Ottawa (8 years at 5%) and on the Laurentian (5½ years
+without progress), get no nudge.

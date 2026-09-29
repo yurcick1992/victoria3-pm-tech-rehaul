@@ -253,9 +253,10 @@ reads that way it has been corrected in place; the headings that follow are HIST
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
-`config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.canon-dams-family.json` + twin (sha256
-`7bf6e9db1cb46b1d`; the twin is the `canon-dams` tree byte for byte). The book is `canon-dams` plus exactly two keys, `dams.rules = "family"` and
-`dams.log_levels = true` (BALANCE_FRAMEWORK **§10.89.12**): construction rights = the owner, its overlord chain, or investment rights in the owner
+`config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.canon-dams-family-nolog.json` + twin
+(sha256 `806c8b3df03b5d61`; the twin is the `canon-dams` tree byte for byte) — the measured `canon-dams-family` book MINUS its monthly dam log
+(user-ruled the same day: *"Drop."*; and *"Leave the stalls sitting on dams"* — no nudge for an owner sitting on its own queued dam). The
+measured book is `canon-dams` plus exactly two keys, `dams.rules = "family"` and `dams.log_levels = true` (BALANCE_FRAMEWORK **§10.89.12**): construction rights = the owner, its overlord chain, or investment rights in the owner
 or any of that chain; a survey inside the host's top-overlord family opens the dam to the family, an outside survey to the surveyor alone; a
 12-month block from a survey's start; no survey while a level is queued; no claim; the AI takes the survey decision itself (spare bureaucracy ≥
 cost, a 30-day AI-only cooldown), no driver. The same bytes as the user's playtest build of 2026-09-28 evening. Measured n=6 (FINDINGS **F177**,
@@ -1494,7 +1495,9 @@ config/mod_config.canon-slide-b158-trade.json ⭐⭐ THE TRADE ARM (ROADMAP step
 config/mod_config.trade15-b1{64,68,72,76}.json ⭐ THE TRADE ×1.5 B LADDER (F163, user-ruled 2026-09-24) + tech-tree twins: the canon
                         (finish boost on) regenerated at B 1.64 / 1.68 / 1.72 / 1.76 via its `_ab.command`, plus `make_trade_config --scale
                         1.5`. Batch 20260924_101627_trade15-bladder-n12 (12 runs). The `slide-b1xx` bases stay gitignored. Un-ignored
-config/mod_config.canon-dams-family.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy; the banner near the top of this
+config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
+                        minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
+config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
                         file) + its tree twin (canon-dams's, byte-identical): canon-dams + `dams.rules = "family"` + `dams.log_levels` (§10.89.12).
                         Measured n=6 (20260929_002728, F177); read the dams with tools/testbed/ledger/dam_situation.mjs (per run: surveys,
                         built, stalled, wasted), dam_outcomes.mjs (finish rates by the actor's relation to the target state) and
