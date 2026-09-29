@@ -17958,3 +17958,15 @@ the same dam — but the monthly log cannot see them, because the queued count n
 voiding them (the treaty history is not persisted); how much capital they cost in £ (not summed); whether the rules move world GDP or its
 tails (the economy reads as F175's family at n=6 vs n=5); why the rights holders out-build owners (ai_value 30,000 applies to every builder;
 rich foreign governments simply have the money and the technology first).
+
+**Addendum — the finish rates by relation** (user-asked 2026-09-29; `tools/testbed/ledger/dam_outcomes.mjs`, all six runs pooled; the relation
+of the surveyor or builder to the target state's owner at the start; a construction here is one builder's continuous stay on one dam, split only
+where a level finished, so the fragments counted above merge):
+| relation | surveys started | finished | abandoned | running at 1936 | P(finished \| ended) | constructions queued | finished | lost (log-confirmed) | vanished (unconfirmed) | queued at 1936 | P(finished \| ended) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| own state | 171 | 163 | 0 | 8 | 100% | 83 | 64 | 0 | 1 | 18 | 98% |
+| overlord, in a subject's state | 56 | 54 | 1 | 1 | 98% | 59 | 51 | 0 | 0 | 8 | 100% |
+| outside the family (rights holder) | 480 | 436 | 31 | 13 | 93% | 251 | 188 | 25 | 11 | 27 | 84% (89% if every unconfirmed one finished) |
+No survey or construction by a subject in its overlord's state or by a sibling appeared. 33 survey starts sit in a split state whose owner
+could not be pinned down (31 finished, 1 abandoned). Nearly every construction progressed (249 of 251 for rights holders); the lost ones were
+39% built on average.
