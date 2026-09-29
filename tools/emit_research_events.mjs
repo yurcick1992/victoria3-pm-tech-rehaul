@@ -285,6 +285,8 @@ if ((RE.war_gate || {}).mobilised_share_min) {
 // ⭐ NO NAVAL ENTRIES (user-ruled 2026-09-03): `research_events.naval_channel = false` drops every fleet technology's entry
 if (RE.naval_channel === false) for (const tech of Object.keys(anchors)) if (anchors[tech].rule === 'war' && isFleetTech(tech)) delete anchors[tech];
 let nWar = 0, nInd = 0;
+// every loc key a scripted progress bar DISPLAYS (its name, its desc, each term's desc) — checked for apostrophes before writing
+const barLocKeys = new Set();
 for (const [tech, a] of Object.entries(anchors).sort()) {
   const T0 = TECH[tech];
   const grant = Math.round(ERACOST['era_' + T0.era] * (RE.grant_fraction ?? 0.5));
@@ -402,7 +404,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       const who = (s.group && MILITARY_GROUPS.has(s.group)) ? 'Soldiers' : 'Workers';
       const line = gTypes.length ? `${who} in ${names}: at least ${people.toLocaleString('en-US')}`
         : `${names}: at least ${need.toLocaleString('en-US')} fully staffed levels` + (!inPeople ? '' : varies
-          ? ` (${people.toLocaleString('en-US')} workers at the base method's staffing, labour saving and other staffing changes calculated correctly)`
+          ? ` (${people.toLocaleString('en-US')} workers at base-method staffing, labour saving and other staffing changes calculated correctly)`
           : ` (${people.toLocaleString('en-US')} workers)`);
       const live = `[ROOT.GetCountry.MakeScope.ScriptValue('${n}')|0]`;
       const dkey = `pmr_term_${tech}_${i}`;
@@ -437,6 +439,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   // still cannot silently become "stacks", and every branch now carries its OWN description instead of sharing
   // the first term's.
   const exclusive = terms.length > 1 && terms.every(x => x.exclusive);
+  barLocKeys.add(barName(tech)); barLocKeys.add('pmr_bar_desc'); for (const t of terms) barLocKeys.add(t.desc);
   bars.push(`${barName(tech)} = {\n${T}name = "${barName(tech)}"\n${T}desc = "pmr_bar_desc"\n${T}default_green = yes\n${T}start_value = 0\n${T}min_value = 0\n${T}max_value = ${span}\n${T}${cadence} = {\n` +
     terms.map((t, i) => `${T}${T}${exclusive && i ? 'else_if' : 'if'} = {\n` +
       `${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}}\n` +
@@ -484,10 +487,26 @@ loc.push(['pmr_term_improvement', 'Employed in the industry this would improve']
 loc.push(['pmr_term_necessity', 'Employed in the industries that would use it']);
 loc.push(['pmr_term_war_pressed', 'Committed to a front in strength']);
 loc.push(['pmr_term_war_enemy_has_it', 'An enemy already fields it']);
-loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions on a front against an enemy who already fields this`]);
+loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilised battalions on a front against an enemy who already fields this`]);
 // the fleet channel's two terms — ours supersedes a rival's, so the bar shows whichever applies
 loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']);
 loc.push(['pmr_term_nav_rival', 'A rival fields a ship of this kind']);
+
+// ⚠⚠ NO ASCII APOSTROPHE IN ANY TEXT A PROGRESS BAR DISPLAYS (BUGS_AND_FIXES 2026-09-30). The vanilla breakdown tooltip
+//   (PROGRESS_BAR_BREAKDOWN) pastes each term's EVALUATED text into a single-quoted data-function argument —
+//   AddTextIf(Not(StringIsEmpty('<text>')), …) — so an apostrophe closes the string early: the tooltip breaks and
+//   error.log takes ~1,500 parser errors a session. "workers at the base method's staffing" did exactly that on 27 terms.
+//   A `[...]` data function is evaluated BEFORE the paste, so its own quotes (ScriptValue('<sv>')) are safe and are skipped.
+//   Typographic ’ is not a quote to the parser. A $key$ reference resolves to another loc string, which this cannot see:
+//   today every name referenced is the mod's own English text or vanilla's, and none holds an ASCII apostrophe.
+{
+  const LOC = new Map(loc);
+  const bad = [...barLocKeys].map(k => [k, LOC.get(k)]).filter(([, v]) => v != null && v.replace(/\[[^\]]*\]/g, '').includes("'"));
+  const missing = [...barLocKeys].filter(k => !LOC.has(k));
+  if (missing.length) throw new Error(`research events: progress-bar loc keys with no text: ${missing.join(', ')}`);
+  if (bad.length) throw new Error(`research events: ${bad.length} progress-bar text(s) contain an ASCII apostrophe, which breaks the ` +
+    `vanilla breakdown tooltip (a single-quoted data-function argument). Rephrase them:\n` + bad.map(([k, v]) => `  ${k}: ${v}`).join('\n'));
+}
 
 const BOM = '\uFEFF';
 const W = (rel, text) => { const p = join(MOD, rel); mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, BOM + text, 'utf8'); };

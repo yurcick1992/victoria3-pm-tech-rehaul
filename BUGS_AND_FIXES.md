@@ -13,6 +13,30 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-09-30 — an apostrophe in 27 research-bar texts broke their tooltips and put ~1,500 parser errors a session into error.log
+
+**Symptom (the user's live Sokoto game, error.log of 2026-09-29, build of 2026-09-28):** about 1,458 repeats of
+`[pdx_data_statementparser.cpp:43]: Expected ',' at … calculated correctly); now 53')), '`, with
+`Failed to convert statement for argument '0' for call 'AddTextIf' in 'AddTextIf(Not(StringIsEmpty('positive_value +1.0! from Era 2.
+Motor Industries (Electric Engines)…` and `Data error in loc string 'PROGRESS_BAR_BREAKDOWN'` beside them. Found while auditing the log for
+an unrelated question; nothing on screen had been reported.
+**Root cause:** the vanilla bar tooltip `PROGRESS_BAR_BREAKDOWN` (`localization/english/interfaces_l_english.yml`) pastes each term's
+EVALUATED text into a single-quoted data-function argument, `[AddTextIf(Not(StringIsEmpty('$WEEKLY_DESC$')), …)]`. Our people-counted
+terms whose source building has a staffing-changing secondary method read *"(75,000 workers at the base method's staffing, labour saving
+and other staffing changes calculated correctly)"*, and the apostrophe in "method's" closed that string early. 27 of the 40 bars' terms
+carried it (every level-counted source whose building has a secondary method that changes its staffing — automation, luxury, canning…). The live figure's own quotes,
+`[ROOT.GetCountry.MakeScope.ScriptValue('<sv>')|0]`, are harmless: the error text shows "now 53", i.e. that call was already evaluated
+before the paste.
+**Fix:** `tools/emit_research_events.mjs` reads *"workers at base-method staffing, labour saving and other staffing changes calculated
+correctly"* (the user's ruled clause kept verbatim), and the `pmr_term_war_engaged` fallback "the era's" (unused while
+`general_battalions_flat` is set) became "the era-scaled number of". The emitted bar, journal-entry and script-value files are
+byte-identical to before; only the loc changes (165 lines a language: the 27 terms plus the entry bodies that list the same sources).
+**Prevention:** the emitter now collects every loc key a bar displays (its name, the shared desc, each term's desc) and THROWS before
+writing if any of those texts holds an ASCII `'` outside a `[...]` data function. Proven by putting the old wording back: exit 1, nothing
+written. ⚠ It cannot see into a `$key$` reference: every name referenced today resolves to the mod's own English building names or
+vanilla's, none with an ASCII apostrophe in any of the 11 languages (French vanilla uses the typographic ’, which the parser ignores).
+⚠ Unrelated to the question that surfaced it — the mod changes no protectorate or production-method mechanic (audited the same day).
+
 ## 2026-09-25 — the research entries never showed their conditions: the emitter wrote them into `_desc`, which the 1.13 journal window does not render
 
 **Symptom (user, reading a live game):** a research journal entry showed only "Our position makes Electric Railways worth pursuing",

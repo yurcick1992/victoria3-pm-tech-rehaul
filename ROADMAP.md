@@ -1685,8 +1685,9 @@ instead of sharing the first term's.
 ⚠ **The units observation below stands as a SEPARATE, still-open readability point** (it was not what the user was seeing):
 
 - level-counted source — `pmr_src_combustion_engine_0` returns **Σ level × occupancy**, and the tooltip reads
-  *"$building_motor_industry_electric_engines$: at least 15 fully staffed levels (75,000 workers at the base method's staffing, labour saving and
-  other staffing changes calculated correctly); now [15 → a LEVEL count]"*. The prose leads with levels, parenthesises people, and the live
+  *"$building_motor_industry_electric_engines$: at least 15 fully staffed levels (75,000 workers at base-method staffing, labour saving and
+  other staffing changes calculated correctly); now [15 → a LEVEL count]"* (it read "the base method's staffing" until 2026-09-30; that
+  apostrophe broke the tooltip — BUGS_AND_FIXES 2026-09-30). The prose leads with levels, parenthesises people, and the live
   figure is levels — so "now 7" sits next to "75,000 workers".
 - people-counted source — `pmr_src_aniline_1` returns **PEOPLE**, and reads *"Workers in $bg_light_industry$: at least 12,500; now […]"*.
 
@@ -1696,8 +1697,9 @@ Aniline's own bar carries one of each, with the same underlying 12,500-people ma
 **The fix:** make every source read in PEOPLE. `tierEmp()` already computes per-level employment, so a level-counted source becomes
 `Σ level × occupancy × employment` in the script value, and the tooltip collapses to one unit and one sentence — the user's own phrasing,
 *"at least 25,000 people employed in <industry>, Era N; now X"*. ⚠ Two knock-ons: the threshold constants in the emitted bar (`>= 15`) must be
-converted with the same multiplier, and the long parenthetical (*"at the base method's staffing, labour saving and other staffing changes
-calculated correctly"* — the user's own wording of 2026-09-03) should be shortened but must keep its meaning, which is that the figure stays
+converted with the same multiplier, and the long parenthetical (*"at base-method staffing, labour saving and other staffing changes
+calculated correctly"* — the user's own wording of 2026-09-03) should be shortened but must keep its meaning; ⚠ and whatever replaces it must
+carry NO ASCII apostrophe, which the emitter now refuses (the bar tooltip pastes the text into a single-quoted argument), which is that the figure stays
 right when automation changes a building's staffing. ⚠ P3 improves this for free: the building names these tooltips interpolate currently end in
 "BE target 65%".
 
