@@ -263,6 +263,11 @@ cost, a 30-day AI-only cooldown), no driver. The same bytes as the user's playte
 session `20260929_002728`): 4 intact / a pre-dam stuck-Britain stall / a runoff, consensus loss 5.90, a median 47 dam levels; investment-rights
 holders build 63% of the constructions and finish 84% of theirs, owners and overlords 98–100% — the losses are RULED ACCEPTABLE, no guard added.
 Built, linted and deployed 2026-09-29. Everything below about `canon-dams` still describes this canon except the survey and builder rules.
+⭐ **REBUILT AND RE-DEPLOYED 2026-09-30 WITH THE RESEARCH-BAR TOOLTIP FIX, THE BOOK UNCHANGED** (user: *"if you also don't expect effects on game
+metrics, canonise the latest changes"*): the config is the same bytes (`806c8b3df03b5d61`), and the build differs from the 2026-09-29 one only in
+the research-bar loc (165 lines × 11 languages: "the base method's staffing" → "base-method staffing", whose apostrophe broke the vanilla bar
+tooltip — BUGS_AND_FIXES 2026-09-30) and the build stamps. No script, recipe, define or number moved, so no metric can: F177's
+measurements of this canon stand as they are.
 
 ### (HISTORY) THE CANON WAS `canon-dams` FROM 2026-09-27 TO 2026-09-29 (user-ruled: *"Remove everything you suggested and canonize the build."*)
 
