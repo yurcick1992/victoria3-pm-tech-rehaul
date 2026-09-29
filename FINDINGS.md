@@ -17970,3 +17970,17 @@ where a level finished, so the fragments counted above merge):
 No survey or construction by a subject in its overlord's state or by a sibling appeared. 33 survey starts sit in a split state whose owner
 could not be pinned down (31 finished, 1 abandoned). Nearly every construction progressed (249 of 251 for rights holders); the lost ones were
 39% built on average.
+
+**Addendum 2 — what a finished survey leads to** (`tools/testbed/ledger/dam_survey_use.mjs` on dam_outcomes' dump; a survey matched to the
+first construction on its dam starting at or after its completion; 684 finished of 741 started):
+| surveyor relation | finished | the surveyor built | its family built on it | someone else built (own survey) | nothing by 1936 | median years to the construction |
+|---|---|---|---|---|---|---|
+| owner | 163 | 37% | 1% | 23% | 39% | 5.5 |
+| overlord | 54 | 50% | 9% | 11% | 26% | 2.1 |
+| rights holder | 436 | 46% | 0% | 23% | 31% | 4.6 |
+⚠ CENSORED at 1936 — half the surveys finished in the 1920s–30s (230 in the 1920s, 117 in the 1930s). For surveys finished BEFORE 1920 the
+surveyor built on it 55% (owner) / 71% (overlord) / 54% (rights holder), and the dam got a construction by anyone 87% / 96% / 80%.
+Surveys the surveyor did not use: the surveyor's constructions ended finished / lost / vanished / queued at 1936 = 47/0/1/13 (owner),
+24/0/0/3 (overlord), 148/20/11/20 (rights holder). The family rule is used rarely (6 constructions in all, 5 of them on an overlord's survey).
+Per dam: 278 surveyed dams (run × dam) got a construction, a median of ONE finished survey before the first; 144 surveyed dams got none by
+1936, carrying 214 finished surveys.

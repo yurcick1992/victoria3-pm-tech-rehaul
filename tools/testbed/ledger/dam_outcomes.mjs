@@ -80,7 +80,7 @@ for (const run of runs) {
     const end = ends.filter(e => e.dam === l[2] && e.who === l[3] && e.t >= t).sort((a, b) => a.t - b.t)[0];
     const rel = actor ? relation(i, actor, host) : 'unresolved name';
     if (rel === 'unknown host') notes.unknownHost++;
-    surveys.push({ run: path.basename(run), dam: l[2], actor, host, rel, outcome: end ? (end.k === 'survey_complete' ? 'finished' : 'abandoned') : 'still running at the end' });
+    surveys.push({ run: path.basename(run), dam: l[2], actor, host, rel, tStart: t, tEnd: end?.t ?? null, top: actor ? top(s, actor) : null, hostTop: host ? top(s, host) : null, outcome: end ? (end.k === 'survey_complete' ? 'finished' : 'abandoned') : 'still running at the end' });
   }
   // --- monthly-log cancellations ---
   const mon = {}; for (const l of L) if (l[1] === 'probe_lvl' || l[1] === 'probe_q') ((mon[l[2]] ??= {})[dt(l[4])] ??= {})[l[1]] = +l[3].split('/')[0];
@@ -113,7 +113,7 @@ for (const run of runs) {
       else if (after.some(s => (s.lvl[dam] || 0) > lvl0)) outcome = 'finished';
       else if (cancels.some(c => c.dam === dam && c.t - snaps[last.i].t > -100 * 864e5 && c.t - snaps[last.i].t < 620 * 864e5)) outcome = 'lost (log)';
       else outcome = 'vanished';
-      builds.push({ run: path.basename(run), dam, builder, host, rel, progressed, outcome, share: Math.max(0, 1 - Math.min(...g.map(e => e.left)) / cost) });
+      builds.push({ run: path.basename(run), dam, builder, host, rel, progressed, outcome, tFirst: snaps[first.i].t, tLast: snaps[last.i].t, top: top(snaps[first.i], builder), hostTop: host ? top(snaps[first.i], host) : null, share: Math.max(0, 1 - Math.min(...g.map(e => e.left)) / cost) });
     }
   }
 }
