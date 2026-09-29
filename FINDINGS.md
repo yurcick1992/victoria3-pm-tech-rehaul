@@ -17980,7 +17980,7 @@ first construction on its dam starting at or after its completion; 684 finished 
 | rights holder | 436 | 46% | 0% | 23% | 31% | 4.6 |
 ⚠ CENSORED at 1936 — half the surveys finished in the 1920s–30s (230 in the 1920s, 117 in the 1930s). For surveys finished BEFORE 1920 the
 surveyor built on it 55% (owner) / 71% (overlord) / 54% (rights holder), and the dam got a construction by anyone 87% / 96% / 80%.
-Surveys the surveyor did not use: the surveyor's constructions ended finished / lost / vanished / queued at 1936 = 47/0/1/13 (owner),
+Where the surveyor did build, its construction ended finished / lost / vanished / queued at 1936 = 47/0/1/13 (owner),
 24/0/0/3 (overlord), 148/20/11/20 (rights holder). The family rule is used rarely (6 constructions in all, 5 of them on an overlord's survey).
 Per dam: 278 surveyed dams (run × dam) got a construction, a median of ONE finished survey before the first; 144 surveyed dams got none by
 1936, carrying 214 finished surveys.
