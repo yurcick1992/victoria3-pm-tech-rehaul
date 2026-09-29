@@ -3,6 +3,7 @@
 pmr_dam_columbia_river_begin_survey = {
 	set_variable = { name = pmr_dam_columbia_river_months value = 0 }
 	set_global_variable = pmr_dam_columbia_river_surveying
+	set_global_variable = { name = pmr_dam_columbia_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_columbia_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_columbia_river_survey }
 	if = {
@@ -16,6 +17,7 @@ pmr_dam_columbia_river_begin_survey = {
 pmr_dam_laurentian_rivers_begin_survey = {
 	set_variable = { name = pmr_dam_laurentian_rivers_months value = 0 }
 	set_global_variable = pmr_dam_laurentian_rivers_surveying
+	set_global_variable = { name = pmr_dam_laurentian_rivers_block  days = 365 }
 	add_modifier = { name = pmr_dam_laurentian_rivers_surveying }
 	add_journal_entry = { type = je_pmr_dam_laurentian_rivers_survey }
 	if = {
@@ -29,6 +31,7 @@ pmr_dam_laurentian_rivers_begin_survey = {
 pmr_dam_norrland_rivers_begin_survey = {
 	set_variable = { name = pmr_dam_norrland_rivers_months value = 0 }
 	set_global_variable = pmr_dam_norrland_rivers_surveying
+	set_global_variable = { name = pmr_dam_norrland_rivers_block  days = 365 }
 	add_modifier = { name = pmr_dam_norrland_rivers_surveying }
 	add_journal_entry = { type = je_pmr_dam_norrland_rivers_survey }
 	if = {
@@ -42,6 +45,7 @@ pmr_dam_norrland_rivers_begin_survey = {
 pmr_dam_lower_columbia_begin_survey = {
 	set_variable = { name = pmr_dam_lower_columbia_months value = 0 }
 	set_global_variable = pmr_dam_lower_columbia_surveying
+	set_global_variable = { name = pmr_dam_lower_columbia_block  days = 365 }
 	add_modifier = { name = pmr_dam_lower_columbia_surveying }
 	add_journal_entry = { type = je_pmr_dam_lower_columbia_survey }
 	if = {
@@ -55,6 +59,7 @@ pmr_dam_lower_columbia_begin_survey = {
 pmr_dam_nelson_winnipeg_begin_survey = {
 	set_variable = { name = pmr_dam_nelson_winnipeg_months value = 0 }
 	set_global_variable = pmr_dam_nelson_winnipeg_surveying
+	set_global_variable = { name = pmr_dam_nelson_winnipeg_block  days = 365 }
 	add_modifier = { name = pmr_dam_nelson_winnipeg_surveying }
 	add_journal_entry = { type = je_pmr_dam_nelson_winnipeg_survey }
 	if = {
@@ -68,6 +73,7 @@ pmr_dam_nelson_winnipeg_begin_survey = {
 pmr_dam_black_canyon_sierra_begin_survey = {
 	set_variable = { name = pmr_dam_black_canyon_sierra_months value = 0 }
 	set_global_variable = pmr_dam_black_canyon_sierra_surveying
+	set_global_variable = { name = pmr_dam_black_canyon_sierra_block  days = 365 }
 	add_modifier = { name = pmr_dam_black_canyon_sierra_surveying }
 	add_journal_entry = { type = je_pmr_dam_black_canyon_sierra_survey }
 	if = {
@@ -81,6 +87,7 @@ pmr_dam_black_canyon_sierra_begin_survey = {
 pmr_dam_western_fjords_begin_survey = {
 	set_variable = { name = pmr_dam_western_fjords_months value = 0 }
 	set_global_variable = pmr_dam_western_fjords_surveying
+	set_global_variable = { name = pmr_dam_western_fjords_block  days = 365 }
 	add_modifier = { name = pmr_dam_western_fjords_surveying }
 	add_journal_entry = { type = je_pmr_dam_western_fjords_survey }
 	if = {
@@ -94,6 +101,7 @@ pmr_dam_western_fjords_begin_survey = {
 pmr_dam_niagara_long_sault_begin_survey = {
 	set_variable = { name = pmr_dam_niagara_long_sault_months value = 0 }
 	set_global_variable = pmr_dam_niagara_long_sault_surveying
+	set_global_variable = { name = pmr_dam_niagara_long_sault_block  days = 365 }
 	add_modifier = { name = pmr_dam_niagara_long_sault_surveying }
 	add_journal_entry = { type = je_pmr_dam_niagara_long_sault_survey }
 	if = {
@@ -107,6 +115,7 @@ pmr_dam_niagara_long_sault_begin_survey = {
 pmr_dam_waitaki_southern_lakes_begin_survey = {
 	set_variable = { name = pmr_dam_waitaki_southern_lakes_months value = 0 }
 	set_global_variable = pmr_dam_waitaki_southern_lakes_surveying
+	set_global_variable = { name = pmr_dam_waitaki_southern_lakes_block  days = 365 }
 	add_modifier = { name = pmr_dam_waitaki_southern_lakes_surveying }
 	add_journal_entry = { type = je_pmr_dam_waitaki_southern_lakes_survey }
 	if = {
@@ -120,6 +129,7 @@ pmr_dam_waitaki_southern_lakes_begin_survey = {
 pmr_dam_grisons_ticino_begin_survey = {
 	set_variable = { name = pmr_dam_grisons_ticino_months value = 0 }
 	set_global_variable = pmr_dam_grisons_ticino_surveying
+	set_global_variable = { name = pmr_dam_grisons_ticino_block  days = 365 }
 	add_modifier = { name = pmr_dam_grisons_ticino_surveying }
 	add_journal_entry = { type = je_pmr_dam_grisons_ticino_survey }
 	if = {
@@ -133,6 +143,7 @@ pmr_dam_grisons_ticino_begin_survey = {
 pmr_dam_rhone_isere_begin_survey = {
 	set_variable = { name = pmr_dam_rhone_isere_months value = 0 }
 	set_global_variable = pmr_dam_rhone_isere_surveying
+	set_global_variable = { name = pmr_dam_rhone_isere_block  days = 365 }
 	add_modifier = { name = pmr_dam_rhone_isere_surveying }
 	add_journal_entry = { type = je_pmr_dam_rhone_isere_survey }
 	if = {
@@ -146,6 +157,7 @@ pmr_dam_rhone_isere_begin_survey = {
 pmr_dam_niagara_ottawa_begin_survey = {
 	set_variable = { name = pmr_dam_niagara_ottawa_months value = 0 }
 	set_global_variable = pmr_dam_niagara_ottawa_surveying
+	set_global_variable = { name = pmr_dam_niagara_ottawa_block  days = 365 }
 	add_modifier = { name = pmr_dam_niagara_ottawa_surveying }
 	add_journal_entry = { type = je_pmr_dam_niagara_ottawa_survey }
 	if = {
@@ -159,6 +171,7 @@ pmr_dam_niagara_ottawa_begin_survey = {
 pmr_dam_tennessee_valley_begin_survey = {
 	set_variable = { name = pmr_dam_tennessee_valley_months value = 0 }
 	set_global_variable = pmr_dam_tennessee_valley_surveying
+	set_global_variable = { name = pmr_dam_tennessee_valley_block  days = 365 }
 	add_modifier = { name = pmr_dam_tennessee_valley_surveying }
 	add_journal_entry = { type = je_pmr_dam_tennessee_valley_survey }
 	if = {
@@ -172,6 +185,7 @@ pmr_dam_tennessee_valley_begin_survey = {
 pmr_dam_valais_alps_begin_survey = {
 	set_variable = { name = pmr_dam_valais_alps_months value = 0 }
 	set_global_variable = pmr_dam_valais_alps_surveying
+	set_global_variable = { name = pmr_dam_valais_alps_block  days = 365 }
 	add_modifier = { name = pmr_dam_valais_alps_surveying }
 	add_journal_entry = { type = je_pmr_dam_valais_alps_survey }
 	if = {
@@ -185,6 +199,7 @@ pmr_dam_valais_alps_begin_survey = {
 pmr_dam_nechako_kootenay_begin_survey = {
 	set_variable = { name = pmr_dam_nechako_kootenay_months value = 0 }
 	set_global_variable = pmr_dam_nechako_kootenay_surveying
+	set_global_variable = { name = pmr_dam_nechako_kootenay_block  days = 365 }
 	add_modifier = { name = pmr_dam_nechako_kootenay_surveying }
 	add_journal_entry = { type = je_pmr_dam_nechako_kootenay_survey }
 	if = {
@@ -198,6 +213,7 @@ pmr_dam_nechako_kootenay_begin_survey = {
 pmr_dam_shinano_kurobe_begin_survey = {
 	set_variable = { name = pmr_dam_shinano_kurobe_months value = 0 }
 	set_global_variable = pmr_dam_shinano_kurobe_surveying
+	set_global_variable = { name = pmr_dam_shinano_kurobe_block  days = 365 }
 	add_modifier = { name = pmr_dam_shinano_kurobe_surveying }
 	add_journal_entry = { type = je_pmr_dam_shinano_kurobe_survey }
 	if = {
@@ -211,6 +227,7 @@ pmr_dam_shinano_kurobe_begin_survey = {
 pmr_dam_lower_rhone_durance_begin_survey = {
 	set_variable = { name = pmr_dam_lower_rhone_durance_months value = 0 }
 	set_global_variable = pmr_dam_lower_rhone_durance_surveying
+	set_global_variable = { name = pmr_dam_lower_rhone_durance_block  days = 365 }
 	add_modifier = { name = pmr_dam_lower_rhone_durance_surveying }
 	add_journal_entry = { type = je_pmr_dam_lower_rhone_durance_survey }
 	if = {
@@ -224,6 +241,7 @@ pmr_dam_lower_rhone_durance_begin_survey = {
 pmr_dam_missouri_big_bend_begin_survey = {
 	set_variable = { name = pmr_dam_missouri_big_bend_months value = 0 }
 	set_global_variable = pmr_dam_missouri_big_bend_surveying
+	set_global_variable = { name = pmr_dam_missouri_big_bend_block  days = 365 }
 	add_modifier = { name = pmr_dam_missouri_big_bend_surveying }
 	add_journal_entry = { type = je_pmr_dam_missouri_big_bend_survey }
 	if = {
@@ -237,6 +255,7 @@ pmr_dam_missouri_big_bend_begin_survey = {
 pmr_dam_austrian_danube_begin_survey = {
 	set_variable = { name = pmr_dam_austrian_danube_months value = 0 }
 	set_global_variable = pmr_dam_austrian_danube_surveying
+	set_global_variable = { name = pmr_dam_austrian_danube_block  days = 365 }
 	add_modifier = { name = pmr_dam_austrian_danube_surveying }
 	add_journal_entry = { type = je_pmr_dam_austrian_danube_survey }
 	if = {
@@ -250,6 +269,7 @@ pmr_dam_austrian_danube_begin_survey = {
 pmr_dam_danube_bavarian_alps_begin_survey = {
 	set_variable = { name = pmr_dam_danube_bavarian_alps_months value = 0 }
 	set_global_variable = pmr_dam_danube_bavarian_alps_surveying
+	set_global_variable = { name = pmr_dam_danube_bavarian_alps_block  days = 365 }
 	add_modifier = { name = pmr_dam_danube_bavarian_alps_surveying }
 	add_journal_entry = { type = je_pmr_dam_danube_bavarian_alps_survey }
 	if = {
@@ -263,6 +283,7 @@ pmr_dam_danube_bavarian_alps_begin_survey = {
 pmr_dam_kiso_tenryu_begin_survey = {
 	set_variable = { name = pmr_dam_kiso_tenryu_months value = 0 }
 	set_global_variable = pmr_dam_kiso_tenryu_surveying
+	set_global_variable = { name = pmr_dam_kiso_tenryu_block  days = 365 }
 	add_modifier = { name = pmr_dam_kiso_tenryu_surveying }
 	add_journal_entry = { type = je_pmr_dam_kiso_tenryu_survey }
 	if = {
@@ -276,6 +297,7 @@ pmr_dam_kiso_tenryu_begin_survey = {
 pmr_dam_douro_gorge_cavado_begin_survey = {
 	set_variable = { name = pmr_dam_douro_gorge_cavado_months value = 0 }
 	set_global_variable = pmr_dam_douro_gorge_cavado_surveying
+	set_global_variable = { name = pmr_dam_douro_gorge_cavado_block  days = 365 }
 	add_modifier = { name = pmr_dam_douro_gorge_cavado_surveying }
 	add_journal_entry = { type = je_pmr_dam_douro_gorge_cavado_survey }
 	if = {
@@ -289,6 +311,7 @@ pmr_dam_douro_gorge_cavado_begin_survey = {
 pmr_dam_tsaritsyn_volga_begin_survey = {
 	set_variable = { name = pmr_dam_tsaritsyn_volga_months value = 0 }
 	set_global_variable = pmr_dam_tsaritsyn_volga_surveying
+	set_global_variable = { name = pmr_dam_tsaritsyn_volga_block  days = 365 }
 	add_modifier = { name = pmr_dam_tsaritsyn_volga_surveying }
 	add_journal_entry = { type = je_pmr_dam_tsaritsyn_volga_survey }
 	if = {
@@ -302,6 +325,7 @@ pmr_dam_tsaritsyn_volga_begin_survey = {
 pmr_dam_muscle_shoals_coosa_begin_survey = {
 	set_variable = { name = pmr_dam_muscle_shoals_coosa_months value = 0 }
 	set_global_variable = pmr_dam_muscle_shoals_coosa_surveying
+	set_global_variable = { name = pmr_dam_muscle_shoals_coosa_block  days = 365 }
 	add_modifier = { name = pmr_dam_muscle_shoals_coosa_surveying }
 	add_journal_entry = { type = je_pmr_dam_muscle_shoals_coosa_survey }
 	if = {
@@ -315,6 +339,7 @@ pmr_dam_muscle_shoals_coosa_begin_survey = {
 pmr_dam_grand_canal_alsace_begin_survey = {
 	set_variable = { name = pmr_dam_grand_canal_alsace_months value = 0 }
 	set_global_variable = pmr_dam_grand_canal_alsace_surveying
+	set_global_variable = { name = pmr_dam_grand_canal_alsace_block  days = 365 }
 	add_modifier = { name = pmr_dam_grand_canal_alsace_surveying }
 	add_journal_entry = { type = je_pmr_dam_grand_canal_alsace_survey }
 	if = {
@@ -328,6 +353,7 @@ pmr_dam_grand_canal_alsace_begin_survey = {
 pmr_dam_arribes_duero_begin_survey = {
 	set_variable = { name = pmr_dam_arribes_duero_months value = 0 }
 	set_global_variable = pmr_dam_arribes_duero_surveying
+	set_global_variable = { name = pmr_dam_arribes_duero_block  days = 365 }
 	add_modifier = { name = pmr_dam_arribes_duero_surveying }
 	add_journal_entry = { type = je_pmr_dam_arribes_duero_survey }
 	if = {
@@ -341,6 +367,7 @@ pmr_dam_arribes_duero_begin_survey = {
 pmr_dam_adda_lombard_alps_begin_survey = {
 	set_variable = { name = pmr_dam_adda_lombard_alps_months value = 0 }
 	set_global_variable = pmr_dam_adda_lombard_alps_surveying
+	set_global_variable = { name = pmr_dam_adda_lombard_alps_block  days = 365 }
 	add_modifier = { name = pmr_dam_adda_lombard_alps_surveying }
 	add_journal_entry = { type = je_pmr_dam_adda_lombard_alps_survey }
 	if = {
@@ -354,6 +381,7 @@ pmr_dam_adda_lombard_alps_begin_survey = {
 pmr_dam_snowy_tumut_begin_survey = {
 	set_variable = { name = pmr_dam_snowy_tumut_months value = 0 }
 	set_global_variable = pmr_dam_snowy_tumut_surveying
+	set_global_variable = { name = pmr_dam_snowy_tumut_block  days = 365 }
 	add_modifier = { name = pmr_dam_snowy_tumut_surveying }
 	add_journal_entry = { type = je_pmr_dam_snowy_tumut_survey }
 	if = {
@@ -367,6 +395,7 @@ pmr_dam_snowy_tumut_begin_survey = {
 pmr_dam_yellow_river_gorges_begin_survey = {
 	set_variable = { name = pmr_dam_yellow_river_gorges_months value = 0 }
 	set_global_variable = pmr_dam_yellow_river_gorges_surveying
+	set_global_variable = { name = pmr_dam_yellow_river_gorges_block  days = 365 }
 	add_modifier = { name = pmr_dam_yellow_river_gorges_surveying }
 	add_journal_entry = { type = je_pmr_dam_yellow_river_gorges_survey }
 	if = {
@@ -380,6 +409,7 @@ pmr_dam_yellow_river_gorges_begin_survey = {
 pmr_dam_hohe_tauern_ziller_begin_survey = {
 	set_variable = { name = pmr_dam_hohe_tauern_ziller_months value = 0 }
 	set_global_variable = pmr_dam_hohe_tauern_ziller_surveying
+	set_global_variable = { name = pmr_dam_hohe_tauern_ziller_block  days = 365 }
 	add_modifier = { name = pmr_dam_hohe_tauern_ziller_surveying }
 	add_journal_entry = { type = je_pmr_dam_hohe_tauern_ziller_survey }
 	if = {
@@ -393,6 +423,7 @@ pmr_dam_hohe_tauern_ziller_begin_survey = {
 pmr_dam_iron_gates_arges_begin_survey = {
 	set_variable = { name = pmr_dam_iron_gates_arges_months value = 0 }
 	set_global_variable = pmr_dam_iron_gates_arges_surveying
+	set_global_variable = { name = pmr_dam_iron_gates_arges_block  days = 365 }
 	add_modifier = { name = pmr_dam_iron_gates_arges_surveying }
 	add_journal_entry = { type = je_pmr_dam_iron_gates_arges_survey }
 	if = {
@@ -406,6 +437,7 @@ pmr_dam_iron_gates_arges_begin_survey = {
 pmr_dam_inga_rapids_begin_survey = {
 	set_variable = { name = pmr_dam_inga_rapids_months value = 0 }
 	set_global_variable = pmr_dam_inga_rapids_surveying
+	set_global_variable = { name = pmr_dam_inga_rapids_block  days = 365 }
 	add_modifier = { name = pmr_dam_inga_rapids_surveying }
 	add_journal_entry = { type = je_pmr_dam_inga_rapids_survey }
 	if = {
@@ -419,6 +451,7 @@ pmr_dam_inga_rapids_begin_survey = {
 pmr_dam_rion_ingur_begin_survey = {
 	set_variable = { name = pmr_dam_rion_ingur_months value = 0 }
 	set_global_variable = pmr_dam_rion_ingur_surveying
+	set_global_variable = { name = pmr_dam_rion_ingur_block  days = 365 }
 	add_modifier = { name = pmr_dam_rion_ingur_surveying }
 	add_journal_entry = { type = je_pmr_dam_rion_ingur_survey }
 	if = {
@@ -432,6 +465,7 @@ pmr_dam_rion_ingur_begin_survey = {
 pmr_dam_yalu_river_begin_survey = {
 	set_variable = { name = pmr_dam_yalu_river_months value = 0 }
 	set_global_variable = pmr_dam_yalu_river_surveying
+	set_global_variable = { name = pmr_dam_yalu_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_yalu_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_yalu_river_survey }
 	if = {
@@ -445,6 +479,7 @@ pmr_dam_yalu_river_begin_survey = {
 pmr_dam_maurienne_tarentaise_begin_survey = {
 	set_variable = { name = pmr_dam_maurienne_tarentaise_months value = 0 }
 	set_global_variable = pmr_dam_maurienne_tarentaise_surveying
+	set_global_variable = { name = pmr_dam_maurienne_tarentaise_block  days = 365 }
 	add_modifier = { name = pmr_dam_maurienne_tarentaise_surveying }
 	add_journal_entry = { type = je_pmr_dam_maurienne_tarentaise_survey }
 	if = {
@@ -458,6 +493,7 @@ pmr_dam_maurienne_tarentaise_begin_survey = {
 pmr_dam_waikato_river_begin_survey = {
 	set_variable = { name = pmr_dam_waikato_river_months value = 0 }
 	set_global_variable = pmr_dam_waikato_river_surveying
+	set_global_variable = { name = pmr_dam_waikato_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_waikato_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_waikato_river_survey }
 	if = {
@@ -471,6 +507,7 @@ pmr_dam_waikato_river_begin_survey = {
 pmr_dam_sevan_zanga_vorotan_begin_survey = {
 	set_variable = { name = pmr_dam_sevan_zanga_vorotan_months value = 0 }
 	set_global_variable = pmr_dam_sevan_zanga_vorotan_surveying
+	set_global_variable = { name = pmr_dam_sevan_zanga_vorotan_block  days = 365 }
 	add_modifier = { name = pmr_dam_sevan_zanga_vorotan_surveying }
 	add_journal_entry = { type = je_pmr_dam_sevan_zanga_vorotan_survey }
 	if = {
@@ -484,6 +521,7 @@ pmr_dam_sevan_zanga_vorotan_begin_survey = {
 pmr_dam_dnieper_rapids_begin_survey = {
 	set_variable = { name = pmr_dam_dnieper_rapids_months value = 0 }
 	set_global_variable = pmr_dam_dnieper_rapids_surveying
+	set_global_variable = { name = pmr_dam_dnieper_rapids_block  days = 365 }
 	add_modifier = { name = pmr_dam_dnieper_rapids_surveying }
 	add_journal_entry = { type = je_pmr_dam_dnieper_rapids_survey }
 	if = {
@@ -497,6 +535,7 @@ pmr_dam_dnieper_rapids_begin_survey = {
 pmr_dam_glommen_falls_begin_survey = {
 	set_variable = { name = pmr_dam_glommen_falls_months value = 0 }
 	set_global_variable = pmr_dam_glommen_falls_surveying
+	set_global_variable = { name = pmr_dam_glommen_falls_block  days = 365 }
 	add_modifier = { name = pmr_dam_glommen_falls_surveying }
 	add_journal_entry = { type = je_pmr_dam_glommen_falls_survey }
 	if = {
@@ -510,6 +549,7 @@ pmr_dam_glommen_falls_begin_survey = {
 pmr_dam_alcantara_gorge_begin_survey = {
 	set_variable = { name = pmr_dam_alcantara_gorge_months value = 0 }
 	set_global_variable = pmr_dam_alcantara_gorge_surveying
+	set_global_variable = { name = pmr_dam_alcantara_gorge_block  days = 365 }
 	add_modifier = { name = pmr_dam_alcantara_gorge_surveying }
 	add_journal_entry = { type = je_pmr_dam_alcantara_gorge_survey }
 	if = {
@@ -523,6 +563,7 @@ pmr_dam_alcantara_gorge_begin_survey = {
 pmr_dam_aura_nordland_begin_survey = {
 	set_variable = { name = pmr_dam_aura_nordland_months value = 0 }
 	set_global_variable = pmr_dam_aura_nordland_surveying
+	set_global_variable = { name = pmr_dam_aura_nordland_block  days = 365 }
 	add_modifier = { name = pmr_dam_aura_nordland_surveying }
 	add_journal_entry = { type = je_pmr_dam_aura_nordland_survey }
 	if = {
@@ -536,6 +577,7 @@ pmr_dam_aura_nordland_begin_survey = {
 pmr_dam_ossola_dora_baltea_begin_survey = {
 	set_variable = { name = pmr_dam_ossola_dora_baltea_months value = 0 }
 	set_global_variable = pmr_dam_ossola_dora_baltea_surveying
+	set_global_variable = { name = pmr_dam_ossola_dora_baltea_block  days = 365 }
 	add_modifier = { name = pmr_dam_ossola_dora_baltea_surveying }
 	add_journal_entry = { type = je_pmr_dam_ossola_dora_baltea_survey }
 	if = {
@@ -549,6 +591,7 @@ pmr_dam_ossola_dora_baltea_begin_survey = {
 pmr_dam_cubatao_escarpment_begin_survey = {
 	set_variable = { name = pmr_dam_cubatao_escarpment_months value = 0 }
 	set_global_variable = pmr_dam_cubatao_escarpment_surveying
+	set_global_variable = { name = pmr_dam_cubatao_escarpment_block  days = 365 }
 	add_modifier = { name = pmr_dam_cubatao_escarpment_surveying }
 	add_journal_entry = { type = je_pmr_dam_cubatao_escarpment_survey }
 	if = {
@@ -562,6 +605,7 @@ pmr_dam_cubatao_escarpment_begin_survey = {
 pmr_dam_derwent_great_lake_begin_survey = {
 	set_variable = { name = pmr_dam_derwent_great_lake_months value = 0 }
 	set_global_variable = pmr_dam_derwent_great_lake_surveying
+	set_global_variable = { name = pmr_dam_derwent_great_lake_block  days = 365 }
 	add_modifier = { name = pmr_dam_derwent_great_lake_surveying }
 	add_journal_entry = { type = je_pmr_dam_derwent_great_lake_survey }
 	if = {
@@ -575,6 +619,7 @@ pmr_dam_derwent_great_lake_begin_survey = {
 pmr_dam_kaema_plateau_begin_survey = {
 	set_variable = { name = pmr_dam_kaema_plateau_months value = 0 }
 	set_global_variable = pmr_dam_kaema_plateau_surveying
+	set_global_variable = { name = pmr_dam_kaema_plateau_block  days = 365 }
 	add_modifier = { name = pmr_dam_kaema_plateau_surveying }
 	add_journal_entry = { type = je_pmr_dam_kaema_plateau_survey }
 	if = {
@@ -588,6 +633,7 @@ pmr_dam_kaema_plateau_begin_survey = {
 pmr_dam_dordogne_gorges_begin_survey = {
 	set_variable = { name = pmr_dam_dordogne_gorges_months value = 0 }
 	set_global_variable = pmr_dam_dordogne_gorges_surveying
+	set_global_variable = { name = pmr_dam_dordogne_gorges_block  days = 365 }
 	add_modifier = { name = pmr_dam_dordogne_gorges_surveying }
 	add_journal_entry = { type = je_pmr_dam_dordogne_gorges_survey }
 	if = {
@@ -601,6 +647,7 @@ pmr_dam_dordogne_gorges_begin_survey = {
 pmr_dam_koyna_western_ghats_begin_survey = {
 	set_variable = { name = pmr_dam_koyna_western_ghats_months value = 0 }
 	set_global_variable = pmr_dam_koyna_western_ghats_surveying
+	set_global_variable = { name = pmr_dam_koyna_western_ghats_block  days = 365 }
 	add_modifier = { name = pmr_dam_koyna_western_ghats_surveying }
 	add_journal_entry = { type = je_pmr_dam_koyna_western_ghats_survey }
 	if = {
@@ -614,6 +661,7 @@ pmr_dam_koyna_western_ghats_begin_survey = {
 pmr_dam_tone_river_begin_survey = {
 	set_variable = { name = pmr_dam_tone_river_months value = 0 }
 	set_global_variable = pmr_dam_tone_river_surveying
+	set_global_variable = { name = pmr_dam_tone_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_tone_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_tone_river_survey }
 	if = {
@@ -627,6 +675,7 @@ pmr_dam_tone_river_begin_survey = {
 pmr_dam_tadami_river_begin_survey = {
 	set_variable = { name = pmr_dam_tadami_river_months value = 0 }
 	set_global_variable = pmr_dam_tadami_river_surveying
+	set_global_variable = { name = pmr_dam_tadami_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_tadami_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_tadami_river_survey }
 	if = {
@@ -640,6 +689,7 @@ pmr_dam_tadami_river_begin_survey = {
 pmr_dam_kainji_rapids_begin_survey = {
 	set_variable = { name = pmr_dam_kainji_rapids_months value = 0 }
 	set_global_variable = pmr_dam_kainji_rapids_surveying
+	set_global_variable = { name = pmr_dam_kainji_rapids_block  days = 365 }
 	add_modifier = { name = pmr_dam_kainji_rapids_surveying }
 	add_journal_entry = { type = je_pmr_dam_kainji_rapids_survey }
 	if = {
@@ -653,6 +703,7 @@ pmr_dam_kainji_rapids_begin_survey = {
 pmr_dam_segre_lower_ebro_begin_survey = {
 	set_variable = { name = pmr_dam_segre_lower_ebro_months value = 0 }
 	set_global_variable = pmr_dam_segre_lower_ebro_surveying
+	set_global_variable = { name = pmr_dam_segre_lower_ebro_block  days = 365 }
 	add_modifier = { name = pmr_dam_segre_lower_ebro_surveying }
 	add_journal_entry = { type = je_pmr_dam_segre_lower_ebro_survey }
 	if = {
@@ -666,6 +717,7 @@ pmr_dam_segre_lower_ebro_begin_survey = {
 pmr_dam_mantaro_canon_del_pato_begin_survey = {
 	set_variable = { name = pmr_dam_mantaro_canon_del_pato_months value = 0 }
 	set_global_variable = pmr_dam_mantaro_canon_del_pato_surveying
+	set_global_variable = { name = pmr_dam_mantaro_canon_del_pato_block  days = 365 }
 	add_modifier = { name = pmr_dam_mantaro_canon_del_pato_surveying }
 	add_journal_entry = { type = je_pmr_dam_mantaro_canon_del_pato_survey }
 	if = {
@@ -679,6 +731,7 @@ pmr_dam_mantaro_canon_del_pato_begin_survey = {
 pmr_dam_dal_klar_rivers_begin_survey = {
 	set_variable = { name = pmr_dam_dal_klar_rivers_months value = 0 }
 	set_global_variable = pmr_dam_dal_klar_rivers_surveying
+	set_global_variable = { name = pmr_dam_dal_klar_rivers_block  days = 365 }
 	add_modifier = { name = pmr_dam_dal_klar_rivers_surveying }
 	add_journal_entry = { type = je_pmr_dam_dal_klar_rivers_survey }
 	if = {
@@ -692,6 +745,7 @@ pmr_dam_dal_klar_rivers_begin_survey = {
 pmr_dam_travancore_highlands_begin_survey = {
 	set_variable = { name = pmr_dam_travancore_highlands_months value = 0 }
 	set_global_variable = pmr_dam_travancore_highlands_surveying
+	set_global_variable = { name = pmr_dam_travancore_highlands_block  days = 365 }
 	add_modifier = { name = pmr_dam_travancore_highlands_surveying }
 	add_journal_entry = { type = je_pmr_dam_travancore_highlands_survey }
 	if = {
@@ -705,6 +759,7 @@ pmr_dam_travancore_highlands_begin_survey = {
 pmr_dam_chirchik_cascade_begin_survey = {
 	set_variable = { name = pmr_dam_chirchik_cascade_months value = 0 }
 	set_global_variable = pmr_dam_chirchik_cascade_surveying
+	set_global_variable = { name = pmr_dam_chirchik_cascade_block  days = 365 }
 	add_modifier = { name = pmr_dam_chirchik_cascade_surveying }
 	add_journal_entry = { type = je_pmr_dam_chirchik_cascade_survey }
 	if = {
@@ -718,6 +773,7 @@ pmr_dam_chirchik_cascade_begin_survey = {
 pmr_dam_cheboksary_volga_begin_survey = {
 	set_variable = { name = pmr_dam_cheboksary_volga_months value = 0 }
 	set_global_variable = pmr_dam_cheboksary_volga_surveying
+	set_global_variable = { name = pmr_dam_cheboksary_volga_block  days = 365 }
 	add_modifier = { name = pmr_dam_cheboksary_volga_surveying }
 	add_journal_entry = { type = je_pmr_dam_cheboksary_volga_survey }
 	if = {
@@ -731,6 +787,7 @@ pmr_dam_cheboksary_volga_begin_survey = {
 pmr_dam_lower_kama_begin_survey = {
 	set_variable = { name = pmr_dam_lower_kama_months value = 0 }
 	set_global_variable = pmr_dam_lower_kama_surveying
+	set_global_variable = { name = pmr_dam_lower_kama_block  days = 365 }
 	add_modifier = { name = pmr_dam_lower_kama_surveying }
 	add_journal_entry = { type = je_pmr_dam_lower_kama_survey }
 	if = {
@@ -744,6 +801,7 @@ pmr_dam_lower_kama_begin_survey = {
 pmr_dam_kiev_kanev_begin_survey = {
 	set_variable = { name = pmr_dam_kiev_kanev_months value = 0 }
 	set_global_variable = pmr_dam_kiev_kanev_surveying
+	set_global_variable = { name = pmr_dam_kiev_kanev_block  days = 365 }
 	add_modifier = { name = pmr_dam_kiev_kanev_surveying }
 	add_journal_entry = { type = je_pmr_dam_kiev_kanev_survey }
 	if = {
@@ -757,6 +815,7 @@ pmr_dam_kiev_kanev_begin_survey = {
 pmr_dam_gorodets_volga_begin_survey = {
 	set_variable = { name = pmr_dam_gorodets_volga_months value = 0 }
 	set_global_variable = pmr_dam_gorodets_volga_surveying
+	set_global_variable = { name = pmr_dam_gorodets_volga_block  days = 365 }
 	add_modifier = { name = pmr_dam_gorodets_volga_surveying }
 	add_journal_entry = { type = je_pmr_dam_gorodets_volga_survey }
 	if = {
@@ -770,6 +829,7 @@ pmr_dam_gorodets_volga_begin_survey = {
 pmr_dam_perm_kama_begin_survey = {
 	set_variable = { name = pmr_dam_perm_kama_months value = 0 }
 	set_global_variable = pmr_dam_perm_kama_surveying
+	set_global_variable = { name = pmr_dam_perm_kama_block  days = 365 }
 	add_modifier = { name = pmr_dam_perm_kama_surveying }
 	add_journal_entry = { type = je_pmr_dam_perm_kama_survey }
 	if = {
@@ -783,6 +843,7 @@ pmr_dam_perm_kama_begin_survey = {
 pmr_dam_zhiguli_volga_begin_survey = {
 	set_variable = { name = pmr_dam_zhiguli_volga_months value = 0 }
 	set_global_variable = pmr_dam_zhiguli_volga_surveying
+	set_global_variable = { name = pmr_dam_zhiguli_volga_block  days = 365 }
 	add_modifier = { name = pmr_dam_zhiguli_volga_surveying }
 	add_journal_entry = { type = je_pmr_dam_zhiguli_volga_survey }
 	if = {
@@ -796,6 +857,7 @@ pmr_dam_zhiguli_volga_begin_survey = {
 pmr_dam_balakovo_volga_begin_survey = {
 	set_variable = { name = pmr_dam_balakovo_volga_months value = 0 }
 	set_global_variable = pmr_dam_balakovo_volga_surveying
+	set_global_variable = { name = pmr_dam_balakovo_volga_block  days = 365 }
 	add_modifier = { name = pmr_dam_balakovo_volga_surveying }
 	add_journal_entry = { type = je_pmr_dam_balakovo_volga_survey }
 	if = {
@@ -809,6 +871,7 @@ pmr_dam_balakovo_volga_begin_survey = {
 pmr_dam_votkinsk_kama_begin_survey = {
 	set_variable = { name = pmr_dam_votkinsk_kama_months value = 0 }
 	set_global_variable = pmr_dam_votkinsk_kama_surveying
+	set_global_variable = { name = pmr_dam_votkinsk_kama_block  days = 365 }
 	add_modifier = { name = pmr_dam_votkinsk_kama_surveying }
 	add_journal_entry = { type = je_pmr_dam_votkinsk_kama_survey }
 	if = {
@@ -822,6 +885,7 @@ pmr_dam_votkinsk_kama_begin_survey = {
 pmr_dam_rybinsk_uglich_begin_survey = {
 	set_variable = { name = pmr_dam_rybinsk_uglich_months value = 0 }
 	set_global_variable = pmr_dam_rybinsk_uglich_surveying
+	set_global_variable = { name = pmr_dam_rybinsk_uglich_block  days = 365 }
 	add_modifier = { name = pmr_dam_rybinsk_uglich_surveying }
 	add_journal_entry = { type = je_pmr_dam_rybinsk_uglich_survey }
 	if = {
@@ -835,6 +899,7 @@ pmr_dam_rybinsk_uglich_begin_survey = {
 pmr_dam_irkutsk_angara_begin_survey = {
 	set_variable = { name = pmr_dam_irkutsk_angara_months value = 0 }
 	set_global_variable = pmr_dam_irkutsk_angara_surveying
+	set_global_variable = { name = pmr_dam_irkutsk_angara_block  days = 365 }
 	add_modifier = { name = pmr_dam_irkutsk_angara_surveying }
 	add_journal_entry = { type = je_pmr_dam_irkutsk_angara_survey }
 	if = {
@@ -848,6 +913,7 @@ pmr_dam_irkutsk_angara_begin_survey = {
 pmr_dam_xinan_river_begin_survey = {
 	set_variable = { name = pmr_dam_xinan_river_months value = 0 }
 	set_global_variable = pmr_dam_xinan_river_surveying
+	set_global_variable = { name = pmr_dam_xinan_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_xinan_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_xinan_river_survey }
 	if = {
@@ -861,6 +927,7 @@ pmr_dam_xinan_river_begin_survey = {
 pmr_dam_mequinenza_aragon_pyrenees_begin_survey = {
 	set_variable = { name = pmr_dam_mequinenza_aragon_pyrenees_months value = 0 }
 	set_global_variable = pmr_dam_mequinenza_aragon_pyrenees_surveying
+	set_global_variable = { name = pmr_dam_mequinenza_aragon_pyrenees_block  days = 365 }
 	add_modifier = { name = pmr_dam_mequinenza_aragon_pyrenees_surveying }
 	add_journal_entry = { type = je_pmr_dam_mequinenza_aragon_pyrenees_survey }
 	if = {
@@ -874,6 +941,7 @@ pmr_dam_mequinenza_aragon_pyrenees_begin_survey = {
 pmr_dam_asahan_toba_begin_survey = {
 	set_variable = { name = pmr_dam_asahan_toba_months value = 0 }
 	set_global_variable = pmr_dam_asahan_toba_surveying
+	set_global_variable = { name = pmr_dam_asahan_toba_block  days = 365 }
 	add_modifier = { name = pmr_dam_asahan_toba_surveying }
 	add_journal_entry = { type = je_pmr_dam_asahan_toba_survey }
 	if = {
@@ -887,6 +955,7 @@ pmr_dam_asahan_toba_begin_survey = {
 pmr_dam_bhagirathi_upper_ganges_begin_survey = {
 	set_variable = { name = pmr_dam_bhagirathi_upper_ganges_months value = 0 }
 	set_global_variable = pmr_dam_bhagirathi_upper_ganges_surveying
+	set_global_variable = { name = pmr_dam_bhagirathi_upper_ganges_block  days = 365 }
 	add_modifier = { name = pmr_dam_bhagirathi_upper_ganges_surveying }
 	add_journal_entry = { type = je_pmr_dam_bhagirathi_upper_ganges_survey }
 	if = {
@@ -900,6 +969,7 @@ pmr_dam_bhagirathi_upper_ganges_begin_survey = {
 pmr_dam_achelous_gorges_begin_survey = {
 	set_variable = { name = pmr_dam_achelous_gorges_months value = 0 }
 	set_global_variable = pmr_dam_achelous_gorges_surveying
+	set_global_variable = { name = pmr_dam_achelous_gorges_block  days = 365 }
 	add_modifier = { name = pmr_dam_achelous_gorges_surveying }
 	add_journal_entry = { type = je_pmr_dam_achelous_gorges_survey }
 	if = {
@@ -913,6 +983,7 @@ pmr_dam_achelous_gorges_begin_survey = {
 pmr_dam_moldau_cascade_begin_survey = {
 	set_variable = { name = pmr_dam_moldau_cascade_months value = 0 }
 	set_global_variable = pmr_dam_moldau_cascade_surveying
+	set_global_variable = { name = pmr_dam_moldau_cascade_block  days = 365 }
 	add_modifier = { name = pmr_dam_moldau_cascade_surveying }
 	add_journal_entry = { type = je_pmr_dam_moldau_cascade_survey }
 	if = {
@@ -926,6 +997,7 @@ pmr_dam_moldau_cascade_begin_survey = {
 pmr_dam_narenta_drina_begin_survey = {
 	set_variable = { name = pmr_dam_narenta_drina_months value = 0 }
 	set_global_variable = pmr_dam_narenta_drina_surveying
+	set_global_variable = { name = pmr_dam_narenta_drina_block  days = 365 }
 	add_modifier = { name = pmr_dam_narenta_drina_surveying }
 	add_journal_entry = { type = je_pmr_dam_narenta_drina_survey }
 	if = {
@@ -939,6 +1011,7 @@ pmr_dam_narenta_drina_begin_survey = {
 pmr_dam_sulak_canyon_begin_survey = {
 	set_variable = { name = pmr_dam_sulak_canyon_months value = 0 }
 	set_global_variable = pmr_dam_sulak_canyon_surveying
+	set_global_variable = { name = pmr_dam_sulak_canyon_block  days = 365 }
 	add_modifier = { name = pmr_dam_sulak_canyon_surveying }
 	add_journal_entry = { type = je_pmr_dam_sulak_canyon_survey }
 	if = {
@@ -952,6 +1025,7 @@ pmr_dam_sulak_canyon_begin_survey = {
 pmr_dam_nepal_hill_rivers_begin_survey = {
 	set_variable = { name = pmr_dam_nepal_hill_rivers_months value = 0 }
 	set_global_variable = pmr_dam_nepal_hill_rivers_surveying
+	set_global_variable = { name = pmr_dam_nepal_hill_rivers_block  days = 365 }
 	add_modifier = { name = pmr_dam_nepal_hill_rivers_surveying }
 	add_journal_entry = { type = je_pmr_dam_nepal_hill_rivers_survey }
 	if = {
@@ -965,6 +1039,7 @@ pmr_dam_nepal_hill_rivers_begin_survey = {
 pmr_dam_hells_canyon_begin_survey = {
 	set_variable = { name = pmr_dam_hells_canyon_months value = 0 }
 	set_global_variable = pmr_dam_hells_canyon_surveying
+	set_global_variable = { name = pmr_dam_hells_canyon_block  days = 365 }
 	add_modifier = { name = pmr_dam_hells_canyon_surveying }
 	add_journal_entry = { type = je_pmr_dam_hells_canyon_survey }
 	if = {
@@ -978,6 +1053,7 @@ pmr_dam_hells_canyon_begin_survey = {
 pmr_dam_garrison_missouri_begin_survey = {
 	set_variable = { name = pmr_dam_garrison_missouri_months value = 0 }
 	set_global_variable = pmr_dam_garrison_missouri_surveying
+	set_global_variable = { name = pmr_dam_garrison_missouri_block  days = 365 }
 	add_modifier = { name = pmr_dam_garrison_missouri_surveying }
 	add_journal_entry = { type = je_pmr_dam_garrison_missouri_survey }
 	if = {
@@ -991,6 +1067,7 @@ pmr_dam_garrison_missouri_begin_survey = {
 pmr_dam_upper_drave_begin_survey = {
 	set_variable = { name = pmr_dam_upper_drave_months value = 0 }
 	set_global_variable = pmr_dam_upper_drave_surveying
+	set_global_variable = { name = pmr_dam_upper_drave_block  days = 365 }
 	add_modifier = { name = pmr_dam_upper_drave_surveying }
 	add_journal_entry = { type = je_pmr_dam_upper_drave_survey }
 	if = {
@@ -1004,6 +1081,7 @@ pmr_dam_upper_drave_begin_survey = {
 pmr_dam_adige_valley_begin_survey = {
 	set_variable = { name = pmr_dam_adige_valley_months value = 0 }
 	set_global_variable = pmr_dam_adige_valley_surveying
+	set_global_variable = { name = pmr_dam_adige_valley_block  days = 365 }
 	add_modifier = { name = pmr_dam_adige_valley_surveying }
 	add_journal_entry = { type = je_pmr_dam_adige_valley_survey }
 	if = {
@@ -1017,6 +1095,7 @@ pmr_dam_adige_valley_begin_survey = {
 pmr_dam_sungari_gorge_begin_survey = {
 	set_variable = { name = pmr_dam_sungari_gorge_months value = 0 }
 	set_global_variable = pmr_dam_sungari_gorge_surveying
+	set_global_variable = { name = pmr_dam_sungari_gorge_block  days = 365 }
 	add_modifier = { name = pmr_dam_sungari_gorge_surveying }
 	add_journal_entry = { type = je_pmr_dam_sungari_gorge_survey }
 	if = {
@@ -1030,6 +1109,7 @@ pmr_dam_sungari_gorge_begin_survey = {
 pmr_dam_malta_valley_begin_survey = {
 	set_variable = { name = pmr_dam_malta_valley_months value = 0 }
 	set_global_variable = pmr_dam_malta_valley_surveying
+	set_global_variable = { name = pmr_dam_malta_valley_block  days = 365 }
 	add_modifier = { name = pmr_dam_malta_valley_surveying }
 	add_journal_entry = { type = je_pmr_dam_malta_valley_survey }
 	if = {
@@ -1043,6 +1123,7 @@ pmr_dam_malta_valley_begin_survey = {
 pmr_dam_bhutan_duars_begin_survey = {
 	set_variable = { name = pmr_dam_bhutan_duars_months value = 0 }
 	set_global_variable = pmr_dam_bhutan_duars_surveying
+	set_global_variable = { name = pmr_dam_bhutan_duars_block  days = 365 }
 	add_modifier = { name = pmr_dam_bhutan_duars_surveying }
 	add_journal_entry = { type = je_pmr_dam_bhutan_duars_survey }
 	if = {
@@ -1056,6 +1137,7 @@ pmr_dam_bhutan_duars_begin_survey = {
 pmr_dam_high_rhine_baden_begin_survey = {
 	set_variable = { name = pmr_dam_high_rhine_baden_months value = 0 }
 	set_global_variable = pmr_dam_high_rhine_baden_surveying
+	set_global_variable = { name = pmr_dam_high_rhine_baden_block  days = 365 }
 	add_modifier = { name = pmr_dam_high_rhine_baden_surveying }
 	add_journal_entry = { type = je_pmr_dam_high_rhine_baden_survey }
 	if = {
@@ -1069,6 +1151,7 @@ pmr_dam_high_rhine_baden_begin_survey = {
 pmr_dam_paulo_afonso_falls_begin_survey = {
 	set_variable = { name = pmr_dam_paulo_afonso_falls_months value = 0 }
 	set_global_variable = pmr_dam_paulo_afonso_falls_surveying
+	set_global_variable = { name = pmr_dam_paulo_afonso_falls_block  days = 365 }
 	add_modifier = { name = pmr_dam_paulo_afonso_falls_surveying }
 	add_journal_entry = { type = je_pmr_dam_paulo_afonso_falls_survey }
 	if = {
@@ -1082,6 +1165,7 @@ pmr_dam_paulo_afonso_falls_begin_survey = {
 pmr_dam_lower_tennessee_cumberland_begin_survey = {
 	set_variable = { name = pmr_dam_lower_tennessee_cumberland_months value = 0 }
 	set_global_variable = pmr_dam_lower_tennessee_cumberland_surveying
+	set_global_variable = { name = pmr_dam_lower_tennessee_cumberland_block  days = 365 }
 	add_modifier = { name = pmr_dam_lower_tennessee_cumberland_surveying }
 	add_journal_entry = { type = je_pmr_dam_lower_tennessee_cumberland_survey }
 	if = {
@@ -1095,6 +1179,7 @@ pmr_dam_lower_tennessee_cumberland_begin_survey = {
 pmr_dam_necaxa_tilostoc_begin_survey = {
 	set_variable = { name = pmr_dam_necaxa_tilostoc_months value = 0 }
 	set_global_variable = pmr_dam_necaxa_tilostoc_surveying
+	set_global_variable = { name = pmr_dam_necaxa_tilostoc_block  days = 365 }
 	add_modifier = { name = pmr_dam_necaxa_tilostoc_surveying }
 	add_journal_entry = { type = je_pmr_dam_necaxa_tilostoc_survey }
 	if = {
@@ -1108,6 +1193,7 @@ pmr_dam_necaxa_tilostoc_begin_survey = {
 pmr_dam_lower_susquehanna_begin_survey = {
 	set_variable = { name = pmr_dam_lower_susquehanna_months value = 0 }
 	set_global_variable = pmr_dam_lower_susquehanna_surveying
+	set_global_variable = { name = pmr_dam_lower_susquehanna_block  days = 365 }
 	add_modifier = { name = pmr_dam_lower_susquehanna_surveying }
 	add_journal_entry = { type = je_pmr_dam_lower_susquehanna_survey }
 	if = {
@@ -1121,6 +1207,7 @@ pmr_dam_lower_susquehanna_begin_survey = {
 pmr_dam_lochaber_affric_begin_survey = {
 	set_variable = { name = pmr_dam_lochaber_affric_months value = 0 }
 	set_global_variable = pmr_dam_lochaber_affric_surveying
+	set_global_variable = { name = pmr_dam_lochaber_affric_block  days = 365 }
 	add_modifier = { name = pmr_dam_lochaber_affric_surveying }
 	add_journal_entry = { type = je_pmr_dam_lochaber_affric_survey }
 	if = {
@@ -1134,6 +1221,7 @@ pmr_dam_lochaber_affric_begin_survey = {
 pmr_dam_galloway_tummel_begin_survey = {
 	set_variable = { name = pmr_dam_galloway_tummel_months value = 0 }
 	set_global_variable = pmr_dam_galloway_tummel_surveying
+	set_global_variable = { name = pmr_dam_galloway_tummel_block  days = 365 }
 	add_modifier = { name = pmr_dam_galloway_tummel_surveying }
 	add_journal_entry = { type = je_pmr_dam_galloway_tummel_survey }
 	if = {
@@ -1147,6 +1235,7 @@ pmr_dam_galloway_tummel_begin_survey = {
 pmr_dam_rhodope_cascades_begin_survey = {
 	set_variable = { name = pmr_dam_rhodope_cascades_months value = 0 }
 	set_global_variable = pmr_dam_rhodope_cascades_surveying
+	set_global_variable = { name = pmr_dam_rhodope_cascades_block  days = 365 }
 	add_modifier = { name = pmr_dam_rhodope_cascades_surveying }
 	add_journal_entry = { type = je_pmr_dam_rhodope_cascades_survey }
 	if = {
@@ -1160,6 +1249,7 @@ pmr_dam_rhodope_cascades_begin_survey = {
 pmr_dam_min_tung_rivers_begin_survey = {
 	set_variable = { name = pmr_dam_min_tung_rivers_months value = 0 }
 	set_global_variable = pmr_dam_min_tung_rivers_surveying
+	set_global_variable = { name = pmr_dam_min_tung_rivers_block  days = 365 }
 	add_modifier = { name = pmr_dam_min_tung_rivers_surveying }
 	add_journal_entry = { type = je_pmr_dam_min_tung_rivers_survey }
 	if = {
@@ -1173,6 +1263,7 @@ pmr_dam_min_tung_rivers_begin_survey = {
 pmr_dam_upper_ob_begin_survey = {
 	set_variable = { name = pmr_dam_upper_ob_months value = 0 }
 	set_global_variable = pmr_dam_upper_ob_surveying
+	set_global_variable = { name = pmr_dam_upper_ob_block  days = 365 }
 	add_modifier = { name = pmr_dam_upper_ob_surveying }
 	add_journal_entry = { type = je_pmr_dam_upper_ob_survey }
 	if = {
@@ -1186,6 +1277,7 @@ pmr_dam_upper_ob_begin_survey = {
 pmr_dam_tabqa_narrows_begin_survey = {
 	set_variable = { name = pmr_dam_tabqa_narrows_months value = 0 }
 	set_global_variable = pmr_dam_tabqa_narrows_surveying
+	set_global_variable = { name = pmr_dam_tabqa_narrows_block  days = 365 }
 	add_modifier = { name = pmr_dam_tabqa_narrows_surveying }
 	add_journal_entry = { type = je_pmr_dam_tabqa_narrows_survey }
 	if = {
@@ -1199,6 +1291,7 @@ pmr_dam_tabqa_narrows_begin_survey = {
 pmr_dam_bigorre_bearn_pyrenees_begin_survey = {
 	set_variable = { name = pmr_dam_bigorre_bearn_pyrenees_months value = 0 }
 	set_global_variable = pmr_dam_bigorre_bearn_pyrenees_surveying
+	set_global_variable = { name = pmr_dam_bigorre_bearn_pyrenees_block  days = 365 }
 	add_modifier = { name = pmr_dam_bigorre_bearn_pyrenees_surveying }
 	add_journal_entry = { type = je_pmr_dam_bigorre_bearn_pyrenees_survey }
 	if = {
@@ -1212,6 +1305,7 @@ pmr_dam_bigorre_bearn_pyrenees_begin_survey = {
 pmr_dam_upper_euphrates_begin_survey = {
 	set_variable = { name = pmr_dam_upper_euphrates_months value = 0 }
 	set_global_variable = pmr_dam_upper_euphrates_surveying
+	set_global_variable = { name = pmr_dam_upper_euphrates_block  days = 365 }
 	add_modifier = { name = pmr_dam_upper_euphrates_surveying }
 	add_journal_entry = { type = je_pmr_dam_upper_euphrates_survey }
 	if = {
@@ -1225,6 +1319,7 @@ pmr_dam_upper_euphrates_begin_survey = {
 pmr_dam_onega_vyg_begin_survey = {
 	set_variable = { name = pmr_dam_onega_vyg_months value = 0 }
 	set_global_variable = pmr_dam_onega_vyg_surveying
+	set_global_variable = { name = pmr_dam_onega_vyg_block  days = 365 }
 	add_modifier = { name = pmr_dam_onega_vyg_surveying }
 	add_journal_entry = { type = je_pmr_dam_onega_vyg_survey }
 	if = {
@@ -1238,6 +1333,7 @@ pmr_dam_onega_vyg_begin_survey = {
 pmr_dam_truyere_gorges_begin_survey = {
 	set_variable = { name = pmr_dam_truyere_gorges_months value = 0 }
 	set_global_variable = pmr_dam_truyere_gorges_surveying
+	set_global_variable = { name = pmr_dam_truyere_gorges_block  days = 365 }
 	add_modifier = { name = pmr_dam_truyere_gorges_surveying }
 	add_journal_entry = { type = je_pmr_dam_truyere_gorges_survey }
 	if = {
@@ -1251,6 +1347,7 @@ pmr_dam_truyere_gorges_begin_survey = {
 pmr_dam_lufira_lualaba_begin_survey = {
 	set_variable = { name = pmr_dam_lufira_lualaba_months value = 0 }
 	set_global_variable = pmr_dam_lufira_lualaba_surveying
+	set_global_variable = { name = pmr_dam_lufira_lualaba_block  days = 365 }
 	add_modifier = { name = pmr_dam_lufira_lualaba_surveying }
 	add_journal_entry = { type = je_pmr_dam_lufira_lualaba_survey }
 	if = {
@@ -1264,6 +1361,7 @@ pmr_dam_lufira_lualaba_begin_survey = {
 pmr_dam_niva_tuloma_begin_survey = {
 	set_variable = { name = pmr_dam_niva_tuloma_months value = 0 }
 	set_global_variable = pmr_dam_niva_tuloma_surveying
+	set_global_variable = { name = pmr_dam_niva_tuloma_block  days = 365 }
 	add_modifier = { name = pmr_dam_niva_tuloma_surveying }
 	add_journal_entry = { type = je_pmr_dam_niva_tuloma_survey }
 	if = {
@@ -1277,6 +1375,7 @@ pmr_dam_niva_tuloma_begin_survey = {
 pmr_dam_drina_gorge_begin_survey = {
 	set_variable = { name = pmr_dam_drina_gorge_months value = 0 }
 	set_global_variable = pmr_dam_drina_gorge_surveying
+	set_global_variable = { name = pmr_dam_drina_gorge_block  days = 365 }
 	add_modifier = { name = pmr_dam_drina_gorge_surveying }
 	add_journal_entry = { type = je_pmr_dam_drina_gorge_survey }
 	if = {
@@ -1290,6 +1389,7 @@ pmr_dam_drina_gorge_begin_survey = {
 pmr_dam_mingechaur_gorge_begin_survey = {
 	set_variable = { name = pmr_dam_mingechaur_gorge_months value = 0 }
 	set_global_variable = pmr_dam_mingechaur_gorge_surveying
+	set_global_variable = { name = pmr_dam_mingechaur_gorge_block  days = 365 }
 	add_modifier = { name = pmr_dam_mingechaur_gorge_surveying }
 	add_journal_entry = { type = je_pmr_dam_mingechaur_gorge_survey }
 	if = {
@@ -1303,6 +1403,7 @@ pmr_dam_mingechaur_gorge_begin_survey = {
 pmr_dam_uryu_ishikari_begin_survey = {
 	set_variable = { name = pmr_dam_uryu_ishikari_months value = 0 }
 	set_global_variable = pmr_dam_uryu_ishikari_surveying
+	set_global_variable = { name = pmr_dam_uryu_ishikari_block  days = 365 }
 	add_modifier = { name = pmr_dam_uryu_ishikari_surveying }
 	add_journal_entry = { type = je_pmr_dam_uryu_ishikari_survey }
 	if = {
@@ -1316,6 +1417,7 @@ pmr_dam_uryu_ishikari_begin_survey = {
 pmr_dam_volkhov_svir_begin_survey = {
 	set_variable = { name = pmr_dam_volkhov_svir_months value = 0 }
 	set_global_variable = pmr_dam_volkhov_svir_surveying
+	set_global_variable = { name = pmr_dam_volkhov_svir_block  days = 365 }
 	add_modifier = { name = pmr_dam_volkhov_svir_surveying }
 	add_journal_entry = { type = je_pmr_dam_volkhov_svir_survey }
 	if = {
@@ -1329,6 +1431,7 @@ pmr_dam_volkhov_svir_begin_survey = {
 pmr_dam_mimi_river_begin_survey = {
 	set_variable = { name = pmr_dam_mimi_river_months value = 0 }
 	set_global_variable = pmr_dam_mimi_river_surveying
+	set_global_variable = { name = pmr_dam_mimi_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_mimi_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_mimi_river_survey }
 	if = {
@@ -1342,6 +1445,7 @@ pmr_dam_mimi_river_begin_survey = {
 pmr_dam_kamianske_dnieper_begin_survey = {
 	set_variable = { name = pmr_dam_kamianske_dnieper_months value = 0 }
 	set_global_variable = pmr_dam_kamianske_dnieper_surveying
+	set_global_variable = { name = pmr_dam_kamianske_dnieper_block  days = 365 }
 	add_modifier = { name = pmr_dam_kamianske_dnieper_surveying }
 	add_journal_entry = { type = je_pmr_dam_kamianske_dnieper_survey }
 	if = {
@@ -1355,6 +1459,7 @@ pmr_dam_kamianske_dnieper_begin_survey = {
 pmr_dam_kremenchug_dnieper_begin_survey = {
 	set_variable = { name = pmr_dam_kremenchug_dnieper_months value = 0 }
 	set_global_variable = pmr_dam_kremenchug_dnieper_surveying
+	set_global_variable = { name = pmr_dam_kremenchug_dnieper_block  days = 365 }
 	add_modifier = { name = pmr_dam_kremenchug_dnieper_surveying }
 	add_journal_entry = { type = je_pmr_dam_kremenchug_dnieper_survey }
 	if = {
@@ -1368,6 +1473,7 @@ pmr_dam_kremenchug_dnieper_begin_survey = {
 pmr_dam_sariyar_gorge_begin_survey = {
 	set_variable = { name = pmr_dam_sariyar_gorge_months value = 0 }
 	set_global_variable = pmr_dam_sariyar_gorge_surveying
+	set_global_variable = { name = pmr_dam_sariyar_gorge_block  days = 365 }
 	add_modifier = { name = pmr_dam_sariyar_gorge_surveying }
 	add_journal_entry = { type = je_pmr_dam_sariyar_gorge_survey }
 	if = {
@@ -1381,6 +1487,7 @@ pmr_dam_sariyar_gorge_begin_survey = {
 pmr_dam_pescara_sangro_begin_survey = {
 	set_variable = { name = pmr_dam_pescara_sangro_months value = 0 }
 	set_global_variable = pmr_dam_pescara_sangro_surveying
+	set_global_variable = { name = pmr_dam_pescara_sangro_block  days = 365 }
 	add_modifier = { name = pmr_dam_pescara_sangro_surveying }
 	add_journal_entry = { type = je_pmr_dam_pescara_sangro_survey }
 	if = {
@@ -1394,6 +1501,7 @@ pmr_dam_pescara_sangro_begin_survey = {
 pmr_dam_guatape_falls_begin_survey = {
 	set_variable = { name = pmr_dam_guatape_falls_months value = 0 }
 	set_global_variable = pmr_dam_guatape_falls_surveying
+	set_global_variable = { name = pmr_dam_guatape_falls_block  days = 365 }
 	add_modifier = { name = pmr_dam_guatape_falls_surveying }
 	add_journal_entry = { type = je_pmr_dam_guatape_falls_survey }
 	if = {
@@ -1407,6 +1515,7 @@ pmr_dam_guatape_falls_begin_survey = {
 pmr_dam_pyramid_canyon_begin_survey = {
 	set_variable = { name = pmr_dam_pyramid_canyon_months value = 0 }
 	set_global_variable = pmr_dam_pyramid_canyon_surveying
+	set_global_variable = { name = pmr_dam_pyramid_canyon_block  days = 365 }
 	add_modifier = { name = pmr_dam_pyramid_canyon_surveying }
 	add_journal_entry = { type = je_pmr_dam_pyramid_canyon_survey }
 	if = {
@@ -1420,6 +1529,7 @@ pmr_dam_pyramid_canyon_begin_survey = {
 pmr_dam_zezere_gorges_begin_survey = {
 	set_variable = { name = pmr_dam_zezere_gorges_months value = 0 }
 	set_global_variable = pmr_dam_zezere_gorges_surveying
+	set_global_variable = { name = pmr_dam_zezere_gorges_block  days = 365 }
 	add_modifier = { name = pmr_dam_zezere_gorges_surveying }
 	add_journal_entry = { type = je_pmr_dam_zezere_gorges_survey }
 	if = {
@@ -1433,6 +1543,7 @@ pmr_dam_zezere_gorges_begin_survey = {
 pmr_dam_sila_plateau_begin_survey = {
 	set_variable = { name = pmr_dam_sila_plateau_months value = 0 }
 	set_global_variable = pmr_dam_sila_plateau_surveying
+	set_global_variable = { name = pmr_dam_sila_plateau_block  days = 365 }
 	add_modifier = { name = pmr_dam_sila_plateau_surveying }
 	add_journal_entry = { type = je_pmr_dam_sila_plateau_survey }
 	if = {
@@ -1446,6 +1557,7 @@ pmr_dam_sila_plateau_begin_survey = {
 pmr_dam_tequendama_falls_begin_survey = {
 	set_variable = { name = pmr_dam_tequendama_falls_months value = 0 }
 	set_global_variable = pmr_dam_tequendama_falls_surveying
+	set_global_variable = { name = pmr_dam_tequendama_falls_block  days = 365 }
 	add_modifier = { name = pmr_dam_tequendama_falls_surveying }
 	add_journal_entry = { type = je_pmr_dam_tequendama_falls_survey }
 	if = {
@@ -1459,6 +1571,7 @@ pmr_dam_tequendama_falls_begin_survey = {
 pmr_dam_savannah_river_begin_survey = {
 	set_variable = { name = pmr_dam_savannah_river_months value = 0 }
 	set_global_variable = pmr_dam_savannah_river_surveying
+	set_global_variable = { name = pmr_dam_savannah_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_savannah_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_savannah_river_survey }
 	if = {
@@ -1472,6 +1585,7 @@ pmr_dam_savannah_river_begin_survey = {
 pmr_dam_lower_karun_begin_survey = {
 	set_variable = { name = pmr_dam_lower_karun_months value = 0 }
 	set_global_variable = pmr_dam_lower_karun_surveying
+	set_global_variable = { name = pmr_dam_lower_karun_block  days = 365 }
 	add_modifier = { name = pmr_dam_lower_karun_surveying }
 	add_journal_entry = { type = je_pmr_dam_lower_karun_survey }
 	if = {
@@ -1485,6 +1599,7 @@ pmr_dam_lower_karun_begin_survey = {
 pmr_dam_nilgiri_hills_begin_survey = {
 	set_variable = { name = pmr_dam_nilgiri_hills_months value = 0 }
 	set_global_variable = pmr_dam_nilgiri_hills_surveying
+	set_global_variable = { name = pmr_dam_nilgiri_hills_block  days = 365 }
 	add_modifier = { name = pmr_dam_nilgiri_hills_surveying }
 	add_journal_entry = { type = je_pmr_dam_nilgiri_hills_survey }
 	if = {
@@ -1498,6 +1613,7 @@ pmr_dam_nilgiri_hills_begin_survey = {
 pmr_dam_bistritza_gorge_begin_survey = {
 	set_variable = { name = pmr_dam_bistritza_gorge_months value = 0 }
 	set_global_variable = pmr_dam_bistritza_gorge_surveying
+	set_global_variable = { name = pmr_dam_bistritza_gorge_block  days = 365 }
 	add_modifier = { name = pmr_dam_bistritza_gorge_surveying }
 	add_journal_entry = { type = je_pmr_dam_bistritza_gorge_survey }
 	if = {
@@ -1511,6 +1627,7 @@ pmr_dam_bistritza_gorge_begin_survey = {
 pmr_dam_lajes_serra_do_mar_begin_survey = {
 	set_variable = { name = pmr_dam_lajes_serra_do_mar_months value = 0 }
 	set_global_variable = pmr_dam_lajes_serra_do_mar_surveying
+	set_global_variable = { name = pmr_dam_lajes_serra_do_mar_block  days = 365 }
 	add_modifier = { name = pmr_dam_lajes_serra_do_mar_surveying }
 	add_journal_entry = { type = je_pmr_dam_lajes_serra_do_mar_survey }
 	if = {
@@ -1524,6 +1641,7 @@ pmr_dam_lajes_serra_do_mar_begin_survey = {
 pmr_dam_santee_saluda_begin_survey = {
 	set_variable = { name = pmr_dam_santee_saluda_months value = 0 }
 	set_global_variable = pmr_dam_santee_saluda_surveying
+	set_global_variable = { name = pmr_dam_santee_saluda_block  days = 365 }
 	add_modifier = { name = pmr_dam_santee_saluda_surveying }
 	add_journal_entry = { type = je_pmr_dam_santee_saluda_survey }
 	if = {
@@ -1537,6 +1655,7 @@ pmr_dam_santee_saluda_begin_survey = {
 pmr_dam_piave_valley_begin_survey = {
 	set_variable = { name = pmr_dam_piave_valley_months value = 0 }
 	set_global_variable = pmr_dam_piave_valley_surveying
+	set_global_variable = { name = pmr_dam_piave_valley_block  days = 365 }
 	add_modifier = { name = pmr_dam_piave_valley_surveying }
 	add_journal_entry = { type = je_pmr_dam_piave_valley_survey }
 	if = {
@@ -1550,6 +1669,7 @@ pmr_dam_piave_valley_begin_survey = {
 pmr_dam_yili_river_begin_survey = {
 	set_variable = { name = pmr_dam_yili_river_months value = 0 }
 	set_global_variable = pmr_dam_yili_river_surveying
+	set_global_variable = { name = pmr_dam_yili_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_yili_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_yili_river_survey }
 	if = {
@@ -1563,6 +1683,7 @@ pmr_dam_yili_river_begin_survey = {
 pmr_dam_first_cataract_begin_survey = {
 	set_variable = { name = pmr_dam_first_cataract_months value = 0 }
 	set_global_variable = pmr_dam_first_cataract_surveying
+	set_global_variable = { name = pmr_dam_first_cataract_block  days = 365 }
 	add_modifier = { name = pmr_dam_first_cataract_surveying }
 	add_journal_entry = { type = je_pmr_dam_first_cataract_survey }
 	if = {
@@ -1576,6 +1697,7 @@ pmr_dam_first_cataract_begin_survey = {
 pmr_dam_conowingo_falls_begin_survey = {
 	set_variable = { name = pmr_dam_conowingo_falls_months value = 0 }
 	set_global_variable = pmr_dam_conowingo_falls_surveying
+	set_global_variable = { name = pmr_dam_conowingo_falls_block  days = 365 }
 	add_modifier = { name = pmr_dam_conowingo_falls_surveying }
 	add_journal_entry = { type = je_pmr_dam_conowingo_falls_survey }
 	if = {
@@ -1589,6 +1711,7 @@ pmr_dam_conowingo_falls_begin_survey = {
 pmr_dam_warsak_gorge_begin_survey = {
 	set_variable = { name = pmr_dam_warsak_gorge_months value = 0 }
 	set_global_variable = pmr_dam_warsak_gorge_surveying
+	set_global_variable = { name = pmr_dam_warsak_gorge_block  days = 365 }
 	add_modifier = { name = pmr_dam_warsak_gorge_surveying }
 	add_journal_entry = { type = je_pmr_dam_warsak_gorge_survey }
 	if = {
@@ -1602,6 +1725,7 @@ pmr_dam_warsak_gorge_begin_survey = {
 pmr_dam_sennar_blue_nile_begin_survey = {
 	set_variable = { name = pmr_dam_sennar_blue_nile_months value = 0 }
 	set_global_variable = pmr_dam_sennar_blue_nile_surveying
+	set_global_variable = { name = pmr_dam_sennar_blue_nile_block  days = 365 }
 	add_modifier = { name = pmr_dam_sennar_blue_nile_surveying }
 	add_journal_entry = { type = je_pmr_dam_sennar_blue_nile_survey }
 	if = {
@@ -1615,6 +1739,7 @@ pmr_dam_sennar_blue_nile_begin_survey = {
 pmr_dam_lower_drave_begin_survey = {
 	set_variable = { name = pmr_dam_lower_drave_months value = 0 }
 	set_global_variable = pmr_dam_lower_drave_surveying
+	set_global_variable = { name = pmr_dam_lower_drave_block  days = 365 }
 	add_modifier = { name = pmr_dam_lower_drave_surveying }
 	add_journal_entry = { type = je_pmr_dam_lower_drave_survey }
 	if = {
@@ -1628,6 +1753,7 @@ pmr_dam_lower_drave_begin_survey = {
 pmr_dam_trollhattan_falls_begin_survey = {
 	set_variable = { name = pmr_dam_trollhattan_falls_months value = 0 }
 	set_global_variable = pmr_dam_trollhattan_falls_surveying
+	set_global_variable = { name = pmr_dam_trollhattan_falls_block  days = 365 }
 	add_modifier = { name = pmr_dam_trollhattan_falls_surveying }
 	add_journal_entry = { type = je_pmr_dam_trollhattan_falls_survey }
 	if = {
@@ -1641,6 +1767,7 @@ pmr_dam_trollhattan_falls_begin_survey = {
 pmr_dam_ariege_aude_pyrenees_begin_survey = {
 	set_variable = { name = pmr_dam_ariege_aude_pyrenees_months value = 0 }
 	set_global_variable = pmr_dam_ariege_aude_pyrenees_surveying
+	set_global_variable = { name = pmr_dam_ariege_aude_pyrenees_block  days = 365 }
 	add_modifier = { name = pmr_dam_ariege_aude_pyrenees_surveying }
 	add_journal_entry = { type = je_pmr_dam_ariege_aude_pyrenees_survey }
 	if = {
@@ -1654,6 +1781,7 @@ pmr_dam_ariege_aude_pyrenees_begin_survey = {
 pmr_dam_agno_gorge_begin_survey = {
 	set_variable = { name = pmr_dam_agno_gorge_months value = 0 }
 	set_global_variable = pmr_dam_agno_gorge_surveying
+	set_global_variable = { name = pmr_dam_agno_gorge_block  days = 365 }
 	add_modifier = { name = pmr_dam_agno_gorge_surveying }
 	add_journal_entry = { type = je_pmr_dam_agno_gorge_survey }
 	if = {
@@ -1667,6 +1795,7 @@ pmr_dam_agno_gorge_begin_survey = {
 pmr_dam_gersoppa_falls_begin_survey = {
 	set_variable = { name = pmr_dam_gersoppa_falls_months value = 0 }
 	set_global_variable = pmr_dam_gersoppa_falls_surveying
+	set_global_variable = { name = pmr_dam_gersoppa_falls_block  days = 365 }
 	add_modifier = { name = pmr_dam_gersoppa_falls_surveying }
 	add_journal_entry = { type = je_pmr_dam_gersoppa_falls_survey }
 	if = {
@@ -1680,6 +1809,7 @@ pmr_dam_gersoppa_falls_begin_survey = {
 pmr_dam_tikves_gorge_begin_survey = {
 	set_variable = { name = pmr_dam_tikves_gorge_months value = 0 }
 	set_global_variable = pmr_dam_tikves_gorge_surveying
+	set_global_variable = { name = pmr_dam_tikves_gorge_block  days = 365 }
 	add_modifier = { name = pmr_dam_tikves_gorge_surveying }
 	add_journal_entry = { type = je_pmr_dam_tikves_gorge_survey }
 	if = {
@@ -1693,6 +1823,7 @@ pmr_dam_tikves_gorge_begin_survey = {
 pmr_dam_missouri_breaks_begin_survey = {
 	set_variable = { name = pmr_dam_missouri_breaks_months value = 0 }
 	set_global_variable = pmr_dam_missouri_breaks_surveying
+	set_global_variable = { name = pmr_dam_missouri_breaks_block  days = 365 }
 	add_modifier = { name = pmr_dam_missouri_breaks_surveying }
 	add_journal_entry = { type = je_pmr_dam_missouri_breaks_survey }
 	if = {
@@ -1706,6 +1837,7 @@ pmr_dam_missouri_breaks_begin_survey = {
 pmr_dam_imatra_rapids_begin_survey = {
 	set_variable = { name = pmr_dam_imatra_rapids_months value = 0 }
 	set_global_variable = pmr_dam_imatra_rapids_surveying
+	set_global_variable = { name = pmr_dam_imatra_rapids_block  days = 365 }
 	add_modifier = { name = pmr_dam_imatra_rapids_surveying }
 	add_journal_entry = { type = je_pmr_dam_imatra_rapids_survey }
 	if = {
@@ -1719,6 +1851,7 @@ pmr_dam_imatra_rapids_begin_survey = {
 pmr_dam_lawpita_falls_begin_survey = {
 	set_variable = { name = pmr_dam_lawpita_falls_months value = 0 }
 	set_global_variable = pmr_dam_lawpita_falls_surveying
+	set_global_variable = { name = pmr_dam_lawpita_falls_block  days = 365 }
 	add_modifier = { name = pmr_dam_lawpita_falls_surveying }
 	add_journal_entry = { type = je_pmr_dam_lawpita_falls_survey }
 	if = {
@@ -1732,6 +1865,7 @@ pmr_dam_lawpita_falls_begin_survey = {
 pmr_dam_laxapana_falls_begin_survey = {
 	set_variable = { name = pmr_dam_laxapana_falls_months value = 0 }
 	set_global_variable = pmr_dam_laxapana_falls_surveying
+	set_global_variable = { name = pmr_dam_laxapana_falls_block  days = 365 }
 	add_modifier = { name = pmr_dam_laxapana_falls_surveying }
 	add_journal_entry = { type = je_pmr_dam_laxapana_falls_survey }
 	if = {
@@ -1745,6 +1879,7 @@ pmr_dam_laxapana_falls_begin_survey = {
 pmr_dam_longxi_river_begin_survey = {
 	set_variable = { name = pmr_dam_longxi_river_months value = 0 }
 	set_global_variable = pmr_dam_longxi_river_surveying
+	set_global_variable = { name = pmr_dam_longxi_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_longxi_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_longxi_river_survey }
 	if = {
@@ -1758,6 +1893,7 @@ pmr_dam_longxi_river_begin_survey = {
 pmr_dam_castelo_do_bode_begin_survey = {
 	set_variable = { name = pmr_dam_castelo_do_bode_months value = 0 }
 	set_global_variable = pmr_dam_castelo_do_bode_surveying
+	set_global_variable = { name = pmr_dam_castelo_do_bode_block  days = 365 }
 	add_modifier = { name = pmr_dam_castelo_do_bode_surveying }
 	add_journal_entry = { type = je_pmr_dam_castelo_do_bode_survey }
 	if = {
@@ -1771,6 +1907,7 @@ pmr_dam_castelo_do_bode_begin_survey = {
 pmr_dam_sun_moon_lake_begin_survey = {
 	set_variable = { name = pmr_dam_sun_moon_lake_months value = 0 }
 	set_global_variable = pmr_dam_sun_moon_lake_surveying
+	set_global_variable = { name = pmr_dam_sun_moon_lake_block  days = 365 }
 	add_modifier = { name = pmr_dam_sun_moon_lake_surveying }
 	add_journal_entry = { type = je_pmr_dam_sun_moon_lake_survey }
 	if = {
@@ -1784,6 +1921,7 @@ pmr_dam_sun_moon_lake_begin_survey = {
 pmr_dam_des_moines_rapids_begin_survey = {
 	set_variable = { name = pmr_dam_des_moines_rapids_months value = 0 }
 	set_global_variable = pmr_dam_des_moines_rapids_surveying
+	set_global_variable = { name = pmr_dam_des_moines_rapids_block  days = 365 }
 	add_modifier = { name = pmr_dam_des_moines_rapids_surveying }
 	add_journal_entry = { type = je_pmr_dam_des_moines_rapids_survey }
 	if = {
@@ -1797,6 +1935,7 @@ pmr_dam_des_moines_rapids_begin_survey = {
 pmr_dam_cachapoal_canyon_begin_survey = {
 	set_variable = { name = pmr_dam_cachapoal_canyon_months value = 0 }
 	set_global_variable = pmr_dam_cachapoal_canyon_surveying
+	set_global_variable = { name = pmr_dam_cachapoal_canyon_block  days = 365 }
 	add_modifier = { name = pmr_dam_cachapoal_canyon_surveying }
 	add_journal_entry = { type = je_pmr_dam_cachapoal_canyon_survey }
 	if = {
@@ -1810,6 +1949,7 @@ pmr_dam_cachapoal_canyon_begin_survey = {
 pmr_dam_lower_yalu_begin_survey = {
 	set_variable = { name = pmr_dam_lower_yalu_months value = 0 }
 	set_global_variable = pmr_dam_lower_yalu_surveying
+	set_global_variable = { name = pmr_dam_lower_yalu_block  days = 365 }
 	add_modifier = { name = pmr_dam_lower_yalu_surveying }
 	add_journal_entry = { type = je_pmr_dam_lower_yalu_survey }
 	if = {
@@ -1823,6 +1963,7 @@ pmr_dam_lower_yalu_begin_survey = {
 pmr_dam_edea_falls_begin_survey = {
 	set_variable = { name = pmr_dam_edea_falls_months value = 0 }
 	set_global_variable = pmr_dam_edea_falls_surveying
+	set_global_variable = { name = pmr_dam_edea_falls_block  days = 365 }
 	add_modifier = { name = pmr_dam_edea_falls_surveying }
 	add_journal_entry = { type = je_pmr_dam_edea_falls_survey }
 	if = {
@@ -1836,6 +1977,7 @@ pmr_dam_edea_falls_begin_survey = {
 pmr_dam_victoria_nile_begin_survey = {
 	set_variable = { name = pmr_dam_victoria_nile_months value = 0 }
 	set_global_variable = pmr_dam_victoria_nile_surveying
+	set_global_variable = { name = pmr_dam_victoria_nile_block  days = 365 }
 	add_modifier = { name = pmr_dam_victoria_nile_surveying }
 	add_journal_entry = { type = je_pmr_dam_victoria_nile_survey }
 	if = {
@@ -1849,6 +1991,7 @@ pmr_dam_victoria_nile_begin_survey = {
 pmr_dam_rincon_del_bonete_begin_survey = {
 	set_variable = { name = pmr_dam_rincon_del_bonete_months value = 0 }
 	set_global_variable = pmr_dam_rincon_del_bonete_surveying
+	set_global_variable = { name = pmr_dam_rincon_del_bonete_block  days = 365 }
 	add_modifier = { name = pmr_dam_rincon_del_bonete_surveying }
 	add_journal_entry = { type = je_pmr_dam_rincon_del_bonete_survey }
 	if = {
@@ -1862,6 +2005,7 @@ pmr_dam_rincon_del_bonete_begin_survey = {
 pmr_dam_uhl_river_begin_survey = {
 	set_variable = { name = pmr_dam_uhl_river_months value = 0 }
 	set_global_variable = pmr_dam_uhl_river_surveying
+	set_global_variable = { name = pmr_dam_uhl_river_block  days = 365 }
 	add_modifier = { name = pmr_dam_uhl_river_surveying }
 	add_journal_entry = { type = je_pmr_dam_uhl_river_survey }
 	if = {

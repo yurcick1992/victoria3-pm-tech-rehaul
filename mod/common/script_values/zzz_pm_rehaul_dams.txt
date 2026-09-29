@@ -8,6 +8,11 @@ pmr_dam_bur_used = {
 	value = bureaucracy_usage
 }
 
+pmr_dam_bur_headroom = {
+	value = produced_bureaucracy
+	subtract = bureaucracy_usage
+}
+
 pmr_dam_active = {
 	value = 0
 	if = {

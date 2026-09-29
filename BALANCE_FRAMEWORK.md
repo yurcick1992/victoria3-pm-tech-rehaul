@@ -8923,7 +8923,7 @@ technology. So every scripted construction path was a workaround for a missing d
 - ⚠ **What is not guarded**: a subject that HAS the technology may still grab a level it cannot fund (F173 §4); no capacity lock stands in
   front of it, by ruling. The first measurement is the n=5 century batch of 2026-09-28 on the canon as it now ships.
 
-### 10.89.12 — WHO MAY SURVEY AND BUILD, AND HOW THE AI SURVEYS (user-ruled 2026-09-28; FINDINGS F176) — `dams.rules = "family"`, NOT YET THE CANON
+### 10.89.12 — WHO MAY SURVEY AND BUILD, AND HOW THE AI SURVEYS (user-ruled 2026-09-28; FINDINGS F176, F177) — `dams.rules = "family"`, THE CANON SINCE 2026-09-29
 
 The rulings, in the user's words where they were given:
 - **Construction rights** = the state holder and the upward chain to the top overlord; siblings only through investment rights: *"Unless
@@ -8946,4 +8946,12 @@ The rulings, in the user's words where they were given:
 Implemented in `tools/emit_dams.mjs` behind `dams.rules = "family"` (the canon's output is byte-identical without it); the AI takes the survey
 decision itself and the quarterly driver is not hooked; `dams.log_levels` adds the monthly built/queued level log. The book is
 `config/mod_config.canon-dams-family.json` (the canon + those two keys), probed by p29 (F176 §5); its prod-like batch
-`tools/testbed/schedules/canon_dams_family_n3.json` waits for the user's go-ahead.
+`tools/testbed/schedules/canon_dams_family_n3.json` was run as the n=6 `canon_dams_family_n6.json` (session `20260929_002728`, FINDINGS F177).
+
+⭐⭐ **CANONIZED 2026-09-29** (user: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in
+losing little enough progress to ignore. All types of options stay and get canonized."*). The measured n=6: 4 intact / 1 pre-dam stuck-Britain
+stall / 1 runoff, consensus loss 5.90; a median 47 dam levels; rights holders finish 84% of the constructions they start and lose 25 with ~39%
+built, owners and overlords finish 98–100%. ⇒ **No protection is added against rights-holder or subject losses**: every builder kind the
+rules allow (owner, overlord chain, investment rights in the owner or its chain, family surveys) stays. `config/mod_config.json` + twin are
+`config/mod_config.canon-dams-family.json` + twin verbatim (sha256 `7bf6e9db1cb46b1d`), `dams.log_levels` included, as measured and
+playtested.
