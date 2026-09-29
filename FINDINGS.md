@@ -17896,3 +17896,65 @@ element); whether
 the INVESTMENT-RIGHTS case behaves like the subject case (p26 is the direct test: the host withdraws from its investment-rights treaties
 a year into a foreign build); the survey rate under the `possible` check over a century with real survey lengths (p24 covers 20 years);
 the AI decision cadence rule.
+
+## F177 — THE RULED DAM RULES (`dams.rules = family`) OVER A CENTURY, n=6: more dams than the canon rules (median 47 levels against 31), built mostly by INVESTMENT-RIGHTS holders, and every wasted construction is theirs (24 confirmed, ~39% built on average; none from a lost subject); stalls are rare and mostly harmless; the register reads as the canon family (4 intact, one pre-dam stuck Britain, one runoff)
+
+**Arm.** Session `20260929_002728_canon-dams-family-n6`, 6 runs 1836.1.1 → 1936.1.1, `config/mod_config.canon-dams-family.json` at commit
+`befb04b` — the canon `canon-dams` + `dams.rules = family` (BALANCE_FRAMEWORK §10.89.12: construction rights = the owner, its overlord chain,
+or investment rights in the owner or any of that chain; a survey inside the host's top-overlord family opens the dam to the whole family, an
+outside survey to the surveyor alone; a 12-month block from a survey's start; no survey while a level is queued; no claim; the AI takes the
+survey decision itself, spare bureaucracy ≥ cost, a 30-day AI-only cooldown; no driver) + `dams.log_levels` (the monthly built/queued log).
+The same book as the user's playtest build of 2026-09-28 20:54. Quarterly saves. Fixed n=6, no stop watcher. Play 144 / 167 / 185 / 162 /
+176 / 178 min; two runs crashed and resumed (3 and 2 attempts), 2.1 min of crash overhead in all.
+
+**The register** (vanilla n=16): run 1 **broken by stall** 0.56× — Britain's revolt of June 1847 won as the "British Proletarian Revolt" in
+July 1848, Britain bankrupt 1899, £136M at 1930: F166's stuck Britain, decades before any dam technology · run 2 intact 1.03× (loss 5.3) ·
+run 3 intact 1.23× (8.0; U* and H weakened by the gate) · run 4 **broken by runoff** 1.75× — the whole world large (£8.2bn against £4.6–5.8bn
+in runs 2–3; British India £916M, Germany £724M, Austria £441M) and Britain's pool 3.05 of its GDP · run 5 intact 1.09× (7.8; Germany under 5%
+U* 1927–36, soft) · run 6 intact 0.93× (7.0; pool U* 45.4%). **Consensus (n=4 intact, the median of all) loss 5.90**: world GDP 1.06, pool GDP
+1.48, pool W 0.88, world W 0.73, pool U* 1.18, pool H 0.81, PI 0.96, PP 0.88, T3 ÷ rest 0.49. The canon rules' n=5 (F175) read 5.49 on the
+same register with the same 3-intact / stall / runoff shape; nothing here separates the two books on the economy.
+
+**The dams** (`tools/testbed/ledger/dam_situation.mjs`, quarterly queues + the monthly level log; a "construction" = one builder's stay in
+the queue on one dam):
+| run | surveys started / completed / abandoned / family | levels at 1936 | dams with a level / complete | constructions: owner / overlord / rights-holder | stalled ≥ 1 y (blocking another builder) | wasted, confirmed (mean share built) |
+|---|---|---|---|---|---|---|
+| 1 | 75 / 69 / 1 / 26 | 10 | 10 / 6 | 4 / 0 / 12 | 0 | 4 (27%) |
+| 2 | 150 / 126 / 10 / 37 | 33 | 29 / 22 | 14 / 1 / 37 | 1 (1) | 5 (42%) + 2 probable (76%, 80%) |
+| 3 | 126 / 121 / 5 / 44 | 49 | 43 / 26 | 18 / 4 / 44 | 0 | 0 |
+| 4 | 147 / 139 / 7 / 54 | 85 | 55 / 44 | 21 / 45 / 56 | 2 (2) | 10 (46%) |
+| 5 | 142 / 132 / 7 / 34 | 71 | 50 / 37 | 6 / 12 / 66 | 10 (5) | 2 (20%) + 1 unstarted |
+| 6 | 101 / 97 / 3 / 39 | 45 | 35 / 22 | 21 / 6 / 39 | 2 (0) | 3 (38%) |
+- **More dams than the canon rules**: median 47 levels (10–85) against F175's 31 (17–49). The poorest run (the stuck Britain) builds 10.
+- **Rights holders build most of them**: 254 of 406 constructions (63%) are by a government OUTSIDE the host's overlord chain, which under
+  these rules can only be an investment-rights holder (Germany, Britain, France, the USA, Scandinavia, Russia, Austria, Belgium). Owners 84,
+  overlords 68.
+- **WASTED = 24 confirmed constructions with progress, ~39% built on average, and EVERY ONE is a rights-holder's.** Loss by subject status: 0.
+  Loss by the state changing hands: 1 at most (Adda, run 1: queued while a revolt held the state). The rest are the investment-rights case:
+  the construction vanished while the builder had no subject link to the host — Germany in Italy through Italy's 1908 and 1910–11 civil
+  wars (run 1, four at once), Germany in Spain and Sardinia (run 2, three in May 1935), France in British India in the quarter India left
+  Britain's family (run 2 — France's rights ran through Britain, "rights in your overlord", and stopped covering India when it left), Germany
+  and Britain across Austria, Australia, British India, Portugal and Brazil (run 4). ⚠ The cause is INFERRED: a save summary carries no
+  treaties, so "rights lost" is what the classification leaves once subject loss and a change of hands are ruled out, not something
+  observed; losses in one quarter across several dams of one builder (run 1 1911, run 2 1935) point to one treaty ending, not to war damage
+  dam by dam. The canon rules' n=5 (F175, the chain rule, no rights builders) had 4 abandoned constructions, all by a change of hands.
+- **STALLED ≥ 1 year: 15 constructions in six runs, 8 blocking another possible builder.** Most are harmless waits: in run 5 seven German
+  rights-holder constructions sat unstarted 4–7 quarters and then finished at 94–98%; Snowy by Australia 3 years, then built. The two that
+  matter: **Niagara-Ottawa (run 5)** — Canada queued its own dam in late 1927 and was still at 5% at the end, eight years, with Britain (the
+  family surveyor) able to build it; **Laurentian Rivers (run 2)** — Canada again, 5½ years without progress from late 1926, 65% at the end.
+  Both are F173's poor-owner grab. ⚠ The candidate test counts the host, its chain and surveyors only, not other rights holders.
+- **Surveys**: 101–150 started per run, 3–10 abandoned, 26–54 opening a dam to a whole family. No run surveyed all 144 dams (47–87).
+
+**Reading limits.** Quarterly resolution. ⚠ The quarterly queue listing sometimes DROPS a construction that is still going on (Piave and
+Western Fjords in run 1 vanish from Germany's queue in 1911 and are completed by early 1912), so a vanished element counts as wasted only when
+the monthly log confirms it — the queued count falls without a level added, or the dam's building record disappears with a level still
+queued above the built count; the 30 vanished elements without that confirmation (fragments of one construction split by a points-left jump,
+losses masked by a new builder queueing the same dam within the month, levels finished after a quarter's gap) are an upper bound, not a
+count. Two run-2 losses (Gersoppa 76%, Hohe Tauern 80%) are near-certain — the builder's element vanished and another country later queued
+the same dam — but the monthly log cannot see them, because the queued count never fell. The "wasted share" is of the first level's points
+(the element's own points left over its level cost).
+
+**What it does NOT say.** Whether the rights-holder losses are treaties expiring, treaties withdrawn by the host, or the host's revolution
+voiding them (the treaty history is not persisted); how much capital they cost in £ (not summed); whether the rules move world GDP or its
+tails (the economy reads as F175's family at n=6 vs n=5); why the rights holders out-build owners (ai_value 30,000 applies to every builder;
+rich foreign governments simply have the money and the technology first).
