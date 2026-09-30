@@ -262,6 +262,18 @@ Electric Sewing Machines, Spray Finishing, Paper Bleaching, Improved Fertilizers
 main methods of the rung below, at the geometric-midpoint cost (host × √1.9), recipes verbatim. Both are ALTERNATE books (`artisan6`,
 `artisan6-shop`, `merge6`), measured separately against `canon-dams-family`; nothing about them reaches `config/mod_config.json` until
 the user rules on measured results.
+⭐ **HOW A MERGE IS EXPRESSED (2026-09-30):** the removed rung keeps its tier record and gains **`method_of: <host key>`**. The builder then
+emits no building for it: its main method joins the HOST's main group, gated by its own technology (`unlocking_technologies`), and the host
+carries the midpoint `building_cost` / `ai_value` (`_merge` records the pairs; L31 checks both). Every emitter follows: `emit_secondaries`
+mints each of the host's secondaries **once per main method** (scaled to that method, gated to it — so the secondary stays in proportion to
+whichever method runs); `emit_research_events` counts a merged rung as the host's levels running its method (`has_active_production_method`,
+the trigger vanilla's art journal entries use); `emit_companies` keeps merged keys out like craft keys; `convert_history` THROWS on a 1836
+block landing on a merged rung (none of the six does). ⚠ **The save summaries cannot tell the two rungs apart by building type** — a merged
+rung's levels are the host's `pms` entries for its method: read them with `tools/testbed/ledger/merge_methods.mjs`. The register's T0–T3
+split a host's workers by method since 2026-09-30; the old-rung census and obsolescence readers still count by building type.
+⭐ **PROBED 2026-09-30, BOTH LINES (F181, F182):** the craft books load and hold their staffing, with the ownership fix confirmed; the merge
+book's switch works (the AI moves hosts to the merged method one building at a time, no construction). No century batch of either has run —
+that is the user's to confirm.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
@@ -1530,6 +1542,12 @@ config/mod_config.artisan6.json / config/mod_config.artisan6-shop.json ⚗ THE C
                         (proven by field diff). `artisan6` carries the RULED staffing (30–50% machinists), `artisan6-shop` masters as
                         shopkeepers + laborers at the same wage units (the probe of the machinist literacy gate, F180 §2). Probed by
                         schedule `artisan6_probe_2x.json`. Un-ignored with their twins
+config/mod_config.merge6.json / config/mod_config.merge6-probe.json ⚗ THE MERGE BOOKS (BALANCE_FRAMEWORK §10.91.2, ROADMAP step 13; UNDER TEST,
+                        not the canon) + their tree twins (the canon's, byte for byte): the canon with six add-on rungs made second main
+                        methods of the rung below by `tools/make_merge_config.mjs` (`method_of`, host cost and ai_value at the geometric
+                        midpoint). `merge6-probe` = merge6 + a probe-only `start_tech_grants` (the three merged technologies whose host
+                        buildings stand in 1836, to GBR FRA USA PRU BEL) so a two-year probe can watch the switch; probed by schedule
+                        `merge6_probe.json`. Un-ignored with their twins
 config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
@@ -2302,6 +2320,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         still throws. ⚠ It walks $creates THREE times (placement, pop seeding, and
                         the no-silent-holes check) and every pass needs the guard: adding it to one
                         pass of a multi-pass loop is not a guard, it just moves the crash
+                        ⚠ A 1836 block landing on a MERGED rung (`method_of`, §10.91.2) THROWS: it would have to become the host
+                        running that method, with that method's own secondary copies, which neither this tool nor emit_secondaries
+                        does yet. None of the six ruled merges has a 1836 factory (checked 2026-09-30)
   extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
   history_lib.ps1       shared vanilla parsing: ONE history walker (Invoke-HistoryWalk; Walk-HistoryFile = rewriting mode, Read-HistoryBlocks = read-only mode) + Get-TopBlocks / Get-ListTokens / Get-Num, used by the converter, every extractor and the volume solvers
   ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
@@ -2582,6 +2603,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ Session paths hardcoded to the first instance (flatcost-n1); --session flag TODO
                         (the `fill_*` scripts still are; the three `analyse_ai_*`/`analyse_build_*`
                         scripts now take `--session`/`--config` and discover their runs)
+  testbed/ledger/merge_methods.mjs  WHICH MAIN METHOD A MERGED BUILDING RUNS (§10.91.2, 2026-09-30): per run, save date, country and merged
+                        industry, the host's levels on its own method and on the merged one, and the levels whose secondary is the merged
+                        method's own copy (`!!` when those exceed the merged method's levels — the per-method gating broken). Pairs and
+                        method keys from each run's OWN book (`_merge`). `--session <stamp> [--setup <name>] [--tags GBR,FRA] [--every N]`.
+                        ⚠ Until the register is taught the same, criteria.mjs's T0–T3 on a merge book count a merged rung's levels under
+                        its HOST's era
   testbed/ledger/criteria.mjs  ⭐⭐ THE CRITERIA REGISTER (user-ruled 2026-09-17, BALANCE_FRAMEWORK §10.83 — the governing section near the top of this
                         file): aim / soft / hard per scope (the shortlist pool and the world), end-state means over 1932–1936, HARD lines per run with the binary
                         outcome (broken by stall / by runoff — the anchor, the pooled U*, the capital-abundance pair, the end-state GDP lines), SOFT lines, everything else on
@@ -2973,6 +3000,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         rather than bypassed — without it the lint fails every rung of a shifted industry, which is the guardrail
                         working. ⚠ Its origin is 0 unless `anchor_for` names the industry, NEVER the industry's own first rung (the
                         four industries with no e0 rung are keyed on the absolute era — the F111 bug).
+                        ⭐ Since 2026-09-30 it checks CRAFT rungs against `_artisan.recipes` (§10.91.1) and MERGED rungs against
+                        `_merge.pairs` (§10.91.2): a `method_of` the record does not name, a host that is not the rung directly below,
+                        a merged rung with no technology, and a host whose cost / ai_value is not the geometric midpoint of the two
+                        rungs' era-rule values all FAIL (proven on three sabotaged copies of merge6).
                         `--config <path>` scores an alternate book, `--census` prints every rung's era, technology, game era
                         and deviation. Out of scope, and says so: a book without `era_game_era` (the six-rung one)
   emit_techs.mjs        THE TECH TREE, EMITTED (ROADMAP step 1) — called by build.ps1, which THROWS if it
@@ -3030,6 +3061,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         its tiers would gate a technology on buildings the mod never ships. It was the
                         only emitter that did not, and it died on a shipyard tier the moment an arm
                         disabled shipyards. No-op where nothing is disabled.
+                        ⭐ A MERGED RUNG (`method_of`, §10.91.2, 2026-09-30) is counted as the HOST's levels running its method
+                        (`has_active_production_method = <its main method>` beside `is_building_type = <host>`), and a host
+                        carrying merged methods counts only the levels on its own — every source kind (rule A, group anchors,
+                        lists); its text names "<host> (<method>)". So paper e3 counts sulfite mills on the bleaching method, and
+                        fertilizer e2 chemical plants on the improved method.
                         THE INDUSTRY-DRIVEN RESEARCH EVENTS (ROADMAP step 2) — called by build.ps1, which
                         THROWS if it fails. Reads config's `research_events` block and emits nothing when it
                         is disabled. Derives the per-technology anchor table rather than storing it: rule A
@@ -3078,6 +3114,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         `exclude_secondary_pmgs` loses the dropped groups' methods (the engine rejects a whole create_building over
                         one invalid method) — ASSERTED per building afterwards. THROWS on a craft rung keeping a labour-saving
                         method, a group kept by reference with employment, or a non-whole scaled employment
+                        ⭐ THE MERGE AMENDMENT (2026-09-30, §10.91.2): a building carrying merged rungs (`method_of`) gets each rescalable
+                        secondary once PER MAIN METHOD — named <pm>_<that rung's key>, scaled to that rung's output and inputs, and gated
+                        `unlocking_production_methods = { <that rung's main method> }` — so the secondary stays in proportion to whichever
+                        method runs. A vanilla-gated secondary keeps its ORIGINAL only when no main method satisfies the gate (the builder's
+                        gate remap would otherwise make it selectable at vanilla quantities beside a merged method). Plain buildings mint
+                        exactly what they did before, under the same names. THROWS on a craft rung that also hosts a merge
   lib_dams.mjs          ⭐ THE HYDRO-DAM DERIVATION — ONE implementation (BALANCE_FRAMEWORK §10.89): project → LEVELS (≤ 10,000 points each), points per MW = 0.4 × (power-plant points ÷ 50) × 1.2 × m × (MW per part ÷ 560)^−0.2
                         (the plant's cost READ from the book), electricity 0.52 per MW, staff and upkeep per 50 electricity, the per-LEVEL
                         technology class (A electrical_generation / B steam_turbine / C arc_welding, shared out over a merged project's
@@ -3163,6 +3205,15 @@ tools/                  dev tooling — NOT shipped in the mod
                         so they shadow vanilla's). ⚠ build.ps1 never wipes common/history, so a book WITHOUT crafts deletes any file
                         this tool wrote earlier (recognised by its header). THROWS on a craft state with no region_state block or too
                         few untyped pops
+  make_merge_config.mjs THE MERGE BOOK — `--base <config> --suffix <sfx>` turns six add-on rungs into second main METHODS of the
+                        rung below (BALANCE_FRAMEWORK §10.91.2): food e2, textile e3, furniture e3, paper e2, fertilizer e1 and steel e3
+                        gain `method_of: <host key>`, and each host's `building_cost` / `ai_value` becomes the geometric midpoint of the
+                        two rungs' (the ruled "midpoint first"); recipes and staffing verbatim. Adds `_merge` (the pairs, the record L31
+                        checks), `_merge_variant`, and copies the base's tree twin. THE PAIR TABLE LIVES HERE ONLY. THROWS on a base with
+                        a craft rung in a pair, staffing that differs within a pair, or a rung with no technology. ⚗ `--grant TAG,TAG
+                        [--grant-industries a,b]` writes `start_tech_grants` handing the merged methods' technologies to those countries
+                        at the 1836 start — PROBE books only (it THROWS unless the suffix contains "probe"). Books: `merge6`, and
+                        `merge6-probe` (baking powder, chemical bleaching and improved fertilizer to GBR FRA USA PRU BEL)
   make_trade_config.mjs THE PER-GOOD TRADE BOOK — `--base <config> --suffix <sfx>` writes config/mod_config.<sfx>.json = the base + 
                         `goods_traded_quantity` + `_trade` + `_trade_variant` (no base key touched) and the base's tech-tree twin
                         (L20). It holds F159 §7's FIVE-CLASS TABLE — the only copy: E bulk & perishable UNCHANGED (the untreated
@@ -3206,6 +3257,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⭐ CRAFT RUNGS ARE OUT (2026-09-30, §10.91.1): a tier with `craft: true` leaves every list, formation
                         test, prosperity line and construction target — the vanilla key ITSELF is removed, since the craft IS
                         the vanilla-keyed rung — and a surviving craft key in any form THROWS with file:line.
+                        ⭐ MERGED RUNGS TOO (2026-09-30, §10.91.2): a `method_of` key names no building type in game, so it leaves
+                        the same lists; its host stays and covers both methods.
                         ⭐⭐ **A COMPANY TARGETS ITS BEST UNLOCKED RUNG, NOT EVERY RUNG (2026-09-02, user-
                         approved).** Duplicating `ai_construction_targets` per tier gave every flavoured
                         company a standing `level = 5` target on its rung-0 building — the engine uses those

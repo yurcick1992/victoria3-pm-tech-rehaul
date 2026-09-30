@@ -18557,3 +18557,69 @@ Validated once at load; the triggers return false, which is the truth for a craf
 
 **What it does NOT say.** Two years and one seed per book — nothing about the century, the register, or whether crafts die where wages rise.
 The ownership fix is unmeasured. The staffing verdict holds for the START; recruitment of NEW machinists in low-literacy countries is untested.
+
+## F182 — THE MERGE PROBE AND THE CRAFT RE-PROBE, 2 × 1836→1838: a merged rung works as a method switch — given the technology, the AI moves existing buildings onto the merged method one building at a time over 1–18 months with no construction; switching resets the old method's secondary copy and no switched building re-selected a merged copy in two years; switched chemical plants run at 0.67–0.71 staffing (Improved Fertilizer doubles the engineers); world GDP stays in the canon's range. The craft book's ownership fix works: urban centres and financial districts are back at the canon's (2026-09-30)
+
+**Session** `20260930_174540_merge6-probe` (schedule `merge6_probe.json`, commit `beb761f`): run 1 `artisan6` (the ruled craft staffing, rebuilt
+with the ownership fix of F181 §7), quarterly saves; run 2 `merge6-probe` = the canon with the six ruled merges (BALANCE_FRAMEWORK §10.91.2:
+food e2, textile e3, furniture e3, paper e2, fertilizer e1, steel e3 as second main METHODS of the rung below, host cost and ai_value at the
+geometric midpoint) PLUS a probe-only start grant of the three merged technologies whose host buildings stand in 1836 (baking_powder,
+chemical_bleaching, improved_fertilizer) to GBR, FRA, USA, PRU and BEL, monthly saves. Both 1836→1838.1.1, one seed each, compared with the
+canon's six F177 runs (`20260929_002728`). A MECHANICS probe; questions and predictions registered in the schedule before launch.
+⚠ improved_fertilizer also unlocks the farms' Fertilization method, so the granted countries' fertilizer demand moves with it — the in-game
+context the switch would meet anyway.
+
+**1. The craft book's ownership fix (A1) — works.** At 1836.4.1, world urban-centre levels **602** against the canon's 596–603 (per country,
+fixed run | canon runs: China 105 | 104–105, Russia 36 | 36–37, India 33 | 33–35, **Austria 26 | 25–26** (33 before the fix), Ottomans 16 | 15,
+Japan 11 | 11, Britain 89 | 88–89). Financial-district levels **1,117** against the canon's 1,090–1,095 (the unfixed run: 1,704); capitalists 57k
+against 56–57k (unfixed 88k); manor-house levels 31,503 against 31,457–31,500. The residual +2.5% on financial districts (Russia 76 against
+70–71, Ottomans 24 against 18, Japan 7 against 3) is measured and its cause not identified.
+
+**2. The craft book otherwise repeats F181 (A2).** Staffing 1836.4 → 1838.1: China 1.00 → 1.00 (1,640 levels), Russia 0.99 → 0.95, India
+0.98 → 0.99, Austria 0.99 → 0.99, Ottomans 0.99 → 0.97, Japan 1.00 → 0.94, Spain 1.00 → 1.00, Persia 0.87 → 0.97, **Korea 0.98 → 0.79**
+(literacy 10%; machinist workers 21k → 17k — the literacy gate showing, on 70 levels). World craft levels 1836.4 → 1838.1: food 403 → 410,
+textile 1,532 → 1,475, furniture 902 → 890, glass 871 → 842, tooling 101 → 92, paper 1,321 → 1,288 (−2.6%). Zero company-owned craft levels.
+World GDP at 1836.4.1: 389M displayed, 417M at base prices (canon 389–393M, 412–418M).
+
+**3. The switch (M1, M4) — works, building by building.** Host levels on their own method / on the merged method, granted countries:
+
+| | 1836.2.1 | 1836.3.1 | 1836.7.1 | 1837.3.1 | 1837.8.1 | 1838.1.1 |
+|---|---|---|---|---|---|---|
+| food, GBR | 12/0 | 8/4 | 3/9 | 3/9 | 0/12 | 0/12 |
+| food, FRA | 6/3 | 0/9 | 0/9 | 0/9 | 0/9 | 0/9 |
+| food, PRU · USA · BEL | 5/0 · 1/2 · 2/0 | 0/5 · 1/2 · 2/0 | 0/5 · 0/3 · 2/0 (BEL 0/2 by 1836.8) | 0/5 · 0/3 · 0/2 | same | same |
+| paper, GBR | 10/0 | 10/0 | 5/5 | 0/10 | 0/10 | 0/10 |
+| paper, FRA | 17/4 | 5/16 | 5/16 | 0/21 | 0/21 | 0/21 |
+| paper, PRU · USA · BEL | 4/0 · 5/0 · 1/0 | 4/0 · 5/0 · 1/0 | 0/4 · 2/3 · 1/0 | 0/4 · 0/5 · 1/0 | same | same |
+| fertilizer, GBR · PRU · USA · BEL | 2/0 · 0/2 · 2/0 · 2/0 | same | same | 0/2 · 0/2 · 1/1 · 2/0 | 0/2 · 0/2 · 0/2 · 2/0 | same |
+
+World: food 31/5 → 5/31 (the five left are ungranted countries' levels), paper 37/4 → 1/40, fertilizer 6/2 → 2/6. **No ungranted country
+ran a merged method** (M4). The prediction (every granted host within 1–3 months) was **half right**: France and Prussia switched in the first
+one or two months, Britain took 18 months for food and 14 for paper, Belgium's single paper level never switched, and the fertilizer switch
+took 0–19 months. It is the engine's own pace — one building at a time, the vanilla PM-switch behaviour — and it cost no construction.
+**No new host levels** were built in two years (food 36, paper 41, fertilizer 8 at both ends, M3).
+
+**4. Secondaries (M2) — the old method's copy resets, and no merged copy was selected.** Each host's secondaries are minted once per main method
+and gated to it, so a building that switches loses its old method's copy to the group default: Britain's pot stills (8 of 12 food levels at the
+start) were gone by 1836.9, with every British food level on `pm_disabled_distillery`. In two years **no level ran a merged method's secondary
+copy**. The canon's AI does the same on its own early (canon run 1, sweeteners' pot stills 19 → 10 → 5 levels at 1836.4 / 1838.1 / 1845.1) and
+picks secondaries up again only later (canneries, vacuum canning and stills on a minority of levels by 1860–1900). So the reset costs little
+early, and whether merged copies get re-selected is a century-scale reading. No gating error anywhere.
+
+**5. Staffing through the switch.** Staffed ÷ levels on the three host types in the granted countries: food 0.98 → 0.96 (1836.3) → 1.00 (1838.1);
+paper 0.98 → 0.91 (1836.4) → 0.96–0.98; **chemical plants 0.93 → 0.68 (1837.1) → 0.71 (1838.1)**. Improved Fertilizer staffs 1,000 engineers
+and 1,500 machinists a level against Artificial Fertilizers' 500 and 1,000 (and eats 41.5 iron against 12). The AI switched anyway and runs the
+switched plants two-thirds staffed — the switch is decided before the labour exists.
+
+**6. World product (M6).** Displayed GDP 388M / 414M / 427M at 1836.4.1 / 1837.1.1 / 1838.1.1 against the canon's 389–393M / 409–417M /
+419–438M — inside the range. At base prices 422M / 420M / 447M against 412–418M / 406–417M / 425–444M — at or just above the canon's top:
+the switched hosts make more (the merged methods' output is ×2.2 a level), and their prices fall.
+
+**7. Load (M5).** Both books load and match the game version; the init marker is in both runs' logs. No error line names a file of ours, and no
+start building was rejected. The merge run carries the canon's own catalogued `is_production_method_active` lines (pm_mechanized_workshops,
+pm_patent_stills, pm_pot_stills, pm_traditional_art, two each); the craft run adds the F181 automation references.
+
+**What it does NOT say.** Two years, one seed per book, and the merge book's technologies arrive by a probe grant decades early, on buildings of
+five countries. Nothing about the century, the register, prices under a real diffusion of the technologies, or the three merges whose hosts do
+not stand in 1836 (textile, furniture, steel). Whether the AI ever re-selects a merged method's secondary is open, and so is whether the
+under-staffed switched chemical plants recover. The residual +27 financial-district levels in the craft book are unexplained.

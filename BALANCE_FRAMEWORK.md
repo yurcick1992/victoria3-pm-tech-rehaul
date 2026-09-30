@@ -9080,3 +9080,19 @@ pair (furniture closest at 0.18). A cost-only branch is × 1.9^0.75 = 1.62 of th
 **What merging changes.** The old method dies by SWITCHING, as in vanilla, not by exit — every metric must count levels by the ACTIVE
 method's era (save summaries carry per-method levels since v8); this matters most for fertilizer, whose host is the e0 rung T0 counts. None
 of the six removed rungs stands on the 1836 map; staffing totals already match within every pair.
+
+**How it is expressed (implemented 2026-09-30, `tools/make_merge_config.mjs`, book `merge6`).** The removed rung keeps its tier record and gains
+`method_of: <host key>`; `_merge.pairs` records every pair with both rungs' old costs and ai_values. The builder emits no building for a
+`method_of` rung: its main method joins the host's main group, gated by its own technology. Each emitter follows the same reading, one
+building with two main methods:
+- **Secondaries** (`emit_secondaries`): each rescalable secondary is minted once per main method, scaled to that method's output and input bill,
+  and gated to that method — so a cannery beside Baking Powder is Baking Powder's cannery. A vanilla-gated secondary keeps its original only
+  when no main method satisfies the gate.
+- **Research entries** (`emit_research_events`): a merged rung is counted as the host's levels running its method; a host carrying merged
+  methods counts only the levels on its own. Paper e3's source is sulfite mills on the bleaching method; fertilizer e2's, chemical plants on
+  the improved method.
+- **Companies**: merged keys leave every company list (they name no building type); the host covers both methods.
+- **The 1836 start**: no factory lands on a merged rung, and the converter throws if one ever does.
+- **L31** checks the record and the midpoint.
+The reading side is `tools/testbed/ledger/merge_methods.mjs` (levels per method, from the summaries' `pms`). The register's T0–T3 still count
+a merged rung under its host's era; that must change before a century batch of this book is read.

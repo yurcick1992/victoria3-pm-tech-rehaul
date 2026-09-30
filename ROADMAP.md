@@ -2241,15 +2241,16 @@ e0 where they stand; a periphery craft repays itself in about a year (ruled deli
 
 **Next:**
 1. ✅ Rulings recorded (§10.91).
-2. Generate `config/mod_config.artisan6.json` (the ruled staffing) and `config/mod_config.artisan6-shop.json` (masters as shopkeepers at
-   the same wage units) + tree twins, from the canon by a post-processor, so e1–e3 are byte-identical by construction.
-3. Builder support: the craft building group, per-rung group / secondary exclusions / mesh density, secondary employment × 0.1, the 1836
-   ×10 levels and dropped method entries, the 1836 pops re-typed into the craft professions, companies without the craft keys, L31 taught
-   the craft rungs.
-4. Probe both books, 1836→1838 each (user go-ahead 2026-09-30): staffing fill by profession in the craft states of China, the Ottomans,
-   Korea, Persia, Russia and India; zero economy of scale on 20+-level crafts; urban-centre levels and state infrastructure usage against the
-   canon; no company-owned craft levels; the craft build rate and the queue mix (the ai_value watch item); error.log.
-5. Pick the staffing on the probe, then ask for the 2+1 century batch against `canon-dams-family` (F177, consensus loss 5.90). Watch: craft
+2. ✅ `config/mod_config.artisan6.json` (the ruled staffing) and `config/mod_config.artisan6-shop.json` (masters as shopkeepers at the same
+   wage units) + tree twins, generated from the canon by `tools/make_artisan_config.mjs`.
+3. ✅ Builder support: the craft building group, per-rung group / secondary exclusions / mesh density, secondary employment × 0.1, the 1836
+   ×10 levels and dropped method entries, the 1836 pops re-typed into the craft professions (`emit_craft_start.mjs`), companies without the
+   craft keys, L31 taught the craft rungs.
+4. ✅ Probed (F181, session `20260930_171147`): both staffings hold 0.89–1.00, no economy of scale, no company crafts, no building wave,
+   world GDP the canon's — and the ×10 start had multiplied the ownership entries; FIXED, and the fix confirmed (F182, session
+   `20260930_174540`: urban centres and financial districts back at the canon's).
+5. Pick the staffing on the probe (both read alike at the start; Korea's ruled staffing slips to 0.79 by 1838), then ask for the 2+1 century
+   batch against `canon-dams-family` (F177, consensus loss 5.90). Watch: craft
    workers by country and decade against each country's wage path (a craft rung still growing in Britain at 1900 falsifies the mechanism),
    world W, T0 by workers, PI/PP, row P.
 
@@ -2265,10 +2266,15 @@ gated by its own technology. Period retrofits cost 5–20% of a new plant.
 Branch if it runs hot: the added method ×1/√1.9 (capital-neutral for new builds), or cost ×1.62.
 
 **Next:**
-1. `config/mod_config.merge6.json` + twin from the canon by a post-processor (`method_of` on the removed rung).
-2. Builder: no building for a merged rung; its method in the host's main group, gated by its technology; per-method secondaries gated with
-   `unlocking_production_methods`; companies drop the removed keys; the technology after a merged pair anchors on the host; L31 accepts a
-   host with a second method.
-3. Method-era accounting in the register and the ledgers (T0–T3 and the old-rung census read the per-method split).
-4. A probe with the six technologies granted to a few countries (1836→1838) to watch the AI switch; then a 2+1 batch against the canon.
+1. ✅ `config/mod_config.merge6.json` + twin, generated from the canon by `tools/make_merge_config.mjs` (`method_of` on the removed rung).
+2. ✅ Builder: no building for a merged rung; its method in the host's main group, gated by its technology; per-method secondaries gated with
+   `unlocking_production_methods`; companies drop the removed keys; the technology after a merged pair counts the host's levels on the
+   merged method; the start converter throws on a merged rung; L31 checks the `_merge` record and the midpoint.
+3. ◐ Method-era accounting: the register (`criteria.mjs` T0–T3) splits a host's workers by method; `tools/testbed/ledger/merge_methods.mjs`
+   reads the switch. Still keyed on building type: the old-rung census and obsolescence readers (`rung_econ`, `rung0_*`,
+   `lib_obsolescence`, `tiered_panel`) — teach them before quoting them on a merge book.
+4. ✅ Probed (F182, session `20260930_174540`, with three of the technologies granted to GBR FRA USA PRU BEL): the AI switches existing hosts
+   one building at a time over 0–19 months, no construction, ungranted countries untouched; a switch resets the old method's secondary and no
+   merged copy was re-selected in two years; switched chemical plants run two-thirds staffed. NEXT: the 2+1 century batch of `merge6`
+   against the canon — ASK FIRST.
 

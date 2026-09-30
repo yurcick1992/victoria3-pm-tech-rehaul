@@ -133,7 +133,11 @@ function configFor(runDir) {
   if (!p) { try { const bs = JSON.parse(readFileSync(join(runDir, 'build_state.json'), 'utf8')); const d = bs.deterministic || {}; p = (d.mod_under_test || {}).built_from_config || d.built_from_config || ''; } catch { p = ''; } }
   if (!p) return null; const abs = existsSync(p) ? p : join(REPO, p); if (!existsSync(abs)) return null;
   const cfg = JSON.parse(readFileSync(abs, 'utf8')); const tier = {};
-  for (const ind of cfg.industries || []) { if (ind.disabled) continue; for (const t of ind.tiers || []) tier[t.key] = { era: t.era, emp: Object.values(t.employment || {}).reduce((a, b) => a + (+b || 0), 0) * (t.workforce_mult || 1) }; }
+  for (const ind of cfg.industries || []) { if (ind.disabled) continue; for (const t of ind.tiers || []) tier[t.key] = { era: t.era, pm: t.pm_key, emp: Object.values(t.employment || {}).reduce((a, b) => a + (+b || 0), 0) * (t.workforce_mult || 1) }; }
+  // ⭐ A MERGED RUNG (`method_of`, BALANCE_FRAMEWORK §10.91.2) is a second main METHOD of its host building, so its workers sit in the
+  //   host's building type: the host's staffing is split by the levels running each main method (the summary's `pms`) and each share
+  //   goes to its own rung's era — otherwise a merge book counts every switched level under the host's era (fertilizer's under T0).
+  for (const ind of cfg.industries || []) { if (ind.disabled) continue; for (const t of ind.tiers || []) if (t.method_of && tier[t.method_of]) (tier[t.method_of].methods ||= [{ pm: tier[t.method_of].pm, era: tier[t.method_of].era, emp: tier[t.method_of].emp }]).push({ pm: t.pm_key, era: t.era, emp: tier[t.key].emp }); }
   return { path: abs.replace(REPO, '').replace(/^[\\/]/, ''), tier };
 }
 // ---- one run's yearly summaries
@@ -149,7 +153,11 @@ function readRun(rel, tier) {
     const y = +String((j.provenance && j.provenance.date) || '').split('.')[0]; if (!y || years.has(y)) continue;
     const C = j.countries || {}; const world = agg(), pool = agg(); const members = {}; const T = { w: [0, 0, 0, 0], s: [0, 0, 0, 0] };
     for (const [tag, c] of Object.entries(C)) { addC(world, c); const inPool = POOL.includes(tag); if (inPool) addC(pool, c);
-      if (tier) for (const [k, b] of Object.entries(c.buildings || {})) { const t = tier[k]; if (!t) continue; const w = (+b.staffing || 0) * t.emp; T.w[t.era] += w; if (inPool) T.s[t.era] += w; } }
+      if (tier) for (const [k, b] of Object.entries(c.buildings || {})) { const t = tier[k]; if (!t) continue;
+        // a merge host: its staffing shared out over its main methods by the levels running each (a summary without `pms` → the host's own era)
+        const lv = t.methods && b.pms ? t.methods.map(m => +b.pms[m.pm] || 0) : null; const tot = lv ? lv.reduce((x, y) => x + y, 0) : 0;
+        const parts = tot > 0 ? t.methods.map((m, i) => ({ era: m.era, w: (+b.staffing || 0) * (lv[i] / tot) * m.emp })) : [{ era: t.era, w: (+b.staffing || 0) * t.emp }];
+        for (const p of parts) { T.w[p.era] += p.w; if (inPool) T.s[p.era] += p.w; } } }
     world.gdp = +j.world.gdp || world.gdp;
     for (const m of MEMBER) { const tag = (MEMBER_FAMILY[m] || [m]).find(x => C[x]); const c = tag && C[tag]; if (!c) { members[m] = null; continue; } const a = agg(); addC(a, c); members[m] = { tag, ...fin(a) }; }
     wage[y] = {}; for (const tag of PRICE_TAGS) if (C[tag]) wage[y][tag] = +C[tag].base_wage || NaN;
