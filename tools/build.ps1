@@ -1404,6 +1404,13 @@ if ($LASTEXITCODE -ne 0) { throw "emit_companies.mjs failed (exit $LASTEXITCODE)
 & node (Join-Path $PSScriptRoot 'emit_goods.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_goods.mjs failed (exit $LASTEXITCODE) - the per-good trade weights would ship broken or not at all." }
 
+# --- BUILDING-GROUP AI WEIGHTS (FINDINGS F178, the capital-export arm) --------------------------------
+# `building_group_ai` rewrites named fields of named groups (e.g. bg_manufacturing.foreign_investment_ai_factor)
+# in a whole-file copy of vanilla's common/building_groups/00_building_groups.txt. Absent -> nothing emitted and
+# vanilla's file stands, which is the canon.
+& node (Join-Path $PSScriptRoot 'emit_building_groups.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_building_groups.mjs failed (exit $LASTEXITCODE)." }
+
 # --- CONSTRUCTION COST OF PRESERVED VANILLA BUILDINGS (BALANCE_FRAMEWORK §10.89) --------------------
 # `building_required_construction` patches the named buildings' required_construction inside the building
 # files this build owns (the power plant at 4x vanilla); absent -> nothing patched. Throws on a building

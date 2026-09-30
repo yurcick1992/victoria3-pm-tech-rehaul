@@ -144,7 +144,7 @@ intact runs** (the median of two; with three, the two closest on world GDP; a pa
 0 at 1936 or falling decade over decade, soft 1935 > 1.3 × the 1900s · T3 ÷ (T0 + T1 + T2) the more the better, low weight · GDP aim **1.1–1.9×** (= 0.95 × 2.0; §10.85), soft
 < 0.95 or > **2.0** — ⚠ the register reads TOTAL pool GDP while the ruling says "per capita"; they differ by the pool's population ratio (conquest moves it up to ~20%) and the report prints both. ⚠⚠ THE AMENDMENT UNSEATS THE INCUMBENT: re-scored, `canon-c19-e0ai500` 5.0 (n=1 intact), the eager `canon-c195-in12` book 5.3, A 1.9 6.6, **the canon 7.9** — the books penalised for being "too rich" are now the best. No re-canonization is proposed on that evidence. ⚠ It also makes pool U*'s "≥ 2×" aim CONTRADICT pool W's (r = −0.98; U* ≥ 2 ⇔ pool W ≈ 0.68, so at the new 0.95 ceiling U* sits on its own soft line) — unruled · PI (the building inputs steel / tools / engines / fertilizer / explosives / dye / paper, in pounds ÷ base in the British, American, French and
 Dutch markets, ÷ vanilla) aim ≤ 0.8 and falling decade over decade, soft > 1.0 · PP (the pop goods groceries / clothes / furniture / glass / fine art /
-automobiles / telephones / radios in WAGE UNITS ÷ vanilla) aim ≤ 0.8, soft > 1.1 · the war goods read only. **World:** GDP aim 1.0×, soft outside [0.75, 1.33],
+automobiles / telephones / radios in WAGE UNITS ÷ vanilla) aim ≤ 0.8, soft > 1.1 · the war goods read only. **World:** GDP aim 1.0× — ⭐ the GDP AS THE GAME DISPLAYS IT (the save's `gdp`), because government minting and prestige/rank scale with it (user-ruled 2026-09-30, BALANCE_FRAMEWORK §10.90, which also closes pop-need caps, construction goods-efficiency and pool-contribution changes as price levers; GDP at base prices is a secondary reading only) — ⚠ that figure tracks value added at BASE prices within 0.94–1.08 over a century, so the mod's lower prices take only ~7% off the world's (FINDINGS F178 §9.4, which qualifies F45's "market prices"), soft outside [0.75, 1.33],
 HARD > 1.5× (runoff) or < 0.5× (stall) at the end state and the 1836–1845 anchor (outside vanilla's 90% CI ± 10% in more than two years) · W aim 0.6–0.95×,
 soft > 1.0 · U* soft < 1.0 · H aim < 1×. ⭐⭐ **THE WORLD PRODUCT CARRIES A DERIVED HARD BAND SINCE 2026-09-19, AND NEITHER H NOR W DOES** (user-ruled, after two corrections that GLOSSARY.md now exists to prevent): *"not H and not W, but rather world product, the combined GDP of all countries (do we have a letter for that? We probably shouldn’t, GDP is good enough). For it, the mod hard boundaries are 95% CI ±10%."* ⇒ the END-STATE world GDP line is **[vanilla’s p2.5 × 0.8, vanilla’s p97.5 × 1.2]**, DERIVED per invocation like the 1836 anchor’s: at n=16 vanilla runs 0.823–1.146× its own median, so the band is **0.66–1.38×** (AMENDED from ×0.9/×1.1 within the hour — *“let’s make it 95CI-+20%, not 10%, for hard bounds on world product. To not disallow 1.3 as hard boundary broken”*), below = broken by STALL, above = broken by RUNOFF, per run. It REPLACES the provisional < 0.5 / > 1.5 lines (`--gdp-hard legacy` restores them). ⚠ "CI" in this project is the PERCENTILE INTERVAL OF THE SIXTEEN SEEDS, never the confidence interval of a mean (GLOSSARY §4). ⚠ It breaks **2 of 11 runs** across the six books of 2026-09-17/19 — canon-lvl-a19b17’s two stalls at 0.60 and 0.45, which every other reading already condemned; at the ×0.9/×1.1 first tried it broke 6 of 11 INCLUDING the canon’s run 1 at 1.30×, which is what the amendment was for. ✅ At the ruled width the band sits OUTSIDE the soft line (0.75–1.33) on both sides, so soft and hard are ordered correctly and the loss’s kink still works — the ±10% version had the hard ceiling INSIDE the soft one and needed a further ruling; this does not. H carries no vanilla-derived bound by the same ruling (*"H is hardly comparable with vanilla anyway"* — vanilla’s own H spans 0.56–1.93× between seeds where its W spans 0.86–1.08×); the W band was measured and is **NOT shipped** (kept behind `--w-hard`, default off, so nothing unruled ships) because its floor lands inside the register’s own W aim and breaks every book (BALANCE_FRAMEWORK §10.86.1). **HARD — CAPITAL ABUNDANCE (agreed 2026-09-17 13:30):** a shortlist member of 50M+ people with U* under 5% in FIVE or
 more consecutive years ending by 1936 AND a mean hoard over them ≥ 1.5 of its own GDP = broken by runoff (vanilla's own seeds break it in 2 of 16 — Britain at 1.5
@@ -1500,6 +1500,18 @@ config/mod_config.canon-slide-b158-trade.json ⭐⭐ THE TRADE ARM (ROADMAP step
 config/mod_config.trade15-b1{64,68,72,76}.json ⭐ THE TRADE ×1.5 B LADDER (F163, user-ruled 2026-09-24) + tech-tree twins: the canon
                         (finish boost on) regenerated at B 1.64 / 1.68 / 1.72 / 1.76 via its `_ab.command`, plus `make_trade_config --scale
                         1.5`. Batch 20260924_101627_trade15-bladder-n12 (12 runs). The `slide-b1xx` bases stay gitignored. Un-ignored
+config/mod_config.canon-fdi-rgate.json ⚗ THE CAPITAL-EXPORT + RESEARCH DATE-GATE ARM (2026-09-30, FINDINGS F178; experimental, NOT ruled) + its tree twin
+                        (the canon's, byte for byte): the canon (canon-dams-family-nolog, sha256 806c8b3df03b5d61) plus exactly two keys —
+                        `building_group_ai` {bg_manufacturing.foreign_investment_ai_factor 0.25 → 1.0} (tools/emit_building_groups.mjs; lets
+                        a leader's private pool build factories abroad, the off-axis lever for Britain's depeasantation) and
+                        `research_events.date_gate` {eras 3/4/5: 1855/1885/1920, before_mult 0.5} (an INDUSTRY research entry for a game-era
+                        3/4/5 technology grants half before each era's anchor minus 20 years; war entries never gated; the player-side lever,
+                        each reduced grant logs `PMR_JEG|reduced|<stage>|<tech>|<country>`). Measured by session 20260930_011604 (schedule
+                        canon_fdi_rgate_n6.json with its predictions; n=5, run 6 stopped by the user at 1874). ⭐ OUTCOME (FINDINGS F179): NOT
+                        ADOPTED — British factories abroad ×3 and the shortlist's share of world GDP back to vanilla's, but the hoard ROSE (pool H
+                        2.31 against 0.87), Britain's depeasantation did not move (end U* 10.2% against 9.2%), 3 intact / 1 stall / 1 runoff with a
+                        divergent consensus, every intact run's loss above every intact canon run's. The user then closed the current lines of
+                        work in favour of an e0 "true artisanship" redesign (another session). Un-ignored with its twin
 config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
@@ -2563,6 +2575,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         families resolved per run), and PI/PP are read on the arm's markets ∩ VANILLA's, with the basis PRINTED beside the index —
                         an arm on the eleven-tag list has German and Belgian prices the n=16 vanilla baseline does not, and averaging different
                         baskets on the two sides of a ratio is not a comparison
+                        ⭐ Since 2026-09-30 it prints GDP AT BASE PRICES beside world GDP — 52 × Σ (va_out − va_in) over every building, world and
+                        shortlist, ÷ vanilla's, with the price level (displayed ÷ base-priced, ÷ vanilla's) — a SECONDARY reading, NOT in the loss
+                        (BALANCE_FRAMEWORK §10.90, FINDINGS F178 §9.4); per run it reads "world GDP 1.09× (1.17× at base prices)"
   testbed/ledger/capital_flags.mjs  ⚠ SUPERSEDED AS A CRITERION 2026-09-17 by §10.83 (a diagnostic printer now) — ⭐ THE HOARD SPLIT AND THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15): per usable run at a year, the
                         investment-pool hoard ÷ GDP for the WORLD and the SHORTLIST (GBR, USA, FRA, GER — NGF, then PRU, standing in for an unformed
                         Germany) and TOTAL UNEMPLOYMENT INCLUDING PEASANTS ((unemployed + peasants) ÷ workforce) beside the strict figure, each
@@ -2665,7 +2680,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         `trade_obsolescence.mjs --arm <session>:<setup>:<book> [--arm …] [--label-<setup> <name>] [--years …]
                         [--pool …] [--override-dir <dir of re-summarised saves>] [--industries …] [--json out]`.
                         ⚠ Staffing alone is not death (a profitable building can empty for want of labour); loss share and
-                        margin carry the reading. ⚠ Local purchase prices are not in a save: the premium is a PRODUCER price
+                        margin carry the reading. ⚠ Local purchase prices are not in a save: the premium is a PRODUCER price.
+                        ⚠ Until 2026-09-30 it found a year's summary only near the YEARLY file index, so a session with QUARTERLY
+                        autosaves (20260929_002728) printed its run count and NO rows; it now tries both cadences, then every file
   testbed/ledger/fill_obsolescence.mjs  the ledger's OBS const (the "Obsolescence — in-market vs trade" card on the
                         world page and its selection mirror on the watchlist): `<outDir> --session --setup --config [--pool]
                         [--override-dir]` → obsolescence.json; run it BEFORE fill_assemble. Exits 1 if no industry has an
@@ -2884,6 +2901,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         build.ps1 -> run -> harvest -> cross-run markets_all.tsv. Interactive p/r/s/x control;
                         crash policy. Never call the builder directly for test data. Specs in
                         testbed/schedules/, results in testbed/sessions/ (the ONE results root).
+                        ⭐ `tools/testbed/NO_NEW_RUNS` (2026-09-30) is the FILE twin of the [s] key: checked before EVERY
+                        run, it lets a running game finish and starts nothing further — the tool for a user deadline on
+                        STARTING games (the STOP file is the [x] key and closes the running game). Dropped at a set local
+                        time by `testbed/no_new_runs_at.ps1 -At 'yyyy-MM-dd HH:mm'` (launch it detached, -Hidden; it logs to
+                        no_new_runs_at.log). ⚠ REMOVE the file after the batch: while it exists every schedule refuses to
+                        start a run (it says so in session.log). Both files are gitignored
                         ⭐ It also owns the SAVEGAME HARVEST (default ON, `-NoSaveHarvest` opts out):
                         `archive_autosaves.ps1` runs CONCURRENTLY with the game into `<run>\saves\`, and
                         `harvest_saves.ps1` runs BETWEEN runs into `<run>\save_summaries\`, with a
@@ -3082,6 +3105,17 @@ tools/                  dev tooling — NOT shipped in the mod
                         THROWS on an unknown good, a `local`/untradeable good, a good with no traded_quantity line, or a value < 1.
                         W = cost × traded_quantity is the base-price £ one unit of Trade Capacity moves; the merchant marine a trade
                         centre consumes is per LEVEL, so raising it costs no convoys (F155)
+  emit_building_groups.mjs  BUILDING-GROUP AI WEIGHTS (2026-09-30, FINDINGS F178, the capital-export arm; not ruled) — called by
+                        build.ps1 (throws). With a top-level `building_group_ai` {group: {field: number}} it writes a WHOLE-FILE copy
+                        of vanilla's common/building_groups/00_building_groups.txt with exactly those direct-child fields changed
+                        (annotated); absent → emits NOTHING (the canon). THROWS on an unknown group, a field that is not a direct
+                        child of the group's block (nothing is ever inserted), or more than one match. Built for
+                        `bg_manufacturing.foreign_investment_ai_factor` (vanilla 0.25; mines 1.0, plantations 1.25): the engine's
+                        weight on a FOREIGN private investment by building group — why British capital abroad (3.8k–11.5k levels at
+                        1936, canon and vanilla alike) is mines, trade centres, railways and plantations and hardly ever factories
+                        (F178 §2, corrected: the summary's `owned_abroad_levels` counts government ownership only). Book:
+                        config/mod_config.canon-fdi-rgate.json (1.0), measured by 20260930_011604 (F179: it works — British factories
+                        abroad ×3 — and is NOT adopted; the machinery stays for any later book)
   make_trade_config.mjs THE PER-GOOD TRADE BOOK — `--base <config> --suffix <sfx>` writes config/mod_config.<sfx>.json = the base + 
                         `goods_traded_quantity` + `_trade` + `_trade_variant` (no base key touched) and the base's tech-tree twin
                         (L20). It holds F159 §7's FIVE-CLASS TABLE — the only copy: E bulk & perishable UNCHANGED (the untreated
@@ -5083,6 +5117,8 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   world away carries fewer lightly-staffed buildings; they notice the century taking longer. So the
   budget is spent against **total run time vs vanilla**, and **shrinking what we ask the engine to
   simulate is a legitimate way to meet it** — not a way of cheating the metric.
+  ⭐ `report_perf.mjs`'s PRINTED labels follow this since 2026-09-30 (section 1 carries "THE GRADE"); until then it still called the
+  pop-matched figure "the verdict" and the total "NOT the verdict" (BUGS_AND_FIXES 2026-09-30). Its JSON keys did not change.
   ⚠ **The pop-matched figure is the DIAGNOSTIC beside it, not the verdict**: seconds per in-game year
   compared at the same live pop-object count (`world.pop_objects_live`, in every save summary). It
   answers a different and narrower question — *is the engine dearer per unit of work?* — which is what

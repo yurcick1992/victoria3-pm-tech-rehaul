@@ -453,6 +453,14 @@ $runNo = 0
 $modsBuilt = @{}
 foreach ($p in $plan) {
     if ($abort) { Log "schedule aborted - skipping remaining runs" "WARN"; break }
+    # ⭐ NO_NEW_RUNS (2026-09-30): the FILE twin of the [s] key - a game already running FINISHES, but no further run
+    # starts. STOP is the [x] key (it closes the running game), so it cannot honour a deadline for STARTING games
+    # ("don't start new games past 4PM"); tools/testbed/no_new_runs_at.ps1 drops this file at a given time. Checked
+    # before EVERY run, the first included; never deleted here, so a relaunch refuses too until someone removes it.
+    if (Test-Path (Join-Path $PSScriptRoot "NO_NEW_RUNS")) {
+        Log "NO_NEW_RUNS present ($(Join-Path $PSScriptRoot 'NO_NEW_RUNS')) - not starting run $($p.index) or any later run" "WARN"
+        break
+    }
     $runNo++
     $token   = "{0}s{1:d3}" -f $stamp, $p.index
     $runDir  = Join-Path $sessionDir ("run{0:d3}_{1}" -f $p.index, $p.setup)

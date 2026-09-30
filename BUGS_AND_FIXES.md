@@ -13,6 +13,28 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-09-30 — the obsolescence reader read NOTHING from a quarterly-save session and said "6 runs"; the speed report's labels inverted the ruling
+
+**Symptom 1:** `tools/testbed/ledger/trade_obsolescence.mjs` on `20260929_002728_canon-dams-family-n6` printed `fam: 6 run(s)` and
+no industry rows at all, while the same call on the yearly-save engine-built dam session printed a full table.
+**Root cause:** `lib_obsolescence.mjs`'s `summariesByYear` found a year's summary by its FILE INDEX, looking within ±3 of `Y − 1835` —
+the position of `Y.1.1` in a run with YEARLY autosaves. The family-rules session saved QUARTERLY (401 summaries a run), where `Y.1.1`
+sits near index `4 × (Y − 1836) + 1`, so every requested year came back empty and the tool summarised empty cells without complaint.
+**Fix:** it tries both neighbourhoods, then every file. Verified on the quarterly session (full rows) with the yearly session unchanged.
+**Prevent:** a reader that finds a file by position must say when it finds none; "N runs" beside an empty table is the signature.
+
+**Symptom 2:** `report_perf.mjs` printed the TOTAL play time under "⚠ NOT the verdict — see 3" and the POP-MATCHED figure as
+"⭐ … => OVER BUDGET", although the user ruled on 2026-08-31 that the GRADE is the total (what a player waits through) and the
+pop-matched figure a diagnostic (CLAUDE.md, the must-not-be-slower bullet). The ledger template had always graded the total; the
+tool's printout and header had not been updated. **Fix:** the labels and one grade line follow the ruling; the JSON keys are unchanged,
+so the ledger's readers see nothing different. First reading under the new labels: the capital-export batch at ×1.01 of vanilla's
+total, WITHIN budget, with the pop-matched figure at +10% as the diagnostic.
+
+**Also added the same day:** `criteria.mjs` prints GDP AT BASE PRICES beside world GDP (a secondary reading, not in the loss;
+BALANCE_FRAMEWORK §10.90, FINDINGS F178 §9.4).
+
+---
+
 ## 2026-09-30 — an apostrophe in 27 research-bar texts broke their tooltips and put ~1,500 parser errors a session into error.log
 
 **Symptom (the user's live Sokoto game, error.log of 2026-09-29, build of 2026-09-28):** about 1,458 repeats of

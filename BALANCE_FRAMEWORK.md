@@ -8960,3 +8960,30 @@ playtested.
 no gameplay effect; the measured book keeps its bytes as the record. (2) **Owners that queue their own dam and sit on it are LEFT ALONE**
 (*"Leave the stalls sitting on dams."*): F177's two long cases, Canada on Niagara-Ottawa (8 years at 5%) and on the Laurentian (5½ years
 without progress), get no nudge.
+
+## §10.90 — LOW END-GAME PRICES: WHICH LEVERS ARE OPEN, AND WHY WORLD GDP IS READ AS DISPLAYED (user-ruled 2026-09-30)
+
+Asked while looking for a way to keep the tiered outputs' prices low in the end game (the obsolescence mechanism: an old rung dies when its
+output price falls while its input prices do not). Three levers were proposed; the user ruled on each:
+
+1. **NO change to the pop-need demand limits** (`max_supply_share` caps, or any other limit on how much of a need a finished good may take).
+   *"Narrative and simulation consistency grounds: people should really mostly switch to consuming finished products towards the end of the
+   game era."* The supply-share "sponge" (a good's share of its need grows with its supply until the cap) therefore stays as it is.
+2. **NO construction goods-efficiency change**, and **NO change to how treasury and pool cash is generated** (investment-pool contribution
+   efficiency and the like): *"Unless we change how cash is generated in treasuries in pools (like IP contribution efficiency, and we won't
+   go there), this will simply lead to more construction and guaranteed runoffs."*
+3. **Cheaper frontier inputs: "possible", with a stated fear of runoff**, and a worked example requested on a canonical scenario. The
+   example (FINDINGS F178 §8) found the input-cost lever family moves prices and the old rung only WITH world GDP (24 runs of the B axis:
+   PI −0.114 per unit ln world GDP, B's own effect not resolved; the old rung's share none beyond GDP), so it is recorded as a GDP lever,
+   not a price lever. Not pursued unless a new argument separates it from growth.
+
+⭐ **WORLD GDP IS READ AS THE GAME DISPLAYS IT.** *"Two important things in game scale with displayed GDP and have mechanical
+consequences: government money minting and prestige (so country rank), which again has mechanical consequences. We're aiming for 1.0 of
+vanilla GDP not because it looks nice, but because otherwise we'll have a hell of a lot more to balance."* ⇒ a design that lowers prices must
+still land the DISPLAYED world GDP near 1.0× vanilla. GDP at BASE prices may be tracked beside it as a secondary reading (*"could be a useful
+secondary metric to track, but not the main one"*); it never replaces the register's line.
+⚠ **Measured the same day (FINDINGS F178 §9.4): the displayed figure is not a market-priced value added.** Over a century it stays within
+0.94–1.08 of value added at BASE prices, in vanilla and the mod, while the buildings' own market ledgers reach only ~0.63–0.70 of it. So a
+price decline costs displayed GDP little: the mod's lower price level takes ~7% off the world's at 1935 (~18% off the shortlist's), and the
+two readings (displayed and base-priced) stay close. The first draft of this section called the ruled figure "nominal, at market prices";
+that wording is withdrawn — the user's words were "displayed GDP".

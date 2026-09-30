@@ -447,10 +447,26 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       `${T}${T}}`).join('\n') +
     `\n${T}}\n}`);
 
+  // ⭐ THE DATE GATE (FINDINGS F178, the player-side arm of 2026-09-30; not ruled): `research_events.date_gate` =
+  //   { eras: { "<game era>": <year> }, before_mult: 0.5 }. An INDUSTRY entry of a technology whose game era has a gate year
+  //   grants only before_mult of its stage grant while game_date < that year, the full grant after. The playtest's Britain
+  //   held 5 of the 8 era-5 production technologies by 1909, where the anchor principle puts half of era 5 at 1940 for a
+  //   tech leader; the AI leaders reach era 5 in the late 1920s–30s, so a gate at anchor − 20 years barely touches them.
+  //   War entries are never gated: they are a catch-up channel (an enemy already fields the technology).
+  const DG = RE.date_gate || null;
+  const gateYear = DG && DG.eras && a.rule !== 'war' ? DG.eras[String(T0.era)] : null;
+  if (gateYear != null && !(Number.isInteger(gateYear) && gateYear > 1836 && gateYear < 1950)) throw new Error(`research_events.date_gate: bad year ${gateYear} for era ${T0.era}`);
+  const lowGrant = gateYear != null ? Math.round(grant * (DG.before_mult ?? 0.5)) : null;
+  if (lowGrant != null && !(lowGrant >= 0 && lowGrant <= grant)) throw new Error(`research_events.date_gate: before_mult ${DG.before_mult} out of [0, 1]`);
   RE.stages.forEach((stage, si) => {
     const key = jeName(tech, stage);
     const first = si === 0;
     const next = RE.stages[si + 1];
+    const grantBlock = gateYear == null
+      ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n${T}${T}}\n`
+      : `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech}  game_date >= ${gateYear}.1.1 }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n${T}${T}}\n` +
+        `${T}${T}else_if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_technology_progress = { progress = ${lowGrant}  technology = ${tech} }\n` +
+        `${T}${T}${T}debug_log = "PMR_JEG|reduced|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n${T}${T}}\n`;
     jes.push(
       `${key} = {\n` +
       `${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n` +
@@ -461,7 +477,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       `${T}scripted_progress_bar = ${barName(tech)}\n\n` +
       `${T}complete = {\n${T}${T}scope:journal_entry ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} }\n${T}}\n\n` +
       `${T}on_complete = {\n` +
-      `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n${T}${T}}\n` +
+      grantBlock +
       (next ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_journal_entry = { type = ${jeName(tech, next)} }\n${T}${T}}\n` : '') +
       `${T}${T}debug_log = "PMR_JE|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n` +
       `${T}}\n\n` +
@@ -476,7 +492,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     //   only "Our position makes X worth pursuing." `_desc` keeps the same text, harmless and cheap.
     const body = a.rule === 'war'
       ? `Hard fighting concentrates the mind. Each month a general of ours holds a front with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions against an enemy who already fields ${nice}, this bar advances by one; three stages of ${span} months each, and each completed stage grants half the technology's base research cost.`
-      : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; three stages of ${span} months each, and each completed stage grants half the technology's base research cost.` + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
+      : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; three stages of ${span} months each, and each completed stage grants half the technology's base research cost` + (gateYear != null ? ` (before ${gateYear}, only ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that: the trade cannot hurry an idea ahead of its time).` : '.') + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
     loc.push([key + '_desc', body]);
     loc.push([key + '_reason', body]);
   });

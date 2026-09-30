@@ -2,6 +2,10 @@
 //
 //   node tools/testbed/ledger/report_perf.mjs <sessionDir|runDir> [...] [--json <out>] [--bins N]
 //
+// ⭐⭐ SUPERSEDED READING BELOW (user-ruled 2026-08-31, CLAUDE.md): THE GRADE IS THE TOTAL PLAY TIME against vanilla's — what a player
+// waits through — and shrinking what the engine simulates is a legitimate way to meet it. The pop-matched figure is the DIAGNOSTIC beside
+// it (is the engine dearer per unit?). The printed labels follow the ruling since 2026-09-30; the text below is the original argument.
+//
 // ⚠⚠ THE WHOLE POINT, AND THE TRAP IT EXISTS TO AVOID: **A RAW WALL-CLOCK COMPARISON IS
 // MEANINGLESS, AND ON OUR OWN DATA IT POINTS THE WRONG WAY.** In session 20260813_083557 the modded
 // arm finished a century in 134.6-137.2 min against vanilla's 155.5-186.7 — the mod looks ~15% FASTER.
@@ -135,7 +139,7 @@ for (const r of runs) {
 
 const good = runs.filter(r => r.complete);
 const van = good.filter(r => r.isVanilla), mod = good.filter(r => !r.isVanilla);
-console.log('\n=== 1. NAIVE TOTAL WALL CLOCK  (⚠ NOT the verdict — see 3) ===');
+console.log('\n=== 1. ⭐ TOTAL PLAY TIME — THE GRADE (user-ruled 2026-08-31: what a player waits through; budget +10%) ===');
 console.log(`  wall basis: ${WALL === 'meta' ? 'meta.wall_seconds (every attempt, crash overhead IN)' : 'play time from the observer ticks (load once + play; reloads and replays OUT; lib_wall.mjs)'}`);
 for (const [nm, set] of [['vanilla', van], ['mod', mod]]) if (set.length) { const ov = set.map(r => r.crash_overhead_seconds).filter(Number.isFinite); const ct = set.filter(r => (r.attempts ?? 1) > 1).length; const sumOv = ov.reduce((x, y) => x + y, 0); const sumPlay = set.reduce((x, r) => x + (r.wall_play_seconds || 0), 0); console.log(`  ${nm.padEnd(8)}: ${ct} of ${set.length} runs resumed after a crash; crash overhead (meta − play) Σ ${(sumOv / 60).toFixed(1)} min = ${sumPlay ? (sumOv / sumPlay * 100).toFixed(2) : '-'}% of play`); }
 const tot = a => a.length ? `${a.map(r => fmtMin(r.wall_seconds)).join(' / ')} min   median ${fmtMin(median(a.map(r => r.wall_seconds)))}` : '(none)';
@@ -144,9 +148,10 @@ console.log(`  mod     (n=${mod.length}): ${tot(mod)}`);
 if (van.length && mod.length) {
   const rr = median(mod.map(r => r.wall_seconds)) / median(van.map(r => r.wall_seconds));
   console.log(`  raw ratio mod/vanilla = ${rr.toFixed(3)}  (${rr < 1 ? 'mod finishes SOONER' : 'mod finishes LATER'})`);
+  console.log(`  ⭐ THE GRADE: total play time ×${rr.toFixed(3)} of vanilla's, budget ×1.10 => ${rr <= 1.10 ? 'WITHIN BUDGET' : 'OVER BUDGET'}`);
   const pr = median(mod.map(r => r.endPops)) / median(van.map(r => r.endPops));
   const lr = median(mod.map(r => r.endLevels)) / median(van.map(r => r.endLevels));
-  console.log(`  ⚠ but the arms did not simulate the same thing: live pop objects ×${pr.toFixed(2)}, building levels ×${lr.toFixed(2)} of vanilla.`);
+  console.log(`  (for the diagnostic in 3) the arms did not simulate the same thing: live pop objects ×${pr.toFixed(2)}, building levels ×${lr.toFixed(2)} of vanilla.`);
 }
 
 // ---- 2. per-decade rate (the shape, for the chart) ---------------------------------------------
@@ -177,7 +182,7 @@ if (van.length && mod.length) {
   for (const r of van) for (const p of r.pts) if (Number.isFinite(p.pops)) bv[binOf(p.pops)].push(p.secPerYear);
   for (const r of mod) for (const p of r.pts) if (Number.isFinite(p.pops)) bm[binOf(p.pops)].push(p.secPerYear);
 
-  console.log('\n=== 3. ⭐ POP-MATCHED: seconds per in-game year at the SAME live pop-object count ===');
+  console.log('\n=== 3. DIAGNOSTIC (not the grade) — POP-MATCHED: seconds per in-game year at the SAME live pop-object count ===');
   console.log('  live pop objects        vanilla    mod    mod/van   (nV,nM)');
   const rows = [], ratios = [];
   for (let i = 0; i < BINS; i++) {
@@ -196,7 +201,7 @@ if (van.length && mod.length) {
     const pct = (overall - 1) * 100;
     const verdict = pct <= 10 ? (pct <= 0 ? 'PASS (no slowdown)' : 'PASS') : 'OVER BUDGET';
     console.log(`\n  overlapping bins: ${ratios.length}/${BINS}   range ${Math.min(...ratios).toFixed(3)}-${Math.max(...ratios).toFixed(3)}`);
-    console.log(`  ⭐ POP-MATCHED SLOWDOWN = ${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%   budget +10%   => ${verdict}`);
+    console.log(`  pop-matched per-unit cost = ${pct >= 0 ? '+' : ''}${pct.toFixed(1)}% (${verdict} against the old +10% line — a DIAGNOSTIC since 2026-08-31; the grade is section 1)`);
     if (ratios.length < BINS / 3) console.log('  ⚠ FEW OVERLAPPING BINS — the arms barely reached the same size; treat the figure as indicative only.');
     matched = { bins: rows, overlapping: ratios.length, ratio: overall, pct, verdict, budgetPct: 10 };
   } else {

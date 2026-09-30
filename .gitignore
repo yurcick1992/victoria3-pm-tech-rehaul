@@ -277,3 +277,9 @@ tools/testbed/ledger/corpus_gbr.jsonl
 !config/tech_tree_options.canon-dams-family.json
 !config/mod_config.canon-dams-family-nolog.json
 !config/tech_tree_options.canon-dams-family-nolog.json
+# the capital-export + research date-gate arm (2026-09-30, FINDINGS F178)
+!config/mod_config.canon-fdi-rgate.json
+!config/tech_tree_options.canon-fdi-rgate.json
+# the start-deadline control file and its timer log (tools/testbed/no_new_runs_at.ps1) - runtime state, never committed
+tools/testbed/NO_NEW_RUNS
+tools/testbed/no_new_runs_at.log

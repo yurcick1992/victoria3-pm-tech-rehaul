@@ -1270,7 +1270,12 @@ its save, so it must say what it came from without a lookup), then per country:
   building** — including **`subsidies` and `subventions` per building type**.
 - **`last_bankruptcy_date`** — over a series of saves this yields bankruptcy *frequency* per country.
 - **Technologies held** (the full list) and what is being researched.
-- Foreign-owned and owned-abroad building **levels**.
+- Foreign-owned and owned-abroad building **levels**. ⚠⚠ **GOVERNMENT OWNERSHIP ONLY** (found 2026-09-30, FINDINGS F178 §2): the
+  two fields count ownership records whose identity is a COUNTRY, i.e. levels a government owns directly. Private foreign investment
+  runs through financial districts, company HQs and manor houses (identity = a building) and is NOT in them — Britain reads 5–568
+  "owned abroad" at 1935 where the melted save, every owner type resolved to its country, reads 3.8k–11.5k. For private capital
+  abroad, read the kept endpoint save (`building_ownership_manager`, owner building → its state → its country); a summary version
+  carrying an all-owner count would have to be added between batches, never during one (the harvester writes summaries mid-batch).
 - Goods **in/out per country**, and from them **TOP PRODUCERS BY GOOD** with quantities — the **top 20**
   per good, in **every** summary (user ruling 2026-08-11: "at least top-10, or better, 20"). `local`
   goods are kept rather than skipped: the table is built from building outputs aggregated to countries,

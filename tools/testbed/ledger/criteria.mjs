@@ -5,6 +5,9 @@
 //   SOFT  — beyond it is not acceptable, but the economy is not broken, so every reading of the run is taken in full;
 //   HARD  — beyond it the economy IS broken; the run's recorded outcome is binary — "broken by stall" or "broken by runoff" — and ONE broken
 //           run ends the config (the batch-flow rule; a soft breach never stops a batch).
+// ⭐ GDP AT BASE PRICES (2026-09-30, BALANCE_FRAMEWORK §10.90, FINDINGS F178 §9.4) is printed beside world GDP as a SECONDARY reading and
+//   is NOT in the loss: 52 × Σ (va_out − va_in) over every building, ÷ vanilla's; the price level = displayed ÷ base-priced, ÷ vanilla's.
+//   ⚠ The displayed GDP itself tracks base-priced value added within 0.94–1.08 over a century (vanilla and the mod), so the two stay close.
 // Scopes: the SHORTLIST pool GBR/USA/FRA/NET/BEL/PRU/NGF/GER taken TOGETHER (per country only where a line says so) and the WORLD. Every
 // condition is about the END STATE — the mean over the last five yearly summaries, 1932.1.1 … 1936.1.1 (`--end`; the 1935 point printed
 // beside) — unless the line names its own years. HARD lines are checked PER RUN; everything else on the CONSENSUS of the INTACT runs (the
@@ -134,10 +137,10 @@ function configFor(runDir) {
   return { path: abs.replace(REPO, '').replace(/^[\\/]/, ''), tier };
 }
 // ---- one run's yearly summaries
-const agg = () => ({ gdp: 0, pop: 0, prod: 0, sal: 0, un: 0, pe: 0, pool: 0 });
+const agg = () => ({ gdp: 0, pop: 0, prod: 0, sal: 0, un: 0, pe: 0, pool: 0, real: 0, vaSeen: 0 });
 const addC = (a, c) => { const p = c.pop_statistics || {}; const sal = +p.population_salaried_workforce || 0, un = +p.population_unemployed_workforce || 0, pe = (+p.population_subsisting_workforce || 0) * 1e5;
-  a.gdp += +c.gdp || 0; a.pop += Object.values(c.strata || {}).reduce((x, y) => x + y, 0); a.prod += sal - (+p.population_government_workforce || 0) - (+p.population_military_workforce || 0); a.sal += sal; a.un += un; a.pe += pe; a.pool += +c.investment_pool || 0; };
-const fin = a => ({ ...a, W: a.pop > 0 ? a.prod / a.pop : NaN, U: (a.sal + a.un + a.pe) > 0 ? (a.un + a.pe) / (a.sal + a.un + a.pe) : NaN, H: a.gdp > 0 ? a.pool / a.gdp : NaN, Y: a.prod > 0 ? a.gdp / a.prod : NaN });
+  a.gdp += +c.gdp || 0; for (const b of Object.values(c.buildings || {})) if (b.va_out != null) { a.real += 52 * ((+b.va_out || 0) - (+b.va_in || 0)); a.vaSeen = 1; } a.pop += Object.values(c.strata || {}).reduce((x, y) => x + y, 0); a.prod += sal - (+p.population_government_workforce || 0) - (+p.population_military_workforce || 0); a.sal += sal; a.un += un; a.pe += pe; a.pool += +c.investment_pool || 0; };
+const fin = a => ({ ...a, real: a.vaSeen ? a.real : NaN, W: a.pop > 0 ? a.prod / a.pop : NaN, U: (a.sal + a.un + a.pe) > 0 ? (a.un + a.pe) / (a.sal + a.un + a.pe) : NaN, H: a.gdp > 0 ? a.pool / a.gdp : NaN, Y: a.prod > 0 ? a.gdp / a.prod : NaN });
 function readRun(rel, tier) {
   const dir = join(SES, rel, 'save_summaries'); const years = new Map(); const wage = {}; // wage[year][tag] = base wage
   if (!existsSync(dir)) return { years, wage };
@@ -184,6 +187,7 @@ const vanRuns = runsOf(VAN).map(rel => { const r = readRun(rel, null); return { 
 const ref = {}, sig = {};
 const setRef = (key, vals) => { const m = med(vals); ref[key] = m; sig[key] = m ? sd(vals.map(v => v / m)) : NaN; };
 for (const scope of ['world', 'pool']) for (const q of ['gdp', 'W', 'U', 'H', 'Y']) setRef(scope + '.' + q, vanRuns.map(r => winMean(r.years, scope, q)));
+for (const scope of ['world', 'pool']) setRef(scope + '.real', vanRuns.map(r => winMean(r.years, scope, 'real')));   // GDP at base prices (secondary)
 // ⭐ THE PRICE BASIS: the market names the VANILLA reference actually carries, per year. An arm is scored on the
 // INTERSECTION of its own markets with this — so an arm instrumented with the ten-tag list of 2026-09-20 (which adds
 // the German and Belgian markets) is still compared against vanilla like for like. Those markets enter PI/PP the day
@@ -229,6 +233,7 @@ function scoreRun(rel, tier) {
   const { years, wage } = readRun(rel, tier); const P = readPrices(rel); const r = { rel, hard: [], soft: [], side: [], famWarn: [] };
   r.gdpW = winMean(years, 'world', 'gdp') / ref['world.gdp']; r.gdp35 = at(years, 1935, 'world', 'gdp') / med(vanRuns.map(v => at(v.years, 1935, 'world', 'gdp'))); r.gdpP = winMean(years, 'pool', 'gdp') / ref['pool.gdp'];
   for (const s of ['world', 'pool']) for (const q of ['W', 'U', 'H', 'Y']) { r[s + q] = winMean(years, s, q) / ref[s + '.' + q]; r[s + q + '_abs'] = winMean(years, s, q); }
+  r.realW = winMean(years, 'world', 'real') / ref['world.real']; r.realP = winMean(years, 'pool', 'real') / ref['pool.real']; r.plW = r.gdpW / r.realW; r.plP = r.gdpP / r.realP;
   // the price basis: this run's markets ∩ vanilla's, per year (see VANBASIS)
   const bas = {};
   for (const y of PYEARS) {
@@ -325,7 +330,7 @@ const consensusOf = runs => { // over intact runs
   const divergent = cons.length === 2 && diverges(cons[0], cons[1]);
   if (divergent) note += ' — DIVERGENT under F114 (world GDP ' + cons.map(r => f2(r.gdpW)).join(' / ') + ', world W ' + cons.map(r => f2(r.worldW)).join(' / ') + '): no consensus, a third run is needed';
   const C = { note, runs: cons.map(r => r.rel), intact: ok.length, broken: runs.length - ok.length, divergent };
-  const keys = ['gdpW', 'gdp35', 'gdpP', 'poolW', 'poolU', 'poolH', 'poolY', 'worldW', 'worldU', 'worldH', 'worldY', 'poolW_abs', 'worldW_abs', 'poolU_abs', 'worldU_abs', 'poolH_abs', 'worldH_abs', 'PI', 'PI_abs', 'PP', 'PM'];
+  const keys = ['gdpW', 'gdp35', 'gdpP', 'poolW', 'poolU', 'poolH', 'poolY', 'worldW', 'worldU', 'worldH', 'worldY', 'poolW_abs', 'worldW_abs', 'poolU_abs', 'worldU_abs', 'poolH_abs', 'worldH_abs', 'PI', 'PI_abs', 'PP', 'PM', 'realW', 'realP', 'plW', 'plP'];
   for (const k of keys) C[k] = med(cons.map(r => r[k]));
   C.PIfalling = cons.length ? cons.filter(r => r.PIfalling).length >= cons.length / 2 : false;
   if (cons.length && cons[0].T) { C.T = { ratio0: med(cons.map(r => r.T.ratio0)), r3: med(cons.map(r => r.T.r3)), r0: med(cons.map(r => r.T.r0)), share3: med(cons.map(r => r.T.share3)), t36: med(cons.map(r => r.T.t36)), dec0: [0, 1, 2, 3].map(i => med(cons.map(r => r.T.dec0[i]))), end: [0, 1, 2, 3].map(i => med(cons.map(r => r.T.end[i]))) }; C.T.declining = C.T.dec0.every((v, i, a) => i === 0 || !(Number.isFinite(v) && Number.isFinite(a[i - 1])) || v < a[i - 1]); }
@@ -355,7 +360,7 @@ if (!QUIET) {
   for (const a of arms) {
     console.log('\n' + '='.repeat(150) + '\n' + a.spec + ' · ' + a.runs.length + ' usable run(s) · ' + (a.cfg ? a.cfg.path : 'no config → T not read'));
     console.log('--- HARD, per run ---');
-    for (const r of a.runs) { console.log('  ' + r.rel.split('/').slice(-2).join('/').padEnd(64) + (r.broken ? '⛔ BROKEN BY ' + r.broken.toUpperCase() : '✅ intact') + '  [anchor ' + r.anchor.viol + ' y out; pooled U* ' + pc(r.poolU_abs) + '; world GDP ' + f2(r.gdpW) + '×' + (r.loss ? '; loss ' + f2(r.loss.L, 1) : '') + ']'); for (const h of r.hard) console.log('        ⛔ ' + h); for (const s of r.soft) console.log('        ⚠ soft: ' + s); }
+    for (const r of a.runs) { console.log('  ' + r.rel.split('/').slice(-2).join('/').padEnd(64) + (r.broken ? '⛔ BROKEN BY ' + r.broken.toUpperCase() : '✅ intact') + '  [anchor ' + r.anchor.viol + ' y out; pooled U* ' + pc(r.poolU_abs) + '; world GDP ' + f2(r.gdpW) + '× (' + f2(r.realW) + '× at base prices)' + (r.loss ? '; loss ' + f2(r.loss.L, 1) : '') + ']'); for (const h of r.hard) console.log('        ⛔ ' + h); for (const s of r.soft) console.log('        ⚠ soft: ' + s); }
     const C = a.C; console.log('--- CONSENSUS: ' + C.note + ' ---'); if (!C.intact) continue;
     const b0 = a.runs.find(r => r.basis && r.basis.length);
     if (b0 && b0.famWarn && b0.famWarn.length) console.log('  ⚠ SUCCESSION ANOMALY — two forms of one state alive at once, the priority set picked the later: '
@@ -372,6 +377,7 @@ if (!QUIET) {
     if (C.T) { line('T0 ÷ (T1+T2+T3)', C.T.r0, 'the less the better', 'T0 = ' + f2(C.T.end && C.T.end[0] / 1e6, 2) + 'M of ' + f2(C.T.end && C.T.end.reduce((x, y) => x + y, 0) / 1e6, 2) + 'M tiered workers'); line('T0 (1935 ÷ the 1900s)', C.T.ratio0, r2(C.T.ratio0) > 1.3 ? 'BEYOND THE SOFT BOUNDARY' : (C.T.t36 === 0 || C.T.declining) ? 'AT THE AIM' : 'inside, not yet falling', 'decades ' + C.T.dec0.map(v => f2(v / 1e6, 2) + 'M').join(' / ') + '; soft > 1.3'); line('T3 ÷ (T0+T1+T2)', C.T.r3, 'the more the better', 'T3 = ' + pc(C.T.share3) + ' of the tiered workers; T0…T3 ' + C.T.end.map(v => f2(v / 1e6, 2) + 'M').join(' / ')); }
     console.log('  WORLD');
     line('GDP (priority 1)', C.gdpW, verdict(C.gdpW, 0.95, 1.05, x => x < 0.75 || x > 1.33), 'the 1935 point ' + f2(C.gdp35) + '×; aim 1.0, soft outside 0.75–1.33, ' + (GDPHARD === 'ci' && gci ? 'HARD ' + f2(gci.lo) + '–' + f2(gci.hi) + '×' : GDPHARD === 'legacy' ? 'HARD 0.5–1.5×' : 'no hard line'));
+    line('GDP at base prices', C.realW, 'secondary, not in the loss', 'price level (displayed ÷ base-priced) ' + f2(C.plW) + '× vanilla\'s; the shortlist ' + f2(C.realP) + '× at base prices, price level ' + f2(C.plP) + '× (§10.90)');
     line('W', C.worldW, verdict(C.worldW, 0.6, 0.95, x => x > 1.0), 'abs ' + f2(C.worldW_abs, 4) + ' vs ' + f2(ref['world.W'], 4) + '; aim 0.6–0.95, soft > 1.0, ' + wband('world'));
     line('U*', C.worldU, r2(C.worldU) < 1.0 ? 'BEYOND THE SOFT BOUNDARY' : 'inside (no aim)', 'abs ' + pc(C.worldU_abs) + ' vs ' + pc(ref['world.U']) + '; soft < 1.0');
     line('H', C.worldH, verdict(C.worldH, -Infinity, 1.0), 'abs ' + f2(C.worldH_abs) + ' vs ' + f2(ref['world.H']) + '; aim < 1');

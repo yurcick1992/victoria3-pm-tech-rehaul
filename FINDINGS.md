@@ -2016,6 +2016,10 @@ whose era costs differ from society's.
 
 **What it says.** The game's `gdp` is the market-price value of production **reduced by the value of
 goods used as inputs** — value added, on the production side only. Annual GDP is 52× the weekly figure.
+⚠⚠ **QUALIFIED 2026-09-30 (F178 §9.4): the PRICE BASIS is not established.** Vanilla's prices sit near base, so this data cannot tell
+market-priced from base-priced value added. Where they differ, the displayed GDP tracks 52 × BASE-priced value added (0.94–1.08 over a
+century, vanilla and the mod), and the buildings' own market ledgers (goods sales − goods cost) reach only ~0.63–0.70 of it, in vanilla too.
+"Value added" stands; "at market prices" does not.
 
 **Evidence.** The `gdp` series a savegame persists, read beside the *same* saves' building
 `input_goods` / `output_goods` (so the two sides come from one gamestate, not from two instruments):
@@ -17984,3 +17988,407 @@ Where the surveyor did build, its construction ended finished / lost / vanished 
 24/0/0/3 (overlord), 148/20/11/20 (rights holder). The family rule is used rarely (6 constructions in all, 5 of them on an overlord's survey).
 Per dam: 278 surveyed dams (run × dam) got a construction, a median of ONE finished survey before the first; 144 surveyed dams got none by
 1936, carrying 214 finished surveys.
+
+## F178 — WHERE THE CANON STANDS BEFORE THE POLISH PHASE: world GDP at vanilla's (median 1.03, mean 1.00 over 19 runs); the AI's Britain already depeasants ~14 years AFTER vanilla's (end-state U* 9% against 1.7%), its last reserve Irish and colonial; the dam book is ON F165's one-axis line for end-state U* and at most 3–5 years later on its timing (weak); idle labour keeps old rungs alive (seed-level r +0.48); tech leaders hold half of each era at its anchor year; and the playtest's Britain is 11× the AI's at 1909 with 63% of the era-5 production technologies (re-read 2026-09-30, no game time)
+
+**Why.** The user, 2026-09-30, before the polish phase: bring Britain's U* (incl. peasants) up "a bit" so depeasantation is not the norm, give a
+GBR player more challenge ("I can absolutely steamroll the game even without gamey mechanics"), and say where canon and pre-canon runs stand on
+world GDP against vanilla (all dam runs eligible) — "are we a bit higher? If so, we can probably be a bit more aggressive."
+
+**Data.** The 16 century runs of the dam books (sessions `20260926_154538`, `20260926_195231`, `20260927_001731`, `20260928_000616`,
+`20260929_002728`) and the 3 of `canon-b164-trade` (`20260926_002930`), added to F165's corpus with `corpus_extract.mjs` (19 lines appended to
+the gitignored `corpus_runs.jsonl`); `criteria.mjs` on the four arms; the melted 1936.1.1 endpoints of five runs read state by state; and the
+user's GBR playtest saves (`great britain_1909_07_25.v3`, `british republic_1917_01_09.v3`; build "PM and Tech Rehaul (built 2026-09-27 11:34)",
+game rule Base Construction Capacity "Scaled (All)" — the HARDER setting for a player, the default gives the player the maximum) summarised with
+`save_state_summary.mjs`. End state = the 1932–36 mean ÷ the vanilla n=16 median of the same window, as the register.
+
+### 1. World GDP
+
+| set | n | median | mean | geometric mean | range |
+|---|---|---|---|---|---|
+| the canon's measured book (`canon-dams-family`) | 6 | 1.06 | 1.10 | 1.04 | 0.56–1.75 |
+| all dam runs | 16 | 1.03 | 1.02 | 0.97 | 0.56–1.75 |
+| dam runs + `canon-b164-trade` (their base book) | 19 | 1.03 | 1.00 | 0.96 | 0.56–1.75 |
+| the same without the four stuck Britains | 15 | 1.03 | 1.10 | 1.09 | 0.87–1.75 |
+| the same without both tails (stuck and runoff) | 13 | 1.03 | 1.03 | — | 0.87–1.23 |
+| vanilla | 16 | 1.00 | 0.99 | 0.99 | 0.82–1.15 |
+
+The typical run sits ~3% above vanilla, inside the seed noise; the all-run mean equals vanilla because three stuck-Britain stalls (0.56, 0.57,
+0.63) offset two runoffs (1.44, 1.75). **5 of the 16 dam runs are outside the world-product hard band (0.66–1.38)**; vanilla by construction ~1
+in 20. The mod's spread is ~2.5× vanilla's.
+
+### 2. Britain
+
+| | vanilla (16) | dam runs (16) | pre-dam `b164` books, healthy (4) |
+|---|---|---|---|
+| end-state U* median | 1.7% | 9.2% | 1.1 / 1.5 / 1.7 / 3.1% |
+| under 5% at the end | 12 | 5 | 4 |
+| in the 10–50% band | 2 | 7 | 0 |
+| stuck (Britain's GDP < 0.85 of vanilla-Britain's, U* ≥ 35% at 1926) | 0 | 3 | — |
+| first year under 10%, non-stuck, median | 1915.5 | 1929 | 1921 (1916 / 1920 / 1922 / 1923) |
+| U* at 1900 / 1920 (medians, all runs) | 23.0% / 6.0% | 41.6% / 22.4% | |
+| Britain's GDP ÷ vanilla-Britain's, healthy runs | 1.00 | 1.20–1.99 (median 1.59) | |
+| Britain's population at the end, healthy runs | 78M | 72M | |
+
+**Where the last reserve sits** (1936.1.1 endpoints, Britain's states by region; "the Isles" = the twelve British and Irish states):
+vanilla run 4 — U* 1.5%, the Isles 0.2%, 91% of the reserve in 25 unincorporated colonies (19.7M people); vanilla run 14 — 1.9%, the Isles 0.3%;
+dams-family run 2 — 7.3%, the Isles 2.9% (Munster 40%, Connaught 23%), 55% of the reserve in 20 unincorporated colonies of only 4.0M people;
+dams-family run 5 — 3.6%, the Isles 0.0%, all of it colonial; dams-engine run 5 (world GDP 0.87) — 27.8%, the Isles themselves 24.6% (Ireland
+35–74%, the Midlands 28%, the West Country 22%, the Home Counties 13%) at home wages of 380–670 against 1,500–2,900 in family run 2. ⇒ In a
+healthy run Great Britain proper is fully employed by 1936; what is left is Ireland and the colonies.
+
+**The shortlist members' end-state U*** (medians; vanilla / dams-family / dams-engine): GBR 1.7 / 9.1 / 11.5% · USA 36.5 / 47.4 / 44.9% · FRA 47.2 /
+32.1 / 63.0% · GER (GER, else NGF, else PRU) 0.8 / 26.1 / 13.9% · NET+BEL+UNL 4.1 / 11.0 / 15.5%. Germany is bimodal: 0–3.3% in 6 of the 16 dam
+runs, 14–72% in the rest. Pool U* consensus 1.18 / 1.58 / 1.91 × vanilla (family / engine / v1–v3) against the register's ≥ 2 aim.
+
+~~**British capital barely leaves Britain, in either game:** GBR's levels owned abroad at 1935 are 34–568 in six vanilla runs and 5–369 in eight
+dam runs, against 10–31k levels at home.~~ ⚠⚠ **WITHDRAWN 2026-09-30 07:30 — MEASURED ON THE WRONG QUANTITY.** A save summary's
+`owned_abroad_levels` counts only levels a GOVERNMENT owns directly (ownership identity = a country); private ownership runs through
+financial districts, company HQs and manor houses (identity = a building) and is not in it. Read from the melted 1936 saves with every owner
+type resolved to its country: **Britain owns 3,849 / 10,791 / 7,897 / 7,342 levels abroad in four canon dam runs (family runs 2 and 5, engine runs
+1 and 2) and 11,532 / 8,310 in two vanilla runs (4 and 10)** — mostly coal, iron and sulfur mines, logging camps, trade centres, ports, railways,
+fishing wharves and plantations, in the USA, Canada, Australia, the Ottoman Empire, Germany, Spain and Latin America. Manufacturing (the tiered
+industries' buildings) is a small part of it: ~200 / 1,700 / 655 / 735 levels in the canon runs, ~910–1,090 in vanilla. So capital DOES leave
+Britain, in quantity, into extraction and infrastructure; what vanilla's weights keep home is FACTORIES. Vanilla's building groups weight
+foreign investment at 0.25 for manufacturing (and urban facilities), 0.5 power, 0.75 agriculture / ranching / infrastructure, 1.0 mining /
+logging / oil / rubber, 1.25 plantations — consistent with that composition. ⇒ The capital-export arm launched the same night
+(`20260930_011604`) tests a shift in COMPOSITION (factories abroad), not the opening of a closed channel as first argued; its first two runs read
+Britain owning 5,077 / 11,106 levels abroad with 1,429 / 3,449 of them tiered.
+
+### 3. The lever line, refit with the 19 runs (99 runs since the era rule, 16 of them dam runs; OLS and F165's censored fit, `dams` an indicator)
+
+- ln world GDP: ln A **+6.07** ± 1.09 · ln B **−3.80** ± 0.87 · ln C **−2.28** ± 0.42 · trade **+0.325** ± 0.086 · dams +0.04 ± 0.09.
+- First year Britain's U* < 10%: ln A −272 ± 59 · ln B +163 ± 39 · ln C +106 ± 20 · trade −14.1 ± 3.7 y · **dams +3.3 ± 3.5 y** (all runs);
+  without the stuck runs (84 runs, the §2 test) ln A −244 ± 61 · ln B +165 ± 36 · ln C +100 ± 19 · trade −15.3 ± 3.4 · **dams +3.2 ± 3.3 y**.
+- ⇒ **per +10% of world GDP bought, Britain crosses 10% earlier by ~4.1–4.8 y, whichever of A, B, the cost slope or trade buys it** (4.3 / 4.1 /
+  4.4 / 4.1 on all runs, 4.6 / 4.2 / 4.8 / 4.5 without the stuck ones) — F165's one axis, tighter than before. On world GDP alone: −3.4 y and
+  −2.2 pp of end-state U* per +10%.
+- **The dam book, consistently classified (13 non-stuck dam runs):** on END-STATE U* it is ON the line — the pre-dam model predicts 9.6% for the
+  canon's lever vector and the dam runs read 8.9% (residual 0.0 ± 2.1 pp; +1.6 ± 1.7 pp against world GDP alone). On TIMING it reads later:
+  +3.2 ± 3.3 y at equal levers, +4.8 ± 2.5 y at equal world GDP (the dam runs carry ~10% more world GDP than their levers predict, ln +0.10 ±
+  0.075). Weak and directional. ⚠ A first pass that counted two stuck dam runs as healthy read the timing at +4.8 ± 3.3 y at equal levers — the
+  stuck runs never cross and inflate it.
+- Tails by B (the loose stuck test above): stuck Britain 5 of 22 runs at B 1.64 (23%), 0 of 9 at B 1.68–1.76 (the trade ×1.5 ladder, small n).
+
+### 4. Idle labour keeps the old rung alive
+
+Over the 84 non-stuck runs since the era rule, the old rung's share of tiered workers (T0 ÷ (T1+T2+T3)) rises with pool U* (r +0.51) and with
+Britain's (+0.43); **with the levers held, at the seed level, r +0.48 / +0.42**, slope **+0.0077 ± 0.0016 of T0 share per +10 pp of pool U***
+(the canon's T0 share is 0.015–0.03). This is F97's mechanism seen from the other side: the engine lays off an old rung when its workers fall under
+0.66× their expected SoL, i.e. through RISING WAGES, and idle labour holds wages down.
+
+### 5. Technology pace against the anchor principle
+
+The share of each game era's technologies held by the country holding the most (all trees / production), medians:
+
+| | 1875, game era 3 (e1 anchor 1875) | 1905, game era 4 (e2 anchor 1905) | 1936, game era 5 (e3 anchor 1940) |
+|---|---|---|---|
+| vanilla (16) | 50% / 30% | 39% / 20% | 52% / 20% |
+| dams-family (6) | 51% / 43% | 51% / 44% | 52% / 38% |
+| dams-engine (5) | 48% / 36% | 41% / 38% | 35% / 13% |
+| dams-v3 (3) | 55% / 43% | 46% / 44% | 46% / 56% |
+
+⇒ The AI leaders hold about half of each era at its anchor — the principle's rule 2 is MET; the production tree runs ~1.5–2× vanilla's pace (the
+research journal entries).
+
+### 6. Realised economics by rung era, the shortlist at 1935 (14 dam runs, per staffed level per week)
+
+| era | sales | inputs | wages | profit | wage share of sales / of value added | value added per worker | true margin (per arm) |
+|---|---|---|---|---|---|---|---|
+| e0 | £3.5k | £2.6k | £0.39k | £0.56k | 11% / 41% | £0.20 | 18–20% |
+| e1 | £4.4k | £2.8k | £0.69k | £0.94k | 16% / 42% | £0.37 | 27–30% |
+| e2 | £10.4k | £6.3k | £1.04k | £3.08k | 10% / 25% | £0.86 | 38–44% |
+| e3 | £14.4k | £7.7k | £1.47k | £5.27k | 10% / 22% | £1.47 | 42–63% |
+
+The old rung is 60–75% unstaffed with 30–36% of its levels at a loss; e2/e3 0–1% at a loss. Vanilla manufacturing runs ~23% (F135).
+
+### 7. The playtest's Britain against the AI's (median [p10–p90] of the AI Britains at the same date)
+
+| | player 1909.7 | AI, dam runs (16) | AI, vanilla (16) | player 1917.1 | AI, dam runs | AI, vanilla |
+|---|---|---|---|---|---|---|
+| Britain's GDP | £2,408M | £210M [101–331] | £250M [147–272] | £2,541M | £319M [126–468] | £297M [234–352] |
+| world GDP | £4,390M | £1,755M | £2,108M | £5,230M | £2,190M | £2,639M |
+| Britain's share of world GDP | 55% | 12% | 11% | 49% | 14% | 11% |
+| population | 178.5M | 56.2M | 59.8M | 205.3M | 55.1M | 65.7M |
+| GDP per head | £13.5 | £3.9 | £3.8 | £12.4 | £5.3 | £4.4 |
+| U* incl. peasants | 13.1% | 36.2% | 15.0% | 4.6% | 27.0% | 8.5% |
+| construction sector levels | 1,831 | 134 | 140 | 1,866 | 187 | 183 |
+| tiered levels e0 / e1 / e2 / e3 | 142 / 461 / 2,821 / 3,783 | 55 / 107 / 478 / 63 | — | 145 / 475 / 2,911 / 5,113 | 50 / 102 / 622 / 153 | — |
+| share of game-era-5 technologies (all / production) | 31% / 63% | 0% / 0% | 0% / 0% | 50% / 63% | 0% / 0% | 0% / 0% |
+
+⇒ One player's Britain holds half the world economy and two-thirds of the 1940-anchored production technologies thirty years early, with a
+construction sector 13× the AI's; the AI's construction sector is vanilla-sized although the mod makes modernisation a construction cost.
+
+**What it does NOT say.** The dam indicator compares one book family against many and is confounded with the 4× power plant that came with it;
+t 1.0–1.9, directional under §10.83.7. The playtest is one player, one playthrough, one build, compared with AI Britains — how much of the gap the
+mod adds over vanilla's own player advantage is not measured. The reserve-by-state reading is five endpoints. §4 is a seed-level correlation, not
+a controlled test. The runs of one config share a lever vector (effective n nearer the config count), so the standard errors are optimistic.
+
+### 8. ADDENDUM (2026-09-30, later) — what holds end-game prices up, and does a cheaper frontier recipe lower them? (no game time)
+
+Asked by the user as a worked example of "cheaper frontier inputs" on a canonical scenario. Sources: the 16 canon dam runs (medians)
+against the pinned vanilla n=16; the 24 century runs of the B gradient (`20260922_084038`, `20260922_233932`) and the trade ×1.5 B ladder
+(`20260924_101627`) for the lever.
+
+**The British market at 1935** (telemetry order book; pops = buy − building inputs − exports):
+
+| good | price canon / vanilla | production canon / vanilla | buy orders canon / vanilla |
+|---|---|---|---|
+| clothes | 0.83 / 1.05 | 45,480 / 26,761 | 36,029 (pops 35,316) / 33,770 (pops 31,737) |
+| tools | 0.78 / 0.91 | 103,640 / 84,421 | 84,345 (buildings 73,790, exports 10,701) / 73,033 (buildings 67,360) |
+| steel | 0.80 / 1.11 | 115,851 / 61,263 | 84,952 (buildings 85,026) / 65,782 (buildings 66,663) |
+
+**Britain's rungs at 1935, per staffed level per week** (realised: sales and inputs at market, wages = sales − inputs − profit; break-even =
+the price × (inputs + wages) ÷ sales):
+
+| rung | profit | true margin | break-even price | GBR staffed levels |
+|---|---|---|---|---|
+| textile e3 (290 clothes ← 72 fabric, 24 dye, 12 tools, 12 electricity) | £4,096 (sales £12,363, inputs £7,532, wages £808) | 49% | 0.56 | 66 |
+| textile e2 (132 ← 66 fabric, 11 dye, 5.5 tools) | £1,357 (£6,063 / £4,396 / £744) | 26% | 0.71 | 59 |
+| tooling e3 / e2 | £4,161 / £1,182 | 56% / 24% | 0.49 / 0.64 | 126 / 77 |
+| steel e3 / e2 | £13,344 / £3,495 | 55% / 23% | 0.51 / 0.63 | 15 / 96 |
+
+**Where the old rungs are** (staffed levels at 1935; GBR / rest of the British market / other shortlist markets / rest of the world):
+textile e0+e1 1 / 6 / 9 / 160 (e2+e3 125 / 68 / 395 / 301), old-rung true margin 13% / 17% / 17% / 24%; furniture 0 / 2 / 6 / 60; glass
+0 / 7 / 14 / 37; tooling 0 / 1 / 2 / 74; steel 0 / 1 / 7 / 37. World: e0 630, e1 866, e2 4,802, e3 2,043. The frontier's realised output
+price is about the same in all four groups (textile 0.71–0.74 of base, tooling 0.75–0.82, steel 0.76–0.79, output-weighted over the rung's
+goods), so the survivors live on local costs and local shortages (§4 of F161: importers' prices +0.30–0.37 in log terms), not on a dearer
+world price.
+
+**The money a 20% cut in every e3 rung's inputs would add to profits at unchanged prices** (20% of the e3 goods bill, world):
+£0.5M/wk at 1915 (1.2% of world GDP), £0.8M (1.8%) 1920, £1.4M (2.5%) 1925, £2.2M (2.9%) 1930, £3.0M (3.4%) 1935 — against e3 profits
+of £1.6 → £10.5M/wk and all tiered profits of £8.1 → £24.8M/wk over the same dates.
+
+**The measured analogue — the B axis** (24 runs, B 1.52–1.76, end state 1932–36, OLS with a trade indicator): per −0.1 ln B (inputs
+e1 −10%, e2 −18%, e3 −26%): ln world GDP **+0.43 ± 0.19** (×1.53), PI **−0.088 ± 0.035**, PP −0.16 ± 0.12 (not resolved),
+T0 ÷ rest −0.029 ± 0.018. With world GDP in the model: PI on ln world GDP **−0.114 ± 0.031** and on ln B +0.39 ± 0.31 (−0.039 per
+−0.1 ln B, not resolved); T0 ÷ rest on ln world GDP **−0.062 ± 0.016** and on ln B **+0.03 ± 0.16** (none).
+
+⇒ **On the measured lever, the price index and the old rung move WITH world GDP, whatever made the world richer; B adds no resolved
+price effect of its own and no effect at all on the old rung.** An input-cost cut is a GDP lever whose price decline is a by-product of
+growth: bringing PI from ~0.88 to the 0.80 aim that way takes on the order of +50% world GDP, past the hard line (1.38).
+⇒ In the shortlist the ladder already does its job at the end state: Britain's clothes, tools and steel sell 14–28% under vanilla's
+prices, its old rungs are gone, and the frontier earns 49–56% at break-evens of 0.49–0.56. The old rungs that survive (18% of tiered
+staffed levels world-wide) are outside the shortlist.
+
+**What it does NOT say.** An e3-only cut is not measured: it acts from ~1915 (the B axis from the 1850s) and at 1935 carries about a third
+of −0.1 ln B's money, so its magnitudes are unknown and only the direction is supported. The 24 runs span two book families (trade ×1 and
+×1.5); the seed spread dominates (PI on world GDP alone R² 0.28). The per-staffed-level figures are medians over runs of Britain alone.
+
+### 9. ADDENDUM (2026-09-30, later) — why the old rungs outside the shortlist survive, what more trade could reach, and what the displayed GDP is made of (no game time)
+
+Asked by the user after §8: why the rest-of-world survivors stay profitable, whether more trade would help cross-market obsolescence, and GDP
+at base prices as a secondary reading. Sources: the 16 canon dam runs at 1935.1.1 (an OLD rung = the world's supply frontier, the highest era
+holding ≥ 10% of the industry's output, is ≥ 2 eras above it); for §9.4 the same 45 century runs as the regressions named there.
+
+**9.1 Where the old rungs are** (staffed levels per run). Outside the shortlist's markets / inside them / Britain: textile 155 / 30 / 4 ·
+furniture 32 / 11 / 0 · glass 45 / 31 / 1 · food 58 / 11 / 0 · paper 94 / 10 / 2 · tooling 76 / 8 / 0 · steel 38 / 9 / 1 · motor 104 / 117 / 13.
+Outside the shortlist, by the position of the rung's market in its own good (the premium in brackets = ln of the rung's realised price over the
+world's output-weighted price):
+
+| industry | market imports the good | market trades, does not import it | market has no trade capacity |
+|---|---|---|---|
+| textile | 60 (+0.30) | 34 (+0.17) | 61 (+0.42) |
+| furniture | 5 (+0.28) | 13 (+0.21) | 14 (+0.46) |
+| glass | 29 (+0.37) | 12 (+0.28) | 4 (+0.44) |
+| food | 25 (+0.29) | 22 (+0.20) | 11 (+0.35) |
+| paper | 49 (+0.31) | 32 (+0.17) | 13 (+0.16) |
+| tooling | 37 (+0.32) | 18 (+0.25) | 21 (+0.42) |
+| steel | 19 (+0.30) | 17 (+0.13) | 2 (+0.38) |
+| motor | 73 (+0.24) | 28 (+0.06) | 3 (+0.30) |
+
+No market holds more than 6–14% of an industry's rest-of-world old rungs (the largest: Russia, China under the Canton system, Turkey, Egypt,
+Japan; the no-trade group is many small markets, e.g. a £16M-a-year market with zero capacity).
+
+**9.2 Why they stay profitable** — textile's rest-of-world old rungs on their own books (output price p = sales ÷ base-valued output, input
+price q = goods cost ÷ base-valued inputs, both on the buildings' own ledgers; the world price is 0.73 on the same basis):
+
+| group | p | q | wages, share of cost | local wage ÷ Britain's | true margin | break-even p |
+|---|---|---|---|---|---|---|
+| importing markets | 0.99 | 0.81 | 17% | 0.60 | 24% | 0.80 |
+| no-trade markets | 1.11 | 0.76 | 30% | 0.57 | 26% | 0.88 |
+| trading non-importers | 0.87 | 0.80 | 15% | 0.60 | 21% | 0.72 |
+| Britain's frontier (e3), for reference | 0.67 | 1.11 | 11% | 1.00 | 37% | 0.49 |
+
+One factor at a time on those books (static arithmetic, not a prediction): at the world price the margins go 24% → −9%, 26% → −17%,
+21% → +2%; at Britain's wage rate → +11% / +3% / +10%; at British input prices (fabric 1.00, dye 0.90 × base) → about +4% / +3% / 0%.
+⇒ **The local price premium is the largest single prop; cheap local raw inputs and low wages each take another ~10–20 points.** The other
+consumer chains read the same way (premiums +0.2 to +0.46, wage rates 0.50–0.65 of Britain's, break-evens above the world price).
+
+**9.3 What more trade can reach.** The per-good weights are exhausted: ×1.5 bought ×1.03 the trade of ×1 (F163 §4). At ×1 the textile
+importers' premium fell from +0.59 to +0.30 (F161 §6); killing their old rungs needs it under about +0.09 (break-even 0.80 against the world's
+0.73). The no-trade markets (39% of textile's rest-of-world survivors, 44% of furniture's, 28% of tooling's) have no trade capacity at all.
+The AI gates trade centres on state GDP (`TRADE_CENTER_MINIMUM_GDP_MARKET_CAPITAL` £100k and `_NON_MARKET_CAPITAL` £500k a year, ×2 inland,
+× (1 + 0.02 × years since 1836), i.e. £0.3M / £1.5M at 1935) — the untested lever that could open them. The measured costs of trade: it
+converges prices — exporters' manufactures 0.75 → 0.82 of base in F161 §2 — and it is a GDP lever (F161: +0.26 on world GDP at B 1.58).
+
+**9.4 GDP at base prices** ("real" = 52 × Σ (base-valued output − base-valued input) over every building; "price level" = displayed ÷ real,
+÷ vanilla's 1.024; end state 1932–36, medians ÷ vanilla n=16):
+
+| arm | n | world displayed | world real | world price level | pool displayed | pool real | pool price level |
+|---|---|---|---|---|---|---|---|
+| canon-dams (engine-built) + v3 | 8 | 0.99 | 1.05 | 0.94 | 1.14 | 1.40 | 0.82 |
+| canon-dams-family | 6 | 1.06 | 1.04 | 0.93 | 1.48 | 1.60 | 0.81 |
+| trade arm, B 1.58 | 4 | 1.13 | 1.21 | 0.93 | 1.35 | 1.62 | 0.83 |
+| canon B 1.58, no trade weights | 3 | 0.87 | 0.98 | 0.90 | 1.20 | 1.50 | 0.76 |
+
+Regressed over 45 runs (B gradient, trade ×1.5 ladder, trade arm, canon, dam books) on ln B, the trade weights and ln world GDP: the world price
+level +0.035 ± 0.015 with the trade weights on (nothing from B or GDP); the pool's +0.015 ± 0.037 (trade), +0.61 ± 0.45 (ln B),
++0.12 ± 0.05 (ln world GDP).
+
+⚠⚠ **What the displayed GDP is made of — this qualifies F45.** Over a whole century the game's GDP stays within **0.94–1.08** of
+52 × base-priced value added, in vanilla (run 1 of the n=16) and in the mod (engine-built run 2) alike; while 52 × (goods sales − goods cost),
+the buildings' own market ledgers, comes to only **~0.63–0.70** of it in BOTH (vanilla v9 runs 20260920_192007 / 20260920_225047 and the mod).
+The ledgers sit 10–19% below base on sales and 3–24% above on costs even in vanilla, where market prices are near base. Valued at the world
+market price instead, the mod's 1935 goods flows give 52 × VA = £4,234M against a displayed £4,787M and £5,015M at base. ⇒ **F45's "value
+added at MARKET prices" is not established** — vanilla's prices sit near base, so F45's data could not tell the two apart — and the engine's
+figure sits much nearer base-priced value added. The mod's lower price level takes about **7%** off the world's displayed GDP at 1935 (0.955 of
+base-priced value added against vanilla's 1.02–1.04) and roughly **18%** off the shortlist's.
+
+**What it does NOT say.** The engine's GDP formula. Per country the displayed ÷ base-valued ratio scatters 0.72–1.27 (cause not identified —
+ownership abroad is a candidate), so the pool's price level is the weaker reading. §9.2's counterfactuals move one factor with the rest fixed.
+⚠ `tools/testbed/ledger/lib_obsolescence.mjs` finds a year's summary by its file index, so it reads nothing from a session with QUARTERLY
+saves (the family-rules session printed "6 runs" and no rows); §9.1 used a date-based reader. ✅ Fixed the same day once the batch had ended:
+it tries the yearly neighbourhood, then the quarterly one, then every file (BUGS_AND_FIXES 2026-09-30).
+
+**9.5 Can a market without trade centres still trade through foreign merchants? And do the isolated markets pay for it?** (asked by the user)
+- **The game's own texts** (`localization/english`, 1.13): *"Trade Capacity is generated by Trade Center levels and used to conduct trade with
+  the world market"*; *"Most trade is conducted autonomously by a Trade Center via the world market, but countries can also set up treaties to
+  trade goods between them directly"*; each market area trades with the world market through its own hub. So every flow runs between a trade
+  centre and the pooled world market, not from one country's merchants into another's market. The measurement agrees: a market's imports
+  equal what the trade centres in its own members' states carry (159 of 160 one-way pairs, TESTBED_METRICS §2.5).
+  ⇒ **A market with no trade centre in its territory cannot trade through the world market at all.** "Foreign merchants" exist only as
+  foreign-owned trade centres built INSIDE the market under investment rights, and those count as that market's capacity. The only other
+  channel is a treaty's direct goods transfer, not measured here. Reading of the texts plus the capacity match, not of the engine's code.
+- **Observed at 1935** (16 canon dam runs; per run; prices on the buildings' own ledgers ÷ the world's):
+
+| group | countries | population | GDP per head | standard of living | clothes price | all producer prices | tiered staffing on old rungs |
+|---|---|---|---|---|---|---|---|
+| markets with no trade capacity | 115 | 223M | £0.62 | 8.2 | 1.41 | 0.89 | 64% |
+| trading markets, under £2 a head | 42 | 819M | £0.80 | 9.1 | 1.05 | 0.98 | 33% |
+| trading markets, £2–4 a head | 13 | 145M | £2.79 | 13.2 | 1.00 | 0.99 | 15% |
+| the shortlist's markets | 63 | 630M | £4.72 | 15.6 | 0.99 | 1.01 | 7% |
+
+  ⇒ The isolated markets are the poorest and pay most for manufactures (clothes ×1.41 the world price against ×1.05 in trading markets of
+  similar income), while their OVERALL producer price level is the LOWEST (0.89): the raw and farm goods they mostly make cannot be sold
+  abroad. Dear to buy, cheap to sell — and two-thirds of their tiered labour is on old rungs. ⚠ Causality runs both ways: the AI builds trade
+  centres only in states above a GDP threshold (§9.3), so poverty keeps a market isolated as much as isolation keeps it poor.
+
+## F179 — CAPITAL EXPORT + THE RESEARCH DATE GATE ON THE CANON, n=5: Britain builds three times as many factories abroad and the shortlist's share of world GDP falls to vanilla's, but the hoard RISES, Britain's depeasantation does not move, and every intact run scores worse than every intact canon run — NOT ADOPTED (5 runs of 1836→1936 and one stopped at 1874, 2026-09-30)
+
+**Why.** F178's goal (the user, 2026-09-30): raise Britain's U* "a bit" so depeasantation is not the norm, and give a GBR player more challenge.
+F178 §3 showed the ladder levers (A, B, the cost slope, trade) are ONE axis at ~4–5 years of Britain's depeasantation per 10% of world GDP, with
+world GDP already at vanilla's, so the batch tested an OFF-axis lever: **capital export** — vanilla weights a foreign private investment in
+manufacturing at 0.25 (mines 1.0, plantations 1.25), raised to 1.0 so a leader's pool builds factories where the idle labour is. Layered on it,
+for the player, the **research date gate** (an industry research entry for a game-era 3/4/5 technology grants half before 1855 / 1885 / 1920).
+
+**Arm.** `config/mod_config.canon-fdi-rgate.json` (sha256 `f01de7720f02af44`; tree twin = the canon's) = the canon `canon-dams-family-nolog`
+plus exactly `building_group_ai` {bg_manufacturing.foreign_investment_ai_factor 1.0} and `research_events.date_gate`, emitted by the new
+`tools/emit_building_groups.mjs` and `tools/emit_research_events.mjs`. Session `20260930_011604_canon-fdi-rgate-n6`, commit `30e6272` (the
+arm's files uncommitted at launch), game 1.13.11, yearly saves, fixed n=6 with no stop watcher. **Run 6 was stopped by the user at 1874.1.8**
+("abandon run 6, we're wrapping this up") and is excluded (L17). One crash in the five complete runs (run 4 at 1889.10.11, resumed on the first
+feed). References: `canon-dams-family` n=6 (`20260929_002728`), the engine-built dam book n=5 + v3 n=3 (`20260928_000616`, `20260927_001731`),
+the pinned vanilla n=16 (`20260821_131149`). End state = the 1932–36 mean ÷ vanilla's median, as the register.
+
+**Predictions (pre-registered in the schedule 01:20 local, before launch) against outcomes:**
+
+| prediction | outcome |
+|---|---|
+| British levels owned abroad ≥ 5× the dam runs' (a GOVERNMENT-only field — corrected 07:30 to factories abroad, every owner type) | factories ×3 (median 1,429 vs 477); the government-held field 188 vs ~70 (×2.7) — the mechanism MOVED |
+| Britain's end-state U* 9% → 12–16%; first year under 10% 1929 → 1934 or later | 10.2% (canon runs 9.1% / 11.4%); 1935 (canon 1931 / 1933.5, never = 1937) — inside the seed spread, NOT moved |
+| world GDP median inside 0.95–1.10 | 0.94 (all runs); 0.84 at the register's consensus pair — missed low |
+| world W up, world U* down | world W 0.69 (canon 0.73 / 0.71), world U* 1.41 (1.31 / 1.35) — both the other way |
+| capital-abundance runoffs rarer (a hoard can vent abroad) | one runoff in five plus one soft near-abundance, and the hoard ROSE (§3) — missed |
+| stuck-Britain rate unchanged | no stuck Britain (run 3's flag is a civil-war snapshot, §4) — met |
+| date gate: a handful of reduced grants; leader shares within 5 points of the dam runs' | 4–12 a run — met; 1875 / 1905 met, 1936 outside (§6) |
+
+### 1. The register (per run)
+
+| run | world GDP (at base prices) | pool GDP | pool W | pool U* | pool H | world H | PI | PP | Britain's end U* | British factories abroad (share of Britain's holdings abroad) | verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 0.94 (1.09) | 0.95 | 0.76 | 1.93 | 2.31 | 1.45 | 0.87 | 0.92 | 10.2% | 1,429 (28%) | intact, loss 12.4 |
+| 2 | 1.15 (1.27) | 0.97 | 0.94 | 1.09 | 2.33 | 1.38 | 0.90 | 1.08 | 2.5% | 3,449 (31%) | intact, loss 18.9; soft: Britain near capital abundance (hoard 1.36 GDP) |
+| 3 | 0.64 (0.68) | 0.67 | 0.64 | 2.22 | 0.40 | 0.42 | 1.01 | 0.91 | 14.0% | 672 (18%) | BROKEN BY STALL |
+| 4 | 0.75 (0.82) | 0.68 | 0.59 | 2.44 | 1.26 | 0.86 | 1.03 | 1.05 | 13.9% | 1,317 (38%) | intact, loss 14.7 |
+| 5 | 1.06 (1.15) | 1.30 | 0.79 | 1.59 | 3.81 | 1.99 | 0.88 | 1.07 | 7.5% | 2,896 (28%) | BROKEN BY RUNOFF: Britain in capital abundance 1923–29 at a mean hoard of 1.87 GDP |
+
+The consensus pair (runs 1 and 4, world GDP 0.94 / 0.75) DIVERGES under F114, so there is no consensus loss. At that pair: pool GDP 0.82
+(beyond the soft line), pool W 0.68, pool U* 2.18, pool H 1.78, PI 0.95, PP 0.99, T0 1935 ÷ the 1900s 1.41 (beyond the soft line).
+⇒ **Every intact run's loss (12.4 / 14.7 / 18.9) is above every intact canon run's** (nine runs, 2.8–10.0: family 5.3 / 7.0 / 7.8 / 8.0,
+engine + v3 2.8 / 4.5 / 7.5 / 9.5 / 10.0). Under §10.83.7 that is a direction, not a significance test; it points one way.
+
+### 2. The mechanism: Britain's factories abroad (the tiered industries' buildings, every owner type resolved from the melted 1936 saves)
+
+| | runs | British factories abroad | share of Britain's holdings abroad |
+|---|---|---|---|
+| capital export + gate | 5 | 672 / 1,317 / 1,429 / 2,896 / 3,449 (median 1,429) | 18–38% (median 28%) |
+| the canon's dam books (family 6, engine 5) | 11 | 2–3,404 (median 477) | 0.4–16% (median 7.9%) |
+| vanilla (runs 4, 10, 14) | 3 | 920 / 1,184 / 2,716 | 10–18% |
+
+Germany's rose too where read (731 / 1,391 in FDI runs 1–2 against 254 / 952 in family runs 2 and 5). The government-held field alone
+(`owned_abroad_levels`): Britain 188 at 1935 (median; 25 at 1900) against ~70 in the dam runs.
+
+### 3. What it did to the shortlist and the hoard (medians of all runs)
+
+| | capital export + gate (5) | canon-dams-family (6) | engine-built + v3 (8) |
+|---|---|---|---|
+| world GDP | 0.94 | 1.06 | 0.99 |
+| pool GDP ÷ world GDP (each ÷ vanilla's) | **1.01** | 1.36 | 1.24 |
+| pool H (the shortlist's investment pool ÷ its GDP, ÷ vanilla's) | **2.31** | 0.81 | 0.91 |
+| world H | **1.38** | 0.72 | 0.82 |
+| the pool's price level (displayed ÷ base-priced GDP, ÷ vanilla's) | 0.90 | 0.81 | 0.82 |
+
+⇒ Capital export does what it says — the shortlist's share of the world economy falls back to vanilla's, and its prices sit less far under
+vanilla's — **but the hoard does not vent, it grows**: the pool's GDP shrinks while its pools do not. A candidate, NOT measured: the dividends
+of foreign holdings flow back into the owners' investment pools, while the production they pay for is booked in the host's GDP.
+
+### 4. Britain
+
+End-state U* 10.2 / 2.5 / 14.0 / 13.9 / 7.5% (median 10.2%; the family book 9.1%, the engine book 11.4%, vanilla 1.7%). First year under 10%:
+1935 / 1927 / never / never / 1915. Inside the canon's spread; the lever does not reach Britain's depeasantation. ⚠ Run 3's Britain is
+flagged by F166's loose test only because its 1926.1.1 snapshot caught a civil war (the tag held 18M people and £33M for that reading; U* 17%
+in 1925 and 22% in 1927, 11.8% at 1936) — it is not a stuck Britain.
+
+### 5. The old rungs
+
+- **The pool's e0 workers are almost all the MOTOR industry's e0 rung**: 0.77M (median per run, 1932–36) against 0.26M (family) and 0.39M
+  (engine + v3), so the T0 soft breach (1935 ÷ the 1900s 1.41) is motor's. Why capital export would feed it is not established.
+- Old rungs at 1935.1.1 (staffed levels per run, the reader of F178 §9.1), capital export (5) against the canon dam runs (16) — outside the
+  shortlist's markets / inside them / Britain: textile 128 vs 155 / 23 vs 30 / 2 vs 4 · furniture 17 vs 32 / 0 vs 11 / 0 vs 0 · glass 41 vs 45 /
+  18 vs 31 / 0 vs 1 · food 63 vs 58 / 9 vs 11 / 1 vs 0 · paper 80 vs 94 / 6 vs 10 / 0 vs 2 · tooling 55 vs 76 / 4 vs 8 / 0 vs 0 · steel 21 vs 38 /
+  2 vs 9 / 0 vs 1 · motor 182 vs 104 / 238 vs 117 / 22 vs 13. Fewer outside the shortlist in most consumer chains, twice as many motor — at a
+  lower world GDP and n=5, so not separated from the seed spread. The survivors' books read as F178 §9.2: outside the shortlist, local
+  premiums +0.12 to +0.52 in every chain but motor, wage rates 0.48–0.65 of Britain's, break-evens mostly above the world price (textile's
+  trading non-importers break even at 0.69 against the world's 0.73).
+
+### 6. The research date gate
+
+Reduced grants per run 5 / 4 / 5 / 4 / 12 (`PMR_JEG|reduced`), mostly Britain's (vulcanization, telephone) and Germany's (plastics). The
+leader's share of each game era's technologies at its anchor year (all trees; per run in brackets):
+
+| | 1875, game era 3 | 1905, game era 4 | 1936, game era 5 |
+|---|---|---|---|
+| capital export + gate (5) | 53% [55 53 48 48 55] | 51% [51 51 46 33 56] | 65% [69 65 31 38 73] |
+| canon-dams-family (6) | 51% | 51% | 52% |
+| engine-built / v3 | 48% / 55% | 41% / 46% | 35% / 46% |
+| vanilla (16) | 50% | 39% | 52% |
+
+1875 and 1905 inside the ±5 prediction; 1936 outside it, carried by Belgium leading in three runs at 65–73% (Britain 31 / 38% in the other
+two). The gate only reduces grants, so it has no mechanism to raise a leader's share; not attributed. Its purpose — the player — is untested
+by an AI batch.
+
+### 7. Speed and errors
+
+Total play time ×0.998 of vanilla's (median 164.7 against 165.0 min; the grade, within budget); pop-matched +8.8% over 13 of 14 bins
+(0.996–1.128; the diagnostic). No error line names a file of ours in any of the six runs; no version mismatch; every other landmine passes.
+
+**The ruling that followed.** The user, the same afternoon: *"there's no point to push this further on the current lines. We will try one more
+major change that is discussed with another session: drastically changing e0 economy to push its effectiveness per wage unit way lower,
+implementing 'true artisanship' on lower level (prospering in scarcity, badly scalable, replaced in mid-game by industrial scale)."* The arm is
+not adopted; the canon stays `canon-dams-family-nolog`. For that redesign the relevant readings are F178 §6 (value added per worker by rung era:
+e0 £0.20 against e3 £1.47 a week), §8 (the price path runs through GDP only) and §9.2 (the old rung survives on a local price premium, cheap
+local inputs and wages 0.5–0.65 of Britain's), with F97 (an old rung dies through rising wages).
+
+**What it does NOT say.** n=5 with a divergent consensus: every comparison here is directional. The two levers were tested together; the gate
+is expected to be neutral for the AI but was not isolated. The hoard mechanism of §3 is a candidate. The old-rung comparison of §5 is confounded
+with world GDP. Nothing here measures a GBR player's experience of the gate or of foreign competition.

@@ -2206,3 +2206,26 @@ much headroom they consumed and therefore where the ladder should sit afterwards
 - ⚠ **L37 is still live and still owed a fix** — `stop_watch` calls `criteria.mjs --arm <session>` with no `:setup` and
   therefore goes blind to the register on any multi-config schedule.
 
+## ⭐⭐ CLOSED 2026-09-30 — BRITAIN'S U* AND THE PRICE PATH ON THE CURRENT LINES (FINDINGS F178, F179; BALANCE_FRAMEWORK §10.90)
+
+**The user, 2026-09-30:** *"there's no point to push this further on the current lines. We will try one more major change that is discussed
+with another session: drastically changing e0 economy to push its effectiveness per wage unit way lower, implementing 'true artisanship' on
+lower level (prospering in scarcity, badly scalable, replaced in mid-game by industrial scale)."* That redesign is the next major change and
+its plan belongs to the session designing it; this entry only records what was closed and where the evidence is.
+
+**What was tried, and why it is closed:**
+- **The ladder levers are one axis** (F178 §3): A, B, the cost slope and trade buy world GDP and Britain's depeasantation together, ~4–5 years
+  of Britain's first year under 10% U* per 10% of world GDP, and world GDP already sits at vanilla's. No ladder lever raises Britain's U* at
+  equal world GDP.
+- **The price path runs only through GDP** (F178 §8, §10.90): the ruled-out demand limits and construction goods-efficiency aside, a cheaper
+  frontier recipe lowers prices by raising world GDP (per −0.1 ln B, world GDP ×1.53 and PI −0.088, with no independent B effect on the old
+  rung), which spends the one headroom the register cares most about.
+- **More trade cannot reach the survivors** (F178 §9): the per-good weights are exhausted (×1.5 bought ×1.03 the trade), and in textile,
+  furniture and tooling 28–44% of the rest-of-world old rungs sit in markets with no trade capacity at all (3–19% in the other chains).
+- **Capital export works and does not help** (F179): British factories abroad ×3, but Britain's depeasantation is unmoved, the hoard rises,
+  and every intact run scores worse than every intact canon run.
+
+**What the redesign can start from:** F178 §6 (value added per worker by rung era, e0 £0.20 against e3 £1.47 a week), §9.2 (an old rung
+survives on a local price premium, cheap local inputs and wages 0.5–0.65 of Britain's), F97 (an old rung dies through rising wages) and
+F178 §4 (idle labour keeps it alive). The canon is unchanged: `canon-dams-family-nolog`.
+

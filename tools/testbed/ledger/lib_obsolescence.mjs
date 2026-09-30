@@ -29,8 +29,11 @@ export function summariesByYear(runDir, years, overrideDir = null) {
     if (fs.existsSync(f)) { const j = load(f); const y = +j.provenance.date.slice(0, 4); if (years.includes(y) && j.provenance.date === y + '.1.1') out[y] = j; } }
   const sd = path.join(runDir, 'save_summaries'); if (!fs.existsSync(sd)) return out;
   const files = fs.readdirSync(sd).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort();
-  for (const y of years) { if (out[y]) continue; const guess = y - 1835;
-    for (const f of files.filter(f => Math.abs(+f.slice(0, 4) - guess) <= 3)) { let j; try { j = load(path.join(sd, f)); } catch { continue; } if (j.provenance?.date === y + '.1.1') { out[y] = j; break; } } }
+  // ⚠ The file index is the save's position in the run: YEARLY autosaves put Y.1.1 near index Y − 1835, QUARTERLY ones near 4 × (Y − 1836) + 1.
+  //   Try both neighbourhoods, then every file — a quarterly session used to read as empty here (2026-09-30, FINDINGS F178 §9.4).
+  const near = g => files.filter(f => Math.abs(+f.slice(0, 4) - g) <= 3);
+  for (const y of years) { if (out[y]) continue;
+    search: for (const cand of [near(y - 1835), near(4 * (y - 1836) + 1), files]) for (const f of cand) { let j; try { j = load(path.join(sd, f)); } catch { continue; } if (j.provenance?.date === y + '.1.1') { out[y] = j; break search; } } }
   return out;
 }
 export function usableRuns(session, setup) {
