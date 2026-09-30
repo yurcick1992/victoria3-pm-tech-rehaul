@@ -19456,3 +19456,38 @@ points at 1846, 6–9% of a craft country's PB clout.
 
 **What it does NOT say.** The attributed clout rests on the fitted exp(wealth/5) weight (members are exact). One date per save, one or two
 seeds per book; the no-craft reference is the canon's family, not the canon. Nothing past 1866.
+
+## F193 — WHERE SHOPKEEPERS WORK AROUND 1846, AND WHAT A DISPLACED ONE IS: the crafts now hold 36% of the world's shopkeepers (machinist crafts 22%, the no-craft e0 15%, vanilla's six whole industries 31%); urban centres 11–17% and trade centres 3–5% are the vanilla employers a Petite Bourgeoisie would have to re-rise on; an UNEMPLOYED shopkeeper falls to wealth 2.5–4 (employed 16–21) and is by far the most radical shopkeeper (loyalists − radicals −0.04 to −0.26 against about 0 employed), but carries almost no PB weight (2026-10-01, read from kept saves, no game time)
+
+**Source.** Pop records of four kept saves (a scratch reader over the melt; the fields are the pop's `type`, `workforce`, `wealth`,
+`loyalists_and_radicals`, `workplace` and its PB members, F192 §1): the shopkeeper crafts `20260930_225621` run 1 (1846), the machinist crafts
+`20260930_205540` run 2 (1846), the no-craft `20260917_104214` run 2 (1848), vanilla `saves_debut` (1847.4). Asked with the user's design intent
+(2026-10-01): *"I want the PB to fall with the craft and re-rise with UC shopkeepers and possibly traders … It would though be desirable to have a
+temporary friction from industry-displaced shopkeepers radicalising and being partially responsible for 1848-and-around revolutions, which are
+now rather imposed, in a railroady way."*
+
+| shopkeepers' workplace (share of the shopkeeper workforce) | shopkeeper crafts 1846 | machinist crafts 1846 | no crafts 1848 | vanilla 1847 |
+|---|---|---|---|---|
+| total shopkeeper workforce | 2.44M | 1.92M | 1.86M | 1.94M |
+| the six keys (craft / e0; vanilla: whole industries) | 35.6% | 22.3% | 14.7% | 30.8% |
+| the six industries' e1+ rungs | 11.6% | 14.9% | 14.5% | (in the row above) |
+| urban centres | 11.5% | 14.6% | 17.1% | 15.3% |
+| logging camps | 12.2% | 15.2% | 16.2% | 16.4% |
+| fishing wharves | 6.1% | 7.5% | 7.7% | 8.1% |
+| trade centres | 3.2% | 3.5% | 4.8% | 4.1% |
+| UNEMPLOYED | 4.1% (99k) | 3.0% (58k) | 4.7% (88k) | 5.3% (103k) |
+
+- **An unemployed shopkeeper**: wealth 2.5–4.2 (employed shopkeepers 16–21 in every workplace), loyalists − radicals (the pop's
+  `loyalists_and_radicals`, workforce-weighted) −0.045 to −0.264 against −0.016 to +0.008 employed — the SoL collapse makes them radical; but
+  their PB members are 0.05–0.10 × 10⁻⁶ in total (the wealth collapse takes their engagement), so a displaced shopkeeper is a RADICAL and not a
+  PB voice. The shopkeeper crafts do not (yet) make more of them than vanilla does.
+- **The vanilla employers of shopkeepers:** every vanilla building of the six industries, mines and camps carries 500 shopkeepers a 5,000-head
+  level; urban centres 400 a level on market squares and covered markets and **1,000 on arcades (the `elevator` technology)**; trade centres
+  200; financial districts 25.
+- **The vanilla 1848:** the Springtime starts organically — a European major with `egalitarianism` in a liberal or socialist REVOLUTION
+  (`civil_war_progress ≥ 0.25`, its capital in revolt), or France's `france_had_revolution` variable — and then CASCADES by script:
+  `peoples_springtime.1` fires in every European country holding `egalitarianism`, creates a radical and a liberal movement where none
+  exists, and adds `modifier_radical_movement_enhancement` plus flat `add_radicals` (medium, small). `add_radicals` takes a `pop_type` (128
+  uses in vanilla events), so the cascade can be retargeted at the pops a design wants radicalised.
+
+**What it does NOT say.** One save per book at one date; `loyalists_and_radicals`'s scale is the engine's own and is read only comparatively.
