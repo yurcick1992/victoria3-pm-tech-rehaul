@@ -9036,10 +9036,14 @@ unacceptable. Cost = the canon e0's ÷ 50 (600 → 12, 316 → 6).
    159-level financial districts; group-keyed script matches subgroups).
 4. **ai_value untouched** (*"Don't touch for now"*), 1,000 per craft level — a watch item.
 5. **Research events keep their marks in PEOPLE**; the people→levels conversion already honours `workforce_mult`.
-6. **The 1836 start holds employment**: every converted craft building gets ×10 levels (ownership lines too), and — ruled 2026-09-30
-   evening, *"that's a must"* — **the converted factories' workforce is converted into the craft professions**: in every state holding
-   craft levels, the untyped history pops of that state are carved into typed shopkeepers and machinists matching the craft staffing
-   (base plus the active secondaries), population unchanged, laborers left untyped (*"tune 1836 workers to recipes"*).
+6. **The 1836 start holds employment**: every converted craft building gets ×10 levels, and — ruled 2026-09-30 evening, *"that's a
+   must"* — **the converted factories' workforce is converted into the craft professions**: in every state holding craft levels, the
+   untyped history pops of that state are carved into typed shopkeepers and machinists matching the craft staffing (base plus the active
+   secondaries), population unchanged, laborers left untyped (*"tune 1836 workers to recipes"*). ⚠ The ×10 must not reach OWNER BUILDINGS:
+   the engine sizes a financial district or manor house by the levels it owns at the start, so the first probe grew financial districts
+   by +693 levels and urban centres by +5% (FINDINGS F181). An owner-building entry of a craft block keeps its original levels and the rest
+   of that craft becomes self-owned in its own state — the masters own the rest (76% of the 1836 craft capital was self-owned already);
+   government entries keep the ×10.
 7. **Companies can neither build nor form off craft rungs** (*"Companies, by themselves or with mandates, should not be able to build
    'artisanship' t0s"*): the craft keys leave every company list, formation test, prosperity line and construction target.
 8. **Cost ÷50 is kept** — the local session found a periphery craft repays itself in about a year at 1836 prices (F180 §4) and the user

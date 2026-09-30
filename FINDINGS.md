@@ -18496,3 +18496,64 @@ cheapest rate — 720 for the 1840s/1870s, 540 for 1900, 527 for 1930, F53):
 realised prices, profits and wages fixed, so every craft and merge figure there is a directional reading, not a prediction — a book built on
 them will make different build decisions. The machinist evidence (§2) is from vanilla and the canon; whether the 1836 start fills the craft
 machinist slots, and whether the re-typed pops stay, is what the probes measure. Nothing here is measured on a craft or merge book.
+
+## F181 — THE CRAFT PROBE, 2 × 1836→1838: both staffing variants hold 0.89–1.00 staffing everywhere (the re-typed 1836 machinists stay), economy of scale reads zero on 80–120-level crafts, no company holds a craft level, world GDP is the canon's, prices move as the scenario maths predicted — and the ×10 start had also multiplied the ownership entries, inflating financial districts (+693 levels) and urban centres (+5%); fixed after the probe (2026-09-30)
+
+**Session** `20260930_171147_artisan6-probe-2x` (schedule `artisan6_probe_2x.json`, commit `024a120`): run 1 `artisan6` (the ruled staffing, 30–50%
+machinists), run 2 `artisan6-shop` (masters as shopkeepers plus laborers at the same wage units), each 1836→1838.1.1, quarterly saves, the
+building inventory at 1836.1.8, markets for GBR/FRA/USA/PRU/RUS/CHI/AUS/TUR/JAP. Compared with the canon's six F177 runs
+(`20260929_002728`, same map, same dates). A MECHANICS probe: two years, one seed per book, no outcome reading. Questions and predictions were
+registered in the schedule before launch.
+
+**1. Staffing (Q1) — both variants hold; the literacy gate does not bite at the start.** Craft staffing (staffed ÷ levels), 1836.4 → 1838.1,
+ruled mix: China 1.00 → 1.00 (1,640 levels), Russia 0.97 → 0.97, India (BIC) 0.98 → 0.99, Austria 1.00 → 1.00, Ottomans 0.96 → 0.96, Japan
+0.99 → 0.95, Spain 1.00 → 0.98, Korea 0.99 → 0.89, Persia 0.88 → 0.93. The shop mix (to 1837.1) is within 0.02 of those, Korea also 0.89 at
+1837.1. The re-typed machinists stay employed: China 406k → 407k machinist workers (vanilla China: 31.8k in 1837), Russia 194k → 192k, India
+109k → 123k, Austria 119k → 125k, Ottomans 80k → 80k; only Korea (literacy 10%) slips, 21k → 17k, and Persia (8%) 14k → 12k. ⇒ at the start
+the re-typing carries the ruled staffing; whether crafts can GROW where machinists cannot be recruited is untested in two years.
+
+**2. Economy of scale (Q2) — off.** Building-inventory throughput at 1836.1.8: craft buildings at 80, 90, 100, 110 and 120 levels read
+**0.0000**; the e1 rungs beside them read +1% per level (Dye Workshops 6 levels → 0.06, Sulfite Pulping 8 → 0.08).
+
+**3. Companies (Q5) — none.** Zero company-owned levels of the six craft keys at every date in both runs.
+
+**4. Build rate (Q6) — no expansion wave.** World craft levels 1836.4 → 1838.1 (ruled run): food 406 → 420, textile 1,532 → 1,450, furniture
+901 → 894, glass 873 → 838, tooling 101 → 103, paper 1,321 → 1,254 — net −179 (−3.5%). The canon's own e0 fell −22 levels (−220 craft
+equivalents) over the same dates (F177 run 2), so this is the ordinary early downsizing, in finer steps: Brazil −28, Nagpur −19, the Mughals −17,
+India −17, Berar −13. About 35 countries built 1–3 craft levels each (Britain, France, Sweden, Spain, Belgium …). The prediction ("crafts grow in
+the periphery") was WRONG for these two years; the one-year payback of F180 §4 did not start a building wave.
+
+**5. World product (Q8) — unchanged.** At 1836.4.1: displayed GDP 390M / 389M against the canon's 389–393M; GDP at base prices 417M / 414M
+against 412–418M. (F180 §3 predicted −0.5…−1.5% at base prices.)
+
+**6. Prices at 1836.2.1 against the canon's median** (British, Russian and Japanese markets — the canon logged no Chinese, Austrian or Ottoman
+market): the British market within ±6%; Russian paper **+27%** (F180 §3 predicted +25%), glass +8% (+16%), furniture +9% (+13%), fabric −11%
+(−18%), wood −11%; Japanese paper **+39%** (+34%), glass +38% (+25%), tools +17%, wood −7%. The scenario maths had the directions and the rough
+sizes. In absolute terms at 1837.1.1 (ruled run): clothes 112% of base in the Qing market, 156% Russian, 144% Austrian, 170% Japanese, 153%
+Ottoman; paper 153% Qing, 139% Russian, 165% Austrian and Japanese, 167% Ottoman.
+
+**7. Urbanization and infrastructure (Q3/Q4) — the craft group works exactly; the ×10 start did not.**
+- Every one of the 140 craft states' urban-centre levels at 1836.1.8 equals floor(Σ building urbanization ÷ 100) with crafts at **2** per level
+  (0 of 140 fit 20) — the child group's override is in force.
+- Yet urban centres ran ~5% above the canon: Austria 33 against 25, Ottomans 18 against 15, Japan 14 against 11, Russia 39 against 36. The
+  cause, from a building-by-building diff of Austria against a vanilla run's inventory (`20260821_125917` run 2, which follows the same formula
+  in 868 of 886 states): **financial districts 36 → 164 levels**. convert_history had multiplied every `levels=` line of a craft block by 10,
+  ownership entries included, and the engine sizes a financial district or manor house by the levels it owns at the start. World-wide the
+  1836 craft ownership is 391 canon levels self-owned (76%), 77 financial-district (15%), 43 government (8%), 4 manor-house (1%); the ×10 turned
+  the 77 into 770 and added ~693 financial-district levels, 5 urbanization each, with their capitalist and clerk jobs.
+- **FIXED after the probe** (`emit_craft_start.mjs`, formerly `emit_craft_pops.mjs`): an owner-building entry of a craft block keeps its
+  ORIGINAL level count and the rest becomes self-owned in the craft's own state — 58 entries in 56 blocks, 729 craft levels moved
+  (financial districts 693, manor houses 36); total craft levels unchanged at 5,150. Government entries keep the ×10 (they create no owner
+  building). Unmeasured until the next probe.
+- Infrastructure usage, world, 1836.4.1: 9,704 / 9,694 against the canon's 9,626–9,652 (+0.6–0.8%, the owner-building and urban-centre excess);
+  the ×1/10 on the craft group holds (unscaled, crafts would have added ~+70%).
+
+**8. Load (Q7).** Both books load and match the game version; the init marker is in run 2's log (run 1's fell out of the rotating log before
+the mirror caught it). No error line names a file of ours. Each run carries 34 `Invalid Production Method` lines of the catalogued
+`is_production_method_active` class (MISSING_PM_REFERENCES) against 8 in a canon run: the new members are vanilla scripts asking whether a
+vanilla-keyed textile mill, furniture manufactory, tooling workshop or paper mill runs an AUTOMATION method (pm_mechanized_looms,
+pm_automatic_power_looms, pm_traditional_looms, the watertube / rotary-valve / assembly-line methods) — groups the craft rungs no longer carry.
+Validated once at load; the triggers return false, which is the truth for a craft. Catalogued, not fixed (the standing convention).
+
+**What it does NOT say.** Two years and one seed per book — nothing about the century, the register, or whether crafts die where wages rise.
+The ownership fix is unmeasured. The staffing verdict holds for the START; recruitment of NEW machinists in low-literacy countries is untested.

@@ -8,7 +8,7 @@
 // A post-processor, like make_trade_config / make_dam_config, so e1–e3 of the six industries are the base's by construction (the
 // ruling requires them byte-identical to the canon) and every other key survives untouched.
 //
-// ⭐ THE CRAFT TABLE LIVES HERE AND ONLY HERE. build.ps1, emit_secondaries, emit_companies, emit_craft_pops and L31 read what the
+// ⭐ THE CRAFT TABLE LIVES HERE AND ONLY HERE. build.ps1, emit_secondaries, emit_companies, emit_craft_start and L31 read what the
 // config says (`craft`, `workforce_mult`, `building_group`, `exclude_secondary_pmgs`, `exclude_secondary_pms`, `levels_per_mesh`,
 // `_artisan`), never this table.
 //

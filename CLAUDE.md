@@ -3150,7 +3150,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         `wage_pct` restated at the e0 reference wage; adds `building_groups_add`, `_artisan` (the record L31 checks) and
                         `_artisan_variant`, and copies the base's tree twin. THE CRAFT TABLE LIVES HERE ONLY. THROWS on a base whose e0
                         is not vanilla-staffed, an excluded group the industry lacks, or a staffing block that is not 5,000 whole heads
-  emit_craft_pops.mjs   THE CRAFT RUNGS' 1836 WORKFORCE (§10.91.1 item 6, "that's a must") — called by build.ps1 AFTER emit_secondaries.
+  emit_craft_start.mjs  THE CRAFT RUNGS' 1836 START (§10.91.1 item 6, "that's a must") — called by build.ps1 AFTER emit_secondaries.
+                        ⭐ PART 1, OWNERSHIP (found by the first craft probe, FINDINGS F181): convert_history's ×10 also multiplied the
+                        ownership entries, and the engine SIZES a financial district or manor house by the levels it owns at the start
+                        (+693 financial-district levels world-wide, urban centres +5%). So an owner-building entry of a craft block keeps its
+                        ORIGINAL levels and the rest becomes self-owned in the craft's own state (government entries keep the ×10).
+                        PART 2, THE WORKFORCE:
                         From the EMITTED 1836 map it sums each state's craft workforce by profession (levels × (base × workforce_mult +
                         the active secondaries)), laborers excepted, and CARVES that many people (÷ WORKING_ADULT_RATIO_BASE) out of the
                         state's own untyped vanilla pops into typed shopkeeper / machinist blocks, largest block first, ≤ 90% of any

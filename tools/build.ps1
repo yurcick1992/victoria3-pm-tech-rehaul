@@ -1519,8 +1519,8 @@ if ($LASTEXITCODE -ne 0) { throw "emit_secondaries.mjs failed (exit $LASTEXITCOD
 #   population unchanged. AFTER emit_secondaries, because it reads the final 1836 map (x10 levels, minted secondary names) and the
 #   minted secondaries' scaled employment. A book without crafts emits nothing and REMOVES any file an earlier craft book left here
 #   (common/history is never wiped by the clean step above).
-& node (Join-Path $PSScriptRoot 'emit_craft_pops.mjs') $modAbs $cfgPath
-if ($LASTEXITCODE -ne 0) { throw "emit_craft_pops.mjs failed (exit $LASTEXITCODE) - the craft rungs would start without their workforce in the right professions." }
+& node (Join-Path $PSScriptRoot 'emit_craft_start.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_craft_start.mjs failed (exit $LASTEXITCODE) - the craft rungs would start without their workforce in the right professions." }
 
 if (-not $NoLint) {
     $bashPath = $null
