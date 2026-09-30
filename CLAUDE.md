@@ -2717,6 +2717,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         [--every N] [--json out]`; prints the tags' clout nearest each 1 Jan and the MEAN / MEDIAN over every main
                         country holding the IG — ⚠ read a lever on those, never on one country: a revolution or a ban puts one
                         country's IG at 0 for years (Britain's PB 0.0 → 44% within five years in a vanilla seed)
+  testbed/ledger/ig_pop_contrib.mjs  WHO MAKES AN IG'S CLOUT, POP BY POP, BY WORKPLACE (2026-10-01, FINDINGS F192): a pop's
+                        `interest_group_support_array` = its politically ENGAGED MEMBERS of each IG in millions (index = the IG's
+                        alphabetical file order; per head it tracks engagement, not wealth), so the class's share of an IG's MEMBERS is
+                        exact, and its share of the IG's CLOUT is attributed inside each country ∝ members × exp(wealth/5) (the best of
+                        five fitted weights; law modifiers are not in the save). `<save.v3|melt> [--keys <building keys>]
+                        [--ig ig_petty_bourgeoisie] [--minwf 1000000] [--json out]`; prints the world decomposition, the class by
+                        profession, and the cross-country correlations. ⚠ In vanilla the six craft keys are the WHOLE industries
   testbed/ledger/health_vs_ref.mjs  IS ANY INDUSTRY DEAD, IS ANY MARKET LEFT WITH A TOKEN? (2026-10-01, user-asked for the craft probe)
                         An arm's summaries at one date against a reference's: world STAFFED levels per building type (a merged rung
                         folded into its host on both sides) — DEAD when every arm run is under 0.10 of the reference median AND under

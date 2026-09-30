@@ -19404,3 +19404,55 @@ shopkeepers); inside vanilla's single-seed range.
 
 **What it does NOT say.** Two seeds, ten years, one date for the health check. Whether the crafts die later, how the century reads on the
 register, and whether the PB's gain grows or fades are the n=3 batch's questions.
+
+## F192 — THE PETITE BOURGEOISIE'S CLOUT, POP BY POP: the shopkeeper crafts' workers hold 11.5–11.7% of the PB's members world-wide and carry 0.18–0.20 of its 2.9 mean clout points — double the machinist crafts (7.1%, 0.07–0.11) and the no-craft books' e0 factories (4.9–6.9%, 0.05–0.11), about vanilla's six WHOLE industries (18%, 0.17); almost all of it is the crafts' SHOPKEEPERS; but across countries the PB's clout does NOT follow the craft share (r −0.09 / −0.16), because crafts are ~1% of any country's workforce and sit where the PB is weak for other reasons (2026-10-01, read from kept saves, no game time)
+
+**Source.** `tools/testbed/ledger/ig_pop_contrib.mjs` (new) over the kept saves: the shopkeeper crafts `20260930_225621` runs 1–2 (1846); the
+machinist crafts `20260930_205540` runs 1–2 (1846) and `20260930_181601` run 1 (1866); books without crafts (their e0 is vanilla's first
+method, 500 shopkeepers + 4,500 laborers a level) `20260917_104214` run 2 (1848), `20260904_211458` run 1, `20260907_074504` run 20,
+`20260914_143137` run 2 (1842), `20260930_181601` run 2 (`merge6`, 1866); vanilla `saves_debut` (1847.4, 1867.4). ⚠ The canon itself has no
+kept save before 1936; the four-rung no-craft books are the canon's own family (the same e0 buildings). ⚠ In VANILLA the six keys are the
+WHOLE industries (every method), in the mod the e0 rung alone. Asked by the user: *"it is supposed to be correlated with artisan share. Does
+it? Can you directly measure clout effects (pop-level contributions) in our current employees of the artisan industries, compared to canon
+and to vanilla?"*
+
+**1. What a save holds per pop.** `interest_group_support_data.interest_group_support_array` = the count of IG definitions (8) and sparse
+`index=value` pairs, the index being the IG definition in alphabetical file order (0 armed forces … 5 petty bourgeoisie, 6 rural folk,
+7 trade unions — laborers sit mostly in 7 and 0–1, shopkeepers in 5, bureaucrats in 3, peasants in 6). The value is the pop's POLITICALLY
+ENGAGED MEMBERS of that IG in millions: per head it tracks engagement, not wealth (members ÷ size, median by type: clergymen 2.37, capitalists
+2.41, bureaucrats 2.28, shopkeepers 1.31, farmers 1.24, machinists 0.95, laborers 0.53, peasants 0.51, slaves 0 — × 10⁻⁶), and summed per
+country it is far from clout (GBR 1846: rural folk 12.5 members and 2.4M political strength, the industrialists 0.6 and 20.6M). An IG's
+political strength weights its members by wealth; of five weights tried, exp(wealth/5) fits the IG records' strength best (ln-residual MAD
+0.58 over 569 country×IG; wealth² 0.63, wealth 1.00, none 1.42). The remaining spread is law modifiers (suffrage, strata) the save does not
+break out. ⇒ MEMBERS are read exactly; CLOUT is attributed inside each country ∝ members × exp(wealth/5), so each country's total is its
+recorded clout and only the split rests on the fit.
+
+**2. The world** (mean over main countries; "points" = percentage points of the mean PB clout):
+
+| save | PB mean clout | the six keys' workers: share of all workforce | share of the PB's members | PB points attributed to them | of which shopkeepers |
+|---|---|---|---|---|---|
+| **shopkeeper crafts** r1 / r2, 1846 | 2.89 / 2.95% | 0.90 / 0.89% | **11.7 / 11.5%** | **0.175 / 0.195** | 0.172 / 0.190 |
+| machinist crafts, floor / no floor, 1846 | 2.80 / 2.70% | 0.85 / 0.82% | 7.2 / 7.1% | 0.066 / 0.108 | 0.056 / 0.087 |
+| machinist crafts (artisan6), 1866 | 4.20% | 0.76% | 6.8% | 0.088 | 0.075 |
+| no crafts: a205-gm 1848 · c16 / canon4v / je24 1842 | 2.64–2.99% | 0.70–0.86% | 4.9–6.9% | 0.048–0.107 | 0.042–0.096 |
+| no crafts: merge6, 1866 | 4.07% | 0.66% | 3.7% | 0.036 | 0.032 |
+| vanilla (whole industries), 1847 / 1867 | 2.97 / 4.40% | 1.51 / 1.82% | 18.3 / 17.1% | 0.172 / 0.308 | 0.138 / 0.205 |
+
+PB members a worker (× 10⁻⁶), in the six keys: shopkeepers 2.7–3.7 in every book, machinists 0.3–1.0, laborers 0.1–0.5. The crafts' PB weight
+is their shopkeeper headcount: 867–871k in the shopkeeper crafts against 403–425k in the machinist crafts and 275–325k in the no-craft e0.
+
+**3. Across countries** (workforce ≥ 1M, n = 30–33): r(the keys' workforce share, PB clout) = **−0.09 / −0.16** in the shopkeeper crafts,
+−0.20 / −0.12 machinist, −0.06 to 0.08 no-craft, but **0.54 / 0.51 in vanilla**, where the six keys are the whole light industry and their share
+tracks industrialisation. The keys' own attributed part does follow their share everywhere (r 0.32 / 0.42 shopkeeper crafts, 0.18–0.56 the
+rest, 0.65 / 0.58 vanilla), and the REST of the PB's clout runs against it (r −0.16 / −0.22): crafts are largest, relative to the workforce, in
+the periphery (China 0.9%, Russia 1.4%, Austria 3.1%, the Netherlands 4.9%), where landowners hold the clout. In the median craft-holding
+country the craft workers carry **6.4–9.0% of the PB's clout** (machinist crafts 1.9–4.5%, no-craft e0 3.1–6.4%, vanilla's whole industries
+8.8–9.7%) and 15–16% of its members (machinist 9.5–11.9%, no-craft 7.4–9.8%, vanilla 12–14%).
+
+**4. So:** the staffing change did what it could — the crafts' pull on the PB doubled and matches what vanilla's WHOLE light industry carries
+— but the crafts are about 1% of any country's workforce, so the PB's clout is set elsewhere (the other shopkeepers, clerks and farmers, the
+laws) and does not rise or fall with the craft share. The PB will die with the crafts only in the part the crafts carry: ~0.2 of ~3 mean
+points at 1846, 6–9% of a craft country's PB clout.
+
+**What it does NOT say.** The attributed clout rests on the fitted exp(wealth/5) weight (members are exact). One date per save, one or two
+seeds per book; the no-craft reference is the canon's family, not the canon. Nothing past 1866.
