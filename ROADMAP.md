@@ -3,6 +3,8 @@
 The order below is the project's own numbering, set by the user on 2026-08-10. Step 0 is where the work
 has been until now; **steps 1–4 are the MVP**, steps 5–7 are polish before release.
 
+⭐ **Every open item, one line each, is in `BACKLOG.md`** (since 2026-10-01) — the layer between this plan and a session's handover.
+
 ⚠ This file is the PLAN. It is not a status board (those are disposable, see CLAUDE.md) and not a record
 of results (that is `FINDINGS.md`). When a step's design settles, its content moves into the relevant
 doc — `BALANCE_FRAMEWORK.md` for balance rulings, `MODDING_NOTES.md` for engine gotchas,
