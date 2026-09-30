@@ -1,0 +1,76 @@
+{
+  "schedule_version": 1,
+  "label": "artisan6-probe-2x",
+  "_why": "MECHANICS PROBE of the craft rungs (BALANCE_FRAMEWORK §10.91.1, ROADMAP step 12; user go-ahead 2026-09-30: 'all right, probe both. Don't forget to tune 1836 workers to recipes' and 'go on with the probes'). Two books, both the canon (canon-dams-family-nolog) with the six light-industry e0 rungs turned into 500-worker craft rungs (cost /50, group bg_pmr_crafts: no economy of scale, urbanization 2, infrastructure x1/10; automation stripped; 1836 levels x10; 1836 pops carved into the craft professions; craft keys out of every company). artisan6 = the RULED staffing (30-50% machinists); artisan6-shop = masters as shopkeepers plus laborers at the same wage units. The question that splits them is the machinist literacy gate (F180 §2). A mechanics check, not an outcome reading: two years, one seed each.",
+  "_questions": {
+    "Q1": "Staffing: are the craft buildings staffed at 1836.4 / 1837.1 / 1838.1 in China, the Ottomans, Korea, Persia, Russia, India, Austria, Japan — and does the ruled mix keep its machinists where literacy is near 10%? (save summaries: staffing / levels per craft key per country; workforce_by_profession)",
+    "Q2": "Economy of scale: do craft buildings of 20+ levels read 0 throughput bonus at 1836.1.8 (building_inventory THRU lines), while e1+ light industry reads +1%/level?",
+    "Q3": "Urbanization: urban-centre levels per country at 1836.4.1 against the canon's (F177 session 20260929_002728, same date) — the ruling holds urbanization equal (2 per craft level x 10).",
+    "Q4": "Infrastructure: state infrastructure usage in the craft states against the canon's at 1836.4.1.",
+    "Q5": "Companies: zero company-owned levels of the six craft keys (summary company_levels), every date.",
+    "Q6": "Build rate: how many craft levels are added (or queued) by 1837.1 / 1838.1, where, and by whom — the ai_value watch item and the one-year payback (F180 §4).",
+    "Q7": "Load: the init marker; no error line naming zzz_pm_rehaul files or the craft keys; no 'Invalid production method'; the 1836 craft levels present (5,150).",
+    "Q8": "World product at 1836.4.1 against the canon's (displayed GDP and GDP at base prices)."
+  },
+  "_predictions": {
+    "Q1": "both variants >= 0.8 staffed everywhere at 1836.4 (the history pops are typed); the ruled mix may slip where literacy is near 10% by 1838, the shop mix does not",
+    "Q2": "0 on every craft building, +1%/level on e1+",
+    "Q3": "within 2% of the canon",
+    "Q4": "within a few % of the canon",
+    "Q5": "zero",
+    "Q6": "craft levels GROW in the periphery (China, Russia, India) within two years; how fast is the reading",
+    "Q7": "clean",
+    "Q8": "world GDP within -0.5...-1.5% of the canon at base prices (F180 §3)"
+  },
+  "_cost": "2 runs x 1836 -> 1838.1, about 3-4 minutes each plus builds and harvest",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Two years and one seed per book: a mechanics reading. No register reading, no outcome claim."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1837.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "RUS",
+      "CHI",
+      "AUS",
+      "TUR",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "events",
+      "market_goods_scoped",
+      "building_inventory"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "artisan6": {
+      "kind": "config",
+      "config": "config/mod_config.artisan6.json"
+    },
+    "artisan6-shop": {
+      "kind": "config",
+      "config": "config/mod_config.artisan6-shop.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "artisan6",
+      "until": "1838.1.1"
+    },
+    {
+      "setup": "artisan6-shop",
+      "until": "1838.1.1"
+    }
+  ]
+}

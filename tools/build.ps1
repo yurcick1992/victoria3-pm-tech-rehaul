@@ -563,14 +563,22 @@ foreach ($ind in $cfg.industries) {
             # putting them on any other tier would be a duplicate-alias conflict. That is the ANCHOR
             # tier, not tier position 1 — an era-0 rung sits at position 1 and has an invented key.
             if ($null -ne $b.aliases -and $t.key -eq $anchorKey) { $bl += "`taliases = { $($b.aliases -join ' ') }" }
-            $bl += "`tbuilding_group = $($b.building_group)","`ticon = `"$($b.icon)`"","`tcity_type = $($b.city_type)","`tlevels_per_mesh = $([int]$b.levels_per_mesh)"
+            # ⭐ A RUNG MAY SIT IN ITS OWN BUILDING GROUP AND MESH DENSITY (the craft rungs, BALANCE_FRAMEWORK §10.91.1): a craft
+            # e0 is a 500-worker level in `bg_pmr_crafts` (no economy of scale, urbanization 2, infrastructure x1/10), with ten
+            # times the levels per map model so the x10 levels do not multiply the models on the map. Absent = the industry's.
+            $bgKey = if ($t.building_group) { $t.building_group } else { $b.building_group }
+            $lpm = if ($null -ne $t.levels_per_mesh) { [int]$t.levels_per_mesh } else { [int]$b.levels_per_mesh }
+            $bl += "`tbuilding_group = $bgKey","`ticon = `"$($b.icon)`"","`tcity_type = $($b.city_type)","`tlevels_per_mesh = $lpm"
             if ($null -ne $b.ai_nationalization_desire) { $bl += "`tai_nationalization_desire = $(Fmt $b.ai_nationalization_desire)" }
             # An era-0 rung carries NO technology on purpose (ROADMAP step 1): a bloomery forge and a
             # village joinery are what exists before industry, so they emit ungated like vanilla's own
             # logging camp. Omit the line entirely rather than writing an empty block.
             if ($null -ne $t.tech -and "$($t.tech)" -ne '') { $bl += "`tunlocking_technologies = { $($t.tech) }" }
             $bl += "`tproduction_method_groups = {","`t`t$($t.pmg_key)"
-            foreach ($s in $ind.secondary_pmgs) { $bl += "`t`t$s" }
+            # a rung may drop some of its industry's secondary groups (the craft rungs carry no automation, §10.91.1);
+            # emit_secondaries strips the dropped groups' methods from the 1836 history, or the engine rejects the block
+            $exclPmg = @(); if ($t.exclude_secondary_pmgs) { $exclPmg = @($t.exclude_secondary_pmgs) }
+            foreach ($s in $ind.secondary_pmgs) { if ($exclPmg -contains $s) { continue }; $bl += "`t`t$s" }
             # required_construction: per-tier building_cost (construction points) if set, else the
             # building-level fallback (a raw number or a vanilla script-value name like construction_cost_high).
             $reqCon = if ($null -ne $t.building_cost) { [int]$t.building_cost } else { $b.required_construction }
@@ -1505,6 +1513,14 @@ $summary | Format-Table -AutoSize | Out-String | Write-Output
 # ⚠ It must run AFTER the buildings are emitted: it REWRITES their production_method_groups lists.
 & node (Join-Path $PSScriptRoot 'emit_secondaries.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_secondaries.mjs failed (exit $LASTEXITCODE) - secondary methods would ship at vanilla scale against a laddered main recipe." }
+
+# ⭐ THE CRAFT RUNGS' 1836 WORKFORCE (BALANCE_FRAMEWORK §10.91.1 item 6, user-ruled 2026-09-30, "that's a must"): the untyped
+#   history pops of every state holding craft levels are carved into typed shopkeepers / machinists matching the craft staffing,
+#   population unchanged. AFTER emit_secondaries, because it reads the final 1836 map (x10 levels, minted secondary names) and the
+#   minted secondaries' scaled employment. A book without crafts emits nothing and REMOVES any file an earlier craft book left here
+#   (common/history is never wiped by the clean step above).
+& node (Join-Path $PSScriptRoot 'emit_craft_pops.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_craft_pops.mjs failed (exit $LASTEXITCODE) - the craft rungs would start without their workforce in the right professions." }
 
 if (-not $NoLint) {
     $bashPath = $null

@@ -19,6 +19,8 @@
 //      a goods conversion (wood -> silk), not an automation method.
 //   2. EMPLOYMENT DOES NOT SCALE. `level_scaled` employment is copied verbatim. A tier-3 cannery
 //      makes 15.6x the groceries with the same 500 extra machinists, deliberately.
+//      ⭐ AMENDED 2026-09-30 for rungs with `workforce_mult` < 1 (the craft rungs, BALANCE_FRAMEWORK §10.91.1): their
+//      secondaries' employment is × workforce_mult, because the LEVEL itself is a tenth of a 5,000-head level.
 //   3. CROSS-INDUSTRY OUTPUTS RESCALE TOO — porcelain, luxury_clothes, luxury_furniture, liquor,
 //      aeroplanes, tanks, radios. These reach their markets through a side door that is not on the
 //      tier ladder, and the ruling is that the side door scales with the building anyway.
@@ -114,6 +116,17 @@ for (const ind of cfg.industries || []) {
 const outPMs = [], outPMGs = [];
 const RESOLVED = {};   // building key -> minted pm key -> { from, ref, in, out }
 const RENAME = {};     // building key -> vanilla pm -> minted pm, for the 1836 history
+// ⭐ THE CRAFT RUNGS (BALANCE_FRAMEWORK §10.91.1, 2026-09-30) amend two rules for a rung carrying `workforce_mult` < 1:
+//   RULE 2 BECOMES "EMPLOYMENT SCALES WITH THE LEVEL": a craft level is a tenth of a 5,000-head level, so a kept secondary's
+//     employment is × workforce_mult (Craftsman Sewing +500 shopkeepers → +50). Unscaled, luxury / canning / distilling would add
+//     50–200% to a 500-head level. The goods already scale with the rung's output through Rout/Rin.
+//   EXCLUSIONS: `exclude_secondary_pmgs` groups are not on the building at all (build.ps1 drops them) and `exclude_secondary_pms`
+//     members are dropped from the minted copy of their group (Vacuum Canning, Patent Stills). The 1836 history then names methods
+//     of groups the building no longer has (pm_traditional_looms, pm_automation_disabled, pm_manual_glassblowing,
+//     pm_manual_dough_processing), and the engine REJECTS a whole create_building over one invalid method — so the history pass
+//     below strips them per building and asserts none survive.
+const STRIP = {};      // building key -> Set of methods its 1836 history must not name
+const craftChecked = [];
 const report = [];
 let minted = 0, groupsMinted = 0;
 // every copied method and group gets a loc line pointing at its vanilla source — the copies shipped WITHOUT one for
@@ -129,6 +142,15 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     const { ind, t } = rec;
     const industry = IND[ind];
     const rung0 = (industry.tiers || []).slice().sort((a, b) => a.era - b.era)[0];
+    const wmT = t.workforce_mult != null ? +t.workforce_mult : 1;
+    const exclPms = new Set(t.exclude_secondary_pms || []);
+    if ((t.exclude_secondary_pmgs || []).length || exclPms.size) {
+      const s = STRIP[bkey] = new Set(exclPms);
+      for (const g of (t.exclude_secondary_pmgs || [])) {
+        if (!PMG[g]) throw new Error(`emit_secondaries: ${bkey} excludes group ${g}, which vanilla does not define`);
+        for (const p of listOf(PMG[g], 'production_methods')) s.add(p);
+      }
+    }
     const gmatch = /production_method_groups\s*=\s*\{([\s\S]*?)\}/.exec(body);
     if (!gmatch) continue;
     // ⚠ IDEMPOTENT. build.ps1 runs this tool, so a mod built by the normal path already carries the
@@ -145,7 +167,13 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
       const members = listOf(gb, 'production_methods');
       const rescalable = members.filter(p => PM[p] && !LABOUR_SAVING.test(p) &&
         /goods_(input|output)_[a-z_]+_add/.test(PM[p]));
-      if (!rescalable.length) { newGroups.push(g); continue; }
+      if (!rescalable.length) {
+        // a group kept BY REFERENCE cannot drop a member or scale its employment — refuse rather than ship it wrong on a craft rung
+        if (members.some(p => exclPms.has(p))) throw new Error(`emit_secondaries: ${bkey} excludes a member of ${g}, which is not minted per rung — exclude the whole group instead`);
+        if (wmT < 1 && members.some(p => /building_employment_[a-z_]+_add\s*=\s*-?[1-9]/.test(PM[p] || '')))
+          throw new Error(`emit_secondaries: ${bkey} (workforce_mult ${wmT}) keeps ${g} by reference, whose methods employ people at vanilla scale — exclude the group or give it goods`);
+        newGroups.push(g); continue;
+      }
 
       // THE REFERENCE — the lowest primary PM that allows this secondary.
       //   PM-gated   -> the named method (bone china, elastics, precision tools).
@@ -175,6 +203,7 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
 
       const newMembers = [];
       for (const p of members) {
+        if (exclPms.has(p)) continue;   // a craft rung does not carry it (Vacuum Canning, Patent Stills)
         const pb = PM[p];
         if (!pb || !rescalable.includes(p)) { newMembers.push(p); continue; }
         // ⚠⚠ A PM-GATED SECONDARY KEEPS ITS RESTRICTION. Minting a per-tier copy and pointing its
@@ -235,6 +264,16 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         // a gate naming a vanilla main PM must name OUR tier's method instead, or it never unlocks
         nb = nb.replace(/unlocking_production_methods\s*=\s*\{[\s\S]*?\}/,
           'unlocking_production_methods = { ' + t.pm_key + ' }');
+        // the craft amendment to RULE 2: a fractional-unit rung's secondaries employ in proportion to its level
+        if (wmT < 1) {
+          nb = nb.replace(/building_employment_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, pr, q) => {
+            const v = +q * wmT;
+            if (v < 0) throw new Error(`emit_secondaries: ${bkey} keeps ${p}, which REMOVES ${pr} (${q}) — a craft rung must not carry labour-saving methods`);
+            if (Math.abs(v - Math.round(v)) > 1e-9) throw new Error(`emit_secondaries: ${bkey} ${p}: ${pr} ${q} × ${wmT} is not whole`);
+            return 'building_employment_' + pr + '_add = ' + Math.round(v);
+          });
+          craftChecked.push(`${bkey}:${p}`);
+        }
         // ⭐⭐ THE RESOLVED GOODS GO IN THE CONFIG, NOT ONLY IN THE EMITTED TEXT. The first cut of
         //   this tool rewrote the mod alone, which left THREE disagreeing views of a good's supply:
         //   the GAME got scaled secondaries, the BALANCE UI read vanilla's flat quantities out of
@@ -294,7 +333,7 @@ if (process.argv.includes('--write')) {
 //   each tier, and a global rename would send every rung to one rung's numbers.
 {
   const histDir = join(MOD, 'common/history/buildings');
-  let files = 0, swaps = 0;
+  let files = 0, swaps = 0, stripped = 0;
   for (const f of (existsSync(histDir) ? readdirSync(histDir).filter(x => x.endsWith('.txt')) : [])) {
     const fp = join(histDir, f);
     let t = rd(fp); const before = t;
@@ -305,11 +344,16 @@ if (process.argv.includes('--write')) {
     //   starting factories survived the first two attempts at this rewrite for exactly that reason.
     t = t.replace(/building\s*=\s*"([a-z_0-9-]+)"((?:(?!create_building)[\s\S]){0,40000}?)activate_production_methods\s*=\s*\{([^}]*)\}/g,
       (whole, bkey, mid, list) => {
-        const map = RENAME[bkey]; if (!map) return whole;
+        const map = RENAME[bkey], strip = STRIP[bkey]; if (!map && !strip) return whole;
         let out = list, hit = false;
-        for (const [van, mint] of Object.entries(map)) {
+        for (const [van, mint] of Object.entries(map || {})) {
           const re = new RegExp('"' + van + '"', 'g');
           if (re.test(out)) { out = out.replace(re, '"' + mint + '"'); hit = true; }
+        }
+        // a craft rung's dropped groups: their methods leave the list (the engine rejects the whole block over one)
+        for (const s of (strip || [])) {
+          const re = new RegExp('\\s*"' + s + '"', 'g');
+          if (re.test(out)) { out = out.replace(re, ''); hit = true; stripped++; }
         }
         if (hit) swaps++;
         return 'building = "' + bkey + '"' + mid + 'activate_production_methods = {' + out + '}';
@@ -318,7 +362,19 @@ if (process.argv.includes('--write')) {
     //   notes `should be in utf8-bom encoding` for each (seen in every run's error.log until 2026-09-04)
     if (t !== before) { writeFileSync(fp, BOM + t); files++; }
   }
-  console.log('  history re-pointed: ' + swaps + ' block(s) in ' + files + ' file(s)');
+  console.log('  history re-pointed: ' + swaps + ' block(s) in ' + files + ' file(s)' + (stripped ? `; ${stripped} method(s) of dropped groups stripped from craft blocks` : ''));
+  // ⚠ the craft strip is asserted PER BUILDING: the same vanilla method (pm_automation_disabled) is legitimately named by every
+  //   non-craft rung's block, so only the craft buildings' own blocks are checked
+  if (Object.keys(STRIP).length) {
+    const left = [];
+    const reB = /building\s*=\s*"([a-z_0-9-]+)"((?:(?!create_building)[\s\S]){0,40000}?)activate_production_methods\s*=\s*\{([^}]*)\}/g;
+    for (const f of (existsSync(histDir) ? readdirSync(histDir).filter(x => x.endsWith('.txt')) : [])) {
+      const t = rd(join(histDir, f)); let m;
+      while ((m = reB.exec(t))) { const s = STRIP[m[1]]; if (!s) continue;
+        for (const x of s) if (m[3].includes('"' + x + '"')) left.push(`${f}: ${m[1]} still names ${x}`); }
+    }
+    if (left.length) throw new Error('emit_secondaries: ' + left.length + ' craft history block(s) still name a method of a dropped group — the engine would reject them: ' + left.slice(0, 8).join(' | '));
+  }
   // ⚠⚠ VERIFY, DO NOT ASSUME. A vanilla secondary name left in the history names a method its building
   //   no longer has, and the engine rejects the WHOLE create_building — 130 starting factories vanished
   //   that way on 2026-09-01 with every linter green, because the history and the PMGs are checked
@@ -359,7 +415,8 @@ if (minted) {
   console.log('secondaries loc: ' + locLines.length + ' key(s) x ' + LANGS.length + ' language(s)');
 }
 console.log('secondaries: ' + minted + ' per-tier method(s) in ' + groupsMinted + ' group(s) across ' +
-  new Set(report.map(r => r.bkey)).size + ' building(s)');
+  new Set(report.map(r => r.bkey)).size + ' building(s)' +
+  (craftChecked.length ? `; ${craftChecked.length} on fractional-unit (craft) rungs with employment × workforce_mult` : ''));
 const byPm = {};
 for (const r of report) (byPm[r.pm] ||= []).push(r);
 for (const p of Object.keys(byPm).sort())

@@ -1524,6 +1524,12 @@ config/mod_config.canon-fdi-rgate.json ⚗ THE CAPITAL-EXPORT + RESEARCH DATE-GA
                         2.31 against 0.87), Britain's depeasantation did not move (end U* 10.2% against 9.2%), 3 intact / 1 stall / 1 runoff with a
                         divergent consensus, every intact run's loss above every intact canon run's. The user then closed the current lines of
                         work in favour of an e0 "true artisanship" redesign (another session). Un-ignored with its twin
+config/mod_config.artisan6.json / config/mod_config.artisan6-shop.json ⚗ THE CRAFT BOOKS (BALANCE_FRAMEWORK §10.91.1, ROADMAP step 12; UNDER
+                        TEST, not the canon) + their tree twins (the canon's, byte for byte): the canon with its six light-industry e0 rungs
+                        turned into 500-worker craft rungs by `tools/make_artisan_config.mjs` — every other key and rung byte-identical
+                        (proven by field diff). `artisan6` carries the RULED staffing (30–50% machinists), `artisan6-shop` masters as
+                        shopkeepers + laborers at the same wage units (the probe of the machinist literacy gate, F180 §2). Probed by
+                        schedule `artisan6_probe_2x.json`. Un-ignored with their twins
 config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
@@ -3066,6 +3072,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         REGEX HAD NO BACKSLASHES and matched nothing, so every secondary shipped with vanilla INPUTS and scaled
                         OUTPUTS on every rung of every measured book (BUGS_AND_FIXES 2026-09-13; F111 addendum). Reductions
                         (negative quantities) now round TOWARD ZERO, so a full conversion can never sum past the main output
+                        ⭐ THE CRAFT AMENDMENT (2026-09-30, §10.91.1): on a rung with `workforce_mult` < 1 the minted secondaries'
+                        employment is × workforce_mult (Craftsman Sewing +500 → +50 shopkeepers); a rung's `exclude_secondary_pms`
+                        are dropped from its minted groups (Vacuum Canning, Patent Stills); and the 1836 history of a rung with
+                        `exclude_secondary_pmgs` loses the dropped groups' methods (the engine rejects a whole create_building over
+                        one invalid method) — ASSERTED per building afterwards. THROWS on a craft rung keeping a labour-saving
+                        method, a group kept by reference with employment, or a non-whole scaled employment
   lib_dams.mjs          ⭐ THE HYDRO-DAM DERIVATION — ONE implementation (BALANCE_FRAMEWORK §10.89): project → LEVELS (≤ 10,000 points each), points per MW = 0.4 × (power-plant points ÷ 50) × 1.2 × m × (MW per part ÷ 560)^−0.2
                         (the plant's cost READ from the book), electricity 0.52 per MW, staff and upkeep per 50 electricity, the per-LEVEL
                         technology class (A electrical_generation / B steam_turbine / C arc_welding, shared out over a merged project's
@@ -3128,6 +3140,24 @@ tools/                  dev tooling — NOT shipped in the mod
                         (F178 §2, corrected: the summary's `owned_abroad_levels` counts government ownership only). Book:
                         config/mod_config.canon-fdi-rgate.json (1.0), measured by 20260930_011604 (F179: it works — British factories
                         abroad ×3 — and is NOT adopted; the machinery stays for any later book)
+                        ⭐ ALSO NEW GROUPS, ADDITIVELY (2026-09-30): top-level `building_groups_add` {bg_pmr_<x>: {name, <field>: number |
+                        bare key}} → common/building_groups/zzz_pm_rehaul_groups.txt + the name in every language. The craft books use it
+                        for `bg_pmr_crafts` (parent bg_light_industry, economy_of_scale = no, urbanization 2, infrastructure 0.15)
+  make_artisan_config.mjs THE CRAFT BOOK — `--base <config> --suffix <sfx> [--staffing ruled|shop]` turns the six light-industry e0
+                        rungs of a canon-shaped book into 500-worker craft rungs (BALANCE_FRAMEWORK §10.91.1): the per-level recipe, a
+                        5,000-head staffing block × `workforce_mult` 0.1, cost = the base e0's ÷ 50, `building_group` bg_pmr_crafts,
+                        `levels_per_mesh` 500, the excluded secondary groups/methods, `craft: true`, the base-price break-even and
+                        `wage_pct` restated at the e0 reference wage; adds `building_groups_add`, `_artisan` (the record L31 checks) and
+                        `_artisan_variant`, and copies the base's tree twin. THE CRAFT TABLE LIVES HERE ONLY. THROWS on a base whose e0
+                        is not vanilla-staffed, an excluded group the industry lacks, or a staffing block that is not 5,000 whole heads
+  emit_craft_pops.mjs   THE CRAFT RUNGS' 1836 WORKFORCE (§10.91.1 item 6, "that's a must") — called by build.ps1 AFTER emit_secondaries.
+                        From the EMITTED 1836 map it sums each state's craft workforce by profession (levels × (base × workforce_mult +
+                        the active secondaries)), laborers excepted, and CARVES that many people (÷ WORKING_ADULT_RATIO_BASE) out of the
+                        state's own untyped vanilla pops into typed shopkeeper / machinist blocks, largest block first, ≤ 90% of any
+                        block — population unchanged. Ships whole copies of the touched vanilla common/history/pops files (same names,
+                        so they shadow vanilla's). ⚠ build.ps1 never wipes common/history, so a book WITHOUT crafts deletes any file
+                        this tool wrote earlier (recognised by its header). THROWS on a craft state with no region_state block or too
+                        few untyped pops
   make_trade_config.mjs THE PER-GOOD TRADE BOOK — `--base <config> --suffix <sfx>` writes config/mod_config.<sfx>.json = the base + 
                         `goods_traded_quantity` + `_trade` + `_trade_variant` (no base key touched) and the base's tech-tree twin
                         (L20). It holds F159 §7's FIVE-CLASS TABLE — the only copy: E bulk & perishable UNCHANGED (the untreated
@@ -3168,6 +3198,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         existing rung and follow the country up the ladder. The investor-tech
                         foreign-investment edge (regional HQ owning abroad what its home country has not
                         unlocked) is ACCEPTED by the same ruling.
+                        ⭐ CRAFT RUNGS ARE OUT (2026-09-30, §10.91.1): a tier with `craft: true` leaves every list, formation
+                        test, prosperity line and construction target — the vanilla key ITSELF is removed, since the craft IS
+                        the vanilla-keyed rung — and a surviving craft key in any form THROWS with file:line.
                         ⭐⭐ **A COMPANY TARGETS ITS BEST UNLOCKED RUNG, NOT EVERY RUNG (2026-09-02, user-
                         approved).** Duplicating `ai_construction_targets` per tier gave every flavoured
                         company a standing `level = 5` target on its rung-0 building — the engine uses those

@@ -283,3 +283,8 @@ tools/testbed/ledger/corpus_gbr.jsonl
 # the start-deadline control file and its timer log (tools/testbed/no_new_runs_at.ps1) - runtime state, never committed
 tools/testbed/NO_NEW_RUNS
 tools/testbed/no_new_runs_at.log
+# the artisanship craft books (2026-09-30, BALANCE_FRAMEWORK §10.91.1): the ruled staffing and the shopkeeper variant
+!config/mod_config.artisan6.json
+!config/tech_tree_options.artisan6.json
+!config/mod_config.artisan6-shop.json
+!config/tech_tree_options.artisan6-shop.json

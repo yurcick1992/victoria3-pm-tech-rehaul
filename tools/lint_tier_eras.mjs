@@ -121,6 +121,26 @@ for (const ind of cfg.industries || []) {
   const anchor = ANCH[(ind.building || {}).required_construction || ind.required_construction];
   for (const t of tiers) {
     const e = t.era, k = e - ORIGIN;
+    // ⭐ A CRAFT RUNG (BALANCE_FRAMEWORK §10.91.1, make_artisan_config.mjs) is not on the A/B ladder: its recipe, staffing and cost are
+    //   the craft table's, recorded in `_artisan.recipes`. Checked against that RECORD (a hand edit fails), its base cost against the
+    //   era rule's e0 cost it was divided from, and its ai_value like any rung. Taught the field rather than bypassed.
+    if (t.craft) {
+      const ART = cfg._artisan || {}, R = (ART.recipes || {})[ind.id];
+      if (!R || R.key !== t.key) { faults.push(`${ind.id} ${t.key}: a craft rung with no _artisan record — regenerate with make_artisan_config`); continue; }
+      const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+      if (e !== 0) faults.push(`${ind.id} ${t.key}: a craft rung at e${e} — crafts are e0 rungs`);
+      if (t.output_qty !== R.output_qty || !same(t.inputs, R.inputs) || !same(t.employment, R.employment) || +t.workforce_mult !== +R.workforce_mult || t.building_cost !== R.building_cost)
+        faults.push(`${ind.id} ${t.key}: the craft rung differs from its _artisan record (output/inputs/staffing/workforce_mult/cost) — hand-edited?`);
+      if (anchor) { const ce = (AB.anchor_cost && aEra != null) ? (e - ORIGIN) : e; const C = AB.cost_ratio ?? A; const L = Array.isArray(AB.cost_ladder) ? AB.cost_ladder : null;
+        const wantBase = AB.cost_flat ? anchor : L ? Math.round(anchor * L[Math.min(ce, L.length - 1)]) : Math.round(anchor * Math.pow(C, ce));
+        if (R.base_cost !== wantBase) faults.push(`${ind.id} ${t.key}: the craft cost was divided from ${R.base_cost}, the era rule's e0 cost is ${wantBase}`);
+        if (t.building_cost !== Math.round(R.base_cost / (+ART.cost_div || 1))) faults.push(`${ind.id} ${t.key}: building_cost ${t.building_cost} is not ${R.base_cost} ÷ ${ART.cost_div}`); }
+      const steepC = AB.ai_steep && AB.ai_steep.industries.includes(ind.id) ? AB.ai_steep.ratio : null;
+      const wantAivC = (AB.ai_ladder && !steepC) ? Math.round(AB.ai_ladder[Math.min(e, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steepC || A, e));
+      if (t.ai_value !== wantAivC) faults.push(`${ind.id} e${e}: ai_value ${t.ai_value}, the era rule says ${wantAivC}`);
+      notes.push(`${ind.id} e0: a craft rung (${ART.staffing} staffing) — checked against its _artisan record, not the A/B ladder`);
+      continue;
+    }
     const wantOut = Math.round(out0 * Math.pow(A, k) * 10) / 10;
     if (Math.abs(t.output_qty - wantOut) > 0.051 + 0.002 * wantOut) faults.push(`${ind.id} e${e}: output ${t.output_qty}, the era rule says ${wantOut} (vanilla ${out0} × ${A}^${k}) — keyed on something other than the era`);
     // --in0-anchored: the SLID set (named in _ab.anchor_for) carries its own lift; everything else the scalar in0
