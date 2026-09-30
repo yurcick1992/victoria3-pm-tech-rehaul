@@ -18623,3 +18623,19 @@ pm_patent_stills, pm_pot_stills, pm_traditional_art, two each); the craft run ad
 five countries. Nothing about the century, the register, prices under a real diffusion of the technologies, or the three merges whose hosts do
 not stand in 1836 (textile, furniture, steel). Whether the AI ever re-selects a merged method's secondary is open, and so is whether the
 under-staffed switched chemical plants recover. The residual +27 financial-district levels in the craft book are unexplained.
+
+**Addendum (2026-09-30, the user's question: are the new craft levels as fully staffed at the start as the old e0 was?).** Read from the
+building inventory at **1836.1.8** — one week in, the earliest date our telemetry reaches (the day-0 tick is left free because the inventory
+burst would overflow the log ring) — every craft building matched to the canon's e0 building of the same type in the SAME state (the
+reference is run 2 of this session: its six e0 rungs are the canon's, vanilla-staffed). All 223 starting buildings pair one to one; the
+only unmatched entries are level-0 constructions queued in the first week, and craft levels total 5,120 = 10 × the canon's 512.
+- Jobs filled (cap-weighted): **craft 98.3% against the canon e0's 97.3%** (the fixed ruled book); 98.4% pre-fix; **97.6% for the
+  shopkeeper variant**. Per industry, craft / canon: food 99.2 / 99.1, textile 98.2 / 97.4, furniture 98.0 / 96.4, glass 99.3 / 98.8,
+  tooling 94.8 / 86.6, paper 97.9 / 97.1%.
+- **Where the canon's e0 was ≥ 95% staffed (191 states), the craft falls under 90% in ONE**: Minsk textile, 10 craft levels at 75% where
+  the canon's one level is 100% (cause not identified). Jobs short against the canon's share, summed over those 191: 6,070 of 2.46M (0.25%).
+- The fill is by profession, not only in total: a craft's machinist slots are 30–50% of its jobs (the ruled mix), so an unfilled machinist
+  slot would cap the building at 50–70%. WHO filled them is not in this reading — the carved typed pops (F181 §1), or the engine typing
+  untyped history pops from the available jobs at game start; the machinist headcount holding at 1838 (F181 §1) fits either.
+- ⚠ Day 0 itself is not observed, and the reading gives no per-profession breakdown per building — the building panel at 1.1.1836 would
+  show both.
