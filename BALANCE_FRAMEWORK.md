@@ -9116,3 +9116,6 @@ Three rulings in one message, answering the open choices after FINDINGS F184 / F
   --hire-floor 0.01` then `make_merge_config.mjs`; its build differs from `artmerge6`'s by that one line. Probe session
   `20260930_205540_craft-floor-10y`, 2 × 1836 → 1846 (ten years suffice: in the 30-year craft run 30–45% of craft levels sat under the £3 floor
   in 1837–1848 and ~10% after, while craft staffing fell 95.6 → 88.5%). The floor is NOT ruled into the book; the probe reports, the user decides.
+  **Outcome (FINDINGS F188):** the setting stays inside the crafts; their failed hires collapse and they add 118k workers from peasants and the
+  unemployed while taking FEWER from other industries; nothing outside the crafts moves beyond two no-floor seeds' spread; new crafts still
+  pause near 10% — the pause and margin rules, which have no group override, now bind.

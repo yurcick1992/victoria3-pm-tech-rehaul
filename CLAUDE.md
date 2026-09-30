@@ -286,10 +286,13 @@ hiring floor (`BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES`), which the craf
 (vanilla's first methods at 74–81%); new craft levels are built and left 7–30% staffed. ⭐ **WHAT THE EMPTY CRAFTS COST (F187):** the crafts
 standing new at 1866 took 10,932 construction points (£5.9M) — 0.48% of all construction, 0.68% of economic and 1.7% of tiered construction —
 and 36% of it stands empty (0.17% of all construction); the canon spent a median 115,000 points (£66M, 5.0% of all construction) on the same
-six e0 rungs in the same years, and the merge run's new e0 factories stand 36% empty as well. ⭐ **THE CRAFTS' HIRING FLOOR IS UNDER A PROBE**
-(user go-ahead 2026-09-30 evening; §10.91.3): **`artmerge6-floor`** = `artmerge6` + `min_productivity_to_hire = 0.01` on `bg_pmr_crafts`
-(`make_artisan_config.mjs --hire-floor`), against `artmerge6`, 2 × 1836 → 1846, session `20260930_205540_craft-floor-10y` — not ruled into
-the book. No century batch of the combined book has run.
+six e0 rungs in the same years, and the merge run's new e0 factories stand 36% empty as well. ⭐ **THE CRAFTS' HIRING FLOOR, PROBED (F188;
+user go-ahead 2026-09-30 evening, §10.91.3):** **`artmerge6-floor`** = `artmerge6` + `min_productivity_to_hire = 0.01` on `bg_pmr_crafts`
+(`make_artisan_config.mjs --hire-floor`), against `artmerge6`, 2 × 1836 → 1846 (session `20260930_205540_craft-floor-10y`). The setting stays
+inside the crafts (every other group under the £3 floor fails to hire as before); craft failed-hire levels 1,297 → 306, craft workers +118k
+(+4.8%) taken from peasants and the unemployed with FEWER hires from other industries (29% → 11% of the crafts' hires); staffing +1.3 points
+world-wide (inside the seed spread) but glass +10, tooling +9, Korea 47 → 96%; new crafts still pause near 10%; nothing outside the crafts
+beyond the spread of two no-floor seeds. NOT ruled into the book — the user decides. No century batch of the combined book has run.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
@@ -2669,6 +2672,24 @@ tools/                  dev tooling — NOT shipped in the mod
                         reported apart). `--arm <session>[:<setup>] --mod <emitted mod dir> [--arm … --mod …] [--until 1866.1.1] [--stock]`; the config
                         is each run's own. ⚠ Up to 10 points a week per country come from the country_gdp_construction static modifier and buy no
                         goods — 12% of all points in the craft run — so £ shares understate a poor country's construction; points are the clean unit
+  testbed/ledger/hiring_census.mjs  WHO WORKS WHERE, AND WHO CAN HIRE — EVERY building of one save (FINDINGS F188, 2026-09-30): workers per building
+                        from the pop table (`workplace`, the full record id), job slots from every active method (emitted mod over vanilla),
+                        value added / profit / wage ÷ the country's normal rate, and the hiring class (FAILED-HIRE / LAYING-OFF within a
+                        year, FULL ≥ 98%, PAUSED under 20% profit at ≥ 10% employed, RAMPING), per SECTOR (the book's crafts and tiered
+                        rungs by era, then vanilla's building-group tree) and per type, plus the labour pool (unemployed, peasants, by
+                        profession). ⭐ THE EARNINGS-FLOOR TEST: non-subsidised buildings holding workers split at £3 of value added per
+                        employee a year, failed-hire and inbound-hire rates per group — the direct test that a group-level hiring setting
+                        stays in its group (F188: every goods-selling sector's floor signature intact, only the crafts' row moved).
+                        `<save.v3> --mod <emitted mod dir> [--book <config>] [--json out]` (the book defaults to the save's own run folder);
+                        `--diff A.json B.json [--top N]` compares two. ⚠ A subsidised building is `subsidies=` > 0 in the save (no yes/no
+                        flag); government, military, construction and owner buildings sell nothing and are read apart
+  testbed/ledger/labour_flows.mjs  WHERE EACH SECTOR'S HIRES CAME FROM — the labour-flow matrix of one save from the buildings' own transfer logs
+                        (FINDINGS F188). ⭐ The log's semantics, verified record by record: in the log of a building of type K, new=K with no
+                        old = a hire from unemployment; old=X, new=K = a hire from building type X; old=K with no new = a layoff into
+                        unemployment; old=K, new=Y = a departure (sitting in Y's log as its hire); old=new=K = a re-typing. Each move is
+                        counted once, on the hiring side, weighted by `transfer_total`. The log holds RECENT moves only — read shares.
+                        Prints each sector's hires by source, the share from other working buildings, each sector as a source, layoffs,
+                        and the crafts' hires by pop type and source. `<save.v3> --mod <emitted mod dir> [--book <config>]`
   testbed/ledger/merge_methods.mjs  WHICH MAIN METHOD A MERGED BUILDING RUNS (§10.91.2, 2026-09-30): per run, save date, country and merged
                         industry, the host's levels on its own method and on the merged one, and the levels whose secondary is the merged
                         method's own copy (`!!` when those exceed the merged method's levels — the per-method gating broken). Pairs and

@@ -19121,3 +19121,102 @@ construction and the points shares are the cleaner reading. The stock is net of 
 and removed before 1866; an expansion carries its building's occupancy proportionally (the originals-staff-first reading would make the
 added levels look fuller). Military buildings the engine sizes at the start are not on the 1836 map, so the stock misses their later
 expansions (the flow has them).
+
+## F188 — THE CRAFTS' HIRING FLOOR, PROBED (min_productivity_to_hire 0.01 on bg_pmr_crafts, 2 × 1836→1846 on the combined book): the setting stays inside the crafts — every other building group under the £3 floor fails to hire as before — and the crafts' failed hires collapse (craft levels in the failed-hire state 1,297 → 306); the crafts gain 118k workers (+4.8%), taken from peasants and the unemployed, with FEWER hires from other industries than without the change (11% of their hires against 29%) and more of their own workers moving on to e1 factories; craft staffing +1.3 points world-wide (inside the seed spread) but +9–10 in glass and tooling and 47% → 96% in Korea; no sector, price, wage or macro reading outside the crafts moves beyond the spread of two no-floor seeds; new crafts still stall near 10% under the pause rule (2026-09-30, session 20260930_205540)
+
+**The probe** (user go-ahead 2026-09-30 evening: *"go with a 10-year probe and report on differences"*, and on the result: *"I'm additionally
+interested on whether changed floor affects all other industries"*). Session `20260930_205540_craft-floor-10y`, schedule
+`craft_floor_10y.json` (predictions registered before the run). **A** = `artmerge6` (the combined craft + merge book, §10.91.3), **B** =
+`artmerge6-floor`, the same plus `min_productivity_to_hire = 0.01` on `bg_pmr_crafts` (the per-group override of the engine's £3
+`BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES`; the two builds differ by that one line). One run each, 1836 → 1846.1.1, both clean (mod
+loaded, no error naming our files, post-run landmines passed; v12 summaries). Reference seed without the change: **ref** = the 30-year craft
+run (`20260930_181601` run 1, `artisan6` — no merges, which act only from ~1845; v11 summaries, so a same-tag civil war can drop a record).
+Macro scale: the canon's six runs (`20260929_002728`) at 1846. Readers: `tools/testbed/ledger/hiring_census.mjs` (new: every building's
+workers from the pop table, job slots, value added, wage and hiring state, per sector) and `labour_flows.mjs` (new: the buildings' own transfer
+logs), `craft_fill.mjs`, `construction_spend.mjs`, and the summaries' world market prices, the instrumented markets' dumps and the countries'
+normal wage rates.
+
+**1. The setting stays inside the crafts.** The floor test — non-subsidised buildings holding workers, split at £3 of value added per
+employee a year (the reading F185 found separates hiring from not hiring). Failed hire = a failed hire within the last year; inbound = a hire
+in the transfer log; A → B:
+
+| buildings under £3 | n (A → B) | failed hire | inbound hire | staffed |
+|---|---|---|---|---|
+| **crafts** | 80 → 116 | **56.3% → 24.1%** | **5.0% → 27.6%** | 81.1% → 91.6% |
+| light industry, not crafts (the crafts' parent group) | 40 → 55 | 15.0% → 18.2% | 25.0% → 21.8% | 81.6% → 77.6% |
+| agriculture, plantations, ranching | 141 → 171 | 74.5% → 69.0% | 9.2% → 5.3% | 62.3% → 68.8% |
+| extraction | 51 → 64 | 62.7% → 65.6% | 9.8% → 10.9% | 52.2% → 56.2% |
+| other tiered rungs | 25 → 33 | 36.0% → 21.2% | 8.0% → 0.0% | 14.5% → 22.3% |
+| owner buildings (their own floor, 10) | 1,389 → 1,400 | 47.4% → 46.4% | 13.0% → 12.9% | 94.7% → 94.6% |
+| government, military, construction (no floor in either) | 1,880 → 1,823 | 6.2% → 6.4% | 10.2% → 9.6% | 95.8% → 96.5% |
+
+The floor's signature is sharp in every goods-selling sector of BOTH arms (agriculture under £3 fails to hire in 74.5% / 69.0% of buildings
+against 7.0% / 5.8% over it; extraction 62.7% / 65.6% against 9.9% / 6.6%), and only the crafts' row moved: failed hires more than halved and
+inbound hires ×5.5. ⇒ The group field is read for the crafts alone; nothing leaks to the parent group or anywhere else.
+
+**2. The crafts.**
+- **Hiring states** (craft_fill, levels / unstaffed levels, A → B): failed to hire **1,297 / 275 → 306 / 154** · paused 1,882 / 62 → 3,166 / 126
+  · laying off 111 / 57 → 156 / 86 · ramping 1,884 / 66 → 1,709 / 40. Unstaffed 460 → 406 of 5,174 → 5,337 levels. Understaffed crafts under
+  £3 with an inbound hire: **3% → 36%**. ⇒ The floor was the main brake in the first decade (60% of unstaffed craft levels in A), and with it
+  gone the next rules bind — the PAUSE (profit under 20% of revenue once ≥ 10% employed) and the SoL layoffs after wage cuts.
+- **Workers** (census): 2.45M → 2.57M (**+118k, +4.8%**): laborers 1,028k → 1,074k, machinists 1,021k → 1,068k, shopkeepers 403k → 428k.
+  Value added per worker £4.69 → **£3.83** (the added hires sit in the low-price cells the floor used to shut), wage ÷ the country's normal
+  rate 0.57 → 0.52, profit ÷ revenue 15.5% → 15.0%; craft value added £11.5M → £9.9M a year (ref £10.1M).
+- **Staffing** (summaries, staffed levels ÷ levels, 1846; ref · A · B): all crafts 88.5 · 91.1 · **92.4%** — +1.3 over A, inside the 2.6-point
+  gap between the two no-floor seeds, and A ≈ B all decade (95.4 / 96.1% at 1837, 91.7 / 92.4% at 1845). But concentrated where the recipes
+  sit under £3 at base (F185 §3): **glass 80.7 · 80.0 · 90.6%**, **tooling 62.6 · 62.9 · 72.3%**, food 88.5 · 86.8 · 91.5% — both no-floor
+  seeds agree, the floor arm sits ~10 points above them; textile 94.0 · 96.5 · 95.1, furniture 93.5 · 94.6 · 91.8, paper 85.1 · 93.0 · 92.7.
+  By country (craft levels, staffed): **Korea 58.5 · 47.3 · 96.2%** (F180's literacy worry: it was the floor), Turkey 88.4 · 78.0 · 91.4,
+  Japan 99.7 · 92.1 · 99.9, Russia 98.0 · 91.6 · 95.9, China 92.7 · 98.6 · 100; the other way Netherlands 66.2 · 96.1 · 80.7, Brazil 88.6 · 89.1
+  · 72.4 (seed-level).
+- **New crafts are NOT better staffed**: constructed since 1836, 233 buildings / 366 levels at 60% staffed (A) against 256 / 424 at 51% (B);
+  the under-half ones are laying off, paused or failing to hire in both. A new craft fills to ~10% and pauses under 20% profit; the floor does
+  not touch that. A few countries dominate this small stock (B: tag QWR, 62 levels at 14%).
+
+**3. Where the extra craft workers came from — the labour flows** (the transfer logs of the 1846 saves; each move counted once, on the hiring
+side, weighted by its size; a snapshot of recent moves, so shares):
+
+| | A | B |
+|---|---|---|
+| the crafts' share of all hires | 3.75% | **5.11%** |
+| the crafts' hires from the unemployed | 36% | 36% |
+| … from subsistence (peasants) | 27% | **45%** |
+| … from OTHER working buildings (ranches, farms, e0 factories, …) | **29%** (1.09% of all hires) | **11%** (0.58% of all hires) |
+| peasants moving from subsistence farms into craft professions | 24% of the crafts' hires | 44% |
+| the e1 factories' hires that came from crafts | ~0% | **16%** |
+| the military buildings' hires that came from crafts | 9% | 19% |
+
+⇒ With the floor lowered the crafts hire in the poor states where the pool is peasants and the unemployed, and they draw LESS from other
+industries, not more. They also become a stepping stone: a craft pays ~0.5 of the normal wage, so its workers take e1 factory and military
+jobs as those open (a pop moves for ≥ 10% more wage). Unemployed machinists 75.9k → 67.0k and shopkeepers 70.0k → 58.1k world-wide — the only
+labour-pool reading the crafts' professions visibly touch, and it is small.
+
+**4. Everything else, against the spread of two no-floor seeds** (ref · A · B, 1846):
+- **World**: GDP £491M · £521M · £505M (the canon's six runs £476–526M); population 1,130M · 1,139M · 1,135M; U* 80.0% in all three; W 47.2 ·
+  47.2 · 47.4 per 1,000.
+- **Sectors** (value added at market £M a year, staffed share): plantations 99.2 · 103.4 · 99.2; extraction 51.1 · 55.2 · 55.1; agriculture
+  37.1 · 37.6 · 35.5; urban 17.5 · 19.2 · 18.6; ranching 16.4 · 17.4 · 17.8; the tiered e1 rungs 24.4 · 30.4 · 25.8 (staffed 89.4 · 94.0 ·
+  91.1%) — every B reading inside the range the two no-floor seeds span or within ~5% of it (agriculture the furthest, 4% under). The
+  census's larger worker moves (plantations −0.53M, military −0.23M,
+  subsistence +1.28M) are an order above the crafts' own +118k and match the seed-to-seed scale; they are not the crafts' doing.
+- **The crafts' e1 competitors**: furniture e1 staffed 87.5 · 90.2 · 82.8%, tooling e1 82.8 · 88.3 · 80.8% (B lowest in both, a few points
+  under ref) — consistent with the crafts' cheaper tools and furniture, but inside a seed's reach; textile, food, paper and glass e1 unmoved.
+- **Prices**: world market prices of the craft goods B vs A — groceries +4.4, clothes +12.3, furniture −2.6, glass −3.3, tools −0.6, paper −3.4
+  points of base (mixed signs; ref within the same range). In the Russian market (large crafts) at 1845 the craft goods ran cheaper and more
+  plentiful in B — tools 155 → 140% of base with production +23%, clothes 158 → 148% (+11%), furniture 147 → 135% (+7%) — but grain, wood and
+  services were cheaper there too, and Britain (few crafts) moved the other way; not separable from the seed at n=1.
+- **Wages**: the normal wage rates of the craft countries unchanged (China 0.0441 / 0.0441, Russia 0.0431 / 0.0432, British India 0.0599 /
+  0.0596, Korea 0.0441 / 0.0441 £ a week).
+- **Construction**: new craft levels standing at 1846 372 → 428 (2,772 → 3,258 points, 0.08% of the decade's construction), 61% → 52%
+  staffed; all construction 664k → 631k points (−5%, the seed); other tiered rungs 133 → 135 levels.
+
+**The predictions** (schedule `_predictions`, registered before the run): Q1 baseline craft staffing 86–91% — ✓ (91.1%); floor arm +2 to +6
+points — ✗ (+1.3); constructed crafts 45–65% — ✓ (60%), +5 to +20 in B — ✗ (−9). Q2 failed-hire unstaffed levels at least halved — ✗ narrowly
+(−44%); laying off and paused not smaller — ✓ (+29 and +64 unstaffed levels); new crafts stopping near 10% — ✓. Q3 lower value added per worker,
+similar margins and wages — ✓. Q4 world GDP within ±3% — ✓ at the edge (−3.1%, inside the seed spread); U* lower in the craft periphery — not
+seen; craft goods cheaper there — Russia yes, not separable. Q5 similar craft construction — ✓; less empty — ✗. Q6 clean — ✓.
+
+**What it does NOT say.** One seed per arm; ref is a different book (no merges) with v11 summaries. The transfer log holds recent moves only,
+so its shares describe the end of the decade, not the whole of it. Ten years only: whether more craft employment slows the move to e1 or
+changes depeasantation after 1860 is unmeasured, and the price channel needs more seeds. The pause and margin rules, which now bind the crafts,
+have no building-group override; their lever is the craft recipe's margin.
