@@ -2558,6 +2558,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         version, and a pool member is the plain TAG, i.e. the main record. ⚠⚠ PRE-v12 SUMMARIES CANNOT BE
                         REPAIRED (their saves are reaped): `tools/testbed/ledger/summary_drops.mjs --session` sizes their drops
                         from the always-complete `world.buildings` and flags a shortlist member that was not the main record,
+                        ⭐ INTEREST GROUPS (v13, 2026-10-01, user-asked for the craft redesign's Petite Bourgeoisie): per country
+                        `interest_groups.<ig_def>` = {clout (0–1, after the engine's modifiers), ps, rad, loy (political strength,
+                        total / radical / loyalist)}; `ledger/ig_clout.mjs` back-fills ten years from any kept save (FINDINGS F190),
                         and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
                         ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and
                         `<id>=none` freed slots sit in the same database (a record test must require the
@@ -2702,6 +2705,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         counted once, on the hiring side, weighted by `transfer_total`. The log holds RECENT moves only — read shares.
                         Prints each sector's hires by source, the share from other working buildings, each sector as a source, layoffs,
                         and the crafts' hires by pop type and source. `<save.v3> --mod <emitted mod dir> [--book <config>]`
+  testbed/ledger/ig_clout.mjs  INTEREST-GROUP CLOUT OUT OF ONE SAVE, WITH TEN YEARS OF HISTORY (2026-10-01, FINDINGS F190): every IG record
+                        carries `clout_trend`, a ring of 521 WEEKLY samples (newest at (index − 1) mod 521, its `date=` the newest
+                        sample's), so a kept save back-fills the decade before it — a century run's endpoint 1926–1936, a thirty-year
+                        run's 1856–1866, a ten-year probe's 1836–1846. `<save.v3|melt> [--tags …|all] [--ig ig_petty_bourgeoisie|all]
+                        [--every N] [--json out]`; prints the tags' clout nearest each 1 Jan and the MEAN / MEDIAN over every main
+                        country holding the IG — ⚠ read a lever on those, never on one country: a revolution or a ban puts one
+                        country's IG at 0 for years (Britain's PB 0.0 → 44% within five years in a vanilla seed)
   testbed/ledger/merge_methods.mjs  WHICH MAIN METHOD A MERGED BUILDING RUNS (§10.91.2, 2026-09-30): per run, save date, country and merged
                         industry, the host's levels on its own method and on the merged one, and the levels whose secondary is the merged
                         method's own copy (`!!` when those exceed the merged method's levels — the per-method gating broken). Pairs and

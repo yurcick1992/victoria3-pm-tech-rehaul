@@ -99,7 +99,9 @@ import { fileURLToPath } from 'node:url';
 // Readers: a key is opaque. `c.tag ?? key.split('@')[0]` is the definition in every version; a pool member is the plain
 // TAG, i.e. the MAIN record — a rebel side, or a country a revolt left behind, is a country of its own. FINDINGS F186,
 // landmine L38. ⚠ A pre-v12 summary cannot be repaired (its save is reaped); summary_drops.mjs says which ones are hit.
-export const SAVE_SUMMARY_VERSION = 12;
+export const SAVE_SUMMARY_VERSION = 13;
+// v13 (2026-10-01): + per country `interest_groups` {ig_def: {clout, ps, rad, loy}} — the IG clout the craft redesign is meant to move
+// (the Petite Bourgeoisie; user-asked 2026-10-01). Absent in a pre-v13 summary; ledger/ig_clout.mjs back-fills from kept saves (clout_trend).
 // v9 (2026-09-20): + THE BUILDING'S OWN LEDGER per building type per country — goods_sales and goods_cost (revenue and inputs at MARKET prices, so no price-multiplier repair is needed) and salary_w = sum(salary_rate x staffing) (the building's OWN wage rate, not the country's base_wage) and taxes. Wages are then EXACT: goods_sales - goods_cost - profit, verified against the game's own building panel to 0.38%. FINDINGS F152 section 9; it retires the inference F150/F152 needed.
 // v7 (2026-08-21): + OWNERSHIP — per-building-type `company_levels` (levels held through an `identity={building=}` owner whose own type is building_company_* OR building_regional_company_*), the `companies` register (type, prosperity, charters, regional HQs, resolved to a country via the HQ building), and `ownership_levels` (host-side levels by owner class: state/foreign_country/financial_district/manor_house/company/company_regional/other_building). ROADMAP step 5a: per-year company data cannot be back-filled, and the long vanilla batch is its baseline. Absent field = zero WITHIN v7+; pre-v7 summaries simply cannot answer it.
 // v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), PRICED at base cost, so a tiered-sector GDP is derivable (F74)
@@ -175,7 +177,7 @@ const SUBJECT = new Set(['puppet', 'protectorate', 'colony', 'vassal', 'dominion
 const TREND_KEYS = new Map([['gdp', 'gdp'], ['prestige', 'prestige'], ['literacy', 'literacy'], ['avgsoltrend', 'avg_sol']]);
 // Sections we actually walk.  Everything else is skipped in O(1) per line: a top-level section always
 // closes with a `}` in COLUMN 0, so skipping never needs brace arithmetic.
-const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies', 'market_manager', 'laws']);
+const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies', 'market_manager', 'laws', 'interest_groups']);
 
 // ---------------------------------------------------------------- collectors
 let saveDate = '';
@@ -279,6 +281,10 @@ let b = null, side = '', inGoods = false, curGood = null, inPrestige = false, in
 let o = null, inIdent = false;
 // companies (v7)
 let co = null, coList = null;
+// v13 — INTEREST GROUPS. One record per (country, IG definition) in `interest_groups.database`; the scalars sit at depth 3,
+// the pop list and the trend blocks (clout_trend holds ~10 years weekly — read by ledger/ig_clout.mjs from a kept save) deeper.
+const igRecs = [];                         // {country: country_manager id, def, clout, ps, rad, loy}
+let ig = null;
 
 const numsOf = t => { const out = []; for (const m of t.matchAll(/-?\d+(?:\.\d+)?/g)) out.push(+m[0]); return out; };
 
@@ -717,6 +723,24 @@ for await (const line of rl) {
     depth = nd; if (depth <= 0) mode = 'top';
     continue;
   }
+
+  // v13 — INTEREST GROUPS (see igRecs). Only depth-3 scalars are read; everything deeper is skipped by depth.
+  if (mode === 'interest_groups') {
+    if (depth === 2 && /^\d+=\{$/.test(t)) ig = { country: null, def: null, clout: 0, ps: 0, rad: 0, loy: 0 };
+    else if (ig && depth === 3 && !opens) {
+      let x;
+      if ((x = /^country=(\d+)$/.exec(t))) ig.country = +x[1];
+      else if ((x = /^definition="([a-z_0-9]+)"$/.exec(t))) ig.def = x[1];
+      else if ((x = /^clout=([-\d.e]+)$/.exec(t))) ig.clout = +x[1];
+      else if ((x = /^political_strength=([-\d.e]+)$/.exec(t))) ig.ps = +x[1];
+      else if ((x = /^radicals_political_strength=([-\d.e]+)$/.exec(t))) ig.rad = +x[1];
+      else if ((x = /^loyalists_political_strength=([-\d.e]+)$/.exec(t))) ig.loy = +x[1];
+    }
+    const nd = depth + opens - closes;
+    if (ig && nd <= 2) { if (ig.def && ig.country != null) igRecs.push(ig); ig = null; }
+    depth = nd; if (depth <= 0) mode = 'top';
+    continue;
+  }
 }
 
 // ---------------------------------------------------------------- integrity gates (fail loud)
@@ -830,6 +854,12 @@ for (const c of companyRecs) {
   a.push({ type: c.type, prosperity: c.prosperity, prosperous: c.prosperous, charters: c.charters, regional_hqs: c.regional_hqs });
 }
 
+const igByCountry = new Map();
+for (const g of igRecs) {
+  const m = igByCountry.get(g.country) ?? igByCountry.set(g.country, {}).get(g.country);
+  m[g.def] = { clout: +g.clout.toFixed(5), ps: Math.round(g.ps), rad: Math.round(g.rad), loy: Math.round(g.loy) };
+}
+if (!igRecs.length) console.error('WARN: no interest_groups records parsed — the save layout may have moved');
 const countries = {};
 for (const [id, c] of C) {
   if (!c.tag) continue;
@@ -878,6 +908,9 @@ for (const [id, c] of C) {
     buildings: blds, goods_out: gout, goods_in: gin,
     // v8: prestige quantity of each output flow (absent good = 0 within v8+)
     prestige_out: pout,
+    // v13: interest groups — clout (the IG's share of the country's political strength, 0–1) and political strength,
+    // total / radical / loyalist, per IG definition
+    interest_groups: igByCountry.get(id) ?? {},
     // v5: queue COMPOSITION per country — n elements, total work left (points), total speed
     // (points/wk), and per-building-type breakdown. Retired the CQ telemetry (§9).
     queues: {

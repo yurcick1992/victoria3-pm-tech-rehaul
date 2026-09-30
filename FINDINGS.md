@@ -19311,3 +19311,52 @@ cost + wages)):
 date, with secondary employment left out of the worker counts and the canon's v11 summaries possibly missing a country record (F186). Nothing
 past 1846 is read: whether the crafts die as the wage path rises, and whether textile's craft keeps out-earning its e1, is what a century
 batch has to show.
+
+## F190 — THE CRAFT BOOKS DID NOT RAISE THE PETITE BOURGEOISIE'S CLOUT: back-filled from the clout history every kept save carries, the world mean of the PB's clout runs 4.1–4.4% over 1838–1846 and 5.2–6.1% over 1858–1866 under the craft books, inside the range of the four-rung books without crafts (3.7–4.5% and 5.5–6.1%) and of vanilla (4.0–4.7% and 5.5–6.3%); and at the realised 1838–1846 prices the crafts pay 0.2–0.8 of their country's normal wage, the canon's e0 0.2–0.95 (2026-10-01, read from kept saves, no game time)
+
+**Source.** `tools/testbed/ledger/ig_clout.mjs` (new) over 19 kept saves: the craft books `20260930_205540` runs 1–2 (`artmerge6`,
+`artmerge6-floor`, to 1846) and `20260930_181601` run 1 (`artisan6`, to 1866); books without crafts — `20260930_181601` run 2 (`merge6`),
+`20260930_174540` run 2 (`merge6-probe`), `20260914_173832` run 2 (`canon-c19-in12`), `20260914_143137` run 2, `20260907_074504` run 20,
+`20260917_104214` run 2, `20260902_223037` run 1, `20260902_121027` run 5, `20260904_211458` run 1, `20260930_011604` run 6; vanilla —
+`saves_debut` (one seed, 1847 / 1857 / 1867 saves), `20260814_123646` run 4, `20260811_094048` run 4, `20260813_083557` run 4. Asked by the
+user with the ruling that craft staffing becomes shopkeepers + laborers: *"add interest group clout to telemetry, and if possible fill the
+data retrospectively, to understand whether we have indeed boosted early PB"*. The summary carries the current clout per country from v13.
+
+**1. The instrument.** Every IG record carries `clout_trend`, a ring of 521 weekly samples (`index` advances 52 a year; newest at
+(index − 1) mod 521; the channel's `date=` is the newest sample's), so each kept save holds the ten years before it. One country's clout is
+useless for a lever: a revolution or a ban puts it at 0 for years (vanilla seed: Britain's PB 0.0% in 1842, 42% in 1846, 15% in 1857,
+42% in 1863). The reading is the mean and median over every main country holding the IG (~210–275 countries).
+
+**2. The PB's clout, mean / median over all main countries, % (nearest 1 Jan):**
+
+| save | 1838 | 1840 | 1842 | 1844 | 1846 | 1850 | 1855 | 1858 | 1861 | 1864 | 1866 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **craft** artmerge6 (F188 run 1) | 4.3/2.5 | 4.1/2.5 | 4.1/2.6 | 4.2/2.7 | 4.2/2.8 | | | | | | |
+| **craft** artmerge6-floor (F188 run 2) | 4.1/2.4 | 4.1/2.4 | 4.4/2.5 | 4.4/2.7 | 4.1/2.5 | | | | | | |
+| **craft** artisan6 (F184) | | | | | | | | 5.2/3.5 | 5.7/3.9 | 6.1/4.1 | 6.0/4.6 |
+| merge6 (F184, no crafts) | | | | | | | | 5.5/3.8 | 5.8/4.0 | 5.9/4.1 | 6.1/4.8 |
+| merge6-probe | 3.8/2.3 | | | | | | | | | | |
+| canon4v-art3 | 4.3/2.5 | 4.2/2.5 | 3.7/2.5 | | | | | | | | |
+| canon-je24 | 4.4/2.5 | 4.4/2.6 | 4.0/2.3 | | | | | | | | |
+| canon-c16-in12 | 4.1/2.5 | 4.0/2.6 | 3.8/2.4 | | | | | | | | |
+| canon-a205-gm | 4.2/2.5 | 4.1/2.5 | 4.2/2.7 | 4.1/2.6 | 4.5/2.9 | | | | | | |
+| canon-c19-in12 | | | | | | 4.6/2.9 | 4.6/3.1 | | | | |
+| ab3 / ab2 | | | | | | 4.7/3.2 | 5.1–5.7 | 5.6–5.8 | 4.5/3.2 | | |
+| canon-fdi-rgate | | | | | | | | | | 5.3/3.8 | 5.4/4.0 |
+| vanilla (saves_debut) | 4.2/2.4 | 4.0/2.4 | 4.0/2.5 | 4.4/2.6 | 4.7/2.7 | 4.7/3.1 | 5.1/3.1 | 5.5/3.5 | 5.8/3.8 | 6.3/4.4 | 7.0/5.1 |
+| vanilla (three other seeds) | | | 4.5/2.6 | 4.4/2.7 | 4.5/2.8 | 4.6–4.7 | 5.2–5.3 | 5.4–5.9 | 6.1/3.9 | | |
+
+The craft books sit inside the spread of the books without crafts and of vanilla at every date. With the machinist staffing (10–18%
+shopkeepers against vanilla's 10%, the rest machinists and laborers) the crafts did not lift the PB. This is what the user's amendment of
+2026-10-01 addresses: craft staffing becomes shopkeepers + laborers only.
+
+**3. What the crafts pay** (the proposal that followed; `goods_sales − goods_cost − profit` over the building's staffed levels, against
+the country's normal wage `base_wage ÷ 10,000` per wage unit, both seeds of F188 at 1838 / 1842 / 1846): food 0.31–0.55, textile 0.62–0.79,
+furniture 0.50–0.74, glass 0.20–0.44, tooling 0.32–0.53, paper 0.27–0.54 of the normal wage, at profit ÷ revenue 15–20% except textile
+(26–32%) and furniture (19–27%) — the engine cuts a building's wage until its profit share sits near those lines, so the crafts' wage BILL
+is endogenous, and the recipe decides the WAGE LEVEL. The canon's e0 (F177 runs 1–2, 1838 / 1846) pays 0.39–0.68 (food, textile, furniture,
+paper), 0.20–0.45 (glass) and 0.60–0.95 (tooling, few levels).
+
+**What it does NOT say.** The world mean weights a microstate as much as Britain; crafts sit mostly in the periphery, so a PB effect confined to
+craft-holding countries could hide under it (a craft-weighted reading is not built). One seed per craft book. Clout is after the engine's
+modifiers and moves with laws, government and revolutions; it is not the pop attraction alone.

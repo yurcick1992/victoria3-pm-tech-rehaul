@@ -1201,6 +1201,12 @@ every autosave of every run is archived, melted, summarised and reaped automatic
 produces an ANNUAL (or quarterly) per-country state series beside the log telemetry's handful of dump
 dates. `tools/testbed/save_state_summary.mjs` + `harvest_saves.ps1`, wired into `run_schedule.ps1`.
 
+⭐ **INTEREST-GROUP CLOUT IS SAVE-SIDE (summary v13, 2026-10-01; FINDINGS F190).** Each record of `interest_groups.database` carries
+`country`, `definition`, `clout`, `political_strength` (+ radical / loyalist) and a `clout_trend` ring of 521 weekly samples. The
+summary records the current values per country; `ledger/ig_clout.mjs` reads the ring from a kept save, which is how pre-v13 runs
+are back-filled (ten years before each kept save, no more). No log-side telemetry was added: the harvest already runs on every
+batch, so the save is the cheaper and the complete instrument.
+
 ### ⭐⭐ THE COST, MEASURED — and the planning assumption it destroys
 
 The plan for this was written around a feared **~90 s melt**, which implied the consumer would be 3–6×
