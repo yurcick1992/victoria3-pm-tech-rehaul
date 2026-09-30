@@ -2566,6 +2566,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⭐ INTEREST GROUPS (v13, 2026-10-01, user-asked for the craft redesign's Petite Bourgeoisie): per country
                         `interest_groups.<ig_def>` = {clout (0–1, after the engine's modifiers), ps, rad, loy (political strength,
                         total / radical / loyalist)}; `ledger/ig_clout.mjs` back-fills ten years from any kept save (FINDINGS F190),
+                        ⭐ IG MEMBERS BY WORKPLACE (v14, 2026-10-01, the user's "tracking only" ruling on the Petite Bourgeoisie's
+                        fall with the crafts and re-rise with urban/trade centres): per country `ig_by_workplace.<class>` = {mem, wm
+                        (8-arrays in `world.ig_order`: engaged members in millions, and × exp(wealth/5)), wf, shop} for the classes
+                        light6 / urban_center / trade_center / owner / other / unemployed, from the pop table's IG support array
+                        (F192); read with `ledger/ig_workplace_series.mjs`. ⚠ Session 20260930_232639 run 1 switched v13 → v14 at
+                        1860 (the swap was made mid-batch; the field is additive),
                         and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
                         ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and
                         `<id>=none` freed slots sit in the same database (a record test must require the
@@ -2724,6 +2730,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         five fitted weights; law modifiers are not in the save). `<save.v3|melt> [--keys <building keys>]
                         [--ig ig_petty_bourgeoisie] [--minwf 1000000] [--json out]`; prints the world decomposition, the class by
                         profession, and the cross-country correlations. ⚠ In vanilla the six craft keys are the WHOLE industries
+  testbed/ledger/ig_workplace_series.mjs  AN IG'S CLOUT BY WHERE ITS MEMBERS WORK, YEAR BY YEAR (v14 summaries; 2026-10-01): per run and year
+                        the IG's mean clout (main countries, or `--tags` / `--pool`) split by workplace class — attributed clout
+                        ∝ members × exp(wealth/5) (⚠ over-weights the rich owner class) and the exact members % — beside the
+                        shopkeeper workforce by class. `--arm <session>[:<setup>] [--ig ig_petty_bourgeoisie] [--every 5]`
   testbed/ledger/health_vs_ref.mjs  IS ANY INDUSTRY DEAD, IS ANY MARKET LEFT WITH A TOKEN? (2026-10-01, user-asked for the craft probe)
                         An arm's summaries at one date against a reference's: world STAFFED levels per building type (a merged rung
                         folded into its host on both sides) — DEAD when every arm run is under 0.10 of the reference median AND under

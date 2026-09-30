@@ -1265,6 +1265,20 @@ the AI never built a dam and could not build abroad; with it (and local electric
 scripted construction — the owner-queue starts, the overlord financing, the owner capacity gate — is removed; the driver only surveys; the
 survey and level 1 need the same technology. No capacity guard, by ruling. The n=5 century batch of that day is the first measurement.
 
+## Step 6½ — ARTISANAL OWNERSHIP: THE LAST FEATURE PASS (user, 2026-10-01; LONG-TERM, CONDITIONAL)
+
+**Only if the crafts + merges arm (steps 12–13, `artmerge6-pb`) holds and is canonised.** Its place is fixed by the user: *"the artisanal
+ownership will probably be the last feature pass between final balance check and final polishing"* — i.e. after the final balance check and
+before step 7.
+- **What it is:** shopkeepers as OWNERS — ownership production methods that route dividends to the artisans' own class (the crafts, and
+  possibly urban-centre and trade-centre shopkeepers), so the Petite Bourgeoisie holds property income, not wages alone. Not researched:
+  which ownership groups the engine lets a building carry, how dividends reach a pop type, and what it does to the investment pool.
+- **Why it waits:** the ruled intent (2026-10-01) is that the Petite Bourgeoisie FALLS with the crafts and RE-RISES with the urban centres'
+  and trade centres' shopkeepers, with the displaced shopkeepers' radicalism a temporary friction around 1848. Ownership income changes that
+  arc, so it is designed against the measured arc, not before it. The arc is TRACKED ONLY for now (the user rejected forcing it: *"your
+  solutions are about as forced. Tracking only it is"*): save summary v14 `ig_by_workplace`, read with
+  `tools/testbed/ledger/ig_workplace_series.mjs`; FINDINGS F190–F193.
+
 ## Step 7 — VISUALS, PROOFREADING, RELEASE
 
 - Per-tier building artwork, so a player reads the tier from the picture instead of a wall of text.

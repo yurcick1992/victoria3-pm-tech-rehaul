@@ -99,7 +99,9 @@ import { fileURLToPath } from 'node:url';
 // Readers: a key is opaque. `c.tag ?? key.split('@')[0]` is the definition in every version; a pool member is the plain
 // TAG, i.e. the MAIN record — a rebel side, or a country a revolt left behind, is a country of its own. FINDINGS F186,
 // landmine L38. ⚠ A pre-v12 summary cannot be repaired (its save is reaped); summary_drops.mjs says which ones are hit.
-export const SAVE_SUMMARY_VERSION = 13;
+export const SAVE_SUMMARY_VERSION = 14;
+// v14 (2026-10-01): + per country `ig_by_workplace` — IG members (and members × exp(wealth/5)) by the pops' workplace class, and `world.ig_order`
+// (user: "tracking only" — does the Petite Bourgeoisie fall with the crafts and re-rise with the urban centres' shopkeepers? FINDINGS F192–F193).
 // v13 (2026-10-01): + per country `interest_groups` {ig_def: {clout, ps, rad, loy}} — the IG clout the craft redesign is meant to move
 // (the Petite Bourgeoisie; user-asked 2026-10-01). Absent in a pre-v13 summary; ledger/ig_clout.mjs back-fills from kept saves (clout_trend).
 // v9 (2026-09-20): + THE BUILDING'S OWN LEDGER per building type per country — goods_sales and goods_cost (revenue and inputs at MARKET prices, so no price-multiplier repair is needed) and salary_w = sum(salary_rate x staffing) (the building's OWN wage rate, not the country's base_wage) and taxes. Wages are then EXACT: goods_sales - goods_cost - profit, verified against the game's own building panel to 0.38%. FINDINGS F152 section 9; it retires the inference F150/F152 needed.
@@ -161,6 +163,14 @@ if (Object.keys(GOODS_PRICE).length < GOODS.length * 0.9)
 const POP_TYPES = readdirSync(join(GAME, 'common/pop_types')).filter(x => x.endsWith('.txt')).sort()
   .map(x => x.replace(/\.txt$/, ''));
 if (!GOODS.length || !POP_TYPES.length) throw new Error(`game reference tables empty — is --game right? (${GAME})`);
+// v14: a pop's `interest_group_support_array` indexes the IG definitions in ALPHABETICAL FILE ORDER of common/interest_groups (FINDINGS F192)
+const IG_ORDER = readdirSync(join(GAME, 'common/interest_groups')).filter(x => /^00_[a-z_]+\.txt$/.test(x)).sort().map(x => 'ig_' + x.slice(3, -4));
+if (IG_ORDER.length !== 8) throw new Error(`interest group files read as [${IG_ORDER}] — expected 8; the pop IG-support index mapping is no longer safe`);
+// v14: the workplace classes the IG membership is split by. LIGHT6 = the six light industries' vanilla keys: a craft rung in a craft book, the
+// e0 rung in a four-rung book, the WHOLE industry in vanilla — a reader must know which book it reads.
+const LIGHT6 = new Set(['building_food_industry', 'building_textile_mill', 'building_furniture_manufactory', 'building_glassworks', 'building_tooling_workshop', 'building_paper_mill']);
+const WP_CLASS = ty => ty == null ? 'other' : LIGHT6.has(ty) ? 'light6' : ty === 'building_urban_center' ? 'urban_center' : ty === 'building_trade_center' ? 'trade_center'
+  : /^building_(financial_district|manor_house|company_|regional_company_)/.test(ty) ? 'owner' : 'other';
 // v11: law → law group, read live, so `trade_policy` follows the game's own grouping (six laws in 1.13.11)
 const LAW_GROUP = {};
 for (const f of readdirSync(join(GAME, 'common/laws')).filter(x => x.endsWith('.txt')).sort()) {
@@ -243,13 +253,26 @@ const rl = createInterface({
 // regression can ask which of them actually predicts tick speed.  They differ by about a fifth.
 const popObjByState = new Map();          // state -> { n, live }
 let popObjTotal = 0, popObjLive = 0, popCurState = -1, popCurPeople = 0;
+// v14: IG MEMBERS BY WORKPLACE (user-asked 2026-10-01 — "tracking only": does the Petite Bourgeoisie fall with the crafts and re-rise with the
+// urban centres' and trade centres' shopkeepers?). Per pop: its type, workforce, wealth, workplace (the building's FULL id) and its politically
+// engaged IG members (`interest_group_support_array`, millions, FINDINGS F192), tallied by (state, workplace) and classed once the building
+// table is read (it follows the pop table).
+let popType = '', popWf = 0, popWealth = 0, popWp = -1, popSup = null, popSupNext = false;
+const igByStateWp = new Map();             // `${state}|${wp}` -> { mem: [8], wm: [8], wf, shop }
 const closePop = () => {
   if (popCurState >= 0) {
     let e = popObjByState.get(popCurState);
     if (!e) popObjByState.set(popCurState, e = { n: 0, live: 0 });
     e.n++; if (popCurPeople) e.live++;
+    if (popWf > 0 || popSup) {
+      const k = `${popCurState}|${popWp}`;
+      let g = igByStateWp.get(k);
+      if (!g) igByStateWp.set(k, g = { mem: new Float64Array(8), wm: new Float64Array(8), wf: 0, shop: 0 });
+      g.wf += popWf; if (popType === 'shopkeepers') g.shop += popWf;
+      if (popSup) { const wt = Math.exp(popWealth / 5); for (let i = 0; i < 8; i++) { g.mem[i] += popSup[i]; g.wm[i] += popSup[i] * wt; } }
+    }
   }
-  popCurState = -1; popCurPeople = 0;
+  popCurState = -1; popCurPeople = 0; popType = ''; popWf = 0; popWealth = 0; popWp = -1; popSup = null; popSupNext = false;
 };
 
 let mode = 'top', depth = 0;
@@ -330,8 +353,20 @@ for await (const line of rl) {
       // Only three initials can matter, so the string comparisons run on a small minority of lines.
       const c3 = line.charCodeAt(3);
       if (c3 === 108) { if (popCurState < 0 && line.startsWith('\t\t\tlocation=')) popCurState = +line.slice(12); }
-      else if (c3 === 119) { if (!popCurPeople && line.startsWith('\t\t\tworkforce=') && +line.slice(13) > 0) { popCurPeople = 1; popObjLive++; } }
+      else if (c3 === 119) {
+        if (line.startsWith('\t\t\tworkforce=')) { popWf = +line.slice(13); if (!popCurPeople && popWf > 0) { popCurPeople = 1; popObjLive++; } }
+        else if (line.startsWith('\t\t\twealth=')) popWealth = +line.slice(10);                  // v14
+        else if (line.startsWith('\t\t\tworkplace=')) popWp = +line.slice(13);                   // v14: the FULL building id
+      }
       else if (c3 === 100) { if (!popCurPeople && line.startsWith('\t\t\tdependents=') && +line.slice(14) > 0) { popCurPeople = 1; popObjLive++; } }
+      else if (c3 === 116) { if (line.startsWith('\t\t\ttype="')) popType = line.slice(9, -1); }   // v14
+      else if (c3 === 9) {                                                                            // v14: 4+ tabs — only the IG support array
+        if (popSupNext && line.charCodeAt(4) === 9) {
+          popSupNext = false; popSup = new Float64Array(8);
+          const parts = line.trim().split(' ');
+          for (let i = 1; i < parts.length; i++) { const e = parts[i].indexOf('='); popSup[+parts[i].slice(0, e)] = +parts[i].slice(e + 1); }
+        } else if (line.charCodeAt(4) === 105 && line === '\t\t\t\tinterest_group_support_array={') popSupNext = true;
+      }
     }
     continue;
   }
@@ -805,6 +840,22 @@ for (const [st, e] of popObjByState) {
   if (!r) popObjByCountry.set(ci, r = { n: 0, live: 0 });
   r.n += e.n; r.live += e.live;
 }
+// v14: IG members by workplace class, per owner country (a pop with no workplace is `unemployed` — peasants and dependants-only pops included)
+const igWpByCountry = new Map();
+let igWpUnclassed = 0;
+for (const [k, g] of igByStateWp) {
+  const bar = k.indexOf('|'), st = +k.slice(0, bar), wp = +k.slice(bar + 1);
+  const ci = stateCountry.get(st); if (ci == null) continue;
+  const ty = wp >= 0 ? bldType.get(wp) : null;
+  if (wp >= 0 && ty == null) igWpUnclassed += g.wf;
+  const cls = wp < 0 ? 'unemployed' : WP_CLASS(ty);
+  const m = igWpByCountry.get(ci) ?? igWpByCountry.set(ci, {}).get(ci);
+  const a = m[cls] ??= { mem: new Array(8).fill(0), wm: new Array(8).fill(0), wf: 0, shop: 0 };
+  for (let i = 0; i < 8; i++) { a.mem[i] += g.mem[i]; a.wm[i] += g.wm[i]; }
+  a.wf += g.wf; a.shop += g.shop;
+}
+for (const m of igWpByCountry.values()) for (const a of Object.values(m)) { a.mem = a.mem.map(v => +v.toFixed(5)); a.wm = a.wm.map(v => +v.toFixed(4)); a.wf = Math.round(a.wf); a.shop = Math.round(a.shop); }
+if (igWpUnclassed) console.error(`WARN: ${Math.round(igWpUnclassed)} workforce in workplaces absent from the building table — classed 'other'`);
 
 // v7 — OWNERSHIP, resolved now that every map is complete (parse order is not assumed).
 // An ownership record whose identity is a BUILDING is company-held iff that owner building's own type
@@ -911,6 +962,10 @@ for (const [id, c] of C) {
     // v13: interest groups — clout (the IG's share of the country's political strength, 0–1) and political strength,
     // total / radical / loyalist, per IG definition
     interest_groups: igByCountry.get(id) ?? {},
+    // v14: IG MEMBERS by the pops' workplace class (light6 / urban_center / trade_center / owner / other / unemployed): `mem` the politically
+    // engaged members in millions and `wm` the same × exp(wealth/5) (the clout weight, F192), both as 8-arrays in `world.ig_order`;
+    // `wf` the class's workforce, `shop` its shopkeeper workforce. A class's share of an IG's clout ≈ its wm ÷ Σ wm × the IG's clout.
+    ig_by_workplace: igWpByCountry.get(id) ?? {},
     // v5: queue COMPOSITION per country — n elements, total work left (points), total speed
     // (points/wk), and per-building-type breakdown. Retired the CQ telemetry (§9).
     queues: {
@@ -938,7 +993,7 @@ for (const [g, rows] of [...byGood].sort()) {
 // stored by the engine and hidden by the interface: 17.4 % of them in a vanilla 1936 gamestate, and
 // half the records in some states.  Which of the two predicts a tick's cost is an open question, so
 // the summary refuses to choose (user ruling, 2026-08-11).
-const world = { buildings: {}, gdp: 0, population: 0, game_rules: gameRules,
+const world = { buildings: {}, gdp: 0, population: 0, game_rules: gameRules, ig_order: IG_ORDER,
                 pop_objects: popObjTotal, pop_objects_live: popObjLive,
                 pop_objects_empty: popObjTotal - popObjLive,
                 pop_objects_unowned: popObjOrphan, pop_objects_unowned_live: popObjOrphanLive };
