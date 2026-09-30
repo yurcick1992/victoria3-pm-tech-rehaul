@@ -19050,3 +19050,74 @@ sessions hold more affected summaries than counted. A non-main member entry in a
 proves it where it appears), but a lone non-main record cannot be told apart from one on the summary alone. The two-mains rule (the most
 populous keeps TAG) is a judgment call made here, not ruled; it touched no shortlist member in the 23 saves. What `last_civil_war_date`
 marks (a war's start or its end) is not verified, and why the engine gives `is_main_tag` to both records of six pairs is not known.
+
+## F187 — WHAT THE EMPTY CRAFTS COST: by 1866 the craft book had put 10,932 construction points (£5.9M) into craft levels still standing — 0.48% of all construction, 0.68% of economic and 1.7% of tiered construction — and 36% of it stands empty, 0.17% of all construction; the canon spent a median 115,000 points (£66M, 5.0% of all construction) on the same six e0 rungs over the same thirty years, and the merge run's e0 factories built in those years stand 36% empty as well (2026-09-30, read from quarterly summaries and kept saves, no game time)
+
+**The question (the user, after F185):** how much money went into the artisanal e0 rungs by the probe's end (1866), which share of it is
+unstaffed, and what is that as a share of (1) all construction spend, (2) all economic buildings constructed, (3) all tiered buildings
+constructed?
+
+**Sources.** `tools/testbed/ledger/construction_spend.mjs` (new; its header holds every definition) over the craft run (`20260930_181601`,
+run 1, `artisan6`), the merge run (run 2, `merge6`) and the canon's six runs (`20260929_002728`, `canon-dams-family`), each 1836→1866.1.1
+from its 120 quarterly save summaries, plus the craft and merge runs' kept 1866.1.1 saves. Three readings:
+- **THE FLOW = all construction**: Σ (government + private queue speed) × the weeks between summaries — the points the building queues
+  received — and the money, Σ the construction sector's goods bill (market prices; it is the budget's construction-goods line) × weeks. A
+  country's £ per point is its bill ÷ its points over the run, and prices everything it built.
+- **LEVELS ADDED** (gross): positive level changes per country and building type between consecutive summaries × the type's own cost (a
+  rung's `building_cost`, else vanilla's `required_construction`). Skipped: country-quarters whose total levels jump more than 25%
+  (annexation, a civil-war record coming back) and the types the engine sizes itself (urban centres, subsistence, owner buildings,
+  logistics and conscription centres, gold fields).
+- **THE STOCK AT 1866**: the kept save against the build's own 1836 map (`common/history/buildings`) — CONSTRUCTED (a building where the
+  region held none of that type in 1836) plus EXPANDED (an original with more levels than the map gave it, its added levels at the
+  building's own occupancy), each with its staffed levels; re-established buildings (a transferred state resets the date) apart.
+
+**1. The crafts (craft run).**
+
+| | levels | points | £ (the builders' own cost) | staffed |
+|---|---|---|---|---|
+| standing at 1866, new since 1836 | 1,410 (1,374 in 693 new buildings, +36 on originals) | 10,932 | £5.85M | 65.0% |
+| — of which EMPTY | 494 | **3,919 (35.8%)** | **£1.71M (29%)** | |
+| every craft level added (gross, summaries) | 1,973 | 14,988 | £8.88M | |
+
+The gross count reads 37% above the stock: crafts that changed hands count there as built by the receiver, and craft levels built and gone
+again by 1866 count there and not in the stock (world craft levels rose by 2,005 and fell by 1,593 across the quarterly steps, the falls
+partly F186's dropped records). The empty share is 29% in £ against 36% in points because the emptiest crafts were built by countries that
+build on the GDP base points: up to 10 points a week come from the `country_gdp_construction` static modifier with no construction sector
+and no goods behind them — **12.0% of all construction points** in this run, while **22% of the craft points** were built by countries
+averaging under £300 a point (Ségou £27 a point, 97% of its points with no sector — F185's Ségou crafts sit at 7–10% staffed).
+
+**2. The shares — standing at 1866 (the gross reading in brackets).**
+
+| denominator, 1836→1866 | size | crafts | crafts' EMPTY part |
+|---|---|---|---|
+| (1) all construction (the flow) | 2,269,240 points · £1,452M (£640 a point) | 0.48% (0.66%) of points · 0.40% (0.61%) of £ | 0.17% of points · 0.12% of £ |
+| (2) economic buildings constructed | 1,617,426 points · £1,054M | 0.68% (0.76%) · 0.56% of £ | 0.24% · 0.16% of £ |
+| (3) tiered buildings constructed | 638,626 points · £419M | 1.7% (2.1%) · 1.4% of £ | 0.61% · 0.41% of £ |
+
+Everything standing new since 1836 adds up to 1,941,801 points, **85.6% of the flow** (the rest: levels built and removed, work in
+progress at 1866, state transfers, military expansions the 1836 map cannot see).
+
+**3. The empty share against everything else built.** Stock at 1866, empty ÷ built, in points: **crafts 35.8%** · the other tiered rungs
+21.5% (717 levels, 627,694 points, 135,115 empty) · economic untiered 7.7% (978,800 points) · non-economic 2.6%; all economic 13.3%, all
+tiered 21.8%. **The merge run** — the canon's recipes and costs on every e0 rung — built 174 levels of e0 factories in the same six
+industries (156 in 140 new buildings, +18 on originals): 68,616 points (£40.7M), **35.7% empty** (24,471 points, £13.4M); its other
+tiered rungs 20.7% empty, economic untiered 5.6%. ⇒ New e0 capacity standing a third empty by 1866 is not a craft trait on this evidence;
+the crafts leave about a sixth of the points empty that the merge run's e0 factories do (3,919 against 24,471) — one seed each.
+
+**4. The canon's six runs, the same measure (levels added, gross, 1836→1866).** The same six e0 rungs (factories at 316 points a level for
+textile, furniture, glass and tooling, 600 for food and paper) took a median **115,338 points (£66.5M) = 5.0% of all construction, 5.7% of
+economic and 14.4% of tiered construction** (runs 4.4–5.5% / 4.8–6.3% / 12.4–16.6%, 104,032–125,956 points); the merge run 94,744
+(3.9% / 4.6% / 10.3%); the craft run **14,988 (0.66% / 0.76% / 2.1%) — about an eighth of the canon's (÷7.7)**. The craft run's other construction
+sits inside the canon's range on every class: all construction 2.27M points (canon median 2.27M, 2.11–2.53M), the other tiered rungs
+703k (the canon's tiered rungs outside the six e0: 590–754k, median 691k), economic untiered 1,249k (1,060–1,430k, median 1,214k),
+non-economic 499k (462–507k, median 489k). The ~100,000 points not spent on e0 rungs cannot be traced to any one class at n=1.
+
+**What it does NOT say.** One seed per book over thirty years. The canon has no stock reading and no empty share of its own (its kept saves
+are at 1936); the merge run stands in for canon-style e0 construction. The flow is quarterly snapshots of queue speed × the quarter's
+weeks, not a weekly sum; these pre-v12 summaries miss a record in 24 of the run's 31 yearly summaries (0.40% of world GDP on average, 3.7%
+at 1842.1.1 — F186, `summary_drops.mjs`), so the flow and the gross counts run slightly low. The £ column is the construction sector's
+goods bill at market prices: points from the GDP base modifier cost nothing there, so the £ shares understate a poor country's
+construction and the points shares are the cleaner reading. The stock is net of demolitions within a region and blind to buildings built
+and removed before 1866; an expansion carries its building's occupancy proportionally (the originals-staff-first reading would make the
+added levels look fuller). Military buildings the engine sizes at the start are not on the 1836 map, so the stock misses their later
+expansions (the flow has them).

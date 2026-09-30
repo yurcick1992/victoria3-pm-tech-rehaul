@@ -280,7 +280,10 @@ machinists than the craft lacks; the least literate states hold the best-staffed
 economics — profit under 25% of revenue (no active hiring, no wage raises, wage cuts at 15%) and value added per worker at or under the £3
 hiring floor (`BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES`), which the craft recipes clear only at output prices of 100–124% of base
 (vanilla's first methods at 74–81%); new craft levels are built and left 7–30% staffed. A crafts-only `min_productivity_to_hire` on
-`bg_pmr_crafts` is PROPOSED, not ruled. No century batch of either has run — that is the user's to confirm.
+`bg_pmr_crafts` is PROPOSED, not ruled. ⭐ **WHAT THE EMPTY CRAFTS COST (F187):** the crafts standing new at 1866 took 10,932 construction
+points (£5.9M) — 0.48% of all construction, 0.68% of economic and 1.7% of tiered construction — and 36% of it stands empty (0.17% of all
+construction); the canon spent a median 115,000 points (£66M, 5.0% of all construction) on the same six e0 rungs in the same years, and the
+merge run's new e0 factories stand 36% empty as well. No century batch of either has run — that is the user's to confirm.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
@@ -2642,6 +2645,17 @@ tools/                  dev tooling — NOT shipped in the mod
                         [--top 40] [--built] [--states]`. ⚠ `workplace` is the building record's FULL id — a reused slot's id carries a generation prefix
                         (slot + k·2^24); the first cut reduced it mod 2^24 and lost every worker of a reused slot. ⚠ A building's `staffing` is STAFFED
                         LEVELS; its active methods sit on ONE line of the save
+  testbed/ledger/construction_spend.mjs  WHERE THE CONSTRUCTION MONEY WENT, AND HOW MUCH OF IT STANDS EMPTY (FINDINGS F187, 2026-09-30): per run
+                        to `--until`, in construction POINTS and £. (1) THE FLOW = all construction: Σ (government + private queue speed) × weeks
+                        between summaries, and the construction sector's goods bill × weeks (a country's £ per point = its bill ÷ its points, which
+                        prices everything it built). (2) LEVELS ADDED per country and type × the type's own cost (a rung's `building_cost`, else
+                        vanilla's `required_construction` from the build's files), by class — crafts · other tiered rungs · economic untiered ·
+                        non-economic · "e0 of the six" (`--e0-of`, the like-for-like line between a craft book and the canon); >25% country-quarter
+                        jumps and engine-sized types skipped. (3) `--stock`: the run's kept save at `--until` against the build's own 1836 map —
+                        constructed + expanded levels per class with their staffed share, so the EMPTY money is readable (re-established buildings
+                        reported apart). `--arm <session>[:<setup>] --mod <emitted mod dir> [--arm … --mod …] [--until 1866.1.1] [--stock]`; the config
+                        is each run's own. ⚠ Up to 10 points a week per country come from the country_gdp_construction static modifier and buy no
+                        goods — 12% of all points in the craft run — so £ shares understate a poor country's construction; points are the clean unit
   testbed/ledger/merge_methods.mjs  WHICH MAIN METHOD A MERGED BUILDING RUNS (§10.91.2, 2026-09-30): per run, save date, country and merged
                         industry, the host's levels on its own method and on the merged one, and the levels whose secondary is the merged
                         method's own copy (`!!` when those exceed the merged method's levels — the per-method gating broken). Pairs and
