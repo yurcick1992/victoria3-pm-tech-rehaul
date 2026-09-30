@@ -1,0 +1,80 @@
+{
+  "schedule_version": 1,
+  "label": "craft-merge-30y",
+  "_why": "GROWTH CHECK over the first thirty years of both lines of BALANCE_FRAMEWORK 10.91, one run each, one after the other (user go-ahead 2026-09-30: 'Go on with both approaches one by one, but with longer probes, 30y each, to check that the economies grow more or less in line with canon'). Run 1 = config/mod_config.artisan6.json, Line A with the RULED craft staffing (the ruled default; the staffing choice between it and artisan6-shop is still open with the user). Run 2 = config/mod_config.merge6.json, Line B, the six rung-to-method merges at the geometric-midpoint cost, with NO probe grant: every technology arrives by ordinary research. Reference = the canon's six F177 runs (session 20260929_002728, canon-dams-family = the deployed canon plus the monthly dam log, which only logs), read at the same dates. Tags, metrics, dump dates up to 1860 and the quarterly autosave are the canon batch's, so the market dumps and the wall clock compare like for like. A probe: one seed per book, no register reading.",
+  "_questions": {
+    "Q1": "World GDP (displayed and at base prices) and the shortlist pool's GDP at 1840 / 1850 / 1860 / 1865 against the canon's six runs: inside their range, or outside?",
+    "Q2": "Population, productive workers per capita (W) and unemployment including peasants (U*), world and shortlist, at the same dates against the canon's range.",
+    "Q3": "Crafts (run 1): world craft levels and staffing by decade; staffing in the low-literacy craft countries (Korea, Persia, China, the Ottomans, India); the e1 rungs of the six industries against the canon's at 1850 / 1865.",
+    "Q4": "Merges (run 2): when each merged technology is first held by a shortlist country, and the share of host levels on the merged method in countries holding it; whether any merged method's secondary copy is ever selected; host staffing after the switch (the chemical plants ran two-thirds staffed in F182).",
+    "Q5": "Both: the old-rung readings (T0 by workers, by the rung's era, the merged rungs by method) against the canon at 1865.",
+    "Q6": "Load and health: the init marker, no error line naming our files, no stall (world GDP under 0.8 of the canon's median at 1865), crashes resumed.",
+    "Q7": "Play time 1836 -> 1866 against the canon runs' own first thirty years."
+  },
+  "_predictions": {
+    "Q1": "both inside the canon's six-run range at every date; crafts at or a little under the canon at base prices (F180 section 3 predicted -0.5 to -1.5% at 1836), merges at or a little above from the 1850s as the merged methods are switched on for free",
+    "Q2": "inside the canon's range; the crafts hold more workers per unit of output, so W at or above the canon, U* at or below",
+    "Q3": "craft levels within +-30% of the 1836 stock by 1866, shrinking in the core, stable or growing in the periphery; staffing >= 0.85 everywhere except Korea and Persia, which may slip under 0.8 as the machinist literacy gate binds",
+    "Q4": "baking powder, chemical bleaching and improved fertilizer held by the leaders in the 1850s-60s; most host levels switched within a few years of the technology; merged secondary copies rare; switched chemical plants under 0.8 staffed",
+    "Q5": "crafts: T0 in workers ABOVE the canon (a craft level employs as many as the e0 it replaced, and there are more craft levels in the periphery); merges: e1 food and paper workers move to e2 by method, fertilizer e0 to e1",
+    "Q6": "clean; no stall",
+    "Q7": "within 10% of the canon's median"
+  },
+  "_cost": "2 runs x 1836 -> 1866, about 35-45 minutes each plus builds and harvest",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "One seed per book against the canon's six: a reading inside the canon's range is agreement, a reading outside it is a flag, never a verdict.",
+    "No stop watcher: a probe has no end state for the register to judge."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 150
+  },
+  "setups": {
+    "artisan6": {
+      "kind": "config",
+      "config": "config/mod_config.artisan6.json"
+    },
+    "merge6": {
+      "kind": "config",
+      "config": "config/mod_config.merge6.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "artisan6",
+      "until": "1866.1.1"
+    },
+    {
+      "setup": "merge6",
+      "until": "1866.1.1"
+    }
+  ]
+}
