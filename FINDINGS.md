@@ -19249,6 +19249,13 @@ output value), with NO ×1.2 input lift (the canon's e0s carry it) and construct
 
 Vanilla and the canon staff every one of these at 500 shopkeepers + 4,500 laborers (1.20 wage units a head); the crafts carry 30–50%
 machinists and 10–18% shopkeepers (1.40–1.61 wage units a head).
+- **Shopkeepers:** food 18%, furniture 18%, tooling 15%, textile 13%, glass 10%, paper 10% of a craft's heads, against vanilla's 500
+  shopkeepers (9–10%) on EVERY rung of these six industries (none of the six has an ownership group carrying staff). By wage bill (shopkeepers weigh 3,
+  machinists 1.5, laborers 1) they are 21–36% of a craft's wages against 25% of vanilla's e0. The luxury secondaries add more (Craftsman
+  Sewing, Luxury Furniture +50 a craft level): realised at 1845.10 in F188's floor run, 428k of 2.57M craft workers were shopkeepers (16.7%).
+- **Machinists:** the crafts' 30–50% is MORE than any vanilla rung of these industries carries — vanilla adds skill up its ladder as
+  machinists (10–25%) plus engineers (5–15%), with laborers still 50–70% on the top rung. The dropped `shop` variant had 20–30% shopkeepers
+  and no machinists at the same wage units.
 
 **2. Per worker, at base prices** (vanilla / the canon's e0 / the craft):
 
