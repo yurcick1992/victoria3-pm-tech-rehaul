@@ -274,9 +274,13 @@ split a host's workers by method since 2026-09-30; the old-rung census and obsol
 ⭐ **PROBED 2026-09-30, BOTH LINES (F181, F182):** the craft books load and hold their staffing, with the ownership fix confirmed; the merge
 book's switch works (the AI moves hosts to the merged method one building at a time, no construction). ⭐ **THIRTY YEARS EACH (F184,
 1836→1866, n=1 per book):** both worlds grow with the canon's (craft 0.94–1.02×, merge 1.00–1.07×); the craft run's shortlist lagged
-11–17% on a political seed (the Springtime from Austria in 1840, the earliest of 23 runs); understaffed crafts are short of every profession
-alike, not of machinists; Baking Powder and Bleached Paper spread decades before the canon builds those rungs. No century batch of either
-has run — that is the user's to confirm.
+11–17% on a political seed (the Springtime from Austria in 1840, the earliest of 23 runs); Baking Powder and Bleached Paper spread decades
+before the canon builds those rungs. ⭐ **WHY CRAFTS STAY UNDERSTAFFED (F185):** not literacy (every case state holds more qualified
+machinists than the craft lacks; the least literate states hold the best-staffed crafts) but the engine's hiring rules against the crafts'
+economics — profit under 25% of revenue (no active hiring, no wage raises, wage cuts at 15%) and value added per worker at or under the £3
+hiring floor (`BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES`), which the craft recipes clear only at output prices of 100–124% of base
+(vanilla's first methods at 74–81%); new craft levels are built and left 7–30% staffed. A crafts-only `min_productivity_to_hire` on
+`bg_pmr_crafts` is PROPOSED, not ruled. No century batch of either has run — that is the user's to confirm.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
@@ -2613,11 +2617,19 @@ tools/                  dev tooling — NOT shipped in the mod
                         game's country figure); over workforce + dependents it reads a quarter of it. ⚠ "Lower class" = the default hierarchy's
                         professions from common/social_classes (farmers are middle class in 1.13), not the pop's own `social_class` record, which
                         follows its country's hierarchy (castes, the Edo classes). ⚠ Kept saves only: the harvester reaps all but each run's newest
-  testbed/ledger/craft_fill.mjs  WHICH PROFESSION AN UNDERSTAFFED CRAFT IS SHORT OF, OUT OF ONE SAVE (FINDINGS F184 §4, 2026-09-30): per country
-                        and craft industry, levels, occupancy (a building's `staffing` is STAFFED LEVELS), recent failed hires, downsize flags,
-                        profit, and the workers by profession (the pop table's `workplace`) against the book's own staffing × levels.
-                        `<save.v3> <book.json> [--min-levels 10] [--top 40]`. ⚠ `workplace` is the building record's FULL id — a reused slot's
-                        id carries a generation prefix (slot + k·2^24); the first cut reduced it mod 2^24 and lost every worker of a reused slot
+  testbed/ledger/craft_fill.mjs  WHO IS TO BLAME FOR AN UNDERSTAFFED CRAFT, OUT OF ONE SAVE (FINDINGS F185, 2026-09-30): per craft building its job
+                        slots per profession (every active method's level-scaled employment × levels, read from the EMITTED mod over vanilla),
+                        its workers per profession (the pop table's `workplace`), the BINDING profession (lowest fill — `EMPLOYMENT_PROPORTIONALITY_LIMIT`
+                        holds the others within 10 points, so equal fills prove nothing), and its hiring state from the save (establishment, last layoff,
+                        last failed hire, hiring rate, profit ÷ revenue, value added and profit per employee against the £3 hiring floor, wage ÷ the
+                        country's normal rate, inbound hires from its transfer log); per state, literacy by stratum, unemployed, peasants and the people
+                        QUALIFIED as machinists / shopkeepers outside that job; a blame split in the order the engine's rules bind; `--built`: crafts
+                        CONSTRUCTED during the game (no such craft in the region on the emitted 1836 map — an establishment date alone also resets
+                        when a state changes hands) and expansions of the originals; `--states`: every craft state, and staffing by lower-class literacy.
+                        `<save.v3> <book.json> --mod <the book's emitted mod: build.ps1 -SaveTo <name> -Config <book>> [--max-occ 0.8] [--min-missing 2]
+                        [--top 40] [--built] [--states]`. ⚠ `workplace` is the building record's FULL id — a reused slot's id carries a generation prefix
+                        (slot + k·2^24); the first cut reduced it mod 2^24 and lost every worker of a reused slot. ⚠ A building's `staffing` is STAFFED
+                        LEVELS; its active methods sit on ONE line of the save
   testbed/ledger/merge_methods.mjs  WHICH MAIN METHOD A MERGED BUILDING RUNS (§10.91.2, 2026-09-30): per run, save date, country and merged
                         industry, the host's levels on its own method and on the merged one, and the levels whose secondary is the merged
                         method's own copy (`!!` when those exceed the merged method's levels — the per-method gating broken). Pairs and

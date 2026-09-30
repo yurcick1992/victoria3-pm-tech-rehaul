@@ -18701,7 +18701,7 @@ the East India Company 2.28M against, in the ruled craft book, roughly 400k mach
 whether the machinist JOBS get filled over time in Persia and the Mughal rump (the 30-year probe reads that); why Awadh's reading swings
 between seeds. The 10% line is where qualification growth starts, not a hiring rule.
 
-## F184 — THE CRAFT BOOK AND THE MERGE BOOK OVER THIRTY YEARS (1836→1866, one seed each, against the canon's six runs): both worlds grow with the canon's; the craft run's shortlist falls 11–17% behind on a heavy political seed that began with the People's Springtime in 1840, set off by Austria, earlier than in any of 23 reference runs; the crafts hold the canon's e0 capacity in the periphery and die in small European states; an understaffed craft is short of every profession alike, not of machinists; craft goods stay dearer in the craft-holding markets; the merge book grows at the top of the canon's range and adopts its merged methods decades before the canon builds the same rungs — and the save summaries drop the main side of every same-tag civil war from their world totals (2026-09-30)
+## F184 — THE CRAFT BOOK AND THE MERGE BOOK OVER THIRTY YEARS (1836→1866, one seed each, against the canon's six runs): both worlds grow with the canon's; the craft run's shortlist falls 11–17% behind on a heavy political seed that began with the People's Springtime in 1840, set off by Austria, earlier than in any of 23 reference runs; the crafts hold the canon's e0 capacity in the periphery and die in small European states; understaffed crafts are not short of qualified machinists (§4 corrected by F185: their margins keep them from hiring); craft goods stay dearer in the craft-holding markets; the merge book grows at the top of the canon's range and adopts its merged methods decades before the canon builds the same rungs — and the save summaries drop the main side of every same-tag civil war from their world totals (2026-09-30)
 
 **Session** `20260930_181601_craft-merge-30y` (schedule `craft_merge_30y.json`, commit `a4dde06`): run 1 `artisan6` (the craft book, the
 ruled staffing), run 2 `merge6` (the merge book), each 1836→1866.1.1, quarterly saves, markets for the eleven instrumented tags. Both clean —
@@ -18761,14 +18761,14 @@ Switzerland and Finland (paper, furniture), plus Segou and Kaffa — the old run
 ⭐ **F183's open question** (do the machinist jobs fill in Persia and the Mughal rump?): Persia's crafts ran 0.85–0.98 staffed all thirty years
 (0.98 at 1866) with its machinists 11k → 26k employed (the canon's Persia: 0–1k); the Mughal rump's crafts are gone by 1865 with the state.
 
-**4. Understaffing is not a machinist shortage.** From the kept 1866 save (`tools/testbed/ledger/craft_fill.mjs`: every craft building's
-workers by profession against its book staffing): where a craft is under-staffed, **shopkeepers, machinists and laborers fill at about the
-same rate** — Kaffa food 35 / 35 / 34%, Sardinia-Piedmont paper 62 / 62 / 62, Egypt paper 82 / 83 / 74, Russia food 95 / 84 / 77, Korea glass
-128 / 85 / 85 (shopkeepers above 100% where a kept secondary adds their own jobs). The machinist column trails in single cases only
-(Switzerland textile 76 / 44 / 71). ⇒ the literacy gate of F180 §2 / F183 does not bind by 1866; the fill is set by the building's overall
-hiring, not by one profession. World craft staffing at 1866: textile 0.93, furniture 0.92, paper 0.83, glass 0.83, food 0.79, **tooling
-0.59** — tooling under 0.70 and glass under 0.80 from 1845 to 1860; by country, Korea's crafts (mostly glass) ran 0.56–0.70 over 1840–1860
-and Egypt's 0.52–0.92.
+**4. Understaffing — ⚠ SUPERSEDED BY F185, and its first argument was WRONG.** This section first read "shopkeepers, machinists and laborers
+fill at about the same rate" as evidence against a machinist shortage. It is not evidence of anything: `EMPLOYMENT_PROPORTIONALITY_LIMIT`
+(0.1, common/defines) holds every profession of a building within 10 points of fill of the least-filled one, so equal fills are exactly what
+a single-profession shortage looks like (the user, the same evening). F185 redoes it properly — the binding profession, the state's stock of
+qualified people, literacy by stratum, and the engine's own hiring rules — and the conclusion survives on that evidence: no understaffed craft
+is short of qualified machinists at 1866; the crafts' margins and value added per worker are what keep them from hiring. World craft staffing
+at 1866: textile 0.93, furniture 0.92, paper 0.83, glass 0.83, food 0.79, **tooling 0.59** — tooling under 0.70 and glass under 0.80 from
+1845 to 1860; by country, Korea's crafts (mostly glass) ran 0.56–0.70 over 1840–1860 and Egypt's 0.52–0.92.
 ⚠ The first cut of the reader reduced a pop's `workplace` modulo 2^24 and found NO workers in some crafts: a building record's id carries a
 generation prefix once its slot has been reused (slot + k·2^24), and the pop's handle is that full id (TESTBED_METRICS §7). Harmless at the
 1836–1838 dates of F181/F182, wrong by 1866; fixed before the numbers above (927 of 932 craft buildings join; the other five are empty).
@@ -18812,3 +18812,104 @@ version bump, a detector and the measurement of past impact were split off as a 
 **What it does NOT say.** One seed per book: nothing on whether the early Springtime is the crafts' doing (a channel is plausible; n=1 cannot
 separate it from seed luck), nothing past 1866, nothing about the register or depeasantation, and nothing on the e3 merges. The staffing reading
 is one save. The canon's comparison ranges carry the §7 defect uncorrected.
+
+## F185 — WHY CRAFTS STAY UNDERSTAFFED: not literacy — every understaffed craft's state holds more qualified machinists than it lacks, and the least literate states hold the best-staffed crafts; what binds is the crafts' own economics under the engine's hiring rules (profit under a quarter of revenue — no active hiring, no wage raises, wage cuts at 15% — and value added per worker at or under the £3-a-year hiring floor, which the craft recipes clear only at output prices of 100–124% of base); and the AI keeps BUILDING new craft levels that stay 7–30% staffed for decades (2026-09-30, read from kept saves, no game time)
+
+**The question (the user, on F184 §4):** equal fills across professions prove nothing — `EMPLOYMENT_PROPORTIONALITY_LIMIT = 0.1`
+(common/defines; a building group can override it as `proportionality_limit`) keeps every profession of a building within 10 points of fill of
+the least-filled one, so a building missing its machinists cannot hire its laborers either. Report the cases in detail, with statewide literacy
+by stratum; and does a craft often get built or expanded while its staffing stays near zero?
+
+**Sources.** The craft run's kept 1866.1.1 save (`20260930_181601`, run 1, `artisan6`) and the craft re-probe's kept 1838.1.1 save
+(`20260930_174540`, run 1, the same book), read with `tools/testbed/ledger/craft_fill.mjs` against the book built into a side folder
+(`build.ps1 -SaveTo artisan6diag`, for every method's job slots). Per craft building: job slots per profession (every active method's
+level-scaled employment × levels), workers per profession (the pop table's `workplace`, the full record id), the BINDING profession (lowest
+fill), and the building's own hiring state from the save — establishment date, last layoff, last failed hire, hiring rate, profit, sales, input
+cost, wage, recent hires. Per state: literacy by stratum (the default hierarchy's professions; literate ÷ workforce), unemployed, peasants, and
+the people QUALIFIED for machinist or shopkeeper work who do not hold that job (the save's per-pop `qualifications`).
+The engine's hiring rules this reads against (common/defines, NEconomy): a building tries to hire at a profit margin ≥ 0.25 and considers
+raising wages only at ≥ 0.25 (`BUILDING_PROFIT_TARGET_TO_HIRE_EMPLOYEES`, `_TO_RAISE_WAGES`); at ≤ 0.15 it lowers wages (`_TO_LOWER_WAGES`);
+it may pause hiring once ≥ 10% employed and under 0.20 of revenue in profit (`BUILDING_MAX_PROFIT_TO_PAUSE_HIRES`); it will not hire below
+**£3 a year of earnings per employee** (`BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES`, overridable per building group — vanilla's owner
+buildings set `min_productivity_to_hire = 10`); it prefers laying off pops at ≤ 0.66 of their expected SoL
+(`BUILDING_PREFER_LAYOFFS_TARGET_WEALTH_MULT`); a pop moves jobs only for ≥ 10% more wage (`MIN_RAISE_TO_HIRE`).
+
+**1. Literacy and qualifications are not the constraint.**
+- **1866**: where machinists are the binding profession (93 understaffed crafts), the state holds people qualified as machinists outside
+  that job at **1.52× (minimum) and 59× (median) the building's machinist gap**; no understaffed craft is short of qualified machinists
+  or shopkeepers. **1838** (literacy at its lowest): 2 buildings, 2 unstaffed levels, were (the minimum ratio 0.25, the median 5.2).
+- **Craft staffing by the state's lower-class literacy**, level-weighted, 1866: **0–20%: 94% staffed** (145 states, 2,862 levels) ·
+  20–40%: 68% (130, 1,154) · 40–60%: 85% (129, 1,529) · 60–100%: 76% (37, 337). At 1838: 96 / 94 / 92%, no state above 60%. The least
+  literate states — China's and India's — hold the best-staffed crafts; the empty ones sit in literate Europe and in the West-African and
+  Central-Asian minors.
+- Literacy by stratum (lower / middle / upper) in the case states at 1866: Eastern Hubei 16 / 60 / 84% · Zhili 14 / 70 / 79 · Smolensk
+  17 / 52 / 64 · Kazan 15 / 49 / 60 · Central Hungary 22 / 62 / 53 · São Paulo 17 / 51 / 69 · Western Mali 39 / 52 / 55 · Gonder 35 / 49 /
+  57 · Western Thrace 51 / 74 / 64 · Venetia 51 / 67 / 95 · Chugoku 57 / 67 / 83 · West Switzerland 53 / 63 / 67 · Moldavia 65 / 72 / 84 ·
+  Hesse 65 / 75 / 75 · Friesland 69 / 80 / 79.
+
+**2. What binds: the crafts' economics under those rules.** At 1866: 932 craft buildings, 5,882 levels, 861 unstaffed (15%).
+- By the building's hiring state: **laying off** (a layoff in the last year) 237 buildings / 364 unstaffed levels, binding profession
+  shopkeepers 242, laborers 65, machinists 57 · **failed to hire** (a failed hire in the last year) 159 / 324 — laborers 128, shopkeepers
+  128, machinists 68 · **paused** (under 20% profit, ≥ 10% employed) 314 / 98 · **ramping** 222 / 75.
+- **96% of the unstaffed levels** (783 of 818 in the crafts under 90% staffed) sit in crafts earning **under 25% of revenue** — below both
+  the hiring and the wage-raise line; median 12% (under 20% in 329 of 350). The staffed crafts earn little more (median 16%): they keep the
+  workers they started with and cannot win new ones.
+- **Wages cut to the floor**: the understaffed crafts pay a median **0.58 of their country's normal wage rate** (under 0.5 in 141 of 351);
+  the big Qing crafts pay the engine's minimum rate of 10 (0.02–0.03 of normal). The staffed pay 0.63.
+- **Layoffs fall on shopkeepers first** (the binding profession in 242 of the 364 laying-off levels) — consistent with the layoff rule: a
+  middle-class shopkeeper on a cut craft wage is the first to fall under 0.66 of their expected SoL (consistent, not traced pop by pop).
+- **The £3 earnings floor.** Read as value added per employee (goods sales − goods cost, a year): **146 of 351 understaffed crafts (42%) are
+  under £3, against 23 of 526 staffed (4%)**; read as profit, 343 and 429 — no separation, so value added is the reading that fits. Under
+  the floor, 19% of the understaffed crafts show an inbound hire in their transfer log, against 40% above it: the floor holds hiring back,
+  not absolutely on this reading.
+- Cases, the largest shortfalls (1866): Qing paper, Eastern Hubei — 90 levels, 56% staffed, binding laborers, 15% of revenue, value added
+  £1.16 per employee, wage at the minimum (0.02×), 492k unemployed and 139k qualified machinists in the state; Kaffa textile, Gonder — 60
+  levels, 50%, laying off, binding shopkeepers, 16%; Dutch paper, Friesland — 31 levels, 32%, failed hire, binding laborers, 15%, wage 0.64×,
+  148k peasants in the state; Ottoman glass, Western Thrace — 24 levels, 14%, failed hire, binding shopkeepers, wage 0.13×; Russian food,
+  Smolensk — 30 levels, 47%, paused, binding machinists, 15%, 17k qualified machinists against a 2.8k gap.
+
+**3. At what prices a craft falls under the £3 floor** (one level, main method only, inputs at BASE prices; the output price as a share of its
+base price at which value added per employee reaches £3 a year):
+
+| | craft: VA per employee a year at base | craft: output price for £3 | canon e0 (5,000 staff): VA at base | canon e0: price for £3 | vanilla's first method: VA at base | vanilla: price for £3 |
+|---|---|---|---|---|---|---|
+| food | £3.03 | 100% | £4.06 | 92% | £5.72 | 81% |
+| furniture | £2.41 | 109% | £1.61 | 115% | £5.72 | 81% |
+| glass | £2.18 | 115% | £1.48 | 120% | £6.24 | 74% |
+| textile | £2.03 | 116% | £0.90 | 125% | £5.72 | 81% |
+| tooling | £1.98 | 115% | £0.71 | 120% | £6.24 | 74% |
+| paper | £1.22 | 124% | £4.99 | 84% | £6.24 | 74% |
+
+Each 10 points of output price moves a craft's value added per employee by £0.55 (glass) to £1.05 (food) a year. At realised prices the
+world averages clear the floor (1866: crafts food 4.8, textile 6.0, furniture 5.4, glass 3.3, tooling 4.6, paper 4.2; the canon's e0 in the
+merge run food 5.8, textile 4.9, furniture 4.2, glass 2.4, tooling 4.0, paper 6.6) — the floor bites building by building, where local
+prices sit low. ⇒ **Vanilla's floor is set so its own first methods hire down to 74–81% output prices; the mod's input lift and the craft
+recipe put both our e0 rungs and the crafts under it at base prices.** For the canon's old rungs that is part of how they stop hiring as
+their prices fall; for the crafts — labour-heavy by design and meant to persist in the periphery — it works against the design.
+
+**4. Built during the game, and left empty.** A building's establishment date also resets when its state changes hands, so construction is
+separated against the emitted 1836 map: a craft in a region that held no craft of that key in 1836 was CONSTRUCTED.
+- Constructed by 1866: **693 buildings, 1,374 levels, 64% staffed** — against the originals' 92% (212 buildings, 4,473 levels). **287 of
+  those levels (21%) under 10% staffed, 438 (32%) under half.** By industry: glass 47%, tooling 50%, food 59%, paper 63%, textile 72%,
+  furniture 72%. The under-half ones: laying off 214 levels, failed hire 193, paused 18, ramping 13; profit median 11% of revenue, wage 0.58×.
+- **Expansions of the 1836 crafts are rare and staffed**: 18 buildings, +36 levels, about 88% of the added levels staffed.
+- 1838: 48 levels constructed in the first two years, 42% staffed.
+- The pattern, quarter by quarter (craft buildings / levels / staffed, from the summaries): **Segou** 1843 1 / 1 / 98% → 1846 5 / 27 / 14% →
+  1852 5 / 44 / 9% → 1866 5 / 44 / 7%; **Kaarta** 1843 1 / 1 → 1852 4 / 22 / 10% → 1866 5 / 24 / 24%; **Moldavia** 1849 1 / 5 / 100% →
+  1852 1 / 9 / 100% → 1855 3 / 11 / 13% → 1866 4 / 17 / 30%; Bukhara 1840 1 / 1 / 2% → 1866 15 / 28 / 55%. For contrast Sokoto 1837
+  1 / 10 / 100% → 1866 20 / 59 / 87%, and Brazil 8 / 73 / 76% → 28 / 85 / 77%.
+- ⇒ The AI keeps constructing and expanding cheap craft levels (construction ÷50) that the hiring rules then keep empty.
+
+**5. Levers (PROPOSED, not ruled; nothing built).**
+- **The craft group's own earnings floor**: `min_productivity_to_hire` on `bg_pmr_crafts` — crafts only, one key in the craft book (the
+  emitter already writes that group's fields). At 1 the crafts would hire down to output prices of about 78–85% of base (paper 97%); at 0
+  whenever value added is positive (60–84%). The global define would move the canon's e0 too, whose hiring stop at low prices the ladder
+  relies on.
+- The margin rules (25% / 20% / 15%) have no building-group override in the group documentation — their lever is the craft recipe's margin.
+- `proportionality_limit` per group exists (vanilla 1.0 on owner buildings and the logistics centres); not indicated, since qualified
+  machinists are not short.
+
+**What it does NOT say.** One seed, one save per date. The engine's exact "earnings" is not documented beyond the define's comment; value
+added is the reading that separates the groups, and `min_productivity_to_hire` is inferred to be its group override from its name and use.
+The transfer log's time window is unknown. The shopkeeper layoffs are consistent with the layoff rule, not traced pop by pop. Nothing here
+measures what lowering the floor would do.
