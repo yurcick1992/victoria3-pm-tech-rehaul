@@ -17,7 +17,7 @@ import { gunzipSync } from 'node:zlib';
 import { profitLine } from '../../lib_wage_model.mjs';
 const [runDir, cfgPath, year] = process.argv.slice(2);
 const cfg = JSON.parse(readFileSync(cfgPath, 'utf8'));
-const meta = {}; for (const ind of cfg.industries) { if (ind.disabled) continue; for (const t of ind.tiers) meta[t.key] = { ind: ind.id, era: t.era, emp: Object.values(t.employment || {}).reduce((a, b) => a + b, 0) }; }
+const meta = {}; for (const ind of cfg.industries) { if (ind.disabled) continue; for (const t of ind.tiers) meta[t.key] = { ind: ind.id, era: t.era, emp: Object.values(t.employment || {}).reduce((a, b) => a + b, 0) * (t.workforce_mult ?? 1) }; }   // a craft level is 500 heads (workforce_mult 0.1, §10.91.1)
 const dir = runDir + '/save_summaries';
 const files = readdirSync(dir).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).map(x => { const o = JSON.parse(gunzipSync(readFileSync(dir + '/' + x)).toString()); return { d: o.provenance.date, o }; });
 const f = files.filter(o => o.d.startsWith(year + '.')).sort((a, b) => a.d.localeCompare(b.d))[0];
@@ -36,6 +36,7 @@ console.log(f.d, '(world, every market)  profit and profit% are the ruled report
 console.log(anyV9
   ? '  profit% is WAGES-INCLUSIVE and EXACT (save-summary v9): wages = goods_sales − goods_cost − profit, margin = profit ÷ (goods_cost + wages)'
   : '  ⚠ PRE-v9 summary: it carries no goods_sales/goods_cost, so the wages-inclusive profit% cannot be computed and reads "—". Not filled with F92\'s base-priced ratio.');
+if (cfg.industries.some(i => !i.disabled && i.tiers.some(t => t.workforce_mult != null && t.workforce_mult !== 1))) console.log('  ⚠ this book has rungs of a different size (a craft level is 500 heads, workforce_mult 0.1, §10.91.1): VA/worker counts them right, the RUNG SHARE column is by staffed LEVELS and overstates them');
 console.log('ind era | bldgs levels staffed(%) |    PROFIT £/wk   £/staffed lvl  profit% | VA/staffed lvl  VA/worker(£/wk) | rung share | VA/worker ÷ frontier');
 for (const [ind, rs] of Object.entries(byInd)) {
   const totSt = rs.reduce((s, r) => s + r.st, 0);

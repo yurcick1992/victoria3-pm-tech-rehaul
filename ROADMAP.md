@@ -2254,10 +2254,18 @@ e0 where they stand; a periphery craft repays itself in about a year (ruled deli
    crafts cost (F187: 0.17% of all construction).
 7. ⭐ **STEPS 12 AND 13 ARE ONE BOOK FROM NOW ON** (user-ruled 2026-09-30 evening, BALANCE_FRAMEWORK §10.91.3): *"From now on, combine them
    always. After this arc (maybe 2-3 days), I'll finalise the decision on whether both stay and get canonised or both go."* The book is
-   `artmerge6`; its crafts' hiring floor is under a 10-year probe (`artmerge6-floor`, session `20260930_205540_craft-floor-10y`). Then, and
-   only on the user's go-ahead, a century batch of the combined book against `canon-dams-family` (F177, consensus loss 5.90). Watch: craft
-   workers by country and decade against each country's wage path (a craft rung still growing in Britain at 1900 falsifies the mechanism),
-   world W, T0 by workers, PI/PP, row P.
+   `artmerge6`; its crafts' hiring floor was probed for ten years (F188, session `20260930_205540_craft-floor-10y`).
+8. ✅ **The floor is RULED INTO THE ARM** (2026-09-30 late evening, §10.91.3): *"This threshold reduction is now a firm part of the 'artisans
+   + merges' arm, implement it."* ⇒ the arm is **`config/mod_config.artmerge6-floor.json`**; `make_artisan_config.mjs` defaults to the floor.
+   F189 sets the craft recipes beside vanilla's first methods and the canon's e0 (base prices and realised at 1845).
+9. ⭐ **NEXT — the century 2+1 of the arm** against `canon-dams-family` (F177, consensus loss 5.90) and the pinned vanilla n=16: schedule
+   `tools/testbed/schedules/artmerge6_floor_n2.json` (+ `_tb.json` on divergence), prepared with its predictions, the register's stop
+   watcher armed. Watch: craft workers by country and decade against each country's wage path (a craft rung still growing in Britain at
+   1900 falsifies the mechanism), whether textile's craft keeps out-earning its e1 (F189 §4), world W, T0 by workers, PI/PP, the merged
+   methods' adoption (the three e3 merges are game-era-5 technologies), row P (the craft book's thirty years ran ~8% slower than the
+   canon's median on one seed). Then, possibly, recipe iteration — the anchor slide on food and paper (their e1 carries A¹ and leaves the
+   craft far behind, F189 §3), the craft recipes themselves (`CRAFTS` in `make_artisan_config.mjs`) — each as a new book the user confirms
+   first; ⚠ §10.91.1 ruling 1 holds e1–e3 byte-identical to the canon, so an anchor move needs its own ruling.
 
 **Deferred:** Muskets; spreading the 1836 craft levels over the largest states; trimming automation that duplicates a main-method upgrade.
 

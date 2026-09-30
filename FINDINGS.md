@@ -19220,3 +19220,87 @@ seen; craft goods cheaper there — Russia yes, not separable. Q5 similar craft 
 so its shares describe the end of the decade, not the whole of it. Ten years only: whether more craft employment slows the move to e1 or
 changes depeasantation after 1860 is unmeasured, and the price channel needs more seeds. The pause and margin rules, which now bind the crafts,
 have no building-group override; their lever is the craft recipe's margin.
+
+**Outcome.** Ruled the same night (BALANCE_FRAMEWORK §10.91.3): *"This threshold reduction is now a firm part of the 'artisans + merges'
+arm"* — the arm's book is `artmerge6-floor`, and `make_artisan_config.mjs` defaults to the floor.
+
+## F189 — THE CRAFT RECIPES AGAINST VANILLA'S FIRST METHODS AND THE CANON'S e0: per worker the crafts make 43–75% of vanilla's goods and pay 17–34% more wages, so their value added per wage unit is 17–42% of vanilla's; against the canon they cut food and paper hard (×0.59 and ×0.21 per wage unit) but sit ABOVE the four slid industries' e0 (×1.1–2.2), which the anchor slide had already priced a rung below vanilla; they need the highest output price of the three to break even (115–140% of base) and a fifth of the canon's capital per worker; realised at 1845 they earn 18–47% margins against the canon e0's 12–31%, and per construction point they return 1.3–5.4 £/wk against 0.4–1.6 for the e1 rung meant to replace them (2026-09-30, no game time)
+
+**Source.** The books `config/mod_config.artmerge6-floor.json` (the arm, §10.91.3) and `config/mod_config.json` (the canon,
+`canon-dams-family-nolog`), vanilla's methods from `ui/vanilla.js` (the game files), base prices from `tools/goods_prices.tsv`, wages at the
+e0 reference wage the books use (£0.05837 per wage unit per week, `lib_wage_model.eraReferenceWage`). Realised: the v11/v12 save summaries at
+1845.10.1 of canon runs 1–2 (`20260929_002728`, F177) and both runs of `20260930_205540` (F188: A = `artmerge6`, B = `artmerge6-floor`),
+`goods_sales`/`goods_cost`/`profit` (market-priced, exact from v9), workers = staffed levels × heads per level (500 for a craft, 5,000 for a
+factory; secondary employment left out). Asked by the user when the floor was ruled in: *"which recipes were taken for the artisans, how they
+compare to vanilla and the current canon"*.
+
+**1. The recipes.** Per craft level (500 heads, a 5,000-head block × `workforce_mult` 0.1), as §10.91.1 records them — designed in the cloud
+session of 2026-09-30 for a base-price break-even of 130–150% (food 115%), from the identity labour share = 1 − r ÷ BE (r = material cost ÷
+output value), with NO ×1.2 input lift (the canon's e0s carry it) and construction cost = the canon e0's ÷ 50:
+
+| craft (vanilla key) | per level | staffing per level: shopkeepers / machinists / laborers | cost | vanilla's first method, per 5,000 | the canon's e0, per 5,000 |
+|---|---|---|---|---|---|
+| Bakeries (food) | 3.6 grain → 3.37 groceries | 90 / 150 / 260 | 12 | `pm_bakery` 40 grain → 45 | 48 grain → 45 (the ×1.2 lift), cost 600 |
+| Handsewn Clothes (textile) | 1.95 fabric → 1.95 clothes | 65 / 210 / 225 | 6 | `pm_handsewn_clothes` 40 fabric → 45 | 36.6 fabric → 27.3 (slid: e1 ÷ A, ÷ B), cost 316 |
+| Handcrafted Furniture | 1.38 wood + 0.46 fabric → 2.0 furniture | 90 / 250 / 160 | 6 | 30 wood + 10 fabric → 45 | 27.4 wood + 9.1 fabric → 29.5 (slid), 316 |
+| Forest Glass | 1.59 wood → 1.32 glass | 50 / 250 / 200 | 6 | 30 wood → 30 | 29.3 wood → 18.2 (slid), 316 |
+| Crude Tools | 2.23 wood → 1.59 tools | 75 / 225 / 200 | 6 | 30 wood → 30 | 51.2 wood → 27.3 (slid), 316 |
+| Pulp Pressing (paper) | 3.06 wood → 2.43 paper | 50 / 200 / 250 | 12 | 30 wood → 40 | 36 wood → 40 (the ×1.2 lift), 600 |
+
+Vanilla and the canon staff every one of these at 500 shopkeepers + 4,500 laborers (1.20 wage units a head); the crafts carry 30–50%
+machinists and 10–18% shopkeepers (1.40–1.61 wage units a head).
+
+**2. Per worker, at base prices** (vanilla / the canon's e0 / the craft):
+
+| | goods per 1,000 workers a week | material ratio I ÷ O | value added £ per worker a year | value added per wage unit (£/wk × 1000) | labour share of cost | base-price break-even | construction points per 1,000 workers |
+|---|---|---|---|---|---|---|---|
+| food | 9.0 / 9.0 / 6.7 | 0.59 / 0.71 / 0.71 | 5.72 / 4.06 / 3.03 | 92 / 65 / 39 | 30 / 27 / 38% | 85 / 97 / 115% | 120 / 120 / 24 |
+| textile | 9.0 / 5.5 / 3.9 | 0.59 / 0.89 / 0.67 | 5.72 / 0.90 / 2.03 | 92 / 15 / 27 | 30 / 32 / 52% | 85 / 132 / 140% | 120 / 63 / 12 |
+| furniture | 9.0 / 5.9 / 4.0 | 0.59 / 0.82 / 0.61 | 5.72 / 1.61 / 2.41 | 92 / 26 / 29 | 30 / 32 / 56% | 85 / 122 / 140% | 120 / 63 / 12 |
+| glass | 6.0 / 3.6 / 2.6 | 0.50 / 0.80 / 0.60 | 6.24 / 1.48 / 2.18 | 100 / 24 / 29 | 37 / 37 / 57% | 79 / 129 / 140% | 120 / 63 / 12 |
+| tooling | 6.0 / 5.5 / 3.2 | 0.50 / 0.94 / 0.70 | 6.24 / 0.71 / 1.98 | 100 / 11 / 25 | 37 / 25 / 50% | 79 / 126 / 140% | 120 / 63 / 12 |
+| paper | 8.0 / 8.0 / 4.9 | 0.50 / 0.60 / 0.84 | 6.24 / 4.99 / 1.22 | 100 / 80 / 17 | 37 / 33 / 40% | 79 / 89 / 140% | 120 / 120 / 24 |
+
+- **Against vanilla** every craft is far weaker: 43–75% of the goods per worker, value added per wage unit 17–42% — the "effectiveness per
+  wage unit way lower" the redesign asked for — and a break-even at 115–140% of base against vanilla's 79–85%.
+- **Against the canon it splits by the anchor slide.** Food and paper are UNSLID in the canon (their e0 is vanilla's own method with the ×1.2
+  lift), and there the crafts cut value added per wage unit to 0.59× (food) and 0.21× (paper). Textile, furniture, glass and tooling are SLID
+  to e1 (`--anchor-for …:1`): their canon e0 is the e1 method divided by A 2.2 in output and B 1.64 in input value, which left it at 11–26 per
+  wage unit — BELOW the crafts' 25–29 (the craft is 1.1× furniture, 1.2× glass, 1.8× textile, 2.2× tooling). So in four of six industries the
+  craft is the more productive e0 per worker and per wage unit, and needs a higher output price only because it pays more wages (labour 50–57%
+  of cost against 25–37%). Paper's craft is the most material-hungry of the six crafts (0.84 of its output value, vanilla's pulp pressing 0.50).
+- **Capital:** a craft costs 12 or 6 points for 500 workers — a fifth of the canon e0's points per worker in every industry (the canon e0's
+  cost ÷ 50 for a tenth of the heads), and a fifth (food, paper) or a tenth (the slid four) of vanilla's.
+
+**3. Up the ladder** (the arm, base prices, value added per worker a year and the craft's share of it): food e1 £14.51 (0.21), e2 £41.10
+(0.07, a method of the e1 building); textile e1 6.24 (0.33), e2 20.72 (0.10), e3 57.01 (0.04, a method); furniture 7.80 (0.31), 21.95 (0.11),
+58.69 (0.04, a method); glass 6.66 (0.33), 20.22 (0.11), 53.71 (0.04); tooling 7.49 (0.26), 26.27 (0.08), 73.83 (0.03); paper 15.19 (0.08),
+40.28 (0.03, a method), 99.83 (0.01). Two rungs up every craft sits at 0.03–0.11, well under F97's ~0.2 line. The unslid pair's e1 is about twice
+(1.9–2.4×) the slid four's per worker (food and paper e1 carry A¹ over vanilla's first method; the slid four's e1 is vanilla's e1 method with the lift).
+
+**4. Realised at 1845.10.1** (per worker a year, two seeds each; A = no floor, B = the floor; the margin is wages-inclusive, profit ÷ (goods
+cost + wages)):
+
+| | craft VA/worker A / B | canon e0 VA/worker r1 / r2 | craft margin A / B | canon e0 margin | e1 margin, arm A / B · canon r1 / r2 | workers, craft A / B · canon e0 r1 / r2 |
+|---|---|---|---|---|---|---|
+| food | 4.15 / 3.91 | 6.06 / 5.10 | 23 / 18% | 27 / 28% | 88 / 71 · 70 / 75% | 196k / 214k · 199k / 185k |
+| textile | 6.40 / 6.05 | 5.12 / 5.23 | 47 / 40% | 27 / 27% | 40 / 32 · 29 / 32% | 737k / 764k · 634k / 624k |
+| furniture | 5.22 / 3.97 | 3.38 / 4.23 | 26 / 23% | 16 / 23% | 23 / 20 · 20 / 22% | 467k / 462k · 255k / 269k |
+| glass | 3.04 / 2.17 | 2.90 / 2.33 | 23 / 21% | 21 / 15% | 25 / 26 · 22 / 21% | 320k / 385k · 121k / 128k |
+| tooling | 3.08 / 2.39 | 4.14 / 4.02 | 21 / 18% | 27 / 12% | 24 / 17 · 12 / 19% | 38k / 40k · 40k / 19k |
+| paper | 4.18 / 2.68 | 5.53 / 5.22 | 22 / 20% | 31 / 27% | 65 / 79 · 71 / 72% | 601k / 598k · 637k / 569k |
+
+- Realised prices carry the crafts: every craft earns a positive margin, 18–47%, beside the canon e0's 12–31% and vanilla manufacturing's
+  25.8% at 1836 (F92). **Textile's craft out-earns its own e1 in margin in both seeds** (40–47% against 29–40%), furniture's sits a little above its e1
+  (23–26% against 20–23%), glass's and tooling's level with theirs; only food and paper, whose e1 carries A¹, leave the craft far behind (e1 at 65–88%).
+- The crafts hold MORE people than the canon's e0 in furniture (1.8×) and glass (2.5–3×) — the cheap craft levels the AI builds (F185, F187)
+  — and about the same elsewhere.
+- **Per construction point** (profit a week per staffed level ÷ the build cost): crafts return **1.3–5.4 £/wk a point** (textile 4.9–5.4,
+  furniture 2.9–3.3, tooling 2.0–2.5, glass 1.8–2.2, food 1.5–1.8, paper 1.3–1.6), the canon's e0 0.42–1.02, the e1 rungs 0.46–1.59. At
+  1845 the craft is the best return on construction in all six industries — the ruled "faster payback is narratively deliberate" at work —
+  so the century question is whether rising wages, not a better investment elsewhere, end them.
+
+**What it does NOT say.** Base-price figures are design coordinates, not predictions (§10.86.2); the realised table is two seeds per arm at one
+date, with secondary employment left out of the worker counts and the canon's v11 summaries possibly missing a country record (F186). Nothing
+past 1846 is read: whether the crafts die as the wage path rises, and whether textile's craft keeps out-earning its e1, is what a century
+batch has to show.

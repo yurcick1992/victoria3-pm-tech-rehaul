@@ -292,7 +292,14 @@ user go-ahead 2026-09-30 evening, §10.91.3):** **`artmerge6-floor`** = `artmerg
 inside the crafts (every other group under the £3 floor fails to hire as before); craft failed-hire levels 1,297 → 306, craft workers +118k
 (+4.8%) taken from peasants and the unemployed with FEWER hires from other industries (29% → 11% of the crafts' hires); staffing +1.3 points
 world-wide (inside the seed spread) but glass +10, tooling +9, Korea 47 → 96%; new crafts still pause near 10%; nothing outside the crafts
-beyond the spread of two no-floor seeds. NOT ruled into the book — the user decides. No century batch of the combined book has run.
+beyond the spread of two no-floor seeds. ⭐⭐ **THE FLOOR IS RULED INTO THE ARM (2026-09-30 late evening, §10.91.3):** *"This threshold
+reduction is now a firm part of the 'artisans + merges' arm, implement it."* ⇒ **THE ARM IS `config/mod_config.artmerge6-floor.json`** (the
+bytes F188 measured); `make_artisan_config.mjs` defaults to the floor, `artmerge6` is the no-floor record. ⭐ **THE RECIPES AGAINST VANILLA
+AND THE CANON (F189):** per worker the crafts make 43–75% of vanilla's goods and pay 17–34% more wages (value added per wage unit 17–42% of
+vanilla's); against the canon they cut food and paper (×0.59 and ×0.21 per wage unit) but sit ABOVE the four SLID industries' e0 (×1.1–2.2 —
+the anchor slide had already priced those a rung below vanilla); break-even at base 115–140%; a fifth of the canon's capital per worker.
+Realised at 1845 they earn 18–47% margins (textile's craft out-earns its own e1) and return 1.3–5.4 £/wk per construction point against the
+e1's 0.4–1.6. No century batch of the combined book has run: the 2+1 is prepared (`artmerge6_floor_n2.json` + `_tb.json`), not launched.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
@@ -1567,13 +1574,18 @@ config/mod_config.merge6.json / config/mod_config.merge6-probe.json ⚗ THE MERG
                         midpoint). `merge6-probe` = merge6 + a probe-only `start_tech_grants` (the three merged technologies whose host
                         buildings stand in 1836, to GBR FRA USA PRU BEL) so a two-year probe can watch the switch; probed by schedule
                         `merge6_probe.json`. Un-ignored with their twins
-config/mod_config.artmerge6.json / config/mod_config.artmerge6-floor.json / config/mod_config.artisan6-floor.json ⭐⭐ THE COMBINED BOOK
+config/mod_config.artmerge6-floor.json / config/mod_config.artisan6-floor.json / config/mod_config.artmerge6.json ⭐⭐⭐ THE ARM = artmerge6-floor (THE COMBINED BOOK
                         (user-ruled 2026-09-30 evening, BALANCE_FRAMEWORK §10.91.3: "From now on, combine them always") + tree twins
                         (the canon's, byte for byte). `artmerge6` = `make_merge_config.mjs --base config/mod_config.artisan6.json
                         --suffix artmerge6`: artisan6 (the machinist staffing) + the six merges, proven by field diff to be exactly the
                         union. `artmerge6-floor` = the same built on `artisan6-floor` (`make_artisan_config.mjs --hire-floor 0.01`):
                         `min_productivity_to_hire = 0.01` on bg_pmr_crafts, the probe of the crafts' hiring floor (schedule
-                        `craft_floor_10y.json`); its build differs from artmerge6's in that one line. Un-ignored with their twins
+                        `craft_floor_10y.json`); its build differs from artmerge6's in that one line. ⭐⭐ The floor was RULED INTO THE ARM the
+                        same night (§10.91.3, on F188): `artmerge6-floor` IS the arm (sha256 `ea45a2bc32b78025`, its craft half
+                        `d3a37b6e2f7dc84e`), `artmerge6` is the no-floor record. Regenerate: `make_artisan_config.mjs --base
+                        config/mod_config.json --suffix artisan6-floor` (the floor is the default) then `make_merge_config.mjs --base
+                        config/mod_config.artisan6-floor.json --suffix artmerge6-floor` — proven byte-identical. Its century 2+1 is
+                        `artmerge6_floor_n2.json` + `_tb.json` (prepared, not launched). Un-ignored with their twins
 config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
@@ -2729,7 +2741,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         staffed, workers; on a vanilla run by the rung-0 method's share of the `pms` split — `rung0_split.mjs <config> <year> mod|vanilla
                         <runDir>…`), and the PER-INDUSTRY PER-ERA RUNG ECONOMICS (VA per staffed level and per worker, margin, the rung's share, VA per worker
                         ÷ the frontier — `rung_econ.mjs <runDir> <config> <year>`). They read the yearly save summaries directly and are what F127 / F128 / F129
-                        quote for the raw sector, the old rung and the realised value added per frontier level
+                        quote for the raw sector, the old rung and the realised value added per frontier level. ⚠ A craft level is 500 heads
+                        (`workforce_mult` 0.1): rung0_split and rung_econ count it so since 2026-09-30 (they used 5,000, a 10× error per worker);
+                        rung_econ's RUNG SHARE column stays by staffed LEVELS and says so on a craft book; read a VANILLA run with a non-craft book
   testbed/ledger/major_series.mjs  ⚠ the plateau test it served is SUPERSEDED by §10.83 (2026-09-17 midday); the columns stay useful — ⭐ THE PER-MAJOR SERIES the plateau test is read from (user-ruled 2026-09-16, CORRECTED 2026-09-17 — §10.82.1):
                         per major and year, strict unemployment, the peasants' share of the workforce and the salaried workforce from the yearly summaries'
                         pop_statistics. A PLATEAU is capital abundance persisting at the frictional residual — total unemployment INCLUDING peasants ≤ 10% in
@@ -3286,7 +3300,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⭐ ALSO NEW GROUPS, ADDITIVELY (2026-09-30): top-level `building_groups_add` {bg_pmr_<x>: {name, <field>: number |
                         bare key}} → common/building_groups/zzz_pm_rehaul_groups.txt + the name in every language. The craft books use it
                         for `bg_pmr_crafts` (parent bg_light_industry, economy_of_scale = no, urbanization 2, infrastructure 0.15)
-  make_artisan_config.mjs THE CRAFT BOOK — `--base <config> --suffix <sfx> [--staffing ruled|shop] [--hire-floor X]` turns the six light-industry e0
+  make_artisan_config.mjs THE CRAFT BOOK — `--base <config> --suffix <sfx> [--staffing ruled|shop] [--hire-floor X|none]` turns the six light-industry e0
                         rungs of a canon-shaped book into 500-worker craft rungs (BALANCE_FRAMEWORK §10.91.1): the per-level recipe, a
                         5,000-head staffing block × `workforce_mult` 0.1, cost = the base e0's ÷ 50, `building_group` bg_pmr_crafts,
                         `levels_per_mesh` 500, the excluded secondary groups/methods, `craft: true`, the base-price break-even and
@@ -3294,9 +3308,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         `_artisan_variant`, and copies the base's tree twin. THE CRAFT TABLE LIVES HERE ONLY. THROWS on a base whose e0
                         is not vanilla-staffed, an excluded group the industry lacks, or a staffing block that is not 5,000 whole heads.
                         `--staffing ruled` is the variant in use (user-ruled 2026-09-30 evening); `shop` stays for its record book.
-                        `--hire-floor X` (2026-09-30, the F185 §5 probe) writes `min_productivity_to_hire = X` on bg_pmr_crafts — the
-                        per-group override of the engine's £3 `BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES` — and records it as
-                        `_artisan.hire_floor`; it refuses 0 (some group fields read 0 as unset), so "no floor" is 0.01
+                        `--hire-floor X` writes `min_productivity_to_hire = X` on bg_pmr_crafts — the per-group override of the engine's £3
+                        `BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES` — and records it as `_artisan.hire_floor`. ⭐ DEFAULT 0.01 since the
+                        floor was ruled into the arm (2026-09-30 late evening, §10.91.3, on F188); `--hire-floor none` = the engine's £3, only
+                        for regenerating the pre-ruling records (artisan6, artisan6-shop), whose recorded commands carry no flag. Every command
+                        it records now spells the floor out. It refuses 0 (some group fields read 0 as unset), so "no floor" is 0.01
   emit_craft_start.mjs  THE CRAFT RUNGS' 1836 START (§10.91.1 item 6, "that's a must") — called by build.ps1 AFTER emit_secondaries.
                         ⭐ PART 1, OWNERSHIP (found by the first craft probe, FINDINGS F181): convert_history's ×10 also multiplied the
                         ownership entries, and the engine SIZES a financial district or manor house by the levels it owns at the start

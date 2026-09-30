@@ -1,0 +1,77 @@
+{
+  "schedule_version": 1,
+  "label": "artmerge6-floor-n2",
+  "_why": "THE CENTURY 2+1 OF THE CRAFTS + MERGES ARM (BALANCE_FRAMEWORK §10.91.3). The user, 2026-09-30 late evening, on FINDINGS F188: 'This threshold reduction is now a firm part of the artisans + merges arm, implement it. Write a handover for the next session that will run full runs under this new config and possibly iterate on anchors and other parts of recipes.' The arm = config/mod_config.artmerge6-floor.json: the canon (canon-dams-family-nolog) with its six light-industry e0 rungs turned into 500-worker craft rungs (§10.91.1, the machinist staffing), six add-on rungs made second main methods of the rung below at the geometric-midpoint cost (§10.91.2), and the crafts' own hiring floor min_productivity_to_hire 0.01 on bg_pmr_crafts (§10.91.3). The user decides after a 2-3-day arc whether both lines are canonised or both go; this batch is the first century reading of the combined book. PREPARED 2026-09-30 in the session that ruled the floor in; launched by the next session (HANDOVER.md), which states the cost at launch. Full-length runs (1836 -> 1936); the register's hard lines stop the config (one broken run ends it), a soft line never does.",
+  "_arms": {
+    "artmerge6-floor": "{kind: config, config: config/mod_config.artmerge6-floor.json} (+ tech_tree_options.artmerge6-floor.json = the canon's tree, byte for byte). sha256 ea45a2bc32b78025, the bytes F188 measured; regenerated through make_artisan_config's default path 2026-09-30 and proven identical. Built and probed: F181/F182 (two years), F184 (thirty years each line), F188 (ten years with the floor)."
+  },
+  "_delta": "Against the canon (config/mod_config.json = canon-dams-family-nolog): (1) food/textile/furniture/glass/tooling/paper e0 = craft rungs - per 500-head level 3.6 grain -> 3.37 groceries, 1.95 fabric -> 1.95 clothes, 1.38 wood + 0.46 fabric -> 2.0 furniture, 1.59 wood -> 1.32 glass, 2.23 wood -> 1.59 tools, 3.06 wood -> 2.43 paper; staffing 10-18% shopkeepers / 30-50% machinists / the rest laborers; cost 12 (food, paper) or 6; no x1.2 input lift; group bg_pmr_crafts (no economy of scale, urbanization 2, infrastructure x1/10, the hiring floor 0.01); 1836 levels x10 with the pops re-typed; no company builds or forms off them. (2) food e2, textile e3, furniture e3, paper e2, fertilizer e1, steel e3 = methods of the rung below (method_of), hosts at the geometric-midpoint cost and ai_value. e1-e3 of the six craft industries are the canon's (§10.91.1 ruling 1) apart from the merge hosts' cost and ai_value. The canon's measured reference F177 is canon-dams-family = the canon + its monthly dam log (log only).",
+  "_comparison": "canon-dams-family-n6 (20260929_002728, F177: 4 intact / 1 stall / 1 runoff, consensus loss 5.90; world GDP 0.56 / 1.03 / 1.23 / 1.75 / 1.09 / 0.93) and the pinned vanilla n=16 (20260821_131149). Same dump dates, tags, metrics and quarterly autosaves as F177, so its readers and row P compare directly.",
+  "_predictions": {
+    "gdp": "world GDP at the end state 0.95-1.15x vanilla (point ~1.05; the canon's intact 0.93-1.23, consensus 1.06). The crafts ran 0.94-1.02x the canon's median to 1866 and the merges 1.00-1.07x (F184, one seed each); the floor moved nothing outside the crafts in ten years (F188). By the end state the industrial core has no crafts (Britain held 1 craft level at 1866, F184 §3), so the century is carried by e1-e3 = the canon's plus the merges' earlier adoption.",
+    "crafts": "craft WORKERS world-wide peak before 1880 and fall decade over decade after; Britain, France, the USA and Prussia under 5% of their 1836 craft levels by 1880; the periphery (China, India, Russia, the Ottomans) keeps crafts to 1900 and loses most by 1936. FALSIFIED if a shortlist member's craft rung still grows at 1900. Textile's craft out-earned its own e1 in margin at 1845 (F189 §4): if it still does at 1880 in a shortlist market, the old rung is not dying there.",
+    "labour": "pool W 0.80-0.95 (canon 0.88), pool U* 1.0-1.4x (canon 1.18), world W 0.68-0.80 (canon 0.73). T0 / rest 0.005-0.03 (canon 0.015; the pool's crafts die early), T0 1935 / the 1900s under 0.6 (canon 0.39); world T0 above the canon's through 1900 (the crafts hold more people than the canon's e0 in furniture and glass, F189 §4).",
+    "prices": "PI 0.90-1.00 (canon 0.96), PP 0.82-0.95 (canon 0.88); craft goods dearer than the canon's in the craft-holding markets through the 1850s (F184 §5), converging after.",
+    "merges": "Baking Powder adopted from the mid-1840s and Bleached Paper from the mid-1850s in the leaders (F184 §6); the three e3 merges (electric sewing, spray finishing, electric arc: game-era-5 technologies) from ~1905-1920, switching hosts in place (merge_methods.mjs).",
+    "hard": "the canon's two failure modes are inherited unchanged - the stuck Britain (F166, ~1 run in 5-6) and Britain's capital abundance (the canon's run 4) - so 1 broken run in 2-3 would be the canon's own rate, not the arm's fault. An early People's Springtime (before 1843) in a seed would support F184's plausible craft channel (radicals, peasant wealth); the canon's six ran 1843-1845.",
+    "perf": "row P: total play within +10% of the canon's per-run median (F177: 144-185 min with quarterly saves); the craft book's thirty years ran 42.2 min against the canon's 36.9-39.9 on one seed (+8%) while the floor probe's first decade matched the canon's (11.7 min against 11.7-12.4) - watch the mid-century."
+  },
+  "_register": "Read with criteria.mjs --arm <session>:artmerge6-floor (the book comes from build_state.json), alignment_check.mjs for the F114 divergence test, and the craft readers (craft_fill.mjs, hiring_census.mjs, labour_flows.mjs, construction_spend.mjs --mod <the built arm>, merge_methods.mjs, rung_econ.mjs - which counts a craft level as 500 heads since 2026-09-30). Expected consensus loss inside the canon's per-run spread (its intact runs 5.3 / 7.0 / 7.8 / 8.0; consensus 5.90). Statistics are DIRECTIONAL (§10.83.7): the verdict weighs mechanisms, not a two-book loss gap. The decision is the user's: canonise both lines or drop both, after the arc.",
+  "_stop_rule": "2+1: stop_watch armed after launch (tools/testbed/launch_detached.ps1 -File tools\\testbed\\stop_watch.ps1 -ArgumentList '-Session','<session NAME>','-Poll','30' -Hidden; confirm its stop_watch.log appears within ~90 s). One run broken by the register's hard lines ends the config. After two intact runs: alignment_check.mjs; on divergence run artmerge6_floor_tb.json (one more run), the config read as the median of three.",
+  "_cost": "2 runs x 1836 -> 1936 at ~2.5-3 h each (F177's 144-185 min with quarterly saves): ~5.5-6.5 h; +1 run (~3 h) only on divergence.",
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "artmerge6-floor": {
+      "kind": "config",
+      "config": "config/mod_config.artmerge6-floor.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "artmerge6-floor",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "artmerge6-floor",
+      "until": "1936.1.1"
+    }
+  ]
+}

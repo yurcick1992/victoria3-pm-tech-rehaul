@@ -1,0 +1,62 @@
+{
+  "schedule_version": 1,
+  "label": "artmerge6-floor-tb",
+  "_why": "THE TIE-BREAKER of artmerge6_floor_n2.json (the century 2+1 of the crafts + merges arm, BALANCE_FRAMEWORK §10.91.3): run ONLY if the pair diverges under the F114 rule (alignment_check.mjs), then read the config as the median of three. Same book, same instrument. Not run if either of the pair broke the register's hard lines (one broken run ends the config).",
+  "_arms": {
+    "artmerge6-floor": "{kind: config, config: config/mod_config.artmerge6-floor.json} - the arm, sha256 ea45a2bc32b78025."
+  },
+  "_predictions": "as artmerge6_floor_n2.json; the third seed decides which of the pair's readings is the config's.",
+  "_stop_rule": "arm stop_watch again for this session (its own session NAME); a hard break ends the config.",
+  "_cost": "1 run x 1836 -> 1936, ~2.5-3 h.",
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "artmerge6-floor": {
+      "kind": "config",
+      "config": "config/mod_config.artmerge6-floor.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "artmerge6-floor",
+      "until": "1936.1.1"
+    }
+  ]
+}

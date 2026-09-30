@@ -1,7 +1,7 @@
 // THE ARTISANSHIP CRAFT BOOK — a base config with its six light-industry e0 rungs turned into craft rungs (BALANCE_FRAMEWORK
 // §10.91.1, user-ruled 2026-09-30; FINDINGS F180; ROADMAP step 12).
 //
-//   node tools/make_artisan_config.mjs --base config/mod_config.json --suffix artisan6 [--staffing ruled|shop]
+//   node tools/make_artisan_config.mjs --base config/mod_config.json --suffix artisan6 [--staffing ruled|shop] [--hire-floor X|none]
 //
 // Writes config/mod_config.<suffix>.json — the base, byte-for-byte in every other key and rung, with the six e0 rungs replaced and
 // `building_groups_add`, `_artisan`, `_artisan_variant` added — and its tech-tree twin (landmine L20), copied from the base's own.
@@ -31,9 +31,13 @@
 //   the engine's `BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES` (3: "non-subsidized buildings will not hire if it would result
 //   in their annual earnings/employee falling below this threshold"; vanilla sets 10 on its owner buildings). FINDINGS F185 §3/§5:
 //   the craft recipes clear £3 only at output prices of 100–124% of base, so the floor blocks hiring where local prices sit low.
-//   Absent = the engine's default. ⚠ Use a small positive number for "no floor" (0.01), not 0: for some group fields the engine
-//   reads 0 as "unset, take the parent's / the default" (the documentation says so for cash_reserves_max), and a 0 read that way
-//   would silently restore the £3 floor.
+//   ⭐ DEFAULT 0.01 — RULED 2026-09-30 late evening (BALANCE_FRAMEWORK §10.91.3, on FINDINGS F188): *"This threshold reduction is now a
+//   firm part of the 'artisans + merges' arm"*. A craft book without the floor is no longer the arm.
+//   --hire-floor none = the engine's default (3) — only to regenerate the pre-ruling records (artisan6, artisan6-shop, and artmerge6 on
+//   top of artisan6), whose recorded commands predate the default and carry no --hire-floor. Every command this tool records now spells
+//   the floor out, so a book's own command reproduces it whatever the default becomes.
+//   ⚠ For "no floor" use a small positive number (0.01), not 0: for some group fields the engine reads 0 as "unset, take the parent's /
+//   the default" (the documentation says so for cash_reserves_max), and a 0 read that way would silently restore the £3 floor.
 import { readFileSync, writeFileSync, existsSync, copyFileSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -46,13 +50,13 @@ const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1
 const BASE = argOf('--base', 'config/mod_config.json');
 const SFX = argOf('--suffix', null);
 const STAFFING = argOf('--staffing', 'ruled');
-const HIRE_FLOOR_ARG = argOf('--hire-floor', null);
-if (!SFX) { console.error('usage: node tools/make_artisan_config.mjs --base <config> --suffix <suffix> [--staffing ruled|shop] [--hire-floor X]'); process.exit(2); }
+const HIRE_FLOOR_ARG = argOf('--hire-floor', '0.01');   // the ruled floor (§10.91.3); 'none' = the engine's default
+if (!SFX) { console.error('usage: node tools/make_artisan_config.mjs --base <config> --suffix <suffix> [--staffing ruled|shop] [--hire-floor X|none]'); process.exit(2); }
 const die = m => { throw new Error('make_artisan_config: ' + m); };
 if (!['ruled', 'shop'].includes(STAFFING)) die(`--staffing must be ruled or shop (got ${STAFFING})`);
-const HIRE_FLOOR = HIRE_FLOOR_ARG == null ? null : Number(HIRE_FLOOR_ARG);
+const HIRE_FLOOR = HIRE_FLOOR_ARG === 'none' ? null : Number(HIRE_FLOOR_ARG);
 if (HIRE_FLOOR != null && !(Number.isFinite(HIRE_FLOOR) && HIRE_FLOOR > 0))
-  die(`--hire-floor must be a positive number (got ${HIRE_FLOOR_ARG}); for "no floor" pass a small one such as 0.01 — 0 may read as unset`);
+  die(`--hire-floor must be a positive number or none (got ${HIRE_FLOOR_ARG}); for "no floor" pass a small one such as 0.01 — 0 may read as unset`);
 
 const WM = 0.1;          // a craft level is a tenth of a 5,000-head level
 const COST_DIV = 50;     // construction cost = the base e0's ÷ 50
@@ -167,7 +171,7 @@ cfg._artisan = {
   recipes,
   hire_floor: HIRE_FLOOR,
   ruled_by: 'BALANCE_FRAMEWORK §10.91.1 (user, 2026-09-30); FINDINGS F180',
-  command: `node tools/make_artisan_config.mjs --base ${BASE} --suffix ${SFX} --staffing ${STAFFING}` + (HIRE_FLOOR != null ? ` --hire-floor ${HIRE_FLOOR}` : ''),
+  command: `node tools/make_artisan_config.mjs --base ${BASE} --suffix ${SFX} --staffing ${STAFFING}` + ` --hire-floor ${HIRE_FLOOR ?? 'none'}`,
 };
 cfg._artisan_variant = {
   name: SFX,
