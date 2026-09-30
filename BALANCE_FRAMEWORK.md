@@ -9129,3 +9129,25 @@ Three rulings in one message, answering the open choices after FINDINGS F184 / F
   records of F181–F188 and are no longer the arm. The next step is a century 2+1 of the arm against the canon (schedule
   `tools/testbed/schedules/artmerge6_floor_n2.json` + `_tb.json`, prepared, not launched), and the recipe iteration it may lead to; FINDINGS
   **F189** sets the craft recipes beside vanilla's first methods and the canon's e0, at base prices and realised at 1845.
+
+### §10.91.4 — The craft staffing becomes shopkeepers + laborers, 30%; four craft outputs raised (user-ruled 2026-10-01; under probe)
+
+- **The staffing (amending §10.91.3's "The one with the machinists"):** *"No machinists as artisans. Rather, make them all shopkeepers +
+  labourers. While machinists could fit a bit better from some narrative PoVs, I want the Petite Bourgeoisie interest group to represent those
+  new artisans. And making them mostly shopkeepers is the easiest way to do that."* FINDINGS F190: the machinist crafts had not moved the PB's
+  clout at all (world mean 4.1–4.4% over 1838–1846, inside the no-craft books' and vanilla's range).
+- **The share:** proposed with F190 §3's arithmetic and ruled *"30% it is"* ⇒ every craft **1,500 shopkeepers + 3,500 laborers per 5,000 block
+  (150 + 350 a craft level)**, 1.60 wage units a head (vanilla's e0 1.20; the machinist mixes 1.40–1.61). The engine sets a craft's wage LEVEL
+  (it cuts wages until profit sits near 15–20% of revenue), so a bigger shopkeeper share costs wage level, not a runaway bill; the risks named
+  with it are shopkeepers leaving at cut wages (F185: craft layoffs bind on shopkeepers) and the shopkeeper qualification (wealth − 5).
+- **The recipes (the ruling allowed "tune recipes a bit to provide more added value under early-game realised prices"):** craft OUTPUT × 1.10 food
+  (3.37 → 3.71), × 1.30 glass (1.32 → 1.72), × 1.20 tooling (1.59 → 1.91), × 1.20 paper (2.43 → 2.92); textile and furniture unchanged; inputs,
+  cost and everything else unchanged. Sized so each craft reaches 20% profit on revenue paying ~0.6 of its country's normal wage (the canon e0's
+  level) at the realised 1838–1846 prices of F188 — first-order: more output lowers the price. Base-price break-even 107 / 146 / 139 / 114 / 119
+  / 123%.
+- **The book:** `config/mod_config.artmerge6-pb.json` (+ twin) = `make_artisan_config.mjs --base config/mod_config.json --suffix artisan6-pb
+  --staffing pb` (the floor by default), then `make_merge_config.mjs --base config/mod_config.artisan6-pb.json --suffix artmerge6-pb`; proven
+  by field diff against `artmerge6-floor` to be the six crafts' employment, four `output_qty` and the derived `wage_pct` / `target_be` only.
+  The `pb` table lives in the generator (`PB_STAFF`, each craft's `pb_out`); `ruled` and `shop` stay as records. The ruled next steps: a
+  10-year probe (*"check that no industries are completely dead, and no market that has some goods produced in canon is left with only a token
+  amount"*), then the n=3 century batch if it is healthy.

@@ -300,3 +300,7 @@ tools/testbed/no_new_runs_at.log
 !config/tech_tree_options.artmerge6-floor.json
 !config/mod_config.artisan6-floor.json
 !config/tech_tree_options.artisan6-floor.json
+!config/mod_config.artisan6-pb.json
+!config/tech_tree_options.artisan6-pb.json
+!config/mod_config.artmerge6-pb.json
+!config/tech_tree_options.artmerge6-pb.json

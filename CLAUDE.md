@@ -300,6 +300,11 @@ vanilla's); against the canon they cut food and paper (×0.59 and ×0.21 per wag
 the anchor slide had already priced those a rung below vanilla); break-even at base 115–140%; a fifth of the canon's capital per worker.
 Realised at 1845 they earn 18–47% margins (textile's craft out-earns its own e1) and return 1.3–5.4 £/wk per construction point against the
 e1's 0.4–1.6. No century batch of the combined book has run: the 2+1 is prepared (`artmerge6_floor_n2.json` + `_tb.json`), not launched.
+⭐⭐ **THE STAFFING IS RE-RULED 2026-10-01 (§10.91.4): NO MACHINISTS — 30% SHOPKEEPERS + 70% LABORERS**, so the Petite Bourgeoisie represents
+the artisans (F190: the machinist crafts had not moved its clout), with craft output ×1.10 food / ×1.30 glass / ×1.20 tooling / ×1.20 paper so
+the crafts can pay the canon e0's wage level at early realised prices. ⇒ **THE ARM UNDER PROBE IS `config/mod_config.artmerge6-pb.json`**
+(`make_artisan_config.mjs --staffing pb`, the floor kept, then the merges); probe session `20260930_225621_artmerge6-pb-10y` (2 × 1836 →
+1846), read with `ledger/health_vs_ref.mjs` against the canon; the n=3 century batch follows if it is healthy. `artmerge6-floor` is a record.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
@@ -2712,6 +2717,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         [--every N] [--json out]`; prints the tags' clout nearest each 1 Jan and the MEAN / MEDIAN over every main
                         country holding the IG — ⚠ read a lever on those, never on one country: a revolution or a ban puts one
                         country's IG at 0 for years (Britain's PB 0.0 → 44% within five years in a vanilla seed)
+  testbed/ledger/health_vs_ref.mjs  IS ANY INDUSTRY DEAD, IS ANY MARKET LEFT WITH A TOKEN? (2026-10-01, user-asked for the craft probe)
+                        An arm's summaries at one date against a reference's: world STAFFED levels per building type (a merged rung
+                        folded into its host on both sides) — DEAD when every arm run is under 0.10 of the reference median AND under
+                        half its minimum; and per market (named by its largest-GDP member) per good, the members' `goods_out` — TOKEN
+                        by the same two tests, on cells the reference median produces ≥ 5 units and ≥ 2% of the world's. The minimum
+                        guard is what keeps a seed's company formation or conquest from reading as a design effect. `--arm
+                        <session>[:<setup>] --ref <session>[:<setup>] [--date 1846.1.1] [--dead 0.10] [--token 0.20]`
   testbed/ledger/merge_methods.mjs  WHICH MAIN METHOD A MERGED BUILDING RUNS (§10.91.2, 2026-09-30): per run, save date, country and merged
                         industry, the host's levels on its own method and on the merged one, and the levels whose secondary is the merged
                         method's own copy (`!!` when those exceed the merged method's levels — the per-method gating broken). Pairs and

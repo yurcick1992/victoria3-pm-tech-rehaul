@@ -1,0 +1,39 @@
+{
+  "schedule_version": 1,
+  "label": "artmerge6-pb-10y",
+  "_why": "THE PETITE-BOURGEOISIE CRAFT STAFFING, PROBED (user-ruled 2026-10-01: 'No machinists as artisans. Rather, make them all shopkeepers + labourers ... I want the Petite Bourgeoisie interest group to represent those new artisans'; the share: '30% it is. Go on with the probe and check that no industries are completely dead, and no market that has some goods produced in canon is left with only a token amount'). Book config/mod_config.artmerge6-pb.json = the arm artmerge6-floor with every craft staffed 1,500 shopkeepers / 3,500 laborers per 5,000 block (150 / 350 per craft level, 1.60 wage units a head) and craft OUTPUT x1.10 food, x1.30 glass, x1.20 tooling, x1.20 paper (textile and furniture unchanged) so a craft can pay ~0.6 of its country's normal wage at 20% profit on revenue at the realised 1838-1846 prices (FINDINGS F190 section 3). Proven by field diff against artmerge6-floor: the six crafts' employment, four output_qty and the derived wage_pct/target_be, nothing else. Two seeds, 1836 -> 1846, the instrument of craft_floor_10y.json so F188's two runs read directly beside it; the canon at the same dates is F177's six runs (20260929_002728).",
+  "_questions": {
+    "Q1": "Is any industry (building type) completely dead at 1846 — zero or near-zero staffed levels where the canon's six runs hold a real presence?",
+    "Q2": "Does any market that produces a good in the canon hold only a token amount of it here (per market leader, per good, 1846 production against the canon's median)?",
+    "Q3": "The crafts: staffing, profit per revenue, wage per the country's normal rate, against F188's two runs.",
+    "Q4": "The Petite Bourgeoisie's clout (summary v13 + ig_clout.mjs), world mean and median, against F190's table.",
+    "Q5": "World GDP and the craft goods' prices against the canon and F188; health (init marker, no error line naming our files, clock advancing)."
+  },
+  "_predictions": {
+    "Q1": "no dead industry: the crafts' levels similar to F188's, the craft goods' e1 rungs as in F188",
+    "Q2": "no token market outside the ones F188 already shows; glass, tooling and paper supply up by 10-30% in the craft-holding markets, their prices down",
+    "Q3": "craft wage per normal up to ~0.5-0.7 in glass, tooling and paper (F188: 0.2-0.54); profit per revenue near 20% as before (the engine's wage rule sets it)",
+    "Q4": "world PB clout mean +0.1 to +0.5 points over F188's 4.1-4.4% by 1846 — craft shopkeepers roughly double, a small share of all PB pops; possibly inside the seed noise",
+    "Q5": "world GDP within +-3% of F188; clean"
+  },
+  "_cost": "2 runs x 1836 -> 1846, about 12-16 minutes each plus builds and harvest",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Two seeds: a probe, no register reading.",
+    "No stop watcher: a probe has no end state for the register to judge."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1845.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "artmerge6-pb": { "kind": "config", "config": "config/mod_config.artmerge6-pb.json" }
+  },
+  "runs": [
+    { "setup": "artmerge6-pb", "until": "1846.1.1" },
+    { "setup": "artmerge6-pb", "until": "1846.1.1" }
+  ]
+}

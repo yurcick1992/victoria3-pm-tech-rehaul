@@ -53,7 +53,7 @@ const STAFFING = argOf('--staffing', 'ruled');
 const HIRE_FLOOR_ARG = argOf('--hire-floor', '0.01');   // the ruled floor (§10.91.3); 'none' = the engine's default
 if (!SFX) { console.error('usage: node tools/make_artisan_config.mjs --base <config> --suffix <suffix> [--staffing ruled|shop] [--hire-floor X|none]'); process.exit(2); }
 const die = m => { throw new Error('make_artisan_config: ' + m); };
-if (!['ruled', 'shop'].includes(STAFFING)) die(`--staffing must be ruled or shop (got ${STAFFING})`);
+if (!['ruled', 'shop', 'pb'].includes(STAFFING)) die(`--staffing must be ruled, shop or pb (got ${STAFFING})`);
 const HIRE_FLOOR = HIRE_FLOOR_ARG === 'none' ? null : Number(HIRE_FLOOR_ARG);
 if (HIRE_FLOOR != null && !(Number.isFinite(HIRE_FLOOR) && HIRE_FLOOR > 0))
   die(`--hire-floor must be a positive number or none (got ${HIRE_FLOOR_ARG}); for "no floor" pass a small one such as 0.01 — 0 may read as unset`);
@@ -62,35 +62,41 @@ const WM = 0.1;          // a craft level is a tenth of a 5,000-head level
 const COST_DIV = 50;     // construction cost = the base e0's ÷ 50
 const GROUP = 'bg_pmr_crafts';
 // per industry: the per-LEVEL recipe (500 heads), the two 5,000-head staffing blocks, and what the craft rung does not carry
+// --staffing pb (user-ruled 2026-10-01, BALANCE_FRAMEWORK §10.91.4): EVERY craft staffed 30% shopkeepers / 70% laborers (no machinists —
+// "I want the Petite Bourgeoisie interest group to represent those new artisans"; FINDINGS F190: the machinist mix did not lift it), with
+// each craft's OUTPUT × its `pb_out` so the craft can pay about 0.6 of its country's normal wage at 20% profit on revenue at the realised
+// 1838–1846 prices of F188's runs (the canon e0's wage level; F190 §3). Textile and furniture need none. Inputs, cost, everything else
+// unchanged.
+const PB_STAFF = { shopkeepers: 1500, laborers: 3500 };
 const CRAFTS = {
   food: {
-    out: 3.37, in: { grain: 3.6 },
+    pb_out: 1.10, out: 3.37, in: { grain: 3.6 },
     ruled: { shopkeepers: 900, machinists: 1500, laborers: 2600 }, shop: { shopkeepers: 1270, laborers: 3730 },
     exclude_pmgs: ['pmg_automation_building_food_industry'],
     exclude_pms: ['pm_vacuum_canning', 'pm_vacuum_canning_principle_3', 'pm_patent_stills'],
   },
   textile: {
-    out: 1.95, in: { fabric: 1.95 },
+    pb_out: 1.00, out: 1.95, in: { fabric: 1.95 },
     ruled: { shopkeepers: 650, machinists: 2100, laborers: 2250 }, shop: { shopkeepers: 1180, laborers: 3820 },
     exclude_pmgs: ['pmg_automation_building_textile_mill'], exclude_pms: [],
   },
   furniture: {
-    out: 2.0, in: { wood: 1.38, fabric: 0.46 },
+    pb_out: 1.00, out: 2.0, in: { wood: 1.38, fabric: 0.46 },
     ruled: { shopkeepers: 900, machinists: 2500, laborers: 1600 }, shop: { shopkeepers: 1520, laborers: 3480 },
     exclude_pmgs: ['pmg_automation_building_furniture_manufactory'], exclude_pms: [],
   },
   glass: {
-    out: 1.32, in: { wood: 1.59 },
+    pb_out: 1.30, out: 1.32, in: { wood: 1.59 },
     ruled: { shopkeepers: 500, machinists: 2500, laborers: 2000 }, shop: { shopkeepers: 1120, laborers: 3880 },
     exclude_pmgs: ['pmg_glassblowing'], exclude_pms: [],
   },
   tooling: {
-    out: 1.59, in: { wood: 2.23 },
+    pb_out: 1.20, out: 1.59, in: { wood: 2.23 },
     ruled: { shopkeepers: 750, machinists: 2250, laborers: 2000 }, shop: { shopkeepers: 1310, laborers: 3690 },
     exclude_pmgs: ['pmg_automation_building_tooling_workshop'], exclude_pms: [],
   },
   paper: {
-    out: 2.43, in: { wood: 3.06 },
+    pb_out: 1.20, out: 2.43, in: { wood: 3.06 },
     ruled: { shopkeepers: 500, machinists: 2000, laborers: 2500 }, shop: { shopkeepers: 1000, laborers: 4000 },
     exclude_pmgs: ['pmg_automation_building_paper_mill'], exclude_pms: [],
   },
@@ -121,7 +127,7 @@ for (const [id, c] of Object.entries(CRAFTS)) {
   const emp = t.employment || {};
   if (emp.shopkeepers !== 500 || emp.laborers !== 4500 || Object.keys(emp).length !== 2) die(`${id} e0 (${t.key}) staffing is not vanilla's 500/4500 — is this a canon-shaped book?`);
   for (const g of c.exclude_pmgs) if (!(ind.secondary_pmgs || []).includes(g)) die(`${id}: excluded group ${g} is not one of the industry's secondary groups`);
-  const block = c[STAFFING];
+  const block = STAFFING === 'pb' ? PB_STAFF : c[STAFFING];
   const heads = Object.values(block).reduce((a, b) => a + b, 0);
   if (heads !== 5000) die(`${id} ${STAFFING} staffing sums to ${heads}, not 5,000`);
   for (const [p, n] of Object.entries(block)) if (Math.round(n * WM) !== n * WM) die(`${id}: ${p} ${n} × ${WM} is not an integer (build.ps1 would throw)`);
@@ -129,7 +135,7 @@ for (const [id, c] of Object.entries(CRAFTS)) {
   if (!(baseCost > 0)) die(`${id} e0 has no building_cost in the base`);
 
   t.craft = true;
-  t.output_qty = c.out;
+  t.output_qty = STAFFING === 'pb' ? Math.round(c.out * c.pb_out * 100) / 100 : c.out;
   t.inputs = { ...c.in };
   t.employment = { ...block };
   t.workforce_mult = WM;
@@ -170,7 +176,7 @@ cfg._artisan = {
   base_sha256: sha,
   recipes,
   hire_floor: HIRE_FLOOR,
-  ruled_by: 'BALANCE_FRAMEWORK §10.91.1 (user, 2026-09-30); FINDINGS F180',
+  ruled_by: STAFFING === 'pb' ? 'BALANCE_FRAMEWORK §10.91.1 + §10.91.4 (user, 2026-10-01: "30% it is"); FINDINGS F180, F190' : 'BALANCE_FRAMEWORK §10.91.1 (user, 2026-09-30); FINDINGS F180',
   command: `node tools/make_artisan_config.mjs --base ${BASE} --suffix ${SFX} --staffing ${STAFFING}` + ` --hire-floor ${HIRE_FLOOR ?? 'none'}`,
 };
 cfg._artisan_variant = {
