@@ -474,6 +474,20 @@ foreach ($ind in $cfg.industries) {
     $anchor = ($ind.tiers | Where-Object { $null -ne $_.vanilla_pm } | Sort-Object { [int]$_.era } | Select-Object -First 1)
     if ($null -eq $anchor) { $anchor = $ind.tiers[0] }
     $anchorKey = $anchor.key
+    # ⭐ A RUNG MAY BE A SECOND MAIN METHOD OF THE RUNG BELOW (the six merges, BALANCE_FRAMEWORK §10.91.2): a tier carrying
+    # `method_of = <host key>` emits NO building, its main method joins the HOST's main group, and the method itself is gated by the
+    # rung's own technology (vanilla's switch). The host's group lists its own method first, so the host builds on its own recipe.
+    $methodsOf = @{}
+    foreach ($t in $ind.tiers) {
+        if (-not $t.method_of) { continue }
+        $h = @($ind.tiers | Where-Object { $_.key -eq $t.method_of })
+        if ($h.Count -ne 1) { throw "method_of: $($t.key) names host '$($t.method_of)', which is not one rung of $($ind.id)" }
+        if ($h[0].method_of) { throw "method_of: $($t.key)'s host $($t.method_of) is itself a method of another rung - one step per building" }
+        if (-not $t.tech) { throw "method_of: $($t.key) has no technology to gate its method" }
+        if ($ind.clone_from_vanilla) { throw "method_of: $($ind.id) is a cloned industry - not supported" }
+        if (-not $methodsOf.ContainsKey($t.method_of)) { $methodsOf[$t.method_of] = @() }
+        $methodsOf[$t.method_of] += $t
+    }
     foreach ($t in $ind.tiers) {
         $tierNo++
 
@@ -487,6 +501,8 @@ foreach ($ind in $cfg.industries) {
         $wfM = if ($null -ne $t.workforce_mult) { [double]$t.workforce_mult } else { 1.0 }
         $fxM = if ($null -ne $t.effect_mult) { [double]$t.effect_mult } else { 1.0 }
         $pm = @("$($t.pm_key) = {", "`ttexture = `"$($t.texture)`"")
+        # a merged rung's method is gated by the rung's own technology (the building that carries it is the host's)
+        if ($t.method_of) { $pm += "`tunlocking_technologies = { $($t.tech) }" }
         # state modifiers (workforce-scaled): pollution + infrastructure (ports/railways produce infra).
         $stateMods = @()
         if ([double]$t.pollution -gt 0) { $stateMods += "state_pollution_generation_add = $(QtyMul $t.pollution $fxM)" }
@@ -533,8 +549,17 @@ foreach ($ind in $cfg.industries) {
         $pmOut += $pm
         $actualBe = if ($Oval -gt 0) { $actualI / (1 - $wage) / $Oval * 100 } else { 0 }   # actual FULL break-even (total cost = goods/(1-wage)), for the building name + summary
 
-        # ---- PMG (single main PM) ----
-        $pmgOut += "$($t.pmg_key) = {","`ttexture = `"gfx/interface/icons/generic_icons/mixed_icon_base.dds`"","`tproduction_methods = { $($t.pm_key) }","}",""
+        # ---- PMG (single main PM; a host also lists the methods merged into it, after its own) ----
+        if ($t.method_of) {
+            # no group and no building of its own: the method lives in the host's main group. Loc for the method only.
+            $locBody += " $($t.pm_key):0 `"$($t.pm_name)`""
+            if ($ind.follows_be -ne $false -and -not $ind.no_mass_be) { $tierMap += "$($t.pm_key) $tierNo $($t.target_be) $(Fmt $wage)" }
+            $summary += [pscustomobject]@{ Building="$($t.key) (method of $($t.method_of))"; Tier=$tierNo; TargetBE=$t.target_be; ActualBE=[math]::Round($actualBe) }
+            continue
+        }
+        $mainPms = @($t.pm_key)
+        if ($methodsOf.ContainsKey($t.key)) { foreach ($mt in $methodsOf[$t.key]) { $mainPms += $mt.pm_key } }
+        $pmgOut += "$($t.pmg_key) = {","`ttexture = `"gfx/interface/icons/generic_icons/mixed_icon_base.dds`"","`tproduction_methods = { $($mainPms -join ' ') }","}",""
 
         # ---- Building ----
         if ($ind.clone_from_vanilla) {

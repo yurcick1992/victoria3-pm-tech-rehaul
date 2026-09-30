@@ -73,14 +73,16 @@ const combinedShipyard = [...(chains.get('shipyard') || []), ...(chains.get('shi
 // longer be met by 500-worker craft levels. ⚠ The craft key IS the vanilla building key, so the vanilla reference itself is
 // rewritten to the e1+ keys, never left in place. A company whose industry exists only as crafts in a country cannot form there
 // until the e1 rung is built — intended.
+// ⭐ A MERGED RUNG (`method_of`, §10.91.2) is excluded the same way for a different reason: it is a main METHOD of its host
+// building, not a building, so its key names no building type in game. The host stays in every list, which covers both methods.
 const EXCLUDE = new Set();
-for (const ind of CFG.industries) { if (ind.disabled) continue; for (const t of ind.tiers || []) if (t.craft) EXCLUDE.add(t.key); }
+for (const ind of CFG.industries) { if (ind.disabled) continue; for (const t of ind.tiers || []) if (t.craft || t.method_of) EXCLUDE.add(t.key); }
 
-// expand: any tier key -> the full chain a vanilla reference to it should become (craft keys filtered out)
+// expand: any tier key -> the full chain a vanilla reference to it should become (craft and merged keys filtered out)
 const expand = new Map();
 for (const [id, keys] of chains) {
   const target = ((id === 'shipyard' || id === 'shipyard_steam') ? combinedShipyard : keys).filter(k => !EXCLUDE.has(k));
-  if (!target.length) throw new Error(`emit_companies: every rung of ${id} is a craft rung — a company reference to it would name nothing`);
+  if (!target.length) throw new Error(`emit_companies: no rung of ${id} is a building of its own (all craft or merged) — a company reference to it would name nothing`);
   for (const k of keys) expand.set(k, target);
 }
 // ⭐⭐ A COMPANY TARGETS ITS BEST UNLOCKED RUNG, NOT EVERY RUNG (2026-09-02). Duplicating an
@@ -205,7 +207,7 @@ for (const f of readdirSync(CDIR).sort()) {
       let expanded = false;
       for (const t of tokens) {
         const k = resolveKey(t);
-        if (k && EXCLUDE.has(k)) { expanded = true; counts.craftDropped = (counts.craftDropped || 0) + 1; }   // the craft key itself leaves the list
+        if (k && EXCLUDE.has(k)) { expanded = true; counts.craftDropped = (counts.craftDropped || 0) + 1; }   // a craft or merged key itself leaves the list
         else outTokens.push(t);
         if (k) for (const c of expand.get(k)) if (!seen.has(c)) { seen.add(c); outTokens.push(c); expanded = true; counts.listTokens++; }
       }
@@ -228,7 +230,7 @@ for (const f of readdirSync(CDIR).sort()) {
         changed = true; counts.orWraps++; counts.companies.add(f + ':' + curCompany);
         continue;
       }
-      // a craft key whose chain is down to ONE non-craft rung: the test names that rung instead
+      // an excluded key whose chain is down to ONE building of its own: the test names that rung instead
       if (k && EXCLUDE.has(k)) {
         out.push(indent + bt[1] + ' = ' + expand.get(k)[0]);
         changed = true; counts.craftDropped = (counts.craftDropped || 0) + 1; counts.companies.add(f + ':' + curCompany);
@@ -298,13 +300,13 @@ for (const f of readdirSync(CDIR).sort()) {
         /^\s*building_[a-z_0-9]+\s*$/.test(c);                                 // token list member
       if (!ok) throw new Error(`emit_companies: unhandled reference to ${tok} at ${f}:${i2 + 1}: "${ls[i2].trim()}"`);
     }
-    // ⚠ no craft key may survive in ANY form — a bare token, a trigger, a target or a building_<key>_<suffix> prosperity line
+    // ⚠ no craft or merged key may survive in ANY form — a bare token, a trigger, a target or a building_<key>_<suffix> prosperity line
     if (EXCLUDE.size) for (const m2 of c.matchAll(/building_[a-z_0-9]+/g)) {
       // a token that IS a building key is judged as a key (building_textile_mill_dye_workshops is the e1 rung, not a modifier of the
       // craft key); only a non-key token is split into <key>_<suffix>
       const tok = m2[0], key = resolveKey(tok), sp = key ? null : splitModifierToken(tok);
       const bad = key ? EXCLUDE.has(key) : (sp && EXCLUDE.has(sp.base));
-      if (bad) throw new Error(`emit_companies: craft key ${key || sp.base} survives at ${f}:${i2 + 1}: "${ls[i2].trim()}" — companies must not build or form off craft rungs`);
+      if (bad) throw new Error(`emit_companies: craft or merged key ${key || sp.base} survives at ${f}:${i2 + 1}: "${ls[i2].trim()}" — companies must not build or form off craft rungs, and a merged rung is no building`);
     }
   }
   { // brace balance
@@ -361,4 +363,4 @@ for (const lang of LANGS) {
 console.log(`emit_companies: ${counts.files} company files rewritten, ${counts.companies.size} companies touched; ` +
   `+${counts.listTokens} list tokens, ${counts.orWraps} OR-wrapped triggers, ${counts.prosperity} prosperity lines expanded, ` +
   `+${counts.aiTargets} ai_construction_targets entries (${counts.gatedTargets || 0} gated to the best unlocked rung); ${neededModTypes.size} new modifier types, ${locKeys} en loc keys x ${LANGS.length} languages.` +
-  (EXCLUDE.size ? ` Craft rungs kept out of every company: ${EXCLUDE.size} key(s), ${counts.craftDropped || 0} reference(s) dropped or re-pointed.` : ''));
+  (EXCLUDE.size ? ` Craft and merged rungs kept out of every company: ${EXCLUDE.size} key(s), ${counts.craftDropped || 0} reference(s) dropped or re-pointed.` : ''));

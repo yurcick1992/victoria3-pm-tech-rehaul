@@ -89,6 +89,21 @@ for (const ind of cfg.industries || []) {
     if (!(b.output_qty > a.output_qty)) faults.push(`${ind.id}: e${b.era} makes ${b.output_qty} against e${a.era}'s ${a.output_qty} — a later era must out-produce the one below`);
     if (!(vaB > vaA)) faults.push(`${ind.id}: e${b.era} adds £${vaB.toFixed(0)} a level against e${a.era}'s £${vaA.toFixed(0)} — a later era must add more value per level at base prices`);
   }
+  // ---- 4. merged rungs (`method_of`, BALANCE_FRAMEWORK §10.91.2, make_merge_config.mjs) ---------------------------
+  //   A merged rung is a second main method of the rung directly below it, recorded in `_merge.pairs`. The record is the
+  //   contract: a `method_of` the record does not name, or a record the config does not carry out, is a hand edit.
+  const MP = cfg._merge && cfg._merge.pairs ? cfg._merge.pairs[ind.id] : null;
+  for (const t of tiers) {
+    if (!t.method_of) continue;
+    const h = tiers.find(x => x.key === t.method_of);
+    if (!MP || MP.added !== t.key || MP.host !== t.method_of) faults.push(`${ind.id} ${t.key}: method_of ${t.method_of} with no matching _merge record — regenerate with make_merge_config`);
+    if (!h) { faults.push(`${ind.id} ${t.key}: method_of names ${t.method_of}, which is not a rung of ${ind.id}`); continue; }
+    if (h.method_of || h.craft) faults.push(`${ind.id} ${t.key}: its host ${h.key} is itself ${h.craft ? 'a craft rung' : 'merged'}`);
+    const k = tiers.indexOf(t); if (tiers[k - 1] !== h) faults.push(`${ind.id} ${t.key}: merged into ${h.key}, which is not the rung directly below it`);
+    if (!t.tech) faults.push(`${ind.id} ${t.key}: a merged rung needs a technology to gate its method`);
+  }
+  if (MP && !tiers.some(t => t.method_of === MP.host && t.key === MP.added)) faults.push(`${ind.id}: _merge records ${MP.added} as a method of ${MP.host}, which the config does not carry`);
+  if (MP) notes.push(`${ind.id}: e${MP.added_era} is a second main method of the e${MP.host_era} building — the host's cost and ai_value checked as the geometric midpoint of the two rungs'`);
   // ---- 2. the era-keyed book ----------------------------------------------------------------------------------
   if (!AB) continue;
   const A = +AB.A, B = +AB.B, lift = +(AB.in0 ?? 1), in0only = !!AB.in0_only;
@@ -150,11 +165,17 @@ for (const ind of cfg.industries || []) {
     // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of
     // 2026-09-14) and A by default (capacity-priced, the canon)
     // ... or anchor × m_era from an explicit per-era list (`_ab.cost_ladder`, 2026-09-16 — one era's cost moved on its own, or a changed A/B gain-matched per era)
-    if (anchor) { const ce = (AB.anchor_cost && aEra != null) ? (e - ORIGIN) : e;   // --anchor-cost: the cost exponent follows the anchor
-      const C = AB.cost_ratio ?? A; const L = Array.isArray(AB.cost_ladder) ? AB.cost_ladder : null; const wantCost = AB.cost_flat ? anchor : L ? Math.round(anchor * L[Math.min(ce, L.length - 1)]) : Math.round(anchor * Math.pow(C, ce)); if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor} × ${L ? L[e] + ' by era' : C + '^' + e})`); }
+    // a merge host's cost and ai_value are the geometric midpoint of its own era's and the merged rung's (§10.91.2)
+    const mergedIn = MP && MP.host === t.key ? tiers.find(x => x.key === MP.added) : null;
+    if (anchor) { const C = AB.cost_ratio ?? A; const L = Array.isArray(AB.cost_ladder) ? AB.cost_ladder : null;
+      const costAt = e2 => { const ce = (AB.anchor_cost && aEra != null) ? (e2 - ORIGIN) : e2;   // --anchor-cost: the cost exponent follows the anchor
+        return AB.cost_flat ? anchor : L ? Math.round(anchor * L[Math.min(ce, L.length - 1)]) : Math.round(anchor * Math.pow(C, ce)); };
+      const wantCost = mergedIn ? Math.round(Math.sqrt(costAt(e) * costAt(mergedIn.era))) : costAt(e);
+      if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor} × ${L ? L[e] + ' by era' : C + '^' + e}${mergedIn ? `, the midpoint with e${mergedIn.era}` : ''})`); }
     const steep = AB.ai_steep && AB.ai_steep.industries.includes(ind.id) ? AB.ai_steep.ratio : null;
-    const wantAiv = (AB.ai_ladder && !steep) ? Math.round(AB.ai_ladder[Math.min(e, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steep || A, e));
-    if (t.ai_value !== wantAiv) faults.push(`${ind.id} e${e}: ai_value ${t.ai_value}, the era rule says ${wantAiv}`);
+    const aivAt = e2 => (AB.ai_ladder && !steep) ? Math.round(AB.ai_ladder[Math.min(e2, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steep || A, e2));
+    const wantAiv = mergedIn ? Math.round(Math.sqrt(aivAt(e) * aivAt(mergedIn.era))) : aivAt(e);
+    if (t.ai_value !== wantAiv) faults.push(`${ind.id} e${e}: ai_value ${t.ai_value}, the era rule says ${wantAiv}${mergedIn ? ` (the midpoint with e${mergedIn.era})` : ''}`);
   }
 }
 if (AB && AB.keyed_by !== 'era') notes.push(`_ab.keyed_by is '${AB.keyed_by || 'unset'}' — a book from before the era pass (2026-09-13); its ladder was keyed on the rung index unless the checks above pass`);

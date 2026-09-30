@@ -95,6 +95,16 @@ const groupTypes = (g, exceptInd = null) => {
   return out.filter(x => x.emp > 0 && !skip.has(x.key));
 };
 const lvValues = new Set();   // per-type staffed-level values already emitted (shared across sources)
+// ⭐ A MERGED RUNG (`method_of`, BALANCE_FRAMEWORK §10.91.2, 2026-09-30) is a second main METHOD of its host building, not a
+//   building of its own, so its key names no building type in game. Every count of it reads the HOST's levels running ITS
+//   method, and a host carrying merged methods counts only the levels running its own — each rung keeps its own per-level
+//   employment and its own share of a bar. Its text names the host building and the method.
+const TIER_BY_KEY = {};
+for (const ind of CFG.industries) if (!ind.disabled) for (const t of ind.tiers || []) if (t.key) TIER_BY_KEY[t.key] = t;
+const HOSTS = new Set(Object.values(TIER_BY_KEY).filter(t => t.method_of).map(t => t.method_of));
+const bldOf = key => { const t = TIER_BY_KEY[key]; return t && t.method_of ? t.method_of : key; };
+const pmClause = key => { const t = TIER_BY_KEY[key]; return t && (t.method_of || HOSTS.has(key)) ? `  has_active_production_method = ${t.pm_key}` : ''; };
+const nameOf = key => { const t = TIER_BY_KEY[key]; return t && (t.method_of || HOSTS.has(key)) ? `$${bldOf(key)}$ ($${t.pm_key}$)` : `$${key}$`; };
 const tierEmp = (tier, ind) => { const wm = tier.workforce_mult != null ? +tier.workforce_mult : 1; const own = Object.values(tier.employment || {}).reduce((a, b) => a + (+b || 0), 0); if (own > 0) return Math.round(own * wm); return Math.round((ind.secondary_pmgs || []).reduce((a, g) => a + basePmEmp(g), 0) * wm); };
 
 // ---- tech -> production methods it unlocks, for the rule-D anchoring ----------------------------
@@ -362,7 +372,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       const people = thresholdPeople(a.era, s.ind);
       // Σ(level × occupancy): occupancy is a WEIGHT. A `limit = { occupancy >= x }` FILTER would score
       // seven half-staffed levels as zero while passing three full ones - measured and rejected.
-      const filter = s.group ? `is_building_group = ${s.group}` : `is_building_type = ${s.building}`;
+      const filter = s.group ? `is_building_group = ${s.group}` : `is_building_type = ${bldOf(s.building)}${pmClause(s.building)}`;
       // ⚠ A source only carries `emp` when it is one of OUR tiers (rule A), where the config states
       // employment per level. A hand-authored necessity anchor naming a VANILLA building, and every
       // building-GROUP anchor, has no such figure — so those are counted in STAFFED LEVELS against a
@@ -387,7 +397,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       const mult = '';
       if (gTypes.length) {
         // a GROUP or LIST source in people: Σ over its building types of (staffed levels of that type × that type's employment)
-        for (const ty of gTypes) { const lv = `pmr_lv_${ty.key.replace(/^building_/, '')}`; if (!lvValues.has(lv)) { lvValues.add(lv); sv.push(`${lv} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { is_building_type = ${ty.key} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}\n}`); } }
+        for (const ty of gTypes) { const lv = `pmr_lv_${ty.key.replace(/^building_/, '')}`; if (!lvValues.has(lv)) { lvValues.add(lv); sv.push(`${lv} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { is_building_type = ${bldOf(ty.key)}${pmClause(ty.key)} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}\n}`); } }
         sv.push(`${n} = {\n${T}value = 0\n` + gTypes.map(ty => `${T}add = { value = pmr_lv_${ty.key.replace(/^building_/, '')}  multiply = ${ty.emp} }`).join('\n') + `\n}`);
       } else {
         sv.push(`${n} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { ${filter} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}${mult}\n}`);
@@ -398,7 +408,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       //   (Soldiers for the military groups), a level-counted one "<building>: at least 5 fully staffed levels (25,000 workers);
       //   now 3". Names are vanilla's own loc keys ($building_coal_mine$, $bg_staple_crops$), so every language shows its own
       //   building names; the live figure is the loc data function [ROOT.GetCountry.MakeScope.ScriptValue('<sv>')|0].
-      const names = s.group ? `$${s.group}$` : s.types ? s.types.map(k => `$${k}$`).join(' and ') : `$${s.building}$`;
+      const names = s.group ? `$${s.group}$` : s.types ? s.types.map(nameOf).join(' and ') : nameOf(s.building);
       const indObj = CFG.industries.find(x => x.id === s.ind);
       const varies = (s.group || s.types) ? false : (s.emp != null && s.emp > 0 ? workforceVaries(indObj) : workforceVaries(null, s.building));
       const who = (s.group && MILITARY_GROUPS.has(s.group)) ? 'Soldiers' : 'Workers';

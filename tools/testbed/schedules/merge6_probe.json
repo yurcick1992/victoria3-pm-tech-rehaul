@@ -1,0 +1,79 @@
+{
+  "schedule_version": 1,
+  "label": "merge6-probe",
+  "_why": "MECHANICS PROBE, two books, one run each (user go-ahead 2026-09-30: '3) midpoint first 4) go on with the probes'). (1) artisan6 = the craft book of 20260930_171147 rebuilt with the OWNERSHIP FIX (tools/emit_craft_start.mjs: an owner-building entry keeps its original levels, the remainder of the x10 becomes self-owned) — that probe's urban-centre and financial-district readings were VOID because the x10 start multiplied the ownership entries and the engine sized financial districts by what they own. (2) merge6-probe = the canon with the six ruled merges (BALANCE_FRAMEWORK 10.91.2: food e2, textile e3, furniture e3, paper e2, fertilizer e1, steel e3 become second main METHODS of the rung below; host cost and ai_value at the geometric midpoint) PLUS a probe-only start grant of the three merged technologies whose host buildings exist in 1836 (baking_powder, chemical_bleaching, improved_fertilizer) to GBR, FRA, USA, PRU and BEL, so the switch from the host method to the merged method can be watched on buildings that already stand. Monthly autosaves on the merge run for the switch timing. A mechanics check, not an outcome reading.",
+  "_questions": {
+    "A1": "Craft book, ownership fix: urban-centre levels and financial-district levels per country at 1836.4.1 against the canon's (session 20260929_002728, same date) — the 20260930_171147 reading was +693 financial-district levels world-wide and Austria's urban centres 33 against 25.",
+    "A2": "Craft book: the F181 readings repeat (staffing 0.89-1.00, economy of scale 0 on crafts, zero company craft levels, no building wave, world GDP at the canon's).",
+    "M1": "Merge book: do the GRANTED countries' existing food e1 (sweeteners), paper e1 (sulfite) and fertilizer e0 (chemical plant) buildings switch their main method to the merged one (baking powder / bleached paper / improved fertilizer), and when? (monthly save summaries: pms levels by method per building type per country)",
+    "M2": "Merge book: when a host runs the merged method, is its active secondary the merged method's own copy (pms lists every active method)? Any 'Invalid production method' or gating error naming the merged keys?",
+    "M3": "Merge book: new levels of the host buildings in the granted countries over two years, and on which method.",
+    "M4": "Merge book: ungranted countries keep the host method (the merged method needs its technology).",
+    "M5": "Both: load clean (init marker; no error line naming zzz_pm_rehaul files, the craft keys or the merged methods).",
+    "M6": "Merge book: world GDP at 1836.4.1 and 1837.1.1 against the canon's (the midpoint costs and the grants are the only differences)."
+  },
+  "_predictions": {
+    "A1": "urban centres within 2% of the canon in every country; financial-district levels within 5%",
+    "A2": "as F181",
+    "M1": "every granted country's hosts switch within 1-3 months of the start (the merged methods out-produce at A 2.2 per era and cost nothing to switch); improved fertilizer may lag where fertilizer demand is thin, since the farms' fertilization method arrives with the same technology",
+    "M2": "the merged copy follows the main method; no errors",
+    "M3": "a handful of levels at most in two years",
+    "M4": "yes",
+    "M5": "clean",
+    "M6": "within 1% of the canon at 1836.4.1"
+  },
+  "_cost": "2 runs x 1836 -> 1838.1, about 4-6 minutes each plus builds and harvest (the merge run writes 24 monthly saves)",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Two years and one seed per book: a mechanics reading. No register reading, no outcome claim.",
+    "The merge book's start grant is a PROBE device (make_merge_config --grant, suffix 'probe'); it hands 1836 countries era-2/3 technologies and is not the design."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1837.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "BEL",
+      "RUS",
+      "CHI",
+      "AUS",
+      "TUR",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "events",
+      "market_goods_scoped",
+      "building_inventory"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "artisan6": {
+      "kind": "config",
+      "config": "config/mod_config.artisan6.json"
+    },
+    "merge6-probe": {
+      "kind": "config",
+      "config": "config/mod_config.merge6-probe.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "artisan6",
+      "until": "1838.1.1"
+    },
+    {
+      "setup": "merge6-probe",
+      "until": "1838.1.1",
+      "autosave_interval": "monthly"
+    }
+  ]
+}

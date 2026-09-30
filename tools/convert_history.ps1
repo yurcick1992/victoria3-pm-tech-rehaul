@@ -140,6 +140,11 @@ $handler = {
     }
     else { $tier = $industryById[$id].tiers[$tierIndex - 1] }   # the vanilla method's own rung (pmMap: position, era carried beside it)
     $tierKey = $tier.key; $newPm = $tier.pm_key
+    # A MERGED RUNG (method_of, BALANCE_FRAMEWORK 10.91.2) is a main METHOD of its host building, not a building, so a start
+    # block landing on it would have to become the host running that method - and its secondaries would need the merged
+    # method's own minted copies, which emit_secondaries only renames for the host's method. No 1836 factory lands on any of
+    # the six ruled merges (checked 2026-09-30); a later book whose start does must teach both tools first, so this THROWS.
+    if ($tier.method_of) { throw "convert_history: a 1836 $bkey block ($country/$state) lands on $tierKey, which is a method of $($tier.method_of) - teach the start converter and emit_secondaries the merged method first" }
 
     # §10.60 GRADED PORT FACTORISATION: a tier carrying `workforce_mult` is a fractional-unit building
     # (its config goods/cost are explicitly divided; build.ps1 scales employment/effects by the

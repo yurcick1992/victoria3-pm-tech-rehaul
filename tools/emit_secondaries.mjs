@@ -143,6 +143,9 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     const industry = IND[ind];
     const rung0 = (industry.tiers || []).slice().sort((a, b) => a.era - b.era)[0];
     const wmT = t.workforce_mult != null ? +t.workforce_mult : 1;
+    // the building's main methods: its own rung, then the rungs merged into it (method_of, §10.91.2)
+    const variants = [t, ...(industry.tiers || []).filter(x => x.method_of === bkey)];
+    if (variants.length > 1 && wmT < 1) throw new Error(`emit_secondaries: ${bkey} is a craft rung (workforce_mult ${wmT}) and a merge host — the two amendments were never designed together`);
     const exclPms = new Set(t.exclude_secondary_pms || []);
     if ((t.exclude_secondary_pmgs || []).length || exclPms.size) {
       const s = STRIP[bkey] = new Set(exclPms);
@@ -206,90 +209,107 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         if (exclPms.has(p)) continue;   // a craft rung does not carry it (Vacuum Canning, Patent Stills)
         const pb = PM[p];
         if (!pb || !rescalable.includes(p)) { newMembers.push(p); continue; }
-        // ⚠⚠ A PM-GATED SECONDARY KEEPS ITS RESTRICTION. Minting a per-tier copy and pointing its
-        //   `unlocking_production_methods` at that tier's own method would make it available on EVERY
-        //   rung — vanilla restricts bone china to advanced glassworks, elastics to sewing-machine
-        //   mills, precision tools to lathe workshops, and the builder's own gate remap preserves
-        //   that ("the secondary unlocks at exactly the tiers whose main PM satisfied it in vanilla").
-        //   So a tier that does NOT satisfy the vanilla gate keeps the ORIGINAL vanilla method, which
-        //   names main PMs it does not have and therefore stays unavailable — the restriction intact.
         const gatedOn = listOf(pb, 'unlocking_production_methods');
-        if (gatedOn.length) {
-          // ⚠⚠ A MINTED RUNG HAS NO `vanilla_pm`, so `mine` used to be EMPTY and the rung always failed the
-          //   gate — it kept the original vanilla secondary, which names main methods it does not have, so the
-          //   method was silently unselectable. Furniture's e3 (spray finishing) could not take precision tools
-          //   at all: reported from a live campaign, 2026-09-18 (ROADMAP step 8 P7; landmine L35). THE RULE, the
-          //   same one build.ps1's gate remap uses: a rung with no `vanilla_pm` inherits the method of the
-          //   nearest rung BELOW it that has one — the rung the generator already copies its recipe, staffing
-          //   and icon from, so an addition is "the method after X" and belongs wherever X belongs. A gate that
-          //   does not name that lower method still excludes the addition, which is correct.
-          const below = (industry.tiers || []).filter(x => (x.era ?? 0) <= (t.era ?? 0) && x.vanilla_pm);
-          const inherited = below.length ? below[below.length - 1] : null;
-          const mine = [t.vanilla_pm || (inherited && inherited.vanilla_pm),
-            ...(t.vanilla_pm_aliases || (inherited && inherited.vanilla_pm_aliases) || [])].filter(Boolean);
-          if (!mine.some(v => gatedOn.includes(v))) { newMembers.push(p); continue; }
-        }
-        const ref = refFor(p);
-        const g0 = t.output_good || industry.output_good || industry.good;
-        const mainOutRef = ref ? val(ref.out) : 0;
-        const mainInRef = ref ? val(ref.inp) : 0;
-        const tierOut = (t.output_qty || 0) * (PRICE[g0] ?? 0);
-        const tierIn = val(t.inputs || {});
-        const Rout = mainOutRef > 0 ? tierOut / mainOutRef : 1;
-        const Rin = mainInRef > 0 ? tierIn / mainInRef : Rout;
-        const nk = p + '_' + bkey.replace(/^building_/, '');
-        let nb = pb;
-        // a NEGATIVE quantity (a reduction of the main good, or a saved input) rounds TOWARD ZERO at two decimals, so the
-        // reductions of a full conversion can never sum past the main output by rounding alone (2026-09-13)
-        const r2 = x => x < 0 ? -Math.floor(-x * 100 + 1e-9) / 100 : +x.toFixed(2);
-        nb = nb.replace(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g,
-          (_, g2, q) => 'goods_output_' + g2 + '_add = ' + r2(q * Rout));
-        // ⚠⚠ A REDUCTION SCALES WITH ITS OWN GOOD, NOT WITH THE INPUT BILL. `pm_cannery` carries
-        //   `goods_input_grain_add = -20`, i.e. "20 less grain than the main method uses". Scaling
-        //   that by the AGGREGATE input-value ratio overshoots whenever the tier's recipe holds a
-        //   different grain proportion than the reference method — which drove grain NEGATIVE on
-        //   three food tiers and was caught by lint_negative_goods. So a good the reference method
-        //   also consumes scales by THIS TIER'S share of THAT good; anything else falls back to the
-        //   aggregate ratio.
-        // ⚠⚠ THIS REGEX SHIPPED WITHOUT ITS BACKSLASHES FROM 2026-09-01 TO 2026-09-13 (`_adds*=s*`, i.e. "add, any number of
-        //   the letter s, =, any number of the letter s"), so it matched NO vanilla line (`goods_input_grain_add = -20`) and
-        //   every secondary's INPUTS stayed at vanilla quantities on every rung while its outputs scaled by Rout — an e2
-        //   cannery made 4× vanilla's groceries for vanilla's meat and iron. Nothing failed; the cannery's saved grain simply
-        //   never went negative. BUGS_AND_FIXES 2026-09-13; every four-rung measurement before that date carried it.
-        nb = nb.replace(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, g2, q) => {
-          const mine = (t.inputs || {})[g2], theirs = ref && ref.inp ? ref.inp[g2] : null;
-          const k = (mine != null && theirs) ? (mine / theirs) : Rin;
-          return 'goods_input_' + g2 + '_add = ' + r2(q * k);
-        });
-        // a gate naming a vanilla main PM must name OUR tier's method instead, or it never unlocks
-        nb = nb.replace(/unlocking_production_methods\s*=\s*\{[\s\S]*?\}/,
-          'unlocking_production_methods = { ' + t.pm_key + ' }');
-        // the craft amendment to RULE 2: a fractional-unit rung's secondaries employ in proportion to its level
-        if (wmT < 1) {
-          nb = nb.replace(/building_employment_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, pr, q) => {
-            const v = +q * wmT;
-            if (v < 0) throw new Error(`emit_secondaries: ${bkey} keeps ${p}, which REMOVES ${pr} (${q}) — a craft rung must not carry labour-saving methods`);
-            if (Math.abs(v - Math.round(v)) > 1e-9) throw new Error(`emit_secondaries: ${bkey} ${p}: ${pr} ${q} × ${wmT} is not whole`);
-            return 'building_employment_' + pr + '_add = ' + Math.round(v);
+        // ⭐ ONE COPY PER MAIN METHOD OF THE BUILDING (BALANCE_FRAMEWORK §10.91.2, 2026-09-30): its own rung, then any rung
+        //   merged into it as a second main method (`method_of`). Each copy is scaled to ITS method's output and input bill
+        //   and is available only beside that method, so a merged building's secondaries stay in proportion to whichever
+        //   main method it runs. A plain building has one variant and mints exactly what it always did, under the same names.
+        let mintedHere = 0;
+        for (const v of variants) {
+          // ⚠⚠ A PM-GATED SECONDARY KEEPS ITS RESTRICTION. Minting a per-tier copy and pointing its
+          //   `unlocking_production_methods` at that tier's own method would make it available on EVERY
+          //   rung — vanilla restricts bone china to advanced glassworks, elastics to sewing-machine
+          //   mills, precision tools to lathe workshops, and the builder's own gate remap preserves
+          //   that ("the secondary unlocks at exactly the tiers whose main PM satisfied it in vanilla").
+          //   So a tier that does NOT satisfy the vanilla gate keeps the ORIGINAL vanilla method, which
+          //   names main PMs it does not have and therefore stays unavailable — the restriction intact.
+          //   ⚠ In a merged building the original is kept only when NO main method satisfies the gate: build.ps1's gate remap
+          //   appends every tier's pm_key whose vanilla method the gate names, the merged method's included, so an original
+          //   kept beside a minted copy would be selectable at VANILLA quantities under that method.
+          if (gatedOn.length) {
+            // ⚠⚠ A MINTED RUNG HAS NO `vanilla_pm`, so `mine` used to be EMPTY and the rung always failed the
+            //   gate — it kept the original vanilla secondary, which names main methods it does not have, so the
+            //   method was silently unselectable. Furniture's e3 (spray finishing) could not take precision tools
+            //   at all: reported from a live campaign, 2026-09-18 (ROADMAP step 8 P7; landmine L35). THE RULE, the
+            //   same one build.ps1's gate remap uses: a rung with no `vanilla_pm` inherits the method of the
+            //   nearest rung BELOW it that has one — the rung the generator already copies its recipe, staffing
+            //   and icon from, so an addition is "the method after X" and belongs wherever X belongs. A gate that
+            //   does not name that lower method still excludes the addition, which is correct.
+            const below = (industry.tiers || []).filter(x => (x.era ?? 0) <= (v.era ?? 0) && x.vanilla_pm);
+            const inherited = below.length ? below[below.length - 1] : null;
+            const mine = [v.vanilla_pm || (inherited && inherited.vanilla_pm),
+              ...(v.vanilla_pm_aliases || (inherited && inherited.vanilla_pm_aliases) || [])].filter(Boolean);
+            if (!mine.some(x => gatedOn.includes(x))) continue;
+          }
+          const ref = refFor(p);
+          const g0 = v.output_good || industry.output_good || industry.good;
+          const mainOutRef = ref ? val(ref.out) : 0;
+          const mainInRef = ref ? val(ref.inp) : 0;
+          const tierOut = (v.output_qty || 0) * (PRICE[g0] ?? 0);
+          const tierIn = val(v.inputs || {});
+          const Rout = mainOutRef > 0 ? tierOut / mainOutRef : 1;
+          const Rin = mainInRef > 0 ? tierIn / mainInRef : Rout;
+          const nk = p + '_' + v.key.replace(/^building_/, '');
+          let nb = pb;
+          // a NEGATIVE quantity (a reduction of the main good, or a saved input) rounds TOWARD ZERO at two decimals, so the
+          // reductions of a full conversion can never sum past the main output by rounding alone (2026-09-13)
+          const r2 = x => x < 0 ? -Math.floor(-x * 100 + 1e-9) / 100 : +x.toFixed(2);
+          nb = nb.replace(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g,
+            (_, g2, q) => 'goods_output_' + g2 + '_add = ' + r2(q * Rout));
+          // ⚠⚠ A REDUCTION SCALES WITH ITS OWN GOOD, NOT WITH THE INPUT BILL. `pm_cannery` carries
+          //   `goods_input_grain_add = -20`, i.e. "20 less grain than the main method uses". Scaling
+          //   that by the AGGREGATE input-value ratio overshoots whenever the tier's recipe holds a
+          //   different grain proportion than the reference method — which drove grain NEGATIVE on
+          //   three food tiers and was caught by lint_negative_goods. So a good the reference method
+          //   also consumes scales by THIS TIER'S share of THAT good; anything else falls back to the
+          //   aggregate ratio.
+          // ⚠⚠ THIS REGEX SHIPPED WITHOUT ITS BACKSLASHES FROM 2026-09-01 TO 2026-09-13 (`_adds*=s*`, i.e. "add, any number of
+          //   the letter s, =, any number of the letter s"), so it matched NO vanilla line (`goods_input_grain_add = -20`) and
+          //   every secondary's INPUTS stayed at vanilla quantities on every rung while its outputs scaled by Rout — an e2
+          //   cannery made 4× vanilla's groceries for vanilla's meat and iron. Nothing failed; the cannery's saved grain simply
+          //   never went negative. BUGS_AND_FIXES 2026-09-13; every four-rung measurement before that date carried it.
+          nb = nb.replace(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, g2, q) => {
+            const mine = (v.inputs || {})[g2], theirs = ref && ref.inp ? ref.inp[g2] : null;
+            const k = (mine != null && theirs) ? (mine / theirs) : Rin;
+            return 'goods_input_' + g2 + '_add = ' + r2(q * k);
           });
-          craftChecked.push(`${bkey}:${p}`);
+          // a gate naming a vanilla main PM must name OUR tier's method instead, or it never unlocks
+          nb = nb.replace(/unlocking_production_methods\s*=\s*\{[\s\S]*?\}/,
+            'unlocking_production_methods = { ' + v.pm_key + ' }');
+          // a merged building's copies are each available only beside their own main method, gated or not in vanilla
+          if (variants.length > 1 && !/unlocking_production_methods/.test(nb))
+            nb = '\n\tunlocking_production_methods = { ' + v.pm_key + ' }' + nb;
+          // the craft amendment to RULE 2: a fractional-unit rung's secondaries employ in proportion to its level
+          if (wmT < 1) {
+            nb = nb.replace(/building_employment_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, pr, q) => {
+              const v = +q * wmT;
+              if (v < 0) throw new Error(`emit_secondaries: ${bkey} keeps ${p}, which REMOVES ${pr} (${q}) — a craft rung must not carry labour-saving methods`);
+              if (Math.abs(v - Math.round(v)) > 1e-9) throw new Error(`emit_secondaries: ${bkey} ${p}: ${pr} ${q} × ${wmT} is not whole`);
+              return 'building_employment_' + pr + '_add = ' + Math.round(v);
+            });
+            craftChecked.push(`${bkey}:${p}`);
+          }
+          // ⭐⭐ THE RESOLVED GOODS GO IN THE CONFIG, NOT ONLY IN THE EMITTED TEXT. The first cut of
+          //   this tool rewrote the mod alone, which left THREE disagreeing views of a good's supply:
+          //   the GAME got scaled secondaries, the BALANCE UI read vanilla's flat quantities out of
+          //   ui/vanilla.js, and era_inverse modelled no secondaries at all — so radios stayed a
+          //   `fixed-supply` phantom at 48 and the ceiling warning survived a fix that had actually
+          //   worked. The repo's rule is one implementation per quantity (ladderFaults, needSplit,
+          //   recipeSnapshot); this is that rule applied to secondary goods.
+          const rg = {};
+          for (const m of nb.matchAll(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) (rg.in ||= {})[m[1]] = +m[2];
+          for (const m of nb.matchAll(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) (rg.out ||= {})[m[1]] = +m[2];
+          (RESOLVED[v.key] ||= {})[nk] = { from: p, ref: ref ? ref.pm : null, ...rg };
+          // the 1836 history runs the HOST's own method (convert_history throws on a start block that lands on a merged rung)
+          if (v === t) (RENAME[bkey] ||= {})[p] = nk;
+          outPMs.push(nk + ' = {' + nb + '}');
+          locPairs.push([nk, p]);
+          newMembers.push(nk); minted++; mintedHere++;
+          report.push({ bkey: v.key, pm: p, Rout: +Rout.toFixed(2), Rin: +Rin.toFixed(2), ref: ref ? ref.pm : '(none)' });
         }
-        // ⭐⭐ THE RESOLVED GOODS GO IN THE CONFIG, NOT ONLY IN THE EMITTED TEXT. The first cut of
-        //   this tool rewrote the mod alone, which left THREE disagreeing views of a good's supply:
-        //   the GAME got scaled secondaries, the BALANCE UI read vanilla's flat quantities out of
-        //   ui/vanilla.js, and era_inverse modelled no secondaries at all — so radios stayed a
-        //   `fixed-supply` phantom at 48 and the ceiling warning survived a fix that had actually
-        //   worked. The repo's rule is one implementation per quantity (ladderFaults, needSplit,
-        //   recipeSnapshot); this is that rule applied to secondary goods.
-        const rg = {};
-        for (const m of nb.matchAll(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) (rg.in ||= {})[m[1]] = +m[2];
-        for (const m of nb.matchAll(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) (rg.out ||= {})[m[1]] = +m[2];
-        (RESOLVED[bkey] ||= {})[nk] = { from: p, ref: ref ? ref.pm : null, ...rg };
-        (RENAME[bkey] ||= {})[p] = nk;
-        outPMs.push(nk + ' = {' + nb + '}');
-        locPairs.push([nk, p]);
-        newMembers.push(nk); minted++;
-        report.push({ bkey, pm: p, Rout: +Rout.toFixed(2), Rin: +Rin.toFixed(2), ref: ref ? ref.pm : '(none)' });
+        // no main method of this building satisfies the vanilla gate: keep the ORIGINAL, which names main methods the
+        // building does not have and therefore stays unavailable — the restriction intact
+        if (!mintedHere) newMembers.push(p);
       }
       const ng = g + '_' + bkey.replace(/^building_/, '');
       const tex = /texture\s*=\s*"[^"]*"/.exec(gb);
