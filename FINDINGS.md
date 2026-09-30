@@ -19360,3 +19360,47 @@ paper), 0.20–0.45 (glass) and 0.60–0.95 (tooling, few levels).
 **What it does NOT say.** The world mean weights a microstate as much as Britain; crafts sit mostly in the periphery, so a PB effect confined to
 craft-holding countries could hide under it (a craft-weighted reading is not built). One seed per craft book. Clout is after the engine's
 modifiers and moves with laws, government and revolutions; it is not the pop attraction alone.
+
+## F191 — THE SHOPKEEPER CRAFTS, PROBED (30% shopkeepers / 70% laborers, four craft outputs raised; 2 × 1836→1846): no industry dies and no market is left with a token amount of a good the canon produces there; the crafts staff better and pay more of the normal wage where the recipes were raised; shopkeepers +25% world-wide; world GDP inside the canon's range; the Petite Bourgeoisie's clout about 0.3 points higher than under the machinist crafts, from the first year (2026-10-01, session 20260930_225621)
+
+**Source.** Session `20260930_225621_artmerge6-pb-10y`, book `config/mod_config.artmerge6-pb.json` (BALANCE_FRAMEWORK §10.91.4), two runs
+1836 → 1846 with F188's instrument, both clean (no crash, init marker, 0 error lines naming our files). References at 1846.1.1: the canon's six
+runs (`20260929_002728`, F177) and F188's two runs (`20260930_205540`: `artmerge6`, `artmerge6-floor`). The user's check: *"check that no
+industries are completely dead, and no market that has some goods produced in canon is left with only a token amount"*. Readers:
+`tools/testbed/ledger/health_vs_ref.mjs` (new), `ig_clout.mjs`, the summaries' v9 building ledgers.
+
+**1. Dead industries and token markets** (`health_vs_ref.mjs`, both seeds against the canon's six; DEAD / TOKEN = every arm run under 0.10 /
+0.20 of the reference median AND under half the reference minimum; a merged rung folded into its host; market cells the canon produces ≥ 5
+units and ≥ 2% of the world's): **0 of 79 building types dead, 0 of 344 market×good cells a token.** The lowest cells: China's small arms 26
+against 79 (min 10), Spain's gold 16 / 46, Australia's fine art 5 / 10, Zanzibar's coffee 51 / 99, Japan's luxury clothes 56–60 / 103,
+British India's luxury clothes 1,506–2,123 / 3,455 (min 839), France's tools 682–691 / 1,019 (min 31) — each above the reference's own minimum
+or its spread. Run 1 alone put China's tools at 28 / 258: China's tools come from its four e1 pig-iron workshops (it holds no tool crafts),
+which emptied 1843–46 in that seed (4 staffed → 0); run 2 reads 252, and the same workshops dipped in F188's floor run (1839–40, 1844) and in a
+canon run (1844). Measured on F188's floor run the same way: 0 dead, 0 tokens.
+
+**2. The crafts at 1846** (world; wage ÷ normal = the building's wage bill ÷ its staffed levels × 500 × wage units × the country's normal
+wage; pb r1 / r2 · F188 floor / no floor):
+
+| craft | levels | staffed | profit ÷ revenue | wage ÷ normal |
+|---|---|---|---|---|
+| food | 459 / 454 · 468 / 437 | 85 / 95 · 91 / 87% | 19 / 18 · 15 / 18% | 0.55 / 0.56 · 0.55 / 0.53 |
+| textile | 1,597 / 1,564 · 1,602 / 1,532 | 97 / 97 · 95 / 97% | 28 / 28 · 29 / 32% | 0.76 / 0.73 · 0.78 / 0.79 |
+| furniture | 1,010 / 983 · 1,005 / 992 | 96 / 95 · 92 / 95% | 21 / 22 · 19 / 21% | 0.51 / 0.67 · 0.50 / 0.74 |
+| glass | 869 / 883 · 852 / 799 | 98 / 98 · 91 / 80% | 20 / 22 · 17 / 18% | 0.42 / 0.50 · 0.28 / 0.44 |
+| tooling | 144 / 126 · 110 / 119 | 86 / 80 · 72 / 63% | 23 / 20 · 16 / 16% | 0.73 / 0.84 · 0.43 / 0.45 |
+| paper | 1,317 / 1,324 · 1,300 / 1,295 | 98 / 98 · 93 / 93% | 19 / 21 · 17 / 18% | 0.73 / 0.64 · 0.29 / 0.54 |
+
+The raised recipes did what they were sized for: glass, tooling and paper pay more of the normal wage and staff up; food, textile and
+furniture, whose recipes did not change, read as before despite 1.60 wage units a head — the engine sets the wage level, not the staffing.
+Craft profit in £ a week, world: paper 30–32k (F188 19–24k), glass 13–15k (8k), tooling 2.0–2.9k (1.0k).
+
+**3. The economy.** World GDP 522 / 514 £M at 1846 (canon's six 476–526, median 509; F188 505 / 521). Shopkeeper workforce 2.43M in both seeds
+against 1.92–1.96M in F188's (+25%).
+
+**4. The Petite Bourgeoisie** (world mean / median of its clout over main countries, `ig_clout.mjs` on the kept end saves): 4.5 / 2.5–2.8% at
+1837 → 4.5 / 2.8–2.9% at 1846 in both seeds, against F190's 4.1–4.4 / 2.4–2.8% for the machinist crafts, 3.7–4.5% for the no-craft books and
+4.0–4.7% for vanilla over the same years. About 0.3 points up in both seeds and from the first year (the 1836 start re-types the craft pops into
+shopkeepers); inside vanilla's single-seed range.
+
+**What it does NOT say.** Two seeds, ten years, one date for the health check. Whether the crafts die later, how the century reads on the
+register, and whether the PB's gain grows or fades are the n=3 batch's questions.
