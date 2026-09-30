@@ -272,8 +272,11 @@ block landing on a merged rung (none of the six does). ⚠ **The save summaries 
 rung's levels are the host's `pms` entries for its method: read them with `tools/testbed/ledger/merge_methods.mjs`. The register's T0–T3
 split a host's workers by method since 2026-09-30; the old-rung census and obsolescence readers still count by building type.
 ⭐ **PROBED 2026-09-30, BOTH LINES (F181, F182):** the craft books load and hold their staffing, with the ownership fix confirmed; the merge
-book's switch works (the AI moves hosts to the merged method one building at a time, no construction). No century batch of either has run —
-that is the user's to confirm.
+book's switch works (the AI moves hosts to the merged method one building at a time, no construction). ⭐ **THIRTY YEARS EACH (F184,
+1836→1866, n=1 per book):** both worlds grow with the canon's (craft 0.94–1.02×, merge 1.00–1.07×); the craft run's shortlist lagged
+11–17% on a political seed (the Springtime from Austria in 1840, the earliest of 23 runs); understaffed crafts are short of every profession
+alike, not of machinists; Baking Powder and Bleached Paper spread decades before the canon builds those rungs. No century batch of either
+has run — that is the user's to confirm.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
@@ -2610,6 +2613,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         game's country figure); over workforce + dependents it reads a quarter of it. ⚠ "Lower class" = the default hierarchy's
                         professions from common/social_classes (farmers are middle class in 1.13), not the pop's own `social_class` record, which
                         follows its country's hierarchy (castes, the Edo classes). ⚠ Kept saves only: the harvester reaps all but each run's newest
+  testbed/ledger/craft_fill.mjs  WHICH PROFESSION AN UNDERSTAFFED CRAFT IS SHORT OF, OUT OF ONE SAVE (FINDINGS F184 §4, 2026-09-30): per country
+                        and craft industry, levels, occupancy (a building's `staffing` is STAFFED LEVELS), recent failed hires, downsize flags,
+                        profit, and the workers by profession (the pop table's `workplace`) against the book's own staffing × levels.
+                        `<save.v3> <book.json> [--min-levels 10] [--top 40]`. ⚠ `workplace` is the building record's FULL id — a reused slot's
+                        id carries a generation prefix (slot + k·2^24); the first cut reduced it mod 2^24 and lost every worker of a reused slot
   testbed/ledger/merge_methods.mjs  WHICH MAIN METHOD A MERGED BUILDING RUNS (§10.91.2, 2026-09-30): per run, save date, country and merged
                         industry, the host's levels on its own method and on the merged one, and the levels whose secondary is the merged
                         method's own copy (`!!` when those exceed the merged method's levels — the per-method gating broken). Pairs and

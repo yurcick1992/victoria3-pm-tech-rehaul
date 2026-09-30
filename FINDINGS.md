@@ -18700,3 +18700,115 @@ the East India Company 2.28M against, in the ruled craft book, roughly 400k mach
 **What it does NOT say.** Nothing about the craft book's own literacy (it touches no education lever, so it should read the same, unmeasured);
 whether the machinist JOBS get filled over time in Persia and the Mughal rump (the 30-year probe reads that); why Awadh's reading swings
 between seeds. The 10% line is where qualification growth starts, not a hiring rule.
+
+## F184 — THE CRAFT BOOK AND THE MERGE BOOK OVER THIRTY YEARS (1836→1866, one seed each, against the canon's six runs): both worlds grow with the canon's; the craft run's shortlist falls 11–17% behind on a heavy political seed that began with the People's Springtime in 1840, set off by Austria, earlier than in any of 23 reference runs; the crafts hold the canon's e0 capacity in the periphery and die in small European states; an understaffed craft is short of every profession alike, not of machinists; craft goods stay dearer in the craft-holding markets; the merge book grows at the top of the canon's range and adopts its merged methods decades before the canon builds the same rungs — and the save summaries drop the main side of every same-tag civil war from their world totals (2026-09-30)
+
+**Session** `20260930_181601_craft-merge-30y` (schedule `craft_merge_30y.json`, commit `a4dde06`): run 1 `artisan6` (the craft book, the
+ruled staffing), run 2 `merge6` (the merge book), each 1836→1866.1.1, quarterly saves, markets for the eleven instrumented tags. Both clean —
+no crash, no resume, 43 and 40 minutes; post-run landmines pass. Against the canon's six F177 runs (`20260929_002728`, same dates, same
+harvest). One seed per book: every reading below is a direction, and the political events that dominate the shortlist are seed events.
+The question (the user): do the economies grow more or less in line with the canon?
+
+**1. Growth.** £M, each run ÷ the canon's six-run median in brackets, ↓/↑ outside the six-run range. ⚠ The craft run's 1866 figures are
+CORRECTED for the summary defect of §7 (shipped: world 701, shortlist 133); the canon's own ranges carry that defect uncorrected — its 1845
+shortlist minimum of 67 is canon run 4's British revolution, where the rebel Britain (9.3M people, £0.0M) replaced a ~£35M Britain.
+
+| year | world GDP: canon min / median / max | craft | merge | shortlist GDP: canon | craft | merge |
+|---|---|---|---|---|---|---|
+| 1837 | 409 / 414 / 417 | 415 (1.00) | 414 (1.00) | 86 / 87 / 88 | 91 (1.05 ↑) | 88 (1.02 ↑) |
+| 1840 | 436 / 437 / 441 | 438 (1.00) | 437 (1.00) | 89 / 91 / 94 | 93 (1.02) | 92 (1.00) |
+| 1845 | 463 / 497 / 512 | 480 (0.97) | 508 (1.02) | 67 / 100 / 105 | 94 (0.95) | 103 (1.03) |
+| 1850 | 552 / 557 / 570 | 536 (0.96 ↓) | 573 (1.03 ↑) | 110 / 117 / 122 | 103 (0.88 ↓) | 119 (1.02) |
+| 1855 | 551 / 623 / 646 | 587 (0.94) | 635 (1.02) | 117 / 127 / 142 | 113 (0.89 ↓) | 138 (1.09) |
+| 1860 | 630 / 651 / 713 | 663 (1.02) | 697 (1.07) | 129 / 142 / 158 | 134 (0.94) | 156 (1.09) |
+| 1865 | 639 / 701 / 779 | 703 (1.00) | 742 (1.06) | 139 / 155 / 186 | 133 (0.86 ↓) | 177 (1.14) |
+| 1866 | 667 / 711 / 783 | **719 (1.01)** | 746 (1.05) | 141 / 161 / 185 | **138 (0.86 ↓)** | 174 (1.08) |
+
+GDP at base prices: craft 0.97–1.01 (1866 corrected 687, 1.00), merge 0.99–1.03. Population: both 1.00–1.02 (the craft run's shipped dips
+at 1860 and 1866 are §7's artefact — Japan's and Prussia's main sides dropped; corrected 1866 1,292M against the canon's 1,283–1,306). W and
+U* inside ±5% of the canon's median throughout, in both runs. World H: craft 0.89–1.16×, merge up to 1.68–1.79× at 1865–66 — see §6.
+
+**2. The craft run's shortlist lag is political, and it began with an early Springtime.** Per member, craft run ÷ the canon median:
+Britain 0.95–1.11 (above the median from 1860); **Belgium 0.43–0.63 from 1850** — the Belgian Proletarian Revolt won its civil war in July
+1842; **Prussia 0.51–0.59 from 1845** — a revolution in November 1841, a civil war to January 1844, a war with France 1860–64, a second
+revolution in September 1865; France 0.74 at 1865 after that war; the USA 0.81–0.89 from 1855 (wars with Britain 1845–47 and Spain 1849–52,
+population 0.90–0.95). The canon's runs carry their own revolts (Belgium in five of six, Prussia in three), none this many on the shortlist.
+- **The People's Springtime** (the vanilla journal entry; it starts when a European major holding egalitarianism has a springtime revolution,
+  and the game logs the date and the starter in debug.log): craft run **2 July 1840, from Austria**; merge run 28 August 1842, from Britain;
+  the canon's six 19 March 1843 – 20 September 1845 (Austria three times, France twice, Sweden once); vanilla's fifteen readable seeds of
+  `20260821_131149` 26 February 1842 – 11 January 1857, median ~1845.7. The craft run's is the earliest of 23.
+- **Radicals ran above every canon run before it** in the largest European craft holder and two others: Austria 12.4% of the population at
+  1839.1 against 9.1–9.8, 16.2 against 9.3–10.3 at 1840.1; Russia 2.4 against 1.2–1.4 at 1839.1; Japan 1837–40. The average SoL sat under
+  the canon's minimum in Russia (8.39 / 8.35 against 8.53 / 8.44 at 1838–39) and Japan (5.25 / 6.10 against 6.97 / 6.67 at 1837–38);
+  Austria's sat at or inside the range. China, India, the Ottomans and Spain read inside the canon's range on both. In the year the Springtime
+  began every European major's radicals jumped together (Belgium 7.5 → 18.6%, Prussia 5.3 → 13.4, France 8.5 → 22.4, Britain 7.0 → 16.3).
+- **A craft channel is plausible and not proven.** The crafts' base-price break-even is ~140% (§10.91.1) and their goods run dearer where they
+  stand (§5). The 1838 saves of the two probes — the craft book against the merge probe, which keeps the canon's e0 and grants Austria
+  nothing — put Austria's peasants at wealth **6.4 against 7.1**, and Austria's radicals in its peasants (94–97% in both) and laborers; the
+  re-typed craft shopkeepers and machinists carry 0.7% and 2.6% radicals. One seed, and the Springtime's date spreads over fifteen years
+  across vanilla's seeds.
+- Austria's crafts fell **390 → 101 levels across the 1841–43 civil wars** (textile 160 → 1, glass 50 → 0) and stood at 153 from 1844; the
+  canon's Austrian e0 also fell through its civil wars (355 → 230 craft-equivalent levels, 1840–1850).
+
+**3. The crafts over thirty years — they hold where they were meant to, and die where industry arrives.** Craft levels at 1866 against the
+canon's e0 ×10 (its median): China **1,633 (1,305)**, India 497 (520), Russia 510 (565), the Ottomans 218 (205), Spain 143 (135), Korea 94
+(65), Persia 85 (100), Mexico 84 (95), Egypt 72 (140), Brazil 85 (130); Britain 1 (10), France 8 (10), the USA 43 (55), Prussia 0 (0). World by
+industry at 1866, craft levels | the canon's e0 ×10: food 469 | 655, textile 1,718 | 1,755, furniture 1,057 | 995, glass 752 | 760, **tooling
+165 | 550**, paper 1,382 | 1,655. The e1 and e2 rungs of the six industries sit at the canon's (food e2 36 against 12 the one exception).
+Tooling crafts never grew the way the canon's e0 workshops did (10 → 55 factory levels); tools prices stayed inside the canon's range in every
+logged market (§5). **Dying crafts:** at 1866 the emptiest (0–11% staffed, profit ~£0) are in Schwarzburg, Moldavia, Bremen, Hesse,
+Switzerland and Finland (paper, furniture), plus Segou and Kaffa — the old rung dying where it cannot pay, as designed.
+⭐ **F183's open question** (do the machinist jobs fill in Persia and the Mughal rump?): Persia's crafts ran 0.85–0.98 staffed all thirty years
+(0.98 at 1866) with its machinists 11k → 26k employed (the canon's Persia: 0–1k); the Mughal rump's crafts are gone by 1865 with the state.
+
+**4. Understaffing is not a machinist shortage.** From the kept 1866 save (`tools/testbed/ledger/craft_fill.mjs`: every craft building's
+workers by profession against its book staffing): where a craft is under-staffed, **shopkeepers, machinists and laborers fill at about the
+same rate** — Kaffa food 35 / 35 / 34%, Sardinia-Piedmont paper 62 / 62 / 62, Egypt paper 82 / 83 / 74, Russia food 95 / 84 / 77, Korea glass
+128 / 85 / 85 (shopkeepers above 100% where a kept secondary adds their own jobs). The machinist column trails in single cases only
+(Switzerland textile 76 / 44 / 71). ⇒ the literacy gate of F180 §2 / F183 does not bind by 1866; the fill is set by the building's overall
+hiring, not by one profession. World craft staffing at 1866: textile 0.93, furniture 0.92, paper 0.83, glass 0.83, food 0.79, **tooling
+0.59** — tooling under 0.70 and glass under 0.80 from 1845 to 1860; by country, Korea's crafts (mostly glass) ran 0.56–0.70 over 1840–1860
+and Egypt's 0.52–0.92.
+⚠ The first cut of the reader reduced a pop's `workplace` modulo 2^24 and found NO workers in some crafts: a building record's id carries a
+generation prefix once its slot has been reused (slot + k·2^24), and the pop's handle is that full id (TESTBED_METRICS §7). Harmless at the
+1836–1838 dates of F181/F182, wrong by 1866; fixed before the numbers above (927 of 932 craft buildings join; the other five are empty).
+
+**5. Craft goods stay dearer in the craft-holding markets** (% of base, craft run | the canon's six-run min / median / max; ↑ above the max):
+- Russian market: clothes 163 | 144/146/160 ↑ at 1840 and 172 | 145/159/166 ↑ at 1860; furniture above the max at every dump (139 | 122–132
+  at 1840); glass 121–139 against 84–124, above the max 1836–1850; paper 157–175, above the max 1836–1850; groceries 126–135, above 1836–1850.
+- British market (India's crafts are in it): paper 137 / 154 / 160 / 171 — above the max at three of four dumps; furniture above at 1836–40.
+- Japanese market: glass above the max at every dump (105 | 77/85/96 at 1840), paper and furniture at 1836–1850.
+- Tools stay inside the canon's range everywhere (British 105–110, Russian 134–147, Japanese 148–175, French 101–112).
+So the direction F181 measured at 1837 persists for thirty years.
+
+**6. The merge book (run 2): growth at the top of the canon's range, and the merged methods adopted decades before the canon builds the
+same rungs.**
+- **Growth**: world GDP 1.00–1.07× the canon's median (1850 at 573 just above its 570; otherwise inside), 0.99–1.03× at base prices; shortlist
+  1.00–1.14× — Britain 1.10–1.14 from 1855, France 1.19–1.26, the USA 1.03–1.21, Prussia 0.97–1.15; Belgium 0.39–0.53 after its own Proletarian
+  revolt (1843–44) and two later ones. India (BIC) falls to 0.81–0.82× at 1865–66 (population 0.91×), under the canon's range — not traced.
+  The Springtime: 28 August 1842, from Britain — before all six canon runs, inside vanilla's range.
+- **World H rises to 0.29–0.30 at 1865–66** (canon median 0.17, maximum 0.30–0.31), and it is **China's pool**: £137M, 1.22 of China's GDP,
+  at the canon's top (0.01–1.21); every shortlist member's hoard sits at or under the canon's. (The craft run's China reads the other way,
+  0.50–0.58 against a canon median of 0.74–0.99 — China's pool dominates the world figure in both directions.)
+- **Adoption** (`tools/testbed/ledger/merge_methods.mjs`): **Baking Powder** (food e2 as a method of the e1 sugar refinery) from 1845 —
+  Britain switched its 15 hosts within the year the technology arrived; **71 levels ran it at 1866 against the canon's 12 e2 buildings**,
+  the host method at 70 (the canon's e1: 103), so the two food rungs total 141 against 115. **Bleached Paper** from ~1855: 39 levels on the
+  merged method at 1866 against the canon's 5 e2 buildings; the sulfite method 24 (canon 54); total 63 against 59. **Improved Fertilizer**:
+  no level had switched by 1866 (the canon has no e1 chemical plant by then either). The three e3 merges (textile, furniture, steel) are
+  game-era-5 technologies — untested in thirty years.
+- **The secondary reset is not permanent**: by 1866, 17 of the 71 Baking-Powder levels ran one of its own secondary copies (F182's two years
+  saw none), never more than the method itself (the per-method gating holds).
+- The construction sector ran 935–995 levels against the canon's 835–915 (1855–1866), in an economy 2–7% larger.
+
+**7. The save summaries drop the main side of a same-tag civil war (an instrument defect, found here).** A revolution creates a country with
+its parent's definition tag; `save_state_summary.mjs` keys `countries` by tag, so the record that comes later — the rebel side — replaces the
+main country, and `world.gdp` / `world.population` are summed over that map. Re-summarising the craft run's kept 1866 save with the two sides
+keyed apart restores main Prussia (12.2M people, £4.9M GDP), main Japan (29.7M, £10.0M), main Kaffa, Ryukyu and North Korea: **world GDP
+£718.9M against the shipped £701.0M (+2.6%), population 1,292M against 1,247M**. The same drop reads in the craft run at 1860 (Japan) and 1842
+(Austria), and in canon run 4 at 1845 (Britain). Non-main entries sit in 87% of the canon's quarterly summaries (not every one a live main side
+dropped). A per-year world reading can dip a few per cent in a civil-war year; a member's per-country reading shows the rebels. The fix, its
+version bump, a detector and the measurement of past impact were split off as a separate task.
+
+**What it does NOT say.** One seed per book: nothing on whether the early Springtime is the crafts' doing (a channel is plausible; n=1 cannot
+separate it from seed luck), nothing past 1866, nothing about the register or depeasantation, and nothing on the e3 merges. The staffing reading
+is one save. The canon's comparison ranges carry the §7 defect uncorrected.

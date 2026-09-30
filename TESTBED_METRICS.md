@@ -1324,6 +1324,12 @@ profession) alone leaves 158 636 records in **45 615 keys**, 55 % of them holdin
 workplace reaches 132 599, adding wealth as well 147 155 (**92.8 %**), and the last 7.2 % is
 unidentified. ⇒ **Count records; claim nothing about the tuple.**
 
+⚠ **A pop's `workplace` IS THE BUILDING RECORD'S FULL ID — never reduce it.** A database record id carries a GENERATION prefix once
+its slot has been reused (`slot + k·2^24`: a Kaffa textile mill read `16785323` = 2^24 + 8107 at 1866), and the pop's handle carries
+the same prefix. A reader that took `workplace mod 2^24` joined every first-generation building and lost every worker of a reused slot —
+harmless at 1836–1838, where nearly every id is first-generation, and wrong by 1866 (2026-09-30, FINDINGS F184 §4;
+`tools/testbed/ledger/craft_fill.mjs` joins on the full id). Country ids carry the same prefix (`50332209` = 3·2^24 + 1073).
+
 ⚠ **The game's interface hides the empties.** STATE_SLAVONIA stores 564 records and shows 280. A report
 that quotes stored counts to someone reading the UI will not agree with what they see, and neither side
 is wrong.
