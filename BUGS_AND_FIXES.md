@@ -13,6 +13,29 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-09-30 — the save summary kept ONE country record per definition: a civil war's other side, a revolt's leftover country, even China, vanished from `countries` and from the world totals (landmine L38, FINDINGS F186)
+
+**Symptom:** reading the craft/merge thirty-year batch, the 1866.1.1 summary of `20260930_181601_craft-merge-30y/run001_artisan6`
+gave Prussia 3.6M people and Japan 8.9M, both `is_main_tag: false`. The main Prussia (12.2M) and Japan (29.7M) were not in the file.
+`save_state_summary.mjs --verify-pops` on that melt: **"MAPPING SUSPECT", 4.0%** short on every profession.
+**Root cause:** the per-country output was `countries[c.tag] = {…}` over every `country_manager` record — keyed by the DEFINITION.
+Two records share one routinely: a revolution creates a country with its parent's definition (`civil_war=yes`, no `is_main_tag`), a
+revolt that ends in a separate country leaves a second record for decades (vanilla n=16 seed 7: a second Prussia from 1871 to
+1936), and some pairs both carry `is_main_tag`. The record later in slot order overwrote the other — the main one as often as not.
+`world.gdp` / `world.population` were summed over that map and lost every overwritten record, while `world.buildings`, summed over
+country IDS, stayed complete — so the file disagreed with itself and nothing compared the two. A second, smaller defect rode on
+it: the v10/v11 trade attribution looked a state's owner up BY TAG, so a dropped record's trade capacity landed on the survivor.
+**Fix:** `SAVE_SUMMARY_VERSION` 12 — one entry per record: the single main keeps TAG, the others `TAG@<id>`; two mains (or none) →
+the most populous keeps TAG, named on stderr; world totals over every record; `overlord`, `states.<id>.country`, `top_producers`
+and trade by the same key; each entry carries `tag`, `civil_war`, `last_civil_war_date`. Every summary reader was audited — none
+parses a key — and `pop_literacy.mjs`, which joins a tag-keyed melt to a summary, now folds `TAG@id` back into its tag.
+⚠ Pre-v12 summaries cannot be repaired (their saves are reaped). `tools/testbed/ledger/summary_drops.mjs --session` sizes their
+drops from the `world.buildings` gap; F186 measures the register's exposure (small) and the per-country one (not small).
+**Detect/prevent:** landmine **L38** — a repo-side self-test runs the real writer on a synthetic two-records-one-definition melt
+before every build and batch, and `-Session` checks every sampled v12 summary's identities (Σ countries = world). The general
+lesson: **a map keyed by a field is a claim that the field is unique; check it on the data.** And a verification mode that is run
+once and never again is not a guard — `--verify-pops` would have flagged this on any save with a large civil war.
+
 ## 2026-09-30 — the obsolescence reader read NOTHING from a quarterly-save session and said "6 runs"; the speed report's labels inverted the ruling
 
 **Symptom 1:** `tools/testbed/ledger/trade_obsolescence.mjs` on `20260929_002728_canon-dams-family-n6` printed `fam: 6 run(s)` and

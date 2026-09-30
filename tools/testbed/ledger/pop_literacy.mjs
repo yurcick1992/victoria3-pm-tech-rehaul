@@ -88,7 +88,9 @@ const E0 = ['building_food_industry', 'building_textile_mill', 'building_furnitu
 const e0 = {};
 if (existsSync(sumPath)) {
   const j = JSON.parse(gunzipSync(readFileSync(sumPath)));
-  for (const [tag, c] of Object.entries(j.countries)) { let lv = 0; for (const k of E0) lv += (c.buildings && c.buildings[k] && c.buildings[k].levels) || 0; if (lv) e0[tag] = lv; }
+  // the melt rows below are keyed by TAG with every record of a definition summed, so fold a v12 TAG@<id> key back into its tag
+  // (a pre-v12 summary kept only ONE record per tag — its other record's levels are simply absent, FINDINGS F186)
+  for (const [key, c] of Object.entries(j.countries)) { let lv = 0; for (const k of E0) lv += (c.buildings && c.buildings[k] && c.buildings[k].levels) || 0; if (lv) { const tag = c.tag ?? key.split('@')[0]; e0[tag] = (e0[tag] || 0) + lv; } }
 }
 const C = {};
 for (const p of pops) {

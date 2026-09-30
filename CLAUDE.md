@@ -2515,6 +2515,18 @@ tools/                  dev tooling — NOT shipped in the mod
                         LEVEL (max_tariffs / high_tariffs / low_tariffs / no_tariffs_or_subventions / low_subventions / …; a
                         good with no record is absent, not "none"). ⚠ Trade advantage and each state's local import/export price
                         are NOT persisted (`not_captured.trade_advantage_and_local_prices`),
+                        ⭐⭐ ONE ENTRY PER COUNTRY RECORD (v12, 2026-09-30, FINDINGS F186, landmine L38): up to v11 `countries`
+                        was keyed by the DEFINITION, so records sharing one — a civil war's two sides, a country a revolt left
+                        behind for decades, two records that both carry `is_main_tag` — overwrote each other in slot order, the
+                        MAIN one as often as not (vanilla n=16 seed 7 read a second, 2.4–4.5M Prussia as `countries.PRU` from 1871
+                        to 1936; seed 5 dropped CHINA at 1936), and `world.gdp`/`world.population`, summed over that map, lost
+                        them. Now the single main keeps TAG and the others are `TAG@<country id>` (two mains → the most populous
+                        keeps TAG, named on stderr); the world totals sum every record; `overlord`, `states.<id>.country`,
+                        `top_producers` and the trade attribution use the same key; each entry carries `tag`, `civil_war`,
+                        `last_civil_war_date`. ⚠ A KEY IS OPAQUE — the definition is `c.tag ?? key.split('@')[0]` in every
+                        version, and a pool member is the plain TAG, i.e. the main record. ⚠⚠ PRE-v12 SUMMARIES CANNOT BE
+                        REPAIRED (their saves are reaped): `tools/testbed/ledger/summary_drops.mjs --session` sizes their drops
+                        from the always-complete `world.buildings` and flags a shortlist member that was not the main record,
                         and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
                         ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and
                         `<id>=none` freed slots sit in the same database (a record test must require the
@@ -2796,6 +2808,19 @@ tools/                  dev tooling — NOT shipped in the mod
                         indistinguishable from a run that never existed. ⚠ It replaces the hardcoded
                         `RUNS = [1..6]` lists, which is how canon-n7's stopped-at-1853 run007 would have
                         entered an n=6 baseline the moment someone re-pointed a script
+  testbed/ledger/summary_drops.mjs  ⭐⭐ WHICH SAVE SUMMARIES LOST A COUNTRY RECORD, AND HOW MUCH (landmine L38,
+                        FINDINGS F186). Up to summary v11 records sharing a definition overwrote each other
+                        (see save_state_summary.mjs above); a pre-v12 summary cannot be re-made, but it can be
+                        CHECKED — `world.buildings` was always summed over country ids, so Σ countries' levels
+                        and value added fall short of the world's by exactly the dropped records'. Report mode
+                        (`--session <stamp>[,<stamp>][:<setup>] [--years 1932-1936] [--all] [--detail]`, the
+                        first summary of each year by default = what criteria.mjs reads): per run and year the
+                        dropped levels, the dropped value added and an ESTIMATE of the dropped GDP (0.6–1.3 of
+                        the exact figure in 18 of 20 checked drops — enough to judge materiality, not to correct
+                        a number), and every SHORTLIST member whose entry is not the main record (⚑⚑ when it
+                        answers to its own tag, i.e. the main was the record dropped). ⚠ Population cannot be
+                        estimated (people per pop object runs 659–75,583). `--check <session>` and `--selftest`
+                        are L38's two halves, run by preflight
   testbed/ledger/analyse_ai_tier_choice.mjs / analyse_ai_tier_profit.mjs  THE BUILD-CHOICE MEASURE
                         (FINDINGS **F75**): of the levels a country builds, what share go to a tier BELOW
                         the best one it already holds, and does the first frontier building stop the

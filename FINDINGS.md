@@ -18807,7 +18807,9 @@ keyed apart restores main Prussia (12.2M people, £4.9M GDP), main Japan (29.7M,
 £718.9M against the shipped £701.0M (+2.6%), population 1,292M against 1,247M**. The same drop reads in the craft run at 1860 (Japan) and 1842
 (Austria), and in canon run 4 at 1845 (Britain). Non-main entries sit in 87% of the canon's quarterly summaries (not every one a live main side
 dropped). A per-year world reading can dip a few per cent in a civil-war year; a member's per-country reading shows the rebels. The fix, its
-version bump, a detector and the measurement of past impact were split off as a separate task.
+version bump, a detector and the measurement of past impact were split off as a separate task. → **Done: F186** (summary v12, landmine
+L38). ⚠ Corrected there: the record kept is whichever sits LATER in slot order, not necessarily the rebel — at the 1936 endpoints the lost
+record was the MAIN country in 130 of 218 drops — and sharing a definition is not only a live civil war.
 
 **What it does NOT say.** One seed per book: nothing on whether the early Springtime is the crafts' doing (a channel is plausible; n=1 cannot
 separate it from seed luck), nothing past 1866, nothing about the register or depeasantation, and nothing on the e3 merges. The staffing reading
@@ -18913,3 +18915,138 @@ separated against the emitted 1836 map: a craft in a region that held no craft o
 added is the reading that separates the groups, and `min_productivity_to_hire` is inferred to be its group override from its name and use.
 The transfer log's time window is unknown. The shopkeeper layoffs are consistent with the layoff rule, not traced pop by pop. Nothing here
 measures what lowering the floor would do.
+
+## F186 — THE SAVE SUMMARIES KEPT ONE COUNTRY RECORD PER DEFINITION (summary v≤11): every 1932–1936 summary of the canon n=6 and the vanilla n=16 lost at least one country, usually a MAIN one; the register's end state moves ~1% on world GDP and none of its verdicts; per-country series can be the wrong country for decades (vanilla seed 7's Prussia 1871–1936, seed 5's China at 1936). Fixed in summary v12, guarded by landmine L38 (2026-09-30, 22 kept 1936 saves re-summarised + every shipped summary read, no game time)
+
+**Claim.** Up to `SAVE_SUMMARY_VERSION` 11, `tools/testbed/save_state_summary.mjs` keyed `countries` by the country's DEFINITION, so two
+records sharing one overwrote each other and `world.gdp` / `world.population` — summed over that map — lost the overwritten one
+(F184 §7 found it at 1866). It is not only live civil wars and not mostly the rebel side: at the 1936 endpoint **the dropped record was
+the MAIN country in 130 of 218 cases, carrying £476M of the £565M dropped GDP and 578M of the 718M dropped people**. For the register
+it is small — world GDP ~1%, no verdict moves; for a per-country or per-member reading it can be the wrong country.
+
+**Data.** The kept 1936.1.1 save of every run of `20260929_002728_canon-dams-family-n6` (6) and `20260821_131149_vanilla-baseline-n16`
+(16) re-summarised with the v12 writer into a scratch directory (the shipped summaries untouched — a reaped save makes the summary the
+record), compared with the shipped summary of the same save; the register (`criteria.mjs`) re-run with those 22 points swapped in; every
+shipped summary of the two sessions' 1932–1936 window read with the new `tools/testbed/ledger/summary_drops.mjs`; `countries.<member>`
+read in the first summary of every year of all 186 century runs in the F165 corpus (22 vanilla, 164 mod).
+
+### 1. The mechanism, and a correction to F184 §7
+A save's `country_manager` holds one record per country, and several can share a definition. `countries[c.tag] = {…}` kept the record
+LATER in slot order, whichever that was (at 1866: Prussia's and Japan's REBELS won, Bavaria's MAIN won; at 1936, above, the main lost
+more often than not — 130 times in 218). F184 §7's "the record that comes later — the rebel side — replaces the main country" holds for its 1866
+case only. `world.buildings` summed over country IDs and stayed complete, so each pre-v12 summary disagrees with itself by exactly the
+dropped records' levels — which is what makes the drop measurable after the fact (§4).
+A second defect rode on it: v10/v11's trade attribution found a state's owner entry by TAG, so a dropped record's trade capacity was
+added to the survivor (the rebel Prussia of 1866 carried the main one's 156).
+
+### 2. Who shares a definition — the 221 same-definition groups in 23 v12 summaries (22 × 1936.1.1 + the craft run's 1866.1.1)
+
+| group (M = `is_main_tag`, C = `civil_war`) | groups | what it is |
+|---|---|---|
+| M + C | 192 | a live civil war |
+| M + a non-main, no civil war | 20 | by its `last_civil_war_date` (every one of the 24 such records carries one) a revolt that ended in a separate country beside the main one — often for DECADES (vanilla seed 7: a second Prussia, a subject of the first, 1871–1936); several leave a decentralized remnant holding the flag beside the real state (BMB, KNK, BRN, KBA, OVM) |
+| M + M | 6 | two records BOTH main, no civil war (TUN, ACE, KNK, TPG, BRN, ASH — e.g. vanilla seed 11's Taiping: 28.8M and 359.1M people); none a shortlist member |
+| M + non-main + C | 2 | both of the above at once |
+| M + two non-mains | 1 | |
+
+Plus 8 LONE records without `is_main_tag` (a definition held by one non-main record; not a drop — v12 keys them TAG).
+⚠ `is_main_tag` is therefore not "the legitimate side": the engine gives it to both records of a pair in six groups, and to a
+0.04M chiefdom over the 2.78M state beside it in others.
+
+### 3. At the 1936 endpoint — exact (shipped summary against the v12 re-summary of the same kept save)
+
+| run | world GDP £M shipped → v12 | Δ | world population M shipped → v12 | Δ | records dropped | the largest dropped (people / GDP) | shortlist entry swapped |
+|---|---|---|---|---|---|---|---|
+| vanilla 001 | 4553.0 → 4562.4 | +0.21% | 1963.4 → 1972.2 | +0.45% | 5 | WAL civil-war side 4.3M / £4.7M | — |
+| vanilla 002 | 4459.2 → 4530.0 | +1.59% | 1957.7 → 1991.6 | +1.73% | 14 | BRZ (main) 15.7M / £32.4M | — |
+| vanilla 003 | 3928.5 → 3932.1 | +0.09% | 1927.2 → 1934.8 | +0.39% | 9 | CLM (main) 4.6M / £1.5M | — |
+| vanilla 004 | 4550.8 → 4559.6 | +0.19% | 1880.1 → 1887.2 | +0.38% | 10 | SOK civil-war side 3.9M / £5.2M | — |
+| vanilla 005 | 4360.0 → 4492.7 | +3.04% | 1688.3 → 1958.7 | **+16.02%** | 9 | **CHI (main) 251.5M / £112.7M** | — |
+| vanilla 006 | 4264.4 → 4277.5 | +0.31% | 1989.7 → 1997.3 | +0.38% | 5 | SOK civil-war side 4.4M / £6.8M | — |
+| vanilla 007 | 3773.6 → 3874.8 | +2.68% | 1986.1 → 2030.9 | +2.26% | 18 | PRU (main) 16.4M / £38.5M | **PRU: id 16777780 (4.3M, not main) → id 5 (16.4M)** |
+| vanilla 008 | 5096.5 → 5110.6 | +0.28% | 2050.3 → 2072.8 | +1.10% | 13 | BGL civil-war side 14.3M / £4.2M | — |
+| vanilla 009 | 5178.6 → 5178.6 | +0.00% | 1981.5 → 1981.6 | +0.01% | 4 | LAH (main) 0.1M / £0.0M | — |
+| vanilla 010 | 4586.7 → 4651.6 | +1.41% | 2004.4 → 2087.9 | +4.17% | 15 | SIH civil-war side 42.0M / £16.8M | — |
+| vanilla 011 | 5198.8 → 5212.3 | +0.26% | 2018.4 → 2049.2 | +1.52% | 6 | TPG (one of two mains) 28.8M / £9.6M | — |
+| vanilla 012 | 4477.7 → 4499.8 | +0.49% | 1972.5 → 2015.4 | +2.18% | 11 | JAS (main) 17.3M / £8.3M | — |
+| vanilla 013 | 3750.4 → 3753.4 | +0.08% | 1959.8 → 1962.9 | +0.16% | 5 | ASH (one of two mains) 1.9M / £2.7M | — |
+| vanilla 014 | 4581.5 → 4586.4 | +0.11% | 1943.4 → 1966.2 | +1.17% | 7 | BEI (main) 22.4M / £4.4M | — |
+| vanilla 015 | 4102.2 → 4103.4 | +0.03% | 1952.9 → 1956.0 | +0.16% | 7 | PHI (main) 1.1M / £0.2M | — |
+| vanilla 016 | 4981.4 → 4991.0 | +0.19% | 1926.4 → 1944.9 | +0.96% | 16 | PER (main) 3.9M / £2.6M | — |
+| canon 001 | 2527.2 → 2539.0 | +0.47% | 1863.2 → 1883.0 | +1.06% | 6 | AWA (main) 18.3M / £9.2M | — |
+| canon 002 | 4558.7 → 4566.2 | +0.16% | 1831.2 → 1836.7 | +0.30% | 13 | MOL (main) 3.1M / £4.4M | — |
+| canon 003 | 5846.4 → 5893.6 | +0.81% | 1794.6 → 1850.3 | +3.10% | 17 | HNA civil-war side 12.2M / £5.1M | — |
+| canon 004 | 8167.6 → 8167.7 | +0.00% | 2095.5 → 2095.7 | +0.01% | 3 | SIA (main) 0.2M / £0.0M | — |
+| canon 005 | 4992.7 → 5002.6 | +0.20% | 1951.2 → 1970.8 | +1.00% | 15 | NEP (main) 6.3M / £3.8M | — |
+| canon 006 | 4328.6 → 4344.5 | +0.37% | 1923.1 → 1934.8 | +0.61% | 10 | BAG (main) 3.9M / £2.1M | — |
+
+Medians over the 22: world GDP **+0.23%** (0.00–3.04), world population **+0.98%** (0.01–16.02), **9.5 records dropped** (3–18).
+Vanilla seed 5's world readings at 1936, shipped → v12: W 0.1646 → 0.1477, U\* 31.7% → 38.5%, H 0.304 → 0.358.
+Vanilla seed 7's POOL at 1936: GDP £1,088.9M → £1,112.2M (+2.1%), W 0.1822 → 0.1795, U\* 29.4% → 30.4%, H 0.182 → 0.177.
+
+### 4. The register's end state (the 1932–1936 mean)
+**Every one of the 110 window summaries of the 22 runs carries a dropped record** (`summary_drops.mjs --years 1932-1936`). The GDP of a
+pre-v12 drop is ESTIMATED from the summary itself: the dropped base-priced value added (`world.buildings` − Σ countries) × 52 × the
+survivors' displayed GDP per £ of value added. Against the exact figures of §3 (drops over £1M) the estimate reads **0.61–1.27 of the
+truth in 18 of 20, median 0.97** (outliers 0.09 on £3.0M and 1.77 on £7.5M) — enough to judge materiality, not to correct a number.
+⚠ Population cannot be estimated this way (people per dropped pop object: 659–75,583).
+
+| reading | shipped | only the 1936 points exact (criteria.mjs re-run) | + 1932–1935 estimated |
+|---|---|---|---|
+| vanilla window median, world GDP | £4,258M | £4,265M (+0.16%) | £4,327M (+1.6%) |
+| canon consensus world GDP ÷ vanilla | 1.06× (1.0608) | 1.06× | 1.050× |
+| the world-GDP hard band | 0.66–1.38× (0.658–1.376) | 0.66–1.37× | 0.652–1.360× |
+| canon broken runs | run 1 0.56× stall, run 4 1.75× runoff | unchanged | run 1 0.552×, run 4 1.734× — unchanged verdicts |
+| vanilla world W median | 0.1427 | 0.1428 | not estimable |
+| canon consensus LOSS | 5.90 | 5.90 | — |
+
+Estimated dropped world GDP, mean over the window per run: **canon 0.18–1.33%, vanilla 0.14–1.88%**; single years up to **5.73%**
+(vanilla seed 10, 1932) and **3.96%** (canon run 4, 1933 — a French civil war whose rebel side held `countries.FRA`).
+The POOL reference, with its two in-window member swaps corrected (seed 7's PRU every year, scaled by its exact 1936 correction; seed 6's
+FRA at 1932, replaced by the main France of 1933.1.1): median pool GDP **£1,340M unchanged**, W **0.1973 → 0.1962**, U\* 21.3% and H 0.33
+unchanged. The canon's intact runs carry no in-window member swap (its only one, run 4's France in 1933, is a broken run).
+⇒ **Not material for the register's end state or for the canon's standing**: world GDP moves ~1% (≈ 0.05 σ), nothing crosses a band
+and the pool reference does not move. Both sides of every ratio lose a similar share, which is why the ratios barely move.
+
+### 5. Where it IS material: per-country and per-member readings
+Over the F165 corpus (first summary of each year): **every century run — 22 of 22 vanilla, 163 of 164 mod — has a year in which some
+shortlist member's `countries.<tag>` is NOT a main record.** Most are civil-war years; some are long:
+
+| member | vanilla runs (run-years) | mod runs (run-years) | stretches of ≥ 5 years on one record | in the 1932–36 window |
+|---|---|---|---|---|
+| GBR | 14 (31) | 71 (132) | vanilla seed 8 1910–1915 (29.6→31.6M) | mod 3 runs |
+| USA | 1 (1) | 20 (30) | a mod run 1923–1929 (1.9→1.1M) | mod 2 |
+| FRA | 21 (44) | 151 (428) | two mod runs, 6–7 y | vanilla 1 (seed 6, 1932), mod 9 |
+| NET | 13 (29) | 90 (241) | vanilla seeds 2 and 3 (7 and 9 y); 13 stretches of 6–12 y in 11 mod runs, a 0.1–1.2M record standing in for the Netherlands | mod 10 |
+| BEL | 18 (31) | 121 (184) | — | mod 1 |
+| UNL | 2 (4) | 11 (30) | — | — |
+| PRU | 6 (76) | 68 (124) | **vanilla seed 7 1871–1936 (66 y)**; a mod run 1853–1862 | vanilla 1 (seed 7), mod 2 |
+| NGF | 1 (1) | 18 (28) | — | — |
+| GER | 7 (10) | 67 (114) | — | mod 2 |
+
+⚠ **Vanilla seed 7's German member was the wrong country for 65 years**: `countries.PRU` was record 16777780 — 2.4–4.5M people, a
+separate Prussia that became a SUBJECT of the main one (`overlord: "PRU"`, its own tag) — while the main Prussia (16.4M at 1936) was
+absent from every summary from 1871 (and in 1856) to 1936. `summary_drops.mjs` marks that pattern ⚑⚑.
+⭐ **F166's stuck Britain is NOT this artefact.** Of the 15 runs the current corpus classes as stuck (F166 counted 13), 11 read a
+non-main `countries.GBR` only in 1–6 isolated civil-war years (e.g. 1869–70, 1843–44) and 4 never; not one persistently, and not one in
+a year the "stuck" definition reads (1900 / 1910 / 1920 / 1930 / 1936).
+Per-country ranges quoted from shipped summaries (F184's canon 1845 shortlist minimum is canon run 4's rebel Britain, 9.3M people)
+carry the defect; a per-year WORLD reading can dip several per cent in a year with a large civil war.
+
+### 6. The fix and the guard
+`SAVE_SUMMARY_VERSION` **12**: one entry per record — the single main keeps TAG, every other record of the definition is `TAG@<country
+id>`, a lone record keeps TAG, two mains (or none) give TAG to the most populous (named on stderr); world totals over every record;
+`overlord`, `states.<id>.country`, `top_producers` and the trade attribution by the same key; each entry carries `tag`, `civil_war`,
+`last_civil_war_date`. Every summary reader was audited: all treat keys as opaque (exact lookups, membership tests, per-key maps), so
+none breaks on `TAG@id`, and every world sum over `countries` becomes complete; `pop_literacy.mjs`, which joins a tag-keyed melt to a
+summary, folds `TAG@id` back into its tag. Landmine **L38**: a repo-side self-test runs the real writer on a synthetic two-records-one-
+definition melt before every build and batch, and `-Session` checks every sampled v12 summary's identities (Σ countries = world on
+levels, population, GDP). Verified on the 1866 melt: `--verify-pops` reads **4.0% ("MAPPING SUSPECT")** under v11 and **0.3%
+("CONFIRMED")** under v12, and every non-shared country's entry is byte-identical between the two versions apart from the new fields.
+
+**What it does NOT say.** Pre-v12 summaries are NOT repaired and cannot be: the 1932–1935 figures are estimates (±~30% per drop) and
+world W / U\* / H are exact only at the 1936 endpoint. Only the first summary of each year was read (the register's reading); quarterly
+sessions hold more affected summaries than counted. A non-main member entry in a pre-v12 summary is nearly always a dropped main (⚑⚑
+proves it where it appears), but a lone non-main record cannot be told apart from one on the summary alone. The two-mains rule (the most
+populous keeps TAG) is a judgment call made here, not ruled; it touched no shortlist member in the 23 saves. What `last_civil_war_date`
+marks (a war's start or its end) is not verified, and why the engine gives `is_main_tag` to both records of six pairs is not known.

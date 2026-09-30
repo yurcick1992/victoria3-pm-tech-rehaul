@@ -1536,6 +1536,42 @@ function Test-LmL36 {
     Add-Result 'L36' 'a telemetry metric name that matches nothing' 'PASS' "every schedule's metrics resolve to a real telemetry block ($($valid.Count) valid names)"
 }
 
+function Test-LmL38 {
+    <#
+      L38 - A SAVE SUMMARY THAT KEEPS ONE COUNTRY RECORD PER DEFINITION, silently dropping the others
+      (found 2026-09-30, 20260930_181601_craft-merge-30y run001, FINDINGS F186).
+
+      Up to SAVE_SUMMARY_VERSION 11, save_state_summary.mjs keyed `countries` by the DEFINITION tag, so records
+      sharing one - a civil war's two sides, a country a revolt left behind for decades, two records that both
+      carry is_main_tag - overwrote each other in slot order, and world.gdp / world.population (summed over that
+      map) lost the dropped ones. Every summary of every run in the 1932-1936 window of the canon n=6 and the
+      vanilla n=16 carries a drop; vanilla seed 5 dropped the main CHINA at 1936, seed 7 read a second 2.4-4.5M
+      Prussia as countries.PRU from 1871 to 1936. Nothing failed: harvest verified, L12 passed, the ledger read.
+      And the saves are REAPED, so a summary that drops a record is the only record there will ever be.
+
+      DETECTOR, two halves, both through tools\testbed\ledger\summary_drops.mjs:
+        (a) REPO-SIDE, every build and every batch gate (-RepoOnly): --selftest feeds a synthetic melt with
+            two records on one definition through the REAL writer and requires both entries (AAA and AAA@2),
+            world totals over every record and the state keyed to its own owner - so a regression is caught
+            BEFORE a batch reaps a single save.
+        (b) POST-RUN (-Session): --check requires every v12+ summary sampled (the newest of each run and every
+            10th) to hold every record - Sigma countries = world on building levels, population and GDP, and
+            every key its tag or tag@<id>. Pre-v12 summaries are counted, not failed: they cannot be repaired.
+    #>
+    $T = 'a save summary that keeps one country record per definition'
+    $tool = Join-Path $Repo 'tools\testbed\ledger\summary_drops.mjs'
+    if (-not (Test-Path $tool)) { Add-Result 'L38' $T 'FAIL' "detector missing: $tool"; return }
+    # through cmd, never '& node ... 2>&1' (see L31): a native stderr line under Stop preference throws.
+    $out = & cmd /c "node ""$tool"" --selftest 2>&1" | Out-String
+    if ($LASTEXITCODE -ne 0) { Add-Result 'L38' $T 'FAIL' ($out.Trim() + [Environment]::NewLine + 'FIX: key countries by tag, and tag@<id> for every other record of that definition (the v12 KEY block of save_state_summary.mjs).'); return }
+    $self = ($out.Trim() -split "`r?`n")[-1]
+    if (-not $Session) { Add-Result 'L38' $T 'PASS' "$self (post-run half N/A: no -Session)"; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L38' $T 'FAIL' "no such session: $Session"; return }
+    $out2 = & cmd /c "node ""$tool"" --check ""$Session"" 2>&1" | Out-String
+    if ($LASTEXITCODE -ne 0) { Add-Result 'L38' $T 'FAIL' $out2.Trim(); return }
+    Add-Result 'L38' $T 'PASS' ((($out2.Trim() -split "`r?`n")[-1]) + " | $self")
+}
+
 $CHECKS = @(
     @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
     @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
@@ -1575,6 +1611,9 @@ $CHECKS = @(
     # L36 reads the SCHEDULES against telemetry_lib.ps1's own -contains tests: a metric name that
     # matches nothing emits nothing, silently. Repo-only, so it gates a batch before anything is built.
     @{ Id = 'L36'; Artifact = $false; Fn = { Test-LmL36 } }
+    # L38 runs the SUMMARY WRITER on a synthetic melt (repo-side, so it gates a batch before any save is reaped) and,
+    # with -Session, checks every sampled v12+ summary holds every country record.
+    @{ Id = 'L38'; Artifact = $false; Fn = { Test-LmL38 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

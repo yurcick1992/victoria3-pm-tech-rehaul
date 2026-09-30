@@ -1283,6 +1283,18 @@ its save, so it must say what it came from without a lookup), then per country:
   ⚠ The 319 summaries written before that ruling carry 15, and cannot be widened — their saves are reaped.
 - ⭐ **POP OBJECT COUNTS, total AND non-empty**, per country and world-wide (schema v3, user ruling) —
   see the pop-table box below for why the two are kept apart and why neither is "the number of pops".
+- ⭐⭐ **ONE ENTRY PER COUNTRY RECORD, since v12 (2026-09-30, FINDINGS F186, landmine L38).** `countries` is keyed by
+  the definition TAG for the main record and **`TAG@<country id>`** for every other record of the same definition — a
+  civil war's other side (`civil_war: true`), a country a revolt left behind, the second of two `is_main_tag` records
+  (the most populous of two mains keeps the plain TAG). Each entry carries `tag`, `civil_war` and `last_civil_war_date`
+  (the save's field verbatim; whether it marks a war's start or its end is NOT verified). ⚠⚠ **Up to v11 the map was keyed
+  by the definition alone, so those records OVERWROTE each other in slot order — the main one as often as not — and
+  `world.gdp` / `world.population` lost them.** Every summary of the register's 1932–1936 window in the canon n=6 and the
+  vanilla n=16 carries such a drop (the register's world-GDP reading moves ~1% — the canon's consensus 1.061× → ~1.050×,
+  no verdict flips; per-country series can be the wrong country — vanilla seed 7's `countries.PRU` is a second, 2.4–4.5M
+  Prussia from 1871 to 1936). A pre-v12 summary cannot be
+  repaired; `tools/testbed/ledger/summary_drops.mjs --session` sizes its drops from `world.buildings`, which was always
+  complete (summed over country ids), and flags a shortlist member that was not the main record.
 
 ⭐ **The per-building SUBSIDY line needed no deriving.** The plan expected to reconstruct it from a
 building's subsidised flag and its shortfall; the save books it directly. GBR at 1935 in the F48 save:

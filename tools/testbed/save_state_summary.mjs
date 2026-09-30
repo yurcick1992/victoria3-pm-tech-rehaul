@@ -76,7 +76,30 @@ import { fileURLToPath } from 'node:url';
 // high_tariffs / low_tariffs / no_tariffs_or_subventions / low_subventions / …; a good with no entry has no set level).
 // Written for FINDINGS F161's open question: is it tariffs or trade capacity that keeps an importer's price ~×1.4 the
 // world average? ⚠ A state's TRADE ADVANTAGE and its LOCAL goods prices are NOT persisted (searched, 2026-09-24).
-export const SAVE_SUMMARY_VERSION = 11;
+// ⭐⭐ v12 (2026-09-30): ONE ENTRY PER COUNTRY RECORD — COUNTRIES SHARING A DEFINITION NO LONGER OVERWRITE EACH OTHER.
+// A revolution creates a country with its parent's DEFINITION (the "Revolutionary Empire of Japan" is definition JAP): the
+// rebel record carries `civil_war=yes` and no `is_main_tag`, the legitimate one `is_main_tag=yes` — and a revolt that ends
+// in a separate country leaves a second record of the definition for good (a main + a non-main with no civil war, or two
+// mains). Up to v11 `countries` was keyed by the definition alone, so whichever record came LATER in the save's slot order
+// replaced the other — the main side as often as the other one. 1866.1.1 of run001_artisan6 in 20260930_181601: PRU and JAP
+// read their REBELS' 3.6M / 8.9M people where the main sides hold 12.2M / 29.7M; vanilla n=16 seed 7 read a second, 2.4–4.5M
+// Prussia as `countries.PRU` in every summary from 1871 to 1936. `world.gdp` / `world.population`, summed over that map,
+// lost every dropped record (−2.5% of GDP, −45M people at that 1866 date). `world.buildings` was always complete (it sums
+// over country ids), which is what lets a pre-v12 summary be CHECKED for a drop: Σ countries' levels falls short of the
+// world's (tools/testbed/ledger/summary_drops.mjs). Now:
+//   · the main-tag record keeps the plain TAG key; every other record sharing its definition is keyed TAG@<country id>. A
+//     record alone on its definition keeps TAG whatever its flag. A group with two mains (or none) gives the plain TAG to its
+//     most populous main (else record) and names the group on stderr — see the KEY block for why nobody-gets-it is worse;
+//   · each entry carries `tag` (the definition — read it rather than parsing the key), `civil_war` (`civil_war=yes`) and
+//     `last_civil_war_date` (the save's own field, verbatim; whether it marks a war's start or end is NOT verified);
+//   · `world.gdp` / `world.population` sum over EVERY country record, not over the keyed map;
+//   · every other reference to a country uses the same key — `overlord`, `states.<id>.country`, the `top_producers` rows —
+//     and each state's TRADE is added to its OWN owner's entry (v10/v11 added a dropped side's trade capacity to the entry
+//     that survived under its tag, so that entry's `trade` summed both sides).
+// Readers: a key is opaque. `c.tag ?? key.split('@')[0]` is the definition in every version; a pool member is the plain
+// TAG, i.e. the MAIN record — a rebel side, or a country a revolt left behind, is a country of its own. FINDINGS F186,
+// landmine L38. ⚠ A pre-v12 summary cannot be repaired (its save is reaped); summary_drops.mjs says which ones are hit.
+export const SAVE_SUMMARY_VERSION = 12;
 // v9 (2026-09-20): + THE BUILDING'S OWN LEDGER per building type per country — goods_sales and goods_cost (revenue and inputs at MARKET prices, so no price-multiplier repair is needed) and salary_w = sum(salary_rate x staffing) (the building's OWN wage rate, not the country's base_wage) and taxes. Wages are then EXACT: goods_sales - goods_cost - profit, verified against the game's own building panel to 0.38%. FINDINGS F152 section 9; it retires the inference F150/F152 needed.
 // v7 (2026-08-21): + OWNERSHIP — per-building-type `company_levels` (levels held through an `identity={building=}` owner whose own type is building_company_* OR building_regional_company_*), the `companies` register (type, prosperity, charters, regional HQs, resolved to a country via the HQ building), and `ownership_levels` (host-side levels by owner class: state/foreign_country/financial_district/manor_house/company/company_regional/other_building). ROADMAP step 5a: per-year company data cannot be back-filled, and the long vanilla batch is its baseline. Absent field = zero WITHIN v7+; pre-v7 summaries simply cannot answer it.
 // v6 (2026-08-18): + per-building-type VALUE ADDED (va_out/va_in), PRICED at base cost, so a tiered-sector GDP is derivable (F74)
@@ -316,7 +339,7 @@ for await (const line of rl) {
     if (m && depth === 2) {
       cid = +m[1];
       cur = { id: cid, tag: null, market: null, government: null, country_type: null, capital: null,
-              is_main_tag: false, last_bankruptcy_date: null,
+              is_main_tag: false, civil_war: false, last_civil_war_date: null, last_bankruptcy_date: null,
               gdp: null, prestige: null, literacy: null, avg_sol: null,
               money: null, credit: null, investment_pool: null, base_wage: null, average_productivity: null,
               weekly_expenses: null, weekly_income: null,
@@ -339,6 +362,8 @@ for await (const line of rl) {
         else if ((x = /^country_type="?([a-z_]+)"?$/.exec(t))) cur.country_type ??= x[1];
         else if ((x = /^capital=(\d+)$/.exec(t))) cur.capital ??= +x[1];
         else if (t === 'is_main_tag=yes') cur.is_main_tag = true;
+        else if (t === 'civil_war=yes') cur.civil_war = true;                                   // v12
+        else if ((x = /^last_civil_war_date=([\d.]+)$/.exec(t))) cur.last_civil_war_date = x[1]; // v12
         else if ((x = /^last_bankruptcy_date=([\d.]+)$/.exec(t))) cur.last_bankruptcy_date = x[1];
       }
       const p0 = path[0];
@@ -705,7 +730,42 @@ if (popTypeCountSeen && popTypeCountSeen !== POP_TYPES.length)
   throw new Error(`pop type count mismatch: save says ${popTypeCountSeen}, game/common/pop_types has ${POP_TYPES.length} (${POP_TYPES.join(',')}) — the profession index mapping is no longer safe`);
 
 // ---------------------------------------------------------------- assemble
-const tagOf = id => C.get(id)?.tag ?? null;
+// ⭐⭐ v12: THE OUTPUT KEY OF EVERY COUNTRY RECORD, decided once, here, and used by EVERY reference below (the `countries`
+// map, `overlord`, `states.<id>.country`, `top_producers`, the trade attribution). Keying by the definition alone let
+// records sharing a definition overwrite each other — see the v12 note at the top. A definition held by one record keeps
+// its TAG; held by several, the single `is_main_tag` record keeps it and the others become TAG@<country id>.
+// ⚠ SHARING IS NOT ONLY A LIVE CIVIL WAR (census of the 23 saves re-summarised for FINDINGS F186): of 221 groups, 192 are
+//   one main + a `civil_war` side, 20 a main + a non-main country with NO civil war — a revolt that ended in a separate
+//   country, often for decades (vanilla n=16 seed 7: a second PRU, 2.4–4.5M people, beside the 16M main one from 1871 to
+//   1936, and it held `countries.PRU` in every one of those summaries) — and 6 have TWO `is_main_tag` records.
+// ⚠ TWO MAINS (or none): the MOST POPULOUS of the mains (else of all) keeps the plain TAG and the group is named on
+//   stderr. A rule that gave nobody the plain TAG would make `countries.TAG` vanish, and a pool member reading it would
+//   silently drop out of the pool — the failure lib_markets.mjs was written against. Population, not GDP, because a
+//   decentralized remnant can hold people and no GDP.
+const KEY = new Map();                     // country id -> key in `countries`
+let splitRecords = 0;
+{
+  const byTag = new Map();
+  for (const [id, c] of C) if (c.tag) (byTag.get(c.tag) ?? byTag.set(c.tag, []).get(c.tag)).push(id);
+  const popOf = id => Object.values(C.get(id).professions).reduce((a, x) => a + x, 0);
+  for (const [tag, ids] of byTag) {
+    if (ids.length === 1) { KEY.set(ids[0], tag); continue; }
+    const mains = ids.filter(id => C.get(id).is_main_tag);
+    let plain = mains.length === 1 ? mains[0] : null;
+    if (plain === null) {
+      const cand = mains.length ? mains : ids;
+      plain = cand.reduce((b, id) => (popOf(id) > popOf(b) || (popOf(id) === popOf(b) && id < b)) ? id : b);
+      console.error(`WARN: definition ${tag} has ${ids.length} country records and ${mains.length} with is_main_tag — the most populous${mains.length ? ' main' : ''} (id ${plain}) keeps ${tag}, the rest ${tag}@<id>`);
+    }
+    for (const id of ids) {
+      KEY.set(id, id === plain ? tag : `${tag}@${id}`);
+      if (id !== plain) splitRecords++;
+    }
+  }
+}
+const keyOf = id => KEY.get(id) ?? null;
+const untagged = [...C.values()].filter(c => !c.tag);
+if (untagged.length) console.error(`WARN: ${untagged.length} country record(s) carry no definition — counted in world.gdp/population, absent from countries (ids ${untagged.map(c => c.id).join(',')})`);
 // ⚠ MARKET MEMBERSHIP: a save gives every country its own `market` object and records no membership list,
 // so grouping by the raw id splits a market that contains subjects.  We report BOTH the raw market id and
 // the subject/overlord relation, and leave the merge to the reader — `melted_building_goods.mjs` measured
@@ -780,9 +840,10 @@ for (const [id, c] of C) {
   for (const [k, v] of goodsOut) { const i = k.indexOf('|'); if (+k.slice(0, i) === id && v) gout[k.slice(i + 1)] = +v.toFixed(2); }
   for (const [k, v] of goodsIn) { const i = k.indexOf('|'); if (+k.slice(0, i) === id && v) gin[k.slice(i + 1)] = +v.toFixed(2); }
   for (const [k, v] of prestigeOut) { const i = k.indexOf('|'); if (+k.slice(0, i) === id && v) pout[k.slice(i + 1)] = +v.toFixed(2); }
-  countries[c.tag] = {
-    id, market: c.market, government: c.government, country_type: c.country_type, is_main_tag: c.is_main_tag,
-    overlord: overlord.has(id) ? tagOf(overlord.get(id)) : null,
+  countries[keyOf(id)] = {
+    id, tag: c.tag, market: c.market, government: c.government, country_type: c.country_type, is_main_tag: c.is_main_tag,
+    civil_war: c.civil_war, last_civil_war_date: c.last_civil_war_date,                  // v12
+    overlord: overlord.has(id) ? keyOf(overlord.get(id)) : null,
     own_market_pact: ownMarket.has(id) || null,
     gdp: c.gdp, prestige: c.prestige, literacy: c.literacy, avg_sol: c.avg_sol,
     money: c.money, credit: c.credit, investment_pool: c.investment_pool,
@@ -831,8 +892,8 @@ for (const [id, c] of C) {
 // the same ranking and completely different economies.
 const byGood = new Map();
 for (const [k, v] of goodsOut) {
-  const i = k.indexOf('|'); const tag = tagOf(+k.slice(0, i)); if (!tag || !v) continue;
-  const g = k.slice(i + 1); (byGood.get(g) ?? byGood.set(g, []).get(g)).push([tag, +v.toFixed(1)]);
+  const i = k.indexOf('|'); const key = keyOf(+k.slice(0, i)); if (!key || !v) continue;
+  const g = k.slice(i + 1); (byGood.get(g) ?? byGood.set(g, []).get(g)).push([key, +v.toFixed(1)]);
 }
 const top_producers = {};
 for (const [g, rows] of [...byGood].sort()) {
@@ -866,7 +927,9 @@ world.companies_unresolved = companiesUnresolved;
 world.ownership_levels = {};
 for (const bag of ownClassByCountry.values())
   for (const [cls, lv] of Object.entries(bag)) world.ownership_levels[cls] = (world.ownership_levels[cls] || 0) + lv;
-for (const c of Object.values(countries)) { world.gdp += c.gdp || 0; world.population += Object.values(c.professions).reduce((a, x) => a + x, 0); }
+// ⚠ v12: over EVERY country record (C), never over `countries` — summing the keyed map is how v≤11 lost a civil war's
+// dropped side from both totals. The two agree now that the map holds every record, and the preflight re-derives it (L38).
+for (const c of C.values()) { world.gdp += c.gdp || 0; world.population += Object.values(c.professions).reduce((a, x) => a + x, 0); }
 world.gdp = Math.round(world.gdp); world.population = Math.round(world.population);
 
 // v10 TRADE — per country (summed over the states it owns) and world-wide. `imp`/`exp` are TRADE CAPACITY
@@ -875,8 +938,9 @@ world.trade = { capacity: 0, usage: 0 };
 world.trade_goods = {};
 const r2 = x => +x.toFixed(2);
 for (const s of new Set([...stateTradeCap.keys(), ...stateTradeGoods.keys()])) {
-  const id = stateCountry.get(s), tag = id != null ? tagOf(id) : null;
-  const c = tag ? countries[tag] : null;
+  // v12: the state's OWN owner entry — by key, not by definition (v10/v11 put a dropped side's states on its survivor)
+  const id = stateCountry.get(s), key = id != null ? keyOf(id) : null;
+  const c = key ? countries[key] : null;
   const cap = stateTradeCap.get(s) || 0, use = stateTradeUse.get(s) || 0;
   world.trade.capacity += cap; world.trade.usage += use;
   if (c) { c.trade ??= { capacity: 0, usage: 0, goods: {} }; c.trade.capacity += cap; c.trade.usage += use; }
@@ -907,9 +971,9 @@ const out = {
   world,
   countries,
   // v8: every state, keyed by its save-internal id (stable within a campaign; `region` is the durable
-  // key across campaigns). `country` is the owner's tag, null for an unowned state.
+  // key across campaigns). `country` is the owner's KEY in `countries` (v12; its tag before), null for an unowned state.
   states: Object.fromEntries([...new Set([...stateCountry.keys(), ...stateRegion.keys(), ...stateInfra.keys()])].sort((a, z) => a - z).map(s => [s, {
-    country: (id => id != null ? (tagOf(id) ?? null) : null)(stateCountry.get(s)),
+    country: (id => id != null ? (keyOf(id) ?? null) : null)(stateCountry.get(s)),
     region: stateRegion.get(s) ?? null,
     infrastructure: stateInfra.get(s) ?? null,
     infrastructure_usage: stateInfraUse.get(s) ?? null,
@@ -928,7 +992,7 @@ if (OUT) {
   let bytes = Buffer.from(json, 'utf8');
   if (/\.gz$/i.test(OUT)) bytes = (await import('node:zlib')).gzipSync(bytes, { level: 6 });
   writeFileSync(OUT, bytes);
-  console.error(`${saveDate} · ${Object.keys(countries).length} countries · ${Object.keys(top_producers).length} goods · ${(json.length / 1024).toFixed(0)} KB raw / ${(bytes.length / 1024).toFixed(0)} KB written -> ${OUT}`);
+  console.error(`${saveDate} · ${Object.keys(countries).length} countries${splitRecords ? ` (${splitRecords} keyed TAG@id)` : ''} · ${Object.keys(top_producers).length} goods · ${(json.length / 1024).toFixed(0)} KB raw / ${(bytes.length / 1024).toFixed(0)} KB written -> ${OUT}`);
 } else process.stdout.write(json);
 
 // ---------------------------------------------------------------- optional corroboration

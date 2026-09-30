@@ -81,6 +81,11 @@ closed.
 | L31 | A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY RATHER THAN BY ITS ERA — the A/B generator keyed output, input value, cost and the lift on k = era − the industry's first era, so a late industry's first rung (automotive e2, electrics, synthetics, munition) was priced as an 1836 rung and electrics' only rung sat one era below its game-era-4 technology; eleven batches passed every lint | AUTO | `tools/lint_tier_eras.mjs` inside build.ps1 (throws) and `Test-LmL31` (the config + its paired tree); the generator derives eras from the technologies and throws beyond ±1. Found 2026-09-13 |
 | L32 | A CTD DURING THE AUTOSAVE WRITE LEAVES THE CONTINUE POINTER AIMED AT A SAVE THAT DOES NOT EXIST — the engine resumes by the TITLE its own `continue_game.json` names, not the newest file, so a truncated write defeats every step-back and the resume begins a FRESH 1836 game | AUTO | the deterministic resume feeder (quarantined set, one attempt per member, the `-ResumeWindowYears` process rule) + `Test-LmL32`: any run whose debug.log carries `Could not load save game [`. Found 2026-09-14 |
 | L33 | AN EMITTED DEFINE THE ENGINE REJECTS AT LOAD — a value outside the validator's hardcoded range is discarded with ONE line in error.log and the key keeps VANILLA's, so the arm is not the book: the eager set's `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR = 1.0` (vanilla's own comment says "capped at 1"; the range is [0,1)) ran at vanilla's 0.75, BELOW the 0.9 it was a one-lever test against, and F121 measured three of its four levers. A bound can also be a cross-reference: land `CRITICAL_THRESHOLD` 1.25 invalidates vanilla's ship `EXCESSIVE_THRESHOLD` 1.05, a define we never set | AUTO | `Test-LmL33` — (a) the config's `ai_defines` against the bounds the engine has stated (`-RepoOnly`, gates a launch), (b) with `-Session`, every run's error.log for `defines.cpp` "not valid with given value", which needs no table; `batch_heartbeat.sh` gives it its own DEFINE REJECTED alarm. Found 2026-09-15 |
+| L34 | A run recorded complete in minutes — a crash before the first autosave restarted through `-continuelastsave`, which loaded the previous run's endpoint | AUTO (post-run, `-Session`) |
+| L35 | A minted rung that no gate admits to its industry's gated secondary method | AUTO |
+| L36 | A telemetry metric name that matches nothing, so the run measures nothing and says so nowhere | AUTO (repo-side) |
+| L37 | The stop watcher goes blind to the register on any multi-config schedule, and says so only in its own hidden log | **REGISTERED, DETECTOR OWED** |
+| L38 | A save summary that keeps ONE country record per definition — a civil war's other side, or a country a revolt left behind, vanishes from `countries` and from `world.gdp` / `world.population` (up to v11; found 2026-09-30, F186) | AUTO (repo-side self-test + post-run, `-Session`) |
 
 ---
 
@@ -1949,4 +1954,62 @@ any future multi-config schedule that DOES want the register enforced per config
 (preflight walks them in every build, L27), and a running watcher keeps the code it loaded, so a fix would need it
 killed and re-armed. The repair is one line: derive the setup from the completed run's folder name and pass
 `--arm ${NAME}:${setup}`.
+
+## L38 — A SAVE SUMMARY THAT KEEPS ONE COUNTRY RECORD PER DEFINITION, SO A CIVIL WAR'S OTHER SIDE — OR A WHOLE COUNTRY — VANISHES FROM `countries` AND FROM THE WORLD TOTALS (found 2026-09-30, `20260930_181601_craft-merge-30y` run 1, FINDINGS F186)
+
+### What happens
+Up to `SAVE_SUMMARY_VERSION` 11, `tools/testbed/save_state_summary.mjs` built its per-country output as `countries[c.tag] = {…}`
+over every record of the save's `country_manager` — keyed by the country's **definition**. Records sharing a definition are
+common, and they come in three shapes (census of 221 same-definition groups in 23 saves, F186 §2): a live civil war (the main
+record + a `civil_war=yes` side, 192), a revolt that ended in a separate country beside the main one, often for decades (20), and
+two records that BOTH carry `is_main_tag` (6). The record later in the save's slot order overwrote the other — **the main one as
+often as not** — and `world.gdp` / `world.population`, summed over that map, lost every overwritten record.
+
+**MEASURED.** At 1866.1.1 of the run that found it, `countries.PRU` and `countries.JAP` were the REBEL sides (3.6M / 8.9M
+people) where the main Prussia and Japan hold 12.2M / 29.7M; world GDP read 2.5% low and world population 45M low. At the
+1936 endpoint of the vanilla n=16 baseline, seed 5 dropped the main **China** (251.5M people — world population read 13.8%
+low) and seed 7 read a second, 2.4–4.5M Prussia as `countries.PRU` in every summary **from 1871 to 1936**. In the register's
+1932–1936 window every summary of every run of the canon n=6 and the vanilla n=16 carries at least one dropped record.
+It also mis-attributed trade: v10/v11 found a state's owner entry by TAG, so a dropped record's trade capacity was added to
+the surviving entry (the rebel Prussia of 1866 carried the main one's 156).
+
+### Why nothing fails
+The harvester verifies a summary has a version, a date and ≥ 10 countries — it has 370. L12 reads one and finds a version.
+Every reader looks up `countries.GBR` or sums `Object.values(countries)` and gets a number. `world.buildings` — summed over
+country IDS, not over the map — stayed complete, so the two disagree silently: Σ countries' building levels falls short of the
+world's by exactly the dropped records' levels, and nothing compares them. `--verify-pops`, which re-derives the professions the
+expensive way, reads **"MAPPING SUSPECT", 4.0%** on the 1866 save — it was validated once, on a 1936 save whose drops were
+small, and never run again. ⚠⚠ **And the saves are reaped**: a summary that dropped a record is the only record there will ever
+be. Pre-v12 summaries cannot be repaired.
+
+### Fix (v12)
+One entry per country record. The single `is_main_tag` record keeps the plain TAG; every other record of its definition is keyed
+`TAG@<country id>`; a record alone on its definition keeps TAG whatever its flag; a group with two mains (or none) gives the plain
+TAG to its most populous main (else record) and names the group on stderr — giving it to nobody would make `countries.TAG` vanish
+and drop a pool member from the pool. `world.gdp` / `world.population` sum over every record; `overlord`, `states.<id>.country`,
+the `top_producers` rows and the trade attribution all use the same key; each entry carries `tag`, `civil_war` and
+`last_civil_war_date`. Readers treat keys as opaque (audited — no reader parses one); `c.tag ?? key.split('@')[0]` is the
+definition in every version.
+
+### Detector — `Test-LmL38`, both halves through `tools/testbed/ledger/summary_drops.mjs`
+1. **Repo-side, so it gates every build and every batch (`-RepoOnly`)**: `--selftest` writes a synthetic melt with two records of
+   one definition (the second later in slot order, i.e. the one a definition-keyed writer lets win), runs the **real writer** on
+   it and requires both entries (`AAA` = the main record, `AAA@2`), `world.population` and `world.gdp` over every record, no
+   building-level gap, keys `tag` or `tag@id`, and the second record's state keyed `AAA@2`. A regression is caught **before** a
+   batch reaps a single save — which is the only moment it can still be caught cheaply.
+2. **Post-run (`-Session`)**: `--check` requires every sampled v12+ summary (each run's newest and every 10th) to satisfy
+   Σ countries = world on building levels, population and GDP, with every key its tag or `tag@<id>`. Pre-v12 summaries are
+   COUNTED, not failed — they cannot be repaired; `summary_drops.mjs --session <stamp>` sizes their drops from the
+   `world.buildings` gap (the dropped value added × 52 × the survivors' displayed-to-base-priced ratio: 0.6–1.3 of the exact
+   dropped GDP in 18 of 20 checked drops, median 0.97) and flags every shortlist member whose entry is not a main record (⚑⚑ when
+   it answers to its own tag — the main it answers to was the one dropped).
+
+**Proven both ways (2026-09-30):** putting `countries[c.tag] = {` back into the writer ⇒ `L38 FAIL … countries.AAA is record 2 —
+it must be the main record 1; countries['AAA@2'] is absent — the second AAA record was dropped; Σ countries' levels short of the
+world's by 5` and `PREFLIGHT FAILED`; restored ⇒ `PASS`. A scratch session of three v12 re-summaries ⇒ `PASS`; the same with one
+`TAG@id` entry deleted from the newest ⇒ `L38 FAIL … Σ countries' levels short of the world's by 190; world.population differs
+from Σ countries by 2168519; world.gdp differs from Σ countries by 512489`.
+
+⚠ **The lesson is general: a map keyed by a field is a claim that the field is unique. Check it on the data** — here one pass
+over one save's country records would have shown six definitions held twice.
 
