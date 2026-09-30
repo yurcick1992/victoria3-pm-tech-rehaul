@@ -2603,6 +2603,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ Session paths hardcoded to the first instance (flatcost-n1); --session flag TODO
                         (the `fill_*` scripts still are; the three `analyse_ai_*`/`analyse_build_*`
                         scripts now take `--session`/`--config` and discover their runs)
+  testbed/ledger/pop_literacy.mjs  WHO CAN BECOME A MACHINIST, OUT OF ONE SAVE (FINDINGS F183, 2026-09-30): per country the lower class's literacy,
+                        the lower-class pops above 10% (where the machinist qualification starts to grow) and the share of the lower-class WORKFORCE
+                        in them, the people already qualified as machinists (the save's own `qualifications`), and the six light industries' e0
+                        levels (the future crafts). `<save.v3> [--json out] [--top N]`. ⚠ Pop literacy is literate ÷ WORKFORCE (it reproduces the
+                        game's country figure); over workforce + dependents it reads a quarter of it. ⚠ "Lower class" = the default hierarchy's
+                        professions from common/social_classes (farmers are middle class in 1.13), not the pop's own `social_class` record, which
+                        follows its country's hierarchy (castes, the Edo classes). ⚠ Kept saves only: the harvester reaps all but each run's newest
   testbed/ledger/merge_methods.mjs  WHICH MAIN METHOD A MERGED BUILDING RUNS (§10.91.2, 2026-09-30): per run, save date, country and merged
                         industry, the host's levels on its own method and on the merged one, and the levels whose secondary is the merged
                         method's own copy (`!!` when those exceed the merged method's levels — the per-method gating broken). Pairs and

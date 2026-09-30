@@ -18639,3 +18639,64 @@ only unmatched entries are level-0 constructions queued in the first week, and c
   untyped history pops from the available jobs at game start; the machinist headcount holding at 1838 (F181 §1) fits either.
 - ⚠ Day 0 itself is not observed, and the reading gives no per-profession breakdown per building — the building panel at 1.1.1836 would
   show both.
+
+## F183 — LOWER-CLASS LITERACY IN THE CANON'S 1840s: 155–158 countries have NO lower-class pop above 10% literacy, and every one is a small, barely literate state holding NONE of the future craft capacity; among the 72 craft-holding countries the thin ones are the Mughal rump, Persia and (in some seeds) Awadh; literacy climbs fast in the first decade, so F180 §2's 1837 figures overstate the 1840s gate (2026-09-30, read from kept saves, no game time)
+
+**The question (the user, 2026-09-30):** in the canon's 1840s, which countries have no lower-class pop with literacy over 10% — the pops
+from which the machinist qualification can grow at all. The qualification GROWS at `(pop literacy − 0.1) × 20` a pop, floored at zero, ×2
+for laborers and ×0.05 for peasants under serfdom (`common/pop_types/machinists.txt`); the ruled craft staffing is 30–50% machinists
+(BALANCE_FRAMEWORK §10.91.1 item 9).
+
+**Sources.** The canon's own 1840s saves are reaped (the harvester keeps each run's newest). Kept instead: **ten saves at 1844.1.1** of
+session `20260925_202118_finboost-wall-ab-n5x2` — `canon-slide-b158` with and without the finish boost, two canons back; nothing since
+(B 1.58 → 1.64, the trade weights, the dams) touches education or literacy — plus a vanilla control at 1846.1.1
+(`20260920_192007_schedule/run002_vanilla`) and the first craft probe's kept 1838.1.1 save (`20260930_171147`, run 1). Read with
+`tools/testbed/ledger/pop_literacy.mjs`.
+- **Pop literacy = literate ÷ WORKFORCE** (`num_literate` over `workforce`): it reproduces the game's own country figure within 0.3 points for
+  most countries (China 15.62 against 15.65%, Ottomans 16.85 against 16.85, Korea 32.61 against 32.52; Britain and France 4–6 points under).
+  Over workforce + dependents it reads about a quarter of that — the first cut of the reader made that mistake.
+- **Lower class = the default hierarchy's professions** (`common/social_classes/00_default.txt`): clerks, laborers, machinists, peasants,
+  slaves, soldiers — farmers are MIDDLE class in 1.13. A pop's own `social_class` record follows its country's hierarchy (India's castes,
+  Japan's Edo classes), so it is not used for the cut.
+
+**1. The strict answer: no craft country is in it.** In at least one of the ten runs, **158 countries** (155 in run 1) have no lower-class pop
+above 10% literacy — 26M people in run 1, all small decentralized or tribal states at about 1% literacy (the largest: Igbo 2.2M, Mossi 1.5M,
+Kaabu, Fante and their like). **They hold 0 of the ~508 e0 levels of the six industries** (median over the runs), i.e. none of the future
+craft capacity. One more country (Sulu) has such pops for under 5% of its lower-class workforce; it holds no crafts either.
+
+**2. The craft holders, thinnest first** (median of ten runs; the minimum over runs in brackets; e0 levels = the future crafts ÷ 10):
+
+| Country | e0 levels | lower-class literacy | lower-class workforce in pops > 10% | machinist-qualified people | vanilla 1846 lower-class literacy |
+|---|---|---|---|---|---|
+| Mughal rump (MUG) | 1 | 7.4% | 11.9% (1.1%) | 4k | 7.3% |
+| Persia (PER) | 7 | 11.0% | 33.7% (23.4%) | 47k | 13.3% |
+| Ottomans (TUR) | 22 | 16.0% | 72.6% (40.9%) | 139k | 18.0% |
+| Punjab (PAN) | 4 | 16.2% | 82.7% (38.5%) | 26k | — |
+| Egypt (EGY) | 10 | 13.4% | 86.0% (65.2%) | 57k | 10.8% |
+| Brazil (BRZ) | 10.5 | 19.4% | 87.1% (73.9%) | 141k | 17.9% |
+| Sokoto (SOK) | 2 | 26.8% | 90.9% (54.3%) | 55k | 20.4% |
+| Morocco (MOR) | 3 | 21.6% | 95.6% (49.5%) | 13k | 26.7% |
+| Awadh (AWA) | 4 | 32.0% | 99.1% (**3.8%**) | 93k | 17.9% |
+| East India Co. (BIC) | 34.5 | 18.5% | 94.8% (88.8%) | 2.28M | 17.4% |
+| Russia (RUS) | 59 | 15.5% | 96.6% (93.3%) | 392k | 14.9% |
+| China (CHI) | 146.5 | 15.2% | 97.8% (97.0%) | 1.33M | 16.9% |
+| Korea (KOR) | 5 | 31.6% | 99.1% (98.7%) | 95k | 35.0% |
+| Japan (JAP) | 25.5 | 60.1% | 99.8% (99.5%) | 268k | 58.3% |
+
+Every other craft holder (58 countries, the Europeans, the Americas, the Indian princely states) has ≥ 85% of its lower-class workforce in
+pops above 10% in the median run. Awadh is SEED-DEPENDENT: 99% in most runs and 3.8% in one (11.4% in run 1) — not traced.
+
+**3. The first decade is where the gate binds, and it loosens fast.** Country literacy, the craft probe's summaries at 1836.4 → 1838.1, then the
+canon at 1844.1: **Korea 10.3 → 16.2 → 32.5%**, **Siam 8.3 → 10.9 → 23.6%**, Persia 8.4 → 8.9 → 13.1%, Ottomans 11.2 → 12.8 → 16.9%, China
+15.3 → 15.7 → 15.6%. At 1838 the lower-class workforce in pops above 10% is **5.7% in Persia and 5.9% in the Mughal rump**, 45.9% in Siam,
+51.7% in the Ottomans, 55.8% in Egypt, 98.9% in Korea, 97.7% in China. ⇒ **F180 §2's figures (Korea 11.4%, Persia 8.6%, Siam 8.4% in 1837)
+were right for 1837 and overstate the gate from the 1840s on**; the ruled staffing's real exposure is the first years in Persia and the
+Mughal rump.
+
+**4. Above 10% is a trickle near the line.** The growth rate scales with the distance: a laborer pop at 15% literacy qualifies at 2 against
+8 at 30%. The stock already qualified is the better measure of who can be hired, and it is large where the crafts are large — China 1.33M and
+the East India Company 2.28M against, in the ruled craft book, roughly 400k machinist jobs in China at the start (F181 §1).
+
+**What it does NOT say.** Nothing about the craft book's own literacy (it touches no education lever, so it should read the same, unmeasured);
+whether the machinist JOBS get filled over time in Persia and the Mughal rump (the 30-year probe reads that); why Awadh's reading swings
+between seeds. The 10% line is where qualification growth starts, not a hiring rule.
