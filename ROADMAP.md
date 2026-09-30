@@ -2249,8 +2249,13 @@ e0 where they stand; a periphery craft repays itself in about a year (ruled deli
 4. ✅ Probed (F181, session `20260930_171147`): both staffings hold 0.89–1.00, no economy of scale, no company crafts, no building wave,
    world GDP the canon's — and the ×10 start had multiplied the ownership entries; FIXED, and the fix confirmed (F182, session
    `20260930_174540`: urban centres and financial districts back at the canon's).
-5. Pick the staffing on the probe (both read alike at the start; Korea's ruled staffing slips to 0.79 by 1838), then ask for the 2+1 century
-   batch against `canon-dams-family` (F177, consensus loss 5.90). Watch: craft
+5. ✅ Staffing picked (user, 2026-09-30 evening): *"The one with the machinists"* — `artisan6`'s ruled mix; `artisan6-shop` dropped.
+6. ✅ Thirty years (F184) and the understaffing diagnosed (F185: the hiring rules against the crafts' economics, not literacy); what the empty
+   crafts cost (F187: 0.17% of all construction).
+7. ⭐ **STEPS 12 AND 13 ARE ONE BOOK FROM NOW ON** (user-ruled 2026-09-30 evening, BALANCE_FRAMEWORK §10.91.3): *"From now on, combine them
+   always. After this arc (maybe 2-3 days), I'll finalise the decision on whether both stay and get canonised or both go."* The book is
+   `artmerge6`; its crafts' hiring floor is under a 10-year probe (`artmerge6-floor`, session `20260930_205540_craft-floor-10y`). Then, and
+   only on the user's go-ahead, a century batch of the combined book against `canon-dams-family` (F177, consensus loss 5.90). Watch: craft
    workers by country and decade against each country's wage path (a craft rung still growing in Britain at 1900 falsifies the mechanism),
    world W, T0 by workers, PI/PP, row P.
 
@@ -2275,6 +2280,8 @@ Branch if it runs hot: the added method ×1/√1.9 (capital-neutral for new buil
    `lib_obsolescence`, `tiered_panel`) — teach them before quoting them on a merge book.
 4. ✅ Probed (F182, session `20260930_174540`, with three of the technologies granted to GBR FRA USA PRU BEL): the AI switches existing hosts
    one building at a time over 0–19 months, no construction, ungranted countries untouched; a switch resets the old method's secondary and no
-   merged copy was re-selected in two years; switched chemical plants run two-thirds staffed. NEXT: the 2+1 century batch of `merge6`
-   against the canon — ASK FIRST.
+   merged copy was re-selected in two years; switched chemical plants run two-thirds staffed. Thirty years (F184): the merged methods spread
+   decades before the canon builds those rungs.
+5. ⭐ **ONE BOOK WITH STEP 12 FROM NOW ON** (§10.91.3): the merges are measured only inside `artmerge6`, and canonised or dropped with the
+   crafts. No separate `merge6` batch.
 

@@ -293,3 +293,10 @@ tools/testbed/no_new_runs_at.log
 !config/tech_tree_options.merge6.json
 !config/mod_config.merge6-probe.json
 !config/tech_tree_options.merge6-probe.json
+# the combined craft + merge book (user-ruled 2026-09-30 evening, BALANCE_FRAMEWORK §10.91.3) and the crafts' hiring-floor probe books
+!config/mod_config.artmerge6.json
+!config/tech_tree_options.artmerge6.json
+!config/mod_config.artmerge6-floor.json
+!config/tech_tree_options.artmerge6-floor.json
+!config/mod_config.artisan6-floor.json
+!config/tech_tree_options.artisan6-floor.json

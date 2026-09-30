@@ -259,9 +259,13 @@ craft rungs — skilled, labour-heavy, construction cost ÷50, base-price break-
 the craft professions; companies cannot build or form off them. Two staffing variants are probed (the ruled mix with 30–50% machinists,
 and masters-as-shopkeepers at the same wage units), because machinists need literacy above 10% (F180 §2). **Line B:** Baking Powder,
 Electric Sewing Machines, Spray Finishing, Paper Bleaching, Improved Fertilizers and Electric Arc stop being buildings and become second
-main methods of the rung below, at the geometric-midpoint cost (host × √1.9), recipes verbatim. Both are ALTERNATE books (`artisan6`,
-`artisan6-shop`, `merge6`), measured separately against `canon-dams-family`; nothing about them reaches `config/mod_config.json` until
-the user rules on measured results.
+main methods of the rung below, at the geometric-midpoint cost (host × √1.9), recipes verbatim. They were built as ALTERNATE books (`artisan6`,
+`artisan6-shop`, `merge6`) and measured separately against `canon-dams-family` (F181–F187); nothing about them reaches `config/mod_config.json`
+until the user rules on measured results.
+⭐⭐ **ONE BOOK SINCE 2026-09-30 EVENING (user-ruled, BALANCE_FRAMEWORK §10.91.3):** *"From now on, combine them always. After this arc (maybe
+2-3 days), I'll finalise the decision on whether both stay and get canonised or both go."* ⇒ measure only **`artmerge6`** = `artisan6` + the
+merge keys (proven by field diff; the tree twin is the canon's); the lines are canonised or dropped TOGETHER. The staffing is the machinist
+mix (*"The one with the machinists"*; `artisan6-shop` dropped, kept as a record).
 ⭐ **HOW A MERGE IS EXPRESSED (2026-09-30):** the removed rung keeps its tier record and gains **`method_of: <host key>`**. The builder then
 emits no building for it: its main method joins the HOST's main group, gated by its own technology (`unlocking_technologies`), and the host
 carries the midpoint `building_cost` / `ai_value` (`_merge` records the pairs; L31 checks both). Every emitter follows: `emit_secondaries`
@@ -279,11 +283,13 @@ before the canon builds those rungs. ⭐ **WHY CRAFTS STAY UNDERSTAFFED (F185):*
 machinists than the craft lacks; the least literate states hold the best-staffed crafts) but the engine's hiring rules against the crafts'
 economics — profit under 25% of revenue (no active hiring, no wage raises, wage cuts at 15%) and value added per worker at or under the £3
 hiring floor (`BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES`), which the craft recipes clear only at output prices of 100–124% of base
-(vanilla's first methods at 74–81%); new craft levels are built and left 7–30% staffed. A crafts-only `min_productivity_to_hire` on
-`bg_pmr_crafts` is PROPOSED, not ruled. ⭐ **WHAT THE EMPTY CRAFTS COST (F187):** the crafts standing new at 1866 took 10,932 construction
-points (£5.9M) — 0.48% of all construction, 0.68% of economic and 1.7% of tiered construction — and 36% of it stands empty (0.17% of all
-construction); the canon spent a median 115,000 points (£66M, 5.0% of all construction) on the same six e0 rungs in the same years, and the
-merge run's new e0 factories stand 36% empty as well. No century batch of either has run — that is the user's to confirm.
+(vanilla's first methods at 74–81%); new craft levels are built and left 7–30% staffed. ⭐ **WHAT THE EMPTY CRAFTS COST (F187):** the crafts
+standing new at 1866 took 10,932 construction points (£5.9M) — 0.48% of all construction, 0.68% of economic and 1.7% of tiered construction —
+and 36% of it stands empty (0.17% of all construction); the canon spent a median 115,000 points (£66M, 5.0% of all construction) on the same
+six e0 rungs in the same years, and the merge run's new e0 factories stand 36% empty as well. ⭐ **THE CRAFTS' HIRING FLOOR IS UNDER A PROBE**
+(user go-ahead 2026-09-30 evening; §10.91.3): **`artmerge6-floor`** = `artmerge6` + `min_productivity_to_hire = 0.01` on `bg_pmr_crafts`
+(`make_artisan_config.mjs --hire-floor`), against `artmerge6`, 2 × 1836 → 1846, session `20260930_205540_craft-floor-10y` — not ruled into
+the book. No century batch of the combined book has run.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
@@ -1558,6 +1564,13 @@ config/mod_config.merge6.json / config/mod_config.merge6-probe.json ⚗ THE MERG
                         midpoint). `merge6-probe` = merge6 + a probe-only `start_tech_grants` (the three merged technologies whose host
                         buildings stand in 1836, to GBR FRA USA PRU BEL) so a two-year probe can watch the switch; probed by schedule
                         `merge6_probe.json`. Un-ignored with their twins
+config/mod_config.artmerge6.json / config/mod_config.artmerge6-floor.json / config/mod_config.artisan6-floor.json ⭐⭐ THE COMBINED BOOK
+                        (user-ruled 2026-09-30 evening, BALANCE_FRAMEWORK §10.91.3: "From now on, combine them always") + tree twins
+                        (the canon's, byte for byte). `artmerge6` = `make_merge_config.mjs --base config/mod_config.artisan6.json
+                        --suffix artmerge6`: artisan6 (the machinist staffing) + the six merges, proven by field diff to be exactly the
+                        union. `artmerge6-floor` = the same built on `artisan6-floor` (`make_artisan_config.mjs --hire-floor 0.01`):
+                        `min_productivity_to_hire = 0.01` on bg_pmr_crafts, the probe of the crafts' hiring floor (schedule
+                        `craft_floor_10y.json`); its build differs from artmerge6's in that one line. Un-ignored with their twins
 config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
@@ -2660,8 +2673,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         industry, the host's levels on its own method and on the merged one, and the levels whose secondary is the merged
                         method's own copy (`!!` when those exceed the merged method's levels — the per-method gating broken). Pairs and
                         method keys from each run's OWN book (`_merge`). `--session <stamp> [--setup <name>] [--tags GBR,FRA] [--every N]`.
-                        ⚠ Until the register is taught the same, criteria.mjs's T0–T3 on a merge book count a merged rung's levels under
-                        its HOST's era
+                        ⭐ criteria.mjs's T0–T3 read merge books the same way since 2026-09-30 (commit df5769f: a host's staffing
+                        shared out over its main methods by the levels running each); the old-rung census and obsolescence readers
+                        still count by building type
   testbed/ledger/criteria.mjs  ⭐⭐ THE CRITERIA REGISTER (user-ruled 2026-09-17, BALANCE_FRAMEWORK §10.83 — the governing section near the top of this
                         file): aim / soft / hard per scope (the shortlist pool and the world), end-state means over 1932–1936, HARD lines per run with the binary
                         outcome (broken by stall / by runoff — the anchor, the pooled U*, the capital-abundance pair, the end-state GDP lines), SOFT lines, everything else on
@@ -3251,13 +3265,17 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⭐ ALSO NEW GROUPS, ADDITIVELY (2026-09-30): top-level `building_groups_add` {bg_pmr_<x>: {name, <field>: number |
                         bare key}} → common/building_groups/zzz_pm_rehaul_groups.txt + the name in every language. The craft books use it
                         for `bg_pmr_crafts` (parent bg_light_industry, economy_of_scale = no, urbanization 2, infrastructure 0.15)
-  make_artisan_config.mjs THE CRAFT BOOK — `--base <config> --suffix <sfx> [--staffing ruled|shop]` turns the six light-industry e0
+  make_artisan_config.mjs THE CRAFT BOOK — `--base <config> --suffix <sfx> [--staffing ruled|shop] [--hire-floor X]` turns the six light-industry e0
                         rungs of a canon-shaped book into 500-worker craft rungs (BALANCE_FRAMEWORK §10.91.1): the per-level recipe, a
                         5,000-head staffing block × `workforce_mult` 0.1, cost = the base e0's ÷ 50, `building_group` bg_pmr_crafts,
                         `levels_per_mesh` 500, the excluded secondary groups/methods, `craft: true`, the base-price break-even and
                         `wage_pct` restated at the e0 reference wage; adds `building_groups_add`, `_artisan` (the record L31 checks) and
                         `_artisan_variant`, and copies the base's tree twin. THE CRAFT TABLE LIVES HERE ONLY. THROWS on a base whose e0
-                        is not vanilla-staffed, an excluded group the industry lacks, or a staffing block that is not 5,000 whole heads
+                        is not vanilla-staffed, an excluded group the industry lacks, or a staffing block that is not 5,000 whole heads.
+                        `--staffing ruled` is the variant in use (user-ruled 2026-09-30 evening); `shop` stays for its record book.
+                        `--hire-floor X` (2026-09-30, the F185 §5 probe) writes `min_productivity_to_hire = X` on bg_pmr_crafts — the
+                        per-group override of the engine's £3 `BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES` — and records it as
+                        `_artisan.hire_floor`; it refuses 0 (some group fields read 0 as unset), so "no floor" is 0.01
   emit_craft_start.mjs  THE CRAFT RUNGS' 1836 START (§10.91.1 item 6, "that's a must") — called by build.ps1 AFTER emit_secondaries.
                         ⭐ PART 1, OWNERSHIP (found by the first craft probe, FINDINGS F181): convert_history's ×10 also multiplied the
                         ownership entries, and the engine SIZES a financial district or manor house by the levels it owns at the start

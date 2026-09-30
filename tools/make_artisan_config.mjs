@@ -23,9 +23,17 @@
 //   • map meshes per level × 10 (levels_per_mesh 500), so the ×10 levels do not multiply the models on the map.
 //
 // --staffing ruled (default): the cloud session's skilled mix — shopkeepers (masters) / machinists (journeymen) / laborers.
+//   ⭐ The variant in use (user-ruled 2026-09-30 evening: "The one with the machinists").
 // --staffing shop: masters as shopkeepers + laborers at the SAME wage units (±0.1%), for the probe that asks whether machinists'
 //   literacy gate (qualification = (literacy − 0.1) × 20) throttles the crafts where they stand (F180 §2; ruled 2026-09-30:
-//   "probe both").
+//   "probe both"). DROPPED by the same evening's ruling; the flag stays so its book can be regenerated as a record.
+// --hire-floor X: the craft group's own hiring floor, `min_productivity_to_hire = X` on bg_pmr_crafts — the per-group override of
+//   the engine's `BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES` (3: "non-subsidized buildings will not hire if it would result
+//   in their annual earnings/employee falling below this threshold"; vanilla sets 10 on its owner buildings). FINDINGS F185 §3/§5:
+//   the craft recipes clear £3 only at output prices of 100–124% of base, so the floor blocks hiring where local prices sit low.
+//   Absent = the engine's default. ⚠ Use a small positive number for "no floor" (0.01), not 0: for some group fields the engine
+//   reads 0 as "unset, take the parent's / the default" (the documentation says so for cash_reserves_max), and a 0 read that way
+//   would silently restore the £3 floor.
 import { readFileSync, writeFileSync, existsSync, copyFileSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -38,9 +46,13 @@ const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1
 const BASE = argOf('--base', 'config/mod_config.json');
 const SFX = argOf('--suffix', null);
 const STAFFING = argOf('--staffing', 'ruled');
-if (!SFX) { console.error('usage: node tools/make_artisan_config.mjs --base <config> --suffix <suffix> [--staffing ruled|shop]'); process.exit(2); }
+const HIRE_FLOOR_ARG = argOf('--hire-floor', null);
+if (!SFX) { console.error('usage: node tools/make_artisan_config.mjs --base <config> --suffix <suffix> [--staffing ruled|shop] [--hire-floor X]'); process.exit(2); }
 const die = m => { throw new Error('make_artisan_config: ' + m); };
 if (!['ruled', 'shop'].includes(STAFFING)) die(`--staffing must be ruled or shop (got ${STAFFING})`);
+const HIRE_FLOOR = HIRE_FLOOR_ARG == null ? null : Number(HIRE_FLOOR_ARG);
+if (HIRE_FLOOR != null && !(Number.isFinite(HIRE_FLOOR) && HIRE_FLOOR > 0))
+  die(`--hire-floor must be a positive number (got ${HIRE_FLOOR_ARG}); for "no floor" pass a small one such as 0.01 — 0 may read as unset`);
 
 const WM = 0.1;          // a craft level is a tenth of a 5,000-head level
 const COST_DIV = 50;     // construction cost = the base e0's ÷ 50
@@ -140,6 +152,7 @@ cfg.building_groups_add = {
     infrastructure_usage_per_level: 0.15,
     economy_of_scale: 'no',
     construction_efficiency_modifier: 'yes',
+    ...(HIRE_FLOOR != null ? { min_productivity_to_hire: HIRE_FLOOR } : {}),
   },
 };
 const sha = createHash('sha256').update(baseRaw).digest('hex').slice(0, 16);
@@ -152,13 +165,15 @@ cfg._artisan = {
   base: basename(BASE),
   base_sha256: sha,
   recipes,
+  hire_floor: HIRE_FLOOR,
   ruled_by: 'BALANCE_FRAMEWORK §10.91.1 (user, 2026-09-30); FINDINGS F180',
-  command: `node tools/make_artisan_config.mjs --base ${BASE} --suffix ${SFX} --staffing ${STAFFING}`,
+  command: `node tools/make_artisan_config.mjs --base ${BASE} --suffix ${SFX} --staffing ${STAFFING}` + (HIRE_FLOOR != null ? ` --hire-floor ${HIRE_FLOOR}` : ''),
 };
 cfg._artisan_variant = {
   name: SFX,
   base: basename(BASE),
-  delta: `six light-industry e0 rungs -> 500-worker craft rungs (${STAFFING} staffing), cost /${COST_DIV}, group ${GROUP}; every other key and rung the base's`,
+  delta: `six light-industry e0 rungs -> 500-worker craft rungs (${STAFFING} staffing), cost /${COST_DIV}, group ${GROUP}` +
+    (HIRE_FLOOR != null ? `, the group's hiring floor min_productivity_to_hire ${HIRE_FLOOR} (engine default 3)` : '') + `; every other key and rung the base's`,
 };
 const outCfg = join(REPO, 'config', `mod_config.${SFX}.json`);
 writeFileSync(outCfg, JSON.stringify(cfg), 'utf8');

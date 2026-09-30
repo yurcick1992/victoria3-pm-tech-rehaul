@@ -1,0 +1,77 @@
+{
+  "schedule_version": 1,
+  "label": "craft-floor-10y",
+  "_why": "THE CRAFT HIRING-FLOOR PROBE (user go-ahead 2026-09-30 evening: 'Yes, go with a 10-year probe and report on differences. If only possible with a longer probe, do that one instead'), on the COMBINED book the same message ruled ('From now on, combine them always') with the RULED staffing ('The one with the machinists'). Run 1 = config/mod_config.artmerge6.json: the craft book artisan6 (ruled staffing) plus the six merges of merge6, proven by field diff to be exactly artisan6 + the merge keys and merge6 + the craft keys. Run 2 = config/mod_config.artmerge6-floor.json: the same plus ONE key, min_productivity_to_hire 0.01 on bg_pmr_crafts, the per-group override of the engine's BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES (3: 'non-subsidized buildings will not hire if it would result in their annual earnings/employee falling below this threshold'; vanilla sets 10 on its owner buildings). 0.01 and not 0, because for some group fields the engine reads 0 as unset. The two builds differ in that one line and the generated header comments. WHY TEN YEARS IS ENOUGH: in the 30-year craft run (20260930_181601 run 1, artisan6 alone) world craft staffing fell 95.6% (1837) -> 88.5% (1846), and 30-45% of craft levels sat in country cells whose value added per worker was under the 3-pound floor in 1837-1848, against ~10% after 1849 — the floor binds most in exactly these years (FINDINGS F185). Second baseline seed = that run read at the same dates (no merges, but merges act only from ~1845). A probe: one seed per arm, no register reading.",
+  "_questions": {
+    "Q1": "World craft staffing (staffed / levels) by year, and the staffing of the crafts CONSTRUCTED since 1836, at 1846.1.1 in both arms (craft_fill.mjs --built on the kept end saves; the summaries for the path).",
+    "Q2": "The hiring states of the understaffed crafts at 1846 (craft_fill.mjs: laying off / failed to hire / paused / ramping) — does 'failed to hire', the floor's signature, shrink in the floor arm, and what is left?",
+    "Q3": "The crafts' economics in both arms: value added per employee (against 3), profit per revenue, wage per the country's normal rate, inbound hires.",
+    "Q4": "Side effects: world GDP (displayed and at base prices), population, W and U* (world and shortlist), unemployment and peasants in the craft-heavy countries, craft goods' prices in the instrumented markets.",
+    "Q5": "Craft construction 1836 -> 1846 in both arms (construction_spend.mjs): levels built, points, and the empty share.",
+    "Q6": "Load and health: the init marker, no error line naming our files, clock advancing, crashes resumed."
+  },
+  "_predictions": {
+    "Q1": "baseline world craft staffing at 1846 in 86-91% (the 30-year run read 88.5%); the floor arm +2 to +6 points; constructed crafts 45-65% staffed in the baseline, +5 to +20 points in the floor arm",
+    "Q2": "failed-to-hire unstaffed levels at least halved in the floor arm; laying off and paused not smaller (the margin rules are untouched, and more hires at cut wages feed the SoL-based layoffs); many new crafts still stop near 10% employment in both arms, where the pause rule (under 20% profit, at least 10% employed) binds",
+    "Q3": "value added per employee LOWER on average in the floor arm's crafts (it hires in the low-price cells the floor used to shut), margins similar or lower, wages per normal similar",
+    "Q4": "world GDP within +-3% of the baseline (inside one seed's noise); unemployment including peasants a little lower in the craft-heavy periphery; craft goods a little cheaper there",
+    "Q5": "craft construction similar in both arms; the floor arm's constructed crafts less empty",
+    "Q6": "clean"
+  },
+  "_cost": "2 runs x 1836 -> 1846, about 12-16 minutes each plus builds and harvest",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "One seed per arm: a difference larger than the path the 30-year run's crafts took (95.6 -> 88.5% in ten years) is a reading, a smaller one is noise until repeated.",
+    "No stop watcher: a probe has no end state for the register to judge."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1845.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "artmerge6": {
+      "kind": "config",
+      "config": "config/mod_config.artmerge6.json"
+    },
+    "artmerge6-floor": {
+      "kind": "config",
+      "config": "config/mod_config.artmerge6-floor.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "artmerge6",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "artmerge6-floor",
+      "until": "1846.1.1"
+    }
+  ]
+}
