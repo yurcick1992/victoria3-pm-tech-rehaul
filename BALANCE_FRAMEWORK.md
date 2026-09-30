@@ -8987,3 +8987,92 @@ secondary metric to track, but not the main one"*); it never replaces the regist
 price decline costs displayed GDP little: the mod's lower price level takes ~7% off the world's at 1935 (~18% off the shortlist's), and the
 two readings (displayed and base-priced) stay close. The first draft of this section called the ruled figure "nominal, at market prices";
 that wording is withdrawn — the user's words were "displayed GDP".
+
+## §10.91 — THE ARTISANSHIP e0 RUNGS (LINE A) AND SIX RUNGS MERGED BACK INTO METHOD SWITCHES (LINE B) (user-ruled 2026-09-30; unmeasured)
+
+**Provenance.** Designed with the user in a cloud session on 2026-09-30 (no game files or run data there); its handover lived outside the
+repo (`HANDOVER_artisanship.md` in the user's Downloads), so this section is the durable record of its rulings. The local session answered
+the questions the cloud session could not (FINDINGS **F180**), and the user ruled on the remaining choices the same evening. ROADMAP steps
+**12** (Line A) and **13** (Line B). Both lines are built as ALTERNATE books (`artisan6*`, `merge6`), measured separately, and combined only
+after both are read. The canon (`canon-dams-family-nolog`) is untouched.
+
+**Why.** The user, closing the previous line: *"drastically changing e0 economy to push its effectiveness per wage unit way lower,
+implementing 'true artisanship' on lower level (prospering in scarcity, badly scalable, replaced in mid-game by industrial scale)."* F94
+says the output-price decline the design rests on is not achieved; F97 says the decline the engine reads is in WAGE units (a building lays
+off once its workers fall under 0.66× expected SoL). A labour-heavy rung is exposed to exactly that: it gets dearer as the wage rises.
+
+### §10.91.1 — Line A: the craft rungs
+
+**The pattern (ruled).** Rungs that are *"1) artisanship, not manufacturies / factories 2) narratively need more skilled workforce (e.g. as
+a share of the workforce), on average, than later industrial-scale production 3) much more labour-intensive, with reasonable labour share of
+full non-capital expenditure way higher than for later industries."* Six e0 rungs: Bakeries (food), Handsewn Clothes (textile), Handcrafted
+Furniture (furniture), Forest Glass (glass), Crude Tools (tooling), Pulp Pressing (paper). **Muskets fits the pattern and is deferred**
+(the only 1836 small-arms producer). **Automobiles are untouched** (the era rule: the industry starts at e2).
+
+**The unit and the recipes (ruled: *"500 looks better to me narratively"*; *"On recipes: let's go with your proposal"*).** A level is a
+500-worker craft unit (`workforce_mult` 0.1 on a 5,000-head staffing block), keeping the vanilla building key. Per level, at base prices,
+base-price break-even with W = the e0 reference wage (£0.05837 per wage unit per week, `lib_wage_model.eraReferenceWage`) × wage units:
+
+| Rung | Staffing, ruled mix (shopkeepers / machinists / laborers) | Recipe per level | Cost (points) | Base-price break-even | Labour share |
+|---|---|---|---|---|---|
+| Bakeries | 90 / 150 / 260 | 3.6 grain → 3.37 groceries | 12 | 115% | 38% |
+| Handsewn Clothes | 65 / 210 / 225 | 1.95 fabric → 1.95 clothes | 6 | 140% | 52% |
+| Handcrafted Furniture | 90 / 250 / 160 | 1.38 wood + 0.46 fabric → 2.0 furniture | 6 | 140% | 56% |
+| Forest Glass | 50 / 250 / 200 | 1.59 wood → 1.32 glass | 6 | 140% | 57% |
+| Crude Tools | 75 / 225 / 200 | 2.23 wood → 1.59 tools | 6 | 140% | 50% |
+| Pulp Pressing | 50 / 200 / 250 | 3.06 wood → 2.43 paper | 12 | 140% | 40% |
+
+The identity behind them: labour share = 1 − r ÷ BE, r = material cost ÷ output value at base. The aim is a break-even of 130–150%; 175% is
+unacceptable. Cost = the canon e0's ÷ 50 (600 → 12, 316 → 6).
+
+**Rulings, in full:**
+1. **No ×1.2 input lift on the craft e0s**; e1–e3 of the six industries keep theirs and must come out byte-identical to the canon.
+2. **Secondaries:** automation stripped *"where they're narratively inappropriate altogether"*; on the crafts that is every automation
+   group, plus Vacuum Canning (both variants) and Patent Stills. Kept: Cannery, Pot Stills, Craftsman Sewing, Luxury Furniture, Ceramics —
+   their employment × 0.1 (`emit_secondaries`' verbatim-employment rule is amended for rungs carrying `workforce_mult`).
+3. **No economy of scale for crafts**, urbanization **2** per level and infrastructure usage **×1/10** — carried by ONE child building group
+   `bg_pmr_crafts` (parent `bg_light_industry`, `economy_of_scale = no`, `urbanization = 2`, `infrastructure_usage_per_level = 0.15`). The
+   route was researched before adopting it (F180 §1: vanilla overrides an inherited economy of scale in child groups, measured zero on
+   159-level financial districts; group-keyed script matches subgroups).
+4. **ai_value untouched** (*"Don't touch for now"*), 1,000 per craft level — a watch item.
+5. **Research events keep their marks in PEOPLE**; the people→levels conversion already honours `workforce_mult`.
+6. **The 1836 start holds employment**: every converted craft building gets ×10 levels (ownership lines too), and — ruled 2026-09-30
+   evening, *"that's a must"* — **the converted factories' workforce is converted into the craft professions**: in every state holding
+   craft levels, the untyped history pops of that state are carved into typed shopkeepers and machinists matching the craft staffing
+   (base plus the active secondaries), population unchanged, laborers left untyped (*"tune 1836 workers to recipes"*).
+7. **Companies can neither build nor form off craft rungs** (*"Companies, by themselves or with mandates, should not be able to build
+   'artisanship' t0s"*): the craft keys leave every company list, formation test, prosperity line and construction target.
+8. **Cost ÷50 is kept** — the local session found a periphery craft repays itself in about a year at 1836 prices (F180 §4) and the user
+   ruled: *"keep ÷1/50. Faster payback is narratively deliberate."*
+9. **The staffing risk is accepted and tracked** (F180 §2: machinists need literacy above 10%, and a building cannot fill one profession
+   more than 10 points ahead of its scarcest): *"Needs tracking, but otherwise acceptable. 10% is a really low threshold."* The first probe
+   builds **two staffing variants** — the ruled mix, and masters as shopkeepers plus laborers at the same wage units (Bakeries 127/373,
+   Clothes 118/382, Furniture 152/348, Glass 112/388, Tools 131/369, Paper 100/400 per level; the base-price break-even unchanged within
+   0.1%) — each with the 1836 workforce tuned to its own mix (*"all right, probe both. Don't forget to tune 1836 workers to recipes"*).
+10. **Later, not now:** spread the 1836 craft levels over several of the largest states; trim automation methods that duplicate a
+    main-method upgrade (textile looms, bottle blowers, the automated bakery, furniture's steam methods on Lathes); Muskets.
+
+### §10.91.2 — Line B: six add-on rungs become second main methods of the rung below
+
+**The ruling.** *"Anything over 30% can safely be ignored. However, the 6 options you say should be merged, removing higher tiers and
+recreating them as new PMs, unlockable by the same techs that now unlock tiers (so, basically returning for vanilla PM switch and gates, but
+only for some tiers of some industries)."* Period sources put each retrofit at 5–20% of a new plant (the old plant plus one department or a
+new drive). The six: Sweeteners + Baking Powder (food e1|e2), Sewing Machines + Electric Sewing Machines (textile e2|e3), Mechanized
+Workshops + Spray Finishing (furniture e2|e3), Sulfite Pulping + Paper Bleaching (paper e1|e2), Artificial + Improved Fertilizers
+(fertilizer e0|e1), Open Hearth + Electric Arc (steel e2|e3). Continuous Web Processing and Catalytic Synthesis stay tiered (*"I agree on
+all three counts"*); everything over 30% stays tiered (*"leave everything as in canon, strictly tiered"* otherwise).
+
+**Cost (principle ruled, numbers from data).** One constant cost per merged building, with no dependence on the builder (*"very gamey and
+we won't go this way"*), chosen *"that results in reasonable payback time at realised prices for both tierN PM in its era and tierN+1 PM in
+its era"*. **The first test is the geometric midpoint** (*"midpoint first"*, 2026-09-30): cost = host × √1.9 — 1,571 (food, textile,
+furniture, paper), 1,103 (fertilizer), 3,981 (steel) — and ai_value likewise 1,000 × 3^(e+0.5): 5,196 (food, paper), 15,588 (textile,
+furniture, steel), 1,732 (fertilizer). At the canon's realised profits (F180 §5) that puts the hosts at 12–18 years in their own era and the
+added methods at 3.8–6.4 years (vanilla F53: 1900 quartiles 5.6 / 9.0 / 15.4).
+
+**Recipes verbatim** (the ruled default). The prepared branch if the merge book runs hot: the added method's recipe (output and inputs) ×
+1/√1.9 ≈ 0.73, which gives new builds exactly the canon's value added per construction point and keeps F97's death test under 0.20 in every
+pair (furniture closest at 0.18). A cost-only branch is × 1.9^0.75 = 1.62 of the host.
+
+**What merging changes.** The old method dies by SWITCHING, as in vanilla, not by exit — every metric must count levels by the ACTIVE
+method's era (save summaries carry per-method levels since v8); this matters most for fertilizer, whose host is the e0 rung T0 counts. None
+of the six removed rungs stands on the 1836 map; staffing totals already match within every pair.

@@ -18392,3 +18392,107 @@ local inputs and wages 0.5–0.65 of Britain's), with F97 (an old rung dies thro
 **What it does NOT say.** n=5 with a divergent consensus: every comparison here is directional. The two levers were tested together; the gate
 is expected to be neutral for the AI but was not isolated. The hoard mechanism of §3 is a candidate. The old-rung comparison of §5 is confounded
 with world GDP. Nothing here measures a GBR player's experience of the gate or of foreign competition.
+
+## F180 — BEFORE BUILDING THE CRAFT RUNGS AND THE SIX MERGES: the craft building group works as ruled; machinists are literacy-gated, so the ruled craft staffing is a start-up risk in low-literacy countries; through the 1836 scenario maths the craft conversion barely moves value added and the crafts start at least as profitable as the canon's e0 where they stand; at the canon's realised prices they stay profitable outside the core and lose money in it; a periphery craft repays its construction in about a year; the six merges at the geometric-midpoint cost put the hosts at 12–18 years and the added methods at 3.8–6.4 years (read 2026-09-30, no game time)
+
+**Why.** BALANCE_FRAMEWORK §10.91 was designed in a cloud session without game files or run data; this is the local session's answer to its
+open questions, read from the game files, the vanilla n=16 baseline (`20260821_131149`), the canon's six-run batch (`20260929_002728`, F177,
+`canon-dams-family`, v11 summaries) and the balance sheet's scenario model. The user added a method rule the same day: a recipe change moves
+prices and consumption, so 1836 effects go through the scenario maths (prices re-solved, pop demand re-split) and later decades are read at
+realised prices.
+
+### §1 The craft building group: a child's `economy_of_scale = no` overrides the parent's
+
+- Vanilla does exactly this: `bg_owner_buildings` (child of `bg_urban_facilities`, which has economy of scale) sets `economy_of_scale = no`,
+  as do `bg_monuments` and `bg_skyscraper` (children of `bg_government`, which has it).
+- **Measured in game** (session `20260802_190643`, `THRU` telemetry, 1836): financial districts at 2–159 levels read **0.0000** throughput
+  bonus, while government administration, urban centres, food industries and textile mills read +1% per level (3 levels → 0.03, 5 → 0.05).
+- `urbanization` and `infrastructure_usage_per_level` are group fields children override (`bg_conscription` urbanization 0 under
+  `bg_military`'s 2; `bg_manor_houses` infrastructure 0.0 under 0.1; `bg_arts` 0.5 under 2). Light industry's per-level infrastructure
+  usage is **1.5**, so the ruled ×1/10 is **0.15**.
+- Script keyed on a parent reaches its subgroups: no vanilla building sits directly in `bg_manufacturing`, yet decrees weight
+  `any_scope_building = { is_building_group = bg_manufacturing }` — the test must match descendants. So laws, decrees, events, AI strategy
+  weights and `building_group_bg_light_industry_*` modifiers still reach a child of light industry.
+- ⇒ one child group `bg_pmr_crafts` (parent `bg_light_industry`) carries all three rulings; the cap-modifier fallback is not needed.
+
+### §2 Staffing: machinists are literacy-gated
+
+- Machinist qualification = (literacy − 0.1) × 20 (× 2 for laborers, × 0.05 for serfs): **zero below 10% literacy**. Shopkeepers: wealth − 5.
+- `EMPLOYMENT_PROPORTIONALITY_LIMIT` = 0.1: no profession may fill more than 10 points ahead of the scarcest (a group may set its own
+  `proportionality_limit`; vanilla gives owner buildings and logistics centres 1.0).
+- 1837 country literacy (vanilla run 1): China 15.6%, Russia 15.5%, India (BIC) 20.5%, Ottomans 11.7%, Korea 11.4%, Persia 8.6%, Siam 8.4%,
+  Dai Nam 8.0% (Korea 24.9% and Persia 11.7% by 1841).
+- The ruled mixes are 30–50% machinists. By the 1836 preset levels China alone would need **~392k** machinists (16 textile × 2,100 + 40
+  furniture × 2,500 + 57 glass × 2,500 + 58 paper × 2,000); vanilla China has **31,831** in 1837 and **18,631** in 1838.
+- Vanilla's machinist-using buildings in low-literacy countries, 1837 → 1838 → 1841: China arms 0.59 → 0.21 → 0.38 staffed, China and
+  Korea artillery 0.01–0.02, Ottoman shipyards 0.42 → 0.41 → 0.59 — though China's logging camps (25,000 machinist slots) and tool
+  workshops ran full. In the canon, China's 10%-machinist e1 rungs are 0.9–1.0 staffed from the 1850s.
+- ⇒ a start-up risk, permanent only where literacy stays under 10%. Ruled acceptable and tracked (§10.91.1 item 9); the 1836 history pops
+  are re-typed into the craft professions (item 6).
+
+### §3 The 1836 conversion through the scenario maths
+
+Eight vanilla-1836 preset markets (`ui/presets.js`, the canon build of 2026-09-30), the six e0 rungs swapped for the craft recipes at ×10
+levels, throughput removed from the crafts (economy of scale off), secondary goods scaled with the rung's output and their employment ×0.1,
+prices re-solved by the game's formula, pop demand re-split by `needSplit` (value-weighted availability, −½ non-pop demand, clamps).
+Margins wages-inclusive at the market's normal wage (w = 1); `(×0.5)` at half of it:
+
+| Market | Value added, realised / base prices | Price moves (% of base) | Craft margin, w = 1 (canon e0) |
+|---|---|---|---|
+| China | −1.04% / −1.52% | paper 109→155, glass 81→104, furniture 104→113, wood 120→104, fabric 30→25 | textile +153% (+113), furniture +110 (+42), glass +51 (+7), paper +20 (+18) |
+| Russia | −4.04% / −1.09% | paper 114→142, glass 145→168, furniture 155→175, groceries 126→133, fabric 92→75, wood 48→38 | food +59 (+80), textile +70 (+51), furniture +172 (+143), glass +110 (+102), tools +54 (+74), paper +96 (+128) |
+| Japan | −1.28% / −1.52% | paper 122→163, glass 97→121, furniture 123→134, fabric 55→31 | food +48 (+68), textile +46 (+3), furniture +1 (−21), glass +19 (−13), tools −65 (−81), paper +28 (+34) |
+| Austria | +2.81% / −1.85% | clothes 126→147, paper 125→175, furniture 111→119, fabric 131→106 | food −17 (−22), textile 0 (−21), furniture −23 (−24), glass −4 (−14), paper +9 (+17); ×0.5: all positive but food (−5) |
+| British market (India) | +1.39% / −0.56% | paper 118→124, fabric 108→100 | textile +12 (−9), furniture −2 (−8), glass +12 (+7), paper −28 (+5) |
+| USA | −0.12% / −0.13% | groceries 145→147 | food +22 (+40) |
+| France, Belgium | 0 | (no e0 in these markets) | — |
+
+- Pops substitute: paper pop demand −76% (China), −50% (Russia), −80% (Japan), −100% (Austria), −14% (British market) — to furniture and
+  glass; groceries −11% (USA), −21% (Japan), −22% (Russia), −29% (Austria) — to grain, meat and fish.
+- The crafts' inputs get 5–25 points cheaper: they use less material per unit of output in four of six industries.
+- ⇒ the anchor barely moves in value; paper moves most (to the 175% edge in Austria). Crafts start at least as profitable as the canon's
+  e0 almost everywhere they stand, because the canon's e0 carries the ×1.2 lift and the anchor slide.
+
+### §4 Later decades at the canon's realised prices, and the build rate
+
+From the six F177 runs, per rung and country group (level-weighted, sums over runs): realised price index `goods_sales ÷ va_out`, input
+index `goods_cost ÷ va_in`, and the building's OWN wage rate ÷ its country's normal rate (`salary_w ÷ staffing ÷ base_wage`):
+- The canon's e0 rungs outside the core pay mostly **0.35–0.70** of their country's normal wage, rising over the century (rest of the world,
+  1837 → 1935: glass 0.15 → 0.53, tooling 0.34 → 0.54, furniture 0.36 → 0.67, textile 0.37 → 0.64, food 0.50 → 0.67, paper 0.45 → 0.85; China
+  textile 0.27–0.68, India textile 0.22–0.65); in the core the few survivors pay ~0.6–1.0 (British e0 food 0.75–0.99 in 1837–60).
+- The craft recipes scored statically at those prices and wages: in the rest of the world profitable all century (textile +11…+23%, food
+  +5…+20%); at the full normal wage at or below break-even there (food 0…−8%, textile −7…−16%). In the core (FRA USA PRU NGF GER NET BEL UNL)
+  loss-making at the normal wage from the start (food −7…−13%, textile −10…−17%); in Britain bakeries are profitable only in the scarce
+  1830s–50s (+39% 1837, +27% 1840, +14% 1850, +5% 1860, negative from 1870).
+- ⇒ consistent with the design's bet (crafts die where the wage is actually paid), with the caveat that different build decisions will move
+  both the prices and the wage ratio.
+- ⚠ **Build rate.** At 1836 prices a periphery craft level repays its 6–12 points in about a year (China textile ~£123 a week per level
+  against £4,320 of construction at £720/point; Russian furniture ~0.8–1.1 years). The canon's e0 rungs take 18.8–92.1 years in the 1840s
+  (textile 18.8, furniture 28.1, food 31.3, paper 32.4, tooling 71.4, glass 92.1) and vanilla manufacturing ~21 (F53, 1838). Expect crafts
+  to be built wherever idle labour meets high prices, until the local price falls to their break-even. Ruled deliberate (§10.91.1 item 8).
+
+### §5 The six merges at realised paybacks
+
+`payback_by_decade.mjs` on `20260929_002728` (capital-weighted per run, median over the six runs; at £720 per point, converted to the era's
+cheapest rate — 720 for the 1840s/1870s, 540 for 1900, 527 for 1930, F53):
+
+| Pair | Canon host / removed rung, own decade | Midpoint cost | Host / added method at the midpoint |
+|---|---|---|---|
+| Food: Sweeteners e1 + Baking Powder e2 | 13.3 (1870) / 7.0 (1900) | 1,571 | 18.3 / 5.1 |
+| Textile: Sewing e2 + Electric Sewing e3 | 8.8 (1900) / 7.0 (1930) | 1,571 | 12.1 / 5.1 |
+| Furniture: Mechanized e2 + Spray e3 | 8.9 / 7.0 | 1,571 | 12.2 / 5.0 |
+| Paper: Sulfite e1 + Bleaching e2 | 12.9 (1870) / 7.4 (1900) | 1,571 | 17.8 / 5.4 |
+| Fertilizer: Artificial e0 + Improved e1 | 47.6 (1840) / 8.9 (1900) | 1,103 | 65.6 / 6.4 |
+| Steel: Open Hearth e2 + Electric Arc e3 | 9.5 (1900) / 5.3 (1930) | 3,981 | 13.1 / 3.8 |
+
+- Vanilla (F53, measured): 1870 median 11.5 years (manufacturing 10.2), p75 24.3; 1900 quartiles 5.6 / 9.0 / 15.4 (manufacturing median
+  8.2). At the midpoint the hosts stay inside vanilla's range; the added methods land at its fast quartile, steel's below it; fertilizer's
+  host is out of range either way (the canon's e0 fertilizer earns 15–21%, levels 9 → 31 over the century).
+- F97's death test at base prices, canon → added method × 0.73: textile e1/e3 0.109 → 0.150, furniture 0.133 → 0.183, steel 0.104 → 0.143,
+  paper e0/e2 0.124 → 0.171, food e0/e2 0.099 → 0.136; fertilizer's added method is the lower rung of its pair and only improves. At × 0.6
+  furniture (0.221) and paper (0.207) fail.
+
+**What it does NOT say.** §3 is a static single-market model (trade held, F24's ~18% error on pop spending); §4 and §5 hold the canon's
+realised prices, profits and wages fixed, so every craft and merge figure there is a directional reading, not a prediction — a book built on
+them will make different build decisions. The machinist evidence (§2) is from vanilla and the canon; whether the 1836 start fills the craft
+machinist slots, and whether the re-typed pops stay, is what the probes measure. Nothing here is measured on a craft or merge book.

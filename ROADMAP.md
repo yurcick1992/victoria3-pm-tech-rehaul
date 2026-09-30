@@ -2229,3 +2229,46 @@ its plan belongs to the session designing it; this entry only records what was c
 survives on a local price premium, cheap local inputs and wages 0.5–0.65 of Britain's), F97 (an old rung dies through rising wages) and
 F178 §4 (idle labour keeps it alive). The canon is unchanged: `canon-dams-family-nolog`.
 
+## ⭐⭐⭐ STEP 12 — THE ARTISANSHIP e0 RUNGS (user-ruled 2026-09-30; BALANCE_FRAMEWORK §10.91.1; FINDINGS F180)
+
+Six e0 rungs become 500-worker craft rungs — skilled, labour-heavy (38–57% of non-capital cost), cost ÷50, base-price break-even ~140%
+(Bakeries 115%) — so they die where wages rise and survive where they don't. Built as an ALTERNATE book, never the canon until measured.
+
+**Answered before building (F180):** the craft child building group carries all three group rulings (economy of scale off, urbanization 2,
+infrastructure ×1/10); machinists are literacy-gated, so the ruled staffing is a start-up risk in low-literacy countries (accepted, tracked);
+through the 1836 scenario maths the conversion moves value added by −4…+3% per market and crafts start at least as profitable as the canon's
+e0 where they stand; a periphery craft repays itself in about a year (ruled deliberate).
+
+**Next:**
+1. ✅ Rulings recorded (§10.91).
+2. Generate `config/mod_config.artisan6.json` (the ruled staffing) and `config/mod_config.artisan6-shop.json` (masters as shopkeepers at
+   the same wage units) + tree twins, from the canon by a post-processor, so e1–e3 are byte-identical by construction.
+3. Builder support: the craft building group, per-rung group / secondary exclusions / mesh density, secondary employment × 0.1, the 1836
+   ×10 levels and dropped method entries, the 1836 pops re-typed into the craft professions, companies without the craft keys, L31 taught
+   the craft rungs.
+4. Probe both books, 1836→1838 each (user go-ahead 2026-09-30): staffing fill by profession in the craft states of China, the Ottomans,
+   Korea, Persia, Russia and India; zero economy of scale on 20+-level crafts; urban-centre levels and state infrastructure usage against the
+   canon; no company-owned craft levels; the craft build rate and the queue mix (the ai_value watch item); error.log.
+5. Pick the staffing on the probe, then ask for the 2+1 century batch against `canon-dams-family` (F177, consensus loss 5.90). Watch: craft
+   workers by country and decade against each country's wage path (a craft rung still growing in Britain at 1900 falsifies the mechanism),
+   world W, T0 by workers, PI/PP, row P.
+
+**Deferred:** Muskets; spreading the 1836 craft levels over the largest states; trimming automation that duplicates a main-method upgrade.
+
+## ⭐⭐ STEP 13 — SIX ADD-ON RUNGS BECOME METHOD SWITCHES (user-ruled 2026-09-30; BALANCE_FRAMEWORK §10.91.2; FINDINGS F180 §5)
+
+Baking Powder into Sweeteners, Electric Sewing Machines into Sewing Machines, Spray Finishing into Mechanized Workshops, Paper Bleaching into
+Sulfite Pulping, Improved Fertilizers into Artificial Fertilizers, Electric Arc into Open Hearth — each a second main method of the host,
+gated by its own technology. Period retrofits cost 5–20% of a new plant.
+
+**Ruled 2026-09-30:** the geometric-midpoint cost first (1,571 ×4, 1,103, 3,981; ai_value 5,196 / 15,588 / 1,732), recipes verbatim.
+Branch if it runs hot: the added method ×1/√1.9 (capital-neutral for new builds), or cost ×1.62.
+
+**Next:**
+1. `config/mod_config.merge6.json` + twin from the canon by a post-processor (`method_of` on the removed rung).
+2. Builder: no building for a merged rung; its method in the host's main group, gated by its technology; per-method secondaries gated with
+   `unlocking_production_methods`; companies drop the removed keys; the technology after a merged pair anchors on the host; L31 accepts a
+   host with a second method.
+3. Method-era accounting in the register and the ledgers (T0–T3 and the old-rung census read the per-method split).
+4. A probe with the six technologies granted to a few countries (1836→1838) to watch the AI switch; then a 2+1 batch against the canon.
+

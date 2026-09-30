@@ -251,6 +251,18 @@ the reason it is closed is the UI, which has to render a rung per era per indust
 ⇒ Nothing may describe it as the canon, the shipped book, or the current method. Where an old banner below still
 reads that way it has been corrected in place; the headings that follow are HISTORY.
 
+## ⭐⭐ UNDER TEST, NOT THE CANON — ARTISANSHIP CRAFTS (LINE A) AND SIX RUNGS MERGED INTO METHOD SWITCHES (LINE B) (user-ruled 2026-09-30; BALANCE_FRAMEWORK §10.91; ROADMAP steps 12–13; FINDINGS F180)
+
+**Line A:** six e0 rungs (Bakeries, Handsewn Clothes, Handcrafted Furniture, Forest Glass, Crude Tools, Pulp Pressing) become 500-worker
+craft rungs — skilled, labour-heavy, construction cost ÷50, base-price break-even ~140% — in a child building group `bg_pmr_crafts`
+(no economy of scale, urbanization 2, infrastructure ×1/10); the 1836 start holds employment (×10 levels) and its pops are re-typed into
+the craft professions; companies cannot build or form off them. Two staffing variants are probed (the ruled mix with 30–50% machinists,
+and masters-as-shopkeepers at the same wage units), because machinists need literacy above 10% (F180 §2). **Line B:** Baking Powder,
+Electric Sewing Machines, Spray Finishing, Paper Bleaching, Improved Fertilizers and Electric Arc stop being buildings and become second
+main methods of the rung below, at the geometric-midpoint cost (host × √1.9), recipes verbatim. Both are ALTERNATE books (`artisan6`,
+`artisan6-shop`, `merge6`), measured separately against `canon-dams-family`; nothing about them reaches `config/mod_config.json` until
+the user rules on measured results.
+
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
 `config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.canon-dams-family-nolog.json` + twin
