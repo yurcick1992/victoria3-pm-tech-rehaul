@@ -19491,3 +19491,55 @@ now rather imposed, in a railroady way."*
   uses in vanilla events), so the cascade can be retargeted at the pops a design wants radicalised.
 
 **What it does NOT say.** One save per book at one date; `loyalists_and_radicals`'s scale is the engine's own and is read only comparatively.
+
+## F194 — THE CRAFTS + MERGES ARM OVER THE CENTURY (`artmerge6-pb`, n=3): all three runs intact (the canon: 4 of 6), consensus loss 10.09 against the canon's 5.90 — the hoard (pool H 2.64× against 0.81×) and dearer pop goods (PP 1.16 against 0.88) carry the gap, while more of the shortlist stays peasant (pool U* 1.98× against 1.18×); the crafts peak at 2.8–3.0M workers around 1880–1900 and are still 2.0–2.4M at 1935, almost all outside the shortlist; the Petite Bourgeoisie's members move from the crafts to the urban centres as intended, but its clout rises every decade with no dip (2026-10-01, session 20260930_232639)
+
+**Source.** Session `20260930_232639_artmerge6-pb-n3`, book `config/mod_config.artmerge6-pb.json` (BALANCE_FRAMEWORK §10.91.1–4), three runs
+1836 → 1936, a FIXED n=3 (user-named; no stop watcher), quarterly saves, F177's instrument. Against `20260929_002728` (the canon,
+`canon-dams-family`, F177, n=6) and the pinned vanilla n=16. Readers: `criteria.mjs`, `ig_workplace_series.mjs` (summary v14), `ig_clout.mjs`
+(the kept saves), `wall_from_ticks.mjs`. ⚠ Run 1's summaries are v13 until 1860 and v14 after (the summarizer was swapped mid-run).
+
+**1. The register** (end state 1932–36):
+
+| | run 1 | run 2 | run 3 | consensus (runs 2+3) | the canon (consensus) |
+|---|---|---|---|---|---|
+| outcome | intact | intact | intact | 3 / 0 | 4 / 2 |
+| world GDP | 1.34× | 0.93× | 1.01× | 0.97× | 1.06× |
+| loss | 12.5 | 15.9 | 8.1 | **10.09** | **5.90** |
+| pool GDP / pool W / pool U* | | | | 0.97 / 0.72 / 1.98 | 1.48 / 0.88 / 1.18 |
+| pool H / world H | | | | 2.64 / 1.77 | 0.81 / — |
+| PI / PP | | | | 0.89 / **1.16** (beyond soft) | 0.96 / 0.88 |
+| T0 ÷ rest / T3 ÷ rest | | | | 0.038 / 0.36 | 0.015 / 0.49 |
+
+Loss terms of the consensus: PP 3.08, T0 2.29, T3 1.51, PI 1.15, pool H 0.91, world H 0.68, pool GDP 0.44, pool U* 0.03. Soft flags: Britain
+near capital abundance in every run (U* under 5% for 6–8 years at hoards of 0.47–0.69 GDP); run 2's Germany above 2 GDP of hoard 1931–36.
+⚠ Run 1's T0 rise in the shortlist (0.55M → 0.92M from the 1900s) is the MOTOR industry's e0 (445k → 901k workers) and fertilizer's e0 building
+(85k → 215k, it now hosts the merged method) — not crafts; the canon's own six seeds hold 38k–727k motor e0 workers in the shortlist at 1935.
+
+**2. The crafts** (world craft workers, millions; shortlist in thousands):
+
+| run | 1846 | 1866 | 1880 | 1900 | 1920 | 1935 |
+|---|---|---|---|---|---|---|
+| 1 | 2.53 (83) | 2.89 (135) | 2.91 (143) | 2.90 (118) | 2.61 (107) | 2.10 (74) |
+| 2 | 2.57 (44) | 2.70 (144) | 2.79 (166) | 2.72 (122) | 2.57 (117) | 2.40 (94) |
+| 3 | 2.59 (42) | 2.83 (56) | 2.93 (91) | 2.96 (131) | 2.44 (162) | 2.02 (105) |
+
+They peak around 1880–1900 and lose 20–30% by 1935, held by Russia, British India and the successor states of China. In the shortlist they are
+never more than 166k workers; run 3's still rose to 1920 (131k → 162k), the only shortlist growth after 1900 in the three seeds.
+
+**3. The Petite Bourgeoisie** (members by workplace, world; clout = mean over main countries):
+
+| | 1836 | 1866 | 1896 | 1926 | 1935 clout, world mean |
+|---|---|---|---|---|---|
+| crafts' share of PB members (runs 2 / 3) | 12.2 / 12.4% | 7.4 / 8.4% | 3.7 / 3.9% | 1.2 / 0.8% | |
+| urban centres' share | 13.6 / 14.0% | 18.6 / 18.4% | 26.5 / 24.6% | 34.4 / 32.6% | |
+| PB clout (runs 2 / 3) | 2.8 / 2.8% | 3.3 / 3.9% | 5.5 / 6.1% | 8.7 / 10.1% | runs 1–3: 15.2 / 12.5 / 12.3% · canon's six: 10.2–14.8% |
+
+Run 1 reads the same shape (crafts 8.2% → 0.3% of members 1866–1936, urban centres 19.9% → 38.4%, clout 3.7% → 14.2%). The members move from
+the crafts to the urban centres as the design intends (urban-centre shopkeepers ×10 over the century); total clout rises every decade, because
+~55% of the members work in ordinary buildings whose shopkeepers grow with the economy, and the crafts never held more than ~12% of them.
+
+**4. Play time:** 167 / 179 / 184 min (median 179) against the canon's 144–185 (median 177), ~+1%. One crash resumed (run 2, 1.3 min).
+
+**What it does NOT say.** Three seeds against six, and the register's statistics are directional (§10.83.7). One book: the staffing, the four
+recipe raises, the merges and the hiring floor are not separated, so no term of the loss gap is attributed to one of them.

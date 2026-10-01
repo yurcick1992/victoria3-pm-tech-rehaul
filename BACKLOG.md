@@ -21,8 +21,8 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 
 ## A. The arm under test — crafts + merges (ROADMAP steps 12–13, BALANCE_FRAMEWORK §10.91)
 
-- **NOW** · century batch n=3 of `artmerge6-pb` — running (session `20260930_232639_artmerge6-pb-n3`, launched 2026-09-30 23:26) · F191
-- **NOW** · read it: register, crafts' death by 1880–1900 in the shortlist, textile craft vs its e1, PB fall/re-rise (`ig_workplace_series.mjs`) · §10.91.4
+- **RULING** · the arm read over the century (F194): 3/0 intact, consensus loss 10.09 vs the canon's 5.90 — the hoard (pool H 2.64) and pop-goods prices (PP 1.16) carry the gap; crafts still 2.0–2.4M workers at 1935 (periphery) · F194
+- **OPEN** · the PB rises every decade with no dip (members do move crafts → urban centres) — tracking only by ruling · F194 §3
 - **RULING** · canonise or drop crafts + merges TOGETHER after the 2–3-day arc · §10.91.3
 - **RULING** · anchor slide for food and paper (their e1 carries A¹; e1–e3 are held byte-identical by §10.91.1) · HANDOVER §2a, F189 §3
 - **RULING** · the crafts' ÷50 construction cost ("faster payback is narratively deliberate") · HANDOVER §2c
@@ -110,6 +110,8 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 - **OPEN** · release
 
 ## Done (recent; prune freely)
+
+- 2026-10-01 · `artmerge6-pb` century n=3 read · F194
 
 - 2026-10-01 · save summary v13/v14: IG clout and IG members by workplace (`ig_clout.mjs`, `ig_pop_contrib.mjs`, `ig_workplace_series.mjs`) · F190, F192, F193
 - 2026-10-01 · craft staffing → 30% shopkeepers / 70% laborers, four craft outputs raised; 10-year probe healthy · §10.91.4, F191
