@@ -19543,3 +19543,48 @@ the crafts to the urban centres as the design intends (urban-centre shopkeepers 
 
 **What it does NOT say.** Three seeds against six, and the register's statistics are directional (§10.83.7). One book: the staffing, the four
 recipe raises, the merges and the hiring floor are not separated, so no term of the loss gap is attributed to one of them.
+
+## F195 — THE OLD RUNGS IN THE 1930s SHORTLIST (levels on an e0/e1 method only): every surviving one sits at 13–17% profit on revenue — the engine's wage-cut equilibrium — and pays 0.04–0.41 of its country's normal wage; the crafts survive more than the canon's e0 did (staffed 32–63% against 1–29%, 10–23k workers each against 0–16k), the merge hosts' own e0/e1 methods are gone (replaced by the merged method), and the largest live old rung is the motor industry's e0 — 647k workers, 37% of the industry's, against the canon's 239k / 15% (2026-10-01, no game time)
+
+**Source.** The 1935 (and 1920) save summaries of `20260930_232639` (`artmerge6-pb`, n=3, F194) against `20260929_002728` (the canon, n=6), the
+shortlist GBR/USA/FRA/NET/BEL/UNL/PRU/NGF/GER pooled, per rung: workers (staffed levels × the rung's heads × `workforce_mult`), staffed share,
+profit ÷ goods sales, and the wage bill (`goods_sales − goods_cost − profit`) ÷ the normal wage (the country's `base_wage` ÷ 10,000 × heads ×
+the rung's wage units). ⚠ Per the user (*"only analyse the wellbeing of buildings that do not have a e2/e3 PM"*), a merge host's levels count
+only on its OWN e0/e1 method (its `pms` split), and its margin only where all its levels run it. Asked: *"other e0 and e1 industries shouldn't
+feel too well in 1930s shortlist either. How's the situation on them?"*
+
+**The shortlist at 1935** (median of the arm's 3 runs | the canon's 6):
+
+| rung | workers k | staffed % | profit ÷ revenue | wage ÷ normal |
+|---|---|---|---|---|
+| food e0 (craft) | 23 \| 16 | 63 \| 29 | 17 \| 26% | 0.36 \| 0.50 |
+| textile e0 (craft) | 16 \| 2 | 34 \| 3 | 16 \| 5% | 0.17 \| — |
+| furniture e0 (craft) | 17 \| 0 | 51 \| 1 | 13 \| −46% | 0.11 \| 0.10 |
+| glass e0 (craft) | 12 \| 0 | 56 \| 1 | 24 \| −10% | 0.41 \| — |
+| tooling e0 (craft) | 10 \| 3 | 51 \| 7 | 15 \| −25% | 0.13 \| — |
+| paper e0 (craft) | 20 \| 3 | 32 \| 5 | 17 \| 13% | 0.10 \| — |
+| textile e1 | 41 \| 35 | 21 \| 12 | 15 \| 12% | 0.37 \| 0.31 |
+| furniture e1 | 16 \| 22 | 13 \| 16 | 13 \| 15% | 0.04 \| 0.19 |
+| glass e1 | 28 \| 51 | 21 \| 30 | 15 \| 15% | 0.32 \| 0.53 |
+| tooling e1 | 3 \| 9 | 2 \| 6 | 3 \| 4% | — |
+| food e1 / paper e1 / fertilizer e0 (merge hosts, own method) | 4 / 0 / 0 \| 228 / 254 / 12 | — | — | — \| 1.12 / 0.79 / 0.51 |
+| **motor e0** | **647 \| 239** | 63 \| 50 | 15 \| 15% | 0.35 \| 0.37 |
+| explosives e1 | 25 \| 45 | 55 \| 56 | 15 \| 17% | 1.17 \| 0.99 |
+| steel e1 | 3 \| 51 | 3 \| 25 | 10 \| 14% | 0.08 \| 0.59 |
+| arms, artillery, munition e0/e1 | ≤ 1 | ≤ 2 | losses | — |
+
+("—": too few levels for a figure; a negative wage reading on a handful of levels is noise.) At 1920 the arm's motor e0 held 557k (70% of the
+industry), glass e1 67k, textile e1 66k, explosives e1 55k, tooling e1 46k, the crafts 8–41k each.
+
+- **No surviving old rung is "well" in margin terms, but none is dead either:** the engine cuts a building's wage until profit sits near 15%
+  of revenue, so survivors meet at 13–17% and the health signal is the WAGE — 0.04–0.41 of normal for the crafts and the slid e1s.
+- **The crafts outlive the canon's e0 in the shortlist:** the canon's furniture, glass, tooling and textile e0 are empty or loss-making by 1935;
+  the crafts hold 10–23k workers each at half staffing. Their cheap levels (cost ÷50) and the hiring floor keep them standing.
+- **The merges retire the old method by switching, not by construction:** food e1, paper e1 and fertilizer e0 run their own method on 0–8% of
+  their shortlist levels at 1935 (F194 shows the hosts' split: food 0–1%, paper 0%, fertilizer 0–8%), against the canon's 228k / 254k / 12k
+  workers on those rungs.
+- **The motor industry's e0 is the largest live old rung**: 647k workers (median; 170–901k), 37% of the motor workforce, against the canon's
+  239k / 15% — on both books paid 0.35–0.37 of normal at 15% profit.
+
+**What it does NOT say.** One date; three seeds against six; the profit share is the realised one after the engine's wage cuts, so it cannot
+by itself say a rung "should" die — the wage and the staffing say how hard it is held.

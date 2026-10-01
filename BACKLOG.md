@@ -21,6 +21,8 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 
 ## A. The arm under test — crafts + merges (ROADMAP steps 12–13, BALANCE_FRAMEWORK §10.91)
 
+- **NOW** · seed more craft (e0) levels and add pops so the 1836 craft output matches vanilla's 1836 output (user, 2026-10-01) · HANDOVER §1
+- **NOW** · recipe iteration for obsolescence: the craft recipes individually, and the other tiered industries through anchors and ladders; the motor e0 is the largest live old rung (647k shortlist workers at 1935) · HANDOVER §2, F195
 - **RULING** · the arm read over the century (F194): 3/0 intact, consensus loss 10.09 vs the canon's 5.90 — the hoard (pool H 2.64) and pop-goods prices (PP 1.16) carry the gap; crafts still 2.0–2.4M workers at 1935 (periphery) · F194
 - **OPEN** · the PB rises every decade with no dip (members do move crafts → urban centres) — tracking only by ruling · F194 §3
 - **RULING** · canonise or drop crafts + merges TOGETHER after the 2–3-day arc · §10.91.3
