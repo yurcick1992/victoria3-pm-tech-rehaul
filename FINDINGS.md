@@ -19588,3 +19588,47 @@ industry), glass e1 67k, textile e1 66k, explosives e1 55k, tooling e1 46k, the 
 
 **What it does NOT say.** One date; three seeds against six; the profit share is the realised one after the engine's wage cuts, so it cannot
 by itself say a rung "should" die — the wage and the staffing say how hard it is held.
+
+## F196 — WHY THE SHORTLIST'S CRAFTS STAY STAFFED AT 1936: not because their workers stay — crafts lose workers to other industries at about the e1 rungs' rate — but because they refill from the peasants (48% of their hires from subsistence, 34% from unemployment), and the same states hold 0.4–1.4M peasants beside 49–64k craft workers; better-paid (+10%) work that is actually hiring exists mainly in British states; job satisfaction plays no part in changing jobs (only in migration), and the crafts' workers are among the least satisfied in their states (2026-10-01, read from the kept 1936 saves, no game time)
+
+**Source.** The three kept 1936 saves of `20260930_232639` (`artmerge6-pb`, F194), read pop by pop and building by building (a scratch reader:
+per shortlist state holding ≥ 3k craft workers, the crafts' workers and their staffing-weighted `salary_rate`; the vacancies of every other
+job building in the state — (levels − staffed levels) × 5,000, excluding subsistence, urban centres, military, government, universities,
+construction, owner buildings, trade centres and ports — at ≥ 1.1 × the crafts' rate, split into hiring (not paused: profit ≥ 20% of revenue
+or staffing < 10%; no layoff in the last year) and failed-to-hire in the last year; the state's unemployed and peasant workforce; pop
+`job_satisfaction` workforce-weighted) and `tools/testbed/ledger/labour_flows.mjs` on run 1 (the buildings' transfer logs, world-wide). The
+engine's rules, from `common/defines/00_defines.txt`: a pop changes job only for **≥ +10% wage** (`MIN_RAISE_TO_HIRE = 0.10`); job satisfaction
+enters **migration** (`MIGRATION_DESIRE_FROM_JOB_SATISFACTION_FACTOR = −1.0`), not job changes. Asked by the user: *"Is there alternative
+employment in states where they exist en masse? If so, why don't they shift? Is the wage not higher? Is their current job satisfaction
+prohibitively high and prevents them from looking for a new job?"*
+
+**1. Alternatives in the craft states** (shortlist states with ≥ 3k craft workers; runs 1 / 2 / 3):
+
+| | run 1 | run 2 | run 3 |
+|---|---|---|---|
+| states / craft workers | 7 / 64k | 7 / 49k | 6 / 54k |
+| other employers' vacancies paying ≥ +10% over the crafts | 128k | 33k | 59k |
+| … of which HIRING (not paused, not laying off) | 62k | 5k | 49k |
+| … of which failed to hire in the last year | 16k | 0k | 8k |
+| unemployed / peasants in those states | 64k / 1,356k | 6k / 430k | 138k / 968k |
+
+The hiring better-paid work sits almost all in British states (Lancashire-type states: 23–39k each); in the American, German, Dutch and French
+craft states the other employers either pay less than +10% more or are paused (profit under 20% of revenue) or laying off.
+
+**2. Who moves** (run 1, world, the transfer logs): crafts are a SOURCE of 2.4% of all hires world-wide — about the e1 rungs' 2.1% — going to
+government (22% of its hires come from crafts), tiered e3 (12%), agriculture (7.7%), tiered e1 (5.7%), tiered e0 (4.2%) and urban centres. And
+crafts REFILL from the bottom: 48% of their hires from subsistence (peasants → laborers 31%, peasants → shopkeepers 7.8%, rice paddies and
+orchards), 34% from unemployment, 11% from other crafts; only 7% from other working buildings, the lowest of any sector bar subsistence.
+
+**3. Job satisfaction** (workforce-weighted, crafts vs the state's other workers): −211 to +129, negative in 16 of 20 state readings, and below the
+state's other workers in 17 of 20 (e.g. −181 vs +41, −162 vs −53, −135 vs +52). It does not hold anyone in a job; by the defines it raises the
+crafts' workers' desire to MIGRATE.
+
+**So:** the crafts are a stepping stone off the farm. Their workers do leave for better-paid hiring jobs where those exist, and the crafts —
+cheap to build (cost ÷ 50) and able to hire at almost any value added (the hiring floor 0.01, §10.91.3) — refill from the peasants, of whom
+the craft states still hold 8–21× the craft workforce in 1936. They will empty when the peasant reserve does, or if they cannot hire at the
+wages they pay.
+
+**What it does NOT say.** The hiring ORDER (unemployed and peasants before other buildings' workers) is read from the flows, not from the engine;
+vacancies are counted at 5,000 a missing level, all professions together; the transfer logs hold recent moves only (shares, not volumes); one run
+for the flows.
