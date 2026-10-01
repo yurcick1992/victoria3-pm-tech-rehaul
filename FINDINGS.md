@@ -19589,7 +19589,7 @@ industry), glass e1 67k, textile e1 66k, explosives e1 55k, tooling e1 46k, the 
 **What it does NOT say.** One date; three seeds against six; the profit share is the realised one after the engine's wage cuts, so it cannot
 by itself say a rung "should" die — the wage and the staffing say how hard it is held.
 
-## F196 — WHY THE SHORTLIST'S CRAFTS STAY STAFFED AT 1936: not because their workers stay — crafts lose workers to other industries at about the e1 rungs' rate — but because they refill from the peasants (48% of their hires from subsistence, 34% from unemployment), and the same states hold 0.4–1.4M peasants beside 49–64k craft workers; better-paid (+10%) work that is actually hiring exists mainly in British states; job satisfaction plays no part in changing jobs (only in migration), and the crafts' workers are among the least satisfied in their states (2026-10-01, read from the kept 1936 saves, no game time)
+## F196 — WHY THE SHORTLIST'S CRAFTS STAY STAFFED AT 1936: not because their workers stay — crafts lose workers to other industries at about the e1 rungs' rate — but because they refill from the peasants (48% of their hires from subsistence, 34% from unemployment), and the same states hold 0.4–1.4M peasants beside 49–64k craft workers; better-paid (+10%) work that is actually hiring exists mainly in British states; and the crafts' workers are among the least satisfied in their states, so job satisfaction is not what keeps them (2026-10-01, read from the kept 1936 saves, no game time)
 
 **Source.** The three kept 1936 saves of `20260930_232639` (`artmerge6-pb`, F194), read pop by pop and building by building (a scratch reader:
 per shortlist state holding ≥ 3k craft workers, the crafts' workers and their staffing-weighted `salary_rate`; the vacancies of every other
@@ -19597,8 +19597,12 @@ job building in the state — (levels − staffed levels) × 5,000, excluding su
 construction, owner buildings, trade centres and ports — at ≥ 1.1 × the crafts' rate, split into hiring (not paused: profit ≥ 20% of revenue
 or staffing < 10%; no layoff in the last year) and failed-to-hire in the last year; the state's unemployed and peasant workforce; pop
 `job_satisfaction` workforce-weighted) and `tools/testbed/ledger/labour_flows.mjs` on run 1 (the buildings' transfer logs, world-wide). The
-engine's rules, from `common/defines/00_defines.txt`: a pop changes job only for **≥ +10% wage** (`MIN_RAISE_TO_HIRE = 0.10`); job satisfaction
-enters **migration** (`MIGRATION_DESIRE_FROM_JOB_SATISFACTION_FACTOR = −1.0`), not job changes. Asked by the user: *"Is there alternative
+engine's rules, from `common/defines/00_defines.txt`: a pop changes job only for **≥ +10% wage** (`MIN_RAISE_TO_HIRE = 0.10`); the defines
+name job satisfaction only in **migration** (`MIGRATION_DESIRE_FROM_JOB_SATISFACTION_FACTOR = −1.0`). ⚠ CORRECTED the same day: the first
+write-up read that as "satisfaction plays no part in job changes" — an over-reading of the defines, which list constants, not the code that uses
+them. The user's understanding: *"High enough job satisfaction prevents looking for a job, regardless of wage difference (although potential
+wage difference itself, I believe, decreases satisfaction)"* — consistent with `JOB_SATISFACTION_PER_PERCENT_HIGHER_SOL_QUALIFICATION = −1`
+(satisfaction falls with the share qualified for a better job). Unverified either way; treat the user's reading as the working model. Asked by the user: *"Is there alternative
 employment in states where they exist en masse? If so, why don't they shift? Is the wage not higher? Is their current job satisfaction
 prohibitively high and prevents them from looking for a new job?"*
 
@@ -19621,8 +19625,8 @@ crafts REFILL from the bottom: 48% of their hires from subsistence (peasants →
 orchards), 34% from unemployment, 11% from other crafts; only 7% from other working buildings, the lowest of any sector bar subsistence.
 
 **3. Job satisfaction** (workforce-weighted, crafts vs the state's other workers): −211 to +129, negative in 16 of 20 state readings, and below the
-state's other workers in 17 of 20 (e.g. −181 vs +41, −162 vs −53, −135 vs +52). It does not hold anyone in a job; by the defines it raises the
-crafts' workers' desire to MIGRATE.
+state's other workers in 17 of 20 (e.g. −181 vs +41, −162 vs −53, −135 vs +52). Under the user's reading (high satisfaction stops a pop looking for a job) it
+cannot be what holds the crafts' workers — theirs is low; under the defines it also raises their desire to MIGRATE.
 
 **So:** the crafts are a stepping stone off the farm. Their workers do leave for better-paid hiring jobs where those exist, and the crafts —
 cheap to build (cost ÷ 50) and able to hire at almost any value added (the hiring floor 0.01, §10.91.3) — refill from the peasants, of whom
