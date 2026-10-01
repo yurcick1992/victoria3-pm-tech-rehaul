@@ -21,20 +21,20 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 
 ## A. The arm under test — crafts + merges (ROADMAP steps 12–13, BALANCE_FRAMEWORK §10.91)
 
-- **NOW** · seed more craft (e0) levels and add pops so the 1836 craft output matches vanilla's 1836 output (user, 2026-10-01) · HANDOVER §1
-- **NOW** · recipe iteration for obsolescence: the craft recipes individually, and the other tiered industries through anchors and ladders; the motor e0 is the largest live old rung (647k shortlist workers at 1935) · HANDOVER §2, F195
+- **NOW** · seed more craft (e0) levels and add pops so the 1836 craft output matches vanilla's 1836 output (user, 2026-10-01) · HANDOVER (2026-10-01) §1
+- **NOW** · recipe iteration for obsolescence: the craft recipes individually, and the other tiered industries through anchors and ladders; the motor e0 is the largest live old rung (647k shortlist workers at 1935) · HANDOVER (2026-10-01) §2, F195
 - **RULING** · the arm read over the century (F194): 3/0 intact, consensus loss 10.09 vs the canon's 5.90 — the hoard (pool H 2.64) and pop-goods prices (PP 1.16) carry the gap; crafts still 2.0–2.4M workers at 1935 (periphery) · F194
 - **OPEN** · the PB rises every decade with no dip (members do move crafts → urban centres) — tracking only by ruling · F194 §3
 - **RULING** · canonise or drop crafts + merges TOGETHER after the 2–3-day arc · §10.91.3
-- **RULING** · anchor slide for food and paper (their e1 carries A¹; e1–e3 are held byte-identical by §10.91.1) · HANDOVER §2a, F189 §3
-- **RULING** · the crafts' ÷50 construction cost ("faster payback is narratively deliberate") · HANDOVER §2c
-- **OPEN** · crafts sitting on the engine's 20% profit pause line — a few % more output if the century batch shows it binds · F188, HANDOVER §2b
-- **OPEN** · `--craft-table <file>` override so a variant never edits the ruled `CRAFTS` table in place · HANDOVER §2d
+- **RULING** · anchor slide for food and paper (their e1 carries A¹; e1–e3 are held byte-identical by §10.91.1) · F189 §3
+- **RULING** · the crafts' ÷50 construction cost ("faster payback is narratively deliberate") · §10.91.1
+- **OPEN** · crafts sitting on the engine's 20% profit pause line — a few % more output if the century batch shows it binds · F188
+- **OPEN** · `--craft-table <file>` override so a variant never edits the ruled `CRAFTS` table in place · this file
 - **OPEN** · teach the old-rung readers (`rung_econ`, `rung0_*`, `lib_obsolescence`, `tiered_panel`) the merged methods · ROADMAP step 13 item 3
 - **DEFERRED** · merge branch if the hosts run hot (added method ×1/√1.9, or host cost ×1.62) · §10.91.2
 - **DEFERRED** · craft extras: a Muskets craft; spreading the 1836 craft levels over the largest states; automation that duplicates a main-method upgrade · ROADMAP step 12
 - **DEFERRED** · ARTISANAL OWNERSHIP (shopkeepers as owners, dividends) — the last feature pass, only if canonised · ROADMAP step 6½
-- **WATCH** · craft ai_value (1,000 a level) — not a lever to pull unasked · HANDOVER §2f
+- **WATCH** · craft ai_value (1,000 a level) — not a lever to pull unasked · §10.91.1
 - **WATCH** · the PB arc is tracking-only by ruling (no forced radicalisation, no retargeted 1848 cascade) · F190–F193
 - **RESEARCH** · the crafts' channel into early revolutions (Austria's 1840 Springtime) — look for Springtimes before 1843 · F184
 - **RESEARCH** · merged-method secondaries not re-selected after a switch; switched chemical plants two-thirds staffed · F182
