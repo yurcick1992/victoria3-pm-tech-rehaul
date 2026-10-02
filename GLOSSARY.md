@@ -94,6 +94,9 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **`salary_rate`** | the BUILDING'S OWN wage rate in a melted save. ⚠ Not the rate actually paid either (it reads 1.09–1.17 against the exact bill); the country's `base_wage` is the better of the two. `tools/building_ledger.mjs` reads all of these from a melt |
 | **wage_pct** | the flat wage fraction of TOTAL cost, 0.25. ⚠ **RETIRED FROM PREDICTIONS** (§10.87) — but NOT because it was far out: measured exactly, the wage share of cost is 54% → 29% across the century for the WHOLE economy and **15–23% for MANUFACTURING ALONE**, so for the tiered industries 25% was reasonable. It goes because it is a constant where the truth is a property of the economy and the decade, and because a share OF GOODS cannot see the art academy. It survives as the config-side convention behind `target_be` and `lint_solvency` (L18) |
 | **throughput** | a per-building multiplier on inputs *and* outputs, so it raises the full margin but not the goods margin |
+| **expected payback** (of a new level) | its construction cost (points × the country's £ per point at base prices) ÷ the annual PROFIT per staffed level that building type earned in that country at the time — realised prices, actual wages; a type the country does not run yet takes its market's figure, else the world's (F206). Years |
+| **a VALID option** | a building type a country could productively add: some state of it holds **≥ 25k peasants + unemployed** AND, for a mine / logging camp / wharf / rig, free capped slots of that resource, or for a farm / plantation / ranch, free arable land with the crop allowed; manufacturing needs only the labour (user-ruled 2026-10-02, F207) |
+| ⭐ **MISPLACED CAPITAL** (the user's "ineffectively invested capital") | the share of new capital in mines, agriculture and manufacturing whose expected payback is **> 3× the best valid sector's, or loss-making ("grossly suboptimal")**, beside the share at **1.5–3× ("a bit suboptimal")**; taken WITHIN a run-decade (or country-decade). ⚠ NEVER MEASURED, even where they earn through goods (ruled 2026-10-02, §10.92.1): infrastructure (railways, ports, power plants, dams), trade centres, shipyards, every government-funded building and gold mines — their AI values are set to get them built, not to follow profit. The military industries are NOT exempt (ruled the same day): they are measured like any manufacturing rung. Capital built where no option is valid (a fully employed country) is reported apart, ungraded. Vanilla 10–19% grossly in every decade; the four-rung books climb to 24–38% by 1926–36 (F206/F207). ⭐ **It should be as low as possible, and it is the yardstick of every AI-value change** (§10.92, CLAUDE.md's governing section) |
 
 ## 7. PROCESS
 
@@ -109,5 +112,6 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 ---
 
 **Where the authority lives**: the register in BALANCE_FRAMEWORK §10.83 (+ .4–.7 and §10.85, §10.86), the era rule in §10.78 and CLAUDE.md's
-governing section, the price principles in §10.86.2, results in FINDINGS, engine behaviour in MODDING_NOTES, guardrails in TESTBED_LANDMINES.
+governing section, the price principles in §10.86.2, what the AI levers are for (recipes steer, AI values follow profit) in §10.92, results in
+FINDINGS, engine behaviour in MODDING_NOTES, guardrails in TESTBED_LANDMINES.
 This page names things; it does not rule on them.

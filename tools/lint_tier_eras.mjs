@@ -151,17 +151,23 @@ for (const ind of cfg.industries || []) {
         if (R.base_cost !== wantBase) faults.push(`${ind.id} ${t.key}: the craft cost was divided from ${R.base_cost}, the era rule's e0 cost is ${wantBase}`);
         if (t.building_cost !== Math.round(R.base_cost / (+ART.cost_div || 1))) faults.push(`${ind.id} ${t.key}: building_cost ${t.building_cost} is not ${R.base_cost} ÷ ${ART.cost_div}`); }
       const steepC = AB.ai_steep && AB.ai_steep.industries.includes(ind.id) ? AB.ai_steep.ratio : null;
-      const wantAivC = (AB.ai_ladder && !steepC) ? Math.round(AB.ai_ladder[Math.min(e, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steepC || A, e));
-      if (t.ai_value !== wantAivC) faults.push(`${ind.id} e${e}: ai_value ${t.ai_value}, the era rule says ${wantAivC}`);
+      // `_artisan.craft_ai` (make_artisan_config --craft-ai, user-ruled 2026-10-02) is the crafts' own desire, in place of the era rule's e0
+      const wantAivC = ART.craft_ai != null ? Math.round(+ART.craft_ai)
+        : (AB.ai_ladder && !steepC) ? Math.round(AB.ai_ladder[Math.min(e, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steepC || A, e));
+      if (t.ai_value !== wantAivC) faults.push(`${ind.id} e${e}: ai_value ${t.ai_value}, ${ART.craft_ai != null ? '_artisan.craft_ai' : 'the era rule'} says ${wantAivC}`);
       notes.push(`${ind.id} e0: a craft rung (${ART.staffing} staffing) — checked against its _artisan record, not the A/B ladder`);
       continue;
     }
-    const wantOut = Math.round(out0 * Math.pow(A, k) * 10) / 10;
-    if (Math.abs(t.output_qty - wantOut) > 0.051 + 0.002 * wantOut) faults.push(`${ind.id} e${e}: output ${t.output_qty}, the era rule says ${wantOut} (vanilla ${out0} × ${A}^${k}) — keyed on something other than the era`);
+    // ⭐ --down-step (2026-10-01, F197): below the anchor (k < 0) output AND input value are both s^k, the anchor's margin kept
+    const down = (AB.down_step != null && k < 0) ? Math.pow(+AB.down_step, k) : null;
+    const wantOut = Math.round(out0 * (down != null ? down : Math.pow(A, k)) * 10) / 10;
+    if (Math.abs(t.output_qty - wantOut) > 0.051 + 0.002 * wantOut) faults.push(`${ind.id} e${e}: output ${t.output_qty}, the era rule says ${wantOut} (vanilla ${out0} × ${down != null ? AB.down_step + '^' + k + ' (--down-step)' : A + '^' + k}) — keyed on something other than the era`);
     // --in0-anchored: the SLID set (named in _ab.anchor_for) carries its own lift; everything else the scalar in0
-    const liftI = perInd && perInd[ind.id] != null ? +perInd[ind.id] : ((AB.in0_anchored != null && aEra != null) ? +AB.in0_anchored : lift);
-    const wantIn = I0 * (in0only ? (k === 0 ? liftI : 1) : liftI) * inMul(k); const gotIn = val(t.inputs);
-    if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${lift} × ${inL ? inMul(k).toFixed(3) + ' at ladder index ' + k : B + '^' + k})`);
+    // ⭐ --in1-pop (2026-10-01, F197): the anchor and every rung below it of a pop-good industry carry the pop lift
+    const popLow = AB.in1_pop != null && Array.isArray(AB.in1_pop_industries) && AB.in1_pop_industries.includes(ind.id) && k <= 0;
+    const liftI = popLow ? +AB.in1_pop : perInd && perInd[ind.id] != null ? +perInd[ind.id] : ((AB.in0_anchored != null && aEra != null) ? +AB.in0_anchored : lift);
+    const wantIn = I0 * (in0only ? (k === 0 ? liftI : 1) : liftI) * (down != null ? down : inMul(k)); const gotIn = val(t.inputs);
+    if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${liftI}${popLow ? ' (--in1-pop)' : ''} × ${down != null ? AB.down_step + '^' + k + ' (--down-step)' : inL ? inMul(k).toFixed(3) + ' at ladder index ' + k : B + '^' + k})`);
     // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of
     // 2026-09-14) and A by default (capacity-priced, the canon)
     // ... or anchor × m_era from an explicit per-era list (`_ab.cost_ladder`, 2026-09-16 — one era's cost moved on its own, or a changed A/B gain-matched per era)

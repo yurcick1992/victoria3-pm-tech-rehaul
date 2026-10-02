@@ -117,6 +117,9 @@ export const PLACEMENT = {
   fertilizer: [0, 1, 2, 3],   // intensive_agriculture (2 → e0, −1); improved_fertilizer (3); nitrogen_fixation (4); catalytic_synthesis (minted, 5)
   explosives: [0, 1, 2, 3],   // intensive_agriculture (2 → e0, −1); nitroglycerin (2); dynamite (3, +1); electrical_capacitors (4, +1)
   motor: [0, 2, 3],           // atmospheric_engine (2 → e0, −1: the ladder overflows at e1 — electric_railway 4 → e2, compression_ignition 5 → e3); see below
+  // ⚠⚠ CORRECTED 2026-10-01: the paragraph below is WRONG about the derivation. derivePlacement([2, 4, 5]) gives [1, 2, 3]
+  //   (atmospheric_engine is game era 2 → e1, electric_railway 4 → e2, compression_ignition 5 → e3: no overflow, no bump). Motor
+  //   sits on [0, 2, 3] ONLY because of the `motor:` entry above. Behaviour is unchanged; the text is kept as the record.
   // motor — NO ENTRY (user-ruled 2026-09-13, "option B"): the derivation places it [0, 2, 3] by itself once the minted
   //   high_speed_diesel addition is gone — atmospheric_engine (2 → e0 by the same first-rung reasoning as fertilizer and
   //   explosives, but here the ladder FITS: e0 is forced only because electric engines (electric_railway, GAME ERA 4 → e2) and

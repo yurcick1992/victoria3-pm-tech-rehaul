@@ -25,7 +25,9 @@ for (const ind of cfg.industries) {
   }
 }
 const FRONTIER_INDS = ['tooling', 'steel', 'motor', 'automotive', 'fertilizer', 'explosives', 'munition', 'arms', 'artillery', 'electrics', 'paper', 'glass', 'shipyard', 'shipyard_steam', 'synthetics'];
-const PANEL = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SIC', 'POR', 'NET'];
+// ⭐ BEL / NGF / GER / UNL joined 2026-10-02 (the shortlist pool of lib_markets.mjs) — the three lists (here, report_data2.mjs TAGS,
+//   ledger_template.html TAGS) must stay identical.
+const PANEL = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SIC', 'POR', 'NET', 'BEL', 'NGF', 'GER', 'UNL'];
 const YEARS = [1840, 1860, 1880, 1900, 1920, 1935];
 const classOf = k => {
   if (k === 'building_construction_sector') return 'c';

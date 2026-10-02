@@ -1073,6 +1073,42 @@ function Test-LmL34 {
     elseif ($checked -eq 0) { Add-Result 'L34' $T 'N/A' 'no ended runs in this session yet' }
     else { Add-Result 'L34' $T 'PASS' "$checked ended run(s), every completed one has a campaign behind it" }
 }
+
+function Test-LmL29 {
+    <#
+      L29, THE READER SIDE (2026-10-01, 20261001_215119_e1a-lift-probe-10y) - A SESSION LOG THAT LOST ITS LINES TO A READER
+      HOLDING THE FILE OPEN.
+
+      The 2026-09-07 fix makes every harness log writer retry eight times and then keep the console line only. That outlasts a
+      reader that opens, reads and closes (grep, tail -1, Select-String). It does NOT outlast a reader that KEEPS the file open:
+      an agent Monitor running `tail -n 0 -F session.log` dropped every scheduler line from 22:05 to 22:30 (run 1's end, run 2's
+      start/build/end, run 3's start), and the Monitor's expiry did not kill the tail - it sat on as an orphan until killed by
+      hand. Left alone it would have swallowed SCHEDULE DONE, the marker wait_for_session.ps1 waits for.
+
+      DETECTOR: every run folder that has a meta.json must have its '=== run N/M:' line in session.log (the scheduler writes it
+      at the start of every run; the format is the same in every session since 2026-08). WARN, never FAIL: the runs' own
+      run.log / meta.json / summaries are intact and are the record - the WARN says the session log is not, and the VERDICT
+      should say so. N/A without -Session, like L12 / L17 / L26 / L34.
+    #>
+    $T = 'session.log lines lost to a reader holding the file open'
+    if (-not $Session) { Add-Result 'L29' $T 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L29' $T 'FAIL' "no such session: $Session"; return }
+    $runs = @(Get-ChildItem $Session -Directory | Where-Object { $_.Name -match '^run(\d+)_' -and (Test-Path (Join-Path $_.FullName 'meta.json')) })
+    if (-not $runs.Count) { Add-Result 'L29' $T 'N/A' 'no run folder with a meta.json yet'; return }
+    $log = Join-Path $Session 'session.log'
+    if (-not (Test-Path $log)) { Add-Result 'L29' $T 'WARN' 'no session.log in this session'; return }
+    $text = Get-Content $log -Raw -Encoding UTF8
+    $missing = @()
+    foreach ($r in $runs) {
+        $null = $r.Name -match '^run(\d+)_'
+        $n = [int]$Matches[1]
+        if ($text -notmatch ("=== run {0}/\d+:" -f $n)) { $missing += $r.Name }
+    }
+    if ($missing.Count) {
+        Add-Result 'L29' $T 'WARN' ("session.log has no '=== run N/M' line for $($missing.Count) of $($runs.Count) run folder(s): " + ($missing -join ', ') + " - something held the log open while the scheduler wrote (a tail -F or a Monitor; L29's reader-side addendum). The runs' own run.log / meta.json are the record; say so in the VERDICT")
+    }
+    else { Add-Result 'L29' $T 'PASS' "$($runs.Count) run folder(s), each with its '=== run N/M' line in session.log" }
+}
 function Test-LmL26 {
     <#
       L26 - ONE RUN FOLDER HOLDING TWO CAMPAIGNS.
@@ -1592,6 +1628,8 @@ $CHECKS = @(
     @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } },
     @{ Id = 'L17'; Artifact = $false; Fn = { Test-LmL17 } },
     @{ Id = 'L34'; Artifact = $false; Fn = { Test-LmL34 } },
+    # L29's reader side: a session.log that lost its run lines to a reader holding it open (WARN only; post-run)
+    @{ Id = 'L29'; Artifact = $false; Fn = { Test-LmL29 } },
     # L20 reads the CONFIG, not the mod, so it gates a batch before anything is built - which is the
     # whole point: the failure it catches costs a whole window when it is found at the first build.
     @{ Id = 'L20'; Artifact = $false; Fn = { Test-LmL20 } },

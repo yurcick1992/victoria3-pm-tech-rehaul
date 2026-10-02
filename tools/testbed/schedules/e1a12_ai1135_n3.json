@@ -1,0 +1,35 @@
+{
+  "schedule_version": 1,
+  "label": "e1a12-ai1135-n3",
+  "_why": "OVERNIGHT n=3 OF THE COMPRESSED DESIRE LADDER (user, 2026-10-02 evening: 'Leave the current build active for human playtest and wrap up. I'll playtest, highlight the problems I see for the next session and run overnight n=3 with it.'). The same book the 2+1 measured (config/mod_config.e1a12-ai1135-artmerge.json, sha256 73065d3f2a9328b9 — byte-identical to session 20261002_120946's) and the same book deployed for the human playtest (built 2026-10-02 20:34). The 2+1 ended at two runs by the stop rule (FINDINGS F209: run 1 intact at world GDP 0.79, run 2 BROKEN BY RUNOFF at 1.42); this batch adds three seeds so the arm's register consensus rests on more than one intact run and the runoff rate can be read.",
+  "_arms": {
+    "e1a12-ai1135": "{kind: config, config: config/mod_config.e1a12-ai1135-artmerge.json} (+ tech_tree_options.e1a12-ai1135-artmerge.json, the arm's tree byte for byte)."
+  },
+  "_comparison": "The 2+1 of the same book (20261002_120946, F209, n=2: 1 intact / 1 broken by runoff); e1a12-artmerge (20261001_225817, F203, n=3); the canon canon-dams-family (20260929_002728, F177, n=6); the pinned vanilla n=16 (20260821_131149). Same dump dates, tags and metrics as the 2+1.",
+  "_fixed_n": "A FIXED-n batch, NOT a 2+1: every run plays to 1936.1.1 whatever the register says of an earlier one (the stop watcher is NOT armed; memory 'fixed-n batches run to completion'). A broken run is reported, not dropped.",
+  "_autosave": "YEARLY, unlike the 2+1's quarterly: vanilla's n=16 baseline saved yearly, so the ledger's play-time row becomes readable (F209 could not read it: quarterly saves cost wall clock the baseline never paid). The economy does not depend on the cadence; every reader used on the arm (criteria, misplaced_capital --batch, fill_emp, the US construction windows) steps yearly. v15 summaries.",
+  "_predictions": {
+    "register": "world GDP at the end state spread across 0.75-1.45x vanilla seed by seed, as in the 2+1 (0.79 / 1.42); at least one of three seeds above 1.2 and at least one below 0.9; any seed above 1.38 or with pooled shortlist U* under 10% is broken by runoff (the 2+1 suggests a runoff rate near one in two or three)",
+    "misplaced_capital": "1926-36 grossly misplaced share 24-30% of new capital (all options) per seed — the canon's level, under e1a12's 38%, above vanilla's 17%",
+    "usa": "no seed agrarian: US GDP at 1935 0.8-1.3x vanilla (e1a12 0.35-0.55)",
+    "old_rungs": "old rungs beside a rung two eras newer 4-6% of world tier workers and under 2% of the shortlist's at 1935, three quarters of them crafts",
+    "perf": "play time within 1.10x of vanilla's yearly median (165 min) if the machine is otherwise idle"
+  },
+  "_register": "criteria.mjs --arm 20261002_120946_e1a12-ai1135-n2:e1a12-ai1135,<this session>:e1a12-ai1135 pools the two sessions (five seeds); misplaced_capital.mjs --batch; the ledger as for F209 (fill_ledger chain, the e0 artisans/other split and the old-rungs-beside-replacement table). Statistics are DIRECTIONAL (§10.83.7).",
+  "_cost": "3 runs x 1836 -> 1936, about 2.5-3.3 h each, about 8-10 h",
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "e1a12-ai1135": { "kind": "config", "config": "config/mod_config.e1a12-ai1135-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "e1a12-ai1135", "until": "1936.1.1" },
+    { "setup": "e1a12-ai1135", "until": "1936.1.1" },
+    { "setup": "e1a12-ai1135", "until": "1936.1.1" }
+  ]
+}

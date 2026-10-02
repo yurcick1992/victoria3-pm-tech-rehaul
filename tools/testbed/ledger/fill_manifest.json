@@ -129,6 +129,20 @@
       "means": "tier employment by era, EXACT (staffed levels x per-tier employment)"
     },
     {
+      "name": "EMP_COLS",
+      "from": "fill_emp.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "the employment columns' labels (e0 split into artisans / other on a craft book, lib_era_cols.mjs)"
+    },
+    {
+      "name": "EMP_B2",
+      "from": "fill_emp.mjs",
+      "required": true,
+      "minKeys": 4,
+      "means": "old rungs beside their replacement: workers on a rung 2+ eras behind the best rung their own country staffs in the industry, world + shortlist pool"
+    },
+    {
       "name": "PROD_FLAT",
       "from": "fill_consts.mjs",
       "required": true,
@@ -285,6 +299,21 @@
       "id": "t-wemp",
       "minRows": 4,
       "means": "tier employment by era, selection"
+    },
+    {
+      "id": "t-empb2",
+      "minRows": 4,
+      "means": "old rungs beside their replacement, world + shortlist pool"
+    },
+    {
+      "id": "t-wempb2",
+      "minRows": 4,
+      "means": "old rungs beside their replacement, selection"
+    },
+    {
+      "id": "t-emp",
+      "minRows": 4,
+      "means": "tier employment by era, world"
     },
     {
       "id": "t-wlab",

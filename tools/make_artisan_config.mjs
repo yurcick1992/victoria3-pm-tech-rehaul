@@ -19,7 +19,8 @@
 //   • the child building group `bg_pmr_crafts` (parent bg_light_industry): no economy of scale, urbanization 2, infrastructure ×1/10;
 //   • automation stripped, plus Vacuum Canning (both variants) and Patent Stills; the kept secondaries' employment × 0.1;
 //   • companies can neither build nor form off it (`craft: true`, read by emit_companies);
-//   • ai_value untouched ("Don't touch for now");
+//   • ai_value untouched by default ("Don't touch for now"); `--craft-ai <v>` sets the six crafts' ai_value (user-ruled 2026-10-02:
+//     crafts 800 under the 1000/1000/3000/5000 ladder of `e1a12-ai1135`), recorded as `_artisan.craft_ai`, which L31 checks;
 //   • map meshes per level × 10 (levels_per_mesh 500), so the ×10 levels do not multiply the models on the map.
 //
 // --staffing ruled (default): the cloud session's skilled mix — shopkeepers (masters) / machinists (journeymen) / laborers.
@@ -31,8 +32,11 @@
 //   the engine's `BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES` (3: "non-subsidized buildings will not hire if it would result
 //   in their annual earnings/employee falling below this threshold"; vanilla sets 10 on its owner buildings). FINDINGS F185 §3/§5:
 //   the craft recipes clear £3 only at output prices of 100–124% of base, so the floor blocks hiring where local prices sit low.
-//   ⭐ DEFAULT 0.01 — RULED 2026-09-30 late evening (BALANCE_FRAMEWORK §10.91.3, on FINDINGS F188): *"This threshold reduction is now a
-//   firm part of the 'artisans + merges' arm"*. A craft book without the floor is no longer the arm.
+//   ⭐ DEFAULT 2 — THE RULED FLOOR, a third off the engine's £3 (BALANCE_FRAMEWORK §10.91.3 and its 2026-10-01 correction). From
+//   2026-09-30 late evening to 2026-10-01 this default was 0.01: the PROBE value of F188 (F185 §5's "at 1 … at 0" range), written in as
+//   the ruled one when the ruling — *"This threshold reduction is now a firm part of the 'artisans + merges' arm"* — named no number. The
+//   user, 2026-10-01: *"not to 0.01, but to £2, so only a third off"*. Every book written in that window records `--hire-floor 0.01` in its
+//   own command, so it still regenerates byte for byte; none of them is the intended arm on this key.
 //   --hire-floor none = the engine's default (3) — only to regenerate the pre-ruling records (artisan6, artisan6-shop, and artmerge6 on
 //   top of artisan6), whose recorded commands predate the default and carry no --hire-floor. Every command this tool records now spells
 //   the floor out, so a book's own command reproduces it whatever the default becomes.
@@ -43,6 +47,7 @@ import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { tierEmployment, wageUnits, eraReferenceWage } from './lib_wage_model.mjs';
+import { readVanilla } from './lib_vanilla_ladder.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -50,11 +55,34 @@ const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1
 const BASE = argOf('--base', 'config/mod_config.json');
 const SFX = argOf('--suffix', null);
 const STAFFING = argOf('--staffing', 'ruled');
-const HIRE_FLOOR_ARG = argOf('--hire-floor', '0.01');   // the ruled floor (§10.91.3); 'none' = the engine's default
-if (!SFX) { console.error('usage: node tools/make_artisan_config.mjs --base <config> --suffix <suffix> [--staffing ruled|shop] [--hire-floor X|none]'); process.exit(2); }
+const HIRE_FLOOR_ARG = argOf('--hire-floor', '2');      // the ruled floor, £2 (§10.91.3, corrected 2026-10-01); 'none' = the engine's default
+if (!SFX) { console.error('usage: node tools/make_artisan_config.mjs --base <config> --suffix <suffix> [--staffing ruled|shop|pb] [--hire-floor X|none] [--craft-rule s,x] [--seed N] [--craft-ai V]'); process.exit(2); }
 const die = m => { throw new Error('make_artisan_config: ' + m); };
 if (!['ruled', 'shop', 'pb'].includes(STAFFING)) die(`--staffing must be ruled, shop or pb (got ${STAFFING})`);
 const HIRE_FLOOR = HIRE_FLOOR_ARG === 'none' ? null : Number(HIRE_FLOOR_ARG);
+// ⭐⭐ --craft-rule <share>,<cross> (user-ruled 2026-10-01, FINDINGS F197 §2: "the 60%"): ONE recipe rule for every craft, in place of the
+//   per-craft table. Each craft level makes `share` of its vanilla first method's goods PER WORKER (a 500-head level: share × vanilla output
+//   ÷ 10), and its inputs are set so that its value added per worker-year reaches the craft group's hiring floor exactly at an output price
+//   of `cross` × base with its inputs at base: I = cross × O − floor × heads ÷ 52, spread over the vanilla first method's input mix by value.
+//   WHY: the engine stops a non-subsidised building hiring once its value added per worker-year falls under the floor (F185, F188, F197 §1),
+//   so a craft that crosses the floor where the shortlist's prices end up (0.81–0.95 of base by 1935 in F194's batch) stops refilling
+//   there while it keeps hiring in the periphery, where prices stay at or above base. At 0.6 / 0.89 and a £2 floor every craft earns
+//   £4.0–4.2 a worker-year at a price of 1.15 and £2.8–2.9 at 1.00, base-price break-even 123–127%, and 16.7 craft levels make a vanilla
+//   level's output. The ruled `pb_out` multipliers (§10.91.4) do not apply under the rule; the staffing (pb) and everything else do.
+//   Recorded as `_artisan.craft_rule`; every recipe lands in `_artisan.recipes`, which L31 checks.
+const CRAFT_RULE = (() => { const v = argOf('--craft-rule', ''); if (!v) return null; const [s, x] = v.split(',').map(Number);
+  if (!(s > 0 && s <= 1) || !(x > 0)) die('--craft-rule <share 0-1>,<crossing price as a share of base>, e.g. 0.6,0.89'); return { share: s, cross: x }; })();
+// ⭐⭐ --seed <cities> (user-ruled 2026-10-01, F197 §4 and the same day's rulings): OUTPUT-MATCHED 1836 craft seeding. Recorded as
+//   `_artisan.seed`; tools/emit_craft_start.mjs does the work at build time (it needs the emitted 1836 map): per country and craft industry
+//   the craft levels the vanilla e0 factories became are topped up until they make the vanilla factories' output, the extra levels spread over
+//   the country's `cities` most urbanised states; their shopkeepers and laborers are NEW typed pops carrying the country's most numerous
+//   culture-religion of that profession (config/measured_1836_pop_identity.json, read from a vanilla 1836.2.1 gamestate), and the same number of
+//   people is taken from the peasants of that state — else of the country's state with the most peasants — so vanilla's head count holds.
+const SEED_CITIES = (() => { const v = argOf('--seed', ''); if (!v) return null; const n = +v; if (!(Number.isInteger(n) && n >= 1)) die('--seed <cities>, a positive integer'); return n; })();
+// --craft-ai <v> (user-ruled 2026-10-02: "artisan 800, other e0 1000, e1 1000, e2 3000, e3 5000"): the six crafts' ai_value, in place of
+//   the base e0's. Recorded as `_artisan.craft_ai` (only when set, so every earlier book regenerates byte for byte), which L31 reads.
+const CRAFT_AI = (() => { const v = argOf('--craft-ai', ''); if (!v) return null; const n = +v; if (!(Number.isFinite(n) && n > 0)) die('--craft-ai <ai_value>, a positive number'); return Math.round(n); })();
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 if (HIRE_FLOOR != null && !(Number.isFinite(HIRE_FLOOR) && HIRE_FLOOR > 0))
   die(`--hire-floor must be a positive number or none (got ${HIRE_FLOOR_ARG}); for "no floor" pass a small one such as 0.01 — 0 may read as unset`);
 
@@ -115,6 +143,7 @@ for (const l of readFileSync(join(REPO, 'tools/goods_prices.tsv'), 'utf8').split
 const val = o => Object.entries(o).reduce((s, [g, q]) => { if (!(PRICE[g] > 0)) die(`no base price for ${g}`); return s + q * PRICE[g]; }, 0);
 
 const recipes = {};
+let VAN = null;   // the game's methods, read only when --craft-rule needs them
 const rows = [];
 for (const [id, c] of Object.entries(CRAFTS)) {
   const ind = (cfg.industries || []).find(i => i.id === id);
@@ -135,9 +164,25 @@ for (const [id, c] of Object.entries(CRAFTS)) {
   if (!(baseCost > 0)) die(`${id} e0 has no building_cost in the base`);
 
   t.craft = true;
-  t.output_qty = STAFFING === 'pb' ? Math.round(c.out * c.pb_out * 100) / 100 : c.out;
-  t.inputs = { ...c.in };
+  if (CRAFT_RULE) {
+    // the rule: share of the vanilla first method's goods per worker; inputs so the floor is crossed at the ruled price
+    const V = VAN || (VAN = readVanilla(GAME));
+    const vr = V.goodsOf(t.vanilla_pm); const og = t.output_good || ind.output_good;
+    const vOut = vr.out[og]; const vIn = val(vr.in);
+    if (!(vOut > 0) || !(vIn > 0)) die(`${id}: vanilla ${t.vanilla_pm} has no ${og} output or no inputs — the craft rule needs both`);
+    const heads = Object.values(block).reduce((a, b) => a + b, 0) * WM;
+    const floor = HIRE_FLOOR ?? 3;
+    const oQty = CRAFT_RULE.share * vOut * heads / 5000;
+    const iVal = CRAFT_RULE.cross * oQty * PRICE[og] - floor * heads / 52;
+    if (!(iVal > 0)) die(`${id}: the craft rule leaves no inputs (output £${(oQty * PRICE[og]).toFixed(1)} at ${CRAFT_RULE.cross} against a floor of £${floor})`);
+    t.output_qty = Math.round(oQty * 100) / 100;
+    t.inputs = Object.fromEntries(Object.entries(vr.in).map(([g, q]) => [g, Math.round(q * iVal / vIn * 100) / 100]));
+  } else {
+    t.output_qty = STAFFING === 'pb' ? Math.round(c.out * c.pb_out * 100) / 100 : c.out;
+    t.inputs = { ...c.in };
+  }
   t.employment = { ...block };
+  if (CRAFT_AI != null) t.ai_value = CRAFT_AI;
   t.workforce_mult = WM;
   t.building_cost = Math.round(baseCost / COST_DIV);
   t.building_group = GROUP;
@@ -176,14 +221,26 @@ cfg._artisan = {
   base_sha256: sha,
   recipes,
   hire_floor: HIRE_FLOOR,
-  ruled_by: STAFFING === 'pb' ? 'BALANCE_FRAMEWORK §10.91.1 + §10.91.4 (user, 2026-10-01: "30% it is"); FINDINGS F180, F190' : 'BALANCE_FRAMEWORK §10.91.1 (user, 2026-09-30); FINDINGS F180',
-  command: `node tools/make_artisan_config.mjs --base ${BASE} --suffix ${SFX} --staffing ${STAFFING}` + ` --hire-floor ${HIRE_FLOOR ?? 'none'}`,
+  // (both keys only when set, so a book written before 2026-10-01 still regenerates byte for byte from its own command)
+  ...(CRAFT_RULE ? { craft_rule: { share: CRAFT_RULE.share, cross_price: CRAFT_RULE.cross, floor: HIRE_FLOOR ?? 3, heads_per_level: 5000 * WM } } : {}),
+  ...(SEED_CITIES ? { seed: { rule: 'output_match', cities: SEED_CITIES, identity: 'config/measured_1836_pop_identity.json',
+    head_count: 'preserved: the seeded workforce is taken from the peasants of the target state, else of the country\'s state with the most peasants (user, 2026-10-01)' } } : {}),
+  ...(CRAFT_AI != null ? { craft_ai: CRAFT_AI } : {}),
+  ruled_by: (STAFFING === 'pb' ? 'BALANCE_FRAMEWORK §10.91.1 + §10.91.4 (user, 2026-10-01: "30% it is"); FINDINGS F180, F190' : 'BALANCE_FRAMEWORK §10.91.1 (user, 2026-09-30); FINDINGS F180')
+    + (CRAFT_RULE || SEED_CITIES ? '; the craft rule and the output-matched seeding: user, 2026-10-01, FINDINGS F197' : '')
+    + (CRAFT_AI != null ? `; the crafts' ai_value ${CRAFT_AI}: user, 2026-10-02` : ''),
+  command: `node tools/make_artisan_config.mjs --base ${BASE} --suffix ${SFX} --staffing ${STAFFING}` + ` --hire-floor ${HIRE_FLOOR ?? 'none'}`
+    + (CRAFT_RULE ? ` --craft-rule ${CRAFT_RULE.share},${CRAFT_RULE.cross}` : '') + (SEED_CITIES ? ` --seed ${SEED_CITIES}` : '')
+    + (CRAFT_AI != null ? ` --craft-ai ${CRAFT_AI}` : ''),
 };
 cfg._artisan_variant = {
   name: SFX,
   base: basename(BASE),
   delta: `six light-industry e0 rungs -> 500-worker craft rungs (${STAFFING} staffing), cost /${COST_DIV}, group ${GROUP}` +
-    (HIRE_FLOOR != null ? `, the group's hiring floor min_productivity_to_hire ${HIRE_FLOOR} (engine default 3)` : '') + `; every other key and rung the base's`,
+    (HIRE_FLOOR != null ? `, the group's hiring floor min_productivity_to_hire ${HIRE_FLOOR} (engine default 3)` : '') +
+    (CRAFT_RULE ? `, recipes by the craft rule (${CRAFT_RULE.share} of vanilla's goods per worker, the floor crossed at ${CRAFT_RULE.cross} of base)` : '') +
+    (SEED_CITIES ? `, the 1836 craft output matched to vanilla's (the gap seeded over each country's ${SEED_CITIES} most urbanised states)` : '') +
+    (CRAFT_AI != null ? `, the crafts' ai_value ${CRAFT_AI}` : '') + `; every other key and rung the base's`,
 };
 const outCfg = join(REPO, 'config', `mod_config.${SFX}.json`);
 writeFileSync(outCfg, JSON.stringify(cfg), 'utf8');

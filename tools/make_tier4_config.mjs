@@ -33,6 +33,12 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const SUFFIX = process.env.TIER4_SUFFIX || 'tier4';
 const rd = p => readFileSync(p, 'utf8').replace(/^\uFEFF/, '');
+// \u2B50 --derive <ind,ind> (2026-10-01, user-ruled for the e1-anchor book: "Agreed on \u2026 engines"): the named industries IGNORE their PLACEMENT
+//   entry and take the era rule's own derivation. Built for motor, whose [0,2,3] entry overrides the derivation's [1,2,3] (atmospheric_engine
+//   is game era 2 \u2192 e1). A flag, not a spec edit, so the canon's own regeneration still reproduces the canon; the book records it as
+//   `_placement_derived`. Write the result under its own TIER4_SUFFIX (e.g. tier4-e1).
+const DERIVE = (() => { const i = process.argv.indexOf('--derive'); return new Set(i > 0 && process.argv[i + 1] ? process.argv[i + 1].split(',').map(s => s.trim()).filter(Boolean) : []); })();
+for (const id of DERIVE) if (!PLACEMENT[id]) throw new Error(`--derive ${id}: no PLACEMENT entry to ignore \u2014 it is already derived`);
 
 // ---- the game -------------------------------------------------------------------------------------------------
 const BLD = {}, BLDFILE = {}, PMG = {}, PM = {};
@@ -79,7 +85,7 @@ for (const { id, building } of INDUSTRIES) {
   const gameEras = [...methods.map(pm => { const g = gateOf(pm); if (!g) return 1; if (TECH_ERA[g] == null) throw new Error(`${id}: ${pm} is gated on ${g}, not a vanilla technology`); return TECH_ERA[g]; }),
                     ...adds.map(a => gameEraOfYear(a.year))];
   const derived = derivePlacement(gameEras);
-  let eras = PLACEMENT[id];
+  let eras = DERIVE.has(id) ? null : PLACEMENT[id];
   if (eras) {
     if (eras.length !== gameEras.length) throw new Error(`${id}: PLACEMENT has ${eras.length} eras for ${gameEras.length} rungs (${methods.length} vanilla methods + ${adds.length} additions)`);
   } else if (derived.overflow) {
@@ -88,7 +94,7 @@ for (const { id, building } of INDUSTRIES) {
   } else eras = derived.eras;
   const faults = placementFaults(id, eras, gameEras);
   if (faults.length) throw new Error(`THE ERA RULE (2026-09-13) is broken:\n  ${faults.join('\n  ')}`);
-  const placed = PLACEMENT[id] ? 'ruled' : 'derived';
+  const placed = (PLACEMENT[id] && !DERIVE.has(id)) ? 'ruled' : DERIVE.has(id) ? 'derived (--derive)' : 'derived';
   const tiers = methods.map((pm, k) => {
     const body = PM[pm]; if (body == null) throw new Error(`${id}: method ${pm} not found`);
     const tech = gateOf(pm);
@@ -167,6 +173,7 @@ const cfg = {
   _era_rule: `rung era = narrative era (0..${N - 1}, anchors ${ERA_YEARS.join('/')}) derived from the gate technology's GAME era through era_game_era (game era 2 rounds up to e1), bumped up only to keep one rung per era; every rung within ${ERA_TOLERANCE} era of its technology's; the rung index is never a key (user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78)`,
   // the four-rung canon's 1836 start is vanilla's, converted; the six-rung chain seed does not apply
   start_exceptions_file: 'config/start_exceptions.vanilla.json',
+  ...(DERIVE.size ? { _placement_derived: [...DERIVE].sort() } : {}),
   // the ruled research-event parameters (§10.69) live in the spec — validated here against the industries that exist
   // ⭐ the per-PM overrides on VANILLA's own methods that are ruled but are not about our rungs — today the urban centre's
   //   electric streetlights, which §10.43 rules an electricity SOURCE (+1 out, 2 coal in, 250 engineers) against vanilla's

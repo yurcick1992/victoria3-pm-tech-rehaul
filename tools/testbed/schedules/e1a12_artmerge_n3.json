@@ -1,0 +1,37 @@
+{
+  "schedule_version": 1,
+  "label": "e1a12-artmerge-n3",
+  "_why": "THE e1-ANCHOR BOOK WITH THE POP-GOOD LIFT AT 1.2, OVER THE CENTURY (user-ruled 2026-10-01 on F202: 'Go with 1.2. 3 full runs.'). Book config/mod_config.e1a12-artmerge.json = e1a-artmerge (BALANCE_FRAMEWORK 10.91.5: every industry anchored at e1, the step down to e0 /1.5, motor on [1,2,3], the 60% craft rule, the 2-pound craft floor, the output-matched 1836 craft seeding, the merges) with the pop-good industries' anchor-and-below input lift at 1.2 in place of 1.4 - F201: 1.4 puts the e1 glass and food rungs under the engine's 15% wage-cut line, so after vanilla's own opening glut they never rehire; F202: 1.2 keeps them staffed through 1845 and keeps British groceries inside vanilla's range (1.0 did not). A FIXED n=3 batch of FULL runs: all three play to 1936 whatever the first two read; no stop watcher.",
+  "_arms": {
+    "e1a12-artmerge": "{kind: config, config: config/mod_config.e1a12-artmerge.json} (+ tech_tree_options.e1a12-artmerge.json, e1a's tree byte for byte). Field diff against e1a-artmerge: the inputs, wage_pct and base-price break-even of the anchor-and-below rungs of food, textile, furniture, glass, paper, arms and the art academy (lift 1.4 -> 1.2), plus the records - nothing else."
+  },
+  "_comparison": "e1a-artmerge over the century (20261001_124750, F200, n=2: loss 7.76, world GDP 0.82, pool H 0.52, PP 1.07, PI 0.98 falling, T0 0.60 of the 1900s), the canon canon-dams-family (20260929_002728, F177, n=6: loss 5.90), the crafts arm at 0.01 (20260930_232639, F194, n=3: loss 10.09) and the pinned vanilla n=16 (20260821_131149). Same dump dates, tags, metrics and quarterly saves as F177/F194/F200. The only difference from F200's book is the lift.",
+  "_predictions": {
+    "gdp": "world GDP at the end state 0.82-0.95x vanilla, at or above e1a's 0.82: the e1 consumer rungs stay staffed through 1837-1850 in the continental markets (F202) and earn more, so the pool's inflow and the early economy are larger; the mid-game dip of F200 (0.71 at 1900, 0.69 at 1920) is the frontier's value added per level, which the lift does not touch, so the dip stays",
+    "hoard": "pool H above e1a's 0.52, 0.55-1.0: the e1 food and glass margins rise (British food e1 0.22-0.27 of sales against 0.20-0.21 at 1845, F202) and F135 says the inflow is the margin",
+    "prices": "PP at or below e1a's 1.07 (more continental glass and groceries supply), PI near e1a's 0.98 and falling decade over decade",
+    "obsolescence": "the old rungs survive MORE than in e1a: the death ratio e1/e3 rises from 0.07-0.10 to 0.11-0.15 (F202 §5), so the shortlist's consumer e1 workers at 1935 (textile, furniture, glass, food) at or above e1a's; T0 near e1a's 0.60 (the e0 crafts follow the 60% rule, not the lift)",
+    "german_market": "no deep hole: the German market's glass at 1846/1850/1860 inside vanilla's sixteen-seed range in all three seeds (e1a: 51/53/59 in run 2), and its groceries likewise",
+    "britain": "British-market groceries at 1850-1860 at 1.1-1.4x vanilla's median, not beyond its range (F202: 1.27-1.32 at 1845; the 1.0 lift read 1.60-2.23)",
+    "hard": "the canon's inherited failure modes are possible (the stuck Britain about 1 in 5-6; Britain's capital abundance less likely with a hoard near e1a's)",
+    "perf": "row P within +10% of vanilla's median play time (e1a: x1.05)"
+  },
+  "_register": "criteria.mjs --arm <session>:e1a12-artmerge (the book from build_state.json), with e1a (20261001_124750) and the canon (20260929_002728) in the ranking; first_run_decomp.mjs; report_perf.mjs; the German watch item and the British groceries from the summaries' goods_out per market (the F201/F202 readers); health_vs_ref.mjs against vanilla n=16 at 1846. Statistics are DIRECTIONAL (10.83.7).",
+  "_stop_rule": "FULL RUNS, fixed n=3 (user-ruled 2026-10-01: '3 full runs'): every run plays to 1936; stop_watch.mjs is NOT armed; the register's hard lines are READ afterwards, they do not stop the batch.",
+  "_cost": "3 runs x 1836 -> 1936, about 2.5-3 h each, about 8-9 h",
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "e1a12-artmerge": { "kind": "config", "config": "config/mod_config.e1a12-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "e1a12-artmerge", "until": "1936.1.1" },
+    { "setup": "e1a12-artmerge", "until": "1936.1.1" },
+    { "setup": "e1a12-artmerge", "until": "1936.1.1" }
+  ]
+}

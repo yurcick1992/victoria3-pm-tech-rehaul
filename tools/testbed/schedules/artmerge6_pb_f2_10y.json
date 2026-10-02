@@ -1,0 +1,37 @@
+{
+  "schedule_version": 1,
+  "label": "artmerge6-pb-f2-10y",
+  "_why": "THE ARM AT ITS RULED HIRING FLOOR, PROBED (user, 2026-10-01: 'There was a ruling to lower the threshold for crafts, but not to 0.01, but to 2 pounds, so only a third off. Probably should retest with a probe on the intended setup.'). Every craft book since artmerge6-floor carried min_productivity_to_hire = 0.01 on bg_pmr_crafts — the PROBE value of FINDINGS F188, written in as the ruling, which had named no number (BALANCE_FRAMEWORK 10.91.3, correction of 2026-10-01). Book config/mod_config.artmerge6-pb-f2.json = config/mod_config.artmerge6-pb.json with that one key at 2 (proven by field diff: the floor, _artisan.hire_floor and the provenance fields, nothing else). Two seeds, 1836 -> 1846, the instrument of artmerge6_pb_10y.json (F191) and craft_floor_10y.json (F188), so the three floors read side by side: 0.01 (F191, this book's twin), 2 (this), 3 (F188's artmerge6 arm, machinist staffing — not a like-for-like twin, the staffing differs).",
+  "_questions": {
+    "Q1": "Craft failed-hire levels, craft workers and craft staffing at 1846 against F191 (0.01, same staffing) — hiring_census.mjs / craft_fill.mjs on the kept 1846 saves.",
+    "Q2": "Where the floor binds: which craft buildings (country, state) sit between 2 and 3 pounds of value added per worker-year, and whether they are the low-price periphery states F185 named.",
+    "Q3": "Health against the canon's six runs (health_vs_ref.mjs): no dead industry, no token market.",
+    "Q4": "World GDP, the craft goods' prices, the Petite Bourgeoisie's clout (ig_clout.mjs) against F191."
+  },
+  "_predictions": {
+    "Q1": "between F188's two arms: craft failed-hire levels between F191's and ~1,300; craft workers 0-3% below F191's; staffing within 1-2 points of F191 world-wide, lower in Korea / glass / tooling where F188 saw the floor bind",
+    "Q2": "the binding states are the low-price ones (local craft-goods prices near or under base); the shortlist's crafts sit at 4-7 pounds a worker-year in 1840-1860 (F194's batch) and are untouched",
+    "Q3": "no dead industry, no token market (F191 had none at 0.01; a higher floor removes craft hires, not other industries' workers)",
+    "Q4": "world GDP within +-2% of F191; craft-goods prices a little higher where crafts fail to hire; PB clout within F191's seed spread"
+  },
+  "_cost": "2 runs x 1836 -> 1846, about 12-16 minutes each plus builds and harvest",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30), and only on the user's go-ahead.",
+    "Ten years speak to the EARLY game only: where the floor would bind late (the shortlist's crafts fall to 1.7-3.0 pounds a worker-year by 1935 in F194's batch) needs a century run.",
+    "Two seeds: a probe, no register reading. No stop watcher."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1845.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "artmerge6-pb-f2": { "kind": "config", "config": "config/mod_config.artmerge6-pb-f2.json" }
+  },
+  "runs": [
+    { "setup": "artmerge6-pb-f2", "until": "1846.1.1" },
+    { "setup": "artmerge6-pb-f2", "until": "1846.1.1" }
+  ]
+}

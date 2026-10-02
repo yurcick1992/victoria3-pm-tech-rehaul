@@ -12,7 +12,7 @@
 // silently re-pairs the remaining values against the wrong targets.
 //
 // USAGE: node fill_goals.mjs <outFile> <outDir>
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 const OUTFILE = process.argv[2], DIR = process.argv[3];
 const J = n => JSON.parse(readFileSync(`${DIR}/${n}`, 'utf8'));
 const C = J('consts.json'), PB = J('payback.json'), EMP = J('emp.json'), TC = J('tierchoice.json');
@@ -28,7 +28,14 @@ const early = (() => { let a = 0, b = 0; for (let y = 1837; y <= 1860; y++) { a 
 //   fill_consts never emits, so G3 printed an em-dash in every report to date (2026-09-05).
 const RD = J('report_data.json');
 const constrR = (RD.flat?.years?.[Y]?.ptsAdd && RD.vanMean?.[Y]?.ptsAdd) ? RD.flat.years[Y].ptsAdd / RD.vanMean[Y].ptsAdd : null;
-const topEmp = y => { const e = EMP[y] || []; let bi = 0; e.forEach((v, i) => { if (v > e[bi]) bi = i; }); return 'e' + bi; };
+// ⭐ THE EMPLOYMENT COLUMNS ARE LABELLED (emp_cols.json, lib_era_cols.mjs, 2026-10-02): on a craft book e0 is TWO columns, artisans
+//   and other, so a column INDEX is no longer an era — 'e' + index named the e1 column "e2". Labels come from the file; the oldest
+//   rung is EVERY column labelled e0, summed, with the split printed beside it.
+const COLS = existsSync(`${DIR}/emp_cols.json`) ? J('emp_cols.json') : ['e0', 'e1', 'e2', 'e3', 'e4', 'e5'];
+const E0 = COLS.map((l, i) => l.startsWith('e0') ? i : -1).filter(i => i >= 0);
+const e0of = y => E0.reduce((a, i) => a + (+(EMP[y] || [])[i] || 0), 0);
+const e0txt = y => E0.length > 1 ? E0.map(i => COLS[i].replace('e0 ', '') + ' ' + (+(EMP[y] || [])[i] || 0).toFixed(2)).join(' + ') : '';
+const topEmp = y => { const e = EMP[y] || []; let bi = 0; e.forEach((v, i) => { if (v > e[bi]) bi = i; }); return COLS[bi] || ('e' + bi); };
 // ⚠ THE ARM'S ROW IS THE LAST ONE. fill_tierchoice pushes every --baseline row FIRST and the arm's row last,
 //   so rows[0] is a PRIOR batch's figure whenever a baseline is given — this read rows[0] and would have graded
 //   G1 on canon4-je's number under canon4v's title (caught 2026-09-05 filling canon4v-art3, the first fill to
@@ -37,7 +44,7 @@ const belowBest = (TC.rows && TC.rows.length) ? TC.rows[TC.rows.length - 1].raw 
 // ⚠ EVERY BAND IS TWO-SIDED (user-ruled 2026-09-13: "If both bounds are given, both must be respected"). G4 used to
 //   grade `gdpR >= 0.8` alone and printed "met" on a 2.10× world; G2's pill and G7's class were literals that ignored
 //   their own numbers. A metric outside EITHER bound is not met — say which side it left.
-const staleShrinks = Number((EMP[Y] || [])[0]) < Number((EMP[1900] || [])[0]);
+const staleShrinks = e0of(Y) < e0of(1900);
 const frontierIn = p.frontier >= 8 && p.frontier <= 15;
 
 const row = (id, goal, metric, val, target, pill, cls) =>
@@ -52,7 +59,7 @@ const rows = [
       belowBest != null && belowBest < 39 ? 'ok' : 'warn'),
   row('G2', 'Inefficient producers die',
       'Oldest rung: payback <span class="dim">· its employment 1900→1935</span>',
-      '<b>' + p.stale.toFixed(1) + ' y</b> <span class="dim">· ' + (EMP[1900] || [])[0] + '→' + (EMP[Y] || [])[0] + 'M</span>',
+      '<b>' + p.stale.toFixed(1) + ' y</b>' + ('staleArt' in p ? ' <span class="dim">(artisans ' + (p.staleArt == null ? 'loss' : p.staleArt.toFixed(1) + ' y') + ' · e0 factories ' + (p.staleOther == null ? 'loss' : p.staleOther.toFixed(1) + ' y') + ')</span>' : '') + ' <span class="dim">· ' + e0of(1900).toFixed(2) + '→' + e0of(Y).toFixed(2) + 'M' + (E0.length > 1 ? ' (' + e0txt(1900) + ' → ' + e0txt(Y) + ')' : '') + '</span>',
       'lengthening <span class="dim">· shrinking</span>',
       staleShrinks && p.stale >= 30 ? 'oldest rung dies' : staleShrinks ? 'shrinks, still pays back' : 'oldest rung still grows',
       staleShrinks && p.stale >= 30 ? 'ok' : staleShrinks ? 'warn' : 'bad'),

@@ -4,7 +4,7 @@
   --bg:#f4f6f9; --panel:#ffffff; --panel2:#eef2f7; --ink:#1c2733; --ink2:#5a6b7d; --ink3:#8b99a8;
   --line:#d8dfe8; --accent:#3a76b0; --gold:#a97b24; --ok:#2e7d4f; --warn:#a06d10; --bad:#b3403a;
   --okbg:#e7f2ec; --warnbg:#f7efdd; --badbg:#f7e6e4;
-  --e0:#dde7f2; --e1:#b5cbe6; --e2:#8cafd8; --e3:#6190c6; --e4:#3d6ea8; --e5:#1f4a7d;
+  --e0:#dde7f2; --e1:#b5cbe6; --e2:#8cafd8; --e3:#6190c6; --e4:#3d6ea8; --e5:#1f4a7d; --eA:#e6c483; --eO:#e8b0b0;
   --phdash:#b3bfcc;
 }
 @media (prefers-color-scheme: dark){
@@ -12,7 +12,7 @@
     --bg:#141a21; --panel:#1d252f; --panel2:#232d39; --ink:#e2e8ef; --ink2:#96a4b4; --ink3:#6d7c8c;
     --line:#33404e; --accent:#6ea3d8; --gold:#d9a441; --ok:#4fa876; --warn:#d29a3a; --bad:#d96b64;
     --okbg:#1e3229; --warnbg:#33291a; --badbg:#33211f;
-    --e0:#31404f; --e1:#3f5871; --e2:#4f7396; --e3:#6790bc; --e4:#86b0dc; --e5:#abcdf2;
+    --e0:#31404f; --e1:#3f5871; --e2:#4f7396; --e3:#6790bc; --e4:#86b0dc; --e5:#abcdf2; --eA:#8f6d32; --eO:#8a4f55;
     --phdash:#4a5866;
   }
 }
@@ -20,7 +20,7 @@
   --bg:#141a21; --panel:#1d252f; --panel2:#232d39; --ink:#e2e8ef; --ink2:#96a4b4; --ink3:#6d7c8c;
   --line:#33404e; --accent:#6ea3d8; --gold:#d9a441; --ok:#4fa876; --warn:#d29a3a; --bad:#d96b64;
   --okbg:#1e3229; --warnbg:#33291a; --badbg:#33211f;
-  --e0:#31404f; --e1:#3f5871; --e2:#4f7396; --e3:#6790bc; --e4:#86b0dc; --e5:#abcdf2;
+  --e0:#31404f; --e1:#3f5871; --e2:#4f7396; --e3:#6790bc; --e4:#86b0dc; --e5:#abcdf2; --eA:#8f6d32; --eO:#8a4f55;
   --phdash:#4a5866;
 }
 *{box-sizing:border-box}
@@ -397,7 +397,9 @@ function renderPerf(mode){
     <div class="legend" id="legend2"></div>
     <div id="chart2"></div>
     <figcaption>Estimated workers employed in the mod's tier buildings (staffed-level-equivalents × the tier's base
-    employment; unemployed and subsistence excluded by construction; automation PMs not netted). Unlike counting
+    employment; unemployed and subsistence excluded by construction; automation PMs not netted; a merge host's
+    workers shared over its main methods at each method's own era). On a book with craft rungs the e0 band is split
+    into <b>e0 artisans</b> (the crafts, tan) and <b>e0 other</b> (the e0 factories, rose). Unlike counting
     built levels, this view shows contraction: <span id="emp-shape">…</span></figcaption>
   </figure>
 
@@ -407,6 +409,18 @@ function renderPerf(mode){
   <p class="small">Δ in brackets = change since the previous row. Negative brackets are the obsolescence signal
   the level-addition view cannot show — a rung's workforce contracting while its buildings still stand.
   <span id="emp-note">…</span></p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>Old rungs beside their replacement — the non-obsolescence that is the ladder's failure (millions)</h3>
+  <table id="t-empb2"></table>
+  <p class="small">Workers on a rung <b>two or more eras behind a rung their own country already staffs in the same
+  industry</b> — the old rung surviving next to its replacement, which the ladder's death rule says cannot last (a tier-N
+  building cannot stay profitable once tier N+2 floods the market). The by-era chart above counts every old-rung worker,
+  and most of them sit in countries that run <i>nothing newer</i> in that industry: that is backwardness (technology or
+  capital), not obsolescence, and it is <b>not</b> counted here. Country-level reading; the in-market vs trade panel
+  reads the same question per market. Shortlist = the register's pool (GBR USA FRA NET BEL UNL PRU NGF GER, main
+  records). Median over the batch's runs.</p>
   </div>
 
   <div class="card tablewrap">
@@ -481,7 +495,7 @@ function renderPerf(mode){
   <div class="card">
     <h3>Countries — click to include / exclude</h3>
     <div class="ctagbar" id="ctags" style="margin-top:8px"></div>
-    <div style="margin-top:6px"><button class="linkbtn" id="sel-all">all</button>·<button class="linkbtn" id="sel-none">none</button>·<button class="linkbtn" id="sel-gp">great powers</button></div>
+    <div style="margin-top:6px"><button class="linkbtn" id="sel-all">all</button>·<button class="linkbtn" id="sel-none">none</button>·<button class="linkbtn" id="sel-gp">great powers</button>·<button class="linkbtn" id="sel-sl">shortlist</button></div>
     <p class="small" id="flagnote" style="margin-bottom:0"></p>
   </div>
 
@@ -525,6 +539,14 @@ function renderPerf(mode){
   <table id="t-wemp"></table>
   <p class="small">Same construction as the world table, summed over the selected tags. Negative brackets =
   the selection's obsolete rungs shedding real workers.</p>
+  </div>
+
+  <div class="card tablewrap">
+  <h3>Old rungs beside their replacement — selection (millions)</h3>
+  <table id="t-wempb2"></table>
+  <p class="small">The world table's construction summed over the selected tags: workers on a rung two or more eras
+  behind a rung the same country already staffs in the same industry, and their share of the selection's tier workers.
+  First run only, like every per-country panel here.</p>
   </div>
 
     <div class="card tablewrap">
@@ -622,7 +644,14 @@ function renderPerf(mode){
 const GDP_FLAT={1837:417,1838:425,1839:432,1840:444,1841:463,1842:468,1843:483,1844:511,1845:521,1846:532,1847:545,1848:544,1849:564,1850:565,1851:520,1852:556,1853:583,1854:599,1855:596,1856:637,1857:654,1858:672,1859:680,1860:700,1861:713,1862:731,1863:757,1864:776,1865:798,1866:824,1867:846,1868:878,1869:901,1870:924,1871:958,1872:969,1873:978,1874:1001,1875:1024,1876:1057,1877:1070,1878:1047,1879:1097,1880:1170,1881:1176,1882:1177,1883:1185,1884:1198,1885:1254,1886:1272,1887:1327,1888:1374,1889:1422,1890:1414,1891:1447,1892:1530,1893:1575,1894:1635,1895:1673,1896:1718,1897:1778,1898:1845,1899:1908,1900:1992,1901:2035,1902:2152,1903:2208,1904:2270,1905:2386,1906:2488,1907:2584,1908:2697,1909:2792,1910:2959,1911:3028,1912:3125,1913:3169,1914:3374,1915:3606,1916:3740,1917:3908,1918:4045,1919:4112,1920:4316,1921:4579,1922:4706,1923:4855,1924:5006,1925:5287,1926:5546,1927:5668,1928:5379,1929:4744,1930:6047,1931:6237,1932:6340,1933:6366,1934:6686,1935:6855,1936:7047};
 const GDP_VAN={1837:417,1838:426,1839:436,1840:452,1841:465,1842:476,1843:489,1844:502,1845:520,1846:530,1847:547,1848:555,1849:559,1850:575,1851:595,1852:607,1853:620,1854:628,1855:642,1856:667,1857:684,1858:677,1859:704,1860:716,1861:732,1862:755,1863:764,1864:779,1865:792,1866:813,1867:812,1868:838,1869:857,1870:872,1871:890,1872:905,1873:924,1874:938,1875:953,1876:973,1877:981,1878:993,1879:1012,1880:1029,1881:1059,1882:1060,1883:1092,1884:1122,1885:1147,1886:1186,1887:1202,1888:1244,1889:1274,1890:1306,1891:1339,1892:1376,1893:1379,1894:1438,1895:1473,1896:1509,1897:1559,1898:1611,1899:1626,1900:1687,1901:1770,1902:1817,1903:1859,1904:1924,1905:1953,1906:2024,1907:2074,1908:2093,1909:2147,1910:2208,1911:2254,1912:2305,1913:2328,1914:2389,1915:2493,1916:2568,1917:2643,1918:2718,1919:2780,1920:2861,1921:2989,1922:3059,1923:3153,1924:3239,1925:3390,1926:3465,1927:3536,1928:3643,1929:3636,1930:3750,1931:3926,1932:3910,1933:4056,1934:4226,1935:4385,1936:4526};
 const GDP_NB={1837:419,1838:424,1839:430,1840:443,1841:450,1842:466,1843:475,1844:493,1845:502,1846:508,1847:518,1848:527,1849:538,1850:546,1851:561,1852:556,1853:544,1854:563,1855:578,1856:586,1857:593,1858:585,1859:600,1860:614,1861:622,1862:616,1863:630,1864:644,1865:654,1866:647,1867:653,1868:660,1869:671,1870:684,1871:682,1872:678,1873:678,1874:678,1875:691,1876:706,1877:727,1878:721,1879:743,1880:748,1881:759,1882:758,1883:762,1884:732,1885:748,1886:747,1887:782,1888:808,1889:810,1890:839,1891:840,1892:862,1893:855,1894:859,1895:883,1896:889,1897:892,1898:884,1899:885,1900:922,1901:902,1902:935,1903:941,1904:947,1905:914,1906:905,1907:978,1908:927,1909:942,1910:992,1911:992,1912:1018,1913:1018,1914:1022,1915:1036,1916:1047,1917:1069,1918:1090,1919:1105,1920:1108,1921:1087,1922:1123,1923:1137,1924:1132,1925:1162,1926:1179,1927:1180,1928:1172,1929:1196,1930:1111,1931:1206,1932:1217,1933:1197,1934:1228,1935:1249,1936:1242};
+// EMP_COLS = the employment-by-era COLUMN LABELS (fill_emp.mjs → emp_cols.json, spliced by fill_assemble). On a book with craft rungs
+// e0 is split into 'e0 artisans' / 'e0 other' (user-ruled 2026-10-02); otherwise 'e0' … 'eN'. Every employment renderer reads it.
+const EMP_COLS=['e0','e1','e2','e3','e4','e5'];
 const EMP={1840:[3.52,1.84,0.27,0,0,0],1850:[4.1,2.57,0.52,0,0,0],1860:[5.25,3.69,1.11,0.02,0,0],1870:[6.75,5.76,2.47,0.15,0,0],1880:[8.62,7.85,4.63,0.6,0,0],1890:[10.07,9.81,6.66,1.58,0.07,0],1900:[12.17,13.09,9.97,5.01,0.91,0],1910:[13.86,15.8,15.49,11.87,4.65,0],1920:[14.12,16.56,20.15,20.42,14.34,0.17],1930:[13.86,17.43,23.18,26.9,27.09,5.36],1935:[13.65,16.97,23.86,28.89,31.08,9.99]};
+// EMP_B2 = old rungs BESIDE THEIR REPLACEMENT (fill_emp.mjs → emp_b2.json; lib_era_cols countrySplit, 2026-10-02): per year, per column,
+// the workers on a rung 2+ eras behind the best rung their own country staffs in the same industry — w world, p the shortlist pool,
+// pAll the pool's every tier worker. Separates the ladder failing to retire a rung from countries that run nothing newer.
+const EMP_B2={};
 const PROD_FLAT={1840:{w:49.4,g:444},1850:{w:56.6,g:565},1860:{w:66.4,g:700},1870:{w:84.1,g:924},1880:{w:106.4,g:1170},1890:{w:129.3,g:1414},1900:{w:161.3,g:1992},1910:{w:204.5,g:2959},1920:{w:251.3,g:4316},1930:{w:309.4,g:6047},1935:{w:335.1,g:6855}};
 const PROD_VAN={1840:{w:49.9,g:452},1850:{w:58,g:575},1860:{w:69.8,g:716},1870:{w:82.7,g:872},1880:{w:96.1,g:1029},1890:{w:113.9,g:1306},1900:{w:136.5,g:1687},1910:{w:171.3,g:2208},1920:{w:208.3,g:2861},1930:{w:253.1,g:3750},1935:{w:284.1,g:4385}};
 const TRAJ={1840:[0.98,0.95,1.06],1860:[0.98,0.95,1.26],1880:[1.14,1.13,1.02],1900:[1.18,1.14,1.20],1920:[1.51,1.23,1.55],1935:[1.56,1.25,1.29]};
@@ -641,8 +670,10 @@ const D2=__D2__;
 // The empty default is deliberate and safe: with no data the GDP chart stays whole-economy under the
 // tiered scope and prints why, which is exactly the degraded behaviour the filled version falls back to.
 const VA={flat:{},van:{},nb:{},cov:{flat:{seen:0,withVa:0,version:null},van:{seen:0,withVa:0,version:null},nb:{seen:0,withVa:0,version:null}}};
-const TAGS=['GBR','RUS','FRA','USA','PRU','TUR','AUS','SPA','BRZ','SIC','POR','NET'];
+const TAGS=['GBR','RUS','FRA','USA','PRU','TUR','AUS','SPA','BRZ','SIC','POR','NET','BEL','NGF','GER','UNL'];
 const GP=['GBR','RUS','FRA','USA','PRU','TUR','AUS'];
+// the SHORTLIST POOL the criteria register reads (lib_markets.mjs POOL; BEL/NGF/GER/UNL joined the watchlist 2026-10-02 for it)
+const SL=['GBR','USA','FRA','NET','BEL','UNL','PRU','NGF','GER'];
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const tip=document.getElementById('tip');
 
@@ -712,7 +743,9 @@ for(const y of YEARS){
     '<td class="num">'+cmp(WORLD_FULL[y][0],WORLD_FULL[y][1])+'</td><td class="num">'+cmp(WORLD_PURE[y][0],WORLD_PURE[y][1])+'</td>';
 }
 function empTable(el,data,yrs){
-  el.innerHTML='<tr><th>year</th>'+[0,1,2,3,4,5].map(i=>'<th class="num">era '+i+'</th>').join('')+'<th class="num">total</th></tr>';
+  // headers from EMP_COLS, as many as the data carries (the literal six 'era i' headers misaligned every four-rung table's total column)
+  const nc=Math.max(0,...yrs.map(y=>(data[y]||[]).length));
+  el.innerHTML='<tr><th>year</th>'+EMP_COLS.slice(0,nc).map(l=>'<th class="num">'+l+'</th>').join('')+'<th class="num">total</th></tr>';
   let prev=null;
   for(const y of yrs){
     const e=data[y]; if(!e)continue;
@@ -730,6 +763,23 @@ function empTable(el,data,yrs){
   }
 }
 empTable(document.getElementById('t-emp'),EMP,EYRS);
+// ---------- old rungs beside their replacement (world: EMP_B2; watchlist: D2.flat[tag].b2) ----------
+function b2Table(el,rows,withPool){
+  const yrs=Object.keys(rows).map(Number).sort((a,b)=>a-b);
+  if(!yrs.length){el.innerHTML='<tr><td class="small">No old-rung split in this batch — run fill_emp.mjs (world) / report_data2.mjs (watchlist) and refill.</td></tr>';return;}
+  const nc=Math.max(...yrs.map(y=>(rows[y].b2||[]).length));
+  const cs=[...Array(nc).keys()].filter(i=>yrs.some(y=>((rows[y].b2||[])[i]||0)>=0.005));
+  const sm=a=>(a||[]).reduce((x,y)=>x+y,0), pc=(a,b)=>b>0?(100*a/b).toFixed(1)+'%':'—';
+  el.innerHTML='<tr><th>year</th>'+cs.map(i=>'<th class="num">'+(EMP_COLS[i]||('era '+i))+'</th>').join('')+'<th class="num">beside, total</th><th class="num">share of tier workers</th>'+(withPool?'<th class="num">shortlist, beside</th><th class="num">share of its tier workers</th>':'')+'</tr>';
+  for(const y of yrs){
+    const r=rows[y], b=sm(r.b2);
+    el.insertRow().innerHTML='<td>'+y+'</td>'+cs.map(i=>'<td class="num">'+(((r.b2||[])[i]||0)>=0.005?r.b2[i].toFixed(2):'<span class="dim">—</span>')+'</td>').join('')+
+      '<td class="num"><b>'+b.toFixed(2)+'</b></td><td class="num">'+pc(b,r.all)+'</td>'+
+      (withPool?'<td class="num">'+sm(r.p).toFixed(2)+'</td><td class="num">'+pc(sm(r.p),sm(r.pAll))+'</td>':'');
+  }
+}
+{ const rows={}; for(const y of EYRS) if(EMP_B2[y]&&EMP[y]) rows[y]={b2:EMP_B2[y].w,all:EMP[y].reduce((a,b)=>a+b,0),p:EMP_B2[y].p,pAll:EMP_B2[y].pAll};
+  b2Table(document.getElementById('t-empb2'),rows,true); }
 // ⭐ DERIVED CAPTIONS (2026-09-05). These two sentences were shell literals from the first fill (2026-08-15) ("era-0
 //   employment peaks in 1920 and falls … while e4–e5 absorb them", "e0 declines only from the 1920s–30s") and were
 //   published under every later batch, including four-rung books with no e4 and an e0 that never declines.
@@ -742,16 +792,20 @@ empTable(document.getElementById('t-emp'),EMP,EYRS);
     const v=yrs.map(y=>EMP[y][e]||0); if(!v.some(x=>x>0)) continue;
     let pi=0; v.forEach((x,i)=>{ if(x>v[pi]) pi=i; });
     const first=yrs[v.findIndex(x=>x>0)];
-    if(pi<yrs.length-1){ parts.push('era '+e+' peaks in '+yrs[pi]+' at '+v[pi].toFixed(1)+'M and falls to '+v[v.length-1].toFixed(1)+'M'); falling.push(e); }
-    else parts.push('era '+e+(first>yrs[0]?' (from '+first+')':'')+' still grows through '+last+' ('+v[v.length-1].toFixed(1)+'M)');
+    const lbl=EMP_COLS[e]||('era '+e);
+    if(pi<yrs.length-1){ parts.push(lbl+' peaks in '+yrs[pi]+' at '+v[pi].toFixed(1)+'M and falls to '+v[v.length-1].toFixed(1)+'M'); falling.push(e); }
+    else parts.push(lbl+(first>yrs[0]?' (from '+first+')':'')+' still grows through '+last+' ('+v[v.length-1].toFixed(1)+'M)');
   }
   const sh=document.getElementById('emp-shape');
   if(sh) sh.textContent=parts.join('; ')+(falling.length?' — obsolete rungs shedding real workers while the newer ones absorb them.':' — no rung sheds workers in this batch, so the obsolescence signal this view exists for is absent here.');
-  let dec=null; for(let i=1;i<yrs.length;i++){ if((EMP[yrs[i]][0]||0)<(EMP[yrs[i-1]][0]||0)){ dec=yrs[i]; break; } }
-  const e0=yrs.map(y=>EMP[y][0]||0), d0=e0.length>1?e0[e0.length-1]-e0[e0.length-2]:0;
+  // e0 = every column labelled e0 (artisans + other on a craft book); the note names the split when there is one
+  const E0=EMP_COLS.map((l,i)=>l.startsWith('e0')?i:-1).filter(i=>i>=0&&i<nE), e0of=y=>E0.reduce((a,i)=>a+(EMP[y][i]||0),0);
+  const e0name=E0.length>1?'e0 (artisans + other)':'e0';
+  let dec=null; for(let i=1;i<yrs.length;i++){ if(e0of(yrs[i])<e0of(yrs[i-1])){ dec=yrs[i]; break; } }
+  const e0=yrs.map(e0of), d0=e0.length>1?e0[e0.length-1]-e0[e0.length-2]:0;
   const nt=document.getElementById('emp-note');
-  if(nt) nt.innerHTML=dec?('⚠ e0 first declines in the '+dec+' row; whether that lateness is the book’s doing is a watchlist-level question — check per-country on the Watchlist page.')
-    :('⚠ e0 never declines in this batch — it still adds workers in the last row ('+(d0>=0?'+':'')+d0.toFixed(1)+'M to '+last+'); whether the ladder retires it anywhere is a watchlist-level question — check per-country on the Watchlist page.');
+  if(nt) nt.innerHTML=dec?('⚠ '+e0name+' first declines in the '+dec+' row; whether that lateness is the book’s doing is a watchlist-level question — check per-country on the Watchlist page.')
+    :('⚠ '+e0name+' never declines in this batch — it still adds workers in the last row ('+(d0>=0?'+':'')+d0.toFixed(1)+'M to '+last+'); whether the ladder retires it anywhere is a watchlist-level question — check per-country on the Watchlist page.');
 })();
 // ---------- research tables (tree-aware; keys tree|era for techs, stage|tree|era for JEs) ----------
 const TREES=['production','military','society'];
@@ -1008,8 +1062,10 @@ function render1(mode) {
   const scopeNote = SCOPE === 'tier' ? vaNote() : '';
   if (C1MODE === 'ratio') {
     lineChart(document.getElementById('chart1'), [
-      { pts: flatPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--accent', label: '__ARMLABEL__' }].concat(hasNb ? [
-      { pts: nbPts.map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--gold', label: '__NBLABEL__' }] : []),
+      // ⚠ only years BOTH arms carry: a quarterly-autosave batch has an 1836 summary and the vanilla baseline (yearly) starts at
+      //   1837, so g / undefined put a NaN at the head of the path and the browser refused the whole line (2026-10-02)
+      { pts: flatPts.filter(([y]) => GDP_VAN[y]).map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--accent', label: '__ARMLABEL__' }].concat(hasNb ? [
+      { pts: nbPts.filter(([y]) => GDP_VAN[y]).map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--gold', label: '__NBLABEL__' }] : []),
       { ymin: 0.2, ymax: 1.8, grid: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75], emph: 1, band: [0.8, 1.25], fmt: v => v.toFixed(2) + '×', label: 'World GDP ratio' });
     document.getElementById('cap1').innerHTML = 'Yearly world GDP ÷ the vanilla baseline (__VANLABEL__); the mod line is the median of this batch’s runs. Shaded band = the 0.8–1.25× target. ⚠ A median hides the spread — __SPREAD__ Sharp notches are civil wars and collapses (see incidents), not business cycles.' + scopeNote;
   } else {
@@ -1027,8 +1083,10 @@ function press(on,off){document.getElementById(on).setAttribute('aria-pressed',t
 render1('ratio');
 
 // ---------- stacked employment chart (shared) ----------
-const eras=['e0','e1','e2','e3','e4','e5'],cols=['--e0','--e1','--e2','--e3','--e4','--e5'];
-function legendHTML(txt){return eras.map((e,i)=>'<span><span class="sw" style="background:var('+cols[i]+')"></span>era '+i+'</span>').join('')+'<span class="dim" style="margin-left:auto">'+txt+'</span>';}
+// the employment columns are LABELLED (EMP_COLS): 'e0 artisans' takes a warm tan, 'e0 other' (the e0 FACTORIES, the rung that should die) a rose, 'eN' its era blue
+const eras=EMP_COLS,cols=EMP_COLS.map(l=>l==='e0 artisans'?'--eA':l==='e0 other'?'--eO':'--'+l);
+const darkBar=l=>/^e[345]$/.test(l);   // the dark bars take light text (index-based before the artisan split shifted the columns)
+function legendHTML(txt){return eras.map((e,i)=>'<span><span class="sw" style="background:var('+cols[i]+')"></span>'+e+'</span>').join('')+'<span class="dim" style="margin-left:auto">'+txt+'</span>';}
 document.getElementById('legend2').innerHTML=legendHTML('workers in tier buildings (est.)');
 document.getElementById('legend4').innerHTML=legendHTML('selection only (est.)');
 function stacked(el,data,yrs,mode){
@@ -1045,7 +1103,7 @@ function stacked(el,data,yrs,mode){
     s+='<text x="'+(L-7)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="'+css('--ink3')+'">'+g+(mode==='norm'?'%':'M')+'</text>';
   }
   yrs.forEach((y,di)=>{
-    const a=data[y]||[0,0,0,0,0,0],tot=a.reduce((x2,y2)=>x2+y2,0)||1;
+    const a=data[y]||[0],tot=a.reduce((x2,y2)=>x2+y2,0)||1;
     const scale=mode==='norm'?100/tot:1;
     let acc=0;
     const bx=L+di*bw+bw*0.14,bwid=bw*0.72;
@@ -1057,7 +1115,7 @@ function stacked(el,data,yrs,mode){
       const pct=100*v/tot;
       s+='<rect x="'+bx+'" y="'+(gy+1)+'" width="'+bwid+'" height="'+Math.max(0,hv-2)+'" rx="2" fill="var('+cols[ei]+')" data-d="'+y+'" data-e="'+ei+'" data-p="'+pct.toFixed(0)+'" data-v="'+v.toFixed(2)+'"/>';
       if((mode==='norm'?pct>=11:hv>=20))
-        s+='<text x="'+(bx+bwid/2)+'" y="'+(gy+hv/2+4)+'" text-anchor="middle" font-size="11" font-weight="600" fill="'+(ei>=3?'var(--bg)':'var(--ink)')+'" pointer-events="none">'+(mode==='norm'?pct.toFixed(0):(v>=10?v.toFixed(0):v.toFixed(1)))+'</text>';
+        s+='<text x="'+(bx+bwid/2)+'" y="'+(gy+hv/2+4)+'" text-anchor="middle" font-size="11" font-weight="600" fill="'+(darkBar(eras[ei])?'var(--bg)':'var(--ink)')+'" pointer-events="none">'+(mode==='norm'?pct.toFixed(0):(v>=10?v.toFixed(0):v.toFixed(1)))+'</text>';
     });
     s+='<text x="'+(bx+bwid/2)+'" y="'+(H-7)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+y+'</text>';
   });
@@ -1065,7 +1123,7 @@ function stacked(el,data,yrs,mode){
   el.innerHTML=s;
   el.querySelectorAll('rect[data-d]').forEach(rc=>{
     rc.addEventListener('mousemove',ev=>{
-      tip.innerHTML='<b>'+rc.dataset.d+'</b> era '+rc.dataset.e+': '+rc.dataset.v+'M workers · '+rc.dataset.p+'%';
+      tip.innerHTML='<b>'+rc.dataset.d+'</b> '+(eras[+rc.dataset.e]||('era '+rc.dataset.e))+': '+rc.dataset.v+'M workers · '+rc.dataset.p+'%';
       tip.style.opacity=1;tip.style.left=(ev.clientX+14)+'px';tip.style.top=(ev.clientY-10)+'px';
     });
     rc.addEventListener('mouseleave',()=>tip.style.opacity=0);
@@ -1090,6 +1148,7 @@ for(const tag of TAGS){
 document.getElementById('sel-all').onclick=()=>{SEL=new Set(TAGS);TAGS.forEach(t=>document.getElementById('ct-'+t).setAttribute('aria-pressed',true));renderWatch();};
 document.getElementById('sel-none').onclick=()=>{SEL=new Set();TAGS.forEach(t=>document.getElementById('ct-'+t).setAttribute('aria-pressed',false));renderWatch();};
 document.getElementById('sel-gp').onclick=()=>{SEL=new Set(GP);TAGS.forEach(t=>document.getElementById('ct-'+t).setAttribute('aria-pressed',SEL.has(t)));renderWatch();};
+document.getElementById('sel-sl').onclick=()=>{SEL=new Set(SL);TAGS.forEach(t=>document.getElementById('ct-'+t).setAttribute('aria-pressed',SEL.has(t)));renderWatch();};
 
 let c3mode='ratio',c4mode='abs';
 document.getElementById('c3-ratio').onclick=()=>{press('c3-ratio','c3-abs');c3mode='ratio';renderWatch();};
@@ -1129,7 +1188,7 @@ function renderWatch(){
   // employment
   const edata={};
   for(const y of EYRS){
-    const a=[0,0,0,0,0,0];let any=false;
+    const a=new Array(EMP_COLS.length).fill(0);let any=false;
     for(const t of sel){const e=D2.flat[t].emp[y];if(e){any=true;e.forEach((v,i)=>a[i]+=v);}}
     if(any)edata[y]=a.map(v=>+v.toFixed(2));
   }
@@ -1174,11 +1233,18 @@ function renderWatch(){
   // employment-with-brackets table for selection
   const wemp={};
   for(const y of EYRS){
-    const a=[0,0,0,0,0,0];let any=false;
+    const a=new Array(EMP_COLS.length).fill(0);let any=false;
     for(const tg of sel){const e=D2.flat[tg].emp[y];if(e){any=true;e.forEach((v,i)=>a[i]+=v);}}
     if(any)wemp[y]=a.map(v=>+v.toFixed(2));
   }
   empTable(document.getElementById('t-wemp'),wemp,EYRS.filter(y=>wemp[y]));
+  const wb2={};
+  for(const y of EYRS){
+    const b=new Array(EMP_COLS.length).fill(0);let any=false,all=0;
+    for(const tg of sel){const e=(D2.flat[tg].b2||{})[y],a=D2.flat[tg].emp[y];if(e){any=true;e.forEach((v,i)=>b[i]+=v);}if(a)all+=a.reduce((x,z)=>x+z,0);}
+    if(any)wb2[y]={b2:b.map(v=>+v.toFixed(3)),all};
+  }
+  b2Table(document.getElementById('t-wempb2'),wb2,false);
   // research tables for selection (tree-aware)
   const trees=[...TREE_SEL.s];
   function selMean(src,y){

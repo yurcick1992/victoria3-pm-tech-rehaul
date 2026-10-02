@@ -64,6 +64,42 @@ The A/B ladder (§10.68) is designed on that ratio rather than on a £ price pat
    profitable once tier-(N+2) buildings flood the market — so a tech lead actually pushes
    laggards out. Governed by `BALANCE_FRAMEWORK.md` (the balance source of truth).
 
+## ⭐⭐⭐ RECIPES STEER PRODUCTION; AI VALUES ONLY MAKE THE AI FOLLOW PROFIT (user-ruled 2026-10-02, GOVERNING — BALANCE_FRAMEWORK §10.92)
+
+**The user, 2026-10-02:** *"we want it [the ineffectively invested capital] to be as low as possible, and the reason that we fine-tune AI
+values is that it's not low naturally, not for some desire to steer it away. When we do need to steer the industrial production somewhere
+(e.g. some industry is dead and shouldn't be, or even dead and causes ripple effects), we primarily work with recipes to ensure that it is
+effective/profitable for the AI to combat this problem. And AI values only follow to ensure that the AI follows what's profitable."* Recorded
+as a universal principle, valid whatever machinery measures it.
+
+1. **The investment AI should put capital where it pays, and the measure of how well it does is MISPLACED CAPITAL** — the share of new
+   capital whose expected payback is far worse than the best VALID alternative (today FINDINGS **F206/F207**: "grossly suboptimal" = expected
+   payback more than 3× the best valid sector's, or loss-making; vanilla misplaces 10–19% of each decade's capital, the four-rung books climb to
+   24–38% by 1926–36).
+   **It should be as low as possible.**
+2. **AI values — and every other willingness lever (strategies, AI defines) — are tuned for that alone**, because the AI does not follow profit
+   well on its own; never to push it toward or away from an industry or a rung for its own sake. A change to them is judged by whether
+   misplaced capital falls.
+3. **Steering production is the job of the RECIPES** and the rest of the economics a book sets (inputs, outputs, building cost). When an
+   industry is dead and should not be, when a death ripples down a chain, when an old rung should die and does not: make the wanted outcome
+   effective and profitable for the AI. AI values follow, so the AI pursues what is profitable.
+4. **The measurement may change; the principle does not.** "How profitable" is today the expected payback at realised prices and actual wages
+   (F206); "how well the AI pursues profit" is today F207's misplaced-capital share against valid options. Either may be replaced.
+5. ⭐ **EXEMPT, and never measured (user, the same day):** *"if AI stops building infrastructure or government industries or shipyards 'because it
+   doesn't see profits', this'll be a net loss … it's important to exclude them and infrastructure and trade centers from the measurement, even if
+   they technically can generate profit, and most of them -- through goods. Additionally, let's remove gold mines as well (but add a static 5000
+   ai_value to them)."* ⇒ **infrastructure (railways, ports, power plants, dams), trade centres, shipyards, every government-funded building (the
+   engine's `is_government_funded` groups: administration, universities, construction sectors, the military, monuments, canals) and gold mines**
+   are outside the misplaced-capital measurement, and their AI values are set to get them BUILT, not to follow profit. No detailed adequacy
+   criterion for them exists. The gold mine's static `ai_value` 5000 is VANILLA's own (*"Gold mines are very nice for minting revenue and
+   guaranteed profits"*, `03_mines.txt`), which the mod does not touch — every book already ships it; ruled to stay (ON_GAME_UPDATE coupling).
+   ⚠ **The MILITARY INDUSTRIES (arms, munitions, artillery) are NOT exempt** (user, the same day: *"They should not be exempt."*) — privately
+   built manufacturing, measured and profit-following like every other rung; the art academy likewise stays in.
+⇒ It sits beside the no-artificial-limits ruling of 2026-09-03 (hard build blocks are rejected): that one says WHICH levers may touch the AI,
+this one WHAT they are for. It reclassifies the era desire ladders (1,000 × A^era, 1,000 × 3^era) as legitimate only to the degree they correct
+the AI's under-weighting of a rung's REAL profit — F206 §5 measured them overshooting into misallocation (e1a12's three e2 merge hosts at
+15,588 hold 39% of its grossly misplaced capital). The compressed ladder `e1a12-ai1135` is its first test (F208).
+
 ## ⭐⭐⭐ THE ANCHOR PRINCIPLE — WHAT AN ERA *MEANS* (user-ruled 2026-08-12, GOVERNING)
 
 **Read this before touching the tech tree, the era ladder, or any tier's era.** It is the intent the
@@ -294,7 +330,10 @@ inside the crafts (every other group under the £3 floor fails to hire as before
 world-wide (inside the seed spread) but glass +10, tooling +9, Korea 47 → 96%; new crafts still pause near 10%; nothing outside the crafts
 beyond the spread of two no-floor seeds. ⭐⭐ **THE FLOOR IS RULED INTO THE ARM (2026-09-30 late evening, §10.91.3):** *"This threshold
 reduction is now a firm part of the 'artisans + merges' arm, implement it."* ⇒ **THE ARM IS `config/mod_config.artmerge6-floor.json`** (the
-bytes F188 measured); `make_artisan_config.mjs` defaults to the floor, `artmerge6` is the no-floor record. ⭐ **THE RECIPES AGAINST VANILLA
+bytes F188 measured); `make_artisan_config.mjs` defaults to the floor, `artmerge6` is the no-floor record. ⚠⚠ **CORRECTED 2026-10-01: THE
+RULED FLOOR IS £2, NOT 0.01** (user: *"not to 0.01, but to £2, so only a third off"*) — 0.01 was the probe value, written in as ruled because the
+ruling named no number; F188, F191, F194 and its readings F195/F196 all ran at 0.01, i.e. not on the intended arm for this key. The generator
+now defaults to `--hire-floor 2`; written books keep their recorded 0.01 (§10.91.3's correction). ⭐ **THE RECIPES AGAINST VANILLA
 AND THE CANON (F189):** per worker the crafts make 43–75% of vanilla's goods and pay 17–34% more wages (value added per wage unit 17–42% of
 vanilla's); against the canon they cut food and paper (×0.59 and ×0.21 per wage unit) but sit ABOVE the four SLID industries' e0 (×1.1–2.2 —
 the anchor slide had already priced those a rung below vanilla); break-even at base 115–140%; a fifth of the canon's capital per worker.
@@ -305,6 +344,46 @@ the artisans (F190: the machinist crafts had not moved its clout), with craft ou
 the crafts can pay the canon e0's wage level at early realised prices. ⇒ **THE ARM UNDER PROBE IS `config/mod_config.artmerge6-pb.json`**
 (`make_artisan_config.mjs --staffing pb`, the floor kept, then the merges); probe session `20260930_225621_artmerge6-pb-10y` (2 × 1836 →
 1846), read with `ledger/health_vs_ref.mjs` against the canon; the n=3 century batch follows if it is healthy. `artmerge6-floor` is a record.
+⭐⭐ **2026-10-01, LATER: THE e1-ANCHOR BOOK (§10.91.5, F197), user-ruled — `config/mod_config.e1a-artmerge.json`.** Every industry anchored at
+e1 (e2 ×A, e3 ×A², cost following the anchor), the step DOWN to e0 ÷1.5 on output and input value (`make_ab_config --down-step 1.5`), engines
+on e1 (motor [1,2,3] — the era rule's own derivation; `make_tier4_config --derive motor`), the pop-good industries' anchor-and-below input lift
+1.4 (`--in1-pop 1.4`), ONE craft rule (0.6 of vanilla's goods per worker, the £2 floor crossed at 0.89 of base: `make_artisan_config
+--craft-rule 0.6,0.89`), the £2 floor, and OUTPUT-MATCHED 1836 craft seeding with vanilla's head count kept (`--seed 5`; the seeded artisans
+come off peasants, identities from `config/measured_1836_pop_identity.json` at 1836.2.1). The chain and its field diff are §10.91.5's. Paraguay and
+Schwarzburg lack the peasants for their full seeding (reported); Kraków and the Mughals are covered. ⭐ **PROBED (F199, 2 × 1836→1846):** the
+seeding takes, the 1836 supply anchor lands on vanilla's (groceries 0.93 against the canon's 1.33–1.53), steel at the ceiling 0% at 1837.12, world
+GDP on vanilla's path; ⚠ the 1.4-lifted pop-good e1 rungs empty in the German states and Belgium within four years (the Prussian market's glass a
+fifth of vanilla's in both seeds) — the lift's value awaits a ruling. The arm at £2 alone (`artmerge6-pb-f2`) was re-probed first (F198: healthy).
+⭐ **THE CENTURY (F200, `20261001_124750`, n=2 aligned, both intact):** loss 7.76 (the canon 5.90, the 0.01 crafts arm 10.09) — the hoard gone
+(pool H 0.52), PP 1.07, PI falling, T0 at 0.60 of the 1900s; world GDP 0.82 after a long mid-game dip; motor's steam rung (e1 now) and the
+shortlist's food/paper crafts survive; the German glass hole lasts until the German e2 rungs. Not ruled on.
+⭐ **WHY THE HOLE, AND THE LIFT PROBE (F201, F202):** the 1.4 lift puts the e1 glass and food rungs under the engine's 15% wage-cut line, so after vanilla's
+own opening glut they never rehire. Probed at **1.0** (`e1a10-artmerge`) and **1.2** (`e1a12-artmerge`), 2 × 1836→1846 each (`20261001_215119`): both
+close the hole (Prussian glass 0.81–0.93× vanilla at 1845, French groceries 1.00–1.12×); 1.0 overshoots British groceries (1.60–2.23×, above vanilla's
+range) with the British food e1 at 0.34–0.39 of sales, 1.2 stays inside (1.27–1.32×, 0.22–0.27). ⭐⭐ **RULED: THE LIFT IS 1.2** (user, 2026-10-01: *"Go
+with 1.2. 3 full runs."*) ⇒ **THE ARM'S BOOK IS `config/mod_config.e1a12-artmerge.json`**; `e1a-artmerge` (1.4) and `e1a10-artmerge` (1.0) are records. Its
+century is a fixed n=3 of full runs (no stop watcher), session `20261001_225817_e1a12-artmerge-n3`. ⛔ A technology-triggered penalty on old rungs is ruled
+out for good (*"never ever, for simulation purity"*). ⭐ **ITS CENTURY (F203):** 2 intact / 1 broken by stall (F166's stuck Britain), loss **8.62** (the
+1.4 book 7.76, the canon 5.90); world GDP 0.78, the pool's GDP 0.85 (beyond the soft line), the hoard back (pool H 1.41 against 0.52); the German hole
+gone early, the e1 food rung overshooting in the rich markets in the 1850s; ⚠ the USA agrarian in all three seeds. Not ruled on. ⭐ **WHY THE USA
+(F204):** no plain bug — one seed's politics, and in all three the investment AI's `ai_value`-led choice: textile's and furniture's e2 merge hosts
+(15,588, open from the 1850s) took a quarter to a third of US private construction 1860–1900 because steel is thin under the e1 anchor, while mines,
+logging, plantations and railways (2–10× the profit per point) got ~10% against vanilla's 31% (a starvation every four-rung book shares). Levers
+proposed, none ruled.
+⭐⭐ **2026-10-02: THE DESIRE LADDER COMPRESSED (user-ruled):** *"Change the desire to build to 1) artisan 800 2) other e0 1000 3) e1 1000 4) e2 3000
+5) e3 5000. Run a 30-year probe and report. Unless clearly broken, run 2+1 then."* ⇒ **`config/mod_config.e1a12-ai1135-artmerge.json`** = the arm's book
+through its own chain with `make_ab_config --ai-ladder 1000,1000,3000,5000` (in place of `--ai-steep … :3`, i.e. 1000 × 3^era) and `make_artisan_config
+--craft-ai 800`; the merge hosts keep the ruled geometric-midpoint rule on the new values (food and paper e1 hosts 1,732, textile / furniture / steel e2
+hosts 3,873, fertilizer's e0 host 1,000). Field diff against e1a12-artmerge: 57 ai_value fields and the provenance records, nothing else; every build check
+passes. Probe `20261002_111449_e1a12-ai1135-30y` (1 × 1836→1866), then the century 2+1 `e1a12_ai1135_n2.json` (+ `_tb.json` on divergence).
+⭐ **THE PROBE (F208):** not broken; world GDP 0.91–1.02× vanilla to 1865; the grossly misplaced share of new capital down to vanilla's level
+(17–19% a decade against e1a12's 23–25%), the textile e2 merge host nearly empty; ⚠ the USA still put 47% of its 1856–66 private construction
+into textile and furniture in that seed. The century 2+1 runs: session `20261002_120946_e1a12-ai1135-n2` (v15 summaries), judged on the register
+AND on misplaced capital (the governing principle of the same day, §10.92).
+⭐ **ITS CENTURY (F209): ENDED AT n=2 BY THE STOP RULE** — run 1 intact (world GDP 0.79, loss 8.79), run 2 BROKEN BY RUNOFF (1.42×, the shortlist
+fully depeasanted at a pooled U* of 7.0%, the pools spent); consensus = run 1 alone. Misplaced capital 1926–36 29% / 26% (e1a12 38%, the canon 28%,
+vanilla 17%) — the ruled yardstick moved the way §10.92 asks; the USA 1.23 / 0.91× vanilla (e1a12 0.35–0.55); old rungs beside a rung two eras newer
+4.9 / 4.5% of world tier workers and 0.9 / 1.2% of the shortlist's at 1935, three quarters crafts. Not ruled on; the arm's keep-or-drop is the user's.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
@@ -529,7 +608,8 @@ gap over the old canon is not a significance test — the case is the monotone a
 
 ⭐⭐⭐ **THE CANON WAS REGENERATED UNDER THE ERA RULE ON 2026-09-13 AND CANONISED THAT EVENING** ("Canonize the outcome config"; the
 section above): `config/mod_config.json` = `canon4v-hai3` regenerated by the era-keyed generator — automotive, munition, synthetics and
-electrics re-priced at their eras, electrics moved e1 → e2, **motor placed by the rule alone at [0,2,3] with its minted high-speed-diesel
+electrics re-priced at their eras, electrics moved e1 → e2, **motor placed by the rule alone at [0,2,3]** (⚠ corrected 2026-10-01: NOT by
+the rule alone — the derivation gives [1,2,3], atmospheric_engine being game era 2; [0,2,3] is an explicit PLACEMENT entry) **with its minted high-speed-diesel
 top rung DROPPED** (user-ruled "option B": compression_ignition, an era-5 technology, IS motor's e3; the addition had no slot), munition
 [1,2] confirmed ("earliest munition is t1"); every other industry byte-identical. **56 buildings, 182 technologies (3 minted).** The book
 F106/F107 measured is commit `880f098`'s copy.
@@ -1595,7 +1675,19 @@ config/mod_config.artmerge6-floor.json / config/mod_config.artisan6-floor.json /
                         `d3a37b6e2f7dc84e`), `artmerge6` is the no-floor record. Regenerate: `make_artisan_config.mjs --base
                         config/mod_config.json --suffix artisan6-floor` (the floor is the default) then `make_merge_config.mjs --base
                         config/mod_config.artisan6-floor.json --suffix artmerge6-floor` — proven byte-identical. Its century 2+1 is
-                        `artmerge6_floor_n2.json` + `_tb.json` (prepared, not launched). Un-ignored with their twins
+                        `artmerge6_floor_n2.json` + `_tb.json` (prepared, not launched). Un-ignored with their twins. ⚠ Their 0.01 is the
+                        PROBE value, not the ruled £2 (corrected 2026-10-01, §10.91.3) — they are records, not the intended arm
+config/mod_config.e1a-artmerge.json ⭐⭐ THE e1-ANCHOR BOOK UNDER TEST (§10.91.5, user-ruled 2026-10-01; F197) + its tree twin (the canon's
+                        technologies; one rung-era record differs: atmospheric_engine now unlocks an e1 rung): the £2 arm with every
+                        industry anchored at e1 (÷1.5 below, the pop-good lift 1.4), motor on [1,2,3], the 60% craft rule and the
+                        output-matched 1836 seeding. Its craft half `config/mod_config.e1a-art.json` is kept beside it; the intermediate books
+                        (e1a, e1a-trade, e1a-dams, tier4-e1) stay gitignored. `config/mod_config.artmerge6-pb-f2.json` (+ `artisan6-pb-f2`) =
+                        `artmerge6-pb` at the ruled £2 floor, the twin of the re-probe 20261001_115032. Un-ignored with their twins
+config/mod_config.e1a12-ai1135-artmerge.json ⭐ THE COMPRESSED DESIRE LADDER (user-ruled 2026-10-02) + its tree twin (the arm's, byte for byte):
+                        `e1a12-artmerge` regenerated through its own chain with ai_value 1000/1000/3000/5000 by era (`--ai-ladder`), the
+                        crafts at 800 (`--craft-ai`), the merge hosts at the midpoint of the new values; 57 ai_value fields and the records
+                        differ, nothing else. The chain is scratchpad-free: the five commands sit in the book's `_ab`, `_trade_variant`,
+                        `_artisan` and `_merge` records, plus `dams.rules = family` after make_dam_config as for every e1a book. Un-ignored with its twin
 config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
@@ -1656,8 +1748,12 @@ config/start_exceptions.json ⚠ SIX-RUNG ONLY since 2026-09-05 (the canon names
 config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
 config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol, measured_market) — editable. A preset carrying a **`placeholder`** block instead of `country` is **SYNTHETIC**: not derived from any country, one level of every ordinary building so each production chain is present exactly once (what BE-solving wants). See `placeholder_defaults` for the shared pops, the SoL multipliers and the exclusion lists. Note `sol.slaves` is the **slave basket level** (what buildings buy for them), not a standard of living, and `defaults.class_mult` deliberately has **no** `slaves` entry — slaves are not on the pop-consumption path at all
 config/pop_distribution.json FITTED within-need consumption distribution (need → good → share), replacing the vanilla `weight` field — which is not an allocation rule (the game allocates by SUPPLY SHARE) and cost 12 pp of scenario demand accuracy. ONE market-independent distribution by design, solved across all 7 preset markets against config/measured_1836.json; re-derive with the balance UI's **fit pops** button and paste the printed JSON back. Absent ⇒ the UI falls back to `weight` per need
+config/measured_1836_pop_identity.json GENERATED (tools/testbed/melted_pop_identity.mjs, from the melted VANILLA 1836.2.1 save
+                        kept by session 20261001_114627_vanilla-18362-save) and COMMITTED: per country and profession the culture-religion
+                        group holding the most people of it, and per state share (STATE|TAG) its peasants, people and the state's
+                        infrastructure capacity/usage. The 1836 craft seeding's source (emit_craft_start PART S, §10.91.5)
 config/measured_1836_professions.json GENERATED (tools/testbed/melted_pops_by_profession.mjs, from a melted VANILLA
-                        1836.4.1 autosave) and COMMITTED: population BY PROFESSION per COUNTRY — the source the
+                        1836.2.1 save — since 2026-10-01; before that a 1836.3.1 melt that no longer exists, ≤2.5% apart by profession) and COMMITTED: population BY PROFESSION per COUNTRY — the source the
                         balance sheet's population row is edited on, and which its wealth strata are the SUM of.
                         Per country, not per market, because market membership is extract_presets.ps1's job and a
                         second save-derived definition of it would drift silently. ⚠ A pop's size here is
@@ -2099,6 +2195,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         rung from the THEN-canonical six-rung config (retired for good 2026-09-16) and copied that book's top-level blocks along; its
                         `--apply-solve` / era_inverse pipeline and the era_prices/measured_price_paths twins are RETIRED
                         with it (§10.66's four-rung solver-2 arm is history, not regenerable)
+                        ⭐ `--derive <ind,ind>` (2026-10-01, §10.91.5): the named industries IGNORE their PLACEMENT entry and take the
+                        era rule's own derivation (built for motor: [1,2,3] in place of the entry's [0,2,3]); a flag rather than a spec
+                        edit, so the canon still regenerates as the canon. Write it under its own TIER4_SUFFIX (tier4-e1); the book
+                        records `_placement_derived`
   make_tier4_techs.mjs  ⭐⭐ THE FOUR-RUNG TECH TREE, FROM VANILLA (§10.72). Reads the game's technologies (era,
                         category, prerequisites, English name), the four-rung config and the spec; writes
                         config/tech_tree_options.<suffix>.json (the L20 twin). Every vanilla technology carries
@@ -2184,6 +2284,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         implementation did that and was caught before it generated a book. Recorded as `_ab.anchor_for`, which L31 reads; exclusive with
                         `--tiers-for` on the same industry and with `--in0-level` / `--in0-stage`. Measured arms: `probe-tool-a1` / `probe-tool-a2`.
                         the canon's is 0.000125 — ab3 = ab2 + glass,tooling:3
+                        ⭐ 2026-10-01 (§10.91.5): `--down-step <s>` — below the anchor, output AND input value ÷ s per step (the anchor's
+                        margin kept; s 1.5 = vanilla's own method step) in place of A^k/B^k; `--in1-pop <mult>` — the anchor-and-below
+                        rungs of industries whose output sits in a pop need (read live from common/pop_needs) carry this input lift
+                        instead of `--in0`, the rungs above keep the scalar's ladder. Both recorded in `_ab` and re-derived by L31. The tree
+                        twin is now the BASE's own (tech_tree_options.<base suffix>.json), falling back to tier4's — every earlier book was
+                        built on tier4, so none changes (the canon's command regenerates its rungs identically)
                         (1000/3000/9000/27000), the arm under test in 20260902_223037_ab3-n3
                         OUTCOME (F99, 2026-09-03): the lever bites — British glass 118%/112% vs ab2's 153–158, Britain
                         84/201 plastics glassworks vs ab2's 44/97 — GDP 0.95×/0.90× in the two growth seeds, and ONE of
@@ -2490,6 +2596,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         sheet edits population by profession and sums the strata from it, and nothing in
                         history or telemetry supplied that split. ⚠ Size is `workforce + dependents`, and
                         an unattributable pop (a state with no owner) is REPORTED, never dropped
+  testbed/melted_pop_identity.mjs  WHO each profession is per country (the culture-religion group with the most people of it),
+                        and each state share's PEASANTS, people and infrastructure, out of a melt -> config/measured_1836_pop_identity.json
+                        (2026-10-01, for the craft seeding's identities and its peasant takes; read from a vanilla 1836.2.1 save). Culture
+                        is an INDEX into the save's culture database and is resolved there; an unowned pop is reported, never dropped
   testbed/melted_cultures.mjs  the culture database and its CURRENT obsessions. ⚠ OBSESSIONS ARE RUNTIME
                         STATE — common/cultures holds only the 1836 set and the game adds and drops them
                         all campaign; reading the file instead of the save put Australian wine 220 pp wrong
@@ -2577,6 +2687,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         light6 / urban_center / trade_center / owner / other / unemployed, from the pop table's IG support array
                         (F192); read with `ledger/ig_workplace_series.mjs`. ⚠ Session 20260930_232639 run 1 switched v13 → v14 at
                         1860 (the swap was made mid-batch; the field is additive),
+                        ⭐ PER-STATE LABOUR AND RESOURCE LEVELS (v15, 2026-10-02, for the user's VALID-INVESTMENT rule — free deposits or
+                        arable land AND ≥ 25k peasants + unemployed in the state, FINDINGS F207): per state `lab` = {peas, unemp}, the
+                        WORKFORCE of its peasant pops and of its other pops with no workplace (Σ over a country's states matches its
+                        `population_unemployed_workforce` within ~5%), and `res` = {building type: [levels, staffing, profit]} for every
+                        resource-capped type (mines, logging, fishing, whaling, oil, rubber, farms, plantations, ranches, orchards,
+                        vineyards; subsistence left out). The caps themselves are static and read from `map_data/state_regions`. First
+                        batch carrying it: 20261002_120946 (every earlier session is v14 or older; a KEPT save can be re-summarised),
                         and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
                         ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and
                         `<id>=none` freed slots sit in the same database (a record test must require the
@@ -2859,6 +2976,29 @@ tools/                  dev tooling — NOT shipped in the mod
                         `local`/`tradeable` and the POSITIONAL index a save uses (F159 §1). `tradedQuantity(cfg)` gives an
                         arm's own quantities (the book's `goods_traded_quantity` over vanilla's); `tradeClasses(cfg)` reads
                         F159 §7's five classes from the trade book's own `_trade.classes`, never from a copy
+  testbed/ledger/lib_era_cols.mjs  THE LEDGER'S EMPLOYMENT-BY-ERA COLUMNS (2026-10-02) — one implementation for `fill_emp.mjs` (world)
+                        and `report_data2.mjs` (watchlist): on a book with craft rungs e0 is SPLIT into `e0 artisans` and `e0 other`
+                        (user-ruled: "for the art- family, split report into e0-artisans and e0-other, where appropriate"), and a merge
+                        host's workers are shared out over its main methods at each method's own era. `eraCols(cfg)` → labels, `parts(key,
+                        building)`; the ledger carries the labels as `EMP_COLS` and every reader keys on LABELS, never on a column index.
+                        `countrySplit(buildings)` → per column every tier worker and those on a rung TWO OR MORE eras behind the best rung
+                        the same country staffs in the same industry — the ledger's "old rungs beside their replacement" tables, which
+                        separate the ladder failing to retire a rung from a country that runs nothing newer (backwardness)
+  testbed/ledger/fill_ledger.sh  ⭐ THE LEDGER'S DATA FILL AS ONE COMMAND (2026-10-02): `bash tools/testbed/ledger/fill_ledger.sh <session> <setup>
+                        <book> <outName>` — every data script in the README's order on the arm's COMPLETE runs against the pinned vanilla n=16;
+                        the prose files are written by hand, then fill_assemble + fill_verify
+  testbed/ledger/lib_sumidx.mjs + ustar_path.mjs + craft_path.mjs + us_construction_windows.mjs + pp_goods.mjs + rung_fate.mjs  the small per-batch
+                        readers behind F209, promoted from the scratchpad 2026-10-02 with identical output: the yearly summary index of a run
+                        (first summary of a year, no cache); the shortlist's U* path; the crafts over the century; one country's private-queue
+                        shares by window; the PP index by good and market; per industry and era the workers, prices, true margin and wage ÷ normal
+  testbed/ledger/misplaced_capital.mjs  ⭐ MISPLACED CAPITAL (FINDINGS F206/F207, BALANCE_FRAMEWORK §10.92; promoted from the session scratchpad
+                        2026-10-02 with identical output): the expected payback of each year's new capital (cost × the country's £ per point ÷
+                        the annual profit per staffed level of the type) against the country's best sector — fine ≤ 1.5× · a bit ≤ 3× ·
+                        GROSS > 3× or loss-making · none = no valid benchmark — on three benchmarks: ALL, OPEN, VALID (free deposits / arable
+                        land and ≥ 25k peasants + unemployed in the state; needs save summary v15). Infrastructure, shipyards, trade centres,
+                        government buildings and gold are out by ruling; military industries are IN. `--batch label:session[:setup]` (yearly,
+                        per decade, century, the like-for-like last decade), `--snap <dir of v15 re-summarised kept saves> --arm label:session`,
+                        `--series <dir>`, `--why` (what the benchmark sector is). A reading, NOT a register term (§10.92.1)
   testbed/ledger/lib_obsolescence.mjs + trade_obsolescence.mjs  ⭐⭐ OBSOLESCENCE, IN-MARKET vs TRADE — ONE metric set
                         for both kinds of competition (user-agreed 2026-09-24, FINDINGS F161 §4/§6). Per industry, per rung,
                         per country and year: the rung is IN-MARKET when its own market's SUPPLY FRONTIER (the highest era with
@@ -3353,10 +3493,19 @@ tools/                  dev tooling — NOT shipped in the mod
                         is not vanilla-staffed, an excluded group the industry lacks, or a staffing block that is not 5,000 whole heads.
                         `--staffing ruled` is the variant in use (user-ruled 2026-09-30 evening); `shop` stays for its record book.
                         `--hire-floor X` writes `min_productivity_to_hire = X` on bg_pmr_crafts — the per-group override of the engine's £3
-                        `BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES` — and records it as `_artisan.hire_floor`. ⭐ DEFAULT 0.01 since the
-                        floor was ruled into the arm (2026-09-30 late evening, §10.91.3, on F188); `--hire-floor none` = the engine's £3, only
+                        `BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES` — and records it as `_artisan.hire_floor`. ⭐ DEFAULT 2 — the RULED
+                        floor, a third off the engine's £3 (corrected 2026-10-01: from 2026-09-30 late evening the default was 0.01, F188's
+                        probe value, written in as the ruling, which named no number — §10.91.3); `--hire-floor none` = the engine's £3, only
                         for regenerating the pre-ruling records (artisan6, artisan6-shop), whose recorded commands carry no flag. Every command
                         it records now spells the floor out. It refuses 0 (some group fields read 0 as unset), so "no floor" is 0.01
+                        ⭐ `--craft-rule <share>,<cross>` (§10.91.5, "the 60%"): every craft's recipe from ONE rule — share × its vanilla
+                        first method's goods per worker, inputs set so value added per worker-year meets the floor at `cross` × base
+                        output price (inputs at base) — in place of the table's recipes and `pb_out`; `--seed <cities>` records the
+                        output-matched 1836 seeding (`_artisan.seed`) that emit_craft_start performs. Both keys are written only when set,
+                        so every earlier book still regenerates byte for byte from its own command (proven on artisan6-pb)
+                        ⭐ `--craft-ai <v>` (2026-10-02, user-ruled "artisan 800"): the six crafts' ai_value, recorded as `_artisan.craft_ai`
+                        (only when set), which L31 checks in place of the era rule's e0 value (proven to trip on a hand-edited craft). Without
+                        the flag the crafts keep the base e0's ai_value, and e1a12-art regenerates identically from its own command
   emit_craft_start.mjs  THE CRAFT RUNGS' 1836 START (§10.91.1 item 6, "that's a must") — called by build.ps1 AFTER emit_secondaries.
                         ⭐ PART 1, OWNERSHIP (found by the first craft probe, FINDINGS F181): convert_history's ×10 also multiplied the
                         ownership entries, and the engine SIZES a financial district or manor house by the levels it owns at the start
@@ -3370,6 +3519,14 @@ tools/                  dev tooling — NOT shipped in the mod
                         so they shadow vanilla's). ⚠ build.ps1 never wipes common/history, so a book WITHOUT crafts deletes any file
                         this tool wrote earlier (recognised by its header). THROWS on a craft state with no region_state block or too
                         few untyped pops
+                        ⭐ PART S, OUTPUT-MATCHED SEEDING (§10.91.5, only with `_artisan.seed`): tops each country's craft levels up to its
+                        vanilla e0 factories' output, the extra over its N most urbanised states (each capped by spare 1836.2.1
+                        infrastructure, the excess spilling down the urbanisation order), as NEW typed shopkeeper/laborer pops carrying
+                        the country's most numerous culture-religion of that profession (config/measured_1836_pop_identity.json; none →
+                        first primary culture + state religion, reported), and takes the same people off that state's untyped pops (≤ its
+                        1836.2.1 peasants, ≥ 10% of a block kept), else off the country's most-peasant state — head count unchanged; a
+                        country short of peasants is seeded as far as they reach and reported. Without the key the output is byte-identical
+                        to the pre-2026-10-01 emitter (proven by diffing two builds)
   make_merge_config.mjs THE MERGE BOOK — `--base <config> --suffix <sfx>` turns six add-on rungs into second main METHODS of the
                         rung below (BALANCE_FRAMEWORK §10.91.2): food e2, textile e3, furniture e3, paper e2, fertilizer e1 and steel e3
                         gain `method_of: <host key>`, and each host's `building_cost` / `ai_value` becomes the geometric midpoint of the

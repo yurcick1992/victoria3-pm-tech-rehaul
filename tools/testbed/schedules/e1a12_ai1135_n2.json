@@ -1,0 +1,35 @@
+{
+  "schedule_version": 1,
+  "label": "e1a12-ai1135-n2",
+  "_why": "THE COMPRESSED DESIRE LADDER OVER THE CENTURY, 2+1 (user-ruled 2026-10-02: 'Change the desire to build to 1) artisan 800 2) other e0 1000 3) e1 1000 4) e2 3000 5) e3 5000. Run a 30-year probe and report. Unless clearly broken, run 2+1 then.'). Book config/mod_config.e1a12-ai1135-artmerge.json = the arm's book e1a12-artmerge with ai_value by era 1000/1000/3000/5000 (make_ab_config --ai-ladder) in place of 1000 x 3^era, the six crafts at 800 (make_artisan_config --craft-ai 800), the merge hosts at the ruled geometric midpoint of the new values (food and paper e1 hosts 1,732; textile, furniture and steel e2 hosts 3,873; fertilizer's e0 host 1,000). Field diff against e1a12-artmerge: 57 ai_value fields and the provenance records, nothing else. Motivated by F204 (the US's private investment poured into the 15,588 textile and furniture e2 merge hosts while its raw sector and railways were starved). The 30-year probe e1a12_ai1135_30y.json (session 20261002_111449) ran first.",
+  "_arms": {
+    "e1a12-ai1135": "{kind: config, config: config/mod_config.e1a12-ai1135-artmerge.json} (+ tech_tree_options.e1a12-ai1135-artmerge.json, the arm's tree byte for byte)."
+  },
+  "_comparison": "e1a12-artmerge (20261001_225817, F203, n=3: 2 intact / 1 stuck-Britain stall, loss 8.62, world GDP 0.78, pool GDP 0.85, pool H 1.41, PI 0.95, PP 1.05, the USA 0.35-0.55 of vanilla at 1935); the canon canon-dams-family (20260929_002728, F177, n=6, loss 5.90); the pinned vanilla n=16 (20260821_131149). Same dump dates, tags, metrics and quarterly saves. The only difference from F203's book is the ai_value of the tiered rungs and the crafts.",
+  "_predictions": {
+    "construction": "the investment AI's choice leans on predicted profit and shortages where it leaned on ai_value: the raw sector and infrastructure take a larger share of private construction in the late industrialisers (the US 1860-1900 raw + infrastructure share up from e1a12's 7-12% toward vanilla's ~34%), textile and furniture e2 hosts well under e1a12's 23-32%",
+    "gdp": "world GDP at the end state 0.80-0.95x vanilla (e1a12 0.78): a better-supplied raw sector and a USA on a raw-led path (the USA 0.6-1.0x vanilla at 1935, against 0.35-0.55); the mid-game dip shallower",
+    "obsolescence": "the frontier's premium over the old rungs is now 3-5x instead of 9-27x, so frontier construction is slower and the old rungs survive more: T0 at or above e1a12's 0.87 of the 1900s, the consumer e1 rungs alive longer, PI and PP at or a little above e1a12's 0.95 / 1.05",
+    "hoard": "pool H not far from e1a12's 1.41: the spending defines are unchanged, and the pool's inflow moves with margins, which this change touches only through where the capital goes",
+    "hard": "the inherited failure modes stay possible (the stuck Britain about 1 in 5-6); a stall in the frontier's build-out is the new risk if e2/e3 at 3,000/5,000 are under-built against the raw sector",
+    "perf": "row P within +10% of vanilla's median play time"
+  },
+  "_probe_outcome": "Added before launch, after the predictions above were written. The 30-year probe 20261002_111449 (n=1, not broken: mod loaded, no error naming our files, no crash, every post-run landmine PASS): world GDP 0.93x vanilla at 1865 (e1a12 0.96-1.04, the canon 0.82-1.00, vanilla's range 0.92-1.08), dipping from 1856; the US textile + furniture share of private construction 1856-66 47% (e1a12 32-65%, the canon 0-31%) - the US capture NOT removed in this seed; world staffed textile e2 hosts 8 against e1a12's 42; the share of new capital grossly suboptimal by payback 17-19% per decade (e1a12 23-25%, the canon 19-22%, vanilla 15-17%), manufacturing's 19% (e1a12 36%). From this batch on, the save summaries are v15: per-state labour (peasants + unemployed) and resource-capped building levels, so the user's valid-option rule (free deposits AND 25k labour in the state) can be applied every year.",
+  "_register": "criteria.mjs --arm <session>:e1a12-ai1135 (the book from build_state.json), with e1a12-artmerge (20261001_225817), e1a (20261001_124750) and the canon (20260929_002728) in the ranking; alignment_check.mjs for the divergence test; first_run_decomp.mjs after run 1; the US construction mix (F204's readers); health_vs_ref.mjs; report_perf.mjs. Statistics are DIRECTIONAL (10.83.7).",
+  "_stop_rule": "2+1 with the run-level stop: stop_watch.mjs armed after launch; a run broken by stall or runoff ends the config (the third run is not launched). The third run (e1a12_ai1135_tb.json) only if alignment_check.mjs reads the pair as divergent.",
+  "_cost": "2 runs x 1836 -> 1936, about 2.5-3 h each, about 5-6 h; a third run only on divergence",
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "e1a12-ai1135": { "kind": "config", "config": "config/mod_config.e1a12-ai1135-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "e1a12-ai1135", "until": "1936.1.1" },
+    { "setup": "e1a12-ai1135", "until": "1936.1.1" }
+  ]
+}

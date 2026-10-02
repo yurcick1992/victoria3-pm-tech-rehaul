@@ -1,0 +1,42 @@
+{
+  "schedule_version": 1,
+  "label": "e1a12-ai1135-30y",
+  "_why": "THE DESIRE LADDER COMPRESSED, a 30-year probe before the century 2+1 (user-ruled 2026-10-02: 'Change the desire to build to 1) artisan 800 2) other e0 1000 3) e1 1000 4) e2 3000 5) e3 5000. Run a 30-year probe and report. Unless clearly broken, run 2+1 then.'). Book config/mod_config.e1a12-ai1135-artmerge.json = the arm's book e1a12-artmerge regenerated through its own chain with ai_value by era 1000/1000/3000/5000 (make_ab_config --ai-ladder, in place of 1000 x 3^era) and the six crafts at 800 (make_artisan_config --craft-ai 800); the merge hosts keep the ruled geometric-midpoint rule on the new values (food and paper e1 hosts 1,732, textile / furniture / steel e2 hosts 3,873, fertilizer's e0 host 1,000). Field diff against e1a12-artmerge: 57 ai_value fields and the provenance records, nothing else. Motivated by F204: the investment AI's ai_value-led choice put 26-33% of US private construction 1860-1900 into textile's and furniture's e2 merge hosts (15,588) while mines, logging, plantations and railways got ~10% against vanilla's 31%. One run.",
+  "_arms": {
+    "e1a12-ai1135": "{kind: config, config: config/mod_config.e1a12-ai1135-artmerge.json} (+ tech_tree_options.e1a12-ai1135-artmerge.json, the arm's tree byte for byte)."
+  },
+  "_comparison": "e1a12-artmerge (20261001_225817, F203, n=3) and the canon canon-dams-family (20260929_002728, F177, n=6) read at the same dates from their summaries; vanilla n=16 (20260821_131149) for GDP. Same tags, metrics, dump dates up to 1860 and quarterly autosaves as those batches. A probe: one seed, no register reading; F204's addendum says what a 30-year run can and cannot see (the capture's onset in 1856-66, not its persistence nor the US GDP outcome, and a world-GDP reading at 1866 that ranks e1a12 above the canon, the reverse of 1935).",
+  "_questions": {
+    "Q1": "Is it broken? Init marker, no error naming our files, no crash loop, no stall (world GDP at 1865 under 0.8 of vanilla's median), no industry dead and no market left with a token (health_vs_ref.mjs at 1866 against e1a12's seeds), no single building family dominating a major's construction queue.",
+    "Q2": "World and shortlist GDP at 1840 / 1850 / 1860 / 1865 against e1a12's three seeds and the canon's six.",
+    "Q3": "WHERE CONSTRUCTION GOES: the US private queue's textile + furniture share and its raw + infrastructure share in 1846-56 and 1856-66 (F204's signature), and the world's levels added 1836-1866 by class (crafts, other e0, e1, e2, raw, infrastructure) against e1a12.",
+    "Q4": "The crafts and the e1 rungs: craft levels and staffing at 1866, e1 levels of the six consumer industries and steel, against e1a12.",
+    "Q5": "Play time 1836 -> 1866 against e1a12's own first thirty years."
+  },
+  "_predictions": {
+    "Q1": "not broken: the change is willingness only (no recipe, cost or define moved)",
+    "Q2": "inside e1a12's three-seed range at every date (world 0.96-1.03 of vanilla at 1866), give or take a seed",
+    "Q3": "the US textile + furniture share in 1856-66 falls from e1a12's 32-65% to 20% or less (toward the canon's 0-31% and vanilla's 0-8%), and its raw + infrastructure share rises from 24-39% toward vanilla's 37-69%; world-wide, levels added shift from e1 rungs toward raw producers and infrastructure, the crafts (800, the lowest desire) build less than in e1a12",
+    "Q4": "craft levels at or a little under e1a12's at 1866, staffing unchanged; fewer new e1 consumer levels than e1a12 (the e1 rungs lost their 3x premium over e0 and the raw sector)",
+    "Q5": "within 10% of e1a12's median"
+  },
+  "_stop_rule": "a probe: no stop watcher, no end state for the register to judge. Clearly broken = Q1 fails; otherwise the century 2+1 (e1a12_ai1135_n2.json, then e1a12_ai1135_tb.json on divergence) follows without a further question, by the user's ruling.",
+  "_cost": "1 run x 1836 -> 1866, about 40-45 minutes plus build and harvest",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "One seed against three and six: inside the reference range is agreement, outside it is a flag, never a verdict."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 150
+  },
+  "setups": {
+    "e1a12-ai1135": { "kind": "config", "config": "config/mod_config.e1a12-ai1135-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "e1a12-ai1135", "until": "1866.1.1" }
+  ]
+}

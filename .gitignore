@@ -304,3 +304,21 @@ tools/testbed/no_new_runs_at.log
 !config/tech_tree_options.artisan6-pb.json
 !config/mod_config.artmerge6-pb.json
 !config/tech_tree_options.artmerge6-pb.json
+# the arm at its RULED hiring floor, £2 (2026-10-01 correction of §10.91.3: every book above carries the probe value 0.01)
+!config/mod_config.artisan6-pb-f2.json
+!config/tech_tree_options.artisan6-pb-f2.json
+!config/mod_config.artmerge6-pb-f2.json
+!config/tech_tree_options.artmerge6-pb-f2.json
+# the e1-anchor book (BALANCE_FRAMEWORK §10.91.5, 2026-10-01) and its craft half; the intermediate books stay ignored
+!config/mod_config.e1a-art.json
+!config/tech_tree_options.e1a-art.json
+!config/mod_config.e1a-artmerge.json
+!config/tech_tree_options.e1a-artmerge.json
+# the lift probe's two books (F201, 2026-10-01): the pop-good anchor lift at 1.0 and 1.2; their intermediates stay ignored
+!config/mod_config.e1a10-artmerge.json
+!config/tech_tree_options.e1a10-artmerge.json
+!config/mod_config.e1a12-artmerge.json
+!config/tech_tree_options.e1a12-artmerge.json
+# the compressed desire ladder (user-ruled 2026-10-02: crafts 800, other e0 1000, e1 1000, e2 3000, e3 5000); intermediates stay ignored
+!config/mod_config.e1a12-ai1135-artmerge.json
+!config/tech_tree_options.e1a12-ai1135-artmerge.json

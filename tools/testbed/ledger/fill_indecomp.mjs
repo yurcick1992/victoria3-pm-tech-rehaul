@@ -40,6 +40,9 @@ const BROAD = [
   // the industries a four-rung book hands BACK to vanilla (disabled: true — their keys are the vanilla buildings); on the
   // six-rung canon these keys are tiered and MODIND claims them first, so this bucket is empty there (L27, 2026-09-03)
   ['infrastructure & shipping (vanilla)', /^building_(port|railway|shipyard|power_plant)$/],
+  // the hydro DAMS (one building per project, building_dam_<id>, BALANCE_FRAMEWORK §10.89) sell electricity beside the power plant —
+  // in the canon since 2026-09-27, they had fallen into 'other' (2026-10-02: £27–72k a week each, a dozen of them)
+  ['hydro dams', /^building_dam_/],
   ['state & military', /government_administration|university|construction_sector|barrack|naval_base|conscription_center|port_military|logistics_center|naval_fortification|naval_administration/],
   ['ownership & companies', /manor_house|financial_district|company_|_estate$/],
   ['monuments & canals', /_canal$|skyscraper|cathedral|white_house|capitol_hill|mosque|hagia|forbidden_city|statue|big_ben|eiffel|vatican|kremlin|mausoleum|taj_mahal|angkor|dojo|shwedagon/],

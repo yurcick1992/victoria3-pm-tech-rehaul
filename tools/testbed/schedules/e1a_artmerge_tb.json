@@ -1,0 +1,19 @@
+{
+  "schedule_version": 1,
+  "label": "e1a-artmerge-tb",
+  "_why": "THE TIE-BREAKER of e1a_artmerge_n2.json (BALANCE_FRAMEWORK 10.91.5, FINDINGS F197): launched ONLY if alignment_check.mjs reads the first two runs as divergent under F114's bands, and only if neither was broken (the run-level stop). The config is read as the median of three. Same book, dump dates, tags, metrics and saves as the pair.",
+  "_cost": "1 run x 1836 -> 1936, about 2.5-3 h",
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "e1a-artmerge": { "kind": "config", "config": "config/mod_config.e1a-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "e1a-artmerge", "until": "1936.1.1" }
+  ]
+}

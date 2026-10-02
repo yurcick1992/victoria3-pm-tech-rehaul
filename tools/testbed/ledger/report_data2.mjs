@@ -3,6 +3,7 @@
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
+import { eraCols } from './lib_era_cols.mjs';
 const REPO = 'C:/claude-code/victoria 3 PM and tech rehaul';
 const SES = join(REPO, 'tools/testbed/sessions');
 const OUT = (() => { const a = process.argv.slice(2), i = a.indexOf('--out'); return i >= 0 && a[i + 1] ? a[i + 1] : '.'; })();  // default: cwd
@@ -11,6 +12,10 @@ const OUT = (() => { const a = process.argv.slice(2), i = a.indexOf('--out'); re
 // trap tiered_panel.mjs documents; fixed 2026-08-24 together with the sector set)
 const cfgPath = (() => { const a = process.argv.slice(2), i = a.indexOf('--config'); return i >= 0 && a[i + 1] ? a[i + 1] : join(REPO, 'config/mod_config.json'); })();
 const cfg = JSON.parse(readFileSync(cfgPath, 'utf8'));
+// ⭐ The per-country employment-by-era columns come from lib_era_cols.mjs (2026-10-02): e0 split into artisans / other on a book with
+//   crafts, a merge host's workers shared out over its main methods at each method's era — the SAME columns fill_emp.mjs writes for
+//   the world page, so the two pages cannot disagree. The `emp_cols` the template labels them with ship in the output beside them.
+const ERA_COLS = eraCols(cfg);
 const tierEra = {}, tierEmp = {}, vanEmp = {};
 for (const ind of cfg.industries) {
   if (ind.disabled) continue;   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
@@ -27,17 +32,23 @@ for (const ind of cfg.industries) {
 // NET joins the panel 2026-08-17: it is the third colonial-port power and the one the §10.60.3 chain
 // seed deliberately withheld from (the seed is GBR/FRA markets only), so it is the control for
 // "does an unseeded overseas empire fall behind once it researches the port tech?".
-const TAGS = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SIC', 'POR', 'NET'];
+// ⭐ BEL, NGF, GER and UNL join 2026-10-02 so the watchlist can show THE SHORTLIST POOL (lib_markets.mjs: GBR USA FRA NET BEL UNL PRU
+//   NGF GER) — the countries the criteria register reads; the template's "shortlist" button selects exactly them.
+const TAGS = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SIC', 'POR', 'NET', 'BEL', 'NGF', 'GER', 'UNL'];
 const SAMPLE = [1840, 1850, 1860, 1870, 1880, 1890, 1900, 1910, 1920, 1930, 1935];
 function walk(runDir, isMod) {
   const dir = join(SES, runDir, 'save_summaries');
   const out = {};
   const EMP = isMod ? tierEmp : vanEmp;   // which ladder this arm's building keys live on
-  for (const tag of TAGS) out[tag] = { gdp: {}, pop: {}, lab: {}, emp: {}, pw: {} };
+  for (const tag of TAGS) out[tag] = { gdp: {}, pop: {}, lab: {}, emp: {}, b2: {}, pw: {} };
   out._sector = { world: {}, tags: {} };  // [workers M, workers M, weekly VA £M] per year
+  const seen = new Set();
   for (const f of readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort()) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
     const y = +(j.provenance.date || '0').split('.')[0];
+    // ⭐ ONE SUMMARY PER YEAR — the first (2026-10-02). On a quarterly-autosave batch this read all four and kept the LAST, so a
+    //   "1935" figure was really October 1935's while every other reader takes January's.
+    if (seen.has(y)) continue; seen.add(y);
     // sector: EVERY country (the world row), tier-equivalent buildings only, VA from v6+ fields
     const secOf = c => {
       let w = 0, va = 0;
@@ -68,10 +79,11 @@ function walk(runDir, isMod) {
       const [sw, sva] = secOf(c);
       (out._sector.tags[tag] ||= {})[y] = [+(sw / 1e6).toFixed(3), +(sw / 1e6).toFixed(3), +(sva / 1e6).toFixed(3)];
       if (isMod) {
-        const e = [0, 0, 0, 0, 0, 0];
-        for (const [k, b] of Object.entries(c.buildings || {}))
-          if (tierEra[k] != null) e[tierEra[k]] += (b.staffing || 0) * (tierEmp[k] || 0);
-        out[tag].emp[y] = e.map(x => +(x / 1e6).toFixed(2));
+        // every tier worker per column (emp) and the part on a rung 2+ eras behind the best rung this country staffs in the same
+        // industry (b2 — the old rung beside its replacement; lib_era_cols countrySplit, the world page's EMP_B2 per tag)
+        const s = ERA_COLS.countrySplit(c.buildings);
+        out[tag].emp[y] = s.all.map(x => +(x / 1e6).toFixed(3));
+        out[tag].b2[y] = s.b2.map(x => +(x / 1e6).toFixed(3));
       }
     }
   }

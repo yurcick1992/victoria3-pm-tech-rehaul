@@ -39,6 +39,7 @@
 //        [--ai-base 1000] [--divisor <s>] [--ai-steep glass,tooling:3] [--ai-defines K=V,K=V]
 //        [--in0 1.2] [--in0-only] [--cost-flat | --cost-ratio 1.6 | --cost-ladder 1.9,3.083,6.859] [--ai-ladder 1000,2000,3000,4000]
 //        [--in-ladder 1.5,2.6,4.7]   (the input ladder as an explicit per-era list, in place of B^e — see its own header)
+//        [--down-step 1.5] [--in1-pop 1.4]   (below the anchor ÷s on output and input; the pop-good industries' anchor-and-below lift — 2026-10-01)
 //        [--bar-months 24] [--variant "name|base|ruled_by|delta"]        (writes config/mod_config.<suffix>.json + tech_tree_options twin)
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { tierEmployment, wageUnits, eraReferenceWage } from './lib_wage_model.mjs';
@@ -216,6 +217,22 @@ const IN0_ANCHORED = (() => { const v = arg('--in0-anchored', ''); if (v === '')
 //   ⚠ ai_value deliberately does NOT slide with it, so this stays one lever. A slid e3 keeping ai_value 27,000 while
 //   costing 2,166 is unusually attractive; that is a thing to watch in the result, not to pre-empt.
 const ANCHOR_COST = process.argv.includes('--anchor-cost');
+// ⭐⭐ --down-step <s> (user-ruled 2026-10-01, FINDINGS F197 §3: "Agreed on e1/1.5 instead of e1/A; e1/B"): BELOW the anchor (k < 0) a rung's
+//   OUTPUT and INPUT VALUE are both divided by s per step — the anchor's margin is kept, the rung is just smaller — in place of A^k and B^k (or
+//   the in-ladder's geometric extension). WHY: with every industry anchored at e1, the geometric step down (÷A on output, ÷B on inputs) cuts
+//   each e0 rung's margin by A÷B and leaves the thin 1836 e0 recipes value-destroying at base — steel −£3.8, explosives −£1.6, fertilizer
+//   −£0.7 a worker-year, F149 §4's all-17 failure (steel at the band ceiling in 60% of readings). s = 1.5 is vanilla's own method step (F97 §6,
+//   A ≈ B ≈ 1.5), so the e0 rungs land at 0.80–1.20 of their own vanilla method's output. Cost is untouched (it follows --anchor-cost's C^k).
+//   Recorded as `_ab.down_step`, which tools/lint_tier_eras.mjs (L31) reads.
+const DOWN_STEP = (() => { const v = arg('--down-step', ''); if (v === '') return null; const s = +v; if (!(s > 1)) throw new Error('--down-step <s> must be > 1'); return s; })();
+// ⭐⭐ --in1-pop <mult> (user-ruled 2026-10-01, F197 §3: "the pop-good penalty"): the ANCHOR rung and every rung BELOW it (k ≤ 0) of an industry
+//   whose output good is bought by POPS — any good named in a pop need, read live from common/pop_needs — carry this input lift instead of the
+//   scalar --in0; the rungs ABOVE the anchor keep the scalar's ladder (I × in0 × B^k), so the frontier is untouched and only the old rungs pay.
+//   WHY: an old rung dies when its realised value added per worker falls under the engine's hiring floor (F197 §1-2), and a pop good's price
+//   cannot fall far (F97, F136) — the consumer chains' old rungs have to be made dearer to run instead. Intermediates (steel, engines, tools,
+//   fertilizer, explosives, dye) keep the scalar, which protects the chain F149 §2-3 and F143 §3a found breaking under a uniform rise. A rule
+//   derived from the game's own need table, not a per-industry table. Recorded as `_ab.in1_pop` + `_ab.in1_pop_industries` (L31 reads both).
+const IN1_POP = (() => { const v = arg('--in1-pop', ''); if (v === '') return null; const m = +v; if (!(m > 0)) throw new Error('--in1-pop <mult> must be > 0'); return m; })();
 // --bar-months N (2026-09-13): research_events.industry_bar_months — the 24-month bar of canon-je24 and every book since
 //   (§10.76) used to be a hand edit after generation; a book is regenerable by ONE command or it is not regenerable.
 const BAR_MONTHS = (() => { const v = arg('--bar-months', ''); if (!v) return null; if (!(+v > 0)) throw new Error('--bar-months <months>'); return +v; })();
@@ -244,6 +261,14 @@ const rec = pm => { const b = pm && PM[pm]; if (!b) return null; const io = { in
 const val = o => Object.entries(o).reduce((s, [g, q]) => s + q * (PRICE[g] || 0), 0);
 const ANCH = { construction_cost_low: 200, construction_cost_medium: 400, construction_cost_high: 600, construction_cost_very_high: 800 };
 const r1 = x => Math.round(x * 10) / 10;
+// the goods pops buy — every `goods = X` inside common/pop_needs (for --in1-pop), read live so a patch flows through
+const POP_GOODS = new Set();
+if (IN1_POP != null) {
+  for (const f of readdirSync(join(GAME, 'common/pop_needs'))) for (const m of strip(readFileSync(join(GAME, 'common/pop_needs', f), 'utf8')).matchAll(/\bgoods\s*=\s*([a-z_]+)/g)) POP_GOODS.add(m[1]);
+  if (!POP_GOODS.size) throw new Error('--in1-pop: no goods read from common/pop_needs');
+  if (IN0_LEVEL != null || IN0_STAGE || IN0_ONLY || IN0_ANCHORED != null) throw new Error('--in1-pop with --in0-level / --in0-stage / --in0-only / --in0-anchored: each decides the old rungs\' lift; give one');
+}
+const IN1_POP_INDUSTRIES = [];
 
 const cfg = JSON.parse(readFileSync(join(REPO, BASE), 'utf8'));
 // ⭐ the config-side reference wage per era, and the live game the ART ACADEMY's ownership-PMG employment is read from
@@ -340,6 +365,8 @@ for (const ind of cfg.industries) {
   const anchor = ANCH[(ind.building || {}).required_construction || ind.required_construction]; if (!anchor) throw new Error(`${ind.id}: no required_construction class`);
   const wp0 = ind.tiers[0].wage_pct != null ? +ind.tiers[0].wage_pct : 0.25;
   const LEVEL_LIFT = IN0_LEVEL != null ? O0 * (1 - wp0) / (I0 * (1 + IN0_LEVEL)) : IN0_STAGE ? stageLift(ind.id) : 1;
+  const popGood = IN1_POP != null && POP_GOODS.has(outGood);
+  if (popGood) IN1_POP_INDUSTRIES.push(ind.id);
   if (IN0_LEVEL != null || IN0_STAGE) LEVELLED[ind.id] = Math.round(LEVEL_LIFT * 1000) / 1000;
   ind.tiers.forEach((t, pos) => {
     // ⭐ THE KEY IS THE ERA. `pos` (the rung's index in the industry) is used for exactly one thing below: walking DOWN
@@ -358,13 +385,17 @@ for (const ind of cfg.industries) {
     //   INPUT VALUE only; building_cost and ai_value below stay functions of the absolute era `e`. See the flag's header.
     const k = e - ORIGIN;
     const baseLift = (IN0_ANCHORED != null && aEra != null) ? IN0_ANCHORED : IN0;   // --in0-anchored: the SLID set's own lift
-    const lift = (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (k === 0 ? baseLift : 1) : baseLift);
+    const lift0 = (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (k === 0 ? baseLift : 1) : baseLift);
+    // --in1-pop: the anchor and every rung below it of a pop-good industry carry the pop lift; the rungs above keep the scalar's ladder
+    const lift = (popGood && k <= 0) ? IN1_POP : lift0;
     if (IN_LADDER && k >= IN_LADDER.length) throw new Error(`--in-ladder: ${ind.id} reaches ladder index ${k} (e${e}), the ladder has ${IN_LADDER.length - 1} multipliers above era 0`);
-    const Ve = I0 * lift * (TF ? TF.in[e] : inMul(k));
+    // --down-step: below the anchor, output and input value both ÷ s per step (the anchor's margin kept)
+    const down = (DOWN_STEP != null && k < 0) ? Math.pow(DOWN_STEP, k) : null;
+    const Ve = I0 * lift * (TF ? TF.in[e] : down != null ? down : inMul(k));
     const inputs = {};
     for (const [g, q] of Object.entries(mixRec.in)) { const share = q * (PRICE[g] || 0) / mixVal; const qty = r1(share * Ve / PRICE[g]); if (qty > 0) inputs[g] = qty; }
     const Ai = A_FOR[ind.id] || A;   // this industry's own output ratio (--A-for), else the book's A
-    t.output_qty = r1(out0 * (TF ? TF.out[e] : Math.pow(Ai, k)));
+    t.output_qty = r1(out0 * (TF ? TF.out[e] : down != null ? down : Math.pow(Ai, k)));
     t.inputs = inputs;
     delete t.input_ratio;
     if (COST_LADDER && e >= COST_LADDER.length) throw new Error(`--cost-ladder: ${ind.id} reaches e${e}, the ladder has ${COST_LADDER.length - 1} multipliers above era 0`);
@@ -418,6 +449,9 @@ cfg._ab.in0 = IN0; cfg._ab.in0_level = IN0_LEVEL; cfg._ab.in0_stage = IN0_STAGE;
 // ⭐ the book records that it is era-keyed, and the command that made it — the era pass (2026-09-13) is what a
 //   reader of an older book has to check for: a book without `keyed_by: 'era'` was keyed on the rung index
 cfg._ab.in0_anchored = IN0_ANCHORED;
+cfg._ab.down_step = DOWN_STEP;
+cfg._ab.in1_pop = IN1_POP;
+cfg._ab.in1_pop_industries = IN1_POP != null ? IN1_POP_INDUSTRIES : null;
 cfg._ab.anchor_cost = ANCHOR_COST || null;
 cfg._ab.anchor_for = Object.keys(ANCHOR_FOR).length ? ANCHOR_FOR : null;
 cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';
@@ -426,7 +460,11 @@ if (VARIANT) cfg._variant = { ...VARIANT, declared: new Date().toISOString().sli
 else delete cfg._variant;
 cfg._comment = `A/B LADDER (${SFX}) derived by tools/make_ab_config.mjs from ${BASE}, KEYED ON THE RUNG'S ERA (the era rule, 2026-09-13): a rung of era e has output = vanilla lowest-tier × ${A}^e, input value × ${IN0 !== 1 ? IN0 + (IN0_ONLY ? ' (era 0 only)' : '') + ' × ' : ''}${B}^e over the rung's own vanilla mix, building_cost = ${COST_FLAT ? 'the vanilla anchor, flat' : COST_LADDER ? `vanilla anchor × ${COST_LADDER.join('/')} by era` : `vanilla anchor × ${COST_RATIO ?? A}^e`}, ai_value =${AI_LADDER ? AI_LADDER.join('/') + ' by era' : `${AI_BASE} × ${A}^e`}, cost-divisor scaling ${s}${STEEP ? `, ai_value ${AI_BASE} × ${STEEP.ratio}^e for ${[...STEEP.inds].join('/')}` : ''}${BAR_MONTHS != null ? `, research_events.industry_bar_months ${BAR_MONTHS}` : ''}. target_be restated as the drift guard.`;
 writeFileSync(join(REPO, `config/mod_config.${SFX}.json`), JSON.stringify(cfg));
-writeFileSync(join(REPO, `config/tech_tree_options.${SFX}.json`), readFileSync(join(REPO, 'config/tech_tree_options.tier4.json'), 'utf8'));
+// the tree twin is the BASE's own (config/mod_config.X.json → config/tech_tree_options.X.json); a base with no twin of its own falls back to
+// tier4's, which is what every book took before 2026-10-01 (all of them were built on config/mod_config.tier4.json, so nothing changes for them)
+const TWIN_SRC = (() => { const m = /mod_config\.([^/\\]+)\.json$/.exec(BASE); const own = m ? join(REPO, `config/tech_tree_options.${m[1]}.json`) : null;
+  return own && existsSync(own) ? own : join(REPO, 'config/tech_tree_options.tier4.json'); })();
+writeFileSync(join(REPO, `config/tech_tree_options.${SFX}.json`), readFileSync(TWIN_SRC, 'utf8'));
 
 console.log(`A/B LADDER ${SFX} — KEYED ON ERA: A=${A} B=${B} · era-0 inputs ×${IN0}${IN0_ONLY ? ' (era 0 only)' : ' (ladder anchored on it)'} · cost ${COST_FLAT ? 'FLAT (vanilla anchor every rung)' : COST_LADDER ? `anchor × ${COST_LADDER.join('/')} by era (--cost-ladder)` : COST_RATIO ? `anchor × ${COST_RATIO}^era (--cost-ratio)` : 'anchor × A^era'} · ai_value${AI_LADDER ? AI_LADDER.join('/') + ' by era' : AI_BASE + '×' + A + '^era'} · cost divisor scaling ${s} (top rung ${cmax} pts ÷${(1 + s * cmax).toFixed(2)}, 600-pt rung ÷${(1 + 600 * s).toFixed(2)}; vanilla 0.001 would give ÷${(1 + 0.001 * cmax).toFixed(1)})${BAR_MONTHS != null ? ` · industry bar ${BAR_MONTHS} months` : ''}`);
 if (IN0_STAGE) { console.log('--in0-stage ' + IN0_STAGE.join(' / ') + ' (raw / stage 1 / stage 2), dye+silk+electricity RAW by ruling');

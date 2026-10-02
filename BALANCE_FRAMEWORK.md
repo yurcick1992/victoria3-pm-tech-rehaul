@@ -7317,6 +7317,10 @@ below ruled it. Motor is placed by the rule alone at **[0, 2, 3]**: atmospheric 
 e2, diesel (compression_ignition, game era 5) e3 — no rung below its technology's era, an empty e1, and the minted high_speed_diesel
 addition DROPPED (compression_ignition, an era-5 technology, is the 1940 rung; the addition had no slot). The book is **56 buildings, 182
 technologies (3 minted)**. **Munition: [1, 2] confirmed** ("earliest munition is t1"), which is what the derivation gives.
+⚠⚠ **CORRECTED 2026-10-01: "placed by the rule alone" is wrong for motor.** atmospheric_engine is GAME ERA 2, which the rule rounds UP to
+e1, so the derivation gives **[1, 2, 3]** (no overflow, no bump); [0, 2, 3] exists only through the explicit `motor` entry in
+`tools/lib_tier4_spec.mjs`'s PLACEMENT, i.e. the first rung sits one era BELOW its technology's (−1, inside the tolerance). Nothing about the
+book changes; the wording does.
 
 The aggregates that decided it (rows = tiers, columns = the gating technology's game era):
 
@@ -9129,6 +9133,14 @@ Three rulings in one message, answering the open choices after FINDINGS F184 / F
   records of F181–F188 and are no longer the arm. The next step is a century 2+1 of the arm against the canon (schedule
   `tools/testbed/schedules/artmerge6_floor_n2.json` + `_tb.json`, prepared, not launched), and the recipe iteration it may lead to; FINDINGS
   **F189** sets the craft recipes beside vanilla's first methods and the canon's e0, at base prices and realised at 1845.
+- ⚠⚠ **CORRECTED 2026-10-01 — THE RULED FLOOR IS £2, NOT 0.01.** The user: *"There was a ruling to lower the threshold for crafts, but not to
+  0.01, but to £2, so only a third off. Probably should retest with a probe on the intended setup."* The 0.01 was the PROBE value (taken from
+  F185 §5's "at 1 … at 0" range), the ruling's words named no number, and the session wrote the probe value in as the ruled one. So every
+  craft book since `artmerge6-floor` carries `min_productivity_to_hire = 0.01` — F188's floor arm, F191's 10-year probe, F194's century batch
+  (`artmerge6-pb`, n=3) and the readings taken from it (F195, F196) all ran on a floor the user did not rule. Those findings stand as
+  measurements of 0.01; none of them is a measurement of the intended arm on this key. `make_artisan_config.mjs` now defaults to `--hire-floor
+  2`; the books already written keep their recorded `--hire-floor 0.01` and stay the records of what was measured. A re-probe of the arm at £2
+  is proposed (not launched).
 
 ### §10.91.4 — The craft staffing becomes shopkeepers + laborers, 30%; four craft outputs raised (user-ruled 2026-10-01; under probe)
 
@@ -9151,3 +9163,199 @@ Three rulings in one message, answering the open choices after FINDINGS F184 / F
   The `pb` table lives in the generator (`PB_STAFF`, each craft's `pb_out`); `ruled` and `shop` stay as records. The ruled next steps: a
   10-year probe (*"check that no industries are completely dead, and no market that has some goods produced in canon is left with only a token
   amount"*), then the n=3 century batch if it is healthy.
+
+### §10.91.5 — The e1-anchor recipe model, engines on e1, one craft rule and output-matched 1836 seeding (user-ruled 2026-10-01; under probe)
+
+The user asked for a recipe model to settle first (*"anchor t1 including engines, go from there to both sides uniformly, even if not
+geometrically"*) and then a way to make old rungs and crafts obsolete and the 1830s' artisans more numerous. FINDINGS **F197** holds the
+arithmetic; the rulings, in the user's words where given:
+- **Every industry is anchored at e1** — its ×1 is its e1 rung's vanilla method (or, with no e1 rung, its first rung's), inputs × the lift; e2
+  = ×A, e3 = ×A² (A 2.2 / B 1.64 / C 1.9 kept); building cost follows the anchor (`--anchor-cost`, F151). The eight industries already slid
+  are unchanged; it moves food, paper, fertilizer, explosives, steel, motor, arms, artillery and the art academy.
+- **The step DOWN to e0 is ÷1.5 on output and on input value** (*"Agreed on e1/1.5 instead of e1/A; e1/B"*) — vanilla's own method step
+  (F97 §6), the anchor's margin kept. The geometric step (÷A, ÷B) left steel's, explosives' and fertilizer's 1836 rungs value-destroying at
+  base (F197 §3; F149 §4's all-17 failure). `make_ab_config --down-step 1.5`.
+- **Engines on e1** — motor on [1,2,3], which is the era rule's own derivation (atmospheric_engine is game era 2 → e1); [0,2,3] was an
+  explicit PLACEMENT entry (§10.78's correction). `make_tier4_config --derive motor` writes the structure without that entry, so the canon's
+  own regeneration still reproduces the canon. Named costs (F197 §3): frontier engines −14% per construction point, the steam rung one step
+  below electric (it dies where diesel prevails), and motor's steam workers leave the era-0 count (T0) by relabelling.
+- **The pop-good penalty**: the anchor and every rung below it of an industry whose output sits in a pop need (read live from
+  common/pop_needs — food, textile, furniture, glass, paper, arms, the art academy; automotive and electrics have no rung that low) carry an
+  input lift of **1.4**; every other rung and industry keeps 1.2. The frontier above the anchor keeps the 1.2 ladder. `--in1-pop 1.4`.
+- **One craft rule, "the 60%"**: every craft level makes 0.6 of its vanilla first method's goods per worker, with inputs set so its value added
+  per worker-year meets the crafts' hiring floor (£2) at an output price of 0.89 of base, inputs at base (`make_artisan_config --craft-rule
+  0.6,0.89`). It replaces the per-craft recipes of §10.91.1/§10.91.4 (the pb staffing stays): output 2.70 (food, textile, furniture) / 1.80 (glass,
+  tooling) / 2.40 (paper) a level, base-price break-even 123–127%.
+- **The crafts' hiring floor is £2** (§10.91.3's correction): kept at the ruled value.
+- **Output-matched 1836 seeding** (`--seed 5`, done by `tools/emit_craft_start.mjs` at build time): per country and craft industry the craft
+  levels the vanilla e0 factories became are topped up until they make the vanilla factories' output; the extra levels go to the country's 5
+  most urbanised states (the F13 sum), in proportion, each city capped by its spare 1836.2.1 infrastructure (the excess spills to the next
+  urbanised states). Their workforce is NEW typed pops, 30% shopkeepers / 70% laborers, each profession carrying the country's most numerous
+  culture-religion of that profession at **1836.2.1** (*"Redo with 1836.2.1"* — `config/measured_1836_pop_identity.json` from a kept vanilla
+  1836.2.1 save; no such profession → the first primary culture and state religion, reported). **Head count is vanilla's** (*"Always preserve
+  vanilla total head count, take from peasants (in the states where shopkeepers/labourers are created, if possible, otherwise from the state
+  with most peasants), Ignore ethnicity and religion of the peasants"*): the same number of people comes off the untyped pops of that state —
+  never more than its 1836.2.1 peasants, never below 10% of a block — else off the country's state with the most peasants left. A country
+  whose peasants cannot cover its seeding is seeded only as far as they do, and REPORTED (*"If still not possible to fix Krakow or Mughals,
+  report"*): Kraków and the Mughals are covered; **Paraguay** (Bajo Paraguay holds 44 peasants at 1836.2.1) loses 3 of 7 levels and
+  **Schwarzburg** (0 peasants) all 7.
+- Measured by the build itself: 3,441 craft levels seeded in 60 countries over 156 states, 6.88M people typed (4.82M laborers, 2.06M
+  shopkeepers) and the same 6.88M taken from peasants (6.79M in the same state); 513 levels spilled past the top five cities on
+  infrastructure; 1836 urban centres 469 → 538 (F13 estimate — the seeded artisans are urban workers at the ruled urbanization of 2 a level).
+- **The user's correction on the labour reserve:** *"It won't, if the prices are the way that this is value-destroying"* — a rung whose value
+  added at realised prices is under its hiring floor cannot hire, so a peasant reserve does not refill it; the reserve only refills rungs that
+  stay above the floor.
+- **The book**: `config/mod_config.e1a-artmerge.json` (+ twin), built by the canon's own chain — `make_tier4_config --derive motor`
+  (TIER4_SUFFIX=tier4-e1) → `make_tier4_techs` → `make_ab_config` (the canon's command + `--base config/mod_config.tier4-e1.json --anchor-for
+  <all 17>:1 --down-step 1.5 --in1-pop 1.4`, suffix e1a) → `make_trade_config` (e1a-trade) → `make_dam_config` (e1a-dams) + `dams.rules =
+  family` → `make_artisan_config --staffing pb --hire-floor 2 --craft-rule 0.6,0.89 --seed 5` (e1a-art) → `make_merge_config` (e1a-artmerge).
+  Field diff against `artmerge6-pb-f2`: the nine re-anchored industries' rungs, motor's first rung's era, the pop-good e1 inputs of textile,
+  furniture and glass, the six craft recipes and the records — nothing else. Every build check passes (LINT, negative goods, solvency, tech
+  content, L13, L31 with the two new rules, mod checks, preflight). The plan (user: *"go: probes and then runs"*): a 10-year probe, then a
+  century 2+1 against the canon.
+- **The floor itself, re-probed first** (FINDINGS **F198**, session `20261001_115032`, `artmerge6-pb` at £2, 2 × 1836→1846): healthy against
+  the canon (0 of 79 types dead, 0 of 335 cells a token), crafts staffed 95–96% as at 0.01, but 15–21% of craft levels log a failed hire
+  (0.01: 3–4%) — the ruled floor restores most of the hiring friction, and costs no staffing at 1846.
+- **The probe** of the e1a book: session `20261001_121754_e1a-artmerge-10y` (2 × 1836→1846, dumps 1836.2.1 / 1837.12.1 / 1840.1.1 /
+  1845.1.1; schedule `e1a_artmerge_10y.json` with its predictions). The seeding takes in game: at the first summary (1836.4.1) the six crafts
+  hold +3,447 levels against the £2 arm (the build reported 3,441), 93–98% staffed, world population within 0.02%, urban centres 673 against 599.
+  The century 2+1 is `e1a_artmerge_n2.json` + `e1a_artmerge_tb.json`.
+- **The probe's outcome** (FINDINGS **F199**): the 1836 supply anchor lands on vanilla's in the seven markets (groceries 0.93 against the canon's
+  1.33–1.53, paper 0.96 against 1.16), steel sits at the ceiling in 0% of readings at 1837.12 (F149's all-17 failure does not recur), world GDP
+  528 / 527 at 1846, and the e1 money printer is gone (food e1 £8.4 of value added per worker-year against the canon book's £21). ⚠⚠ **ONE
+  REGIONAL DEFECT, both seeds**: the 1.4-lifted pop-good e1 rungs empty in the German states and Belgium within four years (the Zollverein's glass
+  sold at 0.69× base at 1836, where the lifted recipe cannot pay), and since pop demand follows supply share the market shrinks instead of calling
+  capacity back — the Prussian market's glass 59–61 a week at 1846 against vanilla's 287–384. The lift's VALUE is the lever it points at (the user:
+  "the exact value isn't fixed"); NOT changed without a ruling. The century 2+1 runs on the ruled book (`20261001_124750_e1a-artmerge-n2`) with
+  the German market registered as a watch item.
+- **The century** (FINDINGS **F200**, n=2 aligned, both intact): consensus loss **7.76** (the canon 5.90 at 4 intact / 2 broken; the 0.01 crafts arm
+  10.09). The hoard is gone (pool H 0.52 against the 0.01 arm's 2.64 — the e1 money printer was the pool's inflow, F135) and pop-goods prices sit
+  back inside the soft line (PP 1.07 against 1.16), PI falls decade over decade, T0 falls to 0.60 of its 1900s level; but **world GDP 0.82** after a
+  long mid-game dip (0.71 at 1900, 0.69 at 1920), the shortlist ending at 1.09× vanilla's GDP with 1.41× its output per worker. Motor's steam rung
+  (e1 now) keeps 0.5–1.0M shortlist workers — out of T0 by relabelling only — and the shortlist's food and paper crafts survive at £5–8 of value
+  added per worker-year. The German glass hole ran until the German Empire's e2 rungs (run 2: 51–59 a week 1846–1860). Not ruled on.
+- **Why the hole (FINDINGS F201):** the 1.4 lift puts the e1 glass and food rungs under the engine's 15% wage-cut line at ordinary prices
+  (`BUILDING_PROFIT_TARGET_TO_LOWER_WAGES`), so once a price dip has emptied them they never rehire (`BUILDING_PROFIT_TARGET_TO_HIRE_EMPLOYEES` 25%);
+  the trigger is an opening glut vanilla itself has (the Zollverein's glass at 0.53–0.56× base at 1836.2.1). France, Prussia and the USA lose a quarter
+  to three-quarters of their groceries and Prussia and the USA up to half or more of their glass in 1837–1850.
+- ⛔ **RULED OUT (user, 2026-10-01): a penalty that arrives with the better method** — *"No, never ever, for simulation purity reasons."* No
+  technology-triggered malus (throughput or otherwise) on a country's older rungs when it learns a newer method; obsolescence stays with recipes and
+  realised prices. Do not propose it again.
+- **The lift probe (user-approved the same day: "Go on with the probes you suggest"; FINDINGS F202, session `20261001_215119`):** the lift on
+  the anchor at **1.0** (`e1a10-artmerge`, the e1 recipe = vanilla's own) and **1.2** (`e1a12-artmerge`, the canon's scalar), every other key e1a's;
+  2 × 1836→1846 each, read on the ten largest 1836 markets. ⭐ **Both close the hole**: the e1 glass and food rungs of the Prussian, French and US markets
+  ride out the opening glut (Prussian glass 0.81–0.93× vanilla's median at 1845 against 0.15–0.70 under 1.4; French groceries 1.00–1.12× against
+  0.33–0.74; US groceries 0.69–0.85× against 0.47–0.70). They differ where the e1 rung was already healthy: at **1.0** the British food rung earns
+  0.34–0.39 of sales and British-market groceries reach **1.60–2.23×** vanilla's median, above its seed range (0.88–1.36); at **1.2** 0.22–0.27 and
+  **1.27–1.32×**, inside it. World GDP at 1846: 1.02 / 1.00, 0.99 / 0.99, 0.95–1.00 (1.0 / 1.2 / 1.4); the 1836 anchor is unchanged (the lift moves
+  inputs, not output); 0 dead types. The obsolescence handicap the lift exists for, in F97's death ratio at base prices (e1 ÷ e3, line 0.20): 0.15–0.17
+  at 1.0, 0.11–0.15 at 1.2, 0.07–0.10 at 1.4. ⚠ At 1.2 one seed's French e1 glassworks fell to 0.47 staffed at 1845.
+  ⭐⭐ **RULED 2026-10-01 (user, on F202): THE LIFT IS 1.2** — *"Go with 1.2. 3 full runs."* It closes the hole without lifting the e1 rungs into the
+  money-printer band in Britain and keeps the larger part of the handicap. ⇒ **THE ARM'S BOOK IS `config/mod_config.e1a12-artmerge.json`** (+ its tree
+  twin, e1a's byte for byte): e1a-artmerge with `--in1-pop 1.2`; `e1a-artmerge` (1.4) and `e1a10-artmerge` (1.0) are records. Regenerate by the e1a chain of
+  this section with `--in1-pop 1.2` and suffix `e1a12` (the book's `_ab.command`). Its century: a FIXED n=3 of full runs (no stop watcher; the register's
+  hard lines are read afterwards), session `20261001_225817_e1a12-artmerge-n3`, schedule `e1a12_artmerge_n3.json` with its predictions registered before
+  launch.
+- **The 1.2 book's century (FINDINGS F203, n=3 full runs):** 2 intact / 1 broken by stall (F166's stuck Britain after an 1847 civil war); consensus loss
+  **8.62** against the 1.4 book's 7.76 and the canon's 5.90; world GDP 0.78, the pool's GDP 0.85 (beyond the soft line), the hoard back (pool H 1.41
+  against 0.52 — F135: the e1 margins are the inflow), PI 0.95 falling, PP 1.05, T0 not yet falling (0.87). The German hole is gone at 1846–1850 in all
+  three seeds; the e1 food rung overshoots in the rich markets in the 1850s; ⚠ the USA stays agrarian in all three seeds (GDP 0.35–0.55× vanilla at
+  1935). Directional: the lift fixed the early hole and did not improve the century. Not ruled on.
+- **Why the USA (FINDINGS F204, no game time):** no plain bug. One seed lost five southern states to New Africa in 1891; in all three the investment
+  AI put 26–33% of the US's 1860–1900 private construction into textile's and furniture's e2 MERGE HOSTS — `ai_value` 15,588 (this section's midpoint
+  rule), available from the 1850s because the era rule bumps their game-era-2 gate to e2 — since steel, the high-value alternative, is thin under the e1
+  anchor (Bessemer O:I 1.14 at base against vanilla's 1.36 and the canon's 1.45). Mines, logging, plantations and railways (`ai_value` 1,000–2,000, at
+  2–10× the hosts' profit per construction point) took ~10% against vanilla's 31% — a starvation common to every four-rung book, which the canon's US
+  survives because its steel and arms rungs win the AI's choice. ⚠ The merge hosts' midpoint `ai_value` applies to the host's OWN method for the
+  decades before the merged method's technology exists. Levers proposed in F204, none ruled.
+- ⭐⭐ **THE DESIRE LADDER COMPRESSED (user-ruled 2026-10-02):** *"Change the desire to build to 1) artisan 800 2) other e0 1000 3) e1 1000 4) e2 3000
+  5) e3 5000. Run a 30-year probe and report. Unless clearly broken, run 2+1 then."* — in place of 1,000 × 3^era (1,000 / 3,000 / 9,000 / 27,000) on all
+  seventeen tiered industries. The book `config/mod_config.e1a12-ai1135-artmerge.json` is the arm's book regenerated through its own chain with
+  `make_ab_config --ai-ladder 1000,1000,3000,5000` (no `--ai-steep`) and `make_artisan_config --craft-ai 800` (a new flag; `_artisan.craft_ai`, which
+  L31 checks); everything else is the arm's commands verbatim, `dams.rules = family` after make_dam_config as before. ⚠ **The merge hosts keep this
+  section's midpoint rule on the NEW values** — food and paper e1 hosts √(1,000 × 3,000) = 1,732, textile / furniture / steel e2 hosts √(3,000 ×
+  5,000) = 3,873, fertilizer's e0 host √(1,000 × 1,000) = 1,000 — the ruling named the ladder, not the hosts, and F204's lever (a) (hosts at their own
+  era's value) stays unruled. Field diff against `e1a12-artmerge`: 57 `ai_value` fields and the provenance records, nothing else; every build check
+  passes. The frontier's premium over the old rungs falls from 9–27× to 3–5×, and e0 and e1 now stand at par with the untiered sector (1,000); the
+  crafts sit under it. Probe `20261002_111449_e1a12-ai1135-30y` (1 × 1836 → 1866), then the century 2+1 (`e1a12_ai1135_n2.json` + `_tb.json`).
+- **The probe's outcome (FINDINGS F208):** not broken; world GDP 0.91–1.02× vanilla to 1865, dipping from 1856 like every four-rung book; the grossly
+  misplaced share of new capital (F206) 17–19% a decade against e1a12's 23–25% (vanilla 16–17%), 15% against valid options only (F207); the textile e2
+  merge host nearly empty (8 staffed levels world-wide against 42); ⚠ the USA still put 47% of its 1856–66 private construction into textile and furniture
+  in that seed (e1a12's seeds 32–65%) — the prediction "under 20%" failed. Not broken ⇒ the century 2+1 launched as ruled: `20261002_120946_e1a12-ai1135-n2`,
+  its saves summarised at v15, so §10.92's metric can be read on it year by year.
+- **The century's outcome (FINDINGS F209):** ended at n=2 by the stop rule — run 1 intact (world GDP 0.79, loss 8.79), run 2 BROKEN BY RUNOFF (1.42×, the
+  shortlist fully depeasanted, pooled U* 7.0%, the pools spent); the register's consensus is run 1 alone. Misplaced capital 1926–36 29% / 26% (e1a12 38%,
+  the canon 28%, vanilla 17%); the USA 1.23 / 0.91× vanilla (e1a12 0.35–0.55); old rungs beside a rung two eras newer 4.9 / 4.5% of world tier workers and
+  0.9 / 1.2% of the shortlist's at 1935. Not ruled on.
+
+## §10.92 — RECIPES STEER PRODUCTION; AI VALUES ONLY MAKE THE AI FOLLOW PROFIT (user-ruled 2026-10-02, GOVERNING)
+
+**The ruling, verbatim** (after F206/F207 defined under-investment as payback and measured it): *"Once the 2+1 lands, let's see whether it'll lead
+to better 'ineffectively invested capital' metric. In fact, we want it to be as low as possible, and the reason that we fine-tune AI values is that
+it's not low naturally, not for some desire to steer it away. When we do need to steer the industrial production somewhere (e.g. some industry is
+dead and shouldn't be, or even dead and causes ripple effects), we primarily work with recipes to ensure that it is effective/profitable for the AI
+to combat this problem. And AI values only follow to ensure that the AI follows what's profitable. This is a very universal principle worth
+recording at a high-level, even if our machinery to understand 'how profitable something is' and 'how effective is the AI in pursuing profits in
+economic development' can change in the future."*
+
+**What it rules.**
+1. **The objective for the investment AI is that misplaced capital be as low as possible.** Today's measure (FINDINGS F206 for the definition, F207 for
+   the valid-option rule): the share of a run-decade's new capital in mines, agriculture and manufacturing whose expected payback — construction cost ÷
+   the annual profit per staffed level that type earned in that country at the time, at realised prices and actual wages — is more than 3× the best
+   VALID sector's (grossly suboptimal; loss-making counts here) or 1.5–3× (a bit suboptimal); an option is valid when some state holds free deposits or
+   arable land for it AND ≥ 25k peasants + unemployed. Infrastructure, shipyards and trade centres are left out.
+2. **AI values, and every other willingness lever (AI strategies, AI defines), are tuned for that and nothing else** — because the AI does not invest
+   where it pays on its own. They are never a device to push the AI toward or away from an industry or a rung for its own sake, and a change to them
+   is judged by whether misplaced capital falls (directionally, §10.83.7).
+3. **Steering production is the recipes' job** — inputs, outputs, building cost, i.e. the economics the book sets. A dead industry that should live,
+   a death that ripples down a chain, an old rung that should die and does not: the remedy is to make the wanted outcome effective and profitable for
+   the AI, reading realised prices first (§10.86.2). The AI values then follow so that the AI pursues what is profitable.
+4. **Machinery-independent.** "How profitable" and "how effective is the AI at pursuing profit" are measured today by F206/F207's reader
+   (`tools/testbed/ledger/misplaced_capital.mjs`, promoted from the session's scratch `payback_valid2.mjs` on 2026-10-02 with identical output);
+   it may be replaced, the principle stands.
+
+**How it reads against what was done before** (a reclassification, not a retraction).
+- **The era desire ladders** (1,000 × A^era on the ab books, 1,000 × 3^era since §10.75) were introduced to correct exactly this kind of failure: the
+  private pool weighs a company's rung 0 with the same ×3 company multiplier, the cheapest cost divisor and a large random term as its rung 3, so it
+  expanded old rungs "regardless of profit per construction point" (the §10.69 reading of 2026-09-03 above, F100). Under §10.92 that motive is the
+  legitimate one — the AI not following profit — and the measure of the dose is misplaced capital. **F206 §5 measured the dose overshooting** in every
+  four-rung book: the gross capital concentrates in the high-desire e2 rungs (canon: bolt-action arms 82% of their own new capital gross, open-hearth
+  steel 36%), and e1a12 put **39% of all its grossly misplaced capital into its three e2 merge hosts at `ai_value` 15,588**.
+- **The halved rung-0 desire** (`canon-c19-e0ai500`, F120) was the same motive applied at the bottom of the ladder; it moved nothing, because the
+  government AI's desire was not what built the old rung.
+- **The no-artificial-limits ruling (§10.69, 2026-09-03)** said which levers may touch the AI (willingness, never a hard block); §10.92 says what
+  those levers are FOR.
+- **The compressed ladder** (`e1a12-ai1135`, §10.91.5) is the first change tested under it: its probe brought misplaced capital to vanilla's level over
+  1836–66 (F208); over the century (F209) it brought the last decade's share from e1a12's 38% to 29% / 26% — the canon's level, not vanilla's 17% — with
+  one of its two seeds broken by runoff, so the AI-side lever moved the yardstick the ruled way and left the remaining excess to the recipes.
+
+**What it does not rule.** Misplaced capital is NOT a line of the criteria register (§10.83) and carries no aim number; it is the yardstick of the AI
+levers. ⭐ CONFIRMED the same day (user: *"It doesn't, you went correctly. It is an important metric to consider though."*): it stays out of the register.
+
+### §10.92.1 — The exemption: what is never measured, and whose AI values are set to get it BUILT (user-ruled 2026-10-02)
+
+**The ruling, verbatim:** *"It's worth noting that there are things that can be affected by ai_values that are exempt from the 'minimise bad capital
+allocation' aim. Basically, if AI stops building infrastructure or government industries or shipyards 'because it doesn't see profits', this'll be a
+net loss. We won't have a very detailed criterion that will check whether there are enough shipyards etc. But it's important to exclude them and
+infrastructure and trade centers from the measurement, even if they technically can generate profit, and most of them -- through goods.
+Additionally, let's remove gold mines as well (but add a static 5000 ai_value to them)."*
+
+- **Never in the measurement, even where they earn through goods**: infrastructure — railways, ports, power plants, the hydro dams; **trade centres**;
+  **shipyards** (vanilla files them under light industry, `bg_ship_construction`); **every government-funded building** — the groups the engine marks
+  `is_government_funded = yes` (`bg_government`: administration, universities, monuments, skyscrapers; `bg_public_infrastructure`: construction
+  sectors; `bg_canals`; `bg_military`: barracks, conscription and logistics centres, the navy's buildings); and **gold mines and gold fields**.
+  F206/F207's scope already excluded every one of them (it is the tiered manufacturing rungs plus the mine and farm patterns, gold left out); the
+  reader now also refuses the port / railway / power / shipyard industries by NAME, so a book that tiers one of them cannot leak it in — proven to
+  change no existing reading.
+- **Their AI values serve a different purpose**: to make the AI build them although they do not pay (or do not pay visibly). §10.92's
+  "AI values only follow profit" does not apply to them, and there is no adequacy criterion for them (how many shipyards are enough) beyond the
+  register's general lines.
+- **The gold mine's static `ai_value` 5000 is already the game's**: vanilla's `building_gold_mine` carries `ai_value = 5000 # Gold mines are very
+  nice for minting revenue and guaranteed profits` (`common/buildings/03_mines.txt`), and the mod does not own that file, so every book — the canon,
+  the arm, the running batch — already ships it. Ruled to STAY 5000: a patch that moves it moves ours silently, hence the ON_GAME_UPDATE coupling.
+  `building_gold_field` (the gold-rush fields, `bg_gold_fields`) is `expandable = no` and placed by events, so its `ai_value` has nothing to steer.
+- ⭐ **Read narrowly, by the engine's own classification**: "government industries" are the government-funded groups above. **The military
+  industries (arms, munitions, artillery — `bg_military_industry`, a child of `bg_manufacturing`, privately built) are NOT exempt — user-ruled the
+  same day: *"They should not be exempt."*** They stay in the measurement and their AI values follow profit like any manufacturing rung's. The art
+  academy (`bg_arts`, urban facilities, privately built) stays in on the same reading (not separately ruled). Their weight in the measurement is in
+  FINDINGS F207's addendum (the military industries carry 3–4 points of the four-rung books' 1926–36 misplacement, none of vanilla's).

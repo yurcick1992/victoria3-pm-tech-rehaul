@@ -1,0 +1,40 @@
+{
+  "schedule_version": 1,
+  "label": "e1a-lift-probe-10y",
+  "_why": "THE POP-GOOD LIFT PROBE (user, 2026-10-01: 'Go on with the probes you suggest'; FINDINGS F201). The e1-anchor book's 1.4 input lift on the anchor-and-below rungs of pop-good industries puts the e1 glass and food rungs under the engine's 15% wage-cut line at ordinary prices, so once the opening glut empties them they never rehire (25% needed): Prussia, the USA and France lose a quarter to three-quarters of their groceries and up to half or more of their glass in 1837-1850. Two books, everything else e1a's (field diff: the nine pop-good anchor-and-below rungs' inputs, wage share and base-price break-even, and the records): e1a10-artmerge = the lift 1.0 (the e1 recipe IS vanilla's own: glass wood 20 + lead 10, food grain 40 + sugar 15) and e1a12-artmerge = 1.2 (the canon's scalar: glass 24 + 12, food 48 + 18). Two seeds each, 1836 -> 1846, one config's runs back to back. Read on the ten largest 1836 markets against vanilla's sixteen seeds and e1a's four (F199/F200), the same readers as F201.",
+  "_arms": {
+    "e1a10-artmerge": "{kind: config, config: config/mod_config.e1a10-artmerge.json} (+ its tree twin, e1a's byte for byte)",
+    "e1a12-artmerge": "{kind: config, config: config/mod_config.e1a12-artmerge.json} (+ its tree twin, e1a's byte for byte)"
+  },
+  "_predictions": {
+    "the_hole_1_0": "e1a10: the German market's glass at 1840/1845 inside vanilla's range (vanilla 245-342 / 124-371; e1a 65-203 / 52-239), its e1 glassworks 6-8 of 8 staffed by 1840; Prussia's, France's and the USA's food e1 at 4/5 of their levels staffed or more; groceries in France and the USA at 0.7-1.0 of vanilla's (e1a 0.33-0.74 / 0.47-0.70 at 1845)",
+    "the_hole_1_2": "e1a12: between e1a and e1a10 - the e1 glassworks keeps the workers it never lost but does not rehire after the glut (margin 15-25%), so the German glass at 0.5-0.9 of vanilla's; food e1 partly staffed",
+    "margins": "the e1 glass and food rungs' realised profit / sales in the German, French and US markets at 1840-1845: e1a10 at or above 0.25 (the hire line), e1a12 0.15-0.25, against e1a's 0.09-0.21",
+    "anchor": "the 1836.2.1 supply unchanged from e1a (the lift moves inputs, not output): groceries 0.93, paper 0.96, glass 0.93 of vanilla in the seven markets",
+    "gdp": "world GDP at 1846 at or slightly above e1a's 528 / 527 (the canon's six 476-526): more e1 output kept in the rich markets",
+    "health": "no dead industry, no token cell - read against vanilla's sixteen seeds as well as the canon's six (F199 §8: the canon-only guard missed the German hole)"
+  },
+  "_cost": "4 runs x 1836 -> 1846, about 13 minutes each plus builds and harvest, about 1 hour",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "A probe: ten years and two seeds per book; it decides the lift for the next century batch, it does not read obsolescence.",
+    "Rejected by ruling the same day and NOT tested here: a technology-triggered penalty on old rungs ('never ever, for simulation purity')."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1837.12.1", "1840.1.1", "1845.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "e1a10-artmerge": { "kind": "config", "config": "config/mod_config.e1a10-artmerge.json" },
+    "e1a12-artmerge": { "kind": "config", "config": "config/mod_config.e1a12-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "e1a10-artmerge", "until": "1846.1.1" },
+    { "setup": "e1a10-artmerge", "until": "1846.1.1" },
+    { "setup": "e1a12-artmerge", "until": "1846.1.1" },
+    { "setup": "e1a12-artmerge", "until": "1846.1.1" }
+  ]
+}

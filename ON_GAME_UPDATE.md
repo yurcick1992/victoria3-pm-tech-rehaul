@@ -373,6 +373,11 @@ observer refuses to launch a mod that carries no telemetry, so build it with `-T
   tier map), `lint_profitability.awk` (fallback when the tier map lacks a `wage_pct` column), and
   `ui/builder.html` (`DEF_WAGE`; the £↔% wage row). To change the global default, update all five (or set
   per-tier `wage_pct` in the config, which every tool honors); then re-solve volumes + building cost and rebuild.
+- **The gold mine's `ai_value` is a static 5000 — VANILLA's, and RULED to stay** (user, 2026-10-02, `BALANCE_FRAMEWORK.md` §10.92.1:
+  *"add a static 5000 ai_value to them"*). `building_gold_mine` in `common/buildings/03_mines.txt` already reads `ai_value = 5000 # Gold mines are
+  very nice for minting revenue and guaranteed profits`, and the mod does NOT own that file, so the ruling rides on vanilla's line. After a patch:
+  check that line under `building_gold_mine`; if Paradox moved or removed it, the mod has silently moved with it — restore 5000 through the builder
+  (there is no emitter for a non-owned building file yet; a whole-file copy in the `emit_goods.mjs` pattern is the way).
 
 ---
 

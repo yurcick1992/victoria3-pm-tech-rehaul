@@ -13,7 +13,10 @@ encodes, all user-ruled:
   yet). The **industry composition panel follows the SCOPE control as a detalisation**: whole
   economy = broad sectors, tiered sector = the exact 22 industries — same panel, deeper cut.
 - **Every graph/table exists at world level AND watchlist level** (the twelve majors: GBR RUS FRA USA
-  PRU TUR AUS SPA BRZ SIC POR NET), the watchlist with **selectable countries** (filter chips).
+  PRU TUR AUS SPA BRZ SIC POR NET, **plus BEL NGF GER UNL since 2026-10-02** so the register's whole shortlist
+  pool is on the page), the watchlist with **selectable countries** (filter chips) and a **`shortlist` button**
+  that selects the register's pool (GBR USA FRA NET BEL UNL PRU NGF GER — `lib_markets.mjs`'s `POOL`; an absent tag
+  simply contributes nothing). ⚠ The watchlist reads the FIRST mod run only (`report_data2.mjs`'s `flat`), as it always has.
   **NET was added 2026-08-17** as the port-seed control: the §10.60.3 chain seed converts anchorages
   into level-1 steam-port stubs in the **GBR and FRA markets only**, so the Netherlands is the third
   overseas-empire power that got nothing — the panel is where "does an unseeded colonial empire fall
@@ -147,9 +150,31 @@ save summaries, and are parameterised only by the run list at the top of each fi
 - **`fill_emp.mjs`** — EMP, tier employment by era: staffed levels × the config’s own per-tier
   employment × `workforce_mult`. EXACT, not proxied; an earlier proxy (levels × people-per-level ×
   staffing off report_data) came out ~4× low and was thrown away rather than published.
+  ⭐ Since 2026-10-02 its COLUMNS come from **`lib_era_cols.mjs`**, shared with `report_data2.mjs`'s per-country
+  `emp`: on a book with craft rungs **e0 is split into `e0 artisans` and `e0 other`** (user-ruled: "for the art-
+  family, split report into e0-artisans and e0-other, where appropriate" — a craft is meant to fade on its own
+  economics, an e0 FACTORY that survives is the ladder failing), and a merge host's workers are shared out over its
+  main methods at each method's own era (the summary's `pms`, criteria.mjs's rule). It writes **`emp_cols.json`**
+  beside `emp.json`; `fill_assemble.mjs` splices it as the template's **`EMP_COLS`** (REQUIRED in the manifest), and
+  the table headers, legend, bar colours (artisans tan, e0 factories rose, eras blue), the derived captions and
+  `fill_goals.mjs`'s G2 (the e0 SUM, split printed) / G7 (the largest column's LABEL) all read the labels.
+  ⚠ Columns are LABELS, never indices: with the split, index 2 is e1 — `'e' + index` named it "e2".
+  ⭐ It samples every DECADE (1840 … 1930, 1935) rather than six anchor years, and takes the FIRST summary of each
+  year per run (it used to fold every summary of a sample year in, i.e. four quarters on a quarterly batch).
+  ⭐⭐ **OLD RUNGS BESIDE THEIR REPLACEMENT** (2026-10-02, tables `t-empb2` world + `t-wempb2` watchlist; `emp_b2.json` →
+  `EMP_B2`, per tag `report_data2.mjs`'s `b2`): workers on a rung **two or more eras behind a rung their own country already
+  staffs in the same industry** (`lib_era_cols.mjs` `countrySplit`), world-wide and in the register's shortlist pool, with
+  their share of tier workers. Written because the user found "just how significant the non-obsolescence problem is" hard
+  to read off the by-era chart, which cannot tell the ladder failing to retire a rung from a country that runs NOTHING
+  newer in that industry (backwardness) — and most of the world's old-rung workforce is the second kind (e1a12-ai1135 run 1
+  at 1935: 7.6M e0 + e1 workers world-wide, of which 1.9M beside a rung two eras newer; 0.15M of the shortlist's 16.6M).
+  Country-level by construction; the in-market vs trade panel reads the same question per market.
 - **`fill_payback.mjs`** — frontier and stale rung payback (build cost × £720 ÷ annual profit per level,
   at realised prices) and the leader−p25 stock-era gap. ⚠ A loss-making rung has NO payback and is
   counted, never folded into a median as a large number (the `vanilla_payback_census` rule).
+  ⭐ On a book with craft rungs it also writes `staleArt` / `staleOther` (2026-10-02, the e0 split): a craft costs a fiftieth
+  of a factory and employs a tenth, so the pooled e0 figure (`stale`, still what the LADDER table and G2's grade read) mixed
+  two unrelated buildings — e1a12-ai1135 run 1 at 1935: pooled 31.8 y = artisans 7.1 y + e0 factories 79.6 y. G2 prints both.
 - **`fill_research.mjs`** — `techsT` (technologies held per era/tree, mean per country, both arms from
   `technologies_held`) and `jeT` (journal entries). ⚠⚠ **JE firings are DISTINCT `(stage, technology,
   country)` triples, never raw log lines** — landmine **L23** measured raw lines overcounting 2.25×.
@@ -179,6 +204,8 @@ save summaries, and are parameterised only by the run list at the top of each fi
   the anchor years, mod beside vanilla (VA = the direct v6+ fields; vanilla reads the same 22
   industries through their base buildings — tier-1 key = the vanilla base). Bottom row = the
   sector's absolute £M/wk, because shares are composition and can fall while the industry grows.
+  ⚠ The broad sectors are a regex table, and anything it misses lands in `other` and is PRINTED by name: the hydro
+  DAMS (`building_dam_*`, in the canon since 2026-09-27) sat there until 2026-10-02 and now have their own row.
 - **`fill_obsolescence.mjs`** — the **Obsolescence panel, in-market vs trade** (`OBS`, tables `t-obs` on the world page
   and `t-wobs` on the watchlist; user-agreed 2026-09-24, FINDINGS F161 §4/§6, permanent on both pages).
   `node fill_obsolescence.mjs <outDir> --session <stamp> --setup <setup> --config <book> [--pool 1920,1930,1935] [--override-dir <dir>]`
@@ -206,9 +233,18 @@ save summaries, and are parameterised only by the run list at the top of each fi
   alias map — PMR_JE lines carry display names, the L11 hazard; unknown names are dropped, never
   guessed, 'Italy' deliberately absent since several tags can form it).
 
-⚠ They are not yet a single command, and their run lists are edited per batch — same known TODO as
-`--session`. Everything they emit is a median over the arm’s COMPLETE runs; an L17-incomplete run is
-excluded by hand from the run list, so check `preflight.ps1 -Session` before filling.
+⭐ **ONE COMMAND SINCE 2026-10-02:** `bash tools/testbed/ledger/fill_ledger.sh <session> <setup> <book> <outName>` runs every data
+script above in order on the arm's COMPLETE runs (meta.json reached its own until date, no abandoned_reason — L17) against the pinned
+vanilla n=16 (its run list discovered the same way, proven identical to the hand list every recent ledger used), writes `_mod.txt` /
+`_van.txt` into the out dir, and marks a failed step `!!! FAILED` without stopping. The PROSE half stays by hand (lede / incidents /
+next / footer .html, `tokens.json`, `title.txt`), then `fill_assemble.mjs` + `fill_verify.mjs`. One session per report.
+⚠ Token values land inside single-quoted JS strings in places: `fill_assemble.mjs` turns a word-internal straight apostrophe into ’ since
+2026-10-02 (one had blanked every renderer of the e1a12-ai1135 page; the gate caught it) — keep other straight quotes out of tokens.
+⭐ The small per-batch readers F209 used sit beside it (promoted from the scratchpad 2026-10-02, outputs proven identical, all on
+`lib_sumidx.mjs`): `ustar_path.mjs` (the shortlist's U* year by year, first year under 10% / 5%), `craft_path.mjs` (the crafts over the
+century, world and pool), `us_construction_windows.mjs` (one country's private-queue shares by window, `--country`, `--windows`),
+`pp_goods.mjs` (the PP index good by good and market by market), `rung_fate.mjs` (per industry and era: workers, prices, true margin, wage ÷
+normal), and `misplaced_capital.mjs` (F206/F207).
 
 ## Filling it for a new batch
 

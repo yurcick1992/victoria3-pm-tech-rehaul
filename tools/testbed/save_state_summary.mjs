@@ -99,7 +99,12 @@ import { fileURLToPath } from 'node:url';
 // Readers: a key is opaque. `c.tag ?? key.split('@')[0]` is the definition in every version; a pool member is the plain
 // TAG, i.e. the MAIN record — a rebel side, or a country a revolt left behind, is a country of its own. FINDINGS F186,
 // landmine L38. ⚠ A pre-v12 summary cannot be repaired (its save is reaped); summary_drops.mjs says which ones are hit.
-export const SAVE_SUMMARY_VERSION = 14;
+export const SAVE_SUMMARY_VERSION = 15;
+// v15 (2026-10-02): + per STATE `lab` {peas, unemp} — the workforce of its peasants and of its other pops with no workplace — and `res`
+// {building type: [levels, staffing, profit]} for every resource-capped type (mines, logging, fishing, whaling, oil, rubber, farms, plantations,
+// ranches, orchards, vineyards; subsistence left out). The user's rule for a VALID investment option (2026-10-02): free deposits or arable land in
+// the state AND at least 25k peasants + unemployed there — per state, so a fringe, unpopulated state's free slots cannot pose as an opportunity.
+// The caps themselves are static (common/map_data/state_regions) and are read by the analysis, not stored here.
 // v14 (2026-10-01): + per country `ig_by_workplace` — IG members (and members × exp(wealth/5)) by the pops' workplace class, and `world.ig_order`
 // (user: "tracking only" — does the Petite Bourgeoisie fall with the crafts and re-rise with the urban centres' shopkeepers? FINDINGS F192–F193).
 // v13 (2026-10-01): + per country `interest_groups` {ig_def: {clout, ps, rad, loy}} — the IG clout the craft redesign is meant to move
@@ -259,11 +264,20 @@ let popObjTotal = 0, popObjLive = 0, popCurState = -1, popCurPeople = 0;
 // table is read (it follows the pop table).
 let popType = '', popWf = 0, popWealth = 0, popWp = -1, popSup = null, popSupNext = false;
 const igByStateWp = new Map();             // `${state}|${wp}` -> { mem: [8], wm: [8], wf, shop }
+// v15: the labour a state could hire from — peasants' workforce, and the workforce of its other pops with no workplace
+const stateLab = new Map();                // state -> { peas, unemp }
+// v15: per state, the resource-capped building types (their levels sit against the state region's static caps)
+const RES_TYPE = k => !k.includes('subsistence') && /_mine$|logging_camp|fishing_wharf|whaling_station|oil_rig|rubber_plantation|_farm$|_plantation$|_ranch$|orchards?$|vineyard$/.test(k);
+const stateRes = new Map();                // state -> { type: [levels, staffing, profit] }
 const closePop = () => {
   if (popCurState >= 0) {
     let e = popObjByState.get(popCurState);
     if (!e) popObjByState.set(popCurState, e = { n: 0, live: 0 });
     e.n++; if (popCurPeople) e.live++;
+    if (popWf > 0 && (popType === 'peasants' || popWp < 0)) {                                     // v15
+      let l = stateLab.get(popCurState); if (!l) stateLab.set(popCurState, l = { peas: 0, unemp: 0 });
+      if (popType === 'peasants') l.peas += popWf; else l.unemp += popWf;
+    }
     if (popWf > 0 || popSup) {
       const k = `${popCurState}|${popWp}`;
       let g = igByStateWp.get(k);
@@ -666,6 +680,10 @@ for await (const line of rl) {
       if (b.type && b.state !== null) {
         bldState.set(b.id, b.state);
         bldType.set(b.id, b.type);
+        if (RES_TYPE(b.type)) {                                                                  // v15: per state
+          let sr = stateRes.get(b.state); if (!sr) stateRes.set(b.state, sr = {});
+          const a = sr[b.type] ??= [0, 0, 0]; a[0] += b.levels; a[1] += b.staffing; a[2] += b.profit;
+        }
         const ci = stateCountry.get(b.state);
         if (ci != null) {
           const k = ci + '|' + b.type;
@@ -1067,6 +1085,9 @@ const out = {
     infrastructure_usage: stateInfraUse.get(s) ?? null,
     // v10: absent key in the save = 0 (the engine elides a zero usage), so both are written as numbers
     ...(stateTradeCap.has(s) ? { trade_capacity: stateTradeCap.get(s), trade_capacity_usage: stateTradeUse.get(s) || 0 } : {}),
+    // v15: the hireable labour (workforce) and the resource-capped buildings [levels, staffing, profit]
+    lab: (l => l ? { peas: Math.round(l.peas), unemp: Math.round(l.unemp) } : { peas: 0, unemp: 0 })(stateLab.get(s)),
+    ...(stateRes.has(s) ? { res: Object.fromEntries(Object.entries(stateRes.get(s)).map(([k, a]) => [k, [a[0], +a[1].toFixed(3), +a[2].toFixed(1)]])) } : {}),
   }])),
   top_producers,
 };

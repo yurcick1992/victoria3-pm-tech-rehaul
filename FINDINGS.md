@@ -19543,6 +19543,9 @@ the crafts to the urban centres as the design intends (urban-centre shopkeepers 
 
 **What it does NOT say.** Three seeds against six, and the register's statistics are directional (§10.83.7). One book: the staffing, the four
 recipe raises, the merges and the hiring floor are not separated, so no term of the loss gap is attributed to one of them.
+⚠⚠ **CORRECTED 2026-10-01: the book's craft hiring floor is 0.01, and the user's ruling was £2** ("not to 0.01, but to £2, so only a third
+off"; BALANCE_FRAMEWORK §10.91.3's correction). This batch — and F188's floor arm, F191's probe, F195 and F196 read from it — measured a floor
+nobody ruled; it is not the intended arm on that key.
 
 ## F195 — THE OLD RUNGS IN THE 1930s SHORTLIST (levels on an e0/e1 method only): every surviving one sits at 13–17% profit on revenue — the engine's wage-cut equilibrium — and pays 0.04–0.41 of its country's normal wage; the crafts survive more than the canon's e0 did (staffed 32–63% against 1–29%, 10–23k workers each against 0–16k), the merge hosts' own e0/e1 methods are gone (replaced by the merged method), and the largest live old rung is the motor industry's e0 — 647k workers, 37% of the industry's, against the canon's 239k / 15% (2026-10-01, no game time)
 
@@ -19629,10 +19632,1052 @@ state's other workers in 17 of 20 (e.g. −181 vs +41, −162 vs −53, −135 v
 cannot be what holds the crafts' workers — theirs is low; under the defines it also raises their desire to MIGRATE.
 
 **So:** the crafts are a stepping stone off the farm. Their workers do leave for better-paid hiring jobs where those exist, and the crafts —
-cheap to build (cost ÷ 50) and able to hire at almost any value added (the hiring floor 0.01, §10.91.3) — refill from the peasants, of whom
+cheap to build (cost ÷ 50) and able to hire at almost any value added (the hiring floor 0.01, §10.91.3 — ⚠ the PROBE value; the user's ruling
+was £2, corrected 2026-10-01, so "any value added" is this batch's setting, not the arm's) — refill from the peasants, of whom
 the craft states still hold 8–21× the craft workforce in 1936. They will empty when the peasant reserve does, or if they cannot hire at the
 wages they pay.
 
 **What it does NOT say.** The hiring ORDER (unemployed and peasants before other buildings' workers) is read from the flows, not from the engine;
 vacancies are counted at 5,000 a missing level, all professions together; the transfer logs hold recent moves only (shares, not volumes); one run
 for the flows.
+
+## F197 — WHAT HOLDS THE OLD RUNGS UP, READ AS REALISED VALUE ADDED PER WORKER AGAINST THE ENGINE'S HIRING FLOORS; WHAT AN e1 ANCHOR FOR EVERY INDUSTRY (ENGINES ON [1,2,3]) DOES RUNG BY RUNG; AND HOW BIG OUTPUT-MATCHED 1836 CRAFT SEEDING IS (2026-10-01, derived from F177's and F194's summaries and the game files, no game time)
+
+**Source.** The yearly save summaries of `20260930_232639` (`artmerge6-pb`, n=3, F194 — crafts' hiring floor 0.01; see §10.91.3's correction:
+the ruled floor is £2) and `20260929_002728` (the canon, n=6, F177): per building type `goods_sales − goods_cost` over staffed levels × heads per
+level (500 a craft level, the base method's heads otherwise), × 52 = value added per worker-year, the quantity the engine's hiring floor reads
+(`BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES` £3, "annual earnings/employee"; a group may override it with `min_productivity_to_hire`).
+Shortlist = GBR USA FRA NET BEL UNL PRU NGF GER pooled, per-run means. The e1-anchor rungs are the generator's own rule (`--anchor-for <all>:1
+--anchor-cost`, A 2.2 / B 1.64 / C 1.9 / lift 1.2) computed from vanilla's methods; their "realised" figures are reconstructions at the arm's
+shortlist median prices (directional — the recipes would move the prices). Scratch readers `rung_va_path.mjs`, `e1_anchor_model.mjs`,
+`craft_seed_size.mjs` (session scratchpad, not committed). Asked by the user: *"propose a way to 1) increase obsolescence, in both artisans and
+other lower rungs 2) make artisans more numerous in 1830s"*, with an e1 anchor for every industry and engines on e1 as the user's lean.
+
+**1. Realised value added per worker-year, shortlist (F194's batch):**
+
+| rung | 1840 | 1860 | 1880 | 1900 | 1920 | 1935 | workers 1935 (peak) |
+|---|---|---|---|---|---|---|---|
+| craft food / textile / furniture | 4.2 / — / 6.8 | 5.6 / 5.7 / 4.1 | 5.1 / 4.1 / 3.2 | 5.0 / 3.6 / 2.8 | 5.9 / 2.9 / 2.7 | 4.9 / 3.0 / 1.7 | 25k / 13k / 15k |
+| craft glass / tooling / paper | 6.1 / — / 3.7 | 5.4 / 4.1 / 6.3 | 5.2 / 4.4 / 4.7 | 6.4 / 5.1 / 4.4 | 4.7 / 3.5 / 4.1 | 4.2 / 2.8 / 2.6 | 12k / 9k / 19k |
+| textile e1 | 11.0 | 13.9 | 9.8 | 8.7 | 7.3 | 5.3 | 50k (617k) |
+| furniture e1 / glass e1 | 8.7 / 8.6 | 9.6 / 7.4 | 8.2 / 8.7 | 6.2 / 6.9 | 4.3 / 7.9 | 5.3 / 5.8 | 18k (307k) / 34k (101k) |
+| motor e0 (steam) | 6.7 | 13.5 | 12.4 | 11.6 | 12.1 | 9.1 | 573k (664k) |
+
+World-wide at 1935 the crafts run £3.1–6.8 (furniture 3.1, textile 4.3, glass 4.5, tooling 4.6, paper 4.9, food 6.4); the canon's e0 world-wide
+£2.8–9.9 with textile 383k, paper 576k, food 302k and motor 1,044k workers. Every old rung in the table sits ABOVE the £3 factory floor (the
+crafts above 0.01 by construction), so all of them may hire; the survivors cut wages to 13–17% profit (F195) and refill from the peasants (F196).
+The shortlist's old-rung workforce at 1935 is ~830k, 573k of it motor's steam plants; the consumer e1s have shed 66–94% from their peaks.
+Engines run 1.09–1.74 of base all century while steel falls 1.49 → 0.83, so the steam plant's value added rises (F143 §3a's reading).
+⇒ At a £2 craft floor with today's recipes only the shortlist's furniture crafts (1.7 by 1935) would stop hiring; world-wide none would.
+
+**2. The current crafts' crossing prices** (base method, inputs at base; the output price as a share of base at which value added per worker-year
+is £2 / £3 / 0): food 0.82 / 0.91 / 0.65 · textile 1.00 / 1.16 / 0.67 · furniture 0.93 / 1.09 / 0.61 · glass 0.74 / 0.88 / 0.46 · tooling 0.84 /
+0.96 / 0.58 · paper 0.92 / 1.03 / 0.70. The arm's shortlist prices at 1935: groceries 0.89 (grain 1.06), clothes 0.92, furniture 0.84, glass
+0.94 (0.85–1.12 all century), tools 0.81, paper 0.95. The measured craft values run ~£1 above the base-method reconstruction (the luxury
+secondaries). A UNIFORM rule — every craft crosses £2 at 0.89 of base and makes a fixed share s of vanilla's first-method goods per worker —
+gives, at s = 0.6: output 2.70 (food, textile, furniture) / 1.80 (glass, tooling) / 2.40 (paper) a level from inputs worth 0.62–0.65 of the
+output, £4.0–4.2 at a price of 1.15 and £2.8–2.9 at 1.00, base-price break-even 123–127%, 16.7 craft levels per vanilla level; at s = 0.75:
+£4.4–4.7 / £3.0–3.2, break-even 116–120%, 13.3 levels.
+
+**3. The e1 anchor for all seventeen, rung by rung** (base prices unless "realised"; motor on [1,2,3]; the eight already-slid industries and
+munition, synthetics, automotive and electrics are unchanged by it):
+- The e1 rung becomes vanilla's own e1 method × 1.2 on inputs. Value added per worker-year at base: food 14.5 → 4.7, paper 15.2 → 8.1, steel
+  23.2 → 5.6, explosives 24.4 → 7.9, fertilizer 22.9 → 10.0, arms 24.8 → 17.5, artillery 19.6 → 12.8, academy 16.7 → 6.9. Realised: food e1
+  10.1 / 7.3 / 4.7 / 2.5 at 1840 / 1870 / 1900 / 1935, steel e1 14.1 / 13.9 / −0.8 / −5.1, explosives e1 19.0 / 17.1 / 10.2 / 3.5.
+- The frontier's value added per level is 0.38–0.76 of today's (motor e3 0.38, food e2 0.46, academy e3 0.48, steel e3 0.52, explosives 0.59,
+  fertilizer 0.62, paper 0.69, arms 0.73, artillery 0.76); per construction point 0.88–1.44 (cost falls by C 1.9 a step) except motor (0.73).
+- The non-craft e0 rungs under the geometric step down (output ÷A, input value ÷B): output 0.55–0.82 of vanilla's own e0, value added per
+  worker-year at base steel −3.8, explosives −1.6, fertilizer −0.7 (realised 1840: −1.1 / 5.0 / 0.4) — F149 §4's all-17 failure (steel at the
+  band ceiling in 60% of readings). Under a margin-preserving ÷1.5 on both: output 0.80–1.20 of vanilla's e0 (steel 0.92, fertilizer 1.04,
+  explosives 1.07, arms 1.11, artillery 1.20, academy 0.80), realised 1840 £7.7–14.0, steel e0 negative from ~1900. The academy's e0 earns
+  £7.7 at 1840 under it, £4.0 under the geometric step, £10.9 today.
+- 1836: every converted e1 block produces exactly its vanilla method's output; tooling's e2 blocks still 1.65×.
+- Motor: vanilla's own ladder is 40 / 80 / 120 engines; today's book 40 / 193.6 / 425.9; [1,2,3] anchored at e1 40 / 88 / 193.6. Frontier
+  engines per construction point −14%, value added per point −27% (e3) to −35% (e2), per worker −55% (goods) / −66% (value added). Realised
+  steam ÷ electric value added per worker 0.29–0.38 (today 0.11–0.15); steam ÷ diesel 0.11–0.15. ⚠ `derivePlacement([2, 4, 5])` gives [1, 2, 3]:
+  motor's [0, 2, 3] is an explicit PLACEMENT entry, not the era rule's derivation (the spec, §10.78 and CLAUDE.md corrected the same day).
+- A pop-good anchor penalty (1.4 instead of 1.2 on e1 and below of the industries whose output sits in a pop need, read from common/pop_needs —
+  groceries, clothes, furniture, glass, paper, fine art, automobiles, telephones, small arms) at the arm's shortlist prices: textile e1 9.3 → 7.3
+  (1840) and 4.9 → 2.9 (1935); furniture e1 8.6 → 6.3 and 5.3 → 3.3; glass e1 6.0 → 4.3 and 4.6 → 2.8.
+
+**4. Output-matched 1836 craft seeding** (vanilla's 1836 e0 output of the six industries ÷ the arm's craft output per level; people = workers ÷
+0.25): 515 vanilla e0 levels need 9,564 craft levels (today ×10 = 5,150) and 4.78M workers (today 2.58M) — +2.21M workers, **+8.8M people if the
+gap is added as new pops (0.86% of the world's 1,024M)**, +19.1M (1.9%) if every craft worker is a new pop. China +2.59M people (0.7% of its
+population), British India +0.91M (0.8%), Russia +0.88M (1.5%), Austria +0.60M (2.9%), the Ottomans +0.54M (2.8%), Japan +0.33M (1.0%); small
+states up to Kraków +23%, MUG +10%, Argentina +7.7%. ⚠ **GBR, FRA, BEL and PRU hold no vanilla e0 factory in the six industries** (their 1836
+light industry runs e1 methods), the USA 4 food levels, the Netherlands a few — output matching adds artisans almost only outside the shortlist.
+Under the s = 0.6 / 0.75 craft rule: +1.71M / +0.85M workers (+6.9M / +3.4M people).
+
+**What it does NOT say.** No game time: every recipe figure is the generator's arithmetic and every "realised" one a reconstruction at another
+book's prices (F94, §10.86.2 — base-price numbers are coordinates, not predictions). The batch behind §1 ran at a craft floor nobody ruled
+(0.01); at £2 the crafts would hire less, their prices would sit higher and their value added with them. The hiring floor is read as value added
+per worker-year from the define's comment and F185/F188, not from the engine's code. Nothing here was built when it was written; the book
+it led to is `config/mod_config.e1a-artmerge.json` (BALANCE_FRAMEWORK §10.91.5), probed by session `20261001_121754_e1a-artmerge-10y`.
+
+## F198 — THE CRAFTS + MERGES ARM AT THE RULED £2 HIRING FLOOR, PROBED (2 × 1836→1846): healthy against the canon (no dead industry, no token market); the crafts staff as well as at the 0.01 probe value, but a sixth to a fifth of their levels log failed hires again (0.01: 3–4%); world GDP inside the canon's range (2026-10-01, session 20261001_115032)
+
+**Source.** Session `20261001_115032_artmerge6-pb-f2-10y`, book `config/mod_config.artmerge6-pb-f2.json` = `artmerge6-pb` with
+`min_productivity_to_hire = 2` on `bg_pmr_crafts` (the ruled floor, §10.91.3's correction; the field diff against `artmerge6-pb` is that one
+value), two runs 1836 → 1846, both clean (one attempt each, 777 / 780 s of play, init marker, 0 error lines naming our files). References at
+1846.1.1: the canon's six runs (`20260929_002728`, F177) and the same book at the 0.01 probe value (`20260930_225621`, F191, n=2). Readers:
+`health_vs_ref.mjs`, `hiring_census.mjs` on the kept 1846 saves (with the f2 book's emitted mod), and the summaries' v14 building ledgers
+(staffing, profit, `goods_sales`, `goods_cost`, the country's `base_wage`).
+
+**1. Dead industries and token markets** (both seeds against the canon's six, F191's thresholds): **0 of 79 building types dead, 0 of 335
+market × good cells a token.** Run 1 alone flagged nine cells, every one a map difference of that seed — Austria's market without Kraków and
+Croatia (GDP 6.6 against the canon run 1's 11.8: hardwood, silk, wine), the Dutch East Indies in the Dutch market instead of Prussia's (small
+arms, groceries, clippers), Russian oil — and run 2 clears them all.
+
+**2. The crafts at 1846** (world; wage ÷ normal = the wage bill `goods_sales − goods_cost − profit` ÷ staffed levels × 500 × 1.6 wage units ×
+the country's normal wage; £2 r1 / r2 · F191's 0.01 r1 / r2):
+
+| craft | staffed | profit ÷ revenue | wage ÷ normal | value added per worker-year |
+|---|---|---|---|---|
+| food | 92 / 93 · 85 / 95% | 18 / 17 · 19 / 18% | 0.49 / 0.67 · 0.55 / 0.56 | £4.34 / 4.99 · 4.73 / 4.73 |
+| textile | 97 / 97 · 97 / 97% | 26 / 29 · 28 / 28% | 0.66 / 0.74 · 0.76 / 0.73 | £5.60 / 6.25 · 6.33 / 6.12 |
+| furniture | 95 / 95 · 96 / 95% | 20 / 19 · 21 / 22% | 0.32 / 0.59 · 0.51 / 0.67 | £2.74 / 4.24 · 3.88 / 4.97 |
+| glass | 93 / 96 · 98 / 98% | 20 / 21 · 20 / 22% | 0.22 / 0.43 · 0.42 / 0.50 | £2.33 / 3.32 · 3.21 / 3.79 |
+| tooling | 83 / 82 · 86 / 80% | 17 / 20 · 23 / 20% | 0.63 / 0.54 · 0.73 / 0.84 | £4.36 / 4.28 · 5.48 / 5.49 |
+| paper | 96 / 96 · 98 / 98% | 18 / 20 · 19 / 21% | 0.20 / 0.52 · 0.73 / 0.64 | £2.64 / 4.39 · 5.35 / 5.17 |
+
+Run 2 reads as the 0.01 runs. Run 1's paper, glass and furniture are low for ONE market: China holds 574 of the ~1,300 staffed paper-craft levels,
+and its paper sold at **1.02× base** in that seed against 1.23–1.35× in the 0.01 runs (value added per worker-year £0.96 against £4.1–4.3; the
+world market price of paper was the same in all three, 42–44). A seed's local glut, not the floor.
+
+**3. Hiring** (`hiring_census.mjs`, every building of the kept 1846 save; £2 r1 / r2 · 0.01 r1 / r2):
+
+| crafts | £2 | 0.01 |
+|---|---|---|
+| staffed ÷ levels | 94.7 / 95.5% | 96.0 / 96.4% |
+| levels with a failed hire in the last year | **21.4 / 14.9%** | 4.4 / 2.9% |
+| — of crafts under £3 of value added per worker-year | 35.2 / 33.8% | 9.8 / 25.4% |
+| full (≥ 98% staffed) | 66.6 / 78.0% | 87.8 / 91.4% |
+| value added per worker-year | £3.57 / 4.63 | £4.80 / 4.95 |
+| wage ÷ normal (level-weighted median) | 0.53 / 0.54 | 0.60 / 0.53 |
+
+So the ruled floor puts back most of the hiring friction the 0.01 setting removed (F188's no-floor machinist books, at the engine's £3, logged
+failed hires on about a quarter of craft levels), and at 1846 it costs no staffing.
+
+**4. The economy.** World GDP £514.7M / £520.0M at 1846 (the canon's six 476–526, median 509; the 0.01 pair 522 / 514).
+
+**What it does NOT say.** Ten years, two seeds, one date for the health check. Whether the £2 floor changes the crafts' path after 1846 —
+where F197 §1 has their realised value added per worker falling toward £2 in the shortlist by 1920–1935 — is a century question; the arm's only
+century evidence (F194) ran at 0.01. The next batch measured is the e1-anchor book (§10.91.5), which carries this floor.
+
+## F199 — THE e1-ANCHOR BOOK, PROBED (2 × 1836→1846): the seeding takes, the 1836 supply anchor moves onto vanilla's (groceries 0.93 against the canon's 1.33–1.53), the steel–engines chain holds (steel at the ceiling 0% of readings), world GDP lands on vanilla's path — but the 1.4-lifted pop-good e1 rungs empty in the German states and Belgium within four years, and the Prussian market's glass falls to a fifth of vanilla's in both seeds (2026-10-01, session 20261001_121754)
+
+**Source.** Session `20261001_121754_e1a-artmerge-10y`, book `config/mod_config.e1a-artmerge.json` (BALANCE_FRAMEWORK §10.91.5), two
+runs 1836 → 1846, both clean (one attempt each, 746 / 795 s of play, init marker, 0 error lines naming our files). Dumps 1836.2.1 /
+1837.12.1 / 1840.1.1 / 1845.1.1 on the eleven tags, quarterly autosaves. References: the canon's six (`20260929_002728`, F177), the
+same arm before the re-anchoring at the ruled £2 floor (`20261001_115032`, F198), the pinned vanilla n=16 (`20260821_131149`, dumps
+1836.2.1 and 1840.1.1) and, for 1837.12.1 only, the vanilla pair and probe arms of F149 (`20260919_132049`, `20260919_190944`,
+`20260919_201023`). Market readings are the seven markets F149 used (British, French, American, Prussian, Russian, Japanese, Dutch).
+The schedule `e1a_artmerge_10y.json` carries the pre-registered questions Q1–Q6 and predictions.
+
+**1. The seeding takes in game.** At the first summary (1836.4.1, run 1) the six crafts hold food 673, textile 2,558, furniture 1,502,
+glass 1,452, tooling 169, paper 2,219 levels against the £2 arm's 403 / 1,531 / 901 / 871 / 100 / 1,320 — +3,447 (the build reported
+3,441) — 93–98% staffed; world population 1,025.64M against 1,025.39M (0.02%); shopkeeper workforce 2.72M against 2.15M, peasants
+207.0M against 208.4M; urban centres 673 against 599 (the build's F13 estimate was +69).
+
+**2. The 1836 supply anchor (Q2)** — production ÷ the vanilla n=16 median, seven markets, 1836.2.1 (r1 / r2 · the canon's six):
+
+| good | e1a | canon |
+|---|---|---|
+| groceries | **0.93 / 0.94** | 1.33–1.53 |
+| clothes | 0.97 / 0.94 | 0.87–0.92 |
+| furniture | 0.88 / 0.95 | 0.89 |
+| glass | 0.93 / 0.93 | 0.82–0.84 |
+| paper | **0.96 / 0.96** | 1.15–1.16 |
+| tools | 1.51 / 1.51 | 1.51–1.52 |
+| steel | 0.92 / 0.92 | 1.00 |
+| engines | 0.99 / 1.00 | 0.98–1.01 |
+| fine art | **0.80 / 0.80** | 1.00 |
+
+Predicted "craft goods within ±15%, steel 0.9–1.1, tools still over": met. New and not predicted: fine art −20% (the academy's e0 is now
+its e1 ÷ 1.5 where the canon's e0 IS vanilla's method).
+
+**3. The chain at 1837.12 (Q3)**, seven markets: steel at the +75% ceiling in **0%** of readings (median 1.52× base), production 937 / 1,108
+(the vanilla pair 885 / 989; F149: the then-canon 18% / 820, the all-17 slide 60–85% / 243–619); engines 25% at the ceiling, 92 / 154 (the vanilla
+pair 176–178; F149's reference arms 14–209). The F149 all-17 collapse does not recur: the ÷1.5 step keeps the e0 rungs' margins. Consumer goods in
+the seven markets run 0.70–0.84 of the vanilla pair at 1837.12 (glass 0.70, clothes 0.76–0.79, furniture 0.75–0.76, groceries 0.76–0.81, paper
+0.83–0.84) — F149's eight-industry slide read 0.71–0.87 on glass, clothes and furniture at the same date.
+
+**4. 1840 against vanilla n=16** (seven markets, production r1 / r2 · the £2 arm · the canon): groceries 0.85 / 0.77 · 1.12 / 1.34 · 1.38–1.57;
+clothes 0.80 / 0.77 · 0.76–0.77 · 0.80–0.86; furniture 0.78 / 0.80 · 0.82–0.85 · 0.81–0.88; glass 0.63 / 0.70 · 0.77–0.83 · 0.73–0.84; paper
+0.84 / 0.85 · 1.01–1.03 · 1.07–1.09; tools 1.34 / 1.38; steel 1.05 / 1.19 · 0.86–0.91 · 0.80–1.09; engines 0.57 / 0.68 · 0.61–0.74 · 0.39–0.73;
+fine art 0.67 / 0.69 · 0.87–1.08 · 0.96–1.20. Prices ÷ base (median, run 1 · the canon · vanilla): groceries 1.27 · 1.18 · 1.20, clothes 1.13 ·
+1.14 · 1.15, furniture 1.22 · 1.19 · 1.06, glass 0.92 · 0.95 · 0.74, paper 1.35 · 1.29 · 1.23, steel 1.46 (25% at the ceiling) · 1.52 (25%) · 1.29
+(0%), engines 1.73 (50%) · 1.70 (42%) · 1.51 (13%).
+
+**5. World-wide at 1846** (summaries, r1 / r2 · the canon's six · vanilla n=16): world GDP **528 / 527** · 476–526 · 467–538. Consumer-goods
+production: groceries 3,768 / 3,552 · 5,222–6,672 · 3,878–4,945; clothes 22,117 / 21,562 · 17,384–20,449 · 20,064–25,254; furniture 18,772 / 18,105
+· 16,203–18,202 · 17,937–20,195; glass 1,976 / 1,978 · 1,011–1,301 · 2,151–2,820; paper 8,108 / 8,501 · 7,690–9,419 · 8,048–9,138 — closer to
+vanilla's than the canon's in all five.
+
+**6. The crafts (Q4) and the rungs above them.** At 1846: food 86 / 85%, textile 99 / 97%, furniture 93 / 89%, glass 85 / 82%, tooling 84 / 76%,
+paper 95 / 96% staffed; value added per worker-year £2.5–7.2 (glass lowest, £2.46 / £3.03); 3.93M craft workers in run 1 against the £2 arm's
+2.53M; the census (run 1, kept save) reads 93.2% staffed and 14.6% of craft levels with a failed hire (the £2 arm 14.9–21.4%). The e1 rungs of the
+re-anchored pop-good industries earn far less than the canon book's (value added per worker-year, run 1 · the £2 arm r1 / r2): food e1 £8.4, 72%
+staffed · £21.7 / £20.8, 94–99%; paper e1 £11.1, 88% · £19.5 / £20.6, 100%; glass e1 £7.5, 68% · £9.5 / £7.5, 86–90%; furniture e1 £8.0, 84% ·
+£9.6 / £10.3; steel e1 (not a pop good, lift 1.2) £5.9, 39% staffed · £32.3 / £37.8 — the ruled removal of the e1 money printer (ROADMAP P1),
+all above the £3 hiring floor. Census: tiered e1 81% staffed with a third of its levels laying off (the £2 arm 90–93%, 12–17%).
+
+**7. Motor (Q6).** The steam rung (now e1, ai_value 3,000) reads as the canon's: 4 → 5 → 9 → 16 levels 1836–1846 (7 staffed; the canon 12–17),
+engines 158 → 356 a week at 1.24 → 1.60× base (the canon 354–391 at 1.50–1.64). Predicted "more motor levels, engines cheaper": NOT met — the rung
+is held back by staffing, not desire.
+
+**8. THE DEFECT — the German market's glass and food.** In both seeds the 1.4-lifted pop-good e1 rungs empty in the German states and Belgium within
+four years while Britain keeps every one full (at 1846, levels / staffed): Prussia's food e1 2/0 and 1/0 (the £2 arm 5/5), glass e1 3/0 and 3/1 (3/3,
+4/4); Saxony's glass e1 5/1 and 5/0 (5/5, 5/4); Belgium's food e1 1/0 (2/2, 3/3); France's furniture e1 19/11 and 16/5. Inside the Prussian market
+(25 members) run 1's leaded glassworks go 8/8 → 8/1 staffed between 1836.4 and 1840, the sweeteners 5/4 → 2/0, and its glass crafts 17/17 → 17/5 by
+1846. The Zollverein's glass sold at **0.69× base at 1836.2** (vanilla's seven-market glass median 0.74), where the lifted e1 recipe cannot pay its
+workers. Because pop demand follows supply share (F40), the market SHRINKS rather than calling capacity back: the Prussian market's glass buy orders
+fall 194 → 53 a week and groceries 334 → 67 by 1845, at prices near base (glass 40.5, base 40). At 1846 its glass production reads **59 / 61 against
+vanilla's 287–384 in all sixteen seeds** (porcelain 29 / 30 against 96–130; groceries 70 / 58 against 23–491). `health_vs_ref.mjs` did not flag
+it because the canon's own minimum there is 0 (two canon seeds without a Prussian market at 1846) — the guard meant to absorb seed-level map
+differences absorbed a design effect here. ⇒ The lift's value is the lever it points at (the user's first message: "with in1-penalty still in
+place, but the exact value isn't fixed"); the century 2+1 runs on the ruled book with it registered as a watch item.
+
+**What it does NOT say.** Ten years, two seeds; obsolescence, the hoard and the register are the century's questions. The German defect is one
+market in two seeds; whether it heals when the German e2 rungs arrive (1860s–1870s) is what the century 2+1 (`20261001_124750_e1a-artmerge-n2`)
+will show.
+
+## F200 — THE e1-ANCHOR BOOK OVER THE CENTURY (n=2, aligned): both runs intact, consensus loss 7.76 against the canon's 5.90 and the 0.01 crafts arm's 10.09; the hoard is gone (pool H 0.52 against 2.64) and pop-goods prices fall back inside the soft line (PP 1.07 against 1.16), but world GDP lands at 0.82× vanilla after a long mid-game dip; the motor steam rung and the shortlist's food/paper crafts survive; the German glass hole runs until the German e2 rungs arrive (2026-10-01, session 20261001_124750)
+
+**Source.** Session `20261001_124750_e1a-artmerge-n2`, book `config/mod_config.e1a-artmerge.json` (BALANCE_FRAMEWORK §10.91.5), two runs
+1836 → 1936, both reaching 1936.1.1 on one attempt (play 187.7 / 157.7 min), no crash; post-run preflight passed. Schedule
+`e1a_artmerge_n2.json` with its predictions and the German watch item registered before launch. 2+1: `alignment_check.mjs` reads world GDP
+0.84 / 0.82 and workers per capita 0.72 / 0.67 of the vanilla n=16 medians at 1935 — ALIGNED, no tie-breaker. References: the canon
+`canon-dams-family` (`20260929_002728`, F177, n=6), the crafts + merges arm at the 0.01 floor (`20260930_232639`, F194, n=3), the pinned
+vanilla n=16 (`20260821_131149`). Readers: `criteria.mjs`, `first_run_decomp.mjs`, `report_perf.mjs`, the summaries' building ledgers.
+
+**1. The register** (`criteria.mjs`, end state 1932–1936; e1a consensus of two · the canon's 4 intact · the 0.01 arm's consensus):
+
+| line | e1a | canon | 0.01 arm |
+|---|---|---|---|
+| intact / broken | **2 / 0** | 4 / 2 | 3 / 0 |
+| LOSS | **7.76** | 5.90 | 10.09 |
+| world GDP | **0.82** (0.84 / 0.80) | 1.06 | 0.97 |
+| pool GDP | 1.08 | 1.48 | 0.97 |
+| pool W | 0.78 | 0.88 | 0.72 |
+| pool U* | 1.79 | 1.18 | 1.98 |
+| **pool H** | **0.52** | 0.81 | 2.64 |
+| world W / world H | 0.69 / 0.57 | 0.73 / 0.72 | 0.71 / 1.77 |
+| PI | 0.98, falling decade over decade | 0.96, not falling | 0.89, not falling |
+| **PP** | **1.07** | 0.88 | 1.16 (beyond soft) |
+| T0 (1935 ÷ the 1900s) | 0.60 (at the aim) | 0.39 | 0.86 |
+| T3 ÷ rest | 0.42 | 0.49 | 0.36 |
+
+The loss's terms: PI 2.31 + PP 1.73 + T3 1.32 + world GDP 1.14 + T0 0.86 + pool U* 0.33 + pool GDP 0.07. ⚠ World GDP 0.80–0.84 sits at the floor
+of §10.83.8's normal reading band: U* and H read, but only with the GDP quoted beside them — the hoard's fall is real in both seeds, and part of it
+belongs to a poorer world (world H 0.57 at world GDP 0.82).
+
+**2. The decomposition** (`first_run_decomp.mjs`, medians of the two · run 1 / run 2):
+
+| year | world GDP ÷ van | workers per capita | £ per productive worker | shortlist GDP ÷ van | shortlist £/worker |
+|---|---|---|---|---|---|
+| 1880 | 0.87 (0.91 / 0.82) | 0.89 | 0.99 | 0.79 | 0.99 |
+| 1900 | 0.71 (0.76 / 0.66) | 0.76 | 0.97 | 0.69 | 1.07 |
+| 1920 | 0.69 (0.74 / 0.64) | 0.68 | 1.04 | 0.76 | 1.19 |
+| 1935 | 0.83 (0.84 / 0.82) | 0.70 | 1.21 | **1.09** (1.01 / 1.17) | **1.41** |
+
+The mid-game dip (ruled expected, §10.82) is deeper and longer than the canon's (F117: 0.75–0.89 at 1900 on the then-canon); the e1-anchored
+frontiers make less value added per level (F197 §3 predicted 0.38–0.76 of the canon book's), and the world recovers only in the last two
+decades. The pre-registered prediction "world GDP 0.85–1.10×" lands just under its lower edge (0.82).
+
+**3. The hoard.** Gone in both seeds: shortlist H 0.52, world H 0.57 — the first crafts book with no capital-abundance flag on the shortlist beyond
+one soft GBR line (run 1: U* under 5% in 1927–1936 at a mean hoard of only 0.30 GDP). The mechanism is F135's: the pool's INFLOW is the
+realised margin, and the e1 money printer (ROADMAP P1) was its largest source; the 0.01 arm, which carried the canon's e1 recipes, read 2.64.
+
+**4. The old rungs in the shortlist at 1935** (workers, levels; e1a r1 / r2 · the 0.01 arm r1–r3 · the canon r1–r6):
+- **motor's steam rung** — e1 here, e0 in the others: 967k (210) / 499k (170) · 901k / 647k / 170k · 621k / 196k / 38k / 283k / 727k / 114k. Its absence
+  from T0 is a RELABELLING (F197 §3 named it): the rung is as alive as before.
+- **textile e1** 484k (128) / 1k (38) · 25–85k · 15–44k — run 1's dye workshops survive at scale.
+- **crafts**: food 81k / 47k, paper 69k / 7k, textile 51k / 33k · 22–29k, 13–23k, 6–17k; furniture, glass and tooling crafts 2–15k (nearly empty). The
+  food crafts earn £8.0 of value added per worker-year in run 1's shortlist (the e1-anchored food frontier presses them less than the canon's).
+- **steel e0** 18k / 60k · 0k — the ÷1.5 step keeps steel's 1836 rung alive at the margin, small.
+- World crafts 3.35M / 3.14M workers at 1935 (the 0.01 arm 2.0–2.4M).
+
+**5. The German watch item** (the German market's glass, a week; vanilla medians 342 / 369 / 464 / 537): run 1 239 / 297 / 494 / 332 at 1846 /
+1850 / 1860 / 1870, run 2 **51 / 53 / 59** then 388 at 1870 under the German Empire and 542 at 1880. Run 2 met the pre-registered prediction
+("persists until the German e2 rungs arrive"); run 1's hole was shallow. Across the book's four seeds (F199's two probe seeds + these two) three
+carry the deep 1846 hole.
+
+**6. Speed** (`report_perf.mjs`, play time from the ticks): 187.7 / 157.7 min, median 172.7 against vanilla's 165.0 (×1.05) and the canon's six
+(144–185, median ~172) — within the 10% budget.
+
+**What it does NOT say.** Two seeds, and the statistics are directional (§10.83.7). The book differs from the canon on every lever of §10.91.5 at
+once (and on the crafts and merges), so nothing here attributes the lower world GDP or the vanished hoard to one lever; the hoard's attribution to
+the e1 margins is by mechanism (F135), not isolation. The German hole is measured, its cause (the 1.4 lift on Zollverein glass priced at 0.69× base)
+is the probe's inference (F199 §8) — settled by F201.
+
+## F201 — WHY THE GERMAN HOLE: the 1.4 pop-good lift puts the e1 frontier rungs of glass and food UNDER the engine's 15% wage-cut line at ordinary prices, so once a price dip has emptied them they never rehire (that needs 25%); it is not German — France, Prussia and the USA lose a quarter to three-quarters of their groceries and Prussia and the USA up to half or more of their glass in 1837–1850, while markets carried by crafts or by Britain's prices sit on vanilla's (2026-10-01, read from F177/F198/F199/F200's sessions and the vanilla n=16, no game time)
+
+**Question (the user):** *"What causes this? Is the in1 too strong that glass becomes unprofitable? How is it in 1830–1850s for 10 largest 1836 markets?"*
+
+**1. The recipes.** The glass e1 rung (leaded glass) differs between e1a and the canon / the £2 arm ONLY by the lift: 40 glass from wood 28 + lead 14
+(£1,120 at base, break-even 95%) against wood 24 + lead 12 (£960, 85%); vanilla's own `pm_leaded_glass` is wood 20 + lead 10 (£800). Food e1 changed more
+(the anchor move AND the lift): 65 groceries from grain 56 + sugar 21 (£1,750, break-even 110%) against the canon's 99 from £1,575 (66%); paper e1 70 from
+£1,540 (92%) against 88 from £1,179 (60%).
+
+**2. The engine's lines** (`common/defines/00_defines.txt`): profit ≤ **15%** of revenue → the building LOWERS wages every week (`BUILDING_PROFIT_TARGET_TO_LOWER_WAGES`,
+up to 10% a step); it tries to HIRE only at ≥ **25%** (`BUILDING_PROFIT_TARGET_TO_HIRE_EMPLOYEES`); hiring pauses under 20%; a worker leaves for +10% pay
+(`MIN_RAISE_TO_HIRE`), and below 0.66 of expected wealth the building prefers layoffs.
+
+**3. The counterfactual — the same e1 glassworks at the same realised prices and wages** (e1a's markets.tsv; wage = 6,250 wage units × the country's normal
+rate; profit ÷ revenue for vanilla's recipe · the canon's 1.2 · e1a's 1.4):
+- Prussia 1840 (glass 40.0, wood 22.9, lead 27.1): **32% · 23% · 14%**; run 2 (glass 37.9): 26% · 16% · 6%.
+- Britain 1840 (glass 38.6): — · 15% · 5%; France 1840: — · 10–16% · −1–6%; the USA 1840 (glass 46–47, 1.15–1.17× base): — · 29–32% · 20–24%.
+⇒ At ordinary prices vanilla's recipe sits on or above the 25% hire line, the 1.2 lift between the 15% and 25% lines (keeps workers, cannot add), the 1.4 lift
+under 15% (cuts wages, bleeds). The realised margins agree: the e1 glassworks' profit ÷ sales in the German market 10–14% in e1a against 15–19% in the £2 arm.
+
+**4. The trigger is an opening glut that VANILLA ITSELF HAS.** The Prussian market's glass sells at **0.53–0.56× base at 1836.2.1 in vanilla** (buy 183–187 against
+sell 290–305), 0.68–0.69 in e1a, 0.78 in the canon, 0.84–0.92 in the £2 arm — so the seeded crafts are NOT the cause (e1a's opening price is above
+vanilla's). Glass shares one pop need (household items) with furniture (weight 1, max share 0.75) and paper (0.5); its only other 1836 buyer is the urban
+centres' market squares (1 a level). At the opening price every recipe loses money (vanilla's −35%, e1a's −54 to −61%), every e1 glassworks cuts wages and
+sheds; when the price recovers to ~1.0 by 1837–1840, vanilla's rehires (≥ 25%) and e1a's cannot (≤ 14%). Because pop demand follows supply share (F40),
+the market shrinks with the supply instead of raising the price — the Prussian market's glass buy orders fall 194 → 53 a week by 1845 at prices near base.
+
+**5. The ten largest 1836 markets** (vanilla's median market GDP at 1837.1.1: China 98, British (led by British India) 86, Russia 29, France 24, the Ottomans
+22, Prussia 19, the USA 18, Austria 17, Japan 12, Spain 11 £M). Production ÷ vanilla's median (e1a: the range of its four seeds · the canon's median):
+
+| market | glass 1837 | glass 1845 | glass 1850 | groceries 1837 | groceries 1845 | groceries 1850 |
+|---|---|---|---|---|---|---|
+| China | 0.92–0.98 · 0.47 | 0.83–1.11 · 0.24 | 0.66–0.69 · 0.20 | — | — | — |
+| British | 0.89–0.91 · 0.75 | 0.60–0.77 · 0.68 | 0.50–0.83 · 0.76 | 0.94–1.02 · 1.52 | 0.65–0.98 · 1.40 | 0.92–0.98 · 1.58 |
+| Russia | 0.81–1.00 · 0.47 | 0.41–0.84 · 0 | 0.41–0.60 · 0 | 0.90 · 1.09 | 0.78–1.10 · 1.25 | 0.84–1.12 · 0.97 |
+| France | 0.69–0.76 · 0.97 | 0.78–0.93 · 1.02 | 0.30–0.90 · 0.93 | **0.41–0.56** · 1.52 | **0.33–0.74** · 1.56 | **0.16–0.40** · 1.48 |
+| Ottomans | 1.68–1.81 · 0.24 | 1.0–1.95 · 0 | (tiny) | 0.66–0.68 · 0.77 | 0.60–1.02 · 0.72 | 1.05–1.32 · 1.34 |
+| **Prussia** | **0.38–0.64** · 1.19 | **0.15–0.70** · 0.95 | **0.14–0.80** · 0.90 | **0.49–0.59** · 2.23 | **0.19–0.61** · 2.64 | **0.43–0.68** · 1.98 |
+| **USA** | **0.46–0.63** · 0.88 | **0.56–0.74** · 0.96 | 0.56–0.88 · 0.93 | **0.26–0.53** · 0.96 | **0.47–0.70** · 1.15 | 0.81–0.85 · 1.16 |
+| Austria | 0.72–0.98 · 0.64 | 0.48–0.76 · 0.38 | 0.16–0.86 · 0.22 | 0.61–0.86 · 1.01 | 0.57–0.93 · 0.94 | 0.49–0.64 · 0.45 |
+| Japan | 1.07–1.11 · 0.45 | 0.91–1.01 · 0.18 | 0.83–1.00 · 0.35 | 0.74–0.88 · 0.74 | 0.75–1.28 · 0.70 | 1.05–1.27 · 1.04 |
+| Spain | (none in any arm) | | | 1.00–1.04 · 1.54 | 0.56–1.42 · 2.21 | 1.12–1.37 · 1.38 |
+
+(1850: the two century seeds only.) Where the e1 rung carries a market's supply at an ordinary price — Prussia, the USA, France — e1a falls far under vanilla
+(the e1 glassworks 1–4 of 6–8 levels staffed in Prussia, 2–3 of 5 in the USA; food e1 0–1 of 1–2 in Prussia, 4–5 of 9 in France). Where crafts carry it
+(China, Russia, the Ottomans, Japan, Austria) e1a sits on or above vanilla — and far above the canon, whose e0 glass collapses in those markets (China 0.20–0.47,
+Russia 0). Britain's e1 glassworks keeps all 7 levels staffed: its glass never dipped (0.97–0.99× base at 1836.2.1, porcelain at a premium).
+
+**What it does NOT say.** The counterfactual margins use the normal wage rate; realised wages after cuts sit lower, so realised margins run above the modelled
+ones by a few points. The lift's EFFECT on obsolescence later in the century (what it was for) is not separated from the hole it opens early. No game time.
+
+## F202 — THE POP-GOOD LIFT PROBE: at 1.0 and at 1.2 the e1 glass and food rungs of the Prussian, French and US markets stay staffed through the opening glut and the 1837–1845 hole closes; 1.0 lifts the British food rung to 0.34–0.39 of sales and British-market groceries to 1.60–2.23× vanilla's median (above its range), 1.2 keeps them at 1.27–1.32× (inside it) with the e1 rungs on 0.11–0.29 of sales; world GDP, the 1836 anchor and the health check barely move (2026-10-01, session 20261001_215119, n=2 per lift, 1836→1846)
+
+**Question (the user, on F201):** *"Go on with the probes you suggest"* — the probe pair F201 proposed: the e1-anchor book with the pop-good industries' anchor-and-below
+input lift at **1.0** and at **1.2** in place of 1.4, everything else e1a-artmerge's, read on the ten largest 1836 markets. (The other F201 option, a penalty that
+arrives with the better method, was ruled out the same day: *"No, never ever, for simulation purity reasons."*)
+
+**Arms.** `e1a10-artmerge` (lift 1.0 — the e1 recipe IS vanilla's own method: glass from wood 20 + lead 10, food from grain 40 + sugar 15) and `e1a12-artmerge`
+(lift 1.2 — the canon's scalar: glass 24 + 12, food 48 + 18), built by e1a's own chain with `--in1-pop` changed; field diff against e1a-artmerge = the inputs,
+`wage_pct` and base-price break-even of the anchor-and-below rungs of food, textile, furniture, glass, paper, arms and the art academy, plus the records; tree
+twins byte-identical to e1a's. Two seeds each, 1836 → 1846, quarterly saves, the eleven tags. References: vanilla n=16 (`20260821_131149`), the lift-1.4 book
+e1a-artmerge (the probe `20261001_121754` ×2 and the first decade of the century `20261001_124750` ×2), the canon (`20260929_002728` ×6). All four runs intact,
+every post-run landmine clean (one L29 WARN on the session log, below).
+
+**1. Glass — production ÷ vanilla's median, each seed (the e1 rung's staffed share):**
+
+| market (vanilla /wk 1837 · 1840 · 1845) | lift 1.0 | lift 1.2 | lift 1.4 (e1a, 4 seeds) |
+|---|---|---|---|
+| Prussian 1837 (223) | 1.28 / 1.34 (1.00 / 1.00) | 0.98 / 0.86 (0.75 / 0.65) | 0.38–0.64 (0.25–0.52) |
+| Prussian 1840 (313) | 0.91 / 0.98 (1.00 / 1.00) | 1.00 / 0.99 (1.00 / 1.00) | 0.21–0.65 (0.17–0.75) |
+| Prussian 1845 (342) | 0.81 / 0.88 (1.00 / 1.00) | 0.93 / 0.89 (1.00 / 1.00) | 0.15–0.70 (0.17–1.00) |
+| American 1837 (152) | 0.97 / 0.89 (1.00) | 0.93 / 0.84 (0.94 / 0.90) | 0.46–0.64 (0.52–0.67) |
+| American 1840 (152) | 0.98 / 0.89 (1.00) | 0.62 / 0.69 (0.60 / 0.71) | 0.41–0.62 (0.46–0.67) |
+| American 1845 (153) | 0.88 / 0.89 (1.00) | 0.97 / 0.79 (1.00 / 0.89) | 0.56–0.74 (0.57–0.84) |
+| French 1837 (170) | 1.02 / 0.97 (1.00) | 0.82 / 0.82 (0.84 / 0.85) | 0.69–0.77 (0.71–0.79) |
+| French 1840 (172) | 1.09 / 0.96 (1.00) | 0.79 / 0.88 (0.83 / 0.92) | 0.71–0.94 (0.80–0.98) |
+| French 1845 (160) | 1.12 / 1.04 (1.00) | 0.86 / **0.47** (1.00 / **0.47**) | 0.78–0.94 (0.75–0.94) |
+
+Britain's market reads 0.89–0.91 / 0.81–0.93 / 0.60–0.78 in all three books with its e1 glassworks fully staffed throughout; the craft-carried markets (China,
+Russia, the Ottomans, Japan) do not move with the lift.
+
+**2. Groceries — production ÷ vanilla's median, each seed:**
+
+| market (vanilla /wk 1837 · 1840 · 1845) | lift 1.0 | lift 1.2 | lift 1.4 (e1a) |
+|---|---|---|---|
+| French (614 · 614 · 614) | 1.05/1.00 · 1.00/1.00 · 1.00/1.01 | 1.12/1.00 · 1.12/0.99 · 1.12/1.00 | 0.41–0.56 · 0.38–0.57 · 0.33–0.74 |
+| Prussian (188 · 205 · 258) | 0.64/2.22 · 0.41/2.00 · 1.76/1.87 | 2.20/2.20 · 2.04/1.59 · 0.91/1.72 | 0.50–0.58 · 0.30–0.68 · 0.19–0.61 |
+| American (463 · 463 · 463) | 0.60/0.72 · 0.84/0.83 · 0.81/0.81 | 0.38/0.55 · 0.75/0.77 · 0.85/0.69 | 0.26–0.53 · 0.52–0.67 · 0.47–0.70 |
+| **British** (787 · 975 · 1,453) | 1.11/1.12 · 1.25/1.50 · **1.60/2.23** | 1.02/1.11 · 1.36/1.30 · 1.27/1.32 | 0.94–1.02 · 1.00–1.28 · 0.65–0.98 |
+
+Vanilla's own seeds span 0.88–1.36 of its British median at 1845 and 0.12–1.90 of its Prussian one (the German market's membership is seed-dependent), so the
+lift-1.0 British readings sit ABOVE everything vanilla produces and the Prussian ones inside it. ⚠ Prussian seed 1 at 1.0 emptied its food e1 in 1837–1840 (0.26 →
+0.07 staffed — dear sugar, the inputs at 1.22× base in 1836.4, the rung at 0.08–0.16 of sales) and was full again by 1845; seed 1 at 1.2 lost its German food
+CRAFTS (49 → 18 staffed, 1844.1–1845.1) and recovered by 1845.7 — a passing shock, not the lift. Spain's small market (71 a week) reads 2.96× in one 1.0 seed
+(vanilla's maximum 2.62×), 1.80–1.92× at 1.2.
+
+**3. The e1 rungs' TRUE PROFIT at 1845.1.1** (£ a week for the market's whole e1 rung; per staffed level; profit ÷ sales):
+
+| | lift 1.0 (two seeds) | lift 1.2 | lift 1.4 (the probe's two) |
+|---|---|---|---|
+| glass, British | £4,031 (504) 0.23 · £5,225 (653) 0.29 | £4,056 (579) 0.24 · £4,664 (583) 0.24 | £3,192 (456) 0.19 · £2,744 (392) 0.15 |
+| glass, French | £4,220 (703) 0.31 · £4,111 (685) 0.31 | £1,439 (288) 0.15 · £634 (226, 2.8 of 6 staffed) 0.11 | £1,144 (249) 0.12 · £1,671 (315) 0.15 |
+| glass, Prussian | £4,147 (518) 0.20 · £2,813 (352) 0.15 | £2,853 (357) 0.14 · £3,841 (480) 0.18 | £390 (1.4 of 8 staffed) 0.11 · £1,256 (3.5 of 8) 0.14 |
+| glass, American | £1,235 (247) 0.15 · £1,574 (315) 0.16 | £1,180 (236) 0.14 · £1,139 (253) 0.14 | £1,186 (297) 0.14 · £957 (299) 0.15 |
+| **food, British** | **£28,426 (864) 0.34 · £46,413 (1,612) 0.39** (29–34 levels) | £14,517 (544) 0.22 · £19,153 (682) 0.27 (32 levels) | £11,523 (576) 0.21 · £10,913 (548) 0.20 (22–23 levels) |
+| food, French | £6,778 (753) 0.28 · £7,262 (807) 0.31 | £4,294 (429) 0.18 · £3,902 (434) 0.18 | £1,767 (353) 0.15 · £834 (214) 0.10 |
+| food, Prussian | £1,710 (285) 0.13 · £2,317 (386) 0.18 | £939 (303) 0.15 · £1,824 (332) 0.15 | ~£0 (0 of 1–2 staffed) |
+| food, American | £2,870 (718) 0.31 · £2,718 (680) 0.30 | £2,550 (510) 0.25 · £1,712 (428) 0.21 | £683 (310) 0.14 · £1,239 (563) 0.27 |
+
+⭐ **Per staffed level, lift 1.2 earns about what 1.4 earns — the difference is that its rungs stay staffed.** At 1.2 the e1 rungs sit mostly between the engine's
+15% wage-cut line and its 25% hire line (0.11–0.18 on the continent), which F201 §3 predicted would "keep workers, add none": of the 16 market-rung cells read here
+only the French glassworks of seed 2 fell under 0.6 staffed (0.47 at 1845); the rest hold 0.62–1.00, the British food rung's gap being new, unfilled levels. At 1.0
+every cell is staffed 0.97–1.00 at 1845 and the rungs sit at or above the hire line in the rich markets and grow: the British food rung carries 6–12 more levels than 1.4's and
+earns 2.5–4.3× its profit.
+
+**4. What barely moves.**
+- **World GDP** (the summary's, ÷ vanilla n=16's median): 1837 1.04 / 1.04 at 1.0, 1.02 / 1.03 at 1.2, 0.98–1.03 at 1.4; 1840 1.03 / 1.03, 1.01 / 1.01, 1.00–1.02;
+  **1846 1.02 / 1.00, 0.99 / 0.99, 0.95–1.00** (the canon's six 0.90–1.00).
+- **The 1836.2.1 anchor** (seven markets summed, ÷ vanilla): groceries 1.03 / 1.07, 1.08 / 1.04 against 0.96 / 0.97; glass 0.93–0.94 in all three; everything else
+  identical (the lift moves inputs, not output; tools 1.62 in every book is e1a's tooling anchor, not the lift).
+- **Crafts at 1846** (world): glass 72–75% staffed against 82–85% under 1.4 (a viable e1 glassworks takes some of their market); food 79–91% against 85–86%; the
+  other four within a few points.
+- **Health at 1846** (`health_vs_ref.mjs`): 0 dead building types against either reference in any book; against the canon 0 token cells at 1.0 and at 1.2; against
+  vanilla 1 at 1.0 (Prussian luxury clothes 0 / 0 — weak in every craft book, the £2 arm reads 10 / 13), 3 at 1.2 (Prussian luxury clothes, Prussian fine art 1 / 0,
+  Russian porcelain 0 / 0 — the £2 arm's too), against 1.4's 3 (Spanish tools, Prussian fine art, Prussian glass).
+- **The chain at 1837.12–1840** (share of market readings at ≥ 1.745× base): steel 5% / 10% / 10%, engines 40% / 35% / 20%, iron 22% / 25% / 28% (1.0 / 1.2 / 1.4) —
+  engines at the ceiling more often in the lifted-down books, with engine production per run the same (285–403 against 260–353): more demand from a busier economy.
+
+**5. The book arithmetic (base prices, `make_ab_config`'s rungs).** F97's death test, a rung two behind's value added per worker ÷ the frontier's (the line is
+0.20): e1 ÷ e3 for glass **0.15 / 0.12 / 0.09**, paper 0.15 / 0.12 / 0.08, textile 0.15 / 0.11 / 0.07, furniture 0.17 / 0.13 / 0.10 (1.0 / 1.2 / 1.4) — every lift passes,
+1.0 with the least room. Arms' e0 ÷ e2 fails the line under every lift (0.28 / 0.25 / 0.22). The goods margin of the e1 rung at base prices: food 56% / 30% / 11%,
+glass 100% / 67% / 43%.
+
+**Reading.** F201's mechanism is confirmed by intervention: take the lift off, or down to 1.2, and the e1 rungs ride out vanilla's own opening glut and the hole
+closes in all three markets where the e1 rung carries the supply. The two values part company where the e1 rung was never in trouble: at 1.0 the British food rung
+becomes the richest building of its kind on the map and British-market groceries leave vanilla's range by 1845 (the canon read 1.40× there, F201); at 1.2 they
+stay inside it. 1.2 keeps more of the obsolescence handicap the lift was for (death ratio 0.11–0.15 against 0.15–0.17) and costs one French glassworks half its
+staff at 1845 in one seed of two.
+
+**What it does NOT say.** Nothing about obsolescence over the century — the lift's whole purpose — or about the register: a ten-year probe cannot read either.
+Two seeds per lift; the early-1840s Prussian and Spanish readings sit inside a wide vanilla seed spread. The arms differ ONLY in the lift, so the comparison is
+clean, but the 1.4 references come from two sessions run earlier the same day. ⚠ The session's own `session.log` lost runs 2 and 3's lines to the agent's
+monitor (`tail -F` held it open; TESTBED_LANDMINES L29's reader-side addendum) — the runs' own logs, meta and summaries are complete.
+
+## F203 — THE e1-ANCHOR BOOK AT LIFT 1.2 OVER THE CENTURY (n=3, full runs): 2 intact / 1 broken by stall (a stuck Britain after an 1847 civil war), consensus loss 8.62 against the 1.4 book's 7.76 and the canon's 5.90; the German hole is gone at 1846–1850 in all three seeds, but world GDP 0.78 and the shortlist's 0.85 (beyond the soft line) sit below the 1.4 book's, the hoard comes back (pool H 1.41 against 0.52), the e1 food rung overshoots in the rich markets in the 1850s, and the USA stays agrarian in all three seeds (2026-10-02, session 20261001_225817)
+
+**Source.** Session `20261001_225817_e1a12-artmerge-n3`, book `config/mod_config.e1a12-artmerge.json` (the e1-anchor book with the pop-good lift RULED at
+1.2, BALANCE_FRAMEWORK §10.91.5; user: *"Go with 1.2. 3 full runs."*). A fixed n=3 of full runs, no stop watcher; schedule `e1a12_artmerge_n3.json` with
+its predictions registered before launch. All three runs reached 1936.1.1 on one attempt with no crash; every post-run landmine clean (L29 included).
+References: e1a-artmerge at lift 1.4 (`20261001_124750`, F200, n=2), the canon (`20260929_002728`, F177, n=6), the pinned vanilla n=16. Readers:
+`criteria.mjs`, `first_run_decomp.mjs`, `report_perf.mjs`, the F201/F202 market readers, per-country summaries.
+
+**1. The register** (`criteria.mjs`, end state 1932–1936; the 1.2 book's consensus of its two intact runs · the 1.4 book's two · the canon's four):
+
+| line | lift 1.2 | lift 1.4 (F200) | canon (F177) |
+|---|---|---|---|
+| intact / broken | **2 / 1** (stall) | 2 / 0 | 4 / 2 |
+| LOSS | **8.62** | 7.76 | 5.90 |
+| world GDP | **0.78** (0.75 / 0.82; the broken run 0.65) | 0.82 | 1.06 |
+| pool GDP | **0.85** (beyond the soft line) | 1.08 | 1.48 |
+| pool W / pool U* | 0.59 / 2.33 | 0.78 / 1.79 | 0.88 / 1.18 |
+| **pool H** | **1.41** | 0.52 | 0.81 |
+| world W / world H | 0.68 / 0.87 | 0.69 / 0.57 | 0.73 / 0.72 |
+| PI | 0.95, falling | 0.98, falling | 0.96, not falling |
+| PP | 1.05 | 1.07 | 0.88 |
+| T0 (1935 ÷ the 1900s) | 0.87, not yet falling | 0.60 | 0.39 |
+| T3 ÷ rest | 0.46 | 0.42 | 0.49 |
+
+The loss's terms: PI 1.92 + PP 1.60 + pool GDP 1.53 + world GDP 1.49 + T3 1.16 + T0 0.60 + pool H 0.23 + pool W 0.08. ⚠ World GDP 0.75–0.82 is the
+WEAKENED band of §10.83.8 for one of the two intact runs: pool U* "at the aim" is not a result there.
+
+**2. The decomposition** (`first_run_decomp.mjs`, ÷ the vanilla median; runs 1 / 2 / 3):
+
+| year | world GDP | shortlist GDP | world productive workers per head | shortlist £ per productive worker |
+|---|---|---|---|---|
+| 1880 | 0.97 / 0.89 / 0.91 | 0.92 / 0.92 / 0.83 | 0.94 / 0.87 / 0.91 | 1.06 / 1.02 / 1.06 |
+| 1900 | 0.71 / 0.76 / 0.81 | 0.59 / 0.69 / 0.76 | 0.79 / 0.72 / 0.82 | 1.03 / 1.05 / 1.11 |
+| 1920 | 0.70 / 0.68 / 0.80 | 0.62 / 0.59 / 0.88 | 0.68 / 0.61 / 0.73 | 1.30 / 1.08 / 1.25 |
+| 1935 | 0.75 / 0.66 / 0.81 | 0.80 / 0.61 / 0.87 | 0.66 / 0.59 / 0.73 | 1.46 / 1.12 / 1.28 |
+
+The mid-game dip of F200 is unchanged (the lift does not touch the frontier's value added per level); the recovery after 1920 is weaker.
+
+**3. The seeds.**
+- **Run 2 is broken by stall, and it is F166's stuck Britain**: a British civil war in 1847 (and again in 1911 and 1930), Britain at 0.57× vanilla's GDP
+  in 1900 and 0.63× in 1920, China the largest economy all century; world GDP 0.65 at the end state against the 0.66 floor.
+- **Run 1**: France split in 1897 (45.9M → 23.0M people, ending at 0.22× vanilla's GDP); India left the British market in the 1890s; world 0.75.
+- **Run 3**: the healthiest (world 0.82), with a soft flag — Britain under 5% U* for 12 years 1925–1936 at a mean hoard of 0.96 of its GDP.
+- ⚠⚠ **THE USA STAYS AGRARIAN IN ALL THREE SEEDS**: its GDP at 1935 0.35 / 0.45 / 0.55× vanilla's (the 1.4 book 1.36 / 0.75, the canon 0.94–3.08),
+  its salaried workforce 7.2 / 10.9 / 13.7M against vanilla's 21.8M and the 1.4 book's 24.3 / 13.8M, on a LARGER population (158–174M against 131M).
+  At 1920 its staffed levels (mean of the three) read subsistence farms 4,408 (1.4: 3,678; canon 3,525), manor houses 3,662 (2,799 / 2,254), urban
+  centres 329 (514 / 547), trade centres 83 (243 / 257), iron and coal mines 31 + 51 (130 + 148), railways 62 (129), construction sector 47 (81 / 145),
+  steel mills 19 (66). Its slavery and land laws do not separate the books (legacy slavery past 1900 in most runs of all three). The mechanism is NOT
+  identified; three seeds against two is directional only.
+
+**4. The German watch item and the rich markets' groceries** (production ÷ vanilla's median, runs 1 / 2 / 3; the 1.4 book's two beside):
+- **Prussian-market glass**: 1846 0.95 / 0.84 / 0.80 (0.70 / 0.15), 1850 0.97 / 0.74 / 0.82 (0.80 / 0.14) — the deep early hole is gone in all three
+  seeds; run 1 reads 0.13 at 1860 with no e1 glassworks left in the Prussian market that year.
+- **British-market groceries**: 1846 1.99 / 1.93 / 1.00 (0.86 / 0.99), 1860 2.30 / 2.07 / 1.40 (1.23 / 1.08), 1870 2.46 / 2.34 / 1.26 (2.10 / 1.37) — two of
+  three seeds sit at ~2× from 1846, above vanilla's range (0.88–1.36 at 1845); the probe's two seeds (F202) had read 1.27 / 1.32.
+- **Prussian groceries 1850** 3.43 / 3.22 / 2.28 (0.68 / 0.43), **French** 1.99 / 2.57 / 0.91 (0.40 / 0.16): the e1 food rung earns 0.21–0.42 of sales in
+  these markets in the 1850s and expands well past vanilla's production.
+
+**5. The old rungs at 1935** (shortlist workers, runs 1 / 2 / 3 · the 1.4 book's two): textile e1 22k / 211k / 56k (484k / 1k), furniture e1 2k / 1k / 15k
+(1k / 1k), glass e1 31k / 131k / 93k (57k / 84k), motor's steam rung (e1) 131k / 1,274k / 335k (967k / 499k); the crafts 6–83k each. No systematic
+difference from the 1.4 book: the consumer e1 rungs are small in both, motor's steam rung is a seed matter in both.
+
+**6. Speed** (`report_perf.mjs`, play time from the ticks): 194.4 / 150.5 / 163.9 min, median 163.9 against vanilla's 165.0 — ×0.99, within budget
+(pop-matched +5.5%).
+
+**The predictions** (registered in the schedule): world GDP 0.82–0.95 → 0.78 (MISSED low); pool H 0.55–1.0 → 1.41 (right direction, MISSED high);
+PP ≤ 1.07 → 1.05 ✓; PI near 0.98 and falling → 0.95 falling ✓; old rungs at or above the 1.4 book's → no systematic difference; T0 near 0.60 → 0.87
+(MISSED); the German market inside vanilla's range 1846–1860 → 1846/1850 ✓ in 3/3, 1860 one dip; British groceries 1.1–1.4× → MISSED in 2 of 3 (~2×);
+the stuck Britain possible → it happened (run 2); speed within +10% → ×0.99 ✓.
+
+**Reading.** Directional (§10.83.7). The lift did over the century what F202 showed over ten years: the e1 consumer rungs stay staffed and the early
+German hole is gone. What it did not do is improve the economy. The 1.2 book reads below the 1.4 book on world GDP (0.78 against 0.82), on the pool's GDP
+(0.85 against 1.08) and on the loss (8.62 against 7.76). The hoard returned (pool H 1.41 against 0.52), which is F135's mechanism in a known direction:
+the e1 margins are the pool's inflow, and the lift raised them. The e1 food rung overshot in the rich markets, and the USA failed to industrialise in every
+seed. Both e1-anchor books trail the canon (5.90) on the register.
+
+**What it does NOT say.** Three seeds against two, each with its own political accident (a French split, a stuck Britain); the loss's separation needs
+Δ ≈ 13 at this n (§10.83.7), so 8.62 against 7.76 is direction only. The USA's failure is measured in all three seeds; its cause is not identified, and
+the lift is the only change from the 1.4 book. ⇒ **F204 (the same day) traces the USA**: no plain bug; one seed's politics, and in all three an
+investment AI that `ai_value` steers into two consumer merge hosts while the raw sector and the railways that carry vanilla's USA go unbuilt.
+
+## F204 — WHY THE USA STAYS AGRARIAN IN THE e1-ANCHOR BOOK: no plain bug was found; one seed is a political casualty, and in all three the US's private investment goes where `ai_value` points — two consumer MERGE HOSTS (textile and furniture, 15,588, unlocked in the 1850s) — while the mines, logging camps, plantations and railways that carry vanilla's USA, at 2–10× the profit per construction point, stay small; steel, the alternative that saves the US elsewhere, is thin under the e1 anchor (2026-10-02, read from F203's session, the 1.4 book's, the canon's n=6, the vanilla n=16 and the 232-run corpus; no game time)
+
+**The question** (user, 2026-10-02): F203's USA ends at 0.35 / 0.45 / 0.55× vanilla's GDP with 25–30M peasant workers against vanilla's 10.5M — *"try
+finding maybe not only a legitimate condition that in our circumstances leads to the disaster, but maybe also a plain bug that just breaks some part of
+the game."* Readers: scratchpad scripts over the save summaries (an index of each summary's date read from its first 4 KB), `rakaly` melts of the kept
+1936 saves (each country record's `budget.investment` = the investment pool's weekly inflow by building type), and the run corpus (every run since
+2026-08-21 with a 1935 summary carrying the states map: 232 runs, 210 of them mod runs).
+
+**1. No plain bug found.** Each checked against the canon's six runs and vanilla's sixteen:
+- **Error logs**: no line in any of the three runs names a file we emit (`zzz_pm_rehaul…`: 0 hits); the vanilla-named files we replace raise nothing but
+  vanilla's own noise classes; no `create_building` or history error.
+- **The 1836 start**: the USA at 1837 reads GDP £368–376k/wk (canon 362–384k, vanilla 321–366k), every building group within a few levels of both.
+- **Technologies**: the same years in every book — Bessemer 1842 (1839–1844 everywhere), mechanized workshops 1854–1860 (canon 1852–1863, vanilla
+  1851–1864), open hearth 1865 / 1876 / 1889 (canon 1873–1883, vanilla 1870–1907); 148–162 held at 1935 (canon 154–164, vanilla 142–157).
+- **Companies**: 4–5 at 1935, the canon's and vanilla's set (William Cramp, Lee Wilson, Standard Oil, US Steel, Colt…).
+- **Infrastructure**: no US state over capacity at any decade, in any book.
+- **The land law**: the switch from Homesteading to Tenant Farmers (manor houses take the farms: other-building ownership 43% → 3% of US levels in one
+  quarter) happened in run 3 in 1846 and in run 2 in 1888 — but also in canon runs 3 and 6 (1927, 1875), and the poorest e1a12 seed never switched.
+- **The government**: its construction queue is empty at nearly every decade reading in every book, vanilla included, and it runs deficits in all three
+  mod books alike — the US builds through its private queue, in all of them.
+
+**2. The political layer — one seed.** Run 1's New African rising (1890) took **Virginia, Georgia, Maryland, North and South Carolina to New Africa
+(ASA) from 1891 to 1935**; a Confederate war followed in 1911–12 (won back) and a revolt held the North-East briefly in 1931. Its GDP is flat
+1880–1900 (£46 → 51 → 47M). Runs 2 and 3 crushed their risings (1873/1886, 1858). All three took **6–10 of Mexico's 12 core states** (canon 0–5,
+vanilla 0–9), which explains the larger population (158–174M against 131M) and much of the peasantry. **Over the corpus**, a US that lost an original
+state at 1935 ends at a median 0.54× vanilla (92 runs), one whose risings were crushed at 1.02 (92), one with none at 1.15 (48); holding Mexico's core
+lowers it little (1.08 against 1.20 among runs with no rising, 9 and 39 runs). ⇒ Politics explains run 1; it does not explain runs 2 and 3.
+
+**3. The economic layer — fewer construction points, spent on the wrong things.**
+- **Points** (government + private queue speed × weeks): 1880–1900 **138k / 160k / 186k** against vanilla's median 214k and the canon's 312k;
+  1900–1920 **176k / 421k / 416k** against 529k and 1,041k. Speed tracks the number of concurrent private projects (~31 points a week each at 1890 in
+  every book: e1a12 4–5 items, vanilla 6, canon 7), i.e. the pool funds fewer projects; the construction sector is as large as vanilla's to 1900.
+- **What the points bought** — the US private queue 1860–1900 (points left, summed over yearly readings), by class:
+
+| | consumer | capital goods | war | infrastructure | raw | US GDP ÷ vanilla 1935 |
+|---|---|---|---|---|---|---|
+| vanilla n=16 | 12% | 47% | 5% | 16% | 15% | 1.00 |
+| canon-dams-family n=6 | 24% | 53% | 13% | 6% | 3% | 1.14 |
+| e1a (lift 1.4) n=2 | 33% | 53% | 4% | 6% | 4% | 1.06 |
+| **e1a12 n=3** | **42%** | 38% | 11% | 7% | 3% | **0.45** |
+
+  The consumer share is mostly two buildings: **textile and furniture took 33% / 26% / 28% of the US's private construction 1860–1900, nearly all of
+  it their e2 merge hosts** (sewing machines, mechanized workshops) — against 3–11% in the canon's six runs, 0–9% in vanilla's sixteen, 13% / 30% in e1a
+  and 9–15% in the crafts-and-merges book on the canon ladder (`artmerge6-pb`). Steel took 21% / 20% / 8% (canon 9–44%, vanilla 7–34%, e1a 62% / 5%,
+  `artmerge6-pb` 32–62%).
+- **What those points return** — the USA at 1885, e1a12 runs 1–3, £ profit a week per 1,000 construction points: textile host 220–487, furniture host
+  251–990 · coal mines 865–2,945, logging camps 992–2,477, cotton plantations 693–3,378, iron mines 693–993, railways 381–529, the steel host
+  1,004–1,344 (two seeds), glass e2 1,489–2,060. The hosts the AI chose return the least per point of anything it was building.
+- **What followed**: clothes at 58 / 87 / 69% of base in the American market at 1900 (vanilla 99%, canon 87%), furniture 77–98% (107%); at 1920
+  mining value added £169–238k a week against vanilla's 655k (canon 483k), heavy industry 161–187k (266k; canon 944k), railways 44–52 levels at 1910
+  (vanilla 70, canon 97); at 1935 salaried workers 7.2 / 10.9 / 13.7M (21.8M) and 100–120M peasants (40M).
+
+**4. Why the AI picks the hosts — `ai_value` is the base of its score, and profit only breaks the tie.** Vanilla's own `common/defines/00_ai.txt`:
+a production building's AI weight starts from its `ai_value` (`PRODUCTION_BUILDING_BASE_VALUE` 1000 when unscripted), ADDS 5,000 × 1.5 per £ of
+predicted profit per employee and 0.25 × 1.25 per £ of output at base value, multiplies by shortage, construction-time and infrastructure factors, and
+divides by 1 + cost × `…CONSTRUCTION_COST_DIVISOR_SCALING` (ours 0.000125, vanilla's 0.001). Our rungs carry 1,000 × 3^era — 3,000 / 9,000 / 27,000 —
+and the merge hosts the midpoint, **15,588 for textile, furniture and steel** (§10.91.2's first test, "ai_value likewise"); vanilla's railway carries
+2,000, its mines, logging camps, farms and plantations 1,000 (a few with conditional bonuses). **By my reading of those defines** (the AI's predicted
+profit is not observable), a textile host's weight sits near 15k against a coal mine's ~2k — the profit and output terms are worth ~1–3k — so even the
+×5 for relieving a shortage does not lift a mine into contention. Two placements make the hosts available early: the era rule bumps textile's and
+furniture's third methods (both gated by mechanized workshops, a GAME-ERA-2 technology the US holds from 1854–1860) to e2 (+1, inside the ruled
+tolerance), and the merge adds each industry's e3 method (electric sewing machines, held 1898–1901; spray finishing, never by 1935) — so from the
+1850s the most desired buildings an American investor can build are a clothing and a furniture factory valued as an e2½ rung. **Among the 15,588
+hosts the AI picks by profit**: where steel pays, steel wins — `artmerge6-pb` runs 1 and 3 (62%, 50% of the queue) and e1a run 1 (62%), whose US ended
+at 1.33, 0.22 (twelve states lost) and 1.36; where it does not, the consumer hosts win — all three e1a12 seeds and e1a run 2 (0.75).
+
+**5. Why steel does not pay in the American market — the e1 anchor.** Bessemer, the 1860–1900 steel rung, is now vanilla's own method with the 1.2
+input lift: **O:I 1.14 at base prices against vanilla's 1.36 and the canon's 1.45** (canon e1 = 2.2× the first method's output); the steam-engine rung
+(motor e1) is the same in both books (1.33; vanilla 1.60). At 1885 the US Bessemer mills run 1–67% staffed at −20% to +14% margins and the motor plants
+37–44% staffed at 10–18%; at 1900 the American market's steel sits at 117 / 117 / 131% of base on 1,617 / 3,001 / 2,806 sold (vanilla 104% on 4,383,
+canon 83% on 9,353) and engines at 145 / 152 / 175% (the ceiling) on 597 / 731 / 848 (vanilla 124% on 1,480). Engines feed the steam methods of
+mines, logging camps and railways, so the raw sector's own upgrades are dear too.
+
+**6. Across the corpus — the starvation of raw and infrastructure is every four-rung book's, the consumer capture is the e1-anchor's.**
+- **Raw + infrastructure share of the 1860–1900 private queue**, vanilla → e1a12 · canon-dams-family · canon-je24 (n=30): USA 31% → 10 · 9 · 6%;
+  GBR 55% → 17 · 17 · 9%; FRA 45% → 19 · 19 · 11%; RUS 38% → 26 · 5 · 5%; JAP 49% → 32 · 9 · 14%. The only books that kept the US near vanilla's
+  share are the flat family (linear ai ladder 1,000–4,000, vanilla's 0.001 divisor, flat cost; 25–42%) and the six-rung solver books (milder ai ladders;
+  16–26%) — several levers moved at once there, so which one carries it is not separated.
+- **Pearson r of the US consumer share 1860–1900 with ln(US GDP ÷ vanilla, 1935)**: −0.31 over 210 mod runs (−0.25 among the 128 with no original state
+  lost), −0.41 over vanilla's 22; infrastructure +0.22 and raw +0.26 (mod).
+- **Who gains in our books** (country ÷ vanilla, over world ÷ vanilla, median of ~200 mod runs): GBR 1.78, FRA 1.06, USA 0.89, Germany 0.80, JAP 0.79,
+  RUS 0.65 — the leader that built its raw base before 1836 thrives on the same rules that starve a raw-led late industrialiser.
+
+**Reading.** The US's agrarian end state is capital placed where `ai_value` points. In every four-rung book the investment AI builds a fraction of the
+raw sector and railways it builds in vanilla (the US 6–10% of its private construction against 31%; the ladder's 3,000–27,000 swamps their
+1,000–2,000), and the canon's US survives it because its steel and arms rungs pay and win the AI's choice among the high-value rungs. In the e1-anchor book with merges, the 1850s offer the American investor two consumer factories valued
+at 15,588 while its steel rung is thin, so the capital goes to clothes and furniture capacity whose prices then fall; the mines, logging camps,
+plantations and railways — vanilla's American growth path, at several times the return per point — stay small, steel and engines stay dear, and the
+peasants that conquest and population growth bring are never employed. Run 1 adds the loss of five southern states in 1891.
+
+**What it does NOT say.** Correlation and mechanism, not an experiment: n = 3 against 2 against 6; the AI's predicted profit is not in a save, so the
+score comparison in §4 is a reading of the defines, not a measurement; queue shares weight long-lasting (dear) projects more than a count would. Whether
+the lift (1.2 against 1.4) tipped the US seeds is NOT shown — every e2 and e3 rung, the three e2 hosts included, is identical in both books (the two
+differ only on the pop-good e0/e1 rungs and arms e0/e1), and the 1.4 book split 1–1. The corpus readings pool many books whose levers differ.
+
+**Levers this points at (proposed, not ruled; nothing built, no game time).** All are willingness levers, none an artificial limit: (a) the merge hosts
+at their OWN era's `ai_value` (textile, furniture, steel 9,000; food, paper 3,000; fertilizer 1,000) in place of the midpoint — a number per host;
+(b) `ai_value` keyed on the gating technology's game era for a rung the era rule bumped (textile, furniture, glass, tooling e2 → 3,000); (c) the
+untiered capital buildings (railways, mines, logging) on a share of the ladder; (d) vanilla's cost divisor (0.001). Each is a new book and waits for the
+user.
+
+**When it shows, and what a shorter run would see** (added the same day, from the same summaries; no game time).
+- **The USA's GDP** (÷ vanilla's n=16 median at each date, runs 1 / 2 / 3): on vanilla's path to 1880 (0.95–1.38 at 1866–1880), sliding from 1886
+  (0.86 / 0.84 / 0.90), then 0.61 / 0.81 / 0.85 at 1900, 0.54 / 0.78 / 0.79 at 1910, 0.48 / 0.62 / 0.72 at 1920 and 0.35 / 0.45 / 0.55 at 1935.
+  ⚠ Vanilla's own USA spans 0.5–1.6 of its median between seeds all century (lowest / second-lowest / highest seed: 0.50 / 0.56 / 1.29 at 1866,
+  0.56 / 0.57 / 1.56 at 1886, 0.68 / 0.70 / 1.28 at 1900, 0.50 / 0.72 / 1.39 at 1920, 0.38 / 0.58 / 1.50 at 1935), so one seed's US leaves vanilla's
+  range only at 1900 in run 1 (after its 1891 secession) and at 1920 in runs 2 and 3. The canon has a US seed below vanilla's second-lowest from 1890
+  to 1920 too (run 2, 0.48–0.63), which is back at 1.03 by 1935.
+- **World GDP**: 1.03 / 0.96 / 0.98 at 1866, inside vanilla's range (0.93–1.07); run 2 falls below vanilla's lowest seed from 1876, run 1 from 1896
+  (below the second-lowest at 1886), run 3 below the second-lowest from 1876 (below the lowest only at 1935). The canon's world dip starts EARLIER — five of its six seeds sit below vanilla's lowest seed at 1866
+  (0.84–0.92; the sixth 0.98), most recovering after 1920 — so at 1866 this book's three seeds (0.96–1.03) sit above five of the canon's six, the
+  reverse of the end state (0.66–0.81 against the canon's intact 0.94–1.28). F165 §3 measured the general case: world GDP at 1860 ranks configs at r 0.42, at 1880 0.70, at 1900 0.86.
+- **The mechanism's signature** — the textile + furniture share of US private construction (points left, summed over the yearly readings in the
+  window) — appears as soon as `mechanized_workshops` lands (1854–1860):
+
+| window | e1a12 (3 seeds) | e1a (2) | artmerge6-pb (3) | canon (6) | vanilla (16) |
+|---|---|---|---|---|---|
+| 1846–56 | 0 / 0 / 0% | 10 / 0 | 2 / 0 / 0 | 0–6 | 0–14 |
+| 1856–66 | **32 / 50 / 65** | 18 / 13 | 8 / 18 / 8 | 0–31 (27 and 31 in two seeds) | 0–8 |
+| 1866–76 | 20 / 36 / 28 | 23 / 48 | 25 / 12 / 11 | 5–39 | 0–17 |
+| 1876–86 | **46 / 39 / 29** | 10 / 45 | 32 / 31 / 0 | 0–10 | 0–21 |
+
+  A run to 1866 sees the onset in every seed of this book (32–65% against vanilla's ≤ 8%), but the canon has an early burst of the same size in two
+  seeds that fades by 1876–86; what separates the books is that the capture PERSISTS (29–46% in 1876–86 against the canon's ≤ 10%). The signature is
+  the mechanism, not a sure predictor of the outcome: artmerge6-pb's run 1 carries 32% in 1876–86 and its US ends at 1.33 of vanilla (the 1.4 book's
+  run 1, at 10%, recovered to 1.36).
+- **Wall clock** (archive stamps from the 1837 save, this book): to 1866 39–40 min, to 1886 66–74, to 1900 85–100, against a century of 150–194 min of
+  play — 1866 is about a quarter of a run, 1886 about 40%, 1900 a little over half (F165: 1910 0.62–0.67, 1920 0.76–0.80).
+
+⇒ **A 30-year probe reads the capture's onset, not its persistence and not the outcome**, and its world GDP ranks this book against the canon
+backwards. It can test a lever's DIRECT effect where the expected change is large (a lever that removes the capture should take 1856–66 from 32–65%
+toward vanilla's ≤ 8%); persistence needs a run to ~1886, and the US GDP consequence, which clears vanilla's own seed spread only at 1900–1920, needs
+most of a century.
+
+## F205 — THE DESIRE LADDER IS NOT WHAT SEPARATES THE e1-ANCHOR BOOK FROM THE CANON: the canon carries the same 1,000 × 3^era ladder and the same low share of new capital for the raw sector and infrastructure (about a third against vanilla's half after 1866) and is fine on world GDP regardless, because its ladder makes more steel than vanilla out of two thirds of vanilla's iron; the e1-anchor book's shortfall is its heavy chain and its e1-anchored pop goods — steel e1 at a quarter of the canon's value added per level — and the crafts + merges on the canon's own recipes do not have it (2026-10-02, read from the vanilla n=16, the canon n=6, artmerge6-pb n=3 and e1a12-artmerge n=3; no game time)
+
+**Question (user, 2026-10-02, while the compressed-ladder probe ran):** *"I'm still unsure that ai_values are a significant part of the problem. I
+think they're the same in canon, but the economy seems fine. Or is it fine despite underinvesting in mines? How's that in vanilla (vanilla situation
+is NOT the goal here in all points except world GDP and 1836-1845 health, but we need to understand the reference)."*
+
+**§1 The ladder IS the canon's.** The canon (canon-dams-family-nolog): ai_value 1,000 / 3,000 / 9,000 / 27,000 by era on all seventeen tiered
+industries. e1a12-artmerge differs only on the six merge hosts (food and paper e1 hosts 5,196 against 3,000; textile, furniture and steel e2 hosts
+15,588 against 9,000; fertilizer's e0 host 1,732 against 1,000) and on motor's first rung (e1 at 3,000 against the canon's e0 at 1,000); its crafts
+sit at 1,000 like any e0. Vanilla: 1,000 by default, tooling and railways 2,000, gold mines 5,000 (common/buildings).
+
+**§2 Where the net new capital goes** — Σ positive level changes per building type × its construction cost (each run's own book; vanilla's from the
+game files), the median share of the window's total by sector:
+
+| world | vanilla (16) | canon (6) | e1a12 (3) |
+|---|---|---|---|
+| 1837–66: manufacturing · agriculture · extraction · railways · ports+trade | 25 · 30 · 14 · 11 · 4% | 34 · 26 · 11 · 11 · 3% | 34 · 25 · 11 · 13 · 3% |
+| 1866–1900: manufacturing · agriculture · extraction · railways · ports+trade · power | 41 · 13 · 18 · 15 · 6 · 1% | 60 · 10 · 9 · 10 · 3 · 2% | 59 · 9 · 12 · 11 · 2 · 1% |
+| 1900–36: the same | 48 · 10 · 15 · 13 · 5 · 2% | 68 · 5 · 8 · 7 · 3 · 5% | 64 · 6 · 10 · 8 · 3 · 5% |
+| total points 1866–1900 · 1900–36 | 6,585k · 20,001k | 5,459k · 24,128k | 5,184k · 16,838k |
+
+Raw + infrastructure take about half of the new capital in vanilla after 1866 (53% · 45%), about a third in the canon (34% · 28%) and in e1a12 (35% ·
+32%). The USA likewise: 1866–1900 vanilla 43% (extraction alone 25%), the canon 27%, e1a12 18%, on totals of 282k · 385k · 190k points; 1900–36 44% ·
+24% · 26% of 1,797k · 3,092k · 1,196k. ⚠ Part of the shift is STRUCTURAL: vanilla modernises a factory by switching its method, which costs no
+construction, so its manufacturing construction is expansion only; in our books every modernisation is a new building — the capital-demand goal — so
+manufacturing takes a larger share of the capital by design.
+
+**§3 The canon is fine despite it.** At 1935 it holds 8,854 extraction levels against vanilla's 14,421 (extraction value added at base 15.1 against
+23.6 £M a week), 14,580 agricultural levels against 19,556 and 3,216 railway levels against 4,564; it mines 178k iron and 252k coal a week against
+269k and 406k (37 and 55 per £1M of GDP against 61 and 93). Raw prices run mostly 10–40% above vanilla's in the British and American markets (Britain
+1900: iron 1.14 / coal 1.22 / wood 1.20 of base against 0.93 / 1.05 / 0.86; 1935: 1.18 / 1.13 / 1.08 against 1.03 / 1.02 / 0.89; American coal at
+1935 0.86 against 0.96) — a moderate scarcity, not a wall — while its steel (0.84) and clothes (0.74) sit below vanilla's (1.11, 1.05). It makes MORE
+steel than vanilla, 347k against 268k a week, from two thirds of the iron: the higher rungs need less input per unit of output. World GDP 4,759 £M
+against vanilla's 4,390 (displayed, 1935); building value added at base 82.5 against 78.5 £M a week, about 64% of it manufacturing against
+vanilla's 35%. The economy is manufacturing-heavy by design and does not need vanilla's raw sector.
+
+**§4 What separates e1a12 from the canon is the heavy chain and the e1-anchored pop goods, not the raw share.** World value added at base, 1935, the
+canon → e1a12 (£M a week): steel 8.76 → 3.47 (−5.29, the largest single gap), agriculture 25.1 → 21.3, textile 8.00 → 4.32, glass 6.63 → 3.62, food
+5.10 → 2.23, extraction 15.1 → 12.3, the art academy 3.29 → 1.22, explosives 3.40 → 2.07, motor 2.34 → 0.99, tooling 6.01 → 4.78, automotive 2.49 →
+1.45, arms 3.30 → 2.30; world GDP 4,759 → 3,303. At 1900 the raw sectors are NOT smaller in e1a12 (agriculture 12.2 against 12.0, extraction 4.5
+against 4.4 £M a week) while its steel is 0.58 against 1.53: the raw gap of 1935 follows a smaller industry, it does not precede it.
+- **The recipe.** Steel e1 (Bessemer): the canon 143 steel a level from £4,921 of inputs (value added £2,229 a level at base, O:I 1.45, cost 1,520);
+  e1a12 90 steel from £3,960 (£540, O:I 1.14, cost 800); vanilla's own Bessemer 90 from £3,300 (£1,200, O:I 1.36). The e1 anchor puts vanilla's
+  method on e1 and the ×1.2 input lift lands on it, so the rung is WORSE than vanilla's own. Motor e2 (electric engines): the canon 194 engines a level,
+  e1a12 88 — one A step fewer on every industry the canon had not slid.
+- **The prices.** British steel at 1870 1.47× base in both e1-anchor books against 1.18–1.23 in vanilla, the canon and artmerge6-pb; engines 1.68–1.70
+  against 1.37–1.67; American steel at 1900 1.17–1.18 against 0.77–1.04.
+- **The control:** artmerge6-pb — crafts + merges on the canon's recipes, the SAME 15,588 merge hosts and the same ladder — reads steel value added 8.61
+  £M a week at 1935 (the canon 8.76), British steel 1.23 / 0.81 / 0.86 at 1870 / 1900 / 1935 (the canon 1.19 / 0.85 / 0.84) and world GDP 4,491 £M
+  (1.02× vanilla). Its textile is as low as e1a12's (4.67): the textile gap is the MERGE (fewer levels behind the merged top method), while the steel,
+  food, glass and art-academy gaps are e1a12's own.
+
+**§5 The USA.** All three books stand at about vanilla's US GDP at 1866 (31–32 £M). By 1900 (vanilla / the canon / e1a12): US GDP 77 / 90 / 62 £M;
+iron 3,826 / 3,981 / 1,452 a week; coal 7,325 / 5,506 / 2,902; steel 4,285 / 7,960 / 1,904; engines 1,423 / 2,216 / 607. The canon's US also puts a
+low share of its capital into mines and railways, but on twice e1a12's total, and mines as much iron as vanilla's. In artmerge6-pb the US fails only
+where it is dismembered (run 3 held 27 states at 1850 against 39, the South gone in the 1840s; run 2 lost 13 states in the 1890s); its intact seed
+ends at 1.33× vanilla. e1a12's runs 2 and 3 failed with every state held. ⇒ The US needs a heavy-industry rung that pays; under the e1 anchor steel e1
+returns a quarter of the canon's value added per level, so the US's capital goes to the consumer merge hosts, where the 15,588 desire decides WHICH
+second-best option wins (F204) — not why the first one fails.
+
+**Reading.** The desire ladder is shared with the canon, and so is the low raw/infrastructure share of new capital; the canon is fine despite both,
+because its ladder needs less raw input per unit of output and its manufacturing carries GDP. The e1-anchor book's world GDP (0.70× the canon's at 1935)
+is lost in the chains the anchor re-priced — steel above all (one A step fewer, and the ×1.2 lift on vanilla's own method), then the e1-anchored pop
+goods (food, glass, the art academy). ai_value is secondary: it routes the US's capital once steel stops paying.
+
+**What it does NOT say.** Medians at n = 3 / 6 / 16, directional (§10.83.7); value added here is at BASE prices (a volume measure); "net capital" counts
+only positive level changes per type within each window, so a type that grew and shrank counts its net; artmerge6-pb ran the 0.01 craft floor. The
+compressed-ladder probe running at the time (`20261002_111449`) is the experiment the ai_value question needs — this reading predicts a modest effect on
+world GDP. The recipe-side candidates it points at — the heavy industries' e1 rungs without the ×1.2 lift (vanilla's own methods), or the heavy
+industries anchored at e0 as in the canon — are NOT proposed for launch without a ruling.
+⇒ **F206 (the same day) qualifies the reading**: measured as PAYBACK, the high desire of the e2 rungs is a real driver of misallocated capital in
+every four-rung book — secondary for world GDP, not negligible.
+
+## F206 — UNDER-INVESTMENT AS PAYBACK: about a third of each four-rung book's new capital in mines, agriculture and manufacturing goes into buildings whose expected payback is more than three times the country's best sector's, against a fifth in vanilla; the excess is all in manufacturing and concentrated in the high-desire e2 rungs (in e1a12 the three 15,588 merge hosts carry 39% of it), while mines and agriculture are chosen no worse than in vanilla — they get a SMALLER SHARE, not worse picks; and the e1-anchor book's steel shortage does not cascade through engines and railways into infrastructure (2026-10-02, the vanilla n=16, the canon n=6, e1a12-artmerge n=3, artmerge6-pb n=3; no game time)
+
+**Question (user, 2026-10-02):** *"Lets define 'underinvesting' better. It's investing in something with a much higher payback period. And it differs
+vastly between book, seed, country and in-game decade. Try to answer in these terms, how heavy the underinvestment is (which share goes grossly
+suboptimal, which -- a bit suboptimal) between vanilla, canon and artmerge. Ignore infrastructure completely (ports, railroads, power plants). Ignore
+shipyards and trade centers. Compare mines to agriculture to manufacturing industries. ... it's the share within a run (or run-decade) that matters."*
+and *"the payback period is 'expected at the time of construction at realised prices at that time and actual wages'."* Plus: *"Do you think this
+[the steel shortage] can cause chain effects, killing all steam-reliant production, and then infrastructure (no engines for locomotive), and then all
+development (no infrastructure)?"*
+
+**Method** (scratch reader `payback_alloc.mjs`; its ALL benchmark is reproduced within 0–3 points by `tools/testbed/ledger/misplaced_capital.mjs`, promoted 2026-10-02 — see F207). Per run, country and year: the expected payback of a new level of a building type = its
+construction cost (points × the country's construction cost per point at base prices = its construction sector's input value ÷ its construction
+points a week) ÷ the annual profit per STAFFED level that type earned in that country at the start of the year (the save's own profit: revenue at
+realised prices − inputs at realised prices − actual wages); a type the country did not yet run takes its market's figure, else the world's (16–23% of
+the new capital). The benchmark = the country's best SECTOR at that moment (mines & extraction · agriculture · manufacturing; a sector's staffed capital ÷
+its annual profit; a sector qualifies with ≥ 5% of the country's in-scope capital). New capital = Σ positive level changes over the year × construction
+cost. Classes by payback ÷ benchmark: **fine ≤ 1.5×, a bit suboptimal ≤ 3×, grossly suboptimal > 3× or loss-making.** In scope: mines (gold left out),
+logging, oil, fishing, whaling · farms, plantations, ranches · every rung of the tiered industries (crafts included; vanilla's buildings of the same
+industries). Out: railways, ports, power plants and dams, shipyards, trade centres, and everything non-economic. Shares are taken WITHIN each
+run-decade (and each country-decade) and compared across runs by their median.
+
+**§1 The share of each run-decade's new capital that is grossly / a bit suboptimal** (median over runs):
+
+| decade | vanilla (16) | canon (6) | e1a12 (3) | artmerge6-pb (3) |
+|---|---|---|---|---|
+| 1836–46 | 17% / 20% | 22% / 24% | 24% / 24% | 21% / 24% |
+| 1846–56 | 16% / 25% | 21% / 28% | 25% / 29% | 21% / 30% |
+| 1856–66 | 17% / 29% | 19% / 28% | 23% / 33% | 21% / 31% |
+| 1866–76 | 15% / 31% | 17% / 30% | 21% / 34% | 20% / 36% |
+| 1876–86 | 16% / 31% | 17% / 28% | 20% / 36% | 20% / 36% |
+| 1886–96 | 16% / 29% | 27% / 31% | 20% / 37% | 25% / 32% |
+| 1896–1906 | 20% / 29% | 24% / 33% | 28% / 37% | 29% / 29% |
+| 1906–16 | 16% / 31% | 29% / 30% | 28% / 35% | 30% / 29% |
+| 1916–26 | 18% / 32% | 29% / 31% | 36% / 33% | 32% / 30% |
+| 1926–36 | 20% / 33% | 30% / 34% | 38% / 31% | 38% / 27% |
+| the century | **19% / 30%** | **28% / 31%** | **31% / 33%** | **32% / 30%** |
+
+Vanilla wastes a steady 15–20% of its new capital grossly; the four-rung books start a few points above it and climb to 30–38% once the e2/e3 rungs
+take the investment (the 1890s on). "A bit suboptimal" is ~30% everywhere.
+⚠ This table counts capital built where NO sector qualifies as a benchmark as gross. F207 corrects that (such capital is ungraded); re-read the same
+way (`payback_valid2.mjs --batch`, all options) the medians move by 0–3 points — 1926–36 vanilla 17% / 33%, the canon 28% / 34%, e1a12 38% / 31%,
+artmerge6-pb 38% / 27% — and the shape and the ranking are unchanged.
+
+**§2 By sector** (per run over the century, medians: the sector's share of the new capital · the share of the sector's own new capital that is grossly
+/ a bit suboptimal):
+
+| | mines & extraction | agriculture | manufacturing |
+|---|---|---|---|
+| vanilla | 21% · 13% / 27% | 22% · 16% / 22% | 57% · 21% / 35% |
+| canon | 11% · 13% / 21% | 14% · 17% / 19% | 76% · 32% / 34% |
+| e1a12 | 12% · 11% / 28% | 14% · 15% / 21% | 74% · 38% / 36% |
+| artmerge6-pb | 11% · 11% / 26% | 10% · 14% / 22% | 78% · 37% / 32% |
+
+⇒ The "under-investment in mines" is a SMALLER SHARE of new capital (11–12% against vanilla's 21%; agriculture 10–14% against 22%), not worse picks
+within the raw sectors (11–17% gross in every book). The whole excess waste is manufacturing: a third of it grossly suboptimal against a fifth in
+vanilla, on three quarters of all new capital against vanilla's 57%.
+
+**§3 The expected payback of new capital, years** (capital-weighted within each run-decade, median over runs): mines & extraction 4–6 and agriculture
+2½–4 in every book; manufacturing 6–8 in vanilla, 10 → 5 in the canon (falling decade by decade), 7½–8½ in e1a12 from 1866 to 1926 (6.7 at the end),
+10 → 6–7 in artmerge6-pb. Manufacturing pays back about twice as slowly as the raw sectors in EVERY book, vanilla included — vanilla's AI also leaves
+the faster-paying raw sectors short, and a raw sector is capped by land and deposits, which the summaries do not show.
+
+**§4 Countries.** Over country-decades with ≥ 2,000 points of new capital in scope, the median share grossly suboptimal is 15% (vanilla) / 21% (canon) /
+25% (e1a12) / 26% (artmerge6-pb), and more than half of it is gross in 14% / 20% / 21% / 25% of them. The majors, per decade: vanilla's Britain,
+France and Prussia waste 0–9% (France 21% in 1836–46); in the canon Britain and the USA climb to 15–27% and 15–43% after 1886; in e1a12 the USA wastes
+30–49% from 1876 on (F204's merge hosts) and Japan 30–76% in the later decades.
+
+**§5 Where the gross capital goes** (each book's grossly suboptimal capital pooled over its runs; in brackets the share of that type's own new capital
+that is gross): vanilla spreads it — the motor industry 13% (39%), tooling 10% (19%), textile 6%, steel 5%, iron and coal mines 9%. The canon
+concentrates it in e2 rungs — bolt-action arms 9% (82%), open-hearth steel 7% (36%), sewing-machine textile 6% (35%), steel tooling 6% (35%), baking
+powder 4%, mechanized furniture 3% (36%). e1a12 puts **39% of all its gross capital into the three e2 MERGE HOSTS at 15,588** — open-hearth steel 14%
+(44%), sewing-machine textile 14% (52%), mechanized furniture 11% (64%) — then steel tooling 8%, bolt-action arms 6% (74%). ⇒ The desire premium of the
+e2 rungs IS a measurable driver of misallocation in every four-rung book, the merge hosts' above all: F205's "ai_value is secondary" holds for world GDP
+(the canon carries the same premium and stays on vanilla's GDP), not for the use of capital. The compressed ladder under test (`e1a12-ai1135`: e2 3,000,
+the hosts 3,873) is aimed squarely at it.
+
+**§6 The chain the user asked about — steel → engines → steam methods → railways → infrastructure** (scratch reader `chain.mjs`; engine-using methods read
+from the game files: every train method, steam donkeys in mines and logging, tractors, plantation machinery, power plants, shipyards, cars). World
+engine output in e1a12 tracks the canon's to 1890 (5,736 vs 5,927 a week), falls 15% behind by 1900 (7,666 vs 9,073) and 31% by 1920–35 (21,604 vs
+31,237; 56,494 vs 81,473); both books stay under vanilla's (16,185 at 1900). But world railway levels in e1a12 are AT OR ABOVE the canon's until 1920
+(1,145 vs 947 at 1900), the adoption of engine-using methods is the same within a few points, and infrastructure binds in no book: 1–4% of states over
+capacity world-wide (vanilla 3–4%), usage at ~40% of capacity. In the USA the dear engines show as a LATE switch to labour-saving steam donkeys (mines
+0% in 1870 and 27% in 1880 against 66–78% in vanilla and the canon) — more labour per mine, not less output — and railways fall behind from 1890 (31 /
+35 / 128 levels at 1890 / 1900 / 1935 against the canon's 42 / 65 / 412); yet no US state is ever over capacity (usage 23–31% of it), so the railways
+follow a smaller economy rather than holding it back. ⇒ No cascade through locomotives and infrastructure: the steel shortfall hits through the heavy
+chain's own returns (steel e1's low value added, dear steel for tools, engines and arms) — §5's open-hearth hosts are where it shows.
+
+**What it does NOT say.** The benchmark is the best SECTOR at the time, not the best BUILDABLE option: a sector capped by land or deposits cannot absorb
+more capital, so "suboptimal" is not "avoidable". The expected profit of a new level is the existing buildings' average per staffed level; a new level in
+a glutted market earns less, and levels completed within a year were decided up to two years earlier. Construction costs are at base prices — within a
+country-year the cost per point is common, so the classes do not depend on it, only the payback years do. n = 16 / 6 / 3 / 3, directional (§10.83.7);
+artmerge6-pb ran the 0.01 craft floor. ⇒ **F207 applies the user's VALID-OPTION rule** (free deposits or arable land AND ≥ 25k slack labour in the
+state) to the same reading: the classes move by 1–7 points of gross, the ranking does not, and the raw alternatives behind the factories' gross capital
+are valid ones.
+
+## F207 — UNDER-INVESTMENT AGAINST VALID OPTIONS ONLY: requiring a better alternative to have free deposits (or arable land) AND ≥ 25k peasants + unemployed in its state moves each book's grossly suboptimal share down by 1–7 points and leaves the ranking as it was — vanilla 13%, the canon 24%, artmerge6-pb 31%, e1a12 35% of the last decade's new capital; the raw options the factories lose to are real ones (vanilla's are plantations, the four-rung books' coal, iron and logging), and the four-rung shortlists leave most of their staffable mineral room unbuilt where vanilla's has used most of it; a fifth of vanilla's late capital has NO valid alternative at all, because its industrial core is fully employed (2026-10-02, the vanilla n=16 + vanilla's 1836–1921 campaign year by year, the canon n=6, e1a12-artmerge n=3, artmerge6-pb n=3, the e1a12-ai1135 probe; no game time)
+
+**Question (user, 2026-10-02, on F206):** *"Only consider investment option 'valid' if there are empty deposits at the time of investment AND there
+is at least some labour in the state (peasants+unemployment at least 25k). Don't let a fringe underpopulated Alaskan iron mines with 4/6 levels and 10%
+staffing always report 'there are still great mining opportunities and the AI invests in manufactures for some reason'."* — with the note that mines may
+not be productively investable, specific agriculture (cotton, tea, opium) may be, general agriculture (wheat) hardly.
+
+**Method** (scratch reader `payback_valid2.mjs`, on F206's payback; promoted 2026-10-02 as `tools/testbed/ledger/misplaced_capital.mjs` with identical output on the probe and on run 1 of 20261002_120946). It needs per-state data the summaries did not carry, so **save summary v15**
+(2026-10-02) adds per state `lab` = {peasants, unemployed} WORKFORCE (from the pop table: a peasant pop, or a pop with no workplace) and `res` = {type:
+[levels, staffing, profit]} for every resource-capped building type; checked against each country's own `population_unemployed_workforce` (USA 1,169,715
+vs 1,164,171; Russia, Japan, China, Brazil, France within 5%). The pre-v15 runs were re-summarised from their KEPT 1936 saves (the harvester reaps the
+rest), and vanilla's own 1836–1921 campaign (`saves_debut`, 339 quarterly saves, one in four → 85 summaries) gives the exact year-by-year version.
+A type is **valid** for a country when some state of it holds ≥ 25k peasants + unemployed AND, for a mine / logging camp / wharf / rig, free capped slots
+of that resource (`capped_resources` + discovered resources from `map_data/state_regions`, minus the levels built), or, for a farm / plantation / ranch,
+free arable land with the crop allowed (`arable_land` − the agricultural levels built; `arable_resources`); a manufacturing type is valid wherever any
+state has the labour. Three benchmarks for the same new capital: **ALL** = F206's (the best sector over every type, ≥ 5% of the in-scope capital);
+**OPEN** = the same, over the sectors that hold at least one valid type (it can only LOOSEN the benchmark); **VALID** = each sector's capital-weighted
+payback over its VALID types only (types with ≥ 2 staffed levels, a sector's valid staffed capital ≥ 5% of the in-scope capital). A country-year with
+no valid sector has **no valid alternative**: its new capital is reported apart, not graded (a loss-making investment stays gross).
+⚠ The first cut graded a missing benchmark as gross, which made the rule look as if it RAISED the gross share (vanilla 19% → 35%); a benchmark that
+does not exist is not a verdict, and the corrected reader shows the rule can only move OPEN down. Recorded so the inverted reading is not re-derived.
+
+**§1 Vanilla's own campaign, year by year** (one seed, 1837–1920; validity from each year's own summary; gross / a bit / no valid alternative):
+
+| decade | ALL | OPEN | VALID | manufacturing gross (ALL / VALID) |
+|---|---|---|---|---|
+| 1836–46 | 18% / 28% / 2% | 17% / 27% / 7% | 15% / 24% / 16% | 24% / 23% |
+| 1846–56 | 17% / 27% / 0% | 16% / 26% / 5% | 15% / 25% / 8% | 20% / 17% |
+| 1856–66 | 18% / 26% / 0% | 17% / 26% / 2% | 16% / 25% / 4% | 20% / 19% |
+| 1866–76 | 19% / 31% / 0% | 19% / 30% / 2% | 18% / 30% / 4% | 16% / 14% |
+| 1876–86 | 15% / 34% / 0% | 14% / 33% / 4% | 14% / 33% / 4% | 13% / 12% |
+| 1886–96 | 11% / 33% / 1% | 10% / 33% / 4% | 10% / 32% / 4% | 13% / 11% |
+| 1896–1906 | 13% / 34% / 0% | 12% / 32% / 5% | 11% / 32% / 6% | 17% / 14% |
+| 1906–16 | 13% / 29% / 0% | 11% / 28% / 6% | 11% / 27% / 6% | 17% / 15% |
+| 1916–26 | 13% / 33% / 1% | 11% / 31% / 7% | 10% / 30% / 7% | 17% / 14% |
+
+The rule takes 1–3 points off vanilla's gross share in every decade and changes nothing else: vanilla's AI grossly misplaces 10–18% of its capital
+whether or not the alternatives have to be buildable.
+
+**§2 The books, the decade before each run's kept 1936 save** (validity from that save applied to the decade; median over runs; gross / a bit / no valid
+alternative):
+
+| book | ALL | OPEN | VALID | manufacturing gross (ALL / OPEN / VALID) | benchmark moved by OPEN |
+|---|---|---|---|---|---|
+| vanilla (16) | 17% / 33% / 1% | 14% / 28% / 19% | 13% / 26% / 21% | 21% / 16% / 15% | 8–41% of the capital |
+| canon (6) | 28% / 34% / 2% | 26% / 30% / 10% | 24% / 27% / 14% | 32% / 29% / 27% | 2–22% |
+| e1a12-artmerge (3) | 38% / 31% / 0% | 37% / 29% / 4% | 35% / 29% / 5% | 44% / 42% / 40% | 3–7% |
+| artmerge6-pb (3) | 38% / 27% / 0% | 34% / 25% / 9% | 31% / 24% / 9% | 43% / 39% / 35% | 8–29% |
+| e1a12-ai1135 probe, 1856–66 (1) | 17% / 31% / 0% | 16% / 30% / 4% | 15% / 28% / 5% | 16% / 15% / 14% | 4% |
+
+Mines and agriculture stay at 3–21% gross per run under every benchmark, in every book (the one higher reading is vanilla's own campaign, agriculture 34%
+in 1866–76). ⇒ **The excess waste of the four-rung books survives the rule intact**: e1a12 still
+places a third of its last decade's capital grossly (two fifths of its factory capital) against vanilla's eighth.
+
+**§3 "No valid alternative" is vanilla's FULL EMPLOYMENT.** A fifth of vanilla's 1926–36 capital is built in country-years where no state holds 25k
+slack labour — the industrial core is fully employed: vanilla run 1 at 1936 has Britain with 1 of 39 states at ≥ 25k (23,687 unemployed, no peasants),
+France 5 of 29, Spain 0 of 23, against the USA's 31 of 40, Russia's 76 of 91, China's 39 of 40. The four-rung books keep more slack labour (the
+design's U* ≥ 2× vanilla on the shortlist), so 4–14% of their capital falls in that class. Under the user's rule every new building in a fully employed
+Britain draws its staff from another building — none is "valid", and none can be graded.
+
+**§4 What the factories lose to** (the grossly suboptimal manufacturing capital pooled over each book's runs): loss-making 1–8%, the rest PROFITABLE BUT
+SLOW. The valid benchmark behind the slow part:
+
+| | the benchmark sector | its valid types, capital-weighted (top) |
+|---|---|---|
+| vanilla, its campaign 1837–1920 | agriculture 81% · mines 15% | cotton plantation 13%, tobacco 10%, banana 10%, livestock ranch 7%, logging 6%, tea 6%, dye 6%, opium 5%, coffee 4%, sugar 4%, silk 4%, wheat 3%, rice 3%, maize 3% |
+| vanilla, 1926–36 (16) | agriculture 77% · mines 21% | tobacco 10%, banana 8%, cotton 8%, livestock 7%, logging 6%, coffee 6%, tea 6%, opium 5%, sugar 5%, coal 5%, wheat 5%, silk 5%, dye 4%, iron 4% |
+| canon (6) | mines 50% · agriculture 48% | coal 15%, iron 9%, logging 8%, oil 8%, tea 6%, tobacco 6%, lead 5%, silk 4%, opium 4%, coffee 4%, sugar 4%, sulfur 4%, dye 4%, cotton 3% |
+| e1a12-artmerge (3) | agriculture 58% · mines 41% | coal 13%, iron 11%, tea 8%, logging 7%, livestock 6%, tobacco 5%, sugar 5%, wheat 5%, silk 5%, dye 4%, cotton 3%, banana 3%, coffee 3%, vineyard 3% |
+| artmerge6-pb (3) | mines 61% · agriculture 37% | iron 19%, coal 19%, logging 10%, tea 5%, livestock 4%, lead 4%, tobacco 4%, sugar 4%, cotton 4%, dye 3%, sulfur 3%, coffee 3%, fishing 2%, oil 2% |
+
+⇒ The user's distinction holds in the data: vanilla's factories lose to SPECIFIC agriculture — plantations carry ~60% of its benchmark, general farms
+(wheat, rice, maize) 8–11%. The four-rung books' factories lose to MINES as much as to plantations: coal and iron alone are 24–38% of their benchmark.
+
+**§5 The mineral room is valid and unused in the four-rung books** (scratch reader `free_room.mjs`, the kept 1936 summaries, median over runs; levels
+built / free capped slots / free slots in a state with ≥ 25k slack labour):
+
+| shortlist (GBR USA FRA NET BEL UNL PRU NGF GER) | coal | iron | lead | sulfur | logging | oil |
+|---|---|---|---|---|---|---|
+| vanilla | 1,275 / 1,775 / 625 | 940 / 1,053 / 379 | 285 / 592 / 235 | 353 / 463 / 153 | 679 / 1,154 / 498 | 403 / 772 / 274 |
+| canon | 1,050 / 1,973 / 810 | 804 / 1,087 / 476 | 249 / 630 / 270 | 185 / 582 / 351 | 528 / 1,132 / 571 | 393 / 788 / 450 |
+| artmerge6-pb | 703 / 2,050 / 747 | 603 / 1,189 / 682 | 224 / 536 / 304 | 194 / 640 / 369 | 415 / 1,246 / 684 | 215 / 954 / 666 |
+| e1a12-artmerge | 735 / 2,460 / 2,036 | 466 / 1,600 / 1,340 | 176 / 765 / 539 | 112 / 686 / 654 | 311 / 1,441 / 1,207 | 73 / 1,207 / 1,038 |
+
+World, the same columns: vanilla coal 3,822 / 9,440 / 5,343 and iron 3,024 / 7,174 / 4,022; e1a12 coal 1,810 / 11,347 / 9,093 and iron 1,911 / 8,451 /
+6,120. ⇒ Vanilla's shortlist has built about two thirds of its staffable coal and iron; e1a12's about a quarter, with ~3× the built levels still free
+in states that have the labour. The "great mining opportunities" are not Alaskan: they sit in the shortlist's own populated states, and they pay back
+in 4–6 years against the factories' 7½–8½ (F206 §3).
+
+**§6 The compressed ladder's probe** (`e1a12-ai1135`, 1856–66, n=1; F208): 15% gross by the VALID benchmark, 14% of its factory capital — vanilla's level
+for that decade (16% and 19%) and below e1a12's (23%, F206 §1).
+
+**What it does NOT say.** The caps are the files' `capped_resources` + DISCOVERED resources; amounts discovered later are not counted, so the free room
+is a lower bound for oil and rubber. 25k slack labour is a state-level test, blind to infrastructure, market access and how far the labour is from the
+deposit. The payback of the alternative is the existing levels' AVERAGE; the marginal mine in a glutted market earns less (the ceteris-paribus warning:
+building a third of the free coal room would move coal's price). In the books' snapshots the 1936 validity is applied to the whole decade before it
+(the year-by-year version exists only for vanilla's single campaign and for v15 batches from 2026-10-02 on). n = 16 / 6 / 3 / 3 / 1, directional
+(§10.83.7).
+
+**Addendum, the same day — the exemption (BALANCE_FRAMEWORK §10.92.1).** The user ruled infrastructure, trade centres, shipyards, government
+buildings and gold mines out of the measurement for good (their AI values are set to get them built, not to follow profit). The scope above
+already left every one of them out; the reader now also refuses the port / railway / power / shipyard industries by name, so a book that tiers one
+cannot leak it in — re-run over all 28 reference runs, every reading is identical. The two privately built categories a reader could take for
+"government industries" stay in, and their weight was measured (all-options benchmark, median gross share of new capital):
+
+| book | 1926–36 as measured | without arms, munitions, artillery | without the art academy |
+|---|---|---|---|
+| vanilla (16) | 17% | 17% | 17% |
+| canon (6) | 28% | 24% | 29% |
+| e1a12-artmerge (3) | 38% | 35% | 39% |
+| artmerge6-pb (3) | 38% | 37% | 42% |
+
+The military industries carry three to four points of the four-rung books' late misplacement and none of vanilla's (1836–1916 moves 0–3 points
+in every book); the art academy is a better-than-average investment, so removing it RAISES the share. The ranking is the same under all three.
+⭐ **Ruled the same day: the military industries are NOT exempt** (user: *"They should not be exempt."*) — the "as measured" column is the reading.
+Gold mines: vanilla's own `building_gold_mine` already carries a static `ai_value = 5000` (*"Gold mines are very nice for minting revenue and
+guaranteed profits"*), untouched by the mod, so every book measured here ran with it.
+
+## F208 — THE COMPRESSED DESIRE LADDER, 30-YEAR PROBE: `e1a12-ai1135` (ai_value 1,000 / 1,000 / 3,000 / 5,000 by era, crafts 800, merge hosts at the midpoint) is not broken and runs world GDP at 0.91–1.02× vanilla to 1865, inside vanilla's range; it cuts the grossly misplaced share of new capital to vanilla's level (17–19% a decade against e1a12's 23–25%) and empties the textile e2 merge host (8 staffed levels world-wide against 42), but in this seed the USA still pours 47% of its private construction into textile and furniture in 1856–66 — the prediction of "under 20%" failed (2026-10-02, session 20261002_111449, n=1, 1836→1866)
+
+**Arm.** `{kind: config, config: config/mod_config.e1a12-ai1135-artmerge.json}` — the arm's book e1a12-artmerge with ai_value by era 1,000 / 1,000 /
+3,000 / 5,000 (`make_ab_config --ai-ladder`) in place of 1,000 × 3^era, the six crafts at 800 (`make_artisan_config --craft-ai 800`, new flag), and the
+merge hosts at the ruled geometric midpoint of the new values (food and paper e1 hosts 1,732; textile, furniture and steel e2 hosts 3,873; fertilizer's
+e0 host 1,000); field diff against e1a12-artmerge: 57 ai_value fields and the provenance records. User-ruled 2026-10-02: *"Change the desire to build to
+1) artisan 800 2) other e0 1000 3) e1 1000 4) e2 3000 5) e3 5000. Run a 30-year probe and report. Unless clearly broken, run 2+1 then."*
+
+**Health.** Our init marker in debug.log, no error line naming a file of ours, no crash, every post-run landmine PASS. Three company HQ types at zero
+staffed levels against the reference (a seed's company formation); China lower than in vanilla's seeds (0.82× at 1865).
+
+**Readings** (against e1a12-artmerge's three runs, the canon's six and the vanilla n=16 at the same dates):
+- **World GDP ÷ vanilla median** 1.02 / 1.00 / 1.00 / 0.93 / 0.91 / 0.93 at 1840 / 1845 / 1850 / 1855 / 1860 / 1865 (e1a12 0.96–1.04 over the same
+  years; the canon 0.82–1.00; vanilla's own seeds 0.92–1.08 at 1865) — dipping from 1856 like every four-rung book.
+- **The USA's textile + furniture share of PRIVATE construction, 1856–66: 47%** (e1a12's three seeds 32–65%, the canon's 0–31%). F204's capture is NOT
+  removed in this seed; the schedule's prediction (under 20%) failed.
+- **The e2 merge hosts empty:** world staffed levels of the textile e2 host 8 against e1a12's 41.7 (median of three) at 1866.
+- **Construction 1837–66:** 1,890k points against e1a12's 2,104k; the e1 tiered rungs took 277k against 421k.
+- **Misplaced capital (F206's reader):** grossly suboptimal 19% / 18% / 17% of each decade's new capital 1836–66 (e1a12 24 / 25 / 23%, the canon 22 / 21 /
+  19%, vanilla 17 / 16 / 17%); manufacturing's own new capital grossly placed 19% over the thirty years against e1a12's 36%. Under the valid-option
+  rule, 1856–66: 15% (F207 §6).
+
+**Decision taken on it:** not clearly broken ⇒ the 2+1 over the century launched as ruled (`e1a12_ai1135_n2.json`, session
+`20261002_120946_e1a12-ai1135-n2`, its saves summarised at v15 so F207's rule can be read year by year).
+
+**What it does NOT say.** One seed and thirty years: the US capture is a seed-level reading (e1a12's own seeds span 32–65%), and the mid-game dip and the
+register's end state are beyond the probe. The misallocation share is F206's definition at the decade level and inherits its limits.
+
+## F209 — THE COMPRESSED DESIRE LADDER OVER THE CENTURY: `e1a12-ai1135` ends its 2+1 at two runs — run 1 intact (world GDP 0.79× vanilla, loss 8.79), run 2 BROKEN BY RUNOFF (1.42×, the shortlist fully depeasanted at a pooled U* of 7.0%); misplaced capital falls to the canon's level (1926–36: 29% / 26% of new capital against e1a12's 38%, the canon's 28%, vanilla's 17%), the USA is no longer agrarian (1.23 / 0.91× vanilla at 1935), and old rungs surviving BESIDE a rung two eras newer are 4.5–4.9% of the world's tier workers and 0.9–1.2% of the shortlist's at 1935, three quarters of them crafts (2026-10-02, session 20261002_120946, n=2, 1836→1936)
+
+**Arm.** `{kind: config, config: config/mod_config.e1a12-ai1135-artmerge.json}` — F208's book (e1a12-artmerge with ai_value 1,000 / 1,000 / 3,000 / 5,000
+by era, the crafts at 800, the merge hosts at the midpoint of the new values). Schedule `e1a12_ai1135_n2.json`, quarterly autosaves, v15 summaries
+(400 / 401 per run), the stop watcher armed. Comparison: e1a12-artmerge (20261001_225817, F203, n=3), the canon canon-dams-family (20260929_002728,
+F177, n=6), e1a-artmerge (20261001_124750, F200, n=2), the pinned vanilla n=16 (20260821_131149). Ledger: https://claude.ai/artifact/LmtipGTd3dP1CQemKXRhdg
+(also `REPORT.html` in the session).
+
+**Runs and health.** Both reached 1936.1.1. Run 1 crashed once (1927.2.26) and the resume feeder restored it from the autosave written 27 s earlier;
+run 2 ran clean. Init marker in both debug logs, no error line naming a file of ours, every session landmine PASS (`preflight.ps1 -Session`).
+
+**The register (criteria.mjs).**
+- Run 1 **intact**: world GDP 0.79× (the 1932–36 mean; 0.81 at 1935), pool W 0.84, pool U* 1.44 (30.6% against 21.3%), pool H 0.64, pool GDP 0.89
+  (beyond the soft line), PI 0.92 falling, PP 1.08, T0 0.16 of the 1900s, T3 22.8% of the shortlist's tiered workers; **loss 8.79**.
+- Run 2 **BROKEN BY RUNOFF**: world GDP 1.42× at the end state (hard ceiling 1.38) AND pooled shortlist U* 7.0% (hard floor 10%); soft: Britain
+  under 5% U* in 9 years 1928–36 and Germany in 10 years 1925–34, both at a mean hoard of 0.06 of GDP — full employment with the pools spent, not a hoard.
+  One broken run ends a config: the tie-breaker was not launched, and the consensus is run 1 alone.
+- Ranking (consensus loss): the canon 5.90 (4 intact / 2 broken), e1a-artmerge 7.76 (2/0), e1a12-artmerge 8.62 (2/1), **e1a12-ai1135 8.79 (1/1)** — all
+  inside one run's loss noise (σ ≈ 6.6), directional only. Its T3 ÷ rest is the lowest of the four (0.295 against 0.42–0.49).
+
+**Two economies** (first_run_decomp.mjs, ÷ the vanilla n=16 median; GDP = workers per capita × product per worker):
+
+| | 1880 | 1900 | 1920 | 1935 | 1935 decomposition |
+|---|---|---|---|---|---|
+| run 1, world | 0.88 | 0.73 | 0.72 | 0.81 | 0.76 × 1.10 |
+| run 2, world | 1.00 | 0.94 | 1.14 | 1.44 | 1.06 × 1.34 |
+| run 1, shortlist | 0.83 | 0.65 | 0.69 | 0.90 | 0.87 × 1.29 |
+| run 2, shortlist | 1.05 | 0.99 | 1.27 | 1.61 | 1.10 × 1.57 |
+
+Run 1 takes the e1a12 dip; run 2 never dips and runs away after 1900. Germany collapses in run 1 (0.09× vanilla's German GDP at 1935) and holds in run 2
+(1.03×); France 1.74 / 3.42×, Britain 1.05 / 1.66×.
+
+**Misplaced capital** (misplaced_capital.mjs, F206/F207 — gross = expected payback > 3× the country's best sector's, or loss-making; ALL / VALID options):
+
+| decade | run 1 | run 2 |
+|---|---|---|
+| 1836–46 | 19 / 15% | 18 / 17% |
+| 1876–86 | 22 / 20% | 18 / 15% |
+| 1906–16 | 23 / 22% | 20 / 19% |
+| 1916–26 | 33 / 32% | 23 / 22% |
+| 1926–36 | 29 / 27% | 26 / 23% |
+| century | 26 / 24% | 23 / 21% |
+
+Like-for-like 1926–36 (ALL / OPEN / VALID): run 1 29 / 28 / 25%, run 2 26 / 23 / 19%, against F207's e1a12 38 / 35 / 39%, the canon 28 / 24 / 29% and
+vanilla 17 / 17 / 17%. The gross part is 99% profitable-but-slow factories; the better alternative is mines (63–69%: coal, iron, logging, oil) and
+plantations (30–36%). ⇒ **The compressed ladder cut misplaced capital by about a third against e1a12 and brought it to the canon's level; vanilla's level
+is not reached**, and the remaining excess is still the factories' (manufacturing 66–72% of new capital, 27–32% of it gross).
+
+**The USA.** GDP ÷ vanilla at 1935: **1.23 (run 1) / 0.91 (run 2)** against e1a12's 0.35 / 0.45 / 0.55. Textile + furniture's share of US private
+construction (win_share2): 1860–80 **37% / 10%**, 1880–1900 10% / 3% (e1a12 33–42% and 20–32%; the canon 4–30% and 2–11%). The merge-host capture appears
+in run 1 for two decades and fades; run 2 never shows it.
+
+**Who works where — how much of the old-rung workforce is the ladder failing?** (fill_emp.mjs + lib_era_cols.mjs; the ledger's new table.) A worker is
+counted when his rung is TWO OR MORE eras behind a rung his own country staffs in the same industry ("beside +2"); the rest of the old-rung workforce sits
+either in countries that run nothing newer in that industry (backwardness) or one era behind the country's best (ordinary succession).
+
+| | world 1935 | shortlist 1935 | peak, world | peak, shortlist |
+|---|---|---|---|---|
+| run 1 | 1.86M of 38.1M (4.9%) | 0.15M of 16.6M (0.9%) | 13.4% (1890) | 5.9% (1870) |
+| run 2 | 2.94M of 64.9M (4.5%) | 0.33M of 26.7M (1.2%) | — | — |
+| two-run median | 2.40M of 51.5M (4.7%) | 0.23M of 21.6M (1.1%) | 11.4% (1890) | 7.3% (1870–80) |
+| the canon, n=6 | 2.05M of 38.4M (5.3%) | 0.49M of 18.7M (2.6%) | 8.7% at 1920 (read at 1900/1920/1935 only) | 8.0% at 1920 (the same) |
+| e1a12-artmerge, n=3 | 2.26M of 37.0M (6.1%) | 0.28M of 13.6M (2.1%) | 13.8% at 1900 (the same) | 2.7% at 1900 (the same) |
+
+At 1935 (two-run medians) the world's 7.9M old-rung workers split about evenly: 2.8M in countries with nothing newer (1.2M artisans, 1.5M on e1),
+2.7M one era behind (2.5M on e1), 2.4M beside +2 — and of those 2.4M, **1.8M are crafts** (76%), 0.5M e1, 0.1M e0 factories. By industry: textile 0.89M
+(12% of textile's workers), furniture 0.42M (10%), paper 0.32M (9%), glass 0.28M (4%), food 0.20M (4%), tooling 0.14M (2%), everything else ≤ 0.09M;
+the countries carrying them in run 1 are Russia 0.46M, Spain 0.15M, the USA 0.12M, Ethiopia 0.10M, Yue 0.09M. **The e0 factories are almost gone**:
+0.22M world-wide at 1935 (peak 1.0M at 1870), none in the shortlist, payback 90.8 years at 1935 against the crafts' 7.7 (fill_payback's new split).
+⇒ The non-obsolescence that is the ladder's failure is about **one shortlist tier worker in a hundred** and **one world tier worker in twenty** by 1935,
+lower in the shortlist than the canon's, and mostly crafts in the periphery — which the craft design keeps alive by construction (a craft costs a fiftieth
+of a factory).
+
+**Depeasantation (U*, the shortlist).** Run 1: pooled 28.3% at 1935, never under 10%; Britain 14.0% at 1935 and 9.8% at 1936, never under 5%; the USA 28%,
+France 37%, Germany 36%. Run 2: pooled under 10% from 1930 (5.9% at 1935); Britain under 5% from 1928, Germany from 1925 (11 years), the Netherlands from
+1929, France 4.0% at 1935, the USA 15.5%.
+
+**Crafts** (craft_path): world 9,156 / 9,638 levels at 1935, 75% / 66% staffed, 3.4M / 3.2M workers (4.0M at 1837), true margin 17%; in the shortlist 195 /
+365 levels at 33% / 20% staffed (32k / 37k workers). The crafts hold world-wide and empty out in the leaders.
+
+**Pop goods in wage units ÷ vanilla, 1935** (pp_goods, the two-run median): Britain 0.52–0.82 (furniture 0.52), the USA 0.83–1.11 (groceries 1.10,
+clothes 1.09), France 0.66–0.88 — the register's PP 1.08 is a median over markets that sit on both sides of 1.
+
+**Play time NOT readable.** Run 1 186.0 min, run 2 204.4 min of play against vanilla's 165.0 median — but vanilla's sixteen seeds saved yearly and this
+batch quarterly, and the canon's own quarterly batch reads 171.7 min; both runs also shared the machine with heavy analysis. Row P (×1.18) is not a finding.
+
+**Instrument added in the same pass** (ledger README): the ledger's employment columns come from `lib_era_cols.mjs` — e0 split into **e0 artisans / e0
+other** on a craft book (user-asked: "for art- family, split report into e0-artisans and e0-other, where appropriate"), merge hosts shared over their
+methods, decade samples, first summary of each year; the **old-rungs-beside-replacement** tables (`EMP_B2`, world + shortlist, and the watchlist mirror);
+G2's payback split into artisans and e0 factories; BEL / NGF / GER / UNL on the watchlist with a **shortlist** button; hydro dams as their own sector in the
+industry composition; `misplaced_capital.mjs` promoted from the scratchpad with identical output.
+
+**What it does NOT say.** Two seeds, one of them broken: the register's consensus is ONE run, the loss gap to e1a12 (0.17) is noise, and whether the
+compressed ladder RAISES the runoff risk or this is the seed spread every four-rung book shows (the canon broke 2 of 6, e1a12 1 of 3) cannot be told at
+n=2. The misplaced-capital fall is directional but consistent with F208's probe and with the mechanism the ruling names (lower e2/e3 desire, less capital
+into slow factories). The old-rung split is COUNTRY-level: a rung beside a newer one in another country of the same market is "nothing newer" here; the
+in-market vs trade obsolescence panel reads the market view.

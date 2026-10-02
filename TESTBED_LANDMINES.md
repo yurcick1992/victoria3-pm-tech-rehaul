@@ -76,7 +76,7 @@ closed.
 | L25 | A summary reader globs *.json.gz and reads the harvester's in-progress file | AUTO |
 | L27 | An analysis script walks cfg.industries for tiers without skipping `disabled` industries (their rung-0 key IS the vanilla building) | AUTO |
 | L28 | The log MIRROR re-copied the current log on a FALSE rotation — a stale directory length below the read position reset the tail to 0 every poll; non-telemetry lines (PMR_JE, events) multiplied ×2–28 in bursts | AUTO (post-run) | `Test-LmL28` — any `recovered 0 chars from []` seam in a run's `logs_live/*.log` FAILS; observer fixed 2026-09-04 |
-| L29 | The OBSERVER DIED ON ITS OWN LOG LINE — `Add-Content` to run.log throws "Stream was not readable" while another process reads the file (a heartbeat's `tail -1`), and under `Stop` preference the unguarded tick write unwound the observer with the game still running; the scheduler then burned 48 runs in 15 minutes behind the orphan (L19's cascade) | FIXED (generator) + PROOF OWED | all four harness log writers retry and never throw (2026-09-07); `run_schedule.ps1` aborts after TWO consecutive instant failures (non-zero exit < 90 s after launch) — live proof owed at the next idle window; L17 catches the artifact (a run with no meta.json) |
+| L29 | The OBSERVER DIED ON ITS OWN LOG LINE — `Add-Content` to run.log throws "Stream was not readable" while another process reads the file (a heartbeat's `tail -1`), and under `Stop` preference the unguarded tick write unwound the observer with the game still running; the scheduler then burned 48 runs in 15 minutes behind the orphan (L19's cascade) | FIXED (generator) + PROOF OWED | all four harness log writers retry and never throw (2026-09-07); `run_schedule.ps1` aborts after TWO consecutive instant failures (non-zero exit < 90 s after launch) — live proof owed at the next idle window; L17 catches the artifact (a run with no meta.json). ⚠ READER SIDE (2026-10-01): a reader that KEEPS the file open (`tail -F`, an agent Monitor — whose expiry leaves the tail running) defeats the eight-try retry and the lines are dropped silently; `Test-LmL29` (`-Session`, WARN) flags a session.log missing a run's `=== run N/M` line |
 | L30 | A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP — the shell sits in the desktop app's job object (KILL_ON_JOB_CLOSE), a `Start-Process` child silently breaks away into a SECOND app job, and an app restart (a forced re-auth, 2026-09-10 18:45:29) tore both down: scheduler, observer, game, archiver and harvester died in one second, ten months short of run 1's end | AUTO (launch) + WARN (scheduler) | `tools/testbed/launch_detached.ps1` creates the process through WMI (in NO job) and FAILS unless the kernel confirms it; `run_schedule.ps1` prints an ALERT when it finds itself inside a job. Found 2026-09-13 |
 | L31 | A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY RATHER THAN BY ITS ERA — the A/B generator keyed output, input value, cost and the lift on k = era − the industry's first era, so a late industry's first rung (automotive e2, electrics, synthetics, munition) was priced as an 1836 rung and electrics' only rung sat one era below its game-era-4 technology; eleven batches passed every lint | AUTO | `tools/lint_tier_eras.mjs` inside build.ps1 (throws) and `Test-LmL31` (the config + its paired tree); the generator derives eras from the technologies and throws beyond ±1. Found 2026-09-13 |
 | L32 | A CTD DURING THE AUTOSAVE WRITE LEAVES THE CONTINUE POINTER AIMED AT A SAVE THAT DOES NOT EXIST — the engine resumes by the TITLE its own `continue_game.json` names, not the newest file, so a truncated write defeats every step-back and the resume begins a FRESH 1836 game | AUTO | the deterministic resume feeder (quarantined set, one attempt per member, the `-ResumeWindowYears` process rule) + `Test-LmL32`: any run whose debug.log carries `Could not load save game [`. Found 2026-09-14 |
@@ -1610,6 +1610,25 @@ cannot be run beside a live batch because a second scheduler shares the `STOP_AR
 **Rule.** A harness that supervises a game may die on nothing but the game. Every periodic write in the poll loop is
 wrapped; readers of a live run's files stay legitimate — the writer tolerates them, not the other way round. And a
 console window is not a log: anything a harness says on its way down must also reach a file.
+
+⚠⚠ **ADDENDUM 2026-10-01 — THE READER SIDE: A *PERSISTENT* READER DEFEATS THE RETRY, AND THE LINES ARE DROPPED
+SILENTLY** (found on `20261001_215119_e1a-lift-probe-10y`). The fix above tolerates a reader that opens, reads and
+closes (`grep`, `tail -1`, `Select-String`): eight tries over ~0.9 s outlast it. It does NOT tolerate a reader that
+KEEPS the file open. The agent armed a Monitor on `session.log` with `tail -n 0 -F … | grep --line-buffered` at 21:59;
+from then on every `Log` call in `run_schedule.ps1` failed all eight tries and fell back to the console line
+(`[log line not written to session.log after 8 tries …]`), so `session.log` stopped at 21:51:37 — run 1's end, run 2's
+start, build and end, and run 3's start were never written. The runs themselves were unaffected (each run folder's
+`run.log` and `meta.json` are complete). ⚠ **And the Monitor's 30-minute expiry did NOT kill the `tail`** (Windows,
+Git Bash): the process sat on as an orphan holding the handle, found by `ps -ef` at 22:29 and killed by hand. Left
+alone it would have swallowed `SCHEDULE DONE` too — the marker `wait_for_session.ps1` waits for — so the batch's
+completion would have read as DEAD after the 900-s grace. ⇒ **RULE: never `tail -f` / `tail -F` a live harness log
+(`session.log`, any `run.log`, `archive.log`, `harvest.log`); watch with a POLLING loop that opens and closes the file
+(`until grep -q … ; do sleep 10; done` in a background shell), and after any Monitor on a log expires, check
+`ps -ef | grep "tail -"` for an orphan.** ✅ DETECTOR (added the same night, once the batch had ended): `Test-LmL29` in
+`preflight.ps1 -Session` — every run folder with a `meta.json` must have its `=== run N/M:` line in `session.log`; a
+missing one is a **WARN** naming the runs (never a FAIL: the runs' own `run.log` / `meta.json` / summaries are the
+record). Proven both ways: it WARNs on `20261001_215119` (runs 2 and 3 named) and PASSes on `20260929_002728`; N/A
+without `-Session`.
 
 ## L30 — A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP: the whole process tree sat in the desktop app's job objects (found 2026-09-13, the flat-cost ×1.2 arm's run 1)
 

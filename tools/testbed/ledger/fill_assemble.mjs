@@ -57,6 +57,12 @@ rep(/^const GDP_FLAT=\{.*$/m, 'const GDP_FLAT=' + JSON.stringify(C.GDP_FLAT) + '
 rep(/^const GDP_VAN=\{.*$/m,  'const GDP_VAN='  + JSON.stringify(C.GDP_VAN)  + ';', 'GDP_VAN');
 rep(/^const GDP_NB=\{.*$/m,   'const GDP_NB='   + JSON.stringify(C.GDP_NB)   + ';', 'GDP_NB');
 rep(/^const EMP=\{.*$/m,      'const EMP='      + JSON.stringify(EMP)        + ';', 'EMP');
+// the employment columns ARE LABELLED (fill_emp.mjs → emp_cols.json, lib_era_cols.mjs): e0 split into artisans / other on a craft
+// book (user-ruled 2026-10-02). ⚠ REQUIRED: the template's default six labels would misname every column of a craft book's five.
+rep(/^const EMP_COLS=\[.*$/m, 'const EMP_COLS=' + JSON.stringify(J('emp_cols.json')) + ';', 'EMP_COLS');
+// old rungs beside their replacement (fill_emp.mjs → emp_b2.json, 2026-10-02): the "Who works where" section's answer to how much of the
+// old-rung workforce is the ladder failing to retire a rung rather than a country with nothing newer
+rep(/^const EMP_B2=\{.*$/m, 'const EMP_B2=' + JSON.stringify(J('emp_b2.json')) + ';', 'EMP_B2');
 rep(/^const PROD_FLAT=\{.*$/m,'const PROD_FLAT='+ JSON.stringify(C.PROD_FLAT)+ ';', 'PROD_FLAT');
 rep(/^const PROD_VAN=\{.*$/m, 'const PROD_VAN=' + JSON.stringify(C.PROD_VAN) + ';', 'PROD_VAN');
 rep(/^const TRAJ=\{.*$/m,     'const TRAJ='     + JSON.stringify(TRAJ)       + ';', 'TRAJ');
@@ -84,6 +90,13 @@ s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
                               ['__FOOTER__','footer.html']]) {
     const p = join(DIR, file);
     if (existsSync(p)) tok[name] = readFileSync(p, 'utf8');
+  }
+  // ⚠ SEVERAL TOKENS LAND INSIDE SINGLE-QUOTED JS STRINGS (__ARMLABEL__, __SPREAD__, … in render1's chart labels and captions), so a
+  //   straight apostrophe in one ("vanilla's path") is a SYNTAX ERROR that blanks every renderer after it — fill_verify caught it on
+  //   2026-10-02. A word-internal ' becomes the typographic ’, which is what the shipped prose uses anyway; any other ' is reported.
+  for (const k of Object.keys(tok)) {
+    tok[k] = String(tok[k]).replace(/(\w)'(\w)/g, '$1’$2');
+    if (/'/.test(tok[k]) && /^__[A-Z0-9_]+__$/.test(k) && !/\.html$/.test(k)) console.log('  ⚠ ' + k + ' still holds a straight quote — it may break a JS string');
   }
   let missing = [];
   for (const m of s.match(/__[A-Z_]+__/g) || []) if (!(m in tok) && !missing.includes(m)) missing.push(m);

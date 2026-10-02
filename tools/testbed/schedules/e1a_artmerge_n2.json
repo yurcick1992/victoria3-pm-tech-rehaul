@@ -1,0 +1,37 @@
+{
+  "schedule_version": 1,
+  "label": "e1a-artmerge-n2",
+  "_why": "THE e1-ANCHOR BOOK OVER THE CENTURY, 2+1 (user-ruled 2026-10-01, BALANCE_FRAMEWORK 10.91.5, FINDINGS F197; 'go: probes and then runs'). Book config/mod_config.e1a-artmerge.json = the crafts + merges arm at the ruled 2-pound craft floor, with every industry anchored at e1 (e2 xA, e3 xA^2, building cost following the anchor), the step down to e0 /1.5 on output and input value, motor on [1,2,3], the pop-good industries' anchor-and-below input lift 1.4, the 60% craft rule (0.6 of vanilla's goods per worker, the floor crossed at 0.89 of base) and the output-matched 1836 craft seeding (head count vanilla's). Two runs, then alignment_check.mjs; a third (e1a_artmerge_tb.json) only on divergence (F114). The run-level stop applies (stop_watch.mjs armed after launch): a register hard break ends the config.",
+  "_arms": {
+    "e1a-artmerge": "{kind: config, config: config/mod_config.e1a-artmerge.json} (+ tech_tree_options.e1a-artmerge.json). Proven by field diff against artmerge6-pb-f2: the nine re-anchored industries' rungs, motor's first rung's era, the pop-good e1 inputs of textile/furniture/glass, the six craft recipes and the records - nothing else."
+  },
+  "_comparison": "The canon canon-dams-family (20260929_002728, F177, n=6: consensus loss 5.90), the crafts arm at 0.01 (20260930_232639, F194, n=3: loss 10.09, pool H 2.64, PP 1.16) and the pinned vanilla n=16 (20260821_131149). Same dump dates, tags, metrics and quarterly saves as F177/F194.",
+  "_predictions": {
+    "obsolescence": "the shortlist's old rungs at 1935 below F194's: consumer e1s (textile/furniture/glass) under 0.6 of F194's 50k/18k/34k workers and their value added per worker-year under the 3-pound floor by 1930 (the 1.4 lift; F197 §3: textile e1 4.9 -> 2.9 at F194's prices); the shortlist's crafts' value added per worker-year at or under 2 pounds by 1920-1935 where clothes, furniture, tools and paper prices sit at 0.81-0.95 of base; motor's steam rung (now e1) NOT smaller than F194's 573k - it is one step below electric by design (F197 §3); it falls only where diesel spreads",
+    "gdp": "world GDP at the end state 0.85-1.10x vanilla: the nine re-anchored frontiers make 0.38-0.76 of today's value added per level but 0.88-1.44 per construction point (motor 0.73), so fewer jobs-per-pound and more labour per unit of output; the money printer cut in food, paper and the academy lowers the pool's inflow",
+    "labour": "pool U* below F194's 1.98 (more labour per unit of output at the frontier), pool W above F194's 0.72",
+    "hoard": "pool H below F194's 2.64 (the frontier's margins in the nine industries fall by a factor A/B per step that moved; F135: the inflow is the margin)",
+    "prices": "PP at or above F194's 1.16 early (weaker food/paper e1 at the anchor) and converging later; PI up on engines (the frontier engine rungs make 14% fewer engines per construction point)",
+    "crafts": "world craft workers at 1840 ~1.7x F194's (the seeding: 4.3M+ workers against 2.6M), then falling where the frontier prices them under the 2-pound floor; the periphery keeps them",
+    "hard": "the canon's own failure modes inherited (the stuck Britain ~1 in 5-6, Britain's capital abundance); a stall is possible if the weaker frontier starves construction (F151's mechanism, here with cost sliding)",
+    "perf": "row P within +10% of the canon's per-run median; the seeding adds ~3,400 craft levels at 1836 (small, levels per state rise in 156 states)",
+    "watch_german_market": "FOUND BY THE PROBE (20261001_121754, both seeds): the 1.4-lifted pop-good e1 rungs empty in the German states and Belgium by 1840 (Prussia's e1 food 2/0 and 1/0, e1 glass 3/0 and 3/1, Saxony's e1 glass 5/1 and 5/0, Belgium's e1 food 1/0) - the Zollverein's glass sold at 0.69x base at 1836 - and the Prussian market's glass production falls to 59-61 a week at 1846 against vanilla's 287-384 (all sixteen seeds) because pop demand follows supply share, so no price signal calls the capacity back. Britain holds every e1 rung full. PREDICTION: the hole persists until the German e2 rungs arrive (1860s-1870s), and the German consumer-goods supply reads under vanilla's at 1850 and 1860; it will show in PP for the German series."
+  },
+  "_register": "criteria.mjs --arm <session>:e1a-artmerge (the book from build_state.json); alignment_check.mjs for the divergence test; the old-rung readers (the realised value added per worker reader of F197 §1, rung_econ.mjs, hiring_census.mjs on kept saves), merge_methods.mjs, health_vs_ref.mjs. Statistics are DIRECTIONAL (10.83.7).",
+  "_stop_rule": "2+1 with the run-level stop: stop_watch.mjs armed after launch; a run broken by stall or runoff ends the config (the third run is not launched).",
+  "_cost": "2 runs x 1836 -> 1936, about 2.5-3 h each, about 5-6 h; a third run only on divergence",
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "e1a-artmerge": { "kind": "config", "config": "config/mod_config.e1a-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "e1a-artmerge", "until": "1936.1.1" },
+    { "setup": "e1a-artmerge", "until": "1936.1.1" }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schedule_version": 1,
+  "label": "e1a-artmerge-10y",
+  "_why": "THE e1-ANCHOR BOOK, PROBED (user-ruled 2026-10-01, BALANCE_FRAMEWORK 10.91.5, FINDINGS F197: 'Agreed on e1/1.5 instead of e1/A; e1/B, engines, the 60% and pop-good penalty' ... 'go: probes and then runs'). Book config/mod_config.e1a-artmerge.json = the arm at the ruled 2-pound craft floor (artmerge6-pb-f2) with every industry anchored at e1 (e2 xA, e3 xA^2, cost following the anchor), the step down to e0 /1.5 on output and input value, motor on [1,2,3], the pop-good industries' anchor-and-below input lift 1.4, the 60% craft rule (0.6 of vanilla's goods per worker, the floor crossed at 0.89 of base) and the output-matched 1836 craft seeding (3,441 craft levels in 60 countries, 6.88M people typed from peasants, head count unchanged). Two seeds 1836 -> 1846 on F191's instrument plus a 1837.12.1 dump for F149's chain readings.",
+  "_questions": {
+    "Q1": "Health against the canon's six runs at 1846 (health_vs_ref.mjs): no dead industry, no token market.",
+    "Q2": "The 1836 supply anchor: production of the craft goods and of steel, engines, tools at 1836.2.1 in the instrumented markets against vanilla's (the n=16 baseline's 1836.2.1 dumps).",
+    "Q3": "The chain at 1837.12.1 (F149): steel and engines - production and the share of price readings at the +75% ceiling - against the canon and vanilla.",
+    "Q4": "The crafts at 1846: staffed levels, value added per worker-year against the 2-pound floor, failed hires (hiring_census.mjs / craft_fill.mjs on the kept saves), and whether the seeded crafts keep their staff.",
+    "Q5": "World GDP at 1846 against the canon's six and the 2-pound arm (20261001_115032); 1836 urban centres against the canon (the build's +69 estimate).",
+    "Q6": "Motor: steam-engine levels built 1836-1846 (its ai_value is now 3,000 as an e1 rung) and the engine price path against the canon."
+  },
+  "_predictions": {
+    "Q1": "no dead industry; the craft goods' cells nearer the canon's than the arm's (more craft output at the start)",
+    "Q2": "craft goods' 1836.2.1 production within +-15% of vanilla's (the crafts now make vanilla's e0 output; the e1 blocks make exactly vanilla's) - the arm's was well under; steel 0.9-1.1 of vanilla (its e0 at 0.92 of vanilla's output, margin kept); tools still over vanilla's (tooling's e2 blocks at 1.65x)",
+    "Q3": "steel at the ceiling in no more of the readings than the canon's 18%; engines production at or above the canon's (the steam rung's AI desire tripled)",
+    "Q4": "crafts staffed 85-98% at 1846 like F191; value added per worker-year 3-7 pounds in 1840-1846 (prices above base early), above the floor",
+    "Q5": "world GDP within -5% / +3% of the canon's at 1846 (weaker e1 rungs in food, paper, steel, explosives against more craft output); urban centres +10-15% at 1836.2.1",
+    "Q6": "more motor levels by 1846 than the canon (1,000 -> 3,000 desire); engines cheaper by 1840-1845"
+  },
+  "_cost": "2 runs x 1836 -> 1846, about 13 minutes each plus builds and harvest",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Ten years speak to the anchor and the early game only; obsolescence is the century's question (a 2+1 follows if this reads healthy).",
+    "Two seeds: a probe, no register reading. No stop watcher."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1837.12.1", "1840.1.1", "1845.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "e1a-artmerge": { "kind": "config", "config": "config/mod_config.e1a-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "e1a-artmerge", "until": "1846.1.1" },
+    { "setup": "e1a-artmerge", "until": "1846.1.1" }
+  ]
+}
