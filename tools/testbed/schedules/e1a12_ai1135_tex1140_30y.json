@@ -1,0 +1,53 @@
+{
+  "schedule_version": 1,
+  "label": "e1a12-ai1135-tex1140-30y",
+  "_why": "TEXTILE'S MERGED HOST AT ITS OWN COST, a 30-year probe (user-ruled 2026-10-03: 'Go with the host cost, run a 30-year probe' — the first lever of the two vectors 'increase obsolescence for specifically textile' / 'boost USA', FINDINGS F211 §4). Book config/mod_config.e1a12-ai1135-tex1140-artmerge.json = the arm's book e1a12-ai1135-artmerge regenerated through its own merge step with `make_merge_config --host-cost textile:own`: the Sewing Machines host (building_textile_mill_sewing_machines, which also runs Electric Sewing Machines from electrical_capacitors) costs its own e2's 1,140 construction points instead of the merge midpoint 1,571; its ai_value stays the midpoint 3,873. Field diff against the arm's book: that one building_cost and the _merge records, nothing else (proven); tree twin = the arm's (with Conveyors before Compression Ignition, which gates nothing before 1900). WHY: F211 found textile's e1 (Dye Workshops) survives because the frontier is under-built — 192 shortlist Sewing Machines levels at 1936 against the canon's 704, clothes ~0.85 of base against ~0.70 — and that frontier returns ~1.5 £ a week per construction point at 1866 at 1,571 points (≈ 2.1 at 1,140) against the mines' 1.3-1.5 and logging's 1.8-2.5. Under §10.92 the lever is a recipe/cost one, not a desire. One run.",
+  "_arms": {
+    "e1a12-ai1135-tex1140": "{kind: config, config: config/mod_config.e1a12-ai1135-tex1140-artmerge.json} (+ tech_tree_options.e1a12-ai1135-tex1140-artmerge.json, the arm's tree byte for byte)."
+  },
+  "_comparison": "THE ARM'S OWN SEEDS AT THE SAME DATES: the overnight n3 (20261002_235755, three seeds, the same build but for this cost — §10.93's mandates included; the Conveyors prerequisite acts only after 1900), with the n2 (20261002_120946) and the earlier 30-year probe (20261002_111449) as further seeds of the pre-§10.93 build; the canon canon-dams-family (20260929_002728, n=6) for the Sewing Machines rung at 1,140 points under the old desire ladder (ai_value 9,000); vanilla n=16 (20260821_131149) for GDP and prices. Same tags, metrics, quarterly autosaves; dump dates as before plus 1865.1.1 (one more price read; the shared dates stay comparable). A probe: one seed against six — inside the references' spread is agreement, outside it is a flag, never a verdict; no register reading.",
+  "_reference_1866": {
+    "shortlist Sewing Machines levels (e2)": "the arm 3 / 41 / 17 (n3), 11 / 23 (n2), 7 (p30) — median 14; the canon 15-32, median 21",
+    "shortlist Dye Workshops levels (e1)": "the arm 116 / 133 / 122 (n3), 104 / 117 (n2), 116 (p30); the canon 117-177",
+    "world Sewing Machines levels": "the arm 7 / 41 / 18 (n3), 11 / 27 (n2), 8 (p30)",
+    "profit per staffed Sewing Machines level": "£1,460-2,480 a week (the arm's six seeds) = 0.9-1.6 £/wk per point at 1,571, 1.3-2.2 at 1,140",
+    "clothes price ÷ base at 1860": "the arm (n3) British 1.10-1.43, French 1.14-1.36, American 1.22-1.36; vanilla medians ~1.08 / 1.04 / 0.99",
+    "US private construction textile+furniture 1856-66": "the arm 0 / 0 / 23% (n3), 10 / 0% (n2), 47% (p30); the canon 0-31%",
+    "misplaced capital 1856-66 (ALL, grossly)": "the arm 20 / 15 / 18% (n3), 17% (p30)",
+    "world GDP ÷ vanilla at 1865": "the arm 0.99 / 1.01 / 1.01 (n3), 0.93 (p30)"
+  },
+  "_questions": {
+    "Q1": "Is it broken? Init marker, no error naming our files, no crash loop, no stall (world GDP at 1865 under 0.8 of vanilla's median), no industry dead and no market left with a token (health_vs_ref.mjs at 1866 against the n3 seeds), no single building family dominating a major's construction queue.",
+    "Q2": "THE FRONTIER: shortlist and world Sewing Machines levels at 1850 / 1860 / 1866 (textile_luxury.mjs --runs), its profit per staffed level and per construction point (return_per_point.mjs), against the arm's six seeds.",
+    "Q3": "THE OLD RUNG: Dye Workshops levels, staffing and profit at 1866, and the clothes price in the shortlist's markets at 1850 / 1860 / 1865.",
+    "Q4": "WHERE CONSTRUCTION GOES: the US private queue's textile + furniture share and raw + infrastructure share in 1846-56 and 1856-66 (us_construction_windows.mjs — F204's signature), and misplaced capital 1846-56 / 1856-66 (misplaced_capital.mjs).",
+    "Q5": "World and shortlist GDP at 1850 / 1860 / 1865 against the arm's seeds; play time 1836 -> 1866 against the earlier probe."
+  },
+  "_predictions": {
+    "Q1": "not broken: one building's cost moved, nothing else",
+    "Q2": "more Sewing Machines by 1866 than the arm's median seed: shortlist 20-60 levels (the arm's six seeds 3-41, median 14); a reading above 41 is outside every reference seed and reads as the lever working; one inside 3-41 says a thirty-year seed cannot tell (the frontier's divergence from the canon came after 1880, F211). Profit per staffed level a little below the arm's £2,100-2,400 if more of it is built (the clothes price falls), still ≥ 1.5 £/wk per point",
+    "Q3": "Dye Workshops levels at 1866 inside the arm's 104-133 (the old rung's death is a post-1880 matter, F211) but fewer NEW ones 1856-66; clothes at 1865 a few points below the arm's 1860 readings where the frontier grew",
+    "Q4": "misplaced capital 1856-66 not above the arm's 15-20% (the cheaper frontier is a better use of capital, not a worse one); the US textile + furniture share 1856-66 likely up from the n3's 0-23% — up to ~30% reads as the lever reaching the US; above the earlier probe's 47% flags F204's capture returning",
+    "Q5": "world GDP at 1865 inside 0.93-1.03 of vanilla; play time within 10% of the earlier probe's"
+  },
+  "_stop_rule": "a probe: no stop watcher, no end state for the register to judge. Clearly broken = Q1 fails. What follows (a century 2+1, more probes, or nothing) is PROPOSED to the user, not launched.",
+  "_cost": "1 run x 1836 -> 1866, about 40-45 minutes plus build and harvest",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "One seed against six: inside the reference range is agreement, outside it is a flag, never a verdict.",
+    "The quarterly autosaves overwrite the player's own autosave slots (the user's e1a12-ai1135 playtest build stays deployed; the testbed runs its own built mod)."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1865.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 150
+  },
+  "setups": {
+    "e1a12-ai1135-tex1140": { "kind": "config", "config": "config/mod_config.e1a12-ai1135-tex1140-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "e1a12-ai1135-tex1140", "until": "1866.1.1" }
+  ]
+}

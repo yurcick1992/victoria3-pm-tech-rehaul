@@ -6,14 +6,15 @@
 //   (dynamite, repeaters, breech-loading artillery, combustion engine, telephone, aniline all lowered), its fourteen
 //   renames and its inserted prerequisites — and only re-pointed the unlocks. Every vanilla technology now carries
 //   vanilla's era, vanilla's name and vanilla's prerequisites, and every departure is an explicit spec entry:
-//   ERA_MOVES (the top-rung rule), TECH_RENAMES_RULED (empty), and the ADDITIONS' minted technologies.
+//   ERA_MOVES (the top-rung rule), TECH_RENAMES_RULED (empty), PREREQ_ADDS (since 2026-10-03: conveyors before compression_ignition,
+//   §10.93) and the ADDITIONS' minted technologies.
 //
 // Run AFTER make_tier4_config.mjs.
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { blocks } from './lib_vanilla_ladder.mjs';
-import { INDUSTRIES, ADDITIONS, ERA_MOVES, TECH_RENAMES_RULED, gameEraOfYear } from './lib_tier4_spec.mjs';
+import { INDUSTRIES, ADDITIONS, ERA_MOVES, TECH_RENAMES_RULED, PREREQ_ADDS, gameEraOfYear } from './lib_tier4_spec.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
@@ -44,12 +45,23 @@ for (const f of readdirSync(join(GAME, 'common/buildings'))) if (f.endsWith('.tx
 for (const f of readdirSync(join(GAME, 'common/production_methods'))) if (f.endsWith('.txt')) for (const [k, body] of Object.entries(blocks(rd(join(GAME, 'common/production_methods', f))))) for (const t of list(body, 'unlocking_technologies')) (pmUnlocks[t] ||= []).push(k);
 
 // ---- the tree ---------------------------------------------------------------------------------------------------
+// the spec's ruled prerequisite additions (PREREQ_ADDS) — a stale or misspelt entry throws rather than silently adding nothing
+for (const [id, a] of Object.entries(PREREQ_ADDS)) {
+  if (!VT[id]) throw new Error(`PREREQ_ADDS: ${id} is not a vanilla technology`);
+  for (const q of a.add || []) {
+    if (!VT[q]) throw new Error(`PREREQ_ADDS: ${id} would wait on ${q}, which is not a vanilla technology`);
+    if (VT[id].prereqs.includes(q)) throw new Error(`PREREQ_ADDS: ${q} is already a vanilla prerequisite of ${id} - the entry is stale`);
+  }
+}
 const techs = Object.entries(VT).map(([id, v]) => {
   const vname = ENLOC[id] || id; const ruled = TECH_RENAMES_RULED[id];
   const era = ERA_MOVES[id] != null && ERA_MOVES[id] > v.era ? ERA_MOVES[id] : v.era;
+  const added = (PREREQ_ADDS[id] || {}).add || [];
   return { id, name: ruled ? ruled[0] : vname, vanillaName: vname, renamed: ruled ? ruled[1] : null, desc: null,
     category: v.category, era, vanillaEra: v.era, reEra: era !== v.era, year: null, onset: ONSET[id] ?? null, idea: false, mod: null,
-    origin: 'vanilla', filler: false, platform: null, industry: null, prereqs: v.prereqs, unlocks: [],
+    origin: 'vanilla', filler: false, platform: null, industry: null, prereqs: [...v.prereqs, ...added], unlocks: [],
+    // a ruled departure from vanilla's prerequisites is RECORDED beside vanilla's own list, so emit_techs patches exactly it
+    ...(added.length ? { vanillaPrereqs: v.prereqs, prereqsAdded: added } : {}),
     vanillaUnlocks: vanillaUnlocks[id] || [], pmUnlocks: pmUnlocks[id] || [], otherGates: [], modLines: v.modLines, blocks: [] };
 });
 const moved = techs.filter(t => t.reEra).map(t => `${t.id} ${t.vanillaEra}→${t.era}`);
@@ -104,5 +116,6 @@ console.log('  minted technology                 year  era  serves');
 for (const t of newT) console.log('  ' + t.id.padEnd(33) + t.year + '   ' + t.era + '   ' + t.unlocks.map(u => u.ind + ' e' + u.era).join(' + '));
 console.log(`  era moves against vanilla (ERA_MOVES): ${moved.join(', ') || 'none'}`);
 console.log(`  vanilla technologies renamed: ${techs.filter(t => t.renamed).length}`);
+console.log(`  prerequisites added to vanilla technologies (PREREQ_ADDS): ${techs.filter(t => t.prereqsAdded).map(t => `${t.id} + ${t.prereqsAdded.join('/')}`).join(', ') || 'none'}`);
 console.log(`  technologies that gate at least one of our tiers: ${techs.filter(t => t.unlocks.length).length}`);
 console.log(`\n  wrote config/tech_tree_options.${SUFFIX}.json — next: node tools/make_ab_config.mjs --A 2.0 --B 1.5 --suffix <canon> --ai-steep glass,tooling:3`);

@@ -402,6 +402,15 @@ metrics, canonise the latest changes"*): the config is the same bytes (`806c8b3d
 the research-bar loc (165 lines × 11 languages: "the base method's staffing" → "base-method staffing", whose apostrophe broke the vanilla bar
 tooltip — BUGS_AND_FIXES 2026-09-30) and the build stamps. No script, recipe, define or number moved, so no metric can: F177's
 measurements of this canon stand as they are.
+⭐ **2026-10-03 — THE CANON'S BYTES MOVED, ITS RECIPES DID NOT** (BALANCE_FRAMEWORK **§10.93**, rules 6 and 7, user-ruled): the book is now sha256
+`07ffa6f57af0e8ec` (both copies) — three rungs' `target_be` / `wage_pct` restated under the most basic secondary methods (Sewing Machines 64, Electric
+Sewing Machines 48, Mass Production 32; recorded as `_basic_be`; neither field reaches the game) — and its tree twin `b56d75721e77f2d9` carries one
+departure from vanilla, **Conveyors a prerequisite of Compression Ignition** (`PREREQ_ADDS`, so Mass Production's mandated Assembly Lines keep their own
+gate). With §10.93's secondary rules (the reviewed table, the mandates, no dead or "off"-only groups) the canon's NEXT build differs from F177's measured one
+in those and in the building names; it is UNMEASURED, and the repo's `mod/` (regenerated `-NoDeploy` 2026-10-03) is that build. ⚠ The deployed copy in
+Documents is NOT the canon: since 2026-10-03 13:58 it is the latest probe's book `e1a12-ai1135-tex1140-artmerge` WITHOUT telemetry (user-asked, for a
+playtest) — `mod_playtest_tex1140/`, proven byte-identical to probe `20261003_111956`'s build bar its two telemetry files (a rebuild with the probe's own
+telemetry and token reproduced its recorded fingerprint exactly). The previous playtest build (e1a12-ai1135, 2026-10-02 20:34) is kept in `mod_playtest_e1a12ai1135/`.
 
 ### (HISTORY) THE CANON WAS `canon-dams` FROM 2026-09-27 TO 2026-09-29 (user-ruled: *"Remove everything you suggested and canonize the build."*)
 
@@ -1688,6 +1697,16 @@ config/mod_config.e1a12-ai1135-artmerge.json ⭐ THE COMPRESSED DESIRE LADDER (u
                         crafts at 800 (`--craft-ai`), the merge hosts at the midpoint of the new values; 57 ai_value fields and the records
                         differ, nothing else. The chain is scratchpad-free: the five commands sit in the book's `_ab`, `_trade_variant`,
                         `_artisan` and `_merge` records, plus `dams.rules = family` after make_dam_config as for every e1a book. Un-ignored with its twin
+config/mod_config.e1a12-ai1135-tex1140-artmerge.json ⚗ TEXTILE'S MERGED HOST AT ITS OWN COST (user-ruled 2026-10-03: "Go with the host cost, run a 30-year
+                        probe"; FINDINGS F211 §4) + its tree twin (the arm's, byte for byte, sha256 04ac513168388956): the arm's book with the Sewing
+                        Machines host (which also runs Electric Sewing Machines) at its own e2's 1,140 construction points instead of the midpoint 1,571,
+                        ai_value 3,873 unchanged — `make_merge_config --base config/mod_config.e1a12-ai1135-art.json --suffix e1a12-ai1135-tex1140-artmerge
+                        --host-cost textile:own`, then `restate_basic_be.mjs --write`. Field diff against the arm's book: that building_cost and the
+                        `_merge` records. ⚠ The twin was COPIED from the arm's: the intermediate twins on disk (e1a12-ai1135, -trade, -dams, -art) predate
+                        the Conveyors prerequisite of 2026-10-03, so re-running ONE step from an intermediate copies a stale twin — the full chain from
+                        tier4-e1 (whose twin carries it) does not. Probe 20261003_111956 (1 × 1836→1866, FINDINGS F213): the frontier builds (77 shortlist
+                        levels at 1866 against 3–41) and British clothes fall to 0.75 of base, but the e1 rung grows (179 against 104–133) and misplaced
+                        capital rises (24% against 15–20%). Not ruled on. Un-ignored with its twin
 config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
@@ -2204,7 +2223,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         config/tech_tree_options.<suffix>.json (the L20 twin). Every vanilla technology carries
                         vanilla's era, name and prerequisites; the departures are the spec's ERA_MOVES (the 2026-08-30
                         top-rung rule — against vanilla's eras only vulcanization moves, 3 → 4; `reEra` marks it so
-                        emit_techs patches the vanilla file), TECH_RENAMES_RULED (empty) and the ADDITIONS' minted
+                        emit_techs patches the vanilla file), TECH_RENAMES_RULED (empty), PREREQ_ADDS (since 2026-10-03: conveyors appended
+                        to compression_ignition's prerequisites, §10.93 rule 7 — recorded as `vanillaPrereqs` / `prereqsAdded`, which
+                        emit_techs patches into the vanilla file) and the ADDITIONS' minted
                         technologies (3 since 2026-09-13 — furniture, paper, fertilizer; motor's fell to the era rule — each placed by
                         its own year). Validates: no minted technology in era 1, none
                         gating nothing, every prerequisite known, same-category and not in a later era, no technology
@@ -2870,6 +2891,63 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⭐ criteria.mjs's T0–T3 read merge books the same way since 2026-09-30 (commit df5769f: a host's staffing
                         shared out over its main methods by the levels running each); the old-rung census and obsolescence readers
                         still count by building type
+  testbed/ledger/mandate_switch.mjs  IS EVERY MANDATED AUTOMATION BESIDE THE MAIN METHOD IT BELONGS TO? (§10.93, 2026-10-03): per run and yearly
+                        summary, the levels on each mandated main method (Sewing Machines, Electric Sewing Machines, Mass Production) against
+                        those on its gated copy, world-wide, and with --detail the countries where they differ — the merged textile building's
+                        switch is the case it exists for (20261002_235755 run 1: one or two stale levels 1913–1926). Pairs from each run's OWN
+                        book through lib_secondary_compat. `--session <stamp> [--setup <name>] [--detail] [--every N]`
+  testbed/ledger/us_history.mjs  THE UNITED STATES' CENTURY PER RUN — the politics to check before reading "the USA is agrarian" as economics
+                        (2026-10-03, FINDINGS F210's addendum): from events.tsv the 1836 Texas revolt, every US–Mexico play and Mexican capitulation,
+                        and every secession or revolution the USA faced with its winner (a side's own win first, then the USA's — secessions can
+                        overlap); from the yearly summaries' `states` map the year California first has an American owner, the Mexican cession's
+                        owners at 1886, the Confederacy's and New Africa's lifetimes, the USA's capitulations and bankruptcies, and the USA's GDP ÷
+                        vanilla's median with U* along the century — SPLIT into population ÷ vanilla's median and GDP per head ÷ vanilla's median
+                        per head, which is what separates a territorial loss from an economic one. `<label>=<session>[:<setup>] [...]` (a pooled
+                        `a,b` session names its runs <time>/runNNN), a label `van` sets the denominators; a tally per arm (California American by
+                        1886, Confederate secessions, the CSA independent by 1900 / at 1936, bankrupt before 1890, ever capitulated). First read
+                        (F211): the compressed-ladder arm's 1935 shortfall is population (0.77×) at 1.45× vanilla's GDP per head
+  testbed/ledger/country_composition.mjs  ONE COUNTRY'S VALUE ADDED BY SECTOR, YEAR BY YEAR, ACROSS ARMS (2026-10-03, F211 §3): Σ (va_out − va_in) × 52
+                        at BASE prices per sector, the sectors from VANILLA's building groups read live (a tiered rung takes its industry's vanilla
+                        anchor's group, a craft rung is "crafts", a dam "power"); medians over each arm's runs of the £M and of the share, the total ÷
+                        the `van` arm's. `[--tag USA] [--years …] [--runs] <label>=<session>[:<setup>] [...]`. Base prices because vanilla's v8
+                        summaries carry no market-priced goods flows (the displayed GDP tracks them within ~0.94–1.08, F178 §9.4)
+  testbed/ledger/return_per_point.mjs  PROFIT PER CONSTRUCTION POINT BESIDE THE AI DESIRE (2026-10-03, F211 §4): per building type, Σ profit ÷ Σ staffed
+                        levels ÷ its construction points (the book's building_cost, else vanilla's), pool or world, median over runs, with the payback at
+                        £600 a point, the ai_value and the staffed levels — does the desire track the return on capital? `[--year 1935] [--scope
+                        pool|world] [--filter <regex>] <label>=<session>[:<setup>] [...]`. ⚠ No validity rule (free deposits, labour): that is
+                        misplaced_capital.mjs's job; this is the per-type reading beside it
+  testbed/ledger/textile_luxury.mjs  TEXTILE'S RUNGS AND THEIR LUXURY LINES IN THE SHORTLIST (2026-10-03, F211 §4): per rung (a merge host split by the
+                        main method each level runs), levels, staffed levels, the levels on Craftsman Sewing / Elastics, profit per staffed level;
+                        medians of the pool's sums over runs. `[--year 1935] [--scope pool|world] [--runs] <label>=<session>[:<setup>] [...]` —
+                        `--scope world` sums every country record, `--runs` adds each run's line under the median (to place a one-seed probe)
+  testbed/ledger/input_price_flags.mjs  ⭐⭐ INPUT-PRICE RED FLAGS — A STANDING CHECK, user-ruled 2026-10-03 (BALANCE_FRAMEWORK §10.94, FINDINGS F212):
+                        HIGH = ≥ 1.70 × base at every reading of a stretch ≥ 2 y (readings ≤ 1.1 y apart); SWING = within 3 years a ≥ 0.5 × base range on
+                        < 10 units a week of SUPPLY (the window's median — "shortages in disguise"); every good ANY industry's production method consumes
+                        (read live from the game) plus the book's rung inputs; LOCAL goods (electricity, transportation, services) EXCLUDED; the major
+                        markets of the eleven tags. Two sources: the MARKET order books (G lines + the yearly GW lines of `market_goods_wide`, which
+                        run_schedule.ps1 now adds to every run — supply = sell orders) and the SAVE SUMMARIES (supply = the market members' production + in a
+                        v10+ summary their imports, trade capacity × the run's traded quantity, a LOWER bound; price = producers' goods_sales ÷ va_out) — `auto` takes the order books where yearly GW lines resolve; the summaries are BLIND where
+                        a market makes none of the good (vanilla's Japan had engine demand and no producer for decades). The summaries give every flag its
+                        context whatever the source: the producers' staffed levels and the BUYERS PRESENT — building · method, most levels at a reading, IN
+                        HOW MANY READINGS (F215: seven Assembly Lines tooling levels at one reading of four once read as "tooling short of oil" in a German
+                        market with no oil economy) — or "no buyer in the market" + the rungs that would eat it — never dismissed for want of demand (the user: an industry that cannot
+                        begin growing shows exactly that). ⭐ The producer map is every game building whose FIRST production-method group outputs one good
+                        (a brace-depth parse: vanilla closes some blocks on an indented " }") plus the book's rungs; it THROWS if the coal/iron/lead/sulfur/
+                        steel/explosives/tools producers move (ON_GAME_UPDATE). ⚠ Until 2026-10-03 afternoon the tiered goods' producers came from the
+                        book alone, so a CONTROL run priced no steel/tools/engines/paper/fertilizer/explosives/glass — F212's first "vanilla never flags"
+                        was that. `<label>=<session>[,<session>][:<setup>] [...] [--ref <label>=<session…>[:<setup>]] [--source auto|market|summary|both]
+                        [--yearly] [--from Y] [--until Y] [--list 40] [--html <file>] [--md] [--json <file>]` (thresholds `--high --years --gap --swing
+                        --window --supply`); `--ref` adds a REFERENCE arm reported as one count line in the prose; `--html` writes the ledger's highlighted
+                        verdict card (fill_ledger.sh → redflags.html → `__REDFLAGS__`), `--md` the probe readout's prose; `--yearly` thins quarterly
+                        summaries so arms of mixed cadence compare. ⚠ A --ref read on a v9 summary (no trade: production alone) gets the book's counts on THAT basis
+                        printed beside it (vanilla 0.5 HIGH / 20.8 SWING a run, the arm n=3 1.3 / 26.7). ⚠ At the ruled line vanilla itself throws ~21 SWING flags a century run (books 23–28):
+                        read SWING against the `--ref` line; the HIGH years separate books from vanilla ×5–6. The pinned vanilla n=16 has v8 summaries (no
+                        goods_sales), so the yearly vanilla reference is the eleven-tag set (20260920_225047 + 20260920_192007 run 1, n=4) — say so where quoted
+  testbed/ledger/old_rungs_by_industry.mjs  OLD RUNGS BESIDE THEIR REPLACEMENT, PER INDUSTRY, ACROSS ARMS (2026-10-03, F210's addendum): the
+                        ledger's countrySplit rule (a worker on a rung two+ eras behind the best rung his own country staffs in the industry) per
+                        industry, medians of each arm's runs, as workers and as % of the industry, plus the e0+e1 share, for the shortlist pool and
+                        the world, each run on its own book. `<year> <label>=<session>[:<setup>] [...]`. ⚠ Books with different ladders compare
+                        what each calls two eras behind (motor is [0,2,3] on the canon, [1,2,3] on the e1-anchor books)
   testbed/ledger/criteria.mjs  ⭐⭐ THE CRITERIA REGISTER (user-ruled 2026-09-17, BALANCE_FRAMEWORK §10.83 — the governing section near the top of this
                         file): aim / soft / hard per scope (the shortlist pool and the world), end-state means over 1932–1936, HARD lines per run with the binary
                         outcome (broken by stall / by runoff — the anchor, the pooled U*, the capital-abundance pair, the end-state GDP lines), SOFT lines, everything else on
@@ -3245,6 +3323,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         build.ps1 -> run -> harvest -> cross-run markets_all.tsv. Interactive p/r/s/x control;
                         crash policy. Never call the builder directly for test data. Specs in
                         testbed/schedules/, results in testbed/sessions/ (the ONE results root).
+                        ⭐⭐ THE RED-FLAG FEED IS ON FOR EVERY RUN (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.94): it adds
+                        `market_goods_wide` on 1 July of every year from 1836 to the year before `until`, on the eleven tags
+                        read from ledger/lib_markets.mjs's `TELEMETRY_TAGS` (it THROWS if that list cannot be read), MERGED
+                        with the schedule's own wide_dates / wide_tags / metrics (a union — the emitter takes one tag list for
+                        all wide dates); the plan print and each run's log line say so, and `telemetry.json` records it.
+                        `-NoRedFlagFeed` drops it — only for a re-run whose telemetry must match an old batch. ~50 lines a
+                        market a year, ≤ 11 markets (L3-bounded); proven on a throwaway control build (30 July blocks, guarded tags)
                         ⭐ `tools/testbed/NO_NEW_RUNS` (2026-09-30) is the FILE twin of the [s] key: checked before EVERY
                         run, it lets a running game finish and starts nothing further — the tool for a user deadline on
                         STARTING games (the STOP file is the [x] key and closes the running game). Dropped at a set local
@@ -3267,10 +3352,59 @@ tools/                  dev tooling — NOT shipped in the mod
                         -> config/mod_config.vanilla_stub.json; the headless twin of the UI's Bring-to-vanilla,
                         used as the control arm when measuring what the tier split alone does
   goods_prices.tsv      THE price table — the single source for the builder, both solvers, BOTH linters and the UI
-  lint.sh                profitability + negative-goods linter wrapper (runs both awks below)
-  lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter (ladder_tiers.txt is GENERATED; prices come
-                        from goods_prices.tsv via `-v PRICES=`, never a copy inside the awk)
-  lint_negative_goods.awk negative-goods invariant linter (no PM combination drives a good's building total < 0)
+  lint.sh                profitability + negative-goods linter wrapper (runs both awks below on ONE concatenation: every
+                        vanilla + mod production-method, group and building file, vanilla first so the mod overrides — the mod's own
+                        01_industry.txt with its remapped gates included)
+  lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter. ⭐ SINCE 2026-10-03 (BALANCE_FRAMEWORK §10.93 rule 6,
+                        user-ruled: "BE numbers should mean 'under most basic of all secondary PMs available for the building'. Not 'main
+                        PM only'. Skipping checks is wrong") it checks EVERY main method of a building — a merged host's second method
+                        included, which had no drift guard before — under, in every other group, the FIRST member legal beside it
+                        (ungated, or gated on the main method or on a method already chosen; power-bloc gated never chosen): the "off"
+                        method almost everywhere, the mandated copy where one is mandated. It FAILS a main method with nothing legal in
+                        some group. The 2026-10-02 stop-gap that left mandated groups out is gone. ladder_tiers.txt is GENERATED; prices
+                        come from goods_prices.tsv via `-v PRICES=`, never a copy inside the awk
+  lint_negative_goods.awk negative-goods invariant linter (no PM combination drives a good's building total < 0) —
+                        goods only, and lint.sh's result only PRINTS; the HARD rule is lint_pm_combos.mjs below
+  lint_pm_combos.mjs    ⭐⭐ THE PRODUCTION-METHOD COMBINATION RULE — HARD (user-ruled 2026-10-02, BALANCE_FRAMEWORK §10.93), run
+                        by build.ps1 on every build and THROWING. Reads the EMITTED mod over the game, every building the game
+                        loads: (1) no legal combination of one method per group (a PM-gated method only beside a method it names)
+                        takes an input good, an output good OR ANY PROFESSION'S EMPLOYMENT below −0.011; (2) no DEAD method — a
+                        member gated on main methods its building lacks, which the game still SHOWS, greyed, at its own numbers
+                        (vanilla's Elastics / Precision Tools / Bone China on the crafts, the user's playtest); (3) every 1836
+                        history block names only methods its building's groups list; (4) NARRATIVE COMPATIBILITY on tier
+                        buildings — no secondary or automation method beside a main method the pair-by-pair review in
+                        lib_secondary_compat.mjs marked it incompatible with (a carried pair the review never covered only
+                        WARNS); (5) no labour-saving method on a craft rung; (6) every group of a tier building has something to
+                        run beside every main method; (7) a MANDATED automation is the only choice beside its main method and carries
+                        no technology gate its main method does not imply (the building's technology and the method's, with every
+                        prerequisite, in the tree the mod loads — since 2026-10-03; it was "no gate at all").
+                        `node tools/lint_pm_combos.mjs [modDir] [config]`.
+                        Each failure kind proven to trip on a sabotaged copy the day it was written
+  lib_secondary_compat.mjs ⭐⭐ WHICH SECONDARY / AUTOMATION METHOD MAY RUN BESIDE WHICH MAIN METHOD — the table of BALANCE_FRAMEWORK
+                        §10.93, REVIEWED ONE COMBINATION AT A TIME (user, 2026-10-02: "No, no universal rule. Go through all vanilla
+                        combinations one by one"): `REVIEWED` (139 pairs, every vanilla secondary of each tiered industry × every vanilla
+                        main method of it), `NOT_BESIDE` (the 14 incompatible, each with its reason — Assembly Lines not beside Muskets,
+                        Rifles, Cannons, Smoothbores, Percussion Caps, Wrought Iron Tools; no powered automation beside the handcraft
+                        methods; …) and the borderline pairs judged compatible — ACCEPTED by the user. ONE table: emit_secondaries
+                        drops from it, lint_pm_combos verifies against it; `validateCompat(GAME)` THROWS on a key the game does not define.
+                        Keyed by VANILLA method names, so it serves every book (a minted addition takes the vanilla method below it).
+                        ⭐ `MANDATED` (user-ruled 2026-10-02 23:55): an automation that is narratively the same as a main method —
+                        Mechanized Looms ↔ Sewing Machines, Automatic Power Looms ↔ Electric Sewing Machines, Assembly Lines ↔ Mass
+                        Production — is the ONLY choice of its group beside that main method (a vanilla-quantity copy with no law gate and
+                        no technology gate its main method does not imply) and is not allowed beside the main methods listed before it
+                        (derived into NOT_BESIDE)
+                        ⭐ SINCE 2026-10-03 ALSO THE ONE DEFINITION OF "THE MOST BASIC SECONDARY AVAILABLE" (§10.93 rule 6): `basicSecondaries`
+                        (per group, the first member legal beside the rung's vanilla main method — the mandated copy where one is mandated),
+                        `basicTotals` / `basicEmployment` (their goods and jobs, × workforce_mult), `secondaryOptions` (every legal member,
+                        an empty list for a group the building does not carry — the balance sheet's options), and `readTechPrereqs` /
+                        `techClosure` (the prerequisite closure in the tree a mod loads — rule 7's kept gates and lint check 7)
+  basic_secondaries.mjs `node tools/basic_secondaries.mjs --config <book> [--options]` — per rung, the goods of its most basic secondary
+                        methods as QUANTITIES (build.ps1 adds them, priced with its own table, to the building name's "Recipe BE"), or
+                        with --options the sheet's per-rung secondary options (ui/data.js `sec_options`). JSON on stdout; §10.93 rule 6
+  restate_basic_be.mjs  `node tools/restate_basic_be.mjs --config <book> [--write]` — re-applies make_ab_config's target_be / wage_pct
+                        restatement under the most basic secondary methods to a book written before 2026-10-03, without regenerating its
+                        chain. PROVES ITSELF: every rung without a mandate must reproduce its stored numbers exactly, or it prints
+                        UNEXPECTED and writes nothing. --write records `_basic_be` (the rungs changed, before and after)
   lint_solvency.mjs     THE SOLVENCY LINTER (§10.63 / landmine L18) — every tier's BASE PM must be able to
                         break even at SOME price inside the engine's own 25–175% band: output ×1.75,
                         inputs ×0.25, wages included. `--census` ranks every tier by how close it is to
@@ -3302,12 +3436,15 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⭐ Since 2026-09-30 it checks CRAFT rungs against `_artisan.recipes` (§10.91.1) and MERGED rungs against
                         `_merge.pairs` (§10.91.2): a `method_of` the record does not name, a host that is not the rung directly below,
                         a merged rung with no technology, and a host whose cost / ai_value is not the geometric midpoint of the two
-                        rungs' era-rule values all FAIL (proven on three sabotaged copies of merge6).
+                        rungs' era-rule values all FAIL (proven on three sabotaged copies of merge6). A pair recorded with `cost_rule: 'own'`
+                        (make_merge_config `--host-cost`, 2026-10-03) has its host's cost checked as its OWN era's instead, ai_value still the midpoint.
                         `--config <path>` scores an alternate book, `--census` prints every rung's era, technology, game era
                         and deviation. Out of scope, and says so: a book without `era_game_era` (the six-rung one)
   emit_techs.mjs        THE TECH TREE, EMITTED (ROADMAP step 1) — called by build.ps1, which THROWS if it
                         fails. Reads config/tech_tree_options.json's SHIPPING option and writes the additive
-                        new-technology file, the era moves into vanilla's production AND military files, the
+                        new-technology file, the era moves into vanilla's production AND military files, the tree's
+                        added prerequisites (a vanilla technology's `prereqsAdded`, appended inside that technology's own block — it
+                        THROWS if vanilla's list is no longer the tree's `vanillaPrereqs`; since 2026-10-03, §10.93 rule 7), the
                         per-tree AI research weight (config `tech_ai_weight_mult` — DEFAULT 1/1/1 by ruling
                         2026-08-17, at which it emits NOTHING; the 2026-08-11 society ×0.8 is superseded;
                         a tree ≠1 gets `multiply` appended in every vanilla ai_weight of its file and sets
@@ -3416,9 +3553,25 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⭐ THE MERGE AMENDMENT (2026-09-30, §10.91.2): a building carrying merged rungs (`method_of`) gets each rescalable
                         secondary once PER MAIN METHOD — named <pm>_<that rung's key>, scaled to that rung's output and inputs, and gated
                         `unlocking_production_methods = { <that rung's main method> }` — so the secondary stays in proportion to whichever
-                        method runs. A vanilla-gated secondary keeps its ORIGINAL only when no main method satisfies the gate (the builder's
-                        gate remap would otherwise make it selectable at vanilla quantities beside a merged method). Plain buildings mint
-                        exactly what they did before, under the same names. THROWS on a craft rung that also hosts a merge
+                        method runs. Plain buildings mint exactly what they did before, under the same names. THROWS on a craft rung
+                        that also hosts a merge
+                        ⭐⭐ THE §10.93 AMENDMENT (2026-10-02, the user's playtest): (a) a building no longer carries a method NONE of its
+                        main methods can run — until then a rung that failed a vanilla PM gate KEPT VANILLA'S ORIGINAL, which the game
+                        SHOWED, greyed, at vanilla numbers (Elastics −70 clothes on a craft making 2.7); (b) NARRATIVE COMPATIBILITY from
+                        the pair-by-pair table in lib_secondary_compat.mjs: no member (rescalable, labour-saving or "off") beside a main
+                        method the review marked it incompatible with (Assembly Lines off Muskets, Rifles, Cannons, Smoothbores, Percussion
+                        Caps and Wrought Iron Tools; no powered automation beside the handcraft methods); a rung is judged by its vanilla
+                        main method; on a merged building whose methods disagree, a vanilla-quantity copy per main method that may run it,
+                        gated to that method; a group
+                        kept by reference is copied per building where a member has to go; (c) a MANDATED automation (lib_secondary_compat
+                        MANDATED) becomes the group's only member beside its main method — a vanilla-quantity copy gated to that method,
+                        its law gates removed and its technology gate KEPT only where the main method implies it (every technology of the
+                        gate in the prerequisite closure of the building's and the method's technology, in the tree THIS build emitted —
+                        since 2026-10-03; all three keep theirs once Conveyors precedes Compression Ignition) (a merged building gets one
+                        copy per main method; partly mandated THROWS);
+                        (d) a group left with nothing but an "off" method is dropped from the building. What a building no longer carries,
+                        or carries mandated, is printed under "not carried, or mandated"; a dropped method its 1836 history could name is
+                        stripped there; a history block the rewrite does not change is left byte for byte
   lib_dams.mjs          ⭐ THE HYDRO-DAM DERIVATION — ONE implementation (BALANCE_FRAMEWORK §10.89): project → LEVELS (≤ 10,000 points each), points per MW = 0.4 × (power-plant points ÷ 50) × 1.2 × m × (MW per part ÷ 560)^−0.2
                         (the plant's cost READ from the book), electricity 0.52 per MW, staff and upkeep per 50 electricity, the per-LEVEL
                         technology class (A electrical_generation / B steam_turbine / C arc_welding, shared out over a merged project's
@@ -3536,6 +3689,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         [--grant-industries a,b]` writes `start_tech_grants` handing the merged methods' technologies to those countries
                         at the 1836 start — PROBE books only (it THROWS unless the suffix contains "probe"). Books: `merge6`, and
                         `merge6-probe` (baking powder, chemical bleaching and improved fertilizer to GBR FRA USA PRU BEL)
+                        ⭐ `--host-cost <industry>:own[,…]` (2026-10-03, user-ruled for textile, F211 §4): the named hosts keep their OWN rung's
+                        building_cost instead of the midpoint (ai_value stays the midpoint), recorded per pair as `cost_rule: 'own'`, which L31
+                        re-derives (proven to trip both ways: the record removed, and the record added to a midpoint book). Written only when set,
+                        so every earlier book regenerates byte for byte (proven on the arm's book). Book: `e1a12-ai1135-tex1140-artmerge`
   make_trade_config.mjs THE PER-GOOD TRADE BOOK — `--base <config> --suffix <sfx>` writes config/mod_config.<sfx>.json = the base + 
                         `goods_traded_quantity` + `_trade` + `_trade_variant` (no base key touched) and the base's tech-tree twin
                         (L20). It holds F159 §7's FIVE-CLASS TABLE — the only copy: E bulk & perishable UNCHANGED (the untreated
@@ -3654,6 +3811,9 @@ ui/                     browser balance editor — builder.html (hand-authored) 
                         WHOLE ladder, model_only tiers included — the emission path drops those, the UI
                         must not; ⚠ a BUILD-TIME COPY: when served, the page fetches the live config over
                         /api/config and this copy is only the snapshot/file:// fallback),
+                        ⭐ `sec_options` (since 2026-10-03, §10.93): per tier key and group, the vanilla secondary methods legal beside
+                        that rung's main method wherever they differ from vanilla's group (an empty list = the building does not carry
+                        it) — the sheet offers exactly these and defaults to the first, so a mandated automation is on by default;
                         `start_exceptions` (config/start_exceptions.json embedded, so the Mod-changes
                         page can enumerate the 1836 rules standalone), `prices`, and **`techs`** — a COMPACT
                         index of the SHIPPING tech tree, `id → {n name, e game era, c category, o
@@ -3725,7 +3885,7 @@ mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
   common/scripted_progress_bars/zzz_pm_rehaul_research_bars.txt  (generated, ADDITIVE — one bar per covered technology, shared by its three stages, each instance starting at zero. ⚠⚠ **ALL bars are `monthly_progress` — there is NO `weekly_progress` in the emitted file** (war bars were weekly/26 until the 2026-08-18 rebuild). Industry entries carry `max_value` 36; WAR entries carry `max_value` **6** and tick only while `has_variable = pmr_wargate_<tech>`, the expiring variable the wargate on_action sets. **Classify a bar by that variable, never by its cadence** — both kinds are monthly now, so a shape-based check reports "no war bars exist" and a doc-based one reports the wrong span (both happened, 2026-08-18). One tooltipped `add` term per contributing source, so several qualifying industries fill the bar proportionally faster)
   common/technology/technologies/zzz_pm_rehaul_techs.txt (generated by emit_techs.mjs, ADDITIVE — the technologies the mod ADDS (42 at the current tree: 27 production, 14 military, 1 society), each with its era, prerequisites, unlocks and the minted placeholder icon)
   common/defines/01_pm_rehaul_defines.txt                (generated by emit_techs.mjs, ADDITIVE partial override — TECH_AHEAD_OF_TIME_PENALTY_FACTOR. ⚠ ships at 0.25, which IS vanilla's value — currently a NO-OP, flagged on the UI's Mod-changes page: the 0.15 boost was withdrawn by the 2026-08-12 ruling and the emission outlived the setting. ⭐ Since 2026-08-25 it also emits an NAI block from the config's optional top-level **`ai_defines`** map (define key → value; absent/empty ⇒ no NAI block, so the canonical build is unchanged) — built for the INVESTMENT-HOARD levers the user ruled after solver2e measured pools at 47–93% of GDP with peasants unabsorbed: pool-pressure factor 0.75→0.9, wanted-construction thresholds 1.05→1.5 / 0.75→0.9, private-queue cap 0.05→0.10; since 2026-08-26 CANONICAL (§10.65.9 — the solver2f canonization carries them in config/mod_config.json). ⚠⚠ THE LONG-BUILD-TIME THRESHOLDS ARE NOW TAKEN, and this line used to deny it: `PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD` **120** and `..._VERY_LONG_...` **180**, against vanilla’s **40** and **60**. UNITS ARE **WEEKS**, and the raise is a RELAXATION, not a malus: the engine multiplies a building’s AI score by `PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_MULT` **0.5** past the first threshold and **0.25** past the second, and those two MULTs are left at vanilla — so raising the thresholds ×3 keeps an expensive building OUT of the penalty band. ⭐ The ×3 raise vs the tier4 cost ladder’s 1.4³ = **2.744×** top rung is near-exact cover BY COINCIDENCE (k was chosen on payback grounds, the thresholds for the hoard levers) — do not read it as a designed pair. ⚠ The threshold is construction time AT FULL CONSTRUCTION-INDUSTRY USAGE, so it binds on small construction sectors, not on cost alone. Levers still NOT taken: bg_construction strategy weights, AUTONOMOUS_INVESTMENT_UPDATE_COUNT_DIVISOR)
-  common/technology/technologies/{10_production,20_military,30_society}.txt (generated: WHOLE-FILE replacements of vanilla — 20 and 30 ONLY EXIST WHEN THEY CARRY SOMETHING. 10 carries the ERA MOVES + the `aniline` prerequisite swap; **20 carries era moves too** — until 2026-08-12 emit_techs patched 10 alone, so a re-era on a MILITARY technology was written into the spec, drawn by the viewer, and silently dropped on the way to the mod, with nothing failing anywhere; the ladder-era alignment moves three (repeaters, breech_loading_artillery, bolt_action_rifles) and that is what surfaced it. Any file also takes the per-tree `tech_ai_weight_mult` multiply when ≠1 — **at the ruled default 1/1/1 (2026-08-17) 30_society is NOT emitted at all**; its hardcoded ai_weight ×0.8 (2026-08-11) is superseded — no tree is damped or favoured by default, the research JEs being boost enough. Each transform asserts its own match count and THROWS on a no-op. ⭐ SINCE 2026-09-23 the canon's `finish_boost` makes emit_tech_finish.mjs OWN 20_military AND 30_society too, every researchable technology's ai_weight in all four files ending in one `# pmr_finish_boost` block — 56 / 58 / 64 / 3)
+  common/technology/technologies/{10_production,20_military,30_society}.txt (generated: WHOLE-FILE replacements of vanilla — 20 and 30 ONLY EXIST WHEN THEY CARRY SOMETHING. 10 carries the ERA MOVES + the tree's ADDED PREREQUISITES (PREREQ_ADDS — since 2026-10-03 conveyors before compression_ignition; emit_techs THROWS if vanilla's list moved) + the `aniline` prerequisite swap; **20 carries era moves too** — until 2026-08-12 emit_techs patched 10 alone, so a re-era on a MILITARY technology was written into the spec, drawn by the viewer, and silently dropped on the way to the mod, with nothing failing anywhere; the ladder-era alignment moves three (repeaters, breech_loading_artillery, bolt_action_rifles) and that is what surfaced it. Any file also takes the per-tree `tech_ai_weight_mult` multiply when ≠1 — **at the ruled default 1/1/1 (2026-08-17) 30_society is NOT emitted at all**; its hardcoded ai_weight ×0.8 (2026-08-11) is superseded — no tree is damped or favoured by default, the research JEs being boost enough. Each transform asserts its own match count and THROWS on a no-op. ⭐ SINCE 2026-09-23 the canon's `finish_boost` makes emit_tech_finish.mjs OWN 20_military AND 30_society too, every researchable technology's ai_weight in all four files ending in one `# pmr_finish_boost` block — 56 / 58 / 64 / 3)
   common/scripted_effects/00_starting_inventions.txt     (generated: WHOLE-FILE replacement — the new era-1 production technologies added to the 1836 starting sets. ⚠ `add_era_researched = era_1` is the ONLY era granted at the start, which is exactly why the ladder-era alignment refuses to move anything INTO era 1)
   common/script_values/zzz_pm_rehaul_research_values.txt (generated, ADDITIVE — per-source employment sums, `Σ(level × occupancy) × employment-per-level`. ⚠ occupancy is a WEIGHT, never a `limit` filter: the filter form scores seven half-staffed levels as zero while passing three full ones, which is the opposite of the intent)
   events/zzz_v3tb_probe.txt                              (generated, TESTBED ONLY — the only events/ file the builder ever emits, and only when a telemetry metric asks. Exists because `on_monthly_pulse` is the finest pulse vanilla has: a reading BETWEEN month boundaries is unreachable from an on_action, so a scheduled `trigger_event = { days = N }` is the only route. Never present in a normal build)
@@ -3785,7 +3945,11 @@ the game.
   `mod/common/history/buildings/` via `convert_history.ps1`), and then runs the linter — which
   must print **LINT PASSED** (BE-vs-ladder) and **NEGATIVE-GOODS CHECK PASSED** (invariant: no
   reachable PM combination drives any good's building-level total input/output below zero — see
-  Working conventions), then **MOD CHECKS PASSED** (post-build sanity on the finished mod: required files
+  Working conventions), the node linters (solvency L18, tech content, start conversion L13, the era rule L31 and
+  **PM-COMBINATION CHECK PASSED** — `lint_pm_combos.mjs`, the hard §10.93 rule: goods AND jobs never negative in a legal
+  combination, no dead method, no history block naming a missing method, no pair the compatibility review marked incompatible;
+  every one of these THROWS),
+  then **MOD CHECKS PASSED** (post-build sanity on the finished mod: required files
   exist + non-empty, one loc file per language, and the **1836 start** — one history file per vanilla
   history file, none empty, `create_building` blocks actually present, because `replace_paths` makes our
   copy the *only* history the engine reads, so an empty conversion would silently delete every starting
@@ -3864,6 +4028,13 @@ the game.
   production_methods file is a PM and every token in a `production_methods`/`unlocking_production_methods`
   list is a PM reference. The check reads all vanilla PMGs, the mod's **owned** production-methods files (so
   `pm_goods` overrides are seen), and all buildings (vanilla + mod, mod overriding).
+  ⭐⭐ **SINCE 2026-10-02 THE HARD FORM OF THIS RULE IS `tools/lint_pm_combos.mjs`** (BALANCE_FRAMEWORK §10.93, user-ruled: *"Check as a
+  hard rule that no secondary can exist that in combination with an allowed compatible primary takes any number into the negative (one
+  of the input goods or employment)"*). It adds **employment** (every profession) to the goods, **FAILS the build** (this awk's result is
+  only printed), and fails a **DEAD method** — a member gated on main methods its building lacks. ⚠ That last one is the blind spot this
+  awk has by construction: it sums only LEGAL combinations, and a method that can never be legal is never summed, yet **the game still
+  SHOWS it**, greyed, at its own numbers. That is how vanilla's Elastics (−70 clothes) sat on a 500-worker craft making 2.7 with every
+  linter green.
 - **BE targets are derived from tech unlock date.** `tools/solve_be_targets.ps1` reads each tier's
   unlocking tech's **era** live from vanilla `common/technology/technologies/*.txt` and writes per-tier
   `target_be` (era anchor − H1 input discount, above) and `natural_year` (the era's representative year,
@@ -4807,8 +4978,14 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   every language file, because untranslated keys show as raw `<key>` placeholders for non-English
   players (no reliable English fallback). This is handled by the builder; you never write loc by
   hand. See MODDING_NOTES.md → Localization. In-game building names are auto-formatted as
-  `Era N. <name>. BE target <actual on-build full BE>%` (e.g. "Era 1. Bakery Food Industries. BE target 140%";
-  BE here is the wage-inclusive full break-even).
+  `Era N. <name>. Recipe BE <goods-only base-price break-even>%` (e.g. "Era 1. Food Industries (Sweeteners). Recipe BE 77%";
+  the label read "BE target" and was wage-inclusive until ROADMAP step 8 P3). ⭐ Since 2026-10-03 it is the recipe UNDER ITS MOST BASIC
+  SECONDARY METHODS (BALANCE_FRAMEWORK §10.93 rule 6, user-ruled): a mandated automation's goods count — Sewing Machines reads 55%, not 50%.
+  ⭐ **A MERGED BUILDING (a host carrying `method_of` rungs, §10.91.2) IS NAMED BY ITS ERA SPAN AND ITS BUILDING ALONE**
+  (user, 2026-10-02: *"merged industries should have a mixed name, e.g. 'era 1-2. paper mills'"*, BALANCE_FRAMEWORK §10.93):
+  "Era 1-2. Paper Mills. Recipe BE 63%/47%" — one break-even per main method in era order. The name is the host's `name` with its
+  trailing "(<method>)" removed. ⭐ **Every main production-method group is titled "Base"** (`$pm_base$`, vanilla's own title, translated
+  in every language; user-agreed 2026-10-02) — it used to carry the rung's method name. A display label only: nothing reads it.
   ⚠⚠ **N IS THE ERA, NEVER A POSITION — in the game, in the UI and in the config alike.** It used to be a
   1-based count of emitted tiers, which made the same digit mean different vintages in different industries:
   the automotive industry's first building is era 3 and shipped as "Tier 1", while arms' era-2 rung shipped

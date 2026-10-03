@@ -70,7 +70,6 @@ building_textile_mill = {
 	production_method_groups = {
 		pmg_main_textile_handsewn_clothes
 		pmg_luxury_building_textile_mill_textile_mill
-		pmg_automation_building_textile_mill
 	}
 	required_construction = 316
 	ai_value = 1000
@@ -88,7 +87,6 @@ building_textile_mill_dye_workshops = {
 	production_method_groups = {
 		pmg_main_textile_dye_workshops
 		pmg_luxury_building_textile_mill_textile_mill_dye_workshops
-		pmg_automation_building_textile_mill
 	}
 	required_construction = 600
 	ai_value = 3000
@@ -106,7 +104,7 @@ building_textile_mill_sewing_machines = {
 	production_method_groups = {
 		pmg_main_textile_sewing_machines
 		pmg_luxury_building_textile_mill_textile_mill_sewing_machines
-		pmg_automation_building_textile_mill
+		pmg_automation_building_textile_mill_textile_mill_sewing_machines
 	}
 	required_construction = 1140
 	ai_value = 9000
@@ -124,7 +122,7 @@ building_textile_mill_electric_sewing_machines = {
 	production_method_groups = {
 		pmg_main_textile_electric_sewing_machines
 		pmg_luxury_building_textile_mill_textile_mill_electric_sewing_machines
-		pmg_automation_building_textile_mill
+		pmg_automation_building_textile_mill_textile_mill_electric_sewing_machines
 	}
 	required_construction = 2166
 	ai_value = 27000
@@ -144,7 +142,6 @@ building_furniture_manufactory = {
 	production_method_groups = {
 		pmg_main_furniture_handcrafted_furniture
 		pmg_luxury_building_furniture_manufactory_furniture_manufactory
-		pmg_automation_building_furniture_manufactory
 	}
 	required_construction = 316
 	ai_value = 1000
@@ -216,7 +213,6 @@ building_glassworks = {
 	production_method_groups = {
 		pmg_main_glass_forest_glass
 		pmg_luxury_building_glassworks_glassworks
-		pmg_glassblowing
 	}
 	required_construction = 316
 	ai_value = 1000
@@ -286,7 +282,6 @@ building_tooling_workshop = {
 	unlocking_technologies = { manufacturies }
 	production_method_groups = {
 		pmg_main_tooling_crude_tools
-		pmg_automation_building_tooling_workshop
 	}
 	required_construction = 316
 	ai_value = 1000
@@ -303,7 +298,7 @@ building_tooling_workshop_pig_iron = {
 	unlocking_technologies = { steelworking }
 	production_method_groups = {
 		pmg_main_tooling_pig_iron
-		pmg_automation_building_tooling_workshop
+		pmg_automation_building_tooling_workshop_tooling_workshop_pig_iron
 	}
 	required_construction = 600
 	ai_value = 3000
@@ -873,7 +868,6 @@ building_automotive_industry = {
 		pmg_main_automotive_automobile_production
 		pmg_aeroplanes_automotive_industry
 		pmg_tanks_automotive_industry
-		pmg_automation_building_automotive_industry
 	}
 	required_construction = 1520
 	possible = {
@@ -901,7 +895,7 @@ building_automotive_industry_mass_automobile_production = {
 		pmg_main_automotive_mass_automobile_production
 		pmg_aeroplanes_automotive_industry_mass_automobile_production
 		pmg_tanks_automotive_industry_mass_automobile_production
-		pmg_automation_building_automotive_industry
+		pmg_automation_building_automotive_industry_automotive_industry_mass_automobile_production
 	}
 	required_construction = 2888
 	possible = {
@@ -957,7 +951,7 @@ building_arms_industry = {
 	unlocking_technologies = { gunsmithing }
 	production_method_groups = {
 		pmg_main_arms_muskets
-		pmg_automation_building_arms_industry
+		pmg_automation_building_arms_industry_arms_industry
 	}
 	required_construction = 600
 	ai_value = 1000
@@ -974,7 +968,7 @@ building_arms_industry_rifles = {
 	unlocking_technologies = { rifling }
 	production_method_groups = {
 		pmg_main_arms_rifles
-		pmg_automation_building_arms_industry
+		pmg_automation_building_arms_industry_arms_industry_rifles
 	}
 	required_construction = 1140
 	ai_value = 3000
@@ -1026,7 +1020,7 @@ building_artillery_foundry = {
 	unlocking_technologies = { artillery }
 	production_method_groups = {
 		pmg_main_artillery_cannons
-		pmg_automation_building_arms_industry
+		pmg_automation_building_arms_industry_artillery_foundry
 	}
 	required_construction = 600
 	ai_value = 1000
@@ -1043,7 +1037,7 @@ building_artillery_foundry_smoothbores = {
 	unlocking_technologies = { shell_gun }
 	production_method_groups = {
 		pmg_main_artillery_smoothbores
-		pmg_automation_building_arms_industry
+		pmg_automation_building_arms_industry_artillery_foundry_smoothbores
 	}
 	required_construction = 1140
 	ai_value = 3000
@@ -1096,7 +1090,7 @@ building_munition_plant = {
 	unlocking_technologies = { percussion_cap }
 	production_method_groups = {
 		pmg_main_munition_percussion_caps
-		pmg_automation_building_munition_plant
+		pmg_automation_building_munition_plant_munition_plant
 	}
 	required_construction = 800
 	possible = {

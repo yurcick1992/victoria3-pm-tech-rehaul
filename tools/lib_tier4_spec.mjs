@@ -13,7 +13,8 @@
 //     era — ERA, never rung index, see THE ERA RULE below), the research events (the ruled four-rung parameters) and
 //     the keys/names a rung needs to exist as its own building;
 //   - EVERYTHING that alters vanilla is an explicit entry in this file with its ruling: ADDITIONS (rule 2), ERA_MOVES,
-//     PLACEMENT (the ruled adjustments where the era rule cannot place a ladder by itself), TECH_RENAMES_RULED (empty).
+//     PLACEMENT (the ruled adjustments where the era rule cannot place a ladder by itself), TECH_RENAMES_RULED (empty),
+//     PREREQ_ADDS (prerequisites appended to vanilla technologies).
 //
 // ⭐⭐⭐ THE ERA RULE (user-ruled 2026-09-13 — "the final ladder realignment"; BALANCE_FRAMEWORK §10.78):
 //   TWO ERA KINDS, NEVER CONFLATED. A TECHNOLOGY is referred to by its GAME era (1–5), which has mechanical meaning
@@ -163,6 +164,20 @@ export const ADDITIONS = [
 //   are listed so the rule stays visible. Raising a technology raises everything that depends on it — the tree tool
 //   checks that no prerequisite ends up in a later era than its dependent.
 export const ERA_MOVES = { electrical_capacitors: 4, plastics: 4, vulcanization: 4, bolt_action_rifles: 4, electric_railway: 4 };
+
+// ⭐ PREREQUISITES ADDED TO VANILLA TECHNOLOGIES, each with its ruling: { id: { add: [prerequisite, …], why } }. Appended to vanilla's own
+//   list (make_tier4_techs records them as `prereqsAdded` beside `vanillaPrereqs`; emit_techs patches the technology's unlocking_technologies
+//   block in its vanilla file and THROWS if the block is not found once). The tree tool checks category and era as for any prerequisite.
+//   ⚠ A prerequisite binds EVERYTHING its technology gates, not just the rung that motivated it — the `why` says what else moves.
+export const PREREQ_ADDS = {
+  // (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.93: "Would simply requiring conveyors as the tech prerequisite for the latest automobile
+  //  industry-gating tech help? Do that"). Mass Production (automotive e3) runs the mandated Assembly Lines copy, and Assembly Lines' own gate
+  //  is conveyors; with conveyors a prerequisite of the rung's technology, every country holding Mass Production holds conveyors, so the copy
+  //  keeps vanilla's technology gate and can never leave the building with nothing legal to run.
+  //  ⚠ compression_ignition also gates motor's e3 (Diesel Engines), compression-ignition tractors, the five mines' diesel pumps and diesel trains —
+  //  all now wait on conveyors as well; and vanilla's onset dates run the other way (compression ignition 1897, conveyors 1913).
+  compression_ignition: { add: ['conveyors'], why: 'Mass Production\'s mandated Assembly Lines carry the conveyors gate (§10.93)' },
+};
 
 // Rule 1 for TECHNOLOGY names: vanilla's, unless ruled here as { id: [name, why] }. Empty. (The six-rung tree renamed
 // fourteen; none is ruled for this line. The two dating corrections — pumpjacks "Oil Drilling", threshing_machine "Steam

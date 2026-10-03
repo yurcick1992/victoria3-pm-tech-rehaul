@@ -322,3 +322,6 @@ tools/testbed/no_new_runs_at.log
 # the compressed desire ladder (user-ruled 2026-10-02: crafts 800, other e0 1000, e1 1000, e2 3000, e3 5000); intermediates stay ignored
 !config/mod_config.e1a12-ai1135-artmerge.json
 !config/tech_tree_options.e1a12-ai1135-artmerge.json
+# textile's merged host at its own cost (user-ruled 2026-10-03: "Go with the host cost, run a 30-year probe"; F211 §4)
+!config/mod_config.e1a12-ai1135-tex1140-artmerge.json
+!config/tech_tree_options.e1a12-ai1135-tex1140-artmerge.json

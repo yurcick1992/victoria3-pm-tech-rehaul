@@ -218,6 +218,15 @@ save summaries, and are parameterised only by the run list at the top of each fi
   market's and the world's frontier, and the caption says so.
   ⚠ The session's own yearly summaries carry no tariffs before v11. To split the trade-only row by tariff and trade policy,
   re-summarise the kept saves and pass `--override-dir`; `trade_obsolescence.mjs` prints those splits.
+- **`input_price_flags.mjs --html`** — ⭐ **THE INPUT-PRICE RED FLAGS, highlighted inline in the VERDICT** (user-ruled 2026-10-03,
+  BALANCE_FRAMEWORK §10.94): which major market held which industrially consumed good at ≥ 1.70 × base for ≥ 2 years (HIGH) or swung it
+  ≥ 0.5 × base within 3 years on < 10 units a week of supply (SWING), when, and the buyers present (building · method, most levels at a
+  reading, in how many readings — a buyer seen once is not the starved industry, F215). `fill_ledger.sh` writes
+  `redflags.html` (+ `redflags.json`); `fill_assemble.mjs` splices it as `__REDFLAGS__` above the goal table, and an out dir without it
+  says so on the page. The fill passes vanilla's line by default (`--ref "vanilla (eleven-tag set, n=4)=20260920_225047_schedule,
+  20260920_192007_schedule:vanilla"`, `--yearly` so both sides read one reading a year) — at the ruled line vanilla throws ~21 SWING flags
+  a century run, so a book's SWING count means little without it; that reference's v9 summaries carry no trade, so the card prints the
+  book's counts on production alone beside it (like for like). Not a loss term.
 - **`batch_tables.mjs`** — the F106-layout READING tables for an arm that spans SEVERAL sessions (2026-09-09, F107):
   pools ÷ GDP, the tiered goods' prices (British market + the seven-market pool per dump date, arm beside vanilla, the 1935
   ratio), wage units, British production ÷ vanilla at 1900 and 1935, GDP ÷ vanilla — medians over the USABLE runs pooled across

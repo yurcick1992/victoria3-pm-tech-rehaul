@@ -13,6 +13,53 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-10-03 — a merged rung's recipe had NO break-even drift guard, and the lint judged every building by its groups' first members blindly (BALANCE_FRAMEWORK §10.93 rule 6)
+
+**Symptom.** None visible: every build printed LINT PASSED. Found while redoing the lint on the user's ruling that a building's BE means "under the most
+basic of all secondary PMs available for the building" (*"Skipping checks is wrong, rather we should check properly so that it'd match"*).
+**Root cause.** `lint_profitability.awk` took each group's FIRST-LISTED member as "the base" and found the main method as the member of the main group
+on the ladder — `pmgBase`, one per group. A merged building's main group lists the host's own method first, so the SECOND main method (Baking Powder,
+Bleached Paper, Electric Sewing Machines, Spray Finishing, Electric Arc, Improved Fertilizers on the merge books, since 2026-09-30) was never compared with
+its `target_be` at all. And the first member was taken blindly: a group whose first member is GATED on another method (the mandated automations of
+2026-10-02, each a copy gated to its own main method) was summed whatever the main method, which the 2026-10-02 stop-gap "fixed" by leaving such groups
+out — the skip the user ruled wrong. It also read only vanilla's `01_industry.txt` plus the mod's `zzz_*` files, so the mod's own gate-remapped
+`01_industry.txt` was invisible to it.
+**Fix.** Per building, EVERY main method on the ladder is checked, each under the first member of every other group legal beside it (ungated, or gated
+on the main method or on a method already chosen; power-bloc gated never); a main method with nothing legal in some group FAILS. `lint.sh` feeds it the
+full vanilla + mod definition set (the same concatenation the negative-goods check reads). The targets were restated on the same basis
+(`restate_basic_be.mjs`, three rungs), so all 56 main methods of the canon and the arm pass at +0/−0.
+**Detect next time.** Sabotage, three ways, all trip: a merged method's target off by 12; the looms copy removed from its group ("NOTHING LEGAL beside …");
+the copy's tools ×12 (+66 pp). A detector that silently covers fewer objects than it reports is the L-register's oldest failure — the count it prints is
+now "main method(s)", which is the thing it checks.
+
+## 2026-10-02 — the craft rungs showed vanilla's Elastics, Precision Tools and Bone China at vanilla numbers: methods no building of theirs could ever run (BALANCE_FRAMEWORK §10.93)
+
+**Symptom (the user's playtest of `e1a12-ai1135`).** In the building panel of the e0 crafts, the luxury group offered Elastics (Handsewn Clothes:
+−70 clothes), Precision Tools (Handcrafted Furniture: −55 furniture) and Bone China (Forest Glass: −20 glass) — deductions many times what a
+500-worker craft level makes (2.7 / 2.7 / 1.8). The same on two factory rungs: Elastics on Dye Workshops, Bone China on Leaded Glass.
+
+**Root cause.** These are the only three PM-gated secondaries in vanilla's industry file (`unlocking_production_methods`: Elastics on the sewing-machine
+methods, Precision Tools on lathe / mechanized workshops, Bone China on crystal glass / houseware plastics). `emit_secondaries.mjs` mints a per-rung copy
+only where one of the building's main methods satisfies the gate — and on every OTHER rung it put **vanilla's original** back into the group, reasoning
+that a method gated on main methods the building lacks "stays unavailable — the restriction intact". It did stay unavailable. **The game shows a locked
+method anyway**, greyed in the dropdown at its own numbers (the field that would hide it, `is_hidden_when_unavailable`, exists at PM and PMG level and was
+not set). Nothing failed: `lint_negative_goods.awk` enumerates only LEGAL combinations, and a method that can never be legal is never summed — so the
+one check that looks at secondary deductions was blind to it by construction. And `lint.sh`'s result was never fatal in `build.ps1` anyway.
+
+**Fix.** A building no longer carries a method none of its main methods can run (dropped, and printed under "not carried"); a group copied per building
+lists only what can run there. The new **`tools/lint_pm_combos.mjs`**, run fatally by `build.ps1`, fails a DEAD method (a member gated on methods its
+building lacks), any legal combination taking an input, an output or an employment below zero (goods AND jobs — the awk checked goods only), an 1836
+history block naming a method its building lacks, a pair the compatibility review marked incompatible (§10.93, `lib_secondary_compat.mjs`) and a
+labour-saving method on a craft rung. Proven to trip on each.
+
+**Detect next time.** A greyed method in a building panel is a method the building's emitted groups list; `lint_pm_combos.mjs` names every one. ⚠ The
+general lesson: **a check that enumerates only legal states cannot see an illegal state that is DISPLAYED** — what the player sees is the group list, so
+the group list is what must be clean.
+
+⚠ The parse trap met while writing the checker: a production method has a `workforce_scaled` block under `state_modifiers` (pollution) BEFORE the one
+under `building_modifiers` (goods), so a first-match regex for `workforce_scaled = {…}` reads the pollution block and reports every main method as
+producing nothing — which made every secondary look like it drove its building negative. Read goods and jobs inside `building_modifiers` only.
+
 ## 2026-09-30 — the save summary kept ONE country record per definition: a civil war's other side, a revolt's leftover country, even China, vanished from `countries` and from the world totals (landmine L38, FINDINGS F186)
 
 **Symptom:** reading the craft/merge thirty-year batch, the 1866.1.1 summary of `20260930_181601_craft-merge-30y/run001_artisan6`

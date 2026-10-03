@@ -103,7 +103,9 @@ for (const ind of cfg.industries || []) {
     if (!t.tech) faults.push(`${ind.id} ${t.key}: a merged rung needs a technology to gate its method`);
   }
   if (MP && !tiers.some(t => t.method_of === MP.host && t.key === MP.added)) faults.push(`${ind.id}: _merge records ${MP.added} as a method of ${MP.host}, which the config does not carry`);
-  if (MP) notes.push(`${ind.id}: e${MP.added_era} is a second main method of the e${MP.host_era} building — the host's cost and ai_value checked as the geometric midpoint of the two rungs'`);
+  if (MP) notes.push(`${ind.id}: e${MP.added_era} is a second main method of the e${MP.host_era} building — ` + (MP.cost_rule === 'own'
+    ? `the host's cost checked as its own era's (cost_rule own), its ai_value as the geometric midpoint of the two rungs'`
+    : `the host's cost and ai_value checked as the geometric midpoint of the two rungs'`));
   // ---- 2. the era-keyed book ----------------------------------------------------------------------------------
   if (!AB) continue;
   const A = +AB.A, B = +AB.B, lift = +(AB.in0 ?? 1), in0only = !!AB.in0_only;
@@ -176,8 +178,10 @@ for (const ind of cfg.industries || []) {
     if (anchor) { const C = AB.cost_ratio ?? A; const L = Array.isArray(AB.cost_ladder) ? AB.cost_ladder : null;
       const costAt = e2 => { const ce = (AB.anchor_cost && aEra != null) ? (e2 - ORIGIN) : e2;   // --anchor-cost: the cost exponent follows the anchor
         return AB.cost_flat ? anchor : L ? Math.round(anchor * L[Math.min(ce, L.length - 1)]) : Math.round(anchor * Math.pow(C, ce)); };
-      const wantCost = mergedIn ? Math.round(Math.sqrt(costAt(e) * costAt(mergedIn.era))) : costAt(e);
-      if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor} × ${L ? L[e] + ' by era' : C + '^' + e}${mergedIn ? `, the midpoint with e${mergedIn.era}` : ''})`); }
+      // `_merge.pairs[ind].cost_rule === 'own'` (make_merge_config --host-cost, 2026-10-03, F211 §4): the host keeps its own era's cost
+      const ownCost = mergedIn && MP.cost_rule === 'own';
+      const wantCost = mergedIn && !ownCost ? Math.round(Math.sqrt(costAt(e) * costAt(mergedIn.era))) : costAt(e);
+      if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor} × ${L ? L[e] + ' by era' : C + '^' + e}${mergedIn ? (ownCost ? ', the host\'s own (cost_rule own)' : `, the midpoint with e${mergedIn.era}`) : ''})`); }
     const steep = AB.ai_steep && AB.ai_steep.industries.includes(ind.id) ? AB.ai_steep.ratio : null;
     const aivAt = e2 => (AB.ai_ladder && !steep) ? Math.round(AB.ai_ladder[Math.min(e2, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steep || A, e2));
     const wantAiv = mergedIn ? Math.round(Math.sqrt(aivAt(e) * aivAt(mergedIn.era))) : aivAt(e);

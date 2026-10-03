@@ -40,5 +40,9 @@ step node $L/fill_research.mjs $OUT --mod $MOD
 step node $L/fill_tierchoice.mjs $OUT --session $SESSION --setup $SETUP --config $BOOK
 step node $L/fill_indecomp.mjs $OUT --mod $MOD --van $VAN --config $BOOK
 step node $L/fill_obsolescence.mjs $OUT --session $SESSION --setup $SETUP --config $BOOK
+# ⭐ the input-price red flags (BALANCE_FRAMEWORK §10.94): prose, highlighted inline in the verdict — every report carries it
+#   with vanilla's line beside it: at the ruled thresholds vanilla throws ~21 SWING flags a century run, so a book's count needs it. The yearly
+#   vanilla reference is the eleven-tag set (v9+ summaries; the pinned n=16 is v8 and prices nothing) — the prose names it as such
+step node $L/input_price_flags.mjs "$SETUP=$SESSION:$SETUP" --ref "vanilla (eleven-tag set, n=4)=20260920_225047_schedule,20260920_192007_schedule:vanilla" --yearly --html $OUT/redflags.html --json $OUT/redflags.json --list 0
 step node $L/fill_goals.mjs $OUT/goals.html $OUT
 echo; echo "data filled in $OUT — now write lede.html incidents.html next.html footer.html tokens.json title.txt, then fill_assemble + fill_verify"

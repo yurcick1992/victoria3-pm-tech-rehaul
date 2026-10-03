@@ -40,6 +40,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 'node:fs';
 const BOM = '﻿';
 import { join } from 'node:path';
+import { notBeside, validateCompat, mandatedFor, MANDATED, readTechPrereqs, techClosure } from './lib_secondary_compat.mjs';
 
 const MOD = process.argv[2] || 'mod';
 const CFGP = process.argv[3] || process.env.MOD_CONFIG || 'config/mod_config.json';
@@ -68,6 +69,9 @@ const TECH = {};
 for (const f of readdirSync(GAME + '/common/technology/technologies'))
   Object.assign(TECH, blocks(rd(GAME + '/common/technology/technologies/' + f)));
 const techGates = b => listOf(b || '', 'unlocking_technologies');
+// the tree THIS build emitted (the game's technology files with the mod's over them) - read once, on first use, by the mandated copies
+let PREREQ_OF = null;
+const PREREQ = () => (PREREQ_OF ||= readTechPrereqs(GAME, MOD));
 // ⚠⚠ A TECH GATE CAN IMPLY A LATER MAIN METHOD (user-caught 2026-09-01). `pm_radios` needs `radio`,
 //   and radio's PREREQUISITE CLOSURE contains `electrical_generation` — the technology our e2 rung
 //   stands on. So anyone able to run the radio method necessarily already has the e2 main method,
@@ -81,6 +85,22 @@ const closure = (t, seen = new Set()) => {
 };
 
 const cfg = JSON.parse(rd(CFGP));
+
+// ⭐⭐ NARRATIVE COMPATIBILITY, PAIR BY PAIR (user-ruled 2026-10-02, BALANCE_FRAMEWORK §10.93): "ensure that all secondary and automation
+//   PMs are narratively compatible with the primary PMs of our tiered industries" — and, the same evening, "No, no universal rule. Go through
+//   all vanilla combinations one by one". tools/lib_secondary_compat.mjs holds the reviewed table (Assembly Lines not beside Muskets, Rifles,
+//   Cannons, Smoothbores, Percussion Caps or Wrought Iron Tools; no powered automation beside the handcraft methods; …). A rung is judged by
+//   its VANILLA main method — a minted addition by the vanilla method below it, the inheritance the PM gates use. ⚠ The rule acts on every
+//   member of a group, the labour-saving automation kept by reference included: such a group is copied per building where a member has to go.
+//   (A first cut the same evening used a universal formula — no method two narrative eras ahead of its main method — which the user rejected.)
+validateCompat(GAME);
+const vanillaMainOf = (industry, v) => v.vanilla_pm ||
+  ((industry.tiers || []).filter(x => (x.era ?? 0) <= (v.era ?? 0) && x.vanilla_pm).slice(-1)[0] || {}).vanilla_pm || null;
+const compatOk = (industry, p, v) => !notBeside(vanillaMainOf(industry, v), p);
+// an "off" method — Traditional Looms, Automation Disabled, No Luxuries …: a vanilla method whose body is a texture and nothing else
+const isOffMethod = p => { const b = PM[p]; return b != null && !/=/.test(b.replace(/texture\s*=\s*"[^"]*"/g, '')); };
+const DROPPED = [];   // [building, group, method, why] — what a building no longer shows, printed so the build log says so
+
 const PRICE = {};
 for (const line of rd('tools/goods_prices.tsv').split(/\r?\n/).slice(1)) {
   const c = line.split('\t'); if (c.length >= 2 && c[0]) PRICE[c[0].trim()] = +c[1];
@@ -164,6 +184,26 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     const groups = (gmatch[1].match(/[a-z_0-9-]+/g) || [])
       .map(g => (!PMG[g] && g.endsWith(sfx) && PMG[g.slice(0, -sfx.length)]) ? g.slice(0, -sfx.length) : g);
     const newGroups = [];
+    // a member kept at VANILLA quantities (an "off" method, or a labour-saving one) under the compatibility table: kept by name where
+    // every main method of the building may run it, dropped where none may, and — in a merged building whose main methods disagree —
+    // copied once per main method that may, each copy gated to that method (vanilla quantities: these methods carry no output ratio)
+    const byName = (p, g) => {
+      if (!PM[p]) return [p];
+      const ok = variants.filter(v => compatOk(industry, p, v));
+      if (ok.length === variants.length) return [p];
+      if (!ok.includes(t)) (STRIP[bkey] ||= new Set()).add(p);   // the 1836 history runs the host's own method: it may not name p
+      const why = v => notBeside(vanillaMainOf(industry, v), p);
+      if (!ok.length) { DROPPED.push([bkey, g, p, why(variants[0])]); return []; }
+      for (const v of variants) if (!ok.includes(v)) DROPPED.push([bkey, g, p, `beside ${v.pm_key}: ${why(v)}`]);
+      return ok.map(v => {
+        const nk = p + '_' + v.key.replace(/^building_/, '');
+        let nb = PM[p];
+        nb = /unlocking_production_methods/.test(nb) ? nb.replace(/unlocking_production_methods\s*=\s*\{[\s\S]*?\}/, 'unlocking_production_methods = { ' + v.pm_key + ' }')
+          : '\n\tunlocking_production_methods = { ' + v.pm_key + ' }' + nb;
+        outPMs.push(nk + ' = {' + nb + '}'); locPairs.push([nk, p]); minted++;
+        return nk;
+      });
+    };
     for (const g of groups) {
       const gb = PMG[g];
       if (!gb || /^pmg_main_/.test(g)) { newGroups.push(g); continue; }
@@ -175,7 +215,54 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         if (members.some(p => exclPms.has(p))) throw new Error(`emit_secondaries: ${bkey} excludes a member of ${g}, which is not minted per rung — exclude the whole group instead`);
         if (wmT < 1 && members.some(p => /building_employment_[a-z_]+_add\s*=\s*-?[1-9]/.test(PM[p] || '')))
           throw new Error(`emit_secondaries: ${bkey} (workforce_mult ${wmT}) keeps ${g} by reference, whose methods employ people at vanilla scale — exclude the group or give it goods`);
-        newGroups.push(g); continue;
+        // ⭐ A MANDATED AUTOMATION (lib_secondary_compat MANDATED, user-ruled 2026-10-02): on a main method whose automation is narratively
+        //   the same thing (Sewing Machines ↔ Mechanized Looms, Electric Sewing Machines ↔ Automatic Power Looms, Mass Production ↔
+        //   Assembly Lines), the group offers ONLY that method — a vanilla-quantity copy gated to the main method, with no law gate and no
+        //   technology gate the main method does not already imply (below), so it runs whenever the main method runs and nothing else of the group can. A merged building gets one copy per main
+        //   method (each gated to its own), so exactly one member is valid at a time; the vanilla members leave its 1836 history (none names them
+        //   today). A building whose main methods are only partly mandated in one group was never designed: THROW.
+        //   ⭐ (2026-10-03) A COPY KEEPS VANILLA'S OWN TECHNOLOGY GATE WHERE ITS MAIN METHOD IMPLIES IT: every technology of the gate within the
+        //   prerequisite closure of the building's technology and the method's, in the tree THIS build emitted (emit_techs runs first) - Mechanized
+        //   Looms on Sewing Machines (both Mechanized Workshops), Assembly Lines on Mass Production once conveyors is a prerequisite of
+        //   compression_ignition (lib_tier4_spec PREREQ_ADDS, user-ruled the same day). A gate the main method does NOT imply is dropped as before:
+        //   the group has nothing else to run, and a country holding the main method without it would be left with no valid method.
+        const mand = variants.map(v => { const a = mandatedFor(vanillaMainOf(industry, v)); return a && members.includes(a) ? a : null; });
+        let kept;
+        if (mand.some(Boolean)) {
+          if (!mand.every(Boolean)) throw new Error(`emit_secondaries: ${bkey}'s main methods are only partly mandated in ${g} (${variants.map((v, i) => v.pm_key + '=' + (mand[i] || 'none')).join(', ')}) — not designed`);
+          kept = variants.map((v, i) => {
+            const a = mand[i], nk = a + '_' + v.key.replace(/^building_/, '');
+            const own = listOf(PM[a], 'unlocking_technologies'), seeds = (v === t ? [t.tech] : [t.tech, v.tech]).filter(Boolean);
+            const implied = techClosure(PREREQ(), seeds), keepTech = own.length > 0 && own.every(x => implied.has(x));
+            let nb = (keepTech ? PM[a] : PM[a].replace(/\n\s*unlocking_technologies\s*=\s*\{[^}]*\}/, '')).replace(/\n\s*(disallowing_laws|unlocking_laws)\s*=\s*\{[^}]*\}/g, '');
+            nb = /unlocking_production_methods/.test(nb) ? nb.replace(/unlocking_production_methods\s*=\s*\{[\s\S]*?\}/, 'unlocking_production_methods = { ' + v.pm_key + ' }')
+              : '\n\tunlocking_production_methods = { ' + v.pm_key + ' }' + nb;
+            outPMs.push(nk + ' = {' + nb + '}'); locPairs.push([nk, a]); minted++;
+            DROPPED.push([bkey, g, '(mandated) ' + a, `always on beside ${v.pm_key}: ${MANDATED[vanillaMainOf(industry, v)].why}` +
+              (!own.length ? '' : keepTech ? `; keeps its own gate (${own.join(' ')}), implied by ${seeds.join(' + ')}` : `; its own gate (${own.join(' ')}) dropped - not implied by ${seeds.join(' + ') || 'no technology'}`)]);
+            return nk;
+          });
+          for (const p of members) (STRIP[bkey] ||= new Set()).add(p);
+        } else {
+          // the compatibility table: where a member has to go (or be gated per main method), the group is copied for this building
+          kept = members.flatMap(p => byName(p, g));
+        }
+        if (kept.join(' ') === members.join(' ')) { newGroups.push(g); continue; }
+        // nothing left but an "off" method (Traditional Looms, Automation Disabled …): the group has no choice to offer — the building
+        // does not carry it (and its 1836 history may not name it)
+        if (kept.every(isOffMethod)) {
+          for (const p of members) (STRIP[bkey] ||= new Set()).add(p);
+          DROPPED.push([bkey, g, '(group) ' + g, 'nothing but an off method left']);
+          continue;
+        }
+        const ng = g + '_' + bkey.replace(/^building_/, '');
+        const tex = /texture\s*=\s*"[^"]*"/.exec(gb);
+        const sel = /ai_selection\s*=\s*[a-z_]+/.exec(gb);
+        outPMGs.push(ng + ' = {\n\t' + (tex ? tex[0] : '') + (sel ? '\n\t' + sel[0] : '') +
+          '\n\tproduction_methods = {\n' + kept.map(x => '\t\t' + x).join('\n') + '\n\t}\n}');
+        newGroups.push(ng); groupsMinted++;
+        locPairs.push([ng, g]);
+        continue;
       }
 
       // THE REFERENCE — the lowest primary PM that allows this secondary.
@@ -208,7 +295,7 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
       for (const p of members) {
         if (exclPms.has(p)) continue;   // a craft rung does not carry it (Vacuum Canning, Patent Stills)
         const pb = PM[p];
-        if (!pb || !rescalable.includes(p)) { newMembers.push(p); continue; }
+        if (!pb || !rescalable.includes(p)) { newMembers.push(...byName(p, g)); continue; }
         const gatedOn = listOf(pb, 'unlocking_production_methods');
         // ⭐ ONE COPY PER MAIN METHOD OF THE BUILDING (BALANCE_FRAMEWORK §10.91.2, 2026-09-30): its own rung, then any rung
         //   merged into it as a second main method (`method_of`). Each copy is scaled to ITS method's output and input bill
@@ -221,11 +308,14 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
           //   rung — vanilla restricts bone china to advanced glassworks, elastics to sewing-machine
           //   mills, precision tools to lathe workshops, and the builder's own gate remap preserves
           //   that ("the secondary unlocks at exactly the tiers whose main PM satisfied it in vanilla").
-          //   So a tier that does NOT satisfy the vanilla gate keeps the ORIGINAL vanilla method, which
-          //   names main PMs it does not have and therefore stays unavailable — the restriction intact.
-          //   ⚠ In a merged building the original is kept only when NO main method satisfies the gate: build.ps1's gate remap
-          //   appends every tier's pm_key whose vanilla method the gate names, the merged method's included, so an original
-          //   kept beside a minted copy would be selectable at VANILLA quantities under that method.
+          //   So a tier that does NOT satisfy the vanilla gate gets NO copy of it.
+          //   ⚠⚠ UNTIL 2026-10-02 SUCH A TIER KEPT THE *ORIGINAL* VANILLA METHOD, on the theory that a method gated on main methods
+          //   the building lacks "stays unavailable — the restriction intact". It did stay unavailable, AND THE GAME SHOWED IT, at
+          //   vanilla numbers: Elastics (−70 clothes) on the Handsewn Clothes craft and on Dye Workshops, Precision Tools (−55
+          //   furniture) on the Handcrafted Furniture craft, Bone China (−20 glass) on the Forest Glass craft and on Leaded Glass —
+          //   deductions many times what a 500-worker craft level makes (the user's playtest of e1a12-ai1135). The user: "If those
+          //   PMs are actually disallowed by something, we need to not show them (or not have)". Now the building simply does not
+          //   carry them, and tools/lint_pm_combos.mjs FAILS the build on any method gated on main methods its building lacks.
           if (gatedOn.length) {
             // ⚠⚠ A MINTED RUNG HAS NO `vanilla_pm`, so `mine` used to be EMPTY and the rung always failed the
             //   gate — it kept the original vanilla secondary, which names main methods it does not have, so the
@@ -241,6 +331,8 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
               ...(v.vanilla_pm_aliases || (inherited && inherited.vanilla_pm_aliases) || [])].filter(Boolean);
             if (!mine.some(x => gatedOn.includes(x))) continue;
           }
+          // the compatibility table (lib_secondary_compat.mjs): no copy beside a main method the review marked it incompatible with
+          if (!compatOk(industry, p, v)) { DROPPED.push([bkey, g, p, `beside ${v.pm_key}: ${notBeside(vanillaMainOf(industry, v), p)}`]); continue; }
           const ref = refFor(p);
           const g0 = v.output_good || industry.output_good || industry.good;
           const mainOutRef = ref ? val(ref.out) : 0;
@@ -307,9 +399,11 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
           newMembers.push(nk); minted++; mintedHere++;
           report.push({ bkey: v.key, pm: p, Rout: +Rout.toFixed(2), Rin: +Rin.toFixed(2), ref: ref ? ref.pm : '(none)' });
         }
-        // no main method of this building satisfies the vanilla gate: keep the ORIGINAL, which names main methods the
-        // building does not have and therefore stays unavailable — the restriction intact
-        if (!mintedHere) newMembers.push(p);
+        // no main method of this building may run it (the vanilla gate, or the era rule): the building does not carry it at all.
+        // (It used to keep the vanilla ORIGINAL, which the game then showed at vanilla numbers — see the gate note above.)
+        if (!mintedHere && gatedOn.length) DROPPED.push([bkey, g, p, 'gated on ' + gatedOn.join('/') + ', which no main method here is']);
+        // the 1836 history runs the host's own method: if that method got no copy, no start block may name the vanilla method
+        if (!(RENAME[bkey] && RENAME[bkey][p])) (STRIP[bkey] ||= new Set()).add(p);
       }
       const ng = g + '_' + bkey.replace(/^building_/, '');
       const tex = /texture\s*=\s*"[^"]*"/.exec(gb);
@@ -375,7 +469,8 @@ if (process.argv.includes('--write')) {
           const re = new RegExp('\\s*"' + s + '"', 'g');
           if (re.test(out)) { out = out.replace(re, ''); hit = true; stripped++; }
         }
-        if (hit) swaps++;
+        if (!hit) return whole;   // nothing to re-point or strip: leave the block byte for byte
+        swaps++;
         return 'building = "' + bkey + '"' + mid + 'activate_production_methods = {' + out + '}';
       });
     // ⚠ rd() strips the BOM; write it back, or every converted history file ships without one and the engine's lexer
@@ -437,6 +532,11 @@ if (minted) {
 console.log('secondaries: ' + minted + ' per-tier method(s) in ' + groupsMinted + ' group(s) across ' +
   new Set(report.map(r => r.bkey)).size + ' building(s)' +
   (craftChecked.length ? `; ${craftChecked.length} on fractional-unit (craft) rungs with employment × workforce_mult` : ''));
+// what a building no longer carries (or carries beside one of its main methods only): the vanilla gate, or the compatibility table
+if (DROPPED.length) {
+  console.log('  not carried, or mandated (' + DROPPED.length + '):');
+  for (const [b, g, p, why] of DROPPED) console.log('    ' + b.padEnd(48) + ' ' + p.padEnd(44) + ' ' + why);
+}
 const byPm = {};
 for (const r of report) (byPm[r.pm] ||= []).push(r);
 for (const p of Object.keys(byPm).sort())

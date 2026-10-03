@@ -79,7 +79,11 @@ param(
     # ever reaching its own exit-code test, costing the whole window (TESTBED_LANDMINES L21). The
     # blocking mechanism was never identified, so this bounds the build rather than diagnosing it.
     # 10 minutes is ~85x the normal build and still releases the machine the same morning.
-    [int]    $BuildTimeoutMinutes = 10
+    [int]    $BuildTimeoutMinutes = 10,
+    # ⭐ THE RED-FLAG FEED IS ON BY DEFAULT (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.94): every run logs `market_goods_wide` on
+    # 1 July of every year on the eleven telemetry tags, so ledger/input_price_flags.mjs can read a 2-year stretch from the order books.
+    # This switch drops it, for a re-run whose telemetry must match an old batch byte for byte. Not for saving log lines.
+    [switch] $NoRedFlagFeed
 )
 
 $ErrorActionPreference = "Stop"
@@ -132,6 +136,28 @@ $defMetrics  = @(Val $defaults "metrics" @("market_goods"))
 $defAutosave = Val $defaults "autosave_interval" "five_year"
 $defTimeout  = [int](Val $defaults "timeout_minutes" 360)
 $defDumps    = @(Val $defaults "dump_dates" @())
+
+# ⭐ THE RED-FLAG FEED (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.94): "Add yearly market_goods_wide for the eleven tags to every schedule
+# from now on." The input-price red flags (HIGH: ≥ 1.70 × base for ≥ 2 years; SWING: a ≥ 0.5 × base swing within 3 years on < 10 units a week of
+# supply) need a reading a year; the decadal dump dates resolve nothing. So every run carries `market_goods_wide` on 1 July of every year from
+# 1836 to the year before `until` (July: clear of the January dumps and their phases, the canon_ports_n2 precedent) on the eleven tags of
+# tools/testbed/ledger/lib_markets.mjs — ONE definition of the list, read from there. MERGED with any wide_dates / wide_tags a schedule sets
+# (a union; the emitter takes one tag list for all wide dates, so a schedule's own longer list also covers the July readings). ~50 lines a market
+# a year, ≤ 11 markets: bounded at any end date (L3). `-NoRedFlagFeed` drops it.
+$RedFlagTags = @()
+if (-not $NoRedFlagFeed) {
+    $lm = Get-Content (Join-Path $Repo 'tools\testbed\ledger\lib_markets.mjs') -Raw -Encoding UTF8
+    $mt = [regex]::Match($lm, "export const TELEMETRY_TAGS\s*=\s*\[([^\]]*)\]")
+    if (-not $mt.Success) { throw "red-flag feed: TELEMETRY_TAGS not found in tools\testbed\ledger\lib_markets.mjs - the one tag list moved" }
+    $RedFlagTags = @([regex]::Matches($mt.Groups[1].Value, "'([A-Z]{3})'") | ForEach-Object { $_.Groups[1].Value })
+    if ($RedFlagTags.Count -lt 8) { throw "red-flag feed: read only $($RedFlagTags.Count) tag(s) from TELEMETRY_TAGS - refusing a feed that would miss the majors" }
+}
+function Get-RedFlagDates {
+    param([string]$Until)
+    $u = $Until.Split('.'); $uy = [int]$u[0]; $um = [int]$u[1]
+    $out = @(); for ($y = 1836; ($y -lt $uy) -or ($y -eq $uy -and $um -gt 7); $y++) { $out += "$y.7.1" }
+    return $out
+}
 
 # ---- L16: A `defaults` KEY THAT IS HONOURED FOR SOME FIELDS AND SILENTLY DROPPED FOR OTHERS --------
 # `dump_dates` used to be read from the RUN ONLY, with no $defaults fallback - unlike `tags` and
@@ -201,9 +227,20 @@ foreach ($r in $runs) {
     foreach ($d in $dumps) {
         if ($d -notmatch '^\d{3,4}\.\d{1,2}\.1$') { throw "run #$i dump date '$d' must be the 1st of a month (on_monthly_pulse only fires then)" }
     }
+    # the red-flag feed (above): merged into what the run asks for, never replacing it
+    $runMetrics = @(Val $r "metrics" $defMetrics)
+    $runWideDates = @(Val $r "wide_dates" @(Val $defaults "wide_dates" @()))
+    $runWideTags  = @(Val $r "wide_tags"  @(Val $defaults "wide_tags"  @()))
+    $feedDates = @(); if (-not $NoRedFlagFeed) { $feedDates = @(Get-RedFlagDates $until) }
+    if ($feedDates.Count) {
+        if ($runMetrics -notcontains 'market_goods_wide') { $runMetrics += 'market_goods_wide' }
+        $runWideDates = @(@($runWideDates) + $feedDates | Select-Object -Unique)
+        $runWideTags  = @(@($runWideTags) + $RedFlagTags | Select-Object -Unique)
+    }
     $plan += [ordered]@{
         index = $i; setup = $sid; until = $until; dump_dates = $dumps
-        tags = @(Val $r "tags" $defTags); metrics = @(Val $r "metrics" $defMetrics)
+        tags = @(Val $r "tags" $defTags); metrics = $runMetrics
+        red_flag_feed = $feedDates.Count
         # Which markets get PER-POP lines (metric `wages`): group -> successor chain. An OBJECT, so
         # it is passed through as-is rather than through the array-coercing Val defaults above.
         # ⚠ Both lookups are guarded: this script runs under StrictMode, where reading a property an
@@ -229,8 +266,8 @@ foreach ($r in $runs) {
         # below, and preflight will confirm it.
         breakdown_dates = $(Val $r "breakdown_dates" @(Val $defaults "breakdown_dates" @()))
         breakdown_tags  = $(Val $r "breakdown_tags"  @(Val $defaults "breakdown_tags"  @()))
-        wide_dates      = $(Val $r "wide_dates"      @(Val $defaults "wide_dates"      @()))
-        wide_tags       = $(Val $r "wide_tags"       @(Val $defaults "wide_tags"       @()))
+        wide_dates      = $runWideDates     # the schedule's own wide_dates (run, else defaults) ∪ the red-flag feed
+        wide_tags       = $runWideTags      # the schedule's own wide_tags ∪ the eleven
         origin_goods    = $(Val $r "origin_goods"    @(Val $defaults "origin_goods"    @()))
         # v14: which dump dates carry the wages metric's per-pop sweep (both|first|last|none).
         # A scalar, so plain Val (no array coercion) is right.
@@ -274,6 +311,8 @@ $estMin = [int]($years * 85 / 60)          # ~85 s per in-game year, measured on
 Write-Host ""
 Write-Host "schedule '$label': $($plan.Count) run(s) over $($setupNames.Count) setup(s)"
 foreach ($p in $plan) { Write-Host ("  #{0,-3} {1,-12} -> {2}   dumps: {3}" -f $p.index, $p.setup, $p.until, ($p.dump_dates -join ', ')) }
+if ($NoRedFlagFeed) { Write-Host "red-flag feed: OFF (-NoRedFlagFeed) - the input-price red flags will read only the dump dates and the save summaries" }
+else { Write-Host ("red-flag feed: market_goods_wide on 1 July of every year on {0} tags ({1}); run #1 carries {2} reading date(s)" -f $RedFlagTags.Count, ($RedFlagTags -join ' '), $plan[0].red_flag_feed) }
 Write-Host ("estimate: ~{0:N1} h of game time (rough - late years run slower)" -f ($estMin / 60))
 Write-Host ""
 if ($WhatIf) { Write-Host "-WhatIf: nothing built, nothing launched."; return }
@@ -477,6 +516,8 @@ foreach ($p in $plan) {
     [System.IO.File]::WriteAllText($specFile, ($spec | ConvertTo-Json -Depth 6), $Utf8)
 
     Log "=== run $($p.index)/$($plan.Count): setup '$($p.setup)' -> $($p.until) ==="
+    if ($p.red_flag_feed) { Log "red-flag feed: market_goods_wide on $($p.red_flag_feed) yearly 1 July date(s) over $(@($p.wide_tags).Count) tag(s) (BALANCE_FRAMEWORK §10.94)" }
+    else                  { Log "red-flag feed: none for this run$(if ($NoRedFlagFeed) { ' (-NoRedFlagFeed)' } else { ' (its span holds no 1 July)' })" "WARN" }
     $setupSpec = $setups.$($p.setup)
     $resolved = Resolve-Setup -Id $p.setup -Spec $setupSpec -SpecFile $specFile -Token $token
 

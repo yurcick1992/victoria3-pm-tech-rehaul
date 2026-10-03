@@ -316,6 +316,16 @@ So import share of a good in a market = `GetMarketImports / GetMarketBuyOrders`,
 giving the domestic side. Example (British market, 1836): `tools` production 1888.8, buy 1788.9,
 imports 0, exports 125 — i.e. a net exporter, 0% import share.
 
+### 2.4½ The yearly red-flag feed — `market_goods_wide` in EVERY run (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.94)
+`run_schedule.ps1` adds `market_goods_wide` to every run on **1 July of every year** from 1836 to the year before `until`, over the eleven
+tags of `ledger/lib_markets.mjs` (`TELEMETRY_TAGS`), merged with whatever the schedule asks; `-NoRedFlagFeed` drops it. The lines are
+`V3TB|<token>|GW|<date>|<market>|<good>|<buy>|<sell>|<price>|<production>` (buy and sell orders, the market price, production), ~50 a market
+a year, ≤ 11 markets — guarded tags (L1), bounded at any end date (L3), July so they never share a tick with the January dumps' phases.
+They stay in `logs_live/debug.log` (not harvested into a TSV): `ledger/input_price_flags.mjs` reads them by the run's token, de-duplicating
+mirror re-copies (L28). They exist for the input-price red flags — a 2-year stretch needs a reading a year, which the decadal dump dates
+cannot give — and they are the only source that prices a good in a market that makes none of it (the save summaries price a good from its
+producers). Sessions before 2026-10-03 carry no such lines; their flags come from the save summaries and say so.
+
 ### 2.5 Where a market's imports come from — VERIFIED, with one limit
 ```
 every_market = {                                    # THIS = the SOURCE market
@@ -1795,7 +1805,7 @@ mid-collapse between the two instruments' dates), not a scale factor. **VERDICT:
 | `population` | none | REPLACEABLE — summaries carry pop_statistics + professions (it is the alignment join key) |
 | `treasury` | none | REPLACEABLE — money/credit/weekly flows/budget by category are all in the summaries |
 | `building_inventory` | none | PARTIAL — save building records have staffing/levels/PMs but **no headcounts**; exact employment stays BINV (employment% × cap) or the heavy pop-table workplace join |
-| `market_goods` / `_scoped` / `_wide` | scope variants of one family, never run together | **LOG-ONLY, permanently** — the order book is not persisted (re-confirmed in the melt) |
+| `market_goods` / `_scoped` / `_wide` | scope variants of one family; ⚠ since 2026-10-03 `_wide` runs in EVERY run beside the others, yearly on 1 July (the red-flag feed, §2.4½) | **LOG-ONLY, permanently** — the order book is not persisted (re-confirmed in the melt) |
 | `origins` | none | **LOG-ONLY, permanently** — no trade-route volume database exists in the melt (only event flags); market-pair attribution lives in the live order book |
 | `events` | none | LOG-ONLY — process, not state; saves keep only current diplo state + `last_bankruptcy_date` |
 | `tech_log` | annual overlap with summaries' `technologies_held` — cross-instrument, deliberate | PARTIAL — saves cover the yearly held-set (the ledger uses it); keep `tech_log` only when day precision matters |

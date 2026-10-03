@@ -662,6 +662,19 @@ function techTitle(id){ const T = techInfo(id);
     + ' ⚠ the technology\'s era is its row in the game\'s five-era tree, which is not the rung\'s narrative era'
     + ' on the mod\'s ladder (the config\'s era_game_era maps the two: e0 ↔ 1, e1 ↔ 3, e2 ↔ 4, e3 ↔ 5).'; }
 function initSel(pmgs){ const s={}; (pmgs||[]).forEach(pg=>{ const b=basePm(pg); if(b) s[pg]=b; }); return s; }
+// ⭐ THE SECONDARY METHODS A RUNG MAY RUN (BALANCE_FRAMEWORK §10.93, 2026-10-03). PMDATA.sec_options (build.ps1, from
+// tools/lib_secondary_compat.mjs — the library the emitter reads) lists, per tier key and group, the vanilla members legal beside
+// that rung's main method wherever they differ from vanilla's group: the reviewed compatibility table, vanilla's PM gates (Elastics
+// only beside the sewing-machine methods …), a MANDATED automation as the group's only member (Mechanized Looms beside Sewing
+// Machines, Automatic Power Looms beside Electric Sewing Machines, Assembly Lines beside Mass Production), the craft rungs' exclusions;
+// an EMPTY list = the building does not carry the group at all. The sheet offers exactly those and a rung's default is the first of
+// them - so a mandated automation is on by default and the BE column is the book's target_be, "under the most basic of all
+// secondary PMs available for the building" (user-ruled 2026-10-03). Absent (an old data.js) = vanilla's lists, as before.
+// ⚠ The tiers' secondary defaults are a SHEET rule: ui/econ.js (the retired six-rung solvers' copy of the tier model) keeps initSel.
+const SECOPT = (window.PMDATA && window.PMDATA.sec_options) || {};
+function secOpts(tkey, pg){ const o=SECOPT[tkey]; if(o && o[pg]) return o[pg]; const g=VAN.pmgs[pg]; return (g&&g.pms)||[]; }
+function tierBasePm(tkey, pg){ const ms=secOpts(tkey,pg); return ms.find(p=>!pmGated(p)) || ms[0]; }
+function initSecT(pmgs, tkey){ const s={}; (pmgs||[]).forEach(pg=>{ const b=tierBasePm(tkey,pg); if(b) s[pg]=b; }); return s; }
 // normalize industries into an editable model
 const AIVAL_DEFAULT = 1000;   // PRODUCTION_BUILDING_BASE_VALUE — engine default when a building scripts no ai_value
 // ---- AI subsidy policy (config-backed top-level `building_subsidies` map) ----
@@ -720,7 +733,7 @@ function makeTiers(i){ return i.tiers.map((t,ix)=>({
     pollution:(t.pollution!=null?+t.pollution:null),
     state_infrastructure:(t.state_infrastructure!=null?+t.state_infrastructure:null),
     ship_construction:(t.ship_construction!=null?+t.ship_construction:null),
-    _sec:initSel((i.secondary_pmgs||[]).filter(pg=>VAN.pmgs[pg])),   // per-tier secondary-PM selection (session-only, default base)
+    _sec:initSecT((i.secondary_pmgs||[]).filter(pg=>VAN.pmgs[pg]), t.key),   // per-tier secondary-PM selection (session-only, default = the rung's most basic legal method, §10.93)
     inputs:Object.fromEntries(Object.entries(t.inputs).map(([g,q])=>[g,+q])),
     // frozen recipe MIX — the solver owns it (only the SCALE is solved); carried so an export keeps it
     // consistent with the inputs beside it. See ui/econ.js makeTiers and BALANCE_FRAMEWORK §10.25.
@@ -2091,7 +2104,7 @@ function applyScenarioPreset(id, quiet){
   Object.keys(ADDBUY).forEach(k=>delete ADDBUY[k]);
   Object.keys(ADDSELL).forEach(k=>delete ADDSELL[k]);
   Object.keys(REFSEL).forEach(k=>delete REFSEL[k]);                        // reference PMs back to their defaults
-  IND.forEach(i=>i.tiers.forEach(t=>{ t._sec=initSel(i.secondary_pmgs); })); // our tiers' secondaries back to base
+  IND.forEach(i=>i.tiers.forEach(t=>{ t._sec=initSecT(i.secondary_pmgs, t.key); })); // our tiers' secondaries back to their defaults (§10.93)
   for(const k in (p.buildings||{})) BLDNUM[k]=p.buildings[k];
   // battalions: the peacetime row takes history's count, the mobilised row starts empty — 1836 is a
   // peace year, and a preset that silently mobilised everyone would misprice every military good.
@@ -2271,13 +2284,16 @@ function industryCard(i){
 // inert). The selected PM's goods/employment are distributed into the Input / Output / Workforce columns; here we
 // render only the dropdowns, with the net £ effect as a hint.
 function secSelectors(i,t){
-  if(!HAVE_VAN || !i.secondary_pmgs.length) return '';
-  const rows = i.secondary_pmgs.map(pg=>{
-    const g=VAN.pmgs[pg]; const sel=t._sec[pg]||basePm(pg);
-    const opts=g.pms.map(pm=>`<option value="${esc(pm)}" ${pm===sel?'selected':''}>${esc(prettyPm(pm))}</option>`).join('');
-    const r=pmRec(sel), inV=goodsVal(r.in,false), outV=goodsVal(r.out,false), active=(sel!==basePm(pg));
+  // only the groups this rung carries, and in each only the members legal beside its main method (PMDATA.sec_options, §10.93)
+  const pgs = HAVE_VAN ? i.secondary_pmgs.filter(pg=>secOpts(t.key,pg).length) : [];
+  if(!pgs.length) return '';
+  const rows = pgs.map(pg=>{
+    const ms=secOpts(t.key,pg), base=tierBasePm(t.key,pg); const sel=t._sec[pg]||base;
+    const opts=ms.map(pm=>`<option value="${esc(pm)}" ${pm===sel?'selected':''}>${esc(prettyPm(pm))}</option>`).join('');
+    const r=pmRec(sel), inV=goodsVal(r.in,false), outV=goodsVal(r.out,false), active=(sel!==base);
+    const mand = ms.length===1 && !/^pm_(no|disabled)_/.test(ms[0]) ? ' — MANDATED beside this main method (BALANCE_FRAMEWORK §10.93): its goods and jobs are in the BE of this row' : '';
     const eff = active ? `<span class="v muted" style="font-size:10px">${inV?'−£'+round(inV):''}${(outV>0||outV<0)?' +£'+round(outV):''}</span>` : '';
-    return `<div class="secrow" title="${esc(prettyKey(pg))} — its goods go to the Input/Output columns, employment to Workforce">
+    return `<div class="secrow" title="${esc(prettyKey(pg))} — its goods go to the Input/Output columns, employment to Workforce${esc(mand)}">
       <select class="pmsel${active?' on':''}" data-ind="${i.id}" data-tier="${t.tier}" data-pmg="${esc(pg)}">${opts}</select>${eff}</div>`;
   }).join('');
   return `<div class="secsep">secondary PMs</div><div class="secselwrap">${rows}</div>`;
@@ -3349,7 +3365,7 @@ document.getElementById('applyPreset').onclick=()=>{
     const fresh = makeTiers(s);
     ind.tiers.forEach((t,ix)=>{ const f=fresh[ix]; if(!f) return;
       t.target_be=f.target_be; t.building_cost=f.building_cost; t.ai_value=f.ai_value;
-      t._sec=initSel(ind.secondary_pmgs); });
+      t._sec=initSecT(ind.secondary_pmgs, t.key); });
   });
   render();
   banner(lockedSkipped?'warn':'info', `Restored defaults for ${targets.length} group(s) (${scope==='__all'?'all industries':scope}) — target BE, volumes, build cost, ai_value & secondary PMs reset to the loaded config.`
@@ -3378,7 +3394,7 @@ document.getElementById('bringVanilla').onclick=()=>{
       if(t.vanilla_pm && VAN.pms[t.vanilla_pm]) tiersSet++; else noPm.push(`${ind.id} ${tlab(t)}`);
       t.ai_value=vanAiv;
       if(vanCost!=null) t.building_cost=vanCost;                // GUIDELINE: bring EVERYTHING editable/emittable to vanilla
-      t._sec=initSel(ind.secondary_pmgs);                       // reset secondaries to inert base
+      t._sec=initSecT(ind.secondary_pmgs, t.key);               // reset secondaries to the rung's defaults (inert base, or its mandated automation)
     });
   });
   render();

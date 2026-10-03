@@ -16,7 +16,8 @@
 //     gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds
 //     localization/<lang>/replace/zzz_pm_rehaul_tech_l_<lang>.yml
 //   WHOLE-FILE, REGENERATED FROM VANILLA EACH BUILD (so a patch flows through, nothing is frozen)
-//     common/technology/technologies/10_production.txt  — era moves + one prerequisite swap (+ ai_weight
+//     common/technology/technologies/10_production.txt  — era moves + the tree's added prerequisites (PREREQ_ADDS:
+//                                                         conveyors before compression_ignition) + one prerequisite swap (+ ai_weight
 //                                                         multiplier, only when the config sets one ≠ 1)
 //     common/technology/technologies/20_military.txt    — era moves / ai_weight mult (only when any)
 //     common/technology/technologies/30_society.txt     — era moves / ai_weight mult (only when any —
@@ -228,11 +229,35 @@ function applyAiWeightMult(txt, mult, label) {
   return txt;
 }
 
+// ⭐ PREREQUISITES THE TREE ADDS TO A VANILLA TECHNOLOGY (the spec's PREREQ_ADDS, which make_tier4_techs records as `prereqsAdded` beside
+// `vanillaPrereqs`; user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.93: conveyors before compression_ignition, so Mass Production's mandated
+// Assembly Lines can keep their own technology gate). Appended to the technology's own unlocking_technologies block, in whichever of the
+// three files holds it (each file below takes them, and a file is owned when it has any).
+// ⚠ The match is anchored inside THAT technology's block (it may not cross a column-0 `}`), and the list it finds must be the one the tree
+//   recorded as vanilla's: a patch that changes vanilla's prerequisites fails the build here rather than being silently re-written.
+const PREREQ_TECHS = OPT.techs.filter(t => (t.prereqsAdded || []).length);
+for (const t of PREREQ_TECHS) if (t.origin !== 'vanilla') throw new Error(`emit_techs: ${t.id} carries prereqsAdded but is not a vanilla technology - a minted one states its prerequisites itself`);
+function applyPrereqAdds(txt, category) {
+  for (const t of PREREQ_TECHS.filter(x => x.category === category)) {
+    const re = new RegExp(`(^${t.id} = \\{(?:(?!\\n\\})[\\s\\S])*?\\n\\tunlocking_technologies = \\{)([^}]*)(\\})`, 'm');
+    const m = txt.match(re);
+    if (!m) throw new Error(`emit_techs: ${t.id} has no unlocking_technologies block in its vanilla file - an added prerequisite needs one to append to`);
+    const found = m[2].trim().split(/\s+/).filter(Boolean);
+    if (found.join(' ') !== (t.vanillaPrereqs || []).join(' '))
+      throw new Error(`emit_techs: ${t.id}'s vanilla prerequisites are now [${found.join(' ')}] where the tree recorded [${(t.vanillaPrereqs || []).join(' ')}] - regenerate the tree (make_tier4_techs.mjs)`);
+    txt = sub(txt, re, (all, a, list, b) => a + list.replace(/\s*$/, '') + t.prereqsAdded.map(p => `\n\t\t${p}`).join('') + '\n\t' + b,
+      1, `add prerequisite(s) ${t.prereqsAdded.join(', ')} to ${t.id}`);
+    console.log(`  prerequisite added: ${t.id} now also waits on ${t.prereqsAdded.join(', ')}`);
+  }
+  return txt;
+}
+
 // ===================================================================================================
 // 2. VANILLA PRODUCTION FILE — era moves, one prerequisite swap, ai_weight mult when set
 // ===================================================================================================
 {
   let txt = vanilla('common/technology/technologies/10_production.txt');
+  txt = applyPrereqAdds(txt, 'production');
   // Re-era'd technologies, each with the reason the spec recorded.
   // ⚠ VANILLA ONES ONLY. `reEra` records that the spec moved a technology, and since the ladder-era
   // alignment (2026-08-12) most of the moved ones are technologies WE ADD — those get their era written
@@ -270,8 +295,8 @@ function applyAiWeightMult(txt, mult, label) {
 // pattern look identical.
 {
   const moves = OPT.techs.filter(t => t.reEra && t.category === 'military' && t.origin === 'vanilla');
-  if (moves.length || AIW.military !== 1) {
-    let txt = vanilla('common/technology/technologies/20_military.txt');
+  if (moves.length || AIW.military !== 1 || PREREQ_TECHS.some(t => t.category === 'military')) {
+    let txt = applyPrereqAdds(vanilla('common/technology/technologies/20_military.txt'), 'military');
     for (const t of moves) {
       const re = new RegExp(`(^${t.id} = \\{[\\s\\S]*?\\n\\tera = era_)\\d`, 'm');
       txt = sub(txt, re, `$1${t.era}`, 1, `re-era ${t.id} -> era ${t.era}`);
@@ -291,8 +316,8 @@ function applyAiWeightMult(txt, mult, label) {
 // the research journal entries being boost enough.
 {
   const moves = OPT.techs.filter(t => t.reEra && t.category === 'society' && t.origin === 'vanilla');
-  if (moves.length || AIW.society !== 1) {
-    let txt = vanilla('common/technology/technologies/30_society.txt');
+  if (moves.length || AIW.society !== 1 || PREREQ_TECHS.some(t => t.category === 'society')) {
+    let txt = applyPrereqAdds(vanilla('common/technology/technologies/30_society.txt'), 'society');
     for (const t of moves) {
       const re = new RegExp(`(^${t.id} = \\{[\\s\\S]*?\\n\\tera = era_)\\d`, 'm');
       txt = sub(txt, re, `$1${t.era}`, 1, `re-era ${t.id} -> era ${t.era}`);

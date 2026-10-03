@@ -20681,3 +20681,594 @@ compressed ladder RAISES the runoff risk or this is the seed spread every four-r
 n=2. The misplaced-capital fall is directional but consistent with F208's probe and with the mechanism the ruling names (lower e2/e3 desire, less capital
 into slow factories). The old-rung split is COUNTRY-level: a rung beside a newer one in another country of the same market is "nothing newer" here; the
 in-market vs trade obsolescence panel reads the market view.
+
+## F210 — THE COMPRESSED DESIRE LADDER, THREE MORE SEEDS ON THE §10.93 BUILD: all three intact (world GDP 0.80 / 1.01 / 0.89× vanilla at the end state, consensus loss 7.40; pooled with the 2+1, 4 intact / 1 broken, 7.02); misplaced capital down again to 21% of 1926–36's new capital (vanilla 17%); play time ×1.09 of vanilla's; but OLD RUNGS BESIDE A RUNG TWO ERAS NEWER rise to 3–7% of the shortlist's tier workers (the 2+1: ~1%), led by Dye Workshops beside Electric Sewing Machines — the e1 textile rung lost its looms to §10.93, and at the wages these countries pay the looms cost more than they save (2026-10-03, session 20261002_235755, n=3, 1836→1936)
+
+**Arm.** `{kind: config, config: config/mod_config.e1a12-ai1135-artmerge.json}` — the book of F208/F209 byte for byte as measured (sha256
+`73065d3f2a9328b9`), BUILT with the uncommitted BALANCE_FRAMEWORK §10.93 rules 1–5 (`CODE_DELTA.patch` in the session folder): no dead vanilla-gated
+method on any rung, the pair-by-pair compatibility table (Assembly Lines off Muskets, Rifles, Cannons, Smoothbores, Percussion Caps, Wrought Iron Tools),
+the MANDATED automations (Mechanized Looms on Sewing Machines, Automatic Power Looms on Electric Sewing Machines, Assembly Lines on Mass Production; the
+looms removed from Handsewn Clothes and Dye Workshops, Assembly Lines from Automobile Production — Dye Workshops and Automobile Production lose their
+automation group altogether), "Base" group titles, merged names. Schedule `e1a12_ai1135_n3.json`: a FIXED n=3 (not a 2+1: no stop watcher, every run
+plays), yearly autosaves. Reference: the pinned vanilla n=16 (20260821_131149); the 2+1 of the same book (20261002_120946, F209) read like for like.
+⚠ So against F209 this arm differs by §10.93 as a SECOND difference beside the seeds. ⚠ The book was restated after the batch (§10.93 rule 6:
+`target_be` / `wage_pct` of three rungs, `_basic_be`; no game file reads either) and its tree twin regenerated with Conveyors before Compression Ignition
+(rule 7): today's build of it is not the measured one. Ledger: https://claude.ai/artifact/JA9phhkp7X7FaRQjyvKdUG (also `REPORT.html` in the session).
+
+**Runs and health.** All three reached 1936.1.1 (100 / 100 / 101 yearly summaries, v15). Run 3 crashed once (1881.8.27) and the resume feeder landed it
+on the newest autosave; runs 1–2 ran clean. Every post-run landmine PASS (L12 / L17 / L26 / L29 / L34 / L38); the init marker in every debug log.
+
+**The register (criteria.mjs; end state = the 1932–36 mean).**
+
+| | run 1 | run 2 | run 3 | consensus (runs 1 + 3) |
+|---|---|---|---|---|
+| world GDP | 0.80× | 1.01× | 0.89× | 0.84 (the 1935 point 0.83) |
+| pooled shortlist U* | 41.3% | 13.2% | 40.2% | 1.91× vanilla's 21.3% |
+| loss | 10.6 | 8.0 | 5.4 | **7.40** |
+
+Consensus readings: pool W 0.71 and H 0.50 at the aim, pool GDP 0.91 (beyond the soft line, per capita 1.02 = W 0.71 × Y 1.44), PI 0.97 falling, PP 0.97,
+T0 at 0.89 of its 1900s level, T3 34.7% of the tiered workers (T3 ÷ rest 0.54 — F209's run 1 0.295), world W 0.73, world H 0.72. World GDP at base prices
+0.93× (price level 0.91× vanilla's). Soft flags: Britain near capital abundance in runs 2 and 3 (U* under 5% for 7 / 5 years at a mean hoard of 0.35 /
+0.25 GDP — full employment with small pools). The world-GDP reading gate puts U* and H in the normal band (0.84). **Pooled with the 2+1 (F209): 4 intact
+/ 1 broken, consensus loss 7.02** — against the canon 5.90 (F177), e1a 7.76, e1a12 8.62; directional only (one run's loss σ ≈ 6.6).
+
+**Two economies again, one runaway-side seed** (first_run_decomp.mjs, ÷ the vanilla n=16 median; world GDP = workers per capita × product per worker):
+
+| | 1880 | 1900 | 1920 | 1935 | 1935 decomposition |
+|---|---|---|---|---|---|
+| world, median | 0.96 | 0.82 | 0.81 | 0.87 | 0.76 × 1.13 |
+| world, runs 1 / 2 / 3 | 0.89 / 1.01 / 0.96 | 0.76 / 0.93 / 0.82 | 0.73 / 0.85 / 0.81 | 0.80 / 1.04 / 0.87 | |
+| shortlist, median | 0.98 | 0.71 | 0.81 | 0.92 | 0.72 × 1.42 |
+| shortlist, runs 1 / 2 / 3 | 0.66 / 1.00 / 0.98 | 0.55 / 0.90 / 0.71 | 0.65 / 0.86 / 0.81 | 0.88 / 1.42 / 0.92 | |
+
+Run 2 is the F209-run-2 shape on a smaller scale (the shortlist 1.42×, workers per capita 1.03×) but stays inside the world's hard band. Majors at 1935, ÷
+vanilla's median GDP: Britain 1.79 / 1.33 / 1.74, the USA **0.30 / 1.94 / 0.50**, France 0.89 / 1.98 / 0.39, Germany 0.50 / 0.58 / 0.81, Russia 0.85 /
+0.35 / 0.58, Japan 2.01 / 0.55 / 0.96. ⚠ **The USA is agrarian again in two seeds of three** (U* 68% / 55% at 1936 against vanilla's 31.5%; run 2 8.3%) —
+F209's "no longer agrarian" (1.23 / 0.91×) does not hold over five seeds. Britain: U* 2.7 / 4.2 / 4.8% at 1936 (vanilla 1.3%), hoard 0.29 / 0.52 / 0.31
+of GDP (vanilla 0.88).
+
+**Misplaced capital** (misplaced_capital.mjs --batch; ALL / VALID options; gross = expected payback > 3× the country's best sector's, or loss-making):
+1926–36 **21 / 19%, 21 / 19%, 28 / 26%** (median 21 / 19%), century 20 / 17%, 22 / 18%, 26 / 23%. The 2+1 read 29 / 25% and 26 / 19%, e1a12 38%, the
+canon 28%, vanilla 17%. The gross part is manufacturing (22–32% of its new capital gross); mines 9–15%, agriculture 7–20%.
+
+**⭐ OLD RUNGS BESIDE A RUNG TWO OR MORE ERAS NEWER IN THE SAME COUNTRY** (lib_era_cols countrySplit, per run, 1935; the same script on both sessions):
+
+| | world | shortlist |
+|---|---|---|
+| this batch, runs 1 / 2 / 3 | 4.66M of 36.8M (12.7%) · 2.98M of 47.9M (6.2%) · 3.32M of 41.0M (8.1%) | 1.10M of 15.5M (7.1%) · 0.71M of 22.9M (3.1%) · 0.72M of 14.7M (4.9%) |
+| the 2+1 (F209), runs 1 / 2 | 1.86M of 38.1M (4.9%) · 2.94M of 64.9M (4.5%) | 0.15M of 16.6M (0.9%) · 0.33M of 26.7M (1.3%) |
+
+In the SHORTLIST the excess is one rung: **textile's e1, Dye Workshops, beside Electric Sewing Machines** — 0.62 / 0.40 / 0.12M (the 2+1: 0.08 / 0.19M):
+Britain 0.27 / 0.17M, France 0.25M (run 1), Germany 0.10 / 0.10 / 0.11M, the USA 0.11M (run 2). Then glass e1 (0.07 / 0.12 / 0.03M), motor e1 in
+Germany in run 3 (0.32M), and the crafts (0.05–0.10M). World-wide the crafts are most of it, as in F209 (textile 0.65–1.02M, paper 0.19–0.83M,
+furniture 0.40–0.64M of artisans), plus textile e1 0.25–0.84M and motor e1 0.25–0.32M.
+⇒ **The mechanism, read from the summaries (directional, three seeds):** §10.93 took the looms off Dye Workshops (narratively the Sewing Machines rungs'
+own methods) and charges Sewing Machines and Electric Sewing Machines their looms always. At the wages these economies pay, the looms cost more than they
+save — vanilla's own note on Mechanized Looms puts its break-even at a laborer wage above £6.9 a year, and Britain's normal rate is £3.2–4.8 (F152) — so
+the change made the e1 rung relatively CHEAPER, not dearer: in Britain at 1935, Dye Workshops 71 / 62 / 8 levels (54 / 34 / 1 staffed) at £1,022 / £583
+/ £477 a staffed level a week, against the 2+1's 12 / 35 levels (0 / 29 staffed) running looms; and a loom-less level employs its full 5,000, so each
+surviving level counts more workers. The e0 FACTORIES stay nearly extinct (0.23M world-wide, payback 50 years at 1935 against the crafts' 7).
+
+**The mandated automations in the engine** (`tools/testbed/ledger/mandate_switch.mjs`): every Sewing Machines level ran its Mechanized Looms copy and every
+Mass Production level its Assembly Lines copy in all three runs. On the merged textile building, run 1 held one or two Electric Sewing Machines levels
+on the Mechanized Looms copy in ten yearly snapshots 1913–1926 (Scandinavia, Croatia, Austria) — the engine does not re-check a selected method when the
+main method changes and the AI keeps the cheaper one; runs 2–3 never did, and all three were consistent from 1927. Nothing in any error log names it.
+
+**Play time** (report_perf.mjs, observer ticks; yearly saves on both sides this time, so readable): 185.4 / 179.6 / 148.9 min, median 179.6 against
+vanilla's 165.0 — **×1.089, within the 10% budget**; the arm simulates ×0.93 the live pop objects and ×0.86 the building levels of vanilla.
+Research by tree and era tracks vanilla's within a technology (fill_research); tier choice below-best 58.5% (F209 57.8%).
+
+**What it does NOT say.** Two differences against F209 at once (the seeds and §10.93); the textile mechanism is read from levels, profits and the looms'
+own break-even, not from an A/B of §10.93 on a fixed seed — so "§10.93 strengthened the e1 textile rung" is directional, with the mechanism understood
+(the user's 2026-09-18 standard), not a measured effect size. How much of the WORLD-wide rise is seeds (the crafts in run 1's periphery) is not separable.
+The USA's relapse may be the seed spread F204 described rather than anything new. The consensus loss rests on two seeds and is inside the noise of the
+canon's. Nothing here measures the Conveyors prerequisite or the restated targets (rules 6–7), which came after the batch.
+
+**⭐ ADDENDUM 2026-10-03 — the user's questions on the ledger: the USA's two agrarian seeds are the two the CONFEDERACY WON; no seed fought a
+Mexican–American war; the shortlist's old-rung excess is TEXTILE ALONE.** Two new readers, each reading every arm the same way:
+`tools/testbed/ledger/us_history.mjs` (the run's events.tsv and the yearly summaries' `states` map) and `tools/testbed/ledger/old_rungs_by_industry.mjs`
+(the ledger's countrySplit rule per industry, medians of each arm's runs, each run on its own book).
+
+*The user's litmus test — is California American in 1886?*
+
+| | California American by 1886 | 1836 Texas revolt crushed | a Confederate secession | the CSA won its independence by 1900 | the CSA a country at 1936 |
+|---|---|---|---|---|---|
+| this batch, n=3 | **0** (American from 1928 / 1922 / 1902) | 2 | 2 | **2** (1876, 1849) | 2 |
+| the 2+1 (F209), n=2 | 2 (1863, 1860) | 2 | 1 | 1 (1881) | 1 |
+| e1a12 (F203), n=3 | 3 | 1 | 2 | 0 | 0 |
+| the canon (F177), n=6 | 5 | 5 | 2 | 0 | 0 |
+| vanilla, n=16 | 10 | 9 | 9 | 6 | 8 |
+
+- **No seed of this batch fought a Mexican–American war in its historical window.** The USA's first play on Mexico came in 1897, 1917 and 1876, and
+  California became American in 1928, 1922 and 1902; in vanilla the USA opened a play on Mexico in 15 of 16 seeds, 12 of them by 1867. Mexico crushed
+  the 1836 Texas revolt in runs 1 and 2 — common in vanilla too (9 of 16). ⚠ The test does not separate rich USAs from poor ones: run 2 had no American
+  California until 1922 and ends with the richest USA of any batch (1.94×), and vanilla's six seeds without it at 1886 end at 0.84–1.16× of vanilla's
+  median USA GDP.
+- **The American Civil War happened in runs 1 and 3, and the Confederacy won both.** Run 1: the Confederate secession of November 1874 — two years
+  after an African-American ("New African") secession the USA put down in 1872–73 — won in January 1876 and took 13 state regions, Virginia to Missouri
+  and Kansas, with 11.6M of the USA's 43M people (27%); the CSA has 26M at 1935. Run 3: the secession of April 1848 won in June 1849 and took 15, Texas
+  included, with 8.6M of 22.6M (38%); the CSA grew to the USA's own size (76.7M against 77.3M at 1935). Run 2 saw only the African-American secession of
+  1860–61, put down. Vanilla: a Confederate secession in 9 of 16 seeds, the CSA winning 8 and standing at 1936 in 8.
+- **The USA's path** (GDP ÷ vanilla's median USA GDP, U* in brackets):
+
+| | 1845 | 1855 | 1865 | 1875 | 1885 | 1900 | 1915 | 1925 | 1935 |
+|---|---|---|---|---|---|---|---|---|---|
+| vanilla median | 1.00 (42%) | 1.00 (50%) | 1.00 (58%) | 1.00 (65%) | 1.00 (68%) | 1.00 (66%) | 1.00 (59%) | 1.00 (50%) | 1.00 (35%) |
+| run 1 (the CSA from 1876) | 1.04 (47%) | 0.92 (56%) | 0.86 (63%) | **0.45 (81%)** | 0.49 (83%) | 0.39 (84%) | 0.36 (83%) | 0.29 (81%) | 0.30 (70%) |
+| run 2 (no CSA) | 1.02 (41%) | 0.86 (55%) | 1.03 (60%) | 0.98 (63%) | 1.08 (65%) | 1.06 (66%) | 1.11 (56%) | 1.53 (37%) | 1.94 (10%) |
+| run 3 (the CSA from 1849) | 1.10 (42%) | **0.60 (62%)** | 0.62 (66%) | **0.31 (84%)** | 0.43 (80%) | 0.46 (75%) | 0.36 (78%) | 0.46 (68%) | 0.50 (58%) |
+| e1a12, runs 1 / 2 / 3 | | | | | 0.96 / 0.98 / 1.01 | 0.61 / 0.81 / 0.85 | 0.46 / 0.67 / 0.75 | 0.49 / 0.61 / 0.68 | 0.35 / 0.45 / 0.55 |
+
+  ⇒ **In this batch the USA broke AT the secession and did not recover** (run 1 bankrupt in 1887, run 3 in 1874; U* 75–84% from 1875 to 1915 in both,
+  vanilla's median 59–68%), where e1a12's seeds slid gradually from about 1.0 at 1885 to 0.35–0.55 at 1935 (one of them after losing five southern states
+  to New Africa in 1891), which F204 traced to the construction mix. So the two agrarian seeds are not F204's slow slide: the book's five seeds split three
+  prosperous USAs (1.23, 0.91, 1.94) and two broken at a lost civil war. ⚠ A lost civil war does not doom the USA by itself — of vanilla's eight seeds with
+  a CSA at 1935 the USA ends at 0.38–1.50× (two under 0.6), and the 2+1's run 2, which lost the South in 1881, recovered to 0.91× at U* 15%. Why the rump
+  USA (the North: the CSA took the South) stayed agrarian for decades is not established; whether F204's construction mix is what kept it from recovering
+  is open (`us_construction_windows.mjs` on runs 1 and 3).
+
+*Old rungs beside their replacement, per industry, against the canon* (1935; workers on a rung two or more eras behind the best rung their own country
+staffs in the industry, median of each arm's runs, and their share of the industry's workers):
+
+| shortlist pool | this batch (n=3) | the 2+1 (n=2) | e1a12 (n=3) | the canon (n=6) |
+|---|---|---|---|---|
+| all tiered | 0.72M · 4.9% | 0.24M · 1.1% | 0.29M · 1.9% | 0.55M · 2.3% |
+| textile | **0.45M · 21%** | 0.15M · 6% | 0.04M · 3% | 0.04M · 1% |
+| motor | 0.06M · 5% | 0.03M · 1% | 0.01M · 1% | **0.24M · 15%** |
+| glass | 0.07M · 4% | 0.02M · 1% | 0.06M · 5% | 0.02M · 1% |
+| explosives | 0.05M · 8% | 0.00M | 0.01M · 3% | 0.06M · 7% |
+| food | 0.05M · 5% | 0.02M · 2% | 0.03M · 5% | 0.02M · 1% |
+| paper | 0.05M · 4% | 0.00M | 0.04M · 4% | 0.01M · 1% |
+| steel | 0.00M | 0.01M | 0.00M | 0.05M · 2% |
+
+| world | this batch | the 2+1 | e1a12 | the canon |
+|---|---|---|---|---|
+| all tiered | 3.32M · 8.1% | 2.40M · 4.7% | 2.27M · 5.5% | 2.21M · 5.6% |
+| textile | 1.61M · 21% | 0.89M · 12% | 0.85M · 12% | 0.32M · 5% |
+| paper | 0.77M · 25% | 0.32M · 9% | 0.34M · 13% | 0.32M · 13% |
+| furniture | 0.58M · 15% | 0.42M · 11% | 0.36M · 10% | 0.06M · 3% |
+| motor | 0.25M · 8% | 0.03M · 1% | 0.01M · 0% | 0.65M · 25% |
+| glass / food / tooling | 0.22 / 0.22 / 0.15M | 0.28 / 0.20 / 0.14M | 0.23 / 0.22 / 0.15M | 0.13 / 0.19 / 0.12M |
+
+⇒ **In the shortlist the excess over the canon is textile alone.** Without textile this batch keeps fewer old-rung workers there than the canon (about
+0.27M against 0.51M by these medians); the canon's are old engine works — the USA's and France's e0 motor beside combustion engines, 0.24M — and the e1
+steel and explosives rungs. Glass e1 and the food and paper crafts sit a few points of their industries above the canon, at e1a12's level: the arm
+family's, not §10.93's. ⚠ The motor line compares different ladders (the canon's motor is [0,2,3], the e1-anchor books' [1,2,3], where the steam rung
+counts only beside diesel, not beside combustion engines). **World-wide the arm family keeps more old textile and furniture rungs than the canon**
+(textile 0.85–1.61M against 0.32M, furniture 0.36–0.58M against 0.06M), mostly CRAFTS beside an e2 rung in the same country; this batch nearly doubles
+the family's textile (crafts 0.65–1.02M and e1 0.25–0.84M by run) and, in two seeds, its paper (crafts 0.83 / 0.19 / 0.77M by run).
+⚠ **The "mechanism" paragraph above (§10.93's looms making the e1 rung relatively cheaper) is SUPERSEDED by F211 §4**: the looms cost about
+£60–110 a week net per frontier level against ~£2,700 of profit, and the e1 rung survives because the frontier is under-built.
+
+## F211 — THE COMPRESSED-LADDER ARM'S USA IS SHORT ON PEOPLE, NOT ON GDP PER HEAD (its shortfall is territory lost to the Confederacy); AND ITS e1 TEXTILE RUNG SURVIVES BECAUSE THE FRONTIER IS UNDER-BUILT, NOT BECAUSE IT IS TAXED — the canon's textile obsolescence was bought with misplaced capital (2026-10-03; readings of the arm `e1a12-ai1135` = 20261002_235755 n=3 + 20261002_120946 n=2, the canon 20260929_002728 n=6, e1a12 20261001_225817 n=3 and vanilla 20260821_131149 n=16; no new runs)
+
+The user's questions on F210, with two "vectors" stated: *increase obsolescence for specifically textile*, and *boost USA* — "I see that its
+GDP/vanilla is on track for the first thirty years, and then drops. Is this purely political? Is it usually ahead in canon in those 30 years,
+or also on par? What's the in-US GDP composition by decade, is it noticeably different between canon and current artmerge?" New readers:
+`tools/testbed/ledger/us_history.mjs` (political history + the population / per-head split), `country_composition.mjs` (value added by
+sector), `return_per_point.mjs` (profit per construction point beside the AI desire) and `textile_luxury.mjs` (textile rungs and their luxury
+lines). Below, "the arm" pools the n3 (on the §10.93 build) and the 2+1 (before it) — the same book; every ratio is ÷ vanilla's n=16 median.
+
+**§1. The first thirty years: on par in every book; the canon is not ahead** (USA GDP and GDP per head ÷ vanilla's medians, median of runs):
+
+| | 1840 | 1850 | 1860 | 1870 |
+|---|---|---|---|---|
+| canon (n=6): GDP · per head | 1.06 · 1.06 | 1.02 · 1.03 | 1.05 · 1.01 | 0.97 · 0.99 |
+| the arm (n=5) | 1.09 · 1.08 | 1.01 · 1.00 | 0.96 · 1.01 | 0.96 · 1.03 |
+| e1a12 (n=3) | 1.06 · 1.06 | 1.01 · 1.03 | 0.93 · 0.92 | 0.98 · 0.96 |
+
+The canon's USA pulls ahead only after ~1900 and only in two seeds of six (GDP 2.9–3.1×, per head 2.3–2.9× by 1935); its median stays 0.95–1.17.
+
+**§2. The drop: a political trigger, and mostly a loss of territory.** At 1935:
+
+| | GDP | population | GDP per head | per seed: GDP / population / per head |
+|---|---|---|---|---|
+| canon (n=6) | 1.14 | 1.12 | 1.08 | — |
+| **the arm (n=5)** | **0.91** | **0.77** | **1.45** | 0.30/0.77/0.39 · 1.94/1.01/1.94 · 0.50/0.59/0.86 · 1.23/0.86/1.45 · 0.91/0.57/1.62 |
+| e1a12 (n=3) | 0.45 | 1.29 | 0.38 | — |
+
+- **n3 run 1:** an African-American ("New African") secession 1872–73, put down; the Confederate secession of November 1874, which the CSA
+  won in January 1876, taking 13 state regions (Virginia to Missouri and Kansas) and 27% of the USA's people; bankrupt 1887. GDP 0.86 (1865) →
+  0.45 (1875); per head 0.95 → 0.66 → 0.39 (1935) — territory AND per head, never recovered.
+- **n3 run 3:** Texas won its 1836 revolt and joined the USA by 1838; the Confederate secession of April 1848 won in June 1849, with 15 state
+  regions, Texas included, and 38% of the people. GDP 1.10 (1845) → 0.50 (1850), but GDP per head held at ~1.0 for twenty years (a purely
+  territorial loss) until a war with the British Republic (1868–72) and a bankruptcy (1874): per head 0.54 (1875), 0.86 by 1935. The CSA grew to
+  the USA's size (76.7M against 77.3M at 1935).
+- **2+1 run 2:** a war Russia opened in 1869, lost in 1870 (a US capitulation, a default), bankrupt 1875: GDP 1.35 → 0.68; per head back to
+  1.11 by 1880; then the Confederate secession of 1880–81 (population 1.04 → 0.68), per head 1.13–1.76 afterwards.
+- **n3 run 2 and 2+1 run 1** had no Confederate war: GDP per head 1.94× and 1.45× vanilla's at 1935 — the richest US per head of any book.
+- **Counts** (us_history.mjs): the CSA independent by 1900 — vanilla 6/16, canon 0/6, the arm 3/5, e1a12 0/3; the USA bankrupt before 1890 —
+  3/16, 0/6, 3/5, 0/3; the USA ever capitulated — 8/16, 2/6, 3/5, 1/3; California American by 1886 — 10/16, 5/6, 2/5, 3/3 (in the n3 seeds it
+  became American only in 1928 / 1922 / 1902; no Mexican–American war in the historical window).
+
+⇒ **In this arm the USA's GDP shortfall is POPULATION — territory lost to the Confederacy — with GDP per head ABOVE vanilla's in four seeds of
+five; one seed (n3 run 1) also lost GDP per head for good.** e1a12's agrarian USA was the opposite: MORE people (Mexico conquered) and a per-head
+slide from 1885 to 0.38 — F204's economic mode, which the compressed ladder removed. ⚠ n=5: vanilla's own rate of an independent Confederacy by
+1900 is 6/16, so 3 of 5 is not distinguishable from seed luck (≥ 3 of 5 at 0.38: p ≈ 0.28), and the canon's 0 of 6 (p ≈ 0.06 at that rate) is
+as likely luck the other way. Each bankruptcy followed a war or a civil war; whether the arm makes the USA fiscally more fragile is NOT measured
+(the summary's treasury fields carry no debt).
+
+**§3. The US composition by decade** (country_composition.mjs; value added at base prices by sector, % of the total; medians; the full
+1840–1936 decade series is the tool's output):
+
+| sector | vanilla 1860 | canon 1860 | arm 1860 | vanilla 1900 | canon 1900 | arm 1900 | vanilla 1936 | canon 1936 | arm 1936 |
+|---|---|---|---|---|---|---|---|---|---|
+| total ÷ vanilla | 1.00 | 1.06 | 1.05 | 1.00 | 1.23 | 0.74 | 1.00 | 1.35 | 0.88 |
+| agriculture | 48 | 51 | 47 | 27 | 26 | 14 | 19 | 8 | 16 |
+| subsistence | 19 | 19 | 18 | 16 | 17 | 17 | 2 | 3 | 1 |
+| extraction | 34 | 24 | 27 | 37 | 24 | 38 | 42 | 22 | 35 |
+| light industry | 13 | 14 | 12 | 16 | 20 | 21 | 20 | 22 | 24 |
+| heavy industry | 2 | 1 | 1 | 6 | 12 | 8 | 12 | 26 | 24 |
+| arms industry | 3 | 1 | 2 | 2 | 6 | 4 | 2 | 17 | 3 |
+| urban centres | 9 | 8 | 8 | 13 | 11 | 14 | 14 | 10 | 13 |
+| construction | −9 | −8 | −6 | −10 | −15 | −16 | −13 | −22 | −21 |
+
+- 1840–1870 is the same economy in every book. From ~1880: the arm keeps vanilla's EXTRACTION weight (34–41%) where the canon's falls to
+  22–28%; the canon's USA runs a large ARMS industry (6–23%, 17% at 1936) against 2–5% in the arm and vanilla; HEAVY industry is high in both mod
+  books (canon 12–26%, the arm 8–24%, vanilla 6–12%); LIGHT industry 20–25% in both; CONSTRUCTION costs −21–22% of value added in both mod books
+  (vanilla −13%, the dearer buildings). The arm's agriculture dips to 12–14% in 1890–1900 because the plantation South sits in the CSA in three
+  seeds of five (its two intact seeds read 22–29% at 1910). e1a12 for contrast: extraction 20–23% (F204's starved mines), arms 19–26% late.
+- ⇒ **The arm's US economy is not structurally weak; where politics left it alone it outgrew vanilla's and the canon's median per head.**
+
+**§4. Textile — why the e1 rung survives in this batch** (shortlist pool at 1935; textile_luxury.mjs and return_per_point.mjs give medians of the
+pool's sums over runs; rung_fate.mjs gives the output price and the wage paid ÷ the normal wage):
+
+| | e1 levels (staffed) | e1 on Craftsman Sewing | frontier levels e2 + e3 | frontier profit per staffed level, e2 / e3 | textile output price ÷ base | e1 wage ÷ normal |
+|---|---|---|---|---|---|---|
+| the arm, n3 | 118 (80) | 102 | 142 + 50 | £2,692 / £4,154 a week | 0.84–0.85 | 1.22 |
+| the arm, 2+1 | 69 (30) | 14 | 460 + 72 | £1,956 / £3,989 | 0.77–0.87 | 0.97 |
+| e1a12 | 42 (11) | 16 | 290 + 15 | £1,012 / £2,342 | 0.76–0.81 | 0.20 |
+| the canon | 47 (7) | 14 | 373 + 331 | £1,171 / £4,106 | 0.69–0.71 | 0.29 |
+
+At 1900 every book ran its e1 rung the same way — 89–102 of its 126–133 levels on Craftsman Sewing, turning clothes and silk into LUXURY clothes.
+By 1935 what differs is how much frontier was built and, with it, the clothes price. **The e1 rung dies by losing its workers once it can no longer
+pay them** (the canon's pays 0.29× the normal wage and is 11% staffed; e1a12's 0.20× and 40%), **not by losses**: its profit per staffed level is
+positive in every book.
+
+- **§4.1 The frontier is not taxed out.** In the n3 batch it earns MORE per staffed level than in the 2+1 or the canon (true margin 46% / 66%
+  against 31% / 49% and 23% / 39%). Mechanized Looms cost +5 tools and save 1,500 laborers a level (vanilla's own note: break-even at a
+  laborer wage of £6.9 a year); at British rates that is about £60–110 a week net against ~£2,700 of profit. ⇒ **F210's mechanism (§10.93's looms
+  made the old rung relatively cheaper) is too small to carry the effect and is SUPERSEDED.**
+- **§4.2 The frontier is under-built because it returns less on capital than the mines, and the compressed ladder lets the AI follow that.**
+  Profit per staffed level per week ÷ construction points, pool, 1935:
+
+  | | iron mine | logging | coal mine | textile frontier | Dye Workshops (e1) |
+  |---|---|---|---|---|---|
+  | the arm, n3 | 4.13 | 3.76 | 3.20 | host 2.00 (1,571 pt, ai 3,873) | 0.87 (600 pt, ai 1,000) |
+  | the canon | 4.44 | 4.23 | 4.03 | ESM 1.73 (2,166 pt, ai 27,000) · SM 1.04 (1,140 pt, ai 9,000) | 0.44 (600 pt, ai 3,000) |
+
+  At £600 a point the canon's Sewing Machines pay back in 11 years against the mines' 3 — §10.92's ">3× the best = grossly misplaced" class — and
+  the canon built 306 staffed levels of them; the arm's host pays back in 5.8 years and got 178. ⇒ **The canon's textile obsolescence was bought
+  with misplaced capital**: a desire ladder of 9,000 / 27,000 built the frontier past what its profit justified, the clothes price fell to ~0.70 of
+  base and the e1 emptied. e1a12's host at 15,588 did the same (F206: e1a12's e2 merge hosts held 39% of its grossly misplaced capital).
+- ⇒ **Under §10.92 the arm's smaller textile frontier IS the AI following profit, so the lever that kills the e1 rung must be a RECIPE one**
+  (rule 3): make the frontier pay better per point — the merge rule prices the textile host at the e2/e3 midpoint, 1,571 points, 38% above the
+  canon's e2 from the day only Sewing Machines exists — or make the e1 rung pay worse at the same clothes price. Raising the host's desire would
+  repeat the canon's misplacement.
+
+**What it does NOT say.** The per-point returns are one year's prices on the pool's average staffed level; a frontier built out lowers its own
+prices (the canon's e2 at 1.04 is that outcome), so "pays better" is a direction, not a forecast. The mines' high returns are partly scarcity
+(free deposits, labour), which misplaced_capital.mjs's validity rule weighs and this reading does not. Composition is at base prices (the game's
+displayed GDP tracks it within ~0.94–1.08, F178 §9.4); market-priced shares would move the price-depressed sectors down. n is 5 / 6 / 3 seeds, and
+the arm's five come from two builds (before and after §10.93).
+
+## F212 — INPUT-PRICE RED FLAGS: there was no check for them; read back yearly over the century, every four-rung book holds an industrially consumed good at +70% for two years more often and far longer than vanilla — ENGINES in Japan, the Netherlands and Russia above all, on almost no local supply — while vanilla does so rarely (⚠ CORRECTED the same day, §7: the first reading's "vanilla never does" was the reader, which priced no tiered good in a control run; the swing line was re-ruled) (2026-10-03)
+
+**Question (user, 2026-10-03):** *"Are we tracking industrial inputs shortages in major markets for all configs? Not only 'do we save them', but
+actually 'do we have mandatory checks and problemness metrics for them'? … I'm concerned whether some overly tight e0/e1 recipes lead to decades
+of shortages and stifled growth for some countries, even if on average it looks OK."* And the definition, the same turn: *"No need to track the
+penalty itself, probably. Prolonged (2–3 years plus) price of +70% and higher for any industrially consumed good, or wide oscillations on tiny
+volumes all count as red flags."*
+
+**§1 The answer: no.** What existed: (a) every batch SAVES the instrumented markets' order books (buy, sell, price, production per good) at its dump
+dates — for a century batch twelve DECADAL readings; (b) the register's PI is the median of seven building-input goods' prices over four markets at
+1935 ÷ vanilla's, plus its decade path — an average that cannot see one market's decade-long shortage; (c) `good_market.mjs` prints one good's share
+of readings at the 175% ceiling, used by hand in F145–F149 / F199 for steel and engines; (d) nothing in the heartbeat, the ledger fill, the stop
+watcher or the probe readouts. The metric `market_goods_wide` (yearly order books over a tag list) exists in the telemetry and no current schedule
+carries it. ⚠ Every save also records each building's `input_goods_shortage` (its current output penalty); the summaries do not harvest it, and the
+user ruled it unnecessary.
+**The engine's line** (`common/defines/00_defines.txt`): `GOODS_SHORTAGE_PENALTY_THRESHOLD = 0.5` — at sell/buy < 0.5 the price is pinned at 175% of
+base AND every consumer of the good takes an output penalty (5–50%, 75% when the input is missing from local supply, ramping 1% of target a day).
++70% is sell/buy ≈ 0.52, so the user's line sits on the engine's.
+
+**§2 Method.** `tools/testbed/ledger/input_price_flags.mjs` (new). **HIGH** = the price ≥ 1.70 × base at every reading of a stretch spanning ≥ 2
+years (readings ≤ 1.1 years apart); **SWING** = a 3-year span whose price range is ≥ 1.0 × base (e.g. 0.70 → 1.70) on < £2,000 a week of volume at
+base prices. Two sources: the MARKET order books (G lines at dump dates, GW lines where a schedule logged `market_goods_wide`) — no batch below has
+yearly lines, so this source flags nothing; and the PRODUCERS' realised price, `goods_sales ÷ va_out` of each country's single-output producers of
+the good, from save summaries v9+ (yearly, or quarterly thinned to the first reading of each year with `--yearly`, so arms of mixed cadence compare).
+Rows: Britain, the USA, France, the Netherlands (UNL/NET), Belgium, Germany (GER/NGF/PRU), Russia, Japan. Goods: the inputs of every rung of the
+run's own book plus coal, iron, lead, sulfur, oil, rubber, dye, silk, fabric, wood, electricity, fish, grain.
+⚠ **The vanilla reference here is the ELEVEN-TAG vanilla set, n=4** (`20260920_225047_schedule` runs 1–3 + `20260920_192007_schedule` run 1), not the
+pinned n=16: the n=16 summaries are v8 and carry no `goods_sales` (the 2026-09-21 ruling: a result from the smaller set says so where it is quoted).
+
+**§3 Results, yearly readings (`--yearly`):** ⚠⚠ **SUPERSEDED by §7** — this table was read by the first reader, which priced no steel, tools,
+engines, paper, fertilizer, explosives or glass in a CONTROL run (its producer map for the tiered goods came from the book alone), so vanilla's zeros
+below are the reader, not vanilla; and its swing line is not the ruled one. Kept as the record of what was reported.
+
+| book | runs | HIGH episodes per run | years flagged per run | SWING episodes per run | HIGH by good (years, runs touched) |
+|---|---|---|---|---|---|
+| vanilla (eleven-tag set) | 4 | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 | 6 / 5 / 6 / 6 | — |
+| canon `canon-dams-family` (20260929_002728) | 6 | 4 / 0 / 3 / 1 / 4 / 8 | 19.5 / 0 / 19.0 / 2.0 / 35.3 / 32.5 | 10 / 12 / 17 / 6 / 11 / 19 | engines 66.5 y (4 of 6), electricity 30.0 y (4), iron / silk / glass / coal / steel 2.0–3.5 y (1 each) |
+| `e1a12-artmerge` (20261001_225817) | 3 | 2 / 3 / 0 | 4.0 / 9.0 / 0 | 10 / 10 / 10 | electricity 7.0 y (1, France), engines / iron / paper 2.0 y (1 each) |
+| the arm `e1a12-ai1135` (20261002_235755 runs 1–3, 20261002_120946 runs 1–2) | 5 | 0 / 5 / 1 / 2 / 2 | 0 / 24.0 / 3.0 / 6.0 / 12.0 | 17 / 16 / 7 / 13 / 7 | engines 26.0 y (3 of 5), paper 10.0 y (1), electricity 6.0 y (2), steel 3.0 y (1) |
+
+The longest stretches (country | good · span · mean price ÷ base · the country's producers' output, £/wk at base):
+- canon: run 5 Russia | engines 1860.4–1877 (16.8 y, 1.75, **£3**) and 1848.4–1854 (5.8 y, £1); run 6 Japan | engines 1880–1890 (10 y, £3); run 1 Japan |
+  engines 1872–1881 (9 y, £2); run 5 Belgium | electricity 1912–1921 (9 y, 1.74, £3,685); run 3 Netherlands | electricity 1912–1920 (8 y, £758) and
+  engines 1864–1871 (7 y, £9); run 6 Netherlands | engines 1914–1920 (6 y, £17).
+- the arm: run 2 of the n3 Japan | engines 1896–1909 (**13 y**, 1.75, £2) and 1922–1925 (3 y); run 2 of the n2 Belgium | paper 1856–1866 (**10 y**, 1.73,
+  **£2,541** — a real producer, not a token one); run 2 of the n3 Russia | engines 1858–1862 (4 y, £9); Netherlands | engines 1888–1891 (3 y, £1,462) and
+  1914–1917; Netherlands | steel 1924–1927 (3 y, £442).
+- `e1a12-artmerge`: France | electricity 1931–1936 (5 y, £2,178); the rest 2-year stretches.
+
+**§4 Engines are where the long stretches live, and their demand is VANILLA's.** The only rungs of either book that consume engines are automotive e2/e3;
+the 1840–1900 demand comes from vanilla buildings — railways (early and steam trains), the steam donkeys of coal mines, iron mines and logging camps,
+plantation steam methods (sugar evaporation, coffee drying) and shipyards. Supply is our motor-industry ladder. A producer row of £1–60 a week at the
+ceiling for a decade is a market that adopted steam while our motor rung was never built there — demand with almost no supply. Why the motor rung
+is not built in those markets is NOT measured.
+
+**§5 The decadal market books agree** (the twelve G-line readings, scratch `input_shortage.mjs`; the pinned n=16 for vanilla, the same arms otherwise):
+engines sit in the shortage zone (sell/buy < 0.5) in 15–17% of the majors' readings in every four-rung book against vanilla's 8%; streaks of ≥ 2
+consecutive decadal readings in the zone, per run — vanilla median 1 [0–7], canon 5.5 [3–11], the arm 5 [3–6], `e1a12-artmerge` 5 [3–6]; the longest:
+canon Russian engines 1850–1900 (six readings) in two runs, the arm's Japanese engines 1880–1935. The share of the majors' industrial-input DEMAND
+(buy × base price) in the zone is small everywhere — 1840–70: vanilla 0.5%, canon 1.2%, the arm 1.0%, `e1a12-artmerge` 1.4% (intermediates alone
+0.7 / 1.4 / 1.6 / 3.0%) — and the core markets (British, American, French, German) read ~0 in the median in every book; the Russian, Japanese and
+Dutch markets carry it.
+
+**§6 The swings** (thin volume, 3-year range ≥ 1.0 × base): mostly EXPLOSIVES in the four-rung books — the USA 1836–1875, the Netherlands, Germany,
+Russia, the price flipping between 0.25 and 1.75 on £37–841 a week — and electricity; vanilla's are Belgian lead, Japanese iron / coal / lead, German
+and Belgian electricity, British rubber. 1–3× vanilla's count per run.
+
+**Confidence.** ⚠ WITHDRAWN in its first half (§7): vanilla's "no industrial input at +70% for two years in four seeds" was the reader's blind spot.
+What stands: MEDIUM on the per-good attribution (engines) — consistent between the producer source (yearly) and the market source (decadal); LOW on
+magnitudes (small n, two builds in the arm, quarterly thinned to yearly).
+
+**What it does NOT say.** The producer source is BLIND where a country buys a good it does not make (a good missing entirely — the market source sees
+it, decadally); a HIGH flag says a price stayed at the ceiling, not how much output it cost; electricity is a local good, so a producer's price is its
+state's; glass mixes porcelain and logging camps hardwood; the vanilla side is the eleven-tag set at n=4. It does NOT say the arm's e0/e1 recipes
+are tighter than the canon's: on these readings the arm flags fewer engine-years than the canon and `e1a12-artmerge` fewer still, and the one
+recipe-shaped flag (Belgian paper, 10 years on a real producer) is one seed.
+⇒ PROPOSED, not ruled: yearly `market_goods_wide` on the eleven telemetry tags in every schedule (so the market source resolves 2-year stretches,
+including goods with no producer), the reader in the ledger fill and the probe readouts, and the thresholds and their place (a ledger table, a
+register flag) ruled by the user. ⭐ **RULED the same afternoon — BALANCE_FRAMEWORK §10.94** (all of it; the swing line re-ruled; not a loss term).
+
+**§7 CORRECTION AND THE RULED READING (2026-10-03, afternoon).**
+- **The defect.** The reader priced a good from its producers' `goods_sales ÷ va_out`, and took the producers of the TIERED goods from the run's book
+  alone; a control run has no book, so vanilla's steel, tools, engines, paper, fertilizer, explosives and glass were never priced and could raise no flag.
+  The first fix then lost the lead and sulfur mines to a column-0 block parser (vanilla closes `building_iron_mine` and `building_lead_mine` on an indented
+  " }", merging each into the next). Now the producer map is read from the game with a brace-depth parser — every building whose first production-method
+  group outputs exactly one good — plus the book's rungs, and the reader THROWS if the coal / iron / lead / sulfur / steel / explosives / tools producers
+  are not where it expects them (ON_GAME_UPDATE coupling).
+- **The ruled thresholds** (§10.94): HIGH ≥ 1.70 × base for ≥ 2 years; SWING a ≥ 0.5 × base range within 3 years on < 10 units a week of supply; every
+  industrially consumed good; local goods (electricity, transportation, services) excluded — so §3's electricity flags drop out by ruling.
+- **Re-read, yearly over the century** (`input_price_flags.mjs --yearly`; the vanilla side is the eleven-tag set at n=4, as above):
+
+| book | runs | HIGH per run | HIGH-years per run | SWING per run | HIGH-years by good and market (summed over runs) |
+|---|---|---|---|---|---|
+| vanilla (eleven-tag set) | 4 | 0 / 1 / 1 / 0 → 0.5 | 1.5 | 21 / 13 / 18 / 31 → 20.8 | engines (Russian) 4.0 · explosives (American) 2.0 |
+| canon `canon-dams-family` | 6 | 3 / 1 / 1 / 0 / 1 / 5 → 1.8 | 9.3 | 22 / 21 / 30 / 16 / 29 / 50 → 28.0 | engines: Japanese 23.3, Dutch 13.0, Russian 9.8 · iron (Dutch) 3.5 · silk (French) 2.3 · glass, steel (Dutch) 2.0 each |
+| `e1a12-artmerge` | 3 | 0 / 1 / 0 → 0.3 | 0.7 | 21 / 28 / 20 → 23.0 | paper (Japanese) 2.0 |
+| the arm `e1a12-ai1135` (n3 + n2) | 5 | 0 / 3 / 1 / 2 / 1 → 1.4 | 6.8 | 35 / 24 / 21 / 34 / 23 → 27.4 | engines: Japanese 16.0, Dutch 6.5, Russian 4.0 · paper (Belgian) 4.8 · steel (Dutch) 3.0 |
+
+  SWING by good, summed over runs: vanilla explosives 22, lead 18, steel 16, sulfur 7, coal 6, glass 6, rubber 3; the canon explosives 40, lead 40, glass
+  32, sulfur 15, rubber 11, steel 11; the arm explosives 46, lead 21, sulfur 12, coal 11, rubber 10, fish 9, glass 9. ⚠ **At the ruled line SWING is common
+  in vanilla itself** (~21 a century run, two-thirds of them the munitions and glass chains in thin markets), so the books' 23–28 are only 1.1–1.35×
+  vanilla's; the HIGH years separate the books from vanilla by ×5–6 and are where the signal is.
+- **The summary source's blind spot is real and matters**: a market that makes NONE of a good has no price to read. Vanilla's Japan carried engine
+  demand of 19 → 89 units a week through 1880–1900 with no producer at all, and vanilla's France (one run) 18 → 118 a week through 1837–1850 — neither can
+  flag, while the canon's Japan, with ONE unstaffed e0 level, is priced at the ceiling and flags. The yearly feed (§10.94 rule 5) reads both sides alike.
+- **The probe of F213** (1836–1866, its native quarterly summaries): 0 HIGH and 13 SWING; yearly-thinned 0 and 12, against vanilla's 0.5 and 6.3 per run
+  to 1866 — the flags one by one are F213's addendum. **The engines mechanism** (§4's "why the motor rung is not built … NOT measured") is F214.
+- **Second correction (the same afternoon, on the user's recheck of a German oil flag — F215).** Two reader defects, both fixed in
+  `input_price_flags.mjs`: (a) the summary source's supply was the market members' PRODUCTION alone, so a market fed by imports read as thin — it now adds
+  each v10+ summary's imports, trade capacity × the run's traded quantity, a LOWER bound (the trade centres' quantity multiplier is not in a summary);
+  (b) a flag's consumers were every building type that ran an eating method at any reading of the window, at its peak, under "eaten by" — they are now
+  "buyers present", building · method, most levels at a reading and in how many readings, with the median building demand and the producers' staffing
+  on the line. ⭐ **The table above is on production-only supply for every book, i.e. LIKE FOR LIKE against the v9 vanilla reference** (whose summaries
+  carry no trade) and it stands. With imports the arm's n=3 runs read SWING 34 / 21 / 19 (35 / 24 / 21 production alone), and HIGH does not move (it
+  reads no supply). The reader now prints the production-only count beside a pre-v10 reference: vanilla 0.5 HIGH and 20.8 SWING a run, the arm's n=3
+  on that basis 1.3 and 26.7. F213's probe loses its French engines flag (France imported them; 12 SWING, 13 on production alone).
+
+## F213 — TEXTILE'S MERGED HOST AT ITS OWN e2 COST, 30-YEAR PROBE: the frontier is built (77 shortlist levels at 1866 against 3–41) and the British clothes price falls to 0.75 of base — but in thirty years the e1 rung GROWS rather than shrinking, the frontier's own return collapses, and misplaced capital rises (2026-10-03)
+
+**Question (user, 2026-10-03):** *"Go with the host cost, run a 30-year probe"* — the first lever of F211 §4 for *"increase obsolescence for
+specifically textile"*. Book `config/mod_config.e1a12-ai1135-tex1140-artmerge.json` = the arm's book with textile's merged host (Sewing Machines, which
+also runs Electric Sewing Machines) at its own e2 cost of **1,140** construction points in place of the merge midpoint **1,571**; ai_value 3,873
+unchanged (`make_merge_config --host-cost textile:own`, recorded per pair as `cost_rule: 'own'`, checked by L31; field diff against the arm: that one
+building_cost and the `_merge` records). Session `20261003_111956_e1a12-ai1135-tex1140-30y`, 1 × 1836→1866, quarterly summaries v15. References: the
+arm's six seeds (the n3 20261002_235755 — the same build but for the cost, before 1900 — the n2 20261002_120946 and the 30-year probe 20261002_111449),
+the canon n6 (20260929_002728), vanilla where stated. The predictions were written into the schedule before launch.
+
+| at 1866 (shortlist pool) | the probe | the arm's six seeds | the canon (n=6) |
+|---|---|---|---|
+| Sewing Machines (e2) levels · staffed | **77 · 74** (1860: 47) | 3 / 41 / 17 · 11 / 23 · 7 | 15–32 |
+| its profit a staffed level a week | **£713** | £1,460–2,480 | £843–2,561 |
+| … per construction point | **0.63 £/wk** (1,140 pts) | 1.50 (1,571 pts, n3 median) | 1.53 (1,140 pts) |
+| Dye Workshops (e1) levels · staffed | **179 · 174** | 104–133 | 117–177 |
+| its profit a staffed level a week | **£654** | £578–912 | £544–919 |
+| clothes ÷ base, British market 1860 / 1865 | **0.79 / 0.75** | 1.10–1.43 (1860, n3) | 1.19–1.36 (1860) |
+| clothes ÷ base, French / American 1865 | 0.98 / 0.95 | 1.14–1.36 / 1.22–1.36 (1860, n3) | — |
+| misplaced capital 1856–66, grossly (all · manufacturing) | **24% · 32%** | 15–20% · 12–23% (n3); 17% (probe) | 15–21% (3 runs read) |
+| US private construction into textile + furniture 1856–66 | **37%** | 0 / 0 / 23% (n3) · 10 / 0% (n2) · 47% (probe) | 0–31% |
+| world GDP ÷ vanilla n=16, 1860 / 1865 | 0.95 / 0.99 | 0.97–0.99 / 0.99–1.01 (n3); 0.91 / 0.93 (probe) | — |
+
+Vanilla's clothes price in the same markets at 1860 (pinned n=16): British 0.94–1.36, French 0.88–1.26, American 0.83–1.11.
+
+**§1 Predictions against the outcome.** Q1 not broken — MET (no error names our files; world GDP on vanilla's path). Q2 more Sewing Machines than any
+reference seed — MET and exceeded (77 against a predicted 20–60); "profit per staffed level a little below the arm's, still ≥ 1.5 £/wk per point" —
+MISSED: £713 and 0.63. Q3 Dye Workshops inside 104–133 with fewer new levels — MISSED: 179, still staffed; the clothes price fell — MET, further than
+predicted. Q4 misplaced capital not above 15–20% — MISSED (24%); the US share up but under 47% — MET (37%). Q5 world GDP 0.93–1.03 — MET.
+
+**§2 Reading.** The cost was the binding constraint on the frontier: at 1,140 points it is built in volume by 1860. The build-out does what the
+design rests on — the clothes price falls well below vanilla's in the British market — but in thirty years it overshoots: the frontier's own profit a
+level falls by two-thirds and its return per point (0.63) drops under the mines' (1.3–1.8), which is what the misplaced-capital rise records. The e1
+rung is NOT displaced: it adds ~50 levels over the arm and stays staffed at £654 a week, in line with F97 (an old rung empties on the wage-unit price,
+not on £ profit) and with F211 (the e1/frontier divergence from the canon came after 1880). Who builds the extra e1 levels is NOT identified.
+
+**§3 Side readings.** Textile's inputs stay clear of shortage (fabric 0.85–0.95, dye 0.61–0.78 of base in the three markets). F212's red flags to
+1866: no 2-year stretch at +70%; six thin-volume swings (explosives; Belgian engines during its revolution) against the arm's 2–6 and vanilla's 1–2.
+⚠ That count used the first reader and the first swing line — superseded by the addendum below (13 swings, vanilla 6.3 a run).
+Two health tokens are seed politics: Belgium's radical revolt of 1863–64 (won by the revolt) emptied its coal mines and engines; Russia ran one
+coal-mine level at 1866 and one staffed level of seven in its motor industry (F212's engine gap again).
+
+**Confidence.** HIGH that the cost lever builds the frontier and lowers the clothes price within thirty years (outside every reference seed on both);
+LOW on the e1 growth and the misplaced-capital rise — one seed, plausible mechanisms, neither decomposed.
+
+**What it does NOT say.** Whether the e1 rung dies after 1880 at a clothes price of ~0.75 (a century run would say); whether a cost between 1,140 and
+1,571 builds the frontier without the overshoot; anything about the USA beyond the construction share. ⚠ The run's wall clock (43.6 min against the
+earlier probe's 49.3) is NOT a clean reading — the agent loaded the machine during it (27 melts, ~4,000 summaries read).
+
+**Addendum — the probe's input-price red flags, one by one** (the user, 2026-10-03: *"What are all the cases of high-price flags and swing flags in the
+latest probe? Describe all, I'll decide whether we'll need some tuning (and maybe further probe) before some human playtesting."*). Read at the ruled
+line (BALANCE_FRAMEWORK §10.94) from the run's quarterly summaries — it has no yearly order-book feed — with `input_price_flags.mjs`, and each flag traced
+quarter by quarter: price = the producers' realised price ÷ base, supply = the market members' production, demand = their buildings' consumption.
+**No HIGH flag. Thirteen SWING flags** (twelve when thinned to yearly), against vanilla's 0.5 HIGH and 6.3 SWING a run to 1866 (the eleven-tag set, n=4,
+yearly). Ten of the thirteen are one small chain — percussion caps (munition e1, 24 explosives + 24 lead → 50 ammunition) and its inputs.
+⚠ Read on production alone, as above. With the market members' imports added (F212 §7's second correction) flag 4, French engines, drops out — France
+imported engines enough to clear 10 a week — and twelve remain; every other flag stands unchanged.
+1. **British explosives, 1842.4–1847** (0.52–1.53 × base). Britain's lone explosives factory lost its workers — 0.4–0.5 staffed levels in 1841–42,
+   0.0–0.1 through 1843.7–1845.7 — and supply fell from ~20 a week to 0.7–7 against the 4–17 its two munition levels wanted; it refilled from 1846 (1.0
+   staffed and 50 a week by 1847.10). A shortage in disguise, two years long, ammunition the casualty. Vanilla's Britain (run 1) runs its factory at
+   0.1–0.5 staffing in the same years and does not flag.
+2. **American explosives, 1836.4–1856, and 3. again 1856.4–1863.10** (0.25–1.75). The American market's single explosives factory sat at 0.0–0.2
+   staffed levels for twenty years (0.4–0.5 only in 1854–57), supply 0.1–8 a week against one munition plant, the price flipping between the floor and
+   the ceiling quarter to quarter. From 1861 the construction sector's steel-frame method added 3–13 levels of demand (explosives at 1.24–1.75 until the
+   factory refilled in 1862). ⚠ **This one is the game's own**: all four vanilla runs flag American explosives in 1837–1865 with the same lone,
+   unstaffed factory and one munition plant, and vanilla run 3 holds it at the ceiling for 1861–63 (the only vanilla HIGH besides Russian engines).
+4. **French engines, 1839.10–1844** (1.22–1.74). A real shortage on real volume: French engine demand rose 18 → 110 a week as urban centres took up
+   public trams (up to 52 levels), railways early trains, sugar plantations steam evaporation and shipyards complex shipbuilding, while France had 1–2
+   motor levels at 0.2–1.3 staffed (supply 0–63 a week); the price stayed at 1.16–1.64 to 1866 with 5–6 levels and supply 120–190 a week in the 1860s.
+   ⚠ **Vanilla is worse here**: one vanilla run has NO French motor industry at all through 1850 (demand 18 → 118 a week, supply zero — invisible to the
+   summary reader), the other two build one level in 1843–45 (40 a week against 80–200). The flag is the book doing better than vanilla, not worse.
+5. **Dutch explosives, 1858.10–1863.7** (0.25–1.42), and 6. **Dutch lead, 1857.7–1866** (0.25–1.53). The Dutch market built a munition plant in 1858
+   with two new explosives levels and one lead mine; the explosives levels stayed at 0.0–0.1 staffed for three years (supply 0.6–4 a week, then 45–70 once
+   staffed in 1862 — mostly beyond the market's 2–5 of demand), the lead mine at 0.0–0.2 for nine years (supply 0.1–3 against 0.1–5).
+7. **Belgian explosives, 1843.10–1847.10** (0.25–1.11). A factory making 35–47 a week in 1842–43 with NO consumer in the market emptied by 1845
+   (staffing 0.7 → 0.0) and its price fell to the floor: a producer dying for want of a buyer — the price falls, so nothing is starved by it.
+8. **Belgian explosives, 1852.4–1856.10** (0.25–1.75). A dormant level at the floor until the Belgian iron mines took up nitroglycerin in 1855.4 (five
+   levels, demand 0 → 25 a week): the price hit the ceiling for one quarter, the factory hired to 0.7 within it and the price settled at ~1.0 — the market
+   working.
+9. **Belgian explosives, 1862.10–1866** (0.25–1.12). The iron mines dropped nitroglycerin in 1863.4, during Belgium's radical revolt (F213 §3), demand
+   went 33 → 0 a week, the price fell to the floor and the factory emptied — an exit, not a shortage.
+10. **Russian explosives, 1862.4–1866**, 11. **Russian lead, 1858.4–1866**, 12. **Russian sulfur, 1859.4–1866** (0.25–1.53). A whole small munitions
+    chain — a lead mine, a sulfur mine, an explosives factory and a munition plant — standing by 1857–62 and never staffed (0.0 staffed levels throughout,
+    supply 0.1–0.8 a week). Tiny, and a chain that cannot start: each building waits for the others' inputs.
+13. **Japanese lead, 1854–1857** (0.25–0.78). Two lead-mine levels making 19–29 a week with no consumer in the Japanese market (no munitions, no glass
+    or electrics rung yet); the price fell to the floor and the mines emptied (1.4 → 0.1 staffed by 1858) — a producer dying, the price falling.
+**Reading.** Nothing in the thirteen moves an economy: the volumes are 0.1–110 units a week, and the largest (French engines) is a case vanilla handles
+worse. Four are a lone producer entering or leaving a market (7, 8, 9, 13), where the price swings because the ONLY seller or the only buyer appears or
+vanishes. The pattern the book ADDS to vanilla's is the percussion-cap chain staying unstaffed in thin markets (1, 5, 6, 10–12; vanilla shows it in the
+USA alone): the arm's explosives e0 makes 53.3 explosives from 27 sulfur + 27 fertilizer (`target_be` 97; at base prices a 23% goods margin against
+vanilla's Leblanc process, 50 from 20 + 20, at 56%), and its munition e1 takes 24 + 24 for vanilla's 20 + 20 (16% against 39%) — both carry the e1 anchor's ×1.2 input
+lift (the e0 rung inherits it through the ÷1.5 step), so a lone level in a market without slack sits near break-even and does not hire.
+**What it does NOT say.** That these recipes cause the swings — one seed, against a vanilla that has the American case too; anything after 1866.
+
+## F214 — THE STEAM MOTOR RUNG IS THE SAME RECIPE IN EVERY FOUR-RUNG BOOK AND EARNS VANILLA'S REALISED MARGIN; THE CANON BUILDS LITTLE OF IT BECAUSE ITS e0 LABEL GIVES IT A THIRD OF ITS PEERS' BUILD DESIRE — which is where the canon's long engine shortages in thin markets come from (2026-10-03; readings of the canon 20260929_002728 n=6, the arm `e1a12-ai1135` 20261002_235755 + 20261002_120946 n=5, and the eleven-tag vanilla set n=4; no new runs)
+
+**The question** (the user, 2026-10-03, on F212 §4's "why the motor rung is not built … NOT measured"): *"Specifically on canon engines: in canon they're
+e0, e2, e3 (not e1-e2-e3 like in artmerge), and that's likely cause for both your analysis failure and the shortage (as the recipe also followed e0, made
+steam engines too bad an industry)."*
+
+**§1 The recipe does NOT differ between the books.** The canon's motor ladder is [0, 2, 3] (an explicit PLACEMENT; the era rule alone would derive
+[1, 2, 3], atmospheric_engine being game era 2); the e1-anchor books' is [1, 2, 3]. Their steam rung is the same building in all of them:
+**40 engines from 36 steel, 800 points** — the canon's e0 carries the in0 ×1.2 input lift, the e1-anchor books' e1 anchor the same ×1.2. Against vanilla's own
+first method (40 from 30 steel), the goods margin at base prices is **33% against 60%**: the steam rung IS a worse recipe than vanilla's, in every book.
+
+**§2 But the market pays for it, not the producer.** The rung's realised economics (summaries, `building_motor_industry`, world; medians over runs;
+vanilla's motor industry runs Steam Engines as its main method on every level through 1885 — 218 / 162 levels in two seeds — so the rows compare like
+with like):
+
+| | 1845 | 1855 | 1865 | 1875 | 1885 |
+|---|---|---|---|---|---|
+| true margin, profit ÷ (sales − profit) — vanilla / canon / arm | 17 / 15 / 17% | 15 / 16 / 17% | 16 / 18 / 17% | 17 / 18 / 15% | 17 / 18 / 19% |
+| profit per staffed level, £/wk — vanilla / canon / arm | 510 / 549 / 600 | 458 / 513 / 558 | 524 / 592 / 606 | 549 / 608 / 548 | 535 / 647 / 669 |
+| engines' realised price ÷ base — vanilla / canon / arm | 1.27 / 1.44 / 1.35 | 1.14 / 1.36 / 1.45 | 1.25 / 1.38 / 1.43 | 1.22 / 1.38 / 1.43 | 1.18 / 1.31 / 1.42 |
+| staffed share of levels — vanilla / canon / arm | 79 / 63 / 54% | 83 / 63 / 52% | 69 / 66 / 46% | 72 / 70 / 50% | 65 / 74 / 59% |
+
+The producer earns vanilla's margin; the engine costs every buyer 15–20% more (railways, the mines' pumps and steam donkeys, plantation steam methods,
+shipyards, urban-centre trams — all vanilla buildings), and the rung stands less staffed.
+
+**§3 What the e0 label DOES change: the build desire.** `ai_value` is set by era. The canon's steam rung, e0, carries **1,000**, while every e1 rung it
+competes with for the capital of 1840–1890 carries **3,000** (and its own e2, 193.6 engines at 2,888 points, 9,000). In the arm the steam rung is e1 at
+1,000 beside e1 peers at 1,000 (the compressed ladder); in `e1a12-artmerge` e1 at 3,000 beside peers at 3,000. The canon is the one book where the rung
+that supplies the century's engines is desired at a third of its contemporaries.
+
+**§4 The consequence, where engines are scarce** (`engines_tag` reading: the market's motor levels by rung, staffed in brackets, medians over runs):
+
+| market | vanilla 1890 / 1910 | canon 1890 / 1910 | arm 1890 / 1910 |
+|---|---|---|---|
+| Russian | 22 (11.4) / 59 (38.7) — supply 503 / 2,300 a week | e0 7 (2.5) / 11 (7.7) — supply 115 / 389 | e1 18 (6.4) / 38 (22.2) — supply 378 / 1,254 |
+| Dutch | 73 (49.8) / 92 (63.8) — supply 2,677 / 3,812 | e0 12 (7.9) / 13 (9.1) — supply 405 / 441 | e1 25 (19.6) / 76 (40.1) — supply 1,042 / 3,426 |
+| Japanese | 0 / 2 (1.7) — supply 0 / 68 | e0 0 / 1 (0.3) — supply 0 / 11 | e1 0 / 0 — supply 0 / 0 |
+
+and the century's HIGH engine-years per run (F212 §7): vanilla 1.0, the canon 7.7, the arm 5.3, `e1a12-artmerge` 0. The e2 electric rung is almost never
+built in these markets in either book (0–7 levels to 1920).
+⚠ **Japan is short in vanilla too** — no motor industry at all until ~1905 against demand of 19 → 89 a week (1880–1900); the canon's Japanese HIGH flag is
+partly that ONE unstaffed e0 level makes the ceiling price readable where vanilla's empty market cannot be priced from its summaries (F212 §7).
+
+**§5 Reading.** The user's diagnosis holds for the shortage and needs one correction on the mechanism: the canon's steam rung is not a worse industry than
+the arm's (same recipe, same cost, the same realised margin as vanilla's) — it is built less because the e0 label prices its DESIRE at a third of the
+e1 rungs of the same decades. Under §10.92 that is an AI value not following profit: a rung earning vanilla's margin, desired at a third of its
+contemporaries. The recipe's ×1.2 steel is a separate, smaller cost, carried by the engine's buyers in every four-rung book.
+And the analysis failure: F212 §4 read "the motor ladder is not built there" and stopped; any reading keyed on an e1 motor rung finds nothing in the canon.
+
+**Confidence.** HIGH on §1 and §3 (the books' own fields); MEDIUM on §2 (n=4–6 medians, consistent across three books and forty years); MEDIUM on the
+attribution in §4–§5 — the arm builds 2–3× the canon's Russian and Dutch steam levels with the same recipe and cost, but the books also differ in their
+steel, their e2 motor rung and every other rung's desire, so the desire is the leading mechanism, not an isolated one.
+
+**What it does NOT say.** That raising the canon's steam desire would close the shortage, or what it would cost elsewhere (no run); anything about the
+e2/e3 motor rungs beyond their being rarely built in these markets.
+
+## F215 — THE GERMAN OIL RED FLAG IS NO SHORTAGE AT ALL: IN SOME SEEDS OF EVERY FOUR-RUNG BOOK THE GERMAN MARKET HAS NO OIL ECONOMY UNTIL 1910–1925 (ONE UNSTAFFED OIL RIG, NO BUYER), WHERE VANILLA'S ALWAYS FORMS BY 1905–1910 THROUGH FREE METHOD SWITCHES — and the red-flag card had named the tooling workshop as if it were starving (2026-10-03; readings of the arm `e1a12-ai1135` 20261002_235755 n=3, the canon 20260929_002728 n=6 and the eleven-tag vanilla set n=4 — the low-n reference, used because it carries the German market's yearly summaries beside the others, CLAUDE.md's 2026-09-21 ruling 2; no new runs)
+
+**The question** (the user, reading the red-flags card of the arm's n=3): *"The red flags section reports that tooling workshops has oil shortages in
+Germany? Tooling workshop hardly eats oil (maybe as automation?) Recheck."*
+
+**1. The card misled, and the reader is fixed.** A tooling workshop eats oil only through the Assembly Lines automation (vanilla
+`pm_assembly_lines_building_tooling_workshop`: +10 oil and +5 electricity a level for −3,000 laborers, gated on conveyors). In run 1, seven steel-tooling
+levels ran it at ONE of the four readings in the flag's window (1921.1.1) — the oil economy beginning to form, not an industry the price starved. The card
+listed, under "eaten by", every building type that ran ANY oil-eating method at ANY reading of the window, at its peak level count, with no method and no
+frequency. `input_price_flags.mjs` now writes "buyers present (building · method, most levels at a reading): … tooling workshop steel · Assembly Lines ≤ 7
+levels in 1 of 4 readings", and the market line carries the median building demand and the producers' staffing beside the supply. The same pass counts
+imports in a v10+ summary's supply (a lower bound, F212 §7's second correction).
+
+**2. What the flag is.** In runs 1 and 3 (run 1: 1910–16 and 1918–21; run 3: 1904–09) the German market held ONE oil-rig level at 0.00–0.01 staffed levels
+(`pm_steam_derricks`) making 0.35–0.55 units a week, imported none and had no building buying oil (median demand 0). The swinging "price" is that idle
+rig's realised sale price, 0.25–1.38 × base. No industry was short of oil; there was no oil economy.
+
+**3. Against vanilla and the canon** — oil bought by the German market's buildings, units a week (made at home in brackets), from the yearly summaries:
+
+| run | 1900 | 1905 | 1910 | 1915 | 1920 | 1925 |
+|---|---|---|---|---|---|---|
+| arm run 1 | 0 (0) | 0 (0) | 0 (0) | 0 (0) | 0 (0) | 1,383 (1,630) |
+| arm run 2 | 307 (323) | 433 (378) | 724 (1,411) | 1,049 (1,991) | 1,747 (2,855) | 2,775 (3,659) |
+| arm run 3 | 0 (1) | 0 (1) | 322 (133) | 950 (1,032) | 1,507 (1,815) | 2,683 (4,539) |
+| canon runs 1 / 2 / 4 / 5 | 0–857 | 368–2,328 | 691–5,849 | 1,636–11,221 | 2,431–25,060 | 2,873–20,789 |
+| canon run 3 | 0 (0) | 0 (1) | 0 (0) | 0 (1) | 0 (1) | 0.4 (1.5) |
+| canon run 6 | 0 (0) | 0 (0) | 0 (0) | 0 (1) | 79 (0) | 400 (0) |
+| vanilla seeds 1–4 | 0–932 | 105–3,074 | 664–4,021 | 1,022–12,290 | 1,698–13,410 | 4,285–15,376 |
+
+The other majors do not show it in the arm: Britain buys 2,239–3,437 a week at 1910 (vanilla 1,530–6,481), the USA 303–391 (376–582), Russia 21–430
+(5–274); France and Japan buy almost none in either (vanilla France 0–5 in all four seeds, Japan 0).
+
+**4. Why — the first buyers.** Vanilla's German oil economy starts with FREE switches: the arms industry to Bolt Action Rifles (10 oil a level; 71 levels
+by 1900 in seed 1, 15–22 by 1905 in seeds 2–3), then ports to Modern Port (concrete dockyards; 31–118 levels by 1910), logging camps to chainsaws and the
+automotive industry (combustion engine; 65 levels by 1910 in seed 1), and recoiled barrels (machine guns). The arm's Germany holds the same technologies on
+similar dates (run 1: bolt-action rifles 1895, machine guns 1900, concrete dockyards 1905, combustion engine 1910; run 3 all four by 1905), but in the
+four-rung books bolt-action rifles, recoiled barrels and automobile production are RUNGS that must be built — arms e3 and artillery e3 at 2,166 points,
+automotive e2 at 1,520 — and Germany ran 0–1 arms e3 levels by 1910 in every arm seed (run 3: 7 by 1915; run 1: none to 1920). The vanilla buildings that
+CAN switch for free — ports and logging camps, untiered in every book — did so only where oil was on offer: run 2, with home oil from 1895, had 20 Modern
+Port levels by 1900; run 3, 26 by 1910 as oil arrived; run 1, with none, ran no Modern Port until 1920–25 although it held concrete dockyards from 1905.
+Where the canon's German oil economy formed early (runs 1, 2, 4, 5) its first buyer was a built rung: the plastics glassworks (glass e3, 14 levels by 1900 in
+run 1) and arms e3, with chainsaws and Modern Port following.
+
+**Reading.** The design's own cost: modernising takes a building, so the oil economy waits for the first BUILT oil-eating rung, and in about a third of
+four-rung seeds (2 of 3 arm, 2 of 6 canon) Germany's waits 5–20 years past vanilla's. Through that wait the oil-using secondaries (Modern Port, chainsaws,
+the Assembly Lines automations) stay off in Germany even where the technology is held. Nothing in the market is starved: the flag says the market is empty.
+
+**Confidence.** HIGH on §1–§3 (the summaries' own levels, quantities and technologies). MEDIUM on §4: that the free switches waited for oil on offer is a
+reading consistent with the ten seeds traced method by method — the arm's three, vanilla's four, the canon's runs 1, 3 and 6 (vanilla seed 3 began Modern Port on imports alone — 841 a week bought on 0 made at 1905), not a tested engine rule;
+and the arm's Germany built no automotive e2 at all to 1925 in any seed, so which built rung "should" have started it is not identified.
+
+**What it does NOT say.** That the late oil economy costs Germany anything measurable (GDP, wars, port throughput — not read); why Germany rather than
+another major (Britain, the USA and Russia make their own oil); anything about the SWING line's calibration (§10.94, open with the user).

@@ -44,6 +44,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { tierEmployment, wageUnits, eraReferenceWage } from './lib_wage_model.mjs';
 import { readVanilla } from './lib_vanilla_ladder.mjs';
+import { basicTotals, basicEmployment } from './lib_secondary_compat.mjs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -410,14 +411,21 @@ for (const ind of cfg.industries) {
     // ⭐ It is what finally charges the ART ACADEMY properly: its jobs live in its ownership PMG, so `t.employment` is
     // empty and a share OF GOODS gave it almost nothing (its e2 reads 22 → 31, wage share 25% → 46%).
     // `--be-wage flat` restores the old `Ibase / ((1 − wage_pct) × Obase)`.
-    const Wbe = BE_WAGE_FLAT ? Ibase * wp / (1 - wp) : eraWage(e) * wageUnits(tierEmployment(t, ind, VLAD));
+    // ⭐⭐ UNDER THE MOST BASIC SECONDARY METHOD AVAILABLE BESIDE THE MAIN ONE (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.93: "BE numbers should
+    // mean 'under most basic of all secondary PMs available for the building'. Not 'main PM only'"): the basic secondaries' goods join the recipe's
+    // and their jobs join the rung's (lib_secondary_compat basicTotals / basicEmployment). An "off" method adds nothing, so this moves only the rungs
+    // whose basic method has goods or jobs — the three MANDATED automations (Sewing Machines, Electric Sewing Machines, Mass Production) — and leaves
+    // the art academy where tierEmployment() already put it. restate_basic_be.mjs re-applies exactly this to a book generated before it.
+    const bt = VLAD ? basicTotals(ind, t, VLAD) : { in: {}, out: {} };
+    const Ib = Ibase + val(bt.in), Ob = Obase + val(bt.out);
+    const Wbe = BE_WAGE_FLAT ? Ib * wp / (1 - wp) : eraWage(e) * wageUnits(basicEmployment(ind, t, VLAD));
     // ⭐ STORE IT AS THE RUNG'S OWN `wage_pct` — the wage fraction of TOTAL cost, which is exactly what that field has
     // always meant, only measured instead of assumed. Everything downstream already reads it (lint_profitability.awk,
     // lint_solvency's L18 gate, the balance UI's wages row), so the whole chain moves to the measured wage with no
     // second implementation and no new field. A book generated before this — or the six-rung one — carries no per-tier
     // value and falls back to the flat 0.25, which is why nothing older breaks.
-    if (!BE_WAGE_FLAT) t.wage_pct = Math.round(Wbe / (Ibase + Wbe) * 10000) / 10000;
-    t.target_be = Math.round((Ibase + Wbe) / Obase * 100);   // ≡ Ibase / ((1 − wage_pct) × Obase) × 100 at that wage_pct
+    if (!BE_WAGE_FLAT) t.wage_pct = Math.round(Wbe / (Ib + Wbe) * 10000) / 10000;
+    t.target_be = Math.round((Ib + Wbe) / Ob * 100);   // ≡ Ib / ((1 − wage_pct) × Ob) × 100 at that wage_pct
     cmax = Math.max(cmax, t.building_cost);
     rows.push({ ind: ind.id, era: e, key: t.key, out: t.output_qty, inputs, cost: t.building_cost, aiv: t.ai_value, be: t.target_be, va: Obase - Ibase, share: Ibase / Obase, emp: Object.values(t.employment || {}).reduce((s, x) => s + x, 0) || 5000 });
   });

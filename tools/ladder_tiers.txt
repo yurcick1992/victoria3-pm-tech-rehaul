@@ -4,8 +4,8 @@ pm_main_food_sweeteners 2 66 0.202
 pm_main_food_baking_powder 3 47 0.1604
 pm_main_textile_handsewn_clothes 1 132 0.3236
 pm_main_textile_dye_workshops 2 89 0.2494
-pm_main_textile_sewing_machines 3 62 0.2005
-pm_main_textile_electric_sewing_machines 4 45 0.1847
+pm_main_textile_sewing_machines 3 64 0.151
+pm_main_textile_electric_sewing_machines 4 48 0.1157
 pm_main_furniture_handcrafted_furniture 1 122 0.3242
 pm_main_furniture_lathe 2 84 0.2712
 pm_main_furniture_mechanized_workshops 3 60 0.2393
@@ -38,7 +38,7 @@ pm_main_motor_steam_engines 1 94 0.2008
 pm_main_motor_electric_engines 2 47 0.1148
 pm_main_motor_diesel_engines 3 35 0.107
 pm_main_automotive_automobile_production 1 39 0.2421
-pm_main_automotive_mass_automobile_production 2 29 0.2273
+pm_main_automotive_mass_automobile_production 2 32 0.1754
 pm_main_arms_muskets 1 74 0.2754
 pm_main_arms_rifles 2 50 0.2084
 pm_main_arms_repeaters 3 36 0.1727

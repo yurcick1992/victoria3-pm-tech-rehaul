@@ -488,6 +488,17 @@ foreign government can build (`self` on the trade centre, ports, power plant and
 and company HQs). `is_government_funded = no` on the group is NOT enough. ⇒ A building meant to be buildable abroad needs
 `ownership_type = self`.
 
+## ⭐ A production method the building can NEVER run is still SHOWN — greyed, at its own numbers
+
+Found 2026-10-02 (user's playtest, BALANCE_FRAMEWORK §10.93, BUGS_AND_FIXES 2026-10-02). A method whose `unlocking_production_methods` names
+main methods the building does not carry can never be selected there, but the building panel still lists it in its group's dropdown, locked,
+with its full goods and jobs — so vanilla's Elastics (−70 clothes) read as a defect of a craft rung that makes 2.7. The engine has a field
+for hiding: **`is_hidden_when_unavailable = yes`**, on a method (vanilla puts it on `pm_vacuum_canning_principle_3` and the monuments' methods)
+or on a whole group (*"Whether PMs in this group should be visible at all if they cannot currently be switched to"*,
+`common/production_method_groups/production_method_groups.md`). ⚠ It hides on ANY unavailability, technology included, so it would also hide
+a method the player is meant to see coming. ⇒ This mod does not use it for this: a building's group simply does not list a method it can
+never run (`emit_secondaries.mjs`), and `tools/lint_pm_combos.mjs` fails the build on one.
+
 ## ⭐⭐ `create_building` IS GATED ON THE STATE OWNER'S TECHNOLOGY — AND FAILS SILENTLY
 
 **Undocumented, measured 2026-08-17 (FINDINGS F68). The single most expensive engine trap this mod has

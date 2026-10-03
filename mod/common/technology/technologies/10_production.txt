@@ -1386,6 +1386,7 @@ compression_ignition = {
 
 	unlocking_technologies = {
 		combustion_engine
+		conveyors
 	}
 
 	ai_weight = {

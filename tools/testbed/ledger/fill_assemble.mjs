@@ -87,9 +87,15 @@ s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
   const tok = existsSync(tokFile) ? JSON.parse(readFileSync(tokFile, 'utf8')) : {};
   for (const [name, file] of [['__LEDE__','lede.html'],['__GOALS__','goals.html'],
                               ['__INCIDENTS__','incidents.html'],['__NEXT__','next.html'],
-                              ['__FOOTER__','footer.html']]) {
+                              ['__FOOTER__','footer.html'],['__REDFLAGS__','redflags.html']]) {
     const p = join(DIR, file);
     if (existsSync(p)) tok[name] = readFileSync(p, 'utf8');
+  }
+  // ⭐ THE INPUT-PRICE RED FLAGS ARE PART OF EVERY REPORT (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.94): fill_ledger.sh writes redflags.html
+  //   with ledger/input_price_flags.mjs --html. An out dir from before the ruling has none — it says so ON THE PAGE rather than dropping the card.
+  if (!tok.__REDFLAGS__) {
+    tok.__REDFLAGS__ = '<p class="dim">⚑ Input-price red flags: not read for this report (no redflags.html — run <code>input_price_flags.mjs --html</code>, BALANCE_FRAMEWORK §10.94).</p>';
+    console.log('  ⚠ redflags.html absent — the page says the red flags were not read');
   }
   // ⚠ SEVERAL TOKENS LAND INSIDE SINGLE-QUOTED JS STRINGS (__ARMLABEL__, __SPREAD__, … in render1's chart labels and captions), so a
   //   straight apostrophe in one ("vanilla's path") is a SYNTAX ERROR that blanks every renderer after it — fill_verify caught it on

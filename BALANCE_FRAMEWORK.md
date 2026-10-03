@@ -9359,3 +9359,197 @@ Additionally, let's remove gold mines as well (but add a static 5000 ai_value to
   same day: *"They should not be exempt."*** They stay in the measurement and their AI values follow profit like any manufacturing rung's. The art
   academy (`bg_arts`, urban facilities, privately built) stays in on the same reading (not separately ruled). Their weight in the measurement is in
   FINDINGS F207's addendum (the military industries carry 3–4 points of the four-rung books' 1926–36 misplacement, none of vanilla's).
+
+## §10.93 — SECONDARY AND AUTOMATION METHODS: NONE SHOWN THAT CANNOT RUN, NONE THAT TAKES A NUMBER NEGATIVE, NONE BESIDE A MAIN METHOD IT IS NARRATIVELY INCOMPATIBLE WITH (REVIEWED PAIR BY PAIR), THE ONES THAT ARE THE SAME AS A MAIN METHOD MANDATED ON IT; MAIN GROUPS TITLED "BASE"; MERGED BUILDINGS NAMED BY THEIR ERA SPAN (user, 2026-10-02 evening, from the playtest of `e1a12-ai1135`)
+
+**The user, verbatim:** *"some secondary PMs for artisans are wrong. Make another pass to ensure that all secondary and automation PMs are narratively
+compatible with the primary PMs of our tiered industries. Even if they are, secondary ones are unbalanced in some places. Check as a hard rule that no
+secondary can exist that in combination with an allowed compatible primary takes any number into the negative (one of the input goods or employment).
+Examples: e0 textile elastics, e0 furniture precision tools, e0 glass bone china all deduct much more than the only primary PM produces. If those PMs are
+actually disallowed by something, we need to not show them (or not have)"* and *"merged industries should have a mixed name, e.g. 'era 1-2. paper mills'"*.
+
+**What the three examples were (traced the same evening, BUGS_AND_FIXES 2026-10-02).** They WERE disallowed: vanilla gates Elastics on the sewing-machine
+methods, Precision Tools on the lathe and mechanized-workshop methods, Bone China on crystal glass and houseware plastics (`unlocking_production_methods`,
+the only three such gates in vanilla's industry file). `emit_secondaries.mjs` minted per-rung copies only where a main method satisfies the gate and, on
+every other rung, KEPT VANILLA'S ORIGINAL in the group — "names main PMs it does not have and therefore stays unavailable". It did stay unavailable, and the
+game SHOWED it, greyed, at vanilla numbers: −70 clothes, −55 furniture, −20 glass beside a craft level that makes 2.7, 2.7 and 1.8. Five such cases on the
+arm's book (the three crafts, plus Dye Workshops and Leaded Glass); the same five in the canon's build. No legal combination of any building went negative in
+goods or employment — measured over all 292 buildings the game loads, vanilla's included.
+
+**What is ruled and built.**
+1. **A building carries only methods it can run.** A secondary gated on main methods the building lacks is not in its group at all (it used to be kept,
+   greyed). `emit_secondaries.mjs` drops it and prints it under "not carried".
+2. **THE HARD RULE — no legal combination takes any number negative.** For every combination of one method per group that the engine would allow (a
+   PM-gated method only beside a method it names), every input good, every output good and every profession's employment stays ≥ −0.011 (one hundredth,
+   the emitted resolution — vanilla's own car plant nets automobiles to exactly zero with both conversions). Enforced by **`tools/lint_pm_combos.mjs`**,
+   which `build.ps1` runs on every build and **throws** on — unlike `lint.sh`'s goods-only negative check, whose result the build only prints. It reads
+   the EMITTED mod over the game, over every building the game loads (a `pm_goods` override can reach a vanilla building through a method file we own).
+   It also fails a dead method (rule 1), an 1836 history block naming a method its building lacks (the engine rejects the whole block), and a
+   labour-saving method on a craft rung (§10.91.1). Each kind proven to trip on a sabotaged copy the day it was written.
+3. **⭐ NARRATIVE COMPATIBILITY, REVIEWED ONE COMBINATION AT A TIME — `tools/lib_secondary_compat.mjs`** (user-ruled 23:15 the same evening: *"No, no
+   universal rule. Go through all vanilla combinations one by one, it's not like there are thousands of them. I agree that the assembly line on muskets
+   doesn't make much sense though."*). Every vanilla secondary or automation method of every tiered industry was judged beside every vanilla main method of
+   that industry — **139 pairs** — on one question asked case by case: *could a factory working this way plausibly have run this method?* (the main method
+   still in use when the secondary's technology appeared, and the secondary not contradicting what the main method is). **14 are incompatible:**
+
+   | main method | not beside | why |
+   |---|---|---|
+   | Handsewn Clothes | Automatic Power Looms | electric automatic looms (c.1900) arrive half a century after the sewing machine ended hand-sewing as a factory method |
+   | Handcrafted Furniture | Water-tube Boiler · Rotary Valve Engine · Assembly Lines | a handcraft method: powering its machinery is what the Lathes method is |
+   | Forest Glass | Automatic Bottle Blowers | wood-fired forest glasshouses were gone long before the bottle machine (1903) |
+   | Crude Tools | Water-tube Boiler · Rotary Valve Engine · Assembly Lines | a village-smithy method: powering it is what Wrought Iron Tools is |
+   | Wrought Iron Tools | Assembly Lines | wrought-iron tools gave way to mild steel by the 1890s; conveyors arrive in the 1910s |
+   | Muskets | Assembly Lines | out of military production in the 1860s (the user agreed) |
+   | Rifles | Assembly Lines | rifle-muskets and single-shot breechloaders out of military production by the 1890s |
+   | Cannons · Smoothbores | Assembly Lines | smoothbore cannon and shell guns obsolete by the 1870s |
+   | Percussion Caps | Assembly Lines | cap-and-ball ammunition gave way to the metallic cartridge in the 1870s |
+
+   ⭐ **ACCEPTED by the user the same night** (*"All right on incompatibles."*), the borderline calls below included.
+   Borderline pairs judged COMPATIBLE: Muskets / Cannons beside the Rotary Valve Engine (steam-powered armories of the
+   1850s–60s, as the products died out); Handsewn Clothes beside Mechanized Looms (weaving was mechanised while sewing was still by hand); Dye Workshops
+   beside Automatic Power Looms; Leaded Glass beside Automatic Bottle Blowers; Pulp Pressing beside steam (paper mills were among the first steam-powered
+   industries); Steam Engines beside Assembly Lines (steam engines were built into the 1940s); the Automated Bakery beside Sweeteners (the biscuit
+   industry's lines). Every other pair is plainly compatible — the luxury lines, canning, distilling, rayon, radios, aeroplanes and tanks, the patronage
+   methods, and the automation of every factory method from Lathes, Sewing Machines, Leaded Glass, Sulfite Pulping and the Bessemer process upward.
+   A rung is judged by its VANILLA main method (a minted addition by the vanilla method below it); a merged building whose main methods disagree gets the
+   method once per main method that may run it, gated to that method; a group kept by reference is copied per building where a member has to go. The
+   table is validated against the game's method files at every build (a key the game does not define THROWS), and a carried pair the review never looked
+   at WARNS — a patch that adds a method owes the table a row.
+   - **On the arm's book** it removes Assembly Lines from Muskets, Rifles, Cannons, Smoothbores, Percussion Caps and Wrought Iron Tools; the eight other
+     incompatible pairs sit on the six e0 methods that are crafts there, whose automation the craft ruling (§10.91.1) already removes.
+   - **On the canon's next build it removes all fourteen.** ⚠ An economic change to the canon (late-game automation on old rungs, which keeps them alive —
+     against the ladder's goal), unmeasured; the canon is not rebuilt.
+   - ⚠ **Superseded within the hour: a UNIVERSAL rule** — no method two or more narrative eras ahead of its main method (the ladder's death distance), my
+     first reading of "narratively compatible". The user rejected it; it removed three pairs on the arm (Muskets and Cannons × Assembly Lines, and the
+     Automated Bakery beside Sweeteners, which the review keeps) and nine on the canon. Session `20261002_223204` was built with it and is VOID.
+4. **A merged building carries a mixed name**: its main methods' era span and the building's own name, without any one method's — **"Era 1-2. Paper
+   Mills. Recipe BE 63%/47%"** — the recipe break-even given per main method in era order. A method name in the building's name described half of what it
+   runs. Research texts naming a merged rung read "<host> (<method>)" as before. ⭐ **Every main production-method group is titled "Base"** (`$pm_base$`,
+   vanilla's own title for its main groups, translated in every language) — user-agreed 23:55; it used to carry the rung's method name, which for a merged
+   building named one of its two switchable methods. A display label only: no key, save, history or tool reads it.
+5. **⭐ AN AUTOMATION THAT IS NARRATIVELY THE SAME AS A MAIN METHOD IS MANDATED ON IT AND REMOVED FROM THE RUNGS BELOW** (user-ruled 23:55: *"1) remove
+   them from lower, 'not yet upgraded' rungs 2) mandate them as is to primary rungs they match with"*). The census the user asked for (*"Just how often
+   does this happen?"*) found three pairs in the tiered industries: textile's **Mechanized Looms** (the Sewing Machines rung's own technology, Mechanized
+   Workshops), textile's **Automatic Power Looms** (Electric Sewing Machines' own technology, Electrical Capacitors) and automotive's **Assembly Lines**
+   (what Mass Production IS, though vanilla gates it on Conveyors). On the matching main method the automation group offers ONLY that method — vanilla's
+   quantities, always on, no "off" — as a copy gated to the main method and carrying no law gate, and no technology gate the main method does not imply
+   (rule 6: until 2026-10-03 Mass Production needed Compression Ignition, which did not require Conveyors, so a copy keeping Conveyors would have left the
+   group with nothing to run, and every copy's technology gate was dropped). The merged textile
+   building's group holds the two copies, each gated to its own method, so exactly one is valid at a time; a group left with nothing but an "off" method
+   (Dye Workshops, Automobile Production) is dropped from the building. The rule-1 removals (Mechanized Looms off Handsewn Clothes and Dye Workshops;
+   Automatic Power Looms off them and off Sewing Machines; Assembly Lines off Automobile Production) are derived into the table from vanilla's main-method
+   order. `MANDATED` lives in `tools/lib_secondary_compat.mjs`; `lint_pm_combos.mjs` checks that each mandated method is the only choice beside its main
+   method and carries no technology gate its main method does not imply, and that no group of a tier building has nothing to run beside some main method.
+   ⚠ **What the mandate costs, recorded when ruled:** the three rungs now always pay the automation's goods and need fewer laborers. Vanilla's own note on
+   Mechanized Looms says it breaks even only when a laborer's annual wage exceeds £6.9, and Britain's measured normal rate runs £3.2–4.8 a year (F152), so
+   at base prices each mandate trims its rung's margin by roughly 2–4% of revenue (Sewing Machines −£60–110 a level a week, Electric Sewing Machines
+   −£270–350, Mass Production −£410–460). Employment stays ≥ 0 (Mass Production's laborers reach exactly 0).
+   ⚠ **The engine behaviour it relies on — MEASURED: IT WORKS BUT IS NOT ENFORCED** (session `20261002_235755`, `tools/testbed/ledger/mandate_switch.mjs`).
+   When the merged textile building switches main method the engine does move most levels to the other gated copy (every level on each method ran its own
+   copy through 1912 in run 1, and through 1936 in runs 2 and 3), but it does not re-check a selected method when the main method changes: run 1 held one or
+   two Electric Sewing Machines levels on the Mechanized Looms copy in ten yearly snapshots 1913–1926 (Scandinavia, Croatia, Austria), the AI keeping the
+   cheaper copy. Nothing in error.log names it; consistent again by 1927. Folding each loom into its main method on the merged building would make it
+   engine-proof; accepting it is the alternative — the user's call (BACKLOG).
+6. **⭐ BREAK-EVEN UNDER THE MOST BASIC SECONDARY METHODS AVAILABLE** (user-ruled 2026-10-03 00:05, implemented after the batch the same morning): *"BE
+   numbers should mean 'under most basic of all secondary PMs available for the building'. Not 'main PM only'. Skipping checks is wrong, rather we should
+   check properly so that it'd match. This is a visual and linter thing though, so redo after the runs end, don't restart one more time."* A building's BE,
+   per main method, is computed with — in each of its other groups — the FIRST member legal beside that main method: the "off" method almost everywhere
+   (no goods, nothing changes), the mandated copy where one is mandated. ONE implementation, `lib_secondary_compat.mjs` (`basicSecondaries` /
+   `basicTotals` / `basicEmployment`), read by every surface:
+   - **the book**: `make_ab_config.mjs` restates `target_be` / `wage_pct` on that basis (the automation's goods in, its jobs out of the wage units);
+     **`tools/restate_basic_be.mjs --config <book> [--write]`** re-applies the same formula to a book written before the ruling and PROVES itself — every
+     rung without a mandate must reproduce its stored numbers to the last digit, or nothing is written. Applied to the canon (both copies) and the arm:
+     Sewing Machines 62 → **64** (wage share 0.2005 → 0.151), Electric Sewing Machines 45 → **48** (0.1847 → 0.1157), Mass Production 29 → **32**
+     (0.2273 → 0.1754); the other 53 of 56 rungs reproduce exactly. Recorded in each book as `_basic_be`. ⚠ Neither field reaches the game, so no measured
+     number moves — the arm's batch ran on the pre-restatement bytes.
+   - **the lint**: `lint_profitability.awk` checks EVERY main method of a building (a merged host's second method had no drift guard at all — only a
+     group's first member was ever checked) under the first member of every other group legal beside it (gate-aware: ungated, or gated on the main method
+     or on a method already chosen; power-bloc gated members never chosen), FAILS a main method with nothing legal in some group, and reads the full
+     vanilla + mod definition set (the mod's own 01_industry.txt with its remapped gates included; `lint.sh` feeds both linters one concatenation). The
+     stop-gap that left mandated groups out is gone. Proven to trip three ways: a merged method's target off by 12, the looms copy removed from its group,
+     the copy's tools ×12.
+   - **the building name**: "Recipe BE" (goods only, wages ignored, ROADMAP step 8 P3) adds the basic secondaries' goods — `tools/basic_secondaries.mjs`, called
+     by `build.ps1` once per build, prices them with the builder's own table. Sewing Machines reads 55% (was 50% at main method only), Mass Production 26%.
+   - **the balance sheet**: `ui/data.js` carries `sec_options` (`basic_secondaries.mjs --options`): per rung and group, the vanilla members legal beside
+     its main method wherever they differ from vanilla's group, an empty list for a group the building does not carry. The sheet offers exactly those and
+     defaults to the first, so a mandated automation is selected by default and no rung offers a method the game would not let it run (Elastics on
+     Handsewn Clothes, looms on the e0 and e1 textile rungs, Assembly Lines on Muskets …).
+7. **⭐ CONVEYORS IS A PREREQUISITE OF COMPRESSION IGNITION, SO MASS PRODUCTION'S ASSEMBLY LINES KEEP THEIR OWN GATE** (user-ruled 2026-10-03: *"Would simply
+   requiring conveyors as the tech prerequisite for the latest automobile industry-gating tech help? Do that after the current runs."*). It does: with
+   Conveyors a prerequisite of the rung's technology, every country holding Mass Production holds Conveyors, so the mandated copy keeps vanilla's gate and
+   the group can never be left with nothing to run. The general rule now in `emit_secondaries.mjs`: **a mandated copy keeps vanilla's technology gate
+   wherever every technology in it lies in the prerequisite closure of its building's technology and its main method's, in the tree the build emitted**;
+   otherwise it is dropped as before. All three copies keep theirs now (Mechanized Looms ← Mechanized Workshops, Automatic Power Looms ← Electrical
+   Capacitors, Assembly Lines ← Conveyors ⊂ the closure of Compression Ignition). `lint_pm_combos.mjs` check 7 fails a gate the main method does not imply.
+   - **Where it lives:** `PREREQ_ADDS` in `tools/lib_tier4_spec.mjs` (a new explicit-departure table beside `ERA_MOVES`; a stale or misspelt entry
+     throws); `make_tier4_techs.mjs` appends it and records `vanillaPrereqs` / `prereqsAdded`; `emit_techs.mjs` patches the technology's block in its
+     vanilla file, anchored inside that block, and THROWS if vanilla's list is no longer the one the tree recorded. The canon's and the arm's tree twins were
+     regenerated (tier4 / tier4-e1) and proven to differ from the shipped ones only by the prerequisite and the stamp.
+   - ⚠ **What else it moves:** Compression Ignition also gates motor's e3 (Diesel Engines), compression-ignition tractors, the five mines' diesel pumps
+     and diesel trains — all now wait on Conveyors (era 4: vulcanization, shift work, electrical generation) as well. Vanilla's onset dates run the other way
+     (compression ignition 1897, conveyors 1913), and at the anchor principle's era-5 position the practical delay should be small; unmeasured.
+
+**Measured the same night:** the overnight n=3 of the arm (session `20261002_235755_e1a12-ai1135-n3`, the third launch at 23:57 — the first, on the
+universal rule, and the second, before the mandates, were stopped and are VOID) is the first batch built with all five; its book is the 2+1's byte for byte
+(sha256 `73065d3f2a9328b9`), so pooling with the 2+1 carries rules 3 and 5 as a second, small difference. The 1836 history comes out semantically identical (whitespace only; the history rewrite
+now leaves a block it does not change byte for byte). ⭐ **It ended 3/3 intact** (the VERDICT in the session folder): world GDP 0.80 / 1.01 / 0.89× at the
+end state, consensus loss 7.40 (pooled with the 2+1, 4 intact / 1 broken, 7.02), misplaced capital 21% of 1926–36's new capital. Rules 6 and 7 came after
+it: the arm's book was restated in place (`_basic_be`, three rungs' `target_be` / `wage_pct`, which reach no game file) and its tree twin regenerated with
+the Conveyors prerequisite, so a build of the arm's book today differs from the measured one by rule 7 and the building names.
+
+**What "the method box" was** (the user asked, 23:15: *"Are those not two switchable vanilla-like PMs, but rather one averaging 'PM in the middle'?"*):
+they ARE two switchable methods, exactly like vanilla's own main group — `pmg_main_paper_sulfite_pulping = { production_methods = { pm_main_paper_sulfite_pulping
+pm_main_paper_bleached_paper } }`, each method with its own recipe, the second gated on its own technology (§10.91.2). Nothing is averaged; only the cost
+and `ai_value` of the HOST BUILDING are the two rungs' geometric midpoint. "The method box" was the group's display NAME, which the first cut of rule 4
+changed from the host method's name to both names; it is now "Base", as vanilla titles it.
+
+## §10.94 — INPUT-PRICE RED FLAGS: A STANDING CHECK ON EVERY BATCH AND EVERY PROBE, REPORTED AS PROSE AND HIGHLIGHTED INLINE, NOT A LOSS TERM (user-ruled 2026-10-03)
+
+**The question** (the user, 2026-10-03): *"Are we tracking industrial inputs shortages in major markets for all configs? Not only 'do we save them', but
+actually 'do we have mandatory checks and problemness metrics for them'? … I'm concerned whether some overly tight e0/e1 recipes lead to decades of
+shortages and stifled growth for some countries, even if on average it looks OK."* The answer was no (FINDINGS F212 §1). **The rulings, verbatim:**
+- *"No need to track the penalty itself, probably. Prolonged (2–3 years plus) price of +70% and higher for any industrially consumed good, or wide
+  oscillations on tiny volumes all count as red flags."*
+- *"For clarity: we need to track this for any good that is consumed by any industry. Say, iron fits."*
+- *"Ruling: >= 0.5 base price swings within 3 years on under 10 units of supply a week is a flag."* — the swing is the **shortage in disguise**: *"the
+  volumes are too low and don't allow for a stable high price, but the market conditions are the same: producers can't produce even at a significant
+  shortage, pushing prices beyond the +70%."*
+- *"An industry that can't begin growing because its inputs prices make it insolvent will have these prices swing."* — so **no flag is dismissed for want
+  of building demand**: a good nobody in the market eats may be the input of the industry that never began.
+- *"while we still gather local goods which are industry-consumed, electricity and transportation, we exclude them from the red flag calculations,
+  possible addition to loss function etc."*
+- Yearly `market_goods_wide` on the eleven tags in every schedule — *"Yes"*; the reader in every ledger and every probe readout — *"Yep"*; the next vanilla
+  batch paired with the same logging — *"Yep"*.
+- *"while we're not adding this to loss function now, we should add this as prose to the standardized report (which major market had flags, for which
+  industries, when). I also want you to highlight that inline."*
+
+**The rules:**
+1. **HIGH** — the price ≥ **1.70 × base** at every reading of a stretch spanning **≥ 2 years** (readings ≤ 1.1 years apart). The engine's own line sits
+   beside it: `GOODS_SHORTAGE_PENALTY_THRESHOLD` 0.5 pins the price at 175% and cuts every consumer's output; +70% is sell/buy ≈ 0.52.
+2. **SWING** — inside any **3-year** window the price ranges **≥ 0.5 × base** while the window's median **supply is under 10 units a week**.
+3. **Goods** — every good a production method of any INDUSTRY consumes (read live from the game: every production-methods file but the military,
+   government, monument, canal, subsistence and company-HQ ones) plus every input of the book's own rungs. **Local goods (electricity, transportation,
+   services) are excluded** from the flags, still gathered.
+4. **Scope** — the major markets of the eleven telemetry tags (British, American, French, Dutch, Belgian, German, Russian, Japanese; `lib_markets.mjs`).
+5. **The feed** — `run_schedule.ps1` adds `market_goods_wide` on **1 July of every year** from 1836 to the year before `until`, on the eleven tags read
+   from `lib_markets.mjs`'s `TELEMETRY_TAGS`, to EVERY run, merged with whatever the schedule asks (a union, never a replacement); `-NoRedFlagFeed` drops
+   it for a re-run that must match an old batch's telemetry. July keeps it clear of the January dumps and their phases. ⇒ the next vanilla batch carries
+   it like any other.
+6. **The reader** — `tools/testbed/ledger/input_price_flags.mjs`. Its primary source is that feed (supply = sell orders); a run without it is read from
+   the save summaries (supply = the market members' production PLUS, in a v10+ summary, their imports at a lower bound — trade capacity × the run's
+   traded quantity; price = the producers' `goods_sales ÷ va_out`), which are **blind where a market makes none of the good** — the feed is what closes
+   that. Every flag carries the market, the good, the span, the price range, supply (made + imported) and building demand, the producers' staffed levels
+   and the **BUYERS PRESENT** in the market — building · method, most levels at a reading, and in how many of the window's readings it was there — or "no
+   buyer in the market" with the rungs that would eat it. ⚠ A buyer present at one reading of four is not the industry the price starved (F215: the card
+   once read "tooling workshop" for seven Assembly Lines levels at one reading of a German oil market that had no oil economy at all).
+7. **Where it is read** — the ledger's VERDICT section carries the flags as a highlighted card above the goal table (`fill_ledger.sh` writes
+   `redflags.html`; the template's `__REDFLAGS__`; an out dir without it says so on the page), and every probe readout prints `--md`. A reference arm
+   (`--ref`, the vanilla set) prints one line of counts per run beside the book's flags — and where the reference's summaries carry no trade (the
+   eleven-tag set is v9) the book's counts ON THAT BASIS (production alone) beside it, so the comparison is like for like.
+8. **Not a loss term and not a register flag**, for now.
+
+**Calibration (FINDINGS F212 §7, yearly readings over the century):** vanilla (the eleven-tag set, n=4) 0.5 HIGH and 20.8 SWING flags per run (1.5
+HIGH-years per run: Russian engines 1859–63, American explosives 1861–63); the canon 1.8 HIGH (9.3 HIGH-years) and 28.0 SWING; `e1a12-artmerge` 0.3 (0.7)
+and 23.0; the arm `e1a12-ai1135` 1.4 (6.8) and 27.4 — every book on production-alone supply, like for like with the v9 reference (with imports the
+arm's n=3 reads 34 / 21 / 19 SWING against 35 / 24 / 21). ⚠ **At the ruled thresholds SWING is common in vanilla itself** — a book's SWING count is read
+against vanilla's line, never alone; the HIGH years separate the books from vanilla far more sharply (×5–6).

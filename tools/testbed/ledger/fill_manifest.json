@@ -51,6 +51,12 @@
       "means": "what this batch is for, and how to read the table"
     },
     {
+      "name": "__REDFLAGS__",
+      "from": "input_price_flags.mjs --html (redflags.html)",
+      "required": true,
+      "means": "the input-price red flags, highlighted inline in the verdict: which major market, which industrially consumed good, when (BALANCE_FRAMEWORK §10.94)"
+    },
+    {
       "name": "__GOALS__",
       "from": "fill_goals.mjs",
       "required": true,
