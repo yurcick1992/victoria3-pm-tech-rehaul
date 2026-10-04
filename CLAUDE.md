@@ -1706,7 +1706,10 @@ config/mod_config.e1a12-ai1135-tex1140-artmerge.json ⚗ TEXTILE'S MERGED HOST A
                         the Conveyors prerequisite of 2026-10-03, so re-running ONE step from an intermediate copies a stale twin — the full chain from
                         tier4-e1 (whose twin carries it) does not. Probe 20261003_111956 (1 × 1836→1866, FINDINGS F213): the frontier builds (77 shortlist
                         levels at 1866 against 3–41) and British clothes fall to 0.75 of base, but the e1 rung grows (179 against 104–133) and misplaced
-                        capital rises (24% against 15–20%). Not ruled on. Un-ignored with its twin
+                        capital rises (24% against 15–20%). ⭐ Its CENTURY (20261003_171038, fixed n=5, FINDINGS F216): 4 intact / 1 runoff, consensus
+                        loss 5.59 (the canon 5.90); the USA dead in 1 of 5, by a won Confederate secession — the dead USAs are political since the
+                        compressed ladder, where e1a12-artmerge's were economic; a raw-sector shortfall in the surviving USAs remains. Not ruled on.
+                        Un-ignored with its twin
 config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this

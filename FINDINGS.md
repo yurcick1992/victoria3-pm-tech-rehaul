@@ -21272,3 +21272,73 @@ and the arm's Germany built no automotive e2 at all to 1925 in any seed, so whic
 
 **What it does NOT say.** That the late oil economy costs Germany anything measurable (GDP, wars, port throughput — not read); why Germany rather than
 another major (Britain, the USA and Russia make their own oil); anything about the SWING line's calibration (§10.94, open with the user).
+
+## F216 — THE LATEST BOOK OVER FIVE CENTURIES: 4 INTACT / 1 RUNOFF, CONSENSUS LOSS 5.59 (THE CANON 5.90); THE DEAD USA IS POLITICS IN THIS ARM — 1 OF 5, A WON CONFEDERATE SECESSION — WHERE THE e1a12-ARTMERGE BOOK'S 3 OF 3 WERE ECONOMIC; A RESIDUAL RAW-SECTOR SHORTFALL REMAINS (2026-10-04; session 20261003_171038_e1a12-ai1135-tex1140-n5, n=5 fixed, all runs to 1936; references the pinned vanilla n=16 20260821_131149, the canon 20260929_002728 n=6, the arm's earlier centuries 20261002_120946 n=2 + 20261002_235755 n=3 and e1a12-artmerge 20261001_225817 n=3)
+
+**The question** (the user, 2026-10-03): *"go on with n=5 on the latest config … I want to understand the general health and whether the dead USA was a set
+of unfortunate seeds, as we never found mechanical reasons."* Book `config/mod_config.e1a12-ai1135-tex1140-artmerge.json` (F213's probe book, the user's
+playtest build plus telemetry). Arm `{kind: config}`. Five runs, every one 1836.1.1 → 1936.1.1, play 155–181 min (Σ 848 min; one CTD in run 3 recovered,
+overhead 0.5% of play). Preflight `-Session`: everything passes except L28 (one false rotation in run 5's error.log mirror — raw error-line counts of that
+run only; telemetry and summaries untouched).
+
+**1. The register (criteria.mjs, the 1932–36 mean, ÷ vanilla n=16).**
+
+| run | outcome | world GDP | pooled U* | loss | soft flags |
+|---|---|---|---|---|---|
+| 1 | ⛔ BROKEN BY RUNOFF | 1.34× (1.38× at base prices) | 3.2% | — | GBR U* < 5% 13 y (hoard 0.18), FRA 5 y (0.10) |
+| 2 | ✅ intact | 1.23× | 26.8% | 7.5 | GER U* < 5% 11 y (hoard 0.10) |
+| 3 | ✅ intact | 0.77× | 27.8% | 9.9 | — |
+| 4 | ✅ intact | 0.94× | 41.0% | 5.6 | GBR U* < 5% 7 y (hoard 0.03) |
+| 5 | ✅ intact | 0.96× | 42.0% | 4.2 | — |
+
+Consensus (n=4 intact, the median): **LOSS 5.59** = PI 1.54 + T3 1.54 + PP 1.03 + pool U* 0.60 + pool GDP 0.48 + T0 0.41. World GDP 0.95 (at the aim),
+world W 0.85, world H 0.52; pool W 0.80 (aim), pool U* 1.62 (below the ≥ 2 aim), pool H 0.53 (aim), pool GDP 0.96 (below 1.1), PI 0.92 falling decade over
+decade, PP 0.96, T0 1935 ÷ the 1900s 0.42 (aim), T3 26.4% of tiered workers. Against the canon's 5.90 (F177) and the arm's earlier books (e1a12-artmerge
+8.62; e1a12-ai1135 7.40 over the overnight n=3, 7.02 pooled with its 2+1, F210) the best consensus of the arm's line — ⚠ DIRECTIONAL (§10.83.7): σ of one run's loss ≈ 6.6. ⚠ The runoff is a NEW kind:
+the shortlist fully depeasanted at a SMALL hoard (0.10–0.18 of GDP), not the old rich-and-idle runoff.
+
+**2. Misplaced capital (misplaced_capital.mjs, grossly misplaced share of new capital, ALL benchmark, median of 5).** 18–19% a decade to 1906, 21–23% after;
+1926–36 **23%** — the arm's own level (e1a12-ai1135: 21 / 21 / 28% over the overnight n=3, 29 / 26% over the n2), below e1a12's 38% and the
+canon's 28%, above vanilla's 17%; the cheaper textile host did not move it. Manufacturing's gross share 25–34% in 1926–36.
+
+**3. Old rungs at 1935 (old_rungs_by_industry.mjs).** Shortlist: 0.39M of 16.8M tiered workers (2.3%) on a rung two+ eras behind their country's best,
+textile 0.31M (14% of the industry) the bulk. World: 3.21M of 44.6M (7.1%) — textile 17%, furniture 14%, paper 16%, glass 6%.
+
+**4. THE USA (us_history.mjs).** US GDP ÷ vanilla's median US GDP at 1935, with population and GDP per head ÷ vanilla's:
+
+| run | GDP | population | per head | the politics |
+|---|---|---|---|---|
+| 1 | 3.02 | 1.31 | 2.35 | California 1853; CSA seceded and won 1896–97 (17.9M), the USA kept 171M |
+| 2 | 0.83 | 0.95 | 0.89 | Texas crushed; California NEVER American; no civil war |
+| 3 | **0.38** | **0.56** | 0.70 | California never; CSA seceded 1882, won 1884, 46.4M at 1935 against the USA's 73.1M; capitulated 1874, 1905 |
+| 4 | 0.63 | 0.79 | 0.81 | Texas crushed; California only in 1888; no civil war |
+| 5 | 1.29 | 0.93 | 1.41 | California 1852; New Africa 1889–90 put down |
+
+Pooled with the earlier books at 1935 ("dead" = < 0.6 of vanilla's US GDP):
+
+| book | n | dead | the dead runs' population ÷ vanilla | their GDP per head ÷ vanilla |
+|---|---|---|---|---|
+| this book (tex1140) | 5 | 1 | 0.56 | 0.70 |
+| e1a12-ai1135 (n2 + overnight n3) | 5 | 2 | 0.77, 0.59 | 0.39, 0.86 |
+| e1a12-artmerge (the 1.2-lift book) | 3 | **3** | **1.33, 1.21, 1.29** | **0.26, 0.38, 0.43** |
+| the canon | 6 | 0 | — | — |
+| vanilla | 16 | 2 (0.38, 0.58; both with a Confederacy at 1935) | — | — |
+
+⭐ **The answer to the question.** The dead USA of the e1a12-artmerge book (F203/F204, 3 of 3) was ECONOMIC: the USA kept MORE people than vanilla's and
+made a quarter to two fifths of vanilla's GDP per head. Since the compressed desire ladder (e1a12-ai1135, F208/F209) and in this book, the dead USAs are
+POLITICAL: every one lost its South or its West — run 3 here to a Confederacy that won in 1884 (population 0.92 → 0.58 of vanilla between 1880 and 1890,
+with GDP per head following it down from 1.14 to 0.64 within a decade). Their rate (3 of 10 across the two books) is above vanilla's 2 of 16 but at n=10
+that is not a measured difference; the Confederacy wins its independence by 1900 in 5 of 10 here against 6 of 16 in vanilla. ⇒ **"A set of unfortunate
+seeds" holds for this book's death; the earlier economic death was the ai_value ladder, and the compressed ladder removed it.**
+
+**5. The residual: a raw-sector shortfall in the surviving USAs (country_composition.mjs, value added at BASE prices; runs 1–4 medians against vanilla's 16).**
+At 1935 the US total is 0.80× vanilla's, and the whole gap is raw production — agriculture £41.5M against £83.5M (0.50×), extraction £89.1M against £159M
+(0.56×) — while light industry 0.90×, heavy industry 1.55× and arms 2.8×. In 1910 extraction was 0.84× and agriculture level; the gap opens after 1910. The
+construction record says why it can (us_construction_windows.mjs, the US private queue's raw + infrastructure share, this book's five runs against vanilla's
+sixteen): **1846–66 20–62% (vanilla 31–71%) · 1866–86 9–30% (12–55%) · 1886–1906 10–21% (22–44%) · 1906–21 15–25% (18–55%) · 1921–36 14–25% (28–54%)**,
+and textile + furniture take **13–32%** of 1866–86 against vanilla's **0–14%** — F204's signature, weaker, and still present. It is what pulls GDP per head
+below vanilla's after 1910 in runs 2 and 4 (0.89 / 0.81) with no war to explain it.
+
+**What it does NOT say.** Five seeds: the register's consensus and every rate here are directional. §5 is a shortfall in where value added sits, not yet a
+test that the raw sectors paid better when they were not built (misplaced_capital.mjs's US cut is that test, not run). The USA's population ratio mixes
+territory with migration. The runoff's cause is not read.

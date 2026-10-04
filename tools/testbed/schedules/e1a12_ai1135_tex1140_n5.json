@@ -1,0 +1,41 @@
+{
+  "schedule_version": 1,
+  "label": "e1a12-ai1135-tex1140-n5",
+  "_why": "FIVE FULL CENTURIES OF THE LATEST BOOK (user-asked 2026-10-03: 'go on with n=5 on the latest config (the one that we had probes on; the one that I playtested on, but with telemetry). I want to understand the general health and whether the dead USA was a set of unfortunate seeds, as we never found mechanical reasons.'). Book config/mod_config.e1a12-ai1135-tex1140-artmerge.json — the book of probe 20261003_111956 (F213) and of the user's playtest build mod_playtest_tex1140/ (that build = this book without telemetry). A FIXED-n batch: every run plays 1836 -> 1936, no stop watcher, no 2+1 rule (memory: fixed-n batches run to completion).",
+  "_arms": {
+    "e1a12-ai1135-tex1140": "{kind: config, config: config/mod_config.e1a12-ai1135-tex1140-artmerge.json} (+ its tree twin, the arm's tree byte for byte)."
+  },
+  "_comparison": "The pinned vanilla n=16 (20260821_131149) for the register and the USA's GDP/population path; the eleven-tag vanilla n=4 (20260920_225047 + 20260920_192007 run 1) for yearly prices / red flags, said so where quoted; the arm's earlier centuries at the midpoint textile cost — e1a12-ai1135 (20261002_120946 n2, 20261002_223204 / 232955 / 235755 n3) and e1a12-artmerge (20261001_225817 n3) — for the USA question; the canon canon-dams-family (20260929_002728, n=6) as the incumbent.",
+  "_questions": {
+    "Q1 HEALTH": "Register (criteria.mjs): intact / broken per run, consensus loss, world GDP, pool W / U* / H / GDP, PI / PP, T0 / T3; misplaced capital per decade (misplaced_capital.mjs); input-price red flags against vanilla's line (input_price_flags.mjs); old rungs beside their replacement (old_rungs_by_industry.mjs); dead industries / token markets at 1880 and 1935 (health_vs_ref.mjs); play time (report_perf.mjs).",
+    "Q2 THE USA": "Per run, us_history.mjs: the Texas revolt and the Mexican war, California, the Confederacy (secession, winner, lifetime), capitulations, bankruptcies, and the USA's GDP ÷ vanilla split into population ÷ vanilla and GDP per head ÷ vanilla along the century; country_composition.mjs --tag USA for the sector mix. Pooled with the arm's earlier centuries (the same arm bar the textile host cost) to ask: how often is the USA 'dead' (GDP ÷ vanilla < 0.6 at 1935), and is the shortfall territory (population) or economy (per head)?"
+  },
+  "_predictions": {
+    "Q1": "Mostly intact; the arm's family has run 1 broken in 2–3 runs (a runoff in 20261002_120946, the stuck-Britain stall in e1a12-artmerge), so 0–2 broken of 5 is the expectation. World GDP median 0.80–1.00; misplaced capital 1926–36 at or under the arm's 26–29%; the cheaper textile host keeps more Sewing Machines and lower clothes prices than the arm's centuries (F213 at 1866).",
+    "Q2": "If the dead USA is seed politics, it appears in at most 1–2 of 5 and coincides with a political event visible in us_history.mjs (a lost Confederate war, a lost California, an early bankruptcy); a USA under 0.6 at 1935 in 3+ of 5 with population near vanilla's would point at an economic mechanism after all. F211's reading of the compressed-ladder arm (shortfall = population 0.77×, GDP per head 1.45×) predicts territory, not economy."
+  },
+  "_stop_rule": "none: a fixed n=5, every run plays to 1936. Only a hard harness failure (crash loop, mod not loaded) stops it.",
+  "_cost": "5 runs x 1836 -> 1936, about 2.5-3.3 h each, about 13-16 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "The autosaves overwrite the player's own autosave slots; the testbed runs its own built mod and does not touch the deployed playtest build.",
+    "run_schedule.ps1 adds the red-flag feed (market_goods_wide each 1 July) to every run."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "e1a12-ai1135-tex1140": { "kind": "config", "config": "config/mod_config.e1a12-ai1135-tex1140-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "e1a12-ai1135-tex1140", "until": "1936.1.1" },
+    { "setup": "e1a12-ai1135-tex1140", "until": "1936.1.1" },
+    { "setup": "e1a12-ai1135-tex1140", "until": "1936.1.1" },
+    { "setup": "e1a12-ai1135-tex1140", "until": "1936.1.1" },
+    { "setup": "e1a12-ai1135-tex1140", "until": "1936.1.1" }
+  ]
+}
