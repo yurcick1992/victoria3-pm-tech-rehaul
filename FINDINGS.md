@@ -21339,6 +21339,8 @@ sixteen): **1846–66 20–62% (vanilla 31–71%) · 1866–86 9–30% (12–55%
 and textile + furniture take **13–32%** of 1866–86 against vanilla's **0–14%** — F204's signature, weaker, and still present. It is what pulls GDP per head
 below vanilla's after 1910 in runs 2 and 4 (0.89 / 0.81) with no war to explain it.
 
+**The ledger:** https://claude.ai/artifact/Ect8ap7iAwMCMzoT5f6W9g (also the session's REPORT.html). Its red-flag card adds one reading: on the summaries' basis the book throws 3.0 HIGH / 27.0 SWING flags a run against vanilla's 0.5 / 20.8 (the eleven-tag n=4 set, the low-n reference) and the overnight n=3's 1.3 HIGH; on the market order books 72 HIGH stretches a run, led by engines at the band edge for decades in the Japanese and Russian markets and through 1840–70 in the British, Dutch and French, with building demand about twice supply.
+
 **What it does NOT say.** Five seeds: the register's consensus and every rate here are directional. §5 is a shortfall in where value added sits, not yet a
 test that the raw sectors paid better when they were not built (misplaced_capital.mjs's US cut is that test, not run). The USA's population ratio mixes
 territory with migration. The runoff's cause is not read.
