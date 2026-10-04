@@ -3265,6 +3265,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         reload and replay subtracted; `report_perf.mjs` reads it by default (`--wall meta` for the observer's own
                         wall_seconds). Written because meta's wall over-counts crash-prone arms by 1.5–2 min per CTD and a killed-and-
                         continued run carries only its last launch. `wall_from_ticks.mjs <session> [--detail]` prints meta / play / overhead per run
+  testbed/ledger/tick_overhead.mjs  ⭐ THE ENGINE OVERHEAD A BOOK ADDS, PERIOD BY PERIOD (2026-10-04, FINDINGS F217): seconds per in-game year from the
+                        observer's 20-s ticks with every autosave tick removed (so save cadences compare), minus vanilla's cost scaled to the run's
+                        own world size (F120's pops+GDP and levels-weighted models, both printed), mean ± 2·SE per period.
+                        `--van label=<sessions>:<setup> [--van …] --arm label=<sessions>:<setup> [--arm …] [--json out]` (one setup per spec).
+                        First reading: the mod's "early-game dip" is a near-constant ~+6–7 s per in-game year from 1836 (+12% of a 55-s early tick,
+                        ~+4 by the 1880s), not an early event, not instrumentation and not world size. ⚠ Quarterly-save runs read dearer even
+                        with the save ticks out — compare like cadence with like
   testbed/ledger/corpus_extract.mjs + corpus_levers.mjs + corpus_early.mjs + corpus_depeasant(_extrap).mjs + lib_corpus_stats.mjs + lib_depeasant.mjs  ⭐ THE WHOLE RUN CORPUS AT ONCE
                         (2026-09-25, FINDINGS **F165**): the extractor writes one line per usable century run of every four-rung A/B book
                         (and the vanilla controls) — the lever vector from the run's own `_ab`, yearly world / pool / GBR GDP, W, U*, H and

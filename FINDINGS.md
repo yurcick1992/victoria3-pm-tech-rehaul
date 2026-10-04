@@ -21344,3 +21344,93 @@ below vanilla's after 1910 in runs 2 and 4 (0.89 / 0.81) with no war to explain 
 **What it does NOT say.** Five seeds: the register's consensus and every rate here are directional. §5 is a shortfall in where value added sits, not yet a
 test that the raw sectors paid better when they were not built (misplaced_capital.mjs's US cut is that test, not run). The USA's population ratio mixes
 territory with migration. The runoff's cause is not read.
+
+---
+
+## F217 — THE EARLY-GAME WALL-CLOCK DIP IS A NEAR-CONSTANT ENGINE OVERHEAD, NOT AN EARLY EVENT: ~+6–7 s per in-game year from 1836 (+12% of a cheap early tick), ~+4 by the 1880s, buried after 1900 under the mod's smaller world; it is not instrumentation and not world size, and it arrived in steps with content (2026-10-04; no new runs — every yearly-save session since 2026-07-31 re-read)
+
+**The question** (the user, 2026-10-04, after F216's row P): *"Dive deep and try explaining early-game wall clock speed dip."* — the batch of F216 ran
+1.15× vanilla's seconds per in-game year in the 1830s, 1.09× in the 1840s–90s, and 0.93–1.02× after 1900 (total play ×1.050).
+
+**Method.** The game's own progress, not the save stamps: the observer's 20-second tick lines (elapsed wall, in-game date) summed per period,
+**excluding every tick that wrote an autosave** (the tick crossing the 1st of a save month under the session's own cadence), so batches compare across
+save cadence and the save stall is out. World size from each run's save summaries at the period's anchor year (live pop objects, summed levels, world
+GDP), subtracted with F120's two fitted models. New tool: `tools/testbed/ledger/tick_overhead.mjs` (`--van label=sessions:setup --arm label=sessions:setup`).
+Reference: vanilla n=16 (2026-08-21) + the eleven-tag vanilla (2026-09-20, n=4), which agree in 1836–40 to ±1 s (55.2 / 55.7).
+
+### 1. Not instrumentation, not the harvester, not logging, not the game version
+
+| suspect | test | result |
+|---|---|---|
+| telemetry | the schedules' metric/tag specs | identical (11 tags, the same six metrics) for every batch from 2026-09-22 on; the step comes after |
+| the concurrent save harvester | game speed in ticks with a save being melted vs idle ticks, to 1860 | no difference: tex1140 5.24 vs 5.17 in-game days per wall second, vanilla 5.69 vs 5.59, b-gradient 5.54 vs 5.49 |
+| harvester load by summary version | save → summary latency, first 15 saves | 76–79 s (v8/v9) → 80–85 s (v10–v15): no step |
+| the autosave stall | year-end ticks vs clean ticks | ~1.1 s per save in the mod, ~0.9 s in vanilla: ~0.2 s a year |
+| error / debug logging | each run's own 1836–45 window | error.log 18–41 lines a year in every book (vanilla 32), debug.log 433–1,043 |
+| game version | build_state.json | 1.13.11 on every batch compared |
+| the red-flag feed (2026-10-03 only) | tex1140 vs the same arm's overnight n=3 | indistinguishable |
+
+### 2. Not world size: the non-craft books simulated vanilla's world exactly
+
+At 1840 every non-craft book of 2026-09-17 → 30 has live pop objects, levels and building records within **1%** of vanilla's — and still runs 3–12%
+dearer per in-game year. The craft books carry **+5% pop objects** (the typed, identity-split craft seeding) and **+7.7% levels** (8,300 craft levels at
+×10 per worker) — and cost no more than the dam books without crafts (§3): the extra craft LEVELS cost nothing measurable, consistent with F120 §4.
+
+### 3. The overhead by book (1836–40, clean ticks, mean ± 2·SE, s per in-game year beyond vanilla at equal size)
+
+| book | n | overhead | what it added (effective definitions loaded: buildings / journal entries / decisions; vanilla 115 / 419 / 59) |
+|---|---|---|---|
+| six-rung canon, 2026-08-13 — **same night as vanilla** | 2 vs 4 | **+8.6 ± 1.0** | 199 / 797 (378 research JEs, 126 bars) / 59 |
+| six-rung mod WITHOUT research events, 2026-08-11 — same session as vanilla | 1–2 | +0.9 / −1.2 | the tier split alone |
+| four-rung canon family, 2026-09-17 → 22 | 10 | +2.0 ± 1.2 | 155 / 542 (123 research JEs) / 59 |
+| + per-good trade weights, 2026-09-23 / 26 | 7 | +5.4 ± 1.7 | nothing loaded per country — see below |
+| + dams, 2026-09-27 → 30 | 13 | **+6.4 ± 0.7** | 298 / 683 (+144 dam JEs) / 347 (+288 survey decisions) |
+| + crafts and merges (this book), 2026-10-03 | 5 | +7.3 ± 2.0 (pops+GDP) · +4.3 ± 2.0 (levels-weighted) | 292 / 683 / 347; +5% pop objects |
+
+On medians the archive reads the same steps: vanilla 55, the September canons 54–58.5, trade 58–61, dams 60–65, crafts 61.8–61.9 (yearly saves).
+
+### 4. ⭐ Its shape: CONSTANT in absolute terms, so LARGE in relative terms only while the tick is cheap
+
+The dam-era books (n=13), size-subtracted (pops+GDP / levels-weighted models agree to ±0.5 s before 1890):
+
+| period | vanilla s/yr | overhead | % of vanilla |
+|---|---|---|---|
+| 1836–40 | 55.6 | +6.4 ± 0.7 | 11.5% |
+| 1840–45 | 63.6 | +7.2 ± 1.8 | 11.3% |
+| 1845–50 | 68.1 | +7.9 ± 3.7 | 11.6% |
+| 1850–60 | 71.2 | +6.2 ± 3.4 | 8.7% |
+| 1860–70 | 75.4 | +4.5 ± 3.9 | 6.0% |
+| 1870–80 | 80.5 | +3.7 ± 3.5 | 4.6% |
+| 1880–90 | 84.1 | +4.7 ± 4.0 | 5.6% |
+| 1890–1900 | 96.5 | +2.2 ± 3.7 | 2.3% |
+| after 1900 | 116–162 | −5 to +13, ±5–8 | not resolvable |
+
+⇒ **There is no early-game EVENT.** The overhead is present from the first months (half-year bins 1836–47 read +6 to +9 throughout, no decaying
+transient), roughly constant to 1850 and declining slowly afterwards — in step with the number of countries (438 → 375 → 316 → 290 at 1840 / 1860 /
+1880 / 1900) or with a per-country research workload that stays flat to 1880 (unresearched covered technologies × building records: 1.00 / 1.07 / 0.99 /
+0.92 of 1840) — while vanilla's own cost per in-game year triples. Against a 55-second early tick ~+6.5 s is +12%; against a 97-second tick in the 1890s
+~+3 s is +3%; after 1900 the mod's world is 5–15% smaller in levels and that saving (F72/F120: cost is proportional to size) outweighs the overhead —
+which is the whole shape of F216's per-decade ratios and of its ×1.05 total.
+
+### 5. What carries it — attribution, with the confidence each deserves
+
+- **Research events, as built in August, were the largest single cost**: the six-rung book ran at vanilla's speed without them (+0.9 / −1.2 s) and
+  +6–9 s with them (126 covered technologies, weekly war bars at the time). In the four-rung canon (40 covered technologies, monthly bars) they cost
+  ~nothing measurable: canon4-je (with) 54.4 against canon4-tgate / ab3 (without) 56.0 / 57.4 on the same day, 2026-09-03.
+- **The dams add ~+1 to +4 s**: 144 building types the construction AI checks per state (each `potential` exits on its state region), 288 survey
+  decisions checked per country (each `is_shown` exits on `steam_turbine`, held by nobody before ~1890) and 144 dam journal entries (inactive: no
+  `possible`, no churn in the logs). Cheap per check and many checks; the probes p2–p5 (stage design, ~190 more building types, the same decisions) ran
+  ~2 s a year dearer than p6–p9, i.e. ~0.01 s per building type.
+- **The per-good trade weights: +0 to +3 s and NO mechanism found.** They change no definition; the number of (country, good) pairs trading is unchanged
+  (~500 at 1840 with or without them) and trade capacity in use FALLS 16% (each unit moves more goods). Likely in part night-to-night noise.
+- **The crafts: +0 to +2 s**, through the +5% pop objects of the typed 1836 seeding (F120's pop term, ~0.5 s per thousand); the +8% craft levels are free.
+
+### What it does NOT say
+
+- **No engine subsystem is identified.** Wall clock cannot see inside the engine; the per-state and per-country evaluation of added definitions is the
+  leading hypothesis, consistent with every reading here, and untested.
+- **The attribution in §3/§5 is cross-night** except the August six-rung pair. Early-game vanilla reproduced to ±1 s over a month (2026-08-21 vs
+  2026-09-20), but mid-August vanilla sessions with heavier telemetry ran 58–62 — night and instrument can move a book by ±2–3 s.
+- **The confirming test is a same-night ablation**, proposed and not run: the tex1140 book, the same without dams, without research events, without the
+  trade weights, and vanilla, alternating, 3 × 1836→1846 each (~3 h).
+- Row P's grade (the TOTAL, ×1.050, inside the 10% budget) is unchanged by any of this.
