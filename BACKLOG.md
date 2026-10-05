@@ -108,6 +108,7 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 
 - **OPEN** · company mandates first cut shipped and unmeasured (the company-held rung mix) · ROADMAP step 5
 - **RULING** · the capital-export arm (FDI factor) — measured, not adopted · F179
+- **OPEN** · the dam level cap with SEVERAL foreign builders on one site: counted on the region total (as intended) or per builder? Read with the contest probe (`dams.probe.contest`, `probe_q` above the cap) · BUGS_AND_FIXES 2026-10-05
 - **DEFERRED** · dam consumers' recipes (power plant at 4× cost ships) · ROADMAP step 6
 - **OPEN** · dam survey concurrency: a spare check + a "just surveyed" variable · F176
 - **RESEARCH** · dams' effect on GDP and the stall/runoff tails; what sets the dam count; privatisation in some countries · F175–F177
@@ -146,7 +147,7 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 
 ## Done (recent; prune freely)
 
-- 2026-10-05 · the dam level cap moved to the engine's `has_max_level` (a shift+click had queued five levels past the scripted cap); the user verified in game that a shift+click now stops at the cap · BUGS_AND_FIXES 2026-10-05
+- 2026-10-05 · the dam level cap moved to the engine's `has_max_level`, carried by `base_values` on every country (a shift+click had queued five levels past the scripted cap; a state-trait carrier blocked every foreign builder); the user verified in game that a shift+click stops at the cap for owners and foreign builders alike · BUGS_AND_FIXES 2026-10-05
 - 2026-10-01 · `artmerge6-pb` century n=3 read · F194
 
 - 2026-10-01 · save summary v13/v14: IG clout and IG members by workplace (`ig_clout.mjs`, `ig_pop_contrib.mjs`, `ig_workplace_series.mjs`) · F190, F192, F193

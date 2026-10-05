@@ -411,11 +411,11 @@ in those and in the building names; it is UNMEASURED, and the repo's `mod/` (reg
 Documents is NOT the canon: since 2026-10-03 13:58 it is the latest probe's book `e1a12-ai1135-tex1140-artmerge` WITHOUT telemetry (user-asked, for a
 playtest) — `mod_playtest_tex1140/`, proven byte-identical to probe `20261003_111956`'s build bar its two telemetry files (a rebuild with the probe's own
 telemetry and token reproduced its recorded fingerprint exactly). The previous playtest build (e1a12-ai1135, 2026-10-02 20:34) is kept in `mod_playtest_e1a12ai1135/`.
-⭐ **Since 2026-10-05 09:22 the deployed copy is `mod_playtest_tex1140_damcap/`** (built 09:15): the same book, differing from `mod_playtest_tex1140/` only
-in the dam files (the engine level cap, BUGS_AND_FIXES 2026-10-05) and the build stamp; restore the old one with robocopy /MIR if needed.
-The hand test of the cap ran on `mod_playtest_damtest/` (deployed 09:40, config `mod_config.e1a12-ai1135-tex1140-artmerge-damtest.json`, gitignored:
-the damcap build plus `dams.probe.player_open` — every PLAYER country holds the three dam technologies and every survey at the 1836 start); it passed and
-the damcap build was put back.
+⭐ **Since 2026-10-05 10:33 the deployed copy is `mod_playtest_tex1140_damcap/`** (built 10:31): the same book, differing from `mod_playtest_tex1140/` only
+in the dam files (the engine level cap carried by `base_values`, BUGS_AND_FIXES 2026-10-05), the copied `00_code_static_modifiers.txt` and the build stamp;
+restore the old one with robocopy /MIR if needed. The hand tests of the cap ran on `mod_playtest_damtest/` (config
+`mod_config.e1a12-ai1135-tex1140-artmerge-damtest.json`, gitignored: the damcap build plus `dams.probe.player_open` — every PLAYER country holds the three
+dam technologies and every survey at the 1836 start); the last one passed and the damcap build was put back.
 
 ### (HISTORY) THE CANON WAS `canon-dams` FROM 2026-09-27 TO 2026-09-29 (user-ruled: *"Remove everything you suggested and canonize the build."*)
 
@@ -3595,8 +3595,11 @@ tools/                  dev tooling — NOT shipped in the mod
   emit_dams.mjs         THE DAMS, EMITTED — called by build.ps1 (throws); `dams.enabled` absent/false → nothing. Writes: the building group
                         bg_pmr_hydro_dams (under bg_private_infrastructure, NOT government-funded, `stateregion_max_level = yes`) and ONE
                         expandable building per project, `has_max_level = yes` (⭐ since 2026-10-05 the level cap is the ENGINE's: a
-                        per-project site trait `pmr_dam_<id>_site`, added once per campaign, carries `state_building_dam_<id>_max_level_add`;
-                        the scripted cap below, kept as the tooltip, let a shift+click queue five levels past it — BUGS_AND_FIXES 2026-10-05),
+                        dam's `state_building_dam_<id>_max_level_add` sits in vanilla's `base_values`, i.e. on EVERY country — the build owns a
+                        whole-file copy of `common/static_modifiers/00_code_static_modifiers.txt` with those 144 lines added — because a state
+                        trait carrying it held for the state's owner and was 0 for every foreign builder (user's hand tests); a per-project
+                        site trait `pmr_dam_<id>_site`, added at the campaign start, is the visible label only; the scripted cap it replaced
+                        let a shift+click queue five levels past it and is removed — BUGS_AND_FIXES 2026-10-05),
                         building_dam_<id>: `potential` = the anchor province's split part once someone surveyed; `can_build_private` always
                         no; `can_build_government` reads `scope:investor_country` (the anchor owner or its overlord chain, its OWN survey,
                         the next level's technology, the cap by `level_after_queued_constructions`); `ownership_type = self` (without it the

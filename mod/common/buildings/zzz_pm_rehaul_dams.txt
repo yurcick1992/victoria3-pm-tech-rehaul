@@ -44,10 +44,6 @@ building_dam_columbia_river = {
 			}
 		}
 		custom_tooltip = {
-			text = pmr_dam_columbia_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_columbia_river  level_after_queued_constructions >= 19 } }
-		}
-		custom_tooltip = {
 			text = pmr_dam_columbia_river_tech_2_tt
 			OR = {
 				NOT = { any_scope_building = { is_building_type = building_dam_columbia_river  level_after_queued_constructions >= 1 } }
@@ -128,10 +124,6 @@ building_dam_laurentian_rivers = {
 				scope:investor_country ?= { has_variable = pmr_dam_laurentian_rivers_surveyed }
 				AND = { has_global_variable = pmr_dam_laurentian_rivers_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_laurentian_rivers_family  top_overlord ?= { this = global_var:pmr_dam_laurentian_rivers_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_laurentian_rivers_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_laurentian_rivers  level_after_queued_constructions >= 11 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_laurentian_rivers_tech_3_tt
@@ -222,10 +214,6 @@ building_dam_norrland_rivers = {
 				AND = { has_global_variable = pmr_dam_norrland_rivers_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_norrland_rivers_family  top_overlord ?= { this = global_var:pmr_dam_norrland_rivers_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_norrland_rivers_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_norrland_rivers  level_after_queued_constructions >= 5 } }
-		}
 	}
 
 	can_build_private = {
@@ -300,10 +288,6 @@ building_dam_lower_columbia = {
 				scope:investor_country ?= { has_variable = pmr_dam_lower_columbia_surveyed }
 				AND = { has_global_variable = pmr_dam_lower_columbia_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_columbia_family  top_overlord ?= { this = global_var:pmr_dam_lower_columbia_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_lower_columbia_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lower_columbia  level_after_queued_constructions >= 10 } }
 		}
 	}
 
@@ -380,10 +364,6 @@ building_dam_nelson_winnipeg = {
 				AND = { has_global_variable = pmr_dam_nelson_winnipeg_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_nelson_winnipeg_family  top_overlord ?= { this = global_var:pmr_dam_nelson_winnipeg_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_nelson_winnipeg_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_nelson_winnipeg  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -458,10 +438,6 @@ building_dam_black_canyon_sierra = {
 				scope:investor_country ?= { has_variable = pmr_dam_black_canyon_sierra_surveyed }
 				AND = { has_global_variable = pmr_dam_black_canyon_sierra_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_black_canyon_sierra_family  top_overlord ?= { this = global_var:pmr_dam_black_canyon_sierra_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_black_canyon_sierra_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_black_canyon_sierra  level_after_queued_constructions >= 8 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_black_canyon_sierra_tech_4_tt
@@ -545,10 +521,6 @@ building_dam_western_fjords = {
 				AND = { has_global_variable = pmr_dam_western_fjords_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_western_fjords_family  top_overlord ?= { this = global_var:pmr_dam_western_fjords_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_western_fjords_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_western_fjords  level_after_queued_constructions >= 4 } }
-		}
 	}
 
 	can_build_private = {
@@ -623,10 +595,6 @@ building_dam_niagara_long_sault = {
 				scope:investor_country ?= { has_variable = pmr_dam_niagara_long_sault_surveyed }
 				AND = { has_global_variable = pmr_dam_niagara_long_sault_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_niagara_long_sault_family  top_overlord ?= { this = global_var:pmr_dam_niagara_long_sault_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_niagara_long_sault_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_niagara_long_sault  level_after_queued_constructions >= 4 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_niagara_long_sault_tech_2_tt
@@ -710,10 +678,6 @@ building_dam_waitaki_southern_lakes = {
 				AND = { has_global_variable = pmr_dam_waitaki_southern_lakes_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_waitaki_southern_lakes_family  top_overlord ?= { this = global_var:pmr_dam_waitaki_southern_lakes_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_waitaki_southern_lakes_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_waitaki_southern_lakes  level_after_queued_constructions >= 5 } }
-		}
 	}
 
 	can_build_private = {
@@ -788,10 +752,6 @@ building_dam_grisons_ticino = {
 				scope:investor_country ?= { has_variable = pmr_dam_grisons_ticino_surveyed }
 				AND = { has_global_variable = pmr_dam_grisons_ticino_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_grisons_ticino_family  top_overlord ?= { this = global_var:pmr_dam_grisons_ticino_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_grisons_ticino_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_grisons_ticino  level_after_queued_constructions >= 5 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_grisons_ticino_tech_4_tt
@@ -876,10 +836,6 @@ building_dam_rhone_isere = {
 			}
 		}
 		custom_tooltip = {
-			text = pmr_dam_rhone_isere_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_rhone_isere  level_after_queued_constructions >= 6 } }
-		}
-		custom_tooltip = {
 			text = pmr_dam_rhone_isere_tech_2_tt
 			OR = {
 				NOT = { any_scope_building = { is_building_type = building_dam_rhone_isere  level_after_queued_constructions >= 1 } }
@@ -960,10 +916,6 @@ building_dam_niagara_ottawa = {
 				scope:investor_country ?= { has_variable = pmr_dam_niagara_ottawa_surveyed }
 				AND = { has_global_variable = pmr_dam_niagara_ottawa_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_niagara_ottawa_family  top_overlord ?= { this = global_var:pmr_dam_niagara_ottawa_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_niagara_ottawa_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_niagara_ottawa  level_after_queued_constructions >= 3 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_niagara_ottawa_tech_2_tt
@@ -1047,10 +999,6 @@ building_dam_tennessee_valley = {
 				AND = { has_global_variable = pmr_dam_tennessee_valley_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tennessee_valley_family  top_overlord ?= { this = global_var:pmr_dam_tennessee_valley_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_tennessee_valley_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_tennessee_valley  level_after_queued_constructions >= 6 } }
-		}
 	}
 
 	can_build_private = {
@@ -1126,10 +1074,6 @@ building_dam_valais_alps = {
 				AND = { has_global_variable = pmr_dam_valais_alps_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_valais_alps_family  top_overlord ?= { this = global_var:pmr_dam_valais_alps_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_valais_alps_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_valais_alps  level_after_queued_constructions >= 4 } }
-		}
 	}
 
 	can_build_private = {
@@ -1204,10 +1148,6 @@ building_dam_nechako_kootenay = {
 				scope:investor_country ?= { has_variable = pmr_dam_nechako_kootenay_surveyed }
 				AND = { has_global_variable = pmr_dam_nechako_kootenay_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_nechako_kootenay_family  top_overlord ?= { this = global_var:pmr_dam_nechako_kootenay_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_nechako_kootenay_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_nechako_kootenay  level_after_queued_constructions >= 3 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_nechako_kootenay_tech_3_tt
@@ -1292,10 +1232,6 @@ building_dam_shinano_kurobe = {
 			}
 		}
 		custom_tooltip = {
-			text = pmr_dam_shinano_kurobe_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_shinano_kurobe  level_after_queued_constructions >= 4 } }
-		}
-		custom_tooltip = {
 			text = pmr_dam_shinano_kurobe_tech_4_tt
 			OR = {
 				NOT = { any_scope_building = { is_building_type = building_dam_shinano_kurobe  level_after_queued_constructions >= 3 } }
@@ -1376,10 +1312,6 @@ building_dam_lower_rhone_durance = {
 				scope:investor_country ?= { has_variable = pmr_dam_lower_rhone_durance_surveyed }
 				AND = { has_global_variable = pmr_dam_lower_rhone_durance_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_rhone_durance_family  top_overlord ?= { this = global_var:pmr_dam_lower_rhone_durance_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_lower_rhone_durance_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lower_rhone_durance  level_after_queued_constructions >= 4 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_lower_rhone_durance_tech_3_tt
@@ -1463,10 +1395,6 @@ building_dam_missouri_big_bend = {
 				AND = { has_global_variable = pmr_dam_missouri_big_bend_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_missouri_big_bend_family  top_overlord ?= { this = global_var:pmr_dam_missouri_big_bend_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_missouri_big_bend_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_missouri_big_bend  level_after_queued_constructions >= 5 } }
-		}
 	}
 
 	can_build_private = {
@@ -1542,10 +1470,6 @@ building_dam_austrian_danube = {
 				AND = { has_global_variable = pmr_dam_austrian_danube_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_austrian_danube_family  top_overlord ?= { this = global_var:pmr_dam_austrian_danube_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_austrian_danube_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_austrian_danube  level_after_queued_constructions >= 5 } }
-		}
 	}
 
 	can_build_private = {
@@ -1620,10 +1544,6 @@ building_dam_danube_bavarian_alps = {
 				scope:investor_country ?= { has_variable = pmr_dam_danube_bavarian_alps_surveyed }
 				AND = { has_global_variable = pmr_dam_danube_bavarian_alps_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_danube_bavarian_alps_family  top_overlord ?= { this = global_var:pmr_dam_danube_bavarian_alps_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_danube_bavarian_alps_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_danube_bavarian_alps  level_after_queued_constructions >= 4 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_danube_bavarian_alps_tech_3_tt
@@ -1707,10 +1627,6 @@ building_dam_kiso_tenryu = {
 				AND = { has_global_variable = pmr_dam_kiso_tenryu_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kiso_tenryu_family  top_overlord ?= { this = global_var:pmr_dam_kiso_tenryu_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_kiso_tenryu_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_kiso_tenryu  level_after_queued_constructions >= 3 } }
-		}
 	}
 
 	can_build_private = {
@@ -1785,10 +1701,6 @@ building_dam_douro_gorge_cavado = {
 				scope:investor_country ?= { has_variable = pmr_dam_douro_gorge_cavado_surveyed }
 				AND = { has_global_variable = pmr_dam_douro_gorge_cavado_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_douro_gorge_cavado_family  top_overlord ?= { this = global_var:pmr_dam_douro_gorge_cavado_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_douro_gorge_cavado_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_douro_gorge_cavado  level_after_queued_constructions >= 3 } }
 		}
 	}
 
@@ -1865,10 +1777,6 @@ building_dam_tsaritsyn_volga = {
 				AND = { has_global_variable = pmr_dam_tsaritsyn_volga_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tsaritsyn_volga_family  top_overlord ?= { this = global_var:pmr_dam_tsaritsyn_volga_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_tsaritsyn_volga_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_tsaritsyn_volga  level_after_queued_constructions >= 4 } }
-		}
 	}
 
 	can_build_private = {
@@ -1943,10 +1851,6 @@ building_dam_muscle_shoals_coosa = {
 				scope:investor_country ?= { has_variable = pmr_dam_muscle_shoals_coosa_surveyed }
 				AND = { has_global_variable = pmr_dam_muscle_shoals_coosa_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_muscle_shoals_coosa_family  top_overlord ?= { this = global_var:pmr_dam_muscle_shoals_coosa_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_muscle_shoals_coosa_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_muscle_shoals_coosa  level_after_queued_constructions >= 3 } }
 		}
 	}
 
@@ -2023,10 +1927,6 @@ building_dam_grand_canal_alsace = {
 				AND = { has_global_variable = pmr_dam_grand_canal_alsace_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_grand_canal_alsace_family  top_overlord ?= { this = global_var:pmr_dam_grand_canal_alsace_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_grand_canal_alsace_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_grand_canal_alsace  level_after_queued_constructions >= 3 } }
-		}
 	}
 
 	can_build_private = {
@@ -2101,10 +2001,6 @@ building_dam_arribes_duero = {
 				scope:investor_country ?= { has_variable = pmr_dam_arribes_duero_surveyed }
 				AND = { has_global_variable = pmr_dam_arribes_duero_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_arribes_duero_family  top_overlord ?= { this = global_var:pmr_dam_arribes_duero_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_arribes_duero_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_arribes_duero  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -2181,10 +2077,6 @@ building_dam_adda_lombard_alps = {
 				AND = { has_global_variable = pmr_dam_adda_lombard_alps_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_adda_lombard_alps_family  top_overlord ?= { this = global_var:pmr_dam_adda_lombard_alps_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_adda_lombard_alps_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_adda_lombard_alps  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -2259,10 +2151,6 @@ building_dam_snowy_tumut = {
 				scope:investor_country ?= { has_variable = pmr_dam_snowy_tumut_surveyed }
 				AND = { has_global_variable = pmr_dam_snowy_tumut_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_snowy_tumut_family  top_overlord ?= { this = global_var:pmr_dam_snowy_tumut_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_snowy_tumut_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_snowy_tumut  level_after_queued_constructions >= 3 } }
 		}
 	}
 
@@ -2339,10 +2227,6 @@ building_dam_yellow_river_gorges = {
 				AND = { has_global_variable = pmr_dam_yellow_river_gorges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_yellow_river_gorges_family  top_overlord ?= { this = global_var:pmr_dam_yellow_river_gorges_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_yellow_river_gorges_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_yellow_river_gorges  level_after_queued_constructions >= 3 } }
-		}
 	}
 
 	can_build_private = {
@@ -2418,10 +2302,6 @@ building_dam_hohe_tauern_ziller = {
 				AND = { has_global_variable = pmr_dam_hohe_tauern_ziller_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_hohe_tauern_ziller_family  top_overlord ?= { this = global_var:pmr_dam_hohe_tauern_ziller_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_hohe_tauern_ziller_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_hohe_tauern_ziller  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -2496,10 +2376,6 @@ building_dam_iron_gates_arges = {
 				scope:investor_country ?= { has_variable = pmr_dam_iron_gates_arges_surveyed }
 				AND = { has_global_variable = pmr_dam_iron_gates_arges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_iron_gates_arges_family  top_overlord ?= { this = global_var:pmr_dam_iron_gates_arges_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_iron_gates_arges_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_iron_gates_arges  level_after_queued_constructions >= 4 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_iron_gates_arges_tech_2_tt
@@ -2583,10 +2459,6 @@ building_dam_inga_rapids = {
 				AND = { has_global_variable = pmr_dam_inga_rapids_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_inga_rapids_family  top_overlord ?= { this = global_var:pmr_dam_inga_rapids_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_inga_rapids_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_inga_rapids  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -2661,10 +2533,6 @@ building_dam_rion_ingur = {
 				scope:investor_country ?= { has_variable = pmr_dam_rion_ingur_surveyed }
 				AND = { has_global_variable = pmr_dam_rion_ingur_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_rion_ingur_family  top_overlord ?= { this = global_var:pmr_dam_rion_ingur_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_rion_ingur_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_rion_ingur  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -2741,10 +2609,6 @@ building_dam_yalu_river = {
 				AND = { has_global_variable = pmr_dam_yalu_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_yalu_river_family  top_overlord ?= { this = global_var:pmr_dam_yalu_river_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_yalu_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_yalu_river  level_after_queued_constructions >= 3 } }
-		}
 	}
 
 	can_build_private = {
@@ -2819,10 +2683,6 @@ building_dam_maurienne_tarentaise = {
 				scope:investor_country ?= { has_variable = pmr_dam_maurienne_tarentaise_surveyed }
 				AND = { has_global_variable = pmr_dam_maurienne_tarentaise_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_maurienne_tarentaise_family  top_overlord ?= { this = global_var:pmr_dam_maurienne_tarentaise_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_maurienne_tarentaise_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_maurienne_tarentaise  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -2899,10 +2759,6 @@ building_dam_waikato_river = {
 				AND = { has_global_variable = pmr_dam_waikato_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_waikato_river_family  top_overlord ?= { this = global_var:pmr_dam_waikato_river_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_waikato_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_waikato_river  level_after_queued_constructions >= 3 } }
-		}
 	}
 
 	can_build_private = {
@@ -2977,10 +2833,6 @@ building_dam_sevan_zanga_vorotan = {
 				scope:investor_country ?= { has_variable = pmr_dam_sevan_zanga_vorotan_surveyed }
 				AND = { has_global_variable = pmr_dam_sevan_zanga_vorotan_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sevan_zanga_vorotan_family  top_overlord ?= { this = global_var:pmr_dam_sevan_zanga_vorotan_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_sevan_zanga_vorotan_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_sevan_zanga_vorotan  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -3057,10 +2909,6 @@ building_dam_dnieper_rapids = {
 				AND = { has_global_variable = pmr_dam_dnieper_rapids_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_dnieper_rapids_family  top_overlord ?= { this = global_var:pmr_dam_dnieper_rapids_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_dnieper_rapids_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_dnieper_rapids  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -3135,10 +2983,6 @@ building_dam_glommen_falls = {
 				scope:investor_country ?= { has_variable = pmr_dam_glommen_falls_surveyed }
 				AND = { has_global_variable = pmr_dam_glommen_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_glommen_falls_family  top_overlord ?= { this = global_var:pmr_dam_glommen_falls_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_glommen_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_glommen_falls  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -3215,10 +3059,6 @@ building_dam_alcantara_gorge = {
 				AND = { has_global_variable = pmr_dam_alcantara_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_alcantara_gorge_family  top_overlord ?= { this = global_var:pmr_dam_alcantara_gorge_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_alcantara_gorge_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_alcantara_gorge  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -3293,10 +3133,6 @@ building_dam_aura_nordland = {
 				scope:investor_country ?= { has_variable = pmr_dam_aura_nordland_surveyed }
 				AND = { has_global_variable = pmr_dam_aura_nordland_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_aura_nordland_family  top_overlord ?= { this = global_var:pmr_dam_aura_nordland_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_aura_nordland_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_aura_nordland  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -3373,10 +3209,6 @@ building_dam_ossola_dora_baltea = {
 				AND = { has_global_variable = pmr_dam_ossola_dora_baltea_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_ossola_dora_baltea_family  top_overlord ?= { this = global_var:pmr_dam_ossola_dora_baltea_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_ossola_dora_baltea_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_ossola_dora_baltea  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -3451,10 +3283,6 @@ building_dam_cubatao_escarpment = {
 				scope:investor_country ?= { has_variable = pmr_dam_cubatao_escarpment_surveyed }
 				AND = { has_global_variable = pmr_dam_cubatao_escarpment_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_cubatao_escarpment_family  top_overlord ?= { this = global_var:pmr_dam_cubatao_escarpment_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_cubatao_escarpment_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_cubatao_escarpment  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -3531,10 +3359,6 @@ building_dam_derwent_great_lake = {
 				AND = { has_global_variable = pmr_dam_derwent_great_lake_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_derwent_great_lake_family  top_overlord ?= { this = global_var:pmr_dam_derwent_great_lake_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_derwent_great_lake_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_derwent_great_lake  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -3609,10 +3433,6 @@ building_dam_kaema_plateau = {
 				scope:investor_country ?= { has_variable = pmr_dam_kaema_plateau_surveyed }
 				AND = { has_global_variable = pmr_dam_kaema_plateau_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kaema_plateau_family  top_overlord ?= { this = global_var:pmr_dam_kaema_plateau_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_kaema_plateau_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_kaema_plateau  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -3689,10 +3509,6 @@ building_dam_dordogne_gorges = {
 				AND = { has_global_variable = pmr_dam_dordogne_gorges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_dordogne_gorges_family  top_overlord ?= { this = global_var:pmr_dam_dordogne_gorges_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_dordogne_gorges_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_dordogne_gorges  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -3767,10 +3583,6 @@ building_dam_koyna_western_ghats = {
 				scope:investor_country ?= { has_variable = pmr_dam_koyna_western_ghats_surveyed }
 				AND = { has_global_variable = pmr_dam_koyna_western_ghats_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_koyna_western_ghats_family  top_overlord ?= { this = global_var:pmr_dam_koyna_western_ghats_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_koyna_western_ghats_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_koyna_western_ghats  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -3847,10 +3659,6 @@ building_dam_tone_river = {
 				AND = { has_global_variable = pmr_dam_tone_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tone_river_family  top_overlord ?= { this = global_var:pmr_dam_tone_river_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_tone_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_tone_river  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -3925,10 +3733,6 @@ building_dam_tadami_river = {
 				scope:investor_country ?= { has_variable = pmr_dam_tadami_river_surveyed }
 				AND = { has_global_variable = pmr_dam_tadami_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tadami_river_family  top_overlord ?= { this = global_var:pmr_dam_tadami_river_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_tadami_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_tadami_river  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -4005,10 +3809,6 @@ building_dam_kainji_rapids = {
 				AND = { has_global_variable = pmr_dam_kainji_rapids_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kainji_rapids_family  top_overlord ?= { this = global_var:pmr_dam_kainji_rapids_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_kainji_rapids_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_kainji_rapids  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -4083,10 +3883,6 @@ building_dam_segre_lower_ebro = {
 				scope:investor_country ?= { has_variable = pmr_dam_segre_lower_ebro_surveyed }
 				AND = { has_global_variable = pmr_dam_segre_lower_ebro_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_segre_lower_ebro_family  top_overlord ?= { this = global_var:pmr_dam_segre_lower_ebro_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_segre_lower_ebro_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_segre_lower_ebro  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -4163,10 +3959,6 @@ building_dam_mantaro_canon_del_pato = {
 				AND = { has_global_variable = pmr_dam_mantaro_canon_del_pato_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_mantaro_canon_del_pato_family  top_overlord ?= { this = global_var:pmr_dam_mantaro_canon_del_pato_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_mantaro_canon_del_pato_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_mantaro_canon_del_pato  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -4241,10 +4033,6 @@ building_dam_dal_klar_rivers = {
 				scope:investor_country ?= { has_variable = pmr_dam_dal_klar_rivers_surveyed }
 				AND = { has_global_variable = pmr_dam_dal_klar_rivers_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_dal_klar_rivers_family  top_overlord ?= { this = global_var:pmr_dam_dal_klar_rivers_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_dal_klar_rivers_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_dal_klar_rivers  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -4321,10 +4109,6 @@ building_dam_travancore_highlands = {
 				AND = { has_global_variable = pmr_dam_travancore_highlands_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_travancore_highlands_family  top_overlord ?= { this = global_var:pmr_dam_travancore_highlands_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_travancore_highlands_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_travancore_highlands  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -4399,10 +4183,6 @@ building_dam_chirchik_cascade = {
 				scope:investor_country ?= { has_variable = pmr_dam_chirchik_cascade_surveyed }
 				AND = { has_global_variable = pmr_dam_chirchik_cascade_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_chirchik_cascade_family  top_overlord ?= { this = global_var:pmr_dam_chirchik_cascade_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_chirchik_cascade_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_chirchik_cascade  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -4479,10 +4259,6 @@ building_dam_cheboksary_volga = {
 				AND = { has_global_variable = pmr_dam_cheboksary_volga_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_cheboksary_volga_family  top_overlord ?= { this = global_var:pmr_dam_cheboksary_volga_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_cheboksary_volga_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_cheboksary_volga  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -4557,10 +4333,6 @@ building_dam_lower_kama = {
 				scope:investor_country ?= { has_variable = pmr_dam_lower_kama_surveyed }
 				AND = { has_global_variable = pmr_dam_lower_kama_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_kama_family  top_overlord ?= { this = global_var:pmr_dam_lower_kama_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_lower_kama_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lower_kama  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -4637,10 +4409,6 @@ building_dam_kiev_kanev = {
 				AND = { has_global_variable = pmr_dam_kiev_kanev_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kiev_kanev_family  top_overlord ?= { this = global_var:pmr_dam_kiev_kanev_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_kiev_kanev_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_kiev_kanev  level_after_queued_constructions >= 3 } }
-		}
 	}
 
 	can_build_private = {
@@ -4715,10 +4483,6 @@ building_dam_gorodets_volga = {
 				scope:investor_country ?= { has_variable = pmr_dam_gorodets_volga_surveyed }
 				AND = { has_global_variable = pmr_dam_gorodets_volga_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_gorodets_volga_family  top_overlord ?= { this = global_var:pmr_dam_gorodets_volga_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_gorodets_volga_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_gorodets_volga  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -4795,10 +4559,6 @@ building_dam_perm_kama = {
 				AND = { has_global_variable = pmr_dam_perm_kama_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_perm_kama_family  top_overlord ?= { this = global_var:pmr_dam_perm_kama_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_perm_kama_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_perm_kama  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -4873,10 +4633,6 @@ building_dam_zhiguli_volga = {
 				scope:investor_country ?= { has_variable = pmr_dam_zhiguli_volga_surveyed }
 				AND = { has_global_variable = pmr_dam_zhiguli_volga_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_zhiguli_volga_family  top_overlord ?= { this = global_var:pmr_dam_zhiguli_volga_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_zhiguli_volga_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_zhiguli_volga  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -4953,10 +4709,6 @@ building_dam_balakovo_volga = {
 				AND = { has_global_variable = pmr_dam_balakovo_volga_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_balakovo_volga_family  top_overlord ?= { this = global_var:pmr_dam_balakovo_volga_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_balakovo_volga_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_balakovo_volga  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -5031,10 +4783,6 @@ building_dam_votkinsk_kama = {
 				scope:investor_country ?= { has_variable = pmr_dam_votkinsk_kama_surveyed }
 				AND = { has_global_variable = pmr_dam_votkinsk_kama_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_votkinsk_kama_family  top_overlord ?= { this = global_var:pmr_dam_votkinsk_kama_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_votkinsk_kama_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_votkinsk_kama  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -5111,10 +4859,6 @@ building_dam_rybinsk_uglich = {
 				AND = { has_global_variable = pmr_dam_rybinsk_uglich_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_rybinsk_uglich_family  top_overlord ?= { this = global_var:pmr_dam_rybinsk_uglich_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_rybinsk_uglich_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_rybinsk_uglich  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -5189,10 +4933,6 @@ building_dam_irkutsk_angara = {
 				scope:investor_country ?= { has_variable = pmr_dam_irkutsk_angara_surveyed }
 				AND = { has_global_variable = pmr_dam_irkutsk_angara_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_irkutsk_angara_family  top_overlord ?= { this = global_var:pmr_dam_irkutsk_angara_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_irkutsk_angara_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_irkutsk_angara  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -5269,10 +5009,6 @@ building_dam_xinan_river = {
 				AND = { has_global_variable = pmr_dam_xinan_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_xinan_river_family  top_overlord ?= { this = global_var:pmr_dam_xinan_river_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_xinan_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_xinan_river  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -5347,10 +5083,6 @@ building_dam_mequinenza_aragon_pyrenees = {
 				scope:investor_country ?= { has_variable = pmr_dam_mequinenza_aragon_pyrenees_surveyed }
 				AND = { has_global_variable = pmr_dam_mequinenza_aragon_pyrenees_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_mequinenza_aragon_pyrenees_family  top_overlord ?= { this = global_var:pmr_dam_mequinenza_aragon_pyrenees_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_mequinenza_aragon_pyrenees_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_mequinenza_aragon_pyrenees  level_after_queued_constructions >= 2 } }
 		}
 		custom_tooltip = {
 			text = pmr_dam_mequinenza_aragon_pyrenees_tech_2_tt
@@ -5434,10 +5166,6 @@ building_dam_asahan_toba = {
 				AND = { has_global_variable = pmr_dam_asahan_toba_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_asahan_toba_family  top_overlord ?= { this = global_var:pmr_dam_asahan_toba_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_asahan_toba_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_asahan_toba  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -5512,10 +5240,6 @@ building_dam_bhagirathi_upper_ganges = {
 				scope:investor_country ?= { has_variable = pmr_dam_bhagirathi_upper_ganges_surveyed }
 				AND = { has_global_variable = pmr_dam_bhagirathi_upper_ganges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_bhagirathi_upper_ganges_family  top_overlord ?= { this = global_var:pmr_dam_bhagirathi_upper_ganges_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_bhagirathi_upper_ganges_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_bhagirathi_upper_ganges  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -5592,10 +5316,6 @@ building_dam_achelous_gorges = {
 				AND = { has_global_variable = pmr_dam_achelous_gorges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_achelous_gorges_family  top_overlord ?= { this = global_var:pmr_dam_achelous_gorges_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_achelous_gorges_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_achelous_gorges  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -5670,10 +5390,6 @@ building_dam_moldau_cascade = {
 				scope:investor_country ?= { has_variable = pmr_dam_moldau_cascade_surveyed }
 				AND = { has_global_variable = pmr_dam_moldau_cascade_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_moldau_cascade_family  top_overlord ?= { this = global_var:pmr_dam_moldau_cascade_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_moldau_cascade_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_moldau_cascade  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -5750,10 +5466,6 @@ building_dam_narenta_drina = {
 				AND = { has_global_variable = pmr_dam_narenta_drina_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_narenta_drina_family  top_overlord ?= { this = global_var:pmr_dam_narenta_drina_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_narenta_drina_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_narenta_drina  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -5828,10 +5540,6 @@ building_dam_sulak_canyon = {
 				scope:investor_country ?= { has_variable = pmr_dam_sulak_canyon_surveyed }
 				AND = { has_global_variable = pmr_dam_sulak_canyon_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sulak_canyon_family  top_overlord ?= { this = global_var:pmr_dam_sulak_canyon_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_sulak_canyon_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_sulak_canyon  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -5908,10 +5616,6 @@ building_dam_nepal_hill_rivers = {
 				AND = { has_global_variable = pmr_dam_nepal_hill_rivers_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_nepal_hill_rivers_family  top_overlord ?= { this = global_var:pmr_dam_nepal_hill_rivers_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_nepal_hill_rivers_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_nepal_hill_rivers  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -5986,10 +5690,6 @@ building_dam_hells_canyon = {
 				scope:investor_country ?= { has_variable = pmr_dam_hells_canyon_surveyed }
 				AND = { has_global_variable = pmr_dam_hells_canyon_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_hells_canyon_family  top_overlord ?= { this = global_var:pmr_dam_hells_canyon_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_hells_canyon_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_hells_canyon  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -6066,10 +5766,6 @@ building_dam_garrison_missouri = {
 				AND = { has_global_variable = pmr_dam_garrison_missouri_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_garrison_missouri_family  top_overlord ?= { this = global_var:pmr_dam_garrison_missouri_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_garrison_missouri_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_garrison_missouri  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -6144,10 +5840,6 @@ building_dam_upper_drave = {
 				scope:investor_country ?= { has_variable = pmr_dam_upper_drave_surveyed }
 				AND = { has_global_variable = pmr_dam_upper_drave_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_upper_drave_family  top_overlord ?= { this = global_var:pmr_dam_upper_drave_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_upper_drave_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_upper_drave  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -6224,10 +5916,6 @@ building_dam_adige_valley = {
 				AND = { has_global_variable = pmr_dam_adige_valley_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_adige_valley_family  top_overlord ?= { this = global_var:pmr_dam_adige_valley_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_adige_valley_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_adige_valley  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -6302,10 +5990,6 @@ building_dam_sungari_gorge = {
 				scope:investor_country ?= { has_variable = pmr_dam_sungari_gorge_surveyed }
 				AND = { has_global_variable = pmr_dam_sungari_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sungari_gorge_family  top_overlord ?= { this = global_var:pmr_dam_sungari_gorge_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_sungari_gorge_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_sungari_gorge  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -6382,10 +6066,6 @@ building_dam_malta_valley = {
 				AND = { has_global_variable = pmr_dam_malta_valley_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_malta_valley_family  top_overlord ?= { this = global_var:pmr_dam_malta_valley_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_malta_valley_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_malta_valley  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -6460,10 +6140,6 @@ building_dam_bhutan_duars = {
 				scope:investor_country ?= { has_variable = pmr_dam_bhutan_duars_surveyed }
 				AND = { has_global_variable = pmr_dam_bhutan_duars_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_bhutan_duars_family  top_overlord ?= { this = global_var:pmr_dam_bhutan_duars_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_bhutan_duars_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_bhutan_duars  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -6540,10 +6216,6 @@ building_dam_high_rhine_baden = {
 				AND = { has_global_variable = pmr_dam_high_rhine_baden_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_high_rhine_baden_family  top_overlord ?= { this = global_var:pmr_dam_high_rhine_baden_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_high_rhine_baden_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_high_rhine_baden  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -6618,10 +6290,6 @@ building_dam_paulo_afonso_falls = {
 				scope:investor_country ?= { has_variable = pmr_dam_paulo_afonso_falls_surveyed }
 				AND = { has_global_variable = pmr_dam_paulo_afonso_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_paulo_afonso_falls_family  top_overlord ?= { this = global_var:pmr_dam_paulo_afonso_falls_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_paulo_afonso_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_paulo_afonso_falls  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -6698,10 +6366,6 @@ building_dam_lower_tennessee_cumberland = {
 				AND = { has_global_variable = pmr_dam_lower_tennessee_cumberland_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_tennessee_cumberland_family  top_overlord ?= { this = global_var:pmr_dam_lower_tennessee_cumberland_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_lower_tennessee_cumberland_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lower_tennessee_cumberland  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -6776,10 +6440,6 @@ building_dam_necaxa_tilostoc = {
 				scope:investor_country ?= { has_variable = pmr_dam_necaxa_tilostoc_surveyed }
 				AND = { has_global_variable = pmr_dam_necaxa_tilostoc_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_necaxa_tilostoc_family  top_overlord ?= { this = global_var:pmr_dam_necaxa_tilostoc_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_necaxa_tilostoc_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_necaxa_tilostoc  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -6856,10 +6516,6 @@ building_dam_lower_susquehanna = {
 				AND = { has_global_variable = pmr_dam_lower_susquehanna_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_susquehanna_family  top_overlord ?= { this = global_var:pmr_dam_lower_susquehanna_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_lower_susquehanna_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lower_susquehanna  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -6934,10 +6590,6 @@ building_dam_lochaber_affric = {
 				scope:investor_country ?= { has_variable = pmr_dam_lochaber_affric_surveyed }
 				AND = { has_global_variable = pmr_dam_lochaber_affric_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lochaber_affric_family  top_overlord ?= { this = global_var:pmr_dam_lochaber_affric_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_lochaber_affric_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lochaber_affric  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -7014,10 +6666,6 @@ building_dam_galloway_tummel = {
 				AND = { has_global_variable = pmr_dam_galloway_tummel_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_galloway_tummel_family  top_overlord ?= { this = global_var:pmr_dam_galloway_tummel_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_galloway_tummel_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_galloway_tummel  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -7092,10 +6740,6 @@ building_dam_rhodope_cascades = {
 				scope:investor_country ?= { has_variable = pmr_dam_rhodope_cascades_surveyed }
 				AND = { has_global_variable = pmr_dam_rhodope_cascades_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_rhodope_cascades_family  top_overlord ?= { this = global_var:pmr_dam_rhodope_cascades_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_rhodope_cascades_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_rhodope_cascades  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -7172,10 +6816,6 @@ building_dam_min_tung_rivers = {
 				AND = { has_global_variable = pmr_dam_min_tung_rivers_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_min_tung_rivers_family  top_overlord ?= { this = global_var:pmr_dam_min_tung_rivers_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_min_tung_rivers_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_min_tung_rivers  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -7250,10 +6890,6 @@ building_dam_upper_ob = {
 				scope:investor_country ?= { has_variable = pmr_dam_upper_ob_surveyed }
 				AND = { has_global_variable = pmr_dam_upper_ob_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_upper_ob_family  top_overlord ?= { this = global_var:pmr_dam_upper_ob_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_upper_ob_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_upper_ob  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -7330,10 +6966,6 @@ building_dam_tabqa_narrows = {
 				AND = { has_global_variable = pmr_dam_tabqa_narrows_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tabqa_narrows_family  top_overlord ?= { this = global_var:pmr_dam_tabqa_narrows_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_tabqa_narrows_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_tabqa_narrows  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -7408,10 +7040,6 @@ building_dam_bigorre_bearn_pyrenees = {
 				scope:investor_country ?= { has_variable = pmr_dam_bigorre_bearn_pyrenees_surveyed }
 				AND = { has_global_variable = pmr_dam_bigorre_bearn_pyrenees_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_bigorre_bearn_pyrenees_family  top_overlord ?= { this = global_var:pmr_dam_bigorre_bearn_pyrenees_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_bigorre_bearn_pyrenees_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_bigorre_bearn_pyrenees  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -7488,10 +7116,6 @@ building_dam_upper_euphrates = {
 				AND = { has_global_variable = pmr_dam_upper_euphrates_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_upper_euphrates_family  top_overlord ?= { this = global_var:pmr_dam_upper_euphrates_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_upper_euphrates_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_upper_euphrates  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -7566,10 +7190,6 @@ building_dam_onega_vyg = {
 				scope:investor_country ?= { has_variable = pmr_dam_onega_vyg_surveyed }
 				AND = { has_global_variable = pmr_dam_onega_vyg_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_onega_vyg_family  top_overlord ?= { this = global_var:pmr_dam_onega_vyg_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_onega_vyg_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_onega_vyg  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -7646,10 +7266,6 @@ building_dam_truyere_gorges = {
 				AND = { has_global_variable = pmr_dam_truyere_gorges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_truyere_gorges_family  top_overlord ?= { this = global_var:pmr_dam_truyere_gorges_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_truyere_gorges_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_truyere_gorges  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -7724,10 +7340,6 @@ building_dam_lufira_lualaba = {
 				scope:investor_country ?= { has_variable = pmr_dam_lufira_lualaba_surveyed }
 				AND = { has_global_variable = pmr_dam_lufira_lualaba_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lufira_lualaba_family  top_overlord ?= { this = global_var:pmr_dam_lufira_lualaba_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_lufira_lualaba_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lufira_lualaba  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -7804,10 +7416,6 @@ building_dam_niva_tuloma = {
 				AND = { has_global_variable = pmr_dam_niva_tuloma_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_niva_tuloma_family  top_overlord ?= { this = global_var:pmr_dam_niva_tuloma_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_niva_tuloma_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_niva_tuloma  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -7882,10 +7490,6 @@ building_dam_drina_gorge = {
 				scope:investor_country ?= { has_variable = pmr_dam_drina_gorge_surveyed }
 				AND = { has_global_variable = pmr_dam_drina_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_drina_gorge_family  top_overlord ?= { this = global_var:pmr_dam_drina_gorge_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_drina_gorge_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_drina_gorge  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -7962,10 +7566,6 @@ building_dam_mingechaur_gorge = {
 				AND = { has_global_variable = pmr_dam_mingechaur_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_mingechaur_gorge_family  top_overlord ?= { this = global_var:pmr_dam_mingechaur_gorge_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_mingechaur_gorge_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_mingechaur_gorge  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -8040,10 +7640,6 @@ building_dam_uryu_ishikari = {
 				scope:investor_country ?= { has_variable = pmr_dam_uryu_ishikari_surveyed }
 				AND = { has_global_variable = pmr_dam_uryu_ishikari_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_uryu_ishikari_family  top_overlord ?= { this = global_var:pmr_dam_uryu_ishikari_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_uryu_ishikari_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_uryu_ishikari  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -8120,10 +7716,6 @@ building_dam_volkhov_svir = {
 				AND = { has_global_variable = pmr_dam_volkhov_svir_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_volkhov_svir_family  top_overlord ?= { this = global_var:pmr_dam_volkhov_svir_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_volkhov_svir_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_volkhov_svir  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -8198,10 +7790,6 @@ building_dam_mimi_river = {
 				scope:investor_country ?= { has_variable = pmr_dam_mimi_river_surveyed }
 				AND = { has_global_variable = pmr_dam_mimi_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_mimi_river_family  top_overlord ?= { this = global_var:pmr_dam_mimi_river_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_mimi_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_mimi_river  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -8278,10 +7866,6 @@ building_dam_kamianske_dnieper = {
 				AND = { has_global_variable = pmr_dam_kamianske_dnieper_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kamianske_dnieper_family  top_overlord ?= { this = global_var:pmr_dam_kamianske_dnieper_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_kamianske_dnieper_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_kamianske_dnieper  level_after_queued_constructions >= 2 } }
-		}
 	}
 
 	can_build_private = {
@@ -8356,10 +7940,6 @@ building_dam_kremenchug_dnieper = {
 				scope:investor_country ?= { has_variable = pmr_dam_kremenchug_dnieper_surveyed }
 				AND = { has_global_variable = pmr_dam_kremenchug_dnieper_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kremenchug_dnieper_family  top_overlord ?= { this = global_var:pmr_dam_kremenchug_dnieper_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_kremenchug_dnieper_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_kremenchug_dnieper  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -8436,10 +8016,6 @@ building_dam_sariyar_gorge = {
 				AND = { has_global_variable = pmr_dam_sariyar_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sariyar_gorge_family  top_overlord ?= { this = global_var:pmr_dam_sariyar_gorge_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_sariyar_gorge_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_sariyar_gorge  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -8514,10 +8090,6 @@ building_dam_pescara_sangro = {
 				scope:investor_country ?= { has_variable = pmr_dam_pescara_sangro_surveyed }
 				AND = { has_global_variable = pmr_dam_pescara_sangro_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_pescara_sangro_family  top_overlord ?= { this = global_var:pmr_dam_pescara_sangro_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_pescara_sangro_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_pescara_sangro  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -8594,10 +8166,6 @@ building_dam_guatape_falls = {
 				AND = { has_global_variable = pmr_dam_guatape_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_guatape_falls_family  top_overlord ?= { this = global_var:pmr_dam_guatape_falls_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_guatape_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_guatape_falls  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -8672,10 +8240,6 @@ building_dam_pyramid_canyon = {
 				scope:investor_country ?= { has_variable = pmr_dam_pyramid_canyon_surveyed }
 				AND = { has_global_variable = pmr_dam_pyramid_canyon_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_pyramid_canyon_family  top_overlord ?= { this = global_var:pmr_dam_pyramid_canyon_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_pyramid_canyon_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_pyramid_canyon  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -8752,10 +8316,6 @@ building_dam_zezere_gorges = {
 				AND = { has_global_variable = pmr_dam_zezere_gorges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_zezere_gorges_family  top_overlord ?= { this = global_var:pmr_dam_zezere_gorges_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_zezere_gorges_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_zezere_gorges  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -8830,10 +8390,6 @@ building_dam_sila_plateau = {
 				scope:investor_country ?= { has_variable = pmr_dam_sila_plateau_surveyed }
 				AND = { has_global_variable = pmr_dam_sila_plateau_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sila_plateau_family  top_overlord ?= { this = global_var:pmr_dam_sila_plateau_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_sila_plateau_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_sila_plateau  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -8910,10 +8466,6 @@ building_dam_tequendama_falls = {
 				AND = { has_global_variable = pmr_dam_tequendama_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tequendama_falls_family  top_overlord ?= { this = global_var:pmr_dam_tequendama_falls_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_tequendama_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_tequendama_falls  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -8988,10 +8540,6 @@ building_dam_savannah_river = {
 				scope:investor_country ?= { has_variable = pmr_dam_savannah_river_surveyed }
 				AND = { has_global_variable = pmr_dam_savannah_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_savannah_river_family  top_overlord ?= { this = global_var:pmr_dam_savannah_river_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_savannah_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_savannah_river  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -9068,10 +8616,6 @@ building_dam_lower_karun = {
 				AND = { has_global_variable = pmr_dam_lower_karun_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_karun_family  top_overlord ?= { this = global_var:pmr_dam_lower_karun_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_lower_karun_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lower_karun  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -9146,10 +8690,6 @@ building_dam_nilgiri_hills = {
 				scope:investor_country ?= { has_variable = pmr_dam_nilgiri_hills_surveyed }
 				AND = { has_global_variable = pmr_dam_nilgiri_hills_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_nilgiri_hills_family  top_overlord ?= { this = global_var:pmr_dam_nilgiri_hills_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_nilgiri_hills_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_nilgiri_hills  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -9226,10 +8766,6 @@ building_dam_bistritza_gorge = {
 				AND = { has_global_variable = pmr_dam_bistritza_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_bistritza_gorge_family  top_overlord ?= { this = global_var:pmr_dam_bistritza_gorge_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_bistritza_gorge_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_bistritza_gorge  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -9304,10 +8840,6 @@ building_dam_lajes_serra_do_mar = {
 				scope:investor_country ?= { has_variable = pmr_dam_lajes_serra_do_mar_surveyed }
 				AND = { has_global_variable = pmr_dam_lajes_serra_do_mar_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lajes_serra_do_mar_family  top_overlord ?= { this = global_var:pmr_dam_lajes_serra_do_mar_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_lajes_serra_do_mar_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lajes_serra_do_mar  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -9384,10 +8916,6 @@ building_dam_santee_saluda = {
 				AND = { has_global_variable = pmr_dam_santee_saluda_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_santee_saluda_family  top_overlord ?= { this = global_var:pmr_dam_santee_saluda_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_santee_saluda_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_santee_saluda  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -9462,10 +8990,6 @@ building_dam_piave_valley = {
 				scope:investor_country ?= { has_variable = pmr_dam_piave_valley_surveyed }
 				AND = { has_global_variable = pmr_dam_piave_valley_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_piave_valley_family  top_overlord ?= { this = global_var:pmr_dam_piave_valley_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_piave_valley_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_piave_valley  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -9542,10 +9066,6 @@ building_dam_yili_river = {
 				AND = { has_global_variable = pmr_dam_yili_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_yili_river_family  top_overlord ?= { this = global_var:pmr_dam_yili_river_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_yili_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_yili_river  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -9620,10 +9140,6 @@ building_dam_first_cataract = {
 				scope:investor_country ?= { has_variable = pmr_dam_first_cataract_surveyed }
 				AND = { has_global_variable = pmr_dam_first_cataract_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_first_cataract_family  top_overlord ?= { this = global_var:pmr_dam_first_cataract_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_first_cataract_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_first_cataract  level_after_queued_constructions >= 2 } }
 		}
 	}
 
@@ -9700,10 +9216,6 @@ building_dam_conowingo_falls = {
 				AND = { has_global_variable = pmr_dam_conowingo_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_conowingo_falls_family  top_overlord ?= { this = global_var:pmr_dam_conowingo_falls_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_conowingo_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_conowingo_falls  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -9778,10 +9290,6 @@ building_dam_warsak_gorge = {
 				scope:investor_country ?= { has_variable = pmr_dam_warsak_gorge_surveyed }
 				AND = { has_global_variable = pmr_dam_warsak_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_warsak_gorge_family  top_overlord ?= { this = global_var:pmr_dam_warsak_gorge_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_warsak_gorge_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_warsak_gorge  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -9858,10 +9366,6 @@ building_dam_sennar_blue_nile = {
 				AND = { has_global_variable = pmr_dam_sennar_blue_nile_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sennar_blue_nile_family  top_overlord ?= { this = global_var:pmr_dam_sennar_blue_nile_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_sennar_blue_nile_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_sennar_blue_nile  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -9936,10 +9440,6 @@ building_dam_lower_drave = {
 				scope:investor_country ?= { has_variable = pmr_dam_lower_drave_surveyed }
 				AND = { has_global_variable = pmr_dam_lower_drave_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_drave_family  top_overlord ?= { this = global_var:pmr_dam_lower_drave_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_lower_drave_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lower_drave  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -10016,10 +9516,6 @@ building_dam_trollhattan_falls = {
 				AND = { has_global_variable = pmr_dam_trollhattan_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_trollhattan_falls_family  top_overlord ?= { this = global_var:pmr_dam_trollhattan_falls_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_trollhattan_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_trollhattan_falls  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -10094,10 +9590,6 @@ building_dam_ariege_aude_pyrenees = {
 				scope:investor_country ?= { has_variable = pmr_dam_ariege_aude_pyrenees_surveyed }
 				AND = { has_global_variable = pmr_dam_ariege_aude_pyrenees_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_ariege_aude_pyrenees_family  top_overlord ?= { this = global_var:pmr_dam_ariege_aude_pyrenees_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_ariege_aude_pyrenees_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_ariege_aude_pyrenees  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -10174,10 +9666,6 @@ building_dam_agno_gorge = {
 				AND = { has_global_variable = pmr_dam_agno_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_agno_gorge_family  top_overlord ?= { this = global_var:pmr_dam_agno_gorge_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_agno_gorge_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_agno_gorge  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -10252,10 +9740,6 @@ building_dam_gersoppa_falls = {
 				scope:investor_country ?= { has_variable = pmr_dam_gersoppa_falls_surveyed }
 				AND = { has_global_variable = pmr_dam_gersoppa_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_gersoppa_falls_family  top_overlord ?= { this = global_var:pmr_dam_gersoppa_falls_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_gersoppa_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_gersoppa_falls  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -10332,10 +9816,6 @@ building_dam_tikves_gorge = {
 				AND = { has_global_variable = pmr_dam_tikves_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tikves_gorge_family  top_overlord ?= { this = global_var:pmr_dam_tikves_gorge_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_tikves_gorge_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_tikves_gorge  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -10410,10 +9890,6 @@ building_dam_missouri_breaks = {
 				scope:investor_country ?= { has_variable = pmr_dam_missouri_breaks_surveyed }
 				AND = { has_global_variable = pmr_dam_missouri_breaks_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_missouri_breaks_family  top_overlord ?= { this = global_var:pmr_dam_missouri_breaks_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_missouri_breaks_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_missouri_breaks  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -10490,10 +9966,6 @@ building_dam_imatra_rapids = {
 				AND = { has_global_variable = pmr_dam_imatra_rapids_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_imatra_rapids_family  top_overlord ?= { this = global_var:pmr_dam_imatra_rapids_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_imatra_rapids_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_imatra_rapids  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -10568,10 +10040,6 @@ building_dam_lawpita_falls = {
 				scope:investor_country ?= { has_variable = pmr_dam_lawpita_falls_surveyed }
 				AND = { has_global_variable = pmr_dam_lawpita_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lawpita_falls_family  top_overlord ?= { this = global_var:pmr_dam_lawpita_falls_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_lawpita_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lawpita_falls  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -10648,10 +10116,6 @@ building_dam_laxapana_falls = {
 				AND = { has_global_variable = pmr_dam_laxapana_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_laxapana_falls_family  top_overlord ?= { this = global_var:pmr_dam_laxapana_falls_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_laxapana_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_laxapana_falls  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -10726,10 +10190,6 @@ building_dam_longxi_river = {
 				scope:investor_country ?= { has_variable = pmr_dam_longxi_river_surveyed }
 				AND = { has_global_variable = pmr_dam_longxi_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_longxi_river_family  top_overlord ?= { this = global_var:pmr_dam_longxi_river_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_longxi_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_longxi_river  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -10806,10 +10266,6 @@ building_dam_castelo_do_bode = {
 				AND = { has_global_variable = pmr_dam_castelo_do_bode_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_castelo_do_bode_family  top_overlord ?= { this = global_var:pmr_dam_castelo_do_bode_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_castelo_do_bode_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_castelo_do_bode  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -10884,10 +10340,6 @@ building_dam_sun_moon_lake = {
 				scope:investor_country ?= { has_variable = pmr_dam_sun_moon_lake_surveyed }
 				AND = { has_global_variable = pmr_dam_sun_moon_lake_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sun_moon_lake_family  top_overlord ?= { this = global_var:pmr_dam_sun_moon_lake_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_sun_moon_lake_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_sun_moon_lake  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -10964,10 +10416,6 @@ building_dam_des_moines_rapids = {
 				AND = { has_global_variable = pmr_dam_des_moines_rapids_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_des_moines_rapids_family  top_overlord ?= { this = global_var:pmr_dam_des_moines_rapids_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_des_moines_rapids_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_des_moines_rapids  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -11042,10 +10490,6 @@ building_dam_cachapoal_canyon = {
 				scope:investor_country ?= { has_variable = pmr_dam_cachapoal_canyon_surveyed }
 				AND = { has_global_variable = pmr_dam_cachapoal_canyon_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_cachapoal_canyon_family  top_overlord ?= { this = global_var:pmr_dam_cachapoal_canyon_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_cachapoal_canyon_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_cachapoal_canyon  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -11122,10 +10566,6 @@ building_dam_lower_yalu = {
 				AND = { has_global_variable = pmr_dam_lower_yalu_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_yalu_family  top_overlord ?= { this = global_var:pmr_dam_lower_yalu_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_lower_yalu_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_lower_yalu  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -11200,10 +10640,6 @@ building_dam_edea_falls = {
 				scope:investor_country ?= { has_variable = pmr_dam_edea_falls_surveyed }
 				AND = { has_global_variable = pmr_dam_edea_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_edea_falls_family  top_overlord ?= { this = global_var:pmr_dam_edea_falls_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_edea_falls_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_edea_falls  level_after_queued_constructions >= 1 } }
 		}
 	}
 
@@ -11280,10 +10716,6 @@ building_dam_victoria_nile = {
 				AND = { has_global_variable = pmr_dam_victoria_nile_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_victoria_nile_family  top_overlord ?= { this = global_var:pmr_dam_victoria_nile_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_victoria_nile_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_victoria_nile  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -11359,10 +10791,6 @@ building_dam_rincon_del_bonete = {
 				AND = { has_global_variable = pmr_dam_rincon_del_bonete_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_rincon_del_bonete_family  top_overlord ?= { this = global_var:pmr_dam_rincon_del_bonete_family } } } }
 			}
 		}
-		custom_tooltip = {
-			text = pmr_dam_rincon_del_bonete_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_rincon_del_bonete  level_after_queued_constructions >= 1 } }
-		}
 	}
 
 	can_build_private = {
@@ -11437,10 +10865,6 @@ building_dam_uhl_river = {
 				scope:investor_country ?= { has_variable = pmr_dam_uhl_river_surveyed }
 				AND = { has_global_variable = pmr_dam_uhl_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_uhl_river_family  top_overlord ?= { this = global_var:pmr_dam_uhl_river_family } } } }
 			}
-		}
-		custom_tooltip = {
-			text = pmr_dam_uhl_river_levels_tt
-			NOT = { any_scope_building = { is_building_type = building_dam_uhl_river  level_after_queued_constructions >= 1 } }
 		}
 	}
 

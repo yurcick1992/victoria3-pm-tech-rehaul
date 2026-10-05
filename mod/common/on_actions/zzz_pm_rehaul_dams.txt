@@ -612,16 +612,6 @@ pmr_dam_built = {
 	}
 }
 
-on_monthly_pulse = {
-	on_actions = { pmr_dam_caps_check }
-}
-
-pmr_dam_caps_check = {
-	effect = {
-		pmr_dam_add_caps = yes
-	}
-}
-
 on_yearly_pulse_country = {
 	on_actions = { pmr_dam_yearly }
 }

@@ -23,12 +23,25 @@ count (vanilla's trade-centre idiom). The engine evaluates that trigger once for
 passes it with the queue still empty. Vanilla's canals are immune for an unrelated reason: `unique = yes` + `expandable = no` is an engine
 cap of one level in the world, which a multi-level dam cannot use.
 **Fix.** The engine's own level cap, which vanilla's barracks and construction sector use: every dam is `has_max_level = yes`, its max level
-is `state_building_dam_<id>_max_level_add` (declared like vanilla's four), carried by a per-project state trait `pmr_dam_<id>_site` that
-`pmr_dam_add_caps` adds to the region once — at the campaign start, or on the first monthly pulse of a save begun on an earlier build — and
-the group is `stateregion_max_level = yes`, so the cap counts the whole state region. The scripted cap stays as the build menu's tooltip.
-✅ **Verified in game by the user, 2026-10-05**: on a test build that opens every dam to the player at the 1836 start
-(`dams.probe.player_open`, `mod_playtest_damtest/`), a shift+click stops at the cap. (A probe could not show it: the AI never queues past a
-cap.) Levels already over-queued in an existing save are not removed.
+is `state_building_dam_<id>_max_level_add` (declared like vanilla's four), and the group is `stateregion_max_level = yes`, so the cap counts
+the whole state region. The scripted cap is REMOVED as redundant, and so was a first draft's monthly catch-up for saves begun on an earlier
+build (user-ruled: no legacy-save contingency unless asked).
+⚠⚠ **THE FIRST CARRIER BROKE EVERY FOREIGN BUILDER — the regression this entry also records.** The max level was first carried by a
+per-project STATE TRAIT (`pmr_dam_<id>_site`, a state modifier). The user's hand tests: the state's OWNER got the full cap (France 4 of 4 in
+Provence, Serbia 1 of 1 in Western Serbia), every FOREIGN builder got 0 (the Ottomans in their protectorate's Western Serbia, Britain in its
+colony Oregon — "at maximum capacity"). A first reading blamed split states (the cap shared out by province); Provence, split 8/9 and giving
+all 4, refuted it, and Oregon, whole, confirmed the builder as the variable. The engine evidently reads a foreign builder's own COUNTRY
+modifiers for the max level (buildings.md calls it "a dynamic country modifier"); vanilla never meets the case, because all four of its
+`has_max_level` buildings are government buildings only the owner can build. ⇒ **The cap now sits in vanilla's `base_values`**, the static
+modifier every country carries and every state inherits (vanilla's own `state_building_naval_fortification_max_level_add = 5` is there): the
+build owns a whole-file copy of `common/static_modifiers/00_code_static_modifiers.txt` with the 144 lines appended inside that block
+(asserted: one block, closing on its own line, no line of ours already in vanilla). The site trait stays as a visible label with no modifier,
+added at the campaign start, shown in every split part of the region (user-accepted).
+✅ **Verified in game by the user, 2026-10-05**, on a test build opening every dam to the player at the 1836 start (`dams.probe.player_open`,
+`mod_playtest_damtest/`): a shift+click stops at the cap for the owner AND for foreign builders (Britain in Oregon, Tasmania and Southern
+Columbia; France in Provence; the Ottomans in Western Serbia). (A probe could not show the shift+click: the AI never queues past a cap.)
+⚠ **Not yet verified**: that two foreign builders together cannot exceed the cap (the cap could in principle be counted per builder). The
+contest probe (`dams.probe.contest`, several eligible builders per site, `probe_q` above the cap = a leak) would read it.
 **Detect.** A dam's `level` above its `stages` in a save summary (`world.buildings`), or the monthly dam level log (`dams.log_levels`).
 
 ---

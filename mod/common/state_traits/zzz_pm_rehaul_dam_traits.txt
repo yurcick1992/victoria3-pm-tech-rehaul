@@ -46,7 +46,6 @@ pmr_dam_columbia_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_columbia_river_max_level_add = 19
 	}
 }
 
@@ -54,7 +53,6 @@ pmr_dam_laurentian_rivers_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_laurentian_rivers_max_level_add = 11
 	}
 }
 
@@ -62,7 +60,6 @@ pmr_dam_norrland_rivers_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_norrland_rivers_max_level_add = 5
 	}
 }
 
@@ -70,7 +67,6 @@ pmr_dam_lower_columbia_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lower_columbia_max_level_add = 10
 	}
 }
 
@@ -78,7 +74,6 @@ pmr_dam_nelson_winnipeg_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_nelson_winnipeg_max_level_add = 2
 	}
 }
 
@@ -86,7 +81,6 @@ pmr_dam_black_canyon_sierra_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_black_canyon_sierra_max_level_add = 8
 	}
 }
 
@@ -94,7 +88,6 @@ pmr_dam_western_fjords_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_western_fjords_max_level_add = 4
 	}
 }
 
@@ -102,7 +95,6 @@ pmr_dam_niagara_long_sault_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_niagara_long_sault_max_level_add = 4
 	}
 }
 
@@ -110,7 +102,6 @@ pmr_dam_waitaki_southern_lakes_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_waitaki_southern_lakes_max_level_add = 5
 	}
 }
 
@@ -118,7 +109,6 @@ pmr_dam_grisons_ticino_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_grisons_ticino_max_level_add = 5
 	}
 }
 
@@ -126,7 +116,6 @@ pmr_dam_rhone_isere_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_rhone_isere_max_level_add = 6
 	}
 }
 
@@ -134,7 +123,6 @@ pmr_dam_niagara_ottawa_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_niagara_ottawa_max_level_add = 3
 	}
 }
 
@@ -142,7 +130,6 @@ pmr_dam_tennessee_valley_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_tennessee_valley_max_level_add = 6
 	}
 }
 
@@ -150,7 +137,6 @@ pmr_dam_valais_alps_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_valais_alps_max_level_add = 4
 	}
 }
 
@@ -158,7 +144,6 @@ pmr_dam_nechako_kootenay_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_nechako_kootenay_max_level_add = 3
 	}
 }
 
@@ -166,7 +151,6 @@ pmr_dam_shinano_kurobe_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_shinano_kurobe_max_level_add = 4
 	}
 }
 
@@ -174,7 +158,6 @@ pmr_dam_lower_rhone_durance_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lower_rhone_durance_max_level_add = 4
 	}
 }
 
@@ -182,7 +165,6 @@ pmr_dam_missouri_big_bend_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_missouri_big_bend_max_level_add = 5
 	}
 }
 
@@ -190,7 +172,6 @@ pmr_dam_austrian_danube_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_austrian_danube_max_level_add = 5
 	}
 }
 
@@ -198,7 +179,6 @@ pmr_dam_danube_bavarian_alps_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_danube_bavarian_alps_max_level_add = 4
 	}
 }
 
@@ -206,7 +186,6 @@ pmr_dam_kiso_tenryu_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_kiso_tenryu_max_level_add = 3
 	}
 }
 
@@ -214,7 +193,6 @@ pmr_dam_douro_gorge_cavado_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_douro_gorge_cavado_max_level_add = 3
 	}
 }
 
@@ -222,7 +200,6 @@ pmr_dam_tsaritsyn_volga_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_tsaritsyn_volga_max_level_add = 4
 	}
 }
 
@@ -230,7 +207,6 @@ pmr_dam_muscle_shoals_coosa_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_muscle_shoals_coosa_max_level_add = 3
 	}
 }
 
@@ -238,7 +214,6 @@ pmr_dam_grand_canal_alsace_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_grand_canal_alsace_max_level_add = 3
 	}
 }
 
@@ -246,7 +221,6 @@ pmr_dam_arribes_duero_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_arribes_duero_max_level_add = 2
 	}
 }
 
@@ -254,7 +228,6 @@ pmr_dam_adda_lombard_alps_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_adda_lombard_alps_max_level_add = 2
 	}
 }
 
@@ -262,7 +235,6 @@ pmr_dam_snowy_tumut_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_snowy_tumut_max_level_add = 3
 	}
 }
 
@@ -270,7 +242,6 @@ pmr_dam_yellow_river_gorges_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_yellow_river_gorges_max_level_add = 3
 	}
 }
 
@@ -278,7 +249,6 @@ pmr_dam_hohe_tauern_ziller_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_hohe_tauern_ziller_max_level_add = 2
 	}
 }
 
@@ -286,7 +256,6 @@ pmr_dam_iron_gates_arges_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_iron_gates_arges_max_level_add = 4
 	}
 }
 
@@ -294,7 +263,6 @@ pmr_dam_inga_rapids_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_inga_rapids_max_level_add = 2
 	}
 }
 
@@ -302,7 +270,6 @@ pmr_dam_rion_ingur_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_rion_ingur_max_level_add = 1
 	}
 }
 
@@ -310,7 +277,6 @@ pmr_dam_yalu_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_yalu_river_max_level_add = 3
 	}
 }
 
@@ -318,7 +284,6 @@ pmr_dam_maurienne_tarentaise_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_maurienne_tarentaise_max_level_add = 2
 	}
 }
 
@@ -326,7 +291,6 @@ pmr_dam_waikato_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_waikato_river_max_level_add = 3
 	}
 }
 
@@ -334,7 +298,6 @@ pmr_dam_sevan_zanga_vorotan_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_sevan_zanga_vorotan_max_level_add = 1
 	}
 }
 
@@ -342,7 +305,6 @@ pmr_dam_dnieper_rapids_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_dnieper_rapids_max_level_add = 2
 	}
 }
 
@@ -350,7 +312,6 @@ pmr_dam_glommen_falls_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_glommen_falls_max_level_add = 2
 	}
 }
 
@@ -358,7 +319,6 @@ pmr_dam_alcantara_gorge_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_alcantara_gorge_max_level_add = 2
 	}
 }
 
@@ -366,7 +326,6 @@ pmr_dam_aura_nordland_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_aura_nordland_max_level_add = 1
 	}
 }
 
@@ -374,7 +333,6 @@ pmr_dam_ossola_dora_baltea_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_ossola_dora_baltea_max_level_add = 2
 	}
 }
 
@@ -382,7 +340,6 @@ pmr_dam_cubatao_escarpment_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_cubatao_escarpment_max_level_add = 1
 	}
 }
 
@@ -390,7 +347,6 @@ pmr_dam_derwent_great_lake_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_derwent_great_lake_max_level_add = 2
 	}
 }
 
@@ -398,7 +354,6 @@ pmr_dam_kaema_plateau_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_kaema_plateau_max_level_add = 2
 	}
 }
 
@@ -406,7 +361,6 @@ pmr_dam_dordogne_gorges_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_dordogne_gorges_max_level_add = 2
 	}
 }
 
@@ -414,7 +368,6 @@ pmr_dam_koyna_western_ghats_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_koyna_western_ghats_max_level_add = 2
 	}
 }
 
@@ -422,7 +375,6 @@ pmr_dam_tone_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_tone_river_max_level_add = 2
 	}
 }
 
@@ -430,7 +382,6 @@ pmr_dam_tadami_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_tadami_river_max_level_add = 2
 	}
 }
 
@@ -438,7 +389,6 @@ pmr_dam_kainji_rapids_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_kainji_rapids_max_level_add = 2
 	}
 }
 
@@ -446,7 +396,6 @@ pmr_dam_segre_lower_ebro_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_segre_lower_ebro_max_level_add = 2
 	}
 }
 
@@ -454,7 +403,6 @@ pmr_dam_mantaro_canon_del_pato_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_mantaro_canon_del_pato_max_level_add = 2
 	}
 }
 
@@ -462,7 +410,6 @@ pmr_dam_dal_klar_rivers_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_dal_klar_rivers_max_level_add = 2
 	}
 }
 
@@ -470,7 +417,6 @@ pmr_dam_travancore_highlands_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_travancore_highlands_max_level_add = 2
 	}
 }
 
@@ -478,7 +424,6 @@ pmr_dam_chirchik_cascade_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_chirchik_cascade_max_level_add = 2
 	}
 }
 
@@ -486,7 +431,6 @@ pmr_dam_cheboksary_volga_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_cheboksary_volga_max_level_add = 2
 	}
 }
 
@@ -494,7 +438,6 @@ pmr_dam_lower_kama_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lower_kama_max_level_add = 2
 	}
 }
 
@@ -502,7 +445,6 @@ pmr_dam_kiev_kanev_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_kiev_kanev_max_level_add = 3
 	}
 }
 
@@ -510,7 +452,6 @@ pmr_dam_gorodets_volga_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_gorodets_volga_max_level_add = 2
 	}
 }
 
@@ -518,7 +459,6 @@ pmr_dam_perm_kama_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_perm_kama_max_level_add = 2
 	}
 }
 
@@ -526,7 +466,6 @@ pmr_dam_zhiguli_volga_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_zhiguli_volga_max_level_add = 2
 	}
 }
 
@@ -534,7 +473,6 @@ pmr_dam_balakovo_volga_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_balakovo_volga_max_level_add = 2
 	}
 }
 
@@ -542,7 +480,6 @@ pmr_dam_votkinsk_kama_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_votkinsk_kama_max_level_add = 2
 	}
 }
 
@@ -550,7 +487,6 @@ pmr_dam_rybinsk_uglich_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_rybinsk_uglich_max_level_add = 2
 	}
 }
 
@@ -558,7 +494,6 @@ pmr_dam_irkutsk_angara_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_irkutsk_angara_max_level_add = 2
 	}
 }
 
@@ -566,7 +501,6 @@ pmr_dam_xinan_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_xinan_river_max_level_add = 2
 	}
 }
 
@@ -574,7 +508,6 @@ pmr_dam_mequinenza_aragon_pyrenees_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_mequinenza_aragon_pyrenees_max_level_add = 2
 	}
 }
 
@@ -582,7 +515,6 @@ pmr_dam_asahan_toba_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_asahan_toba_max_level_add = 1
 	}
 }
 
@@ -590,7 +522,6 @@ pmr_dam_bhagirathi_upper_ganges_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_bhagirathi_upper_ganges_max_level_add = 1
 	}
 }
 
@@ -598,7 +529,6 @@ pmr_dam_achelous_gorges_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_achelous_gorges_max_level_add = 2
 	}
 }
 
@@ -606,7 +536,6 @@ pmr_dam_moldau_cascade_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_moldau_cascade_max_level_add = 2
 	}
 }
 
@@ -614,7 +543,6 @@ pmr_dam_narenta_drina_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_narenta_drina_max_level_add = 2
 	}
 }
 
@@ -622,7 +550,6 @@ pmr_dam_sulak_canyon_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_sulak_canyon_max_level_add = 2
 	}
 }
 
@@ -630,7 +557,6 @@ pmr_dam_nepal_hill_rivers_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_nepal_hill_rivers_max_level_add = 1
 	}
 }
 
@@ -638,7 +564,6 @@ pmr_dam_hells_canyon_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_hells_canyon_max_level_add = 2
 	}
 }
 
@@ -646,7 +571,6 @@ pmr_dam_garrison_missouri_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_garrison_missouri_max_level_add = 2
 	}
 }
 
@@ -654,7 +578,6 @@ pmr_dam_upper_drave_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_upper_drave_max_level_add = 2
 	}
 }
 
@@ -662,7 +585,6 @@ pmr_dam_adige_valley_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_adige_valley_max_level_add = 1
 	}
 }
 
@@ -670,7 +592,6 @@ pmr_dam_sungari_gorge_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_sungari_gorge_max_level_add = 2
 	}
 }
 
@@ -678,7 +599,6 @@ pmr_dam_malta_valley_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_malta_valley_max_level_add = 1
 	}
 }
 
@@ -686,7 +606,6 @@ pmr_dam_bhutan_duars_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_bhutan_duars_max_level_add = 1
 	}
 }
 
@@ -694,7 +613,6 @@ pmr_dam_high_rhine_baden_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_high_rhine_baden_max_level_add = 2
 	}
 }
 
@@ -702,7 +620,6 @@ pmr_dam_paulo_afonso_falls_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_paulo_afonso_falls_max_level_add = 2
 	}
 }
 
@@ -710,7 +627,6 @@ pmr_dam_lower_tennessee_cumberland_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lower_tennessee_cumberland_max_level_add = 2
 	}
 }
 
@@ -718,7 +634,6 @@ pmr_dam_necaxa_tilostoc_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_necaxa_tilostoc_max_level_add = 1
 	}
 }
 
@@ -726,7 +641,6 @@ pmr_dam_lower_susquehanna_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lower_susquehanna_max_level_add = 1
 	}
 }
 
@@ -734,7 +648,6 @@ pmr_dam_lochaber_affric_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lochaber_affric_max_level_add = 1
 	}
 }
 
@@ -742,7 +655,6 @@ pmr_dam_galloway_tummel_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_galloway_tummel_max_level_add = 1
 	}
 }
 
@@ -750,7 +662,6 @@ pmr_dam_rhodope_cascades_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_rhodope_cascades_max_level_add = 1
 	}
 }
 
@@ -758,7 +669,6 @@ pmr_dam_min_tung_rivers_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_min_tung_rivers_max_level_add = 1
 	}
 }
 
@@ -766,7 +676,6 @@ pmr_dam_upper_ob_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_upper_ob_max_level_add = 2
 	}
 }
 
@@ -774,7 +683,6 @@ pmr_dam_tabqa_narrows_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_tabqa_narrows_max_level_add = 1
 	}
 }
 
@@ -782,7 +690,6 @@ pmr_dam_bigorre_bearn_pyrenees_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_bigorre_bearn_pyrenees_max_level_add = 1
 	}
 }
 
@@ -790,7 +697,6 @@ pmr_dam_upper_euphrates_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_upper_euphrates_max_level_add = 1
 	}
 }
 
@@ -798,7 +704,6 @@ pmr_dam_onega_vyg_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_onega_vyg_max_level_add = 1
 	}
 }
 
@@ -806,7 +711,6 @@ pmr_dam_truyere_gorges_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_truyere_gorges_max_level_add = 1
 	}
 }
 
@@ -814,7 +718,6 @@ pmr_dam_lufira_lualaba_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lufira_lualaba_max_level_add = 1
 	}
 }
 
@@ -822,7 +725,6 @@ pmr_dam_niva_tuloma_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_niva_tuloma_max_level_add = 1
 	}
 }
 
@@ -830,7 +732,6 @@ pmr_dam_drina_gorge_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_drina_gorge_max_level_add = 1
 	}
 }
 
@@ -838,7 +739,6 @@ pmr_dam_mingechaur_gorge_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_mingechaur_gorge_max_level_add = 1
 	}
 }
 
@@ -846,7 +746,6 @@ pmr_dam_uryu_ishikari_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_uryu_ishikari_max_level_add = 1
 	}
 }
 
@@ -854,7 +753,6 @@ pmr_dam_volkhov_svir_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_volkhov_svir_max_level_add = 1
 	}
 }
 
@@ -862,7 +760,6 @@ pmr_dam_mimi_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_mimi_river_max_level_add = 1
 	}
 }
 
@@ -870,7 +767,6 @@ pmr_dam_kamianske_dnieper_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_kamianske_dnieper_max_level_add = 2
 	}
 }
 
@@ -878,7 +774,6 @@ pmr_dam_kremenchug_dnieper_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_kremenchug_dnieper_max_level_add = 2
 	}
 }
 
@@ -886,7 +781,6 @@ pmr_dam_sariyar_gorge_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_sariyar_gorge_max_level_add = 1
 	}
 }
 
@@ -894,7 +788,6 @@ pmr_dam_pescara_sangro_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_pescara_sangro_max_level_add = 1
 	}
 }
 
@@ -902,7 +795,6 @@ pmr_dam_guatape_falls_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_guatape_falls_max_level_add = 1
 	}
 }
 
@@ -910,7 +802,6 @@ pmr_dam_pyramid_canyon_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_pyramid_canyon_max_level_add = 1
 	}
 }
 
@@ -918,7 +809,6 @@ pmr_dam_zezere_gorges_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_zezere_gorges_max_level_add = 1
 	}
 }
 
@@ -926,7 +816,6 @@ pmr_dam_sila_plateau_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_sila_plateau_max_level_add = 1
 	}
 }
 
@@ -934,7 +823,6 @@ pmr_dam_tequendama_falls_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_tequendama_falls_max_level_add = 1
 	}
 }
 
@@ -942,7 +830,6 @@ pmr_dam_savannah_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_savannah_river_max_level_add = 1
 	}
 }
 
@@ -950,7 +837,6 @@ pmr_dam_lower_karun_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lower_karun_max_level_add = 1
 	}
 }
 
@@ -958,7 +844,6 @@ pmr_dam_nilgiri_hills_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_nilgiri_hills_max_level_add = 1
 	}
 }
 
@@ -966,7 +851,6 @@ pmr_dam_bistritza_gorge_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_bistritza_gorge_max_level_add = 1
 	}
 }
 
@@ -974,7 +858,6 @@ pmr_dam_lajes_serra_do_mar_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lajes_serra_do_mar_max_level_add = 1
 	}
 }
 
@@ -982,7 +865,6 @@ pmr_dam_santee_saluda_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_santee_saluda_max_level_add = 1
 	}
 }
 
@@ -990,7 +872,6 @@ pmr_dam_piave_valley_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_piave_valley_max_level_add = 1
 	}
 }
 
@@ -998,7 +879,6 @@ pmr_dam_yili_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_yili_river_max_level_add = 1
 	}
 }
 
@@ -1006,7 +886,6 @@ pmr_dam_first_cataract_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_first_cataract_max_level_add = 2
 	}
 }
 
@@ -1014,7 +893,6 @@ pmr_dam_conowingo_falls_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_conowingo_falls_max_level_add = 1
 	}
 }
 
@@ -1022,7 +900,6 @@ pmr_dam_warsak_gorge_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_warsak_gorge_max_level_add = 1
 	}
 }
 
@@ -1030,7 +907,6 @@ pmr_dam_sennar_blue_nile_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_sennar_blue_nile_max_level_add = 1
 	}
 }
 
@@ -1038,7 +914,6 @@ pmr_dam_lower_drave_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lower_drave_max_level_add = 1
 	}
 }
 
@@ -1046,7 +921,6 @@ pmr_dam_trollhattan_falls_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_trollhattan_falls_max_level_add = 1
 	}
 }
 
@@ -1054,7 +928,6 @@ pmr_dam_ariege_aude_pyrenees_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_ariege_aude_pyrenees_max_level_add = 1
 	}
 }
 
@@ -1062,7 +935,6 @@ pmr_dam_agno_gorge_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_agno_gorge_max_level_add = 1
 	}
 }
 
@@ -1070,7 +942,6 @@ pmr_dam_gersoppa_falls_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_gersoppa_falls_max_level_add = 1
 	}
 }
 
@@ -1078,7 +949,6 @@ pmr_dam_tikves_gorge_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_tikves_gorge_max_level_add = 1
 	}
 }
 
@@ -1086,7 +956,6 @@ pmr_dam_missouri_breaks_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_missouri_breaks_max_level_add = 1
 	}
 }
 
@@ -1094,7 +963,6 @@ pmr_dam_imatra_rapids_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_imatra_rapids_max_level_add = 1
 	}
 }
 
@@ -1102,7 +970,6 @@ pmr_dam_lawpita_falls_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lawpita_falls_max_level_add = 1
 	}
 }
 
@@ -1110,7 +977,6 @@ pmr_dam_laxapana_falls_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_laxapana_falls_max_level_add = 1
 	}
 }
 
@@ -1118,7 +984,6 @@ pmr_dam_longxi_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_longxi_river_max_level_add = 1
 	}
 }
 
@@ -1126,7 +991,6 @@ pmr_dam_castelo_do_bode_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_castelo_do_bode_max_level_add = 1
 	}
 }
 
@@ -1134,7 +998,6 @@ pmr_dam_sun_moon_lake_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_sun_moon_lake_max_level_add = 1
 	}
 }
 
@@ -1142,7 +1005,6 @@ pmr_dam_des_moines_rapids_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_des_moines_rapids_max_level_add = 1
 	}
 }
 
@@ -1150,7 +1012,6 @@ pmr_dam_cachapoal_canyon_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_cachapoal_canyon_max_level_add = 1
 	}
 }
 
@@ -1158,7 +1019,6 @@ pmr_dam_lower_yalu_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_lower_yalu_max_level_add = 1
 	}
 }
 
@@ -1166,7 +1026,6 @@ pmr_dam_edea_falls_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_edea_falls_max_level_add = 1
 	}
 }
 
@@ -1174,7 +1033,6 @@ pmr_dam_victoria_nile_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_victoria_nile_max_level_add = 1
 	}
 }
 
@@ -1182,7 +1040,6 @@ pmr_dam_rincon_del_bonete_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_rincon_del_bonete_max_level_add = 1
 	}
 }
 
@@ -1190,6 +1047,5 @@ pmr_dam_uhl_river_site = {
 	icon = "gfx/interface/icons/state_trait_icons/river.dds"
 
 	modifier = {
-		state_building_dam_uhl_river_max_level_add = 1
 	}
 }

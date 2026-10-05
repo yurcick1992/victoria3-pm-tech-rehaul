@@ -137,12 +137,16 @@ that list is for. If a patch adds a fourth such case and does *not* name it, thi
   that changes that trait's agriculture bonus changes the net 1836 value (the malus is sized against +0.2).
 - **The power plant's cost patch** (`building_required_construction`, `tools/emit_building_costs.mjs`) edits the owned
   `common/buildings/06_urban_center.txt` and throws unless exactly one `required_construction` line matches inside `building_power_plant`.
-- **The level cap is the engine's `has_max_level`** (since 2026-10-05, BUGS_AND_FIXES): each dam's max level is the state modifier
+- **The level cap is the engine's `has_max_level`** (since 2026-10-05, BUGS_AND_FIXES): each dam's max level is the modifier
   `state_<building key>_max_level_add`, declared in `common/modifier_type_definitions/zzz_pm_rehaul_dam_modifiers.txt` the way vanilla
-  declares its four (barrack, conscription centre, naval fortification, construction sector), carried by a per-project site trait added
-  once per campaign, with `stateregion_max_level = yes` on the group (vanilla's `bg_infrastructure` flag). A patch that renames that
-  modifier pattern, or drops `has_max_level` / `stateregion_max_level` (documented in `common/buildings/buildings.md` and
-  `common/building_groups/00_building_groups.txt`), would leave every dam at max level 0 — check vanilla's four still use it.
+  declares its four (barrack, conscription centre, naval fortification, construction sector), set in vanilla's `base_values` static
+  modifier, with `stateregion_max_level = yes` on the group (vanilla's `bg_infrastructure` flag). ⚠ The build therefore owns a WHOLE-FILE
+  copy of `common/static_modifiers/00_code_static_modifiers.txt`, regenerated from vanilla each build (it throws if `base_values` is not
+  exactly one block closing on its own line) — a patch's changes to that file flow through, a patch that moves `base_values` elsewhere stops
+  the build. A patch that renames the modifier pattern, or drops `has_max_level` / `stateregion_max_level` (documented in
+  `common/buildings/buildings.md` and `common/building_groups/00_building_groups.txt`), would leave every dam at max level 0 — check
+  vanilla's four still use it. ⚠ Re-test by hand after a major patch that a FOREIGN builder still gets the cap (it read 0 when the cap was a
+  state trait — the engine reads the builder's own country modifiers).
 - **Engine facts the design rests on** (FINDINGS F168), to re-probe after a major patch: the government AI does not queue unique
   government-funded buildings; the AI takes every visible decision in one pass; `start_building_construction` builds into the state
   owner's queue; no country-tag data function exists.
