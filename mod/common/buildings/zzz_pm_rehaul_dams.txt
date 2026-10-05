@@ -7,6 +7,7 @@ building_dam_columbia_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9584
 
 	potential = {
@@ -92,6 +93,7 @@ building_dam_laurentian_rivers = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9618
 
 	potential = {
@@ -184,6 +186,7 @@ building_dam_norrland_rivers = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8485
 
 	potential = {
@@ -262,6 +265,7 @@ building_dam_lower_columbia = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9838
 
 	potential = {
@@ -340,6 +344,7 @@ building_dam_nelson_winnipeg = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6504
 
 	potential = {
@@ -418,6 +423,7 @@ building_dam_black_canyon_sierra = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9120
 
 	potential = {
@@ -503,6 +509,7 @@ building_dam_western_fjords = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8189
 
 	potential = {
@@ -581,6 +588,7 @@ building_dam_niagara_long_sault = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9387
 
 	potential = {
@@ -666,6 +674,7 @@ building_dam_waitaki_southern_lakes = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8112
 
 	potential = {
@@ -744,6 +753,7 @@ building_dam_grisons_ticino = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8377
 
 	potential = {
@@ -829,6 +839,7 @@ building_dam_rhone_isere = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8573
 
 	potential = {
@@ -914,6 +925,7 @@ building_dam_niagara_ottawa = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9046
 
 	potential = {
@@ -999,6 +1011,7 @@ building_dam_tennessee_valley = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8907
 
 	potential = {
@@ -1077,6 +1090,7 @@ building_dam_valais_alps = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8353
 
 	potential = {
@@ -1155,6 +1169,7 @@ building_dam_nechako_kootenay = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8522
 
 	potential = {
@@ -1240,6 +1255,7 @@ building_dam_shinano_kurobe = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7738
 
 	potential = {
@@ -1325,6 +1341,7 @@ building_dam_lower_rhone_durance = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9475
 
 	potential = {
@@ -1410,6 +1427,7 @@ building_dam_missouri_big_bend = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9817
 
 	potential = {
@@ -1488,6 +1506,7 @@ building_dam_austrian_danube = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8212
 
 	potential = {
@@ -1566,6 +1585,7 @@ building_dam_danube_bavarian_alps = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9416
 
 	potential = {
@@ -1651,6 +1671,7 @@ building_dam_kiso_tenryu = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8052
 
 	potential = {
@@ -1729,6 +1750,7 @@ building_dam_douro_gorge_cavado = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8940
 
 	potential = {
@@ -1807,6 +1829,7 @@ building_dam_tsaritsyn_volga = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8226
 
 	potential = {
@@ -1885,6 +1908,7 @@ building_dam_muscle_shoals_coosa = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8863
 
 	potential = {
@@ -1963,6 +1987,7 @@ building_dam_grand_canal_alsace = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9595
 
 	potential = {
@@ -2041,6 +2066,7 @@ building_dam_arribes_duero = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8872
 
 	potential = {
@@ -2119,6 +2145,7 @@ building_dam_adda_lombard_alps = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9595
 
 	potential = {
@@ -2197,6 +2224,7 @@ building_dam_snowy_tumut = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7010
 
 	potential = {
@@ -2275,6 +2303,7 @@ building_dam_yellow_river_gorges = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7886
 
 	potential = {
@@ -2353,6 +2382,7 @@ building_dam_hohe_tauern_ziller = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8353
 
 	potential = {
@@ -2431,6 +2461,7 @@ building_dam_iron_gates_arges = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8723
 
 	potential = {
@@ -2516,6 +2547,7 @@ building_dam_inga_rapids = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7087
 
 	potential = {
@@ -2594,6 +2626,7 @@ building_dam_rion_ingur = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6794
 
 	potential = {
@@ -2672,6 +2705,7 @@ building_dam_yalu_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7397
 
 	potential = {
@@ -2750,6 +2784,7 @@ building_dam_maurienne_tarentaise = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8122
 
 	potential = {
@@ -2828,6 +2863,7 @@ building_dam_waikato_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6689
 
 	potential = {
@@ -2906,6 +2942,7 @@ building_dam_sevan_zanga_vorotan = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9080
 
 	potential = {
@@ -2984,6 +3021,7 @@ building_dam_dnieper_rapids = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9616
 
 	potential = {
@@ -3062,6 +3100,7 @@ building_dam_glommen_falls = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8096
 
 	potential = {
@@ -3140,6 +3179,7 @@ building_dam_alcantara_gorge = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8801
 
 	potential = {
@@ -3218,6 +3258,7 @@ building_dam_aura_nordland = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9397
 
 	potential = {
@@ -3296,6 +3337,7 @@ building_dam_ossola_dora_baltea = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7196
 
 	potential = {
@@ -3374,6 +3416,7 @@ building_dam_cubatao_escarpment = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8665
 
 	potential = {
@@ -3452,6 +3495,7 @@ building_dam_derwent_great_lake = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6297
 
 	potential = {
@@ -3530,6 +3574,7 @@ building_dam_kaema_plateau = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5457
 
 	potential = {
@@ -3608,6 +3653,7 @@ building_dam_dordogne_gorges = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7549
 
 	potential = {
@@ -3686,6 +3732,7 @@ building_dam_koyna_western_ghats = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6137
 
 	potential = {
@@ -3764,6 +3811,7 @@ building_dam_tone_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6039
 
 	potential = {
@@ -3842,6 +3890,7 @@ building_dam_tadami_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6794
 
 	potential = {
@@ -3920,6 +3969,7 @@ building_dam_kainji_rapids = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9884
 
 	potential = {
@@ -3998,6 +4048,7 @@ building_dam_segre_lower_ebro = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7496
 
 	potential = {
@@ -4076,6 +4127,7 @@ building_dam_mantaro_canon_del_pato = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5398
 
 	potential = {
@@ -4154,6 +4206,7 @@ building_dam_dal_klar_rivers = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6091
 
 	potential = {
@@ -4232,6 +4285,7 @@ building_dam_travancore_highlands = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5415
 
 	potential = {
@@ -4310,6 +4364,7 @@ building_dam_chirchik_cascade = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6772
 
 	potential = {
@@ -4388,6 +4443,7 @@ building_dam_cheboksary_volga = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8226
 
 	potential = {
@@ -4466,6 +4522,7 @@ building_dam_lower_kama = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8226
 
 	potential = {
@@ -4544,6 +4601,7 @@ building_dam_kiev_kanev = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7087
 
 	potential = {
@@ -4622,6 +4680,7 @@ building_dam_gorodets_volga = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8226
 
 	potential = {
@@ -4700,6 +4759,7 @@ building_dam_perm_kama = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8226
 
 	potential = {
@@ -4778,6 +4838,7 @@ building_dam_zhiguli_volga = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8226
 
 	potential = {
@@ -4856,6 +4917,7 @@ building_dam_balakovo_volga = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8226
 
 	potential = {
@@ -4934,6 +4996,7 @@ building_dam_votkinsk_kama = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8226
 
 	potential = {
@@ -5012,6 +5075,7 @@ building_dam_rybinsk_uglich = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8226
 
 	potential = {
@@ -5090,6 +5154,7 @@ building_dam_irkutsk_angara = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5886
 
 	potential = {
@@ -5168,6 +5233,7 @@ building_dam_xinan_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5886
 
 	potential = {
@@ -5246,6 +5312,7 @@ building_dam_mequinenza_aragon_pyrenees = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6015
 
 	potential = {
@@ -5331,6 +5398,7 @@ building_dam_asahan_toba = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8353
 
 	potential = {
@@ -5409,6 +5477,7 @@ building_dam_bhagirathi_upper_ganges = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8353
 
 	potential = {
@@ -5487,6 +5556,7 @@ building_dam_achelous_gorges = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5662
 
 	potential = {
@@ -5565,6 +5635,7 @@ building_dam_moldau_cascade = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6597
 
 	potential = {
@@ -5643,6 +5714,7 @@ building_dam_narenta_drina = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5662
 
 	potential = {
@@ -5721,6 +5793,7 @@ building_dam_sulak_canyon = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5743
 
 	potential = {
@@ -5799,6 +5872,7 @@ building_dam_nepal_hill_rivers = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8353
 
 	potential = {
@@ -5877,6 +5951,7 @@ building_dam_hells_canyon = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6265
 
 	potential = {
@@ -5955,6 +6030,7 @@ building_dam_garrison_missouri = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8181
 
 	potential = {
@@ -6033,6 +6109,7 @@ building_dam_upper_drave = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5662
 
 	potential = {
@@ -6111,6 +6188,7 @@ building_dam_adige_valley = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9595
 
 	potential = {
@@ -6189,6 +6267,7 @@ building_dam_sungari_gorge = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6363
 
 	potential = {
@@ -6267,6 +6346,7 @@ building_dam_malta_valley = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8353
 
 	potential = {
@@ -6345,6 +6425,7 @@ building_dam_bhutan_duars = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8353
 
 	potential = {
@@ -6423,6 +6504,7 @@ building_dam_high_rhine_baden = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6504
 
 	potential = {
@@ -6501,6 +6583,7 @@ building_dam_paulo_afonso_falls = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7219
 
 	potential = {
@@ -6579,6 +6662,7 @@ building_dam_lower_tennessee_cumberland = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5775
 
 	potential = {
@@ -6657,6 +6741,7 @@ building_dam_necaxa_tilostoc = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7833
 
 	potential = {
@@ -6735,6 +6820,7 @@ building_dam_lower_susquehanna = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9927
 
 	potential = {
@@ -6813,6 +6899,7 @@ building_dam_lochaber_affric = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8096
 
 	potential = {
@@ -6891,6 +6978,7 @@ building_dam_galloway_tummel = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8096
 
 	potential = {
@@ -6969,6 +7057,7 @@ building_dam_rhodope_cascades = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8096
 
 	potential = {
@@ -7047,6 +7136,7 @@ building_dam_min_tung_rivers = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8995
 
 	potential = {
@@ -7125,6 +7215,7 @@ building_dam_upper_ob = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6860
 
 	potential = {
@@ -7203,6 +7294,7 @@ building_dam_tabqa_narrows = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9858
 
 	potential = {
@@ -7281,6 +7373,7 @@ building_dam_bigorre_bearn_pyrenees = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6070
 
 	potential = {
@@ -7359,6 +7452,7 @@ building_dam_upper_euphrates = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9858
 
 	potential = {
@@ -7437,6 +7531,7 @@ building_dam_onega_vyg = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7804
 
 	potential = {
@@ -7515,6 +7610,7 @@ building_dam_truyere_gorges = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7549
 
 	potential = {
@@ -7593,6 +7689,7 @@ building_dam_lufira_lualaba = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7804
 
 	potential = {
@@ -7671,6 +7768,7 @@ building_dam_niva_tuloma = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7804
 
 	potential = {
@@ -7749,6 +7847,7 @@ building_dam_drina_gorge = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7549
 
 	potential = {
@@ -7827,6 +7926,7 @@ building_dam_mingechaur_gorge = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8457
 
 	potential = {
@@ -7905,6 +8005,7 @@ building_dam_uryu_ishikari = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6772
 
 	potential = {
@@ -7983,6 +8084,7 @@ building_dam_volkhov_svir = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 9782
 
 	potential = {
@@ -8061,6 +8163,7 @@ building_dam_mimi_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6772
 
 	potential = {
@@ -8139,6 +8242,7 @@ building_dam_kamianske_dnieper = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5315
 
 	potential = {
@@ -8217,6 +8321,7 @@ building_dam_kremenchug_dnieper = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5315
 
 	potential = {
@@ -8295,6 +8400,7 @@ building_dam_sariyar_gorge = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8209
 
 	potential = {
@@ -8373,6 +8479,7 @@ building_dam_pescara_sangro = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5397
 
 	potential = {
@@ -8451,6 +8558,7 @@ building_dam_guatape_falls = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 3598
 
 	potential = {
@@ -8529,6 +8637,7 @@ building_dam_pyramid_canyon = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7796
 
 	potential = {
@@ -8607,6 +8716,7 @@ building_dam_zezere_gorges = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5997
 
 	potential = {
@@ -8685,6 +8795,7 @@ building_dam_sila_plateau = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5397
 
 	potential = {
@@ -8763,6 +8874,7 @@ building_dam_tequendama_falls = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 3598
 
 	potential = {
@@ -8841,6 +8953,7 @@ building_dam_savannah_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7796
 
 	potential = {
@@ -8919,6 +9032,7 @@ building_dam_lower_karun = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8353
 
 	potential = {
@@ -8997,6 +9111,7 @@ building_dam_nilgiri_hills = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5203
 
 	potential = {
@@ -9075,6 +9190,7 @@ building_dam_bistritza_gorge = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5397
 
 	potential = {
@@ -9153,6 +9269,7 @@ building_dam_lajes_serra_do_mar = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 4198
 
 	potential = {
@@ -9231,6 +9348,7 @@ building_dam_santee_saluda = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 7796
 
 	potential = {
@@ -9309,6 +9427,7 @@ building_dam_piave_valley = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 4798
 
 	potential = {
@@ -9387,6 +9506,7 @@ building_dam_yili_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5997
 
 	potential = {
@@ -9465,6 +9585,7 @@ building_dam_first_cataract = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5434
 
 	potential = {
@@ -9543,6 +9664,7 @@ building_dam_conowingo_falls = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 4963
 
 	potential = {
@@ -9621,6 +9743,7 @@ building_dam_warsak_gorge = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 5241
 
 	potential = {
@@ -9699,6 +9822,7 @@ building_dam_sennar_blue_nile = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 6794
 
 	potential = {
@@ -9777,6 +9901,7 @@ building_dam_lower_drave = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 3774
 
 	potential = {
@@ -9855,6 +9980,7 @@ building_dam_trollhattan_falls = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 3020
 
 	potential = {
@@ -9933,6 +10059,7 @@ building_dam_ariege_aude_pyrenees = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 3035
 
 	potential = {
@@ -10011,6 +10138,7 @@ building_dam_agno_gorge = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 4336
 
 	potential = {
@@ -10089,6 +10217,7 @@ building_dam_gersoppa_falls = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 3035
 
 	potential = {
@@ -10167,6 +10296,7 @@ building_dam_tikves_gorge = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 3774
 
 	potential = {
@@ -10245,6 +10375,7 @@ building_dam_missouri_breaks = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 8866
 
 	potential = {
@@ -10323,6 +10454,7 @@ building_dam_imatra_rapids = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 2775
 
 	potential = {
@@ -10401,6 +10533,7 @@ building_dam_lawpita_falls = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 1989
 
 	potential = {
@@ -10479,6 +10612,7 @@ building_dam_laxapana_falls = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 2755
 
 	potential = {
@@ -10557,6 +10691,7 @@ building_dam_longxi_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 2998
 
 	potential = {
@@ -10635,6 +10770,7 @@ building_dam_castelo_do_bode = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 2998
 
 	potential = {
@@ -10713,6 +10849,7 @@ building_dam_sun_moon_lake = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 2399
 
 	potential = {
@@ -10791,6 +10928,7 @@ building_dam_des_moines_rapids = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 4798
 
 	potential = {
@@ -10869,6 +11007,7 @@ building_dam_cachapoal_canyon = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 3362
 
 	potential = {
@@ -10947,6 +11086,7 @@ building_dam_lower_yalu = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 3898
 
 	potential = {
@@ -11025,6 +11165,7 @@ building_dam_edea_falls = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 3100
 
 	potential = {
@@ -11103,6 +11244,7 @@ building_dam_victoria_nile = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 2998
 
 	potential = {
@@ -11181,6 +11323,7 @@ building_dam_rincon_del_bonete = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 4226
 
 	potential = {
@@ -11259,6 +11402,7 @@ building_dam_uhl_river = {
 	levels_per_mesh = 50
 	expandable = yes
 	downsizeable = no
+	has_max_level = yes
 	required_construction = 1872
 
 	potential = {

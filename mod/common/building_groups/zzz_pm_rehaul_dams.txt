@@ -8,4 +8,5 @@ bg_pmr_hydro_dams = {
 	inheritable_construction = yes
 	economy_of_scale = no
 	urbanization = 10
+	stateregion_max_level = yes
 }

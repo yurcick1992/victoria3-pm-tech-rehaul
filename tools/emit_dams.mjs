@@ -4,8 +4,10 @@
 //
 // Config `dams` absent or `enabled: false` → emits nothing. Enabled → per project (config/dam_projects.json,
 // one per state; the numbers are tools/lib_dams.mjs's — ONE derivation):
-//   • ONE building per project, `building_dam_<id>`, with up to `stages` LEVELS (the level cap is vanilla's trade-centre
-//     idiom, `level_after_queued_constructions`). Its group is NOT government-funded (a government-funded building
+//   • ONE building per project, `building_dam_<id>`, with up to `stages` LEVELS. The cap is the ENGINE's (`has_max_level`,
+//     the max level a per-project state trait `pmr_dam_<id>_site` carries — since 2026-10-05, because the scripted cap,
+//     vanilla's trade-centre idiom `level_after_queued_constructions`, let a shift+click queue five levels past it; the
+//     scripted cap stays as the build menu's tooltip). Its group is NOT government-funded (a government-funded building
 //     cannot be built by another country), `can_build_private = { always = no }` keeps the private queue out (the
 //     skyscraper idiom), and `can_build_government` reads the BUILDER through `scope:investor_country`: it must be
 //     the anchor owner or above it in the overlord chain, must have completed its OWN survey, and must hold the
@@ -102,6 +104,12 @@ const V = p => `pmr_dam_${p.id}`;     // variable / key stem
 // another country, and the overlord must be able to build and own the dam in a subject's state. So the group sits
 // under bg_private_infrastructure like the trade centre, and each dam forbids the private queue itself
 // (can_build_private = { always = no }, vanilla's skyscraper idiom).
+// ⭐ THE LEVEL CAP IS THE ENGINE'S (user's playtest, 2026-10-05): the scripted cap in can_build_government
+// (level_after_queued_constructions) is evaluated ONCE per click, so a shift+click queued five levels past it and all
+// were built. Each dam now carries vanilla's `has_max_level = yes` (the barracks / construction-sector mechanism): its
+// max level is the state modifier state_building_dam_<id>_max_level_add, carried by a per-project state trait
+// (pmr_dam_<id>_site, added to the region once — see pmr_dam_add_caps). `stateregion_max_level` makes the cap count
+// the whole state REGION (vanilla's bg_infrastructure flag), so the split parts of a state can never add up past it.
 W('common/building_groups/zzz_pm_rehaul_dams.txt', HDR +
 `bg_pmr_hydro_dams = {
 ${T}parent_group = bg_private_infrastructure
@@ -111,6 +119,7 @@ ${T}subsidized = yes
 ${T}inheritable_construction = yes
 ${T}economy_of_scale = no
 ${T}urbanization = 10
+${T}stateregion_max_level = yes
 }
 `);
 
@@ -149,6 +158,8 @@ for (const p of projects) {
     `${T}icon = "gfx/interface/icons/building_icons/power_plant.dds"\n` +
     `${T}city_type = city\n${T}levels_per_mesh = 50\n` +
     `${T}expandable = yes\n${T}downsizeable = no\n` +
+    // the engine-enforced cap: max level = state_building_<key>_max_level_add, set to p.stages by the site trait
+    `${T}has_max_level = yes\n` +
     `${T}required_construction = ${p.stage_points}\n\n` +
     // ⚠ NO unlocking_technologies: the first level's technology is checked on the BUILDER in can_build_government, so an
     // overlord can build in a subject that lacks it (the user's Ceylon test in the Britain-only build, 2026-09-27) — identical
@@ -294,7 +305,27 @@ const traitTxt = Object.entries(newTraits).map(([k, t]) =>
   `${k} = {\n${T}icon = "${t.icon || 'gfx/interface/icons/state_trait_icons/river.dds'}"\n\n${T}modifier = {\n` +
   Object.entries(t.modifier).map(([m, q]) => `${T}${T}${m} = ${q}\n`).join('') + `${T}}\n}`);
 for (const [k, t] of Object.entries(newTraits)) loc.push([k, t.name], [`${k}_desc`, t.desc || '']);
+// THE ENGINE LEVEL CAP (see the building group above): one site trait per project, carrying the dam's max level. The modifier
+// type is declared explicitly, as vanilla declares its four has_max_level buildings' (barrack, conscription centre, naval
+// fortification, construction sector) — the name is state_ + the building key + _max_level_add
+const capMod = p => `state_${BKEY(p)}_max_level_add`;
+const siteTrait = p => `${V(p)}_site`;
+for (const p of projects) {
+  if (newTraits[siteTrait(p)]) die(`trait ${siteTrait(p)} is both a site trait and a configured trait`);
+  traitTxt.push(`${siteTrait(p)} = {\n${T}icon = "gfx/interface/icons/state_trait_icons/river.dds"\n\n${T}modifier = {\n${T}${T}${capMod(p)} = ${p.stages}\n${T}}\n}`);
+  loc.push([siteTrait(p), `Dam Site: ${p.name}`],
+    [`${siteTrait(p)}_desc`, `The ${p.name} can hold up to ${p.stages} level${p.stages > 1 ? 's' : ''} of hydroelectric dams.`],
+    [capMod(p), `$${BKEY(p)}$ Max Level`],
+    [`${capMod(p)}_desc`, `A bonus or penalty to the maximum level of $${BKEY(p)}$ buildings.`]);
+}
+W('common/modifier_type_definitions/zzz_pm_rehaul_dam_modifiers.txt', HDR +
+  projects.map(p => `${capMod(p)}={\n${T}decimals=0\n${T}color=good\n${T}game_data={\n${T}${T}ai_value=0\n${T}}\n}`).join('\n\n') + '\n');
 if (traitTxt.length) W('common/state_traits/zzz_pm_rehaul_dam_traits.txt', HDR + traitTxt.join('\n\n') + '\n');
+// added ONCE per campaign: at the start, and — for a save begun on an earlier build — on the first monthly pulse
+seff.push(`pmr_dam_add_caps = {\n${T}if = {\n${T}${T}limit = { NOT = { has_global_variable = pmr_dam_caps_added } }\n` +
+  `${T}${T}set_global_variable = pmr_dam_caps_added\n` +
+  projects.map(p => `${T}${T}s:${p.state} = { add_state_trait = ${siteTrait(p)} }\n`).join('') +
+  `${T}${T}debug_log = "PMR_DAM|caps_added|${projects.length} projects|-|${DATE}"\n${T}}\n}`);
 
 const regionEffect = (e) => {
   const lines = [];
@@ -402,6 +433,15 @@ if (P.probe?.release_after) for (const p of projects) {
 if (P.probe?.open_survey_tags?.length) for (const tag of P.probe.open_survey_tags) start.push(
   `${T}${T}if = {\n${T}${T}${T}limit = { exists = c:${tag} }\n${T}${T}${T}c:${tag} = {\n${T}${T}${T}${T}set_variable = pmr_probe_major\n` + projects.map(p => `${T}${T}${T}${T}set_variable = ${V(p)}_surveyed\n`).join('') + `${T}${T}${T}}\n${T}${T}}\n` +
   projects.map(p => `${T}${T}set_global_variable = ${V(p)}_surveyed_any`).join('\n'));
+// PLAYTEST BUILDS ONLY: dams.probe.player_open = true - at the start (after the lobby, when players are assigned) every PLAYER country
+// holds the three class technologies and a completed survey of every project, so a human can queue dams in 1836 (user, 2026-10-05:
+// testing the engine level cap by hand). AI countries are untouched
+if (P.probe?.player_open) start.push(
+  `${T}${T}every_country = {\n${T}${T}${T}limit = { is_player = yes }\n` +
+  [...new Set(Object.values(P.tech_by_class))].map(t => `${T}${T}${T}add_technology_researched = ${t}\n`).join('') +
+  projects.map(p => `${T}${T}${T}set_variable = ${V(p)}_surveyed\n`).join('') +
+  `${T}${T}${T}debug_log = "PMR_DAM|playtest_open|-|${TAG}|${DATE}"\n${T}${T}}\n` +
+  projects.map(p => `${T}${T}set_global_variable = ${V(p)}_surveyed_any`).join('\n'));
 // on_building_built (a dam's first level) and on_building_expanded (every later level) both land here, root = the building.
 // An effect named for level k fires once, the first time the dam stands at k levels or more; 'last' = at its final level.
 const onBuilt = [];
@@ -428,11 +468,12 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
   `on_game_started_after_lobby = {\n${T}on_actions = { pmr_dam_campaign_start }\n}\n\n` +
   `on_building_built = {\n${T}on_actions = { pmr_dam_built }\n}\n\n` +
   `on_building_expanded = {\n${T}on_actions = { pmr_dam_built }\n}\n\n` +
-  `pmr_dam_campaign_start = {\n${T}effect = {\n${T}${T}debug_log = "PMR_DAM|start|${projects.length} projects|-|${DATE}"\n${start.join('\n')}\n${T}}\n}\n\n` +
+  `pmr_dam_campaign_start = {\n${T}effect = {\n${T}${T}debug_log = "PMR_DAM|start|${projects.length} projects|-|${DATE}"\n${T}${T}pmr_dam_add_caps = yes\n${start.join('\n')}\n${T}}\n}\n\n` +
   `pmr_dam_built = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { is_building_group = bg_pmr_hydro_dams }\n${onBuilt.join('\n')}\n${T}${T}}\n${T}}\n}\n\n` +
   // PROBE (contest): every standing dam's built level and its level after every queued construction, monthly. Checked up to
   // two above the cap, so an over-queue shows. A dam whose first level is only queued already has a (level-0) building record.
-  ((releaseLines.length || LOGLV) ? `on_monthly_pulse = {\n${T}on_actions = { ${[releaseLines.length ? 'pmr_dam_probe_release' : '', LOGLV ? 'pmr_dam_probe_levels' : ''].filter(Boolean).join(' ')} }\n}\n\n` : '') +
+  `on_monthly_pulse = {\n${T}on_actions = { ${['pmr_dam_caps_check', releaseLines.length ? 'pmr_dam_probe_release' : '', LOGLV ? 'pmr_dam_probe_levels' : ''].filter(Boolean).join(' ')} }\n}\n\n` +
+  `pmr_dam_caps_check = {\n${T}effect = {\n${T}${T}pmr_dam_add_caps = yes\n${T}}\n}\n\n` +
   (releaseLines.length ? `pmr_dam_probe_release = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { game_date >= ${P.probe.release_after} }\n` + releaseLines.join('\n') + `\n${T}${T}}\n${T}}\n}\n\n` : '') +
   (LOGLV ? `` +
     `pmr_dam_probe_levels = {\n${T}effect = {\n` + projects.map(p => {

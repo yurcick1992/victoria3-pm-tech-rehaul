@@ -15,6 +15,7 @@ on_building_expanded = {
 pmr_dam_campaign_start = {
 	effect = {
 		debug_log = "PMR_DAM|start|144 projects|-|[TimeKeeper.GetCurrentDate.GetString]"
+		pmr_dam_add_caps = yes
 		s:STATE_MIDDLE_EGYPT = {
 			add_state_trait = state_trait_pmr_basin_irrigation
 		}
@@ -608,6 +609,16 @@ pmr_dam_built = {
 				pmr_dam_uhl_river_on_level = yes
 			}
 		}
+	}
+}
+
+on_monthly_pulse = {
+	on_actions = { pmr_dam_caps_check }
+}
+
+pmr_dam_caps_check = {
+	effect = {
+		pmr_dam_add_caps = yes
 	}
 }
 

@@ -146,6 +146,7 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 
 ## Done (recent; prune freely)
 
+- 2026-10-05 · the dam level cap moved to the engine's `has_max_level` (a shift+click had queued five levels past the scripted cap); the user verified in game that a shift+click now stops at the cap · BUGS_AND_FIXES 2026-10-05
 - 2026-10-01 · `artmerge6-pb` century n=3 read · F194
 
 - 2026-10-01 · save summary v13/v14: IG clout and IG members by workplace (`ig_clout.mjs`, `ig_pop_contrib.mjs`, `ig_workplace_series.mjs`) · F190, F192, F193

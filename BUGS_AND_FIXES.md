@@ -13,6 +13,26 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-10-05 — a shift+click queued five dam levels past the project's cap, and all five were built
+
+**Symptom.** The user's playtest: queueing a dam with shift+click (the game's queue-five shortcut) put five levels in the queue on a
+project whose cap was lower, and every one was built and ran. A single click past the cap was refused, and once enough levels were queued
+the button greyed out — so only an instant multi-queue got through.
+**Root cause.** The cap lived in script: `can_build_government` required `level_after_queued_constructions` below the project's level
+count (vanilla's trade-centre idiom). The engine evaluates that trigger once for the click, not once per queued level, so a batch queue
+passes it with the queue still empty. Vanilla's canals are immune for an unrelated reason: `unique = yes` + `expandable = no` is an engine
+cap of one level in the world, which a multi-level dam cannot use.
+**Fix.** The engine's own level cap, which vanilla's barracks and construction sector use: every dam is `has_max_level = yes`, its max level
+is `state_building_dam_<id>_max_level_add` (declared like vanilla's four), carried by a per-project state trait `pmr_dam_<id>_site` that
+`pmr_dam_add_caps` adds to the region once — at the campaign start, or on the first monthly pulse of a save begun on an earlier build — and
+the group is `stateregion_max_level = yes`, so the cap counts the whole state region. The scripted cap stays as the build menu's tooltip.
+✅ **Verified in game by the user, 2026-10-05**: on a test build that opens every dam to the player at the 1836 start
+(`dams.probe.player_open`, `mod_playtest_damtest/`), a shift+click stops at the cap. (A probe could not show it: the AI never queues past a
+cap.) Levels already over-queued in an existing save are not removed.
+**Detect.** A dam's `level` above its `stages` in a save summary (`world.buildings`), or the monthly dam level log (`dams.log_levels`).
+
+---
+
 ## 2026-10-03 — a merged rung's recipe had NO break-even drift guard, and the lint judged every building by its groups' first members blindly (BALANCE_FRAMEWORK §10.93 rule 6)
 
 **Symptom.** None visible: every build printed LINT PASSED. Found while redoing the lint on the user's ruling that a building's BE means "under the most
