@@ -306,7 +306,8 @@ mix (*"The one with the machinists"*; `artisan6-shop` dropped, kept as a record)
 emits no building for it: its main method joins the HOST's main group, gated by its own technology (`unlocking_technologies`), and the host
 carries the midpoint `building_cost` / `ai_value` (`_merge` records the pairs; L31 checks both). Every emitter follows: `emit_secondaries`
 mints each of the host's secondaries **once per main method** (scaled to that method, gated to it — so the secondary stays in proportion to
-whichever method runs); `emit_research_events` counts a merged rung as the host's levels running its method (`has_active_production_method`,
+whichever method runs; since 2026-10-05 every such copy is `is_hidden_when_unavailable`, so the panel lists ONE entry per line, the copy
+beside the running method, where it listed both under one name and icon); `emit_research_events` counts a merged rung as the host's levels running its method (`has_active_production_method`,
 the trigger vanilla's art journal entries use); `emit_companies` keeps merged keys out like craft keys; `convert_history` THROWS on a 1836
 block landing on a merged rung (none of the six does). ⚠ **The save summaries cannot tell the two rungs apart by building type** — a merged
 rung's levels are the host's `pms` entries for its method: read them with `tools/testbed/ledger/merge_methods.mjs`. The register's T0–T3
@@ -1715,6 +1716,10 @@ config/mod_config.e1a12-ai1135-tex1140-artmerge.json ⚗ TEXTILE'S MERGED HOST A
                         loss 5.59 (the canon 5.90); the USA dead in 1 of 5, by a won Confederate secession — the dead USAs are political since the
                         compressed ladder, where e1a12-artmerge's were economic; a raw-sector shortfall in the surviving USAs remains. Not ruled on.
                         Un-ignored with its twin
+config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json ⚗ THE EXTRA RESEARCH ENTRIES (user-ruled 2026-10-05, BALANCE_FRAMEWORK §10.95, ROADMAP
+                        step 2) + its tree twin (the base's): the book above + `research_events.extra_entries` (25 production technologies outside
+                        the tier ladder, calibrated on the narrative onset) + `era1_rule_a`; `make_research_extra_config.mjs`. 68 technologies carry
+                        entries (the base 40). Measured n=16 by 20261005_154629_jex-n16 (launched 2026-10-05). Un-ignored with its twin
 config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
@@ -2803,6 +2808,28 @@ tools/                  dev tooling — NOT shipped in the mod
                         completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished, and
                         STALLED (exit 3) if nothing anywhere in the session tree has been written for
                         -StallMinutes (default 20) — landmine L21: "alive" is not "working"
+  testbed/machine_monitor.ps1  ⭐ THE MACHINE-LOAD MONITOR (user-asked 2026-10-06: "an objective external machine load monitoring that
+                        would explain wall clock speed fluctuations"). Launched BESIDE a batch, never part of it: `& 'tools\testbed\launch_detached.ps1'
+                        -File 'tools\testbed\machine_monitor.ps1' -ArgumentList '-Session','<stamp>' -Hidden`; it appends a row every 20 s to
+                        `<session>/machine_load.tsv` (log beside it, `machine_load.log`) and exits by itself on SCHEDULE DONE. A row: the game's cores
+                        and its CUMULATIVE CPU seconds (the discriminator — more game CPU per in-game year = the game did more work; more wall at flat
+                        CPU = it waited), memory, the HARNESS's cores (archiver, harvester melts, watchers) and everything ELSE's (top three named),
+                        busy cores and clock % per core CLASS (this machine is hybrid: P-cores logical 0–11, E-cores 12–19 — Windows can move a
+                        background process onto the E-cores — one hypothesis for run 3 of 20261005_154629, whose game slowed 3–4× over 1890–1903 on
+                        ~3.9 cores against ~7 normally while the harvester's real melts stayed normal), free memory, hard page reads, disk and GPU
+                        busy, ⭐ the system's COMMIT against its commit limit and transition faults (system and the game's own) — added the same
+                        morning when run 6 slowed from in-game 1890 at the minute Windows cut the game's working set 10.5 → 6.6 GB (it holds ~17 GB)
+                        with commit at 37.0 of 38.9 GB; ⚠ the run then RECOVERED (1900) with the working set still cut and commit at 96–98%, so
+                        memory did not cause it — the game's own CPU per in-game year rose 690 → 940 on fewer cores (a game-state episode,
+                        the fleet repair-loop shape of F218) —
+                        the run and its in-game date, and
+                        every 5 min a CANARY (a fixed compute job, ms per 1e7 iterations: slower = a slower machine, whatever the game does).
+                        ⚠ Machine counters come from the WMI perf CLASSES, never `Get-Counter`: counter paths are LOCALISED and a process made by
+                        launch_detached gets the system's ru-RU UI where the agent's shell has en-US, so English paths returned nothing in the
+                        detached monitor while every interactive test passed. Cost: ~2 s a sample, mostly an idle WMI wait. First attached to
+                        20261005_154629 mid-batch (run 5, 07:43 2026-10-06); ⭐ since the same evening `run_schedule.ps1` STARTS IT for every
+                        session (full session path, `-MaxHours` from the estimate; `-NoMachineMonitor` opts out). `-Session` takes a name or a
+                        full path
   testbed/launch_detached.ps1  ⭐⭐ THE ONLY WAY THE AGENT LAUNCHES A BATCH (2026-09-13, landmine L30): creates the
                         scheduler (or any harness script) through WMI `Win32_Process.Create`, so it belongs to NO job
                         object — the agent's tool shells sit in the desktop app's jobs (KILL_ON_JOB_CLOSE) and a
@@ -3257,6 +3284,30 @@ tools/                  dev tooling — NOT shipped in the mod
                         26, prosperity ~99 vs 100, regional HQs 95 vs 96, company-held 39.3% vs 39.1%
                         — i.e. the chain extension had already put companies at vanilla's level.
                         `--arm <session>[:<setup>] --ref <session>[:<setup>] [--years …]`
+  testbed/ledger/tech_timing.mjs  ⭐ TECHNOLOGY TIMING AGAINST THE NARRATIVE ONSET, ACROSS ARMS (2026-10-05, BALANCE_FRAMEWORK §10.95):
+                        per run and technology the HALF-MAJORS YEAR (the first yearly summary in which half the tech majors present —
+                        lib_markets.resolveMembers — hold it), the median per arm, ✓ within ten years of the tree's `onset`, « / » an arm's
+                        median outside the control's per-run range; the summary counts on-target / early / late over the technologies
+                        whose onset is 1826–1926. `<label>=<session>[,<session>][:<setup>] ... [--control <label>] [--cat production|military|
+                        society|all] [--book <config>]` (the book marks its extra entries X). First read (control = e1a12-ai1135-tex1140
+                        n=5): production 16 of 43 on target, 24 late, median 11 years late; the canon 15 / 25 / 12 — the tree runs LATE
+                        against the onsets (but ON the anchor principle — tech_census.mjs D)
+  testbed/ledger/tech_census.mjs  ⭐ THE TECHNOLOGY CENSUS AT A RUN'S END, ACROSS ARMS (2026-10-05): A. each top-era technology's holders
+                        at the end (every country counts, mean per run); B. technologies held by the tech majors individually (GBR USA NET
+                        BEL FRA PRU SWE UNL NGF GER — a tag absent from a run is dropped, never replaced); C. the top ten independents by GDP
+                        outside that list; D. THE ANCHOR PRINCIPLE — the share of game era 3 / 4 / 5 technologies the run's tech leader (and
+                        its third) holds at 1875 / 1905 / the end; E. reliance on the research entries — the share of B's acquisitions with
+                        an entry stage and the entries' grants as a share of their base cost (PMR_JE lines, windowed by the run's token).
+                        `<label>=<session>[,<session>][:<setup>] ... [--top-era 5]`. First read: the control's leader holds 52 / 46 / 46% of
+                        game eras 3 / 4 / 5 at 1875 / 1905 / 1936 (the canon 52 / 54 / 54) — on the anchor principle; the entries carry
+                        5–6% of the majors' acquisitions (Britain ~10–12%)
+  testbed/ledger/dam_yearly.mjs  THE DAMS OF A BATCH WITH YEARLY SAVES (2026-10-05; dam_situation / dam_outcomes need quarterly ones): per arm,
+                        dam levels at the end, projects with a level, the levels hosted by SUBJECTS against their share of the potential, and
+                        who built each level by relation to the host — own / overlord / family / outside (investment rights) — the builder being
+                        the country with that dam in its government queue at the last yearly sample before the PMR_DAM|built line.
+                        `<label>=<session>[,<session>][:<setup>] ...`. First read: the artmerge books 22–35 levels a run (of 312), subjects ~25%
+                        of built ≈ their share of the potential, ~40% built from outside the family; the jex run 1 104 levels (the entries bring
+                        steam turbine and arc welding forward — 28 of its levels need arc welding, none in tex1140), 46% in subjects
   testbed/ledger/je_tally.mjs  ⭐ THE RESEARCH-JOURNAL-ENTRY TALLY (2026-09-04): unique (country, technology,
                         stage) completions per run from the debug.log MIRROR — the run's own telemetry TOKEN marks
                         where its lines begin (a wall-time window fails on a run that crosses midnight) and
@@ -3277,6 +3328,38 @@ tools/                  dev tooling — NOT shipped in the mod
                         First reading: the mod's "early-game dip" is a near-constant ~+6–7 s per in-game year from 1836 (+12% of a 55-s early tick,
                         ~+4 by the 1880s), not an early event, not instrumentation and not world size. ⚠ Quarterly-save runs read dearer even
                         with the save ticks out — compare like cadence with like
+  testbed/ledger/machine_load.mjs  ⭐ WHY WAS A RUN SLOW? (2026-10-06) — reads machine_monitor.ps1's `machine_load.tsv`: per run and in-game
+                        period (`--years 5`), wall and GAME CPU seconds per in-game year, each against the median of the OTHER runs over the same
+                        period (×run — world size moves both, so siblings at the same dates are the yardstick), cores (game / harness / other),
+                        clock %, P/E-core busy, the canary against the session's median, memory, disk, and a stated heuristic DRIVER: MACHINE ·
+                        LOAD · MEMORY · GAME WORK · WAITING. `<session> [--years 5] [--run runNNN_setup]`. Follows a header change mid-file
+  testbed/ledger/slow_episodes.mjs  ⭐ SLOWDOWN EPISODES AND THE FACTORISED WALL CLOCK (user-ruled 2026-10-06): from the observer's tick lines
+                        only (so every session ever run can be read), per run and 5-year period the seconds per in-game year (reloads and
+                        replays excluded) against the arm's median; an EPISODE = ≥ 1.4× for ≥ 2 consecutive periods; per arm the NORMAL
+                        BRANCH (Σ the median pace), the share of runs with an episode and an episode's cost in minutes. `<label>=<session>
+                        [,<session>][:<setup>] ... [--years 5] [--ratio 1.4] [--min 2] [--ref <label>]` (`--ref`: the arm whose medians judge an
+                        arm of under three runs). First read: vanilla 1 of 19 runs; the 2026-09 canon arms 3 of 60, 11–21 min each
+  testbed/ledger/tick_profile.mjs  ⭐ WHERE A RUN'S WALL CLOCK WENT, TICK BY TICK (2026-10-06, FINDINGS **F218**): the game writes `Processing
+                        Tick: Y.M.D[.H]` to dedicated_server.log at every quarter-day tick (hours 0/6/12/18, 1-s stamps), mirrored in
+                        logs_live/; each gap is charged to the earlier tick. Per in-game year: s/yr split by sub-tick and the ticks ≥ 3 s; `--long S`
+                        lists long ticks; `--days a,b --slots 6,12,18 --bin 5` pins a start/end to a few days. `<session>/<run> [--from Y] [--to Y]`.
+                        THE SIGNATURES: hour 0 + ONE other sub-tick rising together for years then dropping within days = a fleet stuck on a
+                        repair loop (read the save with fleet_loops.mjs); all four rising, ending at a peace = a long great-power war; a few
+                        multi-second ticks on a fixed cycle = something periodic (only canon-dams-v2-n1, unexplained). Exports `parseTicks`
+  testbed/ledger/fleet_loops.mjs  ⭐ FLEETS STUCK ON A REPAIR LOOP, OUT OF ONE SAVE (2026-10-06, F218): streams a .v3 through rakaly and lists every
+                        formation whose travel path holds ≥ --min (200) moves — owner tag, country id and its index mod 4 WITH THE SUB-TICK IT
+                        MAPS TO (F218 §8, from every kept save: ≡ 1 → hour 6, ≡ 0 → hour 12, ≡ 2 → hour 0 alone, ≡ 3 → hour 18 presumed — NOT
+                        6 × (id mod 4), which F218 first assumed), the recall flag, creation date, its ships (type@hit points), moves, current_move, the
+                        DISTANCE SAILED (what the cost tracks: ≲ 125k = 0–10 s a year, ~150–200k = 20–30 s, ~470k = 100–200 s) and the repair target
+                        (`STATE NO LONGER EXISTS` where the target's record is gone). `<save.v3> [...] [--min 200] [--json]`. Over 288 kept endpoints
+                        every such formation was a recalled fleet (vanilla 3 of 30, mod 14 of 258) and none an army. ⚠ A kept save is the run's
+                        newest: a loop that ended earlier is gone — copy a save into the run's `diag_saves/` while an episode is live
+  testbed/ledger/fleet_loop_runs.mjs  ⭐⭐ WHICH RUNS ARE DISQUALIFIED FROM THE WALL CLOCK BY A FLEET LOOP (user-ruled 2026-10-06, F218; the ruling is
+                        in the "MOD MUST NOT MAKE THE GAME SLOWER" bullet). From each run's dedicated_server.log: an episode = one of the 06 / 12
+                        / 18 sub-ticks ≥ --threshold (25) s a year above BOTH others, the same one, ≥ --years (3) consecutive years (a war lifts
+                        all three and never fires; hour-0-only load is undetectable and stays). Per run the verdict and its evidence; per arm
+                        the SHARE DISQUALIFIED and the mean play time over all runs and over the qualifying ones; `--dirs` prints the qualifying
+                        run folders for report_perf.mjs. `<label>=<session>[,<session>][:<setup>] [...]`. Exports `detect(runDir)`
   testbed/ledger/corpus_extract.mjs + corpus_levers.mjs + corpus_early.mjs + corpus_depeasant(_extrap).mjs + lib_corpus_stats.mjs + lib_depeasant.mjs  ⭐ THE WHOLE RUN CORPUS AT ONCE
                         (2026-09-25, FINDINGS **F165**): the extractor writes one line per usable century run of every four-rung A/B book
                         (and the vanilla controls) — the lever vector from the run's own `_ab`, yearly world / pool / GBR GDP, W, U*, H and
@@ -3345,6 +3428,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         all wide dates); the plan print and each run's log line say so, and `telemetry.json` records it.
                         `-NoRedFlagFeed` drops it — only for a re-run whose telemetry must match an old batch. ~50 lines a
                         market a year, ≤ 11 markets (L3-bounded); proven on a throwaway control build (30 July blocks, guarded tags)
+                        ⭐ THE MACHINE-LOAD MONITOR IS ON FOR EVERY SESSION (2026-10-06): `machine_monitor.ps1` is started once, before
+                        run 1, with the session's full path and `-MaxHours` = max(24, 2 × the estimate + 12), proven alive (the log line
+                        "machine monitor alive (pid …)"), and exits by itself at SCHEDULE DONE; a failed start is a WARN, never an abort.
+                        `-NoMachineMonitor` drops it; the plan print says which
                         ⭐ `tools/testbed/NO_NEW_RUNS` (2026-09-30) is the FILE twin of the [s] key: checked before EVERY
                         run, it lets a running game finish and starts nothing further — the tool for a user deadline on
                         STARTING games (the STOP file is the [x] key and closes the running game). Dropped at a set local
@@ -3528,11 +3615,22 @@ tools/                  dev tooling — NOT shipped in the mod
                         industries' tiers (mechanized_workshops → textile + furniture) gets one journal entry
                         fed by both, each adding a tick, so holding both fills the bar twice as fast.
                         Emits journal_entries + scripted_progress_bars + script_values + loc for all 11
-                        languages. ⚠ Era-1 technologies are SKIPPED by construction — `add_era_researched =
-                        era_1` hands them out at the 1836 start, so `can_research` is false from day one and
-                        an event on them could never fire. Current output: 126 technologies (86 industry,
-                        40 war) → 378 journal entries, 126 bars, 133 script values, ~1,265 loc keys
-                        (was 122/366/115/1103 at the 2026-08-12 first emission; counts track the ladder)
+                        languages. ⚠ Era-1 technologies are SKIPPED — `add_era_researched = era_1` hands them
+                        out at the 1836 start — ⚠ but only to tiers 1–2 (59 of 444 countries), so since
+                        2026-10-05 `research_events.era1_rule_a` keeps the entry of an era-1 technology gating a
+                        rung WITH a predecessor (lathe, distillation, steelworking). ⭐⭐ `research_events.extra_entries`
+                        (2026-10-05, BALANCE_FRAMEWORK §10.95): production technologies OUTSIDE the tier ladder, each
+                        with its sources (`industries` [+ `crafts: false`] or `buildings` [+ `methods`: count only
+                        levels RUNNING those main methods]), a `mark` in people that must be a whole number of fully
+                        staffed levels of everything it counts (THROWS otherwise), and `requires` (technologies the
+                        country must hold for the bar to advance). Validated against the game: an unknown building,
+                        a method its building does not have, a technology already covered all THROW. Current output:
+                        the canon 40 technologies (34 industry, 6 war) → 120 journal entries; the jex book 68 → 204
+                        (was 126/378 before the 2026-08-30 `tiers_only` scope; counts track the ladder)
+  make_research_extra_config.mjs  THE EXTRA RESEARCH ENTRIES BOOK — `--base <config> --suffix <sfx>` writes the base + the
+                        ruled `research_events.extra_entries` table (25 technologies; THE ONLY PLACE IT LIVES) +
+                        `era1_rule_a` + `_research_extra_variant`, and copies the base's tree twin. Book:
+                        `e1a12-ai1135-tex1140-jex-artmerge` (field diff against its base: those three keys)
   emit_tech_finish.mjs  ⭐⭐ FINISH WHAT IS ALREADY PAID FOR (user-ruled 2026-09-23, FINDINGS F160) — runs AFTER emit_techs and
                         emit_research_events. `research_events.finish_boost` {enabled, threshold 0.99, add 10000}: EVERY researchable
                         technology's ai_weight ends in `if = { limit = { has_technology_progress = { technology = X  progress >= 0.99 } }
@@ -3569,7 +3667,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         secondary once PER MAIN METHOD — named <pm>_<that rung's key>, scaled to that rung's output and inputs, and gated
                         `unlocking_production_methods = { <that rung's main method> }` — so the secondary stays in proportion to whichever
                         method runs. Plain buildings mint exactly what they did before, under the same names. THROWS on a craft rung
-                        that also hosts a merge
+                        that also hosts a merge. ⭐ (2026-10-05) Copies sharing a name carry `is_hidden_when_unavailable = yes`, so the
+                        building panel shows only the one beside the running main method (it showed both, one greyed, same name and icon)
                         ⭐⭐ THE §10.93 AMENDMENT (2026-10-02, the user's playtest): (a) a building no longer carries a method NONE of its
                         main methods can run — until then a rung that failed a vanilla PM gate KEPT VANILLA'S ORIGINAL, which the game
                         SHOWED, greyed, at vanilla numbers (Elastics −70 clothes on a craft making 2.7); (b) NARRATIVE COMPATIBILITY from
@@ -5747,6 +5846,31 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   answers a different and narrower question — *is the engine dearer per unit of work?* — which is what
   you want when the total moves and you need to know whether the cause is a bigger world or a costlier
   one. Report both, grade the total.
+  ⭐ **AN EXTERNAL SLOWDOWN IS SET ASIDE, NOT GRADED — AND SINCE 2026-10-06 IT IS MEASURED, NOT INFERRED.** The 2026-09-26 ruling stands:
+  a run whose game and save-melt speeds slow and recover TOGETHER is external load, and its wall clock leaves the grade.
+  ⚠⚠ **A SUMMARY'S FILE TIME MINUS ITS SAVE'S STAMP IS NOT A MELT TIME** (found 2026-10-06, BUGS_AND_FIXES): in watch mode the harvester
+  holds the newest save until the NEXT one exists, so that gap is one autosave interval — the game's own wall time per in-game year — and
+  "the melts slowed with the game" read that way is circular. It was, in BOTH cases ever ruled on: canon-dams-v2-n1 (F170's VOID, now
+  marked unsupported) and run 3 of 20261005_154629, whose REAL melts (the harvest.log's in-flight lines) ran 6–13 s a save straight through
+  the game's 3–4× slowdown. Neither case meets the rule.
+  ⭐⭐ **RULED 2026-10-06: A SLOWDOWN COUNTS IN THE WALL CLOCK UNLESS THERE IS HARD EVIDENCE OF A MACHINE-WIDE ONE** (the user: *"unless we have
+  harder evidence for external machine-wide slowdown, do record those as parts of the wall clock"*), so both runs above count again. ⭐ And
+  the wall clock is REPORTED FACTORISED, as diverging branches, never as one line (*"to not conflate cases of 'everything is 10% slower'
+  and cases of 'half of the runs is 10% faster, half is 30% slower'"*): the NORMAL BRANCH (Σ each period's median pace over the arm's runs)
+  beside the SHARE of runs with a slowdown episode and an episode's COST in minutes (`ledger/slow_episodes.mjs`), each against vanilla's.
+  The control (vanilla n=16 + 3): 1 of 19 runs with an episode (10 min, 2.2×); the older mod arms 3 of 60 (11–21 min); the two big ones
+  (57–58 min, over 3×) are canon-dams-v2-n1 and run 3 of 20261005_154629. ⭐ WHAT THEY ARE — FINDINGS **F218** (a peer session, the same
+  day, over 291 runs): mostly a lone ship stuck on a repair voyage whose travel path the engine keeps appending to for decades (run 3's were
+  two US torpedo boats), VANILLA behaviour as common in vanilla as in the mod, plus a few long great-power wars — seed variance, not a mod cost.
+  ⭐⭐ **RULED 2026-10-06 (later): A RUN WITH A FLEET-LOOP EPISODE IS DISQUALIFIED FOR WALL CLOCK — THE WHOLE RUN, ON BOTH SIDES** (the configs
+  compared AND the vanilla reference), **and for nothing else** (every other metric of the run stays). **Every other slowdown STAYS**, however
+  sharp (wars, hour-0-only rises, the unexplained). **Reports show, per config, the SHARE OF RUNS DISQUALIFIED** beside the wall clock without
+  them. The test is mechanical — one of the 06 / 12 / 18 sub-ticks ≥ 25 s a year above both others, the same one, ≥ 3 consecutive years — and
+  `ledger/fleet_loop_runs.mjs` applies it (per run, the share per arm, the play time with and without, `--dirs` for report_perf.mjs). On
+  291 runs: 1 of 31 vanilla, 20 of 260 mod; ⚠ the jex batch 20261005_154629 read 3 of its first 6 (watch: if a book raises the rate, the
+  exclusion hides a real cost — which is why the share is reported).
+  `tools/testbed/machine_monitor.ps1` beside a batch, read by `ledger/machine_load.mjs`, now records the machine every 20 s, so the next
+  case is attributed (machine slower / other load / memory / the game's own work / waiting) instead of inferred from file times.
   ⭐ **SINCE 2026-09-13 THE TOTAL IS THE CENTURY'S PLAY TIME REBUILT FROM THE OBSERVER'S TICK LINES** (`tools/testbed/ledger/lib_wall.mjs`,
   `report_perf.mjs`'s default; `--wall meta` restores the observer's `wall_seconds`; `wall_from_ticks.mjs <session>` prints the per-run
   table). `meta.json → wall_seconds` spans EVERY attempt of a run, so a crash-resume added its grace, reload and the replay of the year

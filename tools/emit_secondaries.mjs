@@ -148,7 +148,7 @@ const RENAME = {};     // building key -> vanilla pm -> minted pm, for the 1836 
 const STRIP = {};      // building key -> Set of methods its 1836 history must not name
 const craftChecked = [];
 const report = [];
-let minted = 0, groupsMinted = 0;
+let minted = 0, groupsMinted = 0, hiddenCopies = 0;
 // every copied method and group gets a loc line pointing at its vanilla source — the copies shipped WITHOUT one for
 // every run since ab1 (700–1,000 `missing loc key` lines a run, raw keys in the building panel; BUGS_AND_FIXES 2026-09-03)
 const locPairs = [];
@@ -166,6 +166,14 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     // the building's main methods: its own rung, then the rungs merged into it (method_of, §10.91.2)
     const variants = [t, ...(industry.tiers || []).filter(x => x.method_of === bkey)];
     if (variants.length > 1 && wmT < 1) throw new Error(`emit_secondaries: ${bkey} is a craft rung (workforce_mult ${wmT}) and a merge host — the two amendments were never designed together`);
+    // ⭐ ONE NAME, ONE VISIBLE ENTRY (user, 2026-10-05: "My problem is the UI clatter"). A merged building gets one copy of a secondary per
+    //   main method, each scaled to that method and gated to it, so exactly one is valid at a time — but the panel listed BOTH, with the same
+    //   name and icon, the other one greyed. Vanilla's own idiom for variants of one line (pm_steam_trains / pm_steam_trains_principle_transport_3,
+    //   pm_vacuum_canning_principle_3) is `is_hidden_when_unavailable = yes`, so every copy that shares its name with another copy in the group
+    //   carries it, and the dropdown shows only the copy beside the running main method. No number changes.
+    //   ⚠ The field hides on ANY unavailability (MODDING_NOTES): a technology-gated line (cannery, stills, vacuum canning, elastics, precision
+    //   tools) does not appear at all on a merged building until the technology is held, where a plain building shows it greyed. Accepted.
+    const hideCopy = nb => /is_hidden_when_unavailable/.test(nb) ? nb : '\n\tis_hidden_when_unavailable = yes' + nb;
     const exclPms = new Set(t.exclude_secondary_pms || []);
     if ((t.exclude_secondary_pmgs || []).length || exclPms.size) {
       const s = STRIP[bkey] = new Set(exclPms);
@@ -200,6 +208,7 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         let nb = PM[p];
         nb = /unlocking_production_methods/.test(nb) ? nb.replace(/unlocking_production_methods\s*=\s*\{[\s\S]*?\}/, 'unlocking_production_methods = { ' + v.pm_key + ' }')
           : '\n\tunlocking_production_methods = { ' + v.pm_key + ' }' + nb;
+        if (ok.length > 1) { nb = hideCopy(nb); hiddenCopies++; }   // two copies of one name: show only the one beside the running main method
         outPMs.push(nk + ' = {' + nb + '}'); locPairs.push([nk, p]); minted++;
         return nk;
       });
@@ -302,6 +311,7 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         //   and is available only beside that method, so a merged building's secondaries stay in proportion to whichever
         //   main method it runs. A plain building has one variant and mints exactly what it always did, under the same names.
         let mintedHere = 0;
+        const mineIdx = [];   // where this method's copies sit in outPMs: more than one ⇒ each is hidden when unavailable (hideCopy above)
         for (const v of variants) {
           // ⚠⚠ A PM-GATED SECONDARY KEEPS ITS RESTRICTION. Minting a per-tier copy and pointing its
           //   `unlocking_production_methods` at that tier's own method would make it available on EVERY
@@ -394,10 +404,16 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
           (RESOLVED[v.key] ||= {})[nk] = { from: p, ref: ref ? ref.pm : null, ...rg };
           // the 1836 history runs the HOST's own method (convert_history throws on a start block that lands on a merged rung)
           if (v === t) (RENAME[bkey] ||= {})[p] = nk;
+          mineIdx.push(outPMs.length);
           outPMs.push(nk + ' = {' + nb + '}');
           locPairs.push([nk, p]);
           newMembers.push(nk); minted++; mintedHere++;
           report.push({ bkey: v.key, pm: p, Rout: +Rout.toFixed(2), Rin: +Rin.toFixed(2), ref: ref ? ref.pm : '(none)' });
+        }
+        if (mineIdx.length > 1) for (const i of mineIdx) {
+          const at = outPMs[i].indexOf(' = {') + 4;
+          outPMs[i] = outPMs[i].slice(0, at) + hideCopy(outPMs[i].slice(at, -1)) + '}';
+          hiddenCopies += 1;
         }
         // no main method of this building may run it (the vanilla gate, or the era rule): the building does not carry it at all.
         // (It used to keep the vanilla ORIGINAL, which the game then showed at vanilla numbers — see the gate note above.)
@@ -531,7 +547,8 @@ if (minted) {
 }
 console.log('secondaries: ' + minted + ' per-tier method(s) in ' + groupsMinted + ' group(s) across ' +
   new Set(report.map(r => r.bkey)).size + ' building(s)' +
-  (craftChecked.length ? `; ${craftChecked.length} on fractional-unit (craft) rungs with employment × workforce_mult` : ''));
+  (craftChecked.length ? `; ${craftChecked.length} on fractional-unit (craft) rungs with employment × workforce_mult` : '') +
+  (hiddenCopies ? `; ${hiddenCopies} per-main-method copies on merged buildings hidden when unavailable` : ''));
 // what a building no longer carries (or carries beside one of its main methods only): the vanilla gate, or the compatibility table
 if (DROPPED.length) {
   console.log('  not carried, or mandated (' + DROPPED.length + '):');

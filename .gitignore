@@ -325,3 +325,6 @@ tools/testbed/no_new_runs_at.log
 # textile's merged host at its own cost (user-ruled 2026-10-03: "Go with the host cost, run a 30-year probe"; F211 §4)
 !config/mod_config.e1a12-ai1135-tex1140-artmerge.json
 !config/tech_tree_options.e1a12-ai1135-tex1140-artmerge.json
+# the extra research entries (user-ruled 2026-10-05: "Build it and go with n=16"; ROADMAP step 2) on the book above
+!config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json
+!config/tech_tree_options.e1a12-ai1135-tex1140-jex-artmerge.json

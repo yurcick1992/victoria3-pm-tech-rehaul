@@ -498,6 +498,10 @@ or on a whole group (*"Whether PMs in this group should be visible at all if the
 `common/production_method_groups/production_method_groups.md`). ⚠ It hides on ANY unavailability, technology included, so it would also hide
 a method the player is meant to see coming. ⇒ This mod does not use it for this: a building's group simply does not list a method it can
 never run (`emit_secondaries.mjs`), and `tools/lint_pm_combos.mjs` fails the build on one.
+⭐ It IS used for one case since 2026-10-05: a MERGED building's per-main-method copies of one secondary (same name, same icon, each gated to
+its own main method — `emit_secondaries.mjs`). Exactly one copy can run at a time, and hiding the others is vanilla's own pattern for variants
+of one line (`pm_steam_trains` / `pm_steam_trains_principle_transport_3`). The accepted cost is the caveat above: a technology-gated line is
+invisible on those buildings until researched. ⚠ Not yet seen in a building panel; the next playtest of a merge book is the check.
 
 ## ⭐⭐ `create_building` IS GATED ON THE STATE OWNER'S TECHNOLOGY — AND FAILS SILENTLY
 

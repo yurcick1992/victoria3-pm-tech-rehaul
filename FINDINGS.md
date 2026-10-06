@@ -17613,6 +17613,11 @@ and 129 mod runs, Qing leads at 1922 in 3 of 16 vanilla seeds and 10 of 129 mod 
 
 **Wall clock: VOID** — external machine load 1865-1895 (play and the harvester's melts slowed ~3x and recovered at the same wall-clock
 moment on a world the size of the comparison runs).
+⚠⚠ **CORRECTED 2026-10-06: the melt evidence was circular and the VOID is unsupported.** The "melt time" was a summary's file time minus
+its save's archive stamp, and in watch mode the harvester waits for the NEXT save before summarising one, so that gap is the game's own
+wall time per in-game year. The run's own harvest.log puts the real melts at ~4.6 s a save over the slow stretch (21:00–22:00, in-game
+1878–1892) against ~10 s around it, i.e. the machine was not slower. RULED the same day: this wall clock COUNTS (a slowdown stays in
+the record unless a machine-wide one is shown); read factorised it is a slowdown episode 1866–1896, peak 3.15×, +58 min.
 
 **What it does NOT say.** Anything beyond direction at n=1; whether the loss difference to the stage run is the redesign or the seed; the
 design's performance cost.
@@ -21434,3 +21439,243 @@ which is the whole shape of F216's per-decade ratios and of its ×1.05 total.
 - **The confirming test is a same-night ablation**, proposed and not run: the tex1140 book, the same without dams, without research events, without the
   trade weights, and vanilla, alternating, 3 × 1836→1846 each (~3 h).
 - Row P's grade (the TOTAL, ×1.050, inside the 10% budget) is unchanged by any of this.
+
+## F218 — WHAT THE MID-GAME SLOWDOWN EPISODES ARE: MOSTLY A LONE SHIP STUCK ON A REPAIR VOYAGE, WHOSE TRAVEL PATH THE ENGINE KEEPS APPENDING TO FOR DECADES (VANILLA BEHAVIOUR, AS COMMON IN VANILLA AS IN THE MOD); THE REST ARE LONG GREAT-POWER WARS, AND ONE RETIRED DAM BOOK'S 28-DAY PULSE (2026-10-06; no new runs — every century run with a tick log re-read, 288 kept endpoint saves and one kept mid-episode save scanned)
+
+**Asked** (user, 2026-10-06): *"Analyse the past runs and try connecting the slowdown periods with in-game events and situations."*
+
+**The corpus.** Every run that reached 1936.1.1 with a usable `run.log` and a mirrored `dedicated_server.log`: **291 runs** — 31 vanilla
+(yearly saves), 242 mod (yearly), 16 mod (quarterly), 2 mod (five-yearly), game versions 1.13.9–1.13.11, sessions 2026-07-31 → 2026-10-05
+(the running batch `20261005_154629`'s runs 1–6 included).
+
+### 1. The instrument: the game's own per-tick log, split into the four sub-ticks of a day
+
+`dedicated_server.log` carries `Processing Tick: Y.M.D[.H]` at the start of every quarter-day tick (hours 0 / 6 / 12 / 18) with a 1-second
+wall stamp, and the observer mirrors it. The gap to the next tick is that tick's cost; summed per year or per few days it is exact. Read with
+**`tools/testbed/ledger/tick_profile.mjs`** (new). On a normal run hour 0 carries ~60% of the time (the 1880 medians, mod yearly: 49 / 12 / 10 / 11 s
+per in-game year for hours 0 / 6 / 12 / 18; vanilla 49 / 12 / 10 / 10).
+
+### 2. The episodes and their four signatures
+
+An episode = a run's 5-year pace ≥ 1.4 × its expected pace for ≥ 2 consecutive periods (expected = its arm's median where the arm has ≥ 3
+runs — arm = config sha + save cadence + game version — else its cadence class's median curve scaled by the run's own level). **23 episodes in
+22 runs, +461 min in total; 2 of 31 vanilla runs, 20 of 260 mod runs.** Where the extra time lands (extra over the 5 years before onset, shares
+of hours 0 / 6 / 12 / 18):
+
+| signature | episodes | minutes | vanilla | examples |
+|---|---|---|---|---|
+| hour 0 + hour 6, ~50/50 | 8 | 169 | 0 | `20261005_154629` run 3 1891–1906 (+56 min, 49/48/2/1), canon-je24 run 18 (+22), ab3 run 2 (+20), tier4 aiv26-n2b run 1 (+18, 50/40/6/4) |
+| hour 0 + hour 12 | 6 | 136 | 0 | b-gradient b152 run 1 1861–1891 (+68, 52/1/44/2), c195-eager run 1 (+19, 59/−5/50/−4) |
+| hour 0 + hour 18 | 1 | 13 | 1 | `20260920_225047` run 2 (vanilla) 1901–1911 (49/3/2/46) |
+| hour 0 alone | 2 | 24 | 1 | canon-je24-n60 run 4 (76/11/9/3), vanilla baseline run 11 1866–1876 (64/12/16/8) |
+| all four sub-ticks | 4 | 51 | 0 | era6 1916–1926 (36/25/20/19), canon-n7 run 1, flat-a19 run 2, `20261005_154629` run 3 1911–1921 |
+| a few multi-second ticks on a 28-day cycle | 1 | 60 | 0 | canon-dams-v2-n1 1866–1896 (94/1/2/3) |
+| mixed (≈ hour 0 + 6) | 1 | 8 | 0 | canon-c19-in12-r2 run 1 1851–1861 |
+
+The first four signatures share one SHAPE: hour 0 and one other sub-tick rise by about the same amount, steadily for 5–30 years, and then
+**both fall back to normal within days** (run 3: 615 s per in-game year in 1903, 126 in 1904, the drop on **1903-11-22**; b152 run 1: hour 12
+from 29 to 129 s a year 1862→1889, back to 8 in 1891; the vanilla hour-18 case: 27 → 94, ending 1912-09/10).
+
+### 3. The mechanism of the single-sub-tick episodes: a fleet recalled for repairs that never arrives
+
+Run 3 of `20261005_154629` had a save copied BY HAND from the middle of its episode (`diag_saves/0066_…`, in-game 1902.1.1, at ~600 s per
+in-game year). Its `military_formation_manager` is **181,863 lines against 78,791–118,907** in the 1936 endpoints of the same batch, and two
+records hold 116k of them: **two US fleets, each ONE torpedo-boat flotilla, both `is_recalled_for_repairs = yes`, both heading for New York
+(state 2, the US market capital)**, created 1882.2.27 and 1887.5.24. Their travel paths hold **4,559 and 4,349 moves** that shuttle between the
+same two or three nodes (a port node and the sea nodes off it: 3152 ↔ 3418 ↔ 1186 …); `current_move` sits at the END of the list (4,553 /
+4,343) and `total_distance_progress` reads **482,117 and 461,879**: the ships really have been sailing back and forth for ~15–20 years, and the
+engine APPENDS each new leg to the path instead of replacing it (~250–300 moves a year). The next-largest formation in the save is 523 lines.
+⇒ The tick cost grows with that path and vanishes when it is reset: in the run's 1936 save no formation is over 2,226 lines.
+**Confirmed a second time, on a different country and book:** tier4-flatcost-aiv26-n2b run 1, whose hour-6 episode was still GROWING at the end,
+holds at 1936 **one Siamese torpedo-boat flotilla, recalled for repairs to Bangkok since 1920.12.15, 1,370 moves, 482,346 sailed** — and
+nothing else over 940 lines.
+
+**It is vanilla's behaviour, not the mod's** (`tools/testbed/ledger/fleet_loops.mjs`, new, over every kept endpoint):
+
+| | endpoint saves | carrying a recalled fleet with ≥ 200 path moves | ≥ 1,000 moves |
+|---|---|---|---|
+| vanilla | 30 | **3 (10%)** — AGJ 363 · NOR 1,343 + 1,033 · SAR 245 | 1 |
+| mod | 258 | **14 (5.4%)** — SIA 1,374 · BRZ 2,014 · GRE 1,415 · SIC 3 × ~1,115 · USA 797 · GBR 645 · SCA 612 + 424 · SAR 611 · CAT 478 · D00 443 · DEN 268 / 238 · FIN 231 · SPA 200 | 4 |
+
+**Every one of the 288 saves' formations with ≥ 200 path moves is a fleet recalled for repairs; not one army.** By sub-tick spans (≥ 3 years at
+≥ 30 s a year of excess in hour 6, 12 or 18): vanilla 2 of 31 runs, mod 23 of 260 — the same order. One vanilla campaign read yearly 1838–1920
+(`saves_debut`, 85 saves) never carried a loop. The fleets are lone ships (torpedo boats, cruisers; one Brazilian loop of six damaged cruisers),
+and their repair targets are ordinary coastal home states (New York, Bangkok, Macedonia, Paraíba, Piedmont) — except vanilla run 11's two
+Norwegian cruisers, recalled to **state 202, which no longer exists** in that save (`202=none`).
+**The cost tracks the distance sailed, roughly quadratically, not the move count:** the two US loops (~944k sailed between them) cost ~+255 s a
+year in hour 6 and as much in hour 0; Siam's (482k) ~+90–105; the cheap ones — Brazil 121k, Greece 111k, Sicily 3 × 121k, Norway 101k + 78k —
+show nothing measurable (a quadratic fit predicts < 10 s a year for each). A loop is harmless for its first ~5–10 years and costs only if it
+survives 15+.
+**The sub-tick bucket** (an inference): the loops' owners USA (country id 9) and Siam (id 165) both have id mod 4 = 1 and both cost hour 6.
+The hour-12, hour-18 and hour-0-only episodes have the same shape and are PRESUMED the same mechanism in other buckets (Greece, id 88 → bucket
+0, shows only a mild hour-0 rise). **No save from inside an hour-12 / hour-18 episode exists**, so this part is unconfirmed.
+⚠ **CORRECTED in §8 (the same day, a second session):** the bucket → hour map is NOT hour = 6 × (id mod 4). Every save scanned since fits
+**id ≡ 1 → hour 6, ≡ 0 → hour 12, ≡ 2 → hour 0 only, ≡ 3 → hour 18 (presumed)** — a Bulgarian loop (≡ 0) inside an hour-12 episode, three
+Sicilian loops (≡ 0) and Greece's (≡ 0) under hour-12 leads; Portugal (≡ 2) with an hour-0-only rise.
+**What starts and ends a loop is NOT in our event log**: the USA led no logged war or play after 1855 in run 3, and nothing US-specific was logged in
+the week both loops reset at once (1903-11-22) — no peace, law change, technology or capitulation. The reset is engine-internal (the fleet
+reaching repair, a merge or a disband) as far as our instruments can see.
+
+### 4. The all-sub-tick episodes are long great-power wars
+
+Wars rebuilt from `events.tsv` (each PEACE pair matched to the latest earlier DIPPLAY between the same two war leaders; crude — a few spans pair
+with a decades-old play). Over 1880–1935, a run-year's excess in the three sub-ticks other than hour 0 (the MINIMUM of the three, against the
+class median) is ≥ 15 s in **0.2% of run-years with no ≥ 2-year war between two majors on, 0.4% with one, 1.5% with two or more**; and **all 22
+run-years at ≥ 25 s fall inside such a war** (about half of all run-years have one on). Two to the day:
+- `20261003_171038` run 2 (the latest book): all four sub-ticks rise from 1926 (1930: 155 / 117 / 111 / 100 s a year) — **Britain vs Spain, play
+  1925-09-07, war 1926-02-17, PEACE 1930-10-11** — and the 5-day series drops in the bin starting 1930-10-11 (6–7 s → 1–3).
+- Vanilla baseline run 11: all four rise 1927–1930 (143 / 73 / 76 / 97) and fade through Jan–Feb 1931 into the **Russia–Spain peace of
+  1931-02-15** (Britain–USA 1927→1930 also on).
+These are shorter (2–5 years) and milder than the long fleet loops, so the 5-year episode test mostly misses them: of its 4 all-sub-tick
+episodes, 3 have a long major war on (era6 run 1 — Britain–Russia 1915→1920, Britain–Austria 1919→1924; flat-a19 run 2 — Britain–France
+1913→1918, Britain–USA 1915→1919; `20261005_154629` run 3 1911–1921 — Russia–Sweden 1916→1919) and canon-n7 run 1 1926–1936 has none found.
+
+### 5. canon-dams-v2-n1: a 28-day pulse, unexplained
+
+The +60 min episode of `20260926_195231` (the dam redesign with the scripted driver, overlord financing and owner-queue starts, all removed on
+2026-09-28) is none of the above: hour 0 carries 94% of the extra, as **pairs of multi-second ticks 3–4 days apart every 28 days** (1890: 1.4/1.8,
+2.2/2.5, 3.2/3.6, 3.31/4.3 …), each growing from ~2 s (1866) to ~10–11 s (1893), the last on **1893-11-13**, then nothing. Nothing is logged in
+those seconds; no PMR_DAM line marks the end. **No other run of the 291 has a recurring multi-second tick** (≥ 8 ticks of ≥ 3 s a year in ≥ 3
+years). One run of a retired book — recorded, not pursued.
+
+### 6. The monitored case
+
+Run 6 of `20261005_154629` (the one run with `machine_monitor.ps1` beside it, BACKLOG G): hour 6 climbs 24 → 57 s a year 1889–1895 with hour 0
+(55 → 105) and drops in 1897 — the fleet-loop shape — and the monitor scored the same stretch "GAME WORK ×1.31" (more game CPU per in-game year,
+canary and clock normal). The Windows working-set cut at its onset is a bystander, as already recorded.
+
+### What it means for the wall clock
+
+- These are GAME-STATE slowdowns, so under the 2026-10-06 ruling they COUNT in the wall clock — and the fleet loops are a base-game defect that
+  vanilla suffers at the same rate, so they add VARIANCE to a book's mean, not a mod cost. With ~1 run in 10 carrying a costly loop or a long war,
+  a 5-run batch's mean can move by ~10 min on one seed: read the factorised branches (`slow_episodes.mjs`), not the mean.
+- **The mod cannot see a fleet's path from script**, so no cheap guard exists; a loop is diagnosable after the fact with `fleet_loops.mjs` on a
+  kept save and `tick_profile.mjs` on the run's log.
+
+### What it does NOT say
+
+- **Why the engine appends instead of replacing**, or what lets a lone recalled ship circle instead of docking — the New York target had a naval
+  base (level 1) and a port; only Norway's target was missing.
+- **That hour-12 / hour-18 / hour-0-only episodes are fleet loops.** Same shape, no save; the bucket-by-country-id rule rests on two countries.
+- **What starts a loop.** No war, revolt, default or bankruptcy in our event log lines up with an onset; the event log does not record naval damage.
+- **A cost model.** "Roughly quadratic in distance sailed" fits six loops at three cost levels; it is a description, not a law.
+- **The war link's mechanism** (battles, fronts, supply, AI war planning) — only that the load spreads over every sub-tick and ends at the peace.
+- The scans (≈ 290 melts, ~45 min, one core) ran beside the live batch's run 7 between ~13:15 and ~14:05 local; its `machine_load.tsv` may
+  show them as other load.
+
+### 7. Can the disqualification test fire on something that is NOT a fleet loop? (added later on 2026-10-06 by a second session; no new runs)
+
+**Asked** (user): *"Check comprehensively whether our latest fleet-loop finder can give false positives on other types of slowdowns."* The test is
+`fleet_loop_runs.mjs`: one of hours 6 / 12 / 18 at ≥ 25 s a year above BOTH of the other two, the same sub-tick, ≥ 3 consecutive years. Read
+over every mirrored `dedicated_server.log` in `sessions/` (732 logs; 293 complete centuries, the calibration set plus jex runs 7 and 8),
+with the tool's own parser and an exact copy of its per-year metric — it reproduces the calibration: **250 never above the line, 22 isolated
+years, 21 fire** (1 of 31 vanilla).
+
+**Verdict: no false positive in the corpus, and no other KNOWN slowdown can fire it — except a sustained machine-wide slowdown, which can, rarely.**
+
+| candidate | can it fire the test? | evidence |
+|---|---|---|
+| **Long wars** | **No.** War load does not land on the belligerents' sub-tick | 1,763 major-vs-major wars ≥ 1.5 y (crude match: WARSTART target + the latest play's initiator, ended at either leader's PEACE). Change of each sub-tick's lead (it minus the mean of the other two), war years vs the 5 years before: **wars led by hour-6 countries 0.0 s (n 1,081); led by hour-18 countries −0.4 s on hour 18 (n 328); hour-6 v hour-18 0.0 (n 339)**. The share with a ≥ 15-s lead shift is 0.3–1.2% in every group alike = coincident loops. The heaviest war year of the corpus (`20261003_171038` run 2, 1930, Britain v Spain — both hour-6 countries) reads 117 / 111 / 100. |
+| **Autosaves, any cadence** | **No.** The write lands on hour 0 of the save day | Per-tick means 1900+, 12 runs per cadence: quarterly saves — quarter-start hour 0 **1.94 s** against 0.34 s on other month starts; hours 6/12/18 **0.04–0.06 s on save days and other days alike**; yearly — Jan 1 hour 0 2.04 s, hours 6/12/18 unchanged. |
+| **Monthly / scripted pulses (mod content)** | **No** (they land on hour 0) | The dam pulse put 94% of its cost in hour 0 (§5); the jex book's 204 research entries add no lead to any sub-tick (decade medians h6/h12/h18 1930s: jex 26/20/23, its base tex1140 24/21/20, vanilla n=16 28/21/23). |
+| **Single stalls / hiccups** | Only if one of ≥ 25 s hit the SAME sub-tick in 3 consecutive years; **never observed** | Ticks ≥ 25 s over all 732 logs: hour 0 three, hours 6/12/18 **two** (one 1837 probe run, two different sub-ticks). Hangs ≥ 600 s are dropped by the parser. |
+| **Log artifacts** | **No** | Synthetic logs through `parseTicks`: a 30-day chunk re-copied ×27 across midnight (L28), a crash-resume with a 300-s reload and a 5-month replay, DST ±1 h and a 700-s hang leave the sub-tick sums unchanged and never fire. |
+| **A bigger world / bigger hour-6 economies** | **No**, within the range measured | The 15 runs with the heaviest 1925–1935 sub-ticks (32–51 s a year each, 1.6–2.5× the median of 20) show a largest lead of 10–23 s unless they carry a loop. The hour-6 lead correlates with world size (r 0.32 with the hour-6 countries' GDP, **0.08 with their share of it**). |
+| **A sustained machine-wide slowdown** | **Yes, rarely** — it scales every sub-tick, so it scales the existing lead | Every non-firing run (272) slowed ×k over a 6-year window, placed every 5 years (4,896 placements): **×1.5 → 12 fires (0.25%), ×2 → 20 (0.4%), ×3 → 42 (0.9%), ×5 → 198 (4%)**. Slowed over the WHOLE run: ×1.25 → 5 runs, **×1.5 → 10 (3.7%)**, ×2 → 18, ×3 → 44. The extra fires are almost all the corpus's near-miss loop shapes (cheap two-year loops: `20260903_094941` run 2, vanilla n=16 run 16, `20260914_204329` run 1 …) pushed over 25 s; pure baseline lead needs ≳ ×2.5–3 sustained for 3 years. |
+
+**Why hour 6 leads, and why 13 of the 21 fires are hour 6.** The sub-tick follows the owner's save id mod 4 — ⚠ with the map CORRECTED in §8
+(this paragraph first carried F218's hour = 6 × (id mod 4), which is wrong for ≡ 0 and ≡ 2). From the vanilla 1836.2.1 save,
+**id ≡ 1 → hour 6: GBR 1, PRU 5 (→ NGF → GER keep it), USA 9, JAP 17, BEL 25, NET 29, SPA 37, BRZ, MEX, SIA 165**; ≡ 0 → hour 12: FRA 4,
+AUS 8, DEN 20, SIC 64, HUN 72, GRE 88, CHI 156; ≡ 3 → hour 18 (presumed): RUS 3, SWE 23, SAR 63, TUR 95, KOR; ≡ 2 → **hour 0 only, invisible
+to the test**: NOR 22, POR 30, TUS, BIC, BUR, CHL. GBR 1, USA 9, GER 5, RUS 3, SPA 37 and SWE 23 keep their ids to 1936 in two endpoint
+saves; a re-created country takes a new slot (France was ≡ 0 in one 1936 save and ≡ 2 in another). So every shortlist member except France
+(and UNL, which takes a new slot when it forms) loads hour 6, and hour 6 runs heavier than 12/18 late in every arm (1930s decade medians vanilla 25/20/21, mod 22/18/19; hour 6 the largest in
+64% of 1930s years; its ordinary-year lead p99 16–18 s) — no difference between mod and vanilla, so the test is not tilted against the mod.
+
+**What the 21 fires look like** (all of them): one sub-tick ramps for 3–25 years; **the other two stay flat** (×0.72–1.34 of their 5 years
+before the streak); then it falls **together with hour 0 inside one 30-day bin**; no major-power peace lines up beyond chance (an hour-6
+power is a war leader in most run-years). That is F218's fleet-loop shape in every case — but only the two hour-6 cases are save-confirmed;
+**the 7 hour-12 fires and the 1 hour-18 fire are fleet loops by shape alone**, and the test would label any other per-country runaway with
+this shape the same way. (⚠ Superseded by §8: with the corrected map, 3 of the 21 have a save inside them showing such a loop, the
+hour-12 case included.)
+
+**Two properties of the rule, not false positives but worth knowing:**
+- **The edge is crowded, so borderline verdicts move with machine speed.** Threshold 20 → 26 runs fire, 22.5 → 23, 25 → 21, 27.5 → 18, 30 → 17;
+  a minimum streak of 2 years → 28, of 4 years → 17. A 10% faster machine un-fires 3 of the 21 (`20260926_002930` run 1, `20260914_143137` run 1, `20260829_212316` run 1);
+  a 25% slower one fires 5 more. Every run that flips is a real but cheap loop (~1–2 min over the century) — and disqualifies a whole run
+  exactly as a 56-minute one does, while a costlier two-year loop (`20260906_001032` run 6, +44/+47 s) does not.
+- **A per-sub-tick yearly sum is NOT exact.** Only the sum over all four sub-ticks telescopes; one sub-tick's sum adds every 4th gap, each
+  ±1 s of stamp quantization, so it carries **~±4–5 s (1σ) per year** at late-game levels (synthetic, equal true costs: 12–32 s around 18–22).
+  The 25-s line sits ~5σ above it, so this does not fire the test; it does make single-sub-tick bins of a few days mostly noise.
+
+**Natural experiment:** run 7 of `20261005_154629` ran beside F218's ~290 melts (`machine_load.tsv`: LOAD 1901–1921, canary ×1.12–1.14,
+other-load cores up to 9) — no lead above 11 s, no fire.
+
+**Proposed hardening (NOT applied — it amends a ruled test, so it is the user's call):** (1) where a run has a `machine_load.tsv`, require
+the canary and the clock to be normal over the streak before disqualifying (jex run 6's streak: canary 1.00, driver GAME WORK); (2) a
+scale-free condition — the leading sub-tick ≥ 1.75 × the larger of the other two in every streak year. It changes **no** current verdict
+(firing years' ratio min 1.87, median 4.28; ordinary years' p99 2.13) and cuts the whole-run ×3 stress from 44 extra fires to 16 and ×5 from
+151 to 19; what it cannot remove is a cheap loop amplified by a slow machine, which (1) catches.
+
+**What it does NOT say:** that the hour-12/18 fires are fleets (no save); that no unknown per-country runaway exists; how a real machine
+slowdown splits over the sub-ticks (modelled as uniform — no large one has been monitored); and it holds for this machine and game 1.13.9–1.13.11
+only: the 25-s line is in wall seconds and the sub-tick assignments are engine scheduling (ON_GAME_UPDATE.md, Testbed couplings).
+
+### 8. Is a flagged episode actually a fleet loop, and are loops common and mostly harmless? (added later on 2026-10-06; no new runs — all 593 kept saves scanned)
+
+**Asked** (user, after §7): *"whether we now check that when a slowdown happens on specific ticks, it's fleet-loop related"*, and *"whether fleet
+loops are in fact happen much more often, and usually without performance indicators, and the decision to pin the slowdowns on them could have
+been premature"*.
+
+**1. Nothing checks it.** `fleet_loop_runs.mjs` reads only the tick log, and the yearly save summaries carry no military formations, so a
+flagged run is called a fleet loop by its SHAPE. The only evidence is a save from inside the episode, and the harvester keeps one save per run
+(the 1936 endpoint) plus whatever a crash quarantined or a hand copied. Every `.v3` under `sessions/` (593, one unreadable: 291 endpoints at 1936.1.1, 301 others
+— crash-quarantined, resume sets, `saves_keep`, `diag_saves`, early-stopped runs) was read with `fleet_loops.mjs --min 50`, and each joined to its
+run's sub-ticks over the 365 days before the save.
+
+**2. How common loops are** (a recalled fleet with ≥ 200 path moves): **5 of 301 non-endpoint saves (1.7%), but 227 of those are dated before
+1860 (short probes, early crashes) — of the 55 dated 1880 or later, 4 (7%) — and 17 of 291 endpoints (5.8%)**. In the late game a loop is present
+at a random moment in roughly one run in 15: common enough to explain the episodes, not a background present in most runs.
+
+**3. Cost follows distance sailed, and lands where the owner's id says — with the map CORRECTED.** Every loop ≥ 100k sailed found in a save, with
+its mapped sub-tick's lead over the larger other (the rule's d) over the year before the save:
+
+| loop(s) | owner id mod 4 | sailed (each) | mapped hour | lead |
+|---|---|---|---|---|
+| 2 × USA (jex run 3, 1902 — inside the flagged episode) | 1 | 482k, 462k | 6 | **+210 s** |
+| SIA (tier4-flatcost run 1, 1936 — inside the flagged episode) | 1 | 482k | 6 | **+110 s** |
+| 3 × USA (vanilla extra run 2, 1910 — a near miss, 19/19/29 s) | 1 | 149k | 6 | +29 s |
+| BUL (canon-c16 run 1, 1900 — inside the flagged hour-12 episode) | 0 | 204k | **12** | **+21 s** |
+| 3 × SIC (canon-c195-eager run 1, 1936) | 0 | 121k | 12 | +10 s |
+| GRE (je24-a22 run 10, 1936) | 0 | 111k | 12 | +9 s |
+| BRZ (je24 run 10, 1936) | 1 | 121k | 6 | +6 s |
+| DEI (c205-eager-tb run 1, 1920; only 500 path moves) | 3 | 157k | 18 | −2 s |
+| POR (dams-family run 4, 1876), NOR (vanilla run 11, 1936) | 2 | 163k, 101k | **0** | no 6/12/18 lead; POR's run shows hour 0 alone up ~+40 s until mid-1878 |
+
+Under F218's map (hour = 6 × (id mod 4)) Bulgaria, Sicily and Greece would have to cost hour 0 and Portugal hour 12; the data say the opposite,
+and the corrected map — **≡ 1 → hour 6, ≡ 0 → hour 12, ≡ 2 → hour 0 only, ≡ 3 → hour 18 (no costly ≡ 3 loop seen yet)** — fits every case.
+The dose-response is steep: ≲ 125k sailed costs 0–10 s a year (inside the ±5-s noise of one sub-tick), ~150–200k costs 20–30 s, ~470k costs
+100–200 s. So **yes, most loops alive at any moment are harmless** — they are young; a loop costs only after ~150k (5–6 years of sailing at the
+~24k a year the US loops logged).
+
+**4. The converse: a sub-tick lead without a loop.** Of the 556 saves with a tick window, 13 save-years have a 6/12/18 lead ≥ 15 s: 4 have a loop
+mapped to that sub-tick (the three ≥ 25-s ones all do), **9 have none, all at 15–22 s** — eight of them hour 6, i.e. the ordinary hour-6 lead's upper
+tail (§7: p99 16–18), and one hour 12 at 21 s (`20260926_002930` run 1, 1935). **No save shows a lead of 25 s or more without a matching loop**
+— but only three save-years reach 25 s at all.
+
+**5. What it means for the attribution.** Of the 21 disqualified runs, **3 are save-confirmed** (jex run 3 → USA; tier4-flatcost run 1 → Siam;
+canon-c16 run 1 → Bulgaria, the first hour-12 confirmation, which F218's map would have read as "no loop"). One more is consistent: canon-c195-eager
+run 1's hour-12 episode (1925–1931, peak +130 s) dropped in September 1931 while its three Sicilian loops lived on to 1936 at 1,118 moves each —
+four years' worth at ~260 a year — which fits **a path reset ending an episode and the same fleet starting the next one** (its hour-12 lead was
+back to 19 s by 1934). Jex run 3 shows the same saw-tooth (a second hour-6 episode 1914–1917 after the 1903 reset). The other 17 are by shape. So
+pinning the costly single-sub-tick episodes on loops survives every check that can be made — the sub-tick matches the owner, the cost scales with
+distance, nothing ≥ 25 s appears without a loop — but the check covers few episodes, and the hour-0-only episodes F218 left unexplained are now
+expected from ≡ 2 owners (Norway, Portugal, Tuscany …).
+
+**6. The proper check (PROPOSED, not built — after the running batch, since the harvester uses the summary writer):** save summary v16 records
+every formation with ≥ 50 path moves (owner tag, id, recalled, moves, distance, creation date); `fleet_loop_runs.mjs` then requires, during the
+streak, a recalled loop whose owner maps to the flagged sub-tick and labels the rest **unverified** (they stay in the wall clock, by the ruling).
+
+**What it does NOT say:** that ≡ 3 → hour 18 (presumed; no costly ≡ 3 loop in any save); why the engine stages countries this way; whether a path
+reset also resets the distance counter (the distance-per-move ratios disagree: USA, SIC ~106, BUL 51, POR 239); and anything about the 17
+unconfirmed runs beyond their shape.

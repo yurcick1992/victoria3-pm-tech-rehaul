@@ -13,6 +13,48 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-10-06 — "the save melts slowed with the game" was the game's own slowdown measured twice; two wall clocks were voided on it
+
+**Symptom.** A run slows 3–4× mid-century with no bigger world. Its save summaries appear late after their saves in step with the game
+(run 3 of 20261005_154629: 110 s → 188 / 323 / 571 s and back; canon-dams-v2-n1 on 2026-09-26: 128 → 351 s). Read as "a process OUTSIDE the
+game slowed too", it met the 2026-09-26 ruling (game + melt slowing together ⇒ external load ⇒ discard the wall clock), and both wall clocks
+were set aside: F170's VOID, and run 3 in the 3-run report of 2026-10-06.
+
+**Root cause.** The "melt time" was a summary's file time minus its save's archive stamp. In `-Watch` mode `harvest_saves.ps1` skips the
+NEWEST save (`Select-Object -SkipLast 1`: the game may still be writing it), so each save is summarised only once the next autosave arrives.
+The gap is therefore one autosave interval plus the melt — the game's own wall time per in-game year. The kept 1902 save of run 3's slow
+stretch summarises in **11 s** today; the harvester's own queue log (lines with a melt "in flight", ~16 s apart) puts the melts at the time at
+**6–13 s a save straight through the slowdown**, and canon-dams-v2-n1's at **~4.6 s** over its slow stretch. The machine was not slower in
+either case; the game was (run 3 used ~3.9 cores in the slow stretch against ~7 normally).
+
+**Fix.** The records were corrected (F170, that session's VERDICT.md and SESSION_VERDICTS row, CLAUDE.md, the memory note); whether the two
+wall clocks re-enter the performance record is left to the user. `tools/testbed/machine_monitor.ps1` + `ledger/machine_load.mjs` now
+measure the machine directly every 20 s (the game's CPU seconds per in-game year, other load, P/E-core load, a fixed-work canary).
+
+**Prevent.** A file-time gap measures whatever the pipeline WAITS for, not the work. Before reading a duration off timestamps, find what sits
+between them; a real per-item duration needs a start and an end stamp from the worker itself. And a confirming signal that comes out of the
+thing being explained (here, the game's autosave cadence) is no confirmation.
+
+## 2026-10-05 — a merged building listed every secondary twice, under one name and one icon
+
+**Symptom (the user, on the merge books).** On the three merged hosts — Sweeteners + Baking Powder, Sewing Machines + Electric Sewing Machines,
+Mechanized Workshops + Spray Finishing — each rescalable secondary appeared twice in its dropdown: two Canneries, two Pot Stills, two Craftsman
+Sewings, two Luxury Furnitures …, same name, same icon, different numbers, one of them greyed. 10 lines, 20 entries, in 4 groups.
+
+**Root cause.** By design (§10.91.2): `emit_secondaries.mjs` mints a copy per MAIN METHOD of a merged building, scaled to that method and gated to it,
+so exactly one copy is valid at a time. The loc of each copy is its vanilla source's (`$pm_cannery$`), and the game lists a gated method it cannot
+currently switch to, greyed (MODDING_NOTES) — so the invalid twin showed beside the valid one.
+
+**Fix.** Every copy that shares its name with another copy in its group carries `is_hidden_when_unavailable = yes` — vanilla's own idiom for
+variants of one line (`pm_steam_trains` / `pm_steam_trains_principle_transport_3`). The panel shows only the copy beside the running main method;
+no number moved (the playtest book's build differs from the deployed one in 18 such lines — the two principle-3 vacuum-canning copies already
+carried it from vanilla — and the canon's build is unchanged). ⚠ The field hides on any unavailability: a technology-gated line does not appear
+on a merged building until researched. Considered and not taken: one physical copy per line (host-sized weakens the lines beside the merged
+method to ~45% of their ratio; merged-sized and disallowed where negative strips 7 of 10 lines from the host — BALANCE_FRAMEWORK §10.91.2).
+
+**Detect next time.** Two members of one group whose loc resolves to the same vanilla key — the scan in this entry's session read the emitted
+groups file against the secondaries loc file. ⚠ Not yet seen in an actual building panel.
+
 ## 2026-10-05 — a shift+click queued five dam levels past the project's cap, and all five were built
 
 **Symptom.** The user's playtest: queueing a dam with shift+click (the game's queue-five shortcut) put five levels in the queue on a

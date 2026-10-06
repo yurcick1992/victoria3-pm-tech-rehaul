@@ -1,0 +1,45 @@
+{
+  "schedule_version": 1,
+  "label": "jex-n16",
+  "_why": "THE EXTRA RESEARCH ENTRIES, SIXTEEN CENTURIES (user-ruled 2026-10-05: 'Drop the Shift Work JE set. Build it and go with n=16. Report after the first and first 3 runs. What to watch: whether the techs are significantly ahead of previous artmerge and of the canon.'). Book config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json = the latest artmerge book (e1a12-ai1135-tex1140-artmerge, measured n=5 in 20261003_171038) + research_events.extra_entries (25 production technologies outside the tier ladder, each with its calibrated mark, method filter and co-requirement: ROADMAP step 2's table) + research_events.era1_rule_a (lathe, distillation and steelworking keep their entries for the countries that do not start with them). Its build also carries the 2026-10-05 secondaries change (a merged building's per-method copies hidden when unavailable: UI only, no number). A FIXED-n batch: every run plays 1836 -> 1936, no stop watcher.",
+  "_arms": {
+    "jex": "{kind: config, config: config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json} (+ its tree twin, the base book's tree byte for byte). 68 technologies carry research entries (the base: 40)."
+  },
+  "_comparison": "THE CONTROL is the same book without the entries: e1a12-ai1135-tex1140 (20261003_171038, n=5), widened where it helps by the compressed-ladder arm (20261002_120946 n2 + 20261002_235755 n3), which carries the same research entries; the CANON canon-dams-family (20260929_002728, n=6, quarterly summaries) as the incumbent. The per-technology target is the tree's narrative onset (the user's ideal: half the tech majors hold a technology within a decade of its onset, either side). Every comparison is read on the yearly save summaries' technologies_held; the entries' firings on the PMR_JE debug lines (je_tally.mjs).",
+  "_questions": {
+    "Q1 AHEAD?": "Per technology, the year half the tech majors (GBR, FRA, USA, the German state, NET/UNL, BEL) hold it, against the control and the canon; how many of the 25 move earlier, by how much, and whether the move exceeds the seed spread. The same for the technologies DOWNSTREAM of them (spray_finishing behind pneumatic_tools, compression_ignition behind conveyors, telephone and the capacitors behind electrical_generation, aniline and vulcanization behind rubber_mastication).",
+    "Q2 ON TARGET?": "Per technology, |half-of-majors year - onset| <= 10 years: the share of the production tree on target in the control, the canon and this arm; technologies held by 1936 per major.",
+    "Q3 WHO FIRES THEM?": "PMR_JE completions per technology and country (je_tally.mjs): are the entries a leaders' channel or a catch-up channel; did the four ruled marks fire as the calibration said (radio and art silk rarely, watertube boiler for Britain alone)?",
+    "Q4 SIDE EFFECTS": "World GDP and the register against the control (the faster research could move the economy), research spend, and play time (68 entries' script values against 40)."
+  },
+  "_predictions": {
+    "Q1": "Most of the 25 move earlier for the countries that meet the marks, typically by 5-20 years (an entry grants the technology about four years after its clock starts, and the calibration put the second starter near each onset); the pre-1836 ones move little for the leaders (they already hold or research them fast) and more for Russia, China and the Ottomans (canneries ~7 years, fractional distillation 8-16); the downstream technologies follow. Because the marks were read on runs WITHOUT the entries, the chains (conveyors, pneumatic tools, pasteurization) open earlier than the calibration said.",
+    "Q2": "The control's production tree is mostly on or behind target; this arm moves it ahead, so by 1936 the majors hold more of the tree than the onset dates say they should — the state the user wants to reach before nerfing ordinary research.",
+    "Q3": "A leaders' channel for the mid-century industrial technologies, a catch-up channel for the pre-1836 ones; radio and art silk fire in a minority of runs, watertube boiler for Britain alone in most.",
+    "Q4": "World GDP within the control's spread (the entries move research, not recipes); play time up by under 2% (the script values are cheap monthly sums)."
+  },
+  "_stop_rule": "none: a fixed n=16, every run plays to 1936. Only a hard harness failure (crash loop, mod not loaded) stops it.",
+  "_cost": "16 runs x 1836 -> 1936, about 2.5-3.3 h each, about 40-53 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "The autosaves overwrite the player's own autosave slots; the testbed runs its own built mod and does not touch the deployed playtest build.",
+    "Do NOT edit tools/emit_research_events.mjs, tools/make_research_extra_config.mjs, tools/emit_secondaries.mjs or the book while the batch runs: the mod is rebuilt before every run.",
+    "run_schedule.ps1 adds the red-flag feed (market_goods_wide each 1 July) to every run."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "jex": { "kind": "config", "config": "config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" },
+    { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" },
+    { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" },
+    { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }
+  ]
+}

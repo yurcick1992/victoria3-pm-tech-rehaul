@@ -570,6 +570,104 @@ parameter names are unverified (vanilla never calls it) and must be probed with 
 ⚠ Related: `TECH_RANDOM_FACTOR = 1.0` means a 100+ technology production tree scatters the AI more than
 vanilla's 57 does. Our technologies need **authored** `ai_weight`s, not vanilla's near-flat `value = 1`.
 
+### ⭐ COVERAGE AUDIT OF THE PRODUCTION TREE (2026-10-05, user-asked after Radio turned out to have no entry)
+
+The user's test, per production technology: (a) one of our research entries; (b) a vanilla journal entry, not country- or
+region-specific, that grants its progress; (c) first in its chain and held at the start by the overwhelming majority; (d) no
+reasonable in-game precursor to anchor an entry on; (e) none of these — an oversight. Read off the emitted mod (the canon and the
+`e1a12-ai1135-tex1140-artmerge` playtest book share one tree and emit the same 40 technologies' entries), the 1836 starting sets
+(`verify_start_techs`' logic, weighted by `config/measured_1836_professions.json` population) and vanilla's journal entries and events.
+**60 production technologies:**
+
+- **(a) 25:** atmospheric_engine, baking_powder, bessemer_process, chemical_bleaching, crystal_glass, intensive_agriculture,
+  mechanical_tools, mechanized_workshops, nitroglycerin · aniline, dynamite, improved_fertilizer, open_hearth_process ·
+  combustion_engine, electric_arc_process, electric_railway, electrical_capacitors, nitrogen_fixation, plastics, telephone,
+  vulcanization · catalytic_synthesis, compression_ignition, continuous_web_processing, spray_finishing.
+- **(b) 0.** No vanilla journal entry grants a production technology (`je_camera` → `camera_film_pm_events.1` grants film, a SOCIETY
+  technology). Vanilla's monthly RANDOM EVENTS (`production_tech_events`, not journal entries) offer progress on railways,
+  watertube_boiler, shift_work, steel_railway_cars, radio and steam_turbine among the uncovered ones. ⚠ Radio's `.210` can never
+  fire in the mod: it requires `pm_radios` active, and our electrics building runs the per-rung copy `pm_radios_electrics_industry`.
+- **(c) 6 + 1:** enclosure (98% of 1836 population starts with it), manufacturies (97%), shaft_mining (97%), distillation, prospecting,
+  steelworking (94% each; only the unrecognised tiers 5–7 lack them). sericulture is unresearchable by design (`can_research = no`).
+- **(d) 2:** rubber_mastication (unlocks rubber plantations; nothing handles rubber before it — ⚠ RECONSIDERED the same day: Hancock's
+  masticator served the waterproof-cloth trade, and it gates aniline and vulcanization, so the proposal below anchors it on textile) and, borderline, pumpjacks (unlocks oil
+  rigs; the only earlier oil is whale oil — whaling stations would be a stretch; its automatic-irrigation half could anchor on plantations).
+- **(e) 26**, in two groups:
+  1. **A true oversight — the era-1 skip.** `emit_research_events` skips every game-era-1 technology as "granted free at the 1836
+     start", which holds only for tiers 1–2 (59 of 444 countries). **lathe** gates three of OUR rungs (textile, furniture and glass e1)
+     and is held by 28% of the 1836 population: Russia, Spain, Brazil, Mexico, Egypt (tier 3) and the Ottomans, China, Japan, Persia
+     (tier 4) research it with no entry. **cotton_gin** (lathe's prerequisite; cotton-plantation throughput) is held by 41%.
+  2. **Excluded by the 2026-08-30 scope ruling** ("only JEs for techs that unlock a tiered industry tier"; `research_events.scope`
+     absent = `tiers_only`), each with the precursor an entry would anchor on: canneries, fractional_distillation, vacuum_canning,
+     dough_rollers (food industry) · radio (the electrics industry — its telephones) · art_silk (textile) · automatic_bottle_blowers
+     (glass) · watertube_boiler, rotary_valve_engine, electrical_generation (motor industry: engines, dynamos) · conveyors
+     (motor/automotive/tooling/furniture/arms/munition; ⚠ since 2026-10-03 a prerequisite of compression_ignition, i.e. of Mass
+     Production) · shift_work (manufacturing at large; its modifier is the economy-of-scale cap) · railways (mines — vanilla's own
+     event anchors on them — or the motor industry) · steel_railway_cars (railways) · steam_turbine, oil_turbine (power plants) ·
+     reinforced_concrete, pneumatic_tools (the construction sector — both technologies' modifiers are its throughput) · arc_welding
+     (shipyards, construction) · steam_donkey (logging, mines) · threshing_machine, mechanized_farming (farms) · pasteurization (ranches,
+     food) · flash_freezing (fishing). `research_events.scope = 'all'` restores rule D, which anchors each on the building GROUP of
+     what it unlocks — coarser than the list above. Whether to cover them, and on which anchors, is the user's ruling (BACKLOG C).
+
+⭐ **The user's direction (2026-10-05):** restore them where it makes sense narratively, one by one; RADIO on the electrics industry (its
+telephones) and, as a further condition, the country must HOLD **electric_telegraph** for the bar to advance — visibility stays gated on the
+technology's own researchability, as everywhere. ⇒ Machinery this needs: per-technology entries in the config (sources, a mark, `requires`),
+a held-technology condition ANDed into every tick, the era-1 skip lifted for rungs with a predecessor (lathe; it brings distillation and
+steelworking along, seen only by the ~5% of the 1836 population lacking them), and for vacuum canning a new source kind, the levels RUNNING
+a method (optional — vacuum canning also calibrates on the whole food industry).
+
+⭐ **CALIBRATED 2026-10-05 on the user's rules** (*"1) on average, the narrative onset decade for a tech coincides with when the second-fastest
+country has the prerequisites fulfilled and starts the clock; 2) no more than in 10% of playerless runs does any country start the clock more
+than 20 years earlier"*; 3) a late technology that usually has no second country by 1936 is permissible but highlighted; 4) where 1 and 2
+are incompatible, highlighted), then **RE-RULED the same day**: the user set four marks (watertube boiler 30k, bottle blowers 200k, art silk 25k,
+radio 25k); every mark is a WHOLE number of fully staffed levels of what it counts (the counter reads fully staffed levels at base staffing, so a
+level with a mandated automation still counts its base 5,000); **a switchable building counts only its main methods that can narratively lead to
+the technology** (no wooden shipyard advances arc welding); onsets before 1836 are exempt from rule 1, but their marks should make a speed-up
+for Russia, China and the Ottomans possible or likely, not instant; shift work counts every NON-ARTISAN URBAN industry — all e1–e3 rungs,
+the e0 rungs that are not crafts, and shipyards (not infrastructure, rural or non-economic buildings).
+"Starts the clock" = the first yearly summary in which the technology is researchable, every co-requirement is held and a source is at or above
+the mark. Read on the **18 complete century runs of the six artmerge arms** (`20260930_232639` ×3, `20261001_124750` ×2, `20261001_225817` ×3,
+`20261002_120946` ×2, `20261002_235755` ×3, `20261003_171038` ×5), each run with its own book's per-level employment and the summaries'
+levels per method; a run with no second country by 1936 counts as 1937 in the mean. ⚠⚠ **These runs carry none of these entries**: a restored
+entry speeds its own technology and everything downstream of it, so the dependent technologies will open EARLIER than read here. A batch with
+the entries built must re-read the marks. ⭐ **BUILT AND LAUNCHED 2026-10-05** (user: *"Drop the Shift Work JE set. Build it and go with n=16"*): `tools/make_research_extra_config.mjs` holds the table, book `e1a12-ai1135-tex1140-jex-artmerge`, batch `20261005_154629_jex-n16` (16 centuries); BALANCE_FRAMEWORK §10.95 records the rulings. Two marks moved in the build: threshing 95k → 100k (rice farms employ 10,000 a level, the rounding rule), and shift work is gone.
+
+| technology | counts (method filter) | mark (levels) | also requires | 2nd starts | early | note |
+|---|---|---|---|---|---|---|
+| lathe | e0 textile, furniture, glass crafts (3 sources) | 25k (50 craft levels) | — | | | pre-1836: RUS, CHI, TUR start at once at ANY mark that lets them start (their crafts do not grow); it brings lathe ~2 years forward |
+| cotton_gin | cotton plantations | 48k (6) | — | | | pre-1836: TUR at once, ~2 years forward; CHI has no plantations; RUS holds it |
+| canneries | food industry | 100k (20) | — | | | pre-1836: RUS 11/18 (2 at once, median 7 years forward), CHI 5/18 (6), TUR never — its food industry is too small at any mark that is not instant for Russia |
+| fractional_distillation | food industry | 10k (2) | — | | | pre-1836: CHI 14/18 (8 years forward), TUR 9/18 (16), never at once; RUS holds it |
+| railways | coal + iron mines on steam pumps | 30k (6) | — | | | pre-1836: no real speed-up is possible — all three research it 2–5 years after it opens, inside the entry's own four years |
+| rubber_mastication | textile | 100k (20) | — | | | pre-1836: RUS 12/18 (10 at once, 7 forward), TUR 4/18, CHI at once (its craft textile is huge below ~300k) |
+| rotary_valve_engine | motor industry | 10k (2) | — | 1854 | 0 | prerequisites alone give 1852 |
+| electrical_generation | motor industry | 15k (3) | electric_telegraph | 1885 | 0 | |
+| ~~shift_work~~ DROPPED by the user | non-craft tiered rungs (art academy e1–e3 only) + shipyards on metal or arc welding | 850k (170) | — | 1884 | 1 | ⚠ INCOMPATIBLE: 750k gives 1877 with 3/18 early (Britain in the 1840s). ⚠⚠ WIDE OVER TALL (read the same day; runs where the country lost a quarter of its population for good excluded): the median year the count reaches 750k / 850k / 1M is NET 1932 / 1936 / never (it researches shift work unaided ~1881), FRA 1884 / 1887 / 1896 (~1896), GBR 1836 / 1850 / 1861 (~1880), RUS 1904 / 1906 / 1911 (~1902); 850k is 7% of the Dutch or Belgian population against 1.2% of the American and 0.8% of the Russian. The user is weighing dropping the entry |
+| conveyors | motor + automotive | 180k (36) | — | 1916 | 1 | 3 runs with no second |
+| reinforced_concrete | construction sector on iron frame or later | 61k (61) | — | 1866 | 0 | |
+| pneumatic_tools | construction sector on iron frame or later | 9k (9) | — | 1885 | 0 | prerequisites alone give 1883 |
+| vacuum_canning | food factory rungs (a craft cannot run it) | 75k (15) | — | 1879 | 1 | |
+| steel_railway_cars | railways | 56k (56) | bessemer_process | 1866 | 0 | |
+| steam_turbine | power plants | 13k (13) | — | 1905 | 0 | |
+| steam_donkey | logging camps on saw mills or later | 10k (2) | rotary_valve_engine | 1888 | 0 | |
+| threshing_machine | grain farms using tools | 100k (20; rice farms 10) | — | 1864 | 0 | prerequisites alone give 1862 (vanilla's order is inverted) |
+| mechanized_farming | wheat, rye, maize, millet farms on steam threshers | 75k (15) | combustion_engine | 1899 | 0 | |
+| pasteurization | ranches on slaughterhouses or later | 55k (11) | — | 1898 | 0 | prerequisites alone give 1896 |
+| flash_freezing | fishing on steam trawlers + whaling on steam ships | 75k (15) | steam_turbine | 1925 | 0 | |
+| dough_rollers | food factory rungs | 85k (17) | — | 1924 | 0 | 1 run with no second |
+| arc_welding | shipyards on metal shipbuilding | 5k (1) | — | 1918 | 1 | |
+| oil_turbine | power plants on coal-fired turbines | 19k (19) | pumpjacks | 1925 | 0 | |
+| watertube_boiler | motor industry | **30k (6), ruled** | — | — | 2 | ⚠ rule 3: a second country in 4/18 only; Britain early in 2/18 (11%) |
+| radio | electrics industry | **25k (5), ruled** | electric_telegraph | 1932 | 0 | ⚠ rule 3: no second country in 9/18 |
+| art_silk | synthetics plants | **25k (5), ruled** | — | — | 0 | ⚠ rule 3: no second country in 15/18 |
+| automatic_bottle_blowers | glass factory rungs (forest glass cannot run it) | **200k (40), ruled** | — | 1916 | 1 | a decade after the onset decade |
+| pumpjacks | — | — | — | — | — | skip |
+
+**Old entries checked against the method rule, nothing found:** every rule-A source is one rung with one main method, or a merged host counted by
+the method it runs; the necessity anchors (staple-crop farms for intensive agriculture and the explosives' first rung, textile and light industry for
+aniline, the motor e2/e3 rungs for combustion engine, trade centres for telephone, the arms and artillery rungs for percussion cap, coal and iron
+mines for atmospheric engine) all count buildings whose every method is the precursor of the technology, not an obsolete stage of it.
+
 ---
 
 ## Step 3 — BUILDING COSTS, THEN THE FIRST REAL BUILD  ✅ **RULED AND SHIPPED (2026-08-17)**

@@ -101,6 +101,7 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 - **OPEN** · a validator for technology re-pegs (no emptied vanilla technology) · BUGS_AND_FIXES 2026-08-30
 - **OPEN** · `emit_techs.mjs` grant-side blind spot (two-line fix) · TESTBED_LANDMINES
 - **RULING** · the scope of post-JE tech finishing beyond the shipped finish boost · ROADMAP step 11
+- **NOW** · the extra research entries (25 production technologies outside the tier ladder + the era-1 skip lifted for lathe, distillation, steelworking; shift work and pumpjacks dropped) — built as `e1a12-ai1135-tex1140-jex-artmerge`, measured by `20261005_154629_jex-n16` — STOPPED BY THE USER AT n=8 (2026-10-06); the NEXT BATCH reruns the same config with different telemetry and the report reads both together (HANDOVER); then, per the user, nerf ordinary research if the tree runs ahead (ruling owed: uniform or weighted to game eras 4–5) · BALANCE_FRAMEWORK §10.95, ROADMAP step 2
 - **RESEARCH** · F162's anomalies (Spain's intensive_agriculture, Ecuador's and Alwar's aniline) · F162
 - **RESEARCH** · ai_weight depth *(verify — likely moot since `tech_ai_weight_mult`)* · ROADMAP step 1
 
@@ -116,6 +117,7 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 ## E. Engine compatibility (vanilla references our split breaks)
 
 - **DEFERRED** · MISSING_PM_REFERENCES.md — ~28 vanilla events/JEs checking a relocated main PM; one strategic "tiers are eligible" pass · MISSING_PM_REFERENCES.md
+- **DEFERRED** · the same class for SECONDARY methods, which the audit does not cover: a per-rung copy renames the vanilla method, so e.g. `production_tech_events.210` (radio progress) needs `pm_radios` active and can never fire · ROADMAP step 2 coverage audit
 - **DEFERRED** · `has_building` narrowing (457 refs match tier 1 only) — the same pass · CLAUDE.md
 - **DEFERRED** · MISSING_BUILDING_CONDITIONS.md — the art academy's conditional ai_value (1 case) · MISSING_BUILDING_CONDITIONS.md
 
@@ -135,6 +137,30 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 - **OPEN** · detectors owed: L19 orphaned game process, L23 raw-counted repeated log lines, L11 wrong/nonexistent tag, L9 per-run error windows
 - **OPEN** · live proofs owed: quarantined-save resume hooks, L29 scheduler abort, L34 fresh-start restart
 - **OPEN** · L30: a resume mode after a machine reboot
+- **OPEN** · the perf report (`report_perf.mjs`, the ledger's row P) shows the wall clock FACTORISED as diverging branches (ruled 2026-10-06: the
+  normal branch, the share of runs with a slowdown episode and its cost, each against vanilla — `ledger/slow_episodes.mjs`), applies the
+  fleet-loop disqualification (`ledger/fleet_loop_runs.mjs`) and puts `ledger/machine_load.mjs` beside it. ✅ The scheduler half is DONE
+  (2026-10-06 evening): `run_schedule.ps1` starts `machine_monitor.ps1` for every session (`-NoMachineMonitor` opts out)
+- **WATCH** · slowdown EPISODES — EXPLAINED 2026-10-06 (FINDINGS **F218**): 23 episodes in 22 of 291 century runs (vanilla 2 of 31). Most are a
+  LONE SHIP RECALLED FOR REPAIRS whose travel path the engine keeps appending to for decades (run 3 of 20261005_154629: two US torpedo boats,
+  4.5k moves each, 1882/1887 → reset 1903-11-22; confirmed again on a Siamese loop at 1936) — VANILLA behaviour, as common in vanilla's
+  endpoints (3 of 30) as in the mod's (14 of 258); signature = hour 0 + one other sub-tick of the day rising together, then dropping within days.
+  The all-sub-tick ones are long great-power wars (end at the peace); canon-dams-v2-n1's 28-day pulse stays unexplained (retired book). Run 6's
+  1890–1897 episode has the fleet-loop shape (memory a bystander). ⭐ RULED LATER THE SAME DAY: a run with a FLEET-LOOP episode is
+  DISQUALIFIED for wall clock (whole run, config and vanilla alike, wall clock only; the share disqualified is reported per config); every
+  other slowdown stays — `ledger/fleet_loop_runs.mjs`. Diagnose with `ledger/tick_profile.mjs` (the run's log) and `ledger/fleet_loops.mjs`
+  (a kept save)
+- **OPEN** *(after 20261005_154629 ends)* · wire the fleet-loop disqualification into `report_perf.mjs` / the ledger's row P (today: pass
+  `fleet_loop_runs.mjs --dirs` output by hand) and show the share disqualified in the verdict table
+- **WATCH** · the jex book 20261005_154629 had fleet loops in 3 of its first 6 runs (corpus ~8% of mod runs, its base tex1140 0 of 5; ~1% by
+  chance): if it holds, the extra research entries may raise the loop rate — a mod cost the exclusion would hide
+- **RESEARCH** · whether the hour-12 / hour-18 / hour-0-only episodes are fleet loops too — PARTLY ANSWERED 2026-10-06 (F218 §8, every kept
+  save scanned): the sub-tick follows the owner's id mod 4 as ≡1 → 6, ≡0 → 12, ≡2 → hour 0 alone, ≡3 → 18 (presumed); an hour-12 episode is
+  save-confirmed (Bulgaria); 3 of the 21 disqualified runs have a save inside them, the other 17 are by shape. Still: copy a save by hand into
+  `diag_saves/` the next time an hour-18 episode forms mid-batch
+- **OPEN** *(after 20261005_154629 ends — touches the summary writer the harvester uses)* · VERIFY the fleet-loop label: save summary v16
+  records every formation with ≥ 50 path moves (owner, id, recalled, moves, distance, created), and `fleet_loop_runs.mjs` requires a recalled
+  loop whose owner maps to the flagged sub-tick during the streak, labelling the rest UNVERIFIED (F218 §8.6). Today nothing checks the label
 - **MANUAL** · L3 unbounded scopes, L10 mid-batch edits (no detector possible); L4 advisory
 - **PARKED** *(verify)* · three-arm runs 4–6, autosave-cadence experiment, concentration metric, tick-speed regression; do empty pop records cost tick time · ROADMAP "Parked"
 

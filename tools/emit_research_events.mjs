@@ -153,7 +153,10 @@ for (const ind of CFG.industries) {
     if (!t.tech) return;
     const T = TECH[t.tech];
     if (!T) throw new Error(`tier ${t.key} names technology '${t.tech}', which is not in the shipping tree`);
-    if (T.era === 1) return;                                  // granted free at the 1836 start
+    // granted free at the 1836 start — but ONLY to tiers 1–2 (59 of 444 countries; ROADMAP step 2's coverage audit, 2026-10-05):
+    // `research_events.era1_rule_a` keeps the entry of an era-1 technology gating a rung WITH a predecessor (lathe, distillation,
+    // steelworking), so Russia, the Ottomans, China, Japan … research it with one. A first rung on an era-1 technology stays skipped.
+    if (T.era === 1 && !(RE.era1_rule_a && i > 0)) return;
     if (i > 0) {
       const prev = ts[i - 1];
       // §10.60: a factored tier (ports) EMPLOYS config × workforce_mult per level — the script value
@@ -227,6 +230,48 @@ if (JE_SCOPE === 'all') {
   // rule C: the military tree, on the war gate
   for (const t of OPT.techs.filter(x => x.category === 'military' && x.era > 1 && !anchors[x.id]))
     anchors[t.id] = { rule: 'war', era: Math.max(2, t.era), sources: [] };
+}
+
+// ⭐⭐ EXTRA ENTRIES — production technologies OUTSIDE the tier ladder, one by one (user-ruled 2026-10-05, ROADMAP step 2's coverage audit).
+//   `research_events.extra_entries` = { <tech>: { sources: [ { industries | buildings, crafts?, methods?, label? } ], mark, requires? } }.
+//   · a source is ONE summed workforce (fully staffed levels × base-method employment, like every source here): `industries` = every rung
+//     of those industries (`crafts: false` leaves the craft rungs out), `buildings` = vanilla building types;
+//   · `methods` (an array, or a map building → array) counts only the levels RUNNING one of those main methods — "an old and narratively
+//     incompatible method does not progress the entry" (no wooden shipyard advances arc welding);
+//   · `mark` is in PEOPLE and must be a whole number of fully staffed levels of every building it counts (the user's rounding rule);
+//   · `requires` = technologies the country must HOLD for the bar to advance; visibility stays gated on the technology's own researchability.
+const EXTRA = RE.extra_entries || {};
+const PMGS_OF = k => new Set(((VAN.buildings[k] || {}).pmgs || []).flatMap(g => ((VAN.pmgs[g] || {}).pms || [])));
+for (const [tech, e] of Object.entries(EXTRA)) {
+  if (tech.startsWith('_')) continue;
+  const T0 = TECH[tech];
+  if (!T0) throw new Error(`extra_entries: '${tech}' is not in the shipping tree`);
+  if (anchors[tech]) throw new Error(`extra_entries: '${tech}' already has an entry (rule ${anchors[tech].rule}) — an extra entry is for a technology the ladder does not cover`);
+  for (const r of (e.requires || [])) if (!TECH[r]) throw new Error(`extra_entries[${tech}].requires names unknown technology '${r}'`);
+  if (!(e.mark > 0)) throw new Error(`extra_entries[${tech}]: no mark`);
+  const sources = (e.sources || []).map((src, si) => {
+    const types = [];
+    for (const id of src.industries || []) {
+      const ind = CFG.industries.find(x => x.id === id);
+      if (!ind || ind.disabled) throw new Error(`extra_entries[${tech}]: industry '${id}' is unknown or disabled — name its vanilla buildings instead`);
+      for (const t of ind.tiers || []) { if (t.model_only || (src.crafts === false && t.craft)) continue; types.push({ key: t.key, emp: tierEmp(t, ind), methods: null }); }
+    }
+    for (const k of src.buildings || []) {
+      if (!VAN.buildings[k]) throw new Error(`extra_entries[${tech}]: unknown building '${k}'`);
+      const ms = src.methods == null ? null : (Array.isArray(src.methods) ? src.methods : src.methods[k]);
+      if (src.methods != null && !ms) throw new Error(`extra_entries[${tech}]: no methods named for '${k}'`);
+      for (const m of ms || []) if (!PMGS_OF(k).has(m)) throw new Error(`extra_entries[${tech}]: '${m}' is not a method of ${k}`);
+      const emp = buildingEmp(k); if (!(emp > 0)) throw new Error(`extra_entries[${tech}]: no per-level employment known for ${k}`);
+      types.push({ key: k, emp, methods: ms });
+    }
+    if (src.methods != null && (src.industries || []).length) throw new Error(`extra_entries[${tech}]: methods on an industries source are not designed`);
+    if (!types.length) throw new Error(`extra_entries[${tech}] source ${si}: counts nothing`);
+    // the rounding rule: a whole number of fully staffed levels of every building it counts
+    for (const ty of types) if (e.mark % ty.emp) throw new Error(`extra_entries[${tech}]: mark ${e.mark} is not a whole number of ${ty.key} levels (${ty.emp} a level)`);
+    return { extra: true, types, label: src.label || null };
+  });
+  if (!sources.length) throw new Error(`extra_entries[${tech}]: no sources`);
+  anchors[tech] = { rule: 'extra', era: narrativeEraOf(T0.era), sources, mark: e.mark, requires: e.requires || [] };
 }
 
 // ---- emit ----------------------------------------------------------------------------------------
@@ -357,6 +402,26 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   } else {
     nInd++;
     a.sources.forEach((s, i) => {
+      if (s.extra) {
+        // an EXTRA entry's source: Σ over its building types of fully staffed levels (optionally only those running the named main
+        // methods) × the type's base per-level employment, against the entry's mark in people; `requires` ANDs into the tick
+        const n = svName(tech, i);
+        const parts = s.types.map((ty, j) => {
+          const lv = `pmr_lx_${tech}_${i}_${j}`;
+          const meth = ty.methods ? `  OR = { ${ty.methods.map(m => `has_active_production_method = ${m}`).join('  ')} }` : '';
+          sv.push(`${lv} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { is_building_type = ${bldOf(ty.key)}${pmClause(ty.key)}${meth} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}\n}`);
+          return `${T}add = { value = ${lv}  multiply = ${ty.emp} }`;
+        });
+        sv.push(`${n} = {\n${T}value = 0\n${parts.join('\n')}\n}`);
+        const req = a.requires.map(r => `has_technology_researched = ${r}`);
+        const names = s.label || s.types.map(ty => nameOf(ty.key)).join(' and ');
+        const live = `[ROOT.GetCountry.MakeScope.ScriptValue('${n}')|0]`;
+        const line = `Workers in ${names}: at least ${a.mark.toLocaleString('en-US')}` + (req.length ? ` (only while ${a.requires.map(r => '$' + r + '$').join(' and ')} is researched)` : '') + `; now ${live}`;
+        const dkey = `pmr_term_${tech}_${i}`;
+        loc.push([dkey, line]); srcLines.push(line);
+        terms.push({ desc: dkey, trigger: [`${n} >= ${a.mark}`, ...req].join('  '), value: 1 });
+        return;
+      }
       if (s.good) {
         // ⭐ CONSUMPTION ANCHOR (user-ruled 2026-09-03, military first rungs): the country's MARKET buys at least T of the good
         //   a week — `research_events.consumption_thresholds[good]`; the market-goods trigger the port strategy already uses.

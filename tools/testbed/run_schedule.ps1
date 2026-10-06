@@ -83,7 +83,11 @@ param(
     # ⭐ THE RED-FLAG FEED IS ON BY DEFAULT (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.94): every run logs `market_goods_wide` on
     # 1 July of every year on the eleven telemetry tags, so ledger/input_price_flags.mjs can read a 2-year stretch from the order books.
     # This switch drops it, for a re-run whose telemetry must match an old batch byte for byte. Not for saving log lines.
-    [switch] $NoRedFlagFeed
+    [switch] $NoRedFlagFeed,
+    # ⭐ THE MACHINE-LOAD MONITOR IS ON BY DEFAULT (2026-10-06, BACKLOG G): tools/testbed/machine_monitor.ps1 runs beside the whole session
+    # and writes <session>\machine_load.tsv every 20 s (the game's CPU per in-game year, other load, P/E-core load, a canary, memory),
+    # read with ledger/machine_load.mjs. It touches no build, telemetry or game. This switch drops it.
+    [switch] $NoMachineMonitor
 )
 
 $ErrorActionPreference = "Stop"
@@ -313,6 +317,7 @@ Write-Host "schedule '$label': $($plan.Count) run(s) over $($setupNames.Count) s
 foreach ($p in $plan) { Write-Host ("  #{0,-3} {1,-12} -> {2}   dumps: {3}" -f $p.index, $p.setup, $p.until, ($p.dump_dates -join ', ')) }
 if ($NoRedFlagFeed) { Write-Host "red-flag feed: OFF (-NoRedFlagFeed) - the input-price red flags will read only the dump dates and the save summaries" }
 else { Write-Host ("red-flag feed: market_goods_wide on 1 July of every year on {0} tags ({1}); run #1 carries {2} reading date(s)" -f $RedFlagTags.Count, ($RedFlagTags -join ' '), $plan[0].red_flag_feed) }
+Write-Host ("machine monitor: {0}" -f $(if ($NoMachineMonitor) { "OFF (-NoMachineMonitor)" } else { "ON - machine_load.tsv beside the session (ledger/machine_load.mjs reads it)" }))
 Write-Host ("estimate: ~{0:N1} h of game time (rough - late years run slower)" -f ($estMin / 60))
 Write-Host ""
 if ($WhatIf) { Write-Host "-WhatIf: nothing built, nothing launched."; return }
@@ -351,6 +356,26 @@ try {
         Log "this scheduler is running INSIDE a Windows job object - it will die with whatever owns that job (landmine L30: an app restart killed 20260910_151220 at 18:45:29). From the agent, launch through tools	estbedlaunch_detached.ps1; from your own console this is usually benign." "ALERT"
     } else { Log "job-object check: not in a job (L30)" }
 } catch { Log "job-object check skipped: $($_.Exception.Message)" "WARN" }
+
+# ---- THE MACHINE-LOAD MONITOR (2026-10-06): one per SESSION, beside every run, so a wall-clock fluctuation is attributed (machine slower /
+#      other load / the game's own work) rather than guessed at - the guess once read the game's own slowdown as "external" (BUGS_AND_FIXES
+#      2026-10-06). It exits by itself when this script writes SCHEDULE DONE, or after -MaxHours (sized from the estimate). A dead or failed
+#      monitor costs the batch nothing: it is reported and the schedule goes on. ⚠ Start-Process quotes NOTHING - every path is quoted by
+#      hand, exactly as for the archiver below.
+if (-not $NoMachineMonitor) {
+    $monLog = Join-Path $sessionDir "machine_monitor_launch.log"
+    try {
+        $monHours = [math]::Max(24, [int][math]::Ceiling($estMin / 60 * 2) + 12)
+        $mon = Start-Process powershell -PassThru -WindowStyle Hidden -RedirectStandardError $monLog -ArgumentList @(
+            "-ExecutionPolicy","Bypass","-File","`"$(Join-Path $PSScriptRoot 'machine_monitor.ps1')`"",
+            "-Session","`"$sessionDir`"","-MaxHours","$monHours")
+        $null = $mon.Handle
+        Start-Sleep -Seconds 4
+        if ($mon.HasExited) {
+            Log "MACHINE MONITOR DIED AT LAUNCH (exit $($mon.ExitCode)): $((Get-Content $monLog -Tail 3 -ErrorAction SilentlyContinue) -join ' / ') - no machine_load.tsv for this session" "WARN"
+        } else { Log "machine monitor alive (pid $($mon.Id), up to $monHours h) -> machine_load.tsv" }
+    } catch { Log "machine monitor not started: $($_.Exception.Message)" "WARN" }
+} else { Log "machine monitor: OFF (-NoMachineMonitor)" }
 
 # ---- build a setup's mod. Rebuilt for EVERY run, deliberately: builds are deterministic
 #      (same config + same vanilla -> same output), they take ~1 min, and caching would hide

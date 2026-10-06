@@ -9092,7 +9092,12 @@ of the six removed rungs stands on the 1836 map; staffing totals already match w
 building with two main methods:
 - **Secondaries** (`emit_secondaries`): each rescalable secondary is minted once per main method, scaled to that method's output and input bill,
   and gated to that method — so a cannery beside Baking Powder is Baking Powder's cannery. A vanilla-gated secondary keeps its original only
-  when no main method satisfies the gate.
+  when no main method satisfies the gate. ⭐ (2026-10-05, the user's "UI clatter") Copies that share a name are each `is_hidden_when_unavailable
+  = yes`, vanilla's idiom for variants of one line, so the panel lists only the copy beside the running main method — the numbers are unchanged.
+  ⚠ The field hides on any unavailability, so a technology-gated line (cannery, stills, vacuum canning, elastics, precision tools) does not
+  appear at all on a merged building until the technology is held. Considered and NOT taken the same day: ONE copy per line (host-sized: the
+  line falls to ~45% of its per-rung ratio beside the merged method; merged-sized and disallowed where negative: the host loses 7 of its 10
+  lines, until era 4 for luxury clothes and era 5 for luxury furniture).
 - **Research entries** (`emit_research_events`): a merged rung is counted as the host's levels running its method; a host carrying merged
   methods counts only the levels on its own. Paper e3's source is sulfite mills on the bleaching method; fertilizer e2's, chemical plants on
   the improved method.
@@ -9553,3 +9558,29 @@ HIGH-years per run: Russian engines 1859–63, American explosives 1861–63); t
 and 23.0; the arm `e1a12-ai1135` 1.4 (6.8) and 27.4 — every book on production-alone supply, like for like with the v9 reference (with imports the
 arm's n=3 reads 34 / 21 / 19 SWING against 35 / 24 / 21). ⚠ **At the ruled thresholds SWING is common in vanilla itself** — a book's SWING count is read
 against vanilla's line, never alone; the HIGH years separate the books from vanilla far more sharply (×5–6).
+
+## §10.95 — RESEARCH ENTRIES FOR PRODUCTION TECHNOLOGIES OUTSIDE THE TIER LADDER: ONE BY ONE, CALIBRATED ON THE NARRATIVE ONSET (user-ruled 2026-10-05)
+
+Relaxes the 2026-08-30 `tiers_only` scope (only technologies that unlock a tier rung carry an entry) for the production tree, after the user found
+Radio without one. The audit, the per-technology table and the calibration live in ROADMAP step 2 ("COVERAGE AUDIT OF THE PRODUCTION TREE"); the
+table itself lives only in `tools/make_research_extra_config.mjs`. The rulings:
+
+1. **Every production technology has an entry, or a stated reason not to**: a vanilla journal entry that is not country- or region-specific; an early
+   technology most countries start with; no reasonable in-game precursor. An oversight is restored where it makes sense narratively.
+2. **An entry counts its PRECURSOR**: the workforce of the industry the technology would improve (Radio: the electrics industry's telephones), and may
+   REQUIRE further technologies held for the bar to advance (Radio: Electric Telegraph). Visibility stays gated on the technology's own researchability.
+3. **The marks** (user's rules): on average the SECOND-fastest country starts the clock in the technology's narrative onset decade; in no more than 10%
+   of playerless runs does any country start it more than 20 years early; a late technology with no second country by 1936 is allowed but highlighted, as
+   is a technology where the two rules conflict. Onsets before 1836 are exempt, sized so a Russian, Chinese or Ottoman speed-up is possible, not instant.
+4. **Every mark is a whole number of fully staffed levels** of what it counts (rounded UP; the counter reads fully staffed levels at base staffing).
+5. **A switchable building counts only the main methods that can narratively lead to the technology** — no wooden shipyard advances arc welding; a
+   method a craft cannot run (vacuum canning, the automated bakery, the bottle machine) leaves the crafts out of that count.
+6. **Dropped:** shift work (an absolute workforce mark rewards playing wide: 850k is 7% of the Dutch population against 0.8% of the Russian, and healthy
+   Netherlands reached it decades after researching shift work unaided) and pumpjacks (no precursor).
+7. **Era-1 technologies gating a rung with a predecessor keep their entry** (`era1_rule_a`): the start grants them only to tiers 1–2, 59 of 444 countries.
+8. The user's stated aim: if the earlier books placed half the tech majors' discoveries within a decade of the onset and these entries push the tree
+   ahead by 1936, ordinary research is nerfed to bring it back, so the tree leans more on the entries than before. First measured by `20261005_154629_jex-n16`.
+9. **An entry whose mark most majors already exceed when the technology opens is ACCEPTABLE** (user, 2026-10-05: *"Acceptable."*): it no longer tells a
+   big industry from a small one and acts as a flat research subsidy on that technology (run 1: arc welding, pneumatic tools, pasteurization, steam
+   donkey, mechanized farming, threshing — majors at 3–10× the mark at opening). The majors' acquisitions still spread by decades, because a technology
+   opens at different dates in different countries. No "at most half the majors over the mark at opening" rule is applied.
