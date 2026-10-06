@@ -1,0 +1,40 @@
+{
+  "schedule_version": 1,
+  "label": "jex-n8-v16",
+  "_why": "THE SAME BOOK AS 20261005_154629_jex-n16, EIGHT MORE CENTURIES ON SAVE SUMMARY v16 (user, 2026-10-06: 'Go on with another n=8 on the new telemetry. After the first four runs, run a preliminary analysis on the fleet / excess slowdown correlation.'). The book config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json is unchanged; what differs is the harvest: v16 summaries carry, per country and world-wide, the military formations and their travel paths (moves, distance sailed, recalled fleets, loops = recalled AND >= 200 moves, the worst 40 paths with owner id, repair target, top-2-node share, ships), so a slowdown seen in the observer's ticks can be read against the fleets that were sailing that year, not only against the run's newest kept save. The jex-n16 report was deferred by the user to after this batch: both batches are read together (n=8 + n=8 of one book) for the research questions, then FINDINGS. A FIXED-n batch: every run plays 1836 -> 1936, no stop watcher.",
+  "_arms": {
+    "jex": "{kind: config, config: config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json} (+ its tree twin). Identical to the jex arm of 20261005_154629."
+  },
+  "_comparison": "Research and economy: pooled with 20261005_154629 runs 1-8 (same book), against the control e1a12-ai1135-tex1140 (20261003_171038, n=5) and the canon (20260929_002728). Wall clock: fleet_loop_runs.mjs per run (disqualified share and the qualifying play time) against vanilla n=16 + the eleven-tag set; slow_episodes.mjs for the factorised branches; machine_monitor.ps1 (started by run_schedule) for the machine side.",
+  "_questions": {
+    "F1 FLEET vs EXCESS (preliminary at run 4, final at run 8)": "Per run and in-game year: the excess seconds per in-game year over the batch's median pace for that year (tick_profile.mjs / the observer's ticks, autosave ticks out), against the v16 world.formations readings of the same year — loops, recalled fleets, moves, dist, dist_k2, and the worst paths' distance. Does the excess track distance sailed by looping/recalled fleets (F218's cost-vs-distance shape: <=125k ~0-10 s/yr, ~150-200k ~20-30 s, ~470k ~100-200 s)? Is it carried by the sub-tick the looping owner's id mod 4 maps to (F218 sec. 8)? What share of the excess is NOT explained by fleets (wars: all sub-ticks rising)?",
+    "F2 THE SHARE": "Do the entries make loops likelier? jex-n16 read 3 of 8 runs disqualified against ~8% in the corpus; eight more runs say whether that was luck."
+  },
+  "_predictions": {
+    "F1": "Where a run has a fleet-loop episode, the year's excess rises with the looping fleets' distance sailed (dist_k2 the better predictor, cost superlinear in path length) and sits on one sub-tick; years with no recalled path above ~150k carry under ~10 s of excess unless a great-power war is running. Most excess outside loops is war, lifting all four sub-ticks.",
+    "F2": "1-3 of 8 runs disqualified; if 3+ again, the entries plausibly raise the loop rate (more naval technology earlier -> more fleets abroad), to be checked against when the loop's ships were built."
+  },
+  "_stop_rule": "none: a fixed n=8, every run plays to 1936. Only a hard harness failure (crash loop, mod not loaded) stops it.",
+  "_cost": "8 runs x 1836 -> 1936, about 2.5-4.5 h each, about 22-30 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Do NOT edit tools/testbed/save_state_summary.mjs while the batch runs: the harvester loads it per save, so an edit mid-batch changes what later summaries carry.",
+    "Do NOT edit tools/emit_research_events.mjs, tools/make_research_extra_config.mjs, tools/emit_secondaries.mjs or the book while the batch runs: the mod is rebuilt before every run.",
+    "Yearly saves only: a loop that starts and ends between two yearly saves is seen in the ticks but not in the formations reading; when a run slows mid-batch, copy its newest save into diag_saves/ before the harvester reaps it.",
+    "run_schedule.ps1 adds the red-flag feed (market_goods_wide each 1 July) and the machine-load monitor."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "jex": { "kind": "config", "config": "config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json" }
+  },
+  "runs": [
+    { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" },
+    { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }, { "setup": "jex", "until": "1936.1.1" }
+  ]
+}
