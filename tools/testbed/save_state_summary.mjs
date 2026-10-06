@@ -99,7 +99,14 @@ import { fileURLToPath } from 'node:url';
 // Readers: a key is opaque. `c.tag ?? key.split('@')[0]` is the definition in every version; a pool member is the plain
 // TAG, i.e. the MAIN record — a rebel side, or a country a revolt left behind, is a country of its own. FINDINGS F186,
 // landmine L38. ⚠ A pre-v12 summary cannot be repaired (its save is reaped); summary_drops.mjs says which ones are hit.
-export const SAVE_SUMMARY_VERSION = 15;
+export const SAVE_SUMMARY_VERSION = 16;
+// v16 (2026-10-06): + MILITARY FORMATIONS AND THEIR TRAVEL PATHS (user-asked, for the fleet-loop slowdowns — FINDINGS F218 §8: a fleet recalled for
+// repairs can shuttle near its port for decades while the engine appends every leg to one travel path, and the tick cost grows with it; until v16
+// nothing per-year recorded a fleet, so only a save that happened to be kept from inside an episode could confirm one). Per country `formations`
+// {formations, fleets, armies, moving, recalled, recalled_moving, loops, moves, dist, dist_k2, max_moves, max_dist} (absent = none); and
+// `world.formations` = the same world-wide + `by_bucket` (owner id mod 4 — the inferred sub-tick key) + `hist_moves` + `supply_moves` + `worst`,
+// the ≤ 40 longest paths (15 by length, 15 by moves, every loop) with owner, recall flag, repair target, distinct nodes, the top-2 nodes' share
+// of the moves and the ships. Collected for a LATER correlation with the per-tick log (tick_profile.mjs), not analysed by anything yet.
 // v15 (2026-10-02): + per STATE `lab` {peas, unemp} — the workforce of its peasants and of its other pops with no workplace — and `res`
 // {building type: [levels, staffing, profit]} for every resource-capped type (mines, logging, fishing, whaling, oil, rubber, farms, plantations,
 // ranches, orchards, vineyards; subsistence left out). The user's rule for a VALID investment option (2026-10-02): free deposits or arable land in
@@ -121,7 +128,8 @@ const NOT_CAPTURED = {
   pop_need_purchase_weights: 'per (state, culture, need, good) — tens of thousands of rows. `melted_pop_need_weights.mjs` reads it from a kept save.',
   cultures_and_obsessions: '`melted_cultures.mjs` reads it from a kept save; runtime state, but not per-quarter interesting.',
   technology_acquisition_DATES: 'a save shows what is HELD, never when it arrived. Stays on telemetry (`tech_log`) — the two are complementary, not redundant.',
-  trade_advantage_and_local_prices: 'NOT PERSISTED — a state\'s trade advantage (which sets its import/export price off the world price) and its local goods prices are nowhere in a 1.13.11 save (searched 2026-09-24). A rung\'s realised price is goods_sales ÷ va_out per building type instead.',
+  formation_paths_in_full: 'v16 keeps per-formation PATH STATISTICS (moves, length, distinct nodes, top-2 node share) for the ≤ 40 worst paths and sums for the rest; the node sequences themselves (13 lines a move, 59k lines for one 4,556-move loop) are not kept. fleet_loops.mjs reads them from a kept save.',
+  trade_advantage_and_local_prices:'NOT PERSISTED — a state\'s trade advantage (which sets its import/export price off the world price) and its local goods prices are nowhere in a 1.13.11 save (searched 2026-09-24). A rung\'s realised price is goods_sales ÷ va_out per building type instead.',
 };
 
 const args = process.argv.slice(2);
@@ -192,7 +200,8 @@ const SUBJECT = new Set(['puppet', 'protectorate', 'colony', 'vassal', 'dominion
 const TREND_KEYS = new Map([['gdp', 'gdp'], ['prestige', 'prestige'], ['literacy', 'literacy'], ['avgsoltrend', 'avg_sol']]);
 // Sections we actually walk.  Everything else is skipped in O(1) per line: a top-level section always
 // closes with a `}` in COLUMN 0, so skipping never needs brace arithmetic.
-const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies', 'market_manager', 'laws', 'interest_groups']);
+const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies', 'market_manager', 'laws', 'interest_groups',
+                      'military_formation_manager', 'ship_manager']);   // v16
 
 // ---------------------------------------------------------------- collectors
 let saveDate = '';
@@ -322,6 +331,22 @@ let co = null, coList = null;
 // the pop list and the trend blocks (clout_trend holds ~10 years weekly — read by ledger/ig_clout.mjs from a kept save) deeper.
 const igRecs = [];                         // {country: country_manager id, def, clout, ps, rad, loy}
 let ig = null;
+// v16 — MILITARY FORMATIONS AND THEIR TRAVEL PATHS (the fleet-loop slowdowns, FINDINGS F218 §8). One record per formation in
+// `military_formation_manager.database`: scalars at depth 3; `travel_progress={ path={ target_node … moves={ { to_node= … distance= cost= } … }
+// cost= distance= } current_move= … total_distance_progress= }` — a move's `to_node` sits at depth 7, the PATH's own cost/distance at depth 5,
+// the progress fields at depth 4. The two supply paths have the same shape and stay short (≤ 24 moves in a 1902 melt holding two 4,500-move
+// loops), so only their move counts are kept. Ships (`ship_manager`, after the formations) give each fleet its ship count and hit points.
+const fmRecs = [];                         // compact per-formation records, owner resolved at the end
+let fm = null, fmBlk = null, fmNodes = null;
+let sh = null;
+const shipsByFleet = new Map();            // fleet formation id -> { n, hp, hpMin, names: first ship's name list }
+const closeFm = () => {
+  if (fmNodes && fmNodes.size) {
+    const top = [...fmNodes.values()].sort((a, z) => z - a);
+    fm.nodes = fmNodes.size; fm.top2 = (top[0] + (top[1] || 0)) / fm.moves;
+  }
+  fmRecs.push(fm); fm = null; fmBlk = null; fmNodes = null;
+};
 
 const numsOf = t => { const out = []; for (const m of t.matchAll(/-?\d+(?:\.\d+)?/g)) out.push(+m[0]); return out; };
 
@@ -794,6 +819,73 @@ for await (const line of rl) {
     depth = nd; if (depth <= 0) mode = 'top';
     continue;
   }
+
+  // v16 — FORMATIONS (see fmRecs). A loop's path is the bulk of this section (~13 lines a move, 59k lines for one 4,556-move loop), so the
+  // per-line work inside a path is one depth test and one startsWith.
+  if (mode === 'military_formation_manager') {
+    if (depth === 2 && opens && /^\d+=\{$/.test(t)) {
+      if (fm) closeFm();
+      fm = { id: +t.slice(0, -2), country: null, type: null, created: null, recalled: false, loiter: null, mission: false,
+             target: null, ttype: null, moves: 0, cur: null, dist: 0, cost: 0, prog: 0, fs: 0, ns: 0, nodes: 0, top2: null };
+      fmBlk = null; fmNodes = null;
+    } else if (fm) {
+      if (depth === 3) {
+        if (opens) {
+          fmBlk = t === 'travel_progress={' ? 'tp' : t === 'full_supply_path={' ? 'fs' : t === 'naval_supply_path={' ? 'ns' : t === 'target_location={' ? 'tl' : null;
+          if (t.startsWith('naval_mission=')) fm.mission = true;
+        } else {
+          let x;
+          if ((x = /^country=(\d+)$/.exec(t))) fm.country = +x[1];
+          else if ((x = /^type=([a-z_]+)$/.exec(t))) fm.type = x[1];
+          else if ((x = /^creation_date=([\d.]+)$/.exec(t))) fm.created = x[1];
+          else if (t === 'is_recalled_for_repairs=yes') fm.recalled = true;
+          else if ((x = /^loiter_reason=([a-z_]+)$/.exec(t))) fm.loiter = x[1];
+          else if (t.startsWith('naval_mission=')) fm.mission = true;
+        }
+      } else if (fmBlk === 'tp') {
+        if (depth === 7) {
+          if (t.startsWith('to_node=')) { fm.moves++; const n = +t.slice(8); (fmNodes ??= new Map()).set(n, (fmNodes.get(n) || 0) + 1); }
+        } else if (depth === 5) {
+          if (t.startsWith('distance=')) fm.dist = +t.slice(9);
+          else if (t.startsWith('cost=')) fm.cost = +t.slice(5);
+        } else if (depth === 4) {
+          if (t.startsWith('current_move=')) fm.cur = +t.slice(13);
+          else if (t.startsWith('total_distance_progress=')) fm.prog = +t.slice(24);
+        }
+      } else if (fmBlk === 'fs' || fmBlk === 'ns') {
+        if (depth === 7 && t.startsWith('to_node=')) fm[fmBlk]++;
+      } else if (fmBlk === 'tl' && depth === 4) {
+        if (t.startsWith('identity=')) fm.target = +t.slice(9);
+        else if (t.startsWith('type=')) fm.ttype = t.slice(5);
+      }
+    }
+    const nd = depth + opens - closes;
+    if (fm && nd <= 2) closeFm();
+    depth = nd; if (depth <= 0) mode = 'top';
+    continue;
+  }
+
+  // v16 — SHIPS: per fleet, the ship count, hit points and the first ship's name list (its `definition`, e.g. ship_names_historical_dutch_cruisers —
+  // the only hint of the ship class a ship record carries).
+  if (mode === 'ship_manager') {
+    if (depth === 2 && opens && /^\d+=\{$/.test(t)) sh = { fleet: null, hp: null, name: null };
+    else if (sh) {
+      if (depth === 3 && !opens) {
+        if (t.startsWith('fleet=')) sh.fleet = +t.slice(6);
+        else if (t.startsWith('hit_points=')) sh.hp = +t.slice(11);
+      } else if (depth === 5 && !sh.name && t.startsWith('definition="')) sh.name = t.slice(12, -1);
+    }
+    const nd = depth + opens - closes;
+    if (sh && nd <= 2) {
+      if (sh.fleet != null) {
+        const e = shipsByFleet.get(sh.fleet) ?? shipsByFleet.set(sh.fleet, { n: 0, hp: 0, hpMin: Infinity, names: sh.name }).get(sh.fleet);
+        e.n++; if (sh.hp != null) { e.hp += sh.hp; e.hpMin = Math.min(e.hpMin, sh.hp); }
+      }
+      sh = null;
+    }
+    depth = nd; if (depth <= 0) mode = 'top';
+    continue;
+  }
 }
 
 // ---------------------------------------------------------------- integrity gates (fail loud)
@@ -929,6 +1021,61 @@ for (const g of igRecs) {
   m[g.def] = { clout: +g.clout.toFixed(5), ps: Math.round(g.ps), rad: Math.round(g.rad), loy: Math.round(g.loy) };
 }
 if (!igRecs.length) console.error('WARN: no interest_groups records parsed — the save layout may have moved');
+
+// v16 — FORMATIONS, aggregated. `moves` = the travel path's move count, `dist` = the path's own length (its `distance`; for a loop it equals
+// the distance sailed along it, `total_distance_progress`, because the formation sits at the path's end), `dist_k2` = Σ (dist / 1000)² — kept
+// because the cost looked SUPERLINEAR in distance (F218 §3/§8: ~150k → +20–30 s a year, ~470k → +100–200 s). A LOOP = recalled for repairs
+// with ≥ 200 path moves (F218's line). `bucket` = owner id mod 4 — the sub-tick the owner's work lands in is an INFERENCE (F218 §8: 1 → hour 6,
+// 0 → 12, 2 → hour 0 only, 3 → 18 presumed), so the record stores the bucket and leaves the hour to the reader.
+const fmZero = () => ({ formations: 0, fleets: 0, armies: 0, moving: 0, recalled: 0, recalled_moving: 0, loops: 0, moves: 0, dist: 0, dist_k2: 0, max_moves: 0, max_dist: 0 });
+const fmAdd = (a, f) => {
+  a.formations++; if (f.type === 'fleet') a.fleets++; else if (f.type === 'army') a.armies++;
+  if (f.recalled) a.recalled++;
+  if (f.moves) { a.moving++; if (f.recalled) a.recalled_moving++; a.moves += f.moves; a.dist += f.dist; a.dist_k2 += (f.dist / 1000) ** 2;
+    a.max_moves = Math.max(a.max_moves, f.moves); a.max_dist = Math.max(a.max_dist, f.dist); }
+  if (f.recalled && f.moves >= 200) a.loops++;
+};
+const fmRound = a => { a.dist = Math.round(a.dist); a.dist_k2 = +a.dist_k2.toFixed(1); a.max_dist = Math.round(a.max_dist); return a; };
+const fmByCountry = new Map();
+const fmWorld = fmZero(), fmByBucket = [0, 1, 2, 3].map(fmZero);
+const fmHist = { '1-9': 0, '10-49': 0, '50-199': 0, '200-999': 0, '1000-4999': 0, '5000+': 0 };
+let fmSupplyFull = 0, fmSupplyNaval = 0, fmNoOwner = 0;
+for (const f of fmRecs) {
+  fmAdd(fmWorld, f);
+  if (f.country != null) { fmAdd(fmByCountry.get(f.country) ?? fmByCountry.set(f.country, fmZero()).get(f.country), f); fmAdd(fmByBucket[f.country % 4], f); }
+  else fmNoOwner++;
+  fmSupplyFull += f.fs; fmSupplyNaval += f.ns;
+  if (f.moves) fmHist[f.moves < 10 ? '1-9' : f.moves < 50 ? '10-49' : f.moves < 200 ? '50-199' : f.moves < 1000 ? '200-999' : f.moves < 5000 ? '1000-4999' : '5000+']++;
+}
+for (const a of fmByCountry.values()) fmRound(a);
+if (!fmRecs.length) console.error('WARN: no military_formation_manager records parsed — the save layout may have moved');
+// the WORST OFFENDERS: the 15 longest travel paths by distance and the 15 by move count, plus every loop, capped at 40 — each with what
+// a later reader needs to tell a repair loop from an ordinary long voyage: the recall flag, the repair target (and whether that state still
+// exists), the number of DISTINCT nodes the path visits and the share of its moves going to its two commonest nodes (a loop shuttles between
+// two or three nodes: 4,556 moves over 3 nodes, top-2 share 0.91), and its ships
+const fmWorst = (() => {
+  const moving = fmRecs.filter(f => f.moves), fmIds = new Set(fmRecs.map(f => f.id));
+  // ⚠ `target_location` is TYPED (state / military_formation / front / prov); a fleet recalled for repairs can target a FORMATION, which F218
+  //   first read as a state id. `target_gone` is answered for the two types this save can resolve, null otherwise.
+  const gone = f => f.target == null ? null : f.ttype === 'state' ? !stateRegion.has(f.target) : f.ttype === 'military_formation' ? !fmIds.has(f.target) : null;
+  const pick = new Map();
+  for (const f of [...moving].sort((a, z) => z.dist - a.dist).slice(0, 15)) pick.set(f.id, f);
+  for (const f of [...moving].sort((a, z) => z.moves - a.moves).slice(0, 15)) pick.set(f.id, f);
+  for (const f of moving) if (f.recalled && f.moves >= 200) pick.set(f.id, f);
+  return [...pick.values()].sort((a, z) => z.dist - a.dist).slice(0, 40).map(f => {
+    const s = shipsByFleet.get(f.id);
+    return { id: f.id, owner: f.country != null ? keyOf(f.country) : null, owner_id: f.country, bucket: f.country != null ? f.country % 4 : null,
+      type: f.type, recalled: f.recalled, created: f.created,
+      target_type: f.ttype, target: f.target,
+      target_region: f.ttype === 'state' && f.target != null ? (stateRegion.get(f.target) ?? null) : null,
+      target_gone: gone(f),
+      moves: f.moves, current_move: f.cur, dist: Math.round(f.dist), cost: Math.round(f.cost), progress: Math.round(f.prog),
+      nodes: f.nodes, top2_share: f.top2 == null ? null : +f.top2.toFixed(3),
+      loiter: f.loiter, naval_mission: f.mission,
+      ships: s ? s.n : 0, ship_hp_mean: s && s.n ? Math.round(s.hp / s.n) : null, ship_hp_min: s && s.hpMin !== Infinity ? Math.round(s.hpMin) : null,
+      ship_names: s ? s.names : null };
+  });
+})();
 const countries = {};
 for (const [id, c] of C) {
   if (!c.tag) continue;
@@ -984,6 +1131,8 @@ for (const [id, c] of C) {
     // engaged members in millions and `wm` the same × exp(wealth/5) (the clout weight, F192), both as 8-arrays in `world.ig_order`;
     // `wf` the class's workforce, `shop` its shopkeeper workforce. A class's share of an IG's clout ≈ its wm ÷ Σ wm × the IG's clout.
     ig_by_workplace: igWpByCountry.get(id) ?? {},
+    // v16: this country's military formations and their travel paths (counts, Σ moves, Σ path length, Σ (length/1000)², loops) — absent = none
+    ...(fmByCountry.has(id) ? { formations: fmByCountry.get(id) } : {}),
     // v5: queue COMPOSITION per country — n elements, total work left (points), total speed
     // (points/wk), and per-building-type breakdown. Retired the CQ telemetry (§9).
     queues: {
@@ -1059,6 +1208,9 @@ for (const s of new Set([...stateTradeCap.keys(), ...stateTradeGoods.keys()])) {
 for (const c of Object.values(countries)) if (c.trade) { c.trade.capacity = r2(c.trade.capacity); c.trade.usage = r2(c.trade.usage); }
 world.trade.capacity = r2(world.trade.capacity); world.trade.usage = r2(world.trade.usage);
 world.world_market_price = wmPrice;
+// v16: formations world-wide, by owner bucket (id mod 4), the travel-path move histogram, the supply paths' move totals and the worst offenders
+world.formations = { ...fmRound(fmWorld), unowned: fmNoOwner, by_bucket: fmByBucket.map(fmRound), hist_moves: fmHist,
+                     supply_moves: { full: fmSupplyFull, naval: fmSupplyNaval }, worst: fmWorst };
 
 const out = {
   save_summary_version: SAVE_SUMMARY_VERSION,

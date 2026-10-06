@@ -2728,6 +2728,17 @@ tools/                  dev tooling — NOT shipped in the mod
                         resource-capped type (mines, logging, fishing, whaling, oil, rubber, farms, plantations, ranches, orchards,
                         vineyards; subsistence left out). The caps themselves are static and read from `map_data/state_regions`. First
                         batch carrying it: 20261002_120946 (every earlier session is v14 or older; a KEPT save can be re-summarised),
+                        ⭐ MILITARY FORMATIONS AND THEIR TRAVEL PATHS (v16, 2026-10-06, for the fleet-loop slowdowns — FINDINGS F218 §8, the
+                        user: collect now, correlate with the per-tick log after the next n=8+): per country `formations` {formations, fleets,
+                        armies, moving, recalled, recalled_moving, loops (recalled AND ≥ 200 path moves), moves, dist (the travel path's own
+                        length = the distance sailed along it), dist_k2 = Σ (dist/1000)², max_moves, max_dist}; `world.formations` = the same
+                        + `by_bucket` (owner id mod 4 — the sub-tick key, stored as the bucket because its hour is an inference) +
+                        `hist_moves` + `supply_moves` + `worst`: ≤ 40 paths (15 longest, 15 most moves, every loop) with owner key AND id,
+                        recall flag, TYPED repair target (state / military_formation / front / prov, and whether it still exists), distinct
+                        nodes, the top-2 nodes' share of the moves (a loop shuttles: 3 nodes, 0.91) and ships (count, hit points, name list).
+                        ⚠ An owner's id can change (Britain was id ≡ 0 in one 1936 save, a re-created country) — use `owner_id` per year.
+                        Cost +~5% per save (13.6 → 14.3 s on a 1936 save); everything else byte-identical to v15. Nothing reads it yet
+                        (`fleet_loops.mjs` remains the tool for a kept save),
                         and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
                         ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and
                         `<id>=none` freed slots sit in the same database (a record test must require the

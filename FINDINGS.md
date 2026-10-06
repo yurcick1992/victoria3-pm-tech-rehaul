@@ -21501,7 +21501,9 @@ nothing else over 940 lines.
 ≥ 30 s a year of excess in hour 6, 12 or 18): vanilla 2 of 31 runs, mod 23 of 260 — the same order. One vanilla campaign read yearly 1838–1920
 (`saves_debut`, 85 saves) never carried a loop. The fleets are lone ships (torpedo boats, cruisers; one Brazilian loop of six damaged cruisers),
 and their repair targets are ordinary coastal home states (New York, Bangkok, Macedonia, Paraíba, Piedmont) — except vanilla run 11's two
-Norwegian cruisers, recalled to **state 202, which no longer exists** in that save (`202=none`).
+Norwegian cruisers, recalled to **state 202, which no longer exists** in that save (`202=none`). ⚠ **MISREAD, corrected 2026-10-06:** their
+`target_location` is `type=military_formation identity=202` — a FORMATION, which does exist in that save; `fleet_loops.mjs` ignored the type and
+looked 202 up among the states. It prints the type now, and save summary v16 records it.
 **The cost tracks the distance sailed, roughly quadratically, not the move count:** the two US loops (~944k sailed between them) cost ~+255 s a
 year in hour 6 and as much in hour 0; Siam's (482k) ~+90–105; the cheap ones — Brazil 121k, Greece 111k, Sicily 3 × 121k, Norway 101k + 78k —
 show nothing measurable (a quadratic fit predicts < 10 s a year for each). A loop is harmless for its first ~5–10 years and costs only if it
@@ -21555,7 +21557,7 @@ canary and clock normal). The Windows working-set cut at its onset is a bystande
 ### What it does NOT say
 
 - **Why the engine appends instead of replacing**, or what lets a lone recalled ship circle instead of docking — the New York target had a naval
-  base (level 1) and a port; only Norway's target was missing.
+  base (level 1) and a port; only Norway's target was missing (⚠ not so — Norway's targets a fleet, see §3's correction).
 - **That hour-12 / hour-18 / hour-0-only episodes are fleet loops.** Same shape, no save; the bucket-by-country-id rule rests on two countries.
 - **What starts a loop.** No war, revolt, default or bankruptcy in our event log lines up with an onset; the event log does not record naval damage.
 - **A cost model.** "Roughly quadratic in distance sailed" fits six loops at three cost levels; it is a description, not a law.
@@ -21672,9 +21674,11 @@ pinning the costly single-sub-tick episodes on loops survives every check that c
 distance, nothing ≥ 25 s appears without a loop — but the check covers few episodes, and the hour-0-only episodes F218 left unexplained are now
 expected from ≡ 2 owners (Norway, Portugal, Tuscany …).
 
-**6. The proper check (PROPOSED, not built — after the running batch, since the harvester uses the summary writer):** save summary v16 records
-every formation with ≥ 50 path moves (owner tag, id, recalled, moves, distance, creation date); `fleet_loop_runs.mjs` then requires, during the
-streak, a recalled loop whose owner maps to the flagged sub-tick and labels the rest **unverified** (they stay in the wall clock, by the ruling).
+**6. The proper check.** ✅ **The measurement is BUILT (2026-10-06 evening, user-asked): save summary v16** records every country's formations and
+path sums, by owner bucket, and the ≤ 40 worst paths (owner + id, recall flag, typed target, moves, length, distinct nodes, ships) — every yearly
+summary of every batch from now on. Still open (user: after the next n=8+, "they don't need immediate analysis"): correlate the per-bucket path
+load with the sub-tick leads run-year by run-year, then make `fleet_loop_runs.mjs` require, during the streak, a recalled loop whose owner maps
+to the flagged sub-tick and label the rest **unverified** (they stay in the wall clock, by the ruling).
 
 **What it does NOT say:** that ≡ 3 → hour 18 (presumed; no costly ≡ 3 loop in any save); why the engine stages countries this way; whether a path
 reset also resets the distance counter (the distance-per-move ratios disagree: USA, SIC ~106, BUL 51, POR 239); and anything about the 17

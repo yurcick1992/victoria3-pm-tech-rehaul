@@ -326,6 +326,14 @@ hand on a major patch.
      "low tariffs = 12.5% of base price" is those numbers multiplied together, so it changes if any of them does. (4) Trade advantage and
      local import/export prices were NOT in the 1.13.11 save. If a patch starts persisting them, the importer premium can be
      read directly instead of from producer prices.
+   - **Save summary v16 reads military formations and ships** (`tools/testbed/save_state_summary.mjs`, FINDINGS F218 §8;
+     the same layout `ledger/fleet_loops.mjs` reads). It relies on `military_formation_manager.database.<id>` with `country=`,
+     `type=`, `is_recalled_for_repairs=yes`, a typed `target_location`, and `travel_progress.path.moves` whose `to_node=`
+     lines sit at depth 7 and whose path-level `distance=` / `cost=` sit at depth 5; and on `ship_manager` records with
+     `fleet=` / `hit_points=`. A re-nested path does NOT throw: it reads every formation as unmoving. So after a patch,
+     summarise a kept late-game save and check that `world.formations.moving` is non-zero and that `hist_moves` looks
+     like the 1.13.11 saves' (about a dozen moving formations of ~800, most under 50 moves). An empty section prints a WARN on stderr.
+     The patch could also change a fleet's repair-loop behaviour itself.
    - **`base_values` in `common/static_modifiers/00_code_static_modifiers.txt`** is the engine's always-applied block
      and already carries state modifiers, so it is the candidate global hook. Owning that 1,029-line file freezes it
      against the next patch; if we ever do, it joins the whole-file-replacement list in §"Automated" and must be

@@ -53,7 +53,9 @@ async function scan(file) {
         else if (/^\t\t\t(full_supply_path|naval_supply_path)=/.test(line)) inTravel = false;
         else if (/^\t\t\ttarget_location=/.test(line)) inTarget = true;
       }
-      if (f && inTarget) { const m = /identity=(\d+)/.exec(line); if (m) { f.target = m[1]; inTarget = false; } }
+      // ⚠ the target is TYPED (state / military_formation / front / prov): the Norwegian loops of vanilla n=16 run 11 target FORMATION 202, which
+      //   F218 first read as "state 202, no longer exists" (2026-10-06)
+      if (f && inTarget) { const ty = /^\t+type=(\w+)/.exec(line); if (ty) f.ttype = ty[1]; const m = /identity=(\d+)/.exec(line); if (m) { f.target = m[1]; inTarget = false; } }
       if (f && inTravel) {
         if (/^\t+to_node=/.test(line)) f.moves++;
         let m;
@@ -76,7 +78,9 @@ async function scan(file) {
     const idx = (+x.country) & 0xFFFFFF;
     return { tag: tag[x.country] || x.country, country_id: +x.country, bucket: idx % 4, hour: [12, 6, 0, 18][idx % 4], type: x.type, recalled: x.recalled, created: x.created,
       ships: ships[x.id] || [], path_moves: x.moves, current_move: x.cur, distance_sailed: x.dist == null ? null : Math.round(x.dist),
-      target_state: x.target, target_region: x.target ? (stTpl[x.target] || tpl[stRegion[x.target]] || (stGone[x.target] ? 'STATE NO LONGER EXISTS' : null)) : null };
+      target_type: x.ttype ?? null, target_state: x.ttype === 'state' ? x.target : null, target_id: x.target,
+      target_region: x.ttype !== 'state' ? (x.target ? `${x.ttype} ${x.target}` : null)
+        : x.target ? (stTpl[x.target] || tpl[stRegion[x.target]] || (stGone[x.target] ? 'STATE NO LONGER EXISTS' : null)) : null };
   });
   return { file, date, formations: F.length, loops: out };
 }

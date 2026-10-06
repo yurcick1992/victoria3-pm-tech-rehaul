@@ -158,9 +158,11 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
   save scanned): the sub-tick follows the owner's id mod 4 as ≡1 → 6, ≡0 → 12, ≡2 → hour 0 alone, ≡3 → 18 (presumed); an hour-12 episode is
   save-confirmed (Bulgaria); 3 of the 21 disqualified runs have a save inside them, the other 17 are by shape. Still: copy a save by hand into
   `diag_saves/` the next time an hour-18 episode forms mid-batch
-- **OPEN** *(after 20261005_154629 ends — touches the summary writer the harvester uses)* · VERIFY the fleet-loop label: save summary v16
-  records every formation with ≥ 50 path moves (owner, id, recalled, moves, distance, created), and `fleet_loop_runs.mjs` requires a recalled
-  loop whose owner maps to the flagged sub-tick during the streak, labelling the rest UNVERIFIED (F218 §8.6). Today nothing checks the label
+- **OPEN** *(after the next n=8+ batch — user-ruled 2026-10-06: collect first, analyse later)* · VERIFY the fleet-loop label. ✅ The MEASUREMENT
+  is in: save summary **v16** (2026-10-06) records every country's formations and path sums, by owner bucket, and the ≤ 40 worst paths (owner +
+  id, recall flag, typed target, moves, length, distinct nodes, ships). Still to do: correlate per run-year the per-bucket path load (Σ moves,
+  Σ (length/1000)², loops) with the sub-tick leads of `tick_profile.mjs`, then make `fleet_loop_runs.mjs` require a recalled loop whose owner
+  maps to the flagged sub-tick during the streak and label the rest UNVERIFIED (F218 §8.6). Until then nothing checks the label
 - **MANUAL** · L3 unbounded scopes, L10 mid-batch edits (no detector possible); L4 advisory
 - **PARKED** *(verify)* · three-arm runs 4–6, autosave-cadence experiment, concentration metric, tick-speed regression; do empty pop records cost tick time · ROADMAP "Parked"
 
