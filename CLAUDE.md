@@ -5920,7 +5920,7 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   restored" = t back within **+15% (2σ1, σ1 = 0.070)** of the pre-episode speed (median of X−L−2…X−L, growth-projected) — accepted by the user;
   an episode that steps up and never comes back (canon-je24 run 9: ~72 → ~96 s/yr in 1866–69) runs to the end of the game, AS INTENDED. ⭐ The
   save of YEAR X−L (the year the triggering lag compares against) is kept too, as `before` (user-asked the same day), so a save of year Y is
-  judged only once Y + 12 is complete (~13 saves, ~650 MB, unjudged at any time). In use from run 8 of 20261006_193418 (run 7 on the 3-year
+  judged only once Y + 12 is complete (~13 saves, ~650 MB, unjudged at any time). In use from in-game ~1891 of run 7 of 20261006_193418 (the harvester calls the judge afresh each minute; run 7's earlier saves were judged on the 3-year
   form). `harvest_saves.ps1` no longer reaps a summarised save at once:
   the judge answers `keep` (MOVED to `<run>\quarantine_saves\` UNDER A SELF-DESCRIBING NAME, `<session>__<run>__<YYYY-MM-DD>__ep<N>_<role>.v3`,
   role before / in1–in4 / last / after1 / after2 — a save serving two episodes keeps its first name; the newest save stays in `saves\` and goes
@@ -5929,7 +5929,7 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   through it, every kept file with its role and WHAT TO COMPARE — the `before` save (normal speed), a slowed `in*`/`last` save and a restored
   `after*` one) and `slow_periods.json`. Proven end to end on synthetic run folders carrying two real tick logs (jex-n16 run 3: 1890–1903 and
   1911–18, 16 saves; canon-je24 run 9: 1869–94, 8) and mid-run (the X−3 save held until the episode shows, then kept). In use from run 6 of
-  20261006_193418 (runs 1–5 harvested on the old code; run 6 judged by the post-run drain after its harvester died at launch — BUGS_AND_FIXES 2026-10-07; the three-lag rule from run 8). `-NoQuarantine` restores immediate reaping.
+  20261006_193418 (runs 1–5 harvested on the old code; run 6 judged by the post-run drain after its harvester died at launch — BUGS_AND_FIXES 2026-10-07; the three-lag rule from in-game ~1891 of run 7). `-NoQuarantine` restores immediate reaping.
   ⭐ **WHY A YEARLY SAVE SEES A FLEET LOOP** (the "direct observation" question): the loop is persistent state that grows ~340 path moves and
   ~21k distance a year (run 4 of 20261006_193418: one German fleet id in every save 1899–1905, 220 → 2,248 moves, 15k → 145k), so a loop of
   material size (≥125k) has been visible in ~5 consecutive yearly saves before it costs anything — not an intermittent state a save can miss.
