@@ -190,7 +190,11 @@ function Resolve-Quarantine([switch]$Final) {
   try { $raw = & node @a 2>$null } catch { $raw = $null }
   if ($LASTEXITCODE -ne 0 -or -not $raw) { Log "quarantine judge failed (exit $LASTEXITCODE) - nothing reaped this pass" "WARN"; return }
   try { $o = ($raw | Out-String) | ConvertFrom-Json } catch { Log "quarantine judge printed unreadable JSON - nothing reaped this pass" "WARN"; return }
-  $newest = @(Get-ChildItem $Saves -Filter "*.v3" -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -Last 1).FullName
+  # ⚠ NOT `@(…).FullName`: on an EMPTY saves\ (every run's state at launch) that is a property of an empty array, which StrictMode
+  #   rejects — the harvester of run 6 of 20261006_193418 died at launch on exactly this (2026-10-07)
+  $newest = $null
+  $nf = Get-ChildItem $Saves -Filter "*.v3" -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -Last 1
+  if ($nf) { $newest = $nf.FullName }
   foreach ($p in $o.decisions.PSObject.Properties) {
     $full = Join-Path $Saves $p.Name
     $act = $p.Value.action

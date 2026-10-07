@@ -13,6 +13,19 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-10-07 — the harvester died at launch on the first run after the slowdown quarantine shipped
+
+**Symptom.** Run 6 of `20261006_193418_jex-n8-v16`: `[ALERT] HARVESTER DIED AT LAUNCH (exit 1): … PropertyNotFoundStrict,harvest_saves.ps1`;
+the scheduler fell back to a drain after the run (nothing lost — the saves pile up in `saves\` and are summarised and judged post-run).
+**Root cause.** `Resolve-Quarantine` (new that morning) took the newest save as `@(Get-ChildItem … | Select-Object -Last 1).FullName`. On an
+EMPTY `saves\` — the state of EVERY run's harvester at launch — that reads a property of an empty array, which `Set-StrictMode -Version
+Latest` rejects. Every test had been on a folder already holding saves.
+**Fix.** Take the item first, read `.FullName` only if one exists. Re-tested on an empty folder and on the 100-save synthetic run.
+**Next time.** Test a harness change on its STARTING state (an empty folder, a game not yet running), not only on a full one — and under
+StrictMode, `@(…).Prop` on a possibly-empty pipeline is a crash, not a null.
+
+---
+
 ## 2026-10-06 — "the save melts slowed with the game" was the game's own slowdown measured twice; two wall clocks were voided on it
 
 **Symptom.** A run slows 3–4× mid-century with no bigger world. Its save summaries appear late after their saves in step with the game
