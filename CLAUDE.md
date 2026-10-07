@@ -2758,7 +2758,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         per arm the cluster-1 and cluster-2 medians, the MAIN median over 1 + 2, and the cluster-3 count and bug.
                         `<label>=<session>[,<session>][:<setup>] [...] [--runs]`. Use it for every wall-clock report
   testbed/slow_quarantine.mjs  ⭐ THE SLOWDOWN QUARANTINE JUDGE (user-ruled 2026-10-07; the wall-clock bullet): per run, from the per-tick log,
-                        which yearly saves sit in a slowdown EPISODE (d3 > 3σ3 three years running) or the two years after —
+                        which yearly saves sit in a slowdown EPISODE (the time per in-game year > 3σ over year X−3, X−6 or X−10, three years running) or the two years after —
                         `keep` (with its quarantine name) / `release` / `wait`, plus `<run>/slow_periods.json` and
                         `<run>/quarantine_saves/MANIFEST.md`. Called by harvest_saves.ps1 before every reap; `<runDir> [--final] [--k 3]
                         [--restore 2]`. Exports `yearTimes()` / `episodes()` for the cluster-2 reading
@@ -5909,12 +5909,19 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   is over 3sigma. The end of the episode is when the speed is restored. We quarantine all saves during the episode and two after, but no
   more than 5 within episode (earliest four and the last one stays)"* (the two after only "unless the game ended"). Implemented in
   `tools/testbed/slow_quarantine.mjs`: t(Y) = wall seconds per in-game year from the per-tick log (month-boundary ticks dropped); d3(X) =
-  ln t(X) − ln t(X−3) − the corpus's expected growth; **σ3 = 0.092** (MAD over 32,011 run-years of 354 runs) ⇒ the line is **+32%**. "Speed
-  restored" = t back within **+15% (2σ1, σ1 = 0.070)** of the pre-episode speed (median of X−5…X−3, growth-projected) — accepted by the user;
+  ln t(X) − ln t(X−3) − the corpus's expected growth; **σ3 = 0.092** (MAD over 32,011 run-years of 354 runs) ⇒ the line is **+32%**.
+  ⭐⭐ **EXTENDED THE SAME DAY TO THREE LAGS, user-approved ("Yep, do that")**: measured on the corpus, the 3-year form MISSED HALF the real
+  slowdowns — of the 140 runs in batches of ≥ 4, it caught 10 of the 22 runs ≥ 10% slower than their batch median, 22 of the 49 with a 5-year
+  stretch ≥ +30%, and 11 of the 21 with the fleet-loop sub-tick signature — because a fleet loop's cost RAMPS ~6–8% a year for a decade and
+  then drops off a cliff, never gaining +32% within three years (canon-je24 run 18: 81 → 272 s/yr over 1882–99; b-gradient run 1: 89 → 364
+  over 1858–89). So the same three-years-running test is also made against **X−6 and X−10** (σ 0.102 / 0.109 ⇒ +36% / +39%), tried in the
+  order 3, 6, 10: 78 of 354 runs carry an episode (12 of 56 vanilla; the 3-year form 51 and 9), and 18 of the 36 missed slow runs are caught,
+  every large ramp among them. Still missed by design: two-year bursts and slowness spread thinly over a whole run. "Speed
+  restored" = t back within **+15% (2σ1, σ1 = 0.070)** of the pre-episode speed (median of X−L−2…X−L, growth-projected) — accepted by the user;
   an episode that steps up and never comes back (canon-je24 run 9: ~72 → ~96 s/yr in 1866–69) runs to the end of the game, AS INTENDED. ⭐ The
-  save of YEAR X−3 (the year the rule compares against) is kept too, as `before` (user-asked the same day), so a save of year Y is judged
-  only once Y + 5 is complete (~6 saves, ~300 MB, unjudged at any time). On the
-  corpus ~56 episodes in 51 of 354 runs (9 of 56 vanilla), 3–30 years long. `harvest_saves.ps1` no longer reaps a summarised save at once:
+  save of YEAR X−L (the year the triggering lag compares against) is kept too, as `before` (user-asked the same day), so a save of year Y is
+  judged only once Y + 12 is complete (~13 saves, ~650 MB, unjudged at any time). In use from run 8 of 20261006_193418 (run 7 on the 3-year
+  form). `harvest_saves.ps1` no longer reaps a summarised save at once:
   the judge answers `keep` (MOVED to `<run>\quarantine_saves\` UNDER A SELF-DESCRIBING NAME, `<session>__<run>__<YYYY-MM-DD>__ep<N>_<role>.v3`,
   role before / in1–in4 / last / after1 / after2 — a save serving two episodes keeps its first name; the newest save stays in `saves\` and goes
   in as a copy), `release` (reaped) or `wait` (judged at Y+5; in-episode years past the fourth wait for the episode's end); the post-run
@@ -5922,7 +5929,7 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   through it, every kept file with its role and WHAT TO COMPARE — the `before` save (normal speed), a slowed `in*`/`last` save and a restored
   `after*` one) and `slow_periods.json`. Proven end to end on synthetic run folders carrying two real tick logs (jex-n16 run 3: 1890–1903 and
   1911–18, 16 saves; canon-je24 run 9: 1869–94, 8) and mid-run (the X−3 save held until the episode shows, then kept). In use from run 6 of
-  20261006_193418 (runs 1–5 harvested on the old code). `-NoQuarantine` restores immediate reaping.
+  20261006_193418 (runs 1–5 harvested on the old code; run 6 judged by the post-run drain after its harvester died at launch — BUGS_AND_FIXES 2026-10-07; the three-lag rule from run 8). `-NoQuarantine` restores immediate reaping.
   ⭐ **WHY A YEARLY SAVE SEES A FLEET LOOP** (the "direct observation" question): the loop is persistent state that grows ~340 path moves and
   ~21k distance a year (run 4 of 20261006_193418: one German fleet id in every save 1899–1905, 220 → 2,248 moves, 15k → 145k), so a loop of
   material size (≥125k) has been visible in ~5 consecutive yearly saves before it costs anything — not an intermittent state a save can miss.
