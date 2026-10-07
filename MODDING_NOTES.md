@@ -96,6 +96,12 @@ copies with only the header line swapped from `l_english:` to `l_<lang>:`.
   errors, missing textures, etc. First place to look; should be clean for our objects.
 - Launch with **`-debug_mode`** (Steam launch option or launcher) for richer script error
   reporting and hot-reload of some assets.
+- ⭐ **In debug mode the game can show each SUBTASK's share of tick time, in MILLISECONDS** (the user,
+  2026-10-07 — this was not known to the agent). It is the investigation tool for a slowdown nobody can
+  explain from logs: load a save from inside the slowed period and read which subtask the time goes to.
+  The testbed keeps exactly those saves for it — `<run>\quarantine_saves\` (the slowdown quarantine,
+  `tools/testbed/slow_quarantine.mjs`, CLAUDE.md's wall-clock bullet). The menu path and the exact readout
+  are the user's; record them here once used.
 - Mods that change checksummed files (most of `common/`) **disable Ironman/achievements** and
   change the game **checksum**; multiplayer requires all players on the same mod + checksum.
 - Our own lightweight check is `bash tools/lint.sh` (economic balance). It does **not** catch

@@ -42,7 +42,8 @@ param(
   [bool]   $KeepLast   = $true,       # keep the newest save permanently
   [int]    $PollSeconds = 5,
   [int]    $IdleExitMinutes = 10,
-  [string] $Provenance = ""           # JSON merged into every summary's .provenance
+  [string] $Provenance = "",          # JSON merged into every summary's .provenance
+  [switch] $NoQuarantine              # reap every summarised save at once (the pre-2026-10-07 behaviour)
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -140,7 +141,9 @@ function Complete-One($key) {
     # final state has both a summary and a save to re-read for whatever the schema did not anticipate.
     $isNewest = $KeepLast -and (@(Get-ChildItem $Saves -Filter "*.v3" -ErrorAction SilentlyContinue |
                                  Sort-Object Name | Select-Object -Last 1).FullName -eq $key)
-    if (-not $NoReap -and -not $isNewest) { Remove-Item -LiteralPath $key -Force -ErrorAction SilentlyContinue; $script:reaped++ }
+    # ⭐ THE SLOWDOWN QUARANTINE (user-ruled 2026-10-07): a summarised save is NOT reaped here; Resolve-Quarantine asks
+    # slow_quarantine.mjs whether its year sits in (or just after) a meaningfully slowed period and keeps or reaps it then.
+    if (-not $NoReap -and -not $isNewest -and $NoQuarantine) { Remove-Item -LiteralPath $key -Force -ErrorAction SilentlyContinue; $script:reaped++ }
   } else {
     $script:failed++
     $script:blocked[$key] = $why
@@ -170,8 +173,48 @@ function Get-Queue {
     })
 }
 
+# ⭐ THE SLOWDOWN QUARANTINE (user-ruled 2026-10-07). Every summarised save other than the newest is put to the judge,
+# tools/testbed/slow_quarantine.mjs, which reads the run's own per-tick log: `keep` moves it to <run>\quarantine_saves\ (never
+# reaped — for a later debug-mode look at per-subtask tick times), `release` reaps it, `wait` leaves it until its year can be
+# judged. Stateless — the pending set is "saves in saves\ that already have a summary" — so the watch-mode instance and the
+# post-run drain share it, and only the post-run drain (no -Watch: the run is over) passes --final.
+# ⚠ A judge failure reaps NOTHING (the saves wait on disk, logged): losing a quarantined save is the failure to avoid, disk is not.
+$quarantineDir = Join-Path (Split-Path $Saves -Parent) "quarantine_saves"
+$judge = Join-Path $PSScriptRoot "slow_quarantine.mjs"
+$lastJudge = [datetime]::MinValue
+function Resolve-Quarantine([switch]$Final) {
+  if ($NoQuarantine -or $NoReap) { return }
+  $runDir = Split-Path $Saves -Parent
+  $a = @($judge, $runDir); if ($Final) { $a += "--final" }
+  $raw = $null
+  try { $raw = & node @a 2>$null } catch { $raw = $null }
+  if ($LASTEXITCODE -ne 0 -or -not $raw) { Log "quarantine judge failed (exit $LASTEXITCODE) - nothing reaped this pass" "WARN"; return }
+  try { $o = ($raw | Out-String) | ConvertFrom-Json } catch { Log "quarantine judge printed unreadable JSON - nothing reaped this pass" "WARN"; return }
+  $newest = @(Get-ChildItem $Saves -Filter "*.v3" -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -Last 1).FullName
+  foreach ($p in $o.decisions.PSObject.Properties) {
+    $full = Join-Path $Saves $p.Name
+    if (-not (Test-Path -LiteralPath $full)) { continue }
+    if ($KeepLast -and $full -eq $newest) { continue }
+    if ($jobs.ContainsKey($full) -or $blocked.ContainsKey($full)) { continue }
+    $stem = [IO.Path]::GetFileNameWithoutExtension($p.Name)
+    if (-not (Test-Path (Join-Path $Out "$stem.json.gz"))) { continue }         # never act on a save with no summary
+    # ⚠ try/catch: the watch instance and the post-run drain can overlap for a few minutes, so the file can vanish under us
+    try {
+      if ($p.Value -eq 'keep') {
+        New-Item -ItemType Directory -Force -Path $quarantineDir | Out-Null
+        Move-Item -LiteralPath $full -Destination (Join-Path $quarantineDir $p.Name) -Force -ErrorAction Stop
+        Log ("QUARANTINED {0} - slowed periods {1}" -f $p.Name, ((@($o.periods) | ForEach-Object { "$($_.start)-$($_.end) +$($_.peak_pct)%" }) -join ', '))
+      } elseif ($p.Value -eq 'release') {
+        Remove-Item -LiteralPath $full -Force -ErrorAction Stop; $script:reaped++
+      }
+    } catch { Log "quarantine: could not act on $($p.Name) ($($p.Value)): $_" "WARN" }
+  }
+  if (Test-Path $quarantineDir) { Copy-Item (Join-Path $runDir 'slow_periods.json') (Join-Path $quarantineDir 'slow_periods.json') -Force -ErrorAction SilentlyContinue }
+}
+
 $lastReport = Get-Date; $lastDone = 0; $rate = 0.0
 while ($true) {
+  if (((Get-Date) - $lastJudge).TotalSeconds -ge 60) { Resolve-Quarantine; $lastJudge = Get-Date }
   if (Test-Path $stopFile) { Log "STOP_HARVEST seen - finishing in-flight work"; break }
 
   foreach ($k in @($jobs.Keys)) { if ($jobs[$k].proc.HasExited) { Complete-One $k } }
@@ -206,6 +249,8 @@ while ($true) {
   Start-Sleep -Seconds ([Math]::Max(1, [Math]::Min($PollSeconds, 2)))
 }
 foreach ($k in @($jobs.Keys)) { $jobs[$k].proc.WaitForExit(); Complete-One $k }
+# the post-run drain (no -Watch) judges every remaining save on the whole run; the watch instance leaves undecided ones for it
+Resolve-Quarantine -Final:(-not $Watch)
 
 $elapsed = [math]::Round(((Get-Date) - $startedAt).TotalMinutes, 1)
 Log "HARVEST DONE - $done summaries, $failed failed, $reaped saves reaped, ${elapsed} min"

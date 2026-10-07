@@ -2753,8 +2753,14 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ SAVE_SUMMARY_VERSION is bump-never-renumber, like TELEMETRY_VERSION.
                         ⚠ NOT to be confused with `save_summary.mjs` (below), which reads the RAW BINARY
                         and answers a different question
+  testbed/slow_quarantine.mjs  ⭐ THE SLOWDOWN QUARANTINE JUDGE (user-ruled 2026-10-07; the wall-clock bullet): per run, from the per-tick log,
+                        which yearly saves sit in (or two years after) a meaningfully slowed period — `keep` / `release` / `wait`, plus
+                        `<run>/slow_periods.json`. Called by harvest_saves.ps1 before every reap; `<runDir> [--final] [--k 3] [--sigma 0.070]
+                        [--min-len 2]`. Exports `yearTimes()` / `slowPeriods()` for the cluster-2 reading
   testbed/harvest_saves.ps1  stages B-D: melt -> extract -> VERIFY -> reap, N workers (default 4), with
-                        the queue-depth / GB / drain-rate progress line. ⚠⚠ IT INVERTS THE REPO'S RULE:
+                        the queue-depth / GB / drain-rate progress line. ⭐ SINCE 2026-10-07 A SUMMARISED SAVE IS REAPED ONLY ON THE
+                        QUARANTINE JUDGE'S `release` (slow_quarantine.mjs); `keep` moves it to `<run>\quarantine_saves\` for good.
+                        ⚠⚠ IT INVERTS THE REPO'S RULE:
                         everywhere else "the summary is a CACHE, the raw log is the record", but a reaped
                         save makes THE SUMMARY THE RECORD. Hence: write to a temp name, VERIFY the
                         artifact (gunzip, parse, require a version + date + ≥10 countries), rename, and
@@ -3365,8 +3371,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         (`STATE NO LONGER EXISTS` where the target's record is gone). `<save.v3> [...] [--min 200] [--json]`. Over 288 kept endpoints
                         every such formation was a recalled fleet (vanilla 3 of 30, mod 14 of 258) and none an army. ⚠ A kept save is the run's
                         newest: a loop that ended earlier is gone — copy a save into the run's `diag_saves/` while an episode is live
-  testbed/ledger/fleet_loop_runs.mjs  ⭐⭐ WHICH RUNS ARE DISQUALIFIED FROM THE WALL CLOCK BY A FLEET LOOP (user-ruled 2026-10-06, F218; the ruling is
-                        in the "MOD MUST NOT MAKE THE GAME SLOWER" bullet). From each run's dedicated_server.log: an episode = one of the 06 / 12
+  testbed/ledger/fleet_loop_runs.mjs  ⚠ AN INVESTIGATION AID SINCE 2026-10-07, NOT A VERDICT — the user ruled that no tick pattern can establish
+                        the listed fleet-loop bug; only observing the loop directly can (the "MOD MUST NOT MAKE THE GAME SLOWER" bullet). It
+                        WAS: WHICH RUNS ARE DISQUALIFIED FROM THE WALL CLOCK BY A FLEET LOOP (2026-10-06, F218). From each run's dedicated_server.log: an episode = one of the 06 / 12
                         / 18 sub-ticks ≥ --threshold (25) s a year above BOTH others, the same one, ≥ --years (3) consecutive years (a war lifts
                         all three and never fires; hour-0-only load is undetectable and stays). Per run the verdict and its evidence; per arm
                         the SHARE DISQUALIFIED and the mean play time over all runs and over the qualifying ones; `--dirs` prints the qualifying
@@ -5873,13 +5880,31 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   (57–58 min, over 3×) are canon-dams-v2-n1 and run 3 of 20261005_154629. ⭐ WHAT THEY ARE — FINDINGS **F218** (a peer session, the same
   day, over 291 runs): mostly a lone ship stuck on a repair voyage whose travel path the engine keeps appending to for decades (run 3's were
   two US torpedo boats), VANILLA behaviour as common in vanilla as in the mod, plus a few long great-power wars — seed variance, not a mod cost.
-  ⭐⭐ **RULED 2026-10-06 (later): A RUN WITH A FLEET-LOOP EPISODE IS DISQUALIFIED FOR WALL CLOCK — THE WHOLE RUN, ON BOTH SIDES** (the configs
-  compared AND the vanilla reference), **and for nothing else** (every other metric of the run stays). **Every other slowdown STAYS**, however
-  sharp (wars, hour-0-only rises, the unexplained). **Reports show, per config, the SHARE OF RUNS DISQUALIFIED** beside the wall clock without
-  them. The test is mechanical — one of the 06 / 12 / 18 sub-ticks ≥ 25 s a year above both others, the same one, ≥ 3 consecutive years — and
-  `ledger/fleet_loop_runs.mjs` applies it (per run, the share per arm, the play time with and without, `--dirs` for report_perf.mjs). On
-  291 runs: 1 of 31 vanilla, 20 of 260 mod; ⚠ the jex batch 20261005_154629 read 3 of its first 6 (watch: if a book raises the rate, the
-  exclusion hides a real cost — which is why the share is reported).
+  ⭐⭐⭐ **RULED 2026-10-07 — THREE RUN CLUSTERS, AND ONLY A DIRECTLY OBSERVED LISTED VANILLA BUG EXCLUDES A RUN** (supersedes the
+  2026-10-06 sub-tick disqualification). The user: *"We exclude from wall clock measurements only runs with meaningful slowdowns that are
+  caused by known vanilla bugs. The standard of proof that it's the bug affecting the run is quite high, we need to observe the listed bug
+  directly."* **THE LIST holds one bug: the fleet path looping calculation** (F218 — a fleet recalled for repairs whose travel path the
+  engine keeps appending to). ⚠ **NO TICK PATTERN IS A CRITERION** — *"no tick pattern (3-hour / daily / weekly / monthly ticks suddenly
+  longer for a period, without affecting other types of ticks) can be reliably used as a criterion for a listed bug, and we're unlikely to
+  find such connection in the future, although it could help investigations"* ⇒ `ledger/fleet_loop_runs.mjs`'s one-sub-tick rule is an
+  INVESTIGATION AID now, never a verdict. **The clusters, every one reported in ABSOLUTE numbers:**
+  (1) **NORMAL runs** in-batch; (2) **INEXPLICABLY SLOWED runs** — meaningfully diverging from the median on per-computational-unit wall-clock
+  speed over some prolonged period, with no material explanation; (3) **runs affected by a LISTED bug**. ⇒ For 1 and 2 give SEPARATE medians
+  of the wall clock in writing, but the MAIN reports are based on 1 + 2 COMBINED. For 3 report only the NUMBER of such runs and WHICH listed
+  bug. ⚠ The exact cluster-2 line and what counts as observing the loop "directly" were PROPOSED on 2026-10-07 and await the user's ruling
+  (the session that made the quarantine reported both; until ruled, report the cluster-2 candidates with the criterion used).
+  ⭐⭐ **THE SLOWDOWN QUARANTINE (the same ruling) — non-agentic**: *"every year during a meaningfully slowed period is quarantined and then
+  two in a row when the period ends, unless the game ended"*, so the user can later load the save in **DEBUG MODE, where the game shows
+  each subtask's influence on tick speed in milliseconds** (MODDING_NOTES → Debugging; the investigation tool for cluster 2).
+  `harvest_saves.ps1` no longer reaps a summarised save at once: `tools/testbed/slow_quarantine.mjs` judges it from the run's own
+  per-tick log and `keep` MOVES it to `<run>\quarantine_saves\` (with `slow_periods.json`), `release` reaps it, `wait` holds it until its
+  year can be judged; the post-run drain passes `--final`; a judge failure reaps NOTHING. **The line**: wall seconds per in-game year
+  (month-boundary ticks dropped) more than **3σ above the frozen baseline** — the median of the last three normal years projected by the
+  corpus's expected growth, σ = **0.070**, the MAD spread of exactly that residual over 32,005 run-years of 354 runs ⇒ **+23%** — for at least
+  **2 consecutive years** (a one-year spike is released); saves of 1 January only. On the corpus: 182 of 354 runs carry such a period, ~4
+  saves a run (~0.2 GB). The baseline FREEZES during a period because a trailing one absorbs a long slowdown (jex-n16 run 3's 3–4× read
+  +30–40% against one). Proven end to end on a synthetic run folder carrying that run's real tick log (30 saves kept: 1883–86, 1889–1905,
+  1911–19). In use from run 6 of 20261006_193418 (runs 1–5 harvested on the old code). `-NoQuarantine` restores immediate reaping.
   `tools/testbed/machine_monitor.ps1` beside a batch, read by `ledger/machine_load.mjs`, now records the machine every 20 s, so the next
   case is attributed (machine slower / other load / memory / the game's own work / waiting) instead of inferred from file times.
   ⭐ **SINCE 2026-09-13 THE TOTAL IS THE CENTURY'S PLAY TIME REBUILT FROM THE OBSERVER'S TICK LINES** (`tools/testbed/ledger/lib_wall.mjs`,

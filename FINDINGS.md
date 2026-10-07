@@ -21442,6 +21442,13 @@ which is the whole shape of F216's per-decade ratios and of its ×1.05 total.
 
 ## F218 — WHAT THE MID-GAME SLOWDOWN EPISODES ARE: MOSTLY A LONE SHIP STUCK ON A REPAIR VOYAGE, WHOSE TRAVEL PATH THE ENGINE KEEPS APPENDING TO FOR DECADES (VANILLA BEHAVIOUR, AS COMMON IN VANILLA AS IN THE MOD); THE REST ARE LONG GREAT-POWER WARS, AND ONE RETIRED DAM BOOK'S 28-DAY PULSE (2026-10-06; no new runs — every century run with a tick log re-read, 288 kept endpoint saves and one kept mid-episode save scanned)
 
+> ⚠⚠ **2026-10-07 — THE USE OF THIS FINDING FOR WALL CLOCK WAS RE-RULED.** The one-sub-tick signature below is NOT a criterion for
+> excluding a run (user: *"no tick pattern … can be reliably used as a criterion for a listed bug"*); a run leaves the wall clock only when
+> the listed bug (the fleet path loop) is OBSERVED DIRECTLY during a meaningful slowdown. The mechanism this finding describes stands;
+> `fleet_loop_runs.mjs` is an investigation aid. The ruling, the three run clusters and the slowdown quarantine are in CLAUDE.md's
+> wall-clock bullet. First year-by-year test of the owner-id → sub-tick map on v16 data (20261006_193418 runs 1–4): one loop of size,
+> GER 124–145k in 1904–05, put +6 s a year on hour 6 against +0.7 s on the other three, as §8 predicts.
+
 **Asked** (user, 2026-10-06): *"Analyse the past runs and try connecting the slowdown periods with in-game events and situations."*
 
 **The corpus.** Every run that reached 1936.1.1 with a usable `run.log` and a mirrored `dedicated_server.log`: **291 runs** — 31 vanilla
