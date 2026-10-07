@@ -193,21 +193,25 @@ function Resolve-Quarantine([switch]$Final) {
   $newest = @(Get-ChildItem $Saves -Filter "*.v3" -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -Last 1).FullName
   foreach ($p in $o.decisions.PSObject.Properties) {
     $full = Join-Path $Saves $p.Name
+    $act = $p.Value.action
     if (-not (Test-Path -LiteralPath $full)) { continue }
-    if ($KeepLast -and $full -eq $newest) { continue }
     if ($jobs.ContainsKey($full) -or $blocked.ContainsKey($full)) { continue }
     $stem = [IO.Path]::GetFileNameWithoutExtension($p.Name)
     if (-not (Test-Path (Join-Path $Out "$stem.json.gz"))) { continue }         # never act on a save with no summary
+    $isNewest = $KeepLast -and $full -eq $newest
     # ⚠ try/catch: the watch instance and the post-run drain can overlap for a few minutes, so the file can vanish under us
     try {
-      if ($p.Value -eq 'keep') {
+      if ($act -eq 'keep') {
         New-Item -ItemType Directory -Force -Path $quarantineDir | Out-Null
-        Move-Item -LiteralPath $full -Destination (Join-Path $quarantineDir $p.Name) -Force -ErrorAction Stop
-        Log ("QUARANTINED {0} - slowed periods {1}" -f $p.Name, ((@($o.periods) | ForEach-Object { "$($_.start)-$($_.end) +$($_.peak_pct)%" }) -join ', '))
-      } elseif ($p.Value -eq 'release') {
+        $dest = Join-Path $quarantineDir $p.Value.as
+        # the newest save is the run's escape hatch and stays in saves\ — a quarantined newest goes in as a COPY
+        if ($isNewest) { if (-not $Final -or (Test-Path -LiteralPath $dest)) { continue }; Copy-Item -LiteralPath $full -Destination $dest -Force -ErrorAction Stop }
+        else { Move-Item -LiteralPath $full -Destination $dest -Force -ErrorAction Stop }
+        Log ("QUARANTINED {0} as {1} - episodes {2}" -f $p.Name, $p.Value.as, ((@($o.episodes) | ForEach-Object { "$($_.start)-$($_.end) +$($_.peak_pct)%" }) -join ', '))
+      } elseif ($act -eq 'release' -and -not $isNewest) {
         Remove-Item -LiteralPath $full -Force -ErrorAction Stop; $script:reaped++
       }
-    } catch { Log "quarantine: could not act on $($p.Name) ($($p.Value)): $_" "WARN" }
+    } catch { Log "quarantine: could not act on $($p.Name) ($act): $_" "WARN" }
   }
   if (Test-Path $quarantineDir) { Copy-Item (Join-Path $runDir 'slow_periods.json') (Join-Path $quarantineDir 'slow_periods.json') -Force -ErrorAction SilentlyContinue }
 }

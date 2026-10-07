@@ -1,27 +1,29 @@
-// THE SLOWDOWN QUARANTINE JUDGE (user-ruled 2026-10-07): which yearly autosaves of a run are KEPT for a later debug-mode look at what
-// slowed the game, and which the harvester may reap. Called by harvest_saves.ps1 before it deletes a summarised save; non-agentic.
+// THE SLOWDOWN QUARANTINE JUDGE (user-ruled 2026-10-07, the rule amended the same day): which yearly autosaves of a run are KEPT for a
+// later debug-mode look at what slowed the game (the game shows each subtask's tick time in ms in debug mode — MODDING_NOTES), and which
+// the harvester may reap. Called by harvest_saves.ps1 before it deletes a summarised save; non-agentic.
 //
-//   node tools/testbed/slow_quarantine.mjs <runDir> [--final] [--k 3] [--sigma 0.070] [--min-len 2]
-//   → JSON on stdout: { complete_through, periods:[{start,end,peak}], keep_years:[…], decisions:{ <save file name>: keep|release|wait } }
-//     and the same written to <runDir>/slow_periods.json (overwritten each call).
+//   node tools/testbed/slow_quarantine.mjs <runDir> [--final] [--k 3] [--restore 2]
+//   → JSON on stdout: { complete_through, episodes:[…], decisions:{ <save file>: { action: keep|release|wait, as?: <quarantine name> } } }
+//     and <runDir>/slow_periods.json; when an episode exists, <runDir>/quarantine_saves/MANIFEST.md (what to compare with what).
 //
-// THE RULING: "every year during a meaningfully slowed period is quarantined and then two in a row when the period ends, unless the game
-// ended", with a strong meaningfulness line (the user's preference: at least three sigma over last year).
-// THE MEASURE: wall seconds per in-game year from the game's own per-tick log (logs_live/dedicated_server.log, tick_profile.mjs's
-// parseTicks), the ticks either side of every month boundary dropped (the autosave and the monthly pulse — the same for every save
-// cadence) and the rest scaled to 1,460 ticks; a year with under 1,100 usable ticks (a crash-resume, the run's last partial year) is
-// SKIPPED, neither normal nor slowed.
-// THE LINE: year Y is SLOWED when ln t(Y) exceeds the BASELINE by more than K·σ (default 3 × 0.070 ⇒ +23%). The baseline is the median of
-// the last three NORMAL years' ln t, each projected forward to Y by the corpus's expected growth G; it is FROZEN while a period runs (a
-// trailing baseline would absorb a long slowdown — jex-n16 run 3, 3–4× in 1890–1903, read only +30–40% against one). σ = 0.070 is the
-// robust (MAD) spread of exactly this residual over 32,005 run-years of 354 century runs (2026-07-31 → 2026-10-07), median +0.0002.
-// "Last year" is read as "the last three normal years" so one unusually fast year cannot fake a jump.
-// A PERIOD = consecutive slowed years; it counts only at ≥ --min-len (default 2) years — a one-year spike (a war's opening, a big event)
-// is released. Quarantined: every save dated 1 January of a year in a counted period, and of the TWO years after it ends (unless the
-// game ended first). On the corpus: 182 of 354 runs carry such a period, ~4 saves a run on average (~0.2 GB).
-// DECISIONS: a save of year Y can be judged once years up to Y + min-len − 1 are complete (so a period's length and end are known);
-// before that it is `wait`. With --final (the run is over) every save is judged on what exists. A save that is not 1 January (a
-// quarterly cadence) is released: the ruling keeps one save per year. ⚠ The judge never deletes anything — the harvester acts.
+// THE RULING: "An 'episode' is when at least three consecutive years the difference between year X and year X-3 is over 3 sigma. The end of
+// the episode is when the speed is restored. We quarantine all saves during the episode and two after, but no more than 5 within episode
+// (earliest four and the last one stays)" — and the two after only "unless the game ended".
+// THE MEASURE: t(Y) = wall seconds per in-game year from the game's own per-tick log (logs_live/dedicated_server.log via tick_profile.mjs's
+// parseTicks), the ticks either side of every month boundary dropped (the autosave and the monthly pulse; the same for any save cadence),
+// the rest scaled to 1,460 ticks; a year with under 1,100 usable ticks (a crash-resume, a partial last year) is SKIPPED.
+// d3(X) = ln t(X) − ln t(X−3) − the corpus's expected growth over those three years (G below). σ3 = 0.092, the robust (MAD) spread of d3
+// over 32,011 run-years of 354 century runs (2026-07-31 → 2026-10-07), median +0.0008 ⇒ the 3σ line is +32%.
+// AN EPISODE starts at the first X with d3 > 3σ3 at X, X+1 and X+2. ITS END ("speed restored") = the last year before the first year after
+// X+2 whose t falls back within 2σ1 (+15%; σ1 = 0.070, the one-year spread of the same corpus) of the PRE-EPISODE SPEED — the median of
+// t(X−5 … X−3), projected to that year by G — an operational reading of "restored", PROPOSED with the rule, not ruled. Then the search
+// resumes after the end. On the corpus: 56 episodes in 51 of 354 runs (9 of 56 vanilla runs), lengths 3–30 years, ~7 saves an episode.
+// KEPT, per episode: the 1 January saves of its first four years and of its LAST year (≤ 5), and of the two years after it unless the run
+// ended first. Saves are RENAMED on the way in — <session>__<run>__<YYYY-MM-DD>__ep<N>_<role>.v3, role ∈ in1..in4 / last / after1 / after2 —
+// so a copy taken anywhere still says what it is; the MANIFEST says what to compare with what.
+// DECISIONS: a save of year Y is judged once years up to Y + 2 are complete (an episode starting at Y is only known then); a save in an
+// episode beyond its fourth year waits until the episode ends (only the last of them is kept). With --final (the run is over) everything
+// is judged on what exists. A save that is not 1 January (a quarterly cadence) is released. ⚠ The judge never deletes anything.
 import fs from 'node:fs'; import path from 'node:path'; import zlib from 'node:zlib';
 import { parseTicks } from './ledger/tick_profile.mjs';
 
@@ -32,6 +34,8 @@ const G = [0.012,0.012,0.013,0.011,0.012,0.012,0.017,0.015,0.012,0.008,0.005,0.0
   0.013,0.014,0.013,0.013,0.013,0.014,0.014,0.014,0.014,0.014,0.014,0.013,0.013,0.012,0.014,0.013,0.012,0.013,0.012,0.013,0.011,0.012,0.014,
   0.013,0.013,0.013,0.013,0.014,0.014,0.014,0.014,0.016];
 const g = y => G[y - 1837] ?? 0.012;
+const gs = (a, b) => { let s = 0; for (let z = a + 1; z <= b; z++) s += g(z); return s; };
+export const SIGMA3 = 0.092, SIGMA1 = 0.070;
 const ML = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const med = v => { const s = [...v].sort((a, b) => a - b); return s.length % 2 ? s[s.length >> 1] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2; };
 
@@ -45,21 +49,26 @@ export function yearTimes(runDir) {
   return { ty, complete: L.m === 12 && L.d === 31 && L.h === 18 ? L.y : L.y - 1 };
 }
 
-export function slowPeriods(ty, { k = 3, sigma = 0.070, through = 1936 } = {}) {
-  const P = []; let hist = [], cur = null;
-  for (let y = 1837; y <= through; y++) {
-    const t = ty[y]; if (!t) continue;                                  // a skipped year neither extends nor resets anything
-    const lt = Math.log(t);
-    if (hist.length >= 3) {
-      const base = med(hist.map(([yy, l]) => { let s = l; for (let z = yy + 1; z <= y; z++) s += g(z); return s; }));
-      const ex = lt - base;
-      if (ex > k * sigma) { if (!cur) cur = { start: y, end: y, peak: ex }; else { cur.end = y; cur.peak = Math.max(cur.peak, ex); } continue; }
+// episodes over the complete years; `open` = still running at the last complete year
+export function episodes(ty, { k = 3, restore = 2, through = 1936 } = {}) {
+  const d3 = y => ty[y] && ty[y - 3] ? Math.log(ty[y] / ty[y - 3]) - gs(y - 3, y) : null;
+  const E = []; let y = 1839;
+  while (y + 2 <= through) {
+    if (![0, 1, 2].every(i => { const v = d3(y + i); return v !== null && v > k * SIGMA3; })) { y++; continue; }
+    const x0 = y, pre = [x0 - 5, x0 - 4, x0 - 3].filter(z => ty[z]);
+    const base = z => med(pre.map(p => Math.log(ty[p]) + gs(p, z)));
+    let end = x0 + 2, peak = 0, open = true;
+    for (let z = x0; z <= through; z++) {
+      if (!ty[z]) continue;
+      const ex = Math.log(ty[z]) - base(z);
+      if (z > x0 + 2 && ex < restore * SIGMA1) { open = false; break; }
+      end = z; peak = Math.max(peak, ex);
     }
-    if (cur) { P.push(cur); cur = null; }
-    hist.push([y, lt]); if (hist.length > 3) hist.shift();
+    E.push({ start: x0, end, open, pre_speed_s_per_year: Math.round(Math.exp(base(x0))), peak_pct: Math.round(100 * (Math.exp(peak) - 1)),
+             speed_s_per_year: Object.fromEntries(Array.from({ length: end - x0 + 1 }, (_, i) => x0 + i).filter(z => ty[z]).map(z => [z, Math.round(ty[z])])) });
+    y = end + 1;
   }
-  if (cur) P.push({ ...cur, open: true });
-  return P.map(p => ({ ...p, peak_pct: Math.round(100 * (Math.exp(p.peak) - 1)) }));
+  return E;
 }
 
 function saveDate(runDir, file) {
@@ -73,28 +82,61 @@ function saveDate(runDir, file) {
 if ((process.argv[1] || '').endsWith('slow_quarantine.mjs')) {
   const a = process.argv.slice(2), opt = (key, d) => { const i = a.indexOf(key); return i >= 0 ? a[i + 1] : d; };
   const runDir = a.find((x, i) => !x.startsWith('--') && !a[i - 1]?.startsWith('--'));
-  if (!runDir) { console.error('usage: slow_quarantine.mjs <runDir> [--final] [--k 3] [--sigma 0.070] [--min-len 2]'); process.exit(2); }
-  const FINAL = a.includes('--final'), K = +opt('--k', 3), SIG = +opt('--sigma', 0.070), MINLEN = +opt('--min-len', 2);
+  if (!runDir) { console.error('usage: slow_quarantine.mjs <runDir> [--final] [--k 3] [--restore 2]'); process.exit(2); }
+  const FINAL = a.includes('--final'), K = +opt('--k', 3), RESTORE = +opt('--restore', 2);
+  const abs = path.resolve(runDir), RUN = path.basename(abs), SESSION = path.basename(path.dirname(abs));
   const { ty, complete } = yearTimes(runDir);
-  const periods = slowPeriods(ty, { k: K, sigma: SIG, through: complete });
-  const counted = periods.filter(p => p.end - p.start + 1 >= MINLEN);
-  const keep = new Set();
-  for (const p of counted) { for (let y = p.start; y <= p.end; y++) keep.add(y); if (!p.open) { keep.add(p.end + 1); keep.add(p.end + 2); } }
-  const decisions = {};
+  const E = episodes(ty, { k: K, restore: RESTORE, through: complete });
+  // year → { ep, role }: the roles the ruling keeps
+  const roleOf = new Map(), pending = new Set();          // pending = in an episode beyond its 4th year, the episode still running
+  E.forEach((e, i) => {
+    const n = i + 1;
+    for (let y = e.start; y <= e.end; y++) {
+      const k = y - e.start + 1;
+      if (k <= 4) roleOf.set(y, { ep: n, role: 'in' + k });
+      else if (y === e.end && (!e.open || FINAL)) roleOf.set(y, { ep: n, role: 'last' });
+      else if (e.open && !FINAL) pending.add(y);
+    }
+    if (!e.open) { roleOf.set(e.end + 1, { ep: n, role: 'after1' }); roleOf.set(e.end + 2, { ep: n, role: 'after2' }); }
+  });
+  const nameOf = (d, r) => `${SESSION}__${RUN}__${d.y}-${String(d.m).padStart(2, '0')}-${String(d.d).padStart(2, '0')}__ep${r.ep}_${r.role}.v3`;
+  const decisions = {}, planned = [];
   const sv = path.join(runDir, 'saves');
-  for (const f of fs.existsSync(sv) ? fs.readdirSync(sv).filter(x => x.endsWith('.v3')) : []) {
-    const d = saveDate(runDir, f); if (!d) { decisions[f] = 'wait'; continue; }           // not summarised yet: the harvester's job first
-    if (!(d.m === 1 && d.d === 1)) { decisions[f] = 'release'; continue; }
-    const Y = d.y;
-    if (keep.has(Y)) decisions[f] = 'keep';
-    else if (FINAL || Y + MINLEN - 1 <= complete) {
-      // an OPEN period (the slowdown still running at the last complete year) keeps the years after it too, once they come
-      const open = periods.find(p => p.open && Y >= p.start);
-      decisions[f] = open && (FINAL ? open.end - open.start + 1 >= MINLEN : true) ? (FINAL ? 'keep' : 'wait') : 'release';
-    } else decisions[f] = 'wait';
+  for (const f of fs.existsSync(sv) ? fs.readdirSync(sv).filter(x => x.endsWith('.v3')).sort() : []) {
+    const d = saveDate(runDir, f); if (!d) { decisions[f] = { action: 'wait' }; continue; }   // not summarised yet: the harvester's job first
+    if (!(d.m === 1 && d.d === 1)) { decisions[f] = { action: 'release' }; continue; }
+    const r = roleOf.get(d.y);
+    if (r) { decisions[f] = { action: 'keep', as: nameOf(d, r) }; continue; }
+    if (pending.has(d.y)) { decisions[f] = { action: 'wait' }; continue; }
+    decisions[f] = FINAL || d.y + 2 <= complete ? { action: 'release' } : { action: 'wait' };
   }
-  const out = { judged_at: new Date().toISOString(), final: FINAL, rule: { k: K, sigma: SIG, min_len: MINLEN, line_pct: Math.round(100 * (Math.exp(K * SIG) - 1)) },
-                complete_through: complete, periods, keep_years: [...keep].sort(), decisions };
+  const out = { judged_at: new Date().toISOString(), final: FINAL, session: SESSION, run: RUN,
+                rule: { k: K, sigma3: SIGMA3, line_pct: Math.round(100 * (Math.exp(K * SIGMA3) - 1)), restore_sigma1: RESTORE, sigma1: SIGMA1,
+                        restore_pct: Math.round(100 * (Math.exp(RESTORE * SIGMA1) - 1)) },
+                complete_through: complete, episodes: E, decisions };
   try { fs.writeFileSync(path.join(runDir, 'slow_periods.json'), JSON.stringify(out, null, 1)); } catch {}
+  // THE MANIFEST: one file a reader opens first — what each kept save is, and what to compare it with
+  if (E.length) {
+    const qd = path.join(runDir, 'quarantine_saves'); fs.mkdirSync(qd, { recursive: true });
+    const have = new Set(fs.readdirSync(qd));
+    const L = [`# Slowdown quarantine — ${SESSION} / ${RUN}`, '',
+      `Written by tools/testbed/slow_quarantine.mjs (judged ${out.judged_at}${FINAL ? ', final' : ', run still playing'}). Rule (user-ruled 2026-10-07): an EPISODE`,
+      `starts when, for three consecutive years X, the wall seconds per in-game year exceed year X−3's by more than 3σ (+${out.rule.line_pct}%, growth-adjusted);`,
+      `it ends when the speed is back within +${out.rule.restore_pct}% of the pre-episode speed. Kept: the first four years and the last year of each`,
+      `episode, and the two years after it (unless the run ended). Files are 1 January autosaves: \`<session>__<run>__<in-game date>__ep<N>_<role>.v3\`.`, '',
+      '**What to compare:** load an `in*` / `last` save (the game slowed) and an `after1` / `after2` save of the same episode (speed restored) in',
+      'debug mode, and compare each subtask\'s tick time in ms. The pre-episode speed below is the reference both are measured against.', ''];
+    E.forEach((e, i) => {
+      L.push(`## Episode ${i + 1}: ${e.start} → ${e.end}${e.open ? (FINAL ? ' (still slowed when the run ended)' : ' (still running)') : ''}`, '',
+        `Pre-episode speed: ~${e.pre_speed_s_per_year} s per in-game year (median of ${e.start - 5}–${e.start - 3}). Peak: +${e.peak_pct}% over it.`,
+        `Speed in the episode (s per in-game year): ${Object.entries(e.speed_s_per_year).map(([y, s]) => `${y} ${s}`).join(' · ')}`, '');
+      for (const [y, r] of [...roleOf].filter(([, r]) => r.ep === i + 1).sort((p, q) => p[0] - q[0])) {
+        const nm = nameOf({ y, m: 1, d: 1 }, r);
+        L.push(`- \`${nm}\` — ${r.role.startsWith('in') ? `episode year ${r.role.slice(2)} (slowed)` : r.role === 'last' ? 'the episode\'s last year (slowed)' : `${r.role === 'after1' ? 'first' : 'second'} year after it (restored)`}${have.has(nm) ? '' : ' — not (yet) here'}`);
+      }
+      L.push('');
+    });
+    try { fs.writeFileSync(path.join(qd, 'MANIFEST.md'), L.join('\n')); } catch {}
+  }
   console.log(JSON.stringify(out));
 }

@@ -2754,9 +2754,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ NOT to be confused with `save_summary.mjs` (below), which reads the RAW BINARY
                         and answers a different question
   testbed/slow_quarantine.mjs  ⭐ THE SLOWDOWN QUARANTINE JUDGE (user-ruled 2026-10-07; the wall-clock bullet): per run, from the per-tick log,
-                        which yearly saves sit in (or two years after) a meaningfully slowed period — `keep` / `release` / `wait`, plus
-                        `<run>/slow_periods.json`. Called by harvest_saves.ps1 before every reap; `<runDir> [--final] [--k 3] [--sigma 0.070]
-                        [--min-len 2]`. Exports `yearTimes()` / `slowPeriods()` for the cluster-2 reading
+                        which yearly saves sit in a slowdown EPISODE (d3 > 3σ3 three years running) or the two years after —
+                        `keep` (with its quarantine name) / `release` / `wait`, plus `<run>/slow_periods.json` and
+                        `<run>/quarantine_saves/MANIFEST.md`. Called by harvest_saves.ps1 before every reap; `<runDir> [--final] [--k 3]
+                        [--restore 2]`. Exports `yearTimes()` / `episodes()` for the cluster-2 reading
   testbed/harvest_saves.ps1  stages B-D: melt -> extract -> VERIFY -> reap, N workers (default 4), with
                         the queue-depth / GB / drain-rate progress line. ⭐ SINCE 2026-10-07 A SUMMARISED SAVE IS REAPED ONLY ON THE
                         QUARANTINE JUDGE'S `release` (slow_quarantine.mjs); `keep` moves it to `<run>\quarantine_saves\` for good.
@@ -5893,18 +5894,26 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   of the wall clock in writing, but the MAIN reports are based on 1 + 2 COMBINED. For 3 report only the NUMBER of such runs and WHICH listed
   bug. ⚠ The exact cluster-2 line and what counts as observing the loop "directly" were PROPOSED on 2026-10-07 and await the user's ruling
   (the session that made the quarantine reported both; until ruled, report the cluster-2 candidates with the criterion used).
-  ⭐⭐ **THE SLOWDOWN QUARANTINE (the same ruling) — non-agentic**: *"every year during a meaningfully slowed period is quarantined and then
-  two in a row when the period ends, unless the game ended"*, so the user can later load the save in **DEBUG MODE, where the game shows
-  each subtask's influence on tick speed in milliseconds** (MODDING_NOTES → Debugging; the investigation tool for cluster 2).
-  `harvest_saves.ps1` no longer reaps a summarised save at once: `tools/testbed/slow_quarantine.mjs` judges it from the run's own
-  per-tick log and `keep` MOVES it to `<run>\quarantine_saves\` (with `slow_periods.json`), `release` reaps it, `wait` holds it until its
-  year can be judged; the post-run drain passes `--final`; a judge failure reaps NOTHING. **The line**: wall seconds per in-game year
-  (month-boundary ticks dropped) more than **3σ above the frozen baseline** — the median of the last three normal years projected by the
-  corpus's expected growth, σ = **0.070**, the MAD spread of exactly that residual over 32,005 run-years of 354 runs ⇒ **+23%** — for at least
-  **2 consecutive years** (a one-year spike is released); saves of 1 January only. On the corpus: 182 of 354 runs carry such a period, ~4
-  saves a run (~0.2 GB). The baseline FREEZES during a period because a trailing one absorbs a long slowdown (jex-n16 run 3's 3–4× read
-  +30–40% against one). Proven end to end on a synthetic run folder carrying that run's real tick log (30 saves kept: 1883–86, 1889–1905,
-  1911–19). In use from run 6 of 20261006_193418 (runs 1–5 harvested on the old code). `-NoQuarantine` restores immediate reaping.
+  ⭐⭐ **THE SLOWDOWN QUARANTINE (the same ruling, its rule amended the same day) — non-agentic**, so the user can later load a save in
+  **DEBUG MODE, where the game shows each subtask's influence on tick speed in milliseconds** (MODDING_NOTES → Debugging; the investigation
+  tool for cluster 2). THE RULE (user): *"An 'episode' is when at least three consecutive years the difference between year X and year X-3
+  is over 3sigma. The end of the episode is when the speed is restored. We quarantine all saves during the episode and two after, but no
+  more than 5 within episode (earliest four and the last one stays)"* (the two after only "unless the game ended"). Implemented in
+  `tools/testbed/slow_quarantine.mjs`: t(Y) = wall seconds per in-game year from the per-tick log (month-boundary ticks dropped); d3(X) =
+  ln t(X) − ln t(X−3) − the corpus's expected growth; **σ3 = 0.092** (MAD over 32,011 run-years of 354 runs) ⇒ the line is **+32%**. ⚠ "Speed
+  restored" is read as t back within **+15% (2σ1, σ1 = 0.070)** of the pre-episode speed (median of X−5…X−3, growth-projected) — PROPOSED, not
+  ruled; an episode that steps up and never comes back (canon-je24 run 9: ~72 → ~96 s/yr in 1866–69) runs to the end of the game. On the
+  corpus ~56 episodes in 51 of 354 runs (9 of 56 vanilla), 3–30 years long. `harvest_saves.ps1` no longer reaps a summarised save at once:
+  the judge answers `keep` (MOVED to `<run>\quarantine_saves\` UNDER A SELF-DESCRIBING NAME, `<session>__<run>__<YYYY-MM-DD>__ep<N>_<role>.v3`,
+  role in1–in4 / last / after1 / after2; the newest save stays in `saves\` and goes in as a copy), `release` (reaped) or `wait` (an episode
+  starting at Y is known only at Y+2; in-episode years past the fourth wait for the episode's end); the post-run drain passes `--final`; a
+  judge failure reaps NOTHING. Beside the saves: **`MANIFEST.md`** (each episode, its pre-episode speed, the speeds through it, every kept
+  file with its role and WHAT TO COMPARE — a slowed `in*`/`last` save against the restored `after*` ones) and `slow_periods.json`. Proven end
+  to end on synthetic run folders carrying two real tick logs (jex-n16 run 3: 1890–1903 and 1911–18, 14 saves; canon-je24 run 9: 1869–94,
+  7). In use from run 6 of 20261006_193418 (runs 1–5 harvested on the old code). `-NoQuarantine` restores immediate reaping.
+  ⭐ **WHY A YEARLY SAVE SEES A FLEET LOOP** (the "direct observation" question): the loop is persistent state that grows ~340 path moves and
+  ~21k distance a year (run 4 of 20261006_193418: one German fleet id in every save 1899–1905, 220 → 2,248 moves, 15k → 145k), so a loop of
+  material size (≥125k) has been visible in ~5 consecutive yearly saves before it costs anything — not an intermittent state a save can miss.
   `tools/testbed/machine_monitor.ps1` beside a batch, read by `ledger/machine_load.mjs`, now records the machine every 20 s, so the next
   case is attributed (machine slower / other load / memory / the game's own work / waiting) instead of inferred from file times.
   ⭐ **SINCE 2026-09-13 THE TOTAL IS THE CENTURY'S PLAY TIME REBUILT FROM THE OBSERVER'S TICK LINES** (`tools/testbed/ledger/lib_wall.mjs`,
