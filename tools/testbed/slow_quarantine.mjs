@@ -16,12 +16,15 @@
 // over 32,011 run-years of 354 century runs (2026-07-31 → 2026-10-07), median +0.0008 ⇒ the 3σ line is +32%.
 // AN EPISODE starts at the first X with d3 > 3σ3 at X, X+1 and X+2. ITS END ("speed restored") = the last year before the first year after
 // X+2 whose t falls back within 2σ1 (+15%; σ1 = 0.070, the one-year spread of the same corpus) of the PRE-EPISODE SPEED — the median of
-// t(X−5 … X−3), projected to that year by G — an operational reading of "restored", PROPOSED with the rule, not ruled. Then the search
+// t(X−5 … X−3), projected to that year by G — the reading of "restored" the user accepted (2026-10-07). Then the search
 // resumes after the end. On the corpus: 56 episodes in 51 of 354 runs (9 of 56 vanilla runs), lengths 3–30 years, ~7 saves an episode.
-// KEPT, per episode: the 1 January saves of its first four years and of its LAST year (≤ 5), and of the two years after it unless the run
-// ended first. Saves are RENAMED on the way in — <session>__<run>__<YYYY-MM-DD>__ep<N>_<role>.v3, role ∈ in1..in4 / last / after1 / after2 —
-// so a copy taken anywhere still says what it is; the MANIFEST says what to compare with what.
-// DECISIONS: a save of year Y is judged once years up to Y + 2 are complete (an episode starting at Y is only known then); a save in an
+// KEPT, per episode: the 1 January save of year X−3 (the year the rule compares against — "before", user-asked 2026-10-07), those of its
+// first four years and of its LAST year (≤ 5), and of the two years after it unless the run ended first. Saves are RENAMED on the way in —
+// <session>__<run>__<YYYY-MM-DD>__ep<N>_<role>.v3, role ∈ before / in1..in4 / last / after1 / after2 (a save serving two episodes keeps
+// the first name it got; the MANIFEST points at it from both) — so a copy taken anywhere still says what it is; the MANIFEST says what to
+// compare with what.
+// DECISIONS: a save of year Y is judged once years up to Y + 5 are complete (it may be the "before" of an episode starting at Y + 3, which
+// is only known at Y + 5 — so ~6 saves, ~300 MB, sit unjudged in saves\ at any time); a save in an
 // episode beyond its fourth year waits until the episode ends (only the last of them is kept). With --final (the run is over) everything
 // is judged on what exists. A save that is not 1 January (a quarterly cadence) is released. ⚠ The judge never deletes anything.
 import fs from 'node:fs'; import path from 'node:path'; import zlib from 'node:zlib';
@@ -87,17 +90,18 @@ if ((process.argv[1] || '').endsWith('slow_quarantine.mjs')) {
   const abs = path.resolve(runDir), RUN = path.basename(abs), SESSION = path.basename(path.dirname(abs));
   const { ty, complete } = yearTimes(runDir);
   const E = episodes(ty, { k: K, restore: RESTORE, through: complete });
-  // year → { ep, role }: the roles the ruling keeps
+  // per episode the (year, role) pairs the ruling keeps; year → the FIRST { ep, role } it got (one save, one name)
   const roleOf = new Map(), pending = new Set();          // pending = in an episode beyond its 4th year, the episode still running
   E.forEach((e, i) => {
-    const n = i + 1;
+    const n = i + 1; e.parts = [[e.start - 3, 'before']];
     for (let y = e.start; y <= e.end; y++) {
       const k = y - e.start + 1;
-      if (k <= 4) roleOf.set(y, { ep: n, role: 'in' + k });
-      else if (y === e.end && (!e.open || FINAL)) roleOf.set(y, { ep: n, role: 'last' });
+      if (k <= 4) e.parts.push([y, 'in' + k]);
+      else if (y === e.end && (!e.open || FINAL)) e.parts.push([y, 'last']);
       else if (e.open && !FINAL) pending.add(y);
     }
-    if (!e.open) { roleOf.set(e.end + 1, { ep: n, role: 'after1' }); roleOf.set(e.end + 2, { ep: n, role: 'after2' }); }
+    if (!e.open) e.parts.push([e.end + 1, 'after1'], [e.end + 2, 'after2']);
+    for (const [y, role] of e.parts) if (!roleOf.has(y)) roleOf.set(y, { ep: n, role });
   });
   const nameOf = (d, r) => `${SESSION}__${RUN}__${d.y}-${String(d.m).padStart(2, '0')}-${String(d.d).padStart(2, '0')}__ep${r.ep}_${r.role}.v3`;
   const decisions = {}, planned = [];
@@ -108,7 +112,7 @@ if ((process.argv[1] || '').endsWith('slow_quarantine.mjs')) {
     const r = roleOf.get(d.y);
     if (r) { decisions[f] = { action: 'keep', as: nameOf(d, r) }; continue; }
     if (pending.has(d.y)) { decisions[f] = { action: 'wait' }; continue; }
-    decisions[f] = FINAL || d.y + 2 <= complete ? { action: 'release' } : { action: 'wait' };
+    decisions[f] = FINAL || d.y + 5 <= complete ? { action: 'release' } : { action: 'wait' };
   }
   const out = { judged_at: new Date().toISOString(), final: FINAL, session: SESSION, run: RUN,
                 rule: { k: K, sigma3: SIGMA3, line_pct: Math.round(100 * (Math.exp(K * SIGMA3) - 1)), restore_sigma1: RESTORE, sigma1: SIGMA1,
@@ -123,16 +127,19 @@ if ((process.argv[1] || '').endsWith('slow_quarantine.mjs')) {
       `Written by tools/testbed/slow_quarantine.mjs (judged ${out.judged_at}${FINAL ? ', final' : ', run still playing'}). Rule (user-ruled 2026-10-07): an EPISODE`,
       `starts when, for three consecutive years X, the wall seconds per in-game year exceed year X−3's by more than 3σ (+${out.rule.line_pct}%, growth-adjusted);`,
       `it ends when the speed is back within +${out.rule.restore_pct}% of the pre-episode speed. Kept: the first four years and the last year of each`,
-      `episode, and the two years after it (unless the run ended). Files are 1 January autosaves: \`<session>__<run>__<in-game date>__ep<N>_<role>.v3\`.`, '',
-      '**What to compare:** load an `in*` / `last` save (the game slowed) and an `after1` / `after2` save of the same episode (speed restored) in',
-      'debug mode, and compare each subtask\'s tick time in ms. The pre-episode speed below is the reference both are measured against.', ''];
+      `episode, the year X−3 it is compared against, and the two years after it (unless the run ended). Files are 1 January autosaves:`,
+      '`<session>__<run>__<in-game date>__ep<N>_<role>.v3`.', '',
+      '**What to compare:** in debug mode, load the episode\'s `before` save (normal speed — the year the rule compares against), an `in*` /',
+      '`last` save (slowed) and an `after1` / `after2` save (speed restored), and compare each subtask\'s tick time in ms.', ''];
     E.forEach((e, i) => {
       L.push(`## Episode ${i + 1}: ${e.start} → ${e.end}${e.open ? (FINAL ? ' (still slowed when the run ended)' : ' (still running)') : ''}`, '',
         `Pre-episode speed: ~${e.pre_speed_s_per_year} s per in-game year (median of ${e.start - 5}–${e.start - 3}). Peak: +${e.peak_pct}% over it.`,
         `Speed in the episode (s per in-game year): ${Object.entries(e.speed_s_per_year).map(([y, s]) => `${y} ${s}`).join(' · ')}`, '');
-      for (const [y, r] of [...roleOf].filter(([, r]) => r.ep === i + 1).sort((p, q) => p[0] - q[0])) {
-        const nm = nameOf({ y, m: 1, d: 1 }, r);
-        L.push(`- \`${nm}\` — ${r.role.startsWith('in') ? `episode year ${r.role.slice(2)} (slowed)` : r.role === 'last' ? 'the episode\'s last year (slowed)' : `${r.role === 'after1' ? 'first' : 'second'} year after it (restored)`}${have.has(nm) ? '' : ' — not (yet) here'}`);
+      const what = role => role === 'before' ? 'year X−3, before the episode (normal speed)' : role.startsWith('in') ? `episode year ${role.slice(2)} (slowed)`
+        : role === 'last' ? 'the episode\'s last year (slowed)' : `${role === 'after1' ? 'first' : 'second'} year after it (restored)`;
+      for (const [y, role] of e.parts) {
+        const r = roleOf.get(y), nm = nameOf({ y, m: 1, d: 1 }, r);
+        L.push(`- \`${nm}\` — ${what(role)}${r.ep !== i + 1 ? ` (the same save as episode ${r.ep}'s ${r.role})` : ''}${have.has(nm) ? '' : ' — not (yet) here'}`);
       }
       L.push('');
     });

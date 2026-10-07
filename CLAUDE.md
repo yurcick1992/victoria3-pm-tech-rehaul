@@ -2753,6 +2753,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ SAVE_SUMMARY_VERSION is bump-never-renumber, like TELEMETRY_VERSION.
                         ⚠ NOT to be confused with `save_summary.mjs` (below), which reads the RAW BINARY
                         and answers a different question
+  testbed/ledger/wall_clusters.mjs  ⭐ THE WALL CLOCK IN THE THREE RULED RUN CLUSTERS (2026-10-07): normal / inexplicably slowed (an episode,
+                        no listed bug observed) / a directly observed listed bug (the fleet path loop in the v16 summaries' worst paths);
+                        per arm the cluster-1 and cluster-2 medians, the MAIN median over 1 + 2, and the cluster-3 count and bug.
+                        `<label>=<session>[,<session>][:<setup>] [...] [--runs]`. Use it for every wall-clock report
   testbed/slow_quarantine.mjs  ⭐ THE SLOWDOWN QUARANTINE JUDGE (user-ruled 2026-10-07; the wall-clock bullet): per run, from the per-tick log,
                         which yearly saves sit in a slowdown EPISODE (d3 > 3σ3 three years running) or the two years after —
                         `keep` (with its quarantine name) / `release` / `wait`, plus `<run>/slow_periods.json` and
@@ -5892,25 +5896,33 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   (1) **NORMAL runs** in-batch; (2) **INEXPLICABLY SLOWED runs** — meaningfully diverging from the median on per-computational-unit wall-clock
   speed over some prolonged period, with no material explanation; (3) **runs affected by a LISTED bug**. ⇒ For 1 and 2 give SEPARATE medians
   of the wall clock in writing, but the MAIN reports are based on 1 + 2 COMBINED. For 3 report only the NUMBER of such runs and WHICH listed
-  bug. ⚠ The exact cluster-2 line and what counts as observing the loop "directly" were PROPOSED on 2026-10-07 and await the user's ruling
-  (the session that made the quarantine reported both; until ruled, report the cluster-2 candidates with the criterion used).
+  bug. ⭐ **RULED THE SAME DAY:** cluster 2 = a run with a slowdown EPISODE (the quarantine rule below) and no directly observed listed bug;
+  cluster 3 = a run where, during an episode, a save shows a fleet RECALLED for repairs with **≥ 200 path moves and ≥ 125k distance sailed**,
+  and the loop is GONE once the slowdown ends (an episode running to the end of the game needs only the loop present in its last year).
+  `tools/testbed/ledger/wall_clusters.mjs <label>=<session>[:<setup>] [...] [--runs]` applies both from the tick log and the v16 summaries and
+  prints the three clusters with the ruled medians. A run with no v16 summaries in its episode years is UNOBSERVABLE and stays in cluster 2
+  (first reading: vanilla n=16 10 / 6 / 0, main median 165.0 min; jex-n16 5 / 3 / 0, 184.3 min — every pre-v16 episode unobservable; a kept
+  save from inside an episode, like jex-n16 run 3's `diag_saves/` one F218 read, can establish the loop by hand, but not that it ended).
   ⭐⭐ **THE SLOWDOWN QUARANTINE (the same ruling, its rule amended the same day) — non-agentic**, so the user can later load a save in
   **DEBUG MODE, where the game shows each subtask's influence on tick speed in milliseconds** (MODDING_NOTES → Debugging; the investigation
   tool for cluster 2). THE RULE (user): *"An 'episode' is when at least three consecutive years the difference between year X and year X-3
   is over 3sigma. The end of the episode is when the speed is restored. We quarantine all saves during the episode and two after, but no
   more than 5 within episode (earliest four and the last one stays)"* (the two after only "unless the game ended"). Implemented in
   `tools/testbed/slow_quarantine.mjs`: t(Y) = wall seconds per in-game year from the per-tick log (month-boundary ticks dropped); d3(X) =
-  ln t(X) − ln t(X−3) − the corpus's expected growth; **σ3 = 0.092** (MAD over 32,011 run-years of 354 runs) ⇒ the line is **+32%**. ⚠ "Speed
-  restored" is read as t back within **+15% (2σ1, σ1 = 0.070)** of the pre-episode speed (median of X−5…X−3, growth-projected) — PROPOSED, not
-  ruled; an episode that steps up and never comes back (canon-je24 run 9: ~72 → ~96 s/yr in 1866–69) runs to the end of the game. On the
+  ln t(X) − ln t(X−3) − the corpus's expected growth; **σ3 = 0.092** (MAD over 32,011 run-years of 354 runs) ⇒ the line is **+32%**. "Speed
+  restored" = t back within **+15% (2σ1, σ1 = 0.070)** of the pre-episode speed (median of X−5…X−3, growth-projected) — accepted by the user;
+  an episode that steps up and never comes back (canon-je24 run 9: ~72 → ~96 s/yr in 1866–69) runs to the end of the game, AS INTENDED. ⭐ The
+  save of YEAR X−3 (the year the rule compares against) is kept too, as `before` (user-asked the same day), so a save of year Y is judged
+  only once Y + 5 is complete (~6 saves, ~300 MB, unjudged at any time). On the
   corpus ~56 episodes in 51 of 354 runs (9 of 56 vanilla), 3–30 years long. `harvest_saves.ps1` no longer reaps a summarised save at once:
   the judge answers `keep` (MOVED to `<run>\quarantine_saves\` UNDER A SELF-DESCRIBING NAME, `<session>__<run>__<YYYY-MM-DD>__ep<N>_<role>.v3`,
-  role in1–in4 / last / after1 / after2; the newest save stays in `saves\` and goes in as a copy), `release` (reaped) or `wait` (an episode
-  starting at Y is known only at Y+2; in-episode years past the fourth wait for the episode's end); the post-run drain passes `--final`; a
-  judge failure reaps NOTHING. Beside the saves: **`MANIFEST.md`** (each episode, its pre-episode speed, the speeds through it, every kept
-  file with its role and WHAT TO COMPARE — a slowed `in*`/`last` save against the restored `after*` ones) and `slow_periods.json`. Proven end
-  to end on synthetic run folders carrying two real tick logs (jex-n16 run 3: 1890–1903 and 1911–18, 14 saves; canon-je24 run 9: 1869–94,
-  7). In use from run 6 of 20261006_193418 (runs 1–5 harvested on the old code). `-NoQuarantine` restores immediate reaping.
+  role before / in1–in4 / last / after1 / after2 — a save serving two episodes keeps its first name; the newest save stays in `saves\` and goes
+  in as a copy), `release` (reaped) or `wait` (judged at Y+5; in-episode years past the fourth wait for the episode's end); the post-run
+  drain passes `--final`; a judge failure reaps NOTHING. Beside the saves: **`MANIFEST.md`** (each episode, its pre-episode speed, the speeds
+  through it, every kept file with its role and WHAT TO COMPARE — the `before` save (normal speed), a slowed `in*`/`last` save and a restored
+  `after*` one) and `slow_periods.json`. Proven end to end on synthetic run folders carrying two real tick logs (jex-n16 run 3: 1890–1903 and
+  1911–18, 16 saves; canon-je24 run 9: 1869–94, 8) and mid-run (the X−3 save held until the episode shows, then kept). In use from run 6 of
+  20261006_193418 (runs 1–5 harvested on the old code). `-NoQuarantine` restores immediate reaping.
   ⭐ **WHY A YEARLY SAVE SEES A FLEET LOOP** (the "direct observation" question): the loop is persistent state that grows ~340 path moves and
   ~21k distance a year (run 4 of 20261006_193418: one German fleet id in every save 1899–1905, 220 → 2,248 moves, 15k → 145k), so a loop of
   material size (≥125k) has been visible in ~5 consecutive yearly saves before it costs anything — not an intermittent state a save can miss.
