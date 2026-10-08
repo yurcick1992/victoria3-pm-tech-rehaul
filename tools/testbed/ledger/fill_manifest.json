@@ -52,9 +52,15 @@
     },
     {
       "name": "__REDFLAGS__",
-      "from": "input_price_flags.mjs --html (redflags.html)",
+      "from": "redflag_metrics.mjs (redflags_card.html; before 2026-10-08 input_price_flags.mjs --html's listing, redflags.html)",
       "required": true,
-      "means": "the input-price red flags, highlighted inline in the verdict: which major market, which industrially consumed good, when (BALANCE_FRAMEWORK §10.94)"
+      "means": "the input-price red flags in the verdict: the headline (problem market-years, chronic markets) and the summary — the listing stays in redflags_full.html (BALANCE_FRAMEWORK §10.94)"
+    },
+    {
+      "name": "__RF_SUMMARY__",
+      "from": "redflags_summary.html, written with the redflag-summary skill from redflags_digest.md",
+      "required": true,
+      "means": "3–15 sentences on the red flags: what dominates, where, why (2026-10-08)"
     },
     {
       "name": "__GOALS__",

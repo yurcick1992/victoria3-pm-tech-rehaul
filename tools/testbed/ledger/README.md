@@ -1,14 +1,17 @@
 # The Batch Ledger — reusable per-batch report
 
 `ledger_template.html` is the report shell (structure agreed 2026-08-15): verdict panel →
-World / Watchlist pages (tab switcher) → placeholders → incidents → next lever. Conventions it
+World / Watchlist pages (tab switcher) → incidents → next lever. Conventions it
 encodes, all user-ruled:
 
 - **Every graph/table gets a normalized/absolute toggle** unless there is a specific local reason not to.
 - ⭐ **THE TWO PAGES CARRY THE SAME PANELS IN THE SAME ORDER** (user-ruled 2026-08-24): **GDP →
   G4/G5 decomposition → employment by era (chart + table) → industry composition (VA) → research →
   build choice**, then page-specific extras (world: ladder, trajectory; watchlist: labour, tech
-  edge, ex-placeholders). A view diverges only for a stated reason, written in its caption — today
+  edge). ⭐ The "ex-placeholders" card (five metrics probed 2026-08-15) and the tech-edge table's "lost markets ◇" column were
+  DROPPED 2026-10-08 (user: "irrelevant for months, integrate or drop"): lost markets is answered by the Obsolescence panel (in-market vs
+  trade); market access, queue depth and the per-rung wage live in the off-page readers (save summaries' `states`, `queue_series.mjs`,
+  `rung_fate.mjs`); true employment per rung IS the employment-by-era panels. A view diverges only for a stated reason, written in its caption — today
   exactly one: the watchlist build-choice panel shows WORLD totals (no per-country cut computed
   yet). The **industry composition panel follows the SCOPE control as a detalisation**: whole
   economy = broad sectors, tiered sector = the exact 22 industries — same panel, deeper cut.
@@ -218,15 +221,22 @@ save summaries, and are parameterised only by the run list at the top of each fi
   market's and the world's frontier, and the caption says so.
   ⚠ The session's own yearly summaries carry no tariffs before v11. To split the trade-only row by tariff and trade policy,
   re-summarise the kept saves and pass `--override-dir`; `trade_obsolescence.mjs` prints those splits.
-- **`input_price_flags.mjs --html`** — ⭐ **THE INPUT-PRICE RED FLAGS, highlighted inline in the VERDICT** (user-ruled 2026-10-03,
-  BALANCE_FRAMEWORK §10.94): which major market held which industrially consumed good at ≥ 1.70 × base for ≥ 2 years (HIGH) or swung it
-  ≥ 0.5 × base within 3 years on < 10 units a week of supply (SWING), when, and the buyers present (building · method, most levels at a
-  reading, in how many readings — a buyer seen once is not the starved industry, F215). `fill_ledger.sh` writes
-  `redflags.html` (+ `redflags.json`); `fill_assemble.mjs` splices it as `__REDFLAGS__` above the goal table, and an out dir without it
-  says so on the page. The fill passes vanilla's line by default (`--ref "vanilla (eleven-tag set, n=4)=20260920_225047_schedule,
-  20260920_192007_schedule:vanilla"`, `--yearly` so both sides read one reading a year) — at the ruled line vanilla throws ~21 SWING flags
-  a century run, so a book's SWING count means little without it; that reference's v9 summaries carry no trade, so the card prints the
-  book's counts on production alone beside it (like for like). Not a loss term.
+- **`input_price_flags.mjs` → `redflag_metrics.mjs` → the redflag-summary skill** — ⭐ **THE INPUT-PRICE RED FLAGS IN THE VERDICT, AS A
+  HEADLINE AND A SUMMARY** (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.94; reshaped 2026-10-08 — the flag-by-flag listing had reached 1,625
+  flags / 576k characters on the jex n=16 report, "at least 100 times too large to be readable"). `fill_ledger.sh` writes the listing to
+  **`redflags_full.html`** (KEPT beside REPORT.html in the session folder, never on the page) and `redflags.json`; **`redflag_metrics.mjs <outDir>`**
+  (`lib_redflag_metrics.mjs`) then writes `redflags_metrics.json`, **`redflags_digest.md`** (~15 KB: per market the problem years, per market · good
+  the runs, span, price, supply, demand, producers and buyers) and **`redflags_card.html`**, which `fill_assemble.mjs` splices as `__REDFLAGS__`.
+  The card's two numbers, per run and given as median · range:
+  **PROBLEM MARKET-YEARS** — Σ over the eight major markets (British, American, French, Dutch, Belgian, German, Russian, Japanese — the ones the flags
+  have always been read on) of the in-game years under a HIGH flag on ≥ 10 units/wk of BUILDING demand (the demand floor drops the phantom HIGHs: a
+  good nobody makes and almost nobody eats sits at the band edge for decades), of 800; and **CHRONIC MARKETS** — markets with ≥ 20 such years. Beside
+  them: the split by period (1836–69 / 1870–99 / 1900–35) and by market. ⚠ The first-proposed forms ("years with a problem in any market", "markets
+  with a problem in ≥ 5 of the 99 two-year windows") SATURATE on the four-rung books (jex n=16: 96 of 100 and 8 of 8) and stay in the JSON only.
+  ⚠ BASIS: the order books price a good with demand and no producer at the band edge, the save summaries leave it unpriced, so the two read
+  several-fold apart; the vanilla references are summary-only, so the like-for-like vanilla column uses the book's `prodFlags` (input_price_flags.mjs
+  keeps them since 2026-10-08). The card's `__RF_SUMMARY__` is **`redflags_summary.html`**, 3–15 sentences written with the **redflag-summary
+  skill** (`.claude/skills/redflag-summary/SKILL.md`) from the digest; without it fill_verify refuses the report. Not a loss term.
 - **`batch_tables.mjs`** — the F106-layout READING tables for an arm that spans SEVERAL sessions (2026-09-09, F107):
   pools ÷ GDP, the tiered goods' prices (British market + the seven-market pool per dump date, arm beside vanilla, the 1935
   ratio), wage units, British production ÷ vanilla at 1900 and 1935, GDP ÷ vanilla — medians over the USABLE runs pooled across

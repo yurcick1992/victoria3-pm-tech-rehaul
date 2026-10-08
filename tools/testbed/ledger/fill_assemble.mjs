@@ -91,11 +91,23 @@ s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
     const p = join(DIR, file);
     if (existsSync(p)) tok[name] = readFileSync(p, 'utf8');
   }
+  // ⭐ SINCE 2026-10-08 THE PAGE CARRIES THE RED FLAGS' HEADLINE AND A SUMMARY, NOT THE LISTING (user: "at least 100 times too large to be
+  //   readable"): redflag_metrics.mjs writes redflags_card.html with a __RF_SUMMARY__ token, the redflag-summary skill writes
+  //   redflags_summary.html (3–15 sentences), and the flag-by-flag listing stays in redflags_full.html beside the report. The card wins over a
+  //   legacy redflags.html (an out dir from before the change, which held the listing itself). Without a summary the token stays and
+  //   fill_verify refuses the report.
+  if (existsSync(join(DIR, 'redflags_card.html'))) {
+    const card = readFileSync(join(DIR, 'redflags_card.html'), 'utf8'), sp = join(DIR, 'redflags_summary.html');
+    // the summary goes INTO the card here, not through the token map: the map is applied in key order, and a token spliced after its own
+    // substitution has run would survive into the page
+    tok.__REDFLAGS__ = existsSync(sp) ? card.split('__RF_SUMMARY__').join(readFileSync(sp, 'utf8')) : card;
+    if (!existsSync(sp)) console.log('  ⚠ redflags_summary.html absent — write it with the redflag-summary skill; fill_verify will refuse the report');
+  }
   // ⭐ THE INPUT-PRICE RED FLAGS ARE PART OF EVERY REPORT (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.94): fill_ledger.sh writes redflags.html
   //   with ledger/input_price_flags.mjs --html. An out dir from before the ruling has none — it says so ON THE PAGE rather than dropping the card.
   if (!tok.__REDFLAGS__) {
-    tok.__REDFLAGS__ = '<p class="dim">⚑ Input-price red flags: not read for this report (no redflags.html — run <code>input_price_flags.mjs --html</code>, BALANCE_FRAMEWORK §10.94).</p>';
-    console.log('  ⚠ redflags.html absent — the page says the red flags were not read');
+    tok.__REDFLAGS__ = '<p class="dim">⚑ Input-price red flags: not read for this report (no redflags_card.html — run <code>input_price_flags.mjs --json</code> then <code>redflag_metrics.mjs</code>, BALANCE_FRAMEWORK §10.94).</p>';
+    console.log('  ⚠ redflags_card.html absent — the page says the red flags were not read');
   }
   // ⚠ SEVERAL TOKENS LAND INSIDE SINGLE-QUOTED JS STRINGS (__ARMLABEL__, __SPREAD__, … in render1's chart labels and captions), so a
   //   straight apostrophe in one ("vanilla's path") is a SYNTAX ERROR that blanks every renderer after it — fill_verify caught it on

@@ -50,8 +50,6 @@ td.num,th.num{text-align:right}
 .neg{color:var(--bad);font-weight:600}
 .pill{display:inline-block;border-radius:3px;padding:2px 9px;font-size:12px;font-weight:600;white-space:nowrap}
 .pill.ok{background:var(--okbg);color:var(--ok)}.pill.warn{background:var(--warnbg);color:var(--warn)}.pill.bad{background:var(--badbg);color:var(--bad)}
-.ph{border:1.5px dashed var(--phdash);border-radius:3px;color:var(--ink3);background:transparent;padding:2px 8px;font-size:12px;white-space:nowrap}
-.phcell{color:var(--ink3);font-style:italic}
 .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--ink2);align-items:center}
 .sw{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 figure{margin:0;display:flex;flex-direction:column;gap:8px}
@@ -595,24 +593,13 @@ function renderPerf(mode){
   <div class="card tablewrap">
   <h3>The tech edge (watchlist-wide, not filtered)</h3>
   <table id="t-watch">
-    <tr><th>year</th><th class="num">GDP ×van</th><th class="num">mean stock era <span class="dim">· GBR · p25</span></th><th class="num">non-productive <span class="dim">(vs van)</span></th><th class="num">frontier share of output</th><th class="num">lost markets ◇</th></tr>
+    <tr><th>year</th><th class="num">GDP ×van</th><th class="num">mean stock era <span class="dim">· GBR · p25</span></th><th class="num">non-productive <span class="dim">(vs van)</span></th><th class="num">frontier share of output</th></tr>
   </table>
   <p class="small">Stock era = level-weighted mean era of a country's tier buildings. Frontier share = of the
   15 industrial goods, the median share of world output produced by countries holding that industry's newest
-  researched technology. <b>Lost markets ◇</b> is <b>not yet gathered</b> (needs import origins; see below).</p>
+  researched technology. Who loses a market to a better-equipped rival is read in the Obsolescence panel (in-market vs trade).</p>
   </div>
 
-  <div class="card">
-  <h3>Ex-placeholders — collection status and first real values (probes of 2026-08-15, telemetry v13)</h3>
-  <table>
-    <tr><th>Metric, in game terms</th><th>Status</th><th>First real data</th><th>Route to the full series</th></tr>
-    <tr><td><span class="ph">◇ lost markets</span></td><td><span class="pill ok">gatherable</span></td><td>1836.2 probe: 33 nonzero market-pair flows over 7 goods — FRA imports <b>11.53 engines/wk from the American market</b> and 0.46 from the British; USA imports 12.98 paper from the Russian.</td><td><span class="mono">origins</span> in the next full batch. ⚠ Rides phase 3 — span past the last dump +3 months (probe 1's lesson).</td></tr>
-    <tr><td><span class="ph">◇ market access</span></td><td><span class="pill ok">gatherable</span></td><td>1836.2 probe, 420 states of 6 tags: <b>every tagged state reads access 1.0000</b> — no infrastructure throttle at the start. GBR Home Counties: infra 205.81, used 153.40 (75%).</td><td>NEW <span class="mono">state_access</span> (v13) at every dump of the next batch.</td></tr>
-    <tr><td><span class="ph">◇ queue depth</span></td><td><span class="pill warn">levels only</span></td><td>1836.2 probe, queued-but-unbuilt levels: <b>GBR 4 (0 gov + 4 private) · USA 7 (5+2) · RUS 6 (6+0) · FRA 3 · PRU 2 · TUR 4</b>.</td><td>NEW <span class="mono">construction_queue</span> (v13). Composition by building type is not exposed to script — levels and gov/private split only.</td></tr>
-    <tr><td><span class="ph">◇ wage catch-up per rung</span></td><td><span class="pill warn">derivable</span></td><td>—</td><td>No building-scope wage function exists (exe pool checked). Derive offline: SW state wages × BINV per-building employment.</td></tr>
-    <tr><td><span class="ph">◇ true employment per rung</span></td><td><span class="pill ok">collected</span></td><td>Day-7 BINV inventory of THIS run, exact: tier employment <b>6.96M at 1836</b> — e0 4.75 · e1 1.96 · e2 0.25. Cross-check: the charts' estimate reads 3.52/1.84/0.27 at 1840 — same order, <b>e0 biased low ~20%</b> (start staffing differences + the four-year gap).</td><td>BINV fires once (day 7) today; re-wiring it to every dump is the route to an exact century series (burst-phasing care needed: ~8.9k lines per firing).</td></tr>
-  </table>
-  </div>
 
   </div>
 
@@ -949,7 +936,7 @@ const wat=document.getElementById('t-watch');
 for(const y of YEARS){
   const w=WATCH[y];
   wat.insertRow().innerHTML='<td>'+y+'</td><td class="num '+((w[0]>=0.8&&w[0]<=1.25)?'':'vbad')+'">'+w[0].toFixed(2)+'×</td><td class="num">'+w[1].toFixed(2)+' <span class="dim">· '+w[2].toFixed(2)+' · '+w[3].toFixed(2)+'</span></td>'+
-    '<td class="num">'+cmp(w[4],w[5])+'</td><td class="num">'+w[6]+'%</td><td class="num phcell">—◇</td>';
+    '<td class="num">'+cmp(w[4],w[5])+'</td><td class="num">'+w[6]+'%</td>';
 }
 
 // ---------- generic line chart ----------

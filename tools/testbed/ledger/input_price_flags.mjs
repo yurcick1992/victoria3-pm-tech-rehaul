@@ -21,6 +21,9 @@
 //   node tools/testbed/ledger/input_price_flags.mjs <label>=<session>[,<session>][:<setup>] [...] [--source auto|market|summary|both]
 //        [--high 1.70] [--years 2] [--gap 1.1] [--swing 0.5] [--window 3] [--supply 10] [--yearly] [--from Y] [--until Y] [--list 40]
 //        [--json <file>] [--html <file>] [--md] [--ref <label>=<session>[,<session>][:<setup>]]…
+//   ⭐ The report shows NOT this listing but redflag_metrics.mjs's headline (problem market-years, chronic markets) and a 3–15-sentence summary
+//   (user-ruled 2026-10-08: the listing "is at least 100 times too large to be readable"); fill_ledger.sh writes `--html` to redflags_full.html,
+//   which is kept beside the report, and `--json` to redflags.json, which redflag_metrics.mjs reads.
 //   --ref names a REFERENCE arm (the eleven-tag vanilla set, say): read the same way, reported in the prose as one line of counts per run and the
 //   goods it flags, so a book's flags can be told from the game's own.
 import fs from 'node:fs'; import path from 'node:path'; import zlib from 'node:zlib';
@@ -252,9 +255,13 @@ for (const [spec, ref] of [...argv.map(s => [s, false]), ...REFS.map(s => [s, tr
     // the counts on the basis a PRE-v10 summary reference is read on — save summaries, supply = production ALONE — so an arm read from the
     // order books or from v10+ summaries (imports in its supply) can be put beside such a reference like for like (the eleven-tag vanilla set
     // is v9: no trade). HIGH does not read supply, so only its SOURCE differs; SWING differs in both
-    const prodBasis = { high: 0, swing: 0 };
-    for (const a0 of SS.series.values()) { const a = thin(a0.filter(p => Number.isFinite(p.r))).map(p => ({ ...p, sup: p.prod })); if (!resolves(a)) continue;
-      prodBasis.high += highFlags(a).length; prodBasis.swing += swingFlags(a).length; }
+    // ⭐ the flags themselves are kept too (2026-10-08, `prodFlags` in the JSON): redflag_metrics.mjs scores problem market-years on them, which
+    //   is the only basis the pinned vanilla references can be put beside
+    const prodBasis = { high: 0, swing: 0 }, prodFlags = [];
+    for (const [k, a0] of SS.series) { const a = thin(a0.filter(p => Number.isFinite(p.r))).map(p => ({ ...p, sup: p.prod })); if (!resolves(a)) continue;
+      const [market, good] = k.split('|'), hs = highFlags(a), ss = swingFlags(a);
+      prodBasis.high += hs.length; prodBasis.swing += ss.length;
+      for (const e of [...hs, ...ss]) prodFlags.push({ market, good, type: e.type, from: e.from, to: e.to, lo: r2(e.lo), hi: r2(e.hi), sup: r1(e.sup), dem: r1(e.dem) }); }
     for (const src of srcs) {
       const S = src === 'market' ? M : SS;
       const flags = []; let resolvedSeries = 0;
@@ -274,7 +281,7 @@ for (const [spec, ref] of [...argv.map(s => [s, false]), ...REFS.map(s => [s, tr
       }
       flags.sort((x, y) => MAJOR.indexOf(x.market) - MAJOR.indexOf(y.market) || x.good.localeCompare(y.good) || x.from - y.from);
       arm.runs.push({ run, source: src, cadence: src === 'market' ? `${S.gw} yearly GW readings` : `${S.n} summaries`, resolvedSeries,
-        withTrade: src === 'summary' && SS.withTrade > 0, summariesWithTrade: SS.withTrade > 0, prodBasis, flags });
+        withTrade: src === 'summary' && SS.withTrade > 0, summariesWithTrade: SS.withTrade > 0, prodBasis, prodFlags, flags });
     }
   }
 }
@@ -334,7 +341,8 @@ function prose(fmt) {
     // that would eat the good may be the one that never began (the user, 2026-10-03: never dismiss a swing for want of demand)
     // 'buyers present', not 'eaten by': a building that ran an oil-eating method at ONE reading of four is not the industry the price starved
     const eatOf = cs => cs.length ? `buyers present (building · method, most levels at a reading): ${cs.map(consText).join(', ')}` : 'no buyer in the market';
-    const runTag = f => runs > 1 ? '; run ' + f.run.split('/')[1].slice(3, 6) : '';
+    const multiSess = new Set(a.runs.map(r => r.run.split('/')[0])).size > 1;
+    const runTag = f => runs > 1 ? '; run ' + (multiSess ? f.run.split('/')[0] + '/' : '') + f.run.split('/')[1].slice(3, 6) : '';
     const full = f => `${fmtY(f.from)}–${fmtY(f.to)} (${f.lo.toFixed(2)}–${f.hi.toFixed(2)}× base on ${supplyText(f)} against ${r1(f.dem)} of building demand, producers ${f.producers_staffed ?? '?'} staffed levels; ${eatOf(f.consumers || [])}${runTag(f)})`;
     const byMG = fs => { const m = {}; for (const f of fs) ((m[f.market] ||= {})[f.good] ||= []).push(f);
       return Object.entries(m).sort((x, y) => MAJOR.indexOf(x[0]) - MAJOR.indexOf(y[0])); };

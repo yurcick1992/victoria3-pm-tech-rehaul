@@ -130,6 +130,9 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 - **DEFECT** · `fill_consts.mjs`'s "productive workers" subtracts a levels-scale staffing (held: moving it restates a shipped number) · CLAUDE.md
 - **DEFECT** · `deviates_from_vanilla` is a six-path probe list; it should walk the built mod · ROADMAP DEFERRED FIXES
 - **DEFECT** · the binary save reader is trusted only below ~104 MB (per-market pops, per-state local supply) · CLAUDE.md
+- **RULING** · THE RED-FLAG HEADLINE'S TWO THRESHOLDS (2026-10-08, BALANCE_FRAMEWORK §10.94 rule 9): a problem year counts a HIGH flag only on ≥ 10 units/wk of building demand, and a market is chronic at ≥ 20 problem years — both proposed (the user's own sketch, any-market years and ≥ 5 of 99 two-year windows, saturates at 96/100 and 8/8 on jex n=16) · `lib_redflag_metrics.mjs`
+- **OPEN** · a vanilla batch with the yearly order-book feed (`market_goods_wide`, on by default since 2026-10-03) — until one exists the red-flag headline has no vanilla twin on the order books, only on the summaries · §10.94 rule 9
+- **OPEN** · copy the redone jex n=16 report (artifact BjmxoKZjkYL6fUypJd5XPf v3) and its full red-flag listing (KdPDv6wH1hb77iJ9GNBtdX) into `20261006_193418_jex-n8-v16` on the machine — the 2026-10-08 redo ran in a cloud session without the session folder; a fresh `fill_ledger.sh` there writes redflags.json and the summary-basis column too
 
 ## G. Testbed instrument (TESTBED_LANDMINES)
 

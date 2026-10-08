@@ -9548,10 +9548,22 @@ shortages and stifled growth for some countries, even if on average it looks OK.
    buyer in the market" with the rungs that would eat it. ⚠ A buyer present at one reading of four is not the industry the price starved (F215: the card
    once read "tooling workshop" for seven Assembly Lines levels at one reading of a German oil market that had no oil economy at all).
 7. **Where it is read** — the ledger's VERDICT section carries the flags as a highlighted card above the goal table (`fill_ledger.sh` writes
-   `redflags.html`; the template's `__REDFLAGS__`; an out dir without it says so on the page), and every probe readout prints `--md`. A reference arm
+   `redflags.html`; the template's `__REDFLAGS__`; an out dir without it says so on the page — since 2026-10-08 the headline card of rule 9 in its
+   place), and every probe readout prints `--md`. A reference arm
    (`--ref`, the vanilla set) prints one line of counts per run beside the book's flags — and where the reference's summaries carry no trade (the
    eleven-tag set is v9) the book's counts ON THAT BASIS (production alone) beside it, so the comparison is like for like.
 8. **Not a loss term and not a register flag**, for now.
+9. ⭐ **THE REPORT SHOWS A HEADLINE AND A SUMMARY, NOT THE LISTING (user-ruled 2026-10-08).** The listing had reached 1,625 flags (576k characters)
+   on the jex n=16 report — "at least 100 times too large to be readable". The user asked for "a short metric or two of how problematic the situation
+   is for major markets" and a summary of 3–15 sentences, the whole listing saved but not shown. Implemented (`redflag_metrics.mjs`,
+   `lib_redflag_metrics.mjs`, the redflag-summary skill): **PROBLEM MARKET-YEARS** — Σ over the eight major markets of the in-game years under a HIGH
+   flag on ≥ 10 units a week of BUILDING demand, of 800 — and **CHRONIC MARKETS**, those with ≥ 20 such years, each as median · range over the runs,
+   with the split by period and by market beside them; the listing goes to `redflags_full.html`, kept beside the report. ⚠ The demand floor reuses the
+   ruled SWING line's 10 units and drops the phantom HIGHs (a good nobody makes and almost nobody eats — radios, obsolete clippers — at the band edge
+   for decades): on jex n=16 it takes the median from 259 to 212.5 market-years. ⚠ The two forms the user sketched — years with a problem in any market,
+   and markets with a problem in ≥ 5 of the 99 two-year windows — saturate on that book (96 of 100, 8 of 8; 86 and 7 with the floor) and are kept in
+   the JSON only. ⚠ A vanilla line is like for like only on the summaries' basis; the order-book readings have no vanilla twin until a vanilla batch
+   with yearly GW lines exists. PROPOSED, the thresholds (10 units, 20 years) awaiting the user's word.
 
 **Calibration (FINDINGS F212 §7, yearly readings over the century):** vanilla (the eleven-tag set, n=4) 0.5 HIGH and 20.8 SWING flags per run (1.5
 HIGH-years per run: Russian engines 1859–63, American explosives 1861–63); the canon 1.8 HIGH (9.3 HIGH-years) and 28.0 SWING; `e1a12-artmerge` 0.3 (0.7)

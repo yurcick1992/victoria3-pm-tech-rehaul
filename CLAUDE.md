@@ -2994,12 +2994,23 @@ tools/                  dev tooling — NOT shipped in the mod
                         book alone, so a CONTROL run priced no steel/tools/engines/paper/fertilizer/explosives/glass — F212's first "vanilla never flags"
                         was that. `<label>=<session>[,<session>][:<setup>] [...] [--ref <label>=<session…>[:<setup>]] [--source auto|market|summary|both]
                         [--yearly] [--from Y] [--until Y] [--list 40] [--html <file>] [--md] [--json <file>]` (thresholds `--high --years --gap --swing
-                        --window --supply`); `--ref` adds a REFERENCE arm reported as one count line in the prose; `--html` writes the ledger's highlighted
-                        verdict card (fill_ledger.sh → redflags.html → `__REDFLAGS__`), `--md` the probe readout's prose; `--yearly` thins quarterly
+                        --window --supply`); `--ref` adds a REFERENCE arm reported as one count line in the prose; `--html` writes the flag-by-flag
+                        LISTING (fill_ledger.sh → redflags_full.html, kept beside the report, OFF the page since 2026-10-08), `--json` keeps every flag
+                        and, since 2026-10-08, the summary-basis flags too (`prodFlags`), `--md` the probe readout's prose; `--yearly` thins quarterly
                         summaries so arms of mixed cadence compare. ⚠ A --ref read on a v9 summary (no trade: production alone) gets the book's counts on THAT basis
                         printed beside it (vanilla 0.5 HIGH / 20.8 SWING a run, the arm n=3 1.3 / 26.7). ⚠ At the ruled line vanilla itself throws ~21 SWING flags a century run (books 23–28):
                         read SWING against the `--ref` line; the HIGH years separate books from vanilla ×5–6. The pinned vanilla n=16 has v8 summaries (no
                         goods_sales), so the yearly vanilla reference is the eleven-tag set (20260920_225047 + 20260920_192007 run 1, n=4) — say so where quoted
+  testbed/ledger/lib_redflag_metrics.mjs + redflag_metrics.mjs  ⭐ THE RED FLAGS AS A HEADLINE (user-ruled 2026-10-08: the listing — 1,625 flags,
+                        576k characters on the jex n=16 report — "is at least 100 times too large to be readable"). `redflag_metrics.mjs <outDir>
+                        [--json redflags.json] [--span 1836-1935]` writes redflags_metrics.json, redflags_digest.md (~15 KB, what the summary is written
+                        from) and redflags_card.html (the report's `__REDFLAGS__`: the metrics table + `__RF_SUMMARY__` + the rule line). The two numbers:
+                        PROBLEM MARKET-YEARS = Σ over the eight major markets of the years under a HIGH flag on ≥ 10 units/wk of building demand (of 800),
+                        and CHRONIC MARKETS = markets with ≥ 20 such years; beside them the split by period and by market. ⚠ "Years with a problem in any
+                        market" and "markets with ≥ 5 of the 99 two-year windows" SATURATE on the four-rung books (96/100, 8/8) and stay in the JSON only.
+                        ⚠ The like-for-like vanilla column is on the summaries' basis (`prodFlags`), never the order books'. The summary itself is written
+                        with the **redflag-summary skill** (`.claude/skills/redflag-summary/SKILL.md`) into redflags_summary.html; fill_verify refuses a
+                        report without it. First read: jex n=16 212.5 (128–267) problem market-years, 4 (2–6) chronic markets, Japan 60 and Russia 40
   testbed/ledger/old_rungs_by_industry.mjs  OLD RUNGS BESIDE THEIR REPLACEMENT, PER INDUSTRY, ACROSS ARMS (2026-10-03, F210's addendum): the
                         ledger's countrySplit rule (a worker on a rung two+ eras behind the best rung his own country staffs in the industry) per
                         industry, medians of each arm's runs, as workers and as % of the industry, plus the e0+e1 share, for the shortlist pool and
@@ -5418,7 +5429,8 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   probed with `tools/testbed/probe_resume.ps1`: with `autosave.v3` absent and four intact slots beside it the engine logs `Could not
   load save game [autosave]` and begins a fresh 1836 game; a save from another campaign copied in under that title loads in 28 s. A
   CTD during the autosave write (run 2 of 20260914_173832: the 1858 save never completed) therefore defeated every step-back. Now: on
-  a crash a PROCESS opens — the whole autosave set is quarantined into `<run>esume_set_<n>`, newest first, frozen — and each attempt
+  a crash a PROCESS opens — the whole autosave set is quarantined into `<run>
+esume_set_<n>`, newest first, frozen — and each attempt
   FEEDS one member as a COPY under the pointer's title; whatever the engine writes meanwhile is set aside into `resume_attempts` and
   never fed. A re-crash within `-ResumeWindowYears` (5) of the process's first crash feeds the NEXT-OLDER ORIGINAL (a crash that soon
   is presumed the same cause); beyond the window a new process opens from the engine's current slots and the old one is trimmed to its
