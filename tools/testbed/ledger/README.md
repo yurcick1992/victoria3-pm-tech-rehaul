@@ -181,6 +181,8 @@ save summaries, and are parameterised only by the run list at the top of each fi
 - **`fill_research.mjs`** — `techsT` (technologies held per era/tree, mean per country, both arms from
   `technologies_held`) and `jeT` (journal entries). ⚠⚠ **JE firings are DISTINCT `(stage, technology,
   country)` triples, never raw log lines** — landmine **L23** measured raw lines overcounting 2.25×.
+- **`redflag_metrics.mjs`'s card is COLLAPSED by default** (user-ruled 2026-10-08): a `<details>` whose summary line carries only the
+  two headline numbers; the table, the 3–15-sentence summary and the rule line open on a click.
 - **`fill_build_perf.mjs`** — the PERF const from `perf_raw.json` (see the shape warning below).
 - **`fill_goals.mjs`** — the verdict rows. ⚠ **Every row reads POSITIONALLY**: metric A · metric B →
   value A · value B → target A · target B. A term with no agreed target carries an explicit em-dash;
@@ -193,12 +195,13 @@ save summaries, and are parameterised only by the run list at the top of each fi
   ⭐⭐ **REVIEWED AGAINST THE RULED CRITERIA 2026-10-08** (user: *"G1 verdict always says yellow first read. What does it even mean? …
   G3 … definitely a yellow, not a red. G7 expects t3 to be the main employment tier in 1920"*). Every row grades ok / warn / bad (a near
   miss is a warn) and names its source:
-  - **G1** — graded on the LESS-EFFICIENT below-best cut (a lower rung earning less than the country's frontier — §10.92: building a
-    lower rung that pays MORE is following profit) against the four-rung canon family's 21.0–21.6% (F106/F107), warn to +5 pp.
-    "First read" meant "worse than 39%", solver2f's six-rung figure (F93), a book retired 2026-09-05. Raw / unit-weighted share and the
-    leader−p25 gap 1900→1935 printed beside it.
-  - **G2** — the register's T0 aim: e0 workers (craft and factory columns SUMMED) falling every decade 1900→1935; soft breach when 1935 >
-    1.3 × 1900; dead = every e0 part's payback ≥ 30 y (artisans and e0 factories separately on a craft book).
+  - **G1** — the BELOW-BEST share itself, unit-weighted (user-ruled 2026-10-08: *"If AI builds below-last but it is best on profits, this
+    is still a failure by G1 standards"* — the mod's point is that an obsolete rung stops paying, so the less-efficient cut is NOT a G1
+    reading): < 35% ok (better than any four-rung canon measured, 34.9–40.2%), to 45% warn, above bad. "First read" meant "worse than
+    39%", solver2f's six-rung figure (F93), a book retired 2026-09-05. Raw share and the leader−p25 gap beside it.
+  - **G2** — e0 AND e1 (user, the same day): e0 falling every decade from 1900 (the register's T0 aim; soft breach when 1935 > 1.3 ×
+    1900), every e0 part paying back in ≥ 30 y (artisans and e0 factories apart on a craft book); e1 falling every decade from 1920 (e1
+    dies at N+2 = e3, whose technologies open from ~1920 toward the 1940 anchor).
   - **G3** — construction points added **1880–1935**, the MEDIAN over the arm's runs ÷ vanilla's mean (report_data's `ptsByYear` /
     `vanPtsByYear`; it read run 1's single year 1934→35 until this date) ≥ 1× (warn 0.9–1); frontier payback at £720/pt 8–15 y, warn
     6–8 or 15–20 (the floor = vanilla's own manufacturing payback at 1900, F53; £720 overstates a late payback ~25%).
@@ -206,9 +209,10 @@ save summaries, and are parameterised only by the run list at the top of each fi
   - **G5** — the register's W: productive workers PER HEAD (consts' new `p`; absolute on an older fill, labelled), 1932–36: 0.6–0.95 ok,
     above 1.0 bad (soft), else warn; GDP per worker must exceed vanilla's.
   - **G6** — 1837–60 world GDP 0.9–1.1 ok, 0.8–1.2 warn (this file's band; the register's hard 1836–45 anchor is criteria.mjs's).
-  - **G7** — THE ERA RULE'S ANCHORS (`era_anchor_years` from `--config`, else 1836/1875/1905/1940): the largest-employment era at
-    1900 / 1920 / 1935 may be the latest era whose anchor has passed or the next one within 5 years — e1/e2 · e2 · e2/e3. The old target
-    "t2 · t3 · t3" was the retired six-rung ladder's; e0 parts are summed. The top era's share of tier workers at 1935 printed beside it.
+  - **G7** — THE ERA RULE'S ANCHORS, fact and target in ONE format (user-ruled 2026-10-08): eras by descending share of tiered workers,
+    listed until they pass 50% (one era over 50% → only it) — `e2/e0`. Target = the latest era whose anchor has passed plus the next one
+    within 5 years (`era_anchor_years` from `--config`, else 1836/1875/1905/1940): e1/e2 · e2 · e2/e3 at 1900 · 1920 · 1935. Met when
+    every listed era is in the target. The old "t2 · t3 · t3" was the retired six-rung ladder's; e0 parts are summed.
   - **P** — the median over wall-clock clusters 1 + 2 (`wall_clusters.mjs --json` → `wall_clusters.json`, read by fill_build_perf); a
     cluster-3 run (a directly observed listed vanilla bug) is left out and named; yellow edge = the ruled +10% budget (it read 15).
 - **`fill_tierchoice.mjs`** — the **Build choice panel** (`TIERC`, table `t-tierc`; user-ruled INTO

@@ -73,30 +73,35 @@ const row = (id, goal, metric, val, target, pill, cls) =>
   `<tr><td>${id}</td><td class="goalcell">${goal}</td><td>${metric}</td><td class="num">${val}</td><td class="num dim">${target}</td><td><span class="pill ${cls}">${pill}</span></td></tr>`;
 const band3 = (x, okLo, okHi, wLo, wHi) => x == null ? 'warn' : (x >= okLo && x <= okHi) ? 'ok' : (x >= wLo && x <= wHi) ? 'warn' : 'bad';
 
-// ---- G1 — graded on the LESS-EFFICIENT cut: a level added below the best held rung AND earning less per level than that country's
-//   frontier. Building a lower rung that PAYS MORE is the AI following profit, which §10.92 asks for; only the less-efficient kind is the
-//   fault. Reference = the four-rung canon family as measured with the same tool: canon4v-hai3 21.4% (F106), canon-je24 21.6 / 21.0% (F107).
-//   ⚠ The old pill read "first read" whenever the RAW share was above 39% — solver2f's six-rung figure (F93), a book retired 2026-09-05.
-//   The raw and unit-weighted shares are printed for context only: a craft level is a tenth of a factory (unit-weighted) and a cheap craft
-//   built beside an e1 rung is often the more profitable choice, so the raw share mixes the two kinds.
-const G1REF = 21.6;
-const less = TCR.less, unit = TCR.unit ?? TCR.raw;
-const g1cls = less == null ? 'warn' : less <= G1REF ? 'ok' : less <= G1REF + 5 ? 'warn' : 'bad';
+// ---- G1 — graded on the BELOW-BEST share itself (user-ruled 2026-10-08: "the whole mod intends to make obsolete rungs less
+//   profitable and thus dying out, and the point measures that. If AI builds below-last but it is best on profits, this is still a
+//   failure by G1 standards"). So a below-best level is a fault whether or not it out-earns the frontier; the less-efficient cut is not
+//   a G1 reading. Graded on the UNIT-weighted share (a craft level is a tenth of a factory, its workforce_mult), raw printed beside it.
+//   Bands: the four-rung canon family as measured with the same tool runs 34.9–40.2% (F106, F107, F109, the C 1.9 sweep) — below 35%
+//   is better than any canon measured (ok), up to 45% warn, above it bad. ⚠ "First read" (until 2026-10-08) meant "above 39%",
+//   solver2f's six-rung figure (F93), a book retired 2026-09-05.
+const unit = TCR.unit ?? TCR.raw, raw = TCR.raw;
+const g1cls = unit == null ? 'warn' : band3(unit, 0, 35, 0, 45);
+const g1pill = unit == null ? 'no reading' : unit < 35 ? 'better than the canon family' : unit <= 40.2 ? 'at the canon family' : unit <= 45 ? 'worse than the canon family' : 'old rungs still built';
 const gap0 = PB[1900]?.gap, gap1 = p.gap;
-// ---- G2 — the register's T0 aim: e0 workers falling decade over decade (soft line: 1935 > 1.3 × the 1900s), and death = no e0 part
-//   paying back inside 30 y (the 2+1 standard's obsolescence line, F114). On a craft book the parts are the crafts and the e0 factories.
+// ---- G2 — the OLD RUNGS, e0 AND e1 (user-ruled 2026-10-08: "G2 should probably track t1 too"). e0: the register's T0 aim, falling every
+//   decade from 1900 (soft breach when 1935 > 1.3 × 1900); dead = every e0 part pays back in ≥ 30 y (artisans and e0 factories apart on a
+//   craft book). e1: falling every decade from 1920 — e1 is the rung two below e3, and a rung is meant to die once its N+2 floods the
+//   market; e3's technologies open from about 1920 on the way to their 1940 anchor, so e1 may still grow before that.
 const DEC = [1900, 1910, 1920, 1930, 1935].filter(y => EMP[y]);
-const e0s = DEC.map(e0of);
-const falling = e0s.every((v, i) => i === 0 || v < e0s[i - 1]);
+const fallsFrom = (era, y0) => { const v = DEC.filter(y => y >= y0).map(y => byEra(y)[era]); return v.length > 1 && v.every((x, i) => i === 0 || x < v[i - 1]); };
+const e0s = DEC.map(e0of), e1s = DEC.map(y => byEra(y)[1] || 0);
+const e0fall = fallsFrom(0, 1900), e1fall = NERA > 1 ? fallsFrom(1, 1920) : true;
 const shrinks = e0of(Y) < e0of(1900);
 const softT0 = e0of(Y) > 1.3 * e0of(1900);
 const parts = 'staleArt' in p ? [['artisans', p.staleArt], ['e0 factories', p.staleOther]] : [['e0', p.stale]];
 const stillPays = parts.filter(([, v]) => v != null && v < 30);
-const dies = shrinks && !stillPays.length;
-const g2pill = softT0 ? 'oldest rung grows (soft breach)' : !shrinks ? 'oldest rung still grows'
-  : dies ? (falling ? 'oldest rung dies' : 'oldest rung dies, unevenly')
-  : 'shrinks; ' + stillPays.map(([n, v]) => n + ' still pay back in ' + v.toFixed(0) + ' y').join(', ');
-const g2cls = softT0 || !shrinks ? 'bad' : dies && falling ? 'ok' : 'warn';
+const g2bits = [];
+if (softT0) g2bits.push('e0 grows (soft breach)'); else if (!shrinks) g2bits.push('e0 still grows'); else if (!e0fall) g2bits.push('e0 falls unevenly');
+if (shrinks && stillPays.length) g2bits.push(stillPays.map(([n, v]) => n + ' pay back in ' + v.toFixed(0) + ' y').join(', '));
+if (!e1fall) g2bits.push('e1 not falling since 1920');
+const g2cls = softT0 || !shrinks ? 'bad' : g2bits.length ? 'warn' : 'ok';
+const g2pill = g2bits.length ? g2bits.join('; ') : 'old rungs die';
 // ---- G3 — capital demand: construction at or above vanilla's (warn 0.9–1, bad under 0.9), and the frontier rung's payback 8–15 y at
 //   £720 a point (vanilla's realised manufacturing payback, F53: 21 y in 1838 → 8.2 y in 1900; the band floor is vanilla's own late
 //   figure), warn 6–8 or 15–20 y, bad outside. ⚠ £720 is the iron-frame rate held flat (§10.61): with steel/arc frames a late building
@@ -121,31 +126,31 @@ const g5pill = wR > 1.0 ? 'more workers than vanilla (soft breach)' : wR < 0.6 ?
 // ---- G6 — the opening quarter-century's world GDP. ⚠ This file's band, not a ruling: 0.9–1.1 ok, 0.8–1.2 warn. The register's HARD
 //   anchor (1836–1845, per run, against vanilla's seed interval ± 10%) is criteria.mjs's job and is not graded here.
 const g6cls = band3(early, 0.9, 1.1, 0.8, 1.2);
-// ---- G7 — THE ERA RULE'S ANCHORS (§10.78; anchors 1836 / 1875 / 1905 / 1940, the book's own where given). The largest-employment era
-//   at year Y may be the latest era whose anchor has passed, or the next one if its anchor is within 5 years. So 1900 → e1 or e2,
-//   1920 → e2, 1935 → e2 or e3. ⚠ The old target "t2 · t3 · t3" was the RETIRED six-rung ladder's (e3 anchored 1900 there); on the four-
-//   rung books e3 is anchored at 1940, so "e3 the largest employer in 1920" demanded the 1940 rung 20 years early, and the row was red on
-//   every four-rung report. ⚠ The e0 columns of a craft book are summed (the old code compared "e0 artisans" and "e0 other" separately).
+// ---- G7 — THE ERA RULE'S ANCHORS (§10.78; anchors 1836 / 1875 / 1905 / 1940, the book's own where given). Fact and target in ONE
+//   format (user-ruled 2026-10-08): "if any era is over 50%, only it is listed; otherwise all are listed through slash until 50% of tiered
+//   employment is reached" — eras by descending share of tiered workers (e0 parts summed). The target at year Y is the latest era whose
+//   anchor has passed, plus the next one if its anchor is within 5 years: e1/e2 at 1900, e2 at 1920, e2/e3 at 1935. Met when every era
+//   in the fact is in the target. ⚠ The old target "t2 · t3 · t3" was the retired six-rung ladder's.
 const ANCH = (CFG?.era_anchor_years && CFG.era_anchor_years.length >= NERA) ? CFG.era_anchor_years : [1836, 1875, 1905, 1940].slice(0, NERA);
 const allowed = y => { let cur = 0; ANCH.forEach((a, e) => { if (a <= y) cur = e; }); const s = [cur]; if (cur + 1 < ANCH.length && ANCH[cur + 1] <= y + 5) s.push(cur + 1); return s; };
+const majority = y => { const e = byEra(y), t = e.reduce((a, b) => a + b, 0); const ord = e.map((v, i) => [i, v]).sort((a, b) => b[1] - a[1]); const out = []; let acc = 0;
+  for (const [i, v] of ord) { out.push(i); acc += v; if (acc > 0.5 * t) break; } return out; };
 const G7Y = [1900, 1920, Y].filter(y => EMP[y]);
-const g7 = G7Y.map(y => { const t = topEra(y), a = allowed(y); return { y, t, a, ok: a.includes(t), late: t < Math.min(...a) }; });
+const g7 = G7Y.map(y => { const f = majority(y), a = allowed(y), bad = f.filter(e => !a.includes(e)); return { y, f, a, ok: !bad.length, late: bad.length && bad.every(e => e < Math.min(...a)) }; });
 const g7miss = g7.filter(r => !r.ok);
 const g7cls = !g7miss.length ? 'ok' : g7miss.length === 1 ? 'warn' : 'bad';
-const g7pill = !g7miss.length ? 'on the anchors' : g7miss.every(r => r.late) ? 'eras arrive late' : g7miss.every(r => !r.late) ? 'eras arrive early' : 'off the anchors';
-const topShare = (() => { const e = byEra(Y), t = e.reduce((a, b) => a + b, 0); return t ? 100 * e[NERA - 1] / t : null; })();
-
+const g7pill = !g7miss.length ? 'on the anchors' : g7miss.every(r => r.late) ? 'old eras linger' : g7miss.every(r => !r.late) ? 'eras arrive early' : 'off the anchors';
+const eraList = l => l.map(e => 'e' + e).join('/');
 const rows = [
   row('G1', 'A tech edge wins markets',
-      'Below-best builds onto a <b>less profitable</b> rung <span class="dim">· all below-best, unit-weighted · leader−p25 stock-era gap 1900→' + Y + '</span>',
-      (less == null ? '—' : '<b>' + less.toFixed(1) + '%</b>') + ' <span class="dim">· ' + (unit == null ? '—' : unit.toFixed(1) + '%') + ' · ' + (gap0 == null ? '' : gap0.toFixed(2) + '→') + (gap1 == null ? '—' : gap1.toFixed(2)) + ' era</span>',
-      '≤' + G1REF + '% <span class="dim">(canon family) · — · widening</span>',
-      less == null ? 'no reading' : less <= G1REF ? 'at or better than the canon' : 'worse than the canon', g1cls),
+      'Levels built below the best held rung, unit-weighted <span class="dim">· raw · leader−p25 era gap</span>',
+      (unit == null ? '—' : '<b>' + unit.toFixed(1) + '%</b>') + ' <span class="dim">· ' + (raw == null ? '—' : raw.toFixed(1) + '%') + ' · ' + (gap0 == null ? '' : gap0.toFixed(2) + '→') + (gap1 == null ? '—' : gap1.toFixed(2)) + '</span>',
+      '&lt;35% <span class="dim">(canon 35–40) · — · widening</span>', g1pill, g1cls),
   row('G2', 'Inefficient producers die',
-      'Oldest rung (e0) workers 1900→' + Y + ' <span class="dim">· its payback</span>',
-      '<b>' + e0s.map(v => v.toFixed(2)).join('→') + 'M</b>' + (E0.length > 1 ? ' <span class="dim">(' + e0txt(1900) + ' → ' + e0txt(Y) + ')</span>' : '')
-        + ' <span class="dim">· ' + parts.map(([n, v]) => (parts.length > 1 ? n + ' ' : '') + (v == null ? 'loss' : v.toFixed(1) + ' y')).join(' · ') + '</span>',
-      'falling every decade <span class="dim">· ≥30 y</span>', g2pill, g2cls),
+      'e0 workers, M, ' + DEC.join('/') + ' <span class="dim">· e1 workers · e0 payback</span>',
+      '<b>' + e0s.map(v => v.toFixed(1)).join('→') + '</b> <span class="dim">· ' + e1s.map(v => v.toFixed(1)).join('→') + ' · '
+        + parts.map(([n, v]) => (parts.length > 1 ? n.replace('e0 ', '') + ' ' : '') + (v == null ? 'loss' : v.toFixed(0) + ' y')).join(', ') + '</span>',
+      '↓ from 1900 <span class="dim">· ↓ from 1920 · ≥30 y</span>', g2pill, g2cls),
   row('G3', 'Modernising costs capital',
       'Construction ÷ vanilla, ' + constrLab + ' <span class="dim">· frontier-rung (e' + (p.topEra ?? '?') + ') payback at £720/pt</span>',
       f2(constrR) + ' <span class="dim">· <b>' + (fr == null ? 'loss' : fr.toFixed(1) + ' y') + '</b></span>', '≥1× <span class="dim">· 8–15 y (warn 6–8, 15–20)</span>',
@@ -159,10 +164,9 @@ const rows = [
   row('G6', 'Early game still grows', '1837–1860 world GDP ÷ vanilla', early.toFixed(2) + '×', '0.9–1.1× <span class="dim">(warn 0.8–1.2)</span>',
       g6cls === 'ok' ? 'met' : early < 1 ? 'slow start' : 'fast start', g6cls),
   row('G7', 'Eras arrive on the anchors',
-      'Largest employment era at ' + G7Y.join(' · ') + ' <span class="dim">· e' + (NERA - 1) + '’s share of tier workers at ' + Y + '</span>',
-      g7.map((r, i) => (i === g7.length - 1 ? '<b>e' + r.t + '</b>' : 'e' + r.t)).join(' <span class="dim">·</span> ') + ' <span class="dim">· ' + (topShare == null ? '—' : topShare.toFixed(0) + '%') + '</span>',
-      g7.map(r => r.a.map(e => 'e' + e).join('/')).join(' · ') + ' <span class="dim">(anchors ' + ANCH.join(' / ') + ')</span>',
-      g7pill, g7cls),
+      'Eras holding half the tier workers, ' + G7Y.join(' · '),
+      g7.map(r => (r.ok ? '' : '<b>') + eraList(r.f) + (r.ok ? '' : '</b>')).join(' · '),
+      g7.map(r => eraList(r.a)).join(' · '), g7pill, g7cls),
 ];
 writeFileSync(OUTFILE, rows.join('\n    '));
-console.log(`goals computed: GDP ${f2(gdpR)} · W ${f2(wR)}${perHead ? '' : ' (absolute)'} · perWorker ${f2(ppwR)} · early ${early.toFixed(2)}x · less-efficient below-best ${less}% · constr ${f2(constrR)} (${constrLab}) · frontier ${fr}y · e0 ${e0s.map(v => v.toFixed(2)).join('>')} · top era ${g7.map(r => 'e' + r.t).join('/')}`);
+console.log(`goals computed: GDP ${f2(gdpR)} · W ${f2(wR)}${perHead ? '' : ' (absolute)'} · perWorker ${f2(ppwR)} · early ${early.toFixed(2)}x · below-best ${unit}% unit / ${raw}% raw · constr ${f2(constrR)} (${constrLab}) · frontier ${fr}y · e0 ${e0s.map(v => v.toFixed(2)).join('>')} · majority ${g7.map(r => eraList(r.f)).join(' · ')}`);

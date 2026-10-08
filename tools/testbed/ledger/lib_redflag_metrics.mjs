@@ -130,7 +130,13 @@ export function cardHtml(report, metrics, fullName = 'redflags_full.html') {
     ['Chronic markets — major markets with ≥ ' + CHRONIC_YEARS + ' problem years, of ' + MAJOR.length, 'chronic_markets', 0],
   ];
   let h = `<div class="card" style="border-left:4px solid var(--${prim && prim.problem_market_years.median > 0 ? 'bad' : 'ok'});background:var(--${prim && prim.problem_market_years.median > 0 ? 'badbg' : 'okbg'})">`
-    + `<h3 style="margin-top:0">⚑ Input-price red flags — how much of the major markets’ century is spent short of an industrial input</h3>`
+    // ⭐ COLLAPSED BY DEFAULT (user-ruled 2026-10-08: "contracted by default, which only shows the two headline metrics unless explicitly
+    //   expanded") — the summary line carries the two numbers; the table, the summary prose and the rule line sit inside the <details>.
+    + `<details><summary style="cursor:pointer;font:600 15px/1.4 Segoe UI,sans-serif">⚑ Input-price red flags — `
+    + (prim ? `problem market-years <b>${prim.problem_market_years.median}</b> of ${pm} <span class="dim">(${prim.problem_market_years.min}–${prim.problem_market_years.max})</span>`
+        + ` · chronic markets <b>${prim.chronic_markets.median}</b> of ${MAJOR.length} <span class="dim">(${prim.chronic_markets.min}–${prim.chronic_markets.max}) · ${primName}, median of ${prim.n} runs · click for the detail</span>`
+      : '<span class="dim">no reading</span>') + `</summary>`
+    + `<p class="dim" style="margin-top:8px">How much of the major markets’ century is spent short of an industrial input.</p>`
     + `<table><tr><th></th><th class="num">${esc(book?.label || 'book')} <span class="dim">· ${primName}, median · range</span></th>`
     + (like ? `<th class="num">${esc(book.label)} <span class="dim">· summaries, production only</span></th><th class="num">${esc(ref?.label || 'vanilla')} <span class="dim">· same basis</span></th>` : '') + '</tr>';
   for (const [lab, k, pct] of rows) h += `<tr><td>${esc(lab)}</td><td class="num">${cell(prim?.[k], pct)}</td>` + (like ? `<td class="num">${cell(like[k], pct)}</td><td class="num">${refCell(k, pct)}</td>` : '') + '</tr>';
@@ -142,6 +148,6 @@ export function cardHtml(report, metrics, fullName = 'redflags_full.html') {
   if (!like && ref?.counts_only) h += `<p class="dim">The reference, ${esc(ref.label)}, is read on the save summaries only, where a good with no producer is unpriced: there it throws ${ref.counts_only.high_per_run} HIGH and ${ref.counts_only.swing_per_run} SWING flags a run, against this book’s ${ref.counts_only.book_on_ref_basis?.high_per_run} and ${ref.counts_only.book_on_ref_basis?.swing_per_run} on that basis. Its problem market-years need the flag spans, which this report’s fill did not keep.</p>`;
   h += `__RF_SUMMARY__`;
   const n = (book?.flag_count ?? 0);
-  h += `<p class="dim">HIGH = an industrially consumed good at ≥ ${report.thresholds?.HIGH ?? 1.7}× base for ≥ ${report.thresholds?.YEARS ?? 2} years; SWING = a ≥ ${report.thresholds?.SWING ?? 0.5}× base swing within ${report.thresholds?.WINDOW ?? 3} years on under ${report.thresholds?.SUPPLY ?? 10} units a week of supply; local goods excluded — ${esc(report.ruled)}. Not a loss term. A flag covers a year when its readings touch it. The full flag-by-flag listing${n ? ` (${n} flags)` : ''} is kept as <code>${esc(fullName)}</code> beside this report.</p></div>\n`;
+  h += `<p class="dim">HIGH = an industrially consumed good at ≥ ${report.thresholds?.HIGH ?? 1.7}× base for ≥ ${report.thresholds?.YEARS ?? 2} years; SWING = a ≥ ${report.thresholds?.SWING ?? 0.5}× base swing within ${report.thresholds?.WINDOW ?? 3} years on under ${report.thresholds?.SUPPLY ?? 10} units a week of supply; local goods excluded — ${esc(report.ruled)}. Not a loss term. A flag covers a year when its readings touch it. The full flag-by-flag listing${n ? ` (${n} flags)` : ''} is kept as <code>${esc(fullName)}</code> beside this report.</p></details></div>\n`;
   return h;
 }
