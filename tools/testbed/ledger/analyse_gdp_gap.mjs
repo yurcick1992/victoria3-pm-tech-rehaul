@@ -4,16 +4,19 @@
 // spend, workforce split, and per-era profit/staffing (mod).
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
-import { join } from 'node:path';
+import { join, basename, dirname } from 'node:path';
+import { usableRuns } from './lib_runs.mjs';
 import { requiredConstruction } from 'file:///C:/claude-code/victoria%203%20PM%20and%20tech%20rehaul/tools/vanilla_construction.mjs';
 
 // --session <dir-or-name>: the session whose run*/save_summaries to decompose (default: the
 // original vanilla-vs-mod batch). A bare name is resolved under tools/testbed/sessions.
 const argsG = process.argv.slice(2);
 const sessArg = (() => { const i = argsG.indexOf('--session'); return i >= 0 && argsG[i + 1] ? argsG[i + 1] : '20260813_083557_vanilla-vs-mod-n4'; })();
-const SESSION = sessArg.includes('/') || sessArg.includes('\\')
-  ? sessArg
-  : 'C:/claude-code/victoria 3 PM and tech rehaul/tools/testbed/sessions/' + sessArg;
+// ⭐ (2026-10-08) --session may also be a GROUP: a comma list of session names and/or single `<session>/runNNN_<setup>` folders, read
+//   through lib_runs (L17/L34-usable runs only). A full path (drive letter, leading slash or backslash) keeps the old one-folder reading.
+const SESROOT = 'C:/claude-code/victoria 3 PM and tech rehaul/tools/testbed/sessions';
+const IS_PATH = /^[A-Za-z]:|^\//.test(sessArg) || sessArg.includes('\\');
+const SESSION = IS_PATH ? sessArg : SESROOT + '/' + sessArg;
 const OUT = (() => { const a = process.argv.slice(2), i = a.indexOf('--out'); return i >= 0 && a[i + 1] ? a[i + 1] : '.'; })();  // default: cwd
 
 // --- building key -> era + cost (mod tiers), and vanilla costs ---
@@ -44,13 +47,17 @@ const costOf = (k, isMod) => {
 
 // --setup <name>: keep only runNNN_<name> — a multi-config session (the trade ×1.5 B ladder holds four) must name its arm
 const SETUP = (() => { const i = argsG.indexOf('--setup'); return i >= 0 && argsG[i + 1] ? argsG[i + 1] : null; })();
-const runs = readdirSync(SESSION).filter(d => /^run\d+_/.test(d) && (!SETUP || d.replace(/^run\d+_/, '') === SETUP));
+const GROUP = !IS_PATH && (SETUP || /[,/]/.test(sessArg));
+const runs = GROUP ? usableRuns(SESROOT, sessArg, SETUP || '').runs.map(r => join(SESROOT, r))
+  : readdirSync(SESSION).filter(d => /^run\d+_/.test(d) && (!SETUP || d.replace(/^run\d+_/, '') === SETUP)).map(d => join(SESSION, d));
 if (SETUP && !runs.length) { console.error(`no run of setup ${SETUP} in ${SESSION}`); process.exit(1); }
 const rows = [];
-for (const run of runs) {
+for (const runDir of runs) {
+  // a pooled group can hold two sessions' run001: the row label carries the session stamp then, so rows never merge
+  const run = GROUP ? `${basename(dirname(runDir)).slice(0, 15)}/${basename(runDir)}` : basename(runDir);
   // a run is the MOD arm unless its setup name says vanilla/control (run001_vancost_nosub is mod)
-  const isMod = !/_(vanilla|control)$/.test(run);
-  const dir = join(SESSION, run, 'save_summaries');
+  const isMod = !/_(vanilla|control)$/.test(basename(runDir));
+  const dir = join(runDir, 'save_summaries');
   let files;
   try { files = readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort(); } catch { continue; }
   let prevLv = null;

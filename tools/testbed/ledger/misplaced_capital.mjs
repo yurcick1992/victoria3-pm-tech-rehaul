@@ -22,6 +22,7 @@
 //   --arm label:session[:setup] --snap <dir of v15 kept-save summaries>   the decade before each run's kept save; validity from that save
 import fs from 'node:fs'; import path from 'node:path'; import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
+import { usableRuns } from './lib_runs.mjs';
 import { requiredConstruction, GAME } from '../../vanilla_construction.mjs';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const S = path.join(ROOT, 'tools/testbed/sessions');
@@ -37,7 +38,9 @@ function indexRun(runDir) {
   return idx;
 }
 const readSum = f => JSON.parse(zlib.gunzipSync(fs.readFileSync(f)));
-const runsOf = (sessDir, setup) => fs.readdirSync(sessDir).filter(d => /^run\d+/.test(d) && (!setup || d.endsWith('_' + setup))).sort().map(d => path.join(sessDir, d));
+// (2026-10-08) through lib_runs: L17/L34-usable runs only, and a session may be a GROUP (a comma list of sessions and/or session/run folders)
+const runsOf = (sessDir, setup) => { const root = path.dirname(sessDir), r = usableRuns(root, path.basename(sessDir), setup || '');
+  for (const d of r.dropped) console.error(`  EXCLUDED ${d.run}: ${d.reason}`); return r.runs.map(x => path.join(root, x)); };
 const args = process.argv.slice(2);
 const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
 const all = n => args.flatMap((a, i) => a === n ? [args[i + 1]] : []);

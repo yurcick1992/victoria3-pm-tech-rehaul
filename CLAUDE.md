@@ -3190,6 +3190,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         indistinguishable from a run that never existed. ⚠ It replaces the hardcoded
                         `RUNS = [1..6]` lists, which is how canon-n7's stopped-at-1853 run007 would have
                         entered an n=6 baseline the moment someone re-pointed a script
+                        ⭐ A GROUP OF RUNS (2026-10-08): `session` may be a comma list of sessions and/or
+                        `<session>/runNNN_<setup>` folders. ⭐⭐ `configFamilies(root, runs)` says whether a
+                        group may be pooled — ONE FAMILY = the same tier/building structure (industries,
+                        rung keys and eras, crafts, merged rungs) read from each run's own config; ladder
+                        coefficients and before/after-bugfix builds MAY differ inside it (user-ruled: "the
+                        hard requirement for the build to be identical is an overkill"), and are printed so
+                        the report can name them. `fill_ledger.sh` stops on more than one family
   testbed/ledger/summary_drops.mjs  ⭐⭐ WHICH SAVE SUMMARIES LOST A COUNTRY RECORD, AND HOW MUCH (landmine L38,
                         FINDINGS F186). Up to summary v11 records sharing a definition overwrote each other
                         (see save_state_summary.mjs above); a pre-v12 summary cannot be re-made, but it can be

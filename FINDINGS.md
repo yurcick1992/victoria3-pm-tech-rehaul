@@ -21690,3 +21690,83 @@ to the flagged sub-tick and label the rest **unverified** (they stay in the wall
 **What it does NOT say:** that ≡ 3 → hour 18 (presumed; no costly ≡ 3 loop in any save); why the engine stages countries this way; whether a path
 reset also resets the distance counter (the distance-per-move ratios disagree: USA, SIC ~106, BUL 51, POR 239); and anything about the 17
 unconfirmed runs beyond their shape.
+
+⚠ **SUPERSEDED IN PART 2026-10-07/08:** the sub-tick disqualification §6 proposed is retired by the wall-clock ruling of 2026-10-07 (only a
+directly observed listed bug excludes a run; no tick pattern is a criterion), and the v16 correlation §6 left open is F219 §4.
+
+## F219 — THE EXTRA RESEARCH ENTRIES OVER SIXTEEN CENTURIES: THE PRODUCTION TREE REACHES ITS NARRATIVE ONSETS FAR MORE OFTEN (23 OF 43 ON TARGET, THE BASE BOOK 16) AND THE REGISTER READS ITS BEST CONSENSUS OF THE LINE (4.98), BUT THE LEADER OVERSHOOTS THE ANCHOR PRINCIPLE IN GAME ERAS 4–5, THE RICH TAIL WIDENS (3 RUNOFFS IN 16) AND PLAY TIME RISES TO ×1.14 OF VANILLA, OVER BUDGET; FLEET LOOPS EXPLAIN LITTLE OF THE EXCESS SLOWDOWN (2026-10-08; sessions 20261005_154629_jex-n16 runs 1–8 + 20261006_193418_jex-n8-v16 runs 1–8, one build, pooled; references the pinned vanilla n=16 20260821_131149, the base book 20261003_171038 n=5 (F216) and the canon 20260929_002728 n=6)
+
+**Arm:** `{kind: config, config: config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json}` (sha256 `25f411dbfd8641b7`) — the playtest book
+`e1a12-ai1135-tex1140-artmerge` plus `research_events.extra_entries` (25 production technologies outside the tier ladder, calibrated on the
+narrative onset) and `era1_rule_a` (BALANCE_FRAMEWORK §10.95): 68 technologies carry entries, the base book 40. Two fixed-n schedules of the
+SAME build (config sha256 and emitted-mod fingerprint identical in all sixteen runs): the first n=16 stopped by the user at run 9 (excluded, L17),
+the second n=8 on save summary v16 (fleet telemetry), its run 8 continued from its 1935.1.1 save after a power outage. All sixteen reached
+1936.1.1; four resumed once after a crash. Ledger: https://claude.ai/artifact/BjmxoKZjkYL6fUypJd5XPf (copied as REPORT.html into both sessions).
+
+**1. Research: the change does what it was built for.** Half-majors year against the narrative onset, over the 43 production technologies with
+an onset in 1826–1926 (`tech_timing.mjs`; ✓ = within ten years):
+
+| arm | n | on target | early | late | median lag | held at the end per major (of 60) |
+|---|---|---|---|---|---|---|
+| jex | 16 | **23** | 4 | 16 | **7 y** | 56 |
+| base book (tex1140) | 5 | 16 | 3 | 24 | 11 y | 51 |
+| canon | 6 | 15 | 3 | 25 | 12 y | 51 |
+
+The entries' own technologies move a median 9 years earlier against the base book (21 of them), the other 28 do not move (median 0). The tech
+majors end with 3–14 more technologies (GBR 175.5 / 167.2, USA 169.7 / 161.0, NET 164.5 / 154.2, GER 174.4 / 164.3, FRA 147.1 / 143.8), the top ten
+other independents 138.0 / 134.4 (`tech_census.mjs` B, C). The entries carry **12.0%** of the majors' acquisitions (Britain 23.8%) against 6.0%.
+⚠ **The early onsets stay late**: pumpjacks 1859 → 1887, pasteurization 1864 → 1903 even with its entry, threshing machine 1842 → 1870,
+vulcanization 1839 → 1907, dynamite 1867 → 1885.
+
+**2. The leader overshoots the anchor principle** (`tech_census.mjs` D, the share of a game era's technologies the run's tech leader holds,
+median over runs; aim about half):
+
+| arm | 1875, game era 3 | 1905, game era 4 | 1936, game era 5 |
+|---|---|---|---|
+| jex | **65%** (third 55%) | **64%** (49%) | **88%** (73%) |
+| base book | 52% (50%) | 46% (36%) | 46% (39%) |
+| canon | 52% (45%) | 54% (41%) | 54% (39%) |
+
+Game-era-5 production technologies spread wide: arc welding is held by 11.3 countries a run at the end (base book 0.2), the oil turbine 9.8
+(1.2), flash freezing 9.8 (0.6). So the tree is now too FAST at the top and still too SLOW at the bottom — a uniform research nerf would deepen
+the second to cure the first.
+
+**3. The economy (`criteria.mjs`, end state 1932–36).** 13 intact / 3 broken by runoff (runs 5, 7, 8 of the first session: world GDP 1.60 /
+1.42 / 1.41×; run 5 also the shortlist's pooled U* 8.4%, run 8 Britain in capital abundance at a hoard of 1.85 GDP). Consensus over the
+thirteen intact: **loss 4.98** (base book 5.59, canon 5.90 — directional), world GDP 1.05, world W 0.80, world H 1.00; shortlist GDP 1.28,
+W 0.84, U* 1.47, H 1.15; PI 0.93 falling decade over decade, PP 1.01; T0 at 0.57 of the 1900s; **T3 39.1% of the tiered workers** (base book
+26.4%). Fourteen of sixteen runs have Britain or Germany near capital abundance (U* under 5% for 5–17 years). Misplaced capital 1926–36
+(`misplaced_capital.mjs`, median of runs): ALL **28%** (base book 23%, vanilla 17%), VALID 22% (20%); manufacturing 33% gross. Old rungs beside a
+rung two eras newer at 1935: 2.7% of the shortlist's tier workers (2.3%), 6.8% of the world's (7.1%), textile's shortlist share 7% (14%).
+Dams 73.8 levels a run (35.4) — the steam turbine and arc welding arrive decades earlier. Red flags at the base book's level (a median 69
+HIGH stretches a run on the market order books, base book 72; summary basis 2.8 HIGH / 20.6 SWING against vanilla's 0.5 / 20.8).
+
+**The two sessions differ, and are pooled anyway.** The first session's eight end at a median 1.25× vanilla's world GDP with three runoffs, the
+second's at 1.04× with none; the intact runs' per-run loss medians are 10.8 and 5.8. Permutation tests on the halves' means: world GDP p 0.12,
+intact loss p 0.02 — the loss follows GDP (the rich runs overshoot the shortlist's GDP and undershoot its U*), and among several readings
+compared one at 0.02 is weak. The build is identical and the sessions differ only in summary version and date, so this is read as SEED spread.
+⇒ The rich tail is real for the arm (3 of 16 against the base book's 1 of 5, whose runoff broke on U* at 1.34×), and n=16 cannot say whether
+the entries widened it.
+
+**4. Play time, and what the fleet loops explain** (the 2026-10-07 clusters, `wall_clusters.mjs`; `fleet_excess.mjs` on the eight v16 runs —
+the correlation F218 §6 left open):
+
+| arm | (1) normal | (2) inexplicably slowed | MAIN (1 + 2) | ÷ vanilla's main | (3) listed bug |
+|---|---|---|---|---|---|
+| jex, both sessions | 11 runs, 188.7 min | 4, 189.0 | 15, **188.7** | **×1.14** | 1 — fleet path loop |
+| base book | 4, 168.7 | 1, 181.0 | 5, 173.2 | ×1.05 | 0 |
+| vanilla n=16 | 9, 157.9 | 7, 172.7 | 16, 165.0 | — | 0 |
+
+The entries cost about 9% of play time on the base book. Seconds per in-game year run 1.21–1.24× vanilla's from the 1830s to the 1880s and
+1.08–1.10× after 1910 (`report_perf.mjs`; its all-runs grade ×1.117). The cluster-3 run is run 6 of the second session: a recalled Chinese fleet
+(id 2550137302, owner bucket 0 → hour 12) that sailed 196k in 432 moves during the 1858–67 episode (+76%) and was gone after. The first session's
+four slowdowns predate v16 and stay in cluster 2 (unobservable). Over the 800 v16 run-years: a ≥ 125k loop is sailing in **8%** of the positive
+excess (6.7 min), war-like years (three or more sub-ticks up) carry 25%, and **62% has neither signature**. Where a ≥ 125k loop sails, the
+predicted sub-tick reads a median +12.0 s (hour 6, 7 run-years) and +16.1 s (hour 12, 9 run-years) against −1.8 / +7.2 on the other three; the
+125–200k bin reads +14.5 s (F218's 20–30 s band sits a little above it). Correlations over all run-years are weak (Σ (loop dist/1000)² Pearson 0.26,
+Spearman 0.04). ⇒ **F218's mechanism holds where a loop is present, and a loop is present rarely**: most of the mod's excess slowdown is not
+fleet loops.
+
+**What it does NOT say:** whether the entries widened the rich tail (n=16, a 3-of-8 / 0-of-8 split between identical-build halves); which part of
+the +9% play time is the entries' script and which the bigger late-game world they buy (`tick_overhead.mjs` not yet run on this pair); anything
+about hour-0 or hour-18 loops (none ≥ 125k in the v16 runs); and whether the overshoot would survive a research nerf shaped by era.

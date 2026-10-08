@@ -246,7 +246,19 @@ save summaries, and are parameterised only by the run list at the top of each fi
 script above in order on the arm's COMPLETE runs (meta.json reached its own until date, no abandoned_reason — L17) against the pinned
 vanilla n=16 (its run list discovered the same way, proven identical to the hand list every recent ledger used), writes `_mod.txt` /
 `_van.txt` into the out dir, and marks a failed step `!!! FAILED` without stopping. The PROSE half stays by hand (lede / incidents /
-next / footer .html, `tokens.json`, `title.txt`), then `fill_assemble.mjs` + `fill_verify.mjs`. One session per report.
+next / footer .html, `tokens.json`, `title.txt`), then `fill_assemble.mjs` + `fill_verify.mjs`.
+⭐⭐ **A REPORT IS ONE GROUP OF RUNS, NOT ONE SESSION (2026-10-08, user: "support random grouping of similar-config runs")**: `<session>`
+may be a comma list of session names and/or single `<session>/runNNN_<setup>` folders, and every step reads the same L17/L34-usable runs
+through `lib_runs.mjs` (`analyse_gdp_gap`, `fill_tierchoice`, `fill_obsolescence` and `misplaced_capital` were taught the group form; the
+`--mod` steps take the resolved list). ⭐ **The group must be ONE FAMILY, not one build** (user-ruled the same day: *"the hard requirement for the
+build to be identical is an overkill. It should belong to the same family … shouldn't have different tier or building structure. But lumping
+together slightly different approaches to ladder coefficients could have merit. And joining together before-fix and after-fix builds on minor
+bugfixes is definitely OK."*): `lib_runs.configFamilies()` compares each run's config STRUCTURE (enabled industries, rung keys and eras, craft
+and merged rungs) and the fill stops only on more than one family (`ALLOW_MIXED=1` overrides); inside a family it PRINTS every distinct config
+and build, which the prose must name. ⚠ The steps still take ONE `<book>` for costs, eras and labels — with coefficient variants pooled, pass
+the book most runs used and say so (criteria.mjs reads each run's own). ⚠ **Never edit `fill_ledger.sh` while it runs**: bash reads a script
+as it goes, and a header edit mid-fill broke every step after the one running (2026-10-08). ⚠ The watchlist still reads the group's FIRST run.
+First use: `out_jex_n16` (two sessions of one build, n=16).
 ⚠ Token values land inside single-quoted JS strings in places: `fill_assemble.mjs` turns a word-internal straight apostrophe into ’ since
 2026-10-02 (one had blanked every renderer of the e1a12-ai1135 page; the gate caught it) — keep other straight quotes out of tokens.
 ⭐ The small per-batch readers F209 used sit beside it (promoted from the scratchpad 2026-10-02, outputs proven identical, all on

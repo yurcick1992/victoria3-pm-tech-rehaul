@@ -16,6 +16,7 @@
 // ⚠ Eras, never rung indices (§10.78). ⚠ Disabled industries skipped (L27). ⚠ Staffing alone is not death — labour supply can
 // empty a profitable building; read the loss share and the margin with it.
 import fs from 'node:fs'; import zlib from 'node:zlib'; import path from 'node:path';
+import { usableRuns as libUsableRuns } from './lib_runs.mjs';
 export const REPO = 'C:/claude-code/victoria 3 PM and tech rehaul';
 export const SES = path.join(REPO, 'tools/testbed/sessions');
 export const REGIMES = ['IN-MARKET', 'TRADE-ONLY', 'UNCONTESTED'];
@@ -36,10 +37,9 @@ export function summariesByYear(runDir, years, overrideDir = null) {
     search: for (const cand of [near(y - 1835), near(4 * (y - 1836) + 1), files]) for (const f of cand) { let j; try { j = load(path.join(sd, f)); } catch { continue; } if (j.provenance?.date === y + '.1.1') { out[y] = j; break search; } } }
   return out;
 }
-export function usableRuns(session, setup) {
-  return fs.readdirSync(path.join(SES, session)).filter(d => /^run\d+/.test(d) && (!setup || d.endsWith('_' + setup))).filter(d => {
-    try { const m = JSON.parse(fs.readFileSync(path.join(SES, session, d, 'meta.json'), 'utf8')); return String(m.reached_ingame_date).startsWith('1936') && !m.abandoned_reason; } catch { return false; } });
-}
+// the runs: lib_runs's rule (L17 + L34), so `session` may be a comma list of sessions and/or single `<session>/runNNN_<setup>` folders
+// (2026-10-08); returns paths relative to SES. It used to read one folder and count any run reaching 1936.
+export function usableRuns(session, setup) { return libUsableRuns(SES, session, setup || '').runs; }
 const newCell = () => ({ lv: 0, st: 0, lossLv: 0, marg: [], stNow: 0, stNext: 0, add: 0, wbe: [], wbeLossLv: 0, gap: [], split: {}, tariff: {}, policy: {} });
 const newSub = () => ({ lv: 0, lossLv: 0, marg: [], sg: [] });
 export function measure({ session, setup, config, years, thr = 0.10, overrideDir = null, industries = null }) {
@@ -52,7 +52,7 @@ export function measure({ session, setup, config, years, thr = 0.10, overrideDir
   const front = shares => { const T = Object.values(shares).reduce((a, b) => a + b, 0); let f = -1; for (const [e, v] of Object.entries(shares)) if (v / T >= thr && +e > f) f = +e; return f; };
   const regime = (fl, fw, era) => (fl - era >= 2) ? 'IN-MARKET' : (fw - era >= 2) ? 'TRADE-ONLY' : 'UNCONTESTED';
   for (const run of runs) {
-    const S = summariesByYear(path.join(SES, session, run), years, overrideDir);
+    const S = summariesByYear(path.join(SES, run), years, overrideDir);
     for (let yi = 0; yi < years.length; yi++) { const y = years[yi], j = S[y]; if (!j) continue; const jn = S[years[yi + 1]]; const ver = j.save_summary_version || 0;
       const cells = [];
       for (const [tag, c] of Object.entries(j.countries)) for (const [k, b] of Object.entries(c.buildings || {})) { const r = rung[k]; if (!r || !b.levels) continue;

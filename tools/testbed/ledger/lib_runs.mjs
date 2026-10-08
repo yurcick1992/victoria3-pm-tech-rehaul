@@ -24,6 +24,7 @@
 
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 
 const parseDate = s => String(s || '').split('.').map(Number);
 const reached = (got, want) => {
@@ -41,15 +42,72 @@ const reached = (got, want) => {
 //   configs are two arms, and folding them is the same error the multi-arm guard below refuses —
 //   it just cannot be detected from the folder names. The CALLER must have checked; state it in the
 //   schedule’s _why, as 20260831_192428 does ("byte-identical setup ... mtime predates that batch").
+// ⭐ A GROUP OF RUNS, NOT ONLY OF SESSIONS (2026-10-08, the user: "support random grouping of similar-config runs"): an item of the
+//   list may also be ONE run folder, `<session>/runNNN_<setup>`, judged by the same rule — so a report can pool two sessions of one
+//   book, or pick runs out of several. `configGroups()` below is the check that the group really is one configuration.
 export function usableRunsPooled(sesRoot, sessions, setup = '') {
   const list = String(sessions).split(',').map(s => s.trim()).filter(Boolean);
   const runs = [], dropped = [];
-  for (const s of list) { const r = usableRuns(sesRoot, s, setup); runs.push(...r.runs); dropped.push(...r.dropped); }
+  for (const s of list) {
+    if (s.includes('/')) {
+      const [ses, d] = s.split('/'); const r = usableRuns(sesRoot, ses, d.replace(/^run\d+_/, ''));
+      const hit = r.runs.filter(x => x === `${ses}/${d}`), miss = r.dropped.filter(x => x.run === d);
+      if (!hit.length && !miss.length) throw new Error(`no such run: ${s}`);
+      runs.push(...hit); dropped.push(...miss); continue;
+    }
+    const r = usableRuns(sesRoot, s, setup); runs.push(...r.runs); dropped.push(...r.dropped);
+  }
   return { runs, dropped };
 }
 
+// ⭐ IS A GROUP OF RUNS ONE FAMILY? (user-ruled 2026-10-08: "the hard requirement for the build to be identical is an overkill. It should
+//   belong to the same family … shouldn't have different tier or building structure. But lumping together slightly different approaches to
+//   ladder coefficients could have merit. And joining together before-fix and after-fix builds on minor bugfixes is definitely OK.")
+//   A FAMILY = the same tier / building STRUCTURE: every enabled industry, each rung's key and era, and which rungs are crafts or merged
+//   methods — read from the config each run was built from (build_state.json → mod_under_test.built_from_config). Coefficients (A, B, cost,
+//   recipes, ai_value), defines and the emitted build may differ inside a family; configFamilies() reports those differences so the report
+//   can say them, and the caller STOPS only on more than one family. A run whose config cannot be read is its own family ("unknown").
+//   ⚠ The config is read from its path TODAY: if that file was regenerated after the run, its sha256 no longer matches the recorded one and
+//   the row says so (`config_changed`) — the structure then comes from the current file, which is usually still right but is not proven.
+export function configFamilies(sesRoot, runs) {
+  const fams = new Map();
+  for (const r of runs) {
+    let struct = 'unknown:' + r, cfgSha = '?', build = '?', changed = false, cfgPath = '?';
+    try {
+      const m = JSON.parse(readFileSync(join(sesRoot, r, 'build_state.json'), 'utf8')).deterministic.mod_under_test;
+      cfgSha = m.config_sha256 || '?'; build = `${m.fingerprint?.layout_sha256 || '?'}|${m.fingerprint?.bytes ?? '?'}`; cfgPath = m.built_from_config || '?';
+      const raw = readFileSync(cfgPath, 'utf8');
+      changed = cfgSha !== '?' && !cfgSha.startsWith(createHash('sha256').update(raw).digest('hex').slice(0, cfgSha.length));
+      const cfg = JSON.parse(raw);
+      struct = JSON.stringify((cfg.industries || []).filter(i => !i.disabled).map(i => [i.id, (i.tiers || []).map(t => [t.key, t.era, t.method_of || null, !!t.craft])])
+        .sort((a, b) => (a[0] < b[0] ? -1 : 1)));
+    } catch {}
+    const key = createHash('sha256').update(struct).digest('hex').slice(0, 12);
+    if (!fams.has(key)) fams.set(key, { family: key, runs: [], configs: new Map(), builds: new Set(), changed: [] });
+    const f = fams.get(key); f.runs.push(r); f.builds.add(build);
+    if (!f.configs.has(cfgSha)) f.configs.set(cfgSha, { sha: cfgSha, path: cfgPath, runs: 0 }); f.configs.get(cfgSha).runs++;
+    if (changed) f.changed.push(r);
+  }
+  return [...fams.values()].map(f => ({ ...f, configs: [...f.configs.values()], builds: [...f.builds] }));
+}
+
+// the stricter, older test: one group per (config sha256, emitted build) — kept as a reading (a family with more than one group pools
+// coefficient variants or bugfix rebuilds, which is allowed and should be stated)
+export function configGroups(sesRoot, runs) {
+  const groups = new Map();
+  for (const r of runs) {
+    let key = 'unknown:' + r;
+    try {
+      const m = JSON.parse(readFileSync(join(sesRoot, r, 'build_state.json'), 'utf8')).deterministic.mod_under_test;
+      key = `${m.config_sha256 || '?'}|${m.fingerprint?.layout_sha256 || '?'}|${m.fingerprint?.bytes ?? '?'}`;
+    } catch {}
+    if (!groups.has(key)) groups.set(key, []); groups.get(key).push(r);
+  }
+  return [...groups].map(([key, rs]) => ({ key, runs: rs }));
+}
+
 export function usableRuns(sesRoot, session, setup = '') {
-  if (String(session).includes(',')) return usableRunsPooled(sesRoot, session, setup);
+  if (String(session).includes(',') || String(session).includes('/')) return usableRunsPooled(sesRoot, session, setup);
   const root = join(sesRoot, session);
   if (!existsSync(root)) throw new Error(`no such session: ${root}`);
   const all = readdirSync(root).filter(x => /^run\d+_/.test(x)).sort();
