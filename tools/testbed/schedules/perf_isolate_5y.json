@@ -1,0 +1,55 @@
+{
+  "schedule_version": 1,
+  "label": "perf-isolate-5y",
+  "_why": "TICK-COST ISOLATION (user-asked 2026-10-08: 'Build the options, run them and try isolating the effects by overall time (alternate options, switching off features in combinations)'). The user's in-game Tick Task List screenshots (vanilla vs the jex book, Jul 1836 and Jan 1838, two runs each) read the mod's extra serial cost at ~+8 s per in-game year in 1836 and ~+4 s in 1838, spread over RemoveExpiredCatalysts (1836 only, 11-12 ms/day), RecalculateModifierNodes (+~1 ms/tick), UpdateStandardBuildingModifiers (x3, weekly), MonthlyPulseJournalEntries (x1.65) and UpdateJournalEntries. This batch switches whole features off and measures the wall time per in-game year (observer ticks, dedicated_server.log per-tick stamps). Arms: vanilla = control (vanilla + telemetry); full = config/mod_config.perf-full.json, the jex book (e1a12-ai1135-tex1140-jex-artmerge) unchanged; d0 = full with dams.enabled false (no dam buildings, no base_values static-modifier copy, no 144 dam JEs, no dam on_action); r0 = full with research_events.enabled false and the finish boost off (no 204 research JEs, no bars/script values, no wargate on_action, vanilla tech ai_weights); c0 = full with company_chain false (vanilla company files, no 27 extra modifier types); drc0 = all three off (the tier structure, recipes, crafts, merges, trade weights and secondaries alone). Configs are probe files, not books. Alternated by round, order varied per round so no arm always runs first.",
+  "_predictions": {
+    "full_vs_vanilla": "+4 to +8 s per in-game year over 1836-1840 (F217 read +6-7)",
+    "d0": "recovers 1-3 s/yr if the dam base_values modifiers drive RecalculateModifierNodes / UpdateStandardBuildingModifiers; ~0.5 s/yr from the 144 dam JEs",
+    "r0": "recovers ~1-2 s/yr (MonthlyPulseJournalEntries and UpdateJournalEntries back toward vanilla)",
+    "c0": "recovers < 1 s/yr",
+    "drc0": "the residual is the tier structure itself (more building types and levels: crafts carry x10 levels); if drc0 still sits several s/yr above vanilla, the structure is the cost",
+    "catalysts": "unexplained; whichever arm loses the 1836 burst names it"
+  },
+  "_cost": "18 runs x 1836 -> 1841, about 6-7 minutes each with build and startup, ~2 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Run with -NoSaveHarvest -NoRedFlagFeed so no melt competes for the CPU; the machine monitor stays on.",
+    "A feature switched off also changes the economy a little (r0: no research grants; c0: companies see only rung 0), so a small world-size difference rides along; five years is too short for it to matter much.",
+    "No stop watcher, no register reading: a timing probe."
+  ],
+  "defaults": {
+    "dump_dates": ["1840.1.1"],
+    "tags": ["GBR"],
+    "metrics": ["country_state"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 30
+  },
+  "setups": {
+    "vanilla": { "kind": "control" },
+    "full": { "kind": "config", "config": "config/mod_config.perf-full.json" },
+    "d0": { "kind": "config", "config": "config/mod_config.perf-d0.json" },
+    "r0": { "kind": "config", "config": "config/mod_config.perf-r0.json" },
+    "c0": { "kind": "config", "config": "config/mod_config.perf-c0.json" },
+    "drc0": { "kind": "config", "config": "config/mod_config.perf-drc0.json" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1841.1.1" },
+    { "setup": "full", "until": "1841.1.1" },
+    { "setup": "d0", "until": "1841.1.1" },
+    { "setup": "r0", "until": "1841.1.1" },
+    { "setup": "c0", "until": "1841.1.1" },
+    { "setup": "drc0", "until": "1841.1.1" },
+    { "setup": "drc0", "until": "1841.1.1" },
+    { "setup": "c0", "until": "1841.1.1" },
+    { "setup": "r0", "until": "1841.1.1" },
+    { "setup": "d0", "until": "1841.1.1" },
+    { "setup": "full", "until": "1841.1.1" },
+    { "setup": "vanilla", "until": "1841.1.1" },
+    { "setup": "full", "until": "1841.1.1" },
+    { "setup": "r0", "until": "1841.1.1" },
+    { "setup": "vanilla", "until": "1841.1.1" },
+    { "setup": "drc0", "until": "1841.1.1" },
+    { "setup": "d0", "until": "1841.1.1" },
+    { "setup": "c0", "until": "1841.1.1" }
+  ]
+}

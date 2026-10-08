@@ -52,6 +52,9 @@ const MOD = process.argv[2];
 if (!MOD) { console.error('usage: node emit_companies.mjs <modDir> [configPath]'); process.exit(1); }
 const CFGPATH = process.argv[3] || join(REPO, 'config', 'mod_config.json');
 const CFG = JSON.parse(readFileSync(CFGPATH, 'utf8'));
+// A PERFORMANCE PROBE SWITCH (2026-10-08): `company_chain: false` emits nothing, so vanilla's company files stand (companies then see
+// only the rung-0 / craft keys, as before ROADMAP step 5). For isolating the extension's tick cost; no book ships with it.
+if (CFG.company_chain === false) { console.log('companies: chain extension OFF (company_chain: false) - nothing emitted, vanilla company files stand'); process.exit(0); }
 
 const BOM = '\uFEFF';
 const stripBom = s => s.replace(/^\uFEFF/, '');

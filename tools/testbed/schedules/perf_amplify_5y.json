@@ -1,0 +1,52 @@
+{
+  "schedule_version": 1,
+  "label": "perf-amplify-5y",
+  "_why": "TICK-COST ISOLATION, PART 2 — THE 'TESTS TO WORSEN' (user, 2026-10-08: 'If you suspect that 50 research JEs add +3s, surely 500 research JEs with close, but not identical conditions ... should add about +30s, and be clearly visible'). Every arm is the jex book (config/mod_config.perf-full.json) with ONE part multiplied x10 by the probe amplifiers (emit_research_events.mjs research_events.perf_amplify; emit_dams.mjs dams.perf_amplify): ra10 = 2,040 research journal entries / 680 bars / 1,640 script values (copies without the grant, thresholds +i x 0.001); dab10 = 1,440 dam building types (copies share the methods, never buildable before steam_turbine); das10 = 1,440 base_values max-level lines (on every country); dat10 = 1,440 site traits added to states at the start; dad10 = 2,880 survey decisions (is_shown fails on steam_turbine). Per-copy cost = (arm − full) / 9. Plus full and vanilla as references, and ONE full run with the launch argument -script_profiling (the exe pairs it with logs/script_profiling_handsoff.log; untested) — read separately, its own overhead makes it no timing arm. Batch 1 (20261008_224938_perf-isolate-5y) is the subtraction half.",
+  "_predictions": {
+    "ra10": "if the research entries cost ~4-6 s/yr (batch 1, n=1: research off -6.2 s/yr), x10 adds roughly +35 to +55 s/yr — dominated by the monthly tick (batch 1: monthly tick 192 ms with entries vs 136 without)",
+    "dab10": "if dam building types cost ~2-4 s/yr (part of batch 1's dams-off -4.6), x10 adds +20 to +40; if not the buildings, ~0",
+    "das10": "the static cap lines: unknown; RecalculateModifierNodes/UpdateStandardBuildingModifiers are the suspects",
+    "dat10": "site traits: small unless state trait count drives modifier recalculation",
+    "dad10": "decisions: small, their is_shown fails on the first line in 1836",
+    "script_profiling": "writes logs/script_profiling_handsoff.log (per script location: time, call count) — if so, a cheap per-script reading for later batches"
+  },
+  "_cost": "14 runs x 1836 -> 1841, ~6-9 minutes each (the amplified arms slower), ~2 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); -NoSaveHarvest -NoRedFlagFeed.",
+    "Amplified copies may change the AI's evaluation of things beyond time (e.g. 1,440 building types in the build list) — read time only.",
+    "No stop watcher, no register reading: a timing probe. Never monitor session.log with tail -F (L29: the scheduler's log lines are dropped)."
+  ],
+  "defaults": {
+    "dump_dates": ["1840.1.1"],
+    "tags": ["GBR"],
+    "metrics": ["country_state"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 40
+  },
+  "setups": {
+    "vanilla": { "kind": "control" },
+    "full": { "kind": "config", "config": "config/mod_config.perf-full.json" },
+    "ra10": { "kind": "config", "config": "config/mod_config.perf-ra10.json" },
+    "dab10": { "kind": "config", "config": "config/mod_config.perf-dab10.json" },
+    "das10": { "kind": "config", "config": "config/mod_config.perf-das10.json" },
+    "dat10": { "kind": "config", "config": "config/mod_config.perf-dat10.json" },
+    "dad10": { "kind": "config", "config": "config/mod_config.perf-dad10.json" },
+    "fullprof": { "kind": "config", "config": "config/mod_config.perf-full.json" }
+  },
+  "runs": [
+    { "setup": "ra10", "until": "1841.1.1" },
+    { "setup": "dab10", "until": "1841.1.1" },
+    { "setup": "das10", "until": "1841.1.1" },
+    { "setup": "full", "until": "1841.1.1" },
+    { "setup": "dat10", "until": "1841.1.1" },
+    { "setup": "dad10", "until": "1841.1.1" },
+    { "setup": "vanilla", "until": "1841.1.1" },
+    { "setup": "dad10", "until": "1841.1.1" },
+    { "setup": "dat10", "until": "1841.1.1" },
+    { "setup": "full", "until": "1841.1.1" },
+    { "setup": "das10", "until": "1841.1.1" },
+    { "setup": "dab10", "until": "1841.1.1" },
+    { "setup": "ra10", "until": "1841.1.1" },
+    { "setup": "fullprof", "until": "1838.1.1", "dump_dates": ["1837.1.1"], "game_args": "-script_profiling" }
+  ]
+}

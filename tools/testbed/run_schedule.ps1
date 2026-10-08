@@ -179,7 +179,7 @@ function Get-RedFlagDates {
 # here despite working. Reconciled 2026-08-21; wage_pop_endpoints added with telemetry v14.
 $KNOWN_DEFAULT_KEYS = @('tags','metrics','autosave_interval','timeout_minutes','dump_dates',
                         'wage_pop_markets','wage_pop_endpoints','breakdown_dates','breakdown_tags',
-                        'wide_dates','wide_tags','origin_goods')
+                        'wide_dates','wide_tags','origin_goods','game_args')
 if ($defaults) {
     $unknown = @($defaults.PSObject.Properties | ForEach-Object { $_.Name } |
                  Where-Object { $KNOWN_DEFAULT_KEYS -notcontains $_ -and $_ -notlike '_*' })
@@ -278,6 +278,8 @@ foreach ($r in $runs) {
         wage_pop_endpoints = $(Val $r "wage_pop_endpoints" (Val $defaults "wage_pop_endpoints" $null))
         autosave = Val $r "autosave_interval" $defAutosave
         timeout  = [int](Val $r "timeout_minutes" $defTimeout)
+        # extra game launch arguments (space-separated string, run else defaults) -> run_observer -ExtraGameArgs (2026-10-08)
+        game_args = [string](Val $r "game_args" (Val $defaults "game_args" ""))
     }
 }
 
@@ -584,6 +586,7 @@ foreach ($p in $plan) {
     # PROVENANCE: the arm this run was built from, machine-read into build_state.json. A control arm
     # with no config passes nothing, and build_state then reads as the pure-vanilla arm it is.
     if ($resolved.Config) { $obsArgs += @("-BuildConfig",$resolved.Config) }
+    if ($p.game_args -and $p.game_args.Trim()) { $obsArgs += @("-ExtraGameArgs","`"$($p.game_args.Trim())`"") }
 
     # ---- STAGE A: archive autosaves CONCURRENTLY with the game (a file copy; the engine rotates its
     #      slots by RENAME and a 45 MB write is not atomic, both of which archive_autosaves.ps1 handles).

@@ -1,0 +1,187 @@
+{
+  "schedule_version": 1,
+  "label": "perf-mechanism-5y",
+  "_why": "TICK-COST ISOLATION, PART 3 — MECHANISMS AND A CANDIDATE FIX (the user's standing go-ahead of 2026-10-08: 'Go on with as many tests as you want, and high N-s on short (2-20y) probes'). Batch 1 (20261008_224938) put the jex book's early overhead (+7.7 s per in-game year over 1836-40, n=3) on the dams (+1.9 alone) and the research journal entries (+3.2 alone), superadditive; batch 2 (20261009_003420) amplified each part x10 (research ~1.4 s/yr per copy of the 204-entry set plus a one-off cascade of long daily ticks from 1836.2.1; dam building types ~1.1 s/yr per 144 unbuildable types). This batch asks WHY and tests a fix. Arms (all the jex book, config/mod_config.perf-*.json): vanilla and full as same-night references (n=4 each); fq = full with research_events.update_frequency {active 30, inactive 60} — the engine's per-type overrides of JOURNAL_ENTRY_UPDATE_ACTIVE 4 / _INACTIVE 14 (fields named in victoria3.exe, used by no vanilla file: does the engine accept them, and do they cut the research cost?) (n=4); ra10fq = the x10 research amplifier with the same frequencies (the cut, made visible) (n=2); ra10i = x10 with the copies never shown (is_shown_when_inactive/possible always no: the cost of checking inactive entries) (n=2); ra10n = x10 with the copies shown and active but no progress bar (the activation and per-entry update cost without bars/script values) (n=2); dab10n = x10 dam building types whose potential is always no (is the per-type cost the potential's evaluation?) (n=2); rw0 = full without the six war-channel entries and the wargate on_action (n=3). ADDED before launch: ds = full without the 144 base_values dam cap lines (n=3) and das10t = the x10 static amplifier with the copies declared as modifier TYPES only, no base_values line (is the static cost the types or the lines?) (n=2) — after batch 2 run 3 read the x10 cap lines at ~2.0 s/yr per 144 lines.",
+  "_predictions": {
+    "fq": "if the per-entry update (every 4 / 14 days) is the cost, the research share (~3 s/yr) falls by a half or more; if the monthly bar evaluation is the cost, little changes. The engine may also reject the fields (error.log) — then fq = full",
+    "ra10fq_vs_ra10": "the same cut x10: visible as 5-10 s/yr if the frequency is the lever",
+    "ra10i": "small if inactive entries are cheap (a can_research check every 14 days per country per entry); the 1836.2.1 cascade gone if it is the activation of thousands of entries",
+    "ra10n": "between ra10i and ra10",
+    "dab10n": "close to full if the cost is the potential's evaluation per state; close to dab10 if it is the number of building types itself",
+    "rw0": "within 1 s/yr of full (six entries, a monthly on_action over every country)"
+  },
+  "_cost": "28 runs x 1836 -> 1841, ~6-10 minutes each, ~3.4 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); -NoSaveHarvest -NoRedFlagFeed.",
+    "Never monitor session.log with tail -F (L29).",
+    "No stop watcher, no register reading: a timing probe."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 40
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    },
+    "full": {
+      "kind": "config",
+      "config": "config/mod_config.perf-full.json"
+    },
+    "fq": {
+      "kind": "config",
+      "config": "config/mod_config.perf-fq.json"
+    },
+    "ra10fq": {
+      "kind": "config",
+      "config": "config/mod_config.perf-ra10fq.json"
+    },
+    "ra10i": {
+      "kind": "config",
+      "config": "config/mod_config.perf-ra10i.json"
+    },
+    "ra10n": {
+      "kind": "config",
+      "config": "config/mod_config.perf-ra10n.json"
+    },
+    "dab10n": {
+      "kind": "config",
+      "config": "config/mod_config.perf-dab10n.json"
+    },
+    "rw0": {
+      "kind": "config",
+      "config": "config/mod_config.perf-rw0.json"
+    },
+    "ds": {
+      "kind": "config",
+      "config": "config/mod_config.perf-ds.json"
+    },
+    "das10t": {
+      "kind": "config",
+      "config": "config/mod_config.perf-das10t.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "fq",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "full",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ra10i",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ds",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "dab10n",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ra10fq",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "rw0",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ra10n",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "fq",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "das10t",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "full",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "rw0",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ra10n",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "dab10n",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ds",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ra10i",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ra10fq",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "fq",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "full",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "das10t",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "rw0",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "fq",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "full",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ds",
+      "until": "1841.1.1"
+    }
+  ]
+}

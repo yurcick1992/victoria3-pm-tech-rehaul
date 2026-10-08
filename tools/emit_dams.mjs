@@ -41,6 +41,14 @@ const CFG = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 if (!CFG.dams?.enabled) { console.log('dams: disabled - nothing emitted'); process.exit(0); }
 
 const die = m => { throw new Error('emit_dams: ' + m); };
+// A PERFORMANCE PROBE SWITCH (2026-10-08, the tick-cost isolation batches): `dams.perf_off` lists dam parts to leave out —
+// 'static' (the base_values copy with the 144 level caps, and their modifier types), 'traits' (the site traits added at the
+// campaign start), 'events' (decisions, journal entries and every on_action but the campaign start), 'buildings' (the dam
+// buildings, methods, groups and building group; needs 'events', which name them). No book ships with it: a dam left without
+// its static cap cannot be built at all, which a 1836-1856 probe never reaches anyway.
+const PERF_OFF = new Set(CFG.dams.perf_off || []);
+for (const k of PERF_OFF) if (!['static', 'traits', 'events', 'buildings'].includes(k)) die(`perf_off: unknown part '${k}'`);
+if (PERF_OFF.has('buildings') && !PERF_OFF.has('events')) die(`perf_off: 'buildings' needs 'events' (the decisions and journal entries name the buildings)`);
 const W = (rel, s) => { const f = join(MOD, rel); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, '\uFEFF' + s, 'utf8'); };
 const T = '\t';
 const stripBom = s => s.replace(/^\uFEFF/, '');
@@ -346,7 +354,7 @@ if (traitTxt.length) W('common/state_traits/zzz_pm_rehaul_dam_traits.txt', HDR +
 // added at the campaign start only. ⚠ NO catch-up for saves begun on an earlier build (user-ruled 2026-10-05: no legacy-save
 // contingency unless asked — it would run forever for a case that never occurs)
 seff.push(`pmr_dam_add_caps = {\n` +
-  projects.map(p => `${T}s:${p.state} = { add_state_trait = ${siteTrait(p)} }\n`).join('') + `}`);
+  (PERF_OFF.has('traits') ? '' : projects.map(p => `${T}s:${p.state} = { add_state_trait = ${siteTrait(p)} }\n`).join('')) + `}`);
 
 const regionEffect = (e) => {
   const lines = [];
@@ -569,6 +577,75 @@ const LANGS = CFG.languages || ['english'];
 const esc = s => String(s).replace(/"/g, '\\"');
 for (const lang of LANGS)
   W(`localization/${lang}/replace/zzz_pm_rehaul_dams_l_${lang}.yml`, `l_${lang}:\n` + loc.map(([k, s]) => ` ${k}:0 "${esc(s)}"`).join('\n') + '\n');
+
+// THE PERFORMANCE PROBE SWITCH, applied to the emitted files (see PERF_OFF at the top)
+if (PERF_OFF.size) {
+  const { rmSync } = await import('node:fs');
+  const rm = rel => rmSync(join(MOD, rel), { force: true });
+  if (PERF_OFF.has('static')) { rm('common/static_modifiers/00_code_static_modifiers.txt'); rm('common/modifier_type_definitions/zzz_pm_rehaul_dam_modifiers.txt'); }
+  if (PERF_OFF.has('events')) {
+    rm('common/decisions/zzz_pm_rehaul_dams.txt'); rm('common/journal_entries/zzz_pm_rehaul_dams.txt'); rm('common/script_values/zzz_pm_rehaul_dams.txt');
+    W('common/scripted_effects/zzz_pm_rehaul_dams.txt', HDR + seff.filter(s => s.startsWith('pmr_dam_add_caps')).join('\n\n') + '\n');
+    W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR + `on_game_started_after_lobby = {\n${T}on_actions = { pmr_dam_campaign_start }\n}\n\n` +
+      `pmr_dam_campaign_start = {\n${T}effect = {\n${T}${T}debug_log = "PMR_DAM|start|${projects.length} projects|-|${DATE}"\n${T}${T}pmr_dam_add_caps = yes\n${start.join('\n')}\n${T}}\n}\n`);
+  }
+  if (PERF_OFF.has('buildings')) for (const d of ['buildings', 'production_methods', 'production_method_groups', 'building_groups']) rm(`common/${d}/zzz_pm_rehaul_dams.txt`);
+  console.log(`dams: ⚠ PERF PROBE - left out: ${[...PERF_OFF].join(', ')}`);
+}
+// ⚗ THE PERFORMANCE PROBE AMPLIFIER (2026-10-08, the user's "tests to worsen"): `dams.perf_amplify` = { buildings, static, traits,
+// decisions: k } appends k − 1 renamed COPIES (`_a<i>`) of that part — dam building types (sharing the originals' methods, each with
+// its own declared max-level modifier type), base_values cap lines (with declared types), site traits added at the start, survey
+// decisions (thresholds + i × 0.001, so no two are identical). Copies are never buildable or takeable within a 1836–1856 probe
+// (steam_turbine gates them all), so they cost evaluation only. No book ships with it.
+const AMP = CFG.dams.perf_amplify || {};
+for (const k of Object.keys(AMP)) if (!['buildings', 'static', 'traits', 'decisions', 'buildings_potential', 'static_types_only'].includes(k)) die(`perf_amplify: unknown part '${k}'`);
+if (Object.keys(AMP).length) {
+  const K = part => Math.max(1, Math.round(AMP[part] || 1));
+  const copies = (part, f) => Array.from({ length: K(part) - 1 }, (_, j) => f(`_a${j + 1}`, j + 1));
+  const H = part => `\n\n# ⚗ PERF PROBE: ${K(part) - 1} amplified copies follow (dams.perf_amplify.${part} = ${K(part)})\n`;
+  const newTypes = [];
+  if (K('buildings') > 1) {
+    // `buildings_potential: 'never'` gives the copies `potential = { always = no }` (does the cost come from evaluating the potential?)
+    const never = AMP.buildings_potential === 'never';
+    const add = copies('buildings', s => {
+      let t = bld.join('\n\n').replace(/\bbuilding_dam_([a-z0-9_]+)\b/g, m => m + s);
+      if (never) { const n0 = (t.match(/\n\tpotential = \{\n[\s\S]*?\n\t\}/g) || []).length; if (n0 !== projects.length) die(`buildings_potential: ${n0} potential blocks, expected ${projects.length}`); t = t.replace(/\n\tpotential = \{\n[\s\S]*?\n\t\}/g, '\n\tpotential = { always = no }'); }
+      return t;
+    });
+    W('common/buildings/zzz_pm_rehaul_dams.txt', HDR + bld.join('\n\n') + H('buildings') + add.join('\n\n') + '\n');
+    copies('buildings', s => projects.forEach(p => newTypes.push(`state_${BKEY(p)}${s}_max_level_add`)));
+  }
+  if (K('static') > 1) {
+    const rel = 'common/static_modifiers/00_code_static_modifiers.txt';
+    const txt = stripBom(readFileSync(join(MOD, rel), 'utf8'));
+    const lines = copies('static', s => projects.map(p => `${T}state_${BKEY(p)}_st${s}_max_level_add = ${p.stages}`).join('\n'));
+    copies('static', s => projects.forEach(p => newTypes.push(`state_${BKEY(p)}_st${s}_max_level_add`)));
+    const at = txt.indexOf('# pm_tech_rehaul: the hydro-dam level caps'); if (at < 0) die('perf_amplify.static: the cap block is not in base_values');
+    // `static_types_only: true` declares the copies' modifier TYPES but writes no base_values line (is it the types or the lines?)
+    if (!AMP.static_types_only) W(rel, txt.slice(0, at) + `# ⚗ PERF PROBE: amplified cap lines\n${lines.join('\n')}\n${T}` + txt.slice(at));
+  }
+  if (newTypes.length) {
+    const rel = 'common/modifier_type_definitions/zzz_pm_rehaul_dam_modifiers.txt';
+    const txt = stripBom(readFileSync(join(MOD, rel), 'utf8'));
+    W(rel, txt + '\n' + newTypes.map(t => `${t}={\n${T}decimals=0\n${T}color=good\n${T}game_data={\n${T}${T}ai_value=0\n${T}}\n}`).join('\n\n') + '\n');
+  }
+  if (K('traits') > 1) {
+    const defs = copies('traits', s => projects.map(p => `${siteTrait(p)}${s} = {\n${T}icon = "gfx/interface/icons/state_trait_icons/river.dds"\n\n${T}modifier = {\n${T}}\n}`).join('\n\n'));
+    W('common/state_traits/zzz_pm_rehaul_dam_traits.txt', HDR + traitTxt.join('\n\n') + H('traits') + defs.join('\n\n') + '\n');
+    const adds = copies('traits', s => projects.map(p => `${T}s:${p.state} = { add_state_trait = ${siteTrait(p)}${s} }\n`).join('')).join('');
+    const rel = 'common/scripted_effects/zzz_pm_rehaul_dams.txt';
+    const txt = stripBom(readFileSync(join(MOD, rel), 'utf8'));
+    if (!txt.includes('pmr_dam_add_caps = {\n')) die('perf_amplify.traits: pmr_dam_add_caps not found');
+    W(rel, txt.replace('pmr_dam_add_caps = {\n', `pmr_dam_add_caps = {\n${adds}`));
+  }
+  if (K('decisions') > 1) {
+    const add = copies('decisions', (s, i) => decs.join('\n\n')
+      .replace(/^(pmr_dam_[a-z0-9_]+) = \{/gm, (m, k) => `${k}${s} = {`)
+      .replace(/(> |>= )(\d+)(?![\d.])/g, (m, op, n) => `${op}${(+n + i * 0.001).toFixed(3)}`));
+    W('common/decisions/zzz_pm_rehaul_dams.txt', HDR + decs.join('\n\n') + H('decisions') + add.join('\n\n') + '\n');
+  }
+  console.log(`dams: ⚠ PERF PROBE - amplified ${JSON.stringify(AMP)}`);
+}
 
 const stages = projects.reduce((s, p) => s + p.stages, 0);
 const mw = projects.reduce((s, p) => s + p.mw, 0);

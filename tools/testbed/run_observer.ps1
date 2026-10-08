@@ -67,6 +67,9 @@ param(
     # It MUST carry telemetry (build.ps1 -Telemetry/-TelemetryOn), including the vanilla control
     # arm, which is a real mod built by build.ps1 -ControlOnly.
     [string]   $ModPath = "",
+    # EXTRA game launch arguments, space-separated (2026-10-08, the tick-cost probes: e.g. "-script_profiling"). Appended
+    # after the observer's own; recorded in meta.json with them. Empty = the standard launch.
+    [string]   $ExtraGameArgs = "",
     # the config the mod under test was built from; recorded (with its hash) in build_state.json
     [string]   $BuildConfig = "",
     # short label for this batch, e.g. "vanilla-baseline"
@@ -841,6 +844,7 @@ try {
     Write-Log "pdx_settings.json: display_mode=windowed, language=l_english"
 
     $gameArgs = @("-gdpr-compliant", "-handsoff", "-disable_renderframeifneeded", "-run_until=$UntilDate")
+    if ($ExtraGameArgs.Trim()) { $gameArgs += @($ExtraGameArgs.Trim() -split '\s+') }
     Write-Log "args: $($gameArgs -join ' ')"
 
     if ($script:HasConsole) { Write-Log "press [q] to stop after the current run, [x] to stop immediately" }
