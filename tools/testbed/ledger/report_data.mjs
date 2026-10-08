@@ -51,7 +51,7 @@ function walk(runDir, isFlat) {
   // SAVE_SUMMARY_VERSION 6, so every batch harvested before 2026-08-18 has none and the report must
   // say so rather than draw an empty chart. A DERIVED count, never a hand-written caveat: it goes to
   // zero on its own the moment a v6-harvested batch is read.
-  const out = { years: {}, addsByDecade: {}, gdpByYear: {}, vaByYear: {}, vaCov: { seen: 0, withVa: 0, version: null } };
+  const out = { years: {}, addsByDecade: {}, gdpByYear: {}, ptsByYear: {}, vaByYear: {}, vaCov: { seen: 0, withVa: 0, version: null } };
   let prev = null;
   for (const f of files) {
     let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; }
@@ -84,6 +84,9 @@ function walk(runDir, isFlat) {
       }
     }
     prev = lv;
+    // ⭐ construction points added, SUMMED per calendar year over every summary (yearly or quarterly cadence alike) — fill_goals' G3 reads
+    //   the 1880–1935 total (2026-10-08); `years[y].ptsAdd` below stays the single step into y, which TRAJ plots
+    out.ptsByYear[y] = (out.ptsByYear[y] || 0) + ptsAdd;
     if (!YEARS.includes(y)) continue;
     // world aggregates
     let gdp = 0, pool = 0, sal = 0, unemp = 0, peasW = 0, wfAll = 0, econ = 0;
@@ -183,6 +186,12 @@ for (const y of Object.keys(van[0].gdpByYear)) {
   const vals = van.map(v => v.gdpByYear[y]).filter(Boolean);
   vanGdpByYear[y] = vals.reduce((a, b) => a + b, 0) / vals.length;
 }
+// vanilla's construction points per calendar year, the MEAN over its runs (n=16) — fill_goals' G3 denominator
+const vanPtsByYear = {};
+for (const y of new Set(van.flatMap(v => Object.keys(v.ptsByYear)))) {
+  const vals = van.map(v => v.ptsByYear[y]).filter(x => x != null);
+  if (vals.length) vanPtsByYear[y] = vals.reduce((a, b) => a + b, 0) / vals.length;
+}
 const flatAll = flats.map(f => f.gdpByYear);   // per-run world GDP series (n=2 agreement is a finding)
 
 // ---- VA: the tiered-sector GDP series, per arm, with its own COVERAGE. The template plots it when
@@ -205,7 +214,7 @@ const covOf = runs => ({ seen: runs.reduce((a, r) => a + r.vaCov.seen, 0),
                          version: runs[0]?.vaCov.version ?? null });
 const VA = { flat: mergeVa(flats), van: mergeVa(van), nb: mergeVa(nb),
              cov: { flat: covOf(flats), van: covOf(van), nb: covOf(nb) } };
-writeFileSync(join(OUT, 'report_data.json'), JSON.stringify({ flat, flats, flatAll, vanMean, nbGdp, vanGdpByYear, nbAdds: nb[0] ? nb[0].addsByDecade : {}, VA }, null, 1));
+writeFileSync(join(OUT, 'report_data.json'), JSON.stringify({ flat, flats, flatAll, vanMean, vanPtsByYear, nbGdp, vanGdpByYear, nbAdds: nb[0] ? nb[0].addsByDecade : {}, VA }, null, 1));
 console.log('written. flat years:', Object.keys(flat.years).join(','));
 console.log('VA coverage (tiered-sector GDP, save_summary_version >= 6):',
   ['flat', 'van', 'nb'].map(a => a + ' ' + VA.cov[a].withVa + '/' + VA.cov[a].seen + ' (v' + VA.cov[a].version + ')').join('  '));

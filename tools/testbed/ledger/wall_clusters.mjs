@@ -11,8 +11,11 @@
 // REPORTING (ruled): every cluster in ABSOLUTE numbers; separate wall-clock medians for 1 and 2 in writing, the MAIN figure = 1 + 2
 // combined; for 3 only the count and which bug.
 //
-//   node tools/testbed/ledger/wall_clusters.mjs <label>=<session>[,<session>][:<setup>] [...] [--runs]
+//   node tools/testbed/ledger/wall_clusters.mjs <label>=<session>[,<session>][:<setup>] [...] [--runs] [--json <file>]
+//   --json: per label, every usable run's cluster, bug, reason and play time — fill_build_perf.mjs reads it, so the ledger's row P takes
+//   its MAIN figure over clusters 1 + 2 and reports cluster 3 as a count (2026-10-08).
 import { join, dirname } from 'node:path';
+import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { usableRuns } from './lib_runs.mjs';
 import { wallFromTicks } from './lib_wall.mjs';
@@ -20,6 +23,8 @@ import { indexRun, firstOf, readSum, med } from './lib_sumidx.mjs';
 import { yearTimes, episodes } from '../slow_quarantine.mjs';
 const SES = join(dirname(fileURLToPath(import.meta.url)), '..', 'sessions');
 const args = process.argv.slice(2), RUNS = args.includes('--runs');
+const JSON_OUT = (() => { const i = args.indexOf('--json'); return i >= 0 ? args.splice(i, 2)[1] : null; })();
+const OUTJ = {};
 const specs = args.filter(a => a.includes('='));
 if (!specs.length) { console.error('usage: wall_clusters.mjs <label>=<session>[,<session>][:<setup>] [...] [--runs]'); process.exit(2); }
 const LOOP_MOVES = 200, LOOP_DIST = 125000;
@@ -62,6 +67,7 @@ for (const spec of specs) {
   for (const r of runs) {
     const dir = join(SES, r), c = classify(dir), w = wallFromTicks(dir);
     C[c.cluster].push(w?.wall_play ?? null);
+    ((OUTJ[label] ||= {}).runs ||= {})[r] = { cluster: c.cluster, bug: c.bug ?? null, why: c.why, wall_play: w?.wall_play ?? null };
     if (c.cluster === 3) bugs[c.bug] = (bugs[c.bug] || 0) + 1;
     if (RUNS || c.cluster !== 1) console.log(`   ${r.padEnd(58)} cluster ${c.cluster}  ${fmt(w?.wall_play).padStart(10)}  ${c.E.map(e => `${e.start}–${e.end}${e.open ? '(to end)' : ''} +${e.peak_pct}%`).join(', ') || ''}${c.cluster !== 1 ? '  · ' + c.why : ''}`);
   }
@@ -71,3 +77,4 @@ for (const spec of specs) {
   console.log(`   ⇒ MAIN wall clock (1 + 2): ${C[1].length + C[2].length} run(s), median ${fmt(m([...C[1], ...C[2]]))}`);
   console.log(`   (3) listed bug: ${C[3].length} run(s)${C[3].length ? ' — ' + Object.entries(bugs).map(([b, n]) => `${b} ${n}`).join(', ') : ''}`);
 }
+if (JSON_OUT) { writeFileSync(JSON_OUT, JSON.stringify(OUTJ, null, 1)); console.log(`\nwrote ${JSON_OUT}`); }

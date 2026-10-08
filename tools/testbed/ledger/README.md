@@ -190,6 +190,27 @@ save summaries, and are parameterised only by the run list at the top of each fi
   `gdpR >= 0.8` alone and printed "met" on the 2.10× world of F110; G2's pill was a literal. A reading above the upper
   bound is "above the band", never "met"; a target that is one-sided by design (G3's construction ≥1×) says so in its
   target text.
+  ⭐⭐ **REVIEWED AGAINST THE RULED CRITERIA 2026-10-08** (user: *"G1 verdict always says yellow first read. What does it even mean? …
+  G3 … definitely a yellow, not a red. G7 expects t3 to be the main employment tier in 1920"*). Every row grades ok / warn / bad (a near
+  miss is a warn) and names its source:
+  - **G1** — graded on the LESS-EFFICIENT below-best cut (a lower rung earning less than the country's frontier — §10.92: building a
+    lower rung that pays MORE is following profit) against the four-rung canon family's 21.0–21.6% (F106/F107), warn to +5 pp.
+    "First read" meant "worse than 39%", solver2f's six-rung figure (F93), a book retired 2026-09-05. Raw / unit-weighted share and the
+    leader−p25 gap 1900→1935 printed beside it.
+  - **G2** — the register's T0 aim: e0 workers (craft and factory columns SUMMED) falling every decade 1900→1935; soft breach when 1935 >
+    1.3 × 1900; dead = every e0 part's payback ≥ 30 y (artisans and e0 factories separately on a craft book).
+  - **G3** — construction points added **1880–1935**, the MEDIAN over the arm's runs ÷ vanilla's mean (report_data's `ptsByYear` /
+    `vanPtsByYear`; it read run 1's single year 1934→35 until this date) ≥ 1× (warn 0.9–1); frontier payback at £720/pt 8–15 y, warn
+    6–8 or 15–20 (the floor = vanilla's own manufacturing payback at 1900, F53; £720 overstates a late payback ~25%).
+  - **G4** — world GDP, 1932–36 mean (§10.83): 0.80–1.20 ok (U*/H read normally, §10.83.8), to 0.66 / 1.38 warn (weakened), beyond bad.
+  - **G5** — the register's W: productive workers PER HEAD (consts' new `p`; absolute on an older fill, labelled), 1932–36: 0.6–0.95 ok,
+    above 1.0 bad (soft), else warn; GDP per worker must exceed vanilla's.
+  - **G6** — 1837–60 world GDP 0.9–1.1 ok, 0.8–1.2 warn (this file's band; the register's hard 1836–45 anchor is criteria.mjs's).
+  - **G7** — THE ERA RULE'S ANCHORS (`era_anchor_years` from `--config`, else 1836/1875/1905/1940): the largest-employment era at
+    1900 / 1920 / 1935 may be the latest era whose anchor has passed or the next one within 5 years — e1/e2 · e2 · e2/e3. The old target
+    "t2 · t3 · t3" was the retired six-rung ladder's; e0 parts are summed. The top era's share of tier workers at 1935 printed beside it.
+  - **P** — the median over wall-clock clusters 1 + 2 (`wall_clusters.mjs --json` → `wall_clusters.json`, read by fill_build_perf); a
+    cluster-3 run (a directly observed listed vanilla bug) is left out and named; yellow edge = the ruled +10% budget (it read 15).
 - **`fill_tierchoice.mjs`** — the **Build choice panel** (`TIERC`, table `t-tierc`; user-ruled INTO
   the layout 2026-08-24 — the layout may gain panels, never lose them): the share of tiered
   construction below the best tier the country holds (raw / unit-weighted / ex-ports, on

@@ -25,7 +25,9 @@ const YEARS = [1840,1860,1880,1900,1920,1935];
 const LADDER = {};
 for (const y of YEARS) {
   const p = PB[y], yr = RD.flat.years[y]; if (!p || !yr) continue;
-  const adds = RD.flat.addsByDecade[Math.floor(y / 10) * 10] || [0,0,0,0,0,0];
+  // ⚠ the decade's additions SUMMED OVER EVERY RUN (2026-10-08) — RD.flat is run 1 alone, which on a sixteen-run arm made the most-built
+  //   era one seed's; the e0 staffing beside it stays run 1's (the era census is per run and only RD.flat carries it)
+  const adds = (RD.flats || [RD.flat]).reduce((acc, f) => { (f.addsByDecade[Math.floor(y / 10) * 10] || []).forEach((v, i) => { acc[i] = (acc[i] || 0) + v; }); return acc; }, [0,0,0,0,0,0]);
   const tot = adds.reduce((a, b) => a + b, 0) || 1;
   LADDER[y] = ['e' + adds.indexOf(Math.max(...adds)), +(100 * adds[0] / tot).toFixed(0),
                'e' + p.topEra, p.frontier ?? 0, 'e0', p.stale ?? 0,
@@ -34,7 +36,9 @@ for (const y of YEARS) {
 const TRAJ = {};
 for (const y of YEARS) {
   const t = C.TRAJ[y]; if (!t) continue;
-  const cm = RD.flat.years[y]?.ptsAdd, cv = RD.vanMean[y]?.ptsAdd;
+  // the MEDIAN over the arm's runs (2026-10-08; it read run 1 alone)
+  const cms = (RD.flats || [RD.flat]).map(f => f.years[y]?.ptsAdd).filter(Number.isFinite).sort((a, b) => a - b);
+  const cm = cms.length ? (cms.length % 2 ? cms[cms.length >> 1] : (cms[cms.length / 2 - 1] + cms[cms.length / 2]) / 2) : null, cv = RD.vanMean[y]?.ptsAdd;
   TRAJ[y] = [t[0], t[1], cm && cv ? +(cm / cv).toFixed(2) : 0];
 }
 // --- WATCH: seven POSITIONAL slots, matching the template's t-watch renderer EXACTLY:

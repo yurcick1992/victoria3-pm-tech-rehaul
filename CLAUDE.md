@@ -2756,7 +2756,9 @@ tools/                  dev tooling — NOT shipped in the mod
   testbed/ledger/wall_clusters.mjs  ⭐ THE WALL CLOCK IN THE THREE RULED RUN CLUSTERS (2026-10-07): normal / inexplicably slowed (an episode,
                         no listed bug observed) / a directly observed listed bug (the fleet path loop in the v16 summaries' worst paths);
                         per arm the cluster-1 and cluster-2 medians, the MAIN median over 1 + 2, and the cluster-3 count and bug.
-                        `<label>=<session>[,<session>][:<setup>] [...] [--runs]`. Use it for every wall-clock report
+                        `<label>=<session>[,<session>][:<setup>] [...] [--runs] [--json <file>]`. Use it for every wall-clock report.
+                        Since 2026-10-08 fill_ledger.sh runs it with --json, and the ledger's row P grades the median over clusters 1 + 2
+                        (a cluster-3 run is named and left out; the yellow edge is the ruled +10% budget)
   testbed/slow_quarantine.mjs  ⭐ THE SLOWDOWN QUARANTINE JUDGE (user-ruled 2026-10-07; the wall-clock bullet): per run, from the per-tick log,
                         which yearly saves sit in a slowdown EPISODE (the time per in-game year > 3σ over year X−3, X−6 or X−10, three years running) or the two years after —
                         `keep` (with its quarantine name) / `release` / `wait`, plus `<run>/slow_periods.json` and

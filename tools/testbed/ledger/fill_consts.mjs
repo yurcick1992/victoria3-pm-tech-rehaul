@@ -52,7 +52,7 @@ function series(runDir) {
     }
     let lv = 0;
     for (const b of Object.values(j.world.buildings || {})) lv += b.levels || 0;
-    out[y] = { gdp: gdp / 1e6, sal, unemp, peas, wfAll, lv, govMilStaff, pops: j.world.pop_objects_live ?? null };
+    out[y] = { gdp: gdp / 1e6, sal, unemp, peas, wfAll, lv, govMilStaff, pop: +j.world.population || 0, pops: j.world.pop_objects_live ?? null };
   }
   return out;
 }
@@ -72,8 +72,10 @@ const merge = dirs => {
 };
 const mod = merge(MOD), van = merge(VAN), nb = merge(NB);
 // productive workers, millions
+// ⭐ `p` = world population, millions (2026-10-08): fill_goals' G5 grades the register's W, productive workers PER HEAD — it used to
+//   grade the absolute count, which a smaller or larger world moves without any change in how industrialised it is
 const prod = s => Object.fromEntries(Object.entries(s).map(([y, r]) =>
-  [y, { w: +((r.sal - r.govMilStaff) / 1e6).toFixed(1), g: Math.round(r.gdp) }]));
+  [y, { w: +((r.sal - r.govMilStaff) / 1e6).toFixed(1), g: Math.round(r.gdp), ...(r.pop ? { p: +(r.pop / 1e6).toFixed(1) } : {}) }]));
 // non-productive adults % and pure unemployment %
 const full = r => 100 * (r.unemp + r.peas) / (r.wfAll || 1);
 const pure = r => 100 * r.unemp / ((r.wfAll - r.peas) || 1);

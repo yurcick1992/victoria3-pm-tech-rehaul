@@ -43,6 +43,8 @@ step node $L/analyse_gdp_gap.mjs --session $SESSION --setup $SETUP --config $BOO
 step node $L/report_data.mjs --mod $MOD --van $VAN --nb none --config $BOOK --out $OUT
 step node $L/report_data2.mjs --mod $MOD --van $VAN --config $BOOK --out $OUT
 step node $L/report_perf.mjs $(echo $MOD | tr ',' '\n' | sed "s|^|$S/|") $S/$VANS --json $OUT/perf_raw.json
+# the three wall-clock clusters (user-ruled 2026-10-07) — fill_build_perf tags each run, the grade is the median over clusters 1 + 2
+step node $L/wall_clusters.mjs "$SETUP=$SESSION:$SETUP" "vanilla=$VANS:vanilla" --json $OUT/wall_clusters.json
 step node $L/fill_build_perf.mjs $OUT
 step node $L/fill_consts.mjs $OUT --mod $MOD --van $VAN --nb none
 step node $L/fill_emp.mjs $OUT --mod $MOD --config $BOOK
@@ -59,7 +61,7 @@ step node $L/fill_obsolescence.mjs $OUT --session $SESSION --setup $SETUP --conf
 #   summary the redflag-summary skill writes from redflags_digest.md into redflags_summary.html
 step node $L/input_price_flags.mjs "$SETUP=$SESSION:$SETUP" --ref "vanilla (eleven-tag set, n=4)=20260920_225047_schedule,20260920_192007_schedule:vanilla" --yearly --html $OUT/redflags_full.html --json $OUT/redflags.json --list 0
 step node $L/redflag_metrics.mjs $OUT
-step node $L/fill_goals.mjs $OUT/goals.html $OUT
+step node $L/fill_goals.mjs $OUT/goals.html $OUT --config $BOOK
 echo; echo "data filled in $OUT — now write lede.html incidents.html next.html footer.html tokens.json title.txt, and redflags_summary.html with the"
 echo "redflag-summary skill (.claude/skills/redflag-summary/SKILL.md, from redflags_digest.md); then fill_assemble + fill_verify, and copy redflags_full.html"
 echo "into the session folder beside REPORT.html"

@@ -107,7 +107,7 @@ a{color:var(--accent)}
   <table>
     <tr><th></th><th>Goal, in game terms</th><th>Headline metric</th><th class="num">This batch</th><th class="num">Target</th><th>Verdict</th></tr>
     __GOALS__
-    <tr><td><b>P</b></td><td class="goalcell"><b>The game does not get slower</b></td><td><b>Total run time</b> vs vanilla <span class="dim">(per-unit, pop-matched, beside it)</span></td><td class="num" id="v-perf">—</td><td class="num dim">≤+5% / +5–15% / >+15%</td><td id="v-perfpill"><span class="pill dim">—</span></td></tr>
+    <tr><td><b>P</b></td><td class="goalcell"><b>The game does not get slower</b></td><td><b>Total run time</b> vs vanilla <span class="dim">(per-unit, pop-matched, beside it)</span></td><td class="num" id="v-perf">—</td><td class="num dim">≤+5% / +5–10% / >+10% <span class="dim">(clusters 1+2)</span></td><td id="v-perfpill"><span class="pill dim">—</span></td></tr>
   </table>
   </div>
 </section>
@@ -116,7 +116,7 @@ a{color:var(--accent)}
 <section class="sec">
   <h2>P — Performance: does our meddling make the game slower than vanilla?</h2>
   <p class="lede"><b>A standing constraint on every batch.</b> Whatever the mod does to the economy, it must not
-  make Victoria&nbsp;3 materially slower to play. Graded on the total: <b>≤+5%</b> acceptable, <b>+5–15%</b> needs improvement, <b>&gt;+15%</b> too slow. Speed is reported as <b>in-game years per
+  make Victoria&nbsp;3 materially slower to play. Graded on the total: <b>≤+5%</b> acceptable, <b>+5–10%</b> needs improvement, <b>&gt;+10%</b> (the ruled budget) too slow — over the wall-clock clusters 1 + 2; a run with a directly observed listed vanilla bug (cluster 3) is left out and named (user-ruled 2026-10-07). Speed is reported as <b>in-game years per
   minute</b> — the rate you actually feel — so <b>higher is better</b> everywhere on this page.</p>
   <p class="lede"><b>Total run time is the quantity that matters</b> — a player never notices that the economy
   half a world away carries more lightly-staffed buildings, they notice the century taking longer. So the aim is
@@ -185,7 +185,16 @@ function perfShapeText(){
 }
 function renderPerf(mode){
   const med=a=>{if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
-  const van=PERF.runs.filter(r=>r.van), mod=PERF.runs.filter(r=>!r.van);
+  // ⭐ THE THREE RUN CLUSTERS (user-ruled 2026-10-07): a run with a directly observed LISTED vanilla bug (cluster 3, today only the
+  //   fleet path loop) leaves the grade and is reported as a count; the MAIN figure is the median over clusters 1 + 2. Untagged runs
+  //   (no wall_clusters.json in the fill) all count, as before the ruling.
+  const c3=PERF.runs.filter(r=>r.cluster===3);
+  const van=PERF.runs.filter(r=>r.van&&r.cluster!==3), mod=PERF.runs.filter(r=>!r.van&&r.cluster!==3);
+  const cl=a=>({n1:a.filter(r=>r.cluster===1).length,n2:a.filter(r=>r.cluster===2).length});
+  const clTxt=PERF.clustered?(' <span class="dim">Clusters (2026-10-07 ruling): mod '+cl(mod).n1+' normal + '+cl(mod).n2+' inexplicably slowed, vanilla '+cl(van).n1+' + '+cl(van).n2+
+    '; the grade is their median. '+(c3.length?c3.length+' run(s) left out for a listed vanilla bug ('+[...new Set(c3.map(r=>r.bug||'listed bug'))].join(', ')+': '+
+    c3.map(r=>r.label+(r.van?' (vanilla)':'')).join(', ')+').':'No run carried a listed bug.')+'</span>'):
+    ' <span class="dim">⚠ Runs not clustered (no wall_clusters.json in this fill): every run counts.</span>';
   const mv=med(van.map(r=>r.min)), mm=med(mod.map(r=>r.min));
   const raw=mm/mv, pr=med(mod.map(r=>r.pops))/med(van.map(r=>r.pops));
   const pctTotal=(raw-1)*100, pct=PERF.pct;
@@ -195,7 +204,8 @@ function renderPerf(mode){
   const spd=x=>{const v=+x; if(!isFinite(v)) return "—";
     if(Math.abs(v)<0.05) return "no change";
     return (v>0? "+"+v.toFixed(1)+"% slower" : v<0? Math.abs(v).toFixed(1)+"% faster" : "no change");};
-  const GY=(PERF.grade&&PERF.grade.green)??5, RY=(PERF.grade&&PERF.grade.yellow)??15;
+  // the ruled BUDGET is +10% overall (CLAUDE.md, 2026-08-18): beyond it is red. The yellow edge read 15 until 2026-10-08.
+  const GY=(PERF.grade&&PERF.grade.green)??5, RY=(PERF.grade&&PERF.grade.yellow)??10;
   const cls=pctTotal<=GY?'ok':pctTotal<=RY?'wa':'bad';
   // The RAW TOTAL is the grade (user-ruled 2026-08-31): a player waits through the total, and
   // shrinking what the engine simulates is a legitimate way to lower it. So the pill says "faster"
@@ -216,7 +226,7 @@ function renderPerf(mode){
       '<div style="flex:1 1 260px"><div class="eyebrow">THE GRADE &mdash; total run time</div>'+
         '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--'+(cls==='wa'?'warn':cls==='ok'?'ok':'bad')+');margin:6px 0">'+spd(pctTotal)+'</div>'+
         '<div class="small">Vanilla <b>'+mv.toFixed(1)+'</b> min vs mod <b>'+mm.toFixed(1)+'</b> min for the century. '+
-        'This is what a player feels, so it sets the grade: &le;+'+GY+'% acceptable, +'+GY+'\u2013'+RY+'% needs improvement, &gt;+'+RY+'% too slow.</div></div>'+
+        'This is what a player feels, so it sets the grade: &le;+'+GY+'% acceptable, +'+GY+'\u2013'+RY+'% needs improvement, &gt;+'+RY+'% (the ruled budget) too slow.'+clTxt+'</div></div>'+
       '<div style="flex:1 1 290px"><div class="eyebrow">Per unit of work &mdash; pop-matched</div>'+
         '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--ink2);margin:6px 0">'+spd(pct)+'</div>'+
         '<div class="small">At equal live pop objects ('+PERF.overlapping+' overlapping bins). The <b>fair arm-vs-arm</b> figure, '+
