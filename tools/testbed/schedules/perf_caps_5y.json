@@ -1,0 +1,62 @@
+{
+  "schedule_version": 1,
+  "label": "perf-caps-5y",
+  "_why": "TICK-COST ISOLATION, PART 5 (the last 50 minutes of the user's window to 07:15): tighten the one ambiguous reading of F220 — what the 144 base_values dam level caps cost at their REAL size (removed: −1.1 ± 1.2 at n=3; x3 and x10 imply ~2 per 144). ds = the jex book without the cap lines (config/mod_config.perf-ds.json) against full, alternated, n=3 each.",
+  "_predictions": {
+    "ds": "−1 to −2.5 s/yr against full"
+  },
+  "_cost": "6 runs x 1836 -> 1841, ~7 minutes each, ~42 min",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 (L30); -NoSaveHarvest -NoRedFlagFeed.",
+    "A NO_NEW_RUNS guard drops at 07:00 local; remove it after the batch."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 40
+  },
+  "setups": {
+    "full": {
+      "kind": "config",
+      "config": "config/mod_config.perf-full.json"
+    },
+    "ds": {
+      "kind": "config",
+      "config": "config/mod_config.perf-ds.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "ds",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "full",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ds",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "full",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "ds",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "full",
+      "until": "1841.1.1"
+    }
+  ]
+}

@@ -21771,7 +21771,7 @@ fleet loops.
 the +9% play time is the entries' script and which the bigger late-game world they buy (`tick_overhead.mjs` not yet run on this pair); anything
 about hour-0 or hour-18 loops (none ≥ 125k in the v16 runs); and whether the overshoot would survive a research nerf shaped by era.
 
-## F220 — WHERE THE EARLY-GAME OVERHEAD COMES FROM: NOT THE TIER STRUCTURE, BUT SCRIPT CONTENT THAT EXISTS FROM 1836 — THE RESEARCH JOURNAL ENTRIES (A MONTHLY PRICE FOR EVERY ENTRY TYPE CARRYING `is_shown_when_inactive`, WHETHER OR NOT IT EVER SHOWS, PLUS THE ACTIVE STAGE-2/3 ENTRIES) AND THE DAMS (144 UNBUILT BUILDING TYPES, PRICED BY COUNT WHATEVER THEIR `potential`, AND 144 LEVEL CAPS SITTING ON EVERY COUNTRY) (2026-10-09; four timing batches, 1836→1841, 85 runs: 20261008_224938_perf-isolate-5y, 20261009_003420_perf-amplify-5y, 20261009_020736_perf-mechanism-5y, 20261009_051302_perf-types-5y)
+## F220 — WHERE THE EARLY-GAME OVERHEAD COMES FROM: NOT THE TIER STRUCTURE, BUT SCRIPT CONTENT THAT EXISTS FROM 1836 — THE RESEARCH JOURNAL ENTRIES (A MONTHLY PRICE FOR EVERY ENTRY TYPE CARRYING `is_shown_when_inactive`, WHETHER OR NOT IT EVER SHOWS, PLUS THE ACTIVE STAGE-2/3 ENTRIES) AND THE DAMS (144 UNBUILT BUILDING TYPES, PRICED BY COUNT WHATEVER THEIR `potential`, AND 144 LEVEL CAPS SITTING ON EVERY COUNTRY) (2026-10-09; five timing batches, 1836→1841, 91 runs: 20261008_224938_perf-isolate-5y, 20261009_003420_perf-amplify-5y, 20261009_020736_perf-mechanism-5y, 20261009_051302_perf-types-5y, 20261009_062252_perf-caps-5y)
 
 **Asked** (user, 2026-10-08, after comparing the debug-mode Tick Task List of vanilla and the mod at Jul 1836 and Jan 1838, two runs
 each): why does the mod slow the game from 1836; build the options, switch features off in combinations, run "tests to worsen"
@@ -21810,7 +21810,7 @@ measurable in the first five years. The overhead is the dams and the research jo
 | — `active_update_frequency` 30 / `inactive_update_frequency` 60 (fields named in victoria3.exe, used by no vanilla file) | ×1 n=4 = full; ×10 = ×10 after 1836 | HONOURED (the burst spreads over two months at ~3 s/day) but no steady saving |
 | — the six war-channel entries + the wargate on_action | n=3 = full | free |
 | dam building types (144, never buildable before steam turbines) | ×10: ~1.3–1.5 s/yr per 144; `potential = { always = no }`: the same | priced by the building-TYPE COUNT (weekly tick +100 ms at ×10) |
-| dam level caps (144 `max_level_add` lines in `base_values`) | removed: −1.1 ± 1.2 (n=3); ×3: +2.25 per extra 144; ×10: +2.2 per extra 144 | ~1 s/yr at the real size, rising a little faster than the count; declared modifier TYPES without lines cost 0 |
+| dam level caps (144 `max_level_add` lines in `base_values`) | removed: −1.1 ± 1.2 (n=3), and −0.8 ± 0.6 in a same-night alternated n=3+3 (20261009_062252_perf-caps-5y); ×3: +2.25 per extra 144; ×10: +2.2 per extra 144 | ~1 s/yr at the real size, rising a little faster than the count; declared modifier TYPES without lines cost 0 |
 | — the caps as ONE country modifier on every country (n=2) | = full | the route does not matter; the price is every country carrying them |
 | site traits (144) ×10 / survey decisions (288) ×10 | ≤ 0.2 / ≤ 0.25 per set | free while the decisions' first `is_shown` fails |
 | company chain extension | off: −0.3 ± 1.1 | no resolved effect |
