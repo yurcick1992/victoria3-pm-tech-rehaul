@@ -150,6 +150,94 @@ export function deriveProject(p, P) {
   };
 }
 
+// ⭐ THE RESOURCE-SLOT LAYOUT (`dams.layout = 'resource4'`): FOUR dam building types in place of one per project, each state
+// region carrying `building_dam_<class> = <slots>` in its capped_resources (the logging-camp mechanism). ONE derivation, shared by
+// tools/emit_dams.mjs (what ships) and tools/testbed/ledger/dam_slots.mjs (the slot check).
+//  • `dams.resource4` present = THE RULED TABLE (user, 2026-10-09: "go with the revised classes"): size by the PROJECT's scale
+//    (≥ large_mw → large), price by its head type (high-head resource types holding ≥ half its MW → cheap), each class a fixed
+//    level (units of electricity, construction points, technology class); slots = round(project electricity ÷ the class level);
+//    a project under min_units electricity is DROPPED unless it is named in `keep` (its non-power effects are large), which takes
+//    one level of `keep_class`. The survey's length and bureaucracy are re-derived from the shipped levels.
+//  • `dams.resource4` absent = the F221 PROBE rule (median splits of MW per part and points per MW) — kept so the v-* probe configs
+//    of 20261009_082702 regenerate as measured.
+// Staff and upkeep follow the electricity (staff_per_50 / inputs_per_50); the ruled table is ASSERTED profitable once built at any
+// price: electricity at the 25% band floor, its inputs at the 175% ceiling and a wage of £0.15 an employee a week (twice Britain's
+// 1935 rate) must still leave a profit.
+const BASE_PRICE = { electricity: 30, tools: 40, engines: 60 };
+export function resourceLayout(P, projects) {
+  const med = a => { const s = [...a].sort((x, y) => x - y), n = s.length; return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2; };
+  const costMult = P.probe?.cost_mult ?? 1;
+  const NAMES = ['small_cheap', 'small_dear', 'large_cheap', 'large_dear'];
+  const upkeep = units => {
+    const k = units / 50, staff = {}, inputs = {};
+    for (const [prof, q] of Object.entries(P.staff_per_50)) staff[prof] = Math.max(10, Math.round(q * k / 10) * 10);
+    for (const [g, q] of Object.entries(P.inputs_per_50)) inputs[g] = Math.max(0.1, Math.round(q * k * 10) / 10);
+    return { staff, inputs };
+  };
+  const classes = {}, kept = [], dropped = [];
+  const R = P.resource4;
+  if (R) {
+    const cheap = new Set(R.cheap_resources || []);
+    if (!cheap.size) throw new Error('dams.resource4: cheap_resources empty');
+    for (const r of cheap) if (!P.class_of_resource[r]) throw new Error(`dams.resource4: cheap resource type '${r}' unknown`);
+    for (const c of NAMES) {
+      const d = R.classes?.[c]; if (!d) throw new Error(`dams.resource4: class ${c} missing`);
+      if (!P.tech_by_class[d.tech]) throw new Error(`dams.resource4: ${c} technology class '${d.tech}'`);
+      const { staff, inputs } = upkeep(d.units);
+      // the profitability floor (see the header)
+      const W = 0.15, wu = (staff.laborers || 0) * 1 + (staff.machinists || 0) * 1.5 + (staff.engineers || 0) * 3;
+      const worst = 0.25 * BASE_PRICE.electricity * d.units - 1.75 * Object.entries(inputs).reduce((s, [g, q]) => s + q * BASE_PRICE[g], 0) - W * wu;
+      if (!(worst > 0)) throw new Error(`dams.resource4: ${c} is not profitable at the worst prices (${worst.toFixed(0)} a week)`);
+      classes[c] = { units: d.units, points: Math.max(10, Math.round(d.points * costMult)), tcls: d.tech, name: d.name || c, staff, inputs,
+        worst_profit: Math.round(worst), n: 0, slots: 0 };
+    }
+    const keep = new Set(R.keep || []);
+    for (const id of keep) if (!projects.some(p => p.id === id)) throw new Error(`dams.resource4: keep names no project '${id}'`);
+    for (const p of projects) {
+      let m = 0; for (const r of p.rows) if (cheap.has(r.resource_type)) m += r.parts_taken * r.mw_per_part;
+      let c = `${p.mw >= R.large_mw ? 'large' : 'small'}_${m >= p.mw / 2 ? 'cheap' : 'dear'}`;
+      const units0 = p.mw * P.units_per_mw;
+      let slots = Math.round(units0 / classes[c].units);
+      if (keep.has(p.id)) { c = R.keep_class || 'small_dear'; slots = Math.max(1, Math.round(units0 / classes[c].units)); }
+      if (units0 < (R.min_units ?? 0) && !keep.has(p.id)) { dropped.push({ id: p.id, state: p.state, units: Math.round(units0), why: `under ${R.min_units} electricity` }); continue; }
+      if (slots < 1) { dropped.push({ id: p.id, state: p.state, units: Math.round(units0), why: 'rounds to no level' }); continue; }
+      p.dcls = c; kept.push(p);
+    }
+  } else {
+    for (const p of projects) { p._part = p.mw / p.rows.reduce((s, r) => s + r.parts_taken, 0); p._ppm = p.total_points / p.mw; }
+    const mPart = med(projects.map(p => p._part)), mPpm = med(projects.map(p => p._ppm));
+    for (const p of projects) { p.dcls = `${p._part > mPart ? 'large' : 'small'}_${p._ppm > mPpm ? 'dear' : 'cheap'}`; kept.push(p); }
+    for (const c of NAMES) {
+      const ps = projects.filter(p => p.dcls === c); if (!ps.length) throw new Error(`dams: class ${c} is empty`);
+      const ppm = med(ps.map(p => p._ppm)), mwl = Math.min(med(ps.map(p => p._part)), P.stage_cap_points / ppm);
+      const units = Math.max(1, Math.round(mwl * P.units_per_mw));
+      classes[c] = { units, points: Math.max(10, Math.round(ppm * mwl * costMult)), tcls: c.startsWith('large') ? 'B' : 'A',
+        name: { small_cheap: 'Small Hydro Dam', small_dear: 'Small Hydro Dam (difficult site)', large_cheap: 'Large Hydro Dam', large_dear: 'Large Hydro Dam (difficult site)' }[c],
+        ...upkeep(units), n: 0, slots: 0, mwl };
+    }
+  }
+  const S = P.survey;
+  for (const p of kept) {
+    const C = classes[p.dcls];
+    const slots = R ? Math.max(1, Math.round(p.mw * P.units_per_mw / C.units)) : Math.max(1, Math.round(p.mw / C.mwl));
+    C.n++; C.slots += slots;
+    const tech = P.tech_by_class[C.tcls];
+    Object.assign(p, { stages: slots, stage_classes: Array(slots).fill(C.tcls), stage_techs: Array(slots).fill(tech), cls: C.tcls,
+      tech, stage_points: C.points, stage_units: C.units, staff: C.staff, inputs: C.inputs });
+    if (R) {   // the survey follows the shipped levels: months by the class's technology, bureaucracy by the shipped points
+      const pts = slots * C.points / costMult, units = slots * C.units;
+      let months = S.months_by_class[C.tcls];
+      for (const [thr, add] of S.plus_months) if (units / P.units_per_mw > thr) months += add;
+      months = Math.min(S.max_months, months);
+      if (P.probe?.survey_months) months = P.probe.survey_months;
+      let bur = S.bureaucracy_ref * Math.pow(pts / S.bureaucracy_ref_points, S.bureaucracy_exp);
+      bur = Math.min(S.bureaucracy_max, Math.max(S.bureaucracy_min, round(bur, S.bureaucracy_round)));
+      Object.assign(p, { survey_months: months, survey_bureaucracy: bur });
+    }
+  }
+  return { classes, projects: kept, dropped, ruled: !!R };
+}
+
 export function deriveAll(cfg) {
   const P = damParams(cfg);
   const ids = new Set(), states = new Set();

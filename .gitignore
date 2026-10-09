@@ -328,3 +328,6 @@ tools/testbed/no_new_runs_at.log
 # the extra research entries (user-ruled 2026-10-05: "Build it and go with n=16"; ROADMAP step 2) on the book above
 !config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json
 !config/tech_tree_options.e1a12-ai1135-tex1140-jex-artmerge.json
+# the jex book + the four-class dams on resource slots + script-placed research first stages (user-ruled 2026-10-09: "go with the revised classes")
+!config/mod_config.jex-dam4s.json
+!config/tech_tree_options.jex-dam4s.json

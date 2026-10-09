@@ -99,7 +99,12 @@ import { fileURLToPath } from 'node:url';
 // Readers: a key is opaque. `c.tag ?? key.split('@')[0]` is the definition in every version; a pool member is the plain
 // TAG, i.e. the MAIN record — a rebel side, or a country a revolt left behind, is a country of its own. FINDINGS F186,
 // landmine L38. ⚠ A pre-v12 summary cannot be repaired (its save is reaped); summary_drops.mjs says which ones are hit.
-export const SAVE_SUMMARY_VERSION = 16;
+export const SAVE_SUMMARY_VERSION = 17;
+// v17 (2026-10-09): + THE DAM SLOT CHECK (user-asked with the four-class dam book, dams on the engine's resource slots): the dam types
+// `building_dam_*` join the per-state resource-capped buildings (`states.<id>.res`), and every QUEUED dam level is recorded per state
+// as `states.<id>.dam_q = { <type>: { <builder country key>: n } }` (government and private queues together; the builder is the
+// queue's owner) — so built + queued against the state region's slots, and who builds where, read per state per year
+// (tools/testbed/ledger/dam_slots.mjs). Everything else byte-identical to v16.
 // v16 (2026-10-06): + MILITARY FORMATIONS AND THEIR TRAVEL PATHS (user-asked, for the fleet-loop slowdowns — FINDINGS F218 §8: a fleet recalled for
 // repairs can shuttle near its port for decades while the engine appends every leg to one travel path, and the tick cost grows with it; until v16
 // nothing per-year recorded a fleet, so only a save that happened to be kept from inside an episode could confirm one). Per country `formations`
@@ -276,8 +281,9 @@ const igByStateWp = new Map();             // `${state}|${wp}` -> { mem: [8], wm
 // v15: the labour a state could hire from — peasants' workforce, and the workforce of its other pops with no workplace
 const stateLab = new Map();                // state -> { peas, unemp }
 // v15: per state, the resource-capped building types (their levels sit against the state region's static caps)
-const RES_TYPE = k => !k.includes('subsistence') && /_mine$|logging_camp|fishing_wharf|whaling_station|oil_rig|rubber_plantation|_farm$|_plantation$|_ranch$|orchards?$|vineyard$/.test(k);
+const RES_TYPE = k => !k.includes('subsistence') && /^building_dam_|_mine$|logging_camp|fishing_wharf|whaling_station|oil_rig|rubber_plantation|_farm$|_plantation$|_ranch$|orchards?$|vineyard$/.test(k);
 const stateRes = new Map();                // state -> { type: [levels, staffing, profit] }
+const stateDamQ = new Map();               // v17: state -> { dam type: { builder country id: queued levels } }
 const closePop = () => {
   if (popCurState >= 0) {
     let e = popObjByState.get(popCurState);
@@ -506,12 +512,17 @@ for await (const line of rl) {
           if ((x = /^type="([a-z_0-9]+)"$/.exec(t))) qEl.type = x[1];
           else if ((x = /^construction_left=([\d.]+)$/.exec(t))) qEl.left = +x[1];
           else if ((x = /^construction_speed=([\d.]+)$/.exec(t))) qEl.speed = +x[1];
+          else if (qEl.d === 1 && (x = /^state=(\d+)$/.exec(t))) qEl.state = +x[1];          // v17
           qEl.d += opens - closes;
           if (qEl.d <= 0) {
             if (qEl.type) {
               q.n++; q.left += qEl.left || 0; q.speed += qEl.speed || 0;
               const b = q.by_type[qEl.type] = q.by_type[qEl.type] || { n: 0, left: 0 };
               b.n++; b.left += qEl.left || 0;
+              if (qEl.state != null && qEl.type.startsWith('building_dam_')) {                       // v17
+                let sq = stateDamQ.get(qEl.state); if (!sq) stateDamQ.set(qEl.state, sq = {});
+                const by = sq[qEl.type] ??= {}; by[cid] = (by[cid] || 0) + 1;
+              }
             }
             qEl = null;
           }
@@ -1230,7 +1241,7 @@ const out = {
   countries,
   // v8: every state, keyed by its save-internal id (stable within a campaign; `region` is the durable
   // key across campaigns). `country` is the owner's KEY in `countries` (v12; its tag before), null for an unowned state.
-  states: Object.fromEntries([...new Set([...stateCountry.keys(), ...stateRegion.keys(), ...stateInfra.keys()])].sort((a, z) => a - z).map(s => [s, {
+  states: Object.fromEntries([...new Set([...stateCountry.keys(), ...stateRegion.keys(), ...stateInfra.keys(), ...stateDamQ.keys()])].sort((a, z) => a - z).map(s => [s, {
     country: (id => id != null ? (keyOf(id) ?? null) : null)(stateCountry.get(s)),
     region: stateRegion.get(s) ?? null,
     infrastructure: stateInfra.get(s) ?? null,
@@ -1240,6 +1251,8 @@ const out = {
     // v15: the hireable labour (workforce) and the resource-capped buildings [levels, staffing, profit]
     lab: (l => l ? { peas: Math.round(l.peas), unemp: Math.round(l.unemp) } : { peas: 0, unemp: 0 })(stateLab.get(s)),
     ...(stateRes.has(s) ? { res: Object.fromEntries(Object.entries(stateRes.get(s)).map(([k, a]) => [k, [a[0], +a[1].toFixed(3), +a[2].toFixed(1)]])) } : {}),
+    // v17: queued dam levels per type and builder (the queue's owner, by its key in `countries`)
+    ...(stateDamQ.has(s) ? { dam_q: Object.fromEntries(Object.entries(stateDamQ.get(s)).map(([k, by]) => [k, Object.fromEntries(Object.entries(by).map(([id, n]) => [keyOf(+id) ?? ('id' + id), n]))])) } : {}),
   }])),
   top_producers,
 };
