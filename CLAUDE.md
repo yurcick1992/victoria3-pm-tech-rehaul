@@ -3363,6 +3363,14 @@ tools/                  dev tooling — NOT shipped in the mod
                         reload and replay subtracted; `report_perf.mjs` reads it by default (`--wall meta` for the observer's own
                         wall_seconds). Written because meta's wall over-counts crash-prone arms by 1.5–2 min per CTD and a killed-and-
                         continued run carries only its last launch. `wall_from_ticks.mjs <session> [--detail]` prints meta / play / overhead per run
+  testbed/ledger/arm_tick_cost.mjs  ⭐ THE TICK COST OF A FEATURE, ARM AGAINST ARM (2026-10-09, FINDINGS F220): per run and in-game year the wall seconds
+                        from the engine's 1-s tick stamps (the 1 Jan autosave day out) and the GAME-LOGIC time + one daily / weekly / monthly tick's
+                        cost from `logs/custom_automated_stats.log` (vanilla's automation_stats logger, written by every observer run); per setup the
+                        mean ± SE and Δ vs `--ref` (default vanilla). `<session>[,<session>] [--ref vanilla] [--from 1836] [--to 1841] [--runs]`.
+                        Built for the short feature-switch batches (schedules perf_*_5y.json) and their probe-only config keys: `company_chain:
+                        false`; `dams.perf_off` / `perf_amplify` / `static_mode`; `research_events.perf_off` / `perf_amplify` / `perf_amplify_mode`
+                        / `update_frequency` (MODDING_NOTES → *What script content costs the tick*). Extra game launch arguments: schedule key
+                        `game_args` → `run_observer -ExtraGameArgs` (⚠ `-script_profiling` crashes a headless game)
   testbed/ledger/tick_overhead.mjs  ⭐ THE ENGINE OVERHEAD A BOOK ADDS, PERIOD BY PERIOD (2026-10-04, FINDINGS F217): seconds per in-game year from the
                         observer's 20-s ticks with every autosave tick removed (so save cadences compare), minus vanilla's cost scaled to the run's
                         own world size (F120's pops+GDP and levels-weighted models, both printed), mean ± 2·SE per period.

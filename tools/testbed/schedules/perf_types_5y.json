@@ -1,0 +1,101 @@
+{
+  "schedule_version": 1,
+  "label": "perf-types-5y",
+  "_why": "TICK-COST ISOLATION, PART 4 — IS THE JOURNAL-ENTRY COST PER ENTRY TYPE, AND IS THE base_values ROUTE THE PRICE OF THE DAM CAPS? (the user's standing go-ahead of 2026-10-08, the window to 07:15). Batch 3 (20261009_020736) run 3 read x10 research entries that can NEVER show (is_shown_when_inactive/possible always no) at ~0.9 s/yr per 204-entry copy — two thirds of a working copy's 1.4 — with the monthly tick 189 -> 578 ms: the engine pays per entry TYPE per country whatever its conditions. Arms (the jex book, config/mod_config.perf-*.json): daj10 = 1,440 dam survey journal-entry types (copies never added by anything: existence only) — is the per-type price general? (n=2); r1s = the research entries with ONE stage (inception) instead of three — 68 entry types instead of 204, the type count a merged-stage design would have; a probe, not a book (one grant per technology instead of three) (n=3); dcm = the 144 dam caps as ONE country static modifier added to every country at the start instead of 144 base_values lines (n=2) — if dcm = full the cost is the caps on every country whatever the route, and the fix is to give them only to the countries that need them (static_mode country_modifier_tech, which costs nothing before the dam technology); full (n=2) as the same-night reference. AMENDED before launch: das3 = the 144 cap lines x3 (432 lines) (n=2) — batch 3 read the original 144 lines as free at n=1 (ds = full) while x10 cost ~2.2 s/yr per copy: linear or superlinear? The vanilla run was dropped (batch 3 carries four).",
+  "_predictions": {
+    "daj10": "if the price is per entry type: x10 dam entries (1,440 types, ~0.7x the research set's 2,040) add ~+6 s/yr; if dam entries are cheaper because they carry no is_shown_when_inactive, less",
+    "r1s": "two thirds of the research entries' type count gone: −1 to −2 s/yr against full, the monthly tick lower",
+    "dcm": "close to full if every country carrying the caps is the cost; lower if base_values is dearer than a country modifier",
+    "das3": "linear: +4.4 s/yr over full (2 copies x 2.2); superlinear: clearly less"
+  },
+  "_cost": "11 runs x 1836 -> 1841, ~6-8 minutes each, ~1.3 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); -NoSaveHarvest -NoRedFlagFeed.",
+    "Never monitor session.log with tail -F (L29).",
+    "No stop watcher, no register reading: a timing probe."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 40
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    },
+    "full": {
+      "kind": "config",
+      "config": "config/mod_config.perf-full.json"
+    },
+    "daj10": {
+      "kind": "config",
+      "config": "config/mod_config.perf-daj10.json"
+    },
+    "r1s": {
+      "kind": "config",
+      "config": "config/mod_config.perf-r1s.json"
+    },
+    "dcm": {
+      "kind": "config",
+      "config": "config/mod_config.perf-dcm.json"
+    },
+    "das3": {
+      "kind": "config",
+      "config": "config/mod_config.perf-das3.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "r1s",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "dcm",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "daj10",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "das3",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "full",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "r1s",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "dcm",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "das3",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "daj10",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "r1s",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "full",
+      "until": "1841.1.1"
+    }
+  ]
+}

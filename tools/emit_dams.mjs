@@ -47,6 +47,8 @@ const die = m => { throw new Error('emit_dams: ' + m); };
 // buildings, methods, groups and building group; needs 'events', which name them). No book ships with it: a dam left without
 // its static cap cannot be built at all, which a 1836-1856 probe never reaches anyway.
 const PERF_OFF = new Set(CFG.dams.perf_off || []);
+const STATIC_MODE = CFG.dams.static_mode || 'base_values';
+if (!['base_values', 'country_modifier', 'country_modifier_tech'].includes(STATIC_MODE)) die(`static_mode '${STATIC_MODE}'`);
 for (const k of PERF_OFF) if (!['static', 'traits', 'events', 'buildings'].includes(k)) die(`perf_off: unknown part '${k}'`);
 if (PERF_OFF.has('buildings') && !PERF_OFF.has('events')) die(`perf_off: 'buildings' needs 'events' (the decisions and journal entries name the buildings)`);
 const W = (rel, s) => { const f = join(MOD, rel); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, '\uFEFF' + s, 'utf8'); };
@@ -348,8 +350,18 @@ W('common/modifier_type_definitions/zzz_pm_rehaul_dam_modifiers.txt', HDR +
   for (const p of projects) if (lines.some(l => new RegExp(`^\\s*${capMod(p)}\\s*=`).test(l))) die(`${rel}: vanilla already sets ${capMod(p)}`);
   lines.splice(end, 0, '', `${T}# pm_tech_rehaul: the hydro-dam level caps (tools/emit_dams.mjs) - every country carries them, see the comment there`,
     ...projects.map(p => `${T}${capMod(p)} = ${p.stages}`));
-  W(rel, lines.join('\n'));
+  if (STATIC_MODE === 'base_values') W(rel, lines.join('\n'));
 }
+// ⚗ PERF PROBE / CANDIDATE FIX (2026-10-08, the tick-cost batches: 144 base_values cap lines cost ~2 s per in-game year, because
+// base_values sits on every country and flows into every state): `dams.static_mode` = 'country_modifier' carries the caps as ONE
+// static modifier `pmr_dam_caps`, added to every country at the campaign start (is the route cheaper?); 'country_modifier_tech' adds
+// it only to a country holding the first dam technology, on its yearly pulse (no cost before then). Default 'base_values' = the book.
+if (STATIC_MODE !== 'base_values') W('common/static_modifiers/zzz_pm_rehaul_dam_caps.txt', HDR +
+  `pmr_dam_caps = {\n${T}icon = "gfx/interface/icons/timed_modifier_icons/modifier_documents_positive.dds"\n` +
+  projects.map(p => `${T}${capMod(p)} = ${p.stages}\n`).join('') + `}\n`);
+const capAddStart = STATIC_MODE === 'country_modifier' ? `${T}${T}every_country = { add_modifier = { name = pmr_dam_caps } }\n` : '';
+const capAddYearly = STATIC_MODE === 'country_modifier_tech' ?
+  `${T}${T}if = {\n${T}${T}${T}limit = { has_technology_researched = ${P.tech_by_class.A}  NOT = { has_modifier = pmr_dam_caps } }\n${T}${T}${T}add_modifier = { name = pmr_dam_caps }\n${T}${T}}\n` : '';
 if (traitTxt.length) W('common/state_traits/zzz_pm_rehaul_dam_traits.txt', HDR + traitTxt.join('\n\n') + '\n');
 // added at the campaign start only. ⚠ NO catch-up for saves begun on an earlier build (user-ruled 2026-10-05: no legacy-save
 // contingency unless asked — it would run forever for a case that never occurs)
@@ -497,7 +509,7 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
   `on_game_started_after_lobby = {\n${T}on_actions = { pmr_dam_campaign_start }\n}\n\n` +
   `on_building_built = {\n${T}on_actions = { pmr_dam_built }\n}\n\n` +
   `on_building_expanded = {\n${T}on_actions = { pmr_dam_built }\n}\n\n` +
-  `pmr_dam_campaign_start = {\n${T}effect = {\n${T}${T}debug_log = "PMR_DAM|start|${projects.length} projects|-|${DATE}"\n${T}${T}pmr_dam_add_caps = yes\n${start.join('\n')}\n${T}}\n}\n\n` +
+  `pmr_dam_campaign_start = {\n${T}effect = {\n${T}${T}debug_log = "PMR_DAM|start|${projects.length} projects|-|${DATE}"\n${T}${T}pmr_dam_add_caps = yes\n${capAddStart}${start.join('\n')}\n${T}}\n}\n\n` +
   `pmr_dam_built = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { is_building_group = bg_pmr_hydro_dams }\n${onBuilt.join('\n')}\n${T}${T}}\n${T}}\n}\n\n` +
   // PROBE (contest): every standing dam's built level and its level after every queued construction, monthly. Checked up to
   // two above the cap, so an over-queue shows. A dam whose first level is only queued already has a (level-0) building record.
@@ -513,7 +525,7 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
     }).join('') + `${T}}\n}\n\n` : '') +
   // the bureaucracy baseline around the survey events (user, 2026-09-26)
   `on_yearly_pulse_country = {\n${T}on_actions = { pmr_dam_yearly }\n}\n\n` +
-  `pmr_dam_yearly = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = { has_technology_researched = ${P.tech_by_class.A} }\n` +
+  `pmr_dam_yearly = {\n${T}effect = {\n${capAddYearly}${T}${T}if = {\n${T}${T}${T}limit = { has_technology_researched = ${P.tech_by_class.A} }\n` +
   `${T}${T}${T}debug_log = "PMR_DAM|bur_year|-|${TAG}|${DATE}|${BUR}|surveys [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_active')|0] building [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_building_now')|0]"\n` +
   `${T}${T}}\n${T}}\n}\n\n` +
   // THE AI DRIVER (F168) — SURVEYS ONLY since 2026-09-27 (user-ruled: the engine builds every level itself, F173/F174). Every
@@ -598,7 +610,7 @@ if (PERF_OFF.size) {
 // decisions (thresholds + i × 0.001, so no two are identical). Copies are never buildable or takeable within a 1836–1856 probe
 // (steam_turbine gates them all), so they cost evaluation only. No book ships with it.
 const AMP = CFG.dams.perf_amplify || {};
-for (const k of Object.keys(AMP)) if (!['buildings', 'static', 'traits', 'decisions', 'buildings_potential', 'static_types_only'].includes(k)) die(`perf_amplify: unknown part '${k}'`);
+for (const k of Object.keys(AMP)) if (!['buildings', 'static', 'traits', 'decisions', 'buildings_potential', 'static_types_only', 'jes'].includes(k)) die(`perf_amplify: unknown part '${k}'`);
 if (Object.keys(AMP).length) {
   const K = part => Math.max(1, Math.round(AMP[part] || 1));
   const copies = (part, f) => Array.from({ length: K(part) - 1 }, (_, j) => f(`_a${j + 1}`, j + 1));
@@ -637,6 +649,11 @@ if (Object.keys(AMP).length) {
     const txt = stripBom(readFileSync(join(MOD, rel), 'utf8'));
     if (!txt.includes('pmr_dam_add_caps = {\n')) die('perf_amplify.traits: pmr_dam_add_caps not found');
     W(rel, txt.replace('pmr_dam_add_caps = {\n', `pmr_dam_add_caps = {\n${adds}`));
+  }
+  if (K('jes') > 1) {
+    // dam survey journal entries, renamed copies: never added by anything (no is_shown_when_inactive), so they cost existence only
+    const add = copies('jes', s => jes.join('\n\n').replace(/^(je_pmr_dam_[a-z0-9_]+) = \{/gm, (m, k) => `${k}${s} = {`));
+    W('common/journal_entries/zzz_pm_rehaul_dams.txt', HDR + jes.join('\n\n') + H('jes') + add.join('\n\n') + '\n');
   }
   if (K('decisions') > 1) {
     const add = copies('decisions', (s, i) => decs.join('\n\n')

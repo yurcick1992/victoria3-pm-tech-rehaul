@@ -21770,3 +21770,65 @@ fleet loops.
 **What it does NOT say:** whether the entries widened the rich tail (n=16, a 3-of-8 / 0-of-8 split between identical-build halves); which part of
 the +9% play time is the entries' script and which the bigger late-game world they buy (`tick_overhead.mjs` not yet run on this pair); anything
 about hour-0 or hour-18 loops (none ≥ 125k in the v16 runs); and whether the overshoot would survive a research nerf shaped by era.
+
+## F220 — WHERE THE EARLY-GAME OVERHEAD COMES FROM: NOT THE TIER STRUCTURE, BUT SCRIPT CONTENT THAT EXISTS FROM 1836 — THE RESEARCH JOURNAL ENTRIES (A MONTHLY PRICE FOR EVERY ENTRY TYPE CARRYING `is_shown_when_inactive`, WHETHER OR NOT IT EVER SHOWS, PLUS THE ACTIVE STAGE-2/3 ENTRIES) AND THE DAMS (144 UNBUILT BUILDING TYPES, PRICED BY COUNT WHATEVER THEIR `potential`, AND 144 LEVEL CAPS SITTING ON EVERY COUNTRY) (2026-10-09; four timing batches, 1836→1841, 85 runs: 20261008_224938_perf-isolate-5y, 20261009_003420_perf-amplify-5y, 20261009_020736_perf-mechanism-5y, 20261009_051302_perf-types-5y)
+
+**Asked** (user, 2026-10-08, after comparing the debug-mode Tick Task List of vanilla and the mod at Jul 1836 and Jan 1838, two runs
+each): why does the mod slow the game from 1836; build the options, switch features off in combinations, run "tests to worsen"
+(×10 of a part), high n on short probes. **Book**: the jex book (`e1a12-ai1135-tex1140-jex-artmerge`), the latest arm, through
+probe-only config files `config/mod_config.perf-*.json` (gitignored) and probe-only config keys (MODDING_NOTES → *What script content
+costs the tick*). **Instrument**: `tools/testbed/ledger/arm_tick_cost.mjs` — wall seconds per in-game year from the engine's own 1-s
+tick stamps (dedicated_server.log), the 1 Jan autosave day excluded, and the engine's GAME-LOGIC time per year and per daily /
+weekly / monthly tick from `logs/custom_automated_stats.log`, which every observer run writes (found this night: vanilla's
+`automation_stats` logger). Logic is only ~35% of the observer's wall clock.
+
+### 1. The subtraction (batch 1, n=3 per arm; vanilla and full pooled over the four batches)
+
+| arm | wall s/yr 1836–40 | Δ vs vanilla | logic Δ | the tick that moves |
+|---|---|---|---|---|
+| vanilla (n=8) | 55.8 ± 0.7 | — | — | daily 36 / weekly 125 / monthly 131 ms |
+| tier structure alone — dams, research entries, company chains off | 56.4 ± 0.4 | +0.6 ± 0.8 | +0.3 | none |
+| dams only (research entries off) | 57.6 ± 0.3 | +1.8 ± 0.8 | +1.7 | weekly +24 ms |
+| research entries only (dams off) | 58.9 ± 0.1 | +3.1 ± 0.7 | +2.4 | monthly +54 ms |
+| company chain extension off | 62.1 ± 0.9 | +6.2 ± 1.1 | +4.4 | — (no resolved effect) |
+| **full (n=11)** | **62.4 ± 0.6** | **+6.5 ± 0.9 (+12%)** | +4.3 | daily +10 / weekly +30 / monthly +57 ms |
+
+The tier split itself — 56 rungs, crafts at ×10 levels, merges, recipes, secondaries, the tree, the trade weights — costs nothing
+measurable in the first five years. The overhead is the dams and the research journal entries, and the two are SUPERADDITIVE
+(+1.8 and +3.1 alone, +6.5 together; the excess sits mostly outside the engine's tick-logic sums and is not explained).
+
+### 2. The parts, by amplifier and mechanism (×10 = 9 extra copies; "per copy" = Δ ÷ 9 against the same session's full)
+
+| part | measured | reading |
+|---|---|---|
+| research entries (204 types: 68 technologies × 3 stages) | ×10: ~1.4 s/yr per copy (1837–40) | linear in copies |
+| — copies that can NEVER show (`is_shown_when_inactive = { always = no }`) | ~0.8 per copy; monthly tick 189 → 580 ms | an entry type with the trigger costs every month whatever the trigger says |
+| — copies active, without bars | ≈ never-shown | the bars add ~0.4 per set |
+| — one stage instead of three (68 types; batch 4, n=3) | −2.2 vs full, mostly in 1840 | the stage-2/3 entries cost while ACTIVE (the 1840 surge) |
+| — 1,440 dam survey entry types never placed (no `is_shown_when_inactive`) | = full | entries placed only by script are FREE until placed |
+| — the start-up burst | ×10: ~180 s once (13 long daily ticks from 1836.2.1, 24 → 2 s, deterministic); ×1 ~2 s | activating thousands of entries at once is quadratic; absent for never-shown copies |
+| — `active_update_frequency` 30 / `inactive_update_frequency` 60 (fields named in victoria3.exe, used by no vanilla file) | ×1 n=4 = full; ×10 = ×10 after 1836 | HONOURED (the burst spreads over two months at ~3 s/day) but no steady saving |
+| — the six war-channel entries + the wargate on_action | n=3 = full | free |
+| dam building types (144, never buildable before steam turbines) | ×10: ~1.3–1.5 s/yr per 144; `potential = { always = no }`: the same | priced by the building-TYPE COUNT (weekly tick +100 ms at ×10) |
+| dam level caps (144 `max_level_add` lines in `base_values`) | removed: −1.1 ± 1.2 (n=3); ×3: +2.25 per extra 144; ×10: +2.2 per extra 144 | ~1 s/yr at the real size, rising a little faster than the count; declared modifier TYPES without lines cost 0 |
+| — the caps as ONE country modifier on every country (n=2) | = full | the route does not matter; the price is every country carrying them |
+| site traits (144) ×10 / survey decisions (288) ×10 | ≤ 0.2 / ≤ 0.25 per set | free while the decisions' first `is_shown` fails |
+| company chain extension | off: −0.3 ± 1.1 | no resolved effect |
+
+### 3. What it means for the mod (proposals, none ruled)
+- **Research entries (~3 s/yr of the 6.5).** Two prices: the 68 first-stage types (each carries `is_shown_when_inactive`) cost
+  monthly in every country, and the active stage-2/3 entries cost while they run. Candidates: carry the three stages in ONE
+  entry type per technology (bar reset between stages by a variable) — removes the 136 stage-2/3 types; or give the first stage
+  no `is_shown_when_inactive` and place it by script when the technology becomes researchable (the dam entries show such entries
+  are free until placed). The update-frequency fields do not help.
+- **Dams (~2–3 s/yr).** The 144 building types cost by existing; the 144 caps cost ~1 s/yr on every country. Candidates: the caps
+  only on countries holding the dam technology (`dams.static_mode = country_modifier_tech`, built and linted this night: zero cost
+  before the technology, then ∝ the holders); fewer dam building types (a design change).
+- **The tier structure needs nothing.**
+
+### What it does NOT say
+- It prices 1836–40 only. Later in the century more entries are active, dams exist and the tier structure carries more levels;
+  F217's overhead fades to ~+4 s/yr by the 1880s, but these parts' later shares are unmeasured.
+- The dams × research interaction (~+1.6 s/yr beyond the sum) is measured, not explained.
+- `-script_profiling` crashes a headless game in its first week (two attempts) — per-script profiling is not available headless.
+- Wall times here come from short runs with minimal telemetry and no save harvest; they compare arms, not absolute play time.

@@ -1084,3 +1084,34 @@ the entry, Britain never did. The anchor is no longer used (percussion cap rides
 idiom stays here because it works. Check the first tick's `error.log` for a `market` / `mg:` scope error before
 trusting a consumption-anchored entry, and a silent zero (the bar never moving in a market that plainly buys the good) is
 the landmine shape (TESTBED_LANDMINES L6) — count `PMR_JE|…|percussion_cap|` lines in the first run.
+
+## ⭐⭐ What script content costs the tick (measured 2026-10-08/09, FINDINGS F220)
+
+Measured on 1836→1841 observer runs, by switching parts of the mod off and by multiplying one part ×10 (the probe switches
+`dams.perf_off` / `perf_amplify` / `static_mode`, `research_events.perf_off` / `perf_amplify` / `perf_amplify_mode` /
+`update_frequency`, `company_chain: false` — probe-only config keys, no book ships with them). Read with
+`node tools/testbed/ledger/arm_tick_cost.mjs <session>[,<session>]`. Seconds are WALL seconds per in-game year at observer
+speed (vanilla ~55 s/yr in 1836–40).
+- **The engine writes its own per-tick-rate timings in every run**: `logs/custom_automated_stats.log` (the `automation_stats`
+  logger of vanilla's `log_settings_live.json`), one block per in-game year — the year's total tick LOGIC and the average cost of
+  one daily / weekly / monthly tick. A line labelled `[Y]` covers year Y−1. Logic is only ~35% of the observer's wall clock
+  (vanilla 1836–40: ~19.7 of ~55.7 s/yr); the per-task "Tick Task List" (debug mode) has no log output.
+- **A journal-entry TYPE that carries `is_shown_when_inactive` costs every month whether or not it ever shows.** ×10 research
+  entries whose `is_shown_when_inactive` and `possible` are `always = no` still cost ~0.8 s/yr per copy (the monthly tick
+  189 → 580 ms). Active entries with progress bars add ~0.4 s/yr per 204 on top. ⭐ An entry type with NO `is_shown_when_inactive`
+  (placed only by `add_journal_entry`) is FREE until placed: 1,440 never-placed dam entry types measured = nothing. ⇒ The lever
+  is the number of entry types that carry the trigger, and how many entries are active at once — not their conditions.
+- **Activating many entries at once is a one-off quadratic burst**: ×10 research entries (2,040) cost ~180 s of wall clock in
+  13 long daily ticks from 1836.2.1 (24 s → 2 s), deterministic; at ×1 it is ~2 s. Never seen in the steady state.
+- **`active_update_frequency` / `inactive_update_frequency` exist** on a journal-entry type (named in victoria3.exe, used by no
+  vanilla file; they override `JOURNAL_ENTRY_UPDATE_ACTIVE` 4 / `_INACTIVE` 14 days). They are honoured — the activation burst
+  spreads over the longer interval — but they do NOT reduce the steady cost.
+- **A building TYPE costs even if it is never built and its `potential` is `always = no`**: ~1.5 s/yr per 144 types (×10
+  unbuildable dam types; the weekly tick +100 ms). The tier split's ~40 extra types are inside the noise.
+- **Modifier lines on EVERY country cost by count**: the 144 dam `state_building_X_max_level_add` lines in `base_values` cost
+  ~1 s/yr, ×3 +2.25 and ×10 +2.2 per extra 144 (a little faster than linear); the same lines as one country static modifier
+  added to every country cost the same — the route does not matter, the number of countries carrying them does. The same
+  modifier TYPES declared without any line cost nothing.
+- **Free in this period**: state traits (×10 = 1,440 added at start), decisions whose first `is_shown` condition fails
+  (×10 = 2,880), the war-channel research entries, the company chain extension.
+- ⚠ **`-script_profiling` crashes a `-handsoff` game** within the first in-game week (two attempts, two minidumps).

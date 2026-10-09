@@ -147,6 +147,12 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
   normal branch, the share of runs with a slowdown episode and its cost, each against vanilla — `ledger/slow_episodes.mjs`), applies the
   fleet-loop disqualification (`ledger/fleet_loop_runs.mjs`) and puts `ledger/machine_load.mjs` beside it. ✅ The scheduler half is DONE
   (2026-10-06 evening): `run_schedule.ps1` starts `machine_monitor.ps1` for every session (`-NoMachineMonitor` opts out)
+- **RULING** · the early-game tick overhead (+6.5 s per in-game year, +12%, 1836–40) is LOCALISED (FINDINGS **F220**, 2026-10-09): not the
+  tier structure (+0.6 ± 0.8) but the research journal entries (~3 s/yr: 68 first-stage types carrying `is_shown_when_inactive` priced monthly
+  in every country, and the active stage-2/3 entries) and the dams (~2–3: 144 unbuilt building types by count, 144 level caps on every
+  country). Fix candidates, none ruled: one entry type per technology (stages by variable) or a script-placed first stage; the caps only on
+  dam-technology holders (`dams.static_mode = country_modifier_tech`, built); fewer dam building types · F220, MODDING_NOTES → *What script
+  content costs the tick*
 - **WATCH** · slowdown EPISODES — EXPLAINED 2026-10-06 (FINDINGS **F218**): 23 episodes in 22 of 291 century runs (vanilla 2 of 31). Most are a
   LONE SHIP RECALLED FOR REPAIRS whose travel path the engine keeps appending to for decades (run 3 of 20261005_154629: two US torpedo boats,
   4.5k moves each, 1882/1887 → reset 1903-11-22; confirmed again on a Siamese loop at 1936) — VANILLA behaviour, as common in vanilla's
