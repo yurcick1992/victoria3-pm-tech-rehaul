@@ -1,0 +1,24 @@
+{
+  "schedule_version": 1,
+  "label": "vectors-smoke",
+  "_why": "LOAD SMOKE for the four tick-cost vectors (user-ruled 2026-10-09): V1 dams as four resource-capped building types (dams.layout resource4), V2 research first stages placed by on_acquired_technology (research_events.placement script), V3 two 3-year production stages at 0.75 (industry_stages / industry_grant_fraction / industry_bar_months 36), V4 one entry per industry, bar-fill then retarget (research_events.compress industry). One run each of the single vectors and the two triples, 1836 -> 1837, to catch load errors (error.log lines naming our files), confirm the placement fires (PMR_JE|placed_all) and that the state-region overrides load, before the 39-run batch.",
+  "_cost": "6 runs x 1836 -> 1837, ~3 minutes each",
+  "_caveats": ["Launch ONLY through tools/testbed/launch_detached.ps1 (L30); -NoSaveHarvest -NoRedFlagFeed. Never tail -F session.log (L29)."],
+  "defaults": { "dump_dates": ["1836.6.1"], "tags": ["GBR"], "metrics": ["country_state"], "autosave_interval": "yearly", "timeout_minutes": 20 },
+  "setups": {
+    "v1": { "kind": "config", "config": "config/mod_config.v-1.json" },
+    "v2": { "kind": "config", "config": "config/mod_config.v-2.json" },
+    "v3": { "kind": "config", "config": "config/mod_config.v-3.json" },
+    "v4": { "kind": "config", "config": "config/mod_config.v-4.json" },
+    "v123": { "kind": "config", "config": "config/mod_config.v-123.json" },
+    "v124": { "kind": "config", "config": "config/mod_config.v-124.json" }
+  },
+  "runs": [
+    { "setup": "v124", "until": "1837.1.1" },
+    { "setup": "v123", "until": "1837.1.1" },
+    { "setup": "v1", "until": "1837.1.1" },
+    { "setup": "v2", "until": "1837.1.1" },
+    { "setup": "v3", "until": "1837.1.1" },
+    { "setup": "v4", "until": "1837.1.1" }
+  ]
+}

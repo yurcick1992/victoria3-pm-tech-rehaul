@@ -277,6 +277,12 @@ for (const [tech, e] of Object.entries(EXTRA)) {
 // ---- emit ----------------------------------------------------------------------------------------
 const T = '\t';
 const sv = [], bars = [], jes = [], loc = [];
+// ⚗ the 2026-10-09 vectors: V2 script placement, V4 per-industry compression (see their uses)
+const PLACE = RE.placement === 'script', COMPRESS = RE.compress === 'industry';
+if (RE.placement && !PLACE) throw new Error(`research_events.placement '${RE.placement}'`);
+if (RE.compress && !COMPRESS) throw new Error(`research_events.compress '${RE.compress}'`);
+if (COMPRESS && (RE.industry_stages || RE.date_gate)) throw new Error('research_events.compress is an alternative stage structure: not with industry_stages or date_gate');
+const firsts = [], compressed = {};
 const thresholdPeople = (era, ind) => {
   const v0 = (RE.thresholds_by_era || {})[String(era)];
   if (v0 == null) throw new Error(`no threshold configured for era ${era}`);
@@ -348,7 +354,10 @@ let nWar = 0, nInd = 0;
 const barLocKeys = new Set();
 for (const [tech, a] of Object.entries(anchors).sort()) {
   const T0 = TECH[tech];
-  const grant = Math.round(ERACOST['era_' + T0.era] * (RE.grant_fraction ?? 0.5));
+  // ⚗ STAGE STRUCTURE PROBES (2026-10-09, the tick-cost vectors V3/V4): `research_events.industry_stages` / `industry_grant_fraction`
+  // give the non-war entries their own stage list and per-stage grant (V3: two 3-year stages at 0.75 = the same total as three at 0.5);
+  // war entries keep `stages` / `grant_fraction`. Absent = today's book.
+  const grant = Math.round(ERACOST['era_' + T0.era] * (a.rule === 'war' ? (RE.grant_fraction ?? 0.5) : (RE.industry_grant_fraction ?? RE.grant_fraction ?? 0.5)));
   if (!grant) throw new Error(`no era cost for ${tech} (era ${T0.era})`);
   const terms = [];
   const srcLines = [];   // the JE text: what each source is, its mark, and the live figure (user-ruled 2026-09-03)
@@ -517,6 +526,13 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   // if / else_if AT THIS LEVEL — vanilla does the same (00_ep2_ryukyu_rivalry, 00_sepoy_mutiny) — so "supersedes"
   // still cannot silently become "stacks", and every branch now carries its OWN description instead of sharing
   // the first term's.
+  // ⚗ V4 (2026-10-09): `research_events.compress = 'industry'` folds every ladder technology of one industry into ONE entry (below,
+  // after this loop); war and extra entries stay per technology
+  if (COMPRESS && a.rule !== 'war' && a.rule !== 'extra') {
+    const ind = (a.sources.find(s => s.ind) || {}).ind; if (!ind) throw new Error(`compress: ${tech} has no industry source`);
+    (compressed[ind] ||= []).push({ tech, era: a.era, terms, span, grant, srcLines });
+    continue;
+  }
   const exclusive = terms.length > 1 && terms.every(x => x.exclusive);
   barLocKeys.add(barName(tech)); barLocKeys.add('pmr_bar_desc'); for (const t of terms) barLocKeys.add(t.desc);
   bars.push(`${barName(tech)} = {\n${T}name = "${barName(tech)}"\n${T}desc = "pmr_bar_desc"\n${T}default_green = yes\n${T}start_value = 0\n${T}min_value = 0\n${T}max_value = ${span}\n${T}${cadence} = {\n` +
@@ -537,10 +553,12 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   if (gateYear != null && !(Number.isInteger(gateYear) && gateYear > 1836 && gateYear < 1950)) throw new Error(`research_events.date_gate: bad year ${gateYear} for era ${T0.era}`);
   const lowGrant = gateYear != null ? Math.round(grant * (DG.before_mult ?? 0.5)) : null;
   if (lowGrant != null && !(lowGrant >= 0 && lowGrant <= grant)) throw new Error(`research_events.date_gate: before_mult ${DG.before_mult} out of [0, 1]`);
-  RE.stages.forEach((stage, si) => {
+  const STAGES = a.rule === 'war' ? RE.stages : (RE.industry_stages || RE.stages);
+  STAGES.forEach((stage, si) => {
     const key = jeName(tech, stage);
     const first = si === 0;
-    const next = RE.stages[si + 1];
+    const next = STAGES[si + 1];
+    if (first) firsts.push({ key, cond: `can_research = ${tech}` });
     const grantBlock = gateYear == null
       ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n${T}${T}}\n`
       : `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech}  game_date >= ${gateYear}.1.1 }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n${T}${T}}\n` +
@@ -556,7 +574,9 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         (RE.update_frequency.inactive ? `${T}inactive_update_frequency = ${RE.update_frequency.inactive}\n` : '') + '\n' : '') +
       // Only the FIRST stage auto-activates. is_shown_when_inactive defaults to `no`, so stages 2
       // and 3 simply never appear until add_journal_entry places them.
-      (first ? `${T}is_shown_when_inactive = { can_research = ${tech} }\n${T}possible = { can_research = ${tech} }\n\n` : '') +
+      // ⚗ V2 (2026-10-09): `research_events.placement = 'script'` drops is_shown_when_inactive — the first stage is placed by
+      // on_acquired_technology instead (below), so the engine has no inactive entry type to check every month
+      (first ? (PLACE ? '' : `${T}is_shown_when_inactive = { can_research = ${tech} }\n`) + `${T}possible = { can_research = ${tech} }\n\n` : '') +
       `${T}scripted_progress_bar = ${barName(tech)}\n\n` +
       `${T}complete = {\n${T}${T}scope:journal_entry ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} }\n${T}}\n\n` +
       `${T}on_complete = {\n` +
@@ -574,11 +594,71 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     //   Until then the sources, their marks and the live figures sat in `_desc` and no player ever saw them; the body read
     //   only "Our position makes X worth pursuing." `_desc` keeps the same text, harmless and cheap.
     const body = a.rule === 'war'
-      ? `Hard fighting concentrates the mind. Each month a general of ours holds a front with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions against an enemy who already fields ${nice}, this bar advances by one; three stages of ${span} months each, and each completed stage grants half the technology's base research cost.`
-      : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; three stages of ${span} months each, and each completed stage grants half the technology's base research cost` + (gateYear != null ? ` (before ${gateYear}, only ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that: the trade cannot hurry an idea ahead of its time).` : '.') + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
+      ? `Hard fighting concentrates the mind. Each month a general of ours holds a front with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions against an enemy who already fields ${nice}, this bar advances by one; ${STAGES === RE.stages ? 'three' : STAGES.length} stages of ${span} months each, and each completed stage grants ${STAGES === RE.stages ? 'half' : Math.round(100 * (RE.grant_fraction ?? 0.5)) + '% of'} the technology's base research cost.`
+      : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; ${STAGES === RE.stages ? 'three' : STAGES.length} stages of ${span} months each, and each completed stage grants ${STAGES === RE.stages ? 'half' : Math.round(100 * (RE.industry_grant_fraction ?? RE.grant_fraction ?? 0.5)) + '% of'} the technology's base research cost` + (gateYear != null ? ` (before ${gateYear}, only ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that: the trade cannot hurry an idea ahead of its time).` : '.') + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
     loc.push([key + '_desc', body]);
     loc.push([key + '_reason', body]);
   });
+}
+
+// ⚗ V4 (2026-10-09, the tick-cost vectors; user-chosen: one entry per industry, "bar-fill, then retarget"): every ladder technology of
+// an industry shares ONE journal entry and ONE bar. The bar counts the sources of the CURRENT TARGET (the industry's lowest-era
+// technology still researchable and short of its full number of fills); when it is full the entry's monthly pulse grants that
+// target one stage's grant, takes the span off the bar (je:<type> ?= { add_progress = … }, vanilla's French-monarchism idiom) and
+// retargets. A technology takes at most RE.stages.length fills — the same total as today's three stages. The entry never completes;
+// it turns invalid when no target is left and comes back (is_shown_when_inactive, or V2's placement) when a later rung opens.
+const seffR = [];
+for (const [ind, list] of Object.entries(compressed)) {
+  list.sort((x, y) => x.era - y.era || x.tech.localeCompare(y.tech));
+  const je = `je_pmr_ind_${ind}`, bar = `pmr_bar_ind_${ind}`, span = list[0].span, NF = RE.stages.length;
+  if (list.some(x => x.span !== span)) throw new Error(`compress: ${ind} mixes bar spans`);
+  const tg = i => `pmr_tg_${ind}_${i}`, st = (t, k) => `pmr_st_${t}_${k}`, done = t => st(t, NF);
+  const open = x => `AND = { can_research = ${x.tech}  NOT = { has_variable = ${done(x.tech)} } }`;
+  const avail = `OR = { ${list.map(open).join('  ')} }`;
+  seffR.push(`pmr_retarget_${ind} = {\n` +
+    list.map((x, i) => `${T}if = { limit = { has_variable = ${tg(i)} } remove_variable = ${tg(i)} }\n`).join('') +
+    list.map((x, i) => `${T}${i ? 'else_if' : 'if'} = {\n${T}${T}limit = { ${open(x)} }\n${T}${T}set_variable = ${tg(i)}\n${T}}\n`).join('') + `}`);
+  const terms = list.flatMap((x, i) => x.terms.map(t => ({ ...t, trigger: `has_variable = ${tg(i)}  ${t.trigger}` })));
+  barLocKeys.add(bar); for (const t of terms) barLocKeys.add(t.desc);
+  bars.push(`${bar} = {\n${T}name = "${bar}"\n${T}desc = "pmr_bar_desc"\n${T}default_green = yes\n${T}start_value = 0\n${T}min_value = 0\n${T}max_value = ${span}\n${T}monthly_progress = {\n` +
+    terms.map(t => `${T}${T}if = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}}\n${T}${T}${T}add = {\n${T}${T}${T}${T}desc = "${t.desc}"\n${T}${T}${T}${T}value = ${t.value}\n${T}${T}${T}}\n${T}${T}}`).join('\n') + `\n${T}}\n}`);
+  const grantOf = (x, i) => `${T}${T}${T}${i ? 'else_if' : 'if'} = {\n${T}${T}${T}${T}limit = { has_variable = ${tg(i)}  can_research = ${x.tech} }\n` +
+    `${T}${T}${T}${T}add_technology_progress = { progress = ${x.grant}  technology = ${x.tech} }\n` +
+    Array.from({ length: NF }, (_, k) => k + 1).map((k, j) => `${T}${T}${T}${T}${j ? 'else_if' : 'if'} = { limit = { NOT = { has_variable = ${st(x.tech, k)} } } set_variable = ${st(x.tech, k)} }\n`).join('') +
+    `${T}${T}${T}${T}debug_log = "PMR_JE|ind_fill|${x.tech}|[THIS.GetCountry.GetNameNoFormatting]"\n${T}${T}${T}}\n`;
+  const cur = `OR = { ${list.map((x, i) => `AND = { has_variable = ${tg(i)}  ${open(x)} }`).join('  ')} }`;
+  firsts.push({ key: je, cond: avail, reentrant: true });
+  jes.push(`${je} = {\n${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n${T}group = je_group_technology\n\n` +
+    (PLACE ? '' : `${T}is_shown_when_inactive = { ${avail} }\n`) + `${T}possible = { ${avail} }\n\n` +
+    `${T}immediate = { pmr_retarget_${ind} = yes }\n\n${T}scripted_progress_bar = ${bar}\n\n` +
+    `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { je:${je} ?= { "scripted_bar_progress(${bar})" >= ${span} } }\n` +
+    list.map((x, i) => grantOf(x, i).replace(/^/gm, T)).join('') +
+    `${T}${T}${T}${T}je:${je} ?= { add_progress = { value = -${span}  name = ${bar} } }\n${T}${T}${T}${T}pmr_retarget_${ind} = yes\n${T}${T}${T}}\n` +
+    `${T}${T}${T}else_if = {\n${T}${T}${T}${T}limit = { NOT = { ${cur} } }\n${T}${T}${T}${T}pmr_retarget_${ind} = yes\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
+    `${T}invalid = { NOT = { ${avail} } }\n\n${T}weight = 1\n${T}transferable = no\n${T}can_revolution_inherit = yes\n${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
+  const indName = (CFG.industries.find(x => x.id === ind) || {}).name || ind;
+  loc.push([bar, `Towards the next advance in ${indName}`], [je, `Advances in ${indName}`]);
+  const body = `The trade already knows its own shortcomings. Each month the bar advances by one for every source of the current target at or above its mark; when it fills (${span} months), the target gains ${Math.round(100 * (RE.grant_fraction ?? 0.5))}% of its base research cost — at most ${NF} times — and the entry moves on to the next technology of the trade.\n\n` +
+    list.map(x => `${(TECH[x.tech].name || x.tech).replace(/"/g, '')}:\n` + x.srcLines.map(l => '• ' + l).join('\n')).join('\n\n');
+  loc.push([je + '_desc', body], [je + '_reason', body]);
+}
+// ⚗ V2 (2026-10-09): `research_events.placement = 'script'` — the first stage of every entry (and V4's per-industry entries) carries no
+// is_shown_when_inactive; on_acquired_technology (vanilla's code on_action: root = the country, any acquisition) and the campaign
+// start place it once its technology is researchable. A per-technology first stage is placed once (pmr_pl_<key>); a V4 entry may
+// return, so it is placed whenever it is absent and has a target. Registered by NAME (L22: vanilla's on_acquired_technology carries
+// its own effect block).
+if (PLACE) {
+  seffR.push(`pmr_place_research_entries = {\n` + firsts.map(f => f.reentrant
+    ? `${T}if = {\n${T}${T}limit = { NOT = { has_journal_entry = ${f.key} }  ${f.cond} }\n${T}${T}add_journal_entry = { type = ${f.key} }\n${T}}\n`
+    : `${T}if = {\n${T}${T}limit = { NOT = { has_variable = pmr_pl_${f.key} }  ${f.cond} }\n${T}${T}set_variable = pmr_pl_${f.key}\n${T}${T}add_journal_entry = { type = ${f.key} }\n${T}}\n`).join('') + `}`);
+}
+if (seffR.length) {
+  const Wx = (rel, text) => { const p = join(MOD, rel); mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, '﻿' + text, 'utf8'); };
+  Wx('common/scripted_effects/zzz_pm_rehaul_research_effects.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' + seffR.join('\n\n') + '\n');
+  if (PLACE) Wx('common/on_actions/zzz_pm_rehaul_research_place.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' +
+    `on_acquired_technology = {\n${T}on_actions = { pmr_research_place }\n}\n\non_game_started_after_lobby = {\n${T}on_actions = { pmr_research_place_all }\n}\n\n` +
+    `pmr_research_place = {\n${T}effect = {\n${T}${T}pmr_place_research_entries = yes\n${T}}\n}\n\n` +
+    `pmr_research_place_all = {\n${T}effect = {\n${T}${T}every_country = { pmr_place_research_entries = yes }\n${T}${T}debug_log = "PMR_JE|placed_all|-|-"\n${T}}\n}\n`);
 }
 
 loc.push(['pmr_bar_desc', 'Progress towards this discovery: +1 each month for every source at or above its mark — the entry lists the sources and your current figures.']);

@@ -1,0 +1,242 @@
+{
+  "schedule_version": 1,
+  "label": "vectors-n3-10y",
+  "_why": "THE FOUR TICK-COST VECTORS IN EVERY COMBINATION (user-ruled 2026-10-09: \"test it alone and in (all possible) combination(s) with other vector(s), n=3\"; 12 arms x n=3, 1836 -> 1846, plus vanilla). Base: the jex book (config/mod_config.perf-full.json = e1a12-ai1135-tex1140-jex-artmerge). V1 = dams as FOUR building types (small/large x cheap/dear, median splits of MW per part and points per MW; small need electrical_generation, large steam_turbine) capped by resource SLOTS in the state regions (capped_by_resources; capped_resources in whole-file copies of map_data/state_regions) in place of 144 types + 144 base_values caps. V2 = the research first stages placed by on_acquired_technology + the campaign start (no is_shown_when_inactive). V3 = production entries in TWO 3-year stages at 0.75 of the era cost each (same total as three 2-year stages at 0.5); war entries unchanged. V4 = one entry per industry for the ladder technologies, bar-fill then retarget (24-month fills, 0.5 each, at most 3 per technology); war and extra entries stay per technology. V3 and V4 are alternative stage structures, hence V1 on/off x {base, V3, V4} x V2 on/off. Setup names v<codes>: v0 = the base book, v124 = V1+V2+V4. Rounds shuffled (seed 7) so no arm always runs first. Read with tools/testbed/ledger/arm_tick_cost.mjs <session> --from 1836 --to 1846, and the research completions per stage (PMR_JE lines) to confirm each vector works.",
+  "_predictions": {
+    "V1": "-2 to -2.5 s/yr (F220: the 141 extra building types ~1.4, the caps ~1)",
+    "V2": "-0.5 to -1 s/yr (the 68 first-stage types carrying is_shown_when_inactive, F220 ~0.8)",
+    "V3": "part of the active stage-2/3 cost (F220: one stage instead of three -2.2): -0.5 to -1.5",
+    "V4": "fewer entry types and fewer active entries: -1 to -2",
+    "combined_best": "V1+V2 with V3 or V4: -3 to -5 s/yr of the base book +6.5"
+  },
+  "_cost": "39 runs x 1836 -> 1846, ~11 minutes each, ~7.2 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 (L30); -NoSaveHarvest -NoRedFlagFeed. Never tail -F session.log (L29).",
+    "V1 changes the dams economy (535 slots against 312 levels, banded costs) and V3/V4 change research timing; in 1836-46 dams are not reached and research only begins to differ, so the arms compare cost.",
+    "No stop watcher, no register reading: a timing probe."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1845.1.1"
+    ],
+    "tags": [
+      "GBR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 45
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    },
+    "v0": {
+      "kind": "config",
+      "config": "config/mod_config.v-0.json"
+    },
+    "v1": {
+      "kind": "config",
+      "config": "config/mod_config.v-1.json"
+    },
+    "v2": {
+      "kind": "config",
+      "config": "config/mod_config.v-2.json"
+    },
+    "v12": {
+      "kind": "config",
+      "config": "config/mod_config.v-12.json"
+    },
+    "v3": {
+      "kind": "config",
+      "config": "config/mod_config.v-3.json"
+    },
+    "v13": {
+      "kind": "config",
+      "config": "config/mod_config.v-13.json"
+    },
+    "v23": {
+      "kind": "config",
+      "config": "config/mod_config.v-23.json"
+    },
+    "v123": {
+      "kind": "config",
+      "config": "config/mod_config.v-123.json"
+    },
+    "v4": {
+      "kind": "config",
+      "config": "config/mod_config.v-4.json"
+    },
+    "v14": {
+      "kind": "config",
+      "config": "config/mod_config.v-14.json"
+    },
+    "v24": {
+      "kind": "config",
+      "config": "config/mod_config.v-24.json"
+    },
+    "v124": {
+      "kind": "config",
+      "config": "config/mod_config.v-124.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "v0",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v1",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v124",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v24",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v14",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v123",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v12",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v13",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v4",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v3",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v2",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v23",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v1",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v23",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v0",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v123",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v2",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v14",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v13",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v3",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v4",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v24",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v12",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v124",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v23",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v4",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v124",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v2",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v13",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v12",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v3",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v24",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v0",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v123",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v14",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "v1",
+      "until": "1846.1.1"
+    }
+  ]
+}
