@@ -153,6 +153,10 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
   BALANCE_FRAMEWORK §10.89.13: 300/600 electricity, ≤ 5-year builds, cheap 1.5× cheaper, < 150 electricity dropped bar Aswan and Sennar);
   NOW: the century of V1+V2 on them, `20261009_193145_jex-dam4s-n3` (3 runs), with the slot check read from the summaries (v17,
   `ledger/dam_slots.mjs`); the player's shift-click queue path stays a hand test · F221
+- **NEXT** (user-ruled 2026-10-09, after the batch above) · lower the dam staffing to the historical level, the WHOLE dam and project
+  counted (Hoover ~1–1.3 GW: ~150 power-plant staff + ~350 Bureau of Reclamation at the dam ≈ 0.4 per MW; the book now runs 2.1 per MW):
+  proposed `staff_per_50` 10 laborers / 15 machinists / 10 engineers → 210 a small level, 420 a large one. Keep every profession ≥ 10 a
+  level (vanilla's own floor, the anchorage's 10 bureaucrats under the default 10-point proportionality rule) · §10.89.13
 - **RULING** · the early-game tick overhead (+6.5 s per in-game year, +12%, 1836–40) is LOCALISED (FINDINGS **F220**, 2026-10-09): not the
   tier structure (+0.6 ± 0.8) but the research journal entries (~3 s/yr: 68 first-stage types carrying `is_shown_when_inactive` priced monthly
   in every country, and the active stage-2/3 entries) and the dams (~2–3: 144 unbuilt building types by count, 144 level caps on every
