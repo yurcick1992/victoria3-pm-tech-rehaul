@@ -8965,6 +8965,46 @@ no gameplay effect; the measured book keeps its bytes as the record. (2) **Owner
 (*"Leave the stalls sitting on dams."*): F177's two long cases, Canada on Niagara-Ottawa (8 years at 5%) and on the Laurentian (5½ years
 without progress), get no nudge.
 
+### 10.89.13 — FOUR DAM TYPES ON THE ENGINE'S RESOURCE SLOTS, IN RULED CLASSES (user-ruled 2026-10-09; FINDINGS F220–F221) — UNDER TEST, not the canon
+
+**Why.** F220 localised a third of the mod's early tick overhead in the dams: 144 unbuilt building types priced by count, and 144 level-cap
+lines on every country. F221 measured the fix — four building types capped by the state region's own resource slots (`capped_by_resources` on
+the group, `capped_resources = { building_dam_<class> = N }` in whole-file copies of the vanilla `map_data/state_regions` files) — at −2.3 s per
+in-game year, and with it the level cap holds for every builder by construction (the 2026-10-05 foreign-builder hole). The user: *"Can't we
+have true local slots, still? A state can have 5 logging slots, can't it have 2 'large dam' slots?"*; *"two dam sizes, and for each two dam
+prices, four building types"*.
+
+**The classes, ruled** (*"go with the revised classes"*), after the user's constraints: a small dam *"still should be much bigger than a
+regular factory … under 300 output is absolutely not good enough"* (a vanilla coal plant level makes 50); every level built within 5 years
+(*"9.5y build time is excessive from gameplay PoV, I'd cap at 5 years"* — the engine caps one construction at 40 points a week with every
+technology, ~35 when dams open, so ≤ ~9,000 points); cheap and dear *"at least 1.5 times over"*; and the economy aligned with the recipes
+(at base prices the jex book's e2 rungs pay back in 6.7 years median, e3 3.3; the per-project dams 15):
+
+| class | name | electricity / points per level | points per electricity | payback at base (GBR 1920 wage, £600 a point) | build at 35/wk | technology |
+|---|---|---|---|---|---|---|
+| small cheap | Mountain Power Station | 300 / 4,800 | 16 | 6.7 y | 2.6 y | electrical_generation |
+| small dear | River Dam | 300 / 7,200 | 24 | 10.1 y | 4.0 y | steam_turbine |
+| large cheap | Great Mountain Scheme | 600 / 6,000 | 10 | 4.2 y | 3.3 y | steam_turbine |
+| large dear | Great River Dam | 600 / 9,000 | 15 | 6.3 y | 4.9 y | arc_welding |
+
+- **Size by the PROJECT's scale** (≥ 1.5 GW → large), **price by its head type** (the high-head resource types — falls, alpine, fjord,
+  escarpment, plateau, lake outlet, canal — holding ≥ half its MW → cheap). Large is 37.5% cheaper per electricity than small (the 1930s big
+  dams ran $80–90 a kW against $170–200 for the smaller ones). The user's own first guess of 1,500 for large was argued down: within 5 years
+  it costs 6 points per electricity and pays back in 2.5 years, ahead of every e3 rung, and only seven projects are big enough.
+- **Slots** = round(the project's electricity ÷ the class level). **Projects under 150 electricity are dropped** (*"Dropping those under 150 in
+  canon is OK unless they add huge agricultural bonuses, in which cases let's make them small (and probably dear)"*): 22 sites; **Aswan's First
+  Cataract and Sennar are kept** as one River Dam level each (+8 / +12 arable land, the basin-irrigation and rain-fed-plain penalties removed);
+  Warsak's +3 arable land is not large. 122 projects, 181 slots, 72,900 electricity (the per-project book 70,568 in 312 levels); total
+  construction points halve (2.41M → 1.24M), the price of ≥ 300-electricity levels under the 5-year cap.
+- **Upkeep follows the electricity** (*"align the tools input to the electricity output (should still be widely profitable once built, at
+  any prices)"*): per 50 electricity 1 tools + 1 engines and 50 laborers / 100 machinists / 50 engineers; `resourceLayout()` ASSERTS each class
+  profitable at electricity on the 25% floor, inputs on the 175% ceiling and a wage of £0.15 an employee a week (twice Britain's 1935 rate):
+  +885 a week a small level, +1,770 a large one.
+- **Where it lives:** the table in `tools/make_dam4_config.mjs` (book `config/mod_config.jex-dam4s.json` = the jex book + these dams +
+  `research_events.placement = script`); the derivation in `tools/lib_dams.mjs` `resourceLayout()`, shared by `emit_dams.mjs` and the slot
+  check `tools/testbed/ledger/dam_slots.mjs` (save summary v17: dam levels and queued dam levels per state, with builders). Measured by the
+  century batch `20261009_193145_jex-dam4s-n3`.
+
 ## §10.90 — LOW END-GAME PRICES: WHICH LEVERS ARE OPEN, AND WHY WORLD GDP IS READ AS DISPLAYED (user-ruled 2026-09-30)
 
 Asked while looking for a way to keep the tiered outputs' prices low in the end game (the obsolescence mechanism: an old rung dies when its

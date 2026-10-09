@@ -1720,6 +1720,10 @@ config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json ⚗ THE EXTRA RESEARCH 
                         step 2) + its tree twin (the base's): the book above + `research_events.extra_entries` (25 production technologies outside
                         the tier ladder, calibrated on the narrative onset) + `era1_rule_a`; `make_research_extra_config.mjs`. 68 technologies carry
                         entries (the base 40). Measured n=16 by 20261005_154629_jex-n16 (launched 2026-10-05). Un-ignored with its twin
+config/mod_config.jex-dam4s.json ⚗ THE TICK-COST FIX ON THE jex BOOK (user-ruled 2026-10-09, BALANCE_FRAMEWORK §10.89.13, FINDINGS F221) + its
+                        tree twin (the jex book's): the jex book + dams on the engine's RESOURCE SLOTS in the four ruled classes (300/600 electricity,
+                        ≤ 5-year builds, 122 projects / 181 slots) + `research_events.placement = script`; `make_dam4_config.mjs --base
+                        e1a12-ai1135-tex1140-jex-artmerge --suffix jex-dam4s --script-placement`. Century n=3: 20261009_193145_jex-dam4s-n3. Un-ignored
 config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
@@ -2739,6 +2743,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ An owner's id can change (Britain was id ≡ 0 in one 1936 save, a re-created country) — use `owner_id` per year.
                         Cost +~5% per save (13.6 → 14.3 s on a 1936 save); everything else byte-identical to v15. Nothing reads it yet
                         (`fleet_loops.mjs` remains the tool for a kept save),
+                        ⭐ THE DAM SLOT CHECK (v17, 2026-10-09): the dam types `building_dam_*` join the per-state `res`, and every queued dam
+                        level is recorded per state as `dam_q = { <type>: { <builder key>: n } }` (government and private queues; builder = the
+                        queue's owner) — read by `ledger/dam_slots.mjs`; everything else byte-identical to v16,
                         and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
                         ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and
                         `<id>=none` freed slots sit in the same database (a record test must require the
@@ -3343,6 +3350,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         `<label>=<session>[,<session>][:<setup>] ... [--top-era 5]`. First read: the control's leader holds 52 / 46 / 46% of
                         game eras 3 / 4 / 5 at 1875 / 1905 / 1936 (the canon 52 / 54 / 54) — on the anchor principle; the entries carry
                         5–6% of the majors' acquisitions (Britain ~10–12%)
+  testbed/ledger/dam_slots.mjs  ⭐ THE DAM SLOT CHECK (2026-10-09, for dams on resource slots, `dams.layout = resource4`): per run, from its own
+                        book through lib_dams `resourceLayout()` (each project's region and slots) and the v17 summaries — every year a region's
+                        standing levels and standing + queued levels against its slots (BREACHES, exit 1 if any), the queued levels by the
+                        builder's relation to the state owner (own / overlord / family / outside = investment rights), and per class at the
+                        last summary levels against slots and regions started / full. `<session>[:<setup>] [--every N] [--list 30]`; reads
+                        unfinished runs too. ⚠ A level queued and finished between two yearly samples is never seen queued
   testbed/ledger/dam_yearly.mjs  THE DAMS OF A BATCH WITH YEARLY SAVES (2026-10-05; dam_situation / dam_outcomes need quarterly ones): per arm,
                         dam levels at the end, projects with a level, the levels hosted by SUBJECTS against their share of the potential, and
                         who built each level by relation to the host — own / overlord / family / outside (investment rights) — the builder being
@@ -3748,6 +3761,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         technology class (A electrical_generation / B steam_turbine / C arc_welding, shared out over a merged project's
                         rows by points, earliest first; `tech` = the FIRST level's, which the survey needs too), the survey's months and
                         bureaucracy, and the survey driver's GDP slot tiers. The financing / capacity-gate / build-slot parameters are GONE (§10.89.11)
+                        ⭐ `resourceLayout(P, projects)` (2026-10-09): the RESOURCE-SLOT layout (`dams.layout = resource4`) — four dam types, a
+                        project's slots per class; with `dams.resource4` the RULED table (§10.89.13: size by project scale, price by head type,
+                        fixed levels, small projects dropped unless in `keep`, each class ASSERTED profitable at the worst prices), without it the
+                        F221 probe's median splits. Shared by emit_dams.mjs and ledger/dam_slots.mjs
+  make_dam4_config.mjs  THE FOUR-CLASS DAM BOOK — `--base <book> --suffix <sfx> [--script-placement]`: the base + `dams.layout = resource4` +
+                        `dams.resource4` (THE RULED TABLE LIVES HERE ONLY) + the four class keys must_have in place of the per-project subsidies
+                        (+ `research_events.placement = script`); records `_dam4_variant`, copies the tree twin. Book: `jex-dam4s`
   emit_dams.mjs         THE DAMS, EMITTED — called by build.ps1 (throws); `dams.enabled` absent/false → nothing. Writes: the building group
                         bg_pmr_hydro_dams (under bg_private_infrastructure, NOT government-funded, `stateregion_max_level = yes`) and ONE
                         expandable building per project, `has_max_level = yes` (⭐ since 2026-10-05 the level cap is the ENGINE's: a
