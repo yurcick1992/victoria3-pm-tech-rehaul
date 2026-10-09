@@ -558,7 +558,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     const key = jeName(tech, stage);
     const first = si === 0;
     const next = STAGES[si + 1];
-    if (first) firsts.push({ key, cond: `can_research = ${tech}` });
+    if (first) firsts.push({ key, cond: `can_research = ${tech}`, stageKeys: STAGES.map(s => jeName(tech, s)) });
     const grantBlock = gateYear == null
       ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n${T}${T}}\n`
       : `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech}  game_date >= ${gateYear}.1.1 }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n${T}${T}}\n` +
@@ -650,7 +650,10 @@ for (const [ind, list] of Object.entries(compressed)) {
 if (PLACE) {
   seffR.push(`pmr_place_research_entries = {\n` + firsts.map(f => f.reentrant
     ? `${T}if = {\n${T}${T}limit = { NOT = { has_journal_entry = ${f.key} }  ${f.cond} }\n${T}${T}add_journal_entry = { type = ${f.key} }\n${T}}\n`
-    : `${T}if = {\n${T}${T}limit = { NOT = { has_variable = pmr_pl_${f.key} }  ${f.cond} }\n${T}${T}set_variable = pmr_pl_${f.key}\n${T}${T}add_journal_entry = { type = ${f.key} }\n${T}}\n`).join('') + `}`);
+    // ⚠ a REVOLT country inherits its parent's entries (can_revolution_inherit) but not the placed-variable: without the
+    //   has_journal_entry test the placement re-added them and the engine logged "already has a journal entry" (batch
+    //   20261009_082702, run 23, 7 lines) — so no stage of the technology may be present either
+    : `${T}if = {\n${T}${T}limit = { NOT = { has_variable = pmr_pl_${f.key} }  ${f.stageKeys.map(k => `NOT = { has_journal_entry = ${k} }`).join('  ')}  ${f.cond} }\n${T}${T}set_variable = pmr_pl_${f.key}\n${T}${T}add_journal_entry = { type = ${f.key} }\n${T}}\n`).join('') + `}`);
 }
 if (seffR.length) {
   const Wx = (rel, text) => { const p = join(MOD, rel); mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, '﻿' + text, 'utf8'); };

@@ -1115,3 +1115,12 @@ speed (vanilla ~55 s/yr in 1836–40).
 - **Free in this period**: state traits (×10 = 1,440 added at start), decisions whose first `is_shown` condition fails
   (×10 = 2,880), the war-channel research entries, the company chain extension.
 - ⚠ **`-script_profiling` crashes a `-handsoff` game** within the first in-game week (two attempts, two minidumps).
+- ⭐ **The fixes that work (FINDINGS F221, n=3 in every combination)**: a building group with `capped_by_resources = yes` takes its
+  per-region cap from `capped_resources = { building_<type> = N }` in `map_data/state_regions` (keyed by building TYPE, any group;
+  whole-file copies of the region files override vanilla's) — four dam types on slots instead of 144 types with base_values caps,
+  −2.3 s/yr; and research first stages placed by `on_acquired_technology` (root = the country; vanilla's code on_action, register by
+  name) + the campaign start instead of `is_shown_when_inactive` — −1.2 s/yr, research delivery unchanged. ⚠ A placed entry must test
+  `has_journal_entry` for every stage too: a REVOLT country inherits entries (`can_revolution_inherit`) but not variables. Fewer,
+  longer stages buy nothing; one entry per industry saves what script placement saves.
+- **A bar can be reset from script**: `je:<type> ?= { add_progress = { value = -N name = <bar> } }` (vanilla's French monarchism),
+  and `je:<type> ?= { "scripted_bar_progress(<bar>)" >= N }` reads it — so an entry can grant repeatedly without completing.

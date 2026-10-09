@@ -21832,3 +21832,67 @@ measurable in the first five years. The overhead is the dams and the research jo
 - The dams × research interaction (~+1.6 s/yr beyond the sum) is measured, not explained.
 - `-script_profiling` crashes a headless game in its first week (two attempts) — per-script profiling is not available headless.
 - Wall times here come from short runs with minimal telemetry and no save harvest; they compare arms, not absolute play time.
+
+## F221 — THE FIXES, MEASURED IN EVERY COMBINATION: DAMS AS FOUR RESOURCE-CAPPED TYPES (V1, −2.3 s per in-game year) AND SCRIPT-PLACED RESEARCH ENTRIES (V2, −1.2) WORK AND ADD UP; TOGETHER THEY CLOSE ~70% OF THE BOOK'S GAP TO VANILLA. TWO 3-YEAR STAGES (V3) DO NOTHING MEASURABLE, AND ONE ENTRY PER INDUSTRY (V4) SAVES WHAT V2 SAVES, NOT MORE; RESEARCH DELIVERY IS UNCHANGED IN EVERY ARM (2026-10-09; session 20261009_082702_vectors-n3-10y, 39 runs, 1836→1846, n=3 per arm; load smoke 20261009_081412_vectors-smoke)
+
+**Asked** (user, 2026-10-09, after F220): test the fixes alone and in all combinations, n=3 — V1 "dams as two sizes × two prices,
+four building types" on the engine's resource slots ("A state can have 5 logging slots, can't it have 2 'large dam' slots?"); and
+for the research entries: V2 "whether the on-script enabler … even works and improves things", V3 "two 3-year JEs (150% of the
+initial grant for each, so same totals)", V4 "compressing several tech JEs into one with periodic grants" (user-chosen: one entry
+per industry, bar-fill then retarget). Book: the jex book (`e1a12-ai1135-tex1140-jex-artmerge`) through probe configs
+`config/mod_config.v-<codes>.json`; the switches are `dams.layout = resource4`, `research_events.placement = script`,
+`industry_stages`/`industry_grant_fraction`/`industry_bar_months`, `compress = industry` (MODDING_NOTES, CLAUDE.md).
+
+**What each vector is.**
+- **V1**: 144 per-project dam building types → FOUR (small/large × cheap/dear by median splits of MW per part and points per MW: small
+  cheap 40 projects 150 MW/level 2,416 points; small dear 35, 150 MW, 3,135; large cheap 32, 331 MW, 4,607; large dear 37, 400 MW,
+  9,401), `capped_by_resources = yes` on the group and `capped_resources = { building_dam_<class> = N }` in whole-file copies of 15
+  vanilla `map_data/state_regions` files (535 slots for the same 135.7 GW; 312 levels before); no `has_max_level`, no base_values caps;
+  surveys, decisions and survey entries per project; small classes need the first dam technology, large the second.
+- **V2**: no research entry carries `is_shown_when_inactive`; `on_acquired_technology` (vanilla's code on_action) and the campaign
+  start place each first stage once its technology is researchable.
+- **V3**: production entries in two 36-month stages at 0.75 of the era cost (war entries unchanged).
+- **V4**: one entry per industry (17) for the ladder technologies: 24-month fills of 0.5 to the current target, the span taken off the
+  bar by `je:<type> ?= { add_progress }`, then retarget; war and extra entries per technology.
+
+**Sanity (all 39 runs, `tools/testbed/ledger/run_sanity.mjs`)**: every run reached 1846.1.1; world GDP at 1845 0.95–1.02× the same
+batch's vanilla runs in every arm; 81–772 error lines per run inside its own window (median 256; the three vanilla runs 187 / 101 / 175; the two highest, 772 and 757, are a V2+V4 run with a long revolt and a V2+V3 run), all vanilla's
+classes; ONE line class of ours — 7 lines in one V2+V4 run, a revolt country re-given entries it had inherited ("already has a journal
+entry"), harmless and FIXED after the batch (the placement now also skips a technology with any stage present). Britain's GDP fell to
+13–19M in four runs (two V1+V2+V4, one V1+V2+V3, one BASE) — an Indian break-away, a seed event, the base arm carries one too.
+**Research delivery** (stage grants per run, in units of half an era's cost): base ~70, V2 ~70, V3 ~74, V4 ~69 — no vector changes
+how much research the entries grant, and V2's placement evidently catches technologies arriving by spread.
+
+**Reading** (`tools/testbed/ledger/vector_effects.mjs 20261009_082702_vectors-n3-10y`, OLS over the 36 vector runs; wall = s per
+in-game year 1836–45 from the engine's tick stamps without the 1 Jan autosave day; logic = custom_automated_stats.log):
+
+| effect | wall s/yr | logic s/yr |
+|---|---|---|
+| base book (fitted constant) | 64.6 ± 0.8 | 25.8 ± 0.4 |
+| vanilla (n=3, reference) | 58.1 | 20.9 |
+| V1 dams resource4 | **−2.27 ± 0.72** | **−1.87 ± 0.38** |
+| V2 script placement | **−1.24 ± 0.72** | **−1.05 ± 0.38** |
+| V3 two 3-year stages | −0.48 ± 0.89 | −0.35 ± 0.46 |
+| V4 one entry per industry | −1.04 ± 0.89 | −0.70 ± 0.46 |
+| with interactions: V2 × V4 | +3.5 ± 1.5 | +1.86 ± 0.78 (V2 alone −1.6, V4 alone −1.6, both −1.4: SUBSTITUTES) |
+| V1 × V2, V1 × V3, V1 × V4 | ≈ 0 | ≈ 0 (additive) |
+
+Per arm (logic s/yr, Δ vs base 25.9; vanilla 20.9): V1+V2 **22.4 (−3.5, 70% of the gap)**, V1+V2+V3 22.4, V1+V2+V4 22.7, V1+V4 22.7,
+V1 24.4, V2 24.7, V4 24.4, V3 26.0; wall: V1+V2 **60.0** against base 64.6 and vanilla 58.0. The monthly tick: base 191 ms, V2 arms
+146–154, V4-only 174, vanilla 133; the weekly tick: base 164, V1 arms 140–152.
+
+**What it says.**
+1. **V1 works and is the biggest single lever** — the slot cap is the state region's own, so the 2026-10-05 foreign-builder cap
+   problem is gone by construction, and the 144 base_values lines and 140 building types with it.
+2. **V2 works** (−1.2 wall, −1.05 logic; the monthly tick −40 ms) and costs nothing in research delivered.
+3. **V3 buys nothing measurable**; **V4 saves what V2 saves** (both remove the per-type monthly price of the inactive first stages —
+   V4 by having 17 types instead of 68 first stages, V2 by having none) and adds nothing on top of V2.
+4. **V1 + V2 is the fix**: ~70% of the base book's gap to vanilla closed in 1836–45. What remains (~1.5 s/yr logic, ~2 wall) is the
+   active research entries running and F220's unexplained dams × research interaction.
+
+### What it does NOT say
+- 1836–45 only: dams are not reached and the research entries are in their opening decade; V1's and V2's later-century effect is
+  unmeasured (V1 should matter MORE once dams are built — fewer types; V2 should stay constant).
+- V1 is functionally untested where it matters: the slot cap under queueing and for overlord / investment-rights builders, and the AI's
+  dam building (not reachable before steam turbines) — a hand test and a century run are owed before it can ship.
+- The classes are the user's "settle the principle" split; costs and outputs are banded, not tuned.

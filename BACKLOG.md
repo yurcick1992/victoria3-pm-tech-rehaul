@@ -147,6 +147,10 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
   normal branch, the share of runs with a slowdown episode and its cost, each against vanilla — `ledger/slow_episodes.mjs`), applies the
   fleet-loop disqualification (`ledger/fleet_loop_runs.mjs`) and puts `ledger/machine_load.mjs` beside it. ✅ The scheduler half is DONE
   (2026-10-06 evening): `run_schedule.ps1` starts `machine_monitor.ps1` for every session (`-NoMachineMonitor` opts out)
+- **RULING** · THE FIXES MEASURED (FINDINGS **F221**, 2026-10-09, 39 runs, every combination n=3): dams as four resource-capped types
+  (`dams.layout = resource4`) −2.3 s/yr and script-placed research entries (`research_events.placement = script`) −1.2 s/yr, additive —
+  together ~70% of the gap to vanilla; two 3-year stages and one entry per industry add nothing. Before either ships: tune V1's four
+  classes, hand-test V1's slot cap (queueing, overlords, investment rights) and run a century of V1+V2 · F221
 - **RULING** · the early-game tick overhead (+6.5 s per in-game year, +12%, 1836–40) is LOCALISED (FINDINGS **F220**, 2026-10-09): not the
   tier structure (+0.6 ± 0.8) but the research journal entries (~3 s/yr: 68 first-stage types carrying `is_shown_when_inactive` priced monthly
   in every country, and the active stage-2/3 entries) and the dams (~2–3: 144 unbuilt building types by count, 144 level caps on every

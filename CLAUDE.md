@@ -3363,6 +3363,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         reload and replay subtracted; `report_perf.mjs` reads it by default (`--wall meta` for the observer's own
                         wall_seconds). Written because meta's wall over-counts crash-prone arms by 1.5–2 min per CTD and a killed-and-
                         continued run carries only its last launch. `wall_from_ticks.mjs <session> [--detail]` prints meta / play / overhead per run
+  testbed/ledger/vector_effects.mjs  THE TICK-COST VECTORS AS A FACTORIAL (2026-10-09, FINDINGS F221): per run wall s per in-game year (tick stamps,
+                        1 Jan out) and game logic, regressed by OLS on the vectors coded in the setup name `v<digits>` (v0 = none);
+                        `<session> [--from Y] [--to Y] [--interactions 12,24]`; setups without a code (vanilla) are references
+  testbed/ledger/run_sanity.mjs  PER-RUN SANITY FOR A SHORT TIMING BATCH (2026-10-09): reached date, world and British GDP at the dump (the run's
+                        own token's GDP lines) ÷ the session's vanilla runs, error.log lines inside the run's own window (⚠ split on
+                        \r?\n — `.` does not match \r and a first cut read 0 errors everywhere) and their top classes. `<session dir>`
   testbed/ledger/arm_tick_cost.mjs  ⭐ THE TICK COST OF A FEATURE, ARM AGAINST ARM (2026-10-09, FINDINGS F220): per run and in-game year the wall seconds
                         from the engine's 1-s tick stamps (the 1 Jan autosave day out) and the GAME-LOGIC time + one daily / weekly / monthly tick's
                         cost from `logs/custom_automated_stats.log` (vanilla's automation_stats logger, written by every observer run); per setup the
