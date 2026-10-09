@@ -1,0 +1,73 @@
+{
+  "schedule_version": 1,
+  "label": "jex-dam4s-run4",
+  "_why": "RUN 4 OF THE jex-dam4s BATCH (user, 2026-10-09 late evening: \"Add run four to this all before you finalize the report\"). The same book, the same telemetry and harvest as 20261009_193145_jex-dam4s-n3 (runs 1-3); launched automatically when that session wrote SCHEDULE DONE; read pooled with it as n=4.",
+  "_arms": {
+    "dam4s": "{kind: config, config: config/mod_config.jex-dam4s.json} (+ its tree twin, the jex book's)."
+  },
+  "_comparison": "Against the jex book, n=16 (20261005_154629 runs 1-8 + 20261006_193418, same book with per-project dams and is_shown_when_inactive research entries): the wall clock in the three ruled clusters (wall_clusters.mjs) and the tick overhead by period (tick_overhead.mjs) beside vanilla n=16; the criteria register (criteria.mjs); dams built, by whom, and the slot check (dam_yearly.mjs, dam_slots.mjs); research timing and delivery (tech_timing.mjs, je_tally.mjs); input-price red flags.",
+  "_predictions": {
+    "wall clock": "F221 measured V1+V2 at -3.5 s per in-game year in 1836-45 (70% of the gap to vanilla); over the century the main median falls from the jex book's ~184 min towards vanilla's ~165 (expect ~170-178): the research saving stays constant, the dam saving grows once dams are built (4 building types instead of 144)",
+    "dams": "more dam levels than the jex book (25-150 levels a run of 312) in electricity terms, because a level now costs half as many points per unit of electricity; the first Mountain Power Stations from ~1890 (electrical_generation), the Great River Dams only after arc_welding (~1920s)",
+    "slot check": "zero breaches: built + queued never above a region's slots, whoever builds; outside-family builders (investment rights) ~30-45% of queued levels, as in the jex runs",
+    "economy": "world GDP and the register within the jex book's seed spread; electricity cheaper where many dams stand"
+  },
+  "_stop_rule": "none: a fixed n=3, every run plays to 1936. Only a hard harness failure (crash loop, mod not loaded) stops it.",
+  "_cost": "1 run x 1836 -> 1936, about 3.2 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Do NOT edit tools/testbed/save_state_summary.mjs, tools/emit_dams.mjs, tools/lib_dams.mjs, tools/emit_research_events.mjs or the book while the batch runs.",
+    "run_schedule.ps1 adds the red-flag feed (market_goods_wide each 1 July) and the machine-load monitor."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 420
+  },
+  "setups": {
+    "dam4s": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "dam4s",
+      "until": "1936.1.1"
+    }
+  ]
+}
