@@ -153,7 +153,10 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
   BALANCE_FRAMEWORK §10.89.13: 300/600 electricity, ≤ 5-year builds, cheap 1.5× cheaper, < 150 electricity dropped bar Aswan and Sennar);
   ✅ MEASURED over a century (FINDINGS **F222**, n=4, `jex-dam4s`): play time ×1.036 of vanilla (the jex book ×1.14), 0 dam slot breaches,
   research unchanged. ✅ The dam staffing is at the historical level since 2026-10-10 (10 / 15 / 10 per 50 electricity, §10.89.13).
-  The player's shift-click queue path stays a hand test · F221, F222
+  ✅ IN THE ARTMERGE ARM since 2026-10-10 (user-ruled: "almost certainly this becomes our standard") — the arm's book is `jex-dam4s`.
+  The player's shift-click queue path: hand test in progress (build `mod_playtest_dam4s_damtest/`, deployed 2026-10-10) · F221, F222
+- **DEFERRED** · a return to the pre-artmerge canon must REIMPLEMENT the two tick-cost fixes (resource-slot dam classes re-fitted to its
+  projects, script-placed research entries) — the canon carries neither (user, 2026-10-10) · BALANCE_FRAMEWORK §10.89.13
 - **RULING** · F222's open question: the jex-dam4s world ends richer (world GDP median 1.30, 2 of 4 runs broken by runoff, no consensus)
   with no mechanism found — more runs of the book, or the pair split over a century, would tell the change from the seeds; and whether the
   pair rides on the next canonised book · F222

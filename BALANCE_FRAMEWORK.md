@@ -9009,6 +9009,15 @@ technology, ~35 when dams open, so ≤ ~9,000 points); cheap and dear *"at least
   `research_events.placement = script`); the derivation in `tools/lib_dams.mjs` `resourceLayout()`, shared by `emit_dams.mjs` and the slot
   check `tools/testbed/ledger/dam_slots.mjs` (save summary v17: dam levels and queued dam levels per state, with builders). Measured by the
   century batch `20261009_193145_jex-dam4s-n3`.
+- ⭐⭐ **IN THE ARTMERGE ARM SINCE 2026-10-10** (user, on F222: *"Huge success. Almost certainly this becomes our standard. Incorporate this
+  into the artmerge 'branch' now. If we ever get back to preartmerge canon, these performance-optimizing changes will need to be
+  reimplemented."*) ⇒ **the arm's book is `config/mod_config.jex-dam4s.json`**: the jex book + the four dam classes + script-placed research
+  entries + the historical staffing (the lib default since 2026-10-10, so the book now BUILDS at 10 / 15 / 10, not the 50 / 100 / 50 F222
+  measured). The two performance changes are the arm's from here on; an artmerge book made later is made by `make_dam4_config.mjs --base
+  <it> --suffix <sfx> --script-placement` as the chain's last step. ⚠ **The canon (`canon-dams-family-nolog`) does NOT carry them** — it
+  keeps the per-project dams and `is_shown_when_inactive` first stages. A return to the pre-artmerge line must REIMPLEMENT both: the class
+  table above was fitted on the artmerge book's projects and research entries, so it has to be checked against that book's (and re-measured,
+  with the slot check) rather than assumed to carry over.
 
 ## §10.90 — LOW END-GAME PRICES: WHICH LEVERS ARE OPEN, AND WHY WORLD GDP IS READ AS DISPLAYED (user-ruled 2026-09-30)
 

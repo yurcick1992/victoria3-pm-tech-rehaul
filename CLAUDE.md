@@ -385,6 +385,11 @@ AND on misplaced capital (the governing principle of the same day, §10.92).
 fully depeasanted at a pooled U* of 7.0%, the pools spent); consensus = run 1 alone. Misplaced capital 1926–36 29% / 26% (e1a12 38%, the canon 28%,
 vanilla 17%) — the ruled yardstick moved the way §10.92 asks; the USA 1.23 / 0.91× vanilla (e1a12 0.35–0.55); old rungs beside a rung two eras newer
 4.9 / 4.5% of world tier workers and 0.9 / 1.2% of the shortlist's at 1935, three quarters crafts. Not ruled on; the arm's keep-or-drop is the user's.
+⭐⭐ **2026-10-10: THE ARM'S BOOK IS `config/mod_config.jex-dam4s.json`** (user, on F222's ×1.036 play time: *"Almost certainly this becomes our
+standard. Incorporate this into the artmerge 'branch' now"*) — the textile-host-cost book + the extra research entries (§10.95) + the four
+resource-slot dam classes + script-placed research first stages (§10.89.13) + the historical dam staffing. ⚠ The canon carries NEITHER tick-cost
+fix: a return to the pre-artmerge line must reimplement both (§10.89.13's last bullet). The shift-click hand test runs on
+`mod_playtest_dam4s_damtest/` (config `mod_config.jex-dam4s-damtest.json`, gitignored: the book + `dams.probe.player_open`), deployed 2026-10-10 10:25.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
