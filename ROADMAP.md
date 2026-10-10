@@ -2407,3 +2407,20 @@ Branch if it runs hot: the added method ×1/√1.9 (capital-neutral for new buil
 5. ⭐ **ONE BOOK WITH STEP 12 FROM NOW ON** (§10.91.3): the merges are measured only inside `artmerge6`, and canonised or dropped with the
    crafts. No separate `merge6` batch.
 
+
+## ⭐⭐⭐ STEP 14 — THE ARTMERGE ARM'S LAST TECH REWORK, THEN THE CANONISATION DECISION (user, 2026-10-10)
+
+The user, after F222 and the shift-click hand test: *"Astounding success, wrapping it up before the final tech rework that should bring the
+world back onto vanilla total volumes, while making our tech JEs more important. Then goes the decision on whether this all gets canonised or
+we return to the preartmerge canon and reiterate there (basically in this case, we're dropping artmerge; keeping performance optimisations,
+such as dams as typical buildings and JE initialisation on triggers; and what tech changes stay will get another go)."*
+
+1. **The base book is `config/mod_config.jex-dam4s.json`** (BALANCE_FRAMEWORK §10.89.13's last bullet): the artmerge arm with the extra
+   research entries (§10.95) and the two tick-cost fixes. Measured: F219 (the jex book, n=16) and F222 (this book, n=4).
+2. **The tech rework — two goals, design NOT started:** (a) world total volumes back onto vanilla's (F222's world GDP median 1.30 against the
+   jex book's 1.09, two of four runs broken by runoff; F219: the leader overshoots the anchor principle in game eras 4–5 while the bottom of
+   the tree still runs late), and (b) the research journal entries made MORE important to research. F219 already warned that a UNIFORM
+   research nerf deepens the lateness at the bottom; a nerf shaped by game era was the open proposal.
+3. **Then the decision**, the user's: canonise the arm whole, OR return to the pre-artmerge canon (`canon-dams-family-nolog`) and iterate
+   there — dropping the crafts + merges, KEEPING the performance changes (dams as resource-slot buildings, research entries started by
+   triggers — which the canon lacks and would need reimplementing), and giving the surviving tech changes another go.

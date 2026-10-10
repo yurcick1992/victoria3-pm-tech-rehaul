@@ -9017,7 +9017,8 @@ technology, ~35 when dams open, so ≤ ~9,000 points); cheap and dear *"at least
   <it> --suffix <sfx> --script-placement` as the chain's last step. ⚠ **The canon (`canon-dams-family-nolog`) does NOT carry them** — it
   keeps the per-project dams and `is_shown_when_inactive` first stages. A return to the pre-artmerge line must REIMPLEMENT both: the class
   table above was fitted on the artmerge book's projects and research entries, so it has to be checked against that book's (and re-measured,
-  with the slot check) rather than assumed to carry over.
+  with the slot check) rather than assumed to carry over. ✅ **The player's shift-click queue PASSED the hand test** (user, 2026-10-10, on
+  `mod_playtest_dam4s_damtest/`: one dam queued correctly — the engine's resource slot is the cap for a human builder too).
 
 ## §10.90 — LOW END-GAME PRICES: WHICH LEVERS ARE OPEN, AND WHY WORLD GDP IS READ AS DISPLAYED (user-ruled 2026-09-30)
 

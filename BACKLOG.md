@@ -11,7 +11,10 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
 
 ## The order (from ROADMAP and the user's rulings)
 
-1. **Now:** the crafts + merges arc → the user canonises or drops both lines together (A).
+1. **Now:** wrap the artmerge arm (book `jex-dam4s`) with ONE LAST TECH REWORK — bring the world back onto vanilla's total volumes while
+   making the research journal entries matter more (user, 2026-10-10) — then THE DECISION: canonise the arm whole, or return to the
+   pre-artmerge canon and iterate there, i.e. drop the crafts + merges, KEEP the performance changes (dams as ordinary resource-slot
+   buildings, research entries started by triggers) and give the surviving tech changes another go (A, C; ROADMAP step 14).
 2. **Balance campaign** on the canon that results: the price path, the old rung in the consumer chains, the hoard (B), with the tech-tree
    and AI items that bear on them (C, D).
 3. **Final balance check.**
@@ -101,7 +104,8 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 - **OPEN** · a validator for technology re-pegs (no emptied vanilla technology) · BUGS_AND_FIXES 2026-08-30
 - **OPEN** · `emit_techs.mjs` grant-side blind spot (two-line fix) · TESTBED_LANDMINES
 - **RULING** · the scope of post-JE tech finishing beyond the shipped finish boost · ROADMAP step 11
-- **NOW** · the extra research entries (25 production technologies outside the tier ladder + the era-1 skip lifted for lathe, distillation, steelworking; shift work and pumpjacks dropped) — built as `e1a12-ai1135-tex1140-jex-artmerge`, measured by `20261005_154629_jex-n16` — STOPPED BY THE USER AT n=8 (2026-10-06); the NEXT BATCH reruns the same config with different telemetry and the report reads both together (HANDOVER); then, per the user, nerf ordinary research if the tree runs ahead (ruling owed: uniform or weighted to game eras 4–5) · BALANCE_FRAMEWORK §10.95, ROADMAP step 2
+- **NOW** · THE LAST TECH REWORK of the artmerge arm (user, 2026-10-10): world back onto vanilla's total volumes (F222: world GDP median 1.30, the jex book 1.09; F219: the leader overshoots the anchor principle in game eras 4–5) and the research journal entries more important — design not yet started, base book `jex-dam4s` · ROADMAP step 14, F219, F222
+- **DONE → superseded by the item above** · the extra research entries (25 production technologies outside the tier ladder + the era-1 skip lifted for lathe, distillation, steelworking; shift work and pumpjacks dropped) — built as `e1a12-ai1135-tex1140-jex-artmerge`, measured by `20261005_154629_jex-n16` — STOPPED BY THE USER AT n=8 (2026-10-06); the NEXT BATCH reruns the same config with different telemetry and the report reads both together (HANDOVER); then, per the user, nerf ordinary research if the tree runs ahead (ruling owed: uniform or weighted to game eras 4–5) · BALANCE_FRAMEWORK §10.95, ROADMAP step 2
 - **RESEARCH** · F162's anomalies (Spain's intensive_agriculture, Ecuador's and Alwar's aniline) · F162
 - **RESEARCH** · ai_weight depth *(verify — likely moot since `tech_ai_weight_mult`)* · ROADMAP step 1
 
@@ -154,7 +158,8 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
   ✅ MEASURED over a century (FINDINGS **F222**, n=4, `jex-dam4s`): play time ×1.036 of vanilla (the jex book ×1.14), 0 dam slot breaches,
   research unchanged. ✅ The dam staffing is at the historical level since 2026-10-10 (10 / 15 / 10 per 50 electricity, §10.89.13).
   ✅ IN THE ARTMERGE ARM since 2026-10-10 (user-ruled: "almost certainly this becomes our standard") — the arm's book is `jex-dam4s`.
-  The player's shift-click queue path: hand test in progress (build `mod_playtest_dam4s_damtest/`, deployed 2026-10-10) · F221, F222
+  ✅ The player's shift-click queue path PASSED the hand test (user, 2026-10-10: one dam queued correctly; build
+  `mod_playtest_dam4s_damtest/`, still deployed) · F221, F222
 - **DEFERRED** · a return to the pre-artmerge canon must REIMPLEMENT the two tick-cost fixes (resource-slot dam classes re-fitted to its
   projects, script-placed research entries) — the canon carries neither (user, 2026-10-10) · BALANCE_FRAMEWORK §10.89.13
 - **RULING** · F222's open question: the jex-dam4s world ends richer (world GDP median 1.30, 2 of 4 runs broken by runoff, no consensus)
