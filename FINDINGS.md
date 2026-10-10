@@ -22016,6 +22016,23 @@ tech's later stages; one free factor, resEff (directed research × it, standing 
 - ⚠ **Every setting that brings the leader to ~50% costs onset timing (26 → 19–22 of 43)**: one research slot, so slower research anywhere is
   less production for the majors. Only spread raises restore it, and they lift the leader with it — a trade-off, not a fitting problem.
 
+### 5. Where the points come from (`sources.mjs`; the book's four runs × 2 seeds; countries ranked by technologies held each year)
+| 1866–1900 | research | spread | entries | points / country-year |
+|---|---|---|---|---|
+| leader | 36% | 39% | 25% | 19,959 |
+| tech majors | 30% | 57% | 13% | 17,039 |
+| top quarter | 23% | 73% | 4% | 12,622 |
+| second / third quarter | 29% / 35% | 70% / 65% | 1% / 0% | 8,762 / 7,054 |
+| bottom quarter (laggards) | 51% | 49% | 0% | 4,867 |
+- **Laggards live on the flat 50 innovation and on spread, half and half, and get nothing from the entries**; the middle of the field is two-thirds
+  spread. Candidate A (cap 50 + 50 × literacy, universities × 0.5) leaves every quarter's points unchanged to the unit (laggards 4,867 a year both
+  ways) and takes the leader 19,959 → 16,431, the majors 17,039 → 15,785 — the leader's research share 36% → 23%, the entries' 25% unchanged in
+  share. ⇒ cutting the BASE innovation (50) is the lever that would reach the laggards; the cap does not.
+- ⚠ The user's caveat on §4 (2026-10-10): the entries delivering the leader's era-5 production is NOT guaranteed in a slowed world — slower
+  technologies mean later rungs, later workforces over the marks, and later or fewer grants. The model holds the entries' timing from the
+  measured run (shifting a stage only when its tech is not yet researchable), so this chain is outside it; the 1836–1900 probe of A
+  (`20261010_132640_jex-dam4s-ra-1900-n3`) is the test.
+
 ### What it does NOT say
 - GDP is not modelled: literacy, universities and every economic path are fixed inputs, and technology does not answer back to them.
 - One vanilla quarterly series (n=1) carries the measured innovation; the n=16 and the book's runs have it ESTIMATED from universities.

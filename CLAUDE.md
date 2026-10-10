@@ -2787,7 +2787,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         era, P ∝ ai_weight⁴; spread uniform in the oldest missing era; levers incl. capLit, innovBase, uniMult, spreadLit,
                         era4/era5 cost, res_<tree>/spr_<tree>, resEff — 0.95 on the book, 0.80 on vanilla), `lib_metrics.mjs` (the targets);
                         readers `flow_check.mjs` / `spread_pick.mjs` / `research_pick.mjs` / `innovation_fit.mjs` (need v18 summaries),
-                        `validate.mjs <summaries> [--mod] [--je]` (model against a run), `fit_eff.mjs`, and `sweep.mjs --runs … --mod …
+                        `validate.mjs <summaries> [--mod] [--je]` (model against a run), `fit_eff.mjs`, `sources.mjs` (points by source and rank), and `sweep.mjs --runs … --mod …
                         --tree … [--van …] --set "name:key=v,…"` (candidate levers scored on §10.96's targets). ⚠ GDP is not modelled
   testbed/ledger/wall_clusters.mjs  ⭐ THE WALL CLOCK IN THE THREE RULED RUN CLUSTERS (2026-10-07): normal / inexplicably slowed (an episode,
                         no listed bug observed) / a directly observed listed bug (the fleet path loop in the v16 summaries' worst paths);

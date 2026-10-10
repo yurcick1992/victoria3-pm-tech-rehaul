@@ -24,7 +24,10 @@ const LAW_SPREAD = { law_outlawed_dissent: -0.15, law_censorship: -0.10, law_pro
 export function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
 // paths: { years: [y…], at: { y: { key: { tag, lit, innov, ctype, laws, held: [...] } } } }; grants: { key: [{ y (fractional year), tech, pts }] }
-export function simulate(tree, paths, L0 = {}, { seed = 1, grants = null, from = null, to = null, record = null } = {}) {
+export function simulate(tree, paths, L0 = {}, { seed = 1, grants = null, from = null, to = null, record = null, acct = null } = {}) {
+  // acct: an object filled with acct[key][year] = { res, spr, je } — the points each source put into technologies, counting only what went
+  // toward a completion (the part of an addition beyond a tech's cost is lost in game and is not counted)
+  let curY = null; const book = (k, src, id, s, amt) => { if (!acct) return; const room = Math.max(0, cost(s, id) - (s.prog[id] || 0)); const a = ((acct[k] ||= {})[curY] ||= { res: 0, spr: 0, je: 0 }); a[src] += Math.min(amt, room); };
   const L = { ...DEFAULT_LEVERS, ...L0, rankMult: { ...DEFAULT_LEVERS.rankMult, ...(L0.rankMult || {}) }, eraMult: { ...(L0.eraMult || {}) } };
   for (const e of [1, 2, 3, 4, 5]) if (L0['era' + e] != null) L.eraMult[e] = L0['era' + e];   // era4=1.2 on the command line
   const R = rng(seed); const T = tree.techs; const ids = Object.keys(T);
@@ -65,7 +68,7 @@ export function simulate(tree, paths, L0 = {}, { seed = 1, grants = null, from =
   const out = {};   // y -> key -> held count etc
   const gq = new Map(); if (grants) for (const [k, list] of Object.entries(grants)) gq.set(k, [...list].sort((a, b) => a.y - b.y));
   for (let yi = 0; yi < years.length; yi++) {
-    const y = years[yi], P = paths.at[y];
+    const y = years[yi], P = paths.at[y]; curY = y;
     // countries present this year: new ones take their observed holdings; gone ones leave
     for (const [k, s] of C) if (!P[k]) { for (const id of s.held) holders[id]--; C.delete(k); }
     for (const [k, p] of Object.entries(P)) if (!C.has(k)) {
@@ -89,14 +92,14 @@ export function simulate(tree, paths, L0 = {}, { seed = 1, grants = null, from =
         const innov = L.innovBase + uni;
         const R_ = Math.min(innov, cap) * (L.resEff ?? 1), excess = Math.max(0, innov - cap);
         if (!s.research || s.held.has(s.research)) s.research = pickResearch(s);
-        if (s.research) { s.prog[s.research] = (s.prog[s.research] || 0) + R_ * (1 + (L['res_' + T[s.research].category] ?? 0));   // res_military=-0.3: the game's country_<tree>_tech_research_speed_mult
+        if (s.research) { book(k, 'res', s.research, s, R_ * (1 + (L['res_' + T[s.research].category] ?? 0))); s.prog[s.research] = (s.prog[s.research] || 0) + R_ * (1 + (L['res_' + T[s.research].category] ?? 0));   // res_military=-0.3: the game's country_<tree>_tech_research_speed_mult
           if (s.prog[s.research] >= cost(s, s.research)) add(s, s.research); }
         const mult = 1 + (L.rankMult[p.ctype] ?? 0) + (p.laws || []).reduce((a, l) => a + (LAW_SPREAD[l] || 0), 0);
         const sp = (L.spreadBase + L.spreadLit * lit + L.excess * excess) * Math.max(0, mult);
         for (const c of tree.cats) {
           if (!s.spread[c] || s.held.has(s.spread[c])) s.spread[c] = pickSpread(s, c);
           const id = s.spread[c]; if (!id) continue;
-          s.prog[id] = (s.prog[id] || 0) + sp * Math.max(0, 1 + (L['spr_' + c] ?? 0)) * (0.5 + R());   // spr_production=0.2: country_<tree>_tech_spread_mult
+          { const amt = sp * Math.max(0, 1 + (L['spr_' + c] ?? 0)) * (0.5 + R()); book(k, 'spr', id, s, amt); s.prog[id] = (s.prog[id] || 0) + amt; }   // spr_production=0.2: country_<tree>_tech_spread_mult
           if (s.prog[id] >= cost(s, id)) add(s, id);
         }
         const q = gq.get(k);
@@ -109,7 +112,7 @@ export function simulate(tree, paths, L0 = {}, { seed = 1, grants = null, from =
             // a stage that comes due late (its tech not yet researchable here) delays the tech's LATER stages by as much: in game the entry
             // only starts when the tech becomes researchable, and each stage takes its full bar after the previous one
             const late = yf - g.y; if (late > 1 / 52) for (const h of q) if (h !== g && h.tech === g.tech) { h.y += late; shifted = true; }
-            q.splice(i, 1); s.prog[g.tech] = (s.prog[g.tech] || 0) + g.pts * L.jeMult * (L.grantsFollowCost === false ? 1 : L.costMult * (L.eraMult[T[g.tech].era] ?? 1));
+            q.splice(i, 1); { const amt = g.pts * L.jeMult * (L.grantsFollowCost === false ? 1 : L.costMult * (L.eraMult[T[g.tech].era] ?? 1)); book(k, 'je', g.tech, s, amt); s.prog[g.tech] = (s.prog[g.tech] || 0) + amt; }
             if (s.prog[g.tech] >= cost(s, g.tech)) add(s, g.tech);   // a stage grants grant_fraction × the era cost the BUILD reads, so it follows a cost lever
           }
           if (shifted) q.sort((a, b) => a.y - b.y);
