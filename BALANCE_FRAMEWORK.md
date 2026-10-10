@@ -8997,9 +8997,14 @@ technology, ~35 when dams open, so ≤ ~9,000 points); cheap and dear *"at least
   Warsak's +3 arable land is not large. 122 projects, 181 slots, 72,900 electricity (the per-project book 70,568 in 312 levels); total
   construction points halve (2.41M → 1.24M), the price of ≥ 300-electricity levels under the 5-year cap.
 - **Upkeep follows the electricity** (*"align the tools input to the electricity output (should still be widely profitable once built, at
-  any prices)"*): per 50 electricity 1 tools + 1 engines and 50 laborers / 100 machinists / 50 engineers; `resourceLayout()` ASSERTS each class
-  profitable at electricity on the 25% floor, inputs on the 175% ceiling and a wage of £0.15 an employee a week (twice Britain's 1935 rate):
-  +885 a week a small level, +1,770 a large one.
+  any prices)"*): per 50 electricity 1 tools + 1 engines; `resourceLayout()` ASSERTS each class profitable at electricity on the 25% floor,
+  inputs on the 175% ceiling and a wage of £0.15 an employee a week (twice Britain's 1935 rate).
+- **Staff at the historical level, the whole dam and project counted** (user-ruled 2026-10-09: *"This is intended to be extremely capital
+  intensive in construction and a symbolically employed money printer later"*; applied 2026-10-10 after the batch, F222): per 50 electricity
+  10 laborers / 15 machinists / 10 engineers — 210 a small level, 420 a large one (≈ 0.36 a MW; Hoover's ~150 power-plant staff + ~350 Bureau
+  of Reclamation for ~1–1.3 GW ≈ 0.4). Every profession stays ≥ 10 a level, vanilla's own floor (the anchorage's 10 bureaucrats under the
+  10-point proportionality rule). The worst-price profit is then +1,144 a week a small level, +2,288 a large one. It is the default in
+  `tools/lib_dams.mjs` for every dam book; the batch of F222 ran the earlier 50 / 100 / 50 (1,200 / 2,400 a level).
 - **Where it lives:** the table in `tools/make_dam4_config.mjs` (book `config/mod_config.jex-dam4s.json` = the jex book + these dams +
   `research_events.placement = script`); the derivation in `tools/lib_dams.mjs` `resourceLayout()`, shared by `emit_dams.mjs` and the slot
   check `tools/testbed/ledger/dam_slots.mjs` (save summary v17: dam levels and queued dam levels per state, with builders). Measured by the

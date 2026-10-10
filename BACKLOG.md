@@ -151,12 +151,12 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
   (`dams.layout = resource4`) −2.3 s/yr and script-placed research entries (`research_events.placement = script`) −1.2 s/yr, additive —
   together ~70% of the gap to vanilla; two 3-year stages and one entry per industry add nothing. ✅ The classes are RULED (2026-10-09,
   BALANCE_FRAMEWORK §10.89.13: 300/600 electricity, ≤ 5-year builds, cheap 1.5× cheaper, < 150 electricity dropped bar Aswan and Sennar);
-  NOW: the century of V1+V2 on them, `20261009_193145_jex-dam4s-n3` (3 runs), with the slot check read from the summaries (v17,
-  `ledger/dam_slots.mjs`); the player's shift-click queue path stays a hand test · F221
-- **NEXT** (user-ruled 2026-10-09, after the batch above) · lower the dam staffing to the historical level, the WHOLE dam and project
-  counted (Hoover ~1–1.3 GW: ~150 power-plant staff + ~350 Bureau of Reclamation at the dam ≈ 0.4 per MW; the book now runs 2.1 per MW):
-  proposed `staff_per_50` 10 laborers / 15 machinists / 10 engineers → 210 a small level, 420 a large one. Keep every profession ≥ 10 a
-  level (vanilla's own floor, the anchorage's 10 bureaucrats under the default 10-point proportionality rule) · §10.89.13
+  ✅ MEASURED over a century (FINDINGS **F222**, n=4, `jex-dam4s`): play time ×1.036 of vanilla (the jex book ×1.14), 0 dam slot breaches,
+  research unchanged. ✅ The dam staffing is at the historical level since 2026-10-10 (10 / 15 / 10 per 50 electricity, §10.89.13).
+  The player's shift-click queue path stays a hand test · F221, F222
+- **RULING** · F222's open question: the jex-dam4s world ends richer (world GDP median 1.30, 2 of 4 runs broken by runoff, no consensus)
+  with no mechanism found — more runs of the book, or the pair split over a century, would tell the change from the seeds; and whether the
+  pair rides on the next canonised book · F222
 - **RULING** · the early-game tick overhead (+6.5 s per in-game year, +12%, 1836–40) is LOCALISED (FINDINGS **F220**, 2026-10-09): not the
   tier structure (+0.6 ± 0.8) but the research journal entries (~3 s/yr: 68 first-stage types carrying `is_shown_when_inactive` priced monthly
   in every country, and the active stage-2/3 entries) and the dams (~2–3: 144 unbuilt building types by count, 144 level caps on every

@@ -21896,3 +21896,63 @@ V1 24.4, V2 24.7, V4 24.4, V3 26.0; wall: V1+V2 **60.0** against base 64.6 and v
 - V1 is functionally untested where it matters: the slot cap under queueing and for overlord / investment-rights builders, and the AI's
   dam building (not reachable before steam turbines) — a hand test and a century run are owed before it can ship.
 - The classes are the user's "settle the principle" split; costs and outputs are banded, not tuned.
+
+## F222 — THE TICK-COST FIX OVER A CENTURY: ×1.036 OF VANILLA'S PLAY TIME (THE jex BOOK ×1.14), FASTER IN EVERY PERIOD; THE RESOURCE-SLOT DAMS HOLD THEIR SLOTS WHOEVER BUILDS (0 BREACHES IN 400 YEARLY SAMPLES); RESEARCH UNCHANGED; THE WORLD ENDS RICHER (MEDIAN 1.30, 2 OF 4 RUNS BROKEN BY RUNOFF) — CAUSE OPEN (2026-10-10; sessions 20261009_193145_jex-dam4s-n3 runs 1–3 + 20261010_042919_jex-dam4s-run4, n=4, 1836→1936)
+
+**Asked** (user, 2026-10-09): the ruled dam classes (BALANCE_FRAMEWORK §10.89.13) "with first-stages-by-script", a full 100-year n=3, then
+"add run four". **Arm:** `{kind: config, config: config/mod_config.jex-dam4s.json}` (sha256 9f0c98eeba8bd42e) = the jex book
+(e1a12-ai1135-tex1140-jex-artmerge) + `dams.layout = resource4` with the ruled `dams.resource4` table (four dam types on the engine's resource
+slots: Mountain Power Station / River Dam 300 electricity, Great Mountain Scheme / Great River Dam 600; 122 projects, 181 slots) +
+`research_events.placement = script`. Compared with the jex book at n=16 (20261005_154629 + 20261006_193418, F219) and vanilla n=16
+(20260821_131149). Ledger: https://claude.ai/artifact/8g4bkPFEb9LNngEnu234Sx (REPORT.html in both sessions).
+
+**1. Play time (the ruled main reading, clusters 1 + 2, `wall_clusters.mjs`).** jex-dam4s median **170.9 min** (188.8 / 172.3 / 169.6 /
+161.8, all four cluster 1, no slowdown episode) · the jex book 188.7 (n=15 of 16; one fleet-loop run in cluster 3) · vanilla 165.0 ⇒
+**×1.036 of vanilla, INSIDE the 10% budget** (the jex book ×1.14). Seconds per in-game year (the tick log, median over runs):
+
+| period | jex-dam4s (n=4) | jex (n=16) | vanilla (n=16) | dam4s − jex | dam4s − vanilla |
+|---|---|---|---|---|---|
+| 1836–46 | 59.9 | 72.0 | 57.9 | −12.0 | +2.0 |
+| 1846–66 | 70.4 | 82.9 | 70.4 | −12.5 | 0.0 |
+| 1866–86 | 88.8 | 93.1 | 79.3 | −4.3 | +9.5 |
+| 1886–1906 | 104.2 | 108.7 | 97.7 | −4.6 | +6.5 |
+| 1906–21 | 123.7 | 131.5 | 128.1 | −7.8 | −4.4 |
+| 1921–36 | 152.5 | 159.1 | 152.1 | −6.6 | +0.4 |
+
+— faster than the jex book in every period, on a world that ends richer. Run 1 alone (the first-run report) read +3.4 / +0.7 / +14.2 against
+the jex book after 1846; it was the slow seed.
+
+**2. The dam slot check (save summary v17, `ledger/dam_slots.mjs`).** **0 breaches** in 400 yearly samples: no state region ever holds, or
+holds plus has queued, more dam levels than its slots. Queued dam levels at the samples (level-years) by the builder's relation to the
+state owner: own 424 · overlord 182 · family 0 · outside (investment rights) 503. At 1936 (four runs summed): Mountain Power Stations 91 of 192
+slots, River Dams 89 of 284, Great Mountain Schemes 29 of 84, Great River Dams 26 of 164; per run 29 / 103 / 64 / 34 levels. At 1935 the dams
+make a median 17,200 electricity a week (jex: 14,600 from a median 68.5 levels), ~18% of all electricity in both books (all electricity 96k
+against 79k). Surveys are not the limit (run 1: 92 projects surveyed against 89 in a jex run, yet 29 levels against 77).
+
+**3. Research — the jex book's.** 27 of the 43 production technologies with an onset in 1826–1926 reach half the majors within ten years of
+it (jex 23); median lag 7 years in both; the entries carry 12.4% of the majors' acquisitions (jex 12.0%); the leader holds 67.5 / 71.8 / 88.5%
+of game eras 3 / 4 / 5 at 1875 / 1905 / 1936 (jex 65 / 64 / 88.5); first holders of the dam technologies at the usual dates (electrical
+generation 1861, steam turbine 1893, arc welding 1906 in run 1). F221's 1836–45 finding that the placement leaves research delivery unchanged
+holds over the century.
+
+**4. The register (`criteria.mjs`).** Run 1 intact (world GDP 1.11×, loss 7.3) · run 2 BROKEN BY RUNOFF (1.78×) · run 3 intact (1.34×, loss
+9.8) · run 4 BROKEN BY RUNOFF (Britain in capital abundance: U* under 5% in 17 consecutive years 1920–36 at a mean hoard of 1.96 of its GDP).
+The intact pair diverges under F114: **no consensus**. Its mean: shortlist GDP 1.60×, W 0.99, U* 1.08, H 1.35, PI 0.84 (falling), PP 1.02,
+T0 0.39 of the 1900s, T3 40.8%; world W 0.89, H 1.03. Britain or Germany near capital abundance in all four runs. Misplaced capital 1926–36
+(median over runs): 34% grossly (jex 28%), 25% on the valid-options benchmark (jex 22%). Red flags on the order books: 188 problem
+market-years (jex 212.5) and 3.5 chronic markets (jex 4) — engines (no motor industry in Japan, Russia, France, the Netherlands, Germany) and
+paper (a capacity lag in Japan and Russia) as before.
+
+**5. The richer world is OPEN.** World GDP 1.11 / 1.78 / 1.34 / 1.25× (median 1.30) against the jex book's sixteen 0.77–1.60 (median 1.09):
+all four at or above the jex median, about a one-in-ten draw if the book behaved like the jex book (a rank-sum reading, p ≈ 0.1). No
+mechanism is found: the dams make the same share of the electricity, and research timing and delivery are unchanged. Directional only (§10.83.7).
+
+**Incidents.** Run 4 crashed at 1907.6.25 and, on the first resume, again at 1912.5.13; the feeder then fed the 1906 save and the run finished.
+One campaign, but its folder holds both branches' summaries for 1907–12 — a reader taking the first summary of a year reads the abandoned
+branch for those years (landmine L26 FAILs on the backward jump; the end state is clean). Session 1: L28 (one false error.log rotation).
+
+### What it does NOT say
+- n=4, two intact: the economy readings are directional and the register has no consensus.
+- Dams and placement are not separated over the century; F221 separated them only over 1836–45.
+- The staffing of the dams is the pre-ruling 1,200 / 2,400 a level (the historical 210 / 420 is ruled for after this report).
+- The player's shift-click queue against a dam's slots is not exercised by the AI and stays a hand test.

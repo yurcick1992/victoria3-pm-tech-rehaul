@@ -38,7 +38,11 @@ export const DAM_DEFAULTS = {
   scale_exp: -0.2,
   scale_ref_mw: 560,
   stage_cap_points: 10000,
-  staff_per_50: { laborers: 50, machinists: 100, engineers: 50 },   // a fifth of a coal plant's 1,000
+  // the HISTORICAL level, the whole dam and project counted (user-ruled 2026-10-09, after the jex-dam4s batch, F222): Hoover ~1–1.3 GW ran
+  // on ~150 power-plant staff + ~350 Bureau of Reclamation at the dam ≈ 0.4 a MW → 210 a 300-electricity level, 420 a 600 one. Every
+  // profession stays ≥ 10 a level (vanilla's own floor: the anchorage's 10 bureaucrats under the 10-point proportionality rule). Books built
+  // before 2026-10-10 ran 50 / 100 / 50 (a fifth of a coal plant's 1,000): set `dams.staff_per_50` to that to rebuild one as measured
+  staff_per_50: { laborers: 10, machinists: 15, engineers: 10 },
   inputs_per_50: { tools: 1, engines: 1 },                          // ~7% of revenue at base prices
   // the resource type of a research row → a technology class (the MW-dominant row decides a merged project)
   class_of_resource: {
