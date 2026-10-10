@@ -22038,3 +22038,29 @@ tech's later stages; one free factor, resEff (directed research × it, standing 
 - One vanilla quarterly series (n=1) carries the measured innovation; the n=16 and the book's runs have it ESTIMATED from universities.
 - Event grants, research-speed modifiers and strategy-dependent ai_weight terms are not modelled (resEff absorbs them on average).
 - Research-entry timing is taken from the measured runs; a slower world can only DELAY a stage (the model shifts later stages), never speed it.
+
+## F224 — CANDIDATE A (THE INNOVATION CAP'S LITERACY TERM 150 → 50, UNIVERSITIES × 0.5) PUTS THE MAJORS ON VANILLA'S TECHNOLOGY COUNTS THROUGH 1900, AS THE MODEL PREDICTED — AND DOES NOT BRING GDP DOWN (2026-10-10; session 20261010_132640_jex-dam4s-ra-1900-n3, 3 × 1836→1900, no crash; against jex-dam4s n=4 and vanilla n=16)
+
+Book `config/mod_config.jex-dam4s-ra.json` (BALANCE_FRAMEWORK §10.96): jex-dam4s + `research_levers` (`tools/emit_research_levers.mjs`), the dam
+staffing pinned to F222's measured 50/100/50 so the research levers are the only difference.
+
+| medians, same dates | majors 1866 / 1875 / 1886 / 1899 | leader era 3 @1875 | leader era 4 @1899 | max @1899 | all-country median @1899 |
+|---|---|---|---|---|---|
+| vanilla n=16 | 81 / 92 / 105 / 120 | 51% | 24% | 125 | 72 |
+| book jex-dam4s n=4 | 83 / 94 / 109 / 124 | 66% | 49% | 136 | 72 |
+| **A n=3** | **82 / 93 / 105 / 120** | **55%** | **31%** | **128** | **72** |
+| research model, A from the book's inputs (F223) | 81 / 92 / 105 / 120 | 57% | 33% | 129 | 70 |
+
+- **The model's prediction held** on every column, so through 1900 the chain the user warned about (slower techs → later rungs → later entries)
+  did not show at a size the counts can see. The entries' share of the majors' acquisitions: 13.3% (GBR 31.9%) at 1900.
+- **Universities:** world 414 / 454 levels at 1886 / 1899 against the book's 622 / 640 (×0.67–0.71); Britain 39–41 against 57–62, at its lowered cap.
+- **World GDP ÷ vanilla's median** (book in brackets): 1846 1.02 (1.01) · 1856 1.02 (1.01) · 1866 0.99 (1.00) · 1876 1.00 (1.03) · **1886 1.02
+  (1.06)** · 1896 0.98 (1.07) · 1899 1.07 (1.07). Per run at 1899 0.96 / 1.07 / 1.09 (run 3 0.98 → 1.09 over 1896–99). The shortlist's GDP at 1899:
+  1.23 × vanilla (book 1.18), with productive workers per head 0.93 × (book 0.94) and GDP per productive worker 1.28 × (1.25).
+- ⇒ **A brings the technology lead to vanilla's level and leaves GDP where the book had it.** In this span technology does not drive the world
+  product much; the book's GDP excess (F222) needs its own cause.
+- Play time to 1900: 96 / 101 / 84 min (book runs 1–3: 99 / 90 / 90).
+
+### What it does NOT say
+- Nothing past 1900: the era-5 share at 1936 and the late GDP excess (F222's 1.20–1.29 from 1916) are untested.
+- n=3 against n=4; GDP's seed spread (σ 0.03–0.08) covers the difference to the book in every decade.
