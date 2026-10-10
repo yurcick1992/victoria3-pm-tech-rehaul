@@ -2768,6 +2768,16 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ SAVE_SUMMARY_VERSION is bump-never-renumber, like TELEMETRY_VERSION.
                         ⚠ NOT to be confused with `save_summary.mjs` (below), which reads the RAW BINARY
                         and answers a different question
+  research_model/       ⭐⭐ THE RESEARCH MODEL (BALANCE_FRAMEWORK §10.96, FINDINGS F223, 2026-10-10) — read-only tools; nothing here touches a book.
+                        `lib_tree.mjs` (the tree as the game loads it, vanilla or an emitted mod; the penalty skips can_research = no),
+                        `lib_paths.mjs` (a run's yearly literacy / innovation / country type / laws / holdings from its summaries),
+                        `lib_grants.mjs` (a run's research-entry grants from its debug.log, dated by the TECH lines, names mapped to keys),
+                        `lib_sim.mjs` (the weekly simulation with the MEASURED rules: research min(innovation, cap); the AI in each tree's oldest
+                        era, P ∝ ai_weight⁴; spread uniform in the oldest missing era; levers incl. capLit, innovBase, uniMult, spreadLit,
+                        era4/era5 cost, res_<tree>/spr_<tree>, resEff — 0.95 on the book, 0.80 on vanilla), `lib_metrics.mjs` (the targets);
+                        readers `flow_check.mjs` / `spread_pick.mjs` / `research_pick.mjs` / `innovation_fit.mjs` (need v18 summaries),
+                        `validate.mjs <summaries> [--mod] [--je]` (model against a run), `fit_eff.mjs`, and `sweep.mjs --runs … --mod …
+                        --tree … [--van …] --set "name:key=v,…"` (candidate levers scored on §10.96's targets). ⚠ GDP is not modelled
   testbed/ledger/wall_clusters.mjs  ⭐ THE WALL CLOCK IN THE THREE RULED RUN CLUSTERS (2026-10-07): normal / inexplicably slowed (an episode,
                         no listed bug observed) / a directly observed listed bug (the fleet path loop in the v16 summaries' worst paths);
                         per arm the cluster-1 and cluster-2 medians, the MAIN median over 1 + 2, and the cluster-3 count and bug.

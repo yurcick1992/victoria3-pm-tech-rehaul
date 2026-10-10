@@ -99,7 +99,13 @@ import { fileURLToPath } from 'node:url';
 // Readers: a key is opaque. `c.tag ?? key.split('@')[0]` is the definition in every version; a pool member is the plain
 // TAG, i.e. the MAIN record — a rebel side, or a country a revolt left behind, is a country of its own. FINDINGS F186,
 // landmine L38. ⚠ A pre-v12 summary cannot be repaired (its save is reaped); summary_drops.mjs says which ones are hit.
-export const SAVE_SUMMARY_VERSION = 17;
+export const SAVE_SUMMARY_VERSION = 18;
+// v18 (2026-10-10): + RESEARCH (the tech rework, BALANCE_FRAMEWORK §10.96: a research model needs the flows, not only the stock). Per country:
+// `innovation` / `max_innovation` / `population_incorporated`, read from the AI's own snapshot `ai.database.<n>.spending_variables` (the country
+// record carries none of them; the cap reproduces exactly as 50 + 150 × literacy, so it is a cross-check; ⚠ a SNAPSHOT from the AI's last update,
+// not a weekly mean); `spreading` = `currently_spreading_technologies`, at most one per tree (none in a tree the country leads); `progress_unheld`
+// = {tech: points} from `progressed_technologies` for technologies NOT held (the save also keeps stale entries for held ones, dropped here), the
+// points of every source pooled (research, spread, journal-entry grants). Tech spread itself is in no save. Everything else byte-identical to v17.
 // v17 (2026-10-09): + THE DAM SLOT CHECK (user-asked with the four-class dam book, dams on the engine's resource slots): the dam types
 // `building_dam_*` join the per-state resource-capped buildings (`states.<id>.res`), and every QUEUED dam level is recorded per state
 // as `states.<id>.dam_q = { <type>: { <builder country key>: n } }` (government and private queues together; the builder is the
@@ -206,7 +212,7 @@ const TREND_KEYS = new Map([['gdp', 'gdp'], ['prestige', 'prestige'], ['literacy
 // Sections we actually walk.  Everything else is skipped in O(1) per line: a top-level section always
 // closes with a `}` in COLUMN 0, so skipping never needs brace arithmetic.
 const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies', 'market_manager', 'laws', 'interest_groups',
-                      'military_formation_manager', 'ship_manager']);   // v16
+                      'military_formation_manager', 'ship_manager', 'ai']);   // v16; ai v18
 
 // ---------------------------------------------------------------- collectors
 let saveDate = '';
@@ -324,7 +330,9 @@ const wmTake = vals => {
 // v11 laws: country_manager id -> [active law keys]
 const lawsByCountry = new Map(); let lawRec = null;
 // technology
-let tid = null, tcur = null, inAcq = false, inProg = false;
+let tid = null, tcur = null, inAcq = false, inProg = false, inSpread = false, pTech = null;
+// v18: the AI's snapshot (innovation, cap, incorporated population) per country id
+const aiByCountry = new Map(); let aiSV = null;
 // pacts
 let pFirst = null, pSecond = null, pAct = null, pT = false;
 // buildings
@@ -628,24 +636,44 @@ for await (const line of rl) {
 
   if (mode === 'technology') {
     const m = /^(\d+)=\{$/.exec(t);
-    if (m && depth === 2) { tid = +m[1]; tcur = { country: null, acquired: [], researching: null, in_progress: 0 }; inAcq = inProg = false; }
+    if (m && depth === 2) { tid = +m[1]; tcur = { country: null, acquired: [], researching: null, in_progress: 0, progress: {}, spreading: [] }; inAcq = inProg = inSpread = false; pTech = null; }
     else if (tcur) {
       let x;
       if ((x = /^country=(\d+)$/.exec(t))) tcur.country = +x[1];
       else if ((x = /^research_technology="([a-z_0-9\-]+)"$/.exec(t))) tcur.researching = x[1];
       else if (t === 'acquired_technologies={') inAcq = true;
       else if (t === 'progressed_technologies={') inProg = true;
+      else if (t.startsWith('currently_spreading_technologies={')) {   // v18 — names inline or on the following line(s)
+        for (const q of t.matchAll(/"([a-z_0-9\-]+)"/g)) tcur.spreading.push(q[1]);
+        inSpread = !t.endsWith('}');
+      } else if (inSpread) {
+        for (const q of t.matchAll(/"([a-z_0-9\-]+)"/g)) tcur.spreading.push(q[1]);
+        if (t.endsWith('}')) inSpread = false;
+      }
       else if (inAcq) {
         if (t.startsWith('}')) inAcq = false;
         else for (const q of t.matchAll(/"([a-z_0-9\-]+)"/g)) tcur.acquired.push(q[1]);
       } else if (inProg) {
         if (t === '}' && depth === 3) inProg = false;
-        else if (/^technology="/.test(t)) tcur.in_progress++;
+        else if ((x = /^technology="([a-z_0-9\-]+)"$/.exec(t))) { tcur.in_progress++; pTech = x[1]; }
+        else if (pTech && (x = /^progress=(-?[\d.]+)$/.exec(t))) { tcur.progress[pTech] = +x[1]; pTech = null; }
       }
     }
     depth += opens - closes;
     if (tcur && depth <= 2) { if (tcur.country != null) techByCountry.set(tcur.country, tcur); tcur = null; tid = null; }
     if (depth <= 0) { mode = 'top'; }
+    continue;
+  }
+
+  if (mode === 'ai') {   // v18 — ai={ database={ <n>={ … spending_variables={ country= innovation= max_innovation= … } } } }
+    if (depth === 3 && t === 'spending_variables={') aiSV = {};
+    else if (aiSV && depth === 4) {
+      const x = /^(country|innovation|max_innovation|population_incorporated)=(-?[\d.]+)$/.exec(t);
+      if (x) aiSV[x[1]] = +x[2];
+    }
+    depth += opens - closes;
+    if (aiSV && depth <= 3) { if (aiSV.country != null) aiByCountry.set(aiSV.country, aiSV); aiSV = null; }
+    if (depth <= 0) mode = 'top';
     continue;
   }
 
@@ -1119,6 +1147,12 @@ for (const [id, c] of C) {
     technologies: tech ? tech.acquired.length : 0,
     researching: tech?.researching ?? null,
     technologies_held: tech ? tech.acquired : [],
+    // v18: research flows (see the version note)
+    innovation: aiByCountry.get(id)?.innovation ?? null,
+    max_innovation: aiByCountry.get(id)?.max_innovation ?? null,
+    population_incorporated: aiByCountry.get(id)?.population_incorporated ?? null,
+    spreading: tech ? tech.spreading : [],
+    progress_unheld: tech ? Object.fromEntries(Object.entries(tech.progress).filter(([k]) => !tech.acquired.includes(k))) : {},
     // v11: active laws, the trade-policy law, and per-good tariff levels (import / export)
     laws: lawsByCountry.get(id) ?? [],
     trade_policy: (lawsByCountry.get(id) ?? []).find(l => LAW_GROUP[l] === 'lawgroup_trade_policy') ?? null,

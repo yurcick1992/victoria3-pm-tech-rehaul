@@ -2421,6 +2421,14 @@ such as dams as typical buildings and JE initialisation on triggers; and what te
    jex book's 1.09, two of four runs broken by runoff; F219: the leader overshoots the anchor principle in game eras 4–5 while the bottom of
    the tree still runs late), and (b) the research journal entries made MORE important to research. F219 already warned that a UNIFORM
    research nerf deepens the lateness at the bottom; a nerf shaped by game era was the open proposal.
+   ⭐ **STARTED 2026-10-10 — BALANCE_FRAMEWORK §10.96 holds the ruling and the targets** (lever shift, no new principle: cut directed
+   research through the innovation cap / base / university output, maybe raise tech spread; targets = the anchor principle at 1905/1936,
+   vanilla's median counts, onset timing, and EVERY DECADE'S WORLD GDP with a break line at 1886 of vanilla ± 2σ of the canon, 0.83 / 1.17).
+   The order: (i) save summary v18 with innovation, cap, the spreading technologies and unheld progress, and the vanilla quarterly series
+   `saves_debut` + the kept endpoints re-summarised; (ii) a research model — a flow layer per country and tree, then a weekly simulation over
+   the real tree with measured literacy and university paths — calibrated on vanilla and VALIDATED by reproducing F219/F222's overshoot from
+   the research entries; (iii) a lever sweep in the model; (iv) only then century runs, with the user's go-ahead.
+   ✅ (i)–(iii) DONE the same day (FINDINGS F223, `tools/research_model/`); (iv) awaits the user's pick among the candidates.
 3. **Then the decision**, the user's: canonise the arm whole, OR return to the pre-artmerge canon (`canon-dams-family-nolog`) and iterate
    there — dropping the crafts + merges, KEEPING the performance changes (dams as resource-slot buildings, research entries started by
    triggers — which the canon lacks and would need reimplementing), and giving the surviving tech changes another go.

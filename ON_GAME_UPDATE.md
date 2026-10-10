@@ -399,6 +399,13 @@ observer refuses to launch a mod that carries no telemetry, so build it with `-T
   very nice for minting revenue and guaranteed profits`, and the mod does NOT own that file, so the ruling rides on vanilla's line. After a patch:
   check that line under `building_gold_mine`; if Paradox moved or removed it, the mod has silently moved with it — restore 5000 through the builder
   (there is no emitter for a non-owned building file yet; a whole-file copy in the `emit_goods.mjs` pattern is the way).
+- **The research model's rules** (`tools/research_model/`, FINDINGS **F223**, BALANCE_FRAMEWORK §10.96). The tree, era costs and AI weights are
+  read LIVE (`lib_tree.mjs`), but the engine constants sit in `lib_sim.mjs`'s `DEFAULT_LEVERS` as vanilla's 1.13 values: innovation base / cap
+  base 50 / 50, cap per literacy 150, spread 25 + 75 × literacy, unspent innovation 0.2 (`00_code_static_modifiers.txt` `base_values`,
+  `country_literacy_rate`, `excess_innovation`), the ahead-of-time penalty 0.25 (`00_defines.txt` NTechnology), the law spread multipliers
+  (`02_free_speech.txt`, `01_trade_policy.txt`) and the measured rank malus (−0.234). The BEHAVIOURAL rules were MEASURED on vanilla 1.13 saves —
+  spread picks uniformly in the oldest missing era, the AI researches in each tree's oldest era with P ∝ ai_weight⁴ — and a patch can change
+  them silently. After a patch: re-run `flow_check.mjs`, `spread_pick.mjs` and `research_pick.mjs` on a fresh v18 vanilla series and compare.
 
 ---
 

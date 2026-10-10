@@ -21956,3 +21956,68 @@ branch for those years (landmine L26 FAILs on the backward jump; the end state i
 - Dams and placement are not separated over the century; F221 separated them only over 1836–45.
 - The staffing of the dams is the pre-ruling 1,200 / 2,400 a level (the historical 210 / 420 is ruled for after this report).
 - The player's shift-click queue against a dam's slots is not exercised by the AI and stays a hand test.
+
+## F223 — HOW RESEARCH ACTUALLY WORKS, MEASURED, AND A MODEL THAT REPRODUCES OUR BOOK: THE AI RESEARCHES ITS OLDEST ERA, SPREAD FILLS THE OLDEST GAP, THE LEADER'S OVERSHOOT IS JOURNAL-ENTRY PRODUCTION PLUS MILITARY/SOCIETY RESEARCH; THE MEDIAN IS ALREADY AT VANILLA'S (2026-10-10; no game time — the vanilla quarterly series `saves_debut` re-summarised to v18, 339 saves 1836–1921; vanilla n=16 `20260821_131149`; the book `jex-dam4s` n=4 `20261009_193145` + `20261010_042919`)
+
+For the last tech rework (BALANCE_FRAMEWORK §10.96). Tools: `tools/research_model/` (the flow, pick and fit readers, the simulator, the sweep).
+
+### 1. The flows (`flow_check.mjs`, save to save, a technology whose target did not change)
+- **Directed research = min(innovation, cap)** a week: observed ÷ formula median **1.000** (p10 0.99, p90 1.09) over 19,737 intervals; capped
+  countries 1.07 (research-speed modifiers). Cap = 50 + 150 × literacy, exact.
+- **Spread = (25 + 75 × literacy + 0.2 × unspent) × (1 + law and rank multipliers)** a week per tree: recognized countries 0.985 of the formula,
+  unrecognized 0.766 (the rank malus −15/−20/−25%), colonial 0.976. A raw fit over every country reads 15.5 + 78.6 × literacy because the
+  unrecognized cluster at low literacy.
+- **Universities**: innovation − 50 = 1.144 × Σ (1 / 1.5 / 2 per staffed level), the factor rising with size (1.01 under 5 levels, 1.16 over 50:
+  economy-of-scale throughput). ⚠ 202 of 270 countries in a 1936 save have NO university and research at 50; France (104 of a 165 cap), the USA
+  (135 of 150) and Japan (50 of 140) sat under their caps in the book's run 1 at 1936, Britain (180 of 177) and Germany (241 of 183) on or over.
+- Majors always research (0.2% of their saves show none); 32% of all country-saves show no research (minor and decentralized countries).
+
+### 2. The choices
+- **Spread picks UNIFORMLY among the eligible technologies of the OLDEST era the country is missing** (eligible = researchable, held by another
+  country): 100% of 6,908 new picks sit in that era (73% if uniform over all eligible); inside it, P ∝ holders^γ fits best at γ = 0. So spread
+  fills the oldest gaps and never hands a frontier technology while an older one is missing.
+- **The AI researches inside each tree's oldest researchable era**: 97% of 5,884 picks (66% if uniform); never more than one era above the
+  lowest. Inside that set P ∝ ai_weight⁴ fits best, with no penalty term, and reproduces the tree mix (society 2,651 / military 1,787 /
+  production 1,281 predicted, 2,656 / 1,692 / 1,371 observed). The documented score (ai_weight ÷ (1 + 5 × penalty ÷ base)) over every
+  researchable tech sends the AI into later eras decades early. Progress already banked does not pull the pick in vanilla.
+- Switching away before completion: 11% of research changes; progress is kept.
+
+### 3. The model (`lib_sim.mjs`) and its validation
+Weekly, every country, driven by its measured yearly literacy / innovation / country type / laws, starting from its observed holdings; the
+book's research-entry grants from its debug.log (`lib_grants.mjs`, 1,068 of 1,072 completions mapped in run 1), a late stage delaying its
+tech's later stages; one free factor, resEff (directed research × it, standing for what the model leaves out).
+- ⚠ **The ahead-of-time penalty skips `can_research = no` (sericulture)** — F160's result; leaving it in withholds every era-3+ production
+  tech's completion on the second stage and costs the simulated Britain 6–15 technologies.
+- **resEff fits 0.80 on vanilla** (n=5: the debut series + four n=16 runs; majors' mean error 2.3, bias 0) **and 0.95 on the book** (n=4, with
+  grants: error 2.2, bias 0 in every decade). ⚠ The 15% disagreement is unexplained and is the model's stated uncertainty on the majors' speed.
+- On the book at 0.95, from its own inputs: leader e4 @1905 69% (observed 67%), e5 @1936 88% (87%), all-country median 71 / 104 at 1900 / 1936
+  (72 / 107), max 178 (178), majors' median 169 (171), production onsets on target 26 / 43 (23).
+
+### 4. What the readings and the sweep say (`sweep.mjs`, the book's four runs × 3 seeds, resEff 0.95; vanilla = its 16 runs OBSERVED)
+| setting | leader e4 @1905 | leader e5 @1936 (p/m/s) | median 1900 / 1936 | majors 1886 / 1906 / 1936 | onsets on target |
+|---|---|---|---|---|---|
+| vanilla, observed | 41% | 46% (6/50/75) | 72 / 105 | 105 / 128 / 160 | 10 / 43 |
+| book, observed | 67% | 87% (100/80/88) | 72 / 107 | 109 / 134 / 171 | 23 / 43 |
+| model, no change | 69% | 88% (100/70/100) | 71 / 104 | 109 / 131 / 169 | 26 / 43 |
+| cap 50 + 50 × lit, universities × 0.5 | 51% | 60% (100/40/56) | 71 / 104 | 105 / 127 / 164 | 19 / 43 |
+| the same, the AI rebuilds to its cap | 53% | 63% | 71 / 104 | 106 / 128 / 164 | 21 / 43 |
+| cap 50 + 50 × lit, era 4 cost × 1.2, era 5 × 1.4 | 51% | 52% (88/30/38) | 71 / 104 | 106 / 128 / 159 | 19 / 43 |
+| the same + spread × 1.15 | 56% | 56% | 76 / 111 | 110 / 131 / 163 | 24 / 43 |
+| cap 50 + 75 × lit, military/society research −40%, production +40% | 46% | 54% | 66 / 98 | 103 / 125 / 162 | 21 / 43 |
+| spread 25 + 100 × lit alone | 88% | 100% | 76 / 113 | — / — / 179 | 27 / 43 |
+- **The all-country median is ALREADY vanilla's** (72 / 107 against 72 / 105); the overshoot is the leader and the majors.
+- **The leader's era-5 PRODUCTION is 100% in every setting** — the research entries alone deliver all eight; correcting its era-5 share comes
+  from military and society. Vanilla's leader holds 6% of era-5 production.
+- **A cap cut reaches the leader and leaves the median** (median countries are not cap-bound). **A university cut is mostly a COST lever**: if
+  the AI rebuilds to its cap, its effect on the leader nearly vanishes (60 → 63%).
+- **Raising spread raises the LEADER too** (it spreads in every tree it does not lead): spread holds the median and onset up, never the leader down.
+- **Era costs raised for eras 4–5 reach the leader and the majors with the median untouched**, and the entries' grants follow the cost (they are
+  0.5 × the era cost the build reads), so entries keep their share while research and spread lose theirs.
+- ⚠ **Every setting that brings the leader to ~50% costs onset timing (26 → 19–22 of 43)**: one research slot, so slower research anywhere is
+  less production for the majors. Only spread raises restore it, and they lift the leader with it — a trade-off, not a fitting problem.
+
+### What it does NOT say
+- GDP is not modelled: literacy, universities and every economic path are fixed inputs, and technology does not answer back to them.
+- One vanilla quarterly series (n=1) carries the measured innovation; the n=16 and the book's runs have it ESTIMATED from universities.
+- Event grants, research-speed modifiers and strategy-dependent ai_weight terms are not modelled (resEff absorbs them on average).
+- Research-entry timing is taken from the measured runs; a slower world can only DELAY a stage (the model shifts later stages), never speed it.
