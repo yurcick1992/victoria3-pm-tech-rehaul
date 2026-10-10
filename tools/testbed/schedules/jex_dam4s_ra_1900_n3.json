@@ -1,0 +1,34 @@
+{
+  "schedule_version": 1,
+  "label": "jex-dam4s-ra-1900-n3",
+  "_why": "THE LAST TECH REWORK, CANDIDATE A, LONG PROBE (user, 2026-10-10: 'Try a long probe on A, 1836-1900, n=3'; BALANCE_FRAMEWORK §10.96, FINDINGS F223). Book config/mod_config.jex-dam4s-ra.json = jex-dam4s (the artmerge arm's book) + research_levers: the innovation cap's literacy term 150 -> 50 (country_literacy_rate in 00_code_static_modifiers) and the universities' innovation x0.5 (07_government: 1/1.5/2 -> 0.5/0.75/1), + dams.staff_per_50 pinned to 50/100/50 so the book differs from F222's MEASURED book only in the research levers. The cap is the main tool; the university cut keeps universities' share of expenditure from shrinking (user). A FIXED n=3, every run plays to 1900.",
+  "_arms": {
+    "ra": "{kind: config, config: config/mod_config.jex-dam4s-ra.json} (+ its tree twin, jex-dam4s's)."
+  },
+  "_comparison": "Against jex-dam4s n=4 (20261009_193145 runs 1-3 + 20261010_042919, the same book with vanilla research levers and the same dam staffing) at 1846-1900, and vanilla n=16 (20260821_131149): world GDP per decade (§10.96's target, the 1886 break line 0.83/1.17 of vanilla), technologies held (leader, majors, all-country median; tech_census / tech_timing), research-entry completions (je_tally), universities built and their cost, play time. And against the research model's prediction for A over the same span.",
+  "_predictions": {
+    "research model (F223, resEff 0.95, inputs fixed)": "leader e4 share at 1905 ~51% against the book's 67-69% (read 1900 here); majors' median at 1886 ~105 against 109; all-country median unchanged (71 at 1900); production onsets slower. The model's own uncertainty on the majors' speed is ~15%, and it holds literacy, universities and GDP fixed - the chain effects (slower techs -> later rungs -> later research-entry marks -> fewer grants) are NOT in it, which is what this probe tests",
+    "universities": "fewer university levels than the book (the cap is lower and each level produces half): roughly 0.6-0.8x the book's levels for the cap-bound majors",
+    "GDP": "1846-1876 inside the book's spread; 1886 within the break line (0.83-1.17 of vanilla); lower than the book's 1.06-1.07 at 1886-1896 if fewer technologies reach the economy"
+  },
+  "_stop_rule": "none: a fixed n=3, every run plays to 1900. Only a hard harness failure (crash loop, mod not loaded) stops it.",
+  "_cost": "3 runs x 1836 -> 1900, about 1.5-2 h each, about 5-6 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Do NOT edit tools/testbed/save_state_summary.mjs, tools/emit_research_levers.mjs, tools/emit_dams.mjs, tools/emit_research_events.mjs or the book while the batch runs.",
+    "Save summaries are v18 (innovation, cap, spreading techs) - F222's runs are v17, so innovation compares against the model's estimate there."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1899.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 300
+  },
+  "setups": {
+    "ra": { "kind": "config", "config": "config/mod_config.jex-dam4s-ra.json" }
+  },
+  "runs": [
+    { "setup": "ra", "until": "1900.1.1" }, { "setup": "ra", "until": "1900.1.1" }, { "setup": "ra", "until": "1900.1.1" }
+  ]
+}

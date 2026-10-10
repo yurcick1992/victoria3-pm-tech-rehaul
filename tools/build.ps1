@@ -1498,6 +1498,13 @@ if ($LASTEXITCODE -ne 0) { throw "emit_building_costs.mjs failed (exit $LASTEXIT
 & node (Join-Path $PSScriptRoot 'emit_dams.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_dams.mjs failed (exit $LASTEXITCODE) - the dam megaprojects would ship broken or not at all." }
 
+# --- RESEARCH LEVERS (BALANCE_FRAMEWORK §10.96) ------------------------------------------------------
+# `research_levers` changes numbers the game already has (the innovation cap, base innovation, tech spread in
+# 00_code_static_modifiers; the universities' innovation in 07_government); absent -> nothing. AFTER emit_dams,
+# whose base_values cap lines (non-resource layouts) live in the same static-modifier file and are kept.
+& node (Join-Path $PSScriptRoot 'emit_research_levers.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_research_levers.mjs failed (exit $LASTEXITCODE) - the research levers would ship broken or not at all." }
+
 
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---
 # Only the canonical build repoints the UI; alternate builds (-DryRun/-SaveTo) leave ui/data.js alone.

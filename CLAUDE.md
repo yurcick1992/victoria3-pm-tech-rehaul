@@ -1728,6 +1728,9 @@ config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json ⚗ THE EXTRA RESEARCH 
                         step 2) + its tree twin (the base's): the book above + `research_events.extra_entries` (25 production technologies outside
                         the tier ladder, calibrated on the narrative onset) + `era1_rule_a`; `make_research_extra_config.mjs`. 68 technologies carry
                         entries (the base 40). Measured n=16 by 20261005_154629_jex-n16 (launched 2026-10-05). Un-ignored with its twin
+config/mod_config.jex-dam4s-ra.json ⚗ CANDIDATE A OF THE LAST TECH REWORK (user, 2026-10-10, §10.96, FINDINGS F223) + its tree twin (jex-dam4s's):
+                        jex-dam4s + `research_levers` (cap literacy term 150 → 50, universities × 0.5) + the dam staffing pinned to F222's
+                        measured 50/100/50. Long probe 3 × 1836→1900, schedule `jex_dam4s_ra_1900_n3.json`. Un-ignored with its twin
 config/mod_config.jex-dam4s.json ⚗ THE TICK-COST FIX ON THE jex BOOK (user-ruled 2026-10-09, BALANCE_FRAMEWORK §10.89.13, FINDINGS F221) + its
                         tree twin (the jex book's): the jex book + dams on the engine's RESOURCE SLOTS in the four ruled classes (300/600 electricity,
                         ≤ 5-year builds, 122 projects / 181 slots) + `research_events.placement = script`; `make_dam4_config.mjs --base
@@ -2768,6 +2771,14 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ SAVE_SUMMARY_VERSION is bump-never-renumber, like TELEMETRY_VERSION.
                         ⚠ NOT to be confused with `save_summary.mjs` (below), which reads the RAW BINARY
                         and answers a different question
+  emit_research_levers.mjs  THE RESEARCH LEVERS (BALANCE_FRAMEWORK §10.96) — called by build.ps1 after emit_dams (throws). Config
+                        `research_levers` (absent → nothing): `static` {block: {key: value}} REPLACES existing lines of
+                        00_code_static_modifiers.txt (whole-file copy; it edits emit_dams' copy where one exists; a key that is not exactly
+                        once in its block THROWS — it never inserts), `university_innovation_mult` k scales the three university methods'
+                        innovation in a whole-file copy of production_methods/07_government.txt. `make_research_levers_config.mjs --base
+                        <book> --suffix <sfx> [--cap-lit N --cap-base N --innov-base N --spread-base N --spread-lit N --uni-mult k
+                        --dam-staff L,M,E]` writes the book + its tree twin. First book: `jex-dam4s-ra` (candidate A: cap literacy term
+                        150 → 50, universities × 0.5, the dam staffing pinned to F222's measured 50/100/50)
   research_model/       ⭐⭐ THE RESEARCH MODEL (BALANCE_FRAMEWORK §10.96, FINDINGS F223, 2026-10-10) — read-only tools; nothing here touches a book.
                         `lib_tree.mjs` (the tree as the game loads it, vanilla or an emitted mod; the penalty skips can_research = no),
                         `lib_paths.mjs` (a run's yearly literacy / innovation / country type / laws / holdings from its summaries),

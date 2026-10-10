@@ -331,3 +331,5 @@ tools/testbed/no_new_runs_at.log
 # the jex book + the four-class dams on resource slots + script-placed research first stages (user-ruled 2026-10-09: "go with the revised classes")
 !config/mod_config.jex-dam4s.json
 !config/tech_tree_options.jex-dam4s.json
+!config/mod_config.jex-dam4s-ra.json
+!config/tech_tree_options.jex-dam4s-ra.json

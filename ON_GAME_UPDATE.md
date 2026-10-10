@@ -406,6 +406,9 @@ observer refuses to launch a mod that carries no telemetry, so build it with `-T
   (`02_free_speech.txt`, `01_trade_policy.txt`) and the measured rank malus (−0.234). The BEHAVIOURAL rules were MEASURED on vanilla 1.13 saves —
   spread picks uniformly in the oldest missing era, the AI researches in each tree's oldest era with P ∝ ai_weight⁴ — and a patch can change
   them silently. After a patch: re-run `flow_check.mjs`, `spread_pick.mjs` and `research_pick.mjs` on a fresh v18 vanilla series and compare.
+- **A book with `research_levers` owns WHOLE-FILE copies** of `common/static_modifiers/00_code_static_modifiers.txt` and
+  `common/production_methods/07_government.txt` (`tools/emit_research_levers.mjs`), regenerated from vanilla each build — a patch flows through,
+  but the emitter THROWS if a named key is no longer exactly once in its block or a university method loses its single innovation line.
 
 ---
 
