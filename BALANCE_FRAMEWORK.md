@@ -9153,6 +9153,13 @@ building with two main methods:
   appear at all on a merged building until the technology is held. Considered and NOT taken the same day: ONE copy per line (host-sized: the
   line falls to ~45% of its per-rung ratio beside the merged method; merged-sized and disallowed where negative: the host loses 7 of its 10
   lines, until era 4 for luxury clothes and era 5 for luxury furniture).
+  ⚠⚠ (2026-10-11) The hidden copies could never be selected in the panel (BUGS_AND_FIXES 2026-10-11). Interim fix: the flag is removed and
+  each copy is named after its main method ("Cannery (Baking Powder)"). ⭐⭐ **RULED THE SAME DAY: ONE SHARED COPY PER LINE, NOT TIED TO
+  A MAIN METHOD** (user: *"Make one shared copy per option, with no tie to a main method … It's OK if the secondary method zeroes the primary
+  output. It's still not OK to make anything negative."*). So a line may take a main method's output down to exactly zero, under every main
+  method the building carries, but no legal combination may take any good, input or job below zero (`lint_pm_combos.mjs` stays the
+  judge). That relaxes the "disallowed where negative" variant above: a reduction may be as large as the smallest main method's output.
+  The sizing rule is to be worked out when it is built. ⏸ DEFERRED by order until several tests of the neighbouring session are done.
 - **Research entries** (`emit_research_events`): a merged rung is counted as the host's levels running its method; a host carrying merged
   methods counts only the levels on its own. Paper e3's source is sulfite mills on the bleaching method; fertilizer e2's, chemical plants on
   the improved method.
