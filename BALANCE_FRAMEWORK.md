@@ -9794,3 +9794,13 @@ Park, GE, Bell, DuPont) — consistent with the premise; agriculture (experiment
 8. **Society and tech spread: DEFERRED** ("let's see how it all works, first").
 
 Probes (the school-law lever, institution levels in a kept save) wait until the concurrent session reports on its runs.
+
+⚠ **Building it (notes for the book that carries §10.97):** (a) generate it through `make_research_levers_config.mjs` WITHOUT `--dam-staff` (or
+otherwise strip `dams.staff_per_50`), so the dams run the ruled historical staffing 10/15/10 per 50 electricity, not candidate A's 50/100/50 pin;
+(b) since commit `0659e81` every artmerge-branch book builds its secondaries under the `top` rule (§10.91.2), so the new book differs from candidate
+A's MEASURED build in its secondaries and its dam staffing as well as in research — compare it against candidate A rebuilt under the same rules, or
+name both confounds wherever the two are read side by side; (c) the tick-cost design (one repeating Implementation entry per technology with a
+country counter that reads 0 when missing; cheap conditions first in every bar — literacy, then the halved-mark switch, then the sources; no
+placement while under the literacy line with no stored progress; the held flag set on `on_acquired_technology` + the campaign start + a yearly
+sweep, never a monthly scan) is recorded in the session of 2026-10-11 and is to be confirmed by a 5-year amplified timing batch plus an
+active-entry count in the save summary over the first century run.
