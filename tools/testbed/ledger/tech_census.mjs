@@ -62,7 +62,7 @@ function readRun(rel) {
     const [session, run] = rel.split('/');
     const lines = readFileSync(dbg, 'utf8').split('\n'); const token = `|${session.slice(0, 15)}s${run.slice(3, 6)}|`;
     let start = lines.findIndex(l => l.includes(token)); if (start < 0) start = 0; const seen = new Set();
-    for (let i = start; i < lines.length; i++) { const m = lines[i].match(/PMR_JE\|([a-z]+)\|([a-z_0-9]+)\|(.*?)\s*$/); if (!m) continue;
+    for (let i = start; i < lines.length; i++) { const m = lines[i].match(/PMR_JE\|([a-z]+\d*)\|([a-z_0-9]+)\|(.*?)\s*$/); if (!m) continue;
       const name = m[3].trim(); const k = `${name}|${m[2]}|${m[1]}`; if (seen.has(k)) continue; seen.add(k);
       compAll.push({ name, tech: m[2], stage: m[1] });
       const tag = TAG_OF_NAME[name]; if (tag) comp.push({ tag, tech: m[2], stage: m[1] }); }

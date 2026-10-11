@@ -283,6 +283,34 @@ if (RE.placement && !PLACE) throw new Error(`research_events.placement '${RE.pla
 if (RE.compress && !COMPRESS) throw new Error(`research_events.compress '${RE.compress}'`);
 if (COMPRESS && (RE.industry_stages || RE.date_gate)) throw new Error('research_events.compress is an alternative stage structure: not with industry_stages or date_gate');
 const firsts = [], compressed = {};
+// ⭐⭐ §10.97 (user-ruled 2026-10-11, BALANCE_FRAMEWORK §10.97) — INDUSTRY entries only; war and naval entries keep their own rules. Each key
+//   absent = the earlier books, byte for byte.
+//   · `sources_additive: false` — ONE tick a month if AT LEAST ONE source is at its mark (several qualifying sources no longer speed a bar);
+//   · `literacy_by_era: { "<game era>": share }` — the tick also needs the country's literacy at the line for the technology's GAME era; below
+//     it the bar PAUSES (keeps its progress), and the first stage is not PLACED while below it (an entry that cannot tick costs a monthly
+//     evaluation for nothing — the tick-cost design of §10.97; placement is retried on every acquisition and every year);
+//   · `follower_halving: { isolationist_law }` — every mark is HALVED once a country that was not isolationist when it acquired the technology
+//     holds it (one global flag per technology, raised once and forever: on acquisition, at the campaign start, and by a yearly sweep), and
+//     only for an entry country that is not isolationist itself;
+//   · `implementation_repeats: N` — the LAST industry stage repeats up to N times until the technology is acquired, as ONE entry that never
+//     completes: its monthly pulse grants, counts (a country variable; a revolt country inherits the entry but not the variable, so a missing
+//     counter reads 0) and takes the span off the bar (vanilla's French-monarchism idiom, as V4). With no ahead-of-time penalty two stages
+//     already pay the cost; the repeats pay a penalty off with TIME.
+const NONADD = RE.sources_additive === false;
+const LIT = RE.literacy_by_era || null;
+const HALF = RE.follower_halving || null;
+const REPEAT = +(RE.implementation_repeats || 0);
+if ((LIT || HALF) && !NONADD) throw new Error('research_events: literacy_by_era / follower_halving are expressed in the any-source bar - they need sources_additive: false');
+if (REPEAT && COMPRESS) throw new Error('research_events: implementation_repeats is not designed with compress');
+if (REPEAT && !(Number.isInteger(REPEAT) && REPEAT >= 1 && REPEAT <= 50)) throw new Error(`research_events.implementation_repeats ${RE.implementation_repeats}: an integer 1-50`);
+if (LIT) for (const [e, v] of Object.entries(LIT)) if (!/^[1-5]$/.test(e) || !(v >= 0 && v <= 1)) throw new Error(`research_events.literacy_by_era: bad entry ${e}: ${v}`);
+const litOf = T0 => (LIT && LIT[String(T0.era)] != null) ? +LIT[String(T0.era)] : null;
+const ISO = HALF ? (HALF.isolationist_law || 'law_isolationism') : null;
+const heldVar = tech => `pmr_held_${tech}`;
+const notIso = ISO ? `NOT = { has_law = law_type:${ISO} }` : '';
+const implVar = tech => `pmr_impl_${tech}`;
+const HELD_TECHS = [];
+const LOGDATE = '[TimeKeeper.GetCurrentDate.GetString]';
 const thresholdPeople = (era, ind) => {
   const v0 = (RE.thresholds_by_era || {})[String(era)];
   if (v0 == null) throw new Error(`no threshold configured for era ${era}`);
@@ -359,7 +387,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   // war entries keep `stages` / `grant_fraction`. Absent = today's book.
   const grant = Math.round(ERACOST['era_' + T0.era] * (a.rule === 'war' ? (RE.grant_fraction ?? 0.5) : (RE.industry_grant_fraction ?? RE.grant_fraction ?? 0.5)));
   if (!grant) throw new Error(`no era cost for ${tech} (era ${T0.era})`);
-  const terms = [];
+  let terms = [];
   const srcLines = [];   // the JE text: what each source is, its mark, and the live figure (user-ruled 2026-09-03)
 
   if (a.rule === 'war' && isFleetTech(tech)) {
@@ -432,7 +460,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         const line = `Workers in ${names}: at least ${a.mark.toLocaleString('en-US')}` + (req.length ? ` (only while ${a.requires.map(r => '$' + r + '$').join(' and ')} is researched)` : '') + `; now ${live}`;
         const dkey = `pmr_term_${tech}_${i}`;
         loc.push([dkey, line]); srcLines.push(line);
-        terms.push({ desc: dkey, trigger: [`${n} >= ${a.mark}`, ...req].join('  '), value: 1 });
+        terms.push({ desc: dkey, trigger: [`${n} >= ${a.mark}`, ...req].join('  '), half: [`${n} >= ${a.mark / 2}`, ...req].join('  '), value: 1 });
         return;
       }
       if (s.good) {
@@ -443,7 +471,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         const dkey = `pmr_term_${tech}_${i}`;
         loc.push([dkey, `$${s.good}$: at least ${need.toLocaleString('en-US')} a week bought in your market`]);
         srcLines.push(`$${s.good}$ — at least ${need.toLocaleString('en-US')} a week bought in your market`);
-        terms.push({ desc: dkey, trigger: `market = { mg:${s.good} = { market_goods_buy_orders >= ${need} } }`, value: 1 });
+        terms.push({ desc: dkey, trigger: `market = { mg:${s.good} = { market_goods_buy_orders >= ${need} } }`, half: `market = { mg:${s.good} = { market_goods_buy_orders >= ${need / 2} } }`, value: 1 });
         return;
       }
       const n = svName(tech, i);
@@ -498,9 +526,28 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       const dkey = `pmr_term_${tech}_${i}`;
       loc.push([dkey, `${line}; now ${live}`]);
       srcLines.push(`${line}; now ${live}`);
-      terms.push({ desc: dkey, trigger: `${n} >= ${need}`, value: 1 });
+      // the halved mark (§10.97 follower_halving): half the people, i.e. half the levels — a fractional level count is fine in a comparison
+      const halfNeed = gTypes.length ? people / 2 : need / 2;
+      terms.push({ desc: dkey, trigger: `${n} >= ${need}`, half: `${n} >= ${halfNeed}`, value: 1 });
     });
     if (!terms.length) continue;
+    // ⭐ §10.97: the industry bar becomes ONE any-source tick — literacy first (a plain country trigger), then the halved-mark switch, then
+    //   the sources (each an every_scope_building loop): a paused or failing entry stops at the cheap part. The source terms' own texts
+    //   stay in the entry's body, where the player reads the marks and the live figures.
+    if (NONADD) {
+      const L = litOf(T0);
+      const litT = L != null ? `literacy_rate >= ${L}` : '';
+      const anyOf = k => `OR = { ${terms.map(t => `AND = { ${t[k]} }`).join('  ')} }`;
+      const held = `has_global_variable = ${heldVar(tech)}`;
+      const nt = [];
+      if (HALF) {
+        HELD_TECHS.push(tech);
+        nt.push({ desc: 'pmr_term_any_half', trigger: [litT, held, notIso, anyOf('half')].filter(Boolean).join('  '), value: 1, exclusive: true });
+        nt.push({ desc: 'pmr_term_any', trigger: [litT, `NOT = { AND = { ${held}  ${notIso} } }`, anyOf('trigger')].filter(Boolean).join('  '), value: 1, exclusive: true });
+      } else nt.push({ desc: 'pmr_term_any', trigger: [litT, anyOf('trigger')].filter(Boolean).join('  '), value: 1, exclusive: true });
+      if (L != null) nt.push({ desc: `pmr_term_lit_${T0.era}`, trigger: `literacy_rate < ${L}`, value: 0, exclusive: true });
+      terms = nt;
+    }
   }
 
   // ⭐ WAR BARS ARE MONTHLY NOW, six ticks to a stage (user-ruled 2026-08-18). They were
@@ -554,16 +601,41 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   const lowGrant = gateYear != null ? Math.round(grant * (DG.before_mult ?? 0.5)) : null;
   if (lowGrant != null && !(lowGrant >= 0 && lowGrant <= grant)) throw new Error(`research_events.date_gate: before_mult ${DG.before_mult} out of [0, 1]`);
   const STAGES = a.rule === 'war' ? RE.stages : (RE.industry_stages || RE.stages);
+  const LIT0 = a.rule !== 'war' ? litOf(T0) : null;
+  const REP = a.rule !== 'war' && REPEAT ? REPEAT : 0;
   STAGES.forEach((stage, si) => {
     const key = jeName(tech, stage);
     const first = si === 0;
     const next = STAGES[si + 1];
-    if (first) firsts.push({ key, cond: `can_research = ${tech}`, stageKeys: STAGES.map(s => jeName(tech, s)) });
+    if (first) firsts.push({ key, cond: `can_research = ${tech}` + (LIT0 != null ? `  literacy_rate >= ${LIT0}` : ''), stageKeys: STAGES.map(s => jeName(tech, s)) });
     const grantBlock = gateYear == null
       ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n${T}${T}}\n`
       : `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech}  game_date >= ${gateYear}.1.1 }\n${T}${T}${T}add_technology_progress = { progress = ${grant}  technology = ${tech} }\n${T}${T}}\n` +
         `${T}${T}else_if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_technology_progress = { progress = ${lowGrant}  technology = ${tech} }\n` +
         `${T}${T}${T}debug_log = "PMR_JEG|reduced|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n${T}${T}}\n`;
+    // §10.97: a stage completed on the HALVED mark says so (the flag and the law both read in game — the evidence the switch works)
+    const halfLog = (HALF && a.rule !== 'war') ? `${T}${T}if = {\n${T}${T}${T}limit = { has_global_variable = ${heldVar(tech)}  ${notIso} }\n${T}${T}${T}debug_log = "PMR_JEH|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]|${LOGDATE}"\n${T}${T}}\n` : '';
+    if (REP && !next) {
+      // ⭐ §10.97 THE REPEATING IMPLEMENTATION STAGE: one entry, never completes; each full bar grants, counts and is taken off the bar
+      sv.push(`pmr_implv_${tech} = {\n${T}value = 0\n${T}if = { limit = { has_variable = ${implVar(tech)} }  value = var:${implVar(tech)} }\n}`);
+      const ind1 = s => s.replace(/^/gm, T + T);
+      jes.push(
+        `${key} = {\n` +
+        `${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n` +
+        `${T}group = je_group_technology\n\n` +
+        `${T}scripted_progress_bar = ${barName(tech)}\n\n` +
+        `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { je:${key} ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} } }\n` +
+        ind1(grantBlock) +
+        ind1(halfLog) +
+        `${T}${T}${T}${T}if = { limit = { has_variable = ${implVar(tech)} }  change_variable = { name = ${implVar(tech)}  add = 1 } }\n` +
+        `${T}${T}${T}${T}else = { set_variable = { name = ${implVar(tech)}  value = 1 } }\n` +
+        `${T}${T}${T}${T}debug_log = "PMR_JE|${stage}[THIS.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n` +
+        `${T}${T}${T}${T}je:${key} ?= { add_progress = { value = -${span}  name = ${barName(tech)} } }\n` +
+        `${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
+        `${T}invalid = {\n${T}${T}OR = {\n${T}${T}${T}has_technology_researched = ${tech}\n${T}${T}${T}AND = { has_variable = ${implVar(tech)}  var:${implVar(tech)} >= ${REP} }\n${T}${T}}\n${T}}\n\n` +
+        `${T}weight = 1\n${T}transferable = no\n${T}can_revolution_inherit = yes\n` +
+        `${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
+    } else
     jes.push(
       `${key} = {\n` +
       `${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n` +
@@ -580,7 +652,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       `${T}scripted_progress_bar = ${barName(tech)}\n\n` +
       `${T}complete = {\n${T}${T}scope:journal_entry ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} }\n${T}}\n\n` +
       `${T}on_complete = {\n` +
-      grantBlock +
+      grantBlock + halfLog +
       (next ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_journal_entry = { type = ${jeName(tech, next)} }\n${T}${T}}\n` : '') +
       `${T}${T}debug_log = "PMR_JE|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n` +
       `${T}}\n\n` +
@@ -593,9 +665,21 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     //   JournalEntry.GetReason (the body), GetStatusDesc, GetGoalDesc and GetCompletionTooltip — nothing renders `_desc`.
     //   Until then the sources, their marks and the live figures sat in `_desc` and no player ever saw them; the body read
     //   only "Our position makes X worth pursuing." `_desc` keeps the same text, harmless and cheap.
-    const body = a.rule === 'war'
+    let body = a.rule === 'war'
       ? `Hard fighting concentrates the mind. Each month a general of ours holds a front with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions against an enemy who already fields ${nice}, this bar advances by one; ${STAGES === RE.stages ? 'three' : STAGES.length} stages of ${span} months each, and each completed stage grants ${STAGES === RE.stages ? 'half' : Math.round(100 * (RE.grant_fraction ?? 0.5)) + '% of'} the technology's base research cost.`
       : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; ${STAGES === RE.stages ? 'three' : STAGES.length} stages of ${span} months each, and each completed stage grants ${STAGES === RE.stages ? 'half' : Math.round(100 * (RE.industry_grant_fraction ?? RE.grant_fraction ?? 0.5)) + '% of'} the technology's base research cost` + (gateYear != null ? ` (before ${gateYear}, only ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that: the trade cannot hurry an idea ahead of its time).` : '.') + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
+    // §10.97: an industry entry under the reworked rules says so (the old sentence describes a different bar)
+    if (NONADD && a.rule !== 'war') {
+      const pct = x => Math.round(100 * x) + '%';
+      body = `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` +
+        `\n\nEach month the bar advances by one if AT LEAST ONE source below is at its mark` +
+        (HALF ? ` (half the mark once a country that is not isolationist already uses ${nice} - unless we are isolationist ourselves)` : '') +
+        (LIT0 != null ? `, and only while our literacy is at least ${pct(LIT0)}; below that the bar waits` : '') + `. ` +
+        (REP ? `${STAGES.length - 1 === 1 ? 'One stage' : (STAGES.length - 1) + ' stages'} of ${span} months, then implementation stages of ${span} months that repeat until ${nice} is ours (at most ${REP}); each grants ${Math.round(100 * (RE.industry_grant_fraction ?? RE.grant_fraction ?? 0.5))}% of the technology's base research cost.`
+             : `${STAGES.length} stages of ${span} months each; each grants ${Math.round(100 * (RE.industry_grant_fraction ?? RE.grant_fraction ?? 0.5))}% of the technology's base research cost.`) +
+        (REP && !next ? `\n\nImplementation stages completed: [ROOT.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]` : '') +
+        (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
+    }
     loc.push([key + '_desc', body]);
     loc.push([key + '_reason', body]);
   });
@@ -655,16 +739,41 @@ if (PLACE) {
     //   20261009_082702, run 23, 7 lines) — so no stage of the technology may be present either
     : `${T}if = {\n${T}${T}limit = { NOT = { has_variable = pmr_pl_${f.key} }  ${f.stageKeys.map(k => `NOT = { has_journal_entry = ${k} }`).join('  ')}  ${f.cond} }\n${T}${T}set_variable = pmr_pl_${f.key}\n${T}${T}add_journal_entry = { type = ${f.key} }\n${T}}\n`).join('') + `}`);
 }
+// ⭐ §10.97 THE "SOMEONE HOLDS IT" FLAGS — event-driven, never a monthly scan (the tick-cost design): a country acquiring a technology
+//   while NOT isolationist raises its flag (on_acquired_technology, root = the country); the campaign start raises the flags of every
+//   technology already held; a yearly global sweep over the still-unraised flags catches a holder that drops isolationism later.
+//   Raised once and forever (user-ruled: an annexed holder is ignored).
+if (HELD_TECHS.length) {
+  HELD_TECHS.sort();
+  seffR.push(`pmr_mark_held = {\n` + HELD_TECHS.map(t => `${T}if = {\n${T}${T}limit = { NOT = { has_global_variable = ${heldVar(t)} }  has_technology_researched = ${t}  ${notIso} }\n${T}${T}set_global_variable = ${heldVar(t)}\n${T}${T}debug_log = "PMR_HELD|${t}|[THIS.GetCountry.GetNameNoFormatting]|${LOGDATE}"\n${T}}\n`).join('') + `}`);
+}
 if (seffR.length) {
   const Wx = (rel, text) => { const p = join(MOD, rel); mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, '﻿' + text, 'utf8'); };
   Wx('common/scripted_effects/zzz_pm_rehaul_research_effects.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' + seffR.join('\n\n') + '\n');
   if (PLACE) Wx('common/on_actions/zzz_pm_rehaul_research_place.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' +
     `on_acquired_technology = {\n${T}on_actions = { pmr_research_place }\n}\n\non_game_started_after_lobby = {\n${T}on_actions = { pmr_research_place_all }\n}\n\n` +
     `pmr_research_place = {\n${T}effect = {\n${T}${T}pmr_place_research_entries = yes\n${T}}\n}\n\n` +
-    `pmr_research_place_all = {\n${T}effect = {\n${T}${T}every_country = { pmr_place_research_entries = yes }\n${T}${T}debug_log = "PMR_JE|placed_all|-|-"\n${T}}\n}\n`);
+    `pmr_research_place_all = {\n${T}effect = {\n${T}${T}every_country = { pmr_place_research_entries = yes }\n${T}${T}debug_log = "PMR_JE|placed_all|-|-"\n${T}}\n}\n` +
+    // §10.97: a first stage withheld for literacy is retried every year, not only on the next acquisition
+    (LIT ? `\non_yearly_pulse_country = {\n${T}on_actions = { pmr_research_place }\n}\n` : ''));
+  if (HELD_TECHS.length) Wx('common/on_actions/zzz_pm_rehaul_research_held.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' +
+    '# BALANCE_FRAMEWORK §10.97: the global "someone already holds it" flags that halve an entry\'s marks. Named on_actions only (L22).\n' +
+    `on_acquired_technology = {\n${T}on_actions = { pmr_research_held }\n}\n\non_game_started_after_lobby = {\n${T}on_actions = { pmr_research_held_all }\n}\n\n` +
+    `on_yearly_pulse = {\n${T}on_actions = { pmr_research_held_sweep }\n}\n\n` +
+    `pmr_research_held = {\n${T}effect = {\n${T}${T}pmr_mark_held = yes\n${T}}\n}\n\n` +
+    `pmr_research_held_all = {\n${T}effect = {\n${T}${T}every_country = { pmr_mark_held = yes }\n${T}}\n}\n\n` +
+    `pmr_research_held_sweep = {\n${T}effect = {\n` + HELD_TECHS.map(t => `${T}${T}if = {\n${T}${T}${T}limit = { NOT = { has_global_variable = ${heldVar(t)} }  any_country = { has_technology_researched = ${t}  ${notIso} } }\n${T}${T}${T}set_global_variable = ${heldVar(t)}\n${T}${T}${T}debug_log = "PMR_HELD|${t}|sweep|${LOGDATE}"\n${T}${T}}\n`).join('') + `${T}}\n}\n`);
 }
+if (HELD_TECHS.length && !seffR.length) throw new Error('internal: held flags without a scripted-effects file');
 
-loc.push(['pmr_bar_desc', 'Progress towards this discovery: +1 each month for every source at or above its mark — the entry lists the sources and your current figures.']);
+loc.push(['pmr_bar_desc', NONADD
+  ? 'Progress towards this discovery: +1 each month while at least one source is at its mark — the entry lists the sources and your current figures.'
+  : 'Progress towards this discovery: +1 each month for every source at or above its mark — the entry lists the sources and your current figures.']);
+if (NONADD) {
+  loc.push(['pmr_term_any', 'At least one source is at its mark (the entry lists them)']);
+  loc.push(['pmr_term_any_half', 'At least one source is at HALF its mark: another country already uses this technology']);
+  if (LIT) for (const [e, v] of Object.entries(LIT)) loc.push([`pmr_term_lit_${e}`, `Waiting: literacy below ${Math.round(100 * v)}%, the line for an era ${e} technology`]);
+}
 loc.push(['pmr_term_improvement', 'Employed in the industry this would improve']);
 loc.push(['pmr_term_necessity', 'Employed in the industries that would use it']);
 loc.push(['pmr_term_war_pressed', 'Committed to a front in strength']);

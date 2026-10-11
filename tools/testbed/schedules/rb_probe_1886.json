@@ -1,0 +1,33 @@
+{
+  "schedule_version": 1,
+  "label": "rb-probe-1886",
+  "_why": "THE §10.97 BOOK, 50-YEAR PROBE (user, 2026-10-11: 'Run a 50-year probe, then analyse and decide. If doesn't look heavily broken (say, under 70% of vanilla tech delta 1836-1885 on average, or GDP down 20% by 1845), proceed with it and then run two more runs, ultimately to n=3. If looks broken tech-wise, try increasing tech spread factor and rerun the probe, and then continue what's better of the original two'). Book config/mod_config.jex-dam4s-rb.json = jex-dam4s + research halved (innovation base 25, cap base 25, cap literacy term 25, universities x0.5 of vanilla) + the reworked research entries (36-month industry stages, one tick if any source is at its mark, literacy 25/35/45/55/65% by game era as a pause, marks halved once a non-isolationist country holds the technology for non-isolationist entry countries, the implementation stage repeating up to 18 times) + AI schooling (schools institution score 100 in every administrative strategy, +500 enact weight to leave no schools). Secondaries under the e2-anchored top rule (§10.91.2), dams at 10/15/10. The decision reads tools/testbed/ledger/tech_gain_check.mjs (the tech majors' median gain 1837-1885 and world GDP at 1845, both against vanilla n=16).",
+  "_arms": {
+    "rb": "{kind: config, config: config/mod_config.jex-dam4s-rb.json} (+ its tree twin, jex-dam4s's)."
+  },
+  "_comparison": "vanilla n=16 (20260821_131149) through tech_gain_check.mjs and every decade's world GDP (§10.96); candidate A (20261010_132640, which reads 1.00 of vanilla's tech gain and 1.02 of its GDP at 1885) for the change; ⚠ the secondaries (top rule) and the dam staffing also differ from candidate A's measured build.",
+  "_predictions": {
+    "tech": "the majors' gain falls below vanilla's: research is halved for every country and the entries are slower (36-month stages, no additive sources), partly offset for followers by the halved marks and for the leaders by the repeating implementation stage; a guess at 0.7-0.85 of vanilla's gain at 1885 - close to the user's line, which is why the line exists",
+    "GDP": "1845 within a few % of vanilla (technology barely matters to 1845); lower than candidate A's 1.02 by 1885",
+    "literacy": "Russia, Qing and the other low-literacy countries carry no industry entry; GBR/PRU/BEL/NET carry them all"
+  },
+  "_stop_rule": "none: one run to 1886. If kept, it is continued to 1936 from its 1886 autosave (a continuation run) and two more full runs follow.",
+  "_cost": "1 run x 1836 -> 1886, about 60-75 min",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Do NOT edit tools/emit_research_events.mjs, tools/emit_ai_schooling.mjs, tools/emit_research_levers.mjs or the book while it runs."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1885.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 200
+  },
+  "setups": {
+    "rb": { "kind": "config", "config": "config/mod_config.jex-dam4s-rb.json" }
+  },
+  "runs": [
+    { "setup": "rb", "until": "1886.1.1" }
+  ]
+}

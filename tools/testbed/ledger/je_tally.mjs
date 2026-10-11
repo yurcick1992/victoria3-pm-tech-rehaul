@@ -51,7 +51,7 @@ for (const rel of runs) {
   const lines = readFileSync(join(D, 'logs_live', 'debug.log'), 'utf8').split('\n');
   const token = `|${session.slice(0, 15)}s${run.slice(3, 6)}|`; let start = lines.findIndex(l => l.includes(token)); const how = start >= 0 ? 'token' : 'file start (no token line)'; if (start < 0) start = 0;
   const comp = []; const seen = new Set(); let raw = 0; let folded = 0;
-  lines.forEach((l, i) => { if (i < start) return; const m = l.match(/PMR_JE\|([a-z]+)\|([a-z_0-9]+)\|(.*?)\s*$/); if (!m) return; raw++; const rawName = m[3].trim(); const c = ALIAS[rawName] || rawName; if (c !== rawName) folded++; const k = `${c}|${m[2]}|${m[1]}`; if (seen.has(k)) return; seen.add(k); comp.push({ stage: m[1], tech: m[2], c }); });
+  lines.forEach((l, i) => { if (i < start) return; const m = l.match(/PMR_JE\|([a-z]+\d*)\|([a-z_0-9]+)\|(.*?)\s*$/); if (!m) return; raw++; const rawName = m[3].trim(); const c = ALIAS[rawName] || rawName; if (c !== rawName) folded++; const k = `${c}|${m[2]}|${m[1]}`; if (seen.has(k)) return; seen.add(k); comp.push({ stage: m[1], tech: m[2], c }); });
   const byC = by(comp, x => x.c);
   console.log(`\n== ${rel} — ${comp.length} unique completions (${raw} raw lines, ${raw - comp.length} mirror duplicates; window by ${how}${folded ? `; ${folded} lines folded from renamed display names` : ''}); ${Object.keys(byC).length} countries; stages ${JSON.stringify(by(comp, x => x.stage))}`);
   console.log('   top: ' + Object.entries(byC).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([c, n]) => `${c} ${n}`).join(' · '));

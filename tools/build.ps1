@@ -1505,6 +1505,12 @@ if ($LASTEXITCODE -ne 0) { throw "emit_dams.mjs failed (exit $LASTEXITCODE) - th
 & node (Join-Path $PSScriptRoot 'emit_research_levers.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_research_levers.mjs failed (exit $LASTEXITCODE) - the research levers would ship broken or not at all." }
 
+# --- AI SCHOOLING (BALANCE_FRAMEWORK §10.97 item 7) -----------------------------------------------------
+# `ai_schooling` adds a schools institution score to the administrative AI strategies and an enact weight to leave
+# "no schools"; absent -> nothing. AFTER the subsidy policy, whose copy of 01_admin_strategies.txt it edits.
+& node (Join-Path $PSScriptRoot 'emit_ai_schooling.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_ai_schooling.mjs failed (exit $LASTEXITCODE) - the AI schooling levers would ship broken or not at all." }
+
 
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---
 # Only the canonical build repoints the UI; alternate builds (-DryRun/-SaveTo) leave ui/data.js alone.

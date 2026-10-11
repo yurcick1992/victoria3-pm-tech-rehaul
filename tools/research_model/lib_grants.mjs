@@ -36,7 +36,7 @@ export function extractGrants(runDir, tree, paths, { modDir = null, grantFractio
     let m = /V3TB\|([^|]+)\|TECH\|([^|]+)\|([^|]+)\|(.+)$/.exec(l);
     if (m && m[1] === tok) { const d = parseDate(m[3]); if (d) curDate = d; const k = name2key.get(m[4].trim());
       if (k) { if (!acq.has(m[2])) acq.set(m[2], []); acq.get(m[2]).push({ y: d ?? curDate, k }); } continue; }
-    m = /PMR_JE\|(inception|development|implementation)\|([a-z_0-9\-]+)\|(.+)$/.exec(l);
+    m = /PMR_JE\|(inception|development|implementation\d*)\|([a-z_0-9\-]+)\|(.+)$/.exec(l);
     if (m) { const id = `${m[1]}|${m[2]}|${m[3].trim()}`; if (seen.has(id)) continue; seen.add(id); je.push({ stage: m[1], tech: m[2], name: m[3].trim(), y: curDate }); }
   }
   // name → key: per year of acquisition, the keys whose held set gained that tech between the year's summary and the next

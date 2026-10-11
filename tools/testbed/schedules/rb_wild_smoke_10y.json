@@ -1,0 +1,33 @@
+{
+  "schedule_version": 1,
+  "label": "rb-wild-smoke-10y",
+  "_why": "SMOKE PROBE OF THE §10.97 MACHINERY (user, 2026-10-11: 'Start with a 10-year probe or several to check that the changes have taken, that the syntax is right. For that phase, you may go wild with the numbers to ensure the effects are seen'). Book config/mod_config.jex-dam4s-rb-wild.json = jex-dam4s + the research levers ruled in §10.97 item 6 (innovation base 25, cap base 25, cap literacy term 25, universities x0.5 of vanilla) + the reworked research entries with WILD numbers: 3-month industry stages (so a stage completes several times a decade and the repeating implementation stage is seen), literacy 50% for EVERY era (so Russia, Qing, Austria and France get no industry entry placed while the Western leaders do), the follower halving and its global flags, implementation repeats 18, AI schooling with institution score 1000 and enact weight 5000. Never a measured book. The secondaries are built under the e2-anchored top rule (§10.91.2, a029429) and the dams run 10/15/10.",
+  "_arms": {
+    "wild": "{kind: config, config: config/mod_config.jex-dam4s-rb-wild.json} (+ its tree twin, jex-dam4s's)."
+  },
+  "_checks": [
+    "error.log in the run's window: nothing naming zzz_pm_rehaul_research*, the admin strategies or the education laws (the tick-cost and syntax check)",
+    "debug.log: PMR_HELD lines at the start and on acquisitions (the flags raise); PMR_JEH lines (a stage completed on the halved mark); PMR_JE|implementationN lines with N rising past 1 (the repeat works and the counter reads); no PMR_JE line for a country under 50% literacy (Russia, Qing)",
+    "save summaries: school laws (Russia stays at no schools by its own law gates - serfdom and state religion; who moves among the rest), technologies held against candidate A at 1846",
+    "the newest kept save: institution investment levels of schools for the majors"
+  ],
+  "_stop_rule": "none: one run to 1846.",
+  "_cost": "1 run x 1836 -> 1846, about 12 min",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Do NOT edit tools/emit_research_events.mjs, tools/emit_ai_schooling.mjs, tools/emit_research_levers.mjs or the book while it runs."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1845.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "wild": { "kind": "config", "config": "config/mod_config.jex-dam4s-rb-wild.json" }
+  },
+  "runs": [
+    { "setup": "wild", "until": "1846.1.1" }
+  ]
+}
