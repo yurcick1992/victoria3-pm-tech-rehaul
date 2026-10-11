@@ -9169,6 +9169,22 @@ building with two main methods:
   Powder where vanilla's is +25%, and Vacuum +133% against +50%. ⇒ The rebuild emits ONE set of numbers per line per merged building.
   Plain (one-main) buildings keep the per-rung scaling of 2026-09-01. What absolute size that set takes is the open sizing question, bounded
   by the zero-not-negative rule.
+  ⭐⭐ **AND IT IS BY CONSTRUCTION, AS IN VANILLA, NOT BY A RULE** (user, the same day: *"in vanilla this is achieved by construction … its
+  industries have one set of secondaries, and not a tree of 'which secondary belongs to which primary' … restrictions … are named explicitly …
+  Check, and if that's so in vanilla, keep this the same."*). Checked: a vanilla building carries ONE list of secondary groups, shared by every
+  main method. A restriction is written on the restricted method itself, as `unlocking_production_methods` naming the main methods it may run
+  beside. The engine documents no other form and has no disallow list for methods. Vanilla uses it on 6 methods only (Elastics, Precision Tools,
+  Bone China and three outside industry). ⇒ A merged building gets one group per secondary line, one method per line, and an
+  `unlocking_production_methods` list only on a line that may not run beside some main method.
+  **THE SIZE (user, the same message):** *"same percentage as vanilla, for the most advanced PM of both ours and vanilla. If anything goes
+  negative, forbid the combination."* ⇒ Each line takes the share of the building's MOST ADVANCED main method that vanilla's line takes of
+  vanilla's most advanced main method of the industry (food: vanilla Baking Powder, groceries 120, against ours, 143). A combination that would
+  still go negative is FORBIDDEN through that list, never shrunk. Worked for food at this reading (goods the main method also carries keep their
+  own share; new outputs × our output ÷ vanilla's = 1.19; new inputs × our input bill ÷ vanilla's = 0.98; labour-saving lines stay vanilla's):
+  Cannery grain −19.67, meat +19.67, iron +9.84, groceries +35.75 (+£482 value added); Vacuum grain −29.51, groceries +71.5; Pot stills sugar
+  +24.58, liquor +71.5, groceries −35.75; Patent stills liquor +119.17, groceries −47.67. Under Sweeteners the tightest sums are grain 18.49
+  (Vacuum) and groceries 17.33 (Patent stills), so the food building forbids nothing. ⚠ The input/output split is this reading's; vanilla's
+  share is well-defined only for goods the main method carries.
 - **Research entries** (`emit_research_events`): a merged rung is counted as the host's levels running its method; a host carrying merged
   methods counts only the levels on its own. Paper e3's source is sulfite mills on the bleaching method; fertilizer e2's, chemical plants on
   the improved method.
