@@ -9733,14 +9733,19 @@ Park, GE, Bell, DuPont) — consistent with the premise; agriculture (experiment
    flickering at era 3 and blocked at era 4 in vanilla-like seeds, the USA at eras 4–5 in its dip years; GBR, Prussia/Germany, Belgium, the
    Netherlands and Sweden essentially unaffected. (The user's first ladder, 20/35/50/65/80, would have kept GBR, the USA, France and the Netherlands
    out of era 5 for the whole century while Belgium and Germany passed — rejected on that reading.)
-5. **Followers: the mark is HALVED at every stage once any country holds the technology**, unless the country is under the isolationist trade policy.
-   One global flag per technology, raised once and forever (set in the global `on_monthly_pulse`; a holder annexed later is ignored by ruling).
-6. **Ordinary research halved, size-neutrally** — every innovation source and the cap together: `base_values` innovation 50 → 25 and cap 50 → 25,
-   the cap's literacy term 50 → 25 (vanilla 150), universities ×0.25 of vanilla (×0.5 on candidate A). Then research = min(innovation, cap) halves
-   EXACTLY for every country. ⚠ Halving the base alone would not: the tall minors run on the base below their cap (Belgium, Sweden, Sardinia, Denmark,
-   Switzerland at innovation ~50 against caps of 73–94) and would lose 50%, while university-heavy majors at their cap lose 0–35% (Prussia 1935:
-   innovation 119, cap 94). Spread's base and literacy terms are untouched, so spread gains relative weight; its unspent-innovation term halves.
-   No technology-cost change (that would be the same slowdown by another route; not wanted).
+5. **Followers: the mark is HALVED at every stage once a NON-isolationist country holds the technology**, and only for an entry country that is
+   itself NOT isolationist (user: *"have it hit both ways"*). One global flag per technology, raised once and forever by the first holder that is not
+   under the isolationist trade policy at the time (set in the global `on_monthly_pulse`; a holder annexed or turning isolationist later is ignored by
+   ruling); an isolationist country never gets the halved mark, whatever the flag says.
+6. **Ordinary research halved** — `base_values` innovation 50 → 25 and cap 50 → 25, the cap's literacy term 50 → 25 (vanilla 150); **universities
+   stay at candidate A's ×0.5 of vanilla** (user). Research = min(innovation, cap), so: a country on the base alone (the tall minors — Belgium,
+   Sweden, Sardinia, Denmark, Switzerland at innovation ~50 against caps of 73–94) halves exactly (25 against a cap of ~40–48); a major on its cap
+   halves exactly too, because the cap halves (Britain 1866: innovation 81 → 56, cap 80 → 40, research 80 → 40); only a country between the two,
+   with a few universities and below its cap, loses a little less (France ~55 → ~30, −45%). Majors carry ~10–20 innovation above the halved cap,
+   which feeds spread at 0.2 a point (+2–4) and which the AI's university spending (built to 1.0–1.25 × the cap) should shed over time.
+   ⚠ Halving the base ALONE would not do this: the minors would lose 50% while capped majors lose 0–35% (Prussia 1935: innovation 119, cap 94).
+   Spread's base and literacy terms are untouched, so spread gains relative weight. No technology-cost change (the same slowdown by another route,
+   which would slow spread too; not wanted).
 7. **The AI should educate like a player would** — willingness levers, no hard blocks: an `ai_enact_weight_modifier` on the religious/private/public
    school laws while `law_no_schools` is active (⚠ untested outside petitions — probe first), and `institution_scores.institution_schools` added to the
    seven administrative strategies (additive by vanilla's own comment). Measured: Russia keeps no schools in 5 of 5 runs for the whole century, Qing
