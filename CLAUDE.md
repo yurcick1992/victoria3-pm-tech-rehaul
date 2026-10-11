@@ -3521,7 +3521,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         (the landing guard's date, required), `prior_wall_seconds` (the parent's play) and `parent` (<session>/<run>,
                         provenance) → run_observer `-ContinueSave` (feeds the save under the engine's pointer title before attempt 1, the
                         L32 feeder's move) and `continuation.json` in the run folder. First use: `jex_dam4s_ra_finish_1936.json`, the
-                        1900→1936 finishes of `20261010_132640`. ⚠ Readers expecting one folder per 1836→1936 run must stitch parent + child.
+                        1900→1936 finishes of `20261010_132640`. ⚠ Readers expecting one folder per 1836→1936 run must stitch parent + child:
+                        ⭐ `node tools/testbed/stitch_session.mjs <continuation session> <new session name>` builds a NEW session folder
+                        (copies only; STITCHED.md inside) with one run folder per whole campaign — summaries joined and renumbered, debug.log
+                        joined from each half's token with the continuation's token REWRITTEN to the parent's, run.log / tables / meta
+                        merged — so fill_ledger.sh, criteria.mjs and every reader run on it unchanged (proven: lib_runs counts it,
+                        wall_from_ticks reads the reload as overhead, the research-entry grants extract across the rewrite). An absolute
+                        output path + `--partial` = a test outside the sessions folder
   testbed/run_schedule.ps1  THE entry point for all measurement: ordered schedule JSON -> build each run via
                         build.ps1 -> run -> harvest -> cross-run markets_all.tsv. Interactive p/r/s/x control;
                         crash policy. Never call the builder directly for test data. Specs in

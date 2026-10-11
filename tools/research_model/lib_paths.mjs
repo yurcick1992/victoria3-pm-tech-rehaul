@@ -9,15 +9,21 @@ const headDate = f => { const fd = fs.openSync(f, 'r'); const buf = Buffer.alloc
   try { const t = zlib.gunzipSync(buf.subarray(0, n), { finishFlush: zlib.constants.Z_SYNC_FLUSH }).toString('utf8'); return /"date":"([0-9.]+)"/.exec(t)?.[1]; } catch { return null; } };
 export const UNI_K = 1.14;
 // dir: a folder of summaries (a run's save_summaries, or saves_debut/summaries_v18)
+// dir may be a LIST of folders (or a '+'-joined string), a parent then its continuation (run_schedule continue_save, 2026-10-11): a later
+// folder's years override an earlier folder's, so the 1900 summary both carry comes from the continuation.
 export function loadPaths(dir, { from = 1836, to = 1936 } = {}) {
   const byYear = {};
-  for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.'))) {
-    const d = headDate(path.join(dir, f)); if (!d) continue; const y = +d.split('.')[0]; if (y < from || y > to) continue;
-    if (!byYear[y] || toDay(d) < toDay(byYear[y].d)) byYear[y] = { d, f };
+  for (const one of (Array.isArray(dir) ? dir : String(dir).split('+'))) {
+    const mine = {};
+    for (const f of fs.readdirSync(one).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.'))) {
+      const d = headDate(path.join(one, f)); if (!d) continue; const y = +d.split('.')[0]; if (y < from || y > to) continue;
+      if (!mine[y] || toDay(d) < toDay(mine[y].d)) mine[y] = { d, f: path.join(one, f) };
+    }
+    Object.assign(byYear, mine);
   }
   const years = Object.keys(byYear).map(Number).sort((a, b) => a - b); const at = {};
   for (const y of years) {
-    const s = JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(dir, byYear[y].f)))); at[y] = {};
+    const s = JSON.parse(zlib.gunzipSync(fs.readFileSync(byYear[y].f))); at[y] = {};
     for (const [k, c] of Object.entries(s.countries)) {
       const lit = c.literacy ?? 0; const cap = c.max_innovation ?? 50 + 150 * lit;
       const innov = c.innovation ?? uniInnovation(c, UNI_K);
