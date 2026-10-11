@@ -9699,3 +9699,53 @@ depend on the literacy and all levers"*. Base book: `jex-dam4s` (§10.89.13).
    society. A cap cut and higher era-4/5 costs reach the leader with the median untouched (the entries' grants follow the era cost); a university
    cut is mostly a cost lever once the AI rebuilds to its cap; a spread raise lifts the leader too. Every setting that puts the leader near half
    costs production-onset timing (26 → 19–22 of 43) — a trade-off for the user, not yet ruled. Candidates await the user's choice; none has run.
+
+## §10.97 — THE RESEARCH ENTRIES REWORKED: SLOWER, NON-ADDITIVE, LITERACY-GATED, OPEN-ENDED; RESEARCH HALVED FOR EVERYONE (user-ruled 2026-10-11; ROADMAP step 14; NOT BUILT)
+
+**The complaint (user, after playing candidate A of §10.96):** *"tech JEs are overdoing it. Playing a wide-ish major (GBR, USA, FRA, PRU, AUS, RUS,
+QIN) is now trivial for the player, it's too easy to get tech boosts in everything and cover the whole production tree with 90% of points coming from
+JEs."* The slowdown must be organic and narratively justified, never a count cap ("no 'stop JEs of era X if 3 have already happened'"), and a TALL
+HIGH-TECH MINOR must still reach its entries.
+
+**THE PREMISE (user):** *"Innovation happened because the industry was pushed to innovate and had significant concentration of capital and mind, not
+because the state 'considered it vital and promoted'"* — no academic or state-directed channel outside the military, and *"a wide country with ten
+genuinely cutting-edge large enough industries has no reason that only some of them will innovate."* ⇒ No share-of-economy marks (a breadth cap in
+disguise), no science or institution requirement on a stage. REJECTED with reasons: per-state cluster marks (*"state definition is too arbitrary in
+game"*); a capital-inflow condition (hard to read, gameable by periodic demolition, and *"it's the stress and competition that forces firms to innovate,
+and capital influx is inversely correlated with that"*); counting skilled jobs only (the engine already holds profession ratios near target). ⚠ The
+history was challenged and recorded: after ~1870 chemistry and electricity drew heavily on universities, but through FIRMS (the dyestuff labs, Menlo
+Park, GE, Bell, DuPont) — consistent with the premise; agriculture (experiment stations) and the military are the state-driven exceptions.
+
+**THE RULINGS:**
+1. **Sources do not add up.** A bar gains one tick in a month if AT LEAST ONE of its sources qualifies; several qualifying sources no longer speed it.
+   The entry lists its sources as "any of".
+2. **Industry stage length 36 months** (was 24); war and naval channels unchanged ("for now, and let's see").
+3. **Twenty stages: Inception, Development, Implementation 1–18**, each granting 0.5 × the era base cost; the chain continues until the technology is
+   acquired. With no ahead-of-time penalty two stages suffice, as before; the extra stages let an entry pay off a penalty with TIME. **The penalty
+   factor stays 0.25** (user: a tall country may run *"significantly ahead in one industry it specialises on … penalties, but not prohibitive"*).
+   Measured on candidate A (5 runs): combustion engines would cost Britain ×7.5 the era cost at 1846, ×4.75 at 1856, ×2.75 at 1866, ×1.75–2.25 at
+   1871 — 15 / 10 / 6 / 4 stages, so 30 / 20 / 12 / 8 years of one bar at 36 months, before the prerequisite chain and the source's own mark. ⚠ Tick
+   cost: F220 measured entry types placed only by script (no `is_shown_when_inactive`) to be free until placed; only one stage per technology is ever
+   active.
+4. **A literacy requirement per the technology's GAME era: 25 / 35 / 45 / 55 / 65%** (eras 1–5), on industry entries only — **war and naval entries
+   are exempt**. It is a requirement for a monthly tick, not more: below it the bar PAUSES and keeps its progress. Who it hits, from the save summaries
+   (candidate A's runs and vanilla n=16): Russia and Qing out from era 1 for most or all of the century, Austria in eras 3–5 until ~1866–1906, France
+   flickering at era 3 and blocked at era 4 in vanilla-like seeds, the USA at eras 4–5 in its dip years; GBR, Prussia/Germany, Belgium, the
+   Netherlands and Sweden essentially unaffected. (The user's first ladder, 20/35/50/65/80, would have kept GBR, the USA, France and the Netherlands
+   out of era 5 for the whole century while Belgium and Germany passed — rejected on that reading.)
+5. **Followers: the mark is HALVED at every stage once any country holds the technology**, unless the country is under the isolationist trade policy.
+   One global flag per technology, raised once and forever (set in the global `on_monthly_pulse`; a holder annexed later is ignored by ruling).
+6. **Ordinary research halved, size-neutrally** — every innovation source and the cap together: `base_values` innovation 50 → 25 and cap 50 → 25,
+   the cap's literacy term 50 → 25 (vanilla 150), universities ×0.25 of vanilla (×0.5 on candidate A). Then research = min(innovation, cap) halves
+   EXACTLY for every country. ⚠ Halving the base alone would not: the tall minors run on the base below their cap (Belgium, Sweden, Sardinia, Denmark,
+   Switzerland at innovation ~50 against caps of 73–94) and would lose 50%, while university-heavy majors at their cap lose 0–35% (Prussia 1935:
+   innovation 119, cap 94). Spread's base and literacy terms are untouched, so spread gains relative weight; its unspent-innovation term halves.
+   No technology-cost change (that would be the same slowdown by another route; not wanted).
+7. **The AI should educate like a player would** — willingness levers, no hard blocks: an `ai_enact_weight_modifier` on the religious/private/public
+   school laws while `law_no_schools` is active (⚠ untested outside petitions — probe first), and `institution_scores.institution_schools` added to the
+   seven administrative strategies (additive by vanilla's own comment). Measured: Russia keeps no schools in 5 of 5 runs for the whole century, Qing
+   to ~1926; ~80% of country-years at no schools in 1846, ~40% in 1906. The levels actually reached are limited by spare bureaucracy and are not in
+   the summaries — read them from a kept save before sizing the score.
+8. **Society and tech spread: DEFERRED** ("let's see how it all works, first").
+
+Probes (the school-law lever, institution levels in a kept save) wait until the concurrent session reports on its runs.
