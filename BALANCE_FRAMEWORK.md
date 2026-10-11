@@ -9160,6 +9160,15 @@ building with two main methods:
   method the building carries, but no legal combination may take any good, input or job below zero (`lint_pm_combos.mjs` stays the
   judge). That relaxes the "disallowed where negative" variant above: a reduction may be as large as the smallest main method's output.
   The sizing rule is to be worked out when it is built. ⏸ DEFERRED by order until several tests of the neighbouring session are done.
+  ⭐⭐ **SHARPENED THE SAME DAY — A MERGED BUILDING'S SECONDARIES HAVE THE SAME ABSOLUTE EFFECTS UNDER EVERY MAIN METHOD** (user: *"For a
+  merged industry, all secondary PMs must have the same effects in absolute numbers. No 'cannery on sweeteners give -24 grain, cannery on
+  baking powder give -39.35 grain'."*, and *"this is specifically what I forbade"*). The merge ruling above asked for *"basically returning
+  for vanilla PM switch and gates"*, and vanilla's secondaries are fixed amounts whatever main method runs (Cannery is +30 groceries beside
+  Bakery, Sweeteners and Baking Powder alike). The per-main-method scaling of 2026-09-30 therefore broke the ruling from the day it was
+  built. Measured on the food host: the copies kept the Bakery ratio on both main methods, i.e. Cannery +67% groceries beside Baking
+  Powder where vanilla's is +25%, and Vacuum +133% against +50%. ⇒ The rebuild emits ONE set of numbers per line per merged building.
+  Plain (one-main) buildings keep the per-rung scaling of 2026-09-01. What absolute size that set takes is the open sizing question, bounded
+  by the zero-not-negative rule.
 - **Research entries** (`emit_research_events`): a merged rung is counted as the host's levels running its method; a host carrying merged
   methods counts only the levels on its own. Paper e3's source is sulfite mills on the bleaching method; fertilizer e2's, chemical plants on
   the improved method.
