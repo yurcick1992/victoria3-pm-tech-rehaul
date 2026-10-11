@@ -1,0 +1,43 @@
+{
+  "schedule_version": 1,
+  "label": "rb-finish-n3",
+  "_why": "THE §10.97 BOOK TO n=3 (user, 2026-10-11: 'If doesn't look heavily broken ... proceed with it and then run two more runs, ultimately to n=3'). The 50-year probe 20261011_230124_rb-probe-1886 read NOT broken: the tech majors' median gain 1837-1885 at 0.76 of vanilla n=16's (line 0.70; 0.86 / 0.63 / 0.74 / 0.79 / 0.76 at 1845-1885) and world GDP at 1845 0.99 of vanilla's (line 0.80; 1.02 at 1885). So: run 1 CONTINUES the probe from its 1886.1.1 save to 1936 (run_observer -ContinueSave; read through stitch_session.mjs), runs 2-3 are full 1836->1936 runs. Book config/mod_config.jex-dam4s-rb.json, unchanged since the probe (commit 8b46345).",
+  "_arms": {
+    "rb": "{kind: config, config: config/mod_config.jex-dam4s-rb.json} (+ its tree twin, jex-dam4s's)."
+  },
+  "_comparison": "vanilla n=16 (20260821_131149): every decade's world GDP (§10.96, the 1886 break line 0.83/1.17), the criteria register (criteria.mjs) on the stitched session, technology (tech_gain_check.mjs, tech_census.mjs, tech_timing.mjs); candidate A (20261011_212100_jex-dam4s-ra-stitched-n3: technology on vanilla's pace, world GDP 1.48 at the end, 0 intact / 3 broken by runoff, F225). ⚠ Besides research, the book differs from candidate A's measured build in its secondaries (the e2-anchored top rule) and its dam staffing (10/15/10).",
+  "_predictions": {
+    "tech": "the majors stay at ~0.75-0.85 of vanilla's gain through the century (the 1885 reading 0.76); the leader's era-4 share at 1905 well under candidate A's",
+    "GDP": "lower than candidate A's 1.48 at the end - the halved research slows the late technologies that drove its runoff; whether it lands inside the register's world-GDP hard band (0.66-1.38) is the question",
+    "wall clock": "close to candidate A's; the active-entry count is not yet in the summaries"
+  },
+  "_stop_rule": "none: a fixed n=3 (the user's instruction), every run plays to 1936.",
+  "_cost": "run 1: 1886 -> 1936, ~2 h; runs 2-3: 1836 -> 1936, ~3 h each; ~8 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Do NOT edit tools/emit_research_events.mjs, tools/emit_ai_schooling.mjs, tools/emit_research_levers.mjs, tools/emit_secondaries.mjs or the book while it runs: run 1 continues a save built from these bytes."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 300
+  },
+  "setups": {
+    "rb": { "kind": "config", "config": "config/mod_config.jex-dam4s-rb.json" }
+  },
+  "runs": [
+    {
+      "setup": "rb",
+      "until": "1936.1.1",
+      "dump_dates": ["1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+      "parent": "20261011_230124_rb-probe-1886/run001_rb",
+      "continue_save": "tools/testbed/sessions/20261011_230124_rb-probe-1886/run001_rb/saves/0050_20261012_000312_autosave.v3",
+      "continue_expect_after": "1885.12.1",
+      "prior_wall_seconds": 3686
+    },
+    { "setup": "rb", "until": "1936.1.1" },
+    { "setup": "rb", "until": "1936.1.1" }
+  ]
+}
