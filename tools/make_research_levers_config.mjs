@@ -18,6 +18,11 @@ if (opt('--uni-mult', null) != null) RL.university_innovation_mult = +opt('--uni
 if (!Object.keys(RL).length) { console.error('no lever given'); process.exit(1); }
 cfg.research_levers = RL;
 const staff = opt('--dam-staff', null);
+// ⭐ THE DAM STAFFING IS THE HISTORICAL 10 / 15 / 10 (lib_dams.mjs's default, §10.89.13) unless --dam-staff pins it: a pin INHERITED from the
+//   base is dropped (user, 2026-10-11: the deferred workforce reduction goes into every artmerge book onward; candidate A pinned 50 / 100 / 50
+//   only to match F222's measured book).
+const droppedPin = !staff && cfg.dams && cfg.dams.staff_per_50 ? JSON.stringify(cfg.dams.staff_per_50) : null;
+if (droppedPin) { const { staff_per_50, ...rest } = cfg.dams; cfg.dams = rest; console.log(`dropped the base's dams.staff_per_50 pin ${droppedPin}: the book runs lib_dams's default`); }
 if (staff) { const [l, m, e] = staff.split(',').map(Number); cfg.dams = { ...cfg.dams, staff_per_50: { laborers: l, machinists: m, engineers: e } }; }
 const cmd = 'node tools/make_research_levers_config.mjs ' + args.join(' ');
 cfg._research_levers_variant = { name: SFX, base: path.basename(BASE), ruled_by: 'BALANCE_FRAMEWORK §10.96 (user, 2026-10-10)', command: cmd,

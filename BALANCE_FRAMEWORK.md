@@ -9185,6 +9185,21 @@ building with two main methods:
   +24.58, liquor +71.5, groceries −35.75; Patent stills liquor +119.17, groceries −47.67. Under Sweeteners the tightest sums are grain 18.49
   (Vacuum) and groceries 17.33 (Patent stills), so the food building forbids nothing. ⚠ The input/output split is this reading's; vanilla's
   share is well-defined only for goods the main method carries.
+  ⭐⭐ **EXTENDED AND IMPLEMENTED THE SAME EVENING** (user: *"Scale up inputs to match top-output PM as well. Don't change the workforce effect.
+  This applies to all other industries as well. Apply everywhere."*; on scope, *"Every tiered rung"*, and *"These changes will need to be
+  incorporated into all books of the artmerge branch onward"*). `tools/emit_secondaries.mjs`'s `top` rule, on for every book carrying
+  `_merge` or `_artisan` (config `secondary_rule` overrides; every earlier book, the canon included, builds byte for byte as before, proven on the
+  canon): (1) EVERY tiered rung's lines take vanilla's share of vanilla's most advanced main method the line may run beside, applied to the
+  building's most advanced main method (for a plain rung, its own). It replaces, for this branch, the 2026-09-01 reference "the lowest primary
+  method that allows it" — which also made the Bakeries' Pot stills (referenced on Sweeteners) and canners (on Bakery) disagree. (2) Merged
+  buildings carry one copy per line, gated only where a main method is left out. (3) LABOUR-SAVING methods are minted per building with their
+  inputs scaled the same way and their workforce effect untouched (they were vanilla quantities on every rung). Built on the playtest book
+  `jex-dam4s-ra-play` as `mod_ra_top`, every lint green; two combinations FORBIDDEN by the never-negative test: Elastics beside Sewing Machines
+  (clothes −13.2) and Precision Tools beside Mechanized Workshops (furniture −14.3). The effect on the lower rungs is large: the Era 0 and
+  Era 1 food canners go from +67% to +25% of the main output, Craftsman Sewing from −67% to −21% of clothes, Ceramics from −33% to −10% of
+  glass. ⚠ Automation on a low rung is now CHEAPER than vanilla's for the same labour saved (glass e1's Automatic Bottle Blowers tools 0.96 /
+  engines 0.96 / oil 2.4 against vanilla's 2 / 2 / 5, still −2,500 laborers), and dearer on a high one (tooling e3's Rotary Valve Engine coal
+  35.66 against 15). Unmeasured.
 - **Research entries** (`emit_research_events`): a merged rung is counted as the host's levels running its method; a host carrying merged
   methods counts only the levels on its own. Paper e3's source is sulfite mills on the bleaching method; fertilizer e2's, chemical plants on
   the improved method.

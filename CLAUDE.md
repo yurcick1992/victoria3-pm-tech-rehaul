@@ -305,10 +305,11 @@ mix (*"The one with the machinists"*; `artisan6-shop` dropped, kept as a record)
 ⭐ **HOW A MERGE IS EXPRESSED (2026-09-30):** the removed rung keeps its tier record and gains **`method_of: <host key>`**. The builder then
 emits no building for it: its main method joins the HOST's main group, gated by its own technology (`unlocking_technologies`), and the host
 carries the midpoint `building_cost` / `ai_value` (`_merge` records the pairs; L31 checks both). Every emitter follows: `emit_secondaries`
-mints each of the host's secondaries **once per main method** (scaled to that method, gated to it — so the secondary stays in proportion to
-whichever method runs; since 2026-10-11 each copy is NAMED after its main method, "Cannery (Baking Powder)", and the panel lists both, the
-other one greyed. ⚠ From 2026-10-05 to 2026-10-11 the copies were `is_hidden_when_unavailable` instead, and the player could never select one:
-BUGS_AND_FIXES 2026-10-11); `emit_research_events` counts a merged rung as the host's levels running its method (`has_active_production_method`,
+mints each of the host's secondaries **ONCE for the building since 2026-10-11** (user-ruled, §10.91.2: the same absolute numbers under every
+main method, as vanilla does by construction; sized to vanilla's share of its most advanced main method applied to ours; a main method under
+which a line would go negative is left off its `unlocking_production_methods` list). From 2026-09-30 to 2026-10-11 it minted one copy per main
+method, scaled to it, which broke the merge ruling; ⚠ from 2026-10-05 those copies were `is_hidden_when_unavailable` and the player could never
+select one (BUGS_AND_FIXES 2026-10-11); `emit_research_events` counts a merged rung as the host's levels running its method (`has_active_production_method`,
 the trigger vanilla's art journal entries use); `emit_companies` keeps merged keys out like craft keys; `convert_history` THROWS on a 1836
 block landing on a merged rung (none of the six does). ⚠ **The save summaries cannot tell the two rungs apart by building type** — a merged
 rung's levels are the host's `pms` entries for its method: read them with `tools/testbed/ledger/merge_methods.mjs`. The register's T0–T3
@@ -2779,7 +2780,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         innovation in a whole-file copy of production_methods/07_government.txt. `make_research_levers_config.mjs --base
                         <book> --suffix <sfx> [--cap-lit N --cap-base N --innov-base N --spread-base N --spread-lit N --uni-mult k
                         --dam-staff L,M,E]` writes the book + its tree twin. First book: `jex-dam4s-ra` (candidate A: cap literacy term
-                        150 → 50, universities × 0.5, the dam staffing pinned to F222's measured 50/100/50)
+                        150 → 50, universities × 0.5, the dam staffing pinned to F222's measured 50/100/50). ⭐ Since 2026-10-11 a
+                        `dams.staff_per_50` pin INHERITED from the base is DROPPED unless `--dam-staff` is given (user: the deferred dam
+                        workforce reduction, 10/15/10 per 50 electricity, goes into every artmerge book onward)
   research_model/       ⭐⭐ THE RESEARCH MODEL (BALANCE_FRAMEWORK §10.96, FINDINGS F223, 2026-10-10) — read-only tools; nothing here touches a book.
                         `lib_tree.mjs` (the tree as the game loads it, vanilla or an emitted mod; the penalty skips can_research = no),
                         `lib_paths.mjs` (a run's yearly literacy / innovation / country type / laws / holdings from its summaries),
@@ -3778,9 +3781,15 @@ tools/                  dev tooling — NOT shipped in the mod
                         secondary once PER MAIN METHOD — named <pm>_<that rung's key>, scaled to that rung's output and inputs, and gated
                         `unlocking_production_methods = { <that rung's main method> }` — so the secondary stays in proportion to whichever
                         method runs. Plain buildings mint exactly what they did before, under the same names. THROWS on a craft rung
-                        that also hosts a merge. ⭐ (2026-10-11) Copies of one line are named after their main method ("Cannery
-                        (Baking Powder)"); the 2026-10-05 `is_hidden_when_unavailable` on them made them unselectable (BUGS_AND_FIXES
-                        2026-10-11) — never put that flag on a PM-gated copy
+                        that also hosts a merge. ⚠ The 2026-10-05 `is_hidden_when_unavailable` on PM-gated copies made them
+                        unselectable (BUGS_AND_FIXES 2026-10-11) — never put that flag on a PM-gated copy.
+                        ⭐⭐ THE `top` RULE (2026-10-11, §10.91.2), on for every book with `_merge` or `_artisan` (`secondary_rule`
+                        overrides; earlier books, the canon included, build byte for byte as before): every rung's lines take vanilla's
+                        share of VANILLA's most advanced main method, applied to the building's most advanced main method; a merged
+                        building carries ONE copy per line, listed beside every main method under which nothing goes negative (gated
+                        only where one is left out); labour-saving methods are minted per building with their INPUTS scaled the same
+                        way and their workforce effect vanilla's. The per-main-method copies and the "lowest method that allows it"
+                        reference above are the `lowest` rule
                         ⭐⭐ THE §10.93 AMENDMENT (2026-10-02, the user's playtest): (a) a building no longer carries a method NONE of its
                         main methods can run — until then a rung that failed a vanilla PM gate KEPT VANILLA'S ORIGINAL, which the game
                         SHOWED, greyed, at vanilla numbers (Elastics −70 clothes on a craft making 2.7); (b) NARRATIVE COMPATIBILITY from

@@ -86,6 +86,20 @@ const closure = (t, seen = new Set()) => {
 
 const cfg = JSON.parse(rd(CFGP));
 
+// ⭐⭐ THE SIZING RULE (user-ruled 2026-10-11, BALANCE_FRAMEWORK §10.91.2 / §10.93): `top` for every book of the artmerge branch onward
+//   (detected by its `_merge` or `_artisan` record; `secondary_rule` in the config overrides), `lowest` — the 2026-09-01 rule — for every
+//   earlier book, which therefore builds byte for byte as before.
+//   `top`: (1) a line takes the share of the building's MOST ADVANCED main method that vanilla's line takes of VANILLA's most advanced main
+//   method of the industry it may run beside ("same percentage as vanilla, for the most advanced PM of both ours and vanilla"), on every
+//   tiered rung; (2) a MERGED building carries ONE copy of each line, the same absolute numbers under every main method, as vanilla does by
+//   construction — a restriction is an explicit `unlocking_production_methods` list naming the main methods it may run beside, and a main
+//   method under which the line would take any good or job below zero is left off that list ("If anything goes negative, forbid the
+//   combination"); (3) a LABOUR-SAVING method's inputs scale the same way, its workforce effect stays vanilla's ("Scale up inputs to match
+//   top-output PM as well. Don't change the workforce effect. This applies to all other industries as well").
+const RULE = cfg.secondary_rule || ((cfg._merge || cfg._artisan) ? 'top' : 'lowest');
+if (!['top', 'lowest'].includes(RULE)) throw new Error(`emit_secondaries: secondary_rule "${RULE}" is neither top nor lowest`);
+const TOP = RULE === 'top';
+
 // ⭐⭐ NARRATIVE COMPATIBILITY, PAIR BY PAIR (user-ruled 2026-10-02, BALANCE_FRAMEWORK §10.93): "ensure that all secondary and automation
 //   PMs are narratively compatible with the primary PMs of our tiered industries" — and, the same evening, "No, no universal rule. Go through
 //   all vanilla combinations one by one". tools/lib_secondary_compat.mjs holds the reviewed table (Assembly Lines not beside Muskets, Rifles,
@@ -113,6 +127,24 @@ const goodsOf = b => {
   return { inp, out };
 };
 const val = o => Object.entries(o).reduce((a, [g, q]) => a + q * (PRICE[g] ?? 0), 0);
+// a NEGATIVE quantity (a reduction of the main good, or a saved input) rounds TOWARD ZERO at two decimals, so the
+// reductions of a full conversion can never sum past the main output by rounding alone (2026-09-13)
+const r2 = x => x < 0 ? -Math.floor(-x * 100 + 1e-9) / 100 : +x.toFixed(2);
+// a line's goods sized to main method v against vanilla's reference main method `ref`: outputs × the output-value ratio Rout; an input
+// the reference also consumes × v's share of THAT good, any other input × the input-bill ratio Rin. Employment is never touched here.
+// (The `top` rule's one sizing step; the `lowest` rule keeps its own inline copy below, unchanged.)
+function scaleGoods(pb, ref, v, g0) {
+  const mainOutRef = ref ? val(ref.out) : 0, mainInRef = ref ? val(ref.inp) : 0;
+  const tierOut = (v.output_qty || 0) * (PRICE[g0] ?? 0), tierIn = val(v.inputs || {});
+  const Rout = mainOutRef > 0 ? tierOut / mainOutRef : 1;
+  const Rin = mainInRef > 0 ? tierIn / mainInRef : Rout;
+  let nb = pb.replace(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, g2, q) => 'goods_output_' + g2 + '_add = ' + r2(q * Rout));
+  nb = nb.replace(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, g2, q) => {
+    const mine = (v.inputs || {})[g2], theirs = ref && ref.inp ? ref.inp[g2] : null;
+    return 'goods_input_' + g2 + '_add = ' + r2(q * ((mine != null && theirs) ? mine / theirs : Rin));
+  });
+  return { nb, Rout, Rin };
+}
 const listOf = (b, key) => {
   const m = new RegExp(key + '\\s*=\\s*\\{([\\s\\S]*?)\\}').exec(b);
   return m ? (m[1].match(/[a-z_0-9-]+/g) || []) : [];
@@ -175,6 +207,43 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     //   so a merged building kept for good whatever its 1836 history set, and an off line could not be turned back on (the user's
     //   playtest, BUGS_AND_FIXES 2026-10-11). Vanilla never puts that flag on a method gated by `unlocking_production_methods`; the same
     //   gate without the flag works (Bone China, Precision Tools). Do not reintroduce it on a PM-gated copy.
+    // ── the `top` rule's helpers (see RULE above) ──
+    // the building's most advanced main method: the variant of the highest era (a merged host's added method)
+    const topV = variants.reduce((a, b) => ((b.era ?? 0) > (a.era ?? 0) ? b : a));
+    // vanilla's main group for this industry, in its listed order (the last member is vanilla's most advanced main method)
+    const vanMainGroup = (() => { const vp = (industry.tiers || []).map(x => x.vanilla_pm).find(Boolean); return vp ? GROUP_OF[vp] : null; })();
+    const vanMains = vanMainGroup ? listOf(PMG[vanMainGroup], 'production_methods').filter(x => PM[x]) : [];
+    // vanilla's most advanced main method the line may run beside (its own vanilla gate respected)
+    const vanTop = p => {
+      const gate = listOf(PM[p] || '', 'unlocking_production_methods');
+      const ok = gate.length ? vanMains.filter(x => gate.includes(x)) : vanMains;
+      const pm = ok[ok.length - 1];
+      return pm ? { pm, ...goodsOf(PM[pm]) } : null;
+    };
+    // does the line, added to main method v, take any good or job of the building below zero? (per level, the main method's own numbers)
+    const negUnder = (v, nb) => {
+      const g0 = v.output_good || industry.output_good || industry.good;
+      const out = { [g0]: v.output_qty || 0 }, inp = v.inputs || {};
+      const emp = {}; for (const [pr, q] of Object.entries(v.employment || {})) emp[pr] = q * (v.workforce_mult != null ? +v.workforce_mult : 1);
+      for (const m of nb.matchAll(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) if ((out[m[1]] || 0) + +m[2] < -0.011) return `${m[1]} output ${+(out[m[1]] || 0) + +m[2]}`;
+      for (const m of nb.matchAll(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) if ((inp[m[1]] || 0) + +m[2] < -0.011) return `${m[1]} input ${+(inp[m[1]] || 0) + +m[2]}`;
+      for (const m of nb.matchAll(/building_employment_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) if ((emp[m[1]] || 0) + +m[2] < -0.011) return `${m[1]} jobs ${(emp[m[1]] || 0) + +m[2]}`;
+      return null;
+    };
+    // vanilla's own gate on the line: does main method v satisfy it? (a rung with no vanilla_pm inherits the one below it)
+    const vanGateOk = (v, gatedOn) => {
+      if (!gatedOn.length) return true;
+      const below = (industry.tiers || []).filter(x => (x.era ?? 0) <= (v.era ?? 0) && x.vanilla_pm);
+      const inherited = below.length ? below[below.length - 1] : null;
+      const mine = [v.vanilla_pm || (inherited && inherited.vanilla_pm),
+        ...(v.vanilla_pm_aliases || (inherited && inherited.vanilla_pm_aliases) || [])].filter(Boolean);
+      return mine.some(x => gatedOn.includes(x));
+    };
+    // one copy for the whole building, gated only where some main method is left out
+    const gateTo = (nb, allowed, always) => {
+      nb = nb.replace(/\n?[ \t]*unlocking_production_methods\s*=\s*\{[\s\S]*?\}/, '');
+      return (always || allowed.length < variants.length) ? '\n\tunlocking_production_methods = { ' + allowed.map(v => v.pm_key).join(' ') + ' }' + nb : nb;
+    };
     const exclPms = new Set(t.exclude_secondary_pms || []);
     if ((t.exclude_secondary_pmgs || []).length || exclPms.size) {
       const s = STRIP[bkey] = new Set(exclPms);
@@ -198,6 +267,22 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     // copied once per main method that may, each copy gated to that method (vanilla quantities: these methods carry no output ratio)
     const byName = (p, g) => {
       if (!PM[p]) return [p];
+      if (TOP) {
+        // ONE copy for the building: a labour-saving method's inputs sized to the building's most advanced main method against vanilla's
+        // (its workforce effect untouched); an "off" method kept by reference unless some main method may not run it
+        const ok = variants.filter(v => compatOk(industry, p, v));
+        for (const v of variants) if (!ok.includes(v)) DROPPED.push([bkey, g, p, `beside ${v.pm_key}: ${notBeside(vanillaMainOf(industry, v), p)}`]);
+        if (!ok.length) { (STRIP[bkey] ||= new Set()).add(p); return []; }
+        const hasGoods = /goods_(input|output)_[a-z_]+_add/.test(PM[p]);
+        if (ok.length === variants.length && !hasGoods) return [p];
+        const nb0 = hasGoods ? scaleGoods(PM[p], vanTop(p), topV, topV.output_good || industry.output_good || industry.good).nb : PM[p];
+        const allowed = ok.filter(v => { const w = negUnder(v, nb0); if (w) DROPPED.push([bkey, g, p, `beside ${v.pm_key}: would take ${w} — forbidden`]); return !w; });
+        if (!allowed.length) { (STRIP[bkey] ||= new Set()).add(p); return []; }
+        const nk = p + '_' + bkey.replace(/^building_/, '');
+        outPMs.push(nk + ' = {' + gateTo(nb0, allowed, false) + '}'); locPairs.push([nk, p]); minted++;
+        if (allowed.includes(t)) (RENAME[bkey] ||= {})[p] = nk; else (STRIP[bkey] ||= new Set()).add(p);
+        return [nk];
+      }
       const ok = variants.filter(v => compatOk(industry, p, v));
       if (ok.length === variants.length) return [p];
       if (!ok.includes(t)) (STRIP[bkey] ||= new Set()).add(p);   // the 1836 history runs the host's own method: it may not name p
@@ -247,6 +332,8 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
             let nb = (keepTech ? PM[a] : PM[a].replace(/\n\s*unlocking_technologies\s*=\s*\{[^}]*\}/, '')).replace(/\n\s*(disallowing_laws|unlocking_laws)\s*=\s*\{[^}]*\}/g, '');
             nb = /unlocking_production_methods/.test(nb) ? nb.replace(/unlocking_production_methods\s*=\s*\{[\s\S]*?\}/, 'unlocking_production_methods = { ' + v.pm_key + ' }')
               : '\n\tunlocking_production_methods = { ' + v.pm_key + ' }' + nb;
+            // the `top` rule: a labour-saving method's inputs follow the building's most advanced main method; its workforce effect stays vanilla's
+            if (TOP) nb = scaleGoods(nb, vanTop(a), topV, topV.output_good || industry.output_good || industry.good).nb;
             outPMs.push(nk + ' = {' + nb + '}'); locPairs.push([nk, a]); minted++;
             DROPPED.push([bkey, g, '(mandated) ' + a, `always on beside ${v.pm_key}: ${MANDATED[vanillaMainOf(industry, v)].why}` +
               (!own.length ? '' : keepTech ? `; keeps its own gate (${own.join(' ')}), implied by ${seeds.join(' + ')}` : `; its own gate (${own.join(' ')}) dropped - not implied by ${seeds.join(' + ') || 'no technology'}`)]);
@@ -307,6 +394,46 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         const pb = PM[p];
         if (!pb || !rescalable.includes(p)) { newMembers.push(...byName(p, g)); continue; }
         const gatedOn = listOf(pb, 'unlocking_production_methods');
+        if (TOP) {
+          // ⭐ THE `top` RULE: ONE copy, sized to the building's most advanced main method against vanilla's most advanced main method
+          //   the line may run beside; listed for every main method that passes vanilla's gate, the compatibility table and the
+          //   never-negative test, and gated only where some main method is left out (or vanilla gated it)
+          const ref = vanTop(p);
+          const { nb: scaled, Rout, Rin } = scaleGoods(pb, ref, topV, topV.output_good || industry.output_good || industry.good);
+          let nb = scaled;
+          if (wmT < 1) {
+            nb = nb.replace(/building_employment_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, pr, q) => {
+              const x = +q * wmT;
+              if (x < 0) throw new Error(`emit_secondaries: ${bkey} keeps ${p}, which REMOVES ${pr} (${q}) — a craft rung must not carry labour-saving methods`);
+              if (Math.abs(x - Math.round(x)) > 1e-9) throw new Error(`emit_secondaries: ${bkey} ${p}: ${pr} ${q} × ${wmT} is not whole`);
+              return 'building_employment_' + pr + '_add = ' + Math.round(x);
+            });
+            craftChecked.push(`${bkey}:${p}`);
+          }
+          const allowed = variants.filter(v => {
+            if (!vanGateOk(v, gatedOn)) return false;
+            if (!compatOk(industry, p, v)) { DROPPED.push([bkey, g, p, `beside ${v.pm_key}: ${notBeside(vanillaMainOf(industry, v), p)}`]); return false; }
+            const w = negUnder(v, nb); if (w) { DROPPED.push([bkey, g, p, `beside ${v.pm_key}: would take ${w} — forbidden`]); return false; }
+            return true;
+          });
+          if (!allowed.length) {
+            if (gatedOn.length && !variants.some(v => vanGateOk(v, gatedOn))) DROPPED.push([bkey, g, p, 'gated on ' + gatedOn.join('/') + ', which no main method here is']);
+            (STRIP[bkey] ||= new Set()).add(p);
+            continue;
+          }
+          nb = gateTo(nb, allowed, gatedOn.length > 0);
+          const nk = p + '_' + bkey.replace(/^building_/, '');
+          const rg = {};
+          for (const m of nb.matchAll(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) (rg.in ||= {})[m[1]] = +m[2];
+          for (const m of nb.matchAll(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) (rg.out ||= {})[m[1]] = +m[2];
+          for (const v of allowed) (RESOLVED[v.key] ||= {})[nk] = { from: p, ref: ref ? ref.pm : null, ...rg };
+          if (allowed.includes(t)) (RENAME[bkey] ||= {})[p] = nk; else (STRIP[bkey] ||= new Set()).add(p);
+          outPMs.push(nk + ' = {' + nb + '}');
+          locPairs.push([nk, p]);
+          newMembers.push(nk); minted++;
+          report.push({ bkey, pm: p, Rout: +Rout.toFixed(2), Rin: +Rin.toFixed(2), ref: ref ? ref.pm : '(none)' });
+          continue;
+        }
         // ⭐ ONE COPY PER MAIN METHOD OF THE BUILDING (BALANCE_FRAMEWORK §10.91.2, 2026-09-30): its own rung, then any rung
         //   merged into it as a second main method (`method_of`). Each copy is scaled to ITS method's output and input bill
         //   and is available only beside that method, so a merged building's secondaries stay in proportion to whichever
