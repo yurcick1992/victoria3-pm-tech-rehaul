@@ -9197,9 +9197,33 @@ building with two main methods:
   `jex-dam4s-ra-play` as `mod_ra_top`, every lint green; two combinations FORBIDDEN by the never-negative test: Elastics beside Sewing Machines
   (clothes −13.2) and Precision Tools beside Mechanized Workshops (furniture −14.3). The effect on the lower rungs is large: the Era 0 and
   Era 1 food canners go from +67% to +25% of the main output, Craftsman Sewing from −67% to −21% of clothes, Ceramics from −33% to −10% of
-  glass. ⚠ Automation on a low rung is now CHEAPER than vanilla's for the same labour saved (glass e1's Automatic Bottle Blowers tools 0.96 /
-  engines 0.96 / oil 2.4 against vanilla's 2 / 2 / 5, still −2,500 laborers), and dearer on a high one (tooling e3's Rotary Valve Engine coal
-  35.66 against 15). Unmeasured.
+  glass. Unmeasured.
+  ⭐⭐ **ONE NAME, ONE RECIPE FOR AUTOMATION (user, later the same evening):** *"I meant anchoring at the top-level … the same named automation
+  tier must have the same inputs and have the same workforce effects for all industry tiers"*, and *"What definitely goes is 'one name -- one
+  recipe' though. What can change is the numbers."* ⇒ a labour-saving method's inputs are sized ONCE per industry, to the industry's most
+  advanced rung against vanilla's most advanced main method, and that recipe stands on every rung (the per-building first cut made glass e1's
+  Bottle Blowers 0.96 / 0.96 / 2.4 and e3's 2.58 / 2.58 / 6.45; now 2.58 / 2.58 / 6.45 on every rung). ⚠ The user expects the TOP ANCHOR to be
+  too dear and may redo it: the labour saved is fixed in heads, so the anchor only moves the break-even wage. Tooling's (×2.38): Watertube
+  Boiler coal 23.77 for 1,500 laborers = £0.48 a laborer a week at base prices, Rotary Valve £0.54, Assembly Lines £0.44, against vanilla's
+  £0.20 / £0.23 / £0.18 and Britain's normal rate of £0.061 (1840) – £0.092 (1935) — so automation in tooling would hardly ever pay. Three
+  candidate anchors were laid out: vanilla's numbers (×1), the top rung, the rung current when the technology arrives. ⚠ Arms and artillery
+  are two industries on ONE vanilla building, so the same game name (Rotary Valve Engine, Assembly Lines) carries different numbers in each
+  (coal 20.5 against 24.22).
+  ⭐⭐ **AND FOR THE GOODS LINES TOO** (user, asked whether a Cannery may be +0.67 groceries on the Era 0 Bakeries and +35.75 on the Era 1-2
+  building: *"Yes, it does."*). ⇒ IMPLEMENTED BY CONSTRUCTION: under the `top` rule each (industry, line) is ONE method shared by every rung
+  that lists it (`pm_cannery_food`, `pm_watertube_boiler_building_tooling_workshop_tooling` …), sized to the industry's most advanced rung
+  against vanilla's most advanced main method, its employment vanilla's on every rung (the craft amendment of 2026-09-30 no longer applies to
+  it); a rung leaves out of its group a line that would take any good or job below zero beside its main method, and the shared method is
+  gated (`unlocking_production_methods`) only where a merged building's main method is left out. A PAIR of lines from different groups that
+  is fine alone but negative together beside a main method is made mutually exclusive there, the vanilla way: each is unlocked beside that
+  main method only while the other group runs its off method (automotive era 2: Tanks −58.08 and Aeroplanes −29.04 cars against 66; each
+  is now gated on `pm_main_automotive_mass_automobile_production` or the other's `pm_no_…`). Every lint green on the playtest book; the
+  canon builds byte for byte as before. ⚠⚠ **WHAT IT TAKES AWAY — lines now carried by fewer rungs, every one by the never-negative test:**
+  every craft rung loses all its goods lines (cannery, stills, Craftsman Sewing, luxury furniture, ceramics); Craftsman Sewing leaves textile
+  e1 Dye Workshops (clothes −2.22) and luxury furniture leaves furniture e1 Lathe (−6.5), so **LUXURY CLOTHES AND LUXURY FURNITURE HAVE NO
+  PRODUCER UNTIL THE e2 RUNGS** (Sewing Machines, Mechanized Workshops) — at the 1836 start and through the e1 decades, where vanilla's
+  Handsewn Clothes and Handcrafted Furniture make both from day one; Precision Tools leaves the Lathe rung; canning and distilling leave the
+  Bakeries. The anchor is the user's to redo; a lower anchor (e.g. the rung current when the line's technology arrives) would keep them.
 - **Research entries** (`emit_research_events`): a merged rung is counted as the host's levels running its method; a host carrying merged
   methods counts only the levels on its own. Paper e3's source is sulfite mills on the bleaching method; fertilizer e2's, chemical plants on
   the improved method.

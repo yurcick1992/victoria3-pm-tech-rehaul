@@ -94,8 +94,11 @@ const cfg = JSON.parse(rd(CFGP));
 //   tiered rung; (2) a MERGED building carries ONE copy of each line, the same absolute numbers under every main method, as vanilla does by
 //   construction — a restriction is an explicit `unlocking_production_methods` list naming the main methods it may run beside, and a main
 //   method under which the line would take any good or job below zero is left off that list ("If anything goes negative, forbid the
-//   combination"); (3) a LABOUR-SAVING method's inputs scale the same way, its workforce effect stays vanilla's ("Scale up inputs to match
-//   top-output PM as well. Don't change the workforce effect. This applies to all other industries as well").
+//   combination"); (3) a LABOUR-SAVING method carries ONE recipe for the whole industry — its inputs sized to the INDUSTRY's most
+//   advanced rung against vanilla's most advanced main method, its workforce effect vanilla's ("Scale up inputs to match top-output PM as
+//   well. Don't change the workforce effect."; "the same named automation tier must have the same inputs and have the same workforce
+//   effects for all industry tiers" — the top anchor may be redone, the one-recipe rule stays); a rung on which it would take a job below
+//   zero is left off its list.
 const RULE = cfg.secondary_rule || ((cfg._merge || cfg._artisan) ? 'top' : 'lowest');
 if (!['top', 'lowest'].includes(RULE)) throw new Error(`emit_secondaries: secondary_rule "${RULE}" is neither top nor lowest`);
 const TOP = RULE === 'top';
@@ -185,6 +188,20 @@ let minted = 0, groupsMinted = 0, namedCopies = 0;
 // every run since ab1 (700–1,000 `missing loc key` lines a run, raw keys in the building panel; BUGS_AND_FIXES 2026-09-03)
 const locPairs = [];
 const copyName = new Map();   // copy key -> the main method it is gated to, where a building carries more than one copy of a line
+// ⭐ THE `top` RULE'S SHARED METHODS: ONE method per (industry, line), listed in the group of every rung that may run it — one name, one
+//   recipe, by construction (user, 2026-10-11). key -> { src, ind, body (ungated), mains: Set of main methods it may run beside, gate }
+const SHARED = new Map();
+const stripGate = b => b.replace(/\n?[ \t]*unlocking_production_methods\s*=\s*\{[\s\S]*?\}/, '');
+function share(ind, src, body, allowedMains, gate) {
+  const key = src + '_' + ind;
+  const e = SHARED.get(key);
+  if (e && e.body !== body) throw new Error(`emit_secondaries: ${key} would carry two recipes — one name, one recipe`);
+  const x = e || { src, ind, body, mains: new Set(), offs: new Set(), gate: false };
+  for (const m of allowedMains) x.mains.add(m);
+  x.gate ||= gate;
+  SHARED.set(key, x);
+  return key;
+}
 
 for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infrastructure.txt']) {
   const path = join(MOD, 'common/buildings', bfile);
@@ -210,6 +227,11 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     // ── the `top` rule's helpers (see RULE above) ──
     // the building's most advanced main method: the variant of the highest era (a merged host's added method)
     const topV = variants.reduce((a, b) => ((b.era ?? 0) > (a.era ?? 0) ? b : a));
+    // the INDUSTRY's most advanced rung (merged rungs included): the anchor of every labour-saving method, which carries ONE recipe for
+    // the whole industry (user, 2026-10-11: "the same named automation tier must have the same inputs and have the same workforce effects for
+    // all industry tiers"; anchored at the top for now, the anchor may be redone)
+    const indTop = (industry.tiers || []).reduce((a, b) => ((b.era ?? 0) > (a.era ?? 0) ? b : a), t);
+    const lsScale = (body, a) => scaleGoods(body, vanTop(a), indTop, indTop.output_good || industry.output_good || industry.good).nb;
     // vanilla's main group for this industry, in its listed order (the last member is vanilla's most advanced main method)
     const vanMainGroup = (() => { const vp = (industry.tiers || []).map(x => x.vanilla_pm).find(Boolean); return vp ? GROUP_OF[vp] : null; })();
     const vanMains = vanMainGroup ? listOf(PMG[vanMainGroup], 'production_methods').filter(x => PM[x]) : [];
@@ -220,16 +242,22 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
       const pm = ok[ok.length - 1];
       return pm ? { pm, ...goodsOf(PM[pm]) } : null;
     };
-    // does the line, added to main method v, take any good or job of the building below zero? (per level, the main method's own numbers)
+    // do these lines (one method body, or several concatenated), added to main method v, take any good or job of the building below zero?
+    // (per level, the main method's own numbers; the lines' quantities are SUMMED per good, so a pair is judged together)
     const negUnder = (v, nb) => {
       const g0 = v.output_good || industry.output_good || industry.good;
-      const out = { [g0]: v.output_qty || 0 }, inp = v.inputs || {};
-      const emp = {}; for (const [pr, q] of Object.entries(v.employment || {})) emp[pr] = q * (v.workforce_mult != null ? +v.workforce_mult : 1);
-      for (const m of nb.matchAll(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) if ((out[m[1]] || 0) + +m[2] < -0.011) return `${m[1]} output ${+(out[m[1]] || 0) + +m[2]}`;
-      for (const m of nb.matchAll(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) if ((inp[m[1]] || 0) + +m[2] < -0.011) return `${m[1]} input ${+(inp[m[1]] || 0) + +m[2]}`;
-      for (const m of nb.matchAll(/building_employment_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) if ((emp[m[1]] || 0) + +m[2] < -0.011) return `${m[1]} jobs ${(emp[m[1]] || 0) + +m[2]}`;
-      return null;
+      const tot = { ['out ' + g0]: v.output_qty || 0 };
+      for (const [g, q] of Object.entries(v.inputs || {})) tot['in ' + g] = q;
+      for (const [pr, q] of Object.entries(v.employment || {})) tot['jobs ' + pr] = q * (v.workforce_mult != null ? +v.workforce_mult : 1);
+      for (const m of nb.matchAll(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) tot['out ' + m[1]] = (tot['out ' + m[1]] || 0) + +m[2];
+      for (const m of nb.matchAll(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) tot['in ' + m[1]] = (tot['in ' + m[1]] || 0) + +m[2];
+      for (const m of nb.matchAll(/building_employment_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) tot['jobs ' + m[1]] = (tot['jobs ' + m[1]] || 0) + +m[2];
+      const bad = Object.entries(tot).find(([, q]) => q < -0.011);
+      return bad ? `${bad[0]} ${+bad[1].toFixed(2)}` : null;
     };
+    // the `top` rule's shared lines this building lists, for the pairwise test after its groups are built: { key, body, off, allowed }
+    const regs = [];
+    const offOf = members => members.find(isOffMethod) || null;
     // vanilla's own gate on the line: does main method v satisfy it? (a rung with no vanilla_pm inherits the one below it)
     const vanGateOk = (v, gatedOn) => {
       if (!gatedOn.length) return true;
@@ -268,18 +296,22 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     const byName = (p, g) => {
       if (!PM[p]) return [p];
       if (TOP) {
-        // ONE copy for the building: a labour-saving method's inputs sized to the building's most advanced main method against vanilla's
-        // (its workforce effect untouched); an "off" method kept by reference unless some main method may not run it
+        // ONE copy for the building: a labour-saving method's inputs sized to the INDUSTRY's most advanced rung against vanilla's most
+        // advanced main method — the same recipe on every rung (lsScale) — its workforce effect untouched; an "off" method kept by
+        // reference unless some main method may not run it
         const ok = variants.filter(v => compatOk(industry, p, v));
         for (const v of variants) if (!ok.includes(v)) DROPPED.push([bkey, g, p, `beside ${v.pm_key}: ${notBeside(vanillaMainOf(industry, v), p)}`]);
         if (!ok.length) { (STRIP[bkey] ||= new Set()).add(p); return []; }
         const hasGoods = /goods_(input|output)_[a-z_]+_add/.test(PM[p]);
         if (ok.length === variants.length && !hasGoods) return [p];
-        const nb0 = hasGoods ? scaleGoods(PM[p], vanTop(p), topV, topV.output_good || industry.output_good || industry.good).nb : PM[p];
+        const nb0 = hasGoods ? lsScale(PM[p], p) : PM[p];
         const allowed = ok.filter(v => { const w = negUnder(v, nb0); if (w) DROPPED.push([bkey, g, p, `beside ${v.pm_key}: would take ${w} — forbidden`]); return !w; });
         if (!allowed.length) { (STRIP[bkey] ||= new Set()).add(p); return []; }
-        const nk = p + '_' + bkey.replace(/^building_/, '');
-        outPMs.push(nk + ' = {' + gateTo(nb0, allowed, false) + '}'); locPairs.push([nk, p]); minted++;
+        // a labour-saving method: the industry's one shared recipe; an "off" method with a compatibility exclusion: a copy for this building
+        const nk = hasGoods ? share(industry.id, p, stripGate(nb0), allowed.map(v => v.pm_key), allowed.length < variants.length || /unlocking_production_methods/.test(PM[p]))
+          : p + '_' + bkey.replace(/^building_/, '');
+        if (!hasGoods) { outPMs.push(nk + ' = {' + gateTo(nb0, allowed, false) + '}'); locPairs.push([nk, p]); minted++; }
+        else regs.push({ key: nk, body: stripGate(nb0), g, off: offOf(listOf(PMG[g] || '', 'production_methods')), allowed });
         if (allowed.includes(t)) (RENAME[bkey] ||= {})[p] = nk; else (STRIP[bkey] ||= new Set()).add(p);
         return [nk];
       }
@@ -332,8 +364,8 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
             let nb = (keepTech ? PM[a] : PM[a].replace(/\n\s*unlocking_technologies\s*=\s*\{[^}]*\}/, '')).replace(/\n\s*(disallowing_laws|unlocking_laws)\s*=\s*\{[^}]*\}/g, '');
             nb = /unlocking_production_methods/.test(nb) ? nb.replace(/unlocking_production_methods\s*=\s*\{[\s\S]*?\}/, 'unlocking_production_methods = { ' + v.pm_key + ' }')
               : '\n\tunlocking_production_methods = { ' + v.pm_key + ' }' + nb;
-            // the `top` rule: a labour-saving method's inputs follow the building's most advanced main method; its workforce effect stays vanilla's
-            if (TOP) nb = scaleGoods(nb, vanTop(a), topV, topV.output_good || industry.output_good || industry.good).nb;
+            // the `top` rule: a labour-saving method carries one recipe for the whole industry (lsScale: the industry top rung); its workforce effect stays vanilla's
+            if (TOP) nb = lsScale(nb, a);
             outPMs.push(nk + ' = {' + nb + '}'); locPairs.push([nk, a]); minted++;
             DROPPED.push([bkey, g, '(mandated) ' + a, `always on beside ${v.pm_key}: ${MANDATED[vanillaMainOf(industry, v)].why}` +
               (!own.length ? '' : keepTech ? `; keeps its own gate (${own.join(' ')}), implied by ${seeds.join(' + ')}` : `; its own gate (${own.join(' ')}) dropped - not implied by ${seeds.join(' + ') || 'no technology'}`)]);
@@ -395,21 +427,14 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         if (!pb || !rescalable.includes(p)) { newMembers.push(...byName(p, g)); continue; }
         const gatedOn = listOf(pb, 'unlocking_production_methods');
         if (TOP) {
-          // ⭐ THE `top` RULE: ONE copy, sized to the building's most advanced main method against vanilla's most advanced main method
-          //   the line may run beside; listed for every main method that passes vanilla's gate, the compatibility table and the
-          //   never-negative test, and gated only where some main method is left out (or vanilla gated it)
+          // ⭐ THE `top` RULE: ONE method for the whole INDUSTRY (share()), sized to the industry's most advanced rung against vanilla's most
+          //   advanced main method the line may run beside — one name, one recipe on every rung, its employment vanilla's on every rung (a craft
+          //   rung included: the craft amendment of RULE 2 does not apply). This rung lists it beside every main method that passes vanilla's
+          //   gate, the compatibility table and the never-negative test; the shared method is gated only where some rung's main method is left
+          //   out (or vanilla gated it), and then names every main method of every rung that runs it.
           const ref = vanTop(p);
-          const { nb: scaled, Rout, Rin } = scaleGoods(pb, ref, topV, topV.output_good || industry.output_good || industry.good);
+          const { nb: scaled, Rout, Rin } = scaleGoods(pb, ref, indTop, indTop.output_good || industry.output_good || industry.good);
           let nb = scaled;
-          if (wmT < 1) {
-            nb = nb.replace(/building_employment_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, pr, q) => {
-              const x = +q * wmT;
-              if (x < 0) throw new Error(`emit_secondaries: ${bkey} keeps ${p}, which REMOVES ${pr} (${q}) — a craft rung must not carry labour-saving methods`);
-              if (Math.abs(x - Math.round(x)) > 1e-9) throw new Error(`emit_secondaries: ${bkey} ${p}: ${pr} ${q} × ${wmT} is not whole`);
-              return 'building_employment_' + pr + '_add = ' + Math.round(x);
-            });
-            craftChecked.push(`${bkey}:${p}`);
-          }
           const allowed = variants.filter(v => {
             if (!vanGateOk(v, gatedOn)) return false;
             if (!compatOk(industry, p, v)) { DROPPED.push([bkey, g, p, `beside ${v.pm_key}: ${notBeside(vanillaMainOf(industry, v), p)}`]); return false; }
@@ -421,16 +446,15 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
             (STRIP[bkey] ||= new Set()).add(p);
             continue;
           }
-          nb = gateTo(nb, allowed, gatedOn.length > 0);
-          const nk = p + '_' + bkey.replace(/^building_/, '');
+          nb = stripGate(nb);
+          const nk = share(industry.id, p, nb, allowed.map(v => v.pm_key), gatedOn.length > 0 || allowed.length < variants.length);
+          regs.push({ key: nk, body: nb, g, off: offOf(members), allowed });
           const rg = {};
           for (const m of nb.matchAll(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) (rg.in ||= {})[m[1]] = +m[2];
           for (const m of nb.matchAll(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) (rg.out ||= {})[m[1]] = +m[2];
           for (const v of allowed) (RESOLVED[v.key] ||= {})[nk] = { from: p, ref: ref ? ref.pm : null, ...rg };
           if (allowed.includes(t)) (RENAME[bkey] ||= {})[p] = nk; else (STRIP[bkey] ||= new Set()).add(p);
-          outPMs.push(nk + ' = {' + nb + '}');
-          locPairs.push([nk, p]);
-          newMembers.push(nk); minted++;
+          newMembers.push(nk);
           report.push({ bkey, pm: p, Rout: +Rout.toFixed(2), Rin: +Rin.toFixed(2), ref: ref ? ref.pm : '(none)' });
           continue;
         }
@@ -552,6 +576,21 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
       newGroups.push(ng); groupsMinted++;
       locPairs.push([ng, g]);
     }
+    // ⭐ THE `top` RULE, PAIRWISE ("If anything goes negative, forbid the combination"): two shared lines of different groups that are each
+    //   fine beside main method v but take something below zero TOGETHER (automotive era 2: Tanks −58.08 and Aeroplanes −29.04 cars against
+    //   66) are made mutually exclusive beside v, the way vanilla writes a restriction — on the method itself: each is unlocked beside v only
+    //   while the OTHER group runs its "off" method (v leaves its main-method list; the other group's off method joins it). Beside every
+    //   other main method nothing changes.
+    if (TOP) for (let i = 0; i < regs.length; i++) for (let j = i + 1; j < regs.length; j++) {
+      const A = regs[i], B = regs[j];
+      if (A.g === B.g) continue;
+      for (const v of A.allowed) {
+        if (!B.allowed.includes(v) || !negUnder(v, A.body + B.body)) continue;
+        if (!A.off || !B.off) throw new Error(`emit_secondaries: ${A.key} + ${B.key} go negative beside ${v.pm_key} (${negUnder(v, A.body + B.body)}) and a group has no off method to write the exclusion with`);
+        for (const [X, other] of [[A, B], [B, A]]) { const e = SHARED.get(X.key); e.mains.delete(v.pm_key); e.offs.add(other.off); e.gate = true; }
+        DROPPED.push([bkey, A.g + ' + ' + B.g, A.key + ' + ' + B.key, `beside ${v.pm_key}: together would take ${negUnder(v, A.body + B.body)} — forbidden together (each needs the other's off method)`]);
+      }
+    }
     if (newGroups.join(' ') !== groups.join(' ')) {
       const newBlock = body.replace(/production_method_groups\s*=\s*\{[\s\S]*?\}/,
         'production_method_groups = {\n' + newGroups.map(x => '\t\t' + x).join('\n') + '\n\t}');
@@ -649,6 +688,10 @@ if (process.argv.includes('--write')) {
       + 'vanilla secondary whose building no longer has it — the engine would reject those create_building '
       + 'blocks and the starting factories would vanish silently. ' + left.join(' | '));
   }
+}
+for (const [key, e] of SHARED) {
+  outPMs.push(key + ' = {' + (e.gate ? '\n\tunlocking_production_methods = { ' + [...e.mains, ...e.offs].join(' ') + ' }' : '') + e.body + '}');
+  locPairs.push([key, e.src]); minted++;
 }
 if (minted) {
   // ⚠ UTF-8 BOM: the engine's lexer warns `should be in utf8-bom encoding` on every load without it (two lines per run in
