@@ -22064,3 +22064,34 @@ staffing pinned to F222's measured 50/100/50 so the research levers are the only
 ### What it does NOT say
 - Nothing past 1900: the era-5 share at 1936 and the late GDP excess (F222's 1.20–1.29 from 1916) are untested.
 - n=3 against n=4; GDP's seed spread (σ 0.03–0.08) covers the difference to the book in every decade.
+
+## F225 — CANDIDATE A OVER THE WHOLE CENTURY: TECHNOLOGY ON VANILLA'S PACE TO 1936, BUT WORLD GDP 1.48 AND ALL THREE CAMPAIGNS BROKEN BY RUNOFF — THE BOOK'S LATE GDP EXCESS IS NOT A PRODUCT OF ITS TECHNOLOGY LEAD (2026-10-11; the three F224 runs continued from their 1900.1.1 saves to 1936, session 20261011_172840_jex-dam4s-ra-finish-1936, stitched into 20261011_212100_jex-dam4s-ra-stitched-n3; ledger https://claude.ai/artifact/4zaicWaLsP69SA2RsQHxV2)
+
+Machinery new for it: `run_observer -ContinueSave` / run_schedule `continue_save` (a run continued from a named save) and
+`tools/testbed/stitch_session.mjs` (parent + continuation into one whole-campaign folder the standard readers accept).
+
+| medians (vanilla n=16 · book jex-dam4s n=4 · A n=3) | vanilla | book | A |
+|---|---|---|---|
+| majors' median count 1886 / 1906 / 1936 | 105 / 128 / 160 | 109 / 134 / 171 | 105 / 128 / 159 |
+| leader: game era 3 @1875 / era 4 @1905 / era 5 @1936 | 51% / 41% / 46% | 66% / 67% / 87% | 55% / 44% / 38% |
+| leader's era 5 by tree (p / m / s) | 6 / 50 / 75% | 100 / 80 / 88% | 100 / 0 / 25% |
+| year the leader / the majors first hold half of game era 4 (tech_by_group) | 1909 / 1914.5 | 1899.5 / 1908.5 | 1907 / 1914 |
+| all-country median 1900 / 1936 | 72 / 105 | 72 / 107 | 72 / 107 |
+| production onsets on target (of 43) | 10 | 23 | 17 |
+| research-entry share of the majors' acquisitions, per decade from 1866 | — | 8–21% | 10–26% |
+| world GDP ÷ vanilla 1886 / 1906 / 1916 / 1926 / 1936 | 1 | 1.06 / 1.05 / 1.12 / 1.20 / 1.29 | 1.02 / 1.07 / 1.08 / 1.21 / 1.48 |
+- **The top quarter of countries and below are identical in all three arms** (the year their median member holds half of game era 3: Q2
+  1908 / 1908 / 1913.5, Q3 1928 / 1927 / 1929 for A / book / vanilla): they live on flat innovation and spread, which the levers do not touch.
+- **The register: 0 intact / 3 broken by runoff** — world GDP 1.47× and 1.44× over 1932–36 (beyond 1.38×), and campaign 3 (1.21×) with
+  Britain in capital abundance (U* < 5% nine years at a mean hoard of 1.51 GDP). Per campaign at 1936: 1.48 / 1.48 / 1.23.
+- ⇒ **Slowing the top to vanilla's technology pace did not bring GDP down — it ended higher than the book's.** The book's late GDP excess
+  (F222) has a cause outside research; in the book's own register reading it sits in output per worker (shortlist GDP 1.60× at W 0.99,
+  output per worker 1.63×), not in labour.
+- Play time: campaigns 1 and 2 carry a directly observed fleet path loop (cluster 3); campaign 3, the only main-reading run, 150.9 min against
+  vanilla's 165.0 (×0.91). Each includes one reload at 1900.
+- Red flags (on the order books): 210 problem market-years (142–281), 4 chronic markets — the book's 188 and 3.5; engines (Japan, Russia;
+  new in Britain and the USA before 1884) and Japanese and Russian paper dominate.
+
+### What it does NOT say
+- n=3; GDP's seed spread is wide (1.23–1.48 at 1936). That A ends RICHER than the book is a direction, not a measured difference.
+- Superseded as a design by §10.97 (2026-10-11, not built): this is the reference for a cap cut alone.
