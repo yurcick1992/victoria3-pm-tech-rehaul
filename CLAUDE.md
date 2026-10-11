@@ -392,7 +392,7 @@ fix: a return to the pre-artmerge line must reimplement both (§10.89.13's last 
 `mod_playtest_dam4s_damtest/` (config `mod_config.jex-dam4s-damtest.json`, gitignored: the book + `dams.probe.player_open`), deployed 2026-10-10 10:25,
 and PASSED (one dam queued correctly). ⭐ NEXT (user, 2026-10-10): one last tech rework on this book — the world back onto vanilla's total volumes,
 the research entries more important — then the decision: canonise the arm, or return to the pre-artmerge canon keeping the performance changes
-(ROADMAP step 14). ⚠ The DEPLOYED mod is that test build, not the canon.
+(ROADMAP step 14). ⚠ Since 2026-10-11 10:12 the DEPLOYED mod is `mod_playtest_ra/` (user-asked, to eyeball): candidate A of §10.96 at the arm's CURRENT ruled dam staffing 10/15/10 (config `mod_config.jex-dam4s-ra-play.json`, gitignored: jex-dam4s + research_levers, no staffing pin), no telemetry — NOT the canon; the dam test build stays in `mod_playtest_dam4s_damtest/`.
 
 ## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
