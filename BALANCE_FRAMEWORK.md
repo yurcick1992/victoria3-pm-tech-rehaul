@@ -9224,6 +9224,16 @@ building with two main methods:
   PRODUCER UNTIL THE e2 RUNGS** (Sewing Machines, Mechanized Workshops) — at the 1836 start and through the e1 decades, where vanilla's
   Handsewn Clothes and Handcrafted Furniture make both from day one; Precision Tools leaves the Lathe rung; canning and distilling leave the
   Bakeries. The anchor is the user's to redo; a lower anchor (e.g. the rung current when the line's technology arrives) would keep them.
+  ⭐⭐ **THE ANCHOR IS THE INDUSTRY'S e2 RUNG** (user-ruled the same evening, *"go with 'take era 2'"*, after both were built on the playtest
+  book and compared): every shared line is sized to the industry's e2 rung against vanilla's most advanced main method (no e2 rung → the
+  highest below it; synthetics → its e1). Against the top anchor: Craftsman Sewing returns to textile e1 Dye Workshops (+28.3 luxury clothes)
+  and luxury furniture to furniture e1 Lathe (+32.5), so both are made from the e1 rungs on; Elastics and Precision Tools run beside both main
+  methods of their merged buildings; Tanks and Aeroplanes are no longer exclusive on automotive e2 (−26.4 / −13.2 cars against 66); automation
+  break-even per laborer a week at base prices: tooling Watertube Boiler £0.29, Rotary Valve £0.33, Assembly Lines £0.27 (vanilla £0.20 /
+  £0.23 / £0.18; the top anchor £0.48 / £0.54 / £0.44), glass Bottle Blowers £0.13 (vanilla £0.16). Food is unchanged (its top is e2).
+  Still forbidden: every craft's goods lines (a 500-worker level makes too little for any industry-wide recipe — Handsewn Clothes would go to
+  −25.6 clothes) and Precision Tools on Lathe (−6.5). ⚠ OPEN: the crafts carry no secondary at all under one name, one recipe; a separately
+  NAMED craft variant would satisfy it, unruled.
 - **Research entries** (`emit_research_events`): a merged rung is counted as the host's levels running its method; a host carrying merged
   methods counts only the levels on its own. Paper e3's source is sulfite mills on the bleaching method; fertilizer e2's, chemical plants on
   the improved method.

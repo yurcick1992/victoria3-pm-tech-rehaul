@@ -3785,11 +3785,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         unselectable (BUGS_AND_FIXES 2026-10-11) — never put that flag on a PM-gated copy.
                         ⭐⭐ THE `top` RULE (2026-10-11, §10.91.2), on for every book with `_merge` or `_artisan` (`secondary_rule`
                         overrides; earlier books, the canon included, build byte for byte as before): ONE NAME, ONE RECIPE — each
-                        (industry, line) is one method shared by every rung that lists it, sized to the INDUSTRY's most advanced rung
-                        against vanilla's most advanced main method, employment vanilla's; a rung leaves out a line that would take a
+                        (industry, line) is one method shared by every rung that lists it, sized to the INDUSTRY's e2 rung (ruled; config
+                        `secondary_anchor_era` overrides, "top" = the top rung) against vanilla's most advanced main method, employment vanilla's; a rung leaves out a line that would take a
                         good or job below zero beside its main method; gated only where a merged building's main method is left out; a
                         pair negative only together is made mutually exclusive via each other's off method (§10.91.2). Labour-saving
-                        methods the same way. ⚠ The crafts and the e1 textile/furniture rungs lose their luxury lines under it. The
+                        methods the same way. ⚠ The crafts carry no goods line under it (too small for any industry-wide recipe). The
                         per-main-method copies and the "lowest method that allows it" reference above are the `lowest` rule
                         ⭐⭐ THE §10.93 AMENDMENT (2026-10-02, the user's playtest): (a) a building no longer carries a method NONE of its
                         main methods can run — until then a rung that failed a vanilla PM gate KEPT VANILLA'S ORIGINAL, which the game

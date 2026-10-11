@@ -89,7 +89,7 @@ const cfg = JSON.parse(rd(CFGP));
 // ⭐⭐ THE SIZING RULE (user-ruled 2026-10-11, BALANCE_FRAMEWORK §10.91.2 / §10.93): `top` for every book of the artmerge branch onward
 //   (detected by its `_merge` or `_artisan` record; `secondary_rule` in the config overrides), `lowest` — the 2026-09-01 rule — for every
 //   earlier book, which therefore builds byte for byte as before.
-//   `top`: (1) a line takes the share of the building's MOST ADVANCED main method that vanilla's line takes of VANILLA's most advanced main
+//   `top` (anchored on the industry's e2 rung since the same evening, see indTop): (1) a line takes the share of the ANCHOR rung's main method that vanilla's line takes of VANILLA's most advanced main
 //   method of the industry it may run beside ("same percentage as vanilla, for the most advanced PM of both ours and vanilla"), on every
 //   tiered rung; (2) a MERGED building carries ONE copy of each line, the same absolute numbers under every main method, as vanilla does by
 //   construction — a restriction is an explicit `unlocking_production_methods` list naming the main methods it may run beside, and a main
@@ -227,10 +227,22 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     // ── the `top` rule's helpers (see RULE above) ──
     // the building's most advanced main method: the variant of the highest era (a merged host's added method)
     const topV = variants.reduce((a, b) => ((b.era ?? 0) > (a.era ?? 0) ? b : a));
-    // the INDUSTRY's most advanced rung (merged rungs included): the anchor of every labour-saving method, which carries ONE recipe for
+    // the INDUSTRY's anchor rung (merged rungs included; e2 by ruling, below): the anchor of every shared line, which carries ONE recipe for
     // the whole industry (user, 2026-10-11: "the same named automation tier must have the same inputs and have the same workforce effects for
     // all industry tiers"; anchored at the top for now, the anchor may be redone)
-    const indTop = (industry.tiers || []).reduce((a, b) => ((b.era ?? 0) > (a.era ?? 0) ? b : a), t);
+    // ⭐ THE ANCHOR IS THE INDUSTRY'S e2 RUNG (user-ruled 2026-10-11, "take era 2", after the top rung was built and compared: the top anchor
+    //   took the luxury lines off the e1 rungs and priced automation at 2–3× vanilla's break-even wage): the industry's rung of era 2, else its
+    //   highest rung below it, else its lowest (synthetics has only e1). `secondary_anchor_era` in the config (a number, or "top") or env
+    //   SEC_ANCHOR_ERA overrides, for an evaluation build.
+    const anchorRaw = process.env.SEC_ANCHOR_ERA != null ? process.env.SEC_ANCHOR_ERA : (cfg.secondary_anchor_era ?? 2);
+    const anchorEra = anchorRaw === 'top' ? null : +anchorRaw;
+    if (anchorEra != null && !Number.isFinite(anchorEra)) throw new Error(`emit_secondaries: secondary_anchor_era "${anchorRaw}" is neither an era nor "top"`);
+    const indTop = (() => {
+      const tiers = industry.tiers || [];
+      if (anchorEra == null) return tiers.reduce((a, b) => ((b.era ?? 0) > (a.era ?? 0) ? b : a), t);
+      const at = tiers.filter(x => (x.era ?? 0) <= anchorEra).sort((a, b) => (b.era ?? 0) - (a.era ?? 0))[0];
+      return at || tiers.reduce((a, b) => ((b.era ?? 0) < (a.era ?? 0) ? b : a), t);
+    })();
     const lsScale = (body, a) => scaleGoods(body, vanTop(a), indTop, indTop.output_good || industry.output_good || industry.good).nb;
     // vanilla's main group for this industry, in its listed order (the last member is vanilla's most advanced main method)
     const vanMainGroup = (() => { const vp = (industry.tiers || []).map(x => x.vanilla_pm).find(Boolean); return vp ? GROUP_OF[vp] : null; })();
@@ -296,7 +308,7 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     const byName = (p, g) => {
       if (!PM[p]) return [p];
       if (TOP) {
-        // ONE copy for the building: a labour-saving method's inputs sized to the INDUSTRY's most advanced rung against vanilla's most
+        // ONE copy for the building: a labour-saving method's inputs sized to the INDUSTRY's anchor rung (e2) against vanilla's most
         // advanced main method — the same recipe on every rung (lsScale) — its workforce effect untouched; an "off" method kept by
         // reference unless some main method may not run it
         const ok = variants.filter(v => compatOk(industry, p, v));
@@ -364,7 +376,7 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
             let nb = (keepTech ? PM[a] : PM[a].replace(/\n\s*unlocking_technologies\s*=\s*\{[^}]*\}/, '')).replace(/\n\s*(disallowing_laws|unlocking_laws)\s*=\s*\{[^}]*\}/g, '');
             nb = /unlocking_production_methods/.test(nb) ? nb.replace(/unlocking_production_methods\s*=\s*\{[\s\S]*?\}/, 'unlocking_production_methods = { ' + v.pm_key + ' }')
               : '\n\tunlocking_production_methods = { ' + v.pm_key + ' }' + nb;
-            // the `top` rule: a labour-saving method carries one recipe for the whole industry (lsScale: the industry top rung); its workforce effect stays vanilla's
+            // the `top` rule: a labour-saving method carries one recipe for the whole industry (lsScale: the industry's anchor rung, e2); its workforce effect stays vanilla's
             if (TOP) nb = lsScale(nb, a);
             outPMs.push(nk + ' = {' + nb + '}'); locPairs.push([nk, a]); minted++;
             DROPPED.push([bkey, g, '(mandated) ' + a, `always on beside ${v.pm_key}: ${MANDATED[vanillaMainOf(industry, v)].why}` +
@@ -427,7 +439,7 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         if (!pb || !rescalable.includes(p)) { newMembers.push(...byName(p, g)); continue; }
         const gatedOn = listOf(pb, 'unlocking_production_methods');
         if (TOP) {
-          // ⭐ THE `top` RULE: ONE method for the whole INDUSTRY (share()), sized to the industry's most advanced rung against vanilla's most
+          // ⭐ THE `top` RULE: ONE method for the whole INDUSTRY (share()), sized to the industry's anchor rung (e2) against vanilla's most
           //   advanced main method the line may run beside — one name, one recipe on every rung, its employment vanilla's on every rung (a craft
           //   rung included: the craft amendment of RULE 2 does not apply). This rung lists it beside every main method that passes vanilla's
           //   gate, the compatibility table and the never-negative test; the shared method is gated only where some rung's main method is left
