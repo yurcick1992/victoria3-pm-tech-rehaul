@@ -13,6 +13,35 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-10-11 — the 2026-10-05 fix made every merged building's secondary copies unselectable
+
+**Symptom (the user's playtest of `mod_playtest_ra`, 1836 → 1911, as the USA).** On the merged hosts (Era 1-2 food, textile and furniture),
+a secondary line the 1836 history had turned on (Pot Stills) could be turned off and never back on. A line that was off could never be turned
+on: no jars on the Era 1-2 food building with Canneries held, no luxury production on two or three textile and furniture mills each. The
+main-method dropdown of the same building worked (Sweeteners ⇄ Baking Powder). The 1855 save confirmed every file gate was met: the USA held
+canneries, baking_powder, distillation and fractional_distillation, and all six of its Era 0 Bakeries buildings ran the fish cannery. Its two
+Era 1-2 buildings ran Baking Powder with canning and distillery off. The panel's option badges on Era 1-2 read 3 / 3, exactly "none" plus the
+two Baking Powder copies, so the engine COUNTED the copies as options and still refused the switch.
+
+**Root cause.** The fix of 2026-10-05 (below) gave every per-main-method copy `is_hidden_when_unavailable = yes`. The copies are gated by
+`unlocking_production_methods`, and vanilla never combines that gate with the flag. Its hidden methods are gated on technology or a
+power-bloc principle. The combination leaves the copy unselectable in the dropdown even when it is available. Isolated by the user in the
+same game: Bone China on a Crystal Glass glassworks and Precision Tools on a Lathe manufactory carry the same main-method gate WITHOUT the
+flag, and both switch normally. What exactly the engine does with the flag was not established, only that it breaks selection.
+
+**Fix.** The flag is gone from the copies. Each copy of a line is NAMED after its main method instead, e.g. `pm_cannery_food_industry_baking_powder`
+→ "$pm_cannery$ ($pm_main_food_baking_powder$)" = "Cannery (Baking Powder)". The panel lists both copies, the other one greyed, and the
+twins are readable. No number moved: the playtest book's rebuild (`mod_ra_named`) differs from `mod_playtest_ra` only in the secondaries
+file (20 flags removed) and the secondaries loc. ⚠ Left as vanilla ships it: the two `pm_vacuum_canning_principle_3` copies on the merged food
+host keep vanilla's own flag, now beside our main-method gate. They are probably unselectable the same way; they only matter to a power bloc
+holding the Food Standardization 3 principle.
+
+**Detect next time.** No linter can see it: it is engine UI behaviour, and every build check passed both before and after. The 2026-10-05
+entry said "⚠ Not yet seen in an actual building panel". A fix whose only test is the panel needs a playtest pass that both TURNS IT ON
+and turns it off, not only a look.
+
+---
+
 ## 2026-10-07 — the harvester died at launch on the first run after the slowdown quarantine shipped
 
 **Symptom.** Run 6 of `20261006_193418_jex-n8-v16`: `[ALERT] HARVESTER DIED AT LAUNCH (exit 1): … PropertyNotFoundStrict,harvest_saves.ps1`;

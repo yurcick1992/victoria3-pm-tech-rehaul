@@ -306,8 +306,9 @@ mix (*"The one with the machinists"*; `artisan6-shop` dropped, kept as a record)
 emits no building for it: its main method joins the HOST's main group, gated by its own technology (`unlocking_technologies`), and the host
 carries the midpoint `building_cost` / `ai_value` (`_merge` records the pairs; L31 checks both). Every emitter follows: `emit_secondaries`
 mints each of the host's secondaries **once per main method** (scaled to that method, gated to it — so the secondary stays in proportion to
-whichever method runs; since 2026-10-05 every such copy is `is_hidden_when_unavailable`, so the panel lists ONE entry per line, the copy
-beside the running method, where it listed both under one name and icon); `emit_research_events` counts a merged rung as the host's levels running its method (`has_active_production_method`,
+whichever method runs; since 2026-10-11 each copy is NAMED after its main method, "Cannery (Baking Powder)", and the panel lists both, the
+other one greyed. ⚠ From 2026-10-05 to 2026-10-11 the copies were `is_hidden_when_unavailable` instead, and the player could never select one:
+BUGS_AND_FIXES 2026-10-11); `emit_research_events` counts a merged rung as the host's levels running its method (`has_active_production_method`,
 the trigger vanilla's art journal entries use); `emit_companies` keeps merged keys out like craft keys; `convert_history` THROWS on a 1836
 block landing on a merged rung (none of the six does). ⚠ **The save summaries cannot tell the two rungs apart by building type** — a merged
 rung's levels are the host's `pms` entries for its method: read them with `tools/testbed/ledger/merge_methods.mjs`. The register's T0–T3
@@ -3766,8 +3767,9 @@ tools/                  dev tooling — NOT shipped in the mod
                         secondary once PER MAIN METHOD — named <pm>_<that rung's key>, scaled to that rung's output and inputs, and gated
                         `unlocking_production_methods = { <that rung's main method> }` — so the secondary stays in proportion to whichever
                         method runs. Plain buildings mint exactly what they did before, under the same names. THROWS on a craft rung
-                        that also hosts a merge. ⭐ (2026-10-05) Copies sharing a name carry `is_hidden_when_unavailable = yes`, so the
-                        building panel shows only the one beside the running main method (it showed both, one greyed, same name and icon)
+                        that also hosts a merge. ⭐ (2026-10-11) Copies of one line are named after their main method ("Cannery
+                        (Baking Powder)"); the 2026-10-05 `is_hidden_when_unavailable` on them made them unselectable (BUGS_AND_FIXES
+                        2026-10-11) — never put that flag on a PM-gated copy
                         ⭐⭐ THE §10.93 AMENDMENT (2026-10-02, the user's playtest): (a) a building no longer carries a method NONE of its
                         main methods can run — until then a rung that failed a vanilla PM gate KEPT VANILLA'S ORIGINAL, which the game
                         SHOWED, greyed, at vanilla numbers (Elastics −70 clothes on a craft making 2.7); (b) NARRATIVE COMPATIBILITY from
