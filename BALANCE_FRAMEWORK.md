@@ -9831,11 +9831,12 @@ Probes (the school-law lever, institution levels in a kept save) wait until the 
 
 ⚠ **Building it (notes for the book that carries §10.97):** (a) generate it through `make_research_levers_config.mjs` WITHOUT `--dam-staff` (or
 otherwise strip `dams.staff_per_50`), so the dams run the ruled historical staffing 10/15/10 per 50 electricity, not candidate A's 50/100/50 pin;
-(b) since commit `0659e81`, and in its current form since `7fdfcc1` (one shared method per industry and line, sized to the TOP rung, vanilla's
-employment on every rung, a line left out where it would push a good or job below zero), every artmerge-branch book builds its secondaries under the
-`top` rule (§10.91.2). ⚠ Under it the crafts carry no goods lines and Craftsman Sewing / luxury furniture run only from the e2 rungs, so luxury
-clothes and luxury furniture have NO producer at the 1836 start or in the e1 decades, and automation is dear (unmeasured; the user expects to redo
-the anchor). So the new book differs from candidate
+(b) since commit `0659e81`, and in its current form since `a029429` (one shared method per industry and line, sized to the industry's e2 RUNG
+against vanilla's top main method — the anchor ruled the same evening, after `7fdfcc1` had sized it to the top rung — vanilla's employment on every
+rung, a line left out where it would push a good or job below zero), every artmerge-branch book builds its secondaries under the `top` rule
+(§10.91.2). ⚠ Under it the crafts carry NO secondary line (open with the user); luxury clothes and luxury furniture come from the e1 rungs (Dye
+Workshops, Lathe); automation costs sit near vanilla's (tooling break-even £0.27–0.33 a laborer a week against vanilla's £0.18–0.23). Unmeasured.
+So the new book differs from candidate
 A's MEASURED build in its secondaries and its dam staffing as well as in research — compare it against candidate A rebuilt under the same rules, or
 name both confounds wherever the two are read side by side; (c) the tick-cost design (one repeating Implementation entry per technology with a
 country counter that reads 0 when missing; cheap conditions first in every bar — literacy, then the halved-mark switch, then the sources; no
