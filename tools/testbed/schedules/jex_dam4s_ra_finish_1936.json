@@ -1,0 +1,41 @@
+{
+  "schedule_version": 1,
+  "label": "jex-dam4s-ra-finish-1936",
+  "_why": "THE 1900 -> 1936 FINISHES OF CANDIDATE A (user, 2026-10-11: 'Go on with the run finishes'; BALANCE_FRAMEWORK §10.96, FINDINGS F224). Each run CONTINUES its own run of 20261010_132640_jex-dam4s-ra-1900-n3 from that run's kept 1900.1.1 autosave (fed under the engine's pointer title by run_observer -ContinueSave, the L32 feeder's move; the landing guard abandons a run whose first tick is before 1900), on the SAME book config/mod_config.jex-dam4s-ra.json (dam staffing pinned to 50/100/50 as in the probe). Together the two sessions make three 1836 -> 1936 campaigns. A FIXED n=3, every run plays to 1936.",
+  "_arms": {
+    "ra": "{kind: config, config: config/mod_config.jex-dam4s-ra.json} (+ its tree twin, jex-dam4s's) - the probe's book, rebuilt."
+  },
+  "_comparison": "The stitched campaigns (parent 1836-1900 + this 1900-1936) against jex-dam4s n=4 and vanilla n=16: world GDP every decade (§10.96's target), the leader's era-4 share at 1905 and era-5 share at 1936, the majors' and all-country medians, production onsets, research-entry reliance, universities, play time (meta.wall_seconds carries the parent's play), and the research model's prediction for A.",
+  "_predictions": {
+    "research model (F223/F224)": "leader era 4 at 1905 ~51%, era 5 at 1936 ~60% (book 69% / 88%); majors' median 1936 ~164 (book 169, vanilla 160); all-country median unchanged (~104); production onsets on target ~19 of 43 (book 26). The model holds the research entries' timing and every economic path fixed",
+    "GDP": "F224 saw no GDP reduction by 1899 (1.07 median, the book's); if technology drives the late world product, 1916-1936 should fall below the book's 1.12 / 1.20 / 1.29 - if not, the book's late excess has another cause"
+  },
+  "_stop_rule": "none: a fixed n=3, every run plays to 1936. Only a hard harness failure (crash loop, mod not loaded, a landing before 1900) stops a run.",
+  "_cost": "3 runs x 1900 -> 1936, about 1-1.5 h each, about 4-4.5 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Do NOT edit run_observer.ps1, run_schedule.ps1, save_state_summary.mjs, emit_research_levers.mjs or the book while the batch runs.",
+    "Readers expecting one folder per 1836-1936 run must stitch parent + continuation (continuation.json names the parent)."
+  ],
+  "defaults": {
+    "dump_dates": ["1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 300
+  },
+  "setups": {
+    "ra": { "kind": "config", "config": "config/mod_config.jex-dam4s-ra.json" }
+  },
+  "runs": [
+    { "setup": "ra", "until": "1936.1.1", "parent": "20261010_132640_jex-dam4s-ra-1900-n3/run001_ra",
+      "continue_save": "tools/testbed/sessions/20261010_132640_jex-dam4s-ra-1900-n3/run001_ra/saves/0064_20261010_150327_autosave.v3",
+      "continue_expect_after": "1899.12.1", "prior_wall_seconds": 5781.2 },
+    { "setup": "ra", "until": "1936.1.1", "parent": "20261010_132640_jex-dam4s-ra-1900-n3/run002_ra",
+      "continue_save": "tools/testbed/sessions/20261010_132640_jex-dam4s-ra-1900-n3/run002_ra/saves/0064_20261010_164524_autosave.v3",
+      "continue_expect_after": "1899.12.1", "prior_wall_seconds": 6060.2 },
+    { "setup": "ra", "until": "1936.1.1", "parent": "20261010_132640_jex-dam4s-ra-1900-n3/run003_ra",
+      "continue_save": "tools/testbed/sessions/20261010_132640_jex-dam4s-ra-1900-n3/run003_ra/saves/0064_20261010_181019_autosave.v3",
+      "continue_expect_after": "1899.12.1", "prior_wall_seconds": 5044.1 }
+  ]
+}

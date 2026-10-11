@@ -103,6 +103,10 @@ param(
     # (-continuelastsave + -handsoff keeps observer mode — verified 2026-08-06, session resume_diag).
     [switch]   $ContinueFromSave,
     [string]   $ContinueExpectAfter = "",
+    # ⭐ A NAMED SAVE TO CONTINUE FROM (2026-10-11, the 1900 → 1936 finishes of 20261010_132640): the save is FED before attempt 1
+    # exactly as the L32 resume feeder feeds a crash resume - copied under the title continue_game.json names, mtime now - so the
+    # engine loads THIS file, whatever else sits in the save folder. Implies -ContinueFromSave. Recorded in meta.json.
+    [string]   $ContinueSave = "",
     # Wall seconds already spent on this run by an EARLIER launch that was killed (2026-09-13: run 1 of
     # 20260910_151220 died with the agent app at 1935.2, landmine L30, and was finished by hand from its
     # 1935.1.1 autosave). meta.json's wall_seconds is the SUM - what a player actually waited through -
@@ -169,6 +173,10 @@ if (-not $OutRoot) { $OutRoot = Join-Path $PSScriptRoot "sessions" }   # ONE res
 
 foreach ($p in @($Exe, $ModPath)) {
     if (-not (Test-Path $p)) { throw "not found: $p" }
+}
+if ($ContinueSave) {
+    if (-not (Test-Path -LiteralPath $ContinueSave)) { throw "-ContinueSave: not found: $ContinueSave" }
+    $ContinueFromSave = [switch]$true
 }
 # Telemetry lives in the mod under test - there is no fallback generator here any more, so a mod
 # without it would run for the full span and harvest nothing. Fail before burning the game time.
@@ -914,6 +922,14 @@ try {
             # THE FEED (L32): one original member per attempt, newest first, as a copy under the pointer's title; see the helpers
             $null = Invoke-ResumeFeed $runDir $runStart $attempt
         } elseif ($ContinueFromSave -and $attempt -eq 1) {
+            if ($ContinueSave) {
+                # FEED the named save under the pointer's title (the L32 feeder's own move), so the engine loads exactly it
+                $title = Get-PointerTitle
+                $target = Join-Path $SaveDir ($title + ".v3")
+                Copy-Item -LiteralPath $ContinueSave -Destination $target -Force
+                (Get-Item -LiteralPath $target).LastWriteTime = Get-Date
+                Write-Log ("continuation feed: {0} ({1:N0} B) as {2}.v3 - attempt 1 loads it" -f $ContinueSave, (Get-Item -LiteralPath $ContinueSave).Length, $title)
+            }
             # a hand continuation loads whatever the pointer names; keep the F56 evidence copy of it
             $toLoad = Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
                       Sort-Object LastWriteTime -Descending | Select-Object -First 1
@@ -1352,6 +1368,7 @@ try {
             run = $run; token = $token; started = $runStart.ToString("s"); ended = $runEnd.ToString("s")
             wall_seconds = $(if ($PriorWallSeconds -gt 0) { [math]::Round($wallSec + $PriorWallSeconds, 1) } else { $wallSec })
             wall_seconds_this_launch = $wallSec; wall_seconds_prior = $PriorWallSeconds
+            continue_save = $ContinueSave; continue_expect_after = $ContinueExpectAfter
             args = $gameArgs; dump_dates = $DumpDates; until_date = $UntilDate
             reached_ingame_date = $lastTick; self_quit = ((-not $timedOut) -and (-not $abandoned)); timed_out = $timedOut
             attempts = $attempt; resumes = $resumes; abandoned_reason = $abandoned

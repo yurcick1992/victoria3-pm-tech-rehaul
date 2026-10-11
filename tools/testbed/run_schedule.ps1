@@ -280,6 +280,21 @@ foreach ($r in $runs) {
         timeout  = [int](Val $r "timeout_minutes" $defTimeout)
         # extra game launch arguments (space-separated string, run else defaults) -> run_observer -ExtraGameArgs (2026-10-08)
         game_args = [string](Val $r "game_args" (Val $defaults "game_args" ""))
+        # ⭐ A CONTINUATION (2026-10-11): play on from a NAMED save instead of a fresh 1836 game -> run_observer -ContinueSave (fed under
+        # the engine's pointer title, the L32 feeder's move) + -ContinueExpectAfter (the landing guard) + -PriorWallSeconds (the parent's
+        # play, so meta.wall_seconds is the whole campaign). `parent` (<session>/<run>) is provenance only, written to continuation.json.
+        # RUN-level keys only: a continuation names its own save.
+        continue_save         = [string](Val $r "continue_save" "")
+        continue_expect_after = [string](Val $r "continue_expect_after" "")
+        prior_wall_seconds    = [double](Val $r "prior_wall_seconds" 0)
+        parent                = [string](Val $r "parent" "")
+    }
+    $cs = $plan[-1].continue_save
+    if ($cs) {
+        $abs = if ([System.IO.Path]::IsPathRooted($cs)) { $cs } else { Join-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) $cs }
+        if (-not (Test-Path -LiteralPath $abs)) { throw "run #$i continue_save not found: $abs" }
+        if ($plan[-1].continue_expect_after -notmatch '^\d{3,4}\.\d{1,2}\.\d{1,2}$') { throw "run #${i}: a continuation needs continue_expect_after (the landing guard)" }
+        $plan[-1].continue_save = $abs
     }
 }
 
@@ -587,6 +602,15 @@ foreach ($p in $plan) {
     # with no config passes nothing, and build_state then reads as the pure-vanilla arm it is.
     if ($resolved.Config) { $obsArgs += @("-BuildConfig",$resolved.Config) }
     if ($p.game_args -and $p.game_args.Trim()) { $obsArgs += @("-ExtraGameArgs","`"$($p.game_args.Trim())`"") }
+    if ($p.continue_save) {
+        # & powershell @obsArgs quotes each element itself, so the path goes in unquoted (the harvest's rule)
+        $obsArgs += @("-ContinueSave",$p.continue_save,"-ContinueExpectAfter",$p.continue_expect_after)
+        if ($p.prior_wall_seconds -gt 0) { $obsArgs += @("-PriorWallSeconds","$($p.prior_wall_seconds)") }
+        $null = New-Item -ItemType Directory -Force -Path $runDir
+        ([ordered]@{ parent = $p.parent; continue_save = $p.continue_save; continue_expect_after = $p.continue_expect_after
+                     prior_wall_seconds = $p.prior_wall_seconds } | ConvertTo-Json) | Set-Content -Encoding utf8 (Join-Path $runDir "continuation.json")
+        Log "run $($p.index) CONTINUES $($p.parent) from $(Split-Path $p.continue_save -Leaf) (expect after $($p.continue_expect_after), prior play $($p.prior_wall_seconds) s)"
+    }
 
     # ---- STAGE A: archive autosaves CONCURRENTLY with the game (a file copy; the engine rotates its
     #      slots by RENAME and a 45 MB write is not atomic, both of which archive_autosaves.ps1 handles).

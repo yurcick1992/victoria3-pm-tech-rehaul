@@ -3517,6 +3517,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         BOM before matching top-level blocks — the same trap `verify_pms.mjs` documents,
                         and here it silently loses `building_coal_mine` and `building_logging_camp`, two
                         of the raw industries the analysis exists to watch
+  testbed/run_schedule.ps1  ⭐ A RUN CAN CONTINUE A KEPT SAVE (2026-10-11): run-level `continue_save` (path), `continue_expect_after`
+                        (the landing guard's date, required), `prior_wall_seconds` (the parent's play) and `parent` (<session>/<run>,
+                        provenance) → run_observer `-ContinueSave` (feeds the save under the engine's pointer title before attempt 1, the
+                        L32 feeder's move) and `continuation.json` in the run folder. First use: `jex_dam4s_ra_finish_1936.json`, the
+                        1900→1936 finishes of `20261010_132640`. ⚠ Readers expecting one folder per 1836→1936 run must stitch parent + child.
   testbed/run_schedule.ps1  THE entry point for all measurement: ordered schedule JSON -> build each run via
                         build.ps1 -> run -> harvest -> cross-run markets_all.tsv. Interactive p/r/s/x control;
                         crash policy. Never call the builder directly for test data. Specs in
