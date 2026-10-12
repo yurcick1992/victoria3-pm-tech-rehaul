@@ -22158,6 +22158,21 @@ country-run; tech runners-up 21 / 64 / 14; GDP runners-up 24 / 58 / 17; everyone
 someone else already holds, so no country pulls those trees forward and the frontier of game eras 4–5 stalls (§3's anchor shortfall).
 ⚠ Gross, so an overshoot past a technology's remaining cost counts (most for entry stages landing on a part-researched technology); the research
 split by tree is a yearly point sample; event grants and research-speed modifiers are not counted.
+**Against VANILLA** (asked the same day): the only vanilla campaign with the v18 fields is the quarterly `saves_debut` series (n=1, 338 saves,
+1836–1921, re-summarised for F223), so all three arms were read over **1836–1921, grouped by 1921 standing** (`--to 1921 --group-year 1921`; each
+save weighted by the weeks to the next). Research / spread / entries, and points per country-run (thousands):
+| group (1921) | vanilla (n=1) | this book (n=3) | candidate A (n=3) |
+|---|---|---|---|
+| leader — all trees | 34 / 66 / 0 · 1,309 | 14 / 51 / 35 · 1,074 | 22 / 55 / 23 · 1,479 |
+| leader — production | 40 / 60 / 0 · 445 | 9 / 28 / 63 · 554 | 11 / 43 / 45 · 664 |
+| leader — military | 28 / 72 / 0 · 415 | 13 / 76 / 11 · 251 | 30 / 63 / 7 · 409 |
+| leader — society | 34 / 66 / 0 · 449 | 24 / 75 / 1 · 270 | 31 / 67 / 2 · 406 |
+| tech runners-up — all | 38 / 62 / 0 · 954 | 15 / 66 / 19 · 787 | 23 / 60 / 17 · 1,041 |
+| GDP runners-up — all | 32 / 68 / 0 · 803 | 17 / 76 / 7 · 680 | 26 / 62 / 12 · 802 |
+| everyone else — all | 28 / 72 / 0 · 187 | 16 / 83 / 1 · 214 | 27 / 72 / 2 · 238 |
+⇒ Even in vanilla, spread supplies about two-thirds of every group's points. This book's leader gets **~60% of vanilla's military and society
+points** (251k / 270k against 415k / 449k) and ~125% of its production points; candidate A's leader matches vanilla on military and society. ⚠ n=1
+vanilla on a different save cadence; the vanilla 1921 leader is Belgium.
 
 ### What it does NOT say
 n=3 with no consensus pair, and run 2 is a political outlier, so the GDP median is fragile. The probe's continuation half shares a seed with the probe.
