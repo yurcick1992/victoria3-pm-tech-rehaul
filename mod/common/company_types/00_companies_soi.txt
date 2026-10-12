@@ -8,10 +8,8 @@ company_da_afghan_nassaji_sherkat = {
 	preferred_headquarters = { STATE_BALKH }
 
 	building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -48,10 +46,8 @@ company_da_afghan_nassaji_sherkat = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_textile_mill
 					is_building_type = building_textile_mill_dye_workshops
 					is_building_type = building_textile_mill_sewing_machines
-					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -71,12 +67,6 @@ company_da_afghan_nassaji_sherkat = {
 	}
 
 	ai_construction_targets = {
-		building_textile_mill = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BALKH
-			}
-		}
 		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
@@ -84,12 +74,6 @@ company_da_afghan_nassaji_sherkat = {
 			}
 		}
 		building_textile_mill_sewing_machines = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BALKH
-			}
-		}
-		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BALKH
@@ -351,10 +335,8 @@ company_sherkat_shemali = {
 	}
 
 	extension_building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	potential = {
@@ -498,10 +480,8 @@ company_sherkate_eslamiya = {
 	preferred_headquarters = { STATE_ISFAHAN }
 
 	building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -538,10 +518,8 @@ company_sherkate_eslamiya = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_textile_mill
 					is_building_type = building_textile_mill_dye_workshops
 					is_building_type = building_textile_mill_sewing_machines
-					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -560,12 +538,6 @@ company_sherkate_eslamiya = {
 	}
 
 	ai_construction_targets = {
-		building_textile_mill = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ISFAHAN
-			}
-		}
 		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
@@ -573,12 +545,6 @@ company_sherkate_eslamiya = {
 			}
 		}
 		building_textile_mill_sewing_machines = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ISFAHAN
-			}
-		}
-		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_ISFAHAN
@@ -818,10 +784,8 @@ company_persshelk = {
 	}
 
 	extension_building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	potential = {
@@ -904,10 +868,8 @@ company_perskhlopok = {
 	}
 
 	extension_building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	potential = {
@@ -944,10 +906,8 @@ company_perskhlopok = {
 	}
 
 	prosperity_modifier = {
-		building_textile_mill_throughput_add = 0.05
 		building_textile_mill_dye_workshops_throughput_add = 0.05
 		building_textile_mill_sewing_machines_throughput_add = 0.05
-		building_textile_mill_electric_sewing_machines_throughput_add = 0.05
 		interest_group_ig_rural_folk_approval_add = 2
 	}
 
@@ -1102,9 +1062,7 @@ company_guinness = {
 	preferred_headquarters = { STATE_LEINSTER }
 
 	building_types = {
-		building_food_industry
 		building_food_industry_sweeteners
-		building_food_industry_baking_powder
 	}
 
 	extension_building_types = {
@@ -1141,11 +1099,7 @@ company_guinness = {
 			state_region = s:STATE_LEINSTER
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_food_industry
-					is_building_type = building_food_industry_sweeteners
-					is_building_type = building_food_industry_baking_powder
-				}
+				is_building_type = building_food_industry_sweeteners
 				level >= 5
 			}
 		}
@@ -1167,19 +1121,7 @@ company_guinness = {
 	}
 
 	ai_construction_targets = {
-		building_food_industry = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_LEINSTER
-			}
-		}
 		building_food_industry_sweeteners = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_LEINSTER
-			}
-		}
-		building_food_industry_baking_powder = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LEINSTER
@@ -1209,9 +1151,7 @@ company_oriental_development_company = {
 
 	extension_building_types = {
 		building_maize_farm
-		building_food_industry
 		building_food_industry_sweeteners
-		building_food_industry_baking_powder
 	}
 
 	possible_prestige_goods = {

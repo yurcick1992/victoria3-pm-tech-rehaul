@@ -135,5 +135,204 @@ pmr_wargate_eval = {
 			set_variable = { name = pmr_wargate_trench_works  days = 40 }
 		}
 		}
+		# fleet technologies: observation, deliberately OUTSIDE the war test
+		if = {
+			limit = {
+				any_scope_ship = {
+					is_ship_type = ship_type:ship_type_super_dreadnought
+				}
+			}
+			set_variable = { name = pmr_navown_battleship_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_rival_country = {
+					any_scope_ship = {
+						is_ship_type = ship_type:ship_type_super_dreadnought
+					}
+				}
+			}
+			set_variable = { name = pmr_navrival_battleship_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_scope_ship = {
+					is_ship_type = ship_type:ship_type_destroyer
+				}
+			}
+			set_variable = { name = pmr_navown_destroyer  days = 40 }
+		}
+		if = {
+			limit = {
+				any_rival_country = {
+					any_scope_ship = {
+						is_ship_type = ship_type:ship_type_destroyer
+					}
+				}
+			}
+			set_variable = { name = pmr_navrival_destroyer  days = 40 }
+		}
+		if = {
+			limit = {
+				any_scope_ship = {
+					OR = {
+						is_ship_type = ship_type:ship_type_dreadnought
+						is_ship_type = ship_type:ship_type_light_cruiser
+						is_ship_type = ship_type:ship_type_seaplane_tender
+					}
+				}
+			}
+			set_variable = { name = pmr_navown_dreadnought_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_rival_country = {
+					any_scope_ship = {
+						OR = {
+							is_ship_type = ship_type:ship_type_dreadnought
+							is_ship_type = ship_type:ship_type_light_cruiser
+							is_ship_type = ship_type:ship_type_seaplane_tender
+						}
+					}
+				}
+			}
+			set_variable = { name = pmr_navrival_dreadnought_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_scope_ship = {
+					OR = {
+						is_ship_type = ship_type:ship_type_monitor
+						is_ship_type = ship_type:ship_type_early_ironclad
+						is_ship_type = ship_type:ship_type_iron_frigate
+						is_ship_type = ship_type:ship_type_troop_ship
+					}
+				}
+			}
+			set_variable = { name = pmr_navown_ironclad_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_rival_country = {
+					any_scope_ship = {
+						OR = {
+							is_ship_type = ship_type:ship_type_monitor
+							is_ship_type = ship_type:ship_type_early_ironclad
+							is_ship_type = ship_type:ship_type_iron_frigate
+							is_ship_type = ship_type:ship_type_troop_ship
+						}
+					}
+				}
+			}
+			set_variable = { name = pmr_navrival_ironclad_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_scope_ship = {
+					OR = {
+						is_ship_type = ship_type:ship_type_coastal_defense_ship
+						is_ship_type = ship_type:ship_type_modern_ironclad
+					}
+				}
+			}
+			set_variable = { name = pmr_navown_monitor_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_rival_country = {
+					any_scope_ship = {
+						OR = {
+							is_ship_type = ship_type:ship_type_coastal_defense_ship
+							is_ship_type = ship_type:ship_type_modern_ironclad
+						}
+					}
+				}
+			}
+			set_variable = { name = pmr_navrival_monitor_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_scope_ship = {
+					OR = {
+						is_ship_type = ship_type:ship_type_pre_dreadnought
+						is_ship_type = ship_type:ship_type_armored_cruiser
+					}
+				}
+			}
+			set_variable = { name = pmr_navown_pre_dreadnought_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_rival_country = {
+					any_scope_ship = {
+						OR = {
+							is_ship_type = ship_type:ship_type_pre_dreadnought
+							is_ship_type = ship_type:ship_type_armored_cruiser
+						}
+					}
+				}
+			}
+			set_variable = { name = pmr_navrival_pre_dreadnought_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_scope_ship = {
+					OR = {
+						is_ship_type = ship_type:ship_type_protected_cruiser
+						is_ship_type = ship_type:ship_type_torpedo_boat_destroyer
+					}
+				}
+			}
+			set_variable = { name = pmr_navown_sea_lane_strategies  days = 40 }
+		}
+		if = {
+			limit = {
+				any_rival_country = {
+					any_scope_ship = {
+						OR = {
+							is_ship_type = ship_type:ship_type_protected_cruiser
+							is_ship_type = ship_type:ship_type_torpedo_boat_destroyer
+						}
+					}
+				}
+			}
+			set_variable = { name = pmr_navrival_sea_lane_strategies  days = 40 }
+		}
+		if = {
+			limit = {
+				any_scope_ship = {
+					is_ship_type = ship_type:ship_type_torpedo_boat
+				}
+			}
+			set_variable = { name = pmr_navown_self_propelled_torpedoes  days = 40 }
+		}
+		if = {
+			limit = {
+				any_rival_country = {
+					any_scope_ship = {
+						is_ship_type = ship_type:ship_type_torpedo_boat
+					}
+				}
+			}
+			set_variable = { name = pmr_navrival_self_propelled_torpedoes  days = 40 }
+		}
+		if = {
+			limit = {
+				any_scope_ship = {
+					is_ship_type = ship_type:ship_type_submarine
+				}
+			}
+			set_variable = { name = pmr_navown_submarine  days = 40 }
+		}
+		if = {
+			limit = {
+				any_rival_country = {
+					any_scope_ship = {
+						is_ship_type = ship_type:ship_type_submarine
+					}
+				}
+			}
+			set_variable = { name = pmr_navrival_submarine  days = 40 }
+		}
 	}
 }

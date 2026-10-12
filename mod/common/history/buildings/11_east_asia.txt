@@ -73,15 +73,15 @@
 				activate_production_methods={ "default_building_opium_plantation" "pm_road_carts"  }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					country={
 						country="c:CHI"
-						levels=12
+						levels=120
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 		}
 	}
@@ -158,12 +158,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:CHI"
-						levels=7
+						levels=119
 						region="STATE_GUIZHOU"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building={
 				building = "building_glassworks"
@@ -171,12 +171,12 @@
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=8
+						levels=102
 						region="STATE_GUIZHOU"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks" }
+				activate_production_methods = { "pm_main_glass_forest_glass" }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -229,6 +229,19 @@
 				}
 				reserves=1
 				activate_production_methods={ "default_building_tea_plantation" "pm_road_carts"  }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:CHI"
+						levels=72
+						region="STATE_GUIZHOU"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
 			}
 		}
 	}
@@ -514,12 +527,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:CHI"
-						levels=5
+						levels=102
 						region="STATE_BEIJING"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -560,6 +573,45 @@
 					}
 				}
 				activate_production_methods={ "pm_naval_fortification_basic"  }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:CHI"
+						levels=43
+						region="STATE_BEIJING"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:CHI"
+						levels=64
+						region="STATE_BEIJING"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:CHI"
+						levels=75
+						region="STATE_BEIJING"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
 			}
 		}
 	}
@@ -787,17 +839,17 @@
 				activate_production_methods={ "pm_horizontal_drawer_cabinets" "pm_professional_bureaucrats" "pm_religious_bureaucrats" }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:CHI"
-						levels=4
+						levels=40
 						region="STATE_CHONGQING"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -962,6 +1014,58 @@
 					}
 				}
 				activate_production_methods={ "pm_naval_fortification_basic"  }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:CHI"
+						levels=45
+						region="STATE_GUANGDONG"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:CHI"
+						levels=141
+						region="STATE_GUANGDONG"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:CHI"
+						levels=69
+						region="STATE_GUANGDONG"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:CHI"
+						levels=99
+						region="STATE_GUANGDONG"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
 			}
 		}
 		region_state:POR={
@@ -1133,12 +1237,12 @@
 					building={
 						type="building_textile_mill"
 						country="c:CHI"
-						levels=8
+						levels=80
 						region="STATE_ZHEJIANG"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -1210,12 +1314,12 @@
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=5
+						levels=50
 						region="STATE_JIANGSU"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -1275,12 +1379,12 @@
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=10
+						levels=100
 						region="STATE_NANJING"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -1340,12 +1444,12 @@
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=6
+						levels=60
 						region="STATE_HENAN"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -1389,17 +1493,17 @@
 				activate_production_methods={ "pm_picks_and_shovels_building_iron_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:CHI"
-						levels=11
+						levels=180
 						region="STATE_ZHILI"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building = "building_glassworks"
@@ -1407,12 +1511,12 @@
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=6
+						levels=120
 						region="STATE_ZHILI"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -1426,6 +1530,32 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_farming" "pm_citrus_orchards" "pm_tools_disabled"  }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:CHI"
+						levels=19
+						region="STATE_ZHILI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:CHI"
+						levels=48
+						region="STATE_ZHILI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
 			}
 		}
 	}
@@ -1448,12 +1578,12 @@
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=5
+						levels=50
 						region="STATE_JIANGXI"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building="building_rice_farm"
@@ -1515,12 +1645,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:CHI"
-						levels=10
+						levels=149
 						region="STATE_SOUTHERN_ANHUI"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
 			}
 			create_building={
 				building="building_rice_farm"
@@ -1536,17 +1666,17 @@
 				activate_production_methods={ "pm_simple_farming_building_rice_farm" "pm_fig_orchards_building_rice_farm" "pm_tools_disabled"  }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:CHI"
-						levels=6
+						levels=131
 						region="STATE_SOUTHERN_ANHUI"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -1560,6 +1690,19 @@
 				}
 				reserves=1
 				activate_production_methods={ "default_building_tea_plantation" "pm_road_carts"  }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:CHI"
+						levels=46
+						region="STATE_SOUTHERN_ANHUI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
 			}
 		}
 	}
@@ -1618,17 +1761,17 @@
 				activate_production_methods={ "pm_horizontal_drawer_cabinets" "pm_professional_bureaucrats" "pm_religious_bureaucrats" }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:CHI"
-						levels=9
+						levels=90
 						region="STATE_WESTERN_HUBEI"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building = "building_furniture_manufactory"
@@ -1636,12 +1779,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:CHI"
-						levels=10
+						levels=100
 						region="STATE_WESTERN_HUBEI"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
 			}
 			create_building={
 				building="building_rice_farm"
@@ -1690,12 +1833,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:CHI"
-						levels=8
+						levels=80
 						region="STATE_EASTERN_HUBEI"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
 			}
 			create_building={
 				building="building_rice_farm"
@@ -1711,17 +1854,17 @@
 				activate_production_methods={ "pm_simple_farming_building_rice_farm" "pm_fig_orchards_building_rice_farm" "pm_tools_disabled"  }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:CHI"
-						levels=9
+						levels=90
 						region="STATE_EASTERN_HUBEI"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -1878,12 +2021,12 @@
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=10
+						levels=100
 						region="STATE_SHANDONG"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building = "building_textile_mill"
@@ -1891,12 +2034,12 @@
 					building={
 						type="building_textile_mill"
 						country="c:CHI"
-						levels=8
+						levels=80
 						region="STATE_SHANDONG"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -1964,17 +2107,17 @@
 				activate_production_methods={ "pm_horizontal_drawer_cabinets" "pm_professional_bureaucrats" "pm_religious_bureaucrats" }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:CHI"
-						levels=7
+						levels=70
 						region="STATE_SUZHOU"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -2159,25 +2302,25 @@
 					building={
 						type="building_glassworks"
 						country="c:JAP"
-						levels=1
+						levels=10
 						region="STATE_TOHOKU"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:JAP"
-						levels=1
+						levels=10
 						region="STATE_TOHOKU"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building="building_tobacco_plantation"
@@ -2265,12 +2408,12 @@
 					building={
 						type="building_glassworks"
 						country="c:JAP"
-						levels=1
+						levels=13
 						region="STATE_HOKUSHINETSU"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building = "building_furniture_manufactory"
@@ -2278,12 +2421,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:JAP"
-						levels=1
+						levels=13
 						region="STATE_HOKUSHINETSU"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building={
 				building="building_gold_mine"
@@ -2348,6 +2491,58 @@
 				reserves=1
 				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:JAP"
+						levels=3
+						region="STATE_HOKUSHINETSU"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_food_industry"
+				add_ownership={
+					building={
+						type="building_food_industry"
+						country="c:JAP"
+						levels=4
+						region="STATE_HOKUSHINETSU"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
+			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:JAP"
+						levels=1
+						region="STATE_HOKUSHINETSU"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:JAP"
+						levels=4
+						region="STATE_HOKUSHINETSU"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
 		}
 	}
 	s:STATE_KANTO={
@@ -2358,7 +2553,7 @@
 					building={
 						type="building_tooling_workshop"
 						country="c:JAP"
-						levels=1
+						levels=12
 						region="STATE_KANTO"
 					}
 				}
@@ -2388,7 +2583,7 @@
 				activate_production_methods={ "pm_basic_port" }
 			}
 			create_building={# Sake and Soy industries
-				building="building_food_industry"
+				building = "building_food_industry"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -2396,9 +2591,15 @@
 						levels=2
 						region="STATE_KANTO"
 					}
+					building={
+						type="building_food_industry"
+						country="c:JAP"
+						levels=28
+						region="STATE_KANTO"
+					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery"  }
 			}
 			create_building={
 				building = "building_furniture_manufactory"
@@ -2406,12 +2607,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:JAP"
-						levels=1
+						levels=18
 						region="STATE_KANTO"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building={
 				building="building_construction_sector"
@@ -2425,17 +2626,17 @@
 				activate_production_methods={ "pm_wooden_buildings" }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:JAP"
-						levels=1
+						levels=20
 						region="STATE_KANTO"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={ # Gunma
 				building="building_silk_plantation"
@@ -2539,6 +2740,32 @@
 				reserves=1
 				activate_production_methods={ "pm_picks_and_shovels_building_lead_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:JAP"
+						levels=8
+						region="STATE_KANTO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:JAP"
+						levels=8
+						region="STATE_KANTO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_KYOTO={
@@ -2560,12 +2787,12 @@
 					building={
 						type="building_glassworks"
 						country="c:JAP"
-						levels=1
+						levels=15
 						region="STATE_KYOTO"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building = "building_furniture_manufactory"
@@ -2573,15 +2800,15 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:JAP"
-						levels=1
+						levels=15
 						region="STATE_KYOTO"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building={# Sake and Soy industries
-				building="building_food_industry"
+				building = "building_food_industry"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -2589,9 +2816,15 @@
 						levels=1
 						region="STATE_KANSAI"
 					}
+					building={
+						type="building_food_industry"
+						country="c:JAP"
+						levels=15
+						region="STATE_KYOTO"
+					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -2658,6 +2891,45 @@
 				reserves=1
 				activate_production_methods={ "pm_herring_meal_farming_building_rice_farm"  "pm_tools_disabled" "pm_fig_orchards_building_rice_farm" }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:JAP"
+						levels=5
+						region="STATE_KYOTO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:JAP"
+						levels=1
+						region="STATE_KYOTO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:JAP"
+						levels=6
+						region="STATE_KYOTO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
 		}
 	}
 	s:STATE_TOKAI={
@@ -2679,15 +2951,15 @@
 					building={
 						type="building_glassworks"
 						country="c:JAP"
-						levels=1
+						levels=14
 						region="STATE_TOKAI"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={# Sake and Soy industries
-				building="building_food_industry"
+				building = "building_food_industry"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -2695,9 +2967,15 @@
 						levels=1
 						region="STATE_TOKAI"
 					}
+					building={
+						type="building_food_industry"
+						country="c:JAP"
+						levels=14
+						region="STATE_TOKAI"
+					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery"  }
 			}
 			create_building={
 				building="building_cotton_plantation"
@@ -2751,6 +3029,58 @@
 				reserves=1
 				activate_production_methods={ "pm_herring_meal_farming_building_rice_farm"  "pm_tools_disabled" "pm_fig_orchards_building_rice_farm" }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:JAP"
+						levels=4
+						region="STATE_TOKAI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:JAP"
+						levels=1
+						region="STATE_TOKAI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:JAP"
+						levels=4
+						region="STATE_TOKAI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:JAP"
+						levels=5
+						region="STATE_TOKAI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
 		}
 	}
 	s:STATE_KANSAI={
@@ -2772,15 +3102,15 @@
 					building={
 						type="building_textile_mill"
 						country="c:JAP"
-						levels=3
+						levels=37
 						region="STATE_KANSAI"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
 			}
 			create_building={# Sake and Soy industries
-				building="building_food_industry"
+				building = "building_food_industry"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -2788,9 +3118,15 @@
 						levels=1
 						region="STATE_KANSAI"
 					}
+					building={
+						type="building_food_industry"
+						country="c:JAP"
+						levels=17
+						region="STATE_KANSAI"
+					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery"  }
 			}
 			create_building={
 				building = "building_furniture_manufactory"
@@ -2798,12 +3134,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:JAP"
-						levels=1
+						levels=17
 						region="STATE_KANSAI"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building={
 				building="building_construction_sector"
@@ -2919,6 +3255,45 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:JAP"
+						levels=2
+						region="STATE_KANSAI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:JAP"
+						levels=8
+						region="STATE_KANSAI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:JAP"
+						levels=7
+						region="STATE_KANSAI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
 			}
 		}
 	}
@@ -3094,25 +3469,25 @@
 					building={
 						type="building_textile_mill"
 						country="c:JAP"
-						levels=1
+						levels=10
 						region="STATE_CHUGOKU"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:JAP"
-						levels=2
+						levels=20
 						region="STATE_CHUGOKU"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building="building_tobacco_plantation"
@@ -3182,17 +3557,17 @@
 				activate_production_methods={ "pm_horizontal_drawer_cabinets" "pm_hereditary_bureaucrats" "pm_religious_bureaucrats" }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:JAP"
-						levels=1
+						levels=10
 						region="STATE_SHIKOKU"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building="building_cotton_plantation"
@@ -4024,12 +4399,12 @@
 					building={
 						type="building_glassworks"
 						country="c:KOR"
-						levels=3
+						levels=46
 						region="STATE_SEOUL"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks" }
+				activate_production_methods = { "pm_main_glass_forest_glass" }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -4113,12 +4488,12 @@
 					building={
 						type="building_glassworks"
 						country="c:KOR"
-						levels=1
+						levels=18
 						region="STATE_BUSAN"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -4202,12 +4577,12 @@
 					building={
 						type="building_glassworks"
 						country="c:KOR"
-						levels=1
+						levels=17
 						region="STATE_YANGHO"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -4324,6 +4699,19 @@
 				reserves=1
 				activate_production_methods={ "pm_no_organization" }
 			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:KOR"
+						levels=5
+						region="STATE_SARIWON"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_PYONGYANG={
@@ -4345,12 +4733,12 @@
 					building={
 						type="building_glassworks"
 						country="c:KOR"
-						levels=2
+						levels=31
 						region="STATE_PYONGYANG"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building="building_iron_mine"

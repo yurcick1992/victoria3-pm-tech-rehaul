@@ -198,7 +198,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_lathe"  "pm_automation_disabled" "pm_luxury_furniture_furniture_manufactory_lathe" }
+				activate_production_methods = { "pm_main_furniture_lathe"  "pm_automation_disabled" "pm_luxury_furniture_furniture" }
 			}
 			create_building={
 				building="building_tooling_workshop_steel"
@@ -301,6 +301,19 @@
 				create_building={
 					building="building_central_park"
 					level=1
+				}
+				create_building={
+					building="building_food_industry"
+					add_ownership={
+						building={
+							type="building_food_industry"
+							country="c:USA"
+							levels=9
+							region="STATE_NEW_YORK"
+						}
+					}
+					reserves=1
+					activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
 				}
 			}
 		}
@@ -439,6 +452,19 @@
 					}
 				}
 				activate_production_methods={ "pm_naval_fortification_basic"  }
+			}
+			create_building={
+				building="building_food_industry"
+				add_ownership={
+					building={
+						type="building_food_industry"
+						country="c:USA"
+						levels=4
+						region="STATE_VIRGINIA"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
 			}
 		}
 	}
@@ -970,17 +996,17 @@
 				activate_production_methods={ "pm_scholastic_education" "pm_secular_academia" }
 			}
 			create_building={
-				building="building_food_industry"
+				building = "building_food_industry"
 				add_ownership={
 					building={
 						type="building_food_industry"
 						country="c:USA"
-						levels=2
+						levels=20
 						region="STATE_KENTUCKY"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" "pm_disabled_distillery" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning" "pm_disabled_distillery"  }
 			}
 			create_building={
 				building="building_coal_mine"
@@ -1066,7 +1092,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_pot_stills_food_industry_sweeteners" "pm_disabled_canning" "pm_main_food_sweeteners" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_pot_stills_food" "pm_disabled_canning" "pm_main_food_sweeteners" "pm_manual_dough_processing"  }
 			}
 			create_building={
 				building="building_maize_farm"
@@ -1131,6 +1157,19 @@
 				}
 				reserves=1
 				activate_production_methods={ "default_building_cotton_plantation" "pm_road_carts"  }
+			}
+			create_building={
+				building="building_food_industry"
+				add_ownership={
+					building={
+						type="building_food_industry"
+						country="c:USA"
+						levels=3
+						region="STATE_TENNESSEE"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
 			}
 		}
 	}
@@ -1443,7 +1482,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_leaded_glass"  "pm_manual_glassblowing" "pm_ceramics_glassworks_leaded_glass" }
+				activate_production_methods = { "pm_main_glass_leaded_glass"  "pm_manual_glassblowing" "pm_ceramics_glass" }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -1605,7 +1644,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_lathe"  "pm_automation_disabled" "pm_luxury_furniture_furniture_manufactory_lathe" }
+				activate_production_methods = { "pm_main_furniture_lathe"  "pm_automation_disabled" "pm_luxury_furniture_furniture" }
 			}
 			create_building={
 				building="building_munition_plant"
@@ -1629,7 +1668,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_leaded_glass"  "pm_manual_glassblowing" "pm_ceramics_glassworks_leaded_glass" }
+				activate_production_methods = { "pm_main_glass_leaded_glass"  "pm_manual_glassblowing" "pm_ceramics_glass" }
 			}
 			create_building={
 				building="building_coal_mine"
@@ -1751,6 +1790,19 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_main_motor_steam_engines" "pm_automation_disabled" }
+			}
+			create_building={
+				building="building_food_industry"
+				add_ownership={
+					building={
+						type="building_food_industry"
+						country="c:USA"
+						levels=7
+						region="STATE_PENNSYLVANIA"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
 			}
 		}
 	}
@@ -1923,7 +1975,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_leaded_glass" "pm_ceramics_glassworks_leaded_glass" "pm_manual_glassblowing"  }
+				activate_production_methods = { "pm_main_glass_leaded_glass" "pm_ceramics_glass" "pm_manual_glassblowing"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -2068,7 +2120,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_leaded_glass" "pm_ceramics_glassworks_leaded_glass" "pm_manual_glassblowing"  }
+				activate_production_methods = { "pm_main_glass_leaded_glass" "pm_ceramics_glass" "pm_manual_glassblowing"  }
 			}
 			create_building={
 				building="building_shipyard"
@@ -2162,6 +2214,19 @@
 				reserves=1
 				activate_production_methods={ "pm_simple_sailor_recruitment" }
 			}
+			create_building={
+				building="building_food_industry"
+				add_ownership={
+					building={
+						type="building_food_industry"
+						country="c:USA"
+						levels=4
+						region="STATE_MASSACHUSETTS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
+			}
 		}
 	}
 	s:STATE_NEW_HAMPSHIRE={
@@ -2213,12 +2278,12 @@
 					building={
 						type="building_food_industry"
 						country="c:USA"
-						levels=2
+						levels=20
 						region="STATE_VERMONT"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_pot_stills_food_industry" "pm_disabled_canning" "pm_main_food_bakery" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_disabled_canning" "pm_main_food_bakery"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -2272,7 +2337,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_lathe" "pm_luxury_furniture_furniture_manufactory_lathe" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_furniture_lathe" "pm_luxury_furniture_furniture" "pm_automation_disabled"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -2349,7 +2414,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_food_sweeteners" "pm_disabled_canning" "pm_pot_stills_food_industry_sweeteners" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_main_food_sweeteners" "pm_disabled_canning" "pm_pot_stills_food" "pm_manual_dough_processing"  }
 			}
 			create_building={
 				building="building_coal_mine"
@@ -3321,6 +3386,58 @@
 				reserves=1
 				activate_production_methods={ "default_building_dye_plantation" "pm_road_carts"  }
 			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:MEX"
+						levels=1
+						region="STATE_BAJIO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:MEX"
+						levels=2
+						region="STATE_BAJIO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:MEX"
+						levels=4
+						region="STATE_BAJIO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:MEX"
+						levels=1
+						region="STATE_BAJIO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_YUCATAN={
@@ -3374,12 +3491,12 @@
 					building={
 						type="building_glassworks"
 						country="c:MEX"
-						levels=1
+						levels=13
 						region="STATE_MEXICO"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks" }
+				activate_production_methods = { "pm_main_glass_forest_glass" }
 			}
 			create_building={
 				building = "building_textile_mill"
@@ -3387,7 +3504,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:MEX"
-						levels=2
+						levels=29
 						region="STATE_MEXICO"
 					}
 				}
@@ -3400,7 +3517,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:MEX"
-						levels=2
+						levels=26
 						region="STATE_MEXICO"
 					}
 				}
@@ -3472,6 +3589,19 @@
 				reserves=1
 				activate_production_methods={ "pm_picks_and_shovels_building_iron_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:MEX"
+						levels=3
+						region="STATE_MEXICO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
 		}
 	}
 	s:STATE_VERACRUZ={
@@ -3482,7 +3612,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:MEX"
-						levels=1
+						levels=12
 						region="STATE_VERACRUZ"
 					}
 				}
@@ -3586,6 +3716,45 @@
 				}
 				activate_production_methods={ "pm_naval_fortification_basic"  }
 			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:MEX"
+						levels=1
+						region="STATE_VERACRUZ"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:MEX"
+						levels=2
+						region="STATE_VERACRUZ"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:MEX"
+						levels=1
+						region="STATE_VERACRUZ"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_GUERRERO={
@@ -3612,7 +3781,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_pot_stills_food_industry_sweeteners" "pm_disabled_canning" "pm_main_food_sweeteners" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_pot_stills_food" "pm_disabled_canning" "pm_main_food_sweeteners" "pm_manual_dough_processing"  }
 			}
 			create_building={
 				building="building_maize_farm"
@@ -3665,6 +3834,58 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_saw_mills"  "pm_no_equipment" "pm_road_carts" "pm_hardwood" }
+			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:MEX"
+						levels=1
+						region="STATE_GUERRERO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:MEX"
+						levels=1
+						region="STATE_GUERRERO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:MEX"
+						levels=2
+						region="STATE_GUERRERO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:MEX"
+						levels=1
+						region="STATE_GUERRERO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
 			}
 		}
 	}
@@ -3772,6 +3993,58 @@
 				reserves=1
 				activate_production_methods={ "pm_simple_farming" "pm_no_secondary" "pm_tools_disabled"  }
 			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:MEX"
+						levels=1
+						region="STATE_JALISCO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:MEX"
+						levels=2
+						region="STATE_JALISCO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:MEX"
+						levels=3
+						region="STATE_JALISCO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:MEX"
+						levels=1
+						region="STATE_JALISCO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_ZACATECAS={
@@ -3821,7 +4094,7 @@
 					building={
 						type="building_tooling_workshop"
 						country="c:MEX"
-						levels=1
+						levels=10
 						region="STATE_ZACATECAS"
 					}
 				}

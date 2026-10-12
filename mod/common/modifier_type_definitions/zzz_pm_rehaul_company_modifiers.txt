@@ -102,25 +102,7 @@ building_chemical_plant_catalytic_synthesis_throughput_add={
 	}
 }
 
-building_chemical_plant_improved_fertilizer_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
 building_chemical_plant_nitrogen_fixation_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_food_industry_baking_powder_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -156,15 +138,6 @@ building_furniture_manufactory_mechanized_workshops_throughput_add={
 	}
 }
 
-building_furniture_manufactory_spray_finishing_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
 building_motor_industry_diesel_engines_throughput_add={
 	decimals=0
 	color=good
@@ -184,15 +157,6 @@ building_motor_industry_electric_engines_throughput_add={
 }
 
 building_munition_plant_explosive_shells_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_paper_mill_bleached_paper_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -228,15 +192,6 @@ building_steel_mill_bessemer_process_throughput_add={
 	}
 }
 
-building_steel_mill_electric_arc_process_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
 building_steel_mill_open_hearth_process_throughput_add={
 	decimals=0
 	color=good
@@ -247,15 +202,6 @@ building_steel_mill_open_hearth_process_throughput_add={
 }
 
 building_textile_mill_dye_workshops_throughput_add={
-	decimals=0
-	color=good
-	percent=yes
-	game_data={
-		ai_value=0
-	}
-}
-
-building_textile_mill_electric_sewing_machines_throughput_add={
 	decimals=0
 	color=good
 	percent=yes

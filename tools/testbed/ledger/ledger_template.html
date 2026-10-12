@@ -466,8 +466,8 @@ function renderPerf(mode){
   <p class="small">Cells read <b>held / of N</b> — N = discoverable technologies of the selected trees in that era
   (<b>sericulture excluded</b>: only obtainable as an 1836 grant, never researched; excluded from held counts
   too). Both arms mapped onto the MOD tree's eras — a design-centric yardstick. JEs: cumulative firings over the
-  whole run by stage × the gated technology's era, filtered by the same tree selection (society techs carry no
-  JEs by design). No per-date JE series yet — PMR_JE lines carry no game date; the wall-clock join against
+  whole run by stage × the gated technology's era, filtered by the same tree selection (society techs carry
+  JEs only on the §10.98 books; before them, none by design). No per-date JE series yet — PMR_JE lines carry no game date; the wall-clock join against
   run.log's ticks is the route.</p>
   </div>
 <div class="card tablewrap">
@@ -845,14 +845,25 @@ function jeTable(el0,dataMaybe,trees0){
   return jeTableImpl(el0,dataMaybe,trees0);
 }
 function jeTableImpl(el,data,trees){
-  const stages=['inception','development','implementation'];
-  el.innerHTML='<tr><th>journal entries (cumulative)</th>'+[2,3,4,5].map(e=>'<th class="num">era '+e+' gates</th>').join('')+'</tr>';
-  for(const s of stages){
-    el.insertRow().innerHTML='<td>'+s+(s==='implementation'?' <span class="dim">(grant paid)</span>':'')+'</td>'+
-      [2,3,4,5].map(e=>{
-        let n=0;for(const tr of trees)n+=data[s+'|'+tr+'|'+e]||0;
-        return '<td class="num">'+n.toLocaleString()+'</td>';
-      }).join('');
+  // Rows follow the stages the batch actually logged (2026-10-12): the three-stage books log inception / development /
+  // implementation; the §10.97 books log inception, development and implementation1…18 (a repeating stage, one grant each).
+  // Those deep repeats are rare (F227: ~0.5% of entries reach a fourth), so implementation 4 and beyond share a row.
+  const keys=Object.keys(data), stOf=k=>k.split('|')[0];
+  const rows=[['inception',s=>s==='inception'],['development',s=>s==='development']];
+  if(keys.some(k=>stOf(k)==='implementation'))rows.push(['implementation',s=>s==='implementation']);
+  const impN=s=>{const m=/^implementation(\d+)$/.exec(s);return m?+m[1]:0;};
+  const maxN=Math.max(0,...keys.map(k=>impN(stOf(k))));
+  for(let n=1;n<=Math.min(3,maxN);n++)rows.push(['implementation '+n,s=>impN(s)===n]);
+  if(maxN>=4)rows.push(['implementation 4–'+maxN,s=>impN(s)>=4]);
+  const eras=[1,2,3,4,5].filter(e=>e>1||keys.some(k=>k.endsWith('|'+e)));
+  el.innerHTML='<tr><th>journal-entry stages completed (cumulative; every stage pays a grant)</th>'+eras.map(e=>'<th class="num">era '+e+' gates</th>').join('')+'<th class="num">all</th></tr>';
+  for(const [label,test] of rows){
+    let all=0;
+    el.insertRow().innerHTML='<td>'+label+'</td>'+
+      eras.map(e=>{
+        let n=0;for(const k of keys){const [s,tr,er]=k.split('|');if(+er===e&&trees.includes(tr)&&test(s))n+=data[k]||0;}
+        all+=n;return '<td class="num">'+n.toLocaleString()+'</td>';
+      }).join('')+'<td class="num">'+all.toLocaleString()+'</td>';
   }
 }
 function renderResearchW(){

@@ -1,0 +1,55 @@
+{
+  "schedule_version": 1,
+  "label": "rs-revoltfix-20y",
+  "_why": "PROBE OF THE REVOLT DUPLICATE-PLACEMENT FIX (user, 2026-10-12: fix the revolt errors, probe if necessary, then canonise the artmerge arm). Book config/mod_config.jex-dam4s-rs.json, unchanged; the emitter now skips placement in a revolutionary country (a revolt acquires its technologies, firing our placement, BEFORE it inherits its parent's entries) and adds the next stage only where it is absent. The F227 batch logged 627-843 'already has a journal entry of type je_pmr_' lines a run (95% in revolts).",
+  "_checks": [
+    "error.log in the run window: 'already has a journal entry of type je_pmr_' count against the same span of 20261012_121357_rs-probe-1886 (the same book before the fix); vanilla JE duplicates (je_abolish_monarchy etc.) are vanilla's own and stay",
+    "error.log: nothing naming zzz_pm_rehaul_research*",
+    "debug.log: PMR_JE completions at the probe's rate (the fix only withholds placement during a civil war)"
+  ],
+  "_prediction": "our duplicate lines fall to ~0 (the non-revolt ~4% too, through the next-stage guard); technology and GDP unchanged within seed spread",
+  "_stop_rule": "none",
+  "_cost": "1 run x 1836 -> 1856, ~20 min",
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1845.1.1",
+      "1855.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "rs": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "rs",
+      "until": "1856.1.1"
+    }
+  ]
+}

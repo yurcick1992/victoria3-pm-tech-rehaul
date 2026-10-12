@@ -18,7 +18,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:UCA"
-						levels=1
+						levels=13
 						region="STATE_SAN_SALVADOR"
 					}
 				}
@@ -114,6 +114,19 @@
 				reserves=1
 				activate_production_methods={ "pm_no_organization" }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:UCA"
+						levels=2
+						region="STATE_GUATEMALA"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
 		}
 		region_state:GBR={
 			create_building={
@@ -179,6 +192,19 @@
 				reserves=1
 				activate_production_methods={ "pm_no_organization" }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:UCA"
+						levels=1
+						region="STATE_HONDURAS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
 		}
 	}
 	s:STATE_NICARAGUA={
@@ -219,6 +245,19 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_no_organization" }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:UCA"
+						levels=1
+						region="STATE_NICARAGUA"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 		region_state:MKT={

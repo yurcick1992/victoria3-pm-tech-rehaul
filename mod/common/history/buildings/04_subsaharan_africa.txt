@@ -191,7 +191,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:SOK"
-						levels=1
+						levels=14
 						region="STATE_HAUSALAND"
 					}
 				}
@@ -500,6 +500,19 @@
 				reserves=1
 				activate_production_methods={ "pm_no_organization" }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:SOK"
+						levels=1
+						region="STATE_NIGERIA"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
 		}
 	}
 	s:STATE_EAST_HAUSALAND={
@@ -566,6 +579,19 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_no_organization" }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:SOK"
+						levels=2
+						region="STATE_EAST_HAUSALAND"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 	}

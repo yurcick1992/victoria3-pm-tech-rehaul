@@ -534,12 +534,12 @@
 					building={
 						type="building_glassworks"
 						country="c:EGY"
-						levels=1
+						levels=12
 						region="STATE_SYRIA"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks" }
+				activate_production_methods = { "pm_main_glass_forest_glass" }
 			}
 			create_building={
 				building = "building_textile_mill"
@@ -547,7 +547,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:EGY"
-						levels=1
+						levels=14
 						region="STATE_SYRIA"
 					}
 				}
@@ -580,6 +580,19 @@
 				reserves=1
 				activate_production_methods={ "default_building_tobacco_plantation" "pm_road_carts"  }
 			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:EGY"
+						levels=3
+						region="STATE_SYRIA"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
 		}
 	}
 	s:STATE_ALEPPO={
@@ -590,12 +603,12 @@
 					building={
 						type="building_glassworks"
 						country="c:EGY"
-						levels=1
+						levels=11
 						region="STATE_ALEPPO"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -647,6 +660,32 @@
 				reserves=1
 				activate_production_methods={ "pm_anchorage" }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:EGY"
+						levels=1
+						region="STATE_ALEPPO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:EGY"
+						levels=1
+						region="STATE_ALEPPO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
 		}
 	}
 	s:STATE_BAGHDAD={
@@ -657,12 +696,12 @@
 					building={
 						type="building_textile_mill"
 						country="c:TUR"
-						levels=1
+						levels=10
 						region="STATE_BAGHDAD"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
 			}
 			create_building={
 				building="building_rice_farm"
@@ -856,6 +895,45 @@
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:PER"
+						levels=3
+						region="STATE_FARS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:PER"
+						levels=2
+						region="STATE_FARS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:PER"
+						levels=1
+						region="STATE_FARS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_KERMAN={
@@ -1024,12 +1102,12 @@
 					building={
 						type="building_glassworks"
 						country="c:PER"
-						levels=1
+						levels=11
 						region="STATE_KHORASAN"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks" }
+				activate_production_methods = { "pm_main_glass_forest_glass" }
 			}
 			create_building={
 				building="building_opium_plantation"
@@ -1069,6 +1147,32 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_farming" "pm_no_secondary" "pm_tools_disabled"  }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:PER"
+						levels=2
+						region="STATE_KHORASAN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:PER"
+						levels=1
+						region="STATE_KHORASAN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
 			}
 		}
 	}
@@ -1145,6 +1249,45 @@
 				building= "building_khaju_bridge"
 				level = 1
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:PER"
+						levels=3
+						region="STATE_ISFAHAN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:PER"
+						levels=2
+						region="STATE_ISFAHAN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:PER"
+						levels=1
+						region="STATE_ISFAHAN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_MAZANDARAN={
@@ -1155,7 +1298,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:PER"
-						levels=2
+						levels=20
 						region="STATE_MAZANDARAN"
 					}
 				}
@@ -1235,7 +1378,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:PER"
-						levels=1
+						levels=16
 						region="STATE_IRAKAJEMI"
 					}
 				}
@@ -1279,6 +1422,32 @@
 				reserves=1
 				activate_production_methods={ "pm_open_air_stockyards" "pm_simple_ranch" "pm_standard_fences" "pm_unrefrigerated"  }
 			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:PER"
+						levels=4
+						region="STATE_IRAKAJEMI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:PER"
+						levels=2
+						region="STATE_IRAKAJEMI"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_TABRIZ={
@@ -1300,12 +1469,12 @@
 					building={
 						type="building_textile_mill"
 						country="c:PER"
-						levels=2
+						levels=26
 						region="STATE_TABRIZ"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -1371,6 +1540,32 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_farming" "pm_no_secondary" "pm_tools_disabled"  }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:PER"
+						levels=4
+						region="STATE_TABRIZ"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:PER"
+						levels=2
+						region="STATE_TABRIZ"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
 			}
 		}
 	}
@@ -1457,7 +1652,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:TUR"
-						levels=1
+						levels=21
 						region="STATE_HUDAVENDIGAR"
 					}
 				}
@@ -1465,7 +1660,7 @@
 				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -1475,11 +1670,17 @@
 					}
 					country={
 						country="c:TUR"
-						levels=1
+						levels=10
+					}
+					building={
+						type="building_paper_mill"
+						country="c:TUR"
+						levels=24
+						region="STATE_HUDAVENDIGAR"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -1561,6 +1762,45 @@
 				reserves=1
 				activate_production_methods={ "pm_simple_sailor_recruitment" }
 			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:TUR"
+						levels=4
+						region="STATE_HUDAVENDIGAR"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
+			create_building={
+				building="building_food_industry"
+				add_ownership={
+					building={
+						type="building_food_industry"
+						country="c:TUR"
+						levels=1
+						region="STATE_HUDAVENDIGAR"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:TUR"
+						levels=7
+						region="STATE_HUDAVENDIGAR"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
 		}
 	}
 	s:STATE_AYDIN={
@@ -1584,7 +1824,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:TUR"
-						levels=1
+						levels=18
 						region="STATE_AYDIN"
 					}
 				}
@@ -1597,12 +1837,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:TUR"
-						levels=2
+						levels=26
 						region="STATE_AYDIN"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -1692,6 +1932,45 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:TUR"
+						levels=3
+						region="STATE_AYDIN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
+			create_building={
+				building="building_food_industry"
+				add_ownership={
+					building={
+						type="building_food_industry"
+						country="c:TUR"
+						levels=1
+						region="STATE_AYDIN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:TUR"
+						levels=5
+						region="STATE_AYDIN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
 			}
 		}
 	}

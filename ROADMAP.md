@@ -2432,3 +2432,7 @@ such as dams as typical buildings and JE initialisation on triggers; and what te
 3. **Then the decision**, the user's: canonise the arm whole, OR return to the pre-artmerge canon (`canon-dams-family-nolog`) and iterate
    there — dropping the crafts + merges, KEEPING the performance changes (dams as resource-slot buildings, research entries started by
    triggers — which the canon lacks and would need reimplementing), and giving the surviving tech changes another go.
+4. ✅ **DECIDED 2026-10-12: THE ARM IS CANONISED** (BALANCE_FRAMEWORK §10.99) — as `jex-dam4s-rs`, the book after the tech rework's two passes
+   (§10.97, F226; §10.98, F227: 2 intact / 1 runoff, consensus loss 5.37, majors 0.97 of vanilla's technology, the leader on the anchor
+   principle, play ×1.005). The pre-artmerge family is no longer canon; its files stay, and a return to it would need the performance changes
+   reimplemented. Open in the canon: the runoff tail, military research ~10 behind vanilla, tech spread ×2 deferred.

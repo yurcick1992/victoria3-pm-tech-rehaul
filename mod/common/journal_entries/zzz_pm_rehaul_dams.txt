@@ -49,7 +49,7 @@ je_pmr_dam_columbia_river_survey = {
 	}
 
 	goal_add_value = {
-		value = 30
+		value = 36
 	}
 
 	invalid = {
@@ -139,7 +139,7 @@ je_pmr_dam_laurentian_rivers_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 36
 	}
 
 	invalid = {
@@ -229,7 +229,7 @@ je_pmr_dam_norrland_rivers_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 30
 	}
 
 	invalid = {
@@ -499,7 +499,7 @@ je_pmr_dam_black_canyon_sierra_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 30
 	}
 
 	invalid = {
@@ -589,7 +589,7 @@ je_pmr_dam_western_fjords_survey = {
 	}
 
 	goal_add_value = {
-		value = 18
+		value = 24
 	}
 
 	invalid = {
@@ -679,7 +679,7 @@ je_pmr_dam_niagara_long_sault_survey = {
 	}
 
 	goal_add_value = {
-		value = 18
+		value = 30
 	}
 
 	invalid = {
@@ -769,7 +769,7 @@ je_pmr_dam_waitaki_southern_lakes_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 30
 	}
 
 	invalid = {
@@ -859,7 +859,7 @@ je_pmr_dam_grisons_ticino_survey = {
 	}
 
 	goal_add_value = {
-		value = 18
+		value = 24
 	}
 
 	invalid = {
@@ -949,7 +949,7 @@ je_pmr_dam_rhone_isere_survey = {
 	}
 
 	goal_add_value = {
-		value = 18
+		value = 30
 	}
 
 	invalid = {
@@ -1039,7 +1039,7 @@ je_pmr_dam_niagara_ottawa_survey = {
 	}
 
 	goal_add_value = {
-		value = 18
+		value = 24
 	}
 
 	invalid = {
@@ -1129,7 +1129,7 @@ je_pmr_dam_tennessee_valley_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 30
 	}
 
 	invalid = {
@@ -1219,7 +1219,7 @@ je_pmr_dam_valais_alps_survey = {
 	}
 
 	goal_add_value = {
-		value = 18
+		value = 24
 	}
 
 	invalid = {
@@ -1309,7 +1309,7 @@ je_pmr_dam_nechako_kootenay_survey = {
 	}
 
 	goal_add_value = {
-		value = 18
+		value = 24
 	}
 
 	invalid = {
@@ -1399,7 +1399,7 @@ je_pmr_dam_shinano_kurobe_survey = {
 	}
 
 	goal_add_value = {
-		value = 18
+		value = 24
 	}
 
 	invalid = {
@@ -1489,7 +1489,7 @@ je_pmr_dam_lower_rhone_durance_survey = {
 	}
 
 	goal_add_value = {
-		value = 18
+		value = 24
 	}
 
 	invalid = {
@@ -2029,7 +2029,7 @@ je_pmr_dam_tsaritsyn_volga_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -2209,7 +2209,7 @@ je_pmr_dam_grand_canal_alsace_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -2749,7 +2749,7 @@ je_pmr_dam_iron_gates_arges_survey = {
 	}
 
 	goal_add_value = {
-		value = 18
+		value = 30
 	}
 
 	invalid = {
@@ -3019,7 +3019,7 @@ je_pmr_dam_yalu_river_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -3379,7 +3379,7 @@ je_pmr_dam_dnieper_rapids_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -3559,7 +3559,7 @@ je_pmr_dam_alcantara_gorge_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -4459,7 +4459,7 @@ je_pmr_dam_kainji_rapids_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -4999,7 +4999,7 @@ je_pmr_dam_cheboksary_volga_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -5089,7 +5089,7 @@ je_pmr_dam_lower_kama_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -5179,7 +5179,7 @@ je_pmr_dam_kiev_kanev_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -5269,7 +5269,7 @@ je_pmr_dam_gorodets_volga_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -5359,7 +5359,7 @@ je_pmr_dam_perm_kama_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -5449,7 +5449,7 @@ je_pmr_dam_zhiguli_volga_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -5539,7 +5539,7 @@ je_pmr_dam_balakovo_volga_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -5629,7 +5629,7 @@ je_pmr_dam_votkinsk_kama_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -5719,7 +5719,7 @@ je_pmr_dam_rybinsk_uglich_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -5899,7 +5899,7 @@ je_pmr_dam_xinan_river_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -5989,7 +5989,7 @@ je_pmr_dam_mequinenza_aragon_pyrenees_survey = {
 	}
 
 	goal_add_value = {
-		value = 12
+		value = 18
 	}
 
 	invalid = {
@@ -6799,7 +6799,7 @@ je_pmr_dam_garrison_missouri_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -7069,7 +7069,7 @@ je_pmr_dam_sungari_gorge_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -7339,7 +7339,7 @@ je_pmr_dam_high_rhine_baden_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -8149,7 +8149,7 @@ je_pmr_dam_upper_ob_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -8239,7 +8239,7 @@ je_pmr_dam_tabqa_narrows_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -8419,7 +8419,7 @@ je_pmr_dam_upper_euphrates_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -9319,7 +9319,7 @@ je_pmr_dam_kamianske_dnieper_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -9409,7 +9409,7 @@ je_pmr_dam_kremenchug_dnieper_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -10849,7 +10849,7 @@ je_pmr_dam_first_cataract_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -10882,186 +10882,6 @@ je_pmr_dam_first_cataract_survey = {
 		remove_modifier = pmr_dam_first_cataract_surveying
 		change_variable = { name = pmr_dam_active_surveys add = -1 }
 		debug_log = "PMR_DAM|survey_ended|first_cataract|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_conowingo_falls_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_conowingo_falls_months }
-				change_variable = { name = pmr_dam_conowingo_falls_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|conowingo_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_conowingo_falls_surveying
-		remove_variable = pmr_dam_conowingo_falls_months
-		remove_global_variable = pmr_dam_conowingo_falls_surveying
-		set_variable = pmr_dam_conowingo_falls_surveyed
-		set_global_variable = pmr_dam_conowingo_falls_surveyed_any
-		p:x75195D.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_conowingo_falls_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|conowingo_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|conowingo_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_conowingo_falls_months }
-			value = root.var:pmr_dam_conowingo_falls_months
-		}
-	}
-
-	goal_add_value = {
-		value = 18
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_conowingo_falls_months }
-			NOT = {
-				p:x75195D ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_conowingo_falls_months }
-			remove_variable = pmr_dam_conowingo_falls_months
-		}
-		remove_global_variable = pmr_dam_conowingo_falls_block
-		remove_global_variable = pmr_dam_conowingo_falls_surveying
-		remove_modifier = pmr_dam_conowingo_falls_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|conowingo_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_warsak_gorge_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_warsak_gorge_months }
-				change_variable = { name = pmr_dam_warsak_gorge_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|warsak_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_warsak_gorge_surveying
-		remove_variable = pmr_dam_warsak_gorge_months
-		remove_global_variable = pmr_dam_warsak_gorge_surveying
-		set_variable = pmr_dam_warsak_gorge_surveyed
-		set_global_variable = pmr_dam_warsak_gorge_surveyed_any
-		p:x7436D6.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_warsak_gorge_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|warsak_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|warsak_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_warsak_gorge_months }
-			value = root.var:pmr_dam_warsak_gorge_months
-		}
-	}
-
-	goal_add_value = {
-		value = 18
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_warsak_gorge_months }
-			NOT = {
-				p:x7436D6 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_warsak_gorge_months }
-			remove_variable = pmr_dam_warsak_gorge_months
-		}
-		remove_global_variable = pmr_dam_warsak_gorge_block
-		remove_global_variable = pmr_dam_warsak_gorge_surveying
-		remove_modifier = pmr_dam_warsak_gorge_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|warsak_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 	}
 
 	progressbar = yes
@@ -11119,7 +10939,7 @@ je_pmr_dam_sennar_blue_nile_survey = {
 	}
 
 	goal_add_value = {
-		value = 24
+		value = 18
 	}
 
 	invalid = {
@@ -11152,1806 +10972,6 @@ je_pmr_dam_sennar_blue_nile_survey = {
 		remove_modifier = pmr_dam_sennar_blue_nile_surveying
 		change_variable = { name = pmr_dam_active_surveys add = -1 }
 		debug_log = "PMR_DAM|survey_ended|sennar_blue_nile|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_lower_drave_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_lower_drave_months }
-				change_variable = { name = pmr_dam_lower_drave_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|lower_drave|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_lower_drave_surveying
-		remove_variable = pmr_dam_lower_drave_months
-		remove_global_variable = pmr_dam_lower_drave_surveying
-		set_variable = pmr_dam_lower_drave_surveyed
-		set_global_variable = pmr_dam_lower_drave_surveyed_any
-		p:x458E4C.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_lower_drave_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|lower_drave|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|lower_drave|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_lower_drave_months }
-			value = root.var:pmr_dam_lower_drave_months
-		}
-	}
-
-	goal_add_value = {
-		value = 18
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_lower_drave_months }
-			NOT = {
-				p:x458E4C ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_lower_drave_months }
-			remove_variable = pmr_dam_lower_drave_months
-		}
-		remove_global_variable = pmr_dam_lower_drave_block
-		remove_global_variable = pmr_dam_lower_drave_surveying
-		remove_modifier = pmr_dam_lower_drave_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|lower_drave|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_trollhattan_falls_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_trollhattan_falls_months }
-				change_variable = { name = pmr_dam_trollhattan_falls_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|trollhattan_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_trollhattan_falls_surveying
-		remove_variable = pmr_dam_trollhattan_falls_months
-		remove_global_variable = pmr_dam_trollhattan_falls_surveying
-		set_variable = pmr_dam_trollhattan_falls_surveyed
-		set_global_variable = pmr_dam_trollhattan_falls_surveyed_any
-		p:x31D8B4.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_trollhattan_falls_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|trollhattan_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|trollhattan_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_trollhattan_falls_months }
-			value = root.var:pmr_dam_trollhattan_falls_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_trollhattan_falls_months }
-			NOT = {
-				p:x31D8B4 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_trollhattan_falls_months }
-			remove_variable = pmr_dam_trollhattan_falls_months
-		}
-		remove_global_variable = pmr_dam_trollhattan_falls_block
-		remove_global_variable = pmr_dam_trollhattan_falls_surveying
-		remove_modifier = pmr_dam_trollhattan_falls_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|trollhattan_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_ariege_aude_pyrenees_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_ariege_aude_pyrenees_months }
-				change_variable = { name = pmr_dam_ariege_aude_pyrenees_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|ariege_aude_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_ariege_aude_pyrenees_surveying
-		remove_variable = pmr_dam_ariege_aude_pyrenees_months
-		remove_global_variable = pmr_dam_ariege_aude_pyrenees_surveying
-		set_variable = pmr_dam_ariege_aude_pyrenees_surveyed
-		set_global_variable = pmr_dam_ariege_aude_pyrenees_surveyed_any
-		p:x106040.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_ariege_aude_pyrenees_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|ariege_aude_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|ariege_aude_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_ariege_aude_pyrenees_months }
-			value = root.var:pmr_dam_ariege_aude_pyrenees_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_ariege_aude_pyrenees_months }
-			NOT = {
-				p:x106040 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_ariege_aude_pyrenees_months }
-			remove_variable = pmr_dam_ariege_aude_pyrenees_months
-		}
-		remove_global_variable = pmr_dam_ariege_aude_pyrenees_block
-		remove_global_variable = pmr_dam_ariege_aude_pyrenees_surveying
-		remove_modifier = pmr_dam_ariege_aude_pyrenees_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|ariege_aude_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_agno_gorge_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_agno_gorge_months }
-				change_variable = { name = pmr_dam_agno_gorge_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|agno_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_agno_gorge_surveying
-		remove_variable = pmr_dam_agno_gorge_months
-		remove_global_variable = pmr_dam_agno_gorge_surveying
-		set_variable = pmr_dam_agno_gorge_surveyed
-		set_global_variable = pmr_dam_agno_gorge_surveyed_any
-		p:xF4CD9C.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_agno_gorge_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|agno_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|agno_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_agno_gorge_months }
-			value = root.var:pmr_dam_agno_gorge_months
-		}
-	}
-
-	goal_add_value = {
-		value = 18
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_agno_gorge_months }
-			NOT = {
-				p:xF4CD9C ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_agno_gorge_months }
-			remove_variable = pmr_dam_agno_gorge_months
-		}
-		remove_global_variable = pmr_dam_agno_gorge_block
-		remove_global_variable = pmr_dam_agno_gorge_surveying
-		remove_modifier = pmr_dam_agno_gorge_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|agno_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_gersoppa_falls_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_gersoppa_falls_months }
-				change_variable = { name = pmr_dam_gersoppa_falls_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|gersoppa_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_gersoppa_falls_surveying
-		remove_variable = pmr_dam_gersoppa_falls_months
-		remove_global_variable = pmr_dam_gersoppa_falls_surveying
-		set_variable = pmr_dam_gersoppa_falls_surveyed
-		set_global_variable = pmr_dam_gersoppa_falls_surveyed_any
-		p:x16AA78.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_gersoppa_falls_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|gersoppa_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|gersoppa_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_gersoppa_falls_months }
-			value = root.var:pmr_dam_gersoppa_falls_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_gersoppa_falls_months }
-			NOT = {
-				p:x16AA78 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_gersoppa_falls_months }
-			remove_variable = pmr_dam_gersoppa_falls_months
-		}
-		remove_global_variable = pmr_dam_gersoppa_falls_block
-		remove_global_variable = pmr_dam_gersoppa_falls_surveying
-		remove_modifier = pmr_dam_gersoppa_falls_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|gersoppa_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_tikves_gorge_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_tikves_gorge_months }
-				change_variable = { name = pmr_dam_tikves_gorge_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|tikves_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_tikves_gorge_surveying
-		remove_variable = pmr_dam_tikves_gorge_months
-		remove_global_variable = pmr_dam_tikves_gorge_surveying
-		set_variable = pmr_dam_tikves_gorge_surveyed
-		set_global_variable = pmr_dam_tikves_gorge_surveyed_any
-		p:x494421.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_tikves_gorge_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|tikves_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|tikves_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_tikves_gorge_months }
-			value = root.var:pmr_dam_tikves_gorge_months
-		}
-	}
-
-	goal_add_value = {
-		value = 18
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_tikves_gorge_months }
-			NOT = {
-				p:x494421 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_tikves_gorge_months }
-			remove_variable = pmr_dam_tikves_gorge_months
-		}
-		remove_global_variable = pmr_dam_tikves_gorge_block
-		remove_global_variable = pmr_dam_tikves_gorge_surveying
-		remove_modifier = pmr_dam_tikves_gorge_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|tikves_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_missouri_breaks_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_missouri_breaks_months }
-				change_variable = { name = pmr_dam_missouri_breaks_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|missouri_breaks|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_missouri_breaks_surveying
-		remove_variable = pmr_dam_missouri_breaks_months
-		remove_global_variable = pmr_dam_missouri_breaks_surveying
-		set_variable = pmr_dam_missouri_breaks_surveyed
-		set_global_variable = pmr_dam_missouri_breaks_surveyed_any
-		p:x64283A.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_missouri_breaks_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|missouri_breaks|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|missouri_breaks|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_missouri_breaks_months }
-			value = root.var:pmr_dam_missouri_breaks_months
-		}
-	}
-
-	goal_add_value = {
-		value = 24
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_missouri_breaks_months }
-			NOT = {
-				p:x64283A ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_missouri_breaks_months }
-			remove_variable = pmr_dam_missouri_breaks_months
-		}
-		remove_global_variable = pmr_dam_missouri_breaks_block
-		remove_global_variable = pmr_dam_missouri_breaks_surveying
-		remove_modifier = pmr_dam_missouri_breaks_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|missouri_breaks|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_imatra_rapids_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_imatra_rapids_months }
-				change_variable = { name = pmr_dam_imatra_rapids_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|imatra_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_imatra_rapids_surveying
-		remove_variable = pmr_dam_imatra_rapids_months
-		remove_global_variable = pmr_dam_imatra_rapids_surveying
-		set_variable = pmr_dam_imatra_rapids_surveyed
-		set_global_variable = pmr_dam_imatra_rapids_surveyed_any
-		p:x934610.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_imatra_rapids_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|imatra_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|imatra_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_imatra_rapids_months }
-			value = root.var:pmr_dam_imatra_rapids_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_imatra_rapids_months }
-			NOT = {
-				p:x934610 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_imatra_rapids_months }
-			remove_variable = pmr_dam_imatra_rapids_months
-		}
-		remove_global_variable = pmr_dam_imatra_rapids_block
-		remove_global_variable = pmr_dam_imatra_rapids_surveying
-		remove_modifier = pmr_dam_imatra_rapids_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|imatra_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_lawpita_falls_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_lawpita_falls_months }
-				change_variable = { name = pmr_dam_lawpita_falls_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|lawpita_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_lawpita_falls_surveying
-		remove_variable = pmr_dam_lawpita_falls_months
-		remove_global_variable = pmr_dam_lawpita_falls_surveying
-		set_variable = pmr_dam_lawpita_falls_surveyed
-		set_global_variable = pmr_dam_lawpita_falls_surveyed_any
-		p:x02F3AF.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_lawpita_falls_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|lawpita_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|lawpita_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_lawpita_falls_months }
-			value = root.var:pmr_dam_lawpita_falls_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_lawpita_falls_months }
-			NOT = {
-				p:x02F3AF ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_lawpita_falls_months }
-			remove_variable = pmr_dam_lawpita_falls_months
-		}
-		remove_global_variable = pmr_dam_lawpita_falls_block
-		remove_global_variable = pmr_dam_lawpita_falls_surveying
-		remove_modifier = pmr_dam_lawpita_falls_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|lawpita_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_laxapana_falls_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_laxapana_falls_months }
-				change_variable = { name = pmr_dam_laxapana_falls_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|laxapana_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_laxapana_falls_surveying
-		remove_variable = pmr_dam_laxapana_falls_months
-		remove_global_variable = pmr_dam_laxapana_falls_surveying
-		set_variable = pmr_dam_laxapana_falls_surveyed
-		set_global_variable = pmr_dam_laxapana_falls_surveyed_any
-		p:x47B038.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_laxapana_falls_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|laxapana_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|laxapana_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_laxapana_falls_months }
-			value = root.var:pmr_dam_laxapana_falls_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_laxapana_falls_months }
-			NOT = {
-				p:x47B038 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_laxapana_falls_months }
-			remove_variable = pmr_dam_laxapana_falls_months
-		}
-		remove_global_variable = pmr_dam_laxapana_falls_block
-		remove_global_variable = pmr_dam_laxapana_falls_surveying
-		remove_modifier = pmr_dam_laxapana_falls_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|laxapana_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_longxi_river_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_longxi_river_months }
-				change_variable = { name = pmr_dam_longxi_river_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|longxi_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_longxi_river_surveying
-		remove_variable = pmr_dam_longxi_river_months
-		remove_global_variable = pmr_dam_longxi_river_surveying
-		set_variable = pmr_dam_longxi_river_surveyed
-		set_global_variable = pmr_dam_longxi_river_surveyed_any
-		p:xDBFEDF.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_longxi_river_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|longxi_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|longxi_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_longxi_river_months }
-			value = root.var:pmr_dam_longxi_river_months
-		}
-	}
-
-	goal_add_value = {
-		value = 18
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_longxi_river_months }
-			NOT = {
-				p:xDBFEDF ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_longxi_river_months }
-			remove_variable = pmr_dam_longxi_river_months
-		}
-		remove_global_variable = pmr_dam_longxi_river_block
-		remove_global_variable = pmr_dam_longxi_river_surveying
-		remove_modifier = pmr_dam_longxi_river_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|longxi_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_castelo_do_bode_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_castelo_do_bode_months }
-				change_variable = { name = pmr_dam_castelo_do_bode_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|castelo_do_bode|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_castelo_do_bode_surveying
-		remove_variable = pmr_dam_castelo_do_bode_months
-		remove_global_variable = pmr_dam_castelo_do_bode_surveying
-		set_variable = pmr_dam_castelo_do_bode_surveyed
-		set_global_variable = pmr_dam_castelo_do_bode_surveyed_any
-		p:xD02000.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_castelo_do_bode_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|castelo_do_bode|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|castelo_do_bode|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_castelo_do_bode_months }
-			value = root.var:pmr_dam_castelo_do_bode_months
-		}
-	}
-
-	goal_add_value = {
-		value = 18
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_castelo_do_bode_months }
-			NOT = {
-				p:xD02000 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_castelo_do_bode_months }
-			remove_variable = pmr_dam_castelo_do_bode_months
-		}
-		remove_global_variable = pmr_dam_castelo_do_bode_block
-		remove_global_variable = pmr_dam_castelo_do_bode_surveying
-		remove_modifier = pmr_dam_castelo_do_bode_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|castelo_do_bode|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_sun_moon_lake_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_sun_moon_lake_months }
-				change_variable = { name = pmr_dam_sun_moon_lake_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|sun_moon_lake|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_sun_moon_lake_surveying
-		remove_variable = pmr_dam_sun_moon_lake_months
-		remove_global_variable = pmr_dam_sun_moon_lake_surveying
-		set_variable = pmr_dam_sun_moon_lake_surveyed
-		set_global_variable = pmr_dam_sun_moon_lake_surveyed_any
-		p:xAEA2D8.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_sun_moon_lake_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|sun_moon_lake|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|sun_moon_lake|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_sun_moon_lake_months }
-			value = root.var:pmr_dam_sun_moon_lake_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_sun_moon_lake_months }
-			NOT = {
-				p:xAEA2D8 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_sun_moon_lake_months }
-			remove_variable = pmr_dam_sun_moon_lake_months
-		}
-		remove_global_variable = pmr_dam_sun_moon_lake_block
-		remove_global_variable = pmr_dam_sun_moon_lake_surveying
-		remove_modifier = pmr_dam_sun_moon_lake_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|sun_moon_lake|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_des_moines_rapids_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_des_moines_rapids_months }
-				change_variable = { name = pmr_dam_des_moines_rapids_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|des_moines_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_des_moines_rapids_surveying
-		remove_variable = pmr_dam_des_moines_rapids_months
-		remove_global_variable = pmr_dam_des_moines_rapids_surveying
-		set_variable = pmr_dam_des_moines_rapids_surveyed
-		set_global_variable = pmr_dam_des_moines_rapids_surveyed_any
-		p:xF23379.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_des_moines_rapids_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|des_moines_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|des_moines_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_des_moines_rapids_months }
-			value = root.var:pmr_dam_des_moines_rapids_months
-		}
-	}
-
-	goal_add_value = {
-		value = 24
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_des_moines_rapids_months }
-			NOT = {
-				p:xF23379 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_des_moines_rapids_months }
-			remove_variable = pmr_dam_des_moines_rapids_months
-		}
-		remove_global_variable = pmr_dam_des_moines_rapids_block
-		remove_global_variable = pmr_dam_des_moines_rapids_surveying
-		remove_modifier = pmr_dam_des_moines_rapids_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|des_moines_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_cachapoal_canyon_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_cachapoal_canyon_months }
-				change_variable = { name = pmr_dam_cachapoal_canyon_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|cachapoal_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_cachapoal_canyon_surveying
-		remove_variable = pmr_dam_cachapoal_canyon_months
-		remove_global_variable = pmr_dam_cachapoal_canyon_surveying
-		set_variable = pmr_dam_cachapoal_canyon_surveyed
-		set_global_variable = pmr_dam_cachapoal_canyon_surveyed_any
-		p:xC6A968.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_cachapoal_canyon_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|cachapoal_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|cachapoal_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_cachapoal_canyon_months }
-			value = root.var:pmr_dam_cachapoal_canyon_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_cachapoal_canyon_months }
-			NOT = {
-				p:xC6A968 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_cachapoal_canyon_months }
-			remove_variable = pmr_dam_cachapoal_canyon_months
-		}
-		remove_global_variable = pmr_dam_cachapoal_canyon_block
-		remove_global_variable = pmr_dam_cachapoal_canyon_surveying
-		remove_modifier = pmr_dam_cachapoal_canyon_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|cachapoal_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_lower_yalu_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_lower_yalu_months }
-				change_variable = { name = pmr_dam_lower_yalu_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|lower_yalu|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_lower_yalu_surveying
-		remove_variable = pmr_dam_lower_yalu_months
-		remove_global_variable = pmr_dam_lower_yalu_surveying
-		set_variable = pmr_dam_lower_yalu_surveyed
-		set_global_variable = pmr_dam_lower_yalu_surveyed_any
-		p:xD0B789.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_lower_yalu_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|lower_yalu|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|lower_yalu|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_lower_yalu_months }
-			value = root.var:pmr_dam_lower_yalu_months
-		}
-	}
-
-	goal_add_value = {
-		value = 24
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_lower_yalu_months }
-			NOT = {
-				p:xD0B789 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_lower_yalu_months }
-			remove_variable = pmr_dam_lower_yalu_months
-		}
-		remove_global_variable = pmr_dam_lower_yalu_block
-		remove_global_variable = pmr_dam_lower_yalu_surveying
-		remove_modifier = pmr_dam_lower_yalu_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|lower_yalu|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_edea_falls_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_edea_falls_months }
-				change_variable = { name = pmr_dam_edea_falls_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|edea_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_edea_falls_surveying
-		remove_variable = pmr_dam_edea_falls_months
-		remove_global_variable = pmr_dam_edea_falls_surveying
-		set_variable = pmr_dam_edea_falls_surveyed
-		set_global_variable = pmr_dam_edea_falls_surveyed_any
-		p:xCABC41.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_edea_falls_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|edea_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|edea_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_edea_falls_months }
-			value = root.var:pmr_dam_edea_falls_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_edea_falls_months }
-			NOT = {
-				p:xCABC41 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_edea_falls_months }
-			remove_variable = pmr_dam_edea_falls_months
-		}
-		remove_global_variable = pmr_dam_edea_falls_block
-		remove_global_variable = pmr_dam_edea_falls_surveying
-		remove_modifier = pmr_dam_edea_falls_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|edea_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_victoria_nile_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_victoria_nile_months }
-				change_variable = { name = pmr_dam_victoria_nile_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|victoria_nile|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_victoria_nile_surveying
-		remove_variable = pmr_dam_victoria_nile_months
-		remove_global_variable = pmr_dam_victoria_nile_surveying
-		set_variable = pmr_dam_victoria_nile_surveyed
-		set_global_variable = pmr_dam_victoria_nile_surveyed_any
-		p:xF9C916.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_victoria_nile_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|victoria_nile|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|victoria_nile|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_victoria_nile_months }
-			value = root.var:pmr_dam_victoria_nile_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_victoria_nile_months }
-			NOT = {
-				p:xF9C916 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_victoria_nile_months }
-			remove_variable = pmr_dam_victoria_nile_months
-		}
-		remove_global_variable = pmr_dam_victoria_nile_block
-		remove_global_variable = pmr_dam_victoria_nile_surveying
-		remove_modifier = pmr_dam_victoria_nile_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|victoria_nile|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_rincon_del_bonete_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_rincon_del_bonete_months }
-				change_variable = { name = pmr_dam_rincon_del_bonete_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|rincon_del_bonete|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_rincon_del_bonete_surveying
-		remove_variable = pmr_dam_rincon_del_bonete_months
-		remove_global_variable = pmr_dam_rincon_del_bonete_surveying
-		set_variable = pmr_dam_rincon_del_bonete_surveyed
-		set_global_variable = pmr_dam_rincon_del_bonete_surveyed_any
-		p:x3D3A57.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_rincon_del_bonete_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|rincon_del_bonete|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|rincon_del_bonete|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_rincon_del_bonete_months }
-			value = root.var:pmr_dam_rincon_del_bonete_months
-		}
-	}
-
-	goal_add_value = {
-		value = 24
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_rincon_del_bonete_months }
-			NOT = {
-				p:x3D3A57 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_rincon_del_bonete_months }
-			remove_variable = pmr_dam_rincon_del_bonete_months
-		}
-		remove_global_variable = pmr_dam_rincon_del_bonete_block
-		remove_global_variable = pmr_dam_rincon_del_bonete_surveying
-		remove_modifier = pmr_dam_rincon_del_bonete_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|rincon_del_bonete|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	progressbar = yes
-	weight = 10
-	transferable = no
-	should_be_pinned_by_default_uninvolved_or_context = no
-}
-
-je_pmr_dam_uhl_river_survey = {
-	icon = "gfx/interface/icons/event_icons/event_map.dds"
-	group = je_group_technology
-
-	on_monthly_pulse = {
-		effect = {
-			if = {
-				limit = { has_variable = pmr_dam_uhl_river_months }
-				change_variable = { name = pmr_dam_uhl_river_months add = 1 }
-				debug_log = "PMR_DAM|survey_month|uhl_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-			}
-		}
-	}
-
-	complete = {
-		scope:journal_entry = { is_goal_complete = yes }
-	}
-
-	on_complete = {
-		remove_modifier = pmr_dam_uhl_river_surveying
-		remove_variable = pmr_dam_uhl_river_months
-		remove_global_variable = pmr_dam_uhl_river_surveying
-		set_variable = pmr_dam_uhl_river_surveyed
-		set_global_variable = pmr_dam_uhl_river_surveyed_any
-		p:x3264B7.state.owner ?= {
-			if = {
-				limit = { is_subject = yes }
-				top_overlord = { save_scope_as = pmr_dam_famtop }
-			}
-			else = { save_scope_as = pmr_dam_famtop }
-		}
-		if = {
-			limit = { OR = { this = scope:pmr_dam_famtop  top_overlord ?= { this = scope:pmr_dam_famtop } } }
-			set_global_variable = { name = pmr_dam_uhl_river_family  value = scope:pmr_dam_famtop }
-			debug_log = "PMR_DAM|family_survey|uhl_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
-		}
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_complete|uhl_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
-	}
-
-	current_value = {
-		value = 0
-		if = {
-			limit = { has_variable = pmr_dam_uhl_river_months }
-			value = root.var:pmr_dam_uhl_river_months
-		}
-	}
-
-	goal_add_value = {
-		value = 12
-	}
-
-	invalid = {
-		OR = {
-			NOT = { has_variable = pmr_dam_uhl_river_months }
-			NOT = {
-				p:x3264B7 ?= {
-					state ?= {
-						owner ?= {
-							OR = {
-								this = ROOT
-								any_overlord_or_above = { this = ROOT }
-								any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } }
-								any_overlord_or_above = { any_scope_treaty = { binds = ROOT  any_scope_article = { has_type = foreign_investment_rights  target_country = ROOT } } }
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_invalid = {
-		if = {
-			limit = { has_variable = pmr_dam_uhl_river_months }
-			remove_variable = pmr_dam_uhl_river_months
-		}
-		remove_global_variable = pmr_dam_uhl_river_block
-		remove_global_variable = pmr_dam_uhl_river_surveying
-		remove_modifier = pmr_dam_uhl_river_surveying
-		change_variable = { name = pmr_dam_active_surveys add = -1 }
-		debug_log = "PMR_DAM|survey_ended|uhl_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 	}
 
 	progressbar = yes

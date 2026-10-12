@@ -119,9 +119,7 @@ company_basic_agriculture_2 = {
 
 	prosperity_modifier = {
 		building_livestock_ranch_throughput_add = 0.1
-		building_food_industry_throughput_add = 0.1
 		building_food_industry_sweeteners_throughput_add = 0.1
-		building_food_industry_baking_powder_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -163,10 +161,8 @@ company_basic_fabrics = {
 	}
 
 	extension_building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	possible_prestige_goods = {
@@ -193,10 +189,8 @@ company_basic_fabrics = {
 	}
 
 	prosperity_modifier = {
-		building_textile_mill_throughput_add = 0.1
 		building_textile_mill_dye_workshops_throughput_add = 0.1
 		building_textile_mill_sewing_machines_throughput_add = 0.1
-		building_textile_mill_electric_sewing_machines_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -372,10 +366,8 @@ company_basic_silk_and_dye = {
 	}
 
 	extension_building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	possible = {
@@ -392,10 +384,8 @@ company_basic_silk_and_dye = {
 
 	prosperity_modifier = {
 		country_influence_mult = 0.1
-		building_textile_mill_throughput_add = 0.1
 		building_textile_mill_dye_workshops_throughput_add = 0.1
 		building_textile_mill_sewing_machines_throughput_add = 0.1
-		building_textile_mill_electric_sewing_machines_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -561,7 +551,6 @@ company_basic_forestry = {
 	}
 
 	extension_building_types = {
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
@@ -737,7 +726,6 @@ company_basic_metal_mining = {
 		building_steel_mill_throughput_add = 0.1
 		building_steel_mill_bessemer_process_throughput_add = 0.1
 		building_steel_mill_open_hearth_process_throughput_add = 0.1
-		building_steel_mill_electric_arc_process_throughput_add = 0.1
 		state_pollution_reduction_health_mult = 0.05
 	}
 
@@ -795,7 +783,6 @@ company_basic_mineral_mining = {
 
 	prosperity_modifier = {
 		building_chemical_plant_throughput_add = 0.1
-		building_chemical_plant_improved_fertilizer_throughput_add = 0.1
 		building_chemical_plant_nitrogen_fixation_throughput_add = 0.1
 		building_chemical_plant_catalytic_synthesis_throughput_add = 0.1
 	}
@@ -833,9 +820,7 @@ company_basic_food = {
 	}
 
 	building_types = {
-		building_food_industry
 		building_food_industry_sweeteners
-		building_food_industry_baking_powder
 	}
 
 	extension_building_types = {
@@ -858,11 +843,7 @@ company_basic_food = {
 		any_scope_state = {
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_food_industry
-					is_building_type = building_food_industry_sweeteners
-					is_building_type = building_food_industry_baking_powder
-				}
+				is_building_type = building_food_industry_sweeteners
 				level >= 5
 			}
 		}
@@ -876,11 +857,7 @@ company_basic_food = {
 		any_scope_state = {
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_food_industry
-					is_building_type = building_food_industry_sweeteners
-					is_building_type = building_food_industry_baking_powder
-				}
+				is_building_type = building_food_industry_sweeteners
 				level >= 3
 			}
 		}
@@ -905,9 +882,7 @@ company_basic_paper = {
 	}
 
 	building_types = {
-		building_paper_mill
 		building_paper_mill_sulfite_pulping
-		building_paper_mill_bleached_paper
 		building_paper_mill_continuous_web
 	}
 
@@ -931,9 +906,7 @@ company_basic_paper = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_paper_mill
 					is_building_type = building_paper_mill_sulfite_pulping
-					is_building_type = building_paper_mill_bleached_paper
 					is_building_type = building_paper_mill_continuous_web
 				}
 				level >= 5
@@ -950,9 +923,7 @@ company_basic_paper = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_paper_mill
 					is_building_type = building_paper_mill_sulfite_pulping
-					is_building_type = building_paper_mill_bleached_paper
 					is_building_type = building_paper_mill_continuous_web
 				}
 				level >= 3
@@ -979,14 +950,11 @@ company_basic_home_goods = {
 	}
 
 	building_types = {
-		building_glassworks
 		building_glassworks_leaded_glass
 		building_glassworks_crystal_glass
 		building_glassworks_houseware_plastics
-		building_furniture_manufactory
 		building_furniture_manufactory_lathe
 		building_furniture_manufactory_mechanized_workshops
-		building_furniture_manufactory_spray_finishing
 	}
 
 	extension_building_types = {
@@ -1011,16 +979,13 @@ company_basic_home_goods = {
 			any_scope_building = {
 				OR = {
 					OR = {
-						is_building_type = building_glassworks
 						is_building_type = building_glassworks_leaded_glass
 						is_building_type = building_glassworks_crystal_glass
 						is_building_type = building_glassworks_houseware_plastics
 					}
 					OR = {
-						is_building_type = building_furniture_manufactory
 						is_building_type = building_furniture_manufactory_lathe
 						is_building_type = building_furniture_manufactory_mechanized_workshops
-						is_building_type = building_furniture_manufactory_spray_finishing
 					}
 				}
 				level >= 5
@@ -1038,16 +1003,13 @@ company_basic_home_goods = {
 			any_scope_building = {
 				OR = {
 					OR = {
-						is_building_type = building_glassworks
 						is_building_type = building_glassworks_leaded_glass
 						is_building_type = building_glassworks_crystal_glass
 						is_building_type = building_glassworks_houseware_plastics
 					}
 					OR = {
-						is_building_type = building_furniture_manufactory
 						is_building_type = building_furniture_manufactory_lathe
 						is_building_type = building_furniture_manufactory_mechanized_workshops
-						is_building_type = building_furniture_manufactory_spray_finishing
 					}
 				}
 				level >= 3
@@ -1074,10 +1036,8 @@ company_basic_textiles = {
 	}
 
 	building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -1101,10 +1061,8 @@ company_basic_textiles = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_textile_mill
 					is_building_type = building_textile_mill_dye_workshops
 					is_building_type = building_textile_mill_sewing_machines
-					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -1120,10 +1078,8 @@ company_basic_textiles = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_textile_mill
 					is_building_type = building_textile_mill_dye_workshops
 					is_building_type = building_textile_mill_sewing_machines
-					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -1152,7 +1108,6 @@ company_basic_steel = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 	}
 
 	possible_prestige_goods = {
@@ -1179,7 +1134,6 @@ company_basic_steel = {
 					is_building_type = building_steel_mill
 					is_building_type = building_steel_mill_bessemer_process
 					is_building_type = building_steel_mill_open_hearth_process
-					is_building_type = building_steel_mill_electric_arc_process
 				}
 				level >= 5
 			}
@@ -1198,7 +1152,6 @@ company_basic_steel = {
 					is_building_type = building_steel_mill
 					is_building_type = building_steel_mill_bessemer_process
 					is_building_type = building_steel_mill_open_hearth_process
-					is_building_type = building_steel_mill_electric_arc_process
 				}
 				level >= 5
 			}
@@ -1224,7 +1177,6 @@ company_basic_metalworks = {
 	}
 
 	building_types = {
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
@@ -1234,7 +1186,6 @@ company_basic_metalworks = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 	}
 
 	possible_prestige_goods = {
@@ -1254,7 +1205,6 @@ company_basic_metalworks = {
 			any_scope_building = {
 				OR = {
 					OR = {
-						is_building_type = building_tooling_workshop
 						is_building_type = building_tooling_workshop_pig_iron
 						is_building_type = building_tooling_workshop_steel
 						is_building_type = building_tooling_workshop_rubber_grips
@@ -1275,7 +1225,6 @@ company_basic_metalworks = {
 			any_scope_building = {
 				OR = {
 					OR = {
-						is_building_type = building_tooling_workshop
 						is_building_type = building_tooling_workshop_pig_iron
 						is_building_type = building_tooling_workshop_steel
 						is_building_type = building_tooling_workshop_rubber_grips
@@ -1368,7 +1317,6 @@ company_basic_chemicals = {
 
 	building_types = {
 		building_chemical_plant
-		building_chemical_plant_improved_fertilizer
 		building_chemical_plant_nitrogen_fixation
 		building_chemical_plant_catalytic_synthesis
 		building_synthetics_plant
@@ -1396,7 +1344,6 @@ company_basic_chemicals = {
 				OR = {
 					OR = {
 						is_building_type = building_chemical_plant
-						is_building_type = building_chemical_plant_improved_fertilizer
 						is_building_type = building_chemical_plant_nitrogen_fixation
 						is_building_type = building_chemical_plant_catalytic_synthesis
 					}
@@ -1410,7 +1357,6 @@ company_basic_chemicals = {
 	prosperity_modifier = {
 		unit_supply_consumption_mult = -0.05
 		building_chemical_plant_throughput_add = 0.1
-		building_chemical_plant_improved_fertilizer_throughput_add = 0.1
 		building_chemical_plant_nitrogen_fixation_throughput_add = 0.1
 		building_chemical_plant_catalytic_synthesis_throughput_add = 0.1
 	}
@@ -1422,7 +1368,6 @@ company_basic_chemicals = {
 				OR = {
 					OR = {
 						is_building_type = building_chemical_plant
-						is_building_type = building_chemical_plant_improved_fertilizer
 						is_building_type = building_chemical_plant_nitrogen_fixation
 						is_building_type = building_chemical_plant_catalytic_synthesis
 					}
@@ -1463,7 +1408,6 @@ company_basic_motors = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 	}
 
 	possible = {
@@ -1543,7 +1487,6 @@ company_basic_munitions = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 	}
 
 	possible_prestige_goods = {
@@ -1687,7 +1630,6 @@ company_basic_weapons = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 	}
 
 	possible_prestige_goods = {
@@ -1763,12 +1705,9 @@ company_construction_power_bloc = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
-		building_glassworks
 		building_glassworks_leaded_glass
 		building_glassworks_crystal_glass
 		building_glassworks_houseware_plastics
@@ -1794,16 +1733,13 @@ company_construction_power_bloc = {
 						is_building_type = building_steel_mill
 						is_building_type = building_steel_mill_bessemer_process
 						is_building_type = building_steel_mill_open_hearth_process
-						is_building_type = building_steel_mill_electric_arc_process
 					}
 					OR = {
-						is_building_type = building_tooling_workshop
 						is_building_type = building_tooling_workshop_pig_iron
 						is_building_type = building_tooling_workshop_steel
 						is_building_type = building_tooling_workshop_rubber_grips
 					}
 					OR = {
-						is_building_type = building_glassworks
 						is_building_type = building_glassworks_leaded_glass
 						is_building_type = building_glassworks_crystal_glass
 						is_building_type = building_glassworks_houseware_plastics
@@ -1826,16 +1762,13 @@ company_construction_power_bloc = {
 						is_building_type = building_steel_mill
 						is_building_type = building_steel_mill_bessemer_process
 						is_building_type = building_steel_mill_open_hearth_process
-						is_building_type = building_steel_mill_electric_arc_process
 					}
 					OR = {
-						is_building_type = building_tooling_workshop
 						is_building_type = building_tooling_workshop_pig_iron
 						is_building_type = building_tooling_workshop_steel
 						is_building_type = building_tooling_workshop_rubber_grips
 					}
 					OR = {
-						is_building_type = building_glassworks
 						is_building_type = building_glassworks_leaded_glass
 						is_building_type = building_glassworks_crystal_glass
 						is_building_type = building_glassworks_houseware_plastics

@@ -12,9 +12,7 @@ company_sumitomo = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 		building_chemical_plant
-		building_chemical_plant_improved_fertilizer
 		building_chemical_plant_nitrogen_fixation
 		building_chemical_plant_catalytic_synthesis
 	}
@@ -22,7 +20,6 @@ company_sumitomo = {
 	extension_building_types = {
 		building_coal_mine
 		building_iron_mine
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
@@ -65,11 +62,9 @@ company_sumitomo = {
 							is_building_type = building_steel_mill
 							is_building_type = building_steel_mill_bessemer_process
 							is_building_type = building_steel_mill_open_hearth_process
-							is_building_type = building_steel_mill_electric_arc_process
 						}
 						OR = {
 							is_building_type = building_chemical_plant
-							is_building_type = building_chemical_plant_improved_fertilizer
 							is_building_type = building_chemical_plant_nitrogen_fixation
 							is_building_type = building_chemical_plant_catalytic_synthesis
 						}
@@ -117,19 +112,7 @@ company_sumitomo = {
 				state_region = s:STATE_KANSAI
 			}
 		}
-		building_steel_mill_electric_arc_process = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KANSAI
-			}
-		}
 		building_chemical_plant = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KANSAI
-			}
-		}
-		building_chemical_plant_improved_fertilizer = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_KANSAI
@@ -170,15 +153,12 @@ company_yasuda = {
 	}
 
 	extension_building_types = {
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
 		building_coal_mine
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	possible_prestige_goods = {
@@ -364,7 +344,6 @@ company_guthrie = {
 	extension_building_types = {
 		building_rubber_plantation
 		building_logging_camp
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
@@ -534,7 +513,6 @@ company_broken_hill_proprietary_company = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 		building_automotive_industry
 		building_automotive_industry_mass_automobile_production
 		building_iron_mine
@@ -617,9 +595,7 @@ company_ramirez = {
 	preferred_headquarters = { STATE_ALENTEJO }
 
 	building_types = {
-		building_food_industry
 		building_food_industry_sweeteners
-		building_food_industry_baking_powder
 		building_fishing_wharf
 	}
 
@@ -660,11 +636,7 @@ company_ramirez = {
 			any_scope_state = {
 				owner = root
 				any_scope_building = {
-					OR = {
-						is_building_type = building_food_industry
-						is_building_type = building_food_industry_sweeteners
-						is_building_type = building_food_industry_baking_powder
-					}
+					is_building_type = building_food_industry_sweeteners
 					level >= 5
 				}
 				any_scope_building = {
@@ -686,19 +658,7 @@ company_ramirez = {
 	}
 
 	ai_construction_targets = {
-		building_food_industry = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ALENTEJO
-			}
-		}
 		building_food_industry_sweeteners = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ALENTEJO
-			}
-		}
-		building_food_industry_baking_powder = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_ALENTEJO
@@ -884,7 +844,6 @@ company_ferranti_ltd = {
 	}
 
 	extension_building_types = {
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
@@ -926,10 +885,8 @@ company_ferranti_ltd = {
 
 	prosperity_modifier = {
 		country_weekly_innovation_mult = 0.1
-		building_textile_mill_throughput_add = 0.1
 		building_textile_mill_dye_workshops_throughput_add = 0.1
 		building_textile_mill_sewing_machines_throughput_add = 0.1
-		building_textile_mill_electric_sewing_machines_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -965,7 +922,6 @@ company_van_vlissingen_en_dudok_van_heel = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
@@ -976,7 +932,6 @@ company_van_vlissingen_en_dudok_van_heel = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 		building_iron_mine
 		building_automotive_industry
 		building_automotive_industry_mass_automobile_production
@@ -1070,7 +1025,6 @@ company_maschinenfabrik_oerlikon = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
@@ -1176,7 +1130,6 @@ company_a_markwald_and_company = {
 	}
 
 	extension_building_types = {
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
@@ -1436,9 +1389,7 @@ company_noda_shoyu = {
 	preferred_headquarters = { STATE_KANTO }
 
 	building_types = {
-		building_food_industry
 		building_food_industry_sweeteners
-		building_food_industry_baking_powder
 	}
 
 	extension_building_types = {
@@ -1470,11 +1421,7 @@ company_noda_shoyu = {
 			any_scope_state = {
 				owner = root
 				any_scope_building = {
-					OR = {
-						is_building_type = building_food_industry
-						is_building_type = building_food_industry_sweeteners
-						is_building_type = building_food_industry_baking_powder
-					}
+					is_building_type = building_food_industry_sweeteners
 					level >= 5
 				}
 			}
@@ -1493,19 +1440,7 @@ company_noda_shoyu = {
 	}
 
 	ai_construction_targets = {
-		building_food_industry = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KANTO
-			}
-		}
 		building_food_industry_sweeteners = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KANTO
-			}
-		}
-		building_food_industry_baking_powder = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_KANTO

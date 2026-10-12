@@ -12,10 +12,8 @@ company_ingolstadt_electrical_company = {
 	}
 
 	extension_building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 		building_livestock_ranch
 	}
 

@@ -19,7 +19,6 @@ company_krupp = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 	}
 
 	extension_building_types = {
@@ -53,7 +52,6 @@ company_krupp = {
 						is_building_type = building_steel_mill
 						is_building_type = building_steel_mill_bessemer_process
 						is_building_type = building_steel_mill_open_hearth_process
-						is_building_type = building_steel_mill_electric_arc_process
 					}
 					OR = {
 						is_building_type = building_arms_industry
@@ -100,12 +98,6 @@ company_krupp = {
 			}
 		}
 		building_steel_mill_open_hearth_process = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_RUHR
-			}
-		}
-		building_steel_mill_electric_arc_process = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_RUHR
@@ -195,7 +187,6 @@ company_rheinmetall = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 	}
 
 	possible_prestige_goods = {
@@ -406,7 +397,6 @@ company_schichau = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 	}
 
 	potential = {
@@ -634,7 +624,6 @@ company_basf = {
 	building_types = {
 		building_synthetics_plant
 		building_chemical_plant
-		building_chemical_plant_improved_fertilizer
 		building_chemical_plant_nitrogen_fixation
 		building_chemical_plant_catalytic_synthesis
 	}

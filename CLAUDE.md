@@ -287,7 +287,27 @@ the reason it is closed is the UI, which has to render a rung per era per indust
 ⇒ Nothing may describe it as the canon, the shipped book, or the current method. Where an old banner below still
 reads that way it has been corrected in place; the headings that follow are HISTORY.
 
-## ⭐⭐ UNDER TEST, NOT THE CANON — ARTISANSHIP CRAFTS (LINE A) AND SIX RUNGS MERGED INTO METHOD SWITCHES (LINE B) (user-ruled 2026-09-30; BALANCE_FRAMEWORK §10.91; ROADMAP steps 12–13; FINDINGS F180)
+## ⭐⭐⭐ THE CANON IS THE ARTMERGE ARM, `jex-dam4s-rs`, SINCE 2026-10-12 (user-ruled: *"CANONIZE artmerge with all these additions"*; BALANCE_FRAMEWORK §10.99; FINDINGS F227)
+
+`config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.jex-dam4s-rs.json` + its twin
+(`tech_tree_options.jex-dam4s-rs.json`). The book = the artmerge arm described in the next section (crafts + six merges, e1 anchors, the 1.2
+pop-good lift, the compressed desire ladder, textile's host at its own cost) + the extra research entries (§10.95) + the two TICK-COST FIXES
+(four-class resource-slot dams, script-placed research entries — §10.89.13) + the §10.97 research rework (research halved for every source,
+non-additive literacy-gated industry entries, 20 stages, follower halving, AI schooling) + the §10.98 entries (ships, frontline, contagious
+ideas, tropical empire, civilizing mission, state apparatus, universities, finance, cities, antibiotics; follower marks, first acquisition ×2).
+Measured n=3 (F227, stitched session `20261012_203800_jex-dam4s-rs-stitched-n3`): 2 intact / 1 broken by runoff (world GDP 1.04 / 1.09 / 1.45),
+consensus loss 5.37, the majors at 0.97 of vanilla's technology gain, the leader on the anchor principle (45 / 38.5 / 50% of game eras 3 / 4 / 5),
+play ×1.005. The emitter's revolt fix (no placement in a revolutionary country) came after the batch and was probed on the book (20261012_220651:
+0 duplicate-placement errors over 1836–1856 against 49 before, technology and GDP unchanged). Built and DEPLOYED 2026-10-12 22:37 (the default
+build: `mod/` and Documents' `pm_tech_rehaul` are the canon again; the `ra` playtest build that stood there is kept in `mod_playtest_ra/`).
+⚠ **KNOWN OPEN ITEMS:** one runoff seed in three; military technology ~10 behind vanilla's count (no era-5 military technology anywhere); tech
+spread ×2 and a society research multiplier deferred.
+⚠⚠ **THE PRE-ARTMERGE FAMILY (`canon-dams-family-nolog` and every book before it) IS NO LONGER CANON.** Its files are kept, not deleted (yet), as
+records. **RETURNING TO IT WOULD NEED THE PERFORMANCE CHANGES REIMPLEMENTED**: those books carry neither tick-cost fix (dams as four-class
+resource-slot buildings, `dams.layout = resource4`; research entries placed by triggers, `research_events.placement = script` — F220/F221), nor
+§10.95/§10.97/§10.98. Every section below that calls a pre-artmerge book "the canon" is HISTORY.
+
+## ⭐⭐ THE ARTMERGE ARM — ARTISANSHIP CRAFTS (LINE A) AND SIX RUNGS MERGED INTO METHOD SWITCHES (LINE B) — CANON SINCE 2026-10-12 AS PART OF `jex-dam4s-rs` (user-ruled 2026-09-30; BALANCE_FRAMEWORK §10.91; ROADMAP steps 12–13; FINDINGS F180). The text below is the arm's history while it was under test
 
 **Line A:** six e0 rungs (Bakeries, Handsewn Clothes, Handcrafted Furniture, Forest Glass, Crude Tools, Pulp Pressing) become 500-worker
 craft rungs — skilled, labour-heavy, construction cost ÷50, base-price break-even ~140% — in a child building group `bg_pmr_crafts`
@@ -396,7 +416,7 @@ and PASSED (one dam queued correctly). ⭐ NEXT (user, 2026-10-10): one last tec
 the research entries more important — then the decision: canonise the arm, or return to the pre-artmerge canon keeping the performance changes
 (ROADMAP step 14). ⚠ Since 2026-10-11 10:12 the DEPLOYED mod is `mod_playtest_ra/` (user-asked, to eyeball): candidate A of §10.96 at the arm's CURRENT ruled dam staffing 10/15/10 (config `mod_config.jex-dam4s-ra-play.json`, gitignored: jex-dam4s + research_levers, no staffing pin), no telemetry — NOT the canon; the dam test build stays in `mod_playtest_dam4s_damtest/`.
 
-## ⭐⭐⭐ THE CANON IS `canon-dams-family` SINCE 2026-09-29 — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
+## (HISTORY) THE CANON WAS `canon-dams-family` FROM 2026-09-29 TO 2026-10-12 (no longer canon; returning would need the performance changes reimplemented — see the top canon section) — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
 
 `config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.canon-dams-family-nolog.json` + twin
 (sha256 `806c8b3df03b5d61`; the twin is the `canon-dams` tree byte for byte) — the measured `canon-dams-family` book MINUS its monthly dam log
@@ -1737,7 +1757,12 @@ config/mod_config.jex-dam4s.json ⚗ THE TICK-COST FIX ON THE jex BOOK (user-rul
                         tree twin (the jex book's): the jex book + dams on the engine's RESOURCE SLOTS in the four ruled classes (300/600 electricity,
                         ≤ 5-year builds, 122 projects / 181 slots) + `research_events.placement = script`; `make_dam4_config.mjs --base
                         e1a12-ai1135-tex1140-jex-artmerge --suffix jex-dam4s --script-placement`. Century n=3: 20261009_193145_jex-dam4s-n3. Un-ignored
-config/mod_config.canon-dams-family-nolog.json ⭐⭐⭐ THE CANON SINCE 2026-09-29 (config/mod_config.json is a verbatim copy): the book below
+config/mod_config.jex-dam4s-rb.json / config/mod_config.jex-dam4s-rs.json ⭐⭐⭐ THE CANON SINCE 2026-10-12 IS `jex-dam4s-rs` (config/mod_config.json
+                        is a verbatim copy, §10.99): `jex-dam4s-rb` = jex-dam4s + the research levers (`jex-dam4s-rl`: innovation base / cap base / cap
+                        literacy term 25, universities ×0.5, `make_research_levers_config.mjs`) + the §10.97 entry rework (`make_research_rework_config.mjs
+                        --base config/mod_config.jex-dam4s-rl.json --suffix jex-dam4s-rb`, F226); each book's `_*_variant` records hold the commands; `jex-dam4s-rs` = rb + the §10.98 entries
+                        (`make_research_society_config.mjs`, F227). Their `-wild` twins are the smoke books. Un-ignored with their twins
+config/mod_config.canon-dams-family-nolog.json (HISTORY) THE CANON FROM 2026-09-29 TO 2026-10-12, no longer canon (§10.99): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
                         file) + its tree twin (canon-dams's, byte-identical): canon-dams + `dams.rules = "family"` + `dams.log_levels` (§10.89.12).

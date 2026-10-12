@@ -223,9 +223,15 @@
 						levels=1
 						region="STATE_GREATER_CAUCASUS"
 					}
+					building={
+						type="building_textile_mill"
+						country="c:RUS"
+						levels=9
+						region="STATE_GREATER_CAUCASUS"
+					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 		}
 	}
@@ -243,7 +249,7 @@
 				activate_production_methods={ "pm_main_arms_muskets" "pm_automation_disabled"  }
 			}
 			create_building={
-				building="building_food_industry"
+				building = "building_food_industry"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -251,9 +257,15 @@
 						levels=2
 						region="STATE_INGRIA"
 					}
+					building={
+						type="building_food_industry"
+						country="c:RUS"
+						levels=18
+						region="STATE_SAMARA"
+					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning"  "pm_manual_dough_processing" "pm_disabled_distillery" }
+				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning" "pm_disabled_distillery" }
 			}
 			create_building={
 				building="building_rye_farm"
@@ -610,6 +622,19 @@
 				reserves=1
 				activate_production_methods={ "pm_open_air_stockyards" "pm_simple_ranch" "pm_standard_fences" "pm_unrefrigerated"  }
 			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:KAB"
+						levels=4
+						region="STATE_PASHTUNISTAN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
 		}
 		region_state:PAN={
 			create_building={
@@ -651,6 +676,19 @@
 				reserves=1
 				activate_production_methods={ "pm_open_air_stockyards" "pm_simple_ranch" "pm_standard_fences" "pm_unrefrigerated"  }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:PAN"
+						levels=1
+						region="STATE_PASHTUNISTAN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
 		}
 	}
 	s:STATE_KANDAHAR={
@@ -661,7 +699,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:KAN"
-						levels=1
+						levels=17
 						region="STATE_KANDAHAR"
 					}
 				}
@@ -775,7 +813,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:HER"
-						levels=1
+						levels=17
 						region="STATE_HERAT"
 					}
 				}
@@ -842,7 +880,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:KAB"
-						levels=1
+						levels=13
 						region="STATE_KABUL"
 					}
 				}

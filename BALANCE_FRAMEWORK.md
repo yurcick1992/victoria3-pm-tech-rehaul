@@ -9774,7 +9774,7 @@ depend on the literacy and all levers"*. Base book: `jex-dam4s` (§10.89.13).
    cut is mostly a cost lever once the AI rebuilds to its cap; a spread raise lifts the leader too. Every setting that puts the leader near half
    costs production-onset timing (26 → 19–22 of 43) — a trade-off for the user, not yet ruled. Candidates await the user's choice; none has run.
 
-## §10.97 — THE RESEARCH ENTRIES REWORKED: SLOWER, NON-ADDITIVE, LITERACY-GATED, OPEN-ENDED; RESEARCH HALVED FOR EVERYONE (user-ruled 2026-10-11; ROADMAP step 14; NOT BUILT)
+## §10.97 — THE RESEARCH ENTRIES REWORKED: SLOWER, NON-ADDITIVE, LITERACY-GATED, OPEN-ENDED; RESEARCH HALVED FOR EVERYONE (user-ruled 2026-10-11; ROADMAP step 14; BUILT as jex-dam4s-rb, F226; CANON since 2026-10-12 as part of jex-dam4s-rs, §10.99)
 
 **The complaint (user, after playing candidate A of §10.96):** *"tech JEs are overdoing it. Playing a wide-ish major (GBR, USA, FRA, PRU, AUS, RUS,
 QIN) is now trivial for the player, it's too easy to get tech boosts in everything and cover the whole production tree with 90% of points coming from
@@ -9844,7 +9844,7 @@ placement while under the literacy line with no stored progress; the held flag s
 sweep, never a monthly scan) is recorded in the session of 2026-10-11 and is to be confirmed by a 5-year amplified timing batch plus an
 active-entry count in the save summary over the first century run.
 
-## §10.98 — RESEARCH ENTRIES BEYOND PRODUCTION: SHIPS, CONTAGIOUS IDEAS, AND THE COUNTRY'S OWN CONDITION (user-ruling in progress 2026-10-12; NOT BUILT)
+## §10.98 — RESEARCH ENTRIES BEYOND PRODUCTION: SHIPS, CONTAGIOUS IDEAS, AND THE COUNTRY'S OWN CONDITION (user-ruled 2026-10-12; BUILT as jex-dam4s-rs, F227; CANON since 2026-10-12, §10.99)
 
 The user (after F226: the leader's military and society at ~60% of vanilla's points): *"more tech spread and more JEs where possible"* as the
 weak option, *"this and also a significant society research multiplier (possibly also with a slight tuning to ai values to prefer societal techs
@@ -9904,5 +9904,28 @@ variable expiring after ~40 days); ships the same way.
    the largest urban centre 30 / 40 / 80 / 160 first, 15 / 20 / 40 / 80 after; **antibiotics 500,000 chemical workers first, 250,000 after** — the
    500,000 calibrated as the FIRST acquisition (the top country's chemical workers 1925–30 on the §10.97 book: 381 / 559 / 652 thousand in 1925,
    555 / 592 / 882 in 1930; vanilla's leaders 640–2,139 in 1925). Yes/no conditions (ideas, tropics, civilizing mission, ships) carry no mark.
-**OPEN:** the monthly checks' measured cost. ⚠ Performance probes (with inflated complexity where useful)
-come BEFORE any goal-oriented probe.
+**MEASURED (2026-10-12):** the monthly checks cost nothing measurable (20261012_111843: Δ −2.0 ± 1.9 s a year 1836–41; ×10 checks +0.1 ± 2.1);
+over the century the book plays ×1.005 of vanilla (F227). The book measured n=3 in F227: 2 intact / 1 broken by runoff, consensus loss 5.37.
+**THE REVOLT FIX (2026-10-12, after F227):** a revolt acquires its technologies — firing the placement — before it inherits its parent's entries,
+so the placement's has_journal_entry test lost the race and the inheritance logged "already has a journal entry" (627–843 lines a run). Nothing
+is placed in a revolutionary country now (`NOT = { is_revolutionary = yes }`), and a completed stage adds the next only where it is absent.
+
+## §10.99 — THE ARTMERGE ARM IS THE CANON: `jex-dam4s-rs` (user-ruled 2026-10-12; ROADMAP step 14's decision)
+
+The user, after F227: *"CANONIZE artmerge with all these additions. The preartmerge config family is no longer canon, and while it's not
+deleted yet, write that returning to it would need to reimplement performance changes."*
+1. **THE CANON IS `config/mod_config.jex-dam4s-rs.json` + its tree twin**, copied verbatim to `config/mod_config.json` /
+   `config/tech_tree_options.json`. Its chain: the artmerge arm (crafts + six merges, §10.91, the e1 anchors, the 1.2 pop-good lift, the
+   compressed desire ladder, textile's host at its own cost) → the extra research entries (§10.95) → the four-class resource-slot dams and
+   script-placed research entries (§10.89.13, the tick-cost fixes) → the §10.97 research rework (research halved, non-additive literacy-gated
+   entries, 20 stages, follower halving, AI schooling) → the §10.98 entries (ships, frontline, contagious ideas, tropics, civilizing mission,
+   state apparatus, universities, finance, cities, antibiotics). Measured: F227 (n=3: 2 intact / 1 runoff, consensus loss 5.37, majors 0.97 of
+   vanilla's technology, the leader on the anchor principle, play ×1.005). The revolt duplicate-placement fix (§10.98's last paragraph) is in
+   the emitter, not the book, and was probed on it (20261012_220651).
+2. **THE PRE-ARTMERGE FAMILY IS NO LONGER CANON** — `canon-dams-family-nolog` (the canon 2026-09-29 → 2026-10-12) and every book before it.
+   The files stay (not deleted yet), as records. ⚠⚠ **RETURNING TO IT WOULD NEED THE PERFORMANCE CHANGES REIMPLEMENTED**: those books carry
+   neither tick-cost fix — dams as resource-slot buildings in four classes (`dams.layout = resource4`, built for the artmerge book's table)
+   and research entries placed by triggers instead of `is_shown_when_inactive` (`research_events.placement = script`) — nor anything of
+   §10.95/§10.97/§10.98; F220/F221 measured the cost those fixes remove.
+3. Known open items carried into the canon (F227): one runoff seed in three; military technology ~10 behind vanilla (no era-5 military
+   technology held anywhere); tech spread ×2 and a society research multiplier deferred.

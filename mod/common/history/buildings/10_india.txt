@@ -104,6 +104,58 @@
 				reserves = 1
 				activate_production_methods = { "default_building_dye_plantation" "pm_road_carts" }
 			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:BIC"
+						levels=1
+						region="STATE_BIHAR"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:BIC"
+						levels=3
+						region="STATE_BIHAR"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:BIC"
+						levels=21
+						region="STATE_BIHAR"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:BIC"
+						levels=2
+						region="STATE_BIHAR"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_WEST_BENGAL= {
@@ -272,12 +324,18 @@
 					building = {
 						type = "building_manor_house"
 						country = "c:GBR"
-						levels = 3
+						levels=3
 						region = "STATE_HOME_COUNTIES"
+					}
+					building={
+						type="building_glassworks"
+						country="c:BIC"
+						levels=27
+						region="STATE_WEST_BENGAL"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks" }
+				activate_production_methods = { "pm_main_glass_forest_glass" }
 			}
 			create_building = {
 				building = "building_shipyard"
@@ -330,25 +388,25 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BIC"
-						levels = 7
+						levels = 70
 						region = "STATE_WEST_BENGAL"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership = {
 					building = {
 						type="building_paper_mill"
 						country = "c:BIC"
-						levels = 2
+						levels = 20
 						region = "STATE_WEST_BENGAL"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_paper_pulp_pressing" "pm_automation_disabled" }
+				activate_production_methods = { "pm_main_paper_pulp_pressing" }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -395,12 +453,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BIC"
-						levels = 4
+						levels = 40
 						region = "STATE_EAST_BENGAL"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
 				building = "building_silk_plantation"
@@ -578,12 +636,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BIC"
-						levels = 1
+						levels = 10
 						region = "STATE_DELHI"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
 				building = "building_cotton_plantation"
@@ -617,12 +675,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:MUG"
-						levels = 2
+						levels=33
 						region = "STATE_DELHI"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
 				building = "building_cotton_plantation"
@@ -683,12 +741,12 @@
 					building = {
 						type="building_furniture_manufactory"
 						country = "c:AWA"
-						levels = 2
+						levels=33
 						region = "STATE_AWADH"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building = {
 				building = "building_textile_mill"
@@ -696,7 +754,7 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:AWA"
-						levels = 2
+						levels=33
 						region = "STATE_AWADH"
 					}
 				}
@@ -780,7 +838,7 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BIC"
-						levels = 2
+						levels = 20
 						region = "STATE_AWADH"
 					}
 				}
@@ -888,7 +946,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_lathe"  "pm_automation_disabled" "pm_luxury_furniture_furniture_manufactory_lathe" }
+				activate_production_methods = { "pm_main_furniture_lathe"  "pm_automation_disabled" "pm_luxury_furniture_furniture" }
 			}
 			create_building = {
 				building="building_arms_industry"
@@ -907,12 +965,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BIC"
-						levels = 2
+						levels = 20
 						region = "STATE_AGRA"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
 				building = "building_cotton_plantation"
@@ -948,7 +1006,7 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BIC"
-						levels = 1
+						levels = 10
 						region = "STATE_GUJARAT"
 					}
 				}
@@ -961,12 +1019,12 @@
 					building = {
 						type="building_furniture_manufactory"
 						country = "c:BIC"
-						levels = 1
+						levels = 10
 						region = "STATE_GUJARAT"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building = {
 				building = "building_cotton_plantation"
@@ -1008,17 +1066,17 @@
 				activate_production_methods = { "default_building_silk_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership = {
 					building = {
 						type="building_paper_mill"
 						country = "c:BIC"
-						levels = 2
+						levels = 20
 						region = "STATE_GUJARAT"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_paper_pulp_pressing" "pm_automation_disabled" }
+				activate_production_methods = { "pm_main_paper_pulp_pressing" }
 			}
 			create_building = {
 				building = "building_fishing_wharf"
@@ -1065,12 +1123,12 @@
 					building = {
 						type="building_furniture_manufactory"
 						country = "c:BER"
-						levels = 1
+						levels=17
 						region = "STATE_GUJARAT"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building = {
 				building = "building_textile_mill"
@@ -1078,7 +1136,7 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BER"
-						levels = 1
+						levels=17
 						region = "STATE_GUJARAT"
 					}
 				}
@@ -1282,17 +1340,17 @@
 				activate_production_methods = { "default_building_opium_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership = {
 					building = {
 						type="building_paper_mill"
 						country = "c:IND"
-						levels = 1
+						levels=17
 						region = "STATE_MALWA"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_paper_pulp_pressing" "pm_automation_disabled" }
+				activate_production_methods = { "pm_main_paper_pulp_pressing" }
 			}
 		}
 		region_state:GWA= {
@@ -1343,12 +1401,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BHO"
-						levels = 1
+						levels=17
 						region = "STATE_MALWA"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 		}
 	}
@@ -1434,25 +1492,25 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:KAS"
-						levels = 1
+						levels=17
 						region = "STATE_KASHMIR"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership = {
 					building = {
 						type="building_paper_mill"
 						country = "c:KAS"
-						levels = 1
+						levels=17
 						region = "STATE_KASHMIR"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_paper_pulp_pressing" "pm_automation_disabled" }
+				activate_production_methods = { "pm_main_paper_pulp_pressing" }
 			}
 			create_building = {
 				building = "building_silk_plantation"
@@ -1510,12 +1568,12 @@
 					building = {
 						type="building_glassworks"
 						country = "c:PAN"
-						levels = 2
+						levels=30
 						region = "STATE_PUNJAB"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks" }
+				activate_production_methods = { "pm_main_glass_forest_glass" }
 			}
 			create_building = {
 				building = "building_textile_mill"
@@ -1523,12 +1581,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:PAN"
-						levels = 3
+						levels=45
 						region = "STATE_PUNJAB"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
 				building = "building_furniture_manufactory"
@@ -1536,7 +1594,7 @@
 					building = {
 						type="building_furniture_manufactory"
 						country = "c:PAN"
-						levels = 1
+						levels=20
 						region = "STATE_PUNJAB"
 					}
 				}
@@ -1670,12 +1728,12 @@
 					building = {
 						type="building_furniture_manufactory"
 						country = "c:PAN"
-						levels = 1
+						levels=13
 						region = "STATE_HILL_PUNJAB"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building = {
 				building = "building_silk_plantation"
@@ -1714,6 +1772,32 @@
 				reserves = 1
 				activate_production_methods = { "pm_picks_and_shovels_building_iron_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts" }
 			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:PAN"
+						levels=4
+						region="STATE_HILL_PUNJAB"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:PAN"
+						levels=3
+						region="STATE_HILL_PUNJAB"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 		region_state:PTA= {
 			create_building = {
@@ -1739,7 +1823,7 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:NAG"
-						levels = 2
+						levels=33
 						region = "STATE_CENTRAL_PROVINCES"
 					}
 				}
@@ -1936,12 +2020,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:JAI"
-						levels = 1
+						levels=17
 						region = "STATE_RAJPUTANA"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
 				building = "building_opium_plantation"
@@ -2232,12 +2316,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BIC"
-						levels = 5
+						levels=74
 						region = "STATE_CIRCARS"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
 				building = "building_tobacco_plantation"
@@ -2320,6 +2404,45 @@
 				reserves = 1
 				activate_production_methods = { "pm_basic_port" }
 			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:BIC"
+						levels=2
+						region="STATE_CIRCARS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:BIC"
+						levels=3
+						region="STATE_CIRCARS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:BIC"
+						levels=2
+						region="STATE_CIRCARS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_MYSORE= {
@@ -2330,12 +2453,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:MYS"
-						levels = 2
+						levels=33
 						region = "STATE_MYSORE"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
 				building = "building_gold_mine"
@@ -2585,12 +2708,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BIC"
-						levels = 4
+						levels=77
 						region = "STATE_MADRAS"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
 				building="building_arms_industry"
@@ -2679,6 +2802,45 @@
 				reserves = 1
 				activate_production_methods = { "pm_basic_port" }
 			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:BIC"
+						levels=2
+						region="STATE_MADRAS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:BIC"
+						levels=5
+						region="STATE_MADRAS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:BIC"
+						levels=4
+						region="STATE_MADRAS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
 		}
 	}
 	s:STATE_KURNOOL = {
@@ -2762,17 +2924,17 @@
 				activate_production_methods = { "default_building_silk_plantation" "pm_road_carts" }
 			}
 			create_building = {
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership = {
 					building = {
 						type="building_paper_mill"
 						country = "c:HYD"
-						levels = 1
+						levels=17
 						region = "STATE_HYDERABAD"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_paper_pulp_pressing" "pm_automation_disabled" }
+				activate_production_methods = { "pm_main_paper_pulp_pressing" }
 			}
 		}
 	}
@@ -2860,12 +3022,12 @@
 					building = {
 						type="building_furniture_manufactory"
 						country = "c:BIC"
-						levels = 1
+						levels=18
 						region = "STATE_BOMBAY"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building = {
 				building = "building_construction_sector"
@@ -2884,12 +3046,12 @@
 					building = {
 						type="building_textile_mill"
 						country = "c:BIC"
-						levels = 4
+						levels=158
 						region = "STATE_BOMBAY"
 					}
 				}
 				reserves = 1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building = {
 				building="building_arms_industry"
@@ -2960,6 +3122,32 @@
 				}
 				reserves = 1
 				activate_production_methods = { "pm_simple_forestry"  "pm_no_equipment" "pm_road_carts" "pm_hardwood" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:BIC"
+						levels=16
+						region="STATE_BOMBAY"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:BIC"
+						levels=12
+						region="STATE_BOMBAY"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
 			}
 		}
 	}

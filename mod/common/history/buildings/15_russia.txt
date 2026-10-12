@@ -218,7 +218,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:RUS"
-						levels=1
+						levels=10
 						region="STATE_VILNIUS"
 					}
 				}
@@ -255,6 +255,19 @@
 				reserves=1
 				activate_production_methods={ "pm_picks_and_shovels_building_iron_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:FIN"
+						levels=1
+						region="STATE_KUOPIO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
 		}
 	}
 	s:STATE_UUSIMAA={
@@ -289,12 +302,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:FIN"
-						levels=2
+						levels=29
 						region="STATE_UUSIMAA"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -438,6 +451,19 @@
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:FIN"
+						levels=2
+						region="STATE_WEST_KARELIA"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
 		}
 	}
 	s:STATE_ALAND={
@@ -481,6 +507,19 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_farming" "pm_potatoes" "pm_tools_disabled"  }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:FIN"
+						levels=1
+						region="STATE_OSTROBOTHNIA"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
 			}
 		}
 	}
@@ -611,7 +650,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:RUS"
-						levels=2
+						levels=44
 						region="STATE_INGRIA"
 					}
 				}
@@ -624,12 +663,12 @@
 					building={
 						type="building_glassworks"
 						country="c:RUS"
-						levels=2
+						levels=20
 						region="STATE_INGRIA"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glassworks" }
+				activate_production_methods = { "pm_main_glass_forest_glass" }
 			}
 			create_building={
 				building="building_art_academy"
@@ -780,12 +819,12 @@
 					building={
 						type="building_textile_mill"
 						country="c:RUS"
-						levels=3
+						levels=34
 						region="STATE_MOSCOW"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building = "building_furniture_manufactory"
@@ -793,12 +832,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:RUS"
-						levels=5
+						levels=50
 						region="STATE_MOSCOW"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -935,12 +974,12 @@
 					building={
 						type="building_food_industry"
 						country="c:RUS"
-						levels=2
+						levels=20
 						region="STATE_KIEV"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning"  "pm_manual_dough_processing" "pm_pot_stills_food_industry" }
+				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning" }
 			}
 			create_building={
 				building="building_livestock_ranch"
@@ -980,7 +1019,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:RUS"
-						levels=2
+						levels=66
 						region="STATE_KIEV"
 					}
 					building={
@@ -993,6 +1032,32 @@
 				reserves=1
 				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
 			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:RUS"
+						levels=5
+						region="STATE_KIEV"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:RUS"
+						levels=65
+						region="STATE_KIEV"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
 		}
 	}
 	s:STATE_ORYOL={
@@ -1003,7 +1068,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:RUS"
-						levels=2
+						levels=31
 						region="STATE_ORYOL"
 					}
 				}
@@ -1016,12 +1081,12 @@
 					building={
 						type="building_food_industry"
 						country="c:RUS"
-						levels=2
+						levels=91
 						region="STATE_ORYOL"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning" "pm_pot_stills_food_industry" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning"  }
 			}
 			create_building={
 				building="building_tooling_workshop_pig_iron"
@@ -1079,22 +1144,74 @@
 				reserves=1
 				activate_production_methods={ "pm_saw_mills"  "pm_no_equipment" "pm_road_carts" "pm_no_hardwood" }
 			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:RUS"
+						levels=18
+						region="STATE_ORYOL"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:RUS"
+						levels=6
+						region="STATE_ORYOL"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:RUS"
+						levels=77
+						region="STATE_ORYOL"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:RUS"
+						levels=11
+						region="STATE_ORYOL"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
 		}
 	}
 	s:STATE_SMOLENSK={
 		region_state:RUS={
 			create_building={
-				building="building_food_industry"
+				building = "building_food_industry"
 				add_ownership={
 					building={
 						type="building_food_industry"
 						country="c:RUS"
-						levels=3
+						levels=30
 						region="STATE_SMOLENSK"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning"  "pm_manual_dough_processing" "pm_disabled_distillery" }
+				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning" "pm_disabled_distillery" }
 			}
 			create_building={
 				building="building_tooling_workshop_pig_iron"
@@ -1223,17 +1340,17 @@
 	s:STATE_NOVGOROD={
 		region_state:RUS={
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_paper_mill"
 						country="c:RUS"
-						levels=3
+						levels=30
 						region="STATE_NOVGOROD"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -1515,6 +1632,84 @@
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
+			create_building={
+				building="building_food_industry"
+				add_ownership={
+					building={
+						type="building_food_industry"
+						country="c:RUS"
+						levels=9
+						region="STATE_CHERSON"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
+			}
+			create_building={
+				building="building_glassworks"
+				add_ownership={
+					building={
+						type="building_glassworks"
+						country="c:RUS"
+						levels=2
+						region="STATE_CHERSON"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_glass_forest_glass" }
+			}
+			create_building={
+				building="building_tooling_workshop"
+				add_ownership={
+					building={
+						type="building_tooling_workshop"
+						country="c:RUS"
+						levels=1
+						region="STATE_CHERSON"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_tooling_crude_tools" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:RUS"
+						levels=11
+						region="STATE_CHERSON"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
+			}
+			create_building={
+				building="building_furniture_manufactory"
+				add_ownership={
+					building={
+						type="building_furniture_manufactory"
+						country="c:RUS"
+						levels=11
+						region="STATE_CHERSON"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+			}
+			create_building={
+				building="building_textile_mill"
+				add_ownership={
+					building={
+						type="building_textile_mill"
+						country="c:RUS"
+						levels=11
+						region="STATE_CHERSON"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+			}
 		}
 	}
 	s:STATE_GALICH={
@@ -1577,7 +1772,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:RUS"
-						levels=2
+						levels=20
 						region="STATE_MINSK"
 					}
 				}
@@ -1590,12 +1785,12 @@
 					building={
 						type="building_textile_mill"
 						country="c:RUS"
-						levels=1
+						levels=10
 						region="STATE_MINSK"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_mill" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -1766,7 +1961,7 @@
 				activate_production_methods={ "pm_main_arms_muskets" "pm_automation_disabled"  }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -1776,24 +1971,30 @@
 					}
 					country={
 						country="c:RUS"
-						levels=1
+						levels=10
 					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
-			}
-			create_building={
-				building="building_food_industry"
-				add_ownership={
 					building={
-						type="building_food_industry"
+						type="building_paper_mill"
 						country="c:RUS"
-						levels=3
+						levels=9
 						region="STATE_KAZAN"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" "pm_disabled_distillery" "pm_manual_dough_processing"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
+			}
+			create_building={
+				building = "building_food_industry"
+				add_ownership={
+					building={
+						type="building_food_industry"
+						country="c:RUS"
+						levels=30
+						region="STATE_KAZAN"
+					}
+				}
+				reserves=1
+				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning" "pm_disabled_distillery"  }
 			}
 			create_building={
 				building="building_rye_farm"
@@ -2122,19 +2323,19 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:RUS"
-						levels=2
+						levels=20
 						region="STATE_RYAZAN"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
 			}
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					country={
 						country="c:RUS"
-						levels=1
+						levels=10
 					}
 					building={
 						type="building_financial_district"
@@ -2142,20 +2343,26 @@
 						levels=1
 						region="STATE_INGRIA"
 					}
+					building={
+						type="building_paper_mill"
+						country="c:RUS"
+						levels=9
+						region="STATE_RYAZAN"
+					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 		}
 	}
 	s:STATE_VITEBSK={
 		region_state:RUS={
 			create_building={
-				building="building_paper_mill"
+				building = "building_paper_mill"
 				add_ownership={
 					country={
 						country="c:RUS"
-						levels=1
+						levels=10
 					}
 					building={
 						type="building_financial_district"
@@ -2169,9 +2376,15 @@
 						levels=1
 						region="STATE_INGRIA"
 					}
+					building={
+						type="building_paper_mill"
+						country="c:RUS"
+						levels=18
+						region="STATE_VITEBSK"
+					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" "pm_automation_disabled"  }
+				activate_production_methods = { "pm_main_paper_pulp_pressing"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -2299,12 +2512,12 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:RUS"
-						levels=2
+						levels=20
 						region="STATE_NIZHNY_NOVGOROD"
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_manufactory"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
 			}
 			create_building={
 				building="building_naval_administration"

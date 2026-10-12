@@ -10,9 +10,7 @@ company_vodka_monopoly = {
 	preferred_headquarters = { STATE_INGRIA STATE_MOSCOW }
 
 	building_types = {
-		building_food_industry
 		building_food_industry_sweeteners
-		building_food_industry_baking_powder
 		building_vineyard
 	}
 
@@ -34,11 +32,7 @@ company_vodka_monopoly = {
 		any_scope_state = {
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_food_industry
-					is_building_type = building_food_industry_sweeteners
-					is_building_type = building_food_industry_baking_powder
-				}
+				is_building_type = building_food_industry_sweeteners
 				level >= 5
 			}
 		}
@@ -59,25 +53,7 @@ company_vodka_monopoly = {
 	}
 
 	ai_construction_targets = {
-		building_food_industry = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_INGRIA
-					state_region = s:STATE_MOSCOW
-				}
-			}
-		}
 		building_food_industry_sweeteners = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_INGRIA
-					state_region = s:STATE_MOSCOW
-				}
-			}
-		}
-		building_food_industry_baking_powder = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -337,7 +313,6 @@ company_izhevsk_arms_plant = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 	}
 
 	possible_prestige_goods = {
@@ -440,10 +415,8 @@ company_savva_morozov = {
 	preferred_headquarters = { STATE_MOSCOW }
 
 	building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -480,10 +453,8 @@ company_savva_morozov = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_textile_mill
 					is_building_type = building_textile_mill_dye_workshops
 					is_building_type = building_textile_mill_sewing_machines
-					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -548,7 +519,6 @@ company_john_hughes = {
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
-		building_steel_mill_electric_arc_process
 		building_coal_mine
 		building_iron_mine
 	}
@@ -590,7 +560,6 @@ company_john_hughes = {
 						is_building_type = building_steel_mill
 						is_building_type = building_steel_mill_bessemer_process
 						is_building_type = building_steel_mill_open_hearth_process
-						is_building_type = building_steel_mill_electric_arc_process
 					}
 					is_building_type = building_coal_mine
 					is_building_type = building_iron_mine
@@ -638,16 +607,6 @@ company_john_hughes = {
 			}
 		}
 		building_steel_mill_open_hearth_process = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_KHARKOV
-					state_region = s:STATE_TAURIDA
-				}
-				is_incorporated = yes
-			}
-		}
-		building_steel_mill_electric_arc_process = {
 			level = 5
 			state_trigger = {
 				OR = {

@@ -8,7 +8,6 @@ company_ludwig_moser_and_sons = {
 	preferred_headquarters = { STATE_BOHEMIA }
 
 	building_types = {
-		building_glassworks
 		building_glassworks_leaded_glass
 		building_glassworks_crystal_glass
 		building_glassworks_houseware_plastics
@@ -43,7 +42,6 @@ company_ludwig_moser_and_sons = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_glassworks
 					is_building_type = building_glassworks_leaded_glass
 					is_building_type = building_glassworks_crystal_glass
 					is_building_type = building_glassworks_houseware_plastics
@@ -70,12 +68,6 @@ company_ludwig_moser_and_sons = {
 	}
 
 	ai_construction_targets = {
-		building_glassworks = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BOHEMIA
-			}
-		}
 		building_glassworks_leaded_glass = {
 			level = 5
 			state_trigger = {
@@ -112,9 +104,7 @@ company_compania_sansinena_de_carnes_congeladas = {
 
 	building_types = {
 		building_livestock_ranch
-		building_food_industry
 		building_food_industry_sweeteners
-		building_food_industry_baking_powder
 	}
 
 	extension_building_types = {
@@ -145,11 +135,7 @@ company_compania_sansinena_de_carnes_congeladas = {
 			state_region = s:STATE_BUENOS_AIRES
 			is_incorporated = yes
 			any_scope_building = {
-				OR = {
-					is_building_type = building_food_industry
-					is_building_type = building_food_industry_sweeteners
-					is_building_type = building_food_industry_baking_powder
-				}
+				is_building_type = building_food_industry_sweeteners
 				level >= 5
 			}
 		}
@@ -176,19 +162,7 @@ company_compania_sansinena_de_carnes_congeladas = {
 	}
 
 	ai_construction_targets = {
-		building_food_industry = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BUENOS_AIRES
-			}
-		}
 		building_food_industry_sweeteners = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_BUENOS_AIRES
-			}
-		}
-		building_food_industry_baking_powder = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_BUENOS_AIRES
@@ -219,7 +193,6 @@ company_konigliche_porzellan_manufaktur_meissen = {
 	preferred_headquarters = { STATE_SAXONY }
 
 	building_types = {
-		building_glassworks
 		building_glassworks_leaded_glass
 		building_glassworks_crystal_glass
 		building_glassworks_houseware_plastics
@@ -255,7 +228,6 @@ company_konigliche_porzellan_manufaktur_meissen = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_glassworks
 					is_building_type = building_glassworks_leaded_glass
 					is_building_type = building_glassworks_crystal_glass
 					is_building_type = building_glassworks_houseware_plastics
@@ -283,12 +255,6 @@ company_konigliche_porzellan_manufaktur_meissen = {
 	}
 
 	ai_construction_targets = {
-		building_glassworks = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_SAXONY
-			}
-		}
 		building_glassworks_leaded_glass = {
 			level = 5
 			state_trigger = {
@@ -325,10 +291,8 @@ company_jiangnan_weaving_bureaus= {
 
 	building_types = {
 		building_silk_plantation
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -368,10 +332,8 @@ company_jiangnan_weaving_bureaus= {
 				OR = {
 					is_building_type = building_silk_plantation
 					OR = {
-						is_building_type = building_textile_mill
 						is_building_type = building_textile_mill_dye_workshops
 						is_building_type = building_textile_mill_sewing_machines
-						is_building_type = building_textile_mill_electric_sewing_machines
 					}
 				}
 				level >= 5
@@ -408,17 +370,6 @@ company_jiangnan_weaving_bureaus= {
 				is_incorporated = yes
 			}
 		}
-		building_textile_mill = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_SUZHOU
-					state_region = s:STATE_ZHEJIANG
-					state_region = s:STATE_NANJING
-				}
-				is_incorporated = yes
-			}
-		}
 		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
@@ -431,17 +382,6 @@ company_jiangnan_weaving_bureaus= {
 			}
 		}
 		building_textile_mill_sewing_machines = {
-			level = 5
-			state_trigger = {
-				OR = {
-					state_region = s:STATE_SUZHOU
-					state_region = s:STATE_ZHEJIANG
-					state_region = s:STATE_NANJING
-				}
-				is_incorporated = yes
-			}
-		}
-		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -533,10 +473,8 @@ company_russian_american_company = {
 	prosperity_modifier = {
 		state_colony_growth_speed_mult = 0.1
 		state_conversion_mult = 0.05
-		building_textile_mill_throughput_add = 0.05
 		building_textile_mill_dye_workshops_throughput_add = 0.05
 		building_textile_mill_sewing_machines_throughput_add = 0.05
-		building_textile_mill_electric_sewing_machines_throughput_add = 0.05
 	}
 
 	ai_will_do = {
@@ -594,10 +532,8 @@ company_maison_worth = {
 	preferred_headquarters = { STATE_ILE_DE_FRANCE }
 
 	building_types = {
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -633,10 +569,8 @@ company_maison_worth = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_textile_mill
 					is_building_type = building_textile_mill_dye_workshops
 					is_building_type = building_textile_mill_sewing_machines
-					is_building_type = building_textile_mill_electric_sewing_machines
 				}
 				level >= 5
 			}
@@ -657,12 +591,6 @@ company_maison_worth = {
 	}
 
 	ai_construction_targets = {
-		building_textile_mill = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ILE_DE_FRANCE
-			}
-		}
 		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
@@ -670,12 +598,6 @@ company_maison_worth = {
 			}
 		}
 		building_textile_mill_sewing_machines = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_ILE_DE_FRANCE
-			}
-		}
-		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_ILE_DE_FRANCE
@@ -743,10 +665,8 @@ company_lee_wilson = {
 
 	prosperity_modifier = {
 		building_power_plant_throughput_add = 0.05
-		building_textile_mill_throughput_add = 0.1
 		building_textile_mill_dye_workshops_throughput_add = 0.1
 		building_textile_mill_sewing_machines_throughput_add = 0.1
-		building_textile_mill_electric_sewing_machines_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -889,10 +809,8 @@ company_gebruder_thonet = {
 	preferred_headquarters = { STATE_AUSTRIA }
 
 	building_types = {
-		building_furniture_manufactory
 		building_furniture_manufactory_lathe
 		building_furniture_manufactory_mechanized_workshops
-		building_furniture_manufactory_spray_finishing
 	}
 
 	extension_building_types = {
@@ -924,10 +842,8 @@ company_gebruder_thonet = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_furniture_manufactory
 					is_building_type = building_furniture_manufactory_lathe
 					is_building_type = building_furniture_manufactory_mechanized_workshops
-					is_building_type = building_furniture_manufactory_spray_finishing
 				}
 				level >= 5
 			}
@@ -937,10 +853,8 @@ company_gebruder_thonet = {
 	prosperity_modifier = {
 		interest_group_ig_petty_bourgeoisie_pop_attraction_mult = 0.05
 		state_radicals_from_political_movements_mult = -0.05
-		building_furniture_manufactory_throughput_add = 0.1
 		building_furniture_manufactory_lathe_throughput_add = 0.1
 		building_furniture_manufactory_mechanized_workshops_throughput_add = 0.1
-		building_furniture_manufactory_spray_finishing_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -951,12 +865,6 @@ company_gebruder_thonet = {
 	}
 
 	ai_construction_targets = {
-		building_furniture_manufactory = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_AUSTRIA
-			}
-		}
 		building_furniture_manufactory_lathe = {
 			level = 5
 			state_trigger = {
@@ -964,12 +872,6 @@ company_gebruder_thonet = {
 			}
 		}
 		building_furniture_manufactory_mechanized_workshops = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_AUSTRIA
-			}
-		}
-		building_furniture_manufactory_spray_finishing = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_AUSTRIA
@@ -992,7 +894,6 @@ company_kinkozan_sobei = {
 	preferred_headquarters = { STATE_KANSAI }
 
 	building_types = {
-		building_glassworks
 		building_glassworks_leaded_glass
 		building_glassworks_crystal_glass
 		building_glassworks_houseware_plastics
@@ -1027,7 +928,6 @@ company_kinkozan_sobei = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_glassworks
 					is_building_type = building_glassworks_leaded_glass
 					is_building_type = building_glassworks_crystal_glass
 					is_building_type = building_glassworks_houseware_plastics
@@ -1051,12 +951,6 @@ company_kinkozan_sobei = {
 	}
 
 	ai_construction_targets = {
-		building_glassworks = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_KANSAI
-			}
-		}
 		building_glassworks_leaded_glass = {
 			level = 5
 			state_trigger = {
@@ -1092,10 +986,8 @@ company_maple_and_co = {
 	preferred_headquarters = { STATE_HOME_COUNTIES }
 
 	building_types = {
-		building_furniture_manufactory
 		building_furniture_manufactory_lathe
 		building_furniture_manufactory_mechanized_workshops
-		building_furniture_manufactory_spray_finishing
 	}
 
 	extension_building_types = {
@@ -1127,10 +1019,8 @@ company_maple_and_co = {
 			is_incorporated = yes
 			any_scope_building = {
 				OR = {
-					is_building_type = building_furniture_manufactory
 					is_building_type = building_furniture_manufactory_lathe
 					is_building_type = building_furniture_manufactory_mechanized_workshops
-					is_building_type = building_furniture_manufactory_spray_finishing
 				}
 				level >= 5
 			}
@@ -1150,12 +1040,6 @@ company_maple_and_co = {
 	}
 
 	ai_construction_targets = {
-		building_furniture_manufactory = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_HOME_COUNTIES
-			}
-		}
 		building_furniture_manufactory_lathe = {
 			level = 5
 			state_trigger = {
@@ -1163,12 +1047,6 @@ company_maple_and_co = {
 			}
 		}
 		building_furniture_manufactory_mechanized_workshops = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_HOME_COUNTIES
-			}
-		}
-		building_furniture_manufactory_spray_finishing = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_HOME_COUNTIES
@@ -1195,9 +1073,7 @@ company_ong_lung_sheng_tea_company = {
 	}
 
 	extension_building_types = {
-		building_food_industry
 		building_food_industry_sweeteners
-		building_food_industry_baking_powder
 	}
 
 	possible_prestige_goods = {
@@ -1349,10 +1225,8 @@ company_mantero_seta = {
 
 	building_types = {
 		building_silk_plantation
-		building_textile_mill
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
-		building_textile_mill_electric_sewing_machines
 	}
 
 	extension_building_types = {
@@ -1386,10 +1260,8 @@ company_mantero_seta = {
 				OR = {
 					is_building_type = building_silk_plantation
 					OR = {
-						is_building_type = building_textile_mill
 						is_building_type = building_textile_mill_dye_workshops
 						is_building_type = building_textile_mill_sewing_machines
-						is_building_type = building_textile_mill_electric_sewing_machines
 					}
 				}
 				level >= 5
@@ -1410,12 +1282,6 @@ company_mantero_seta = {
 	}
 
 	ai_construction_targets = {
-		building_textile_mill = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_LOMBARDY
-			}
-		}
 		building_textile_mill_dye_workshops = {
 			level = 5
 			state_trigger = {
@@ -1423,12 +1289,6 @@ company_mantero_seta = {
 			}
 		}
 		building_textile_mill_sewing_machines = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_LOMBARDY
-			}
-		}
-		building_textile_mill_electric_sewing_machines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_LOMBARDY
@@ -1458,7 +1318,6 @@ company_norsk_hydro = {
 
 	building_types = {
 		building_chemical_plant
-		building_chemical_plant_improved_fertilizer
 		building_chemical_plant_nitrogen_fixation
 		building_chemical_plant_catalytic_synthesis
 		building_power_plant
@@ -1490,7 +1349,6 @@ company_norsk_hydro = {
 			any_scope_building = {
 				OR = {
 					is_building_type = building_chemical_plant
-					is_building_type = building_chemical_plant_improved_fertilizer
 					is_building_type = building_chemical_plant_nitrogen_fixation
 					is_building_type = building_chemical_plant_catalytic_synthesis
 				}
@@ -1517,12 +1375,6 @@ company_norsk_hydro = {
 
 	ai_construction_targets = {
 		building_chemical_plant = {
-			level = 5
-			state_trigger = {
-				state_region = s:STATE_WESTERN_NORWAY
-			}
-		}
-		building_chemical_plant_improved_fertilizer = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_WESTERN_NORWAY
@@ -1566,7 +1418,6 @@ company_massey_harris = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
-		building_tooling_workshop
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
@@ -1969,9 +1820,7 @@ company_paradox = {
 
 	extension_building_types = {
 		building_coal_mine
-		building_paper_mill
 		building_paper_mill_sulfite_pulping
-		building_paper_mill_bleached_paper
 		building_paper_mill_continuous_web
 	}
 

@@ -702,7 +702,8 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       `${T}complete = {\n${T}${T}scope:journal_entry ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} }\n${T}}\n\n` +
       `${T}on_complete = {\n` +
       grantBlock + halfLog +
-      (next ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_journal_entry = { type = ${jeName(tech, next)} }\n${T}${T}}\n` : '') +
+      // the next stage only where it is not already there (a country holding two stages at once — ~30 a run on F227's batch)
+      (next ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech}  NOT = { has_journal_entry = ${jeName(tech, next)} } }\n${T}${T}${T}add_journal_entry = { type = ${jeName(tech, next)} }\n${T}${T}}\n` : '') +
       `${T}${T}debug_log = "PMR_JE|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n` +
       `${T}}\n\n` +
       `${T}invalid = { has_technology_researched = ${tech} }\n\n` +
@@ -794,12 +795,18 @@ for (const [ind, list] of Object.entries(compressed)) {
 // return, so it is placed whenever it is absent and has a target. Registered by NAME (L22: vanilla's on_acquired_technology carries
 // its own effect block).
 if (PLACE) {
+  // ⚠⚠ NOTHING IS PLACED IN A REVOLUTIONARY COUNTRY (2026-10-12). A revolt is created, acquires its technologies — firing
+  //   on_acquired_technology, so this effect — and only THEN inherits its parent's entries (can_revolution_inherit): the
+  //   has_journal_entry test below cannot see them yet, our placement wins the race and the inheritance logs "already has a
+  //   journal entry" (627–843 lines a run on the §10.98 book, F227). A revolt keeps what it inherits; its own placements wait
+  //   for its next acquisition or yearly retry after the civil war.
+  const noRev = `NOT = { is_revolutionary = yes }`;
   seffR.push(`pmr_place_research_entries = {\n` + firsts.map(f => f.reentrant
-    ? `${T}if = {\n${T}${T}limit = { NOT = { has_journal_entry = ${f.key} }  ${f.cond} }\n${T}${T}add_journal_entry = { type = ${f.key} }\n${T}}\n`
+    ? `${T}if = {\n${T}${T}limit = { ${noRev}  NOT = { has_journal_entry = ${f.key} }  ${f.cond} }\n${T}${T}add_journal_entry = { type = ${f.key} }\n${T}}\n`
     // ⚠ a REVOLT country inherits its parent's entries (can_revolution_inherit) but not the placed-variable: without the
     //   has_journal_entry test the placement re-added them and the engine logged "already has a journal entry" (batch
     //   20261009_082702, run 23, 7 lines) — so no stage of the technology may be present either
-    : `${T}if = {\n${T}${T}limit = { NOT = { has_variable = pmr_pl_${f.key} }  ${f.stageKeys.map(k => `NOT = { has_journal_entry = ${k} }`).join('  ')}  ${f.cond} }\n${T}${T}set_variable = pmr_pl_${f.key}\n${T}${T}add_journal_entry = { type = ${f.key} }\n${T}}\n`).join('') + `}`);
+    : `${T}if = {\n${T}${T}limit = { ${noRev}  NOT = { has_variable = pmr_pl_${f.key} }  ${f.stageKeys.map(k => `NOT = { has_journal_entry = ${k} }`).join('  ')}  ${f.cond} }\n${T}${T}set_variable = pmr_pl_${f.key}\n${T}${T}add_journal_entry = { type = ${f.key} }\n${T}}\n`).join('') + `}`);
 }
 // ⭐ §10.97 THE "SOMEONE HOLDS IT" FLAGS — event-driven, never a monthly scan (the tick-cost design): a country acquiring a technology
 //   while NOT isolationist raises its flag (on_acquired_technology, root = the country); the campaign start raises the flags of every

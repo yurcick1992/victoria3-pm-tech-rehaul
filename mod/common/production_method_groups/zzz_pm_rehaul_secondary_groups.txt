@@ -3,95 +3,64 @@ pmg_canning_food_industry = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
 	production_methods = {
 		pm_disabled_canning
-		pm_cannery_food_industry
-		pm_cannery_fish_food_industry
-		pm_vacuum_canning_food_industry
-		pm_vacuum_canning_principle_3_food_industry
 	}
 }
 pmg_distillery_food_industry = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_disabled_distillery
-		pm_pot_stills_food_industry
-		pm_patent_stills_food_industry
 	}
 }
 pmg_canning_food_industry_sweeteners = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
 	production_methods = {
 		pm_disabled_canning
-		pm_cannery_food_industry_sweeteners
-		pm_cannery_fish_food_industry_sweeteners
-		pm_vacuum_canning_food_industry_sweeteners
-		pm_vacuum_canning_principle_3_food_industry_sweeteners
+		pm_cannery_food
+		pm_cannery_fish_food
+		pm_vacuum_canning_food
+		pm_vacuum_canning_principle_3_food
 	}
 }
 pmg_distillery_food_industry_sweeteners = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_disabled_distillery
-		pm_pot_stills_food_industry_sweeteners
-		pm_patent_stills_food_industry_sweeteners
+		pm_pot_stills_food
+		pm_patent_stills_food
 	}
 }
-pmg_canning_food_industry_baking_powder = {
-	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+pmg_automation_building_food_industry_food_industry_sweeteners = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
 	production_methods = {
-		pm_disabled_canning
-		pm_cannery_food_industry_baking_powder
-		pm_cannery_fish_food_industry_baking_powder
-		pm_vacuum_canning_food_industry_baking_powder
-		pm_vacuum_canning_principle_3_food_industry_baking_powder
-	}
-}
-pmg_distillery_food_industry_baking_powder = {
-	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
-	production_methods = {
-		pm_disabled_distillery
-		pm_pot_stills_food_industry_baking_powder
-		pm_patent_stills_food_industry_baking_powder
+		pm_manual_dough_processing
+		pm_automated_bakery_food
 	}
 }
 pmg_luxury_building_textile_mill_textile_mill = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_no_luxury_clothes
-		pm_craftsman_sewing_textile_mill
 	}
 }
 pmg_luxury_building_textile_mill_textile_mill_dye_workshops = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_no_luxury_clothes
-		pm_craftsman_sewing_textile_mill_dye_workshops
+		pm_craftsman_sewing_textile
 	}
 }
 pmg_luxury_building_textile_mill_textile_mill_sewing_machines = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_no_luxury_clothes
-		pm_craftsman_sewing_textile_mill_sewing_machines
-		pm_elastics_textile_mill_sewing_machines
+		pm_craftsman_sewing_textile
+		pm_elastics_textile
 	}
 }
 pmg_automation_building_textile_mill_textile_mill_sewing_machines = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
 	production_methods = {
 		pm_mechanized_looms_textile_mill_sewing_machines
-	}
-}
-pmg_luxury_building_textile_mill_textile_mill_electric_sewing_machines = {
-	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
-	production_methods = {
-		pm_no_luxury_clothes
-		pm_craftsman_sewing_textile_mill_electric_sewing_machines
-		pm_elastics_textile_mill_electric_sewing_machines
-	}
-}
-pmg_automation_building_textile_mill_textile_mill_electric_sewing_machines = {
-	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
-	production_methods = {
 		pm_automatic_power_looms_textile_mill_electric_sewing_machines
 	}
 }
@@ -99,104 +68,217 @@ pmg_luxury_building_furniture_manufactory_furniture_manufactory = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_no_luxuries
-		pm_luxury_furniture_furniture_manufactory
 	}
 }
 pmg_luxury_building_furniture_manufactory_furniture_manufactory_lathe = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_no_luxuries
-		pm_luxury_furniture_furniture_manufactory_lathe
-		pm_precision_tools_furniture_manufactory_lathe
+		pm_luxury_furniture_furniture
+	}
+}
+pmg_automation_building_furniture_manufactory_furniture_manufactory_lathe = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_furniture_manufactory_furniture
+		pm_rotary_valve_engine_building_furniture_manufactory_furniture
+		pm_assembly_lines_building_furniture_manufactory_furniture
 	}
 }
 pmg_luxury_building_furniture_manufactory_furniture_manufactory_mechanized_workshops = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_no_luxuries
-		pm_luxury_furniture_furniture_manufactory_mechanized_workshops
-		pm_precision_tools_furniture_manufactory_mechanized_workshops
+		pm_luxury_furniture_furniture
+		pm_precision_tools_furniture
 	}
 }
-pmg_luxury_building_furniture_manufactory_furniture_manufactory_spray_finishing = {
-	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
+pmg_automation_building_furniture_manufactory_furniture_manufactory_mechanized_workshops = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
 	production_methods = {
-		pm_no_luxuries
-		pm_luxury_furniture_furniture_manufactory_spray_finishing
-		pm_precision_tools_furniture_manufactory_spray_finishing
+		pm_automation_disabled
+		pm_watertube_boiler_building_furniture_manufactory_furniture
+		pm_rotary_valve_engine_building_furniture_manufactory_furniture
+		pm_assembly_lines_building_furniture_manufactory_furniture
 	}
 }
 pmg_luxury_building_glassworks_glassworks = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_disabled_ceramics
-		pm_ceramics_glassworks
 	}
 }
 pmg_luxury_building_glassworks_glassworks_leaded_glass = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_disabled_ceramics
-		pm_ceramics_glassworks_leaded_glass
+		pm_ceramics_glass
+	}
+}
+pmg_glassblowing_glassworks_leaded_glass = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_manual_glassblowing
+		pm_automatic_bottle_blowers_glass
 	}
 }
 pmg_luxury_building_glassworks_glassworks_crystal_glass = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_disabled_ceramics
-		pm_ceramics_glassworks_crystal_glass
-		pm_bone_china_glassworks_crystal_glass
+		pm_ceramics_glass
+		pm_bone_china_glass
+	}
+}
+pmg_glassblowing_glassworks_crystal_glass = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_manual_glassblowing
+		pm_automatic_bottle_blowers_glass
 	}
 }
 pmg_luxury_building_glassworks_glassworks_houseware_plastics = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_disabled_ceramics
-		pm_ceramics_glassworks_houseware_plastics
-		pm_bone_china_glassworks_houseware_plastics
+		pm_ceramics_glass
+		pm_bone_china_glass
+	}
+}
+pmg_glassblowing_glassworks_houseware_plastics = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_manual_glassblowing
+		pm_automatic_bottle_blowers_glass
 	}
 }
 pmg_automation_building_tooling_workshop_tooling_workshop_pig_iron = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
 	production_methods = {
 		pm_automation_disabled
-		pm_watertube_boiler_building_tooling_workshop
-		pm_rotary_valve_engine_building_tooling_workshop
+		pm_watertube_boiler_building_tooling_workshop_tooling
+		pm_rotary_valve_engine_building_tooling_workshop_tooling
+	}
+}
+pmg_automation_building_tooling_workshop_tooling_workshop_steel = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_tooling_workshop_tooling
+		pm_rotary_valve_engine_building_tooling_workshop_tooling
+		pm_assembly_lines_building_tooling_workshop_tooling
+	}
+}
+pmg_automation_building_tooling_workshop_tooling_workshop_rubber_grips = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_tooling_workshop_tooling
+		pm_rotary_valve_engine_building_tooling_workshop_tooling
+		pm_assembly_lines_building_tooling_workshop_tooling
+	}
+}
+pmg_automation_building_paper_mill_paper_mill_sulfite_pulping = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_paper_mill_paper
+		pm_rotary_valve_engine_building_paper_mill_paper
+	}
+}
+pmg_automation_building_paper_mill_paper_mill_continuous_web = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_paper_mill_paper
+		pm_rotary_valve_engine_building_paper_mill_paper
 	}
 }
 pmg_synthetic_silk_synthetics_plant = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_no_artificial_fibers
-		pm_rayon_synthetics_plant
+		pm_rayon_synthetics
+	}
+}
+pmg_automation_building_steel_mill_steel_mill = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_steel_mill_steel
+		pm_rotary_valve_engine_building_steel_mill_steel
+	}
+}
+pmg_automation_building_steel_mill_steel_mill_bessemer_process = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_steel_mill_steel
+		pm_rotary_valve_engine_building_steel_mill_steel
+	}
+}
+pmg_automation_building_steel_mill_steel_mill_open_hearth_process = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_steel_mill_steel
+		pm_rotary_valve_engine_building_steel_mill_steel
+	}
+}
+pmg_automation_building_motor_industry_motor_industry = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_motor_industry_motor
+		pm_rotary_valve_engine_building_motor_industry_motor
+		pm_assembly_lines_building_motor_industry_motor
+	}
+}
+pmg_automation_building_motor_industry_motor_industry_electric_engines = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_motor_industry_motor
+		pm_rotary_valve_engine_building_motor_industry_motor
+		pm_assembly_lines_building_motor_industry_motor
+	}
+}
+pmg_automation_building_motor_industry_motor_industry_diesel_engines = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_watertube_boiler_building_motor_industry_motor
+		pm_rotary_valve_engine_building_motor_industry_motor
+		pm_assembly_lines_building_motor_industry_motor
 	}
 }
 pmg_aeroplanes_automotive_industry = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
 	production_methods = {
 		pm_no_aeroplane_production
-		pm_aeroplane_production_automotive_industry
+		pm_aeroplane_production_automotive
 	}
 }
 pmg_tanks_automotive_industry = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_no_tank_production
-		pm_tank_production_automotive_industry
+		pm_tank_production_automotive
 	}
 }
 pmg_aeroplanes_automotive_industry_mass_automobile_production = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
 	production_methods = {
 		pm_no_aeroplane_production
-		pm_aeroplane_production_automotive_industry_mass_automobile_production
+		pm_aeroplane_production_automotive
 	}
 }
 pmg_tanks_automotive_industry_mass_automobile_production = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_no_tank_production
-		pm_tank_production_automotive_industry_mass_automobile_production
+		pm_tank_production_automotive
 	}
 }
 pmg_automation_building_automotive_industry_automotive_industry_mass_automobile_production = {
@@ -209,35 +291,67 @@ pmg_radios_category_electrics_industry = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_refining.dds"
 	production_methods = {
 		pm_no_radios
-		pm_radios_electrics_industry
+		pm_radios_electrics
 	}
 }
 pmg_automation_building_arms_industry_arms_industry = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
 	production_methods = {
 		pm_automation_disabled
-		pm_rotary_valve_engine_building_arms_industry
+		pm_rotary_valve_engine_building_arms_industry_arms
 	}
 }
 pmg_automation_building_arms_industry_arms_industry_rifles = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
 	production_methods = {
 		pm_automation_disabled
-		pm_rotary_valve_engine_building_arms_industry
+		pm_rotary_valve_engine_building_arms_industry_arms
+	}
+}
+pmg_automation_building_arms_industry_arms_industry_repeaters = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_rotary_valve_engine_building_arms_industry_arms
+		pm_assembly_lines_building_arms_industry_arms
+	}
+}
+pmg_automation_building_arms_industry_arms_industry_bolt_action_rifles = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_rotary_valve_engine_building_arms_industry_arms
+		pm_assembly_lines_building_arms_industry_arms
 	}
 }
 pmg_automation_building_arms_industry_artillery_foundry = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
 	production_methods = {
 		pm_automation_disabled
-		pm_rotary_valve_engine_building_arms_industry
+		pm_rotary_valve_engine_building_arms_industry_artillery
 	}
 }
 pmg_automation_building_arms_industry_artillery_foundry_smoothbores = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
 	production_methods = {
 		pm_automation_disabled
-		pm_rotary_valve_engine_building_arms_industry
+		pm_rotary_valve_engine_building_arms_industry_artillery
+	}
+}
+pmg_automation_building_arms_industry_artillery_foundry_breech_loaders = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_rotary_valve_engine_building_arms_industry_artillery
+		pm_assembly_lines_building_arms_industry_artillery
+	}
+}
+pmg_automation_building_arms_industry_artillery_foundry_recoiled_barrels = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_automation.dds"
+	production_methods = {
+		pm_automation_disabled
+		pm_rotary_valve_engine_building_arms_industry_artillery
+		pm_assembly_lines_building_arms_industry_artillery
 	}
 }
 pmg_automation_building_munition_plant_munition_plant = {
@@ -245,6 +359,15 @@ pmg_automation_building_munition_plant_munition_plant = {
 	ai_selection = most_productive
 	production_methods = {
 		pm_automation_disabled
-		pm_rotary_valve_engine_building_munition_plant
+		pm_rotary_valve_engine_building_munition_plant_munition
+	}
+}
+pmg_automation_building_munition_plant_munition_plant_explosive_shells = {
+	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
+	ai_selection = most_productive
+	production_methods = {
+		pm_automation_disabled
+		pm_rotary_valve_engine_building_munition_plant_munition
+		pm_assembly_lines_building_munition_plant_munition
 	}
 }
