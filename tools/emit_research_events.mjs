@@ -662,7 +662,8 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         `${T}${T}else_if = {\n${T}${T}${T}limit = { can_research = ${tech} }\n${T}${T}${T}add_technology_progress = { progress = ${lowGrant}  technology = ${tech} }\n` +
         `${T}${T}${T}debug_log = "PMR_JEG|reduced|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n${T}${T}}\n`;
     // §10.97: a stage completed on the HALVED mark says so (the flag and the law both read in game — the evidence the switch works)
-    const halfLog = (HALF && a.rule !== 'war') ? `${T}${T}if = {\n${T}${T}${T}limit = { has_global_variable = ${heldVar(tech)}  ${notIso} }\n${T}${T}${T}debug_log = "PMR_JEH|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]|${LOGDATE}"\n${T}${T}}\n` : '';
+    const halfLog = (HALF && a.rule !== 'war' && HELD_TECHS.includes(tech)) ?   // only where a follower flag exists (an entry with no mark would test a variable never set)
+      `${T}${T}if = {\n${T}${T}${T}limit = { has_global_variable = ${heldVar(tech)}  ${notIso} }\n${T}${T}${T}debug_log = "PMR_JEH|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]|${LOGDATE}"\n${T}${T}}\n` : '';
     if (REP && !next) {
       // ⭐ §10.97 THE REPEATING IMPLEMENTATION STAGE: one entry, never completes; each full bar grants, counts and is taken off the bar
       sv.push(`pmr_implv_${tech} = {\n${T}value = 0\n${T}if = { limit = { has_variable = ${implVar(tech)} }  value = var:${implVar(tech)} }\n}`);
