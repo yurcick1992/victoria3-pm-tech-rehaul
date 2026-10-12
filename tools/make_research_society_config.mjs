@@ -10,10 +10,10 @@
 //     civilizing mission: a great or major power with a colonial-affairs law other than none;
 //   · the state apparatus (government administration) and universities: 3 × N staffed levels for a game-era-N technology;
 //   · capital needs institutions: 10 × N financial-district levels, and the economic-system law is not traditionalism;
-//   · cities: the largest urban centre — modern sewerage 15, organized sports 20, elevator 40, paved roads 80 levels;
-//   · antibiotics: 500,000 workers in the chemical industries (fertilizer, explosives, synthetics) — the top country's level in 1925–30 on the §10.97 book (vanilla's leaders pass it ~1920);
+//   · cities: the largest urban centre — modern sewerage 15, organized sports 20, elevator 40, paved roads 80 levels (followers; ×2 first);
+//   · antibiotics: 500,000 workers (first acquisition; 250,000 for followers) in the chemical industries (fertilizer, explosives, synthetics) — the top country's level in 1925–30 on the §10.97 book (vanilla's leaders pass it ~1920);
 //   · the art chain (realism, camera, film) left to vanilla's own entries; mass propaganda gets none.
-//   Numeric marks are halved for followers (the §10.97 rule), the rest are not marks. Literacy by game era on every non-military entry.
+//   Every counted mark (incl. the cities) is the FOLLOWER's; the first acquisition needs double (§10.98); yes/no conditions carry no mark. Literacy by game era on every non-military entry.
 // --wild: the SMOKE book — 3-month stages everywhere and every mark at its minimum, so each entry fires within a decade. Never measured.
 import fs from 'node:fs'; import path from 'node:path';
 const args = process.argv.slice(2); const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
@@ -61,9 +61,12 @@ CE.civilizing_mission = { trigger: `country_rank >= rank_value:major_power  NOT 
 const staffed = b => `value = 0\nevery_scope_building = {\n\tlimit = { is_building_type = ${b} }\n\tadd = { value = this.level  multiply = occupancy }\n}`;
 CV.pmr_cv_uni = staffed('building_university'); CV.pmr_cv_gov = staffed('building_government_administration');
 CV.pmr_cv_fin = `value = 0\nevery_scope_building = {\n\tlimit = { is_building_type = building_financial_district }\n\tadd = this.level\n}`;
-const markEntry = (t, sv, mark, label, intro, extra = '') => {
-  CE[t] = { trigger: `${sv} >= ${W(mark)}${extra ? '  ' + extra : ''}`, half_trigger: `${sv} >= ${W(mark) / 2}${extra ? '  ' + extra : ''}`,
-    label: label.replace('{m}', W(mark).toLocaleString('en-US')), intro, lines: [`now [ROOT.GetCountry.MakeScope.ScriptValue('${sv}')|0]`] };
+// ⭐ THE RULED NUMBER IS THE FOLLOWER'S MARK; THE FIRST ACQUISITION NEEDS DOUBLE (user, 2026-10-12: 'let's have the ruled numbers as the halved ones, and for
+//   the initial acquisition they should double'). `follower` = the ruled number; the full trigger is 2 × it, the half trigger it.
+const markEntry = (t, sv, follower, label, intro, extra = '') => {
+  const f = W(follower), full = WILD ? 1 : 2 * follower;
+  CE[t] = { trigger: `${sv} >= ${full}${extra ? '  ' + extra : ''}`, half_trigger: `${sv} >= ${f}${extra ? '  ' + extra : ''}`,
+    label: label.replace('{m}', full.toLocaleString('en-US')), intro, lines: [`now [ROOT.GetCountry.MakeScope.ScriptValue('${sv}')|0]`] };
 };
 for (const t of ['central_archives', 'identification_documents', 'macroeconomics', 'mass_surveillance'])
   markEntry(t, 'pmr_cv_gov', 3 * eraOf(t), 'Government administration: at least {m} fully staffed levels', 'A large state needs better tools to know itself.');
@@ -77,10 +80,12 @@ for (const ind of cfg.industries) if (['fertilizer', 'explosives', 'synthetics']
   const b = t.method_of || t.key; const e = Object.values(t.employment || {}).reduce((a, x) => a + x, 0) * (t.workforce_mult ?? 1); if (e > 0) chemTypes[b] = Math.max(chemTypes[b] || 0, e); }
 for (const [b, e] of Object.entries(chemTypes)) CV[`pmr_cv_chem_${b.replace(/^building_/, '')}`] = staffed(b);
 CV.pmr_cv_chem = 'value = 0\n' + Object.entries(chemTypes).map(([b, e]) => `add = { value = pmr_cv_chem_${b.replace(/^building_/, '')}  multiply = ${e} }`).join('\n');
-markEntry('antibiotics', 'pmr_cv_chem', 500000, 'Workers in the chemical industries (fertilizer, explosives, synthetics): at least {m}', 'The chemists already have the bench; medicine needs only the question.');
+markEntry('antibiotics', 'pmr_cv_chem', 250000,   // first acquisition 500,000 = the top country's level 1925-30
+   'Workers in the chemical industries (fertilizer, explosives, synthetics): at least {m}', 'The chemists already have the bench; medicine needs only the question.');
 // cities: the largest urban centre
 for (const [t, m] of [['modern_sewerage', 15], ['organized_sports', 20], ['elevator', 40], ['paved_roads', 80]])
-  CE[t] = { trigger: `any_scope_building = { is_building_type = building_urban_center  level >= ${W(m)} }`, label: `An urban centre of ours of at least ${W(m)} levels`, intro: 'A great city makes its own demands.' };
+  CE[t] = { trigger: `any_scope_building = { is_building_type = building_urban_center  level >= ${WILD ? 1 : 2 * m} }`, half_trigger: `any_scope_building = { is_building_type = building_urban_center  level >= ${W(m)} }`,
+    label: `An urban centre of ours of at least ${WILD ? 1 : 2 * m} levels`, intro: 'A great city makes its own demands.' };
 for (const [t, e] of Object.entries(CE)) eraOf(t);   // every technology must exist (throws otherwise)
 Object.assign(RE, {
   exclude_techs: ['realism', 'camera', 'film'],

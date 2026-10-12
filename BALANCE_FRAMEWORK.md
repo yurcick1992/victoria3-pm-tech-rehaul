@@ -9898,5 +9898,11 @@ military entries from war conditions (farmable).
 the bar as a flag: radical laws and the great-power half of advanced laws as GLOBAL flags recomputed each month (set or cleared — a repealed law
 drops within a month); the neighbour half from the holders outward (each holder marks its adjacent countries, `is_adjacent_to_country`, with a
 variable expiring after ~40 days); ships the same way.
-**OPEN:** the financial-district marks; the monthly checks' measured cost. ⚠ Performance probes (with inflated complexity where useful)
+11. ⭐ **THE RULED NUMBERS ARE THE FOLLOWERS' MARKS; THE FIRST ACQUISITION NEEDS DOUBLE** (user, 2026-10-12: *"let's have the ruled numbers as the
+   halved ones, and for the initial acquisition they should double"*), for every counted mark of §10.98, the cities included: government
+   administration and universities 6 × N first / 3 × N once a non-isolationist country holds the technology; financial districts 20 × N / 10 × N;
+   the largest urban centre 30 / 40 / 80 / 160 first, 15 / 20 / 40 / 80 after; **antibiotics 500,000 chemical workers first, 250,000 after** — the
+   500,000 calibrated as the FIRST acquisition (the top country's chemical workers 1925–30 on the §10.97 book: 381 / 559 / 652 thousand in 1925,
+   555 / 592 / 882 in 1930; vanilla's leaders 640–2,139 in 1925). Yes/no conditions (ideas, tropics, civilizing mission, ships) carry no mark.
+**OPEN:** the monthly checks' measured cost. ⚠ Performance probes (with inflated complexity where useful)
 come BEFORE any goal-oriented probe.
