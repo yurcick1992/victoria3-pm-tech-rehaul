@@ -11,7 +11,7 @@
 //   · the state apparatus (government administration) and universities: 3 × N staffed levels for a game-era-N technology;
 //   · capital needs institutions: 10 × N financial-district levels, and the economic-system law is not traditionalism;
 //   · cities: the largest urban centre — modern sewerage 15, organized sports 20, elevator 40, paved roads 80 levels;
-//   · antibiotics: 20,000 workers in the chemical industries (fertilizer, explosives, synthetics);
+//   · antibiotics: 500,000 workers in the chemical industries (fertilizer, explosives, synthetics) — the top country's level in 1925–30 on the §10.97 book (vanilla's leaders pass it ~1920);
 //   · the art chain (realism, camera, film) left to vanilla's own entries; mass propaganda gets none.
 //   Numeric marks are halved for followers (the §10.97 rule), the rest are not marks. Literacy by game era on every non-military entry.
 // --wild: the SMOKE book — 3-month stages everywhere and every mark at its minimum, so each entry fires within a decade. Never measured.
@@ -77,7 +77,7 @@ for (const ind of cfg.industries) if (['fertilizer', 'explosives', 'synthetics']
   const b = t.method_of || t.key; const e = Object.values(t.employment || {}).reduce((a, x) => a + x, 0) * (t.workforce_mult ?? 1); if (e > 0) chemTypes[b] = Math.max(chemTypes[b] || 0, e); }
 for (const [b, e] of Object.entries(chemTypes)) CV[`pmr_cv_chem_${b.replace(/^building_/, '')}`] = staffed(b);
 CV.pmr_cv_chem = 'value = 0\n' + Object.entries(chemTypes).map(([b, e]) => `add = { value = pmr_cv_chem_${b.replace(/^building_/, '')}  multiply = ${e} }`).join('\n');
-markEntry('antibiotics', 'pmr_cv_chem', 20000, 'Workers in the chemical industries (fertilizer, explosives, synthetics): at least {m}', 'The chemists already have the bench; medicine needs only the question.');
+markEntry('antibiotics', 'pmr_cv_chem', 500000, 'Workers in the chemical industries (fertilizer, explosives, synthetics): at least {m}', 'The chemists already have the bench; medicine needs only the question.');
 // cities: the largest urban centre
 for (const [t, m] of [['modern_sewerage', 15], ['organized_sports', 20], ['elevator', 40], ['paved_roads', 80]])
   CE[t] = { trigger: `any_scope_building = { is_building_type = building_urban_center  level >= ${W(m)} }`, label: `An urban centre of ours of at least ${W(m)} levels`, intro: 'A great city makes its own demands.' };
