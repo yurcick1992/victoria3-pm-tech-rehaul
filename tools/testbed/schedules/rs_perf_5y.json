@@ -1,0 +1,73 @@
+{
+  "schedule_version": 1,
+  "label": "rs-perf-5y",
+  "_why": "PERFORMANCE PROBE OF THE §10.98 ENTRIES (user, 2026-10-12: performance-oriented probes, possibly with inflated complexity, before any goal-oriented probe). Three arms alternated, n=3 each, 1836 -> 1841, read with tools/testbed/ledger/arm_tick_cost.mjs --ref rb: rb = the §10.97 book (no §10.98); rs = rb + §10.98; amp = rs with every research bar condition evaluated 10 times (perf_amplify_terms 10) and every monthly global and per-country fleet check run 10 times (perf_amplify_global 10). Predicted: rs within noise of rb (the new checks are plain country triggers and ~16 global blocks a month); amp shows the cost per unit if there is one.",
+  "_comparison": "rs vs rb = the §10.98 cost; (amp - rs)/9 = the cost of one more copy of the checks. F220 for scale: research entries +3.1 s/yr, dams +1.8 s/yr over vanilla 55.8 s/yr.",
+  "_stop_rule": "none",
+  "_cost": "9 runs x 5 y, ~60 min",
+  "defaults": {
+    "dump_dates": [
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 40
+  },
+  "setups": {
+    "rb": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rb.json"
+    },
+    "rs": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs.json"
+    },
+    "amp": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-amp10.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "rb",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "rs",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "amp",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "rb",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "rs",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "amp",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "rb",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "rs",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "amp",
+      "until": "1841.1.1"
+    }
+  ]
+}

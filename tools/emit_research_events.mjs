@@ -274,6 +274,29 @@ for (const [tech, e] of Object.entries(EXTRA)) {
   anchors[tech] = { rule: 'extra', era: narrativeEraOf(T0.era), sources, mark: e.mark, requires: e.requires || [] };
 }
 
+// ⭐⭐ §10.98 (user-ruled 2026-10-12) — entries beyond production, and the art chain left to vanilla.
+//   `research_events.exclude_techs` = technologies that get NO entry of ours (vanilla's own universal entries advance them: the art chain —
+//     realism, camera, film); THROWS on a name the tree lacks.
+//   `research_events.condition_entries` = { <tech>: { trigger, half_trigger?, military?, label, lines? } } — an entry ticking on a COUNTRY
+//     condition (a raw trigger the bar evaluates in the country's scope; anything reaching beyond the country is a flag the monthly global
+//     effect sets). Non-additive by construction (one condition). `half_trigger`: the follower-halved form of a numeric mark. `military`:
+//     exempt from the literacy line. `values` (top level of condition_entries' sibling `condition_values`) = script values the triggers use.
+//   `research_events.monthly_global_effect` = raw effect text run every month in global scope (on_monthly_pulse, a named on_action — L22).
+//   `research_events.repeat_all` = the war and naval entries repeat too (20 stages); `naval_any` = a fleet entry ticks once if WE, a RIVAL
+//     or a GREAT POWER has the ship (any one; the great-power flag is a global flag the monthly effect sets).
+for (const t of RE.exclude_techs || []) { if (!TECH[t]) throw new Error(`research_events.exclude_techs: '${t}' is not in the shipping tree`); delete anchors[t]; }
+const COND = RE.condition_entries || {};
+for (const [tech, e] of Object.entries(COND)) {
+  if (tech.startsWith('_')) continue;
+  const T0 = TECH[tech];
+  if (!T0) throw new Error(`condition_entries: '${tech}' is not in the shipping tree`);
+  if (anchors[tech]) throw new Error(`condition_entries: '${tech}' already has an entry (rule ${anchors[tech].rule})`);
+  if ((RE.exclude_techs || []).includes(tech)) throw new Error(`condition_entries: '${tech}' is also excluded`);
+  if (!e.trigger || !e.label) throw new Error(`condition_entries[${tech}]: needs trigger and label`);
+  if (T0.era <= 1) throw new Error(`condition_entries[${tech}]: an era-1 technology is handed out at the start`);
+  anchors[tech] = { rule: 'cond', era: narrativeEraOf(T0.era), sources: [], cond: e };
+}
+
 // ---- emit ----------------------------------------------------------------------------------------
 const T = '\t';
 const sv = [], bars = [], jes = [], loc = [];
@@ -331,6 +354,7 @@ const jeName = (tech, s) => `je_pmr_${tech}_${s}`;
 const wgVar = (tech) => `pmr_wargate_${tech}`;
 const navOwnVar = (tech) => `pmr_navown_${tech}`;
 const navRivalVar = (tech) => `pmr_navrival_${tech}`;
+const navGpVar = (tech) => `pmr_navgp_${tech}`;   // §10.98: a great power fields it (a global flag, the monthly effect)
 const WAR_TECHS = [];                       // land: the battle gate
 const NAV_TECHS = [];                       // fleet: observation, no war needed (ROADMAP naval ruling)
 
@@ -372,6 +396,9 @@ if ((RE.war_gate || {}).mobilised_share_min) {
 }
 
 // ⭐ NO NAVAL ENTRIES (user-ruled 2026-09-03): `research_events.naval_channel = false` drops every fleet technology's entry
+// §10.98: with `naval_any` every technology that unlocks a ship type gets a fleet entry, whatever the scope (they used to come only from
+//   scope 'all'); one already anchored keeps its anchor
+if (RE.naval_any) for (const tech of Object.keys(SHIP_BY_TECH)) { const T0 = TECH[tech]; if (!T0 || T0.era <= 1 || anchors[tech] || (RE.exclude_techs || []).includes(tech)) continue; anchors[tech] = { rule: 'war', era: Math.max(2, T0.era), sources: [] }; }
 if (RE.naval_channel === false) for (const tech of Object.keys(anchors)) if (anchors[tech].rule === 'war' && isFleetTech(tech)) delete anchors[tech];
 // A PERFORMANCE PROBE SWITCH (2026-10-08, the tick-cost isolation batches): `research_events.perf_off` drops whole kinds of entry —
 // 'war' (the war-channel entries, and with them the wargate on_action) or 'industry' (every other entry). No book ships with it.
@@ -397,8 +424,26 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     // why the two terms are `exclusive` and render as one ordered if / else_if below.
     nWar++;
     keep(tech);
+    if (RE.naval_any) {   // §10.98: ours, a rival's OR a great power's — any one ticks once
+      terms.push({ desc: 'pmr_term_nav_any', trigger: `OR = { has_variable = ${navOwnVar(tech)}  has_variable = ${navRivalVar(tech)}  has_global_variable = ${navGpVar(tech)} }`, value: 1 });
+    } else {
     terms.push({ desc: 'pmr_term_nav_own',   trigger: `has_variable = ${navOwnVar(tech)}`,   value: 2, exclusive: true });
     terms.push({ desc: 'pmr_term_nav_rival', trigger: `has_variable = ${navRivalVar(tech)}`, value: 1, exclusive: true });
+    }
+  } else if (a.rule === 'cond') {
+    // §10.98: a country condition — literacy first (unless military), then the follower-halved form where the condition carries a mark
+    nInd++;
+    const e = a.cond; const L = e.military ? null : litOf(T0);
+    const litT = L != null ? `literacy_rate >= ${L}` : '';
+    const held = `has_global_variable = ${heldVar(tech)}`;
+    if (HALF && e.half_trigger) {
+      HELD_TECHS.push(tech);
+      terms.push({ desc: 'pmr_term_cond_half', trigger: [litT, held, notIso, `AND = { ${e.half_trigger} }`].filter(Boolean).join('  '), value: 1, exclusive: true });
+      terms.push({ desc: 'pmr_term_cond', trigger: [litT, `NOT = { AND = { ${held}  ${notIso} } }`, `AND = { ${e.trigger} }`].filter(Boolean).join('  '), value: 1, exclusive: true });
+    } else terms.push({ desc: 'pmr_term_cond', trigger: [litT, `AND = { ${e.trigger} }`].filter(Boolean).join('  '), value: 1, exclusive: true });
+    if (L != null) terms.push({ desc: `pmr_term_lit_${T0.era}`, trigger: `literacy_rate < ${L}`, value: 0, exclusive: true });
+    srcLines.push(e.label + (e.half_trigger && HALF ? ' (half that once another country that is not isolationist uses it)' : ''));
+    for (const l of e.lines || []) srcLines.push(l);
   } else if (a.rule === 'war') {
     nWar++;
     const w = RE.war_gate || {};
@@ -587,6 +632,9 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       `${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}}\n` +
       `${T}${T}${T}add = {\n${T}${T}${T}${T}desc = "${t.desc}"\n${T}${T}${T}${T}value = ${t.value}\n${T}${T}${T}}\n` +
       `${T}${T}}`).join('\n') +
+    // ⚗ PERF PROBE (§10.98): research_events.perf_amplify_terms = k evaluates every term k − 1 more times in a separate zero-value `if`, so
+    //   the cost of an ACTIVE bar's conditions shows (copies of script-placed entries are never placed, so perf_amplify cannot). Probe only.
+    (RE.perf_amplify_terms > 1 ? '\n' + Array.from({ length: Math.round(RE.perf_amplify_terms) - 1 }, () => terms.map(t => `${T}${T}if = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}}\n${T}${T}${T}add = {\n${T}${T}${T}${T}desc = "${t.desc}"\n${T}${T}${T}${T}value = 0\n${T}${T}${T}}\n${T}${T}}`).join('\n')).join('\n') : '') +
     `\n${T}}\n}`);
 
   // ⭐ THE DATE GATE (FINDINGS F178, the player-side arm of 2026-09-30; not ruled): `research_events.date_gate` =
@@ -601,8 +649,8 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   const lowGrant = gateYear != null ? Math.round(grant * (DG.before_mult ?? 0.5)) : null;
   if (lowGrant != null && !(lowGrant >= 0 && lowGrant <= grant)) throw new Error(`research_events.date_gate: before_mult ${DG.before_mult} out of [0, 1]`);
   const STAGES = a.rule === 'war' ? RE.stages : (RE.industry_stages || RE.stages);
-  const LIT0 = a.rule !== 'war' ? litOf(T0) : null;
-  const REP = a.rule !== 'war' && REPEAT ? REPEAT : 0;
+  const LIT0 = a.rule !== 'war' && !(a.cond && a.cond.military) ? litOf(T0) : null;
+  const REP = (a.rule !== 'war' || RE.repeat_all) && REPEAT ? REPEAT : 0;
   STAGES.forEach((stage, si) => {
     const key = jeName(tech, stage);
     const first = si === 0;
@@ -669,7 +717,20 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       ? `Hard fighting concentrates the mind. Each month a general of ours holds a front with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions against an enemy who already fields ${nice}, this bar advances by one; ${STAGES === RE.stages ? 'three' : STAGES.length} stages of ${span} months each, and each completed stage grants ${STAGES === RE.stages ? 'half' : Math.round(100 * (RE.grant_fraction ?? 0.5)) + '% of'} the technology's base research cost.`
       : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; ${STAGES === RE.stages ? 'three' : STAGES.length} stages of ${span} months each, and each completed stage grants ${STAGES === RE.stages ? 'half' : Math.round(100 * (RE.industry_grant_fraction ?? RE.grant_fraction ?? 0.5)) + '% of'} the technology's base research cost` + (gateYear != null ? ` (before ${gateYear}, only ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that: the trade cannot hurry an idea ahead of its time).` : '.') + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
     // §10.97: an industry entry under the reworked rules says so (the old sentence describes a different bar)
-    if (NONADD && a.rule !== 'war') {
+    // §10.98: a condition entry, and the war / naval entries once they repeat, say what ticks them and how the stages run
+    const stageText = REP ? `${STAGES.length - 1 === 1 ? 'One stage' : (STAGES.length - 1) + ' stages'} of ${span} months, then implementation stages of ${span} months that repeat until ${nice} is ours (at most ${REP}); each grants ${Math.round(100 * ((a.rule === 'war' ? RE.grant_fraction : (RE.industry_grant_fraction ?? RE.grant_fraction)) ?? 0.5))}% of the technology's base research cost.`
+      : `${STAGES.length} stages of ${span} months each; each grants ${Math.round(100 * (RE.grant_fraction ?? 0.5))}% of the technology's base research cost.`;
+    const doneText = REP && !next ? `\n\nImplementation stages completed: [ROOT.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]` : '';
+    if (a.rule === 'cond') {
+      body = `${a.cond.intro || 'Circumstances make this worth pursuing.'}\n\nEach month the bar advances by one while the condition below holds` +
+        (LIT0 != null ? `, and only while our literacy is at least ${Math.round(100 * LIT0)}%; below that the bar waits` : '') + `. ` + stageText + doneText +
+        (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
+    } else if (a.rule === 'war' && REP) {
+      body = (isFleetTech(tech) && RE.naval_any
+        ? `A navy learns by looking. Each month the bar advances by one while we, a rival of ours or a great power fields a ship of this kind. `
+        : `Hard fighting concentrates the mind. Each month a general of ours holds a front with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions against an enemy who already fields ${nice}, this bar advances by one. `) + stageText + doneText;
+    }
+    if (NONADD && a.rule !== 'war' && a.rule !== 'cond') {
       const pct = x => Math.round(100 * x) + '%';
       body = `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` +
         `\n\nEach month the bar advances by one if AT LEAST ONE source below is at its mark` +
@@ -782,6 +843,30 @@ loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gat
 // the fleet channel's two terms — ours supersedes a rival's, so the bar shows whichever applies
 loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']);
 loc.push(['pmr_term_nav_rival', 'A rival fields a ship of this kind']);
+if (RE.naval_any) loc.push(['pmr_term_nav_any', 'We, a rival of ours or a great power fields a ship of this kind']);
+if (Object.keys(COND).length) { loc.push(['pmr_term_cond', 'The condition in the entry holds']); loc.push(['pmr_term_cond_half', 'The condition in the entry holds, at half its mark: another country already uses this technology']); }
+if (LIT) for (const [e, v] of Object.entries(LIT)) if (!loc.some(([k]) => k === `pmr_term_lit_${e}`)) loc.push([`pmr_term_lit_${e}`, `Waiting: literacy below ${Math.round(100 * v)}%, the line for an era ${e} technology`]);
+// §10.98: the script values the condition entries read
+for (const [n, body] of Object.entries(RE.condition_values || {})) sv.push(`${n} = {\n${body.replace(/^/gm, T)}\n}`);
+// §10.98: the MONTHLY GLOBAL EFFECT — the contagion flags (radical laws anywhere, advanced laws in a great power, the neighbour marks) and, with
+//   naval_any, each fleet technology's "a great power fields it" flag. Recomputed every month (set or cleared), so a repealed law or a sunk
+//   fleet drops the flag within a month. A named on_action on on_monthly_pulse (global, no root), L22.
+{
+  const parts = [];
+  if (RE.monthly_global_effect) parts.push(RE.monthly_global_effect);
+  if (RE.naval_any) for (const tech of NAV_TECHS) {
+    const types = SHIP_BY_TECH[tech] || []; const shipT = types.length === 1 ? `is_ship_type = ship_type:${types[0]}` : `OR = { ${types.map(s => `is_ship_type = ship_type:${s}`).join('  ')} }`;
+    parts.push(`if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { ${shipT} } } }  set_global_variable = ${navGpVar(tech)} }\nelse_if = { limit = { has_global_variable = ${navGpVar(tech)} }  remove_global_variable = ${navGpVar(tech)} }`);
+  }
+  // ⚗ PERF PROBE (§10.98): research_events.perf_amplify_global = k repeats the monthly global checks k times (and the per-country fleet checks
+  //   in the war gate), so their cost shows in a 5-year timing batch. No book ships with it.
+  const KG = Math.max(1, Math.round(RE.perf_amplify_global || 1)); if (KG > 1) { const base = parts.slice(); for (let i = 1; i < KG; i++) parts.push(...base); }
+  if (parts.length) {
+    const p = join(MOD, 'common/on_actions/zzz_pm_rehaul_research_global.txt'); mkdirSync(dirname(p), { recursive: true });
+    writeFileSync(p, '﻿# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n# BALANCE_FRAMEWORK §10.98: the monthly global flags the research entries read. Named on_actions only (L22).\n' +
+      `on_monthly_pulse = {\n${T}on_actions = { pmr_research_global }\n}\n\npmr_research_global = {\n${T}effect = {\n` + parts.join('\n').replace(/^/gm, T + T) + `\n${T}}\n}\n`, 'utf8');
+  }
+}
 
 // ⚠⚠ NO ASCII APOSTROPHE IN ANY TEXT A PROGRESS BAR DISPLAYS (BUGS_AND_FIXES 2026-09-30). The vanilla breakdown tooltip
 //   (PROGRESS_BAR_BREAKDOWN) pastes each term's EVALUATED text into a single-quoted data-function argument —
@@ -901,7 +986,7 @@ ${T}${T}}`).join('\n');
       : `${P}${T}OR = {\n` + types.map(s => `${P}${T}${T}is_ship_type = ship_type:${s}`).join('\n') + `\n${P}${T}}`;
     return `${P}any_scope_ship = {\n${inner}\n${P}}`;
   };
-  const navBlocks = NAV_TECHS.map(tech =>
+  const navBlocks0 = NAV_TECHS.map(tech =>
 `${T}${T}if = {
 ${T}${T}${T}limit = {
 ${shipTest(tech, 4)}
@@ -916,6 +1001,7 @@ ${T}${T}${T}${T}}
 ${T}${T}${T}}
 ${T}${T}${T}set_variable = { name = ${navRivalVar(tech)}  days = ${days} }
 ${T}${T}}`).join('\n');
+  const navBlocks = Array.from({ length: Math.max(1, Math.round(RE.perf_amplify_global || 1)) }, () => navBlocks0).join('\n');   // ⚗ perf_amplify_global
 
   W('common/on_actions/zzz_pm_rehaul_wargate.txt',
 `# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.

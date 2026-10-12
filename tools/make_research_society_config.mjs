@@ -1,0 +1,96 @@
+// THE §10.98 BOOK (BALANCE_FRAMEWORK §10.98, user-ruled 2026-10-12): research entries beyond production. `--base <config> --suffix <sfx> [--wild]`
+// writes config/mod_config.<sfx>.json = the base (a §10.97 book) + the ruled entries, and copies the base's tree twin (landmine L20).
+// THE RULED TABLE LIVES HERE ONLY:
+//   · ships back on: ours, a rival's OR a great power's ship ticks the bar once; 36-month stages; the frontline entries 12-month stages;
+//     war and naval entries repeat (20 stages) like the rest;
+//   · contagious ideas: a law in force in a country that is not a revolt — radical laws from ANY such country, advanced laws from a great power
+//     or a neighbour; recomputed monthly (a repealed law drops the flag);
+//   · tropical empire (quinine, malaria prevention): land in West / Equatorial / East / Southern Africa or Indonesia, ours or an integrated
+//     subject's (colony, dominion, personal union, crown land, puppet, vassal, chartered company — NOT protectorate, NOT tributary);
+//     civilizing mission: a great or major power with a colonial-affairs law other than none;
+//   · the state apparatus (government administration) and universities: 3 × N staffed levels for a game-era-N technology;
+//   · capital needs institutions: 10 × N financial-district levels, and the economic-system law is not traditionalism;
+//   · cities: the largest urban centre — modern sewerage 15, organized sports 20, elevator 40, paved roads 80 levels;
+//   · antibiotics: 20,000 workers in the chemical industries (fertilizer, explosives, synthetics);
+//   · the art chain (realism, camera, film) left to vanilla's own entries; mass propaganda gets none.
+//   Numeric marks are halved for followers (the §10.97 rule), the rest are not marks. Literacy by game era on every non-military entry.
+// --wild: the SMOKE book — 3-month stages everywhere and every mark at its minimum, so each entry fires within a decade. Never measured.
+import fs from 'node:fs'; import path from 'node:path';
+const args = process.argv.slice(2); const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
+const BASE = opt('--base'), SFX = opt('--suffix'), WILD = args.includes('--wild');
+if (!BASE || !SFX) { console.error('usage: --base <config> --suffix <sfx> [--wild]'); process.exit(1); }
+const cfg = JSON.parse(fs.readFileSync(BASE, 'utf8')); const RE = cfg.research_events;
+if (!RE || RE.sources_additive !== false || !RE.implementation_repeats) { console.error('the base is not a §10.97 book'); process.exit(1); }
+if (RE.condition_entries) { console.error('the base already carries §10.98'); process.exit(1); }
+const twinIn = BASE.replace(/mod_config\.([^/\\]+)\.json$/, 'tech_tree_options.$1.json');
+const TREE = JSON.parse(fs.readFileSync(twinIn, 'utf8')).options.find(o => o.ships).techs; const eraOf = id => { const t = TREE.find(x => x.id === id); if (!t) throw new Error('no tech ' + id); return t.era; };
+const W = (n) => WILD ? 1 : n;
+const CE = {}, CV = {}; const G = [];
+const law = l => `has_law = law_type:${l}`;
+// contagion
+const RADICAL = { socialism: ['law_council_republic', 'law_factory_councils', 'law_collectivized_agriculture'], anarchism: ['law_anarchy'],
+  corporatism: ['law_corporate_state', 'law_corporatized_unions'], political_agitation: ['law_single_party_state', 'law_outlawed_dissent'],
+  central_planning: ['law_command_economy'], nationalism: ['law_ethnostate'] };
+const ADVANCED = { egalitarianism: ['law_universal_suffrage'], human_rights: ['law_multicultural', 'law_protected_speech', 'law_compulsory_primary_school', 'law_worker_protections', 'law_old_age_pension'],
+  feminism: ['law_women_in_the_workplace', 'law_womens_suffrage'], labor_movement: ['law_restricted_child_labor', 'law_regulatory_bodies', 'law_wage_subsidies'],
+  pharmaceuticals: ['law_private_health_insurance', 'law_public_health_insurance'] };
+const stable = `NOT = { is_revolutionary = yes }`;
+const anyLaw = ls => `OR = { ${ls.map(law).join('  ')} }`;
+for (const [t, ls] of Object.entries(RADICAL)) {
+  G.push(`if = { limit = { any_country = { ${stable}  ${anyLaw(ls)} } }  set_global_variable = pmr_idea_${t} }\nelse_if = { limit = { has_global_variable = pmr_idea_${t} }  remove_global_variable = pmr_idea_${t} }`);
+  CE[t] = { trigger: `has_global_variable = pmr_idea_${t}`, label: `Somewhere a country that is not in revolt lives under ${ls.map(l => '$' + l + '$').join(' or ')}`,
+    intro: 'An idea in practice anywhere is an idea within reach everywhere.' };
+}
+for (const [t, ls] of Object.entries(ADVANCED)) {
+  G.push(`if = { limit = { any_country = { ${stable}  country_rank >= rank_value:great_power  ${anyLaw(ls)} } }  set_global_variable = pmr_ideagp_${t} }\nelse_if = { limit = { has_global_variable = pmr_ideagp_${t} }  remove_global_variable = pmr_ideagp_${t} }`);
+  G.push(`every_country = { limit = { ${stable}  ${anyLaw(ls)} }  every_country = { limit = { is_adjacent_to_country = PREV }  set_variable = { name = pmr_ideanb_${t}  days = 40 } } }`);
+  CE[t] = { trigger: `OR = { has_global_variable = pmr_ideagp_${t}  has_variable = pmr_ideanb_${t} }`,
+    label: `A great power, or a neighbour of ours, that is not in revolt lives under ${ls.map(l => '$' + l + '$').join(' or ')}`,
+    intro: 'What the great powers and our neighbours practise, our own reformers can point to.' };
+}
+// tropical empire, civilizing mission
+const REG = `OR = { ${['west_africa', 'equatorial_africa', 'east_africa', 'southern_africa', 'indonesia'].map(r => `region = sr:region_${r}`).join('  ')} }`;
+const SUBJ = `OR = { ${['colony', 'dominion', 'personal_union', 'crown_land', 'puppet', 'vassal', 'chartered_company'].map(s => `is_subject_type = subject_type_${s}`).join('  ')} }`;
+for (const t of ['quinine', 'malaria_prevention'])
+  CE[t] = { trigger: `OR = { any_scope_state = { ${REG} }  any_subject_or_below = { ${SUBJ}  any_scope_state = { ${REG} } } }`,
+    label: 'We, or a colony, dominion, personal union, crown land, puppet, vassal or chartered company of ours, hold land in West, Equatorial, East or Southern Africa or in Indonesia',
+    intro: 'Those who rule the tropics must learn to survive them.' };
+CE.civilizing_mission = { trigger: `country_rank >= rank_value:major_power  NOT = { ${law('law_no_colonial_affairs')} }`,
+  label: 'We are a great or major power with colonial affairs in our laws', intro: 'An empire looks for a mission.' };
+// script values: staffed levels of a building type
+const staffed = b => `value = 0\nevery_scope_building = {\n\tlimit = { is_building_type = ${b} }\n\tadd = { value = this.level  multiply = occupancy }\n}`;
+CV.pmr_cv_uni = staffed('building_university'); CV.pmr_cv_gov = staffed('building_government_administration');
+CV.pmr_cv_fin = `value = 0\nevery_scope_building = {\n\tlimit = { is_building_type = building_financial_district }\n\tadd = this.level\n}`;
+const markEntry = (t, sv, mark, label, intro, extra = '') => {
+  CE[t] = { trigger: `${sv} >= ${W(mark)}${extra ? '  ' + extra : ''}`, half_trigger: `${sv} >= ${W(mark) / 2}${extra ? '  ' + extra : ''}`,
+    label: label.replace('{m}', W(mark).toLocaleString('en-US')), intro, lines: [`now [ROOT.GetCountry.MakeScope.ScriptValue('${sv}')|0]`] };
+};
+for (const t of ['central_archives', 'identification_documents', 'macroeconomics', 'mass_surveillance'])
+  markEntry(t, 'pmr_cv_gov', 3 * eraOf(t), 'Government administration: at least {m} fully staffed levels', 'A large state needs better tools to know itself.');
+for (const t of ['dialectics', 'psychiatry', 'philosophical_pragmatism', 'psychoanalysis', 'behaviorism', 'analytical_philosophy'])
+  markEntry(t, 'pmr_cv_uni', 3 * eraOf(t), 'Universities: at least {m} fully staffed levels', 'Learned men argue, and from the argument a school is born.');
+for (const t of ['joint_stock_companies', 'corporate_charters', 'central_banking', 'postal_savings', 'mutual_funds', 'investment_banks', 'corporate_management', 'international_exchange_standards', 'modern_financial_instruments'])
+  markEntry(t, 'pmr_cv_fin', 10 * eraOf(t), 'Financial districts: at least {m} levels, under any economic system but traditionalism', 'Capital needs institutions.', `NOT = { ${law('law_traditionalism')} }`);
+// chemical industries' workers
+const chemTypes = {};
+for (const ind of cfg.industries) if (['fertilizer', 'explosives', 'synthetics'].includes(ind.id) && !ind.disabled) for (const t of ind.tiers) {
+  const b = t.method_of || t.key; const e = Object.values(t.employment || {}).reduce((a, x) => a + x, 0) * (t.workforce_mult ?? 1); if (e > 0) chemTypes[b] = Math.max(chemTypes[b] || 0, e); }
+for (const [b, e] of Object.entries(chemTypes)) CV[`pmr_cv_chem_${b.replace(/^building_/, '')}`] = staffed(b);
+CV.pmr_cv_chem = 'value = 0\n' + Object.entries(chemTypes).map(([b, e]) => `add = { value = pmr_cv_chem_${b.replace(/^building_/, '')}  multiply = ${e} }`).join('\n');
+markEntry('antibiotics', 'pmr_cv_chem', 20000, 'Workers in the chemical industries (fertilizer, explosives, synthetics): at least {m}', 'The chemists already have the bench; medicine needs only the question.');
+// cities: the largest urban centre
+for (const [t, m] of [['modern_sewerage', 15], ['organized_sports', 20], ['elevator', 40], ['paved_roads', 80]])
+  CE[t] = { trigger: `any_scope_building = { is_building_type = building_urban_center  level >= ${W(m)} }`, label: `An urban centre of ours of at least ${W(m)} levels`, intro: 'A great city makes its own demands.' };
+for (const [t, e] of Object.entries(CE)) eraOf(t);   // every technology must exist (throws otherwise)
+Object.assign(RE, {
+  exclude_techs: ['realism', 'camera', 'film'],
+  naval_channel: true, naval_any: true, naval_bar_months: WILD ? 3 : 36, war_bar_months: WILD ? 3 : 12, repeat_all: true,
+  condition_entries: CE, condition_values: CV, monthly_global_effect: G.join('\n'),
+});
+if (WILD) { RE.industry_bar_months = 3; RE.literacy_by_era = { 1: 0.05, 2: 0.05, 3: 0.05, 4: 0.05, 5: 0.05 }; }
+const cmd = 'node tools/make_research_society_config.mjs ' + args.join(' ');
+cfg._research_society_variant = { name: SFX, base: path.basename(BASE), wild: WILD, ruled_by: 'BALANCE_FRAMEWORK §10.98 (user, 2026-10-12)', command: cmd,
+  delta: 'research_events: exclude_techs, naval_channel/naval_any/naval_bar_months/war_bar_months/repeat_all, condition_entries, condition_values, monthly_global_effect' };
+const out = `config/mod_config.${SFX}.json`; fs.writeFileSync(out, JSON.stringify(cfg));
+fs.copyFileSync(twinIn, `config/tech_tree_options.${SFX}.json`);
+console.log(`${out}${WILD ? ' (WILD smoke book)' : ''}: ${Object.keys(CE).length} condition entries, ${Object.keys(CV).length} script values, ${G.length} monthly global blocks`);

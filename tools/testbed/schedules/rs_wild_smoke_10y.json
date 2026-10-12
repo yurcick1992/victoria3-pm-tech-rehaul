@@ -1,0 +1,54 @@
+{
+  "schedule_version": 1,
+  "label": "rs-wild-smoke-10y",
+  "_why": "SMOKE PROBE OF THE §10.98 ENTRIES (user, 2026-10-12: start with feasibility / syntax / performance probes). Book config/mod_config.jex-dam4s-rs-wild.json = the §10.97 book jex-dam4s-rb + the §10.98 entries (ships on any of ours / a rival's / a great power's, contagious ideas, tropical empire, civilizing mission, state apparatus, universities, finance, cities, antibiotics; the art chain excluded) with WILD numbers: 3-month stages everywhere, every mark at 1, literacy 5%. Never measured economically.",
+  "_checks": [
+    "error.log in the run window: nothing naming zzz_pm_rehaul_research*",
+    "debug.log: PMR_JE completions for condition-entry technologies (quinine, central_archives, dialectics, joint_stock_companies, modern_sewerage, ...), fleet technologies, and PMR_JEH on marked ones",
+    "the newest save: global variables pmr_idea_* / pmr_ideagp_* / pmr_navgp_* and country variables pmr_ideanb_* exist where they should"
+  ],
+  "_stop_rule": "none",
+  "_cost": "1 run x 1836 -> 1846, ~12 min",
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1845.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "wild": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-wild.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "wild",
+      "until": "1846.1.1"
+    }
+  ]
+}
