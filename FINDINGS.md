@@ -22140,6 +22140,25 @@ Britain **41% / 47%**, the USA 31% / 33%, France 26% / 30%, the German state 19�
 wall_clusters.mjs: main median **167.7 min** (runs 166.4 / 166.4 / 182.1; run 2 slowed 1930–35, no listed bug observed) against vanilla's 165.0 —
 **×1.02**, inside the 10% budget. Candidate A had 2 of 3 runs with the fleet-loop bug.
 
+### 5. Where the points came from, by tree and by 1935 standing (asked the same day; `tools/research_model/points_by_source.mjs`)
+GROSS inflows over 1836–1936, pooled over the three runs, read from each run's own record: research = 52 × min(innovation, cap) a year on the tree of
+the technology being researched at the year's first summary; spread = F223's measured formula per tree with a technology spreading; entries =
+every completed stage's grant. Groups by each run's 1935 standing: the overall tech leader (NGF / GER / GER), the next ten by technologies held with
+GDP ≥ £50M, the next ten by GDP, everyone else. Shares research / spread / entries:
+| group | production | military | society | all trees | points per country-run |
+|---|---|---|---|---|---|
+| leader | 5 / 35 / **60** | 23 / 66 / 12 | 23 / 74 / 3 | 14 / 52 / 34 | 1.50M |
+| tech runners-up (10) | 8 / 49 / 42 | 13 / 83 / 4 | 22 / 78 / 0 | 13 / 66 / 20 | 1.20M |
+| GDP runners-up (10) | 15 / 75 / 10 | 15 / 82 / 3 | 22 / 78 / 0 | 17 / 78 / 4 | 0.64M |
+| everyone else | 12 / 83 / 5 | 13 / 87 / 0 | 22 / 78 / 0 | 16 / 82 / 2 | 0.22M |
+Candidate A for comparison (the same groups): leader 23 / 56 / 21 (production 13 / 42 / 45, military 27 / 67 / 6, society 33 / 66 / 1), 1.76M per
+country-run; tech runners-up 21 / 64 / 14; GDP runners-up 24 / 58 / 17; everyone else 27 / 72 / 2.
+⇒ **With research halved, spread carries every tree except the leaders' production**, and research is 13–17% of everyone's points (candidate A
+21–27%). The leader's production is 60% entries; its military and society are two-thirds to three-quarters spread — which can only deliver what
+someone else already holds, so no country pulls those trees forward and the frontier of game eras 4–5 stalls (§3's anchor shortfall).
+⚠ Gross, so an overshoot past a technology's remaining cost counts (most for entry stages landing on a part-researched technology); the research
+split by tree is a yearly point sample; event grants and research-speed modifiers are not counted.
+
 ### What it does NOT say
 n=3 with no consensus pair, and run 2 is a political outlier, so the GDP median is fragile. The probe's continuation half shares a seed with the probe.
 Three things changed together against candidate A (research, secondaries, dam staffing), so the GDP improvement is not attributed to research
