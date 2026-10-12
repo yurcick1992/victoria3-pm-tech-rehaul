@@ -9843,3 +9843,39 @@ country counter that reads 0 when missing; cheap conditions first in every bar �
 placement while under the literacy line with no stored progress; the held flag set on `on_acquired_technology` + the campaign start + a yearly
 sweep, never a monthly scan) is recorded in the session of 2026-10-11 and is to be confirmed by a 5-year amplified timing batch plus an
 active-entry count in the save summary over the first century run.
+
+## §10.98 — RESEARCH ENTRIES BEYOND PRODUCTION: SHIPS, CONTAGIOUS IDEAS, AND THE COUNTRY'S OWN CONDITION (user-ruling in progress 2026-10-12; NOT BUILT)
+
+The user (after F226: the leader's military and society at ~60% of vanilla's points): *"more tech spread and more JEs where possible"* as the
+weak option, *"this and also a significant society research multiplier (possibly also with a slight tuning to ai values to prefer societal techs
+a bit more)"* as the strong one — **the weak one first; tech spread deferred to a separate step**. Entries must reward what is otherwise a valid
+thing to achieve: **no condition that invites suboptimal play to farm technology** (which rules out casualties, mobilised armies, war exhaustion
+and front stalemates as sources).
+
+**THE COMMON RULES (every entry, ruled):** conditions do not add up (any one qualifying ticks the bar once); **36-month stages, 20 stages, the
+repeating implementation stage** (two stages pay the cost with no ahead-of-time penalty); the **literacy line by the technology's game era**
+(25/35/45/55/65%, a pause) on every non-military entry; ⭐ the **frontline (war) entries tick faster — 12 months a stage** — but also non-additive
+and 20 stages.
+
+**RULED:**
+1. **Ships, back on** (`naval_channel`): a ship type ticks its technology's bar if WE have one, a declared RIVAL has one, or a GREAT POWER has one
+   — any of the three, one tick; 36-month stages (was 60, with ours +2 superseding a rival's +1).
+2. **Contagious ideas** (the user's own design): a law in force in a country that is not a revolt (a revolt is temporary) ticks the technology that
+   unlocks it — **radical** laws (socialism, anarchism, corporatism, political agitation, central planning, nationalism's ethnostate) from ANY such
+   country; **advanced** laws (egalitarianism, human rights, feminism, labour movement, pharmaceuticals' insurance laws) only from a great power or
+   a neighbour. The condition can turn off again (a law repealed), so it is recomputed, not raised once.
+3. **Tropical empire:** quinine and malaria prevention tick while we or a sufficiently integrated subject (colony, dominion, personal union, crown
+   land, puppet — NOT tributary; protectorate-type not counted) hold land in the strategic regions West Africa, Equatorial Africa, East Africa,
+   Southern Africa or Indonesia. **Civilizing mission:** a great or major power (an unrecognized major power does not count) with any colonial
+   affairs law other than "no colonial affairs".
+4. **Large state apparatus** (central archives, identification documents, macroeconomics, mass surveillance) — government administration.
+5. **Antibiotics** — the chemical industry's workers (pharmaceuticals predates the chemical industry, so it does not).
+6. **Mass media** (mass propaganda) — radios / telephones.
+7. **Cities** (modern sewerage, elevator, organized sports, paved roads) — the largest urban centre, thresholds to calibrate.
+8. **Universities at work** (dialectics, philosophical pragmatism, psychiatry, psychoanalysis, behaviorism, analytical philosophy) — allowed if
+   thresholds stay liberal enough for tall countries.
+**REJECTED:** domestic political pressure (circular — the movements demanding a law are themselves gated on that law's technology); non-unit
+military entries from war conditions (farmable).
+**OPEN:** the capital-institutions row (financial technologies) and how to keep it from favouring size; the monthly-vs-yearly cost of the
+ideas' checks; the vassal and chartered-company subject types; every threshold. ⚠ Performance probes (with inflated complexity where useful)
+come BEFORE any goal-oriented probe.
