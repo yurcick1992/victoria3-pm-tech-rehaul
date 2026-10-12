@@ -9885,6 +9885,9 @@ and 20 stages.
    (financial-district levels at the technologies' narrative dates, below); the mark itself is the user's.
 **REJECTED:** domestic political pressure (circular — the movements demanding a law are themselves gated on that law's technology); non-unit
 military entries from war conditions (farmable).
-**OPEN:** the capital-institutions row (financial technologies) and how to keep it from favouring size; the monthly-vs-yearly cost of the
-ideas' checks; the vassal and chartered-company subject types; every threshold. ⚠ Performance probes (with inflated complexity where useful)
+**COST DESIGN (proposed):** a bar cannot name its own country, so every condition reaching beyond it is computed in a monthly pulse and handed to
+the bar as a flag: radical laws and the great-power half of advanced laws as GLOBAL flags recomputed each month (set or cleared — a repealed law
+drops within a month); the neighbour half from the holders outward (each holder marks its adjacent countries, `is_adjacent_to_country`, with a
+variable expiring after ~40 days); ships the same way.
+**OPEN:** the financial-district marks; the monthly checks' measured cost. ⚠ Performance probes (with inflated complexity where useful)
 come BEFORE any goal-oriented probe.
