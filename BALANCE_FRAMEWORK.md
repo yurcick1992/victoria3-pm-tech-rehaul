@@ -9864,16 +9864,25 @@ and 20 stages.
    unlocks it — **radical** laws (socialism, anarchism, corporatism, political agitation, central planning, nationalism's ethnostate) from ANY such
    country; **advanced** laws (egalitarianism, human rights, feminism, labour movement, pharmaceuticals' insurance laws) only from a great power or
    a neighbour. The condition can turn off again (a law repealed), so it is recomputed, not raised once.
-3. **Tropical empire:** quinine and malaria prevention tick while we or a sufficiently integrated subject (colony, dominion, personal union, crown
-   land, puppet — NOT tributary; protectorate-type not counted) hold land in the strategic regions West Africa, Equatorial Africa, East Africa,
-   Southern Africa or Indonesia. **Civilizing mission:** a great or major power (an unrecognized major power does not count) with any colonial
+3. **Tropical empire:** quinine and malaria prevention tick while we or a sufficiently integrated subject hold land in the strategic regions
+   West Africa, Equatorial Africa, East Africa (which includes the Horn's land; `region_horn_of_africa` is a SEA zone), Southern Africa or
+   Indonesia — North Africa and the Nile Basin deliberately not. Integrated enough = `subject_type_colony`, `_dominion`, `_personal_union`,
+   `_crown_land`, `_puppet`, `_vassal`, `_chartered_company`; NOT `_protectorate` (16 in the 1836 history, e.g. the Ionian Islands) and NOT
+   `_tributary` — "it's important not to confuse them". **Civilizing mission:** a great or major power (an unrecognized major power does not count) with any colonial
    affairs law other than "no colonial affairs".
 4. **Large state apparatus** (central archives, identification documents, macroeconomics, mass surveillance) — government administration.
 5. **Antibiotics** — the chemical industry's workers (pharmaceuticals predates the chemical industry, so it does not).
-6. **Mass media** (mass propaganda) — radios / telephones.
-7. **Cities** (modern sewerage, elevator, organized sports, paved roads) — the largest urban centre, thresholds to calibrate.
-8. **Universities at work** (dialectics, philosophical pragmatism, psychiatry, psychoanalysis, behaviorism, analytical philosophy) — allowed if
-   thresholds stay liberal enough for tall countries.
+6. **Mass media** (mass propaganda) — the electrics industry's workers.
+7. **Cities** — the country's LARGEST urban centre, in levels: **modern sewerage 15, organized sports 20, elevator 40, paved roads 80**. Measured
+   (vanilla, the largest per country): the world's largest 25 / 41 / 78 / 238 at 1850 / 1870 / 1890 / 1910; Belgium 8 / 22 / 41 / 131, the
+   Netherlands 9 / 16 / 19 / 59.
+8. **Universities at work** (dialectics, philosophical pragmatism, psychiatry, psychoanalysis, behaviorism, analytical philosophy) — **3 × N
+   staffed university levels for a game-era-N technology**. Measured in 1860: this book Belgium 5 / the Netherlands 11 / Sardinia-Piedmont 0,
+   vanilla 10 / 16 / 3 (the halved university output makes the AI build fewer).
+9. **Capital needs institutions** (joint stock companies, corporate charters, central banking, postal savings, mutual funds, investment banks,
+   corporate management, international exchange standards, modern financial instruments) — financial-district LEVELS, an absolute mark
+   calibrated "to not exclude tall minors, roughly the same as with universities" (user: not relative to the economy). Calibration in hand
+   (financial-district levels at the technologies' narrative dates, below); the mark itself is the user's.
 **REJECTED:** domestic political pressure (circular — the movements demanding a law are themselves gated on that law's technology); non-unit
 military entries from war conditions (farmable).
 **OPEN:** the capital-institutions row (financial technologies) and how to keep it from favouring size; the monthly-vs-yearly cost of the
