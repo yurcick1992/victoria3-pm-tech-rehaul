@@ -9881,8 +9881,17 @@ and 20 stages.
    vanilla 10 / 16 / 3 (the halved university output makes the AI build fewer).
 9. **Capital needs institutions** (joint stock companies, corporate charters, central banking, postal savings, mutual funds, investment banks,
    corporate management, international exchange standards, modern financial instruments) — financial-district LEVELS, an absolute mark
-   calibrated "to not exclude tall minors, roughly the same as with universities" (user: not relative to the economy). Calibration in hand
-   (financial-district levels at the technologies' narrative dates, below); the mark itself is the user's.
+   calibrated "to not exclude tall minors, roughly the same as with universities" (user: not relative to the economy): **10 × N financial-district
+   levels for a game-era-N technology, AND the economic-system law is not `law_traditionalism`**. Measured at the technologies' narrative dates
+   (vanilla n=16 / this book n=3): majors 90–500 mid-century; Belgium ~40, the Netherlands ~50–60 (163–190 by 1920), Sweden and Portugal ~20,
+   Denmark and Sardinia 10–25; Belgium falls to 26–33 by 1900, so it loses the era-4 technology.
+10. **Overlap with vanilla's own entries (user, the same day):** a technology that a UNIVERSAL vanilla journal entry already advances gets no
+   entry of ours, for now ("I understand that vanilla JEs underdo this a lot compared to what we do"). Found by tracing every vanilla entry's
+   completion events to `add_technology_progress`: the art chain — Romanticism → realism (3,500), Realism → camera (4,150), Camera → film (6,000),
+   Film → mass propaganda (5,850), shown to everyone but unrecognized countries ⇒ **realism, camera, film** (today's art-academy rung entries) and
+   **mass propaganda** (the planned mass-media row) are to be dropped (pending the user's confirmation). Borderline: War Nursing's random
+   "Prefab hospital" event offers progress to the first researchable of medical degrees / quinine / malaria prevention / antibiotics, wartime only
+   and an option; Springtime of the Peoples → central archives is one-off and Europe-only (not universal).
 **REJECTED:** domestic political pressure (circular — the movements demanding a law are themselves gated on that law's technology); non-unit
 military entries from war conditions (farmable).
 **COST DESIGN (proposed):** a bar cannot name its own country, so every condition reaching beyond it is computed in a monthly pulse and handed to
