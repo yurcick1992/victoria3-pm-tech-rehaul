@@ -1,0 +1,90 @@
+{
+  "schedule_version": 1,
+  "label": "rs-finish-n3",
+  "_why": "THE §10.98 BOOK TO n=3 (user, 2026-10-12: \"if it's not broken, proceed to 100 years from the same save and then add two full runs, for n=3\"). The 50-year probe 20261012_121357_rs-probe-1886 read NOT broken: the tech majors' median gain 1837-1885 at 0.95 of vanilla n=16's (the §10.97 book 0.76; line 0.70) and world GDP 1.00 at 1845 (line 0.80), 0.93 at 1885; every §10.98 entry fired (quinine, malaria prevention, civilizing mission, ironclads, the contagion flags via nationalism, egalitarianism, labour movement, corporatism, pharmaceuticals). Run 1 CONTINUES the probe from its 1886.1.1 save to 1936; runs 2-3 are full 1836->1936 runs. Book config/mod_config.jex-dam4s-rs.json, unchanged since the probe.",
+  "_arms": {
+    "rs": "{kind: config, config: config/mod_config.jex-dam4s-rs.json} (+ its tree twin, jex-dam4s's)."
+  },
+  "_comparison": "vanilla n=16 (20260821_131149); the §10.97 book (20261012_074500_jex-dam4s-rb-stitched-n3, F226) for the change: technology by tree, the anchor principle, points by source, world GDP per decade, the register, play time.",
+  "_predictions": {
+    "tech": "the majors near vanilla's gain through 1935 (0.95 at 1885); the leader's society share of game eras 4-5 well above the §10.97 book's, military still behind",
+    "GDP": "below the §10.97 book's 1.00 median (0.93 at 1885 here against 1.02)"
+  },
+  "_stop_rule": "none: a fixed n=3 (the user's instruction), every run plays to 1936.",
+  "_cost": "run 1: 1886 -> 1936, ~2 h; runs 2-3: 1836 -> 1936, ~3 h each; ~8 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Do NOT edit tools/emit_research_events.mjs, tools/emit_ai_schooling.mjs, tools/emit_research_levers.mjs, tools/emit_secondaries.mjs, tools/make_research_society_config.mjs or the book while it runs: run 1 continues a save built from these bytes."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 300
+  },
+  "setups": {
+    "rs": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "rs",
+      "until": "1936.1.1",
+      "dump_dates": [
+        "1890.1.1",
+        "1900.1.1",
+        "1910.1.1",
+        "1920.1.1",
+        "1930.1.1",
+        "1935.1.1"
+      ],
+      "parent": "20261012_121357_rs-probe-1886/run001_rs",
+      "continue_save": "tools/testbed/sessions/20261012_121357_rs-probe-1886/run001_rs/saves/0050_20261012_131359_autosave.v3",
+      "continue_expect_after": "1885.12.1",
+      "prior_wall_seconds": 3575.7
+    },
+    {
+      "setup": "rs",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "rs",
+      "until": "1936.1.1"
+    }
+  ]
+}
