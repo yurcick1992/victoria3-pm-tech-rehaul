@@ -22095,3 +22095,53 @@ Machinery new for it: `run_observer -ContinueSave` / run_schedule `continue_save
 ### What it does NOT say
 - n=3; GDP's seed spread is wide (1.23–1.48 at 1936). That A ends RICHER than the book is a direction, not a measured difference.
 - Superseded as a design by §10.97 (2026-10-11, not built): this is the reference for a cap cut alone.
+
+## F226 — THE §10.97 BOOK (RESEARCH HALVED, RESEARCH ENTRIES REWORKED): 3 OF 3 CAMPAIGNS INTACT WHERE CANDIDATE A HAD 0 OF 3; WORLD GDP AT THE AIM (1.00, PER RUN 1.09 / 0.68 / 0.91); PRODUCTION TECHNOLOGY AHEAD OF VANILLA'S, MILITARY AND SOCIETY BEHIND, SO THE LEADER MISSES THE ANCHOR PRINCIPLE BADLY (7.7% OF GAME ERA 4 AT 1905); PLAY ×1.02 (2026-10-12; the probe 20261011_230124_rb-probe-1886 continued to 1936 as run 1 of 20261012_000549_rb-finish-n3 + two full runs, stitched into 20261012_074500_jex-dam4s-rb-stitched-n3)
+
+**Asked** (user, 2026-10-11): build §10.97 (BALANCE_FRAMEWORK) on the artmerge arm, smoke it, run a 50-year probe, decide on the ruled line (broken if the
+tech majors' gain 1836→1885 is under 70% of vanilla's or world GDP is down 20% by 1845), and if not broken take it to n=3.
+**Book** `config/mod_config.jex-dam4s-rb.json` = jex-dam4s + research halved for every source (innovation base 25, cap base 25, cap literacy term 25,
+universities ×0.5 of vanilla) + the reworked research entries (36-month industry stages; one tick a month if any source is at its mark; literacy
+25/35/45/55/65% by the technology's game era, a pause; marks halved once a non-isolationist country holds the technology, for non-isolationist entry
+countries; the implementation stage repeating up to 18 times) + AI schooling (schools institution score 100, +500 to leave no schools). ⚠ It also
+differs from candidate A's MEASURED build in its secondaries (the e2-anchored top rule, §10.91.2) and its dam staffing (10/15/10).
+**Machinery** (the wild smoke probe 20261011_224222): every part fires — held flags, halved-mark completions, the repeating stage's counter, the
+literacy gate (no country under the line holds an industry placement), no error from our files. AI schooling barely moves anything even at ×10
+values: the law gates bind (serfdom forbids religious and public schools, a state religion private ones), and vanilla already gives +500.
+
+### 1. The probe decision (1836→1886, n=1): NOT BROKEN
+`tools/testbed/ledger/tech_gain_check.mjs`, against vanilla n=16: the tech majors' median gain in technologies held from 1837 **6 / 12 / 23 / 34 / 42** at
+1845 / 1855 / 1865 / 1875 / 1885 against vanilla's 7 / 19 / 31 / 43 / 55 = **0.86 / 0.63 / 0.74 / 0.79 / 0.76** (line 0.70); world GDP **0.99** at 1845
+(line 0.80) and 1.02 at 1885. Candidate A: 1.00 on technology, 1.02 on GDP.
+
+### 2. The century, n=3 (the register, criteria.mjs)
+| run | world GDP (1932–36 ÷ vanilla) | pooled U* | loss | note |
+|---|---|---|---|---|
+| 1 (the probe, continued) | 1.09 | 32.1% | 5.7 | |
+| 2 | 0.68 | 33.9% | 16.6 | France revolts twice and loses 34 → 17 states in 1884–85; GDP 30 → 13 for fifty years; the USA dips in the 1870s; Britain slow |
+| 3 | 0.91 | 26.4% | 5.0 | Germany near capital abundance (soft) |
+**3 intact / 0 broken** (candidate A: 0 / 3, all by runoff at 1.21–1.47). No consensus: the two closest (runs 1 and 3, 1.09 / 0.91) diverge under F114.
+Medians: world GDP **1.00** (AT THE AIM), world W 0.89 (aim), world H 1.04; shortlist W **0.86** (aim), GDP 1.11 (aim), U* 1.37 (under the ≥2 aim), H 1.36,
+PI 0.91 (falling, above the ≤0.8 aim), PP **0.78** (aim), T0 1935 ÷ 1900s 0.45 (aim), T3 24.5% of tiered workers.
+World GDP per decade (median ÷ vanilla): 1845 1.00 · 1865 1.04 · 1885 0.95 · 1905 0.94 · 1920 0.85 · 1935 0.91 — inside the 1886 break line (0.83 / 1.17).
+
+### 3. Technology: production ahead, military and society behind
+Majors' gain from 1837 (median of 3 ÷ vanilla): 0.78 at 1885, 0.82 at 1905, 0.84 at 1920, **0.86 at 1935** (candidate A 1.00–1.03).
+Held at the end (production / military / society): GBR **144** (54.7 / 38.7 / 50.7) against vanilla's 161.6 (49.6 / 51.0 / 60.9); USA 142 (52.0 / 39.3 / 50.7)
+against 156.4 (47.3 / 49.3 / 59.8). **Production ends ahead of vanilla; military −12 and society −10 for the leaders** — the trees with no industry
+entries carry the whole halving.
+**The anchor principle (tech_census D, the leader's share of a game era): 22.5% of era 3 at 1875 · 7.7% of era 4 at 1905 · 23.1% of era 5 at the end**,
+against vanilla's 52.5 / 41.0 / 46.2 and candidate A's 55.0 / 43.6 / 38.5 — the aim is about half. All trees counted, so the military/society lag
+drags it; the production tree alone was not separated here.
+The entries' share: 21.0% of the majors' acquisitions had an entry stage and the grants paid 24.8% of their base cost (candidate A 14.9% / 17.6%);
+Britain **41% / 47%**, the USA 31% / 33%, France 26% / 30%, the German state 19–21% / 27–28%.
+
+### 4. Play time
+wall_clusters.mjs: main median **167.7 min** (runs 166.4 / 166.4 / 182.1; run 2 slowed 1930–35, no listed bug observed) against vanilla's 165.0 —
+**×1.02**, inside the 10% budget. Candidate A had 2 of 3 runs with the fleet-loop bug.
+
+### What it does NOT say
+n=3 with no consensus pair, and run 2 is a political outlier, so the GDP median is fragile. The probe's continuation half shares a seed with the probe.
+Three things changed together against candidate A (research, secondaries, dam staffing), so the GDP improvement is not attributed to research
+alone. The anchor-principle shortfall is measured on all three trees together; how much of it is military/society against production is not split.
+The schooling levers' effect is unmeasured beyond the smoke probe's ×10 values.
