@@ -22179,3 +22179,73 @@ n=3 with no consensus pair, and run 2 is a political outlier, so the GDP median 
 Three things changed together against candidate A (research, secondaries, dam staffing), so the GDP improvement is not attributed to research
 alone. The anchor-principle shortfall is measured on all three trees together; how much of it is military/society against production is not split.
 The schooling levers' effect is unmeasured beyond the smoke probe's ×10 values.
+
+## F227 — THE §10.98 BOOK (THE §10.97 BOOK + SHIPS, FRONTLINE, CONTAGIOUS IDEAS, TROPICAL EMPIRE, CIVILIZING MISSION, STATE APPARATUS, UNIVERSITIES, FINANCE, CITIES, ANTIBIOTICS): THE MAJORS BACK ON VANILLA'S TECHNOLOGY PACE (0.97 AT 1935) AND THE LEADER ON THE ANCHOR PRINCIPLE (38.5% OF GAME ERA 4 AT 1905, 50% OF ERA 5 AT THE END) — AT THE PRICE OF ONE RUNOFF IN THREE (WORLD GDP 1.04 / 1.09 / 1.45); CONSENSUS LOSS 5.37, THE BEST OF THE THREE RESEARCH BOOKS; PLAY ×1.005 (2026-10-12; the probe 20261012_121357_rs-probe-1886 continued to 1936 as run 1 of 20261012_131726_rs-finish-n3 + two full runs, stitched into 20261012_203800_jex-dam4s-rs-stitched-n3)
+
+**Asked** (user, 2026-10-12): the "weak option" after F226 — more research entries where possible, outside the production tree — ruled item by item
+as BALANCE_FRAMEWORK §10.98; feasibility / syntax / performance probes first, then a 50-year probe, and if not broken the same save to 1936 plus two
+full runs (n=3). Tech spread ×2 and a society research multiplier (the strong option) were deferred.
+**Book** `config/mod_config.jex-dam4s-rs.json` = the §10.97 book (jex-dam4s-rb) + §10.98's entries (`make_research_society_config.mjs`): ships (any
+own / rival / great-power ship of the class ticks, 36-month stages), frontline entries at 12-month stages, contagious radical and advanced laws, the
+tropical-empire and civilizing-mission entries, the state apparatus, universities 3×N, finance 10×N + a non-traditionalist economy, cities
+15/20/40/80, antibiotics on chemical-industry workers; every ruled mark is the FOLLOWER's and the first acquisition needs double; realism / camera /
+film / mass propaganda dropped (a universal vanilla JE already advances them). Everything else is the §10.97 book byte for byte.
+**Earlier probes** (verdicts in SESSION_VERDICTS): the wild smoke 20261012_110448 (syntax sound), the timing batch 20261012_111843 (Δ −2.0 ± 1.9 s a
+year, nothing measurable), the 50-year probe 20261012_121357 (not broken: majors 0.95 of vanilla at 1885, GDP 1.00 at 1845; every entry fired).
+
+### 1. The century, n=3 (the register, criteria.mjs)
+| run | world GDP (1932–36 ÷ vanilla) | pooled U* | loss | note |
+|---|---|---|---|---|
+| 1 (the probe, continued) | 1.04 | 22.0% | 5.6 | |
+| 2 | 1.09 | 35.2% | 5.3 | |
+| 3 | **1.45** | 17.9% | — | ⛔ BROKEN BY RUNOFF (hard ceiling 1.38); Britain and Germany under 5% U* for 17 years 1920–36 (soft; hoards 0.86 / 0.15 GDP); world GDP 1.24× already at 1905 |
+
+**2 intact / 1 broken** (§10.97: 3 / 0 with no consensus; candidate A: 0 / 3). The intact pair agrees (1.04 / 1.09), so a consensus exists:
+**loss 5.37** = T3 1.20 + PI 1.15 + pool U* 1.05 + PP 0.96 + T0 0.92 + world GDP 0.09. World GDP **1.06** (the 1935 point 1.08), world W 0.87, world H 0.70;
+shortlist W **0.82**, GDP **1.33**, U* 1.34 (under the ≥ 2 aim), H **0.95** (at the aim; §10.97 1.36), PI 0.89 (falling), PP 0.95, T0 ÷ rest 0.015,
+T0 1935 ÷ the 1900s 0.74, T3 30.8% of tiered workers (§10.97 24.5%). GDP at base prices 1.10, the shortlist 1.56.
+Ranking (one invocation): rs **5.37** (2 / 1) · rb divergent, no loss (3 / 0) · ra out (0 / 3).
+World GDP per decade (median of 3 ÷ vanilla, tech_gain_check): 1845 1.00 · 1865 1.00 · 1885 0.97 · 1905 0.92 · 1925 0.96 · 1935 1.10 — inside the 1886
+break line throughout; run 3 alone 1.24 at 1905 and 1.30 at 1925.
+First-run decomposition (run 1 ÷ vanilla's median): world GDP 0.82 / 0.90 / 1.05 at 1900 / 1920 / 1935 = productive workers per head 0.91 / 0.84 / 0.85 ×
+GDP per productive worker 0.92 / 1.04 / 1.18; the shortlist 0.93 / 1.05 / 1.48, its population 433M against vanilla's 345M at 1935.
+
+### 2. Technology: the majors on vanilla's pace, the leader on the anchor principle
+Majors' median gain from 1837 ÷ vanilla's: **1.00 / 0.90 / 0.98 / 0.95 / 0.96 / 0.97** at 1845 / 1865 / 1885 / 1905 / 1925 / 1935 (§10.97 0.86 at 1935;
+candidate A 1.02).
+Held at the end (production / military / society): GBR **159.3** (58.0 / 41.0 / 60.3) against vanilla's 161.6 (49.6 / 51.0 / 60.9) and §10.97's 144.0
+(54.7 / 38.7 / 50.7); the USA 154.0 (55.3 / 40.3 / 58.3) against 156.4 (47.3 / 49.3 / 59.8); GER 160.0, FRA 156.3. ⇒ **Society is back on vanilla's count
+(+10 over §10.97); military is still ~10 behind** (+2 over §10.97); production still ahead by ~8.
+**The anchor principle (tech_census D): the leader holds 45.0% of game era 3 at 1875 · 38.5% of era 4 at 1905 · 50.0% of era 5 at the end** (the third
+42.5 / 25.6 / 46.2) — against §10.97's 22.5 / 7.7 / 23.1, vanilla's 52.5 / 41.0 / 46.2 and candidate A's 55.0 / 43.6 / 38.5. About half, as the principle asks.
+Era-5 holders at the end (mean per run): production 1–9 countries a technology (catalytic synthesis 1.0, in one run); society macroeconomics 22.7, modern
+financial instruments 19.7, mass surveillance 14.3, paved roads 14.3, antibiotics 6.3 (two runs), analytical philosophy 3.3, behaviorism 3.0, mass propaganda
+0; **military: nobody holds any era-5 military technology in any run of any of the three books**.
+The entries' share: **34.6%** of the majors' acquisitions had an entry stage and grants paid **43.8%** of their base cost (§10.97 21.0 / 24.8, candidate A
+14.9 / 17.6); Britain 57.7% / 78.0%, France 44 / 51, the USA 42 / 50, GER 29 / 42.
+Completions per run 4,723–5,983 (§10.97 ~1,000); the largest new rows: ironclads 492–620, self-propelled torpedoes 333–401, egalitarianism 340–446,
+corporatism 328–401, socialism 245–288, monitors ~240, labor movement 178–297, political agitation 0–303, anarchism 186–210, identification documents
+136–174, quinine 76–108, pharmaceuticals 15–145, antibiotics 2–6 (on the 500k / 250k chemistry marks).
+
+### 3. Where the points came from (points_by_source.mjs, gross 1836–1936, pooled, by 1935 standing; research / spread / entries)
+| group | production | military | society | all | per country-run |
+|---|---|---|---|---|---|
+| leader (GER / WUR / GER) | 8 / 43 / 49 · 752k | 21 / 67 / 12 · 398k | 7 / 49 / **44** · 701k | 11 / 50 / 39 | **1.85M** |
+| tech runners-up | 9 / 45 / 46 · 580k | 16 / 77 / 7 · 329k | 9 / 46 / 45 · 561k | 10 / 53 / 37 | 1.47M |
+| GDP runners-up | 14 / 64 / 21 | 12 / 73 / 15 | 15 / 57 / 28 | 14 / 64 / 22 | 0.90M |
+| everyone else | 12 / 82 / 5 | 12 / 77 / 11 | 17 / 64 / 20 | 14 / 73 / 13 | 0.24M |
+
+§10.97 (the same tool, the same pass): leader 1.50M — production 767k, military **346k**, society **389k**; tech runners-up 1.20M.
+⇒ The new entries take the leader's society points from 389k to 701k (44% of them entries, against 3%) and the runners-up's from 343k to 561k; military
+moves only 346k → 398k (12% entries — the frontline and ship entries add little to a leader not at war), which is why military stays ~10 behind vanilla.
+⚠ The vanilla comparison (F226 §5, by 1921) was not re-run for this book; vanilla's 1921 leader got 415k military / 449k society over 1836–1921.
+
+### 4. Play time
+wall_clusters.mjs: all three runs normal (cluster 1) at 149.8 / 165.9 / 177.3 min, main median **165.9** against vanilla's 165.0 (n=16) — **×1.005**. The
+§10.98 checks cost nothing visible over a century. The runoff run is the slowest (a bigger world).
+
+### What it does NOT say
+n=3 with one run broken: whether the runoff is this book's tendency or one seed's cannot be decided here — the intact pair agrees, so the consensus is of
+two. GDP and technology moved together: the GDP rise over §10.97 is not attributed to the society entries alone, which also move laws (contagion) and so
+politics. Military technology is still behind vanilla and no book reaches an era-5 military technology, so the leader's anchor score leans on production
+and society. The revolt duplicate-placement errors (~229 a run) are cosmetic and unfixed. Points by source are gross, and the vanilla column was not re-read.
