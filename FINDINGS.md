@@ -22397,6 +22397,9 @@ different regime from its neighbour across the line, and a book's runoff or stal
 
 ## F230 — VANILLA HAS A MEASURABLE "WAR TAX" ON TICK TIME, ~2% OF A CENTURY ON AVERAGE (EACH CONCURRENT MAJOR-v-MAJOR WAR +3.5% THAT YEAR); BUT VANILLA'S SLOWDOWN EPISODES ARE MOSTLY NOT WARS — HEAVY WARS EXPLAIN A QUARTER TO AT MOST HALF OF THEIR EXCESS, 0.4–0.8% OF CENTURY TICK TIME (2026-10-13; 25 vanilla century runs, 2,446 run-years; no new runs)
 
+> **CLOSED AS A NEGATIVE (user, the same day):** *"It's a negative then. A slightly more correct account of 30% of things that are 3% of time is
+> not worth the discussion."* No war-tax line goes into wall-clock reports; the tool stays as a record.
+
 **Asked** (user, 2026-10-13): *"Does vanilla data support a measurable 'war tax' on performance of any sort? Something that would say 'the run is this
 long, but the three slowdown episodes are explained by ultra-heavy wars, and that makes up 80% of the slowdowns, so removing them would remove 3% of
 overall 100-year wall clock time'."* Ruled with it: **an explanatory point only — never deducted from a wall-clock measurement.**
