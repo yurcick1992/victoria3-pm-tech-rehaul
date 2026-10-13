@@ -310,13 +310,18 @@ function scoreRun(rel, tier) {
 // minimisation"): beyond a soft boundary the EXCESS distance (in σ, capped at 5) counts SOFT_SLOPE more times on top of the aim distance, so the loss is
 // continuous through the line and steeper past it; the 2026-09-17 flat 10 × w step survives only as --soft-pen (default 0). A breach still marks the
 // consensus 'not final' in the report and the ranking (the soft column) — "hitting soft cap means we're not there yet".
+// THE WORLD GDP AIM IS A BAND 0.90–1.00 SINCE 2026-10-13 (user-ruled after FINDINGS F229 / F231: the four-rung outcomes are one wide continuum whose upper tail
+// is capital abundance, so the optimiser may sit a little low and is never pulled above 1.0). It was 0.95–1.05; --gdp-aim 0.95,1.05 restores it. The soft
+// line (0.75–1.33) and the hard lines are unchanged.
+const GDPAIM = argOf('--gdp-aim', '0.90,1.00').split(',').map(Number);
+if (GDPAIM.length !== 2 || !GDPAIM.every(Number.isFinite) || GDPAIM[0] > GDPAIM[1]) throw new Error('--gdp-aim lo,hi');
 const SOFT_PEN = +argOf('--soft-pen', '0'); const SOFT_SLOPE = +argOf('--soft-slope', '2');
 const dist = (v, lo, hi, s, softLo = -Infinity, softHi = Infinity) => { if (!Number.isFinite(v) || !Number.isFinite(s) || !s) return NaN; const x = r2(v);
   const aim = Math.min(5, (x < lo ? (lo - x) : x > hi ? (x - hi) : 0) / s); const excess = x < softLo ? (softLo - x) : x > softHi ? (x - softHi) : 0;
   return aim + Math.min(5, excess / s) * SOFT_SLOPE + (excess > 0 ? SOFT_PEN : 0); };
 function lossOf(o, sT) { // o: a run or a consensus object with the metrics; sT: {ratio0, r3} spreads
   const t = {};
-  t.gdpW = dist(o.gdpW, 0.95, 1.05, sig['world.gdp'], 0.75, 1.33); t.gdpP = dist(o.gdpP, 1.10, 1.90, sig['pool.gdp'], 0.95, 2.0); t.poolW = dist(o.poolW, 0.6, 0.95, sig['pool.W'], -Infinity, 1.0); t.worldW = dist(o.worldW, 0.6, 0.95, sig['world.W'], -Infinity, 1.0);
+  t.gdpW = dist(o.gdpW, GDPAIM[0], GDPAIM[1], sig['world.gdp'], 0.75, 1.33); t.gdpP = dist(o.gdpP, 1.10, 1.90, sig['pool.gdp'], 0.95, 2.0); t.poolW = dist(o.poolW, 0.6, 0.95, sig['pool.W'], -Infinity, 1.0); t.worldW = dist(o.worldW, 0.6, 0.95, sig['world.W'], -Infinity, 1.0);
   t.poolU = dist(o.poolU, 2.0, Infinity, sig['pool.U'], 1.0); t.worldU = dist(o.worldU, 1.0, Infinity, sig['world.U'], 1.0); t.poolH = dist(o.poolH, -Infinity, 1.0, sig['pool.H']); t.worldH = dist(o.worldH, -Infinity, 1.0, sig['world.H']);
   t.PI = dist(o.PI, -Infinity, 0.8, sig.PI, -Infinity, 1.0); t.PP = dist(o.PP, -Infinity, 0.8, sig.PP, -Infinity, 1.1);
   if (o.T) { // T0 ÷ (T1+T2+T3), the less the better — its distance from 0 in the mod runs' spread (fallback 0.02), plus the kink beyond the soft line (1935 > 1.3 × the 1900s)
@@ -384,7 +389,7 @@ if (!QUIET) {
     line('PP (pop goods, wage units)', C.PP, verdict(C.PP, -Infinity, 0.8, x => x > 1.1), 'aim ≤ 0.8, soft > 1.1  |  PM (war goods, read only) ' + f2(C.PM) + '×');
     if (C.T) { line('T0 ÷ (T1+T2+T3)', C.T.r0, 'the less the better', 'T0 = ' + f2(C.T.end && C.T.end[0] / 1e6, 2) + 'M of ' + f2(C.T.end && C.T.end.reduce((x, y) => x + y, 0) / 1e6, 2) + 'M tiered workers'); line('T0 (1935 ÷ the 1900s)', C.T.ratio0, r2(C.T.ratio0) > 1.3 ? 'BEYOND THE SOFT BOUNDARY' : (C.T.t36 === 0 || C.T.declining) ? 'AT THE AIM' : 'inside, not yet falling', 'decades ' + C.T.dec0.map(v => f2(v / 1e6, 2) + 'M').join(' / ') + '; soft > 1.3'); line('T3 ÷ (T0+T1+T2)', C.T.r3, 'the more the better', 'T3 = ' + pc(C.T.share3) + ' of the tiered workers; T0…T3 ' + C.T.end.map(v => f2(v / 1e6, 2) + 'M').join(' / ')); }
     console.log('  WORLD');
-    line('GDP (priority 1)', C.gdpW, verdict(C.gdpW, 0.95, 1.05, x => x < 0.75 || x > 1.33), 'the 1935 point ' + f2(C.gdp35) + '×; aim 1.0, soft outside 0.75–1.33, ' + (GDPHARD === 'ci' && gci ? 'HARD ' + f2(gci.lo) + '–' + f2(gci.hi) + '×' : GDPHARD === 'legacy' ? 'HARD 0.5–1.5×' : 'no hard line'));
+    line('GDP (priority 1)', C.gdpW, verdict(C.gdpW, GDPAIM[0], GDPAIM[1], x => x < 0.75 || x > 1.33), 'the 1935 point ' + f2(C.gdp35) + '×; aim ' + f2(GDPAIM[0]) + '–' + f2(GDPAIM[1]) + ', soft outside 0.75–1.33, ' + (GDPHARD === 'ci' && gci ? 'HARD ' + f2(gci.lo) + '–' + f2(gci.hi) + '×' : GDPHARD === 'legacy' ? 'HARD 0.5–1.5×' : 'no hard line'));
     line('GDP at base prices', C.realW, 'secondary, not in the loss', 'price level (displayed ÷ base-priced) ' + f2(C.plW) + '× vanilla\'s; the shortlist ' + f2(C.realP) + '× at base prices, price level ' + f2(C.plP) + '× (§10.90)');
     line('W', C.worldW, verdict(C.worldW, 0.6, 0.95, x => x > 1.0), 'abs ' + f2(C.worldW_abs, 4) + ' vs ' + f2(ref['world.W'], 4) + '; aim 0.6–0.95, soft > 1.0, ' + wband('world'));
     line('U*', C.worldU, r2(C.worldU) < 1.0 ? 'BEYOND THE SOFT BOUNDARY' : 'inside (no aim)', 'abs ' + pc(C.worldU_abs) + ' vs ' + pc(ref['world.U']) + '; soft < 1.0');

@@ -22461,3 +22461,70 @@ names. ~3 peace pairs a run go unmatched, so some wars are missed and the index 
 an explanation, not an observation of a loop. Size controls: ln pops and ln GDP are collinear (b_pop's interval spans 0); the war coefficient is
 stable across both models. Pre-v12 summaries may drop a civil war's second side from the mobilisation sum (L38). Tick time excludes month-boundary
 ticks (saves, the monthly pulse), ~5% of play.
+
+## F231 — CAPITAL ABUNDANCE IN THE CLOSED MAJORS: GERMANY IS THE ONLY ONE THAT BINDS, AND IT FOLLOWS WORLD GDP WITH A STEP AT ~1.1× — BELOW 1.0× NO GERMAN SEED IS CAPITAL-ABUNDANT AND A FIFTH ARE FULLY EMPLOYED, ABOVE 1.1× TWO THIRDS ARE FULLY EMPLOYED AND 10–15% ABUNDANT; FRANCE, THE USA AND RUSSIA ARE MORE PEASANT-HEAVY THAN IN VANILLA AND ALMOST NEVER GET THERE; THE MOD ALREADY HALVES VANILLA GERMANY'S FULL EMPLOYMENT (72% → 27%) (2026-10-13; the F229 corpus, 219 four-rung century runs / 57 configs, 22 vanilla runs; no new runs)
+
+**Asked** (user, 2026-10-13, after F229): a skilled player gets capital-abundant more easily than in vanilla, and even the AI runs off when lucky,
+so the targets should come down "at least in optimisation"; the aim is that *"capital abundance [is] a hard to achieve goal for an average player,
+even on majors with no capital dump zones"*. Ruled the same day (BALANCE_FRAMEWORK **§10.100**): score the mechanism on the closed majors
+**GER (GER > NGF > PRU) and FRA** (the USA is unreliable; BEL fits but is too small, which the research entries penalise); a lucky AI seed is the
+stand-in for a skilled player, said so; the world-GDP aim becomes the band **0.90–1.00**. This finding is the measurement asked for before the term
+is designed.
+**Data.** `tools/testbed/ledger/corpus_country_extract.mjs` over every run of the F229 corpus → `corpus_countries.jsonl` (gitignored): per year,
+GER (GER, else NGF, else PRU), USA, FRA, BEL, NET, UNL, RUS — GDP, population, U* (unemployed + peasants ÷ workforce), hoard H (investment pool ÷
+GDP), W. Read with `node tools/testbed/ledger/closed_major_abundance.mjs [--list]`. Three readings of abundance: **HARD** = the register's
+capital-abundance shape WITHOUT its 50M population gate (U* < 5% in ≥ 5 consecutive years ending by 1936 at a mean hoard ≥ 1.5 GDP); **SOFT3** = three
+such years at ≥ 1.0 GDP; **LOW5** = five years under 5% at any hoard (full employment, whatever became of the capital).
+
+**1. Per country, the end state (1932–36 mean) and the abundance rates.**
+
+| label | arm | n | U* median (p10–p90) | hoard median (p90) | ever U* < 10% | HARD | SOFT3 | LOW5 |
+|---|---|---|---|---|---|---|---|---|
+| GER (formed GER only) | four-rung | 174 | 26% | 0.14 | — | 3% | — | 27% |
+| GER (formed GER only) | vanilla | 18 | 1% | 0.06 | — | 6% | — | 72% |
+| GER (any of the three tags) | four-rung | 219 | 27% (0–65%) | 0.12 (0.83) | 40% | 3% | 5% | 27% |
+| GER (any) | vanilla | 22 | 1% (0–40%) | 0.06 (0.39) | 68% | 5% | 5% | 64% |
+| FRA | four-rung | 219 | 62% (22–76%) | 0.07 (0.23) | 8% | 0% | 1% | 2% |
+| FRA | vanilla | 22 | 53% (20–63%) | 0.04 (0.29) | 5% | 0% | 0% | 0% |
+| USA | four-rung | 219 | 60% (29–79%) | 0.15 (0.50) | 3% | 1% | 1% | 1% |
+| USA | vanilla | 22 | 37% (20–63%) | 0.18 (0.69) | 5% | 0% | 0% | 0% |
+| BEL | four-rung | 149 | 9% (0–58%) | 0.22 (2.06) | 66% | 8% | 15% | 46% |
+| BEL | vanilla | 16 | 3% (0–48%) | 0.12 (0.93) | 88% | 0% | 0% | 69% |
+| NET | four-rung | 191 | 16% (1–53%) | 0.12 (0.81) | 53% | 2% | 3% | 24% |
+| NET | vanilla | 19 | 2% (1–15%) | 0.06 (2.39) | 95% | 5% | 11% | 79% |
+| RUS | four-rung | 219 | 76% (54–83%) | 0.06 (0.14) | 1% | 0% | 0% | 0% |
+| RUS | vanilla | 22 | 52% (18–70%) | 0.02 (0.04) | 14% | 0% | 0% | 0% |
+
+Germany forms in 174 of 219 four-rung runs (79%) against 18 of 22 vanilla ones; where it does not, the label is a smaller Prussia (median 32M) or NGF
+(35M) against a formed Germany's 64M (vanilla 81M). France's median population at 1935 is 61M with its colonies.
+**2. Germany against world GDP (four-rung runs where Germany formed, n = 174).**
+
+| world GDP (1932–36 ÷ vanilla) | n | German U* median | U* < 5% at the end | LOW5 | HARD |
+|---|---|---|---|---|---|
+| < 0.80 | 47 | 47% | 6% | 2% | 0% |
+| 0.80–0.90 | 28 | 34% | 7% | 7% | 0% |
+| 0.90–1.00 | 25 | 26% | 28% | 20% | 0% |
+| 1.00–1.10 | 26 | 26% | 35% | 27% | 0% |
+| 1.10–1.25 | 21 | 1% | 67% | 67% | 10% |
+| ≥ 1.25 | 27 | 1% | 67% | 67% | 15% |
+
+The step is between 1.0–1.1 and 1.1–1.25: full employment jumps from about a quarter to two thirds and capital abundance appears. Elasticity of
+German end U* on world GDP over all 219 runs (log–log) −3.4, r −0.57; France −1.25 (r −0.50), the USA −1.10 (r −0.54), Belgium −2.1 (r −0.36).
+**3. France does not bind.** Its median end U* is 62% (vanilla 53%); it reaches 5 years under 5% in 2% of runs and is capital-abundant in one, the
+flat-cost F110 run at 2.15× world GDP. Between 0.9 and 1.25× world GDP its median U* stays 52–69%.
+**4. The lucky-seed proxy.** Per config with ≥ 3 runs, the BEST German seed's end U* is 0–4% in most configs from world GDP ~0.85 up (canon-je24
+0% at a median of 0.84 over 30 seeds; canon-je24-a22 0% at 0.92; canon-dams 0% at 1.01; jex 0% at 1.09; the canon jex-dam4s-rs 0% at 1.10), while the
+HARD reading fires in only six German seeds of 219: the flat-cost F110 run (from 1905, hoard 15.0), flat-in12-a19 run 2 (1931, 2.8),
+c19-in12-sharp run 1 (1928, 4.3), jex-n8-v16 run 3 (1931, 1.6), c19-e0ai500 run 1 (1935, 1.7), canon4v-art3 run 5 (1936, 1.5). ⇒ The lucky
+German seed reaches FULL EMPLOYMENT at almost any world GDP above ~0.85; what it rarely reaches is full employment WITH capital piling up.
+**5. Belgium is the country that actually hoards.** HARD 8% of runs (vanilla 0%), SOFT3 15%, a p90 hoard of 2.06 GDP (vanilla 0.93), with 13 HARD
+runs spread over world GDP 0.75–2.15 — a small country whose pool outgrows its labour. (One rs run reads a hoard of 47,440 GDP: Belgium's GDP collapsed
+to near zero, an artefact of the ratio.)
+**Reading.** With the 0.90–1.00 band, the AI's Germany is capital-abundant in no seed and fully employed in about a fifth; the band's upper edge sits
+just below the step. The step at ~1.1 is the quantitative case for the band. France adds no constraint on today's books: a term on it would read
+slack. Whether a skilled German player crosses from full employment into abundance depends on what the player does with government construction
+and the private pool, which the AI corpus cannot show.
+- ⚠ What this does NOT say: the world-GDP bands pool 57 configs, so the step mixes lever and seed effects; within one config the seed cases are a
+  handful per band. The HARD reading drops the register's 50M gate on purpose (France would never pass it) and counts a streak ending in any year,
+  so 1936 streaks are partly the window's edge. A formed Germany and a Prussia are different-sized economies under one label; the formed-only rows
+  are the clean comparison. The lucky-seed proxy's "best of n" depends on n (3 to 30 here). Nothing here tests a player.

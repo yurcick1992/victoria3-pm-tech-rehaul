@@ -9929,3 +9929,31 @@ deleted yet, write that returning to it would need to reimplement performance ch
    §10.95/§10.97/§10.98; F220/F221 measured the cost those fixes remove.
 3. Known open items carried into the canon (F227): one runoff seed in three; military technology ~10 behind vanilla (no era-5 military
    technology held anywhere); tech spread ×2 and a society research multiplier deferred.
+
+## §10.100 — CAPITAL ABUNDANCE MUST BE HARD TO REACH FOR A PLAYER ON A CLOSED MAJOR: THE WORLD-GDP AIM BECOMES 0.90–1.00, AND A CLOSED-MAJOR TERM IS TO BE DESIGNED (user-ruled 2026-10-13; FINDINGS F229, F231)
+
+The user, after F229: *"with a skilled player being more likely to go capital-abundant than in vanilla, and even AI running off often enough under
+our four-rung structure if it's lucky, we need to lower our targets a bit, at least in optimisation … the aim here is to make capital abundance a
+hard to achieve goal for an average player, even on majors with no capital dump zones (so, GER or, to some extent, USA; GBR with its vast empire has
+investment targets long after Britain itself is fully urban)."* Of the options argued (a lower world-GDP target, an asymmetric penalty, both, or
+scoring the mechanism directly), the rulings:
+1. **THE WORLD-GDP AIM IS THE BAND 0.90–1.00** (*"the band of 0.9-1.0 is good"*), in place of 0.95–1.05 (the register's "aim 1.0"). Inside it the
+   term costs nothing; outside it the distance counts as before; the soft line (0.75–1.33) and the hard lines (vanilla's percentile interval ±20%,
+   0.66–1.38 at n=16) are unchanged. `criteria.mjs` ships it as the default since 2026-10-13; `--gdp-aim 0.95,1.05` restores the old aim. Losses
+   computed before that date are on the old aim (the canon's two intact runs score 5.6 / 5.3 on the old aim and 5.9 / 5.8 on the new one).
+   ⚠ Why not a lower point target or an asymmetric penalty alone: F229's outcomes are one continuum, so moving the target trades runoffs for stalls;
+   and the loss is scored on the consensus of intact runs (a median), on which an asymmetric penalty is only a shifted target.
+2. **THE MECHANISM IS TO BE SCORED DIRECTLY ON THE CLOSED MAJORS GER AND FRA** — *"Let's go with PRU/NGF/GER (if for some weird reason all exist,
+   take one, GER > NGF > PRU) and FRA. France tends to have a colonial empire, but not nearly as vast as GBR, and not in the same order of magnitude
+   in population."* The USA is out (*"unreliable"*), Belgium out (it fits, but is too small, and the research entries penalise small countries).
+   The term itself is NOT yet designed. ⚠ F231's measurement: France does not bind on any book measured (median end U* 52–69% at world GDP 0.9–1.25,
+   capital-abundant in one run of 219), so a France term would read slack today; Germany binds, with a step at world GDP ~1.1 (full employment a
+   quarter of seeds below it, two thirds above, capital abundance only above).
+3. **A LUCKY AI SEED IS THE STAND-IN FOR A SKILLED PLAYER, AND EVERY REPORT USING IT SAYS SO** (*"All right, let's do that."*). ⚠ What a skilled
+   player does better, in the user's words, is mostly NOT capital allocation: *"A skilled player knows which techs to rush and what research order to
+   choose to maximise spread. A skilled player knows to grab easy access points into Africa to block other countries and get a lot of land unopposed.
+   A skilled player knows when to attack a weakened rival. And yes, in economic development it doesn't misplace capital and knows how to propel up an
+   unsustainable industry to avoid economy-wide problems from it being insolvent, but that's less important than everything else combined."* So the
+   proxy is a lucky seed (more land, faster technology, the rival weakened) rather than a sharpened investment AI.
+4. **The lever that matches the goal** (the capital cost of a job on the frontier rungs, i.e. the cost slope C against employment) is under the
+   user's consideration, NOT ruled (*"So upping C further? I'll think on that."*). F228's C 2.0 widened the seed spread.
