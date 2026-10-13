@@ -9988,3 +9988,26 @@ specifically."*
    wage_pct, nothing else. ⚠ Its `_variant` record says "10.100" — written before a peer session took that number; it means this section.
 4. **The plan (the same message):** three 30-year probes (`rs_m10_30y_n3.json`); if they hold, the research entries' bar goes from 3 to 4 years a stage,
    and the combined book runs a century n=3 under the register as amended by §10.100.
+5. **PRECEDENCE (user-ruled later the same day):** *"an individual decision overrides a more general one. It's 'paper', more importantly than a pop
+   good."* ⇒ an industry's own lift (`--in0-for`) replaces the pop-good lift (`--in1-pop`) on its anchor and lower rungs as well as the general lift
+   above them — its WHOLE ladder carries the one number. Implemented in `make_ab_config.mjs` (it used to refuse the combination); L31 already gave
+   `_ab.in0_for` priority. Proven: the m10 chain's A/B book regenerates with 0 differing leaves, and `--in0-for motor:1,paper:1` moves exactly the four
+   paper rungs' inputs and their restated target_be / wage_pct (the e0 paper rung's A/B recipe is replaced by the craft rule later in the chain).
+   **Paper is the proposed next per-industry lift** (the second-largest problem good in every artmerge book; a large share of government upkeep through
+   government administration — the user's expectation is steadier budgets and possibly less dispersion in world GDP). Its value is not yet chosen.
+
+### §10.101.1 — THE ROUTINE OPTIMISATION LEVERS (user-ruled 2026-10-13)
+The set a routine search for the optimum moves — everything else is either decided, or recalibrated only as a separate, deliberate event.
+- **The ladder:** A (output step per era), B (input step per era), C (cost step per era); **in1** the general input lift; **in1 for pop goods** (the
+  anchor and lower rungs of industries whose output pops buy — a separate dial, though today equal to in1); **the two e0 steps down**, one for the
+  crafts and one for the non-craft e0 rungs (today `--down-step` 1.5); **per-industry in1** where ruled (engines 1.0; paper proposed).
+- **Research:** ONE combined innovation parameter (innovation base, innovation cap base, the cap's literacy term and the universities' multiplier
+  move together); **tech spread** (unused so far, vanilla's); **the length of a non-war research-entry stage** (48 months in `jex-dam4s-rs-m10-je48`).
+- **NOT levers:**
+  - **The AI desire ladder** is not a lever in itself: it is CALIBRATED per config to minimise misplaced capital (§10.92), better or worse.
+  - **Decided:**
+    - the grant per stage (half the era's base cost when no ahead-of-time penalty applies — research effectiveness is carried by the stage length);
+    - the trade weights (per-good, non-vanilla, at ×1; scaling them is closed);
+    - the merge-host cost rule;
+    - the dam staffing.
+  - **Separate recalibration events at most, never routine:** the entry marks, the literacy gates and the power-plant cost.

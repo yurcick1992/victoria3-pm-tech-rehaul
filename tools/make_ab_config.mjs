@@ -395,11 +395,12 @@ for (const ind of cfg.industries) {
     //   INPUT VALUE only; building_cost and ai_value below stay functions of the absolute era `e`. See the flag's header.
     const k = e - ORIGIN;
     const baseLift = (IN0_ANCHORED != null && aEra != null) ? IN0_ANCHORED : IN0;   // --in0-anchored: the SLID set's own lift
-    if (IN0_FOR && IN0_FOR[ind.id] != null && (IN0_LEVEL != null || IN0_STAGE || IN0_ONLY || (IN0_ANCHORED != null && aEra != null) || (popGood && k <= 0)))
-      throw new Error(`--in0-for ${ind.id}: another flag also decides this industry's lift (--in0-level / --in0-stage / --in0-only / --in0-anchored / --in1-pop); give one`);
+    if (IN0_FOR && IN0_FOR[ind.id] != null && (IN0_LEVEL != null || IN0_STAGE || IN0_ONLY || (IN0_ANCHORED != null && aEra != null)))
+      throw new Error(`--in0-for ${ind.id}: another flag also decides this industry's lift (--in0-level / --in0-stage / --in0-only / --in0-anchored); give one`);
     const lift0 = (IN0_FOR && IN0_FOR[ind.id] != null) ? IN0_FOR[ind.id] : (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (k === 0 ? baseLift : 1) : baseLift);
     // --in1-pop: the anchor and every rung below it of a pop-good industry carry the pop lift; the rungs above keep the scalar's ladder
-    const lift = (popGood && k <= 0) ? IN1_POP : lift0;
+    // ⭐ an industry's OWN lift (--in0-for) overrides the pop-good lift too (user-ruled 2026-10-13, §10.101: "an individual decision overrides a more general one")
+    const lift = (IN0_FOR && IN0_FOR[ind.id] != null) ? lift0 : (popGood && k <= 0) ? IN1_POP : lift0;
     if (IN_LADDER && k >= IN_LADDER.length) throw new Error(`--in-ladder: ${ind.id} reaches ladder index ${k} (e${e}), the ladder has ${IN_LADDER.length - 1} multipliers above era 0`);
     // --down-step: below the anchor, output and input value both ÷ s per step (the anchor's margin kept)
     const down = (DOWN_STEP != null && k < 0) ? Math.pow(DOWN_STEP, k) : null;
