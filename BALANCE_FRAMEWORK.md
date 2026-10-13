@@ -10003,8 +10003,11 @@ The set a routine search for the optimum moves — everything else is either dec
   crafts — the craft rule's SHARE of vanilla's goods per worker (today 0.6), the 0.89× hiring-floor crossing held fixed (user-agreed) — and one for the
   non-craft e0 rungs (today `--down-step` 1.5); **per-industry in1** where ruled (engines 1.0; **paper a likely lever, today 1.2 on every rung,
   range 1.0–1.3**, value not chosen).
-- **Research:** ONE combined innovation parameter (innovation base, innovation cap base, the cap's literacy term and the universities' multiplier
-  move together); **tech spread** (unused so far, vanilla's); **the length of a non-war research-entry stage** (48 months in `jex-dam4s-rs-m10-je48`).
+- **Research:** ONE combined innovation parameter **x** (user-ruled the same day): innovation base = cap base = the cap's literacy term = x, and the
+  universities' innovation × **x/150** — vanilla's base equals its cap base, so the room universities fill is 150 × literacy there and x × literacy here,
+  and x/150 keeps the number of universities needed to reach the cap at vanilla's for every literacy. At the canon's x = 25 that is ×1/6 in place of ×0.5
+  (today a country needs a third of vanilla's universities to reach the cap; the canon's leaders sit on it with 16–31 levels against vanilla's 46–83). Flat
+  innovation from companies, power-bloc principles and events is not scaled. **To be implemented in the canon after  ends**; **tech spread** (unused so far, vanilla's); **the length of a non-war research-entry stage** (48 months in `jex-dam4s-rs-m10-je48`).
 - **NOT levers:**
   - **The AI desire ladder** is not a lever in itself: it is CALIBRATED per config to minimise misplaced capital (§10.92), better or worse.
   - **Decided:**
