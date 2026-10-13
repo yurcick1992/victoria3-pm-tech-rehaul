@@ -125,6 +125,13 @@ const COST_RATIO = (() => { const v = arg('--cost-ratio', ''); if (!v) return nu
 //   point held at the found book's (FINDINGS F127: canon-b18-gm). Exclusive with --cost-flat and --cost-ratio; recorded as
 //   `_ab.cost_ladder`, which tools/lint_tier_eras.mjs (L31) reads when it recomputes cost.
 const COST_LADDER = (() => { const v = arg('--cost-ladder', ''); if (!v) return null; if (COST_FLAT || COST_RATIO != null) throw new Error('--cost-ladder is exclusive with --cost-flat and --cost-ratio'); const a = v.split(',').map(Number); if (a.length < 3 || a.some(x => !(x > 0))) throw new Error('--cost-ladder m1,m2,m3 (one multiplier per era ABOVE era 0, era 1 first; era 0 is always 1)'); return [1, ...a]; })();
+// ⭐⭐ --cost1 <k> (user-ruled 2026-10-14, "C 1.8 and cost1 1.2"): ONE multiplier on EVERY rung's building_cost — the cost
+//   counterpart of the input lift. It sets how capital-hungry the whole ladder is and leaves its SLOPE to --cost-ratio, so the two
+//   are separate dials (raising C alone makes e3 relatively dearer, the opposite of what the e3-vs-e2 payback complaint asks).
+//   It multiplies the anchor, so the non-craft e0 rungs move with it (an e0 left cheaper would reward rebuilding the old rung) and the
+//   craft rungs follow through make_artisan_config's ÷50 (a few points). Output, inputs, ai_value and target_be are untouched.
+//   Recorded as `_ab.cost1` ONLY WHEN SET, so every earlier book regenerates byte for byte; tools/lint_tier_eras.mjs (L31) reads it.
+const COST1 = (() => { const v = arg('--cost1', ''); if (v === '') return null; const k = +v; if (!(k > 0)) throw new Error('--cost1 <k> must be > 0'); return k; })();
 // ⭐⭐ --in-ladder m1,m2,m3 (2026-09-20) — THE INPUT LADDER AS AN EXPLICIT PER-ERA LIST, the exact counterpart of
 //   --cost-ladder, and the axis the user's 2026-09-19 ruling OPENED: *"vanilla values + uniform ladders and penalties
 //   stay, although ladders can be more complex than anchor*A^era"*. It replaces `B^k` with `m_k` — still UNIFORM across
@@ -414,7 +421,7 @@ for (const ind of cfg.industries) {
     if (COST_LADDER && e >= COST_LADDER.length) throw new Error(`--cost-ladder: ${ind.id} reaches e${e}, the ladder has ${COST_LADDER.length - 1} multipliers above era 0`);
     // --anchor-cost: the cost exponent follows the anchor, like output and input; otherwise it stays on the absolute era
     const ce = (ANCHOR_COST && aEra != null) ? k : e;
-    t.building_cost = Math.round(anchor * (COST_FLAT ? 1 : (TF ? TF.cost[e] : COST_LADDER ? COST_LADDER[Math.min(ce, COST_LADDER.length - 1)] : Math.pow(COST_RATIO ?? Ai, ce))));   // --cost-flat: §10.61's flat book; --cost-ratio: anchor × C^era; --cost-ladder: anchor × m_era
+    t.building_cost = Math.round(anchor * (COST1 ?? 1) * (COST_FLAT ? 1 : (TF ? TF.cost[e] : COST_LADDER ? COST_LADDER[Math.min(ce, COST_LADDER.length - 1)] : Math.pow(COST_RATIO ?? Ai, ce))));   // --cost-flat: §10.61's flat book; --cost-ratio: anchor × C^era; --cost-ladder: anchor × m_era
     t.ai_value = (AI_LADDER && !(STEEP && STEEP.inds.has(ind.id))) ? Math.round(AI_LADDER[Math.min(e, AI_LADDER.length - 1)]) : Math.round(AI_BASE * Math.pow(STEEP && STEEP.inds.has(ind.id) ? STEEP.ratio : Ai, e));
     const Obase = t.output_qty * PRICE[outGood]; const Ibase = val(inputs); const wp = t.wage_pct != null ? +t.wage_pct : 0.25;
     // ⭐⭐ target_be IS WAGE-INCLUSIVE ON THE MEASURED WAGE, not a flat share of cost (user-ruled 2026-09-20, §10.87).
@@ -473,13 +480,14 @@ cfg._ab.down_step = DOWN_STEP;
 cfg._ab.in1_pop = IN1_POP;
 cfg._ab.in1_pop_industries = IN1_POP != null ? IN1_POP_INDUSTRIES : null;
 cfg._ab.anchor_cost = ANCHOR_COST || null;
+if (COST1 != null) cfg._ab.cost1 = COST1;
 cfg._ab.anchor_for = Object.keys(ANCHOR_FOR).length ? ANCHOR_FOR : null;
 if (IN0_FOR) { for (const id of Object.keys(IN0_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--in0-for: unknown or disabled industry ${id}`); cfg._ab.in0_for = IN0_FOR; }
 cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';
 cfg._ab.command = 'node tools/make_ab_config.mjs ' + process.argv.slice(2).map(a => /[\s|"]/.test(a) ? JSON.stringify(a) : a).join(' ');
 if (VARIANT) cfg._variant = { ...VARIANT, declared: new Date().toISOString().slice(0, 10), regenerate: cfg._ab.command };
 else delete cfg._variant;
-cfg._comment = `A/B LADDER (${SFX}) derived by tools/make_ab_config.mjs from ${BASE}, KEYED ON THE RUNG'S ERA (the era rule, 2026-09-13): a rung of era e has output = vanilla lowest-tier × ${A}^e, input value × ${IN0 !== 1 ? IN0 + (IN0_ONLY ? ' (era 0 only)' : '') + ' × ' : ''}${B}^e over the rung's own vanilla mix, building_cost = ${COST_FLAT ? 'the vanilla anchor, flat' : COST_LADDER ? `vanilla anchor × ${COST_LADDER.join('/')} by era` : `vanilla anchor × ${COST_RATIO ?? A}^e`}, ai_value =${AI_LADDER ? AI_LADDER.join('/') + ' by era' : `${AI_BASE} × ${A}^e`}, cost-divisor scaling ${s}${STEEP ? `, ai_value ${AI_BASE} × ${STEEP.ratio}^e for ${[...STEEP.inds].join('/')}` : ''}${BAR_MONTHS != null ? `, research_events.industry_bar_months ${BAR_MONTHS}` : ''}. target_be restated as the drift guard.`;
+cfg._comment = `A/B LADDER (${SFX}) derived by tools/make_ab_config.mjs from ${BASE}, KEYED ON THE RUNG'S ERA (the era rule, 2026-09-13): a rung of era e has output = vanilla lowest-tier × ${A}^e, input value × ${IN0 !== 1 ? IN0 + (IN0_ONLY ? ' (era 0 only)' : '') + ' × ' : ''}${B}^e over the rung's own vanilla mix, building_cost = ${COST_FLAT ? 'the vanilla anchor, flat' : COST_LADDER ? `vanilla anchor × ${COST_LADDER.join('/')} by era` : `vanilla anchor × ${COST_RATIO ?? A}^e`}${COST1 != null ? ` × cost1 ${COST1}` : ''}, ai_value =${AI_LADDER ? AI_LADDER.join('/') + ' by era' : `${AI_BASE} × ${A}^e`}, cost-divisor scaling ${s}${STEEP ? `, ai_value ${AI_BASE} × ${STEEP.ratio}^e for ${[...STEEP.inds].join('/')}` : ''}${BAR_MONTHS != null ? `, research_events.industry_bar_months ${BAR_MONTHS}` : ''}. target_be restated as the drift guard.`;
 writeFileSync(join(REPO, `config/mod_config.${SFX}.json`), JSON.stringify(cfg));
 // the tree twin is the BASE's own (config/mod_config.X.json → config/tech_tree_options.X.json); a base with no twin of its own falls back to
 // tier4's, which is what every book took before 2026-10-01 (all of them were built on config/mod_config.tier4.json, so nothing changes for them)

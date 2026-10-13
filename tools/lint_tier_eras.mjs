@@ -149,7 +149,8 @@ for (const ind of cfg.industries || []) {
       if (t.output_qty !== R.output_qty || !same(t.inputs, R.inputs) || !same(t.employment, R.employment) || +t.workforce_mult !== +R.workforce_mult || t.building_cost !== R.building_cost)
         faults.push(`${ind.id} ${t.key}: the craft rung differs from its _artisan record (output/inputs/staffing/workforce_mult/cost) — hand-edited?`);
       if (anchor) { const ce = (AB.anchor_cost && aEra != null) ? (e - ORIGIN) : e; const C = AB.cost_ratio ?? A; const L = Array.isArray(AB.cost_ladder) ? AB.cost_ladder : null;
-        const wantBase = AB.cost_flat ? anchor : L ? Math.round(anchor * L[Math.min(ce, L.length - 1)]) : Math.round(anchor * Math.pow(C, ce));
+        const K1 = AB.cost1 != null ? +AB.cost1 : 1;   // --cost1 (2026-10-14): one multiplier on every rung's cost
+        const wantBase = AB.cost_flat ? Math.round(anchor * K1) : L ? Math.round(anchor * K1 * L[Math.min(ce, L.length - 1)]) : Math.round(anchor * K1 * Math.pow(C, ce));
         if (R.base_cost !== wantBase) faults.push(`${ind.id} ${t.key}: the craft cost was divided from ${R.base_cost}, the era rule's e0 cost is ${wantBase}`);
         if (t.building_cost !== Math.round(R.base_cost / (+ART.cost_div || 1))) faults.push(`${ind.id} ${t.key}: building_cost ${t.building_cost} is not ${R.base_cost} ÷ ${ART.cost_div}`); }
       const steepC = AB.ai_steep && AB.ai_steep.industries.includes(ind.id) ? AB.ai_steep.ratio : null;
@@ -179,11 +180,12 @@ for (const ind of cfg.industries || []) {
     const mergedIn = MP && MP.host === t.key ? tiers.find(x => x.key === MP.added) : null;
     if (anchor) { const C = AB.cost_ratio ?? A; const L = Array.isArray(AB.cost_ladder) ? AB.cost_ladder : null;
       const costAt = e2 => { const ce = (AB.anchor_cost && aEra != null) ? (e2 - ORIGIN) : e2;   // --anchor-cost: the cost exponent follows the anchor
-        return AB.cost_flat ? anchor : L ? Math.round(anchor * L[Math.min(ce, L.length - 1)]) : Math.round(anchor * Math.pow(C, ce)); };
+        const K1 = AB.cost1 != null ? +AB.cost1 : 1;   // --cost1 (2026-10-14): one multiplier on every rung's cost
+        return AB.cost_flat ? Math.round(anchor * K1) : L ? Math.round(anchor * K1 * L[Math.min(ce, L.length - 1)]) : Math.round(anchor * K1 * Math.pow(C, ce)); };
       // `_merge.pairs[ind].cost_rule === 'own'` (make_merge_config --host-cost, 2026-10-03, F211 §4): the host keeps its own era's cost
       const ownCost = mergedIn && MP.cost_rule === 'own';
       const wantCost = mergedIn && !ownCost ? Math.round(Math.sqrt(costAt(e) * costAt(mergedIn.era))) : costAt(e);
-      if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor} × ${L ? L[e] + ' by era' : C + '^' + e}${mergedIn ? (ownCost ? ', the host\'s own (cost_rule own)' : `, the midpoint with e${mergedIn.era}`) : ''})`); }
+      if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor}${AB.cost1 != null ? ' × cost1 ' + AB.cost1 : ''} × ${L ? L[e] + ' by era' : C + '^' + e}${mergedIn ? (ownCost ? ', the host\'s own (cost_rule own)' : `, the midpoint with e${mergedIn.era}`) : ''})`); }
     const steep = AB.ai_steep && AB.ai_steep.industries.includes(ind.id) ? AB.ai_steep.ratio : null;
     const aivAt = e2 => (AB.ai_ladder && !steep) ? Math.round(AB.ai_ladder[Math.min(e2, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steep || A, e2));
     const wantAiv = mergedIn ? Math.round(Math.sqrt(aivAt(e) * aivAt(mergedIn.era))) : aivAt(e);

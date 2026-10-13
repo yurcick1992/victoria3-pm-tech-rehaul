@@ -2339,7 +2339,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         = anchor × C^era for any C between 1 (flat) and A (the default, capacity-priced) — THE COST-SLOPE DIAL of the sweep
                         that followed F113/F114 (flat cost at A ≥ 1.9 doubles the world and kills rung 0; ×A^era keeps rung 0 alive);
                         recorded as `_ab.cost_ratio`, which `lint_tier_eras.mjs` (L31) reads when it recomputes cost; exclusive with
-                        `--cost-flat`. ⭐ 2026-09-16: `--cost-ladder m1,m2,m3` prices building_cost = anchor × m_era from an
+                        `--cost-flat`. ⭐ 2026-10-14 (§10.101.2): `--cost1 k` multiplies EVERY rung's building_cost (the level dial beside C, the slope dial;
+                        recorded as `_ab.cost1` only when set, re-derived by L31; first book `jex-dam4s-rs-x25-c18k12`, C 1.8 × cost1 1.2). ⭐ 2026-09-16: `--cost-ladder m1,m2,m3` prices building_cost = anchor × m_era from an
                         explicit PER-ERA list (era 0 = 1): one era's cost can move alone (`canon-c19-e2soft`: the e2 rungs only) or a changed A/B
                         can be GAIN-MATCHED per era to the found book's value added per construction point (`canon-b18-gm`, FINDINGS F127); recorded
                         as `_ab.cost_ladder`, which L31 reads (proven to trip on a hand-edited e2 cost); exclusive with both. ⭐⭐ 2026-09-20: **`--in-ladder m1,m2,m3`

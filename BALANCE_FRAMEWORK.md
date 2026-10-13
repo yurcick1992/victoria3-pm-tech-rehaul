@@ -10016,3 +10016,18 @@ The set a routine search for the optimum moves — everything else is either dec
     - the merge-host cost rule;
     - the dam staffing.
   - **Separate recalibration events at most, never routine:** the entry marks, the literacy gates and the power-plant cost.
+
+### §10.101.2 — COST LEVEL AND COST SLOPE ARE SEPARATE DIALS: `cost1` (user-ruled 2026-10-14; under test)
+The user, 2026-10-14: *"I want to reduce capital abundance and depeasantation. I'd push C some more, but I'm already unhappy with the fact that payback
+periods on e3 are not significantly better than e2. Idea: add cost1-factor, similar to what in1 does, but for cost"*, then *"Let's try C=1.8 and cost1=1.2"*.
+1. **What it is:** ONE multiplier on every rung's `building_cost` (`make_ab_config --cost1 <k>`, recorded as `_ab.cost1` only when set, re-derived by L31).
+   It multiplies the anchor, so the non-craft e0 rungs move with it (an e0 left cheaper would reward rebuilding the old rung) and the crafts follow
+   through the ÷50 rule (6 → 8 points). Output, inputs, ai_value and target_be are untouched.
+2. **Why a separate dial:** raising C alone makes e3 relatively dearer. Measured on F227's end state (the shortlist at 1935, £600 a point), paybacks run
+   e1 8.6–11.8 y, e2 7.6–10.6 y, e3 7.1–7.9 y — e3 barely better than e2. cost1 sets how capital-hungry the ladder is; C sets the e3-vs-e2 relation.
+3. **The first book:** `config/mod_config.jex-dam4s-rs-x25-c18k12.json` = the canon's recorded chain with `--cost-ratio 1.8 --cost1 1.2` in place of
+   `--cost-ratio 1.9` (the unchanged chain proven to reproduce the canon with 0 content differences first). Against the canon, `building_cost` alone:
+   e0 ×1.27, e1 ×1.20, e2 ×1.14, e3 ×1.08 (the ladder pivots at the e1 anchor). Batch: `rs_c18k12_n3.json`, a fixed n=3 century.
+4. **The static expectation (stated before the batch):** with the same capital in the tiered sector and ~1/1.15 of its levels, world GDP −6 to −7%, the
+   shortlist's −9 to −10%, U* +1.3 to +1.8 pp world and +2.8 to +3.4 pp shortlist. The tiered sector is ~48% of world GDP and ~70–75% of the
+   shortlist's, and 10–13% of the world's workforce against 21–25% of the shortlist's. Feedback loops are expected to change the size, not the sign.
