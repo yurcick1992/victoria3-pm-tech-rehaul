@@ -22288,3 +22288,35 @@ slope is not the lever for the runoff tail; C stays 1.9.
 ### What it does NOT say
 n=3, one intact — no consensus pair, and the two broken runs break on opposite sides, so a seed-spread reading is all it supports. Two levers moved
 together (cost and desire); the desire raise was meant to offset the cost, not tested alone. The e0 factories got 5% cheaper as a side effect.
+
+### Addendum (2026-10-13): why run 3 slowed in 1927–1933 — two long wars with Russia, fought by sea; not a listed bug
+The quarantine judge flagged run 3 at 1927–1933 (10-year lag; ~159 s per in-game year before, 223 / 217 / 229 / **290** / 262 / 238 / 221, then
+174 in 1934). What it was, from the run's own logs and its eight quarantined saves (melted):
+- **The machine was not the cause.** In machine_load.mjs the canary reads ×0.95–1.07 of the session median, memory and disk are flat, and the
+  GAME's own CPU per in-game year rises ×1.30–1.42 against its siblings (driver "GAME WORK"). The engine's automation log agrees: a day's
+  sub-tick processing (Day sum − Day tick) runs 89 ms a day at 1926 and 288 ms at 1931, with the daily tick itself only 156 → 230 ms.
+- **It was not the fleet loop.** Every yearly v16 summary shows 0 loops, the longest path at ≤ 72 moves and ≤ 11k distance. All four sub-ticks
+  rose together (hour 0 ~90 → 125–134 s a year, hours 6/12/18 ~20 → 35–54), F218 §4's great-power-war signature. ⇒ cluster 2, as recorded.
+- **The steps land on two peace dates.** All four sub-ticks per 61 days (exact sums): ~28–32 through 1925; 40–46 from mid-1927; 46–54 through
+  1930; **53 → 38 in the bin holding 28 Apr 1931** (Russia–Netherlands peace, ending war 716); ~38–43 through 1932; **40 → 34 → 31 in the bin
+  holding 2 Oct 1933** (Russia–USA peace, ending war 736); 27–31 after. The Prussia–Sweden peace of 18 Nov 1930 (war 728) and Britain's
+  of 6 Jul 1931 show no step.
+  - **War 716** (30 Apr 1927 → 28 Apr 1931): Spain's play on the Dutch East Indies (Dec 1926), grown into a 56–64-participant war, Spain and Russia
+    against the Netherlands, Britain, Norway and their subjects (naval pairs SPA–GBR, SPA–NET, GBR/NOR/NET/MAD–RUS). By the 1930.1.1 save it had 141
+    land battles and 116 naval battles on record.
+  - **War 736** (3 May 1929 → 2 Oct 1933): Haiti's play on the USA, with Russia, Bulgaria, Alaska and Finland against the USA, France, Oyo and
+    other African participants. By the 1933 save it had **486 naval battles on record, 485 of them supply raids** on Russian convoys (FRA–RUS 340,
+    USA–RUS 102), started at 85 / 112 / 135 / 154 a year in 1929–32, mostly in the Western Mediterranean, the Southern Bight, the Channel,
+    the Celtic Sea and the Baltic entrances. Russia was supplying forces through enemy waters for four years.
+- **The size of the war state follows the episode.** The save's naval-battle database: 52k lines (1927) → 163k (1929) → 325k (1930) →
+  335k (1933) → **6.5k (1934)**. Land battles 10k → 52k (1930) → 6k (1934). The run's supply routes (summary supply_moves, all) 2,139 (1927) →
+  **3,776 / 3,701 (1930 / 1931)** → 2,393 (1932) → 1,785 (1935), with naval routes up to 1,176. Russia's armies were 19 (1926) → 49 (1930) → 63 (1931)
+  → 20 (1932). The world itself grew smoothly over the episode (live pop objects +8%, building levels +7% from 1926 to 1931). It cannot carry
+  +76%.
+- **Run 1 is the contrast.** It had a France–Britain war of the same length (play Jan 1928, peace 2 Oct 1931) and slowed only ~+15–20%
+  (61-day sums 24 → 30–35). Its supply routes stayed at 1,800–2,100. What made run 3 expensive was not war as such. It was two overlapping
+  multi-continent wars whose belligerent had to supply its forces by sea through the enemy's home waters. That multiplied supply routes and
+  produced hundreds of convoy-raid battles. The pattern is vanilla AI conduct, the same shape as F218 §4's vanilla run 11 (Russia–Spain 1927–31).
+- ⚠ What this does NOT say: the per-subsystem split (land combat vs naval raids vs supply pathing) is inferred from the war state and the
+  step timing, not measured. The quarantined saves (`run003_c20/quarantine_saves/`, ep2 before / in1–in4 / last / after1–2) are what debug
+  mode needs to measure it. Whether the runoff world's larger economy made these wars likelier or larger is not testable at n=1.
