@@ -8338,7 +8338,7 @@ with vanilla B (1.5, is it?)?"*
 
 ⇒ **`make_ab_config --in0-level` IS CLOSED as a design axis.** It stays in the tool (it generated `canon-lvl-a19b17`, the F139 book, and the census of
 F140 needs it to price the option) but no book will use it again: a per-industry number chosen to hit a per-industry target is the solver's shape, and
-the solver is the thing this project walked away from. **`in0` is ONE SCALAR. A, B and the cost ladder are UNIFORM across industries.**
+the solver is the thing this project walked away from. **`in0` is ONE SCALAR. A, B and the cost ladder are UNIFORM across industries.** ⚠ **RELAXED 2026-10-13 (§10.101):** a named industry may carry its own lift for its WHOLE ladder (one number per industry line; the engines at 1.0); `--in0-level` stays closed.
 ⇒ **What IS opened: a ladder need not be `anchor × A^era`.** Per-era lists are legitimate (the cost ladder has taken them since 2026-09-16,
 `--cost-ladder`), so the OUTPUT and INPUT ladders may be lists too. That is a real new degree of freedom and §10.86.4.2 is what it buys.
 
@@ -9967,3 +9967,24 @@ scoring the mechanism directly), the rulings:
    proxy is a lucky seed (more land, faster technology, the rival weakened) rather than a sharpened investment AI.
 4. **The lever that matches the goal** (the capital cost of a job on the frontier rungs, i.e. the cost slope C against employment) is under the
    user's consideration, NOT ruled (*"So upping C further? I'll think on that."*). F228's C 2.0 widened the seed spread.
+
+## §10.101 — A PER-INDUSTRY INPUT LIFT IS ALLOWED, ONE NUMBER PER INDUSTRY LINE; THE ENGINE LADDER GOES UNLIFTED (user-ruled 2026-10-13; FINDINGS F232)
+
+The user, after F232's equilibrium model of the engine red flags: *"remove in1 for engines specifically, all rungs. The ruling that disallowed
+fine-tuning industries was a result of our failure to balance it automatically with a solver, it might have been an overkill. I still want to keep it as
+simple as possible, so as few specific rulings as possible, and better to have a reduced in1 for an industry line than a very bespoke recipe for one rung
+specifically."*
+1. **The 2026-09-19 closure of the per-industry axis (§10.86.4, "`in0` is ONE SCALAR") is RELAXED, not reversed.** A named industry may carry its own
+   input lift — ONE number for its WHOLE ladder, every rung, so the steps between its rungs (and F97's death test) are untouched. Per-rung recipes stay
+   out, and so does a per-industry level solved to a target margin (`--in0-level` stays closed: that was the solver by another name). Each such
+   exception is a ruling of its own, kept as few as possible.
+2. **The first: the motor industry (engines) at lift 1.0** in place of the book's 1.2 — steel 36 → 30 per 40 engines on the steam rung (vanilla's own
+   recipe), 40.7 → 33.9 steel + 30.5 → 25.4 electricity on the electric rung, 53.8 → 44.8 steel + oil on the diesel rung. WHY (F232): engines are about
+   half of the canon's input-price problem market-years; at the equilibrium where new engine factories pay back like the average new tiered capital,
+   the unlifted recipe clears 64% of engine problem-years against 38% today.
+3. **Implementation:** `make_ab_config --in0-for <industry>:<mult>[,…]`, recorded as `_ab.in0_for` only when set (every earlier book regenerates byte
+   for byte), re-derived by `lint_tier_eras.mjs` (L31; proven to fail on the book with the record stripped). Book: `config/mod_config.jex-dam4s-rs-m10.json`
+   = the canon's recorded chain with `--in0-for motor:1`; field diff against the canon = the three motor rungs' inputs and their restated target_be /
+   wage_pct, nothing else. ⚠ Its `_variant` record says "10.100" — written before a peer session took that number; it means this section.
+4. **The plan (the same message):** three 30-year probes (`rs_m10_30y_n3.json`); if they hold, the research entries' bar goes from 3 to 4 years a stage,
+   and the combined book runs a century n=3 under the register as amended by §10.100.

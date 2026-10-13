@@ -1,0 +1,36 @@
+{
+  "schedule_version": 1,
+  "label": "rs-m10-30y-n3",
+  "_why": "THE ENGINE LADDER WITHOUT THE INPUT LIFT, PROBED (user, 2026-10-13: \"remove in1 for engines specifically, all rungs ... Go with 3 30-year probes\"; BALANCE_FRAMEWORK 10.101, FINDINGS F232). Book config/mod_config.jex-dam4s-rs-m10.json = the canon jex-dam4s-rs regenerated through its own recorded chain with --in0-for motor:1. Field diff against the canon: the three motor rungs' inputs divided by 1.2 (steel 36 -> 30, 40.7 -> 33.9, 53.8 -> 44.8; electricity 30.5 -> 25.4; oil 53.8 -> 44.8) and their restated target_be / wage_pct; nothing else. Motivation: engines are about half of the canon's problem market-years (Japan 49, Netherlands 18, Russia 18, France 10 a run); the equilibrium model of F232 puts vanilla's 30 steel per 40 engines at 64% of engine problem-years cleared (today 38%).",
+  "_arms": {
+    "m10": "{kind: config, config: config/mod_config.jex-dam4s-rs-m10.json} (+ its tree twin, the canon's byte for byte)."
+  },
+  "_comparison": "the canon's own first 30 years (20261012_203800_jex-dam4s-rs-stitched-n3, F227: same book bar the motor ladder, same telemetry) on engine red flags, the engine order books, motor levels and staffing, world and shortlist GDP; health_vs_ref.mjs at 1866 for dead industries and token markets.",
+  "_predictions": {
+    "engines": "engine HIGH problem market-years 1836-1866 well under the canon's (the model says roughly a third to a half fewer over the century; the early years are the import-dependent markets, where the gain comes through cheaper exporters); engine prices in the exporters (Belgium, Britain, USA) lower than the canon's at 1850 and 1860; more motor levels built and staffed than the canon's in 1850-1866",
+    "steel": "steel demand per engine down a sixth; steel prices no higher than the canon's",
+    "GDP": "world GDP to 1866 inside the canon's three-seed range; a small rise at most",
+    "holds": "the probe HOLDS if no run stalls or runs away (world GDP inside the canon's range, nothing dead at 1866) and the engine flags fall; then the next step is the century n=3 with the research bar lengthened 3 -> 4 years per stage (user, same message)"
+  },
+  "_stop_rule": "none: a fixed n=3 of 30-year probes; the stop watcher is NOT armed.",
+  "_cost": "3 x 1836 -> 1866, ~40 min each, ~2 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Do NOT edit the emitters, the generators or the book while it runs."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1845.1.1", "1850.1.1", "1855.1.1", "1860.1.1", "1865.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 150
+  },
+  "setups": {
+    "m10": { "kind": "config", "config": "config/mod_config.jex-dam4s-rs-m10.json" }
+  },
+  "runs": [
+    { "setup": "m10", "until": "1866.1.1" },
+    { "setup": "m10", "until": "1866.1.1" },
+    { "setup": "m10", "until": "1866.1.1" }
+  ]
+}

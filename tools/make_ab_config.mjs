@@ -234,6 +234,15 @@ const DOWN_STEP = (() => { const v = arg('--down-step', ''); if (v === '') retur
 //   fertilizer, explosives, dye) keep the scalar, which protects the chain F149 §2-3 and F143 §3a found breaking under a uniform rise. A rule
 //   derived from the game's own need table, not a per-industry table. Recorded as `_ab.in1_pop` + `_ab.in1_pop_industries` (L31 reads both).
 const IN1_POP = (() => { const v = arg('--in1-pop', ''); if (v === '') return null; const m = +v; if (!(m > 0)) throw new Error('--in1-pop <mult> must be > 0'); return m; })();
+// ⭐⭐ --in0-for <ind>:<mult>[,<ind>:<mult>] (user-ruled 2026-10-13, BALANCE_FRAMEWORK §10.101): the named industry's WHOLE LADDER carries this
+//   input lift in place of the scalar --in0 — one number per industry line, every rung, never a per-rung recipe. It partly reopens the axis the
+//   2026-09-19 ruling closed (the user: that ruling "was a result of our failure to balance it automatically with a solver, it might have been an
+//   overkill … as few specific rulings as possible, and better to have a reduced in1 for an industry line than a very bespoke recipe for one rung").
+//   First use: motor:1 — the engine ladder unlifted (FINDINGS F232: the engine red flags). Recorded as `_ab.in0_for` ONLY WHEN SET, so every
+//   earlier book regenerates byte for byte; tools/lint_tier_eras.mjs (L31) reads it.
+const IN0_FOR = (() => { const v = arg('--in0-for', ''); if (v === '') return null; const o = {};
+  for (const p of v.split(',')) { const [id, m] = p.split(':'); if (!id || !(+m > 0)) throw new Error('--in0-for <industry>:<mult>[,…], mult > 0'); o[id] = +m; }
+  return o; })();
 // --bar-months N (2026-09-13): research_events.industry_bar_months — the 24-month bar of canon-je24 and every book since
 //   (§10.76) used to be a hand edit after generation; a book is regenerable by ONE command or it is not regenerable.
 const BAR_MONTHS = (() => { const v = arg('--bar-months', ''); if (!v) return null; if (!(+v > 0)) throw new Error('--bar-months <months>'); return +v; })();
@@ -386,7 +395,9 @@ for (const ind of cfg.industries) {
     //   INPUT VALUE only; building_cost and ai_value below stay functions of the absolute era `e`. See the flag's header.
     const k = e - ORIGIN;
     const baseLift = (IN0_ANCHORED != null && aEra != null) ? IN0_ANCHORED : IN0;   // --in0-anchored: the SLID set's own lift
-    const lift0 = (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (k === 0 ? baseLift : 1) : baseLift);
+    if (IN0_FOR && IN0_FOR[ind.id] != null && (IN0_LEVEL != null || IN0_STAGE || IN0_ONLY || (IN0_ANCHORED != null && aEra != null) || (popGood && k <= 0)))
+      throw new Error(`--in0-for ${ind.id}: another flag also decides this industry's lift (--in0-level / --in0-stage / --in0-only / --in0-anchored / --in1-pop); give one`);
+    const lift0 = (IN0_FOR && IN0_FOR[ind.id] != null) ? IN0_FOR[ind.id] : (IN0_LEVEL != null || IN0_STAGE) ? LEVEL_LIFT : (IN0_ONLY ? (k === 0 ? baseLift : 1) : baseLift);
     // --in1-pop: the anchor and every rung below it of a pop-good industry carry the pop lift; the rungs above keep the scalar's ladder
     const lift = (popGood && k <= 0) ? IN1_POP : lift0;
     if (IN_LADDER && k >= IN_LADDER.length) throw new Error(`--in-ladder: ${ind.id} reaches ladder index ${k} (e${e}), the ladder has ${IN_LADDER.length - 1} multipliers above era 0`);
@@ -462,6 +473,7 @@ cfg._ab.in1_pop = IN1_POP;
 cfg._ab.in1_pop_industries = IN1_POP != null ? IN1_POP_INDUSTRIES : null;
 cfg._ab.anchor_cost = ANCHOR_COST || null;
 cfg._ab.anchor_for = Object.keys(ANCHOR_FOR).length ? ANCHOR_FOR : null;
+if (IN0_FOR) { for (const id of Object.keys(IN0_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--in0-for: unknown or disabled industry ${id}`); cfg._ab.in0_for = IN0_FOR; }
 cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';
 cfg._ab.command = 'node tools/make_ab_config.mjs ' + process.argv.slice(2).map(a => /[\s|"]/.test(a) ? JSON.stringify(a) : a).join(' ');
 if (VARIANT) cfg._variant = { ...VARIANT, declared: new Date().toISOString().slice(0, 10), regenerate: cfg._ab.command };

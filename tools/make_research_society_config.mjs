@@ -93,9 +93,14 @@ Object.assign(RE, {
   condition_entries: CE, condition_values: CV, monthly_global_effect: G.join('\n'),
 });
 if (WILD) { RE.industry_bar_months = 3; RE.literacy_by_era = { 1: 0.05, 2: 0.05, 3: 0.05, 4: 0.05, 5: 0.05 }; }
+// --stage-months N (user, 2026-10-13: 'change JE length (3y per stage to 4y per stage) to dampen techs a bit'): every 36-month stage — the industry
+//   bar (every non-war entry, the condition entries included) and the naval bar — becomes N months; the frontline (war) entries keep 12.
+//   Written into the variant record only when given, so every earlier book regenerates byte for byte.
+const STAGE = opt('--stage-months'); if (STAGE != null) { if (WILD || !(+STAGE > 0)) throw new Error('--stage-months N (N > 0), not with --wild'); RE.industry_bar_months = +STAGE; RE.naval_bar_months = +STAGE; }
 const cmd = 'node tools/make_research_society_config.mjs ' + args.join(' ');
 cfg._research_society_variant = { name: SFX, base: path.basename(BASE), wild: WILD, ruled_by: 'BALANCE_FRAMEWORK §10.98 (user, 2026-10-12)', command: cmd,
   delta: 'research_events: exclude_techs, naval_channel/naval_any/naval_bar_months/war_bar_months/repeat_all, condition_entries, condition_values, monthly_global_effect' };
+if (STAGE != null) cfg._research_society_variant.stage_months = +STAGE;
 const out = `config/mod_config.${SFX}.json`; fs.writeFileSync(out, JSON.stringify(cfg));
 fs.copyFileSync(twinIn, `config/tech_tree_options.${SFX}.json`);
 console.log(`${out}${WILD ? ' (WILD smoke book)' : ''}: ${Object.keys(CE).length} condition entries, ${Object.keys(CV).length} script values, ${G.length} monthly global blocks`);

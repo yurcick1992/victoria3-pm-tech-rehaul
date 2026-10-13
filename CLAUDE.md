@@ -1762,6 +1762,9 @@ config/mod_config.jex-dam4s-rb.json / config/mod_config.jex-dam4s-rs.json ⭐⭐
                         literacy term 25, universities ×0.5, `make_research_levers_config.mjs`) + the §10.97 entry rework (`make_research_rework_config.mjs
                         --base config/mod_config.jex-dam4s-rl.json --suffix jex-dam4s-rb`, F226); each book's `_*_variant` records hold the commands; `jex-dam4s-rs` = rb + the §10.98 entries
                         (`make_research_society_config.mjs`, F227). Their `-wild` twins are the smoke books. Un-ignored with their twins
+config/mod_config.jex-dam4s-rs-m10.json ⚗ THE ENGINE LADDER UNLIFTED (user-ruled 2026-10-13, BALANCE_FRAMEWORK §10.101, FINDINGS F232) + its tree twin (the canon's,
+                        byte for byte): the canon's recorded chain with `make_ab_config --in0-for motor:1` — the three motor rungs' inputs ÷ 1.2 and their
+                        restated target_be / wage_pct, nothing else. Probed 3 × 1836→1866 (20261013_110054_rs-m10-30y-n3). Un-ignored with its twin
 config/mod_config.canon-dams-family-nolog.json (HISTORY) THE CANON FROM 2026-09-29 TO 2026-10-12, no longer canon (§10.99): the book below
                         minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
 config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
@@ -2316,7 +2319,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         multipliers over its rung 0 (output, input VALUE over the rung's own mix, cost; ai_value keeps the era
                         rule) — the art-academy stress test §10.70 (fine art 5/10/35/80, cost 400/800/2,400/3,600); ⚠ PIN
                         `--divisor` with either (the auto value follows the dearest rung and would re-score every building),
-                        ⚠⚠ **`--in0-level` IS A CLOSED DESIGN AXIS since 2026-09-19** (user: "we won't go there, this is 'the
+                        ⭐ **RELAXED 2026-10-13 (§10.101): `--in0-for <industry>:<mult>` gives ONE industry its own lift for its WHOLE ladder** (recorded `_ab.in0_for` only when set, L31 re-derives it; first use motor:1, the engines unlifted) — one number per industry line, never a per-rung recipe; the closure below still holds for `--in0-level`. ⚠⚠ **`--in0-level` IS A CLOSED DESIGN AXIS since 2026-09-19** (user: "we won't go there, this is 'the
                         solver' all over again, and we didn't manage to do that, too complex. Vanilla values + uniform ladders
                         and penalties stay, although ladders can be more complex than anchor*A^era") — it stays in the tool
                         because F139's book used it and F140's census prices the option, but **no book will use it again:

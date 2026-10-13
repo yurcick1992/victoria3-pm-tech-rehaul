@@ -22528,3 +22528,56 @@ and the private pool, which the AI corpus cannot show.
   handful per band. The HARD reading drops the register's 50M gate on purpose (France would never pass it) and counts a streak ending in any year,
   so 1936 streaks are partly the window's edge. A formed Germany and a Prussia are different-sized economies under one label; the formed-only rows
   are the clean comparison. The lucky-seed proxy's "best of n" depends on n (3 to 30 here). Nothing here tests a player.
+
+## F232 — THE ENGINE RED FLAGS ARE HALF OF THE CANON'S INPUT-PRICE PROBLEMS, AND THEY ARE A PRICE-LEVEL EFFECT OF THE 1.2 INPUT LIFT: AT THE EQUILIBRIUM WHERE NEW ENGINE FACTORIES PAY BACK LIKE THE AVERAGE NEW CAPITAL, THE UNLIFTED (VANILLA) RECIPE CLEARS 64% OF ENGINE PROBLEM-YEARS AGAINST 38% TODAY, +20% OUTPUT 78%, +30% 89%; UNLIFTED, THE ENGINE RUNGS EARN ×1.68 / ×1.44 / ×1.19 AT FIXED 1930s PRICES (2026-10-13; the canon's n=3, 20261012_203800_jex-dam4s-rs-stitched-n3; no new runs; led to §10.101)
+
+**Asked** (user, 2026-10-13): how much more effective would the engines' e1 recipe have to be to drastically reduce the engine red flags; then the
+profitability of the unlifted ladder against the other e2/e3 industries.
+
+### 1. Where the flags are
+Engines carry ~100 of the canon's ~190 problem market-years a run (HIGH ≥ 1.70× base for ≥ 2 y on ≥ 10 units/wk of building demand): Japan 49, the
+Netherlands 18, Russia 18, France 10, Belgium 3, Germany 1, Britain 1. The flagged markets mostly make no engines at all (62% of engine flag-years:
+Japan all century, the Netherlands to ~1890, Russia to ~1880, France before 1860) — so does vanilla, which builds no motor industry there either.
+On the dump-date order books, engine readings at ≥ 1.70× with ≥ 10 demand: canon 16 a run, vanilla (eleven-tag set, 20260920_225047, n=3) 8 —
+Japan 5.3 against 3.7, Russia 3.0 against 1.0, the Netherlands 2.7 against 0. The Netherlands imports 60–198 engines/wk in vanilla 1860–80 against
+12–48 in the canon; Belgium's engines sell at 0.63–0.68× base in vanilla against 0.79–0.86×.
+The steam rung (40 engines from 36 steel; vanilla 30) earns the same 13–16% of revenue in both arms 1850–1900 at about vanilla's level count — the
+higher engine price absorbs the lift — but the canon's exporters' engine factories ran 59–66% staffed 1850–80 against vanilla's 77–83% (unexplained).
+
+### 2. The equilibrium model
+Per engine problem-year (244, Belgium's 6 left out on an unusable £/point reading): the engine price p* at which a NEW steam-rung factory in the
+market pays back in the benchmark time — the run's capital-weighted payback of all new tiered capital world-wide in that decade (9–15 y before 1860,
+6–7 by the 1930s; median over the rows 8.6). 800 points at the leader's £/point (median £761), wages = the leader's rate × 7,750 wage units, steel at
+its local yearly price — or, where it was ≥ 1.70× or absent (56% of rows), at the price where the best steel mill the leader can build pays back in
+the same time. Base methods, no throughput bonus, no demand response. The year clears if p* < 1.70.
+
+| recipe | problem-years cleared | median p* |
+|---|---|---|
+| today (36 steel) | 38% | 1.79 |
+| 33 steel | 50% | |
+| **30 steel (vanilla, no lift)** | **64%** | |
+| 27 / 24 steel | 75% / 85% | |
+| output +10% / +20% / +30% / +40% | 61% / 78% / 89% / 94% | 1.63 / 1.49 / 1.38 / — |
+
+Per market, the output multiplier needed (median, p10–p90): Japan 1.08 (0.79–1.38), the Netherlands 0.95 (0.55–1.25), Russia 1.08 (0.82–1.20), France
+1.00 (0.92–1.20). Steel is ~60% of the factory's cost at these prices (capital ~30%, wages ~10%), so cutting steel is weaker than adding output by the
+same percentage. Sensitivity: a benchmark 25% shorter → +20% output clears 59%; 25% longer → 88%.
+⚠ The 38% that clear under today's recipe are years where a factory would already pay back at the benchmark below 1.70× and none was built (the
+leader held atmospheric_engine in every row): the recipe is not their blocker — the AI's choice or capital is.
+
+### 3. The unlifted ladder at fixed 1930–35 prices (shortlist, per staffed level per week)
+| rung | revenue | profit today | unlifted | × | profit ÷ revenue | payback (y, £497/pt) |
+|---|---|---|---|---|---|---|
+| e1 steam | £4,355 | £670 | £1,129 | 1.68 | 15 → 26% | 11.4 → 6.8 |
+| e2 electric | £8,370 | £1,855 | £2,663 | 1.44 | 22 → 32% | 7.8 → 5.5 |
+| e3 diesel | £16,097 | £6,029 | £7,186 | 1.19 | 37 → 45% | 4.6 → 3.8 |
+
+Against the other rungs (same basis): e2 paybacks automotive 3.3, art academy 3.9, electrics 4.3, glass 6.6, fertilizer 6.9, engines 7.8 (the median),
+tooling 8.6, explosives 9.0, munitions 10.3, artillery 11.9, small arms 14.4; the merged e2/e3 buildings textile 5.2, steel 6.1, furniture 6.2. e3:
+automotive 2.7, art academy 2.9, engines 4.6, paper 5.1, tooling 5.4, explosives 5.7, glass 6.7, artillery 7.5, small arms 11.9 (median ~5.3). Unlifted,
+e2 engines would sit fourth (5.5), e3 engines third (3.8); the steam rung would earn like a typical 1905 factory, so it would retire more slowly.
+
+### What it does NOT say
+A static model: no demand response (cheaper engines mean more railways and trams), prices held where the run left them; the benchmark is a world
+average, not each country's own; the exporters' staffing gap is unexplained and a recipe may not touch it. Tools: scratchpad `engine_eq.mjs`,
+`motor_unlift.mjs`, `rung_profit_1930s.mjs` (this session).

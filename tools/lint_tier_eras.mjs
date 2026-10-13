@@ -167,9 +167,11 @@ for (const ind of cfg.industries || []) {
     // --in0-anchored: the SLID set (named in _ab.anchor_for) carries its own lift; everything else the scalar in0
     // ⭐ --in1-pop (2026-10-01, F197): the anchor and every rung below it of a pop-good industry carry the pop lift
     const popLow = AB.in1_pop != null && Array.isArray(AB.in1_pop_industries) && AB.in1_pop_industries.includes(ind.id) && k <= 0;
-    const liftI = popLow ? +AB.in1_pop : perInd && perInd[ind.id] != null ? +perInd[ind.id] : ((AB.in0_anchored != null && aEra != null) ? +AB.in0_anchored : lift);
+    // ⭐ --in0-for (2026-10-13, §10.100): the named industry's whole ladder carries its own lift (motor:1 — the engines unlifted)
+    const forI = AB.in0_for && AB.in0_for[ind.id] != null ? +AB.in0_for[ind.id] : null;
+    const liftI = forI != null ? forI : popLow ? +AB.in1_pop : perInd && perInd[ind.id] != null ? +perInd[ind.id] : ((AB.in0_anchored != null && aEra != null) ? +AB.in0_anchored : lift);
     const wantIn = I0 * (in0only ? (k === 0 ? liftI : 1) : liftI) * (down != null ? down : inMul(k)); const gotIn = val(t.inputs);
-    if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${liftI}${popLow ? ' (--in1-pop)' : ''} × ${down != null ? AB.down_step + '^' + k + ' (--down-step)' : inL ? inMul(k).toFixed(3) + ' at ladder index ' + k : B + '^' + k})`);
+    if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${liftI}${forI != null ? ' (--in0-for)' : popLow ? ' (--in1-pop)' : ''} × ${down != null ? AB.down_step + '^' + k + ' (--down-step)' : inL ? inMul(k).toFixed(3) + ' at ladder index ' + k : B + '^' + k})`);
     // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of
     // 2026-09-14) and A by default (capacity-priced, the canon)
     // ... or anchor × m_era from an explicit per-era list (`_ab.cost_ladder`, 2026-09-16 — one era's cost moved on its own, or a changed A/B gain-matched per era)
