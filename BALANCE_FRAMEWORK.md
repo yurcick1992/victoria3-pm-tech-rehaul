@@ -10000,7 +10000,9 @@ specifically."*
 The set a routine search for the optimum moves — everything else is either decided, or recalibrated only as a separate, deliberate event.
 - **The ladder:** A (output step per era), B (input step per era), C (cost step per era); **in1** the general input lift; **in1 for pop goods** (the
   anchor and lower rungs of industries whose output pops buy — a separate dial, though today equal to in1); **the two e0 steps down**, one for the
-  crafts and one for the non-craft e0 rungs (today `--down-step` 1.5); **per-industry in1** where ruled (engines 1.0; paper proposed).
+  crafts — the craft rule's SHARE of vanilla's goods per worker (today 0.6), the 0.89× hiring-floor crossing held fixed (user-agreed) — and one for the
+  non-craft e0 rungs (today `--down-step` 1.5); **per-industry in1** where ruled (engines 1.0; **paper a likely lever, today 1.2 on every rung,
+  range 1.0–1.3**, value not chosen).
 - **Research:** ONE combined innovation parameter (innovation base, innovation cap base, the cap's literacy term and the universities' multiplier
   move together); **tech spread** (unused so far, vanilla's); **the length of a non-war research-entry stage** (48 months in `jex-dam4s-rs-m10-je48`).
 - **NOT levers:**
