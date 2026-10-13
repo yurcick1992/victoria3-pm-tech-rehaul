@@ -52,7 +52,7 @@ function runDirs() {
 // ---- per-run yearly series from the summaries (the 1 January summary of each year)
 function series(dir) {
   const S = {}; const sd = path.join(dir, 'save_summaries');
-  for (const f of fs.readdirSync(sd).filter(f => f.endsWith('.json.gz')).sort()) {
+  for (const f of fs.readdirSync(sd).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort()) {
     let s; try { s = JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(sd, f)))); } catch { continue; }
     const d = String(s.provenance?.date || s.date || ''); const [y, mo, dd] = d.split('.').map(Number);
     if (!y || mo !== 1 || dd !== 1 || S[y]) continue;
