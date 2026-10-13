@@ -97,7 +97,7 @@ const [E0, E1] = argOf('--end', '1932-1936').split('-').map(Number); const JSON_
 // 1935 > the pool's W × Y > W" instead of contradicting it. Superseded: the 2026-09-18 morning set gdpW 2, gdpP 1.25, poolW 1.5, worldW 1.25, poolU 1,
 // T0 1.5, T3 1.5, PI 1, PP 0.75, worldU 0.75, poolH 0.75, worldH 0.5; the 2026-09-17 set 3 / 2 / 2 / 1.5 / 1 / 1 / 1 / 0.5 / 0.5 / 0.5 / 0.3 / 0.25.
 // Either is reproducible with --weights (worldU is settable again simply by naming it).
-const W = { gdpW: 2, gdpP: 1.5, poolW: 1.25, worldW: 1.25, poolU: 1, T0: 1.5, T3: 1.5, PI: 1, PP: 0.75, poolH: 0.75, worldH: 0.5 };
+const W = { gdpW: 2, gdpP: 1.5, poolW: 1.25, worldW: 1.25, poolU: 1, T0: 1.5, T3: 1.5, PI: 1, PP: 0.75, poolH: 0.75, worldH: 0.5, gerCM: 1.5 }; // gerCM since 2026-10-13 (§10.100)
 // ⭐⭐ THE σ THE DISTANCES ARE MEASURED IN (user-ruled 2026-09-18 evening, "ok on the right sigma and fixing sigmas for T"; F134 §6 and §10).
 // FIXED CONSTANTS, measured as the POOLED WITHIN-CONFIG spread of each ratio over the 29 intact runs of the books of 2026-09-13 → 09-18 (17 d.f.) —
 // the seed noise of the population actually being scored. Vanilla's own seed spread (the 2026-09-17 default, still `--sigma vanilla`) is 1.3–3.0×
@@ -301,6 +301,7 @@ function scoreRun(rel, tier) {
     const w2 = ys.filter(y => y >= 1931 && y <= 1936); const rows2 = w2.map(y => years.get(y).members[m]);
     if (w2.length >= 5 && rows2.every(Boolean) && rows2.every(x => x.pop >= BIG && x.H > 2)) { const decline = (rows2[0].pool - rows2[rows2.length - 1].pool) / (rows2[0].gdp || 1); if (!(decline >= 2.5)) r.soft.push(m + ' hoard above 2 GDP in every year ' + w2[0] + '–' + w2[w2.length - 1] + ' and not spent down (' + f2(decline, 1) + ' of the ' + w2[0] + ' GDP, needs 2.5)'); }
   }
+  r.gerCM = closedMajor(years);
   r.broken = null;
   if (r.hard.length) { const ro = r.side.filter(s => s === 'runoff').length, st = r.side.length - ro; r.broken = ro && st ? (r.gdpW >= 1 ? 'runoff' : 'stall') : (ro ? 'runoff' : 'stall'); }
   return r;
@@ -319,8 +320,22 @@ const SOFT_PEN = +argOf('--soft-pen', '0'); const SOFT_SLOPE = +argOf('--soft-sl
 const dist = (v, lo, hi, s, softLo = -Infinity, softHi = Infinity) => { if (!Number.isFinite(v) || !Number.isFinite(s) || !s) return NaN; const x = r2(v);
   const aim = Math.min(5, (x < lo ? (lo - x) : x > hi ? (x - hi) : 0) / s); const excess = x < softLo ? (softLo - x) : x > softHi ? (x - softHi) : 0;
   return aim + Math.min(5, excess / s) * SOFT_SLOPE + (excess > 0 ? SOFT_PEN : 0); };
+// THE CLOSED-MAJOR TERM (user-ruled 2026-10-13, BALANCE_FRAMEWORK §10.100, FINDINGS F231): capital abundance must be hard to reach for a player on a
+// closed major — Germany alone (the MEMBER label GER = GER > NGF > PRU; France dropped, it never binds). Over 1927–1936, year by year:
+//   e = how far German U* is below 10% (0 at ≥ 10%, 1 at 0%)  — full employment, "just bad";
+//   a = e × the hoard's excess over 0.5 GDP, ramped to 1 at 1.5 GDP — full employment WITH capital piling up, "very-very bad";
+//   G = mean(e) + 4 · mean(a), 0–5. A run's loss carries its own G; the CONSENSUS carries the arm's LUCKY SEED — the 75th-percentile run (nearest
+//   rank) over ALL its usable runs, broken ones included (the better of two, the best of three) — the ruled stand-in for a skilled player.
+// Weight gerCM 1.5 (--weights gerCM=0 drops it). Every number here (10%, 0.5–1.5, ×4, 1.5, p75) is the proposal the user accepted, not a measurement.
+function closedMajor(years) { const e = [], a = [];
+  for (let y = 1927; y <= 1936; y++) { const g = years.has(y) && years.get(y).members.GER; if (!g || !Number.isFinite(g.U)) continue;
+    const ey = Math.max(0, 0.10 - g.U) / 0.10; e.push(ey); a.push(ey * Math.min(1, Math.max(0, (Number.isFinite(g.H) ? g.H : 0) - 0.5) / 1.0)); }
+  if (e.length < 3) return null; const fe = mean(e), ab = mean(a); return { fe, ab, G: fe + 4 * ab, n: e.length }; }
+const luckySeed = runs => { const xs = runs.filter(r => r.gerCM).sort((p, q) => p.gerCM.G - q.gerCM.G); if (!xs.length) return null;
+  const r = xs[Math.max(0, Math.ceil(0.75 * xs.length) - 1)]; return { ...r.gerCM, rel: r.rel, of: xs.length }; };
 function lossOf(o, sT) { // o: a run or a consensus object with the metrics; sT: {ratio0, r3} spreads
   const t = {};
+  if (o.gerCM) t.gerCM = o.gerCM.G;
   t.gdpW = dist(o.gdpW, GDPAIM[0], GDPAIM[1], sig['world.gdp'], 0.75, 1.33); t.gdpP = dist(o.gdpP, 1.10, 1.90, sig['pool.gdp'], 0.95, 2.0); t.poolW = dist(o.poolW, 0.6, 0.95, sig['pool.W'], -Infinity, 1.0); t.worldW = dist(o.worldW, 0.6, 0.95, sig['world.W'], -Infinity, 1.0);
   t.poolU = dist(o.poolU, 2.0, Infinity, sig['pool.U'], 1.0); t.worldU = dist(o.worldU, 1.0, Infinity, sig['world.U'], 1.0); t.poolH = dist(o.poolH, -Infinity, 1.0, sig['pool.H']); t.worldH = dist(o.worldH, -Infinity, 1.0, sig['world.H']);
   t.PI = dist(o.PI, -Infinity, 0.8, sig.PI, -Infinity, 1.0); t.PP = dist(o.PP, -Infinity, 0.8, sig.PP, -Infinity, 1.1);
@@ -342,7 +357,7 @@ const consensusOf = runs => { // over intact runs
   const diverges = (a, b) => (band(a.gdpW, [0.6, 0.9, 1.1, 1.5]) !== band(b.gdpW, [0.6, 0.9, 1.1, 1.5]) && Math.abs(a.gdpW - b.gdpW) >= 0.15) || (band(a.worldW, [0.4, 0.55, 0.72, 0.9]) !== band(b.worldW, [0.4, 0.55, 0.72, 0.9]) && Math.abs(a.worldW - b.worldW) >= 0.10);
   const divergent = cons.length === 2 && diverges(cons[0], cons[1]);
   if (divergent) note += ' — DIVERGENT under F114 (world GDP ' + cons.map(r => f2(r.gdpW)).join(' / ') + ', world W ' + cons.map(r => f2(r.worldW)).join(' / ') + '): no consensus, a third run is needed';
-  const C = { note, runs: cons.map(r => r.rel), intact: ok.length, broken: runs.length - ok.length, divergent };
+  const C = { note, runs: cons.map(r => r.rel), intact: ok.length, broken: runs.length - ok.length, divergent, gerCM: luckySeed(runs) };
   const keys = ['gdpW', 'gdp35', 'gdpP', 'poolW', 'poolU', 'poolH', 'poolY', 'worldW', 'worldU', 'worldH', 'worldY', 'poolW_abs', 'worldW_abs', 'poolU_abs', 'worldU_abs', 'poolH_abs', 'worldH_abs', 'PI', 'PI_abs', 'PP', 'PM', 'realW', 'realP', 'plW', 'plP'];
   for (const k of keys) C[k] = med(cons.map(r => r[k]));
   C.PIfalling = cons.length ? cons.filter(r => r.PIfalling).length >= cons.length / 2 : false;
@@ -394,6 +409,9 @@ if (!QUIET) {
     line('W', C.worldW, verdict(C.worldW, 0.6, 0.95, x => x > 1.0), 'abs ' + f2(C.worldW_abs, 4) + ' vs ' + f2(ref['world.W'], 4) + '; aim 0.6–0.95, soft > 1.0, ' + wband('world'));
     line('U*', C.worldU, r2(C.worldU) < 1.0 ? 'BEYOND THE SOFT BOUNDARY' : 'inside (no aim)', 'abs ' + pc(C.worldU_abs) + ' vs ' + pc(ref['world.U']) + '; soft < 1.0');
     line('H', C.worldH, verdict(C.worldH, -Infinity, 1.0), 'abs ' + f2(C.worldH_abs) + ' vs ' + f2(ref['world.H']) + '; aim < 1');
+    console.log('  CLOSED MAJOR (Germany: GER > NGF > PRU; the lucky seed, a stand-in for a skilled player — §10.100)');
+    if (C.gerCM) line('G = full empl. + 4 × hoarding', C.gerCM.G, C.gerCM.G < 0.005 ? 'AT THE AIM' : C.gerCM.ab > 0.005 ? 'capital piling up' : 'full employment', 'the p75 of ' + C.gerCM.of + ' run(s): ' + C.gerCM.rel.split('/').slice(-1)[0] + ' — 1927–36 mean e ' + f2(C.gerCM.fe) + ', a ' + f2(C.gerCM.ab) + '; per run ' + a.runs.map(r => r.gerCM ? f2(r.gerCM.G) : '—').join(' / ') + '; aim 0');
+    else console.log('  (no German record in the 1927–36 window)');
     if (C.loss) console.log('  LOSS ' + f2(C.loss.L, 2) + '  = ' + Object.entries(C.loss.parts).filter(([, v]) => Math.abs(v) > 0.005).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1])).map(([k, v]) => k + ' ' + f2(v, 2)).join(' + ') + (C.loss.soft.length ? '   ⚠ beyond the soft boundary on: ' + C.loss.soft.join(', ') : ''));
     else if (C.divergent) console.log('  LOSS — (divergent pair, no consensus)');
   }

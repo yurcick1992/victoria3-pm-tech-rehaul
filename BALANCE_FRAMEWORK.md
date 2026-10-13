@@ -9951,7 +9951,14 @@ scoring the mechanism directly), the rulings:
    quarter of seeds below it, two thirds above, capital abundance only above).
    ⭐ **AMENDED THE SAME DAY, on F231** (user: *"Full employment with capital piling up is very-very bad. Simply full employment is just bad; drop
    France for now."*): **the term is on GERMANY ALONE** (GER > NGF > PRU), and it has two severities — full employment of the closed major is BAD,
-   full employment WITH the hoard piling up is VERY BAD and weighs several times more. The term's form and weights are proposed, not ruled.
+   full employment WITH the hoard piling up is VERY BAD and weighs several times more.
+   ⭐⭐ **THE TERM, RULED AND IMPLEMENTED THE SAME DAY** (user: *"Yes, implement it with those numbers."*) — `criteria.mjs`'s `gerCM`, weight
+   **1.5**, a default loss term: over 1927–1936, year by year, **e** = how far German U* is below 10% (0 at ≥ 10%, 1 at 0%) and **a** = e × the
+   hoard's excess over 0.5 GDP ramped to 1 at 1.5 GDP; **G = mean(e) + 4 · mean(a)** (0–5). A run's own loss carries its own G; the consensus carries
+   the arm's **lucky seed = the 75th-percentile run by G (nearest rank) over ALL its usable runs, broken ones included** (the better of two, the best
+   of three). `--weights gerCM=0` drops it. Every number (10%, 0.5–1.5, ×4, 1.5, p75) is a chosen setting, not a measurement. First reading: the
+   canon's consensus loss **5.37 → 7.28** (its runoff seed, run 3, has Germany fully employed with the hoard spent: G 0.98 → +1.47), rs-c20 11.06
+   (G 0.99, again the runoff seed).
 3. **A LUCKY AI SEED IS THE STAND-IN FOR A SKILLED PLAYER, AND EVERY REPORT USING IT SAYS SO** (*"All right, let's do that."*). ⚠ What a skilled
    player does better, in the user's words, is mostly NOT capital allocation: *"A skilled player knows which techs to rush and what research order to
    choose to maximise spread. A skilled player knows to grab easy access points into Africa to block other countries and get a lot of land unopposed.
