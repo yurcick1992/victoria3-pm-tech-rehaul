@@ -9949,6 +9949,9 @@ scoring the mechanism directly), the rulings:
    The term itself is NOT yet designed. ⚠ F231's measurement: France does not bind on any book measured (median end U* 52–69% at world GDP 0.9–1.25,
    capital-abundant in one run of 219), so a France term would read slack today; Germany binds, with a step at world GDP ~1.1 (full employment a
    quarter of seeds below it, two thirds above, capital abundance only above).
+   ⭐ **AMENDED THE SAME DAY, on F231** (user: *"Full employment with capital piling up is very-very bad. Simply full employment is just bad; drop
+   France for now."*): **the term is on GERMANY ALONE** (GER > NGF > PRU), and it has two severities — full employment of the closed major is BAD,
+   full employment WITH the hoard piling up is VERY BAD and weighs several times more. The term's form and weights are proposed, not ruled.
 3. **A LUCKY AI SEED IS THE STAND-IN FOR A SKILLED PLAYER, AND EVERY REPORT USING IT SAYS SO** (*"All right, let's do that."*). ⚠ What a skilled
    player does better, in the user's words, is mostly NOT capital allocation: *"A skilled player knows which techs to rush and what research order to
    choose to maximise spread. A skilled player knows to grab easy access points into Africa to block other countries and get a lot of land unopposed.
