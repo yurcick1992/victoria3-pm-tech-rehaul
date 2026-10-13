@@ -22249,3 +22249,42 @@ n=3 with one run broken: whether the runoff is this book's tendency or one seed'
 two. GDP and technology moved together: the GDP rise over §10.97 is not attributed to the society entries alone, which also move laws (contagion) and so
 politics. Military technology is still behind vanilla and no book reaches an era-5 military technology, so the leader's anchor score leans on production
 and society. The revolt duplicate-placement errors (~229 a run) are cosmetic and unfixed. Points by source are gross, and the vanilla column was not re-read.
+
+## F228 — THE CANON AT COST RATIO 2.0 (e2 / e3 DESIRE 3,200 / 5,600): 1 INTACT / 1 STALL / 1 RUNOFF — THE STEEPER SLOPE WIDENS THE SEED SPREAD INSTEAD OF TAKING THE TAIL OFF; THE ONE INTACT RUN SCORES 9.39 AGAINST THE CANON'S 5.37; NOT ADOPTED (2026-10-13; session 20261012_224416_rs-c20-n3, 3 × 1836→1936, fixed n)
+
+**Asked** (user, 2026-10-12): *"Raise to 2.0, raise AI-values on higher tiers slightly over-proportionally to compensate, run n=3."* Motivation: the
+canon's runoff seed and over-depeasanted leaders (F227); new tiered capital in the canon pays back in 6.4–7.1 years at realised prices and wages
+(vanilla manufacturing 6.9–7.2), the frontier faster (e2 6.0, e3 4.3–5.6) — measured the same day by building each year's new levels at the
+country's own £ per construction point against the profit per staffed level its type earned the following year.
+**Book** `config/mod_config.jex-dam4s-rs-c20.json` = the canon regenerated through its own recorded chain (proven to reproduce the canon field for
+field at C 1.9) with `--cost-ratio 2.0` and `--ai-ladder 1000,1000,3200,5600`. Field diff against the canon: 68 leaves, building_cost and ai_value only —
+e2 cost +5.3% / desire +6.7%, e3 cost +10.8% / desire +12%, the merge hosts at their midpoints, the e0 factories 5% CHEAPER (their cost follows the e1
+anchor down by 1 / C); crafts, recipes, technologies, research and dams unchanged.
+**Static prediction** (made before the runs, no feedback, the canon's 1935 levels scaled by cost): world GDP −3.2%, productive workers −0.9%; the
+shortlist −5.4% / −2.0%.
+
+### 1. The register (criteria.mjs)
+| run | world GDP (1932–36 ÷ vanilla) | pooled U* | verdict |
+|---|---|---|---|
+| 1 (one crash, resumed) | 1.02 | 30.1% | intact, loss 9.4; Britain under 5% U* 1920–36 (soft) |
+| 2 | **0.63** | 46.0% | ⛔ BROKEN BY STALL (floor 0.66); 0.75 already at 1905 |
+| 3 | 1.21 | **9.2%** | ⛔ BROKEN BY RUNOFF — the pooled shortlist U* under the 10% hard line; Britain and France near capital abundance (soft) |
+
+**1 intact / 2 broken** (the canon 2 / 1). The intact run alone: loss **9.39** (the canon's consensus 5.37) = T3 2.46 + PI 2.18 + pool GDP 1.84 + PP 1.22 +
+pool U* 0.94 + T0 0.76; world GDP 1.02, the shortlist's GDP **0.82 — beyond the soft line (< 0.95)** against the canon's 1.33, its W 0.83 (0.82), H 0.40 (0.95),
+PI 0.97 (0.89), PP 0.99 (0.95), T3 16.3% of tiered workers (30.8%), T0 falling to 0.45 of the 1900s (0.74).
+First-run decomposition at 1935 (÷ vanilla's median): run 1 world 1.03 = workers per head 0.96 × GDP per worker 1.09, shortlist 0.83 = 0.84 × 1.13; run 2
+world 0.63 = 0.68 × 0.97, shortlist 0.72 = 0.70 × 1.13.
+Technology: the majors' gain 0.96 / 0.94 of vanilla's at 1885 / 1935 (the canon 0.98 / 0.97). Play: main median 175.8 min (×1.066 of vanilla's 165.0; runs
+172.2 / 175.8 / 200.9, run 3 slowed 1927–33 with no listed bug) — the canon ×1.005; one batch, not separable from seed spread.
+
+### 2. Reading
+The steeper slope did not take the runoff tail off: it widened the spread on both sides — a stall and a full-employment runoff in three seeds — and
+the intact seed is poorer where the canon was richest (the shortlist's GDP 0.82 against 1.33, the frontier's share of tiered workers halved). The
+static estimate (shortlist −5.4%) understated the shortlist's loss in the intact run about sevenfold: the feedback through the investment pool
+(less frontier built ⇒ less GDP ⇒ less to build with) dominates, as F78 and every earlier slope sweep found. Directionally (§10.83.7): on this book the
+slope is not the lever for the runoff tail; C stays 1.9.
+
+### What it does NOT say
+n=3, one intact — no consensus pair, and the two broken runs break on opposite sides, so a seed-spread reading is all it supports. Two levers moved
+together (cost and desire); the desire raise was meant to offset the cost, not tested alone. The e0 factories got 5% cheaper as a side effect.
