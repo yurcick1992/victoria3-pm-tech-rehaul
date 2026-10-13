@@ -3473,6 +3473,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         THE SIGNATURES: hour 0 + ONE other sub-tick rising together for years then dropping within days = a fleet stuck on a
                         repair loop (read the save with fleet_loops.mjs); all four rising, ending at a peace = a long great-power war; a few
                         multi-second ticks on a fixed cycle = something periodic (only canon-dams-v2-n1, unexplained). Exports `parseTicks`
+  testbed/ledger/war_tax.mjs  THE "WAR TAX" ON TICK TIME (2026-10-13, FINDINGS **F230**; EXPLANATORY ONLY — user-ruled never to be deducted from a
+                        wall-clock measurement): per run-year, tick time (slow_quarantine's yearTimes) against run FE + ln pops + ln GDP + the number of
+                        major-v-major wars on (rebuilt from events.tsv: WARSTART → both leaders' PEACE) [+ mobilisation above trend]; prints the tax as a
+                        share of century tick time, and each ruled slowdown episode's excess with the share the war terms explain and the wars on.
+                        `[--runs <session>[:<setup>][,…]] [--detail] [--wars] [--json out]`; no --runs = every vanilla century run with an events.tsv.
+                        Vanilla: each concurrent major war +3.5% that year, ~2% of a century; episodes 1.9% of tick time, a quarter to half of it wars
   testbed/ledger/fleet_loops.mjs  ⭐ FLEETS STUCK ON A REPAIR LOOP, OUT OF ONE SAVE (2026-10-06, F218): streams a .v3 through rakaly and lists every
                         formation whose travel path holds ≥ --min (200) moves — owner tag, country id and its index mod 4 WITH THE SUB-TICK IT
                         MAPS TO (F218 §8, from every kept save: ≡ 1 → hour 6, ≡ 0 → hour 12, ≡ 2 → hour 0 alone, ≡ 3 → hour 18 presumed — NOT

@@ -22394,3 +22394,67 @@ different regime from its neighbour across the line, and a book's runoff or stal
   config are not independent. Pooling 57 configs assumes their seed spreads share a shape; the per-config tests have n ≤ 30. World GDP only — Britain's
   stuck mode (F166, ~5% of runs) is a country-level event this world-level view would not separate. The 2.77× leave-one-out outlier (one run of a
   three-run config) is drawn in the last bin of the published seed-spread histogram.
+
+## F230 — VANILLA HAS A MEASURABLE "WAR TAX" ON TICK TIME, ~2% OF A CENTURY ON AVERAGE (EACH CONCURRENT MAJOR-v-MAJOR WAR +3.5% THAT YEAR); BUT VANILLA'S SLOWDOWN EPISODES ARE MOSTLY NOT WARS — HEAVY WARS EXPLAIN A QUARTER TO AT MOST HALF OF THEIR EXCESS, 0.4–0.8% OF CENTURY TICK TIME (2026-10-13; 25 vanilla century runs, 2,446 run-years; no new runs)
+
+**Asked** (user, 2026-10-13): *"Does vanilla data support a measurable 'war tax' on performance of any sort? Something that would say 'the run is this
+long, but the three slowdown episodes are explained by ultra-heavy wars, and that makes up 80% of the slowdowns, so removing them would remove 3% of
+overall 100-year wall clock time'."* Ruled with it: **an explanatory point only — never deducted from a wall-clock measurement.**
+**Tool** `tools/testbed/ledger/war_tax.mjs` (the definitions are its header). In short: t = a run's wall seconds per in-game year from its tick log
+(slow_quarantine's yearTimes: month-boundary ticks out, so the shares are of TICK time, ~158 min a run here against ~165 min of play). The war
+index comes from `events.tsv` and is independent of the tick log: the number of major-v-major wars on in the year, each rebuilt from its WARSTART
+to the date both leaders log PEACE (it recovers the three wars of 20261012_224416 run 3's 1930 war_manager to the day; ~25 wars a run, ~3 peace
+pairs a run unmatched). A second index, mobilisation, is the world military workforce share above its ±7-year rolling median. The model, with run
+fixed effects: ln t = run + b·ln live pop objects + b·ln world GDP + c·wars (+ c·mobilisation). Four vanilla runs without an `events.tsv`
+(20260814_123646 × 3, 20260920_192007) are excluded; with them in, every war reads as peace.
+
+### 1. The average war tax — real, and small
+Tick time against the size-only model (run FE + ln pops + ln GDP), by major-v-major wars on in the year:
+| major wars on | run-years | tick time vs size model |
+|---|---|---|
+| 0 | 1,100 | −1.7% |
+| 0–1 | 588 | +0.8% |
+| 1–2 | 636 | +1.1% |
+| 2–3 | 108 | +4.5% |
+| ≥ 3 | 14 | **+22.0%** |
+
+- **Model A (wars):** c = **0.035 [0.021 … 0.050]** (90% run bootstrap) — each concurrent major war ≈ **+3.5%** tick time that year. Summed over
+  the century: **79 of 3,952 tick-minutes = 2.0%**; per run median 1.8% (≈ 3 min of 157), range 0.8–3.7%.
+- **Model B (wars + mobilisation):** c_war 0.025 [0.012 … 0.039], c_mob 0.38 per pp [0.27 … 0.47]. Tax **2.7%** (median 2.5%, ≈ 4 min; range 1.6–4.9%).
+- The response is convex: a linear term in the war COUNT averages light colonial wars with ultra-heavy ones, so it understates the heaviest.
+  The ≥ 3-war years read +22%; the 2–3 bin +4.5%.
+
+### 2. The slowdown episodes — mostly not wars
+The ruled judge (slow_quarantine.mjs) finds **12 episodes in 9 of the 25 runs**. Their excess over the no-war model is **74 min = 1.9% of all
+tick time** (~3 min a run on average, concentrated in nine runs). The average-war model explains **8% (A) – 11% (B)** of it, 0.1–0.2% of all tick time.
+Which quarter-day ticks carry each episode's excess (per in-game year, the episode's mean against the 4 years before), together with the major
+wars on, reads as follows. ⚠ This is DESCRIPTIVE ONLY: the 2026-10-07 ruling forbids any tick pattern as a criterion for the listed bug.
+| episode | excess | Δ hour 0 / 6 / 12 / 18 (s a year) | major wars on | shape |
+|---|---|---|---|---|
+| 20260920_225047 run 2, 1904–12 | 15 min | +37 / +3 / +5 / +38 | 0.1 | hour 0 + one other — the fleet-loop shape (F218) |
+| n=16 run 11, 1927–32 | 10 min | +34 / +34 / +29 / +37 | 2.0 (GBR–FRA, GBR–USA, RUS–SPA) | all four — war |
+| n=16 run 11, 1868–73 | 9 min | +70 / +12 / +16 / +10 | 0.6 | hour 0 alone (≡ 2 loops land there, F218 §8) |
+| n=16 run 11, 1911–13 | 7 min | +28 / +37 / +33 / +40 | 2.5 (GBR–IND, GER–TUR, GBR–USA) | all four — war |
+| n=16 run 6, 1919–23 | 6 min | +23 / +20 / +13 / +15 | 1.2 | broad, mild |
+| n=16 run 5, 1897–1902 | 6 min | +32 / +19 / +12 / +11 | 1.2 | broad, hour-0-led |
+| n=16 run 16, 1899–1903 | 4 min | +25 / +18 / +5 / +2 | 0.3 | hour 0 + hour 6 — loop shape |
+| n=16 run 10, 1911–14 | 4 min | +23 / +18 / +11 / +14 | 0.9 | broad, mild |
+| 20260920_225047 run 1, 1922–24 | 4 min | +22 / +12 / +13 / +12 | 0.1 | broad, mild |
+| n=16 run 9, 1931–33 | 3 min | +20 / +16 / +13 / +16 | 0.0 | broad, mild, no major war |
+| n=16 run 13, 1913–15 | 3 min | +14 / +17 / +10 / +16 | 0.5 | broad, mild |
+| 20260920_225047 run 1, 1890–92 | 1 min | +8 / +7 / +8 / +10 | 0.3 | broad, mild |
+**Clearly war-shaped: 2 episodes, 17 min = 23% of the episodes' excess** (both in run 11). **Plus the broad ones with about one major war on**
+(runs 6, 5, 10): 33 min = **45%, the upper bound**. **Loop-shaped: 3 episodes, 28 min = 38%.** The rest are mild and unattributed.
+⇒ **In the user's sentence, for vanilla:** "Slowdown episodes are 1.9% of century tick time. Heavy wars explain a quarter to at most half of them
+(0.4–0.8% of the century). Fleet loops explain about two fifths. Beyond the episodes, the ordinary war load costs ~2% of a century." The 80% of
+the example is NOT supported in vanilla.
+**The mod contrast, not pooled:** 20261012_224416 run 3's one large episode (F228 addendum) is the war-shaped kind — two long sea-supplied wars
+with Russia. The mod's episodes have not been put through this tool; its war index needs no change to read them.
+
+### What it does NOT say
+The war index counts wars between majors by their LEADERS only. It cannot see joiners, fronts, naval supply or size, which is why it averages heavy
+and light wars into one coefficient; the convex bins show the heavy end costs far more than 3.5%. The major-power list is a name regex over display
+names. ~3 peace pairs a run go unmatched, so some wars are missed and the index is biased toward zero. The shape column follows F218's mapping; it is
+an explanation, not an observation of a loop. Size controls: ln pops and ln GDP are collinear (b_pop's interval spans 0); the war coefficient is
+stable across both models. Pre-v12 summaries may drop a civil war's second side from the mobilisation sum (L38). Tick time excludes month-boundary
+ticks (saves, the monthly pulse), ~5% of play.
