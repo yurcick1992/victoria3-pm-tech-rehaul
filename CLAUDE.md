@@ -6041,7 +6041,9 @@ esume_set_<n>`, newest first, frozen — and each attempt
   cluster 3 = a run where, during an episode, a save shows a fleet RECALLED for repairs with **≥ 200 path moves and ≥ 125k distance sailed**,
   and the loop is GONE once the slowdown ends (an episode running to the end of the game needs only the loop present in its last year).
   `tools/testbed/ledger/wall_clusters.mjs <label>=<session>[:<setup>] [...] [--runs]` applies both from the tick log and the v16 summaries and
-  prints the three clusters with the ruled medians. A run with no v16 summaries in its episode years is UNOBSERVABLE and stays in cluster 2
+  prints the three clusters with the ruled medians. ⭐ A run where the listed bug was observed STAYS cluster 3 WHOLE even when most of its excess lies
+  outside the episode (user-ruled 2026-10-13, "for simplicity, let's leave it cluster 3": 20261013_130158 run 2, a 1868–74 fleet loop worth ~6 min of
+  ~45 extra, the rest a gradual all-sub-tick load at the same world size, 191 min against vanilla's 151.5 with 1868–74 left out). A run with no v16 summaries in its episode years is UNOBSERVABLE and stays in cluster 2
   (first reading: vanilla n=16 10 / 6 / 0, main median 165.0 min; jex-n16 5 / 3 / 0, 184.3 min — every pre-v16 episode unobservable; a kept
   save from inside an episode, like jex-n16 run 3's `diag_saves/` one F218 read, can establish the loop by hand, but not that it ended).
   ⭐⭐ **THE SLOWDOWN QUARANTINE (the same ruling, its rule amended the same day) — non-agentic**, so the user can later load a save in
