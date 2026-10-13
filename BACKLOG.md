@@ -15,6 +15,7 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
    (BALANCE_FRAMEWORK §10.99, F227). The pre-artmerge family is no longer canon; its files stay, and returning to it would need the
    performance changes (resource-slot dams, trigger-placed research entries) reimplemented. Open in the canon: the runoff tail, military
    research ~10 behind vanilla, tech spread ×2 (deferred).
+1b. **NOW (2026-10-13):** the canon is `jex-dam4s-rs-x25` (the one innovation parameter x = 25, universities × x/150; unmeasured, deployed). Measured and NOT canon: the engine ladder unlifted (§10.101, F232 — engine flags ~−80%, all flags ~−40%) with 48-month research stages (F233 — 3 intact, but the leader 20.5% of game era 4 at 1905: the stages overshoot). Routine levers ruled (§10.101.1); likely next: paper's own lift (1.0–1.3, today 1.2), the stage length between 36 and 48 months, and measuring x/150. Nothing launched.
 2. **Balance campaign** on the canon that results: the price path, the old rung in the consumer chains, the hoard (B), with the tech-tree
    and AI items that bear on them (C, D).
 3. **Final balance check.**
