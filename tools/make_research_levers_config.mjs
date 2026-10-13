@@ -8,6 +8,12 @@ const BASE = opt('--base'), SFX = opt('--suffix'); if (!BASE || !SFX) { console.
 const cfg = JSON.parse(fs.readFileSync(BASE, 'utf8'));
 if (cfg.research_levers) { console.error('the base already carries research_levers'); process.exit(1); }
 const st = {}; const put = (blk, key, flag) => { const v = opt(flag, null); if (v != null) (st[blk] ||= {})[key] = +v; };
+// ⭐ --innov-x x (user-ruled 2026-10-13, BALANCE_FRAMEWORK §10.101.1): THE ONE INNOVATION PARAMETER — innovation base = cap base = the cap's literacy
+//   term = x, and the universities' innovation × x/150, so the universities needed to reach the cap stay vanilla's at every literacy (vanilla: base =
+//   cap base = 50, literacy term 150). Exclusive with the four flags it sets.
+const X = opt('--innov-x', null);
+if (X != null) { if (['--cap-lit', '--cap-base', '--innov-base', '--uni-mult'].some(f => opt(f, null) != null)) { console.error('--innov-x sets --cap-lit / --cap-base / --innov-base / --uni-mult; give one'); process.exit(1); }
+  st.country_literacy_rate = { country_weekly_innovation_max_add: +X }; st.base_values = { country_weekly_innovation_max_add: +X, country_weekly_innovation_add: +X }; }
 put('country_literacy_rate', 'country_weekly_innovation_max_add', '--cap-lit');
 put('base_values', 'country_weekly_innovation_max_add', '--cap-base');
 put('base_values', 'country_weekly_innovation_add', '--innov-base');
@@ -15,6 +21,7 @@ put('base_values', 'country_tech_spread_add', '--spread-base');
 put('country_literacy_rate', 'country_tech_spread_add', '--spread-lit');
 const RL = {}; if (Object.keys(st).length) RL.static = st;
 if (opt('--uni-mult', null) != null) RL.university_innovation_mult = +opt('--uni-mult');
+if (X != null) { RL.university_innovation_mult = Math.round(+X / 150 * 1e6) / 1e6; RL.innov_x = +X; }
 if (!Object.keys(RL).length) { console.error('no lever given'); process.exit(1); }
 cfg.research_levers = RL;
 const staff = opt('--dam-staff', null);

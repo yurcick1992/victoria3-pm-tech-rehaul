@@ -177,7 +177,7 @@ pm_scholastic_education = {
 
 	country_modifiers = {
 		workforce_scaled = {
-			country_weekly_innovation_add = 0.5   # pm_tech_rehaul research lever: vanilla 1 × 0.5 (BALANCE_FRAMEWORK §10.96)
+			country_weekly_innovation_add = 0.1667   # pm_tech_rehaul research lever: vanilla 1 × 0.166667 (BALANCE_FRAMEWORK §10.96)
 		}
 	}
 
@@ -208,7 +208,7 @@ pm_philosophy_department = {
 
 	country_modifiers = {
 		workforce_scaled = {
-			country_weekly_innovation_add = 0.75   # pm_tech_rehaul research lever: vanilla 1.5 × 0.5 (BALANCE_FRAMEWORK §10.96)
+			country_weekly_innovation_add = 0.25   # pm_tech_rehaul research lever: vanilla 1.5 × 0.166667 (BALANCE_FRAMEWORK §10.96)
 		}
 	}
 
@@ -239,7 +239,7 @@ pm_analytical_philosophy_department = {
 
 	country_modifiers = {
 		workforce_scaled = {
-			country_weekly_innovation_add = 1   # pm_tech_rehaul research lever: vanilla 2 × 0.5 (BALANCE_FRAMEWORK §10.96)
+			country_weekly_innovation_add = 0.3333   # pm_tech_rehaul research lever: vanilla 2 × 0.166667 (BALANCE_FRAMEWORK §10.96)
 		}
 	}
 

@@ -350,3 +350,5 @@ tools/testbed/no_new_runs_at.log
 !config/tech_tree_options.jex-dam4s-rs-m10.json
 !config/mod_config.jex-dam4s-rs-m10-je48.json
 !config/tech_tree_options.jex-dam4s-rs-m10-je48.json
+!config/mod_config.jex-dam4s-rs-x25.json
+!config/tech_tree_options.jex-dam4s-rs-x25.json

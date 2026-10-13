@@ -289,8 +289,13 @@ reads that way it has been corrected in place; the headings that follow are HIST
 
 ## ⭐⭐⭐ THE CANON IS THE ARTMERGE ARM, `jex-dam4s-rs`, SINCE 2026-10-12 (user-ruled: *"CANONIZE artmerge with all these additions"*; BALANCE_FRAMEWORK §10.99; FINDINGS F227)
 
-`config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.jex-dam4s-rs.json` + its twin
-(`tech_tree_options.jex-dam4s-rs.json`). The book = the artmerge arm described in the next section (crafts + six merges, e1 anchors, the 1.2
+⭐⭐ **SINCE 2026-10-13 THE CANON'S BYTES ARE `config/mod_config.jex-dam4s-rs-x25.json` + twin** (sha256 `d6a47ee01fb8ae87`; the twin unchanged,
+`04ac513168388956`): `jex-dam4s-rs` with THE ONE INNOVATION PARAMETER x = 25 (BALANCE_FRAMEWORK §10.101.1, user-ruled: innovation base = cap base =
+the cap's literacy term = x, universities × x/150) — field diff against `jex-dam4s-rs`: the universities' multiplier 0.5 → 1/6 and its `innov_x`
+record, nothing else (`make_research_levers_config --innov-x 25`, then the same rework and society steps). ⚠ UNMEASURED: F227's numbers are
+`jex-dam4s-rs`'s. Built with `-NoDeploy` (`mod/` is this book); NOT deployed to Documents until the user says so.
+`config/mod_config.json` and `config/tech_tree_options.json` were VERBATIM copies of `config/mod_config.jex-dam4s-rs.json` + its twin
+(`tech_tree_options.jex-dam4s-rs.json`) from 2026-10-12 to 2026-10-13. The book = the artmerge arm described in the next section (crafts + six merges, e1 anchors, the 1.2
 pop-good lift, the compressed desire ladder, textile's host at its own cost) + the extra research entries (§10.95) + the two TICK-COST FIXES
 (four-class resource-slot dams, script-placed research entries — §10.89.13) + the §10.97 research rework (research halved for every source,
 non-additive literacy-gated industry entries, 20 stages, follower halving, AI schooling) + the §10.98 entries (ships, frontline, contagious
