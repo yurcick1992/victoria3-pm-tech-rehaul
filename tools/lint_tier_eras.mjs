@@ -167,7 +167,7 @@ for (const ind of cfg.industries || []) {
     // --in0-anchored: the SLID set (named in _ab.anchor_for) carries its own lift; everything else the scalar in0
     // ⭐ --in1-pop (2026-10-01, F197): the anchor and every rung below it of a pop-good industry carry the pop lift
     const popLow = AB.in1_pop != null && Array.isArray(AB.in1_pop_industries) && AB.in1_pop_industries.includes(ind.id) && k <= 0;
-    // ⭐ --in0-for (2026-10-13, §10.100): the named industry's whole ladder carries its own lift (motor:1 — the engines unlifted)
+    // ⭐ --in0-for (2026-10-13, §10.101): the named industry's whole ladder carries its own lift (motor:1 — the engines unlifted)
     const forI = AB.in0_for && AB.in0_for[ind.id] != null ? +AB.in0_for[ind.id] : null;
     const liftI = forI != null ? forI : popLow ? +AB.in1_pop : perInd && perInd[ind.id] != null ? +perInd[ind.id] : ((AB.in0_anchored != null && aEra != null) ? +AB.in0_anchored : lift);
     const wantIn = I0 * (in0only ? (k === 0 ? liftI : 1) : liftI) * (down != null ? down : inMul(k)); const gotIn = val(t.inputs);

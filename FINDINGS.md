@@ -22581,3 +22581,20 @@ e2 engines would sit fourth (5.5), e3 engines third (3.8); the steam rung would 
 A static model: no demand response (cheaper engines mean more railways and trams), prices held where the run left them; the benchmark is a world
 average, not each country's own; the exporters' staffing gap is unexplained and a recipe may not touch it. Tools: scratchpad `engine_eq.mjs`,
 `motor_unlift.mjs`, `rung_profit_1930s.mjs` (this session).
+
+### 4. The probe (session 20261013_110054_rs-m10-30y-n3, 3 × 1836→1866, `jex-dam4s-rs-m10`; added the same day)
+Against the canon's own first 30 years (20261012_203800, n=3), same tools, market basis, problem = HIGH ≥ 1.70× for ≥ 2 y on ≥ 10/wk of building demand:
+
+| | canon | engines unlifted |
+|---|---|---|
+| engine problem market-years 1836–1865, per run | 9 / 28 / 17 (mean 18.0) | 13 / 16 / 9 (mean 12.7) |
+| all goods, per run | 54 / 86 / 80 (mean 73.3) | 59 / 63 / 40 (mean 54.0) |
+| world GDP ÷ vanilla n=16, 1846–1865 | 0.91–1.04 | 0.98–1.04 |
+| world engine output 1846 / 1856 / 1865 (units/wk) | 334–370 / 643–957 / 1,195–1,782 | 493–520 / 876–1,320 / 1,330–2,237 |
+| engine factories staffed / levels, exporters (BEL GBR USA PRU FRA) 1856 | 10/19, 11/18, 10/18 | 15/16, 15/16, 17/25 |
+
+Health at 1865 against the canon (health_vs_ref): 0 dead industries of 98, 0 token market cells of 247. Directional at n=3 (the ranges overlap):
+engine problems about 30% fewer and all-goods problems about a quarter fewer over the first thirty years; the gain came less from more factories
+(fewer levels were built) than from the factories that stood being staffed — a plausible cause, NOT measured here, is the unlifted recipe lifting their profit share
+toward the engine's 20–25%-of-revenue hiring lines (§1: 13–16% before) — it would also explain the exporters' staffing gap §1 left open. The probe HOLDS on the schedule's pre-registered test;
+the century n=3 of the book with 48-month research stages follows (user-planned).
