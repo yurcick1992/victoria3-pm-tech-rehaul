@@ -22320,3 +22320,77 @@ The quarantine judge flagged run 3 at 1927–1933 (10-year lag; ~159 s per in-ga
 - ⚠ What this does NOT say: the per-subsystem split (land combat vs naval raids vs supply pathing) is inferred from the war state and the
   step timing, not measured. The quarantined saves (`run003_c20/quarantine_saves/`, ep2 before / in1–in4 / last / after1–2) are what debug
   mode needs to measure it. Whether the runoff world's larger economy made these wars likelier or larger is not testable at n=1.
+
+## F229 — THE FOUR-RUNG WORLD-GDP OUTCOMES ARE ONE CONTINUUM, NOT THREE REGIMES: NO STALL / REGULAR / RUNOFF CLUSTERS, NO TROUGH AT THE 0.66 / 1.38 HARD LINES; THE ONLY SEPARATE TAIL IS THE FLAT-COST BOOKS (A LEVER, NOT A SEED EFFECT); THE MOD'S SEED SPREAD IS 1.8–2.2× VANILLA'S AND SINGLE-PEAKED (2026-10-13; every usable four-rung A/B century run in the corpus, 219 runs / 57 configs, sessions 20260902 → 20261012; vanilla 22 runs as the denominator only)
+
+**Asked** (user, 2026-10-13): *"Would it be true to say that the GDP trajectory forms three clusters (a stall, a regular, a runoff), with in-cluster
+distance measurably closer than the one between? … it's about whether we actually see uneven distribution, not whether we can simply divide all
+possibilities into three bands, which we always can."*
+**Data.** `tools/testbed/ledger/corpus_runs.jsonl` (F165's corpus, gitignored) extended the same day with the 55 century runs since 2026-09-30
+(fdi-rgate 5, artmerge6-pb 3, e1a-artmerge 2, e1a12-artmerge 3, e1a12-ai1135 5, tex1140 5, jex 16, jex-dam4s 4, the ra / rb / rs stitched books 3 each,
+rs-c20 3) — 219 four-rung runs (lib_runs' usable rule, until ≥ 1936, ≥ 80 yearly summaries; no vanilla, no six-rung book), 57 configs. Per run: world
+GDP ÷ the median of the 22 vanilla runs, every 5 years 1840–1935 (a 20-point trajectory), and the end state = the 1932–36 mean. Tool:
+`node tools/testbed/ledger/gdp_clusters.mjs tools/testbed/ledger/corpus_runs.jsonl`.
+
+**1. The end state, all 219 runs pooled — one mode.**
+
+| bin (× vanilla) | <0.50 | 0.50–0.66 | 0.66–0.80 | 0.80–0.95 | 0.95–1.10 | 1.10–1.25 | 1.25–1.38 | 1.38–1.50 | >1.50 |
+|---|---|---|---|---|---|---|---|---|---|
+| runs | 7 | 24 | 30 | 48 | 50 | 28 | 15 | 10 | 7 |
+
+(by the register's hard lines: 31 below 0.66, 171 between, 17 above 1.38). One broad hump peaking at 0.95–1.05, tapering smoothly on both sides.
+
+| test | result |
+|---|---|
+| Silverman critical-bandwidth test, H0 "≤ 1 mode" / "≤ 2 modes" (ln ratio, 500 smoothed bootstraps) | p = 0.65 / 0.47 — unimodality not rejected |
+| 1-D Gaussian mixture, BIC for k = 1 / 2 / 3 / 4 | 109.1 / 119.1 / 132.3 / 146.8 — one component best, three worse by 23 |
+| Kernel density at the hard lines vs the peak (Silverman h = 0.110) | 0.66×: 0.65, 1.38×: 0.56, against 1.35 at 1.0× — the lines sit on the shoulders, not in troughs |
+| largest gap between neighbouring sorted runs (ln) | 0.131 (at 0.50×), against 0.157 median / 0.332 95th pct for a normal sample of the same n and sd |
+
+**2. Whole trajectories — the in-cluster vs between-cluster distance the question asks about.** The trajectory is nearly one-dimensional: its first
+principal component (the run sitting high or low throughout) carries 89% of the variance, the next two 6% and 2%. k-means on the top three
+components, scored against a null with the SAME skewed unimodal shape (Silverman's smoothed bootstrap at the one-mode critical bandwidth on PC1,
+Gaussian PC2/3, 300 draws):
+
+| set | k | silhouette (null median, p) | mean within-cluster ÷ between-cluster pair distance (null, p) |
+|---|---|---|---|
+| all 219 | 2 | 0.465 (0.469, 0.58) | 0.505 (0.499, 0.64) |
+| all 219 | 3 | 0.439 (0.424, 0.22) | 0.388 (0.405, 0.09) |
+| 212 with the > 1.5× runs removed | 3 | 0.422 (0.431, 0.68) | 0.398 (0.395, 0.61) |
+
+Silverman on PC1: p = 0.12 (all), **0.98** (the > 1.5× runs removed). Against a plain Gaussian null the pooled k = 3 split looked significant on the
+164 runs before the extension (p = 0.005, sizes 59 / 97 / 8): that was the left skew and the eight runaway runs, not clusters, and it vanishes under
+the shape-matched null and on the full 219 (p = 0.25 even against the Gaussian null). The 3-means centres describe the continuum's thirds — 54 runs
+0.97 / 0.85 / 0.70 / 0.64 / 0.62 at 1850 / 1875 / 1900 / 1915 / 1935, 120 runs 1.00 / 0.92 / 0.85 / 0.86 / 0.96, 45 runs 1.01 / 0.98 / 1.07 / 1.20 /
+1.35 — every run diverging gradually from a common start, none forking at a date.
+**3. The one separate-looking tail is a LEVER.** Seven runs end above 1.5×: canon-flat-in12 2.15 (F110), flat-in12-a19 1.91 / 1.73, c16-in12 1.92
+(the flat or low cost-slope books, F113–F116), and three single seeds of slope-1.9 books (canon-dams-family 1.76, jex 1.61, jex-dam4s 1.80). The only
+pooled date-level "bimodality" (Silverman p = 0.000 at 1880 and 1900) is ONE run, canon-flat-in12's, at 1.80× / 2.76× — the histograms at those
+dates are plainly single-peaked, per book family (1900 medians: early 09-02→10 books 0.84, the 09-13→18 sweep 0.82, slide→dams 0.82, artmerge 0.91).
+**4. Seed variation alone — single-peaked, but twice vanilla's width.** Each run ÷ the median of its own config's OTHER runs (leave-one-out,
+configs with ≥ 3 runs, 186 runs): Silverman p = 0.06 (end state); per-year 0.36 / 0.77 / 0.88 / 0.44 / 0.06 / 0.04 at 1860 / 1880 / 1900 / 1915 / 1925 /
+1935; trajectory k = 3 silhouette 0.482 against the shape-matched null's 0.445, p = 0.05. Within the larger single configs:
+
+| config | n | end-state × vanilla | Silverman p (≤ 1 mode) |
+|---|---|---|---|
+| canon-je24 | 30 | 0.46 0.46 0.60 0.65 … 1.09 1.12 | 0.19 |
+| jex (e1a12-ai1135-tex1140-jex-artmerge) | 16 | 0.78 0.82 0.94 … 1.43 1.61 | 0.69 |
+| canon-je24-a22 | 11 | 0.62 … 1.22 | 0.89 |
+| canon-dams | 10 | 0.57 0.64 0.87 … 1.10 1.45 | 0.27 |
+
+The spread: within-config sd of ln end-state **0.229** (pooled over 52 configs with n ≥ 2), between-config means 0.254, total 0.304, against
+vanilla's seed sd **0.124** — the mod's seeds diverge ~1.8× as far as vanilla's (2.2× on the leave-one-out measure, 0.27), but smoothly.
+The closest thing to a discrete outcome is canon-je24's two F99 stalls, both at 0.46×, with the next run at 0.60× (BIC prefers a two-run component
+there, 1.3 → −4.8; the unimodality test does not reject, p = 0.19).
+**Reading.** "Stall / intact / runoff" are positions in one tail-heavy, slightly left-skewed distribution, not three attractors: within the same
+seeds-and-configs data a three-way split is no tighter than a single-peaked distribution of the same shape yields. The register's hard lines are
+sensible GRADES (they cut the tails, ~14% and ~8% of runs) and nothing here argues against them — but a run on either side of 0.66 or 1.38 is not in a
+different regime from its neighbour across the line, and a book's runoff or stall seed is the far end of a wide seed spread, not a switch that flipped.
+⇒ A lever that narrows the seed spread is what takes both tails off; one that shifts the whole distribution trades one tail for the other
+(F228's cost ratio 2.0 widened it, 1 stall / 1 runoff).
+- ⚠ What this does NOT say: with ~20 tests run, the borderline within-config results (p ≈ 0.04–0.06 late in the century) are a faint left skew, not
+  evidence of a stall mode — and not evidence against a rare one either: two identical-valued stalls in 30 canon-je24 seeds (F99's British pool
+  collapse) could be a genuine small attractor that n = 30 cannot resolve. Silverman's test is conservative. The leave-one-out residuals of one
+  config are not independent. Pooling 57 configs assumes their seed spreads share a shape; the per-config tests have n ≤ 30. World GDP only — Britain's
+  stuck mode (F166, ~5% of runs) is a country-level event this world-level view would not separate. The 2.77× leave-one-out outlier (one run of a
+  three-run config) is drawn in the last bin of the published seed-spread histogram.
