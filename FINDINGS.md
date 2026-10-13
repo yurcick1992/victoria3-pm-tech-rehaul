@@ -22598,3 +22598,52 @@ engine problems about 30% fewer and all-goods problems about a quarter fewer ove
 (fewer levels were built) than from the factories that stood being staffed — a plausible cause, NOT measured here, is the unlifted recipe lifting their profit share
 toward the engine's 20–25%-of-revenue hiring lines (§1: 13–16% before) — it would also explain the exporters' staffing gap §1 left open. The probe HOLDS on the schedule's pre-registered test;
 the century n=3 of the book with 48-month research stages follows (user-planned).
+
+## F233 — THE CANON WITH THE ENGINE LADDER UNLIFTED AND FOUR-YEAR RESEARCH STAGES: 3 INTACT / 0 BROKEN, THE INPUT-PRICE PROBLEMS DOWN ~40% (ENGINES ~80%), BUT THE STAGES OVERSHOOT — THE LEADER HOLDS 20.5% OF GAME ERA 4 AT 1905; CONSENSUS LOSS 8.75 AGAINST THE CANON'S 7.28 ON THE SAME REGISTER (2026-10-13; session 20261013_130158_rs-m10-je48-n3, 3 × 1836→1936, fixed n)
+
+**Asked** (user, 2026-10-13): the engine ladder without the input lift (§10.101; probe F232 §4 held), and *"change JE length (3y per stage to 4y per
+stage) to dampen techs a bit and see how it all works in 100y n=3, under the new scoring system"*. Book `config/mod_config.jex-dam4s-rs-m10-je48.json`
+(sha256 2d4f5ecc48fa4495) = the canon + `--in0-for motor:1` + `make_research_society_config --stage-months 48` (industry and fleet bars; frontline 12).
+Ledger https://claude.ai/artifact/96kPbqoej9Nitz2UuzEnLr.
+
+### 1. The register (criteria.mjs, the register of 2026-10-13 — §10.100)
+| run | world GDP 1932–36 | pooled U* | loss |
+|---|---|---|---|
+| 1 | 1.12 | 17.9% | 9.7 |
+| 2 | 1.09 | 19.4% | 8.0 (Germany fully employed 1927–36; Britain under 5% U* 1931–36, soft) |
+| 3 | 0.99 | 32.3% | 8.9 |
+
+Consensus (runs 1+2): **loss 8.75** = pool U* 2.16 + T3 1.73 + closed major 1.45 + PI 1.41 + world GDP 0.88 + PP 0.71 + T0 0.41; world GDP 1.10, pool
+GDP 1.34, pool W 0.94, pool U* 18.6% (soft), pool H 0.58, PI 0.91, PP 0.91, T3 23.7%, T0 0.48 of the 1900s. The canon on the same invocation: 2 intact / 1
+runoff, consensus 7.28 (its intact runs 5.9 / 5.8 per run). World GDP per decade (median): 1.01 / 1.00 / 1.04 / 1.00 / 0.99 / 1.09 at 1845…1935.
+Decomposition at 1935 (run 1): world 1.14 = workers per head 0.90 × GDP per worker 1.23; shortlist 1.54 = 1.05 × 1.27.
+
+### 2. Technology
+The majors' median gain ÷ vanilla's: 1.00 / 0.81 / 0.87 / 0.88 / 0.90 / 0.94 at 1845 / 1865 / 1885 / 1905 / 1925 / 1935 (canon 0.97 at 1935). The
+leader: 37.5% of game era 3 at 1875, **20.5% of game era 4 at 1905**, 46% of game era 5 at 1936 (canon 45 / 38.5 / 50; vanilla 52.5 / 41 / 46). The
+entries carry 32% of the majors' acquisitions. Research model accounting (tools/research_model/sources.mjs, 2 seeds a run) — entry points per
+country-year against the canon's three runs: the leader 3,980 / 5,090 / 7,130 (canon 7,490 / 9,260 / 7,110) in 1836–66 / 1866–1900 / 1900–36, i.e.
+−47% / −45% / 0%; the majors 2,120 / 3,840 / 3,760 (canon 3,590 / 4,850 / 4,430), −41% / −21% / −15%; the leader's total points −18% / −21% / +8%,
+the majors' −8% / −8% / −4%; the bottom three quarters unchanged. More than the quarter the stage length alone implies at the top: fewer
+technologies held means fewer entries open.
+
+### 3. Red flags (order books)
+Problem market-years 118 a run (range 96–158), 2 chronic markets — the canon 208 (144–209), 3. Japan 36, Russia 21, Germany 13, America 12. Paper
+leads (Japanese 19, Russian 13, American 7, German 6, Dutch 4: capacity lags behind the government administrations' filing methods); Japanese hardwood
+18 (no producer); engines Russian 9.3 and Japanese 9 (the canon's Japanese engines 49).
+
+### 4. Germany (the closed-major term)
+Run 1: Germany and the North German Federation never form; Prussia at 1935 is 0.59 of vanilla's German GDP (0.71 of its population, 0.83 per head),
+17% U*. Run 2: the NGF by 1866, Germany by 1880; at 1935 GDP 1.01, per head 1.08, U* 0.0%, hoard 0.44 — the term's whole reading. Run 3: Germany by
+1900, GDP 0.34, per head 0.56, U* 34.5%.
+
+### 5. Play time
+Runs 1 and 3 cluster 1 at 160.6 / 163.6 min, main median 162.1 (×0.98 of vanilla's 165.0). Run 2 211.6 min, cluster 3: a British Raj fleet on the
+repair loop through its 1868–74 episode (802 moves, 178k sailed, gone after); the episode is ~6 min of its excess, the rest a gradual all-sub-tick
+load at the same world size (pops +6%, levels −4% at 1935), not wars (war_tax 0.5%). With 1868–74 left out: run 2 191.3 min against vanilla's median
+151.5 (range 128–173), run 1 146.8, the canon 149.5. User-ruled: the run stays cluster 3 whole.
+
+### What it does NOT say
+n=3, two changes at once: the engine change is read on F232 §4's probe and on the flags; the technology and the leader's drop belong to the stages.
+The loss rose against the canon, but the canon's consensus excludes its runoff seed; the two arms' per-run losses overlap little (5.8–5.9 against
+8.0–9.7) and the register changed the same day.
