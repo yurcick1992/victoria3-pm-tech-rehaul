@@ -22647,3 +22647,55 @@ load at the same world size (pops +6%, levels −4% at 1935), not wars (war_tax 
 n=3, two changes at once: the engine change is read on F232 §4's probe and on the flags; the technology and the leader's drop belong to the stages.
 The loss rose against the canon, but the canon's consensus excludes its runoff seed; the two arms' per-run losses overlap little (5.8–5.9 against
 8.0–9.7) and the register changed the same day.
+
+## F234 — THE CANON AT COST SLOPE 1.8 WITH EVERY RUNG ×1.2 (cost1): 3 INTACT / 0 BROKEN, WORLD GDP AT THE AIM, THE CLOSED-MAJOR TERM AT ZERO, e3 PAYING BACK CLEARLY BETTER THAN e2 IN TWO SEEDS OF THREE — AND INPUT PRICES WORSE; CONSENSUS LOSS 5.37 AGAINST THE CANON'S 7.28 (2026-10-14; session 20261014_004734_rs-c18k12-n3, 3 × 1836→1936, fixed n)
+
+**Arm.** `config/mod_config.jex-dam4s-rs-x25-c18k12.json` (sha256 9f5530dec10ae693) = the canon jex-dam4s-rs-x25 regenerated through its own recorded
+chain with `make_ab_config --cost-ratio 1.8 --cost1 1.2` in place of `--cost-ratio 1.9` (BALANCE_FRAMEWORK §10.101.2; the unchanged chain was first
+proven to reproduce the canon with 0 content differences). Field diff: building_cost on 56 rungs — e0 ×1.27, e1 ×1.20, e2 ×1.14, e3 ×1.08 (the
+ladder pivots at the e1 anchor; crafts 6 → 8 points). Run 3 crashed once at 1848.5.10 and resumed. Ledger https://claude.ai/artifact/HLBBEeP4bzzZBMxPKLjri8.
+⚠ The reference canon measured over a century is F227's jex-dam4s-rs, which carries the universities at ×0.5; this book carries x = 25 (×1/6),
+unmeasured alone — a second difference.
+
+### 1. The register (criteria.mjs, the register of 2026-10-13, one invocation with the canon and C 2.0)
+| arm | intact/broken | world GDP per run | consensus loss |
+|---|---|---|---|
+| **c18k12** | 3/0 | 0.95 / 0.84 / 1.01 | **5.37** (runs 1 + 3; per run 5.9 / 11.1 / 7.9) |
+| canon jex-dam4s-rs (F227) | 2/1 runoff | 1.04 / 1.09 / 1.45 | 7.28 |
+| C 2.0 (F228) | 1/2 (stall, runoff) | 1.02 / 0.63 / 1.21 | 11.06 |
+
+Consensus terms: world GDP 0.98 (at the aim), the shortlist's GDP 1.12 (at the aim), W 0.76, U* 1.93 of vanilla's (41.1% against 21.3%), H 1.35
+(the canon 0.95), PI 0.94 of vanilla's and NOT falling decade over decade (the canon 0.89, falling), PP 0.98, T3 25.8% of tiered workers (the canon
+30.8%), T0 0.36 of the 1900s. The loss is PI 1.79 + T3 1.51 + PP 1.15 + T0 0.61 + pool H 0.19 + pool U* 0.11. **The closed-major term is 0 in all
+three runs** (the canon 1.47): Germany's U* at 1936 is 45.6 / 58.7 / 26.3% (the canon 25.7 / 22.8 / 0.0%). Britain 5.9 / 13.2 / 1.0% (canon 2.1 /
+10.1 / 0.5%); France 1.9 / 62.0 / 32.4% (canon 7.7 / 34.3 / 5.9%) — run 1's France near capital abundance (soft), at a hoard of 0.64 GDP.
+
+### 2. The decomposition (first_run_decomp.mjs, ÷ vanilla n=16 median)
+World at 1935: GDP 0.96 / 0.84 / 1.01, productive workers per head 0.82 / 0.83 / 0.88, GDP per productive worker 1.21 / 1.04 / 1.15 (the canon 1.05 /
+1.10 / 1.47; 0.85 / 0.91 / 1.13; 1.18 / 1.24 / 1.30). The dip is deeper: world GDP 0.77 / 0.80 / 0.91 at 1900 and 0.86 / 0.81 / 0.94 at 1920 (the
+canon 0.82–1.09 and 0.90–1.20). The shortlist at 1935: GDP 1.43 / 0.78 / 0.82, workers per head 0.84 / 0.70 / 0.69.
+⚠ The static primary estimate made before the batch (§10.101.2: world GDP −6 to −7%, shortlist −9 to −10%) is consistent in direction; the
+measured end state is −8% world on the intact medians (0.98 against 1.06), with the x = 25 confound.
+
+### 3. Payback by era (the shortlist at 1935, Σ cost × levels × £600 ÷ Σ annual profit)
+| run | e1 | e2 | e3 |
+|---|---|---|---|
+| 1 | 7.0 y | 7.1 y | 6.9 y |
+| 2 | 12.1 | 11.8 | 7.9 |
+| 3 | 12.1 | 11.7 | 7.3 |
+| canon (F227) | 8.6–11.8 | 7.6–10.6 | 7.1–7.9 |
+In two seeds of three e3 now pays back in about two thirds of e2's time; the one C step accounts for ~5% of that, the rest is realised prices.
+
+### 4. Red flags (order books)
+Problem market-years 245 a run (166–253), 3 chronic markets — the canon 208 (144–209), 3. Japan 77, Russia 33, the Dutch market 27, Germany 17.
+Paper (Japanese 42, Russian 20.7, American 13.3: a capacity lag behind the government administrations' filing methods) and engines (Japanese 39.7,
+Russian 21.7, French 16: no staffed engine factory) carry most of it in every run.
+
+### 5. Technology and play time
+The majors' gain 0.94 of vanilla's at 1935 (the canon 0.97); the leader 37.5 / 23.1 / 42.3% of game eras 3 / 4 / 5 at the anchors (the canon 45 /
+38.5 / 50) — confounded with x = 25. Play: runs 1 and 2 cluster 1 at 180.0 / 170.8 min, main median 175.4 (×1.06 of vanilla's 165.0; the canon
+165.9); run 3 (193.6 min) cluster 3, four Spanish fleets on the repair loop 1907–15 (2,562–3,032 moves, 232k–274k sailed, gone after).
+
+### What it does NOT say
+n=3 and two differences from the measured canon (the cost ladder and x = 25). Which of the two moved technology is unknown; the cost reading
+(paybacks, the hoard, Germany) is the ladder's by mechanism. The register is directional (§10.83.7): the loss gap of ~1.9 is inside one run's spread.

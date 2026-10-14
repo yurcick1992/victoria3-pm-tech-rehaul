@@ -10031,3 +10031,6 @@ periods on e3 are not significantly better than e2. Idea: add cost1-factor, simi
 4. **The static expectation (stated before the batch):** with the same capital in the tiered sector and ~1/1.15 of its levels, world GDP −6 to −7%, the
    shortlist's −9 to −10%, U* +1.3 to +1.8 pp world and +2.8 to +3.4 pp shortlist. The tiered sector is ~48% of world GDP and ~70–75% of the
    shortlist's, and 10–13% of the world's workforce against 21–25% of the shortlist's. Feedback loops are expected to change the size, not the sign.
+5. **Measured (FINDINGS F234, n=3, 2026-10-14):** 3 intact / 0 broken, world GDP 0.95 / 0.84 / 1.01, consensus loss 5.37 against the canon's 7.28,
+   the closed-major term 0; e3 pays back in about two thirds of e2's time in two seeds of three; PI no longer falls and the input-price problem
+   market-years rose 208 → 245. Not ruled on.
