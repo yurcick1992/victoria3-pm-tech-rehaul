@@ -5441,6 +5441,11 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   result satisfies **neither** purpose: it is not the design we are moving towards, and it is not a clean
   reference either, since it differs from vanilla in GDP, workforce composition and an unbounded amount
   else. Everything measured that way needs re-running before it can be trusted.
+  ⭐⭐ **AND WHICH BOOK THE NEW CONFIG BRANCHES FROM — ASK, NEVER ASSUME (user-ruled 2026-10-14).** A lever change ("try C 1.8 and cost1 1.2")
+  names what MOVES, not what it moves FROM. Before generating the book, state its base explicitly — the canon, or the latest hypothesis under
+  test (e.g. an unadopted book whose change the user still means to keep), and which of each one's levers carry over — and get agreement. ⚠ It
+  cost a 3 × 1836→1936 batch (20261014_004734_rs-c18k12-n3, F234): built on the canon while the user meant the latest hypothesis (the unlifted
+  engines of F232/F233), so its reading could not be set beside the line it was meant to extend.
   ⚠ **"Which arm" is not a detail — it decides what the number MEANS.** A measurement of *the game's*
   behaviour must be on vanilla; a measurement of *our economy's* behaviour must be on our config; and the
   two answer different questions. **State the arm in the schedule's `_why`, and in every finding it
