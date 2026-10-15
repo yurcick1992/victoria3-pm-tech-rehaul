@@ -22699,3 +22699,52 @@ The majors' gain 0.94 of vanilla's at 1935 (the canon 0.97); the leader 37.5 / 2
 ### What it does NOT say
 n=3 and two differences from the measured canon (the cost ladder and x = 25). Which of the two moved technology is unknown; the cost reading
 (paybacks, the hoard, Germany) is the ladder's by mechanism. The register is directional (§10.83.7): the loss gap of ~1.9 is inside one run's spread.
+
+## F235 — THE COST LADDER (C 1.8 × cost1 1.2) WITH ENGINES AND PAPER UNLIFTED AND FOUR-YEAR STAGES, n=5: 4 INTACT / 1 STALL, LOSS 8.27; e3 PAYS BACK FASTER THAN e2 IN EVERY CAMPAIGN; INPUT-PRICE PROBLEMS 245 → 170 AGAINST THE SAME LADDER LIFTED; TECHNOLOGY SLOW AND THE SHORTLIST POOR (2026-10-15; sessions 20261014_102313_rs-c18k12mp48-run1-stitched + -n3 runs 2–3 + 20261015_001230_rs-c18k12mp48-n2more)
+
+**Arm.** config/mod_config.jex-dam4s-rs-x25-c18k12mp48.json (sha256 b5c89a291e48046e) = the canon jex-dam4s-rs-x25 regenerated through its own chain with
+make_ab_config --cost-ratio 1.8 --cost1 1.2 --in0-for motor:1,paper:1 and make_research_society_config --stage-months 48. Field diff against F234's book:
+the research stages 36 → 48 months and the three motor and three non-craft paper rungs' inputs ÷ 1.2. The base was agreed explicitly ("48-mo stages +
+x=25") under the branch-base rule written after F234. Ledger https://claude.ai/artifact/E59mhRjHme1dKBMjE2wCUK.
+Campaign 1 was paused at 1886.3.5 by an accidental keypress, abandoned by the watchdog, finished from its 1886.1.1 save and stitched (play 186 min,
+pause excluded); its continuation crashed twice and stepped back to 1901, leaving the abandoned 1902–06 branch in its summaries. Campaigns 3 and 5
+crashed once each and resumed. Two more runs were added by the user after campaigns 2 and 3 diverged.
+
+### 1. The register (one invocation with F234, F233 and the canon)
+| arm | intact/broken | world GDP per run | consensus loss |
+|---|---|---|---|
+| **c18k12mp48** | 4/1 stall | 0.61 / 0.97 / 1.14 / 0.86 / 0.93 | **8.27** (the four intact; per run 12.4 / 12.5 / 8.5 / 6.4) |
+| c18k12 (F234) | 3/0 | 0.95 / 0.84 / 1.01 | 5.37 |
+| canon jex-dam4s-rs (F227) | 2/1 runoff | 1.04 / 1.09 / 1.45 | 7.28 |
+| m10-je48 (F233) | 3/0 | 1.12 / 1.09 / 0.99 | 8.75 |
+
+Consensus: world GDP 0.95 (at the aim); the shortlist's GDP 0.86 (beyond the 0.95 soft line), W 0.75, U* 36.9% (vanilla 21.3%), hoard 0.13 of GDP
+(vanilla 0.33); PI 0.99 of base, falling decade over decade; PP 0.92; T3 17.5% of tiered workers; T0 0.41 of the 1900s; the closed-major term 0.29 (per
+run 0 / 0.29 / 0 / 0.50 / 0). The loss is T3 2.33 + PI 2.18 + pool GDP 1.43 + PP 0.77 + T0 0.70 + gerCM 0.43 + pool U* 0.43.
+Campaign 1's stall is game state, not the pause: world GDP 0.86 of vanilla's at 1880, 0.64 at 1900 (China fallen to the Taiping, the USA £27–41M), 0.61 at
+1932–36.
+
+### 2. The shortlist's GDP at 1935 (vanilla £1,389M)
+£962M / £1,097M / £1,141M / £1,151M / £1,332M. USA £203M / £341M / £65M / £254M / £269M — campaign 3's USA held 135M people on £65–75M of GDP from 1928.
+
+### 3. Payback by era (the shortlist at 1935, £600 a point)
+| campaign | e1 | e2 | e3 |
+|---|---|---|---|
+| 1 | 8.6 y | 6.1 | 5.7 |
+| 2 | 12.7 | 13.7 | 10.1 |
+| 3 | 15.4 | 10.5 | 6.2 |
+| 4 | 13.2 | 8.8 | 8.1 |
+| 5 | 9.4 | 10.3 | 6.3 |
+e3 faster than e2 in all five (by 7–41%).
+
+### 4. Red flags (order books)
+Problem market-years 170 a run (117–214), 3 chronic markets — F234 (the same ladder, engines and paper lifted) 245, F233 118, the canon 208. Japanese
+engines 45 a run (no engine factory), Japanese paper 26, Japanese hardwood 22.6, Russian paper 16.4, Russian engines 12.8.
+
+### 5. Technology and play time
+The majors' gain 0.89 of vanilla's at 1935; the leader 35 / 20.5 / 38.5% of game eras 3 / 4 / 5 at the anchors (F233 37.5 / 20.5 / 46). Play: main median
+183.1 min over campaigns 3–5 (×1.11 of vanilla's 165.0 — over the 10% budget); campaigns 1 and 2 cluster 3 (Croatian fleet loop 1870–77, Sicilian 1929–33).
+
+### What it does NOT say
+Four differences from the canon at once; against F234 two (the stages and the unlifted engines and paper), so the input-price drop and the technology
+drop are attributed by mechanism, not by isolation. n=5 with one stall; the register is directional (§10.83.7).
