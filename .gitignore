@@ -358,3 +358,5 @@ tools/testbed/no_new_runs_at.log
 !config/tech_tree_options.jex-dam4s-rs-x25-c18k12mp48.json
 !config/mod_config.jex-dam4s-rs-x25-c18k12mp.json
 !config/tech_tree_options.jex-dam4s-rs-x25-c18k12mp.json
+!config/mod_config.jex-dam4s-rs-x25-mp.json
+!config/tech_tree_options.jex-dam4s-rs-x25-mp.json
