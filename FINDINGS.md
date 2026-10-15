@@ -22748,3 +22748,25 @@ The majors' gain 0.89 of vanilla's at 1935; the leader 35 / 20.5 / 38.5% of game
 ### What it does NOT say
 Four differences from the canon at once; against F234 two (the stages and the unlifted engines and paper), so the input-price drop and the technology
 drop are attributed by mechanism, not by isolation. n=5 with one stall; the register is directional (§10.83.7).
+
+## F236 — THE DEARER COST LADDER DOES NOT COST TICK TIME: 8 v 8 OVER 1836–1866, c18k12 −2.3 ± 2.2 s PER IN-GAME YEAR AGAINST THE CANON (2026-10-15; sessions 20261015_083853_perf-costladder-30y + 20261015_111035_perf-costladder-30y-more)
+
+**Why it ran.** tick_overhead.mjs, comparing batches from different nights at equal world size, read F234's book (C 1.8 × cost1 1.2) +5 to +12 s per
+in-game year above the canon over 1850–1910, and F235's book +10 to +21 s; the user did not find a mechanism plausible and asked for probes, then for 8 v 8.
+**Arms.** The canon jex-dam4s-rs-x25 against jex-dam4s-rs-x25-c18k12 (building_cost on 56 rungs the only difference), 8 runs each, 1836 → 1866, back
+to back by book on one day. All 16 complete; three crashed once and resumed.
+
+| 1850–65 | canon | c18k12 |
+|---|---|---|
+| wall s per in-game year, run means | 78.9 / 82.7 / 70.4 / 74.8 / 75.9 / 79.9 / 76.2 / 83.8 | 69.8 / 70.9 / 82.3 / 76.1 / 71.7 / 79.9 / 77.0 / 76.6 |
+| mean (sd between runs) | 77.8 (4.4) | 75.5 (4.4) |
+| daily / weekly / monthly tick, ms (1840–65) | 57.0 / 186.4 / 164.1 | 56.5 / 183.1 / 162.5 |
+
+Difference −2.3 ± 2.2 s per in-game year (95% −6.7 to +2.1; −2.9%). The machine was steady (canary 0.98–1.09 across the day). Between runs of ONE
+book the per-year cost spreads ±5.7% (sd), so an n=3 batch carries ±3.3% on its mean — and two batches on different nights differ by more.
+
+### What it says
+The cost ladder adds no measurable tick cost through 1866; the earlier +5–7 s for 1850–66 lies outside the band. The cross-night tick_overhead reading
+was between-batch spread, and the books' "normal branch" totals (F235: 162–185 min) should be read with that spread in mind.
+### What it does NOT say
+1866–1910 is untested (the earlier reading was largest in 1880–1910). One day, one machine.
