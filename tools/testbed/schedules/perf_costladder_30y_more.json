@@ -1,0 +1,88 @@
+{
+  "schedule_version": 1,
+  "label": "perf-costladder-30y-more",
+  "_why": "THREE MORE RUNS A SIDE of perf_costladder_30y (user, 2026-10-15: \"Sure n=2v2 is enough? Maybe 5v5?\"): run-level spread ~6% against a ~8% gap needs 5 v 5. Same books, same span; pooled with 20261015_083853_perf-costladder-30y. IS THE TICK COST OF THE DEARER COST LADDER REAL? (user, 2026-10-15: \"I agree to probes, but I don't find it plausible yet ... You may go on with the probes\"). tick_overhead.mjs read +5 to +12 s per in-game year over 1850-1910 for F234's book against the canon at the same world size (n=3 each, different nights), where the canon sits at vanilla's cost. Base stated per the branch-base rule: the CURRENT canon jex-dam4s-rs-x25 against jex-dam4s-rs-x25-c18k12 (field diff: building_cost on 56 rungs, nothing else). Runs back to back by book (no interleaving, user-ruled).",
+  "_arms": {
+    "canon": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25.json}",
+    "c18k12": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-c18k12.json}"
+  },
+  "_comparison": "arm_tick_cost.mjs (wall s per in-game year from the engine tick stamps, game logic and daily/weekly/monthly tick cost from custom_automated_stats.log) and tick_overhead.mjs against vanilla n=16, 1850-1866; the world size printed beside it",
+  "_predictions": {
+    "if_real": "c18k12 3-8 s per in-game year above the canon over 1850-66 at equal world size",
+    "if_not": "the two within each other's spread"
+  },
+  "_stop_rule": "none (fixed 2+2)",
+  "_cost": "6 x 1836 -> 1866, ~3 h",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 called directly (L30).",
+    "If inconclusive: continue each run from its kept 1866 save to 1886 (continue_save), no replay."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1865.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 120
+  },
+  "setups": {
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25.json"
+    },
+    "c18k12": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-c18k12.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon",
+      "until": "1866.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1866.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1866.1.1"
+    },
+    {
+      "setup": "c18k12",
+      "until": "1866.1.1"
+    },
+    {
+      "setup": "c18k12",
+      "until": "1866.1.1"
+    },
+    {
+      "setup": "c18k12",
+      "until": "1866.1.1"
+    }
+  ]
+}
