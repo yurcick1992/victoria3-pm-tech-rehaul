@@ -3568,7 +3568,7 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⭐ `node tools/testbed/stitch_session.mjs <continuation session> <new session name>` builds a NEW session folder
                         (copies only; STITCHED.md inside) with one run folder per whole campaign — summaries joined and renumbered, debug.log
                         joined from each half's token with the continuation's token REWRITTEN to the parent's, run.log / tables / meta
-                        merged — so fill_ledger.sh, criteria.mjs and every reader run on it unchanged (proven: lib_runs counts it,
+                        merged, and every ABANDONED RESUME BRANCH dropped (2026-10-15: on a backward in-game date jump that matches a resume in the half's run.log, the earlier copies of the replayed dates leave the summaries, events.tsv, markets.tsv and the game logs, so a reader never takes a branch that did not finish) — so fill_ledger.sh, criteria.mjs and every reader run on it unchanged (proven: lib_runs counts it,
                         wall_from_ticks reads the reload as overhead, the research-entry grants extract across the rewrite). An absolute
                         output path + `--partial` = a test outside the sessions folder
   testbed/run_schedule.ps1  THE entry point for all measurement: ordered schedule JSON -> build each run via

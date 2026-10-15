@@ -22700,14 +22700,14 @@ The majors' gain 0.94 of vanilla's at 1935 (the canon 0.97); the leader 37.5 / 2
 n=3 and two differences from the measured canon (the cost ladder and x = 25). Which of the two moved technology is unknown; the cost reading
 (paybacks, the hoard, Germany) is the ladder's by mechanism. The register is directional (§10.83.7): the loss gap of ~1.9 is inside one run's spread.
 
-## F235 — THE COST LADDER (C 1.8 × cost1 1.2) WITH ENGINES AND PAPER UNLIFTED AND FOUR-YEAR STAGES, n=5: 4 INTACT / 1 STALL, LOSS 8.27; e3 PAYS BACK FASTER THAN e2 IN EVERY CAMPAIGN; INPUT-PRICE PROBLEMS 245 → 170 AGAINST THE SAME LADDER LIFTED; TECHNOLOGY SLOW AND THE SHORTLIST POOR (2026-10-15; sessions 20261014_102313_rs-c18k12mp48-run1-stitched + -n3 runs 2–3 + 20261015_001230_rs-c18k12mp48-n2more)
+## F235 — THE COST LADDER (C 1.8 × cost1 1.2) WITH ENGINES AND PAPER UNLIFTED AND FOUR-YEAR STAGES, n=5: 4 INTACT / 1 STALL, LOSS 8.27; e3 PAYS BACK FASTER THAN e2 IN EVERY CAMPAIGN; INPUT-PRICE PROBLEMS 245 → 170 AGAINST THE SAME LADDER LIFTED; TECHNOLOGY SLOW AND THE SHORTLIST POOR (2026-10-15; sessions 20261014_102313_rs-c18k12mp48-run1-stitched2 + -n3 runs 2–3 + 20261015_001230_rs-c18k12mp48-n2more)
 
 **Arm.** config/mod_config.jex-dam4s-rs-x25-c18k12mp48.json (sha256 b5c89a291e48046e) = the canon jex-dam4s-rs-x25 regenerated through its own chain with
 make_ab_config --cost-ratio 1.8 --cost1 1.2 --in0-for motor:1,paper:1 and make_research_society_config --stage-months 48. Field diff against F234's book:
 the research stages 36 → 48 months and the three motor and three non-craft paper rungs' inputs ÷ 1.2. The base was agreed explicitly ("48-mo stages +
 x=25") under the branch-base rule written after F234. Ledger https://claude.ai/artifact/E59mhRjHme1dKBMjE2wCUK.
 Campaign 1 was paused at 1886.3.5 by an accidental keypress, abandoned by the watchdog, finished from its 1886.1.1 save and stitched (play 186 min,
-pause excluded); its continuation crashed twice and stepped back to 1901, leaving the abandoned 1902–06 branch in its summaries. Campaigns 3 and 5
+pause excluded); its continuation crashed twice and stepped back to 1901, and the abandoned branches are dropped in the re-stitch (20261014_102313_rs-c18k12mp48-run1-stitched2: 7 summaries, 1,443 event rows, three log windows). Campaigns 3 and 5
 crashed once each and resumed. Two more runs were added by the user after campaigns 2 and 3 diverged.
 
 ### 1. The register (one invocation with F234, F233 and the canon)

@@ -257,3 +257,4 @@ Oldest first (rows are appended). ⚠ = something is wrong with the session; ✅
 | 20261014_222023_rs-c18k12mp48-run1-finish | 2026-10-15 | ✅ SOUND continuation 1886 → 1936 of run 1 above (two crashes, feeder stepped back to 1901); read only through the stitched session. F235 |
 | 20261014_102313_rs-c18k12mp48-run1-stitched | 2026-10-15 | ✅ campaign 1 stitched (play 186 min, pause excluded); ⛔ BROKEN BY STALL (world GDP 0.61); the abandoned 1902–06 branch sits in the summaries (L26). F235 |
 | 20261015_001230_rs-c18k12mp48-n2more | 2026-10-15 | ✅ COMPLETE 2/2, SOUND, both intact: world GDP 0.86 / 0.93. With the three above n=5: 4 intact / 1 stall, consensus loss 8.27, 170 problem market-years, play ×1.11. F235 |
+| 20261014_102313_rs-c18k12mp48-run1-stitched2 | 2026-10-15 | ✅ campaign 1 re-stitched with the abandoned resume branches dropped (7 summaries, 1,443 event rows, 3 log windows); SUPERSEDES -run1-stitched; ⛔ BROKEN BY STALL (world GDP 0.61). F235 |

@@ -25,15 +25,55 @@ const headDate = f => { const fd = fs.openSync(f, 'r'); const b = Buffer.alloc(4
   return /"date":"([0-9.]+)"/.exec(zlib.gunzipSync(b.subarray(0, n), { finishFlush: zlib.constants.Z_SYNC_FLUSH }).toString('utf8'))?.[1]; };
 const dnum = d => { const [y, m, dd] = d.split('.').map(Number); return y * 10000 + m * 100 + dd; };
 const secOfDay = s => { const m = /^\[(\d\d):(\d\d):(\d\d)\]/.exec(s); return m ? +m[1] * 3600 + +m[2] * 60 + +m[3] : null; };
-async function copyLines(src, out, { fromToken = null, fromSec = null, rewrite = null } = {}) {
+// wins (deadWindows of the half): lines stamped inside one are dropped; the clock is unwrapped past midnight from the half's own start
+// (startSec), the origin deadWindows uses, so lines older than the run (a mirror's inherited ring) are never matched
+async function copyLines(src, out, { fromToken = null, fromSec = null, rewrite = null, wins = null, startSec = null } = {}) {
   if (!fs.existsSync(src)) return 0;
   const rl = readline.createInterface({ input: fs.createReadStream(src), crlfDelay: Infinity }); let on = !fromToken && fromSec == null, n = 0;
+  let armed = false, day = 0, prev = null, cur = null;
   for await (let l of rl) {
     if (!on) { if (fromToken && l.includes(fromToken)) on = true; else if (fromSec != null) { const s = secOfDay(l); if (s != null && s >= fromSec) on = true; } if (!on) continue; }
+    if (wins && wins.length) { const s0 = secOfDay(l);
+      if (s0 != null) { if (!armed && startSec != null && s0 >= startSec && s0 - startSec < 1800) armed = true;
+        if (armed) { if (prev != null && s0 < prev - 3600) day += 86400; prev = s0; cur = s0 + day; } }
+      if (armed && cur != null && wins.some(([a, b]) => cur >= a && cur < b)) continue; }
     if (rewrite) l = l.split(rewrite[0]).join(rewrite[1]);
     out.write(l + '\n'); n++;
   }
   return n;
+}
+// ⭐ ABANDONED RESUME BRANCHES ARE DROPPED (user, 2026-10-15: "the freshest, actually finished part of the run [should rewrite] the readings").
+//   A crash-resume replays from an older save (the L32 feeder can step back years), so a half's series holds the abandoned branch's dates ahead of
+//   their replay, and a reader taking "the first summary of a year" reads the branch that never finished. On every backward jump of the in-game
+//   date the earlier copies of the replayed dates are dropped: summaries (by their own date, in archive order), event rows (by their in-game
+//   date, in log order), and the lines of the three game logs written between the abandoned branch's first replayed date and the replay's landing
+//   (from run.log's tick lines; wall stamps unwrapped past midnight).
+const MONTHS = { January: 1, February: 2, March: 3, April: 4, May: 5, June: 6, July: 7, August: 8, September: 9, October: 10, November: 11, December: 12 };
+const evDate = cols => { for (const c of cols) { const m = /^([A-Z][a-z]+) (\d+), (\d{4})$/.exec(c); if (m && MONTHS[m[1]]) return +m[3] * 10000 + MONTHS[m[1]] * 100 + +m[2]; } return null; };
+// items in their own order; a backward jump drops the kept items dated at or after the new date — ONLY where the jump matches a resume
+// recorded in run.log (jumps from deadWindows: the replay lands at or before its first tick's date, within two years of it, and the branch
+// abandoned is not later than the date the game died at): the harvest's own drain leaves rows out of order at a file's tail, and those are not resumes
+function pruneByDate(items, dateOf, jumps) {
+  const kept = []; let dropped = 0; let last = -Infinity;
+  for (const it of items) { const d = dateOf(it); if (d == null) { kept.push(it); continue; }
+    if (d < last && jumps.some(j => d <= j.to && d >= j.to - 20000 && last <= j.from + 10000)) {
+      for (let i = kept.length - 1; i >= 0; i--) { const di = dateOf(kept[i]); if (di != null && di >= d) { kept.splice(i, 1); dropped++; } } }
+    kept.push(it); last = d; }
+  return { kept, dropped };
+}
+function deadWindows(runLog) {         // [startSec, endSec] in unwrapped seconds of the run.log's own clock
+  if (!fs.existsSync(runLog)) return [];
+  const ticks = []; let day = 0, prev = null, lastAttempt = null;
+  for (const l of fs.readFileSync(runLog, 'utf8').split(/\r?\n/)) { const s0 = secOfDay(l); if (s0 == null) continue;
+    if (prev != null && s0 < prev - 3600) day += 86400; prev = s0; const s = s0 + day;
+    if (/resume attempt \d+/.test(l)) lastAttempt = s;
+    const m = /in-game (\d+)\.(\d+)\.(\d+)/.exec(l); if (m) ticks.push({ s, d: +m[1] * 10000 + +m[2] * 100 + +m[3], att: lastAttempt }); }
+  const wins = [];
+  for (let i = 1; i < ticks.length; i++) { if (ticks[i].d >= ticks[i - 1].d) continue;
+    const T = ticks[i].d; let j = i - 1; while (j > 0 && ticks[j - 1].d >= T) j--;
+    const end = ticks[i].att != null && ticks[i].att > ticks[j].s ? ticks[i].att : ticks[i].s;
+    if (ticks[j].d >= T) { const w = [ticks[j].s, end]; w.from = ticks[i - 1].d; w.to = T; wins.push(w); } }
+  return wins;
 }
 const ws = f => fs.createWriteStream(f);
 const end = s => new Promise(r => s.end(r));
@@ -61,21 +101,27 @@ for (const rd of runs) {
   const list = dir => fs.readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort().map(f => ({ f: path.join(dir, f), d: headDate(path.join(dir, f)) })).filter(x => x.d);
   const cs = list(path.join(C, 'save_summaries')); const first = Math.min(...cs.map(x => dnum(x.d)));
   const ps = list(path.join(P, 'save_summaries')).filter(x => dnum(x.d) < first);
-  let k = 0; for (const x of [...ps, ...cs]) { k++; fs.copyFileSync(x.f, path.join(O, 'save_summaries', String(k).padStart(4, '0') + '_' + path.basename(x.f).replace(/^\d+_/, ''))); }
-  // logs
-  const dbg = ws(path.join(O, 'logs_live/debug.log'));
-  const nP = await copyLines(path.join(P, 'logs_live/debug.log'), dbg, { fromToken: pm.token });
-  const nC = await copyLines(path.join(C, 'logs_live/debug.log'), dbg, { fromToken: cm.token, rewrite: [cm.token, pm.token] }); await end(dbg);
-  const cStart = secOfDay('[' + cm.started.slice(11, 19) + ']');
+  const pW = deadWindows(path.join(P, 'run.log')), cW = deadWindows(path.join(C, 'run.log'));
+  const sumP = pruneByDate([...ps, ...cs], x => dnum(x.d), [...pW, ...cW]);
+  let k = 0; for (const x of sumP.kept) { k++; fs.copyFileSync(x.f, path.join(O, 'save_summaries', String(k).padStart(4, '0') + '_' + path.basename(x.f).replace(/^\d+_/, ''))); }
+  // logs — each half pruned of its abandoned resume branches (deadWindows on its own run.log, its own clock origin)
+  const pStart = secOfDay('[' + pm.started.slice(11, 19) + ']'), cStart = secOfDay('[' + cm.started.slice(11, 19) + ']');
+    const dbg = ws(path.join(O, 'logs_live/debug.log'));
+  const nP = await copyLines(path.join(P, 'logs_live/debug.log'), dbg, { fromToken: pm.token, wins: pW, startSec: pStart });
+  const nC = await copyLines(path.join(C, 'logs_live/debug.log'), dbg, { fromToken: cm.token, rewrite: [cm.token, pm.token], wins: cW, startSec: cStart }); await end(dbg);
   for (const lf of ['error.log', 'dedicated_server.log', 'custom_automated_stats.log']) {
     if (!fs.existsSync(path.join(P, 'logs_live', lf)) && !fs.existsSync(path.join(C, 'logs_live', lf))) continue;
-    const o = ws(path.join(O, 'logs_live', lf)); await copyLines(path.join(P, 'logs_live', lf), o); await copyLines(path.join(C, 'logs_live', lf), o, { fromSec: cStart }); await end(o);
+    const o = ws(path.join(O, 'logs_live', lf)); await copyLines(path.join(P, 'logs_live', lf), o, { wins: pW, startSec: pStart }); await copyLines(path.join(C, 'logs_live', lf), o, { fromSec: cStart, wins: cW, startSec: cStart }); await end(o);
   }
   { const o = ws(path.join(O, 'run.log')); await copyLines(path.join(P, 'run.log'), o); await copyLines(path.join(C, 'run.log'), o); await end(o); }
+  const tsvDropped = {};
   for (const t of ['markets.tsv', 'events.tsv']) {
     const a = fs.existsSync(path.join(P, t)) ? fs.readFileSync(path.join(P, t), 'utf8').replace(/\r?\n$/, '').split(/\r?\n/) : [];
     const b = fs.existsSync(path.join(C, t)) ? fs.readFileSync(path.join(C, t), 'utf8').replace(/\r?\n$/, '').split(/\r?\n/) : [];
-    fs.writeFileSync(path.join(O, t), [...(a.length ? a : b.slice(0, 1)), ...b.slice(1)].join('\n') + '\n');
+    const hdr = (a.length ? a : b).slice(0, 1), rows = [...a.slice(1), ...b.slice(1)];
+    const dateOf = t === 'markets.tsv' ? (r => { const c = r.split('\t')[1]; return /^\d+\.\d+\.\d+$/.test(c || '') ? dnum(c) : null; }) : (r => evDate(r.split('\t')));
+    const pr = pruneByDate(rows, dateOf, [...pW, ...cW]); tsvDropped[t] = pr.dropped;
+    fs.writeFileSync(path.join(O, t), [...hdr, ...pr.kept].join('\n') + '\n');
   }
   const pt = J(path.join(P, 'telemetry.json')), ct = J(path.join(C, 'telemetry.json'));
   fs.writeFileSync(path.join(O, 'telemetry.json'), JSON.stringify({ ...ct, dump_dates: [...(pt.dump_dates || []), ...(ct.dump_dates || [])], _stitched: 'both halves\' dump dates' }, null, 2));
@@ -86,7 +132,7 @@ for (const rd of runs) {
   fs.copyFileSync(path.join(C, 'build_state.json'), path.join(O, 'build_state.json'));
   if (fs.existsSync(path.join(C, 'save_provenance.json'))) { const sp = J(path.join(C, 'save_provenance.json')); sp.token = pm.token; sp.session = NEWNAME.slice(0, 15); sp.until = cm.until_date; fs.writeFileSync(path.join(O, 'save_provenance.json'), JSON.stringify(sp, null, 2)); }
   for (const s of fs.readdirSync(path.join(C, 'saves')).filter(f => f.endsWith('.v3'))) fs.copyFileSync(path.join(C, 'saves', s), path.join(O, 'saves', s));
-  notes.push(`- ${rd}: ${cont.parent} (1836 → ${ps.at(-1)?.d}, ${ps.length} summaries, token ${pm.token}) + ${CHILD}/${rd} (${cs[0].d} → ${cs.at(-1).d}, ${cs.length} summaries, token ${cm.token} rewritten); debug.log ${nP} + ${nC} lines; wall ${meta.wall_seconds} s`);
+  notes.push(`- ${rd}: ${cont.parent} (1836 → ${ps.at(-1)?.d}, ${ps.length} summaries, token ${pm.token}) + ${CHILD}/${rd} (${cs[0].d} → ${cs.at(-1).d}, ${cs.length} summaries, token ${cm.token} rewritten); debug.log ${nP} + ${nC} lines; wall ${meta.wall_seconds} s; abandoned resume branches dropped — ${sumP.dropped} summaries, ${tsvDropped['events.tsv']} event rows, ${tsvDropped['markets.tsv']} market rows, log windows ${[...pW, ...cW].map(([a, b]) => Math.round((b - a) / 60) + ' min').join(' / ') || 'none'}`);
   index.push({ index: +rd.slice(3, 6), setup: rd.replace(/^run\d+_/, ''), until: cm.until_date, status: 'ok', stitched: meta.stitched });
 }
 // session level
