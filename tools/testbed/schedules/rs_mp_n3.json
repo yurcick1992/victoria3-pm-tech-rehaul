@@ -1,0 +1,83 @@
+{
+  "schedule_version": 1,
+  "label": "rs-mp-n3",
+  "_why": "THE CONSERVATIVE STEP (user, 2026-10-15: \"I'd go conservative first. Canon + unlifted engines + unlifted paper\" ... \"prepare the conservative book. Only n=3, as the changes are not that major. Don't run yet, wait for my go-ahead.\"). The 4-year research stages are dropped (user: \"increasing the JE length to 4y was bad from all PoVs. Return it to 3\") and the cost ladder of F234/F235 is not carried. Book config/mod_config.jex-dam4s-rs-x25-mp.json (sha256 66ea3e0a93a3d671) = the canon jex-dam4s-rs-x25 regenerated through its own recorded chain with make_ab_config --in0-for motor:1,paper:1. Field diff against the canon: the three motor rungs and the three non-craft paper rungs' inputs / 1.2 with their restated target_be / wage_pct (paper e0 is a craft, set by the craft rule); nothing else; tree twin byte-identical to the canon's. Against jex-dam4s-rs-x25-c18k12mp (the cost-ladder base prepared the same day): building_cost on 56 rungs only.",
+  "_arms": {
+    "mp": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-mp.json} (+ its tree twin, the canon's byte for byte)."
+  },
+  "_comparison": "The canon jex-dam4s-rs-x25 has NO century run of its own: the nearest is F227 (jex-dam4s-rs, universities x0.5 where the canon carries x/150 at x = 25 — a second difference). Also F234 (c18k12: the cost ladder on the canon, both lifted), F235 (c18k12mp48: the cost ladder, both unlifted, 48-month stages) and F233 (m10-je48: engines unlifted, 48-month stages, universities x0.5); the register of 2026-10-13; vanilla n=16 (20260821_131149). The engine unlift at 36-month stages has only the 30-year probe 20261013_110054 (F232 §4); paper unlifted has never run at 36-month stages.",
+  "_predictions": {
+    "prices": "input-price problem market-years well under the canon's 208 (F227) — around F233's 118 or F235's 170; engines (Japanese, Russian) the main drop, paper smaller; PI lower than F234's 0.94 and falling",
+    "GDP": "world GDP end state near F227's intact pair (1.04 / 1.09) or slightly higher (cheaper inputs, more profitable engine and paper rungs); a runoff seed possible as in F227 (1 of 3 at 1.45)",
+    "tech": "near the canon's research path (36-month stages back); the leader under F227's 45 / 38.5 / 50% of game eras 3 / 4 / 5 by the x = 25 universities, as in F234 (37.5 / 23.1 / 42.3)",
+    "labour": "shortlist U* near F227's; the closed-major term back up toward F227's 1.47 (Germany fully employed in rich seeds — the cost ladder that zeroed it in F234 is not carried)",
+    "obsolescence": "e3 share of tiered workers near the canon's 30.8% rather than F235's 17.5%; the motor e1 (steam) rung may hold a larger share than in the canon, the unlift raising its margin most",
+    "play": "x1.00-1.06 of vanilla's 165.0 min main median"
+  },
+  "_stop_rule": "none: a fixed n=3 (the user's instruction), every run plays to 1936; the stop watcher is NOT armed.",
+  "_cost": "3 x 1836 -> 1936, ~2h50 each, ~8.5 h",
+  "_caveats": [
+    "Prepared 2026-10-15; NOT launched — waits for the user's go-ahead.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Do NOT edit the emitters, the generators or the book while it runs."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 300
+  },
+  "setups": {
+    "mp": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-mp.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "mp",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "mp",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "mp",
+      "until": "1936.1.1"
+    }
+  ]
+}
