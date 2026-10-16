@@ -289,7 +289,16 @@ reads that way it has been corrected in place; the headings that follow are HIST
 
 ## ⭐⭐⭐ THE CANON IS THE ARTMERGE ARM, `jex-dam4s-rs`, SINCE 2026-10-12 (user-ruled: *"CANONIZE artmerge with all these additions"*; BALANCE_FRAMEWORK §10.99; FINDINGS F227)
 
-⭐⭐⭐ **SINCE 2026-10-16 THE CANON'S BYTES ARE `config/mod_config.jex-dam4s-rs-x25-dpriv.json` + twin** (sha256 `5bd4c706551d4da8`; the twin
+⭐⭐⭐ **SINCE 2026-10-16 EVENING THE CANON'S BYTES ARE `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json` + twin** (sha256
+`fc7490eb6288514b`; the twin unchanged, `04ac513168388956`) — user: *"Canonize unlifted engines and conditional merge-host desire"*. It is F239's measured
+book `jex-dam4s-rs-x25-m10ac` (the x25 canon through its own chain with `make_ab_config --in0-for motor:1` — the engines' inputs ÷ 1.2, §10.101 — and
+`make_merge_config --ai-rule cond` — each merge host's desire is its own rung's era value, raised to the merged rung's once the owner holds the merged
+method's technology, §10.91.2) **plus `dams.private = all`** (the change below, canonized the same afternoon). Field diff against `jex-dam4s-rs-x25-dpriv`:
+the three motor rungs' inputs / target_be / wage_pct, the five merge hosts' ai_value + `ai_value_cond` (food and paper 1,000 → 3,000; textile, furniture
+and steel 3,000 → 5,000; fertilizer 1,000, no block), and the provenance records — nothing else; against the measured m10ac book: `dams.private` and its
+records only. Measured as m10ac WITHOUT private dams (F239, n=3): 3 intact, world GDP 1.02 / 1.04 / 1.12, consensus loss 6.72 (F227 7.28), misplaced
+capital NOT lower (22% median against the canon's 20%), play ×1.06. ⚠ The combination is UNMEASURED over a century. Built and DEPLOYED 2026-10-16 20:42.
+⭐⭐ **FROM 2026-10-16 AFTERNOON TO EVENING THE CANON'S BYTES WERE `config/mod_config.jex-dam4s-rs-x25-dpriv.json` + twin** (sha256 `5bd4c706551d4da8`; the twin
 unchanged, `04ac513168388956`): `jex-dam4s-rs-x25` with **private dam construction everywhere**, `dams.private = all` (user: *"Canonize this change"*,
 the variant *"Everywhere, and mandate their subsidies"*; BALANCE_FRAMEWORK §10.89.14, FINDINGS F239–F240). Field diff against `jex-dam4s-rs-x25`:
 `dams.private` and its `_dam_private_variant` record, nothing else; the subsidies were already mandated (the four dam types `must_have` in every
@@ -1773,9 +1782,11 @@ config/mod_config.jex-dam4s-rb.json / config/mod_config.jex-dam4s-rs.json ⭐⭐
                         literacy term 25, universities ×0.5, `make_research_levers_config.mjs`) + the §10.97 entry rework (`make_research_rework_config.mjs
                         --base config/mod_config.jex-dam4s-rl.json --suffix jex-dam4s-rb`, F226); each book's `_*_variant` records hold the commands; `jex-dam4s-rs` = rb + the §10.98 entries
                         (`make_research_society_config.mjs`, F227). Their `-wild` twins are the smoke books. Un-ignored with their twins
-config/mod_config.jex-dam4s-rs-x25-dpriv.json ⭐⭐⭐ THE CANON SINCE 2026-10-16 (config/mod_config.json is a verbatim copy) + its tree twin (x25's, byte for
-                        byte): jex-dam4s-rs-x25 + `dams.private = all` (private dam construction under the government check's conditions), nothing
-                        else (§10.89.14, F240). Un-ignored with its twin
+config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json ⭐⭐⭐ THE CANON SINCE 2026-10-16 EVENING (config/mod_config.json is a verbatim copy) + its tree twin
+                        (x25's, byte for byte): the measured `jex-dam4s-rs-x25-m10ac` (engines unlifted, the conditional merge-host desire; F239) +
+                        `dams.private = all` + the `_canon_2026_10_16` record, nothing else. Un-ignored with its twin
+config/mod_config.jex-dam4s-rs-x25-dpriv.json (HISTORY) the canon on the afternoon of 2026-10-16 + its tree twin: jex-dam4s-rs-x25 + `dams.private = all`
+                        (private dam construction under the government check's conditions), nothing else (§10.89.14, F240). Un-ignored with its twin
 config/mod_config.jex-dam4s-rs-m10.json ⚗ THE ENGINE LADDER UNLIFTED (user-ruled 2026-10-13, BALANCE_FRAMEWORK §10.101, FINDINGS F232) + its tree twin (the canon's,
                         byte for byte): the canon's recorded chain with `make_ab_config --in0-for motor:1` — the three motor rungs' inputs ÷ 1.2 and their
                         restated target_be / wage_pct, nothing else. Probed 3 × 1836→1866 (20261013_110054_rs-m10-30y-n3). Un-ignored with its twin

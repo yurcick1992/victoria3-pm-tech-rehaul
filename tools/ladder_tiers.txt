@@ -34,9 +34,9 @@ pm_main_steel_blister_steel_process 1 101 0.132
 pm_main_steel_bessemer_process 2 99 0.1078
 pm_main_steel_open_hearth_process 3 71 0.0824
 pm_main_steel_electric_arc_process 4 53 0.0742
-pm_main_motor_steam_engines 1 96 0.2155
-pm_main_motor_electric_engines 2 68 0.1755
-pm_main_motor_diesel_engines 3 50 0.1642
+pm_main_motor_steam_engines 1 83 0.2479
+pm_main_motor_electric_engines 2 58 0.2036
+pm_main_motor_diesel_engines 3 43 0.1909
 pm_main_automotive_automobile_production 1 39 0.2421
 pm_main_automotive_mass_automobile_production 2 32 0.1754
 pm_main_arms_muskets 1 62 0.2931

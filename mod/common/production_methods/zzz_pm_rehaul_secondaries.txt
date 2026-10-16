@@ -737,8 +737,8 @@ pm_watertube_boiler_building_motor_industry_motor = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_tools_add = 3.28
-			goods_input_coal_add = 3.28
+			goods_input_tools_add = 2.73
+			goods_input_coal_add = 2.73
 		}
 
 		level_scaled = {
@@ -763,8 +763,8 @@ pm_rotary_valve_engine_building_motor_industry_motor = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_tools_add = 3.28
-			goods_input_coal_add = 6.56
+			goods_input_tools_add = 2.73
+			goods_input_coal_add = 5.46
 		}
 
 		level_scaled = {
@@ -788,9 +788,9 @@ pm_assembly_lines_building_motor_industry_motor = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_tools_add = 3.28
-			goods_input_oil_add = 3.28
-			goods_input_electricity_add = 3.28
+			goods_input_tools_add = 2.73
+			goods_input_oil_add = 2.73
+			goods_input_electricity_add = 2.73
 		}
 
 		level_scaled = {

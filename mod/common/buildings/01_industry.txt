@@ -33,7 +33,13 @@ building_food_industry_sweeteners = {
 		pmg_automation_building_food_industry_food_industry_sweeteners
 	}
 	required_construction = 827
-	ai_value = 1732
+	ai_value = {
+		value = 1000
+		if = {
+			limit = { owner ?= { has_technology_researched = baking_powder } }
+			add = 2000
+		}
+	}
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -87,7 +93,13 @@ building_textile_mill_sewing_machines = {
 		pmg_automation_building_textile_mill_textile_mill_sewing_machines
 	}
 	required_construction = 1140
-	ai_value = 3873
+	ai_value = {
+		value = 3000
+		if = {
+			limit = { owner ?= { has_technology_researched = electrical_capacitors } }
+			add = 2000
+		}
+	}
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -142,7 +154,13 @@ building_furniture_manufactory_mechanized_workshops = {
 		pmg_automation_building_furniture_manufactory_furniture_manufactory_mechanized_workshops
 	}
 	required_construction = 1571
-	ai_value = 3873
+	ai_value = {
+		value = 3000
+		if = {
+			limit = { owner ?= { has_technology_researched = spray_finishing } }
+			add = 2000
+		}
+	}
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -314,7 +332,13 @@ building_paper_mill_sulfite_pulping = {
 		pmg_automation_building_paper_mill_paper_mill_sulfite_pulping
 	}
 	required_construction = 827
-	ai_value = 1732
+	ai_value = {
+		value = 1000
+		if = {
+			limit = { owner ?= { has_technology_researched = chemical_bleaching } }
+			add = 2000
+		}
+	}
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
 }
@@ -620,7 +644,13 @@ building_steel_mill_open_hearth_process = {
 			}
 		}
 	}
-	ai_value = 3873
+	ai_value = {
+		value = 3000
+		if = {
+			limit = { owner ?= { has_technology_researched = electric_arc_process } }
+			add = 2000
+		}
+	}
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }

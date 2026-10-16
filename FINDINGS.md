@@ -22934,6 +22934,9 @@ two levers moved (paper lifted again, the conditional desire), against F227 thre
 nor the misplaced-capital reading can be put on one lever. The dam reading by economic law takes the host's law at 1930, while the builder may be an
 overlord or an investor.
 
+**Canonized** 2026-10-16 evening (user: *"Canonize unlifted engines and conditional merge-host desire"*), together with F240's private dams:
+the canon is `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json` (sha256 fc7490eb6288514b) = this book + `dams.private = all`. The combination is unmeasured.
+
 ## F240 — PRIVATE DAM CONSTRUCTION WORKS AND KEEPS THE SURVEY GATE: WITH `dams.private` THE PRIVATE QUEUE BUILDS DAMS UNDER EVERY ECONOMIC LAW, EVERY CONSTRUCTION SITS AT A SITE ITS BUILDER OR FAMILY SURVEYED (30 OF 30), THE LAISSEZ-FAIRE VARIANT BUILDS PRIVATELY ONLY IN LAISSEZ-FAIRE HOSTS; PRIVATELY BUILT LEVELS GO TO FINANCIAL DISTRICTS OR SELF (2026-10-16; session 20261016_192119_dam-private-probe, 2 × 1836→1842, probe books)
 
 **Asked** (user, 2026-10-16, after F239 found laissez-faire hosts building none of their surveyed dams): *"Will our survey gating still work, if we

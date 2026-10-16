@@ -9026,7 +9026,8 @@ technology, ~35 when dams open, so ≤ ~9,000 points); cheap and dear *"at least
 construction (`can_build_private = { always = no }`) for the canon; the rights, survey and technology conditions now bind both routes. The subsidy
 mandate needed no change: the four dam types are already `must_have` in every administrative strategy, and every privately built level in the probe was
 subsidised. Accepted with it: private capital may pre-empt the government route, and privately built levels go to financial districts (or to the dam
-itself), so §10.89.9's government-ownership intent no longer holds where private investors build. ⚠ UNMEASURED over a century.
+itself), so §10.89.9's government-ownership intent no longer holds where private investors build. ⚠ UNMEASURED over a century. ⭐ Since the same
+evening the canon carries it on top of the engine unlift and the conditional merge-host desire (`jex-dam4s-rs-x25-m10ac-dpriv`, §10.101 item 6).
 The text below is the probe-stage record:
 **Why.** Dams are government-built only (§10.89.9: `can_build_private = { always = no }`, a design ruling — ownership kept by governments, the overlord
 building the megaprojects; no engine requirement for it is on record). F239: a host whose government barely builds never builds its surveyed sites —
@@ -9278,6 +9279,10 @@ rung's era value as `ai_value` and `ai_value_cond { tech: the merged method's te
 dropped record). Costs keep their rule (the midpoint; textile its own). On the canon's ladder: food and paper hosts 1,000 → 3,000 with the merged
 technology, textile / furniture / steel 3,000 → 5,000, fertilizer 1,000 / 1,000 (no block). First book `jex-dam4s-rs-x25-m10ac` (the canon + engines
 unlifted + this rule); the condition is probed at extreme values first (`--ai-cond-values lo,hi` + `--grant-full` / `--grant-host`, probe books only).
+⭐⭐ **IN THE CANON SINCE 2026-10-16 EVENING** (user: *"Canonize unlifted engines and conditional merge-host desire"*; the canon book
+`jex-dam4s-rs-x25-m10ac-dpriv`, §10.101 item 6). The mechanism works (F238: the AI's choice moves with the technology); measured over a century it did NOT
+lower misplaced capital (F239: 22% median against the canon's 20% and F237's 19%, the merge hosts taking 24–27% of new capital) — canonized for the
+principle (§10.92: desire follows the profit the host can actually earn), not for a measured gain.
 
 ### §10.91.3 — ONE book from now on; the machinist staffing; the crafts' hiring floor (user-ruled 2026-09-30 evening; the floor ruled in the same night)
 
@@ -10030,6 +10035,10 @@ specifically."*
    paper rungs' inputs and their restated target_be / wage_pct (the e0 paper rung's A/B recipe is replaced by the craft rule later in the chain).
    **Paper is the proposed next per-industry lift** (the second-largest problem good in every artmerge book; a large share of government upkeep through
    government administration — the user's expectation is steadier budgets and possibly less dispersion in world GDP). Its value is not yet chosen.
+6. ⭐⭐ **IN THE CANON SINCE 2026-10-16 EVENING** (user: *"Canonize unlifted engines and conditional merge-host desire"*): the canon is
+   `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json` (sha256 `fc7490eb6288514b`) = F239's measured `jex-dam4s-rs-x25-m10ac` (x25 + `--in0-for
+   motor:1` + §10.91.2's `--ai-rule cond`) + `dams.private = all` (§10.89.14). Measured without the private dams only (F239, n=3: 3 intact, consensus
+   loss 6.72); the combination is unmeasured. Paper stays at the general lift.
 
 ### §10.101.1 — THE ROUTINE OPTIMISATION LEVERS (user-ruled 2026-10-13)
 The set a routine search for the optimum moves — everything else is either decided, or recalibrated only as a separate, deliberate event.

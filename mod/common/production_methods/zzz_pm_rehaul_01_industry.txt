@@ -702,7 +702,7 @@ pm_main_motor_steam_engines = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 36
+			goods_input_steel_add = 30
 			goods_output_engines_add = 40
 		}
 		level_scaled = {
@@ -723,8 +723,8 @@ pm_main_motor_electric_engines = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 40.7
-			goods_input_electricity_add = 30.5
+			goods_input_steel_add = 33.9
+			goods_input_electricity_add = 25.4
 			goods_output_engines_add = 88
 		}
 		level_scaled = {
@@ -745,8 +745,8 @@ pm_main_motor_diesel_engines = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 53.8
-			goods_input_oil_add = 53.8
+			goods_input_steel_add = 44.8
+			goods_input_oil_add = 44.8
 			goods_output_engines_add = 193.6
 		}
 		level_scaled = {
