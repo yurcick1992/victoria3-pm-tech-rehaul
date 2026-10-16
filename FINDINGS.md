@@ -22835,3 +22835,36 @@ Japanese capacity and supply, not the price level.
 ### What it does NOT say
 n=3, and the canon has no century run of its own (F227 differs in the universities), so "the unlift's effect" is read against a book one lever away. The
 input-price comparison with F235 mixes two cost ladders and two stage lengths. The register is directional (§10.83.7).
+
+## F238 — THE CONDITIONAL MERGE-HOST DESIRE SWITCHES ON THE OWNER'S TECHNOLOGY, BOTH WAYS: AT EXTREME VALUES THE MERGED-TECHNOLOGY HOLDERS BUILD +39 HOST LEVELS AGAINST +0 (HIGH ARM) AND +0 AGAINST THE OTHERS' +14 (LOW ARM) (2026-10-16; session 20261016_090435_ai-cond-probe, 2 × 1836→1842, probe books)
+
+**Claim.** `make_merge_config --ai-rule cond` (BALANCE_FRAMEWORK §10.91.2, user-ruled 2026-10-16) makes each merge host's `ai_value` its own rung's
+era value, raised to the merged rung's once the owner holds the merged method's technology. `build.ps1` emits this as vanilla's conditional block,
+`ai_value = { value = lo  if = { limit = { owner ?= { has_technology_researched = <tech> } } add = hi − lo } }`. **The engine reads it**, and it reads
+it on the building's OWNER, the country that would build.
+
+**Arms.** Two probe books, both the regular book `jex-dam4s-rs-x25-m10ac` (the canon + engines unlifted + the rule) with every host's pair forced:
+probehi lo 1 / hi 100000, probelo lo 100000 / hi 1. At the start, GBR FRA USA PRU BEL hold the hosts' own technologies and all five merged
+technologies (`--grant-full`); AUS RUS SPA SWE TUR hold the hosts' own only (`--grant-host`). Both are verified in the 1837 summaries' `technologies_held`.
+
+**Numbers** (the six hosts — food sweeteners, textile sewing machines, furniture mechanized workshops, paper sulfite pulping, steel open hearth,
+chemical plant — summed over each group, from the yearly save summaries):
+
+| arm | group | levels 1837.1 | 1838.1 | 1839.1 | 1840.1 | 1841.1 | private queue 1841.1 |
+|---|---|---|---|---|---|---|---|
+| probehi | merged tech held | 86 | 95 | 101 | 112 | 125 | 13 |
+| probehi | host tech only | 2 | 2 | 2 | 2 | 2 | 0 |
+| probelo | merged tech held | 80 | 80 | 81 | 83 | 80 | 5 |
+| probelo | host tech only | 3 | 5 | 7 | 11 | 17 | 3 (+3 government) |
+
+In probehi the holders built every host type (food +9, textile +10, furniture +4, paper +10, steel +3, chemical +3); in probelo the same countries
+held their level (food −3, steel +2, chemical +1) while the non-holders built food, textile, furniture and paper hosts. Neither run's `error.log` names
+a mod file, `01_industry` or `ai_value`.
+
+**What it says.** The condition is evaluated on the owner and switches the AI's desire as designed, so the regular book's conditional values (food
+and paper hosts 1,000 → 3,000, textile / furniture / steel 3,000 → 5,000 on the merged technology) are live in game. The century n=3 on it is session
+`20261016_092158_rs-m10ac-n3`.
+
+**What it does NOT say.** The high arm's contrast is confounded by group size: the holders are the rich majors. The low arm is the clean half,
+because the same countries stopped building. ai_value at 1 does not stop private investment outright (probelo's holders carried 2–8 private queue
+items a year, steel +2), which is F100's floor again. Nothing here measures the economics of the regular values: n=1 per arm, six years.
