@@ -122,6 +122,7 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 - **DEFERRED** · dam consumers' recipes (power plant at 4× cost ships) · ROADMAP step 6
 - **OPEN** · dam survey concurrency: a spare check + a "just surveyed" variable · F176
 - **RESEARCH** · dams' effect on GDP and the stall/runoff tails; what sets the dam count; privatisation in some countries · F175–F177
+- **RULING** · dams under laissez-faire: dams are government-built only (`can_build_private = { always = no }`, a design ruling, no engine requirement on record), so a host whose government barely builds never builds its surveyed sites — laissez-faire hosts 0 of 6 in F239 (run 3's Britain surveyed both Scottish sites in 1911–12, built neither). Options: open private construction everywhere, or only where the host's government barely builds; either needs the survey/rights/technology conditions copied into `can_build_private` and a probe that `scope:investor_country` resolves there · F239, §10.89.9
 
 ## E. Engine compatibility (vanilla references our split breaks)
 
