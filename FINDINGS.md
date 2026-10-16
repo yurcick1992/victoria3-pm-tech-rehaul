@@ -22811,6 +22811,15 @@ was the stages', not the unlift's. Textile's old rungs beside their replacement:
 Problem market-years 201 a run (158–221), 3 chronic markets — the canon (F227) 208, F234 245, F235 170, F233 118. The Japanese market holds 86: paper 52 a run
 (a capacity lag — 82 staffed levels supplying 205 a week against 431 of demand, the government administrations' filing methods), engines 35.7 and hardwood 30
 (no staffed producer). Russian engines 14.7 (1854–80) and Dutch engines 12.3 (1846–95) are the same early supply failure. By period 64 / 64 / 46.
+**Addendum — is vanilla's Japan as bad?** (user-asked the same day; like-for-like on the order books at the 11 decadal dump dates 1840–1935, the vanilla
+n=16 against these 3 runs; share of run-dates with the Japanese price ≥ 1.70× base on ≥ 10 buy orders — buy orders include pops, so this is NOT the ledger's
+problem-year metric, only a comparison of the two): **engines 47% vanilla / 46% mod** (no Japanese engine factory before ~1910 in either) · hardwood 27 /
+39 (no producer in either) · **paper 13 / 64** · **steel 5 / 46** · tools 14 / 30 · iron 15 / 27 · oil 5 / 18 · coal, explosives, fertilizer, glass, sulfur
+≤ 11 in both. ⭐ Paper is the mod's own: Japanese paper production stays at ~200 a week all century in the mod (the 1836 crafts, ~80 levels) while vanilla's
+grows to ~800 by 1935 on only 5–8 paper-mill levels — vanilla modernises by switching methods for free; the mod's Japan holds the e1 technology (mechanical
+tools) from 1860 and the e2 one (chemical bleaching) from 1880 and never builds a paper factory, so the government administrations' filing demand
+(253 → 1,474 in vanilla, 245 → 1,035 here) meets a flat supply. Steel is also the mod's: its engine e1 and tooling e2 rungs ask Japan for steel from
+1870 with no producer, where vanilla's Japan has no steel demand before the 1890s.
 
 ### 5. Technology and play time
 The majors gain 0.94 of vanilla's technology at 1935 (F227 0.97, F234 0.94, F235 0.89); the leader holds 42.5 / 33.3 / 50% of game eras 3 / 4 / 5 at the
