@@ -105,7 +105,8 @@ for (const ind of cfg.industries || []) {
   if (MP && !tiers.some(t => t.method_of === MP.host && t.key === MP.added)) faults.push(`${ind.id}: _merge records ${MP.added} as a method of ${MP.host}, which the config does not carry`);
   if (MP) notes.push(`${ind.id}: e${MP.added_era} is a second main method of the e${MP.host_era} building — ` + (MP.cost_rule === 'own'
     ? `the host's cost checked as its own era's (cost_rule own), its ai_value as the geometric midpoint of the two rungs'`
-    : `the host's cost and ai_value checked as the geometric midpoint of the two rungs'`));
+    : `the host's cost and ai_value checked as the geometric midpoint of the two rungs'`)
+    + (MP.ai_rule === 'cond' ? ` — ⚠ ai_value instead CONDITIONAL (ai_rule cond): its own era's, the merged rung's with ${MP.tech}${MP.ai_probe ? ` (PROBE ${MP.ai_probe.join('/')})` : ''}` : ''));
   // ---- 2. the era-keyed book ----------------------------------------------------------------------------------
   if (!AB) continue;
   const A = +AB.A, B = +AB.B, lift = +(AB.in0 ?? 1), in0only = !!AB.in0_only;
@@ -188,8 +189,16 @@ for (const ind of cfg.industries || []) {
       if (t.building_cost !== wantCost) faults.push(`${ind.id} e${e}: building_cost ${t.building_cost}, the era rule says ${wantCost} (anchor ${anchor}${AB.cost1 != null ? ' × cost1 ' + AB.cost1 : ''} × ${L ? L[e] + ' by era' : C + '^' + e}${mergedIn ? (ownCost ? ', the host\'s own (cost_rule own)' : `, the midpoint with e${mergedIn.era}`) : ''})`); }
     const steep = AB.ai_steep && AB.ai_steep.industries.includes(ind.id) ? AB.ai_steep.ratio : null;
     const aivAt = e2 => (AB.ai_ladder && !steep) ? Math.round(AB.ai_ladder[Math.min(e2, AB.ai_ladder.length - 1)]) : Math.round((AB.ai_base ?? 1000) * Math.pow(steep || A, e2));
-    const wantAiv = mergedIn ? Math.round(Math.sqrt(aivAt(e) * aivAt(mergedIn.era))) : aivAt(e);
-    if (t.ai_value !== wantAiv) faults.push(`${ind.id} e${e}: ai_value ${t.ai_value}, the era rule says ${wantAiv}${mergedIn ? ` (the midpoint with e${mergedIn.era})` : ''}`);
+    // `_merge.pairs[ind].ai_rule === 'cond'` (make_merge_config --ai-rule cond, 2026-10-16): the host carries its OWN era's ai_value and
+    // `ai_value_cond { tech: the merged rung's technology, value: the merged rung's era value }`; a probe book's `ai_probe` [lo, hi] replaces both
+    const condAi = mergedIn && MP.ai_rule === 'cond';
+    const wantAiv = condAi ? (MP.ai_probe ? MP.ai_probe[0] : aivAt(e)) : mergedIn ? Math.round(Math.sqrt(aivAt(e) * aivAt(mergedIn.era))) : aivAt(e);
+    if (t.ai_value !== wantAiv) faults.push(`${ind.id} e${e}: ai_value ${t.ai_value}, the era rule says ${wantAiv}${condAi ? ' (conditional rule: the host\'s own era value)' : mergedIn ? ` (the midpoint with e${mergedIn.era})` : ''}`);
+    if (condAi) { const wantCond = MP.ai_probe ? MP.ai_probe[1] : aivAt(mergedIn.era);
+      if (wantCond === wantAiv) { if (t.ai_value_cond) faults.push(`${ind.id} e${e}: ai_value_cond present where the two rungs' values are equal (${wantAiv})`); }
+      else if (!t.ai_value_cond || t.ai_value_cond.value !== wantCond || t.ai_value_cond.tech !== mergedIn.tech)
+        faults.push(`${ind.id} e${e}: ai_value_cond ${JSON.stringify(t.ai_value_cond || null)}, the conditional rule says {tech: ${mergedIn.tech}, value: ${wantCond}}`); }
+    else if (t.ai_value_cond) faults.push(`${ind.id} e${e}: ai_value_cond carried without _merge ai_rule 'cond'`);
   }
 }
 if (AB && AB.keyed_by !== 'era') notes.push(`_ab.keyed_by is '${AB.keyed_by || 'unset'}' — a book from before the era pass (2026-09-13); its ladder was keyed on the rung index unless the checks above pass`);

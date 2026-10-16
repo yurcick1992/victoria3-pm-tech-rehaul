@@ -57,6 +57,23 @@ for (const s of argOf('--host-cost', '').split(',').filter(Boolean)) {
   HOST_COST[id] = rule;
 }
 
+// ⭐ --ai-rule cond (user-ruled 2026-10-16): the host's ai_value is CONDITIONAL on the merged method's technology — its own rung's
+//   era value while the building's owner lacks that technology, the merged rung's era value once the owner holds it ("if tech to
+//   unlock a better PM is there, then the ai_values are like the building is higher rung, otherwise — lower"). The host carries its
+//   own value as `ai_value` and `ai_value_cond: { tech, value }`; build.ps1 emits `ai_value = { value = <own> if = { limit = { owner ?=
+//   { has_technology_researched = <tech> } } add = <merged − own> } }` (vanilla's own idiom, 03_mines.txt). Costs keep their rule.
+//   Recorded per pair as `ai_rule: 'cond'`, which L31 reads; written only when set, so every earlier book regenerates byte for byte.
+// ⚗ --ai-cond-values <lo>,<hi> (PROBE books only, the suffix must say "probe"): every host's ai_value = lo and its conditional value
+//   = hi in place of the era values — extreme values to see the condition bite in a short run. Recorded as `ai_probe` per pair.
+const AI_RULE = argOf('--ai-rule', null);
+if (AI_RULE != null && AI_RULE !== 'cond') die(`--ai-rule ${AI_RULE}: the only rule besides the default midpoint is 'cond'`);
+const AI_PROBE = argOf('--ai-cond-values', null) ? argOf('--ai-cond-values', '').split(',').map(Number) : null;
+if (AI_PROBE) {
+  if (AI_RULE !== 'cond') die('--ai-cond-values needs --ai-rule cond');
+  if (!/probe/.test(SFX)) die(`--ai-cond-values is for probe books only; the suffix '${SFX}' does not contain 'probe'`);
+  if (AI_PROBE.length !== 2 || !AI_PROBE.every(v => v > 0)) die('--ai-cond-values <lo>,<hi> (both > 0)');
+}
+
 const baseRaw = readFileSync(join(REPO, BASE), 'utf8');
 const cfg = JSON.parse(baseRaw.replace(/^﻿/, ''));
 if (cfg._merge) die(`the base ${BASE} already carries _merge`);
@@ -75,14 +92,18 @@ for (const [id, [he, ae]] of Object.entries(PAIRS)) {
     die(`${id}: staffing totals differ (${sum(host.employment)} vs ${sum(add.employment)}) — a merged building would change size by method`);
   if (!(host.building_cost > 0 && add.building_cost > 0)) die(`${id}: a rung has no building_cost`);
   const cost = HOST_COST[id] === 'own' ? host.building_cost : Math.round(Math.sqrt(host.building_cost * add.building_cost));
-  const aiv = Math.round(Math.sqrt((host.ai_value ?? 1000) * (add.ai_value ?? 1000)));
+  const a0 = host.ai_value ?? 1000, a1 = add.ai_value ?? 1000;
+  const aiv = AI_RULE === 'cond' ? (AI_PROBE ? AI_PROBE[0] : a0) : Math.round(Math.sqrt(a0 * a1));
+  const aiCond = AI_RULE === 'cond' ? (AI_PROBE ? AI_PROBE[1] : a1) : null;
   pairs[id] = { host: host.key, added: add.key, host_era: he, added_era: ae, tech: add.tech,
     host_cost_before: host.building_cost, added_cost: add.building_cost, cost, ...(HOST_COST[id] ? { cost_rule: HOST_COST[id] } : {}),
-    host_ai_before: host.ai_value ?? null, added_ai: add.ai_value ?? null, ai_value: aiv };
-  rows.push({ id, host: host.key, add: add.key, tech: add.tech, c0: host.building_cost, c1: add.building_cost, cost, a0: host.ai_value, a1: add.ai_value, aiv });
+    host_ai_before: host.ai_value ?? null, added_ai: add.ai_value ?? null, ai_value: aiv,
+    ...(AI_RULE === 'cond' ? { ai_rule: 'cond', ai_value_cond: aiCond } : {}), ...(AI_PROBE ? { ai_probe: AI_PROBE } : {}) };
+  rows.push({ id, host: host.key, add: add.key, tech: add.tech, c0: host.building_cost, c1: add.building_cost, cost, a0: host.ai_value, a1: add.ai_value, aiv: aiCond != null ? `${aiv} (${aiCond} with ${add.tech})` : aiv });
   add.method_of = host.key;
   host.building_cost = cost;
   host.ai_value = aiv;
+  if (aiCond != null && aiCond !== aiv) host.ai_value_cond = { tech: add.tech, value: aiCond };
 }
 
 // ⚗ PROBE BUILDS ONLY: `--grant TAG,TAG --grant-industries food,paper` hands the named merged methods' technologies to those
@@ -99,11 +120,30 @@ if (argOf('--grant', null)) {
   cfg.start_tech_grants = Object.fromEntries(tags.map(t => [t, techs]));
   probeGrant = { tags, industries: inds, techs };
 }
+// ⚗ PROBE BUILDS ONLY (2026-10-16, for --ai-cond-values): `--grant-full TAG,TAG` hands the hosts' OWN technologies AND the merged methods'
+//   to those countries at the 1836 start, `--grant-host TAG,TAG` the hosts' own technologies only — so both branches of the conditional
+//   desire are live in a five-year probe (countries that can build the host with and without the merged method).
+if (argOf('--grant-full', null) || argOf('--grant-host', null)) {
+  if (!/probe/.test(SFX)) die(`--grant-full / --grant-host are for probe books only; the suffix '${SFX}' does not contain 'probe'`);
+  if (cfg.start_tech_grants) die('the base already carries start_tech_grants (or --grant was given too) — not supported together');
+  const hostTechs = [], fullTechs = [];
+  for (const id of Object.keys(pairs)) {
+    const ind = cfg.industries.find(i => i.id === id), host = ind.tiers.find(t => t.key === pairs[id].host);
+    if (!host.tech) die(`${id}: the host ${host.key} has no technology to grant`);
+    hostTechs.push(host.tech); fullTechs.push(host.tech, pairs[id].tech);
+  }
+  const uniq = a => [...new Set(a)];
+  const full = argOf('--grant-full', '').split(',').filter(Boolean), hostOnly = argOf('--grant-host', '').split(',').filter(Boolean);
+  if (full.some(t => hostOnly.includes(t))) die('a tag is in both --grant-full and --grant-host');
+  cfg.start_tech_grants = { ...Object.fromEntries(full.map(t => [t, uniq(fullTechs)])), ...Object.fromEntries(hostOnly.map(t => [t, uniq(hostTechs)])) };
+  probeGrant = { full, host_only: hostOnly, host_techs: uniq(hostTechs), merged_techs: uniq(Object.values(pairs).map(p => p.tech)) };
+}
 
 const ownCost = Object.keys(HOST_COST);
 cfg._merge = {
   rule: 'geometric midpoint of the two rungs\' cost and ai_value (user: "midpoint first", 2026-09-30); recipes and staffing verbatim'
-    + (ownCost.length ? `; EXCEPT the host's building_cost is its own rung's for ${ownCost.join(', ')} (user: "Go with the host cost", 2026-10-03; FINDINGS F211 §4)` : ''),
+    + (ownCost.length ? `; EXCEPT the host's building_cost is its own rung's for ${ownCost.join(', ')} (user: "Go with the host cost", 2026-10-03; FINDINGS F211 §4)` : '')
+    + (AI_RULE === 'cond' ? `; the host's ai_value CONDITIONAL — its own rung's without the merged method's technology, the merged rung's with it (user, 2026-10-16)${AI_PROBE ? ` — PROBE values ${AI_PROBE.join(' / ')}` : ''}` : ''),
   pairs,
   ...(probeGrant ? { probe_grant: probeGrant } : {}),
   base: basename(BASE),
@@ -112,7 +152,8 @@ cfg._merge = {
   command: `node tools/make_merge_config.mjs ${args.join(' ')}`,
 };
 cfg._merge_variant = { name: SFX, base: basename(BASE), delta: 'six add-on rungs -> second main methods of the rung below (method_of), host cost and ai_value at the geometric midpoint'
-  + (ownCost.length ? ` (the host's cost its own rung's for ${ownCost.join(', ')})` : '') + '; every other key and rung the base\'s' };
+  + (ownCost.length ? ` (the host's cost its own rung's for ${ownCost.join(', ')})` : '')
+  + (AI_RULE === 'cond' ? ` (the host's ai_value conditional on the merged method's technology${AI_PROBE ? ', probe values ' + AI_PROBE.join('/') : ''})` : '') + '; every other key and rung the base\'s' };
 writeFileSync(join(REPO, 'config', `mod_config.${SFX}.json`), JSON.stringify(cfg), 'utf8');
 const bn = basename(BASE);
 const twin = bn === 'mod_config.json' ? 'tech_tree_options.json' : bn.replace(/^mod_config\./, 'tech_tree_options.');

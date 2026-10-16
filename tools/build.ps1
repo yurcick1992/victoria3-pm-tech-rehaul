@@ -628,7 +628,15 @@ foreach ($ind in $cfg.industries) {
             if ($b.coastal_only) { $bl += "`tpotential = {","`t`tis_coastal = yes","`t}" }
             # ai_value: per-tier override (editable in the UI) wins, else the building-level fallback.
             $aiv = if ($null -ne $t.ai_value) { $t.ai_value } elseif ($null -ne $b.ai_value) { $b.ai_value } else { $null }
-            if ($null -ne $aiv) { $bl += "`tai_value = $([int]$aiv)" }
+            # ⭐ A CONDITIONAL ai_value (make_merge_config --ai-rule cond, user-ruled 2026-10-16): a merge host wants to be built like its own
+            # rung until its owner holds the merged method's technology, then like the merged rung — vanilla's own idiom (03_mines.txt)
+            if ($null -ne $t.ai_value_cond) {
+                if ($null -eq $aiv) { throw "tier $($t.key): ai_value_cond without a base ai_value" }
+                $cTech = [string]$t.ai_value_cond.tech; $cAdd = [int]$t.ai_value_cond.value - [int]$aiv
+                if (-not $cTech) { throw "tier $($t.key): ai_value_cond has no tech" }
+                $bl += "`tai_value = {","`t`tvalue = $([int]$aiv)","`t`tif = {","`t`t`tlimit = { owner ?= { has_technology_researched = $cTech } }","`t`t`tadd = $cAdd","`t`t}","`t}"
+            }
+            elseif ($null -ne $aiv) { $bl += "`tai_value = $([int]$aiv)" }
             $bl += "`townership_type = $($b.ownership_type)","`tbackground = `"$($b.background)`"","}",""
             $indBld += $bl
         }

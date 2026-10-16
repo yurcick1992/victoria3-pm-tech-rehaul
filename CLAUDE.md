@@ -3982,6 +3982,12 @@ tools/                  dev tooling — NOT shipped in the mod
                         building_cost instead of the midpoint (ai_value stays the midpoint), recorded per pair as `cost_rule: 'own'`, which L31
                         re-derives (proven to trip both ways: the record removed, and the record added to a midpoint book). Written only when set,
                         so every earlier book regenerates byte for byte (proven on the arm's book). Book: `e1a12-ai1135-tex1140-artmerge`
+                        ⭐ `--ai-rule cond` (2026-10-16, user-ruled, BALANCE_FRAMEWORK §10.91.2's last paragraph): the host's ai_value is its OWN
+                        rung's era value, raised to the merged rung's once the owner holds the merged method's technology — `ai_value_cond
+                        { tech, value }` on the host, emitted by build.ps1 as vanilla's conditional block (`owner ?= { has_technology_researched }`),
+                        recorded per pair as `ai_rule: 'cond'`, re-derived by L31 (proven to trip). ⚗ Probe-only (suffix "probe"):
+                        `--ai-cond-values lo,hi` (extreme values for every host) and `--grant-full TAGS` / `--grant-host TAGS` (the hosts' own AND the
+                        merged technologies, or the hosts' own only, at the 1836 start). Book: `jex-dam4s-rs-x25-m10ac`
   make_trade_config.mjs THE PER-GOOD TRADE BOOK — `--base <config> --suffix <sfx>` writes config/mod_config.<sfx>.json = the base + 
                         `goods_traded_quantity` + `_trade` + `_trade_variant` (no base key touched) and the base's tech-tree twin
                         (L20). It holds F159 §7's FIVE-CLASS TABLE — the only copy: E bulk & perishable UNCHANGED (the untreated

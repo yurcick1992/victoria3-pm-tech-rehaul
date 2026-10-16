@@ -9244,6 +9244,20 @@ The reading side is `tools/testbed/ledger/merge_methods.mjs` (levels per method,
 host's workers by method since 2026-09-30 (`criteria.mjs`, commit `df5769f`: the host's staffing shared out over its main methods by the levels
 running each); the old-rung census and the obsolescence readers still count by building type.
 
+**⭐ THE HOST'S DESIRE CONDITIONAL ON THE MERGED TECHNOLOGY (user-ruled 2026-10-16; under test).** *"Costs unchanged, paper returned to regularly
+lifted, desire — conditional on having the tech (if tech to unlock a better PM is there, then the ai_values are like the building is higher rung,
+otherwise — lower)."* Why (the discussion the same day): a host's desire attaches to its BUILDING TYPE, but for years it can run only its own method
+(paper's host opens with mechanical tools and bleaches only with chemical bleaching; textile's, furniture's and steel's open on an e2 technology and
+wait for an e3 one), so the midpoint over-weights it before the merged technology and under-weights it after — §10.92 asks desire to follow profit.
+A flat "ai_value of the highest" was rejected for that reason: it is F204's / F206's e2-host capture again (at 15,588 the hosts took a quarter to a
+third of US private construction and held 39% of the grossly misplaced capital). ⇒ `make_merge_config --ai-rule cond`: the host carries its OWN
+rung's era value as `ai_value` and `ai_value_cond { tech: the merged method's technology, value: the merged rung's era value }`; `build.ps1` emits
+`ai_value = { value = <own> if = { limit = { owner ?= { has_technology_researched = <tech> } } add = <merged − own> } }` (vanilla's own idiom,
+`03_mines.txt`); the record `_merge.pairs[ind].ai_rule = 'cond'` is what L31 re-derives (proven to trip on a hand-edited conditional value and on a
+dropped record). Costs keep their rule (the midpoint; textile its own). On the canon's ladder: food and paper hosts 1,000 → 3,000 with the merged
+technology, textile / furniture / steel 3,000 → 5,000, fertilizer 1,000 / 1,000 (no block). First book `jex-dam4s-rs-x25-m10ac` (the canon + engines
+unlifted + this rule); the condition is probed at extreme values first (`--ai-cond-values lo,hi` + `--grant-full` / `--grant-host`, probe books only).
+
 ### §10.91.3 — ONE book from now on; the machinist staffing; the crafts' hiring floor (user-ruled 2026-09-30 evening; the floor ruled in the same night)
 
 Three rulings in one message, answering the open choices after FINDINGS F184 / F185 / F187.
