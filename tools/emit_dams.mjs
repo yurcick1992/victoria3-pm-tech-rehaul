@@ -9,7 +9,8 @@
 //     vanilla's trade-centre idiom `level_after_queued_constructions`, let a shift+click queue five levels past it, and is
 //     removed). Its group is NOT government-funded (a government-funded building
 //     cannot be built by another country), `can_build_private = { always = no }` keeps the private queue out (the
-//     skyscraper idiom), and `can_build_government` reads the BUILDER through `scope:investor_country`: it must be
+//     skyscraper idiom) — ⭐ unless `dams.private` is set (the CANON since 2026-10-16: `all`, BALANCE_FRAMEWORK §10.89.14), which gives
+//     can_build_private the same conditions as can_build_government — and `can_build_government` reads the BUILDER through `scope:investor_country`: it must be
 //     the anchor owner or above it in the overlord chain, must have completed its OWN survey, and must hold the
 //     technology of the next level's class. Several such builders share the levels like a deposit: the cap counts
 //     everyone's queued levels, and each owns what it built. `ownership_type = self` lets an overlord build a level in a
@@ -128,7 +129,7 @@ const V = p => `pmr_dam_${p.id}`;     // variable / key stem
 // NOT government-funded (user, 2026-09-26): a government-funded group (administration, army) cannot be built by
 // another country, and the overlord must be able to build and own the dam in a subject's state. So the group sits
 // under bg_private_infrastructure like the trade centre, and each dam forbids the private queue itself
-// (can_build_private = { always = no }, vanilla's skyscraper idiom).
+// (can_build_private = { always = no }, vanilla's skyscraper idiom) unless `dams.private` opens it (see PRIV below; the canon since 2026-10-16).
 // ⭐ THE LEVEL CAP IS THE ENGINE'S (user's playtest, 2026-10-05): the scripted cap in can_build_government
 // (level_after_queued_constructions) is evaluated ONCE per click, so a shift+click queued five levels past it and all
 // were built. Each dam now carries vanilla's `has_max_level = yes` (the barracks / construction-sector mechanism): its
