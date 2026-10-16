@@ -462,7 +462,385 @@ building_dam_large_dear = {
 	}
 
 	can_build_private = {
-		always = no
+		OR = {
+			AND = {
+				state_region = s:STATE_WASHINGTON
+				custom_tooltip = {
+					text = pmr_dam_columbia_river_builder_tt
+					p:x3F0EE7 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_columbia_river_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_columbia_river_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_columbia_river_surveyed }
+						AND = { has_global_variable = pmr_dam_columbia_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_columbia_river_family  top_overlord ?= { this = global_var:pmr_dam_columbia_river_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_QUEBEC
+				custom_tooltip = {
+					text = pmr_dam_laurentian_rivers_builder_tt
+					p:xA1B5A5 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_laurentian_rivers_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_laurentian_rivers_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_laurentian_rivers_surveyed }
+						AND = { has_global_variable = pmr_dam_laurentian_rivers_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_laurentian_rivers_family  top_overlord ?= { this = global_var:pmr_dam_laurentian_rivers_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_NORRLAND
+				custom_tooltip = {
+					text = pmr_dam_norrland_rivers_builder_tt
+					p:xFF6F4B ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_norrland_rivers_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_norrland_rivers_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_norrland_rivers_surveyed }
+						AND = { has_global_variable = pmr_dam_norrland_rivers_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_norrland_rivers_family  top_overlord ?= { this = global_var:pmr_dam_norrland_rivers_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_OREGON
+				custom_tooltip = {
+					text = pmr_dam_lower_columbia_builder_tt
+					p:x6C865B ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_columbia_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_columbia_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_lower_columbia_surveyed }
+						AND = { has_global_variable = pmr_dam_lower_columbia_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_columbia_family  top_overlord ?= { this = global_var:pmr_dam_lower_columbia_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_NEW_YORK
+				custom_tooltip = {
+					text = pmr_dam_niagara_long_sault_builder_tt
+					p:x235E9F ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_niagara_long_sault_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_niagara_long_sault_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_niagara_long_sault_surveyed }
+						AND = { has_global_variable = pmr_dam_niagara_long_sault_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_niagara_long_sault_family  top_overlord ?= { this = global_var:pmr_dam_niagara_long_sault_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SOUTH_ISLAND
+				custom_tooltip = {
+					text = pmr_dam_waitaki_southern_lakes_builder_tt
+					p:x92A994 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_waitaki_southern_lakes_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_waitaki_southern_lakes_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_waitaki_southern_lakes_surveyed }
+						AND = { has_global_variable = pmr_dam_waitaki_southern_lakes_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_waitaki_southern_lakes_family  top_overlord ?= { this = global_var:pmr_dam_waitaki_southern_lakes_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_RHONE
+				custom_tooltip = {
+					text = pmr_dam_rhone_isere_builder_tt
+					p:x7516B6 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_rhone_isere_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_rhone_isere_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_rhone_isere_surveyed }
+						AND = { has_global_variable = pmr_dam_rhone_isere_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_rhone_isere_family  top_overlord ?= { this = global_var:pmr_dam_rhone_isere_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_TENNESSEE
+				custom_tooltip = {
+					text = pmr_dam_tennessee_valley_builder_tt
+					p:x00F0C0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_tennessee_valley_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_tennessee_valley_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_tennessee_valley_surveyed }
+						AND = { has_global_variable = pmr_dam_tennessee_valley_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tennessee_valley_family  top_overlord ?= { this = global_var:pmr_dam_tennessee_valley_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SOUTH_DAKOTA
+				custom_tooltip = {
+					text = pmr_dam_missouri_big_bend_builder_tt
+					p:xE37FAD ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_missouri_big_bend_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_missouri_big_bend_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_missouri_big_bend_surveyed }
+						AND = { has_global_variable = pmr_dam_missouri_big_bend_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_missouri_big_bend_family  top_overlord ?= { this = global_var:pmr_dam_missouri_big_bend_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_AUSTRIA
+				custom_tooltip = {
+					text = pmr_dam_austrian_danube_builder_tt
+					p:xA9793B ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_austrian_danube_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_austrian_danube_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_austrian_danube_surveyed }
+						AND = { has_global_variable = pmr_dam_austrian_danube_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_austrian_danube_family  top_overlord ?= { this = global_var:pmr_dam_austrian_danube_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_BAVARIA
+				custom_tooltip = {
+					text = pmr_dam_danube_bavarian_alps_builder_tt
+					p:xB08021 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_danube_bavarian_alps_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_danube_bavarian_alps_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_danube_bavarian_alps_surveyed }
+						AND = { has_global_variable = pmr_dam_danube_bavarian_alps_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_danube_bavarian_alps_family  top_overlord ?= { this = global_var:pmr_dam_danube_bavarian_alps_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ENTRE_DOURO_E_MINHO
+				custom_tooltip = {
+					text = pmr_dam_douro_gorge_cavado_builder_tt
+					p:x37ADD8 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_douro_gorge_cavado_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_douro_gorge_cavado_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_douro_gorge_cavado_surveyed }
+						AND = { has_global_variable = pmr_dam_douro_gorge_cavado_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_douro_gorge_cavado_family  top_overlord ?= { this = global_var:pmr_dam_douro_gorge_cavado_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_WALLACHIA
+				custom_tooltip = {
+					text = pmr_dam_iron_gates_arges_builder_tt
+					p:xD28965 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_iron_gates_arges_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = arc_welding }
+				}
+				custom_tooltip = {
+					text = pmr_dam_iron_gates_arges_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_iron_gates_arges_surveyed }
+						AND = { has_global_variable = pmr_dam_iron_gates_arges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_iron_gates_arges_family  top_overlord ?= { this = global_var:pmr_dam_iron_gates_arges_family } } } }
+					}
+				}
+			}
+		}
 	}
 
 	ownership_type = self
@@ -2585,7 +2963,1777 @@ building_dam_small_dear = {
 	}
 
 	can_build_private = {
-		always = no
+		OR = {
+			AND = {
+				state_region = s:STATE_MANITOBA
+				custom_tooltip = {
+					text = pmr_dam_nelson_winnipeg_builder_tt
+					p:xE58D80 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_nelson_winnipeg_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_nelson_winnipeg_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_nelson_winnipeg_surveyed }
+						AND = { has_global_variable = pmr_dam_nelson_winnipeg_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_nelson_winnipeg_family  top_overlord ?= { this = global_var:pmr_dam_nelson_winnipeg_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ASTRAKHAN
+				custom_tooltip = {
+					text = pmr_dam_tsaritsyn_volga_builder_tt
+					p:x047D6D ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_tsaritsyn_volga_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_tsaritsyn_volga_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_tsaritsyn_volga_surveyed }
+						AND = { has_global_variable = pmr_dam_tsaritsyn_volga_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tsaritsyn_volga_family  top_overlord ?= { this = global_var:pmr_dam_tsaritsyn_volga_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ALABAMA
+				custom_tooltip = {
+					text = pmr_dam_muscle_shoals_coosa_builder_tt
+					p:x12DEAF ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_muscle_shoals_coosa_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_muscle_shoals_coosa_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_muscle_shoals_coosa_surveyed }
+						AND = { has_global_variable = pmr_dam_muscle_shoals_coosa_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_muscle_shoals_coosa_family  top_overlord ?= { this = global_var:pmr_dam_muscle_shoals_coosa_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ALSACE_LORRAINE
+				custom_tooltip = {
+					text = pmr_dam_grand_canal_alsace_builder_tt
+					p:xCC3250 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_grand_canal_alsace_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_grand_canal_alsace_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_grand_canal_alsace_surveyed }
+						AND = { has_global_variable = pmr_dam_grand_canal_alsace_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_grand_canal_alsace_family  top_overlord ?= { this = global_var:pmr_dam_grand_canal_alsace_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_LEON
+				custom_tooltip = {
+					text = pmr_dam_arribes_duero_builder_tt
+					p:x2C00C8 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_arribes_duero_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_arribes_duero_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_arribes_duero_surveyed }
+						AND = { has_global_variable = pmr_dam_arribes_duero_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_arribes_duero_family  top_overlord ?= { this = global_var:pmr_dam_arribes_duero_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_NINGXIA
+				custom_tooltip = {
+					text = pmr_dam_yellow_river_gorges_builder_tt
+					p:x059BB6 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_yellow_river_gorges_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_yellow_river_gorges_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_yellow_river_gorges_surveyed }
+						AND = { has_global_variable = pmr_dam_yellow_river_gorges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_yellow_river_gorges_family  top_overlord ?= { this = global_var:pmr_dam_yellow_river_gorges_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_PYONGYANG
+				custom_tooltip = {
+					text = pmr_dam_yalu_river_builder_tt
+					p:x47D537 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_yalu_river_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_yalu_river_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_yalu_river_surveyed }
+						AND = { has_global_variable = pmr_dam_yalu_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_yalu_river_family  top_overlord ?= { this = global_var:pmr_dam_yalu_river_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_NORTH_ISLAND
+				custom_tooltip = {
+					text = pmr_dam_waikato_river_builder_tt
+					p:xFBC4F4 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_waikato_river_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_waikato_river_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_waikato_river_surveyed }
+						AND = { has_global_variable = pmr_dam_waikato_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_waikato_river_family  top_overlord ?= { this = global_var:pmr_dam_waikato_river_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_TAURIDA
+				custom_tooltip = {
+					text = pmr_dam_dnieper_rapids_builder_tt
+					p:xCFBD13 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_dnieper_rapids_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_dnieper_rapids_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_dnieper_rapids_surveyed }
+						AND = { has_global_variable = pmr_dam_dnieper_rapids_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_dnieper_rapids_family  top_overlord ?= { this = global_var:pmr_dam_dnieper_rapids_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_EASTERN_NORWAY
+				custom_tooltip = {
+					text = pmr_dam_glommen_falls_builder_tt
+					p:x5710E5 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_glommen_falls_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_glommen_falls_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_glommen_falls_surveyed }
+						AND = { has_global_variable = pmr_dam_glommen_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_glommen_falls_family  top_overlord ?= { this = global_var:pmr_dam_glommen_falls_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_EXTREMADURA
+				custom_tooltip = {
+					text = pmr_dam_alcantara_gorge_builder_tt
+					p:x30A000 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_alcantara_gorge_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_alcantara_gorge_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_alcantara_gorge_surveyed }
+						AND = { has_global_variable = pmr_dam_alcantara_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_alcantara_gorge_family  top_overlord ?= { this = global_var:pmr_dam_alcantara_gorge_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_AUVERGNE_LIMOUSIN
+				custom_tooltip = {
+					text = pmr_dam_dordogne_gorges_builder_tt
+					p:xA27EFD ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_dordogne_gorges_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_dordogne_gorges_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_dordogne_gorges_surveyed }
+						AND = { has_global_variable = pmr_dam_dordogne_gorges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_dordogne_gorges_family  top_overlord ?= { this = global_var:pmr_dam_dordogne_gorges_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_TOHOKU
+				custom_tooltip = {
+					text = pmr_dam_tadami_river_builder_tt
+					p:xAC762F ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_tadami_river_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_tadami_river_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_tadami_river_surveyed }
+						AND = { has_global_variable = pmr_dam_tadami_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tadami_river_family  top_overlord ?= { this = global_var:pmr_dam_tadami_river_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_HAUSALAND
+				custom_tooltip = {
+					text = pmr_dam_kainji_rapids_builder_tt
+					p:xF1D52F ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_kainji_rapids_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_kainji_rapids_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_kainji_rapids_surveyed }
+						AND = { has_global_variable = pmr_dam_kainji_rapids_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kainji_rapids_family  top_overlord ?= { this = global_var:pmr_dam_kainji_rapids_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_CATALONIA
+				custom_tooltip = {
+					text = pmr_dam_segre_lower_ebro_builder_tt
+					p:x906040 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_segre_lower_ebro_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_segre_lower_ebro_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_segre_lower_ebro_surveyed }
+						AND = { has_global_variable = pmr_dam_segre_lower_ebro_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_segre_lower_ebro_family  top_overlord ?= { this = global_var:pmr_dam_segre_lower_ebro_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SVEALAND
+				custom_tooltip = {
+					text = pmr_dam_dal_klar_rivers_builder_tt
+					p:xA86C50 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_dal_klar_rivers_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_dal_klar_rivers_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_dal_klar_rivers_surveyed }
+						AND = { has_global_variable = pmr_dam_dal_klar_rivers_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_dal_klar_rivers_family  top_overlord ?= { this = global_var:pmr_dam_dal_klar_rivers_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_CHUVASHIA
+				custom_tooltip = {
+					text = pmr_dam_cheboksary_volga_builder_tt
+					p:x5D97AC ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_cheboksary_volga_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_cheboksary_volga_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_cheboksary_volga_surveyed }
+						AND = { has_global_variable = pmr_dam_cheboksary_volga_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_cheboksary_volga_family  top_overlord ?= { this = global_var:pmr_dam_cheboksary_volga_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_KAZAN
+				custom_tooltip = {
+					text = pmr_dam_lower_kama_builder_tt
+					p:xA84ECC ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_kama_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_kama_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_lower_kama_surveyed }
+						AND = { has_global_variable = pmr_dam_lower_kama_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_kama_family  top_overlord ?= { this = global_var:pmr_dam_lower_kama_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_KIEV
+				custom_tooltip = {
+					text = pmr_dam_kiev_kanev_builder_tt
+					p:x2E05DE ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_kiev_kanev_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_kiev_kanev_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_kiev_kanev_surveyed }
+						AND = { has_global_variable = pmr_dam_kiev_kanev_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kiev_kanev_family  top_overlord ?= { this = global_var:pmr_dam_kiev_kanev_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_NIZHNY_NOVGOROD
+				custom_tooltip = {
+					text = pmr_dam_gorodets_volga_builder_tt
+					p:x202BAA ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_gorodets_volga_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_gorodets_volga_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_gorodets_volga_surveyed }
+						AND = { has_global_variable = pmr_dam_gorodets_volga_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_gorodets_volga_family  top_overlord ?= { this = global_var:pmr_dam_gorodets_volga_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_PERM
+				custom_tooltip = {
+					text = pmr_dam_perm_kama_builder_tt
+					p:x7738DD ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_perm_kama_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_perm_kama_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_perm_kama_surveyed }
+						AND = { has_global_variable = pmr_dam_perm_kama_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_perm_kama_family  top_overlord ?= { this = global_var:pmr_dam_perm_kama_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SAMARA
+				custom_tooltip = {
+					text = pmr_dam_zhiguli_volga_builder_tt
+					p:x795854 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_zhiguli_volga_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_zhiguli_volga_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_zhiguli_volga_surveyed }
+						AND = { has_global_variable = pmr_dam_zhiguli_volga_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_zhiguli_volga_family  top_overlord ?= { this = global_var:pmr_dam_zhiguli_volga_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_TARTARIA
+				custom_tooltip = {
+					text = pmr_dam_balakovo_volga_builder_tt
+					p:x5DC7DF ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_balakovo_volga_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_balakovo_volga_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_balakovo_volga_surveyed }
+						AND = { has_global_variable = pmr_dam_balakovo_volga_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_balakovo_volga_family  top_overlord ?= { this = global_var:pmr_dam_balakovo_volga_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_VYATKA
+				custom_tooltip = {
+					text = pmr_dam_votkinsk_kama_builder_tt
+					p:xCA4466 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_votkinsk_kama_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_votkinsk_kama_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_votkinsk_kama_surveyed }
+						AND = { has_global_variable = pmr_dam_votkinsk_kama_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_votkinsk_kama_family  top_overlord ?= { this = global_var:pmr_dam_votkinsk_kama_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_YAROSLAVL
+				custom_tooltip = {
+					text = pmr_dam_rybinsk_uglich_builder_tt
+					p:xB9892E ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_rybinsk_uglich_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_rybinsk_uglich_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_rybinsk_uglich_surveyed }
+						AND = { has_global_variable = pmr_dam_rybinsk_uglich_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_rybinsk_uglich_family  top_overlord ?= { this = global_var:pmr_dam_rybinsk_uglich_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ZHEJIANG
+				custom_tooltip = {
+					text = pmr_dam_xinan_river_builder_tt
+					p:x6F9804 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_xinan_river_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_xinan_river_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_xinan_river_surveyed }
+						AND = { has_global_variable = pmr_dam_xinan_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_xinan_river_family  top_overlord ?= { this = global_var:pmr_dam_xinan_river_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ARAGON
+				custom_tooltip = {
+					text = pmr_dam_mequinenza_aragon_pyrenees_builder_tt
+					p:x9060C0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_mequinenza_aragon_pyrenees_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_mequinenza_aragon_pyrenees_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_mequinenza_aragon_pyrenees_surveyed }
+						AND = { has_global_variable = pmr_dam_mequinenza_aragon_pyrenees_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_mequinenza_aragon_pyrenees_family  top_overlord ?= { this = global_var:pmr_dam_mequinenza_aragon_pyrenees_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ATTICA
+				custom_tooltip = {
+					text = pmr_dam_achelous_gorges_builder_tt
+					p:x518791 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_achelous_gorges_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_achelous_gorges_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_achelous_gorges_surveyed }
+						AND = { has_global_variable = pmr_dam_achelous_gorges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_achelous_gorges_family  top_overlord ?= { this = global_var:pmr_dam_achelous_gorges_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_BOHEMIA
+				custom_tooltip = {
+					text = pmr_dam_moldau_cascade_builder_tt
+					p:x0B9B4F ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_moldau_cascade_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_moldau_cascade_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_moldau_cascade_surveyed }
+						AND = { has_global_variable = pmr_dam_moldau_cascade_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_moldau_cascade_family  top_overlord ?= { this = global_var:pmr_dam_moldau_cascade_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_BOSNIA
+				custom_tooltip = {
+					text = pmr_dam_narenta_drina_builder_tt
+					p:x23D67C ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_narenta_drina_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_narenta_drina_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_narenta_drina_surveyed }
+						AND = { has_global_variable = pmr_dam_narenta_drina_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_narenta_drina_family  top_overlord ?= { this = global_var:pmr_dam_narenta_drina_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_DAGESTAN
+				custom_tooltip = {
+					text = pmr_dam_sulak_canyon_builder_tt
+					p:x3B6A9E ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_sulak_canyon_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_sulak_canyon_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_sulak_canyon_surveyed }
+						AND = { has_global_variable = pmr_dam_sulak_canyon_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sulak_canyon_family  top_overlord ?= { this = global_var:pmr_dam_sulak_canyon_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_IDAHO
+				custom_tooltip = {
+					text = pmr_dam_hells_canyon_builder_tt
+					p:xCE1B4B ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_hells_canyon_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_hells_canyon_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_hells_canyon_surveyed }
+						AND = { has_global_variable = pmr_dam_hells_canyon_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_hells_canyon_family  top_overlord ?= { this = global_var:pmr_dam_hells_canyon_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_NORTH_DAKOTA
+				custom_tooltip = {
+					text = pmr_dam_garrison_missouri_builder_tt
+					p:xF3EC53 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_garrison_missouri_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_garrison_missouri_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_garrison_missouri_surveyed }
+						AND = { has_global_variable = pmr_dam_garrison_missouri_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_garrison_missouri_family  top_overlord ?= { this = global_var:pmr_dam_garrison_missouri_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SLOVENIA
+				custom_tooltip = {
+					text = pmr_dam_upper_drave_builder_tt
+					p:x31E041 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_upper_drave_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_upper_drave_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_upper_drave_surveyed }
+						AND = { has_global_variable = pmr_dam_upper_drave_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_upper_drave_family  top_overlord ?= { this = global_var:pmr_dam_upper_drave_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SOUTHERN_MANCHURIA
+				custom_tooltip = {
+					text = pmr_dam_sungari_gorge_builder_tt
+					p:xE2D5E0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_sungari_gorge_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_sungari_gorge_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_sungari_gorge_surveyed }
+						AND = { has_global_variable = pmr_dam_sungari_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sungari_gorge_family  top_overlord ?= { this = global_var:pmr_dam_sungari_gorge_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_BADEN
+				custom_tooltip = {
+					text = pmr_dam_high_rhine_baden_builder_tt
+					p:xB08061 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_high_rhine_baden_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_high_rhine_baden_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_high_rhine_baden_surveyed }
+						AND = { has_global_variable = pmr_dam_high_rhine_baden_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_high_rhine_baden_family  top_overlord ?= { this = global_var:pmr_dam_high_rhine_baden_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_KENTUCKY
+				custom_tooltip = {
+					text = pmr_dam_lower_tennessee_cumberland_builder_tt
+					p:x552EC3 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_tennessee_cumberland_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_tennessee_cumberland_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_lower_tennessee_cumberland_surveyed }
+						AND = { has_global_variable = pmr_dam_lower_tennessee_cumberland_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_tennessee_cumberland_family  top_overlord ?= { this = global_var:pmr_dam_lower_tennessee_cumberland_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_MARYLAND
+				custom_tooltip = {
+					text = pmr_dam_lower_susquehanna_builder_tt
+					p:x0E3435 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_susquehanna_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_susquehanna_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_lower_susquehanna_surveyed }
+						AND = { has_global_variable = pmr_dam_lower_susquehanna_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_susquehanna_family  top_overlord ?= { this = global_var:pmr_dam_lower_susquehanna_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SICHUAN
+				custom_tooltip = {
+					text = pmr_dam_min_tung_rivers_builder_tt
+					p:x787852 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_min_tung_rivers_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_min_tung_rivers_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_min_tung_rivers_surveyed }
+						AND = { has_global_variable = pmr_dam_min_tung_rivers_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_min_tung_rivers_family  top_overlord ?= { this = global_var:pmr_dam_min_tung_rivers_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_TOMSK
+				custom_tooltip = {
+					text = pmr_dam_upper_ob_builder_tt
+					p:x875B76 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_upper_ob_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_upper_ob_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_upper_ob_surveyed }
+						AND = { has_global_variable = pmr_dam_upper_ob_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_upper_ob_family  top_overlord ?= { this = global_var:pmr_dam_upper_ob_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_DEIR_EZ_ZOR
+				custom_tooltip = {
+					text = pmr_dam_tabqa_narrows_builder_tt
+					p:x1ECFDA ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_tabqa_narrows_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_tabqa_narrows_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_tabqa_narrows_surveyed }
+						AND = { has_global_variable = pmr_dam_tabqa_narrows_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tabqa_narrows_family  top_overlord ?= { this = global_var:pmr_dam_tabqa_narrows_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_DIYARBAKIR
+				custom_tooltip = {
+					text = pmr_dam_upper_euphrates_builder_tt
+					p:xFB66D7 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_upper_euphrates_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_upper_euphrates_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_upper_euphrates_surveyed }
+						AND = { has_global_variable = pmr_dam_upper_euphrates_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_upper_euphrates_family  top_overlord ?= { this = global_var:pmr_dam_upper_euphrates_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_EAST_KARELIA
+				custom_tooltip = {
+					text = pmr_dam_onega_vyg_builder_tt
+					p:xA857F6 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_onega_vyg_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_onega_vyg_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_onega_vyg_surveyed }
+						AND = { has_global_variable = pmr_dam_onega_vyg_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_onega_vyg_family  top_overlord ?= { this = global_var:pmr_dam_onega_vyg_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_GUYENNE
+				custom_tooltip = {
+					text = pmr_dam_truyere_gorges_builder_tt
+					p:xAF89BC ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_truyere_gorges_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_truyere_gorges_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_truyere_gorges_surveyed }
+						AND = { has_global_variable = pmr_dam_truyere_gorges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_truyere_gorges_family  top_overlord ?= { this = global_var:pmr_dam_truyere_gorges_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_KOLA
+				custom_tooltip = {
+					text = pmr_dam_niva_tuloma_builder_tt
+					p:x96AD41 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_niva_tuloma_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_niva_tuloma_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_niva_tuloma_surveyed }
+						AND = { has_global_variable = pmr_dam_niva_tuloma_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_niva_tuloma_family  top_overlord ?= { this = global_var:pmr_dam_niva_tuloma_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_WESTERN_SERBIA
+				custom_tooltip = {
+					text = pmr_dam_drina_gorge_builder_tt
+					p:xEDBA20 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_drina_gorge_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_drina_gorge_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_drina_gorge_surveyed }
+						AND = { has_global_variable = pmr_dam_drina_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_drina_gorge_family  top_overlord ?= { this = global_var:pmr_dam_drina_gorge_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ELIZAVETPOL
+				custom_tooltip = {
+					text = pmr_dam_mingechaur_gorge_builder_tt
+					p:xEE1A87 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_mingechaur_gorge_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_mingechaur_gorge_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_mingechaur_gorge_surveyed }
+						AND = { has_global_variable = pmr_dam_mingechaur_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_mingechaur_gorge_family  top_overlord ?= { this = global_var:pmr_dam_mingechaur_gorge_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_HOKKAIDO
+				custom_tooltip = {
+					text = pmr_dam_uryu_ishikari_builder_tt
+					p:x6275D4 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_uryu_ishikari_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_uryu_ishikari_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_uryu_ishikari_surveyed }
+						AND = { has_global_variable = pmr_dam_uryu_ishikari_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_uryu_ishikari_family  top_overlord ?= { this = global_var:pmr_dam_uryu_ishikari_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_INGRIA
+				custom_tooltip = {
+					text = pmr_dam_volkhov_svir_builder_tt
+					p:xF4E44C ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_volkhov_svir_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_volkhov_svir_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_volkhov_svir_surveyed }
+						AND = { has_global_variable = pmr_dam_volkhov_svir_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_volkhov_svir_family  top_overlord ?= { this = global_var:pmr_dam_volkhov_svir_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_KYUSHU
+				custom_tooltip = {
+					text = pmr_dam_mimi_river_builder_tt
+					p:x705080 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_mimi_river_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_mimi_river_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_mimi_river_surveyed }
+						AND = { has_global_variable = pmr_dam_mimi_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_mimi_river_family  top_overlord ?= { this = global_var:pmr_dam_mimi_river_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_CHERSON
+				custom_tooltip = {
+					text = pmr_dam_kamianske_dnieper_builder_tt
+					p:xF60A93 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_kamianske_dnieper_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_kamianske_dnieper_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_kamianske_dnieper_surveyed }
+						AND = { has_global_variable = pmr_dam_kamianske_dnieper_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kamianske_dnieper_family  top_overlord ?= { this = global_var:pmr_dam_kamianske_dnieper_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_KHARKOV
+				custom_tooltip = {
+					text = pmr_dam_kremenchug_dnieper_builder_tt
+					p:x3ACCE8 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_kremenchug_dnieper_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_kremenchug_dnieper_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_kremenchug_dnieper_surveyed }
+						AND = { has_global_variable = pmr_dam_kremenchug_dnieper_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kremenchug_dnieper_family  top_overlord ?= { this = global_var:pmr_dam_kremenchug_dnieper_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ANKARA
+				custom_tooltip = {
+					text = pmr_dam_sariyar_gorge_builder_tt
+					p:x5F00C0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_sariyar_gorge_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_sariyar_gorge_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_sariyar_gorge_surveyed }
+						AND = { has_global_variable = pmr_dam_sariyar_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sariyar_gorge_family  top_overlord ?= { this = global_var:pmr_dam_sariyar_gorge_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ARIZONA
+				custom_tooltip = {
+					text = pmr_dam_pyramid_canyon_builder_tt
+					p:xF31ACC ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_pyramid_canyon_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_pyramid_canyon_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_pyramid_canyon_surveyed }
+						AND = { has_global_variable = pmr_dam_pyramid_canyon_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_pyramid_canyon_family  top_overlord ?= { this = global_var:pmr_dam_pyramid_canyon_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_BEIRA
+				custom_tooltip = {
+					text = pmr_dam_zezere_gorges_builder_tt
+					p:x3020A3 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_zezere_gorges_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_zezere_gorges_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_zezere_gorges_surveyed }
+						AND = { has_global_variable = pmr_dam_zezere_gorges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_zezere_gorges_family  top_overlord ?= { this = global_var:pmr_dam_zezere_gorges_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_GEORGIA
+				custom_tooltip = {
+					text = pmr_dam_savannah_river_builder_tt
+					p:x39E367 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_savannah_river_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_savannah_river_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_savannah_river_surveyed }
+						AND = { has_global_variable = pmr_dam_savannah_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_savannah_river_family  top_overlord ?= { this = global_var:pmr_dam_savannah_river_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_KHUZESTAN
+				custom_tooltip = {
+					text = pmr_dam_lower_karun_builder_tt
+					p:x80E4E1 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_karun_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_karun_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_lower_karun_surveyed }
+						AND = { has_global_variable = pmr_dam_lower_karun_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_karun_family  top_overlord ?= { this = global_var:pmr_dam_lower_karun_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SOUTH_CAROLINA
+				custom_tooltip = {
+					text = pmr_dam_santee_saluda_builder_tt
+					p:x9B1B8B ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_santee_saluda_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_santee_saluda_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_santee_saluda_surveyed }
+						AND = { has_global_variable = pmr_dam_santee_saluda_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_santee_saluda_family  top_overlord ?= { this = global_var:pmr_dam_santee_saluda_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_YUNNAN
+				custom_tooltip = {
+					text = pmr_dam_yili_river_builder_tt
+					p:x71C144 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_yili_river_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_yili_river_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_yili_river_surveyed }
+						AND = { has_global_variable = pmr_dam_yili_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_yili_river_family  top_overlord ?= { this = global_var:pmr_dam_yili_river_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_EGYPTIAN_DESERT
+				custom_tooltip = {
+					text = pmr_dam_first_cataract_builder_tt
+					p:xC48A06 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_first_cataract_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_first_cataract_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_first_cataract_surveyed }
+						AND = { has_global_variable = pmr_dam_first_cataract_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_first_cataract_family  top_overlord ?= { this = global_var:pmr_dam_first_cataract_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_BLUE_NILE
+				custom_tooltip = {
+					text = pmr_dam_sennar_blue_nile_builder_tt
+					p:x9BAA9B ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_sennar_blue_nile_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_sennar_blue_nile_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_sennar_blue_nile_surveyed }
+						AND = { has_global_variable = pmr_dam_sennar_blue_nile_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sennar_blue_nile_family  top_overlord ?= { this = global_var:pmr_dam_sennar_blue_nile_family } } } }
+					}
+				}
+			}
+		}
 	}
 
 	ownership_type = self
@@ -2974,7 +5122,298 @@ building_dam_large_cheap = {
 	}
 
 	can_build_private = {
-		always = no
+		OR = {
+			AND = {
+				state_region = s:STATE_CALIFORNIA
+				custom_tooltip = {
+					text = pmr_dam_black_canyon_sierra_builder_tt
+					p:xF49BCD ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_black_canyon_sierra_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_black_canyon_sierra_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_black_canyon_sierra_surveyed }
+						AND = { has_global_variable = pmr_dam_black_canyon_sierra_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_black_canyon_sierra_family  top_overlord ?= { this = global_var:pmr_dam_black_canyon_sierra_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_WESTERN_NORWAY
+				custom_tooltip = {
+					text = pmr_dam_western_fjords_builder_tt
+					p:xA68FB9 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_western_fjords_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_western_fjords_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_western_fjords_surveyed }
+						AND = { has_global_variable = pmr_dam_western_fjords_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_western_fjords_family  top_overlord ?= { this = global_var:pmr_dam_western_fjords_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_EAST_SWITZERLAND
+				custom_tooltip = {
+					text = pmr_dam_grisons_ticino_builder_tt
+					p:x11C0E0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_grisons_ticino_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_grisons_ticino_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_grisons_ticino_surveyed }
+						AND = { has_global_variable = pmr_dam_grisons_ticino_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_grisons_ticino_family  top_overlord ?= { this = global_var:pmr_dam_grisons_ticino_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ONTARIO
+				custom_tooltip = {
+					text = pmr_dam_niagara_ottawa_builder_tt
+					p:x24691A ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_niagara_ottawa_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_niagara_ottawa_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_niagara_ottawa_surveyed }
+						AND = { has_global_variable = pmr_dam_niagara_ottawa_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_niagara_ottawa_family  top_overlord ?= { this = global_var:pmr_dam_niagara_ottawa_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_WEST_SWITZERLAND
+				custom_tooltip = {
+					text = pmr_dam_valais_alps_builder_tt
+					p:x9041E0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_valais_alps_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_valais_alps_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_valais_alps_surveyed }
+						AND = { has_global_variable = pmr_dam_valais_alps_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_valais_alps_family  top_overlord ?= { this = global_var:pmr_dam_valais_alps_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_BRITISH_COLUMBIA
+				custom_tooltip = {
+					text = pmr_dam_nechako_kootenay_builder_tt
+					p:xBD3E1F ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_nechako_kootenay_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_nechako_kootenay_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_nechako_kootenay_surveyed }
+						AND = { has_global_variable = pmr_dam_nechako_kootenay_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_nechako_kootenay_family  top_overlord ?= { this = global_var:pmr_dam_nechako_kootenay_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_HOKUSHINETSU
+				custom_tooltip = {
+					text = pmr_dam_shinano_kurobe_builder_tt
+					p:x88595F ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_shinano_kurobe_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_shinano_kurobe_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_shinano_kurobe_surveyed }
+						AND = { has_global_variable = pmr_dam_shinano_kurobe_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_shinano_kurobe_family  top_overlord ?= { this = global_var:pmr_dam_shinano_kurobe_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_PROVENCE
+				custom_tooltip = {
+					text = pmr_dam_lower_rhone_durance_builder_tt
+					p:xB0C0E0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_rhone_durance_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_lower_rhone_durance_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_lower_rhone_durance_surveyed }
+						AND = { has_global_variable = pmr_dam_lower_rhone_durance_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lower_rhone_durance_family  top_overlord ?= { this = global_var:pmr_dam_lower_rhone_durance_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_TOKAI
+				custom_tooltip = {
+					text = pmr_dam_kiso_tenryu_builder_tt
+					p:x3050C0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_kiso_tenryu_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_kiso_tenryu_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_kiso_tenryu_surveyed }
+						AND = { has_global_variable = pmr_dam_kiso_tenryu_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kiso_tenryu_family  top_overlord ?= { this = global_var:pmr_dam_kiso_tenryu_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_NEW_SOUTH_WALES
+				custom_tooltip = {
+					text = pmr_dam_snowy_tumut_builder_tt
+					p:xC41B96 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_snowy_tumut_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = steam_turbine }
+				}
+				custom_tooltip = {
+					text = pmr_dam_snowy_tumut_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_snowy_tumut_surveyed }
+						AND = { has_global_variable = pmr_dam_snowy_tumut_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_snowy_tumut_family  top_overlord ?= { this = global_var:pmr_dam_snowy_tumut_family } } } }
+					}
+				}
+			}
+		}
 	}
 
 	ownership_type = self
@@ -4315,7 +6754,1110 @@ building_dam_small_cheap = {
 	}
 
 	can_build_private = {
-		always = no
+		OR = {
+			AND = {
+				state_region = s:STATE_LOMBARDY
+				custom_tooltip = {
+					text = pmr_dam_adda_lombard_alps_builder_tt
+					p:x9AC196 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_adda_lombard_alps_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_adda_lombard_alps_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_adda_lombard_alps_surveyed }
+						AND = { has_global_variable = pmr_dam_adda_lombard_alps_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_adda_lombard_alps_family  top_overlord ?= { this = global_var:pmr_dam_adda_lombard_alps_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_TYROL
+				custom_tooltip = {
+					text = pmr_dam_hohe_tauern_ziller_builder_tt
+					p:xAB7EB0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_hohe_tauern_ziller_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_hohe_tauern_ziller_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_hohe_tauern_ziller_surveyed }
+						AND = { has_global_variable = pmr_dam_hohe_tauern_ziller_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_hohe_tauern_ziller_family  top_overlord ?= { this = global_var:pmr_dam_hohe_tauern_ziller_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_BAS_CONGO
+				custom_tooltip = {
+					text = pmr_dam_inga_rapids_builder_tt
+					p:x08302D ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_inga_rapids_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_inga_rapids_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_inga_rapids_surveyed }
+						AND = { has_global_variable = pmr_dam_inga_rapids_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_inga_rapids_family  top_overlord ?= { this = global_var:pmr_dam_inga_rapids_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_GREATER_CAUCASUS
+				custom_tooltip = {
+					text = pmr_dam_rion_ingur_builder_tt
+					p:xC9B445 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_rion_ingur_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_rion_ingur_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_rion_ingur_surveyed }
+						AND = { has_global_variable = pmr_dam_rion_ingur_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_rion_ingur_family  top_overlord ?= { this = global_var:pmr_dam_rion_ingur_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SAVOY
+				custom_tooltip = {
+					text = pmr_dam_maurienne_tarentaise_builder_tt
+					p:x56B04B ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_maurienne_tarentaise_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_maurienne_tarentaise_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_maurienne_tarentaise_surveyed }
+						AND = { has_global_variable = pmr_dam_maurienne_tarentaise_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_maurienne_tarentaise_family  top_overlord ?= { this = global_var:pmr_dam_maurienne_tarentaise_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ARMENIA
+				custom_tooltip = {
+					text = pmr_dam_sevan_zanga_vorotan_builder_tt
+					p:xAB3AF1 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_sevan_zanga_vorotan_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_sevan_zanga_vorotan_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_sevan_zanga_vorotan_surveyed }
+						AND = { has_global_variable = pmr_dam_sevan_zanga_vorotan_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sevan_zanga_vorotan_family  top_overlord ?= { this = global_var:pmr_dam_sevan_zanga_vorotan_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_NORTHERN_NORWAY
+				custom_tooltip = {
+					text = pmr_dam_aura_nordland_builder_tt
+					p:x042C26 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_aura_nordland_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_aura_nordland_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_aura_nordland_surveyed }
+						AND = { has_global_variable = pmr_dam_aura_nordland_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_aura_nordland_family  top_overlord ?= { this = global_var:pmr_dam_aura_nordland_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_PIEDMONT
+				custom_tooltip = {
+					text = pmr_dam_ossola_dora_baltea_builder_tt
+					p:xF00544 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_ossola_dora_baltea_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_ossola_dora_baltea_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_ossola_dora_baltea_surveyed }
+						AND = { has_global_variable = pmr_dam_ossola_dora_baltea_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_ossola_dora_baltea_family  top_overlord ?= { this = global_var:pmr_dam_ossola_dora_baltea_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SAO_PAULO
+				custom_tooltip = {
+					text = pmr_dam_cubatao_escarpment_builder_tt
+					p:x9D3688 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_cubatao_escarpment_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_cubatao_escarpment_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_cubatao_escarpment_surveyed }
+						AND = { has_global_variable = pmr_dam_cubatao_escarpment_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_cubatao_escarpment_family  top_overlord ?= { this = global_var:pmr_dam_cubatao_escarpment_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_TASMANIA
+				custom_tooltip = {
+					text = pmr_dam_derwent_great_lake_builder_tt
+					p:x48D6CE ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_derwent_great_lake_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_derwent_great_lake_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_derwent_great_lake_surveyed }
+						AND = { has_global_variable = pmr_dam_derwent_great_lake_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_derwent_great_lake_family  top_overlord ?= { this = global_var:pmr_dam_derwent_great_lake_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SARIWON
+				custom_tooltip = {
+					text = pmr_dam_kaema_plateau_builder_tt
+					p:xA0D080 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_kaema_plateau_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_kaema_plateau_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_kaema_plateau_surveyed }
+						AND = { has_global_variable = pmr_dam_kaema_plateau_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_kaema_plateau_family  top_overlord ?= { this = global_var:pmr_dam_kaema_plateau_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_BOMBAY
+				custom_tooltip = {
+					text = pmr_dam_koyna_western_ghats_builder_tt
+					p:x33E560 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_koyna_western_ghats_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_koyna_western_ghats_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_koyna_western_ghats_surveyed }
+						AND = { has_global_variable = pmr_dam_koyna_western_ghats_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_koyna_western_ghats_family  top_overlord ?= { this = global_var:pmr_dam_koyna_western_ghats_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_KANTO
+				custom_tooltip = {
+					text = pmr_dam_tone_river_builder_tt
+					p:x7090C0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_tone_river_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_tone_river_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_tone_river_surveyed }
+						AND = { has_global_variable = pmr_dam_tone_river_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tone_river_family  top_overlord ?= { this = global_var:pmr_dam_tone_river_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_LIMA
+				custom_tooltip = {
+					text = pmr_dam_mantaro_canon_del_pato_builder_tt
+					p:x3060D7 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_mantaro_canon_del_pato_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_mantaro_canon_del_pato_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_mantaro_canon_del_pato_surveyed }
+						AND = { has_global_variable = pmr_dam_mantaro_canon_del_pato_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_mantaro_canon_del_pato_family  top_overlord ?= { this = global_var:pmr_dam_mantaro_canon_del_pato_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_TRAVANCORE
+				custom_tooltip = {
+					text = pmr_dam_travancore_highlands_builder_tt
+					p:xA11A79 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_travancore_highlands_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_travancore_highlands_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_travancore_highlands_surveyed }
+						AND = { has_global_variable = pmr_dam_travancore_highlands_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_travancore_highlands_family  top_overlord ?= { this = global_var:pmr_dam_travancore_highlands_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_FERGANA
+				custom_tooltip = {
+					text = pmr_dam_chirchik_cascade_builder_tt
+					p:xB24B12 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_chirchik_cascade_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_chirchik_cascade_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_chirchik_cascade_surveyed }
+						AND = { has_global_variable = pmr_dam_chirchik_cascade_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_chirchik_cascade_family  top_overlord ?= { this = global_var:pmr_dam_chirchik_cascade_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_IRKUTSK
+				custom_tooltip = {
+					text = pmr_dam_irkutsk_angara_builder_tt
+					p:x80B29A ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_irkutsk_angara_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_irkutsk_angara_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_irkutsk_angara_surveyed }
+						AND = { has_global_variable = pmr_dam_irkutsk_angara_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_irkutsk_angara_family  top_overlord ?= { this = global_var:pmr_dam_irkutsk_angara_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ACEH
+				custom_tooltip = {
+					text = pmr_dam_asahan_toba_builder_tt
+					p:x4F7793 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_asahan_toba_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_asahan_toba_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_asahan_toba_surveyed }
+						AND = { has_global_variable = pmr_dam_asahan_toba_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_asahan_toba_family  top_overlord ?= { this = global_var:pmr_dam_asahan_toba_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_AGRA
+				custom_tooltip = {
+					text = pmr_dam_bhagirathi_upper_ganges_builder_tt
+					p:x03A411 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_bhagirathi_upper_ganges_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_bhagirathi_upper_ganges_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_bhagirathi_upper_ganges_surveyed }
+						AND = { has_global_variable = pmr_dam_bhagirathi_upper_ganges_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_bhagirathi_upper_ganges_family  top_overlord ?= { this = global_var:pmr_dam_bhagirathi_upper_ganges_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_HIMALAYAS
+				custom_tooltip = {
+					text = pmr_dam_nepal_hill_rivers_builder_tt
+					p:xDA8130 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_nepal_hill_rivers_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_nepal_hill_rivers_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_nepal_hill_rivers_surveyed }
+						AND = { has_global_variable = pmr_dam_nepal_hill_rivers_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_nepal_hill_rivers_family  top_overlord ?= { this = global_var:pmr_dam_nepal_hill_rivers_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_SOUTH_TYROL
+				custom_tooltip = {
+					text = pmr_dam_adige_valley_builder_tt
+					p:xD040E0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_adige_valley_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_adige_valley_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_adige_valley_surveyed }
+						AND = { has_global_variable = pmr_dam_adige_valley_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_adige_valley_family  top_overlord ?= { this = global_var:pmr_dam_adige_valley_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_STYRIA
+				custom_tooltip = {
+					text = pmr_dam_malta_valley_builder_tt
+					p:xB4D292 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_malta_valley_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_malta_valley_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_malta_valley_surveyed }
+						AND = { has_global_variable = pmr_dam_malta_valley_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_malta_valley_family  top_overlord ?= { this = global_var:pmr_dam_malta_valley_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_WEST_BENGAL
+				custom_tooltip = {
+					text = pmr_dam_bhutan_duars_builder_tt
+					p:x844FCF ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_bhutan_duars_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_bhutan_duars_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_bhutan_duars_surveyed }
+						AND = { has_global_variable = pmr_dam_bhutan_duars_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_bhutan_duars_family  top_overlord ?= { this = global_var:pmr_dam_bhutan_duars_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_BAHIA
+				custom_tooltip = {
+					text = pmr_dam_paulo_afonso_falls_builder_tt
+					p:xBAF5ED ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_paulo_afonso_falls_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_paulo_afonso_falls_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_paulo_afonso_falls_surveyed }
+						AND = { has_global_variable = pmr_dam_paulo_afonso_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_paulo_afonso_falls_family  top_overlord ?= { this = global_var:pmr_dam_paulo_afonso_falls_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_MEXICO
+				custom_tooltip = {
+					text = pmr_dam_necaxa_tilostoc_builder_tt
+					p:x903040 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_necaxa_tilostoc_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_necaxa_tilostoc_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_necaxa_tilostoc_surveyed }
+						AND = { has_global_variable = pmr_dam_necaxa_tilostoc_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_necaxa_tilostoc_family  top_overlord ?= { this = global_var:pmr_dam_necaxa_tilostoc_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_HIGHLANDS
+				custom_tooltip = {
+					text = pmr_dam_lochaber_affric_builder_tt
+					p:xB7B8EA ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_lochaber_affric_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_lochaber_affric_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_lochaber_affric_surveyed }
+						AND = { has_global_variable = pmr_dam_lochaber_affric_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lochaber_affric_family  top_overlord ?= { this = global_var:pmr_dam_lochaber_affric_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_LOWLANDS
+				custom_tooltip = {
+					text = pmr_dam_galloway_tummel_builder_tt
+					p:x206080 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_galloway_tummel_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_galloway_tummel_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_galloway_tummel_surveyed }
+						AND = { has_global_variable = pmr_dam_galloway_tummel_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_galloway_tummel_family  top_overlord ?= { this = global_var:pmr_dam_galloway_tummel_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_NORTHERN_THRACE
+				custom_tooltip = {
+					text = pmr_dam_rhodope_cascades_builder_tt
+					p:xC7D441 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_rhodope_cascades_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_rhodope_cascades_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_rhodope_cascades_surveyed }
+						AND = { has_global_variable = pmr_dam_rhodope_cascades_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_rhodope_cascades_family  top_overlord ?= { this = global_var:pmr_dam_rhodope_cascades_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_AQUITAINE
+				custom_tooltip = {
+					text = pmr_dam_bigorre_bearn_pyrenees_builder_tt
+					p:xF02080 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_bigorre_bearn_pyrenees_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_bigorre_bearn_pyrenees_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_bigorre_bearn_pyrenees_surveyed }
+						AND = { has_global_variable = pmr_dam_bigorre_bearn_pyrenees_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_bigorre_bearn_pyrenees_family  top_overlord ?= { this = global_var:pmr_dam_bigorre_bearn_pyrenees_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_KATANGA
+				custom_tooltip = {
+					text = pmr_dam_lufira_lualaba_builder_tt
+					p:x3057A4 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_lufira_lualaba_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_lufira_lualaba_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_lufira_lualaba_surveyed }
+						AND = { has_global_variable = pmr_dam_lufira_lualaba_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lufira_lualaba_family  top_overlord ?= { this = global_var:pmr_dam_lufira_lualaba_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ABRUZZO
+				custom_tooltip = {
+					text = pmr_dam_pescara_sangro_builder_tt
+					p:xA6F611 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_pescara_sangro_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_pescara_sangro_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_pescara_sangro_surveyed }
+						AND = { has_global_variable = pmr_dam_pescara_sangro_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_pescara_sangro_family  top_overlord ?= { this = global_var:pmr_dam_pescara_sangro_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_ANTIOQUIA
+				custom_tooltip = {
+					text = pmr_dam_guatape_falls_builder_tt
+					p:xA15905 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_guatape_falls_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_guatape_falls_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_guatape_falls_surveyed }
+						AND = { has_global_variable = pmr_dam_guatape_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_guatape_falls_family  top_overlord ?= { this = global_var:pmr_dam_guatape_falls_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_CALABRIA
+				custom_tooltip = {
+					text = pmr_dam_sila_plateau_builder_tt
+					p:xC050E0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_sila_plateau_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_sila_plateau_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_sila_plateau_surveyed }
+						AND = { has_global_variable = pmr_dam_sila_plateau_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_sila_plateau_family  top_overlord ?= { this = global_var:pmr_dam_sila_plateau_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_CUNDINAMARCA
+				custom_tooltip = {
+					text = pmr_dam_tequendama_falls_builder_tt
+					p:x5D372C ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_tequendama_falls_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_tequendama_falls_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_tequendama_falls_surveyed }
+						AND = { has_global_variable = pmr_dam_tequendama_falls_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_tequendama_falls_family  top_overlord ?= { this = global_var:pmr_dam_tequendama_falls_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_MADRAS
+				custom_tooltip = {
+					text = pmr_dam_nilgiri_hills_builder_tt
+					p:x2D75FD ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_nilgiri_hills_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_nilgiri_hills_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_nilgiri_hills_surveyed }
+						AND = { has_global_variable = pmr_dam_nilgiri_hills_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_nilgiri_hills_family  top_overlord ?= { this = global_var:pmr_dam_nilgiri_hills_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_MOLDAVIA
+				custom_tooltip = {
+					text = pmr_dam_bistritza_gorge_builder_tt
+					p:xFF2F40 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_bistritza_gorge_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_bistritza_gorge_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_bistritza_gorge_surveyed }
+						AND = { has_global_variable = pmr_dam_bistritza_gorge_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_bistritza_gorge_family  top_overlord ?= { this = global_var:pmr_dam_bistritza_gorge_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_RIO_DE_JANEIRO
+				custom_tooltip = {
+					text = pmr_dam_lajes_serra_do_mar_builder_tt
+					p:x1FCD89 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_lajes_serra_do_mar_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_lajes_serra_do_mar_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_lajes_serra_do_mar_surveyed }
+						AND = { has_global_variable = pmr_dam_lajes_serra_do_mar_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_lajes_serra_do_mar_family  top_overlord ?= { this = global_var:pmr_dam_lajes_serra_do_mar_family } } } }
+					}
+				}
+			}
+			AND = {
+				state_region = s:STATE_VENETIA
+				custom_tooltip = {
+					text = pmr_dam_piave_valley_builder_tt
+					p:x5141E0 ?= {
+					state ?= {
+						owner ?= {
+							OR = {
+								this = scope:investor_country
+								any_overlord_or_above = { this = scope:investor_country }
+								any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } }
+								any_overlord_or_above = { any_scope_treaty = { binds = scope:investor_country  any_scope_article = { has_type = foreign_investment_rights  target_country = scope:investor_country } } }
+							}
+						}
+					}
+				}
+				}
+				custom_tooltip = {
+					text = pmr_dam_piave_valley_tech_1_tt
+					scope:investor_country ?= { has_technology_researched = electrical_generation }
+				}
+				custom_tooltip = {
+					text = pmr_dam_piave_valley_surveyed_tt
+					OR = {
+						scope:investor_country ?= { has_variable = pmr_dam_piave_valley_surveyed }
+						AND = { has_global_variable = pmr_dam_piave_valley_family  scope:investor_country ?= { OR = { this = global_var:pmr_dam_piave_valley_family  top_overlord ?= { this = global_var:pmr_dam_piave_valley_family } } } }
+					}
+				}
+			}
+		}
 	}
 
 	ownership_type = self

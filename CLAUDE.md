@@ -289,7 +289,13 @@ reads that way it has been corrected in place; the headings that follow are HIST
 
 ## ⭐⭐⭐ THE CANON IS THE ARTMERGE ARM, `jex-dam4s-rs`, SINCE 2026-10-12 (user-ruled: *"CANONIZE artmerge with all these additions"*; BALANCE_FRAMEWORK §10.99; FINDINGS F227)
 
-⭐⭐ **SINCE 2026-10-13 THE CANON'S BYTES ARE `config/mod_config.jex-dam4s-rs-x25.json` + twin** (sha256 `d6a47ee01fb8ae87`; the twin unchanged,
+⭐⭐⭐ **SINCE 2026-10-16 THE CANON'S BYTES ARE `config/mod_config.jex-dam4s-rs-x25-dpriv.json` + twin** (sha256 `5bd4c706551d4da8`; the twin
+unchanged, `04ac513168388956`): `jex-dam4s-rs-x25` with **private dam construction everywhere**, `dams.private = all` (user: *"Canonize this change"*,
+the variant *"Everywhere, and mandate their subsidies"*; BALANCE_FRAMEWORK §10.89.14, FINDINGS F239–F240). Field diff against `jex-dam4s-rs-x25`:
+`dams.private` and its `_dam_private_variant` record, nothing else; the subsidies were already mandated (the four dam types `must_have` in every
+administrative strategy, and the probe found every privately built level subsidised). The built mod differs from the x25 build only in the dam
+buildings file. ⚠ UNMEASURED over a century: the mechanism was probed at exaggerated values (F240). Built and DEPLOYED 2026-10-16.
+⭐⭐ **FROM 2026-10-13 TO 2026-10-16 THE CANON'S BYTES WERE `config/mod_config.jex-dam4s-rs-x25.json` + twin** (sha256 `d6a47ee01fb8ae87`; the twin unchanged,
 `04ac513168388956`): `jex-dam4s-rs` with THE ONE INNOVATION PARAMETER x = 25 (BALANCE_FRAMEWORK §10.101.1, user-ruled: innovation base = cap base =
 the cap's literacy term = x, universities × x/150) — field diff against `jex-dam4s-rs`: the universities' multiplier 0.5 → 1/6 and its `innov_x`
 record, nothing else (`make_research_levers_config --innov-x 25`, then the same rework and society steps). ⚠ UNMEASURED: F227's numbers are
@@ -1767,6 +1773,9 @@ config/mod_config.jex-dam4s-rb.json / config/mod_config.jex-dam4s-rs.json ⭐⭐
                         literacy term 25, universities ×0.5, `make_research_levers_config.mjs`) + the §10.97 entry rework (`make_research_rework_config.mjs
                         --base config/mod_config.jex-dam4s-rl.json --suffix jex-dam4s-rb`, F226); each book's `_*_variant` records hold the commands; `jex-dam4s-rs` = rb + the §10.98 entries
                         (`make_research_society_config.mjs`, F227). Their `-wild` twins are the smoke books. Un-ignored with their twins
+config/mod_config.jex-dam4s-rs-x25-dpriv.json ⭐⭐⭐ THE CANON SINCE 2026-10-16 (config/mod_config.json is a verbatim copy) + its tree twin (x25's, byte for
+                        byte): jex-dam4s-rs-x25 + `dams.private = all` (private dam construction under the government check's conditions), nothing
+                        else (§10.89.14, F240). Un-ignored with its twin
 config/mod_config.jex-dam4s-rs-m10.json ⚗ THE ENGINE LADDER UNLIFTED (user-ruled 2026-10-13, BALANCE_FRAMEWORK §10.101, FINDINGS F232) + its tree twin (the canon's,
                         byte for byte): the canon's recorded chain with `make_ab_config --in0-for motor:1` — the three motor rungs' inputs ÷ 1.2 and their
                         restated target_be / wage_pct, nothing else. Probed 3 × 1836→1866 (20261013_110054_rs-m10-30y-n3). Un-ignored with its twin
@@ -3895,11 +3904,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         claim; the AI takes the decision (spare bureaucracy ≥ cost, a 30-day cooldown for the AI only), no driver.
                         `dams.log_levels` adds the monthly built/queued level log (PMR_DAM|probe_lvl / probe_q). ⚠ No country-tag data function exists: its PMR_DAM log lines carry the
                         country NAME; log from the country scope, never from a state entered from it
-                        ⚗ `dams.private` (2026-10-16, UNDER TEST, not ruled; FINDINGS F239/F240): absent = `can_build_private = { always = no }`
-                        (byte-identical output); `all` = can_build_private carries can_build_government's conditions (rights, survey, technology on
-                        scope:investor_country); `laissez_faire` = the same only where the host state's owner holds law_laissez_faire. Probe books
-                        `jex-dam4s-rs-x25-m10ac-dprivall-probe` / `-dprivlf-probe`: the private route builds, the survey gate held 30 of 30, privately
-                        built levels go to the host's financial district or to the dam itself
+                        ⭐ `dams.private` (2026-10-16; FINDINGS F239/F240; `all` IN THE CANON since 2026-10-16, §10.89.14): absent =
+                        `can_build_private = { always = no }` (byte-identical output); `all` = can_build_private carries can_build_government's
+                        conditions (rights, survey, technology on scope:investor_country); `laissez_faire` = the same only where the host state's owner
+                        holds law_laissez_faire. Probe books `jex-dam4s-rs-x25-m10ac-dprivall-probe` / `-dprivlf-probe`: the private route builds, the
+                        survey gate held 30 of 30, privately built levels go to the host's financial district or to the dam itself, all subsidised
   emit_building_costs.mjs  `building_required_construction` {building: points} patched into the building files the build already OWNS
                         (throws on a building it does not own, or ≠ 1 match) — the power plant at 1,600 in the dam book
   make_dam_projects.mjs / make_dam_config.mjs  the dam table (from config/dam_sites_research.json + the irrigation EFFECTS table and the

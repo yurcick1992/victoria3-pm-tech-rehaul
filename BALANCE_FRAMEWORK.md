@@ -9020,7 +9020,14 @@ technology, ~35 when dams open, so ≤ ~9,000 points); cheap and dear *"at least
   with the slot check) rather than assumed to carry over. ✅ **The player's shift-click queue PASSED the hand test** (user, 2026-10-10, on
   `mod_playtest_dam4s_damtest/`: one dam queued correctly — the engine's resource slot is the cap for a human builder too).
 
-### 10.89.14 — PRIVATE DAM CONSTRUCTION (2026-10-16; FINDINGS F239–F240) — BUILT AND PROBED, NOT RULED
+### 10.89.14 — PRIVATE DAM CONSTRUCTION (2026-10-16; FINDINGS F239–F240) — RULED AND CANONIZED: `dams.private = all`
+⭐⭐ **RULED 2026-10-16** (user: *"Canonize this change"*, the variant *"Everywhere, and mandate their subsidies"*): the canon is
+`config/mod_config.jex-dam4s-rs-x25-dpriv.json` = jex-dam4s-rs-x25 + `dams.private = all`, nothing else. This SUPERSEDES §10.89.9's government-only
+construction (`can_build_private = { always = no }`) for the canon; the rights, survey and technology conditions now bind both routes. The subsidy
+mandate needed no change: the four dam types are already `must_have` in every administrative strategy, and every privately built level in the probe was
+subsidised. Accepted with it: private capital may pre-empt the government route, and privately built levels go to financial districts (or to the dam
+itself), so §10.89.9's government-ownership intent no longer holds where private investors build. ⚠ UNMEASURED over a century.
+The text below is the probe-stage record:
 **Why.** Dams are government-built only (§10.89.9: `can_build_private = { always = no }`, a design ruling — ownership kept by governments, the overlord
 building the megaprojects; no engine requirement for it is on record). F239: a host whose government barely builds never builds its surveyed sites —
 laissez-faire hosts 0 of 6 (run 3's Britain surveyed both Scottish sites in 1911–12 and built neither). The user asked whether the survey gating survives
