@@ -3895,6 +3895,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         claim; the AI takes the decision (spare bureaucracy ≥ cost, a 30-day cooldown for the AI only), no driver.
                         `dams.log_levels` adds the monthly built/queued level log (PMR_DAM|probe_lvl / probe_q). ⚠ No country-tag data function exists: its PMR_DAM log lines carry the
                         country NAME; log from the country scope, never from a state entered from it
+                        ⚗ `dams.private` (2026-10-16, UNDER TEST, not ruled; FINDINGS F239/F240): absent = `can_build_private = { always = no }`
+                        (byte-identical output); `all` = can_build_private carries can_build_government's conditions (rights, survey, technology on
+                        scope:investor_country); `laissez_faire` = the same only where the host state's owner holds law_laissez_faire. Probe books
+                        `jex-dam4s-rs-x25-m10ac-dprivall-probe` / `-dprivlf-probe`: the private route builds, the survey gate held 30 of 30, privately
+                        built levels go to the host's financial district or to the dam itself
   emit_building_costs.mjs  `building_required_construction` {building: points} patched into the building files the build already OWNS
                         (throws on a building it does not own, or ≠ 1 match) — the power plant at 1,600 in the dam book
   make_dam_projects.mjs / make_dam_config.mjs  the dam table (from config/dam_sites_research.json + the irrigation EFFECTS table and the

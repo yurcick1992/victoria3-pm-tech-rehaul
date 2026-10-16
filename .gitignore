@@ -366,3 +366,7 @@ tools/testbed/no_new_runs_at.log
 !config/tech_tree_options.jex-dam4s-rs-x25-m10ac-probehi.json
 !config/mod_config.jex-dam4s-rs-x25-m10ac-probelo.json
 !config/tech_tree_options.jex-dam4s-rs-x25-m10ac-probelo.json
+!config/mod_config.jex-dam4s-rs-x25-m10ac-dprivall-probe.json
+!config/tech_tree_options.jex-dam4s-rs-x25-m10ac-dprivall-probe.json
+!config/mod_config.jex-dam4s-rs-x25-m10ac-dprivlf-probe.json
+!config/tech_tree_options.jex-dam4s-rs-x25-m10ac-dprivlf-probe.json

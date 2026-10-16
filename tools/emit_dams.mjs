@@ -158,6 +158,15 @@ const TCD = R2 ? 30 : P.probe?.take_cooldown_days;
 const TCD_AI_ONLY = R2;
 // PROBE: open builders - no chain requirement in can_build_government, the engine's own rules (investment rights) decide
 const OPEN = !!P.probe?.open_builders;
+// ⚗ dams.private (2026-10-16, F239: a host whose government barely builds never builds its surveyed dams — laissez-faire hosts 0 of 6):
+// absent = `can_build_private = { always = no }` (the ruled design, §10.89.9; the output is byte-identical); 'all' = can_build_private
+// carries the SAME conditions as can_build_government (rights, survey, technology, all read on scope:investor_country — vanilla's trade
+// centre puts one trigger reading scope:investor_country into both, 11_private_infrastructure.txt); 'laissez_faire' = the same, only
+// where the host state's owner holds law_laissez_faire. UNDER TEST — probe books only until ruled
+const PRIV = CFG.dams.private ?? null;
+if (PRIV != null && !['all', 'laissez_faire'].includes(PRIV)) die(`dams.private '${PRIV}' (all | laissez_faire)`);
+const PRIV_LF = PRIV === 'laissez_faire' ? `${T}${T}custom_tooltip = {\n${T}${T}${T}text = pmr_dam_private_lf_tt\n${T}${T}${T}owner ?= { has_law = law_type:law_laissez_faire }\n${T}${T}}\n` : '';
+const privBlock = gov => PRIV ? `${T}can_build_private = {\n${PRIV_LF}${gov}${T}}\n\n` : `${T}can_build_private = {\n${T}${T}always = no\n${T}}\n\n`;
 // ---------------------------------------------------------------- buildings, methods, groups
 const bld = [], pms = [], pmgs = [], mods = [], decs = [], jes = [], loc = [], seff = [];
 const surveyOpen = new Map();
@@ -179,6 +188,15 @@ for (const p of projects) {
   // the technology each LEVEL needs: from the first level of a later class on, the builder must hold that class's technology
   const classGates = [];
   p.stage_classes.forEach((c, i) => { if (i > 0 && c !== p.stage_classes[i - 1]) classGates.push({ level: i + 1, tech: P.tech_by_class[c] }); });
+  // the builder conditions, shared by can_build_government and (dams.private) can_build_private
+  const govBody =
+    (OPEN ? '' : `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_builder_tt\n${T}${T}${T}${R2 ? rightsOf(p, 'scope:investor_country') : builderInChain(p)}\n${T}${T}}\n`) +
+    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_tech_1_tt\n${T}${T}${T}scope:investor_country ?= { has_technology_researched = ${p.stage_techs[0]} }\n${T}${T}}\n` +
+    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_surveyed_tt\n${T}${T}${T}${R2 ? hasSurvey(p, 'scope:investor_country') : `scope:investor_country ?= { has_variable = ${v}_surveyed }`}\n${T}${T}}\n` +
+    // NO scripted level cap here (removed 2026-10-05): the engine's has_max_level enforces it, counting every builder's queued
+    // levels, so concurrent builders share the project's levels the way mines share a state's deposit; each owns what it built
+    classGates.map(g => `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_tech_${g.level}_tt\n${T}${T}${T}OR = {\n${T}${T}${T}${T}NOT = { ${levelsAtLeast(p, g.level - 1)} }\n` +
+      `${T}${T}${T}${T}scope:investor_country ?= { has_technology_researched = ${g.tech} }\n${T}${T}${T}}\n${T}${T}}\n`).join('');
   bld.push(`${key} = {\n` +
     `${T}building_group = bg_pmr_hydro_dams\n` +
     `${T}icon = "gfx/interface/icons/building_icons/power_plant.dds"\n` +
@@ -193,16 +211,8 @@ for (const p of projects) {
     // Only the split part of the state that holds the anchor province LISTS the dam (user, 2026-09-26: Lawpita Falls showed in
     // three parts of Pegu), and only once someone in the chain has surveyed it (so no state lists it from 1836).
     `${T}potential = {\n${T}${T}state_region = s:${p.state}\n${T}${T}owner ?= p:${p.anchor_province}.state.owner\n${T}${T}has_global_variable = ${v}_surveyed_any\n${T}}\n\n` +
-    `${T}can_build_government = {\n` +
-    (OPEN ? '' : `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_builder_tt\n${T}${T}${T}${R2 ? rightsOf(p, 'scope:investor_country') : builderInChain(p)}\n${T}${T}}\n`) +
-    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_tech_1_tt\n${T}${T}${T}scope:investor_country ?= { has_technology_researched = ${p.stage_techs[0]} }\n${T}${T}}\n` +
-    `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_surveyed_tt\n${T}${T}${T}${R2 ? hasSurvey(p, 'scope:investor_country') : `scope:investor_country ?= { has_variable = ${v}_surveyed }`}\n${T}${T}}\n` +
-    // NO scripted level cap here (removed 2026-10-05): the engine's has_max_level enforces it, counting every builder's queued
-    // levels, so concurrent builders share the project's levels the way mines share a state's deposit; each owns what it built
-    classGates.map(g => `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_tech_${g.level}_tt\n${T}${T}${T}OR = {\n${T}${T}${T}${T}NOT = { ${levelsAtLeast(p, g.level - 1)} }\n` +
-      `${T}${T}${T}${T}scope:investor_country ?= { has_technology_researched = ${g.tech} }\n${T}${T}${T}}\n${T}${T}}\n`).join('') +
-    `${T}}\n\n` +
-    `${T}can_build_private = {\n${T}${T}always = no\n${T}}\n\n` +
+    `${T}can_build_government = {\n` + govBody + `${T}}\n\n` +
+    privBlock(govBody) +
     // ⚠ WITHOUT an ownership_type the engine treats the building like an administration or a monument and refuses it in a
     // FOREIGN state ("<building> cannot be constructed in a foreign state", CANNOT_EXPAND_BUILDING_NOT_OWNABLE — user's
     // playtest, 2026-09-27). `self` is what the trade centre, ports and power plant carry, all of which a foreign
@@ -328,7 +338,11 @@ if (LAYOUT === 'resource4') {
         () => `\n${T}potential = {\n${T}${T}OR = {\n${pot.replace(/^/gm, T)}\n${T}${T}}\n${T}}\n\n${T}can_build_government = {\n${T}${T}OR = {\n${cbg.replace(/^/gm, T)}\n${T}${T}}\n${T}}\n\n${T}can_build_private`)
       .replace(/pmg_dam_[a-z0-9_]+/, `pmg_dam_${c}`);
     if (!blk.includes(`pmg_dam_${c}`) || blk.includes('has_max_level') || !blk.includes(`required_construction = ${C.points}`)) throw new Error('emit_dams resource4: building rewrite failed for ' + c);
-    bld.push(blk);
+    // dams.private: the private check is the same OR over the class's projects (block 0 carries only its own project's conditions)
+    const blkP = PRIV ? blk.replace(new RegExp(`\\n${T}can_build_private = \\{\\n[\\s\\S]*?\\n${T}\\}\\n\\n${T}ownership_type`),
+      () => `\n${T}can_build_private = {\n${PRIV_LF}${T}${T}OR = {\n${cbg.replace(/^/gm, T)}\n${T}${T}}\n${T}}\n\n${T}ownership_type`) : blk;
+    if (PRIV && (blkP === blk || (blkP.match(/state_region = s:/g) || []).length !== 3 * list.length)) throw new Error('emit_dams resource4: private rewrite failed for ' + c);
+    bld.push(blkP);
     pmgs.push(`pmg_dam_${c} = {\n${T}texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"\n${T}ai_selection = most_productive\n${T}production_methods = {\n${T}${T}pm_dam_${c}\n${T}}\n}`);
     pms.push(`pm_dam_${c} = {\n${T}texture = "gfx/interface/icons/production_method_icons/hydroelectric_plant.dds"\n\n${T}building_modifiers = {\n${T}${T}workforce_scaled = {\n` +
       Object.entries(C.inputs).map(([g, q]) => `${T}${T}${T}goods_input_${g}_add = ${q}\n`).join('') +
@@ -346,6 +360,9 @@ W('common/production_method_groups/zzz_pm_rehaul_dams.txt', HDR + pmgs.join('\n\
 if (P.probe?.bureaucracy_bonus) {
   mods.push(`pmr_dam_probe_bureaucracy = {\n${T}icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_positive.dds\n${T}country_bureaucracy_add = ${P.probe.bureaucracy_bonus}\n}`);
   loc.push(['pmr_dam_probe_bureaucracy', 'Probe: dam survey bureaucracy']);
+}
+if (PRIV === 'laissez_faire') {
+  loc.push(['pmr_dam_private_lf_tt', 'Private investors may build dams only where the state owner has Laissez-faire']);
 }
 W('common/static_modifiers/zzz_pm_rehaul_dams.txt', HDR + mods.join('\n\n') + '\n');
 

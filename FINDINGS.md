@@ -22933,3 +22933,35 @@ n=3 and directional (§10.83.7): the misplaced-capital ranges overlap, so "no de
 two levers moved (paper lifted again, the conditional desire), against F227 three (universities, engines, the desire), so neither the register's gain
 nor the misplaced-capital reading can be put on one lever. The dam reading by economic law takes the host's law at 1930, while the builder may be an
 overlord or an investor.
+
+## F240 — PRIVATE DAM CONSTRUCTION WORKS AND KEEPS THE SURVEY GATE: WITH `dams.private` THE PRIVATE QUEUE BUILDS DAMS UNDER EVERY ECONOMIC LAW, EVERY CONSTRUCTION SITS AT A SITE ITS BUILDER OR FAMILY SURVEYED (30 OF 30), THE LAISSEZ-FAIRE VARIANT BUILDS PRIVATELY ONLY IN LAISSEZ-FAIRE HOSTS; PRIVATELY BUILT LEVELS GO TO FINANCIAL DISTRICTS OR SELF (2026-10-16; session 20261016_192119_dam-private-probe, 2 × 1836→1842, probe books)
+
+**Asked** (user, 2026-10-16, after F239 found laissez-faire hosts building none of their surveyed dams): *"Will our survey gating still work, if we
+allow private construction of dams?"*, then *"Go with a couple probes with instant tech grants and exaggerated values, just to check. Specifically add
+Laissez-faire to a couple majors."* **Mechanism.** `tools/emit_dams.mjs` takes `dams.private`: absent = `can_build_private = { always = no }` (the ruled
+design; the output proven byte-identical on the m10ac book); `all` = `can_build_private` carries the same conditions as `can_build_government` —
+construction rights, the builder's own or family survey, the technology, all read on `scope:investor_country`, which vanilla's trade centre also reads
+inside `can_build_private` (`trade_center_construction_allowed`, `11_private_infrastructure.txt`); `laissez_faire` = the same, only where the host
+state's owner holds law_laissez_faire. **Arms.** The m10ac book (F239) with `dams.private` = all / laissez_faire, plus probe settings: the dam
+technologies to GBR FRA USA PRU AUS RUS at the start, Laissez-faire forced on GBR and USA (the others keep their laws: FRA, PRU, AUS interventionism,
+RUS traditionalism), 1-month surveys, levels ×0.25 cost, +2000 bureaucracy, dam ai_value 300000 (×10). Quarterly autosaves.
+
+**Numbers** (queued dam levels seen in the quarterly summaries — state, builder, the builder's queue holding that dam type, the host's law — against the
+run's own survey log):
+
+| arm | constructions | in a PRIVATE queue | where | at a site the builder or its family surveyed | levels standing at 1841.10 |
+|---|---|---|---|---|---|
+| all | 21 | 19 (+1 seen in both queues; Russia's Kharkov in the government queue) | USA 7, FRA 4, AUS 4, RUS 4, GBR 2 + Prussia in Russian Armenia (investment rights, its own survey) | 21 of 21 | 16 |
+| laissez_faire | 9 | 8 — all in GBR and USA | GBR 2, USA 6; Russia's Tomsk in the government queue | 9 of 9 | 6 |
+
+**Ownership** (each run's kept 1841.10 save, melted): privately built levels in GBR, the USA and France belong to the host's **financial district**; in
+Austria and Russia to the **dam building itself** (`ownership_type = self`); the one government-built level (Kharkov) to **Russia's government**. A
+domestic private builder resolves as the state owner.
+
+**What it says.** The survey gate carries over to private construction unchanged: the same conditions, read on the same scope, held for 30 of 30
+constructions, including a foreign private investor under investment rights. The laissez-faire variant opens the private route only where the host's
+government barely builds. Opened everywhere, private capital pre-empts the government route even in interventionist France and Austria at these values,
+and those dams are then owned by financial districts — the outcome the government-only ruling (§10.89.9) was meant to prevent.
+**What it does NOT say.** There is no negative test: no investor was seen TRYING to build at an unsurveyed site, so the gate's blocking shows only as an
+absence. The exaggerated values (×10 desire, ×0.25 cost, granted technology) show that the route works, not how much private building a normal book would
+see. n=1 per arm, six years.

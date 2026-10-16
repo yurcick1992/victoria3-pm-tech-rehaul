@@ -9020,6 +9020,20 @@ technology, ~35 when dams open, so ≤ ~9,000 points); cheap and dear *"at least
   with the slot check) rather than assumed to carry over. ✅ **The player's shift-click queue PASSED the hand test** (user, 2026-10-10, on
   `mod_playtest_dam4s_damtest/`: one dam queued correctly — the engine's resource slot is the cap for a human builder too).
 
+### 10.89.14 — PRIVATE DAM CONSTRUCTION (2026-10-16; FINDINGS F239–F240) — BUILT AND PROBED, NOT RULED
+**Why.** Dams are government-built only (§10.89.9: `can_build_private = { always = no }`, a design ruling — ownership kept by governments, the overlord
+building the megaprojects; no engine requirement for it is on record). F239: a host whose government barely builds never builds its surveyed sites —
+laissez-faire hosts 0 of 6 (run 3's Britain surveyed both Scottish sites in 1911–12 and built neither). The user asked whether the survey gating survives
+private construction, then for probes.
+**What exists.** `dams.private` in `tools/emit_dams.mjs`: absent = the ruled design (byte-identical output); `all` = `can_build_private` carries the
+same conditions as `can_build_government` (construction rights, the builder's own or family survey, the technology, all on `scope:investor_country`, the
+scope vanilla's trade centre also reads in `can_build_private`); `laissez_faire` = the same, only where the host state's owner holds law_laissez_faire.
+**What the probe showed (F240, exaggerated values).** The private route builds under every economic law; the survey gate held for all 30
+constructions (including a foreign private investor under investment rights); the laissez-faire variant builds privately only in laissez-faire hosts.
+Privately built levels go to the host's financial district (GBR, USA, France) or to the dam itself (Austria, Russia). Opened everywhere, private capital
+pre-empts the government route even in interventionist countries, so the government-ownership intent of §10.89.9 is lost there; the laissez-faire variant
+keeps it everywhere else. ⇒ **The choice (all / laissez_faire / leave government-only) is the user's**; nothing reaches a book until ruled.
+
 ## §10.90 — LOW END-GAME PRICES: WHICH LEVERS ARE OPEN, AND WHY WORLD GDP IS READ AS DISPLAYED (user-ruled 2026-09-30)
 
 Asked while looking for a way to keep the tiered outputs' prices low in the end game (the obsolescence mechanism: an old rung dies when its
