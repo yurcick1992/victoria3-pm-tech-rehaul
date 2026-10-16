@@ -22868,3 +22868,68 @@ and paper hosts 1,000 → 3,000, textile / furniture / steel 3,000 → 5,000 on 
 **What it does NOT say.** The high arm's contrast is confounded by group size: the holders are the rich majors. The low arm is the clean half,
 because the same countries stopped building. ai_value at 1 does not stop private investment outright (probelo's holders carried 2–8 private queue
 items a year, steel +2), which is F100's floor again. Nothing here measures the economics of the regular values: n=1 per arm, six years.
+
+## F239 — THE CANON WITH ENGINES UNLIFTED AND THE CONDITIONAL MERGE-HOST DESIRE, n=3: 3 INTACT, WORLD GDP 1.02–1.12, CONSENSUS LOSS 6.72 (F227 7.28, F237 9.92); MISPLACED CAPITAL DOES NOT FALL (CENTURY 22% MEDIAN AGAINST F237's 19% AND F227's 20%); PLAY ×1.06; LAISSEZ-FAIRE HOSTS BUILD NO DAMS (2026-10-16; session 20261016_092158_rs-m10ac-n3, 3 × 1836→1936, fixed n)
+
+**Asked** (user, 2026-10-16): *"Costs unchanged, paper returned to regularly lifted, desire — conditional on having the tech … Build probes with extreme
+values to ensure conditions work, and then go with n=3 on regular, ladder-based ai_value."* The probe is F238. **Arm.**
+`config/mod_config.jex-dam4s-rs-x25-m10ac.json` (sha256 f43cbd2a0ecd5573) = the canon jex-dam4s-rs-x25 regenerated through its own chain with
+`make_ab_config --in0-for motor:1` and `make_merge_config --ai-rule cond`. Field diff against the canon: the three motor rungs' inputs ÷ 1.2 with their
+restated target_be / wage_pct, and the five merge hosts' ai_value (food and paper 1,732 → 1,000, raised to 3,000 with baking powder / chemical bleaching;
+textile, furniture and steel 3,873 → 3,000, raised to 5,000 with electrical capacitors / spray finishing / electric arc; fertilizer 1,000, no block).
+Run 3 crashed once at 1929.8.28 and was resumed from its 1929.1.1 autosave. Ledger https://claude.ai/artifact/TGQADGmj58aj8gpT3FwLdP.
+
+### 1. The register (one invocation with F237 and F227)
+| arm | intact/broken | world GDP per run | consensus loss |
+|---|---|---|---|
+| **m10ac** | 3/0 | 1.02 / 1.04 / 1.12 | **6.72** (runs 1 + 2; per run 7.0 / 6.9 / 10.6) |
+| canon jex-dam4s-rs (F227) | 2/1 runoff | 1.04 / 1.09 / 1.45 | 7.28 |
+| mp (F237) | 3/0 | 1.09 / 1.25 / 1.11 | 9.92 |
+
+Consensus: world GDP 1.03 (above the 0.90–1.00 aim); the shortlist's GDP 1.36, W 0.95, U* 24.6% (vanilla 21.3%), hoard 0.25 of GDP (vanilla 0.33);
+PI 0.91 of vanilla's, falling decade over decade; PP 0.90; T3 27.8% of tiered workers; T0 0.46 of the 1900s. Loss = T3 1.43 + PI 1.41 + pool U* 1.33 +
+gerCM 1.21 + PP 0.64 + T0 0.44 + world GDP 0.26. The closed-major term is 0.81 (run 2's Germany fully employed 1927–36 with no hoard; runs 1 and 3 read 0),
+against F237's 1.75.
+
+### 2. Misplaced capital (§10.92, the yardstick for an ai_value change) — no decrease
+Grossly misplaced share of each run's new capital against the best valid alternative (misplaced_capital.mjs):
+
+| arm | century, per run | median | 1926–36 median |
+|---|---|---|---|
+| **m10ac** | 23 / 22 / 19% | **22%** | 24% |
+| mp (F237) | 14 / 20 / 19% | 19% | 16% |
+| canon (F227) | 20 / 17 / 21% | 20% | 22% |
+
+The six merge hosts (a scratchpad split of the same tool by invested type), per run: share of all new capital invested in them 23.9 / 26.6 / 26.7%
+(F237 22.0 / 24.6 / 25.9, F227 22.2 / 24.6 / 25.2); grossly misplaced in them 8.6 / 8.1 / 6.2% of all new capital (F237 4.3 / 6.5 / 7.3, F227
+4.5 / 5.1 / 7.0). Run 1's steel host alone carried 5.2% (runs 2–3: 2.4 / 2.0; F237 1.5–3.5), with the same share of capital as elsewhere (10–13% a
+decade) — its excess was the profitability of steel in that seed, not more steel built; electric arc steelmaking, which raises the steel host's desire,
+was held by 0 countries at 1910 and 7 at 1920 in that run.
+
+### 3. Decomposition, payback, technology
+World at 1935 (÷ vanilla n=16 median): GDP 1.02 / 1.03 / 1.11 = workers per head 0.84 / 0.93 / 0.94 × GDP per worker 1.25 / 1.12 / 1.20; at 1900 0.74 /
+0.91 / 0.93. Shortlist at 1935: GDP 1.63 / 1.05 / 1.18. Payback in the shortlist at 1935 (£600 a point): e1 9.7 / 9.8 / 11.7 y, e2 8.3 / 7.7 / 9.2,
+e3 5.4 / 6.5 / 7.0 — e3 the fastest in every run. The majors gain 0.96 of vanilla's technology at 1935 (F237 0.94, F227 0.97), 0.90 at 1905; the leader
+holds 37.5 / 20.5 / 50% of game eras 3 / 4 / 5 at the anchors (F237 42.5 / 33.3 / 50, F227 45 / 38.5 / 50).
+
+### 4. Red flags, play time, dams
+Problem market-years 184 a run (142–188), 4 chronic markets (F237 201, F227 208); Japanese 69 (paper 36.7, engines 30.7), Russian 30 (engines 29.3,
+paper 23.7) — the paper ones capacity lags behind the government administrations' filing methods, the engine ones supply failures. Play: main median
+174.4 min over runs 1 (cluster 1, 163.6) and 3 (cluster 2, 185.2, a 1921–26 slowdown with no listed bug observed), ×1.06 of vanilla's 165.0; run 2
+cluster 3 (a Danish fleet on the repair loop 1907–15 and 1925–31). Dams: 64 / 47 / 24 levels at 1936. ⭐ **Laissez-faire hosts build none**: run 3's
+Britain held laissez-faire all century, surveyed both Scottish sites (Lochaber–Affric 1911, Galloway–Tummel 1912) and never built them, its government
+queue holding 0–2 items in almost every year (in runs 1 and 2, interventionist, it built them in 1901 and 1929). Surveyed sites built by 1930, by the
+host's economic law in 1930: interventionism 28/68 · 23/42 · 11/35, laissez-faire 0/1 (run 2) · 0/5 (run 3), cooperative ownership 0/5 · 0/5 · 1/11,
+agrarianism 6/21 · 2/11 · 1/6. Dams are government-built only (`can_build_private = { always = no }`, BALANCE_FRAMEWORK §10.89.9); no engine
+requirement for that is on record — it was a design ruling (ownership kept by governments, the overlord building megaprojects), and the survey and
+rights rules live only in `can_build_government`.
+
+### What it says
+The book reads lowest of the three on the register, with world GDP 1.02–1.12 and a smaller closed-major term than F237's, the ladder climbing and play
+inside the budget. The conditional desire did not lower misplaced capital: the merge hosts took a slightly larger share of new capital, and slightly
+more of it went grossly misplaced. A government-only building is unbuilt wherever the host's government barely builds.
+### What it does NOT say
+n=3 and directional (§10.83.7): the misplaced-capital ranges overlap, so "no decrease" is the reading and "an increase" is not established. Against F237
+two levers moved (paper lifted again, the conditional desire), against F227 three (universities, engines, the desire), so neither the register's gain
+nor the misplaced-capital reading can be put on one lever. The dam reading by economic law takes the host's law at 1930, while the builder may be an
+overlord or an investor.
