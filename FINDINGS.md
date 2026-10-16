@@ -22770,3 +22770,59 @@ The cost ladder adds no measurable tick cost through 1866; the earlier +5–7 s 
 was between-batch spread, and the books' "normal branch" totals (F235: 162–185 min) should be read with that spread in mind.
 ### What it does NOT say
 1866–1910 is untested (the earlier reading was largest in 1880–1910). One day, one machine.
+
+## F237 — THE CANON WITH ENGINES AND PAPER UNLIFTED, n=3: 3 INTACT, BUT WORLD GDP 1.09–1.25 AND GERMANY FULLY EMPLOYED AGAIN; THE UNLIFT BARELY MOVES THE INPUT-PRICE PROBLEMS ON THE CANON'S LADDER (201 AGAINST 208); TECHNOLOGY BACK ON THE CANON'S PATH; CONSENSUS LOSS 9.92 (2026-10-16; session 20261015_222039_rs-mp-n3, 3 × 1836→1936, fixed n)
+
+**Asked** (user, 2026-10-15): *"I'd go conservative first. Canon + unlifted engines + unlifted paper"*, *"Only n=3, as the changes are not that major"*, after
+ruling the four-year stages of F233/F235 "bad from all PoVs". **Arm.** `config/mod_config.jex-dam4s-rs-x25-mp.json` (sha256 66ea3e0a93a3d671) = the canon
+jex-dam4s-rs-x25 regenerated through its own recorded chain with `make_ab_config --in0-for motor:1,paper:1`; field diff against the canon: the three motor
+rungs' and the three non-craft paper rungs' inputs ÷ 1.2 with their restated target_be / wage_pct, nothing else; the tree twin is the canon's byte for byte.
+No crash. Ledger https://claude.ai/artifact/Y8AARnQzkeS6oHkiZopU5r.
+⚠ The canon (x = 25) has no century run of its own; the nearest is F227's jex-dam4s-rs (universities ×0.5) — a second difference against it.
+
+### 1. The register (one invocation with F234, F235, the F227 canon and F233)
+| arm | intact/broken | world GDP per run | consensus loss |
+|---|---|---|---|
+| **mp** | 3/0 | 1.09 / 1.25 / 1.11 | **9.92** (runs 1 + 3; per run 11.8 / 9.8 / 6.7) |
+| c18k12 (F234) | 3/0 | 0.95 / 0.84 / 1.01 | 5.37 |
+| canon jex-dam4s-rs (F227) | 2/1 runoff | 1.04 / 1.09 / 1.45 | 7.28 |
+| c18k12mp48 (F235) | 4/1 stall | 0.61 / 0.97 / 1.14 / 0.86 / 0.93 | 8.27 |
+| m10-je48 (F233) | 3/0 | 1.12 / 1.09 / 0.99 | 8.75 |
+
+Consensus: world GDP 1.10 (above the 0.90–1.00 aim); the shortlist's GDP 1.01, W 0.83, U* 29.5% (vanilla 21.3%), hoard 0.33 of GDP (vanilla 0.33); PI 0.91 of
+vanilla's (0.93 of base), falling decade over decade; PP 0.98; T3 24.1% of tiered workers; T0 0.48 of the 1900s. The loss is gerCM 2.62 + T3 1.72 + PI 1.41
++ PP 1.15 + pool U* 0.98 + world GDP 0.88 + T0 0.85 + pool GDP 0.31. **The closed-major term is back**: run 1's Germany has U* under 5% in 11 years from 1926
+at a mean hoard of 0.77 GDP (per run 1.75 / 0 / 0; the lucky seed is run 1); Britain is under 5% U* for 17 years in runs 1 and 2 (soft, hoards 0.35 / 0.37).
+
+### 2. The decomposition (÷ vanilla n=16 median)
+World at 1935: GDP 1.08 / 1.25 / 1.14 = workers per head 0.96 / 0.98 / 0.92 × GDP per worker 1.16 / 1.31 / 1.24; at 1900 0.93 / 1.01 / 0.86. The shortlist
+at 1935: GDP 0.81 / 1.02 / 1.22, workers per head 0.75 / 0.72 / 0.93, GDP per worker 1.13 / 1.34 / 1.45.
+
+### 3. Payback by era (the shortlist at 1935, £600 a point)
+| run | craft | e1 | e2 | e3 |
+|---|---|---|---|---|
+| 1 | 9.5 y | 9.4 | 7.8 | 6.4 |
+| 2 | 17.6 | 12.2 | 11.8 | 7.3 |
+| 3 | 6.0 | 9.2 | 7.1 | 4.6 |
+e3 pays back fastest in every run. The engine industry's e0+e1 share of its shortlist workers is 27% (the canon 28%, F234 41%, F235 83%) — the 83% of F235
+was the stages', not the unlift's. Textile's old rungs beside their replacement: 22% of its shortlist workers (the canon 17%, F234 7%).
+
+### 4. Red flags (order books)
+Problem market-years 201 a run (158–221), 3 chronic markets — the canon (F227) 208, F234 245, F235 170, F233 118. The Japanese market holds 86: paper 52 a run
+(a capacity lag — 82 staffed levels supplying 205 a week against 431 of demand, the government administrations' filing methods), engines 35.7 and hardwood 30
+(no staffed producer). Russian engines 14.7 (1854–80) and Dutch engines 12.3 (1846–95) are the same early supply failure. By period 64 / 64 / 46.
+
+### 5. Technology and play time
+The majors gain 0.94 of vanilla's technology at 1935 (F227 0.97, F234 0.94, F235 0.89); the leader holds 42.5 / 33.3 / 50% of game eras 3 / 4 / 5 at the
+anchors (F227 45 / 38.5 / 50, F234 37.5 / 23.1 / 42.3, F235 35 / 20.5 / 38.5). Play: runs 1 and 2 cluster 1 at 197.2 / 175.1 min, main median 186.2 (×1.13 of
+vanilla's 165.0 — over the 10% budget); run 3 (180.8 min) cluster 3, an American fleet on the repair loop 1847–50 (1,160 moves, 176k sailed, gone after).
+Over 1836–1935 the runs read +11.6 ± 4.4 s per in-game year over vanilla on wall time but +5.6 s on game logic, the F227 canon's +6.1 (different nights).
+
+### What it says
+On the canon's cost ladder the rich seeds over-employ: world GDP 1.09–1.25 and Germany fully employed with its hoard rising in one run of three — the
+problem F234's cost ladder (C 1.8 × cost1 1.2) had removed (term 0 in all three). Against F235 the 36-month stages restore technology and the e3 share,
+and the engine e1 lock-in of F235 was the stages'. Unlifting engines and paper does not cut the input-price problems on this ladder: what remains is
+Japanese capacity and supply, not the price level.
+### What it does NOT say
+n=3, and the canon has no century run of its own (F227 differs in the universities), so "the unlift's effect" is read against a book one lever away. The
+input-price comparison with F235 mixes two cost ladders and two stage lengths. The register is directional (§10.83.7).
