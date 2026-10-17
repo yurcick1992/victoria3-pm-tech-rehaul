@@ -1,0 +1,35 @@
+{
+  "schedule_version": 1,
+  "label": "monothr99-probe",
+  "_why": "Does the world-market monopoly threshold matter? (user, 2026-10-17: probe it only if it can affect foreign trade alone - vanilla in-market monopolies are out of scope). FINDINGS F241: vanilla's WORLD_MARKET_MONOPOLY_MIN_SHARE is a DEAD key; the engine registers the setting as NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD (victoria3.exe define registry), which vanilla never sets, so the game runs on the built-in default. It decides only whether a MARKET counts as monopolising world exports of a good (the world-market price markup, MONOPOLY_PRICE_IMPACT); country and company monopolies are granted on building types and do not read it. ONE run: continue the user's 1935.1.1 autosave (the same file as run 1 of 20261017_190800) with the threshold at 0.99 and compare with that session's canon run 1 - a continuation is deterministic (F241), so any difference is the define's effect.",
+  "_arms": {
+    "thr99": "{kind: config, config: config/mod_config.monothr99-probe.json} - the canon + game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD 0.99, nothing else; + telemetry"
+  },
+  "_comparison": "Against 20261017_190800_monopoly99-probe/run001_canon (same save, same canon otherwise, bit-identical across three runs): month-by-month world GDP, pop objects, Japan's exports, and every good's weekly world price over the year. Affected at 0.99 if the default is 0.5: goods where Japan's market holds 50-99% of world exports (steel 98% at the start, falling to 65% in the canon year; clothes 86-88%; furniture, luxury goods, silk, porcelain, telephones, merchant marine...); unaffected: 100%-share goods while they stay at 100%.",
+  "_predictions": {
+    "if the markup binds": "the run diverges from the canon within weeks; the affected goods' world prices lower by up to ~0.2 x their share",
+    "if the default is already >= 0.99 or the markup does not bind": "bit-identical to the canon run",
+    "load check": "debug.log must NOT report WORLD_MARKET_MONOPOLY_THRESHOLD 'not specified', and error.log must not reject its value"
+  },
+  "_stop_rule": "none: one run.",
+  "_cost": "1 run x 1935.1.1 -> 1936.1.1 from a late save, about 5 min",
+  "_caveats": [
+    "The save is a PLAYER game (Japan); the harness loads it as an observer game, so the AI runs Japan - identical in both arms.",
+    "The observer's autosaves overwrite the user's autosave slots and continue_game.json: backup save games BACKUP 20261017_2015 holds the originals, restored after the run.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30). Watch with short reads only - never tail -F a harness log (L29)."
+  ],
+  "defaults": {
+    "tags": ["JAP", "CHI", "RUS", "GBR", "USA", "FRA", "ITA", "MEX", "TUR", "SPA", "BRZ"],
+    "metrics": ["country_state", "market_goods_scoped", "events"],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "thr99": { "kind": "config", "config": "config/mod_config.monothr99-probe.json" }
+  },
+  "runs": [
+    { "setup": "thr99", "until": "1936.1.1", "parent": "user playtest autosave_1 (1935.1.1), the start of 20261017_190800 run 1",
+      "continue_save": "C:/Users/User/Documents/Paradox Interactive/Victoria 3/save games BACKUP 20261017_1858/autosave_1.v3",
+      "continue_expect_after": "1934.12.1", "dump_dates": ["1935.2.1", "1935.4.1", "1935.7.1", "1935.10.1", "1935.12.1"] }
+  ]
+}

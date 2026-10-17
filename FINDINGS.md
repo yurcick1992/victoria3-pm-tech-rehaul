@@ -22968,3 +22968,85 @@ and those dams are then owned by financial districts — the outcome the governm
 **What it does NOT say.** There is no negative test: no investor was seen TRYING to build at an unsurveyed site, so the gate's blocking shows only as an
 absence. The exaggerated values (×10 desire, ×0.25 cost, granted technology) show that the route works, not how much private building a normal book would
 see. n=1 per arm, six years.
+
+## F241 — `WORLD_MARKET_MONOPOLY_MIN_SHARE` IS A DEAD DEFINE IN 1.13.11: THE ENGINE DOES NOT READ IT, SO SETTING IT TO 0.99 CHANGED NOTHING (a bit-identical year); AND A GAME CONTINUED FROM A SAVE IS DETERMINISTIC — three runs from one save matched to the pound for a year, so a continuation A/B needs n=1 per arm (2026-10-17; session 20261017_190800_monopoly99-probe, 5 × one in-game year continued from the user's Japan playtest autosaves)
+
+**Why it ran.** The user asked whether raising the world-market monopoly threshold from vanilla's 0.5 to 0.99 affects anything. Vanilla's
+`00_defines.txt` says a market holding more than `WORLD_MARKET_MONOPOLY_MIN_SHARE` of a good's world exports raises the world price by up to
+`MONOPOLY_PRICE_IMPACT` (0.2), and the game's text has a matching price-tooltip line ("… because [market] controls X% of exports"). In the user's
+Japan game (canon build of 2026-10-16) Japan's market held 50–99% of world exports of steel (98.2% at 1935.1.1), clothes, tools, lead, silk,
+porcelain, furniture, telephones, merchant marine, small arms, the luxury goods and dye; at 0.99 those would lose the markup.
+
+**Design.** Arms: the canon (`config/mod_config.json`, proven byte-identical to the deployed build bar its stamps) and the canon +
+`game_defines.NEconomy.WORLD_MARKET_MONOPOLY_MIN_SHARE = 0.99` (build diff: that block and header comments only). Each run continued one of the
+user's autosaves for one year, paired by start save: from 1935.1.1 canon, 0.99, canon again; from 1934.1.1 canon, 0.99. Monthly autosaves, every
+one summarised; the world market's 52-week price ring read from each run's last save (`weekly.mjs` in the session's analysis, scratch).
+
+**Result 1 — determinism.** The three runs from 1935.1.1 are IDENTICAL month by month: world GDP (£5,705.312M → £5,146.453M at 1935.12.1, every
+digit), live pop objects (169,446 → 172,810), Japan's steel exports (1,568 → 587 capacity units) and every good's weekly world price over the 48
+weeks all three cover (steel 0.941 of base, clothes 0.629, explosives 0.811 in each). The two runs from 1934.1.1 match the same way. ⇒ Continuing
+a save with the same build reproduces the game exactly, and a CONTINUATION A/B is exact at n=1 per arm: any difference between arms is the
+change's effect, however small. (Not shown: whether a fresh 1836 start is deterministic — a new game draws a new seed.)
+
+**Result 2 — the 0.99 arm is bit-identical to the canon** from both saves. The cause is in every run's **debug.log** (not error.log):
+`Define 'WORLD_MARKET_MONOPOLY_MIN_SHARE' defined in 'common/defines/01_pm_rehaul_defines.txt' not specified. Maybe a define macro is missing` —
+and the CANON runs print the same line for vanilla's own `00_defines.txt`. The engine does not read the key at all. 1.13.11 reports **15 such dead
+keys** in vanilla's defines: `BUILDING_MAX_PROFIT_TO_PAUSE_HIRES`, `CIVIL_WAR_UPRISING_STATE_EXCESSIVE_ARMY_FRACTION`, `HIGH_POP_THRESHOLD`,
+`ROLE_HEIR`, `ROLE_RULER`, `TARGET_NUM_POOL_POLITICIANS_{INFLUENTIAL,MARGINAL,POWERFUL}_IG`, `WORLD_MARKET_MONOPOLY_MIN_SHARE` (00_defines.txt);
+`COMMANDER_DESIRED_RANK_DISPARITY_IN_{ARMY,FLEET}`, `MIN_COMBAT_UNITS_FOR_MULTIPLE_COMMANDERS_{ABSOLUTE,RELATIVE}`,
+`RETIRE_COMMANDER_INTERACTION_KEY` (00_ai.txt); `FLAGSHIP_DECORATION_LOCATOR` (00_graphics.txt). `MONOPOLY_PRICE_IMPACT` is NOT on the list.
+
+**What it says.** No value of `WORLD_MARKET_MONOPOLY_MIN_SHARE` can change the game. If the world-market monopoly markup exists, its threshold is
+set elsewhere; the live lever, if any, is `MONOPOLY_PRICE_IMPACT` — which by its comment also sets country/company monopoly pricing.
+⚠ **`BUILDING_MAX_PROFIT_TO_PAUSE_HIRES` is dead too**, and F185/F188 and `hiring_census.mjs` / `craft_fill.mjs` cite it as the rule behind the
+"paused hiring under 20% profit" class. The class may still describe a real behaviour (the threshold could be hardcoded), but its stated source is
+not one: re-check before leaning on it.
+**Instrument consequences** (same pass): `emit_techs.mjs` refuses the dead keys in `game_defines`; preflight **L33** `-Session` now also reads
+debug.log and FAILs a dead key named in our defines file (proven: FAIL on runs 2 and 5 here, PASS on 20261016_192119).
+**The harness and a player save.** Continued under `-handsoff`, the save loads as an OBSERVER game (the pointer read "Observing Great Britain") and
+the AI takes Japan: within a month it set low export tariffs on steel and glass (the player had none / low subventions on explosives), let trade-centre
+staffing fall from 1,227 to 813 levels by May, and Japan's steel exports fell ~60%; weekly world-price swings for steel, explosives and glass were
+3–5× the player's own year (steel's weekly SD 0.136 of base against 0.041). Irrelevant to this result (identical either way), but a continuation of a
+player save measures an AI-run country.
+
+**What it does NOT say.** Whether the world-market monopoly markup exists or binds in this game (untested: the follow-up is `MONOPOLY_PRICE_IMPACT`,
+which a deterministic continuation can measure exactly in one run per arm). Nothing about the dead keys beyond "the engine does not read them".
+
+**ADDENDUM (the same evening; session 20261017_201628_monothr99-probe, 1 × one year from the same 1935.1.1 save).** The setting is NOT dead, it is
+MISNAMED in vanilla's file: the engine's define registry in `victoria3.exe` holds `AVCDefineRegistryHelper_NEconomyWORLD_MARKET_MONOPOLY_THRESHOLD`
+(beside `…MONOPOLY_PRICE_IMPACT`), and no vanilla file sets `WORLD_MARKET_MONOPOLY_THRESHOLD`, so the game runs on a built-in default. It decides only
+whether a MARKET counts as monopolising a good's world exports (the user's condition: a lever touching foreign trade alone; country and company
+monopolies are granted on building types and do not read it). The data functions `GetWorldMarketMonopolyPriceImpact` / `…Fraction` exist too.
+With `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` (accepted: no "not specified", no rejection) the run DIVERGES from the canon in the first month
+(world GDP £5,644.748M against £5,705.312M→£5,706.138M at 1935.2.1; pop objects 171,413 against 171,477) — the engine reads it.
+⚠⚠ **CORRECTED the same evening (the user: "If the trade capacity is full, the change would be there, but much smaller, dependent on traded goods
+priority … and the trade routes slowly restructuring").** The first write-up read 4-week, 13-week and yearly AVERAGES of the weekly world price, saw
+"no one-sided drop" and called the markup absent and the key no lever. Averaging hid the effect. Week by week:
+- **Week 1: the goods it frees drop by EXACTLY the markup**, thr99 ÷ canon — steel (98% share) 0.836, clothes (88%) 0.850, furniture (81%) 0.863,
+  silk (70%) 0.871, porcelain (75%) 0.870, lead (91%) 0.847, groceries 0.878 — against `1 ÷ (1 + MONOPOLY_PRICE_IMPACT 0.2 × share)` = 0.836 / 0.850 /
+  0.861 / 0.877 / 0.870 / 0.846. The 100%-share goods, which 0.99 leaves monopolised, do not move: explosives, paper, glass 1.000, automobiles 0.986.
+  ⇒ **the markup is real: world price × (1 + 0.2 × the top exporting market's share of world exports) once that share exceeds the default
+  threshold — and the default is BELOW 0.36**: every traded good's week-1 drop matches `1 ÷ (1 + 0.2 × share)` within ~1%, whichever market leads,
+  down to the least concentrated good in this world — engines (Japan 48.1%) 0.912 against 0.912, sugar (Spain 46.9%) 0.914 against 0.914, hardwood
+  (USA 40.6%) 0.925 against 0.925, oil (USA 36.0%) 0.932 against 0.933; iron (British India 63.7%) 0.887 against 0.887, coal (USA 72.9%) 0.866 against
+  0.873, opium (British India 89.7%) 0.846 against 0.848. So in vanilla 1.13.11 EVERY traded good's world price carries 0.2 × its leading exporter's
+  share (+7% to +20%); 0.99 removed it from everything but the >99% goods (Japan's paper, explosives, glass, steamers, radios…; British India's
+  artillery and fish; China's clippers — all 1.000 in week 1).
+- **Weeks 2–3: the world price climbs back** (steel 0.946 → 0.999, clothes 1.002 → 1.093) — the world price is set by the balance of exports and
+  imports, which re-balances; after that the runs diverge chaotically (mean |ln ratio| of all groups 8–30%).
+- **The lasting effect is on VOLUME**: the freed goods' summed world exports run below the canon in **10 of 11 months, geometric mean ×0.916**
+  (world imports of them ×1.002), and Japan's market's exports of them ×0.86–0.93 from mid-year; the 100%-share goods go the other way (×1.041,
+  below the canon in 4 of 11 months) — consistent with exporters moving capacity to the goods that kept their markup.
+- **The first two months, before the runs drift apart** (world trade capacity summed per band of the top exporter's share; capacity in use unchanged,
+  62,365 → 62,224, so this is RE-ALLOCATION): the freed goods' world EXPORTS fall (1935.2.1 / 1935.3.1: 70–99% band ×0.940 / ×0.939, 50–70% ×0.947 /
+  ×0.942, < 50% ×0.952 / ×0.911) and their world IMPORTS rise (×1.079 / ×1.111, ×1.074 / ×1.050, ×1.041 / ×1.060); the >99% goods that kept the markup
+  stay level (exports ×0.993 / ×1.024, imports ×1.003 / ×0.988). Japan's market moves export capacity out of the 70–99% band (5,022 → 4,658) and,
+  by month 2, into the >99% band (7,778 → 7,960). ⇒ The mechanism: each trade centre fills its capacity with the goods that earn most per unit
+  (price gap × traded quantity ± tariffs); a lower world price makes the freed goods worse to export and better to import, so buy orders on the world
+  market outrun sell orders, and the world price's own supply-and-demand term climbs back — the markup is replaced by a scarcity premium.
+⇒ For the design question (do a leader's exports kill old rungs abroad?): the knob does not keep world prices lower; it moves VOLUME — the leader
+exports ~6–9% less of the freed goods, and importers take ~4–11% more of them in the first two months. Whether that import gain persists is not
+readable here (after month 2 the import ratios scatter both ways; the year's geometric mean is ×1.002), and its effect on old rungs abroad is
+unmeasured. Measuring it needs replicates — several start saves × both arms × several years — not one pair. The markup's readout in game: the world-price tooltip
+(`GOODS_MONOPOLY_WORLD_MARKET_PRICE_DESC`) or `Goods.GetWorldMarketMonopolyPriceImpact`. ⚠ The instrument: `emit_techs.mjs` now accepts engine-registered keys absent from vanilla's file
+(`ENGINE_ONLY_DEFINES`, today this one) and still refuses the dead ones. n=1 against n=1, deterministic until the first divergence, chaotic after it.

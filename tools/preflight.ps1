@@ -1479,6 +1479,18 @@ function Test-LmL33 {
                     if ($expectedHit.Count) { $runWarns += "$($run.Name): $($expectedHit -join ', ') (accepted: predicted by the config's own bounds)" }
                     break   # logs_live is the authoritative mirror; do not double-count logs\
                 }
+                # (c) 2026-10-17, session 20261017_190800: a DEAD define. The engine prints "Define 'X' defined in '<file>' not
+                #     specified. Maybe a define macro is missing" — in DEBUG.log, not error.log — for a key it does not read at
+                #     all; vanilla 1.13.11's own 00_defines.txt carries 15 such keys (WORLD_MARKET_MONOPOLY_MIN_SHARE among them).
+                #     An override of a dead key does nothing, so naming OUR defines file in that line is a FAIL.
+                foreach ($log in @('logs_live\debug.log', 'logs\debug.log')) {
+                    $f = Join-Path $run.FullName $log
+                    if (-not (Test-Path $f)) { continue }
+                    $dead = @(Select-String -Path $f -Pattern "Define '([^']+)' defined in 'common/defines/01_pm_rehaul_defines\.txt' not specified" -AllMatches |
+                              ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
+                    if ($dead.Count) { $runFails += "$($run.Name): $($dead -join ', ') is a DEAD define (the engine does not read it at all; vanilla's own line gets the same message)" }
+                    break
+                }
             }
         }
     }

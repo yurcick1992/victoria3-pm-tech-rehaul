@@ -1,0 +1,49 @@
+{
+  "schedule_version": 1,
+  "label": "monopoly99-probe",
+  "_why": "Does WORLD_MARKET_MONOPOLY_MIN_SHARE 0.99 (vanilla 0.5) change anything? (user, 2026-10-17: 'run several probes directly on latest autosaves to determine whether setting WORLD_MARKET_MONOPOLY_MIN_SHARE to 0.99 would affect anything'). Vanilla raises a good's WORLD MARKET price by up to MONOPOLY_PRICE_IMPACT 0.2 when one market controls more than the min share of its exports. In the user's Japan playtest (canon build of 2026-10-16 20:42) Japan's market holds 50-99% of world exports of steel 98.2%, groceries 99.0%, luxury furniture, lead, clothes 87.5%, telephones, furniture, merchant marine, luxury clothes, silk, porcelain, small arms, fine art, tools 51.1%, dye 50.4% (1935.1.1) - those lose the markup at 0.99; explosives, paper, glass, cars 99.9%, steamers, fertilizer, radios, ammunition, sulfur and aeroplanes sit at 99.9-100% and KEEP it. Each run CONTINUES one of the user's own autosaves (copies in Documents/.../save games BACKUP 20261017_1858) for one in-game year, PAIRED by start save: the canon and the probe from the same save, plus a canon repeat from the 1935 save to measure run-to-run noise.",
+  "_arms": {
+    "canon": "{kind: config, config: config/mod_config.json} - the canon jex-dam4s-rs-x25-m10ac-dpriv (sha256 fc7490eb6288514b), proven byte-identical to the user's deployed 2026-10-16 20:42 build apart from the build stamps; + telemetry",
+    "mono99": "{kind: config, config: config/mod_config.monopoly99-probe.json} - the canon + game_defines.NEconomy.WORLD_MARKET_MONOPOLY_MIN_SHARE 0.99, nothing else (field diff: game_defines + the _monopoly_probe record; build diff: the NEconomy block and the config name in header comments); + telemetry"
+  },
+  "_comparison": "Per start save, mono99 against canon at the end of the year: the world market price of every good from the save's 52-week ring (weekly path), Japan's market's exports and every country's imports (save summaries), and the tagged markets' local prices and trade (market_goods_scoped, quarterly). The canon repeat from the 1935 save says how far two runs from one save drift apart without any change.",
+  "_predictions": {
+    "affected goods": "world price lower in mono99 by up to ~0.2 x share (steel, clothes, luxury clothes, furniture, lead, silk, porcelain, telephones, tools, dye, groceries): visible within weeks of the start",
+    "unaffected goods": "explosives, paper, glass, cars, steamers, fertilizer at 100% share: no change beyond run-to-run noise",
+    "second order": "importers' local prices of the affected goods fall less than the world price (capacity-capped, F161); Japan's export volume rises a little; a year is too short for production to respond"
+  },
+  "_stop_rule": "none: a fixed n=5, every run plays its year.",
+  "_cost": "5 runs x 1 in-game year (1934->1935 or 1935->1936) from a late save, about 6-9 min each with monthly autosaves, about 35-45 min",
+  "_caveats": [
+    "The saves are a PLAYER game (Japan). Under -handsoff the loaded country may stay player-controlled with no input: identical in both arms, so the A/B holds, but Japan makes no decisions for a year.",
+    "The observer's autosaves overwrite the user's autosave slots and continue_game.json: the backup holds the originals, restored after the batch.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30). Not a 2+1 batch: no stop watcher."
+  ],
+  "defaults": {
+    "tags": ["JAP", "CHI", "RUS", "GBR", "USA", "FRA", "ITA", "MEX", "TUR", "SPA", "BRZ"],
+    "metrics": ["country_state", "market_goods_scoped", "events"],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "canon":  { "kind": "config", "config": "config/mod_config.json" },
+    "mono99": { "kind": "config", "config": "config/mod_config.monopoly99-probe.json" }
+  },
+  "runs": [
+    { "setup": "canon",  "until": "1936.1.1", "parent": "user playtest autosave_1 (1935.1.1)",
+      "continue_save": "C:/Users/User/Documents/Paradox Interactive/Victoria 3/save games BACKUP 20261017_1858/autosave_1.v3",
+      "continue_expect_after": "1934.12.1", "dump_dates": ["1935.2.1", "1935.4.1", "1935.7.1", "1935.10.1", "1935.12.1"] },
+    { "setup": "mono99", "until": "1936.1.1", "parent": "user playtest autosave_1 (1935.1.1)",
+      "continue_save": "C:/Users/User/Documents/Paradox Interactive/Victoria 3/save games BACKUP 20261017_1858/autosave_1.v3",
+      "continue_expect_after": "1934.12.1", "dump_dates": ["1935.2.1", "1935.4.1", "1935.7.1", "1935.10.1", "1935.12.1"] },
+    { "setup": "canon",  "until": "1936.1.1", "parent": "user playtest autosave_1 (1935.1.1) - noise repeat",
+      "continue_save": "C:/Users/User/Documents/Paradox Interactive/Victoria 3/save games BACKUP 20261017_1858/autosave_1.v3",
+      "continue_expect_after": "1934.12.1", "dump_dates": ["1935.2.1", "1935.4.1", "1935.7.1", "1935.10.1", "1935.12.1"] },
+    { "setup": "canon",  "until": "1935.1.1", "parent": "user playtest autosave_2 (1934.1.1)",
+      "continue_save": "C:/Users/User/Documents/Paradox Interactive/Victoria 3/save games BACKUP 20261017_1858/autosave_2.v3",
+      "continue_expect_after": "1933.12.1", "dump_dates": ["1934.2.1", "1934.4.1", "1934.7.1", "1934.10.1", "1934.12.1"] },
+    { "setup": "mono99", "until": "1935.1.1", "parent": "user playtest autosave_2 (1934.1.1)",
+      "continue_save": "C:/Users/User/Documents/Paradox Interactive/Victoria 3/save games BACKUP 20261017_1858/autosave_2.v3",
+      "continue_expect_after": "1933.12.1", "dump_dates": ["1934.2.1", "1934.4.1", "1934.7.1", "1934.10.1", "1934.12.1"] }
+  ]
+}

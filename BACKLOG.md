@@ -150,6 +150,14 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 
 ## G. Testbed instrument (TESTBED_LANDMINES)
 
+- **DEFECT** · `hiring_census.mjs` / `craft_fill.mjs` (and F185/F188's prose) name `BUILDING_MAX_PROFIT_TO_PAUSE_HIRES` as the rule behind the
+  PAUSED-hiring class, but the 1.13.11 engine does not read that define (FINDINGS F241's dead-define list). Its define registry holds only
+  `BUILDING_MIN_EMPLOYMENT_FRACTION_TO_PAUSE_HIRES` and `BUILDING_PAUSE_HIRES_CASH_RESERVES_THRESHOLD` — no profit threshold for pausing hires.
+  Re-establish the rule from the engine's behaviour (a hardcoded profit test is possible) or relabel the class
+- **RESEARCH** · the world-market monopoly markup is real (F241 addendum): world price × (1 + 0.2 × the top exporter market's share) on EVERY traded good (the
+  default threshold is below 0.36); removing it (`NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD` 0.99) drops the price for ~2 weeks and cuts the leader's exports of
+  the freed goods ~6–9% while importers take ~4–11% more for the first two months. Open: what it does over decades (old-rung survival abroad), and the default threshold's exact value
+
 - **OPEN** · L37 the stop watcher goes blind on a multi-setup schedule
 - **OPEN** · detectors owed: L19 orphaned game process, L23 raw-counted repeated log lines, L11 wrong/nonexistent tag, L9 per-run error windows
 - **OPEN** · live proofs owed: quarantined-save resume hooks, L29 scheduler abort, L34 fresh-start restart
