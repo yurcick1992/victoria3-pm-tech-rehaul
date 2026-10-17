@@ -10078,3 +10078,18 @@ periods on e3 are not significantly better than e2. Idea: add cost1-factor, simi
 5. **Measured (FINDINGS F234, n=3, 2026-10-14):** 3 intact / 0 broken, world GDP 0.95 / 0.84 / 1.01, consensus loss 5.37 against the canon's 7.28,
    the closed-major term 0; e3 pays back in about two thirds of e2's time in two seeds of three; PI no longer falls and the input-price problem
    market-years rose 208 → 245. Not ruled on.
+
+## §10.102 — THE NEXT ARM CARRIES `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99`; CANONISED ONLY AFTER AT LEAST n=3 PERFORMANCE TESTS (user-ruled 2026-10-17; FINDINGS F241)
+The user, 2026-10-17, after the probes of F241: *"We will likely go with that in the future. While we won't canonize it prematurely, before at least
+performance tests on n=3, I want the next arm to have this change"* — and, on scope, *"Vanilla in-market monopolies are broken by design, but are out of
+scope for us"* (the lever was acceptable only because it touches foreign trade alone).
+1. **What it is:** the engine's own key for the world-market monopoly threshold (its define registry; vanilla's file misnames it
+   `WORLD_MARKET_MONOPOLY_MIN_SHARE`, a dead key, and sets the real one nowhere). Vanilla's default is below 0.36, so EVERY traded good's world price
+   carries `MONOPOLY_PRICE_IMPACT` 0.2 × its leading exporting market's share (+7% to +20%). At 0.99 the markup stays only on goods one market exports
+   above 99%. Country and company monopolies do not read it.
+2. **What it does, measured (F241, one year from the user's 1935 save):** the freed goods' world prices drop by exactly the markup in week 1 and climb back
+   within 2–3 weeks; trade centres re-allocate full capacity — the freed goods' world exports −5 to −9%, imports +4 to +11% in months 1–2; importers' local
+   prices ×0.990 at week 4; markets with no trade capacity bit-identical for the first month; in-market company monopolies show no change of their own.
+3. **The book:** `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` + twin = the canon + `game_defines` + `_wm99_variant`, nothing else (field diff
+   proven; build diff = the `NEconomy` block). Every next arm builds on it. Deployed for a playtest 2026-10-17 21:23 (`mod_playtest_wm99/`).
+4. **Before canonising:** at least n=3 performance tests (the wall clock against vanilla and the canon); the economic read comes from the same batch.

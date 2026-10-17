@@ -298,6 +298,10 @@ the three motor rungs' inputs / target_be / wage_pct, the five merge hosts' ai_v
 and steel 3,000 → 5,000; fertilizer 1,000, no block), and the provenance records — nothing else; against the measured m10ac book: `dams.private` and its
 records only. Measured as m10ac WITHOUT private dams (F239, n=3): 3 intact, world GDP 1.02 / 1.04 / 1.12, consensus loss 6.72 (F227 7.28), misplaced
 capital NOT lower (22% median against the canon's 20%), play ×1.06. ⚠ The combination is UNMEASURED over a century. Built and DEPLOYED 2026-10-16 20:42.
+⚠ **SINCE 2026-10-17 21:23 THE DEPLOYED COPY IS NOT THE CANON** (user-asked, for a playtest): it is `mod_playtest_wm99/`, built from the NEXT ARM's book
+`config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` = the canon + `game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` (BALANCE_FRAMEWORK
+§10.102, FINDINGS F241; no telemetry; build diff against `mod/` = the `NEconomy` block alone). Every next arm builds on that book; it is canonised only
+after at least n=3 performance tests. `mod/` is still the canon: restore the deployed copy with robocopy /MIR from it.
 ⭐⭐ **FROM 2026-10-16 AFTERNOON TO EVENING THE CANON'S BYTES WERE `config/mod_config.jex-dam4s-rs-x25-dpriv.json` + twin** (sha256 `5bd4c706551d4da8`; the twin
 unchanged, `04ac513168388956`): `jex-dam4s-rs-x25` with **private dam construction everywhere**, `dams.private = all` (user: *"Canonize this change"*,
 the variant *"Everywhere, and mandate their subsidies"*; BALANCE_FRAMEWORK §10.89.14, FINDINGS F239–F240). Field diff against `jex-dam4s-rs-x25`:
@@ -1785,6 +1789,10 @@ config/mod_config.jex-dam4s-rb.json / config/mod_config.jex-dam4s-rs.json ⭐⭐
 config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json ⭐⭐⭐ THE CANON SINCE 2026-10-16 EVENING (config/mod_config.json is a verbatim copy) + its tree twin
                         (x25's, byte for byte): the measured `jex-dam4s-rs-x25-m10ac` (engines unlifted, the conditional merge-host desire; F239) +
                         `dams.private = all` + the `_canon_2026_10_16` record, nothing else. Un-ignored with its twin
+config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json ⭐⭐ THE NEXT ARM'S BASE (user-ruled 2026-10-17, BALANCE_FRAMEWORK §10.102) + its tree twin (the canon's,
+                        byte for byte): the canon + `game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` (the world-market monopoly markup off for every
+                        good whose top exporter holds ≤ 99% of world exports; FINDINGS F241) + `_wm99_variant`, nothing else. Deployed for a playtest 2026-10-17
+                        (`mod_playtest_wm99/`); canonised only after at least n=3 performance tests. Un-ignored with its twin
 config/mod_config.jex-dam4s-rs-x25-dpriv.json (HISTORY) the canon on the afternoon of 2026-10-16 + its tree twin: jex-dam4s-rs-x25 + `dams.private = all`
                         (private dam construction under the government check's conditions), nothing else (§10.89.14, F240). Un-ignored with its twin
 config/mod_config.jex-dam4s-rs-m10.json ⚗ THE ENGINE LADDER UNLIFTED (user-ruled 2026-10-13, BALANCE_FRAMEWORK §10.101, FINDINGS F232) + its tree twin (the canon's,

@@ -23047,6 +23047,24 @@ priority … and the trade routes slowly restructuring").** The first write-up r
 ⇒ For the design question (do a leader's exports kill old rungs abroad?): the knob does not keep world prices lower; it moves VOLUME — the leader
 exports ~6–9% less of the freed goods, and importers take ~4–11% more of them in the first two months. Whether that import gain persists is not
 readable here (after month 2 the import ratios scatter both ways; the year's geometric mean is ×1.002), and its effect on old rungs abroad is
-unmeasured. Measuring it needs replicates — several start saves × both arms × several years — not one pair. The markup's readout in game: the world-price tooltip
+unmeasured. Measuring it needs replicates — several start saves × both arms × several years — not one pair.
+- **Importers' LOCAL prices** (market telemetry of the 11 instrumented markets, 1935.2.1 ≈ week 4): where a market imports a freed good, its price is
+  ×0.990 median (lower in 70% of 152 cells) on imports ×1.069; importers of the kept goods ×0.999 (51% lower, imports ×1.000); markets neither
+  importing nor exporting a good ×1.000. By 1935.4.1 ×0.991 (56% lower), imports ×1.018. The importer's price falls only through the extra import
+  volume its full capacity lets in, so it is small; week-1 local prices are not in the telemetry.
+- **Nothing outside trade, at first.** After one month 59 of the 71 markets with NO trade capacity (0.9% of world GDP) have bit-identical GDP
+  (the rest within 0.058%), against 0 of 33 trading markets (median |ΔGDP| 0.95%; the largest a tiny trade-dependent one, Maharashtra, £0.50M →
+  £0.33M). The first divergent EVENT is Maharashtra's default on 1935.1.19 in the 0.99 run only. Second-order effects then spread (by 1935.7.1 only 14
+  of 73 no-trade markets are identical), and after the divergence the runs differ chaotically. The binary ties the threshold only to the world-price
+  markup and its readouts (`GetWorldMarketMonopolyPriceImpact` / `…Fraction`, the tooltip); no script trigger names it, and country / company
+  monopolies are separate mechanics on building types.
+- **In-market company monopolies show no change of their own.** The 1935 save holds them on 13 country records (each `monopolies` entry a building-type
+  index → the HQ that owns it): Britain (Bolckow Vaughan: steel rungs, coal; HBC: logging, fishing), Prussia (Krupp: steel rungs), the USA (Lee Wilson:
+  wheat, cotton), Russia (Russian-American Co.: logging, whaling), Italy (metalworks: tooling), France (DMC: textile), China (tea), the Ottomans (food), Cuba
+  (Gran Azucarera: ranching, sugar, logging, railways), British India (Sassoon: cotton, opium) and three minors. In the instrumented markets their goods'
+  local prices at 1935.2.1 move like the market's other goods (thr99 ÷ canon about ×0.995 against medians ×0.99–1.00, mostly inside each market's
+  p10–p90). The two clear outliers are EXPORTED goods whose own market leads world exports — Qing tea ×0.927 (China 75% of world tea exports), Italian
+  tools ×0.952 — i.e. the world-market channel, not the in-market markup; one untraded cell is unexplained (Ottoman groceries ×1.077). One run: a small
+  in-market effect cannot be excluded, but none shows. The markup's readout in game: the world-price tooltip
 (`GOODS_MONOPOLY_WORLD_MARKET_PRICE_DESC`) or `Goods.GetWorldMarketMonopolyPriceImpact`. ⚠ The instrument: `emit_techs.mjs` now accepts engine-registered keys absent from vanilla's file
 (`ENGINE_ONLY_DEFINES`, today this one) and still refuses the dead ones. n=1 against n=1, deterministic until the first divergence, chaotic after it.

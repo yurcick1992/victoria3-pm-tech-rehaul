@@ -17,6 +17,9 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
    research ~10 behind vanilla, tech spread ×2 (deferred).
 1b. **NOW (2026-10-13):** the canon is `jex-dam4s-rs-x25` (the one innovation parameter x = 25, universities × x/150; unmeasured, deployed) — since 2026-10-16 `jex-dam4s-rs-x25-dpriv` (the same + private dam construction, §10.89.14), and since 2026-10-16 EVENING `jex-dam4s-rs-x25-m10ac-dpriv` = that + the engine ladder unlifted (§10.101) + the conditional merge-host desire (§10.91.2) — F239 measured them without private dams (3 intact, loss 6.72, misplaced capital not lower); the combination is deployed and UNMEASURED. Measured and NOT canon: the engine ladder unlifted with 48-month research stages (F233 — 3 intact, but the leader 20.5% of game era 4 at 1905: the stages overshoot). Routine levers ruled (§10.101.1); likely next: paper's own lift (1.0–1.3, today 1.2), the stage length between 36 and 48 months, and measuring x/150. Nothing launched.
 1c. **NEXT (2026-10-16):** measure the canon `jex-dam4s-rs-x25-m10ac-dpriv` over the century (3 × 1836→1936, fixed n; F239 measured everything in it but the private dams, which only the exaggerated probe of F240 has seen) — proposed, NOT launched; it is the base the next lever reads against (paper's own lift, the stage length, the cost ladder of F234).
+1d. **RULED (2026-10-17, §10.102):** the NEXT ARM carries `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` — book
+   `jex-dam4s-rs-x25-m10ac-dpriv-wm99` (the canon + that define; F241). Canonised only after at least n=3 performance tests. Deployed for the user's
+   playtest 2026-10-17 21:23 (`mod_playtest_wm99/`); the canon is restored with `robocopy mod <Documents mod folder> /MIR`.
 2. **Balance campaign** on the canon that results: the price path, the old rung in the consumer chains, the hoard (B), with the tech-tree
    and AI items that bear on them (C, D).
 3. **Final balance check.**
