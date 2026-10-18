@@ -9849,8 +9849,11 @@ Park, GE, Bell, DuPont) — consistent with the premise; agriculture (experiment
    out of era 5 for the whole century while Belgium and Germany passed — rejected on that reading.)
 5. **Followers: the mark is HALVED at every stage once a NON-isolationist country holds the technology**, and only for an entry country that is
    itself NOT isolationist (user: *"have it hit both ways"*). One global flag per technology, raised once and forever by the first holder that is not
-   under the isolationist trade policy at the time (set in the global `on_monthly_pulse`; a holder annexed or turning isolationist later is ignored by
-   ruling); an isolationist country never gets the halved mark, whatever the flag says.
+   under the isolationist trade policy at the time (raised on acquisition, at the campaign start for what is already held, and by a yearly sweep
+   for a holder that drops isolationism later; a holder annexed or turning isolationist later is ignored by ruling); an isolationist country never
+   gets the halved mark, whatever the flag says. ⚠ "Isolationist" is the law OR ANY VARIANT of it: the Qing's `law_canton_system` and Japan's
+   `law_sakoku` (`parent = law_isolationism`). Until 2026-10-17 the test was `has_law`, false for a variant, so both 1836 isolationists raised the
+   flag and took the halved mark (BUGS_AND_FIXES 2026-10-17).
 6. **Ordinary research halved** — `base_values` innovation 50 → 25 and cap 50 → 25, the cap's literacy term 50 → 25 (vanilla 150); **universities
    stay at candidate A's ×0.5 of vanilla** (user). Research = min(innovation, cap), so: a country on the base alone (the tall minors — Belgium,
    Sweden, Sardinia, Denmark, Switzerland at innovation ~50 against caps of 73–94) halves exactly (25 against a cap of ~40–48); a major on its cap

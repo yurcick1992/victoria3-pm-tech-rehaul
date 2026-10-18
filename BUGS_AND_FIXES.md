@@ -13,6 +13,31 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-10-17 — the Qing and Japan counted as NOT isolationist for the research entries' follower halving
+
+**Symptom (the user's playtest of `mod_playtest_wm99`, as the Qing).** Baking powder's research entry ran at half its mark, though the Qing
+is isolationist and §10.97 rule 5 says an isolationist country never gets the halved mark. The game's own log showed it: the flag
+`pmr_held_baking_powder` raised by Belgium on 1852-11-08 (legitimately), then `PMR_JEH|inception|baking_powder|Great Qing|June 2, 1856`.
+`PMR_JEH` is logged only for a stage completed on the halved mark.
+
+**Root cause.** The Qing's trade policy is `law_canton_system` and Japan's is `law_sakoku`. Both are vanilla VARIANTS of isolationism
+(`parent = law_isolationism` in `common/laws/01_trade_policy.txt`). `emit_research_events.mjs` tested `has_law = law_type:law_isolationism`,
+which is false for a variant. So in all 581 places the test appeared (every halved term, every full-mark term, the flag raising on
+acquisition, at the campaign start and in the yearly sweep, and the PMR_JEH log), the two 1836 isolationists read as open countries. They
+took the halved mark and could raise a technology's flag themselves. Vanilla's own trade-policy laws test the group with `has_law_or_variant`.
+
+**Fix.** `has_law_or_variant = law_type:<isolationist_law>`. The rebuilt mod differs from the old one in that test alone (and the build
+stamps), proven file by file against the deployed playtest copy. No other emitted `has_law` names a law that has a variant (checked against
+every `parent =` in vanilla's laws: the §10.98 condition entries test traditionalism, suffrage, welfare and similar laws, none of them a parent).
+⚠ A live save keeps any flag a variant-isolationist raised before the fix ("raised once and forever"). In the user's game the baking powder
+flag came from Belgium, so it is correct. The Qing's progress already earned on the halved mark stays.
+
+**Detect next time.** Any `has_law` on a law that has variants is this bug. List them with
+`awk '/^law_[a-z_]* = \{/{n=$1} /^\tparent = /{print n, "->", $3}' <game>/common/laws/*.txt` before writing a law test. Prefer
+`has_law_or_variant` unless a variant must deliberately be excluded.
+
+---
+
 ## 2026-10-11 — the 2026-10-05 fix made every merged building's secondary copies unselectable
 
 **Symptom (the user's playtest of `mod_playtest_ra`, 1836 → 1911, as the USA).** On the merged hosts (Era 1-2 food, textile and furniture),

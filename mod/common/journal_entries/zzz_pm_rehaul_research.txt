@@ -17,7 +17,7 @@ je_pmr_analytical_philosophy_inception = {
 			add_technology_progress = { progress = 8750  technology = analytical_philosophy }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_analytical_philosophy  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_analytical_philosophy  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|analytical_philosophy|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -51,7 +51,7 @@ je_pmr_analytical_philosophy_development = {
 			add_technology_progress = { progress = 8750  technology = analytical_philosophy }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_analytical_philosophy  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_analytical_philosophy  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|analytical_philosophy|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -84,7 +84,7 @@ je_pmr_analytical_philosophy_implementation = {
 					add_technology_progress = { progress = 8750  technology = analytical_philosophy }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_analytical_philosophy  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_analytical_philosophy  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|analytical_philosophy|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_analytical_philosophy }  change_variable = { name = pmr_impl_analytical_philosophy  add = 1 } }
@@ -223,7 +223,7 @@ je_pmr_aniline_inception = {
 			add_technology_progress = { progress = 6250  technology = aniline }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_aniline  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|aniline|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -257,7 +257,7 @@ je_pmr_aniline_development = {
 			add_technology_progress = { progress = 6250  technology = aniline }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_aniline  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|aniline|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -290,7 +290,7 @@ je_pmr_aniline_implementation = {
 					add_technology_progress = { progress = 6250  technology = aniline }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_aniline  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|aniline|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_aniline }  change_variable = { name = pmr_impl_aniline  add = 1 } }
@@ -332,7 +332,7 @@ je_pmr_antibiotics_inception = {
 			add_technology_progress = { progress = 8750  technology = antibiotics }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_antibiotics  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_antibiotics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|antibiotics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -366,7 +366,7 @@ je_pmr_antibiotics_development = {
 			add_technology_progress = { progress = 8750  technology = antibiotics }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_antibiotics  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_antibiotics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|antibiotics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -399,7 +399,7 @@ je_pmr_antibiotics_implementation = {
 					add_technology_progress = { progress = 8750  technology = antibiotics }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_antibiotics  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_antibiotics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|antibiotics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_antibiotics }  change_variable = { name = pmr_impl_antibiotics  add = 1 } }
@@ -441,7 +441,7 @@ je_pmr_arc_welding_inception = {
 			add_technology_progress = { progress = 8750  technology = arc_welding }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_arc_welding  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_arc_welding  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|arc_welding|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -475,7 +475,7 @@ je_pmr_arc_welding_development = {
 			add_technology_progress = { progress = 8750  technology = arc_welding }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_arc_welding  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_arc_welding  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|arc_welding|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -508,7 +508,7 @@ je_pmr_arc_welding_implementation = {
 					add_technology_progress = { progress = 8750  technology = arc_welding }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_arc_welding  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_arc_welding  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|arc_welding|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_arc_welding }  change_variable = { name = pmr_impl_arc_welding  add = 1 } }
@@ -550,7 +550,7 @@ je_pmr_art_silk_inception = {
 			add_technology_progress = { progress = 7500  technology = art_silk }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_art_silk  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_art_silk  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|art_silk|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -584,7 +584,7 @@ je_pmr_art_silk_development = {
 			add_technology_progress = { progress = 7500  technology = art_silk }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_art_silk  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_art_silk  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|art_silk|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -617,7 +617,7 @@ je_pmr_art_silk_implementation = {
 					add_technology_progress = { progress = 7500  technology = art_silk }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_art_silk  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_art_silk  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|art_silk|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_art_silk }  change_variable = { name = pmr_impl_art_silk  add = 1 } }
@@ -659,7 +659,7 @@ je_pmr_atmospheric_engine_inception = {
 			add_technology_progress = { progress = 5000  technology = atmospheric_engine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|atmospheric_engine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -693,7 +693,7 @@ je_pmr_atmospheric_engine_development = {
 			add_technology_progress = { progress = 5000  technology = atmospheric_engine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|atmospheric_engine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -726,7 +726,7 @@ je_pmr_atmospheric_engine_implementation = {
 					add_technology_progress = { progress = 5000  technology = atmospheric_engine }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|atmospheric_engine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_atmospheric_engine }  change_variable = { name = pmr_impl_atmospheric_engine  add = 1 } }
@@ -768,7 +768,7 @@ je_pmr_automatic_bottle_blowers_inception = {
 			add_technology_progress = { progress = 7500  technology = automatic_bottle_blowers }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_automatic_bottle_blowers  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_automatic_bottle_blowers  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|automatic_bottle_blowers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -802,7 +802,7 @@ je_pmr_automatic_bottle_blowers_development = {
 			add_technology_progress = { progress = 7500  technology = automatic_bottle_blowers }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_automatic_bottle_blowers  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_automatic_bottle_blowers  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|automatic_bottle_blowers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -835,7 +835,7 @@ je_pmr_automatic_bottle_blowers_implementation = {
 					add_technology_progress = { progress = 7500  technology = automatic_bottle_blowers }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_automatic_bottle_blowers  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_automatic_bottle_blowers  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|automatic_bottle_blowers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_automatic_bottle_blowers }  change_variable = { name = pmr_impl_automatic_bottle_blowers  add = 1 } }
@@ -877,7 +877,7 @@ je_pmr_automatic_machine_guns_inception = {
 			add_technology_progress = { progress = 7500  technology = automatic_machine_guns }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|automatic_machine_guns|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -911,7 +911,7 @@ je_pmr_automatic_machine_guns_development = {
 			add_technology_progress = { progress = 7500  technology = automatic_machine_guns }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|automatic_machine_guns|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -944,7 +944,7 @@ je_pmr_automatic_machine_guns_implementation = {
 					add_technology_progress = { progress = 7500  technology = automatic_machine_guns }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|automatic_machine_guns|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_automatic_machine_guns }  change_variable = { name = pmr_impl_automatic_machine_guns  add = 1 } }
@@ -986,7 +986,7 @@ je_pmr_baking_powder_inception = {
 			add_technology_progress = { progress = 5000  technology = baking_powder }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_baking_powder  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_baking_powder  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|baking_powder|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1020,7 +1020,7 @@ je_pmr_baking_powder_development = {
 			add_technology_progress = { progress = 5000  technology = baking_powder }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_baking_powder  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_baking_powder  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|baking_powder|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1053,7 +1053,7 @@ je_pmr_baking_powder_implementation = {
 					add_technology_progress = { progress = 5000  technology = baking_powder }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_baking_powder  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_baking_powder  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|baking_powder|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_baking_powder }  change_variable = { name = pmr_impl_baking_powder  add = 1 } }
@@ -1192,7 +1192,7 @@ je_pmr_behaviorism_inception = {
 			add_technology_progress = { progress = 8750  technology = behaviorism }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_behaviorism  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_behaviorism  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|behaviorism|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1226,7 +1226,7 @@ je_pmr_behaviorism_development = {
 			add_technology_progress = { progress = 8750  technology = behaviorism }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_behaviorism  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_behaviorism  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|behaviorism|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1259,7 +1259,7 @@ je_pmr_behaviorism_implementation = {
 					add_technology_progress = { progress = 8750  technology = behaviorism }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_behaviorism  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_behaviorism  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|behaviorism|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_behaviorism }  change_variable = { name = pmr_impl_behaviorism  add = 1 } }
@@ -1301,7 +1301,7 @@ je_pmr_bessemer_process_inception = {
 			add_technology_progress = { progress = 5000  technology = bessemer_process }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_bessemer_process  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_bessemer_process  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|bessemer_process|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1335,7 +1335,7 @@ je_pmr_bessemer_process_development = {
 			add_technology_progress = { progress = 5000  technology = bessemer_process }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_bessemer_process  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_bessemer_process  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|bessemer_process|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1368,7 +1368,7 @@ je_pmr_bessemer_process_implementation = {
 					add_technology_progress = { progress = 5000  technology = bessemer_process }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_bessemer_process  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_bessemer_process  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|bessemer_process|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_bessemer_process }  change_variable = { name = pmr_impl_bessemer_process  add = 1 } }
@@ -1410,7 +1410,7 @@ je_pmr_bolt_action_rifles_inception = {
 			add_technology_progress = { progress = 7500  technology = bolt_action_rifles }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|bolt_action_rifles|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1444,7 +1444,7 @@ je_pmr_bolt_action_rifles_development = {
 			add_technology_progress = { progress = 7500  technology = bolt_action_rifles }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|bolt_action_rifles|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1477,7 +1477,7 @@ je_pmr_bolt_action_rifles_implementation = {
 					add_technology_progress = { progress = 7500  technology = bolt_action_rifles }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|bolt_action_rifles|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_bolt_action_rifles }  change_variable = { name = pmr_impl_bolt_action_rifles  add = 1 } }
@@ -1616,7 +1616,7 @@ je_pmr_canneries_inception = {
 			add_technology_progress = { progress = 5000  technology = canneries }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_canneries  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_canneries  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|canneries|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1650,7 +1650,7 @@ je_pmr_canneries_development = {
 			add_technology_progress = { progress = 5000  technology = canneries }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_canneries  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_canneries  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|canneries|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1683,7 +1683,7 @@ je_pmr_canneries_implementation = {
 					add_technology_progress = { progress = 5000  technology = canneries }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_canneries  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_canneries  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|canneries|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_canneries }  change_variable = { name = pmr_impl_canneries  add = 1 } }
@@ -1725,7 +1725,7 @@ je_pmr_catalytic_synthesis_inception = {
 			add_technology_progress = { progress = 8750  technology = catalytic_synthesis }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_catalytic_synthesis  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_catalytic_synthesis  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|catalytic_synthesis|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1759,7 +1759,7 @@ je_pmr_catalytic_synthesis_development = {
 			add_technology_progress = { progress = 8750  technology = catalytic_synthesis }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_catalytic_synthesis  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_catalytic_synthesis  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|catalytic_synthesis|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1792,7 +1792,7 @@ je_pmr_catalytic_synthesis_implementation = {
 					add_technology_progress = { progress = 8750  technology = catalytic_synthesis }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_catalytic_synthesis  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_catalytic_synthesis  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|catalytic_synthesis|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_catalytic_synthesis }  change_variable = { name = pmr_impl_catalytic_synthesis  add = 1 } }
@@ -1834,7 +1834,7 @@ je_pmr_central_archives_inception = {
 			add_technology_progress = { progress = 5000  technology = central_archives }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_central_archives  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_central_archives  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|central_archives|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1868,7 +1868,7 @@ je_pmr_central_archives_development = {
 			add_technology_progress = { progress = 5000  technology = central_archives }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_central_archives  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_central_archives  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|central_archives|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1901,7 +1901,7 @@ je_pmr_central_archives_implementation = {
 					add_technology_progress = { progress = 5000  technology = central_archives }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_central_archives  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_central_archives  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|central_archives|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_central_archives }  change_variable = { name = pmr_impl_central_archives  add = 1 } }
@@ -1943,7 +1943,7 @@ je_pmr_central_banking_inception = {
 			add_technology_progress = { progress = 5000  technology = central_banking }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_central_banking  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_central_banking  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|central_banking|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -1977,7 +1977,7 @@ je_pmr_central_banking_development = {
 			add_technology_progress = { progress = 5000  technology = central_banking }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_central_banking  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_central_banking  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|central_banking|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2010,7 +2010,7 @@ je_pmr_central_banking_implementation = {
 					add_technology_progress = { progress = 5000  technology = central_banking }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_central_banking  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_central_banking  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|central_banking|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_central_banking }  change_variable = { name = pmr_impl_central_banking  add = 1 } }
@@ -2149,7 +2149,7 @@ je_pmr_chemical_bleaching_inception = {
 			add_technology_progress = { progress = 5000  technology = chemical_bleaching }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_chemical_bleaching  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_chemical_bleaching  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|chemical_bleaching|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2183,7 +2183,7 @@ je_pmr_chemical_bleaching_development = {
 			add_technology_progress = { progress = 5000  technology = chemical_bleaching }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_chemical_bleaching  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_chemical_bleaching  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|chemical_bleaching|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2216,7 +2216,7 @@ je_pmr_chemical_bleaching_implementation = {
 					add_technology_progress = { progress = 5000  technology = chemical_bleaching }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_chemical_bleaching  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_chemical_bleaching  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|chemical_bleaching|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_chemical_bleaching }  change_variable = { name = pmr_impl_chemical_bleaching  add = 1 } }
@@ -2355,7 +2355,7 @@ je_pmr_combustion_engine_inception = {
 			add_technology_progress = { progress = 7500  technology = combustion_engine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_combustion_engine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|combustion_engine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2389,7 +2389,7 @@ je_pmr_combustion_engine_development = {
 			add_technology_progress = { progress = 7500  technology = combustion_engine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_combustion_engine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|combustion_engine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2422,7 +2422,7 @@ je_pmr_combustion_engine_implementation = {
 					add_technology_progress = { progress = 7500  technology = combustion_engine }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_combustion_engine  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|combustion_engine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_combustion_engine }  change_variable = { name = pmr_impl_combustion_engine  add = 1 } }
@@ -2464,7 +2464,7 @@ je_pmr_compression_ignition_inception = {
 			add_technology_progress = { progress = 8750  technology = compression_ignition }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|compression_ignition|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2498,7 +2498,7 @@ je_pmr_compression_ignition_development = {
 			add_technology_progress = { progress = 8750  technology = compression_ignition }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|compression_ignition|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2531,7 +2531,7 @@ je_pmr_compression_ignition_implementation = {
 					add_technology_progress = { progress = 8750  technology = compression_ignition }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|compression_ignition|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_compression_ignition }  change_variable = { name = pmr_impl_compression_ignition  add = 1 } }
@@ -2573,7 +2573,7 @@ je_pmr_continuous_web_processing_inception = {
 			add_technology_progress = { progress = 8750  technology = continuous_web_processing }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_continuous_web_processing  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_continuous_web_processing  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|continuous_web_processing|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2607,7 +2607,7 @@ je_pmr_continuous_web_processing_development = {
 			add_technology_progress = { progress = 8750  technology = continuous_web_processing }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_continuous_web_processing  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_continuous_web_processing  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|continuous_web_processing|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2640,7 +2640,7 @@ je_pmr_continuous_web_processing_implementation = {
 					add_technology_progress = { progress = 8750  technology = continuous_web_processing }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_continuous_web_processing  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_continuous_web_processing  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|continuous_web_processing|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_continuous_web_processing }  change_variable = { name = pmr_impl_continuous_web_processing  add = 1 } }
@@ -2682,7 +2682,7 @@ je_pmr_conveyors_inception = {
 			add_technology_progress = { progress = 7500  technology = conveyors }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_conveyors  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_conveyors  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|conveyors|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2716,7 +2716,7 @@ je_pmr_conveyors_development = {
 			add_technology_progress = { progress = 7500  technology = conveyors }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_conveyors  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_conveyors  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|conveyors|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2749,7 +2749,7 @@ je_pmr_conveyors_implementation = {
 					add_technology_progress = { progress = 7500  technology = conveyors }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_conveyors  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_conveyors  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|conveyors|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_conveyors }  change_variable = { name = pmr_impl_conveyors  add = 1 } }
@@ -2791,7 +2791,7 @@ je_pmr_corporate_charters_inception = {
 			add_technology_progress = { progress = 5000  technology = corporate_charters }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_corporate_charters  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_corporate_charters  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|corporate_charters|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2825,7 +2825,7 @@ je_pmr_corporate_charters_development = {
 			add_technology_progress = { progress = 5000  technology = corporate_charters }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_corporate_charters  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_corporate_charters  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|corporate_charters|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2858,7 +2858,7 @@ je_pmr_corporate_charters_implementation = {
 					add_technology_progress = { progress = 5000  technology = corporate_charters }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_corporate_charters  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_corporate_charters  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|corporate_charters|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_corporate_charters }  change_variable = { name = pmr_impl_corporate_charters  add = 1 } }
@@ -2900,7 +2900,7 @@ je_pmr_corporate_management_inception = {
 			add_technology_progress = { progress = 7500  technology = corporate_management }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_corporate_management  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_corporate_management  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|corporate_management|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2934,7 +2934,7 @@ je_pmr_corporate_management_development = {
 			add_technology_progress = { progress = 7500  technology = corporate_management }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_corporate_management  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_corporate_management  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|corporate_management|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -2967,7 +2967,7 @@ je_pmr_corporate_management_implementation = {
 					add_technology_progress = { progress = 7500  technology = corporate_management }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_corporate_management  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_corporate_management  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|corporate_management|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_corporate_management }  change_variable = { name = pmr_impl_corporate_management  add = 1 } }
@@ -3106,7 +3106,7 @@ je_pmr_cotton_gin_inception = {
 			add_technology_progress = { progress = 3750  technology = cotton_gin }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_cotton_gin  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_cotton_gin  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|cotton_gin|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3140,7 +3140,7 @@ je_pmr_cotton_gin_development = {
 			add_technology_progress = { progress = 3750  technology = cotton_gin }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_cotton_gin  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_cotton_gin  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|cotton_gin|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3173,7 +3173,7 @@ je_pmr_cotton_gin_implementation = {
 					add_technology_progress = { progress = 3750  technology = cotton_gin }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_cotton_gin  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_cotton_gin  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|cotton_gin|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_cotton_gin }  change_variable = { name = pmr_impl_cotton_gin  add = 1 } }
@@ -3215,7 +3215,7 @@ je_pmr_crystal_glass_inception = {
 			add_technology_progress = { progress = 5000  technology = crystal_glass }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_crystal_glass  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_crystal_glass  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|crystal_glass|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3249,7 +3249,7 @@ je_pmr_crystal_glass_development = {
 			add_technology_progress = { progress = 5000  technology = crystal_glass }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_crystal_glass  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_crystal_glass  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|crystal_glass|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3282,7 +3282,7 @@ je_pmr_crystal_glass_implementation = {
 					add_technology_progress = { progress = 5000  technology = crystal_glass }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_crystal_glass  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_crystal_glass  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|crystal_glass|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_crystal_glass }  change_variable = { name = pmr_impl_crystal_glass  add = 1 } }
@@ -3518,7 +3518,7 @@ je_pmr_dialectics_inception = {
 			add_technology_progress = { progress = 5000  technology = dialectics }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_dialectics  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_dialectics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|dialectics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3552,7 +3552,7 @@ je_pmr_dialectics_development = {
 			add_technology_progress = { progress = 5000  technology = dialectics }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_dialectics  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_dialectics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|dialectics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3585,7 +3585,7 @@ je_pmr_dialectics_implementation = {
 					add_technology_progress = { progress = 5000  technology = dialectics }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_dialectics  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_dialectics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|dialectics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_dialectics }  change_variable = { name = pmr_impl_dialectics  add = 1 } }
@@ -3627,7 +3627,7 @@ je_pmr_distillation_inception = {
 			add_technology_progress = { progress = 3750  technology = distillation }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_distillation  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_distillation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|distillation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3661,7 +3661,7 @@ je_pmr_distillation_development = {
 			add_technology_progress = { progress = 3750  technology = distillation }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_distillation  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_distillation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|distillation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3694,7 +3694,7 @@ je_pmr_distillation_implementation = {
 					add_technology_progress = { progress = 3750  technology = distillation }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_distillation  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_distillation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|distillation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_distillation }  change_variable = { name = pmr_impl_distillation  add = 1 } }
@@ -3736,7 +3736,7 @@ je_pmr_dough_rollers_inception = {
 			add_technology_progress = { progress = 8750  technology = dough_rollers }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_dough_rollers  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_dough_rollers  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|dough_rollers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3770,7 +3770,7 @@ je_pmr_dough_rollers_development = {
 			add_technology_progress = { progress = 8750  technology = dough_rollers }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_dough_rollers  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_dough_rollers  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|dough_rollers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3803,7 +3803,7 @@ je_pmr_dough_rollers_implementation = {
 					add_technology_progress = { progress = 8750  technology = dough_rollers }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_dough_rollers  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_dough_rollers  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|dough_rollers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_dough_rollers }  change_variable = { name = pmr_impl_dough_rollers  add = 1 } }
@@ -3942,7 +3942,7 @@ je_pmr_dynamite_inception = {
 			add_technology_progress = { progress = 6250  technology = dynamite }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_dynamite  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|dynamite|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -3976,7 +3976,7 @@ je_pmr_dynamite_development = {
 			add_technology_progress = { progress = 6250  technology = dynamite }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_dynamite  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|dynamite|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4009,7 +4009,7 @@ je_pmr_dynamite_implementation = {
 					add_technology_progress = { progress = 6250  technology = dynamite }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_dynamite  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|dynamite|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_dynamite }  change_variable = { name = pmr_impl_dynamite  add = 1 } }
@@ -4148,7 +4148,7 @@ je_pmr_electric_arc_process_inception = {
 			add_technology_progress = { progress = 7500  technology = electric_arc_process }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_electric_arc_process  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_electric_arc_process  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|electric_arc_process|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4182,7 +4182,7 @@ je_pmr_electric_arc_process_development = {
 			add_technology_progress = { progress = 7500  technology = electric_arc_process }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_electric_arc_process  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_electric_arc_process  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|electric_arc_process|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4215,7 +4215,7 @@ je_pmr_electric_arc_process_implementation = {
 					add_technology_progress = { progress = 7500  technology = electric_arc_process }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_electric_arc_process  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_electric_arc_process  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|electric_arc_process|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_electric_arc_process }  change_variable = { name = pmr_impl_electric_arc_process  add = 1 } }
@@ -4257,7 +4257,7 @@ je_pmr_electric_railway_inception = {
 			add_technology_progress = { progress = 7500  technology = electric_railway }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_electric_railway  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_electric_railway  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|electric_railway|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4291,7 +4291,7 @@ je_pmr_electric_railway_development = {
 			add_technology_progress = { progress = 7500  technology = electric_railway }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_electric_railway  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_electric_railway  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|electric_railway|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4324,7 +4324,7 @@ je_pmr_electric_railway_implementation = {
 					add_technology_progress = { progress = 7500  technology = electric_railway }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_electric_railway  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_electric_railway  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|electric_railway|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_electric_railway }  change_variable = { name = pmr_impl_electric_railway  add = 1 } }
@@ -4366,7 +4366,7 @@ je_pmr_electrical_capacitors_inception = {
 			add_technology_progress = { progress = 7500  technology = electrical_capacitors }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|electrical_capacitors|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4400,7 +4400,7 @@ je_pmr_electrical_capacitors_development = {
 			add_technology_progress = { progress = 7500  technology = electrical_capacitors }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|electrical_capacitors|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4433,7 +4433,7 @@ je_pmr_electrical_capacitors_implementation = {
 					add_technology_progress = { progress = 7500  technology = electrical_capacitors }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|electrical_capacitors|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_electrical_capacitors }  change_variable = { name = pmr_impl_electrical_capacitors  add = 1 } }
@@ -4475,7 +4475,7 @@ je_pmr_electrical_generation_inception = {
 			add_technology_progress = { progress = 6250  technology = electrical_generation }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_electrical_generation  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_electrical_generation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|electrical_generation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4509,7 +4509,7 @@ je_pmr_electrical_generation_development = {
 			add_technology_progress = { progress = 6250  technology = electrical_generation }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_electrical_generation  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_electrical_generation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|electrical_generation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4542,7 +4542,7 @@ je_pmr_electrical_generation_implementation = {
 					add_technology_progress = { progress = 6250  technology = electrical_generation }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_electrical_generation  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_electrical_generation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|electrical_generation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_electrical_generation }  change_variable = { name = pmr_impl_electrical_generation  add = 1 } }
@@ -4584,7 +4584,7 @@ je_pmr_elevator_inception = {
 			add_technology_progress = { progress = 7500  technology = elevator }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_elevator  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|elevator|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4618,7 +4618,7 @@ je_pmr_elevator_development = {
 			add_technology_progress = { progress = 7500  technology = elevator }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_elevator  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|elevator|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4651,7 +4651,7 @@ je_pmr_elevator_implementation = {
 					add_technology_progress = { progress = 7500  technology = elevator }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_elevator  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|elevator|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_elevator }  change_variable = { name = pmr_impl_elevator  add = 1 } }
@@ -4790,7 +4790,7 @@ je_pmr_flash_freezing_inception = {
 			add_technology_progress = { progress = 8750  technology = flash_freezing }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_flash_freezing  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_flash_freezing  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|flash_freezing|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4824,7 +4824,7 @@ je_pmr_flash_freezing_development = {
 			add_technology_progress = { progress = 8750  technology = flash_freezing }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_flash_freezing  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_flash_freezing  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|flash_freezing|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4857,7 +4857,7 @@ je_pmr_flash_freezing_implementation = {
 					add_technology_progress = { progress = 8750  technology = flash_freezing }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_flash_freezing  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_flash_freezing  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|flash_freezing|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_flash_freezing }  change_variable = { name = pmr_impl_flash_freezing  add = 1 } }
@@ -4899,7 +4899,7 @@ je_pmr_fractional_distillation_inception = {
 			add_technology_progress = { progress = 5000  technology = fractional_distillation }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_fractional_distillation  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_fractional_distillation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|fractional_distillation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4933,7 +4933,7 @@ je_pmr_fractional_distillation_development = {
 			add_technology_progress = { progress = 5000  technology = fractional_distillation }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_fractional_distillation  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_fractional_distillation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|fractional_distillation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -4966,7 +4966,7 @@ je_pmr_fractional_distillation_implementation = {
 					add_technology_progress = { progress = 5000  technology = fractional_distillation }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_fractional_distillation  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_fractional_distillation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|fractional_distillation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_fractional_distillation }  change_variable = { name = pmr_impl_fractional_distillation  add = 1 } }
@@ -5202,7 +5202,7 @@ je_pmr_identification_documents_inception = {
 			add_technology_progress = { progress = 6250  technology = identification_documents }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_identification_documents  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_identification_documents  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|identification_documents|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5236,7 +5236,7 @@ je_pmr_identification_documents_development = {
 			add_technology_progress = { progress = 6250  technology = identification_documents }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_identification_documents  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_identification_documents  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|identification_documents|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5269,7 +5269,7 @@ je_pmr_identification_documents_implementation = {
 					add_technology_progress = { progress = 6250  technology = identification_documents }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_identification_documents  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_identification_documents  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|identification_documents|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_identification_documents }  change_variable = { name = pmr_impl_identification_documents  add = 1 } }
@@ -5311,7 +5311,7 @@ je_pmr_improved_fertilizer_inception = {
 			add_technology_progress = { progress = 6250  technology = improved_fertilizer }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_improved_fertilizer  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_improved_fertilizer  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|improved_fertilizer|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5345,7 +5345,7 @@ je_pmr_improved_fertilizer_development = {
 			add_technology_progress = { progress = 6250  technology = improved_fertilizer }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_improved_fertilizer  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_improved_fertilizer  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|improved_fertilizer|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5378,7 +5378,7 @@ je_pmr_improved_fertilizer_implementation = {
 					add_technology_progress = { progress = 6250  technology = improved_fertilizer }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_improved_fertilizer  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_improved_fertilizer  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|improved_fertilizer|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_improved_fertilizer }  change_variable = { name = pmr_impl_improved_fertilizer  add = 1 } }
@@ -5420,7 +5420,7 @@ je_pmr_intensive_agriculture_inception = {
 			add_technology_progress = { progress = 5000  technology = intensive_agriculture }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_intensive_agriculture  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_intensive_agriculture  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|intensive_agriculture|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5454,7 +5454,7 @@ je_pmr_intensive_agriculture_development = {
 			add_technology_progress = { progress = 5000  technology = intensive_agriculture }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_intensive_agriculture  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_intensive_agriculture  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|intensive_agriculture|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5487,7 +5487,7 @@ je_pmr_intensive_agriculture_implementation = {
 					add_technology_progress = { progress = 5000  technology = intensive_agriculture }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_intensive_agriculture  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_intensive_agriculture  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|intensive_agriculture|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_intensive_agriculture }  change_variable = { name = pmr_impl_intensive_agriculture  add = 1 } }
@@ -5529,7 +5529,7 @@ je_pmr_international_exchange_standards_inception = {
 			add_technology_progress = { progress = 7500  technology = international_exchange_standards }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|international_exchange_standards|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5563,7 +5563,7 @@ je_pmr_international_exchange_standards_development = {
 			add_technology_progress = { progress = 7500  technology = international_exchange_standards }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|international_exchange_standards|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5596,7 +5596,7 @@ je_pmr_international_exchange_standards_implementation = {
 					add_technology_progress = { progress = 7500  technology = international_exchange_standards }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|international_exchange_standards|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_international_exchange_standards }  change_variable = { name = pmr_impl_international_exchange_standards  add = 1 } }
@@ -5638,7 +5638,7 @@ je_pmr_investment_banks_inception = {
 			add_technology_progress = { progress = 6250  technology = investment_banks }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_investment_banks  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_investment_banks  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|investment_banks|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5672,7 +5672,7 @@ je_pmr_investment_banks_development = {
 			add_technology_progress = { progress = 6250  technology = investment_banks }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_investment_banks  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_investment_banks  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|investment_banks|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5705,7 +5705,7 @@ je_pmr_investment_banks_implementation = {
 					add_technology_progress = { progress = 6250  technology = investment_banks }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_investment_banks  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_investment_banks  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|investment_banks|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_investment_banks }  change_variable = { name = pmr_impl_investment_banks  add = 1 } }
@@ -5844,7 +5844,7 @@ je_pmr_joint_stock_companies_inception = {
 			add_technology_progress = { progress = 5000  technology = joint_stock_companies }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|joint_stock_companies|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5878,7 +5878,7 @@ je_pmr_joint_stock_companies_development = {
 			add_technology_progress = { progress = 5000  technology = joint_stock_companies }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|joint_stock_companies|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -5911,7 +5911,7 @@ je_pmr_joint_stock_companies_implementation = {
 					add_technology_progress = { progress = 5000  technology = joint_stock_companies }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|joint_stock_companies|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_joint_stock_companies }  change_variable = { name = pmr_impl_joint_stock_companies  add = 1 } }
@@ -6050,7 +6050,7 @@ je_pmr_lathe_inception = {
 			add_technology_progress = { progress = 3750  technology = lathe }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_lathe  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|lathe|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6084,7 +6084,7 @@ je_pmr_lathe_development = {
 			add_technology_progress = { progress = 3750  technology = lathe }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_lathe  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|lathe|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6117,7 +6117,7 @@ je_pmr_lathe_implementation = {
 					add_technology_progress = { progress = 3750  technology = lathe }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_lathe  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|lathe|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_lathe }  change_variable = { name = pmr_impl_lathe  add = 1 } }
@@ -6159,7 +6159,7 @@ je_pmr_macroeconomics_inception = {
 			add_technology_progress = { progress = 8750  technology = macroeconomics }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_macroeconomics  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_macroeconomics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|macroeconomics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6193,7 +6193,7 @@ je_pmr_macroeconomics_development = {
 			add_technology_progress = { progress = 8750  technology = macroeconomics }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_macroeconomics  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_macroeconomics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|macroeconomics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6226,7 +6226,7 @@ je_pmr_macroeconomics_implementation = {
 					add_technology_progress = { progress = 8750  technology = macroeconomics }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_macroeconomics  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_macroeconomics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|macroeconomics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_macroeconomics }  change_variable = { name = pmr_impl_macroeconomics  add = 1 } }
@@ -6365,7 +6365,7 @@ je_pmr_mass_surveillance_inception = {
 			add_technology_progress = { progress = 8750  technology = mass_surveillance }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_mass_surveillance  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_mass_surveillance  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|mass_surveillance|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6399,7 +6399,7 @@ je_pmr_mass_surveillance_development = {
 			add_technology_progress = { progress = 8750  technology = mass_surveillance }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_mass_surveillance  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_mass_surveillance  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|mass_surveillance|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6432,7 +6432,7 @@ je_pmr_mass_surveillance_implementation = {
 					add_technology_progress = { progress = 8750  technology = mass_surveillance }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_mass_surveillance  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_mass_surveillance  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|mass_surveillance|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_mass_surveillance }  change_variable = { name = pmr_impl_mass_surveillance  add = 1 } }
@@ -6474,7 +6474,7 @@ je_pmr_mechanical_tools_inception = {
 			add_technology_progress = { progress = 5000  technology = mechanical_tools }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|mechanical_tools|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6508,7 +6508,7 @@ je_pmr_mechanical_tools_development = {
 			add_technology_progress = { progress = 5000  technology = mechanical_tools }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|mechanical_tools|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6541,7 +6541,7 @@ je_pmr_mechanical_tools_implementation = {
 					add_technology_progress = { progress = 5000  technology = mechanical_tools }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|mechanical_tools|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_mechanical_tools }  change_variable = { name = pmr_impl_mechanical_tools  add = 1 } }
@@ -6583,7 +6583,7 @@ je_pmr_mechanized_farming_inception = {
 			add_technology_progress = { progress = 7500  technology = mechanized_farming }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_mechanized_farming  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_mechanized_farming  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|mechanized_farming|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6617,7 +6617,7 @@ je_pmr_mechanized_farming_development = {
 			add_technology_progress = { progress = 7500  technology = mechanized_farming }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_mechanized_farming  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_mechanized_farming  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|mechanized_farming|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6650,7 +6650,7 @@ je_pmr_mechanized_farming_implementation = {
 					add_technology_progress = { progress = 7500  technology = mechanized_farming }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_mechanized_farming  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_mechanized_farming  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|mechanized_farming|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_mechanized_farming }  change_variable = { name = pmr_impl_mechanized_farming  add = 1 } }
@@ -6692,7 +6692,7 @@ je_pmr_mechanized_workshops_inception = {
 			add_technology_progress = { progress = 5000  technology = mechanized_workshops }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|mechanized_workshops|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6726,7 +6726,7 @@ je_pmr_mechanized_workshops_development = {
 			add_technology_progress = { progress = 5000  technology = mechanized_workshops }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|mechanized_workshops|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6759,7 +6759,7 @@ je_pmr_mechanized_workshops_implementation = {
 					add_technology_progress = { progress = 5000  technology = mechanized_workshops }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|mechanized_workshops|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_mechanized_workshops }  change_variable = { name = pmr_impl_mechanized_workshops  add = 1 } }
@@ -6898,7 +6898,7 @@ je_pmr_modern_financial_instruments_inception = {
 			add_technology_progress = { progress = 8750  technology = modern_financial_instruments }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|modern_financial_instruments|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6932,7 +6932,7 @@ je_pmr_modern_financial_instruments_development = {
 			add_technology_progress = { progress = 8750  technology = modern_financial_instruments }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|modern_financial_instruments|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -6965,7 +6965,7 @@ je_pmr_modern_financial_instruments_implementation = {
 					add_technology_progress = { progress = 8750  technology = modern_financial_instruments }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|modern_financial_instruments|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_modern_financial_instruments }  change_variable = { name = pmr_impl_modern_financial_instruments  add = 1 } }
@@ -7007,7 +7007,7 @@ je_pmr_modern_sewerage_inception = {
 			add_technology_progress = { progress = 5000  technology = modern_sewerage }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_modern_sewerage  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_modern_sewerage  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|modern_sewerage|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7041,7 +7041,7 @@ je_pmr_modern_sewerage_development = {
 			add_technology_progress = { progress = 5000  technology = modern_sewerage }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_modern_sewerage  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_modern_sewerage  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|modern_sewerage|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7074,7 +7074,7 @@ je_pmr_modern_sewerage_implementation = {
 					add_technology_progress = { progress = 5000  technology = modern_sewerage }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_modern_sewerage  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_modern_sewerage  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|modern_sewerage|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_modern_sewerage }  change_variable = { name = pmr_impl_modern_sewerage  add = 1 } }
@@ -7213,7 +7213,7 @@ je_pmr_mutual_funds_inception = {
 			add_technology_progress = { progress = 6250  technology = mutual_funds }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_mutual_funds  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_mutual_funds  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|mutual_funds|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7247,7 +7247,7 @@ je_pmr_mutual_funds_development = {
 			add_technology_progress = { progress = 6250  technology = mutual_funds }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_mutual_funds  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_mutual_funds  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|mutual_funds|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7280,7 +7280,7 @@ je_pmr_mutual_funds_implementation = {
 					add_technology_progress = { progress = 6250  technology = mutual_funds }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_mutual_funds  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_mutual_funds  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|mutual_funds|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_mutual_funds }  change_variable = { name = pmr_impl_mutual_funds  add = 1 } }
@@ -7516,7 +7516,7 @@ je_pmr_nitrogen_fixation_inception = {
 			add_technology_progress = { progress = 7500  technology = nitrogen_fixation }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_nitrogen_fixation  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_nitrogen_fixation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|nitrogen_fixation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7550,7 +7550,7 @@ je_pmr_nitrogen_fixation_development = {
 			add_technology_progress = { progress = 7500  technology = nitrogen_fixation }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_nitrogen_fixation  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_nitrogen_fixation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|nitrogen_fixation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7583,7 +7583,7 @@ je_pmr_nitrogen_fixation_implementation = {
 					add_technology_progress = { progress = 7500  technology = nitrogen_fixation }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_nitrogen_fixation  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_nitrogen_fixation  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|nitrogen_fixation|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_nitrogen_fixation }  change_variable = { name = pmr_impl_nitrogen_fixation  add = 1 } }
@@ -7625,7 +7625,7 @@ je_pmr_nitroglycerin_inception = {
 			add_technology_progress = { progress = 5000  technology = nitroglycerin }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_nitroglycerin  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_nitroglycerin  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|nitroglycerin|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7659,7 +7659,7 @@ je_pmr_nitroglycerin_development = {
 			add_technology_progress = { progress = 5000  technology = nitroglycerin }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_nitroglycerin  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_nitroglycerin  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|nitroglycerin|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7692,7 +7692,7 @@ je_pmr_nitroglycerin_implementation = {
 					add_technology_progress = { progress = 5000  technology = nitroglycerin }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_nitroglycerin  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_nitroglycerin  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|nitroglycerin|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_nitroglycerin }  change_variable = { name = pmr_impl_nitroglycerin  add = 1 } }
@@ -7734,7 +7734,7 @@ je_pmr_oil_turbine_inception = {
 			add_technology_progress = { progress = 8750  technology = oil_turbine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_oil_turbine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_oil_turbine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|oil_turbine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7768,7 +7768,7 @@ je_pmr_oil_turbine_development = {
 			add_technology_progress = { progress = 8750  technology = oil_turbine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_oil_turbine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_oil_turbine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|oil_turbine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7801,7 +7801,7 @@ je_pmr_oil_turbine_implementation = {
 					add_technology_progress = { progress = 8750  technology = oil_turbine }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_oil_turbine  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_oil_turbine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|oil_turbine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_oil_turbine }  change_variable = { name = pmr_impl_oil_turbine  add = 1 } }
@@ -7843,7 +7843,7 @@ je_pmr_open_hearth_process_inception = {
 			add_technology_progress = { progress = 6250  technology = open_hearth_process }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_open_hearth_process  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_open_hearth_process  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|open_hearth_process|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7877,7 +7877,7 @@ je_pmr_open_hearth_process_development = {
 			add_technology_progress = { progress = 6250  technology = open_hearth_process }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_open_hearth_process  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_open_hearth_process  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|open_hearth_process|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7910,7 +7910,7 @@ je_pmr_open_hearth_process_implementation = {
 					add_technology_progress = { progress = 6250  technology = open_hearth_process }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_open_hearth_process  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_open_hearth_process  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|open_hearth_process|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_open_hearth_process }  change_variable = { name = pmr_impl_open_hearth_process  add = 1 } }
@@ -7952,7 +7952,7 @@ je_pmr_organized_sports_inception = {
 			add_technology_progress = { progress = 5000  technology = organized_sports }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_organized_sports  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_organized_sports  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|organized_sports|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -7986,7 +7986,7 @@ je_pmr_organized_sports_development = {
 			add_technology_progress = { progress = 5000  technology = organized_sports }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_organized_sports  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_organized_sports  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|organized_sports|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8019,7 +8019,7 @@ je_pmr_organized_sports_implementation = {
 					add_technology_progress = { progress = 5000  technology = organized_sports }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_organized_sports  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_organized_sports  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|organized_sports|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_organized_sports }  change_variable = { name = pmr_impl_organized_sports  add = 1 } }
@@ -8061,7 +8061,7 @@ je_pmr_pasteurization_inception = {
 			add_technology_progress = { progress = 7500  technology = pasteurization }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_pasteurization  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_pasteurization  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|pasteurization|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8095,7 +8095,7 @@ je_pmr_pasteurization_development = {
 			add_technology_progress = { progress = 7500  technology = pasteurization }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_pasteurization  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_pasteurization  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|pasteurization|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8128,7 +8128,7 @@ je_pmr_pasteurization_implementation = {
 					add_technology_progress = { progress = 7500  technology = pasteurization }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_pasteurization  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_pasteurization  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|pasteurization|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_pasteurization }  change_variable = { name = pmr_impl_pasteurization  add = 1 } }
@@ -8170,7 +8170,7 @@ je_pmr_paved_roads_inception = {
 			add_technology_progress = { progress = 8750  technology = paved_roads }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_paved_roads  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|paved_roads|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8204,7 +8204,7 @@ je_pmr_paved_roads_development = {
 			add_technology_progress = { progress = 8750  technology = paved_roads }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_paved_roads  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|paved_roads|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8237,7 +8237,7 @@ je_pmr_paved_roads_implementation = {
 					add_technology_progress = { progress = 8750  technology = paved_roads }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_paved_roads  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|paved_roads|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_paved_roads }  change_variable = { name = pmr_impl_paved_roads  add = 1 } }
@@ -8279,7 +8279,7 @@ je_pmr_percussion_cap_inception = {
 			add_technology_progress = { progress = 5000  technology = percussion_cap }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_percussion_cap  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|percussion_cap|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8313,7 +8313,7 @@ je_pmr_percussion_cap_development = {
 			add_technology_progress = { progress = 5000  technology = percussion_cap }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_percussion_cap  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|percussion_cap|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8346,7 +8346,7 @@ je_pmr_percussion_cap_implementation = {
 					add_technology_progress = { progress = 5000  technology = percussion_cap }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_percussion_cap  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|percussion_cap|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_percussion_cap }  change_variable = { name = pmr_impl_percussion_cap  add = 1 } }
@@ -8485,7 +8485,7 @@ je_pmr_philosophical_pragmatism_inception = {
 			add_technology_progress = { progress = 6250  technology = philosophical_pragmatism }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_philosophical_pragmatism  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_philosophical_pragmatism  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|philosophical_pragmatism|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8519,7 +8519,7 @@ je_pmr_philosophical_pragmatism_development = {
 			add_technology_progress = { progress = 6250  technology = philosophical_pragmatism }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_philosophical_pragmatism  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_philosophical_pragmatism  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|philosophical_pragmatism|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8552,7 +8552,7 @@ je_pmr_philosophical_pragmatism_implementation = {
 					add_technology_progress = { progress = 6250  technology = philosophical_pragmatism }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_philosophical_pragmatism  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_philosophical_pragmatism  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|philosophical_pragmatism|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_philosophical_pragmatism }  change_variable = { name = pmr_impl_philosophical_pragmatism  add = 1 } }
@@ -8594,7 +8594,7 @@ je_pmr_plastics_inception = {
 			add_technology_progress = { progress = 7500  technology = plastics }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_plastics  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_plastics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|plastics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8628,7 +8628,7 @@ je_pmr_plastics_development = {
 			add_technology_progress = { progress = 7500  technology = plastics }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_plastics  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_plastics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|plastics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8661,7 +8661,7 @@ je_pmr_plastics_implementation = {
 					add_technology_progress = { progress = 7500  technology = plastics }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_plastics  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_plastics  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|plastics|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_plastics }  change_variable = { name = pmr_impl_plastics  add = 1 } }
@@ -8703,7 +8703,7 @@ je_pmr_pneumatic_tools_inception = {
 			add_technology_progress = { progress = 7500  technology = pneumatic_tools }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_pneumatic_tools  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_pneumatic_tools  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|pneumatic_tools|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8737,7 +8737,7 @@ je_pmr_pneumatic_tools_development = {
 			add_technology_progress = { progress = 7500  technology = pneumatic_tools }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_pneumatic_tools  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_pneumatic_tools  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|pneumatic_tools|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8770,7 +8770,7 @@ je_pmr_pneumatic_tools_implementation = {
 					add_technology_progress = { progress = 7500  technology = pneumatic_tools }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_pneumatic_tools  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_pneumatic_tools  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|pneumatic_tools|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_pneumatic_tools }  change_variable = { name = pmr_impl_pneumatic_tools  add = 1 } }
@@ -8909,7 +8909,7 @@ je_pmr_postal_savings_inception = {
 			add_technology_progress = { progress = 5000  technology = postal_savings }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_postal_savings  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_postal_savings  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|postal_savings|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8943,7 +8943,7 @@ je_pmr_postal_savings_development = {
 			add_technology_progress = { progress = 5000  technology = postal_savings }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_postal_savings  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_postal_savings  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|postal_savings|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -8976,7 +8976,7 @@ je_pmr_postal_savings_implementation = {
 					add_technology_progress = { progress = 5000  technology = postal_savings }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_postal_savings  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_postal_savings  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|postal_savings|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_postal_savings }  change_variable = { name = pmr_impl_postal_savings  add = 1 } }
@@ -9115,7 +9115,7 @@ je_pmr_psychiatry_inception = {
 			add_technology_progress = { progress = 5000  technology = psychiatry }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_psychiatry  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_psychiatry  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|psychiatry|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9149,7 +9149,7 @@ je_pmr_psychiatry_development = {
 			add_technology_progress = { progress = 5000  technology = psychiatry }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_psychiatry  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_psychiatry  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|psychiatry|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9182,7 +9182,7 @@ je_pmr_psychiatry_implementation = {
 					add_technology_progress = { progress = 5000  technology = psychiatry }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_psychiatry  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_psychiatry  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|psychiatry|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_psychiatry }  change_variable = { name = pmr_impl_psychiatry  add = 1 } }
@@ -9224,7 +9224,7 @@ je_pmr_psychoanalysis_inception = {
 			add_technology_progress = { progress = 7500  technology = psychoanalysis }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_psychoanalysis  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_psychoanalysis  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|psychoanalysis|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9258,7 +9258,7 @@ je_pmr_psychoanalysis_development = {
 			add_technology_progress = { progress = 7500  technology = psychoanalysis }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_psychoanalysis  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_psychoanalysis  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|psychoanalysis|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9291,7 +9291,7 @@ je_pmr_psychoanalysis_implementation = {
 					add_technology_progress = { progress = 7500  technology = psychoanalysis }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_psychoanalysis  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_psychoanalysis  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|psychoanalysis|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_psychoanalysis }  change_variable = { name = pmr_impl_psychoanalysis  add = 1 } }
@@ -9430,7 +9430,7 @@ je_pmr_radio_inception = {
 			add_technology_progress = { progress = 7500  technology = radio }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_radio  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_radio  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|radio|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9464,7 +9464,7 @@ je_pmr_radio_development = {
 			add_technology_progress = { progress = 7500  technology = radio }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_radio  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_radio  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|radio|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9497,7 +9497,7 @@ je_pmr_radio_implementation = {
 					add_technology_progress = { progress = 7500  technology = radio }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_radio  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_radio  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|radio|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_radio }  change_variable = { name = pmr_impl_radio  add = 1 } }
@@ -9539,7 +9539,7 @@ je_pmr_railways_inception = {
 			add_technology_progress = { progress = 5000  technology = railways }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_railways  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_railways  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|railways|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9573,7 +9573,7 @@ je_pmr_railways_development = {
 			add_technology_progress = { progress = 5000  technology = railways }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_railways  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_railways  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|railways|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9606,7 +9606,7 @@ je_pmr_railways_implementation = {
 					add_technology_progress = { progress = 5000  technology = railways }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_railways  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_railways  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|railways|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_railways }  change_variable = { name = pmr_impl_railways  add = 1 } }
@@ -9648,7 +9648,7 @@ je_pmr_reinforced_concrete_inception = {
 			add_technology_progress = { progress = 6250  technology = reinforced_concrete }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_reinforced_concrete  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_reinforced_concrete  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|reinforced_concrete|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9682,7 +9682,7 @@ je_pmr_reinforced_concrete_development = {
 			add_technology_progress = { progress = 6250  technology = reinforced_concrete }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_reinforced_concrete  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_reinforced_concrete  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|reinforced_concrete|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9715,7 +9715,7 @@ je_pmr_reinforced_concrete_implementation = {
 					add_technology_progress = { progress = 6250  technology = reinforced_concrete }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_reinforced_concrete  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_reinforced_concrete  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|reinforced_concrete|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_reinforced_concrete }  change_variable = { name = pmr_impl_reinforced_concrete  add = 1 } }
@@ -9757,7 +9757,7 @@ je_pmr_repeaters_inception = {
 			add_technology_progress = { progress = 6250  technology = repeaters }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_repeaters  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_repeaters  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|repeaters|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9791,7 +9791,7 @@ je_pmr_repeaters_development = {
 			add_technology_progress = { progress = 6250  technology = repeaters }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_repeaters  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_repeaters  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|repeaters|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9824,7 +9824,7 @@ je_pmr_repeaters_implementation = {
 					add_technology_progress = { progress = 6250  technology = repeaters }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_repeaters  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_repeaters  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|repeaters|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_repeaters }  change_variable = { name = pmr_impl_repeaters  add = 1 } }
@@ -9866,7 +9866,7 @@ je_pmr_rifling_inception = {
 			add_technology_progress = { progress = 5000  technology = rifling }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_rifling  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_rifling  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|rifling|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9900,7 +9900,7 @@ je_pmr_rifling_development = {
 			add_technology_progress = { progress = 5000  technology = rifling }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_rifling  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_rifling  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|rifling|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -9933,7 +9933,7 @@ je_pmr_rifling_implementation = {
 					add_technology_progress = { progress = 5000  technology = rifling }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_rifling  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_rifling  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|rifling|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_rifling }  change_variable = { name = pmr_impl_rifling  add = 1 } }
@@ -9975,7 +9975,7 @@ je_pmr_rotary_valve_engine_inception = {
 			add_technology_progress = { progress = 6250  technology = rotary_valve_engine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_rotary_valve_engine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_rotary_valve_engine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|rotary_valve_engine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10009,7 +10009,7 @@ je_pmr_rotary_valve_engine_development = {
 			add_technology_progress = { progress = 6250  technology = rotary_valve_engine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_rotary_valve_engine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_rotary_valve_engine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|rotary_valve_engine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10042,7 +10042,7 @@ je_pmr_rotary_valve_engine_implementation = {
 					add_technology_progress = { progress = 6250  technology = rotary_valve_engine }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_rotary_valve_engine  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_rotary_valve_engine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|rotary_valve_engine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_rotary_valve_engine }  change_variable = { name = pmr_impl_rotary_valve_engine  add = 1 } }
@@ -10084,7 +10084,7 @@ je_pmr_rubber_mastication_inception = {
 			add_technology_progress = { progress = 6250  technology = rubber_mastication }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_rubber_mastication  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_rubber_mastication  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|rubber_mastication|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10118,7 +10118,7 @@ je_pmr_rubber_mastication_development = {
 			add_technology_progress = { progress = 6250  technology = rubber_mastication }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_rubber_mastication  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_rubber_mastication  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|rubber_mastication|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10151,7 +10151,7 @@ je_pmr_rubber_mastication_implementation = {
 					add_technology_progress = { progress = 6250  technology = rubber_mastication }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_rubber_mastication  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_rubber_mastication  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|rubber_mastication|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_rubber_mastication }  change_variable = { name = pmr_impl_rubber_mastication  add = 1 } }
@@ -10387,7 +10387,7 @@ je_pmr_shell_gun_inception = {
 			add_technology_progress = { progress = 5000  technology = shell_gun }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_shell_gun  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_shell_gun  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|shell_gun|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10421,7 +10421,7 @@ je_pmr_shell_gun_development = {
 			add_technology_progress = { progress = 5000  technology = shell_gun }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_shell_gun  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_shell_gun  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|shell_gun|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10454,7 +10454,7 @@ je_pmr_shell_gun_implementation = {
 					add_technology_progress = { progress = 5000  technology = shell_gun }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_shell_gun  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_shell_gun  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|shell_gun|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_shell_gun }  change_variable = { name = pmr_impl_shell_gun  add = 1 } }
@@ -10593,7 +10593,7 @@ je_pmr_spray_finishing_inception = {
 			add_technology_progress = { progress = 8750  technology = spray_finishing }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_spray_finishing  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_spray_finishing  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|spray_finishing|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10627,7 +10627,7 @@ je_pmr_spray_finishing_development = {
 			add_technology_progress = { progress = 8750  technology = spray_finishing }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_spray_finishing  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_spray_finishing  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|spray_finishing|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10660,7 +10660,7 @@ je_pmr_spray_finishing_implementation = {
 					add_technology_progress = { progress = 8750  technology = spray_finishing }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_spray_finishing  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_spray_finishing  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|spray_finishing|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_spray_finishing }  change_variable = { name = pmr_impl_spray_finishing  add = 1 } }
@@ -10702,7 +10702,7 @@ je_pmr_steam_donkey_inception = {
 			add_technology_progress = { progress = 6250  technology = steam_donkey }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_steam_donkey  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_steam_donkey  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|steam_donkey|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10736,7 +10736,7 @@ je_pmr_steam_donkey_development = {
 			add_technology_progress = { progress = 6250  technology = steam_donkey }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_steam_donkey  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_steam_donkey  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|steam_donkey|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10769,7 +10769,7 @@ je_pmr_steam_donkey_implementation = {
 					add_technology_progress = { progress = 6250  technology = steam_donkey }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_steam_donkey  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_steam_donkey  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|steam_donkey|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_steam_donkey }  change_variable = { name = pmr_impl_steam_donkey  add = 1 } }
@@ -10811,7 +10811,7 @@ je_pmr_steam_turbine_inception = {
 			add_technology_progress = { progress = 7500  technology = steam_turbine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_steam_turbine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_steam_turbine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|steam_turbine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10845,7 +10845,7 @@ je_pmr_steam_turbine_development = {
 			add_technology_progress = { progress = 7500  technology = steam_turbine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_steam_turbine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_steam_turbine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|steam_turbine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10878,7 +10878,7 @@ je_pmr_steam_turbine_implementation = {
 					add_technology_progress = { progress = 7500  technology = steam_turbine }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_steam_turbine  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_steam_turbine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|steam_turbine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_steam_turbine }  change_variable = { name = pmr_impl_steam_turbine  add = 1 } }
@@ -10920,7 +10920,7 @@ je_pmr_steel_railway_cars_inception = {
 			add_technology_progress = { progress = 6250  technology = steel_railway_cars }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_steel_railway_cars  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_steel_railway_cars  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|steel_railway_cars|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10954,7 +10954,7 @@ je_pmr_steel_railway_cars_development = {
 			add_technology_progress = { progress = 6250  technology = steel_railway_cars }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_steel_railway_cars  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_steel_railway_cars  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|steel_railway_cars|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -10987,7 +10987,7 @@ je_pmr_steel_railway_cars_implementation = {
 					add_technology_progress = { progress = 6250  technology = steel_railway_cars }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_steel_railway_cars  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_steel_railway_cars  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|steel_railway_cars|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_steel_railway_cars }  change_variable = { name = pmr_impl_steel_railway_cars  add = 1 } }
@@ -11029,7 +11029,7 @@ je_pmr_steelworking_inception = {
 			add_technology_progress = { progress = 3750  technology = steelworking }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_steelworking  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_steelworking  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|steelworking|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11063,7 +11063,7 @@ je_pmr_steelworking_development = {
 			add_technology_progress = { progress = 3750  technology = steelworking }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_steelworking  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_steelworking  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|steelworking|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11096,7 +11096,7 @@ je_pmr_steelworking_implementation = {
 					add_technology_progress = { progress = 3750  technology = steelworking }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_steelworking  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_steelworking  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|steelworking|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_steelworking }  change_variable = { name = pmr_impl_steelworking  add = 1 } }
@@ -11235,7 +11235,7 @@ je_pmr_telephone_inception = {
 			add_technology_progress = { progress = 7500  technology = telephone }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_telephone  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_telephone  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|telephone|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11269,7 +11269,7 @@ je_pmr_telephone_development = {
 			add_technology_progress = { progress = 7500  technology = telephone }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_telephone  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_telephone  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|telephone|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11302,7 +11302,7 @@ je_pmr_telephone_implementation = {
 					add_technology_progress = { progress = 7500  technology = telephone }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_telephone  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_telephone  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|telephone|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_telephone }  change_variable = { name = pmr_impl_telephone  add = 1 } }
@@ -11344,7 +11344,7 @@ je_pmr_threshing_machine_inception = {
 			add_technology_progress = { progress = 6250  technology = threshing_machine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_threshing_machine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_threshing_machine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|threshing_machine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11378,7 +11378,7 @@ je_pmr_threshing_machine_development = {
 			add_technology_progress = { progress = 6250  technology = threshing_machine }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_threshing_machine  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_threshing_machine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|threshing_machine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11411,7 +11411,7 @@ je_pmr_threshing_machine_implementation = {
 					add_technology_progress = { progress = 6250  technology = threshing_machine }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_threshing_machine  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_threshing_machine  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|threshing_machine|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_threshing_machine }  change_variable = { name = pmr_impl_threshing_machine  add = 1 } }
@@ -11550,7 +11550,7 @@ je_pmr_vacuum_canning_inception = {
 			add_technology_progress = { progress = 6250  technology = vacuum_canning }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_vacuum_canning  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_vacuum_canning  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|vacuum_canning|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11584,7 +11584,7 @@ je_pmr_vacuum_canning_development = {
 			add_technology_progress = { progress = 6250  technology = vacuum_canning }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_vacuum_canning  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_vacuum_canning  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|vacuum_canning|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11617,7 +11617,7 @@ je_pmr_vacuum_canning_implementation = {
 					add_technology_progress = { progress = 6250  technology = vacuum_canning }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_vacuum_canning  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_vacuum_canning  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|vacuum_canning|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_vacuum_canning }  change_variable = { name = pmr_impl_vacuum_canning  add = 1 } }
@@ -11659,7 +11659,7 @@ je_pmr_vulcanization_inception = {
 			add_technology_progress = { progress = 7500  technology = vulcanization }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_vulcanization  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_vulcanization  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|vulcanization|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11693,7 +11693,7 @@ je_pmr_vulcanization_development = {
 			add_technology_progress = { progress = 7500  technology = vulcanization }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_vulcanization  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_vulcanization  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|vulcanization|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11726,7 +11726,7 @@ je_pmr_vulcanization_implementation = {
 					add_technology_progress = { progress = 7500  technology = vulcanization }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_vulcanization  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_vulcanization  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|vulcanization|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_vulcanization }  change_variable = { name = pmr_impl_vulcanization  add = 1 } }
@@ -11768,7 +11768,7 @@ je_pmr_watertube_boiler_inception = {
 			add_technology_progress = { progress = 5000  technology = watertube_boiler }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|inception|watertube_boiler|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11802,7 +11802,7 @@ je_pmr_watertube_boiler_development = {
 			add_technology_progress = { progress = 5000  technology = watertube_boiler }
 		}
 		if = {
-			limit = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law = law_type:law_isolationism } }
+			limit = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } }
 			debug_log = "PMR_JEH|development|watertube_boiler|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 		}
 		if = {
@@ -11835,7 +11835,7 @@ je_pmr_watertube_boiler_implementation = {
 					add_technology_progress = { progress = 5000  technology = watertube_boiler }
 				}
 						if = {
-					limit = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law = law_type:law_isolationism } }
+					limit = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } }
 					debug_log = "PMR_JEH|implementation|watertube_boiler|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]"
 				}
 						if = { limit = { has_variable = pmr_impl_watertube_boiler }  change_variable = { name = pmr_impl_watertube_boiler  add = 1 } }

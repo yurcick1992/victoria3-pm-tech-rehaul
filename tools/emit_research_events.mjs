@@ -314,7 +314,8 @@ const firsts = [], compressed = {};
 //     evaluation for nothing — the tick-cost design of §10.97; placement is retried on every acquisition and every year);
 //   · `follower_halving: { isolationist_law }` — every mark is HALVED once a country that was not isolationist when it acquired the technology
 //     holds it (one global flag per technology, raised once and forever: on acquisition, at the campaign start, and by a yearly sweep), and
-//     only for an entry country that is not isolationist itself;
+//     only for an entry country that is not isolationist itself; "isolationist" = the law OR ANY VARIANT of it (the Qing's canton system,
+//     Japan's sakoku);
 //   · `implementation_repeats: N` — the LAST industry stage repeats up to N times until the technology is acquired, as ONE entry that never
 //     completes: its monthly pulse grants, counts (a country variable; a revolt country inherits the entry but not the variable, so a missing
 //     counter reads 0) and takes the span off the bar (vanilla's French-monarchism idiom, as V4). With no ahead-of-time penalty two stages
@@ -330,7 +331,17 @@ if (LIT) for (const [e, v] of Object.entries(LIT)) if (!/^[1-5]$/.test(e) || !(v
 const litOf = T0 => (LIT && LIT[String(T0.era)] != null) ? +LIT[String(T0.era)] : null;
 const ISO = HALF ? (HALF.isolationist_law || 'law_isolationism') : null;
 const heldVar = tech => `pmr_held_${tech}`;
-const notIso = ISO ? `NOT = { has_law = law_type:${ISO} }` : '';
+// ⚠⚠ `has_law_or_variant`, NEVER `has_law` (BUGS_AND_FIXES 2026-10-17): isolationism has two vanilla VARIANTS, the Qing's
+//   law_canton_system and Japan's law_sakoku (`parent = law_isolationism` in common/laws/01_trade_policy.txt), and `has_law` is false
+//   for a variant — so both 1836 isolationists raised the "someone holds it" flag AND took the halved mark. Vanilla tests the group
+//   with has_law_or_variant (its own trade-policy laws do).
+const notIso = ISO ? `NOT = { has_law_or_variant = law_type:${ISO} }` : '';
+// a renamed or misspelt law would make EVERY country read as open, silently — so the key must be a vanilla law
+if (ISO) {
+  const dir = join(GAME, 'common/laws');
+  const laws = readdirSync(dir).filter(f => f.endsWith('.txt')).flatMap(f => [...readFileSync(join(dir, f), 'utf8').matchAll(/^([a-z_0-9]+)\s*=\s*\{/gm)].map(m => m[1]));
+  if (!laws.includes(ISO)) throw new Error(`research_events.follower_halving.isolationist_law: '${ISO}' is not a law in ${dir}`);
+}
 const implVar = tech => `pmr_impl_${tech}`;
 const HELD_TECHS = [];
 const LOGDATE = '[TimeKeeper.GetCurrentDate.GetString]';
