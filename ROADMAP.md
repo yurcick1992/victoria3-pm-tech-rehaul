@@ -1381,6 +1381,11 @@ before step 7.
 
 ## Step 7 — VISUALS, PROOFREADING, RELEASE
 
+- ⭐⭐ **THE ENGINE-COMPATIBILITY PASS — THE MAIN PART OF THE 1.0 POLISH** (user, 2026-10-19; BACKLOG section E). The tier split leaves vanilla's own
+  script checking names that no longer cover the whole industry: events and journal entries testing a main method that moved to another building
+  (MISSING_PM_REFERENCES.md, ~28), the same for secondary methods our per-rung copies rename (e.g. `production_tech_events.210`, radio progress),
+  the 457 `has_building = building_<x>` checks that now match only the rung keeping the vanilla key, and the art academy's conditional `ai_value`
+  (MISSING_BUILDING_CONDITIONS.md). One strategic pass makes every rung count as its vanilla building in those checks.
 - Per-tier building artwork, so a player reads the tier from the picture instead of a wall of text.
 - Fix the era band dividers in the tech tree GUI (step 1's known cosmetic debt).
 - Proofread every new technology name and description.

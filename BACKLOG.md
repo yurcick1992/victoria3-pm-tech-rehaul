@@ -26,7 +26,7 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
    and AI items that bear on them (C, D).
 3. **Final balance check.**
 4. **Last feature pass:** artisanal ownership, if the crafts are canonised (A, ROADMAP step 6½).
-5. **Polish and release** (H), after the engine-compatibility pass (E).
+5. **Polish and release** (H), with the engine-compatibility pass (E) as its main part (user, 2026-10-19).
 Tooling and instrument debts (F, G) are paid when an item above needs them.
 ⭐⭐ **THE RELEASE TIMELINE (user, 2026-10-19; ROADMAP step 7): POLISHING STARTS WITH THE NEXT SESSION.** Mod 1.0 for game 1.13 on **30.10**; game
 1.15 (with 1.14's AI rework) on 05.11; a stable 1.15.N ~12.11; **mod 1.1 for 1.15.N ~16.11** (the ON_GAME_UPDATE pass + treaty ports if the new AI
@@ -142,10 +142,13 @@ in script (no cost, no effect — keep off), E the readers. Open on 1.15: whethe
 
 ## E. Engine compatibility (vanilla references our split breaks)
 
-- **DEFERRED** · MISSING_PM_REFERENCES.md — ~28 vanilla events/JEs checking a relocated main PM; one strategic "tiers are eligible" pass · MISSING_PM_REFERENCES.md
-- **DEFERRED** · the same class for SECONDARY methods, which the audit does not cover: a per-rung copy renames the vanilla method, so e.g. `production_tech_events.210` (radio progress) needs `pm_radios` active and can never fire · ROADMAP step 2 coverage audit
-- **DEFERRED** · `has_building` narrowing (457 refs match tier 1 only) — the same pass · CLAUDE.md
-- **DEFERRED** · MISSING_BUILDING_CONDITIONS.md — the art academy's conditional ai_value (1 case) · MISSING_BUILDING_CONDITIONS.md
+⭐⭐ **THE MAIN PART OF THE 1.0 POLISH (user, 2026-10-19: "That's the main part of the polish")** — one strategic pass making every rung count as
+its vanilla building wherever vanilla script checks a building or a method; it is NOT treaty-port related and is not deferred.
+
+- **NOW (1.0 polish)** · MISSING_PM_REFERENCES.md — ~28 vanilla events/JEs checking a relocated main PM; one strategic "tiers are eligible" pass · MISSING_PM_REFERENCES.md
+- **NOW (1.0 polish)** · the same class for SECONDARY methods, which the audit does not cover: a per-rung copy renames the vanilla method, so e.g. `production_tech_events.210` (radio progress) needs `pm_radios` active and can never fire · ROADMAP step 2 coverage audit
+- **NOW (1.0 polish)** · `has_building` narrowing (457 refs match tier 1 only) — the same pass · CLAUDE.md
+- **NOW (1.0 polish)** · MISSING_BUILDING_CONDITIONS.md — the art academy's conditional ai_value (1 case) · MISSING_BUILDING_CONDITIONS.md
 
 ## F. UI and tooling
 
