@@ -10098,6 +10098,11 @@ scope for us"* (the lever was acceptable only because it touches foreign trade a
 4. **Before canonising:** at least n=3 performance tests (the wall clock against vanilla and the canon); the economic read comes from the same batch.
    ⭐ **Set at n=4 (user, 2026-10-19):** *"n=4 under the monopoly to decide whether it gets canonised"* — the decision for mod 1.0, after a thorough
    explanation of the change to the user.
+   ⭐⭐ **THE DECISION RULE (user, 2026-10-19 late evening, after the explanation):** *"it's 0.99 if performance is adequate, and we don't touch it
+   otherwise."* ⇒ **performance is the only criterion**: the n=4's play time (`wall_clusters.mjs`, the main median over clusters 1 + 2) within the
+   +10% budget against vanilla n=16 ⇒ the wm99 book becomes the canon at 0.99; over it ⇒ the threshold is left at the engine's default (no
+   `game_defines`). No other value (0.5, 1.0) is in play. The register and the ledger are read from the same batch as the record, not as the gate.
+   Batch: `tools/testbed/schedules/wm99_n4.json` (4 × 1836→1936, fixed n, no stop watcher).
 
 ## §10.103 — TREATY PORTS: THE FUNNEL AS MEASURED, THE LAYERED SOLUTION, AND THE DEFERRAL TO MOD 1.1 ON GAME 1.15 (user-ruled 2026-10-19; FINDINGS F243–F246)
 The user, 2026-10-19, after the treaty-port arc: *"We'll wait for a promised significant AI decision making rework in 1.14. Document the treaty ports

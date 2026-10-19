@@ -1,0 +1,73 @@
+{
+  "schedule_version": 1,
+  "label": "wm99-n4",
+  "_why": "THE CANONISATION TEST FOR THE WORLD-MARKET MONOPOLY THRESHOLD (user-ruled 2026-10-19, BALANCE_FRAMEWORK 10.102 item 4: \"n=4 under the monopoly to decide whether it gets canonised\" - the decision for mod 1.0). Book config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json = the canon (sha256 fc7490eb6288514b, verified 2026-10-19) + game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD 0.99 + the _wm99_variant record, nothing else (field diff re-proved 2026-10-19). The engine's default threshold is below 0.36, so in vanilla and in the canon every traded good's world price carries 0.2 x the top exporting market's share of world exports (+7% to +20%); at 0.99 only goods one market exports above 99% keep it (FINDINGS F241). Dry-run build clean 2026-10-19 (every lint, preflight).",
+  "_arms": {
+    "wm99": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json} (+ its tree twin, the canon's byte for byte)."
+  },
+  "_comparison": "THE BINDING ONE: vanilla n=16 (20260821_131149) for the wall-clock budget (play within +10%, wall_clusters.mjs, main median over clusters 1+2) and for the register (criteria.mjs). Economic context, each with its differences stated: F239 (jex-dam4s-rs-x25-m10ac, 20261016_092158, n=3: no private dams, no threshold; loss 6.72, wall 174.4 min = x1.06) and the treaty-port century F244 9 (20261019_020412_tp-prod-stitched-n3, n=3: this book + the treaty-port layers; 2 intact + 1 runoff, loss 7.82, wall 181.8 min = x1.10). The canon itself (private dams, no threshold) has never run a century: nothing here isolates the threshold from private dams.",
+  "_predictions": {
+    "wall_clock": "near the treaty-port century's x1.10 (that book minus a feature measured at +0.7% over ten years): ~x1.08-1.10 of vanilla, i.e. at the edge of the 10% budget. The threshold has no direct compute cost (one comparison per good); any cost comes through a different economy.",
+    "trade": "the leader markets export somewhat less of the goods they dominate (F241's one-year x0.92), importers a little more; world prices near the canon's after the first weeks of the campaign",
+    "register": "world GDP near F239's 1.02-1.12 and F244's 0.96-1.27; a runoff seed in four is possible (one in three in both F227 and F244 9); loss in the 6.5-8 band"
+  },
+  "_stop_rule": "none: a fixed n=4 (the user's instruction), every run plays to 1936; the stop watcher is NOT armed (memory fixed-n-batches-run-to-completion).",
+  "_cost": "4 x 1836 -> 1936, ~3.1 h each, ~12.5-13 h",
+  "_caveats": [
+    "Launch through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); confirm the session folder within a minute.",
+    "Five-minute smoke check: init marker, game version, error.log by position, defines.cpp rejections (L33 - WORLD_MARKET_MONOPOLY_THRESHOLD must be ACCEPTED: no 'not specified' line in debug.log for it), clock advancing, queue_mix once the first summary lands.",
+    "Do NOT edit the emitters, the generators, the book or any tools/testbed/**/*.mjs while it runs.",
+    "The user's playtest build mod_playtest_wm99/ stays deployed; the batch runs its own mod_sched_wm99/."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 300
+  },
+  "setups": {
+    "wm99": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json"
+    }
+  },
+  "runs": [
+    { "setup": "wm99", "until": "1936.1.1" },
+    { "setup": "wm99", "until": "1936.1.1" },
+    { "setup": "wm99", "until": "1936.1.1" },
+    { "setup": "wm99", "until": "1936.1.1" }
+  ]
+}
