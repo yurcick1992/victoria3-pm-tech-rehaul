@@ -1,0 +1,86 @@
+{
+  "schedule_version": 1,
+  "label": "tp-prod-finish-1936",
+  "_why": "STAGE 3 OF THE TREATY-PORT PROBES (user, 2026-10-18: \"If OK, continue each of the 3 probes to 100-year completion\"): the three 1836-1866 runs of 20261019_020412_tp-prod-30y continued from their kept 1866.1.1 saves to 1936.1.1 on the same book (tpd4). Stitch afterwards with tools/testbed/stitch_session.mjs so every reader sees three 1836-1936 campaigns.",
+  "_arms": {
+    "tpd4": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4.json} - the chosen production book; + telemetry. Also carries the isolationism fix (0b7b2ad)."
+  },
+  "_comparison": "The stitched campaigns against the canon-family reference 20261016_092158 (3 runs) and the vanilla n=16 baseline: the register (criteria.mjs), the wall clock (wall_clusters.mjs) and the war-goal / treaty-port series (v19 summaries).",
+  "_predictions": {
+    "performance": "per-period pace within a few % of the reference after 1866 (1836-1866: +4.6% against the older reference; the same-night control 20261019 tp-control-10y says how much of it is the feature)",
+    "economy": "the register within the canon family spread; treaty-port demands a few % of active war goals"
+  },
+  "_stop_rule": "none: three fixed continuations.",
+  "_cost": "3 runs x 1866 -> 1936 from saves, about 2.5 h each",
+  "_caveats": [
+    "Continuations: the run folders hold 1866-1936 only; stitch with the parents before reading a century.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (L30)."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "tpd4": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tpd4",
+      "until": "1936.1.1",
+      "parent": "20261019_020412_tp-prod-30y/run001_tpd4",
+      "continue_save": "tools/testbed/sessions/20261019_020412_tp-prod-30y/run001_tpd4/saves/0030_20261019_024253_autosave.v3",
+      "continue_expect_after": "1865.12.1",
+      "prior_wall_seconds": 2302
+    },
+    {
+      "setup": "tpd4",
+      "until": "1936.1.1",
+      "parent": "20261019_020412_tp-prod-30y/run002_tpd4",
+      "continue_save": "tools/testbed/sessions/20261019_020412_tp-prod-30y/run002_tpd4/saves/0031_20261019_032336_autosave.v3",
+      "continue_expect_after": "1865.12.1",
+      "prior_wall_seconds": 2403
+    },
+    {
+      "setup": "tpd4",
+      "until": "1936.1.1",
+      "parent": "20261019_020412_tp-prod-30y/run003_tpd4",
+      "continue_save": "tools/testbed/sessions/20261019_020412_tp-prod-30y/run003_tpd4/saves/0030_20261019_040133_autosave.v3",
+      "continue_expect_after": "1865.12.1",
+      "prior_wall_seconds": 2239
+    }
+  ]
+}

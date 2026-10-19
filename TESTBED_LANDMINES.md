@@ -1787,7 +1787,12 @@ must be inside the bound, and the run's own error log is the only proof that it 
 - **(a) STATIC, before a batch** (reads the CONFIG, so `-RepoOnly -Only L33 -Config <cfg>` gates a launch in two seconds): every
   `ai_defines` value against KNOWN bounds. The table is small by construction — a bound enters it only once the engine has *stated*
   it. Today: `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` ∈ [0,1) → FAIL; land `CRITICAL_THRESHOLD` ≥ the ship
-  `EXCESSIVE_THRESHOLD` (vanilla 1.05 unless overridden) → WARN, since that one is a deliberate trade.
+  `EXCESSIVE_THRESHOLD` (vanilla 1.05 unless overridden) → WARN, since that one is a deliberate trade; ⭐ (2026-10-19) both
+  `TRADE_CENTER_MINIMUM_GDP_MARKET_CAPITAL` and `_NON_MARKET_CAPITAL` must be > 0 → FAIL (kind `gt`; 0 rejected, session
+  20261019_172655), and `_NON_MARKET_CAPITAL` must EXCEED `_MARKET_CAPITAL` (ours, else vanilla's 100,000) → FAIL (kind `gt_other`;
+  1 / 1 rejected with "Must be greater than 1", session 20261019_174541). The second is the cross-reference shape again, but here the
+  KEY ITSELF is rejected, not a sibling, so it fails rather than warns. Both proven to trip: the 0 book and the 1 / 1 book FAIL the
+  static half, both sessions FAIL the log half, and the 1 / 2 book passes (FINDINGS F246).
 - **(b) POST-RUN** (`-Session <dir>`): every run's `logs_live\error.log` for `defines.cpp`'s *"not valid with given value"*, which
   catches ANY define including ones no table knows, and names the run and the keys.
 

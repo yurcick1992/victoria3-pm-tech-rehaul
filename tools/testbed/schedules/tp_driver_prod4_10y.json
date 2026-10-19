@@ -1,0 +1,66 @@
+{
+  "schedule_version": 1,
+  "label": "tp-driver-prod4-10y",
+  "_why": "STAGE 1f (overnight). tpd3 (20261019_011240: production desire, driver 10% / >= 15 / 8 y, free host, no great-power hosts) held the guard but its 4 driven plays (Two Sicilies, Holland, Portugal) made no port: at production magnitudes (desire 15-40) the demanding AI lets a play lapse, while at extreme ones (400+, 20261018_235301) it escalates and weaker hosts cede (9 ports in one run). tpd4 = tpd3 with every desire term x4 (the ranking unchanged; driver min 60); the driver still controls how often plays start.",
+  "_arms": {
+    "tpd4": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4.json} - the desire x4 + the driver without great-power hosts; + telemetry"
+  },
+  "_comparison": "Against stage 1b (extreme) and F243 census (vanilla 0 of 614 goals, canon endpoints 1 of 482).",
+  "_predictions": {
+    "the guard": "treaty-port demands under ~10% of active war goals in most snapshots (the driver rate is unchanged; the engine pursues unrecognised hosts somewhat harder)",
+    "outcome": "some driven plays end in a cession: new treaty ports in recognised majors/minors by 1846"
+  },
+  "_stop_rule": "none: two fixed runs (a mechanism probe, read in full).",
+  "_cost": "2 runs x 1836.1.1 -> 1846.1.1, about 12 min each",
+  "_caveats": [
+    "EXTREME values: the economy and the wars of these runs are not a balance reading of anything.",
+    "The observer's autosaves overwrite the user's autosave slots: save games BACKUP 20261018_2317 holds the originals.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30). Watch with short reads only (L29)."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1845.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "tpd4": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tpd4",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "tpd4",
+      "until": "1846.1.1"
+    }
+  ]
+}

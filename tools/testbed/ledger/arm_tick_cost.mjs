@@ -2,6 +2,7 @@
 // perf_isolate_5y.json: which part of the mod costs the extra seconds per year the Tick Task List screenshots showed).
 //
 //   node tools/testbed/ledger/arm_tick_cost.mjs <session>[,<session>] [--ref vanilla] [--from 1836] [--to 1841] [--runs]
+//        [--exclude <session>/<runNNN_setup>[,…]]
 //
 // Per run: Σ tick gaps (tick_profile.mjs's parseTicks — 1-s stamps, exact to ±1 s when every sub-tick is summed) per in-game
 // year, WITHOUT the 1 January tick day (the yearly autosave stall) and split three ways: the hour-0 sub-tick of the 1st of a month
@@ -17,11 +18,15 @@ const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] :
 const sessions = (args.find(a => !a.startsWith('--') && !args[args.indexOf(a) - 1]?.startsWith('--')) || '').split(',').filter(Boolean);
 if (!sessions.length) { console.error('usage: arm_tick_cost.mjs <session>[,<session>] [--ref vanilla] [--from Y] [--to Y] [--runs]'); process.exit(2); }
 const REF = opt('--ref', 'vanilla'), FROM = +opt('--from', 1836), TO = +opt('--to', 1841), SHOWRUNS = args.includes('--runs');
+// --exclude <session>/<runNNN_setup>[,…] (2026-10-19): leave out named runs, e.g. a void run whose setup name a valid arm in another
+// session shares; every exclusion is printed
+const EXCLUDE = new Set((opt('--exclude', '') || '').split(',').filter(Boolean).map(x => x.replace(/\\/g, '/').replace(/\/$/, '')));
 const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
 const se = a => a.length < 2 ? NaN : Math.sqrt(a.reduce((s, x) => s + (x - mean(a)) ** 2, 0) / (a.length - 1) / a.length);
 const years = []; for (let y = FROM; y < TO; y++) years.push(y);
 const arms = {};
 for (const s of sessions) for (const r of readdirSync(join(SES, s)).filter(d => /^run\d+_/.test(d)).sort()) {
+  if (EXCLUDE.has(`${s}/${r}`)) { console.log(`skip ${s}/${r}: --exclude`); continue; }
   const T = parseTicks(join(SES, s, r)); if (!T || !T.length) { console.log(`skip ${s}/${r}: no ticks`); continue; }
   const setup = r.replace(/^run\d+_/, '');
   const Y = {}; for (const y of years) Y[y] = { tot: 0, mon: 0, h0: 0, oth: 0, n: 0 };

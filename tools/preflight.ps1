@@ -1429,6 +1429,18 @@ function Test-LmL33 {
         @{ Key = 'MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD'; Kind = 'gt_sibling'
            Sibling = 'MONEY_SPENDING_SHIP_CONSTRUCTION_EXCESSIVE_THRESHOLD'; SiblingVanilla = 1.05
            Msg = 'raising it above the SHIP excessive threshold makes THAT define invalid, so ship construction silently keeps vanilla' }
+        # 2026-10-19 (session 20261019_172655): 0 is rejected ("Must be greater than 0") and the key keeps vanilla's 100k / 500k -
+        # the trade-centre gate probe's first gated run was the engine gate + the script gate, not the arm it claimed. Use 1 (= off).
+        @{ Key = 'TRADE_CENTER_MINIMUM_GDP_MARKET_CAPITAL'; Kind = 'gt'; Lo = 0.0
+           Msg = 'Must be greater than 0 - use 1 to switch the gate off' }
+        @{ Key = 'TRADE_CENTER_MINIMUM_GDP_NON_MARKET_CAPITAL'; Kind = 'gt'; Lo = 0.0
+           Msg = 'Must be greater than 0 - use 2 (with MARKET_CAPITAL 1) to switch the gate off' }
+        # 2026-10-19 (session 20261019_174541): 1 / 1 was rejected too ("Must be greater than 1") - NON_MARKET_CAPITAL must EXCEED
+        # MARKET_CAPITAL, so non-capital states (every treaty port among them) kept vanilla's 500k. 'gt_other' = the key itself is
+        # rejected unless it exceeds the other define's current value (ours, else vanilla's) - a FAIL, unlike 'gt_sibling'.
+        @{ Key = 'TRADE_CENTER_MINIMUM_GDP_NON_MARKET_CAPITAL'; Kind = 'gt_other'
+           Other = 'TRADE_CENTER_MINIMUM_GDP_MARKET_CAPITAL'; OtherVanilla = 100000
+           Msg = 'the engine rejects a value not greater than MARKET_CAPITAL - use MARKET_CAPITAL 1 / NON_MARKET_CAPITAL 2 to switch the gate off' }
     )
     $cfgFile = if ($Config) { $Config } else { Join-Path $Repo 'config\mod_config.json' }
     if (-not [System.IO.Path]::IsPathRooted($cfgFile)) { $cfgFile = Join-Path $Repo $cfgFile }
@@ -1445,6 +1457,12 @@ function Test-LmL33 {
                     if ($v -lt $b.Lo -or $v -ge $b.Hi) {
                         $statFails += "$($b.Key) = $v is outside [$($b.Lo),$($b.Hi)): $($b.Msg)"
                     }
+                } elseif ($b.Kind -eq 'gt') {
+                    if ($v -le $b.Lo) { $statFails += "$($b.Key) = $v is not greater than $($b.Lo): $($b.Msg)" }
+                } elseif ($b.Kind -eq 'gt_other') {
+                    $othProp = $ad.PSObject.Properties[$b.Other]
+                    $oth = if ($othProp) { [double]$othProp.Value } else { [double]$b.OtherVanilla }
+                    if ($v -le $oth) { $statFails += "$($b.Key) = $v is not greater than $($b.Other) = ${oth}: $($b.Msg)" }
                 } elseif ($b.Kind -eq 'gt_sibling') {
                     $sibProp = $ad.PSObject.Properties[$b.Sibling]
                     $sib = if ($sibProp) { [double]$sibProp.Value } else { [double]$b.SiblingVanilla }

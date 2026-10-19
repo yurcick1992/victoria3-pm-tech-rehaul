@@ -2821,6 +2821,10 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⭐ THE DAM SLOT CHECK (v17, 2026-10-09): the dam types `building_dam_*` join the per-state `res`, and every queued dam
                         level is recorded per state as `dam_q = { <type>: { <builder key>: n } }` (government and private queues; builder = the
                         queue's owner) — read by `ledger/dam_slots.mjs`; everything else byte-identical to v16,
+                        ⭐ WAR GOALS AND TREATY PORTS (v19, 2026-10-18, FINDINGS F243): `world.war_goals` = { "<type>[:<article>]": { initial,
+                        added } } over every goal of the ACTIVE plays (`war_goal_manager`; initial = the goal the play opened with; a 1.13
+                        treaty-port demand is `enforce_treaty_article:treaty_port`), `world.treaty_port_goals` = [{ holder, target, initial }],
+                        and `world.treaty_ports` = [{ giver, taker, state }] from `treaty_article_manager`; everything else as v18,
                         and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
                         ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and
                         `<id>=none` freed slots sit in the same database (a record test must require the
@@ -3201,6 +3205,30 @@ tools/                  dev tooling — NOT shipped in the mod
                         flat, buy up, buy/sell up. `--good engines --arm <session>:<setup> [--arm …] [--dates a,b,c]`;
                         the producing building types come from each run's OWN config, so arms with different books are
                         still comparable. ⇒ QUANTITIES FIRST whenever a good sits at the edge
+  testbed/ledger/war_goal_mix.mjs  WHAT THE WARS ARE ABOUT, OUT OF SAVES (2026-10-18, FINDINGS F243): every war goal of the ACTIVE plays from
+                        a save's `war_goal_manager` — type, and whether it opened the play (`initial_war_goal=yes`) or was added during
+                        it; an enforced treaty article carries its article (a 1.13 treaty-port demand is `enforce_treaty_article:treaty_port`,
+                        never the `take_treaty_port` type). `--label <name> <save.v3> [...] [--label …] [--jobs 4] [--json out]`. A save keeps
+                        only active plays, so pool many snapshots
+  testbed/ledger/treaty_port_trade.mjs  WHAT A TREATY PORT TRADES, AGAINST ITS HOST MARKET (2026-10-19, FINDINGS F245): melts one kept save for its
+                        per-state trade (a summary keeps only the per-country sum, and a port's trade sits under its TAKER while the port stands
+                        in the HOST's market), then per treaty port its capacity, largest flows and each import as a share of the host market's
+                        supply (own production + other imports, units at the book's traded quantities). `<save.v3> <summary.json.gz> <book.json>`;
+                        `--need TAG [--share 0.4]` prints the capacity a port would need to add that share of TAG's consumer-goods supply.
+                        ⚠ The summary's `treaty_ports[].state` is the HOST's part of the region; the port is the taker's own state there
+  testbed/ledger/ai_country_goals.mjs  THE AI'S STANCE TOWARD EACH COUNTRY, OUT OF ONE SAVE (2026-10-19, FINDINGS F244 §10): the `country_goal` records —
+                        owner → target goal scores (threat / protect / befriend / antagonize) with scored reasons, attitude and secret goal — with a
+                        census and every pair carrying one reason (default AI_REASON_WANTS_TREATY_PORTS). `<save.v3> <summary.json.gz> [--reason R]
+                        [--json out]`. Script reads the same through `has_secret_goal` / `has_attitude`
+  testbed/ledger/world_price_rings.mjs + market_good_snapshots.mjs  ONE GOOD'S TRADE OUT OF A PLAYER'S AUTOSAVES (2026-10-18, FINDINGS F242).
+                        A 1.13 save keeps the last 52 WEEKLY world-market prices per good (the ring index advances by exactly 52 between
+                        yearly saves), so yearly autosaves give a continuous weekly world-price series: `world_price_rings.mjs <save.v3>
+                        <out.json>` streams it out (write it as `<summary name>.rings.json` beside the save's summary). `market_good_snapshots.mjs
+                        <summaryDir> --tag CHI --good rubber --units-per-cap 48` prints, per save, the market's building demand, own output,
+                        imports / exports (trade capacity × the units ONE capacity unit moves = traded_quantity × (1 + the trade centres'
+                        state_trade_quantity_mult), an argument because it depends on the build and the importer's trade-centre method), the
+                        market price from its own order book (an estimate) and the world price that week. Copy a live game's saves with
+                        `archive_autosaves.ps1 -Dest tools\testbed\saves_<name>` launched detached, never by touching the save folder
   testbed/ledger/early_probe.mjs  ⭐⭐ THE SHORT-BATCH READER (2026-09-19, F142/F144/F145) — what a 1836→1838 batch
                         says about the anchor: world product ÷ a control arm, realised margins BY ERA via F92's
                         identity, the negative-margin types named and weighted by STAFFED levels, the survival table
@@ -3480,7 +3508,9 @@ tools/                  dev tooling — NOT shipped in the mod
   testbed/ledger/arm_tick_cost.mjs  ⭐ THE TICK COST OF A FEATURE, ARM AGAINST ARM (2026-10-09, FINDINGS F220): per run and in-game year the wall seconds
                         from the engine's 1-s tick stamps (the 1 Jan autosave day out) and the GAME-LOGIC time + one daily / weekly / monthly tick's
                         cost from `logs/custom_automated_stats.log` (vanilla's automation_stats logger, written by every observer run); per setup the
-                        mean ± SE and Δ vs `--ref` (default vanilla). `<session>[,<session>] [--ref vanilla] [--from 1836] [--to 1841] [--runs]`.
+                        mean ± SE and Δ vs `--ref` (default vanilla). `<session>[,<session>] [--ref vanilla] [--from 1836] [--to 1841] [--runs]
+                        [--exclude <session>/<runNNN_setup>[,…]]` (runs are pooled by SETUP NAME across sessions, so a void run sharing a valid
+                        arm's name must be excluded by name; a run cut short counts only its complete years).
                         Built for the short feature-switch batches (schedules perf_*_5y.json) and their probe-only config keys: `company_chain:
                         false`; `dams.perf_off` / `perf_amplify` / `static_mode`; `research_events.perf_off` / `perf_amplify` / `perf_amplify_mode`
                         / `update_frequency` (MODDING_NOTES → *What script content costs the tick*). Extra game launch arguments: schedule key
@@ -3945,6 +3975,52 @@ tools/                  dev tooling — NOT shipped in the mod
                         THROWS on an unknown good, a `local`/untradeable good, a good with no traded_quantity line, or a value < 1.
                         W = cost × traded_quantity is the base-price £ one unit of Trade Capacity moves; the merchant marine a trade
                         centre consumes is per LEVEL, so raising it costs no convoys (F155)
+  emit_ai_treaty_ports.mjs  THE AI'S DESIRE FOR TREATY PORTS, OPENED TO EVERY COUNTRY (2026-10-18, BACKLOG D, FINDINGS F243; ⭐ DEFERRED
+                        TO MOD 1.1 ON GAME 1.15 by ruling 2026-10-19, waiting on 1.14's AI rework — BALANCE_FRAMEWORK §10.103 holds the
+                        funnel, the five-layer solution and the 1.15 plan) — called by build.ps1 after emit_ai_schooling (throws). Config `ai_treaty_ports` (absent → nothing; the
+                        canon carries none) appends one `treaty_port_value` block to every ADMINISTRATIVE strategy (the mod's own copy of
+                        01_admin_strategies.txt, else vanilla's), additive with vanilla's default and Economic Imperialism terms: + the
+                        target's trade-law points (variants listed before their parent, checked against vanilla's laws) + population ÷
+                        divisor + the host state's population and GDP (≤ 10 together: which port within a country); × 0 under our conquer
+                        stance on the state's region, × protectorate_mult where a protectorate is possible (vanilla's rank rule), ×
+                        existing_port_mult where we already hold a port in their market; ×0 if unreachable, same market or we are
+                        isolationist; capped at `max`; then `tech_add` (−1,000) where our `techs_researched` lead over the target is ≤
+                        `tech_margin` (the helper `pmr_tp_tech_lead`, common/script_values/zzz_pm_rehaul_treaty_ports.txt). THROWS on an
+                        unknown key, a non-vanilla law, a variant listed after its parent, a strategy that already carries the field.
+                        Books: `make_treaty_port_config.mjs --base <book> --suffix <sfx> [--extreme]` (THE TABLE LIVES THERE ONLY; `--extreme`
+                        = +400 flat and cap 1,000, the probe that the engine reads the value at all) → `jex-dam4s-rs-x25-m10ac-dpriv-wm99-tp`
+                        / `-tpx`. ⭐ THE ENGINE PURSUES treaty ports ONLY against unrecognised hosts whatever the desire (FINDINGS F244), so
+                        `driver` { chance, min_value, min_rank, cooldown_years, max_host_rank? } adds a yearly on_action: an eligible AI (recognised,
+                        ≥ min_rank, at peace, in no committed play, not infamous, off cooldown) starts a `dp_take_treaty_port` play on the
+                        recognised-host state with its highest engine-computed desire (`ai_treaty_port_value(root)`) ≥ min_value, the host in no
+                        committed play; logs PMR_TPD lines. The book maker's `--scale k` multiplies every desire term (the driven AI follows a play
+                        through only at large desire); `--driver extreme|production|production-nogp`. ⚗ `probe` { takers, hosts } (PROBE ONLY): a
+                        campaign-start log of is_potential_treaty_port and the desire. The chosen book: `…-wm99-tpd4` (×4, 10% / ≥ 60 / 8 y, no great powers)
+  emit_treaty_port_rules.mjs  THE TREATY-PORT ELIGIBILITY RULES (2026-10-19, FINDINGS F244 §6–§8; ⭐ DEFERRED TO MOD 1.1 ON GAME 1.15,
+                        BALANCE_FRAMEWORK §10.103) — called by build.ps1
+                        after emit_ai_treaty_ports (throws). Config `treaty_port_rules` (absent → nothing; the canon carries none):
+                        `no_port_building` replaces the engine's `is_potential_treaty_port` (which needs a PORT BUILDING in the state — 798 of 1836's
+                        eligible states hold one, 723 ineligible hold none) by the scripted trigger `pmr_treaty_port_candidate` (coastal, not
+                        already a treaty port, the host controls the port province, not the taker's) in whole-file copies of
+                        common/treaty_articles/14_treaty_port.txt and common/war_goal_types/25_take_treaty_port.txt, and drops the war goal's
+                        validate_take_treaty_port; `seed_port_on_cession` builds a level-1 port in the state, if it has none, inside the
+                        article's on_entry_into_force just before vanilla's cede_treaty_port. ⚠⚠ USE THEM TOGETHER: the override alone hands the
+                        port province over as PLAIN TERRITORY (no treaty_port flag, a level-0 port) — the engine sets the status only where the
+                        state has a port at the moment of cession (probed, `20261019_120025` / `20261019_120951`). Every replacement asserts its
+                        match count. ⚗ `probe` { cede, treaty, play, log } (PROBE ONLY): plays at the campaign start, bare cessions and
+                        create_treaty at the first monthly pulse (both do nothing at game start; create_treaty needs named countries), a monthly
+                        holdings log. Books `…-wm99-tpr0`…`-tpr3` (probe books, not arms). ⭐ `trade_center_gate: true | { log: true }`
+                        (2026-10-19, FINDINGS F245): THE AI'S TRADE-CENTRE GDP GATE MOVED INTO SCRIPT, TREATY PORTS EXEMPT — the engine gate
+                        (`TRADE_CENTER_MINIMUM_GDP_*`, no treaty-port term) must be OFF in the book (`ai_defines` MARKET_CAPITAL 1 and
+                        NON_MARKET_CAPITAL 2, i.e. £1 / £2 a year, or it THROWS — ⚠ the engine REJECTS 0, and a NON_MARKET_CAPITAL not above
+                        MARKET_CAPITAL, at load, and the key keeps vanilla's value: landmine L33, whose static table carries both bounds), and vanilla's test (read live from 00_ai.txt: 100k / 500k, inland and
+                        unrecognised ×2, +2% a year, the "(additive)" multipliers read as one summed multiplier) goes into the trade centre's
+                        can_build_government / can_build_private as `pmr_tc_gdp_gate_*` (state GDP ≥ `pmr_tc_gdp_threshold`, unless a treaty
+                        port, or a player's government construction) — in the build's own 11_private_infrastructure.txt where it owns it, else in a
+                        whole-file copy of vanilla's (two lines added). `log` (probe only): a yearly PMR_TCG line per treaty-port state (GDP,
+                        threshold, trade-centre levels). Book `…-wm99-tpd4-tcg`, probed by `tp_tc_gate_probe3.json` (FINDINGS F246: no tick
+                        cost, nothing measurable changes, and the engine gate turned out NOT to keep the Qing treaty ports empty — Macau and
+                        Hong Kong got trade centres at a quarter and a tenth of the threshold; the recognised-host ports were not tested)
   emit_building_groups.mjs  BUILDING-GROUP AI WEIGHTS (2026-09-30, FINDINGS F178, the capital-export arm; not ruled) — called by
                         build.ps1 (throws). With a top-level `building_group_ai` {group: {field: number}} it writes a WHOLE-FILE copy
                         of vanilla's common/building_groups/00_building_groups.txt with exactly those direct-child fields changed
@@ -4520,8 +4596,10 @@ the game.
   stays `nice_to_have` in `resource_expansion` and `wants_to_have` in `colonial_extraction`). Config values: `vanilla` (or absent) emits nothing;
   `none` drops the key from every block we write. ⚠ `none` can only reliably suppress entries living in files we
   own — the trio is also set by `ai_strategy_default`, so suppressing those is semantics-dependent (the UI warns).
-  **Note this does NOT bypass the trade-center GDP gate** (`NAI` `TRADE_CENTER_MINIMUM_GDP_*`), a hard eligibility
+  **Note this does NOT bypass the trade-center GDP gate** (`NAI` `TRADE_CENTER_MINIMUM_GDP_*`), an eligibility
   filter on which states the AI will even consider; subsidy only re-weights states that already cleared it.
+  ⚠ It is NOT absolute: FINDINGS F246 watched the AI build trade centres in Qing treaty ports (Macau, Hong Kong) at a
+  quarter and a tenth of the threshold, so where exactly the engine applies it is unknown.
 - **Secondary-PM gates (`unlocking_production_methods`).** A few vanilla secondary PMs are gated behind a
   main PM: `pm_bone_china` (glass porcelain), `pm_elastics` (textile luxury), `pm_precision_tools`
   (furniture luxury) each have `unlocking_production_methods = { <vanilla main PM> }` — only available when

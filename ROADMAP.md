@@ -1386,6 +1386,16 @@ before step 7.
 - Proofread every new technology name and description.
 - Release.
 
+### ⭐⭐ THE RELEASE TIMELINE (user, 2026-10-19) — polishing starts with the session after 2026-10-19
+1. **30.10** — **mod 1.0** for Victoria 3 1.13.
+2. **05.11** — Victoria 3 **1.15** (1.14 folded in by the developers; 1.14 is where an AI decision-making rework was promised).
+3. **~12.11** — a stable **1.15.N**.
+4. **~16.11** — **mod 1.1** for 1.15.N: the ON_GAME_UPDATE pass plus whatever deferred feature the new game supports. The candidate is
+   **TREATY PORTS** (BALANCE_FRAMEWORK §10.103, FINDINGS F243–F246) — built and probed on 1.13, deferred by ruling until the 1.15 AI is seen.
+   ⚠ Only about four days between steps 3 and 4: room for 10-year probes and at most one n=3 century, so 1.1 can carry a feature only if it
+   needs no iteration.
+5. **18.11** — GTA VI; no attention for Paradox mods until the new year.
+
 ---
 
 ## The war research channel — RULED (user, 2026-08-17): rebuild it on option 3

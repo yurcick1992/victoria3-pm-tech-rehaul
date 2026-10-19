@@ -1,0 +1,24 @@
+{
+  "schedule_version": 1,
+  "label": "tp-rules-probe2",
+  "_why": "PROBE, second pass (user, 2026-10-19: \"Go on with the probes once run3 ends\"), FINDINGS F244 §8. The first pass (20261019_120025) showed: removing the script port-building requirement lets a demand on a portless state (Ceara) be enforced, but the engine then splits the province off WITHOUT treaty-port status and with a level-0 port; the direct cession at the campaign start did nothing even for a port state; the scripted treaty had an invalid first country. This pass: tpr2 = the requirement removed AND a level-1 port built in the host state just before the cession (inside the article's on_entry_into_force); tpr3 = vanilla rules with the same, fixed tests. Tests: at the start, treaty-port plays by Britain on Ceara (BRZ, no port), the USA on Rio de Janeiro (BRZ, port), France on Fez (MOR, port); at the first monthly pulse, cede_treaty_port of Veracruz (MEX, port), Sinaloa (MEX, no port) and Sonora (MEX, no port, a level-1 port built first) to Britain, and treaties with a treaty-port article for Yucatan (MEX, no port) and Bahia (BRZ, port) to France. Read: the PMR_TPR lines, the monthly save summaries (splits, treaty articles, war goals) and the kept save's treaty_port=yes flags.",
+  "_arms": {
+    "tpr2": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpr2.json} - the next-arm base + treaty_port_rules {no_port_building, seed_port_on_cession, probe}",
+    "tpr3": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpr3.json} - the next-arm base + treaty_port_rules {probe} (vanilla rules)"
+  },
+  "_comparison": "tpr2 against tpr3, test by test; the port-holding controls (Veracruz, Bahia, Rio de Janeiro, Fez) must succeed for a test to count.",
+  "_predictions": {
+    "cede": "Veracruz becomes a flagged British treaty port in both arms; Sinaloa splits without the flag (or does nothing); Sonora becomes a flagged treaty port if a port built in the same effect is seen by the cession",
+    "treaty": "Bahia becomes a French treaty port in both arms; Yucatan fails in tpr3 and becomes one in tpr2 if the seeded port is seen",
+    "play": "a resolved Ceara play gives a FLAGGED treaty port in tpr2 (the fix works) or the same unflagged split as the first pass (it does not); in tpr3 it cannot be enforced"
+  },
+  "_stop_rule": "none: two six-month runs.",
+  "_cost": "2 runs x 1836.1.1 -> 1836.7.1 with monthly autosaves, about 3 min each",
+  "_caveats": ["Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (L30).", "Probe effects change states' ownership and start three plays: never a book to play.", "Whether a play resolves inside six months is the AI's choice; an unresolved play says nothing about the rules."],
+  "defaults": { "dump_dates": ["1836.2.1", "1836.4.1", "1836.7.1"], "tags": ["GBR", "FRA", "USA", "MEX", "BRZ", "MOR"], "metrics": ["country_state", "events"], "autosave_interval": "monthly", "timeout_minutes": 30 },
+  "setups": {
+    "tpr2": { "kind": "config", "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpr2.json" },
+    "tpr3": { "kind": "config", "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpr3.json" }
+  },
+  "runs": [ { "setup": "tpr2", "until": "1836.7.1" }, { "setup": "tpr3", "until": "1836.7.1" } ]
+}

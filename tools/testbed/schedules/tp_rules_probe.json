@@ -1,0 +1,24 @@
+{
+  "schedule_version": 1,
+  "label": "tp-rules-probe",
+  "_why": "PROBE (user, 2026-10-19: \"Go on with the probes once run3 ends\"), FINDINGS F244 §6-§7. The engine trigger is_potential_treaty_port admits only states holding a port building, and on cession the engine seeds a level-1 port in the new treaty port. Two questions: (1) can a state WITHOUT a port be made a treaty port at all, by the engine's own cession effect, by a scripted treaty, and by a treaty-port diplomatic play; (2) does replacing is_potential_treaty_port in the article and the war goal with our own candidate check (and removing the war goal's validate_take_treaty_port setting) open those routes. At the campaign start each arm runs: cede_treaty_port of Sonora (MEX, no port) and Veracruz (MEX, port) to Britain; create_treaty with a treaty-port article for Yucatan (MEX, no port) and Bahia (BRZ, port) to France; create_diplomatic_play dp_take_treaty_port by Britain on Ceara (BRZ, no port), by the USA on Rio de Janeiro (BRZ, port), by France on Fez (MOR, port). Monthly PMR_TPR lines list every treaty port Britain, France and the USA hold and whether it has a port building; monthly autosaves give the plays' war goals (save summary v19).",
+  "_arms": {
+    "tpr0": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpr0.json} - the next-arm base (canon + monopoly threshold 0.99) + the probe effects; vanilla treaty-port rules",
+    "tpr1": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpr1.json} - the same + treaty_port_rules.no_port_building"
+  },
+  "_comparison": "tpr1 against tpr0, test by test; the port-holding controls (Veracruz, Bahia, Rio de Janeiro, Fez) must succeed in both or the test itself is broken.",
+  "_predictions": {
+    "cede": "Veracruz becomes a British treaty port in both arms; Sonora UNKNOWN - the effect is engine code (if it refuses a portless state, no script change can remove the requirement)",
+    "treaty": "Bahia becomes a French treaty port in both arms; Yucatan fails in tpr0 (the article's state_valid_trigger) and succeeds in tpr1 if the engine accepts the cession",
+    "play": "the Rio de Janeiro and Fez plays exist in both arms; the Ceara play is refused in tpr0 and exists in tpr1 unless the engine's own war-goal validation still applies (or Britain lacks an interest there - then the Rio de Janeiro control tells the interest apart only if it shares the region, which it does)"
+  },
+  "_stop_rule": "none: two six-month runs.",
+  "_cost": "2 runs x 1836.1.1 -> 1836.7.1 with monthly autosaves, about 8 min each",
+  "_caveats": ["Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (L30).", "Probe effects at the campaign start change six states' ownership and start three plays: never a book to play."],
+  "defaults": { "dump_dates": ["1836.2.1", "1836.4.1", "1836.7.1"], "tags": ["GBR", "FRA", "USA", "MEX", "BRZ", "MOR"], "metrics": ["country_state", "events"], "autosave_interval": "monthly", "timeout_minutes": 30 },
+  "setups": {
+    "tpr0": { "kind": "config", "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpr0.json" },
+    "tpr1": { "kind": "config", "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpr1.json" }
+  },
+  "runs": [ { "setup": "tpr0", "until": "1836.7.1" }, { "setup": "tpr1", "until": "1836.7.1" } ]
+}

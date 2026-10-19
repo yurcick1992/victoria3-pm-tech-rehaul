@@ -20,12 +20,17 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
 1d. **RULED (2026-10-17, §10.102):** the NEXT ARM carries `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` — book
    `jex-dam4s-rs-x25-m10ac-dpriv-wm99` (the canon + that define; F241). Canonised only after at least n=3 performance tests. Deployed for the user's
    playtest 2026-10-17 21:23 (`mod_playtest_wm99/`); the canon is restored with `robocopy mod <Documents mod folder> /MIR`.
+   ⭐ **NEXT SESSION (user, 2026-10-19):** first a THOROUGH EXPLANATION of the monopoly-threshold change to the user (deferred, not researched
+   on 2026-10-19), then **n=4 under the monopoly threshold** (4 × 1836→1936 on the wm99 book) to decide whether it is canonised for 1.0; then polish.
 2. **Balance campaign** on the canon that results: the price path, the old rung in the consumer chains, the hoard (B), with the tech-tree
    and AI items that bear on them (C, D).
 3. **Final balance check.**
 4. **Last feature pass:** artisanal ownership, if the crafts are canonised (A, ROADMAP step 6½).
 5. **Polish and release** (H), after the engine-compatibility pass (E).
 Tooling and instrument debts (F, G) are paid when an item above needs them.
+⭐⭐ **THE RELEASE TIMELINE (user, 2026-10-19; ROADMAP step 7): POLISHING STARTS WITH THE NEXT SESSION.** Mod 1.0 for game 1.13 on **30.10**; game
+1.15 (with 1.14's AI rework) on 05.11; a stable 1.15.N ~12.11; **mod 1.1 for 1.15.N ~16.11** (the ON_GAME_UPDATE pass + treaty ports if the new AI
+allows, §10.103); GTA VI on 18.11, after which nothing until the new year.
 
 ## A. The arm under test — crafts + merges (ROADMAP steps 12–13, BALANCE_FRAMEWORK §10.91)
 
@@ -83,6 +88,7 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 - **RULING** · THE CANON'S STEAM MOTOR RUNG IS BUILT AT A THIRD OF ITS PEERS' DESIRE (F214, answering F212 §4's "why the motor rung is not built"): the steam rung is the same recipe in every four-rung book (40 engines from 36 steel, 800 points; vanilla 40 from 30) and earns vanilla's realised margin (~17%, the engines 15–20% dearer instead), but the canon's e0 label gives it `ai_value` 1,000 against 3,000 on every e1 rung of 1840–1890 — Russian / Dutch steam levels a third to a sixth of vanilla's and the arm's, and the canon's engine HIGH-years 7.7 a run against vanilla's 1.0. Under §10.92 an AI value not following profit; no lever ruled · F214
 - **WATCH** · the percussion-cap chain (explosives e0 at 23% and munition e1 at 16% goods margin at base against vanilla's 56% / 39% — the e1 anchor's ×1.2 lift) stays unstaffed in thin markets: 10 of the probe's 13 swings; vanilla has the American case too · F213 addendum
 - **WATCH** · THE GERMAN OIL ECONOMY WAITS FOR A BUILT RUNG: in about a third of four-rung seeds (2 of 3 arm, 2 of 6 canon) the German market has no oil economy until 1910–1925 — one idle oil rig, no buyer — where vanilla's always forms by 1905–1910 through free switches (arms to Bolt Action Rifles, ports to Modern Port, logging to chainsaws); in the books those first buyers are rungs to build (arms/artillery e3, automotive e2), and the ports and logging camps switch only once oil is on offer. The design's own cost; whether to act is the user's · F215
+- **WATCH** · RUBBER IS STRUCTURALLY SHORT IN A RICH LATE GAME (the user's Qing playtest, 1916–1936): the Qing's electrics, tooling e3 (Rubber Grips) and automotive rungs want 74k → 202k rubber a week against a world output of 9–20k; the world price sits at the 175% ceiling 89% of weeks, and the trade AI's 8-week no-reduction lock turns the gap into a ~9–10-week import cycle (median 88k, up to 128k, then a cut and a week at the price floor). Levers if acted on: rubber supply (plantations / a synthetic route), the rungs' rubber inputs, rubber's traded quantity (24, vanilla 5) · F242
 - **OPEN (core)** · the output-price path does not fall (F94); the consumer-chain old rungs stay profitable (87–93%) · CLAUDE.md, F136, F163
 - **OPEN** · the hoard: pool H ~4× vanilla; the inflow mechanism is a candidate, not measured · F135, F179 §3
 - **OPEN** · P1 early rungs are a money printer (aim at 1850–1880 realised margins) · ROADMAP P1
@@ -120,6 +126,12 @@ Tooling and instrument debts (F, G) are paid when an item above needs them.
 
 ## D. AI, construction, companies, dams
 
+- **DEFERRED to mod 1.1 on game 1.15.N (user-ruled 2026-10-19: "We'll wait for a promised significant AI decision making rework in 1.14")** ·
+TREATY PORTS — the funnel as measured on 1.13 and a five-layer solution, all built and probed, none in the canon: A eligibility (our candidate check +
+a level-1 port seeded on cession; the override alone is harmful), B the AI's desire (×4, book `…-wm99-tpd4`), C pursuit (C1 the yearly driver,
+measured, the user against it; C2 an organic driver from the engine's own stances, designed not built; C3 the 1.15 AI itself), D the trade-centre gate
+in script (no cost, no effect — keep off), E the readers. Open on 1.15: whether the AI pursues recognised hosts by itself, the never-added rule
+(`skip_build_list` untested), why ports in recognised markets build no trade capacity · BALANCE_FRAMEWORK §10.103 (the plan for 1.15.N), F243–F246
 - **OPEN** · company mandates first cut shipped and unmeasured (the company-held rung mix) · ROADMAP step 5
 - **RULING** · the capital-export arm (FDI factor) — measured, not adopted · F179
 - **OPEN** · the dam level cap with SEVERAL foreign builders on one site: counted on the region total (as intended) or per builder? Read with the contest probe (`dams.probe.contest`, `probe_q` above the cap) · BUGS_AND_FIXES 2026-10-05

@@ -1,0 +1,14 @@
+{
+  "schedule_version": 1,
+  "label": "tp-potential-probe",
+  "_why": "DIAGNOSTIC (2026-10-18, overnight, user-authorised to try approaches): the extreme treaty-port book produced only 14 AI pairs wanting treaty ports by 1846, ALL against unrecognised or decentralised hosts, and 1-2 demands a run - so the engine computes the desire only where its own is_potential_treaty_port admits a state, and that seems to exclude recognised hosts. This one-month run logs, at the campaign start, for 10 takers x every coastal state of 31 hosts: is_potential_treaty_port, and the engine's own ai_treaty_port_value of that state for that taker (PMR_TPP lines in debug.log).",
+  "_arms": { "tpxp": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpx-probe.json} - the extreme book + the probe log; + telemetry" },
+  "_comparison": "None: a census of what the engine admits.",
+  "_predictions": { "if recognition gates it": "potential = no for every state of a recognised host (FRA, GBR, SPA, NET, BRZ, MEX, USA ...), yes for unrecognised hosts (CHI, JAP, PER, SIA, MOR ...)", "if rank gates it": "potential follows the taker-vs-host rank, whatever recognition", "the value": "positive (around 400+) wherever potential = yes and the parity cancel does not apply" },
+  "_stop_rule": "none: one run.",
+  "_cost": "1 run x 1836.1.1 -> 1836.2.1, about 3 min",
+  "_caveats": ["Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (L30)."],
+  "defaults": { "dump_dates": ["1836.2.1"], "tags": ["GBR", "FRA", "USA", "RUS", "JAP", "CHI"], "metrics": ["country_state", "events"], "autosave_interval": "yearly", "timeout_minutes": 20 },
+  "setups": { "tpxp": { "kind": "config", "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpx-probe.json" } },
+  "runs": [ { "setup": "tpxp", "until": "1836.2.1" } ]
+}

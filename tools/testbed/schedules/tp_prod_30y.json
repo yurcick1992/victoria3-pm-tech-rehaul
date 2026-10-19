@@ -1,0 +1,72 @@
+{
+  "schedule_version": 1,
+  "label": "tp-prod-30y",
+  "_why": "STAGE 2 OF THE TREATY-PORT PROBES (user, 2026-10-18: \"If OK, implement likely production values and go with three 30-year probes to check performance. If OK, continue each of the 3 probes to 100-year completion.\"). The production book: the next-arm book (canon + WORLD_MARKET_MONOPOLY_THRESHOLD 0.99) + the treaty-port desire (production table) + the yearly driver against recognised hosts (calibrated over four 10-year probes, 20261019_002008 / _004649 / _011240 / _013756; the chosen variant tpd4: the desire x4 - ranking unchanged - and the driver at 10% a year, desire >= 60, 8-year cooldown, free host, no great-power hosts: 0-11% of active war goals, new ports in recognised hosts (Two Sicilies -> France, Ottomans -> Britain)). The question is PERFORMANCE: does the desire block (evaluated by the engine for every potential treaty-port state) and the driver (a yearly ordered_state over coastal states for ~15-25 AIs) cost tick time?",
+  "_arms": {
+    "tpd4": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4.json} - the chosen production book; + telemetry. Also carries the isolationism fix (0b7b2ad)."
+  },
+  "_comparison": "Wall clock per in-game year 1836-1866 against the three canon-family runs of 20261016_092158_rs-m10ac-n3 (the same machine two days earlier; that book lacks private dams, the monopoly define and the isolationism fix) and the vanilla n=16 baseline (the 10% budget, CLAUDE.md). Read with tools/testbed/ledger/wall_clusters.mjs and slow_episodes.mjs (the ruled clusters), and the war-goal mix from the v19 summaries.",
+  "_predictions": {
+    "performance": "seconds per in-game year within the seed spread of the reference (a few %): the desire is one small script value per potential state per AI update and the driver a yearly ordered_state for at most ~25 countries",
+    "wars": "treaty-port demands stay under the 10% guard set in stage 1c; more wars than the reference only by the driven plays"
+  },
+  "_stop_rule": "none: three fixed runs, then each continued to 1936 (user-ordered).",
+  "_cost": "3 runs x 1836.1.1 -> 1866.1.1, about 50-60 min each",
+  "_caveats": [
+    "EXTREME values: the economy and the wars of these runs are not a balance reading of anything.",
+    "The observer's autosaves overwrite the user's autosave slots: save games BACKUP 20261018_2317 holds the originals.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30). Watch with short reads only (L29)."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1865.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 150
+  },
+  "setups": {
+    "tpd4": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tpd4",
+      "until": "1866.1.1"
+    },
+    {
+      "setup": "tpd4",
+      "until": "1866.1.1"
+    },
+    {
+      "setup": "tpd4",
+      "until": "1866.1.1"
+    }
+  ]
+}

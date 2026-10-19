@@ -1,0 +1,69 @@
+{
+  "schedule_version": 1,
+  "label": "tp-tc-gate-probe",
+  "_why": "User 2026-10-19: 'Go on with the probes' on moving the AI's trade-centre GDP gate into script with treaty ports exempt (FINDINGS F245: 11 of 24 new ports never traded, the likely cause being TRADE_CENTER_MINIMUM_GDP_*, an engine gate with no treaty-port term). The book tpd4-tcg sets the engine's two base thresholds to 0 and puts vanilla's test into the trade centre's can_build_government / can_build_private (tools/emit_treaty_port_rules.mjs, treaty_port_rules.trade_center_gate), exempting treaty ports (and players' government construction). Two questions: (1) does it cost tick time (00_ai.txt warns that lowering these 'can adversely affect performance') and (2) do treaty ports now get trade centres while the rest of the world builds as before.",
+  "_arms": {
+    "tpd4": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4.json} - the treaty-port book as measured (engine gate); + telemetry",
+    "tpd4-tcg": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4-tcg.json} - the same + the engine gate at 0 + the script gate (treaty ports exempt) + a yearly PMR_TCG log of every treaty-port state's GDP, threshold and trade-centre levels; + telemetry"
+  },
+  "_comparison": "Tick cost: tpd4 against tpd4-tcg over 1836-1841, same session (tools/testbed/ledger/arm_tick_cost.mjs --ref tpd4 --to 1841). Trade centres: the gated runs at 1841 against tpd4's, and at 1846 against 20261019_013756_tp-driver-prod4-10y (the same tpd4 book, 2 x 1836->1846, yesterday).",
+  "_predictions": {
+    "tick cost": "tpd4-tcg within +-3% of tpd4 per in-game year (the gate is evaluated only where the AI considers a trade centre); a rise above +5% means the engine's warning bites",
+    "treaty ports": "the 1836 ports (Macau, Singapore, Bandar Abbas) and any new ones gain trade-centre levels where their taker builds; ports with zero capacity in the tpd4 runs carry some",
+    "elsewhere": "world trade-centre levels and the number of states with trade capacity within ~10% of tpd4's at the same date, if the script threshold matches the engine's (the '(additive)' multipliers are an inference)",
+    "units": "the PMR_TCG log shows state GDP on the same yearly scale as the 100k / 500k thresholds"
+  },
+  "_stop_rule": "none: four fixed runs (a mechanism and tick-cost probe, read in full).",
+  "_cost": "2 runs x 1836.1.1 -> 1841.1.1 (~6 min each) + 2 runs x 1836.1.1 -> 1846.1.1 (~12 min each), about 40 min",
+  "_caveats": [
+    "A 5- and 10-year probe: the trade-centre counts and the tick cost are early-game readings; the price effect (F245 link 3) is not measured here.",
+    "The observer's autosaves overwrite the user's autosave slots (they hold only this afternoon's probe saves; named saves are untouched).",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30). Watch with short reads only (L29)."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1845.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "tpd4": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4.json"
+    },
+    "tpd4-tcg": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4-tcg.json"
+    }
+  },
+  "runs": [
+    { "setup": "tpd4", "until": "1841.1.1" },
+    { "setup": "tpd4", "until": "1841.1.1" },
+    { "setup": "tpd4-tcg", "until": "1846.1.1" },
+    { "setup": "tpd4-tcg", "until": "1846.1.1" }
+  ]
+}

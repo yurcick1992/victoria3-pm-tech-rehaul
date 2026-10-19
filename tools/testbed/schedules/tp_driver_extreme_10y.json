@@ -1,0 +1,67 @@
+{
+  "schedule_version": 1,
+  "label": "tp-driver-extreme-10y",
+  "_why": "STAGE 1b OF THE TREATY-PORT PROBES (overnight, user-authorised to try approaches). Stage 1 (20261018_231810, the admin-strategy desire at +400) showed the engine reads the desire but pursues treaty ports ONLY against unrecognised or decentralised hosts: 14 AI pairs wanted one at 1846 (0 in vanilla 1845-46 saves), none recognised, though the diagnostic 20261018_234440 measured desires of 400+ for recognised hosts whose states pass is_potential_treaty_port. This book adds the DRIVER: once a year every eligible AI (recognised, major power or above, at peace, in no committed play, permitted aggressive plays, not infamous, off a 2-year cooldown) starts a dp_take_treaty_port play on the recognised-host state where its engine-computed desire is highest (EXTREME: chance 100%, any positive desire).",
+  "_arms": {
+    "tpxd": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpxd.json} - the next-arm book + the extreme desire + the extreme driver; + telemetry"
+  },
+  "_comparison": "Against stage 1 (admin desire alone, same extreme values): 0-1 treaty-port goals a snapshot, 1 new port in 2 runs.",
+  "_predictions": {
+    "if the driver works": "PMR_TPD lines in debug.log from 1837 for many AIs; treaty-port goals (take_treaty_port or enforce_treaty_article:treaty_port) against RECOGNISED hosts in most snapshots; new treaty ports in recognised hosts by 1846",
+    "if create_diplomatic_play fails": "PMR_TPD lines but no plays: error.log names the play type or target",
+    "the parity cancel": "no driven play against a host within 5 technologies (the desire is negative there, below min_value)"
+  },
+  "_stop_rule": "none: two fixed runs (a mechanism probe, read in full).",
+  "_cost": "2 runs x 1836.1.1 -> 1846.1.1, about 12 min each",
+  "_caveats": [
+    "EXTREME values: the economy and the wars of these runs are not a balance reading of anything.",
+    "The observer's autosaves overwrite the user's autosave slots: save games BACKUP 20261018_2317 holds the originals.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30). Watch with short reads only (L29)."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1845.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "tpxd": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpxd.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tpxd",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "tpxd",
+      "until": "1846.1.1"
+    }
+  ]
+}

@@ -10096,3 +10096,102 @@ scope for us"* (the lever was acceptable only because it touches foreign trade a
 3. **The book:** `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` + twin = the canon + `game_defines` + `_wm99_variant`, nothing else (field diff
    proven; build diff = the `NEconomy` block). Every next arm builds on it. Deployed for a playtest 2026-10-17 21:23 (`mod_playtest_wm99/`).
 4. **Before canonising:** at least n=3 performance tests (the wall clock against vanilla and the canon); the economic read comes from the same batch.
+   ⭐ **Set at n=4 (user, 2026-10-19):** *"n=4 under the monopoly to decide whether it gets canonised"* — the decision for mod 1.0, after a thorough
+   explanation of the change to the user.
+
+## §10.103 — TREATY PORTS: THE FUNNEL AS MEASURED, THE LAYERED SOLUTION, AND THE DEFERRAL TO MOD 1.1 ON GAME 1.15 (user-ruled 2026-10-19; FINDINGS F243–F246)
+The user, 2026-10-19, after the treaty-port arc: *"We'll wait for a promised significant AI decision making rework in 1.14. Document the treaty ports
+findings and possible multi-layered solution thoroughly, and defer it to possible mod version 1.1 (game version 1.15)."* ⇒ **Nothing of this ships in
+mod 1.0.** The canon carries neither `ai_treaty_ports` nor `treaty_port_rules`, and both emitters write nothing when their key is absent (a canon
+build is unchanged by them). Every piece below stays in the repo, built and probed, for a decision on game 1.15.
+
+**0. The release timeline it is deferred against** (the user, the same message):
+1. **30.10** — mod 1.0 released for Victoria 3 1.13.
+2. **05.11** — Victoria 3 1.15 released, with 1.14 folded in by the developers' decision (1.14 is where the AI decision-making rework was promised).
+3. **~12.11** — a 1.15.N patch that is stable enough to build on.
+4. **~16.11** — mod 1.1 for 1.15.N. **This is where treaty ports could go, or not.**
+5. **18.11** — GTA VI comes out, and attention to Paradox games, let alone mods, is gone until the new year.
+⚠ Between steps 3 and 4 there are about **four days**. That fits the 10-year probes (~25 min each) and at most ONE n=3 century (~9–10 h), and
+nothing iterative. So the 1.1 decision has to be made mostly on whether the 1.15 AI needs the artificial layers at all (§3 below).
+
+**1. Why treaty ports belong in this mod.** A treaty port is the one gateway into a closed or thinly traded market that the host's tariffs,
+subventions, embargoes and isolationism cannot shut (F243 §1). A technology leader's exports reaching a lagging market through it are exactly
+the price pressure THE CORE DESIGN ELEMENT needs: the host's output prices fall while its old rungs' input prices do not. The user's own motive as
+an exporter (F243): *"not allowing me to kill their industries by abundance of higher-tech supply"*.
+
+**2. The funnel, link by link, as measured on 1.13** (the user's own summary, amended where the measurements disagree with it):
+
+| link | what 1.13 does | evidence | status |
+|---|---|---|---|
+| **0. Eligibility** | only a state with a PORT BUILDING can be ceded (`is_potential_treaty_port`; 798 eligible states hold a port at 1836, 723 ineligible hold none); the engine seeds a level-1 port in the new treaty port on cession | F244 §6, §7 | **solved by layer A** (probed on the treaty route) |
+| **1. Pursuit** | the AI STARTS treaty-port plays only against unrecognised or decentralised hosts, whatever the desire, and NEVER adds a treaty-port demand to a play it is already in; yet it SCORES the desire against recognised hosts too (25 of 176 pairs carrying the treaty-port reason, all under the secret goal "conquer"). The PLAYER is gated by rank, not recognition | F243 §2, F244 §2, §5, §10 | **opened by layers B + C**; the user is against the artificial driver |
+| **2. Persistence** | a new port lives a median ~7 years (2–48): the article's `requirement_to_maintain` fails when politics moves the port province (civil wars, a third country taking it; one Russian lapse unexplained); the host never withdrew. 1–5 ports stand at a time over the century against vanilla's 0 at 1936 in 14 of 16 seeds | F244 §4, §9 | **accepted as the game's own politics** |
+| **3. Trade capacity** | of 24 new ports over three centuries, 11 never traded, 8 reached 12–48 capacity, 5 reached 100+ (Calabria 375, Zhejiang 203, Shaozhou 201, Bengal 157, Tuscany 133). The AI's trade-centre GDP gate is NOT what empties them: under vanilla's defines it built Macau's and Hong Kong's trade centres at a quarter and a tenth of the threshold | F245 link 1, F246 | **open**: why ports in RECOGNISED markets stay empty |
+| **4. Imports → the host's prices** | the trade AI fills the host's SHORTAGES first (Macau supplied 77% of the Qing market's luxury clothes, 73% of its luxury furniture); mass goods get 3–12% of the host's supply, and by the price formula pushing an importer's premium down to the world price needs ~40–50% extra supply. Local prices are not in a save, so this link is computed, not observed | F245 links 2–3 | **diluted, not refuted**; economy-wide, more capacity did narrow the importer premium (F161 §6) |
+| **5. Price → the old rung** | at the world's average realised price 59–88% of the consumer-chain old-rung levels sit below break-even | F161 §4 | **works if link 4 delivers** |
+
+⇒ Every link now works or has a working fix; what is thin is VOLUME — how many ports the AI takes and keeps, and how much trade capacity the ones in
+recognised markets build. ⭐ **For a player hegemon the funnel is open already on 1.13**: the rank gate lets a player demand ports from recognised
+countries, and the capacity needed to add 40% of a host's supply of ten consumer goods is ~14 trade-centre levels for Japan at 1866 and 115–327 for
+the Qing over 1866–1936 (F245's hegemon table). One real headwind sits in the engine, not in our implementation: shortages are filled before mass
+goods, so a port undercuts the host's own industry only after its shortages are met.
+
+**3. The layered solution — five layers, each usable alone, each built and probed on 1.13:**
+- **A. ELIGIBILITY** — `treaty_port_rules.no_port_building` + `seed_port_on_cession` (`tools/emit_treaty_port_rules.mjs`). Our check
+  `pmr_treaty_port_candidate` (coastal, not already a treaty port, the host controls the port province, not the taker's) replaces the engine's
+  port-building requirement in whole-file copies of `common/treaty_articles/14_treaty_port.txt` and `common/war_goal_types/25_take_treaty_port.txt`;
+  a level-1 port is built inside the article's `on_entry_into_force` just before vanilla's `cede_treaty_port`. ⚠⚠ **USE BOTH OR NEITHER**: the
+  override alone hands the port province over as plain territory, because the engine sets the treaty-port status only where the state holds a port
+  at the moment of cession (F244 §8: Ceará). ⚠ Proven on the TREATY route (Yucatán → France flagged); the WAR route is inferred, since no portless
+  play resolved inside the six-month probe.
+- **B. DESIRE** — `ai_treaty_ports` (`tools/emit_ai_treaty_ports.mjs`): one additive `treaty_port_value` block in every administrative strategy —
+  the target's trade-law points, population, the host state's population and GDP; × 0 under our conquer stance on the region, × 0.25 where a
+  protectorate is possible, × 0.5 where we already hold a port in their market; −1,000 at a technology lead of ≤ 5. The chosen scale is **×4**
+  (`tpd4`, whose block reads after scaling: sakoku / canton system 140, isolationism 160, mercantilism 48, protectionism 40, free trade −40, capped
+  at 400), because the measured threshold sits there: a demanding AI lets its play lapse at a desire of 15–40, and weaker hosts cede at 160–400
+  (F244 §3).
+- **C. PURSUIT** — three forms:
+  - **C1, the driver as built** (`ai_treaty_ports.driver`, `tpd4`: 10% a year, desire ≥ 60, an 8-year cooldown, no great-power hosts): an AI that
+    is recognised, a major power or above, at peace, in no committed play, permitted aggressive plays and not infamous starts a `dp_take_treaty_port`
+    play on the recognised-host state with its highest engine-computed desire. Measured: +0.7% tick cost, treaty-port demands 3–6% of active war
+    goals, 5–11 new ports a century (F244 §3–§4, §9). ⚠ The user is AGAINST it: it bypasses the AI's own decision whether to go to war.
+  - **C2, the organic driver (designed, NOT built)** — the same play-start step, but gated on what the engine itself already decided (F244 §10):
+    (1) `has_secret_goal = { who = <host> secret_goal = conquer }` toward the host (every pair carrying the treaty-port reason holds it), or attitude
+    belligerent; (2) relations below cordial (the play's own `possible`); (3) affordability — not in default, debt under a line, our
+    `army_power_projection` against the host's and its likely allies', mirroring the engine's own play confidence (force balance 75 at 4:1, debt −25,
+    bankruptcy −25, our own other conflicts −25); (4) a host ALREADY AT WAR raises the chance rather than blocking it (the engine's own
+    `DIPLO_PLAY_CONFIDENCE_FROM_ENEMY_CONFLICTS` +25), weighted by the war's BURDEN — the host's enemies' army power against its own, so a Qing putting
+    down a three-battalion uprising barely counts and a Qing holding off Russia counts fully; (5) a state already demanded is marked per state, and a
+    host whose every candidate state is demanded is skipped. ⚠ Summing `every_enemy_in_war` inside a script value is not yet verified in game.
+  - **C3, the engine's own pursuit** — no driver. ⚠ Two engine behaviours stand in the way on 1.13: the start-of-play filter that leaves recognised
+    hosts out (engine-side, no script names it), and the never-added rule (a treaty-port demand is only ever a play's OPENING goal). The script
+    candidate for the second is `skip_build_list` on the `take_treaty_port` war-goal type; untested. A debug game's console command
+    `ai_evaluate_treaty_port` prints the engine's own score for one state, which is the direct way to see what 1.15 changed.
+- **D. TRADE CAPACITY** — `treaty_port_rules.trade_center_gate` (`tools/emit_treaty_port_rules.mjs`): the engine's trade-centre GDP gate off in
+  `ai_defines` (MARKET_CAPITAL 1 / NON_MARKET_CAPITAL 2 — the engine rejects 0, and a NON_MARKET_CAPITAL not above MARKET_CAPITAL, at load, L33),
+  vanilla's test re-written into the trade centre's `can_build_*` with treaty ports exempt. Measured (F246): no tick cost (Δ −0.5 ± 3.6 s per in-game
+  year), world trade-centre counts inside the reference range, and nothing gained in the ports, because the gate was never what kept them empty.
+  ⇒ **KEEP OFF unless 1.15 shows the gate binding.** The open question is the cause in recognised markets; candidates, none measured: the port's
+  workforce (a trade centre needs 800 clerks and 200 shopkeepers a level; the cession moves 1,000 of the taker's people), the trade centre's profit
+  inside a richer, recognised market, and the taker's own construction priorities.
+- **E. MEASUREMENT** — the tools that read all of it: save summary v19 (`world.war_goals`, `world.treaty_port_goals`, `world.treaty_ports`),
+  `ledger/war_goal_mix.mjs` (the war-goal census), `ledger/treaty_port_trade.mjs` (a port's flows against its host market, and `--need` for the
+  capacity a share would take), `ledger/ai_country_goals.mjs` (stances, attitudes and the pairs carrying a reason), `ledger/market_good_snapshots.mjs`
+  and `ledger/world_price_rings.mjs` (one good through a run's saves), and `ledger/arm_tick_cost.mjs` for the cost.
+
+**4. The books** (all gitignored, regenerable): `…-wm99-tp` / `-tpx` / `-tpd` … `-tpd4` from `tools/make_treaty_port_config.mjs` (each book's
+`_treaty_port_variant.command`; `tpd4` = `--driver production-nogp --scale 4`); the eligibility probe books `…-wm99-tpr0` … `-tpr3` and the gate book
+`…-wm99-tpd4-tcg` were made by hand from those (their `_treaty_port_rules_variant` / `_tcg_variant` records say how). ⚠ For 1.1, teach
+`make_treaty_port_config.mjs` the `treaty_port_rules` keys, so a book carrying layers A and D comes from one command rather than a hand edit.
+
+**5. The plan for 1.15.N, in order (the four days of §0):**
+1. **Re-read the engine facts the AI rework may have changed** before building anything: the port-building requirement (the campaign-start
+   eligibility log, `tp_potential_probe.json`), the pursuit filter (the extreme desire WITHOUT a driver, `tp_extreme_10y.json`: does the AI start
+   plays against recognised hosts now?), the never-added rule (`war_goal_mix.mjs` over a 30-year run), the stances (`ai_country_goals.mjs`), the
+   trade-centre defines and the files the emitters patch (ON_GAME_UPDATE's treaty-port rows).
+2. **If the 1.15 AI pursues recognised hosts by itself:** ship layers A + B (and E), no driver — the most organic outcome, and the one the user prefers.
+3. **If it does not:** C2, the organic driver, built and probed for ten years against the same book without it; C1 only if the user rules it in.
+4. **A 30-year read** of the chosen stack: ports standing, trade capacity per port (`treaty_port_trade.mjs`), the tick cost. A century n=3 only if
+   the time allows; otherwise the feature ships, if at all, on the 30-year read and the user's playtest.
+5. **The recognised-market capacity question** (layer D's open item) is worth a probe of its own only if ports in recognised markets keep standing
+   empty under 1.15.

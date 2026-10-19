@@ -1,0 +1,66 @@
+{
+  "schedule_version": 1,
+  "label": "tp-driver-prod2-10y",
+  "_why": "STAGE 1d (overnight): the REVISED production calibration. 20261019_002008 (driver 20% a year, desire >= 25, 5-year cooldown) put treaty-port demands at 6-40% of active war goals (median ~14%), nearly all against Russia and the Ottomans - the only recognised hosts above 25 - with up to five AIs on Kherson at once and almost no port created. Revised: 10% a year, desire >= 15 (Spain, Portugal, Brazil, Sweden, the Netherlands, the Ottomans qualify beside Russia), 8-year cooldown, and the host must be in no committed play.",
+  "_arms": {
+    "tpd2": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd2.json} - production desire + the revised driver; + telemetry"
+  },
+  "_comparison": "Against stage 1b (extreme) and F243 census (vanilla 0 of 614 goals, canon endpoints 1 of 482).",
+  "_predictions": {
+    "the guard": "treaty-port demands under 10% of active war goals in most snapshots",
+    "spread": "several different hosts, at most one demand per host at a time"
+  },
+  "_stop_rule": "none: two fixed runs (a mechanism probe, read in full).",
+  "_cost": "2 runs x 1836.1.1 -> 1846.1.1, about 12 min each",
+  "_caveats": [
+    "EXTREME values: the economy and the wars of these runs are not a balance reading of anything.",
+    "The observer's autosaves overwrite the user's autosave slots: save games BACKUP 20261018_2317 holds the originals.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30). Watch with short reads only (L29)."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1845.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "tpd2": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd2.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tpd2",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "tpd2",
+      "until": "1846.1.1"
+    }
+  ]
+}

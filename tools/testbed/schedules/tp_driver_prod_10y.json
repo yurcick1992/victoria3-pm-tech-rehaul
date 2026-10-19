@@ -1,0 +1,67 @@
+{
+  "schedule_version": 1,
+  "label": "tp-driver-prod-10y",
+  "_why": "STAGE 1c (overnight, user-authorised): the PRODUCTION calibration of the treaty-port desire + driver before the 3 x 30-year performance probes. Production desire (trade law, population, port quality, conquest/protectorate route factors, parity cancel; cap 100) + the driver at 20% a year per eligible AI (recognised, major power or above, at peace, in no committed play, not infamous), on the recognised-host state with the highest desire if at least 25, 5-year cooldown. Stage 1b (extreme driver) proved the mechanism: 8 treaty-port demands in the 1837 snapshot, all against recognised hosts, all past the parity cancel.",
+  "_arms": {
+    "tpd": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd.json} - the next-arm book + the production desire + the production driver; + telemetry"
+  },
+  "_comparison": "Against stage 1b (extreme) and F243 census (vanilla 0 of 614 goals, canon endpoints 1 of 482).",
+  "_predictions": {
+    "the guard (user: not 95% of wars about treaty ports)": "treaty-port demands under 10% of all active war goals in every snapshot, and a few driven plays a year world-wide",
+    "targets": "large technologically lagging recognised hosts (Russia, the Ottomans) more than small ones; none within 5 technologies",
+    "if over the guard": "lower the chance or raise min_value before the 30-year probes"
+  },
+  "_stop_rule": "none: two fixed runs (a mechanism probe, read in full).",
+  "_cost": "2 runs x 1836.1.1 -> 1846.1.1, about 12 min each",
+  "_caveats": [
+    "EXTREME values: the economy and the wars of these runs are not a balance reading of anything.",
+    "The observer's autosaves overwrite the user's autosave slots: save games BACKUP 20261018_2317 holds the originals.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30). Watch with short reads only (L29)."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1845.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "tpd": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "tpd",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "tpd",
+      "until": "1846.1.1"
+    }
+  ]
+}

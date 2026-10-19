@@ -99,7 +99,12 @@ import { fileURLToPath } from 'node:url';
 // Readers: a key is opaque. `c.tag ?? key.split('@')[0]` is the definition in every version; a pool member is the plain
 // TAG, i.e. the MAIN record — a rebel side, or a country a revolt left behind, is a country of its own. FINDINGS F186,
 // landmine L38. ⚠ A pre-v12 summary cannot be repaired (its save is reaped); summary_drops.mjs says which ones are hit.
-export const SAVE_SUMMARY_VERSION = 18;
+export const SAVE_SUMMARY_VERSION = 19;
+// v19 (2026-10-18): + WAR GOALS AND TREATY PORTS (FINDINGS F243, the treaty-port desire probes). `world.war_goals` = { "<type>[:<article>]":
+// { initial, added } } over every goal of the ACTIVE plays in `war_goal_manager.database` (initial = `initial_war_goal=yes`, the goal the play
+// opened with); an enforced treaty article carries its article, so a 1.13 treaty-port demand is `enforce_treaty_article:treaty_port`.
+// `world.treaty_port_goals` = [{ holder, target, initial }] for those demands (country keys), and `world.treaty_ports` = [{ giver, taker, state }]
+// from `treaty_article_manager` (the treaty-port articles in force). A save holds only active plays: a snapshot. Everything else as v18.
 // v18 (2026-10-10): + RESEARCH (the tech rework, BALANCE_FRAMEWORK §10.96: a research model needs the flows, not only the stock). Per country:
 // `innovation` / `max_innovation` / `population_incorporated`, read from the AI's own snapshot `ai.database.<n>.spending_variables` (the country
 // record carries none of them; the cap reproduces exactly as 50 + 150 × literacy, so it is a cross-check; ⚠ a SNAPSHOT from the AI's last update,
@@ -212,7 +217,7 @@ const TREND_KEYS = new Map([['gdp', 'gdp'], ['prestige', 'prestige'], ['literacy
 // Sections we actually walk.  Everything else is skipped in O(1) per line: a top-level section always
 // closes with a `}` in COLUMN 0, so skipping never needs brace arithmetic.
 const WANT = new Set(['country_manager', 'states', 'technology', 'pacts', 'building_manager', 'building_ownership_manager', 'companies', 'market_manager', 'laws', 'interest_groups',
-                      'military_formation_manager', 'ship_manager', 'ai']);   // v16; ai v18
+                      'military_formation_manager', 'ship_manager', 'ai', 'war_goal_manager', 'treaty_article_manager']);   // v16; ai v18; war goals + treaty articles v19
 
 // ---------------------------------------------------------------- collectors
 let saveDate = '';
@@ -333,6 +338,9 @@ const lawsByCountry = new Map(); let lawRec = null;
 let tid = null, tcur = null, inAcq = false, inProg = false, inSpread = false, pTech = null;
 // v18: the AI's snapshot (innovation, cap, incorporated population) per country id
 const aiByCountry = new Map(); let aiSV = null;
+// v19: war goals of the active plays, and the treaty-port articles in force
+const wgRecs = []; let wg = null;
+const tpRecs = []; let ta = null;
 // pacts
 let pFirst = null, pSecond = null, pAct = null, pT = false;
 // buildings
@@ -842,6 +850,42 @@ for await (const line of rl) {
   }
 
   // v13 — INTEREST GROUPS (see igRecs). Only depth-3 scalars are read; everything deeper is skipped by depth.
+  // v19 — WAR GOALS. A record at depth 2; type / holder / initial_war_goal at 3; the target's country at 4 (`target={ country= … }`);
+  // an enforced article's name at 5 (`target={ options={ article= … } }`).
+  if (mode === 'war_goal_manager') {
+    if (depth === 2 && opens && /^\d+=\{$/.test(t)) wg = { t: null, art: null, init: false, holder: null, target: null };
+    else if (wg && !opens) {
+      let x;
+      if (depth === 3) {
+        if ((x = /^type="([a-z_]+)"$/.exec(t))) wg.t = x[1];
+        else if (t === 'initial_war_goal=yes') wg.init = true;
+        else if ((x = /^holder=(\d+)$/.exec(t))) wg.holder = +x[1];
+      } else if (depth === 4 && (x = /^country=(\d+)$/.exec(t))) wg.target = +x[1];
+      else if (depth === 5 && (x = /^article="([a-z_]+)"$/.exec(t))) wg.art = x[1];
+    }
+    const nd = depth + opens - closes;
+    if (wg && nd <= 2) { if (wg.t) wgRecs.push(wg); wg = null; }
+    depth = nd; if (depth <= 0) mode = 'top';
+    continue;
+  }
+  // v19 — TREATY ARTICLES: only the treaty ports are kept. article / source_country (the giver) / target_country (the taker) at depth 3,
+  // the ceded state at 5 (`inputs={ { state= … } }`).
+  if (mode === 'treaty_article_manager') {
+    if (depth === 2 && opens && /^\d+=\{$/.test(t)) ta = { art: null, src: null, tgt: null, state: null };
+    else if (ta && !opens) {
+      let x;
+      if (depth === 3) {
+        if ((x = /^article="([a-z_]+)"$/.exec(t))) ta.art = x[1];
+        else if ((x = /^source_country=(\d+)$/.exec(t))) ta.src = +x[1];
+        else if ((x = /^target_country=(\d+)$/.exec(t))) ta.tgt = +x[1];
+      } else if (depth === 5 && (x = /^state=(\d+)$/.exec(t))) ta.state = +x[1];
+    }
+    const nd = depth + opens - closes;
+    if (ta && nd <= 2) { if (ta.art === 'treaty_port') tpRecs.push(ta); ta = null; }
+    depth = nd; if (depth <= 0) mode = 'top';
+    continue;
+  }
+
   if (mode === 'interest_groups') {
     if (depth === 2 && /^\d+=\{$/.test(t)) ig = { country: null, def: null, clout: 0, ps: 0, rad: 0, loy: 0 };
     else if (ig && depth === 3 && !opens) {
@@ -1253,6 +1297,18 @@ for (const s of new Set([...stateTradeCap.keys(), ...stateTradeGoods.keys()])) {
 for (const c of Object.values(countries)) if (c.trade) { c.trade.capacity = r2(c.trade.capacity); c.trade.usage = r2(c.trade.usage); }
 world.trade.capacity = r2(world.trade.capacity); world.trade.usage = r2(world.trade.usage);
 world.world_market_price = wmPrice;
+// v19: war goals by type (initial / added), the treaty-port demands among them, and the treaty ports in force
+{
+  const wgOut = {}, tpGoals = [];
+  for (const g of wgRecs) {
+    const k = g.t + (g.art ? ':' + g.art : '');
+    (wgOut[k] ??= { initial: 0, added: 0 })[g.init ? 'initial' : 'added']++;
+    if (g.art === 'treaty_port') tpGoals.push({ holder: keyOf(g.holder), target: keyOf(g.target), initial: g.init });
+  }
+  world.war_goals = wgOut;
+  world.treaty_port_goals = tpGoals;
+  world.treaty_ports = tpRecs.map(a => ({ giver: keyOf(a.src), taker: keyOf(a.tgt), state: a.state }));
+}
 // v16: formations world-wide, by owner bucket (id mod 4), the travel-path move histogram, the supply paths' move totals and the worst offenders
 world.formations = { ...fmRound(fmWorld), unowned: fmNoOwner, by_bucket: fmByBucket.map(fmRound), hist_moves: fmHist,
                      supply_moves: { full: fmSupplyFull, naval: fmSupplyNaval }, worst: fmWorst };

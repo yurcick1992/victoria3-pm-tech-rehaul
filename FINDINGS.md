@@ -23068,3 +23068,457 @@ unmeasured. Measuring it needs replicates — several start saves × both arms �
   in-market effect cannot be excluded, but none shows. The markup's readout in game: the world-price tooltip
 (`GOODS_MONOPOLY_WORLD_MARKET_PRICE_DESC`) or `Goods.GetWorldMarketMonopolyPriceImpact`. ⚠ The instrument: `emit_techs.mjs` now accepts engine-registered keys absent from vanilla's file
 (`ENGINE_ONLY_DEFINES`, today this one) and still refuses the dead ones. n=1 against n=1, deterministic until the first divergence, chaotic after it.
+
+## F242 — THE QING'S RUBBER IMPORTS RUN A ~9–10-WEEK LIMIT CYCLE: its industry wants ~8× the world's rubber, both prices sit at the 175% ceiling, and the trade AI's 8-WEEK NO-REDUCTION LOCK synchronises thousands of trade-centre decisions — so imports overshoot into a LOSS, hold for eight weeks, are cut together, and the world price falls to the 25% FLOOR for a week (2026-10-18; the user's playtest of `mod_playtest_wm99`, a Qing game, read from its 21 yearly autosaves 1916–1936; nothing changed in the game)
+
+**The ask.** The user, playing the Qing at ~1920: rubber imports "oscillate so strongly … sometimes going around 60k, sometimes several times
+lower". **Instrument:** the game's own autosaves, copied as they land (`tools/testbed/archive_autosaves.ps1 -Dest tools\testbed\saves_playtest_rubber`,
+detached), summarised (`save_state_summary.mjs`) and read with two readers written for this: `ledger/world_price_rings.mjs` (a 1.13 save keeps the
+last **52 WEEKLY world-market prices per good** — the ring's index advances by exactly 52 between saves a year apart — so yearly saves give a
+continuous weekly world-price series) and `ledger/market_good_snapshots.mjs` (one good in one market per save: building demand, own output, imports
+= trade capacity × units per capacity unit, and the market price from its own order book by the engine's rule).
+
+**1. The demand is structural: ~8× the world's supply.** At 1920.1.1 the Qing market's buildings want **104,325 rubber a week**: electrics
+33,727 (18 buildings), tooling's Rubber Grips rung 33,451 (12), automotive 37,146 (Mass Automobile Production 22,331 + the e2 rung 14,815). The
+world's 84 rubber plantations elsewhere make **12,325**, the Qing's own two make **629**; world output runs 8.7k–13.0k a week over 1916–1920
+while the Qing's demand climbs 74k → 104k → 112.5k (1921). Every other country's rubber use together is ~6–8k. ⇒ the Qing's market price and the
+world price are both pinned near the **175% ceiling (70 for a £40 good)**: the world price sits at 70 in **215 of 260 weeks** (1915–1919).
+
+**2. The trade granularity.** Your build gives rubber `traded_quantity` 24 (vanilla 5; F159's trade table) and the Qing's **3,733 trade-centre
+levels** (3,691 staffed) all run `pm_trade_center_trade_quantity_very_high` (`state_trade_quantity_mult` +1.0), so ONE capacity unit moves **48
+rubber** (vanilla's would move 10). And each staffed trade-centre level is one capacity re-allocation a week (F155) — the Qing can move its whole
+rubber allocation in a single week.
+
+**3. The snapshots: the Qing imports rubber AT A LOSS.**
+
+| save | building demand | own output | imports (cap × 48) | Qing price (its order book) | world price (that week) | weeks at the ceiling since the last dip |
+|---|---|---|---|---|---|---|
+| 1916.1.1 | 74,041 | 1 | 55,200 | 50.2 | 70.0 | 7 |
+| 1917.1.1 | 89,147 | 1 | 69,840 | 48.3 | 63.5 | 0 |
+| 1918.1.1 | 92,746 | 3 | 56,400 | 59.3 | 70.0 | 1 |
+| 1919.1.1 | 96,867 | 2 | 60,384 | 58.1 | 70.0 | 13 |
+| 1920.1.1 | 104,325 | 629 | 75,168 | 51.3 | 70.0 | 6 |
+| 1921.1.1 | 112,537 | 631 | 68,736 | 58.7 | 70.0 | 2 |
+| 1922.1.1 | 123,345 | 632 | 84,912 | 53.3 | 70.0 | 4 |
+| 1923.1.1 | 128,938 | 649 | 82,608 | 56.5 | 70.0 | 15 |
+| 1924.1.1 | 138,191 | 646 | 93,360 | 54.2 | 70.0 | 10 |
+| 1925.1.1 | 140,314 | 481 | 89,280 | 57.1 | 70.0 | 2 |
+| **1926.1.1** | 149,146 | 516 | **12,192** | **70.0** | 70.0 | **8** |
+| 1927.1.1 | 153,096 | 1 | 88,128 | 62.1 | 70.0 | 4 |
+| 1928.1.1 | 145,542 | 511 | 101,280 | 53.0 | 70.0 | 7 |
+| 1929.1.1 | 159,475 | 520 | 94,560 | 60.3 | 70.0 | 2 |
+| 1930.1.1 | 168,110 | 518 | 110,016 | 55.7 | 70.0 | 13 |
+| **1931.1.1** | 178,327 | 518 | 107,280 | 59.8 | **10.0** | 0 |
+| 1932.1.1 | 185,959 | 496 | 107,136 | 61.9 | 70.0 | 15 |
+| 1933.1.1 | 189,705 | 592 | 115,872 | 58.9 | 70.0 | 17 |
+| 1934.1.1 | 181,675 | 607 | 73,440 | 70.0 | 70.0 | 16 |
+| 1935.1.1 | 202,118 | 607 | 121,680 | 59.6 | 70.0 | 14 |
+| 1936.1.1 | 201,497 | 522 | 127,872 | 57.1 | 70.0 | 8 |
+
+⭐ **THE WHOLE SERIES (the campaign ended at 1936.1.1):** 21 snapshots, imports min 12,192 · median 88,128 · max 127,872; the Qing price under the
+world's 70 in **19 of 21** (the two at 70 are the 1926 trough and 1934). 21 years of weekly world prices (1915–1935, 1,092 weeks): rubber at the
+ceiling **975** weeks, at the floor **23**, 95 dip episodes spaced 9 weeks ×24, 10 ×15, 4 ×10, 14–19 ×17; oil 112 episodes spaced 10 ×22, 9 ×16,
+11 ×13; rubber dips within −1…+2 weeks of an oil dip 42 of 95 against 38.0 by chance — the same period, independent clocks.
+
+(The 1922–1936 rows were added from the next fifteen autosaves, the same day; world output 18.6k a week by 1928, the Qing's trade centres
+5,642 levels.) ⭐ **1931.1.1 caught a RE-ENTRY**: the week before the save sat at the floor (10.0) and the save's allocation already imports
+107k again, at a loss once more (Qing price 59.8) — the response to a floor week is immediate. ⚠ 1934.1.1 reads differently: 73k of imports
+against 182k of demand leave the Qing price at the ceiling — by the 1930s demand outgrows what the world market will hand over. ⭐ **The 1926.1.1 save caught a TROUGH directly**: imports 12,192, ×7–8 below the neighbouring snapshots, the Qing price back at
+the 70 ceiling (its market starved), and the save falls **8 weeks** after the last dip — the lock's expiry. This is the user's "several times
+lower", observed. Imports of 55–101k — the user's "around 60k" — supply enough that the Qing's own price falls to **48–59** while the world market charges
+**70**: at every snapshot each imported unit loses £11–22. A trade at that desirability is below vanilla's keep line, but it is not cut at once.
+
+**4. The world price: single-week crashes to the FLOOR, on a ~9–10-week beat.** Rubber is the **only one of 49 goods** with one-week crashes
+(9 weeks at the floor, 10.0, in 1915–1919, each between two weeks at 70); oil — 100% Qing-imported, at the ceiling 155 of 260 weeks — dips on
+the SAME beat but only to ~1.2–1.8× base, never the floor. The below-ceiling episodes of rubber come at spacings of **9 (×6), 10 (×4)** weeks, with
+double dips 4 weeks apart (×6) and some 14–22-week gaps; 1920 is the cleanest year: dips at weeks **3, 13, 22, 31, 40, 49**, each deeper than
+the last (to 1.6 / 1.4 / 1.0 / 1.0 / 0.8 / 0.6 × base). Over all nine years (1915–1923, 468 weeks): rubber at the ceiling **402** weeks and at the
+floor **15**; spacings 9 weeks ×12, 10 ×7, 4 ×9 (double dips), 15–18 ×7. Over all nineteen (1915–1933, 988 weeks): ceiling **878**, floor
+**23**, spacings 9 ×22, 10 ×15, 4 ×10, 15–19 ×17 (a skipped dip reads as ~2 periods). ⭐ **Rubber and oil keep the same PERIOD on INDEPENDENT clocks** (oil: 10
+weeks ×13, 9 ×8, 11 ×8): of 46 rubber dips, 22 fall within −1…+2 weeks of an oil dip against 21.2 expected by chance. The cycle is per good,
+which is what a per-good lock gives (the define's own words: "the same good"), and not one Qing-wide re-allocation. A week at the floor means the world market's buy orders fell under HALF its sell orders
+(`BUY_SELL_DIFF_AT_MAX_FACTOR` 2) — with the Qing 85% of the world's rubber imports, only the Qing withdrawing can do that.
+
+**5. The mechanism, from vanilla's defines** (`common/defines/00_ai.txt`): **`AUTONOMOUS_TRADE_WEEKS_BEFORE_TRADE_REDUCTION = 8`** ("for this many
+weeks after increasing trade in a good, a state won't reduce the trade volume for that same good"), a trade is KEPT only above a desirability of
+25 per base traded quantity (`…_TO_MAINTAIN_TRADE`) and INCREASED only above 50 (`…_TO_INCREASE_TRADE`), desirability = revenue per traded
+quantity after tariffs. Reading: a crash week (world 10, Qing ~70) makes rubber the most desirable trade there is; thousands of Qing trade centres
+increase it in the same week → imports overshoot to 55–75k, the world price returns to 70 and the Qing's falls to ~50 → the trade loses money
+but every one of those increases is locked for 8 weeks → the locks expire TOGETHER → the trade is cut across the board → world demand drops under
+half of supply → the floor → repeat. 8 weeks of lock + the cut week + the re-entry week = the measured 9–10.
+
+**What it does NOT say.** (a) The Qing's imports themselves were never seen week by week — only at twenty-one yearly snapshots (1926.1.1 landed in a trough, 1931.1.1 on a re-entry); the cycle in them is
+inferred from the weekly world price and the order-book arithmetic. Monthly autosaves for a few in-game years would show it directly.
+(b) The 8-week lock is identified by the PERIOD MATCH and the define's own comment, not by changing it. (c) That rubber's ×4.8 traded quantity
+(×2 again on the very-high trade PM) is what makes rubber's dips reach the floor while oil's (traded quantity 6) do not is an ARGUMENT — fewer
+capacity units carry rubber's whole world book, so one week's re-allocation is a larger share of it — not a measurement; no vanilla game with this
+shortage was read. (d) The Qing price is an estimate (the engine's rule on building demand vs own output + imports; market access and state prices
+not modelled). (e) One game, one country, n=1. ⚠ The STRUCTURAL half (rubber at the ceiling for years, consumed by electrics, tooling e3 and
+automotive at ~8× world output) is an input-price HIGH red flag in the §10.94 sense and a design question in its own right (BACKLOG B).
+
+## F243 — TREATY PORTS IN 1.13: GATED BY RANK, NOT RECOGNITION; WANTED BY THE AI ONLY FROM UNRECOGNISED OR ISOLATIONIST TARGETS; AND ALMOST NEVER FOUGHT OVER — 1 of 2,029 active war goals, filed as `enforce_treaty_article` with article `treaty_port` (2026-10-18; read-only: the 1.13.11 game files, the executable's strings, and 49 save snapshots — the vanilla n=16 baseline's endpoints, 12 kept canon-family endpoints, the user's 21 yearly Qing-playtest saves 1916–1936)
+
+**Why it was read.** The user, as an exporter, wants more gateways into closed or thinly-traded markets ("not allowing me to kill their
+industries by abundance of higher-tech supply"), and asked whether treaty ports work in recognised countries, whether rank or recognition gates
+them, and how a wider AI desire for them would compare with the other war goals.
+
+**1. What a treaty port IS in 1.13** (`concept_treaty_port_desc`): a split coastal state the taker owns that stays **part of the CEDING country's
+market**, trades freely with the world market, is untouched by that market's **tariffs, subventions and embargoes**, and gives its owner trade
+advantage on goods moving between the port and the owner (`TRADE_CENTER_ADVANTAGE_TREATY_PORT_FACTOR` 200). The AI scores trade centres there ×5
+(`PRODUCTION_BUILDING_TREATY_PORT_TRADE_CENTER_FACTOR`). It is the one gateway isolationism does not stop: `no_tariffs` and `trade_privilege`
+both require neither side to be isolationist.
+
+**2. The rules** (`common/treaty_articles/14_treaty_port.txt`): eligibility is the engine trigger `is_potential_treaty_port` (undocumented in the
+files; the executable says only "has the potential to become a treaty port for target country", and that a coastal state region has one
+designated treaty-port province) plus "not our subject". **Ratification: the ceding country's rank ≤ the taker's.** **Withdrawal: the ceding
+country may tear it up once it outranks the holder — unless it is unrecognised and the holder recognised** (the only recognition term). **AI
+acceptance when asked:** a great power −1,000; otherwise half the state's value, −50 more if recognised, −500 on a strait, −1,000 if isolationist.
+⭐ No recognition gate: vanilla's achievement "The Western Protectorate" requires treaty ports in France, Germany and Britain, and **2 of the 16
+vanilla runs end 1936 with one ceded by the Dominican Republic (recognised) to the USA (recognised)** — vanilla's 1836 history creates only
+Macau (Qing → Portugal), Singapore (Johor → Britain) and Bandar Abbas (Persia → Oman), so that one was made in play. ⚠ CORRECTED the same
+night (F244): it was made by a SCRIPTED EVENT (`events/iberia_events/dominican_events.txt`, the Samaná lease, `create_treaty` with a
+treaty-port article), not by the AI — vanilla creates ports in recognised hosts only that way. The no-recognition-gate conclusion stands on
+other evidence: `is_potential_treaty_port` passes for recognised hosts' states (F244 §1).
+
+**3. The AI's desire** (`treaty_port_value`, additive across strategies): the default strategy's main term fires only if WE are recognised and
+the TARGET UNRECOGNISED (not adjacent, and either embargoing us or our belligerent trade partner under Economic Imperialism): 5 + state
+population ÷ 200k (≤ 10) + state GDP ÷ 200k (≤ 10), ×1.5 strategic adjacency, ×0.25 unincorporated; +40 to extend a port we hold, +100 in the
+Opium War and carve-up-China cases; ×0 same market or target GDP < £2M, ×0.25 if we already hold one in their market; clamped 0–100.
+`ai_strategy_economic_imperialism` adds +50 (×2 if already enemies) for ISOLATIONIST targets (GDP ≥ £2M) and +100 revenge.
+
+**4. How it competes** (`common/defines/00_ai.txt`): choosing whom to ANTAGONISE sums relations (25/50/100), the conquest score of the states we
+want (×1.0, capped 200), the subjugation score (×1.0, capped 200), **the treaty ports we want (×0.5, capped 100)**, rival 100, natural enemy 75,
+an ongoing war 1,000; an attitude needs 50 (weak) / 100 (strong). Inside a play, a conquest goal scores the state's value (≤ 100) ×0.75, ×2.5
+where a conquer stance holds, ×5 up to 1,000 against a country already an enemy. ⚠ How the engine turns `treaty_port_value` into the score of
+an `enforce_treaty_article` treaty-port goal is not in the files.
+
+**5. The war-goal census** (`tools/testbed/ledger/war_goal_mix.mjs`; a save holds only ACTIVE plays, so each is a snapshot):
+
+| set | saves | war goals | added during a play | annex_country | conquer_state | enforced articles | of which treaty ports |
+|---|---|---|---|---|---|---|---|
+| vanilla n=16, 1936 | 16 | 614 | 367 (60%) | 45.8% | 12.5% | 14 (2.3%) | **0** |
+| canon-family endpoints | 12 | 482 | 310 (64%) | 38.6% | 12.2% | 23 (4.8%) | **1** (initial) |
+| Qing playtest 1916–1936 | 21 | 933 | 552 (59%) | 50.4% | 6.9% | 36 (3.9%) | **0** |
+
+The `take_treaty_port` goal type appears **0** times in 2,029 goals: a 1.13 treaty-port demand is filed as `enforce_treaty_article` with
+`target.options.article = "treaty_port"`. The one case (canon `rs-m10ac` run 3) was a play's OPENING goal (Britain against a south Indian
+state; executed by back-down) — so such demands can start plays, while ~60% of all goals are added during a play. The other enforced articles
+are no-tolls, transit and investment rights, trade privilege. At 1936 vanilla holds 0 treaty ports in 14 of 16 runs.
+
+**What it does NOT say.** `is_potential_treaty_port`'s conditions beyond what the files and the observed cases show; the score the engine gives a
+treaty-port goal; anything about dynamics between snapshots (a play that started and ended between two saves is invisible). `annex_country`
+is largely the revolutions' and secessions' own goal, so the interstate mix is narrower than the table's denominator.
+
+## F244 — THE ENGINE PURSUES TREATY PORTS ONLY AGAINST UNRECOGNISED HOSTS, WHATEVER THE DESIRE (⚠ QUALIFIED in §10: over a century it scores the desire against recognised hosts too, under the secret goal "conquer", and may start a few such demands itself); A SCRIPTED DRIVER OPENS RECOGNISED ONES, AND IT WORKS ONLY WHEN THE DESIRE IS LARGE ENOUGH FOR THE DEMANDING AI TO FOLLOW THROUGH (2026-10-18/19 overnight; seven sessions, 13 runs of 1–10 years on the next-arm book `jex-dam4s-rs-x25-m10ac-dpriv-wm99` + `ai_treaty_ports`; user-directed probes, "try all, then choose")
+
+**Setup.** The desire of BACKLOG D (FINDINGS F243) as a `treaty_port_value` block in every administrative AI strategy
+(`tools/emit_ai_treaty_ports.mjs`, books by `tools/make_treaty_port_config.mjs`): trade-law points (variants first) + population + the host
+state's population and GDP; ×0 under our conquer stance, ×0.25 where a protectorate is possible, ×0.5 if we already hold a port in their
+market; ×0 unreachable / same market / we isolationist; −1,000 at a technology lead ≤ 5 (`techs_researched`). War goals and treaty ports are
+read from save summary v19.
+
+**1. The desire is read, and computed as designed, for recognised hosts too** (`20261018_234718`, a campaign-start log for 10 takers × every
+coastal state of 31 hosts): `is_potential_treaty_port` passes for recognised hosts' states (Britain → the Ottomans 10 of 19 coastal states,
+→ Russia 6 of 17, → Spain 10 of 11, → France 12 of 18); the engine's own `ai_treaty_port_value` reads ~415–440 for full targets at +400
+(the Ottomans, Russia, Spain, Brazil, the Netherlands, Sweden), ~103 where a protectorate is possible, −570 / −1,000 at technology parity
+(France, the USA, Belgium for Britain), 0 where unreachable or under a conquer stance. ⚠ A saved scope is NOT visible inside debug-log text
+(the first diagnostic, `20261018_234440`, printed blank names and zeros).
+
+**2. But the engine PURSUES treaty ports only against unrecognised or decentralised hosts** (`20261018_231810`, extreme desire +400, 2 × 10
+years): the 1846 save carries 14 AI pairs with `AI_REASON_WANTS_TREATY_PORTS` (vanilla's quarterly 1845–46 saves: 0), all against natives,
+Persia, Oman, Oyo, Makassar or the Qing — none against a recognised host — and the runs made 1–2 treaty-port demands each. The filter is
+engine-side (no script names it). Vanilla itself creates ports in recognised hosts only by scripted events (`create_treaty`: the Samaná
+lease, Meiji Japan).
+
+**3. The DRIVER** (`ai_treaty_ports.driver`): once a year an AI country — recognised, major power or above, at peace, in no committed play,
+permitted aggressive plays, not infamous, off cooldown — rolls a chance and starts a `dp_take_treaty_port` play
+(`create_diplomatic_play`) on the recognised-host state with its highest engine-computed desire (`ai_treaty_port_value(root)`, every strategy
+summed, parity cancel included), if at least `min_value`. In 1.13 the resulting demand is an `enforce_treaty_article:treaty_port` war goal.
+
+| session | settings | driven plays (2 runs) | treaty-port demands, share of active war goals | new ports in recognised hosts |
+|---|---|---|---|---|
+| `20261018_235301` | extreme: desire +400, driver 100% / any / 2 y | 56 / 62 | 15–42% | 3 / 9 (NET → GBR, TUR → SPA ×2, HAN → PRU, RUS → PRU …; DOM → FRA there is vanilla's scripted Samaná lease) |
+| `20261019_002008` | production desire, 20% / ≥ 25 / 5 y | 14 / 18 | 6–40% (median ~14%), up to 5 AIs on Kherson | 0 (a historical one lapsed) |
+| `20261019_004649` | + 10% / ≥ 15 / 8 y, host in no committed play | 5 / 2 | 0–10% | 0 — every play on Russia or the Ottomans (great powers never cede) |
+| `20261019_011240` | + no great-power hosts | 1 / 3 | 0–14% | 0 — the demanding AI lets a play lapse at desire 15–40 |
+| **`20261019_013756`** | **desire ×4, 10% / ≥ 60 / 8 y, free host, no great powers** | **3 / 5** | **0–11%** | **SIC → FRA / TUR → GBR** (+ the Opium-War port in both; DOM → FRA in run 1 is vanilla's scripted Samaná lease, `events/iberia_events/dominican_events.txt`, which goes to whichever country takes the offer) |
+
+⇒ The driver sets HOW OFTEN demands start; the desire's MAGNITUDE sets whether the demanding AI follows through (at 15–40 it lets the play
+lapse; at 160–400 weaker hosts cede). The chosen variant (`tpd4`) holds the user's ~10% guard and produces cessions. ⚠ The ×4 also strengthens
+the engine's own pursuit of unrecognised hosts (the Opium War ended in a port in both runs); with only two runs that is not separable from seed.
+
+**4. Thirty years and the performance check** (`20261019_020412`, tpd4, 3 × 1836→1866; the like-for-like control `20261019_040415`, the
+same base book WITHOUT the feature, 2 × 1836→1846, the same night):
+
+| | 1836–1840 s per in-game year | 1841–1845 | treaty-port goals, share of active war goals |
+|---|---|---|---|
+| control (no feature, n=2) | 64 | 73 | 2.0 / 3.3% over 1836–1846 |
+| tpd4 (n=5, both sessions) | 63 | 75 | 3.1–5.4% over 1836–1846 |
+| tpd4, 30 years (n=3) | — | — | 3.2 / 3.4 / 5.7% over 1836–1866 (largest yearly snapshot 11–18%) |
+
+The feature costs **+0.7%** over the first ten years, inside the control's ±3% seed spread; the 30-year runs pace 63 · 75 · 74 · 78 · 77 · 85
+s per in-game year by five-year period with every run within 0.91–1.10 of the median and **no slowdown episode**. The driver adds one to two
+points to vanilla's own 2–3% share of treaty-port demands. ⇒ **Performance passed; the three runs were continued to 1936**
+(`20261019_043125`).
+
+⭐ **The new ports do not last, and the cause is politics, not the AI giving them up.** Gained and lost in the three seeds (`world.treaty_ports`,
+checked against `states` the year before and after each loss): Portugal → Britain at Porto (1847–1854; the port province passed to the second
+Portuguese record of a civil war), Two Sicilies → the Netherlands in Campania (1851–1859; the province went to a third country, RSM), the
+Ottomans → Russia in Eastern Thrace (1858–1864; lapsed with Russia still holding the province, unexplained), and vanilla's own Shaozhou and
+Singapore lost with a British civil war (1849) and Macau when the Qing broke up (1864). Held at 1866: 0 / 2 (Japan → the Ottomans, Oyo →
+Portugal) / 0 extra ports. Each loss matches the article's `requirement_to_maintain` (the holder must own the port province and the host the
+rest of the state region); the host's own `can_withdraw` needs it to outrank the holder, which none of these did. ⇒ A port lives about as
+long as the politics around it, five to eight years in these seeds — so the steady-state count, not the number of cessions, is what the
+continuations have to show.
+
+**5. A treaty-port demand is NEVER added to a play already running — only ever its opening goal** (2026-10-19, every v19 summary of the
+treaty-port sessions; read while the user questioned the driver). Pooling the yearly snapshots of active plays: the continuation session
+`20261019_043125` holds 83 treaty-port goal-snapshots, every one a play's OPENING goal and 0 added, while the AI ADDED other treaty articles to
+running plays freely — investment rights 153, transit rights 60, no tolls 26, trade privilege 21 — beside 887 annexations and 466 conquests. The
+30-year session reads the same (75 opened, 0 added; investment rights 66 added), and so does every calibration session and the extreme-desire
+probe without a driver (2 opened, against unrecognised hosts; 0 added). Vanilla's own census (F243 §5) is consistent: its one treaty-port goal
+was an opening goal. ⇒ The AI reaches a treaty port by ONE route only: starting a treaty-port play. It never takes one as an extra demand in a
+play or war it entered for other reasons, even at a desire of 160–400. ⚠ The cause is not established. The script candidate is the
+`skip_build_list` setting on the `take_treaty_port` war-goal type (`common/war_goal_types/25_take_treaty_port.txt`; documented as "if the war
+goal should be available to be picked in the diplomatic play or not"), and a second one is that `enforce_treaty_article` "loops over article
+types and then enemy countries" (`war_goal_types.md`), which may not fill an article's STATE input — no state-input article (treaty port,
+transfer state) appears among the added goals at all. Neither is tested. The engine's start-of-play filter (§2: no antagonise reason against a
+recognised host) is a SEPARATE gate; the files carry no recognition term on the play (`dp_take_treaty_port`: not decentralised, aggressive
+plays permitted, no subject tie, relations below cordial), the war goal (`valid`: the state is the host's and `is_potential_treaty_port`), or
+the article (`can_ratify` is rank only). The executable names a console command `ai_evaluate_treaty_port` ("Prints AI score of how much they
+want to have a treaty_port in a particular state"), which a debug game could use to read the engine's own score against a recognised host.
+
+**6. A state can become a treaty port only if it HAS A PORT BUILDING** (2026-10-19, user-asked: the observed Britain's play panel refuses most
+coastal states with "Target state has no valid treaty port province" — `WARGOAL_NO_TREATY_PORT` — Mexico's Rio Grande among them). Every coastal
+state region designates a port province (`port = "x…"` in `map_data/state_regions`; Rio Grande's is `xE96480`, Mexican-owned and whole at 1836
+and at 1905 in run 3 of `20261019_043125`), and there is no separate treaty-port designation in the map data. What separates the states is the
+1836 port BUILDING: joining the campaign-start log of `20261018_234718` (10 takers × every coastal state of 31 hosts, the engine's
+`is_potential_treaty_port`) to `common/history/buildings`, **798 states that pass hold a `building_port` and 723 that fail hold none**; of the 31
+exceptions, 28 are my script crediting a split region's port to the wrong owner (Macau in Western Guangdong, the British part of Tenasserim, the
+Dutch part of the West Indies) and 3 are single-taker cases left unexplained (Indian Ocean Territory, Adana, al Rif). For Britain at 1836 Mexico
+offers Veracruz alone (Rio Grande, Yucatán, Baja California, California, Sonora, Sinaloa, Jalisco, Guerrero, Oaxaca, Chiapas refuse), Brazil
+Bahia, Pernambuco and Rio de Janeiro, the Qing Canton (Eastern Guangdong), Shandong and Suzhou, Joseon Busan. The define
+`WAR_GOAL_TREATY_PORT_BUILDING_LEVEL = 1` is the likely threshold. ⇒ A treaty port can only be an EXISTING port town, so the supply of targets is
+set by where hosts have built ports — few states in most lagging countries — and grows only as they build more. ⚠ Read off the 1836 start only;
+that a state gains eligibility the moment its owner builds a port is the rule's prediction, not yet observed. ⭐ One case is consistent with it:
+the continuation's run 1 ends 1936 with Mexico → Sweden in JALISCO, a state with no port at 1836 (Mexico must have built one first).
+
+**7. The engine ALREADY BUILDS A PORT in a new treaty port, at level 1** (2026-10-19). Every treaty-port state of the extreme-driver probe's
+1846 save (`20261018_235301` run 2, 12 ports) holds a `building_port` of `levels=1`; the eight ceded in play carry `establishment_date`s spread
+over 1842.3–1845.9, i.e. their cession dates, against 1836.1.1 for the historical ones. Run 1 of `20261019_043125` reads the same at 1936:
+Sweden's Jalisco port is level 1, established 1927.3.25 (the summaries show the cession between 1927.1.1 and 1928.1.1), while Mexico's
+remaining part of Jalisco carries a NEW level-2 port established 1929.8.30 — the host rebuilt one after losing its port province. ⇒ The
+define `WAR_GOAL_TREATY_PORT_BUILDING_LEVEL = 1` reads as the level of the port the engine seeds on cession (uncommented in the file; the
+reading rests on these 13 cases). ⚠ Whether a portless state can be ceded at all (§6's gate) is untested. ⭐ The controls of §8 add that the HOST
+keeps its own port: Bahia's level-1 and Rio de Janeiro's level-3 ports stay in the host's part, and the new treaty port gets a fresh level-1 one.
+
+**8. A portless state CAN become a real treaty port — if a port is built in it immediately before the cession** (2026-10-19, user-asked: "Can we
+remove that requirement? … is it possible to seed a port in a conquered treaty port province on war victory?"; two probes of 2 × 1836.1.1→1836.7.1
+on the next-arm base book with `treaty_port_rules`, `tools/emit_treaty_port_rules.mjs`; sessions `20261019_120025` and `20261019_120951`).
+The status that matters is the save's `treaty_port=yes` on the taker's state (Singapore, Macau, Bandar Abbas carry it; F244 §1's market rules hang
+on it). Read from the kept saves:
+
+| case | route | rules | the taker's new state |
+|---|---|---|---|
+| Bahia (port), Rio de Janeiro (port), Fez (port) | treaty article / play | vanilla and both overrides | **flagged**, level-1 port (controls) |
+| Ceará (no port) | play, enforced | the script check replaced (`no_port_building`) | split off, **NOT flagged**, a level-**0** port |
+| Yucatán (no port) | `create_treaty` with a treaty-port article | vanilla | split off, **NOT flagged**, no port |
+| **Yucatán (no port)** | `create_treaty` with a treaty-port article | **the check replaced + a level-1 port built just before `cede_treaty_port`** (`seed_port_on_cession`) | **flagged**, level-1 port |
+| Veracruz (port), Sinaloa, Sonora (seeded) | the bare `cede_treaty_port` effect | any | split off, never flagged — the effect alone moves land; the status comes with the article |
+
+⇒ **(a) Replacing the script check alone is harmful**: the demand is enforced and the engine hands over the treaty-port province as ordinary
+territory — a one-province conquest — because the treaty-port status is set only where the state holds a port at the moment of cession.
+**(b) Building a level-1 port inside the article's `on_entry_into_force`, in the same effect and just before vanilla's `cede_treaty_port`, is
+enough**: the engine sees the new building at once and makes a flagged treaty port with a level-1 port, the host keeping nothing (it had no port).
+⚠ Not observed end to end on the WAR route: no portless play resolved inside six months in the second pass (Britain's Ceará play was still
+open at July). A play is enforced through the same article (the first pass's Ceará split came that way), so the seeded cession should apply, but
+it is inferred. ⚠ `cede_treaty_port` run at `on_game_started_after_lobby` did nothing at all, even for Veracruz; it works from the first monthly
+pulse on. ⚠ `create_treaty` takes `first_country`/`target_country` as named countries — `root` inside an on_action is no country and the engine
+refuses the treaty ("A treaty must have a valid _FirstCountry").
+
+**9. The century: ports come and go, one to five standing at a time, against vanilla's 0** (2026-10-19; the three 30-year runs continued to
+1936 as `20261019_043125` and stitched as `20261019_020412_tp-prod-stitched-n3`; run 1 crashed twice, 1915.8.31 and 1932.1.14, both resumed by
+the feeder). Treaty ports standing (`world.treaty_ports`, the first summary of each year; the three historical ones — Macau, Singapore, Bandar
+Abbas — included):
+
+| run | 1846 | 1866 | 1886 | 1906 | 1926 | 1936 | new ports over the century | of which standing at 1936 |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 3 | 3 | 2 | 3 | 1 | 1 | 5 (Portugal → Britain, Bengal → USA, Rewah in Orissa → USA, Denmark → Germany, Mexico → Sweden) | 1 (Jalisco) |
+| 2 | 3 | 5 | 3 | 2 | 3 | 1 | 8 (Two Sicilies → Netherlands, Japan → Ottomans, Oyo → Portugal, Peru → Chile, Netherlands → Germany, Japan → Germany, France → Scandinavia, a decentralised state in Suzhou → Portugal) | 0 (only Macau stands) |
+| 3 | 4 | 1 | 2 | 2 | 4 | 4 | 11 (Qing → Britain at the Opium War, Ottomans → Russia, Brazil → Austria, Greece → USA, Portugal → Sweden, Two Sicilies → USA, Kutai (East Borneo) → Bali, Philippines → Britain, Two Sicilies → North German Federation, Anhui → Portugal, Netherlands → USA) | 4 |
+
+Vanilla holds **0 treaty ports at 1936 in 14 of its 16 runs** and one in the other two (F243 §5). A new port lives a median of about seven years
+(2–48; Brazil → Austria 1878–1925, Peru → Chile 1871–1900 and Rewah in Orissa → USA 1898–1922 are the long ones), and recognised hosts include France,
+the Netherlands, Denmark and Brazil. Treaty-port demands fall to 1.8% of active war goals over run 1's last 70 years.
+
+**The register** (`criteria.mjs` against vanilla n=16): run 1 intact (world GDP 1.01×, loss 7.2), run 2 intact (0.96×, 9.3), **run 3 broken by
+runoff** — Britain capital-abundant 1926–1936 (U* under 5% for eleven years at a mean hoard of 1.63 of its GDP), world GDP 1.27×. Consensus
+(runs 1 + 2): **loss 7.82** — T3 2.08, PI 2.05, PP 1.47, T0 1.28, pool GDP 0.51, pool U* 0.41; world GDP 0.98×, pool W 0.78, pool U* 37.0% against
+vanilla's 21.3%, pool H 0.51, PI 0.96, PP 1.03, Germany's closed-major term 0. Beside it the canon's measured precursor `jex-dam4s-rs-x25-m10ac`
+(F239: 3 intact, loss 6.72) — ⚠ it lacks private dams, the monopoly threshold and the treaty-port feature, three differences at once, so
+**nothing here can be attributed to treaty ports**.
+
+**The wall clock** (`wall_clusters.mjs`): all three centuries in cluster 1 (no slowdown episode), median **181.8 min** against vanilla's 165.0
+(**×1.10**, at the edge of the budget) and m10ac's 174.4 (×1.04, the same three-difference caveat). The like-for-like ten-year control of §4 put
+the feature itself at +0.7%.
+
+**10. How AI stances work, and what a less artificial driver could read** (2026-10-19, user-asked: the driver should consider whether the
+war should be started at all — target only countries it is not friendly to, check whether it can afford a war, prefer a target already at war
+unless every target state is already demanded; read from `common/defines/00_ai.txt`, vanilla's scripted triggers, and the `country_goal`
+records of eight kept saves — the three 1866 and three 1936 saves of the tpd4 runs and the two 1846 saves of the extreme-driver probe).
+- **What the engine keeps per pair.** Every AI country holds, for every country it finds relevant, goal scores — threat, protect, befriend,
+  antagonize — each with scored reasons, an **attitude** (15 kinds: belligerent = "target of conquest", domineering = "natural subject",
+  antagonistic, wary, cautious, cooperative, genial, protective, …) and a **secret goal** (none, befriend, antagonize, protect, **conquer**,
+  **dominate** = make a subject, reconcile, comply, defy). Treaty-port desire enters the antagonise score as `AI_REASON_WANTS_TREATY_PORTS`
+  (×0.5, capped 100). **No attitude or secret goal means "dominate economically without conquering"**; the treaty-port reason lives under conquer.
+- ⭐ **All 176 pairs carrying the treaty-port reason (eight saves) held the secret goal CONQUER** — attitude belligerent 118, cautious 57,
+  genial 1; targets unrecognised 107, decentralised 37, colonial 6, company 1 and **recognised 25** (USA→Mexico in four saves, Greece→Ottomans
+  twice, France→Ottomans, Egypt→Ottomans, Germany→Russia, Germany→Scandinavia, Colombia→Mexico, Venezuela→Brazil, Chile→Peru, Brazil→Colombia,
+  Britain→Mexico, USA→Portugal, USA→Spain, Russia→Java, Austria→Java, …). ⚠ So §2 is QUALIFIED: the engine does score treaty-port desire against
+  recognised hosts, mostly in pairs it already treats as relevant (neighbours, rivals). The 10-year extreme probe without a driver showed none
+  by 1846; these appear in the longer runs and in the driver probe.
+- ⚠ **Some recognised-host demands may be the engine's own.** Of the recognised-host treaty-port goals in the century summaries, 28 yearly
+  snapshots (9 / 15 / 4 by run, e.g. USA→Netherlands 1846–47, Netherlands→Greece 1867–70, Germany→Japan 1877–78, France→Ottomans 1907–08)
+  have no driver line within three years before them, against 164 that do. Matched by host and year only: the driver's log line carries no
+  taker (the cosmetic bug), so this is a lead, not an attribution.
+- ⭐ **Vanilla's conquest stops at land borders.** `ai_strongly_desires_target_state` (`common/scripted_triggers/00_ai_triggers.txt`) wants a state
+  only if the AI holds the conquer goal toward its owner AND the state touches its land border or lies in its capital's region ("Will limit its
+  ambitions to land borders"). An AI set on conquering an OVERSEAS country therefore has no state it wants — a treaty port is the natural outlet
+  for exactly that goal.
+- **What a script can read** (all used by vanilla script): `has_secret_goal = { who = X secret_goal = conquer }`, `has_attitude = { who = X
+  attitude = belligerent }`, `relations:root` against `relations_threshold:cordial` (the play's own `possible` already requires the host's
+  relations below cordial, `diplomatic_play_has_no_relations_blocker_with_target`), `army_power_projection`, `navy_size`, `in_default`,
+  `scaled_debt`, `gold_reserves`, `is_at_war`, `any_enemy_in_war`, war scopes with `has_war_support` / `has_war_exhaustion`. ⚠ Summing
+  `every_enemy_in_war` inside a script value is the natural war-burden measure and is NOT yet verified in game.
+- **The engine's own war calculus** (the play confidence an AI uses to press or back down): force balance (`DIPLO_PLAY_CONFIDENCE_FORCE_BALANCE_FACTOR`
+  75 at 4:1, `DIPLO_PLAY_FORCE_DIPLOMATIC_PLAY_THRESHOLD` 2.0), debt −25, bankruptcy −25, turmoil −15, devastation −15, gold reserves +15, its own
+  other conflicts −25, and **+25 when the other side is in another conflict** (`DIPLO_PLAY_CONFIDENCE_FROM_ENEMY_CONFLICTS`). A target busy in a
+  war is therefore already a better target in the engine's own terms.
+
+**What it does NOT say.** The economic effect on the exporters the ports are for (F245 reads the trade funnel); what the engine's pursuit filter
+is exactly (§10 qualifies §2). Two to three runs per setting; snapshots are yearly, so a play that began and ended between saves is invisible
+(the PMR_TPD log counts driven plays exactly, but not their taker).
+
+## F245 — A TREATY PORT CAN PUSH THE HOST'S PRICES DOWN ONLY THROUGH THE TRADE CAPACITY BUILT IN IT. AI TAKERS RARELY BUILD ANY, AND THE TRADE THERE IS FILLS THE HOST'S SHORTAGES RATHER THAN UNDERCUTTING ITS OWN INDUSTRY. A PLAYER COULD BUILD IT: ONE PORT IS ENOUGH FOR A JAPAN-SIZED MARKET, A QING NEEDS SEVERAL (2026-10-19; read-only: the three tpd4 centuries' yearly summaries, their kept 1866 and 1936 saves melted for per-state trade, the engine's defines and price formula, F161)
+
+**Why it was read.** The user, on whether the extra treaty ports lead to more trade, lower prices of manufactured goods in the host markets and
+finally stronger obsolescence: "even if the obsolescence can't be observed directly, check all the funnel to understand whether it'll likely
+happen in a more pronounced 'treaty port from a hegemon' scenario, which itself is likelier for players".
+
+**The mechanism** (F243 §1 and the game files). A treaty port is a state the taker owns inside the HOST'S market, trading with the world market free
+of the host's tariffs, subventions and embargoes, with extra trade advantage on trade toward its owner (`TRADE_CENTER_ADVANTAGE_TREATY_PORT_FACTOR`
+200). Its trade capacity comes only from trade centres built in it: `state_trade_capacity_add` 10 per level, each level staffed by 1,000 workers
+(800 clerks, 200 shopkeepers), workforce-scaled. The cession moves 1,000 of the taker's people there (`TREATY_PORT_INITIAL_MIGRATION`).
+
+**Link 1 — port → trade capacity: cut in AI play.** ⚠ **The mechanism below is CONTRADICTED by F246** (the same day): with vanilla's defines the
+AI built trade centres in Macau and Hong Kong at a quarter and a tenth of the threshold, and exempting treaty ports from the gate changed nothing
+measurable; the counts of empty ports stand, their cause is open. The AI builds a trade centre only in a state whose yearly GDP clears
+`TRADE_CENTER_MINIMUM_GDP_NON_MARKET_CAPITAL` £500k × (1 + 0.02 × years since the start), about £1.1M by 1900; the treaty-port ×5
+(`PRODUCTION_BUILDING_TREATY_PORT_TRADE_CENTER_FACTOR`) only re-weights states that pass. A one-province port rarely does. Of the 24 new ports
+in the three centuries, **11 never carried any trade** (Bahia for 47 years, Lima for 29, Brittany, Jutland, Porto under Britain), **8 carried
+12–48 capacity at most**, and **5 reached 100 or more** (Calabria 375, Zhejiang 203, Shaozhou 201, Bengal 157, Tuscany 133). Vanilla's own Macau
+held 310 in run 2's 1866 save.
+
+**Link 2 — capacity → imports, and of what** (each port's goods out of the kept saves; units a week at the book's traded quantities, the port's
+imports as a share of the host market's own production + its other imports):
+
+| port (save) | what the port imports, as a share of the host market's supply |
+|---|---|
+| Macau, Qing → Portugal (1866, cap 310) | luxury clothes **77%**, luxury furniture **73%**, opium 33%, sugar 30%, oil 31%, iron 13% |
+| Zhejiang, Anhui → Portugal (1936, cap 166) | sugar **49%**, small arms 20%, merchant marine 19%, tools 7%, furniture 5.5%, **clothes 4.0%**, paper 2.7% |
+| Jalisco, Mexico → Sweden (1936, cap 41) | hardwood 30%, **furniture 11.9%**, merchant marine 9%, paper 2.4% |
+| Calabria, Two Sicilies → USA (1936, cap 300, inside the German market) | engines 2.0%, lead 2.4% |
+| Tuscany, Two Sicilies → North German Fed. (1936) | every good ≤ 0.3% |
+
+The engine's autonomous trade picks trades by revenue per traded unit, so a port's capacity goes first to the goods the host is SHORT of —
+luxuries, colonial goods, inputs it barely makes — and it fills those shortages. It meets the host's own mass production (clothes, furniture,
+paper) at **3–12% of supply**. Zhejiang's capacity was fully used (203 of 166), so capacity, not demand, is what bounds it.
+
+**Link 3 — imports → the host's price: computed, not observed.** By the engine's price formula (price ÷ base = 1 + 0.75 × (buy − sell) ÷ min(buy,
+sell)), with pop demand fixed in units (F40), a market at the importer premium F161 measured (local about +0.30 in log terms over the world, e.g. 1.15
+against 0.85 of base) needs extra sell orders of **about 40–50% of its own supply** to reach the world price. A port supplying 4% of a good lowers
+1.15 to about 1.12; 10% lowers it to about 1.07. F161 §6 measured the same direction on the whole economy: more capacity narrowed the importer
+premium (textile +0.59 → +0.30). ⚠ The one clean observed case does not separate from seed: Japan in run 2, a Kansai port of 25–46 capacity against
+18–57 in the rest of Japan's market, saw its consumer-goods producer price (goods sales ÷ base-priced output) fall 1.37 → 0.88 of base by 1890; run 3 with no port fell
+1.37 → 0.94, run 1 with no port 1.36 → 1.23.
+
+**Link 4 — price → the old rung.** F161 §4: at the world's average realised price, 59–88% of the consumer-chain old-rung levels would be below
+break-even; at the importer premium they are the most profitable. So the old rung dies IF link 3 delivers something near the world price.
+
+**The hegemon (player) case.** A player is not bound by the GDP gate; the binding limits are the port's workforce (1,000 clerks and shopkeepers per
+10 capacity) and the construction. Capacity needed to add 40% of the host market's supply of ten consumer goods (clothes, fabric, furniture,
+groceries, glass, paper, tools, liquor, luxury clothes and furniture; normal trade-quantity method, the very-high method moves twice the units per
+capacity), run 2:
+
+| host market | year | GDP £M/yr | capacity | trade-centre levels | clerks + shopkeepers |
+|---|---|---|---|---|---|
+| Japan | 1866 | 18 | 138 | 14 | ~14k |
+| Qing | 1866 | 153 | 1,147 | 115 | ~115k |
+| Qing | 1900 | 212 | 1,660 | 166 | ~166k |
+| Qing | 1936 | 273 | 3,274 | 327 | ~327k |
+
+⇒ **In AI play the funnel is cut at link 1 and diluted at link 2**: the extra ports will rarely produce visible obsolescence in their hosts.
+**In a player-hegemon game links 1 and 2 open**, and in a small or closed market one well-staffed port reaches the price effect F161 says kills
+consumer old rungs; a Qing-sized market needs several large ports (Macau reached 31 levels under the AI). The treaty-port advantage tilts the
+port's trade toward the taker, i.e. toward a hegemon's own exports.
+
+**What it does NOT say.** A price effect observed directly: local prices are not in a save, and producer realised prices in the one clean case are
+inside seed spread. Link 3 leaves out the host producers' exit (which cuts supply and props the price back up) and how the advantage term shifts
+which goods flow. Whether a port province can staff 14–30 trade-centre levels (clerks need literacy) was not checked. Three runs, five ports with
+material trade.
+
+## F246 — THE AI'S TRADE-CENTRE GDP GATE DOES NOT KEEP TREATY PORTS EMPTY: UNDER VANILLA'S DEFINES THE AI BUILDS TRADE CENTRES IN PORTS AT A TENTH OF THE THRESHOLD, AND MOVING THE GATE INTO SCRIPT WITH TREATY PORTS EXEMPT CHANGES NOTHING MEASURABLE AND COSTS NO TICK TIME; AND THE ENGINE REQUIRES `TRADE_CENTER_MINIMUM_GDP_NON_MARKET_CAPITAL` > `_MARKET_CAPITAL` (2026-10-19; sessions 20261019_175621_tp-tc-gate-probe3, 2 × 1836→1846 on the gated book, against the four tpd4 runs of 20261019_172655 and 20261019_013756; the void attempts 20261019_172655 run 3 and 20261019_174541)
+
+**Why it was run.** The user, on F245's link 1: *"Maybe we could reword it somehow, so to check GDP 'if not in a treaty port'?"*, then *"Go on with the
+probes."* F245 had read the empty new ports (11 of 24 never traded) as the engine's GDP gate at work. The executable reads five
+`TRADE_CENTER_MINIMUM_GDP_*` defines and none is specific to treaty ports, so the gate was moved into script: the probe book
+`jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpd4-tcg` = the tpd4 treaty-port book + `ai_defines` MARKET_CAPITAL 1 / NON_MARKET_CAPITAL 2 (the engine gate off)
++ `treaty_port_rules.trade_center_gate` (vanilla's test, read live from 00_ai.txt, as the trade centre's `can_build_government` /
+`can_build_private`, exempting treaty ports and a player's government construction; `tools/emit_treaty_port_rules.mjs`) + a yearly `PMR_TCG` log
+of every treaty-port state's GDP, threshold and trade-centre levels.
+
+**1. The engine validates both base thresholds, and the second against the first.** 0 is rejected ("Must be greater than 0"); MARKET_CAPITAL 1 with
+NON_MARKET_CAPITAL 1 is rejected for the second key ("Must be greater than 1"). A rejected key keeps vanilla's value (landmine L33), so the first two
+attempts ran the engine gate AND the script gate and were stopped (VERDICTs in both sessions). 1 / 2 loads clean. Both bounds are now in L33's static
+table (the second as kind `gt_other`, a FAIL) and in the emitter's check.
+
+**2. The engine gate does not bind the treaty ports observed.** With vanilla's thresholds in force:
+- **Macau** (Qing → Portugal; not a market capital, so a 500k threshold) went from its 1836 history's 6 trade-centre levels to **13 by the end of
+  1837** at a GDP of **£127k**, a quarter of the threshold (20261019_174541, where NON_MARKET_CAPITAL was rejected and stayed at 500k).
+- **Hong Kong** (Qing → Britain, ceded around 1838) was built from zero in all four tpd4 runs: **trade capacity 8 → 72 → 98 → 115 by 1841, 219 by
+  1846** in run 1 of 013756, 99 / 207 in run 2. The same state's GDP read **£47–62k** in the gated runs' log, against a threshold of 520–590k.
+- No vanilla script creates trade centres (the opium-war, Ryukyu, metro and Spanish-flu events only test for them), so the AI built these levels.
+⇒ **F245's link-1 mechanism is WRONG as stated** for these ports. Either the engine exempts treaty ports already, or the state's yearly GDP is
+not what it compares, or the gate applies elsewhere in the decision. The executable does not say which. The empty ports F245 counted need another
+explanation.
+
+**3. With the gate in script, nothing measurable changes** (gated runs 1 / 2 against tpd4's four runs):
+
+| reading at 1846 | gated (2 runs) | tpd4 ungated (013756, 2 runs) |
+|---|---|---|
+| world trade-centre levels | 526 / 473 | 507 / 466 |
+| trade-centre buildings | 146 / 146 | 145 / 143 |
+| states with trade capacity | 140 / 142 | 132 / 139 |
+| world trade capacity | 4,923 / 4,375 | 4,188 / 4,382 |
+| Macau / Singapore / Bandar Abbas capacity | 135 / 14 / 2 · 104 / 22 / 23 | 96 / 29 / 10 · 116 / 32 / 7 |
+| Hong Kong capacity | 144 (run 1; not ceded in run 2) | 219 / 207 |
+
+Singapore stays at 1–2 levels in every run of both arms, so its limit is not the gate either. ⚠ **The question the probe was for is NOT
+answered**: no port in a RECOGNISED host formed in either gated run. The driver started plays (on Bahia, Porto, Götaland, Svealand, Holland,
+Campania) and none ended in a cession inside ten years, while the four reference runs had five such ports, at 0–23 capacity (Holland under the USA 23
+and Porto under France 0 at 1841 in 172655 run 1; Campania under France 10, Santo Domingo under France 0 and Eastern Thrace under Britain 0 at 1846
+in 013756). Every port that did form in this probe lies in the Qing market, where the engine gate
+was already no bar.
+
+**4. Tick cost: none detectable.** Wall seconds per in-game year from the tick stamps (`arm_tick_cost.mjs --ref tpd4 --to 1846`, 1 January
+excluded): **gated 67.6 ± 3.5 against tpd4 68.1 ± 1.0, Δ −0.5 ± 3.6** over 1836–1845 (n = 2 against 4); game-logic time 25.7 s against 26.6 s a
+year; one daily / weekly / monthly tick 47.4 / 154.7 / 156.1 ms against 48.4 / 154.9 / 156.4. 00_ai.txt's warning that lowering these defines "can
+adversely affect performance" does not show at this world size, with the script gate standing in.
+
+**5. Units.** State-scope `gdp` is yearly £ on the thresholds' scale (`PMR_TCG|Portugal|Macao|gdp 109428|thr 500000|tc 7`), and the script's
+threshold follows vanilla's ×(1 + 0.02 × years) (500k at 1836, 590k at 1845; Oman's Bandar Lengeh ×2 for an unrecognised owner).
+
+**What it does NOT say.** Why the recognised-host ports stay empty: candidates are the port's workforce (it needs clerks; the cession moves 1,000 of
+the taker's people), the trade centre's profitability inside a recognised, richer market, or the taker's construction priorities, and none was
+measured. Whether the gate binds a non-port state (the script gate kept vanilla's test there, and world counts agree within the seed spread).
+Two runs of ten years; the gated arm's 1846 world capacity sits at the reference's range edge in run 1 and inside it in run 2.

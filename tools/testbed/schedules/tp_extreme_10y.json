@@ -1,0 +1,36 @@
+{
+  "schedule_version": 1,
+  "label": "tp-extreme-10y",
+  "_why": "STAGE 1 OF THE TREATY-PORT DESIRE PROBES (user, 2026-10-18: 'Go with two 10-year probes with extreme values to ensure that countries attempt to create treaty ports all over the place'). The book under test is the next-arm book (the canon + WORLD_MARKET_MONOPOLY_THRESHOLD 0.99, user-chosen base) + ai_treaty_ports with the EXTREME table: +400 to every eligible target, cap 1,000, everything else the production design (trade-law terms, population, port-state quality, conquest-stance x0, protectorate-feasible x0.25, existing-port x0.5, technology parity cancel at a lead of 5 or less). The question is mechanical, not balance: does the engine read treaty_port_value from an ADMINISTRATIVE strategy at all, and does a high value turn into treaty-port war goals (in 1.13 an enforce_treaty_article goal with article treaty_port, FINDINGS F243) and treaty ports in force? Today: 1 of 2,029 active war goals.",
+  "_arms": {
+    "tpx": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpx.json} - the next-arm book + ai_treaty_ports (EXTREME) + telemetry. Built from the current tree, so it also carries the 2026-10-18 isolationism fix (0b7b2ad)."
+  },
+  "_comparison": "Against the war-goal census of F243 (vanilla n=16 endpoints 0 treaty-port goals of 614; 12 canon-family endpoints 1 of 482; the user's Qing playtest 0 of 933) and the 1836 treaty ports (Macau, Singapore, Bandar Abbas only). Read with the v19 save summaries (world.war_goals, world.treaty_port_goals, world.treaty_ports) and tools/testbed/ledger/war_goal_mix.mjs on any kept save.",
+  "_predictions": {
+    "if the engine reads the block": "treaty-port goals (enforce_treaty_article:treaty_port) in most yearly snapshots from the first years, held by many different countries against many targets; new treaty ports in force by 1846 well beyond the three historical ones",
+    "if it does not": "treaty-port goals and treaty ports at vanilla's rates (0-1 goals a snapshot, the 1836 ports only) - then the block moves to the diplomatic strategies",
+    "the parity cancel": "no treaty-port goal held against a target whose technology count is within 5 of the holder's or above it (checked per goal from the summaries' technology counts)",
+    "load check": "error.log carries no line naming treaty_port_value, pmr_tp_tech_lead or 01_admin_strategies"
+  },
+  "_stop_rule": "none: two fixed runs (a mechanism probe, read in full).",
+  "_cost": "2 runs x 1836.1.1 -> 1846.1.1, about 12 min each",
+  "_caveats": [
+    "EXTREME values: the economy and the wars of these runs are not a balance reading of anything.",
+    "The observer's autosaves overwrite the user's autosave slots: save games BACKUP 20261018_2317 holds the originals.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30). Watch with short reads only (L29)."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1845.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "tpx": { "kind": "config", "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99-tpx.json" }
+  },
+  "runs": [
+    { "setup": "tpx", "until": "1846.1.1" },
+    { "setup": "tpx", "until": "1846.1.1" }
+  ]
+}

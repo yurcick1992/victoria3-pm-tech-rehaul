@@ -1519,6 +1519,17 @@ if ($LASTEXITCODE -ne 0) { throw "emit_research_levers.mjs failed (exit $LASTEXI
 & node (Join-Path $PSScriptRoot 'emit_ai_schooling.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_ai_schooling.mjs failed (exit $LASTEXITCODE) - the AI schooling levers would ship broken or not at all." }
 
+# --- AI TREATY-PORT DESIRE (BACKLOG D, FINDINGS F243; under probe) -------------------------------------------
+# `ai_treaty_ports` appends a treaty_port_value block to every administrative AI strategy; absent -> nothing.
+# AFTER emit_ai_schooling, whose copy of 01_admin_strategies.txt it edits.
+& node (Join-Path $PSScriptRoot 'emit_ai_treaty_ports.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_ai_treaty_ports.mjs failed (exit $LASTEXITCODE) - the treaty-port desire would ship broken or not at all." }
+
+# --- TREATY-PORT ELIGIBILITY RULES (FINDINGS F244 §6-§7; under probe) ---------------------------------------
+# `treaty_port_rules` replaces the engine's port-building requirement in the treaty-port article and war goal
+# (whole-file copies) and/or emits probe-only start effects; absent -> nothing.
+& node (Join-Path $PSScriptRoot 'emit_treaty_port_rules.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_treaty_port_rules.mjs failed (exit $LASTEXITCODE) - the treaty-port rules would ship broken or not at all." }
 
 # --- emit UI data (consumed by ui/builder.html) so the editor always reflects the latest config ---
 # Only the canonical build repoints the UI; alternate builds (-DryRun/-SaveTo) leave ui/data.js alone.
