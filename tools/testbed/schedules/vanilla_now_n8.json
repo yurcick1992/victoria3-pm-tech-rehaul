@@ -1,0 +1,75 @@
+{
+  "schedule_version": 1,
+  "label": "vanilla-now-n8",
+  "_why": "IS VANILLA ITSELF SLOWER TODAY THAN IN THE SUMMER? (user, 2026-10-20, after F247 read the monopoly-threshold book at x1.18 of the summer vanilla baseline: \"I wonder whether some PC degradation can cause slower wall clock speed over time (in months of real time). Or whether telemetry improvements slowed the game, which affects both mod and vanilla, under all configs almost equally. Go with n=8 on vanilla+telemetry to see whether it's meaningfully slower than Summer measurements.\") The control arm on TODAY's harness, exactly as the mod batches run it (the wm99_n4 schedule's dump dates, eleven tags and metrics; the red-flag feed, the machine monitor, the concurrent save harvest at summary v19, yearly autosaves), so it is the like-for-like vanilla partner of F247 and of every current mod batch. Same game version as the summer baseline (1.13.11 in both build_state records).",
+  "_arms": {
+    "vanilla": "{kind: control} - vanilla + telemetry and nothing else."
+  },
+  "_comparison": "The summer baseline 20260821_131149_vanilla-baseline-n16 (n=16; main median 165.0 min, normal-cluster 157.9, slowed 172.7) and its two extra runs 20260823_113218 (157.1); the September eleven-tag vanilla runs 20260920_225047 + 20260920_192007 (n=4; main 176.9, normal 159.9). Read with wall_clusters.mjs (the 2026-10-07 clusters), report_perf.mjs (per decade and pop-matched), machine_load.mjs (the canary), arm_tick_cost.mjs (early years). The summer runs carried state_access + wages on 7 tags and no red-flag feed; today's carry 11 tags, the yearly market_goods_wide feed and a heavier save summary (v19 against v8).",
+  "_predictions": {
+    "if_drift": "if machine or harness drift explains F247's gap, the main median lands near 185-195 min (x1.12-1.18 of the summer 165.0) and the late decades carry most of it",
+    "if_no_drift": "if not, it lands inside the summer spread, 160-175 min, and F247's x1.18 is the book's own cost",
+    "early_years": "1836-41 pace 54-58 s per in-game year either way (the summer 55.6; October 5-year probes 54.5-55.7)"
+  },
+  "_stop_rule": "none: a fixed n=8 (the user's instruction), every run plays to 1936; the stop watcher is NOT armed.",
+  "_cost": "8 x 1836 -> 1936, ~2.8 h each, ~22-23 h",
+  "_caveats": [
+    "Launch through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); confirm the session folder within a minute.",
+    "Do NOT edit the observer, the scheduler, telemetry_lib, build.ps1 or any tools/testbed/**/*.mjs while it runs - the harness is the thing under test.",
+    "The machine should stay as it is for the batch (no game, no heavy work), or the canary and the 'other' cores in machine_load.tsv say otherwise."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" }
+  ]
+}
