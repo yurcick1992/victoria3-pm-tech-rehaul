@@ -23,7 +23,9 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
    ⭐ **NEXT SESSION (user, 2026-10-19):** first a THOROUGH EXPLANATION of the monopoly-threshold change to the user (deferred, not researched
    on 2026-10-19), then **n=4 under the monopoly threshold** (4 × 1836→1936 on the wm99 book) to decide whether it is canonised for 1.0; then polish.
    ⭐ **EXPLAINED AND RULED 2026-10-19 late evening (§10.102 item 4):** 0.99 is canonised if the n=4's play time is within +10% of vanilla, and the
-   threshold is left untouched otherwise. **NOW:** the n=4 (`schedules/wm99_n4.json`).
+   threshold is left untouched otherwise. ⛔ **DONE 2026-10-20 (F247): NOT CANONISED** — play ×1.18 of vanilla (194.2 min against 165.0).
+   ⇒ **OPEN (RULING):** whether to measure the CANON's own century (n=4, ~13 h) — it has none, and this batch cannot say whether private dams or
+   the threshold made the book slow; it decides whether mod 1.0 ships inside the +10% budget.
 2. **Balance campaign** on the canon that results: the price path, the old rung in the consumer chains, the hoard (B), with the tech-tree
    and AI items that bear on them (C, D).
 3. **Final balance check.**

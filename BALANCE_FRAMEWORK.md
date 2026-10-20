@@ -10103,6 +10103,11 @@ scope for us"* (the lever was acceptable only because it touches foreign trade a
    +10% budget against vanilla n=16 ⇒ the wm99 book becomes the canon at 0.99; over it ⇒ the threshold is left at the engine's default (no
    `game_defines`). No other value (0.5, 1.0) is in play. The register and the ledger are read from the same batch as the record, not as the gate.
    Batch: `tools/testbed/schedules/wm99_n4.json` (4 × 1836→1936, fixed n, no stop watcher).
+   ⛔ **OUTCOME (2026-10-20, FINDINGS F247): NOT CANONISED.** Session `20261019_225952_wm99-n4`: main median 194.2 min (runs 2 and 3; runs 1 and 4
+   listed-bug fleet loops) against vanilla n=16's 165.0 = **×1.18**, over the ×1.10 budget. The canon keeps the engine's default; the wm99 book
+   stays as the record and no next arm builds on it. ⚠ The book is the canon + the define, and the canon itself (private dams) has never run a
+   century, so the result does not say the THRESHOLD costs time — only that this book is over the budget. The canon's own century is the open
+   performance question for mod 1.0.
 
 ## §10.103 — TREATY PORTS: THE FUNNEL AS MEASURED, THE LAYERED SOLUTION, AND THE DEFERRAL TO MOD 1.1 ON GAME 1.15 (user-ruled 2026-10-19; FINDINGS F243–F246)
 The user, 2026-10-19, after the treaty-port arc: *"We'll wait for a promised significant AI decision making rework in 1.14. Document the treaty ports

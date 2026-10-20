@@ -23522,3 +23522,67 @@ threshold follows vanilla's ×(1 + 0.02 × years) (500k at 1836, 590k at 1845; O
 the taker's people), the trade centre's profitability inside a recognised, richer market, or the taker's construction priorities, and none was
 measured. Whether the gate binds a non-port state (the script gate kept vanilla's test there, and world counts agree within the seed spread).
 Two runs of ten years; the gated arm's 1846 world capacity sits at the reference's range edge in run 1 and inside it in run 2.
+
+## F247 — THE WORLD-MARKET MONOPOLY THRESHOLD AT 0.99 OVER A CENTURY, n=4: PLAY TIME ×1.18 OF VANILLA (main median 194.2 min against 165.0) — OVER THE +10% BUDGET, SO BY THE USER'S RULE IT IS NOT CANONISED; 3 INTACT + 1 STALL, CONSENSUS LOSS 8.21 (F239 6.72); NOTHING SEPARATES THE THRESHOLD FROM PRIVATE DAMS (2026-10-20; session 20261019_225952_wm99-n4, 4 × 1836→1936, fixed n)
+
+**Why it ran.** BALANCE_FRAMEWORK §10.102 item 4: the canonisation test for `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` (F241). The user's
+rule, given after a full explanation of the change (2026-10-19): *"it's 0.99 if performance is adequate, and we don't touch it otherwise."* So
+the play time against vanilla is the ONLY gate; everything else here is the record.
+
+**Arm.** `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` (sha256 64c024535cbd9b71) = the canon (fc7490eb6288514b, re-verified the day of
+launch) + `game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD` 0.99 + `_wm99_variant`, nothing else. At the five-minute smoke check the run's
+debug.log reported "not specified" for vanilla's dead key `WORLD_MARKET_MONOPOLY_MIN_SHARE` only, never for the real one, and error.log carried no
+`defines.cpp` rejection — the define was read. No crash, no resume in any run.
+
+**1. Play time — the gate** (`wall_clusters.mjs`, the 2026-10-07 clusters):
+
+| run | play time | cluster | register |
+|---|---|---|---|
+| 1 | 205.1 min | 3 — an Austrian fleet on the repair loop 1905–15 (5,520 moves, 390k sailed), gone after | broken by stall, world GDP 0.58× |
+| 2 | 193.8 min | 1 — normal | intact, 1.23×, loss 11.6 |
+| 3 | 194.5 min | 2 — a 1899–1906 slowdown (+56%), no listed bug observed | intact, 1.12×, loss 9.6 |
+| 4 | 174.8 min | 3 — a Croatian fleet on the repair loop 1866–73 (6,532 moves, 193k sailed), gone after | intact, 1.03×, loss 7.8 |
+
+Main median (clusters 1 + 2) **194.2 min against vanilla n=16's 165.0 = ×1.18**; the budget line is 181.5. With all four runs counted it is 194.2
+as well. The verdict was fixed after run 3: two counting runs at ~194 min leave any third at or above 193.8. The machine was not the cause — the
+canary (a fixed compute job) held at 0.96–1.06 of its median in every period, and the game's own CPU per in-game year rose with the wall clock.
+Per unit (`report_perf.mjs`, the diagnostic): at the same live pop-object count the book costs ×1.03–1.23 of vanilla, worst above 119k pop objects
+(×1.22); the world ends at ×1.05 vanilla's pop objects and ×0.96 its building levels. Per decade (medians) ×1.06–1.25, the 1920s the dearest.
+Beside it: F239's book (no private dams, no threshold) ×1.06 (174.4 min, runs 163.6 / 185.2 counting, one listed-bug run at 219.5); the treaty-port
+century F244 §9 (this book + the treaty-port layers) ×1.10 (181.8 min, all cluster 1).
+
+**2. The register** (`criteria.mjs`, vanilla n=16, one invocation with F239 and F244 §9). 3 intact + 1 broken by stall. Consensus (runs 3 + 4)
+**loss 8.21** (F239 6.72, the treaty-port century 7.82): world GDP 1.08; the shortlist GDP 1.20, W 1.00 (at the soft line), U* 22.0% against
+vanilla's 21.3%, H 0.25 against 0.33; PI 0.96 (not falling decade over decade), PP 0.94, T3 22.7% of tiered workers, T0 0.34M; the closed-major
+term 0. Largest terms PI 2.05, T3 1.80, pool U* 1.54. Soft flags: Britain near capital abundance in runs 2 and 4 (U* < 5% for 13–14 years at a
+hoard of 0.33–0.51 of GDP), France in run 3 (8 years at 0.15).
+**The stall (run 1):** the USA kept vanilla's population (1.02× at 1935) while its GDP per head fell from 1.21× vanilla's in 1880 to 0.67× in 1900
+and 0.24× in 1935, U* 43% → 81%; one US capitulation, no Confederacy. Britain fought four secessions (won 1886, 1888, 1898, 1912) and ends at U*
+14.9% against vanilla's 1.3%, hoard 0.06. World GDP 0.97× vanilla at 1860, 0.93× at 1880, 0.65× at 1900, 0.59× at 1935; at 1935 the world reads
+workers per head 0.65× × output per worker 0.95×, the shortlist 0.58× × 1.00×.
+
+**3. Misplaced capital** (`misplaced_capital.mjs`, valid alternatives): the century's grossly misplaced share 16 / 23 / 23 / 22% (median 22.5%;
+F239 22%); 1926–36 15 / 28 / 29 / 26%.
+
+**4. Technology** (`tech_census.mjs`, `tech_gain_check.mjs`): the majors gain 0.94 of vanilla's technology at 1935 (F239 0.96); the leader holds
+42.5 / 35.9 / 57.7% of game eras 3 / 4 / 5 at 1875 / 1905 / 1936 (F239 37.5 / 20.5 / 50); world GDP 0.99–1.01 of vanilla through 1885.
+
+**5. Red flags** (the ledger): 140 problem market-years a run (100–202) and 2.5 chronic markets on the order books, against F239's 184 and 4; on the
+summary basis 9 (3–22) against vanilla's 0. Japanese hardwood (no producer, buyers our e0 arms and artillery), Japanese and Russian engines (no
+producer; railways' Experimental Trains and urban centres' Public Trams), Japanese paper (84.5 staffed levels supplying half of the government
+administrations' filing demand).
+
+**6. Dams** (`dam_slots.mjs`): standing levels at 1936 51 / 64 / 45 / 47 (F239 without private dams 64 / 47 / 24); no slot breached; queued levels
+seen at the yearly samples by builders from outside the host's family 382 against the owners' 433 (F239 223 against 268).
+
+**7. Harness.** L28 FAILED post-run on run 1: its error-log mirror re-copied itself on 5 false rotations during a 705,356-line flood of vanilla's
+`lawgroup_navy_model` errors, after the 2026-09-04 observer fix (F239's and the treaty-port century's sessions pass L28). Error-line counts only; no telemetry, summary or measured number
+reads error.log, and no error line names our files.
+
+**What it says.** By the ruled gate the threshold is NOT canonised: the canon keeps the engine's default threshold. The book this arm ran is slower
+than the budget allows.
+**What it does NOT say.** That the THRESHOLD made it slower. The canon (private dams, no threshold) has never run a century; between F239's ×1.06
+and this ×1.18 sit private dams AND the threshold, and the treaty-port century — the same two plus the treaty-port layers — read ×1.10, so seed
+spread at n=2–3 counting runs is wide (vanilla's own sixteen span 140–197 min). The threshold has no direct compute cost (one comparison per traded
+good); private dams add buildings. Whether the CANON is inside the budget is open, and it is the question for mod 1.0. Nothing about the
+threshold's economic effect over a century can be read from one arm without its partner either.

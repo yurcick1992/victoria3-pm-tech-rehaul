@@ -300,8 +300,12 @@ records only. Measured as m10ac WITHOUT private dams (F239, n=3): 3 intact, worl
 capital NOT lower (22% median against the canon's 20%), play ×1.06. ⚠ The combination is UNMEASURED over a century. Built and DEPLOYED 2026-10-16 20:42.
 ⚠ **SINCE 2026-10-17 21:23 THE DEPLOYED COPY IS NOT THE CANON** (user-asked, for a playtest): it is `mod_playtest_wm99/`, built from the NEXT ARM's book
 `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` = the canon + `game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` (BALANCE_FRAMEWORK
-§10.102, FINDINGS F241; no telemetry; build diff against `mod/` = the `NEconomy` block alone). Every next arm builds on that book; it is canonised only
-after at least n=3 performance tests. `mod/` is still the canon: restore the deployed copy with robocopy /MIR from it.
+§10.102, FINDINGS F241; no telemetry; build diff against `mod/` = the `NEconomy` block alone). `mod/` is still the canon: restore the deployed copy
+with robocopy /MIR from it.
+⚠⚠ **THE THRESHOLD IS NOT CANONISED (2026-10-20, FINDINGS F247, by the user's rule "0.99 if performance is adequate, and we don't touch it
+otherwise"):** its n=4 (`20261019_225952_wm99-n4`) played at ×1.18 of vanilla (main median 194.2 min against 165.0), over the +10% budget. The canon
+keeps the engine's default threshold and no next arm carries the define. ⚠ The batch cannot separate the threshold from private dams: whether the
+CANON itself is inside the budget is unmeasured (it has no century run) and is the open performance question for mod 1.0.
 ⭐⭐ **FROM 2026-10-16 AFTERNOON TO EVENING THE CANON'S BYTES WERE `config/mod_config.jex-dam4s-rs-x25-dpriv.json` + twin** (sha256 `5bd4c706551d4da8`; the twin
 unchanged, `04ac513168388956`): `jex-dam4s-rs-x25` with **private dam construction everywhere**, `dams.private = all` (user: *"Canonize this change"*,
 the variant *"Everywhere, and mandate their subsidies"*; BALANCE_FRAMEWORK §10.89.14, FINDINGS F239–F240). Field diff against `jex-dam4s-rs-x25`:

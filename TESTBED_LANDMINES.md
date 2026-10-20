@@ -1574,6 +1574,12 @@ beside the unique one so the duplication is visible per run.
 tallies non-telemetry lines de-duplicates first, and a burst of identical lines in one second is the mirror, not the
 engine, until a unique game line in the same second is shown NOT to be duplicated.
 
+**Seen again after the fix (2026-10-20, session `20261019_225952_wm99-n4` run 1).** `Test-LmL28` FAILED on run 1's `error.log` mirror alone:
+5 false rotations, during a 705,356-line flood of vanilla's `lawgroup_navy_model` errors (a country gone landlocked). Runs 2–4 and every other
+mirror of that session passed, as did the F239 and treaty-port century sessions. So the first-line-signature guard does not catch every case
+when a log grows that fast; the cause is not traced. ⚠ Nothing measured reads error.log, so the damage is error-line counts in that one file. A fix
+would be an observer edit, which waits for a time with no batch running (never mid-batch, CLAUDE.md).
+
 ---
 
 ## L29 — THE OBSERVER DIED ON ITS OWN LOG LINE, and the batch burned its run list behind the orphaned game (found 2026-09-07, the 60-run plan's run 12)
