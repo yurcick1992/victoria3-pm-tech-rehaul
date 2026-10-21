@@ -225,7 +225,16 @@ that reads badly there can be reverted to F247's measured setup before the relea
 | Q8 | **"Era N" in building names against the game's tech eras** (Appendix 2 #7) | "Era 2" electrics are unlocked by a tech-era-4 technology; R1 already drops "Recipe BE" | ✅ **RULED 2026-10-21: "Tier N"** (the user: *"Name 'Tier N'. Add 'craft' for Tier 0 when appropriate"*) — "Tier 2. Electrics Industries (Telephones)", the six crafts "Tier 0 craft. <Building> (<method>)" (U3 amended), a merged building "Tier 1-2. Paper Mills"; "Tier" stays English in every language, like "Era" did. The number is unchanged (the rung's narrative era). Implementation: `build.ps1`'s name format, with U3 and R1. ⚠ The user will say when the MDs move to the "tier" terminology (CLAUDE.md's era rule still forbids a bare "tier" in analysis until then); carried in the handover |
 | Q9 | **`supported_game_version`** | 1.13.11 today; "1.13.*" keeps a hotfix from marking the mod outdated | ✅ **RULED 2026-10-21: "1.13.\*" for the release** — with R1's release metadata |
 | Q10 | **The three minted top rungs are almost never reached** (F227: catalytic synthesis in 1 run) | R5 asks the user to draw their icons | ✅ **MOOT 2026-10-21** — re-counted on the canon (F247 n=4, `tech_census.mjs`): spray finishing held by 2.0 countries a run (3 runs of 4), continuous web processing 2.3 (3 of 4), catalytic synthesis 0.8 (2 of 4) — as often as vanilla's own era-5 production technologies (October vanilla: compression ignition 1.0, oil turbine 0.3, arc welding 0.2). R5 stands as planned (picture assets are outside this pass) |
-| Q11 | **Accept as watch items for 1.0** | AI schooling unmeasured beyond a smoke probe (F226); crafts as a channel into early revolutions (BACKLOG:88); the percussion-cap chain (BACKLOG:96); the monopoly threshold's decade-scale effect cannot be separated from private dams (F247) | RULING (one answer for the group) |
+| Q11 | **Accept as watch items for 1.0** | AI schooling unmeasured beyond a smoke probe (F226); crafts as a channel into early revolutions (BACKLOG:88); the percussion-cap chain (BACKLOG:96); the monopoly threshold's decade-scale effect cannot be separated from private dams (F247) | ✅ **RULED 2026-10-21: all four ACCEPTED as they are for 1.0** |
+
+### Every Q is ruled (2026-10-21, night) — what they add to the work
+
+**Before the batch, canonised at once (Q4):** Q1 (the four flat research bonuses ×1/3), Q3 (the bloc canning method at 85 groceries, and the
+switch fix below). Each goes into both canon copies with a `_polish` record and a new sha256 in CLAUDE.md's canon banner, then a build, every
+lint and a deploy.
+**Text, any time before 1.0:** Q8 (names "Tier N", crafts "Tier 0 craft. …", merged "Tier 1-2. …"), with U3, U8 and R1's removal of "Recipe BE".
+**With the release metadata (R1):** Q9 (`supported_game_version` "1.13.\*").
+**Nothing to build:** Q2, Q5 (1.1), Q6, Q7 (1.1 watch), Q10, Q11.
 
 ### Mine, no ruling needed
 
