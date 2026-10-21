@@ -91,7 +91,7 @@ DLC content carries that content's own DLC condition explicitly — e.g. the Mon
 | R5 | The three minted technologies share one placeholder icon | READY | S |
 | R8 | Dam texts predate private dam construction ("in our own state or a subject's", "each owning what it builds") | DONE 2026-10-21 (the text pass) | S |
 | B1 | Dam level cap with two foreign builders on one site unverified | VERIFY (probe or hand test) | S |
-| R6 | Per-rung building icons (every rung shows the vanilla picture; all dams the power plant's) | RULING (reuse existing icons, cheap; new art, large) | S–M / L |
+| R6 | Per-rung building icons (every rung shows the vanilla picture; all dams the power plant's) | DEFERRED: vanilla pictures for 1.0, new art in 1.1 or later (user, 2026-10-21). The cheap variant was dropped: method icons are 104 px against the buildings' 256 px | S–M / L |
 | R7 | Era dividers in the tech-tree GUI | CLOSED 2026-10-21 by in-game check 5: the bands line up, no fix | S |
 | F1 | Artisanal ownership — "the last feature pass", live since the crafts were canonised | DEFERRED to mod 1.1 or later (user, 2026-10-21) | L |
 | B2 | Mandated looms not enforced on the merged textile building (1–2 stale levels a game) | ACCEPTED for 1.0, revisit in 1.1 (user, 2026-10-21) | M |
