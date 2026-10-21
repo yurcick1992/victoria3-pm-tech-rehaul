@@ -279,7 +279,7 @@ save summaries, and are parameterised only by the run list at the top of each fi
 
 ⭐ **ONE COMMAND SINCE 2026-10-02:** `bash tools/testbed/ledger/fill_ledger.sh <session> <setup> <book> <outName>` runs every data
 script above in order on the arm's COMPLETE runs (meta.json reached its own until date, no abandoned_reason — L17) against the pinned
-vanilla n=16 (its run list discovered the same way, proven identical to the hand list every recent ledger used), writes `_mod.txt` /
+vanilla reference — since 2026-10-21 `lib_runs.VANILLA_REF` (n=24: the summer 18 + the October 6) for every reading and `VANILLA_WALL_REF` (the October 6, interim) for the wall clock, because a play time is not comparable across months (FINDINGS F248) — (its run list discovered the same way), writes `_mod.txt` /
 `_van.txt` into the out dir, and marks a failed step `!!! FAILED` without stopping. The PROSE half stays by hand (lede / incidents /
 next / footer .html, `tokens.json`, `title.txt`), then `fill_assemble.mjs` + `fill_verify.mjs`.
 ⭐⭐ **A REPORT IS ONE GROUP OF RUNS, NOT ONE SESSION (2026-10-08, user: "support random grouping of similar-config runs")**: `<session>`

@@ -1,0 +1,202 @@
+{
+  "schedule_version": 1,
+  "label": "alt-vanilla-canon-n16",
+  "_why": "THE WALL-CLOCK REFERENCE, RE-MEASURED ALTERNATING (user-ruled 2026-10-21, after the October vanilla read x1.06-1.08 slower per unit of world than the summer vanilla on the same game version, FINDINGS F248: \"It seems that the conclusion that same config gives same wall clock speed was premature. After the first round of polish later today, we'll launch an alternating set of configs, vanilla + mod, about n=16 for each, four days in total.\") Vanilla and the canon alternate run by run, so any drift of the machine or the harness over the four days lands on both arms alike - the case CLAUDE.md names as the one legitimate use of interleaving (an extremely long, predetermined batch). It answers whether the canon is inside the +10% budget against a vanilla measured on the same days, and supersedes VANILLA_WALL_REF (lib_runs.mjs) as the wall-clock reference. The canon's register and ledger come from the same batch.",
+  "_arms": {
+    "vanilla": "{kind: control} - vanilla + telemetry and nothing else.",
+    "canon": "{kind: config, config: <the post-polish canon's NAMED copy>} - the path below is the canon of 2026-10-21 (jex-dam4s-rs-x25-m10ac-dpriv-wm99, sha256 64c024535cbd9b71); replace it at launch with the named copy of whatever the canon is after the first round of polish, and record its sha256 here."
+  },
+  "_comparison": "Each arm against the other, pairwise by position (run 2k-1 vanilla beside run 2k canon) and as wholes: wall_clusters.mjs (the main median over clusters 1+2, cluster 3 counted), report_perf.mjs (per decade and pop-matched), machine_load.mjs (the canary over four days), slow_episodes.mjs. Drift is read on the vanilla arm alone against the summer n=18 and the October n=6. The register: criteria.mjs on the canon against VANILLA_REF (n=24, plus these sixteen once they land).",
+  "_predictions": {
+    "wall_clock": "if the October drift is the machine or the harness, this batch's vanilla lands near the October n=6 (main median ~178 min) and the canon at x1.05-1.10 of it (the wm99 n=4 read x1.09 against the October vanilla); if the machine drifts during the four days, both arms move together and the paired differences stay flat",
+    "vanilla_spread": "a within-arm play-time spread like the summer n=16 (p25-p75 about 15 min)"
+  },
+  "_stop_rule": "none: a fixed n=16 per arm (the user), every run plays to 1936; the stop watcher is NOT armed (memory fixed-n-batches-run-to-completion).",
+  "_cost": "32 x 1836 -> 1936, ~3 h each, ~4 days",
+  "_launch_checklist": [
+    "NOT LAUNCHED - waits for the first round of polish and the user's go-ahead.",
+    "Point setups.canon.config at the post-polish canon's NAMED copy (never config/mod_config.json: a canonisation during the batch would change the book between runs, landmine L10), record its sha256 in _arms, and dry-run build it.",
+    "Launch through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); confirm the session folder within a minute.",
+    "Five-minute smoke check on run 1 (vanilla) AND run 2 (canon).",
+    "Remove tools/testbed/NO_NEW_RUNS if it exists.",
+    "Do NOT edit the observer, the scheduler, telemetry_lib, build.ps1, the book or any tools/testbed/**/*.mjs for the four days - both arms are the instrument."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    },
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    }
+  ]
+}

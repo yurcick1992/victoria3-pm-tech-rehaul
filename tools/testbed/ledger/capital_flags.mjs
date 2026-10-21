@@ -21,10 +21,10 @@
 //   node tools/testbed/ledger/capital_flags.mjs --arm <session[,session]>[:<setup>] [--van <session>] [--year 1935] [--shortlist GBR,USA,FRA,GER] [--persist-from 1931] [--persist-years 5]
 import { readFileSync, readdirSync, existsSync } from 'node:fs'; import { gunzipSync } from 'node:zlib';
 import { join, dirname } from 'node:path'; import { fileURLToPath } from 'node:url';
-import { usableRuns, reportDropped } from './lib_runs.mjs';
+import { usableRuns, reportDropped, VANILLA_REF } from './lib_runs.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url)); const SES = join(HERE, '..', 'sessions');
 const ARGV = process.argv.slice(2); const argOf = (n, d) => { const i = ARGV.indexOf(n); return i >= 0 && ARGV[i + 1] ? ARGV[i + 1] : d; };
-const YEAR = argOf('--year', '1935'); const armArg = argOf('--arm', null); const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16');
+const YEAR = argOf('--year', '1935'); const armArg = argOf('--arm', null); const VAN = argOf('--van', VANILLA_REF);
 const SHORT = argOf('--shortlist', 'GBR,USA,FRA,GER').split(',');
 const PFROM = +argOf('--persist-from', '1931'); const PYEARS = +argOf('--persist-years', '5');
 if (!armArg) { console.error('usage: --arm <session[,session]>[:<setup>] [--van <session>] [--year YYYY] [--shortlist A,B,C]'); process.exit(2); }

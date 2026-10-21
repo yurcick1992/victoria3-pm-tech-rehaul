@@ -6,6 +6,7 @@
 //   ⚠ Markets resolve by NAME to a leader tag (MKT below); a German market under another name (NGF/PRU) needs its name in --markets.
 import path from 'node:path'; import fs from 'node:fs';
 import { indexRun, readSum, runsOf, firstOf, med, ROOT } from './lib_sumidx.mjs';
+import { VANILLA_REF } from './lib_runs.mjs';
 const args = process.argv.slice(2); const all = n => args.flatMap((a, i) => a === n ? [args[i + 1]] : []);
 const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
 const GOODS = ['groceries', 'clothes', 'furniture', 'glass', 'fine_art', 'automobiles', 'telephones', 'radios', 'tools', 'steel', 'paper'];
@@ -25,7 +26,7 @@ function read(sess, setup) {
 }
 if (!all('--arm').length) { console.error('usage: pp_goods.mjs --arm label:session[:setup] [--markets a,b]'); process.exit(1); }
 const [, aSess, aSetup] = all('--arm')[0].split(':');
-const arm = read(aSess, aSetup); const van = read('20260821_131149_vanilla-baseline-n16', null);
+const arm = read(aSess, aSetup); const van = read(VANILLA_REF, null);
 console.log(`pop goods: arm (${arm.length} run) ÷ vanilla's median — price ÷ base in pounds · price ÷ normal wage (wage units) · the arm's normal wage ÷ vanilla's`);
 for (const y of YEARS) for (const m of MARKETS) {
   const vw = med(van.map(R => R[y]?.[m]?.wage)); const aw = med(arm.map(R => R[y]?.[m]?.wage));

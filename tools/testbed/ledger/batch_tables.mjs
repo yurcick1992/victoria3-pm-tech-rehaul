@@ -16,13 +16,13 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { usableRuns } from './lib_runs.mjs';
+import { usableRuns, VANILLA_REF } from './lib_runs.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..', '..');
 const SES = join(HERE, '..', 'sessions');
 const argOf = (k, d) => { const i = process.argv.indexOf(k); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
-const ARM = argOf('--arm', null), NB = argOf('--nb', null), VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16');
+const ARM = argOf('--arm', null), NB = argOf('--nb', null), VAN = argOf('--van', VANILLA_REF);
 const CFG = argOf('--config', 'config/mod_config.json'), YEAR = argOf('--year', '1935');
 const EXCL = new Set((argOf('--exclude', '') || '').split(',').map(s => s.trim()).filter(Boolean));
 if (!ARM) { console.error('usage: batch_tables.mjs --arm <sess[,sess]>:<setup> [--nb <sess>:<setup>] [--van <sess>] [--config <path>] [--year 1935] [--exclude <sess/run,...>]'); process.exit(2); }
@@ -107,7 +107,7 @@ const priceTable = (runs, sessions) => {
         if (Number.isFinite(gb)) od.gbr.push(gb / base); if (pool.length) od.pool.push(med(pool) / base); } } }
   return out;
 };
-const armSessions = [...new Set(armRuns.map(r => r.split('/')[0]))], vanSessions = [VAN], nbSessions = [...new Set(nbRuns.map(r => r.split('/')[0]))];
+const armSessions = [...new Set(armRuns.map(r => r.split('/')[0]))], vanSessions = [...new Set(vanRuns.map(r => r.split('/')[0]))], nbSessions = [...new Set(nbRuns.map(r => r.split('/')[0]))];
 const PA = priceTable(armRuns, armSessions), PV = priceTable(vanRuns, vanSessions), PN = nbRuns.length ? priceTable(nbRuns, nbSessions) : {};
 console.log(`\n=== 2. PRICES — price ÷ base (%), medians over runs; British market | seven-market pool; arm / vanilla; last column = ${YEAR} pool ratio arm ÷ vanilla ===`);
 console.log('good'.padEnd(14) + DUMPS.map(d => d.slice(0, 4).padStart(12)).join('') + '   ratio'.padStart(9));

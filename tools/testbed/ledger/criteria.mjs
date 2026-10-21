@@ -80,7 +80,7 @@ import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { usableRuns, reportDropped } from './lib_runs.mjs';
+import { usableRuns, reportDropped, VANILLA_REF } from './lib_runs.mjs';
 import { POOL, MEMBER, MEMBER_FAMILY, MARKET_FAMILY, MARKET_NAMES, PRICE_TAGS, TAG_OF_MARKET, seriesOf, groupBySeries, memberCollisions, marketCollisions } from './lib_markets.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SES = join(HERE, '..', 'sessions');
@@ -88,7 +88,7 @@ const REPO = resolve(HERE, '..', '..', '..');
 const argv = process.argv.slice(2);
 const argOf = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const ARMS = []; for (let i = 0; i < argv.length; i++) if (argv[i] === '--arm') ARMS.push(argv[i + 1]);
-const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16'); const CONFIG = argOf('--config', ''); const BIG = +argOf('--big', '50') * 1e6;
+const VAN = argOf('--van', VANILLA_REF); const CONFIG = argOf('--config', ''); const BIG = +argOf('--big', '50') * 1e6;
 const [E0, E1] = argOf('--end', '1932-1936').split('-').map(Number); const JSON_OUT = argOf('--json', ''); const QUIET = argv.includes('--quiet'); const SIGMA = argOf('--sigma', 'fixed');
 // THE WEIGHTS (user-ruled 2026-09-18 morning: "balance weights more equally — reduce pool GDP, increase the now low-weighted options, especially
 // T3/rest and T0/rest"; AMENDED the same evening after FINDINGS F134: "drop world U*, but not the other things you propose dropping" and "all right

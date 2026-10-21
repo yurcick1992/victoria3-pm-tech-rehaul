@@ -10,12 +10,12 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { usableRuns, reportDropped } from './lib_runs.mjs';
+import { usableRuns, reportDropped, VANILLA_REF } from './lib_runs.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SES = join(HERE, '..', 'sessions');
 const argOf = (k, d) => { const i = process.argv.indexOf(k); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
 const SESSION = argOf('--session', null), SETUP = argOf('--setup', ''), TH = +argOf('--threshold', '0.95'), MIN = +argOf('--min-runs', '30');
-const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16'), YEAR = argOf('--year', '1935');
+const VAN = argOf('--van', VANILLA_REF), YEAR = argOf('--year', '1935');
 if (!SESSION) { console.error('usage: assess_gdp_gate.mjs --session <stamp> [--setup <name>] [--threshold 0.95] [--min-runs 30]'); process.exit(2); }
 const load = p => JSON.parse(gunzipSync(readFileSync(p)).toString());
 const worldGdpAt = (runDir, year) => {

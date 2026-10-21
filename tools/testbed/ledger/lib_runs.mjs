@@ -26,6 +26,19 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 
+// ⭐⭐ THE VANILLA REFERENCE — ONE definition, so every reader quotes the same n (user-ruled 2026-10-21: "Add the vanilla
+//   measurements on everything but wall clock to the dataset, incrementing the previous n … 24 is better"). For EVERY reading
+//   except the wall clock: the summer n=16 (20260821_131149) + its two extra runs (20260823_113218) + the six runs of 2026-10-20/21
+//   (20261020_121619 runs 1–2 + 20261020_222433 runs 1–4) = 24 vanilla campaigns, one harness family, game 1.13.11 throughout.
+//   ⚠ The summer runs carry save summary v8 (no goods_sales, no trade) and seven telemetry tags; a reading that needs a v9+ field or
+//   a German / Belgian market gets it from the runs that carry it — say so where the number is quoted.
+//   ⚠⚠ THE WALL CLOCK IS NOT POOLED: the same vanilla ran ×1.06–1.08 slower per unit of world in October than in August (FINDINGS
+//   F248), so a summer play time is not today's reference. VANILLA_WALL_REF is the most recent same-harness vanilla, an INTERIM
+//   reference until the alternating vanilla + canon batch the user planned on 2026-10-21 replaces it.
+export const VANILLA_REF = ['20260821_131149_vanilla-baseline-n16', '20260823_113218_vanilla-baseline-extra-n2',
+  '20261020_121619_vanilla-now-n8', '20261020_222433_vanilla-now-n8-rest'].join(',');
+export const VANILLA_WALL_REF = ['20261020_121619_vanilla-now-n8', '20261020_222433_vanilla-now-n8-rest'].join(',');
+
 const parseDate = s => String(s || '').split('.').map(Number);
 const reached = (got, want) => {
   const a = parseDate(got), b = parseDate(want);

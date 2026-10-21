@@ -1579,6 +1579,9 @@ engine, until a unique game line in the same second is shown NOT to be duplicate
 mirror of that session passed, as did the F239 and treaty-port century sessions. So the first-line-signature guard does not catch every case
 when a log grows that fast; the cause is not traced. ⚠ Nothing measured reads error.log, so the damage is error-line counts in that one file. A fix
 would be an observer edit, which waits for a time with no batch running (never mid-batch, CLAUDE.md).
+⚠ **And again on a VANILLA run, without the flood (2026-10-21, session `20261020_121619_vanilla-now-n8` run 2):** 2 false rotations in the
+`error.log` mirror, which holds 167,884 lines and only 766 `lawgroup_navy_model` ones. So a fast-growing log is not the whole condition, and the
+defect is the harness's, not the mod's. Same damage (error-line counts in that one file), same deferred fix.
 
 ---
 

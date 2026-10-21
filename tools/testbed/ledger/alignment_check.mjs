@@ -33,7 +33,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
-import { usableRuns, reportDropped } from './lib_runs.mjs';
+import { usableRuns, reportDropped, VANILLA_REF } from './lib_runs.mjs';
 
 const ARGV = process.argv.slice(2);
 const argOf = (n, d) => { const i = ARGV.indexOf(n); return i >= 0 && ARGV[i + 1] ? ARGV[i + 1] : d; };
@@ -42,7 +42,7 @@ const YEAR = argOf('--year', '1935');
 const armArg = argOf('--arm', null);
 if (!armArg) { console.error('usage: alignment_check.mjs --arm <session[,session]>:<setup> [--van <session>] [--year 1935]'); process.exit(1); }
 const [armSessions, armSetup] = armArg.split(':');
-const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16');
+const VAN = argOf('--van', VANILLA_REF);
 
 export const RULE = {
   gdp: { edges: [0.60, 0.90, 1.10, 1.50], threshold: 0.15 },

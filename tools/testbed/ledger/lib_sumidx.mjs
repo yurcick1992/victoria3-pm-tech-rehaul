@@ -18,6 +18,8 @@ export function indexRun(runDir) {
 export const readSum = f => JSON.parse(zlib.gunzipSync(fs.readFileSync(f)));
 // every run folder of a session (optionally one setup), sorted; a session NAME resolves under tools/testbed/sessions
 export function runsOf(sessDir, setup) {
+  // a comma list of sessions (lib_runs.VANILLA_REF is one) reads each in turn
+  if (String(sessDir).includes(',')) return String(sessDir).split(',').flatMap(s => runsOf(s.trim(), setup));
   const d = fs.existsSync(sessDir) ? sessDir : path.join(SESSIONS, sessDir);
   return fs.readdirSync(d).filter(x => /^run\d+/.test(x) && (!setup || x.endsWith('_' + setup))).sort().map(x => path.join(d, x));
 }

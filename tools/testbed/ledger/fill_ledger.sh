@@ -26,7 +26,11 @@ set -u
 cd "$(dirname "$0")/../../.."
 [ $# -eq 4 ] || { echo "usage: fill_ledger.sh <session[,session|session/runNNN_setup…]> <setup> <book> <outName>"; exit 1; }
 SESSION=$1; SETUP=$2; BOOK=$3; OUT=tools/testbed/ledger/$4
-L=tools/testbed/ledger; S=tools/testbed/sessions; VANS=20260821_131149_vanilla-baseline-n16
+L=tools/testbed/ledger; S=tools/testbed/sessions
+# the vanilla reference (lib_runs.mjs, ONE definition): VANS = every reading but the wall clock (n=24 since 2026-10-21),
+# VANW = the wall clock (the most recent same-harness vanilla; summer play times are not today's reference, FINDINGS F248)
+VANS=$(node -e "import('./tools/testbed/ledger/lib_runs.mjs').then(m=>console.log(m.VANILLA_REF))") || exit 1
+VANW=$(node -e "import('./tools/testbed/ledger/lib_runs.mjs').then(m=>console.log(m.VANILLA_WALL_REF))") || exit 1
 [ -f "$BOOK" ] || { echo "no such book: $BOOK"; exit 1; }
 mkdir -p "$OUT"
 group_runs() {      # $1 group spec, $2 setup → comma-separated sess/run of the USABLE runs (lib_runs), the exclusions printed on stderr
@@ -42,9 +46,9 @@ step() { echo; echo "=== $*"; "$@" || echo "!!! FAILED ($?): $*"; }
 step node $L/analyse_gdp_gap.mjs --session $SESSION --setup $SETUP --config $BOOK --out $OUT
 step node $L/report_data.mjs --mod $MOD --van $VAN --nb none --config $BOOK --out $OUT
 step node $L/report_data2.mjs --mod $MOD --van $VAN --config $BOOK --out $OUT
-step node $L/report_perf.mjs $(echo $MOD | tr ',' '\n' | sed "s|^|$S/|") $S/$VANS --json $OUT/perf_raw.json
+step node $L/report_perf.mjs $(echo $MOD | tr ',' '\n' | sed "s|^|$S/|") $(echo $VANW | tr ',' '\n' | sed "s|^|$S/|") --json $OUT/perf_raw.json
 # the three wall-clock clusters (user-ruled 2026-10-07) — fill_build_perf tags each run, the grade is the median over clusters 1 + 2
-step node $L/wall_clusters.mjs "$SETUP=$SESSION:$SETUP" "vanilla=$VANS:vanilla" --json $OUT/wall_clusters.json
+step node $L/wall_clusters.mjs "$SETUP=$SESSION:$SETUP" "vanilla=$VANW:vanilla" --json $OUT/wall_clusters.json
 step node $L/fill_build_perf.mjs $OUT
 step node $L/fill_consts.mjs $OUT --mod $MOD --van $VAN --nb none
 step node $L/fill_emp.mjs $OUT --mod $MOD --config $BOOK

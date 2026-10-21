@@ -23586,3 +23586,70 @@ and this ×1.18 sit private dams AND the threshold, and the treaty-port century 
 spread at n=2–3 counting runs is wide (vanilla's own sixteen span 140–197 min). The threshold has no direct compute cost (one comparison per traded
 good); private dams add buildings. Whether the CANON is inside the budget is open, and it is the question for mod 1.0. Nothing about the
 threshold's economic effect over a century can be read from one arm without its partner either.
+⭐⭐ **OVERTURNED THE NEXT DAY BY F248:** vanilla itself plays ×1.08 slower in October than in the summer; against the same days' vanilla this book
+reads ×1.09, inside the budget, and the user canonised it (BALANCE_FRAMEWORK §10.102 item 4).
+
+## F248 — VANILLA ITSELF PLAYS ~8% SLOWER IN OCTOBER THAN IN AUGUST, AT THE SAME WORLD SIZE AND ON THE SAME GAME VERSION: THE SEEDS DO NOT EXPLAIN IT; IT WAS ALREADY THERE ON 2026-09-20; A PLAY TIME IS NOT COMPARABLE ACROSS MONTHS — AND AGAINST THE SAME DAYS' VANILLA THE MONOPOLY-THRESHOLD BOOK READS ×1.09 (2026-10-21; sessions 20261020_121619_vanilla-now-n8 runs 1–2 + 20261020_222433_vanilla-now-n8-rest runs 1–4, 6 × 1836→1936 vanilla + telemetry on today's harness, against the summer 20260821_131149 + 20260823_113218, n=18, and the September 20260920_225047 + 20260920_192007, n=4)
+
+**Why it ran.** F247 read the wm99 book at ×1.18 of the summer vanilla. The user: *"I wonder whether some PC degradation can cause slower wall clock
+speed over time (in months of real time). Or whether telemetry improvements slowed the game, which affects both mod and vanilla, under all configs almost
+equally. Go with n=8 on vanilla+telemetry to see whether it's meaningfully slower than Summer measurements."* Stopped at n=6 by the user (*"Stop after
+the current run"*), who asked for the wall clock beside the world size, *"to understand that it's not the seeds that made the world bigger and slower,
+by coincidence"*. Arm: `{kind: control}`, game 1.13.11 in all three groups.
+
+**1. Play time** (`wall_clusters.mjs`, the ruled clusters; the tick-log play time):
+
+| group | n | main median (1 + 2) | normal (1) | slowed (2) | listed bug (3) |
+|---|---|---|---|---|---|
+| summer (2026-08-21/23) | 18 | **165.0** | 157.9 (11 runs) | 172.7 (7) | 0 |
+| October (2026-10-20/21) | 6 | **178.5** (×1.08) | 176.6 (4; ×1.12) | 194.1 (2) | 0 |
+| wm99 n=4 (F247, 2026-10-19/20) | 4 | 194.2 (2 runs) | 193.8 (1) | 194.5 (1) | 2 fleet loops |
+
+October runs: 186.3 (cluster 2, 1909–1924 +73%) · 178.2 · 166.0 · 178.8 · 175.1 · 201.9 (cluster 2, 1926–1929 +192%, no listed bug observed). Summer p25–p75
+147.9–172.1; October 174.4–185.9.
+
+**2. World size — the seeds did not make October's worlds bigger** (medians over runs, the first summary of each year):
+
+| year | live pop objects (summer → Oct) | building levels | world GDP £M | population M |
+|---|---|---|---|---|
+| 1860 | 55,457 → 55,626 | 107,217 → 107,614 | 725 → 713 | 1,262 → 1,263 |
+| 1880 | 70,889 → 71,402 | 120,749 → 120,088 | 1,056 → 1,065 | 1,421 → 1,425 |
+| 1900 | 87,826 → 89,152 | 145,833 → 143,897 | 1,714 → 1,746 | 1,594 → 1,588 |
+| 1920 | 111,881 → 115,781 | 185,051 → 189,931 | 2,799 → 3,149 | 1,771 → 1,805 |
+| 1935 | 133,876 → 136,791 (+2.2%) | 231,287 → 242,942 (+5.0%) | 4,390 → 4,802 (+9.4%) | 1,962 → 1,981 |
+
+The worlds are the same size through 1900 and somewhat larger by 1935. But the slowdown does not follow them:
+
+**3. Seconds per in-game year at the SAME world size** (autosave and month-boundary ticks out; medians per bin):
+- **at the same live pop-object count: ×1.089** (12 bins, every one slower, 1.032–1.115);
+- **at the same building levels: ×1.080** (7 bins, 1.037–1.106);
+- **at the same world GDP: ×1.079** (10 bins, 1.036–1.154).
+By decade: 1840s ×1.03, 1850s ×1.11, 1860s ×1.07, 1870s ×1.06, 1880s ×1.08, 1890s ×1.11, 1900s ×1.11, 1910s ×1.03, 1920s ×1.15, 1930s ×1.09. ⇒ The
+median play-time gap (×1.08–1.09) is almost entirely a per-unit cost; the larger late world adds about a point. Small worlds (20–50k pop objects) are
+×1.03–1.06 slower, large ones (50k+) ×1.08–1.12.
+
+**4. When it began.** The September vanilla (20260920_225047 + 20260920_192007, n=4, the first runs on the eleven-tag list) is already ×1.071
+(pop-matched) / ×1.080 (levels-matched) slower than the summer, with a SMALLER world (1935: 129,226 pop objects, £3,911M). So the shift happened between
+2026-08-21 and 2026-09-20 and did not grow after: the red-flag feed (2026-10-03), the machine monitor (2026-10-06) and summaries v10–v19 came later
+and added nothing visible.
+
+**5. What differs between the summer and the later groups** — not separated: the telemetry tag list (seven tags → eleven: + NGF, GER, BEL, UNL), the
+save summary (v8 → v9+, the concurrent harvest's melt; all three groups melt yearly saves on 4 workers while the game plays), and whatever changed on
+the machine (Windows, drivers, Steam client). The machine canary exists only from 2026-10-06 and is flat across October (17.2–17.9 ms per 1e7
+iterations over jex-n16, wm99-n4 and both vanilla sessions), so it cannot reach back to August.
+
+**6. The consequences, ruled the same day (user):** *"It seems that the conclusion that same config gives same wall clock speed was premature."*
+- **A play time is not comparable across months.** The wall-clock reference is now `lib_runs.VANILLA_WALL_REF` (these six runs, interim), and every
+  economic reading pools **n=24** (`lib_runs.VANILLA_REF`: summer 18 + October 6 — *"Add the vanilla measurements on everything but wall clock to the
+  dataset"*), wired into criteria.mjs, fill_ledger.sh and the other default readers. ⚠ The summer runs carry summary v8 and seven tags: readings that
+  need goods_sales, trade, or the German and Belgian markets come from the runs that carry them.
+- **The wm99 book (F247) against the same days' vanilla: 194.2 ÷ 178.5 = ×1.09 — inside the +10% budget.** The user canonised it.
+- **An alternating batch replaces the reference**: vanilla and the canon run by run, n=16 each, ~4 days (`alt_vanilla_canon_n16.json`), after the
+  first round of polish.
+
+**What it does NOT say.** Which of the candidates in §5 costs the 8%: a 7-tag vs 11-tag vanilla A/B on the same days would separate the telemetry from
+the machine, and nothing has run it. That the October reference is precise: n=6 with two slowed runs, so the ×1.09 for the wm99 book has an uncertainty
+of several points either way, and both of its counting runs sit near 194 min. Whether the mod pays the same 8%: if the cause is telemetry or the harvest,
+it scales with what the run logs and saves, which is the same for both arms; if it is the machine, likewise. ⚠ Every mod-vs-vanilla wall-clock ratio
+quoted between ~2026-09-20 and 2026-10-21 divided a mod run of its own day by the summer vanilla, so it is likely inflated by up to ~8% — F222's ×1.036,
+F239's ×1.06 and F247's ×1.18 among them; ratios from mod runs of late August are not affected.

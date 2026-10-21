@@ -14,11 +14,11 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { usableRuns, reportDropped } from './lib_runs.mjs';
+import { usableRuns, reportDropped, VANILLA_REF } from './lib_runs.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SES = join(HERE, '..', 'sessions');
 const argv = process.argv.slice(2);
-const arms = []; let van = '20260821_131149_vanilla-baseline-n16', YEARS = [1935], FAIL = 1.0, AIM = 0.8, MEMBERS = true;
+const arms = []; let van = VANILLA_REF, YEARS = [1935], FAIL = 1.0, AIM = 0.8, MEMBERS = true;
 for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--arm') arms.push(argv[++i]);
   else if (argv[i] === '--van') van = argv[++i];

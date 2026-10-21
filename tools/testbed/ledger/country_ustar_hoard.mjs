@@ -2,6 +2,7 @@
 // 1926.1.1 / 1931.1.1 / 1936.1.1, per usable run, beside vanilla n=16's medians.  (user-asked 2026-09-25)
 //   node tools/testbed/ledger/country_ustar_hoard.mjs --arm <session>:<setup>[:<label>] [--arm …] [--tag GBR]
 import fs from 'node:fs'; import zlib from 'node:zlib'; import path from 'node:path'; import { pathToFileURL } from 'node:url';
+import { VANILLA_REF } from './lib_runs.mjs';
 const REPO = 'C:/claude-code/victoria 3 PM and tech rehaul'; const SES = REPO + '/tools/testbed/sessions';
 const { usableRuns } = await import(pathToFileURL(REPO + '/tools/testbed/ledger/lib_runs.mjs').href);
 const argv = process.argv.slice(2); const TAG = argv.includes('--tag') ? argv[argv.indexOf('--tag') + 1] : 'GBR';
@@ -20,7 +21,7 @@ function read(runDir) {
   return out;
 }
 const pc = x => Number.isFinite(x) ? (100 * x).toFixed(1).padStart(5) + '%' : '    —'; const f2 = x => Number.isFinite(x) ? x.toFixed(2).padStart(5) : '    —';
-const V = usableRuns(SES, '20260821_131149_vanilla-baseline-n16').runs.map(r => read(path.join(SES, r)));
+const V = usableRuns(SES, VANILLA_REF).runs.map(r => read(path.join(SES, r)));
 console.log(`${TAG}: U* (unemployed + peasants ÷ workforce) and hoard (investment pool ÷ GDP), at ${YEARS.join(' / ')}`);
 console.log('run'.padEnd(34) + YEARS.map(y => `   U* ${y}  H ${y}`).join(''));
 console.log('vanilla n=16 median'.padEnd(34) + YEARS.map(y => `  ${pc(med(V.map(v => v[y]?.u)))}  ${f2(med(V.map(v => v[y]?.h)))}`).join(''));
