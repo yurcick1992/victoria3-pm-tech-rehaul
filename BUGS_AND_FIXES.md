@@ -13,6 +13,39 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-10-21 — L28 fired on floods of identical log lines; and three latent ways the log mirror could still re-copy a file
+
+**Symptom.** `preflight.ps1 -Session` FAILED landmine L28 ("log mirror re-copied on a false rotation") on
+`20261019_225952_wm99-n4` run 1 (5) and `20261020_121619_vanilla-now-n8` run 2 (2), both on `error.log` mirrors, and it read as a
+harness defect that survived the 2026-09-04 fix.
+
+**Root cause — the detector.** Its test asked whether the 30 lines after a zero-recovery seam appeared ANYWHERE in the mirror since the
+previous seam. Both mirrors sat in floods of identical vanilla error lines (`lawgroup_navy_model`, the same text 705k times; the spline spam,
+a 3-line cycle), where any 30 lines appear earlier. Each flagged seam was a real rotation whose old segment had already been read to its end
+(so 0 chars recovered), followed by more spam with LATER stamps (vanilla-now run 2, mirror line 120,334: one 524,200-byte segment since the
+previous seam, its next line stamped 18:18:41 where that segment began 18:18:31). Not a duplicate.
+
+**Fix — the detector.** A false rotation re-reads the CURRENT file from offset 0, so its first 30 lines repeat, stamps and all, the 30 lines
+that began an earlier read of that file (the mirror's start or the lines after an earlier seam). The test now asks exactly that.
+**Sweep, 2,988 mirrors since 2026-08:** wherever the new test fires, the old one fires the same number of times (canon4-je-n5 run 4 26,
+canon-n7 run001 14 / run003 28, vanilla-percapita-n3 run 3 110, …); the old one fired 1–5 times in a further ~60 mirrors (mostly error logs,
+a few debug logs in spam), all now 0 — none of those seams goes back in time and none repeats a file start.
+
+**Fix — the observer (three latent paths, found reading the code; one proven).** `Read-Tail` (run_observer.ps1):
+1. The length came from `Get-Item` — the DIRECTORY entry, lazily updated for a file another process holds open (the cause of the original L28).
+   Now `Get-TrueLength` reads it through a handle; a file that cannot be opened this instant is tried on the next poll.
+2. A signature that could not be read (`""` from a failed open of a non-empty file) was taken as "a different file" → a rotation → a re-copy.
+   Now it waits.
+3. The remembered signature is the file's first 120 chars; taken while the file was SHORTER, it was a prefix, and `-eq` against the later full
+   signature called the same file new — in the shrink check AND when finding "our file" among the rotated segments, where it then read that
+   segment whole from 0. `Test-SameSegment` compares as a prefix, and a short signature is refreshed until full.
+   **Proven**: a five-case simulation (growth, one rotation, two rotations between polls, a short-signature rotation, an empty new file), the
+   functions loaded from the observer by AST — the old code mirrored 15 lines for 9 written in the short-signature case, the new code every
+   case exactly once (`tools/testbed/test_log_tail.ps1`).
+
+**Detect / prevent.** L28 now reads the right quantity; a duplicate it reports is real. The observer was edited with no batch running
+(CLAUDE.md: never mid-batch). Any future tail change: re-run the simulation and L28 over a recent session before a batch.
+
 ## 2026-10-17 — the Qing and Japan counted as NOT isolationist for the research entries' follower halving
 
 **Symptom (the user's playtest of `mod_playtest_wm99`, as the Qing).** Baking powder's research entry ran at half its mark, though the Qing

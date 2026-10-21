@@ -235,8 +235,8 @@ function New-Tail {
     # and it holds exactly one run (unlike the copied ring, which mixes runs).
     # $Append keeps one run in one mirror file across a crash resume.
     param([string]$Path, [string]$Mirror = "", [bool]$Append = $false)
-    $len = 0L
-    if (Test-Path $Path) { $len = (Get-Item $Path).Length }
+    $len = Get-TrueLength $Path
+    if ($len -lt 0) { $len = 0L; if (Test-Path $Path) { $len = (Get-Item $Path).Length } }
     $writer = $null
     if ($Mirror) {
         $writer = New-Object System.IO.StreamWriter($Mirror, $Append, (New-Object System.Text.UTF8Encoding($false)))
@@ -277,6 +277,29 @@ function Get-SegmentSig {
         $null = $fs.Read($b, 0, $n)
         return [System.Text.Encoding]::UTF8.GetString($b, 0, $n)
     } catch { return "" } finally { if ($fs) { $fs.Dispose() } }
+}
+
+function Get-TrueLength {
+    # The file's size read through a HANDLE, -1 when it cannot be opened this instant. Never Get-Item's Length: that is
+    # the DIRECTORY entry, which NTFS updates lazily for a file another process holds open (landmine L28).
+    param([string]$Path)
+    if (-not (Test-Path $Path)) { return -1L }
+    $share = [System.IO.FileShare]::ReadWrite -bor [System.IO.FileShare]::Delete
+    $fs = $null
+    try {
+        $fs = [System.IO.File]::Open($Path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, $share)
+        return [long]$fs.Length
+    } catch { return -1L } finally { if ($fs) { $fs.Dispose() } }
+}
+
+function Test-SameSegment {
+    # Do two signatures name the same file? A signature taken while the file was shorter than 120 bytes is a PREFIX of the
+    # one taken later, so a plain -eq called the same file two different files and re-copied it (landmine L28, 2026-10-21).
+    param([string]$A, [string]$B)
+    if (-not $A -or -not $B) { return $false }
+    if ($A.Length -eq $B.Length) { return ($A -ceq $B) }
+    if ($A.Length -lt $B.Length) { return $B.StartsWith($A, [System.StringComparison]::Ordinal) }
+    return $A.StartsWith($B, [System.StringComparison]::Ordinal)
 }
 
 function Close-Tail {
@@ -339,8 +362,10 @@ function Read-Tail {
     param($State)
     $lines = New-Object System.Collections.Generic.List[string]
     if (-not (Test-Path $State.Path)) { return $lines }
-    $len = -1L
-    try { $len = (Get-Item $State.Path -ErrorAction Stop).Length } catch { return $lines }
+    # The length comes through a handle (Get-TrueLength), so a stale directory entry can no longer fake a shrink; a file
+    # that cannot be opened this instant is tried again on the next poll.
+    $len = Get-TrueLength $State.Path
+    if ($len -lt 0) { return $lines }
 
     if ($len -lt $State.Pos) {
         # ⚠ LANDMINE L28 — A SHRUNK LENGTH IS NOT ALWAYS A ROTATION. Get-Item reads the DIRECTORY
@@ -352,8 +377,11 @@ function Read-Tail {
         # canon-n7 run 1 sixteen times. V3TB lines were saved by Seen2; every other line (the research
         # journal's PMR_JE completions, the game's own events) was multiplied. A real rotation gives
         # the current path a NEW first line, so an unchanged signature means a stale length: wait.
+        # ⚠ 2026-10-21: two more ways the same file read as a new one — an unreadable signature ("" from a failed open of a
+        # file that is not empty) and a remembered signature taken while the file was under 120 bytes. Both now WAIT.
         $sigNow = Get-SegmentSig $State.Path
-        if ($sigNow -and $sigNow -eq $State.Sig) { return $lines }
+        if ($len -gt 0 -and -not $sigNow) { return $lines }
+        if (Test-SameSegment $sigNow $State.Sig) { return $lines }
         # The game rotated this log out from under us. The ring is 5 x 512 KB and a SINGLE
         # telemetry dump can write ~450 KB, so more than one rotation can happen between polls -
         # the earlier "read <name>.1" fix handled exactly one and silently lost whole segments
@@ -372,7 +400,7 @@ function Read-Tail {
             $sig = Get-SegmentSig $rot
             if (-not $sig) { continue }
             $from = 0L
-            if ($sig -eq $State.Sig) { $from = $State.Pos }        # our file, continue where we left off
+            if (Test-SameSegment $sig $State.Sig) { $from = $State.Pos }   # our file, continue where we left off
             elseif ($State.Seen.Contains($sig)) { continue }        # already drained on an earlier poll
             $chunk = Read-Chunk $rot $from
             if ($chunk) {
@@ -399,7 +427,8 @@ function Read-Tail {
     }
 
     if ($len -gt $State.Pos) {
-        if (-not $State.Sig) { $State.Sig = Get-SegmentSig $State.Path }
+        # a signature taken while the file was short is refreshed until it holds the full 120 chars
+        if ("$($State.Sig)".Length -lt 120) { $s = Get-SegmentSig $State.Path; if ($s) { $State.Sig = $s } }
         $text = Read-Chunk $State.Path $State.Pos
         if ($text) {
             $State.Pos = $State.Pos + [System.Text.Encoding]::UTF8.GetByteCount($text)

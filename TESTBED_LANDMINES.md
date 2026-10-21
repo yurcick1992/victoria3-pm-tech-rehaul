@@ -1574,7 +1574,21 @@ beside the unique one so the duplication is visible per run.
 tallies non-telemetry lines de-duplicates first, and a burst of identical lines in one second is the mirror, not the
 engine, until a unique game line in the same second is shown NOT to be duplicated.
 
-**Seen again after the fix (2026-10-20, session `20261019_225952_wm99-n4` run 1).** `Test-LmL28` FAILED on run 1's `error.log` mirror alone:
+⭐⭐ **CORRECTED 2026-10-21 — THE TWO "SEEN AGAIN" FAILS BELOW WERE THE DETECTOR, NOT THE MIRROR.** Both mirrors were in floods of IDENTICAL
+error lines (wm99 run 1: `lawgroup_navy_model`, 705k lines, the same text every line; vanilla-now run 2: the spline spam, a 3-line cycle with one
+stamp per second). The old test asked whether the 30 lines after a zero-recovery seam appeared ANYWHERE since the previous seam — in a flood they
+always do. Each of those seams was a REAL rotation whose old segment we had already read to its end (hence 0 chars recovered), followed by more of
+the same spam with LATER stamps: e.g. vanilla-now run 2's seam at mirror line 120,334 follows a 524,200-byte region (one 512 KB segment) and its next
+line is stamped 18:18:41 where that segment began at 18:18:31. **The detector now asks the right question**: a false rotation re-reads the current
+file from offset 0, so its first 30 lines repeat, STAMPS AND ALL, the 30 lines that began an earlier read of that file (the mirror's start or the
+lines after an earlier seam). Checked: canon4-je-n5 run 4's debug mirror reads 26 (the documented 27 copies), canon-n7 run001's 14 (sixteen
+documented), both October mirrors 0; the sweep over every mirror since 2026-08 is in BUGS_AND_FIXES 2026-10-21.
+⭐ **And the observer was hardened the same day** (`run_observer.ps1`, no batch running): the length is read through a HANDLE (`Get-TrueLength`),
+so a stale directory length can no longer fake a shrink at all; a signature that cannot be read this instant WAITS instead of being taken for a
+rotation; and a signature remembered from a file under 120 bytes is compared as a PREFIX (`Test-SameSegment`) and refreshed until full — a
+simulated short-signature rotation re-copied 6 lines on the old code and none on the new (five simulated cases, all exact on the new code).
+
+**(Superseded — read as the detector's false positives.) Seen again after the fix (2026-10-20, session `20261019_225952_wm99-n4` run 1).** `Test-LmL28` FAILED on run 1's `error.log` mirror alone:
 5 false rotations, during a 705,356-line flood of vanilla's `lawgroup_navy_model` errors (a country gone landlocked). Runs 2–4 and every other
 mirror of that session passed, as did the F239 and treaty-port century sessions. So the first-line-signature guard does not catch every case
 when a log grows that fast; the cause is not traced. ⚠ Nothing measured reads error.log, so the damage is error-line counts in that one file. A fix

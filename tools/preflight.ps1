@@ -949,7 +949,9 @@ function Test-LmL28 {
       Nothing fails: the run completes, the TSVs are right (V3TB de-duped), the summaries are right.
       Only a reader that COUNTS non-telemetry lines is wrong, and it is wrong silently.
 
-      The observer is fixed (an unchanged first-line signature means a stale length, not a rotation).
+      The observer is fixed (an unchanged first-line signature means a stale length, not a rotation; and since 2026-10-21
+      the length is read through a handle, an unreadable signature waits, and a signature taken from a short file is
+      compared as a prefix).
       This entry is the ARTIFACT-side check: every false rotation left a seam line reading
       `recovered 0 chars from []`, so a session on disk says for itself whether its mirrors carry
       duplicated chunks. FAIL = at least one such seam in any run; count PMR_JE and event lines from
@@ -958,25 +960,24 @@ function Test-LmL28 {
     if (-not $Session) { Add-Result 'L28' 'log mirror re-copied on a false rotation' 'N/A' 'no -Session given (this entry is post-run)'; return }
     if (-not (Test-Path $Session)) { Add-Result 'L28' 'log mirror re-copied on a false rotation' 'FAIL' "no such session: $Session"; return }
     $hits = @(); $checked = 0
-    # The scan runs in node (as L26's does): the mirrors are 100k–400k lines and the test needs a rolling index.
-    # THE TEST: a false rotation re-copies the current file from its START, so the lines after a zero-recovery
-    # seam reappear as a long run the mirror already holds since the previous seam. Thirty consecutive identical
-    # lines is the bar — a benign real rotation (rotated segment already consumed, new file read from 0) is
-    # followed by NEW lines, and error.log's periodic bursts repeat 4–8 identical lines, never thirty.
-    # ⚠ One line, or five, was NOT enough: canon4-art-n2 (recorded after the fix, nothing duplicated) read
-    #   1–2 false positives per error mirror on both, and the five-line form MISSED run 4 of canon4-je-n5 — the
-    #   original copy of the chunk had been mirrored in interleaved pieces, so only re-copy-vs-re-copy matched.
+    # The scan runs in node (as L26's does): the mirrors are 100k–700k lines.
+    # THE TEST (2026-10-21): a false rotation re-reads the CURRENT file from offset 0, so the 30 lines after its zero-recovery
+    # seam repeat, timestamps and all, the 30 lines that began that file's reading — the mirror's start or the lines after an
+    # earlier seam. A real rotation starts a NEW file at a later moment, so its first lines carry later stamps.
+    # ⚠ The previous test looked for the 30 lines ANYWHERE since the previous seam, and FIRED ON FLOODS OF IDENTICAL LINES:
+    #   wm99-n4 run 1 (lawgroup_navy_model, 705k lines) and vanilla-now-n8 run 2 (the spline spam, period 3) read 5 and 2
+    #   "false rotations" that were real rotations followed by more spam. Checked against both known re-copies: canon4-je-n5
+    #   run 4's debug mirror reads 26, canon-n7 run001's 14, as before; a sweep of every mirror since 2026-08 is in BUGS_AND_FIXES.
     $js = @'
 const fs=require('fs');
 const L=fs.readFileSync(process.argv[2],'utf8').split(/\r?\n/);   // [0]=node [1]=this script [2]=mirror
-const RUN=30; let hits=0, regionStart=0, pendingAt=-1;
-const isSeam=l=>l.startsWith('--- harness: source log rotated');
-const check=(from)=>{ // the RUN non-empty lines after index from must equal RUN consecutive lines somewhere in [regionStart, from)
-  const nxt=[]; for(let j=from;j<L.length&&nxt.length<RUN;j++){ if(isSeam(L[j])) break; if(L[j].length) nxt.push(L[j]); }
-  if(nxt.length<RUN) return false;
-  for(let e=regionStart;e<from;e++){ if(L[e]!==nxt[0]) continue; let k=1, m=e+1; while(k<RUN&&m<from){ if(!L[m].length){m++;continue;} if(L[m]!==nxt[k]) break; k++; m++; } if(k===RUN) return true; }
-  return false; };
-for(let i=0;i<L.length;i++){ if(!isSeam(L[i])) continue; if(L[i].includes('recovered 0 chars from []')){ if(check(i+1)) hits++; } regionStart=i+1; }
+const RUN=30; const isSeam=l=>l.startsWith('--- harness: source log rotated');
+const head=(from)=>{ const out=[]; for(let j=from;j<L.length&&out.length<RUN;j++){ if(isSeam(L[j])) break; if(L[j].length) out.push(L[j]); } return out.length===RUN ? out.join('\n') : null; };
+const starts=new Set(); const h0=head(0); if(h0) starts.add(h0);
+let hits=0;
+for(let i=0;i<L.length;i++){ if(!isSeam(L[i])) continue; const h=head(i+1); if(!h) continue;
+  if(L[i].includes('recovered 0 chars from []') && starts.has(h)) hits++;
+  starts.add(h); }
 console.log(hits);
 '@
     $tmp = Join-Path $env:TEMP ("lm28_" + [guid]::NewGuid().ToString('N') + '.js')

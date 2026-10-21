@@ -5524,8 +5524,12 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   my read position" fired without a rotation and Read-Tail reset to 0 every 250 ms poll: run 4 of canon4-je-n5
   appended one 946-line chunk 27 times in eight seconds, canon-n7 run 1 sixteen times. V3TB lines were de-duplicated by
   the mirror; PMR_JE completions and event lines were multiplied, so any RAW LINE COUNT off a mirror over-reads
-  (F101's canon-n7 figure 2.3×). Observer fixed (an unchanged first-line signature = stale length); `Test-LmL28`
-  fails a session whose mirrors carry a `recovered 0 chars from []` seam, and `je_tally.mjs` de-duplicates ·
+  (F101's canon-n7 figure 2.3×). Observer fixed (an unchanged first-line signature = stale length; ⭐ since 2026-10-21
+  the length is read through a HANDLE, an unreadable signature waits, and a signature taken from a file under 120 bytes is
+  compared as a prefix — the last of these re-copied a file in a test, proven fixed; `tools/testbed/test_log_tail.ps1` re-runs that simulation — run it after any tail change); `Test-LmL28` fails a session where the
+  30 lines after a zero-recovery seam repeat, stamps and all, the lines that began an earlier read of the file (until
+  2026-10-21 it matched them anywhere since the previous seam and fired on floods of identical vanilla error lines — the
+  2026-10-20/21 FAILs were that), and `je_tally.mjs` de-duplicates ·
   **L33 AN EMITTED DEFINE THE ENGINE REJECTS AT LOAD (AUTO since 2026-09-15)** — a value outside the validator's hardcoded range is discarded with ONE line in error.log and the key keeps VANILLA's, so the run is not the config: the eager set's `TOO_LARGE_INVESTMENT_POOL_FACTOR = 1.0` (vanilla's own comment says "capped at 1"; the range is [0,1)) ran at vanilla's 0.75 — BELOW the 0.9 it was a one-lever test against — and F121 measured three of its four levers; a bound can also cross-reference a sibling (land CRITICAL 1.25 invalidates vanilla's ship EXCESSIVE 1.05). `Test-LmL33` checks the config's `ai_defines` against the bounds the engine has stated (`-RepoOnly`, gates a launch) and, with `-Session`, every run's error.log for `defines.cpp`'s rejection line; `batch_heartbeat.sh` gives it its own DEFINE REJECTED alarm · **L34 A RUN RECORDED COMPLETE IN MINUTES (AUTO since 2026-09-17)** — a CTD before the first autosave, the observer's restart path, and the next attempt launched
   with `-continuelastsave`, which loads the newest save ON THE MACHINE (the previous run's 1936 endpoint): the engine lands AT the target, the run "finishes" in 169 s
   with one summary, and L17 (reached == until) and L26 (no backward jump in a one-entry series) both pass it. `Test-LmL34` and `lib_runs.usableRuns` refuse an ended
