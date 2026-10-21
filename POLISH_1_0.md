@@ -17,7 +17,7 @@ Status words: **DONE** · **RULING** (needs the user) · **READY** (clear-cut, c
 
 ## 1. Research entries — DONE 2026-10-21 (commit `70daba8`), not yet seen in game
 
-- Every condition is now a line of the bar tooltip, always: literacy, each source, each counted condition, the war and fleet gates, worth
+- Every condition is now a line of the bar tooltip, always: each source, each counted condition, the war and fleet gates (literacy only in the body, user-ruled after check 1), worth
   their tick or 0 (BUGS_AND_FIXES 2026-10-21; MODDING_NOTES → *A scripted progress bar's tooltip lists only the add terms evaluated*).
 - One wording, in levels: `<buildings>: N fully staffed levels (now X)`; one body template for every entry.
 - **VERIFY in game:** that the 0-valued lines render (vanilla's Divided Monarchists and Ryukyu bars are the evidence).

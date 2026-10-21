@@ -372,8 +372,10 @@ const perLevel = RE.employment_per_level_default || 5000;
 const fmtN = x => (Math.round(x * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: 2 });
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const lvl = x => x === 1 ? 'fully staffed level' : 'fully staffed levels';
-const stagesWord = n => n === 1 ? 'one stage' : `${['', 'one', 'two', 'three', 'four', 'five'][n] || n} stages`;
-const live = svn => `[ROOT.GetCountry.MakeScope.ScriptValue('${svn}')|1]`;
+// a live figure as a whole number ROUNDED DOWN (user, 2026-10-21: "'(now 8.0)' looks clumsily … leave just 8 (always round down)"): a
+//   display-only floored twin of the value, read by the loc and never by a tick
+const flooredSv = new Set();
+const live = svn => { const f = `${svn}_fl`; if (!flooredSv.has(f)) { flooredSv.add(f); sv.push(`${f} = {\n${T}value = ${svn}\n${T}floor = yes\n}`); } return `[ROOT.GetCountry.MakeScope.ScriptValue('${f}')|0]`; };
 // the workforce of ONE level of a people-counted source: its types' common figure, or 5,000 where they differ (said in the text)
 const levelRef = emps => { const u = [...new Set(emps)]; return u.length === 1 ? { ref: u[0], mixed: false } : { ref: perLevel, mixed: true }; };
 // a display-only value in levels (read by the loc, never by a tick)
@@ -443,8 +445,6 @@ const condDisplay = (tech, e) => {
   return { dFull, dHalf, bullet: e.label + ((e.lines || []).length ? ` (${e.lines.join('; ')})` : '') };
 };
 const heldOn = tech => `has_global_variable = ${heldVar(tech)}  ${notIso}`;
-// the literacy line: worth 0 either way — it says whether the bar is paused
-const litLine = (era, L) => [{ trigger: `literacy_rate >= ${L}`, desc: `pmr_term_litok_${era}`, value: 0 }, { desc: `pmr_term_lit_${era}`, value: 0 }];
 // one condition line: its tick when it holds (under the halved mark once the held flag is up), else 0. `before` = the sources listed above it in an
 //   any-source bar: only the FIRST source at its mark carries the +1, so the lines add up to the bar's real tick.
 const sourceLine = ({ litT, halfOn, hf, trig, half, dFull, dHalf, before }) => {
@@ -467,7 +467,9 @@ const renderLine = ln => ln.map((b, k) => {
     `${T}${T}${T}add = {\n${T}${T}${T}${T}desc = "${b.desc}"\n${T}${T}${T}${T}value = ${b.value}\n${T}${T}${T}}\n${T}${T}}`;
 }).join('\n');
 const barDescSpans = new Set();
-if (LIT) sv.push(`pmr_lit = {\n${T}value = literacy_rate\n}`);
+// the literacy figure is shown only by the generic probe terms (the shipped tooltip carries no literacy line: the user, 2026-10-21, "it's OK that
+//   it's only in the description")
+if (LIT && (COMPRESS || RE.perf_amplify_terms > 1)) sv.push(`pmr_lit = {\n${T}value = literacy_rate\n}`);
 const svName = (tech, i) => `pmr_src_${tech}_${i}`;
 const barName = (tech) => `pmr_bar_${tech}`;
 const jeName = (tech, s) => `je_pmr_${tech}_${s}`;
@@ -576,7 +578,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     if (L != null) terms.push({ desc: `pmr_term_lit_${T0.era}`, trigger: `literacy_rate < ${L}`, value: 0, exclusive: true });
     const D = condDisplay(tech, e);
     srcLines.push(D.bullet);
-    if (L != null) lines.push(litLine(T0.era, L));
+    // no literacy line in the tooltip (user, 2026-10-21): the body states the line, and a source line stays 0 while literacy is below it
     const halfOn = !!(HALF && e.half_trigger);
     lines.push(sourceLine({ litT, halfOn, hf: halfOn ? heldOn(tech) : '', trig: `AND = { ${e.trigger} }`, half: halfOn ? `AND = { ${e.half_trigger} }` : null, dFull: D.dFull, dHalf: D.dHalf, before: [] }));
   } else if (a.rule === 'war') {
@@ -735,8 +737,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     //   so the lines add up to the bar's real tick (the old `terms` above stay for the V4 compress probe and the perf_amplify_terms probe)
     const L = NONADD ? litOf(T0) : null;
     const litT = L != null ? `literacy_rate >= ${L}` : '';
-    const halfOn = !!(NONADD && HALF);
-    if (L != null) lines.push(litLine(T0.era, L));
+    const halfOn = !!(NONADD && HALF);   // (no literacy line — see the condition entries above)
     srcs.forEach((s, i) => lines.push(sourceLine({ litT, halfOn, hf: halfOn ? heldOn(tech) : '', trig: s.trig, half: s.half, dFull: s.dFull, dHalf: s.dHalf, before: NONADD ? srcs.slice(0, i) : [] })));
   }
 
@@ -863,11 +864,10 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     //   live figure); the stage rules last. The bar tooltip lists the same conditions with what each adds this month.
     const pctx = x => Math.round(100 * x) + '%';
     const gf = Math.round(100 * ((a.rule === 'war' ? RE.grant_fraction : (RE.industry_grant_fraction ?? RE.grant_fraction)) ?? 0.5));
-    const stageText = (REP
-      ? `${cap(stagesWord(STAGES.length - 1))} of ${span} months, then up to ${REP} more of ${span} months each until we have researched ${nice}.`
-      : `${cap(stagesWord(STAGES.length))} of ${span} months.`) +
-      ` Each completed stage grants ${gf}% of the base research cost of ${nice}` + (gateYear != null ? ` (before ${gateYear}, ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that)` : '') + '.';
-    const doneText = REP && !next ? `\nFurther stages completed: [ROOT.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0] of ${REP}` : '';
+    // the user, 2026-10-21: "The end of the description is needlessly wordy … 'Each 36 month stage grants 50% of tech base cost'"
+    const stageText = `Each ${span}-month stage grants ${gf}% of the technology’s base research cost` +
+      (gateYear != null ? ` (before ${gateYear}, ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that)` : '') + '.';
+    const doneText = REP && !next ? `\nImplementation stages completed: [ROOT.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]` : '';
     const litText = LIT0 != null ? ` and our literacy is at least ${pctx(LIT0)}` : '';
     const halfText = (HALF && HELD_TECHS.includes(tech)) ? ` Every mark is halved once another country that is not isolationist has researched ${nice}, unless we are isolationist.` : '';
     const bullets = srcLines.length ? '\n' + srcLines.map(l => '• ' + l).join('\n') : '';
@@ -992,7 +992,7 @@ if (NONADD && GENERIC) {
   loc.push(['pmr_term_any', 'At least one source is at its mark (the entry lists them)']);
   loc.push(['pmr_term_any_half', 'At least one source is at its halved mark (another country already has this technology)']);
 }
-if (NONADD && LIT) for (const [e, v] of Object.entries(LIT)) {
+if (NONADD && LIT && GENERIC) for (const [e, v] of Object.entries(LIT)) {
   loc.push([`pmr_term_lit_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`} (${Math.round(100 * v)}% needed): the bar is paused`]);
   loc.push([`pmr_term_litok_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`} (${Math.round(100 * v)}% needed)`]);
 }

@@ -9,21 +9,6 @@ pmr_bar_analytical_philosophy = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_analytical_philosophy  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_uni >= 15 } }
 			}
 			add = {
@@ -68,21 +53,6 @@ pmr_bar_anarchism = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  AND = { AND = { has_global_variable = pmr_idea_anarchism } }
 			}
 			add = {
@@ -107,21 +77,6 @@ pmr_bar_aniline = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_aniline_0 >= 12.5 }
@@ -201,21 +156,6 @@ pmr_bar_antibiotics = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_antibiotics  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_chem >= 250000 } }
 			}
 			add = {
@@ -258,21 +198,6 @@ pmr_bar_arc_welding = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_arc_welding  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_arc_welding_0 >= 2500 }
@@ -319,21 +244,6 @@ pmr_bar_art_silk = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_art_silk  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_art_silk_0 >= 12500 }
 			}
 			add = {
@@ -376,21 +286,6 @@ pmr_bar_atmospheric_engine = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_atmospheric_engine_0 >= 12500 }
@@ -437,21 +332,6 @@ pmr_bar_automatic_bottle_blowers = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_automatic_bottle_blowers  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_automatic_bottle_blowers_0 >= 100000 }
 			}
 			add = {
@@ -496,21 +376,6 @@ pmr_bar_automatic_machine_guns = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_automatic_machine_guns_0 >= 11 }
 			}
 			add = {
@@ -553,21 +418,6 @@ pmr_bar_baking_powder = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_baking_powder  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_baking_powder_0 >= 7.5 }
@@ -640,21 +490,6 @@ pmr_bar_behaviorism = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_behaviorism  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_uni >= 15 } }
 			}
 			add = {
@@ -699,21 +534,6 @@ pmr_bar_bessemer_process = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_bessemer_process  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_bessemer_process_0 >= 2.5 }
 			}
 			add = {
@@ -756,21 +576,6 @@ pmr_bar_bolt_action_rifles = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_bolt_action_rifles_0 >= 12 }
@@ -843,21 +648,6 @@ pmr_bar_canneries = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_canneries  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_canneries_0 >= 50000 }
 			}
 			add = {
@@ -900,21 +690,6 @@ pmr_bar_catalytic_synthesis = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_catalytic_synthesis  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_catalytic_synthesis_0 >= 23.5 }
@@ -961,21 +736,6 @@ pmr_bar_central_archives = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_central_archives  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_gov >= 6 } }
 			}
 			add = {
@@ -1018,21 +778,6 @@ pmr_bar_central_banking = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_central_banking  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 20  NOT = { has_law = law_type:law_traditionalism } } }
@@ -1079,21 +824,6 @@ pmr_bar_central_planning = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  AND = { AND = { has_global_variable = pmr_idea_central_planning } }
 			}
 			add = {
@@ -1118,21 +848,6 @@ pmr_bar_chemical_bleaching = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_chemical_bleaching  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_chemical_bleaching_0 >= 7.5 }
@@ -1179,21 +894,6 @@ pmr_bar_civilizing_mission = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  AND = { AND = { country_rank >= rank_value:major_power  NOT = { has_law = law_type:law_no_colonial_affairs } } }
 			}
 			add = {
@@ -1218,21 +918,6 @@ pmr_bar_combustion_engine = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_combustion_engine_0 >= 7.5 }
@@ -1312,21 +997,6 @@ pmr_bar_compression_ignition = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_0 >= 23.5 }
 			}
 			add = {
@@ -1404,21 +1074,6 @@ pmr_bar_continuous_web_processing = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_continuous_web_processing  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_continuous_web_processing_0 >= 23.5 }
 			}
 			add = {
@@ -1461,21 +1116,6 @@ pmr_bar_conveyors = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_conveyors  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_conveyors_0 >= 90000 }
@@ -1522,21 +1162,6 @@ pmr_bar_corporate_charters = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_corporate_charters  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 20  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
@@ -1579,21 +1204,6 @@ pmr_bar_corporate_management = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_corporate_management  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 40  NOT = { has_law = law_type:law_traditionalism } } }
@@ -1640,21 +1250,6 @@ pmr_bar_corporatism = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  AND = { AND = { has_global_variable = pmr_idea_corporatism } }
 			}
 			add = {
@@ -1679,21 +1274,6 @@ pmr_bar_cotton_gin = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.25
-			}
-			add = {
-				desc = "pmr_term_litok_1"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_1"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.25  has_global_variable = pmr_held_cotton_gin  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_cotton_gin_0 >= 24000 }
@@ -1738,21 +1318,6 @@ pmr_bar_crystal_glass = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_crystal_glass  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_crystal_glass_0 >= 7.5 }
@@ -1851,21 +1416,6 @@ pmr_bar_dialectics = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_dialectics  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_uni >= 6 } }
 			}
 			add = {
@@ -1910,21 +1460,6 @@ pmr_bar_distillation = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.25
-			}
-			add = {
-				desc = "pmr_term_litok_1"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_1"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.25  has_global_variable = pmr_held_distillation  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_distillation_0 >= 25 }
 			}
 			add = {
@@ -1967,21 +1502,6 @@ pmr_bar_dough_rollers = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_dough_rollers  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_dough_rollers_0 >= 42500 }
@@ -2052,21 +1572,6 @@ pmr_bar_dynamite = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_dynamite_0 >= 4 }
@@ -2146,21 +1651,6 @@ pmr_bar_egalitarianism = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  AND = { AND = { OR = { has_global_variable = pmr_ideagp_egalitarianism  has_variable = pmr_ideanb_egalitarianism } } }
 			}
 			add = {
@@ -2185,21 +1675,6 @@ pmr_bar_electric_arc_process = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_electric_arc_process  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electric_arc_process_0 >= 23.5 }
@@ -2246,21 +1721,6 @@ pmr_bar_electric_railway = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_electric_railway  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electric_railway_0 >= 7.5 }
 			}
 			add = {
@@ -2303,21 +1763,6 @@ pmr_bar_electrical_capacitors = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electrical_capacitors_0 >= 23.5 }
@@ -2397,21 +1842,6 @@ pmr_bar_electrical_generation = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_electrical_generation  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electrical_generation_0 >= 7500  has_technology_researched = electric_telegraph }
 			}
 			add = {
@@ -2454,21 +1884,6 @@ pmr_bar_elevator = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 40 } } }
@@ -2515,21 +1930,6 @@ pmr_bar_feminism = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  AND = { AND = { OR = { has_global_variable = pmr_ideagp_feminism  has_variable = pmr_ideanb_feminism } } }
 			}
 			add = {
@@ -2554,21 +1954,6 @@ pmr_bar_flash_freezing = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_flash_freezing  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_flash_freezing_0 >= 37500  has_technology_researched = steam_turbine }
@@ -2613,21 +1998,6 @@ pmr_bar_fractional_distillation = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_fractional_distillation  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_fractional_distillation_0 >= 5000 }
@@ -2700,21 +2070,6 @@ pmr_bar_human_rights = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  AND = { AND = { OR = { has_global_variable = pmr_ideagp_human_rights  has_variable = pmr_ideanb_human_rights } } }
 			}
 			add = {
@@ -2739,21 +2094,6 @@ pmr_bar_identification_documents = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_identification_documents  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_gov >= 9 } }
@@ -2800,21 +2140,6 @@ pmr_bar_improved_fertilizer = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_improved_fertilizer  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_improved_fertilizer_0 >= 2.5 }
 			}
 			add = {
@@ -2857,21 +2182,6 @@ pmr_bar_intensive_agriculture = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_intensive_agriculture  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_intensive_agriculture_0 >= 12500 }
@@ -2918,21 +2228,6 @@ pmr_bar_international_exchange_standards = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 40  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
@@ -2975,21 +2270,6 @@ pmr_bar_investment_banks = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_investment_banks  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 30  NOT = { has_law = law_type:law_traditionalism } } }
@@ -3062,21 +2342,6 @@ pmr_bar_joint_stock_companies = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 20  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
@@ -3121,21 +2386,6 @@ pmr_bar_labor_movement = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  AND = { AND = { OR = { has_global_variable = pmr_ideagp_labor_movement  has_variable = pmr_ideanb_labor_movement } } }
 			}
 			add = {
@@ -3160,21 +2410,6 @@ pmr_bar_lathe = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.25
-			}
-			add = {
-				desc = "pmr_term_litok_1"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_1"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.25  has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_lathe_0 >= 25 }
@@ -3287,21 +2522,6 @@ pmr_bar_macroeconomics = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_macroeconomics  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_gov >= 15 } }
 			}
 			add = {
@@ -3346,21 +2566,6 @@ pmr_bar_malaria_prevention = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  AND = { AND = { OR = { any_scope_state = { OR = { region = sr:region_west_africa  region = sr:region_equatorial_africa  region = sr:region_east_africa  region = sr:region_southern_africa  region = sr:region_indonesia } }  any_subject_or_below = { OR = { is_subject_type = subject_type_colony  is_subject_type = subject_type_dominion  is_subject_type = subject_type_personal_union  is_subject_type = subject_type_crown_land  is_subject_type = subject_type_puppet  is_subject_type = subject_type_vassal  is_subject_type = subject_type_chartered_company }  any_scope_state = { OR = { region = sr:region_west_africa  region = sr:region_equatorial_africa  region = sr:region_east_africa  region = sr:region_southern_africa  region = sr:region_indonesia } } } } } }
 			}
 			add = {
@@ -3385,21 +2590,6 @@ pmr_bar_mass_surveillance = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_mass_surveillance  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_gov >= 15 } }
@@ -3444,21 +2634,6 @@ pmr_bar_mechanical_tools = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_0 >= 2.5 }
@@ -3538,21 +2713,6 @@ pmr_bar_mechanized_farming = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_mechanized_farming  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanized_farming_0 >= 37500  has_technology_researched = combustion_engine }
 			}
 			add = {
@@ -3595,21 +2755,6 @@ pmr_bar_mechanized_workshops = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanized_workshops_0 >= 7.5 }
@@ -3715,21 +2860,6 @@ pmr_bar_modern_financial_instruments = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 50  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
@@ -3772,21 +2902,6 @@ pmr_bar_modern_sewerage = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_modern_sewerage  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 15 } } }
@@ -3859,21 +2974,6 @@ pmr_bar_mutual_funds = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_mutual_funds  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 30  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
@@ -3916,21 +3016,6 @@ pmr_bar_nationalism = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  AND = { AND = { has_global_variable = pmr_idea_nationalism } }
@@ -3985,21 +3070,6 @@ pmr_bar_nitrogen_fixation = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_nitrogen_fixation  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_nitrogen_fixation_0 >= 7.5 }
 			}
 			add = {
@@ -4042,21 +3112,6 @@ pmr_bar_nitroglycerin = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_nitroglycerin  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_nitroglycerin_0 >= 1.5 }
@@ -4103,21 +3158,6 @@ pmr_bar_oil_turbine = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_oil_turbine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_oil_turbine_0 >= 9500  has_technology_researched = pumpjacks }
 			}
 			add = {
@@ -4160,21 +3200,6 @@ pmr_bar_open_hearth_process = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_open_hearth_process  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_open_hearth_process_0 >= 7.5 }
@@ -4221,21 +3246,6 @@ pmr_bar_organized_sports = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_organized_sports  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 20 } } }
 			}
 			add = {
@@ -4278,21 +3288,6 @@ pmr_bar_pasteurization = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_pasteurization  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_pasteurization_0 >= 27500 }
@@ -4339,21 +3334,6 @@ pmr_bar_paved_roads = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 80 } } }
 			}
 			add = {
@@ -4396,21 +3376,6 @@ pmr_bar_percussion_cap = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_percussion_cap_0 >= 6250 }
@@ -4457,21 +3422,6 @@ pmr_bar_pharmaceuticals = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  AND = { AND = { OR = { has_global_variable = pmr_ideagp_pharmaceuticals  has_variable = pmr_ideanb_pharmaceuticals } } }
 			}
 			add = {
@@ -4496,21 +3446,6 @@ pmr_bar_philosophical_pragmatism = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_philosophical_pragmatism  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_uni >= 9 } }
@@ -4557,21 +3492,6 @@ pmr_bar_plastics = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_plastics  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_plastics_0 >= 23.5 }
 			}
 			add = {
@@ -4614,21 +3534,6 @@ pmr_bar_pneumatic_tools = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_pneumatic_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_pneumatic_tools_0 >= 4500 }
@@ -4675,21 +3580,6 @@ pmr_bar_political_agitation = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  AND = { AND = { has_global_variable = pmr_idea_political_agitation } }
 			}
 			add = {
@@ -4714,21 +3604,6 @@ pmr_bar_postal_savings = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_postal_savings  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 20  NOT = { has_law = law_type:law_traditionalism } } }
@@ -4801,21 +3676,6 @@ pmr_bar_psychiatry = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_psychiatry  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_uni >= 6 } }
 			}
 			add = {
@@ -4858,21 +3718,6 @@ pmr_bar_psychoanalysis = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_psychoanalysis  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_uni >= 12 } }
@@ -4919,21 +3764,6 @@ pmr_bar_quinine = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  AND = { AND = { OR = { any_scope_state = { OR = { region = sr:region_west_africa  region = sr:region_equatorial_africa  region = sr:region_east_africa  region = sr:region_southern_africa  region = sr:region_indonesia } }  any_subject_or_below = { OR = { is_subject_type = subject_type_colony  is_subject_type = subject_type_dominion  is_subject_type = subject_type_personal_union  is_subject_type = subject_type_crown_land  is_subject_type = subject_type_puppet  is_subject_type = subject_type_vassal  is_subject_type = subject_type_chartered_company }  any_scope_state = { OR = { region = sr:region_west_africa  region = sr:region_equatorial_africa  region = sr:region_east_africa  region = sr:region_southern_africa  region = sr:region_indonesia } } } } } }
 			}
 			add = {
@@ -4958,21 +3788,6 @@ pmr_bar_radio = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_radio  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_radio_0 >= 12500  has_technology_researched = electric_telegraph }
@@ -5019,21 +3834,6 @@ pmr_bar_railways = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_railways  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_railways_0 >= 15000 }
 			}
 			add = {
@@ -5076,21 +3876,6 @@ pmr_bar_reinforced_concrete = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_reinforced_concrete  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_reinforced_concrete_0 >= 30500 }
@@ -5137,21 +3922,6 @@ pmr_bar_repeaters = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_repeaters  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_repeaters_0 >= 4 }
 			}
 			add = {
@@ -5194,21 +3964,6 @@ pmr_bar_rifling = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_rifling  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_rifling_0 >= 1.5 }
@@ -5255,21 +4010,6 @@ pmr_bar_rotary_valve_engine = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_rotary_valve_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_rotary_valve_engine_0 >= 5000 }
 			}
 			add = {
@@ -5312,21 +4052,6 @@ pmr_bar_rubber_mastication = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_rubber_mastication  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_rubber_mastication_0 >= 50000 }
@@ -5425,21 +4150,6 @@ pmr_bar_shell_gun = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_shell_gun  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_shell_gun_0 >= 1.5 }
 			}
 			add = {
@@ -5484,21 +4194,6 @@ pmr_bar_socialism = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  AND = { AND = { has_global_variable = pmr_idea_socialism } }
 			}
 			add = {
@@ -5523,21 +4218,6 @@ pmr_bar_spray_finishing = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.65
-			}
-			add = {
-				desc = "pmr_term_litok_5"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_5"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.65  has_global_variable = pmr_held_spray_finishing  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_spray_finishing_0 >= 21.5 }
@@ -5584,21 +4264,6 @@ pmr_bar_steam_donkey = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_steam_donkey  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_steam_donkey_0 >= 5000  has_technology_researched = rotary_valve_engine }
 			}
 			add = {
@@ -5641,21 +4306,6 @@ pmr_bar_steam_turbine = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_steam_turbine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_steam_turbine_0 >= 6500 }
@@ -5702,21 +4352,6 @@ pmr_bar_steel_railway_cars = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_steel_railway_cars  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_steel_railway_cars_0 >= 28000  has_technology_researched = bessemer_process }
 			}
 			add = {
@@ -5759,21 +4394,6 @@ pmr_bar_steelworking = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.25
-			}
-			add = {
-				desc = "pmr_term_litok_1"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_1"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.25  has_global_variable = pmr_held_steelworking  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_steelworking_0 >= 25 }
@@ -5846,21 +4466,6 @@ pmr_bar_telephone = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_telephone  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_telephone_0 >= 37.5 }
 			}
 			add = {
@@ -5903,21 +4508,6 @@ pmr_bar_threshing_machine = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_threshing_machine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_threshing_machine_0 >= 50000 }
@@ -5990,21 +4580,6 @@ pmr_bar_vacuum_canning = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45
-			}
-			add = {
-				desc = "pmr_term_litok_3"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_3"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.45  has_global_variable = pmr_held_vacuum_canning  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_vacuum_canning_0 >= 37500 }
 			}
 			add = {
@@ -6049,21 +4624,6 @@ pmr_bar_vulcanization = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55
-			}
-			add = {
-				desc = "pmr_term_litok_4"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_4"
-				value = 0
-			}
-		}
-		if = {
-			limit = {
 				literacy_rate >= 0.55  has_global_variable = pmr_held_vulcanization  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_vulcanization_0 >= 23.5 }
 			}
 			add = {
@@ -6106,21 +4666,6 @@ pmr_bar_watertube_boiler = {
 	min_value = 0
 	max_value = 36
 	monthly_progress = {
-		if = {
-			limit = {
-				literacy_rate >= 0.35
-			}
-			add = {
-				desc = "pmr_term_litok_2"
-				value = 0
-			}
-		}
-		else = {
-			add = {
-				desc = "pmr_term_lit_2"
-				value = 0
-			}
-		}
 		if = {
 			limit = {
 				literacy_rate >= 0.35  has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_watertube_boiler_0 >= 15000 }
