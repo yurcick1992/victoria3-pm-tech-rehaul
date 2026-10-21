@@ -47,12 +47,12 @@ cfg.dams = {
     traits: {
       state_trait_pmr_basin_irrigation: {
         name: 'Basin Irrigation',
-        desc: 'The Nile flood waters these fields once a year. Without storage there is no summer crop, and the land yields well below the perennially irrigated Delta.',
+        desc: 'The Nile flood waters these fields once a year. Without storage there is no summer crop, and the land yields well below the perennially irrigated Delta. A storage dam upstream would end this.',
         modifier: { building_group_bg_agriculture_throughput_add: -0.1, building_group_bg_plantations_throughput_add: -0.1 },
       },
       state_trait_pmr_rainfed_plain: {
         name: 'Rain-fed Plain',
-        desc: 'Between the two Niles the plain is farmed on uncertain summer rains and grazed; the river irrigates only a narrow strip.',
+        desc: 'Between the two Niles the plain is farmed on uncertain summer rains and grazed; the river irrigates only a narrow strip. A storage dam upstream would end this.',
         modifier: { building_group_bg_agriculture_throughput_add: -0.2, building_group_bg_plantations_throughput_add: -0.2 },
       },
       state_trait_pmr_steppe_irrigation: {
@@ -66,7 +66,7 @@ cfg.dams = {
         modifier: { state_harvest_condition_flood_impact_mult: -0.15 },
       },
       state_trait_pmr_flood_control_minor: {
-        name: 'River Flood Control',
+        name: 'Partial Flood Control',
         desc: 'Storage dams upstream and on this reach hold back the worst of the floods.',
         modifier: { state_harvest_condition_flood_impact_mult: -0.1 },
       },

@@ -11,12 +11,55 @@ This file is the decision layer. The evidence lives in:
 - **Appendix 1** below — items 3 and 4, the sweep of everything deferred to polishing (22 items, checked against the build).
 - **Appendix 2** below — item 5, an independent hunt over the generated mod and six canon century runs' error logs.
 
-Status words: **DONE** · **RULING** (needs the user) · **DONE 2026-10-21 (vanilla building and method names per language; lens texts per language) | # | Question | Recommended | Why |
+Status words: **DONE** · **RULING** (needs the user) · **READY** (clear-cut, can be done without a ruling) · **VERIFY** (look in game first).
+
+---
+
+## 1. Research entries — DONE 2026-10-21 (commit `70daba8`), not yet seen in game
+
+- Every condition is now a line of the bar tooltip, always: literacy, each source, each counted condition, the war and fleet gates, worth
+  their tick or 0 (BUGS_AND_FIXES 2026-10-21; MODDING_NOTES → *A scripted progress bar's tooltip lists only the add terms evaluated*).
+- One wording, in levels: `<buildings>: N fully staffed levels (now X)`; one body template for every entry.
+- **VERIFY in game:** that the 0-valued lines render (vanilla's Divided Monarchists and Ryukyu bars are the evidence).
+
+## 2. Vanilla references to the tiered industries — RULING, then a generator
+
+**What was found** (`TIER_REFERENCE_AUDIT.md`): 86 distinct script blocks reference a tiered industry's vanilla building key or one of its
+vanilla production methods. **22 are DEAD** (can never fire or complete), **49 NARROW** (count only rung 0 — in 10 of them a 500-worker
+craft, so a vanilla level threshold is ~10× easier), **5 SHIFT** (fire, but mean something else). Plus ~48 throughput modifiers in 20 files
+that boost rung 0 only, and 44 `Invalid Production Method` load errors per run. Checked by hand against the game files: Belle Époque, the
+grand exhibition, the industry-ban laws, the military-industry principles, the art journals — all as the audit says.
+
+**The cases that matter most:**
+1. ⭐ **The vanilla art journals (romanticism → realism → camera → film) can never complete**, so realism +3,500, camera +4,150,
+   film +6,000 and mass propaganda +5,850 of research progress never arrive. ⚠⚠ **§10.98 EXCLUDED realism, camera and film from OUR
+   research entries on the premise that "vanilla's own universal entries advance them" — and those entries are dead in the mod.** So the
+   art chain has had no entry of any kind since 2026-10-12. Fixing the art journals restores what §10.98 assumed.
+2. **Belle Époque never activates** (needs a rung-0 academy running photographic or film art).
+3. **The industry-ban and extraction-economy laws demolish only rung 0**; every later rung survives a ban.
+4. **Tech-boost events dead or narrowed**: repeaters, plastics, radio dead; steel railway cars, rifling, dynamite only for the old rungs.
+5. **Power-bloc Military Industry principles and the event rewards for modernising boost the OBSOLETE rung** (plastics → the forest-glass
+   craft, dynamite → Leblanc, engines → steam engines) — against the mod's own obsolescence design.
+6. **Grand exhibition** needs a 10-level traditional-art academy (the user's example).
+7. **Player objectives demand the obsolete rung** (refining goods → blister steel, specialized goods → steam engines, local arms → muskets).
+8. **Prohibition is never shown** (distillery methods renamed; the food craft cannot distill).
+9. **Industrialisation events dead**; the mechanised-loom accident fires on artisan crafts instead.
+10. **AI levers point at the retired rung**: the admin-strategy subsidies for tools and explosives (the craft and Leblanc), negotiation
+    promises of rung-0 arms/artillery/munitions/academy.
+
+**The proposed fix** (audit §5): one generator, `tools/emit_vanilla_refs.mjs`, beside `emit_companies.mjs` — additive helper triggers /
+values / effects per industry (`pmr_is_<ind>`, `pmr_has_<ind>`, `pmr_is_<ind>_e<k>plus`, `pmr_runs_<pm>`, `pmr_level_v`), an additive
+`on_law_activated` hook for the ban laws, the six missing throughput modifier types, and whole-file transforms of the affected vanilla
+files rewritten from the live game text on every build (match counts asserted, THROWS on drift — a rebuild obligation on patch, not a
+freeze), with a build-time scan that throws on any tiered reference left outside an owned-and-transformed file or an accepted list.
+
+**Rulings needed** (with the recommendation):
+| # | Question | Recommended | Why |
 |---|---|---|---|
-| R2.1 | "N levels" tests (grand exhibition and the rest) | **one building of any rung at level N** — the user's own rule for the grand exhibition, applied everywhere | the user said so for the example: "no need to go into complex conditions that include combinations of rungs" |
-| R2.2 | crafts in vanilla "industry building" tests | **count them, at vanilla-equivalent level** (`level × 0.1`) | the 1836 light industry IS crafts; excluding them silences the revolution/election events for most of the century's early economies |
-| R2.3 | the admin-strategy tools/explosives subsidies (a file we already own) | **every non-craft rung** | §10.92: AI levers make the AI follow profit, never prop a rung; vanilla's intent (tools for the mines) is served by the factory rungs |
-| R2.4 | scope | **tier 1 (22 files) + the throughput modifiers + the negotiation promises; the pure-flavour narrowing tail later** | tier 1 is every DEAD case, every research boost, every objective; the rest is NARROW flavour, generated by the same token rules when wanted |
+| R2.1 | "N levels" tests (grand exhibition and the rest) | ~~one building of any rung at level N, everywhere~~ → **the user (2026-10-21): "go one by one and assess, whether it makes sense narratively"** — DONE as `TIER_REFERENCE_AUDIT.md` PART 2: 30 any-rung, 6 non-craft, 15 a technology's era set, 12 whatever runs a named method, 1 highest rung held, 1 every rung removed, 7 left as they are; judgement calls listed there (F) | |
+| R2.2 | crafts in vanilla "industry building" tests | ~~count them at a tenth~~ → **the user leans "exclude craft ones completely", unless the test is about traditional production** — the highlighted cases are PART 2 (B): "Industry Suffers" and the Serbian slander button (recommended in), Occitan food, haute couture, Japan's calendar malus (to rule) | |
+| R2.3 | the admin-strategy tools/explosives subsidies (a file we already own) | ~~extend to every non-craft rung~~ → **REJECTED by the user**: "such decisions are stopgaps … for now we don't mandate subsidies, except for infrastructure". Open: whether vanilla's own two entries (which now subsidise the crude-tools craft and the Leblanc rung) stay or go | |
+| R2.4 | scope (how many vanilla files the fix takes over) | **tier 1 (22 files) + the throughput modifiers + the negotiation promises; the pure-flavour narrowing tail later** — explained to the user 2026-10-21, awaiting the ruling | tier 1 is every DEAD case, every research boost, every objective; the rest is NARROW flavour, generated by the same token rules when wanted |
 
 Effort: a day for the generator, its guard and a probe of the ban-law hook; it must land **before** the alternating batch.
 
@@ -24,19 +67,19 @@ Effort: a day for the generator, its guard and a probe of the ban-law hook; it m
 
 | # | Item | Status | Effort |
 |---|---|---|---|
-| R1 | Release metadata: version 0.1.0 → 1.0.0, a release build without the "(built …)" name stamp, a current short description | DONE 2026-10-21 (emit_secondaries drops them; lint_pm_combos check 8) | S |
-| R2 | No `thumbnail.png`; no LICENSE | DONE 2026-10-21 (emitted only when registered; a probe confirms dams still work) | S |
-| R3 | README stale: 22 industries / tiered ports and railways / `canon4v-hai3`; no player install route, no "new game only" | READY (after the batch) | S |
+| R1 | Release metadata: version 0.1.0 → 1.0.0, a release build without the "(built …)" name stamp, a current short description | DEFERRED to ~2026-10-26 (user: "this is still a prefinal version"); the final build also drops the recipe detail ("Recipe BE N%") from the names | S |
+| R2 | No `thumbnail.png`; no LICENSE | DEFERRED to ~2026-10-26 (user) | S |
+| R3 | README stale: 22 industries / tiered ports and railways / `canon4v-hai3`; no player install route, no "new game only" | DEFERRED to ~2026-10-26 (user) | S |
 | R4 | Proofread every generated player-facing text (3 minted techs, building names, dam strings, craft and secondary names, company lines) | READY | S–M |
 | R5 | The three minted technologies share one placeholder icon | READY | S |
-| R8 | Dam texts predate private dam construction ("in our own state or a subject's", "each owning what it builds") | READY | S |
+| R8 | Dam texts predate private dam construction ("in our own state or a subject's", "each owning what it builds") | DONE 2026-10-21 (the text pass) | S |
 | B1 | Dam level cap with two foreign builders on one site unverified | VERIFY (probe or hand test) | S |
 | R6 | Per-rung building icons (every rung shows the vanilla picture; all dams the power plant's) | RULING (reuse existing icons, cheap; new art, large) | S–M / L |
 | R7 | Era dividers in the tech-tree GUI | VERIFY in game first (likely moot: the tree is vanilla's + 3) | S |
 | F1 | Artisanal ownership — "the last feature pass", live since the crafts were canonised | RULING: recommend defer past 1.0 (unresearched, large) | L |
 | B2 | Mandated looms not enforced on the merged textile building (1–2 stale levels a game) | RULING (accept, or fold looms into the main method) | M |
 | B3 | Crafts carry no secondary line (no canning, stills, luxury) | RULING (a named craft variant, or accept) | M |
-| N1 | "Recipe BE N%" rides along wherever a building name is referenced (company modifiers: "Era 2. Arms Industries (Bolt Action Rifles). Recipe BE 55% building Throughput") | RULING: recommend the short-name rule the research texts now use | S |
+| N1 | "Recipe BE N%" rides along wherever a building name is referenced (company modifiers: "Era 2. Arms Industries (Bolt Action Rifles). Recipe BE 55% building Throughput") | DONE 2026-10-21 for the company modifiers and the research texts (the per-language short name `<key>_pmr_short`); company FORMATION lines still print the full name until "Recipe BE" goes at release | S |
 | C1 | `TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.25` ships at vanilla's value with a false comment | READY (drop the line) | S |
 | C5 | Stale "open" lines in BACKLOG/ROADMAP that are done or moot | READY | S |
 
@@ -67,13 +110,48 @@ nitrogen_fixation):
 | H1 | **Non-English players see English names where vanilla translates**: the 17 rung-0 keys override vanilla's translated names and lens texts; all 56 main-method names are English though 53 are vanilla methods with translations | DONE 2026-10-21 (vanilla building and method names and lens texts per language) | M |
 | H2 | **Crafts show method groups whose only option is "off"** (Bakeries: canning, distillery — confirmed) — breaks §10.93's rule; the drop is missing on `emit_secondaries`' rescaled path and the lint does not catch it | DONE 2026-10-21 (emit_secondaries drops them; lint_pm_combos check 8 guards it) | S |
 | H3 | Dam build tooltips probably list every project of the class (10/13/38/61 branches) | VERIFY in game, then a `trigger_if` chain | S |
-| H4 | Dam decisions show internals (`pmr_dam_bur_headroom > 1500` with no loc; a raw variable name) | READY | S |
+| H4 | Dam decisions show internals (`pmr_dam_bur_headroom > 1500` with no loc; a raw variable name) | DONE 2026-10-21 (the text pass: requirements as sentences, the AI cooldown hidden) | S |
 | H5 | ~3,700 lines of dead `pmr_dam_driver` script ship, registered nowhere | DONE 2026-10-21 (emitted only when registered; a short probe checks dams still work) | S |
 | H6 | `00_starting_inventions.txt` ships identical to vanilla (L14/L15 read it — they need a fallback) | READY | S |
 | H7 | Builds off the default Steam path: 8 emitters hard-code the game path although the README promises `VIC3_GAME` | READY (one shared resolver) | S |
 | H8 | Release logging: ~12k debug-log lines a century (dams 5.6k, research 6.3k) | RULING (keep for support, or drop in the release build) | S |
 | H9 | Compatibility footprint: 83 vanilla files replaced wholesale — the README should list them | READY (with R3) | S |
 | — | Error logs of six canon-family century runs against ten vanilla: **no error line names a mod file**; the only mod-caused classes are item 2's | — | — |
+
+## Text pass — the generated texts made uniform (DONE 2026-10-21; the user: "make sure that they're all uniform in style unless need to be, and match current mod design")
+
+An inventory of every player-facing string the build writes (a read-only subagent; 48 issues), then the rewrites. The style it set: "we / our"
+voice; one requirement template, `<what>: <mark> (now <figure>)`, a qualifier after a semicolon; vanilla loc keys wherever vanilla names the thing
+(`$building_x$`, `$pm_x$`, `$law_x$`, `$STATE_X$`, `$region_x$`), and a rung by its short name; digits with thousands separators; American spelling,
+as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, variables or internal words in front of the player.
+- **Research entries** (`emit_research_events.mjs`): the stage sentence ("then up to 18 more of 36 months each until we have researched X. Each
+  completed stage grants 50% of the base research cost of X"), one verb for "has the technology", "Further stages completed: N of 18", "2.5 fully
+  staffed levels of 5,000 workers", "(now X); needs <tech>", literacy "Literacy 52% (45% needed)", war entries against "an enemy that has already
+  researched X"; law names stay in a bar line unless one carries an ASCII apostrophe in some language (read from the game: today only English
+  "Workers' Protections"); 12 unused generic keys no longer shipped.
+- **Rung short names** (`build.ps1`, `<key>_pmr_short`, per language — vanilla's building + method names): what research texts and the company
+  throughput modifiers call a rung, never the full "Era N. … Recipe BE N%" name.
+- **Config labels** (both canon copies and their generators — display only): the extra-entry source labels ("Grain and rice farms ($pm_tools$ or
+  later)" — the old label left the rice farms out), the condition labels ("A, B or C"; Civilizing Mission "do not have $law_no_colonial_affairs$";
+  "Our largest $building_urban_center$: N levels"), the count names, the two irrigation maluses ("A storage dam upstream would end this."), "Partial
+  Flood Control".
+- **Dams** (`emit_dams.mjs`, a subagent): the survey decision description (the current rules, private investors, the bureaucracy it ties up, the
+  site's effects, exact numbers), its requirements as sentences (the AI cooldown hidden), the build-requirement tooltips in the we-voice with the
+  correct family rule, the survey entry and modifier, the stop decision, the site trait (names the building, the survey and its technology, the
+  effects), "Expand" lens texts, `$pm_base$` / `$pm_hydroelectric_plant$`, 252 dead keys no longer written. The dam SCRIPT is unchanged except
+  presentation: every dam file byte-identical but the decisions, whose 2,074 changed lines are tooltips around the same triggers and one dropped
+  line (`produced_bureaucracy > X`, implied by the headroom check).
+
+**Open rulings from the text pass:**
+| # | Question |
+|---|---|
+| U1 | 31 dam projects are named "… Dam(s)" (Columbia River Dams, Lower Kama Dam…), so texts read "Survey the Columbia River Dams" — rename them after the SITE? |
+| U2 | Dam building names in the plural, as vanilla names producers ("Great River Dams", "Mountain Power Stations")? |
+| U3 | Should the craft rungs say they are crafts in their name? Today only the building group "Crafts" says so |
+| U4 | The dam build-requirement tooltip (H3): one branch per state instead of an OR over every project — after an in-game look |
+| U5 | Fractional marks (aniline and percussion cap 2.5 levels; halves 1.25; arc welding's half 0.5): round the marks to whole levels, or leave them? |
+| U7 | Vanilla's Krka Falls and Niagara Falls traits are left empty by the dams (their only line was the hydro bonus): a line pointing at the dam site, or leave? |
+| U8 | Research `_desc` = `$…_reason$` (no visible change; 336 duplicate bodies × 11 languages) |
 
 ## Suggested order
 

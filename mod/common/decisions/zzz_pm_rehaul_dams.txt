@@ -24,9 +24,13 @@ pmr_dam_columbia_river_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 1500
-		pmr_dam_bur_headroom > 1500
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_1500
+			pmr_dam_bur_headroom > 1500
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_columbia_river_block_tt
 			NOT = { has_global_variable = pmr_dam_columbia_river_block }
@@ -67,7 +71,12 @@ pmr_dam_columbia_river_survey_decision = {
 
 pmr_dam_columbia_river_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_columbia_river_months }
-	possible = { has_variable = pmr_dam_columbia_river_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_columbia_river_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_columbia_river_months
 		debug_log = "PMR_DAM|survey_stop|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -105,9 +114,13 @@ pmr_dam_laurentian_rivers_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 1400
-		pmr_dam_bur_headroom > 1400
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_1400
+			pmr_dam_bur_headroom > 1400
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_laurentian_rivers_block_tt
 			NOT = { has_global_variable = pmr_dam_laurentian_rivers_block }
@@ -146,7 +159,12 @@ pmr_dam_laurentian_rivers_survey_decision = {
 
 pmr_dam_laurentian_rivers_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_laurentian_rivers_months }
-	possible = { has_variable = pmr_dam_laurentian_rivers_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_laurentian_rivers_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_laurentian_rivers_months
 		debug_log = "PMR_DAM|survey_stop|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -184,9 +202,13 @@ pmr_dam_norrland_rivers_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 1100
-		pmr_dam_bur_headroom > 1100
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_1100
+			pmr_dam_bur_headroom > 1100
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_norrland_rivers_block_tt
 			NOT = { has_global_variable = pmr_dam_norrland_rivers_block }
@@ -221,7 +243,12 @@ pmr_dam_norrland_rivers_survey_decision = {
 
 pmr_dam_norrland_rivers_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_norrland_rivers_months }
-	possible = { has_variable = pmr_dam_norrland_rivers_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_norrland_rivers_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_norrland_rivers_months
 		debug_log = "PMR_DAM|survey_stop|norrland_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -259,9 +286,13 @@ pmr_dam_lower_columbia_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 1300
-		pmr_dam_bur_headroom > 1300
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_1300
+			pmr_dam_bur_headroom > 1300
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_lower_columbia_block_tt
 			NOT = { has_global_variable = pmr_dam_lower_columbia_block }
@@ -298,7 +329,12 @@ pmr_dam_lower_columbia_survey_decision = {
 
 pmr_dam_lower_columbia_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_lower_columbia_months }
-	possible = { has_variable = pmr_dam_lower_columbia_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_lower_columbia_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_lower_columbia_months
 		debug_log = "PMR_DAM|survey_stop|lower_columbia|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -336,9 +372,13 @@ pmr_dam_nelson_winnipeg_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_nelson_winnipeg_block_tt
 			NOT = { has_global_variable = pmr_dam_nelson_winnipeg_block }
@@ -371,7 +411,12 @@ pmr_dam_nelson_winnipeg_survey_decision = {
 
 pmr_dam_nelson_winnipeg_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_nelson_winnipeg_months }
-	possible = { has_variable = pmr_dam_nelson_winnipeg_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_nelson_winnipeg_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_nelson_winnipeg_months
 		debug_log = "PMR_DAM|survey_stop|nelson_winnipeg|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -409,9 +454,13 @@ pmr_dam_black_canyon_sierra_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 1050
-		pmr_dam_bur_headroom > 1050
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_1050
+			pmr_dam_bur_headroom > 1050
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_black_canyon_sierra_block_tt
 			NOT = { has_global_variable = pmr_dam_black_canyon_sierra_block }
@@ -447,7 +496,12 @@ pmr_dam_black_canyon_sierra_survey_decision = {
 
 pmr_dam_black_canyon_sierra_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_black_canyon_sierra_months }
-	possible = { has_variable = pmr_dam_black_canyon_sierra_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_black_canyon_sierra_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_black_canyon_sierra_months
 		debug_log = "PMR_DAM|survey_stop|black_canyon_sierra|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -485,9 +539,13 @@ pmr_dam_western_fjords_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 950
-		pmr_dam_bur_headroom > 950
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_950
+			pmr_dam_bur_headroom > 950
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_western_fjords_block_tt
 			NOT = { has_global_variable = pmr_dam_western_fjords_block }
@@ -522,7 +580,12 @@ pmr_dam_western_fjords_survey_decision = {
 
 pmr_dam_western_fjords_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_western_fjords_months }
-	possible = { has_variable = pmr_dam_western_fjords_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_western_fjords_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_western_fjords_months
 		debug_log = "PMR_DAM|survey_stop|western_fjords|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -560,9 +623,13 @@ pmr_dam_niagara_long_sault_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 1100
-		pmr_dam_bur_headroom > 1100
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_1100
+			pmr_dam_bur_headroom > 1100
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_niagara_long_sault_block_tt
 			NOT = { has_global_variable = pmr_dam_niagara_long_sault_block }
@@ -597,7 +664,12 @@ pmr_dam_niagara_long_sault_survey_decision = {
 
 pmr_dam_niagara_long_sault_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_niagara_long_sault_months }
-	possible = { has_variable = pmr_dam_niagara_long_sault_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_niagara_long_sault_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_niagara_long_sault_months
 		debug_log = "PMR_DAM|survey_stop|niagara_long_sault|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -635,9 +707,13 @@ pmr_dam_waitaki_southern_lakes_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 950
-		pmr_dam_bur_headroom > 950
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_950
+			pmr_dam_bur_headroom > 950
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_waitaki_southern_lakes_block_tt
 			NOT = { has_global_variable = pmr_dam_waitaki_southern_lakes_block }
@@ -671,7 +747,12 @@ pmr_dam_waitaki_southern_lakes_survey_decision = {
 
 pmr_dam_waitaki_southern_lakes_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_waitaki_southern_lakes_months }
-	possible = { has_variable = pmr_dam_waitaki_southern_lakes_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_waitaki_southern_lakes_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_waitaki_southern_lakes_months
 		debug_log = "PMR_DAM|survey_stop|waitaki_southern_lakes|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -709,9 +790,13 @@ pmr_dam_grisons_ticino_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 850
-		pmr_dam_bur_headroom > 850
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_850
+			pmr_dam_bur_headroom > 850
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_grisons_ticino_block_tt
 			NOT = { has_global_variable = pmr_dam_grisons_ticino_block }
@@ -745,7 +830,12 @@ pmr_dam_grisons_ticino_survey_decision = {
 
 pmr_dam_grisons_ticino_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_grisons_ticino_months }
-	possible = { has_variable = pmr_dam_grisons_ticino_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_grisons_ticino_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_grisons_ticino_months
 		debug_log = "PMR_DAM|survey_stop|grisons_ticino|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -783,9 +873,13 @@ pmr_dam_rhone_isere_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 950
-		pmr_dam_bur_headroom > 950
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_950
+			pmr_dam_bur_headroom > 950
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_rhone_isere_block_tt
 			NOT = { has_global_variable = pmr_dam_rhone_isere_block }
@@ -819,7 +913,12 @@ pmr_dam_rhone_isere_survey_decision = {
 
 pmr_dam_rhone_isere_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_rhone_isere_months }
-	possible = { has_variable = pmr_dam_rhone_isere_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_rhone_isere_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_rhone_isere_months
 		debug_log = "PMR_DAM|survey_stop|rhone_isere|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -857,9 +956,13 @@ pmr_dam_niagara_ottawa_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 850
-		pmr_dam_bur_headroom > 850
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_850
+			pmr_dam_bur_headroom > 850
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_niagara_ottawa_block_tt
 			NOT = { has_global_variable = pmr_dam_niagara_ottawa_block }
@@ -893,7 +996,12 @@ pmr_dam_niagara_ottawa_survey_decision = {
 
 pmr_dam_niagara_ottawa_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_niagara_ottawa_months }
-	possible = { has_variable = pmr_dam_niagara_ottawa_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_niagara_ottawa_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_niagara_ottawa_months
 		debug_log = "PMR_DAM|survey_stop|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -931,9 +1039,13 @@ pmr_dam_tennessee_valley_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 950
-		pmr_dam_bur_headroom > 950
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_950
+			pmr_dam_bur_headroom > 950
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_tennessee_valley_block_tt
 			NOT = { has_global_variable = pmr_dam_tennessee_valley_block }
@@ -967,7 +1079,12 @@ pmr_dam_tennessee_valley_survey_decision = {
 
 pmr_dam_tennessee_valley_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_tennessee_valley_months }
-	possible = { has_variable = pmr_dam_tennessee_valley_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_tennessee_valley_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_tennessee_valley_months
 		debug_log = "PMR_DAM|survey_stop|tennessee_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1005,9 +1122,13 @@ pmr_dam_valais_alps_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 850
-		pmr_dam_bur_headroom > 850
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_850
+			pmr_dam_bur_headroom > 850
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_valais_alps_block_tt
 			NOT = { has_global_variable = pmr_dam_valais_alps_block }
@@ -1041,7 +1162,12 @@ pmr_dam_valais_alps_survey_decision = {
 
 pmr_dam_valais_alps_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_valais_alps_months }
-	possible = { has_variable = pmr_dam_valais_alps_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_valais_alps_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_valais_alps_months
 		debug_log = "PMR_DAM|survey_stop|valais_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1079,9 +1205,13 @@ pmr_dam_nechako_kootenay_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 850
-		pmr_dam_bur_headroom > 850
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_850
+			pmr_dam_bur_headroom > 850
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_nechako_kootenay_block_tt
 			NOT = { has_global_variable = pmr_dam_nechako_kootenay_block }
@@ -1115,7 +1245,12 @@ pmr_dam_nechako_kootenay_survey_decision = {
 
 pmr_dam_nechako_kootenay_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_nechako_kootenay_months }
-	possible = { has_variable = pmr_dam_nechako_kootenay_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_nechako_kootenay_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_nechako_kootenay_months
 		debug_log = "PMR_DAM|survey_stop|nechako_kootenay|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1153,9 +1288,13 @@ pmr_dam_shinano_kurobe_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 850
-		pmr_dam_bur_headroom > 850
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_850
+			pmr_dam_bur_headroom > 850
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_shinano_kurobe_block_tt
 			NOT = { has_global_variable = pmr_dam_shinano_kurobe_block }
@@ -1189,7 +1328,12 @@ pmr_dam_shinano_kurobe_survey_decision = {
 
 pmr_dam_shinano_kurobe_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_shinano_kurobe_months }
-	possible = { has_variable = pmr_dam_shinano_kurobe_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_shinano_kurobe_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_shinano_kurobe_months
 		debug_log = "PMR_DAM|survey_stop|shinano_kurobe|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1227,9 +1371,13 @@ pmr_dam_lower_rhone_durance_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 850
-		pmr_dam_bur_headroom > 850
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_850
+			pmr_dam_bur_headroom > 850
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_lower_rhone_durance_block_tt
 			NOT = { has_global_variable = pmr_dam_lower_rhone_durance_block }
@@ -1263,7 +1411,12 @@ pmr_dam_lower_rhone_durance_survey_decision = {
 
 pmr_dam_lower_rhone_durance_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_lower_rhone_durance_months }
-	possible = { has_variable = pmr_dam_lower_rhone_durance_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_lower_rhone_durance_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_lower_rhone_durance_months
 		debug_log = "PMR_DAM|survey_stop|lower_rhone_durance|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1301,9 +1454,13 @@ pmr_dam_missouri_big_bend_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 950
-		pmr_dam_bur_headroom > 950
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_950
+			pmr_dam_bur_headroom > 950
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_missouri_big_bend_block_tt
 			NOT = { has_global_variable = pmr_dam_missouri_big_bend_block }
@@ -1337,7 +1494,12 @@ pmr_dam_missouri_big_bend_survey_decision = {
 
 pmr_dam_missouri_big_bend_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_missouri_big_bend_months }
-	possible = { has_variable = pmr_dam_missouri_big_bend_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_missouri_big_bend_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_missouri_big_bend_months
 		debug_log = "PMR_DAM|survey_stop|missouri_big_bend|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1375,9 +1537,13 @@ pmr_dam_austrian_danube_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 950
-		pmr_dam_bur_headroom > 950
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_950
+			pmr_dam_bur_headroom > 950
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_austrian_danube_block_tt
 			NOT = { has_global_variable = pmr_dam_austrian_danube_block }
@@ -1411,7 +1577,12 @@ pmr_dam_austrian_danube_survey_decision = {
 
 pmr_dam_austrian_danube_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_austrian_danube_months }
-	possible = { has_variable = pmr_dam_austrian_danube_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_austrian_danube_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_austrian_danube_months
 		debug_log = "PMR_DAM|survey_stop|austrian_danube|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1449,9 +1620,13 @@ pmr_dam_danube_bavarian_alps_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_danube_bavarian_alps_block_tt
 			NOT = { has_global_variable = pmr_dam_danube_bavarian_alps_block }
@@ -1484,7 +1659,12 @@ pmr_dam_danube_bavarian_alps_survey_decision = {
 
 pmr_dam_danube_bavarian_alps_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_danube_bavarian_alps_months }
-	possible = { has_variable = pmr_dam_danube_bavarian_alps_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_danube_bavarian_alps_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_danube_bavarian_alps_months
 		debug_log = "PMR_DAM|survey_stop|danube_bavarian_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1522,9 +1702,13 @@ pmr_dam_kiso_tenryu_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 700
-		pmr_dam_bur_headroom > 700
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_700
+			pmr_dam_bur_headroom > 700
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_kiso_tenryu_block_tt
 			NOT = { has_global_variable = pmr_dam_kiso_tenryu_block }
@@ -1557,7 +1741,12 @@ pmr_dam_kiso_tenryu_survey_decision = {
 
 pmr_dam_kiso_tenryu_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_kiso_tenryu_months }
-	possible = { has_variable = pmr_dam_kiso_tenryu_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_kiso_tenryu_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_kiso_tenryu_months
 		debug_log = "PMR_DAM|survey_stop|kiso_tenryu|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1595,9 +1784,13 @@ pmr_dam_douro_gorge_cavado_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_douro_gorge_cavado_block_tt
 			NOT = { has_global_variable = pmr_dam_douro_gorge_cavado_block }
@@ -1630,7 +1823,12 @@ pmr_dam_douro_gorge_cavado_survey_decision = {
 
 pmr_dam_douro_gorge_cavado_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_douro_gorge_cavado_months }
-	possible = { has_variable = pmr_dam_douro_gorge_cavado_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_douro_gorge_cavado_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_douro_gorge_cavado_months
 		debug_log = "PMR_DAM|survey_stop|douro_gorge_cavado|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1668,9 +1866,13 @@ pmr_dam_tsaritsyn_volga_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 900
-		pmr_dam_bur_headroom > 900
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_900
+			pmr_dam_bur_headroom > 900
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_tsaritsyn_volga_block_tt
 			NOT = { has_global_variable = pmr_dam_tsaritsyn_volga_block }
@@ -1704,7 +1906,12 @@ pmr_dam_tsaritsyn_volga_survey_decision = {
 
 pmr_dam_tsaritsyn_volga_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_tsaritsyn_volga_months }
-	possible = { has_variable = pmr_dam_tsaritsyn_volga_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_tsaritsyn_volga_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_tsaritsyn_volga_months
 		debug_log = "PMR_DAM|survey_stop|tsaritsyn_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1742,9 +1949,13 @@ pmr_dam_muscle_shoals_coosa_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 900
-		pmr_dam_bur_headroom > 900
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_900
+			pmr_dam_bur_headroom > 900
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_muscle_shoals_coosa_block_tt
 			NOT = { has_global_variable = pmr_dam_muscle_shoals_coosa_block }
@@ -1778,7 +1989,12 @@ pmr_dam_muscle_shoals_coosa_survey_decision = {
 
 pmr_dam_muscle_shoals_coosa_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_muscle_shoals_coosa_months }
-	possible = { has_variable = pmr_dam_muscle_shoals_coosa_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_muscle_shoals_coosa_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_muscle_shoals_coosa_months
 		debug_log = "PMR_DAM|survey_stop|muscle_shoals_coosa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1816,9 +2032,13 @@ pmr_dam_grand_canal_alsace_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 900
-		pmr_dam_bur_headroom > 900
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_900
+			pmr_dam_bur_headroom > 900
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_grand_canal_alsace_block_tt
 			NOT = { has_global_variable = pmr_dam_grand_canal_alsace_block }
@@ -1852,7 +2072,12 @@ pmr_dam_grand_canal_alsace_survey_decision = {
 
 pmr_dam_grand_canal_alsace_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_grand_canal_alsace_months }
-	possible = { has_variable = pmr_dam_grand_canal_alsace_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_grand_canal_alsace_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_grand_canal_alsace_months
 		debug_log = "PMR_DAM|survey_stop|grand_canal_alsace|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1890,9 +2115,13 @@ pmr_dam_arribes_duero_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 900
-		pmr_dam_bur_headroom > 900
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_900
+			pmr_dam_bur_headroom > 900
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_arribes_duero_block_tt
 			NOT = { has_global_variable = pmr_dam_arribes_duero_block }
@@ -1926,7 +2155,12 @@ pmr_dam_arribes_duero_survey_decision = {
 
 pmr_dam_arribes_duero_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_arribes_duero_months }
-	possible = { has_variable = pmr_dam_arribes_duero_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_arribes_duero_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_arribes_duero_months
 		debug_log = "PMR_DAM|survey_stop|arribes_duero|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -1964,9 +2198,13 @@ pmr_dam_adda_lombard_alps_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_adda_lombard_alps_block_tt
 			NOT = { has_global_variable = pmr_dam_adda_lombard_alps_block }
@@ -2000,7 +2238,12 @@ pmr_dam_adda_lombard_alps_survey_decision = {
 
 pmr_dam_adda_lombard_alps_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_adda_lombard_alps_months }
-	possible = { has_variable = pmr_dam_adda_lombard_alps_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_adda_lombard_alps_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_adda_lombard_alps_months
 		debug_log = "PMR_DAM|survey_stop|adda_lombard_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2038,9 +2281,13 @@ pmr_dam_snowy_tumut_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 700
-		pmr_dam_bur_headroom > 700
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_700
+			pmr_dam_bur_headroom > 700
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_snowy_tumut_block_tt
 			NOT = { has_global_variable = pmr_dam_snowy_tumut_block }
@@ -2073,7 +2320,12 @@ pmr_dam_snowy_tumut_survey_decision = {
 
 pmr_dam_snowy_tumut_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_snowy_tumut_months }
-	possible = { has_variable = pmr_dam_snowy_tumut_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_snowy_tumut_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_snowy_tumut_months
 		debug_log = "PMR_DAM|survey_stop|snowy_tumut|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2111,9 +2363,13 @@ pmr_dam_yellow_river_gorges_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 900
-		pmr_dam_bur_headroom > 900
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_900
+			pmr_dam_bur_headroom > 900
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_yellow_river_gorges_block_tt
 			NOT = { has_global_variable = pmr_dam_yellow_river_gorges_block }
@@ -2147,7 +2403,12 @@ pmr_dam_yellow_river_gorges_survey_decision = {
 
 pmr_dam_yellow_river_gorges_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_yellow_river_gorges_months }
-	possible = { has_variable = pmr_dam_yellow_river_gorges_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_yellow_river_gorges_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_yellow_river_gorges_months
 		debug_log = "PMR_DAM|survey_stop|yellow_river_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2185,9 +2446,13 @@ pmr_dam_hohe_tauern_ziller_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_hohe_tauern_ziller_block_tt
 			NOT = { has_global_variable = pmr_dam_hohe_tauern_ziller_block }
@@ -2221,7 +2486,12 @@ pmr_dam_hohe_tauern_ziller_survey_decision = {
 
 pmr_dam_hohe_tauern_ziller_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_hohe_tauern_ziller_months }
-	possible = { has_variable = pmr_dam_hohe_tauern_ziller_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_hohe_tauern_ziller_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_hohe_tauern_ziller_months
 		debug_log = "PMR_DAM|survey_stop|hohe_tauern_ziller|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2259,9 +2529,13 @@ pmr_dam_iron_gates_arges_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 950
-		pmr_dam_bur_headroom > 950
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_950
+			pmr_dam_bur_headroom > 950
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_iron_gates_arges_block_tt
 			NOT = { has_global_variable = pmr_dam_iron_gates_arges_block }
@@ -2295,7 +2569,12 @@ pmr_dam_iron_gates_arges_survey_decision = {
 
 pmr_dam_iron_gates_arges_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_iron_gates_arges_months }
-	possible = { has_variable = pmr_dam_iron_gates_arges_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_iron_gates_arges_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_iron_gates_arges_months
 		debug_log = "PMR_DAM|survey_stop|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2333,9 +2612,13 @@ pmr_dam_inga_rapids_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_inga_rapids_block_tt
 			NOT = { has_global_variable = pmr_dam_inga_rapids_block }
@@ -2369,7 +2652,12 @@ pmr_dam_inga_rapids_survey_decision = {
 
 pmr_dam_inga_rapids_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_inga_rapids_months }
-	possible = { has_variable = pmr_dam_inga_rapids_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_inga_rapids_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_inga_rapids_months
 		debug_log = "PMR_DAM|survey_stop|inga_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2407,9 +2695,13 @@ pmr_dam_rion_ingur_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_rion_ingur_block_tt
 			NOT = { has_global_variable = pmr_dam_rion_ingur_block }
@@ -2442,7 +2734,12 @@ pmr_dam_rion_ingur_survey_decision = {
 
 pmr_dam_rion_ingur_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_rion_ingur_months }
-	possible = { has_variable = pmr_dam_rion_ingur_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_rion_ingur_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_rion_ingur_months
 		debug_log = "PMR_DAM|survey_stop|rion_ingur|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2480,9 +2777,13 @@ pmr_dam_yalu_river_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 900
-		pmr_dam_bur_headroom > 900
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_900
+			pmr_dam_bur_headroom > 900
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_yalu_river_block_tt
 			NOT = { has_global_variable = pmr_dam_yalu_river_block }
@@ -2516,7 +2817,12 @@ pmr_dam_yalu_river_survey_decision = {
 
 pmr_dam_yalu_river_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_yalu_river_months }
-	possible = { has_variable = pmr_dam_yalu_river_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_yalu_river_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_yalu_river_months
 		debug_log = "PMR_DAM|survey_stop|yalu_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2554,9 +2860,13 @@ pmr_dam_maurienne_tarentaise_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_maurienne_tarentaise_block_tt
 			NOT = { has_global_variable = pmr_dam_maurienne_tarentaise_block }
@@ -2590,7 +2900,12 @@ pmr_dam_maurienne_tarentaise_survey_decision = {
 
 pmr_dam_maurienne_tarentaise_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_maurienne_tarentaise_months }
-	possible = { has_variable = pmr_dam_maurienne_tarentaise_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_maurienne_tarentaise_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_maurienne_tarentaise_months
 		debug_log = "PMR_DAM|survey_stop|maurienne_tarentaise|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2628,9 +2943,13 @@ pmr_dam_waikato_river_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 900
-		pmr_dam_bur_headroom > 900
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_900
+			pmr_dam_bur_headroom > 900
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_waikato_river_block_tt
 			NOT = { has_global_variable = pmr_dam_waikato_river_block }
@@ -2664,7 +2983,12 @@ pmr_dam_waikato_river_survey_decision = {
 
 pmr_dam_waikato_river_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_waikato_river_months }
-	possible = { has_variable = pmr_dam_waikato_river_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_waikato_river_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_waikato_river_months
 		debug_log = "PMR_DAM|survey_stop|waikato_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2702,9 +3026,13 @@ pmr_dam_sevan_zanga_vorotan_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_sevan_zanga_vorotan_block_tt
 			NOT = { has_global_variable = pmr_dam_sevan_zanga_vorotan_block }
@@ -2737,7 +3065,12 @@ pmr_dam_sevan_zanga_vorotan_survey_decision = {
 
 pmr_dam_sevan_zanga_vorotan_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_sevan_zanga_vorotan_months }
-	possible = { has_variable = pmr_dam_sevan_zanga_vorotan_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_sevan_zanga_vorotan_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_sevan_zanga_vorotan_months
 		debug_log = "PMR_DAM|survey_stop|sevan_zanga_vorotan|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2775,9 +3108,13 @@ pmr_dam_dnieper_rapids_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 900
-		pmr_dam_bur_headroom > 900
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_900
+			pmr_dam_bur_headroom > 900
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_dnieper_rapids_block_tt
 			NOT = { has_global_variable = pmr_dam_dnieper_rapids_block }
@@ -2811,7 +3148,12 @@ pmr_dam_dnieper_rapids_survey_decision = {
 
 pmr_dam_dnieper_rapids_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_dnieper_rapids_months }
-	possible = { has_variable = pmr_dam_dnieper_rapids_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_dnieper_rapids_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_dnieper_rapids_months
 		debug_log = "PMR_DAM|survey_stop|dnieper_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2849,9 +3191,13 @@ pmr_dam_glommen_falls_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 900
-		pmr_dam_bur_headroom > 900
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_900
+			pmr_dam_bur_headroom > 900
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_glommen_falls_block_tt
 			NOT = { has_global_variable = pmr_dam_glommen_falls_block }
@@ -2885,7 +3231,12 @@ pmr_dam_glommen_falls_survey_decision = {
 
 pmr_dam_glommen_falls_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_glommen_falls_months }
-	possible = { has_variable = pmr_dam_glommen_falls_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_glommen_falls_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_glommen_falls_months
 		debug_log = "PMR_DAM|survey_stop|glommen_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2923,9 +3274,13 @@ pmr_dam_alcantara_gorge_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 900
-		pmr_dam_bur_headroom > 900
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_900
+			pmr_dam_bur_headroom > 900
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_alcantara_gorge_block_tt
 			NOT = { has_global_variable = pmr_dam_alcantara_gorge_block }
@@ -2959,7 +3314,12 @@ pmr_dam_alcantara_gorge_survey_decision = {
 
 pmr_dam_alcantara_gorge_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_alcantara_gorge_months }
-	possible = { has_variable = pmr_dam_alcantara_gorge_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_alcantara_gorge_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_alcantara_gorge_months
 		debug_log = "PMR_DAM|survey_stop|alcantara_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -2997,9 +3357,13 @@ pmr_dam_aura_nordland_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_aura_nordland_block_tt
 			NOT = { has_global_variable = pmr_dam_aura_nordland_block }
@@ -3033,7 +3397,12 @@ pmr_dam_aura_nordland_survey_decision = {
 
 pmr_dam_aura_nordland_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_aura_nordland_months }
-	possible = { has_variable = pmr_dam_aura_nordland_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_aura_nordland_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_aura_nordland_months
 		debug_log = "PMR_DAM|survey_stop|aura_nordland|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3071,9 +3440,13 @@ pmr_dam_ossola_dora_baltea_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_ossola_dora_baltea_block_tt
 			NOT = { has_global_variable = pmr_dam_ossola_dora_baltea_block }
@@ -3107,7 +3480,12 @@ pmr_dam_ossola_dora_baltea_survey_decision = {
 
 pmr_dam_ossola_dora_baltea_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_ossola_dora_baltea_months }
-	possible = { has_variable = pmr_dam_ossola_dora_baltea_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_ossola_dora_baltea_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_ossola_dora_baltea_months
 		debug_log = "PMR_DAM|survey_stop|ossola_dora_baltea|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3145,9 +3523,13 @@ pmr_dam_cubatao_escarpment_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_cubatao_escarpment_block_tt
 			NOT = { has_global_variable = pmr_dam_cubatao_escarpment_block }
@@ -3181,7 +3563,12 @@ pmr_dam_cubatao_escarpment_survey_decision = {
 
 pmr_dam_cubatao_escarpment_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_cubatao_escarpment_months }
-	possible = { has_variable = pmr_dam_cubatao_escarpment_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_cubatao_escarpment_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_cubatao_escarpment_months
 		debug_log = "PMR_DAM|survey_stop|cubatao_escarpment|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3219,9 +3606,13 @@ pmr_dam_derwent_great_lake_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_derwent_great_lake_block_tt
 			NOT = { has_global_variable = pmr_dam_derwent_great_lake_block }
@@ -3255,7 +3646,12 @@ pmr_dam_derwent_great_lake_survey_decision = {
 
 pmr_dam_derwent_great_lake_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_derwent_great_lake_months }
-	possible = { has_variable = pmr_dam_derwent_great_lake_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_derwent_great_lake_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_derwent_great_lake_months
 		debug_log = "PMR_DAM|survey_stop|derwent_great_lake|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3293,9 +3689,13 @@ pmr_dam_kaema_plateau_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_kaema_plateau_block_tt
 			NOT = { has_global_variable = pmr_dam_kaema_plateau_block }
@@ -3329,7 +3729,12 @@ pmr_dam_kaema_plateau_survey_decision = {
 
 pmr_dam_kaema_plateau_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_kaema_plateau_months }
-	possible = { has_variable = pmr_dam_kaema_plateau_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_kaema_plateau_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_kaema_plateau_months
 		debug_log = "PMR_DAM|survey_stop|kaema_plateau|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3367,9 +3772,13 @@ pmr_dam_dordogne_gorges_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_dordogne_gorges_block_tt
 			NOT = { has_global_variable = pmr_dam_dordogne_gorges_block }
@@ -3402,7 +3811,12 @@ pmr_dam_dordogne_gorges_survey_decision = {
 
 pmr_dam_dordogne_gorges_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_dordogne_gorges_months }
-	possible = { has_variable = pmr_dam_dordogne_gorges_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_dordogne_gorges_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_dordogne_gorges_months
 		debug_log = "PMR_DAM|survey_stop|dordogne_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3440,9 +3854,13 @@ pmr_dam_koyna_western_ghats_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_koyna_western_ghats_block_tt
 			NOT = { has_global_variable = pmr_dam_koyna_western_ghats_block }
@@ -3475,7 +3893,12 @@ pmr_dam_koyna_western_ghats_survey_decision = {
 
 pmr_dam_koyna_western_ghats_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_koyna_western_ghats_months }
-	possible = { has_variable = pmr_dam_koyna_western_ghats_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_koyna_western_ghats_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_koyna_western_ghats_months
 		debug_log = "PMR_DAM|survey_stop|koyna_western_ghats|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3513,9 +3936,13 @@ pmr_dam_tone_river_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_tone_river_block_tt
 			NOT = { has_global_variable = pmr_dam_tone_river_block }
@@ -3548,7 +3975,12 @@ pmr_dam_tone_river_survey_decision = {
 
 pmr_dam_tone_river_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_tone_river_months }
-	possible = { has_variable = pmr_dam_tone_river_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_tone_river_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_tone_river_months
 		debug_log = "PMR_DAM|survey_stop|tone_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3586,9 +4018,13 @@ pmr_dam_tadami_river_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_tadami_river_block_tt
 			NOT = { has_global_variable = pmr_dam_tadami_river_block }
@@ -3621,7 +4057,12 @@ pmr_dam_tadami_river_survey_decision = {
 
 pmr_dam_tadami_river_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_tadami_river_months }
-	possible = { has_variable = pmr_dam_tadami_river_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_tadami_river_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_tadami_river_months
 		debug_log = "PMR_DAM|survey_stop|tadami_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3659,9 +4100,13 @@ pmr_dam_kainji_rapids_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_kainji_rapids_block_tt
 			NOT = { has_global_variable = pmr_dam_kainji_rapids_block }
@@ -3694,7 +4139,12 @@ pmr_dam_kainji_rapids_survey_decision = {
 
 pmr_dam_kainji_rapids_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_kainji_rapids_months }
-	possible = { has_variable = pmr_dam_kainji_rapids_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_kainji_rapids_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_kainji_rapids_months
 		debug_log = "PMR_DAM|survey_stop|kainji_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3732,9 +4182,13 @@ pmr_dam_segre_lower_ebro_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_segre_lower_ebro_block_tt
 			NOT = { has_global_variable = pmr_dam_segre_lower_ebro_block }
@@ -3767,7 +4221,12 @@ pmr_dam_segre_lower_ebro_survey_decision = {
 
 pmr_dam_segre_lower_ebro_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_segre_lower_ebro_months }
-	possible = { has_variable = pmr_dam_segre_lower_ebro_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_segre_lower_ebro_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_segre_lower_ebro_months
 		debug_log = "PMR_DAM|survey_stop|segre_lower_ebro|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3805,9 +4264,13 @@ pmr_dam_mantaro_canon_del_pato_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_mantaro_canon_del_pato_block_tt
 			NOT = { has_global_variable = pmr_dam_mantaro_canon_del_pato_block }
@@ -3840,7 +4303,12 @@ pmr_dam_mantaro_canon_del_pato_survey_decision = {
 
 pmr_dam_mantaro_canon_del_pato_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_mantaro_canon_del_pato_months }
-	possible = { has_variable = pmr_dam_mantaro_canon_del_pato_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_mantaro_canon_del_pato_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_mantaro_canon_del_pato_months
 		debug_log = "PMR_DAM|survey_stop|mantaro_canon_del_pato|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3878,9 +4346,13 @@ pmr_dam_dal_klar_rivers_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_dal_klar_rivers_block_tt
 			NOT = { has_global_variable = pmr_dam_dal_klar_rivers_block }
@@ -3913,7 +4385,12 @@ pmr_dam_dal_klar_rivers_survey_decision = {
 
 pmr_dam_dal_klar_rivers_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_dal_klar_rivers_months }
-	possible = { has_variable = pmr_dam_dal_klar_rivers_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_dal_klar_rivers_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_dal_klar_rivers_months
 		debug_log = "PMR_DAM|survey_stop|dal_klar_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -3951,9 +4428,13 @@ pmr_dam_travancore_highlands_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_travancore_highlands_block_tt
 			NOT = { has_global_variable = pmr_dam_travancore_highlands_block }
@@ -3986,7 +4467,12 @@ pmr_dam_travancore_highlands_survey_decision = {
 
 pmr_dam_travancore_highlands_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_travancore_highlands_months }
-	possible = { has_variable = pmr_dam_travancore_highlands_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_travancore_highlands_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_travancore_highlands_months
 		debug_log = "PMR_DAM|survey_stop|travancore_highlands|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4024,9 +4510,13 @@ pmr_dam_chirchik_cascade_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_chirchik_cascade_block_tt
 			NOT = { has_global_variable = pmr_dam_chirchik_cascade_block }
@@ -4059,7 +4549,12 @@ pmr_dam_chirchik_cascade_survey_decision = {
 
 pmr_dam_chirchik_cascade_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_chirchik_cascade_months }
-	possible = { has_variable = pmr_dam_chirchik_cascade_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_chirchik_cascade_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_chirchik_cascade_months
 		debug_log = "PMR_DAM|survey_stop|chirchik_cascade|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4097,9 +4592,13 @@ pmr_dam_cheboksary_volga_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_cheboksary_volga_block_tt
 			NOT = { has_global_variable = pmr_dam_cheboksary_volga_block }
@@ -4132,7 +4631,12 @@ pmr_dam_cheboksary_volga_survey_decision = {
 
 pmr_dam_cheboksary_volga_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_cheboksary_volga_months }
-	possible = { has_variable = pmr_dam_cheboksary_volga_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_cheboksary_volga_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_cheboksary_volga_months
 		debug_log = "PMR_DAM|survey_stop|cheboksary_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4170,9 +4674,13 @@ pmr_dam_lower_kama_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_lower_kama_block_tt
 			NOT = { has_global_variable = pmr_dam_lower_kama_block }
@@ -4205,7 +4713,12 @@ pmr_dam_lower_kama_survey_decision = {
 
 pmr_dam_lower_kama_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_lower_kama_months }
-	possible = { has_variable = pmr_dam_lower_kama_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_lower_kama_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_lower_kama_months
 		debug_log = "PMR_DAM|survey_stop|lower_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4243,9 +4756,13 @@ pmr_dam_kiev_kanev_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_kiev_kanev_block_tt
 			NOT = { has_global_variable = pmr_dam_kiev_kanev_block }
@@ -4278,7 +4795,12 @@ pmr_dam_kiev_kanev_survey_decision = {
 
 pmr_dam_kiev_kanev_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_kiev_kanev_months }
-	possible = { has_variable = pmr_dam_kiev_kanev_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_kiev_kanev_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_kiev_kanev_months
 		debug_log = "PMR_DAM|survey_stop|kiev_kanev|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4316,9 +4838,13 @@ pmr_dam_gorodets_volga_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_gorodets_volga_block_tt
 			NOT = { has_global_variable = pmr_dam_gorodets_volga_block }
@@ -4351,7 +4877,12 @@ pmr_dam_gorodets_volga_survey_decision = {
 
 pmr_dam_gorodets_volga_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_gorodets_volga_months }
-	possible = { has_variable = pmr_dam_gorodets_volga_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_gorodets_volga_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_gorodets_volga_months
 		debug_log = "PMR_DAM|survey_stop|gorodets_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4389,9 +4920,13 @@ pmr_dam_perm_kama_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_perm_kama_block_tt
 			NOT = { has_global_variable = pmr_dam_perm_kama_block }
@@ -4424,7 +4959,12 @@ pmr_dam_perm_kama_survey_decision = {
 
 pmr_dam_perm_kama_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_perm_kama_months }
-	possible = { has_variable = pmr_dam_perm_kama_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_perm_kama_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_perm_kama_months
 		debug_log = "PMR_DAM|survey_stop|perm_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4462,9 +5002,13 @@ pmr_dam_zhiguli_volga_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_zhiguli_volga_block_tt
 			NOT = { has_global_variable = pmr_dam_zhiguli_volga_block }
@@ -4497,7 +5041,12 @@ pmr_dam_zhiguli_volga_survey_decision = {
 
 pmr_dam_zhiguli_volga_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_zhiguli_volga_months }
-	possible = { has_variable = pmr_dam_zhiguli_volga_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_zhiguli_volga_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_zhiguli_volga_months
 		debug_log = "PMR_DAM|survey_stop|zhiguli_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4535,9 +5084,13 @@ pmr_dam_balakovo_volga_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_balakovo_volga_block_tt
 			NOT = { has_global_variable = pmr_dam_balakovo_volga_block }
@@ -4570,7 +5123,12 @@ pmr_dam_balakovo_volga_survey_decision = {
 
 pmr_dam_balakovo_volga_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_balakovo_volga_months }
-	possible = { has_variable = pmr_dam_balakovo_volga_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_balakovo_volga_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_balakovo_volga_months
 		debug_log = "PMR_DAM|survey_stop|balakovo_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4608,9 +5166,13 @@ pmr_dam_votkinsk_kama_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_votkinsk_kama_block_tt
 			NOT = { has_global_variable = pmr_dam_votkinsk_kama_block }
@@ -4643,7 +5205,12 @@ pmr_dam_votkinsk_kama_survey_decision = {
 
 pmr_dam_votkinsk_kama_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_votkinsk_kama_months }
-	possible = { has_variable = pmr_dam_votkinsk_kama_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_votkinsk_kama_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_votkinsk_kama_months
 		debug_log = "PMR_DAM|survey_stop|votkinsk_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4681,9 +5248,13 @@ pmr_dam_rybinsk_uglich_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_rybinsk_uglich_block_tt
 			NOT = { has_global_variable = pmr_dam_rybinsk_uglich_block }
@@ -4716,7 +5287,12 @@ pmr_dam_rybinsk_uglich_survey_decision = {
 
 pmr_dam_rybinsk_uglich_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_rybinsk_uglich_months }
-	possible = { has_variable = pmr_dam_rybinsk_uglich_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_rybinsk_uglich_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_rybinsk_uglich_months
 		debug_log = "PMR_DAM|survey_stop|rybinsk_uglich|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4754,9 +5330,13 @@ pmr_dam_irkutsk_angara_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_irkutsk_angara_block_tt
 			NOT = { has_global_variable = pmr_dam_irkutsk_angara_block }
@@ -4789,7 +5369,12 @@ pmr_dam_irkutsk_angara_survey_decision = {
 
 pmr_dam_irkutsk_angara_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_irkutsk_angara_months }
-	possible = { has_variable = pmr_dam_irkutsk_angara_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_irkutsk_angara_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_irkutsk_angara_months
 		debug_log = "PMR_DAM|survey_stop|irkutsk_angara|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4827,9 +5412,13 @@ pmr_dam_xinan_river_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_xinan_river_block_tt
 			NOT = { has_global_variable = pmr_dam_xinan_river_block }
@@ -4862,7 +5451,12 @@ pmr_dam_xinan_river_survey_decision = {
 
 pmr_dam_xinan_river_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_xinan_river_months }
-	possible = { has_variable = pmr_dam_xinan_river_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_xinan_river_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_xinan_river_months
 		debug_log = "PMR_DAM|survey_stop|xinan_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4900,9 +5494,13 @@ pmr_dam_mequinenza_aragon_pyrenees_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_mequinenza_aragon_pyrenees_block_tt
 			NOT = { has_global_variable = pmr_dam_mequinenza_aragon_pyrenees_block }
@@ -4935,7 +5533,12 @@ pmr_dam_mequinenza_aragon_pyrenees_survey_decision = {
 
 pmr_dam_mequinenza_aragon_pyrenees_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_mequinenza_aragon_pyrenees_months }
-	possible = { has_variable = pmr_dam_mequinenza_aragon_pyrenees_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_mequinenza_aragon_pyrenees_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_mequinenza_aragon_pyrenees_months
 		debug_log = "PMR_DAM|survey_stop|mequinenza_aragon_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -4973,9 +5576,13 @@ pmr_dam_asahan_toba_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_asahan_toba_block_tt
 			NOT = { has_global_variable = pmr_dam_asahan_toba_block }
@@ -5008,7 +5615,12 @@ pmr_dam_asahan_toba_survey_decision = {
 
 pmr_dam_asahan_toba_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_asahan_toba_months }
-	possible = { has_variable = pmr_dam_asahan_toba_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_asahan_toba_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_asahan_toba_months
 		debug_log = "PMR_DAM|survey_stop|asahan_toba|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5046,9 +5658,13 @@ pmr_dam_bhagirathi_upper_ganges_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_bhagirathi_upper_ganges_block_tt
 			NOT = { has_global_variable = pmr_dam_bhagirathi_upper_ganges_block }
@@ -5081,7 +5697,12 @@ pmr_dam_bhagirathi_upper_ganges_survey_decision = {
 
 pmr_dam_bhagirathi_upper_ganges_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_bhagirathi_upper_ganges_months }
-	possible = { has_variable = pmr_dam_bhagirathi_upper_ganges_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_bhagirathi_upper_ganges_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_bhagirathi_upper_ganges_months
 		debug_log = "PMR_DAM|survey_stop|bhagirathi_upper_ganges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5119,9 +5740,13 @@ pmr_dam_achelous_gorges_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_achelous_gorges_block_tt
 			NOT = { has_global_variable = pmr_dam_achelous_gorges_block }
@@ -5154,7 +5779,12 @@ pmr_dam_achelous_gorges_survey_decision = {
 
 pmr_dam_achelous_gorges_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_achelous_gorges_months }
-	possible = { has_variable = pmr_dam_achelous_gorges_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_achelous_gorges_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_achelous_gorges_months
 		debug_log = "PMR_DAM|survey_stop|achelous_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5192,9 +5822,13 @@ pmr_dam_moldau_cascade_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_moldau_cascade_block_tt
 			NOT = { has_global_variable = pmr_dam_moldau_cascade_block }
@@ -5227,7 +5861,12 @@ pmr_dam_moldau_cascade_survey_decision = {
 
 pmr_dam_moldau_cascade_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_moldau_cascade_months }
-	possible = { has_variable = pmr_dam_moldau_cascade_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_moldau_cascade_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_moldau_cascade_months
 		debug_log = "PMR_DAM|survey_stop|moldau_cascade|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5265,9 +5904,13 @@ pmr_dam_narenta_drina_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_narenta_drina_block_tt
 			NOT = { has_global_variable = pmr_dam_narenta_drina_block }
@@ -5300,7 +5943,12 @@ pmr_dam_narenta_drina_survey_decision = {
 
 pmr_dam_narenta_drina_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_narenta_drina_months }
-	possible = { has_variable = pmr_dam_narenta_drina_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_narenta_drina_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_narenta_drina_months
 		debug_log = "PMR_DAM|survey_stop|narenta_drina|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5338,9 +5986,13 @@ pmr_dam_sulak_canyon_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_sulak_canyon_block_tt
 			NOT = { has_global_variable = pmr_dam_sulak_canyon_block }
@@ -5373,7 +6025,12 @@ pmr_dam_sulak_canyon_survey_decision = {
 
 pmr_dam_sulak_canyon_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_sulak_canyon_months }
-	possible = { has_variable = pmr_dam_sulak_canyon_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_sulak_canyon_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_sulak_canyon_months
 		debug_log = "PMR_DAM|survey_stop|sulak_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5411,9 +6068,13 @@ pmr_dam_nepal_hill_rivers_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_nepal_hill_rivers_block_tt
 			NOT = { has_global_variable = pmr_dam_nepal_hill_rivers_block }
@@ -5446,7 +6107,12 @@ pmr_dam_nepal_hill_rivers_survey_decision = {
 
 pmr_dam_nepal_hill_rivers_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_nepal_hill_rivers_months }
-	possible = { has_variable = pmr_dam_nepal_hill_rivers_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_nepal_hill_rivers_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_nepal_hill_rivers_months
 		debug_log = "PMR_DAM|survey_stop|nepal_hill_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5484,9 +6150,13 @@ pmr_dam_hells_canyon_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_hells_canyon_block_tt
 			NOT = { has_global_variable = pmr_dam_hells_canyon_block }
@@ -5519,7 +6189,12 @@ pmr_dam_hells_canyon_survey_decision = {
 
 pmr_dam_hells_canyon_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_hells_canyon_months }
-	possible = { has_variable = pmr_dam_hells_canyon_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_hells_canyon_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_hells_canyon_months
 		debug_log = "PMR_DAM|survey_stop|hells_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5557,9 +6232,13 @@ pmr_dam_garrison_missouri_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_garrison_missouri_block_tt
 			NOT = { has_global_variable = pmr_dam_garrison_missouri_block }
@@ -5592,7 +6271,12 @@ pmr_dam_garrison_missouri_survey_decision = {
 
 pmr_dam_garrison_missouri_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_garrison_missouri_months }
-	possible = { has_variable = pmr_dam_garrison_missouri_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_garrison_missouri_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_garrison_missouri_months
 		debug_log = "PMR_DAM|survey_stop|garrison_missouri|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5630,9 +6314,13 @@ pmr_dam_upper_drave_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_upper_drave_block_tt
 			NOT = { has_global_variable = pmr_dam_upper_drave_block }
@@ -5665,7 +6353,12 @@ pmr_dam_upper_drave_survey_decision = {
 
 pmr_dam_upper_drave_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_upper_drave_months }
-	possible = { has_variable = pmr_dam_upper_drave_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_upper_drave_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_upper_drave_months
 		debug_log = "PMR_DAM|survey_stop|upper_drave|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5703,9 +6396,13 @@ pmr_dam_adige_valley_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_adige_valley_block_tt
 			NOT = { has_global_variable = pmr_dam_adige_valley_block }
@@ -5738,7 +6435,12 @@ pmr_dam_adige_valley_survey_decision = {
 
 pmr_dam_adige_valley_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_adige_valley_months }
-	possible = { has_variable = pmr_dam_adige_valley_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_adige_valley_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_adige_valley_months
 		debug_log = "PMR_DAM|survey_stop|adige_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5776,9 +6478,13 @@ pmr_dam_sungari_gorge_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_sungari_gorge_block_tt
 			NOT = { has_global_variable = pmr_dam_sungari_gorge_block }
@@ -5811,7 +6517,12 @@ pmr_dam_sungari_gorge_survey_decision = {
 
 pmr_dam_sungari_gorge_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_sungari_gorge_months }
-	possible = { has_variable = pmr_dam_sungari_gorge_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_sungari_gorge_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_sungari_gorge_months
 		debug_log = "PMR_DAM|survey_stop|sungari_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5849,9 +6560,13 @@ pmr_dam_malta_valley_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_malta_valley_block_tt
 			NOT = { has_global_variable = pmr_dam_malta_valley_block }
@@ -5884,7 +6599,12 @@ pmr_dam_malta_valley_survey_decision = {
 
 pmr_dam_malta_valley_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_malta_valley_months }
-	possible = { has_variable = pmr_dam_malta_valley_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_malta_valley_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_malta_valley_months
 		debug_log = "PMR_DAM|survey_stop|malta_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5922,9 +6642,13 @@ pmr_dam_bhutan_duars_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_bhutan_duars_block_tt
 			NOT = { has_global_variable = pmr_dam_bhutan_duars_block }
@@ -5957,7 +6681,12 @@ pmr_dam_bhutan_duars_survey_decision = {
 
 pmr_dam_bhutan_duars_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_bhutan_duars_months }
-	possible = { has_variable = pmr_dam_bhutan_duars_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_bhutan_duars_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_bhutan_duars_months
 		debug_log = "PMR_DAM|survey_stop|bhutan_duars|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -5995,9 +6724,13 @@ pmr_dam_high_rhine_baden_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_high_rhine_baden_block_tt
 			NOT = { has_global_variable = pmr_dam_high_rhine_baden_block }
@@ -6030,7 +6763,12 @@ pmr_dam_high_rhine_baden_survey_decision = {
 
 pmr_dam_high_rhine_baden_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_high_rhine_baden_months }
-	possible = { has_variable = pmr_dam_high_rhine_baden_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_high_rhine_baden_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_high_rhine_baden_months
 		debug_log = "PMR_DAM|survey_stop|high_rhine_baden|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6068,9 +6806,13 @@ pmr_dam_paulo_afonso_falls_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 800
-		pmr_dam_bur_headroom > 800
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_800
+			pmr_dam_bur_headroom > 800
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_paulo_afonso_falls_block_tt
 			NOT = { has_global_variable = pmr_dam_paulo_afonso_falls_block }
@@ -6104,7 +6846,12 @@ pmr_dam_paulo_afonso_falls_survey_decision = {
 
 pmr_dam_paulo_afonso_falls_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_paulo_afonso_falls_months }
-	possible = { has_variable = pmr_dam_paulo_afonso_falls_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_paulo_afonso_falls_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_paulo_afonso_falls_months
 		debug_log = "PMR_DAM|survey_stop|paulo_afonso_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6142,9 +6889,13 @@ pmr_dam_lower_tennessee_cumberland_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_lower_tennessee_cumberland_block_tt
 			NOT = { has_global_variable = pmr_dam_lower_tennessee_cumberland_block }
@@ -6177,7 +6928,12 @@ pmr_dam_lower_tennessee_cumberland_survey_decision = {
 
 pmr_dam_lower_tennessee_cumberland_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_lower_tennessee_cumberland_months }
-	possible = { has_variable = pmr_dam_lower_tennessee_cumberland_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_lower_tennessee_cumberland_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_lower_tennessee_cumberland_months
 		debug_log = "PMR_DAM|survey_stop|lower_tennessee_cumberland|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6215,9 +6971,13 @@ pmr_dam_necaxa_tilostoc_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_necaxa_tilostoc_block_tt
 			NOT = { has_global_variable = pmr_dam_necaxa_tilostoc_block }
@@ -6250,7 +7010,12 @@ pmr_dam_necaxa_tilostoc_survey_decision = {
 
 pmr_dam_necaxa_tilostoc_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_necaxa_tilostoc_months }
-	possible = { has_variable = pmr_dam_necaxa_tilostoc_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_necaxa_tilostoc_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_necaxa_tilostoc_months
 		debug_log = "PMR_DAM|survey_stop|necaxa_tilostoc|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6288,9 +7053,13 @@ pmr_dam_lower_susquehanna_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_lower_susquehanna_block_tt
 			NOT = { has_global_variable = pmr_dam_lower_susquehanna_block }
@@ -6323,7 +7092,12 @@ pmr_dam_lower_susquehanna_survey_decision = {
 
 pmr_dam_lower_susquehanna_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_lower_susquehanna_months }
-	possible = { has_variable = pmr_dam_lower_susquehanna_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_lower_susquehanna_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_lower_susquehanna_months
 		debug_log = "PMR_DAM|survey_stop|lower_susquehanna|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6361,9 +7135,13 @@ pmr_dam_lochaber_affric_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_lochaber_affric_block_tt
 			NOT = { has_global_variable = pmr_dam_lochaber_affric_block }
@@ -6396,7 +7174,12 @@ pmr_dam_lochaber_affric_survey_decision = {
 
 pmr_dam_lochaber_affric_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_lochaber_affric_months }
-	possible = { has_variable = pmr_dam_lochaber_affric_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_lochaber_affric_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_lochaber_affric_months
 		debug_log = "PMR_DAM|survey_stop|lochaber_affric|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6434,9 +7217,13 @@ pmr_dam_galloway_tummel_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_galloway_tummel_block_tt
 			NOT = { has_global_variable = pmr_dam_galloway_tummel_block }
@@ -6469,7 +7256,12 @@ pmr_dam_galloway_tummel_survey_decision = {
 
 pmr_dam_galloway_tummel_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_galloway_tummel_months }
-	possible = { has_variable = pmr_dam_galloway_tummel_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_galloway_tummel_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_galloway_tummel_months
 		debug_log = "PMR_DAM|survey_stop|galloway_tummel|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6507,9 +7299,13 @@ pmr_dam_rhodope_cascades_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_rhodope_cascades_block_tt
 			NOT = { has_global_variable = pmr_dam_rhodope_cascades_block }
@@ -6542,7 +7338,12 @@ pmr_dam_rhodope_cascades_survey_decision = {
 
 pmr_dam_rhodope_cascades_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_rhodope_cascades_months }
-	possible = { has_variable = pmr_dam_rhodope_cascades_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_rhodope_cascades_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_rhodope_cascades_months
 		debug_log = "PMR_DAM|survey_stop|rhodope_cascades|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6580,9 +7381,13 @@ pmr_dam_min_tung_rivers_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_min_tung_rivers_block_tt
 			NOT = { has_global_variable = pmr_dam_min_tung_rivers_block }
@@ -6615,7 +7420,12 @@ pmr_dam_min_tung_rivers_survey_decision = {
 
 pmr_dam_min_tung_rivers_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_min_tung_rivers_months }
-	possible = { has_variable = pmr_dam_min_tung_rivers_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_min_tung_rivers_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_min_tung_rivers_months
 		debug_log = "PMR_DAM|survey_stop|min_tung_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6653,9 +7463,13 @@ pmr_dam_upper_ob_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_upper_ob_block_tt
 			NOT = { has_global_variable = pmr_dam_upper_ob_block }
@@ -6688,7 +7502,12 @@ pmr_dam_upper_ob_survey_decision = {
 
 pmr_dam_upper_ob_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_upper_ob_months }
-	possible = { has_variable = pmr_dam_upper_ob_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_upper_ob_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_upper_ob_months
 		debug_log = "PMR_DAM|survey_stop|upper_ob|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6726,9 +7545,13 @@ pmr_dam_tabqa_narrows_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_tabqa_narrows_block_tt
 			NOT = { has_global_variable = pmr_dam_tabqa_narrows_block }
@@ -6761,7 +7584,12 @@ pmr_dam_tabqa_narrows_survey_decision = {
 
 pmr_dam_tabqa_narrows_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_tabqa_narrows_months }
-	possible = { has_variable = pmr_dam_tabqa_narrows_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_tabqa_narrows_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_tabqa_narrows_months
 		debug_log = "PMR_DAM|survey_stop|tabqa_narrows|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6799,9 +7627,13 @@ pmr_dam_bigorre_bearn_pyrenees_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_bigorre_bearn_pyrenees_block_tt
 			NOT = { has_global_variable = pmr_dam_bigorre_bearn_pyrenees_block }
@@ -6834,7 +7666,12 @@ pmr_dam_bigorre_bearn_pyrenees_survey_decision = {
 
 pmr_dam_bigorre_bearn_pyrenees_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_bigorre_bearn_pyrenees_months }
-	possible = { has_variable = pmr_dam_bigorre_bearn_pyrenees_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_bigorre_bearn_pyrenees_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_bigorre_bearn_pyrenees_months
 		debug_log = "PMR_DAM|survey_stop|bigorre_bearn_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6872,9 +7709,13 @@ pmr_dam_upper_euphrates_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_upper_euphrates_block_tt
 			NOT = { has_global_variable = pmr_dam_upper_euphrates_block }
@@ -6907,7 +7748,12 @@ pmr_dam_upper_euphrates_survey_decision = {
 
 pmr_dam_upper_euphrates_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_upper_euphrates_months }
-	possible = { has_variable = pmr_dam_upper_euphrates_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_upper_euphrates_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_upper_euphrates_months
 		debug_log = "PMR_DAM|survey_stop|upper_euphrates|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -6945,9 +7791,13 @@ pmr_dam_onega_vyg_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_onega_vyg_block_tt
 			NOT = { has_global_variable = pmr_dam_onega_vyg_block }
@@ -6980,7 +7830,12 @@ pmr_dam_onega_vyg_survey_decision = {
 
 pmr_dam_onega_vyg_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_onega_vyg_months }
-	possible = { has_variable = pmr_dam_onega_vyg_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_onega_vyg_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_onega_vyg_months
 		debug_log = "PMR_DAM|survey_stop|onega_vyg|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7018,9 +7873,13 @@ pmr_dam_truyere_gorges_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_truyere_gorges_block_tt
 			NOT = { has_global_variable = pmr_dam_truyere_gorges_block }
@@ -7053,7 +7912,12 @@ pmr_dam_truyere_gorges_survey_decision = {
 
 pmr_dam_truyere_gorges_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_truyere_gorges_months }
-	possible = { has_variable = pmr_dam_truyere_gorges_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_truyere_gorges_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_truyere_gorges_months
 		debug_log = "PMR_DAM|survey_stop|truyere_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7091,9 +7955,13 @@ pmr_dam_lufira_lualaba_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_lufira_lualaba_block_tt
 			NOT = { has_global_variable = pmr_dam_lufira_lualaba_block }
@@ -7126,7 +7994,12 @@ pmr_dam_lufira_lualaba_survey_decision = {
 
 pmr_dam_lufira_lualaba_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_lufira_lualaba_months }
-	possible = { has_variable = pmr_dam_lufira_lualaba_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_lufira_lualaba_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_lufira_lualaba_months
 		debug_log = "PMR_DAM|survey_stop|lufira_lualaba|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7164,9 +8037,13 @@ pmr_dam_niva_tuloma_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_niva_tuloma_block_tt
 			NOT = { has_global_variable = pmr_dam_niva_tuloma_block }
@@ -7199,7 +8076,12 @@ pmr_dam_niva_tuloma_survey_decision = {
 
 pmr_dam_niva_tuloma_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_niva_tuloma_months }
-	possible = { has_variable = pmr_dam_niva_tuloma_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_niva_tuloma_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_niva_tuloma_months
 		debug_log = "PMR_DAM|survey_stop|niva_tuloma|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7237,9 +8119,13 @@ pmr_dam_drina_gorge_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_drina_gorge_block_tt
 			NOT = { has_global_variable = pmr_dam_drina_gorge_block }
@@ -7272,7 +8158,12 @@ pmr_dam_drina_gorge_survey_decision = {
 
 pmr_dam_drina_gorge_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_drina_gorge_months }
-	possible = { has_variable = pmr_dam_drina_gorge_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_drina_gorge_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_drina_gorge_months
 		debug_log = "PMR_DAM|survey_stop|drina_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7310,9 +8201,13 @@ pmr_dam_mingechaur_gorge_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_mingechaur_gorge_block_tt
 			NOT = { has_global_variable = pmr_dam_mingechaur_gorge_block }
@@ -7345,7 +8240,12 @@ pmr_dam_mingechaur_gorge_survey_decision = {
 
 pmr_dam_mingechaur_gorge_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_mingechaur_gorge_months }
-	possible = { has_variable = pmr_dam_mingechaur_gorge_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_mingechaur_gorge_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_mingechaur_gorge_months
 		debug_log = "PMR_DAM|survey_stop|mingechaur_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7383,9 +8283,13 @@ pmr_dam_uryu_ishikari_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_uryu_ishikari_block_tt
 			NOT = { has_global_variable = pmr_dam_uryu_ishikari_block }
@@ -7418,7 +8322,12 @@ pmr_dam_uryu_ishikari_survey_decision = {
 
 pmr_dam_uryu_ishikari_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_uryu_ishikari_months }
-	possible = { has_variable = pmr_dam_uryu_ishikari_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_uryu_ishikari_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_uryu_ishikari_months
 		debug_log = "PMR_DAM|survey_stop|uryu_ishikari|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7456,9 +8365,13 @@ pmr_dam_volkhov_svir_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_volkhov_svir_block_tt
 			NOT = { has_global_variable = pmr_dam_volkhov_svir_block }
@@ -7491,7 +8404,12 @@ pmr_dam_volkhov_svir_survey_decision = {
 
 pmr_dam_volkhov_svir_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_volkhov_svir_months }
-	possible = { has_variable = pmr_dam_volkhov_svir_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_volkhov_svir_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_volkhov_svir_months
 		debug_log = "PMR_DAM|survey_stop|volkhov_svir|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7529,9 +8447,13 @@ pmr_dam_mimi_river_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_mimi_river_block_tt
 			NOT = { has_global_variable = pmr_dam_mimi_river_block }
@@ -7564,7 +8486,12 @@ pmr_dam_mimi_river_survey_decision = {
 
 pmr_dam_mimi_river_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_mimi_river_months }
-	possible = { has_variable = pmr_dam_mimi_river_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_mimi_river_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_mimi_river_months
 		debug_log = "PMR_DAM|survey_stop|mimi_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7602,9 +8529,13 @@ pmr_dam_kamianske_dnieper_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_kamianske_dnieper_block_tt
 			NOT = { has_global_variable = pmr_dam_kamianske_dnieper_block }
@@ -7637,7 +8568,12 @@ pmr_dam_kamianske_dnieper_survey_decision = {
 
 pmr_dam_kamianske_dnieper_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_kamianske_dnieper_months }
-	possible = { has_variable = pmr_dam_kamianske_dnieper_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_kamianske_dnieper_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_kamianske_dnieper_months
 		debug_log = "PMR_DAM|survey_stop|kamianske_dnieper|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7675,9 +8611,13 @@ pmr_dam_kremenchug_dnieper_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_kremenchug_dnieper_block_tt
 			NOT = { has_global_variable = pmr_dam_kremenchug_dnieper_block }
@@ -7710,7 +8650,12 @@ pmr_dam_kremenchug_dnieper_survey_decision = {
 
 pmr_dam_kremenchug_dnieper_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_kremenchug_dnieper_months }
-	possible = { has_variable = pmr_dam_kremenchug_dnieper_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_kremenchug_dnieper_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_kremenchug_dnieper_months
 		debug_log = "PMR_DAM|survey_stop|kremenchug_dnieper|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7748,9 +8693,13 @@ pmr_dam_sariyar_gorge_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_sariyar_gorge_block_tt
 			NOT = { has_global_variable = pmr_dam_sariyar_gorge_block }
@@ -7783,7 +8732,12 @@ pmr_dam_sariyar_gorge_survey_decision = {
 
 pmr_dam_sariyar_gorge_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_sariyar_gorge_months }
-	possible = { has_variable = pmr_dam_sariyar_gorge_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_sariyar_gorge_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_sariyar_gorge_months
 		debug_log = "PMR_DAM|survey_stop|sariyar_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7821,9 +8775,13 @@ pmr_dam_pescara_sangro_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_pescara_sangro_block_tt
 			NOT = { has_global_variable = pmr_dam_pescara_sangro_block }
@@ -7856,7 +8814,12 @@ pmr_dam_pescara_sangro_survey_decision = {
 
 pmr_dam_pescara_sangro_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_pescara_sangro_months }
-	possible = { has_variable = pmr_dam_pescara_sangro_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_pescara_sangro_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_pescara_sangro_months
 		debug_log = "PMR_DAM|survey_stop|pescara_sangro|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7894,9 +8857,13 @@ pmr_dam_guatape_falls_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_guatape_falls_block_tt
 			NOT = { has_global_variable = pmr_dam_guatape_falls_block }
@@ -7929,7 +8896,12 @@ pmr_dam_guatape_falls_survey_decision = {
 
 pmr_dam_guatape_falls_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_guatape_falls_months }
-	possible = { has_variable = pmr_dam_guatape_falls_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_guatape_falls_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_guatape_falls_months
 		debug_log = "PMR_DAM|survey_stop|guatape_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -7967,9 +8939,13 @@ pmr_dam_pyramid_canyon_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_pyramid_canyon_block_tt
 			NOT = { has_global_variable = pmr_dam_pyramid_canyon_block }
@@ -8002,7 +8978,12 @@ pmr_dam_pyramid_canyon_survey_decision = {
 
 pmr_dam_pyramid_canyon_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_pyramid_canyon_months }
-	possible = { has_variable = pmr_dam_pyramid_canyon_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_pyramid_canyon_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_pyramid_canyon_months
 		debug_log = "PMR_DAM|survey_stop|pyramid_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8040,9 +9021,13 @@ pmr_dam_zezere_gorges_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_zezere_gorges_block_tt
 			NOT = { has_global_variable = pmr_dam_zezere_gorges_block }
@@ -8075,7 +9060,12 @@ pmr_dam_zezere_gorges_survey_decision = {
 
 pmr_dam_zezere_gorges_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_zezere_gorges_months }
-	possible = { has_variable = pmr_dam_zezere_gorges_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_zezere_gorges_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_zezere_gorges_months
 		debug_log = "PMR_DAM|survey_stop|zezere_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8113,9 +9103,13 @@ pmr_dam_sila_plateau_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_sila_plateau_block_tt
 			NOT = { has_global_variable = pmr_dam_sila_plateau_block }
@@ -8148,7 +9142,12 @@ pmr_dam_sila_plateau_survey_decision = {
 
 pmr_dam_sila_plateau_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_sila_plateau_months }
-	possible = { has_variable = pmr_dam_sila_plateau_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_sila_plateau_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_sila_plateau_months
 		debug_log = "PMR_DAM|survey_stop|sila_plateau|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8186,9 +9185,13 @@ pmr_dam_tequendama_falls_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_tequendama_falls_block_tt
 			NOT = { has_global_variable = pmr_dam_tequendama_falls_block }
@@ -8221,7 +9224,12 @@ pmr_dam_tequendama_falls_survey_decision = {
 
 pmr_dam_tequendama_falls_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_tequendama_falls_months }
-	possible = { has_variable = pmr_dam_tequendama_falls_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_tequendama_falls_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_tequendama_falls_months
 		debug_log = "PMR_DAM|survey_stop|tequendama_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8259,9 +9267,13 @@ pmr_dam_savannah_river_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_savannah_river_block_tt
 			NOT = { has_global_variable = pmr_dam_savannah_river_block }
@@ -8294,7 +9306,12 @@ pmr_dam_savannah_river_survey_decision = {
 
 pmr_dam_savannah_river_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_savannah_river_months }
-	possible = { has_variable = pmr_dam_savannah_river_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_savannah_river_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_savannah_river_months
 		debug_log = "PMR_DAM|survey_stop|savannah_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8332,9 +9349,13 @@ pmr_dam_lower_karun_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_lower_karun_block_tt
 			NOT = { has_global_variable = pmr_dam_lower_karun_block }
@@ -8367,7 +9388,12 @@ pmr_dam_lower_karun_survey_decision = {
 
 pmr_dam_lower_karun_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_lower_karun_months }
-	possible = { has_variable = pmr_dam_lower_karun_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_lower_karun_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_lower_karun_months
 		debug_log = "PMR_DAM|survey_stop|lower_karun|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8405,9 +9431,13 @@ pmr_dam_nilgiri_hills_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_nilgiri_hills_block_tt
 			NOT = { has_global_variable = pmr_dam_nilgiri_hills_block }
@@ -8440,7 +9470,12 @@ pmr_dam_nilgiri_hills_survey_decision = {
 
 pmr_dam_nilgiri_hills_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_nilgiri_hills_months }
-	possible = { has_variable = pmr_dam_nilgiri_hills_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_nilgiri_hills_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_nilgiri_hills_months
 		debug_log = "PMR_DAM|survey_stop|nilgiri_hills|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8478,9 +9513,13 @@ pmr_dam_bistritza_gorge_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_bistritza_gorge_block_tt
 			NOT = { has_global_variable = pmr_dam_bistritza_gorge_block }
@@ -8513,7 +9552,12 @@ pmr_dam_bistritza_gorge_survey_decision = {
 
 pmr_dam_bistritza_gorge_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_bistritza_gorge_months }
-	possible = { has_variable = pmr_dam_bistritza_gorge_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_bistritza_gorge_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_bistritza_gorge_months
 		debug_log = "PMR_DAM|survey_stop|bistritza_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8551,9 +9595,13 @@ pmr_dam_lajes_serra_do_mar_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_lajes_serra_do_mar_block_tt
 			NOT = { has_global_variable = pmr_dam_lajes_serra_do_mar_block }
@@ -8586,7 +9634,12 @@ pmr_dam_lajes_serra_do_mar_survey_decision = {
 
 pmr_dam_lajes_serra_do_mar_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_lajes_serra_do_mar_months }
-	possible = { has_variable = pmr_dam_lajes_serra_do_mar_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_lajes_serra_do_mar_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_lajes_serra_do_mar_months
 		debug_log = "PMR_DAM|survey_stop|lajes_serra_do_mar|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8624,9 +9677,13 @@ pmr_dam_santee_saluda_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_santee_saluda_block_tt
 			NOT = { has_global_variable = pmr_dam_santee_saluda_block }
@@ -8659,7 +9716,12 @@ pmr_dam_santee_saluda_survey_decision = {
 
 pmr_dam_santee_saluda_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_santee_saluda_months }
-	possible = { has_variable = pmr_dam_santee_saluda_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_santee_saluda_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_santee_saluda_months
 		debug_log = "PMR_DAM|survey_stop|santee_saluda|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8697,9 +9759,13 @@ pmr_dam_piave_valley_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 650
-		pmr_dam_bur_headroom > 650
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_650
+			pmr_dam_bur_headroom > 650
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_piave_valley_block_tt
 			NOT = { has_global_variable = pmr_dam_piave_valley_block }
@@ -8732,7 +9798,12 @@ pmr_dam_piave_valley_survey_decision = {
 
 pmr_dam_piave_valley_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_piave_valley_months }
-	possible = { has_variable = pmr_dam_piave_valley_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_piave_valley_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_piave_valley_months
 		debug_log = "PMR_DAM|survey_stop|piave_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8770,9 +9841,13 @@ pmr_dam_yili_river_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_yili_river_block_tt
 			NOT = { has_global_variable = pmr_dam_yili_river_block }
@@ -8805,7 +9880,12 @@ pmr_dam_yili_river_survey_decision = {
 
 pmr_dam_yili_river_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_yili_river_months }
-	possible = { has_variable = pmr_dam_yili_river_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_yili_river_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_yili_river_months
 		debug_log = "PMR_DAM|survey_stop|yili_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8843,9 +9923,13 @@ pmr_dam_first_cataract_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_first_cataract_block_tt
 			NOT = { has_global_variable = pmr_dam_first_cataract_block }
@@ -8878,7 +9962,12 @@ pmr_dam_first_cataract_survey_decision = {
 
 pmr_dam_first_cataract_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_first_cataract_months }
-	possible = { has_variable = pmr_dam_first_cataract_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_first_cataract_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_first_cataract_months
 		debug_log = "PMR_DAM|survey_stop|first_cataract|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
@@ -8916,9 +10005,13 @@ pmr_dam_sennar_blue_nile_survey_decision = {
 	}
 
 	possible = {
-		produced_bureaucracy > 750
-		pmr_dam_bur_headroom > 750
-		OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		custom_tooltip = {
+			text = pmr_dam_bur_tt_750
+			pmr_dam_bur_headroom > 750
+		}
+		hidden_trigger = {
+			OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }
+		}
 		custom_tooltip = {
 			text = pmr_dam_sennar_blue_nile_block_tt
 			NOT = { has_global_variable = pmr_dam_sennar_blue_nile_block }
@@ -8951,7 +10044,12 @@ pmr_dam_sennar_blue_nile_survey_decision = {
 
 pmr_dam_sennar_blue_nile_stop_survey_decision = {
 	is_shown = { has_variable = pmr_dam_sennar_blue_nile_months }
-	possible = { has_variable = pmr_dam_sennar_blue_nile_months }
+	possible = {
+		custom_tooltip = {
+			text = pmr_dam_survey_running_tt
+			has_variable = pmr_dam_sennar_blue_nile_months
+		}
+	}
 	when_taken = {
 		remove_variable = pmr_dam_sennar_blue_nile_months
 		debug_log = "PMR_DAM|survey_stop|sennar_blue_nile|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"

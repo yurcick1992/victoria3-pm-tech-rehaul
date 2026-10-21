@@ -95,6 +95,33 @@ for (const p of projects) {
   if (!stateProv[p.state].has(p.anchor_province)) die(`${p.id}: anchor ${p.anchor_province} is not a province of ${p.state}`);
 }
 
+// ---------------------------------------------------------------- player-facing text helpers (the 2026-10-21 text pass)
+// STATE NAMES ARE VANILLA'S KEYS (`$STATE_X$`), so they translate and match the map; a state with no vanilla English key falls
+// back to the English name our project table carries (none does today — checked at every build, and the fallback is reported)
+const stateLoc = new Set();
+for (const f of readdirSync(join(GAME, 'localization/english/map')))
+  for (const m of readFileSync(join(GAME, 'localization/english/map', f), 'utf8').matchAll(/^\s*(STATE_[A-Z0-9_]+):/gm)) stateLoc.add(m[1]);
+const stateFallback = new Set();
+const stateRef = s => {
+  if (stateLoc.has(s)) return `$${s}$`;
+  stateFallback.add(s);
+  return ALL_PROJECTS.find(p => p.state === s)?.state_name || s;
+};
+// never an ASCII apostrophe in generated text (it breaks any data-function argument a text is pasted into, BUGS_AND_FIXES
+// 2026-09-30): a project name carries the typographic one
+const nm = p => p.name.replace(/'/g, '’');
+const n = x => Number(x).toLocaleString('en-US');
+const levelsOf = k => `${k} level${k === 1 ? '' : 's'}`;
+// the non-power effects as one clause per affected state, at the level they fire — the same rule as the on_level effect below
+// (an effect named for level k fires the first time the dam stands at k levels or more; 'last' = its final level)
+const fxText = p => (p.effects || []).map(e => {
+  const k = e.stage === 'last' ? p.stages : (e.stage || 1);
+  if (!(k >= 1 && k <= p.stages)) return '';
+  const parts = [e.arable && `+${e.arable} arable land`, e.add_trait && `$${e.add_trait}$`, e.remove_trait && `an end to $${e.remove_trait}$`].filter(Boolean);
+  return parts.length ? `${parts.join(' and ')} in ${stateRef(e.state)}` + (k > 1 ? (k === p.stages ? ' (with the last level)' : ` (with level ${k})`) : '') : '';
+}).filter(Boolean);
+const fxSentence = (p, fx) => fx.length ? ` ${p.stages > 1 ? 'The dams also bring' : 'The dam also brings'} ${fx.join('; ')}.` : '';
+
 // ---------------------------------------------------------------- shared triggers
 // the country in scope (ROOT) owns the anchor province, or sits above its owner in the overlord chain
 const chainOf = p => `p:${p.anchor_province} ?= {\n${T}${T}${T}state ?= {\n${T}${T}${T}${T}owner ?= {\n${T}${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}${T}this = ROOT\n${T}${T}${T}${T}${T}${T}any_overlord_or_above = { this = ROOT }\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}\n${T}${T}${T}}\n${T}${T}}`;
@@ -168,6 +195,13 @@ const PRIV = CFG.dams.private ?? null;
 if (PRIV != null && !['all', 'laissez_faire'].includes(PRIV)) die(`dams.private '${PRIV}' (all | laissez_faire)`);
 const PRIV_LF = PRIV === 'laissez_faire' ? `${T}${T}custom_tooltip = {\n${T}${T}${T}text = pmr_dam_private_lf_tt\n${T}${T}${T}owner ?= { has_law = law_type:law_laissez_faire }\n${T}${T}}\n` : '';
 const privBlock = gov => PRIV ? `${T}can_build_private = {\n${PRIV_LF}${gov}${T}}\n\n` : `${T}can_build_private = {\n${T}${T}always = no\n${T}}\n\n`;
+// who may build once the survey is done, as the texts say it: our government, and with `dams.private` our private investors too
+const BUILD_WHO = PRIV === 'all' ? 'our government and our private investors may build there'
+  : PRIV === 'laissez_faire' ? 'our government may build there, and our private investors too where the owner of the state has $law_laissez_faire$'
+  : 'our government may build there';
+const JE_WHO = PRIV === 'all' ? 'we and our private investors' : PRIV === 'laissez_faire' ? 'we (and, under $law_laissez_faire$, our private investors)' : 'we';
+const burCosts = new Set();   // the distinct survey bureaucracy costs: one localised `possible` line each
+const burKey = c => `pmr_dam_bur_tt_${String(c).replace(/\./g, '_')}`;
 // ---------------------------------------------------------------- buildings, methods, groups
 const bld = [], pms = [], pmgs = [], mods = [], decs = [], jes = [], loc = [], seff = [];
 const surveyOpen = new Map();
@@ -185,7 +219,10 @@ for (const p of projects) {
     `${T}${T}${T}goods_output_electricity_add = ${p.stage_units}\n${T}${T}}\n\n${T}${T}level_scaled = {\n` +
     Object.entries(p.staff).map(([prof, q]) => `${T}${T}${T}building_employment_${prof}_add = ${q}\n`).join('') +
     `${T}${T}}\n${T}}\n}`);
-  loc.push([`pmg_dam_${p.id}`, 'Hydroelectric Station'], [`pm_dam_${p.id}`, `${p.name} Hydroelectric Station`]);
+  // the main group's title is vanilla's `$pm_base$` (every main group, 2026-10-02), the method vanilla's own hydro method name.
+  // ⚠ Under resource4 these per-project blocks are discarded below (the four class methods replace them), so their names would be
+  // dead keys: not written
+  if (LAYOUT !== 'resource4') loc.push([`pmg_dam_${p.id}`, '$pm_base$'], [`pm_dam_${p.id}`, '$pm_hydroelectric_plant$']);
   // the technology each LEVEL needs: from the first level of a later class on, the builder must hold that class's technology
   const classGates = [];
   p.stage_classes.forEach((c, i) => { if (i > 0 && c !== p.stage_classes[i - 1]) classGates.push({ level: i + 1, tech: P.tech_by_class[c] }); });
@@ -230,19 +267,21 @@ for (const p of projects) {
     `${T}${T}if = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}owner ?= {\n${T}${T}${T}${T}${T}OR = {\n${T}${T}${T}${T}${T}${T}in_default = yes\n${T}${T}${T}${T}${T}${T}is_at_war = yes\n${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}}\n${T}${T}${T}}\n${T}${T}${T}multiply = 0.1\n${T}${T}}\n${T}}\n\n` +
     `${T}production_method_groups = {\n${T}${T}pmg_dam_${p.id}\n${T}}\n\n` +
     `${T}background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_monuments.dds"\n}`);
-  loc.push([key, p.name], [`${key}_lens_option`, `Construct $${key}$`],
-    [`${v}_builder_tt`, R2 ? `The builder owns the dam site's province, stands above its owner in the overlord chain, or holds investment rights in the owner or one of its overlords`
-      : `The builder owns the dam site's province, or stands above its owner in the overlord chain`],
-    [`${v}_surveyed_tt`, R2 ? `The builder has surveyed the ${p.name}, or a country of the builder's own overlord family has`
-      : `The builder has completed its own survey of the ${p.name}`],
-    ...(R2 ? [[`${v}_block_tt`, `No other survey of the ${p.name} has started in the last 12 months`],
-      [`${v}_queued_tt`, `No level of the ${p.name} is waiting in a construction queue`]] : []));
-  for (const g of classGates) loc.push([`${v}_tech_${g.level}_tt`, `From level ${g.level} on, the builder needs the technology $${g.tech}$`]);
-  loc.push([`${v}_tech_1_tt`, `The builder needs the technology $${p.stage_techs[0]}$`]);
+  // requirement lines are evaluated for scope:investor_country = the country trying to build, i.e. the reader: "we / our"
+  // ("this state" is the state holding the site: the building's potential lists it nowhere else)
+  loc.push([key, nm(p)], [`${key}_lens_option`, `Expand $${key}$`],
+    [`${v}_builder_tt`, R2 ? `We own this state, are an overlord of its owner, or hold investment rights in its owner or one of its overlords`
+      : `We own this state, or are an overlord of its owner`],
+    [`${v}_surveyed_tt`, R2 ? `We have surveyed the ${nm(p)}, or it was surveyed from within our overlord family while the state belonged to it`
+      : `We have completed our own survey of the ${nm(p)}`],
+    ...(R2 ? [[`${v}_block_tt`, `No other country has started a survey of the ${nm(p)} in the past 12 months`],
+      [`${v}_queued_tt`, `No level of ${LAYOUT === 'resource4' ? `$${key}$ at the ${nm(p)}` : `the ${nm(p)}`} is queued or under construction`]] : []));
+  for (const g of classGates) loc.push([`${v}_tech_${g.level}_tt`, `From level ${g.level}: we have researched $${g.tech}$`]);
+  loc.push([`${v}_tech_1_tt`, `We have researched $${p.stage_techs[0]}$`]);
 
   // survey modifier, scripted effect, decisions, journal entry
   mods.push(`${v}_surveying = {\n${T}icon = gfx/interface/icons/timed_modifier_icons/modifier_documents_negative.dds\n${T}country_bureaucracy_cost_add = ${p.survey_bureaucracy}\n}`);
-  loc.push([`${v}_surveying`, `Surveying: ${p.name}`]);
+  loc.push([`${v}_surveying`, `Surveying the ${nm(p)}`]);   // vanilla: "Surveying Suez Isthmus"
   seff.push(`${v}_begin_survey = {\n${T}set_variable = { name = ${v}_months value = 0 }\n${T}set_global_variable = ${v}_surveying\n` +
     (R2 ? `${T}set_global_variable = { name = ${v}_block  days = 365 }\n` : '') +
     `${T}add_modifier = { name = ${v}_surveying }\n${T}add_journal_entry = { type = je_${v}_survey }\n` +
@@ -260,14 +299,21 @@ for (const p of projects) {
   // ⚠ the AI does NOT take this decision (ai_chance 0): it scores every visible decision in one pass (F168); it surveys through the driver
   decs.push(`${v}_survey_decision = {\n` +
     `${T}is_shown = {\n${T}${T}${surveyOpen.get(p.id)}\n${T}}\n\n` +
-    `${T}possible = {\n${T}${T}produced_bureaucracy > ${p.survey_bureaucracy}\n` +
+    // gate 'headroom' (user, 2026-09-28: "the bureaucracy cost is a sufficient gate by itself"): no survey count at all - the country
+    // may start a survey only while its spare bureaucracy (produced - used) exceeds this survey's cost. Shown as a localised line
+    // (the raw script value printed its name), and it REPLACES `produced_bureaucracy > cost`, which it implies whenever bureaucracy
+    // use is not negative — and it never is: no vanilla or mod modifier subtracts from it outright (the vanilla cost reductions are
+    // `*_cost_factor_mult` multipliers, and every `country_bureaucracy_cost_add` is positive) — the 2026-10-21 text pass
+    `${T}possible = {\n` +
+      (DAI && DAI.gate === 'headroom'
+        ? `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${burKey(p.survey_bureaucracy)}\n${T}${T}${T}pmr_dam_bur_headroom > ${p.survey_bureaucracy}\n${T}${T}}\n`
+        : `${T}${T}produced_bureaucracy > ${p.survey_bureaucracy}\n`) +
       (DAI && DAI.gate === 'possible' ? `${T}${T}pmr_dam_active < 1\n` : '') +
-      // gate 'headroom' (user, 2026-09-28: "the bureaucracy cost is a sufficient gate by itself"): no survey count at all - the country
-      // may start a survey only while its spare bureaucracy (produced - used) exceeds this survey's cost
-      (DAI && DAI.gate === 'headroom' ? `${T}${T}pmr_dam_bur_headroom > ${p.survey_bureaucracy}\n` : '') +
       // PROBE take_cooldown_days (F176): a survey's bureaucracy cost reaches bureaucracy_usage only at the next recalculation, so one AI
-      // pass sees the old spare for every survey; a short-lived "just took a survey" variable, set on the spot, allows one take per pass
-      (TCD ? (TCD_AI_ONLY ? `${T}${T}OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }\n` : `${T}${T}NOT = { has_variable = pmr_dam_took_survey }\n`) : '') +
+      // pass sees the old spare for every survey; a short-lived "just took a survey" variable, set on the spot, allows one take per pass.
+      // The AI-only form is a hidden_trigger: a player always passes it, so it has nothing to tell one (vanilla's own idiom for an
+      // internal variable, e.g. common/decisions/00_decisions.txt)
+      (TCD ? (TCD_AI_ONLY ? `${T}${T}hidden_trigger = {\n${T}${T}${T}OR = { is_player = yes  NOT = { has_variable = pmr_dam_took_survey } }\n${T}${T}}\n` : `${T}${T}NOT = { has_variable = pmr_dam_took_survey }\n`) : '') +
       // rules 'family': the 12-month block from the START of anyone's survey (removed at once if that survey is abandoned), and no
       // survey while a level is queued but not built (user, 2026-09-28: a dam in the construction queue blocks surveys for everyone)
       (R2 ? `${T}${T}custom_tooltip = {\n${T}${T}${T}text = ${v}_block_tt\n${T}${T}${T}NOT = { has_global_variable = ${v}_block }\n${T}${T}}\n` +
@@ -280,16 +326,27 @@ for (const p of projects) {
       (DAI.gate === 'weight' ? `${T}${T}if = {\n${T}${T}${T}limit = { pmr_dam_active > 0 }\n${T}${T}${T}multiply = 0\n${T}${T}}\n` : '') +
       `${T}${T}if = {\n${T}${T}${T}limit = { OR = { is_at_war = yes  is_diplomatic_play_committed_participant = yes  in_default = yes } }\n${T}${T}${T}multiply = 0\n${T}${T}}\n${T}}\n}`
       : `${T}ai_chance = {\n${T}${T}value = 0\n${T}}\n}`));
-  decs.push(`${v}_stop_survey_decision = {\n${T}is_shown = { has_variable = ${v}_months }\n${T}possible = { has_variable = ${v}_months }\n` +
+  // `possible` shown as a localised line. ⚠ NOT vanilla's `has_modifier = <the surveying modifier>` (its Suez idiom): this decision
+  // removes the VARIABLE alone and the modifier goes only when the journal entry turns invalid, so the two are not cleared together
+  decs.push(`${v}_stop_survey_decision = {\n${T}is_shown = { has_variable = ${v}_months }\n${T}possible = {\n${T}${T}custom_tooltip = {\n${T}${T}${T}text = pmr_dam_survey_running_tt\n${T}${T}${T}has_variable = ${v}_months\n${T}${T}}\n${T}}\n` +
     `${T}when_taken = {\n${T}${T}remove_variable = ${v}_months\n` +
     `${T}${T}debug_log = "PMR_DAM|survey_stop|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n` +
     `${T}ai_chance = {\n${T}${T}value = 0\n${T}${T}if = {\n${T}${T}${T}limit = { in_default = yes }\n${T}${T}${T}add = 50\n${T}${T}}\n${T}}\n}`);
-  loc.push([`${v}_survey_decision`, `Survey the ${p.name}`],
-    [`${v}_survey_decision_desc`, `Commission a ${p.survey_months}-month hydrographic and geological survey of the ${p.name} (up to ${p.stages} level${p.stages > 1 ? 's' : ''}, each about ${p.stage_points} construction points and ${p.stage_units} electricity a week). ` + (R2
-      ? `Once it is complete we may build the dams, and so may every country of our overlord family with construction rights there. For twelve months after we start, no other country may begin a survey of the site. Builders share its levels, each owning what it builds.`
-      : `Once it is complete we may build the dams ourselves, in our own state or in a subject's; for two years no other country may survey the site. Countries that have surveyed it share its levels, each owning what it builds.`)],
-    [`${v}_stop_survey_decision`, `Cancel the ${p.name} survey`],
-    [`${v}_stop_survey_decision_desc`, `Abandon the survey of the ${p.name}. Its cost stops; a later attempt starts from scratch.`]);
+  if (DAI && DAI.gate === 'headroom') burCosts.add(p.survey_bureaucracy);
+  const fx = fxText(p);
+  // what the survey costs, what the site holds and what the dams bring, then the rules that matter to the player
+  loc.push([`${v}_survey_decision`, `Survey the ${nm(p)}`],
+    [`${v}_survey_decision_desc`, `Commission a hydrographic and geological survey of the ${nm(p)} in ${stateRef(p.state)}. It takes ${p.survey_months} months ` +
+      `and ties up ${n(p.survey_bureaucracy)} bureaucracy while it runs. The site holds ${levelsOf(p.stages)} of $${key}$, ` +
+      `${p.stages > 1 ? 'each ' : ''}costing ${n(p.stage_points)} construction points and producing ${n(p.stage_units)} electricity a week.` +
+      fxSentence(p, fx) + '\n\n' + (R2
+      ? `Once the survey is complete, ${BUILD_WHO}; if the state belongs to our overlord family, so may every country of that family ` +
+        `with construction rights in it. No other country may start a survey of the site in the 12 months after ours begins.`
+      : `Once the survey is complete we may build the dams, in our own state or in a subject’s; for 2 years no other country may ` +
+        `survey the site. Countries that have surveyed it share its levels, each owning what it builds.`)],
+    [`${v}_stop_survey_decision`, `Cancel the ${nm(p)} survey`],
+    [`${v}_stop_survey_decision_desc`, `Abandon the survey of the ${nm(p)}. Its bureaucracy is freed and other countries may start their own survey; ` +
+      `a later survey of ours starts from scratch.`]);
   jes.push(`je_${v}_survey = {\n${T}icon = "gfx/interface/icons/event_icons/event_map.dds"\n${T}group = je_group_technology\n\n` +
     `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}${T}change_variable = { name = ${v}_months add = 1 }\n${T}${T}${T}${T}debug_log = "PMR_DAM|survey_month|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
     `${T}complete = {\n${T}${T}scope:journal_entry = { is_goal_complete = yes }\n${T}}\n\n` +
@@ -318,8 +375,10 @@ for (const p of projects) {
     `${T}${T}remove_global_variable = ${v}_surveying\n${T}${T}remove_modifier = ${v}_surveying\n${T}${T}change_variable = { name = ${ACTIVE} add = -1 }\n` +
     `${T}${T}debug_log = "PMR_DAM|survey_ended|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n\n` +
     `${T}progressbar = yes\n${T}weight = 10\n${T}transferable = no\n${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
-  loc.push([`je_${v}_survey`, `Surveying the ${p.name}`],
-    [`je_${v}_survey_reason`, `Our engineers are surveying the ${p.name} in ${p.state_name}: river gauging, foundation borings and the reservoir line. When they finish we may build the dams, in our own state or in a subject's.`],
+  loc.push([`je_${v}_survey`, `Surveying the ${nm(p)}`],
+    [`je_${v}_survey_reason`, `Our engineers are surveying the ${nm(p)} in ${stateRef(p.state)}: river gauging, foundation borings and the reservoir line. ` + (R2
+      ? `When they finish, ${JE_WHO} may build there, and so may the rest of our overlord family if the state belongs to it.`
+      : `When they finish we may build the dams, in our own state or in a subject’s.`)],
     [`je_${v}_survey_goal`, `Await the completion of the #bold ${p.survey_months} month#! survey`]);
 }
 // ⚗ V1 resource4: the per-project blocks above share their class's key; fold them into ONE building per class — the potential and
@@ -350,7 +409,9 @@ if (LAYOUT === 'resource4') {
       `${T}${T}${T}goods_output_electricity_add = ${C.units}\n${T}${T}}\n\n${T}${T}level_scaled = {\n` +
       Object.entries(C.staff).map(([prof, q]) => `${T}${T}${T}building_employment_${prof}_add = ${q}\n`).join('') + `${T}${T}}\n${T}}\n}`);
     const nice = C.name;
-    loc.push([key, nice], [`${key}_lens_option`, `Construct $${key}$`], [`pmg_dam_${c}`, 'Hydroelectric Station'], [`pm_dam_${c}`, nice]);
+    // vanilla says "Expand" for every expandable building ("Construct" is its one-off canals); a main group is `$pm_base$`
+    // (2026-10-02 rule, vanilla's Power Plants too) and the method vanilla's own "Hydroelectric Plant"
+    loc.push([key, nice], [`${key}_lens_option`, `Expand $${key}$`], [`pmg_dam_${c}`, '$pm_base$'], [`pm_dam_${c}`, '$pm_hydroelectric_plant$']);
   }
   console.log('dams: layout resource4 - ' + Object.entries(CLASSES).map(([c, C]) => `${c} ${C.n} projects ${C.slots} slots, ${C.units} el. ${C.points} pts (tech ${C.tcls}${C.worst_profit != null ? ', worst-price profit ' + C.worst_profit + '/wk' : ''})`).join('; '));
 }
@@ -363,8 +424,11 @@ if (P.probe?.bureaucracy_bonus) {
   loc.push(['pmr_dam_probe_bureaucracy', 'Probe: dam survey bureaucracy']);
 }
 if (PRIV === 'laissez_faire') {
-  loc.push(['pmr_dam_private_lf_tt', 'Private investors may build dams only where the state owner has Laissez-faire']);
+  loc.push(['pmr_dam_private_lf_tt', 'The owner of this state has $law_laissez_faire$']);
 }
+// the survey decision's bureaucracy line, one key per distinct cost (the stop decision's line is shared)
+for (const c of [...burCosts].sort((a, b) => a - b)) loc.push([burKey(c), `We have more than ${n(c)} spare bureaucracy (production minus use)`]);
+loc.push(['pmr_dam_survey_running_tt', 'We are surveying this site']);
 W('common/static_modifiers/zzz_pm_rehaul_dams.txt', HDR + mods.join('\n\n') + '\n');
 
 // ---------------------------------------------------------------- traits and effects
@@ -388,9 +452,14 @@ const siteTrait = p => `${V(p)}_site`;
 for (const p of projects) {
   if (newTraits[siteTrait(p)]) die(`trait ${siteTrait(p)} is both a site trait and a configured trait`);
   traitTxt.push(`${siteTrait(p)} = {\n${T}icon = "gfx/interface/icons/state_trait_icons/river.dds"\n\n${T}modifier = {\n${T}}\n}`);
-  loc.push([siteTrait(p), `Dam Site: ${p.name}`],
-    [`${siteTrait(p)}_desc`, `The ${p.name} can hold up to ${p.stages} level${p.stages > 1 ? 's' : ''} of hydroelectric dams.`],
-    [capMod(p), `$${BKEY(p)}$ Max Level`],
+  // the trait stands on the map from 1836 and is the player's one pointer to the content: what can be built, what it needs, what it brings
+  const fx = fxText(p);
+  loc.push([siteTrait(p), `Dam Site: ${nm(p)}`],
+    [`${siteTrait(p)}_desc`, `${p.stages > 1 ? `Up to ${p.stages} levels` : '1 level'} of $${BKEY(p)}$ can be built here once the site has been surveyed. ` +
+      `The survey needs $${p.stage_techs[0]}$.` + fxSentence(p, fx)]);
+  // the cap modifier's names exist only where the modifier type does: under resource4 the cap is the state region's resource slots
+  // and no such type is declared or used, so the names would be dead keys
+  if (LAYOUT !== 'resource4') loc.push([capMod(p), `$${BKEY(p)}$ Max Level`],
     [`${capMod(p)}_desc`, `A bonus or penalty to the maximum level of $${BKEY(p)}$ buildings.`]);
 }
 if (LAYOUT !== 'resource4') W('common/modifier_type_definitions/zzz_pm_rehaul_dam_modifiers.txt', HDR +
@@ -676,10 +745,15 @@ if (LAYOUT === 'resource4') {
 // ---------------------------------------------------------------- localization (English text in every language)
 loc.push(['bg_pmr_hydro_dams', 'Hydroelectric Dams']);
 const LANGS = CFG.languages || ['english'];
-const esc = s => String(s).replace(/"/g, '\\"');
+// a line break inside a text is the two characters \n in the file (a raw one would end the YAML line)
+const esc = s => String(s).replace(/"/g, '\\"').replace(/\r?\n/g, '\\n');
 // one line per key, the LAST push wins: under resource4 every project of a class first pushes its own name under the shared class key,
 // and the class's own name is pushed after them (the probe of 20261009_082702 shipped the duplicates; the engine showed a project's name)
 const locOut = [...new Map(loc.map(([k, s]) => [k, s])).entries()];
+// reported, not fatal: what this emitter writes itself is clean, and a config text (the traits) is the config's to fix
+const asciiApos = locOut.filter(([, s]) => /'/.test(String(s).replace(/\[[^\]]*\]/g, '')));
+if (asciiApos.length) console.log(`dams: ⚠ ${asciiApos.length} text(s) carry an ASCII apostrophe (use ’): ${asciiApos.slice(0, 5).map(([k]) => k).join(', ')}`);
+if (stateFallback.size) console.log(`dams: ⚠ no vanilla English loc key for ${[...stateFallback].join(', ')} - the texts use the project table's English name`);
 for (const lang of LANGS)
   W(`localization/${lang}/replace/zzz_pm_rehaul_dams_l_${lang}.yml`, `l_${lang}:\n` + locOut.map(([k, s]) => ` ${k}:0 "${esc(s)}"`).join('\n') + '\n');
 

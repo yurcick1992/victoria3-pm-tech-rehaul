@@ -36,27 +36,29 @@ const ADVANCED = { egalitarianism: ['law_universal_suffrage'], human_rights: ['l
   pharmaceuticals: ['law_private_health_insurance', 'law_public_health_insurance'] };
 const stable = `NOT = { is_revolutionary = yes }`;
 const anyLaw = ls => `OR = { ${ls.map(law).join('  ')} }`;
+// "A, B or C" (2026-10-21, the generated-text pass)
+const lawsText = ls => { const n = ls.map(l => '$' + l + '$'); return n.length > 1 ? n.slice(0, -1).join(', ') + ' or ' + n[n.length - 1] : n[0]; };
 for (const [t, ls] of Object.entries(RADICAL)) {
   G.push(`if = { limit = { any_country = { ${stable}  ${anyLaw(ls)} } }  set_global_variable = pmr_idea_${t} }\nelse_if = { limit = { has_global_variable = pmr_idea_${t} }  remove_global_variable = pmr_idea_${t} }`);
-  CE[t] = { trigger: `has_global_variable = pmr_idea_${t}`, label: `Somewhere a country that is not in revolt lives under ${ls.map(l => '$' + l + '$').join(' or ')}`,
+  CE[t] = { trigger: `has_global_variable = pmr_idea_${t}`, label: `A country not in revolt, anywhere, lives under ${lawsText(ls)}`,
     intro: 'An idea in practice anywhere is an idea within reach everywhere.' };
 }
 for (const [t, ls] of Object.entries(ADVANCED)) {
   G.push(`if = { limit = { any_country = { ${stable}  country_rank >= rank_value:great_power  ${anyLaw(ls)} } }  set_global_variable = pmr_ideagp_${t} }\nelse_if = { limit = { has_global_variable = pmr_ideagp_${t} }  remove_global_variable = pmr_ideagp_${t} }`);
   G.push(`every_country = { limit = { ${stable}  ${anyLaw(ls)} }  every_country = { limit = { is_adjacent_to_country = PREV }  set_variable = { name = pmr_ideanb_${t}  days = 40 } } }`);
   CE[t] = { trigger: `OR = { has_global_variable = pmr_ideagp_${t}  has_variable = pmr_ideanb_${t} }`,
-    label: `A great power, or a neighbour of ours, that is not in revolt lives under ${ls.map(l => '$' + l + '$').join(' or ')}`,
-    intro: 'What the great powers and our neighbours practise, our own reformers can point to.' };
+    label: `A great power or a neighbor of ours, not in revolt, lives under ${lawsText(ls)}`,
+    intro: 'What the great powers and our neighbors practice, our own reformers can point to.' };
 }
 // tropical empire, civilizing mission
 const REG = `OR = { ${['west_africa', 'equatorial_africa', 'east_africa', 'southern_africa', 'indonesia'].map(r => `region = sr:region_${r}`).join('  ')} }`;
 const SUBJ = `OR = { ${['colony', 'dominion', 'personal_union', 'crown_land', 'puppet', 'vassal', 'chartered_company'].map(s => `is_subject_type = subject_type_${s}`).join('  ')} }`;
 for (const t of ['quinine', 'malaria_prevention'])
   CE[t] = { trigger: `OR = { any_scope_state = { ${REG} }  any_subject_or_below = { ${SUBJ}  any_scope_state = { ${REG} } } }`,
-    label: 'We, or a colony, dominion, personal union, crown land, puppet, vassal or chartered company of ours, hold land in West, Equatorial, East or Southern Africa or in Indonesia',
+    label: 'We or a subject of ours other than a $subject_type_tributary_no_icon$ hold land in $region_west_africa$, $region_equatorial_africa$, $region_east_africa$, $region_southern_africa$ or $region_indonesia$',
     intro: 'Those who rule the tropics must learn to survive them.' };
 CE.civilizing_mission = { trigger: `country_rank >= rank_value:major_power  NOT = { ${law('law_no_colonial_affairs')} }`,
-  label: 'We are a great or major power with colonial affairs in our laws', intro: 'An empire looks for a mission.' };
+  label: 'We are a great or major power and do not have $law_no_colonial_affairs$', intro: 'An empire looks for a mission.' };
 // script values: staffed levels of a building type
 const staffed = b => `value = 0\nevery_scope_building = {\n\tlimit = { is_building_type = ${b} }\n\tadd = { value = this.level  multiply = occupancy }\n}`;
 CV.pmr_cv_uni = staffed('building_university'); CV.pmr_cv_gov = staffed('building_government_administration');
@@ -85,7 +87,7 @@ markEntry('antibiotics', 'pmr_cv_chem', 250000,   // first acquisition 500,000 =
 // cities: the largest urban centre
 for (const [t, m] of [['modern_sewerage', 15], ['organized_sports', 20], ['elevator', 40], ['paved_roads', 80]])
   CE[t] = { trigger: `any_scope_building = { is_building_type = building_urban_center  level >= ${WILD ? 1 : 2 * m} }`, half_trigger: `any_scope_building = { is_building_type = building_urban_center  level >= ${W(m)} }`,
-    label: `An urban centre of ours of at least ${WILD ? 1 : 2 * m} levels`, intro: 'A great city makes its own demands.' };
+    label: `Our largest $building_urban_center$: ${WILD ? 1 : 2 * m} levels`, intro: 'A great city makes its own demands.' };
 for (const [t, e] of Object.entries(CE)) eraOf(t);   // every technology must exist (throws otherwise)
 // ⭐ HOW THE COUNTED CONDITIONS READ (2026-10-21, polish): emit_research_events.mjs words a condition whose trigger compares one of these script values
 //   exactly like an industry source — "<name>: N fully staffed levels (now X)" in the entry and in the bar tooltip. `per_level` shows a people
@@ -94,8 +96,8 @@ for (const [t, e] of Object.entries(CE)) eraOf(t);   // every technology must ex
 const COUNT_DISPLAY = {
   pmr_cv_gov: { name: '$building_government_administration$' },
   pmr_cv_uni: { name: '$building_university$' },
-  pmr_cv_fin: { name: '$building_financial_district$', unit: 'levels', note: 'under any economic system but traditionalism' },
-  pmr_cv_chem: { name: 'Chemical industries (fertilizer, explosives, synthetics)', per_level: 5000 },
+  pmr_cv_fin: { name: '$building_financial_district$', unit: 'levels', note: 'not under $law_traditionalism$' },
+  pmr_cv_chem: { name: 'Chemical Industries (Fertilizer Plants, Explosives Factory, Synthetics Plants)', per_level: 5000 },
 };
 Object.assign(RE, {
   exclude_techs: ['realism', 'camera', 'film'],

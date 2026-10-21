@@ -108,7 +108,14 @@ const nameOf = key => { const t = TIER_BY_KEY[key]; return t && (t.method_of || 
 // ⭐ the name a research text gives a building (2026-10-21): one of OUR rungs by its config name — "Textile Mills (Handsewn Clothes)", the rung's own
 //   method in brackets, which also names a merged rung and its host correctly — never by its loc key, which resolves to the full in-game name
 //   "Era 0. Textile Mills (Handsewn Clothes). Recipe BE 65%" (noise in a requirement); a vanilla building by its vanilla loc key
-const shortName = key => { const t = TIER_BY_KEY[key]; return t && t.name ? t.name.replace(/"/g, '') : `$${key}$`; };
+// ⭐ since 2026-10-21 (the translation ruling: "when we simply multiply rungs and the official translation exists, take it for all rungs") a rung is named
+//   through `<key>_pmr_short`, which build.ps1 writes per language as vanilla's building name + a reference to the vanilla method (the minted
+//   methods stay English) — the same words as the in-game name, without its "Era N." and "Recipe BE". The apostrophe guard below checks its parts.
+const shortName = key => { const t = TIER_BY_KEY[key]; return t && t.name ? `$${key}_pmr_short$` : `$${key}$`; };
+// a short-name key's vanilla parts (the industry's building and the rung's vanilla method), for the apostrophe guard
+const SHORT_PARTS = new Map();
+for (const ind of CFG.industries) { if (ind.disabled) continue; const anchor = (ind.tiers || []).filter(t => t.vanilla_pm).sort((a, b) => a.era - b.era)[0];
+  for (const t of ind.tiers || []) if (t.key) SHORT_PARTS.set(`${t.key}_pmr_short`, [anchor && anchor.key, t.vanilla_pm].filter(Boolean)); }
 const tierEmp = (tier, ind) => { const wm = tier.workforce_mult != null ? +tier.workforce_mult : 1; const own = Object.values(tier.employment || {}).reduce((a, b) => a + (+b || 0), 0); if (own > 0) return Math.round(own * wm); return Math.round((ind.secondary_pmgs || []).reduce((a, g) => a + basePmEmp(g), 0) * wm); };
 
 // ---- tech -> production methods it unlocks, for the rule-D anchoring ----------------------------
@@ -373,16 +380,41 @@ const levelRef = emps => { const u = [...new Set(emps)]; return u.length === 1 ?
 const perLevelSv = (tech, i, n, ref) => { if (ref === 1) return n; const nm = `pmr_srcl_${tech}_${i}`; sv.push(`${nm} = {\n${T}value = ${n}\n${T}divide = ${ref}\n}`); return nm; };
 // "<buildings>: N fully staffed levels[, counted at 5,000 workers a level][, with X researched] (now Y)", and its halved twin
 const sourceDisplay = (tech, i, { name, mark, nowSv, mixed, requires = [] }) => {
-  const notes = (mixed ? `, counted at ${fmtN(perLevel)} workers a level` : '') + (requires.length ? `, with ${requires.map(r => '$' + r + '$').join(' and ')} researched` : '');
+  const of = mixed ? ` of ${fmtN(perLevel)} workers` : '';
+  const req = requires.length ? `; needs ${requires.map(r => '$' + r + '$').join(' and ')}` : '';
   const dFull = `pmr_term_${tech}_${i}`, dHalf = dFull + '_half';
-  const full = `${name}: ${fmtN(mark)} ${lvl(mark)}${notes} (now ${live(nowSv)})`;
+  const full = `${name}: ${fmtN(mark)} ${lvl(mark)}${of} (now ${live(nowSv)})${req}`;
   loc.push([dFull, full]);
-  if (HALF) loc.push([dHalf, `${name}: ${fmtN(mark / 2)} ${lvl(mark / 2)}${notes} (halved mark; now ${live(nowSv)})`]);
+  if (HALF) loc.push([dHalf, `${name}: ${fmtN(mark / 2)} ${lvl(mark / 2)}${of}, halved (now ${live(nowSv)})${req}`]);
   return { dFull, dHalf, bullet: full };
 };
 // a condition entry's line: a COUNT named in `research_events.count_display` (keyed by the script value its trigger compares) reads like a
 //   source; any other condition shows its label, with law names left to the entry — a law's name can carry an ASCII apostrophe
 //   ("Workers' Protections"), and the bar tooltip pastes this text into a single-quoted argument (BUGS_AND_FIXES 2026-09-30)
+// the game's own loc, every language the mod ships, for a set of keys: key → [[lang, text], …] (one pass over the game's loc folders)
+const walkYml = d => readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walkYml(join(d, e.name)) : e.name.endsWith('.yml') ? [join(d, e.name)] : []);
+const readVanLoc = keys => {
+  const out = new Map();
+  if (!keys.size) return out;
+  for (const lang of (CFG.languages || ['english'])) {
+    let files; try { files = walkYml(join(GAME, 'localization', lang)); } catch { continue; }
+    for (const f of files) for (const line of readFileSync(f, 'utf8').split(/\r?\n/)) {
+      const m = /^\s*([A-Za-z_0-9.-]+):\d*\s*"(.*)"\s*$/.exec(line);
+      if (m && keys.has(m[1])) { if (!out.has(m[1])) out.set(m[1], []); out.get(m[1]).push([lang, m[2]]); }
+    }
+  }
+  return out;
+};
+const hasApos = t => t.replace(/\[[^\]]*\]/g, '').includes("'");
+// the law names the condition entries' labels name that carry an ASCII apostrophe in some language (English "Workers' Protections"): only an
+//   entry naming one of those leaves its laws to the entry body in the bar line
+let APOS_KEYS = null;
+const aposKeys = () => {
+  if (APOS_KEYS) return APOS_KEYS;
+  const ks = new Set(Object.values(COND).flatMap(e => [...((e && e.label) || '').matchAll(/\$(law_[a-z_0-9]+)\$/g)].map(x => x[1])));
+  APOS_KEYS = new Set([...readVanLoc(ks)].filter(([, v]) => v.some(([, t]) => hasApos(t))).map(([k]) => k));
+  return APOS_KEYS;
+};
 const condSv = new Set();
 const condDisplay = (tech, e) => {
   const dFull = `pmr_term_${tech}_0`, dHalf = dFull + '_half';
@@ -393,18 +425,20 @@ const condDisplay = (tech, e) => {
     const per = +(cd.per_level || 1);
     let nowSv = m[1];
     if (per !== 1) { nowSv = `${m[1]}_lv`; if (!condSv.has(nowSv)) { condSv.add(nowSv); sv.push(`${nowSv} = {\n${T}value = ${m[1]}\n${T}divide = ${per}\n}`); } }
-    const notes = (per !== 1 ? `, counted at ${fmtN(per)} workers a level` : '') + (cd.note ? `, ${cd.note}` : '');
+    const of = per !== 1 ? ` of ${fmtN(per)} workers` : '';
+    const notes = cd.note ? `, ${cd.note}` : '';
     const unit = x => (cd.unit || 'fully staffed levels').replace(/levels$/, x === 1 ? 'level' : 'levels');
-    const full = `${cd.name}: ${fmtN(+m[2] / per)} ${unit(+m[2] / per)}${notes} (now ${live(nowSv)})`;
+    const full = `${cd.name}: ${fmtN(+m[2] / per)} ${unit(+m[2] / per)}${of}${notes} (now ${live(nowSv)})`;
     loc.push([dFull, full]);
-    if (mh) loc.push([dHalf, `${cd.name}: ${fmtN(+mh[2] / per)} ${unit(+mh[2] / per)}${notes} (halved mark; now ${live(nowSv)})`]);
+    if (mh) loc.push([dHalf, `${cd.name}: ${fmtN(+mh[2] / per)} ${unit(+mh[2] / per)}${of}${notes}, halved (now ${live(nowSv)})`]);
     return { dFull, dHalf, bullet: full };
   }
-  const barText = e.label.replace(/ under \$.*$/, ' under one of the laws named in the entry');
+  const lawRefs = [...e.label.matchAll(/\$(law_[a-z_0-9]+)\$/g)].map(x => x[1]);
+  const barText = lawRefs.some(k => aposKeys().has(k)) ? e.label.replace(/ under \$.*$/, ' under one of the laws named in the entry') : e.label;
   loc.push([dFull, barText]);
   if (e.half_trigger) {
     const nf = (/>=\s*([\d.]+)\D*$/.exec(e.trigger) || [])[1], nh = (/>=\s*([\d.]+)\D*$/.exec(e.half_trigger) || [])[1];
-    loc.push([dHalf, (nf && nh && barText.split(nf).length === 2 ? barText.replace(nf, nh) : barText) + ' (halved mark)']);
+    loc.push([dHalf, (nf && nh && barText.split(nf).length === 2 ? barText.replace(nf, nh) : barText) + ', halved']);
   }
   return { dFull, dHalf, bullet: e.label + ((e.lines || []).length ? ` (${e.lines.join('; ')})` : '') };
 };
@@ -830,12 +864,12 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     const pctx = x => Math.round(100 * x) + '%';
     const gf = Math.round(100 * ((a.rule === 'war' ? RE.grant_fraction : (RE.industry_grant_fraction ?? RE.grant_fraction)) ?? 0.5));
     const stageText = (REP
-      ? `${cap(stagesWord(STAGES.length - 1))} of ${span} months, then repeating stages of ${span} months until ${nice} is ours (at most ${REP}).`
+      ? `${cap(stagesWord(STAGES.length - 1))} of ${span} months, then up to ${REP} more of ${span} months each until we have researched ${nice}.`
       : `${cap(stagesWord(STAGES.length))} of ${span} months.`) +
-      ` Each completed stage grants ${gf}% of its base research cost` + (gateYear != null ? ` (before ${gateYear}, ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that)` : '') + '.';
-    const doneText = REP && !next ? `\nRepeating stages completed: [ROOT.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]` : '';
+      ` Each completed stage grants ${gf}% of the base research cost of ${nice}` + (gateYear != null ? ` (before ${gateYear}, ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that)` : '') + '.';
+    const doneText = REP && !next ? `\nFurther stages completed: [ROOT.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0] of ${REP}` : '';
     const litText = LIT0 != null ? ` and our literacy is at least ${pctx(LIT0)}` : '';
-    const halfText = (HALF && HELD_TECHS.includes(tech)) ? ` Every mark halves once a country that is not isolationist knows ${nice}, unless we are isolationist.` : '';
+    const halfText = (HALF && HELD_TECHS.includes(tech)) ? ` Every mark is halved once another country that is not isolationist has researched ${nice}, unless we are isolationist.` : '';
     const bullets = srcLines.length ? '\n' + srcLines.map(l => '• ' + l).join('\n') : '';
     let flavour, rule;
     if (a.rule === 'war' && isFleetTech(tech)) {
@@ -844,7 +878,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         : 'The bar advances by two each month while a ship of this kind sails under our flag, by one while a rival of ours fields one.';
     } else if (a.rule === 'war') {
       flavour = 'Hard fighting concentrates the mind.';
-      rule = `The bar advances by one each month while a general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilised battalions holds a front against an enemy who already fields ${nice}.`;
+      rule = `The bar advances by one each month while a general of ours leads at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilized battalions on a front against an enemy that has already researched ${nice}.`;
     } else if (a.rule === 'cond') {
       flavour = a.cond.intro || 'Circumstances make this worth pursuing.';
       rule = `The bar advances by one each month while the condition below holds${litText}.${halfText}`;
@@ -947,31 +981,26 @@ if (seffR.length) {
 }
 if (HELD_TECHS.length && !seffR.length) throw new Error('internal: held flags without a scripted-effects file');
 
-loc.push(['pmr_bar_desc', NONADD
-  ? 'Progress towards this discovery: +1 each month while at least one source is at its mark — the entry lists the sources and your current figures.'
-  : 'Progress towards this discovery: +1 each month for every source at or above its mark — the entry lists the sources and your current figures.']);
+// the generic terms (2026-10-21): written only where a path still uses them — the V4 compress probe's bars and the perf_amplify_terms probe
+//   read `terms`; the shipped bars are built from `lines`. A key nothing references is not shipped.
+const GENERIC = COMPRESS || RE.perf_amplify_terms > 1;
+if (COMPRESS) loc.push(['pmr_bar_desc', NONADD ? 'Progress towards this discovery: +1 each month while at least one source is at its mark (the entry lists the sources and our current figures)'
+  : 'Progress towards this discovery: +1 each month for every source at its mark (the entry lists the sources and our current figures)']);
 // the bar's own line, printed on the bar in the entry (vanilla's idiom: "Orleanists: 5.21% (25.0/480)")
 for (const sp of barDescSpans) loc.push([`pmr_bar_desc_${sp}`, `Progress: #v [JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)|%0]#! ([JournalEntry.GetCurrentBarValue(ScriptedProgressBar.Self)|0] of ${sp} months)`]);
-if (NONADD) {
+if (NONADD && GENERIC) {
   loc.push(['pmr_term_any', 'At least one source is at its mark (the entry lists them)']);
-  loc.push(['pmr_term_any_half', 'At least one source is at HALF its mark: another country already uses this technology']);
-  if (LIT) for (const [e, v] of Object.entries(LIT)) {
-    loc.push([`pmr_term_lit_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`}, below the ${Math.round(100 * v)}% needed: the bar is paused`]);
-    loc.push([`pmr_term_litok_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`}, at least ${Math.round(100 * v)}% needed`]);
-  }
+  loc.push(['pmr_term_any_half', 'At least one source is at its halved mark (another country already has this technology)']);
 }
-loc.push(['pmr_term_improvement', 'Employed in the industry this would improve']);
-loc.push(['pmr_term_necessity', 'Employed in the industries that would use it']);
-loc.push(['pmr_term_war_pressed', 'Committed to a front in strength']);
-loc.push(['pmr_term_war_enemy_has_it', 'An enemy already fields it']);
-loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilised battalions on a front against an enemy who already fields this`]);
-// the fleet channel's two terms — ours supersedes a rival's, so the bar shows whichever applies
-loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']);
-loc.push(['pmr_term_nav_rival', 'A rival fields a ship of this kind']);
-loc.push(['pmr_term_nav_none', 'Neither we nor a rival of ours field a ship of this kind']);
-if (RE.naval_any) loc.push(['pmr_term_nav_any', 'We, a rival of ours or a great power field a ship of this kind']);
-if (Object.keys(COND).length) { loc.push(['pmr_term_cond', 'The condition in the entry holds']); loc.push(['pmr_term_cond_half', 'The condition in the entry holds, at half its mark: another country already uses this technology']); }
-if (LIT) for (const [e, v] of Object.entries(LIT)) if (!loc.some(([k]) => k === `pmr_term_lit_${e}`)) loc.push([`pmr_term_lit_${e}`, `Waiting: literacy below ${Math.round(100 * v)}%, the line for an era ${e} technology`]);
+if (NONADD && LIT) for (const [e, v] of Object.entries(LIT)) {
+  loc.push([`pmr_term_lit_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`} (${Math.round(100 * v)}% needed): the bar is paused`]);
+  loc.push([`pmr_term_litok_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`} (${Math.round(100 * v)}% needed)`]);
+}
+if (WAR_TECHS.length) loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilized battalions on a front against an enemy that has researched it`]);
+// the fleet lines: ours supersedes a rival's (the older books), or any of ours, a rival's or a great power's (naval_any)
+if (NAV_TECHS.length && !RE.naval_any) { loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']); loc.push(['pmr_term_nav_rival', 'A rival of ours fields a ship of this kind']); loc.push(['pmr_term_nav_none', 'Neither we nor a rival of ours field a ship of this kind']); }
+if (NAV_TECHS.length && RE.naval_any) loc.push(['pmr_term_nav_any', 'We, a rival of ours or a great power field a ship of this kind']);
+if (Object.keys(COND).length && GENERIC) { loc.push(['pmr_term_cond', 'The condition in the entry holds']); loc.push(['pmr_term_cond_half', 'The condition in the entry holds, at its halved mark']); }
 // §10.98: the script values the condition entries read
 for (const [n, body] of Object.entries(RE.condition_values || {})) sv.push(`${n} = {\n${body.replace(/^/gm, T)}\n}`);
 // §10.98: the MONTHLY GLOBAL EFFECT — the contagion flags (radical laws anywhere, advanced laws in a great power, the neighbour marks) and, with
@@ -1012,22 +1041,13 @@ for (const [n, body] of Object.entries(RE.condition_values || {})) sv.push(`${n}
   //   goods and technologies, a translated name holding an ASCII apostrophe would break that language's tooltip with nothing failing in
   //   English. English "Workers' Protections" (law_worker_protections) is the live example, which is why no law name goes into a bar line.
   const refs = new Set();
-  for (const k of barLocKeys) for (const m of (LOC.get(k) || '').matchAll(/\$([A-Za-z_0-9.]+)\$/g)) refs.add(m[1]);
+  for (const k of barLocKeys) for (const m of (LOC.get(k) || '').matchAll(/\$([A-Za-z_0-9.-]+)\$/g)) { if (SHORT_PARTS.has(m[1])) for (const x of SHORT_PARTS.get(m[1])) refs.add(x); else refs.add(m[1]); }
   if (refs.size) {
-    const walk = d => readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(join(d, e.name)) : e.name.endsWith('.yml') ? [join(d, e.name)] : []);
-    const badRefs = [], foundEn = new Set();
-    for (const lang of (CFG.languages || ['english'])) {
-      let files; try { files = walk(join(GAME, 'localization', lang)); } catch { continue; }
-      for (const f of files) for (const line of readFileSync(f, 'utf8').split(/\r?\n/)) {
-        const m = /^\s*([A-Za-z_0-9.]+):\d*\s*"(.*)"\s*$/.exec(line);
-        if (!m || !refs.has(m[1])) continue;
-        if (lang === 'english') foundEn.add(m[1]);
-        if (m[2].replace(/\[[^\]]*\]/g, '').includes("'")) badRefs.push(`${lang} ${m[1]}: ${m[2]}`);
-      }
-    }
+    const got = readVanLoc(refs);
+    const badRefs = [...got].flatMap(([k, v]) => v.filter(([, t]) => hasApos(t)).map(([lang, t]) => `${lang} ${k}: ${t}`));
     if (badRefs.length) throw new Error(`research events: a name a progress-bar text references carries an ASCII apostrophe in some language, which breaks ` +
       `that language's bar tooltip. Leave it out of the bar line (the entry body may name it):\n  ` + badRefs.join('\n  '));
-    const unknown = [...refs].filter(r => !foundEn.has(r) && !LOC.has(r));
+    const unknown = [...refs].filter(r => !(got.get(r) || []).some(([lang]) => lang === 'english') && !LOC.has(r));
     if (unknown.length) console.warn(`research events: WARN - bar texts reference loc keys vanilla English does not define: ${unknown.join(', ')}`);
   }
 }

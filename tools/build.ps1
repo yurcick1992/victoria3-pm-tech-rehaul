@@ -622,6 +622,7 @@ foreach ($ind in $cfg.industries) {
         if ($t.method_of) {
             # no group and no building of its own: the method lives in the host's main group. Loc for the method only.
             $locBody += " $($t.pm_key):0 `"$(PmNameLoc $t)`""
+            $locBody += " $($t.key)_pmr_short:0 `"$(RungNameLoc $t $anchorKey)`""   # the rung's short name, which research texts use (2026-10-21)
             if ($ind.follows_be -ne $false -and -not $ind.no_mass_be) { $tierMap += "$($t.pm_key) $tierNo $($t.target_be) $(Fmt $wage)" }
             $summary += [pscustomobject]@{ Building="$($t.key) (method of $($t.method_of))"; Tier=$tierNo; TargetBE=$t.target_be; ActualBE=[math]::Round($actualBe) }
             continue
@@ -747,6 +748,9 @@ foreach ($ind in $cfg.industries) {
         }
         $locBody += " $($t.key):0 `"$bldName`""
         $locBody += " $($t.key)_lens_option:0 `"@@LENS:$($anchorKey):$($t.key)@@`""
+        # ⭐ THE RUNG'S SHORT NAME (2026-10-21): "<vanilla building> (<vanilla method>)" per language, without "Era N." and "Recipe BE" — what a research
+        #   entry and a company modifier call this rung (tools/emit_research_events.mjs shortName, tools/emit_companies.mjs)
+        $locBody += " $($t.key)_pmr_short:0 `"$(RungNameLoc $t $anchorKey)`""
         $locBody += " $($t.pmg_key):0 `"$pmgName`""
         $locBody += " $($t.pm_key):0 `"$(PmNameLoc $t)`""
 

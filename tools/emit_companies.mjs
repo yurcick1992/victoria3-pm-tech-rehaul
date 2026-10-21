@@ -355,7 +355,9 @@ for (const lang of LANGS) {
     for (const suff of ['', '_desc']) {
       const src = new RegExp(`^\\s*(${info.base}_${info.suffix}${suff}):(\\S*)\\s*(".*")\\s*$`, 'm').exec(van);
       if (!src) continue;
-      const text = src[3].replaceAll(`$${info.base}$`, () => `$${info.tierKey}$`);
+      // the rung's SHORT name (2026-10-21, polish): `<key>_pmr_short` (build.ps1, per language) reads "Arms Industries (Bolt Action Rifles)",
+      //   where the building key would print the whole in-game name "Era 3. Arms Industries (Bolt Action Rifles). Recipe BE 24%"
+      const text = src[3].replaceAll(`$${info.base}$`, () => `$${info.tierKey}_pmr_short$`);
       lines.push(` ${name}${suff}:${src[2]} ${text}`);
       if (lang === 'english') locKeys++;
     }
