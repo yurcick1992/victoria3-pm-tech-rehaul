@@ -94,7 +94,7 @@ DLC content carries that content's own DLC condition explicitly — e.g. the Mon
 | R6 | Per-rung building icons (every rung shows the vanilla picture; all dams the power plant's) | RULING (reuse existing icons, cheap; new art, large) | S–M / L |
 | R7 | Era dividers in the tech-tree GUI | CLOSED 2026-10-21 by in-game check 5: the bands line up, no fix | S |
 | F1 | Artisanal ownership — "the last feature pass", live since the crafts were canonised | DEFERRED to mod 1.1 or later (user, 2026-10-21) | L |
-| B2 | Mandated looms not enforced on the merged textile building (1–2 stale levels a game) | RULING (accept, or fold looms into the main method) | M |
+| B2 | Mandated looms not enforced on the merged textile building (1–2 stale levels a game) | ACCEPTED for 1.0, revisit in 1.1 (user, 2026-10-21) | M |
 | B3 | Crafts carry no secondary line (no canning, stills, luxury) | DEFERRED to mod 1.1 or later (user, 2026-10-21) | M |
 | N1 | "Recipe BE N%" rides along wherever a building name is referenced (company modifiers: "Era 2. Arms Industries (Bolt Action Rifles). Recipe BE 55% building Throughput") | DONE 2026-10-21 for the company modifiers and the research texts (the per-language short name `<key>_pmr_short`); company FORMATION lines still print the full name until "Recipe BE" goes at release | S |
 | C1 | `TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.25` ships at vanilla's value with a false comment | READY (drop the line) | S |
