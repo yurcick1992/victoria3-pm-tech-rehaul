@@ -167,7 +167,7 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 | U3 | ~~Should the craft rungs say they are crafts in their name?~~ — RULED 2026-10-21: "Era 0 craft. <Building> (<method>)" (the user); "craft" stays English in every language. To do with the text items (build.ps1 name format) |
 | U4 | ~~The dam build-requirement tooltip (H3)~~ — CLOSED 2026-10-21 by in-game check 4: no requirement list renders, no change needed |
 | U5 | ~~Fractional marks: round to whole levels, or leave?~~ — RULED 2026-10-21: every research mark rounded UP to whole levels, the halved ones included, BEFORE the batch (the user) — so the floored "(now N)" is always honest. To do in emit_research_events.mjs: ceil the level count, then compare people ≥ levels × per-level workforce |
-| U7 | Vanilla's Krka Falls and Niagara Falls traits are left empty by the dams (their only line was the hydro bonus): a line pointing at the dam site, or leave? |
+| U7 | Vanilla's Krka Falls and Niagara Falls traits are left empty by the dams — RULED 2026-10-21: no state-level electricity bonus anywhere (the user: "Nothing can have a state-level electricity bonus"), so both stay empty. Found: Krka's state, Dalmatia, is the one hydro-trait state with NO dam project (the research's Yugoslav row covers only the Drina, Neretva, Drava and Vardar) — a Cetina project is proposed |
 | U8 | Research `_desc` = `$…_reason$` (no visible change; 336 duplicate bodies × 11 languages) |
 
 ## In-game checks (the user, one at a time; started 2026-10-21)
