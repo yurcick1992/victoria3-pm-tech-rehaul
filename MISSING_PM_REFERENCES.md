@@ -1,5 +1,6 @@
 ﻿> ⚠⚠ **SUPERSEDED 2026-10-21 by `TIER_REFERENCE_AUDIT.md`** — this catalogue is stale (it still lists railway and shipyard methods, which are
-> vanilla again, old file paths, and none of the renamed secondary methods). Kept as the record until the fix of POLISH_1_0.md §2 lands.
+> vanilla again, old file paths, and none of the renamed secondary methods). Kept as the record until the fix of POLISH_1_0.md §2 lands. ✅ **RETIRED 2026-10-21: the fix landed** — `tools/emit_vanilla_refs.mjs` rewrites every such
+> reference on each build and its scan stops the build on a new one (landmine L40); the smoke run of the final canon logged none.
 
 # Vanilla script references to relocated production methods
 

@@ -352,8 +352,9 @@ consensus loss 5.37, the majors at 0.97 of vanilla's technology gain, the leader
 play ×1.005. The emitter's revolt fix (no placement in a revolutionary country) came after the batch and was probed on the book (20261012_220651:
 0 duplicate-placement errors over 1836–1856 against 49 before, technology and GDP unchanged). Built and DEPLOYED 2026-10-12 22:37 (the default
 build: `mod/` and Documents' `pm_tech_rehaul` are the canon again; the `ra` playtest build that stood there is kept in `mod_playtest_ra/`).
-⚠ **KNOWN OPEN ITEMS:** one runoff seed in three; military technology ~10 behind vanilla's count (no tech-era-5 military technology anywhere); tech
-spread ×2 and a society research multiplier deferred.
+⚠ **KNOWN OPEN ITEMS:** one runoff seed in three (F227; the wm99 book's n=4, F247: a stall in one run of four — the USA — and Britain near
+capital abundance in two); military technology ~10 behind vanilla's count (no tech-era-5 military technology anywhere — LEFT FOR MOD 1.1,
+POLISH_1_0.md Q5, with the user's AI-weight approach); tech spread ×2 and a society research multiplier deferred.
 ⚠⚠ **THE PRE-ARTMERGE FAMILY (`canon-dams-family-nolog` and every book before it) IS NO LONGER CANON.** Its files are kept, not deleted (yet), as
 records. **RETURNING TO IT WOULD NEED THE PERFORMANCE CHANGES REIMPLEMENTED**: those books carry neither tick-cost fix (dams as four-class
 resource-slot buildings, `dams.layout = resource4`; research entries placed by triggers, `research_events.placement = script` — F220/F221), nor

@@ -117,7 +117,7 @@ flag, and both switch normally. What exactly the engine does with the flag was n
 **Fix.** The flag is gone from the copies. Each copy of a line is NAMED after its main method instead, e.g. `pm_cannery_food_industry_baking_powder`
 → "$pm_cannery$ ($pm_main_food_baking_powder$)" = "Cannery (Baking Powder)". The panel lists both copies, the other one greyed, and the
 twins are readable. No number moved: the playtest book's rebuild (`mod_ra_named`) differs from `mod_playtest_ra` only in the secondaries
-file (20 flags removed) and the secondaries loc. ⚠ Left as vanilla ships it: the two `pm_vacuum_canning_principle_3` copies on the merged food
+file (20 flags removed) and the secondaries loc. (⭐ MOOT since the `top` rule, 2026-10-11: one copy, no main-method gate, so the flag is vanilla's own case; its switch was re-pointed and its output set to 85 on 2026-10-21 — POLISH Q3.) ⚠ Left as vanilla ships it: the two `pm_vacuum_canning_principle_3` copies on the merged food
 host keep vanilla's own flag, now beside our main-method gate. They are probably unselectable the same way; they only matter to a power bloc
 holding the Food Standardization 3 principle.
 

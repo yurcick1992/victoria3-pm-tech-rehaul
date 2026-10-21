@@ -98,7 +98,7 @@ DLC content carries that content's own DLC condition explicitly — e.g. the Mon
 | B3 | Crafts carry no secondary line (no canning, stills, luxury) | DEFERRED to mod 1.1 or later (user, 2026-10-21) | M |
 | N1 | "Recipe BE N%" rides along wherever a building name is referenced (company modifiers: "Era 2. Arms Industries (Bolt Action Rifles). Recipe BE 55% building Throughput") | DONE 2026-10-21 for the company modifiers and the research texts (the per-language short name `<key>_pmr_short`); company FORMATION lines still print the full name until "Recipe BE" goes at release | S |
 | C1 | `TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.25` ships at vanilla's value with a false comment | DONE 2026-10-21 (emitted only when it differs from vanilla's) | S |
-| C5 | Stale "open" lines in BACKLOG/ROADMAP that are done or moot | READY | S |
+| C5 | Stale "open" lines in BACKLOG/ROADMAP that are done or moot | DONE 2026-10-21 (every line listed in Appendix 1 C5, plus the canon's open items in CLAUDE.md, ON_GAME_UPDATE's urban-centre line, BACKLOG's stage-length note; MISSING_PM_REFERENCES.md retired) | S |
 
 ### R5 — the three technology icons: the specification (2026-10-21; no image generation here, the user draws or sources them)
 

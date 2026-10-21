@@ -593,8 +593,8 @@ Newest first. Append here as we discover more couplings to vanilla.
     (*"fix the electricity and restart"*). The override now lives in **`tools/lib_tier4_spec.mjs`
     (`PM_GOODS_RULED` / `PM_EMPLOYMENT_RULED`)** and is emitted by `make_tier4_config.mjs` into every
     generated book, so a rebuild cannot drop it again — a hand-edited config is exactly how it was lost.
-    ⚠ The CANON has not been regenerated and still lacks it; any arm read against the canon's own
-    century runs (`20260917_132449` / `20260917_161410`) carries that as a second difference.
+    ✅ The canon has carried it since 2026-09-20 (`canon-c19-in12-elec` and every canon since; the line here said it lacked it — POLISH C5).
+    Arms read against the canon's century runs of 2026-09-17 (`20260917_132449` / `20260917_161410`) carry it as a second difference.
   - ⚠ **POWER-PLANT CONTENT RIDES ALONG IN BOTH OWNED `06_urban_center` FILES, and that is
     unavoidable, not a choice** (user-ruled 2026-09-19: power plants stay vanilla, no tiering, no
     changes now or deferred; the dam megaproject is a polishing-phase item). `building_power_plant`

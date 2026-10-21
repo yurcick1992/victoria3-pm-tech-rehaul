@@ -88,7 +88,7 @@ the diesel engine; the invented superheating rung is gone.
 methods, journal entries, events, ship modifications, company formation — so merging onto it means
 re-pointing our own tier gate and leaving it in the tree. `tools/audit_tech_content.mjs` enumerates what
 any technology carries before it is touched. Deleting vanilla technologies and re-pointing their
-references is DEFERRED to final polish (user, 2026-08-12: *"in the distant future we won't shy from
+references is DEFERRED to final polish — ⭐ MOOT since the vanilla-ladder rebuild (2026-08-30): the tree is vanilla's plus three minted technologies, nothing left to delete (POLISH C5) — (user, 2026-08-12: *"in the distant future we won't shy from
 deleting vanilla techs"*), and the UI-readability argument for it is accepted.
 
 | | before | after |
@@ -1059,7 +1059,7 @@ one-off validation pass.
 
 ## DEFERRED FIXES — known, not scheduled
 
-- ⚠ **Our emitted `common/buildings/*.txt` carry no UTF-8 BOM** and the engine logs *File 'common/buildings/01_industry.txt' should be in
+- ✅ **FIXED 2026-09-25 (BUGS_AND_FIXES; POLISH C5): every emitted file starts with a BOM.** Was: ⚠ **Our emitted `common/buildings/*.txt` carry no UTF-8 BOM** and the engine logs *File 'common/buildings/01_industry.txt' should be in
   utf8-bom encoding (will try to use it anyway)* for 01 and 06 in every run — checked and **pre-existing** (two occurrences in the canon
   's own sessions), so long-standing, not new. It evidently does use them, so this is cosmetic; but it is two lines of engine complaint
   per run that a reader has to learn to ignore, which is the class of thing that hides a real one. Fix: write those files with a BOM, as
@@ -1097,7 +1097,7 @@ remembering to update a list — which is the property that failed here.
 ⚠ **Sessions before this fix under-report their content**; the value is a historical record and must not
 be back-filled (same rule as the 2026-08-05/06 `control+pop_needs` entries).
 
-### ⚠⚠ 30% OF THE 1836 START IS EMITTED ON THE WRONG TIER (found 2026-08-12)
+### ✅ (FIXED — landmine L13, lint_start_conversion; POLISH C5) 30% OF THE 1836 START IS EMITTED ON THE WRONG TIER (found 2026-08-12)
 
 **A LANDMINE in the exact sense the register means: nothing fails.** The build succeeds, the linter
 passes, `Invoke-ModChecks` passes (its test is that `create_building` blocks are *present*), the history
@@ -1151,7 +1151,7 @@ and not others — the same reason `build.ps1` and `telemetry_lib.ps1` are froze
 ⚠ **It also invalidates nothing measured so far**, because every arm that carried a mod carried this
 too; it is a wrong *baseline*, not a wrong *comparison*.
 
-### ⚠⚠ THE AI SUBSIDISES ONLY THE OBSOLETE TIER OF EACH INFRASTRUCTURE CHAIN (found 2026-08-11)
+### (MOOT — infrastructure is vanilla in the canon; POLISH C5) THE AI SUBSIDISES ONLY THE OBSOLETE TIER OF EACH INFRASTRUCTURE CHAIN (found 2026-08-11)
 
 **Worse than "we keep subsidising basic ports": we subsidise *nothing else*.** Vanilla's
 `ai_strategy_default` names three buildings at `must_have`:
@@ -1195,7 +1195,7 @@ infrastructure once newer infrastructure is mature enough"*):
    ⚠ Whatever ships must be re-measured against §10.47.4's tolerance, which was calibrated on the
    assumption above.
 
-### DROP STEEL'S TIER-1 RUNG (user-ruled 2026-08-12, deliberately not scheduled)
+### (MOOT — the four-rung canon's steel ladder is vanilla's own methods; POLISH C5) DROP STEEL'S TIER-1 RUNG (user-ruled 2026-08-12, deliberately not scheduled)
 
 `building_steel_mill` (blister steel) should eventually go the way of the bloomery rung that step 1b
 drops. It survives for now for one reason only: the **1836 map contains steel mills**, and the history
