@@ -252,7 +252,7 @@ lint and a deploy.
 ### Mine, no ruling needed
 
 - **The canning switch (Q3's bug):** `emit_secondaries.mjs` must re-point a copied `replacement_if_valid` at our copy of the target. Before the batch.
-- **A load with no DLC enabled** and an `error.log` read — the only proof of the DLC rule (§2) beyond the file comparison; never done. Before the batch.
+- ⭐ **SCHEDULED by the user 2026-10-21: AFTER the alternating batch, BEFORE the release build** (*"Run the no-DLC load test after the batch, before the release build"*) — the harness needs an option that fills `disabledDLC` in content_load.json (it writes an empty list today; the entry format is to be found). **A load with no DLC enabled** and an `error.log` read — the only proof of the DLC rule (§2) beyond the file comparison; never done. Before the batch.
 - **Stale lines that read as open questions:** CLAUDE.md's canon "known open items" (still F227's runoff seed, not F247's stall); ON_GAME_UPDATE:578 (says the
   canon lacks the urban-centre override it has carried since 2026-09-20); BACKLOG 1b (still names a 36–48-month stage length; the user ruled 48 out, F237);
   BACKLOG E:157 (the audit does cover renamed secondaries); BACKLOG lines already settled (textile host, crafts + merges, craft cost ÷50, FDI, survey
