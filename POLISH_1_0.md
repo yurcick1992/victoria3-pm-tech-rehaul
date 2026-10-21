@@ -159,7 +159,7 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 |---|---|---|
 | 1 | A research entry's body, bar label and bar tooltip (Britain 1836, Bessemer Process) | ✅ the lines render. Changed on the user's notes: no literacy line in the tooltip (the body states it); "(now 8)", rounded down, not "(now 8.0)"; the stage rule one sentence, "Each 36-month stage grants 50% of the technology’s base research cost"; the implementation counter shows no cap ("effectively 'this fires until the deed is done'") — `0986b5f` |
 | 2 | The craft buildings' method groups and method names | ✅ no "off"-only groups; method names render |
-| 3 | The dam survey decision, its requirements, the site trait and the survey entry | on `mod_playtest_damcheck/` (the canon + the dam technologies to Britain at the start) |
+| 3 | The dam survey decision, its requirements, the site trait and the survey entry | ✅ on `mod_playtest_damcheck/` (the canon + the dam technologies to Britain at the start): the decision, its requirements and the survey entry read fine. The site trait shows only its name on hover — the game does not render a description for it; the user: "I don't think it's that bad" — left as it is |
 | 4 | The build-menu tooltip of a dam that cannot be built (U4 / H3) | |
 | 5 | The tech-tree era dividers (R7) | |
 | 6 | The translated building, method and research names in another language | |
