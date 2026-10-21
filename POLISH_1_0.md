@@ -75,7 +75,7 @@ Effort: a day for the generator, its guard and a probe of the ban-law hook; it m
 | R8 | Dam texts predate private dam construction ("in our own state or a subject's", "each owning what it builds") | DONE 2026-10-21 (the text pass) | S |
 | B1 | Dam level cap with two foreign builders on one site unverified | VERIFY (probe or hand test) | S |
 | R6 | Per-rung building icons (every rung shows the vanilla picture; all dams the power plant's) | RULING (reuse existing icons, cheap; new art, large) | S–M / L |
-| R7 | Era dividers in the tech-tree GUI | VERIFY in game first (likely moot: the tree is vanilla's + 3) | S |
+| R7 | Era dividers in the tech-tree GUI | CLOSED 2026-10-21 by in-game check 5: the bands line up, no fix | S |
 | F1 | Artisanal ownership — "the last feature pass", live since the crafts were canonised | RULING: recommend defer past 1.0 (unresearched, large) | L |
 | B2 | Mandated looms not enforced on the merged textile building (1–2 stale levels a game) | RULING (accept, or fold looms into the main method) | M |
 | B3 | Crafts carry no secondary line (no canning, stills, luxury) | RULING (a named craft variant, or accept) | M |
@@ -161,7 +161,7 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 | 2 | The craft buildings' method groups and method names | ✅ no "off"-only groups; method names render |
 | 3 | The dam survey decision, its requirements, the site trait and the survey entry | ✅ on `mod_playtest_damcheck/` (the canon + the dam technologies to Britain at the start): the decision, its requirements and the survey entry read fine. The site trait shows only its name on hover — the game does not render a description for it; the user: "I don't think it's that bad" — left as it is |
 | 4 | The build-menu tooltip of a dam (U4 / H3) | ✅ the build tooltip lists no requirements at all (earnings, cost, goods, jobs, the queue keys) — the suspected per-project list never renders, and a dam shows in the build menu only once its site is surveyed, so U4 needs no change |
-| 5 | The tech-tree era dividers (R7) | |
+| 5 | The tech-tree era dividers (R7) | ✅ Vulcanization in era IV, the three minted technologies in era V; the bands line up now that the tree is vanilla's + 3 (in older, larger trees a band sometimes started a little early or late, the order always correct) — R7 needs no fix |
 | 6 | The translated building, method and research names in another language | |
 | 7 | The company throughput modifier names | |
 

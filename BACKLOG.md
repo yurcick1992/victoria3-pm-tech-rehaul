@@ -249,7 +249,7 @@ and an independent hunt over the generated mod and six canon century runs' error
 - **DONE 2026-10-21** · the generated-text pass (research, dams, company names, config labels): uniform style, current design, no internals · POLISH_1_0.md "Text pass"
 - **DONE 2026-10-21** · dam build tooltips: checked in game, no per-project list renders (U4 closed) · POLISH_1_0.md H3
 - **OPEN** · per-tier building artwork; per-technology icons (one placeholder ships)
-- **OPEN** · era band dividers in the tech-tree GUI
+- **DONE 2026-10-21** · era band dividers in the tech-tree GUI: checked in game, they line up (no fix) · POLISH_1_0.md R7
 - **OPEN** · proofread every new technology name and description
 - **OPEN** · release
 
