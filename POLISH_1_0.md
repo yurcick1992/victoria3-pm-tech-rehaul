@@ -40,6 +40,26 @@ Effort: a day for the generator, its guard and a probe of the ban-law hook; it m
 | C1 | `TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.25` ships at vanilla's value with a false comment | READY (drop the line) | S |
 | C5 | Stale "open" lines in BACKLOG/ROADMAP that are done or moot | READY | S |
 
+### R5 — the three technology icons: the specification (2026-10-21; no image generation here, the user draws or sources them)
+
+Measured from vanilla's own 180 invention icons (`game/gfx/interface/icons/invention_icons/*.dds`, e.g. vulcanization, mechanized_workshops,
+nitrogen_fixation):
+- **File:** DDS, **256 × 256 px**, **uncompressed 32-bit BGRA** (A8R8G8B8 — masks R 0x00ff0000, G 0x0000ff00, B 0x000000ff, A 0xff000000), **full
+  mip chain (9 levels, 256 → 1)**, 349,652 bytes. (The placeholder has no mips; it works, vanilla's all have them.) A 256 × 256 PNG with
+  transparency is enough to hand over — converting it to this DDS is mechanical and can be done here.
+- **Names:** `gfx/interface/icons/invention_icons/catalytic_synthesis.dds`, `continuous_web_processing.dds`, `spray_finishing.dds`; `emit_techs.mjs`
+  then points each technology's `texture` at its own file.
+- **Style:** ONE isolated object, no background, frame or text — 40–65% of the pixels fully transparent; painted, near-photographic rendering in
+  a three-quarter view from slightly above; soft key light from the upper left; muted, low-saturation metal and wood; centred, filling ~85–90% of
+  the canvas; anti-aliased edges.
+- **Subjects** (each distinct from the vanilla icon of the technology before it):
+  - **Spray Finishing** (furniture e3, 1923): a period compressed-air spray gun with its paint cup, a fine mist hitting a glossy lacquered panel or
+    chair back. (Vanilla's lathe and mechanized-workshops icons are a lathe and a steam hammer.)
+  - **Continuous Web Processing** (paper e3, 1930): steel drying cylinders with one unbroken white paper web running over them onto a large reel —
+    the reel is the clearest read at small size.
+  - **Catalytic Synthesis** (fertilizer e3, 1937): a tall VERTICAL converter or reformer column with pipework and a gauge, perhaps white fertilizer
+    prills at its foot — vanilla's nitrogen fixation is a horizontal bolted high-pressure tube, so avoid that shape.
+
 ## 5. Found by the independent hunt (Appendix 2)
 
 | # | Item | Status | Effort |

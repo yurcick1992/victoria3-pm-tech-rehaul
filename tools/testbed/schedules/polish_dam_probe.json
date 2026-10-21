@@ -1,0 +1,51 @@
+{
+  "schedule_version": 1,
+  "label": "polish-dam-probe",
+  "_why": "PROBE (user, 2026-10-21: \"About 3,700 lines of unused dam script ship in the mod - remove and test that it still works\"). Commit 21e6ea7 stopped emitting the AI survey driver (pmr_dam_driver and its two script values), which the canon never registered on any on_action since the AI took the survey decision itself (2026-09-28). The removal is behaviour-neutral by construction (the dam files differ only by the removed block; nothing references it); this run checks it in the engine: no load errors, the AI still takes surveys, dams are still built. Arm: {kind: config, config: config/mod_config.polish-dam-probe.json} = the canon (6ae883ec91c7036a, with today's polish commits) + the same probe switches as session 20261016_192119's dprivall arm (dam technologies to GBR FRA USA PRU AUS RUS at the start, Laissez-faire on GBR and USA, 1-month surveys, levels at x0.25 cost, +2000 bureaucracy, dam ai_value 300000). PROBE ONLY - not the canon.",
+  "_comparison": "session 20261016_192119_dam-private-probe, arm dprivall (same switches on the canon of that day): surveys logged in PMR_DAM lines, 21 dam constructions in the queue samples (19 private).",
+  "_predictions": {
+    "loads": "the PM_TECH_REHAUL init marker in debug.log; no error.log line naming a zzz_pm_rehaul_dams file or an unknown pmr_dam_* value",
+    "surveys": "PMR_DAM survey lines from several of the six granted majors within the first year (the AI takes the decision itself)",
+    "built": "dam levels queued and built by 1842 in the yearly/quarterly summaries, of the order of the dprivall arm's 21 constructions"
+  },
+  "_stop_rule": "none: one probe run to 1842.",
+  "_cost": "1 x 1836 -> 1842, ~8 min",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Quarterly autosaves so a level under construction shows in a queue."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1838.1.1",
+      "1840.1.1",
+      "1841.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "AUS",
+      "RUS"
+    ],
+    "metrics": [
+      "country_state",
+      "events"
+    ],
+    "autosave_interval": "quarteryear",
+    "timeout_minutes": 45
+  },
+  "setups": {
+    "probe": {
+      "kind": "config",
+      "config": "config/mod_config.polish-dam-probe.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "probe",
+      "until": "1842.1.1"
+    }
+  ]
+}
