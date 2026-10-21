@@ -418,7 +418,7 @@ company_philips = {
 
 	prosperity_modifier = {
 		country_weekly_innovation_mult = 0.05
-		country_weekly_innovation_max_add = 15
+		country_weekly_innovation_max_add = 5   # pm_tech_rehaul: vanilla 15 — x1/3, POLISH_1_0.md Q1 (user-ruled 2026-10-21): flat research adds sized for vanilla research, scaled to the mod's
 	}
 
 	ai_will_do = {

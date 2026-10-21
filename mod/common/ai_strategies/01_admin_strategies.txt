@@ -4,10 +4,10 @@ ai_strategy_agricultural_expansion = {
 		building_power_plant = must_have
 		building_railway = must_have
 		building_port = must_have
-		building_dam_large_cheap = must_have
-		building_dam_small_cheap = must_have
-		building_dam_large_dear = must_have
 		building_dam_small_dear = must_have
+		building_dam_large_cheap = must_have
+		building_dam_large_dear = must_have
+		building_dam_small_cheap = must_have
 	}
 	icon = "gfx/interface/icons/ai_strategy_icons/agricultural_expansion.dds"
 
@@ -135,10 +135,10 @@ ai_strategy_plantation_economy = {
 		building_power_plant = must_have
 		building_railway = must_have
 		building_port = must_have
-		building_dam_large_cheap = must_have
-		building_dam_small_cheap = must_have
-		building_dam_large_dear = must_have
 		building_dam_small_dear = must_have
+		building_dam_large_cheap = must_have
+		building_dam_large_dear = must_have
+		building_dam_small_cheap = must_have
 	}
 	icon = "gfx/interface/icons/ai_strategy_icons/agricultural_expansion.dds"
 
@@ -227,12 +227,10 @@ ai_strategy_plantation_economy = {
 
 ai_strategy_resource_expansion = {
 	subsidies = {
-		building_tooling_workshop = nice_to_have
-		building_explosives_factory = nice_to_have
-		building_dam_large_cheap = must_have
-		building_dam_small_cheap = must_have
-		building_dam_large_dear = must_have
 		building_dam_small_dear = must_have
+		building_dam_large_cheap = must_have
+		building_dam_large_dear = must_have
+		building_dam_small_cheap = must_have
 	}
 	icon = "gfx/interface/icons/ai_strategy_icons/resource_expansion.dds"
 
@@ -345,10 +343,10 @@ ai_strategy_industrial_expansion = {
 		building_iron_mine = nice_to_have
 		building_lead_mine = nice_to_have
 		building_sulfur_mine = nice_to_have
-		building_dam_large_cheap = must_have
-		building_dam_small_cheap = must_have
-		building_dam_large_dear = must_have
 		building_dam_small_dear = must_have
+		building_dam_large_cheap = must_have
+		building_dam_large_dear = must_have
+		building_dam_small_cheap = must_have
 	}
 	icon = "gfx/interface/icons/ai_strategy_icons/industrial_expansion.dds"
 
@@ -525,10 +523,10 @@ ai_strategy_placate_population = {
 		building_power_plant = must_have
 		building_railway = must_have
 		building_port = must_have
-		building_dam_large_cheap = must_have
-		building_dam_small_cheap = must_have
-		building_dam_large_dear = must_have
 		building_dam_small_dear = must_have
+		building_dam_large_cheap = must_have
+		building_dam_large_dear = must_have
+		building_dam_small_cheap = must_have
 	}
 	icon = "gfx/interface/icons/ai_strategy_icons/placate_population.dds"
 
@@ -626,11 +624,10 @@ ai_strategy_placate_population = {
 
 ai_strategy_colonial_extraction = {
 	subsidies = {
-		building_tooling_workshop = wants_to_have
-		building_dam_large_cheap = must_have
-		building_dam_small_cheap = must_have
-		building_dam_large_dear = must_have
 		building_dam_small_dear = must_have
+		building_dam_large_cheap = must_have
+		building_dam_large_dear = must_have
+		building_dam_small_cheap = must_have
 	}
     icon = "gfx/interface/icons/ai_strategy_icons/resource_expansion.dds"
 
@@ -688,10 +685,10 @@ ai_strategy_colonial_extraction = {
 ai_strategy_montenegro_admin = {
 	subsidies = {
 		building_trade_center = must_have
-		building_dam_large_cheap = must_have
-		building_dam_small_cheap = must_have
-		building_dam_large_dear = must_have
 		building_dam_small_dear = must_have
+		building_dam_large_cheap = must_have
+		building_dam_large_dear = must_have
+		building_dam_small_cheap = must_have
 	}
     icon = "gfx/interface/icons/ai_strategy_icons/placate_population.dds"
 

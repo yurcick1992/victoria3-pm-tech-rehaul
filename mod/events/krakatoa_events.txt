@@ -1,0 +1,774 @@
+﻿# PM & Tech Rehaul: regenerated from vanilla every build by tools/emit_vanilla_refs.mjs (the tier-reference fix, TIER_REFERENCE_AUDIT.md). Do not hand-edit.
+namespace = krakatoa
+
+krakatoa.1 = { # Krakatoa erupts and you're the owner
+	type = country_event
+	placement = scope:krakatoa_state
+
+	event_image = {
+		video = "unspecific_fire"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	title = krakatoa.1.t
+	desc = krakatoa.1.d
+	flavor = krakatoa.1.f
+
+	trigger = {
+		game_date >= 1850.1.1
+		NOT = { has_global_variable = krakatoa_var }
+		any_scope_state = {
+			state_region = s:STATE_WEST_JAVA
+		}
+	}
+
+	immediate = {
+		set_global_variable = krakatoa_var
+		random_scope_state = {
+			limit = {
+				state_region = s:STATE_WEST_JAVA
+			}
+			save_scope_as = krakatoa_state
+			owner = {
+				save_scope_as = krakatoa_country
+			}
+		}
+		krakatoa_tsunami_effect = yes
+		set_global_variable = {
+			name = krakatoa_temperature_drop
+			value = {
+				fixed_range = {
+					min = krakatoa_temperature_drop_roll_min
+					max = krakatoa_temperature_drop_roll_max
+				}
+			}
+		}
+		set_global_variable = {
+			name = krakatoa_temperature_recovery_rate
+			value = {
+				add = global_var:krakatoa_temperature_drop
+				divide = 60
+			}
+		}
+		every_country = {
+			limit = {
+				NOT = { scope:krakatoa_country ?= this }
+			}
+			trigger_event = { id = krakatoa.5 } #notification event
+		}
+		every_country = {
+			limit = {
+				any_scope_state = {
+					is_coastal = yes
+					OR = {
+						is_in_geographic_region = geographic_region_ethiopia_old
+						is_in_geographic_region = geographic_region_indochina
+						is_in_geographic_region = geographic_region_indochina
+						is_in_geographic_region = geographic_region_south_china
+						is_in_geographic_region = geographic_region_japan_old
+						is_in_geographic_region = geographic_region_oceania
+						is_in_geographic_region = geographic_region_zanj_old
+						is_in_geographic_region = geographic_region_southern_africa_old
+						is_in_geographic_region = geographic_region_bombay_old
+						is_in_geographic_region = geographic_region_madras_old
+						is_in_geographic_region = geographic_region_bengal_old
+					}
+				}
+			}
+			trigger_event = { id = krakatoa.2 } #tsunamis
+		}
+		add_journal_entry = {
+			type = je_krakatoa
+		}
+		je:je_krakatoa ?= {
+			add_progress = {
+				value = {
+					value = global_var:krakatoa_temperature_drop
+					multiply = 100
+					multiply = -1
+				}
+				name = je_krakatoa_thermometer_progress_bar
+			}
+		}
+	}
+
+	duration = 3
+
+	option = { #help our people
+		name = krakatoa.1.a
+		default_option = yes
+		scope:krakatoa_state = {
+			add_modifier = {
+				name = krakatoa_eruption_help_modifier
+				days = short_modifier_time
+			}
+		}
+		scope:krakatoa_state.state_region = {
+			add_devastation = 15 # plus 30 from the Tsunami
+		}
+		add_modifier = {
+			name = krakatoa_cost_modifier
+			days = short_modifier_time
+			multiplier = money_amount_multiplier_small
+		}
+		show_as_tooltip = {
+			add_journal_entry = {
+				type = je_krakatoa
+			}
+		}
+	}
+
+	option = { #nothing we can do
+		name = krakatoa.1.b
+		scope:krakatoa_state = {
+			add_modifier = {
+				name = krakatoa_eruption_no_help_modifier
+				days = short_modifier_time
+			}
+		}
+		scope:krakatoa_state.state_region = {
+			add_devastation = 30 # plus 30 from the Tsunami
+		}
+		capital = {
+			add_radicals_in_state = { #public outrage
+				value = medium_radicals
+			}
+		}
+		show_as_tooltip = {
+			add_journal_entry = {
+				type = je_krakatoa
+			}
+		}
+	}
+}
+
+krakatoa.5 = { #krakatoa erupts but youre not the owner
+	type = country_event
+	placement = scope:krakatoa_state
+
+	event_image = {
+		video = "unspecific_fire"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	title = krakatoa.1.t
+	desc = krakatoa.5.d
+	flavor = krakatoa.1.f
+
+	duration = 3
+
+	immediate = {
+		add_journal_entry = {
+			type = je_krakatoa
+		}
+		je:je_krakatoa ?= {
+			add_progress = {
+				value = {
+					value = global_var:krakatoa_temperature_drop
+					multiply = 100
+					multiply = -1
+				}
+				name = je_krakatoa_thermometer_progress_bar
+			}
+		}
+	}
+
+	option = { #send some humaritarian help
+		name = krakatoa.5.a
+		change_relations = {
+			country = scope:krakatoa_country
+			value = 30
+		}
+		add_modifier = {
+			name = krakatoa_cost_modifier
+			days = short_modifier_time
+			multiplier = money_amount_multiplier_very_small
+		}
+		show_as_tooltip = {
+			add_journal_entry = {
+				type = je_krakatoa
+			}
+		}
+		if = {
+			limit = {
+				scope:krakatoa_country ?= {
+					is_subject_of = root
+				}
+			}
+			add_liberty_desire = -30
+			scope:krakatoa_country ?= {
+				add_loyalists = {
+					value = 0.2
+				}
+			}
+		}
+
+		ai_chance = {
+			base = 5
+
+			modifier = {
+				trigger = {
+					scope:krakatoa_country = {
+						is_subject_of = root
+					}
+				}
+				add = 200
+			}
+		}
+	}
+
+	option = { #it doesn't affect us that much
+		name = krakatoa.5.b
+		default_option = yes
+		trigger = {
+			NOT = {
+				any_scope_state = {
+					state_region = {
+						has_harvest_condition = tsunami
+					}
+				}
+			}
+		}
+
+		change_relations = {
+			country = scope:krakatoa_country
+			value = -15
+		}
+		show_as_tooltip = {
+			add_journal_entry = {
+				type = je_krakatoa
+			}
+		}
+
+		ai_chance = {
+			base = 100
+		}
+	}
+
+	option = { # we have nothing to spare
+		name = krakatoa.5.c
+		default_option = yes
+		highlighted_option = yes
+		trigger = {
+			any_scope_state = {
+				state_region = {
+					has_harvest_condition = tsunami
+				}
+			}
+		}
+
+		show_as_tooltip = {
+			add_journal_entry = {
+				type = je_krakatoa
+			}
+		}
+
+		ai_chance = {
+			base = 100
+		}
+	}
+}
+
+krakatoa.2 = { #global tsunamis
+	type = country_event
+	placement = scope:tsunami_state
+
+	event_image = {
+		video = "unspecific_devastation"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_map.dds"
+
+	title = krakatoa.2.t
+	desc = krakatoa.2.d
+	flavor = krakatoa.2.f
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				is_coastal = yes
+				OR = {
+					is_in_geographic_region = geographic_region_ethiopia_old
+					is_in_geographic_region = geographic_region_indochina
+					is_in_geographic_region = geographic_region_indochina
+					is_in_geographic_region = geographic_region_south_china
+					is_in_geographic_region = geographic_region_japan_old
+					is_in_geographic_region = geographic_region_oceania
+					is_in_geographic_region = geographic_region_zanj_old
+					is_in_geographic_region = geographic_region_southern_africa_old
+					is_in_geographic_region = geographic_region_bombay_old
+					is_in_geographic_region = geographic_region_madras_old
+					is_in_geographic_region = geographic_region_bengal_old
+				}
+			}
+			save_scope_as = tsunami_state
+		}
+	}
+
+	duration = 3
+
+	option = { #this is a tragedy
+		name = krakatoa.2.a
+		default_option = yes
+		show_as_tooltip = {
+			s:STATE_WEST_JAVA = {
+				start_harvest_condition = tsunami
+			}
+			krakatoa_tsunami_effect = yes
+		}
+	}
+}
+
+krakatoa.3 = { #crop failure
+	type = country_event
+	placement = scope:farm_state
+
+	event_image = {
+		video = "asia_dead_cattle_poor_harvest"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_skull.dds"
+
+	title = krakatoa.3.t
+	desc = krakatoa.3.d
+	flavor = krakatoa.3.f
+
+	trigger = {
+		NOR = {
+			has_variable = crop_failure_big_var
+			has_variable = crop_failure_medium_var
+			has_variable = crop_failure_small_var
+		}
+		any_scope_state = {
+			state_region = {
+				has_harvest_condition = disease_outbreak
+				NOT = {
+					has_variable = krakatoa_crop_failure
+				}
+			}
+		}
+	}
+
+	immediate = {
+		random_scope_state = {
+			limit = {
+				state_region = { has_harvest_condition = disease_outbreak }
+				NOT = {
+					has_variable = krakatoa_crop_failure
+				}
+			}
+			save_scope_as = farm_state
+		}
+		random_list = {
+			1 = {
+				set_variable = crop_failure_big_var
+			}
+			1 = {
+				set_variable = crop_failure_medium_var
+			}
+			1 = {
+				set_variable = crop_failure_small_var
+			}
+		}
+	}
+
+	duration = 3
+
+	option = { #we throw money to minimize the thing
+		name = krakatoa.3.a
+		custom_tooltip = krakatoa_crop_failure_medium_modifier_tt
+		custom_tooltip = krakatoa_crop_failure_tt
+		add_modifier = {
+			name = krakatoa_crop_cost_modifier
+			days = normal_modifier_time
+			multiplier = money_amount_multiplier_medium
+		}
+		if = {
+			limit = {
+				has_variable = crop_failure_big_var
+			}
+			every_scope_state = {
+				limit = {
+					state_region = {
+						has_harvest_condition = disease_outbreak
+					}
+				}
+				state_region = {
+					set_variable = {
+						name = krakatoa_crop_failure
+						days = normal_modifier_time
+					}
+				}
+				add_modifier = {
+					name = crop_failure_big_modifier
+					days = normal_modifier_time
+					multiplier = 0.75
+					is_decaying = yes
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_variable = crop_failure_medium_var
+			}
+			every_scope_state = {
+				limit = {
+					state_region = {
+						has_harvest_condition = disease_outbreak
+					}
+				}
+				state_region = {
+					set_variable = {
+						name = krakatoa_crop_failure
+						days = normal_modifier_time
+					}
+				}
+				add_modifier = {
+					name = crop_failure_medium_modifier
+					days = normal_modifier_time
+					multiplier = 0.75
+					is_decaying = yes
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_variable = crop_failure_small_var
+			}
+			every_scope_state = {
+				limit = {
+					state_region = {
+						has_harvest_condition = disease_outbreak
+					}
+				}
+				state_region = {
+					set_variable = {
+						name = krakatoa_crop_failure
+						days = normal_modifier_time
+					}
+				}
+				add_modifier = {
+					name = crop_failure_small_modifier
+					days = normal_modifier_time
+					multiplier = 0.75
+					is_decaying = yes
+				}
+			}
+		}
+
+		ai_chance = {
+			base = 3
+		}
+	}
+
+	option = { #oh well
+		name = krakatoa.3.b
+		default_option = yes
+		custom_tooltip = krakatoa_crop_failure_big_modifier_tt
+		custom_tooltip = krakatoa_crop_failure_tt
+		if = {
+			limit = {
+				has_variable = crop_failure_big_var
+			}
+			every_scope_state = {
+				limit = {
+					state_region = {
+						has_harvest_condition = disease_outbreak
+					}
+				}
+				state_region = {
+					set_variable = {
+						name = krakatoa_crop_failure
+						days = normal_modifier_time
+					}
+				}
+				add_modifier = {
+					name = crop_failure_big_modifier
+					days = normal_modifier_time
+					multiplier = 1
+					is_decaying = yes
+				}
+				add_radicals_in_state = {
+					value = medium_radicals
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_variable = crop_failure_medium_var
+			}
+			every_scope_state = {
+				limit = {
+					state_region = {
+						has_harvest_condition = disease_outbreak
+					}
+				}
+				state_region = {
+					set_variable = {
+						name = krakatoa_crop_failure
+						days = normal_modifier_time
+					}
+				}
+				add_modifier = {
+					name = crop_failure_medium_modifier
+					days = normal_modifier_time
+					multiplier = 1
+					is_decaying = yes
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_variable = crop_failure_small_var
+			}
+			every_scope_state = {
+				limit = {
+					state_region = {
+						has_harvest_condition = disease_outbreak
+					}
+				}
+				state_region = {
+					set_variable = {
+						name = krakatoa_crop_failure
+						days = normal_modifier_time
+					}
+				}
+				add_modifier = {
+					name = crop_failure_small_modifier
+					days = normal_modifier_time
+					multiplier = 1
+					is_decaying = yes
+				}
+			}
+		}
+
+		ai_chance = {
+			base = 1
+		}
+	}
+
+	option = { # open the granaries
+		name = krakatoa.3.c
+		highlighted_option = yes
+		custom_tooltip = krakatoa_crop_failure_small_modifier_tt
+		custom_tooltip = krakatoa_crop_failure_tt
+		trigger = {
+			NOT = {
+				has_law = law_type:law_no_social_security
+			}
+		}
+		if = {
+			limit = {
+				has_variable = crop_failure_big_var
+			}
+			every_scope_state = {
+				limit = {
+					state_region = {
+						has_harvest_condition = disease_outbreak
+					}
+				}
+				state_region = {
+					set_variable = {
+						name = krakatoa_crop_failure
+						days = normal_modifier_time
+					}
+				}
+				add_modifier = {
+					name = crop_failure_big_modifier
+					days = normal_modifier_time
+					multiplier = 0.5
+					is_decaying = yes
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_variable = crop_failure_medium_var
+			}
+			every_scope_state = {
+				limit = {
+					state_region = {
+						has_harvest_condition = disease_outbreak
+					}
+				}
+				state_region = {
+					set_variable = {
+						name = krakatoa_crop_failure
+						days = normal_modifier_time
+					}
+				}
+				add_modifier = {
+					name = crop_failure_medium_modifier
+					days = normal_modifier_time
+					multiplier = 0.5
+					is_decaying = yes
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_variable = crop_failure_small_var
+			}
+			every_scope_state = {
+				limit = {
+					state_region = {
+						has_harvest_condition = disease_outbreak
+					}
+				}
+				state_region = {
+					set_variable = {
+						name = krakatoa_crop_failure
+						days = normal_modifier_time
+					}
+				}
+				add_modifier = {
+					name = crop_failure_small_modifier
+					days = normal_modifier_time
+					multiplier = 0.5
+					is_decaying = yes
+				}
+			}
+		}
+
+		ai_chance = {
+			base = 100
+		}
+	}
+
+	cancellation_trigger = {
+		OR = {
+			NOT = {
+				exists = scope:farm_state
+			}
+			scope:farm_state ?= {
+				state_region = {
+					NOT = {
+						has_harvest_condition = disease_outbreak
+					}
+				}
+			}
+		}
+	}
+}
+
+krakatoa.4 = { #art goes crazy
+	type = country_event
+	placement = scope:art_state
+
+	event_image = {
+		video = "unspecific_fire"
+	}
+
+	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+
+	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
+
+	title = krakatoa.4.t
+	desc = krakatoa.4.d
+	flavor = krakatoa.4.f
+
+	trigger = {
+		NOT = { has_variable = krakatoa_art_var }
+		any_scope_state = {
+			is_incorporated = yes
+			pmr_has_art_academy = yes
+		}
+		any_scope_state = {
+			is_incorporated = yes
+			has_building = building_university
+		}
+	}
+
+	immediate = {
+		set_variable = krakatoa_art_var
+		random_scope_state = {
+			limit = {
+				is_incorporated = yes
+				pmr_has_art_academy = yes
+			}
+			save_scope_as = art_state
+			random_scope_building = {
+				limit = {
+					pmr_is_art_academy = yes
+				}
+				save_scope_as = art_building
+			}
+		}
+		random_scope_state = {
+			limit = {
+				is_incorporated = yes
+				has_building = building_university
+			}
+			save_scope_as = university_state
+			random_scope_building = {
+				limit = {
+					is_building_type = building_university
+				}
+				save_scope_as = university_building
+			}
+		}
+	}
+
+	duration = 3
+
+	option = { #sponsor artists
+		name = krakatoa.4.a
+		default_option = yes
+		if = {
+			limit = {
+				has_state_in_state_region = STATE_WEST_JAVA
+			}
+			scope:art_state = {
+				add_modifier = {
+					name = krakatoa_art_modifier
+					days = normal_modifier_time
+					multiplier = 2
+				}
+			}
+		}
+		else = {
+			scope:art_state = {
+				add_modifier = {
+					name = krakatoa_art_modifier
+					days = normal_modifier_time
+				}
+			}
+		}
+	}
+
+	option = { #ask academics to study it
+		name = krakatoa.4.b
+		custom_tooltip = krakatoa_uni.tt #less bad volcanic eruptions in the future
+		set_variable = krakatoa_uni_var
+		if = {
+			limit = {
+				has_state_in_state_region = STATE_WEST_JAVA
+			}
+			scope:university_state = {
+				add_modifier = {
+					name = krakatoa_uni_modifier
+					days = normal_modifier_time
+					multiplier = 2
+				}
+			}
+		}
+		else = {
+			scope:university_state = {
+				add_modifier = {
+					name = krakatoa_uni_modifier
+					days = normal_modifier_time
+				}
+			}
+		}
+	}
+}

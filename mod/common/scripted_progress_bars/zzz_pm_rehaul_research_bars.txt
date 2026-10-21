@@ -79,7 +79,7 @@ pmr_bar_aniline = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_aniline_0 >= 12.5 }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_aniline_0 >= 13 }
 			}
 			add = {
 				desc = "pmr_term_aniline_0_half"
@@ -112,7 +112,7 @@ pmr_bar_aniline = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_aniline_1 >= 6250 }  NOT = { OR = { AND = { pmr_src_aniline_0 >= 12.5 } } }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_aniline_1 >= 10000 }  NOT = { OR = { AND = { pmr_src_aniline_0 >= 13 } } }
 			}
 			add = {
 				desc = "pmr_term_aniline_1_half"
@@ -121,7 +121,7 @@ pmr_bar_aniline = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_aniline_1 >= 12500 }  NOT = { OR = { AND = { pmr_src_aniline_0 >= 25 } } }
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_aniline_1 >= 15000 }  NOT = { OR = { AND = { pmr_src_aniline_0 >= 25 } } }
 			}
 			add = {
 				desc = "pmr_term_aniline_1"
@@ -200,7 +200,7 @@ pmr_bar_arc_welding = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_arc_welding  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_arc_welding_0 >= 2500 }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_arc_welding  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_arc_welding_0 >= 5000 }
 			}
 			add = {
 				desc = "pmr_term_arc_welding_0_half"
@@ -244,7 +244,7 @@ pmr_bar_art_silk = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_art_silk  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_art_silk_0 >= 12500 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_art_silk  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_art_silk_0 >= 15000 }
 			}
 			add = {
 				desc = "pmr_term_art_silk_0_half"
@@ -288,7 +288,7 @@ pmr_bar_atmospheric_engine = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_atmospheric_engine_0 >= 12500 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_atmospheric_engine_0 >= 15000 }
 			}
 			add = {
 				desc = "pmr_term_atmospheric_engine_0_half"
@@ -376,7 +376,7 @@ pmr_bar_automatic_machine_guns = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_automatic_machine_guns_0 >= 11 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_automatic_machine_guns_0 >= 12 }
 			}
 			add = {
 				desc = "pmr_term_automatic_machine_guns_0_half"
@@ -385,7 +385,7 @@ pmr_bar_automatic_machine_guns = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_automatic_machine_guns_0 >= 22 }
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_automatic_machine_guns_0 >= 23 }
 			}
 			add = {
 				desc = "pmr_term_automatic_machine_guns_0"
@@ -420,7 +420,7 @@ pmr_bar_baking_powder = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_baking_powder  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_baking_powder_0 >= 7.5 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_baking_powder  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_baking_powder_0 >= 8 }
 			}
 			add = {
 				desc = "pmr_term_baking_powder_0_half"
@@ -534,7 +534,7 @@ pmr_bar_bessemer_process = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_bessemer_process  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_bessemer_process_0 >= 2.5 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_bessemer_process  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_bessemer_process_0 >= 3 }
 			}
 			add = {
 				desc = "pmr_term_bessemer_process_0_half"
@@ -692,7 +692,7 @@ pmr_bar_catalytic_synthesis = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_catalytic_synthesis  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_catalytic_synthesis_0 >= 23.5 }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_catalytic_synthesis  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_catalytic_synthesis_0 >= 24 }
 			}
 			add = {
 				desc = "pmr_term_catalytic_synthesis_0_half"
@@ -850,7 +850,7 @@ pmr_bar_chemical_bleaching = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_chemical_bleaching  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_chemical_bleaching_0 >= 7.5 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_chemical_bleaching  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_chemical_bleaching_0 >= 8 }
 			}
 			add = {
 				desc = "pmr_term_chemical_bleaching_0_half"
@@ -920,7 +920,7 @@ pmr_bar_combustion_engine = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_combustion_engine_0 >= 7.5 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_combustion_engine_0 >= 8 }
 			}
 			add = {
 				desc = "pmr_term_combustion_engine_0_half"
@@ -953,7 +953,7 @@ pmr_bar_combustion_engine = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_combustion_engine_1 >= 7.5 }  NOT = { OR = { AND = { pmr_src_combustion_engine_0 >= 7.5 } } }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_combustion_engine_1 >= 8 }  NOT = { OR = { AND = { pmr_src_combustion_engine_0 >= 8 } } }
 			}
 			add = {
 				desc = "pmr_term_combustion_engine_1_half"
@@ -997,7 +997,7 @@ pmr_bar_compression_ignition = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_0 >= 23.5 }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_0 >= 24 }
 			}
 			add = {
 				desc = "pmr_term_compression_ignition_0_half"
@@ -1030,7 +1030,7 @@ pmr_bar_compression_ignition = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_1 >= 23.5 }  NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 23.5 } } }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_1 >= 24 }  NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 24 } } }
 			}
 			add = {
 				desc = "pmr_term_compression_ignition_1_half"
@@ -1074,7 +1074,7 @@ pmr_bar_continuous_web_processing = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_continuous_web_processing  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_continuous_web_processing_0 >= 23.5 }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_continuous_web_processing  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_continuous_web_processing_0 >= 24 }
 			}
 			add = {
 				desc = "pmr_term_continuous_web_processing_0_half"
@@ -1320,7 +1320,7 @@ pmr_bar_crystal_glass = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_crystal_glass  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_crystal_glass_0 >= 7.5 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_crystal_glass  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_crystal_glass_0 >= 8 }
 			}
 			add = {
 				desc = "pmr_term_crystal_glass_0_half"
@@ -1504,7 +1504,7 @@ pmr_bar_dough_rollers = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_dough_rollers  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_dough_rollers_0 >= 42500 }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_dough_rollers  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_dough_rollers_0 >= 45000 }
 			}
 			add = {
 				desc = "pmr_term_dough_rollers_0_half"
@@ -1677,7 +1677,7 @@ pmr_bar_electric_arc_process = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_electric_arc_process  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electric_arc_process_0 >= 23.5 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_electric_arc_process  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electric_arc_process_0 >= 24 }
 			}
 			add = {
 				desc = "pmr_term_electric_arc_process_0_half"
@@ -1721,7 +1721,7 @@ pmr_bar_electric_railway = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_electric_railway  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electric_railway_0 >= 7.5 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_electric_railway  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electric_railway_0 >= 8 }
 			}
 			add = {
 				desc = "pmr_term_electric_railway_0_half"
@@ -1765,7 +1765,7 @@ pmr_bar_electrical_capacitors = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electrical_capacitors_0 >= 23.5 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electrical_capacitors_0 >= 24 }
 			}
 			add = {
 				desc = "pmr_term_electrical_capacitors_0_half"
@@ -1798,7 +1798,7 @@ pmr_bar_electrical_capacitors = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electrical_capacitors_1 >= 13 }  NOT = { OR = { AND = { pmr_src_electrical_capacitors_0 >= 23.5 } } }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electrical_capacitors_1 >= 14 }  NOT = { OR = { AND = { pmr_src_electrical_capacitors_0 >= 24 } } }
 			}
 			add = {
 				desc = "pmr_term_electrical_capacitors_1_half"
@@ -1807,7 +1807,7 @@ pmr_bar_electrical_capacitors = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_electrical_capacitors_1 >= 26 }  NOT = { OR = { AND = { pmr_src_electrical_capacitors_0 >= 47 } } }
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_electrical_capacitors_1 >= 27 }  NOT = { OR = { AND = { pmr_src_electrical_capacitors_0 >= 47 } } }
 			}
 			add = {
 				desc = "pmr_term_electrical_capacitors_1"
@@ -1842,7 +1842,7 @@ pmr_bar_electrical_generation = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_electrical_generation  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electrical_generation_0 >= 7500  has_technology_researched = electric_telegraph }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_electrical_generation  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electrical_generation_0 >= 10000  has_technology_researched = electric_telegraph }
 			}
 			add = {
 				desc = "pmr_term_electrical_generation_0_half"
@@ -1956,7 +1956,7 @@ pmr_bar_flash_freezing = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_flash_freezing  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_flash_freezing_0 >= 37500  has_technology_researched = steam_turbine }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_flash_freezing  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_flash_freezing_0 >= 40000  has_technology_researched = steam_turbine }
 			}
 			add = {
 				desc = "pmr_term_flash_freezing_0_half"
@@ -2140,7 +2140,7 @@ pmr_bar_improved_fertilizer = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_improved_fertilizer  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_improved_fertilizer_0 >= 2.5 }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_improved_fertilizer  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_improved_fertilizer_0 >= 3 }
 			}
 			add = {
 				desc = "pmr_term_improved_fertilizer_0_half"
@@ -2184,7 +2184,7 @@ pmr_bar_intensive_agriculture = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_intensive_agriculture  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_intensive_agriculture_0 >= 12500 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_intensive_agriculture  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_intensive_agriculture_0 >= 15000 }
 			}
 			add = {
 				desc = "pmr_term_intensive_agriculture_0_half"
@@ -2636,7 +2636,7 @@ pmr_bar_mechanical_tools = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_0 >= 2.5 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_0 >= 3 }
 			}
 			add = {
 				desc = "pmr_term_mechanical_tools_0_half"
@@ -2669,7 +2669,7 @@ pmr_bar_mechanical_tools = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_1 >= 25 }  NOT = { OR = { AND = { pmr_src_mechanical_tools_0 >= 2.5 } } }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_1 >= 25 }  NOT = { OR = { AND = { pmr_src_mechanical_tools_0 >= 3 } } }
 			}
 			add = {
 				desc = "pmr_term_mechanical_tools_1_half"
@@ -2713,7 +2713,7 @@ pmr_bar_mechanized_farming = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_mechanized_farming  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanized_farming_0 >= 37500  has_technology_researched = combustion_engine }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_mechanized_farming  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanized_farming_0 >= 40000  has_technology_researched = combustion_engine }
 			}
 			add = {
 				desc = "pmr_term_mechanized_farming_0_half"
@@ -2757,7 +2757,7 @@ pmr_bar_mechanized_workshops = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanized_workshops_0 >= 7.5 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanized_workshops_0 >= 8 }
 			}
 			add = {
 				desc = "pmr_term_mechanized_workshops_0_half"
@@ -2790,7 +2790,7 @@ pmr_bar_mechanized_workshops = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanized_workshops_1 >= 7.5 }  NOT = { OR = { AND = { pmr_src_mechanized_workshops_0 >= 7.5 } } }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanized_workshops_1 >= 8 }  NOT = { OR = { AND = { pmr_src_mechanized_workshops_0 >= 8 } } }
 			}
 			add = {
 				desc = "pmr_term_mechanized_workshops_1_half"
@@ -3070,7 +3070,7 @@ pmr_bar_nitrogen_fixation = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_nitrogen_fixation  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_nitrogen_fixation_0 >= 7.5 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_nitrogen_fixation  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_nitrogen_fixation_0 >= 8 }
 			}
 			add = {
 				desc = "pmr_term_nitrogen_fixation_0_half"
@@ -3114,7 +3114,7 @@ pmr_bar_nitroglycerin = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_nitroglycerin  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_nitroglycerin_0 >= 1.5 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_nitroglycerin  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_nitroglycerin_0 >= 2 }
 			}
 			add = {
 				desc = "pmr_term_nitroglycerin_0_half"
@@ -3158,7 +3158,7 @@ pmr_bar_oil_turbine = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_oil_turbine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_oil_turbine_0 >= 9500  has_technology_researched = pumpjacks }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_oil_turbine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_oil_turbine_0 >= 10000  has_technology_researched = pumpjacks }
 			}
 			add = {
 				desc = "pmr_term_oil_turbine_0_half"
@@ -3202,7 +3202,7 @@ pmr_bar_open_hearth_process = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_open_hearth_process  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_open_hearth_process_0 >= 7.5 }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_open_hearth_process  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_open_hearth_process_0 >= 8 }
 			}
 			add = {
 				desc = "pmr_term_open_hearth_process_0_half"
@@ -3290,7 +3290,7 @@ pmr_bar_pasteurization = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_pasteurization  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_pasteurization_0 >= 27500 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_pasteurization  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_pasteurization_0 >= 30000 }
 			}
 			add = {
 				desc = "pmr_term_pasteurization_0_half"
@@ -3378,7 +3378,7 @@ pmr_bar_percussion_cap = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_percussion_cap_0 >= 6250 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_percussion_cap_0 >= 10000 }
 			}
 			add = {
 				desc = "pmr_term_percussion_cap_0_half"
@@ -3387,7 +3387,7 @@ pmr_bar_percussion_cap = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_percussion_cap_0 >= 12500 }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_percussion_cap_0 >= 15000 }
 			}
 			add = {
 				desc = "pmr_term_percussion_cap_0"
@@ -3492,7 +3492,7 @@ pmr_bar_plastics = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_plastics  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_plastics_0 >= 23.5 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_plastics  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_plastics_0 >= 24 }
 			}
 			add = {
 				desc = "pmr_term_plastics_0_half"
@@ -3536,7 +3536,7 @@ pmr_bar_pneumatic_tools = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_pneumatic_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_pneumatic_tools_0 >= 4500 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_pneumatic_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_pneumatic_tools_0 >= 5000 }
 			}
 			add = {
 				desc = "pmr_term_pneumatic_tools_0_half"
@@ -3790,7 +3790,7 @@ pmr_bar_radio = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_radio  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_radio_0 >= 12500  has_technology_researched = electric_telegraph }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_radio  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_radio_0 >= 15000  has_technology_researched = electric_telegraph }
 			}
 			add = {
 				desc = "pmr_term_radio_0_half"
@@ -3878,7 +3878,7 @@ pmr_bar_reinforced_concrete = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_reinforced_concrete  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_reinforced_concrete_0 >= 30500 }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_reinforced_concrete  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_reinforced_concrete_0 >= 31000 }
 			}
 			add = {
 				desc = "pmr_term_reinforced_concrete_0_half"
@@ -3966,7 +3966,7 @@ pmr_bar_rifling = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_rifling  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_rifling_0 >= 1.5 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_rifling  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_rifling_0 >= 2 }
 			}
 			add = {
 				desc = "pmr_term_rifling_0_half"
@@ -4150,7 +4150,7 @@ pmr_bar_shell_gun = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_shell_gun  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_shell_gun_0 >= 1.5 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_shell_gun  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_shell_gun_0 >= 2 }
 			}
 			add = {
 				desc = "pmr_term_shell_gun_0_half"
@@ -4220,7 +4220,7 @@ pmr_bar_spray_finishing = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_spray_finishing  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_spray_finishing_0 >= 21.5 }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_spray_finishing  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_spray_finishing_0 >= 22 }
 			}
 			add = {
 				desc = "pmr_term_spray_finishing_0_half"
@@ -4308,7 +4308,7 @@ pmr_bar_steam_turbine = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_steam_turbine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_steam_turbine_0 >= 6500 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_steam_turbine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_steam_turbine_0 >= 7000 }
 			}
 			add = {
 				desc = "pmr_term_steam_turbine_0_half"
@@ -4466,7 +4466,7 @@ pmr_bar_telephone = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_telephone  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_telephone_0 >= 37.5 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_telephone  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_telephone_0 >= 38 }
 			}
 			add = {
 				desc = "pmr_term_telephone_0_half"
@@ -4580,7 +4580,7 @@ pmr_bar_vacuum_canning = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_vacuum_canning  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_vacuum_canning_0 >= 37500 }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_vacuum_canning  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_vacuum_canning_0 >= 40000 }
 			}
 			add = {
 				desc = "pmr_term_vacuum_canning_0_half"
@@ -4624,7 +4624,7 @@ pmr_bar_vulcanization = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_vulcanization  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_vulcanization_0 >= 23.5 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_vulcanization  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_vulcanization_0 >= 24 }
 			}
 			add = {
 				desc = "pmr_term_vulcanization_0_half"

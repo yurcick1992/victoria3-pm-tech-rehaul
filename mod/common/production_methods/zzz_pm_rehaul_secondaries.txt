@@ -120,7 +120,7 @@ pm_cannery_fish_food = {
 }
 pm_vacuum_canning_food = {
 	texture = "gfx/interface/icons/production_method_icons/vaccum_canning.dds"
-	replacement_if_valid = pm_vacuum_canning_principle_3
+	replacement_if_valid = pm_vacuum_canning_principle_3_food
 
 	unlocking_technologies = {
 		vacuum_canning
@@ -168,7 +168,7 @@ pm_vacuum_canning_principle_3_food = {
 			goods_input_oil_add = 4.92 			# x40 =  200
 
 			# output goods
-			goods_output_groceries_add = 83.42	# x30 = 2100
+			goods_output_groceries_add = 85	# config secondary_goods_override (the scaled value was 83.42)
 		}
 
 		level_scaled = {
