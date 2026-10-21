@@ -1317,6 +1317,10 @@ by ruling they stay as vanilla wrote them. Vanilla's own intent (tools and explo
    Options: (a) keep the percent over buildings of all rungs (strict: the JEs and the plastics event will rarely complete); (b) count the
    share of LEVELS on the target rung or newer, through a generated country value (the capacity meaning of vanilla's test); (c) drop the
    percent and keep only the "one building of the rung at level N" clause. Recommend (b); (c) if no script values are wanted.
+   ✅ RULED 2026-10-21: **(c)** — the user: "drop the share; one building of the right rung at the right level is enough". So je_realism
+   completes on one realist (e1) academy ≥ 90% staffed (vanilla's own clause; it has no level); je_camera / je_film on one level-5 academy
+   of their rung (e2 / e3); production_tech_events.200 on one level-5 plastics (e3) glassworks. The percent clauses and their occupancy
+   lines go.
 2. **Craft IN for economy_laws.6 "Industry Suffers"** (B1). ✅ RULED 2026-10-21: crafts count, beside every factory rung (the user).
 3. **Craft IN for the Serbian slander button** (B2). ✅ RULED 2026-10-21: any paper rung, the craft and every industrial rung (the user).
 4. **Occitan agricultural branch** (B3): craft in at vanilla-equivalent level (lvl ≥ 30), or e1+ only. ✅ RULED 2026-10-21: food factory rungs only, at level 3; the craft does not count (the user).
