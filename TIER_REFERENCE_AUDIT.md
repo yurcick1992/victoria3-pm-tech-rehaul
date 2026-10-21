@@ -1326,7 +1326,8 @@ by ruling they stay as vanilla wrote them. Vanilla's own intent (tools and explo
 4. **Occitan agricultural branch** (B3): craft in at vanilla-equivalent level (lvl ≥ 30), or e1+ only. ✅ RULED 2026-10-21: food factory rungs only, at level 3; the craft does not count (the user).
 5. **Haute couture** (A43 option b and D33): craft in (vanilla-faithful) or e1+ (luxury clothing). ✅ RULED 2026-10-21: textile factory rungs only; the craft does not count (the user).
 6. **dynamite_production_modifier** (D19): all explosives rungs, or e2+ (the rung dynamite unlocks).
-7. **modern_rifle_arsenal / arsenal_proving_ground** (D44–45): e1+ (modern weapons only), or all rungs.
+7. **modern_rifle_arsenal / arsenal_proving_ground** (D44–45): e1+ (modern weapons only), or all rungs. ✅ RULED 2026-10-21: every arms and
+   artillery rung in the state, as in vanilla (the user). The event's own trigger still looks for a rifle rung or newer (A67).
 8. **Industrial Boom decree events** (A46): crafts out per the lean — confirm; and keep vanilla's omission of the artillery foundry.
 9. **The default for throughput modifiers on crafts**: include (vanilla's building ran the handicraft method too), except where a row says
    otherwise. Confirm.
