@@ -10082,7 +10082,7 @@ periods on e3 are not significantly better than e2. Idea: add cost1-factor, simi
    the closed-major term 0; e3 pays back in about two thirds of e2's time in two seeds of three; PI no longer falls and the input-price problem
    market-years rose 208 → 245. Not ruled on.
 
-## §10.102 — THE NEXT ARM CARRIES `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99`; CANONISED ONLY AFTER AT LEAST n=3 PERFORMANCE TESTS (user-ruled 2026-10-17; FINDINGS F241)
+## §10.102 — THE NEXT ARM CARRIES `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99`; CANONISED ONLY AFTER AT LEAST n=3 PERFORMANCE TESTS (user-ruled 2026-10-17; FINDINGS F241) — ⭐ CANONISED 2026-10-21 (F248, item 4)
 The user, 2026-10-17, after the probes of F241: *"We will likely go with that in the future. While we won't canonize it prematurely, before at least
 performance tests on n=3, I want the next arm to have this change"* — and, on scope, *"Vanilla in-market monopolies are broken by design, but are out of
 scope for us"* (the lever was acceptable only because it touches foreign trade alone).
@@ -10108,6 +10108,13 @@ scope for us"* (the lever was acceptable only because it touches foreign trade a
    stays as the record and no next arm builds on it. ⚠ The book is the canon + the define, and the canon itself (private dams) has never run a
    century, so the result does not say the THRESHOLD costs time — only that this book is over the budget. The canon's own century is the open
    performance question for mod 1.0.
+   ⭐⭐ **OVERTURNED 2026-10-21 — CANONISED** (user: *"Canonise the monopoly effects on intenational trade only kicking in in extreme cases of over 99%
+   supply"*). The ×1.18 was read against the SUMMER vanilla; vanilla re-run on 2026-10-20/21 (n=6, game 1.13.11, today's harness) plays at a main median
+   of 178.5 min, ×1.08 of the summer's 165.0, and stays ×1.08–1.09 slower at the same live pop objects, building levels and world GDP (FINDINGS **F248**).
+   Against that same-days vanilla the wm99 n=4 reads 194.2 ÷ 178.5 = **×1.09, inside the budget**. ⇒ `config/mod_config.json` is the wm99 book verbatim
+   (sha256 `64c024535cbd9b71`), built and deployed 2026-10-21. ⚠ Thin: two of the n=4's runs are in clusters 1 + 2 and the reference is n=6; the
+   alternating vanilla + canon batch (`tools/testbed/schedules/alt_vanilla_canon_n16.json`, ~4 days, after the first round of polish) is the measurement
+   that settles the canon's place against the budget.
 
 ## §10.103 — TREATY PORTS: THE FUNNEL AS MEASURED, THE LAYERED SOLUTION, AND THE DEFERRAL TO MOD 1.1 ON GAME 1.15 (user-ruled 2026-10-19; FINDINGS F243–F246)
 The user, 2026-10-19, after the treaty-port arc: *"We'll wait for a promised significant AI decision making rework in 1.14. Document the treaty ports

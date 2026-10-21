@@ -289,7 +289,19 @@ reads that way it has been corrected in place; the headings that follow are HIST
 
 ## ⭐⭐⭐ THE CANON IS THE ARTMERGE ARM, `jex-dam4s-rs`, SINCE 2026-10-12 (user-ruled: *"CANONIZE artmerge with all these additions"*; BALANCE_FRAMEWORK §10.99; FINDINGS F227)
 
-⭐⭐⭐ **SINCE 2026-10-16 EVENING THE CANON'S BYTES ARE `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json` + twin** (sha256
+⭐⭐⭐ **SINCE 2026-10-21 THE CANON'S BYTES ARE `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` + twin** (sha256 `64c024535cbd9b71`; the
+twin unchanged, `04ac513168388956`) — user: *"Canonise the monopoly effects on intenational trade only kicking in in extreme cases of over 99% supply."*
+It is the previous canon (`jex-dam4s-rs-x25-m10ac-dpriv`, below) + `game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` + the `_wm99_variant`
+record, nothing else (BALANCE_FRAMEWORK §10.102, FINDINGS F241 / F247 / F248): the world-market monopoly markup (+0.2 × the leading exporter's share of
+world exports, on every traded good under the engine's default threshold) now applies only to a good one market exports above 99%. The build differs
+from the previous canon's in the `NEconomy` block of `common/defines/01_pm_rehaul_defines.txt` and the build stamps. Built, linted and DEPLOYED 2026-10-21
+10:40 (the playtest build `mod_playtest_wm99/` carried the same book without telemetry).
+⭐ **Why now, when F247 said no:** its n=4 played at ×1.18 of the SUMMER vanilla (194.2 min against 165.0) — but vanilla itself, re-run on 2026-10-20/21
+(n=6, the same game version and today's harness), plays at **178.5 min**, ×1.08 of the summer, and stays ×1.08–1.09 slower at the SAME world size
+(F248). Against the vanilla of the same days the book reads **×1.09, inside the +10% budget**. ⚠ Two runs of four sit in clusters 1 + 2 (the other two are
+fleet loops), and the October reference is n=6, so the margin to the budget line is thin; the alternating batch (`alt_vanilla_canon_n16.json`) is what
+settles it. ⚠ Still unmeasured: the threshold apart from private dams.
+⭐⭐ **FROM 2026-10-16 EVENING TO 2026-10-21 THE CANON'S BYTES WERE `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json` + twin** (sha256
 `fc7490eb6288514b`; the twin unchanged, `04ac513168388956`) — user: *"Canonize unlifted engines and conditional merge-host desire"*. It is F239's measured
 book `jex-dam4s-rs-x25-m10ac` (the x25 canon through its own chain with `make_ab_config --in0-for motor:1` — the engines' inputs ÷ 1.2, §10.101 — and
 `make_merge_config --ai-rule cond` — each merge host's desire is its own rung's era value, raised to the merged rung's once the owner holds the merged
@@ -298,14 +310,9 @@ the three motor rungs' inputs / target_be / wage_pct, the five merge hosts' ai_v
 and steel 3,000 → 5,000; fertilizer 1,000, no block), and the provenance records — nothing else; against the measured m10ac book: `dams.private` and its
 records only. Measured as m10ac WITHOUT private dams (F239, n=3): 3 intact, world GDP 1.02 / 1.04 / 1.12, consensus loss 6.72 (F227 7.28), misplaced
 capital NOT lower (22% median against the canon's 20%), play ×1.06. ⚠ The combination is UNMEASURED over a century. Built and DEPLOYED 2026-10-16 20:42.
-⚠ **SINCE 2026-10-17 21:23 THE DEPLOYED COPY IS NOT THE CANON** (user-asked, for a playtest): it is `mod_playtest_wm99/`, built from the NEXT ARM's book
-`config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` = the canon + `game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` (BALANCE_FRAMEWORK
-§10.102, FINDINGS F241; no telemetry; build diff against `mod/` = the `NEconomy` block alone). `mod/` is still the canon: restore the deployed copy
-with robocopy /MIR from it.
-⚠⚠ **THE THRESHOLD IS NOT CANONISED (2026-10-20, FINDINGS F247, by the user's rule "0.99 if performance is adequate, and we don't touch it
-otherwise"):** its n=4 (`20261019_225952_wm99-n4`) played at ×1.18 of vanilla (main median 194.2 min against 165.0), over the +10% budget. The canon
-keeps the engine's default threshold and no next arm carries the define. ⚠ The batch cannot separate the threshold from private dams: whether the
-CANON itself is inside the budget is unmeasured (it has no century run) and is the open performance question for mod 1.0.
+(HISTORY) From 2026-10-17 21:23 to 2026-10-21 the deployed copy was `mod_playtest_wm99/` (user-asked, for a playtest): the wm99 book that is now the
+canon, without telemetry. On 2026-10-20 F247 read it NOT canonised (×1.18 of the summer vanilla); that reading was overturned the next day by F248's
+drift (above).
 ⭐⭐ **FROM 2026-10-16 AFTERNOON TO EVENING THE CANON'S BYTES WERE `config/mod_config.jex-dam4s-rs-x25-dpriv.json` + twin** (sha256 `5bd4c706551d4da8`; the twin
 unchanged, `04ac513168388956`): `jex-dam4s-rs-x25` with **private dam construction everywhere**, `dams.private = all` (user: *"Canonize this change"*,
 the variant *"Everywhere, and mandate their subsidies"*; BALANCE_FRAMEWORK §10.89.14, FINDINGS F239–F240). Field diff against `jex-dam4s-rs-x25`:
@@ -1790,13 +1797,13 @@ config/mod_config.jex-dam4s-rb.json / config/mod_config.jex-dam4s-rs.json ⭐⭐
                         literacy term 25, universities ×0.5, `make_research_levers_config.mjs`) + the §10.97 entry rework (`make_research_rework_config.mjs
                         --base config/mod_config.jex-dam4s-rl.json --suffix jex-dam4s-rb`, F226); each book's `_*_variant` records hold the commands; `jex-dam4s-rs` = rb + the §10.98 entries
                         (`make_research_society_config.mjs`, F227). Their `-wild` twins are the smoke books. Un-ignored with their twins
-config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json ⭐⭐⭐ THE CANON SINCE 2026-10-16 EVENING (config/mod_config.json is a verbatim copy) + its tree twin
+config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json (HISTORY) THE CANON FROM 2026-10-16 EVENING TO 2026-10-21 + its tree twin
                         (x25's, byte for byte): the measured `jex-dam4s-rs-x25-m10ac` (engines unlifted, the conditional merge-host desire; F239) +
                         `dams.private = all` + the `_canon_2026_10_16` record, nothing else. Un-ignored with its twin
-config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json ⭐⭐ THE NEXT ARM'S BASE (user-ruled 2026-10-17, BALANCE_FRAMEWORK §10.102) + its tree twin (the canon's,
+config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json ⭐⭐⭐ THE CANON SINCE 2026-10-21 (config/mod_config.json is a verbatim copy; user-ruled, BALANCE_FRAMEWORK §10.102) + its tree twin (the canon's,
                         byte for byte): the canon + `game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` (the world-market monopoly markup off for every
                         good whose top exporter holds ≤ 99% of world exports; FINDINGS F241) + `_wm99_variant`, nothing else. Deployed for a playtest 2026-10-17
-                        (`mod_playtest_wm99/`); canonised only after at least n=3 performance tests. Un-ignored with its twin
+                        (`mod_playtest_wm99/`); canonised 2026-10-21 after F248 put its n=4 at ×1.09 of the same days' vanilla (F247 had read ×1.18 of the summer's). Un-ignored with its twin
 config/mod_config.jex-dam4s-rs-x25-dpriv.json (HISTORY) the canon on the afternoon of 2026-10-16 + its tree twin: jex-dam4s-rs-x25 + `dams.private = all`
                         (private dam construction under the government check's conditions), nothing else (§10.89.14, F240). Un-ignored with its twin
 config/mod_config.jex-dam4s-rs-m10.json ⚗ THE ENGINE LADDER UNLIFTED (user-ruled 2026-10-13, BALANCE_FRAMEWORK §10.101, FINDINGS F232) + its tree twin (the canon's,
@@ -3337,6 +3344,13 @@ tools/                  dev tooling — NOT shipped in the mod
                         indistinguishable from a run that never existed. ⚠ It replaces the hardcoded
                         `RUNS = [1..6]` lists, which is how canon-n7's stopped-at-1853 run007 would have
                         entered an n=6 baseline the moment someone re-pointed a script
+                        ⭐⭐ THE VANILLA REFERENCE (2026-10-21, user-ruled; FINDINGS F248): `VANILLA_REF` = the summer n=18
+                        (20260821_131149 + 20260823_113218) + the October n=6 (20261020_121619 + 20261020_222433) = n=24, the
+                        default of criteria.mjs, fill_ledger.sh and the other readers for EVERY reading but the wall clock;
+                        `VANILLA_WALL_REF` = the October six alone, because a play time is not comparable across months (vanilla
+                        ran ×1.08 slower per unit of world in October). Interim until the alternating vanilla + canon batch.
+                        Readers that still name the summer n=16 on purpose: measure_wage_share (config/measured_base_wages.json),
+                        era0_solvency, stop_watch's 1.3× fallback, ladder_headlines, trade_vs_gdp, va_composition, the corpus tools
                         ⭐ A GROUP OF RUNS (2026-10-08): `session` may be a comma list of sessions and/or
                         `<session>/runNNN_<setup>` folders. ⭐⭐ `configFamilies(root, runs)` says whether a
                         group may be pooled — ONE FAMILY = the same tier/building structure (industries,
@@ -5968,6 +5982,13 @@ esume_set_<n>`, newest first, frozen — and each attempt
   confounders from external machine usage or time of day, and any such effect is very likely far below noticeable
   levels** — so "a Steam update or a slow night hits both arms" justifies nothing. The a16/a22-in12 batch of 2026-09-13
   interleaved its two configs; by ruling it was left to finish as scheduled (its tie-breakers, if any, run after it).
+  ⚠⚠ **AMENDED 2026-10-21 FOR THE WALL CLOCK** (user: *"It seems that the conclusion that same config gives same wall clock speed was
+  premature"*; FINDINGS **F248**): vanilla on the same game version ran **×1.06–1.08 slower per unit of world in October than in August**
+  (pop-, level- and GDP-matched, in every decade), so a play time is NOT comparable across months, and a wall-clock comparison needs both
+  arms measured in the same days. ⇒ The economic readings still pool across months (`lib_runs.VANILLA_REF`, n=24), and the decision-driven
+  2+1 rule above stands for them; the WALL CLOCK is read against `VANILLA_WALL_REF`, the most recent same-harness vanilla, and is re-measured
+  by an ALTERNATING batch (`tools/testbed/schedules/alt_vanilla_canon_n16.json`: vanilla and the canon run by run, n=16 each, ~4 days —
+  prepared 2026-10-21, launched after the first round of polish).
   ⭐⭐ **THE 2+1 QUICK CONFIG TEST — THE STANDARD (user-ruled 2026-09-14, FINDINGS F114).** ⚠ Since 2026-09-17 its bands are ONLY the divergence test that decides a third run; what a config is judged by is THE CRITERIA REGISTER (§10.83), whose aims replace the bands' TARGET semantics. Two runs of one config, then
   `node tools/testbed/ledger/alignment_check.mjs --arm <session[,session]>:<setup>`, then a third run ONLY where the two
   DIVERGE, the config read as the median of three. **Two criteria, at 1935, as ratios to the vanilla baseline's per-run
