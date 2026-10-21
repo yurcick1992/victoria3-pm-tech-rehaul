@@ -19,7 +19,7 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **U\*** | **total unemployment INCLUDING peasants** = (unemployed + peasants) ÷ (salaried + unemployed + peasants) | the star is part of the name: plain "U" would read as the strict figure, which is a different number (world 16.3% against U\* 41.7% in vanilla) |
 | **H** | the **investment-pool hoard ÷ GDP** | a stock over a flow. ⚠ vanilla's own H spans 0.56–1.93× between seeds, so it is *"hardly comparable with vanilla"* (user, 2026-09-19) and carries no vanilla-derived bound |
 | **Y** | **GDP ÷ productive worker** | so that `W × Y` = GDP per capita. The productivity axis |
-| **T0 … T3** | **workers in the tiered industries' era-0 … era-3 rungs** = Σ staffed levels × per-level employment × workforce_mult | keyed by the rung's ERA, from the run's own config. An industry starting at e2 contributes nothing to T0 |
+| **T0 … T3** | **workers in the tiered industries' tier-0 … tier-3 rungs** = Σ staffed levels × per-level employment × workforce_mult | keyed by the rung's TIER, from the run's own config. An industry starting at t2 contributes nothing to T0 |
 | **PI** | the **building-input price index**: steel / tools / engines / fertilizer / explosives / dye / paper, median over the scoped markets of price ÷ base, ÷ vanilla's | falling = the design working |
 | **PP** | the **pop-goods price index IN WAGE UNITS**: groceries / clothes / furniture / glass / fine art / automobiles / telephones / radios, ÷ the owner's base wage, ÷ vanilla's | wage units because pop goods stay near base in pounds (F97) |
 | **PM** | the **war-goods** index (small arms / artillery / ammunition) | read only — the army's demand is exogenous |
@@ -66,12 +66,12 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | ⭐ **tech era 1 … 5**, **game era** (synonyms) | the **MECHANICAL era of a TECHNOLOGY** (the tech tree's Era I–V) — the era base cost and the ahead-of-time penalty. Mapped from tiers by `era_game_era` = [1, 3, 4, 5]. Never a bare "era N" where it could be read as a tier |
 | ⭐ **THE RENAME (user-ruled 2026-10-21, POLISH_1_0.md Q8)** | until 2026-10-21 the docs called a rung's tier its "**narrative era**" or "**era**" and wrote **e0 … e3**; every MD was rewritten to "tier" / t0 … t3 the same night, dated records included (the user: *"every MD, dated records included; config and tool names stay era"*). QUOTATIONS were left verbatim, so a user ruling or an old in-game name may still say "era" or "Era N" for a tier. Before 2026-09-13 some text used "Tier N" / "TN" for a 1-based POSITION in an industry's ladder; the rename turned those into "rung N" / "the Nth rung". Vanilla's STARTING-TECHNOLOGY tiers (`effect_starting_technology_tier_N`, "tier-1/2 countries") are unrelated and are written "starting-tech tier N" |
 | **rung** | one tiered building of one industry — the thing a tier labels |
-| **A** | the **output ratio per era**: a rung of era e makes `vanilla's first method × A^e` |
-| **B** | the **input-value ratio per era**: input value `× B^e` over that rung's own vanilla mix |
-| **r** | **A ÷ B** — the margin's SHAPE, multiplying per era. Today 2.2 ÷ 1.5 = **1.467** |
-| **C** | the **cost ratio**: building_cost = the vanilla anchor `× C^era` (`--cost-ratio`; `--cost-ladder` gives it per era explicitly) |
-| **in0**, **the lift**, **the era-0 input penalty** | rung 0's input VALUE `× in0`, with the whole ladder anchored on the lifted rung 0 (`--in0`). Today **1.2** |
-| **`--in0-level m`**, "**uniform −X%**" | the same penalty chosen PER INDUSTRY so every industry's era-0 rung lands on the SAME margin `m` at base prices, in place of one scalar. `lift_i = O0 × (1 − wage_pct) ÷ (I0 × (1 + m))` |
+| **A** | the **output ratio per tier**: a rung of tier e makes `vanilla's first method × A^e` |
+| **B** | the **input-value ratio per tier**: input value `× B^e` over that rung's own vanilla mix |
+| **r** | **A ÷ B** — the margin's SHAPE, multiplying per tier. Today 2.2 ÷ 1.5 = **1.467** |
+| **C** | the **cost ratio**: building_cost = the vanilla anchor `× C^era` (`--cost-ratio`; `--cost-ladder` gives it per tier explicitly) |
+| **in0**, **the lift**, **the tier-0 input penalty** | rung 0's input VALUE `× in0`, with the whole ladder anchored on the lifted rung 0 (`--in0`). Today **1.2** |
+| **`--in0-level m`**, "**uniform −X%**" | the same penalty chosen PER INDUSTRY so every industry's tier-0 rung lands on the SAME margin `m` at base prices, in place of one scalar. `lift_i = O0 × (1 − wage_pct) ÷ (I0 × (1 + m))` |
 | **target_be** | the **output price, as % of base, at which a rung covers input goods + wages**. `= 100 ÷ (1 + m)`. Its own drift guard, not a design input |
 | **the book** | one complete `config/mod_config.*.json` — a named point in (A, B, C, in0, ai_value, defines) space |
 | **the canon** / **the incumbent** | the book `config/mod_config.json` currently is; today `canon-c19-in12` |
@@ -111,7 +111,7 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 
 ---
 
-**Where the authority lives**: the register in BALANCE_FRAMEWORK §10.83 (+ .4–.7 and §10.85, §10.86), the era rule in §10.78 and CLAUDE.md's
+**Where the authority lives**: the register in BALANCE_FRAMEWORK §10.83 (+ .4–.7 and §10.85, §10.86), the tier rule in §10.78 and CLAUDE.md's
 governing section, the price principles in §10.86.2, what the AI levers are for (recipes steer, AI values follow profit) in §10.92, results in
 FINDINGS, engine behaviour in MODDING_NOTES, guardrails in TESTBED_LANDMINES.
 This page names things; it does not rule on them.

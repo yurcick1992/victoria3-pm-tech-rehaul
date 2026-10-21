@@ -56,7 +56,7 @@ and opens the editor in your browser. You can:
   unlocked groups to the loaded config, or **Bring to vanilla** to reset split buildings toward their
   base-game recipes + ai_value,
 - load a **market preset** in the scenario panel — one click fills the whole scenario with a country's
-  vanilla 1836 market (France / UK / Russia / Qing, or Empty), or one of the five **solved era scenarios**
+  vanilla 1836 market (France / UK / Russia / Qing, or Empty), or one of the five **solved tier scenarios**
   (1836 / 1870 / 1900 / 1920 / 1935): its buildings and the production methods
   the base game runs there, its **subsistence farms** (staffed by the peasant population, which is where
   most 1836 food comes from), its treaty goods transfers, and its population. Buy orders then split into

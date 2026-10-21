@@ -6,12 +6,12 @@ encodes, all user-ruled:
 
 - **Every graph/table gets a normalized/absolute toggle** unless there is a specific local reason not to.
 - ⭐ **THE TWO PAGES CARRY THE SAME PANELS IN THE SAME ORDER** (user-ruled 2026-08-24): **GDP →
-  G4/G5 decomposition → employment by era (chart + table) → industry composition (VA) → research →
+  G4/G5 decomposition → employment by tier (chart + table) → industry composition (VA) → research →
   build choice**, then page-specific extras (world: ladder, trajectory; watchlist: labour, tech
   edge). ⭐ The "ex-placeholders" card (five metrics probed 2026-08-15) and the tech-edge table's "lost markets ◇" column were
   DROPPED 2026-10-08 (user: "irrelevant for months, integrate or drop"): lost markets is answered by the Obsolescence panel (in-market vs
   trade); market access, queue depth and the per-rung wage live in the off-page readers (save summaries' `states`, `queue_series.mjs`,
-  `rung_fate.mjs`); true employment per rung IS the employment-by-era panels. A view diverges only for a stated reason, written in its caption — today
+  `rung_fate.mjs`); true employment per rung IS the employment-by-tier panels. A view diverges only for a stated reason, written in its caption — today
   exactly one: the watchlist build-choice panel shows WORLD totals (no per-country cut computed
   yet). The **industry composition panel follows the SCOPE control as a detalisation**: whole
   economy = broad sectors, tiered sector = the exact 22 industries — same panel, deeper cut.
@@ -137,7 +137,7 @@ canon4v-art3). It now takes the last row. Any new reader of `tierchoice.json` mu
 
 On a four-rung book `port` / `shipyard` / `shipyard_steam` / `railway` / `power` carry `disabled: true`; their
 tiers stay in the config and their rung-0 KEY IS THE VANILLA BUILDING, so a tier map built without the filter counts
-Britain's vanilla shipyards and ports as "e0" (it put 0.8M of them into the ab3 ledger's British e0 series — BUGS_AND_FIXES
+Britain's vanilla shipyards and ports as "e0" (it put 0.8M of them into the ab3 ledger's British t0 series — BUGS_AND_FIXES
 2026-09-03). Every script here that walks `cfg.industries` for tiers now starts the loop with
 `if (ind.disabled) continue;`. Keep it that way in any new one.
 
@@ -150,35 +150,35 @@ save summaries, and are parameterised only by the run list at the top of each fi
 - **`fill_consts.mjs`** — GDP_FLAT / GDP_VAN / GDP_NB, PROD_*, TRAJ, WORLD_FULL, WORLD_PURE. Medians
   across the arm’s runs. Productive workers = salaried workforce minus government and military
   staffing, taken off the buildings, which is the panel’s own definition.
-- **`fill_emp.mjs`** — EMP, tier employment by era: staffed levels × the config’s own per-tier
+- **`fill_emp.mjs`** — EMP, tier employment by tier: staffed levels × the config’s own per-tier
   employment × `workforce_mult`. EXACT, not proxied; an earlier proxy (levels × people-per-level ×
   staffing off report_data) came out ~4× low and was thrown away rather than published.
   ⭐ Since 2026-10-02 its COLUMNS come from **`lib_era_cols.mjs`**, shared with `report_data2.mjs`'s per-country
-  `emp`: on a book with craft rungs **e0 is split into `e0 artisans` and `e0 other`** (user-ruled: "for the art-
+  `emp`: on a book with craft rungs **t0 is split into `e0 artisans` and `e0 other`** (user-ruled: "for the art-
   family, split report into e0-artisans and e0-other, where appropriate" — a craft is meant to fade on its own
-  economics, an e0 FACTORY that survives is the ladder failing), and a merge host's workers are shared out over its
-  main methods at each method's own era (the summary's `pms`, criteria.mjs's rule). It writes **`emp_cols.json`**
+  economics, a t0 FACTORY that survives is the ladder failing), and a merge host's workers are shared out over its
+  main methods at each method's own tier (the summary's `pms`, criteria.mjs's rule). It writes **`emp_cols.json`**
   beside `emp.json`; `fill_assemble.mjs` splices it as the template's **`EMP_COLS`** (REQUIRED in the manifest), and
-  the table headers, legend, bar colours (artisans tan, e0 factories rose, eras blue), the derived captions and
-  `fill_goals.mjs`'s G2 (the e0 SUM, split printed) / G7 (the largest column's LABEL) all read the labels.
-  ⚠ Columns are LABELS, never indices: with the split, index 2 is e1 — `'e' + index` named it "e2".
+  the table headers, legend, bar colours (artisans tan, t0 factories rose, tiers blue), the derived captions and
+  `fill_goals.mjs`'s G2 (the t0 SUM, split printed) / G7 (the largest column's LABEL) all read the labels.
+  ⚠ Columns are LABELS, never indices: with the split, index 2 is t1 — `'e' + index` named it "e2".
   ⭐ It samples every DECADE (1840 … 1930, 1935) rather than six anchor years, and takes the FIRST summary of each
   year per run (it used to fold every summary of a sample year in, i.e. four quarters on a quarterly batch).
   ⭐⭐ **OLD RUNGS BESIDE THEIR REPLACEMENT** (2026-10-02, tables `t-empb2` world + `t-wempb2` watchlist; `emp_b2.json` →
-  `EMP_B2`, per tag `report_data2.mjs`'s `b2`): workers on a rung **two or more eras behind a rung their own country already
+  `EMP_B2`, per tag `report_data2.mjs`'s `b2`): workers on a rung **two or more tiers behind a rung their own country already
   staffs in the same industry** (`lib_era_cols.mjs` `countrySplit`), world-wide and in the register's shortlist pool, with
   their share of tier workers. Written because the user found "just how significant the non-obsolescence problem is" hard
-  to read off the by-era chart, which cannot tell the ladder failing to retire a rung from a country that runs NOTHING
+  to read off the by-tier chart, which cannot tell the ladder failing to retire a rung from a country that runs NOTHING
   newer in that industry (backwardness) — and most of the world's old-rung workforce is the second kind (e1a12-ai1135 run 1
-  at 1935: 7.6M e0 + e1 workers world-wide, of which 1.9M beside a rung two eras newer; 0.15M of the shortlist's 16.6M).
+  at 1935: 7.6M t0 + t1 workers world-wide, of which 1.9M beside a rung two tiers newer; 0.15M of the shortlist's 16.6M).
   Country-level by construction; the in-market vs trade panel reads the same question per market.
 - **`fill_payback.mjs`** — frontier and stale rung payback (build cost × £720 ÷ annual profit per level,
-  at realised prices) and the leader−p25 stock-era gap. ⚠ A loss-making rung has NO payback and is
+  at realised prices) and the leader−p25 stock-tier gap. ⚠ A loss-making rung has NO payback and is
   counted, never folded into a median as a large number (the `vanilla_payback_census` rule).
-  ⭐ On a book with craft rungs it also writes `staleArt` / `staleOther` (2026-10-02, the e0 split): a craft costs a fiftieth
-  of a factory and employs a tenth, so the pooled e0 figure (`stale`, still what the LADDER table and G2's grade read) mixed
-  two unrelated buildings — e1a12-ai1135 run 1 at 1935: pooled 31.8 y = artisans 7.1 y + e0 factories 79.6 y. G2 prints both.
-- **`fill_research.mjs`** — `techsT` (technologies held per era/tree, mean per country, both arms from
+  ⭐ On a book with craft rungs it also writes `staleArt` / `staleOther` (2026-10-02, the t0 split): a craft costs a fiftieth
+  of a factory and employs a tenth, so the pooled t0 figure (`stale`, still what the LADDER table and G2's grade read) mixed
+  two unrelated buildings — e1a12-ai1135 run 1 at 1935: pooled 31.8 y = artisans 7.1 y + t0 factories 79.6 y. G2 prints both.
+- **`fill_research.mjs`** — `techsT` (technologies held per tech era/tree, mean per country, both arms from
   `technologies_held`) and `jeT` (journal entries). ⚠⚠ **JE firings are DISTINCT `(stage, technology,
   country)` triples, never raw log lines** — landmine **L23** measured raw lines overcounting 2.25×.
 - **`redflag_metrics.mjs`'s card is COLLAPSED by default** (user-ruled 2026-10-08): a `<details>` whose summary line carries only the
@@ -199,9 +199,9 @@ save summaries, and are parameterised only by the run list at the top of each fi
     is still a failure by G1 standards"* — the mod's point is that an obsolete rung stops paying, so the less-efficient cut is NOT a G1
     reading): < 35% ok (better than any four-rung canon measured, 34.9–40.2%), to 45% warn, above bad. "First read" meant "worse than
     39%", solver2f's six-rung figure (F93), a book retired 2026-09-05. Raw share and the leader−p25 gap beside it.
-  - **G2** — e0 AND e1 (user, the same day): e0 falling every decade from 1900 (the register's T0 aim; soft breach when 1935 > 1.3 ×
-    1900), every e0 part paying back in ≥ 30 y (artisans and e0 factories apart on a craft book); e1 falling every decade from 1920 (e1
-    dies at N+2 = e3, whose technologies open from ~1920 toward the 1940 anchor).
+  - **G2** — t0 AND t1 (user, the same day): t0 falling every decade from 1900 (the register's T0 aim; soft breach when 1935 > 1.3 ×
+    1900), every t0 part paying back in ≥ 30 y (artisans and t0 factories apart on a craft book); t1 falling every decade from 1920 (t1
+    dies at N+2 = t3, whose technologies open from ~1920 toward the 1940 anchor).
   - **G3** — construction points added **1880–1935**, the MEDIAN over the arm's runs ÷ vanilla's mean (report_data's `ptsByYear` /
     `vanPtsByYear`; it read run 1's single year 1934→35 until this date) ≥ 1× (warn 0.9–1); frontier payback at £720/pt 8–15 y, warn
     6–8 or 15–20 (the floor = vanilla's own manufacturing payback at 1900, F53; £720 overstates a late payback ~25%).
@@ -209,10 +209,10 @@ save summaries, and are parameterised only by the run list at the top of each fi
   - **G5** — the register's W: productive workers PER HEAD (consts' new `p`; absolute on an older fill, labelled), 1932–36: 0.6–0.95 ok,
     above 1.0 bad (soft), else warn; GDP per worker must exceed vanilla's.
   - **G6** — 1837–60 world GDP 0.9–1.1 ok, 0.8–1.2 warn (this file's band; the register's hard 1836–45 anchor is criteria.mjs's).
-  - **G7** — THE ERA RULE'S ANCHORS, fact and target in ONE format (user-ruled 2026-10-08): eras by descending share of tiered workers,
-    listed until they pass 50% (one era over 50% → only it) — `e2/e0`. Target = the latest era whose anchor has passed plus the next one
-    within 5 years (`era_anchor_years` from `--config`, else 1836/1875/1905/1940): e1/e2 · e2 · e2/e3 at 1900 · 1920 · 1935. Met when
-    every listed era is in the target. The old "t2 · t3 · t3" was the retired six-rung ladder's; e0 parts are summed.
+  - **G7** — THE TIER RULE'S ANCHORS, fact and target in ONE format (user-ruled 2026-10-08): tiers by descending share of tiered workers,
+    listed until they pass 50% (one tier over 50% → only it) — `e2/e0`. Target = the latest tier whose anchor has passed plus the next one
+    within 5 years (`era_anchor_years` from `--config`, else 1836/1875/1905/1940): t1/t2 · t2 · t2/t3 at 1900 · 1920 · 1935. Met when
+    every listed tier is in the target. The old "t2 · t3 · t3" was the retired six-rung ladder's; t0 parts are summed.
   - **P** — the median over wall-clock clusters 1 + 2 (`wall_clusters.mjs --json` → `wall_clusters.json`, read by fill_build_perf); a
     cluster-3 run (a directly observed listed vanilla bug) is left out and named; yellow edge = the ruled +10% budget (it read 15).
 - **`fill_tierchoice.mjs`** — the **Build choice panel** (`TIERC`, table `t-tierc`; user-ruled INTO
@@ -230,7 +230,7 @@ save summaries, and are parameterised only by the run list at the top of each fi
   user-ruled 2026-08-24: "we clearly need some industry type decomposition chart, not only now, but
   always"): each tiered industry's share of the tiered sector's weekly VALUE ADDED, world-wide, at
   the anchor years, mod beside vanilla (VA = the direct v6+ fields; vanilla reads the same 22
-  industries through their base buildings — tier-1 key = the vanilla base). Bottom row = the
+  industries through their base buildings — the first rung's key = the vanilla base). Bottom row = the
   sector's absolute £M/wk, because shares are composition and can fall while the industry grows.
   ⚠ The broad sectors are a regex table, and anything it misses lands in `other` and is PRINTED by name: the hydro
   DAMS (`building_dam_*`, in the canon since 2026-09-27) sat there until 2026-10-02 and now have their own row.
@@ -239,7 +239,7 @@ save summaries, and are parameterised only by the run list at the top of each fi
   `node fill_obsolescence.mjs <outDir> --session <stamp> --setup <setup> --config <book> [--pool 1920,1930,1935] [--override-dir <dir>]`
   → `obsolescence.json`. Run it BEFORE `fill_assemble`; the manifest makes `OBS` required, so a fill that skips it
   fails the gate. One metric set for both kinds of competition, from `lib_obsolescence.mjs`. An old rung is IN-MARKET
-  when its own market's supply frontier is two eras above it, TRADE-ONLY when only the world's is. Per industry and
+  when its own market's supply frontier is two tiers above it, TRADE-ONLY when only the world's is. Per industry and
   regime the panel shows the loss-making share of levels, the true margin, staffed ÷ levels, the world price ÷ the rung's
   break-even, and the importers' loss share and signed premium ln(local ÷ world). The watchlist mirror shows the
   selection's SHARES only: its levels come from the selected countries, but a rung's regime is decided by its own
@@ -288,9 +288,9 @@ through `lib_runs.mjs` (`analyse_gdp_gap`, `fill_tierchoice`, `fill_obsolescence
 `--mod` steps take the resolved list). ⭐ **The group must be ONE FAMILY, not one build** (user-ruled the same day: *"the hard requirement for the
 build to be identical is an overkill. It should belong to the same family … shouldn't have different tier or building structure. But lumping
 together slightly different approaches to ladder coefficients could have merit. And joining together before-fix and after-fix builds on minor
-bugfixes is definitely OK."*): `lib_runs.configFamilies()` compares each run's config STRUCTURE (enabled industries, rung keys and eras, craft
+bugfixes is definitely OK."*): `lib_runs.configFamilies()` compares each run's config STRUCTURE (enabled industries, rung keys and tiers, craft
 and merged rungs) and the fill stops only on more than one family (`ALLOW_MIXED=1` overrides); inside a family it PRINTS every distinct config
-and build, which the prose must name. ⚠ The steps still take ONE `<book>` for costs, eras and labels — with coefficient variants pooled, pass
+and build, which the prose must name. ⚠ The steps still take ONE `<book>` for costs, tiers and labels — with coefficient variants pooled, pass
 the book most runs used and say so (criteria.mjs reads each run's own). ⚠ **Never edit `fill_ledger.sh` while it runs**: bash reads a script
 as it goes, and a header edit mid-fill broke every step after the one running (2026-10-08). ⚠ The watchlist still reads the group's FIRST run.
 First use: `out_jex_n16` (two sessions of one build, n=16).
@@ -299,7 +299,7 @@ First use: `out_jex_n16` (two sessions of one build, n=16).
 ⭐ The small per-batch readers F209 used sit beside it (promoted from the scratchpad 2026-10-02, outputs proven identical, all on
 `lib_sumidx.mjs`): `ustar_path.mjs` (the shortlist's U* year by year, first year under 10% / 5%), `craft_path.mjs` (the crafts over the
 century, world and pool), `us_construction_windows.mjs` (one country's private-queue shares by window, `--country`, `--windows`),
-`pp_goods.mjs` (the PP index good by good and market by market), `rung_fate.mjs` (per industry and era: workers, prices, true margin, wage ÷
+`pp_goods.mjs` (the PP index good by good and market by market), `rung_fate.mjs` (per industry and tier: workers, prices, true margin, wage ÷
 normal), and `misplaced_capital.mjs` (F206/F207).
 
 ## Filling it for a new batch
@@ -319,7 +319,7 @@ ledgers of 2026-09-13 (phase 1, phase 2, the §10.77 book) were rebuilt this way
      `--session`, so a multi-config session needs **`--setup <name>`** (2026-09-25; the trade ×1.5 B ladder holds four books in one
      session). The other session-level scripts take the same flag (`fill_tierchoice`, `fill_obsolescence`); `report_perf` takes the
      arm's RUN folders instead of the session; the rest take explicit `--mod` run lists.
-   - `report_data.mjs` — era stocks/additions, paybacks, frontier share, panel GDP.
+   - `report_data.mjs` — tier stocks/additions, paybacks, frontier share, panel GDP.
    - `report_data2.mjs` — the per-country dataset (yearly GDP both arms, labour, tier employment,
      anomaly flags) → `report_data2.json`.
    - **`report_perf.mjs` — the wall-clock / row-`P` data.** Point it at the session(s) holding **both**
@@ -368,7 +368,7 @@ into a report by hand:
 |---|---|
 | `analyse_ai_tier_choice.mjs` | Of the levels a country builds, what share go to a tier BELOW the best one it already holds? Does the first frontier building break the cycle? (F75) |
 | `analyse_ai_tier_profit.mjs` | Which industries are worst, normalised — the indefensible case (the frontier pays, a lower rung loses, and the loser is still built) — and, since 2026-08-24, **section (c)**: the share of ALL building that is below-best AND to a rung earning less per level than the standing frontier (the Build choice panel's sharper column). |
-| `analyse_build_allocation.mjs` | ⭐ **THE OVERSHOOT CHECK.** Where did construction actually go, by sector / industry / era, and how did that split move between two arms? |
+| `analyse_build_allocation.mjs` | ⭐ **THE OVERSHOOT CHECK.** Where did construction actually go, by sector / industry / tier, and how did that split move between two arms? |
 
 **All three take `--session <stamp>` and `--config <path>`, and with no arguments reproduce the
 canon-n7 baseline** (52.6% below-best, 54.1% unit-weighted, 55.3% excluding ports, 62,285 qualifying
@@ -396,7 +396,7 @@ it and still be a failure in two ways that measure cannot see:
 - **out of the untiered sector** — extraction, agriculture, ranching and fishing carry no `ai_value`
   change at all, so **starving them registers as a WIN** on the tier-choice metric.
 
-So it reports the sector / industry / era split of every level **added**, absolute beside normalized,
+So it reports the sector / industry / tier split of every level **added**, absolute beside normalized,
 with a per-industry `B/A abs` ratio and a list of industries now building at under 0.60× the baseline.
 
 Conventions it follows, each of which changed a number when it was got wrong:

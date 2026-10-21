@@ -44,7 +44,7 @@ shows the **metrics card** (`redflag_metrics.mjs` → `redflags_card.html`) and 
 
 - Every number comes from the digest, the metrics JSON or redflags.json. No number from memory, no number rounded into a new claim.
 - Name the basis once ("on the order books"). A HIGH is 1.70–1.75× base by construction; do not quote price ranges as findings.
-- Plain declarative sentences, the project's GLOSSARY terms (era vs game era, "the shortlist", "major market"). Typographic apostrophes
+- Plain declarative sentences, the project's GLOSSARY terms (tier vs game era, "the shortlist", "major market"). Typographic apostrophes
   (’) are safe; `fill_assemble` converts word-internal straight ones.
 - It is a reading, not a verdict on the book: no "the book fails", no proposed fix unless the user asks — the lede and "Next lever" own
   those. One clause pointing at a lever is acceptable where the digest makes the mechanism plain.

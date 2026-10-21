@@ -66,10 +66,10 @@ copy of the principle method; a new vanilla `replacement_if_valid` on a tiered b
 | What | Reads from vanilla | Tool | Notes |
 |---|---|---|---|
 | The **four-rung structure** (canon4v: rungs, names, gates, recipes, staffing, icons, secondary groups, building blocks) | `common/buildings/*.txt`, `common/production_method_groups/*.txt`, `common/production_methods/*.txt`, `localization/english/**` | `make_tier4_config.mjs` | Reads the game and `tools/lib_tier4_spec.mjs` only (BALANCE_FRAMEWORK §10.72). A patch that renames a method, re-gates it or adds a fifth main method changes the ladder; the tool throws on more than four |
-| The **four-rung tech tree** (vanilla eras, names, prerequisites + ERA_MOVES + 3 minted since 2026-09-13, motor's dropped under the era rule) | `common/technology/technologies/*.txt`, `localization/english/**` | `make_tier4_techs.mjs` | The twin is rebuilt from the game; `reEra` marks the one moved technology (vulcanization) so `emit_techs.mjs` patches the vanilla file. ⭐ Since 2026-10-03 also `PREREQ_ADDS` (lib_tier4_spec: **conveyors appended to compression_ignition's prerequisites**, §10.93 rule 7): `make_tier4_techs.mjs` throws if either technology is gone or the prerequisite is already vanilla's (a stale entry); `emit_techs.mjs` throws if vanilla's own prerequisite list for compression_ignition (`combustion_engine`) is no longer the tree's recorded `vanillaPrereqs` — regenerate the twins (`TIER4_SUFFIX=tier4` and `tier4-e1`) and copy them over the canon's and the arm's |
-| The **default build** (`config/mod_config.json` = **canon-c19-in12-elec** since 2026-09-20) | everything the two rows above read | `build.ps1` (no `-Config`) | The deployed mod is the four-rung canon. After a patch: regenerate it through the pipeline (make_tier4_config → make_tier4_techs → make_ab_config with the canon's own `_ab.command`), diff against the committed copy, copy over. The six-rung machinery (era pipeline, `tech_tree_spec --write`) runs ONLY with `MOD_CONFIG=config/mod_config.six_rung.json`; it throws otherwise. |
+| The **four-rung tech tree** (vanilla eras, names, prerequisites + ERA_MOVES + 3 minted since 2026-09-13, motor's dropped under the tier rule) | `common/technology/technologies/*.txt`, `localization/english/**` | `make_tier4_techs.mjs` | The twin is rebuilt from the game; `reEra` marks the one moved technology (vulcanization) so `emit_techs.mjs` patches the vanilla file. ⭐ Since 2026-10-03 also `PREREQ_ADDS` (lib_tier4_spec: **conveyors appended to compression_ignition's prerequisites**, §10.93 rule 7): `make_tier4_techs.mjs` throws if either technology is gone or the prerequisite is already vanilla's (a stale entry); `emit_techs.mjs` throws if vanilla's own prerequisite list for compression_ignition (`combustion_engine`) is no longer the tree's recorded `vanillaPrereqs` — regenerate the twins (`TIER4_SUFFIX=tier4` and `tier4-e1`) and copy them over the canon's and the arm's |
+| The **default build** (`config/mod_config.json` = **canon-c19-in12-elec** since 2026-09-20) | everything the two rows above read | `build.ps1` (no `-Config`) | The deployed mod is the four-rung canon. After a patch: regenerate it through the pipeline (make_tier4_config → make_tier4_techs → make_ab_config with the canon's own `_ab.command`), diff against the committed copy, copy over. The six-rung machinery (tier pipeline, `tech_tree_spec --write`) runs ONLY with `MOD_CONFIG=config/mod_config.six_rung.json`; it throws otherwise. |
 | **The wage model and the margin repair** (BALANCE_FRAMEWORK §10.87, FINDINGS F152) | `common/pop_types/*.txt` (`wage_weight`) and `common/defines/00_defines.txt` (`POP_SIZE_PACKAGE` — the DENOMINATOR of the engine's wage rate, which is weekly £ per that many employees, stated on `NORMAL_WAGE_RATE_FALLBACK` / `MINIMUM_WAGE_RATE`) | `tools/lib_wage_model.mjs` | Both read LIVE and both THROW if the key moves (fewer than 10 pop types with a weight, or no `POP_SIZE_PACKAGE`), so a patch cannot leave the wage silently rescaled — unlike the four static mirrors of `wage_weight` listed under *Testbed couplings*. ⚠ **`config/measured_base_wages.json` is a MEASURED snapshot of VANILLA and does NOT re-derive**: a patch that changes wages or the starting economy makes it stale, silently. Regenerate with `tools/measure_wage_share.mjs --write-wages` against a post-patch vanilla baseline — which needs one to exist first. ⚠ So are the wage bill's **two fitted coefficients** — `WAGE_PREMIUM` 1.19 and `PROFIT_WAGE_SHARE` 0.30 (F152 §8): re-measure both with the same tool if the `BUILDING_*_WAGES_*` or `BUILDING_PROFIT_TARGET_TO_*_WAGES` defines move, since the second coefficient IS that wage-raising rule. |
-| Tier **BE targets** (`target_be`) + `natural_year` | `common/technology/technologies/*.txt` (each tier's `tech` → `era`) | `solve_be_targets.ps1 -Write` | Era anchors 125/100/75/50/35 (e1–e5) − 15pp H1 manufactured-input adjustment. Run **before** `solve_volumes`. If a patch moves a tech's `era`, its tier's target shifts. |
+| Tier **BE targets** (`target_be`) + `natural_year` | `common/technology/technologies/*.txt` (each tier's `tech` → `era`) | `solve_be_targets.ps1 -Write` | Era anchors 125/100/75/50/35 (tech eras 1–5) − 15pp H1 manufactured-input adjustment. Run **before** `solve_volumes`. If a patch moves a tech's `era`, its tier's target shifts. |
 | Tier output/input **volumes** | **all** `common/production_methods/*.txt` (each tier's `vanilla_pm`; reads every file so power/port/railway PMs in `06`/`11` resolve) | `solve_volumes.ps1` | Re-solves inputs to hit `target_be`; skips `follows_be:false` industries (ports/railways stay vanilla). |
 | Tier **building_cost** (£/point) | `common/production_methods/13_construction.txt` → `pm_iron_frame_buildings` | `solve_building_cost.ps1` | £/point = Σ(goods_input×price) ÷ `country_construction_add`. Today **£3600/wk ÷ 5 = £720/pt**. |
 | **production_methods** files (whole-file replace, **only the CHANGED ones**) | **every** `common/production_methods/*.txt` is read; only files a transform actually alters are emitted | `build.ps1` | Any PM's goods can be edited without owning building files (buildings reference PMs by key). Two surgical transforms, verbatim otherwise: (1) **gate remap** — append our tier `pm_key` to `unlocking_production_methods` lists referencing a split main PM (bone china / elastics / precision tools); (2) **goods override** — overwrite `goods_input/output_*_add` for any PM in the config `pm_goods` map. Modifiers/employment/effects untouched. **The builder compares its output against the vanilla text and skips the write when they match**, so we own only what we change (today: `01_industry.txt` (gate remap) + `06_urban_center.txt` (the §10.43 streetlights `pm_goods`/`pm_employment` override); the other 14 stay vanilla and thus absorb a patch automatically). The build log line `production_methods: owning N file(s) … M left vanilla` says which. Our tier PMs stay in the additive `zzz_*` file; the BE linter reads vanilla + `zzz`, and the negative-goods linter reads vanilla PMs **plus** whatever we own on top. |
@@ -121,7 +121,7 @@ anchor). Vanilla's shorthand is forgiving; an authored list is not.
    owned files.
 3. Resolve each building's own `unlocking_technologies` too (a building can be gated as well as its PM).
 4. For each COUNTRY, take its starting set from `common/scripted_effects/00_starting_inventions.txt`
-   (which tier it gets comes from `common/history/countries/*.txt`) and check every technology its own
+   (which starting-tech tier it gets comes from `common/history/countries/*.txt`) and check every technology its own
    buildings and PMs need is in it.
 5. Report per country, not as a union.
 
@@ -132,7 +132,7 @@ silently dropped 8 of 110 PMs from this very check and produced a clean result t
 had carried a tech gate, the check would have passed while 1836 was broken.
 
 ⚠ **The union across all countries is NOT sufficient.** A leader's generous set can cover a gap that a
-tier-3 or tier-4 country's does not. The lower starting tiers are where this bites, and they are also
+starting-tech tier-3 or tier-4 country's does not. The lower starting tiers are where this bites, and they are also
 the ones most likely to drift 1836 away from vanilla.
 
 **Known structural exceptions, as of 2026-08-12 (patch 1.13):** three technologies the 1836 map depends
@@ -612,7 +612,7 @@ Newest first. Append here as we discover more couplings to vanilla.
     electric@3) including the PM names. A patch adding a fourth lighting method (LED? arc?) or renaming
     one leaves the mandate quietly wrong — re-check `pmg_street_lighting`'s member list after a patch.
   - **Power's vanilla anchors narrowed**: `pm_early_power_plant` is no longer any tier's `vanilla_pm`
-    (the era-3 tier is deleted; the coal tier keeps the vanilla `building_power_plant` key with tech
+    (the tier-3 rung is deleted; the coal tier keeps the vanilla `building_power_plant` key with tech
     swapped to `steam_turbine`). If a patch gives the power plant a fourth PM or renames
     `pm_coal-fired_plant`/`pm_oil-fired_plant`, the volume solver's anchors and `start_baseline`'s
     unmapped alarm are the tripwires, as for any split industry.
@@ -648,7 +648,7 @@ Newest first. Append here as we discover more couplings to vanilla.
     industries / 67 tier buildings**; the harness autosave default is **`five_year`** (not `never`) and the
     autosave enum row here quoted the *wrong* exe enum; the grace prompt is **60 s** (not 30 s); the removed
     `run_batch.ps1` was still referenced.
-- **2026-08-03** — **The five-era ladder replaces the BE-target system** (BALANCE_FRAMEWORK §10).
+- **2026-08-03** — **The five-tier ladder replaces the BE-target system** (BALANCE_FRAMEWORK §10).
   Balance is now solved as one interdependent economy with prices UNLOCKED, by a Node pipeline.
   **New requirement: Node ≥ 24** (`C:\Program Files\nodejs`) — the PowerShell tools alone can no longer
   reproduce the balance. **New vanilla couplings, all read live and re-derived on rebuild:**
@@ -760,7 +760,7 @@ Newest first. Append here as we discover more couplings to vanilla.
   PMs or PM files flows in on rebuild; stale until then, like the buildings files). Verified: unaffected
   files byte-identical to vanilla, overrides scoped to the exact PM, LINT 53/53.
 - **2026-07-17** — **Softened the ladder −15pp** (era anchors 140/115/90/65/50 → **125/100/75/50/35**; solver
-  `FLOOR` 45 → 30 so e5 can reach 35). Re-ran `solve_be_targets -Write` → `solve_volumes` →
+  `FLOOR` 45 → 30 so tech era 5 can reach 35). Re-ran `solve_be_targets -Write` → `solve_volumes` →
   `solve_building_cost` → `build` (LINT 53/53). Also: per-tier **`ai_value`** is now editable in the UI and
   emitted by the builder (blank = engine default 1000); the UI "natural BE" preset became **Restore
   defaults** (resets unlocked groups to the loaded config). **Tooling gotcha fixed:** `solve_be_targets.ps1`
@@ -802,14 +802,14 @@ Newest first. Append here as we discover more couplings to vanilla.
   tools), per-tier `state_infrastructure` (emitted as `state_infrastructure_add`; ports/railways produce
   infrastructure) and `output_override` (power keeps vanilla electricity output while on the BE ladder).
   `solve_volumes` now reads **all** production-methods files. 1836 ports/railways are re-tiered by
-  `convert_history` (both start on their T1 PM; conversion is a token swap). `trade_center` left vanilla.
+  `convert_history` (both start on their first-rung PM; conversion is a token swap). `trade_center` left vanilla.
   Rebuilt clean: 63 tier buildings / 21 industries, LINT PASSED (53 core), 604 factories re-tiered.
   **Not verifiable without launching V3** — engine correctness (mod loads, ports/railways function,
   `error.log`) needs an in-game test.
 - **2026-07-16** — **BE targets re-cast as a curve over tech unlock date (era).** New solver
   `solve_be_targets.ps1` reads each tier's unlocking tech's **era** from `common/technology/technologies/*.txt`
-  and writes per-tier `target_be` (era anchors **125/100/75/50/35** for e1–e5, minus **−15 pp** when a tier
-  unlocks in eras 1–3 and consumes a factory-made intermediate — dye/silk excluded) plus `natural_year`
+  and writes per-tier `target_be` (era anchors **125/100/75/50/35** for tech eras 1–5, minus **−15 pp** when a tier
+  unlocks in tech eras 1–3 and consumes a factory-made intermediate — dye/silk excluded) plus `natural_year`
   (era's representative year, shown in the UI). Replaces the old per-group ladders (light/heavy/tools/single-PM).
   **New vanilla coupling:** tech→era assignments; a patch that moves a tech between eras shifts that tier's
   target. Run order is now `solve_be_targets -Write` → `solve_volumes` → `solve_building_cost` → `build`.
@@ -846,9 +846,9 @@ Newest first. Append here as we discover more couplings to vanilla.
   (wood 40 + fabric 20 + iron 50 + tools 10 = £3600/wk ÷ 5 pts/wk) at 0 efficiency bonus; economy ticks
   weekly (52/yr); `goods_prices.tsv` is a static price mirror; UI `poundPerPoint` is a static hint that
   can drift; `building_cost` overrides vanilla's flat 200/400/600/800 construction-cost script-values.
-- **2026-09-13** — **THE ERA RULE couples the rung ladder to VANILLA'S TECHNOLOGY ERAS** (BALANCE_FRAMEWORK §10.78). Every rung's
-  narrative era is DERIVED by `tools/make_tier4_config.mjs` from its gate technology's game era as the mod ships it (vanilla's
-  `era = era_N` in `common/technology/technologies`, plus the spec's ERA_MOVES), and the A/B book's multipliers follow that era.
+- **2026-09-13** — **THE TIER RULE couples the rung ladder to VANILLA'S TECHNOLOGY ERAS** (BALANCE_FRAMEWORK §10.78). Every rung's
+  tier is DERIVED by `tools/make_tier4_config.mjs` from its gate technology's game era as the mod ships it (vanilla's
+  `era = era_N` in `common/technology/technologies`, plus the spec's ERA_MOVES), and the A/B book's multipliers follow that tier.
   A patch that moves a main method's technology to another era, re-gates a method, or adds a fifth main method to a tiered
   building therefore RE-PLACES rungs on the next regeneration — the generator prints each rung's deviation and THROWS beyond ±1
   or on an unruled overflow (a `PLACEMENT` ruling in `tools/lib_tier4_spec.mjs` is the answer, not a guess). After a patch:

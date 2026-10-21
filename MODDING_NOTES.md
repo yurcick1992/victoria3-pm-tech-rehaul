@@ -580,7 +580,7 @@ create_building={
 **What our mod breaks:** the listed **main** PM (e.g. `pm_handsewn_clothes`, and notably higher
 tiers actually used at start — `pm_dye_workshops`, `pm_lathe`, `pm_pig_iron`, `pm_sweeteners`,
 `pm_leaded_glass`, `pm_sulfite_pulping`, `pm_steel`) is no longer part of the repurposed base
-building, so those factories fall back to the forced T1 main PM — silently **downgrading**
+building, so those factories fall back to the forced first-rung main PM — silently **downgrading**
 advanced starting industry. Secondary "off" PMs still resolve (we keep those vanilla PMGs).
 
 **Converter approach (tasks I.2–I.4):** rewrite each `create_building` block for a split industry:
@@ -598,7 +598,7 @@ The vanilla-PM→tier mapping should live in the config (add a `vanilla_pm` fiel
 - A PM inside a single-PM main group must have **no `unlocking_technologies`**; put the tech gate
   on the **building** (`unlocking_technologies = { … }`) so the building always has a valid
   active main PM the moment it can be built.
-- Keep the vanilla building key as the **tier-1** variant so companies, journal entries, history
+- Keep the vanilla building key as the **first-rung** variant so companies, journal entries, history
   placement and AI that reference `building_<x>` keep working; higher tiers are new keys.
 - `aliases = { … }` on a building preserves the plural/alt keys other files use.
 - Referenced secondary PMGs (automation, luxury, canning, …) stay defined in vanilla — we only
@@ -894,7 +894,7 @@ and this session cannot disturb the vanilla/techs pooling the ROADMAP handover d
 | variant | completions in 1 year | what it proves |
 |---|--:|---|
 | `always` | **545** (285 countries named) | JE auto-activation + scripted bar + `on_complete` all work, for **every country in the game**, with no `add_journal_entry` anywhere |
-| `canres` | 111 | `can_research` gating works and discriminates (era-2 technology; the era-1 freebies would have given ~0) |
+| `canres` | 111 | `can_research` gating works and discriminates (era-2 technology; the tech era 1 freebies would have given ~0) |
 | `lvl` | 82 | ⭐ **a script value CAN be used as a trigger** (`pmrprobe_tex_lvl >= 1`), and `is_building_type` really filters |
 | `occw` | 56 | the occupancy-weighted sum works as a bar condition end to end |
 | `anyb` | 82 | `any_scope_building` + `occupancy` as a plain trigger works |

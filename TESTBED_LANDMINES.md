@@ -78,7 +78,7 @@ closed.
 | L28 | The log MIRROR re-copied the current log on a FALSE rotation — a stale directory length below the read position reset the tail to 0 every poll; non-telemetry lines (PMR_JE, events) multiplied ×2–28 in bursts | AUTO (post-run) | `Test-LmL28` — any `recovered 0 chars from []` seam in a run's `logs_live/*.log` FAILS; observer fixed 2026-09-04 |
 | L29 | The OBSERVER DIED ON ITS OWN LOG LINE — `Add-Content` to run.log throws "Stream was not readable" while another process reads the file (a heartbeat's `tail -1`), and under `Stop` preference the unguarded tick write unwound the observer with the game still running; the scheduler then burned 48 runs in 15 minutes behind the orphan (L19's cascade) | FIXED (generator) + PROOF OWED | all four harness log writers retry and never throw (2026-09-07); `run_schedule.ps1` aborts after TWO consecutive instant failures (non-zero exit < 90 s after launch) — live proof owed at the next idle window; L17 catches the artifact (a run with no meta.json). ⚠ READER SIDE (2026-10-01): a reader that KEEPS the file open (`tail -F`, an agent Monitor — whose expiry leaves the tail running) defeats the eight-try retry and the lines are dropped silently; `Test-LmL29` (`-Session`, WARN) flags a session.log missing a run's `=== run N/M` line. ⚠ (2026-10-17, session 20261017_190800 run 1: two minutes of run.log lost) STOPPING such a Monitor does NOT kill the `tail.exe` / `grep.exe` it spawned under Git Bash on Windows — they kept run.log blocked until killed by PID. Watch a live run with short reads only (a background `until` loop that runs `tail -n 3` each poll and exits), never `tail -F`; after any stopped watcher, check `Get-CimInstance Win32_Process` for a leftover `tail.exe` |
 | L30 | A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP — the shell sits in the desktop app's job object (KILL_ON_JOB_CLOSE), a `Start-Process` child silently breaks away into a SECOND app job, and an app restart (a forced re-auth, 2026-09-10 18:45:29) tore both down: scheduler, observer, game, archiver and harvester died in one second, ten months short of run 1's end | AUTO (launch) + WARN (scheduler) | `tools/testbed/launch_detached.ps1` creates the process through WMI (in NO job) and FAILS unless the kernel confirms it; `run_schedule.ps1` prints an ALERT when it finds itself inside a job. Found 2026-09-13 |
-| L31 | A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY RATHER THAN BY ITS ERA — the A/B generator keyed output, input value, cost and the lift on k = era − the industry's first era, so a late industry's first rung (automotive e2, electrics, synthetics, munition) was priced as an 1836 rung and electrics' only rung sat one era below its game-era-4 technology; eleven batches passed every lint | AUTO | `tools/lint_tier_eras.mjs` inside build.ps1 (throws) and `Test-LmL31` (the config + its paired tree); the generator derives eras from the technologies and throws beyond ±1. Found 2026-09-13 |
+| L31 | A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY RATHER THAN BY ITS TIER — the A/B generator keyed output, input value, cost and the lift on k = tier − the industry's first tier, so a late industry's first rung (automotive t2, electrics, synthetics, munition) was priced as an 1836 rung and electrics' only rung sat one tier below its game-era-4 technology; eleven batches passed every lint | AUTO | `tools/lint_tier_eras.mjs` inside build.ps1 (throws) and `Test-LmL31` (the config + its paired tree); the generator derives tiers from the technologies and throws beyond ±1. Found 2026-09-13 |
 | L32 | A CTD DURING THE AUTOSAVE WRITE LEAVES THE CONTINUE POINTER AIMED AT A SAVE THAT DOES NOT EXIST — the engine resumes by the TITLE its own `continue_game.json` names, not the newest file, so a truncated write defeats every step-back and the resume begins a FRESH 1836 game | AUTO | the deterministic resume feeder (quarantined set, one attempt per member, the `-ResumeWindowYears` process rule) + `Test-LmL32`: any run whose debug.log carries `Could not load save game [`. Found 2026-09-14 |
 | L33 | AN EMITTED DEFINE THE ENGINE REJECTS AT LOAD — a value outside the validator's hardcoded range is discarded with ONE line in error.log and the key keeps VANILLA's, so the arm is not the book: the eager set's `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR = 1.0` (vanilla's own comment says "capped at 1"; the range is [0,1)) ran at vanilla's 0.75, BELOW the 0.9 it was a one-lever test against, and F121 measured three of its four levers. A bound can also be a cross-reference: land `CRITICAL_THRESHOLD` 1.25 invalidates vanilla's ship `EXCESSIVE_THRESHOLD` 1.05, a define we never set | AUTO | `Test-LmL33` — (a) the config's `ai_defines` against the bounds the engine has stated (`-RepoOnly`, gates a launch), (b) with `-Session`, every run's error.log for `defines.cpp` "not valid with given value", which needs no table; `batch_heartbeat.sh` gives it its own DEFINE REJECTED alarm. Found 2026-09-15 ⚠ (2026-10-17) A SECOND SHAPE: a DEAD key — one the engine does not read at all. It is reported in DEBUG.log as `Define 'X' defined in '<file>' not specified. Maybe a define macro is missing`, for vanilla's own line too (15 keys in 1.13.11, FINDINGS F241). `Test-LmL33 -Session` now also reads debug.log and FAILs a dead key named in OUR defines file (proven on 20261017_190800: FAIL on both 0.99 runs, PASS on 20261016_192119); `emit_techs.mjs` refuses the known dead keys in `game_defines` at build |
 | L34 | A run recorded complete in minutes — a crash before the first autosave restarted through `-continuelastsave`, which loaded the previous run's endpoint | AUTO (post-run, `-Session`) |
@@ -135,10 +135,10 @@ class — reads 0**, because a factory whose base key is absent from the map is 
 rather than being examined and failing.
 
 **Found live, 2026-08-12, at 30%.** `Get-SplitMaps` (`tools/history_lib.ps1:61`) keys the base-building
-map on the **first** tier. That held while tier 1 was the vanilla building; the era ladder then minted
-non-`model_only` **e0 rungs** for nine industries, so slot 0 became an invented key and the vanilla one
-it displaced went invisible. **98 of 327 starting factories** were emitted on era 1 against their own
-methods — textile 21, tooling 25 (nine of them a **two-era** demotion), furniture 18, glass 12, food 12,
+map on the **first** rung. That held while the first rung was the vanilla building; the tier ladder then minted
+non-`model_only` **t0 rungs** for nine industries, so slot 0 became an invented key and the vanilla one
+it displaced went invisible. **98 of 327 starting factories** were emitted on tier 1 against their own
+methods — textile 21, tooling 25 (nine of them a **two-tier** demotion), furniture 18, glass 12, food 12,
 paper 10. Vanilla and converted `create_building` counts were **identical** for all nine industries,
 which is what proves no conversion ran. Full root cause and the fix in `ROADMAP.md` → *Deferred fixes*.
 
@@ -175,9 +175,9 @@ four-rung ladder does whenever an industry has more rungs than vanilla has metho
 checked only against the method it is NAMED for, never against the one the converter actually places
 through it.
 
-The live case: four-rung tooling e1 is `pm_steel` (gate `mechanical_tools`) with `pm_pig_iron` (gate
+The live case: four-rung tooling t1 is `pm_steel` (gate `mechanical_tools`) with `pm_pig_iron` (gate
 `steelworking`) as its alias. Ten countries run pig iron in vanilla 1836 holding `steelworking`; the
-converter puts them on e1; the engine drops the block for want of `mechanical_tools`. L14 asks *"what
+converter puts them on t1; the engine drops the block for want of `mechanical_tools`. L14 asks *"what
 does vanilla need for `pm_steel`?"* against *"what do we need?"*, gets `mechanical_tools` both sides,
 and **PASSES**. The ten dropped buildings appear only in `error.log`, found by the 5-minute smoke
 check. `emit_techs.mjs` has the same blind spot on the granting side — see BUGS_AND_FIXES 2026-08-31
@@ -198,7 +198,7 @@ method in vanilla, and vanilla can run them because `mechanical_tools` sits in i
 ⇒ **One landmine was hiding another.** Fixing L13 is what made L14 visible, which is the argument for
 detectors over inspection: nobody would have gone looking.
 
-**The fix that shipped** was to name `steel_toolmaking` in our own starting grant, tiers 1 and 2, exactly
+**The fix that shipped** was to name `steel_toolmaking` in our own starting grant, starting-tech tiers 1 and 2, exactly
 as vanilla names the three technologies its own 1836 map needs (`central_archives`, `mechanical_tools`,
 `intensive_agriculture`).
 
@@ -234,7 +234,7 @@ was wrong, and it failed **twice over**:
 `add_technology_researched` lines sitting inside a per-country guard —
 `if = { limit = { this = c:NET } … }`, exactly how `emit_techs.mjs` writes `start_tech_grants` — as
 though **every** country of that tier held them. Our NET-only `screw_frigate` grant was therefore
-credited to all 60-odd tier-2 countries, so DEI, SMB, TID and PON looked entitled to steam ports they
+credited to all 60-odd starting-tech tier-2 countries, so DEI, SMB, TID and PON looked entitled to steam ports they
 cannot build. `startSets()` (L15's path) had already solved this and its own comment warned that
 over-reporting holdings *"is a detector that passes the very failure L14 is for"* — correctly, about
 the function beside it. **Both landmines now read `startSets()`**: one definition of what a country
@@ -609,7 +609,7 @@ running it holds the technology that unlocks it.* Nothing in the build enforced 
 
 **Why nothing fails.** We whole-file-replace `common/scripted_effects/00_starting_inventions.txt`, so a
 transform that drops a line removes that technology from every country of that tier. Worse and quieter:
-tiers 1 and 2 get most of their set from `add_era_researched = era_1`, so **re-era-ing a technology OUT
+starting-tech tiers 1 and 2 get most of their set from `add_era_researched = era_1`, so **re-era-ing a technology OUT
 of era 1 silently withdraws it from 59 countries** — no file mentions it, no check reads it, the mod
 loads, and the first symptom is a production method a great power can no longer run. We move eras
 routinely (the ladder-era alignment moved 32 technologies in one commit), which is exactly the operation
@@ -624,10 +624,10 @@ it correct rather than approximately correct:
   A set built from the tier effect alone is the wrong set for a fifth of the world.
 
 It FAILS on any loss and merely REPORTS the gains, grouped — gains are intended and ruled, but their
-shape belongs on screen so an unexpected one is visible. Today: 338 countries gain nothing, tier 3 gains
-`beet_sugar_refining`, tier 2 gains five era-1 technologies, tier 1 those five plus `steel_toolmaking`.
+shape belongs on screen so an unexpected one is visible. Today: 338 countries gain nothing, starting-tech tier 3 gains
+`beet_sugar_refining`, starting-tech tier 2 gains five era-1 technologies, starting-tech tier 1 those five plus `steel_toolmaking`.
 
-**Proven.** Deleting `add_technology_researched = railways` from the tier-1 grant makes it name FRA, GBR,
+**Proven.** Deleting `add_technology_researched = railways` from the starting-tech tier-1 grant makes it name FRA, GBR,
 PRU and USA and exit non-zero.
 
 **⚠⚠ L14 AND L15 ARE `N/A` FOR AN INSTRUMENT ARM, AND THAT EXEMPTION IS ITSELF A LANDMINE STORY
@@ -773,7 +773,7 @@ by ×1.48. Holding **inputs at base** is what makes the bound bite, and that is 
 (`target_be ≤ 175`, §10.63). It catches port 270, railway 217 and synthetics 208, which is what forced
 the re-solve. `lint_solvency.mjs --band` still scores the superseded line for comparison.
 
-**The defect.** `building_port` (era 0) consumes **15.2 clippers to make 9 merchant marine** —
+**The defect.** `building_port` (tier 0) consumes **15.2 clippers to make 9 merchant marine** —
 £912 of input for £450 of output at base prices, a ratio of **0.49**. Vanilla's own
 `pm_basic_port` is 6 → 9, i.e. **+£90**. Its stored `target_be` is **270**, which states plainly
 that the building needs its output at 270% of base to break even. **The engine's price band tops
@@ -811,14 +811,14 @@ non-obvious reason it did not:
 
 **The census (2026-08-17, canonical config, 6 of 105 tiers destroy value at base prices):**
 
-| O:I | era | target_be | in the linter? | tier |
+| O:I | tier | target_be | in the linter? | building |
 |---|---|---|---|---|
-| 0.49 | e0 | 270 | **no** (`no_mass_be`) | `building_port` |
-| 0.61 | e1 | 217 | **no** (`no_mass_be`) | `building_railway` |
-| 0.64 | e2 | 208 | **yes — and it passes** | `building_synthetics_plant` |
-| 0.84 | e3 | 158 | **no** (`no_mass_be`) | `building_power_plant` |
-| 0.96 | e2 | 139 | yes | `building_steel_mill_bessemer` |
-| 0.96 | e0 | 135 | yes | `building_steel_mill` |
+| 0.49 | t0 | 270 | **no** (`no_mass_be`) | `building_port` |
+| 0.61 | t1 | 217 | **no** (`no_mass_be`) | `building_railway` |
+| 0.64 | t2 | 208 | **yes — and it passes** | `building_synthetics_plant` |
+| 0.84 | t3 | 158 | **no** (`no_mass_be`) | `building_power_plant` |
+| 0.96 | t2 | 139 | yes | `building_steel_mill_bessemer` |
+| 0.96 | t0 | 135 | yes | `building_steel_mill` |
 
 **DETECTOR — as RULED and as BUILT (§10.63).** Inputs stay at BASE; only the output price moves to its
 band edge:
@@ -1504,28 +1504,28 @@ industry loop in `tools	estbed***.mjs` must mention `disabled` on the line or wi
 are skipped. Proven both ways on 2026-09-03: an unguarded probe file FAILS (`_lm27_probe.mjs:2`), its removal
 PASSES (13 scripts with industry loops, every one guarded).
 
-**Found 2026-09-03**, from the user reading the ab3 growth-seeds ledger: e0 employment for GBR+FRA "growing era
-to era" while glass e0 had halved. The page's British e0 series ran 0.16M → 0.83M (1930) → 0.68M; the era-0 rungs
+**Found 2026-09-03**, from the user reading the ab3 growth-seeds ledger: t0 employment for GBR+FRA "growing era
+to era" while glass t0 had halved. The page's British t0 series ran 0.16M → 0.83M (1930) → 0.68M; the tier-0 rungs
 of the ENABLED industries, staffing-weighted, ran 0.16M → 0.13M → 0.09M. The difference was `building_shipyard`
 (5,000 per level) and `building_port` (1,000): 469k and 365k "e0 people" at 1935.
 
 ### The mechanism
 On a four-rung book `port`, `shipyard`, `shipyard_steam`, `railway` and `power` carry `disabled: true`
 (§10.66/§10.67.5): the industry is handed back to vanilla, but its tiers stay in the config and its rung-0 KEY IS
-THE VANILLA BUILDING. A tier→era map built without the filter labels every vanilla port, shipyard and railway
+THE VANILLA BUILDING. A rung→tier map built without the filter labels every vanilla port, shipyard and railway
 level a tiered rung — usually rung 0 — and those buildings grow all century. Nine ledger scripts and one melt
 reader had the omission (`report_data2`, `fill_emp`, `fill_indecomp`, `tiered_panel`, `report_data`,
 `analyse_ai_tier_profit`, `analyse_build_allocation`, `analyse_gdp_gap`, `peek_run`,
 `melted_company_ownership`); `fill_payback` and `analyse_ai_tier_choice` had the filter, which is why payback
-and below-best were right while every employment-by-era panel was wrong. **Nothing failed**: the panel rendered,
+and below-best were right while every employment-by-tier panel was wrong. **Nothing failed**: the panel rendered,
 the verify gate passed, goal G2 read "oldest rung still grows" from it. On the six-rung canon nothing is
 disabled, so the defect could not show until a four-rung book met the ledger — and it sat there through five
 four-rung ledgers before a reader noticed.
 
 ### What it touched
-The employment-by-era panels (world and per country) of every four-rung ledger since 2026-08-29, goal G2 on all of
+The employment-by-tier panels (world and per country) of every four-rung ledger since 2026-08-29, goal G2 on all of
 them, the "tiered sector" employment share in `tiered_panel`, and the world rung headcounts quoted in F98 §2 and
-F99 §1 (corrected there: ab2 seed 1 at 1935 e0 8.2M, not 10.7M). Prices, GDP, payback, below-best, companies and
+F99 §1 (corrected there: ab2 seed 1 at 1935 t0 8.2M, not 10.7M). Prices, GDP, payback, below-best, companies and
 the first-run decomposition were never affected (they do not walk tiers, or they filtered).
 
 ### The rule
@@ -1709,30 +1709,30 @@ any launch, a session folder appears within a minute or the launch did not happe
 mode (an at-logon task that re-enters the schedule at its last completed run) or Windows Update held back for the
 batch's window; neither exists yet.
 
-## L31 — A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY, NOT BY ITS ERA (found 2026-09-13, the era pass)
+## L31 — A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY, NOT BY ITS TIER (found 2026-09-13, the tier pass)
 
 ### Why nothing fails
-The four-rung books carry a narrative era on every rung (`t.era`, 0–3), and every label, name and ledger reads it. But two things
-never did: `make_tier4_config.mjs` ASSIGNED eras by vanilla method order (four methods → 0, 1, 2, 3; five short industries by a hand
-table), and `make_ab_config.mjs` keyed the whole economic ladder on **k = era − the industry's first era** — output × A^k, input value
-× B^k, cost × A^k, the ×1.2 lift on k = 0. So a late-starting industry's first rung was priced as an 1836 rung whatever its era said:
-automotive's e2 rung had vanilla's recipe at vanilla's margin, electrics' only rung sat on e1 (telephone is a game-era-4 technology →
-e2) with an 1836 recipe, synthetics' and munition's likewise. The build passed every lint, the mod loaded, eleven batches (F98–F110)
+The four-rung books carry a tier on every rung (`t.era`, 0–3), and every label, name and ledger reads it. But two things
+never did: `make_tier4_config.mjs` ASSIGNED tiers by vanilla method order (four methods → 0, 1, 2, 3; five short industries by a hand
+table), and `make_ab_config.mjs` keyed the whole economic ladder on **k = tier − the industry's first tier** — output × A^k, input value
+× B^k, cost × A^k, the ×1.2 lift on k = 0. So a late-starting industry's first rung was priced as an 1836 rung whatever its tier said:
+automotive's t2 rung had vanilla's recipe at vanilla's margin, electrics' only rung sat on t1 (telephone is a game-era-4 technology →
+t2) with an 1836 recipe, synthetics' and munition's likewise. The build passed every lint, the mod loaded, eleven batches (F98–F110)
 completed. What they measured for those industries (F111): automotive at 1935 earning £2,700 of value added per staffed level against
-£10,200 for steel's e2 and £5,900 for arms' e2 in the same runs; synthetics at a seventh of vanilla's share of world value added; on
+£10,200 for steel's t2 and £5,900 for arms' t2 in the same runs; synthetics at a seventh of vanilla's share of world value added; on
 the flat-cost lifted book electrics and munition loss-making at base from their debut, 29% and 27% staffed on 697 and 841 built levels.
 
 ### The rule it enforces
-THE ERA RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78, CLAUDE.md's governing section): technologies by their GAME era, rungs by
-their NARRATIVE era, the narrative era derived from the technology's (1 → e0, 2 → e1, 3 → e1, 4 → e2, 5 → e3, bumped up only to keep one
-rung per era), a tolerance of ±1 era, and every economic multiplier a function of the era. The rung index is never a key.
+THE TIER RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78, CLAUDE.md's governing section): technologies by their GAME era, rungs by
+their TIER, the tier derived from the technology's game era (1 → t0, 2 → t1, 3 → t1, 4 → t2, 5 → t3, bumped up only to keep one
+rung per tier), a tolerance of ±1 tier, and every economic multiplier a function of the tier. The rung index is never a key.
 
 ### DETECTOR
-`tools/lint_tier_eras.mjs [--config <path>] [--census]` — reads the CONFIG and its PAIRED tree (the era the mod ships, ERA_MOVES
-included): (1) every rung within ±1 of its technology's narrative era, strictly increasing eras, inside 0..3; (2) for an A/B book
-(`_ab` present) output = vanilla first-method output × A^era, input value = vanilla × lift × B^era, cost = anchor × A^era or flat,
-ai_value = the era list or base × ratio^era — recomputed from the game files and `_ab`; (3) output and value added per level rising
-with era in every industry. Wired into `build.ps1` after the L13 lint (throws) and into `preflight.ps1` as `Test-LmL31` (with
+`tools/lint_tier_eras.mjs [--config <path>] [--census]` — reads the CONFIG and its PAIRED tree (the tech era the mod ships, ERA_MOVES
+included): (1) every rung within ±1 of the tier its technology implies, strictly increasing tiers, inside 0..3; (2) for an A/B book
+(`_ab` present) output = vanilla first-method output × A^tier, input value = vanilla × lift × B^tier, cost = anchor × A^tier or flat,
+ai_value = the tier list or base × ratio^tier — recomputed from the game files and `_ab`; (3) output and value added per level rising
+with tier in every industry. Wired into `build.ps1` after the L13 lint (throws) and into `preflight.ps1` as `Test-LmL31` (with
 `-Config` that config; without, the canon alone — the frozen pre-pass records such as canon-4rung are expected to fail it). The
 generator throws at generation on the same rules. Proven: every pre-pass book fails on its four re-keyed industries; every regenerated
 book passes; the six-rung book is out of scope (no `era_game_era`) and says so.
@@ -1741,8 +1741,8 @@ book passes; the six-rung book is out of scope (no `era_game_era`) and says so.
 `make_tier4_config.mjs` derives placement (`derivePlacement` / `placementFaults` in `lib_tier4_spec.mjs`; `PLACEMENT` now holds only the
 ruled adjustments — fertilizer, explosives, motor — and every entry is validated); `make_ab_config.mjs` keys on `t.era` and stamps
 `_ab.keyed_by: 'era'` + `_ab.command`; `convert_history.ps1` resolves a start rule by `era` and throws on a `tier` (position) rule on a
-four-rung book; `extract_start.ps1` labels the baseline by era; `emit_research_events.mjs` converts a rule-D technology's game era to a
-narrative era before reading `thresholds_by_era`.
+four-rung book; `extract_start.ps1` labels the baseline by tier; `emit_research_events.mjs` converts a rule-D technology's game era to a
+tier before reading `thresholds_by_era`.
 
 ## L32 — A CTD DURING THE AUTOSAVE WRITE LEAVES THE CONTINUE POINTER AIMED AT A SAVE THAT DOES NOT EXIST; THE STEP-BACK LADDER IS INERT AGAINST IT (found 2026-09-14, run 2 of 20260914_173832_canon-c19-in12-n2)
 
@@ -1884,7 +1884,7 @@ the game runs, the building exists and works. **The only symptom is a method tha
 which nobody can see from any artifact, and which took a full human campaign to notice.
 
 ⚠ It bites in proportion to how many additions the spec carries, and only where the industry ALSO has a gated secondary. Today that is
-exactly one case (furniture e3), and paper and fertilizer are unaffected only because their industries have no gated secondary. **Every
+exactly one case (furniture t3), and paper and fertilizer are unaffected only because their industries have no gated secondary. **Every
 future addition is a fresh instance.**
 
 ### The fix (2026-09-18)
@@ -1893,11 +1893,11 @@ copies its recipe, staffing and icon from, so an addition is "the method after X
 name that lower method still excludes the addition, which is correct. Applied at BOTH sites: `$script:pmRemap` in `build.ps1` (now
 `vanilla_pm` → a LIST of `pm_key`s, not one) and the `gatedOn` test in `emit_secondaries.mjs`. Verified in a real build: the furniture
 gate in the owned `01_industry.txt` now names `pm_main_furniture_spray_finishing`, and
-`pm_precision_tools_furniture_manufactory_spray_finishing` is minted beside the e1 and e2 copies (6 per-rung copies → 7).
+`pm_precision_tools_furniture_manufactory_spray_finishing` is minted beside the t1 and t2 copies (6 per-rung copies → 7).
 
 ### The detector — `Test-LmL35` in `tools/preflight.ps1`
 Reads the **EMITTED** production_methods, never the generator. For every `unlocking_production_methods` list in a file we own that is NOT
-one of ours: **if any rung of industry I is named, every HIGHER-era rung of I must be named too.** A gate naming no rung of ours is
+one of ours: **if any rung of industry I is named, every HIGHER-tier rung of I must be named too.** A gate naming no rung of ours is
 ignored, as is one naming only the top rung.
 
 ⚠ **It deliberately SKIPS `zzz_pm_rehaul_*`.** Our own per-rung secondary file gates each minted copy to exactly ONE rung by
