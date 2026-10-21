@@ -689,7 +689,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
 			}
 			create_building={
 				building="building_rye_farm"
@@ -824,7 +824,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning"  }
+				activate_production_methods = { "pm_main_food_bakery"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -924,7 +924,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
+				activate_production_methods={ "pm_main_food_bakery" }
 			}
 		}
 	}
@@ -941,7 +941,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning"  }
+				activate_production_methods = { "pm_main_food_bakery"  }
 			}
 			create_building={
 				building="building_vineyard"
@@ -1077,7 +1077,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
+				activate_production_methods={ "pm_main_food_bakery" }
 			}
 		}
 	}
@@ -1161,7 +1161,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
+				activate_production_methods={ "pm_main_food_bakery" }
 			}
 		}
 	}
@@ -1319,7 +1319,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_no_luxuries" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -1503,7 +1503,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_food_bakery" "pm_disabled_canning" "pm_disabled_distillery"  }
+				activate_production_methods = { "pm_main_food_bakery"  }
 			}
 			create_building={
 				building="building_wheat_farm"

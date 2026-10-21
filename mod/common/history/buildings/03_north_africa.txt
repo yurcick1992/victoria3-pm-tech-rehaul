@@ -68,7 +68,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
 			}
 			create_building={
 				building="building_arms_industry"
@@ -364,7 +364,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_paper_mill"
@@ -602,7 +602,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_paper_mill"
@@ -654,7 +654,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" "pm_disabled_ceramics"  }
+				activate_production_methods = { "pm_main_glass_forest_glass"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -728,7 +728,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 		}
 	}
@@ -756,7 +756,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -919,7 +919,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_glassworks"
@@ -1025,7 +1025,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_glassworks"
@@ -1494,7 +1494,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
 			}
 			create_building={
 				building="building_logging_camp"

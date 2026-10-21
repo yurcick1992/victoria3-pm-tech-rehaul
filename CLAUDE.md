@@ -3718,7 +3718,8 @@ tools/                  dev tooling — NOT shipped in the mod
                         WARNS); (5) no labour-saving method on a craft rung; (6) every group of a tier building has something to
                         run beside every main method; (7) a MANDATED automation is the only choice beside its main method and carries
                         no technology gate its main method does not imply (the building's technology and the method's, with every
-                        prerequisite, in the tree the mod loads — since 2026-10-03; it was "no gate at all").
+                        prerequisite, in the tree the mod loads — since 2026-10-03; it was "no gate at all"); (8) no group of a tier building
+                        offering nothing but an "off" method (2026-10-21, §10.93 rule d — the crafts showed five such groups).
                         `node tools/lint_pm_combos.mjs [modDir] [config]`.
                         Each failure kind proven to trip on a sabotaged copy the day it was written
   lib_secondary_compat.mjs ⭐⭐ WHICH SECONDARY / AUTOMATION METHOD MAY RUN BESIDE WHICH MAIN METHOD — the table of BALANCE_FRAMEWORK
@@ -5408,7 +5409,11 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   gated *nothing* (it was read, logged, and never used again), so it was removed. When we do start emitting
   untiered buildings wholesale, add the scope control together with the code that honours it.
 - **Localization is generated for all 11 languages** — every added key gets an English stub in
-  every language file, because untranslated keys show as raw `<key>` placeholders for non-English
+  every language file, ⭐ EXCEPT the tiered buildings' and their main methods' names, which since 2026-10-21 are VANILLA'S OWN
+  TRANSLATIONS (user: "when we simply multiply rungs and the official translation exists, take it for all rungs; for genuinely new names,
+  leave English"): build.ps1 reads each language's vanilla name of the industry's building and its lens text, and a main method's name is a
+  reference to its vanilla method key; "Era N", "Recipe BE" and the three minted methods stay English. It THROWS if a rung's config `name` is
+  not exactly "<vanilla building> (<vanilla method>)" in English, since the translation would then name something else. The rest gets an English stub, because untranslated keys show as raw `<key>` placeholders for non-English
   players (no reliable English fallback). This is handled by the builder; you never write loc by
   hand. See MODDING_NOTES.md → Localization. In-game building names are auto-formatted as
   `Era N. <name>. Recipe BE <goods-only base-price break-even>%` (e.g. "Era 1. Food Industries (Sweeteners). Recipe BE 77%";

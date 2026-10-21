@@ -433,10 +433,11 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
       };
 
       const newMembers = [];
+      const srcOfMember = new Map();   // a kept member's vanilla source (a copy of an "off" method is still "off")
       for (const p of members) {
         if (exclPms.has(p)) continue;   // a craft rung does not carry it (Vacuum Canning, Patent Stills)
         const pb = PM[p];
-        if (!pb || !rescalable.includes(p)) { newMembers.push(...byName(p, g)); continue; }
+        if (!pb || !rescalable.includes(p)) { const got = byName(p, g); for (const x of got) srcOfMember.set(x, p); newMembers.push(...got); continue; }
         const gatedOn = listOf(pb, 'unlocking_production_methods');
         if (TOP) {
           // ⭐ THE `top` RULE: ONE method for the whole INDUSTRY (share()), sized to the industry's anchor rung (e2) against vanilla's most
@@ -580,6 +581,15 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
         if (!mintedHere && gatedOn.length) DROPPED.push([bkey, g, p, 'gated on ' + gatedOn.join('/') + ', which no main method here is']);
         // the 1836 history runs the host's own method: if that method got no copy, no start block may name the vanilla method
         if (!(RENAME[bkey] && RENAME[bkey][p])) (STRIP[bkey] ||= new Set()).add(p);
+      }
+      // ⭐ NOTHING LEFT BUT AN "OFF" METHOD (2026-10-21, the polish hunt; §10.93 rule d): the drop above covered only a group that needs no
+      //   minting, so a group whose every LINE this rung cannot carry still shipped with its off method alone — the Bakeries craft showed
+      //   Canning and Distillery offering nothing but "off", and the textile, furniture and glass crafts more. The building does not carry
+      //   such a group, and its 1836 history may not name it. The user: "For now, remove" (a craft-secondaries pass may come in mod 1.1).
+      if (newMembers.length && newMembers.every(x => isOffMethod(srcOfMember.get(x) ?? x))) {
+        for (const q of members) (STRIP[bkey] ||= new Set()).add(q);
+        DROPPED.push([bkey, g, '(group) ' + g, 'nothing but an off method left']);
+        continue;
       }
       const ng = g + '_' + bkey.replace(/^building_/, '');
       const tex = /texture\s*=\s*"[^"]*"/.exec(gb);

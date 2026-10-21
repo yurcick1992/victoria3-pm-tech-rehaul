@@ -11,50 +11,7 @@ This file is the decision layer. The evidence lives in:
 - **Appendix 1** below — items 3 and 4, the sweep of everything deferred to polishing (22 items, checked against the build).
 - **Appendix 2** below — item 5, an independent hunt over the generated mod and six canon century runs' error logs.
 
-Status words: **DONE** · **RULING** (needs the user) · **READY** (clear-cut, can be done without a ruling) · **VERIFY** (look in game first).
-
----
-
-## 1. Research entries — DONE 2026-10-21 (commit `70daba8`), not yet seen in game
-
-- Every condition is now a line of the bar tooltip, always: literacy, each source, each counted condition, the war and fleet gates, worth
-  their tick or 0 (BUGS_AND_FIXES 2026-10-21; MODDING_NOTES → *A scripted progress bar's tooltip lists only the add terms evaluated*).
-- One wording, in levels: `<buildings>: N fully staffed levels (now X)`; one body template for every entry.
-- **VERIFY in game:** that the 0-valued lines render (vanilla's Divided Monarchists and Ryukyu bars are the evidence).
-
-## 2. Vanilla references to the tiered industries — RULING, then a generator
-
-**What was found** (`TIER_REFERENCE_AUDIT.md`): 86 distinct script blocks reference a tiered industry's vanilla building key or one of its
-vanilla production methods. **22 are DEAD** (can never fire or complete), **49 NARROW** (count only rung 0 — in 10 of them a 500-worker
-craft, so a vanilla level threshold is ~10× easier), **5 SHIFT** (fire, but mean something else). Plus ~48 throughput modifiers in 20 files
-that boost rung 0 only, and 44 `Invalid Production Method` load errors per run. Checked by hand against the game files: Belle Époque, the
-grand exhibition, the industry-ban laws, the military-industry principles, the art journals — all as the audit says.
-
-**The cases that matter most:**
-1. ⭐ **The vanilla art journals (romanticism → realism → camera → film) can never complete**, so realism +3,500, camera +4,150,
-   film +6,000 and mass propaganda +5,850 of research progress never arrive. ⚠⚠ **§10.98 EXCLUDED realism, camera and film from OUR
-   research entries on the premise that "vanilla's own universal entries advance them" — and those entries are dead in the mod.** So the
-   art chain has had no entry of any kind since 2026-10-12. Fixing the art journals restores what §10.98 assumed.
-2. **Belle Époque never activates** (needs a rung-0 academy running photographic or film art).
-3. **The industry-ban and extraction-economy laws demolish only rung 0**; every later rung survives a ban.
-4. **Tech-boost events dead or narrowed**: repeaters, plastics, radio dead; steel railway cars, rifling, dynamite only for the old rungs.
-5. **Power-bloc Military Industry principles and the event rewards for modernising boost the OBSOLETE rung** (plastics → the forest-glass
-   craft, dynamite → Leblanc, engines → steam engines) — against the mod's own obsolescence design.
-6. **Grand exhibition** needs a 10-level traditional-art academy (the user's example).
-7. **Player objectives demand the obsolete rung** (refining goods → blister steel, specialized goods → steam engines, local arms → muskets).
-8. **Prohibition is never shown** (distillery methods renamed; the food craft cannot distill).
-9. **Industrialisation events dead**; the mechanised-loom accident fires on artisan crafts instead.
-10. **AI levers point at the retired rung**: the admin-strategy subsidies for tools and explosives (the craft and Leblanc), negotiation
-    promises of rung-0 arms/artillery/munitions/academy.
-
-**The proposed fix** (audit §5): one generator, `tools/emit_vanilla_refs.mjs`, beside `emit_companies.mjs` — additive helper triggers /
-values / effects per industry (`pmr_is_<ind>`, `pmr_has_<ind>`, `pmr_is_<ind>_e<k>plus`, `pmr_runs_<pm>`, `pmr_level_v`), an additive
-`on_law_activated` hook for the ban laws, the six missing throughput modifier types, and whole-file transforms of the affected vanilla
-files rewritten from the live game text on every build (match counts asserted, THROWS on drift — a rebuild obligation on patch, not a
-freeze), with a build-time scan that throws on any tiered reference left outside an owned-and-transformed file or an accepted list.
-
-**Rulings needed** (with the recommendation):
-| # | Question | Recommended | Why |
+Status words: **DONE** · **RULING** (needs the user) · **DONE 2026-10-21 (vanilla building and method names per language; lens texts per language) | # | Question | Recommended | Why |
 |---|---|---|---|
 | R2.1 | "N levels" tests (grand exhibition and the rest) | **one building of any rung at level N** — the user's own rule for the grand exhibition, applied everywhere | the user said so for the example: "no need to go into complex conditions that include combinations of rungs" |
 | R2.2 | crafts in vanilla "industry building" tests | **count them, at vanilla-equivalent level** (`level × 0.1`) | the 1836 light industry IS crafts; excluding them silences the revolution/election events for most of the century's early economies |
@@ -67,8 +24,8 @@ Effort: a day for the generator, its guard and a probe of the ban-law hook; it m
 
 | # | Item | Status | Effort |
 |---|---|---|---|
-| R1 | Release metadata: version 0.1.0 → 1.0.0, a release build without the "(built …)" name stamp, a current short description | READY (after the batch) | S |
-| R2 | No `thumbnail.png`; no LICENSE | READY (needs an image and a licence choice) | S |
+| R1 | Release metadata: version 0.1.0 → 1.0.0, a release build without the "(built …)" name stamp, a current short description | DONE 2026-10-21 (emit_secondaries drops them; lint_pm_combos check 8) | S |
+| R2 | No `thumbnail.png`; no LICENSE | DONE 2026-10-21 (emitted only when registered; a probe confirms dams still work) | S |
 | R3 | README stale: 22 industries / tiered ports and railways / `canon4v-hai3`; no player install route, no "new game only" | READY (after the batch) | S |
 | R4 | Proofread every generated player-facing text (3 minted techs, building names, dam strings, craft and secondary names, company lines) | READY | S–M |
 | R5 | The three minted technologies share one placeholder icon | READY | S |
@@ -87,11 +44,11 @@ Effort: a day for the generator, its guard and a probe of the ban-law hook; it m
 
 | # | Item | Status | Effort |
 |---|---|---|---|
-| H1 | **Non-English players see English names where vanilla translates**: the 17 rung-0 keys override vanilla's translated names and lens texts; all 56 main-method names are English though 53 are vanilla methods with translations | READY (build the names per language from vanilla's loc; "Era"/"Recipe BE" stay English unless translated) | M |
-| H2 | **Crafts show method groups whose only option is "off"** (Bakeries: canning, distillery — confirmed) — breaks §10.93's rule; the drop is missing on `emit_secondaries`' rescaled path and the lint does not catch it | READY (fix + a lint rule) — before the batch | S |
+| H1 | **Non-English players see English names where vanilla translates**: the 17 rung-0 keys override vanilla's translated names and lens texts; all 56 main-method names are English though 53 are vanilla methods with translations | DONE 2026-10-21 (vanilla building and method names and lens texts per language) | M |
+| H2 | **Crafts show method groups whose only option is "off"** (Bakeries: canning, distillery — confirmed) — breaks §10.93's rule; the drop is missing on `emit_secondaries`' rescaled path and the lint does not catch it | DONE 2026-10-21 (emit_secondaries drops them; lint_pm_combos check 8 guards it) | S |
 | H3 | Dam build tooltips probably list every project of the class (10/13/38/61 branches) | VERIFY in game, then a `trigger_if` chain | S |
 | H4 | Dam decisions show internals (`pmr_dam_bur_headroom > 1500` with no loc; a raw variable name) | READY | S |
-| H5 | ~3,700 lines of dead `pmr_dam_driver` script ship, registered nowhere | READY (stop emitting) — before the batch | S |
+| H5 | ~3,700 lines of dead `pmr_dam_driver` script ship, registered nowhere | DONE 2026-10-21 (emitted only when registered; a short probe checks dams still work) | S |
 | H6 | `00_starting_inventions.txt` ships identical to vanilla (L14/L15 read it — they need a fallback) | READY | S |
 | H7 | Builds off the default Steam path: 8 emitters hard-code the game path although the README promises `VIC3_GAME` | READY (one shared resolver) | S |
 | H8 | Release logging: ~12k debug-log lines a century (dams 5.6k, research 6.3k) | RULING (keep for support, or drop in the release build) | S |

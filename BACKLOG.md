@@ -244,8 +244,8 @@ its vanilla building wherever vanilla script checks a building or a method; it i
 and an independent hunt over the generated mod and six canon century runs' error logs. The lines below are its headline items.
 
 - **OPEN** · release metadata (version 0.1.0, the "(built …)" name stamp, short description), thumbnail, LICENSE, a player README · POLISH_1_0.md R1–R3, H9
-- **OPEN** · non-English players see English names where vanilla translates (17 rung-0 names, 53 vanilla method names) · POLISH_1_0.md H1
-- **DEFECT** · crafts show method groups whose only option is "off" (§10.93 rule broken on emit_secondaries' rescaled path) · POLISH_1_0.md H2
+- **DONE 2026-10-21** · non-English players see vanilla's own translations of the tiered buildings' and methods' names · POLISH_1_0.md H1
+- **DONE 2026-10-21** · crafts no longer show method groups whose only option is "off" (lint_pm_combos check 8 guards it) · POLISH_1_0.md H2
 - **OPEN** · dam texts and decisions: predate private dams, show internals; build tooltips may list every project · POLISH_1_0.md R8, H3, H4
 - **OPEN** · per-tier building artwork; per-technology icons (one placeholder ships)
 - **OPEN** · era band dividers in the tech-tree GUI

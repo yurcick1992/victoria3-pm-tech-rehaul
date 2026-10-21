@@ -31,6 +31,7 @@
 //      reduce employment.
 //   6. EVERY GROUP HAS SOMETHING TO RUN BESIDE EVERY MAIN METHOD of a tier building (PM gates; technology aside) — a merged building's
 //      mandated group holds only copies each gated to one main method, so a gap would leave the engine nothing valid to select.
+//   8. NO GROUP OFFERS NOTHING BUT AN "OFF" METHOD (2026-10-21, §10.93 rule d) — such a group is no choice and the building must not carry it.
 //   7. A MANDATED AUTOMATION (lib_secondary_compat MANDATED, user-ruled 2026-10-02: Mechanized Looms with Sewing Machines, Automatic
 //      Power Looms with Electric Sewing Machines, Assembly Lines with Mass Production) is offered by exactly one group beside its main
 //      method, is the ONLY method of that group legal there, and carries no technology gate its main method does not imply (the building's
@@ -181,6 +182,10 @@ for (const [bk, body] of Object.entries(BLD)) {
   for (const { g, pms } of G) {
     if (pms.some(p => mainOf.has(p.key))) continue;
     for (const m of mains) if (!pms.some(p => !p.gate.length || p.gate.includes(m.key))) fails.mandate.push(`${bk}: ${g} has no method that can run beside ${m.key}`);
+    // 8. NO GROUP WHOSE ONLY OPTION IS "OFF" (2026-10-21, §10.93 rule d): every member a vanilla-style "off" method — a body of a texture
+    //    and nothing else — offers the player no choice (the Bakeries craft showed Canning and Distillery that way); the building must not carry it
+    const textureOnly = k => { const b = noComments(PMB[k] || ''); return !!b && !/=/.test(b.replace(/^[^{]*\{/, '').replace(/\}\s*$/, '').replace(/texture\s*=\s*"[^"]*"/g, '')); };
+    if (pms.length && pms.every(p => textureOnly(p.key))) fails.mandate.push(`${bk}: ${g} offers nothing but an "off" method (${pms.map(p => p.key).join(', ')})`);
   }
   // 7. A MANDATED AUTOMATION (lib_secondary_compat MANDATED) IS THE ONLY CHOICE BESIDE ITS MAIN METHOD, AND COMES WITH IT
   for (const m of mains) {
@@ -219,7 +224,7 @@ for (const [bk, body] of Object.entries(BLD)) {
 }
 
 const labels = { neg: 'A NUMBER GOES NEGATIVE', dead: 'A DEAD METHOD IS SHOWN', hist: 'A 1836 BLOCK NAMES A METHOD ITS BUILDING LACKS',
-  compat: 'A METHOD BESIDE A MAIN METHOD THE REVIEW MARKED IT INCOMPATIBLE WITH', mandate: 'A MANDATED AUTOMATION NOT ALWAYS ON, OR A GROUP WITH NOTHING TO RUN', craft: 'A LABOUR-SAVING METHOD ON A CRAFT RUNG', missing: 'AN UNDEFINED GROUP OR METHOD', cap: 'TOO MANY COMBINATIONS TO CHECK' };
+  compat: 'A METHOD BESIDE A MAIN METHOD THE REVIEW MARKED IT INCOMPATIBLE WITH', mandate: 'A MANDATED AUTOMATION NOT ALWAYS ON, OR A GROUP WITH NOTHING TO RUN OR NOTHING BUT "OFF"', craft: 'A LABOUR-SAVING METHOD ON A CRAFT RUNG', missing: 'AN UNDEFINED GROUP OR METHOD', cap: 'TOO MANY COMBINATIONS TO CHECK' };
 let n = 0;
 for (const [k, lbl] of Object.entries(labels)) {
   const list = fails[k]; if (!list.length) continue;
@@ -234,4 +239,4 @@ if (unreviewed.size) {
 }
 const tail = `${nBld} buildings, ${nCombos} legal combinations checked for goods and employment, ${nTier} tier buildings checked against the compatibility table and the craft rule, ${fails.histBlocks} history blocks`;
 if (n) { console.log(`PM-COMBINATION CHECK FAILED: ${n} case(s). ${tail}.`); process.exit(1); }
-console.log(`PM-COMBINATION CHECK PASSED: no legal method combination takes an input, an output or a job below zero; no dead method; no history block names a method its building lacks; no secondary beside a main method the review marked it incompatible with; every mandated automation the only choice beside its main method; no group with nothing to run; no labour-saving method on a craft rung. ${tail}.`);
+console.log(`PM-COMBINATION CHECK PASSED: no legal method combination takes an input, an output or a job below zero; no dead method; no history block names a method its building lacks; no secondary beside a main method the review marked it incompatible with; every mandated automation the only choice beside its main method; no group with nothing to run or nothing but an off method; no labour-saving method on a craft rung. ${tail}.`);

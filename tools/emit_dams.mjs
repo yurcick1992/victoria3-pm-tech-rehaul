@@ -592,7 +592,9 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
   // THE AI DRIVER (F168) — SURVEYS ONLY since 2026-09-27 (user-ruled: the engine builds every level itself, F173/F174). Every
   // three months an unburdened AI country starts at most ONE survey: the first open project in its chain; a SUBJECT surveys a
   // site in its own state only when no overlord above it holds the technology unburdened (the rich overlord goes first).
-  (DAI ? '' : `on_monthly_pulse_country = {\n${T}on_actions = { pmr_dam_driver }\n}\n\n`) +
+  // ⚠ ONLY WHEN IT RUNS (2026-10-21, polish): with the AI taking the survey decision itself (`DAI`, the canon since 2026-09-28) the driver was
+  //   still WRITTEN — ~3,700 lines registered on no on_action — and shipped as dead script. Now it is emitted only beside its registration.
+  (DAI ? '' : `on_monthly_pulse_country = {\n${T}on_actions = { pmr_dam_driver }\n}\n\n` +
   `pmr_dam_driver = {\n${T}effect = {\n${T}${T}if = {\n${T}${T}${T}limit = {\n` +
   `${T}${T}${T}${T}is_player = no\n${T}${T}${T}${T}has_technology_researched = ${P.tech_by_class.A}\n${T}${T}${T}${T}NOT = { has_variable = pmr_dam_driver_cd }\n` +
   `${T}${T}${T}${T}is_at_war = no\n${T}${T}${T}${T}in_default = no\n${T}${T}${T}${T}scaled_debt < 0.5\n` +
@@ -605,15 +607,15 @@ W('common/on_actions/zzz_pm_rehaul_dams.txt', HDR +
     `${T}${T}${T}${T}${T}${T}${T}NOT = { any_overlord_or_above = { has_technology_researched = ${p.stage_techs[0]}  is_at_war = no  in_default = no  scaled_debt < 0.5 } }\n${T}${T}${T}${T}${T}${T}}\n` +
     `${T}${T}${T}${T}${T}}\n${T}${T}${T}${T}${T}${V(p)}_begin_survey = yes\n${T}${T}${T}${T}}\n`).join('') +
   `${T}${T}${T}}\n` +
-  `${T}${T}}\n${T}}\n}\n`);
+  `${T}${T}}\n${T}}\n}\n`));
 const gdpSlots = (tiers) => tiers.map(g => `${T}if = {\n${T}${T}limit = { gdp >= ${g} }\n${T}${T}add = 1\n${T}}\n`).join('');
 W('common/script_values/zzz_pm_rehaul_dams.txt', HDR +
   `pmr_dam_bur_produced = {\n${T}value = produced_bureaucracy\n}\n\npmr_dam_bur_used = {\n${T}value = bureaucracy_usage\n}\n\n` +
   (DAI ? `pmr_dam_bur_headroom = {\n${T}value = produced_bureaucracy\n${T}subtract = bureaucracy_usage\n}\n\n` : '') +
   `pmr_dam_active = {\n${T}value = 0\n${T}if = {\n${T}${T}limit = { has_variable = ${ACTIVE} }\n${T}${T}value = var:${ACTIVE}\n${T}}\n}\n\n` +
   `pmr_dam_building_now = {\n${T}value = 0\n${T}every_scope_state = {\n${T}${T}every_scope_building = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}is_building_group = bg_pmr_hydro_dams\n${T}${T}${T}${T}is_under_construction = yes\n${T}${T}${T}}\n${T}${T}${T}add = 1\n${T}${T}}\n${T}}\n}\n\n` +
-  `pmr_dam_survey_slots = {\n${T}value = 1\n${gdpSlots(P.ai.survey_slot_gdp)}}\n\n` +
-  `pmr_dam_survey_headroom = {\n${T}value = pmr_dam_survey_slots\n${T}subtract = pmr_dam_active\n}\n`);
+  (DAI ? '' : `pmr_dam_survey_slots = {\n${T}value = 1\n${gdpSlots(P.ai.survey_slot_gdp)}}\n\n` +   // the driver's own values
+  `pmr_dam_survey_headroom = {\n${T}value = pmr_dam_survey_slots\n${T}subtract = pmr_dam_active\n}\n`));
 
 // strip the vanilla hydro-narrative electricity lines (whole-file copies, every other line vanilla's)
 const strip = CFG.dams.strip_trait_modifiers || {};

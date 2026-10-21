@@ -585,7 +585,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_glassworks"
@@ -1026,7 +1026,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_glassworks"
@@ -1542,7 +1542,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_furniture_manufactory"
@@ -2502,7 +2502,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_food_industry"
@@ -2515,7 +2515,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_canning" }
+				activate_production_methods={ "pm_main_food_bakery" }
 			}
 			create_building={
 				building="building_tooling_workshop"
@@ -2599,7 +2599,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery"  }
+				activate_production_methods = { "pm_main_food_bakery"  }
 			}
 			create_building={
 				building = "building_furniture_manufactory"
@@ -2751,7 +2751,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_glassworks"
@@ -2824,7 +2824,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery"  }
+				activate_production_methods = { "pm_main_food_bakery"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -2902,7 +2902,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_tooling_workshop"
@@ -2975,7 +2975,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery"  }
+				activate_production_methods = { "pm_main_food_bakery"  }
 			}
 			create_building={
 				building="building_cotton_plantation"
@@ -3040,7 +3040,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 			create_building={
 				building="building_tooling_workshop"
@@ -3126,7 +3126,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_disabled_distillery" "pm_disabled_canning" "pm_main_food_bakery"  }
+				activate_production_methods = { "pm_main_food_bakery"  }
 			}
 			create_building={
 				building = "building_furniture_manufactory"

@@ -10,8 +10,6 @@ building_food_industry = {
 	unlocking_technologies = { manufacturies }
 	production_method_groups = {
 		pmg_main_food_bakery
-		pmg_canning_food_industry
-		pmg_distillery_food_industry
 	}
 	required_construction = 6
 	ai_value = 800
@@ -55,7 +53,6 @@ building_textile_mill = {
 	unlocking_technologies = { manufacturies }
 	production_method_groups = {
 		pmg_main_textile_handsewn_clothes
-		pmg_luxury_building_textile_mill_textile_mill
 	}
 	required_construction = 6
 	ai_value = 800
@@ -115,7 +112,6 @@ building_furniture_manufactory = {
 	unlocking_technologies = { manufacturies }
 	production_method_groups = {
 		pmg_main_furniture_handcrafted_furniture
-		pmg_luxury_building_furniture_manufactory_furniture_manufactory
 	}
 	required_construction = 6
 	ai_value = 800
@@ -174,7 +170,6 @@ building_glassworks = {
 	unlocking_technologies = { manufacturies }
 	production_method_groups = {
 		pmg_main_glass_forest_glass
-		pmg_luxury_building_glassworks_glassworks
 	}
 	required_construction = 6
 	ai_value = 800

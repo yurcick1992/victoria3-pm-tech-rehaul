@@ -478,6 +478,59 @@ $tierMap = @('# MAIN production method  tier(1-based)  target_be  wage_pct. AUTO
 $summary = @()
 $D = [char]36           # literal '$' for loc interpolation
 
+# ---- vanilla's own translations of the tiered industries' names (2026-10-21, polish; resolved per language when the loc is written) ----
+# Every tiered industry's vanilla building key (its anchor rung keeps it) and that key's lens text, read from the game's loc for each language.
+# ⚠ Read from the GAME, never through a $key$ reference: the anchor rung's key IS the vanilla key and our loc overrides it, so a reference
+#   would point at itself.
+$vanKeys = @{}
+foreach ($ind in $cfg.industries) {
+    if ($ind.disabled) { continue }
+    $a = ($ind.tiers | Where-Object { $null -ne $_.vanilla_pm } | Sort-Object { [int]$_.era } | Select-Object -First 1)
+    if ($a) { $vanKeys[$a.key] = $true; $vanKeys["$($a.key)_lens_option"] = $true }
+}
+function Read-VanillaLoc([string]$lang) {
+    $out = @{}
+    $dir = Join-Path $Game "localization\$lang"
+    if (-not (Test-Path $dir)) { return $out }
+    foreach ($f in Get-ChildItem -Path $dir -Recurse -Filter *.yml) {
+        foreach ($line in [System.IO.File]::ReadAllLines($f.FullName)) {
+            if ($line -match '^\s*([A-Za-z_0-9.-]+):\d*\s*"(.*)"\s*$' -and $vanKeys.ContainsKey($Matches[1])) { $out[$Matches[1]] = $Matches[2] }
+        }
+    }
+    return $out
+}
+$vanEn = Read-VanillaLoc 'english'
+foreach ($k in $vanKeys.Keys) { if (-not $vanEn.ContainsKey($k)) { throw "vanilla English loc has no '$k' - the translated building names cannot be built (game patch?)" } }
+# "<vanilla building> (<vanilla method>)": the building as a per-language token, the method as a reference to its own vanilla key (we never
+# override a vanilla method's loc key). The config's English `name` must be exactly that, or the rung is not what the translation says.
+function RungNameLoc($t, [string]$vb) {
+    if (-not $t.vanilla_pm) {
+        $m = [regex]::Match([string]$t.name, '^(.*) \(([^()]*)\)$')
+        if (-not $m.Success -or $m.Groups[1].Value -ne $vanEn[$vb]) { return [string]$t.name }   # a minted rung outside the pattern: English as authored
+        return "@@VB:$vb@@ ($($m.Groups[2].Value))"   # a minted rung: the building translated, its new method English
+    }
+    $want = "$($vanEn[$vb]) ($($vanEn2[$t.vanilla_pm]))"
+    if ($t.name -ne $want) { throw "rung $($t.key): config name '$($t.name)' is not vanilla's '$want' - its translated name would say something else" }
+    return "@@VB:$vb@@ ($D$($t.vanilla_pm)$D)"
+}
+# a main method's name: the vanilla method's own key where the rung IS a vanilla method (translated by the game), else the English name
+function PmNameLoc($t) {
+    if ($t.vanilla_pm -and $t.vanilla_pm -ne $t.pm_key) {
+        if ($t.pm_name -ne $vanEn2[$t.vanilla_pm]) { throw "rung $($t.key): pm_name '$($t.pm_name)' is not vanilla's '$($vanEn2[$t.vanilla_pm])' for $($t.vanilla_pm)" }
+        return "$D$($t.vanilla_pm)$D"
+    }
+    return [string]$t.pm_name
+}
+# the vanilla methods' English names, for the two checks above (one pass over the English loc)
+$pmKeys = @{}; foreach ($ind in $cfg.industries) { if (-not $ind.disabled) { foreach ($t in $ind.tiers) { if ($t.vanilla_pm) { $pmKeys[$t.vanilla_pm] = $true } } } }
+$vanEn2 = @{}
+foreach ($f in Get-ChildItem -Path (Join-Path $Game 'localization\english') -Recurse -Filter *.yml) {
+    foreach ($line in [System.IO.File]::ReadAllLines($f.FullName)) {
+        # ⚠ the class takes a HYPHEN: one vanilla method key has one (pm_ammonia-soda_process), and vanilla's own loc references such keys ($pan-nationalism$)
+        if ($line -match '^\s*([A-Za-z_0-9.-]+):\d*\s*"(.*)"\s*$' -and $pmKeys.ContainsKey($Matches[1])) { $vanEn2[$Matches[1]] = $Matches[2] }
+    }
+}
+
 foreach ($ind in $cfg.industries) {
     if ($ind.disabled) { continue }   # leave vanilla (no split); config keeps the data for later
     $tierNo = 0
@@ -568,7 +621,7 @@ foreach ($ind in $cfg.industries) {
         # ---- PMG (single main PM; a host also lists the methods merged into it, after its own) ----
         if ($t.method_of) {
             # no group and no building of its own: the method lives in the host's main group. Loc for the method only.
-            $locBody += " $($t.pm_key):0 `"$($t.pm_name)`""
+            $locBody += " $($t.pm_key):0 `"$(PmNameLoc $t)`""
             if ($ind.follows_be -ne $false -and -not $ind.no_mass_be) { $tierMap += "$($t.pm_key) $tierNo $($t.target_be) $(Fmt $wage)" }
             $summary += [pscustomobject]@{ Building="$($t.key) (method of $($t.method_of))"; Tier=$tierNo; TargetBE=$t.target_be; ActualBE=[math]::Round($actualBe) }
             continue
@@ -663,7 +716,12 @@ foreach ($ind in $cfg.industries) {
         # one every other surface uses, so it is what the name says. An industry legitimately starts at
         # "Era 3" or "Era 4" — that IS the statement, not a gap to hide.
         $eraNo = if ($null -ne $t.era) { [int]$t.era } else { $tierNo }
-        $bldName = "Era $eraNo. $($t.name)$beLabel"
+        # ⭐ THE GAME'S OWN TRANSLATIONS (2026-10-21, polish — the user: "when we simply multiply rungs and the official translation exists,
+        # take it for all rungs; for genuinely new names, leave English"). A rung's name is "<vanilla building> (<vanilla method>)" — checked
+        # here against the config's English `name` — so each language gets vanilla's own building name (a per-language token, resolved when
+        # the loc is written: the rung-0 key overrides vanilla's, so it cannot reference itself) and a reference to the vanilla method's key.
+        # A minted rung keeps its English method; "Era N" and "Recipe BE" are the mod's own words and stay English.
+        $bldName = "Era $eraNo. $(RungNameLoc $t $anchorKey)$beLabel"
         # ⭐ EVERY MAIN GROUP IS TITLED "BASE", AS VANILLA TITLES ITS OWN (`$pm_base$`, translated in every language; user-agreed 2026-10-02).
         # It used to carry the rung's method name, which half-describes a merged building's group (two switchable methods in one group).
         $pmgName = "${D}pm_base$D"
@@ -684,12 +742,13 @@ foreach ($ind in $cfg.industries) {
                 $bes += [math]::Round($(if ($mtO -gt 0) { $mtI / $mtO * 100 } else { 0 }))
             }
             $beM = if ($ind.follows_be -eq $false) { "" } else { ". Recipe BE $(($bes | ForEach-Object { "$_%" }) -join '/')" }
-            $bldName = "Era $($eraSpan[0])-$($eraSpan[-1]). $baseName$beM"
+            if ($baseName -ne $vanEn[$anchorKey]) { throw "merged host $($t.key): its name '$baseName' is not vanilla's English '$($vanEn[$anchorKey])' for $anchorKey - the translated name would describe another building" }
+            $bldName = "Era $($eraSpan[0])-$($eraSpan[-1]). @@VB:$anchorKey@@$beM"
         }
         $locBody += " $($t.key):0 `"$bldName`""
-        $locBody += " $($t.key)_lens_option:0 `"Expand $D$($t.key)$D`""
+        $locBody += " $($t.key)_lens_option:0 `"@@LENS:$($anchorKey):$($t.key)@@`""
         $locBody += " $($t.pmg_key):0 `"$pmgName`""
-        $locBody += " $($t.pm_key):0 `"$($t.pm_name)`""
+        $locBody += " $($t.pm_key):0 `"$(PmNameLoc $t)`""
 
         # ---- tier map + summary ---- (columns: pm tier target_be wage_pct; linter reads all four)
         # The hard linter ladder covers only the core manufacturing chains. New-economy industries
@@ -1396,7 +1455,18 @@ Write-Output ("production_methods: owning {0} file(s) [{1}]; {2} left vanilla (u
 #     overrides win over vanilla (and new keys are still defined) ---
 $base = $cfg.loc_basename
 foreach ($lang in $cfg.languages) {
-    $content = "l_${lang}:`n" + "# AUTO-GENERATED by tools/build.ps1 - do not edit by hand. English strings are used as stubs for all languages.`n" + (($locBody -join "`n")) + "`n"
+    # the per-language tokens (2026-10-21): @@VB:<vanilla building>@@ -> vanilla's own name in this language; @@LENS:<vanilla>:<rung>@@ -> vanilla's
+    # own "expand" text with its building reference pointed at the rung (a language that spells the name out, Polish and Russian, keeps
+    # vanilla's text, which names the industry). A key this language lacks falls back to English.
+    $vl = if ($lang -eq 'english') { $vanEn } else { Read-VanillaLoc $lang }
+    $body = ($locBody -join "`n")
+    $body = [regex]::Replace($body, '@@VB:([A-Za-z_0-9]+)@@', { param($m) $k = $m.Groups[1].Value; if ($vl.ContainsKey($k)) { $vl[$k] } else { $vanEn[$k] } })
+    $body = [regex]::Replace($body, '@@LENS:([A-Za-z_0-9]+):([A-Za-z_0-9]+)@@', {
+        param($m) $vk = $m.Groups[1].Value; $rk = $m.Groups[2].Value
+        $txt = if ($vl.ContainsKey("${vk}_lens_option")) { $vl["${vk}_lens_option"] } else { "Expand $D$vk$D" }
+        $txt.Replace("$D$vk$D", "$D$rk$D").Replace("${D}FR_$vk$D", "$D$rk$D") })
+    if ($body -match '@@(VB|LENS):') { throw "loc for ${lang}: an unresolved name token is left" }
+    $content = "l_${lang}:`n" + "# AUTO-GENERATED by tools/build.ps1 - do not edit by hand. English stubs, except the tiered buildings' and their methods' names, which are vanilla's own translations.`n" + $body + "`n"
     WriteText "$modRel\localization\$lang\replace\${base}_l_${lang}.yml" $content $bom
 }
 
