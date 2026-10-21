@@ -1,5 +1,16 @@
 # TIER REFERENCE AUDIT — vanilla script that references a tiered industry
 
+> ⭐ **IMPLEMENTED 2026-10-21 (night) as `tools/emit_vanilla_refs.mjs`**, to every ruling of PART 2 and (F) 1–11; F12 (G3) taken as
+> "crafts out" through a state script value, which is right whichever way `state_has_building_group_levels` treats child groups.
+> 63 vanilla files transformed (213 token rewrites, 23 snippets, 52 throughput lines expanded into every ruled rung), 58 helper triggers,
+> 4 effects, 1 script value, 6 new throughput modifier types (glass e1–e3, explosives e1–e3), one additive on_action (the Montenegro check,
+> DLC-gated). Deviations from §5.1, both deliberate: the industry-ban laws are fixed by OWNING `laws/01_economic_system.txt` and expanding
+> each demolition to every rung (a direct rewrite the engine certainly runs) instead of an unprobed `on_law_activated` hook; and
+> `ai_strategies/00_default_strategy.txt` (A2) and `journal_entries/03_russia.txt` (A16), listed as "avoided", are owned too, since the
+> ruled scope is "everything". Seven files stay vanilla on purpose (the ACCEPTED list in the emitter: achievements, the Russian custom loc,
+> vanilla's own modifier declarations, the map-train trigger, the code on_actions Montenegro line, ukiyo-e D5, the backyard steel mill A35).
+> Every count is asserted and every copied file keeps its DLC gates (also `tools/check_dlc_gates.mjs`). Not yet seen in game.
+
 > **Status (2026-10-21): a PROPOSAL awaiting the rulings in `POLISH_1_0.md` §2; nothing here is implemented.** Written by a read-only audit
 > subagent; the headline cases (Belle Époque, the grand exhibition, the industry-ban laws, the military-industry principles, the art journals)
 > were re-checked by hand against the game files and the built mod. It **supersedes `MISSING_PM_REFERENCES.md`** (stale: it still lists

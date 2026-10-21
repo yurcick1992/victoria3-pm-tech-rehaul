@@ -142,7 +142,13 @@ function Test-LmL1 {
 
     $bad = @()
     $locRefs = 0
+    $vanillaText = 0
     foreach ($f in $files) {
+        # (2026-10-21) a file the tier-reference fix REGENERATES FROM VANILLA every build (tools/emit_vanilla_refs.mjs, its header line) is
+        #   vanilla's own script with tier tokens rewritten: its c:TAG uses are vanilla's (c:CHI ?=, belle_epoque's country = c:FRA), which this
+        #   register does not own. L1 judges the script WE author.
+        $first = [System.IO.File]::ReadLines($f.FullName) | Select-Object -First 1
+        if ($first -and $first.TrimStart([char]0xFEFF).StartsWith('# PM & Tech Rehaul: regenerated from vanilla every build')) { $vanillaText++; continue }
         $depth = 0
         $asserted = @{}      # depth -> @{TAG=$true}
         $n = 0
@@ -172,7 +178,7 @@ function Test-LmL1 {
         }
     }
 
-    $note = "$locRefs tag reference(s) inside loc strings not judged (different subsystem - see register)"
+    $note = "$locRefs tag reference(s) inside loc strings not judged (different subsystem - see register); $vanillaText file(s) of vanilla's own text (the tier-reference fix's copies) not judged"
     if ($bad.Count) {
         $shown = $bad | Select-Object -First 12
         $more = ''
@@ -504,7 +510,8 @@ function Test-LmL24 {
     $dir = Join-Path $Mod 'common'
     if (-not (Test-Path $dir)) { Add-Result 'L24' 'generator text leaked into an emitted script file' 'N/A' 'no common/ emitted'; return }
 
-    $ok  = [regex]'^[@A-Za-z_][\w.:@|''-]*\s*='
+    # a key may START WITH A DIGIT (vanilla's content_1_modifiers.txt: 1848_popular_radical, shipped by the tier-reference fix since 2026-10-21)
+    $ok  = [regex]'^[@A-Za-z0-9_][\w.:@|''-]*\s*='
     $bad = @(); $n = 0
     foreach ($f in Get-ChildItem -Path $dir -Recurse -File -Filter *.txt) {
         $n++

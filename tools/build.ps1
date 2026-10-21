@@ -1705,11 +1705,24 @@ if ($LASTEXITCODE -ne 0) { throw "emit_secondaries.mjs failed (exit $LASTEXITCOD
 & node (Join-Path $PSScriptRoot 'emit_craft_start.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_craft_start.mjs failed (exit $LASTEXITCODE) - the craft rungs would start without their workforce in the right professions." }
 
+# ⭐ THE TIER-REFERENCE FIX (POLISH_1_0.md §2, TIER_REFERENCE_AUDIT.md §5.1 and PART 2, all rulings of 2026-10-21): every vanilla script
+#   position that names a tiered industry rewritten to the rung set ruled for it — 63 vanilla files regenerated from the live game, helper
+#   triggers / effects / values, six throughput modifier types, the Montenegro check (gated on ip3_content). Every transform asserts its
+#   match count and THROWS on drift; a scan THROWS on any tiered reference left outside an owned file or its ACCEPTED list. AFTER
+#   emit_secondaries (the minted names) and emit_craft_start, BEFORE emit_value_overrides (which edits two of its copies).
+& node (Join-Path $PSScriptRoot 'emit_vanilla_refs.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_vanilla_refs.mjs failed (exit $LASTEXITCODE) - vanilla script would keep pointing at rung 0." }
+
 # ⭐ RULED VANILLA VALUES, CHANGED IN PLACE (config `vanilla_value_overrides`, tools/emit_value_overrides.mjs; first use: the four flat
 #   research bonuses x1/3, POLISH_1_0.md Q1). LAST among the content emitters: a file an earlier step already wrote (the company files,
 #   the reference fix's transforms, the static modifiers) is edited in that copy, never re-copied from vanilla. Absent -> nothing.
 & node (Join-Path $PSScriptRoot 'emit_value_overrides.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_value_overrides.mjs failed (exit $LASTEXITCODE) - a ruled vanilla value would ship at vanilla's number." }
+
+# 🛑 NEVER UNLOCK DLC CONTENT (CLAUDE.md, the user 2026-10-21): every vanilla-path file the build ships keeps vanilla's count of
+#   `has_dlc_feature` lines and `dlc =` fields. On the FINAL state, after every content emitter.
+& node (Join-Path $PSScriptRoot 'check_dlc_gates.mjs') $modAbs
+if ($LASTEXITCODE -ne 0) { throw "check_dlc_gates.mjs failed - a replaced vanilla file lost a DLC gate." }
 
 if (-not $NoLint) {
     $bashPath = $null
