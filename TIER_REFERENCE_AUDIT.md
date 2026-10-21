@@ -1318,7 +1318,7 @@ by ruling they stay as vanilla wrote them. Vanilla's own intent (tools and explo
    share of LEVELS on the target rung or newer, through a generated country value (the capacity meaning of vanilla's test); (c) drop the
    percent and keep only the "one building of the rung at level N" clause. Recommend (b); (c) if no script values are wanted.
 2. **Craft IN for economy_laws.6 "Industry Suffers"** (B1). Recommend yes.
-3. **Craft IN for the Serbian slander button** (B2). Recommend yes.
+3. **Craft IN for the Serbian slander button** (B2). ✅ RULED 2026-10-21: any paper rung, the craft and every industrial rung (the user).
 4. **Occitan agricultural branch** (B3): craft in at vanilla-equivalent level (lvl ≥ 30), or e1+ only.
 5. **Haute couture** (A43 option b and D33): craft in (vanilla-faithful) or e1+ (luxury clothing).
 6. **dynamite_production_modifier** (D19): all explosives rungs, or e2+ (the rung dynamite unlocks).
