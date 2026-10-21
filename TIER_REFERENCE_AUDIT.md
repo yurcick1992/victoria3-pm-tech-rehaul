@@ -1260,7 +1260,7 @@ technology or practice, or where a malus hits something specific. `building_<key
 | D12–13 | metternich_modifier_t2 / t4 · `00_ip3_04_modifiers.txt:342,359` | +5% art each, "Legacy of Metternich" | all | clear |
 | D14 | sagrada_familia_construction · `00_ip4_03_modifiers.txt:140` | +5% art | all | clear |
 | D15 | modifier_portugal_education_reforms · `00_ip4_04_modifiers.txt:306` | +15% art | all | clear |
-| D16 | modifier_bg_diminished_rum_production · `02_event_modifiers.txt:512` | **−50% food**, state, after the molasses flood (A52) | **food e1+** (the distilling host) — a rum-tank disaster should not halve the state's bakeries | clear |
+| D16 | modifier_bg_diminished_rum_production · `02_event_modifiers.txt:512` | **−50% food**, state, after the molasses flood (A52) | **food e1+** (the distilling host) — a rum-tank disaster should not halve the state's bakeries — ✅ RULED 2026-10-21 (the user) | clear |
 | D17 | automobile_regulations · `02_event_modifiers.txt:1254` | −10% MOTOR industry, "Unregulated Automobiles" (combustion engine) | all motor rungs (vanilla's own odd target — engine makers, not car plants — kept) | judgement |
 | D18 | plastic_production_modifier · `02_event_modifiers.txt:1515` | +33% glass, reward of A70 | **glass e3** (plastics) — the event requires the plastics rung, so the reward reaches it; boosting the forest-glass craft is the anti-design case the audit names | clear |
 | D19 | dynamite_production_modifier · `02_event_modifiers.txt:1525` | +33% explosives, "Exploding Demand" option a ("increasing supply will lift all boats") | all explosives rungs (the event is about supply against a demand spike and does not require the dynamite rung, which is rarely built at that moment); alternative e2+ (the rung gated on dynamite) — ✅ RULED 2026-10-21: every explosives rung (the user) | clear |
@@ -1268,7 +1268,7 @@ technology or practice, or where a malus hits something specific. `building_<key
 | D21 | motor_industry_production_modifier · `02_event_modifiers.txt:1543` | +33% motor, from A69 (dead in vanilla) | moot; all motor rungs if ever reached | clear |
 | D22 | engine_production_modifier · `02_event_modifiers.txt:1553` | +33% motor, "Railroad Boom" option b (locomotive builders) | all motor rungs | clear |
 | D23 | electrics_building_modifier · `02_event_modifiers.txt:1563` | electrics, single rung | unchanged | clear |
-| D24 | elevator_goods_production_modifier · `02_event_modifiers.txt:1720–1721` | +20% steel and glass (A75) | steel all; glass e1+ (crafts out, consistent with A75) | judgement |
+| D24 | elevator_goods_production_modifier · `02_event_modifiers.txt:1720–1721` | +20% steel and glass (A75) | steel all; glass e1+ (crafts out, consistent with A75) — ✅ RULED 2026-10-21 (the user) | clear |
 | D25 | realist_art · `02_event_modifiers.txt:1746` | +15% art, "Supporting the Realist Movement" (A77) | **e1** | judgement |
 | D26 | romantic_building_modifier · `02_event_modifiers.txt:1757` | +20% art, state, "Romantic Architecture" (A76) | **e0** | judgement |
 | D27 | krakatoa_art_modifier · `104_modifiers.txt:636` | +15% art, state (A55) | all | clear |
@@ -1280,12 +1280,12 @@ technology or practice, or where a malus hits something specific. `building_<key
 | D33 | modifier_haute_couture_competition · `agitators_4_modifiers.txt:772` | +25% textile, state (A43) | all rungs incl. craft, or e1+ — follows A43 | judgement · ASK |
 | D34 | modifier_trad_arts_bonus · `agitators_4_modifiers.txt:788` | +10% art, "Supported Traditional Arts" (A41) | **e0–e2** (not film) | judgement |
 | D35–36 | modifier_fin_de_sicle / _more · `agitators_4_modifiers.txt:804,810` | +10% / +25% art | all | clear |
-| D37 | modifier_intelligentsia_plan · `agitators_4_revolution_modifiers.txt:487` | +10% paper, "the government will run its own presses" | all paper rungs incl. craft | clear |
+| D37 | modifier_intelligentsia_plan · `agitators_4_revolution_modifiers.txt:487` | +10% paper, "the government will run its own presses" | all paper rungs incl. craft — ✅ RULED 2026-10-21 (the user) | clear |
 | D38 | amazon_theatre · `brazil_2_modifiers.txt:214` | +10% art, state (A44) | all | clear |
 | D39 | ybycui_steelworks · `brazil_2_modifiers.txt:299` | +10% steel, state (A20) | all | clear |
 | D40 | steam_engine_production · `content_1_modifiers.txt:1072` | +15% motor, "Steam Engine Time" (A74 option b) | **motor e1 only** — leave as is | clear |
 | D41 | munitions_modifier · `content_1_modifiers.txt:1267` | +15% munition, state, "Munitions Mania" (A78) | all | clear |
-| D42 | high_distribution_news_cycle · `content_2_modifiers.txt:515` | +20% paper, an election news cycle | e1+ (mass newsprint is the wood-pulp revolution); craft-in would also be harmless | judgement |
+| D42 | high_distribution_news_cycle · `content_2_modifiers.txt:515` | +20% paper, an election news cycle | e1+ (mass newsprint is the wood-pulp revolution); craft-in would also be harmless — ✅ RULED 2026-10-21 (the user) | clear |
 | D43 | wartime_production_act · `content_3_modifiers.txt:438–439` | +20% arms/artillery | **no vanilla user** — no action | clear |
 | D44 | modern_rifle_arsenal · `content_3_modifiers.txt:455–456` | +20% arms and artillery in the arsenal state, A67 option a | **arms e1+ and artillery e1+** — a reward for modernising; boosting muskets beside the new rifle works runs against the obsolescence design. Alternative: all rungs (vanilla's state-wide bonus) | judgement · ASK |
 | D45 | arsenal_proving_ground · `content_3_modifiers.txt:462–463` | +5% arms/artillery, A67 option b | same as D44 | judgement · ASK |
@@ -1332,6 +1332,8 @@ by ruling they stay as vanilla wrote them. Vanilla's own intent (tools and explo
    ✅ RULED 2026-10-21: factory rungs only, crafts do not count; vanilla's list kept otherwise, the artillery foundry still left out (the user).
 9. **The default for throughput modifiers on crafts**: include (vanilla's building ran the handicraft method too), except where a row says
    otherwise. Confirm.
+   ✅ RESOLVED 2026-10-21 row by row instead of by a default: every bonus on a craft industry is ruled (D16 / D24 / D42 factory rungs only,
+   D37 every paper rung incl. the craft, D33 factory rungs only, D47 every food rung incl. the craft); the rest of table D concerns industries without a craft.
 10. **The shared light-industry trigger** (A28): its callers want different answers (A57 craft in, A62–A64 craft out), so the generator needs
     two helpers (or per-caller rewrites) rather than one rewrite of `has_industry_building`.
 11. **Montenegro "first arms factory"** (A18): fix through the code on_actions file (7,963 lines) or accept the narrow line (the first factory
