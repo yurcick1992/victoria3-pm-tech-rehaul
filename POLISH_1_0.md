@@ -163,7 +163,7 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 | 4 | The build-menu tooltip of a dam (U4 / H3) | ✅ the build tooltip lists no requirements at all (earnings, cost, goods, jobs, the queue keys) — the suspected per-project list never renders, and a dam shows in the build menu only once its site is surveyed, so U4 needs no change |
 | 5 | The tech-tree era dividers (R7) | ✅ Vulcanization in era IV, the three minted technologies in era V; the bands line up now that the tree is vanilla's + 3 (in older, larger trees a band sometimes started a little early or late, the order always correct) — R7 needs no fix |
 | 6 | The translated building, method and research names in another language | SKIPPED by the user: "If someone doesn't bother to learn English and needs improved localisation, they can make a pull request … What I do is try to not diverge from vanilla when it doesn't cost me anything." The names come from vanilla's own keys; the build checks every rung name against vanilla English |
-| 7 | The company throughput modifier names | |
+| 7 | The company throughput modifier names | ✅ "+15% Textile Mills (Dye Workshops) building Throughput" (J. & P. Coats). The user asked why the requirement lines differ ("Building is Era 1. Textile Mills (Dye Workshops). Recipe BE 67%", "Era 2-3. Textile Mills. Recipe BE 55%/43%"): the engine writes those from is_building_type with the building's full name; the bonus line is the mod's own text. Proposed: the company bonus names the building exactly as the requirement does, minus "Recipe BE" ("Era 1. Textile Mills (Dye Workshops)", "Era 2-3. Textile Mills") — also correct for a merged building, whose bonus covers both its methods — awaiting the ruling |
 
 ## Suggested order
 
