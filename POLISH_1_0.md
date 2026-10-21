@@ -162,7 +162,7 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 **Open rulings from the text pass:**
 | # | Question |
 |---|---|
-| U1 | 31 dam projects are named "… Dam(s)" (Columbia River Dams, Lower Kama Dam…), so texts read "Survey the Columbia River Dams" — rename them after the SITE? |
+| U1 | ~~31 dam projects are named "… Dam(s)" … rename them after the SITE?~~ — LEFT AS THEY ARE (user, 2026-10-21; 33 names, counted) |
 | U2 | Dam building names in the plural, as vanilla names producers ("Great River Dams", "Mountain Power Stations")? |
 | U3 | Should the craft rungs say they are crafts in their name? Today only the building group "Crafts" says so |
 | U4 | ~~The dam build-requirement tooltip (H3)~~ — CLOSED 2026-10-21 by in-game check 4: no requirement list renders, no change needed |
