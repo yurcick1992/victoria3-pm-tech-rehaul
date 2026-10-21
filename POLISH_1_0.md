@@ -168,7 +168,7 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 | U4 | ~~The dam build-requirement tooltip (H3)~~ — CLOSED 2026-10-21 by in-game check 4: no requirement list renders, no change needed |
 | U5 | ~~Fractional marks: round to whole levels, or leave?~~ — RULED 2026-10-21: every research mark rounded UP to whole levels, the halved ones included, BEFORE the batch (the user) — so the floored "(now N)" is always honest. To do in emit_research_events.mjs: ceil the level count, then compare people ≥ levels × per-level workforce |
 | U7 | Vanilla's Krka Falls and Niagara Falls traits are left empty by the dams — RULED 2026-10-21: no state-level electricity bonus anywhere (the user: "Nothing can have a state-level electricity bonus"), so both stay empty. Found: Krka's state, Dalmatia, is the one hydro-trait state with NO dam project (the research's Yugoslav row covers only the Drina, Neretva, Drava and Vardar) — a Cetina project (~800 MW, one Mountain Power Station level) was proposed and DECLINED (user, 2026-10-21: "No Dalmatia dam site") |
-| U8 | Research `_desc` = `$…_reason$` (no visible change; 336 duplicate bodies × 11 languages) |
+| U8 | Research `_desc` = `$…_reason$` (no visible change; 336 duplicate bodies × 11 languages) — RULED 2026-10-21: yes, each `_desc` becomes a reference to its `_reason` (the user) |
 
 ## In-game checks (the user, one at a time; started 2026-10-21)
 
@@ -181,6 +181,23 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 | 5 | The tech-tree era dividers (R7) | ✅ Vulcanization in era IV, the three minted technologies in era V; the bands line up now that the tree is vanilla's + 3 (in older, larger trees a band sometimes started a little early or late, the order always correct) — R7 needs no fix |
 | 6 | The translated building, method and research names in another language | SKIPPED by the user: "If someone doesn't bother to learn English and needs improved localisation, they can make a pull request … What I do is try to not diverge from vanilla when it doesn't cost me anything." The names come from vanilla's own keys; the build checks every rung name against vanilla English |
 | 7 | The company throughput modifier names | ✅ "+15% Textile Mills (Dye Workshops) building Throughput" (J. & P. Coats). The user asked why the requirement lines differ ("Building is Era 1. Textile Mills (Dye Workshops). Recipe BE 67%", "Era 2-3. Textile Mills. Recipe BE 55%/43%"): the engine writes those from is_building_type with the building's full name; the bonus line is the mod's own text. A rename to match the requirement lines was proposed and declined (the user: "The naming isn't a problem, I just want to sure the game understands what's referenced"). The user then asked whether the bonus reaches the higher rungs: it names both non-craft textile buildings, Dye Workshops (e1) and the Sewing Machines building (e2, which also runs Electric Sewing Machines, e3), so every rung but the craft gets it (crafts are out of companies by ruling, and so cannot count toward founding the company either); no line of the canon run's error.log names a company modifier, and vanilla's own `modifier_types.md` says a modifier's KEY decides what it acts on (the definition file only sets its display). ⭐ MEASURED in the canon's 1936 save (`20261019_225952` run 1): each textile mill's throughput minus economy of scale, less the same for the furniture / glass / paper mills IN THE SAME STATE (state and country modifiers cancel) — no prosperous textile company: dye workshops +0.007 (45 buildings), sewing machines +0.012 (39); a +5% company (Britain's HBC, Russia's RAC): +0.059 (5) and +0.064 (5), 7 of 10 within 0.02 of the bonus; a +10% company: +0.09 to +0.50 (16). So the engine applies the bonus to both rungs. Readings above the bonus are textile-specific extras, most likely the prestige-goods input bonus (`PRESTIGE_GOODS_INPUT_THROUGHPUT_BONUS` 0.2 × the prestige share of input value; the dye workshops of the basic-fabrics countries read about +0.2 above the bonus, their sewing-machine mills about the bonus) — a vanilla 1936 save shows the same overshoot (+10% company: +0.158 median, 41 mills) |
+
+## Every ruling is in (2026-10-21, evening) — the work they leave
+
+**Before the alternating batch** (it changes the game, so the batch must measure it):
+1. **The reference fix** — `tools/emit_vanilla_refs.mjs` over all 60 files with the rulings of §2 and `TIER_REFERENCE_AUDIT.md` PART 2
+   (F), the DLC-gate guard, the Montenegro check (ip3-gated), the two helper triggers for light industry (with and without crafts), and
+   vanilla's tooling / explosives subsidies set to none.
+2. **U5** — every research mark rounded up to whole levels (`emit_research_events.mjs`).
+3. **READY items** — C1 (drop the no-op define), H6 (starting-technology checks without the identical vanilla file), H7 (one game-path
+   resolver), C5 (stale doc lines). **B1** — a short probe or hand test of two foreign builders on one dam site.
+
+**Any time before 1.0** (text only): U3 (craft names "Era 0 craft. …"), U8 (`_desc` references).
+
+**For the 1.0 release build (~26–27.10):** the debug/release switch in `build.ps1` (H8), R1–R3 (version, thumbnail, licence, README with the
+replaced-file list H9), R4 proofread, R5 icons (waiting on the user's images), "Recipe BE" out of the names, a final build and an error-log read.
+
+**Deferred to 1.1 or later:** B2 (stale looms), B3 (craft secondary lines), F1 (artisanal ownership), R6 (rung building art).
 
 ## Suggested order
 
