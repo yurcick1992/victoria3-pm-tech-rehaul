@@ -100,12 +100,12 @@ flag came from Belgium, so it is correct. The Qing's progress already earned on 
 
 ## 2026-10-11 — the 2026-10-05 fix made every merged building's secondary copies unselectable
 
-**Symptom (the user's playtest of `mod_playtest_ra`, 1836 → 1911, as the USA).** On the merged hosts (Era 1-2 food, textile and furniture),
+**Symptom (the user's playtest of `mod_playtest_ra`, 1836 → 1911, as the USA).** On the merged hosts (Tier 1-2 food, textile and furniture),
 a secondary line the 1836 history had turned on (Pot Stills) could be turned off and never back on. A line that was off could never be turned
-on: no jars on the Era 1-2 food building with Canneries held, no luxury production on two or three textile and furniture mills each. The
+on: no jars on the Tier 1-2 food building with Canneries held, no luxury production on two or three textile and furniture mills each. The
 main-method dropdown of the same building worked (Sweeteners ⇄ Baking Powder). The 1855 save confirmed every file gate was met: the USA held
-canneries, baking_powder, distillation and fractional_distillation, and all six of its Era 0 Bakeries buildings ran the fish cannery. Its two
-Era 1-2 buildings ran Baking Powder with canning and distillery off. The panel's option badges on Era 1-2 read 3 / 3, exactly "none" plus the
+canneries, baking_powder, distillation and fractional_distillation, and all six of its Tier 0 Bakeries buildings ran the fish cannery. Its two
+Tier 1-2 buildings ran Baking Powder with canning and distillery off. The panel's option badges on Tier 1-2 read 3 / 3, exactly "none" plus the
 two Baking Powder copies, so the engine COUNTED the copies as options and still refused the switch.
 
 **Root cause.** The fix of 2026-10-05 (below) gave every per-main-method copy `is_hidden_when_unavailable = yes`. The copies are gated by
@@ -236,7 +236,7 @@ now "main method(s)", which is the thing it checks.
 
 ## 2026-10-02 — the craft rungs showed vanilla's Elastics, Precision Tools and Bone China at vanilla numbers: methods no building of theirs could ever run (BALANCE_FRAMEWORK §10.93)
 
-**Symptom (the user's playtest of `e1a12-ai1135`).** In the building panel of the e0 crafts, the luxury group offered Elastics (Handsewn Clothes:
+**Symptom (the user's playtest of `e1a12-ai1135`).** In the building panel of the t0 crafts, the luxury group offered Elastics (Handsewn Clothes:
 −70 clothes), Precision Tools (Handcrafted Furniture: −55 furniture) and Bone China (Forest Glass: −20 glass) — deductions many times what a
 500-worker craft level makes (2.7 / 2.7 / 1.8). The same on two factory rungs: Elastics on Dye Workshops, Bone China on Leaded Glass.
 
@@ -426,10 +426,10 @@ silently wrong.**
 
 **Symptom.** None that failed, twice over. (1) In every four-rung build since 2026-09-01 the per-tier secondaries minted by
 `tools/emit_secondaries.mjs` scaled their OUTPUTS by the rung's output ratio and left their INPUTS at vanilla's numbers: the cannery
-on the e2 food rung made 4× vanilla's groceries (A 2.0) for vanilla's 20 meat + 10 iron, the rayon, luxury, porcelain and radio
+on the t2 food rung made 4× vanilla's groceries (A 2.0) for vanilla's 20 meat + 10 iron, the rayon, luxury, porcelain and radio
 conversions likewise — a secondary was cheaper per unit the higher the rung, against the user-ruled rule of 2026-09-01 ("inputs follow
 the tier's own output/input logic … a secondary is as input-efficient as the rung carrying it"). (2) The first dry-run builds of the
-era-keyed A 1.6 and A 2.2 books printed `NEGATIVE-GOODS CHECK FAILED … building_automotive_industry automobiles output min total 0`
+tier-keyed A 1.6 and A 2.2 books printed `NEGATIVE-GOODS CHECK FAILED … building_automotive_industry automobiles output min total 0`
 while the A 2.0 canon passed.
 
 **Root cause.** (1) The replace on `goods_input_*_add` lines read `/goods_input_([a-z_]+)_adds*=s*(-?[0-9.]+)/` — `\s*` written
@@ -450,33 +450,33 @@ prints Rin, which is what a no-op would have left at 1 on every rung — it did,
 four-rung measurement before 2026-09-13 (F98–F110) carried secondaries with vanilla inputs and scaled outputs; the corrected emitter
 makes every secondary dearer on rungs 1+ by the rung's input ratio, which the comparability caveat of §10.78 now names.
 
-## 2026-09-13 — the A/B ladder was keyed on the rung's INDEX, so a late industry's first rung carried an 1836 rung's economics, and electrics' only rung sat one era below its technology (landmine L31)
+## 2026-09-13 — the A/B ladder was keyed on the rung's INDEX, so a late industry's first rung carried an 1836 rung's economics, and electrics' only rung sat one tier below its technology (landmine L31)
 
 **Symptom.** None that failed. In every four-rung batch (F98–F110) the automotive plant earned about £2,700 of value added per staffed
-level at 1935 while steel's e2 rung earned £10,200 and arms' e2 £5,900 in the same runs; synthetics held 0.07–0.09% of world value added
+level at 1935 while steel's t2 rung earned £10,200 and arms' t2 £5,900 in the same runs; synthetics held 0.07–0.09% of world value added
 against vanilla's 0.50%; on the flat-cost ×1.2 book (F110) electrics and munition were loss-making at base from their debut (target_be
 107 and 115) and stood 29% / 27% staffed on 697 / 841 built levels. The batch tables showed automobiles and telephones 12–17% dearer than
 vanilla's British price. All read as "late industries are weak", not as a defect.
 
-**Root cause.** Two order-keyed steps, one on top of the other. `tools/make_tier4_config.mjs` assigned eras by vanilla method ORDER (four
-methods → 0, 1, 2, 3; the five shorter industries from a hand table, which put electrics on e1 although `telephone` is a game-era-4
-technology, i.e. e2). `tools/make_ab_config.mjs` then keyed every multiplier on **k = era − the industry's first era**: output × A^k,
-input value × B^k, cost × A^k, the `--in0` lift on k = 0. For the thirteen industries that start at e0, k = era and nothing was wrong;
-for automotive (e2, e3), munition (e1, e2), synthetics (e1) and electrics (e1) k ran 0, 1 — vanilla's recipe at vanilla's margin, the
-lift on top, the anchor cost — while their `ai_value` (already keyed on `t.era`) pulled the AI toward buildings priced two eras below
+**Root cause.** Two order-keyed steps, one on top of the other. `tools/make_tier4_config.mjs` assigned tiers by vanilla method ORDER (four
+methods → 0, 1, 2, 3; the five shorter industries from a hand table, which put electrics on t1 although `telephone` is a game-era-4
+technology, i.e. t2). `tools/make_ab_config.mjs` then keyed every multiplier on **k = tier − the industry's first tier**: output × A^k,
+input value × B^k, cost × A^k, the `--in0` lift on k = 0. For the thirteen industries that start at t0, k = tier and nothing was wrong;
+for automotive (t2, t3), munition (t1, t2), synthetics (t1) and electrics (t1) k ran 0, 1 — vanilla's recipe at vanilla's margin, the
+lift on top, the anchor cost — while their `ai_value` (already keyed on `t.era`) pulled the AI toward buildings priced two tiers below
 their label. The user's ruling of 2026-09-03 ("do not consider late-to-appear industries as t0/t1") had reached the research marks and
-the analyses but not the generator, because nothing checked the book against its own eras.
+the analyses but not the generator, because nothing checked the book against its own tiers.
 
-**Fix (the era rule, user-ruled 2026-09-13; BALANCE_FRAMEWORK §10.78).** `lib_tier4_spec.mjs` states the rule and exports the
+**Fix (the tier rule, user-ruled 2026-09-13; BALANCE_FRAMEWORK §10.78).** `lib_tier4_spec.mjs` states the rule and exports the
 derivation (`eraOfGameEra`, `derivePlacement`, `placementFaults`, `GAME_ERA_OF_ERA`, `ERA_TOLERANCE`); `make_tier4_config.mjs` derives
-each rung's era from its gate technology's game era as the mod ships it (ERA_MOVES included), bumped only to keep one rung per era,
+each rung's tier from its gate technology's game era as the mod ships it (ERA_MOVES included), bumped only to keep one rung per tier,
 honours a `PLACEMENT` ruling where the ladder overflows (fertilizer, explosives, motor) and throws beyond the ±1 tolerance;
 `make_ab_config.mjs` keys on `t.era` and records `_ab.keyed_by: 'era'` and the command that made the book (`--bar-months` and
 `--variant` replace the hand edits the measured books carried). Regenerated: the canon, canon-je24, canon-je24-a22, canon-flat-in12,
 canon-flat-in13 and the two test books — only the four industries changed, proved by a per-book diff.
 
 **Detect / prevent.** `tools/lint_tier_eras.mjs` inside every `build.ps1` and as preflight `Test-LmL31`: placement within ±1 of the
-technology's era from the paired tree, one rung per era, output and value added rising with era, and an A/B book's multipliers
+technology's era from the paired tree, one rung per tier, output and value added rising with tier, and an A/B book's multipliers
 recomputed from the vanilla first method and `_ab`. A book from before the pass fails it by design. The same rule now covers the
 history converter (a start rule names its rung by `era`; a `tier` position throws on a four-rung book) and the start baseline's labels.
 
@@ -602,7 +602,7 @@ level. Seven such lines, one per cloned tier with a complex vanilla block (3 pow
 **Why it had never fired.** The refusal path is correct and deliberate — mangling railway's 164-line
 Trans-Siberian / Shinkansen / Trans-Continental `ai_value` block would be far worse than skipping it. But
 `Set-BuildingAiValue` is only *called* on a cloned tier when that tier carries an `ai_value` in the config,
-and until the ai_value ladder (500 x (era+1) on all 105 tiers) **no power or railway tier ever did**. The
+and until the ai_value ladder (500 x (tier+1) on all 105 tiers) **no power or railway tier ever did**. The
 F66 port probe did set ai_values on cloned tiers, but ports carry no complex block, so it took the scalar
 path and the note never printed. ⇒ **A branch that has never executed is not known to work** — the same
 holds for any `else` in a generator that only a new config shape can reach.
@@ -685,7 +685,7 @@ batch-B config outright for merely existing). It now checks what it means: **eve
 emit must name a technology the shipping tree contains.**
 ⚠ And the first version of *that* threw on all ten tiers with no technology at all — which are correct:
 a tier with no `tech` is available from the 1836 start, which is exactly right for the pre-industrial
-era-0 rungs and the vanilla basic port. Only a tier that *names* a technology can be wrong about it.
+tier-0 rungs and the vanilla basic port. Only a tier that *names* a technology can be wrong about it.
 The start-available ones are counted and printed instead, so an accidental one is still visible.
 
 **Detecting it next time.** The general shape is *a build step that ignores the config the build was
@@ -796,7 +796,7 @@ five minutes instead of a batch.
 
 ---
 
-## The vanilla building "anchor" was tier POSITION 1 — switching on the era-0 rungs silently shipped vanilla's buildings for 9 industries (2026-08-11)
+## The vanilla building "anchor" was rung POSITION 1 — switching on the tier-0 rungs silently shipped vanilla's buildings for 9 industries (2026-08-11)
 
 **Symptom.** Nothing failed. The build was green — lint, negative-goods, mod checks and preflight all
 passed — the mod loaded, the game ran to date and self-quit. Only `error.log` knew, with nine lines:
@@ -805,8 +805,8 @@ common/buildings/01_industry.txt`, once each for food, textile, furniture, glass
 arms and artillery.
 
 **Root cause.** `build.ps1` keyed each industry's generated block set on **`$ind.tiers[0].key`**, on the
-assumption that the first tier is the one reusing the vanilla building key. That held for as long as the
-era-0 rungs were `model_only`. The moment they were switched on (ROADMAP step 1), `tiers[0]` became an
+assumption that the first rung is the one reusing the vanilla building key. That held for as long as the
+tier-0 rungs were `model_only`. The moment they were switched on (ROADMAP step 1), `tiers[0]` became an
 **invented** key — `building_food_industry_artisanal` — so:
 1. the vanilla `building_food_industry` block matched nothing in `$genByBase` and was copied through
    **verbatim**, and
@@ -818,9 +818,9 @@ shipped **vanilla's** food industry, textile mill, steel mill and six more: no t
 tech gating, for exactly the nine industries that have a pre-industrial rung. Everything downstream
 still looked right, because the generated file *contained* our buildings; they were simply never loaded.
 ⚠ The same assumption also drove `aliases`, which are only legal on the building that reuses the vanilla
-key: they were being written onto the era-0 rung.
+key: they were being written onto the tier-0 rung.
 
-**Fix.** Compute an explicit **anchor tier** per industry — the lowest-era tier that carries a
+**Fix.** Compute an explicit **anchor tier** per industry — the lowest-tier rung that carries a
 `vanilla_pm` — and key both `$genByBase`/`$genFileOf` and the `aliases` emission on it. An all-new chain
 with no `vanilla_pm` anywhere (the steamer shipyard) falls back to `tiers[0]` and is appended, which is
 what the existing `note:` line already reports.
@@ -830,17 +830,17 @@ noise, so nobody reads it — the exact shape TESTBED_LANDMINES exists for. Two 
 used: a **duplicate-key scan of the emitted buildings files** (104 blocks, 0 duplicates), and grepping a
 run's `error.log` for `Duplicated key`. A build-time assertion belongs in `Invoke-ModChecks`.
 ⚠ **Generalise the lesson: any "the first tier is the vanilla one" assumption is now false.** The ladder
-grew a rung *below* the vanilla anchor, so tier POSITION no longer implies tier ROLE anywhere. The same
+grew a rung *below* the vanilla anchor, so rung POSITION no longer implies rung ROLE anywhere. The same
 class already bit the user-facing tier numbering (CLAUDE.md: "N IS THE ERA, NEVER A POSITION").
 
 ---
 
 ## A frozen PM selection was never re-validated against PROFIT — a −40% method shipped with +159% one candidate away (2026-08-10)
 
-**Symptom.** The era-0 preset's textile mill ran `pm_craftsman_sewing` — buying silk to make
+**Symptom.** The tier-0 preset's textile mill ran `pm_craftsman_sewing` — buying silk to make
 luxury_clothes in a scenario whose SoL-7 pops buy no luxury at all, so the output sat at the 25% price
 floor while the 30 clothes/level the method sacrifices traded at 161. Replayed on the shipped state:
-−40.5% with the method on, +159.4% with it off. The same defect ran the other way at era 4, where two
+−40.5% with the method on, +159.4% with it off. The same defect ran the other way at tier 4, where two
 textile tiers sat on `pm_no_luxury_clothes` forgoing +40–49pp. Nothing failed: the run reported
 `PM optimality: SETTLED`, and the state passed every guard. Found by the user reading the sheet.
 
@@ -857,7 +857,7 @@ pinned on the wrong side.
 each present building's PMG selection is re-scored against its legal candidates at CURRENT prices; any
 selection beaten by more than the threshold drops its pin (if any) and unlatches `pmDone`, and the
 optimiser re-decides under its own rules. The pin contract becomes: pins yield to legality, to the
-ceiling, and to dominance — **but each pin gets exactly ONE appeal per era, heard late**. The first
+ceiling, and to dominance — **but each pin gets exactly ONE appeal per tier, heard late**. The first
 version lifted unconditionally every round, and a genuinely bistable pair is dominated from whichever
 side it holds, so it was re-opened forever: the settling property §10.48 bought came straight back off
 ("PM settled 1/6" on the first shipped write). Late + once means the appeal is judged at near-converged
@@ -894,24 +894,24 @@ which it will actually run.
 
 ## The integer polish could not CLEAR a standing ceiling breach — and the macro veto blocked the one move that could (2026-08-10)
 
-**Symptom.** Scenarios shipped with a hard-constraint violation standing (era-1 `clippers buy 106 /
+**Symptom.** Scenarios shipped with a hard-constraint violation standing (tier-1 `clippers buy 106 /
 sell 48` from the 1-level shipyard, price pinned at 175) while the polish reported "0 moves accepted":
 one +1 shipyard level would have priced clippers at ~110, and nothing ever took it. Under the old
-jitter defaults this was live in the SHIPPED ensemble — seeds 9 and 10 both carried a standing era-1
+jitter defaults this was live in the SHIPPED ensemble — seeds 9 and 10 both carried a standing tier-1
 breach the polish never tried to fix.
 
 **Root cause.** Two layers. (1) The polish's objective was `illogicality → losses → net` with a guard
 that only refused NEW breaches — a standing breach was invisible to it, so a breach-clearing move was
 scored purely on profit keys it usually loses. (2) With that fixed, the macroscenario gap-sum veto
 still rejected the move: the shipyard's value added is negative, so adding a level SHRINKS the mapped
-denominator, every other share rises, and a standing above-cap gap (era-1 paper) widens by a hair. The
+denominator, every other share rises, and a standing above-cap gap (tier-1 paper) widens by a hair. The
 veto ran before the objective, so the hard constraint lost to the soft layer — inverting the precedence
 the rest of the solver enforces (macro enforcement undoes its own steps on a ceiling breach).
 
 **Fix.** Ceiling breaches lead the polish objective lexicographically (breaches → faults → losses →
 net), and a move that strictly clears a breach without creating one is exempt from the macro-gap veto.
-Measured: the default ensemble went from standing era-1 breaches on two of three seeds to the ceiling
-CLEAR on all six eras of all three seeds, illogicality unchanged.
+Measured: the default ensemble went from standing tier-1 breaches on two of three seeds to the ceiling
+CLEAR on all six tiers of all three seeds, illogicality unchanged.
 
 **Detect/prevent.** When a constraint is declared to outrank everything, grep for every accept/reject
 decision and check the constraint appears — at the RIGHT precedence — in each. A hard constraint that
@@ -947,7 +947,7 @@ which is the same lesson as the ceiling-pin entry below, one bug further upstrea
 ## The futility guard blocked growth at the CEILING it was needed for (2026-08-09)
 
 **Symptom.** The 1780 iron mine sat at 1 level, 419% margin, its good pinned at the 175 ceiling with
-buy 58 / sell 22 — and the count machinery never grew it, run after run, seed after seed. The era-2
+buy 58 / sell 22 — and the count machinery never grew it, run after run, seed after seed. The tier-2
 engines under-build (buy 229 / sell 96 from 2 levels) resurfaced with the same signature after the date
 gate. The user's read — "the iron mines themselves are profitable, why is there only one of them? It can
 be some systemic weirdness" — was exactly right.
@@ -980,7 +980,7 @@ failure rather than by shipping wrong numbers.
 config field is silently absent until added there — exactly how `input_ratio` once made the frozen-mix
 branch unreachable dead code (§10.25). Fixed in both copies (econ.js + builder.html's fork). The reason
 this cost minutes instead of a shipped defect: the gate THROWS on a missing date instead of falling
-back to era arithmetic. A fallback would have run the old placement silently under the new flag.
+back to tier arithmetic. A fallback would have run the old placement silently under the new flag.
 **Detect next time:** when adding a config field the solver reads, grep `makeTiers` FIRST — it is the
 choke point every tier field passes through, in two copies.
 
@@ -994,7 +994,7 @@ did not create the defect — it created the first chain of length two (fertiliz
 the one-pass version ever faced.
 
 **3. A date inside the honest range can still be the wrong date — the 1780 hardwood pin.** Furniture's
-e1 manufactory dated 1770 placed at 1780, and its recipe eats HARDWOOD — produced only by a tech-gated
+t1 manufactory dated 1770 placed at 1780, and its recipe eats HARDWOOD — produced only by a tech-gated
 logging secondary the 1780 scenario cannot run, and invisible to the chain rule (hardwood is not a
 tiered good, so `GOOD_FIRST_ERA` has no entry and `unproducible()` waves it through by design).
 `hardwood buy 73 / sell 0 — NO PRODUCER AT ALL`. The authoring fix: the honest range for manufactory
@@ -1026,7 +1026,7 @@ without the target sub-block.
   instead of the engineers line — silently, build green. `@( )` around the invocation is load-bearing and
   commented as such. Caught only by reading the emitted artifact (the verify-the-artifact principle).
 - **`era_solver.mjs` still carries a pre-`era_pm.mjs` fork of `candidates()`** — the mandate landed in the
-  shared copy and era 0 of `era_prices.json` still showed gas streetlights. The fork has also already
+  shared copy and tier 0 of `era_prices.json` still showed gas streetlights. The fork has also already
   drifted exactly as era_pm's header predicted (it lacks the coerced-labour ban). Both forks now consult
   the one `mandatedPick()`; full dedup filed as its own task.
 
@@ -1034,24 +1034,24 @@ without the target sub-block.
 exercises the SEMANTIC difference (add + remove, not just requantify), and read the emitted file rather
 than trusting a green build.
 
-## The in-era illogicality count was fiction — it scored recipes that never ship (2026-08-09)
+## The in-tier illogicality count was fiction — it scored recipes that never ship (2026-08-09)
 
 **Symptom.** The headline illogicality read 52 (47 excluding shipyards) while a replay of the criterion on
-the SHIPPED presets — final recipes, final counts — read **94 (84)**. Under the outer era iteration the
-in-era count "worsened" to ~90 and converged to the replayed one.
+the SHIPPED presets — final recipes, final counts — read **94 (84)**. Under the outer tier iteration the
+in-tier count "worsened" to ~90 and converged to the replayed one.
 
 **Root cause.** The same §10.14.1/§10.39.3/§10.41.1 defect in its fourth home: `ladderFaults` judges the
-newest PRESENT tier, and during era N that leading rung still carries its provisional (leanest-legal,
+newest PRESENT tier, and during tier N that leading rung still carries its provisional (leanest-legal,
 canonical-start) recipe — lean recipes look profitable, so fault 1 (loss-making) and fault 3 (inverted)
 were systematically under-counted mid-ladder. The truth was always ~94; "52" measured a state no one ships.
 
 **Fix.** The criterion is now ALSO replayed on the shipped state (`FINAL-STATE ILLOGICALITY`), together
 with leading/dominant-rung scoring and a losses-by-vintage split; the final-state figure is the headline,
-and the outer iteration (ERA_OUTER, default 3) closes the gap at its source by re-solving every era against
+and the outer iteration (ERA_OUTER, default 3) closes the gap at its source by re-solving every tier against
 the final recipe book.
 
-**Detect next time.** Any number computed inside the era pass is suspect until it agrees with a replay of
-the shipped preset — the fingerprint of this defect family is exact agreement at era 0 and era 5 with
+**Detect next time.** Any number computed inside the tier pass is suspect until it agrees with a replay of
+the shipped preset — the fingerprint of this defect family is exact agreement at tier 0 and tier 5 with
 divergence between.
 
 ## The urban-centre reduction is what broke 1870 and 1900 (2026-08-09)
@@ -1066,15 +1066,15 @@ knob off restored 1870 to net 208k / losses 37k and 1900 to 1.4M / 111k. The art
 innocent (reverting it made losses AND faults worse).
 
 **Fix.** Two-stage. First a loss floor (`ERA_URBAN_FLOOR=-0.10`: cut only below −10%) recovered the two
-eras while keeping 1836's −49% case cut. Then the ruled set's outer iteration + unified enforcement
+tiers while keeping 1836's −49% case cut. Then the ruled set's outer iteration + unified enforcement
 absorbed the breaking mechanism entirely — under them the floor, the unconditional cut and never-cutting
 are statistically indistinguishable — so the special case was REMOVED again (default 0, cut at any loss,
 same rule as manufacturing) and the knob remains as the A/B instrument.
 
 ## A raw-only solvency re-check recreated the phase-ordering bug it existed to close (2026-08-09)
 
-**Symptom.** In the first full combination run, era 5 shipped `chemical_plant_reforming` at **116 levels ×
-−46% = £448k/wk** — 60% of the era's losses in one building type — while the report's own reduction had
+**Symptom.** In the first full combination run, tier 5 shipped `chemical_plant_reforming` at **116 levels ×
+−46% = £448k/wk** — 60% of the tier's losses in one building type — while the report's own reduction had
 terminated cleanly.
 
 **Root cause.** The new post-tuner §10.18 re-check dropped/shrank raw producers AFTER the manufacturing
@@ -1085,7 +1085,7 @@ final check can invalidate it.
 
 **Fix.** ONE unified counts-only enforcement loop over every rule at once (raw solvency, manufacturing
 losses, urban floor) — worst violation first, settle + re-price after each step, terminate only when
-everything is clean simultaneously. Era-5 losses under the same combination fell 728k → 127k.
+everything is clean simultaneously. Tier-5 losses under the same combination fell 728k → 127k.
 
 **Detect next time.** When adding any post-solve rule, ask what other rule's terminal check it can
 invalidate; if the answer is anything, it belongs inside the shared loop, not after it.
@@ -1104,17 +1104,17 @@ correct throughout; only the check lied.
 
 ---
 
-## The per-era report scored a tier whose recipe that run had not solved yet — and read it 4x too profitable (2026-08-08)
+## The per-tier report scored a rung whose recipe that run had not solved yet — and read it 4x too profitable (2026-08-08)
 
-**Symptom.** After the profit-target line was changed to also score the scenario's LEADING tier (the era+1
-rung), eras 1–4 reported absurd margins — `railway 708%`, `port 608%`, `arms 291%`, `tooling 201%` — while
-era 0 and era 5 looked fine. Replaying the SHIPPED preset for the same scenarios gave 603%, 196%, 82%, 50%.
-Everything else in those era blocks was byte-identical between the two runs (GDP, illogicality, price path,
+**Symptom.** After the profit-target line was changed to also score the scenario's LEADING rung (the tier+1
+rung), tiers 1–4 reported absurd margins — `railway 708%`, `port 608%`, `arms 291%`, `tooling 201%` — while
+tier 0 and tier 5 looked fine. Replaying the SHIPPED preset for the same scenarios gave 603%, 196%, 82%, 50%.
+Everything else in those tier blocks was byte-identical between the two runs (GDP, illogicality, price path,
 composition), so it was demonstrably the same solve.
 
-**Root cause. A tier's recipe is solved exactly ONCE, in the era where that tier is DOMINANT.** So when era
-N prints its report, the era-(N+1) tier sitting in its scenario still carries an **unsolved** recipe — era
-N+1 has not run yet. Dumping both sides for `tooling e2` at era 1:
+**Root cause. A rung's recipe is solved exactly ONCE, in the tier where that rung is DOMINANT.** So when tier
+N prints its report, the tier-(N+1) rung sitting in its scenario still carries an **unsolved** recipe — tier
+N+1 has not run yet. Dumping both sides for `tooling e2` at tier 1:
 
 ```
 report (live, era 1):    in = { iron  6.4, wood  9.6 }  ->  201%
@@ -1124,31 +1124,31 @@ config it converges to:  in = { iron 16.8, wood 25.1 }  ->   50%
 A uniform 2.62× on the inputs, with **prices, wage, employment, throughput, level count and secondary PM
 all identical** — which is what ruled out every other explanation in turn.
 
-**Why exactly two eras looked right, and why that was the clue.** Era 0's leading tier IS its dominant tier
-(`lead = [0,2,3,4,5,5]`), so it had no such row; era 5 is last, so by the time it reports every tier has
-been solved. Those were precisely the two eras that agreed with the shipped config — the pattern named the
+**Why exactly two tiers looked right, and why that was the clue.** Tier 0's leading rung IS its dominant rung
+(`lead = [0,2,3,4,5,5]`), so it had no such row; tier 5 is last, so by the time it reports every rung has
+been solved. Those were precisely the two tiers that agreed with the shipped config — the pattern named the
 cause before any dump did.
 
-**Fix.** The per-era line scores only the DOMINANT tier (plus a plateaued industry's permanent top tier).
-Scoring the leading tier needs a FINAL pass over all six eras after the whole solve is finished; until that
+**Fix.** The per-tier line scores only the DOMINANT rung (plus a plateaued industry's permanent top rung).
+Scoring the leading rung needs a FINAL pass over all six tiers after the whole solve is finished; until that
 exists, the report scores only what is final at the moment it prints.
 
 **Detect / prevent.** This is BALANCE_FRAMEWORK §10.14.1's rule — *never report from a non-finalised state*
 — surviving for **recipes** after it had been fixed for **prices**. General check: **before scoring anything
-in a per-era report, ask whether a LATER era still writes to it.** The cheap detector is the one that worked
+in a per-tier report, ask whether a LATER tier still writes to it.** The cheap detector is the one that worked
 here — replay the shipped preset and diff every scored row against the report; any row that disagrees is
 being reported from a state that is not shipped.
 
 ⚠ **A second, quieter bug rode along.** The `floored` test keys on `h.kind.startsWith('tier')` to choose
 between an `I:<industry>` and an `R:building_<name>` lookup. Renaming `kind` to the row's role sent every
-lookup down the reference branch, so nothing was ever detected as floored and era 1's seven floored
+lookup down the reference branch, so nothing was ever detected as floored and tier 1's seven floored
 industries silently became genuine misses — inflating the very metric being fixed. A string-prefix contract
 between two sites 40 lines apart, with no assertion on either end.
 ### ⚠⚠ IT RECURRED THE SAME DAY, IN `profitTotals()`, AND THE FIX ABOVE IS WHY IT WAS FOUND
 
 Hours after the above was diagnosed and fixed for the profit-TARGET line, the **same defect shipped in the
-new `profitTotals()` metric**, which was being written in the same session and also ran inside the per-era
-pass. It summed every tier in the scenario — including the leading tier, whose recipe the next era had not
+new `profitTotals()` metric**, which was being written in the same session and also ran inside the per-tier
+pass. It summed every rung in the scenario — including the leading rung, whose recipe the next tier had not
 solved. Scored against a replay of the shipped presets:
 
 | | 1780 | 1836 | 1870 | 1900 | 1920 | 1945 |
@@ -1156,21 +1156,21 @@ solved. Scored against a replay of the shipped presets:
 | in-pass report | £0.01M | £0.09M | £0.40M | **£1.80M** | £4.80M | £8.10M |
 | replay of shipped state | £0.01M | £0.06M | £0.08M | **£0.40M** | £2.45M | £8.10M |
 
-**Same fingerprint** — exact agreement at era 0 and era 5, divergence everywhere between — which is what
-identified it in seconds the second time. Overstated by **4.5×** at 1900, and it hid the fact that era 1870's
-loss-makers lose more than the whole era earns (losses 158% of net).
+**Same fingerprint** — exact agreement at tier 0 and tier 5, divergence everywhere between — which is what
+identified it in seconds the second time. Overstated by **4.5×** at 1900, and it hid the fact that the 1870 tier's
+loss-makers lose more than the whole tier earns (losses 158% of net).
 
-**Fix:** the per-era line is removed entirely and a single FINAL PROFIT PASS runs after the whole era loop,
+**Fix:** the per-tier line is removed entirely and a single FINAL PROFIT PASS runs after the whole tier loop,
 replaying each shipped preset against the final recipe book (BALANCE_FRAMEWORK §10.41).
 
 ⭐ **THE RULE THIS ESTABLISHES: when a defect is found in one report line, SWEEP EVERY OTHER LINE COMPUTED
 AT THE SAME POINT.** The first fix was correct, well documented, and did nothing to prevent the second
 occurrence, because it was written as a fix to *that line* rather than as a property of *that position in
-the solve*. Anything computed inside the per-era pass is computed before the later eras have settled the
-recipes of the tiers standing in the earlier ones.
+the solve*. Anything computed inside the per-tier pass is computed before the later tiers have settled the
+recipes of the rungs standing in the earlier ones.
 
-⚠ And a limit worth stating: the final pass makes the REPORT honest, not the SOLVE. Era N's counts were
-themselves chosen against the provisional downstream recipes, and no outer loop over the era sequence
+⚠ And a limit worth stating: the final pass makes the REPORT honest, not the SOLVE. Tier N's counts were
+themselves chosen against the provisional downstream recipes, and no outer loop over the tier sequence
 exists. The strict fixed-point check cannot catch that — the inconsistency is deterministic, so it
 reproduces byte-identically while still being wrong.
 
@@ -1480,12 +1480,12 @@ build a UI snapshot when `ui/*.js` is older than the config.
 
 ## The solver reported and shipped a state it had already invalidated (2026-08-04)
 
-**Symptom.** Era-1 `iron` was flagged at the +75% price ceiling while the very same scenario's order book
-said buy 831 against sell 990 — which is a price of **86**, not 175. Era-1 `hardwood` did the same. Two of
+**Symptom.** Tier-1 `iron` was flagged at the +75% price ceiling while the very same scenario's order book
+said buy 831 against sell 990 — which is a price of **86**, not 175. Tier-1 `hardwood` did the same. Two of
 three reported ceiling breaches were goods in surplus.
 
 **Root cause.** `buildScenario` ended with three single passes in a fixed order: sync prices → optimise PMs
-→ sync prices → **re-solve every era-current tier's input recipe**. The recipe re-solve changes what those
+→ sync prices → **re-solve every tier-current rung's input recipe**. The recipe re-solve changes what those
 buildings buy, which changes the order book, which changes prices — and nothing ran afterwards. So the
 `S.thresholds` table that was reported, and written into `config/era_presets.json` as the scenario's
 `prices`, described the market *before* the recipes it was shipped alongside. Whichever pass ran last
@@ -1505,13 +1505,13 @@ mutated after it. Written up as an invariant in `tools/era_scenarios.mjs` and in
 
 **Prevent next time.** Any solver that alternates between coupled variables must end on a *convergence*, not
 on a pass. If a step changes something a previously computed output depended on, either re-run it or do not
-report that output. The instrument now prints its own residual per era, so a non-converged solve says so.
+report that output. The instrument now prints its own residual per tier, so a non-converged solve says so.
 
 **Related, found in the same pass** (both BALANCE_FRAMEWORK §10.14):
 
-- **The forward probe.** Every industry placed one level of the *next* era's tier, "to show the ladder from
+- **The forward probe.** Every industry placed one level of the *next* tier's rung, "to show the ladder from
   both sides". It was scored by nothing — every check filters to `era <= this era` — and being a ×1.5-bigger
-  plant it supplied **61% of era-1 steel**, most of era-3 automobiles and most of era-3 telephones. Those
+  plant it supplied **61% of tier-1 steel**, most of tier-3 automobiles and most of tier-3 telephones. Those
   three goods sank to the 25% floor and were precisely the ones reported "insolvent at these prices". It was
   also an anachronism (a Bessemer converter in 1836). *Lesson: a display-only element that participates in
   the simulation is not display-only.*
@@ -1828,12 +1828,12 @@ in our re-tiered `common/history/buildings/*.txt`. (Found via the new self-diagn
 **Root cause.** `pm_anchorage` is vanilla's *undeveloped-port* base PM. The 1836 start has ports on it.
 `convert_history.ps1` matches a factory's active main PM against each tier's `vanilla_pm` (port = basic /
 industrial / modern) — `pm_anchorage` matches none, so the block is left **unchanged** (still
-`building_port` + `pm_anchorage`). But `building_port` is now our T1 (PMG `pmg_main_port_basic`, no
+`building_port` + `pm_anchorage`). But `building_port` is now our rung 1 (PMG `pmg_main_port_basic`, no
 `pm_anchorage`), so the activated PM is invalid for it.
 
 **Fix.** New per-tier **`vanilla_pm_aliases`** (list) in the config + `history_lib.ps1`: extra vanilla main
-PMs that also map to that tier. Set port T1 `vanilla_pm_aliases = ["pm_anchorage"]`, so undeveloped ports
-convert to our basic port (T1). Verified: 0 `pm_anchorage` left; conversion 604→694.
+PMs that also map to that tier. Set port rung 1 `vanilla_pm_aliases = ["pm_anchorage"]`, so undeveloped ports
+convert to our basic port (rung 1). Verified: 0 `pm_anchorage` left; conversion 604→694.
 
 **Detect/prevent.** After tiering any building, check the 1836 history for its **base/level-0 PM** (ports:
 anchorage; some buildings have an inert base main PM) — it won't match a tier's `vanilla_pm` and will be
@@ -1859,7 +1859,7 @@ whether the affected content is worth it.
 ## 2026-07-17 — Gated secondary PMs stopped working (bone china / elastics / precision tools)
 
 **Symptom.** After the tier split, secondary PMs that were gated behind a primary PM became permanently
-unavailable — e.g. **Bone China** could not be selected on the Crystal Glassworks (glass tier 3).
+unavailable — e.g. **Bone China** could not be selected on the Crystal Glassworks (glass rung 3).
 
 **Root cause.** Three vanilla secondaries are gated by
 **`unlocking_production_methods = { <vanilla main PM> }`** — only available when one of those *main* PMs is
@@ -1867,9 +1867,9 @@ present in the building:
 
 | Secondary | gated behind (vanilla main PM) | should appear on |
 |---|---|---|
-| `pm_bone_china` (glass porcelain) | `pm_crystal_glass`, `pm_houseware_plastics` | glass T3, T4 |
-| `pm_elastics` (textile luxury) | `pm_sewing_machines`, `pm_electric_sewing_machines` | textile T3, T4 |
-| `pm_precision_tools` (furniture luxury) | `pm_lathe`, `pm_mechanized_workshops` | furniture T2, T3 |
+| `pm_bone_china` (glass porcelain) | `pm_crystal_glass`, `pm_houseware_plastics` | glass rungs 3, 4 |
+| `pm_elastics` (textile luxury) | `pm_sewing_machines`, `pm_electric_sewing_machines` | textile rungs 3, 4 |
+| `pm_precision_tools` (furniture luxury) | `pm_lathe`, `pm_mechanized_workshops` | furniture rungs 2, 3 |
 
 The split renamed those main PMs (`pm_crystal_glass` → `pm_main_glass_crystal`) and moved each into its own
 building, so the gate referenced a PM that is **never present** in the tier building → the secondary
@@ -2032,11 +2032,11 @@ emitters. Whitelist what survives, not what dies.
 
 ## FOUR VANILLA KEYS CONTAIN A HYPHEN, AND AN `[a-z_0-9]+` ID CLASS MAKES THEM INVISIBLE (2026-08-12)
 
-**Symptom: a confident, wrong finding.** `verify_start_techs.mjs --diff-vanilla` reported that tier-1
-countries LOSE the ability to build the era-2 ammonia-soda explosives works — vanilla needing only
+**Symptom: a confident, wrong finding.** `verify_start_techs.mjs --diff-vanilla` reported that starting-tech tier-1
+countries LOSE the ability to build the tier-2 ammonia-soda explosives works — vanilla needing only
 `intensive_agriculture` where we need `dynamite`. The user asked how dynamite could possibly be available
 to anyone in 1836. It cannot: vanilla gates `pm_ammonia-soda_process` on **`nitroglycerin`**, which no
-starting tier holds.
+starting-tech tier holds.
 
 **Root cause.** The block parser used `/^([A-Za-z_0-9]+)\s*=\s*\{/gm`. Four vanilla keys contain a
 hyphen — `pm_ammonia-soda_process`, `pm_coal-fired_plant`, `pm_oil-fired_plant`, `pan-nationalism` — and
@@ -2044,7 +2044,7 @@ for those the pattern does not merely mis-name the block, **it never opens it**,
 from the table entirely. Every lookup then returns "no gate", and **absent reads as PERMISSIVE**: the
 check concluded vanilla let anyone run those methods.
 
-⚠ **Three of the four are `vanilla_pm` values of our own tiers** — explosives e2, power e3, power e5 — so
+⚠ **Three of the four are `vanilla_pm` values of our own tiers** — explosives t2, power t3, power t5 — so
 a four-key blind spot landed precisely on the comparison the file exists to make. The same class of miss
 had already appeared once that day, in an ad-hoc era-inversion check that silently skipped
 `pan-nationalism` and its edges.
@@ -2110,52 +2110,52 @@ uses all three — into a different kind of file, where one of them has no meani
 uniformly rather than occasionally, suspect the **context**, not the data.
 
 
-## 2026-08-29 — ai_value keyed on the RUNG INDEX instead of the ERA (four-rung arm)
+## 2026-08-29 — ai_value keyed on the RUNG INDEX instead of the TIER (four-rung arm)
 
 **Symptom:** none. The build passed every linter, preflight twice, and played a clean 100-year
-campaign. The defect was found only by reading the emitted numbers *by era* rather than by rung,
+campaign. The defect was found only by reading the emitted numbers *by tier* rather than by rung,
 in answer to a direct question about what ai_values the four tiers carry.
 
 **The bug.** `tools/make_tier4_config.mjs` line 209 set
 `t.ai_value = 750 * AI_LADDER ** steps`, where `steps = j - kept[0].era` is the rung index
 *relative to that industry's own first rung*. That anchor is correct for `output_qty` (a tier's
 absolute output is a design output; the ladder is what carries meaning) and it is what the line
-above it does NOT do for `building_cost`, which already used the absolute era `j`.
+above it does NOT do for `building_cost`, which already used the absolute tier `j`.
 
 **Why it matters.** `ai_value` is the AI's construction desire, and a building competes against
 *every other industry's* buildings, not only against its own ladder. Keying it on the rung index
 made it a function of when an industry's ladder happens to start:
 
-| era | ai_value(s) present | spread |
+| tier | ai_value(s) present | spread |
 |---|---|---|
 | 0 | 750 | — |
 | 1 | 750, 1998 | 2.66× |
 | 2 | **750, 1998, 5321** | **7.1×** |
 | 3 | 1998, 5321, 14172 | 7.1× |
 
-The canonical book is strictly era-keyed (one value per era, no exceptions). The four industries
-whose ladders start late — **automotive and power (first rung e2, 7.1× too low), synthetics and
-electrics (first rung e1, 2.66× too low)** — are precisely the new economy, and they were handed a
+The canonical book is strictly tier-keyed (one value per tier, no exceptions). The four industries
+whose ladders start late — **automotive and power (first rung t2, 7.1× too low), synthetics and
+electrics (first rung t1, 2.66× too low)** — are precisely the new economy, and they were handed a
 malus nobody designed. In the run they came back at **0.14× / 0.34× / 0.06× / 0.54×** of the
-canonical arm's workers, against 0.38–1.27× for the industries starting at e0.
+canonical arm's workers, against 0.38–1.27× for the industries starting at t0.
 
-**Fix.** `t.ai_value = Math.round(750 * Math.pow(AI_LADDER, j))` — the absolute era, with a comment
-saying why and naming the three different anchors in that loop (cost: era; ai_value: era;
+**Fix.** `t.ai_value = Math.round(750 * Math.pow(AI_LADDER, j))` — the absolute tier, with a comment
+saying why and naming the three different anchors in that loop (cost: tier; ai_value: tier;
 output_qty: rung, deliberately). The shipped `config/mod_config.tier4.json` and the pass-through
 copy in `config/era_inverse.tier4.json` were corrected in place (10 tiers), which is exact because
 `ai_value` never enters the solve — `era_inverse.mjs` only copies it into its artifact.
 
-**Lesson.** A per-rung ladder and a per-era ladder look identical on any industry that starts at
+**Lesson.** A per-rung ladder and a per-tier ladder look identical on any industry that starts at
 rung 0, which is most of them — so the defect is invisible in a spot check and invisible in every
 aggregate. **Read a per-tier quantity grouped by the axis it is SUPPOSED to be constant on**, and
-assert the invariant: one `ai_value` per era is now checkable in one line.
+assert the invariant: one `ai_value` per tier is now checkable in one line.
 
 ## 2026-08-29 — `make_tier4_techs.mjs` has NO ladder-era alignment step (latent, not yet harmful)
 
 **Found by:** a user question — "are synthetics and electrics wrongly gated behind a very high level
 tech?" The answer is **no**, but the check exposed a missing guard.
 
-`tech_tree_spec.mjs` carries the LADDER-ERA ALIGNMENT (its line ~1069, user-ruled 2026-08-12): a
+`tech_tree_spec.mjs` carries the LADDER-TIER ALIGNMENT (its line ~1069, user-ruled 2026-08-12): a
 technology gating one of our tiers is placed in the MECHANICAL era that tier maps to, re-derived from
 the ladder every run, only ever lowering, never landing in era 1. **`make_tier4_techs.mjs` — the
 four-rung tree — does none of it.** New technologies get `gameEra(year)`, and vanilla technologies
@@ -2163,13 +2163,13 @@ keep whatever era vanilla gave them. `gameEra` uses VANILLA's windows (1836/1861
 exactly the two-calendar problem that put **41 of 106 tiers one era too high** in the six-rung book.
 
 **Current damage: 3 of 66 tiers**, all vanilla technologies, all +1 above the mechanical era their
-own era maps to (`ERA_LEAD` 2/3/4/5):
+own tier maps to (`ERA_LEAD` 2/3/4/5):
 
-| industry | era | gate | gate era | target |
+| industry | tier | gate | gate era | target |
 |---|---|---|---|---|
-| food | e1 | `pasteurization` | 4 | 3 |
-| motor | e2 | `compression_ignition` | 5 | 4 |
-| arms | e2 | `stormtroopers` | 5 | 4 |
+| food | t1 | `pasteurization` | 4 | 3 |
+| motor | t2 | `compression_ignition` | 5 | 4 |
+| arms | t2 | `stormtroopers` | 5 | 4 |
 
 32 are exactly on target and 31 sit below it (harmless — cheaper and earlier). It is this mild only
 because the tree was hand-pegged under the 15-year rule, which tracked the eras closely **by
@@ -2179,13 +2179,13 @@ is meant to be the workhorse).
 
 **Not fixed yet** — the n=3 batch `20260829_212316` froze the config hash and L10 forbids a mid-batch
 edit. Fix after it lands: port the alignment rule, or at minimum a validator that FAILS on any tier
-whose gate sits above its era's mechanical target.
+whose gate sits above its tier's mechanical target.
 
 ⚠ **Analysis trap, hit while measuring this.** The first pass keyed the target on the RUNG INDEX and
-reported 10 misaligned tiers including every new-economy industry. The target is keyed on the tier's
-**ERA**. Keyed correctly it is 3, and none of them are in the new economy. This is the *same* error
+reported 10 misaligned tiers including every new-economy industry. The target is keyed on the rung's
+**TIER**. Keyed correctly it is 3, and none of them are in the new economy. This is the *same* error
 as the ai_value defect logged above, made within the hour — **when a per-tier quantity has both a rung
-index and an era available, state which one it is keyed on, and check that the two differ before
+index and a tier available, state which one it is keyed on, and check that the two differ before
 trusting any result derived from either.**
 
 ## 2026-08-30 — TWO added technologies are never researched by anyone, so four frontier rungs are dead content
@@ -2203,16 +2203,16 @@ technology at 1936:
 
 | technology | run1 | run2 | run3 | gates |
 |---|---|---|---|---|
-| `automatic_weapons_manufacture` | **0** | **0** | **0** | arms, artillery, munition e3 |
-| `cyclonite_process` | **0** | **0** | **0** | explosives e3 |
-| `catalytic_synthesis` | 2 | 2 | 1 | fertilizer e3 (alive), synthetics e3 (never built) |
-| `glass_fibre` | 0 | 6 | 2 | glass e3 |
-| `transfer_machining` | 2 | 5 | 5 | tooling, automotive e3 |
-| `continuous_web_processing` | 0 | 2 | 5 | textile, paper e3 |
+| `automatic_weapons_manufacture` | **0** | **0** | **0** | arms, artillery, munition t3 |
+| `cyclonite_process` | **0** | **0** | **0** | explosives t3 |
+| `catalytic_synthesis` | 2 | 2 | 1 | fertilizer t3 (alive), synthetics t3 (never built) |
+| `glass_fibre` | 0 | 6 | 2 | glass t3 |
+| `transfer_machining` | 2 | 5 | 5 | tooling, automotive t3 |
+| `continuous_web_processing` | 0 | 2 | 5 | textile, paper t3 |
 
 **Two of the nine technologies added by `make_tier4_techs.mjs` are researched by NOBODY, in any run.**
 That makes four frontier rungs — arms, artillery, munition, explosives — dead content: they exist in
-the files, pass every linter, and can never be constructed. 13 of the 18 e3 rungs are alive; 5 are
+the files, pass every linter, and can never be constructed. 13 of the 18 t3 rungs are alive; 5 are
 never born, and `synthetics` is the fifth for a different reason (its technology IS held by 1–2
 countries and nobody builds the building — an economic failure, not a gating one).
 
@@ -2285,10 +2285,10 @@ reachable**:
 
 | technology | vanilla PMs it gates | industry | what gates that industry now |
 |---|---|---|---|
-| `bessemer_process` (era 2, 1856) | `pm_bessemer_process` | steel | e1 `open_hearth_process` (1867) |
-| `lathe` (era 1, 1800) | `pm_lathe`, `pm_leaded_glass`, `pm_dye_workshops` | tooling/glass/synthetics | e1 `steel_railway_cars` |
-| `crystal_glass` | `pm_crystal_glass` | glass | e2 `plastics` |
-| `baking_powder` | `pm_baking_powder` | food | e1 `pasteurization` |
+| `bessemer_process` (era 2, 1856) | `pm_bessemer_process` | steel | t1 `open_hearth_process` (1867) |
+| `lathe` (era 1, 1800) | `pm_lathe`, `pm_leaded_glass`, `pm_dye_workshops` | tooling/glass/synthetics | t1 `steel_railway_cars` |
+| `crystal_glass` | `pm_crystal_glass` | glass | t2 `plastics` |
+| `baking_powder` | `pm_baking_powder` | food | t1 `pasteurization` |
 
 ⚠ A first scan said EIGHT. `enclosure`, `shaft_mining`, `prospecting` and `rubber_mastication` are
 FINE — they gate BUILDINGS (farms, mines, plantations) and decrees, which an ad-hoc
@@ -2305,7 +2305,7 @@ are needed than vanilla has technologies for that chain. Vanilla's steel mill ha
 BOTH `bessemer_process` (1856) and `open_hearth_process` (1867); with four steel rungs,
 `make_tier4_techs.mjs` chose one by 15-year date proximity and **never checked whether the
 technology it displaced would be left empty.** Bessemer is the EARLIER and arguably more apt gate
-for steel e1.
+for steel t1.
 
 **This contradicts a rule already in CLAUDE.md** — *"THERE ARE NO CONTENTLESS VANILLA TECHNOLOGIES"*
 — which was written about not DELETING them. The four-rung re-peg empties them without deleting
@@ -2475,13 +2475,13 @@ is absorbed into a neighbour as an alias:
 
 | rung | `vanilla_pm` | gate | `vanilla_pm_aliases` |
 |---|---|---|---|
-| e0 | `pm_crude_tools` | `manufacturies` | — |
-| **e1** | **`pm_steel`** | **`mechanical_tools`** | **`pm_pig_iron`** |
-| e2 | `pm_rubber_grips` | `vulcanization` | — |
-| e3 | *(invented)* | `cemented_carbide` | — |
+| t0 | `pm_crude_tools` | `manufacturies` | — |
+| **t1** | **`pm_steel`** | **`mechanical_tools`** | **`pm_pig_iron`** |
+| t2 | `pm_rubber_grips` | `vulcanization` | — |
+| t3 | *(invented)* | `cemented_carbide` | — |
 
 `pm_pig_iron`'s own vanilla gate is **`steelworking`**, and in vanilla these ten countries hold it
-and run pig iron in 1836. Our converter maps them through the **alias** onto e1 — a building gated
+and run pig iron in 1836. Our converter maps them through the **alias** onto t1 — a building gated
 on `mechanical_tools`, which they do not hold. The engine drops the block.
 
 **`emit_techs.mjs`'s 1836 grant never reads `vanilla_pm_aliases`.** The grant rule is *"every
@@ -2502,7 +2502,7 @@ rows.push({ …, vanillaNeeds: [...new Set([...bg, ...(vpm[t.vanilla_pm] || [])]
               weNeed: t.tech ? [t.tech] : [] });
 ```
 
-For tooling e1 it therefore asks *"what does vanilla need to run `pm_steel`?"* (`mechanical_tools`)
+For tooling t1 it therefore asks *"what does vanilla need to run `pm_steel`?"* (`mechanical_tools`)
 against *"what do we need?"* (`mechanical_tools`) — identical, no gap. The comparison that would
 fail — vanilla needs `steelworking` for `pm_pig_iron`, we demand `mechanical_tools` — is never
 constructed, because the alias is not in the row set. **The detector passes, and the mod ships ten
@@ -2516,7 +2516,7 @@ COVERAGE check was per-industry where the property is per-PMG).
 identical 10 lines, so the two arms are affected equally and their comparison is unaffected — which
 is why the running batch was **not** stopped. It arrived with the vanilla-ladder rebuild, which is
 what introduced aliases in the first place (they exist so a dropped rung's vanilla method still has
-somewhere to land). Ten buildings across ten mid-tier countries is small in world terms, but it is a
+somewhere to land). Ten buildings across ten countries of the middle starting-tech tiers is small in world terms, but it is a
 silent divergence from the 1836 start the mod's premise says should match vanilla.
 
 ### The fix owed (NOT yet applied — the batch is running and the build path must not move mid-batch)
@@ -2562,8 +2562,8 @@ const missing = [...reqs].filter(r => !rec.set.has(r) && !NAMED.has(r)).sort();
 ```
 It suppressed those three technologies **as a requirement, for every country**. Its premise — *"the
 1836 grant names them, so a gap is never real"* — holds only while the grant names them to every
-tier that can own such a building. The four-rung book broke it: the grant names `mechanical_tools`
-to tiers 1–2, while the tooling e1 rung lands in **tier-3 and tier-4** countries' hands through the
+starting-tech tier that can own such a building. The four-rung book broke it: the grant names `mechanical_tools`
+to starting-tech tiers 1–2, while the tooling t1 rung lands in **starting-tech tier-3 and tier-4** countries' hands through the
 alias mapping. So the detector was told, in advance and unconditionally, to ignore the exact
 technology that was about to fail.
 
@@ -2575,12 +2575,12 @@ saying not to repopulate it.
 
 **And the grant carried the mirror image of the same mistake:** `if (VAN_STARTING_NAMED.has(t.tech))
 continue;` skipped any technology vanilla names *anywhere*, where the right test is whether vanilla
-names it **to that tier** (`vTier[st].has(t.tech)`). One allow-list on the granting side, one on the
+names it **to that starting-tech tier** (`vTier[st].has(t.tech)`). One allow-list on the granting side, one on the
 checking side, agreeing with each other and both wrong.
 
 ⚠ **A subtlety that would have produced a half-fix.** Widening to aliases must ask the question
 **per method**, not over the union of their gates. The union asks *"could a vanilla country of this
-tier run BOTH `pm_steel` and `pm_pig_iron`"* — which tier 3 cannot — so it would have withheld the
+tier run BOTH `pm_steel` and `pm_pig_iron`"* — which starting-tech tier 3 cannot — so it would have withheld the
 grant from precisely the countries needing it. The right question is *"could this tier run ANY
 method that lands on this rung?"*
 
@@ -2645,10 +2645,10 @@ still fails the gate.
 
 **Symptom.** On the user's own metric — people by rung in the shortlist economies — the rung-0 headcount never
 fell in any four-rung arm (flat-cost 0.48M→0.43M over the century, cost ladder 0.48→1.44M) while its share
-collapsed only because the sector grew. In the flat-cost run001 save at 1936, 30 of the shortlist's 46 e0
-textile levels stood in Ile-de-France and 23 of 54 e0 food levels in Leinster; a third to a half of the standing
-e0 buildings had been ESTABLISHED after 1920, 38% of e0 levels were company-held (textile 55%, steel 73%, motor
-71%), and 54–100% of e0 buildings recorded a layoff after 1930 — dying and rebuilt at once (FINDINGS F97 §4).
+collapsed only because the sector grew. In the flat-cost run001 save at 1936, 30 of the shortlist's 46 t0
+textile levels stood in Ile-de-France and 23 of 54 t0 food levels in Leinster; a third to a half of the standing
+t0 buildings had been ESTABLISHED after 1920, 38% of t0 levels were company-held (textile 55%, steel 73%, motor
+71%), and 54–100% of t0 buildings recorded a layoff after 1930 — dying and rebuilt at once (FINDINGS F97 §4).
 
 **Root cause.** The company chain extension (2026-08-23) duplicated every `ai_construction_targets` entry per
 tier. The engine's own comment (`00_ai.txt`): the AI is much more likely to select the building type and the
@@ -2707,18 +2707,18 @@ first tick of 1836.1.1 after a `$tickAtStart` of 1890 and asserts the `Stop-Proc
 
 ## 2026-09-03 — the ledger counted the four-rung book's DISABLED industries as tiered rungs: Britain's shipyards and ports showed up as a growing "e0"
 
-**Symptom.** The user read a steady era-to-era growth of e0 employment for GBR+FRA on the ab3 growth-seeds ledger
-while glass e0 had halved and tooling e0 barely moved. The page's British e0 series ran 0.16M (1840) → 0.83M
-(1930) → 0.68M (1935); the era-0 rungs of the ENABLED industries, staffing-weighted, are 0.16M (1900) → 0.09M
+**Symptom.** The user read a steady era-to-era growth of t0 employment for GBR+FRA on the ab3 growth-seeds ledger
+while glass t0 had halved and tooling t0 barely moved. The page's British t0 series ran 0.16M (1840) → 0.83M
+(1930) → 0.68M (1935); the tier-0 rungs of the ENABLED industries, staffing-weighted, are 0.16M (1900) → 0.09M
 (1935). The difference is `building_shipyard` (5,000/level) and `building_port` (1,000/level): 469k and 365k
 "e0 people" in Britain at 1935.
 
 **Cause.** On a four-rung book `port`, `shipyard`, `shipyard_steam`, `railway` and `power` carry `disabled: true`
 (§10.66/§10.67.5): the industry is handed back to vanilla, but its tiers stay in the config and its rung-0 KEY IS
-the vanilla building. Nine ledger scripts built their tier→era / tier→employment maps by walking
-`cfg.industries` without the `disabled` filter — `report_data2.mjs` (the per-country employment-by-era panel),
-`fill_emp.mjs` (the world employment-by-era table, hence goal G2's "oldest rung still grows"), `fill_indecomp.mjs`,
-`tiered_panel.mjs`, `report_data.mjs` (era stocks / frontier share), `analyse_ai_tier_profit.mjs`,
+the vanilla building. Nine ledger scripts built their rung→tier / rung→employment maps by walking
+`cfg.industries` without the `disabled` filter — `report_data2.mjs` (the per-country employment-by-tier panel),
+`fill_emp.mjs` (the world employment-by-tier table, hence goal G2's "oldest rung still grows"), `fill_indecomp.mjs`,
+`tiered_panel.mjs`, `report_data.mjs` (tier stocks / frontier share), `analyse_ai_tier_profit.mjs`,
 `analyse_build_allocation.mjs`, `analyse_gdp_gap.mjs`, `peek_run.mjs`. `fill_payback.mjs` and
 `analyse_ai_tier_choice.mjs` already filtered, which is why below-best and payback were right while the employment
 panels were wrong. The same defect class as emit_research_events dying on a disabled shipyard tier (§10.67.5) —
@@ -2727,7 +2727,7 @@ on the six-rung canon nothing is disabled, so nothing ever showed.
 **Fix.** `if (ind.disabled) continue;` as the first statement of every industry loop in those nine scripts
 (`peek_run` via a filter on the loop source); node --check on all; the four A/B ledgers (ab1 n=2, ab2 n=2, ab3 n=3,
 ab3 growth seeds) regenerated and republished to their URLs; F98 §2 and F99 §1's world rung headcounts corrected
-(ab2 seed 1 at 1935: e0 8.2M not 10.7M).
+(ab2 seed 1 at 1935: t0 8.2M not 10.7M).
 
 **Lesson.** A config walker that means "our tiered industries" must say so — `cfg.industries.filter(i =>
 !i.disabled)` — and the register needs a static detector for the omission (owed: L27, the L25 pattern).
@@ -2869,7 +2869,7 @@ data check saw digits in the samples column of the broken table, and its stalene
 **Fixes.** (1) The filler maps the bins onto the renderer's shape, null where a side has no samples. (2) G3 reads the
 construction points from `report_data.json`. (3) Four new tokens (`__ARMLABEL__`, `__NBLABEL__`, `__VANLABEL__`,
 `__SPREAD__`, in the manifest, so an unfilled one fails the gate) and five captions DERIVED from the consts they sit
-beside (employment shape and the e0 note from `EMP`, the decomposition factors and dilution from `PROD_*` and
+beside (employment shape and the t0 note from `EMP`, the decomposition factors and dilution from `PROD_*` and
 `EMP`, the frontier-payback classification from `LADDER`, the speed-curve shape from `PERF.byYear`). Also:
 `fill_tierchoice` pushes `--baseline` rows before the arm's, and `fill_goals` read `rows[0]` — right only while
 no baseline was ever passed; it takes the last row now.

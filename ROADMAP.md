@@ -14,7 +14,7 @@ doc — `BALANCE_FRAMEWORK.md` for balance rulings, `MODDING_NOTES.md` for engin
 
 ## Step 0 — THE SOLVER (substantially done, "almost happy")
 
-The five-era ladder, the scenario solve, and the balance UI. Everything the repo does today.
+The five-tier ladder, the scenario solve, and the balance UI. Everything the repo does today.
 State of play is in `CLAUDE.md` and `BALANCE_FRAMEWORK.md`; the current numbers are the §10.49–§10.51
 set (band regime + recipe ratchet + army fixed point).
 
@@ -82,7 +82,7 @@ unlocking one of our tiers sits in the mechanical era that tier maps to, which 4
 (BALANCE_FRAMEWORK §10.53). Then **eleven merges** (§10.56): where one historical advance reached several
 industries, one technology now gates all of them — Bulk Steel, Electric Drive, The Screw Steamer,
 Continuous-Flow Production, Magazine Rifles, Percussion Ordnance, Coal-Tar Chemistry, Cellulose Esters,
-High-Pressure Steam, Automatic Machine Control, Mass Small-Arms Production. **Railway plateaus at e4** on
+High-Pressure Steam, Automatic Machine Control, Mass Small-Arms Production. **Railway plateaus at t4** on
 the diesel engine; the invented superheating rung is gone.
 ⚠ **A merge deletes only technologies WE added.** A vanilla one is named by vanilla script — production
 methods, journal entries, events, ship modifications, company formation — so merging onto it means
@@ -98,8 +98,8 @@ deleting vanilla techs"*), and the UI-readability argument for it is accepted.
 | society | 65 · 755k · +2% | untouched, by ruling |
 | new technologies | 54 | **42** |
 
-⚠ **Two consequences flagged and NOT addressed.** Era-5 production fell from 20 technologies to 14, which
-changes what "a leader holds half of era 5 by 1940" means and partly re-opens the era-5 hole the re-band
+⚠ **Two consequences flagged and NOT addressed.** Tech-era-5 production fell from 20 technologies to 14, which
+changes what "a leader holds half of era 5 by 1940" means and partly re-opens the tech-era-5 hole the re-band
 was filling. And the military tree now hands a laggard 34% of itself by 1936 against vanilla's 45% — an
 11pp shortfall with no compensation, since its journal entries run on a 26-week war bar rather than the
 36-month industry one.
@@ -130,7 +130,7 @@ The other two stay in the file and the viewer: they cost nothing to keep and a w
 `atmospheric_engine` (Newcomen **1712**, sitting 124 years after the fact in era 2 — and in our tree it
 is what gates the engine works) and `crystal_glass` (Ravenscroft **1674**, 162 years). Both keep
 prerequisites that are already era 1, so neither creates an inversion. Nearly free in practice: vanilla
-already hands `atmospheric_engine` to the tier-1 and tier-2 starting countries by name and grants them
+already hands `atmospheric_engine` to the starting-tech tier-1 and tier-2 countries by name and grants them
 era 1 wholesale, so nothing changes for the powers and it gets cheaper for everyone else.
 **All other datings are left as they are** — they will be tuned against telemetry anyway.
 
@@ -192,11 +192,11 @@ pointing at it and the `model_only` flags gone. Plus, in the same pass:
   in one pass rather than twice.
 - ✅ **DONE — the stale tier BUILDING NAMES are fixed** (2026-08-10). They had been inherited from the
   vanilla production method that used to occupy the slot and several no longer described it. **11 tiers
-  renamed** in `config/mod_config.json`: paper e2 → *Machine Paper Mills* and e3 → *Sulfite Pulping
-  Paper Mills* (they were off by one rung), glass e1 → *Coal-Fired Glassworks* and e3 → *Tank Furnace
-  Glassworks*, tooling e4 → *High-Speed Steel Tooling Workshops*, explosives e3/e4/e5 → *Dynamite* /
-  *Ostwald Process* / *Continuous Nitration*, fertilizer e2 → *Superphosphate Plants*, textile e2 →
-  *Calico Printing Textile Mills*, food e2 → *Beet Sugar Food Industries*.
+  renamed** in `config/mod_config.json`: paper t2 → *Machine Paper Mills* and t3 → *Sulfite Pulping
+  Paper Mills* (they were off by one rung), glass t1 → *Coal-Fired Glassworks* and t3 → *Tank Furnace
+  Glassworks*, tooling t4 → *High-Speed Steel Tooling Workshops*, explosives t3/t4/t5 → *Dynamite* /
+  *Ostwald Process* / *Continuous Nitration*, fertilizer t2 → *Superphosphate Plants*, textile t2 →
+  *Calico Printing Textile Mills*, food t2 → *Beet Sugar Food Industries*.
   ⚠ Only `name` and `pm_name` moved. **`vanilla_pm` is untouched** — it is the 1836 history converter's
   mapping key, and renaming it would silently mis-tier every starting factory.
 - ✅ **DONE — five vanilla technologies get a new DISPLAY NAME**, because the slot they gate is not the
@@ -205,35 +205,35 @@ pointing at it and the `model_only` flags gone. Plus, in the same pass:
   those — and only our localization changes: `crystal_glass` → **Lead Crystal**, `electrical_capacitors`
   → **Alternating Current**, `pumpjacks` → **Oil Drilling**, `threshing_machine` → **Steam Threshing**,
   `dough_rollers` → **Mechanised Bakeries**. Two of these also *fix* a dating absurdity: a pumpjack is
-  1925 and gates an era-3 oil rig, a threshing machine is 1786 and gates era-3 steam threshers.
+  1925 and gates a tech-era-3 oil rig, a threshing machine is 1786 and gates tech-era-3 steam threshers.
 
 ### ⭐⭐ STEP 1b — THE ANCHOR RE-BAND (specified 2026-08-12, NOT yet written)
 
-The governing principle is in `CLAUDE.md` (*the era anchors are authoritative; technologies and
+The governing principle is in `CLAUDE.md` (*the tier anchors are authoritative; technologies and
 industries are calibrated to them, never the reverse*). This is the concrete change that brings the
 tree to it. **Nothing below is implemented yet** — it is a specification the user has ruled on
 clause by clause, held back only by the sequencing constraint at the end.
 
-**The anchors, user-ruled:** **1750 / 1830 / 1870 / 1900 / 1925 / 1940** for our eras 0–5, with band
-boundaries **1790 / 1850 / 1885 / 1912 / 1932**. Six of our eras ride on the engine's five, ours 0
-and 1 sharing mechanical era 1. The anchor means *a technology leader holds about half of that era's
-technologies at the anchor year* — so era 0 sits far before the game starts and era 5 slightly after
+**The anchors, user-ruled:** **1750 / 1830 / 1870 / 1900 / 1925 / 1940** for our tiers 0–5, with band
+boundaries **1790 / 1850 / 1885 / 1912 / 1932**. Six of our tiers ride on the engine's five eras, ours 0
+and 1 sharing mechanical era 1. The anchor means *a technology leader holds about half of that tier's
+technologies at the anchor year* — so tier 0 sits far before the game starts and tier 5 slightly after
 it ends, and finishing a tree should need luck, a strong nation and some neglect of the other trees.
 
-**1. Today's e0 and e1 merge by SPREADING, not doubling.** An industry that currently holds two rungs
-below 1850 keeps both, one per era — it does not end up with two era-0 buildings. After this no
-industry has more than one rung in any era, which is the invariant the ladder already claims.
+**1. Today's t0 and t1 merge by SPREADING, not doubling.** An industry that currently holds two rungs
+below 1850 keeps both, one per tier — it does not end up with two tier-0 buildings. After this no
+industry has more than one rung in any tier, which is the invariant the ladder already claims.
 
-**2. Steel loses its era-0 rung.** `building_steel_mill_bloomery` is dropped outright: its good has no
+**2. Steel loses its tier-0 rung.** `building_steel_mill_bloomery` is dropped outright: its good has no
 buyer of any kind that early, which is exactly why `ERA_PRUNE` already carries `steel@0`.
-⚠ `steelworking` is **not orphaned** by this — it stays era 1, keeps `shaft_mining` as its
+⚠ `steelworking` is **not orphaned** by this — it stays tech era 1, keeps `shaft_mining` as its
 prerequisite, is still required by `bessemer_process` and `mechanical_tools`, and still unlocks
 vanilla `pm_pig_iron` / `pm_saw_mills` / `building_steel_mill`.
 
-**3. `building_steel_mill` (blister steel — today's era-1 rung) gets a MANDATED SOLVER EXCLUSION**
+**3. `building_steel_mill` (blister steel — today's tier-1 rung) gets a MANDATED SOLVER EXCLUSION**
 (user ruling: *"we must mandate a solver exclusion for it to avoid it being built"*), and **dropping it
-too goes on the long-term todo.** ⚠ Named by BUILDING, not by era number: under the new bands its
-`tech_year` of 1745 puts it in era 0 beside the bloomery, so "the era-1 rung" is only true of today's
+too goes on the long-term todo.** ⚠ Named by BUILDING, not by tier number: under the new bands its
+`tech_year` of 1745 puts it in tier 0 beside the bloomery, so "the era-1 rung" is only true of today's
 numbering.
 The building itself has to survive for now — the 1836 map contains steel mills, so the history
 converter needs a tier to map them onto — but no scenario may place it.
@@ -242,20 +242,20 @@ holds *vanilla reference* buildings. Ours are governed by **`ERA_PRUNE`**, whose
 `industry@scenarioEra` and whose shipped default is `steel@0,glass@0` — so the exclusion is
 **`ERA_PRUNE=steel@0,steel@1,glass@0`** as the new default, one line in `tools/era_scenarios.mjs`.
 ⚠ Two things to check when it is applied, neither yet done: `ERA_PRUNE` prunes a whole **industry**
-at an era rather than a single rung (harmless here, since era 1 is the only scenario that could hold
-the e1 rung once e0 is gone), and the 1836 scenario then contains no steel at all against a map that
+at a tier rather than a single rung (harmless here, since tier 1 is the only scenario that could hold
+the t1 rung once t0 is gone), and the 1836 scenario then contains no steel at all against a map that
 holds 6 levels of it — small, but it is a divergence from the "1836 stays close to vanilla" premise
 and should be stated rather than discovered.
 
 **4 & 5. THE LADDER IS RE-BANDED, SEVEN RUNGS DROPPED AND FIFTEEN ADDED — BUILT 2026-08-12.**
-The provisional tables that stood here (five new era-1 technologies, eight new rungs) are **superseded
+The provisional tables that stood here (five new tier-1 technologies, eight new rungs) are **superseded
 by what was actually authored**; both were earlier iterations that did not survive the arithmetic. The
-ladder now runs **105 tiers over 22 industries — 11 / 17 / 19 / 21 / 21 / 16 per era** (the re-band
-authored 106; one invented e5 rung was dropped in a later pass — `build_era_ladder.mjs`'s own summary
+ladder now runs **105 tiers over 22 industries — 11 / 17 / 19 / 21 / 21 / 16 per tier** (the re-band
+authored 106; one invented t5 rung was dropped in a later pass — `build_era_ladder.mjs`'s own summary
 line is the authority), with one rung per
-era per industry, no interior gaps, and every tier's `tech_year` inside its era's band. Bold = new rung:
+tier per industry, no interior gaps, and every tier's `tech_year` inside its tier's band. Bold = new rung:
 
-| industry | e0 | e1 | e2 | e3 | e4 | e5 |
+| industry | t0 | t1 | t2 | t3 | t4 | t5 |
 |---|---|---|---|---|---|---|
 | food | 1750 | 1815 | 1860 | **1909** | 1920 | *plateau* |
 | textile | 1780 | 1830 | 1855 | 1905 | **1925** | *plateau* |
@@ -281,7 +281,7 @@ era per industry, no interior gaps, and every tier's `tech_year` inside its era'
 | art_academy | — | 1800 | 1850 | 1885 | 1912 | 1932 |
 
 **Seven ~1700 rungs dropped.** Under the new anchors an invented ~1700 tier and a real ~1750
-vanilla-anchored one both fall in era 0, and no industry may hold two rungs in one era. The invented one
+vanilla-anchored one both fall in tier 0, and no industry may hold two rungs in one tier. The invented one
 goes in every case — it is ours rather than vanilla's, and the user had already ruled the steel instance
 that way. ⭐ **This restores the vanilla building key to slot 0 in nine industries, which is the root
 cause of landmine L13**, so the re-band and that bug fix pull in the same direction.
@@ -294,20 +294,20 @@ shell filling (1915), wireless telegraphy (1901), superheated locomotives (1915)
 
 **Where no rung could be justified the industry PLATEAUS instead**, per the ruling that gaps are bad but
 late onsets and plateaus are fine. **Port is a plateau again** — its mechanised-cargo tier is a 1930
-building and therefore era 4, and the next real step is containerisation in 1956.
+building and therefore tier 4, and the next real step is containerisation in 1956.
 
-**Eleven dates moved**, all forced by one-rung-per-era and all recorded with their reasoning in the
+**Eleven dates moved**, all forced by one-rung-per-tier and all recorded with their reasoning in the
 SPEC's own notes: textile and furniture manufactories 1800 → 1780, arms rifles 1853 → 1849, steel open
 hearth 1868 → 1885 and electric arc 1903 → 1912 and strip mill 1926 → 1932, motor diesel 1904 → 1912,
 synthetics viscose 1905 → 1912, power oil-fired 1925 → 1932, fertilizer reforming 1931 → 1935, paper
 high-speed 1930 → 1935, and art academy photography 1839 → 1885 / film 1896 → 1912 / sound 1927 → 1932.
 
-⚠ **Steel's era-1 gap is deliberate**, not an oversight — era-1 steel has no buyer of any kind, which is
+⚠ **Steel's tier-1 gap is deliberate**, not an oversight — tier-1 steel has no buyer of any kind, which is
 the same fact clause 3's `ERA_PRUNE` exclusion states.
 
 **Three guards now enforce all of this at authoring time**, because nothing downstream compared an
-authored era against its own date: a tier whose `tech_year` falls outside its era's band throws, two
-tiers in one era throw, and the arrival-order check already present still throws. Two tooling defects
+authored tier against its own date: a tier whose `tech_year` falls outside its tier's band throws, two
+rungs in one tier throw, and the arrival-order check already present still throws. Two tooling defects
 were fixed to get here — see *Deferred fixes* and the commit log.
 
 **THE SOLVE — RUN AND CONFIRMED, 2026-08-12.** Two consecutive `era_scenarios --write` runs on the
@@ -318,13 +318,13 @@ state, and it is comparable to the shipped numbers.
 | | re-banded (106 tiers) | shipped (100 tiers) |
 |---|--:|--:|
 | final-state illogicality | **63** (57 excl shipyards) | 57 (54) |
-| per era | 4 / 4 / 9 / 13 / 15 / 18 | 3 / 5 / 7 / 12 / 15 / 15 |
+| per tier | 4 / 4 / 9 / 13 / 15 / 18 | 3 / 5 / 7 / 12 / 15 / 15 |
 | — **loss** family | **8** | 12 |
 | — inverted | 8 | 6 |
 | — stale-profitable | 41 | 36 |
 | net | £20.2M/wk | £20.1M |
 | losses | £136k/wk (0.7% of net) | £138k |
-| industrial ceiling | **clear, all six eras** | clear |
+| industrial ceiling | **clear, all six tiers** | clear |
 | macro residual breaches | 23 | 19 |
 | recipe monotonicity | 5/84 (all rounding, 4.02→3.99) | 3 |
 
@@ -332,17 +332,17 @@ state, and it is comparable to the shipped numbers.
 money* is the very bad fault and it falls **12 → 8**; an *inverted* ladder is the middling one and rises
 6 → 8; *obsolete-not-phased-out* is the tolerable one and takes the growth, 36 → 41. The headline number
 going up is that trade, and it is the trade the severity ordering asks for.
-⭐ **Losses on NEWEST rungs are £1k / £4k / £603 / £620 / 0 / 0 across the six eras** — the fifteen added
-rungs pay for themselves, and eras 4 and 5 carry no newest-rung loss at all. What loss remains is
-subsistence (£22–38k in the late eras) and stale tails, which is the design working.
+⭐ **Losses on NEWEST rungs are £1k / £4k / £603 / £620 / 0 / 0 across the six tiers** — the fifteen added
+rungs pay for themselves, and tiers 4 and 5 carry no newest-rung loss at all. What loss remains is
+subsistence (£22–38k in the late tiers) and stale tails, which is the design working.
 
 **Two honest residuals, neither hidden:**
 - ⚠ **Dominant rungs sit 37.5pp off the band on average (57/105 within 8pp)**, against 23.5pp shipped.
   The re-band moved every recipe and the band regime has not caught up; this is the clearest lever left.
 - ⚠ **There are now ZERO leading rungs (0/0).** The bands align tightly with the scenario years, so no
-  present tier has an era above its scenario. The leading rung was scored by nothing anyway
+  present rung has a tier above its scenario. The leading rung was scored by nothing anyway
   (BALANCE_FRAMEWORK, 2026-08-08), but it is a structural change, not noise.
-- Macro breaches 19 → 23; the new entries are the war industries and glass at the late eras, plus
+- Macro breaches 19 → 23; the new entries are the war industries and glass at the late tiers, plus
   railway, which remains the standing transport gap rather than anything the re-band caused.
 
 **Not yet done, and needed before this can be merged:** `building_cost` is `null` on all fifteen new
@@ -351,18 +351,18 @@ which is step 1's job and the reason they are still invented tiers rather than e
 
 **6. The four starting-technology lists are rewritten**, and the blanket pass is deliberate: *"the
 countries should have reasonable base techs, and not only the absolute minimum mandated by their 1836
-PMs"* — every civilised country gets **all of era 0** as a blanket statement, before the per-country
+PMs"* — every civilised country gets **all of tier 0** as a blanket statement, before the per-country
 pass that guarantees each start's own production methods are gated.
 
 | list | contents |
 |---|---|
-| `effect_starting_technology_tier_1_tech` | all era 0 + every era-1 technology with onset ≤ 1836 |
-| `…_tier_2_tech` | all era 0 + every era-1 technology with onset ≤ 1820 |
-| `…_tier_3_tech` | all era 0 |
+| `effect_starting_technology_tier_1_tech` | all tier 0 + every tier-1 technology with onset ≤ 1836 |
+| `…_tier_2_tech` | all tier 0 + every tier-1 technology with onset ≤ 1820 |
+| `…_tier_3_tech` | all tier 0 |
 | `…_tier_4_tech` | stays a curated named list |
 
 ⚠ **The blanket lists are a vanilla-style shortcut, not a hard limit** (user): a minor that should not
-hold all of era 0 can be handed technologies one by one. The per-country verification that every 1836
+hold all of tier 0 can be handed technologies one by one. The per-country verification that every 1836
 production method is actually gated is in `ON_GAME_UPDATE.md`, with its BOM warning — a union across
 countries is **not** sufficient, since a technology can be covered by some other country's list while
 the country that needs it lacks it.
@@ -396,7 +396,7 @@ script-values-as-triggers, the `root.` scope trap, and the general/mobilisation 
 in MODDING_NOTES → *What a tech-granting event can CONDITION on*, with the three dead trigger spellings
 that all failed **silently** and were caught only by asking each condition twice, once impossibly.
 ⚠ **The thresholds under measurement are the user's ruled ones** (15k/45k/135k/405k people in the
-predecessor tier for eras 2–5), chosen deliberately high against a retrospective sweep that put JE #2
+predecessor tier for tiers 2–5), chosen deliberately high against a retrospective sweep that put JE #2
 completion at 14%/4%/0%/0% of top-20 countries. The batch exists to see whether the mechanism still moves
 technology and GDP despite firing rarely — that is the question, not a calibration to be fixed first.
 
@@ -531,7 +531,7 @@ on*. The four decisions:
    ⭐⭐ **THE OTHER FOUR GET NO EVENT, because their technology is a 1836 FREEBIE.** `navigation` (shipyard),
    `romanticism` (art_academy), `leblanc_process` (explosives) and `atmospheric_engine` (motor) all sit in
    **game era 1**, and `effect_starting_technology_tier_1_tech` opens with `add_era_researched = era_1` —
-   so every tier-1/2 country already holds them at the 1836 start and `can_research` is false from day one.
+   so every starting-tech tier-1/2 country already holds them at the 1836 start and `can_research` is false from day one.
    An event on them is dead on arrival.
    ⚠⚠ **THIS GENERALISES AND IT RESIZES STEP 2.** Of the **83** distinct tier technologies, **13 are game
    era 1** and therefore free at the start: artillery, atmospheric_engine, beet_sugar_refining,
@@ -588,15 +588,15 @@ reasonable in-game precursor to anchor an entry on; (e) none of these — an ove
   watertube_boiler, shift_work, steel_railway_cars, radio and steam_turbine among the uncovered ones. ⚠ Radio's `.210` can never
   fire in the mod: it requires `pm_radios` active, and our electrics building runs the per-rung copy `pm_radios_electrics_industry`.
 - **(c) 6 + 1:** enclosure (98% of 1836 population starts with it), manufacturies (97%), shaft_mining (97%), distillation, prospecting,
-  steelworking (94% each; only the unrecognised tiers 5–7 lack them). sericulture is unresearchable by design (`can_research = no`).
+  steelworking (94% each; only the unrecognised starting-tech tiers 5–7 lack them). sericulture is unresearchable by design (`can_research = no`).
 - **(d) 2:** rubber_mastication (unlocks rubber plantations; nothing handles rubber before it — ⚠ RECONSIDERED the same day: Hancock's
   masticator served the waterproof-cloth trade, and it gates aniline and vulcanization, so the proposal below anchors it on textile) and, borderline, pumpjacks (unlocks oil
   rigs; the only earlier oil is whale oil — whaling stations would be a stretch; its automatic-irrigation half could anchor on plantations).
 - **(e) 26**, in two groups:
-  1. **A true oversight — the era-1 skip.** `emit_research_events` skips every game-era-1 technology as "granted free at the 1836
-     start", which holds only for tiers 1–2 (59 of 444 countries). **lathe** gates three of OUR rungs (textile, furniture and glass e1)
-     and is held by 28% of the 1836 population: Russia, Spain, Brazil, Mexico, Egypt (tier 3) and the Ottomans, China, Japan, Persia
-     (tier 4) research it with no entry. **cotton_gin** (lathe's prerequisite; cotton-plantation throughput) is held by 41%.
+  1. **A true oversight — the tech-era-1 skip.** `emit_research_events` skips every game-era-1 technology as "granted free at the 1836
+     start", which holds only for starting-tech tiers 1–2 (59 of 444 countries). **lathe** gates three of OUR rungs (textile, furniture and glass t1)
+     and is held by 28% of the 1836 population: Russia, Spain, Brazil, Mexico, Egypt (starting-tech tier 3) and the Ottomans, China, Japan, Persia
+     (starting-tech tier 4) research it with no entry. **cotton_gin** (lathe's prerequisite; cotton-plantation throughput) is held by 41%.
   2. **Excluded by the 2026-08-30 scope ruling** ("only JEs for techs that unlock a tiered industry tier"; `research_events.scope`
      absent = `tiers_only`), each with the precursor an entry would anchor on: canneries, fractional_distillation, vacuum_canning,
      dough_rollers (food industry) · radio (the electrics industry — its telephones) · art_silk (textile) · automatic_bottle_blowers
@@ -612,7 +612,7 @@ reasonable in-game precursor to anchor an entry on; (e) none of these — an ove
 ⭐ **The user's direction (2026-10-05):** restore them where it makes sense narratively, one by one; RADIO on the electrics industry (its
 telephones) and, as a further condition, the country must HOLD **electric_telegraph** for the bar to advance — visibility stays gated on the
 technology's own researchability, as everywhere. ⇒ Machinery this needs: per-technology entries in the config (sources, a mark, `requires`),
-a held-technology condition ANDed into every tick, the era-1 skip lifted for rungs with a predecessor (lathe; it brings distillation and
+a held-technology condition ANDed into every tick, the tech-era-1 skip lifted for rungs with a predecessor (lathe; it brings distillation and
 steelworking along, seen only by the ~5% of the 1836 population lacking them), and for vacuum canning a new source kind, the levels RUNNING
 a method (optional — vacuum canning also calibrates on the whole food industry).
 
@@ -623,8 +623,8 @@ are incompatible, highlighted), then **RE-RULED the same day**: the user set fou
 radio 25k); every mark is a WHOLE number of fully staffed levels of what it counts (the counter reads fully staffed levels at base staffing, so a
 level with a mandated automation still counts its base 5,000); **a switchable building counts only its main methods that can narratively lead to
 the technology** (no wooden shipyard advances arc welding); onsets before 1836 are exempt from rule 1, but their marks should make a speed-up
-for Russia, China and the Ottomans possible or likely, not instant; shift work counts every NON-ARTISAN URBAN industry — all e1–e3 rungs,
-the e0 rungs that are not crafts, and shipyards (not infrastructure, rural or non-economic buildings).
+for Russia, China and the Ottomans possible or likely, not instant; shift work counts every NON-ARTISAN URBAN industry — all t1–t3 rungs,
+the t0 rungs that are not crafts, and shipyards (not infrastructure, rural or non-economic buildings).
 "Starts the clock" = the first yearly summary in which the technology is researchable, every co-requirement is held and a source is at or above
 the mark. Read on the **18 complete century runs of the six artmerge arms** (`20260930_232639` ×3, `20261001_124750` ×2, `20261001_225817` ×3,
 `20261002_120946` ×2, `20261002_235755` ×3, `20261003_171038` ×5), each run with its own book's per-level employment and the summaries'
@@ -634,7 +634,7 @@ the entries built must re-read the marks. ⭐ **BUILT AND LAUNCHED 2026-10-05** 
 
 | technology | counts (method filter) | mark (levels) | also requires | 2nd starts | early | note |
 |---|---|---|---|---|---|---|
-| lathe | e0 textile, furniture, glass crafts (3 sources) | 25k (50 craft levels) | — | | | pre-1836: RUS, CHI, TUR start at once at ANY mark that lets them start (their crafts do not grow); it brings lathe ~2 years forward |
+| lathe | t0 textile, furniture, glass crafts (3 sources) | 25k (50 craft levels) | — | | | pre-1836: RUS, CHI, TUR start at once at ANY mark that lets them start (their crafts do not grow); it brings lathe ~2 years forward |
 | cotton_gin | cotton plantations | 48k (6) | — | | | pre-1836: TUR at once, ~2 years forward; CHI has no plantations; RUS holds it |
 | canneries | food industry | 100k (20) | — | | | pre-1836: RUS 11/18 (2 at once, median 7 years forward), CHI 5/18 (6), TUR never — its food industry is too small at any mark that is not instant for Russia |
 | fractional_distillation | food industry | 10k (2) | — | | | pre-1836: CHI 14/18 (8 years forward), TUR 9/18 (16), never at once; RUS holds it |
@@ -642,7 +642,7 @@ the entries built must re-read the marks. ⭐ **BUILT AND LAUNCHED 2026-10-05** 
 | rubber_mastication | textile | 100k (20) | — | | | pre-1836: RUS 12/18 (10 at once, 7 forward), TUR 4/18, CHI at once (its craft textile is huge below ~300k) |
 | rotary_valve_engine | motor industry | 10k (2) | — | 1854 | 0 | prerequisites alone give 1852 |
 | electrical_generation | motor industry | 15k (3) | electric_telegraph | 1885 | 0 | |
-| ~~shift_work~~ DROPPED by the user | non-craft tiered rungs (art academy e1–e3 only) + shipyards on metal or arc welding | 850k (170) | — | 1884 | 1 | ⚠ INCOMPATIBLE: 750k gives 1877 with 3/18 early (Britain in the 1840s). ⚠⚠ WIDE OVER TALL (read the same day; runs where the country lost a quarter of its population for good excluded): the median year the count reaches 750k / 850k / 1M is NET 1932 / 1936 / never (it researches shift work unaided ~1881), FRA 1884 / 1887 / 1896 (~1896), GBR 1836 / 1850 / 1861 (~1880), RUS 1904 / 1906 / 1911 (~1902); 850k is 7% of the Dutch or Belgian population against 1.2% of the American and 0.8% of the Russian. The user is weighing dropping the entry |
+| ~~shift_work~~ DROPPED by the user | non-craft tiered rungs (art academy t1–t3 only) + shipyards on metal or arc welding | 850k (170) | — | 1884 | 1 | ⚠ INCOMPATIBLE: 750k gives 1877 with 3/18 early (Britain in the 1840s). ⚠⚠ WIDE OVER TALL (read the same day; runs where the country lost a quarter of its population for good excluded): the median year the count reaches 750k / 850k / 1M is NET 1932 / 1936 / never (it researches shift work unaided ~1881), FRA 1884 / 1887 / 1896 (~1896), GBR 1836 / 1850 / 1861 (~1880), RUS 1904 / 1906 / 1911 (~1902); 850k is 7% of the Dutch or Belgian population against 1.2% of the American and 0.8% of the Russian. The user is weighing dropping the entry |
 | conveyors | motor + automotive | 180k (36) | — | 1916 | 1 | 3 runs with no second |
 | reinforced_concrete | construction sector on iron frame or later | 61k (61) | — | 1866 | 0 | |
 | pneumatic_tools | construction sector on iron frame or later | 9k (9) | — | 1885 | 0 | prerequisites alone give 1883 |
@@ -665,7 +665,7 @@ the entries built must re-read the marks. ⭐ **BUILT AND LAUNCHED 2026-10-05** 
 
 **Old entries checked against the method rule, nothing found:** every rule-A source is one rung with one main method, or a merged host counted by
 the method it runs; the necessity anchors (staple-crop farms for intensive agriculture and the explosives' first rung, textile and light industry for
-aniline, the motor e2/e3 rungs for combustion engine, trade centres for telephone, the arms and artillery rungs for percussion cap, coal and iron
+aniline, the motor t2/t3 rungs for combustion engine, trade centres for telephone, the arms and artillery rungs for percussion cap, coal and iron
 mines for atmospheric engine) all count buildings whose every method is the precursor of the technology, not an obsolete stage of it.
 
 ---
@@ -675,7 +675,7 @@ mines for atmospheric engine) all count buildings whose every method is the prec
 Decide each tier's `building_cost` (construction points) under the new tech gating, then build the mod
 for real: solved recipes + new technologies + the step-2 events. **Resolved through three rulings**: the
 §9 ten-year-payback model (its assumed 20% return was 3–6× off the realised margins) → §10.57's
-two-band × 1.5^(era−1) vanilla-anchored ladder (2026-08-13) → **§10.61's EXACTLY-VANILLA FLAT book
+two-band × 1.5^(tier−1) vanilla-anchored ladder (2026-08-13) → **§10.61's EXACTLY-VANILLA FLAT book
 (2026-08-17, canonical)**: each tier costs its industry's vanilla anchor, flat, × workforce_mult on the
 graded ports — the exponential ladder was double jeopardy, since constructing the next tier at all IS
 the modernisation cost. `payback_census.mjs --rule --write` owns the book; `solve_building_cost.ps1`
@@ -905,7 +905,7 @@ The thresholds are the **user's ruled** 15k/45k/135k/405k, chosen deliberately h
 sweep over the baseline campaign put JE #2 completion at **14% / 4% / 0% / 0%** of top-20 countries at
 those levels, and the 10-year smoke fired **20 of 122** technologies — dominated by the *group-anchored*
 ones (`fractional_distillation` 293, `watertube_boiler` 159, `intensive_agriculture` 113), because a
-building-GROUP threshold is expressed in staffed LEVELS (3 at era 2) while a tier threshold is expressed
+building-GROUP threshold is expressed in staffed LEVELS (3 at tier 2) while a tier threshold is expressed
 in PEOPLE (15 000). **That asymmetry is mine, not the user's ruling**, and it is the first calibration
 question to put to them: a group spans many buildings, so its gate is far easier to clear than a single
 tier's. The user's stated purpose is to see whether the mechanism moves tech and GDP *despite* firing
@@ -1105,18 +1105,18 @@ files are non-empty, and `start_baseline.json`'s **`unmapped` list — the versi
 while 327 factories are never inspected at all.
 
 **Root cause, one line.** `Get-SplitMaps` in `tools/history_lib.ps1:61` keys the converter's
-base-building map on the **first** tier: `if ($n -eq 1) { $baseIndustry[$t.key] = $ind.id }`. That was
-correct while tier 1 *was* the vanilla building. The era ladder then minted **e0 rungs**, which are not
+base-building map on the **first** rung: `if ($n -eq 1) { $baseIndustry[$t.key] = $ind.id }`. That was
+correct while the first rung *was* the vanilla building. The tier ladder then minted **t0 rungs**, which are not
 `model_only`, so slot 0 is now an invented key — `building_textile_mill_cottage`,
 `building_steel_mill_bloomery` — and the vanilla key it displaced is invisible to the map. A vanilla
 `create_building` naming `building_textile_mill` therefore matches nothing, is **not** recorded as
-`unmapped`, and passes straight through unconverted onto whatever tier happens to own that key: era 1.
+`unmapped`, and passes straight through unconverted onto whatever rung happens to own that key: tier 1.
 
-**Nine industries affected** — exactly those that got an e0 rung: food, textile, furniture, glass,
-tooling, paper, steel, arms, artillery. Counted by the era each factory's *own active production
-method* implies, against the era 1 they are all emitted as:
+**Nine industries affected** — exactly those that got a t0 rung: food, textile, furniture, glass,
+tooling, paper, steel, arms, artillery. Counted by the tier each factory's *own active production
+method* implies, against the tier 1 they are all emitted as:
 
-| industry | e1 | e2 | e3 | wrong |
+| industry | t1 | t2 | t3 | wrong |
 |---|--:|--:|--:|--:|
 | textile | 55 | 21 | — | 21 |
 | furniture | 33 | 18 | — | 18 |
@@ -1128,14 +1128,14 @@ method* implies, against the era 1 they are all emitted as:
 | artillery | 10 | — | — | 0 |
 | steel | 6 | — | — | 0 |
 
-⇒ **98 of 327 (30%)**, and tooling holds a **two-era** demotion on nine of them. Vanilla and converted
+⇒ **98 of 327 (30%)**, and tooling holds a **two-tier** demotion on nine of them. Vanilla and converted
 `create_building` counts are byte-for-byte identical for all nine, which is the cleanest proof that no
-conversion happens: only `port` moves (229 → 241), because port's first tier still *is* `building_port`.
+conversion happens: only `port` moves (229 → 241), because port's first rung still *is* `building_port`.
 
 ⭐ **Steel is correct by luck, and that matters for step 1b.** All six 1836 steel mills run
-`pm_blister_steel_process`, which is era 1 anyway — so the pass-through lands them right. Better still,
-**dropping steel's bloomery rung (step 1b clause 2) makes `building_steel_mill` the first tier again and
-un-breaks steel by construction.** The same is true of any industry whose e0 rung is dropped; it is not
+`pm_blister_steel_process`, which is tier 1 anyway — so the pass-through lands them right. Better still,
+**dropping steel's bloomery rung (step 1b clause 2) makes `building_steel_mill` the first rung again and
+un-breaks steel by construction.** The same is true of any industry whose t0 rung is dropped; it is not
 a substitute for the fix, but it means the redo and this bug pull in the same direction.
 
 **The fix** is to key `baseIndustry` on the tier that carries the **vanilla building key** rather than on
@@ -1160,7 +1160,7 @@ too; it is a wrong *baseline*, not a wrong *comparison*.
 building_power_plant · building_railway · building_port
 ```
 
-Those are **our tier-1 keys**, because the split deliberately keeps the vanilla key on the lowest rung
+Those are **our first-rung keys**, because the split deliberately keeps the vanilla key on the lowest rung
 so `has_building` references keep matching. So in the shipped mod the standing subsidy lands on:
 
 | chain | subsidised | never subsidised |
@@ -1174,11 +1174,11 @@ themselves — the exact inverse of the design.
 
 ⚠⚠ **AND IT SILENTLY INVALIDATES A BALANCE RULING.** BALANCE_FRAMEWORK §10.47.4 grants railway / port /
 power a **−10% loss tolerance before the ladder criterion calls it a fault**, justified by "vanilla's
-default AI strategy subsidises the trio at must_have". That justification only holds for the tier-1
+default AI strategy subsidises the trio at must_have". That justification only holds for the first-rung
 key. Every higher tier is being scored with a tolerance it does not actually receive.
 
 **This is the `has_building` narrowing class** already recorded in CLAUDE.md (457 vanilla references now
-matching only tier 1, alongside company mandates and monopolies) — but it is the most economically
+matching only the first rung, alongside company mandates and monopolies) — but it is the most economically
 consequential instance found so far, because it moves money every week.
 
 **What a fix has to do** (user, 2026-08-11: *"invent some option to stop subsidising obsolete
@@ -1195,7 +1195,7 @@ infrastructure once newer infrastructure is mature enough"*):
    ⚠ Whatever ships must be re-measured against §10.47.4's tolerance, which was calibrated on the
    assumption above.
 
-### DROP STEEL'S ERA-1 RUNG (user-ruled 2026-08-12, deliberately not scheduled)
+### DROP STEEL'S TIER-1 RUNG (user-ruled 2026-08-12, deliberately not scheduled)
 
 `building_steel_mill` (blister steel) should eventually go the way of the bloomery rung that step 1b
 drops. It survives for now for one reason only: the **1836 map contains steel mills**, and the history
@@ -1204,7 +1204,7 @@ every scenario** by `ERA_PRUNE` (step 1b, clause 3) — so it costs the model no
 player only a building they will never profitably run.
 
 Taking it needs three things together, which is why it is not scheduled: a home for the 1836 steel
-mills (re-tier them onto era 2, or remove them from the converted start), a decision on
+mills (re-tier them onto tier 2, or remove them from the converted start), a decision on
 `crucible_casting` (it would then gate nothing — either drop it or give it a real effect, per
 constraint 4), and a check that nothing in the 1836 start depends on the key.
 
@@ -1229,8 +1229,8 @@ vanilla century (4.0%→47.4% of tiered-equivalent) and the rung mix of company-
 ladder stays set aside until that read is in.
 
 Change company mandates so they latch onto useful and reasonable industries rather than always the
-Tier-1 building. Related to the standing `MISSING_PM_REFERENCES.md` / narrowed-`has_building` problem:
-457 vanilla `has_building` references now match only our Tier-1 building, and the same "make every tier
+first-rung building. Related to the standing `MISSING_PM_REFERENCES.md` / narrowed-`has_building` problem:
+457 vanilla `has_building` references now match only our first-rung building, and the same "make every tier
 of the industry eligible" fix resolves mandates, monopolies and the flavour references together.
 
 ⭐⭐ **THE `ai_value` LADDER IS SET ASIDE BY RULING (user, 2026-08-23) UNTIL THE COMPANY SYSTEM WORKS.**
@@ -1586,14 +1586,14 @@ while a playthrough is live (a build overwrites the deployed copy under the play
 
 ---
 
-### P1 — THE EARLY RUNGS ARE A MONEY PRINTER (especially e1). CONFIRMED, and worse than the realised margins suggest.
+### P1 — THE EARLY RUNGS ARE A MONEY PRINTER (especially t1). CONFIRMED, and worse than the realised margins suggest.
 
 **The user:** *"Probably need to reduce the A/B diff, or invent a more complex ladder than A^N / ((input_t0_penalty+1)*B^N). The game quite
 actively resist prolonged prices under base for most goods, maybe some ladder of +70 .. +0 (base) between 1830s and 1920s can be constructed?"*
 
 **Measured — every rung's margin AT BASE PRICES** (`(out − in − wages) / (in + wages)`, wage_pct 0.25, from the shipped config):
 
-| industry | e0 | e1 | e2 | e3 |
+| industry | t0 | t1 | t2 | t3 |
 |---|---|---|---|---|
 | food / textile / furniture | +5.5% | **+54.6%** | +127% | +233% |
 | glass / tooling / paper | +25.0% | **+83.3%** | +169% | +294% |
@@ -1602,24 +1602,24 @@ actively resist prolonged prices under base for most goods, maybe some ladder of
 | arms | +40.6% | **+106%** | +203% | +344% |
 | art academy | +108% | +206% | +348% | +556% |
 
-against **vanilla's whole manufacturing sector at 23.1% realised**. The realised mod figures (e0 26% / e1 31% / e2 47% / e3 46% at 1935) are
+against **vanilla's whole manufacturing sector at 23.1% realised**. The realised mod figures (t0 26% / t1 31% / t2 47% / t3 46% at 1935) are
 much lower only because prices have fallen by then — **in the decades when a rung is new, it earns the base-price number**, and that is what
 the player is feeling.
 
 **The arithmetic behind it, which is the thing to fix.** Every rung is `output × A^era` over `input value × in0 × B^era`, so the output-to-input
-RATIO steps by `A ÷ B = 2.2 ÷ 1.5 = 1.467` per era. Because rung 0 is anchored at roughly break-even (O ÷ total cost ≈ 1.05), **a multiplicative
+RATIO steps by `A ÷ B = 2.2 ÷ 1.5 = 1.467` per tier. Because rung 0 is anchored at roughly break-even (O ÷ total cost ≈ 1.05), **a multiplicative
 step in the ratio lands as a huge additive step in the margin**: 1.05 → 1.54 → 2.27 → 3.33, i.e. +5% → +55% → +127% → +233%. The ladder's
 steepness is not really "A" — it is the GAP, and the gap is being applied to a base of ~1.0 where it is at its most violent.
 
 **Three fixes, in increasing order of ambition. They are not exclusive; (b) is the tactical version of (c).**
 
-**(a) Shrink the A/B gap.** To put e3 near +60% with e0 at +5%, the gap must be `r³ = 1.60 ÷ 1.05` ⇒ **r ≈ 1.15**, e.g. A 2.2 / B 1.91 or
+**(a) Shrink the A/B gap.** To put t3 near +60% with t0 at +5%, the gap must be `r³ = 1.60 ÷ 1.05` ⇒ **r ≈ 1.15**, e.g. A 2.2 / B 1.91 or
 A 1.73 / B 1.5 — against today's 1.467. ⚠ This is the SAME lever F135 identified for the hoard (the pool's inflow is our doubled margins), so
 two independent problems point at it, which is a reason to try it and a reason to expect it to move a lot at once. ⚠ It also shrinks how much
 price decline the frontier can absorb before it dies too — the frontier's cushion IS the gap.
 
-**(b) A non-geometric ladder — an explicit per-era vector.** The user's "more complex ladder". Half the machinery exists: `make_ab_config.mjs`
-already takes `--tiers-for "<ind>:out=…;in=…;cost=…"` for ONE industry and `--cost-ladder` per era globally. **The work is to generalise
+**(b) A non-geometric ladder — an explicit per-tier vector.** The user's "more complex ladder". Half the machinery exists: `make_ab_config.mjs`
+already takes `--tiers-for "<ind>:out=…;in=…;cost=…"` for ONE industry and `--cost-ladder` per tier globally. **The work is to generalise
 `--tiers-for` into a global `--out-ladder` / `--in-ladder`** and then author the vector from a DESIGNED margin ladder rather than from a ratio —
 e.g. target margins 5 / 25 / 40 / 55% and solve the output and input vectors backwards. This is the smallest change that ends the money printer
 without committing to a price theory.
@@ -1641,8 +1641,8 @@ Measured, British market, price as % of base, medians (vanilla n=16 / the canon 
 
 ⭐ **The user's instinct is right and the game already does it for the goods that can**: several goods START well above base (groceries 175,
 fertilizer 138–156, explosives 135–158, automobiles and telephones at the +75% band ceiling on debut) and decay toward base. So the design
-could stop asking for sub-base prices and instead **set a per-era target price path (say 170 / 145 / 120 / 100 of base) and derive each rung's
-break-even as a fixed margin below its OWN era's price.** Rung 0 would break even near 150: profitable at 1836's 170, dead by the time the price
+could stop asking for sub-base prices and instead **set a per-tier target price path (say 170 / 145 / 120 / 100 of base) and derive each rung's
+break-even as a fixed margin below its OWN tier's price.** Rung 0 would break even near 150: profitable at 1836's 170, dead by the time the price
 reaches 120. That is the obsolescence mechanism stated in the units the engine actually delivers, and it stays inside the solvency bound
 (target_be ≤ 175, §10.63).
 
@@ -1651,8 +1651,8 @@ canon's small arms reach **29** and artillery **25** of base, which is exactly w
 price is pinned near base by rising pop wealth (clothes 88, groceries 98) — F97's mechanism — and no recipe can move it. ⇒ **a price-path design
 needs at least two classes: a falling path for building-fed and army-fed goods, and a flat-at-base path for pop-fed goods, where obsolescence has
 to come from somewhere other than the output price.** What that "somewhere else" is for the pop chains is the open design question this playtest
-has sharpened; the standing candidate is labour cost (every rung employs 5,000/level regardless of era, so the old rung's wage bill per unit of
-output is ~10× the frontier's, and rising SoL should bite it) — and F136 shows that today it does NOT bite hard enough (textile e0 still earns
+has sharpened; the standing candidate is labour cost (every rung employs 5,000/level regardless of tier, so the old rung's wage bill per unit of
+output is ~10× the frontier's, and rising SoL should bite it) — and F136 shows that today it does NOT bite hard enough (textile t0 still earns
 21% against its own frontier's 25%).
 
 ⚠ **(c) has a prerequisite: P6 below.** Designing rung 0 to break even at 150 requires the 1836 price to actually BE ~170. It is not — the canon's
@@ -1665,11 +1665,11 @@ output is ~10× the frontier's, and rising SoL should bite it) — and F136 show
 **The measurement.** British market at 1836.2.1, canon (n=4) against vanilla (n=16) — buy orders agree within a few percent everywhere, and
 PRODUCTION does not:
 
-| good | vanilla prod | canon prod | | vanilla price | canon price | share of that industry's 1836 factories above e0 |
+| good | vanilla prod | canon prod | | vanilla price | canon price | share of that industry's 1836 factories above t0 |
 |---|---|---|---|---|---|---|
-| tools | 1,889 | **3,428 (+81%)** | | 41 | **21** | **71%** (tooling: 10 e0 / 16 e1 / 9 e2) |
-| groceries | 534 | **817 (+53%)** | | 53 | 53 | 38% (food: 20 e0 / 12 e1) |
-| clothes | 6,578 | **8,510 (+29%)** | | 24 | **17** | 22% (textile: 73 e0 / 21 e1) |
+| tools | 1,889 | **3,428 (+81%)** | | 41 | **21** | **71%** (tooling: 10 t0 / 16 t1 / 9 t2) |
+| groceries | 534 | **817 (+53%)** | | 53 | 53 | 38% (food: 20 t0 / 12 t1) |
+| clothes | 6,578 | **8,510 (+29%)** | | 24 | **17** | 22% (textile: 73 t0 / 21 t1) |
 | paper | 971 | 1,146 (+18%) | | 41 | 37 | 18% |
 | steel | 562 | 559 (+0%) | | 50 | 52 | **0%** |
 | small_arms | 640 | 603 (−6%) | | 63 | 64 | **0%** |
@@ -1677,13 +1677,13 @@ PRODUCTION does not:
 
 **The correlation holds industry by industry, and FINDINGS F137 re-does it properly in LEVELS world-wide** (tooling +88% output against a
 vanilla-equivalent ladder, munition +65%, food +29%, furniture +25%, glass +23%, textile +18%, paper +15%, and an exact **0%** for every industry
-wholly on rung 0). 26% of the 392 converted starting factories (93 on e1, 9 on e2) land above rung 0. ⚠ Furniture is +25% world-wide but only +4%
+wholly on rung 0). 26% of the 392 converted starting factories (93 on t1, 9 on t2) land above rung 0. ⚠ Furniture is +25% world-wide but only +4%
 in the British market, because that market’s furniture is mostly BIC’s and India’s, all on rung 0 — a per-market figure is the world mechanism
 filtered through market membership.
 
-**The cause is structural.** Our rung *e* produces `vanilla method 1 × A^e` = ×2.2 at e1 and ×4.84 at e2, while the VANILLA method that building
+**The cause is structural.** Our rung *e* produces `vanilla method 1 × A^e` = ×2.2 at t1 and ×4.84 at t2, while the VANILLA method that building
 was actually running produces only ~1.33× and ~1.8× method 1 (measured: clothes 45 → 60 → 100 → 140; steel 65 → 90 → 120 → 150). So a starting
-building converted onto e1 makes **1.65×** what it made in vanilla, and one converted onto e2 makes **2.7×**. Tooling, where 71% of the starting
+building converted onto t1 makes **1.65×** what it made in vanilla, and one converted onto t2 makes **2.7×**. Tooling, where 71% of the starting
 workshops are above rung 0, is the worst case and shows the largest price collapse.
 
 ⇒ **The "1836 matches vanilla" premise holds for composition and for demand, and is violated for supply and therefore for price.** This has been
@@ -1691,16 +1691,16 @@ true of every A-ladder book and was never measured, because the anchor check (`e
 it then produces.
 
 **Fix options** (all need a ruling; the first is the cheap one):
-1. **Scale a converted building's LEVELS by the inverse of its rung's output multiplier** — a building converted to e1 comes in at `levels ÷ 2.2`
+1. **Scale a converted building's LEVELS by the inverse of its rung's output multiplier** — a building converted to t1 comes in at `levels ÷ 2.2`
    (rounded, floor 1). The mechanism already exists for the graded ports (`workforce_mult`, §10.60.2, and `convert_history.ps1` already does
    `levels × 1/workforce_mult`). Keeps vanilla's output, halves the capital stock those states start with. ⚠ Changes the starting building COUNT,
    which the player sees.
 2. **Convert everything onto rung 0** regardless of the vanilla method it ran, and let the AI climb. Simplest, and it makes the 1836 map
-   uniformly "pre-industrial", which is arguably what era 0 means. ⚠ Loses the historical distinction between an advanced and a backward 1836
+   uniformly "pre-industrial", which is arguably what tier 0 means. ⚠ Loses the historical distinction between an advanced and a backward 1836
    economy — probably unacceptable.
 3. **Leave it and re-anchor the design on the measured 1836 prices** instead of on vanilla's. ⚠ Incompatible with (c) above, which needs a HIGH
    1836 price.
-4. **The recorded "distant possibility" (§10.83): an OUTPUT-goods penalty on the e0 recipes**, which would raise 1836 prices directly. It was
+4. **The recorded "distant possibility" (§10.83): an OUTPUT-goods penalty on the t0 recipes**, which would raise 1836 prices directly. It was
    written down explicitly as not-to-be-tried-without-a-ruling; P6 is the first concrete argument for it.
 
 ---
@@ -1764,7 +1764,7 @@ already handles the `required_input_goods = electricity` line that must be dropp
 documented in the `pm_goods` entry).
 
 ⚠⚠ **One design question must be answered first, and it is why this is not a pure restore.** In the six-rung book the override was half of a
-PAIR: §10.43 also DELETED vanilla's era-3 "Early Power Plant" tier, on the reasoning that the 1900 municipal engine-house is what urban centres
+PAIR: §10.43 also DELETED vanilla's tier-3 "Early Power Plant" rung, on the reasoning that the 1900 municipal engine-house is what urban centres
 model. **The four-rung canon does not tier `power` at all — vanilla's whole power-plant chain is intact.** Restoring the override alone gives the
 world municipal generation *and* vanilla's early power plants, which is not what either design intended. So: restore the override and accept the
 overlap, or restore it and suppress vanilla's early power plant, or leave power wholly vanilla. ⚠ Also note §10.43.2's calibration is specific —
@@ -1786,10 +1786,10 @@ Today (`tools/build.ps1:590`): `". BE target $([math]::Round($actualBe))%"`, so 
    the recipe.
 2. **The basis is wrong for what the player wants.** `actualBe = actualI / (1 − wage) / Oval × 100` is the WAGE-INCLUSIVE break-even. The
    goods-only figure the user asks for is simply `actualI / Oval × 100` = the same number × `(1 − wage_pct)` = **×0.75** at the default. Food
-   e1 would read **49%** instead of 65%, textile e0 **71%** instead of 95%.
+   t1 would read **49%** instead of 65%, textile t0 **71%** instead of 95%.
 
-**Fixed in `build.ps1`**: a goods-only `$goodsBe = $actualI / $Oval * 100` and the label `". Recipe BE N%"`. Verified in the build — food e0 now
-reads `Era 0. Food Industries (Bakeries). Recipe BE 71%` and e1 `Recipe BE 49%`, where they read 95% and 65%. ⚠ Three consumers must stay in step: the `$summary` object and `tools/ladder_tiers.txt` (the linter reads the
+**Fixed in `build.ps1`**: a goods-only `$goodsBe = $actualI / $Oval * 100` and the label `". Recipe BE N%"`. Verified in the build — food t0 now
+reads `Era 0. Food Industries (Bakeries). Recipe BE 71%` and t1 `Recipe BE 49%`, where they read 95% and 65%. ⚠ Three consumers must stay in step: the `$summary` object and `tools/ladder_tiers.txt` (the linter reads the
 latter and its `target_be` column must NOT change basis, or `lint_profitability.awk` starts failing), and the UI, which shows its own BE.
 ⚠ State plainly that this is a property of the RECIPE at base prices — the player's actual building will differ, because throughput bonuses,
 economy of scale, company modifiers and active secondary methods all move it.
@@ -1856,7 +1856,7 @@ Measured against the game's own files:
 is the extreme because vanilla gives it only three methods while our ladder gives it four rungs.
 
 **Recommendation: ACCEPT, with one caveat and one consequence.** The caveat: the 10.65× is the same number that produces P1's margin explosion,
-so **anything done to P1 moves this automatically** — if the output ladder is re-authored per era (P1 fix (b)) or the gap is shrunk (fix (a)),
+so **anything done to P1 moves this automatically** — if the output ladder is re-authored per tier (P1 fix (b)) or the gap is shrunk (fix (a)),
 tier-3 output comes down with it, and P5 should not be given a separate lever. The consequence worth stating: employment is FLAT at 5,000 per
 level across every rung, so a ×10.65 output step is a ×10.65 step in output per worker — which is precisely the "minimum viable firm size"
 the user wants, and also precisely why the frontier out-earns the old rung at all. Cutting it without cutting the input ladder would kill the
@@ -1877,9 +1877,9 @@ map and gets no append.** What ships:
 
 | gate | vanilla names | we append | our rung that is MISSING |
 |---|---|---|---|
-| `pm_elastics` (textile) | `pm_sewing_machines`, `pm_electric_sewing_machines` | our e2, e3 | — (textile has four vanilla methods) |
-| `pm_bone_china` (glass) | `pm_crystal_glass`, `pm_houseware_plastics` | our e2, e3 | — (glass has four) |
-| **`pm_precision_tools` (furniture)** | `pm_lathe`, `pm_mechanized_workshops` | our **e1, e2** | ⚠ **e3 `pm_main_furniture_spray_finishing` — the minted rung** |
+| `pm_elastics` (textile) | `pm_sewing_machines`, `pm_electric_sewing_machines` | our t2, t3 | — (textile has four vanilla methods) |
+| `pm_bone_china` (glass) | `pm_crystal_glass`, `pm_houseware_plastics` | our t2, t3 | — (glass has four) |
+| **`pm_precision_tools` (furniture)** | `pm_lathe`, `pm_mechanized_workshops` | our **t1, t2** | ⚠ **t3 `pm_main_furniture_spray_finishing` — the minted rung** |
 
 ⇒ **One live case today, and it is the one the user found.** The canon has three minted rungs — furniture `spray_finishing`, paper
 `continuous_web_processing`, fertilizer `catalytic_synthesis` — and only furniture's industry carries a gated secondary, so only furniture is
@@ -1888,7 +1888,7 @@ the game runs, and the player simply cannot select a method.
 
 **FIXED 2026-09-18, at BOTH sites — there were two.** `$script:pmRemap` in `build.ps1` is now `vanilla_pm` → a LIST of `pm_key`s, and
 `emit_secondaries.mjs` made the same `vanilla_pm` test a second time when minting the per-rung copies. Verified in a real build: the furniture
-gate names `pm_main_furniture_spray_finishing`, and `pm_precision_tools_furniture_manufactory_spray_finishing` is minted beside the e1 and e2
+gate names `pm_main_furniture_spray_finishing`, and `pm_precision_tools_furniture_manufactory_spray_finishing` is minted beside the t1 and t2
 copies (6 per-rung copies → 7). **Landmine L35 added to `preflight.ps1` and TESTBED_LANDMINES.md, proven both ways by sabotage.**
 
 **What was done (the plan as written, for the record):**
@@ -1906,18 +1906,18 @@ game (ship modifications, company `possible` blocks) are a different mechanism a
 
 ---
 
-### P8 — AN e3 TAKES 2+ YEARS TO BUILD. CONFIRMED, reproduced to the year, and the cause is NOT the construction sector's size
+### P8 — A t3 TAKES 2+ YEARS TO BUILD. CONFIRMED, reproduced to the year, and the cause is NOT the construction sector's size
 
 **The user:** *"e3 construction takes too much time. It may make sense from economic PoV or maybe even narrative PoV, but this is just unfun to
 construct a new industry tier for 2+ years."*
 
 **1. It is the COST, one-for-one.** V3 has no construction-time field: a building's time is `required_construction ÷ the points per week it is
-allocated`. Our e3 costs **4,115** points (600-anchor industries) and **5,487** (800-anchor) against vanilla's flat 600 / 800 — **×6.86**. So an
-e3 takes 6.86× as long as the same building does in vanilla, in any queue, at any date. **Build time and capital cost are the same dial in this
+allocated`. Our t3 costs **4,115** points (600-anchor industries) and **5,487** (800-anchor) against vanilla's flat 600 / 800 — **×6.86**. So a
+t3 takes 6.86× as long as the same building does in vanilla, in any queue, at any date. **Build time and capital cost are the same dial in this
 engine**, which is why this item cannot be fixed without touching one of them.
 
 **2. The capacity is ample — it is the QUEUE that divides it.** Britain's own construction sector in the canon (run 1): 65 levels at 1860 → 173
-at 1900 → 398 at 1920 → **1,316** at 1935. If one e3 got ALL of Britain's points it would take **6.3 weeks at 1860 and 0.3 weeks at 1935**. The
+at 1900 → 398 at 1920 → **1,316** at 1935. If one t3 got ALL of Britain's points it would take **6.3 weeks at 1860 and 0.3 weeks at 1935**. The
 2+ years is entirely the split across a queue.
 
 **3. Reproduced to the year.** Britain's GOVERNMENT queue — the player's own — at 1900 runs at **327 points/week over 10 items**, i.e. ~33 per
@@ -1944,19 +1944,19 @@ construction sector's output, and what is left for the player is slow.
 
 **The fix options.**
 
-**(a) Flatten the top of the cost ladder.** `make_ab_config --cost-ladder m1,m2,m3` already exists and does exactly this per era. ⚠ It is the
-same dial F135 measured as the hoard's lever — log world GDP regresses on log C at −3.34 — so cutting e3's cost to, say, 3× rung 0 (from 6.86×)
+**(a) Flatten the top of the cost ladder.** `make_ab_config --cost-ladder m1,m2,m3` already exists and does exactly this per tier. ⚠ It is the
+same dial F135 measured as the hoard's lever — log world GDP regresses on log C at −3.34 — so cutting t3's cost to, say, 3× rung 0 (from 6.86×)
 is a large economic move, not a cosmetic one. **This is the honest, direct fix and it costs GDP.**
 
 **(b) ⭐ MAKE CONSTRUCTION ITSELF GET FASTER WITH THE ERA, in step with the cost ladder — the only option that keeps the capital cost AND cuts the
-time.** Vanilla's construction methods give **2 → 5 → 10 → 15** points per level (base → iron frame `urban_planning`, era 1 → steel frame
-`steel_frame_buildings`, era 3 → arc welded `arc_welding`, era 5). Our cost ladder is **1 → 1.9 → 3.6 → 6.86**. Level-weeks per building:
+time.** Vanilla's construction methods give **2 → 5 → 10 → 15** points per level (base → iron frame `urban_planning`, tech era 1 → steel frame
+`steel_frame_buildings`, tech era 3 → arc welded `arc_welding`, tech era 5). Our cost ladder is **1 → 1.9 → 3.6 → 6.86**. Level-weeks per building:
 
-| | 1836, e0 at iron frame | 1930, e3 at arc welded |
+| | 1836, t0 at iron frame | 1930, t3 at arc welded |
 |---|---|---|
 | cost ÷ points per level | 600 ÷ 5 = **120** | 4,115 ÷ 15 = **274** |
 
-⇒ **an e3 at the best construction method still takes 2.3× the level-weeks an e0 took in 1836.** Equalising it needs arc welding at ~**34**
+⇒ **a t3 at the best construction method still takes 2.3× the level-weeks a t0 took in 1836.** Equalising it needs arc welding at ~**34**
 points/level instead of 15 (×2.3) and steel frame at ~**18** instead of 10 (×1.8). ⚠⚠ **Their GOODS must be scaled by the same factor**, or each
 construction point costs less in real resources and the capital cost falls with the time — which is exactly goal 3 undone. ⚠ Implementation: the
 points figure is `country_construction_add`, a building modifier, not a goods line, so `pm_goods` cannot reach it — **the builder would have to
@@ -2034,7 +2034,7 @@ next configuration change does not move it unnoticed — it is not an aim today 
 | 3 | **P7** the minted rung's locked secondary | generator + a new landmine detector | hours | none |
 | ✅ | **P2** the electricity override | config, 2 keys | ✅ **DONE 2026-09-20** — canonized as canon-c19-in12-elec, the two-key diff proved | its economic effect is still unmeasured |
 | 5 | **P6** the 1836 supply anchor | converter or generator | a day + a batch | **blocks P1 fix (c)** |
-| 6 | **P8** e3 build time | the cost ladder, or owning `13_construction.txt` | a campaign — **it is the same dial as P1 and the hoard** | see the convergence below |
+| 6 | **P8** t3 build time | the cost ladder, or owning `13_construction.txt` | a campaign — **it is the same dial as P1 and the hoard** | see the convergence below |
 | 7 | **P1** the ladder | generator + a config sweep | the next measurement campaign | needs P6 for (c); (a)/(b) can go first |
 | 8 | **P5** top-rung output | — | none | rides on P1 |
 | — | **P9** the tech tree is completable | REGISTERED DESIRE, unscheduled | one config number to try (`grant_fraction`) | independent of the rest |
@@ -2061,7 +2061,7 @@ otherwise both their margins and natural cost becomes exorbitant)."*
 
 A rung's margin at base prices is `(O·Aᵉ) ÷ (I·in0·Bᵉ ÷ (1 − wage_pct)) − 1`. So:
 
-- **`r = A ÷ B` sets the SHAPE** — the margin multiplies by `r` per era on top of rung 0's. Today `r = 2.2 ÷ 1.5 = 1.467`, applied to a rung 0
+- **`r = A ÷ B` sets the SHAPE** — the margin multiplies by `r` per tier on top of rung 0's. Today `r = 2.2 ÷ 1.5 = 1.467`, applied to a rung 0
   sitting at ~break-even, which is why the ladder explodes: **1.05 → 1.54 → 2.27 → 3.33**, i.e. +5% → +55% → +127% → +233%.
 - **`in0` sets the LEVEL** — it scales every rung's input value together.
 - **`A` alone sets the top rung's OUTPUT** (P5) and, through a capacity-priced cost, its BUILD TIME (P8).
@@ -2069,9 +2069,9 @@ A rung's margin at base prices is `(O·Aᵉ) ÷ (I·in0·Bᵉ ÷ (1 − wage_pct
 ### 2. THE CANDIDATE TABLE, holding `in0` at 1.2 so rung 0 is untouched
 
 Cost is set to hold **capital per unit of output constant** at today's ratio (`C ÷ A = 1.9 ÷ 2.2 = 0.864`), so only the MARGIN moves — a clean
-one-dimensional experiment. Margins are % at base prices; "build time" is the e3 cost relative to today's 6.86× vanilla.
+one-dimensional experiment. Margins are % at base prices; "build time" is the t3 cost relative to today's 6.86× vanilla.
 
-| setting | r | textile e0…e3 | glass e0…e3 | steel e0…e3 | top output | e3 build time |
+| setting | r | textile t0…t3 | glass t0…t3 | steel t0…t3 | top output | t3 build time |
 |---|---|---|---|---|---|---|
 | **TODAY** A 2.2 · B 1.5 · C 1.9 | 1.467 | 5 / **55** / **127** / **233** | 25 / 83 / 169 / 294 | −19 / 19 / 75 / 156 | 10.6× | 100% |
 | A 2.1 · B 1.6 · C 1.80 | 1.313 | 5 / 38 / 82 / 138 | 25 / 64 / 115 / 183 | −19 / 7 / 40 / 84 | 9.3× | 85% |
@@ -2095,7 +2095,7 @@ fall (F136 — building-fed and army-fed goods reach 25–72% of base), so a uni
 ⇒ **Two ways out, and the second is the user's own P1 idea (b):**
 1. **Stop at r ≈ 1.18** (the A 2.0 row), where steel's worst rung is −4% and only at base prices — survivable, since steel's realised price sits
    at or above base for most of the century (vanilla 100–132, the canon 104–141 to 1870).
-2. ⭐ **Level the rung-0 margins first, per industry**, then compress uniformly. A per-industry `in0` chosen so every industry's e0 lands on the
+2. ⭐ **Level the rung-0 margins first, per industry**, then compress uniformly. A per-industry `in0` chosen so every industry's t0 lands on the
    same margin (say +5%) would make one `r` mean the same thing everywhere. That is a generator change — `make_ab_config` takes a scalar `--in0`
    today — and it is the cleaner design, because the current spread is an inherited accident, not a decision.
 
@@ -2120,7 +2120,7 @@ ALIGNED. **Run 1 intact at world GDP 0.60× (loss 29.2), run 2 BROKEN BY STALL a
 that the margin ladder is the investment pool's inflow.
 
 ⭐⭐ **And it failed because the REALISED ladder inverted**: designed 5 / 17 / 31 / 47 realised as **37.6 / 26.0 / 26.3 / 27.4**, the 1836 rung
-the most profitable in the game. Era-0 workers GREW 0.70 → 1.33M, T3 fell to 14.9%, tiered levels to 8,517 against the canon's 43,913, and the
+the most profitable in the game. Tier-0 workers GREW 0.70 → 1.33M, T3 fell to 14.9%, tiered levels to 8,517 against the canon's 43,913, and the
 price decline REVERSED (PI 1.02, not falling, against 0.84 falling).
 
 ⇒ **The market eats most of the designed slope, so the design must OVER-PROVIDE it** — the canon's designed 5/55/127/233 realises as
@@ -2132,7 +2132,7 @@ with it.
 ⇒ ⚠ **The per-industry LEVELLING was never tested alone** (three coupled levers). That separation is the cheap next book if the route is
 continued: `--in0-level 0.05` with A 2.2 / B 1.5 / C 1.9 otherwise unchanged.
 
-⇒ ⚠ **P1's base-price framing is corrected by F139 §5.** Realised, the canon runs 26 / 31 / 47 / 46 at 1935 and peaks at e2 **76%** and e1
+⇒ ⚠ **P1's base-price framing is corrected by F139 §5.** Realised, the canon runs 26 / 31 / 47 / 46 at 1935 and peaks at t2 **76%** and t1
 **47%** in 1860 — against vanilla manufacturing's 23.1%. The money printer is a MID-CENTURY phenomenon that decays, not the +233% the
 base-price table suggests; aim any future attack at the 1850–1880 window and judge it on REALISED margins.
 
@@ -2141,7 +2141,7 @@ base-price table suggests; aim any future attack at the 1850–1880 window and j
 1. **First batch: A 2.0 / B 1.7 / C 1.70, `in0` 1.2** — one book, the 2+1 rule, read under the criteria register. Generated by
    `make_ab_config --A 2.0 --B 1.7 --cost-ratio 1.70 --in0 1.2 …`, no generator change needed.
    **Predictions to pre-register:** margins at base 5 / 24 / 46 / 72 (textile); realised 1935 margins roughly 15 / 20 / 28 / 28; pool H well below
-   the incumbent's 4.17 (the inflow is roughly halved); world GDP 0.9–1.1; pool W 0.75–0.95 (inside the widened aim); e3 build time −28%; top-rung
+   the incumbent's 4.17 (the inflow is roughly halved); world GDP 0.9–1.1; pool W 0.75–0.95 (inside the widened aim); t3 build time −28%; top-rung
    output 8.0× rung 0 instead of 10.6×. **The KEY reading is pool H against world GDP** — if the hoard falls without the GDP falling, the A/B gap
    was the inflow and F135's diagnosis is confirmed.
 2. **Then, depending on it:** either step down one more row (A 1.9), or go to the per-industry `in0` levelling of §3.2 and compress harder.
@@ -2156,12 +2156,12 @@ industries with the most starting capacity — three independent reasons, and co
 
 ⭐⭐ **SUPERSEDED IN PART, 2026-09-19 (user-ruled; BALANCE_FRAMEWORK §10.86.3, measured in FINDINGS F140).** The user: *"I now think we need a tighter
 A/B to avoid money printing, but a higher t0 input penalty to ensure that t0 industry can't work at base prices, require higher output prices."*
-The pairing is the direct answer to F139's inversion — a tighter `r` made era 0, whose recipe is the cheapest in input value, the most profitable
+The pairing is the direct answer to F139's inversion — a tighter `r` made tier 0, whose recipe is the cheapest in input value, the most profitable
 rung in the game, and the `in0` penalty attacks exactly that. **Two of the three reasons above are answered**: "drives rung 0 negative at base" is
 now the stated INTENT, and "closed as a lever" was measured at `r` = 1.467, the number being changed. **The third stands**, and F140 sizes it:
 
-- **The penalty is bounded by the 1836 map's own value added, not by an insolvency count.** The era-0 recipe IS the 1836 manufacturing sector, so a
-  penalty subtracts value added one-for-one: the seven instrumented markets' era-0 VA is 9.2% of world GDP, and the options cost −1.9 (×1.2, today)
+- **The penalty is bounded by the 1836 map's own value added, not by an insolvency count.** The tier-0 recipe IS the 1836 manufacturing sector, so a
+  penalty subtracts value added one-for-one: the seven instrumented markets' tier-0 VA is 9.2% of world GDP, and the options cost −1.9 (×1.2, today)
   / −3.9 (×1.4) / −5.8 (×1.6) / −6.6 (uniform −20%) / −8.9 (uniform −30%) points of world GDP on the day they ship, against a HARD 1836–1845 anchor
   of vanilla's 90% CI ± 10%.
 - **A scalar lift and a uniform `--in0-level` are different levers.** The uniform one hits hardest exactly where vanilla was generous (arms ×2.11,
@@ -2174,7 +2174,7 @@ now the stated INTENT, and "closed as a lever" was measured at `r` = 1.467, the 
 ---
 
 
-## ⭐⭐⭐ STEP 10 — THE ERA-0 INPUT PENALTY, SETTLED AT THE ANCHOR AND UNTESTED OVER THE CENTURY (2026-09-19, FINDINGS F140–F147)
+## ⭐⭐⭐ STEP 10 — THE TIER-0 INPUT PENALTY, SETTLED AT THE ANCHOR AND UNTESTED OVER THE CENTURY (2026-09-19, FINDINGS F140–F147)
 
 **Where this came from.** ROADMAP step 9's margin-compression campaign closed its first batch (F139: the flat uniform ladder fixes the hoard and loses
 the economy, because the realised ladder inverts). The user then re-opened the `in0` axis — *"we need a tighter A/B to avoid money printing, but a
@@ -2186,7 +2186,7 @@ higher t0 input penalty to ensure that t0 industry can't work at base prices, re
 - **The design intent is arithmetically right (F143 §1).** At the canon's OWN realised prices, textile's 1836 rung earns +1% at 1890 and +6% at 1935 on
   the shipped book, and **−14% / −9% at `in0` 1.4**. `in0` 1.3–1.4 is what turns the consumer chains from "survives forever on a sliver" into
   "destroys value from 1890 on", with no extra price decline needed — which is exactly the user's mechanism.
-- **At the anchor the penalty is absorbed (F142).** Realised era-0 margin 26 / 23 / 21 / 21% at `in0` 1.2 / 1.3 / 1.4 / 1.5 after 21 months: a 24-point
+- **At the anchor the penalty is absorbed (F142).** Realised tier-0 margin 26 / 23 / 21 / 21% at `in0` 1.2 / 1.3 / 1.4 / 1.5 after 21 months: a 24-point
   designed spread becomes a 3-point realised one. The rung sheds staffing until its price recovers. **Read F142 as the ANCHOR and F143 as the DESIGN.**
 - **The world-product cost is about 1 point per +0.1 of `in0`, and it saturates (F142)** — far less than the paper's first-order arithmetic.
 - **The raw-input penalty's working maximum is ≈1.40** (F140 on paper, F144 on demolition, F145 on the market). At 1.50+ the STEEL industry is
@@ -2199,8 +2199,8 @@ higher t0 input penalty to ensure that t0 industry can't work at base prices, re
   prices at the +75% ceiling**, where vanilla never touches it — because vanilla leaves steel at a −2.5% base margin, the thinnest of any industry, and
   the uniform ×1.2 lift takes it to −19%. **⭐ But F146 measured that early steel tightness does NOT predict late GDP** (162 runs, 47 books: pooled
   r = −0.15, within-book **+0.19** — opposite signs, both weak), so it is a reason not to spend a lever on it, not an emergency.
-- **Motor is structurally odd and it is not the recipe (F143 §2/§3a).** It is the only industry whose rungs skip an era (e0, e2, e3 — vanilla gives it
-  three methods three game eras apart), so its output per level is frozen from 1836 to ~1905 while everything else compounds at A^era; a gap costs
+- **Motor is structurally odd and it is not the recipe (F143 §2/§3a).** It is the only industry whose rungs skip a tier (t0, t2, t3 — vanilla gives it
+  three methods three game eras apart), so its output per level is frozen from 1836 to ~1905 while everything else compounds at A^tier; a gap costs
   vanilla 1.33× and costs us 2.2×. **A lower A shrinks that automatically** — a third independent argument for the A cut of F141.
 
 ### 2. WHAT IS NOT SETTLED, AND IT IS THE IMPORTANT HALF
@@ -2237,7 +2237,7 @@ in the order the evidence supports them:
    measures vanilla's OWN method ladder over the rungs the 1836 map actually holds: **out ×1.00 / 1.48 / 2.67 with input tracking output to within
    1–2%**, i.e. vanilla's early methods are pure throughput at a FLAT margin, against our geometric ×1.00 / 2.20 / 4.84 on ×1.00 / 1.50 / 2.25, which
    adds +47% and +115% of margin where vanilla adds none — **F137's anchor error and P1's money printer are the same table read on two axes.** A
-   front-flattened book (`out 1 / 1.40 / 2.60 / 10.65`, `in 1 / 1.18 / 1.70 / 3.38`) scores 1836 anchor **−1.9%** against the canon's +27.3%, an e1
+   front-flattened book (`out 1 / 1.40 / 2.60 / 10.65`, `in 1 / 1.18 / 1.70 / 3.38`) scores 1836 anchor **−1.9%** against the canon's +27.3%, a t1
    margin of **25%** — on vanilla manufacturing's measured 23% (F92) — and obsolescence **15 of 17**, where the geometric A 1.9 that buys a smaller
    anchor gain collapses to 10 of 17. It is what the 2026-09-19 ruling opened (*"ladders can be more complex than anchor × A^era"*, §10.86.4) and it
    leaves the top rung's 232% margin untouched, so P1's other half still wants F141 §5's B ladder. ⚠ **Blocked on a generator flag**:
@@ -2359,19 +2359,19 @@ its plan belongs to the session designing it; this entry only records what was c
 - **Capital export works and does not help** (F179): British factories abroad ×3, but Britain's depeasantation is unmoved, the hoard rises,
   and every intact run scores worse than every intact canon run.
 
-**What the redesign can start from:** F178 §6 (value added per worker by rung era, e0 £0.20 against e3 £1.47 a week), §9.2 (an old rung
+**What the redesign can start from:** F178 §6 (value added per worker by rung tier, t0 £0.20 against t3 £1.47 a week), §9.2 (an old rung
 survives on a local price premium, cheap local inputs and wages 0.5–0.65 of Britain's), F97 (an old rung dies through rising wages) and
 F178 §4 (idle labour keeps it alive). The canon is unchanged: `canon-dams-family-nolog`.
 
-## ⭐⭐⭐ STEP 12 — THE ARTISANSHIP e0 RUNGS (user-ruled 2026-09-30; BALANCE_FRAMEWORK §10.91.1; FINDINGS F180)
+## ⭐⭐⭐ STEP 12 — THE ARTISANSHIP t0 RUNGS (user-ruled 2026-09-30; BALANCE_FRAMEWORK §10.91.1; FINDINGS F180)
 
-Six e0 rungs become 500-worker craft rungs — skilled, labour-heavy (38–57% of non-capital cost), cost ÷50, base-price break-even ~140%
+Six t0 rungs become 500-worker craft rungs — skilled, labour-heavy (38–57% of non-capital cost), cost ÷50, base-price break-even ~140%
 (Bakeries 115%) — so they die where wages rise and survive where they don't. Built as an ALTERNATE book, never the canon until measured.
 
 **Answered before building (F180):** the craft child building group carries all three group rulings (economy of scale off, urbanization 2,
 infrastructure ×1/10); machinists are literacy-gated, so the ruled staffing is a start-up risk in low-literacy countries (accepted, tracked);
 through the 1836 scenario maths the conversion moves value added by −4…+3% per market and crafts start at least as profitable as the canon's
-e0 where they stand; a periphery craft repays itself in about a year (ruled deliberate).
+t0 where they stand; a periphery craft repays itself in about a year (ruled deliberate).
 
 **Next:**
 1. ✅ Rulings recorded (§10.91).
@@ -2391,15 +2391,15 @@ e0 where they stand; a periphery craft repays itself in about a year (ruled deli
    `artmerge6`; its crafts' hiring floor was probed for ten years (F188, session `20260930_205540_craft-floor-10y`).
 8. ✅ **The floor is RULED INTO THE ARM** (2026-09-30 late evening, §10.91.3): *"This threshold reduction is now a firm part of the 'artisans
    + merges' arm, implement it."* ⇒ the arm is **`config/mod_config.artmerge6-floor.json`**; `make_artisan_config.mjs` defaults to the floor.
-   F189 sets the craft recipes beside vanilla's first methods and the canon's e0 (base prices and realised at 1845).
+   F189 sets the craft recipes beside vanilla's first methods and the canon's t0 (base prices and realised at 1845).
 9. ⭐ **NEXT — the century 2+1 of the arm** against `canon-dams-family` (F177, consensus loss 5.90) and the pinned vanilla n=16: schedule
    `tools/testbed/schedules/artmerge6_floor_n2.json` (+ `_tb.json` on divergence), prepared with its predictions, the register's stop
    watcher armed. Watch: craft workers by country and decade against each country's wage path (a craft rung still growing in Britain at
-   1900 falsifies the mechanism), whether textile's craft keeps out-earning its e1 (F189 §4), world W, T0 by workers, PI/PP, the merged
-   methods' adoption (the three e3 merges are game-era-5 technologies), row P (the craft book's thirty years ran ~8% slower than the
-   canon's median on one seed). Then, possibly, recipe iteration — the anchor slide on food and paper (their e1 carries A¹ and leaves the
+   1900 falsifies the mechanism), whether textile's craft keeps out-earning its t1 (F189 §4), world W, T0 by workers, PI/PP, the merged
+   methods' adoption (the three t3 merges are game-era-5 technologies), row P (the craft book's thirty years ran ~8% slower than the
+   canon's median on one seed). Then, possibly, recipe iteration — the anchor slide on food and paper (their t1 carries A¹ and leaves the
    craft far behind, F189 §3), the craft recipes themselves (`CRAFTS` in `make_artisan_config.mjs`) — each as a new book the user confirms
-   first; ⚠ §10.91.1 ruling 1 holds e1–e3 byte-identical to the canon, so an anchor move needs its own ruling.
+   first; ⚠ §10.91.1 ruling 1 holds t1–t3 byte-identical to the canon, so an anchor move needs its own ruling.
 
 **Deferred:** Muskets; spreading the 1836 craft levels over the largest states; trimming automation that duplicates a main-method upgrade.
 
@@ -2417,7 +2417,7 @@ Branch if it runs hot: the added method ×1/√1.9 (capital-neutral for new buil
 2. ✅ Builder: no building for a merged rung; its method in the host's main group, gated by its technology; per-method secondaries gated with
    `unlocking_production_methods`; companies drop the removed keys; the technology after a merged pair counts the host's levels on the
    merged method; the start converter throws on a merged rung; L31 checks the `_merge` record and the midpoint.
-3. ◐ Method-era accounting: the register (`criteria.mjs` T0–T3) splits a host's workers by method; `tools/testbed/ledger/merge_methods.mjs`
+3. ◐ Method-tier accounting: the register (`criteria.mjs` T0–T3) splits a host's workers by method; `tools/testbed/ledger/merge_methods.mjs`
    reads the switch. Still keyed on building type: the old-rung census and obsolescence readers (`rung_econ`, `rung0_*`,
    `lib_obsolescence`, `tiered_panel`) — teach them before quoting them on a merge book.
 4. ✅ Probed (F182, session `20260930_174540`, with three of the technologies granted to GBR FRA USA PRU BEL): the AI switches existing hosts

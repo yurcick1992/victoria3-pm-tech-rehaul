@@ -3,7 +3,7 @@
 > ⭐ **IMPLEMENTED 2026-10-21 (night) as `tools/emit_vanilla_refs.mjs`**, to every ruling of PART 2 and (F) 1–11; F12 (G3) taken as
 > "crafts out" through a state script value, which is right whichever way `state_has_building_group_levels` treats child groups.
 > 63 vanilla files transformed (213 token rewrites, 23 snippets, 52 throughput lines expanded into every ruled rung), 58 helper triggers,
-> 4 effects, 1 script value, 6 new throughput modifier types (glass e1–e3, explosives e1–e3), one additive on_action (the Montenegro check,
+> 4 effects, 1 script value, 6 new throughput modifier types (glass t1–t3, explosives t1–t3), one additive on_action (the Montenegro check,
 > DLC-gated). Deviations from §5.1, both deliberate: the industry-ban laws are fixed by OWNING `laws/01_economic_system.txt` and expanding
 > each demolition to every rung (a direct rewrite the engine certainly runs) instead of an unprobed `on_law_activated` hook; and
 > `ai_strategies/00_default_strategy.txt` (A2) and `journal_entries/03_russia.txt` (A16), listed as "avoided", are owned too, since the
@@ -48,10 +48,10 @@ graphics excluded: **86**.
 | **DEAD** — can never fire / complete / be true | **22** | a vanilla main or secondary method checked on rung 0, which never runs it (5 of them — the two industrialisation triggers, the paired effect, pm_events.3, japan_events.32 — fail validation at load with `Invalid Production Method`, 44 sites in error.log; the rest are silently false); plus **4 more event groups dead through those triggers** (pm_events.1, .2, industrial_accident_events.5, prohibition_events.*) |
 | **NARROW** — still fires, but only rung 0 counts; a country on rung 1–3 is ignored | **49** (10 of them where rung 0 is a 500-worker CRAFT with ×10 levels, so a vanilla level threshold is ~10× easier on the craft) | the brief's main case (`has_building`, `is_building_type`) |
 | **SHIFT** — still fires but means something else | **5** script blocks + **3** group-level blocks | inverted (accident on crafts), fires for the wrong countries (arms trade event), subsidies/promises pointing the AI at the obsolete rung, craft levels inflating progress counters |
-| OK — meaning preserved (single-rung industry, or creation of an e0 rung that is thematic) | 5 | |
+| OK — meaning preserved (single-rung industry, or creation of a t0 rung that is thematic) | 5 | |
 | UNUSED (no vanilla caller) / VANILLA-DEAD (broken in vanilla already) | 2 / 1 | |
 | COSMETIC | 2 + loc + gfx | achievement, map-train trigger, Russian loc, city meshes |
-| **Throughput modifiers** (e) | ≈48 modifiers in 20 files, all NARROW | e.g. the power-bloc military-industry principles boost muskets/cannons/the e2 car plant only |
+| **Throughput modifiers** (e) | ≈48 modifiers in 20 files, all NARROW | e.g. the power-bloc military-industry principles boost muskets/cannons/the t2 car plant only |
 
 **Owned whole-file copies of vanilla in `mod/`:** only `common/ai_strategies/01_admin_strategies.txt` still carries an unexpanded key
 (the tooling-workshop and explosives-factory subsidies → craft / Leblanc rung only). The 22 company files are correctly expanded
@@ -64,25 +64,25 @@ goods file reference none of the industries.
 * **Building keys** (config `industries[].tiers[]`; 17 tiered industries, none `disabled` — port/railway/shipyard/power are not in the
   canon config at all). Rung 0 keeps the vanilla key; 50 building keys + 6 merged rungs (methods on the rung below, not buildings):
 
-  | Industry (vanilla key = rung 0) | Building keys (era) | Merged method (host) |
+  | Industry (vanilla key = rung 0) | Building keys (tier) | Merged method (host) |
   |---|---|---|
-  | food `building_food_industry` (CRAFT e0) | `_sweeteners` e1 | baking powder e2 → `pm_main_food_baking_powder` on `_sweeteners` |
-  | textile `building_textile_mill` (CRAFT e0) | `_dye_workshops` e1, `_sewing_machines` e2 | electric sewing e3 → on `_sewing_machines` |
-  | furniture `building_furniture_manufactory` (CRAFT e0) | `_lathe` e1, `_mechanized_workshops` e2 | spray finishing e3 (minted) → on `_mechanized_workshops` |
-  | glass `building_glassworks` (CRAFT e0) | `_leaded_glass` e1, `_crystal_glass` e2, `_houseware_plastics` e3 | — |
-  | tooling `building_tooling_workshop` (CRAFT e0) | `_pig_iron` e1, `_steel` e2, `_rubber_grips` e3 | — |
-  | paper `building_paper_mill` (CRAFT e0) | `_sulfite_pulping` e1, `_continuous_web` e3 (minted) | bleached e2 → on `_sulfite_pulping` |
-  | fertilizer `building_chemical_plant` e0 | `_nitrogen_fixation` e2, `_catalytic_synthesis` e3 (minted) | improved fertilizer e1 → on `building_chemical_plant` |
-  | explosives `building_explosives_factory` e0 | `_ammonia_soda_process` e1, `_vacuum_evaporation` e2, `_brine_electrolysis` e3 | — |
-  | steel `building_steel_mill` e0 | `_bessemer_process` e1, `_open_hearth_process` e2 | electric arc e3 → on `_open_hearth_process` |
-  | motor `building_motor_industry` **e1** | `_electric_engines` e2, `_diesel_engines` e3 | — |
-  | automotive `building_automotive_industry` **e2** | `_mass_automobile_production` e3 | — |
-  | arms `building_arms_industry` e0 | `_rifles` e1, `_repeaters` e2, `_bolt_action_rifles` e3 | — |
-  | artillery `building_artillery_foundry` e0 | `_smoothbores` e1, `_breech_loaders` e2, `_recoiled_barrels` e3 | — |
-  | munition `building_munition_plant` **e1** | `_explosive_shells` e2 | — |
-  | synthetics `building_synthetics_plant` e1 | (single rung — references UNCHANGED) | — |
-  | electrics `building_electrics_industry` e2 | (single rung — references UNCHANGED) | — |
-  | art academy `building_art_academy` e0 | `_realist_art` e1, `_photographic_art` e2, `_film_art` e3 | — |
+  | food `building_food_industry` (CRAFT t0) | `_sweeteners` t1 | baking powder t2 → `pm_main_food_baking_powder` on `_sweeteners` |
+  | textile `building_textile_mill` (CRAFT t0) | `_dye_workshops` t1, `_sewing_machines` t2 | electric sewing t3 → on `_sewing_machines` |
+  | furniture `building_furniture_manufactory` (CRAFT t0) | `_lathe` t1, `_mechanized_workshops` t2 | spray finishing t3 (minted) → on `_mechanized_workshops` |
+  | glass `building_glassworks` (CRAFT t0) | `_leaded_glass` t1, `_crystal_glass` t2, `_houseware_plastics` t3 | — |
+  | tooling `building_tooling_workshop` (CRAFT t0) | `_pig_iron` t1, `_steel` t2, `_rubber_grips` t3 | — |
+  | paper `building_paper_mill` (CRAFT t0) | `_sulfite_pulping` t1, `_continuous_web` t3 (minted) | bleached t2 → on `_sulfite_pulping` |
+  | fertilizer `building_chemical_plant` t0 | `_nitrogen_fixation` t2, `_catalytic_synthesis` t3 (minted) | improved fertilizer t1 → on `building_chemical_plant` |
+  | explosives `building_explosives_factory` t0 | `_ammonia_soda_process` t1, `_vacuum_evaporation` t2, `_brine_electrolysis` t3 | — |
+  | steel `building_steel_mill` t0 | `_bessemer_process` t1, `_open_hearth_process` t2 | electric arc t3 → on `_open_hearth_process` |
+  | motor `building_motor_industry` **t1** | `_electric_engines` t2, `_diesel_engines` t3 | — |
+  | automotive `building_automotive_industry` **t2** | `_mass_automobile_production` t3 | — |
+  | arms `building_arms_industry` t0 | `_rifles` t1, `_repeaters` t2, `_bolt_action_rifles` t3 | — |
+  | artillery `building_artillery_foundry` t0 | `_smoothbores` t1, `_breech_loaders` t2, `_recoiled_barrels` t3 | — |
+  | munition `building_munition_plant` **t1** | `_explosive_shells` t2 | — |
+  | synthetics `building_synthetics_plant` t1 | (single rung — references UNCHANGED) | — |
+  | electrics `building_electrics_industry` t2 | (single rung — references UNCHANGED) | — |
+  | art academy `building_art_academy` t0 | `_realist_art` t1, `_photographic_art` t2, `_film_art` t3 | — |
 
 * **Main methods are renamed**: each rung runs `pm_main_<ind>_<method>` (e.g. `pm_main_art_academy_realist_art`), never the vanilla
   `pm_realist_art`. The vanilla methods are still DEFINED (the mod's whole-file `01_industry.txt`/`06_urban_center.txt` PM copies keep
@@ -155,11 +155,11 @@ boosts silently missing is a research-pacing bias, not just flavour.
 
 * `common/journal_entries/00_belle_epoque.txt:40,43–44` `je_belle_epoque` **possible**: an academy lvl≥3 running photographic or film →
   never true → **the JE never activates and the whole belle_epoque_events chain it drives never runs.** Fix:
-  `any_scope_building = { pmr_is_art_academy_e2plus = yes  level >= 3 }` (photographic/film = rungs e2/e3).
+  `any_scope_building = { pmr_is_art_academy_e2plus = yes  level >= 3 }` (photographic/film = rungs t2/t3).
 * `00_belle_epoque.txt:260` (its `on_monthly_pulse` launcher for belle_epoque_events.14): a neighbour's building with `pm_craftsman_sewing`
   → renamed → DEAD. Fix: `pmr_runs_sec_pm_craftsman_sewing = yes` (= `has_active_production_method = pm_craftsman_sewing_textile`).
 * `events/belle_epoque_events.txt:1375` (the event's own trigger, same secondary) DEAD; `:135,151` (.2), `:280,287` (.3), `:631,636` (.6 option b)
-  art academy lvl≥3 → NARROW; `:602,610` (.6, electrics, single rung) OK; `:781` (.8, automotive rung 0 = e2 car plant) NARROW;
+  art academy lvl≥3 → NARROW; `:602,610` (.6, electrics, single rung) OK; `:781` (.8, automotive rung 0 = t2 car plant) NARROW;
   `:1418` (.14 option, textile craft) NARROW+CRAFT.
 
 ### 3.3 The grand exhibition (the user's example) — NARROW
@@ -205,13 +205,13 @@ boosts silently missing is a research-pacing bias, not just flavour.
 ### 3.5 Player objectives, missions, reforms — NARROW (the player is asked to build the obsolete rung)
 
 * `common/journal_entries/00_player_objectives_economic_dominance.txt:73,82` je_refining_goods: a steel mill lvl≥4, occ≥0.9, unsubsidised
-  → only the blister-steel e0 rung; a player who builds Bessemer cannot complete the objective. `:103,112` je_specialized_goods: motor
+  → only the blister-steel t0 rung; a player who builds Bessemer cannot complete the objective. `:103,112` je_specialized_goods: motor
   industry lvl≥2 → only the steam-engine rung. Fix: `pmr_is_steel` / `pmr_is_motor` (keep `level`, no crafts).
 * `00_trade_route_event_missions.txt:8` je_build_local_arms_industry `complete = { any_scope_state = { has_active_building =
   building_arms_industry } }` → only a musket rung completes it; and `events/trade_route_events.txt:25` (`NOT any state has_building
   arms_industry`) now fires for countries that DO have rifle/repeater factories → **SHIFT** (spurious mission, then demands muskets).
   Fix both: `pmr_has_arms` / `pmr_has_active_arms` (OR of `has_active_building` over the four keys).
-* `03_russia.txt:1277` je_great_reforms_military (munition plant lvl≥3 = percussion caps, e1 — era-appropriate for the 1860s; a Russia
+* `03_russia.txt:1277` je_great_reforms_military (munition plant lvl≥3 = percussion caps, t1 — era-appropriate for the 1860s; a Russia
   with only shell plants fails). Low priority; same fix.
 * `common/scripted_buttons/00_balkan_wars_buttons.txt:187–189,213–215`, `03_paraguay_scripted_buttons.txt:69` (arms lvl≥2),
   `05_serbia_buttons.txt:15` (paper craft) — NARROW / NARROW+CRAFT; fix as above.
@@ -242,7 +242,7 @@ Events (own the files):
 * `events/industrial_accidents_events.txt:53–56,97–100` accident .1: `has_building textile_mill` AND NOT `pm_traditional_looms` active.
   The PM is invalid on the craft → if it evaluates false the NOT is TRUE → **SHIFT: the mechanised-loom accident fires on every state
   with a textile craft.** Fix: `any_scope_building = { pmr_is_textile_e2plus = yes }` (non-traditional looms exist only beside sewing
-  machines e2 and electric sewing e3; the dye-workshop rung has no automation group).
+  machines t2 and electric sewing t3; the dye-workshop rung has no automation group).
 * `:169,184` accident .2: textile craft — NARROW+CRAFT; `pmr_has_textile`.
 * `:327–345` accident .4: food industry with a distillery not disabled → the craft's only distillery method IS `pm_disabled_distillery` →
   DEAD. Fix: `any_scope_building = { pmr_is_food = yes  NOT = { has_active_production_method = pm_disabled_distillery } }`.
@@ -271,7 +271,7 @@ helpers for the rest.
 
 Every `building_<key>_throughput_add` listed in appendix D boosts only rung 0. The significant ones:
 * `common/power_bloc_principles/00_power_bloc_principles.txt:902–904, 947–949, 967–969` — **principle_military_industry_1/2/3**: +10%
-  arms, artillery, automotive → muskets, cannons and the e2 car plant only.
+  arms, artillery, automotive → muskets, cannons and the t2 car plant only.
 * Tech-event rewards in `static_modifiers/02_event_modifiers.txt`: `plastic_production_modifier` (+33% glassworks → the forest-glass
   CRAFT), `dynamite_production_modifier` (+33% explosives → Leblanc), `munitions_production_modifier`, `motor_industry_production_modifier`,
   `engine_production_modifier` (+33% motor → steam engines), `electrics_building_modifier` (single rung, OK), `elevator_goods_production_modifier`,
@@ -300,7 +300,7 @@ Every `building_<key>_throughput_add` listed in appendix D boosts only rung 0. T
   `bt:building_art_academy` / `_artillery_foundry` / `_munition_plant` / `_arms_industry` → the player must then build levels of the
   **rung-0 type** (and `building_can_be_promised` requires already owning rung 0). SHIFT. Fix: replace each fixed `bt:` option with
   `owner = { random_scope_building = { limit = { pmr_is_<ind> = yes } type = { save_temporary_scope_as = potential_building_type } } }`
-  (vanilla's own idiom from the light/heavy-industry options at 403–413, 542–549), preferring the highest era the owner holds.
+  (vanilla's own idiom from the light/heavy-industry options at 403–413, 542–549), preferring the highest tier the owner holds.
   The light/heavy random picks are fine (they pick a real type; `building_levels_to_increase_value` divides by
   `required_construction`, so a 6-point craft promise is cost-normalised).
 
@@ -317,7 +317,7 @@ Every `building_<key>_throughput_add` listed in appendix D boosts only rung 0. T
   rung 0 lvl≥6) NARROW; `economy_laws.txt:444,455` (arms) NARROW; `belle_epoque_events.txt:1418` textile craft NARROW+CRAFT.
 * Creation effects (OK, minor): `events/brazil/amazonas.txt:420,425` (creates an art academy if the state has no rung-0 academy),
   `events/brazil/paraguay.txt:355,360` and `scripted_buttons/03_paraguay_scripted_buttons.txt:98,103` (create a 2-level steel mill if no
-  rung-0 mill) — they create the e0 rung, and can put it NEXT TO a modern mill. Fix: guard with `pmr_is_<ind>` in the NOT. Leave the
+  rung-0 mill) — they create the t0 rung, and can put it NEXT TO a modern mill. Fix: guard with `pmr_is_<ind>` in the NOT. Leave the
   building rung 0. `events/agitators_events/land_ownership_law_events.txt:1577` (`start_building_construction = building_steel_mill`,
   "backyard steel") — OK as is; primitive steel is the point.
 
@@ -339,7 +339,7 @@ Every `building_<key>_throughput_add` listed in appendix D boosts only rung 0. T
    dt_society_events.2 and camera_film_pm_events.1/.2 never fire: **−3,500 realism, −4,150 camera, −6,000 film, −5,850 mass_propaganda
    progress** plus four art modifiers lost in every country — a research-pacing bias against the vanilla reference.
 3. **Industry-ban / extraction-economy laws leave rungs 1–3 standing** (`01_economic_system.txt:263–417`) — a law whose whole point is
-   demolition demolishes only the e0 (or e1/e2 for motor/automotive) buildings.
+   demolition demolishes only the t0 (or t1/t2 for motor/automotive) buildings.
 4. **Tech-boost events dead or narrowed**: military_tech_events.401 (−4,150 repeaters), production_tech_events.200 (−6,000 plastics),
    .210 (−6,000 radio) DEAD; .501/.700 (steel_railway_cars), war_crimes.2 (rifling), .102 only for the old rungs.
 5. **Power-bloc `principle_military_industry_1/2/3`** and ≈48 event/JE throughput rewards boost rung 0 only — including rewards for
@@ -368,8 +368,8 @@ writes — preferable, one definition), and the live vanilla files.
 * `common/scripted_triggers/zzz_pm_rehaul_industry_triggers.txt`, per industry:
   * `pmr_is_<ind>` (building scope) = `OR { is_building_type = <each building key> }` (merged rungs are methods, not keys);
   * `pmr_has_<ind>` (state or country scope) = `OR { has_building = … }`; `pmr_has_active_<ind>` = `OR { has_active_building = … }`;
-  * `pmr_is_<ind>_e<k>plus` (building scope) = the rung buildings with era ≥ k, plus `AND { is_building_type = <host>
-    has_active_production_method = <merged pm_key> }` for merged rungs (keyed by ERA, per the era rule);
+  * `pmr_is_<ind>_e<k>plus` (building scope) = the rung buildings with tier ≥ k, plus `AND { is_building_type = <host>
+    has_active_production_method = <merged pm_key> }` for merged rungs (keyed by TIER, per the tier rule);
   * per vanilla main method (53): `pmr_runs_<vanilla_pm>` (building) = its rung's `is_building_type`, or `AND { host + its pm_key }` for
     a merged method AND for a host's own method; `pmr_state_runs_<vanilla_pm>` (state) = `any_scope_building = { pmr_runs_… = yes }`;
   * per vanilla secondary method of a tiered building (≈40): `pmr_runs_sec_<pm>` (building) = `OR { has_active_production_method =
@@ -397,7 +397,7 @@ no-op — the emit_companies discipline):**
 
 **C. Files to own (count):**
 
-| Tier | Files | Lines | What it fixes |
+| Scope tier | Files | Lines | What it fixes |
 |---|---|---|---|
 | 1 (gameplay, research pacing) | `decisions/grand_exhibition_decision.txt`; JEs `00_art_jes`, `00_belle_epoque`, `00_liberalism`, `00_player_objectives_economic_dominance`, `00_prohibition_laws`, `00_trade_route_event_missions`; `scripted_triggers/00_scripted_triggers.txt`; `scripted_effects/00_scripted_effects.txt`; events `tech_events/{military,production,society}_tech_events`, `tech_events/camera_film_pm_events`, `tech_events/war_crimes_events`, `belle_epoque_events`, `pm_events`, `industrial_accidents_events`, `trade_route_events`; `power_bloc_principles/00_power_bloc_principles.txt`; `static_modifiers/{02_event,content_1,content_3}_modifiers.txt` | **22 files, 17,057 lines** | §3.1–3.8 core, the 44 load errors, all research boosts |
 | 2 (flavour, narrowing) | the other 16 event files, 4 scripted-button files, `04_negotiation_scripted_effects`, `00_victoria_scripted_effects` (5,167 lines: national identity, Orleanist), 15 more static-modifier files, `amendments/00_amendments_enactment_04` | **38 files, 32,378 lines** | the NARROW tail |
@@ -405,7 +405,7 @@ no-op — the emit_companies discipline):**
 | already owned | `ai_strategies/01_admin_strategies.txt` | — | the subsidies (ruling) |
 | cosmetic, optional | 6 base + 4 DLC city-type gfx files, the RU custom loc | — | meshes, Russian declension |
 
-Tier 1 is 22 files, 17,057 lines of someone else's script; tier 1+2 is 60 files, 49,435 lines (the 25 event files 20,705; the 18
+Scope tier 1 is 22 files, 17,057 lines of someone else's script; scope tier 1+2 is 60 files, 49,435 lines (the 25 event files 20,705; the 18
 static-modifier files + power-bloc file + amendment file 16,160). **Patch exposure is a REBUILD obligation, not a freeze**, because every file is regenerated from the live vanilla text on each
 build (as the 22 company files already are); a patch that moves a matched line makes the build THROW instead of shipping stale script.
 Each owned file goes into ON_GAME_UPDATE.md.
@@ -431,7 +431,7 @@ the frontier) would only move the problem; a building has one type.
 1. Craft rungs in "industry building" tests: include with `pmr_level_v` (vanilla capacity) or exclude (a workshop is not a factory).
 2. Admin-strategy subsidies: every tooling/explosives rung, or the non-craft rungs only.
 3. Grand exhibition (and the other "N levels in a state" tests): one building of any rung (OR form, the simplest) or the summed state levels.
-4. Tier 1 only, or tier 1 + 2.
+4. Scope tier 1 only, or scope tiers 1 + 2.
 
 ## Appendix A — every (a) key and (b) main-method line, with its block and verdict (Russian loc excluded; generated from `rows.json`)
 
@@ -441,8 +441,8 @@ the frontier) would only move the problem; a building has one type.
 | common/ai_strategies/00_default_strategy.txt | 5033 | key | `building_textile_mill` | ai_strategy_default | NARROW+CRAFT |
 | common/ai_strategies/00_default_strategy.txt | 5040 | key | `building_textile_mill` | ai_strategy_default | NARROW+CRAFT |
 | common/ai_strategies/00_default_strategy.txt | 5047 | key | `building_furniture_manufactory` | ai_strategy_default | NARROW+CRAFT |
-| common/ai_strategies/01_admin_strategies.txt | 210 | key | `building_tooling_workshop` | ai_strategy_resource_expansion | SHIFT (props up the craft / e0) |
-| common/ai_strategies/01_admin_strategies.txt | 211 | key | `building_explosives_factory` | ai_strategy_resource_expansion | SHIFT (props up the craft / e0) |
+| common/ai_strategies/01_admin_strategies.txt | 210 | key | `building_tooling_workshop` | ai_strategy_resource_expansion | SHIFT (props up the craft / t0) |
+| common/ai_strategies/01_admin_strategies.txt | 211 | key | `building_explosives_factory` | ai_strategy_resource_expansion | SHIFT (props up the craft / t0) |
 | common/ai_strategies/01_admin_strategies.txt | 574 | key | `building_tooling_workshop` | ai_strategy_colonial_extraction | SHIFT (props up the craft) |
 | common/decisions/grand_exhibition_decision.txt | 13 | key | `building_art_academy` | grand_exhibition_decision | NARROW |
 | common/journal_entries/00_art_jes.txt | 27 | key | `building_art_academy` | je_romanticism | DEAD (complete) |
@@ -618,7 +618,7 @@ the frontier) would only move the problem; a building has one type.
 | common/scripted_triggers/00_scripted_triggers.txt | 850 | key | `building_arms_industry` | is_production_building | UNUSED (no vanilla caller) |
 | common/scripted_triggers/00_scripted_triggers.txt | 851 | key | `building_artillery_foundry` | is_production_building | UNUSED (no vanilla caller) |
 | common/scripted_triggers/00_scripted_triggers.txt | 852 | key | `building_munition_plant` | is_production_building | UNUSED (no vanilla caller) |
-| events/agitators_events/land_ownership_law_events.txt | 1577 | key | `building_steel_mill` | land_ownership_law_events.12 | OK (builds the e0 rung - thematic) |
+| events/agitators_events/land_ownership_law_events.txt | 1577 | key | `building_steel_mill` | land_ownership_law_events.12 | OK (builds the t0 rung - thematic) |
 | events/assassination_events.txt | 287 | key | `building_art_academy` | assassination_events.4 | NARROW |
 | events/assassination_events.txt | 304 | key | `building_art_academy` | assassination_events.4 | NARROW |
 | events/balkans_events/03_ip3_austria_events.txt | 433 | key | `building_art_academy` | austria_events.33 | NARROW |
@@ -640,10 +640,10 @@ the frontier) would only move the problem; a building has one type.
 | events/belle_epoque_events.txt | 636 | key | `building_art_academy` | belle_epoque_events.6 | OK (electrics, 1 rung) / NARROW (art academy) |
 | events/belle_epoque_events.txt | 781 | key | `building_automotive_industry` | belle_epoque_events.8 | NARROW |
 | events/belle_epoque_events.txt | 1418 | key | `building_textile_mill` | belle_epoque_events.14 | NARROW+CRAFT (option) ; launcher DEAD (secondary PM) |
-| events/brazil/amazonas.txt | 420 | key | `building_art_academy` | amazonas.5 | OK (creates e0; may duplicate) |
-| events/brazil/amazonas.txt | 425 | key | `building_art_academy` | amazonas.5 | OK (creates e0; may duplicate) |
-| events/brazil/paraguay.txt | 355 | key | `building_steel_mill` | paraguay.3 | OK (creates e0; may duplicate) |
-| events/brazil/paraguay.txt | 360 | key | `building_steel_mill` | paraguay.3 | OK (creates e0; may duplicate) |
+| events/brazil/amazonas.txt | 420 | key | `building_art_academy` | amazonas.5 | OK (creates t0; may duplicate) |
+| events/brazil/amazonas.txt | 425 | key | `building_art_academy` | amazonas.5 | OK (creates t0; may duplicate) |
+| events/brazil/paraguay.txt | 355 | key | `building_steel_mill` | paraguay.3 | OK (creates t0; may duplicate) |
+| events/brazil/paraguay.txt | 360 | key | `building_steel_mill` | paraguay.3 | OK (creates t0; may duplicate) |
 | events/decree_events.txt | 498 | key | `building_art_academy` | decree_events.5 | NARROW |
 | events/decree_events.txt | 517 | key | `building_art_academy` | decree_events.5 | NARROW |
 | events/decree_events_02.txt | 29 | key | `building_food_industry` | decree_events.100 | NARROW+CRAFT |
@@ -1059,20 +1059,20 @@ repo was changed. The question for each case: **which rungs should satisfy this 
 
 ### Key
 
-**Rungs** are named by narrative ERA. A merged rung is a main method on the rung below, so "e2+" for an industry with a merge means the
+**Rungs** are named by TIER. A merged rung is a main method on the rung below, so "e2+" for an industry with a merge means the
 host building under either of its main methods:
 
-| Industry | e0 | e1 | e2 | e3 |
+| Industry | t0 | t1 | t2 | t3 |
 |---|---|---|---|---|
-| food | **craft** (bakery) | sweeteners (host) | baking powder (method on e1 host) | — |
-| textile | **craft** (handsewn) | dye workshops | sewing machines (host) | electric sewing (method on e2 host) |
-| furniture | **craft** (handcrafted) | lathe | mechanized workshops (host) | spray finishing (method on e2 host) |
+| food | **craft** (bakery) | sweeteners (host) | baking powder (method on t1 host) | — |
+| textile | **craft** (handsewn) | dye workshops | sewing machines (host) | electric sewing (method on t2 host) |
+| furniture | **craft** (handcrafted) | lathe | mechanized workshops (host) | spray finishing (method on t2 host) |
 | glass | **craft** (forest glass) | leaded | crystal | houseware plastics |
 | tooling | **craft** (crude tools) | pig iron | steel | rubber grips |
-| paper | **craft** (pulp pressing) | sulfite pulping (host) | bleached (method on e1 host) | continuous web |
-| fertilizer | artificial (host) | improved (method on e0 host) | nitrogen fixation | catalytic synthesis |
+| paper | **craft** (pulp pressing) | sulfite pulping (host) | bleached (method on t1 host) | continuous web |
+| fertilizer | artificial (host) | improved (method on t0 host) | nitrogen fixation | catalytic synthesis |
 | explosives | Leblanc | ammonia-soda | vacuum evaporation (dynamite) | brine electrolysis |
-| steel | blister | Bessemer | open hearth (host) | electric arc (method on e2 host) |
+| steel | blister | Bessemer | open hearth (host) | electric arc (method on t2 host) |
 | motor | — | steam engines | electric engines | diesel engines |
 | automotive | — | — | automobile production | mass production |
 | arms | muskets | rifles | repeaters | bolt action |
@@ -1082,7 +1082,7 @@ host building under either of its main methods:
 | synthetics / electrics | single rung, references unchanged | | | |
 
 **Proposal types:** `ANY` every rung (industry has no craft) · `ANY−C` every non-craft rung (crafts excluded) · `ANY+C` every rung including the
-craft · `ERA` a named era set tied to a technology or practice · `METHOD` whatever building runs a named production method (the rung set
+craft · `ERA` a named tier set tied to a technology or practice · `METHOD` whatever building runs a named production method (the rung set
 follows from where the method exists) · `HIGHEST` the most advanced rung the owner already holds · `ALL-REMOVE` an effect over every rung ·
 `LEAVE` keep the vanilla line (narrow is right, unused, dead, or cosmetic). **Confidence:** clear / judgement. **ASK** = the user should decide.
 
@@ -1090,7 +1090,7 @@ follows from where the method exists) · `HIGHEST` the most advanced rung the ow
 ONLY crafts** in light industry (Japan, Portugal, Egypt, Denmark, Switzerland, Tuscany, the Papal States, Korea, Finland, Morocco, Tunis,
 Argentina, Colombia, Peru, Bolivia, a dozen Indian states, …). The larger agrarian powers (Russia, Austria, the Ottomans, Spain, China, Sweden,
 Brazil, Mexico, Sardinia) hold crafts in most light industries plus at least one factory rung, usually tooling. **GBR, FRA, PRU and BEL own no
-craft at all** (their 1836 light factories convert to e1 methods); the USA owns only a food craft. By industry, countries holding only the craft /
+craft at all** (their 1836 light factories convert to t1 methods); the USA owns only a food craft. By industry, countries holding only the craft /
 countries with a factory rung: **textile 42 / 6** (only GBR FRA USA PRU NET BEL have a textile factory rung; Russia, Austria, the Ottomans, Spain,
 China and Japan are textile-craft-only) · paper 24 / 5 · furniture 21 / 10 · glass 15 / 6 · food 9 / 8 · tooling 8 / 17. ⇒ Excluding crafts
 silences 1836-era light-industry content for most of the world, never for the industrial core.
@@ -1102,31 +1102,31 @@ silences 1836-era light-industry content for most of the world, never for the in
 | # | Block · file:line | What it is about | Proposed rungs | Type | Conf. | |
 |---|---|---|---|---|---|---|
 | A1 | achievement_systembolaget · `achievements/mp1_charters_of_commerce_achievements.txt:146` | Swedish liquor monopoly achievement | — (achievements are off with mods) | LEAVE | clear | |
-| A2 | ai_strategy_default goods stances · `ai_strategies/00_default_strategy.txt:5033,5040,5047` | the AI wants a high supply of dye (textile mill + lathe), silk (textile mill), hardwood (furniture) — the inputs of dye workshops, craftsman sewing and luxury furniture | dye → textile e1+; silk → textile e1+ (the rungs carrying craftsman sewing); hardwood → furniture e1+ (luxury furniture). Crafts out — they consume none of the three. Today the stances fire ONLY for craft holders, i.e. inverted. Low value: the audit "avoids" this 8,792-line file | ERA | clear | |
+| A2 | ai_strategy_default goods stances · `ai_strategies/00_default_strategy.txt:5033,5040,5047` | the AI wants a high supply of dye (textile mill + lathe), silk (textile mill), hardwood (furniture) — the inputs of dye workshops, craftsman sewing and luxury furniture | dye → textile t1+; silk → textile t1+ (the rungs carrying craftsman sewing); hardwood → furniture t1+ (luxury furniture). Crafts out — they consume none of the three. Today the stances fire ONLY for craft holders, i.e. inverted. Low value: the audit "avoids" this 8,792-line file | ERA | clear | |
 | A3 | admin-strategy subsidies · `ai_strategies/01_admin_strategies.txt:210,211,574` | — | see (E) | — | — | |
 | A4 | grand_exhibition_decision · `decisions/grand_exhibition_decision.txt:13` | a world's fair needs an art scene (academy lvl ≥ 10) | one academy of any rung at level ≥ 10 (user's own rule) | ANY | clear | |
-| A5 | je_romanticism complete · `journal_entries/00_art_jes.txt:27–28` | patronise Romanticism: an academy running traditional art, lvl ≥ 2, occ ≥ 0.9; fails when realism is researched | **e0 only** (traditional art IS the romantic method) | ERA | clear | |
-| A6 | je_realism · `00_art_jes.txt:63` (possible) / `:70–73` (complete) | possible: has an academy. complete: **every** academy runs realist art, occ ≥ 0.9 | possible: any rung. complete: **e1** (realist); film/photography cannot exist while the JE runs. The `percent = 1` clause demands every older academy be gone — see F1 | ERA | judgement | ASK |
-| A7 | je_camera · `00_art_jes.txt:103` / `:110–119` | possible: academy lvl ≥ 3. complete: a photographic academy lvl ≥ 5 AND > 75% of academies photographic | possible: any rung. complete: **e2** (photographic; the JE is invalid once film exists, so e2+ ≡ e2). Percent clause: F1 | ERA | judgement | ASK |
-| A8 | je_film · `00_art_jes.txt:150` / `:157–166` | same with film | possible: any rung. complete: **e3**. Percent clause: F1 | ERA | judgement | ASK |
-| A9 | je_belle_epoque possible · `journal_entries/00_belle_epoque.txt:40–44` | a modern art scene: academy lvl ≥ 3 on photographic OR film | **e2+** | ERA | clear | |
-| A10 | Belle Époque launcher · `00_belle_epoque.txt:260` + belle_epoque_events.14 trigger · `events/belle_epoque_events.txt:1375` | a neighbouring Belle Époque country has a fashion trade (craftsman sewing) | the method `pm_craftsman_sewing_textile` (textile e1+; the craft cannot carry it) | METHOD | clear | |
+| A5 | je_romanticism complete · `journal_entries/00_art_jes.txt:27–28` | patronise Romanticism: an academy running traditional art, lvl ≥ 2, occ ≥ 0.9; fails when realism is researched | **t0 only** (traditional art IS the romantic method) | ERA | clear | |
+| A6 | je_realism · `00_art_jes.txt:63` (possible) / `:70–73` (complete) | possible: has an academy. complete: **every** academy runs realist art, occ ≥ 0.9 | possible: any rung. complete: **t1** (realist); film/photography cannot exist while the JE runs. The `percent = 1` clause demands every older academy be gone — see F1 | ERA | judgement | ASK |
+| A7 | je_camera · `00_art_jes.txt:103` / `:110–119` | possible: academy lvl ≥ 3. complete: a photographic academy lvl ≥ 5 AND > 75% of academies photographic | possible: any rung. complete: **t2** (photographic; the JE is invalid once film exists, so t2+ ≡ t2). Percent clause: F1 | ERA | judgement | ASK |
+| A8 | je_film · `00_art_jes.txt:150` / `:157–166` | same with film | possible: any rung. complete: **t3**. Percent clause: F1 | ERA | judgement | ASK |
+| A9 | je_belle_epoque possible · `journal_entries/00_belle_epoque.txt:40–44` | a modern art scene: academy lvl ≥ 3 on photographic OR film | **t2+** | ERA | clear | |
+| A10 | Belle Époque launcher · `00_belle_epoque.txt:260` + belle_epoque_events.14 trigger · `events/belle_epoque_events.txt:1375` | a neighbouring Belle Époque country has a fashion trade (craftsman sewing) | the method `pm_craftsman_sewing_textile` (textile t1+; the craft cannot carry it) | METHOD | clear | |
 | A11 | je_liberalism_3 · `00_liberalism.txt:137` + liberalism.1 · `events/liberalism.txt:71,122,166` | "Freedom of Thought": a university AND an academy lvl ≥ 3 | academy of any rung | ANY | clear | |
 | A12 | je_refining_goods · `00_player_objectives_economic_dominance.txt:73,82` | objective "refine your raw goods": steel mill lvl ≥ 4, unsubsidised | steel of any rung | ANY | clear | |
 | A13 | je_specialized_goods · `…:103,112` | objective "make more expensive goods": motor industry lvl ≥ 2 | motor of any rung | ANY | clear | |
-| A14 | je_prohibition · `00_prohibition_laws.txt:12,30–31` (+ `has_distillery`) | the temperance movement: a food building distilling liquor, lvl ≥ 5 | buildings running `pm_pot_stills_food` / `pm_patent_stills_food` = the food e1 host under either method; the food craft cannot distil | METHOD | clear | |
+| A14 | je_prohibition · `00_prohibition_laws.txt:12,30–31` (+ `has_distillery`) | the temperance movement: a food building distilling liquor, lvl ≥ 5 | buildings running `pm_pot_stills_food` / `pm_patent_stills_food` = the food t1 host under either method; the food craft cannot distil | METHOD | clear | |
 | A15 | je_build_local_arms_industry · `00_trade_route_event_missions.txt:8` + trade_route_events.1 · `events/trade_route_events.txt:25` | "build a domestic arms industry" / the event that asks for it fires when you have none | an active arms building of any rung; the event's absence test must be NOT any rung | ANY | clear | |
-| A16 | je_great_reforms_military · `journal_entries/03_russia.txt:1277` | Alexander II's army reform: a munition plant lvl ≥ 3 | munition of any rung (e1 percussion caps or e2 shells) | ANY | clear | |
-| A17 | law_industry_banned · `laws/01_economic_system.txt:263–307`; law_extraction_economy `:379–417` | the ban demolishes every heavy-industry building | remove EVERY rung of fertilizer (e0–e3), synthetics, steel (e0–e2 + arc method), motor (e1–e3), automotive (e2–e3), electrics, munition (e1–e2); do NOT add explosives (vanilla never removes it) | ALL-REMOVE | clear | |
+| A16 | je_great_reforms_military · `journal_entries/03_russia.txt:1277` | Alexander II's army reform: a munition plant lvl ≥ 3 | munition of any rung (t1 percussion caps or t2 shells) | ANY | clear | |
+| A17 | law_industry_banned · `laws/01_economic_system.txt:263–307`; law_extraction_economy `:379–417` | the ban demolishes every heavy-industry building | remove EVERY rung of fertilizer (t0–t3), synthetics, steel (t0–t2 + arc method), motor (t1–t3), automotive (t2–t3), electrics, munition (t1–t2); do NOT add explosives (vanilla never removes it) | ALL-REMOVE | clear | |
 | A18 | Montenegro monthly check · `on_actions/00_code_on_actions.txt:958` + mon_state_formation.13 · `balkans_events/montenegro_events.txt:1859–1877` | "True Aim": pride in the country's FIRST arms factory | arms of any rung (the `b:` link → the state's arms building of any rung). Accepting the narrow line (the audit's "avoid owning the code on_actions") is tolerable: Montenegro's first factory will normally be a musket or rifle rung | ANY (or LEAVE) | judgement | |
 | A19 | Balkan League "Overwork Arms Industries" · `scripted_buttons/00_balkan_wars_buttons.txt:187–215` | 1912 war mobilisation of the military industry | arms, artillery, munition of any rung (today only muskets / cannons / percussion caps qualify — in 1912 effectively never) | ANY | clear | |
-| A20 | ybycui_iron_works_button · `scripted_buttons/03_paraguay_scripted_buttons.txt:69,98,103` + paraguay.3 · `events/brazil/paraguay.txt:355,360` | the Rosada foundry: an arms works lvl ≥ 2 is a precondition; the effect creates a 2-level steel mill if the state has none | possible: arms of any rung. Creation guard: "no steel mill of any rung" (else the 1.5× modifier); the created building stays e0 (an 1850s charcoal foundry is the e0 rung) | ANY | clear | |
-| A21 | je_tot_slander_button · `scripted_buttons/05_serbia_buttons.txt:15` | Serbian dynastic struggle: "we have the power of imagery" — print pamphlets; needs a paper mill + mass_communication (era 1) | **paper of any rung INCLUDING the craft**: pamphlets do not need a factory, and excluding the craft would require a sulfite mill (mechanical_tools, game era 2) in 1840s–1900s Serbia | ANY+C | judgement | ASK · (B) |
+| A20 | ybycui_iron_works_button · `scripted_buttons/03_paraguay_scripted_buttons.txt:69,98,103` + paraguay.3 · `events/brazil/paraguay.txt:355,360` | the Rosada foundry: an arms works lvl ≥ 2 is a precondition; the effect creates a 2-level steel mill if the state has none | possible: arms of any rung. Creation guard: "no steel mill of any rung" (else the 1.5× modifier); the created building stays t0 (an 1850s charcoal foundry is the t0 rung) | ANY | clear | |
+| A21 | je_tot_slander_button · `scripted_buttons/05_serbia_buttons.txt:15` | Serbian dynastic struggle: "we have the power of imagery" — print pamphlets; needs a paper mill + mass_communication (game era 1) | **paper of any rung INCLUDING the craft**: pamphlets do not need a factory, and excluding the craft would require a sulfite mill (mechanical_tools, game era 2) in 1840s–1900s Serbia | ANY+C | judgement | ASK · (B) |
 | A22 | vernacular buttons Catalan / Galician / Breton · `scripted_buttons/06_vernacular_buttons.txt:50,67,293,558` | a cultural centre: a university OR an academy (lvl ≥ 3 / ≥ 2) in the homeland | academy of any rung | ANY | clear | |
-| A23 | vernacular button Occitan, agricultural branch · `06_vernacular_buttons.txt:634` | an AGRARIAN Occitania: vineyards lvl ≥ 8 + a food industry lvl ≥ 3 + the agricultural decree (the manufacturing branch is a separate light-industry test, line 618) | either food e1+ only (crafts out, keep lvl 3), or the craft IN at vanilla-equivalent size (craft lvl ≥ 30, i.e. 15,000 workers). Regional agro-processing fits a craft; a 3-level craft (1,500 workers) passing it does not. France starts with no food craft | ANY+C at ×0.1, or ANY−C | judgement | ASK · (B) |
+| A23 | vernacular button Occitan, agricultural branch · `06_vernacular_buttons.txt:634` | an AGRARIAN Occitania: vineyards lvl ≥ 8 + a food industry lvl ≥ 3 + the agricultural decree (the manufacturing branch is a separate light-industry test, line 618) | either food t1+ only (crafts out, keep lvl 3), or the craft IN at vanilla-equivalent size (craft lvl ≥ 30, i.e. 15,000 workers). Regional agro-processing fits a craft; a 3-level craft (1,500 workers) passing it does not. France starts with no food craft | ANY+C at ×0.1, or ANY−C | judgement | ASK · (B) |
 | A24 | vernacular button Walloon · `06_vernacular_buttons.txt:694` | the Walloon coal-and-steel basin: mining lvl ≥ 8 + steel mill lvl ≥ 6 | steel of any rung | ANY | clear | |
-| A25 | save_industrialized_pm_building_and_state · `scripted_effects/00_scripted_effects.txt:75–180` + has_industrialized_pm · `scripted_triggers/00_scripted_triggers.txt:141–215` | "a state runs mechanised production" (callers pm_events.1 Dangerous Equipment, .2 Untrained Hands — injuries from mechanisation) | the minted mechanised secondaries (watertube / rotary valve / assembly lines per industry; mechanised and automatic power looms) + the furniture e2 host (mechanized workshops, also spray finishing) for vanilla's main-method pair. Textile resolves to e2+ (looms are mandated there). Crafts never | METHOD | clear | |
-| A26 | using_watertube_boiler · `00_scripted_triggers.txt:217–262` | caller industrial_accident_events.5, Boiler Explosion | buildings running the watertube secondary (furniture e1–e2, tooling e1–e3, paper e1/e3, steel e0–e2, motor e1–e3) | METHOD | clear | |
+| A25 | save_industrialized_pm_building_and_state · `scripted_effects/00_scripted_effects.txt:75–180` + has_industrialized_pm · `scripted_triggers/00_scripted_triggers.txt:141–215` | "a state runs mechanised production" (callers pm_events.1 Dangerous Equipment, .2 Untrained Hands — injuries from mechanisation) | the minted mechanised secondaries (watertube / rotary valve / assembly lines per industry; mechanised and automatic power looms) + the furniture t2 host (mechanized workshops, also spray finishing) for vanilla's main-method pair. Textile resolves to t2+ (looms are mandated there). Crafts never | METHOD | clear | |
+| A26 | using_watertube_boiler · `00_scripted_triggers.txt:217–262` | caller industrial_accident_events.5, Boiler Explosion | buildings running the watertube secondary (furniture t1–t2, tooling t1–t3, paper t1/t3, steel t0–t2, motor t1–t3) | METHOD | clear | |
 | A27 | has_government_building · `00_scripted_triggers.txt:437` | university or academy | no vanilla caller | LEAVE (ANY if rewritten) | clear | |
 | A28 | has_industry_building / is_industry_building · `00_scripted_triggers.txt:451–471` | the six light industries | **a shared trigger whose callers want different answers** (A57 wants crafts IN, A62–A64 OUT) → the generator needs two helper variants or per-caller rewrites | — | — | ASK (F10) |
 | A29 | has_heavy_industry_building / is_heavy_industry_building · `:473–496` | chemical, synthetics, steel, motor, automotive, electrics, munition, power | any rung (no crafts in the set) | ANY | clear | |
@@ -1135,26 +1135,26 @@ silences 1836-era light-industry content for most of the world, never for the in
 | A32 | gfx_mining_train_trigger · `scripted_triggers/00_gfx_route_graphics_triggers.txt:128` | map train visuals | cosmetic | LEAVE | clear | |
 | A33 | calculate_national_identity_progress · `scripted_effects/00_victoria_scripted_effects.txt:3004` | South American national identity grows with Σ levels of academies, universities, administrations | academy levels of any rung | ANY | clear | |
 | A34 | set_promised_building_type · `scripted_effects/04_negotiation_scripted_effects.txt:461–467` (Intelligentsia: art) and `:601–629` (Armed Forces: artillery, munition, arms) | an IG demands more of a building type the country already has | the **most advanced rung of that industry the owner already holds** (an army promised muskets in 1900, or a film-age intelligentsia promised a traditional academy, is absurd); vanilla's "must already own one" rule kept | HIGHEST | judgement (highest vs any held) | |
-| A35 | land_ownership_law_events.12 · `events/agitators_events/land_ownership_law_events.txt:1577` | "an ad hoc steel mill should suffice" — backyard steel | starts an e0 steel mill: primitive steel is the point | LEAVE | clear | |
+| A35 | land_ownership_law_events.12 · `events/agitators_events/land_ownership_law_events.txt:1577` | "an ad hoc steel mill should suffice" — backyard steel | starts a t0 steel mill: primitive steel is the point | LEAVE | clear | |
 | A36 | assassination_events.4 · `events/assassination_events.txt:287,304` | "the high spheres": a state with an urban centre lvl ≥ 10 and a university or academy | academy of any rung | ANY | clear | |
 | A37 | austria_events.33 / .34 · `balkans_events/03_ip3_austria_events.txt:433,558` | Vienna world's fair; Japonisme pavilion and cultural-exchange modifier per academy state | any rung | ANY | clear | |
-| A38 | national_awakening.5 · `balkans_events/national_awakening.txt:368–392` | "National Romanticism": an academy produces a romanticist painting of the founding myth | any rung (vanilla is style-agnostic; national-romantic painting ran into the realist era). Arguable alternative: e0–e1 | ANY | judgement | |
+| A38 | national_awakening.5 · `balkans_events/national_awakening.txt:368–392` | "National Romanticism": an academy produces a romanticist painting of the founding myth | any rung (vanilla is style-agnostic; national-romantic painting ran into the realist era). Arguable alternative: t0–t1 | ANY | judgement | |
 | A39 | belle_epoque_events.2 · `events/belle_epoque_events.txt:135,151` | Art Nouveau: academy lvl ≥ 3 | any rung | ANY | clear | |
 | A40 | belle_epoque_events.3 · `:280,287` | Symbolism: academy lvl ≥ 3 | any rung | ANY | clear | |
-| A41 | belle_epoque_events.6 option b · `:631,636` (the trigger at `:602,610` is electrics, single rung, unchanged) | "Cinema has no commercial future" → **Supported Traditional Arts** in an academy state | **e0–e2** (non-film) — the option is choosing painting/photography over cinema | ERA | judgement | |
-| A42 | belle_epoque_events.8 · `:781` | Peugeot-Serpollet steam car / steam omnibus — the country has a car industry | automotive of any rung (e2–e3) | ANY | clear | |
-| A43 | belle_epoque_events.14 option b · `:1418` | "The [neighbour] must not outdo us!" — answering haute couture with a +25% textile boost in a textile state | either every rung INCLUDING the craft (couture is handwork; vanilla's mill included handsewn clothes), or e1+ (the rungs that can make luxury clothes — the mod's craft cannot) | ANY+C or ANY−C | judgement | ASK · (B) |
-| A44 | amazonas.5 · `events/brazil/amazonas.txt:420,425` | "Manaus, Paris of the Tropics": the opera house — create an academy if the state has none, else a bigger modifier | guard: no academy of any rung; the created building stays e0 | ANY | clear | |
+| A41 | belle_epoque_events.6 option b · `:631,636` (the trigger at `:602,610` is electrics, single rung, unchanged) | "Cinema has no commercial future" → **Supported Traditional Arts** in an academy state | **t0–t2** (non-film) — the option is choosing painting/photography over cinema | ERA | judgement | |
+| A42 | belle_epoque_events.8 · `:781` | Peugeot-Serpollet steam car / steam omnibus — the country has a car industry | automotive of any rung (t2–t3) | ANY | clear | |
+| A43 | belle_epoque_events.14 option b · `:1418` | "The [neighbour] must not outdo us!" — answering haute couture with a +25% textile boost in a textile state | either every rung INCLUDING the craft (couture is handwork; vanilla's mill included handsewn clothes), or t1+ (the rungs that can make luxury clothes — the mod's craft cannot) | ANY+C or ANY−C | judgement | ASK · (B) |
+| A44 | amazonas.5 · `events/brazil/amazonas.txt:420,425` | "Manaus, Paris of the Tropics": the opera house — create an academy if the state has none, else a bigger modifier | guard: no academy of any rung; the created building stays t0 | ANY | clear | |
 | A45 | decree_events.5 · `events/decree_events.txt:498,517` | "Night at the Opera": commission a national opera from an academy | any rung | ANY | clear | |
 | A46 | decree_events.100 / .101 · `events/decree_events_02.txt:29–86, 150–209` | "Industrial Boom" / "Credit Where Credit's Due": a profitable, cash-rich manufacturing building in a state under the manufacturing decree reports a surplus in industrial goods | non-craft rungs of the six light industries, every rung of the rest; keep vanilla's list as it is (artillery foundry omitted) | ANY−C | judgement | ASK (F8) |
 | A47 | fascism_events.8 · `events/fascism_events.txt:949–1017` | "The Voice of the Nation": academy composers write an anthem | any rung | ANY | clear | |
 | A48 | anarchism_events.3 · `iberia_events/ip4_anarchism_events.txt:379` | bombs in a theatre's orchestra pit — a cultural city | any rung | ANY | clear | |
 | A49 | ig_suppression_events.1000 · `events/ig_suppression_events.txt:853` | dialectics +3,500 if the country has an academy | any rung | ANY | clear | |
-| A50 | industrial_accident_events.1 · `events/industrial_accidents_events.txt:53–101` | Triangle Shirtwaist: a garment factory (mechanised looms, not traditional) burns | **textile e2+** (the sewing-machine host, either method; the craft and dye workshops carry no looms). Today it fires on every textile craft | ERA | clear | |
-| A51 | industrial_accident_events.2 · `:169,184` | Dyeworks Accident: "an industrial-sized tub of hot dye" | **textile e1+** (crafts out; the dye-workshop rung is the literal fit). At 1836 only 6 countries qualify (was: every textile holder) | ANY−C | clear | |
-| A52 | industrial_accident_events.4 · `:327–346` | Great Molasses Flood: a tank of molasses for RUM distillation bursts | buildings running a still (food e1 host) | METHOD | clear | |
+| A50 | industrial_accident_events.1 · `events/industrial_accidents_events.txt:53–101` | Triangle Shirtwaist: a garment factory (mechanised looms, not traditional) burns | **textile t2+** (the sewing-machine host, either method; the craft and dye workshops carry no looms). Today it fires on every textile craft | ERA | clear | |
+| A51 | industrial_accident_events.2 · `:169,184` | Dyeworks Accident: "an industrial-sized tub of hot dye" | **textile t1+** (crafts out; the dye-workshop rung is the literal fit). At 1836 only 6 countries qualify (was: every textile holder) | ANY−C | clear | |
+| A52 | industrial_accident_events.4 · `:327–346` | Great Molasses Flood: a tank of molasses for RUM distillation bursts | buildings running a still (food t1 host) | METHOD | clear | |
 | A53 | industrial_accident_events.5 (via A26) · `:413,419` | Boiler Explosion | the watertube secondary | METHOD | clear | |
-| A54 | japan_events.32 · `japan_events/ep2_japan_events_03.txt:157–179` | ukiyo-e woodblock prints from a TRADITIONAL-art academy | **e0 only** (`has_building = building_art_academy` is already exact) | ERA | clear | |
+| A54 | japan_events.32 · `japan_events/ep2_japan_events_03.txt:157–179` | ukiyo-e woodblock prints from a TRADITIONAL-art academy | **t0 only** (`has_building = building_art_academy` is already exact) | ERA | clear | |
 | A55 | krakatoa.4 · `events/krakatoa_events.txt:683–701` | red sunsets of 1883: "only a painting could capture such beauty" | any rung | ANY | clear | |
 | A56 | citizenship_laws.2 · `law_events/citizenship_laws.txt:142,175` | debate at an Art Academy about minority artists | any rung | ANY | clear | |
 | A57 | economy_laws.6 · `law_events/economy_laws.txt:442–456` | "Industry Suffers": foreign competition under a free-trade enactment hurts a state's producers (light industry, shipyard, arms, heavy industry) | **light industry of any rung INCLUDING the craft** (artisans ruined by cheap imports is THE historical case); arms and heavy any rung | ANY+C | judgement | ASK · (B) |
@@ -1165,19 +1165,19 @@ silences 1836-era light-industry content for most of the world, never for the in
 | A62 | revolution_pulse2_events.3 · `agitators_events/revolution_events_03.txt:372–465` | "Our Friends Across the Border": a violent strike at a FACTORY, its shareholders call in foreign gendarmes | non-craft light rungs + any heavy rung, lvl ≥ 3 | ANY−C | judgement | |
 | A63 | revolution_pulse2_events.4 · `:596–641` | company-store scrip riot at a "major" building (raw industries also qualify) | non-craft light rungs + any heavy rung | ANY−C | judgement | |
 | A64 | election_other_parties_events.1 · `election_events/election_other_parties_events.txt:36–68` | "Man Over Machine": agrarians complain that technology replaces the dignity of manual labour | non-craft light rungs + any heavy rung, lvl ≥ 5 — the craft IS the manual labour, it cannot be the machine | ANY−C | clear | |
-| A65 | camera_film_pm_events.1 · `tech_events/camera_film_pm_events.txt:31–32` | "Captured Light and Shadow" (film +6,000) | **e2** photographic | ERA | clear | |
-| A66 | camera_film_pm_events.2 · `:94–95` | "The Moving Picture" (mass_propaganda +5,850) | **e3** film | ERA | clear | |
-| A67 | military_tech_events.401 · `tech_events/military_tech_events.txt:27–62` | "Modernizing the Arsenal": the switch from smoothbore muskets to rifles (repeaters +4,150) | **arms e1+** (rifles or newer), lvl ≥ 3 | ERA | clear | |
+| A65 | camera_film_pm_events.1 · `tech_events/camera_film_pm_events.txt:31–32` | "Captured Light and Shadow" (film +6,000) | **t2** photographic | ERA | clear | |
+| A66 | camera_film_pm_events.2 · `:94–95` | "The Moving Picture" (mass_propaganda +5,850) | **t3** film | ERA | clear | |
+| A67 | military_tech_events.401 · `tech_events/military_tech_events.txt:27–62` | "Modernizing the Arsenal": the switch from smoothbore muskets to rifles (repeaters +4,150) | **arms t1+** (rifles or newer), lvl ≥ 3 | ERA | clear | |
 | A68 | production_tech_events.102 · `tech_events/production_tech_events.txt:83,91` | "Exploding Demand" after dynamite: military and mining compete for explosives | munition plant (or mines) and explosives factory, both any rung | ANY | clear | |
 | A69 | production_tech_events.103 · `:167–170` | motor industry running automobiles | dead in vanilla already | LEAVE | clear | |
-| A70 | production_tech_events.200 · `:239–256` | "Plastic Production": half the glassworks on houseware plastics, lvl ≥ 5 (plastics +6,000 to a neighbour) | **glass e3**, lvl ≥ 5; the ≥ 50% clause see F1 (crafts in the denominator make it near-impossible: glass sheds its old rung least of all, F136). The immediate's random glassworks → an e3 building | ERA | judgement | ASK (F1) |
+| A70 | production_tech_events.200 · `:239–256` | "Plastic Production": half the glassworks on houseware plastics, lvl ≥ 5 (plastics +6,000 to a neighbour) | **glass t3**, lvl ≥ 5; the ≥ 50% clause see F1 (crafts in the denominator make it near-impossible: glass sheds its old rung least of all, F136). The immediate's random glassworks → a t3 building | ERA | judgement | ASK (F1) |
 | A71 | production_tech_events.210 · `:329–344` | "Radio Production": half the electrics plants on radios | the method `pm_radios_electrics` (electrics single rung). The immediate saving a random GLASSWORKS is a vanilla copy-paste slip — any rung, harmless | METHOD | clear | |
 | A72 | production_tech_events.300 · `:414–442` | telephone: electrics lvl ≥ 5 (option b loses its scope today) | the electrics building itself (its main method is telephones) | METHOD | clear | |
 | A73 | production_tech_events.501 · `:762–879` | "Railroad Boom": locomotive builders benefit | motor of any rung (steam, electric and diesel locomotives) | ANY | clear | |
-| A74 | production_tech_events.700 · `:1065,1105` | "The Engines of Progress": "the manufacture of **steam engines** has become profitable … locomotive technology" | **motor e1 only** — today's narrow behaviour (rung 0 = steam engines) is narratively right | LEAVE | clear | (C) |
-| A75 | society_tech_events.104 · `tech_events/society_tech_events.txt:8,11` | "Rising to New Heights": elevators and arcades need steel and plate glass | steel any rung; glass non-craft (e1+) — forest glass is not arcade glass | ANY / ANY−C | judgement | |
-| A76 | society_tech_events.302 · `:219–228` | "Isn't It Romantic?" (realism +3,500) | **e0** | ERA | clear | |
-| A77 | dt_society_events.2 · `:447–460` (+ `b:building_art_academy.level`, `:452`) | "The Realist Movement" (camera +4,150) | **e1**; order states by their realist-rung levels | ERA | clear | |
+| A74 | production_tech_events.700 · `:1065,1105` | "The Engines of Progress": "the manufacture of **steam engines** has become profitable … locomotive technology" | **motor t1 only** — today's narrow behaviour (rung 0 = steam engines) is narratively right | LEAVE | clear | (C) |
+| A75 | society_tech_events.104 · `tech_events/society_tech_events.txt:8,11` | "Rising to New Heights": elevators and arcades need steel and plate glass | steel any rung; glass non-craft (t1+) — forest glass is not arcade glass | ANY / ANY−C | judgement | |
+| A76 | society_tech_events.302 · `:219–228` | "Isn't It Romantic?" (realism +3,500) | **t0** | ERA | clear | |
+| A77 | dt_society_events.2 · `:447–460` (+ `b:building_art_academy.level`, `:452`) | "The Realist Movement" (camera +4,150) | **t1**; order states by their realist-rung levels | ERA | clear | |
 | A78 | war_crimes.2 · `tech_events/war_crimes_events.txt:143,154` | "Dealing in Arms": an established munition plant lvl ≥ 5 (rifling +3,500) | munition of any rung | ANY | clear | |
 
 #### A-g. Building-GROUP lines whose meaning the crafts change (audit appendix C, the 9 lines)
@@ -1204,7 +1204,7 @@ traditional, small-scale or artisan production — or where excluding the craft 
    would push the button decades past the dynastic struggle it belongs to. **Recommend craft IN** (any rung).
 3. **A23 · Occitan button, agricultural branch** (`06_vernacular_buttons.txt:634`). The branch is about an agrarian wine-and-food region
    (vineyards + the agricultural decree), so artisanal food processing fits — but at vanilla size: a craft at level 3 is 1,500 workers.
-   **Recommend craft IN at vanilla-equivalent level (craft lvl ≥ 30)**, or e1+ only if the generator should carry no level scaling.
+   **Recommend craft IN at vanilla-equivalent level (craft lvl ≥ 30)**, or t1+ only if the generator should carry no level scaling.
 4. **A43 · Belle Époque haute couture, option b** (`belle_epoque_events.txt:1418`) and its modifier `modifier_haute_couture_competition` (D33).
    Couture is handwork; vanilla's mill included handsewn clothes. But in the mod the craft carries no luxury-clothing line, so the bonus would
    boost plain artisan clothes. Weak case — **ASK**.
@@ -1216,11 +1216,11 @@ fire, A64 "Man Over Machine" (the craft is the man), A62/A63 factory strikes and
 dye/silk/hardwood stances (crafts consume none), G1–G3.
 
 **What excluding crafts costs elsewhere** (everything involving the six craft industries):
-- 1836–1860s content in countries whose light industry is crafts waits until they build an e1 rung: the dyeworks accident (only GBR FRA USA
+- 1836–1860s content in countries whose light industry is crafts waits until they build a t1 rung: the dyeworks accident (only GBR FRA USA
   PRU NET BEL qualify at start, against every textile holder in vanilla — 48 countries), the Industrial Boom decree events in craft-only
   states, and the AI's dye/silk/hardwood stances. None of these is a research boost or a JE; the dyeworks accident is a one-off per country. Acceptable.
 - The revolution/election callers (A62–A64) fire only in civil wars or election campaigns with intensive agriculture researched — mid-century
-  onward, when most such countries hold e1 rungs or heavy industry; .4 also accepts raw industries.
+  onward, when most such countries hold t1 rungs or heavy industry; .4 also accepts raw industries.
 - Nothing in this list removes a research boost: every DEAD research boost (art chain, repeaters, plastics, radio) concerns non-craft rungs.
 
 ---
@@ -1229,22 +1229,22 @@ dye/silk/hardwood stances (crafts consume none), G1–G3.
 
 | # | Proposal | Why not any rung |
 |---|---|---|
-| A5, A76 | art **e0** | Romanticism is the traditional-art method; the JE fails once realism exists |
-| A54 | art **e0** | ukiyo-e is traditional art; a film academy painting woodblock prints is nonsense |
-| A6, A77 | art **e1** | "Patronise Realist Art" / "The Realist Movement" |
-| A7, A65 | art **e2** | "Establish the Photographic Arts" |
-| A8, A66 | art **e3** | "Establish the Film Arts" |
-| A9 | art **e2+** | Belle Époque needs a MODERN art scene (vanilla: photographic or film) |
-| A41 | art **e0–e2** | "Cinema has no commercial future" → traditional arts, i.e. not film |
-| A67 | arms **e1+** | "the change from smoothbore muskets to rifles" — a musket works is exactly what it is not about |
-| A70 | glass **e3** | "the switch to plastic in our Glassworks" |
-| A74 | motor **e1 only** (LEAVE) | "the manufacture of steam engines … locomotive technology" — vanilla never checked the method because only one existed |
-| A50 | textile **e2+** | a garment factory with mechanised looms (Triangle Shirtwaist); dye workshops carry no looms |
-| A51 | textile **e1+** | "an industrial-sized tub of hot dye" — the dye-workshop rung is the fit, the craft is not |
-| A14, A31, A52, A59, A61 | food rungs **running a still** (e1 host) | liquor production; the craft cannot distil (it carries no distillery line) |
-| A25, A26, A53, A58 | **the mechanised secondary itself** | mechanisation, boilers: a rung without the method is not mechanised whatever its era (steel e0 carries watertube boilers; the textile dye-workshop rung carries no looms) |
-| A10 | **craftsman sewing** (textile e1+) | a fashion trade |
-| A2 | textile e1+ (dye, silk), furniture e1+ (hardwood) | the stance exists to feed rungs that consume those goods; the crafts consume none |
+| A5, A76 | art **t0** | Romanticism is the traditional-art method; the JE fails once realism exists |
+| A54 | art **t0** | ukiyo-e is traditional art; a film academy painting woodblock prints is nonsense |
+| A6, A77 | art **t1** | "Patronise Realist Art" / "The Realist Movement" |
+| A7, A65 | art **t2** | "Establish the Photographic Arts" |
+| A8, A66 | art **t3** | "Establish the Film Arts" |
+| A9 | art **t2+** | Belle Époque needs a MODERN art scene (vanilla: photographic or film) |
+| A41 | art **t0–t2** | "Cinema has no commercial future" → traditional arts, i.e. not film |
+| A67 | arms **t1+** | "the change from smoothbore muskets to rifles" — a musket works is exactly what it is not about |
+| A70 | glass **t3** | "the switch to plastic in our Glassworks" |
+| A74 | motor **t1 only** (LEAVE) | "the manufacture of steam engines … locomotive technology" — vanilla never checked the method because only one existed |
+| A50 | textile **t2+** | a garment factory with mechanised looms (Triangle Shirtwaist); dye workshops carry no looms |
+| A51 | textile **t1+** | "an industrial-sized tub of hot dye" — the dye-workshop rung is the fit, the craft is not |
+| A14, A31, A52, A59, A61 | food rungs **running a still** (t1 host) | liquor production; the craft cannot distil (it carries no distillery line) |
+| A25, A26, A53, A58 | **the mechanised secondary itself** | mechanisation, boilers: a rung without the method is not mechanised whatever its tier (steel t0 carries watertube boilers; the textile dye-workshop rung carries no looms) |
+| A10 | **craftsman sewing** (textile t1+) | a fashion trade |
+| A2 | textile t1+ (dye, silk), furniture t1+ (hardwood) | the stance exists to feed rungs that consume those goods; the crafts consume none |
 | A34 | **highest rung held** | an IG demanding "more arms" in 1900 wants modern arms; any-rung would let the random pick land on muskets |
 | A17 | **every rung, removed** | a demolition effect: all rungs, not "any" — and explosives stay out as in vanilla |
 
@@ -1255,13 +1255,13 @@ dye/silk/hardwood stances (crafts consume none), G1–G3.
 Default when nothing narrower is argued: **every rung of the industry, crafts included** — vanilla's single building ran every method
 including the handicraft one, and a throughput bonus on a 500-worker craft is harmless. Narrowing applies where the reward is for a
 technology or practice, or where a malus hits something specific. `building_<key>_throughput_add` must be declared for the six missing keys
-(glass e1–e3, explosives e1–e3) before any glass/explosives line can reach them.
+(glass t1–t3, explosives t1–t3) before any glass/explosives line can reach them.
 
 | # | Modifier · file:line | Bonus · source | Proposed rungs | Conf. |
 |---|---|---|---|---|
 | D1 | amendment_degenerate_art · `amendments/00_amendments_enactment_04.txt:688` | −10% art, the degenerate-art amendment | all rungs | clear |
 | D2–4 | principle_military_industry_1/2/3 · `power_bloc_principles/00_power_bloc_principles.txt:902–904, 947–949, 967–969` | +10% arms, artillery, automotive (+ shipyards) for bloc members | **all rungs of arms, artillery and automotive** — a principle a player chooses must reach the arsenal they actually run. Munition is not in vanilla's list; do not add | clear |
-| D5 | modifier_ukiyo_e_production · `static_modifiers/00_ep2_03_modifiers.txt:25` | +5% art, state, "Woodblock Print Production" (A54) | **e0** (traditional art) | judgement |
+| D5 | modifier_ukiyo_e_production · `static_modifiers/00_ep2_03_modifiers.txt:25` | +5% art, state, "Woodblock Print Production" (A54) | **t0** (traditional art) | judgement |
 | D6 | modifier_budapest_paris_of_the_east · `00_ip3_02_modifiers.txt:215` | +10% art | all | clear |
 | D7 | modifier_ottonian_renaissance · `00_ip3_02_modifiers.txt:388` | +10% art | all | clear |
 | D8 | cultural_exchange_art · `00_ip3_03_modifiers.txt:161` | +25% art per academy state, Japonisme (A37) | all | clear |
@@ -1271,34 +1271,34 @@ technology or practice, or where a malus hits something specific. `building_<key
 | D12–13 | metternich_modifier_t2 / t4 · `00_ip3_04_modifiers.txt:342,359` | +5% art each, "Legacy of Metternich" | all | clear |
 | D14 | sagrada_familia_construction · `00_ip4_03_modifiers.txt:140` | +5% art | all | clear |
 | D15 | modifier_portugal_education_reforms · `00_ip4_04_modifiers.txt:306` | +15% art | all | clear |
-| D16 | modifier_bg_diminished_rum_production · `02_event_modifiers.txt:512` | **−50% food**, state, after the molasses flood (A52) | **food e1+** (the distilling host) — a rum-tank disaster should not halve the state's bakeries — ✅ RULED 2026-10-21 (the user) | clear |
+| D16 | modifier_bg_diminished_rum_production · `02_event_modifiers.txt:512` | **−50% food**, state, after the molasses flood (A52) | **food t1+** (the distilling host) — a rum-tank disaster should not halve the state's bakeries — ✅ RULED 2026-10-21 (the user) | clear |
 | D17 | automobile_regulations · `02_event_modifiers.txt:1254` | −10% MOTOR industry, "Unregulated Automobiles" (combustion engine) | all motor rungs (vanilla's own odd target — engine makers, not car plants — kept) | judgement |
-| D18 | plastic_production_modifier · `02_event_modifiers.txt:1515` | +33% glass, reward of A70 | **glass e3** (plastics) — the event requires the plastics rung, so the reward reaches it; boosting the forest-glass craft is the anti-design case the audit names | clear |
-| D19 | dynamite_production_modifier · `02_event_modifiers.txt:1525` | +33% explosives, "Exploding Demand" option a ("increasing supply will lift all boats") | all explosives rungs (the event is about supply against a demand spike and does not require the dynamite rung, which is rarely built at that moment); alternative e2+ (the rung gated on dynamite) — ✅ RULED 2026-10-21: every explosives rung (the user) | clear |
+| D18 | plastic_production_modifier · `02_event_modifiers.txt:1515` | +33% glass, reward of A70 | **glass t3** (plastics) — the event requires the plastics rung, so the reward reaches it; boosting the forest-glass craft is the anti-design case the audit names | clear |
+| D19 | dynamite_production_modifier · `02_event_modifiers.txt:1525` | +33% explosives, "Exploding Demand" option a ("increasing supply will lift all boats") | all explosives rungs (the event is about supply against a demand spike and does not require the dynamite rung, which is rarely built at that moment); alternative t2+ (the rung gated on dynamite) — ✅ RULED 2026-10-21: every explosives rung (the user) | clear |
 | D20 | munitions_production_modifier · `02_event_modifiers.txt:1538` | +33% munition, A68 option c | all | clear |
 | D21 | motor_industry_production_modifier · `02_event_modifiers.txt:1543` | +33% motor, from A69 (dead in vanilla) | moot; all motor rungs if ever reached | clear |
 | D22 | engine_production_modifier · `02_event_modifiers.txt:1553` | +33% motor, "Railroad Boom" option b (locomotive builders) | all motor rungs | clear |
 | D23 | electrics_building_modifier · `02_event_modifiers.txt:1563` | electrics, single rung | unchanged | clear |
-| D24 | elevator_goods_production_modifier · `02_event_modifiers.txt:1720–1721` | +20% steel and glass (A75) | steel all; glass e1+ (crafts out, consistent with A75) — ✅ RULED 2026-10-21 (the user) | clear |
-| D25 | realist_art · `02_event_modifiers.txt:1746` | +15% art, "Supporting the Realist Movement" (A77) | **e1** | judgement |
-| D26 | romantic_building_modifier · `02_event_modifiers.txt:1757` | +20% art, state, "Romantic Architecture" (A76) | **e0** | judgement |
+| D24 | elevator_goods_production_modifier · `02_event_modifiers.txt:1720–1721` | +20% steel and glass (A75) | steel all; glass t1+ (crafts out, consistent with A75) — ✅ RULED 2026-10-21 (the user) | clear |
+| D25 | realist_art · `02_event_modifiers.txt:1746` | +15% art, "Supporting the Realist Movement" (A77) | **t1** | judgement |
+| D26 | romantic_building_modifier · `02_event_modifiers.txt:1757` | +20% art, state, "Romantic Architecture" (A76) | **t0** | judgement |
 | D27 | krakatoa_art_modifier · `104_modifiers.txt:636` | +15% art, state (A55) | all | clear |
 | D28 | art_nouveau_strike_modifier · `104_modifiers.txt:794` | −50% art, state, an academy strike | all | clear |
 | D29 | art_nouveau_love_modifier · `104_modifiers.txt:799` | +20% art (A39) | all | clear |
 | D30 | free_arts · `105_modifiers.txt:176` | +10% art (liberalism) | all | clear |
 | D31 | banned_degenerate_art · `105_modifiers.txt:284` | −10% art | **no vanilla user** — no action | clear |
 | D32 | modifier_film_industry_bonus · `agitators_4_modifiers.txt:713` | electrics, single rung | unchanged | clear |
-| D33 | modifier_haute_couture_competition · `agitators_4_modifiers.txt:772` | +25% textile, state (A43) | all rungs incl. craft, or e1+ — follows A43 | judgement · ASK |
-| D34 | modifier_trad_arts_bonus · `agitators_4_modifiers.txt:788` | +10% art, "Supported Traditional Arts" (A41) | **e0–e2** (not film) | judgement |
+| D33 | modifier_haute_couture_competition · `agitators_4_modifiers.txt:772` | +25% textile, state (A43) | all rungs incl. craft, or t1+ — follows A43 | judgement · ASK |
+| D34 | modifier_trad_arts_bonus · `agitators_4_modifiers.txt:788` | +10% art, "Supported Traditional Arts" (A41) | **t0–t2** (not film) | judgement |
 | D35–36 | modifier_fin_de_sicle / _more · `agitators_4_modifiers.txt:804,810` | +10% / +25% art | all | clear |
 | D37 | modifier_intelligentsia_plan · `agitators_4_revolution_modifiers.txt:487` | +10% paper, "the government will run its own presses" | all paper rungs incl. craft — ✅ RULED 2026-10-21 (the user) | clear |
 | D38 | amazon_theatre · `brazil_2_modifiers.txt:214` | +10% art, state (A44) | all | clear |
 | D39 | ybycui_steelworks · `brazil_2_modifiers.txt:299` | +10% steel, state (A20) | all | clear |
-| D40 | steam_engine_production · `content_1_modifiers.txt:1072` | +15% motor, "Steam Engine Time" (A74 option b) | **motor e1 only** — leave as is | clear |
+| D40 | steam_engine_production · `content_1_modifiers.txt:1072` | +15% motor, "Steam Engine Time" (A74 option b) | **motor t1 only** — leave as is | clear |
 | D41 | munitions_modifier · `content_1_modifiers.txt:1267` | +15% munition, state, "Munitions Mania" (A78) | all | clear |
-| D42 | high_distribution_news_cycle · `content_2_modifiers.txt:515` | +20% paper, an election news cycle | e1+ (mass newsprint is the wood-pulp revolution); craft-in would also be harmless — ✅ RULED 2026-10-21 (the user) | clear |
+| D42 | high_distribution_news_cycle · `content_2_modifiers.txt:515` | +20% paper, an election news cycle | t1+ (mass newsprint is the wood-pulp revolution); craft-in would also be harmless — ✅ RULED 2026-10-21 (the user) | clear |
 | D43 | wartime_production_act · `content_3_modifiers.txt:438–439` | +20% arms/artillery | **no vanilla user** — no action | clear |
-| D44 | modern_rifle_arsenal · `content_3_modifiers.txt:455–456` | +20% arms and artillery in the arsenal state, A67 option a | **arms e1+ and artillery e1+** — a reward for modernising; boosting muskets beside the new rifle works runs against the obsolescence design. Alternative: all rungs (vanilla's state-wide bonus) | judgement · ASK |
+| D44 | modern_rifle_arsenal · `content_3_modifiers.txt:455–456` | +20% arms and artillery in the arsenal state, A67 option a | **arms t1+ and artillery t1+** — a reward for modernising; boosting muskets beside the new rifle works runs against the obsolescence design. Alternative: all rungs (vanilla's state-wide bonus) | judgement · ASK |
 | D45 | arsenal_proving_ground · `content_3_modifiers.txt:462–463` | +5% arms/artillery, A67 option b | same as D44 | judgement · ASK |
 | D46 | modifier_second_crusade_against_manchu · `content_4_modifiers.txt:358–359` | +15% arms/artillery (Taiping) | all | clear |
 | D47 | japan_calendar_clockwork_administration_mod · `japan_single_fire_events_modifiers.txt:56` | −10% food, country, the 1873 calendar reform | **all rungs incl. craft** (B5) — ✅ RULED 2026-10-21 (the user) | clear |
@@ -1311,8 +1311,8 @@ technology or practice, or where a malus hits something specific. `building_<key
 
 | Strategy · file:line (vanilla → owned copy) | Entry | What it does in the mod |
 |---|---|---|
-| ai_strategy_resource_expansion · `01_admin_strategies.txt:210` → `mod/…:230` | `building_tooling_workshop = nice_to_have` | subsidises the **crude-tools CRAFT** (e0) only; the pig-iron, steel and rubber-grip workshops get nothing. 10 countries hold a tooling craft at 1836 (Russia, Japan, Mexico, Brazil …) |
-| ai_strategy_resource_expansion · `:211` → `mod/…:231` | `building_explosives_factory = nice_to_have` | subsidises the **Leblanc** rung (e0) only |
+| ai_strategy_resource_expansion · `01_admin_strategies.txt:210` → `mod/…:230` | `building_tooling_workshop = nice_to_have` | subsidises the **crude-tools CRAFT** (t0) only; the pig-iron, steel and rubber-grip workshops get nothing. 10 countries hold a tooling craft at 1836 (Russia, Japan, Mexico, Brazil …) |
+| ai_strategy_resource_expansion · `:211` → `mod/…:231` | `building_explosives_factory = nice_to_have` | subsidises the **Leblanc** rung (t0) only |
 | ai_strategy_colonial_extraction · `:574` → `mod/…:629` | `building_tooling_workshop = wants_to_have` | the crude-tools craft only |
 
 The file is already owned (the dam subsidies are `must_have` in every administrative strategy), so nothing new would be owned to change these;
@@ -1329,15 +1329,15 @@ by ruling they stay as vanilla wrote them. Vanilla's own intent (tools and explo
    share of LEVELS on the target rung or newer, through a generated country value (the capacity meaning of vanilla's test); (c) drop the
    percent and keep only the "one building of the rung at level N" clause. Recommend (b); (c) if no script values are wanted.
    ✅ RULED 2026-10-21: **(c)** — the user: "drop the share; one building of the right rung at the right level is enough". So je_realism
-   completes on one realist (e1) academy ≥ 90% staffed (vanilla's own clause; it has no level); je_camera / je_film on one level-5 academy
-   of their rung (e2 / e3); production_tech_events.200 on one level-5 plastics (e3) glassworks. The percent clauses and their occupancy
+   completes on one realist (t1) academy ≥ 90% staffed (vanilla's own clause; it has no level); je_camera / je_film on one level-5 academy
+   of their rung (t2 / t3); production_tech_events.200 on one level-5 plastics (t3) glassworks. The percent clauses and their occupancy
    lines go.
 2. **Craft IN for economy_laws.6 "Industry Suffers"** (B1). ✅ RULED 2026-10-21: crafts count, beside every factory rung (the user).
 3. **Craft IN for the Serbian slander button** (B2). ✅ RULED 2026-10-21: any paper rung, the craft and every industrial rung (the user).
-4. **Occitan agricultural branch** (B3): craft in at vanilla-equivalent level (lvl ≥ 30), or e1+ only. ✅ RULED 2026-10-21: food factory rungs only, at level 3; the craft does not count (the user).
-5. **Haute couture** (A43 option b and D33): craft in (vanilla-faithful) or e1+ (luxury clothing). ✅ RULED 2026-10-21: textile factory rungs only; the craft does not count (the user).
-6. **dynamite_production_modifier** (D19): all explosives rungs, or e2+ (the rung dynamite unlocks).
-7. **modern_rifle_arsenal / arsenal_proving_ground** (D44–45): e1+ (modern weapons only), or all rungs. ✅ RULED 2026-10-21: every arms and
+4. **Occitan agricultural branch** (B3): craft in at vanilla-equivalent level (lvl ≥ 30), or t1+ only. ✅ RULED 2026-10-21: food factory rungs only, at level 3; the craft does not count (the user).
+5. **Haute couture** (A43 option b and D33): craft in (vanilla-faithful) or t1+ (luxury clothing). ✅ RULED 2026-10-21: textile factory rungs only; the craft does not count (the user).
+6. **dynamite_production_modifier** (D19): all explosives rungs, or t2+ (the rung dynamite unlocks).
+7. **modern_rifle_arsenal / arsenal_proving_ground** (D44–45): t1+ (modern weapons only), or all rungs. ✅ RULED 2026-10-21: every arms and
    artillery rung in the state, as in vanilla (the user). The event's own trigger still looks for a rifle rung or newer (A67).
 8. **Industrial Boom decree events** (A46): crafts out per the lean — confirm; and keep vanilla's omission of the artillery foundry.
    ✅ RULED 2026-10-21: factory rungs only, crafts do not count; vanilla's list kept otherwise, the artillery foundry still left out (the user).
