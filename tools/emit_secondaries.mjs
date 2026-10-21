@@ -715,6 +715,40 @@ for (const [key, e] of SHARED) {
   outPMs.push(key + ' = {' + (e.gate ? '\n\tunlocking_production_methods = { ' + [...e.mains, ...e.offs].join(' ') + ' }' : '') + e.body + '}');
   locPairs.push([key, e.src]); minted++;
 }
+const keyOf = s => s.slice(0, s.indexOf(' = {'));
+// ⭐ A COPIED `replacement_if_valid` NAMES ITS OWN COPY (2026-10-21, POLISH_1_0.md Q3): vanilla switches a holder of the Food Standardization 3
+//   principle from `pm_vacuum_canning` to `pm_vacuum_canning_principle_3`, and the copy kept that line verbatim, so it pointed at a method its
+//   building does not carry. Re-point it at the copy of the target that carries the same suffix as the copy itself; no such copy: THROW.
+const repointed = [];
+{
+  const srcOf = new Map(locPairs), outKeys = new Set(outPMs.map(keyOf));
+  for (let i = 0; i < outPMs.length; i++) {
+    const k = keyOf(outPMs[i]), src = srcOf.get(k);
+    outPMs[i] = outPMs[i].replace(/(\n[ \t]*replacement_if_valid\s*=\s*)([a-z_0-9-]+)/, (m, pre, target) => {
+      if (outKeys.has(target)) return m;
+      const cand = src && k.startsWith(src) ? target + k.slice(src.length) : null;
+      if (!cand || !outKeys.has(cand)) throw new Error(`emit_secondaries: ${k} switches to ${target} (replacement_if_valid), which its building does not carry, and no copy ${cand} exists — not designed`);
+      repointed.push(k + ' -> ' + cand);
+      return pre + cand;
+    });
+  }
+}
+// ⭐ RULED VALUE OVERRIDES (config `secondary_goods_override` { <copy key>: { <modifier line>: value } }; 2026-10-21, POLISH_1_0.md Q3: the Food
+//   Standardization 3 canning at 85 groceries — the user: "Round up for smoothness"). The copy must exist and carry the line exactly once: THROW otherwise.
+const overridden = [];
+for (const [k, lines] of Object.entries(cfg.secondary_goods_override || {})) {
+  if (k.startsWith('_')) continue;
+  const i = outPMs.findIndex(s => keyOf(s) === k);
+  if (i < 0) throw new Error(`emit_secondaries: secondary_goods_override names ${k}, which this build does not mint`);
+  for (const [line, v] of Object.entries(lines)) {
+    if (typeof v !== 'number') throw new Error(`emit_secondaries: secondary_goods_override.${k}.${line} must be a number`);
+    const re = new RegExp('(\\n[ \\t]*' + line + '\\s*=\\s*)(-?[0-9.]+)[^\\n]*', 'g');
+    const hits = [...outPMs[i].matchAll(re)];
+    if (hits.length !== 1) throw new Error(`emit_secondaries: ${k} carries ${line} ${hits.length} time(s), not once`);
+    overridden.push(`${k} ${line} ${hits[0][2]} -> ${v}`);
+    outPMs[i] = outPMs[i].replace(re, (_, pre) => pre + v + '\t# config secondary_goods_override (the scaled value was ' + hits[0][2] + ')');
+  }
+}
 if (minted) {
   // ⚠ UTF-8 BOM: the engine's lexer warns `should be in utf8-bom encoding` on every load without it (two lines per run in
   // error.log, seen 2026-09-02/03); every vanilla script file carries one, so match it.
@@ -738,6 +772,8 @@ console.log('secondaries: ' + minted + ' per-tier method(s) in ' + groupsMinted 
   new Set(report.map(r => r.bkey)).size + ' building(s)' +
   (craftChecked.length ? `; ${craftChecked.length} on fractional-unit (craft) rungs with employment × workforce_mult` : '') +
   (namedCopies ? `; ${namedCopies} per-main-method copies on merged buildings named after their main method` : ''));
+for (const r of repointed) console.log('  replacement_if_valid re-pointed: ' + r);
+for (const o of overridden) console.log('  secondary_goods_override: ' + o);
 // what a building no longer carries (or carries beside one of its main methods only): the vanilla gate, or the compatibility table
 if (DROPPED.length) {
   console.log('  not carried, or mandated (' + DROPPED.length + '):');

@@ -13,7 +13,7 @@
 //       disallows private schools, each needs its technology) — this lever cannot and does not touch those.
 // Called by build.ps1 after emit_research_levers.mjs. usage: node tools/emit_ai_schooling.mjs <modDir> <config.json>
 import fs from 'node:fs'; import path from 'node:path';
-const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const [MOD, CFG] = process.argv.slice(2);
 const die = m => { console.error('emit_ai_schooling: ' + m); process.exit(1); };
 const AS = JSON.parse(fs.readFileSync(CFG, 'utf8')).ai_schooling;

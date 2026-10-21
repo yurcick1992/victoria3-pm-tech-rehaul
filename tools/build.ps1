@@ -721,8 +721,12 @@ foreach ($ind in $cfg.industries) {
         # take it for all rungs; for genuinely new names, leave English"). A rung's name is "<vanilla building> (<vanilla method>)" — checked
         # here against the config's English `name` — so each language gets vanilla's own building name (a per-language token, resolved when
         # the loc is written: the rung-0 key overrides vanilla's, so it cannot reference itself) and a reference to the vanilla method's key.
-        # A minted rung keeps its English method; "Era N" and "Recipe BE" are the mod's own words and stay English.
-        $bldName = "Era $eraNo. $(RungNameLoc $t $anchorKey)$beLabel"
+        # A minted rung keeps its English method; "Tier N" and "Recipe BE" are the mod's own words and stay English.
+        # ⭐ "TIER N", NOT "ERA N" (user-ruled 2026-10-21, POLISH_1_0.md Q8): "Era 2" read as the tech tree's Era II, and the game's eras
+        # disagree with the rung's (Electrics "Era 2" on a tech-era-4 technology). The number is still the rung's narrative era. A craft rung
+        # says so (U3): "Tier 0 craft. Textile Mills (Handsewn Clothes)".
+        $tierWord = if ($t.craft) { "Tier $eraNo craft" } else { "Tier $eraNo" }
+        $bldName = "$tierWord. $(RungNameLoc $t $anchorKey)$beLabel"
         # ⭐ EVERY MAIN GROUP IS TITLED "BASE", AS VANILLA TITLES ITS OWN (`$pm_base$`, translated in every language; user-agreed 2026-10-02).
         # It used to carry the rung's method name, which half-describes a merged building's group (two switchable methods in one group).
         $pmgName = "${D}pm_base$D"
@@ -744,7 +748,7 @@ foreach ($ind in $cfg.industries) {
             }
             $beM = if ($ind.follows_be -eq $false) { "" } else { ". Recipe BE $(($bes | ForEach-Object { "$_%" }) -join '/')" }
             if ($baseName -ne $vanEn[$anchorKey]) { throw "merged host $($t.key): its name '$baseName' is not vanilla's English '$($vanEn[$anchorKey])' for $anchorKey - the translated name would describe another building" }
-            $bldName = "Era $($eraSpan[0])-$($eraSpan[-1]). @@VB:$anchorKey@@$beM"
+            $bldName = "Tier $($eraSpan[0])-$($eraSpan[-1]). @@VB:$anchorKey@@$beM"
         }
         $locBody += " $($t.key):0 `"$bldName`""
         $locBody += " $($t.key)_lens_option:0 `"@@LENS:$($anchorKey):$($t.key)@@`""
@@ -1700,6 +1704,12 @@ if ($LASTEXITCODE -ne 0) { throw "emit_secondaries.mjs failed (exit $LASTEXITCOD
 #   (common/history is never wiped by the clean step above).
 & node (Join-Path $PSScriptRoot 'emit_craft_start.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_craft_start.mjs failed (exit $LASTEXITCODE) - the craft rungs would start without their workforce in the right professions." }
+
+# ⭐ RULED VANILLA VALUES, CHANGED IN PLACE (config `vanilla_value_overrides`, tools/emit_value_overrides.mjs; first use: the four flat
+#   research bonuses x1/3, POLISH_1_0.md Q1). LAST among the content emitters: a file an earlier step already wrote (the company files,
+#   the reference fix's transforms, the static modifiers) is edited in that copy, never re-copied from vanilla. Absent -> nothing.
+& node (Join-Path $PSScriptRoot 'emit_value_overrides.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_value_overrides.mjs failed (exit $LASTEXITCODE) - a ruled vanilla value would ship at vanilla's number." }
 
 if (-not $NoLint) {
     $bashPath = $null

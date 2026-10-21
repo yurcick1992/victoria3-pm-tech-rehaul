@@ -25,7 +25,7 @@
 //                            `log: true` (PROBE BUILDS ONLY): yearly, one PMR_TCG line per treaty-port state — its GDP, threshold, trade-centre levels.
 // Called by build.ps1 after emit_ai_treaty_ports.mjs. usage: node tools/emit_treaty_port_rules.mjs <modDir> <config.json>
 import fs from 'node:fs'; import path from 'node:path';
-const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const [MOD, CFG] = process.argv.slice(2);
 const die = m => { console.error('emit_treaty_port_rules: ' + m); process.exit(1); };
 const BOOK = JSON.parse(fs.readFileSync(CFG, 'utf8'));

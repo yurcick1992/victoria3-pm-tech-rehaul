@@ -45,6 +45,16 @@ Tip: dry-run first (`build.ps1 -DryRun`) to validate a patch without touching th
 These read vanilla live, so re-running the solvers + builder picks up the patch automatically. You
 still must **run** them; they don't run themselves.
 
+⭐ **Ruled vanilla values changed in place (2026-10-21, `tools/emit_value_overrides.mjs`, config `vanilla_value_overrides`; POLISH_1_0.md Q1):**
+the Philips company's innovation cap (`common/company_types/00_companies_europe.txt`, also owned by emit_companies), the Advanced Research III
+principle's cap per schools level (`common/power_bloc_principles/00_power_bloc_principles.txt`, three `power_bloc_features` gates kept), the
+expedition modifier's weekly innovation (`common/static_modifiers/02_event_modifiers.txt`) and Cuba's modernisation cap
+(`common/static_modifiers/cuban_modifiers.txt`). Each entry states vanilla's value; a patch that moves it, or the line, makes the build THROW —
+read the new vanilla line and re-rule the value (×1/3 of vanilla's). The three files not otherwise owned are whole-file copies regenerated each build.
+⭐ **The Food Standardization 3 canning switch** (`replacement_if_valid` on our vacuum-canning copy, `emit_secondaries.mjs`) is re-pointed at our
+copy of the principle method; a new vanilla `replacement_if_valid` on a tiered building's secondary makes the build THROW until it has a copy.
+⭐ **`00_starting_inventions.txt` is no longer shipped** when the derived 1836 grant adds nothing to vanilla's (H6): a patch to it flows through.
+
 | What | Reads from vanilla | Tool | Notes |
 |---|---|---|---|
 | The **four-rung structure** (canon4v: rungs, names, gates, recipes, staffing, icons, secondary groups, building blocks) | `common/buildings/*.txt`, `common/production_method_groups/*.txt`, `common/production_methods/*.txt`, `localization/english/**` | `make_tier4_config.mjs` | Reads the game and `tools/lib_tier4_spec.mjs` only (BALANCE_FRAMEWORK §10.72). A patch that renames a method, re-gates it or adds a fifth main method changes the ladder; the tool throws on more than four |

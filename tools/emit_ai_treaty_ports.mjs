@@ -19,7 +19,7 @@
 // Eligibility (×0 otherwise): we are not isolationist, the state is reachable, the target is not in our market.
 // Called by build.ps1 after emit_ai_schooling.mjs. usage: node tools/emit_ai_treaty_ports.mjs <modDir> <config.json>
 import fs from 'node:fs'; import path from 'node:path';
-const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const [MOD, CFG] = process.argv.slice(2);
 const die = m => { console.error('emit_ai_treaty_ports: ' + m); process.exit(1); };
 const TP = JSON.parse(fs.readFileSync(CFG, 'utf8')).ai_treaty_ports;

@@ -10,7 +10,7 @@
 //       each holds exactly one such line. ⚠ If the mod ever owns that file for another reason, edit its copy here the same way.
 // Called by build.ps1 after emit_dams.mjs. usage: node tools/emit_research_levers.mjs <modDir> <config.json>
 import fs from 'node:fs'; import path from 'node:path';
-const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const [MOD, CFG] = process.argv.slice(2);
 const die = m => { console.error('emit_research_levers: ' + m); process.exit(1); };
 const cfg = JSON.parse(fs.readFileSync(CFG, 'utf8')); const RL = cfg.research_levers;

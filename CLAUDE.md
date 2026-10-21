@@ -2865,6 +2865,11 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ SAVE_SUMMARY_VERSION is bump-never-renumber, like TELEMETRY_VERSION.
                         ⚠ NOT to be confused with `save_summary.mjs` (below), which reads the RAW BINARY
                         and answers a different question
+  emit_value_overrides.mjs  RULED VANILLA VALUES, CHANGED IN PLACE (2026-10-21, POLISH_1_0.md Q1) — called by build.ps1 LAST among the content
+                        emitters (throws). Config `vanilla_value_overrides` = [{ file, block, key, vanilla, value, why }]: one line of a named
+                        top-level block, at the stated vanilla value (a patch that moves it THROWS); a file an earlier step already wrote is edited
+                        in that copy, any other is copied whole from vanilla; every DLC gate survives (counted). First use: the four flat research
+                        adds ×1/3 (Philips, Advanced Research III, the expedition, Cuba). Absent → nothing
   emit_research_levers.mjs  THE RESEARCH LEVERS (BALANCE_FRAMEWORK §10.96) — called by build.ps1 after emit_dams (throws). Config
                         `research_levers` (absent → nothing): `static` {block: {key: value}} REPLACES existing lines of
                         00_code_static_modifiers.txt (whole-file copy; it edits emit_dams' copy where one exists; a key that is not exactly
@@ -5428,7 +5433,11 @@ strategy's own entries). See "AI subsidy policy" below for what it emits and why
   not exactly "<vanilla building> (<vanilla method>)" in English, since the translation would then name something else. The rest gets an English stub, because untranslated keys show as raw `<key>` placeholders for non-English
   players (no reliable English fallback). This is handled by the builder; you never write loc by
   hand. See MODDING_NOTES.md → Localization. In-game building names are auto-formatted as
-  `Era N. <name>. Recipe BE <goods-only base-price break-even>%` (e.g. "Era 1. Food Industries (Sweeteners). Recipe BE 77%";
+  `Tier N. <name>. Recipe BE <goods-only base-price break-even>%` (e.g. "Tier 1. Textile Mills (Dye Workshops). Recipe BE 67%"; a craft
+  "Tier 0 craft. Food Industries (Bakeries). Recipe BE 65%"; a merged building "Tier 1-2. Food Industries. Recipe BE 77%/57%").
+  ⭐ **"TIER", NOT "ERA", SINCE 2026-10-21** (user-ruled, POLISH_1_0.md Q8 and U3): "Era 2" read as the tech tree's Era II. N is still the
+  rung's narrative era; the docs keep "era" until the user schedules the terminology pass (HANDOVER). Before that the format was
+  `Era N. <name>. Recipe BE …` (e.g. "Era 1. Food Industries (Sweeteners). Recipe BE 77%";
   the label read "BE target" and was wage-inclusive until ROADMAP step 8 P3). ⭐ Since 2026-10-03 it is the recipe UNDER ITS MOST BASIC
   SECONDARY METHODS (BALANCE_FRAMEWORK §10.93 rule 6, user-ruled): a mandated automation's goods count — Sewing Machines reads 55%, not 50%.
   ⭐ **A MERGED BUILDING (a host carrying `method_of` rungs, §10.91.2) IS NAMED BY ITS ERA SPAN AND ITS BUILDING ALONE**

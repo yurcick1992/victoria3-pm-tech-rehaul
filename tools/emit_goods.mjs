@@ -23,7 +23,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
-const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const MOD = process.argv[2];
 if (!MOD) { console.error('usage: node tools/emit_goods.mjs <modRoot> [configPath]'); process.exit(2); }
 const CFGPATH = process.argv[3] || join(REPO, 'config/mod_config.json');

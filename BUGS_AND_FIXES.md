@@ -13,6 +13,17 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-10-21 — the power-bloc canning switch pointed at a method our food building does not carry
+
+**Symptom.** None visible: no error line in four canon centuries (no bloc may have held the principle). Found reading the secondaries file for
+POLISH_1_0.md Q3.
+**Cause.** Vanilla's `pm_vacuum_canning` carries `replacement_if_valid = pm_vacuum_canning_principle_3`: a holder of the Food Standardization 3
+principle has its buildings moved to the bloc version on their own. `emit_secondaries.mjs` copies each line it mints from the vanilla method
+verbatim, so our `pm_vacuum_canning_food` named VANILLA's method, which the food building does not carry — the switch pointed at nothing.
+**Fix.** After minting, every copied `replacement_if_valid` is re-pointed at the copy carrying the copy's own suffix
+(`pm_vacuum_canning_principle_3_food`); none found THROWS. The same pass applies the ruled `secondary_goods_override` (that method at 85 groceries).
+**Detect next time.** The build prints each re-point; a new vanilla `replacement_if_valid` on a tiered secondary stops the build until it has a copy.
+
 ## 2026-10-21 — the research bars' tooltips never named the conditions: a term behind a failing `if` is not listed at all
 
 **Symptom (user, after several earlier fixes):** *"the tooltips still don't say the ticking conditions"*. Below its mark a research bar's tooltip

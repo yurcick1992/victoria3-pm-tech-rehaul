@@ -76,7 +76,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
-const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const WRITE = process.argv.includes('--write');
 // ⚠⚠ FOLLOWS MOD_CONFIG, like every other step. The tree is DERIVED from the tier ladder, so generating
 // it against one config and shipping it beside another is the same defect that has now been fixed in

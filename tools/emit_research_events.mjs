@@ -26,7 +26,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
-const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const MOD = process.argv[2];
 if (!MOD) { console.error('usage: node tools/emit_research_events.mjs <modRoot> [configPath]'); process.exit(2); }
 
@@ -107,10 +107,10 @@ const pmClause = key => { const t = TIER_BY_KEY[key]; return t && (t.method_of |
 const nameOf = key => { const t = TIER_BY_KEY[key]; return t && (t.method_of || HOSTS.has(key)) ? `$${bldOf(key)}$ ($${t.pm_key}$)` : `$${key}$`; };
 // ⭐ the name a research text gives a building (2026-10-21): one of OUR rungs by its config name — "Textile Mills (Handsewn Clothes)", the rung's own
 //   method in brackets, which also names a merged rung and its host correctly — never by its loc key, which resolves to the full in-game name
-//   "Era 0. Textile Mills (Handsewn Clothes). Recipe BE 65%" (noise in a requirement); a vanilla building by its vanilla loc key
+//   "Tier 0 craft. Textile Mills (Handsewn Clothes). Recipe BE 65%" (noise in a requirement); a vanilla building by its vanilla loc key
 // ⭐ since 2026-10-21 (the translation ruling: "when we simply multiply rungs and the official translation exists, take it for all rungs") a rung is named
 //   through `<key>_pmr_short`, which build.ps1 writes per language as vanilla's building name + a reference to the vanilla method (the minted
-//   methods stay English) — the same words as the in-game name, without its "Era N." and "Recipe BE". The apostrophe guard below checks its parts.
+//   methods stay English) — the same words as the in-game name, without its "Tier N." and "Recipe BE". The apostrophe guard below checks its parts.
 const shortName = key => { const t = TIER_BY_KEY[key]; return t && t.name ? `$${key}_pmr_short$` : `$${key}$`; };
 // a short-name key's vanilla parts (the industry's building and the rung's vanilla method), for the apostrophe guard
 const SHORT_PARTS = new Map();
@@ -368,6 +368,12 @@ const thresholdPeople = (era, ind) => {
   return v;
 };
 const perLevel = RE.employment_per_level_default || 5000;
+// ⭐ EVERY MARK A WHOLE NUMBER OF LEVELS, ROUNDED UP — the halved ones too (config `research_events.marks_whole_levels`; user-ruled 2026-10-21,
+//   POLISH_1_0.md U5: the live figure is shown rounded DOWN, so "(now 3)" beside a mark of 2.73 levels read as short when it was not). A source
+//   counted in levels takes ceil(people ÷ its per-level workforce) and its halved mark ceil(that ÷ 2); a source counted in people compares
+//   against that many levels × its per-level workforce. Without the key a book builds exactly as before (round, and fractional halves).
+const WHOLE = !!RE.marks_whole_levels;
+const upL = x => Math.max(1, Math.ceil(x - 1e-9));
 // ---- the texts a player reads (2026-10-21 polish): one wording for every mark, and the bar lines built from it ------------------
 const fmtN = x => (Math.round(x * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: 2 });
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
@@ -381,13 +387,13 @@ const levelRef = emps => { const u = [...new Set(emps)]; return u.length === 1 ?
 // a display-only value in levels (read by the loc, never by a tick)
 const perLevelSv = (tech, i, n, ref) => { if (ref === 1) return n; const nm = `pmr_srcl_${tech}_${i}`; sv.push(`${nm} = {\n${T}value = ${n}\n${T}divide = ${ref}\n}`); return nm; };
 // "<buildings>: N fully staffed levels[, counted at 5,000 workers a level][, with X researched] (now Y)", and its halved twin
-const sourceDisplay = (tech, i, { name, mark, nowSv, mixed, requires = [] }) => {
+const sourceDisplay = (tech, i, { name, mark, half = mark / 2, nowSv, mixed, requires = [] }) => {
   const of = mixed ? ` of ${fmtN(perLevel)} workers` : '';
   const req = requires.length ? `; needs ${requires.map(r => '$' + r + '$').join(' and ')}` : '';
   const dFull = `pmr_term_${tech}_${i}`, dHalf = dFull + '_half';
   const full = `${name}: ${fmtN(mark)} ${lvl(mark)}${of} (now ${live(nowSv)})${req}`;
   loc.push([dFull, full]);
-  if (HALF) loc.push([dHalf, `${name}: ${fmtN(mark / 2)} ${lvl(mark / 2)}${of}, halved (now ${live(nowSv)})${req}`]);
+  if (HALF) loc.push([dHalf, `${name}: ${fmtN(half)} ${lvl(half)}${of}, halved (now ${live(nowSv)})${req}`]);
   return { dFull, dHalf, bullet: full };
 };
 // a condition entry's line: a COUNT named in `research_events.count_display` (keyed by the script value its trigger compares) reads like a
@@ -642,9 +648,11 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         // shown in fully staffed LEVELS (2026-10-21, user: "just mentioning the needed number of staffed levels, not people"): the tick still compares
         //   people, exactly as before; the text divides both sides by the workforce of one level (or 5,000 where the counted types differ)
         const { ref, mixed } = levelRef(s.types.map(ty => ty.emp));
-        const D = sourceDisplay(tech, i, { name: names, mark: a.mark / ref, nowSv: perLevelSv(tech, i, n, ref), mixed, requires: a.requires });
+        const mL = WHOLE ? upL(a.mark / ref) : a.mark / ref, hL = WHOLE ? upL(mL / 2) : mL / 2;
+        const mP = WHOLE ? mL * ref : a.mark, hP = WHOLE ? hL * ref : a.mark / 2;
+        const D = sourceDisplay(tech, i, { name: names, mark: mL, half: hL, nowSv: perLevelSv(tech, i, n, ref), mixed, requires: a.requires });
         srcLines.push(D.bullet);
-        terms.push({ desc: D.dFull, trigger: [`${n} >= ${a.mark}`, ...req].join('  '), half: [`${n} >= ${a.mark / 2}`, ...req].join('  '), value: 1 });
+        terms.push({ desc: D.dFull, trigger: [`${n} >= ${mP}`, ...req].join('  '), half: [`${n} >= ${hP}`, ...req].join('  '), value: 1 });
         srcs.push({ ...D, trig: terms[terms.length - 1].trigger, half: terms[terms.length - 1].half });
         return;
       }
@@ -695,7 +703,8 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       } else {
         sv.push(`${n} = {\n${T}value = 0\n${T}every_scope_building = {\n${T}${T}limit = { ${filter} }\n${T}${T}add = { value = this.level  multiply = occupancy }\n${T}}${mult}\n}`);
       }
-      const need = gTypes.length ? people : Math.max(1, Math.round(people / (empOf > 0 ? empOf : perLevel)));
+      const levelsRaw = people / (empOf > 0 ? empOf : perLevel);
+      let need = gTypes.length ? people : (WHOLE ? upL(levelsRaw) : Math.max(1, Math.round(levelsRaw)));
       // ⭐ THE JE SAYS WHAT TICKS, READABLY (user-ruled 2026-09-03; rephrased 2026-09-04: "phrase readably, bg_mining shouldn't be
       //   player-faced"): one desc key per source. A people-counted source reads "Workers in <buildings>: at least 25,000; now N"
       //   (Soldiers for the military groups), a level-counted one "<building>: at least 5 fully staffed levels (25,000 workers);
@@ -708,10 +717,14 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       //   is unchanged: it still compares people. (Retired: the "N workers at base-method staffing, labour saving and other staffing changes
       //   calculated correctly" clause of 2026-09-03, and "Workers in <group>: at least 12,500".)
       const { ref, mixed } = gTypes.length ? levelRef(gTypes.map(ty => ty.emp)) : { ref: 1, mixed: false };
-      const D = sourceDisplay(tech, i, { name: names, mark: gTypes.length ? people / ref : need, nowSv: gTypes.length ? perLevelSv(tech, i, n, ref) : n, mixed });
+      // the mark in LEVELS (shown) and its halved twin; a people-counted source compares people against those levels × its per-level workforce
+      const mL = gTypes.length ? (WHOLE ? upL(people / ref) : people / ref) : need;
+      const hL = WHOLE ? upL(mL / 2) : mL / 2;
+      if (gTypes.length && WHOLE) need = mL * ref;
+      const D = sourceDisplay(tech, i, { name: names, mark: mL, half: hL, nowSv: gTypes.length ? perLevelSv(tech, i, n, ref) : n, mixed });
       srcLines.push(D.bullet);
-      // the halved mark (§10.97 follower_halving): half the people, i.e. half the levels — a fractional level count is fine in a comparison
-      const halfNeed = gTypes.length ? people / 2 : need / 2;
+      // the halved mark (§10.97 follower_halving): half the people, i.e. half the levels — rounded UP to whole levels under marks_whole_levels
+      const halfNeed = gTypes.length ? (WHOLE ? hL * ref : people / 2) : (WHOLE ? hL : need / 2);
       terms.push({ desc: D.dFull, trigger: `${n} >= ${need}`, half: `${n} >= ${halfNeed}`, value: 1 });
       srcs.push({ ...D, trig: `${n} >= ${need}`, half: `${n} >= ${halfNeed}` });
     });
@@ -889,7 +902,9 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         : `The bar advances by one each month for every source below at its mark.`;
     }
     const body = `${flavour}\n\n${rule}${bullets}\n\n${stageText}${doneText}`;
-    loc.push([key + '_desc', body]);
+    // `_desc` is a REFERENCE to `_reason` (user-ruled 2026-10-21, POLISH_1_0.md U8): the 1.13 journal window renders `_reason`, nothing renders
+    //   `_desc`, and one copy of each body (× 11 languages) is enough
+    loc.push([key + '_desc', `$${key}_reason$`]);
     loc.push([key + '_reason', body]);
   });
 }
@@ -933,7 +948,7 @@ for (const [ind, list] of Object.entries(compressed)) {
   loc.push([bar, `Towards the next advance in ${indName}`], [je, `Advances in ${indName}`]);
   const body = `The trade already knows its own shortcomings. Each month the bar advances by one for every source of the current target at or above its mark; when it fills (${span} months), the target gains ${Math.round(100 * (RE.grant_fraction ?? 0.5))}% of its base research cost — at most ${NF} times — and the entry moves on to the next technology of the trade.\n\n` +
     list.map(x => `${(TECH[x.tech].name || x.tech).replace(/"/g, '')}:\n` + x.srcLines.map(l => '• ' + l).join('\n')).join('\n\n');
-  loc.push([je + '_desc', body], [je + '_reason', body]);
+  loc.push([je + '_desc', `$${je}_reason$`], [je + '_reason', body]);
 }
 // ⚗ V2 (2026-10-09): `research_events.placement = 'script'` — the first stage of every entry (and V4's per-industry entries) carries no
 // is_shown_when_inactive; on_acquired_technology (vanilla's code on_action: root = the country, any acquisition) and the campaign

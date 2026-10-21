@@ -97,7 +97,7 @@ DLC content carries that content's own DLC condition explicitly — e.g. the Mon
 | B2 | Mandated looms not enforced on the merged textile building (1–2 stale levels a game) | ACCEPTED for 1.0, revisit in 1.1 (user, 2026-10-21) | M |
 | B3 | Crafts carry no secondary line (no canning, stills, luxury) | DEFERRED to mod 1.1 or later (user, 2026-10-21) | M |
 | N1 | "Recipe BE N%" rides along wherever a building name is referenced (company modifiers: "Era 2. Arms Industries (Bolt Action Rifles). Recipe BE 55% building Throughput") | DONE 2026-10-21 for the company modifiers and the research texts (the per-language short name `<key>_pmr_short`); company FORMATION lines still print the full name until "Recipe BE" goes at release | S |
-| C1 | `TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.25` ships at vanilla's value with a false comment | READY (drop the line) | S |
+| C1 | `TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.25` ships at vanilla's value with a false comment | DONE 2026-10-21 (emitted only when it differs from vanilla's) | S |
 | C5 | Stale "open" lines in BACKLOG/ROADMAP that are done or moot | READY | S |
 
 ### R5 — the three technology icons: the specification (2026-10-21; no image generation here, the user draws or sources them)
@@ -129,8 +129,8 @@ nitrogen_fixation):
 | H3 | Dam build tooltips probably list every project of the class (10/13/38/61 branches) | CLOSED 2026-10-21 by in-game check 4: no requirement list renders | S |
 | H4 | Dam decisions show internals (`pmr_dam_bur_headroom > 1500` with no loc; a raw variable name) | DONE 2026-10-21 (the text pass: requirements as sentences, the AI cooldown hidden) | S |
 | H5 | ~3,700 lines of dead `pmr_dam_driver` script ship, registered nowhere | DONE 2026-10-21 (emitted only when registered; a short probe checks dams still work) | S |
-| H6 | `00_starting_inventions.txt` ships identical to vanilla (L14/L15 read it — they need a fallback) | READY | S |
-| H7 | Builds off the default Steam path: 8 emitters hard-code the game path although the README promises `VIC3_GAME` | READY (one shared resolver) | S |
+| H6 | `00_starting_inventions.txt` ships identical to vanilla (L14/L15 read it — they need a fallback) | DONE 2026-10-21 (not shipped when identical; verify_start_techs falls back to vanilla's) | S |
+| H7 | Builds off the default Steam path: 8 emitters hard-code the game path although the README promises `VIC3_GAME` | DONE 2026-10-21 (all ten such tools now read `VIC3_GAME` first, the form the other 30 use) | S |
 | H8 | Release logging: ~12k debug-log lines a century (dams 5.6k, research 6.3k) | RULED 2026-10-21 — **two build kinds**: DEBUG builds (run locally, full telemetry and logging) and RELEASE builds (designated explicitly; no telemetry or logging at all except a start-up manifest line saying mod version X is loaded). The 1.0 build (~27.10) is the first release build; the alternating batch runs on a debug build. To build: a release switch in `build.ps1` | S |
 | H9 | Compatibility footprint: 83 vanilla files replaced wholesale — the README should list them | READY (with R3) | S |
 | — | Error logs of six canon-family century runs against ten vanilla: **no error line names a mod file**; the only mod-caused classes are item 2's | — | — |
@@ -229,12 +229,15 @@ that reads badly there can be reverted to F247's measured setup before the relea
 
 ### Every Q is ruled (2026-10-21, night) — what they add to the work
 
-⭐⭐ **THE ORDER CHANGED THE SAME NIGHT** (the user: *"Let's do it this way. Commit and push all changes, I'll launch the n=16+16 session, and we'll
-finish the MDs regarding 'tiers' in this one."*): the alternating batch runs NOW on the canon as it stands (sha256 `adb92ffe3c8c3102`, display-only
-polish over F247's book), so it measures the canon WITHOUT Q1, Q3, the reference fix (§2), U5, C1/H6/H7 and the name changes. While it runs
-(~4 days) nothing that reaches a build may change in this checkout — no emitter, no `build.ps1`, no `tools/testbed/**`, no canonisation into the
-named book; that code work happens in a separate worktree and is merged after the batch, or after it ends, and ships UNMEASURED by any century run.
-This session's remaining job is the docs' move to the "tier" terminology (Q8's follow-up). The paragraphs below are the work list as ruled.
+⭐⭐ **EVERYTHING RULED GOES INTO THE CANON BEFORE THE BATCH** (the user, the same night, correcting a launch I had prepared WITHOUT these
+changes: *"all changes we just introduced are instantly canonised, and the batch goes with them"*). Then the user launches the alternating
+n=16+16, and this session moves the docs to the "tier" terminology while it runs.
+✅ **BUILT AND CANONISED 2026-10-21 (night)** — both canon copies carry `secondary_goods_override`, `vanilla_value_overrides`, the two subsidies at
+`none`, `research_events.marks_whole_levels` and the `_polish_2026_10_21b` record; a test build passed every lint and the preflight and showed
+each change in the files: **Q1** (5 / 1.5 / 3 / 10, `tools/emit_value_overrides.mjs`), **Q3** (85 groceries; the switch re-pointed),
+**R2.3** (no tooling or explosives subsidy left in the admin strategies), **U5** (no fractional mark left), **U8** (336 `_desc` references),
+**Q8 + U3** ("Tier 0 craft. …", "Tier 1-2. …"; no "Era N" left in the texts), **C1** (the define line gone), **H6** (the file not shipped; L14/L15
+fall back to vanilla's), **H7** (the ten tools that hard-coded the game path honour `VIC3_GAME`). The reference fix (§2) is being built.
 
 **Originally before the batch, canonised at once (Q4):** Q1 (the four flat research bonuses ×1/3), Q3 (the bloc canning method at 85 groceries, and the
 switch fix below). Each goes into both canon copies with a `_polish` record and a new sha256 in CLAUDE.md's canon banner, then a build, every

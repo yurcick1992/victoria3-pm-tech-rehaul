@@ -39,6 +39,9 @@ const CONFIG_PATH = (() => {
 
 const strip = s => s.replace(/^\uFEFF/, '');
 const read = f => strip(readFileSync(f, 'utf8'));
+// the 1836 grant file: the mod's copy, or vanilla's where the mod ships none — emit_techs.mjs leaves it out when it is vanilla's own text
+//   (POLISH_1_0.md H6, 2026-10-21); an ABSENT file under a content mod therefore means "vanilla's grant", not a missing grant
+const seFile = root => { const f = join(root, 'common/scripted_effects/00_starting_inventions.txt'); return existsSync(f) ? f : join(GAME, 'common/scripted_effects/00_starting_inventions.txt'); };
 const txts = d => existsSync(d) ? readdirSync(d).filter(f => f.endsWith('.txt')).map(f => join(d, f)) : [];
 
 // \u26A0\u26A0 THE GATE BINDS EVERY BUILDING, WHOEVER OWNS IT \u2014 REVERTED 2026-08-17 (FINDINGS F68).
@@ -121,7 +124,7 @@ function analyse(root) {
   // `add_technology_researched` reported Britain and France as lacking `manufacturies` — 24 countries of
   // false positives. Expand it, from THIS root's technology eras, since our re-eras change who gets what.
   const tiers = {};
-  const sePath = join(root, 'common/scripted_effects/00_starting_inventions.txt');
+  const sePath = seFile(root);
   for (const [k, v] of Object.entries(blocks(read(sePath)))) {
     const m = k.match(/^effect_starting_technology_tier_(\d)_tech$/); if (!m) continue;
     const set = new Set([...v.matchAll(/add_technology_researched\s*=\s*([a-z_0-9-]+)/g)].map(x => x[1]));
@@ -226,7 +229,7 @@ function startSets(root) {
       const e = v.match(/\bera\s*=\s*era_(\d)/); if (e) techEra[k] = +e[1];
     }
   const tiers = {}, condPer = {};
-  for (const [k, v] of Object.entries(blocks(read(join(root, 'common/scripted_effects/00_starting_inventions.txt'))))) {
+  for (const [k, v] of Object.entries(blocks(read(seFile(root))))) {
     const m = k.match(/^effect_starting_technology_tier_(\d)_tech$/); if (!m) continue;
     // ⚠⚠ PULL THE PER-COUNTRY GUARDED GRANTS OUT BEFORE THE BLANKET REGEX. `emit_techs.mjs` writes a
     // `start_tech_grants` entry as `if = { limit = { this = c:TAG } add_technology_researched = X }`

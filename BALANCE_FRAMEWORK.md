@@ -10063,7 +10063,10 @@ The set a routine search for the optimum moves — everything else is either dec
   universities' innovation × **x/150** — vanilla's base equals its cap base, so the room universities fill is 150 × literacy there and x × literacy here,
   and x/150 keeps the number of universities needed to reach the cap at vanilla's for every literacy. At the canon's x = 25 that is ×1/6 in place of ×0.5
   (today a country needs a third of vanilla's universities to reach the cap; the canon's leaders sit on it with 16–31 levels against vanilla's 46–83). Flat
-  innovation from companies, power-bloc principles and events is not scaled. **IN THE CANON SINCE 2026-10-13** (`jex-dam4s-rs-x25`, `make_research_levers_config --innov-x 25`; unmeasured); **tech spread** (unused so far, vanilla's); **the length of a non-war research-entry stage** (48 months in `jex-dam4s-rs-m10-je48`).
+  innovation from companies, power-bloc principles and events is not scaled ⭐ (AMENDED 2026-10-21, user-ruled, POLISH_1_0.md Q1: the four
+  FLAT adds are now ×1/3 — Philips cap 15 → 5, Advanced Research III cap 5 → 1.5 per schools level, the expedition's weekly innovation 10 → 3,
+  Cuba's modernisation cap 30 → 10 — so each keeps its vanilla share of a literate major's cap; config `vanilla_value_overrides`. Event research
+  GRANTS stay vanilla's, a third of a technology, Q2). **IN THE CANON SINCE 2026-10-13** (`jex-dam4s-rs-x25`, `make_research_levers_config --innov-x 25`; unmeasured); **tech spread** (unused so far, vanilla's); **the length of a non-war research-entry stage** (48 months in `jex-dam4s-rs-m10-je48`).
 - **NOT levers:**
   - **The AI desire ladder** is not a lever in itself: it is CALIBRATED per config to minimise misplaced capital (§10.92), better or worse.
   - **Decided:**
