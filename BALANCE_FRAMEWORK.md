@@ -9932,7 +9932,13 @@ and 20 stages.
    entry of ours, for now ("I understand that vanilla JEs underdo this a lot compared to what we do"). Found by tracing every vanilla entry's
    completion events to `add_technology_progress`: the art chain — Romanticism → realism (3,500), Realism → camera (4,150), Camera → film (6,000),
    Film → mass propaganda (5,850), shown to everyone but unrecognized countries ⇒ **realism, camera, film** (today's art-academy rung entries) and
-   **mass propaganda** (the planned mass-media row) are to be dropped (pending the user's confirmation). Borderline: War Nursing's random
+   **mass propaganda** (the planned mass-media row) are to be dropped (pending the user's confirmation).
+   ⚠⚠ **THE PREMISE IS FALSE IN THE MOD (found 2026-10-21, TIER_REFERENCE_AUDIT.md §3.1):** those vanilla art entries test
+   `is_building_type = building_art_academy` together with `has_active_production_method = pm_traditional_art` / `pm_realist_art` / … — and in
+   the mod rung 0 runs `pm_main_art_academy_traditional_art` and the later methods live on other buildings, so the chain can NEVER complete.
+   Since `exclude_techs` shipped (2026-10-12) realism, camera and film have had no entry of any kind, and mass propaganda loses its 5,850.
+   The fix is the vanilla-reference pass (POLISH_1_0.md §2), which makes the vanilla entries work again — not a revival of our own entries.
+   Borderline: War Nursing's random
    "Prefab hospital" event offers progress to the first researchable of medical degrees / quinine / malaria prevention / antibiotics, wartime only
    and an option; Springtime of the Peoples → central archives is one-off and Europe-only (not universal).
 **REJECTED:** domestic political pressure (circular — the movements demanding a law are themselves gated on that law's technology); non-unit

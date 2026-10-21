@@ -152,7 +152,8 @@ in script (no cost, no effect — keep off), E the readers. Open on 1.15: whethe
 ⭐⭐ **THE MAIN PART OF THE 1.0 POLISH (user, 2026-10-19: "That's the main part of the polish")** — one strategic pass making every rung count as
 its vanilla building wherever vanilla script checks a building or a method; it is NOT treaty-port related and is not deferred.
 
-- **NOW (1.0 polish)** · MISSING_PM_REFERENCES.md — ~28 vanilla events/JEs checking a relocated main PM; one strategic "tiers are eligible" pass · MISSING_PM_REFERENCES.md
+- **RULING (1.0 polish)** · ⭐ AUDITED 2026-10-21: 86 script blocks (22 dead, 49 narrowed to rung 0, 5 changed meaning) + ~48 rung-0-only throughput modifiers; one generator `emit_vanilla_refs.mjs` proposed, four rulings asked (R2.1–R2.4); covers the three lines below · POLISH_1_0.md §2, TIER_REFERENCE_AUDIT.md
+- **NOW (1.0 polish)** · MISSING_PM_REFERENCES.md — ~28 vanilla events/JEs checking a relocated main PM; one strategic "tiers are eligible" pass (the catalogue is STALE — TIER_REFERENCE_AUDIT.md supersedes it) · MISSING_PM_REFERENCES.md
 - **NOW (1.0 polish)** · the same class for SECONDARY methods, which the audit does not cover: a per-rung copy renames the vanilla method, so e.g. `production_tech_events.210` (radio progress) needs `pm_radios` active and can never fire · ROADMAP step 2 coverage audit
 - **NOW (1.0 polish)** · `has_building` narrowing (457 refs match tier 1 only) — the same pass · CLAUDE.md
 - **NOW (1.0 polish)** · MISSING_BUILDING_CONDITIONS.md — the art academy's conditional ai_value (1 case) · MISSING_BUILDING_CONDITIONS.md
@@ -238,6 +239,14 @@ its vanilla building wherever vanilla script checks a building or a method; it i
 
 ## H. Polish and release (ROADMAP step 7)
 
+⭐ **THE 1.0 POLISH REGISTER IS `POLISH_1_0.md`** (2026-10-21): every polish item with its status (DONE / RULING / READY / VERIFY), the order
+(script and economics before the alternating batch, text and art after), and two appendices — the sweep of everything deferred to polishing
+and an independent hunt over the generated mod and six canon century runs' error logs. The lines below are its headline items.
+
+- **OPEN** · release metadata (version 0.1.0, the "(built …)" name stamp, short description), thumbnail, LICENSE, a player README · POLISH_1_0.md R1–R3, H9
+- **OPEN** · non-English players see English names where vanilla translates (17 rung-0 names, 53 vanilla method names) · POLISH_1_0.md H1
+- **DEFECT** · crafts show method groups whose only option is "off" (§10.93 rule broken on emit_secondaries' rescaled path) · POLISH_1_0.md H2
+- **OPEN** · dam texts and decisions: predate private dams, show internals; build tooltips may list every project · POLISH_1_0.md R8, H3, H4
 - **OPEN** · per-tier building artwork; per-technology icons (one placeholder ships)
 - **OPEN** · era band dividers in the tech-tree GUI
 - **OPEN** · proofread every new technology name and description
