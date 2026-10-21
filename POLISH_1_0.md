@@ -164,7 +164,7 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 |---|---|
 | U1 | ~~31 dam projects are named "… Dam(s)" … rename them after the SITE?~~ — LEFT AS THEY ARE (user, 2026-10-21; 33 names, counted) |
 | U2 | ~~Dam building names in the plural?~~ — KEPT SINGULAR (user, 2026-10-21) |
-| U3 | Should the craft rungs say they are crafts in their name? Today only the building group "Crafts" says so |
+| U3 | ~~Should the craft rungs say they are crafts in their name?~~ — RULED 2026-10-21: "Era 0 craft. <Building> (<method>)" (the user); "craft" stays English in every language. To do with the text items (build.ps1 name format) |
 | U4 | ~~The dam build-requirement tooltip (H3)~~ — CLOSED 2026-10-21 by in-game check 4: no requirement list renders, no change needed |
 | U5 | Fractional marks (aniline and percussion cap 2.5 levels; halves 1.25; arc welding's half 0.5): round the marks to whole levels, or leave them? |
 | U7 | Vanilla's Krka Falls and Niagara Falls traits are left empty by the dams (their only line was the hydro bonus): a line pointing at the dam site, or leave? |
