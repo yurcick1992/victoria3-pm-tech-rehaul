@@ -1320,7 +1320,7 @@ by ruling they stay as vanilla wrote them. Vanilla's own intent (tools and explo
 2. **Craft IN for economy_laws.6 "Industry Suffers"** (B1). ✅ RULED 2026-10-21: crafts count, beside every factory rung (the user).
 3. **Craft IN for the Serbian slander button** (B2). ✅ RULED 2026-10-21: any paper rung, the craft and every industrial rung (the user).
 4. **Occitan agricultural branch** (B3): craft in at vanilla-equivalent level (lvl ≥ 30), or e1+ only. ✅ RULED 2026-10-21: food factory rungs only, at level 3; the craft does not count (the user).
-5. **Haute couture** (A43 option b and D33): craft in (vanilla-faithful) or e1+ (luxury clothing).
+5. **Haute couture** (A43 option b and D33): craft in (vanilla-faithful) or e1+ (luxury clothing). ✅ RULED 2026-10-21: textile factory rungs only; the craft does not count (the user).
 6. **dynamite_production_modifier** (D19): all explosives rungs, or e2+ (the rung dynamite unlocks).
 7. **modern_rifle_arsenal / arsenal_proving_ground** (D44–45): e1+ (modern weapons only), or all rungs.
 8. **Industrial Boom decree events** (A46): crafts out per the lean — confirm; and keep vanilla's omission of the artillery foundry.
