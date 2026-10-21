@@ -168,6 +168,7 @@ its vanilla building wherever vanilla script checks a building or a method; it i
 - **OPEN** · the tech-tree page (`ui/techdata.js`) still shows the six-rung candidates · CLAUDE.md
 - **DONE 2026-10-21** · research-entry texts uniform and in LEVELS (the user ruled levels, not people), and every condition a line of the bar tooltip · BUGS_AND_FIXES 2026-10-21
 - **OPEN** · the ledger fill scripts' hardcoded session paths (`--session` flag) · CLAUDE.md
+- **DEFECT** · `first_run_decomp.mjs` takes several `--van` but medians and ratios use only the FIRST; the others reprint its numbers under their own label and run count (found 2026-10-22; fix after the alternating batch — no `tools/testbed/**` edit while it runs). Workaround: pass a second vanilla session as `--arm` · `first_run_decomp.mjs`
 - **DEFECT** · `fill_consts.mjs`'s "productive workers" subtracts a levels-scale staffing (held: moving it restates a shipped number) · CLAUDE.md
 - **DEFECT** · `deviates_from_vanilla` is a six-path probe list; it should walk the built mod · ROADMAP DEFERRED FIXES
 - **DEFECT** · the binary save reader is trusted only below ~104 MB (per-market pops, per-state local supply) · CLAUDE.md
