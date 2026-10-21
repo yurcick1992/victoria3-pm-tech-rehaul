@@ -1290,7 +1290,7 @@ technology or practice, or where a malus hits something specific. `building_<key
 | D44 | modern_rifle_arsenal · `content_3_modifiers.txt:455–456` | +20% arms and artillery in the arsenal state, A67 option a | **arms e1+ and artillery e1+** — a reward for modernising; boosting muskets beside the new rifle works runs against the obsolescence design. Alternative: all rungs (vanilla's state-wide bonus) | judgement · ASK |
 | D45 | arsenal_proving_ground · `content_3_modifiers.txt:462–463` | +5% arms/artillery, A67 option b | same as D44 | judgement · ASK |
 | D46 | modifier_second_crusade_against_manchu · `content_4_modifiers.txt:358–359` | +15% arms/artillery (Taiping) | all | clear |
-| D47 | japan_calendar_clockwork_administration_mod · `japan_single_fire_events_modifiers.txt:56` | −10% food, country, the 1873 calendar reform | **all rungs incl. craft** (B5) | judgement |
+| D47 | japan_calendar_clockwork_administration_mod · `japan_single_fire_events_modifiers.txt:56` | −10% food, country, the 1873 calendar reform | **all rungs incl. craft** (B5) — ✅ RULED 2026-10-21 (the user) | clear |
 | D48 | mon_many_guns · `montenegrin_modifiers.txt:360` | +50% arms, "Make lots of guns" (A18) | all | clear |
 | D49 | modifier_reliable_supply · `montenegrin_modifiers.txt:402` | +20% arms, reward of A15 | all | clear |
 
