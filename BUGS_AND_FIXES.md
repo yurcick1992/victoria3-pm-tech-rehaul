@@ -13,6 +13,22 @@ Each entry: symptom → root cause → fix → how to detect/prevent next time. 
 
 ---
 
+## 2026-10-21 — the research bars' tooltips never named the conditions: a term behind a failing `if` is not listed at all
+
+**Symptom (user, after several earlier fixes):** *"the tooltips still don't say the ticking conditions"*. Below its mark a research bar's tooltip
+showed only its header; at its mark, a single generic line ("At least one source is at its mark (the entry lists them)"). Pointed at the French
+"Divided Monarchists" entry, whose tooltip lists every factor with its value, zeros included.
+**Root cause:** the engine's bar tooltip lists only the `add` terms the `monthly_progress` block reached that month. Since §10.97 the research bar
+was ONE any-source term behind `if = { limit = { literacy … OR = { source marks } } }`, so whenever it did not tick there was nothing to list, and when
+it did the one term's text was generic. The 2026-09-25 and 2026-09-30 fixes (the `_reason` body, the apostrophe) were real but could not help this.
+**Fix:** `tools/emit_research_events.mjs` builds every bar from LINES, one per condition — literacy, each source, each counted condition, the war
+and fleet gates — each an if / else_if / else chain ending in `add = { desc … value = 0 }`, so every line shows every month with its live figure
+("Textile Mills (Handsewn Clothes): 25 fully staffed levels (now 31.0)"). In an any-source bar only the first source at its mark carries the +1, so
+the lines sum to exactly the old tick (the tick rule is unchanged: same marks, same halving, same literacy line, same requirements). The entry bodies
+were rewritten in the same pass to one template and one source wording (levels, not people — user-ruled the same day).
+**Prevention:** MODDING_NOTES → *A scripted progress bar's tooltip lists only the `add` terms evaluated that month*. The apostrophe guard now also
+resolves every `$key$` a bar line references in all 11 languages. ⚠ Not yet seen on screen.
+
 ## 2026-10-21 — L28 fired on floods of identical log lines; and three latent ways the log mirror could still re-copy a file
 
 **Symptom.** `preflight.ps1 -Session` FAILED landmine L28 ("log mirror re-copied on a false rotation") on

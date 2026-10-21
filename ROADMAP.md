@@ -1811,6 +1811,11 @@ times against this one's 5**: `if = { limit = {…}  add = { desc = "…"  value
 00_ep2_ryukyu_rivalry and 00_sepoy_mutiny), so "supersedes" still cannot become "stacks" — and every branch now carries its OWN description
 instead of sharing the first term's.
 
+⭐⭐ **RESOLVED 2026-10-21 THE OTHER WAY: LEVELS, NOT PEOPLE** (user, polish: *"similar and more concise, just mentioning the needed number of staffed
+levels, not number of people"*). Every source and counted condition now reads `<buildings>: N fully staffed levels (now X)`; a people-counted source is
+shown in levels of its per-level workforce (5,000 where its types differ); the tick still compares people. And every condition is now a line of the
+bar tooltip, always (BUGS_AND_FIXES 2026-10-21). The text below is the record of the people proposal it replaces.
+
 ⚠ **The units observation below stands as a SEPARATE, still-open readability point** (it was not what the user was seeing):
 
 - level-counted source — `pmr_src_combustion_engine_0` returns **Σ level × occupancy**, and the tooltip reads

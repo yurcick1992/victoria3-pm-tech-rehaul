@@ -87,10 +87,20 @@ for (const [t, m] of [['modern_sewerage', 15], ['organized_sports', 20], ['eleva
   CE[t] = { trigger: `any_scope_building = { is_building_type = building_urban_center  level >= ${WILD ? 1 : 2 * m} }`, half_trigger: `any_scope_building = { is_building_type = building_urban_center  level >= ${W(m)} }`,
     label: `An urban centre of ours of at least ${WILD ? 1 : 2 * m} levels`, intro: 'A great city makes its own demands.' };
 for (const [t, e] of Object.entries(CE)) eraOf(t);   // every technology must exist (throws otherwise)
+// ⭐ HOW THE COUNTED CONDITIONS READ (2026-10-21, polish): emit_research_events.mjs words a condition whose trigger compares one of these script values
+//   exactly like an industry source — "<name>: N fully staffed levels (now X)" in the entry and in the bar tooltip. `per_level` shows a people
+//   count in levels of that many workers (the tick still compares people); `unit` and `note` complete the sentence. Display only.
+//   (The canon book was given this key in place on 2026-10-21, `_polish_2026_10_21`, rather than by re-running its chain.)
+const COUNT_DISPLAY = {
+  pmr_cv_gov: { name: '$building_government_administration$' },
+  pmr_cv_uni: { name: '$building_university$' },
+  pmr_cv_fin: { name: '$building_financial_district$', unit: 'levels', note: 'under any economic system but traditionalism' },
+  pmr_cv_chem: { name: 'Chemical industries (fertilizer, explosives, synthetics)', per_level: 5000 },
+};
 Object.assign(RE, {
   exclude_techs: ['realism', 'camera', 'film'],
   naval_channel: true, naval_any: true, naval_bar_months: WILD ? 3 : 36, war_bar_months: WILD ? 3 : 12, repeat_all: true,
-  condition_entries: CE, condition_values: CV, monthly_global_effect: G.join('\n'),
+  condition_entries: CE, condition_values: CV, count_display: COUNT_DISPLAY, monthly_global_effect: G.join('\n'),
 });
 if (WILD) { RE.industry_bar_months = 3; RE.literacy_by_era = { 1: 0.05, 2: 0.05, 3: 0.05, 4: 0.05, 5: 0.05 }; }
 // --stage-months N (user, 2026-10-13: 'change JE length (3y per stage to 4y per stage) to dampen techs a bit'): every 36-month stage — the industry

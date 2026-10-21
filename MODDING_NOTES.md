@@ -1073,6 +1073,20 @@ save**, which carries its own seed — available if ever needed, not currently u
 - A loc VALUE is one line of the yml. A line break inside the text is the two-character escape `
 `; a real newline splits the entry and the rest of the text becomes malformed lines the game ignores (the build does not catch it — `emit_research_events` escapes them since 2026-09-03).
 
+## A scripted progress bar's tooltip lists only the `add` terms evaluated that month (2026-10-21)
+
+The bar tooltip (`PROGRESS_BAR_BREAKDOWN`, `localization/english/interfaces_l_english.yml`) prints "<value> from <desc>" for every `add` the
+`monthly_progress` block actually reached this month — so a term guarded by an `if` whose limit fails is simply ABSENT, and a bar whose terms
+all sit behind failing limits shows an empty breakdown. Vanilla shows its conditions by adding every factor every month and letting it be worth
+0: the French Divided Monarchists bar reads "0.0 from Clout of Orleanist Interest Groups", and the Ryukyu bars close each chain with
+`else = { add = { desc = "…_low" value = 0 } }`. Two rules together, both measured in vanilla's own files:
+- **the `desc` goes on an `add` INSIDE a branch** — `if = { limit = {…} add = { desc = "…" value = 1 } }`, never `add = { desc = "…" if = {…} }`,
+  where the engine ignores the desc and auto-describes the nested condition (ROADMAP step 8 P4, 2026-09-18);
+- **every condition ends in an unconditional branch adding 0** with its own desc, so its line always shows.
+The research bars (`tools/emit_research_events.mjs`) follow both since 2026-10-21. ⚠ The desc text is pasted into a single-quoted
+data-function argument, so it must carry no ASCII apostrophe (BUGS_AND_FIXES 2026-09-30). ⚠ Not yet seen on screen — vanilla's bars are the
+evidence; the first in-game look should confirm the zero lines render.
+
 ## Market-goods triggers from a country scope (`mg:<good>`) — 2026-09-03
 
 A country's market is a scope (`market = { … }`) and a good in it is `mg:<good>`, on which `market_goods_buy_orders` /

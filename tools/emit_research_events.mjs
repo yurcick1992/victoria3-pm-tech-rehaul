@@ -105,6 +105,10 @@ const HOSTS = new Set(Object.values(TIER_BY_KEY).filter(t => t.method_of).map(t 
 const bldOf = key => { const t = TIER_BY_KEY[key]; return t && t.method_of ? t.method_of : key; };
 const pmClause = key => { const t = TIER_BY_KEY[key]; return t && (t.method_of || HOSTS.has(key)) ? `  has_active_production_method = ${t.pm_key}` : ''; };
 const nameOf = key => { const t = TIER_BY_KEY[key]; return t && (t.method_of || HOSTS.has(key)) ? `$${bldOf(key)}$ ($${t.pm_key}$)` : `$${key}$`; };
+// ⭐ the name a research text gives a building (2026-10-21): one of OUR rungs by its config name — "Textile Mills (Handsewn Clothes)", the rung's own
+//   method in brackets, which also names a merged rung and its host correctly — never by its loc key, which resolves to the full in-game name
+//   "Era 0. Textile Mills (Handsewn Clothes). Recipe BE 65%" (noise in a requirement); a vanilla building by its vanilla loc key
+const shortName = key => { const t = TIER_BY_KEY[key]; return t && t.name ? t.name.replace(/"/g, '') : `$${key}$`; };
 const tierEmp = (tier, ind) => { const wm = tier.workforce_mult != null ? +tier.workforce_mult : 1; const own = Object.values(tier.employment || {}).reduce((a, b) => a + (+b || 0), 0); if (own > 0) return Math.round(own * wm); return Math.round((ind.secondary_pmgs || []).reduce((a, g) => a + basePmEmp(g), 0) * wm); };
 
 // ---- tech -> production methods it unlocks, for the rule-D anchoring ----------------------------
@@ -357,6 +361,79 @@ const thresholdPeople = (era, ind) => {
   return v;
 };
 const perLevel = RE.employment_per_level_default || 5000;
+// ---- the texts a player reads (2026-10-21 polish): one wording for every mark, and the bar lines built from it ------------------
+const fmtN = x => (Math.round(x * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: 2 });
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const lvl = x => x === 1 ? 'fully staffed level' : 'fully staffed levels';
+const stagesWord = n => n === 1 ? 'one stage' : `${['', 'one', 'two', 'three', 'four', 'five'][n] || n} stages`;
+const live = svn => `[ROOT.GetCountry.MakeScope.ScriptValue('${svn}')|1]`;
+// the workforce of ONE level of a people-counted source: its types' common figure, or 5,000 where they differ (said in the text)
+const levelRef = emps => { const u = [...new Set(emps)]; return u.length === 1 ? { ref: u[0], mixed: false } : { ref: perLevel, mixed: true }; };
+// a display-only value in levels (read by the loc, never by a tick)
+const perLevelSv = (tech, i, n, ref) => { if (ref === 1) return n; const nm = `pmr_srcl_${tech}_${i}`; sv.push(`${nm} = {\n${T}value = ${n}\n${T}divide = ${ref}\n}`); return nm; };
+// "<buildings>: N fully staffed levels[, counted at 5,000 workers a level][, with X researched] (now Y)", and its halved twin
+const sourceDisplay = (tech, i, { name, mark, nowSv, mixed, requires = [] }) => {
+  const notes = (mixed ? `, counted at ${fmtN(perLevel)} workers a level` : '') + (requires.length ? `, with ${requires.map(r => '$' + r + '$').join(' and ')} researched` : '');
+  const dFull = `pmr_term_${tech}_${i}`, dHalf = dFull + '_half';
+  const full = `${name}: ${fmtN(mark)} ${lvl(mark)}${notes} (now ${live(nowSv)})`;
+  loc.push([dFull, full]);
+  if (HALF) loc.push([dHalf, `${name}: ${fmtN(mark / 2)} ${lvl(mark / 2)}${notes} (halved mark; now ${live(nowSv)})`]);
+  return { dFull, dHalf, bullet: full };
+};
+// a condition entry's line: a COUNT named in `research_events.count_display` (keyed by the script value its trigger compares) reads like a
+//   source; any other condition shows its label, with law names left to the entry — a law's name can carry an ASCII apostrophe
+//   ("Workers' Protections"), and the bar tooltip pastes this text into a single-quoted argument (BUGS_AND_FIXES 2026-09-30)
+const condSv = new Set();
+const condDisplay = (tech, e) => {
+  const dFull = `pmr_term_${tech}_0`, dHalf = dFull + '_half';
+  const m = /^\s*([a-z_0-9]+)\s*>=\s*([\d.]+)/.exec(e.trigger || ''), mh = /^\s*([a-z_0-9]+)\s*>=\s*([\d.]+)/.exec(e.half_trigger || '');
+  const cd = m && (RE.count_display || {})[m[1]];
+  if (cd) {
+    if (!cd.name) throw new Error(`research_events.count_display.${m[1]}: no name`);
+    const per = +(cd.per_level || 1);
+    let nowSv = m[1];
+    if (per !== 1) { nowSv = `${m[1]}_lv`; if (!condSv.has(nowSv)) { condSv.add(nowSv); sv.push(`${nowSv} = {\n${T}value = ${m[1]}\n${T}divide = ${per}\n}`); } }
+    const notes = (per !== 1 ? `, counted at ${fmtN(per)} workers a level` : '') + (cd.note ? `, ${cd.note}` : '');
+    const unit = x => (cd.unit || 'fully staffed levels').replace(/levels$/, x === 1 ? 'level' : 'levels');
+    const full = `${cd.name}: ${fmtN(+m[2] / per)} ${unit(+m[2] / per)}${notes} (now ${live(nowSv)})`;
+    loc.push([dFull, full]);
+    if (mh) loc.push([dHalf, `${cd.name}: ${fmtN(+mh[2] / per)} ${unit(+mh[2] / per)}${notes} (halved mark; now ${live(nowSv)})`]);
+    return { dFull, dHalf, bullet: full };
+  }
+  const barText = e.label.replace(/ under \$.*$/, ' under one of the laws named in the entry');
+  loc.push([dFull, barText]);
+  if (e.half_trigger) {
+    const nf = (/>=\s*([\d.]+)\D*$/.exec(e.trigger) || [])[1], nh = (/>=\s*([\d.]+)\D*$/.exec(e.half_trigger) || [])[1];
+    loc.push([dHalf, (nf && nh && barText.split(nf).length === 2 ? barText.replace(nf, nh) : barText) + ' (halved mark)']);
+  }
+  return { dFull, dHalf, bullet: e.label + ((e.lines || []).length ? ` (${e.lines.join('; ')})` : '') };
+};
+const heldOn = tech => `has_global_variable = ${heldVar(tech)}  ${notIso}`;
+// the literacy line: worth 0 either way — it says whether the bar is paused
+const litLine = (era, L) => [{ trigger: `literacy_rate >= ${L}`, desc: `pmr_term_litok_${era}`, value: 0 }, { desc: `pmr_term_lit_${era}`, value: 0 }];
+// one condition line: its tick when it holds (under the halved mark once the held flag is up), else 0. `before` = the sources listed above it in an
+//   any-source bar: only the FIRST source at its mark carries the +1, so the lines add up to the bar's real tick.
+const sourceLine = ({ litT, halfOn, hf, trig, half, dFull, dHalf, before }) => {
+  const j = (...xs) => xs.filter(Boolean).join('  ');
+  const notBefore = k => before.length ? `NOT = { OR = { ${before.map(b => `AND = { ${b[k]} }`).join('  ')} } }` : '';
+  if (!halfOn) return [{ trigger: j(litT, `AND = { ${trig} }`, notBefore('trig')), desc: dFull, value: 1 }, { desc: dFull, value: 0 }];
+  return [
+    { trigger: j(litT, hf, `AND = { ${half} }`, notBefore('half')), desc: dHalf, value: 1 },
+    { trigger: j(litT, `NOT = { AND = { ${hf} } }`, `AND = { ${trig} }`, notBefore('trig')), desc: dFull, value: 1 },
+    { trigger: hf, desc: dHalf, value: 0 },
+    { desc: dFull, value: 0 },
+  ];
+};
+// if / else_if / else, each branch an `add` carrying its own desc (the P4 idiom: never a desc on an add that wraps an `if`)
+const renderLine = ln => ln.map((b, k) => {
+  const head = k === 0 ? 'if' : (b.trigger ? 'else_if' : 'else');
+  if (k === 0 && !b.trigger) throw new Error('internal: a bar line opening without a condition');
+  if (k < ln.length - 1 && !b.trigger) throw new Error('internal: an unconditional branch before the last');
+  return `${T}${T}${head} = {\n` + (b.trigger ? `${T}${T}${T}limit = {\n${T}${T}${T}${T}${b.trigger}\n${T}${T}${T}}\n` : '') +
+    `${T}${T}${T}add = {\n${T}${T}${T}${T}desc = "${b.desc}"\n${T}${T}${T}${T}value = ${b.value}\n${T}${T}${T}}\n${T}${T}}`;
+}).join('\n');
+const barDescSpans = new Set();
+if (LIT) sv.push(`pmr_lit = {\n${T}value = literacy_rate\n}`);
 const svName = (tech, i) => `pmr_src_${tech}_${i}`;
 const barName = (tech) => `pmr_bar_${tech}`;
 const jeName = (tech, s) => `je_pmr_${tech}_${s}`;
@@ -427,6 +504,14 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   if (!grant) throw new Error(`no era cost for ${tech} (era ${T0.era})`);
   let terms = [];
   const srcLines = [];   // the JE text: what each source is, its mark, and the live figure (user-ruled 2026-09-03)
+  // ⭐⭐ THE BAR LINES (2026-10-21, polish — the user: "the tooltips still don't say the ticking conditions"). The bar tooltip lists only the
+  //   `add` terms that were evaluated this month, so a term guarded by a failing `if` is simply absent and a bar below every mark showed
+  //   NOTHING. Vanilla's own bars add every factor every month and let it be worth 0 (Divided Monarchists: "0.0 from Clout of Orleanist
+  //   Interest Groups"; Ryukyu: `else = { add = { desc … value = 0 } }`). So every CONDITION is now a LINE: ordered branches, each
+  //   `{ trigger, desc, value }`, the last unconditional — rendered if / else_if / else, the desc always on an add INSIDE a branch (the
+  //   P4 idiom below). Exactly one branch of each line fires, so each condition always shows, with its live figure, at 0 or its tick.
+  const lines = [];
+  const srcs = [];       // per source: { trig, half, dFull, dHalf, bullet } — the industry entries' lines are built from these after the loop
 
   if (a.rule === 'war' && isFleetTech(tech)) {
     // ⭐ FLEET TECHNOLOGIES: POSSESSION, NOT BATTLE (ROADMAP → "The NAVAL channel"). A navy is observed
@@ -437,9 +522,11 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     keep(tech);
     if (RE.naval_any) {   // §10.98: ours, a rival's OR a great power's — any one ticks once
       terms.push({ desc: 'pmr_term_nav_any', trigger: `OR = { has_variable = ${navOwnVar(tech)}  has_variable = ${navRivalVar(tech)}  has_global_variable = ${navGpVar(tech)} }`, value: 1 });
+      lines.push([terms[0], { desc: 'pmr_term_nav_any', value: 0 }]);
     } else {
     terms.push({ desc: 'pmr_term_nav_own',   trigger: `has_variable = ${navOwnVar(tech)}`,   value: 2, exclusive: true });
     terms.push({ desc: 'pmr_term_nav_rival', trigger: `has_variable = ${navRivalVar(tech)}`, value: 1, exclusive: true });
+    lines.push([...terms, { desc: 'pmr_term_nav_none', value: 0 }]);
     }
   } else if (a.rule === 'cond') {
     // §10.98: a country condition — literacy first (unless military), then the follower-halved form where the condition carries a mark
@@ -453,8 +540,11 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       terms.push({ desc: 'pmr_term_cond', trigger: [litT, `NOT = { AND = { ${held}  ${notIso} } }`, `AND = { ${e.trigger} }`].filter(Boolean).join('  '), value: 1, exclusive: true });
     } else terms.push({ desc: 'pmr_term_cond', trigger: [litT, `AND = { ${e.trigger} }`].filter(Boolean).join('  '), value: 1, exclusive: true });
     if (L != null) terms.push({ desc: `pmr_term_lit_${T0.era}`, trigger: `literacy_rate < ${L}`, value: 0, exclusive: true });
-    srcLines.push(e.label + (e.half_trigger && HALF ? ' (half that once another country that is not isolationist uses it)' : ''));
-    for (const l of e.lines || []) srcLines.push(l);
+    const D = condDisplay(tech, e);
+    srcLines.push(D.bullet);
+    if (L != null) lines.push(litLine(T0.era, L));
+    const halfOn = !!(HALF && e.half_trigger);
+    lines.push(sourceLine({ litT, halfOn, hf: halfOn ? heldOn(tech) : '', trig: `AND = { ${e.trigger} }`, half: halfOn ? `AND = { ${e.half_trigger} }` : null, dFull: D.dFull, dHalf: D.dHalf, before: [] }));
   } else if (a.rule === 'war') {
     nWar++;
     const w = RE.war_gate || {};
@@ -496,6 +586,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     // must not tick by itself**, so the weaker term is gone and the enemy clause folds into the one
     // gate. One qualifying month, one tick.
     terms.push({ desc: `pmr_term_war_engaged`, trigger: `has_variable = ${wgVar(tech)}`, value: 1 });
+    lines.push([terms[0], { desc: 'pmr_term_war_engaged', value: 0 }]);
   } else {
     nInd++;
     a.sources.forEach((s, i) => {
@@ -511,12 +602,14 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         });
         sv.push(`${n} = {\n${T}value = 0\n${parts.join('\n')}\n}`);
         const req = a.requires.map(r => `has_technology_researched = ${r}`);
-        const names = s.label || s.types.map(ty => nameOf(ty.key)).join(' and ');
-        const live = `[ROOT.GetCountry.MakeScope.ScriptValue('${n}')|0]`;
-        const line = `Workers in ${names}: at least ${a.mark.toLocaleString('en-US')}` + (req.length ? ` (only while ${a.requires.map(r => '$' + r + '$').join(' and ')} is researched)` : '') + `; now ${live}`;
-        const dkey = `pmr_term_${tech}_${i}`;
-        loc.push([dkey, line]); srcLines.push(line);
-        terms.push({ desc: dkey, trigger: [`${n} >= ${a.mark}`, ...req].join('  '), half: [`${n} >= ${a.mark / 2}`, ...req].join('  '), value: 1 });
+        const names = s.label ? cap(s.label.replace(/^the /, '')) : s.types.map(ty => shortName(ty.key)).join(' and ');
+        // shown in fully staffed LEVELS (2026-10-21, user: "just mentioning the needed number of staffed levels, not people"): the tick still compares
+        //   people, exactly as before; the text divides both sides by the workforce of one level (or 5,000 where the counted types differ)
+        const { ref, mixed } = levelRef(s.types.map(ty => ty.emp));
+        const D = sourceDisplay(tech, i, { name: names, mark: a.mark / ref, nowSv: perLevelSv(tech, i, n, ref), mixed, requires: a.requires });
+        srcLines.push(D.bullet);
+        terms.push({ desc: D.dFull, trigger: [`${n} >= ${a.mark}`, ...req].join('  '), half: [`${n} >= ${a.mark / 2}`, ...req].join('  '), value: 1 });
+        srcs.push({ ...D, trig: terms[terms.length - 1].trigger, half: terms[terms.length - 1].half });
         return;
       }
       if (s.good) {
@@ -525,9 +618,11 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         //   No live figure: market buy orders have no loc data function we know to be safe.
         const need = (RE.consumption_thresholds || {})[s.good]; if (need == null) throw new Error(`no consumption_threshold for ${s.good} (anchor of ${tech})`);
         const dkey = `pmr_term_${tech}_${i}`;
-        loc.push([dkey, `$${s.good}$: at least ${need.toLocaleString('en-US')} a week bought in your market`]);
-        srcLines.push(`$${s.good}$ — at least ${need.toLocaleString('en-US')} a week bought in your market`);
+        loc.push([dkey, `$${s.good}$ bought in our market: ${fmtN(need)} a week`]);
+        loc.push([dkey + '_half', `$${s.good}$ bought in our market: ${fmtN(need / 2)} a week (halved mark)`]);
+        srcLines.push(`$${s.good}$ bought in our market: ${fmtN(need)} a week`);
         terms.push({ desc: dkey, trigger: `market = { mg:${s.good} = { market_goods_buy_orders >= ${need} } }`, half: `market = { mg:${s.good} = { market_goods_buy_orders >= ${need / 2} } }`, value: 1 });
+        srcs.push({ dFull: dkey, dHalf: dkey + '_half', trig: terms[terms.length - 1].trigger, half: terms[terms.length - 1].half });
         return;
       }
       const n = svName(tech, i);
@@ -570,21 +665,19 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       //   (Soldiers for the military groups), a level-counted one "<building>: at least 5 fully staffed levels (25,000 workers);
       //   now 3". Names are vanilla's own loc keys ($building_coal_mine$, $bg_staple_crops$), so every language shows its own
       //   building names; the live figure is the loc data function [ROOT.GetCountry.MakeScope.ScriptValue('<sv>')|0].
-      const names = s.group ? `$${s.group}$` : s.types ? s.types.map(nameOf).join(' and ') : nameOf(s.building);
-      const indObj = CFG.industries.find(x => x.id === s.ind);
-      const varies = (s.group || s.types) ? false : (s.emp != null && s.emp > 0 ? workforceVaries(indObj) : workforceVaries(null, s.building));
-      const who = (s.group && MILITARY_GROUPS.has(s.group)) ? 'Soldiers' : 'Workers';
-      const line = gTypes.length ? `${who} in ${names}: at least ${people.toLocaleString('en-US')}`
-        : `${names}: at least ${need.toLocaleString('en-US')} fully staffed levels` + (!inPeople ? '' : varies
-          ? ` (${people.toLocaleString('en-US')} workers at base-method staffing, labour saving and other staffing changes calculated correctly)`
-          : ` (${people.toLocaleString('en-US')} workers)`);
-      const live = `[ROOT.GetCountry.MakeScope.ScriptValue('${n}')|0]`;
-      const dkey = `pmr_term_${tech}_${i}`;
-      loc.push([dkey, `${line}; now ${live}`]);
-      srcLines.push(`${line}; now ${live}`);
+      const names = s.group ? `$${s.group}$` : s.types ? s.types.map(shortName).join(' and ') : shortName(s.building);
+      // ⭐ ONE WORDING FOR EVERY SOURCE (2026-10-21, user: "similar and more concise, just mentioning the needed number of staffed levels, not
+      //   number of people"): "<buildings>: N fully staffed levels (now X)". A people-counted source (a group or a list) is shown in levels of its
+      //   one per-level workforce — or of 5,000 workers where its types differ (a craft level then counts a tenth), which the text says. The tick
+      //   is unchanged: it still compares people. (Retired: the "N workers at base-method staffing, labour saving and other staffing changes
+      //   calculated correctly" clause of 2026-09-03, and "Workers in <group>: at least 12,500".)
+      const { ref, mixed } = gTypes.length ? levelRef(gTypes.map(ty => ty.emp)) : { ref: 1, mixed: false };
+      const D = sourceDisplay(tech, i, { name: names, mark: gTypes.length ? people / ref : need, nowSv: gTypes.length ? perLevelSv(tech, i, n, ref) : n, mixed });
+      srcLines.push(D.bullet);
       // the halved mark (§10.97 follower_halving): half the people, i.e. half the levels — a fractional level count is fine in a comparison
       const halfNeed = gTypes.length ? people / 2 : need / 2;
-      terms.push({ desc: dkey, trigger: `${n} >= ${need}`, half: `${n} >= ${halfNeed}`, value: 1 });
+      terms.push({ desc: D.dFull, trigger: `${n} >= ${need}`, half: `${n} >= ${halfNeed}`, value: 1 });
+      srcs.push({ ...D, trig: `${n} >= ${need}`, half: `${n} >= ${halfNeed}` });
     });
     if (!terms.length) continue;
     // ⭐ §10.97: the industry bar becomes ONE any-source tick — literacy first (a plain country trigger), then the halved-mark switch, then
@@ -604,6 +697,13 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       if (L != null) nt.push({ desc: `pmr_term_lit_${T0.era}`, trigger: `literacy_rate < ${L}`, value: 0, exclusive: true });
       terms = nt;
     }
+    // the tooltip's lines: literacy first, then one line per source; in the any-source bar only the FIRST source at its mark carries the +1,
+    //   so the lines add up to the bar's real tick (the old `terms` above stay for the V4 compress probe and the perf_amplify_terms probe)
+    const L = NONADD ? litOf(T0) : null;
+    const litT = L != null ? `literacy_rate >= ${L}` : '';
+    const halfOn = !!(NONADD && HALF);
+    if (L != null) lines.push(litLine(T0.era, L));
+    srcs.forEach((s, i) => lines.push(sourceLine({ litT, halfOn, hf: halfOn ? heldOn(tech) : '', trig: s.trig, half: s.half, dFull: s.dFull, dHalf: s.dHalf, before: NONADD ? srcs.slice(0, i) : [] })));
   }
 
   // ⭐ WAR BARS ARE MONTHLY NOW, six ticks to a stage (user-ruled 2026-08-18). They were
@@ -636,13 +736,11 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     (compressed[ind] ||= []).push({ tech, era: a.era, terms, span, grant, srcLines });
     continue;
   }
-  const exclusive = terms.length > 1 && terms.every(x => x.exclusive);
-  barLocKeys.add(barName(tech)); barLocKeys.add('pmr_bar_desc'); for (const t of terms) barLocKeys.add(t.desc);
-  bars.push(`${barName(tech)} = {\n${T}name = "${barName(tech)}"\n${T}desc = "pmr_bar_desc"\n${T}default_green = yes\n${T}start_value = 0\n${T}min_value = 0\n${T}max_value = ${span}\n${T}${cadence} = {\n` +
-    terms.map((t, i) => `${T}${T}${exclusive && i ? 'else_if' : 'if'} = {\n` +
-      `${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}}\n` +
-      `${T}${T}${T}add = {\n${T}${T}${T}${T}desc = "${t.desc}"\n${T}${T}${T}${T}value = ${t.value}\n${T}${T}${T}}\n` +
-      `${T}${T}}`).join('\n') +
+  if (!lines.length) throw new Error(`research events: ${tech} has no bar lines`);
+  const barDesc = `pmr_bar_desc_${span}`; barDescSpans.add(span);
+  barLocKeys.add(barName(tech)); barLocKeys.add(barDesc); for (const ln of lines) for (const b of ln) barLocKeys.add(b.desc);
+  bars.push(`${barName(tech)} = {\n${T}name = "${barName(tech)}"\n${T}desc = "${barDesc}"\n${T}default_green = yes\n${T}start_value = 0\n${T}min_value = 0\n${T}max_value = ${span}\n${T}${cadence} = {\n` +
+    lines.map(renderLine).join('\n') +
     // ⚗ PERF PROBE (§10.98): research_events.perf_amplify_terms = k evaluates every term k − 1 more times in a separate zero-value `if`, so
     //   the cost of an ACTIVE bar's conditions shows (copies of script-placed entries are never placed, so perf_amplify cannot). Probe only.
     (RE.perf_amplify_terms > 1 ? '\n' + Array.from({ length: Math.round(RE.perf_amplify_terms) - 1 }, () => terms.map(t => `${T}${T}if = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}}\n${T}${T}${T}add = {\n${T}${T}${T}${T}desc = "${t.desc}"\n${T}${T}${T}${T}value = 0\n${T}${T}${T}}\n${T}${T}}`).join('\n')).join('\n') : '') +
@@ -726,34 +824,37 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     //   JournalEntry.GetReason (the body), GetStatusDesc, GetGoalDesc and GetCompletionTooltip — nothing renders `_desc`.
     //   Until then the sources, their marks and the live figures sat in `_desc` and no player ever saw them; the body read
     //   only "Our position makes X worth pursuing." `_desc` keeps the same text, harmless and cheap.
-    let body = a.rule === 'war'
-      ? `Hard fighting concentrates the mind. Each month a general of ours holds a front with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions against an enemy who already fields ${nice}, this bar advances by one; ${STAGES === RE.stages ? 'three' : STAGES.length} stages of ${span} months each, and each completed stage grants ${STAGES === RE.stages ? 'half' : Math.round(100 * (RE.grant_fraction ?? 0.5)) + '% of'} the technology's base research cost.`
-      : `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` + `\n\nEach month the bar advances by one for every source at or above its mark; ${STAGES === RE.stages ? 'three' : STAGES.length} stages of ${span} months each, and each completed stage grants ${STAGES === RE.stages ? 'half' : Math.round(100 * (RE.industry_grant_fraction ?? RE.grant_fraction ?? 0.5)) + '% of'} the technology's base research cost` + (gateYear != null ? ` (before ${gateYear}, only ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that: the trade cannot hurry an idea ahead of its time).` : '.') + (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
-    // §10.97: an industry entry under the reworked rules says so (the old sentence describes a different bar)
-    // §10.98: a condition entry, and the war / naval entries once they repeat, say what ticks them and how the stages run
-    const stageText = REP ? `${STAGES.length - 1 === 1 ? 'One stage' : (STAGES.length - 1) + ' stages'} of ${span} months, then implementation stages of ${span} months that repeat until ${nice} is ours (at most ${REP}); each grants ${Math.round(100 * ((a.rule === 'war' ? RE.grant_fraction : (RE.industry_grant_fraction ?? RE.grant_fraction)) ?? 0.5))}% of the technology's base research cost.`
-      : `${STAGES.length} stages of ${span} months each; each grants ${Math.round(100 * (RE.grant_fraction ?? 0.5))}% of the technology's base research cost.`;
-    const doneText = REP && !next ? `\n\nImplementation stages completed: [ROOT.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]` : '';
-    if (a.rule === 'cond') {
-      body = `${a.cond.intro || 'Circumstances make this worth pursuing.'}\n\nEach month the bar advances by one while the condition below holds` +
-        (LIT0 != null ? `, and only while our literacy is at least ${Math.round(100 * LIT0)}%; below that the bar waits` : '') + `. ` + stageText + doneText +
-        (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
-    } else if (a.rule === 'war' && REP) {
-      body = (isFleetTech(tech) && RE.naval_any
-        ? `A navy learns by looking. Each month the bar advances by one while we, a rival of ours or a great power fields a ship of this kind. `
-        : `Hard fighting concentrates the mind. Each month a general of ours holds a front with at least ${(RE.war_gate || {}).general_battalions_flat || "the era's"} mobilised battalions against an enemy who already fields ${nice}, this bar advances by one. `) + stageText + doneText;
+    // ⭐ ONE BODY FOR EVERY ENTRY (2026-10-21, polish — the user: "the descriptions and requirements for similarly-formed JEs … are not similar.
+    //   Needs to be similar and more concise"): a flavour line; what advances the bar; the marks as bullets in the one source wording (each with its
+    //   live figure); the stage rules last. The bar tooltip lists the same conditions with what each adds this month.
+    const pctx = x => Math.round(100 * x) + '%';
+    const gf = Math.round(100 * ((a.rule === 'war' ? RE.grant_fraction : (RE.industry_grant_fraction ?? RE.grant_fraction)) ?? 0.5));
+    const stageText = (REP
+      ? `${cap(stagesWord(STAGES.length - 1))} of ${span} months, then repeating stages of ${span} months until ${nice} is ours (at most ${REP}).`
+      : `${cap(stagesWord(STAGES.length))} of ${span} months.`) +
+      ` Each completed stage grants ${gf}% of its base research cost` + (gateYear != null ? ` (before ${gateYear}, ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that)` : '') + '.';
+    const doneText = REP && !next ? `\nRepeating stages completed: [ROOT.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]` : '';
+    const litText = LIT0 != null ? ` and our literacy is at least ${pctx(LIT0)}` : '';
+    const halfText = (HALF && HELD_TECHS.includes(tech)) ? ` Every mark halves once a country that is not isolationist knows ${nice}, unless we are isolationist.` : '';
+    const bullets = srcLines.length ? '\n' + srcLines.map(l => '• ' + l).join('\n') : '';
+    let flavour, rule;
+    if (a.rule === 'war' && isFleetTech(tech)) {
+      flavour = 'A navy learns by looking.';
+      rule = RE.naval_any ? 'The bar advances by one each month while we, a rival of ours or a great power field a ship of this kind.'
+        : 'The bar advances by two each month while a ship of this kind sails under our flag, by one while a rival of ours fields one.';
+    } else if (a.rule === 'war') {
+      flavour = 'Hard fighting concentrates the mind.';
+      rule = `The bar advances by one each month while a general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilised battalions holds a front against an enemy who already fields ${nice}.`;
+    } else if (a.rule === 'cond') {
+      flavour = a.cond.intro || 'Circumstances make this worth pursuing.';
+      rule = `The bar advances by one each month while the condition below holds${litText}.${halfText}`;
+    } else {
+      flavour = a.rule === 'necessity' ? `Where enough hands work in the trades that would use ${nice}, the need finds its answer.`
+        : `Where enough hands work at what ${nice} would improve, the improvement follows.`;
+      rule = NONADD ? `The bar advances by one each month while any one source below is at its mark${litText}.${halfText}`
+        : `The bar advances by one each month for every source below at its mark.`;
     }
-    if (NONADD && a.rule !== 'war' && a.rule !== 'cond') {
-      const pct = x => Math.round(100 * x) + '%';
-      body = `The trade already knows its own shortcomings. Where enough hands are employed at the work that ${nice} would improve, the improvement follows.` +
-        `\n\nEach month the bar advances by one if AT LEAST ONE source below is at its mark` +
-        (HALF ? ` (half the mark once a country that is not isolationist already uses ${nice} - unless we are isolationist ourselves)` : '') +
-        (LIT0 != null ? `, and only while our literacy is at least ${pct(LIT0)}; below that the bar waits` : '') + `. ` +
-        (REP ? `${STAGES.length - 1 === 1 ? 'One stage' : (STAGES.length - 1) + ' stages'} of ${span} months, then implementation stages of ${span} months that repeat until ${nice} is ours (at most ${REP}); each grants ${Math.round(100 * (RE.industry_grant_fraction ?? RE.grant_fraction ?? 0.5))}% of the technology's base research cost.`
-             : `${STAGES.length} stages of ${span} months each; each grants ${Math.round(100 * (RE.industry_grant_fraction ?? RE.grant_fraction ?? 0.5))}% of the technology's base research cost.`) +
-        (REP && !next ? `\n\nImplementation stages completed: [ROOT.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]` : '') +
-        (srcLines.length ? `\n\n` + srcLines.map(l => '• ' + l).join('\n') : '');
-    }
+    const body = `${flavour}\n\n${rule}${bullets}\n\n${stageText}${doneText}`;
     loc.push([key + '_desc', body]);
     loc.push([key + '_reason', body]);
   });
@@ -849,10 +950,15 @@ if (HELD_TECHS.length && !seffR.length) throw new Error('internal: held flags wi
 loc.push(['pmr_bar_desc', NONADD
   ? 'Progress towards this discovery: +1 each month while at least one source is at its mark — the entry lists the sources and your current figures.'
   : 'Progress towards this discovery: +1 each month for every source at or above its mark — the entry lists the sources and your current figures.']);
+// the bar's own line, printed on the bar in the entry (vanilla's idiom: "Orleanists: 5.21% (25.0/480)")
+for (const sp of barDescSpans) loc.push([`pmr_bar_desc_${sp}`, `Progress: #v [JournalEntry.GetCurrentBarProgress(ScriptedProgressBar.Self)|%0]#! ([JournalEntry.GetCurrentBarValue(ScriptedProgressBar.Self)|0] of ${sp} months)`]);
 if (NONADD) {
   loc.push(['pmr_term_any', 'At least one source is at its mark (the entry lists them)']);
   loc.push(['pmr_term_any_half', 'At least one source is at HALF its mark: another country already uses this technology']);
-  if (LIT) for (const [e, v] of Object.entries(LIT)) loc.push([`pmr_term_lit_${e}`, `Waiting: literacy below ${Math.round(100 * v)}%, the line for an era ${e} technology`]);
+  if (LIT) for (const [e, v] of Object.entries(LIT)) {
+    loc.push([`pmr_term_lit_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`}, below the ${Math.round(100 * v)}% needed: the bar is paused`]);
+    loc.push([`pmr_term_litok_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`}, at least ${Math.round(100 * v)}% needed`]);
+  }
 }
 loc.push(['pmr_term_improvement', 'Employed in the industry this would improve']);
 loc.push(['pmr_term_necessity', 'Employed in the industries that would use it']);
@@ -862,7 +968,8 @@ loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gat
 // the fleet channel's two terms — ours supersedes a rival's, so the bar shows whichever applies
 loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']);
 loc.push(['pmr_term_nav_rival', 'A rival fields a ship of this kind']);
-if (RE.naval_any) loc.push(['pmr_term_nav_any', 'We, a rival of ours or a great power fields a ship of this kind']);
+loc.push(['pmr_term_nav_none', 'Neither we nor a rival of ours field a ship of this kind']);
+if (RE.naval_any) loc.push(['pmr_term_nav_any', 'We, a rival of ours or a great power field a ship of this kind']);
 if (Object.keys(COND).length) { loc.push(['pmr_term_cond', 'The condition in the entry holds']); loc.push(['pmr_term_cond_half', 'The condition in the entry holds, at half its mark: another country already uses this technology']); }
 if (LIT) for (const [e, v] of Object.entries(LIT)) if (!loc.some(([k]) => k === `pmr_term_lit_${e}`)) loc.push([`pmr_term_lit_${e}`, `Waiting: literacy below ${Math.round(100 * v)}%, the line for an era ${e} technology`]);
 // §10.98: the script values the condition entries read
@@ -901,6 +1008,28 @@ for (const [n, body] of Object.entries(RE.condition_values || {})) sv.push(`${n}
   if (missing.length) throw new Error(`research events: progress-bar loc keys with no text: ${missing.join(', ')}`);
   if (bad.length) throw new Error(`research events: ${bad.length} progress-bar text(s) contain an ASCII apostrophe, which breaks the ` +
     `vanilla breakdown tooltip (a single-quoted data-function argument). Rephrase them:\n` + bad.map(([k, v]) => `  ${k}: ${v}`).join('\n'));
+  // ⭐ (2026-10-21) AND EVERY $key$ A BAR TEXT REFERENCES, IN EVERY LANGUAGE THE MOD SHIPS: since the bar lines name buildings, groups,
+  //   goods and technologies, a translated name holding an ASCII apostrophe would break that language's tooltip with nothing failing in
+  //   English. English "Workers' Protections" (law_worker_protections) is the live example, which is why no law name goes into a bar line.
+  const refs = new Set();
+  for (const k of barLocKeys) for (const m of (LOC.get(k) || '').matchAll(/\$([A-Za-z_0-9.]+)\$/g)) refs.add(m[1]);
+  if (refs.size) {
+    const walk = d => readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(join(d, e.name)) : e.name.endsWith('.yml') ? [join(d, e.name)] : []);
+    const badRefs = [], foundEn = new Set();
+    for (const lang of (CFG.languages || ['english'])) {
+      let files; try { files = walk(join(GAME, 'localization', lang)); } catch { continue; }
+      for (const f of files) for (const line of readFileSync(f, 'utf8').split(/\r?\n/)) {
+        const m = /^\s*([A-Za-z_0-9.]+):\d*\s*"(.*)"\s*$/.exec(line);
+        if (!m || !refs.has(m[1])) continue;
+        if (lang === 'english') foundEn.add(m[1]);
+        if (m[2].replace(/\[[^\]]*\]/g, '').includes("'")) badRefs.push(`${lang} ${m[1]}: ${m[2]}`);
+      }
+    }
+    if (badRefs.length) throw new Error(`research events: a name a progress-bar text references carries an ASCII apostrophe in some language, which breaks ` +
+      `that language's bar tooltip. Leave it out of the bar line (the entry body may name it):\n  ` + badRefs.join('\n  '));
+    const unknown = [...refs].filter(r => !foundEn.has(r) && !LOC.has(r));
+    if (unknown.length) console.warn(`research events: WARN - bar texts reference loc keys vanilla English does not define: ${unknown.join(', ')}`);
+  }
 }
 
 const BOM = '\uFEFF';
