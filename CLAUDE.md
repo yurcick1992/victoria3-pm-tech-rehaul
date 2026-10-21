@@ -297,8 +297,12 @@ world exports, on every traded good under the engine's default threshold) now ap
 from the previous canon's in the `NEconomy` block of `common/defines/01_pm_rehaul_defines.txt` and the build stamps. Built, linted and DEPLOYED 2026-10-21
 10:40 (the playtest build `mod_playtest_wm99/` carried the same book without telemetry).
 ⭐ **POLISH, 2026-10-21 (display only):** both canon copies gained `research_events.count_display` and the `_polish_2026_10_21` record — how the
-counted condition entries read in the research entries and their bar tooltips; no trigger, mark or script value moved. sha256 now `6ae883ec91c7036a`
-(the twin unchanged). The research texts and bar lines were rebuilt the same day (BUGS_AND_FIXES 2026-10-21).
+counted condition entries read in the research entries and their bar tooltips; no trigger, mark or script value moved. sha256 `6ae883ec91c7036a`
+(the twin unchanged). The research texts and bar lines were rebuilt the same day (BUGS_AND_FIXES 2026-10-21). The generated-text pass the same day
+(commit `65ea447`) changed only display labels in both copies: **sha256 now `adb92ffe3c8c3102`** — the book the alternating n=16+16 batch measures
+(launched by the user 2026-10-21 night, `tools/testbed/schedules/alt_vanilla_canon_n16.json`), BEFORE the polish rulings Q1 / Q3 / the reference
+fix / U5 are built (POLISH_1_0.md). ⚠ Nothing may be canonised into the named copy, and no emitter, `build.ps1` or `tools/testbed/**` file edited
+in this checkout, while it runs: the scheduler rebuilds the mod before every run.
 (HISTORY) From 2026-10-21 17:22 to 17:48 the deployed copy was `mod_playtest_damcheck/` (config `mod_config.damcheck.json`, gitignored: the canon +
 `dams.probe.grant_tags [GBR]`) for the user's in-game dam checks; the canon was redeployed at 17:48.
 ⭐ **Why now, when F247 said no:** its n=4 played at ×1.18 of the SUMMER vanilla (194.2 min against 165.0) — but vanilla itself, re-run on 2026-10-20/21

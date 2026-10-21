@@ -229,7 +229,14 @@ that reads badly there can be reverted to F247's measured setup before the relea
 
 ### Every Q is ruled (2026-10-21, night) — what they add to the work
 
-**Before the batch, canonised at once (Q4):** Q1 (the four flat research bonuses ×1/3), Q3 (the bloc canning method at 85 groceries, and the
+⭐⭐ **THE ORDER CHANGED THE SAME NIGHT** (the user: *"Let's do it this way. Commit and push all changes, I'll launch the n=16+16 session, and we'll
+finish the MDs regarding 'tiers' in this one."*): the alternating batch runs NOW on the canon as it stands (sha256 `adb92ffe3c8c3102`, display-only
+polish over F247's book), so it measures the canon WITHOUT Q1, Q3, the reference fix (§2), U5, C1/H6/H7 and the name changes. While it runs
+(~4 days) nothing that reaches a build may change in this checkout — no emitter, no `build.ps1`, no `tools/testbed/**`, no canonisation into the
+named book; that code work happens in a separate worktree and is merged after the batch, or after it ends, and ships UNMEASURED by any century run.
+This session's remaining job is the docs' move to the "tier" terminology (Q8's follow-up). The paragraphs below are the work list as ruled.
+
+**Originally before the batch, canonised at once (Q4):** Q1 (the four flat research bonuses ×1/3), Q3 (the bloc canning method at 85 groceries, and the
 switch fix below). Each goes into both canon copies with a `_polish` record and a new sha256 in CLAUDE.md's canon banner, then a build, every
 lint and a deploy.
 **Text, any time before 1.0:** Q8 (names "Tier N", crafts "Tier 0 craft. …", merged "Tier 1-2. …"), with U3, U8 and R1's removal of "Recipe BE".
