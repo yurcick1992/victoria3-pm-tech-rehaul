@@ -247,7 +247,7 @@ and an independent hunt over the generated mod and six canon century runs' error
 - **DONE 2026-10-21** · non-English players see vanilla's own translations of the tiered buildings' and methods' names · POLISH_1_0.md H1
 - **DONE 2026-10-21** · crafts no longer show method groups whose only option is "off" (lint_pm_combos check 8 guards it) · POLISH_1_0.md H2
 - **DONE 2026-10-21** · the generated-text pass (research, dams, company names, config labels): uniform style, current design, no internals · POLISH_1_0.md "Text pass"
-- **VERIFY** · dam build tooltips may list every project of the class (one branch per state instead, U4) · POLISH_1_0.md H3
+- **DONE 2026-10-21** · dam build tooltips: checked in game, no per-project list renders (U4 closed) · POLISH_1_0.md H3
 - **OPEN** · per-tier building artwork; per-technology icons (one placeholder ships)
 - **OPEN** · era band dividers in the tech-tree GUI
 - **OPEN** · proofread every new technology name and description

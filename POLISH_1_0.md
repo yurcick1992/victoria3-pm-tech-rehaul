@@ -148,7 +148,7 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 | U1 | 31 dam projects are named "… Dam(s)" (Columbia River Dams, Lower Kama Dam…), so texts read "Survey the Columbia River Dams" — rename them after the SITE? |
 | U2 | Dam building names in the plural, as vanilla names producers ("Great River Dams", "Mountain Power Stations")? |
 | U3 | Should the craft rungs say they are crafts in their name? Today only the building group "Crafts" says so |
-| U4 | The dam build-requirement tooltip (H3): one branch per state instead of an OR over every project — after an in-game look |
+| U4 | ~~The dam build-requirement tooltip (H3)~~ — CLOSED 2026-10-21 by in-game check 4: no requirement list renders, no change needed |
 | U5 | Fractional marks (aniline and percussion cap 2.5 levels; halves 1.25; arc welding's half 0.5): round the marks to whole levels, or leave them? |
 | U7 | Vanilla's Krka Falls and Niagara Falls traits are left empty by the dams (their only line was the hydro bonus): a line pointing at the dam site, or leave? |
 | U8 | Research `_desc` = `$…_reason$` (no visible change; 336 duplicate bodies × 11 languages) |
@@ -160,7 +160,7 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 | 1 | A research entry's body, bar label and bar tooltip (Britain 1836, Bessemer Process) | ✅ the lines render. Changed on the user's notes: no literacy line in the tooltip (the body states it); "(now 8)", rounded down, not "(now 8.0)"; the stage rule one sentence, "Each 36-month stage grants 50% of the technology’s base research cost"; the implementation counter shows no cap ("effectively 'this fires until the deed is done'") — `0986b5f` |
 | 2 | The craft buildings' method groups and method names | ✅ no "off"-only groups; method names render |
 | 3 | The dam survey decision, its requirements, the site trait and the survey entry | ✅ on `mod_playtest_damcheck/` (the canon + the dam technologies to Britain at the start): the decision, its requirements and the survey entry read fine. The site trait shows only its name on hover — the game does not render a description for it; the user: "I don't think it's that bad" — left as it is |
-| 4 | The build-menu tooltip of a dam that cannot be built (U4 / H3) | |
+| 4 | The build-menu tooltip of a dam (U4 / H3) | ✅ the build tooltip lists no requirements at all (earnings, cost, goods, jobs, the queue keys) — the suspected per-project list never renders, and a dam shows in the build menu only once its site is surveyed, so U4 needs no change |
 | 5 | The tech-tree era dividers (R7) | |
 | 6 | The translated building, method and research names in another language | |
 | 7 | The company throughput modifier names | |
