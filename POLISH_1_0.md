@@ -15,12 +15,12 @@ Status words: **DONE** · **RULING** (needs the user) · **READY** (clear-cut, c
 
 ---
 
-## 1. Research entries — DONE 2026-10-21 (commit `70daba8`), not yet seen in game
+## 1. Research entries — DONE 2026-10-21 (commits `70daba8`, `0986b5f`), seen in game (check 1)
 
 - Every condition is now a line of the bar tooltip, always: each source, each counted condition, the war and fleet gates (literacy only in the body, user-ruled after check 1), worth
   their tick or 0 (BUGS_AND_FIXES 2026-10-21; MODDING_NOTES → *A scripted progress bar's tooltip lists only the add terms evaluated*).
 - One wording, in levels: `<buildings>: N fully staffed levels (now X)`; one body template for every entry.
-- **VERIFY in game:** that the 0-valued lines render (vanilla's Divided Monarchists and Ryukyu bars are the evidence).
+- ✅ Verified in game (in-game check 1): the lines render, the 0-valued ones included.
 
 ## 2. Vanilla references to the tiered industries — RULING, then a generator
 
@@ -109,7 +109,7 @@ nitrogen_fixation):
 |---|---|---|---|
 | H1 | **Non-English players see English names where vanilla translates**: the 17 rung-0 keys override vanilla's translated names and lens texts; all 56 main-method names are English though 53 are vanilla methods with translations | DONE 2026-10-21 (vanilla building and method names and lens texts per language) | M |
 | H2 | **Crafts show method groups whose only option is "off"** (Bakeries: canning, distillery — confirmed) — breaks §10.93's rule; the drop is missing on `emit_secondaries`' rescaled path and the lint does not catch it | DONE 2026-10-21 (emit_secondaries drops them; lint_pm_combos check 8 guards it) | S |
-| H3 | Dam build tooltips probably list every project of the class (10/13/38/61 branches) | VERIFY in game, then a `trigger_if` chain | S |
+| H3 | Dam build tooltips probably list every project of the class (10/13/38/61 branches) | CLOSED 2026-10-21 by in-game check 4: no requirement list renders | S |
 | H4 | Dam decisions show internals (`pmr_dam_bur_headroom > 1500` with no loc; a raw variable name) | DONE 2026-10-21 (the text pass: requirements as sentences, the AI cooldown hidden) | S |
 | H5 | ~3,700 lines of dead `pmr_dam_driver` script ship, registered nowhere | DONE 2026-10-21 (emitted only when registered; a short probe checks dams still work) | S |
 | H6 | `00_starting_inventions.txt` ships identical to vanilla (L14/L15 read it — they need a fallback) | READY | S |
