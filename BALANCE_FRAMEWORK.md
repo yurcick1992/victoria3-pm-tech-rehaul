@@ -8690,6 +8690,9 @@ no grid building). ⚠ What it moves is the SPEED of supply, not profitability: 
 4× only stretches the time (~3 → ~11 years at the 175% ceiling) and quarters the plant levels a construction sector adds per year. The
 AI's private scoring divides by (1 + cost × 0.000125): 1.05 → 1.2, a small dent. ⇒ **The test's signal**: electricity pinned at the ceiling
 in the majors' markets by ~1920 means 3× or softer consumer recipes.
+⭐ **READ AND RULED 2026-10-21 (POLISH_1_0.md Q6): the consumers' recipes are KEPT.** On the canon (F247, n=4) electricity reads 25–122% of base
+in the American, British, French and German markets at 1920 (October's vanilla 73–140%) and touches the ceiling once, in one American market at
+1930 — the dams supply the cheap power the 4× plant cost does not touch. The signal did not fire.
 
 ### 10.89.2 — What a dam is
 - **One PROJECT per state** (159), each the research rows (`hydro_1930s_feasible.csv`, 134 projects feasible with 1930s engineering) that
