@@ -62,10 +62,10 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 
 | name | what |
 |---|---|
-| ⭐ **era**, **e0 … e3** | the **NARRATIVE era of a RUNG**, 0–3, anchors 1836 / 1875 / 1905 / 1940. It is the rung's place on the ladder and the key to every multiplier |
-| ⭐ **game era**, **tech era 1 … 5** | the **MECHANICAL era of a TECHNOLOGY** — the era base cost and the ahead-of-time penalty. Mapped by `era_game_era` = [1, 3, 4, 5] |
-| ⚠ **tier** | a LOOKUP KEY only (a DOM id, a history-converter map key). Never a multiplier, never an analysis cut. Say "rung" or "e2" |
-| **rung** | one tiered building of one industry — the thing an era labels |
+| ⭐⭐ **tier**, **t0 … t3** | the **TIER of a RUNG**, 0–3 (0–5 on the retired six-rung book), anchors 1836 / 1875 / 1905 / 1940 — the rung's place on the ladder and the key to every multiplier. The in-game name says it: "Tier 2. Electrics Industries (Telephones)". ⚠ In config and code it is still the field **`era`** (`era_game_era`, `era_anchor_years`, `_ab.keyed_by: 'era'`, `lint_tier_eras.mjs`, `ERA_*` variables, book names like `e1a12-artmerge`) — identifiers were not renamed |
+| ⭐ **tech era 1 … 5**, **game era** (synonyms) | the **MECHANICAL era of a TECHNOLOGY** (the tech tree's Era I–V) — the era base cost and the ahead-of-time penalty. Mapped from tiers by `era_game_era` = [1, 3, 4, 5]. Never a bare "era N" where it could be read as a tier |
+| ⭐ **THE RENAME (user-ruled 2026-10-21, POLISH_1_0.md Q8)** | until 2026-10-21 the docs called a rung's tier its "**narrative era**" or "**era**" and wrote **e0 … e3**; every MD was rewritten to "tier" / t0 … t3 the same night, dated records included (the user: *"every MD, dated records included; config and tool names stay era"*). QUOTATIONS were left verbatim, so a user ruling or an old in-game name may still say "era" or "Era N" for a tier. Before 2026-09-13 some text used "Tier N" / "TN" for a 1-based POSITION in an industry's ladder; the rename turned those into "rung N" / "the Nth rung". Vanilla's STARTING-TECHNOLOGY tiers (`effect_starting_technology_tier_N`, "tier-1/2 countries") are unrelated and are written "starting-tech tier N" |
+| **rung** | one tiered building of one industry — the thing a tier labels |
 | **A** | the **output ratio per era**: a rung of era e makes `vanilla's first method × A^e` |
 | **B** | the **input-value ratio per era**: input value `× B^e` over that rung's own vanilla mix |
 | **r** | **A ÷ B** — the margin's SHAPE, multiplying per era. Today 2.2 ÷ 1.5 = **1.467** |
