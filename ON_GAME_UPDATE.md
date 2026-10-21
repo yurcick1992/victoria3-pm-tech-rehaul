@@ -51,6 +51,14 @@ principle's cap per schools level (`common/power_bloc_principles/00_power_bloc_p
 expedition modifier's weekly innovation (`common/static_modifiers/02_event_modifiers.txt`) and Cuba's modernisation cap
 (`common/static_modifiers/cuban_modifiers.txt`). Each entry states vanilla's value; a patch that moves it, or the line, makes the build THROW —
 read the new vanilla line and re-rule the value (×1/3 of vanilla's). The three files not otherwise owned are whole-file copies regenerated each build.
+⭐⭐ **The tier-reference fix (2026-10-21, `tools/emit_vanilla_refs.mjs`, POLISH_1_0.md §2):** 63 vanilla files regenerated from the live game every
+build, each tiered reference rewritten to the rung set ruled for it (decisions/grand_exhibition_decision; nine journal-entry files incl. 00_art_jes,
+00_belle_epoque, 03_russia, 06_economic_regeneration; laws/01_economic_system; scripted_triggers/00_scripted_triggers; scripted_effects/00_scripted_effects,
+00_victoria_scripted_effects, 04_negotiation_scripted_effects; ai_strategies/00_default_strategy; four scripted-button files; amendments/00_amendments_enactment_04;
+power_bloc_principles/00_power_bloc_principles; 17 static-modifier files; 25 event files — the full list is the generator's SPEC table and the
+audit's implementation box). A patch that moves any matched line makes the build THROW: re-read the `TIER_REFERENCE_AUDIT.md` row, check with
+`REFS_LEARN=1 node tools/emit_vanilla_refs.mjs <mod> <config>` and update the count in the SPEC. Its scan also THROWS when a patch ADDS a tiered
+reference to any other file. `tools/check_dlc_gates.mjs` (every build) fails a replaced file that lost a DLC gate (landmine L39).
 ⭐ **The Food Standardization 3 canning switch** (`replacement_if_valid` on our vacuum-canning copy, `emit_secondaries.mjs`) is re-pointed at our
 copy of the principle method; a new vanilla `replacement_if_valid` on a tiered building's secondary makes the build THROW until it has a copy.
 ⭐ **`00_starting_inventions.txt` is no longer shipped** when the derived 1836 grant adds nothing to vanilla's (H6): a patch to it flows through.

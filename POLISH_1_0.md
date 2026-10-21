@@ -237,7 +237,10 @@ n=16+16, and this session moves the docs to the "tier" terminology while it runs
 each change in the files: **Q1** (5 / 1.5 / 3 / 10, `tools/emit_value_overrides.mjs`), **Q3** (85 groceries; the switch re-pointed),
 **R2.3** (no tooling or explosives subsidy left in the admin strategies), **U5** (no fractional mark left), **U8** (336 `_desc` references),
 **Q8 + U3** ("Tier 0 craft. …", "Tier 1-2. …"; no "Era N" left in the texts), **C1** (the define line gone), **H6** (the file not shipped; L14/L15
-fall back to vanilla's), **H7** (the ten tools that hard-coded the game path honour `VIC3_GAME`). The reference fix (§2) is being built.
+fall back to vanilla's), **H7** (the ten tools that hard-coded the game path honour `VIC3_GAME`). ✅ **§2, the reference fix, BUILT the same night** (`tools/emit_vanilla_refs.mjs`,
+63 vanilla files regenerated with every PART 2 ruling; `tools/check_dlc_gates.mjs` on every build, 131 replaced files keeping every gate; commit
+`94ae51c`); a full canon build passes every lint and the preflight. **B1** answered by F247's slot check. Smoke run 1 × 1836→1841 on the final
+canon: `20261021_220806_polish-final-smoke`.
 
 **Originally before the batch, canonised at once (Q4):** Q1 (the four flat research bonuses ×1/3), Q3 (the bloc canning method at 85 groceries, and the
 switch fix below). Each goes into both canon copies with a `_polish` record and a new sha256 in CLAUDE.md's canon banner, then a build, every

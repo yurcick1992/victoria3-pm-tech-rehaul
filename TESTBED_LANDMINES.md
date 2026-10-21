@@ -2060,3 +2060,22 @@ from Σ countries by 2168519; world.gdp differs from Σ countries by 512489`.
 ⚠ **The lesson is general: a map keyed by a field is a claim that the field is unique. Check it on the data** — here one pass
 over one save's country records would have shown six definitions held twice.
 
+
+## L39 — A REPLACED VANILLA FILE THAT LOSES A DLC GATE, SO DLC CONTENT REACHES PLAYERS WITHOUT THE DLC (registered 2026-10-21, the polish; the user: "This isn't my intention, and that's explicitly prohibited by PDS")
+
+Every DLC's gameplay ships in the BASE game folder behind `has_dlc_feature = <feature>` triggers and the `dlc = dlcNNN` field of events; `game/dlc/`
+holds only art, music and sound. A vanilla file the build replaces wholesale (companies, the tier-reference fix's 63 files, the value overrides,
+defines, technologies, history) that drops one of those lines would unlock DLC content, and NOTHING FAILS: the mod loads, every lint passes.
+**DETECTOR (AUTO, every build):** `tools/check_dlc_gates.mjs <mod>` runs in `build.ps1` after the last content emitter and THROWS unless every
+shipped vanilla-path file keeps vanilla's count of `has_dlc_feature` lines and `dlc =` fields (2026-10-21: 131 files, 19 of them gated).
+Proven to trip by removing one `dlc = dlc014` line. The generators guard their own copies too (`emit_vanilla_refs.mjs`, `emit_value_overrides.mjs`).
+
+## L40 — VANILLA SCRIPT THAT NAMES A RUNG-0 KEY OR A RENAMED METHOD, SO IT ERRORS OR NARROWS SILENTLY (registered 2026-10-21; the tier-reference fix)
+
+A vanilla trigger naming a main or secondary method our tier split moved (`is_production_method_active`) logs `Invalid Production Method` and
+returns false; a `has_building = building_<x>` matches only the rung that keeps the vanilla key. The canon carried 44–46 such error lines a run
+(the industrial-accident events, `pm_events`, the two vanilla scripted-trigger/effect files). **DETECTOR, two halves:** (1) AUTO at build time —
+`tools/emit_vanilla_refs.mjs` scans `common/` and `events/` and THROWS on any tiered reference left outside a file it transforms or its
+ACCEPTED list (a patch that adds one stops the build); (2) MANUAL at the smoke check — the count of `Invalid Production Method` /
+`PostValidate of trigger 'is_production_method_active'` lines whose Script location is a vanilla path, in the run's own error.log window,
+must be 0. ⚠ The second half is a smell (an entry that stays manual): automate it in `preflight.ps1 -Session` when the window logic is shared.

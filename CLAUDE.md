@@ -299,10 +299,15 @@ from the previous canon's in the `NEconomy` block of `common/defines/01_pm_rehau
 ⭐ **POLISH, 2026-10-21 (display only):** both canon copies gained `research_events.count_display` and the `_polish_2026_10_21` record — how the
 counted condition entries read in the research entries and their bar tooltips; no trigger, mark or script value moved. sha256 `6ae883ec91c7036a`
 (the twin unchanged). The research texts and bar lines were rebuilt the same day (BUGS_AND_FIXES 2026-10-21). The generated-text pass the same day
-(commit `65ea447`) changed only display labels in both copies: **sha256 now `adb92ffe3c8c3102`** — the book the alternating n=16+16 batch measures
-(launched by the user 2026-10-21 night, `tools/testbed/schedules/alt_vanilla_canon_n16.json`), BEFORE the polish rulings Q1 / Q3 / the reference
-fix / U5 are built (POLISH_1_0.md). ⚠ Nothing may be canonised into the named copy, and no emitter, `build.ps1` or `tools/testbed/**` file edited
-in this checkout, while it runs: the scheduler rebuilds the mod before every run.
+(commit `65ea447`) changed only display labels in both copies (sha256 `adb92ffe3c8c3102`).
+⭐⭐ **POLISH, 2026-10-21 NIGHT — THE RULINGS CANONISED AT ONCE** (the user: *"all changes we just introduced are instantly canonised, and the batch
+goes with them"*): both copies gained `vanilla_value_overrides` (the four flat research adds ×1/3), `secondary_goods_override` (the bloc canning at 85),
+the tooling / explosives subsidies at `none`, `research_events.marks_whole_levels` and the `_polish_2026_10_21b` record — **sha256 now
+`728f2c7f84e6f467`** (the twin unchanged); the same night's build adds the tier-reference fix (`emit_vanilla_refs.mjs`, 63 vanilla files), the DLC-gate
+check, "Tier N" names, `_desc` references, the dropped no-op define and the unshipped identical starting-inventions file (POLISH_1_0.md, commits
+`ad1b306`, `94ae51c`). This is the book the alternating n=16+16 batch measures (`tools/testbed/schedules/alt_vanilla_canon_n16.json`). ⚠ While it
+runs, nothing may be canonised into the named copy and no emitter, `build.ps1` or `tools/testbed/**` file edited in this checkout: the scheduler
+rebuilds the mod before every run.
 (HISTORY) From 2026-10-21 17:22 to 17:48 the deployed copy was `mod_playtest_damcheck/` (config `mod_config.damcheck.json`, gitignored: the canon +
 `dams.probe.grant_tags [GBR]`) for the user's in-game dam checks; the canon was redeployed at 17:48.
 ⭐ **Why now, when F247 said no:** its n=4 played at ×1.18 of the SUMMER vanilla (194.2 min against 165.0) — but vanilla itself, re-run on 2026-10-20/21
@@ -2865,6 +2870,16 @@ tools/                  dev tooling — NOT shipped in the mod
                         ⚠ SAVE_SUMMARY_VERSION is bump-never-renumber, like TELEMETRY_VERSION.
                         ⚠ NOT to be confused with `save_summary.mjs` (below), which reads the RAW BINARY
                         and answers a different question
+  emit_vanilla_refs.mjs ⭐⭐ THE TIER-REFERENCE FIX (2026-10-21, POLISH_1_0.md §2, TIER_REFERENCE_AUDIT.md §5.1 + PART 2) — called by build.ps1
+                        after emit_craft_start, before emit_value_overrides (throws). Every vanilla script position that names a tiered
+                        industry (a rung-0 key, a moved main method, a renamed secondary, a `building_<key>_throughput_add`) rewritten to the
+                        rung set the user ruled for it: 63 vanilla files regenerated from the live game (213 token rewrites, 23 snippets, 52
+                        throughput lines expanded), additive helper triggers / effects / a value, six throughput modifier types (11 languages),
+                        the Montenegro first-arms check (gated on ip3_content). Match counts asserted per file; DLC gates counted per file; a scan
+                        of common/ and events/ THROWS on any tiered reference outside an owned file or its ACCEPTED list. `REFS_LEARN=1` reprints
+                        the counts after a patch. A file another emitter already wrote is transformed in that copy
+  check_dlc_gates.mjs   🛑 THE DLC RULE, ENFORCED (landmine L39) — run by build.ps1 on the FINAL build: every shipped vanilla-path file keeps
+                        vanilla's count of `has_dlc_feature` lines and `dlc =` fields, or the build THROWS (131 files / 19 gated on 2026-10-21)
   emit_value_overrides.mjs  RULED VANILLA VALUES, CHANGED IN PLACE (2026-10-21, POLISH_1_0.md Q1) — called by build.ps1 LAST among the content
                         emitters (throws). Config `vanilla_value_overrides` = [{ file, block, key, vanilla, value, why }]: one line of a named
                         top-level block, at the stated vanilla value (a patch that moves it THROWS); a file an earlier step already wrote is edited
