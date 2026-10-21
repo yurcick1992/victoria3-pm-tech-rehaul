@@ -162,7 +162,7 @@ as vanilla; the typographic ’ (never an ASCII apostrophe); no script names, va
 | 3 | The dam survey decision, its requirements, the site trait and the survey entry | ✅ on `mod_playtest_damcheck/` (the canon + the dam technologies to Britain at the start): the decision, its requirements and the survey entry read fine. The site trait shows only its name on hover — the game does not render a description for it; the user: "I don't think it's that bad" — left as it is |
 | 4 | The build-menu tooltip of a dam (U4 / H3) | ✅ the build tooltip lists no requirements at all (earnings, cost, goods, jobs, the queue keys) — the suspected per-project list never renders, and a dam shows in the build menu only once its site is surveyed, so U4 needs no change |
 | 5 | The tech-tree era dividers (R7) | ✅ Vulcanization in era IV, the three minted technologies in era V; the bands line up now that the tree is vanilla's + 3 (in older, larger trees a band sometimes started a little early or late, the order always correct) — R7 needs no fix |
-| 6 | The translated building, method and research names in another language | |
+| 6 | The translated building, method and research names in another language | SKIPPED by the user: "If someone doesn't bother to learn English and needs improved localisation, they can make a pull request … What I do is try to not diverge from vanilla when it doesn't cost me anything." The names come from vanilla's own keys; the build checks every rung name against vanilla English |
 | 7 | The company throughput modifier names | |
 
 ## Suggested order
