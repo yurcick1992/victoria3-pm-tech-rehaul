@@ -63,6 +63,23 @@ freeze), with a build-time scan that throws on any tiered reference left outside
 
 Effort: a day for the generator, its guard and a probe of the ban-law hook; it must land **before** the alternating batch.
 
+⭐⭐ **DLC CONTENT MUST STAY BEHIND ITS DLC — a hard rule (the user, 2026-10-21: "This isn't my intention, and that's explicitly prohibited by
+PDS").** How the game gates it: every DLC's gameplay ships in the BASE game folder behind `has_dlc_feature = <feature>` triggers and the
+`dlc = dlcNNN` field of 97 event files; the `game/dlc/` folders hold only art, music and sound. **Checked the same day, the current build
+unlocks nothing:**
+- the 68 vanilla files the mod replaces wholesale keep every gate, file by file (the seven gated company files 11/12/7/7/8/15/12, two
+  history files 1/1);
+- the files it generates from vanilla templates (the tier buildings from `01_industry`, `06_urban_center`, `11_private_infrastructure`,
+  which carry no gate; the per-rung secondary methods) drop none — the one gated method on a tiered building, the power-bloc canning
+  `pm_vacuum_canning_principle_3`, keeps `unlocking_principles` on our copy;
+- our own systems only READ gated things: the dams' family rule reads investment-rights treaties, which exist only with the
+  `foreign_investment` / `mp1_treaties` features, and a building's `can_build_*` conditions can only restrict construction, never allow
+  what the engine would not.
+**The reference fix must keep it so** (it takes over DLC event files: Montenegro `dlc014`/ip3, Japan `ep2`, the immersion-pack modifiers):
+(1) the generator THROWS unless every `has_dlc_feature` and `dlc =` line of a vanilla file survives unchanged in our copy; (2) a preflight
+landmine re-counts them over every owned file against vanilla (today's check, made permanent); (3) any check of ours that fires vanilla
+DLC content carries that content's own DLC condition explicitly — e.g. the Montenegro check below.
+
 ## 3–4. Deferred to polishing (Appendix 1) — the ones for 1.0
 
 | # | Item | Status | Effort |

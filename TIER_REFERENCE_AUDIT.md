@@ -1338,4 +1338,7 @@ by ruling they stay as vanilla wrote them. Vanilla's own intent (tools and explo
     two helpers (or per-caller rewrites) rather than one rewrite of `has_industry_building`.
 11. **Montenegro "first arms factory"** (A18): fix through the code on_actions file (7,963 lines) or accept the narrow line (the first factory
     is normally a musket or rifle rung anyway).
+    ✅ RULED 2026-10-21: neither — our own additive monthly check fires `mon_state_formation.13` when Montenegro has an active arms building
+    of any rung (the user: "OK to go with your recommendation"). It carries `has_dlc_feature = ip3_content` explicitly (the event is
+    `dlc = dlc014`, National Awakening), beside the event's own gate; vanilla's check in `00_code_on_actions.txt` stays untouched.
 12. **The Spanish regeneration JE** (G3): verify whether `state_has_building_group_levels` counts the craft child group before deciding.

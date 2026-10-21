@@ -4358,6 +4358,12 @@ the game.
   warned about it, which is why it is here and not only there.
   ⇒ **Prose containing backticks, or any Windows path, goes through Write/Edit.** Bash is for commands, not for documents.
   ⇒ **Read the result back after any doc edit** — all three were caught only because the tool echoed the file afterwards.
+- 🛑 **NEVER UNLOCK DLC CONTENT — Paradox prohibits it** (user, 2026-10-21: *"This isn't my intention, and that's explicitly prohibited by
+  PDS"*). Every DLC's gameplay ships in the BASE game folder behind `has_dlc_feature = <feature>` triggers and the `dlc = dlcNNN` field of
+  events; `game/dlc/` holds only art, music and sound. So: a vanilla file the mod copies keeps every gate unchanged; a building, method or
+  company the mod generates from a vanilla template keeps the template's gates (`unlocking_principles` included); and any script of ours
+  that fires or grants vanilla DLC content carries that content's DLC condition itself. Checked 2026-10-21: the current build unlocks
+  nothing (`POLISH_1_0.md` §2 holds the evidence and the guard the reference fix must carry).
 - **Keep the docs in sync with reality — always, in the same pass as the change.** Any change
   that affects behavior, file structure, conventions, scope, or numbers must be reflected in the
   relevant `.md` (`CLAUDE.md`, `BALANCE_FRAMEWORK.md`, `MODDING_NOTES.md`, `ON_GAME_UPDATE.md`,
