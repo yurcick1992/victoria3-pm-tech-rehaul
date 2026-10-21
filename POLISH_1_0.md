@@ -199,6 +199,44 @@ replaced-file list H9), R4 proofread, R5 icons (waiting on the user's images), "
 
 **Deferred to 1.1 or later:** B2 (stale looms), B3 (craft secondary lines), F1 (artisanal ownership), R6 (rung building art).
 
+## The second pass (2026-10-21, late evening): balance and research are in scope for 1.0
+
+The user, the same evening: *"Now is likely the time to finalise everything except 1) picture assets 2) telemetry removal. Make another thorough
+pass, highlight everything."* — after asking why the power-bloc and company research bonuses and the power-bloc food method had never come up.
+
+**Why they were missed.** (1) Appendix 1's sweep filed research and balance items under §5 "not polish", and that table was never put to the user;
+the research-bonus nerf (BACKLOG:129, OPEN since 2026-10-11) sat in it. (2) The power-bloc canning method was discussed in sessions of 2026-10-06/11
+and left as shipped, but no doc carries it as an open decision. A second sweep with no category filter found the rest below.
+
+**Timing.** Anything that changes script or economics must land before the alternating batch (~23.10), which is then its only measurement; a change
+that reads badly there can be reverted to F247's measured setup before the release build, not replaced by another.
+
+### Q — the open decisions, in the order they will be asked (one at a time, with context)
+
+| # | Decision | Facts | Status |
+|---|---|---|---|
+| Q1 | **Flat research bonuses sized for vanilla** — how far to scale them | Philips company (prosperity) +15 innovation cap and +5% innovation; Advanced Research III principle +5 cap **per level of the schools institution**, plus +5% spread and −5% ahead-of-time penalty; the Central Africa expedition modifier +10 weekly innovation (`02_event_modifiers.txt:492`); Cuba's modernisation success +30 cap, +15% production spread and research (`cuban_modifiers.txt:86`). The mod cut innovation base, cap base and the cap's literacy term to 25 (vanilla 50 / 50 / 150) and universities to 1/6, so a literate major's cap is ~0.26–0.33 of vanilla's and a flat add weighs 3–4× as much against it; multipliers scale on their own. §10.101.1 states "flat innovation … is not scaled" as a fact, never as a ruling | RULING (user: "need nerfing to align with the current nerfed deliberate research") |
+| Q2 | **Vanilla's 68 event research grants** | 68 `add_technology_progress` in ~23 event files: 3,500 ×16, 4,150 ×14, 6,000 ×13, 5,850 ×8, 2,500 ×8, 5,000 ×2, 4,000 ×2, 8,000, 6,250, 666. Technology costs are unchanged and own research is roughly halved, so a grant weighs about twice as much against a country's own research. The reference fix (§2) revives the art chain's 4,150 / 6,000 / 5,850 grants at that weight | RULING |
+| Q3 | **The Food Standardization 3 canning method** | One copy, `pm_vacuum_canning_principle_3_food`, on the only non-craft food building (Sweeteners, e1, which also runs Baking Powder, e2): the same inputs as plain vacuum canning, 83.42 groceries against 71.5 (vanilla 70 against 60 — the same ×1.17); vanilla's `is_hidden_when_unavailable` and principle gate kept (the principle sits behind `power_bloc_features`). The 2026-10-11 worry that it was unselectable applied to the per-main-method copies, which no longer exist; not seen in game. The user: "this PM needs a balance decision" | RULING |
+| Q4 | **Ship the canon's measured balance as is, or move a book lever first** | F247 (n=4): 3 intact + 1 stall (the USA), consensus loss 8.21 (F239 6.72), world GDP 1.08 (aim 0.90–1.00), PI 0.96 not falling, pool W 1.00 at the soft line, Britain near capital abundance in 2 runs of 4. Unchosen levers: the cost ladder C 1.8 × cost1 1.2 (F234: loss 5.37 against 7.28, but measured on the x25 canon, before the engine unlift, private dams and the threshold — unmeasured on today's canon) and paper's own lift (§10.101 item 5). The user's 2026-10-15 request (session "Cost factor balancing for economy tiers"): *"Final balance passes until going to polishing. Maybe 3-5 more n=8 runs … propose other approaches to cost1, in1, C, A and B to increase obsolescence but not kill early- to mid-game markets and overall GDP trends"* — never done, never waived in writing | RULING |
+| Q5 | **Military research ~10 technologies behind vanilla; no era-5 military technology held anywhere** | Tech spread ×2 and a society research multiplier were deferred (§10.97 item 8: "let's see how it all works, first"). Players see it, and 1.0 is the last release on game 1.13 | RULING |
+| Q6 | **The dam consumers' recipes** | §10.89.1 deferred judgement "until tests"; the batch can show a problem but a recipe change cannot follow it into 1.0 | RULING (1.0 as is, or 1.1) |
+| Q7 | **Rubber (F242)** — the user's Qing playtest | accept for 1.0, or act | RULING |
+| Q8 | **"Era N" in building names against the game's tech eras** (Appendix 2 #7) | "Era 2" electrics are unlocked by a tech-era-4 technology; R1 already drops "Recipe BE" | RULING |
+| Q9 | **`supported_game_version`** | 1.13.11 today; "1.13.*" keeps a hotfix from marking the mod outdated | RULING |
+| Q10 | **The three minted top rungs are almost never reached** (F227: catalytic synthesis in 1 run) | R5 asks the user to draw their icons | RULING (keep the icon work, or simplify) |
+| Q11 | **Accept as watch items for 1.0** | AI schooling unmeasured beyond a smoke probe (F226); crafts as a channel into early revolutions (BACKLOG:88); the percussion-cap chain (BACKLOG:96); the monopoly threshold's decade-scale effect cannot be separated from private dams (F247) | RULING (one answer for the group) |
+
+### Mine, no ruling needed
+
+- **A load with no DLC enabled** and an `error.log` read — the only proof of the DLC rule (§2) beyond the file comparison; never done. Before the batch.
+- **Stale lines that read as open questions:** CLAUDE.md's canon "known open items" (still F227's runoff seed, not F247's stall); ON_GAME_UPDATE:578 (says the
+  canon lacks the urban-centre override it has carried since 2026-09-20); BACKLOG 1b (still names a 36–48-month stage length; the user ruled 48 out, F237);
+  BACKLOG E:157 (the audit does cover renamed secondaries); BACKLOG lines already settled (textile host, crafts + merges, craft cost ÷50, FDI, survey
+  concurrency, tick overhead and others).
+- **Unmeasured, harmless direction:** the cause of vanilla's October ×1.08 drift (telemetry tags, summary version or machine) is not separated, so the
+  release build (no telemetry, H8) is a build no run has timed.
+
 ## Suggested order
 
 1. **Before the batch (21–23.10):** the rulings R2.1–R2.4, then item 2's generator; H2, H5, C1; R8, H4; the in-game look (item 1's tooltips,
@@ -381,6 +419,9 @@ Priority:
 - The "AI subsidises only the obsolete infrastructure tier" issue belongs to the same class but is moot, since infrastructure is vanilla in the canon.
 
 #### Balance and research (not polish; listed so they are not mistaken for polish)
+
+⚠ **Brought into scope for 1.0 on 2026-10-21 (late evening)** — the Research, Book levers, Prices and Rubber rows are questions Q1–Q7 of "The second
+pass" above. This table was the reason they had never been asked.
 
 | Group | Items | Sources |
 |---|---|---|
