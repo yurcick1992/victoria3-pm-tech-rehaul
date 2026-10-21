@@ -1329,6 +1329,7 @@ by ruling they stay as vanilla wrote them. Vanilla's own intent (tools and explo
 7. **modern_rifle_arsenal / arsenal_proving_ground** (D44–45): e1+ (modern weapons only), or all rungs. ✅ RULED 2026-10-21: every arms and
    artillery rung in the state, as in vanilla (the user). The event's own trigger still looks for a rifle rung or newer (A67).
 8. **Industrial Boom decree events** (A46): crafts out per the lean — confirm; and keep vanilla's omission of the artillery foundry.
+   ✅ RULED 2026-10-21: factory rungs only, crafts do not count; vanilla's list kept otherwise, the artillery foundry still left out (the user).
 9. **The default for throughput modifiers on crafts**: include (vanilla's building ran the handicraft method too), except where a row says
    otherwise. Confirm.
 10. **The shared light-industry trigger** (A28): its callers want different answers (A57 craft in, A62–A64 craft out), so the generator needs
