@@ -181,6 +181,8 @@ its vanilla building wherever vanilla script checks a building or a method; it i
 
 ## G. Testbed instrument (TESTBED_LANDMINES)
 
+- **OPEN** · A FROZEN IN-GAME CLOCK READS AS A LIVE RUN (found 2026-10-23, `20261021_224949` run 13, vanilla): the game livelocked at 1871.7.24 for 4 h on ~2 cores; the observer keeps writing a tick line every 20 s, so `wait_for_session.ps1`'s STALLED (session-tree mtime — also fed by `machine_monitor.ps1`) never fires, and the only guard is the 330-min run timeout counted from the RUN start, which then kills the resumed run. Wanted: an observer frozen-clock detector (same in-game date for N min ⇒ kill and resume through the feeder), STALLED on the in-game date, and a landmine entry with its detector. Not before the alternating batch ends (no observer edit while it runs) · run_observer.ps1, wait_for_session.ps1
+
 - **DEFECT** · `hiring_census.mjs` / `craft_fill.mjs` (and F185/F188's prose) name `BUILDING_MAX_PROFIT_TO_PAUSE_HIRES` as the rule behind the
   PAUSED-hiring class, but the 1.13.11 engine does not read that define (FINDINGS F241's dead-define list). Its define registry holds only
   `BUILDING_MIN_EMPLOYMENT_FRACTION_TO_PAUSE_HIRES` and `BUILDING_PAUSE_HIRES_CASH_RESERVES_THRESHOLD` — no profit threshold for pausing hires.
