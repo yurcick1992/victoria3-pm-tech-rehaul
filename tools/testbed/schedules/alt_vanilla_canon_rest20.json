@@ -1,0 +1,153 @@
+{
+  "schedule_version": 1,
+  "label": "alt-vanilla-canon-rest20",
+  "_why": "THE REST OF THE ALTERNATING BATCH. Session 20261021_224949_alt-vanilla-canon-n16 completed runs 1-12 (6 vanilla + 6 canon, all clean); its run 13 (vanilla) was paused by input in the game window at 12:00:31 on 2026-10-23 (landmine L41), killed and resumed, but its watchdog budget was spent, and the harness offers no pause from outside its console - so the user ruled: \"just start anew, with 20 alternating runs that are left\". This session runs the remaining 10 vanilla + 10 canon, alternating, same arms, telemetry and settings; the two sessions are read POOLED (n=16 per arm) and run 13 is excluded. Original purpose: THE WALL-CLOCK REFERENCE, RE-MEASURED ALTERNATING (user-ruled 2026-10-21, after the October vanilla read x1.06-1.08 slower per unit of world than the summer vanilla on the same game version, FINDINGS F248: \"It seems that the conclusion that same config gives same wall clock speed was premature. After the first round of polish later today, we'll launch an alternating set of configs, vanilla + mod, about n=16 for each, four days in total.\") Vanilla and the canon alternate run by run, so any drift of the machine or the harness over the four days lands on both arms alike - the case CLAUDE.md names as the one legitimate use of interleaving (an extremely long, predetermined batch). It answers whether the canon is inside the +10% budget against a vanilla measured on the same days, and supersedes VANILLA_WALL_REF (lib_runs.mjs) as the wall-clock reference. The canon's register and ledger come from the same batch.",
+  "_arms": {
+    "vanilla": "{kind: control} - vanilla + telemetry and nothing else.",
+    "canon": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json} - the canon as launched, sha256 728f2c7f84e6f467 (tree twin 04ac513168388956): the wm99 book F247 measured (64c024535cbd9b71) plus the 2026-10-21 polish, every ruled change canonised at once (the user): display labels and count_display; vanilla_value_overrides (the four flat research adds x1/3, Q1); secondary_goods_override (the bloc canning at 85, Q3); tooling and explosives subsidies none (R2.3); research_events.marks_whole_levels (U5). Its build (commits ad1b306, 94ae51c) adds the tier-reference fix (emit_vanilla_refs.mjs, 63 vanilla files), the DLC-gate check, Tier N names, _desc references, the dropped no-op define and the unshipped identical starting-inventions file. Full build clean 2026-10-21 (every lint, L31, PM combinations, DLC gates, preflight); smoke run 20261021_220806_polish-final-smoke (1 x 1836->1841). Verified 2026-10-23 16:17: nothing that feeds the build changed since the first session started (git diff 107060b..HEAD over tools/config/mod/ui: schedules only), the book still 728f2c7f84e6f467."
+  },
+  "_comparison": "Each arm against the other, pairwise by position (run 2k-1 vanilla beside run 2k canon) and as wholes: wall_clusters.mjs (the main median over clusters 1+2, cluster 3 counted), report_perf.mjs (per decade and pop-matched), machine_load.mjs (the canary over four days), slow_episodes.mjs. Drift is read on the vanilla arm alone against the summer n=18 and the October n=6. The register: criteria.mjs on the canon against VANILLA_REF (n=24, plus these sixteen once they land).",
+  "_predictions": {
+    "wall_clock": "if the October drift is the machine or the harness, this batch's vanilla lands near the October n=6 (main median ~178 min) and the canon at x1.05-1.10 of it (the wm99 n=4 read x1.09 against the October vanilla); if the machine drifts during the four days, both arms move together and the paired differences stay flat",
+    "vanilla_spread": "a within-arm play-time spread like the summer n=16 (p25-p75 about 15 min)"
+  },
+  "_stop_rule": "none: a fixed n=16 per arm (the user), every run plays to 1936; the stop watcher is NOT armed (memory fixed-n-batches-run-to-completion).",
+  "_cost": "20 x 1836 -> 1936, ~3 h each, ~62 h",
+  "_launch_checklist": [
+    "LAUNCHED by the agent 2026-10-23 through launch_detached.ps1 (the user: \"just start anew\").",
+    "Launch through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30); confirm the session folder within a minute.",
+    "Five-minute smoke check on run 1 (vanilla) AND run 2 (canon).",
+    "Remove tools/testbed/NO_NEW_RUNS if it exists.",
+    "Do NOT edit the observer, the scheduler, telemetry_lib, build.ps1, the book or any tools/testbed/**/*.mjs for the four days - both arms are the instrument."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    },
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    }
+  ]
+}
