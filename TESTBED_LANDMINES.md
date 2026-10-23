@@ -2079,3 +2079,15 @@ returns false; a `has_building = building_<x>` matches only the rung that keeps 
 ACCEPTED list (a patch that adds one stops the build); (2) MANUAL at the smoke check — the count of `Invalid Production Method` /
 `PostValidate of trigger 'is_production_method_active'` lines whose Script location is a vanilla path, in the run's own error.log window,
 must be 0. ⚠ The second half is a smell (an entry that stays manual): automate it in `preflight.ps1 -Session` when the window logic is shared.
+
+## L41 — A GAME PAUSED BY INPUT LOOKS LIKE A HEALTHY RUN: the observer keeps writing a tick line every 20 s, so nothing goes silent (found 2026-10-23, run 13 of 20261021_224949_alt-vanilla-canon-n16)
+
+At 12:00:31 the game's own log recorded `Pause Toggled! Paused: true, PlayerID: 1` — a pause from PLAYER INPUT (a keypress or click in the
+game window). The engine's automatic pause toggles are `PlayerID: 0` and always resume; every run of the batch carries one or two. This one
+held the in-game clock at 1871.7.24 for over two hours while `run.log` kept printing `in-game 1871.7.24` every 20 s, so
+`wait_for_session.ps1`'s STALLED (no write anywhere for 20 min) never fired, and the run's 330-minute timeout would end it short of 1936.
+⚠ It also corrupts that run's WALL CLOCK: the play time rebuilt from the tick lines counts the paused hours as play, and a slowdown-episode
+reader would see a monstrous year. Remove the paused interval (from the `Paused: true` line to the next `Paused: false`) before reading it.
+**DETECTOR: MANUAL for now** — a watcher on the newest run's last `in-game` date (unchanged for 15 min while the game runs = FROZEN); the
+agent ran one from its scratchpad. Owed: a FROZEN verdict in `wait_for_session.ps1`, and a post-run check that flags any `Paused: true,
+PlayerID: 1` line (both after the batch — no `tools/testbed/**` edit while it runs).
