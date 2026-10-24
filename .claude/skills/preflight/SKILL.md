@@ -37,7 +37,7 @@ fine", it has not been checked.
 `victoria3.exe` and for a session folder with no completion marker. If one is running, **queue the
 edit** — including edits that look cosmetic, such as a schema-version bump.
 
-Then state the arm, span, n and metrics back to the user per the hard rule in `CLAUDE.md`, and wait
+Then state the arm, span, n and metrics back to the user per the hard rule in `CLAUDE.md` (§5.1 rule 3; procedure in `TESTBED_OPERATIONS.md` §1.1), and wait
 for an explicit go-ahead.
 
 ## After a run that looks wrong

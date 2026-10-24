@@ -495,7 +495,7 @@ wrong arm.
 disagree with what loaded, then require every emitted path to be one of `.metadata`,
 `common/on_actions`, `common/script_values`, `events`. Anything else fails **by name**.
 
-✅ **The architectural fix landed the same day** (see `CLAUDE.md` → the three arms): `-ControlOnly`
+✅ **The architectural fix landed the same day** (see `TESTBED_OPERATIONS.md` §2.2 → the three arms): `-ControlOnly`
 now **throws** if handed a config carrying gameplay content, and the overlay arm — vanilla +
 telemetry + one *declared* change — is its own flag with its own mod id
 (`com.yurcick.v3_testbed_overlay`).
@@ -1723,7 +1723,7 @@ completed. What they measured for those industries (F111): automotive at 1935 ea
 the flat-cost lifted book electrics and munition loss-making at base from their debut, 29% and 27% staffed on 697 and 841 built levels.
 
 ### The rule it enforces
-THE TIER RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78, CLAUDE.md's governing section): technologies by their GAME era, rungs by
+THE TIER RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78, CLAUDE.md §2.3): technologies by their GAME era, rungs by
 their TIER, the tier derived from the technology's game era (1 → t0, 2 → t1, 3 → t1, 4 → t2, 5 → t3, bumped up only to keep one
 rung per tier), a tolerance of ±1 tier, and every economic multiplier a function of the tier. The rung index is never a key.
 

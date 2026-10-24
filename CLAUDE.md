@@ -1,6424 +1,940 @@
 # PM & Tech Rehaul — Victoria 3 mod
 
-An **economic-realism mod for Victoria 3 (1.13 "Matcha")** that addresses structural
-deficiencies in the base game's economy.
-
-## Why this mod exists (the goals)
-
-The vanilla economy is too forgiving and makes technology feel cheap. Concretely:
-
-- **A technological edge should really matter.** Falling behind on tech should cost you
-  markets; leading should let you out-compete rivals. Vanilla blunts this.
-- **The economy should be more competitive and aggressive** — efficient producers should
-  drive inefficient ones out of a market, not coexist indefinitely.
-- **Upgrading production should cost capital, like it does in reality.** Today, turning an
-  1830s-design factory into a 1930s-design one is *free* — you just flip a production method.
-  That is ridiculous. A more modern, more efficient plant should have to be **built** (real
-  construction cost, real capital demand), not switched on for nothing. This raises the demand
-  for capital and creates a realistic capital deficit as economies modernize.
-
-Everything below — "one main PM", "a building per tier", the profitability ladder — is a
-**means to those ends**, not the point. If a mechanic doesn't serve the goals above, it's wrong.
-
-## ⭐⭐⭐ PRICES MUST NOT BE FLAT — THE CORE DESIGN ELEMENT (user-ruled 2026-08-30, GOVERNING)
-
-**A falling output-price path is not one lever among several. It is THE mechanism the whole design
-rests on**, and it ranks immediately after the goals above. Obsolescence here is price-driven: what
-kills an old building is its output price falling while its input prices do not. Remove the price
-decline and nothing else in the ladder can do the job.
-
-⚠⚠ **THIS IS NOT CURRENTLY ACHIEVED, AND IT IS THE PROJECT'S CENTRAL OPEN PROBLEM — FINDINGS F94.**
-Measured over the four-rung n=3 batch: the design mandates a decline to **0.25-0.84x** of the tier-0
-price and the game delivers **0.66-2.13x, median ~0.95x** — flat, rising for six of eighteen goods.
-At the frontier, actual prices run **1.6-4.6x** the design.
-
-⭐ The consequence is measurable and it is the whole of the arm's failure: realized margins at 1936
-are **t0 23.5% / t1 24.4% / t2 22.7%** — an old building is as profitable as one two rungs newer, so
-the AI has no reason to climb (below-best 55.0% against solver2f's 39.0%), no shift to better capacity
-happens, and productivity lands at **0.958x vanilla** where solver2f reaches 1.562x.
-
-⚠ **A corollary that constrains every recipe-side fix**: with prices flat, *"the old tier dies"* and
-*"1836 matches vanilla"* CANNOT both hold through recipe design alone — killing the old rung at base
-prices means making it unprofitable at base, which contradicts the vanilla-anchored 1836. Recipe
-margins can buy PREFERENCE for the frontier; only a real price decline buys DEATH of the old rung.
-⇒ Work the price path first; treat margin-ladder changes as palliative until it moves.
-⭐ **F97 (2026-09-02) says WHICH unit the decline happens in.** Vanilla itself holds every manufactured
-good within ~15% of base for the whole century (clothes 111→101, tools 108→96, steel 119→106): pop wealth
-progression re-absorbs any glut, so a pop good cannot be held below base. What DOES fall is the price in
-wage units — the flat-cost arm's base wage went ×2.04 against vanilla's ×1.40 — and that is the decline the
-engine's death mechanism reads (a building lays off once its workers fall under 0.66× expected SoL). The
-measured threshold: a rung two behind empties below ~0.2 of the frontier's VA per worker; vanilla's own
-recipes put two rungs at ~1:2.7, which is why vanilla's rung 0 survives wherever the AI does not switch.
-The A/B ladder (§10.68) is designed on that ratio rather than on a £ price path.
-
-## How the goals are achieved (the means)
-
-1. **One main PM per building.** Each economic building keeps a single main production method.
-   The old free "switch your factory to a newer method" upgrade path is removed. Secondary /
-   redistribution groups (automation, luxury, canning, distillery, glassblowing, …) stay.
-2. **A building per tier.** Each former main PM becomes its own building type, unlocked on the
-   same technology the old PM used. Modernizing now means *constructing* the newer building —
-   spending capital — instead of a free toggle. (This is the mechanism for the capital-demand
-   and "tech matters" goals.)
-3. **Profitability ladder.** Outputs/inputs are re-sloped so a tier-N building can't stay
-   profitable once tier-(N+2) buildings flood the market — so a tech lead actually pushes
-   laggards out. Governed by `BALANCE_FRAMEWORK.md` (the balance source of truth).
-
-## ⭐⭐⭐ RECIPES STEER PRODUCTION; AI VALUES ONLY MAKE THE AI FOLLOW PROFIT (user-ruled 2026-10-02, GOVERNING — BALANCE_FRAMEWORK §10.92)
-
-**The user, 2026-10-02:** *"we want it [the ineffectively invested capital] to be as low as possible, and the reason that we fine-tune AI
-values is that it's not low naturally, not for some desire to steer it away. When we do need to steer the industrial production somewhere
-(e.g. some industry is dead and shouldn't be, or even dead and causes ripple effects), we primarily work with recipes to ensure that it is
-effective/profitable for the AI to combat this problem. And AI values only follow to ensure that the AI follows what's profitable."* Recorded
-as a universal principle, valid whatever machinery measures it.
-
-1. **The investment AI should put capital where it pays, and the measure of how well it does is MISPLACED CAPITAL** — the share of new
-   capital whose expected payback is far worse than the best VALID alternative (today FINDINGS **F206/F207**: "grossly suboptimal" = expected
-   payback more than 3× the best valid sector's, or loss-making; vanilla misplaces 10–19% of each decade's capital, the four-rung books climb to
-   24–38% by 1926–36).
-   **It should be as low as possible.**
-2. **AI values — and every other willingness lever (strategies, AI defines) — are tuned for that alone**, because the AI does not follow profit
-   well on its own; never to push it toward or away from an industry or a rung for its own sake. A change to them is judged by whether
-   misplaced capital falls.
-3. **Steering production is the job of the RECIPES** and the rest of the economics a book sets (inputs, outputs, building cost). When an
-   industry is dead and should not be, when a death ripples down a chain, when an old rung should die and does not: make the wanted outcome
-   effective and profitable for the AI. AI values follow, so the AI pursues what is profitable.
-4. **The measurement may change; the principle does not.** "How profitable" is today the expected payback at realised prices and actual wages
-   (F206); "how well the AI pursues profit" is today F207's misplaced-capital share against valid options. Either may be replaced.
-5. ⭐ **EXEMPT, and never measured (user, the same day):** *"if AI stops building infrastructure or government industries or shipyards 'because it
-   doesn't see profits', this'll be a net loss … it's important to exclude them and infrastructure and trade centers from the measurement, even if
-   they technically can generate profit, and most of them -- through goods. Additionally, let's remove gold mines as well (but add a static 5000
-   ai_value to them)."* ⇒ **infrastructure (railways, ports, power plants, dams), trade centres, shipyards, every government-funded building (the
-   engine's `is_government_funded` groups: administration, universities, construction sectors, the military, monuments, canals) and gold mines**
-   are outside the misplaced-capital measurement, and their AI values are set to get them BUILT, not to follow profit. No detailed adequacy
-   criterion for them exists. The gold mine's static `ai_value` 5000 is VANILLA's own (*"Gold mines are very nice for minting revenue and
-   guaranteed profits"*, `03_mines.txt`), which the mod does not touch — every book already ships it; ruled to stay (ON_GAME_UPDATE coupling).
-   ⚠ **The MILITARY INDUSTRIES (arms, munitions, artillery) are NOT exempt** (user, the same day: *"They should not be exempt."*) — privately
-   built manufacturing, measured and profit-following like every other rung; the art academy likewise stays in.
-⇒ It sits beside the no-artificial-limits ruling of 2026-09-03 (hard build blocks are rejected): that one says WHICH levers may touch the AI,
-this one WHAT they are for. It reclassifies the tier desire ladders (1,000 × A^tier, 1,000 × 3^tier) as legitimate only to the degree they correct
-the AI's under-weighting of a rung's REAL profit — F206 §5 measured them overshooting into misallocation (e1a12's three t2 merge hosts at
-15,588 hold 39% of its grossly misplaced capital). The compressed ladder `e1a12-ai1135` is its first test (F208).
-
-## ⭐⭐⭐ THE ANCHOR PRINCIPLE — WHAT A TIER *MEANS* (user-ruled 2026-08-12, GOVERNING)
-
-**Read this before touching the tech tree, the tier ladder, or any rung's tier.** It is the intent the
-rest of this section implements, and where the two disagree, this wins.
-
-1. **SIX of our tiers (0–5) ride on FIVE mechanical game eras.** The game has at most five, and they
-   exist only as machinery — the ahead-of-time penalty and the era base cost. The mapping is
-   **our 0 AND our 1 both sit in mechanical era 1**; thereafter one-to-one, our 2→2, 3→3, 4→4, 5→5.
-2. ⭐⭐ **EACH OF OUR TIERS HAS AN ANCHOR YEAR, AND THE ANCHOR HAS A NARRATIVE MEANING: at the anchor
-   year, a TECHNOLOGY LEADER should hold about HALF of that tier's technologies.** That is the
-   definition of a tier in this mod. It is not a label and not a decoration.
-3. **Tier 0 is anchored well before the 1836 start; tier 5 slightly after the 1936 end.** Both are
-   deliberate. The consequence is intended: **even an experienced player should finish a whole tree
-   only when unusually lucky, playing a strong nation, and probably neglecting the other trees.**
-4. ⭐⭐ **THE ANCHORS ARE AUTHORITATIVE. THE TECHNOLOGIES AND THE INDUSTRIES ARE CALIBRATED TO THEM,
-   NEVER THE REVERSE.** If the tree's dates and the anchors disagree, the tree is wrong. A substantial
-   re-dating or re-banding of technologies is an acceptable cost of meeting them.
-   ⚠ This overturns a reading recorded on 2026-08-12 that treated the dated content as fixed and the
-   anchors as the outlier — that had it backwards.
-5. **It coexists with the vanilla-fidelity premise by dividing the timeline.** At **1836** we hold
-   composition and distribution close to vanilla. **After 1836 only GDP** needs to stay near vanilla;
-   nothing else is bound by it, and the tech distribution in particular is expected to diverge.
-6. ⚠ **The balance UI's economic scenarios deliberately break rule 2, and that is correct.** A scenario
-   at tier N contains tier-N industries of *every* type, even though the principle says half that tier's
-   technology should be unavailable. A scenario is not one country: it is an **amalgamation of several
-   large technology leaders, each ahead in a different subfield**, and it models **no international
-   trade**. So it must contain every chain to be solvable. Do not "fix" this to match rule 2.
-
-## ⭐⭐⭐ THE TIER RULE — A RUNG'S NUMBER IS ITS TIER, AND THE TIER IS ITS PLACE ON THE LADDER (user-ruled 2026-09-13, GOVERNING)
-
-**The user's words, 2026-09-13 ("the final ladder realignment"):** "we always refer to the techs by their actual tech era (which
-has a real game mechanical meaning — unfinished techs of eras under N add penalties to era N tech cost), and always refer to tiers
-by their narrative era between 0 and 3, and same-era industry tiers are roughly the same unlock time, meaning that an industry
-that starts in 1900 is starting not at t0, but at around t2. Adjustments can be made as we don't have too many tiers for good
-alignment, but if I ever see a t0 automobile industry, I will riot." And the tier numbers "have a very strict meaning in the mod,
-as those numbers are the anchors that dictate their economy, by the ladder (our late tiers are uniformly more effective than
-earlier ones)". BALANCE_FRAMEWORK **§10.78** is the record; `tools/lib_tier4_spec.mjs`'s header is the code-side statement.
-
-1. **Two kinds of number, never conflated: a TECH ERA and a TIER.** A TECHNOLOGY has a TECH era (1–5 — the game's mechanical era,
-   also called game era: the era base cost, the ahead-of-time penalty). A RUNG has a TIER (0–3; anchors **1836 / 1875 / 1905 / 1940**,
-   carried by the config as `era_anchor_years`). They map through `era_game_era` **[1, 3, 4, 5]**: t0 ↔ tech era 1 (held at the 1836
-   start), t1 ↔ 3, t2 ↔ 4, t3 ↔ 5; **tech era 2 (researched 1836–1861) sits in the gap and rounds UP to t1**, the first researched tier.
-   Write **tech era 4** for a technology and **t2** for a rung; a bare **era N** that could mean either is now the bug this section exists
-   to stop. ⚠ The CONFIG field is still named **era** — identifiers were not renamed (GLOSSARY §5). Until the rename of 2026-10-21 this item
-   said: write "tech era 4" for a technology and "e2" for a rung; a bare "era" or "tier N" that could mean either is the bug (that tier N was
-   a rung's 1-based position, written rung N since).
-2. **A tier is a statement about UNLOCK TIME.** Rungs of one tier unlock at roughly the same time in every industry, so a
-   rung's tier is DERIVED from its gate technology's game era, bumped up only as far as one-rung-per-tier needs in vanilla's method
-   order (vanilla's ladders are front-loaded — a textile mill's methods sit on game eras 1, 1, 2, 4 — so the bump is what puts a
-   four-method industry on 0, 1, 2, 3). **Tolerance ±1 tier** is the ruled "adjustment"; beyond it the generator THROWS, and a
-   ladder that does not fit (a game-era-2 first method with three researched rungs above it: fertilizer, explosives, motor) needs
-   an explicit `PLACEMENT` ruling in the spec, not a guess.
-3. **The tier is ALSO the rung's place on the ladder — output × A^tier, input value × B^tier, the ×lift on tier 0 alone,
-   building cost by tier, ai_value by tier, the research marks by the unlocked rung's tier — so a rung on the wrong tier is a
-   mis-priced rung.** THE RUNG INDEX WITHIN AN INDUSTRY IS NEVER THE KEY to anything: not a label, not a multiplier, not an
-   analysis cut, not a start rule. Until 2026-09-13 `make_ab_config.mjs` keyed the ladder on k = tier − the industry's first tier,
-   so automotive's t2 rung, munition's t1, synthetics' t1 and electrics' rung were priced as 1836 rungs — a quarter of their
-   tier peers' value added per level in every measured batch (FINDINGS **F111**) — and electrics sat on t1 with a game-era-4
-   technology. Only those four industries changed in the regenerated books; every four-method industry is byte-identical.
-4. **Guarded three ways.** The generator derives and validates (throws); **`tools/lint_tier_eras.mjs` runs inside every
-   `build.ps1`** (throws) and as **landmine L31** in `preflight.ps1` (the config + its paired tree: placement, one rung per tier,
-   output and value added rising with tier, and an A/B book's multipliers as functions of the tier); the book records
-   `_ab.keyed_by: 'era'` and its own regenerating command. A book from before the pass fails the lint by design.
-5. **Where a position still exists it is a lookup key, never a number anyone reads**: `t.tier` in the UI (a DOM key), `tier` in
-   `history_lib.ps1`'s map and `start_baseline.json` (beside `era`, which is what the summary labels by), and `tier` in a
-   start rule — honoured only on the six-rung book; on a four-rung book a rule names its rung by **`era`** or the converter throws.
-
-## ⭐⭐⭐ THE CRITERIA REGISTER — AIM / SOFT / HARD, PER SCOPE, ONE RULE SET FOR THE ITERATOR AND THE REPORT (user-ruled 2026-09-17, GOVERNING)
-
-**BALANCE_FRAMEWORK §10.83 is the record (the rulings verbatim, the register, its calibration, the loss and its validation); `tools/testbed/ledger/criteria.mjs`
-is the implementation** (`--arm <session[,session]>[:<setup>] [--arm …] [--config <book>]`; multi-arm prints the RANKING; the run's own `build_state.json` names its
-config). Every criterion is one of three kinds: an **AIM** (what the config iteration is trying to reach), a **SOFT boundary** (beyond it unacceptable, but the
-economy is not broken: every reading of the run is taken in full, and a soft breach NEVER stops a batch) or a **HARD boundary** (the economy is broken; the run
-records only a binary outcome — **broken by stall** or **broken by runoff** — and ONE broken run ends the config: `stop_watch.mjs` drops the STOP file on it).
-Two scopes with different numbers: the **SHORTLIST pool GBR / USA / FRA / NET / BEL / PRU / NGF / GER taken together** (per country only where a line says so)
-and the **WORLD**. Everything is about the **END STATE** — the 1932–1936 mean, the 1935 point beside it (the 1936 point sits 7–10% off the mean on GDP and
-10–18% on the hoard, so a single reading would flip verdicts at the aims' edges) — never the path; **hard lines per run, everything else on the CONSENSUS of the
-intact runs** (the median of two; with three, the two closest on world GDP; a pair that diverges under F114's bands has no consensus and owes a third run).
-**Shortlist:** W aim **0.6–0.95**× vanilla (WIDENED 2026-09-18 evening, §10.85 — user: "for shortest list, a GDP (and GDP per capita) significantly over vanilla reference is normal … having 95% of workforce (compared to vanilla full employment) at x2 product per productive worker is OK"; the WORLD lines are untouched), soft > 1.0 — which IS "full depeasantation", still unacceptable · U* (unemployment INCLUDING peasants) aim ≥ 2×, soft < 1.0, HARD < 10% pooled · H (pool ÷ GDP) aim < 1×
-(the least important aim; no book meets it and that is fine) · T0 (tier-0 rung workers, by the rung's TIER — automotive's t2 start counts nothing toward T0) aim
-0 at 1936 or falling decade over decade, soft 1935 > 1.3 × the 1900s · T3 ÷ (T0 + T1 + T2) the more the better, low weight · GDP aim **1.1–1.9×** (= 0.95 × 2.0; §10.85), soft
-< 0.95 or > **2.0** — ⚠ the register reads TOTAL pool GDP while the ruling says "per capita"; they differ by the pool's population ratio (conquest moves it up to ~20%) and the report prints both. ⚠⚠ THE AMENDMENT UNSEATS THE INCUMBENT: re-scored, `canon-c19-e0ai500` 5.0 (n=1 intact), the eager `canon-c195-in12` book 5.3, A 1.9 6.6, **the canon 7.9** — the books penalised for being "too rich" are now the best. No re-canonization is proposed on that evidence. ⚠ It also makes pool U*'s "≥ 2×" aim CONTRADICT pool W's (r = −0.98; U* ≥ 2 ⇔ pool W ≈ 0.68, so at the new 0.95 ceiling U* sits on its own soft line) — unruled · PI (the building inputs steel / tools / engines / fertilizer / explosives / dye / paper, in pounds ÷ base in the British, American, French and
-Dutch markets, ÷ vanilla) aim ≤ 0.8 and falling decade over decade, soft > 1.0 · PP (the pop goods groceries / clothes / furniture / glass / fine art /
-automobiles / telephones / radios in WAGE UNITS ÷ vanilla) aim ≤ 0.8, soft > 1.1 · the war goods read only. **World:** GDP aim **0.90–1.00×** (a band since 2026-10-13, user-ruled, BALANCE_FRAMEWORK §10.100: capital abundance on a closed major must be hard to reach for a player, and the step to it sits at world GDP ~1.1, FINDINGS F231; it was 0.95–1.05, `criteria.mjs --gdp-aim 0.95,1.05` restores it; and a CLOSED-MAJOR loss term `gerCM` (weight 1.5) on Germany alone (GER > NGF > PRU; France dropped, it never binds) — full employment there is bad, full employment with the hoard piling up very bad: over 1927–36, e = German U* below 10% scaled 0–1, a = e × hoard over 0.5 GDP ramped to 1 at 1.5, G = mean(e) + 4·mean(a); the consensus carries the arm's LUCKY SEED, the p75 run over all usable runs incl. broken ones, the stated stand-in for a skilled player; the canon's consensus loss 5.37 → 7.28 under both changes) — ⭐ the GDP AS THE GAME DISPLAYS IT (the save's `gdp`), because government minting and prestige/rank scale with it (user-ruled 2026-09-30, BALANCE_FRAMEWORK §10.90, which also closes pop-need caps, construction goods-efficiency and pool-contribution changes as price levers; GDP at base prices is a secondary reading only) — ⚠ that figure tracks value added at BASE prices within 0.94–1.08 over a century, so the mod's lower prices take only ~7% off the world's (FINDINGS F178 §9.4, which qualifies F45's "market prices"), soft outside [0.75, 1.33],
-HARD > 1.5× (runoff) or < 0.5× (stall) at the end state and the 1836–1845 anchor (outside vanilla's 90% CI ± 10% in more than two years) · W aim 0.6–0.95×,
-soft > 1.0 · U* soft < 1.0 · H aim < 1×. ⭐⭐ **THE WORLD PRODUCT CARRIES A DERIVED HARD BAND SINCE 2026-09-19, AND NEITHER H NOR W DOES** (user-ruled, after two corrections that GLOSSARY.md now exists to prevent): *"not H and not W, but rather world product, the combined GDP of all countries (do we have a letter for that? We probably shouldn’t, GDP is good enough). For it, the mod hard boundaries are 95% CI ±10%."* ⇒ the END-STATE world GDP line is **[vanilla’s p2.5 × 0.8, vanilla’s p97.5 × 1.2]**, DERIVED per invocation like the 1836 anchor’s: at n=16 vanilla runs 0.823–1.146× its own median, so the band is **0.66–1.38×** (AMENDED from ×0.9/×1.1 within the hour — *“let’s make it 95CI-+20%, not 10%, for hard bounds on world product. To not disallow 1.3 as hard boundary broken”*), below = broken by STALL, above = broken by RUNOFF, per run. It REPLACES the provisional < 0.5 / > 1.5 lines (`--gdp-hard legacy` restores them). ⚠ "CI" in this project is the PERCENTILE INTERVAL OF THE SIXTEEN SEEDS, never the confidence interval of a mean (GLOSSARY §4). ⚠ It breaks **2 of 11 runs** across the six books of 2026-09-17/19 — canon-lvl-a19b17’s two stalls at 0.60 and 0.45, which every other reading already condemned; at the ×0.9/×1.1 first tried it broke 6 of 11 INCLUDING the canon’s run 1 at 1.30×, which is what the amendment was for. ✅ At the ruled width the band sits OUTSIDE the soft line (0.75–1.33) on both sides, so soft and hard are ordered correctly and the loss’s kink still works — the ±10% version had the hard ceiling INSIDE the soft one and needed a further ruling; this does not. H carries no vanilla-derived bound by the same ruling (*"H is hardly comparable with vanilla anyway"* — vanilla’s own H spans 0.56–1.93× between seeds where its W spans 0.86–1.08×); the W band was measured and is **NOT shipped** (kept behind `--w-hard`, default off, so nothing unruled ships) because its floor lands inside the register’s own W aim and breaks every book (BALANCE_FRAMEWORK §10.86.1). **HARD — CAPITAL ABUNDANCE (agreed 2026-09-17 13:30):** a shortlist member of 50M+ people with U* under 5% in FIVE or
-more consecutive years ending by 1936 AND a mean hoard over them ≥ 1.5 of its own GDP = broken by runoff (vanilla's own seeds break it in 2 of 16 — Britain at 1.5
-and 2.1 GDP; the found configuration's run 1 and the A 2.05 run 1 break it, F130); three years at ≥ 1.0 GDP, five at any hoard, or a hoard alone (> 3 GDP at the
-end, > 2 every year 1931–36 unspent) are SOFT. ⭐⭐ **THE PRIORITY IS A READING GATE SINCE 2026-09-22 (§10.83.8, user-ruled): U\* AND H "AT THE AIM" IN A POOR ECONOMY ARE NOT RESULTS, THEY ARE THE ABSENCE OF A READING** — *"'median U\* at the aim because the world is poor' or 'H at the aim because the world is poor' is not a positive result, it's a lack of any result on U\* and H."* A world that never industrialised keeps its peasants and accumulates no pool BY IDENTITY, whatever the levers do. ⚠⚠ **THE GATE IS NOT AT THE AIM** (the user, correcting the first draft within the hour: *"It's important not to overdo that. Readings at 20% of median to either side are OK. But 0.6 is not, 0.6 does disqualify U\* and H."* — the aim is 1.0 and ±20% is ordinary seed spread; vanilla's own sixteen seeds run 0.823–1.146 of their median, so a gate at the aim would void nearly every run ever measured). ⇒ world GDP **0.80–1.20 = U\* and H READ NORMALLY** · 0.66–0.80 or 1.20–1.38 = **WEAKENED**, quoted only with the GDP beside them and never "at the aim" unqualified · **≤ 0.60 = DISQUALIFIED**. ⚠ The cut between weakened and disqualified is UNRULED — report the band, do not invent a threshold. ⭐ 0.60 sits BELOW the world-product hard floor of 0.66, so a run reaching it is already *broken by stall* and reports no U\*/H at all ⇒ the gate's live region for an INTACT run is **0.66–0.80** (and 1.20–1.38), which is where `probe-sm-b152` run 1 landed at 0.67. ⚠ Stronger than F134's "a stall ranks well": F134 says the LOSS mis-ranks (which a re-weighting could fix), this says the READINGS are absent (which none can). `criteria.mjs` is unchanged — it still prints and scores both, because the loss is a residual and this is a rule about what a REPORT may claim. ⭐ The same ruling KEEPS country-level SHARES as evidence (*"while country-level readings are inherently noisy, still, the shares of something (1−U\*, for instance) should not be discarded completely"*): a per-country LEVEL moves with territory and is weak, a per-country SHARE normalises that away and stands — measured the day it was ruled, six seeds of one base sit together at 59–70% GBR U\* through 1880 and then five fall under 12.1% while one ends at 44.0%, on workforce denominators only ~15% apart. **Priorities: world GDP at 1935 > the pool's W × Y > W.** **THE LOSS** (the iterator’s objective; RE-FORMED 2026-09-18, §10.83.5): L = Σ w · d, d = the distance from the aim interval in units of the metric’s natural seed spread (vanilla’s σ of the same ratio, capped at 5σ; the mod runs’ spread for the T terms) PLUS, beyond a SOFT boundary, the excess distance counted SOFT_SLOPE (2) more times — a KINK, continuous through the line, in place of the 2026-09-17 flat 10 × w step (user: “being 1% over soft cap isn’t instantly infinitely worse than being 1% under … will break minimisation”; the step survives only as `--soft-pen`, default 0; a breach still marks the book “not final” in the report and the ranking); T3 as −w · ln(T3 ÷ rest) and T0 as its share T0 ÷ (T1+T2+T3), the less the better; weights RE-BALANCED (user: “more equally — reduce pool GDP, increase the low-weighted ones, especially T3/rest and T0/rest”) to world GDP 2 · pool W 1.5 · T0 1.5 · T3 1.5 · pool GDP 1.25 · world W 1.25 · pool U* 1 · PI 1 · PP 0.75 · world U* 0.75 · pool H 0.75 · world H 0.5 (the 2026-09-17 set 3 / 2 / 2 / 1.5 / 1 / 1 / 1 / 0.5 / 0.5 / 0.5 / 0.3 / 0.25 is reproduced by `--weights … --soft-pen 10 --soft-slope 0`). ⚠ The re-ranking under the new form was RUN over every book since 2026-09-13 (§10.83.5 holds the table: the incumbent 11.5, C 2.05 ×1.3 14.4, A 1.9 16.2, the eager C 1.95 book 27.9, B 1.8 25.6) and its VALIDATION was RUN on 2026-09-18 afternoon (FINDINGS **F134**, §10.83.6) — ⚠⚠ **IT FAILS THE RULING’S TEST TWICE, AND THE JUDGEMENT IS STILL THE USER’S**: (1) **the whole ranking sits inside the seed noise** — the pooled within-book σ of ONE run’s loss is **11.3** (the incumbent’s own seeds read 6.9 / 29.6 / 15.2), so two books separate only at Δ ≳ 22.5 and **no adjacent gap in the eight-book ranking exceeds 4.8**; the loss DESCRIBES a config’s residual, it does not rank at n=2–3; (2) **a stall ranks second** (C 2.05 ×1.3, world GDP 0.72, above the working A 1.9 book) because the depeasantation axis holds 4.5 of the 13.25 weight across FOUR correlated terms (pool W ~ pool U* r = −0.98, world W ~ world U* −0.99, pool H ~ world H 0.95; 3.9 effective dimensions in twelve terms) and a stall meets the labour aims by keeping peasants and the hoard aim by having no capital — the kink is NOT the cause (the two swap only at slope 5.12). Also measured: σ is vanilla’s spread while the mod’s own within-config spread is **1.3–3.0× wider** (pool GDP 3.0×, world W 1.3× — which is why “the pool’s GDP overshoot” dominates every residual); the T σ is per-invocation and moves a book by ~5 points; the weights CONTRADICT the priority sentence above (pool W 1.5 > pool GDP 1.25). ⭐ **What the loss does get right: the historical arc.** Scored on the register, canon4v-hai3 → canon-je24 → canon-je24-a22 → the incumbent reads **19.3 → 14.6 → 12.2 → 11.2**, with T0 ÷ rest 0.113 → 0.039, PI 0.92 → 0.84, PP 1.04 → 0.83 and pool H 1.50 → 4.17 — the price decline and the old rung’s decline are real and monotone, the hoard is the one line that went backwards. Vanilla scored against the mod’s own loss reads **16.8**. Four fixes are PROPOSED and unruled (one term per axis; the priority order restored; σ from the mod’s own spread; a fixed T σ + a floor under −ln(T3 ÷ rest)); `criteria.mjs` still ships the ruled defaults. The 2026-09-17 form’s validation (the found configuration 5.3, the A 1.9 pair 17.6, then the soft-breached books, then the stalls, every runaway OUT) stands as the record of that form. ⭐⭐ **AMENDED 2026-09-18 EVENING (§10.83.7) — three of the four fixes RULED IN and implemented, and the statistics ruled DIRECTIONAL.** The user: “On ‘diffs not being statistically real’: unfortunate, but I can’t think of finer metrics, and increasing statistical power would take too long. So treat as directional, especially when moving a lever leads to theoretically understandable results.” ⇒ a lever’s reading is evidence of its DIRECTION weighted by whether the MECHANISM is understood, the pooled reading across a whole lever axis outranks any two-book comparison, and THE ADOPT RULE’s “beat by 3” is retired as a significance test. Implemented in `criteria.mjs` (its defaults ARE the ruled form): **world U* is OUT of the loss** (r = −0.99 with world W — kept as a SOFT flag; pool U* and world H are KEPT, the user refused those drops); **the priority line is restored in the weights** — world GDP 2 · pool GDP 1.5 · pool W 1.25 · world W 1.25 · T0 1.5 · T3 1.5 · pool U* 1 · PI 1 · PP 0.75 · pool H 0.75 · world H 0.5; and **σ is a FIXED CONSTANT per line, the pooled WITHIN-CONFIG spread over the 29 intact runs of the 2026-09-13→18 books** (world GDP 0.228, pool GDP 0.440, pool W 0.148, PI 0.078, T0 ÷ rest 0.025, …; `--sigma vanilla` restores the old seed spread, `--sigma runs` recomputes per invocation) — fixed so a loss is comparable ACROSS invocations. Re-ranked: the incumbent 8.40, A 1.9 9.24, C 2.05 ×1.3 9.35, e0ai500 10.48, the eager C 1.95 book 13.05, B 1.8 15.64, flat A 1.6 19.97, A 2.2 in12 21.65 — the working book is back above the stall; σ of one run’s loss 6.6, separation ≈ 13.1. ⭐ **PROPOSED, NOT RULED (F136): THE OBSOLESCENCE TERM** in place of T0 — per industry, N = the MODAL rung, `shed = 1 − workers(N−2 or N−3, end) ÷ that rung’s own century maximum`, averaged; 5.0× signal-to-noise against T0 ÷ rest’s 2.8×, a stall cannot score well by staying poor, and the margin half is NOT scored (survivorship — the engine lays off the unprofitable buildings before they can be counted). ⭐⭐ Its census is the sharpest reading the register has produced: **the ladder works COMPLETELY in the war and heavy chains** (arms, artillery, explosives, steel shed 92–98% of the old rung’s peak workers, three at NEGATIVE margins) **and barely at all in the consumer chains** (glass 14%, motor 26%, textile 29% shed, all still ~21%; textile’s t0 earns 21% against its own frontier’s 25%) — F97’s pop-price mechanism, per industry. ⭐ And F135 answers where the hoard comes from: **our realised margins are twice vanilla’s** (frontier 46–52% against vanilla manufacturing’s 23.1% at 1935, our t0 already above it), so the pool’s INFLOW is the source; the cost slope is the only lever that takes the hoard down while also taking W down (1.73% of hoard per 1% of world GDP, regressed over 11 runs), because spending the pool converts it into jobs by identity while a dearer building absorbs it into construction points. **Levers: A, B, the input penalty, eagerness to build (ai_value / strategies / defines), building cost;
-the 1836 anchor stays (except the input penalty), everything else in the game stays.** A distant possibility, NOT to try unless decided explicitly: an
-OUTPUT-goods penalty on the 1836 recipes to raise prices at the anchor. ⇒ SUPERSEDED as operational criteria: the 2026-09-15 capital-abundance flag, §10.79's
-persistent-hoarding tests, §10.82's ceilings and §10.82.1's plateau test, F114's TARGET bands (the bands remain the divergence test) and the 2026-09-14 1.3×
-stop (the fallback only). Their scripts (`capital_flags.mjs`, `majors_workers.mjs`, `major_series.mjs`, `alignment_check.mjs`) stay as diagnostics.
-
-## ⭐⭐⭐ REPORT TRUE PROFITS; PREDICT THE WAGE FROM THE ECONOMY AND THE DECADE (user-ruled 2026-09-20, GOVERNING — BALANCE_FRAMEWORK §10.87, FINDINGS F152)
-
-**The user, 2026-09-20:** *"in reports, always report true profits, not margins (= value added / input value)"* and *"in predictions, try
-assuming the actual wage share by estimating individual wages and applying profession multipliers. Note that an industry tier doesn't have a
-'predicted wage', the decade and the economy does (e.g. 'stalling GBR in 1920')."* Both name the same defect: **we were quoting a RATIO whose
-wage term was either assumed (a flat `wage_pct` of 0.25) or unreconcilable (F92's identity, which mixed market and base prices).**
-
-1. **REPORTS QUOTE PROFIT IN £** — per week, with the annual and per-staffed-level figures where they help. A margin may sit BESIDE it, never
-   instead of it, and never as the headline. ⚠ A tool that cannot compute a UNIT-CORRECT margin prints NO margin rather than the old one:
-   `rung_econ.mjs` and `slid_vs_unslid.mjs` aggregate one rung over EVERY market at every price, so there is no single output price to re-value
-   `va_out` at, and a wrong number is worse than an absent one.
-2. ⭐⭐ **THE WAGE MODEL IS `tools/lib_wage_model.mjs`, ONE implementation**: `W = wage(tag, year) × Σ(employees × wage_weight) × staffed levels`.
-   The weights are vanilla's, read live from `common/pop_types`. **THE UNIT IS IN THE DEFINES** — the engine's wage rate is *weekly £ per
-   `POP_SIZE_PACKAGE` employees*, so **£/employee/week = a save summary's `base_wage` ÷ 10,000** (GBR 1840 reads 0.0610, against F26's
-   independently measured 0.0610 Austrian / 0.0796 Belgian). `config/measured_base_wages.json` is the committed path per tag per year, median
-   over the vanilla n=16 baseline. ⭐⭐⭐ **THERE IS NO PREMIUM AND NO PROFIT TERM — the line above is the whole model** (F152 §10, settled
-   against the game's own building panel; it RETIRES the 1.52× of §4 and the `1.19 + 0.30 × profit` of §8, both of which were artefacts of
-   approximating revenue as base-priced `va_out` × a price multiplier). Scored against the EXACT bill a save reports, it reads
-   **0.85 / 0.92 / 0.99 / 0.99 / 1.01 / 1.09** at 1836.2 / 1836.10 / 1857 / 1877 / 1897 / 1921 — right to ~1% in the median for most of the
-   century, the low readings being the opening year before wages settle. ⚠ The per-building spread is real and wide (p10 ≈ 0.45, p90 ≈ 1.6–1.8):
-   never quote this for ONE building. ⚠ The claim built on the retired coefficients — that a recipe cannot set a margin because the wage damps
-   it by 1/1.30 — is withdrawn with them.
-   ⭐ **`profit = revenue − inputs − wages`, and DIVIDENDS AND SUBSIDIES SIT BELOW IT** (the user, reading a live game: a building paid a 6.13k
-   dividend against 5.51k of profit and ran its reserves down). `profit_after_reserves` — what the summary calls `profit` — IS the clean
-   pre-distribution figure ruling 1 asks for, so nothing needs adding to quote the right thing.
-   ⚠ The wage share of TOTAL cost is 54% → 29% across the century for the WHOLE economy but **15–23% for MANUFACTURING ALONE** — BELOW the flat
-   25%, not above it (the whole-economy figure is carried by labour-heavy, input-light farms and mines). So for the TIERED industries the flat
-   share was reasonable. It is replaced because it is a CONSTANT where the truth is a property of the economy and the decade, and because a share
-   OF GOODS cannot see a building whose employment is not in `t.employment` — the ART ACADEMY, whose jobs live in its OWNERSHIP PMG and which
-   `tierEmployment()` now charges its real 9,500 wage units (F143 §1a). ⚠ `wage_pct` survives ONLY as the config-side accounting convention
-   `make_ab_config`'s `target_be` and `lint_solvency.mjs` (L18) use; re-basing those two is OPEN and needs its own ruling.
-3. ⭐⭐ **THE MARGIN IDENTITY IS REPAIRED.** `va_out`/`va_in` are BASE-priced and `profit` is MARKET-priced, so F92's
-   `profit ÷ (va_out − profit)` mixed them (F150). The repair re-prices value added with the building's own goods mix:
-   **`margin = profit ÷ (R − profit)`, `R = va_out × (market price ÷ base)`** — the implied wage bill is then positive in 490 of 520 priced
-   vanilla entries, against 26% of entries and 45% of LEVELS negative before. ⚠ It is **UNDEFINED, not approximate**, for a building with no
-   goods flows (financial districts, manor houses, company HQs: GBR 1900 alone is £2.75M/wk of unscoreable profit) — those report profit only.
-   ⭐ **F92's 25.8% 1836 anchor STANDS**: at 1836 prices sit at 0.943 of base, so like-for-like the repair reads 30.5% against 30.9%, and the
-   gap to 25.8% is a SAMPLE difference (the 7 instrumented markets are the rich ones), which `vanilla_margins.mjs` now prints both ways.
-   ⭐⭐ **AND IT IS A WORKAROUND, NOT THE ANSWER: save-summary v9 (2026-09-20) carries `goods_sales` and `goods_cost`** — revenue and inputs at
-   MARKET — so from v9 on nothing needs re-pricing and `wages = goods_sales − goods_cost − profit` is exact. The multiplier is for PRE-v9
-   sessions, which cannot be back-filled because the harvester reaps the `.v3`.
-
-## ⭐⭐ THE INSTRUMENTED TAG LIST IS ELEVEN, AND THE POOL, THE MAJORS AND THE PRICE-TRACKED MARKETS ARE ONE FILE (user-ruled 2026-09-20)
-
-**GBR · FRA · USA · PRU · NGF · GER · NET · BEL · UNL · RUS · JAP.** The user: *"add NGF and United Netherlands (NET+BEL, I'm not sure which tag
-in game terms) into both shortlist of reported countries, shortest list of high-tech majors, and the list of price-tracked markets."* The tag is
-**UNL**. `tools/testbed/ledger/lib_markets.mjs` is the ONE definition of all three lists, for nine readers.
-⭐ **UNL IS NOT HYPOTHETICAL AND IT WAS COSTING US MEMBERS**: vanilla's own formation rules (`ai_will_do = always`) put it in **2 of the 16
-vanilla baseline seeds from 1876** and in **run 2 of `20260920_114003`**, where NET and BEL do not exist and UNL holds **£201M of GDP at 1935** —
-every pool listed NET and BEL and not UNL, so those seeds silently reported a smaller, poorer shortlist. ⚠ `UNL_ADJ` is **"Dutch"**, so its
-market is still "Dutch Market": the market NAME does not identify its leader, which is why prices are keyed by TAG and the tag resolved per run
-(the German market reads Prussian → North German → German for the same reason). ⚠⚠ **PI/PP are read on the INTERSECTION of the arm's markets and
-vanilla's, and the basis is printed** — the new German and Belgian prices enter the register the day a vanilla baseline carries them, not before.
-
-⭐⭐ **AMENDED 2026-09-21 — MARKET CONTINUITY, AND WHICH BASELINE A REPORT MAY QUOTE.** Two rulings, both recorded in FINDINGS **F153 §6–§7**:
-1. **A STATE'S MARKET IS ONE SERIES ACROSS ITS TAG CHANGES** (user: *"while this is not guaranteed, assume continuity: GER is not a different market
-   than NGF or PRU, and UNL is the same as NET. We don't need separate references, just a priority set: 'if GER exists in 1935, it is assumed to be the
-   continuation of PRU'"*; and *"UNL not forming should not be a blocker"*). Implemented as `MARKET_FAMILY` / `seriesOf()` / `groupBySeries()` in
-   `lib_markets.mjs`, and **`criteria.mjs` intersects the price basis on SERIES, not market NAMES**, keeping ONE name per intersecting series.
-   ⚠ **Belgium is its own series** — the ruling names only "UNL is the same as NET", so where UNL stands the Belgian series ENDS.
-   ⭐⭐ **EXTENDED 2026-09-21 TO THE FRENCH COMMUNE, THE ONE STATE THAT RENAMES ITS OWN MARKET** (user: *"For the future, fix the
-   communard/french discontinuity too"*, and *"The French Commune is unique in many things, including in how often it can appear.
-   A bespoke solution would be OK"*). A market is named after its leader's ADJECTIVE, so a change of government normally keeps the
-   name and the series for free; France going communard makes it the **Communard Market** on an unchanged TAG, and the series
-   simply ended. `MARKET_NAMES.FRA` now carries both names. ⚠⚠ **It was never an arm-side quirk — it is in the PINNED BASELINE:**
-   5 of the 16 seeds of `20260821_131149` carry Communard rows (run003 171 against 338 French, about a third of that seed's
-   instrumented French life), so BOTH sides of PI/PP were losing the same country, unevenly, seed by seed.
-   ⭐ **Republics lose nothing, verified over every `markets.tsv` this repo has written**: British Republic, Russian Republic,
-   Republic of Japan, Japanese Taikunate, French Republic, French Empire, Germany, United Belgian States and United Netherlands
-   all keep their parent's market name. The Commune is the only same-state rename in the whole corpus.
-   ⚠ **Civil-war REVOLT states are deliberately NOT merged** ("Modernist British Market", "Japanese Proletarian Revolt Market",
-   "Socialist Belgian Market", …): the ruling is about SUCCESSION, and a revolt can coexist with its parent, so folding one in
-   would merge two live economies. They stand alone.
-   ⚠ **What it changed**: the arm's basis, not the reference — vanilla's PI median stays 1.02 (the Commune arrives late and in a
-   minority of seeds, and a median is robust). Of the decision-relevant arms only `20260919_224153` (already out on world GDP)
-   carried Communard rows; the incumbent canon's sessions and `anch-costslide` carry none, so no past decision moves.
-   ⚠ **It changed no measured number** (`20260920_114003` re-scores to PI 0.87 / PP 0.69 / loss 7.97, identical) and it does NOT rescue the end state:
-   an arm instrumented on PRU alone simply stops logging its German market when Prussia becomes the NGF, and continuity cannot recover a series that was
-   never recorded. What it buys is the case nobody had hit — an arm whose Germany is still the NGF at 1935 against vanilla's German Empire, which by NAME
-   intersects to nothing. ⇒ **the TAG LIST, not the intersection rule, is the binding constraint**: the eleven-tag list works because it names PRU, NGF
-   AND GER, so whichever form a run is in gets logged.
-2. **THE PINNED n=16 BASELINE IS THE DEFAULT REFERENCE; THE ELEVEN-TAG n=3 ONE IS USED ONLY WHERE THE JOB NEEDS A MARKET IT ALONE CARRIES — AND ANY
-   RESULT TAKEN FROM IT MUST SAY SO WHERE THE NUMBER IS QUOTED** (user: *"mostly rely on the original set with higher n … when needed to compare using
-   the other runs with lower n (because the job dictates the need to use, say, NGF), highlight that explicitly when telling the result"*). The discipline
-   is the fix — this RETIRES the proposal to teach `criteria.mjs` a second `--van`.
-
-## ⭐⭐⭐ THERE IS ONE CANON, AND THE SIX-RUNG BOOK IS RETIRED FOR GOOD (user-ruled 2026-09-16)
-
-**The user, 2026-09-16:** *"We likely won't return to the six-rung for UI bloat reasons, even if it worked not that
-bad mechanically. If it is still listed as main/canonical somewhere, it's a mistake."* So: the six-rung ladder is a
-CLOSED line, not a dormant alternative. It is kept only as the record of how the four-rung book came to be, and as
-the source its machinery still needs (`MOD_CONFIG=config/mod_config.six_rung.json`). **It was mechanically sound —
-the reason it is closed is the UI, which has to render a rung per tier per industry and becomes unreadable at six.**
-⇒ Nothing may describe it as the canon, the shipped book, or the current method. Where an old banner below still
-reads that way it has been corrected in place; the headings that follow are HISTORY.
-
-## ⭐⭐⭐ THE CANON IS THE ARTMERGE ARM, `jex-dam4s-rs`, SINCE 2026-10-12 (user-ruled: *"CANONIZE artmerge with all these additions"*; BALANCE_FRAMEWORK §10.99; FINDINGS F227)
-
-⭐⭐⭐ **SINCE 2026-10-21 THE CANON'S BYTES ARE `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` + twin** (sha256 `64c024535cbd9b71`; the
-twin unchanged, `04ac513168388956`) — user: *"Canonise the monopoly effects on intenational trade only kicking in in extreme cases of over 99% supply."*
-It is the previous canon (`jex-dam4s-rs-x25-m10ac-dpriv`, below) + `game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` + the `_wm99_variant`
-record, nothing else (BALANCE_FRAMEWORK §10.102, FINDINGS F241 / F247 / F248): the world-market monopoly markup (+0.2 × the leading exporter's share of
-world exports, on every traded good under the engine's default threshold) now applies only to a good one market exports above 99%. The build differs
-from the previous canon's in the `NEconomy` block of `common/defines/01_pm_rehaul_defines.txt` and the build stamps. Built, linted and DEPLOYED 2026-10-21
-10:40 (the playtest build `mod_playtest_wm99/` carried the same book without telemetry).
-⭐ **POLISH, 2026-10-21 (display only):** both canon copies gained `research_events.count_display` and the `_polish_2026_10_21` record — how the
-counted condition entries read in the research entries and their bar tooltips; no trigger, mark or script value moved. sha256 `6ae883ec91c7036a`
-(the twin unchanged). The research texts and bar lines were rebuilt the same day (BUGS_AND_FIXES 2026-10-21). The generated-text pass the same day
-(commit `65ea447`) changed only display labels in both copies (sha256 `adb92ffe3c8c3102`).
-⭐⭐ **POLISH, 2026-10-21 NIGHT — THE RULINGS CANONISED AT ONCE** (the user: *"all changes we just introduced are instantly canonised, and the batch
-goes with them"*): both copies gained `vanilla_value_overrides` (the four flat research adds ×1/3), `secondary_goods_override` (the bloc canning at 85),
-the tooling / explosives subsidies at `none`, `research_events.marks_whole_levels` and the `_polish_2026_10_21b` record — **sha256 now
-`728f2c7f84e6f467`** (the twin unchanged); the same night's build adds the tier-reference fix (`emit_vanilla_refs.mjs`, 63 vanilla files), the DLC-gate
-check, "Tier N" names, `_desc` references, the dropped no-op define and the unshipped identical starting-inventions file (POLISH_1_0.md, commits
-`ad1b306`, `94ae51c`). This is the book the alternating n=16+16 batch measures (`tools/testbed/schedules/alt_vanilla_canon_n16.json`). ⚠ While it
-runs, nothing may be canonised into the named copy and no emitter, `build.ps1` or `tools/testbed/**` file edited in this checkout: the scheduler
-rebuilds the mod before every run.
-(HISTORY) From 2026-10-21 17:22 to 17:48 the deployed copy was `mod_playtest_damcheck/` (config `mod_config.damcheck.json`, gitignored: the canon +
-`dams.probe.grant_tags [GBR]`) for the user's in-game dam checks; the canon was redeployed at 17:48.
-⭐ **Why now, when F247 said no:** its n=4 played at ×1.18 of the SUMMER vanilla (194.2 min against 165.0) — but vanilla itself, re-run on 2026-10-20/21
-(n=6, the same game version and today's harness), plays at **178.5 min**, ×1.08 of the summer, and stays ×1.08–1.09 slower at the SAME world size
-(F248). Against the vanilla of the same days the book reads **×1.09, inside the +10% budget**. ⚠ Two runs of four sit in clusters 1 + 2 (the other two are
-fleet loops), and the October reference is n=6, so the margin to the budget line is thin; the alternating batch (`alt_vanilla_canon_n16.json`) is what
-settles it. ⚠ Still unmeasured: the threshold apart from private dams.
-⭐⭐ **FROM 2026-10-16 EVENING TO 2026-10-21 THE CANON'S BYTES WERE `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json` + twin** (sha256
-`fc7490eb6288514b`; the twin unchanged, `04ac513168388956`) — user: *"Canonize unlifted engines and conditional merge-host desire"*. It is F239's measured
-book `jex-dam4s-rs-x25-m10ac` (the x25 canon through its own chain with `make_ab_config --in0-for motor:1` — the engines' inputs ÷ 1.2, §10.101 — and
-`make_merge_config --ai-rule cond` — each merge host's desire is its own rung's tier value, raised to the merged rung's once the owner holds the merged
-method's technology, §10.91.2) **plus `dams.private = all`** (the change below, canonized the same afternoon). Field diff against `jex-dam4s-rs-x25-dpriv`:
-the three motor rungs' inputs / target_be / wage_pct, the five merge hosts' ai_value + `ai_value_cond` (food and paper 1,000 → 3,000; textile, furniture
-and steel 3,000 → 5,000; fertilizer 1,000, no block), and the provenance records — nothing else; against the measured m10ac book: `dams.private` and its
-records only. Measured as m10ac WITHOUT private dams (F239, n=3): 3 intact, world GDP 1.02 / 1.04 / 1.12, consensus loss 6.72 (F227 7.28), misplaced
-capital NOT lower (22% median against the canon's 20%), play ×1.06. ⚠ The combination is UNMEASURED over a century. Built and DEPLOYED 2026-10-16 20:42.
-(HISTORY) From 2026-10-17 21:23 to 2026-10-21 the deployed copy was `mod_playtest_wm99/` (user-asked, for a playtest): the wm99 book that is now the
-canon, without telemetry. On 2026-10-20 F247 read it NOT canonised (×1.18 of the summer vanilla); that reading was overturned the next day by F248's
-drift (above).
-⭐⭐ **FROM 2026-10-16 AFTERNOON TO EVENING THE CANON'S BYTES WERE `config/mod_config.jex-dam4s-rs-x25-dpriv.json` + twin** (sha256 `5bd4c706551d4da8`; the twin
-unchanged, `04ac513168388956`): `jex-dam4s-rs-x25` with **private dam construction everywhere**, `dams.private = all` (user: *"Canonize this change"*,
-the variant *"Everywhere, and mandate their subsidies"*; BALANCE_FRAMEWORK §10.89.14, FINDINGS F239–F240). Field diff against `jex-dam4s-rs-x25`:
-`dams.private` and its `_dam_private_variant` record, nothing else; the subsidies were already mandated (the four dam types `must_have` in every
-administrative strategy, and the probe found every privately built level subsidised). The built mod differs from the x25 build only in the dam
-buildings file. ⚠ UNMEASURED over a century: the mechanism was probed at exaggerated values (F240). Built and DEPLOYED 2026-10-16.
-⭐⭐ **FROM 2026-10-13 TO 2026-10-16 THE CANON'S BYTES WERE `config/mod_config.jex-dam4s-rs-x25.json` + twin** (sha256 `d6a47ee01fb8ae87`; the twin unchanged,
-`04ac513168388956`): `jex-dam4s-rs` with THE ONE INNOVATION PARAMETER x = 25 (BALANCE_FRAMEWORK §10.101.1, user-ruled: innovation base = cap base =
-the cap's literacy term = x, universities × x/150) — field diff against `jex-dam4s-rs`: the universities' multiplier 0.5 → 1/6 and its `innov_x`
-record, nothing else (`make_research_levers_config --innov-x 25`, then the same rework and society steps). ⚠ UNMEASURED: F227's numbers are
-`jex-dam4s-rs`'s. Built and DEPLOYED 2026-10-13 (user: the game closed).
-`config/mod_config.json` and `config/tech_tree_options.json` were VERBATIM copies of `config/mod_config.jex-dam4s-rs.json` + its twin
-(`tech_tree_options.jex-dam4s-rs.json`) from 2026-10-12 to 2026-10-13. The book = the artmerge arm described in the next section (crafts + six merges, t1 anchors, the 1.2
-pop-good lift, the compressed desire ladder, textile's host at its own cost) + the extra research entries (§10.95) + the two TICK-COST FIXES
-(four-class resource-slot dams, script-placed research entries — §10.89.13) + the §10.97 research rework (research halved for every source,
-non-additive literacy-gated industry entries, 20 stages, follower halving, AI schooling) + the §10.98 entries (ships, frontline, contagious
-ideas, tropical empire, civilizing mission, state apparatus, universities, finance, cities, antibiotics; follower marks, first acquisition ×2).
-Measured n=3 (F227, stitched session `20261012_203800_jex-dam4s-rs-stitched-n3`): 2 intact / 1 broken by runoff (world GDP 1.04 / 1.09 / 1.45),
-consensus loss 5.37, the majors at 0.97 of vanilla's technology gain, the leader on the anchor principle (45 / 38.5 / 50% of game eras 3 / 4 / 5),
-play ×1.005. The emitter's revolt fix (no placement in a revolutionary country) came after the batch and was probed on the book (20261012_220651:
-0 duplicate-placement errors over 1836–1856 against 49 before, technology and GDP unchanged). Built and DEPLOYED 2026-10-12 22:37 (the default
-build: `mod/` and Documents' `pm_tech_rehaul` are the canon again; the `ra` playtest build that stood there is kept in `mod_playtest_ra/`).
-⚠ **KNOWN OPEN ITEMS:** one runoff seed in three (F227; the wm99 book's n=4, F247: a stall in one run of four — the USA — and Britain near
-capital abundance in two); military technology ~10 behind vanilla's count (no tech-era-5 military technology anywhere — LEFT FOR MOD 1.1,
-POLISH_1_0.md Q5, with the user's AI-weight approach); tech spread ×2 and a society research multiplier deferred.
-⚠⚠ **THE PRE-ARTMERGE FAMILY (`canon-dams-family-nolog` and every book before it) IS NO LONGER CANON.** Its files are kept, not deleted (yet), as
-records. **RETURNING TO IT WOULD NEED THE PERFORMANCE CHANGES REIMPLEMENTED**: those books carry neither tick-cost fix (dams as four-class
-resource-slot buildings, `dams.layout = resource4`; research entries placed by triggers, `research_events.placement = script` — F220/F221), nor
-§10.95/§10.97/§10.98. Every section below that calls a pre-artmerge book "the canon" is HISTORY.
-
-## ⭐⭐ THE ARTMERGE ARM — ARTISANSHIP CRAFTS (LINE A) AND SIX RUNGS MERGED INTO METHOD SWITCHES (LINE B) — CANON SINCE 2026-10-12 AS PART OF `jex-dam4s-rs` (user-ruled 2026-09-30; BALANCE_FRAMEWORK §10.91; ROADMAP steps 12–13; FINDINGS F180). The text below is the arm's history while it was under test
-
-**Line A:** six t0 rungs (Bakeries, Handsewn Clothes, Handcrafted Furniture, Forest Glass, Crude Tools, Pulp Pressing) become 500-worker
-craft rungs — skilled, labour-heavy, construction cost ÷50, base-price break-even ~140% — in a child building group `bg_pmr_crafts`
-(no economy of scale, urbanization 2, infrastructure ×1/10); the 1836 start holds employment (×10 levels) and its pops are re-typed into
-the craft professions; companies cannot build or form off them. Two staffing variants are probed (the ruled mix with 30–50% machinists,
-and masters-as-shopkeepers at the same wage units), because machinists need literacy above 10% (F180 §2). **Line B:** Baking Powder,
-Electric Sewing Machines, Spray Finishing, Paper Bleaching, Improved Fertilizers and Electric Arc stop being buildings and become second
-main methods of the rung below, at the geometric-midpoint cost (host × √1.9), recipes verbatim. They were built as ALTERNATE books (`artisan6`,
-`artisan6-shop`, `merge6`) and measured separately against `canon-dams-family` (F181–F187); nothing about them reaches `config/mod_config.json`
-until the user rules on measured results.
-⭐⭐ **ONE BOOK SINCE 2026-09-30 EVENING (user-ruled, BALANCE_FRAMEWORK §10.91.3):** *"From now on, combine them always. After this arc (maybe
-2-3 days), I'll finalise the decision on whether both stay and get canonised or both go."* ⇒ measure only **`artmerge6`** = `artisan6` + the
-merge keys (proven by field diff; the tree twin is the canon's); the lines are canonised or dropped TOGETHER. The staffing is the machinist
-mix (*"The one with the machinists"*; `artisan6-shop` dropped, kept as a record).
-⭐ **HOW A MERGE IS EXPRESSED (2026-09-30):** the removed rung keeps its tier record and gains **`method_of: <host key>`**. The builder then
-emits no building for it: its main method joins the HOST's main group, gated by its own technology (`unlocking_technologies`), and the host
-carries the midpoint `building_cost` / `ai_value` (`_merge` records the pairs; L31 checks both). Every emitter follows: `emit_secondaries`
-mints each of the host's secondaries **ONCE for the building since 2026-10-11** (user-ruled, §10.91.2: the same absolute numbers under every
-main method, as vanilla does by construction; sized to vanilla's share of its most advanced main method applied to ours; a main method under
-which a line would go negative is left off its `unlocking_production_methods` list). From 2026-09-30 to 2026-10-11 it minted one copy per main
-method, scaled to it, which broke the merge ruling; ⚠ from 2026-10-05 those copies were `is_hidden_when_unavailable` and the player could never
-select one (BUGS_AND_FIXES 2026-10-11); `emit_research_events` counts a merged rung as the host's levels running its method (`has_active_production_method`,
-the trigger vanilla's art journal entries use); `emit_companies` keeps merged keys out like craft keys; `convert_history` THROWS on a 1836
-block landing on a merged rung (none of the six does). ⚠ **The save summaries cannot tell the two rungs apart by building type** — a merged
-rung's levels are the host's `pms` entries for its method: read them with `tools/testbed/ledger/merge_methods.mjs`. The register's T0–T3
-split a host's workers by method since 2026-09-30; the old-rung census and obsolescence readers still count by building type.
-⭐ **PROBED 2026-09-30, BOTH LINES (F181, F182):** the craft books load and hold their staffing, with the ownership fix confirmed; the merge
-book's switch works (the AI moves hosts to the merged method one building at a time, no construction). ⭐ **THIRTY YEARS EACH (F184,
-1836→1866, n=1 per book):** both worlds grow with the canon's (craft 0.94–1.02×, merge 1.00–1.07×); the craft run's shortlist lagged
-11–17% on a political seed (the Springtime from Austria in 1840, the earliest of 23 runs); Baking Powder and Bleached Paper spread decades
-before the canon builds those rungs. ⭐ **WHY CRAFTS STAY UNDERSTAFFED (F185):** not literacy (every case state holds more qualified
-machinists than the craft lacks; the least literate states hold the best-staffed crafts) but the engine's hiring rules against the crafts'
-economics — profit under 25% of revenue (no active hiring, no wage raises, wage cuts at 15%) and value added per worker at or under the £3
-hiring floor (`BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES`), which the craft recipes clear only at output prices of 100–124% of base
-(vanilla's first methods at 74–81%); new craft levels are built and left 7–30% staffed. ⭐ **WHAT THE EMPTY CRAFTS COST (F187):** the crafts
-standing new at 1866 took 10,932 construction points (£5.9M) — 0.48% of all construction, 0.68% of economic and 1.7% of tiered construction —
-and 36% of it stands empty (0.17% of all construction); the canon spent a median 115,000 points (£66M, 5.0% of all construction) on the same
-six t0 rungs in the same years, and the merge run's new t0 factories stand 36% empty as well. ⭐ **THE CRAFTS' HIRING FLOOR, PROBED (F188;
-user go-ahead 2026-09-30 evening, §10.91.3):** **`artmerge6-floor`** = `artmerge6` + `min_productivity_to_hire = 0.01` on `bg_pmr_crafts`
-(`make_artisan_config.mjs --hire-floor`), against `artmerge6`, 2 × 1836 → 1846 (session `20260930_205540_craft-floor-10y`). The setting stays
-inside the crafts (every other group under the £3 floor fails to hire as before); craft failed-hire levels 1,297 → 306, craft workers +118k
-(+4.8%) taken from peasants and the unemployed with FEWER hires from other industries (29% → 11% of the crafts' hires); staffing +1.3 points
-world-wide (inside the seed spread) but glass +10, tooling +9, Korea 47 → 96%; new crafts still pause near 10%; nothing outside the crafts
-beyond the spread of two no-floor seeds. ⭐⭐ **THE FLOOR IS RULED INTO THE ARM (2026-09-30 late evening, §10.91.3):** *"This threshold
-reduction is now a firm part of the 'artisans + merges' arm, implement it."* ⇒ **THE ARM IS `config/mod_config.artmerge6-floor.json`** (the
-bytes F188 measured); `make_artisan_config.mjs` defaults to the floor, `artmerge6` is the no-floor record. ⚠⚠ **CORRECTED 2026-10-01: THE
-RULED FLOOR IS £2, NOT 0.01** (user: *"not to 0.01, but to £2, so only a third off"*) — 0.01 was the probe value, written in as ruled because the
-ruling named no number; F188, F191, F194 and its readings F195/F196 all ran at 0.01, i.e. not on the intended arm for this key. The generator
-now defaults to `--hire-floor 2`; written books keep their recorded 0.01 (§10.91.3's correction). ⭐ **THE RECIPES AGAINST VANILLA
-AND THE CANON (F189):** per worker the crafts make 43–75% of vanilla's goods and pay 17–34% more wages (value added per wage unit 17–42% of
-vanilla's); against the canon they cut food and paper (×0.59 and ×0.21 per wage unit) but sit ABOVE the four SLID industries' t0 (×1.1–2.2 —
-the anchor slide had already priced those a rung below vanilla); break-even at base 115–140%; a fifth of the canon's capital per worker.
-Realised at 1845 they earn 18–47% margins (textile's craft out-earns its own t1) and return 1.3–5.4 £/wk per construction point against the
-t1's 0.4–1.6. No century batch of the combined book has run: the 2+1 is prepared (`artmerge6_floor_n2.json` + `_tb.json`), not launched.
-⭐⭐ **THE STAFFING IS RE-RULED 2026-10-01 (§10.91.4): NO MACHINISTS — 30% SHOPKEEPERS + 70% LABORERS**, so the Petite Bourgeoisie represents
-the artisans (F190: the machinist crafts had not moved its clout), with craft output ×1.10 food / ×1.30 glass / ×1.20 tooling / ×1.20 paper so
-the crafts can pay the canon t0's wage level at early realised prices. ⇒ **THE ARM UNDER PROBE IS `config/mod_config.artmerge6-pb.json`**
-(`make_artisan_config.mjs --staffing pb`, the floor kept, then the merges); probe session `20260930_225621_artmerge6-pb-10y` (2 × 1836 →
-1846), read with `ledger/health_vs_ref.mjs` against the canon; the n=3 century batch follows if it is healthy. `artmerge6-floor` is a record.
-⭐⭐ **2026-10-01, LATER: THE t1-ANCHOR BOOK (§10.91.5, F197), user-ruled — `config/mod_config.e1a-artmerge.json`.** Every industry anchored at
-t1 (t2 ×A, t3 ×A², cost following the anchor), the step DOWN to t0 ÷1.5 on output and input value (`make_ab_config --down-step 1.5`), engines
-on t1 (motor [1,2,3] — the tier rule's own derivation; `make_tier4_config --derive motor`), the pop-good industries' anchor-and-below input lift
-1.4 (`--in1-pop 1.4`), ONE craft rule (0.6 of vanilla's goods per worker, the £2 floor crossed at 0.89 of base: `make_artisan_config
---craft-rule 0.6,0.89`), the £2 floor, and OUTPUT-MATCHED 1836 craft seeding with vanilla's head count kept (`--seed 5`; the seeded artisans
-come off peasants, identities from `config/measured_1836_pop_identity.json` at 1836.2.1). The chain and its field diff are §10.91.5's. Paraguay and
-Schwarzburg lack the peasants for their full seeding (reported); Kraków and the Mughals are covered. ⭐ **PROBED (F199, 2 × 1836→1846):** the
-seeding takes, the 1836 supply anchor lands on vanilla's (groceries 0.93 against the canon's 1.33–1.53), steel at the ceiling 0% at 1837.12, world
-GDP on vanilla's path; ⚠ the 1.4-lifted pop-good t1 rungs empty in the German states and Belgium within four years (the Prussian market's glass a
-fifth of vanilla's in both seeds) — the lift's value awaits a ruling. The arm at £2 alone (`artmerge6-pb-f2`) was re-probed first (F198: healthy).
-⭐ **THE CENTURY (F200, `20261001_124750`, n=2 aligned, both intact):** loss 7.76 (the canon 5.90, the 0.01 crafts arm 10.09) — the hoard gone
-(pool H 0.52), PP 1.07, PI falling, T0 at 0.60 of the 1900s; world GDP 0.82 after a long mid-game dip; motor's steam rung (t1 now) and the
-shortlist's food/paper crafts survive; the German glass hole lasts until the German t2 rungs. Not ruled on.
-⭐ **WHY THE HOLE, AND THE LIFT PROBE (F201, F202):** the 1.4 lift puts the t1 glass and food rungs under the engine's 15% wage-cut line, so after vanilla's
-own opening glut they never rehire. Probed at **1.0** (`e1a10-artmerge`) and **1.2** (`e1a12-artmerge`), 2 × 1836→1846 each (`20261001_215119`): both
-close the hole (Prussian glass 0.81–0.93× vanilla at 1845, French groceries 1.00–1.12×); 1.0 overshoots British groceries (1.60–2.23×, above vanilla's
-range) with the British food t1 at 0.34–0.39 of sales, 1.2 stays inside (1.27–1.32×, 0.22–0.27). ⭐⭐ **RULED: THE LIFT IS 1.2** (user, 2026-10-01: *"Go
-with 1.2. 3 full runs."*) ⇒ **THE ARM'S BOOK IS `config/mod_config.e1a12-artmerge.json`**; `e1a-artmerge` (1.4) and `e1a10-artmerge` (1.0) are records. Its
-century is a fixed n=3 of full runs (no stop watcher), session `20261001_225817_e1a12-artmerge-n3`. ⛔ A technology-triggered penalty on old rungs is ruled
-out for good (*"never ever, for simulation purity"*). ⭐ **ITS CENTURY (F203):** 2 intact / 1 broken by stall (F166's stuck Britain), loss **8.62** (the
-1.4 book 7.76, the canon 5.90); world GDP 0.78, the pool's GDP 0.85 (beyond the soft line), the hoard back (pool H 1.41 against 0.52); the German hole
-gone early, the t1 food rung overshooting in the rich markets in the 1850s; ⚠ the USA agrarian in all three seeds. Not ruled on. ⭐ **WHY THE USA
-(F204):** no plain bug — one seed's politics, and in all three the investment AI's `ai_value`-led choice: textile's and furniture's t2 merge hosts
-(15,588, open from the 1850s) took a quarter to a third of US private construction 1860–1900 because steel is thin under the t1 anchor, while mines,
-logging, plantations and railways (2–10× the profit per point) got ~10% against vanilla's 31% (a starvation every four-rung book shares). Levers
-proposed, none ruled.
-⭐⭐ **2026-10-02: THE DESIRE LADDER COMPRESSED (user-ruled):** *"Change the desire to build to 1) artisan 800 2) other e0 1000 3) e1 1000 4) e2 3000
-5) e3 5000. Run a 30-year probe and report. Unless clearly broken, run 2+1 then."* ⇒ **`config/mod_config.e1a12-ai1135-artmerge.json`** = the arm's book
-through its own chain with `make_ab_config --ai-ladder 1000,1000,3000,5000` (in place of `--ai-steep … :3`, i.e. 1000 × 3^tier) and `make_artisan_config
---craft-ai 800`; the merge hosts keep the ruled geometric-midpoint rule on the new values (food and paper t1 hosts 1,732, textile / furniture / steel t2
-hosts 3,873, fertilizer's t0 host 1,000). Field diff against e1a12-artmerge: 57 ai_value fields and the provenance records, nothing else; every build check
-passes. Probe `20261002_111449_e1a12-ai1135-30y` (1 × 1836→1866), then the century 2+1 `e1a12_ai1135_n2.json` (+ `_tb.json` on divergence).
-⭐ **THE PROBE (F208):** not broken; world GDP 0.91–1.02× vanilla to 1865; the grossly misplaced share of new capital down to vanilla's level
-(17–19% a decade against e1a12's 23–25%), the textile t2 merge host nearly empty; ⚠ the USA still put 47% of its 1856–66 private construction
-into textile and furniture in that seed. The century 2+1 runs: session `20261002_120946_e1a12-ai1135-n2` (v15 summaries), judged on the register
-AND on misplaced capital (the governing principle of the same day, §10.92).
-⭐ **ITS CENTURY (F209): ENDED AT n=2 BY THE STOP RULE** — run 1 intact (world GDP 0.79, loss 8.79), run 2 BROKEN BY RUNOFF (1.42×, the shortlist
-fully depeasanted at a pooled U* of 7.0%, the pools spent); consensus = run 1 alone. Misplaced capital 1926–36 29% / 26% (e1a12 38%, the canon 28%,
-vanilla 17%) — the ruled yardstick moved the way §10.92 asks; the USA 1.23 / 0.91× vanilla (e1a12 0.35–0.55); old rungs beside a rung two tiers newer
-4.9 / 4.5% of world tier workers and 0.9 / 1.2% of the shortlist's at 1935, three quarters crafts. Not ruled on; the arm's keep-or-drop is the user's.
-⭐⭐ **2026-10-10: THE ARM'S BOOK IS `config/mod_config.jex-dam4s.json`** (user, on F222's ×1.036 play time: *"Almost certainly this becomes our
-standard. Incorporate this into the artmerge 'branch' now"*) — the textile-host-cost book + the extra research entries (§10.95) + the four
-resource-slot dam classes + script-placed research first stages (§10.89.13) + the historical dam staffing. ⚠ The canon carries NEITHER tick-cost
-fix: a return to the pre-artmerge line must reimplement both (§10.89.13's last bullet). The shift-click hand test runs on
-`mod_playtest_dam4s_damtest/` (config `mod_config.jex-dam4s-damtest.json`, gitignored: the book + `dams.probe.player_open`), deployed 2026-10-10 10:25,
-and PASSED (one dam queued correctly). ⭐ NEXT (user, 2026-10-10): one last tech rework on this book — the world back onto vanilla's total volumes,
-the research entries more important — then the decision: canonise the arm, or return to the pre-artmerge canon keeping the performance changes
-(ROADMAP step 14). ⚠ Since 2026-10-11 10:12 the DEPLOYED mod is `mod_playtest_ra/` (user-asked, to eyeball): candidate A of §10.96 at the arm's CURRENT ruled dam staffing 10/15/10 (config `mod_config.jex-dam4s-ra-play.json`, gitignored: jex-dam4s + research_levers, no staffing pin), no telemetry — NOT the canon; the dam test build stays in `mod_playtest_dam4s_damtest/`.
-
-## (HISTORY) THE CANON WAS `canon-dams-family` FROM 2026-09-29 TO 2026-10-12 (no longer canon; returning would need the performance changes reimplemented — see the top canon section) — `canon-dams` (below) + THE RULED SURVEY/BUILD RULES (`dams.rules = family`) + THE MONTHLY DAM LOG (user-ruled: *"the construction loss when investment rights or a subject relationship breaks are rare enough and result in losing little enough progress to ignore. All types of options stay and get canonized."*)
-
-`config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.canon-dams-family-nolog.json` + twin
-(sha256 `806c8b3df03b5d61`; the twin is the `canon-dams` tree byte for byte) — the measured `canon-dams-family` book MINUS its monthly dam log
-(user-ruled the same day: *"Drop."*; and *"Leave the stalls sitting on dams"* — no nudge for an owner sitting on its own queued dam). The
-measured book is `canon-dams` plus exactly two keys, `dams.rules = "family"` and `dams.log_levels = true` (BALANCE_FRAMEWORK **§10.89.12**): construction rights = the owner, its overlord chain, or investment rights in the owner
-or any of that chain; a survey inside the host's top-overlord family opens the dam to the family, an outside survey to the surveyor alone; a
-12-month block from a survey's start; no survey while a level is queued; no claim; the AI takes the survey decision itself (spare bureaucracy ≥
-cost, a 30-day AI-only cooldown), no driver. The same bytes as the user's playtest build of 2026-09-28 evening. Measured n=6 (FINDINGS **F177**,
-session `20260929_002728`): 4 intact / a pre-dam stuck-Britain stall / a runoff, consensus loss 5.90, a median 47 dam levels; investment-rights
-holders build 63% of the constructions and finish 84% of theirs, owners and overlords 98–100% — the losses are RULED ACCEPTABLE, no guard added.
-Built, linted and deployed 2026-09-29. Everything below about `canon-dams` still describes this canon except the survey and builder rules.
-⭐ **REBUILT AND RE-DEPLOYED 2026-09-30 WITH THE RESEARCH-BAR TOOLTIP FIX, THE BOOK UNCHANGED** (user: *"if you also don't expect effects on game
-metrics, canonise the latest changes"*): the config is the same bytes (`806c8b3df03b5d61`), and the build differs from the 2026-09-29 one only in
-the research-bar loc (165 lines × 11 languages: "the base method's staffing" → "base-method staffing", whose apostrophe broke the vanilla bar
-tooltip — BUGS_AND_FIXES 2026-09-30) and the build stamps. No script, recipe, define or number moved, so no metric can: F177's
-measurements of this canon stand as they are.
-⭐ **2026-10-03 — THE CANON'S BYTES MOVED, ITS RECIPES DID NOT** (BALANCE_FRAMEWORK **§10.93**, rules 6 and 7, user-ruled): the book is now sha256
-`07ffa6f57af0e8ec` (both copies) — three rungs' `target_be` / `wage_pct` restated under the most basic secondary methods (Sewing Machines 64, Electric
-Sewing Machines 48, Mass Production 32; recorded as `_basic_be`; neither field reaches the game) — and its tree twin `b56d75721e77f2d9` carries one
-departure from vanilla, **Conveyors a prerequisite of Compression Ignition** (`PREREQ_ADDS`, so Mass Production's mandated Assembly Lines keep their own
-gate). With §10.93's secondary rules (the reviewed table, the mandates, no dead or "off"-only groups) the canon's NEXT build differs from F177's measured one
-in those and in the building names; it is UNMEASURED, and the repo's `mod/` (regenerated `-NoDeploy` 2026-10-03) is that build. ⚠ The deployed copy in
-Documents is NOT the canon: since 2026-10-03 13:58 it is the latest probe's book `e1a12-ai1135-tex1140-artmerge` WITHOUT telemetry (user-asked, for a
-playtest) — `mod_playtest_tex1140/`, proven byte-identical to probe `20261003_111956`'s build bar its two telemetry files (a rebuild with the probe's own
-telemetry and token reproduced its recorded fingerprint exactly). The previous playtest build (e1a12-ai1135, 2026-10-02 20:34) is kept in `mod_playtest_e1a12ai1135/`.
-⭐ **Since 2026-10-05 10:33 the deployed copy is `mod_playtest_tex1140_damcap/`** (built 10:31): the same book, differing from `mod_playtest_tex1140/` only
-in the dam files (the engine level cap carried by `base_values`, BUGS_AND_FIXES 2026-10-05), the copied `00_code_static_modifiers.txt` and the build stamp;
-restore the old one with robocopy /MIR if needed. The hand tests of the cap ran on `mod_playtest_damtest/` (config
-`mod_config.e1a12-ai1135-tex1140-artmerge-damtest.json`, gitignored: the damcap build plus `dams.probe.player_open` — every PLAYER country holds the three
-dam technologies and every survey at the 1836 start); the last one passed and the damcap build was put back.
-
-### (HISTORY) THE CANON WAS `canon-dams` FROM 2026-09-27 TO 2026-09-29 (user-ruled: *"Remove everything you suggested and canonize the build."*)
-
-`config/mod_config.canon-dams.json` + twin (sha256 `e977b0b7ffb8db50`) is that canon, unchanged. ⭐ **THE TECH TREE DID NOT MOVE** (the twin is the previous canon's byte for byte) and **no key of the previous
-canon changed**: the book adds `building_required_construction` {building_power_plant: 1600}, `dams` and `building_subsidies` (must_have on
-every dam). Built, linted (LINT / NEGATIVE-GOODS / SOLVENCY / TECH CONTENT / L13 / L31 / MOD CHECKS / PREFLIGHT) and deployed 2026-09-28.
-
-**What it is** (BALANCE_FRAMEWORK §10.89, the redesign §10.89.9, the cuts §10.89.10, THE ENGINE BUILDS §10.89.11): **144 dam projects / 312 levels
-/ 135.7 GW**, one expandable building per project in its anchor province's state, `ownership_type = self`; surveyed by the anchor owner or its
-overlord chain (a bureaucracy cost, a two-year claim, the SAME technology as building level 1). ⭐⭐ **SINCE 2026-09-28 NOTHING BUILDS A DAM BY
-SCRIPT** (user-ruled, FINDINGS F173/F174): the engine's own AI builds every level — the owner in its own state, an overlord in its subject's —
-and a player through the build menu; the quarterly driver only SURVEYS; the overlord financing, its journal entry and decisions, the driver's
-owner-queue starts and the OWNER CAPACITY GATE are gone ("no capacity locks / guards yet"). Never private, always subsidised; irrigation effects
-on 12 projects and the 1836 Nile maluses; the vanilla hydro-site electricity bonuses removed.
-Regenerate: `node tools/make_dam_projects.mjs` (reads the committed `config/dam_sites_research.json` and applies the ruled CUTS), then
-`node tools/make_dam_config.mjs` (base `config/mod_config.canon-b164-trade.json`), then copy the book and its twin over the canon.
-
-**Why** (FINDINGS F170–F172): the gated n=3 (`20260927_001731_canon-dams-v3-n3`) read 2 intact at world GDP 1.03 / 0.94 with a consensus loss
-of **5.97** (the previous canon's n=3 has no consensus: a runoff, a divergent pair) and one run broken by a PRE-DAM stuck Britain (an 1845
-revolution, F166); dams replace coal plants rather than add electricity (51–55k a week, the canon's 51–52k) and cut the unmet demand; play
-0.95× the canon. ⚠ **The cuts were ruled AFTER that batch** (12 projects removed, 4 trimmed, one reduced: hydro was 43–52% of world
-electricity at 1935 and remote dams pulled industry into empty places, F172), so **the canon as shipped is unmeasured**; the measured book is
-commit `0ce5324`'s `config/dam_projects.json` (159 projects). Expected: hydro ~40–45%, the Labrador dam (10% of dam output) gone.
-⭐ **ONE OBJECT, ONE IN-GAME PROJECT** (user-ruled 2026-09-27, the same day, §10.89.10's addendum): a physical object feeding two states goes
-to the consumer that takes ≥ 70% of its output (the Hoover ruling), otherwise to where it stands; a tie is ruled case by case. Applied: Paulo
-Afonso into Bahia, the Snowy into NSW, the Iron Gates into Wallachia, the Gatineau split Ontario/Quebec, the Susquehanna hosts swapped (Conowingo
-→ Pennsylvania, Holtwood/Safe Harbor → Maryland), Tabqa → Deir-Ez-Zor. **144 projects / 312 levels / 135.7 GW**; the generator throws on two
-projects in one state. Unmeasured, like the cuts.
-
-⚠⚠ **THE KNOWN DEFECTS OF THIS CANON:**
-1. **The stuck Britain (F166) is inherited** — one run in three here.
-2. ⚠⚠ **THE ENGINE-BUILT SETUP IS UNMEASURED OVER A CENTURY** — its first batch is the n=5 of 2026-09-28. The probes say what to watch:
-   a POOR OWNER can grab a level and sit on it (F173 §4: Lower Canada at speed 0 for five years), and with no capacity gate nothing stops
-   it; post-queue stalls (F171: construction paused, a state lost) are ruled acceptable like bankruptcy losses, which are vanilla.
-3. **Levels financed under the previous setup could end SELF-OWNED** (F171); the financing is gone, so this applies only to its record.
-4. **Russian dams have no customers**: Russia's electricity sits at the 25% floor in every dam run.
-5. The previous canon's defects stand (Britain fully employed in most seeds, the old rung alive in the consumer chains, the hoard).
-
-⚠ The previous canon is UNCHANGED and reachable at `config/mod_config.canon-b164-trade.json` + twin. The section below is its record, kept as history:
-
-## (HISTORY) THE CANON WAS `canon-b164-trade` FROM 2026-09-25 TO 2026-09-27 — THE PREVIOUS CANON AT **B 1.64** WITH THE PER-GOOD TRADE WEIGHTS AT ×1 AND THE FINISH BOOST (user-ruled: *"Canonize trade x1, B 1.64."*)
-
-`config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.canon-b164-trade.json` + twin
-(sha256 `d89c33af74d2a47a`). ⭐ **THE TECH TREE DID NOT MOVE**: the twin is the previous canon's tree byte for byte (`c6dabd3db8a72c0d`).
-Built, linted (LINT / NEGATIVE-GOODS / SOLVENCY / TECH CONTENT / L13 / L31 / MOD CHECKS / PREFLIGHT) and deployed 2026-09-25.
-
-**What it is:** `canon-slide-b158` (below) regenerated at **B 1.64** through its own `_ab.command` — A 2.2, C 1.9, in0 1.2, the anchor
-slide with anchor cost, the mild spending set, the 24-month bar, the urban-centre electricity override, and the **finish boost ON** (restored
-2026-09-24, `edd69ff`; F164 measured no wall-clock cost) — **plus `goods_traded_quantity`**: F159 §7's five-class table at ×1 (35 goods; bulk
-at vanilla, semi-bulk ×√2, manufactures ×2, compact ×2√2, precious ×4 of vanilla's £240 per unit of trade capacity). Regenerate: the canon's
-`_ab.command` with `--B 1.64 --suffix slide-b164`, then `node tools/make_trade_config.mjs --base config/mod_config.slide-b164.json --suffix
-canon-b164-trade`, then copy the tree twin from the previous canon. Proven: the book differs from the measured `trade15-b164` only in the trade
-keys, and its trade table is `canon-slide-b158-trade`'s exactly.
-
-**Why** (FINDINGS F161, F163): the trade weights doubled trade and raised world GDP 0.87 → 1.13 at B 1.58, breaking one run of four by runoff
-(F161). The B ladder with trade ×1.5 (F163, 12 runs) put B 1.64 lowest on the register (consensus loss 3.58 against the previous canon's
-4.91), with the old rung's share of the higher rungs a third of the previous canon's and the price decline equal to it; higher B cut the hoard
-but raised prices and weakened obsolescence. The ×1.5 scale bought only ×1.03 the trade of ×1, so the canon keeps ×1.
-
-⚠⚠ **THE KNOWN DEFECTS OF THIS CANON:**
-1. **MEASURED 2026-09-26 (F167, session `20260926_002930_canon-b164-trade-n3`, n=3): three seeds, three regimes, NO register
-   consensus.** World GDP 1.03 / 1.04 / 0.68: run 1 BROKEN BY RUNOFF (Britain U* < 5% 1923–36 at a mean hoard of 1.67 GDP), run 2
-   intact and clean (loss 4.3), run 3 a STUCK Britain after an 1850 revolt (F166). The intact pair diverges, so the canon has no
-   consensus loss; its healthy centre is fine, its two Britain-level tails (a runaway hoard, a Britain that never industrialises) came
-   up in one seed each.
-2. **Britain is fully employed in most seeds** (U\* 1–5% in every non-weak seed of F163 up to B 1.72, against the 10–50% band), and B shows
-   no relation to it (r 0.11).
-3. **The old rung survives in the consumer chains** (F136; F163's obsolescence panel: 87–93% of consumer-chain old-rung levels still profitable).
-4. **The hoard:** Britain comes near capital abundance (soft) in most healthy seeds; no hard break at B 1.64 in F163.
-
-⚠ The previous canon is UNCHANGED and reachable at `config/mod_config.canon-slide-b158.json` + twin. The section below is its record, kept as history:
-
-## (HISTORY) THE CANON WAS `canon-slide-b158` FROM 2026-09-23 TO 2026-09-25 — THE ANCHOR SLIDE + ANCHOR COST + THE MILD SPENDING SET + **B 1.58**, CHOSEN OFF THE TWELVE-RUN B GRADIENT (user-ruled: *"Canonize the config with 1.58"*)
-
-`config/mod_config.json` and `config/tech_tree_options.json` are VERBATIM copies of `config/mod_config.canon-slide-b158.json`
-+ twin, which are themselves byte-identical to **`config/mod_config.probe-sm-b158.json`** — the book the B gradient actually
-measured (sha256 `4ce5890f88be1279`). The probe-named file is KEPT UNCHANGED as the record of what was measured; the
-`canon-slide-b158` name exists so the canon has a canon-style name, and all three files carry the same bytes.
-⭐ **THE TECH TREE DID NOT MOVE**: `config/tech_tree_options.json` is byte-identical before and after (`c6dabd3db8a72c0d`),
-so this canonization changes the recipe book alone.
-
-**What it is:** A 2.2 · **B 1.58** · `building_cost` = the vanilla anchor × 1.9^tier · rung 0's input value × 1.2 with the ladder
-anchored on it · ai_value 1,000 × 3^tier · the pool cost-divisor 0.000125 · the 24-month industry research bar · the
-**URBAN-CENTRE ELECTRICITY OVERRIDE** of §10.43.0 (verified present before canonizing: `pm_goods` 2 coal → 10 services +
-1 electricity, `pm_employment` 250 engineers) · ⭐ **`research_events.finish_boost`** (user-ruled 2026-09-23, in the canon since
-2026-09-24 after a day parked so another session could test against the canonized setup unchanged): the FLAT form, +10000 AI weight on
-any researchable technology while `has_technology_progress >= 0.99` (`tools/emit_tech_finish.mjs`, FINDINGS **F160** — the AI took the
-boosted tech 52/52 against 0/42 without; expected to fire rarely, because a grant reaching the cost completes the technology on the spot).
-Both canon copies are the canonized book plus that one key (sha `128502ee8b2a4827`), and `lib_tier4_spec.mjs` carries the same default
-— plus the two departures from the previous canon:
-1. ⭐ **THE ANCHOR SLIDE** (`--anchor-for textile,furniture,glass,tooling,munition,synthetics,automotive,electrics:1` with
-   **`--anchor-cost`**): eight industries take their ladder origin at **t1** instead of t0, so tier t is priced A^(t−1) / B^(t−1)
-   over the anchor rung's own vanilla method, and `building_cost` follows the anchor. L31 prints a note per slid industry and
-   checks them on that basis; every ratio BETWEEN rungs is untouched, so F97's death test is unchanged by the slide.
-2. ⭐ **THE MILD SPENDING SET**: `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` **0.95**, `CRITICAL` **1.0**,
-   `EXCESSIVE` **2.0** (the old canon 0.9 / 0.9 / 1.5; the full eager set 0.99 / 1.25 / 3.0). Held under vanilla's ship
-   `EXCESSIVE` of 1.05, so no define is rejected at load — **L33 clean**.
-
-**Why B 1.58, in the gradient's own numbers** (five B points, 17 runs; the end-state 1932–36 mean, ÷ the pinned vanilla n=16):
-
-| B | n | world GDP per seed | median | GBR U\* per seed | median | Britain in the 10–50% band |
-|---|---|---|---|---|---|---|
-| 1.50 | 5 | 1.28 · 1.16 · 1.20 · 0.91 · 1.07 | 1.16 | 1.8 · 13.1 · 15.4 · 2.3 · 8.7% | 8.7% | 2/5 |
-| 1.52 | 3 | 0.67 · 0.86 · 1.16 | 0.86 | 45.8 · 4.4 · 0.9% | 4.4% | 1/3 |
-| 1.55 | 3 | 0.99 · 1.45 · 1.11 | 1.11 | 4.8 · 1.2 · 1.6% | 1.6% | 0/3 |
-| **1.58** | **3** | **0.87 · 1.02 · 0.82** | **0.87** | **22.2 · 12.1 · 24.8%** | **22.2%** | **3/3** |
-| 1.62 | 3 | 0.72 · 0.86 · 0.53 | 0.72 | 12.4 · 3.6 · 44.4% | 12.4% | 2/3 |
-
-**B 1.58 is the only config of the five with 3 intact / 0 broken AND every seed's Britain inside the band**, at consensus
-**LOSS 4.91**, with pool W 0.73 · pool H 0.92 · pool GDP 1.13 · PP 0.78 · T0 0.71 · world W 0.67 **all AT THE AIM** and
-PI 0.89 **falling decade over decade**. B 1.62 is past the edge: one run **broken by stall** (world GDP 0.53, under the 0.66
-floor), a median under the soft line, and the U\* spread re-opening to 3.6–44.4%.
-⭐ The world-GDP gradient is REAL over the full five points — slope **−4.47** on ln(B/1.5), r −0.743, sign stable under
-leave-one-out — and the two LARGEST steps land on the pre-registered model almost exactly (1.58 predicted 0.88 / measured
-0.87; 1.62 predicted 0.75 / measured 0.72). The two smallest steps (1.52, 1.55) are buried in the seed spread, which is why
-a three-point reading of this ladder returned a null.
-
-⚠⚠ **THE KNOWN DEFECTS OF THIS CANON, stated so nothing has to rediscover them:**
-1. **World GDP sits at 0.87 median, below the 1.0 aim** (consensus 0.84), the largest single term of the residual.
-   ⚠⚠ **BUT THIS IS THE CORRECT PLACE TO BE, NOT A DEFECT TO FIX — user-ruled 2026-09-23, and it is the UNDER-SIDE RULE
-   of 2026-09-15 applied again.** The next campaign (ROADMAP step 11) adds post-JE tech finishing and broader trade, both
-   of which RAISE the world product and are going in **for their own design reasons, not as levers competing with B** —
-   so *"the initial point we start applying them to should be lower than the target on GDP"*. ⭐ The canon is correctly
-   positioned on BOTH axes for that: world GDP **0.87, below the 1.0 target**, and Britain's U\* **22.2% median, above the
-   15% target** — and the two changes push GDP up and U\* down, i.e. both toward their targets from the side that leaves
-   room. A book sitting ON 1.0 today would overshoot the moment those changes land.
-   ⭐⭐ **WORLD GDP IS THE PRIMARY OPTIMIZATION POINT — more important AND less volatile than U\*** (the same ruling), and
-   the "less volatile" half is MEASURED on this batch: within-config coefficient of variation averages **19.1% for world
-   GDP against 88.0% for British U\*, a 4.6× gap that holds at every one of the five B points** (3.0–5.9×). ⇒ Tune on
-   world GDP; read U\* as the constraint that must stay in its band, never as the thing being minimised.
-2. **Pool U\* 1.84, under the ≥ 2 aim**, and PI 0.89 against an aim of ≤ 0.8.
-3. ⚠ **It differs from the previous canon on FOUR levers at once** (the slide, anchor cost, the mild spending set, B) — it was
-   chosen on its measured end state, not by isolating each. No single-lever attribution exists for the combination.
-4. ⚠ **The B gradient's U\* slope is DIRECTIONAL ONLY**: +132pp per unit ln B with r = 0.504 and a magnitude that swings 3.4×
-   under leave-one-out (69–233). Do not quote a magnitude for it.
-
-Sessions: `20260922_084038_b-gradient-4x3` (6/12, aborted by its own stop rule) + `20260922_233932_b-gradient-rest` (7/7).
-Regenerate with the `_ab.command` line in the file. Built, linted (LINT / NEGATIVE-GOODS / L18 / tech content / L13 / L31 /
-MOD CHECKS / PREFLIGHT) and deployed 2026-09-23.
-
-⚠ The previous canon is UNCHANGED and reachable at `config/mod_config.canon-c19-in12-elec.json` + twin
-(sha256 `d28b194ddfd0948a`), which was already byte-identical to the outgoing `mod_config.json`, so nothing needed backing up.
-The section below is the record of THAT canon and is kept as history:
-
-## (HISTORY) THE CANON WAS `canon-c19-in12-elec` FROM 2026-09-20 TO 2026-09-23 — `canon-c19-in12` PLUS THE URBAN-CENTRE ELECTRICITY OVERRIDE, AND NOTHING ELSE
-
-`config/mod_config.json` is a VERBATIM copy of `config/mod_config.canon-c19-in12-elec.json` (+ its tech-tree twin). It is
-`canon-c19-in12` — the book canonized 2026-09-18 and described below — regenerated through the vanilla-only pipeline so that it
-carries the two keys BALANCE_FRAMEWORK **§10.43.0** ruled canonical on their own: urban centres are an electricity **SOURCE**
-(`pm_goods` 2 coal in → 10 services + 1 electricity out; `pm_employment` 250 engineers) instead of vanilla's 3-electricity SINK.
-**The diff was PROVED to be those two keys**: not one industry, rung, recipe, `building_cost`, `ai_value`, technology or define
-moved, and the tech-tree twin came back with zero field diffs (the rest of the diff is 12 `_ab` flags going absent → explicit
-`null`, and the book's own name and stamp). Built and deployed 2026-09-20; every linter, L18, L31, MOD CHECKS, PREFLIGHT.
-⚠ **`config/mod_config.canon-c19-in12.json` is NOT the canon and keeps its own bytes** — it is the record of the arm F131
-measured over four seeds, and those seeds ran WITHOUT the override. A named book is the record of what it measured.
-⚠ **Nothing has measured the override's economic effect.** The canon's own century runs (`20260917_132449` / `20260917_161410`)
-predate it, so an arm read against them carries it as a second difference until a century batch runs on this book.
-
-**(the 2026-09-18 canonization, which everything below describes)** — user-delegated: *"Any point in canonizing some newer config
-before we run? If yes, do it"*. `config/tech_tree_options.json` needed no change then either. The previous canon
-(`canon4v-hai3`, 2026-09-06) is backed up at `config/mod_config.pre_c19_canon_backup.json` and remains reachable as
-`config/mod_config.canon4v-hai3.json`.
-
-**What it is:** the A/B book at **A 2.2 / B 1.5**, **building_cost = the vanilla anchor × 1.9^tier** (600 / 1,140 / 2,166 / 4,115 and
-800 / 1,520 / 2,888 / 5,487), rung 0's **input value × 1.2** with the ladder anchored on it, ai_value 1,000 × 3^tier, the pool cost-divisor
-0.000125, the §10.75 investment-pool defines, and the **24-month** industry research bar. Regenerate with the `_ab.command` line in the file.
-
-**Why, in the register's own units** (the amended loss of §10.83.7, one invocation, the arc over 43 intact runs):
-
-| book | intact n | loss | world GDP | T0 ÷ rest | PI | PP | pool H |
-|---|---|---|---|---|---|---|---|
-| `canon4v-hai3` — the canon until today | 2 | 16.39 | 0.88 | 0.113 | 0.92 | 1.04 | 1.50 |
-| `canon-je24` | 28 | 11.80 | 0.85 | 0.078 | 0.96 | 0.97 | 1.82 |
-| `canon-je24-a22` | 10 | 9.39 | 0.91 | 0.060 | 0.93 | 0.89 | 1.48 |
-| **`canon-c19-in12` — the canon** | 3 | **8.40** | **1.10** | **0.039** | **0.84** | **0.83** | **4.17** |
-
-Monotone on every goal column: the old rung's share of tiered labour down by a factor of three, the building-input price index 0.92 → 0.84 of
-vanilla's and the pop-goods index in wage units 1.04 → 0.83 (F94's price decline, for the first time), world GDP fidelity restored, and the
-frontier margin ladder real (t0 26% against t3 46%, where every earlier book ran flat). ⚠ Under the DIRECTIONAL ruling (§10.83.7) the 8.0-point
-gap over the old canon is not a significance test — the case is the monotone arc across four books and 43 runs, not the gap.
-
-⚠⚠ **THE CANON SHIPS TWO KNOWN DEFECTS, both recorded, neither a reason to keep the older book:**
-0. ✅ **THE URBAN-CENTRE ELECTRICITY OVERRIDE — FIXED AND CANONIZED 2026-09-20** (user-ruled 2026-09-19, BALANCE_FRAMEWORK
-   **§10.43.0**, ROADMAP step 8 **P2**). Every four-rung book from `canon4v` to `canon-c19-in12` shipped with urban centres
-   running VANILLA's `pm_electric_streetlights` — **electricity 3 IN**, 200 laborers + 50 engineers, an electricity SINK — where
-   §10.43 rules a SOURCE (+1 electricity out, 2 coal in, 250 engineers). The 2026-09-04 rebuild-from-vanilla dropped the two
-   config keys with everything else it deliberately does not carry; the generator was fixed 2026-09-19
-   (`tools/lib_tier4_spec.mjs`'s `PM_GOODS_RULED` / `PM_EMPLOYMENT_RULED`, emitted by `make_tier4_config.mjs` into every book) and
-   the CANON was regenerated 2026-09-20 as `canon-c19-in12-elec`, the diff proved to be those two keys (the banner above).
-   ⚠ The override's ECONOMIC effect is still unmeasured, and the canon's own century runs predate it.
-   ⚠ The power-plant industry is NOT part of this and must not be reopened (ruled the same day): it stays vanilla, no tiering, no
-   other change, now or deferred; the dam megaproject is a polishing-phase item.
-   ⚠⚠ **PARTLY REVERSED 2026-09-26 (user-ruled, BALANCE_FRAMEWORK §10.89.1):** the power plant's CONSTRUCTION COST goes to 4 × vanilla
-   (1,600 points, config `building_required_construction`, `tools/emit_building_costs.mjs`), its recipe, staff and everything else still
-   vanilla, and the consumers' recipes are deferred until tests. Still no tiering. It ships in the canon since 2026-09-27 (the dam book `canon-dams` is the canon).
-1. **The hoard.** Pool H 4.17× vanilla's — the one line that went BACKWARDS across the arc. One seed of four broke the capital-abundance hard
-   line (Britain, 11 years under 5% U* at 1.80 GDP); a second breached the soft hoard lines. F135 has the mechanism: our realised margins are
-   twice vanilla's, so the pool's INFLOW is the source, and the spending lever is one-signed by identity.
-2. **The old rung survives in the consumer chains.** F136's census: arms, artillery, explosives and steel shed 92–98% of the old rung's peak
-   workers at negative margins, while glass sheds 14%, motor 26% and textile 29%, every one still earning ~21% — textile's t0 earns 21% against
-   its own frontier's 25%. The split is by who buys the output; a pop-fed good's price cannot fall.
-
-### (historical) TWO CANONS SINCE 2026-09-03 — the six-rung canon and `canon-4rung` (user-ruled 2026-09-03)
-
-⭐⭐⭐ **THE CANON WAS REGENERATED UNDER THE TIER RULE ON 2026-09-13 AND CANONISED THAT EVENING** ("Canonize the outcome config"; the
-section above): `config/mod_config.json` = `canon4v-hai3` regenerated by the tier-keyed generator — automotive, munition, synthetics and
-electrics re-priced at their tiers, electrics moved t1 → t2, **motor placed by the rule alone at [0,2,3]** (⚠ corrected 2026-10-01: NOT by
-the rule alone — the derivation gives [1,2,3], atmospheric_engine being game era 2; [0,2,3] is an explicit PLACEMENT entry) **with its minted high-speed-diesel
-top rung DROPPED** (user-ruled "option B": compression_ignition, a tech-era-5 technology, IS motor's t3; the addition had no slot), munition
-[1,2] confirmed ("earliest munition is t1"); every other industry byte-identical. **56 buildings, 182 technologies (3 minted).** The book
-F106/F107 measured is commit `880f098`'s copy.
-
-⭐⭐⭐ **RE-RULED 2026-09-06 — THE CANON IS `canon4v-hai3`** (user: "Canonise the latest config"): the canon4v structure through the
-A/B book WITH ai_value 1,000×3^tier on all 17 tiered industries and the investment-pool defines of §10.75 (TOO_LARGE_INVESTMENT_POOL_FACTOR
-0.9, CONSTRUCTION CRITICAL / EXCESSIVE 0.9 / 1.5, MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.1, LONG / VERY_LONG construction-time
-thresholds 160 / 240), measured in F106. `config/mod_config.json` + twin are `config/mod_config.canon4v-hai3.json` + twin verbatim; regenerate
-with `make_ab_config --A 2.0 --B 1.5 --suffix canon4v-hai3 --ai-steep <all 17>:3 --divisor 0.000125 --ai-defines <the five>` (the exact
-command is the file's `_ab` block and §10.76) and copy over. `config/mod_config.canon4v.json` is the plain book that was the canon on
-2026-09-05. ⭐ **THE STANDING PLAN (§10.76, `HANDOVER.md`): 60 runs of the canon with `research_events.industry_bar_months` 24**
-(`config/mod_config.canon-je24.json` + twin; ⚠ the canon's value is 60 — the "3y → 2y" ruling was made on the six-rung book's 36, so 24
-is the named target, not a third off), **a GDP gate after run 30** (mean world GDP ÷ the vanilla n=16 median at 1935 over the usable runs,
-`tools/testbed/ledger/assess_gdp_gate.mjs`: ≥ 0.95 → the same setup for the last 30; below → `config/mod_config.canon-je24-a22.json`,
-A 2.2 / B 1.5, for 30), **built to finish unsteered**: the 60-run schedule runs to the end on its own; only a present agent stops it at
-run 30 and relaunches. ⭐ OUTCOME 2026-09-09 (F107): phase 1 = 30 usable runs over two sessions (20260906_001032 runs 1–11, dead at run 12 on the L29 harness race; 20260907_074504 runs 1–19), THE GATE READ SWITCH at 0.835× (median 0.83, 0.44–1.11; three F99 stalls in thirty), so phase 2 — canon-je24-a22, A 2.2, the 24-month bar KEPT by ruling — launched 10:09 as 20260909_100930_canon-je24-a22-n30; the bar itself moved Britain’s completions (~25 against 3–12) and nothing downstream. ⭐ PHASE 2 OUTCOME 2026-09-10 (F109): eleven usable runs of canon-je24-a22 (20260909_100930 run 1 + 20260909_123746 runs 1–10) read 0.915× vanilla (0.97 / 0.95 without the two census stalls) against phase 1’s 0.835 — 1.3 standard errors, carried by output per productive worker, with prices / pools / tier choice / research at phase 1’s readings; ENDED at run 11 by the §10.77 ruling (the vanilla-1836 premise dropped; `config/mod_config.canon-flat-in12.json`, session 20260910_151220_canon-flat-in12-n30, 30 runs, launched 15:12). The plan’s “30 runs under this setup” is superseded by that ruling. ⚠ The four minted additions are held by 0–3 countries at 1935 across six runs (F106 §6) — the top rung of
-furniture, paper, fertilizer and motor does not exist in play; open, not ruled.
-
-
-⭐⭐⭐ **SUPERSEDED 2026-09-05 — THERE IS ONE CANON, AND IT IS `canon4v` (user-ruled: "Canonise the result").**
-`config/mod_config.json` + `config/tech_tree_options.json` ARE the canon4v book verbatim (the generator's own copies
-`config/mod_config.canon4v.json` + twin stay beside them; regenerate through the vanilla-only pipeline and copy over — the
-promotion was done that way, and the regenerated book was proven identical to the committed one apart from its stamps).
-**The art academy is on the REGULAR ladder**: rung 0 at vanilla's own 400-point cost (unique — the other industries anchor
-at 600/800), then ×2 per rung, fine art 5/10/20/40 a level; the ×3 film rung measured in F104 (canon4v-art3) is REVERTED as
-gameable — "I'd rather not leave infinite money printers in the mod". The six-rung canon is RETIRED to
-`config/mod_config.six_rung.json` + `config/tech_tree_options.six_rung.json` (source, un-ignored), buildable with
-`-Config`; the six-rung machinery (`build_era_ladder` / `era_solver` / `era_scenarios` / `era_tech_sync` /
-`payback_census` / `vanilla_payback_census` / `verify_pms` / `tech_tree_spec --write`) now THROWS on the four-rung
-canon unless `MOD_CONFIG=config/mod_config.six_rung.json` is set — a `--write` in any of them would have rewritten a
-four-rung config as if it had six tiers. `mod/` and the deployed mod follow the default build = canon4v. BALANCE_FRAMEWORK
-§10.74 has the ruling and the obsolescence-lever options recorded with it. Everything below this banner in this section
-describes the state BEFORE the promotion and is kept as the record of how the two books came to be.
-
-
-The repo now carries **two canonical books side by side**, and every batch, finding and report says which
-one it is on:
-
-- **The six-rung canon** — ⚠⚠ **RETIRED 2026-09-05, AND CLOSED FOR GOOD 2026-09-16 (the banner above). IT IS NOT
-  `config/mod_config.json` AND HAS NOT BEEN SINCE 2026-09-05** — that path is the four-rung canon. The six-rung book
-  lives at `config/mod_config.six_rung.json`: the solver2f configuration below (§10.65.9), 100 rungs on six tiers, the
-  inverse-solved recipe book, payback-normalized costs, ai_value 750×1.8^tier.
-- **`canon-4rung`** — `config/mod_config.canon-4rung.json` (+ `config/tech_tree_options.canon-4rung.json`, the
-  L20 twin), a stamped copy of the **ab3** book: the tier4 STRUCTURE (BALANCE_FRAMEWORK §10.66 — at most four
-  rungs on 1836/1875/1905/1940; port, shipyard, shipyard_steam, railway and power `disabled`, i.e. vanilla),
-  **vanilla's own lowest-tier recipe per industry on the A/B ladder A 2.0 / B 1.5** (§10.68 — output ×2.0 and
-  input value ×1.5 per rung over the rung's own vanilla mix, building_cost = vanilla anchor ×2.0^k, i.e.
-  capacity-priced; pool cost-divisor 0.000125), **ai_value 1000×2^tier with glass and tooling at 1000×3^tier**,
-  the company-target gate OFF. ⚠ FROZEN since 2026-09-04: its STRUCTURE came from the retired clone-from-six-rung generator
-  (§10.72), so the pipeline can no longer reproduce it — the committed file IS the record; its `_canon` block records the
-  declaration and the sessions it was measured in.
-  ⭐⭐ **`canon4v` — THE FOUR-RUNG CANDIDATE, BUILT FROM VANILLA (§10.72, user-ruled 2026-09-04, the third time: "the four-rung
-  generator takes vanilla rungs (up to four) and enriches them. Very rarely alters them. No six-rung-canon data should be
-  consulted whatsoever").** ⭐⭐ THE CANON SINCE 2026-09-05 (banner above). `config/mod_config.canon4v.json` + twin, written by `make_tier4_config.mjs` → `make_tier4_techs.mjs`
-  → `make_ab_config.mjs` from the GAME FILES and `tools/lib_tier4_spec.mjs` alone: every rung IS a vanilla main method with
-  vanilla's name, gate, recipe, staffing and icon; the tree is vanilla's technologies at vanilla's eras, names and prerequisites;
-  the only departures are the spec's explicit entries — four ADDITIONS (furniture spray finishing, paper continuous web,
-  fertilizer catalytic synthesis, motor high-speed diesel — ⚠ THREE since 2026-09-13: motor's fell to the tier rule, §10.78; each a minted technology on a top rung vanilla lacks, none on a
-  secondary group's theme), ERA_MOVES (against vanilla's eras only vulcanization moves, 3 → 4), PLACEMENT for the five industries
-  with fewer than four methods. **57 buildings, 183 technologies (4 minted), 41 research technologies → 123 entries** (⚠ since the tier
-  rule of 2026-09-13: **56 buildings, 182 technologies (3 minted), 40 research technologies → 120 entries** — motor [0,2,3], no
-  high-speed diesel); the 1836
-  start is vanilla's, converted (`start_exceptions_file` → an empty rule set); NOT carried from the six-rung book: the hoard
-  defines, the streetlight override, the trade-centre ai_value, the NET tech grant, the technology renames, the era alignment,
-  the chain seed. **RULES 1–3 (user-ruled 2026-09-04):** vanilla names and gates stay vanilla unless ruled; additions only where
-  a vanilla method is missing, each discussed; no addition on a secondary method's theme — the generator THROWS on an addition
-  pegged to a technology that gates one of the industry's own secondary methods (proven by sabotage). The motor industry's research anchor (its first rung sits on
-  atmospheric_engine, vanilla era 2, a researchable technology with no rung below it) is COAL + IRON MINES as one summed source —
-  user-ruled 2026-09-04; a list in `necessity_anchors` is one source over exactly those building types. ⭐ **MEASURED 2026-09-05 (F104,
-  session 20260904_213059, n=4, on canon4v-art3 = canon4v + the film rung ×3):** world GDP 0.93× vanilla (0.82–1.09), shortlist
-  1.29×; tiered outputs BELOW vanilla at 1935 for the first time on any arm (groceries 64%, steel 69%, small arms 44%, clothes 90%
-  of base — F94's flat path moves); fine art 113% (canon4-je 156); tier choice 44.9% below-best (worse, partly by construction on
-  vanilla's era-1 gates); Britain's JE completions 17–19 (canon4-je 29–43); 2 CTDs resumed; 1 seed timed out at 330 min after a
-  2.5× slowdown from 1899, unexplained. Ratified 2026-09-05 with the academy on the regular ladder (banner above). canon-4rung stays the record of the F98–F103 line.
-  ⭐ **`canon4-je`** (`config/mod_config.canon4-je.json` + twin, committed 2026-09-03) = canon-4rung + the ruled research-event
-  parameters and military channels (§10.69). **Measured n=5 (F102, session 20260903_173810): Britain's JE completions double
-  and it holds 2–12 more technologies at 1935, and NOTHING downstream moves** — GDP 0.79× / shortlist 1.09× (the canon's
-  numbers), companies at the reference, the tier mix inside the canon's spread, prices inside F94's band, tier choice 3pp
-  worse. Not a canon; kept as the measured JE arm.
-  ⭐ What it measured (F98/F99): world GDP **0.95× / 0.90×** vanilla in its two growth seeds (the base ab2 book
-  0.98× / 0.97×), productive workers per capita ~0.72×, output per productive worker 1.25–1.36×, companies at
-  vanilla, British glass 118% / 112% against the ab2 book's 153–158 and vanilla's 105, the plastics rung built.
-  ⚠ Its known open problems, stated in F99: the book family **stalls in 1 of 5 seeds** (a British pool collapse
-  in 1860 that vanilla's 18 reference runs never show world-wide), and the **t0 rungs shrink but do not die** —
-  glass t0 halved, textile/motor t0 ~180k people on the shortlist, and the **company rebuild pattern** (a
-  company keeps expanding its rung-0 mills: DMC's 21 of France's 25 rung-0 textile mills, 74 of 75 American
-  rung-0 tooling workshops) which no ai_value touches.
-- ⚠ `mod/` (the deployable mod) was NOT re-pointed by the 2026-09-03 ruling (SUPERSEDED 2026-09-05: `mod/` and the deployed copy follow canon4v, the default build): it is whatever the last default `build.ps1`
-  produced. Build the canon you mean to play with `-Config config/mod_config.canon-4rung.json` (deploys) and say
-  so. ⚠⚠ **SUPERSEDED — the git-tracked `mod/` and the deployed copy follow the CANON (the default build), and have
-  since 2026-09-05; the six-rung book reaches neither.** The clause that used to stand here ("`mod/` follows the
-  six-rung config until ruled otherwise") was already void when the banner above was written.
-- The ledger, `first_run_decomp`, `company_check` and the t0 tables read either canon; on the four-rung one
-  every industry loop must skip `disabled` industries (landmine **L27**, 2026-09-03).
-
-## (HISTORY) THE SOLVER-2 CONFIGURATION — WHAT THE SIX-RUNG BOOK WAS; NOT SHIPPED SINCE 2026-09-05, CLOSED 2026-09-16
-
-⚠⚠ **RETIRED 2026-09-05.** This section describes `config/mod_config.six_rung.json` now — the solver2f book was the
-canonical `config/mod_config.json` from 2026-08-26 to 2026-09-05, when canon4v replaced it (the banner under TWO CANONS).
-Read it as the six-rung book's record; nothing in it describes what the default build ships.
-
-
-`config/mod_config.json` is a canonized copy of the **solver2f** arm: the granular per-good
-inverse recipe book (§10.65.5/§10.65.6 — measured vanilla anchors, death-condition slopes, margin
-ladder 0.30→0.70, 10y payback-normalized costs), ai_value 750×1.8^tier, and the six investment-hoard
-NAI defines (`ai_defines`). The pre-canonization config is kept at
-`config/mod_config.pre_solver2_canon_backup.json`. ⚠ The solver-1 five-tier pipeline below remains
-the PREMISE machinery and the reference solver, but its `--write` steps would overwrite the shipped
-recipes — do not run them against the canonical config without a ruling. Where older text below
-describes the canonical config's recipes as the solver-1 solve, §10.65.9 wins.
-
-## (HISTORY) THE FIVE-TIER LADDER — THE RETIRED SIX-RUNG METHOD, NOT THE CURRENT ONE
-
-⚠⚠ **SIX-RUNG MACHINERY, NOT THE CANON (since 2026-09-05).** Everything in this section — the tiers, the anchors, the
-pipeline, the scenario solve, the illogicality metric, the tier presets — belongs to the six-rung book, which lives at
-`config/mod_config.six_rung.json` now. Run any of it with `MOD_CONFIG=config/mod_config.six_rung.json`; without the
-override the tools THROW on the four-rung canon rather than solving it as six tiers. The four-rung canon has no scenario
-solve: its recipes are the A/B ladder (§10.68) over vanilla's own methods (§10.72), and its measurement is the testbed.
-
-
-⚠ **The heading is inherited and imprecise: there are SIX tiers (0–5), not five.** Tier 0 is the
-pre-industrial rung that carries no unlocking technology at all. See the anchor principle above.
-
-The mod has its **own technology tiers**, anchored at **1750 / 1830 / 1870 / 1900 / 1925 / 1940**
-(user-ruled 2026-08-12, superseding ~1700/1750/1850/1900/1925/1940) — deliberately wider than the game's
-window at the front and **contracting** towards the back, because technical progress accelerates after
-the industrial revolution. Each rung's `tech_year` must fall in its tier's **band** (boundaries
-**1790 / 1850 / 1885 / 1912 / 1932**, the midpoints between anchors), and **no industry has two rungs on
-one tier** — `build_era_ladder.mjs` now THROWS on either, at authoring time, because nothing downstream
-compared a rung's authored tier against its own date.
-**105 rungs over 22 industries: 66 real + 39 invented**, 11/17/19/21/21/16 per tier (modelled but NOT
-emitted while the game has no unlocking technology for them — the builder gets a filtered config,
-`ui/data.js` gets the complete one; the count is `build_era_ladder.mjs`'s own summary line — earlier
-"89/67/22" and "100/67/33" here had gone stale against the spec).
-⚠ **An invented tier is marked by having NO `vanilla_pm`, not by `model_only`.** It used to be
-`model_only`, which the tech-tree step clears by design — after which the ladder builder's idempotent
-drop matched nothing and it threw on the first industry, i.e. the pipeline's FIRST stage could not run
-at all. A permanent all-new tier therefore belongs in the spec's `invent[]`, never in `eras[]`.
-⚠⚠ **The re-band is written into the SPEC but the CANONICAL config still holds the 100-tier ladder**,
-held until the research-events batch B has built (`config/mod_config.era6.json` carries it meanwhile,
-reachable through **`MOD_CONFIG=`**, which all three era tools now honour — `era_solver.mjs` used to
-hardcode the path while `econ_host.mjs` honoured the override, so a redirected run read one file and
-wrote its solved recipes into the other). The full table is in ROADMAP step 1b.
-⭐⭐ **EVERY TIER ALSO CARRIES `tech_year` — THE DATE GATE (§10.44, user-ruled 2026-08-09).** The year
-the SLOT's technology was first commercially deployable, transcribed from the spec's own dated notes
-(date the slot, not the vanilla PM's decorative name), stamped by `build_era_ladder.mjs`, which throws
-on a missing date or an arrival-order violation. A scenario places a tier iff `tech_year ≤ its calendar
-year` — replacing the "leading rung" tier arithmetic, which had put **~50–58% of tier-output value on
-NEXT-TIER technology in every middle scenario** (census: level-parity leading rungs, tooling 105/105 at
-1900). "Leading" survives only as a CLASSIFICATION (a present rung with tier > scenario tier reports as
-the lead rung, target +20%); placement is the calendar's. The debut guard and its exemption list are
-retired to the legacy path (`ERA_DATE_GATE=0`): railway 1825, steam shipyards 1843, engines 1820 and
-power 1900 all stand on their own dates. Vanilla PMs stay tech-era-gated (a named scope cut). Some ladders stop early, recorded per industry as **`ladder_end`**: `plateau` (food,
-textile, furniture — the last tier is permanent, so its good's price must hold that tier up rather
-than deflate past it, which is Baumol's cost disease falling out of the model) or `extinct` (sail
-shipyards — the industry **actually dies**: no price floor, *and* it is not placed in a scenario two tiers
-past its last tier, *and* neither is any tier whose input it was the only source of. Making only the first
-half true left a −84% shipyard alive in 1935 feeding a tier-1 port that then out-earned the modern one —
-BALANCE_FRAMEWORK §10.30).
-
-**Balance is now solved as one interdependent economy with prices UNLOCKED, not against fixed prices.**
-The old per-tier `target_be` ladder (tech-era anchors, the H1 input discount) is **superseded**: it priced
-every good at 100% of base, which is exactly the assumption the rehaul is trying to stop making.
-`target_be` survives only as a **derived drift guard** so `lint_profitability.awk` still catches an
-accidental hand-edit; it is no longer a design input, and `solve_be_targets.ps1` / `solve_volumes.ps1` /
-`solve_building_cost.ps1` are legacy for tiers on this ladder.
-
-The pipeline (**Node ≥ 24 required**, `C:\Program Files\nodejs`):
+An economic-realism mod for **Victoria 3 1.13** ("Matcha"). Mod 1.0 ships on game 1.13 (target 2026-10-30); mod 1.1 follows on game
+1.15. This repository holds the mod's generator (`config/` + `tools/`), the generated mod (`mod/`), a balance editor (`ui/`), a
+headless measurement harness (`tools/testbed/`) and the design record (the `.md` files).
+
+**How this file is organised.** Part 1 is the GOALS, what the mod changes to reach them, and the recipe formula. Part 2 is the PRINCIPLES that turn them into design rules. Part 3 is the METRICS:
+the divergences from vanilla we expect, and the register that says how close we are. Part 4 describes THE CANON (the book the mod ships) and where it stands. Part 5 holds the RULES, notes and caveats for working
+here. Detail lives in the reference docs listed in §5.2 — this file states each rule once and points at where it is argued, measured
+or implemented. Where this file and a dated ruling in `BALANCE_FRAMEWORK.md` disagree, the later ruling wins and this file is wrong:
+fix it in the same pass.
+
+Section references: **§10.nn** = `BALANCE_FRAMEWORK.md`, **Fnnn** = `FINDINGS.md`, **Lnn** = `TESTBED_LANDMINES.md`. Terms (tier,
+tech era, W, U\*, H, PI, PP, the pool, the register, …) are defined once in **`GLOSSARY.md`**; a bare letter not on that page is not
+allowed in prose.
+
+---
+
+# Part 1 — Goals
+
+## 1.1 Why the mod exists
+
+The vanilla economy is too forgiving and makes technology feel cheap. The mod exists to change these things:
+
+1. **A technological edge must really matter.** Falling behind on technology should cost a country its markets; leading should let it
+   out-compete rivals.
+2. **The economy must be competitive.** Efficient producers should drive inefficient ones out of a market, not coexist with them
+   indefinitely.
+3. **Modernising production must cost capital, as it does in reality.** In vanilla an 1830s-design factory becomes a 1930s-design one
+   by flipping a production method, for free. Here a more modern plant has to be **built** — real construction cost, real capital
+   demand — which creates a realistic capital deficit as economies modernise.
+4. **Depeasantation must be harder to achieve.** It follows from 3: when every modern job needs real capital, the same savings create
+   fewer jobs, so peasants and the unemployed leave subsistence and idleness more slowly than in vanilla. By 1936 a smaller share of the
+   population is in productive work than in vanilla, and those who are produce more each. The numbers expected are in §3.1.
+
+Everything else in this file is a means to these ends. A mechanic that does not serve them is wrong, however elegant.
+
+## 1.2 What the mod changes
+
+The changes a player-facing description lists after the premise, each a means to the goals above. The figures are the canon's (Part 4); the
+rulings and their reasons are in the § given.
+
+### Production: a building for every technology step
+
+Seventeen manufacturing industries — food, textile, furniture, glass, tooling, paper, fertilizer, explosives, steel, motor, automotive, arms,
+artillery, munition, synthetics, electrics and the art academy — no longer modernise by switching a production method. Each of vanilla's main
+methods becomes its own building (a **rung**), unlocked by the technology that unlocked the method, with vanilla's name, staffing and icon: up
+to four rungs per industry, on tiers anchored at 1836, 1875, 1905 and 1940. A newer rung makes more per worker and per unit of capital and costs
+more to build (the formula is §1.3), so modernising means constructing new plants and paying for them.
+
+Old plants are never forbidden or penalised. They lose their market when the newer rungs' output pushes their price down relative to wages,
+until a rung two tiers behind cannot pay its workers (§2.1). Secondary and automation methods stay, one recipe per line per industry, shown only
+beside the main methods they make sense with; an automation that is the same thing as a main method comes with it (Mechanized Looms with Sewing
+Machines, Automatic Power Looms with Electric Sewing Machines, Assembly Lines with Mass Production). Every company that has an industry gets all
+of its rungs. Extraction, agriculture, ports, shipyards, railways, power plants and trade centres keep vanilla's buildings.
+(§10.64, §10.68, §10.72, §10.78, §10.93)
+
+### Artisans and merged methods
+
+The first rung of food, clothes, furniture, glass, tools and paper is an artisan craft — Bakeries, Handsewn Clothes, Handcrafted Furniture,
+Forest Glass, Crude Tools, Pulp Pressing: 500 workers a level (30% shopkeepers, 70% laborers), labour-heavy, cheap to build, without economy of
+scale. The 1836 map carries as many craft levels as vanilla's 1836 output of those goods needs. Companies do not build them or form off them.
+
+Six of vanilla's steps that are a recipe change rather than a new kind of plant — Baking Powder, Electric Sewing Machines, Spray Finishing,
+Paper Bleaching, Improved Fertilizers, Electric Arc Process — are a second production method of the building below them, switched without
+construction. (§10.91)
+
+### Electricity
+
+Power becomes a real input with a supply that has to be built:
+- **Cities light themselves.** The urban centre's electric streetlights burn 2 coal and add 1 electricity (staffed by 250 engineers) instead of
+  consuming 3 electricity, so electrifying a country no longer needs state-by-state switching. (§10.43.0)
+- **Power plants are capital-heavy.** They cost 4× vanilla's construction (1,600 points); their recipes are vanilla's. A utility then carries
+  several years of revenue in capital, as 1930s utilities did. (§10.89.1)
+- **Hydroelectric dams.** 122 historical projects (sites a 1930s engineer could build) as four kinds of dam — Mountain Power Station, River
+  Dam, Great Mountain Scheme, Great River Dam — of 300 or 600 electricity a level, each level built within five years, on the state's own dam
+  slots. A site is surveyed first (a bureaucracy cost and the first level's technology): a survey by the owner's own family of countries opens
+  it to that family, one by an outside investor only to that investor. Governments and private investors with construction rights (the owner,
+  its overlords, holders of investment rights) build; dams are always subsidised; some add arable land or end an irrigation penalty. Vanilla's hydro-themed state traits lose their electricity bonuses, which the dams replace. (§10.89)
+
+### Research: technology follows industry
+
+- **Ordinary research is cut.** Base innovation and the innovation cap fall from 50 to 25, and the cap's literacy term from 150 to 25;
+  universities produce a sixth of vanilla's innovation; four flat research bonuses (a company, a power-bloc principle, an expedition, Cuba's
+  modernisation) are cut to a third. By the levers' arithmetic a country without universities researches at half vanilla's speed, and a literate
+  major on its cap at a quarter to two-fifths. Tech spread is vanilla's. (§10.97, §10.101.1, POLISH_1_0.md Q1)
+- **Industry earns it back through research journal entries.** A technology's entry fills one stage every 36 months while the country employs
+  enough people in the industry that needs it (for a rung's technology, the rung below), and each stage grants half the technology's tech-era
+  base cost, until the technology is acquired — up to 20 stages, so a country far ahead pays the ahead-of-time penalty with time. The mark is
+  25,000 workers for a t1 rung's technology, 75,000 for t2 and 235,000 for t3 (whole fully staffed levels; half that for arms, artillery,
+  munition, explosives and synthetics), halved once a country outside isolationism holds the technology; the entry pauses while literacy is under 25 / 35 / 45 / 55 / 65% for tech eras 1–5. Production
+  technologies outside the ladder have entries of their own, tied to the industries that would use them. (§10.95, §10.97)
+- **Beyond factories.** A land unit's technology advances (12-month stages) while one of our generals with 50 mobilised battalions faces an
+  enemy who already holds it; a ship's technology while we, a rival or a great power has the ship; radical and advanced laws spread from
+  other countries; tropical colonies, a civilizing mission, a large state apparatus, big cities, universities and financial districts each
+  advance their own technologies. (§10.98)
+- **The AI schools its people like a player would, and finishes a technology it has nearly paid for.** With the entries, the technology majors
+  still gain 0.94–0.97 of vanilla's technology by 1935 (F227, F247).
+
+### Trade
+
+- **What one unit of trade capacity moves depends on the good:** bulk and perishable goods as in vanilla, semi-bulk goods √2×, manufactures
+  and colonial staples 2×, compact high-value goods 2√2×, precious and self-delivering goods 4× — about doubling world trade.
+  (§10.88, F159, F161)
+- **Vanilla's world-market monopoly markup** (up to +20% on a good's world price, by the top exporter's share of world exports — in vanilla on
+  almost every traded good) applies only above 99% of world exports. (§10.102, F241)
+
+### Smaller changes
+
+- The 1836 start is vanilla's map with each factory on the rung its method belongs to; a country holds the technology of every method it runs.
+  (§10.55)
+- Vanilla events, journal entries, decrees and company bonuses that name a tiered industry point at the right rungs (`TIER_REFERENCE_AUDIT.md`).
+- The investment AI spends a large pool more readily (the investment-pool defines) and weighs a newer rung more (AI desire by tier); vanilla's AI
+  subsidies of tooling workshops and explosives factories are off. (§10.75, §10.92)
+- The power-bloc canning of Food Standardization 3 makes 85 groceries.
+
+## 1.3 The recipe formula
+
+How every rung's recipe, cost and AI desire is set. Implemented by `tools/make_ab_config.mjs` (§10.68, §10.91.5, §10.101) and recomputed from
+the book's `_ab` record by `tools/lint_tier_eras.mjs` in every build (L31). The values are the canon's and change only with it (§4.4).
+
+Every industry is anchored at **t1**. For a rung of tier t, let **k = t − 1**, and take from vanilla:
+- **M₁** — the vanilla main method of the industry's t1 rung (an industry with no t1 rung: exception 4);
+- **Q₁** — M₁'s output of the industry's good per level; **V₁** — the value of M₁'s inputs at base prices;
+- **K₁** — the construction cost of the industry's vanilla building (600 or 800 points; the art academy 400).
+
+Per level:
 ```
-node tools/build_era_ladder.mjs --write   # structure: eras, tech_year dates (§10.44), invented tiers, ×1.5 ladder
-node tools/era_solver.mjs --write         # refresh era_prices.json (the FIT the scenario solve seeds from)
-node tools/era_scenarios.mjs   --write    # THE solve: prices, volumes, counts, pops, army (~8–20 min:
-powershell -File tools/build.ps1          #   3 outer passes + final-pass integer polish, §10.42.4;
-                                          #   faster since §10.48 — the settled PM loop skips ~half the work)
+output        Q(t) = Q₁ · A^k           (t ≥ 1)        Q(0) = Q₁ / 1.5
+input value   V(t) = V₁ · L · B^k       (t ≥ 1)        V(0) = V₁ · L / 1.5
+cost          K(t) = K₁ · C^k                          K(0) = K₁ / C
+AI desire     1000 / 1000 / 3000 / 5000  for t0 / t1 / t2 / t3
+
+canon:  A = 2.2   B = 1.64   C = 1.9   L = in1 = 1.2
 ```
-`tools/era_solver.mjs` is the **balance-only reference view** (margins alone, no scenario) and writes
-`config/era_prices.json`; `tools/era_scenarios.mjs` is authoritative and overwrites its volumes.
-⚠ The FIRST scenario solve after a ladder rebuild prints the RECIPE MIX ⚠ (re-minted tiers lose their
-frozen ratios; its own `--write` re-freezes them) — the SECOND run is clean (see the fixed-point note).
+- **The input value is split over goods** in the proportions, by base-price value, of the rung's OWN vanilla method's inputs; quantities are
+  rounded to 0.1. A rung keeps its vanilla method's ingredients and staffing and changes only in size and margin.
+- **Staffing** is the rung's own vanilla method's employment, unchanged.
+- **A level's weekly profit at realised prices:** `profit = (1 + τ) · (p_out · Q(t) − Σ_g p_g · q_g(t)) − W`, with W = the country's wage ×
+  Σ (employees × wage weight) (§2.10) and τ the throughput bonus (economy of scale, companies, …), which scales goods but not wages; active
+  secondary methods add their own goods. At base prices and no throughput: **profit = O₁ · A^k − V₁ · L · B^k − W**, with O₁ = Q₁ × base price.
+- Per tier up, output ×2.2 against input value ×1.64 and cost ×1.9: a newer rung earns more per worker, and slightly more per construction
+  point. At base prices a rung two tiers back holds 0.05–0.25 of its successor's value added per worker (most under 0.16; arms and artillery
+  t0 at 0.23–0.25), near or under the ~0.2 line below which F97 measured old rungs emptying. Realised prices move this (§2.7).
 
-**Why prices are realised rather than prescribed.** Deriving a price path from profit margins alone
-produces numbers no market composition can reach — steel at 150% of base in tier 1 is unreachable because
-a tier-1 economy has *no steel consumer at all*. So the solver never assigns a price. It reads what the
-order book produces (the game's own formula, on the scenario's own orders) and moves the one lever it
-has, **building counts**, until the profit targets hold at whatever prices result.
+**The exceptions** (each ruled):
+1. **Crafts** — t0 of food, textile, furniture, glass, tooling and paper (§10.91.1, §10.91.5). Not the t0 line above: 500 workers a level (the
+   vanilla staffing block × 0.1, as 30% shopkeepers and 70% laborers); output Q = 0.6 × the vanilla first method's output per worker × 500;
+   input value V = 0.89 × Q × base price − £2 × 500 ÷ 52, so the value added per worker reaches the crafts' £2 hiring floor when the output sells
+   at 0.89 of base; spread over the vanilla first method's input mix; cost K(0) ÷ 50; AI desire 800; building group `bg_pmr_crafts`, no economy
+   of scale.
+2. **Merged rungs** — food t2, textile t3, furniture t3, paper t2, fertilizer t1, steel t3 (§10.91.2). The recipe follows the formula, but the
+   rung is a second main method of the rung below, not a building. The host costs the geometric midpoint √(K_host · K_merged) (textile's host
+   keeps its own cost); its AI desire is its own tier's, rising to the merged rung's once its owner holds the merged method's technology.
+3. **Engines** (motor): L = 1.0 (§10.101). The industries whose good pops buy carry a separate lift at t0–t1; today it equals in1 (1.2) and
+   changes nothing.
+4. **Industries with no t0 rung** start where the tier rule places their first rung (§2.3):
+   - **motor** — t1 · t2 · t3, from t1 Steam Engines;
+   - **munition** — t1 · t2, from t1 Percussion Caps;
+   - **synthetics** — t1 only, Synthetic Dye;
+   - **automotive** — t2 · t3, from t2 Automobile Production;
+   - **electrics** — t2 only, Telephone Production.
 
-**Targets — A SCENARIO HAS TWO TUNED RUNGS, NOT ONE, AND THEY HAVE DIFFERENT TARGETS.** A scenario may
-hold a **LEADING** rung (a present rung with tier > the scenario tier — since §10.44 it is there only when
-its `tech_year` has actually arrived, not by the retired `lead = [0,2,3,4,5,5]` tier arithmetic, which now
-matters only on the `ERA_DATE_GATE=0` legacy path) and a **DOMINANT** rung (tier N — the workhorse):
-- **leading `TG.current` +20%** · **dominant `TG.minus1` +5%** · **one tier stale `TG.minus2` −20%**.
-- A **plateaued** industry's last tier holds `TG.plateau` **+5%** forever.
-- **Shipyards carry a further −30pp on all of them**, because none of their income from naval ship
-  construction is modelled.
-- Extraction and agriculture have a **band**, not a target (§10.22).
-⚠⚠ **THE TIER-APPROPRIATE RUNG IS THE DOMINANT ONE AND ITS TARGET IS +5%, NOT +20%.** The old five-tier text
-here read "era-appropriate +20%, one era stale −5%, two eras stale −30%", which describes a ladder whose top
-rung present was the tier-appropriate one. That is no longer the shape, and the stale wording outlived the
-change: the report graded the dominant tier against +20% while the solver aimed it at +5%, a **systematic
-15pp phantom miss in every tier**. Fixing the yardstick alone moved the objective from **5/76 to 70/84 within
-8pp** with the economy completely unchanged (BUGS_AND_FIXES, 2026-08-08).
-⚠ **The LEADING tier is currently scored by nothing**, and cannot be scored in the per-tier report: its
-recipe is solved in the *next* tier, so at report time it is not final. That needs a post-solve pass over all
-six tiers — see the same entry.
+   **The ladder counts from t1 for all of them, whether or not the industry has a t1 rung.** Motor, munition and synthetics have one, and it
+   is the anchor as usual. Automotive and electrics have none: their first rung's vanilla method is taken as M₁, as if it were a t1 method, so
+   their t2 rung gets Q₁ × A, V₁ × L × B and K₁ × C like every other t2 rung (never priced as an 1836 rung, F111), and their t3 gets A², B²,
+   C². Automotive's t2 makes 66 automobiles a level (vanilla's 30 × 2.2) and costs 1,520 points (800 × 1.9).
+5. **Minted top rungs** — furniture's spray finishing, paper's continuous web and fertilizer's catalytic synthesis have no vanilla method;
+   they take the input mix and staffing of the rung below.
+6. **Secondary methods** (§10.91.2, §10.93): one recipe per line per industry, sized to vanilla's share of its most advanced main method
+   applied to the industry's t2 rung; vanilla's employment; left off any rung where it would take a good or a job below zero. Crafts carry none.
+7. **Outside the 17 industries** recipes and costs are vanilla's, except the power plant (1,600 points), the urban centres' streetlights and the
+   dams (their own table, §10.89.13).
 
-**⭐ THE GOAL A SCENARIO SET MUST CLEAR IS "ILLOGICALITY" — BALANCE_FRAMEWORK §10.11.** Those profit
-targets are a *means*; illogicality is the end, and it is what says whether the tech ladder actually
-works. Three faults, counted per industry per scenario and summing: (1) the tier-appropriate rung **loses
-money**, (2) a **two-tiers-stale** rung still turns a profit, (3) the ladder is **inverted** — the newest
-tier earns less than the one below it. Acceptable: **~0** for (1) and (3), **in the teens** for (2),
-**excluding shipyards and art academies** (both have targets they cannot meet by construction).
-`tools/era_scenarios.mjs` prints the count per tier with the offending industries named.
-⚠⚠ **THE HEADLINE COUNT IS THE FINAL-STATE ONE** (BUGS_AND_FIXES 2026-08-09): the in-tier line reads the
-leading rung's PROVISIONAL recipe and under-counted by ~40 points (52 reported vs 94 replayed on the
-shipped state). Quote the `FINAL-STATE ILLOGICALITY` line, never the per-tier sum alone — and no profit
-figure before 2026-08-09 is comparable to later ones without adding shipyards back (they are excluded
-from the totals now, reported on their own line, like gold).
-**Current state under the ruled set (§10.42.4) + the 1780 prune + the ELECTRICITY PASS (§10.43, 2-coal
-ruled) + the DATE GATE (§10.44) + the WEDGE and the 1780 RULINGS (§10.45/§10.46) + the MACROSCENARIO
-LAYER with DERIVED BOUNDS, the minCount-for-refs fix, and the INFRA SUBSIDY TOLERANCE
-(§10.47/§10.47.2/§10.47.4, shipped 2026-08-09) + THE HYSTERESIS SET (§10.48, shipped 2026-08-10 —
-`ERA_PM_MINGAIN` 0.10 + `ERA_PM_FREEZE` best-of-cycle freezing as defaults, ceiling guards on breach
-SETS, breach-clearing polish) + THE CONSTRAINT-SET REGIME (§10.49, user-ruled 2026-08-10 "ship this" —
-profit BAND +5…+50% in place of the +5% target, the MANDATED PRICE-DECLINE ladder, the strict INCREASE
-mechanism, and the ERA_PM_LIFT dominance re-open) + THE RECIPE RATCHET (§10.50, 2026-08-10 — the
-STRONG form ships: a later tier's base recipe may not be less input-efficient at base prices than
-the tier below; the census went 31/78 violated → 3 rounding hairliners, and the INVERTED family
-collapsed 21 → 6): final-state illogicality 57 (54 excluding shipyards), per tier: 3/5/7/12/15/15,
-families loss 12 / stale-profitable 36 / inverted 6 · losses £138k/wk ≈ 0.7% of net · net £20.1M/wk
-(the band regime's +59% over §10.48's £12.6M is the ruling's point: real margins, and the stale
-family carrying the fault count is the ruled trade) + THE ARMY IN THE FIXED POINT (§10.51,
-user-ruled 2026-08-10 — ERA_ARMY_FP: battalions and war-goods prices solved jointly inside setArmy,
-killing the cobweb that shipped 1.8–6.8% army shares against the 5% premise; tiers 1–5 now hold
-±1pp of the consistent 5.3% on every seed, tier 0 the flagged 1780 exception; UNDROP-ON-BREACH makes
-the ceiling outrank solvency in both directions; per-tier ARMY report lines added; §10.51.1: the
-recheck runs TWICE, the second time after macro sparing only its floor-grown keys, and re-verifies
-the §10.22 upper band — the five-item one-shot audit is ruled: SoL/wage premise and t0 granularity
-ACCEPTED, block-lists left by ruling, the post-macro gap AND the tuner single-pass both FIXED —
-§10.51.2: free entry re-runs after macro with a fresh futility slate and a macro guard; ⚠ dominant
-rungs off the band 17→23.5pp is the army premise × macro caps × band COLLIDING on the war
-industries, an honest residual, not a defect) ·
-ensemble (full stack) 65/61/61 (58/54/55, mean 55.7) · £116–276k · £20.0–20.3M · macro 20/19/19 ·
-**THE CEILING IS CLEAR IN ALL SIX TIERS OF ALL THREE SEEDS** · PM settled 5/6 (tier 2's steel
-bistables are the exception) · ⚠ the
-§10.48 figures (68/58 · £156k · £12.6M ·
-ensemble 68/64/62 (58/54/51) / £156–218k / £12.6–12.7M / macro 15/17/15) are the LAST OF THE TARGET
-REGIME — comparable to each other, not to these ·
-**PM CHOICE SETTLES in every tier of every seed**, cross-seed phase noise 137→50 selections, freight
-adoption monotone · the same code without the two knobs reads mean ill-excl 64.0 and losses £214–334k,
-so the set is a real gain, not jitter (§10.48.1's table holds all ten arms) · the macro residual
-FAMILY structure below persists under the §10.49 regime (whose own list is 19: the war industries
-join the over-cap block — explosives@1900/20/45, arms@1900, their army-fed margins competed by free
-entry — and railway@1945 reads 1.29% against its 2.05% floor, still the closest approach the model
-has made; the per-family NUMBERS below are the §10.48-era readings) —
-four named families (§10.47.3): the TRANSPORT GAP (railway 0.15/0.33/−0.01/1.88%
-mapped vs derived floors 1.75–2.75% from a real ~7–11%; wages and target handicaps are MEASURED off
-the table — F47: vanilla adopts rail freight against the wage arithmetic, 58% of raw producers by
-1912 at ×1.4-flat wages, and the recipe-reaching handicap made railway value-poorer — and FREIGHT IS
-RULED ACCEPTED AS-IS, §10.47.5: "vanilla doesn't immediately switch either", so the gap is an
-ACCEPTED residual, not open work — and the 1920 cycle swing that used to ride on it
-(2.13/1.70/0.84/−0.01 across same-design runs, the unpinned bistable PM cycle) is GONE since §10.48
-pinned the phase: adoption is monotone in every seed), the late-tier
-NEW-ECONOMY UNDERSIZES (automotive/electrics/power short of real-history floors — V3 pop budgets
-cannot fund them at real scale), the DEBUT WALLS (steel/motor@1836, electrics@1900 — §10.29 family,
-RULED TOLERABLE §10.47.5: every one verified to have consumers, and their denominator drag is
-−4.7%@1836 / ≤1.9% later, inside the corridors' noise in the flattering direction), and hairliners;
-extraction's cap is VERIFY-ONLY structural red at every tier (model
-18–52% vs real 9.8–18.6% caps — V3 books value at the pithead) · the INFRA SUBSIDY TOLERANCE
-(§10.47.4, vanilla's must_have trio railway/port/power may book −10% before fault or shrink, scoring
-only, mirrored in econ.js LADDER_LOSS_FLOOR) ships with an IMPLIED SUBSIDY BILL of ~£0 (£1k/wk =
-0.02% of GDP at 1920 only) and revived railway@1900 to 0.33% · the layer caught seed 9 shrinking 1920
-textile to a 0.17% stub — the "no dead industries" bound working on its first ensemble ·
-calendar-anachronistic output 0% by construction; 1836's honest tech-era-2 share 46.6% vs vanilla's
-measured 45% · hardwood TRADE-SUPPLIED where ruled (every other good domestic — the condition-based
-version shipped an all-imports iron economy and is recorded VOID, §10.46.1) · ownership professions
-follow the MEASURED wedge (F46), and every profession share passes its §10.47 bound in every tier ·
-the futility guard knows which price pin it is looking at, and the dye placeholder pin is
-gone.** Future A/B work compares against THESE numbers. The pre-campaign state on
-the same metric was 94 (84) and £868k losses. 1780's remaining faults (furniture, tooling, paper,
-arms, artillery in the current run) are honest tiny-market statements — industries with real
-buyers, each losing £86–300/wk at one floored level.
-⚠ Older counts in this file's history (43/30, 52/47) are the in-tier metric on the old defaults — void for
-comparison on both grounds.
-⚠ **Two levers that lower the count are REJECTED and must stay rejected**: `ERA_NO_BUYER=1` buys its gain
-with §10.32.3's known defect, and deadband retuning is a spike in a jagged band (§10.42.2's calibration:
-±10 faults / ±250k losses / ±0.4M net from no-op changes on the old defaults — design changes are judged
-on 3-seed ensembles, `ERA_JOINT` 8/9/10).
-It is **live in the balance UI** as the **Ladder check** panel, from ONE shared implementation
-(`ladderFaults()` in `ui/econ.js`, called by both the UI and the solver). It scores only the buildings a
-scenario actually CONTAINS — an absent industry or a tier at Number 0 is never a fault and never the
-comparison partner for one — so zeroing things out while tinkering can only lower the count (§10.17).
-✅ **The write cycle is a STRICT FIXED POINT** (BALANCE_FRAMEWORK §10.25, closed 2026-08-05): config,
-presets and the printed report come back byte-identical after every `--write` → re-run. It got there by
-making the recipe MIX come from invariant sources — the run prints `RECIPE MIX: own 66 · below 23 ·
-frozen 10` and warns if any tier ever reads its mix from the previous write. ⚠ **One EXPECTED transient:**
-`build_era_ladder.mjs --write` re-mints the invented tiers, which discards their frozen `input_ratio`, so
-the FIRST solve after a ladder rebuild prints the ⚠ (those tiers fall through to their seeded inputs) and
-its own `--write` re-freezes them — the SECOND run is clean and the fixed point holds from there. A ⚠ on
-any later run is a real defect.
-✅ **The count/price loop now CONVERGES** (§10.28): it used to limit-cycle forever at a 19–94pp residual,
-because a proportional controller cannot settle integer building counts (a good wanting 6.4 levels toggles
-6/7, worth ~20pp of price). A **deadband with hysteresis — stop chasing at 8pp, resume at 15pp** — fixed
-it. ⭐ **Raw goods now carry a ±30pp BAND instead** (§10.42.4, user design): inside it the controller
-leaves them alone entirely, so raw prices float with scarcity rather than being steered back to base;
-nothing prescribes a raw price path (the drift idea is REJECTED).
-⚠ **The response surface is JAGGED and now CALIBRATED** (§10.42.2): no-op controls swing ±10 faults /
-±250k losses / ±0.4M net, so design changes are judged on 3-seed jitter ensembles (`ERA_JOINT` 8/9/10),
-and the final-pass **integer polish** (±1-level greedy moves on the global objective) attacks the
-amplifier at its source.
-✅ **PM choice now SETTLES — in all six tiers of all three ensemble seeds (§10.48, shipped 2026-08-10).**
-The limit cycle was killed by two levers together: **hysteresis** (`ERA_PM_MINGAIN` default 0.02→0.10 —
-the response curve is clean and 0.10 is its optimum; most churn was near-identical method pairs trading
-places on noise-sized margins) and **best-of-cycle freezing** (`ERA_PM_FREEZE`, default ON: a PMG that
-RETURNS to a method it held after an earlier joint round is pinned at that phase — it just won the score
-comparison at current prices; a pin is lifted if its method goes illegal or touches a ceiling-breached
-good). Cross-seed PM phase noise fell 137→50 differing selections, the freight/railway phase flapping is
-gone (monotone adoption in every seed), losses fell ~35%, and the optimiser work roughly halved.
-⚠ **Freezing without the hysteresis is HARMFUL** (it pins a third of the churning economy at arbitrary
-phases — measured, §10.48.1); the two ship together. ⚠ An early PM fixed point must not starve the
-continuous half: the joint loop always spends its full round budget, skipping only the optimiser.
-⚠ **THE LARGEST REMAINING BLOCK IS NOT A BALANCE PROBLEM (§10.29).** Every insolvent industry is *floored
-at 1 level* and pinned at the 25% price band edge.
-⚠⚠ **THE STEEL HALF OF THIS IS VOID — "era-1 steel has ZERO buyers, its first consumer is an era-2 tier"
-WAS TRUE IN AUGUST 2026 AND IS NOT TRUE NOW** (re-measured 2026-08-13). The date gate and two re-bandings
-moved `motor` t1, `shipyard_steam` t1 and `arms` t1 into tier 1, and all three eat steel: the shipped
-1836 scenario reads **buy 112 against sell 78** — demand EXCEEDS supply and the price sits at 100%, not on
-the floor. Do not cite the zero. ⭐ It is also **contradicted by the game**: a melted vanilla 1838
-gamestate has a real steel market of **1387 units/wk**, consumed by tooling workshops (90.5%, 56 levels)
-and motor industry (9.5%), against 1063 produced — see FINDINGS **F54**. The `ERA_PRUNE` default
-`steel@0` still stands, because at **1780** there genuinely is no steel consumer of any kind.
-The rest of the block is unaffected: tier-3 telephones read buy 18 against sell 72 because they share `popneed_communication`
-with `transportation`, which is sold in vast quantity. Two obvious remedies were measured and **both fail**
-— a 4× bigger market leaves the prices *identical* (supply and demand scale together), and cutting the
-debut tier's output makes the industry **worse** (−29% → −62%), because pop money is allocated by supply
-share, so less supply buys less demand. Do not re-try either; §10.29 states the remaining options.
-⚠ **§10.32 answers "how many industries have no market yet": exactly ONE** — tier-1 steel (gold aside). The
-only other producer-before-consumer gap is `steamers` (made tier 2, first eaten tier 3), and pops buy those.
-**19 of 22 industries sit exactly on their vanilla unlocking tech's era**; the three that do not —
-`synthetics`, `electrics`, `automotive` — are placed one tier EARLY by deliberate historical correction in
-`build_era_ladder.mjs`, and are precisely the offenders. That is the true source of the "consumer arrives
-an era late" gap: the building was moved by hand, the PMs that buy its output were left on vanilla's era.
-**Four candidate fixes were measured and none is a clear win** (moving the engine industry to tier 1 → 47;
-moving railway too → 51; the no-buyer rule → 39 dropped / 45 zeroed, the better figure again coming from a
-defect). **The steamers half is now FIXED** by giving port a five-tier ladder (§10.33), and **§10.35 supplies
-the fix for the rest** — see below.
-✅ **§10.34: TWO INDEPENDENT SOURCES AGREE ON THE READING WE SHIP.**
-`game/common/pop_needs/00_pop_needs.txt` documents the mechanic in a header comment: `weight` is *"the base
-weight applied to this good based on market Sell Order share"*, `max_supply_share` *"the maximum weight
-that can be applied … relative supply above this amount will have no further impact"*, `min_supply_share`
-*"a minimum of this multiplier of the base weight … regardless of its market Sell Order share"*. That is
-**exactly what `needSplit()` does**, and **F31 measured the same conclusion independently** against the
-game's own consumption telemetry. ⚠ **The comment alone would not settle it** — shipped statements can be
-confidently wrong, and a comment that was true when written rots silently after the code moves. It carries
-weight here only because an independent measurement agrees with it. **Read that file before theorising**
-(cheap hypotheses), **and corroborate before believing** (docs are not evidence on their own).
-⚠ F33 briefly claimed to refute it; that claim is **RETRACTED** — an argument that concludes the documented
-rule is impossible is a broken argument. Its measurements stand, its inference does not. The live question
-is now **why our implementation of the documented rule yields so much less demand than the game does**,
-with the `local` goods abstraction (§10.35.1a) the leading suspect. Superseded text follows:
-⭐ **AND F35 SAYS WHY NO AMOUNT OF THAT ARITHMETIC COULD EVER HAVE SETTLED IT.** F33's telephone case was
-called "unconditional" because telephones sit in exactly one need. **A single-need good is not a
-single-good need** (user, 2026-08-06): `communication` is `telephones` + `transportation`, and
-`transportation` is both multi-need and `local` — the very good flaw 1 is about. A census of the shipped
-file shows this is structural: **all 15 pop needs share a good with another need, so NO need's budget is
-observable from the order book**, and that budget is the quantity the whole argument runs through.
-⇒ **The level of a share can never identify the rule; only a PERTURBATION can.** That promotes the
-pop-need weight lever from "is `weight` live?" to the only available route, and makes
-**`popneed_luxury_items` the one clean venue in the game** — silk / luxury_clothes / luxury_furniture /
-porcelain are each single-need with no local good, so its budget IS observable until radios exist, and
-`luxury_furniture` trades from 1836. Design perturbation experiments there, not on telephones.
-⚠ **§10.34 — the reopening (RETRACTED, kept for the record) (FINDINGS F33, 2026-08-05).**
-F31 remains correct for what it measured: scored over seven **1836** markets the final-share reading fits
-**worse in all seven** (20.0% → 24.2%), and Russian heating is 79% wood against wood's 0.5 cap, which that
-reading forbids. **But F31 could not test the case that matters**: in 1836 `free_movement` and
-`communication` each have exactly ONE supplied good, which is why F24 reports 0.0% error for them.
-Measured in a 1903 campaign, the **shipped** reading is *arithmetically impossible* there — 948 units of
-automobile pop demand would require **100 662 units** of transportation pop demand against a market whose
-**entire** transportation buy orders are 19 459, a 5.2× overshoot. The final-share reading is consistent
-(9 483 units, 49% of the market). So: **1836 heating refutes the final-share reading; 1903 free_movement
-refutes the raw clamp.** The real rule is neither, and finding it is open work.
-⚠ **There is no authored floor to appeal to**: `min_supply_share` is non-zero on **7 entries in the whole
-game** (furniture, meat, fruit, silk, luxury_clothes, luxury_furniture, porcelain — all 0.1) and is **0 for
-automobiles, telephones, radios and steamers**. Re-derive the 1836 half with
-`tools/testbed/score_pop_split.mjs`, the 1903 half with `tools/testbed/analyse_debut_mechanism.mjs`.
-⭐ **§10.35 ANSWERS IT INSTEAD, AND IT IS NOT A DEMAND MECHANISM.** In vanilla each of these goods has
-**exactly one** building customer, arriving *with* the good: automobiles are bought by
-`pm_public_motor_carriages` in **urban centres** (hundreds of levels per market, 1 each) on
-**`combustion_engine` — the same tech that unlocks the car plant**; telephones by `pm_switch_boards` in
-government administration (5/level). Our ladder moves the *factory* a tier early but PM availability still
-gates on the tech's **vanilla era remapped 1:1**, so the customers stay behind. Off the shipped presets:
-tier 3 makes 30 automobiles and 60 telephones against **zero** reachable building demand and is floored at
-1 level; tier 4 switches the customers on (330 / 770) and the same industries jump to 22 and 20 levels.
-⚠ The deeper cause: **our tiers and vanilla's eras are different year scales** (ours 1750/1850/1900/1925/1940,
-vanilla's pre-1836 / 1836-61 / 1862-86 / 1887-1911 / 1911-36), so our tier 3 sits inside vanilla's era 4 and
-the 1:1 remap mis-sorts precisely the late techs. Fix built as **`tools/era_tech_sync.mjs`**
-(**`ERA_TECH_SYNC=1`**, **default OFF**): one tech, one era. It **only ever LOWERS** — the naive "whenever
-they differ" rule made 18 changes, 12 unforced, including pushing every dynamite PM out of tech era 3; the
-minimum leaves the 6 that are forced.
-❌ **MEASURED AND PARKED — not a win in any variant** (§10.35.2): all six → **49/36**, `combustion_engine`
-alone → **41/31**, against the shipped **41/30**. The aimed-at effect is real (automotive leaves tier 3's
-loss-making list, tier 4 goes 10 → 8) but tier 3 worsens 12 → 14 and the net is a wash inside the jagged
-surface. Do not ship it on the argument alone.
-⚠⚠ **AND ITS PREMISE ABOUT IN-GAME TIMING IS UNVERIFIED.** A tech gate makes `pm_public_motor_carriages`
-*selectable*; whether urban centres actually switch to it is an **AI decision that plausibly lags until pop
-demand has already built**. The model-side half stands regardless (a PM the tech-era gate forbids can never be
-selected, so tier 3 has zero *reachable* building demand), but the "in vanilla the customer arrives with the
-good" reading does not. `schedules/debut_good_demand.json` is measuring the real sequence.
-NOT started, and `needSplit` is a measured result, so do not replace it on reasoning alone.
+## 1.4 The constraints the goals are pursued under
 
-⚠ **Older illogicality figures in the docs are void, not merely stale** (BALANCE_FRAMEWORK §10.14.1): the
-solver used to re-solve recipes *after* its final price sync, so it reported profits at prices its own
-recipes contradicted. The previous configuration scored 65/54 under corrected accounting where it had
-reported 35/24. **Never report or ship from a non-finalised state** — the solve now iterates prices, PM
-choice, recipes and counts to a joint fixed point and reports only what it ships.
+- **1836 stays vanilla; afterwards only world GDP stays near vanilla.** At the 1836 start the economy's composition and distribution are
+  held close to vanilla where possible (the start is converted from vanilla's own history, §5.4; the input lift is the ruled exception, and the craft rungs
+  are seeded to vanilla's 1836 output). After 1836 only **world GDP as the game displays it**
+  must stay near vanilla — because government minting and prestige/rank scale with it (§10.90); the technology distribution, prices and
+  employment are expected to diverge.
+- **The game must stay about as fast as vanilla.** The budget is **+10% of vanilla's play time** for a century (§3.4). A mod that models a
+  beautiful economy and costs the player a third of their evening has failed at something the balance numbers never show.
+- **Simulation purity: no artificial limits.** No hard build blocks, no `possible` gates that forbid the AI an old rung, and never a
+  technology-triggered penalty on old rungs (the user: *"never ever, for simulation purity"*). Production is steered by economics
+  (recipes, costs); the AI levers are willingness levers only (§2.4).
+- **Vanilla values plus uniform rules.** Rungs are vanilla's own methods; ladders are uniform across industries; per-rung recipe fitting is
+  out (§2.5, §2.6). As few special rulings as possible.
+- **No DLC content is ever unlocked** — Paradox prohibits it (§5.1).
 
-⚠ **The third price band (§10.13) is CLOSED — built, swept over 64 combinations, and within noise.** Do not
-spend more effort tuning the price path; the gradient is not there. What paid was fixing three scenario
-defects (§10.14): the non-final reporting above, the **forward probe** (a level of the *next* tier's rung in
-every industry — an anachronism scored by nothing that supplied 61% of tier-1 steel and floored every debut
-good), and a **glutted by-product vetoing a starved input** in the count feedback (which shrank logging
-523→124 levels while wood starved).
+---
 
-**⭐ POST-SOLVE SCENARIO TUNER — FREE ENTRY (§10.21).** *Not part of the solve*: when it runs, recipes, PM
-selections and volumes are FINAL and must not move — it adjusts **building counts only** and re-prices, which
-is why it must never call `contSettle()` (that re-solves recipes). Any tier-appropriate manufacturing rung over
-**+25%** is built one level at a time until it drops under the cap. **Revertable: `ERA_PROFIT_CAP=0`.** The
-+75% ceiling outranks it — a step that breaches it is undone and that industry stops growing. Sanity check
-printed per tier: manufacturing share of output (⚠ >90%) and raw-producer profits. ⚠ Current verdict:
-manufacturing fine (27→58% across tiers), **raw-sector profits NOT** — medians 52–66% against targets of
-+20%/+10%, 10–12 producers over +50% every tier. Applying the same rule to extraction/agriculture is the
-obvious next move, but it must run *together* with §10.18, not after it.
+# Part 2 — Principles
 
-**⭐ RAW PRODUCERS HAVE A BAND, NOT A TARGET (§10.22).** Extraction **0…+400%**, agriculture **0…+200%** — the old +20%/+10% targets are GONE (a good has one price and several producers, so at most one could ever sit on a target; the rest were permanent unfixable misses). Both bounds are enforced in the SAME loop as §10.21, because growing a producer can push a sibling below zero. ⚠ A rule that cannot reach its goal must stop: if a growth step does not lower the margin (the good is pinned at the 25% floor) the producer is blocked — `tea_plantation` once ate all 400 tuner steps achieving nothing.
+## 2.1 Falling prices are the core mechanism
 
-**⭐ HARD CONSTRAINT — NO LOSS-MAKING RAW PRODUCER MAY BE PRESENT (§10.18).** No extraction or agriculture
-building in a scenario may run at a loss; the rule is on *non-zero* producers, so the remedy is not to build
-it. Enforced greedily and minimally (drop the worst, re-converge, look again), **gold — see below** (one-sided
-order book by construction). ⚠ **It can collide with the ceiling below, and the ceiling wins**: dropping the
-tier-1 scenario's iron mine left 1836 with 704 iron demand and zero iron supply, so a drop that breaches the ceiling is
-undone and the building is kept and **reported by name**. ⚠ Each round must *begin* from a converged state —
-checking and then settling lets the state drift back over the line after the check.
+**Obsolescence here is price-driven.** An old building dies when its output price falls while its input prices and wages do not. Remove the
+price decline and nothing else in the ladder can do the job. This ranks immediately after the goals (user-ruled 2026-08-30).
 
-**⭐⭐ GOLD IS NOT IN THE MODEL AT ALL (§10.40.5, 2026-08-08).** `building_gold_mine` and `building_gold_field`
-are in `EXCLUDE_REF`, so **no scenario contains either**. In the real game gold is minted into the treasury;
-this model has no treasury, so gold is a good with producers and **no consumer whatsoever** — its order book
-is one-sided by construction, its price sits pinned at the 25% floor in every tier scenario, and every gold mine runs
-at about **−62%** regardless of what the rest of the economy does.
-⚠ **It was exempted four separate ways before it was removed** — `SKIP_GOODS`, `NO_BUYER_EXEMPT`,
-`SKIP_TARGET_BLD`, and §10.18 above — and it *still* leaked into the first profit metric that widened its
-population, supplying **£2.28M of loss against £0.48M from the whole rest of the economy** (4.7× the signal;
-92% of tier 4's reported losses on its own). **A quantity that needs a special case everywhere it appears does
-not belong in the model.** Its workforce is negligible and the job-pool rescale absorbs it.
-⚠ Do not "fix" gold by giving it a buyer, a price floor or another exemption; it is out, and the
-`auNet`/`auLoss` line in `profitTotals` is kept purely as a **tripwire** that prints if one ever returns.
-⚠ **The USA — which these scenarios are referenced against throughout — has ZERO gold deposits in vanilla.**
-The right number of gold mines here was never "few", it was none.
+- **The decline happens in WAGE UNITS, not in pounds** (F97). Vanilla holds every manufactured good within ~15% of base for the whole century,
+  because pop wealth growth re-absorbs any glut; a pop good cannot be held below base in £. What does fall is its price relative to the wage.
+  The engine lays a building off once its workers fall under ~0.66× the expected standard of living, and a rung two tiers behind empties when it
+  holds under ~0.2 of the frontier's value added per worker (vanilla's own recipes put two methods apart at ~1:2.7 — why vanilla's first method
+  survives wherever the AI does not switch). The A/B ladder is designed on that ratio, not on a £ price path.
+- **Recipe margins buy PREFERENCE for the frontier; only a price decline buys DEATH of the old rung.** With flat prices, "the old tier dies"
+  and "1836 matches vanilla" cannot both hold through recipes alone: killing the old rung at base prices means making it unprofitable at base,
+  which contradicts the vanilla-anchored 1836. Work the price path first; treat margin-ladder changes as palliative.
+- **It is not yet achieved** — the central open problem; the measured state is in §4.2.
+- **Closed price levers** (§10.90): no change to the pop-need demand caps (`max_supply_share` — people should mostly switch to finished goods);
+  no construction goods-efficiency change; no change to how treasury and pool cash is generated. Cheaper frontier inputs move prices only with
+  world GDP — a GDP lever, not a price lever (F178 §8).
 
-**⭐⭐ SCALE LIMITS — HARD SOLVER CONSTRAINTS on building counts (§10.40.6).** The count controller has no
-notion of a resource deposit, so a good whose price keeps asking for supply keeps getting it. `SCALE_LIMIT`
-bounds it: **whaling 30 · fishing 100 · each ore/logging building 1000 · each plantation TYPE 300 ·
-non-subsistence agriculture combined 3000**. The first four are per-building clamps in `applyCounts`; the
-agriculture bound is **joint**, so an over-total scales every farm/plantation/ranch down together and
-preserves the crop mix the price feedback chose. Per plantation TYPE, because 400 tea plantations is
-implausible even where the total acreage is not.
-⚠ **Judgement calls, stated as such** — deliberately NOT derived from vanilla's `capped_resources`, which
-distinguishes *potential* slots from slots *exploitable at a given date*, and reading one as the other is
-how such a check becomes confidently wrong.
-⚠⚠ **WHALING IS WHY THIS EXISTS.** It produces **oil** and is **ungated by technology**, so the controller
-used it as an unbounded substitute oil source exactly when oil demand exploded — the count ran
-**2 / 19 / 1 / 9 / 47 / 440** across the six tier scenarios, when whaling was historically in steep **decline** by
-1945, so 440 was the wrong sign as well as the wrong magnitude. The other bounds are guardrails; this one is
-a fix. Also caught: fishing 106 at 1920 and iron 1 251 at 1945.
-⚠ The report's **SCALE LIMITS** line is a **verification, not a warning** — the caps bind during the solve,
-so a breach printed there is a bug in the constraint rather than a property of the economy. It also names
-anything sitting *at* a cap, since a binding constraint is a fact about the scenario worth seeing.
-⚠ The verification **skips subsistence buildings** (they are sized from the peasants, never capped) — it
-used to count `subsistence_fishing_village` against the commercial fishing cap and printed a phantom
-"fishing 102 BREACHED" the moment the wharf sat at 100 (BUGS_AND_FIXES 2026-08-09).
+## 2.2 What a tier means — the anchor principle
 
-**⭐⭐ GDP IS `52 × weekly VALUE ADDED`, MEASURED — NOT GROSS OUTPUT (FINDINGS F45).** Value added = building
-outputs − building **inputs**, at market prices; pops and trade are on neither side, because value added is a
-production-side quantity. Confirmed against the `gdp` series three vanilla melted savegames persist, read
-beside those same saves' `input_goods`/`output_goods`: **52.44 (1901) · 51.44 (1912) · 49.94 (1920)**.
-⚠ **Gross output is a MOVING TARGET** — it double-counts every intermediate, so its ratio to GDP falls
-**×48.5 (1836) → ×36.7 (1935)** as chains lengthen. Anything calibrated on gross output is calibrated against
-a quantity whose meaning changes across the very period the ladder spans; that is why this exists.
-The **army (5%)** and **construction (15%)** budgets are shares of GDP, rebased off gross output. Reference,
-measured off a vanilla 1901 gamestate — construction's goods bill as a share of GDP: FRA 20.1% · RUS 19.9% ·
-USA 15.3% · GBR 14.1% · BEL 8.8% · JAP 4.5%. Implemented once, in `ui/econ.js`'s `scenarioValueAdded()` /
-`scenarioGDP()`, and shown in the UI's scenario summary as GDP and GDP per capita — plus two
-READ-ONLY chips (user, 2026-08-10): **army/GDP** and **constr/GDP** share, recomputed on every
-change, on the solver's own self-inclusive basis (both bills sit in `inAgg`, so the VA nets them
-off). Tier-preset targets: army 5%, construction the §10.42.4 ramp. ⚠ The audit that shipped with
-them (§10.50.2): construction tracks within ~1–2pp except 1780; **the army does NOT hold its 5%**
-(1.8–6.8% across tiers — battalions are sized mid-solve and war-goods prices move afterwards; t3's
-1.8% is the same defect as its insolvent war industries, one feedback loop seen from two sides).
+A rung's **tier** (t0–t3) is a statement about time. The anchors are **1836 / 1875 / 1905 / 1940** (`era_anchor_years`).
 
-**⭐ LOSS-MAKING MANUFACTURING SHRINKS (§10.38, semantics updated by §10.42.4).** Raw producers shed levels
-(§10.18 via `ERA_RAW_SHRINK`); manufacturing had no downward rule at all, so a loss-maker sat at whatever
-size the job-pool rescale gave it. Now: converge, take the worst loss-maker — **stale rungs first**
-(`ERA_SHRINK_STALE_FIRST`, user directive: obsolete capacity is the first victim, tier-exact the last
-resort) — cut **coarse-to-fine** (`ERA_SHRINK_COARSE`: ~5% of levels while worse than −10%, one level near
-the boundary), **CAP** it there so the rescale cannot undo it, re-converge, look again. A tier stops at
-**one level** — "unprofitable" and "absent" are different statements, and §10.17 stops scoring a tier at
-zero anyway. The cap is what makes it stick: counts are the DEPENDENT variable (full employment by
-construction) and an uncapped cut regrows on the next settle. **This redistributes the workforce; it
-cannot shrink it.** Shipyards carry their −30pp handicap on both the test and the comparison, or the rule
-cuts them first every tier at a margin that is, for a shipyard, par. Revertable: `ERA_SHRINK_LOSSMAKERS=0`.
-⚠⚠ **`ERA_SHRINK_STEPS` IS A SAFETY NET, NOT A BUDGET (default 6000)** — the loop stops on its own
-(`if (!worst) break`). It was 60 (a budget that bound only in tier 5, §10.38.2), then 2000, which the outer
-iteration made a budget AGAIN (pass-2 tier 5 wanted more than 2000 fine steps and shipped £387k of
-un-shrunk losses) — hence coarse stepping as default and 6000 as the net. A guard that binds in ONE place
-looks like a converged solve everywhere else; never lower it to fix runtime.
-⚠ **"Total losses" is therefore not a clean health metric** — it counts a dying tail, which the design *wants*,
-the same as an industry that cannot pay for itself. At 60 steps tier 5 had £791k of its £900k gross loss on
-**stale tails** and exactly one loss-making *newest* tier (an excused shipyard). Losses **on newest tiers
-only** is what separates them.
-⚠ **Tier 5 is the only scenario whose top two rungs are not both meant to be profitable**, which is why it needs
-so much more shrinking than any other. The placement rule gives `weight: 1` to the leading tier and to the one
-below; with `lead = [0,2,3,4,5,5]` those are the *leading* and *dominant* tiers everywhere else (+20% / +5%),
-but there is no tier 6, so at tier 5 the partner slides down onto the **one-tier-stale** rung and half the
-capacity starts at −13% to −23%. That is the ladder working, not failing — the defect was only that the
-scenario placed a dying rung at full scale and could not correct it.
+1. **At a tier's anchor year a technology leader should hold about half of that tier's technologies** — t1, t2 and t3 sit on the game's tech
+   eras 3, 4 and 5; t0's tech era 1 is held at the start. This is the definition of a tier, not a label (user-ruled 2026-08-12, restated for
+   the four-rung book). Measured by `tools/testbed/ledger/tech_census.mjs` (section D: the leader's share of tech eras 3/4/5 at 1875/1905/1936).
+2. **t3 is anchored after the 1936 end on purpose.** Even an experienced player should finish a whole tree only when unusually lucky, playing a
+   strong nation, and probably neglecting the other trees.
+3. **The anchors are authoritative.** Technologies and industries are calibrated to them, never the reverse; re-dating technologies is an
+   acceptable cost of meeting them.
+4. The balance editor's tier scenarios deliberately contain every chain at every tier — a scenario is an amalgamation of several technology
+   leaders with no international trade, so it must be solvable. Do not "fix" that to match rule 1.
 
-**⭐ HARD CONSTRAINT — THE INDUSTRIAL PRICE CEILING (§10.15).** No good that manufacturing **or the army**
-can consume may reach **+75%** (the engine's 175% band edge). −75% is fine; **+75% is fine only for a
-PURELY CIVILIAN-CONSUMED good** (user ruling 2026-08-12). An input pinned at the ceiling means the market
-can no longer signal scarcity at all, so everything downstream is priced against a wall — and that
-argument does not care whether the buyer is a factory or a battalion. Enforced in the price path
-(restricted goods capped at 160), in the counts (a breach outranks the revenue-weighted mean) and in
-**PM choice** (scored `profit − 100 × breaches`, so the constraint decides and profit only breaks ties).
-⚠ **The military half was measured, not assumed**: combat-unit upkeep consumes 8 goods (ammunition,
-artillery, grain, iron, oil, **radios**, small_arms, tanks), of which **5 were not already restricted** —
-small_arms, ammunition, radios, tanks, artillery, i.e. exactly the war-industry outputs no civilian chain
-eats. Restricted set 25 → 30. `radios` is the case the ruling names: pops buy them, which made them look
-purely civilian, but a battalion's upkeep buys them too. The set comes from `UNIT_GOODS`, which the
-no-buyer test already built and the ceiling simply never consulted.
+## 2.3 The tier rule — a rung's number is its tier, and the tier is its place on the ladder
 
-**Wage share is not a free variable** (`W = base wage × Σ employees × wage_weight`, both pinned), and it
-lands at 10–40% of total cost. So obsolescence is **price-driven**: what kills an old building is its
-output price falling while its input prices do not. That is why the ladder works best for industries
-eating **raw** inputs and weakest for those eating **manufactured** ones.
+User-ruled 2026-09-13, §10.78; the code-side statement is the header of `tools/lib_tier4_spec.mjs`.
 
-**WHICH PRODUCTION METHODS THE SOLVER MAY USE.** Vanilla gates PMs **eight** ways and we originally
-modelled three, so the solver helped itself to a Japan-only rice method and to violent slave-exploitation
-plantations in scenarios containing zero slaves. The rule now:
-- **Technology** is the only gate the solver satisfies freely (the PM's own `unlocking_technologies`, its
-  vanilla era remapped 1:1 onto our tiers).
-- **Every other `unlocking_*` is NEVER satisfied** — no power-bloc principle or identity, no company
-  category, no geographic region, no state religion.
-- **Law gates are read against a deliberate two-law stance**, in the direction vanilla means them:
-  `SCENARIO_LAWS = { law_slavery_banned, law_commercialized_agriculture }`. `unlocking_laws` needs one of
-  ours; `disallowing_laws` blocks only if it names one of ours.
+1. **Two numbers, never conflated.** A TECHNOLOGY has a **tech era** (1–5, the game's mechanical era: era base cost and ahead-of-time penalty).
+   A RUNG has a **tier** (0–3). They map through `era_game_era` = **[1, 3, 4, 5]**: t0 ↔ tech era 1 (held at the 1836 start), t1 ↔ 3, t2 ↔ 4,
+   t3 ↔ 5; tech era 2 (researched 1836–1861) sits in the gap and rounds UP to t1. Write "tech era 4" for a technology and "t2" for a rung; a bare
+   "era N" is the bug. ⚠ Identifiers were not renamed: the config field is still `era`, tools are `lint_tier_eras.mjs`, books are `e1a12-…`.
+   The docs said "era"/"e2" for a tier until the rename of 2026-10-21; quotations keep the old words.
+2. **A tier is derived, not chosen.** A rung's tier is the tier its gate technology's tech era maps to, bumped up only as far as one rung per
+   tier needs in vanilla's method order (vanilla's ladders are front-loaded — a textile mill's methods sit on tech eras 1, 1, 2, 4). Tolerance
+   ±1 tier; beyond it the generator throws, and a ladder that does not fit needs an explicit `PLACEMENT` ruling (fertilizer and explosives start
+   at t0 with a tech-era-2 first method). Late industries start late: automotive is [t2, t3], electrics [t2], munition [t1, t2], synthetics [t1],
+   motor [t1, t2, t3] (derived since 2026-10-01). *"If I ever see a t0 automobile industry, I will riot."*
+3. **The tier is also the rung's place on the ladder** — output × A^tier, input value × B^tier, building cost and `ai_value` by tier, the research
+   marks by the unlocked rung's tier. **The rung's index within its industry is never a key to anything.** (Keying on the index priced
+   automotive's t2 rung as an 1836 rung — a quarter of its tier peers' value added — F111.)
+4. **Guarded three ways:** the generator derives and throws; `tools/lint_tier_eras.mjs` runs in every build and as landmine L31 (placement,
+   one rung per tier, output and value added rising with tier, every A/B multiplier recomputed from `_ab`); a book records `_ab.keyed_by: 'era'`
+   and its own regenerating command.
+5. In-game names say **"Tier N."** ("Tier 2. Electrics Industries (Telephones). …", §5.4); a start rule names its rung by `era`; where a rung's
+   position survives (the UI's `t.tier`, a six-rung start rule's `tier`) it is a lookup key nobody reads.
 
-⚠ The two-law stance is **not** a softening of "assume nothing is fulfilled" — it is what makes that
-instruction *coherent*. The two gate kinds point opposite ways, so treating both as unfulfilled lands
-somewhere worse than either: automation switches **off** (every automation PM carries
-`disallowing_laws = { law_industry_banned }`, a law an industrial country would never hold) and slave
-exploitation switches **on** (25 PMGs, including every plantation labour group, have no law-neutral
-member, so "hold no laws" leaves the default sitting on `slave_exploitation_*`). Two named laws a modern
-country has by definition is the smallest stance that yields no serfdom, no slavery, no exotic
-special cases — and working automation.
+## 2.4 Recipes steer production; AI values only make the AI follow profit
 
-⚠ These PMs are **not** removed from the balance UI. A human can still select any of them and read the
-arithmetic; the restriction is on the **solver**, which must build a scenario from what an unexceptional
-country can run. Verify with **`node tools/verify_pms.mjs`**, which re-reads the game files directly
-(not our extract, so an extractor bug cannot hide) and fails if any selected PM is unreal or illegal.
+User-ruled 2026-10-02, §10.92: *"we want it [the ineffectively invested capital] to be as low as possible, and the reason that we fine-tune AI
+values is that it's not low naturally, not for some desire to steer it away."*
 
-⚠ **Two hard invariants the solve must respect**, both learned by breaking them:
-- **One price rule per good per tier.** `dye` is a plantation good until synthetics exists and a
-  manufactured one after; running both rules made it converge to a *blend* satisfying neither.
-- **The negative-goods floor.** A tier's main input can never be solved below the largest reduction its
-  own secondary PMs can apply, or the building's total input for that good goes negative. The invariant
-  is hard and the profit target is soft, so the floor wins and the tier misses slightly.
+1. **The investment AI should put capital where it pays.** The measure is **misplaced capital** — the share of new capital in mines, agriculture
+   and manufacturing whose expected payback is more than 3× the best VALID alternative's, or loss-making (F206/F207; GLOSSARY §6). It should be as
+   low as possible. Vanilla misplaces 10–19% of each decade's capital; the four-rung books 22–29% by 1926–36.
+2. **AI values, AI strategies and AI defines are tuned for that alone** — never to push the AI toward or away from an industry or a rung for its
+   own sake. A change to them is judged by whether misplaced capital falls (directionally, §2.9). The tier desire ladder is CALIBRATED per book
+   to that end; it is not a design lever.
+3. **Steering production is the recipes' job** — inputs, outputs, building cost. When an industry is dead and should not be, when a death ripples
+   down a chain, when an old rung should die and does not: make the wanted outcome effective and profitable for the AI, reading realised prices
+   first (§2.7). The AI values follow.
+4. **Exempt, never measured, their AI values set to get them BUILT** (§10.92.1): infrastructure (railways, ports, power plants, dams), trade
+   centres, shipyards, every government-funded building group (administration, universities, construction sectors, the military, monuments,
+   canals) and gold mines (vanilla's static `ai_value` 5000, kept). ⚠ The military INDUSTRIES (arms, artillery, munitions) are NOT exempt, nor is
+   the art academy.
+5. The measurement may change; the principle does not. It sits beside the no-artificial-limits constraint (§1.4): that one says which levers may
+   touch the AI, this one what they are for.
 
-Scope now: **all manufacturing + the new-economy chains + the art academy** — 22 config industries / 67 tier
-buildings. The new-economy chains (infra + electricity) are `power` (electricity), `port` and `railway` —
-**all three now on the BE ladder on regular terms** (commit `0cdc041` dropped `follows_be: false` from port
-and railway; they are solved, targeted and scored like any other industry, and since 2026-08-05 they carry
-the ×1.5 output ladder like everything else — BALANCE_FRAMEWORK §10.27). They
-live in other vanilla files (`06_urban_center`, `11_private_infrastructure`) and are emitted by
-**clone-and-swap** (see below); `trade_center` is deliberately left vanilla. **`art_academy`** (fine_art,
-`bg_arts`, on the BE ladder) is a normal split (not clone) sourced from `06_urban_center`; its 4 tiers are the
-vanilla base PMs (traditional → realist → photographic → film art). Its jobs live in its **ownership PMG**
-(kept as a secondary), so its tiers carry **no base `employment`** — the builder omits the empty `level_scaled`
-block, and the UI's workforce column counts every secondary PMG's active PM (base included) so the jobs still show. Break-even is
-**wage-inclusive** (full break-even: output revenue = input goods + wages; `wage_pct` is the wage fraction of
-**total** cost so total = goods/(1−`wage_pct`), default 25% ≡ old +33%-over-goods — a model-only accounting
-layer, **not** emitted to the game; see BALANCE_FRAMEWORK §1).
-**The ladder is a curve over each tier's tech unlock date (tech era), not a per-industry group ladder.** Each
-tier's `target_be` = the tech-era anchor for its unlocking tech's era, minus an early-game input adjustment:
-- **Tech-era anchors** (BE % of base output price), by the tech's vanilla era: **tech era 1: 115 / 2: 90 / 3: 65 /
-  4: 40 / 5: 25** (25 pp/era, so a 2-era lead sits 50 pp under → the N+2 obsolescence). There is
-  **no within-era differentiation** — every rung on the same tech era gets the same anchor (the eras will be
-  reworked later).
-  **Two groups are deliberately OFF the curve** and are hand-tuned, not solver output: **tooling**
-  (95 / 95 / 55 / 30 — a further −20 pp) and **power** (60 / 50 / 35). `solve_be_targets.ps1 -Write`
-  would flatten both back onto the curve; re-apply them afterwards (the UI's group 🔒 protects them
-  from the mass BE tools).
-- **H1 manufactured-input discount: −15 pp** if the rung unlocks in **tech eras 1–3** *and* its recipe
-  consumes a **factory-made intermediate** (tools, steel, engines, fertilizer, explosives, paper, glass,
-  …). **Dye and silk do NOT count** (RGO/plantation-sourced in H1; see BALANCE_FRAMEWORK §3). Off in
-  tech eras 4–5, where those intermediate markets have matured to ~base.
+## 2.5 The levers — what may move, what is decided, what is closed
 
-Targets are derived by **`tools/solve_be_targets.ps1`** (reads each tech's era live from vanilla, writes
-per-tier `target_be` + `natural_year`). ⚠ Since §10.44 the UI shows **`tech_year`** (the slot's real
-onset, under each tier pill and as the industry header's "onset ~YYYY") — `natural_year` (the tech-era
-anchor) is config-only, carried through export but no longer displayed. The tier pill always reads
-`e0`–`e5` (tier 0 included — a falsy-zero check once made t0 rungs display their 1-based position in the
-tier-1 colour; t0 now has its own bronze, distinct from the untiered reference grey "0").
-Volumes then follow the §8 methodology (the first rung's output = vanilla output, ×1.5 per rung, inputs solved from
-the full-BE goal with wages folded in).
-**Shipyards are enabled and split by output good** into two output-good-consistent 2-rung chains (the
-vanilla shipyard produces *clippers* then switches to *steamers* mid-ladder): `shipyard` → clippers
-(Basic/Complex, tech eras 1/2 → 125/85) and `shipyard_steam` → steamers (Metal/Arc-Welding, tech eras 3/5 → 60/35). The
-steamer chain is all-new buildings (base `building_shipyard_metal`, no vanilla anchor — the builder
-appends it). Deferred: more tech tiers, transport/electricity secondary-PM tweaks, and raw-resource
-extraction. (The wage layer is now folded into the ladder.)
+**The routine levers** (§10.83, §10.101.1) — what a search for the optimum moves:
+- the ladder: **A** (output step per tier), **B** (input-value step), **C** (cost step: `building_cost` = anchor × C^tier), **cost1** (one multiplier
+  on every rung's cost, §10.101.2 — cost LEVEL beside C's SLOPE);
+- **in1** (the general input lift, today 1.2), the pop-good industries' anchor-and-below lift (today 1.2), and a **per-industry lift** where ruled —
+  one number for the industry's whole ladder (engines 1.0; paper a candidate, range 1.0–1.3). An industry's own lift overrides the pop-good lift;
+- the two steps down to t0: the craft rule's share of vanilla's goods per worker (0.6) and the non-craft down-step (1.5);
+- research: the one innovation parameter **x** (innovation base = cap base = the cap's literacy term = x; universities × x/150; today 25), tech
+  spread (vanilla so far), the length of a non-war research-entry stage.
 
-## Repository layout
+**Decided, not routine:** the grant per research stage (half the tech era's base cost), the per-good trade weights (×1; scaling them is closed),
+the merge-host cost rule, the dam staffing, the AI desire ladder (calibrated per book, §2.4). The research marks, the literacy gates and the power
+plant's cost are recalibrated only as separate, deliberate events.
+
+**Closed:**
+- per-rung recipes, and a per-industry level solved to a target margin (`--in0-level`: "the solver all over again", §10.86.4). Ladders may be
+  NON-geometric (a per-tier list) but stay uniform across industries;
+- hard build blocks and technology-triggered penalties (§1.4);
+- the price levers of §2.1 (pop-need caps, construction goods-efficiency, pool cash generation);
+- an OUTPUT-goods penalty on the 1836 recipes to raise prices at the anchor — a distant possibility, not to try unless decided explicitly;
+- **no infinite money printers**: a rung whose return per construction point far outruns the ladder is gameable by a player (the ×3 film academy was
+  reverted for that, §10.74), whatever it does for the AI's economy.
+
+**What the levers are known to do** (directional; corpus readings): A, B, the cost slope and the input lift act as ONE axis for world GDP, Britain's U\*
+and the hoard — every +10% of world GDP costs Britain ~2.5–3.3 pp of U\* and raises the hoard ~×1.27, whichever lever buys it, and the seed moves runs
+along the same line (F165). The hoard's source is the pool's inflow: realised margins in the four-rung books run about twice vanilla's, and the cost
+slope is the lever that takes the hoard down together with W (F135). Britain's end-state U\* is a weak reading (within-config sd ~17 pp); a config's
+1900 world GDP already ranks configs well (r ≈ 0.86, F165).
+
+**Two positioning rules.** (1) *The under-side rule* (§10.79): when a change that raises world GDP is going in for its own design reasons, the base
+it lands on should sit slightly BELOW the GDP / depeasantation target, not on it. (2) *Which book a change branches from* is never assumed —
+ask (§5.1 rule 3).
+
+## 2.6 Vanilla is the reference and the material
+
+- **Rungs are vanilla's main methods** with vanilla's names, gates, recipes, staffing and icons, enriched by the A/B ladder (§10.72). Additions
+  (a minted top rung where vanilla has fewer methods) only where ruled, and never on the theme of one of the industry's own secondary methods
+  (the generator throws). Three are minted today: furniture spray finishing, paper continuous web, fertilizer catalytic synthesis.
+- **The tech tree is vanilla's**, at vanilla's tech eras, names and prerequisites, departing only by the spec's explicit entries in
+  `tools/lib_tier4_spec.mjs`: `ERA_MOVES`, `PREREQ_ADDS` (today one: conveyors before compression ignition, so Mass Production's mandated Assembly
+  Lines keep their own gate — §10.93) and the minted technologies of the additions.
+- **There are no contentless vanilla technologies.** A technology that looks empty in the tree viewer gates something elsewhere (methods, units,
+  decrees, companies, events). Never delete a vanilla technology (vanilla script names it), and never empty one: a re-peg must keep what it gates.
+  Read `tools/audit_tech_content.mjs` before any merge or removal; `tools/lint_tech_content.mjs` checks the emitted mod every build.
+- **The 1836 start is converted, never hand-authored** — vanilla's history re-tiered by the active method, plus the book's start rules (the canon's
+  are empty, §5.4). The 1836 technology grant is derived from the map: every method vanilla runs in 1836 stays, and the country running it holds its
+  technology (§10.55).
+- **Tech spread is vanilla's** (§10.54); the per-tree AI research weights default to 1.
+- **A vanilla file is owned only when we change it**; owning it freezes it against the next patch (`ON_GAME_UPDATE.md` lists every coupling).
+
+## 2.7 Plan around realised prices; a base-price margin is not even directional
+
+User-ruled 2026-09-19, §10.86.2: *"Realised prices will be far off base, mostly by design, but significantly — by random seed. Industry economics at
+base prices is not even directional … We should always try understanding where prices go, first, and plan configs around that."* Over vanilla's
+seeds a good's price ÷ base spreads 61 pp across markets and 10 pp across seeds at 1836, and 42 pp across markets against 52 pp across seeds by 1900;
+one industry on vanilla's own recipe runs −48% to +116% across the seven instrumented markets at 1836 (F140).
+
+- Design a recipe against a measured price DISTRIBUTION (`tools/era0_solvency.mjs` on the recipe side; PI/PP on the end-state side), never against
+  base prices or one run's prices. A margin quoted at base prices says so and is never presented as what the building will earn.
+- **At the band edge only quantities carry information.** A price pinned at 25% or 175% of base can no longer signal scarcity; read sell orders,
+  production and the producer's staffed levels (`tools/testbed/ledger/good_market.mjs`) — buy orders include demand that was never met.
+
+## 2.8 No ceteris-paribus extrapolation
+
+The game is one interconnected system: buildings → GDP → investment pool and taxes → construction → buildings; GDP → education → literacy →
+research → which tiers exist; war → conquest → the population every aggregate is computed over. A change to one term reaches every other term
+within a decade or two of game time.
+
+- The failure is usually a confident MAGNITUDE, not a wrong direction ("buildings are 1/5 the cost so the AI builds 5× as many" — it built 2.21×,
+  F78; a doubled `ai_value` predicted to do little moved the metric more than anything before it, F76).
+- **State the prediction in the schedule BEFORE the run**; a surprise is then a finding, not a correction. When a result differs from the
+  extrapolation, the first hypothesis is a feedback path you did not draw. Say whether a magnitude is argued or only its direction.
+
+## 2.9 The statistics are directional
+
+User-ruled 2026-09-18, §10.83.7: at n=2–3 no gap between two books' losses is statistically real (one run's loss has σ ≈ 6.6, so two books separate
+only at Δ ≳ 13). A lever's reading is evidence of its DIRECTION, weighted by whether its mechanism is understood; a pooled reading across a whole
+lever axis outranks any two-book comparison. ⚠ **"CI" in this project is the PERCENTILE INTERVAL OF VANILLA'S SEEDS**, never the confidence interval
+of a mean (GLOSSARY §4).
+
+## 2.10 Report true profits; predict the wage from the economy and the decade
+
+User-ruled 2026-09-20, §10.87, F152.
+
+1. **Reports quote PROFIT in £** (per week; annual and per staffed level where they help). A margin may sit beside it, never instead of it. A tool
+   that cannot compute a unit-correct margin prints none.
+2. **The wage model is `tools/lib_wage_model.mjs`, one implementation:** `W = wage(tag, year) × Σ(employees × wage_weight) × staffed levels`, the
+   weights read live from `common/pop_types`. **£ per employee per week = a save summary's `base_wage` ÷ 10,000** (the engine's unit is weekly £ per
+   `POP_SIZE_PACKAGE` employees). `config/measured_base_wages.json` is the committed per-tag, per-year path (vanilla median). **There is no premium
+   and no profit term** — the plain model reproduces the exact wage bill to ~1% in the median from 1857 on. Never quote it for ONE building (p10 ≈
+   0.45, p90 ≈ 1.6–1.8). A building in an industry has no "predicted wage"; the economy and the decade do ("stalling GBR in 1920").
+3. **`profit = revenue − inputs − wages`; dividends and subsidies sit below it.** The summary's `profit` (`profit_after_reserves`) is the clean
+   pre-distribution figure.
+4. **The margin identity:** `margin = profit ÷ (R − profit)` with `R = va_out × (market price ÷ base)` — because `va_out`/`va_in` are BASE-priced and
+   `profit` is MARKET-priced (F150). From save summary v9 on, `goods_sales` and `goods_cost` are at market and `wages = goods_sales − goods_cost −
+   profit` is exact. A building with no goods flows (financial districts, manor houses, company HQs) has profit only, no margin.
+5. The wage share of total cost is 15–23% in manufacturing (54% → 29% for the whole economy). `wage_pct` (0.25) survives only as the config-side
+   convention behind `target_be` and `lint_solvency.mjs`.
+
+## 2.11 A reported ratio carries its own numerator and denominator
+
+Any table whose headline is a ratio shows both terms as columns, and the ratio column names its direction (`ratio = transp ÷ auto`). The terms carry
+the finding: a "transportation ÷ automobiles" collapse looked like displacement until the columns showed transportation flat and automobiles ×829.
+
+## 2.12 Evidence discipline
+
+- **A shipped comment or document is a cheap hypothesis, not evidence.** Read the game's own files before theorising (`common/pop_needs` documents the
+  pop-need split in a header comment) — and corroborate with a measurement before believing; a comment true when written rots silently after the code
+  moves.
+- **A level cannot identify a rule; a perturbation can.** Every pop need shares a good with another need, so no need's budget is observable from the
+  order book (F35) — change one input and watch what moves.
+- **A quantity that needs a special case everywhere it appears does not belong in the model** (gold, which has no buyer without a treasury, had four
+  exemptions and still leaked into the first metric that widened its population).
+- **A branch that has never executed is not known to work, and a guardrail that has never failed is not known to work** — prove a detector by
+  breaking the thing on purpose. A detector outperforms a hand pass (the hand fix of one landmine found 6 sites; its detector then found 13 more).
+- **Report only a final state.** A number read before the last step that mutates its inputs is void, however plausible it looks.
+- **A rule that declines or skips cases prints what it declined.** A silent skip is indistinguishable from a rule that never ran; a generator that
+  cannot do its job throws rather than warning and continuing.
+
+## 2.13 The rulings in force — an index of BALANCE_FRAMEWORK
+
+One line per ruling that still governs something; the § holds the words, the reasons and the history. §1–§10.51 and most of §10.52–§10.67 are the
+six-rung era and the legacy break-even ladder — records, not rules (the solver they describe is closed, §10.80).
+
+| § | the ruling, in one line | status |
+|---|---|---|
+| 10.54 | tech spread stays vanilla's — the research journal entries pay for the deeper tree | in force |
+| 10.55 | the 1836 technology grant is derived from the 1836 map: the owner of a method vanilla runs holds its technology | in force |
+| 10.62 | per-tree AI research weight, config-backed, default 1 (nothing emitted at 1) | in force |
+| 10.63 | solvency: a rung's base recipe must break even at ≤ 175% of base output price with inputs at base (`lint_solvency.mjs`, L18) | in force |
+| 10.64 | the company chain extension: every tiered rung added to every company that has the industry | in force |
+| 10.68 | the A/B ladder: output × A^tier and input value × B^tier over the rung's own vanilla method | in force (values in Part 4) |
+| 10.69 | no artificial limits: hard build blocks rejected; a willingness lever (a target condition) is allowed | in force |
+| 10.72 | the four-rung book is built from vanilla and the spec alone — vanilla names, gates, recipes; additions only where ruled | in force |
+| 10.74 | the art academy on the regular ladder; no infinite money printers | in force |
+| 10.77 | the tier-0 input lift (the vanilla-1836 premise relaxed for the input penalty only, §10.83) | in force as the lift |
+| 10.78 | the tier rule | in force (§2.3) |
+| 10.79 | the hoard is a problem in itself; the under-side rule | under-side rule in force; the flag superseded by §10.83 |
+| 10.80 | the six-rung ladder is closed for good (UI bloat, not economics) | in force |
+| 10.81 | a conditional construction weight is expressible but deliberately unused (defines are global and constant) | record of a decision |
+| 10.82 | the 1890–1910 dip is EXPECTED (countries hold technologies before they have built the rungs, where vanilla just switches) | the dip ruling in force; the ceilings superseded by §10.83 |
+| 10.83 | the criteria register (+ .4–.8: the amendments, the loss, directional statistics, the reading gate) | in force (§3.2) |
+| 10.85 | the shortlist's GDP and W aims widened | in force (§3.2) |
+| 10.86 | the world product's derived hard band; prices planned first; the tier-0 penalty bounded by the 1836 map; per-industry levels closed, non-geometric ladders open | in force (per-industry lift relaxed by §10.101) |
+| 10.87 | report true profits; the wage model; the margin identity | in force (§2.10) |
+| 10.88 | trade weights ×1 at B 1.64; the finish boost | in force (B moved with later books) |
+| 10.89 | hydro dams (+ .1 the power plant at 4× cost; .9–.14 the redesign, engine-built, family rules, resource slots, private construction) | in force |
+| 10.90 | the closed price levers; world GDP read as displayed | in force (§2.1, §5.6) |
+| 10.91 | craft rungs (line A) and merged rungs (line B), with the staffing, floor, t1 anchors and desire rules of .1–.5 | in force (Part 4) |
+| 10.92 | recipes steer production; AI values only follow profit; the exemptions | in force (§2.4) |
+| 10.93 | secondary and automation methods: none shown that cannot run, none negative, reviewed compatibility, mandates, "Base", tier-span names | in force (§5.4) |
+| 10.94 | input-price red flags, a standing check on every batch | in force (§3.3) |
+| 10.95 | research entries for production technologies outside the ladder, one by one, on the narrative onset | in force |
+| 10.96 | the last tech rework: shift research levers, no new principle; world GDP of every decade a target, with the 1886 break line | in force (§3.2) |
+| 10.97 | research entries reworked: non-additive, literacy-gated, 20 stages; research halved for everyone | in force |
+| 10.98 | research entries beyond production (ships, contagious ideas, the country's condition); frontline entries at 12 months | in force |
+| 10.99 | the artmerge arm canonised; returning to the pre-artmerge family needs the performance changes reimplemented | record + warning |
+| 10.100 | the world-GDP aim 0.90–1.00; the closed-major term on Germany; a lucky seed stands in for a skilled player | in force (§3.2) |
+| 10.101 | per-industry input lift allowed (one number per industry line); the routine levers; cost1 | in force (§2.5) |
+| 10.102 | the world-market monopoly threshold 0.99 | in force (canon since 2026-10-21) |
+| 10.103 | treaty ports: the measured funnel and the layered solution, deferred to mod 1.1 on game 1.15 | deferred |
+
+---
+
+# Part 3 — Metrics: how close we are
+
+## 3.1 Expected divergences from vanilla
+
+What the goals (§1.1) and the changes (§1.2) should do to the numbers, against vanilla. The register (§3.2) turns most of these lines into ruled
+aims and boundaries; the others are expectations, read in every report but not scored. A ratio is to vanilla's per-run median (§3.5) at the end
+state (the 1932–1936 mean) unless a date is given.
+
+| quantity | vanilla | expected in the mod | why | read by |
+|---|---|---|---|---|
+| the 1836 start: map, output, prices | — | the same, inside vanilla's seed spread | 1836 stays vanilla (§1.4); the crafts are seeded to vanilla's output; the input lift is the one ruled exception | register (the 1836–1845 anchor) |
+| world GDP, as displayed | 1.0 | 0.90–1.00× at the end; a dip around 1890–1910 is expected, but 1886 inside 0.83–1.17× | modernising costs capital, so the world ends slightly poorer; capital abundance must be hard to reach (§10.100) | register |
+| productive workers per capita (W), world and pool | 1.0 | 0.6–0.95× | goal 4: capital is scarce, so fewer people find productive work | register |
+| unemployment including peasants (U\*), the pool | ≈ 21% | ≥ 2× (≈ 42% or more); never under 10% pooled | goal 4, seen from the other side | register (10% is a hard line) |
+| GDP of the shortlist pool | 1.0 | 1.1–1.9× | those in work produce much more each (up to ~2× per productive worker) | register |
+| a closed major's capital abundance (Germany, 1927–1936) | — | none: German U\* stays ≥ 10%, and the hoard does not pile up | §10.100 | register (`gerCM`) |
+| the hoard (investment pool ÷ GDP) | 1.0 | under 1× | capital is spent on dear modern plants, not piled up | register (least important) |
+| building-input prices in £ ÷ base (PI) | 1.0 | ≤ 0.8×, falling decade over decade | the frontier floods the market (§2.1) | register |
+| pop-goods prices in wage units (PP) | 1.0 | ≤ 0.8× | obsolescence works through wages, not £ (F97) | register |
+| workers on tier-0 rungs (T0) | vanilla's first methods survive wherever the AI does not switch | zero by 1936, or falling decade over decade | goal 2: old plants lose their market | register |
+| workers on t3 rungs ÷ all other tiers | — | as high as possible | the frontier takes over | register |
+| construction cost of a modern plant | one building cost for every method | t2 ×1.9, t3 ×3.6 of the vanilla building's cost (§1.3) | goal 3 | design |
+| misplaced capital | 10–19% of each decade's new capital | as low as possible | §2.4 | `misplaced_capital.mjs` |
+| the technology leader's share of a tier's technologies | — | about half at the tier's anchor year (t1 1875, t2 1905; somewhat under half of t3 at 1936) | the anchor principle (§2.2) | `tech_census.mjs` |
+| the technology majors' technology count | 77 at 1900, 107 at 1936 | near vanilla's | research cut, industry entries compensate (§1.2) | `tech_census.mjs` |
+| world trade | 1.0 | about 2× | traded quantities by class (§1.2, F161) | `trade_vs_gdp.mjs` |
+| play time for a century | 1.0 | ≤ 1.10× of the same days' vanilla | §1.4 | `wall_clusters.mjs` |
+
+## 3.2 The criteria register
+
+User-ruled 2026-09-17 and amended since — §10.83 (+ .4–.8), §10.85, §10.86.1, §10.100. **Implementation: `tools/testbed/ledger/criteria.mjs`**,
+whose defaults ARE the ruled form (`--arm <session[,session]>[:<setup>] [--arm …] [--config <book>]`; several arms print a ranking). One rule set for
+the config iterator and for every batch report.
+
+**Kinds.** An **AIM** is what config iteration tries to reach. A **SOFT** boundary is unacceptable but the economy is not broken: the run is read in
+full, and a soft breach never stops a batch (it marks the book "not final"). A **HARD** boundary means the economy is broken: the run records only
+*broken by stall* or *broken by runoff*, and **one broken run ends the config** (the stop watcher drops the STOP file).
+
+**Scopes and windows.** The **shortlist pool** = GBR · USA · FRA · NET · BEL · UNL · PRU · NGF · GER read as ONE economy (per country only where a line
+says so); the **world** = every country. The table is read at the **end state**: the 1932–1936 mean (the 1935 point printed beside it); the path has
+one rule of its own (below). Every
+ratio is to vanilla's per-run median of the same scope and window. **Hard lines are checked per run; everything else on the CONSENSUS of the intact
+runs** (the median of two; with three, the two closest on world GDP; a pair that diverges owes a third run).
+
+| scope | metric | aim | soft | hard (per run) |
+|---|---|---|---|---|
+| world | **GDP** (displayed `world.gdp`) — priority 1 | 0.90–1.00× | outside 0.75–1.33× | outside [vanilla p2.5 × 0.8, p97.5 × 1.2], derived per invocation (≈ 0.66–1.38× at n=16): below = stall, above = runoff; and the 1836–1845 anchor outside vanilla's 90% interval ± 10% in more than two years |
+| world | W (productive workers per capita) | 0.6–0.95× | > 1.0× | — |
+| world | U\* (unemployment incl. peasants) | — (higher than vanilla) | < 1.0× (flag only, not in the loss) | — |
+| world | H (investment pool ÷ GDP) | < 1× | — | — |
+| world | closed-major term `gerCM` (Germany, 1927–36) | 0 | — | — |
+| pool | GDP (total) | 1.1–1.9× | < 0.95× or > 2.0× | — |
+| pool | W | 0.6–0.95× | > 1.0× ("full depeasantation") | — |
+| pool | U\* | ≥ 2× | < 1.0× | pooled U\* < 10% (runoff) |
+| pool | H | < 1× (least important; no book meets it) | — | — |
+| pool | capital abundance | — | 3 years at hoard ≥ 1.0 GDP; 5 years at any hoard; a hoard alone > 3 GDP at the end or > 2 every year 1931–36 unspent | a member of ≥ 50M with U\* < 5% in ≥ 5 consecutive years ending by 1936 AND a mean hoard ≥ 1.5 GDP over them (runoff) |
+| pool | T0 (tier-0 rung workers, by the rung's TIER) | 0 at 1936, or falling decade over decade | 1935 > 1.3 × the 1900s mean | — |
+| pool | T3 ÷ (T0+T1+T2) | the more the better | — | — |
+| pool | PI (building inputs steel/tools/engines/fertilizer/explosives/dye/paper, £ ÷ base, ÷ vanilla) | ≤ 0.8 and falling decade over decade | > 1.0 | — |
+| pool | PP (pop goods groceries/clothes/furniture/glass/fine art/automobiles/telephones/radios, in WAGE UNITS ÷ vanilla) | ≤ 0.8 | > 1.1 | — |
+| pool | PM (war goods) | read only | — | — |
+
+**Priorities:** world GDP > the pool's W × Y > W. World GDP is also the steadier reading — within a config its coefficient of variation runs ~19%
+against ~88% for Britain's U\* — so tune on world GDP and read U\* as a constraint that must stay in its band. ⚠ Unruled: the pool U\* aim (≥ 2×) contradicts the widened pool W aim (U\* ≥ 2 ⇔ W ≈ 0.68).
+⚠ The pool GDP line reads TOTAL GDP while the ruling spoke of per capita; the report prints both.
+
+**The closed-major term** (§10.100): over 1927–1936, per year, e = how far German U\* is below 10% (0 at ≥ 10%, 1 at 0%) and a = e × the hoard's
+excess over 0.5 GDP ramped to 1 at 1.5; G = mean(e) + 4 · mean(a). Germany = GER, else NGF, else PRU. The consensus carries the arm's **lucky seed**
+(the 75th-percentile run by G over ALL usable runs, broken ones included) — the stated stand-in for a skilled player; every report using it says so.
+
+**The reading gate** (§10.83.8): U\* and H "at the aim" in a POOR world are not results — a world that never industrialised keeps its peasants and has
+no pool by identity. World GDP 0.80–1.20 → read U\* and H normally; 0.66–0.80 or 1.20–1.38 → WEAKENED (quote only with the GDP beside them); ≤ 0.60 →
+disqualified (already broken by stall). The cut between weakened and disqualified is unruled. Per-country SHARES (1 − U\*) stand as evidence;
+per-country LEVELS move with territory and are weak.
+
+**The loss** (the iterator's objective): L = Σ w · d, where d = the distance from the aim interval in units of a FIXED σ per line (the pooled
+within-config spread of the 2026-09-13→18 books, F134; capped at 5σ), plus, beyond a soft line, the excess counted twice more (a kink, continuous
+through the line). Weights: world GDP 2 · pool GDP 1.5 · pool W 1.25 · world W 1.25 · T0 1.5 · T3 1.5 · pool U\* 1 · PI 1 · PP 0.75 · pool H 0.75 ·
+world H 0.5 · gerCM 1.5. T0 enters as T0 ÷ (T1+T2+T3), the less the better. Losses before 2026-10-13 were on the old GDP aim (0.95–1.05).
+⚠ The loss DESCRIBES a config's residual; at n=2–3 it does not rank (§2.9). What it gets right is the historical arc of the books.
+
+**The path: a mid-game dip is expected, within limits.** Around 1890–1910 world GDP may sag below vanilla, because countries hold technologies before
+they have built the rungs, where vanilla just switches methods (§10.82). But the world GDP of EVERY DECADE is a target in its own right (§10.96): an
+arm whose 1886 world GDP sits more than 2σ of the canon's own 1886 spread from vanilla (0.83 / 1.17 when ruled) has likely broken something.
+
+**Superseded as criteria** (their scripts stay as diagnostics): the 2026-09-15 capital-abundance flag (`capital_flags.mjs`), §10.79's hoarding tests,
+§10.82's workers ceilings and plateau test (`majors_workers.mjs`, `major_series.mjs`), F114's target bands (still the divergence test of the 2+1 rule,
+`alignment_check.mjs`) and the 1.3× GDP stop (now only the stop watcher's fallback).
+
+## 3.3 Readings beside the register
+
+Not loss terms; each is read in every batch report.
+
+- **Misplaced capital** (§2.4, F206/F207) — `tools/testbed/ledger/misplaced_capital.mjs`; the yardstick of every AI-value change.
+- **The old rung beside its replacement** — per industry, workers on a rung two or more tiers behind the best rung their own country staffs
+  (`old_rungs_by_industry.mjs`, the ledger's tables); the obsolescence census by regime, in-market vs trade (`trade_obsolescence.mjs`). This separates
+  the ladder failing to retire a rung from a country that runs nothing newer. Proposed and unruled: an obsolescence term in place of T0 (per industry,
+  the share of the old rung's century-peak workers shed by the end, F136).
+- **Input-price red flags** (§10.94, a standing check on every batch and probe): HIGH = ≥ 1.70 × base at every reading of a ≥ 2-year stretch; SWING = a
+  ≥ 0.5 × base range within 3 years on < 10 units/week of supply (a shortage in disguise); every industrially consumed good except the local goods
+  (electricity, transportation, services); the eleven tags' major markets. Headline: **problem market-years** (of 800) and **chronic markets** (≥ 20
+  years), with a 3–15-sentence summary written with the `redflag-summary` skill (`redflag_metrics.mjs`; listing kept in `redflags_full.html`, not on the
+  page). No flag is dismissed for want of demand: an industry that cannot start because its inputs are dear shows exactly that. SWING is common in
+  vanilla itself — read it against vanilla's line.
+- **Technology** — the majors' technology gain against vanilla and the anchor principle (`tech_census.mjs`), timing against the narrative onsets
+  (`tech_timing.mjs`), reliance on the research entries.
+- **Dams** — slot breaches (must be 0) and who builds (`dam_slots.mjs`).
+- **The first-run decomposition** after each arm's first run: GDP = population × productive workers per capita × GDP per productive worker, world and
+  pool (`first_run_decomp.mjs`).
+
+## 3.4 Play speed
+
+The budget: **the century's play time within +10% of vanilla's**. The grade is the **raw total a player waits through** (the main median, below);
+the pop-matched per-unit cost is a diagnostic beside it, never the verdict — shrinking what the engine simulates is a legitimate way to meet the budget.
+
+- **Same-days vanilla only.** Vanilla on the same game version played ×1.06–1.08 slower per unit of world in October than in August (F248), so a play
+  time is not comparable across months: the reference is `VANILLA_WALL_REF` (the most recent same-harness vanilla, `lib_runs.mjs`), and the alternating
+  vanilla + canon batch measures both in the same days.
+- **Three run clusters** (user-ruled 2026-10-07): (1) normal; (2) inexplicably slowed — a slowdown episode with no listed bug observed; (3) a LISTED
+  vanilla bug directly observed in the run's saves. Main reports use clusters 1 + 2 combined; cluster 3 is reported as a count and the bug's name. The
+  list holds one bug: **the fleet path loop** (a fleet recalled for repairs whose travel path the engine keeps extending; ≥ 200 path moves and ≥ 125k
+  distance, gone once the slowdown ends — F218). No tick pattern is accepted as proof of a listed bug.
+- `tools/testbed/ledger/wall_clusters.mjs` reads it; slowdown episodes and the save quarantine that keeps saves for debug-mode inspection, the machine
+  monitor and the per-tick profile are in `TESTBED_OPERATIONS.md`.
+
+## 3.5 References, pools and which runs count
+
+- **Vanilla references** (`tools/testbed/ledger/lib_runs.mjs`): `VANILLA_REF` = the summer n=18 + the October n=6 = **n=24**, the default for every
+  reading but the wall clock; `VANILLA_WALL_REF` = the October six alone. Interim until the alternating batch.
+- **The instrumented tags are eleven:** GBR · FRA · USA · PRU · NGF · GER · NET · BEL · UNL · RUS · JAP. `tools/testbed/ledger/lib_markets.mjs` is the ONE
+  definition of the shortlist pool, the majors, the per-country members and the price-tracked markets. UNL (the United Netherlands) replaces NET and
+  BEL where it forms. A market is named after its leader's adjective, so prices are keyed by TAG and resolved per run.
+- **A state's market is one series across its tag changes** (GER continues NGF continues PRU; UNL continues NET; the French Commune's market continues
+  France's); civil-war revolt states are NOT merged. PI/PP are read on the intersection of the arm's and vanilla's market SERIES, and the basis is
+  printed.
+- **Disclose the baseline.** Prefer the higher-n references; a result that needs a market only the eleven-tag runs carry (German, Belgian prices) says
+  so where the number is quoted.
+- **Only usable runs count** — a run that reached its own `until` date with no `abandoned_reason` (L17; `lib_runs.usableRuns`, the only definition).
+  A run count in a session's name is not evidence. Runs pool across sessions only within one config FAMILY (same structure; `configFamilies`).
+- Pre-v12 save summaries may have lost a country record to a civil war or revolt (L38): check with `summary_drops.mjs`.
+
+---
+
+# Part 4 — The canon: what ships and where it stands
+
+## 4.1 What it is
+
+**`config/mod_config.json` + `config/tech_tree_options.json` are verbatim copies of the named book
+`config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` + `config/tech_tree_options.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`** — sha256 prefix
+**`728f2c7f84e6f467`** (the tree twin `04ac513168388956`), canonised 2026-10-21 with the night's polish rulings (§10.102; `_polish_2026_10_21`,
+`_polish_2026_10_21b`). `mod/` and the deployed copy are its default build. Verify with `sha256sum config/mod_config.json`.
+
+**What it contains is everything §1.2 describes, built by the formula of §1.3 at the values given there.** The provenance records inside the book —
+`_ab`, `_artisan`, `_merge`, `_*_variant`, `_canon_*`, `_polish_*` — carry the commands that regenerate it. ⚠ The book's plain `_canon` record is
+inherited from `canon4v-hai3` and does NOT name the current canon; `_canon_2026_10_16`, `_wm99_variant` and the `_polish_*` records do.
+
+What §1.2 and §1.3 leave out:
+- **Investment AI:** the private pool's cost divisor 0.000125; the investment-pool defines — too-large-pool factor 0.95, critical 1.0, excessive
+  2.0, the queue cap 0.1, long / very long construction 160 / 240 weeks (§10.75, F158).
+- **Research as stored:** the one innovation parameter x = 25 (`research_levers`: innovation base, cap base and the cap's literacy term = x,
+  universities × x/150, §10.101.1); entries non-additive (several qualifying sources tick once), war and naval entries exempt from the literacy
+  line; the finish boost (+10,000 AI weight on a technology at ≥ 99% of its cost, F160); AI schooling (`ai_schooling`).
+- **Dams:** the four ruled classes and their slots (§10.89.13); staffing 10 laborers / 15 machinists / 10 engineers per 50 electricity;
+  upkeep 1 tools + 1 engines per 50 electricity; the four dam types `must_have` in every administrative strategy.
+- **Trade and defines:** the five-class traded-quantity table at ×1 (F159 §7); `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99`.
+
+## 4.2 Where it stands (2026-10-24)
+
+- **The latest century of the canon's economics** (F247: the wm99 book, n=4, before the 2026-10-21 polish): 3 intact + 1 stall (the USA collapsing
+  after 1880); consensus loss 8.21; world GDP 1.08×; pool W 1.00× (on its soft line), pool U\* ≈ vanilla's (22.0% against 21.3%, far under the ≥ 2×
+  aim), pool H 0.25 against 0.33; PI 0.96 (not falling), PP 0.94; T3 22.7% of tiered workers; the closed-major term 0; misplaced capital 22.5% over the
+  century; the majors at 0.94 of vanilla's technology; red flags 140 problem market-years a run.
+- **The price path** (§2.1): the ladder works completely in the war and heavy chains (arms, artillery, explosives and steel shed 92–98% of their old
+  rung's peak workers) and barely in the consumer chains (glass, motor and textile shed 14–29%; the old rung keeps earning ~21%) — the split is by who
+  buys the output (F136). The price indices fell well below vanilla on `canon-c19-in12` (PI 0.84, PP 0.83) but sit near vanilla on the current book
+  (PI 0.96, PP 0.94 — F247).
+- **Play speed** (§3.4): the wm99 book read ×1.18 of the summer vanilla and ×1.09 of the same days' (F247, F248) — thin (two counting runs).
+- **The 1.0 canon (post-polish) is being measured** by the alternating vanilla + canon batch (n=16 + 16; sessions `20261021_224949_…` and
+  `20261023_161802_alt-vanilla-canon-rest20`): its century and its wall clock in one.
+- **Known open problems:** the price path and the old rung in the consumer chains; one broken seed in three to four (runoff or a stalled USA/Britain —
+  F166, F227, F247); Britain near capital abundance in most healthy seeds; military technology ~10 behind vanilla's count with no tech-era-5 military
+  technology held anywhere (deferred to mod 1.1, with the user's AI-weight approach); the play-speed budget. The live list is `BACKLOG.md`.
+
+## 4.3 Lineage
+
+One line per canon; the reasons are in the § named. The files of every former canon are kept as records.
+
+| from → to | book | what changed | § |
+|---|---|---|---|
+| …→ 2026-09-05 | six-rung `solver2f` (`config/mod_config.six_rung.json`) | inverse-solved six-tier book; retired, CLOSED for good 2026-09-16 (UI bloat, not economics) | 10.65.9, 10.80 |
+| 2026-09-03 | `canon-4rung` (declared beside the six-rung canon) | first four-rung book; frozen record | 10.69 |
+| 09-05 → 09-06 | `canon4v` | four rungs built from vanilla alone | 10.72, 10.74 |
+| 09-06 → 09-18 | `canon4v-hai3` | ai_value 1000 × 3^tier, investment-pool defines; regenerated under the tier rule 09-13 | 10.75, 10.78 |
+| 09-18 → 09-20 | `canon-c19-in12` | A 2.2 / B 1.5, cost × 1.9^tier, in0 1.2, 24-month bar | 10.84 |
+| 09-20 → 09-23 | `canon-c19-in12-elec` | + the urban-centre electricity override | 10.43.0 |
+| 09-23 → 09-25 | `canon-slide-b158` | anchor slide on eight industries, mild spending set, B 1.58; finish boost from 09-24 | F158, F160 |
+| 09-25 → 09-27 | `canon-b164-trade` | B 1.64, per-good trade weights ×1 | 10.88 |
+| 09-27 → 09-29 | `canon-dams` | dam megaprojects, power plant ×4 | 10.89 |
+| 09-29 → 10-12 | `canon-dams-family-nolog` | family survey / build rules | 10.89.12 |
+| 10-12 → 10-13 | `jex-dam4s-rs` | the artmerge arm (crafts + merges, t1 anchors) + research rework + resource-slot dams + script-placed entries | 10.99 |
+| 10-13 → 10-16 | `jex-dam4s-rs-x25` | one innovation parameter x = 25 | 10.101.1 |
+| 10-16 | `jex-dam4s-rs-x25-dpriv` | + private dam construction | 10.89.14 |
+| 10-16 → 10-21 | `jex-dam4s-rs-x25-m10ac-dpriv` | engines unlifted, conditional merge-host desire | 10.101, 10.91.2 |
+| 10-21 → | `jex-dam4s-rs-x25-m10ac-dpriv-wm99` | world-market monopoly threshold 0.99; the polish rulings | 10.102 |
+
+⚠ **Returning to the pre-artmerge family would need the performance changes reimplemented** — those books carry neither tick-cost fix (resource-slot
+dams, `dams.layout = resource4`; trigger-placed research entries, `research_events.placement = script`; F220/F221).
+
+## 4.4 Changing the canon
+
+- A canonisation is a user ruling. The named copy is written first, the change proven by **field diff** against the previous canon (only the intended
+  keys move), then copied verbatim over `config/mod_config.json` + twin, built, linted and deployed; record the sha256 and the ruling in BALANCE_FRAMEWORK
+  and BACKLOG.
+- A named book is the record of what was MEASURED: never overwrite it to carry a later change — make a new name.
+- Regenerate a book through its recorded chain (`_ab.command`, the `_*_variant` records), never by hand edits. `make_ab_config.mjs` and the `make_*_config.mjs`
+  makers are catalogued in `REPO_GUIDE.md`. ⚠ Almost every intermediate book of the canon's chain is gitignored, so a full regeneration starts from
+  the structure: `TIER4_SUFFIX=tier4-e1 node tools/make_tier4_config.mjs --derive motor`, then `make_tier4_techs.mjs`, then the recorded commands in
+  order. A change made from an intermediate copy can pick up a stale tree twin — prove the result by field diff.
+- ⚠ **While the alternating batch runs** (from 2026-10-21): nothing may be canonised into the named copy, and no emitter, `build.ps1` or `tools/testbed/**`
+  file may be edited in the checkout the batch runs from — the scheduler rebuilds the mod before every run.
+
+---
+
+# Part 5 — Rules, notes and caveats
+
+## 5.1 Hard rules
+
+**Game content**
+1. **Never unlock DLC content** — Paradox prohibits it. Every DLC's gameplay ships in the base game folder behind `has_dlc_feature` triggers and the
+   `dlc = dlcNNN` field of events. A vanilla file the mod copies keeps every gate; a building, method or company generated from a vanilla template keeps
+   the template's gates (`unlocking_principles` included); any script of ours that fires or grants DLC content carries that content's DLC condition.
+   `tools/check_dlc_gates.mjs` fails the build if a shipped vanilla-path file loses a gate (L39).
+2. **Edit the config, never the generated files.** Everything under `mod/common`, `mod/localization`, `ui/data.js`, `ui/vanilla.js`, `ui/presets.js`
+   is overwritten every build. The only hand-maintained file in `mod/` is `.metadata/metadata.json`.
+
+**Measurement**
+3. **A run's configuration is unambiguous before it launches.** State back, and get agreement on: which ARM (`{kind: control}` = vanilla + telemetry
+   and nothing else, ever; `{kind: config, config: <path>}` = which book; an overlay is not a control), **which book a new config branches from**
+   (never assume — a wrong base cost a whole century batch, F234), the span, n, the metrics and what is compared against what. A probe of how the
+   ENGINE behaves belongs on vanilla + telemetry (our content would confound it); a probe of how OUR economy behaves belongs on the config. Write the
+   arm and the prediction in the schedule's `_why`, and name the arm in every finding it produces.
+4. **Never launch a game run without the user's explicit go-ahead,** and ask for the whole batch, branches included, in ONE request, quoting the cost as
+   `<count> × <span>` with a time (a 1836→1936 run is ~3–3.5 h: the canon's book 194 min, the same days' vanilla 178.5 min, F247/F248). Permission for
+   one batch is not permission for the next. **An allotted window is a standing go-ahead** for probes and short tests inside it: run the measurement
+   instead of asking; a window never ends sooner than 12 hours after the last reply, a status request does not end it, and no long test starts with
+   under 3 hours of it left.
+5. **All measurement goes through `tools/testbed/run_schedule.ps1`** (never `build.ps1` directly for test data), launched only through
+   **`tools/testbed/launch_detached.ps1`** called directly from the PowerShell tool
+   (`& 'tools\testbed\launch_detached.ps1' -File 'tools\testbed\run_schedule.ps1' -ArgumentList '-Schedule','<spec>' -NoExit`) — never
+   `Start-Process`, never wrapped in `powershell -File` (L30) — and confirm the session folder appears within a minute.
+6. **Smoke-check every run about 5 minutes after it starts:** our init marker in `debug.log`, the game version, the run's OWN error lines (wrap-safe,
+   by position, against the vanilla noise catalogue), the clock advancing, the construction mix (`tools/testbed/batch_heartbeat.sh <stamp>`). Run the
+   background waiter (`wait_for_session.ps1`) after every launch — never relaunch on DEAD alone, a long harvest looks dead — and on a 2+1 batch arm the
+   stop watcher and confirm its `stop_watch.log` exists. Watch live files with short reads only. Details: `TESTBED_OPERATIONS.md` §3–§5.
+7. **Never edit `build.ps1`, `telemetry_lib.ps1`, an emitter, a setup's config or anything under `tools/testbed/` in the checkout a batch runs from** —
+   the mod is rebuilt before every run, so an edit splits the arms (L10). Queue it until `SCHEDULE DONE`; run `preflight.ps1 -RepoOnly` before
+   committing any testbed script while a batch plays.
+8. **Every session that ran gets a `VERDICT.md`** (with the session) and a row in the committed `tools/testbed/SESSION_VERDICTS.md` before the
+   handover is written. **Sessions are never deleted**, nor the kept save archives (`tools/testbed/saves_*/`, `saves_debut/` above all; only
+   `_score_work/` is scratch) — gitignored is not backed up, and a session is a historical observation that no re-run reproduces. Short of disk,
+   ask and propose archiving.
+9. **Record every batch in `FINDINGS.md`** in the same pass: claim and effect size, arms / n / span / session, the numbers in full, the confidence and
+   an explicit "what it does NOT say". Check the next F-number at the moment of writing.
+
+**Repo and docs**
+10. **Keep the docs in sync with reality, in the same pass as the change** — behaviour, structure, numbers, conventions. A new coupling to a vanilla
+    file or number goes into `ON_GAME_UPDATE.md`. The one exception: a proposal the user is still weighing may lag briefly, with the divergence called out.
+11. **Commit with explicit paths; never `git add -A` / `git add .`.** Other sessions write in this repo (FINDINGS above all); check `git status --short`
+    before committing and account for every staged path. Never amend or force-push shared history to clean up.
+12. **Write prose with the Write/Edit tools, never through bash** — backticks are command substitution and Windows paths lose their backslashes, with
+    exit code 0. Read a doc back after editing it.
+13. **Ask when a decision is the user's.** Rulings are the user's; a recommendation of yours is recorded as a proposal until ruled.
+
+## 5.2 The documents — what goes where
+
+| doc | holds | write there when |
+|---|---|---|
+| `CLAUDE.md` (this) | goals, principles, metrics, the canon, hard rules | a ruling changes a principle, the canon moves, a hard rule is added |
+| `GLOSSARY.md` | every term and letter, one meaning each | a quantity needs a name (same pass) |
+| `BALANCE_FRAMEWORK.md` | every balance ruling, §-numbered, with its reasoning — the source of truth | the user rules on design or measurement |
+| `FINDINGS.md` | measured results, F-numbered, numbers in full | a batch or probe establishes something |
+| `ROADMAP.md` | the plan, step by step | the plan changes |
+| `BACKLOG.md` | every open item, one line each, with status and pointer | an item is found, changes status or closes |
+| `POLISH_1_0.md` | the 1.0 polish register | polish items and their rulings |
+| `REPO_GUIDE.md` | every file and tool: what it is, how to run it, its traps | a file or tool is added, changed or retired |
+| `TESTBED_OPERATIONS.md` | how batches are planned, launched, watched, judged, recorded; the wall-clock procedure | the procedure changes |
+| `TESTBED_LANDMINES.md` | defects where nothing fails, each with a detector | a run surfaces a new one (register + detector + proof it trips) |
+| `TESTBED_METRICS.md` | what telemetry and the save summaries can and cannot log | a metric is added or verified |
+| `MODDING_NOTES.md` | engine and tooling behaviour | an engine gotcha is found |
+| `ON_GAME_UPDATE.md` | every coupling to a vanilla file or number; what to re-run after a patch | a new coupling |
+| `BUGS_AND_FIXES.md` | root causes of non-obvious bugs | a bug is fixed whose cause would surprise the next reader |
+| `TIER_REFERENCE_AUDIT.md`, `MISSING_BUILDING_CONDITIONS.md` | vanilla references the tier split affects; dropped building conditionals | a new case is found (catalogue, do not fix inline) |
+| `tools/testbed/SESSION_VERDICTS.md` | one committed line per session's verdict | every session |
+| `README.md` | the player-facing setup | the player-facing story changes |
+
+**Not committed, by design:** the **handover** (a baton for the next session: the user's next tasks in order, their motivating measurements and the
+traps; replaced wholesale; nothing durable may live only there), the **status board** (an Artifact rebuilt unprompted whenever the picture moves —
+start from `tools/status_board.template.html`; tally, open work, waiting on the user, verified working, closed; outcomes in plain words, never bare
+references), and the **published UI snapshot** (once published, regenerate with `tools/bundle_ui.mjs` and republish to the same URL after any change
+to what it shows; stamp `yyyy-mm-dd, HH:MM UTC`; say in the reply that it was regenerated).
+
+## 5.3 Building the mod
 
 ```
-CLAUDE.md               this file — goals + how to work
-GLOSSARY.md             ⭐⭐ THE TERMINOLOGY CHEAT SHEET (user-asked 2026-09-19, after a ruling was made three
-                        times as "H", then "W", then the world product — each a different, separately measured
-                        answer). One letter, one meaning: the register's metrics (world GDP = THE WORLD PRODUCT,
-                        deliberately letterless; pool GDP · W · U* · H · Y · T0–T3 · PI · PP · PM · the loss · σ),
-                        the scopes (world · the shortlist pool · the majors · MEMBER · the scoped and the seven
-                        markets), time (the end state · the anchor · a dump date), the two statistics that caused
-                        trouble (⭐ "CI" here is the PERCENTILE INTERVAL OF VANILLA'S SIXTEEN SEEDS, never the
-                        confidence interval of a mean; aim/soft/hard, intact/broken, consensus, divergent,
-                        directional), the ladder (tier vs tech era — until 2026-10-21 era vs game era vs the forbidden "tier" — A · B · r · C · in0 ·
-                        --in0-level · target_be · the book · the canon), the economics (base vs realised price ·
-                        the 25–175% band · margin, always saying whether wages are in · value added · wage units ·
-                        throughput) and the process (arm · setup · run · session · batch · the 2+1 rule · usable).
-                        RULE: a bare letter is only allowed if it is on this page, and where a letter and a phrase
-                        compete the PHRASE wins in prose. It names things; it never rules on them
-README.md               user-facing setup (play the mod, launch the editor) — for GitHub visitors
-BACKLOG.md              ⭐ EVERY OPEN WORK ITEM, ONE LINE EACH (user-asked 2026-10-01: "Don't we have anything in-between [the ROADMAP]
-                        and small individual handovers? Some features-to-be-done list?"). The middle layer: status (NOW / OPEN /
-                        RULING / DEFERRED / RESEARCH / DEFECT / WATCH) + a pointer to the doc holding the detail, grouped by theme,
-                        with the project's order at the top. COMMITTED, unlike the handover. Keep it true in the same pass as the
-                        change: add an item when found, move it to Done or delete it when it closes
-ROADMAP.md              THE PLAN — steps 0-10 from the solved economy to release. ⭐ STEP 10 (2026-09-19) is THE TIER-0 INPUT PENALTY, settled at the anchor over 28 probe runs and five sessions (FINDINGS F140-F147): the design intent is arithmetically right (at the canon own 1890/1935 prices, in0 1.3-1.4 turns the consumer chains from surviving forever on a sliver into destroying value); the penalty is ABSORBED at the anchor within 21 months but not later; the raw-input maximum is 1.40, above which steel is demolished; the GRADED penalty has a final shape (in0-stage for what an industry BUYS + in0-supplier for what it SELLS, counting 1836-present consumers) and probe-gradsup is the best anchor of any penalised book measured. ⚠⚠ THE GRADED PENALTY HAS NEVER BEEN RUN FOR A CENTURY, and that is the open question — NOT the penalty as such (corrected 2026-09-20, user-flagged): `in0` 1.2 flat IS the shipped canon and has a century of evidence, `in0` 1.3 flat was run and is CLOSED as a lever (F118 runaway / F119 stall), and only `in0` 1.4 and the graded shape have seen nothing beyond 21 months; a second blocker is that the generator refuses `--anchor-for` together with `--in0-stage`. ⭐ STEP 8 (2026-09-18) is THE FIRST HUMAN
-                        PLAYTEST’S DEFECT LIST: P1 the early rungs are a money printer (t1 earns 55–106% at base prices against vanilla
-                        manufacturing’s 23%, because the A÷B gap of 1.467 lands on a rung 0 anchored at break-even) with three fixes
-                        sketched incl. the user’s price-path idea; P2 the urban-centre electricity override was dropped by canon4v and
-                        is a two-key restore behind one power-chain ruling; P3 the building name says “BE target” for a number that is
-                        neither a target nor goods-only; P4 the JE tick tooltips mix LEVELS and PEOPLE inside one bar; P5 top-rung output
-                        is 3.4–4.8× vanilla’s best — accepted, and it rides on P1; **P7** a MINTED rung is locked out of its industry’s gated
-                        secondary (furniture t3 — a landmine, one live case); **P8** a t3 takes 2+ years to build, reproduced exactly (4,115 points
-                        ÷ Britain’s 1900 government queue rate of ~33/wk = 126 weeks) — build time IS capital cost in this engine, so it is the
-                        SAME dial as the hoard, and the one escape is scaling the late construction methods’ points AND goods together; **P9** a REGISTERED DESIRE — the tech tree
-                        is a thing to COMPLETE, not to prioritise (F138: 182 technologies against vanilla’s 178, the AI completes 94% against
-                        vanilla’s 95% matching at every quantile, and the research JEs grant **1.5× each covered technology’s whole base cost**
-                        across 126 of them — a subsidy added to compensate for a depth increase that never happened; it contradicts the ANCHOR
-                        PRINCIPLE’s own words); ⭐⭐ **THE CONVERGENCE: P1, P8 and the hoard are three complaints about TWO dials** — the A/B gap
-                        and the cost ladder — so ONE campaign moving both, with P8’s construction-throughput compensation, is the coherent next
-                        experiment; **P6 (found, not reported by the user) the 1836 supply
-                        anchor is broken — FINDINGS F137**. Steps 0-7 (tech tree rework, industry-
-                        driven research events, costs+build, the telemetry loop that is the MVP's definition,
-                        then mandates/dams/visuals). Plan only: rulings go to BALANCE_FRAMEWORK, results to
-                        FINDINGS, engine gotchas to MODDING_NOTES. CONSULT when deciding what to work on next
-balance-ui.cmd          one-click launcher for the balance editor (double-click; runs tools\ui.ps1)
-balance-snapshot.cmd    one-click SELF-CONTAINED SNAPSHOT of the editor (runs tools\bundle_ui.mjs) →
-                        balance_ui_snapshot.html at the repo root (GITIGNORED). One file, no server, no
-                        network — for reading/tuning the sheet away from this machine or handing to
-                        someone. It is a SNAPSHOT, not a mirror: it carries the config as of the moment it
-                        was written and says so in a dated banner
-BALANCE_FRAMEWORK.md    balance methodology, targets, vanilla baseline, applied changes (SOURCE OF TRUTH)
-MODDING_NOTES.md        Victoria 3 engine/tooling gotchas (localization, load order, error.log, …)
-TESTBED_METRICS.md      what the testbed CAN and CANNOT log — in-game-VERIFIED data-function syntax for
-                        metrics (GDP, building counts, foreign-owned GDP, market imports/origins) and for
-                        one-off events (bankruptcy, diplomatic plays, peace). CONSULT before adding a metric
-FINDINGS.md             what the testbed has actually ESTABLISHED — measured results with their evidence,
-                        confidence and limits (design lives in BALANCE_FRAMEWORK, instrument in
-                        TESTBED_METRICS, this is the OUTPUT). Numbers are copied in FULL, because a finding
-                        must outlive its raw data. APPEND after any measurement batch
-ON_GAME_UPDATE.md       what to re-run / re-check after a Victoria 3 patch (version-sensitive touchpoints + drift log)
-BUGS_AND_FIXES.md       root-cause log of non-obvious fixed bugs — NOT auto-loaded; CONSULT when investigating a new bug or after a patch
-TESTBED_LANDMINES.md    THE REGISTER of defects where NOTHING FAILS — a c:TAG that errors half a million
-                        times once its country is annexed, a script value that reads zero instead of
-                        erroring, telemetry changed without a schema bump, a spec key the scheduler drops.
-                        Each entry carries an ID and a DETECTOR; `tools/preflight.ps1` walks them against
-                        the EMITTED files and THROWS, inside build.ps1 (every build, control arm included)
-                        and run_schedule.ps1 (before a batch). The MD holds the story, the script holds the
-                        enforcement — an entry that stays manual is a smell. ADD TO IT when a run surfaces
-                        a new one, detector and all
-POLISH_1_0.md           ⭐ THE 1.0 POLISH REGISTER (2026-10-21): every polish item with DONE / RULING / READY / VERIFY, the rulings asked, the order
-                        (script and economics before the alternating batch, text and art after), and two appendices (the deferred-items sweep,
-                        an independent pre-release hunt). The decision layer; BACKLOG section H points here
-TIER_REFERENCE_AUDIT.md ⭐ EVERY VANILLA SCRIPT POSITION THAT REFERENCES A TIERED INDUSTRY (2026-10-21): 86 blocks with file:line, verdict (dead /
-                        narrowed to rung 0 / changed meaning) and fix, the rung-0-only throughput modifiers, and the proposed generator
-                        `emit_vanilla_refs.mjs`. A PROPOSAL awaiting rulings; supersedes MISSING_PM_REFERENCES.md
-MISSING_PM_REFERENCES.md (STALE since 2026-10-21 — TIER_REFERENCE_AUDIT.md supersedes it) catalogue of vanilla events/JEs/effects that reference a main PM our tier split relocated (they error+return false → missed flavor). GENERATED by tools/audit_pm_refs.ps1; strategic fix deferred
-MISSING_BUILDING_CONDITIONS.md catalogue of special conditional fields (e.g. a conditional ai_value block) inside vanilla buildings we replace/split that our emitted building drops. Hand-maintained; directly fixable but batch-deferred (distinct from MISSING_PM_REFERENCES, which is external refs)
-config/era_prices.json      GENERATED by tools/era_solver.mjs and COMMITTED: the balance-only view — each good's price
-                        per tier (% of base) and the PMs a country of that tier runs. Reference, not authoritative:
-                        tools/era_scenarios.mjs re-solves against REALISED prices and overwrites the volumes
-config/era_presets.json     GENERATED by tools/era_scenarios.mjs and COMMITTED: the five solved tier scenarios
-                        (buildings/pops/units/sol/prices), passed through by extract_presets.ps1 into ui/presets.js.
-                        Committed because a scenario is a design input, not an artifact
-config/era_inverse.json     GENERATED by tools/era_inverse.mjs --write and COMMITTED: the INVERSE-SOLVE
-                        experiment's artifact (BALANCE_FRAMEWORK §10.65) — the design book + yields, the
-                        recipe book derived from it, the six seeded feasibility scenarios (with
-                        va_by_industry), and `presets` (tier-preset schema). The canonical config is
-                        untouched, but the UI now READS it at build time: build.ps1 embeds `recipes`/
-                        `mandate`/`ladder_yields` into ui/data.js (PMDATA.inverse — the red `recipes:
-                        solver 2` button) and extract_presets.ps1 passes `presets` into ui/presets.js
-                        (the Inverse-solve preset row). Both optional: absent file ⇒ button disabled,
-                        row absent. ⚠ Build-time copies — after a --write, rebuild to refresh the sheet.
-                        ⭐ Since 2026-08-29 it also carries `analytic_ladder` (THE OBSOLESCENCE MATRIX
-                        — every present rung's margin in every tier, beside that tier's faults), `tiers`,
-                        `industries`, `eras`, `base_prices`, `vanilla_industries`, and per scenario
-                        `order_book` (every traded good's buy/sell/price/design/pop-share/class),
-                        `army_share`/`battalions`/`constr_share`/`constr_target`/`output_mix`. All
-                        ADDITIVE — the regeneration that introduced them left every pre-existing value
-                        byte-identical. They are what tools/build_ui2.mjs renders
-config/mod_config.canon-4rung.json THE FOUR-RUNG CANON (user-ruled 2026-09-03, §10.69) + its
-                        tech_tree_options twin — a stamped copy of the ab3 book (see the TWO CANONS ruling above);
-                        un-ignored explicitly in .gitignore, like era6. Build with -Config; nothing reads it by default
-config/mod_config.canon4-art.json ⚗ THE ART-ACADEMY STRESS TEST (§10.70, 2026-09-04, take 2): canon4-je with the art academy alone
-                        on explicit per-rung multipliers (fine art 5/10/35/80, input value ×1/1.5/3/4.5, cost 400/800/2,400/3,600,
-                        ai_value the tier rule) — t3 profitable but not wildly at the band edges; divisor pinned at 0.000125;
-                        tree twin = canon4-je's. Schedule canon4_art_n3.json, not launched. Un-ignored with its twin, like canon4-je
-config/mod_config.canon4v-art3.json ⚗ canon4v WITH THE FILM ACADEMY AT ×3 OUTPUT (§10.73, user-ruled 2026-09-04): the A/B book with
-                        ⚠ REVERTED 2026-09-05 (user: "gameable … infinite money printers"): the canon's academy is on the regular
-                        ladder; this file stays only as the record of F104's measured arm
-                        `--tiers-for art_academy:out=1,2,4,24;in=1,1.5,2.25,3.375;cost=1,2,4,8` — Film Art 120 fine art a level
-                        (canon4v 40), inputs/cost/ai_value the ladder's, everything else byte-identical to canon4v. The first batch
-                        of the vanilla-built structure ran on it: schedule canon4v_art3_n5.json, session 20260904_213059, n=4
-                        (F104: fine art 103–117% at 1935, world GDP 0.93×, tiered prices below vanilla). Un-ignored with its twin
-config/mod_config.canon4v-hai3.json ⚗ THE RULED SET ON THE CANON (§10.75, user-ruled 2026-09-05): canon4v + ai_value 1000×3^tier on
-                        ALL 17 tiered industries + the investment-pool defines (TOO_LARGE_INVESTMENT_POOL_FACTOR 0.9, CONSTRUCTION
-                        CRITICAL / EXCESSIVE 0.9 / 1.5, MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED 0.1, LONG / VERY_LONG
-                        construction-time thresholds 160 / 240; cost coverage ruled OUT) — generated by make_ab_config with its new
-                        `--ai-defines K=V,K=V` flag; recipes, costs, employment, techs and research events byte-identical to canon4v.
-                        ⭐⭐ THE CANON SINCE 2026-09-06 (user: "Canonise the latest config"). ⭐ REGENERATED 2026-09-13 UNDER THE TIER RULE (§10.78): automotive,
-                        munition, synthetics and electrics re-priced at their tiers and electrics moved t1 → t2; everything else byte-identical; the measured
-                        (index-keyed) book is commit 880f098's copy. Schedule canon4v_hai3_n2.json (n=2). ⭐ MEASURED 2026-09-05 (F106, session 20260905_174831, n=2): Britain's
-                        hoard halved but world pools still 0.41 of GDP, the construction sector at vanilla's size and total levels
-                        still 0.77×; the consumer industries built out before 1900; the four falling goods lower still and three
-                        more below vanilla; tier choice 39.0%; GDP 0.88× (0.84 / 0.93); companies 193. Not ratified. Un-ignored with its twin
-config/mod_config.canon-je24.json ⭐ THE 60-RUN PLAN'S ARM (§10.76, user-ruled 2026-09-06): the canon (canon4v-hai3) with
-                        research_events.industry_bar_months 24 (the canon: 60; war bars 6 unchanged) — everything else byte-identical.
-                        ⭐ REGENERATED 2026-09-13 under the tier rule (§10.78) by `make_ab_config … --bar-months 24 --variant …` (the bar and the
-                        `_variant` record are flags now, `_ab.command` holds the line); the four late industries re-keyed, the measured book = commit 880f098's.
-                        Schedule canon_je24_n60.json (60 runs, timeout 420); the GDP gate after run 30 is assess_gdp_gate.mjs. ⭐ MEASURED 2026-09-09 (F107; sessions 20260906_001032 runs 1–11 + 20260907_074504 runs 1–19, n=30, byte-identical config): THE GATE READ SWITCH — world GDP 0.835× vanilla (median 0.83, 0.44–1.11, sd 0.17; three F99 stalls in thirty), Britain’s research-entry completions ~25 (F106: 3–12) with technologies held unchanged (165 vs 164), prices / production / pools / tier choice (39.2%) at F106’s readings — the bar is not a GDP lever. Un-ignored
-config/mod_config.canon-je24-a22.json ⭐ THE PLAN'S FALLBACK (§10.76): canon-je24 with A 2.2 in place of 2.0 (output and building_cost
-                        × 2.2^tier; B 1.5, divisor 0.000125, ai_value 3^tier, the defines and the 24-month bar unchanged; REGENERATED 2026-09-13 under
-                        the tier rule — the four late industries re-keyed, the measured book = commit 880f098's). Schedule
-                        canon_je24_a22_n30.json (30 runs) — LAUNCHED 2026-09-09 10:09 as session 20260909_100930_canon-je24-a22-n30 after the gate read 0.835×; the 24-month bar STANDS in this arm (user-ruled 2026-09-09). Its ledger reads against phase 1 as the reference series. ⭐ MEASURED 2026-09-10 (F109; sessions 20260909_100930 run 1 + 20260909_123746 runs 1–10, n=11, ended at run 11 by §10.77): world GDP 0.915× vanilla (median 0.92, 0.63–1.17; 0.97 / 0.95 with the two census stalls out) against phase 1's 0.835 — a step of 0.08 at 1.3 standard errors, carried by output per productive worker (1.39× vs 1.33×); prices, wage units, tier choice (40.2%), research (23 completions / 167 technologies) and companies are phase 1's; Britain's hoard 0.75 of GDP (0.95) and the oldest rung 5.74M (6.45M) the two readings that moved; stalls 2 of 11. The output step is a small GDP lever and no price lever. Un-ignored
-config/mod_config.canon-flat-in12.json ⭐ THE FLAT-COST, LIFTED-RUNG-0 ARM (§10.77, user-ruled 2026-09-10 — the vanilla-1836 premise
-                        dropped): the canon's structure and A/B ladder (2.2 / 1.5) with rung 0's INPUT VALUE × 1.2 (the ladder anchored on
-                        the lifted rung 0), building_cost FLAT (600 / 800 / 400 every rung, §10.61), ai_value LINEAR by tier: 1,000 / 2,000 /
-                        3,000 / 4,000, cost divisor vanilla's 0.001, the 24-month bar and the §10.75 defines kept. Generated by
-                        make_ab_config --in0 1.2 --cost-flat --ai-ladder 1000,2000,3000,4000 (+ bar 24); dry-run build clean. Schedule
-                        canon_flat_in12_n30.json (30 runs, no gate). canon-flat-in13.json + twin = the same at ×1.3 (the user's lean; six
-                        industries loss-making at base from 1836 — generated for the record). ✅ CONFIRMED by the user 2026-09-10 ("Go with 1.2"); launched
-                        as soon as phase 2's batch ended. ⭐ MEASURED 2026-09-13 (F110, n=1 — session 20260910_151220 run 1, killed with the agent app
-                        at 1935.2 (L30) and finished by hand from its autosave; no relaunch by ruling): world GDP 2.10× vanilla (Russia 4.1×, an independent
-                        India, the USA 1.9×, Britain 0.88×), productive workers per capita 1.23× (every earlier arm 0.6–0.7×), rung 0 DYING (6.71 → 4.17M
-                        workers 1920 → 1935, 157-year payback, 0–2% staffed heavy/war rungs from 1880), tier choice 26.0%, prices 0.3–0.6 of vanilla in
-                        pounds and a tenth in wage units, pools 2.28 of world GDP (Britain 11.2), row P 31% slower in total on a world 1.46× the pops
-                        (+8.1% pop-matched). One seed, four levers at once. Un-ignored with their twins. ⭐ Both REGENERATED 2026-09-13 under the tier
-                        rule (§10.78): automotive, munition, synthetics and electrics at their tiers (electrics t2), which also removes the lifted-vanilla
-                        margins that had electrics at target_be 107 and munition at 115 — loss-making from their debut in F110; the measured book = commit 880f098's
-config/mod_config.canon-flat-in12-a16.json ⭐ TEST ARM 1 OF THE NEXT SESSION (user-ruled 2026-09-13; HANDOVER, schedule a16_vs_a22in12_n2x2.json):
-                        canon-flat-in12 with the output step A 1.6 in place of 2.2 — sized on the LIFTED tier-0 rung, where F97's death ratio is met at
-                        A ≈ 1.6 and the frontier's value added per construction point is ~2× vanilla's instead of F110's 14×. Generated by the tier-keyed
-                        make_ab_config (`_ab.command`); dry-run build clean. Un-ignored with its twin. ⭐ MEASURED n=3 (F113: arm 1 of session
-                        20260913_143610, runs 1 and 3, + the tie-breaker 20260914_002335): world GDP 0.60× the vanilla n=16 median at 1935 (0.57 /
-                        0.60 / 0.60), productive workers per capita 0.69×, pools 0.11 of GDP, rung 0 thinning but ALIVE (44% staffed, −18% staffed
-                        levels 1900→1935 in the median seed, 57-y stale payback), below-best 37.7%, the tiered goods at vanilla's prices — the step
-                        is too weak (two rungs behind hold 0.30 of the frontier's VA per worker at base prices, above F97's 0.2 line). Ledger
-                        https://claude.ai/code/artifact/e3cbf11e-b33f-44c3-a27d-f645a5086ec9
-config/mod_config.canon-je24-a22-in12.json ⭐ TEST ARM 2 (the control that isolates the death lever from cheap capital): canon-je24-a22 (phase 2) plus
-                        the ×1.2 lift on tier 0 with the ladder anchored on it, and nothing else. Same generator, dry-run build clean. Un-ignored with its twin.
-                        ⭐ MEASURED n=3 (F113: arm 2 of session 20260913_143610, runs 2 and 4, + the tie-breaker 20260914_024056): world GDP 0.65×
-                        (0.60 / 0.65 / 0.80), productive workers per capita 0.56×, pools 0.26, rung 0 FLAT at 57% staffed (+3% staffed levels
-                        1900→1935; 34-y stale payback), below-best 39.9%, consumer prices 0.83–0.87× vanilla's — the lift alone does not kill the
-                        old rung under steep cost. Ledger https://claude.ai/code/artifact/b68ba17a-3b6e-4273-b6cd-eccad00cfcd8
-config/mod_config.canon-flat-in12-a19.json ⭐ THE FOLLOW-UP CANDIDATE (generated 2026-09-13 17:24 under the user's pre-authorisation of one more 2–3-run
-                        batch): canon-flat-in12-a16 with A 1.9 in place of 1.6 — the midpoint of the two measured flat-cost lifted books (A 1.6 →
-                        0.57× with rung 0 alive; A 2.2 = F110 → 2.10× with rung 0 dead); two rungs behind hold 0.14 of the frontier's VA per worker
-                        at base prices (A 1.6: 0.30, A 2.2: 0.09). Same generator (`_ab.command`), dry-run build clean, schedule
-                        `tools/testbed/schedules/canon_flat_in12_a19_n2.json` (2 runs + a tie-breaker on divergence; hypothesis and predictions
-                        inside). ⭐ LAUNCHED 2026-09-14 04:46 as session 20260914_044648_canon-flat-in12-a19-n2, after both 2+1 arms were read
-                        at n=3 (F113). ⭐ MEASURED n=2 (aligned under the F114 rule): world GDP 1.80× (1.87 / 1.73), workers per capita
-                        1.12×, pools 1.1–1.35 of GDP, rung 0 DEAD (20–21% staffed), below-best 30%, play 179–185 min — F110's regime,
-                        milder: the explosive loop starts below A 1.9 at flat cost, so the lever is the cost slope. Un-ignored with its twin
-config/mod_config.canon-c16-in12.json ⭐ THE COST-SLOPE SWEEP, BOOK 1 (user-ruled 2026-09-14 "go on with the tests"): canon-je24-a22-in12
-                        with building_cost = anchor × 1.6^tier (600 / 960 / 1,536 / 2,458) in place of × 2.2^tier — the dial between flat
-                        (F110 / a19: the world doubles, rung 0 dies) and capacity-priced (a22-in12: 0.65×, rung 0 alive); A 2.2 / B 1.5, the
-                        ×1.2 lift, ai_value 3^tier, divisor 0.000125, the defines, the 24-month bar. Generated by `make_ab_config --cost-ratio
-                        1.6` (the flag added the same day), dry-run built clean; schedule `canon_c16_in12_n2.json` (2 runs + 1 on divergence
-                        under the F114 rule; predictions inside: GDP 0.8–1.2×, workers 0.65–0.85×, rung 0 25–45% staffed, pools 0.3–0.7).
-                        Bisect on the result (C 1.9 above the band, C 1.3 below), once more, then the ×1.3 lift at the found C. ⭐ MEASURED n=1 (2026-09-14, session 20260914_143137, run 1; run 2 an 1836 stub under THE RUN-LEVEL STOP): on vanilla's
-                        GDP path to 1890 (0.98–1.07×) and then the explosive regime — 1.12 / 1.27 / 1.59 / 1.75× at 1900 / 1910 / 1920 / 1930, 1.94× at 1935,
-                        1.98× at 1936 (£8,986M; France 4.1×, the USA 2.8×, Russia 2.3×, Britain 1.6×, Japan 0.5×); workers per capita 0.95× (0.83× at 1890, pulled
-                        back up by the runaway), GDP per productive worker 1.92×, pools 0.69 of GDP, rung 0 36% staffed at 19% margin with its levels still
-                        growing (1,889), tiered levels 21,913 (vanilla 21,971), two CTDs resumed. The slope 1.6 is on the flat-cost side of the threshold;
-                        the bisection goes UP to C 1.9. Ledger https://claude.ai/code/artifact/818b8375-4934-4d0f-be0d-6479b8a8b0b1. Un-ignored with its twin
-config/mod_config.canon-c19-in12.json ⭐⭐⭐ THE CANON SINCE 2026-09-18 (config/mod_config.json is a verbatim copy; the banner near the top of this file). Originally THE COST-SLOPE SWEEP, BOOK 2 — THE BISECTION UP (pre-registered in book 1's schedule; drafted 2026-09-14 17:00):
-                        canon-je24-a22-in12 with building_cost = anchor × 1.9^tier (600 / 1,140 / 2,166 / 4,115; 800 / 1,520 / 2,888 / 5,487) — between
-                        C 1.6 (book 1's first run sat on vanilla's GDP path to 1890 and then ran away: 1.12 / 1.27 / 1.59× at 1900 / 1910 / 1920) and
-                        C 2.2 (F113: 0.65×, the frontier too scarce); everything else identical. Generated by `make_ab_config --cost-ratio 1.9`
-                        (`_ab.command`), dry-run built clean; schedule `canon_c19_in12_n2.json` (2 runs + 1 on divergence, the run-level stop
-                        applies; predictions inside: GDP 0.75–1.25×, workers 0.60–0.80×, rung 0 30–50% staffed, pools 0.2–0.5). The other
-                        bisection branch, `canon-c13-in12` (C 1.3), is generated beside it and stays gitignored unless a result calls for it. ⭐ MEASURED n=2, ALIGNED (F117; sessions 20260914_173832 run 1 + 20260914_204329, the one-run
-                        replacement for a run VOIDED by a crash during the 1858 autosave write, L32): world GDP 1.09 / 1.07× vanilla at 1935 (1.11 / 1.07 at 1936)
-                        — IN THE BAND; productive workers per capita 0.65 / 0.67× — in the band; GDP per productive worker 1.61×; a dip to 0.75 / 0.89× around
-                        1900 while the frontier is dear, realignment by the 1930s; rung 0 45% staffed at 22–26% margin against the frontier's 44–54% — the
-                        first book whose old rung is out-earned; tiered levels 9,917–10,633 (half of vanilla's), pools 0.42–0.64 of GDP, unemployment 27–30%,
-                        peasants above vanilla's share in most majors; France 4.1× in both seeds, Russia 0.2–0.5×. Play 0.97× the vanilla median, no crash.
-                        THE SWEEP'S FOUND SLOPE. Ledger https://claude.ai/code/artifact/7c8d37a0-4496-49fe-b5f8-d3d2859d5d95.
-                        ⭐ READ OVER FOUR SEEDS UNDER THE CRITERIA REGISTER (F131, 2026-09-17; batch 4 = sessions 20260917_132449 run 1 + 20260917_161410): 3 intact /
-                        1 broken (seed 1: Britain's capital abundance), the consensus of the two closest intact seeds at LOSS 7.6 — the register's best book —
-                        world GDP 1.10 (above the 1.0 aim), pool W 0.68 and pool U* 2.02 (at the aims), the pool's GDP 1.30 (above 1.1), pool H 4.2× vanilla, PI 0.84 /
-                        PP 0.83, T0 flat; the seed spread 1.04–1.31 on world GDP. The residual is the pool's GDP overshoot and the hoard (the A axis does not move
-                        the pool's GDP) — the next levers are cost and eagerness to build, PROPOSED and awaiting the user's confirmation.
-                        Un-ignored with its twin
-config/mod_config.canon-c19-in13.json ⭐ THE COST-SLOPE SWEEP, BOOK 3 — THE ×1.3 LIFT AT THE FOUND SLOPE (the plan's last step; the loop's
-                        first "best config" pick, 2026-09-15): canon-c19-in12 with `--in0 1.3` in place of 1.2 — rung 0's input value ×1.3 with the ladder
-                        anchored on it (every rung's input value ×1.083), the user's original lean (canon-flat-in13, 2026-09-10), to push rung 0's break-even
-                        output price up and turn its thinning (45% staffed, half the frontier's margin at C 1.9) into death; rung 0's textile target_be 103
-                        (marginally loss-making at base, as flat-in13 was). Generated by `make_ab_config --in0 1.3 --cost-ratio 1.9` (`_ab.command`), dry-run
-                        built clean; schedule `canon_c19_in13_n2.json` (2 runs + 1 on divergence, the run-level stop applies; predictions inside: GDP
-                        0.85–1.15×, the 1900 dip 0.65–0.85×, workers 0.55–0.72×, rung 0 25–45% staffed at a margin below 20%, pools 0.4–0.8). ⭐ MEASURED n=1 (F118; session 20260915_002935, the loop's first pick, stopped by THE RUN-LEVEL STOP — the watcher acted
-                        on its own): the lift REMOVED the ×1.2 book's dip (0.97–0.99× to 1880) and then RAN AWAY — 1.08 / 1.16 / 1.36 / 1.55× at 1890–1920,
-                        1.44× at 1935 and 1936 on 0.89× the population; workers per capita 0.94×, GDP per productive worker 1.71×, pools 1.07 of GDP;
-                        rung 0 30% staffed (×1.2: 45%) at a 21% margin with the margin ladder FLAT again (28–34% at the frontier); tiered levels 17,371.
-                        The lift pushes construction to the frontier, it does not kill the old rung; the found config stays canon-c19-in12. Ledger https://claude.ai/code/artifact/b945cf11-8ec9-40b0-beb9-53f682b3d234. Un-ignored with its twin
-config/mod_config.canon-c205-in13.json ⭐ THE LOOP'S SECOND PICK (drafted 2026-09-15 02:45, the standing loop): the ×1.3 lift on a DEARER slope —
-                        canon-c19-in13 with building_cost = anchor × 2.05^tier (600 / 1,230 / 2,522 / 5,169; 800 / 1,640 / 3,362 / 6,892) in place of 1.9^tier,
-                        because the lift at C 1.9 removed the unlifted book's dip and then RAN AWAY (0.97 / 1.08 / 1.16 / 1.36× at 1880–1910 in its first
-                        run): the lift pushes construction to the frontier sooner and at C 1.9 that compounds; at 2.05 the frontier is dearer — between
-                        C 1.9 ×1.3 (runaway) and C 2.2 ×1.2 (F113: 0.65×, a stall). Generated by `make_ab_config --in0 1.3 --cost-ratio 2.05` (`_ab.command`),
-                        dry-run built clean; schedule `canon_c205_in13_n2.json` (2 runs + 1 on divergence, the run-level stop applies; predictions inside:
-                        GDP 0.80–1.20×, no early dip, rung 0 15–35% staffed at a margin below 15%, pools 0.2–0.5). Un-ignored with its twin. ⭐ MEASURED n=2 (F119, session 20260915_033205, ALIGNED — no tie-breaker): world GDP 0.71 / 0.74× vanilla at 1935 (0.70 / 0.75 at 1936), workers
-                        per capita 0.56 / 0.57× — a STALL from 1880 in both seeds (0.66–0.72× every decade 1890–1930), pools hoarded to 0.42 then spent to no
-                        effect, rung 0 ALIVE at 49–50% staffing with its level count still growing and the margin ladder intact (24–25% vs 41–57%), tiered
-                        levels a third of vanilla's, play 0.84–0.88×; run 2's CTD at 1926.6.6 recovered by the resume feeder (L32 PASS). With F118 the ×1.3
-                        lift is CLOSED as a lever at any slope; the found config stays canon-c19-in12. Ledger https://claude.ai/code/artifact/d2dbefff-3fd3-4359-b8d2-7940274760e9
-config/mod_config.canon-c19-e0ai500.json ⭐ THE LOOP'S THIRD PICK (drafted 2026-09-15 05:45): the found slope (canon-c19-in12) with RUNG 0'S
-                        AI_VALUE HALVED to 500 (t1–t3 unchanged at 3,000 / 9,000 / 27,000; `make_ab_config --ai-ladder 500,3000,9000,27000 --cost-ratio 1.9
-                        --in0 1.2`), every recipe, cost and define identical — a willingness lever, not a block, aimed at the one unmet goal: rung 0 is out-earned
-                        but its LEVEL COUNT grows in every book of the sweep (the AI keeps building it — F97 §4), and both price levers tried on it failed (the ×1.3
-                        lift ran away at C 1.9, F118, and stalled at C 2.05). Dry-run built clean; schedule `canon_c19_e0ai500_n2.json` (2 runs + 1 on divergence,
-                        the run-level stop applies; the KEY prediction: rung 0's level count at 1935 BELOW its 1900 count, for the first time; GDP 0.95–1.20×,
-                        workers 0.60–0.72×, pools 0.35–0.65). Un-ignored with its twin. ⭐ LAUNCHED 2026-09-15 08:25 as session 20260915_082510_canon-c19-e0ai500-n2 (the loop's third iteration; the stop watcher armed). ⭐ MEASURED n=2 (F120, ALIGNED — no tie-breaker): world GDP 1.13 / 1.04× vanilla at 1935 (1.15 / 1.04 at 1936), workers per
-                        capita 0.70 / 0.64× — in the band, the C 1.9 economy in two more seeds (the family: 1.09 / 1.07 / 1.13 / 1.04×, four seeds in the band); THE
-                        KEY PREDICTION MISSED — rung 0's level count still rose 18% / 12% from 1900 to 1935 at 46–47% staffing and a 24–25% margin, exactly the
-                        found config: the government AI's desire is not what builds the old rung (F100: the private pool expanding company-owned buildings is).
-                        Hoard 0.70 / 0.48 world, 1.20 / 0.76 shortlist (Britain 1.34 / 1.76), capital flag CLEAN; play 0.96 / 1.03×. The halved desire is NOT
-                        carried forward; the loop's fourth pick is canon-c205-in12-eager. Ledger https://claude.ai/code/artifact/a1a6bb8b-0e98-4849-8035-7fcd88027397
-config/mod_config.canon-c19-in12-eager.json ⭐ THE HOARDING FIX (user-ruled 2026-09-15 morning: "hoarding is a problem by itself that should be tuned by
-                        spending eagerness defines … significant hoarding (more than 1 yearly world product) can spoil all measurements, and we're aiming at
-                        levels lower than vanilla, better to fix that sooner than later"): canon-c19-in12 with ONLY the investment-pool defines pushed toward
-                        spending — MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR **0.99** in place of 0.9 (⚠ 1.0 — the cap vanilla's own comment names — is REJECTED by the engine's validator, whose range is [0,1), and the key then keeps VANILLA's 0.75, i.e. BELOW the canon: landmine **L33**, found 2026-09-15; every eager book was regenerated at 0.99 and F121's `canon-c205-in12-eager` is deliberately left at 1.0 as its own record), CRITICAL 1.25 / EXCESSIVE
-                        3.0 in place of 0.9 / 1.5, CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED back to vanilla's 0.05 from 0.1; the
-                        LONG/VERY_LONG thresholds, the divisor, every recipe, cost, ai_value and the bar identical (field diff: ai_defines only). ⚠ A NAMED RESIDUAL of every eager book: the land CRITICAL at 1.25 makes
-                        VANILLA's own MONEY_SPENDING_SHIP_CONSTRUCTION_EXCESSIVE_THRESHOLD (1.05, a define we never set) invalid, so the engine rejects that one
-                        too and what it holds for the key afterwards is NOT known — naval construction only, identical across every eager arm, accepted rather
-                        than fixed so the batch keeps one lever (L33). WHY THESE
-                        (measured on the C 1.9 runs, F119's addendum): the hoard is CAPACITY-BOUND — the private queue is a 2.0–2.4-year backlog at 1935
-                        (vanilla 0.3–0.4) with the private share of construction speed already 74–87%, and the GOVERNMENT queue 2.8–3.0 years deep (vanilla
-                        0.5), clogged with the dear rungs the government AI builds itself, so the construction sectors it queues arrive years late; the pool
-                        (0.42–0.64 of GDP, Britain 0.87–2.40; 1.07 under the ×1.3 lift, Britain 6.97) is not idle money. Not touched: WANTED_COST_COVERAGE
-                        (ruled out 2026-09-05), AUTONOMOUS_INVESTMENT_UPDATE_COUNT_DIVISOR (2,100–2,300 items already queued — queueing is not the limit); the
-                        private allocation share is a LAW modifier (country_private_construction_allocation_mult), not a define, and already 74–87% of speed.
-                        Generated by `make_ab_config` (`_ab.command`), dry-run built clean; schedule `canon_c19_in12_eager_n2.json` (2 runs + 1 on divergence,
-                        the run-level stop applies; predictions inside: pools 0.15–0.35 of GDP in both seeds, the private backlog under 1.5 y, construction
-                        sector above 3,800 levels at 1935, GDP 1.00–1.30×, workers 0.62–0.78×, rung 0 unchanged). A spent hoard is capital at work, so the
-                        pre-registered branch if it runs away is C 2.05 ×1.2 with this set. ⚠ SUPERSEDED AS THE NEXT PICK within the hour by the ruling below (the eager set
-                        goes on an UNDER-SIDE base, not on the found config); kept, un-ignored, as the found-config control if ever needed. Un-ignored with its twin ⭐ THE FIRST CONFIG OF THE NEXT SESSION (prepared 2026-09-15 evening, §10.79): its schedule `canon_c19_in12_eager_n2.json` carries a post-F121 note (the pool is expected to follow growth, 0.35–0.70 world; the backlog and sector predictions stand; a run above 1.3× at 1936 is a live possibility) and `canon_c19_in12_eager_tb.json` is its tie-breaker; read against canon-c19-in12 (four seeds).
-config/mod_config.canon-c205-in12-eager.json ⭐⭐ THE HOARDING FIX ON AN UNDER-SIDE BASE — THE LOOP'S NEXT PICK (user-ruled 2026-09-15 10:05 local: "more aggressive
-                        spend of investment pool money will increase the economy and thus depeasantation. So ceteris paribus, the other parts of the config
-                        (A/B/initial input penalty/cost_ladder) should be taken from the side that gave values slightly under the GDP/depeasantation target, not
-                        at the target"): the never-run canon-c205-in12 (cost = anchor × 2.05^tier, 600 / 1,230 / 2,522 / 5,169 — between C 1.9 = 1.08× and C 2.2 =
-                        0.65×, the interpolation for "slightly under"; A 2.2 / B 1.5, the ×1.2 lift, ai_value 3^tier, divisor 0.000125, the 24-month bar) with the
-                        eager-spending define set of canon-c19-in12-eager. Dry-run built clean; schedule `canon_c205_in12_eager_n2.json` (2 runs + 1 on divergence,
-                        the run-level stop and the capital-abundance flag apply; predictions inside: pools 0.15–0.35 world, shortlist below 0.6, Britain below 1.0,
-                        backlog under 1.5 y, sector above 3,500 levels, GDP 0.90–1.15×, workers 0.58–0.72×, shortlist unemployment incl. peasants 30–50%). Branches:
-                        above 1.3× → C 2.2 ×1.2 with the set; below 0.8× → C 1.9 with the set (canon-c19-in12-eager). Un-ignored with its twin. ⭐ LAUNCHED 2026-09-15 14:03 local (10:03 UTC, before the 14:00 UTC boundary) as session 20260915_140342_canon-c205-in12-eager-n2 — the loop's fourth iteration, after the e0ai500 pair (F120) failed to earn the halved desire; the stop watcher and a waiter armed, smoke check clean. ⭐ MEASURED n=2, DIVERGENT (GDP 0.56 / 0.37× at 1935, workers 0.50 / 0.37×) → the TIE-BREAKER launched 14:28 UTC as
-                        20260915_182813_canon-c205-in12-eager-tb (user-authorised past the boundary). Provisional reading: EVERY HOARD PREDICTION MET (world 0.17 /
-                        0.15, shortlist 0.12 / 0.07, backlog 1.2 / 1.1 y) and the economy STALLED (below F119's 0.71 / 0.74 with the ×1.3 lift) — the construction
-                        sector shrank to 1,886 / 986 levels, the pool is small because the economy is, the frontier (2,522 / 5,169 points) too dear to fill;
-                        rung 0 alive at 61 / 56%; a British civil war 1860–63 in run 1, Britain bankrupt 1912 in run 2. ⭐ READ AT n=3 (F121; the tie-breaker
-                        20260915_182813, two more CTDs recovered by the feeder, the second through the beyond-window path): the third seed GROWS to 1.32× (1.14× at
-                        1936 after a last-year shock) with Britain intact — and the HOARD RETURNS, 0.83 world / 1.31 shortlist (Britain 1.80, France 2.01) despite a
-                        3,625-level construction sector (the found config ~3,000) and a 1.3-y backlog; the median of three 0.56× (way below), workers 0.50×. So: the
-                        configuration is BISTABLE by seed at this slope (early British disasters lock the stalls), and the AI's construction-sizing defines shorten
-                        the queue (1.1–1.3 y in all three) but cannot hold the pool below vanilla in a growing economy — the hoard's lever is the sector's
-                        throughput or cost, or the pool's inflow (balance changes, to be ruled). The eager set on C 1.9 (canon-c19-in12-eager) remains the
-                        pre-registered branch. Ledger https://claude.ai/code/artifact/2d6d3356-2b6a-4285-bbc6-1caf07aa9c97
-config/mod_config.canon-c205-e0ai500-eager.json ⭐ THE SAME WITH THE HALVED RUNG-0 DESIRE (ai_value 500 / 3,000 / 9,000 / 27,000) — runs in place of the book above ONLY
-                        if the e0ai500 batch (20260915_082510) earns it (rung 0's level count falling 1900 → 1935 without leaving the band). Dry-run built clean;
-                        schedule `canon_c205_e0ai500_eager_n2.json`. Un-ignored with its twin
-config/mod_config.canon-c195-in12-eager.json ⭐⭐ THE SECOND CONFIG OF THE NEXT SESSION (prepared 2026-09-15 evening, §10.79) — THE UNDER-SIDE RULE ON THE SWEEP'S OWN AXIS:
-                        canon-c19-in12-eager with building_cost = anchor × 1.95^tier (600 / 1,170 / 2,282 / 4,449; 800 / 1,560 / 3,042 / 5,932) in place of 1.9^tier —
-                        the top rung 8% dearer than the found slope's, 14% cheaper than C 2.05's, which F121 read as bistable (two stalls locked in by early British
-                        disasters, one growth seed at 1.32×) and F119 as a stall; the eager-spending define set, A 2.2 / B 1.5, the ×1.2 lift, ai_value 3^tier, divisor
-                        0.000125, the 24-month bar identical (field diff against canon-c19-in12-eager: building_cost on the 43 rungs above t0, nothing else).
-                        Generated by `make_ab_config --cost-ratio 1.95` (`_ab.command`), dry-run built clean; schedule `canon_c195_in12_eager_n2.json` (2 runs + the
-                        `_tb.json` on divergence; predictions inside: GDP 0.90–1.20×, the 1900 dip 0.72–0.90×, workers 0.60–0.75×, hoard 0.30–0.65 world — the pool
-                        follows growth, the backlogs fall to 1.0–1.5 y / 0.9–1.6 y — rung 0 42–55%). Runs AFTER canon-c19-in12-eager and reads against it (one lever:
-                        the slope). Branches: above 1.3× at 1936 → canon-c20-in12-eager; two stalls in three → the base goes back to C 1.9. Un-ignored with its twin
-config/mod_config.canon-c195-in12.json ⭐ THE ONE-LEVER CONTROL of the under-side line (generated 2026-09-17 evening under THE CRITERIA REGISTER, F131): the found
-                        configuration with building_cost = anchor × 1.95^tier and NOTHING else changed (field diff against canon-c19-in12: 43 building_cost fields; the
-                        §10.75 defines, not the eager set) — so a read of canon-c195-in12-eager can be attributed to the cost step or the spending step when the paired
-                        book cannot be read alone. Generated by `make_ab_config --cost-ratio 1.95` (`_ab.command`), dry-run built clean (every lint, L31); schedules
-                        `canon_c195_in12_n2.json` + `_tb.json`, whose `_register` blocks (as on every schedule of the loss-minimising sequence, HANDOVER 2026-09-17
-                        evening) state the predictions in the register's terms: world GDP 0.95–1.08, the pool's GDP 1.10–1.30, pool W 0.62–0.70, the hoard as the
-                        found's, expected loss 5–8 against the incumbent's 7.6. Runs only as the sequence's batch 2 on a hard break or an unattributable read of the
-                        paired book. Un-ignored with its twin
-config/mod_config.canon-c19-in12-mild.json ⭐ PROPOSED 2026-09-18 (generated + dry-run built clean, schedules written, NOT launched — the user confirms first): THE MILDER
-                        SPENDING SET on the incumbent — canon-c19-in12 with ai_defines ONLY: MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR 0.95, CRITICAL 1.0,
-                        EXCESSIVE 2.0 in place of the canon set 0.9 / 0.9 / 1.5 (the full eager set: 0.99 / 1.25 / 3.0; vanilla 0.75 / 0.75 / 1.05); the queue cap at the canon 0.1
-                        (F125 exonerated it), everything else byte-identical (field diff: three keys). The land CRITICAL is held UNDER vanilla ship EXCESSIVE (1.05), so no define is
-                        rejected at load — L33 CLEAN, the first spending book whose arm IS its book. WHY (F132 + F131): the full set spends the hoard to the register aim on every
-                        slope tried and runs the pool hot in every seed (the pool GDP 2.0x beyond the soft line); the hoard is the incumbent second-largest loss term; nothing is
-                        measured between the canon set and the full set. Generated by `make_ab_config --cost-ratio 1.9 --in0 1.2 --ai-defines …` (`_ab.command`); schedules
-                        `canon_c19_in12_mild_n2.json` + `_tb.json` with a `_register` block whose honest arithmetic says it is NOT expected to beat 7.6 under the standing weights
-                        (expected loss 10–18 without a soft crossing; the hoard term is worth at most 1.9 while the GDP / W terms it moves cost 3–8) — it is the register first
-                        real TRADE-OFF test (a book better on the hoard and worse on the pool GDP tests the weights). Un-ignored with its twin
-config/mod_config.canon-c20-in12-eager.json ⭐ THE BRANCH BOOK of the under-side series (§10.79): canon-c195-in12-eager with building_cost = anchor ×
-                        2.0^tier (600 / 1,200 / 2,400 / 4,800; 800 / 1,600 / 3,200 / 6,400) — launched ONLY if canon-c19-in12-eager AND canon-c195-in12-eager both
-                        overshoot the band; between C 1.95 and the bistable C 2.05, so not read before n=3. Generated (`_ab.command`), dry-run built clean; schedules
-                        `canon_c20_in12_eager_n2.json` + `_tb.json` (predictions: GDP 0.80–1.15×, a stall in any seed is F121's mechanism). Un-ignored with its twin
-config/mod_config.canon-c19-in12-eager-sharp.json ⭐⭐ THE THIRD CONFIG OF THE NEXT SESSION, ON THE FOUND SLOPE (prepared 2026-09-15 evening, §10.79) —
-                        THE CHOICE SHARPENED, goal 3's remaining willingness lever after the ai_value ladder (the ordered list of 2026-09-03): canon-c19-in12-eager with
-                        PRODUCTION_BUILDING_RANDOM_FACTOR 10 → 5 (the government AI's construction noise halved), PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_RANDOM_FACTOR_MULT
-                        2.0 → 1.0 (the private pool's noise quartered with it) and PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_PROFIT_FACTOR_MULT 1.5 → 2.5 (the pool weighs
-                        predicted profit per employee more; the frontier's edge over rung 0 is 4–10× at 1935) — field diff against its base: ai_defines only, three keys.
-                        Designed on F122's census of the found slope: rung 0's growth is 1900–1920 new buildings in fresh states placed by countries that hold the frontier
-                        (229 of 245, 287 of 304), its staffed levels fall by a fifth, expansion below 80% staffing is forbidden by the engine — the scoring's noise is the
-                        suspect (F100 §3: "a floor no weight removes"). Willingness only. Runs on the base that read in the band (this book on C 1.9; the twin below on
-                        C 1.95). Generated (`_ab.command`), dry-run built clean; schedules `canon_c19_in12_eager_sharp_n2.json` + `_tb.json` (THE KEY PREDICTION:
-                        below-best under 22% — the sweep 30–38%; fewer than 150 new rung-0 buildings 1900 → 1935; rung 0's 1935 level count at or below 1900's; staffing
-                        under 40%; GDP +0.05–0.15 over the base, the stop rule applies; WATCH the between-sector allocation, gluts, companies). Un-ignored with its twin
-config/mod_config.canon-c195-in12-eager-sharp.json ⭐ THE SAME LEVER ON THE C 1.95 BASE (§10.79): canon-c195-in12-eager + the three sharpening defines
-                        above — runs in place of canon-c19-in12-eager-sharp if the under-side book is the one that read in the band. Generated (`_ab.command`), dry-run
-                        built clean; schedules `canon_c195_in12_eager_sharp_n2.json` + `_tb.json`. Un-ignored with its twin
-config/mod_config.canon-c19-e2soft.json ⚠ DROPPED BEFORE IT RAN by ruling 1 of BALANCE_FRAMEWORK §10.82 (2026-09-16 evening: the mid-game dip is
-                        EXPECTED — countries hold the technologies before they have built the rungs, where vanilla just switches); kept with its twin and
-                        schedules as the record of the proposal and of the ruling. It was batch 1 of the four-batch plan:
-                        canon-c19-in12 with the t2 rung's cost ALONE lowered — `make_ab_config --cost-ladder 1.9,3.083,6.859` (600 / 1,140 / 1,850 / 4,115;
-                        800 / 1,520 / 2,466 / 5,487; the academy 400 / 760 / 1,233 / 2,744) in place of 1.9^tier — aimed at the 1890–1910 dip (F117: 0.75 / 0.89
-                        at 1900, the t1 → t2 transition paying for itself); field diff against the found book: 16 building_cost fields, nothing else;
-                        dry-run built clean, L31 passing. Schedule `canon_c19_e2soft_n2.json` + `_tb.json` (KEY: the pair's 1900 mean ≥ 0.90; endpoint
-                        1.05–1.25×; branches t2 2,000 on a stop, t2 1,700 on a null). Un-ignored with its twin
-config/mod_config.canon-b18-gm.json ⭐⭐ BATCH 1 OF THE PLAN AS RE-ORDERED BY §10.82 — LAUNCHED 2026-09-16 21:55 local (17:55 UTC) as session
-                        `20260916_215513_canon-b18-gm-n2` (the plateau test and the workers ceilings of §10.82 pre-registered in the session's
-                        RULING_ADDENDUM.md ten minutes after launch, with run 1 at 1836): canon-c19-in12 with B 1.8 in place of 1.5 on every rung
-                        above tier 0 (rung 0 untouched) and the cost ladder GAIN-MATCHED per tier — `--B 1.8 --cost-ladder 1.52,2.79,5.34` (600 / 912 / 1,674 /
-                        3,204; 800 / 1,216 / 2,232 / 4,272) so the frontier's value added per construction point equals the found book's at t1, t2 and t3
-                        (F127 §5); the design's own obsolescence channel (dearer raw inputs, cheaper outputs) and the raw sector's weight (F127: extraction
-                        at 59–63% of vanilla's levels, the tiered sector at 72–74% of building VA), value added per frontier level 0.77–0.80× ⇒ more levels
-                        and more workers per unit of GDP. Field diff: inputs, building_cost and target_be on the 43 rungs above t0; dry-run built clean.
-                        Schedule `canon_b18_gm_n2.json` + `_tb.json` (KEY 1: extraction levels ≥ 11,000 and dearer fabric / iron / coal; KEY 2: rung-0
-                        workers ≤ 2.8M, staffing ≤ 40%; endpoint 0.95–1.20×, workers 0.68–0.80×; branches ±10% on the ladder, then B 2.0 or the A axis).
-                        Un-ignored with its twin. ⭐ MEASURED n=3 (FINDINGS F128; sessions 20260916_215513 runs 1–2 + the tie-breaker 20260917_030144):
-                        world GDP 0.70 / 0.91 / 0.65× vanilla at 1935, the MEDIAN OF THREE 0.70× (noticeably below), workers per capita 0.63× — A STALL from
-                        1890 in two seeds, a slow climb in one: the base-price gain match UNDERSTATES the price channel (realised value added per frontier
-                        level 0.54–0.91× the found book's against a planned 0.77–0.80×; a richer recipe makes more output per pound of VA and the market
-                        answers with cheaper outputs or dearer inputs by seed); the raw sector 15–35% bigger per £ of GDP but not in levels; the old rung
-                        untouched (44–52%); the USA absorbs labour in 2 of 3 seeds. NOT adopted; the correction candidate is the ladder 15% cheaper
-                        (`--cost-ladder 1.29,2.37,4.54`), a batch-3 option behind the A axis; a corrected B book may overrun the 0.8 shortlist ceiling, in
-                        which case B 1.65. Ledger https://claude.ai/artifact/LuF9v37w3jS8Z976NDHE6y
-config/mod_config.canon-a19-gm.json ⭐⭐ BATCH 2 OF THE PLAN — LAUNCHED 2026-09-17 05:17 local as session `20260917_051736_canon-a19-gm-n2` after the
-                        B-axis tie-breaker (the median shortlist workers 0.61 did not trigger the A 2.0 substitution); the price-channel lesson of F128
-                        pre-registered in its schedule before launch (§10.82 ruling 3 opened the A axis: workers per capita at most 0.8 on the top majors, 0.9 world):
-                        canon-c19-in12 with the output step A 1.9 in place of 2.2 on every rung above tier 0 (rung 0 untouched) and the cost ladder
-                        GAIN-MATCHED per tier — `--A 1.9 --cost-ladder 1.38,2.22,3.68` (600 / 828 / 1,332 / 2,208; 800 / 1,104 / 1,776 / 2,944) — value added
-                        per frontier level 0.73 / 0.61 / 0.54 of the found book's ⇒ 1.4–1.8× the frontier levels and workers per unit of GDP, and input per
-                        unit of output ×1.16 / 1.34 / 1.55 (a raw pull nearly B 1.8's). Generated 2026-09-16 (`_ab.command`), L31 passing; schedule
-                        `canon_a19_gm_n2.json` + `_tb.json` (KEYS: tiered levels ≥ 14,000; the USA's peasant share −10 points 1919 → 1935 (labour absorption) and the corrected plateau
-                        test of §10.82.1 (no shortlist member capital-abundant at the residual); shortlist workers 0.76–0.88 against the 0.8 aim; endpoint 0.95–1.20×). Runs after canon-b18-gm; if batch 1 already
-                        lifts the shortlist's workers above 0.85 in both seeds, the milder book below runs instead. Un-ignored with its twin.
-                        ⭐ MEASURED n=2 ALIGNED (FINDINGS F129, session 20260917_051736): world GDP 1.185 / 1.127× vanilla at 1935 (medians 1.156× — noticeably
-                        ABOVE the band), workers per capita 0.847 / 0.907× world and 1.04 / 0.78 on the shortlist (ruling 3's aim 0.8); THE LABOUR LEVER WORKS —
-                        the frontier 30–45% deeper (tiered levels 13,422 / 14,701, t3 2,755 / 3,454), tiered workers 50.8 / 55.7M (found 36–40M), extraction
-                        12,431 / 10,833 levels, strict unemployment 19.8% (found 27–31%), the old rung 39.5 / 32.2% staffed (the majors' 21 / 34%), the USA's
-                        peasants 57 → 23 and 61 → 47; the price channel's direction seed-dependent (dearer outputs in seed 1, cheaper in seed 2), both above
-                        the band; no plateau (§10.82.1), capital flag CLEAN; one CTD recovered by the feeder. NOT the pick — the A axis is BRACKETED (A 2.2 in
-                        band at 1.08× with labour slack, A 1.9 above at 1.16× with labour absorbed) ⇒ batch 3 = canon-a205-gm. ⚠ Under THE MAJORS RULING of 2026-09-17 midday (the pooled shortlist GBR/USA/FRA/NET/BEL/PRU/NGF/GER at or above vanilla's
-                        workers per capita = a failure; `majors_workers.mjs`) seed 1 reads 1.03 = a FAILED seed on its own, seed 2 0.77 (F129 addendum). Ledger https://claude.ai/artifact/EkxBbZVVJQBF7pWyPrCeCi
-config/mod_config.canon-a20-gm.json ⭐ THE MILDER A STEP, IN RESERVE (§10.82): as above with A 2.0 — `--A 2.0 --cost-ladder 1.55,2.66,4.63`
-                        (600 / 930 / 1,596 / 2,778; 800 / 1,240 / 2,128 / 3,704), value added per frontier level 0.82 / 0.74 / 0.68 of the found book's.
-                        Generated 2026-09-16, L31 passing; no schedule until it is chosen. Un-ignored with its twin
-config/mod_config.canon-a205-gm.json ⭐⭐ BATCH 3 OF THE PLAN — THE A AXIS RE-BISECTED, LAUNCHED 2026-09-17 10:42 local as session
-                        `20260917_104214_canon-a205-gm-n2` after the a19 pair read aligned above the band (its LAUNCH_NOTE.md records the trigger as it
-                        actually applied — the GDP band, the shortlist rule met in one seed): A 2.05 in place of 2.2 on every rung above tier 0, cost ladder
-                        `--cost-ladder 1.64,2.89,5.15` gain-matched at base prices (600 / 984 / 1,734 / 3,090; 800 / 1,312 / 2,312 / 4,120), value added per
-                        frontier level 0.86 / 0.80 / 0.75 of the found book's; schedules `canon_a205_gm_n2.json` + `_tb.json` (predictions as interpolations:
-                        GDP 1.00–1.15×, shortlist workers 0.80–0.92, world 0.72–0.82; in band with the shortlist ≤ 0.85 ⇒ the pick, confirmed by batch 4;
-                        above 0.92 on the shortlist in both ⇒ A 2.15; below 0.9× in both ⇒ the found configuration stays the pick). Un-ignored with its twin.
-                        ⭐ MEASURED n=1, BROKEN BY RUNOFF (F130 — the first read under THE CRITERIA REGISTER, §10.83): run 1 at the aim on world GDP (1.00× the
-                        1932–1936 mean), world W (0.70), T0 (falling every decade) and T3 (34%), pool W 0.77, the pool's GDP 1.56 (beyond the 1.5 soft line) — and
-                        Britain under 5% total unemployment in 1932–1936 at a mean hoard of 2.08 GDP: the agreed capital-abundance hard line; one broken run
-                        ends a config, so run 2 was STOPPED at ~1850. The A axis is not the hoard's lever; batch 4 = two more seeds of the found configuration
-config/mod_config.tier4.json ⚗ GENERATED (gitignored) by tools/make_tier4_config.mjs FROM THE GAME FILES + tools/lib_tier4_spec.mjs
-                        — the four-rung STRUCTURE (rungs = vanilla main methods with vanilla's name, gate, recipe,
-                        staffing, icon; the spec's ADDITIONS on top), with tech_tree_options.tier4.json beside it from
-                        make_tier4_techs.mjs (vanilla's technologies at vanilla's eras). make_ab_config.mjs turns the pair
-                        into a book (canon4v). ⚠ era_prices.tier4.json / measured_price_paths.tier4.json /
-                        era_inverse.tier4.json are artifacts of the RETIRED derivation (§10.66, superseded 2026-09-04 by
-                        §10.72) and are no longer written
-config/tech_tree_options.json ⭐⭐ SINCE 2026-09-05 the canon4v tree (make_tier4_techs.mjs's output, copied from its canon4v
-                        twin) — vanilla's technologies at vanilla's eras plus the minted ones (three since 2026-09-13); the three six-rung candidate
-                        trees the entry below describes moved to config/tech_tree_options.six_rung.json, and tech_tree_spec.mjs
-                        --write REFUSES the four-rung canon without MOD_CONFIG (ui/techdata.js and the tree page still show the
-                        six-rung candidates until re-pointed — a known gap, not a build input)
-config/tech_tree_options.json GENERATED by tools/tech_tree_spec.mjs and COMMITTED: the three candidate
-                        INDUSTRY TECH TREES (ROADMAP step 1) — every technology with its era, date, prerequisites,
-                        dependents and the buildings it unlocks, for all three trees (production/military/society).
-                        A design input under review, not yet emitted to the mod; NOTHING reads it but the viewer
-config/mod_config.canon-slide-b158.json ⭐⭐⭐ THE CANON SINCE 2026-09-23 (+ its tech-tree twin) — byte-identical to
-                        config/mod_config.probe-sm-b158.json, the book the twelve-run B GRADIENT measured (kept unchanged as the record of what
-                        was measured). A 2.2 / B 1.58 / cost = the vanilla anchor × 1.9^tier / in0 1.2 / ai_value 3^tier / divisor 0.000125 /
-                        the 24-month bar / the urban-centre electricity override, PLUS the anchor slide on eight industries with --anchor-cost
-                        and the MILD spending set (0.95 / 1.0 / 2.0). Chosen because it is the only one of five B points with 3 intact / 0 broken
-                        AND all three seeds' Britain inside the 10–50% U* band (12.1 / 22.2 / 24.8%), consensus loss 4.91, pool W / pool H /
-                        pool GDP / PP / T0 / world W all at the aim. ⚠ Ships world GDP 0.87 median (below the 1.0 aim) and pool U* 1.84 (below ≥2);
-                        ⚠ differs from the previous canon on FOUR levers at once. Sessions 20260922_084038_b-gradient-4x3 + 20260922_233932_b-gradient-rest.
-                        The banner near the top of this file is the record
-config/mod_config.canon-slide-b158-trade.json ⭐⭐ THE TRADE ARM (ROADMAP step 11, user-ruled 2026-09-23 "Implement this and go with n=4.
-                        Everything except the trade changes are current canon") + its tech-tree twin (the canon's, byte-identical):
-                        the canon + `goods_traded_quantity` (35 goods, FINDINGS F159 §7) + `_trade` + `_trade_variant`, NO canon key
-                        changed; its build differs from a canon build by exactly one added file, common/goods/00_goods.txt.
-                        Generated by `node tools/make_trade_config.mjs --base config/mod_config.canon-slide-b158.json --suffix
-                        canon-slide-b158-trade`. Batch 20260923_215141_canon-trade-n4 (4 × 1836→1936). Un-ignored with its twin
-config/mod_config.trade15-b1{64,68,72,76}.json ⭐ THE TRADE ×1.5 B LADDER (F163, user-ruled 2026-09-24) + tech-tree twins: the canon
-                        (finish boost on) regenerated at B 1.64 / 1.68 / 1.72 / 1.76 via its `_ab.command`, plus `make_trade_config --scale
-                        1.5`. Batch 20260924_101627_trade15-bladder-n12 (12 runs). The `slide-b1xx` bases stay gitignored. Un-ignored
-config/mod_config.canon-fdi-rgate.json ⚗ THE CAPITAL-EXPORT + RESEARCH DATE-GATE ARM (2026-09-30, FINDINGS F178; experimental, NOT ruled) + its tree twin
-                        (the canon's, byte for byte): the canon (canon-dams-family-nolog, sha256 806c8b3df03b5d61) plus exactly two keys —
-                        `building_group_ai` {bg_manufacturing.foreign_investment_ai_factor 0.25 → 1.0} (tools/emit_building_groups.mjs; lets
-                        a leader's private pool build factories abroad, the off-axis lever for Britain's depeasantation) and
-                        `research_events.date_gate` {eras 3/4/5: 1855/1885/1920, before_mult 0.5} (an INDUSTRY research entry for a game-era
-                        3/4/5 technology grants half before each tech era's tier anchor minus 20 years; war entries never gated; the player-side lever,
-                        each reduced grant logs `PMR_JEG|reduced|<stage>|<tech>|<country>`). Measured by session 20260930_011604 (schedule
-                        canon_fdi_rgate_n6.json with its predictions; n=5, run 6 stopped by the user at 1874). ⭐ OUTCOME (FINDINGS F179): NOT
-                        ADOPTED — British factories abroad ×3 and the shortlist's share of world GDP back to vanilla's, but the hoard ROSE (pool H
-                        2.31 against 0.87), Britain's depeasantation did not move (end U* 10.2% against 9.2%), 3 intact / 1 stall / 1 runoff with a
-                        divergent consensus, every intact run's loss above every intact canon run's. The user then closed the current lines of
-                        work in favour of a t0 "true artisanship" redesign (another session). Un-ignored with its twin
-config/mod_config.artisan6.json / config/mod_config.artisan6-shop.json ⚗ THE CRAFT BOOKS (BALANCE_FRAMEWORK §10.91.1, ROADMAP step 12; UNDER
-                        TEST, not the canon) + their tree twins (the canon's, byte for byte): the canon with its six light-industry t0 rungs
-                        turned into 500-worker craft rungs by `tools/make_artisan_config.mjs` — every other key and rung byte-identical
-                        (proven by field diff). `artisan6` carries the RULED staffing (30–50% machinists), `artisan6-shop` masters as
-                        shopkeepers + laborers at the same wage units (the probe of the machinist literacy gate, F180 §2). Probed by
-                        schedule `artisan6_probe_2x.json`. Un-ignored with their twins
-config/mod_config.merge6.json / config/mod_config.merge6-probe.json ⚗ THE MERGE BOOKS (BALANCE_FRAMEWORK §10.91.2, ROADMAP step 13; UNDER TEST,
-                        not the canon) + their tree twins (the canon's, byte for byte): the canon with six add-on rungs made second main
-                        methods of the rung below by `tools/make_merge_config.mjs` (`method_of`, host cost and ai_value at the geometric
-                        midpoint). `merge6-probe` = merge6 + a probe-only `start_tech_grants` (the three merged technologies whose host
-                        buildings stand in 1836, to GBR FRA USA PRU BEL) so a two-year probe can watch the switch; probed by schedule
-                        `merge6_probe.json`. Un-ignored with their twins
-config/mod_config.artmerge6-floor.json / config/mod_config.artisan6-floor.json / config/mod_config.artmerge6.json ⭐⭐⭐ THE ARM = artmerge6-floor (THE COMBINED BOOK
-                        (user-ruled 2026-09-30 evening, BALANCE_FRAMEWORK §10.91.3: "From now on, combine them always") + tree twins
-                        (the canon's, byte for byte). `artmerge6` = `make_merge_config.mjs --base config/mod_config.artisan6.json
-                        --suffix artmerge6`: artisan6 (the machinist staffing) + the six merges, proven by field diff to be exactly the
-                        union. `artmerge6-floor` = the same built on `artisan6-floor` (`make_artisan_config.mjs --hire-floor 0.01`):
-                        `min_productivity_to_hire = 0.01` on bg_pmr_crafts, the probe of the crafts' hiring floor (schedule
-                        `craft_floor_10y.json`); its build differs from artmerge6's in that one line. ⭐⭐ The floor was RULED INTO THE ARM the
-                        same night (§10.91.3, on F188): `artmerge6-floor` IS the arm (sha256 `ea45a2bc32b78025`, its craft half
-                        `d3a37b6e2f7dc84e`), `artmerge6` is the no-floor record. Regenerate: `make_artisan_config.mjs --base
-                        config/mod_config.json --suffix artisan6-floor` (the floor is the default) then `make_merge_config.mjs --base
-                        config/mod_config.artisan6-floor.json --suffix artmerge6-floor` — proven byte-identical. Its century 2+1 is
-                        `artmerge6_floor_n2.json` + `_tb.json` (prepared, not launched). Un-ignored with their twins. ⚠ Their 0.01 is the
-                        PROBE value, not the ruled £2 (corrected 2026-10-01, §10.91.3) — they are records, not the intended arm
-config/mod_config.e1a-artmerge.json ⭐⭐ THE t1-ANCHOR BOOK UNDER TEST (§10.91.5, user-ruled 2026-10-01; F197) + its tree twin (the canon's
-                        technologies; one rung-tier record differs: atmospheric_engine now unlocks a t1 rung): the £2 arm with every
-                        industry anchored at t1 (÷1.5 below, the pop-good lift 1.4), motor on [1,2,3], the 60% craft rule and the
-                        output-matched 1836 seeding. Its craft half `config/mod_config.e1a-art.json` is kept beside it; the intermediate books
-                        (e1a, e1a-trade, e1a-dams, tier4-e1) stay gitignored. `config/mod_config.artmerge6-pb-f2.json` (+ `artisan6-pb-f2`) =
-                        `artmerge6-pb` at the ruled £2 floor, the twin of the re-probe 20261001_115032. Un-ignored with their twins
-config/mod_config.e1a12-ai1135-artmerge.json ⭐ THE COMPRESSED DESIRE LADDER (user-ruled 2026-10-02) + its tree twin (the arm's, byte for byte):
-                        `e1a12-artmerge` regenerated through its own chain with ai_value 1000/1000/3000/5000 by tier (`--ai-ladder`), the
-                        crafts at 800 (`--craft-ai`), the merge hosts at the midpoint of the new values; 57 ai_value fields and the records
-                        differ, nothing else. The chain is scratchpad-free: the five commands sit in the book's `_ab`, `_trade_variant`,
-                        `_artisan` and `_merge` records, plus `dams.rules = family` after make_dam_config as for every e1a book. Un-ignored with its twin
-config/mod_config.e1a12-ai1135-tex1140-artmerge.json ⚗ TEXTILE'S MERGED HOST AT ITS OWN COST (user-ruled 2026-10-03: "Go with the host cost, run a 30-year
-                        probe"; FINDINGS F211 §4) + its tree twin (the arm's, byte for byte, sha256 04ac513168388956): the arm's book with the Sewing
-                        Machines host (which also runs Electric Sewing Machines) at its own t2's 1,140 construction points instead of the midpoint 1,571,
-                        ai_value 3,873 unchanged — `make_merge_config --base config/mod_config.e1a12-ai1135-art.json --suffix e1a12-ai1135-tex1140-artmerge
-                        --host-cost textile:own`, then `restate_basic_be.mjs --write`. Field diff against the arm's book: that building_cost and the
-                        `_merge` records. ⚠ The twin was COPIED from the arm's: the intermediate twins on disk (e1a12-ai1135, -trade, -dams, -art) predate
-                        the Conveyors prerequisite of 2026-10-03, so re-running ONE step from an intermediate copies a stale twin — the full chain from
-                        tier4-e1 (whose twin carries it) does not. Probe 20261003_111956 (1 × 1836→1866, FINDINGS F213): the frontier builds (77 shortlist
-                        levels at 1866 against 3–41) and British clothes fall to 0.75 of base, but the t1 rung grows (179 against 104–133) and misplaced
-                        capital rises (24% against 15–20%). ⭐ Its CENTURY (20261003_171038, fixed n=5, FINDINGS F216): 4 intact / 1 runoff, consensus
-                        loss 5.59 (the canon 5.90); the USA dead in 1 of 5, by a won Confederate secession — the dead USAs are political since the
-                        compressed ladder, where e1a12-artmerge's were economic; a raw-sector shortfall in the surviving USAs remains. Not ruled on.
-                        Un-ignored with its twin
-config/mod_config.e1a12-ai1135-tex1140-jex-artmerge.json ⚗ THE EXTRA RESEARCH ENTRIES (user-ruled 2026-10-05, BALANCE_FRAMEWORK §10.95, ROADMAP
-                        step 2) + its tree twin (the base's): the book above + `research_events.extra_entries` (25 production technologies outside
-                        the tier ladder, calibrated on the narrative onset) + `era1_rule_a`; `make_research_extra_config.mjs`. 68 technologies carry
-                        entries (the base 40). Measured n=16 by 20261005_154629_jex-n16 (launched 2026-10-05). Un-ignored with its twin
-config/mod_config.jex-dam4s-ra.json ⚗ CANDIDATE A OF THE LAST TECH REWORK (user, 2026-10-10, §10.96, FINDINGS F223) + its tree twin (jex-dam4s's):
-                        jex-dam4s + `research_levers` (cap literacy term 150 → 50, universities × 0.5) + the dam staffing pinned to F222's
-                        measured 50/100/50. Long probe 3 × 1836→1900, schedule `jex_dam4s_ra_1900_n3.json`. Un-ignored with its twin
-config/mod_config.jex-dam4s.json ⚗ THE TICK-COST FIX ON THE jex BOOK (user-ruled 2026-10-09, BALANCE_FRAMEWORK §10.89.13, FINDINGS F221) + its
-                        tree twin (the jex book's): the jex book + dams on the engine's RESOURCE SLOTS in the four ruled classes (300/600 electricity,
-                        ≤ 5-year builds, 122 projects / 181 slots) + `research_events.placement = script`; `make_dam4_config.mjs --base
-                        e1a12-ai1135-tex1140-jex-artmerge --suffix jex-dam4s --script-placement`. Century n=3: 20261009_193145_jex-dam4s-n3. Un-ignored
-config/mod_config.jex-dam4s-rb.json / config/mod_config.jex-dam4s-rs.json ⭐⭐⭐ THE CANON SINCE 2026-10-12 IS `jex-dam4s-rs` (config/mod_config.json
-                        is a verbatim copy, §10.99): `jex-dam4s-rb` = jex-dam4s + the research levers (`jex-dam4s-rl`: innovation base / cap base / cap
-                        literacy term 25, universities ×0.5, `make_research_levers_config.mjs`) + the §10.97 entry rework (`make_research_rework_config.mjs
-                        --base config/mod_config.jex-dam4s-rl.json --suffix jex-dam4s-rb`, F226); each book's `_*_variant` records hold the commands; `jex-dam4s-rs` = rb + the §10.98 entries
-                        (`make_research_society_config.mjs`, F227). Their `-wild` twins are the smoke books. Un-ignored with their twins
-config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv.json (HISTORY) THE CANON FROM 2026-10-16 EVENING TO 2026-10-21 + its tree twin
-                        (x25's, byte for byte): the measured `jex-dam4s-rs-x25-m10ac` (engines unlifted, the conditional merge-host desire; F239) +
-                        `dams.private = all` + the `_canon_2026_10_16` record, nothing else. Un-ignored with its twin
-config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json ⭐⭐⭐ THE CANON SINCE 2026-10-21 (config/mod_config.json is a verbatim copy; user-ruled, BALANCE_FRAMEWORK §10.102) + its tree twin (the canon's,
-                        byte for byte): the canon + `game_defines.NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99` (the world-market monopoly markup off for every
-                        good whose top exporter holds ≤ 99% of world exports; FINDINGS F241) + `_wm99_variant`, nothing else. Deployed for a playtest 2026-10-17
-                        (`mod_playtest_wm99/`); canonised 2026-10-21 after F248 put its n=4 at ×1.09 of the same days' vanilla (F247 had read ×1.18 of the summer's). Un-ignored with its twin
-config/mod_config.jex-dam4s-rs-x25-dpriv.json (HISTORY) the canon on the afternoon of 2026-10-16 + its tree twin: jex-dam4s-rs-x25 + `dams.private = all`
-                        (private dam construction under the government check's conditions), nothing else (§10.89.14, F240). Un-ignored with its twin
-config/mod_config.jex-dam4s-rs-m10.json ⚗ THE ENGINE LADDER UNLIFTED (user-ruled 2026-10-13, BALANCE_FRAMEWORK §10.101, FINDINGS F232) + its tree twin (the canon's,
-                        byte for byte): the canon's recorded chain with `make_ab_config --in0-for motor:1` — the three motor rungs' inputs ÷ 1.2 and their
-                        restated target_be / wage_pct, nothing else. Probed 3 × 1836→1866 (20261013_110054_rs-m10-30y-n3). Un-ignored with its twin
-config/mod_config.canon-dams-family-nolog.json (HISTORY) THE CANON FROM 2026-09-29 TO 2026-10-12, no longer canon (§10.99): the book below
-                        minus `dams.log_levels` (the monthly dam log, dropped by ruling). Un-ignored with its twin
-config/mod_config.canon-dams-family.json ⭐⭐ THE MEASURED BOOK of the canon (F177; it carries the monthly dam log; the banner near the top of this
-                        file) + its tree twin (canon-dams's, byte-identical): canon-dams + `dams.rules = "family"` + `dams.log_levels` (§10.89.12).
-                        Measured n=6 (20260929_002728, F177); read the dams with tools/testbed/ledger/dam_situation.mjs (per run: surveys,
-                        built, stalled, wasted), dam_outcomes.mjs (finish rates by the actor's relation to the target state) and
-                        dam_survey_use.mjs (what a finished survey leads to). Un-ignored with its twin
-config/mod_config.canon-dams.json ⭐⭐ THE CANON FROM 2026-09-27 TO 2026-09-29 (the base of the book above)
-                        + its tree twin (the previous canon's, byte-identical): canon-b164-trade + `building_required_construction`
-                        {building_power_plant: 1600} + `dams` + must_have dam subsidies — 144 projects / 312 levels since the ruled cuts and merges
-                        (§10.89.10). Generated by `node tools/make_dam_config.mjs` (base canon-b164-trade; `--probe` → canon-dams-probe:
-                        techs granted to ten majors, 2-month surveys, cost × 0.05 — probe builds ONLY). Measured: the stage design
-                        (20260926_154538), the redesign n=1 (20260926_195231), the gated redesign n=3 (20260927_001731) — all on the
-                        159-project table of commit 0ce5324, i.e. BEFORE the cuts. ⭐ Since 2026-09-28 it builds nothing by script: the engine AI
-                        builds every level, the driver only surveys (§10.89.11); first measured by the n=5 of that day. Un-ignored with its twin.
-                        The probe books canon-dams-aiself / -aiself-probe / -aiself-probe-gbr / -aiself-probe-p14 (+ twins) are the records of p13,
-                        the user's Ceylon check and p14 (F173/F174); their `dams.ai.driver_*` keys are inert since the switches were removed
-config/dam_sites_research.json THE PLACEMENT RESEARCH'S OUTPUT (2026-09-26, user-reviewed case by case), COMMITTED 2026-09-27: one object per state
-                        with the research rows, the depersonalised name and the anchor province — the input make_dam_projects.mjs reads
-config/dam_projects.json ⭐ THE DAM PROJECT TABLE, GENERATED by tools/make_dam_projects.mjs from config/dam_sites_research.json MINUS THE RULED CUTS
-                        (the `CUTS` table in the script: 12 projects removed, 4 trimmed by a research row, Rion & Ingur cut to 2 parts,
-                        each with its reason) and COMMITTED: one object per state — the research rows merged/split onto it (parts, MW per
-                        part, terrain multiplier, resource type), a depersonalised name (no person or company names; dynasty surnames,
-                        "Victoria" and names in use by 1836 allowed), the anchor province, and the non-power `effects` (arable land, trait
-                        swaps, named TARGET states). Everything numeric that ships is derived from it by tools/lib_dams.mjs
-config/mod_config.canon-b164-trade.json ⭐⭐ THE CANON FROM 2026-09-25 TO 2026-09-27 (+ twin = the previous canon's tree, byte for byte): the previous
-                        canon at B 1.64 + the ×1 trade table; the base the dam book is built on. Un-ignored with its twin
-config/mod_config.json      ⭐⭐⭐ (SUPERSEDED 2026-09-23 — now a verbatim copy of canon-slide-b158 above) THE CANON = canon-c19-in12-elec FROM 2026-09-20 TO 2026-09-23 — a VERBATIM copy of
-                        config/mod_config.canon-c19-in12-elec.json (+ its tech-tree twin), which is canon-c19-in12 regenerated so that it carries the
-                        URBAN-CENTRE ELECTRICITY OVERRIDE §10.43.0 rules canonical on its own (pm_goods + pm_employment on pm_electric_streetlights:
-                        a SOURCE, +1 electricity out / 2 coal in / 250 engineers, in place of vanilla's 3-electricity SINK). PROVED a two-key diff —
-                        no industry, rung, recipe, building_cost, ai_value, technology or define moved, and the tree twin had zero field diffs.
-                        Otherwise unchanged: A 2.2 / B 1.5, building_cost = the vanilla anchor × 1.9^tier, rung 0's input value ×1.2 with the ladder
-                        anchored on it, ai_value 1000×3^tier, divisor 0.000125, the §10.75 defines, the 24-month research bar.
-                        ⚠ config/mod_config.canon-c19-in12.json is NOT the canon and keeps its own bytes — it is the record of the arm F131 measured
-                        over four seeds, and those seeds ran WITHOUT the override. ⚠ The override's ECONOMIC effect is unmeasured.
-                        Loss 8.40 against the old canon's 16.39 on the same register (§10.83.7), monotone on
-                        every goal column over 43 runs; ⚠ it ships the hoard defect (pool H 4.17×, one seed of four in capital abundance) and the surviving
-                        consumer-chain rung 0 (F136). The entry below is the SUPERSEDED record of the 2026-09-06 canon:
-config/mod_config.json      ⭐⭐ (SUPERSEDED 2026-09-18) THE CANON = canon4v-hai3 FROM 2026-09-06 TO 2026-09-18 — canon4v + ai_value 1000×3^tier on all 17 industries + the
-                        investment-pool defines (§10.75/§10.76); before that canon4v alone (2026-09-05: four rungs on vanilla's own methods, the A/B book, the
-                        academy on the regular ladder) — a verbatim copy of config/mod_config.canon4v-hai3.json, regenerated by the
-                        vanilla-only pipeline (make_tier4_config → make_tier4_techs → make_ab_config --suffix canon4v-hai3 with §10.76's flags) and
-                        copied over; its start rules are config/start_exceptions.vanilla.json (empty) via start_exceptions_file.
-                        The six-rung book this entry used to describe is config/mod_config.six_rung.json. The field list below
-                        still describes the SCHEMA (both books share it)
-config/mod_config.json      THE THING YOU EDIT — industries → tiers (tech, target_be, natural_year, output, inputs, building_cost, wage_pct?, employment, names, vanilla_pm, vanilla_pm_aliases?, state_infrastructure?, ship_construction?, ai_value?, output_override?, solve_profit? — §10.59: per-tier recipe-solve margin override replacing the band edge AND the industry handicap, today 0.05 on building_shipyard_metal; must stay carried by ui/econ.js makeTiers — plus workforce_mult?/effect_mult?, §10.60.2: the graded port factorisation's per-tier EMISSION multipliers (0.1 on the ÷10 port tiers, 0.2 on the ÷5 ones; goods+cost are divided EXPLICITLY in the config, employment/state-effects ride these two; UI-editable under ai_value on every tier row; build.ps1, convert_history.ps1 (levels ×1/workforce_mult, anchorage clamped to level 1), tierEmp() in BOTH econ.js and builder.html's fork, emit_research_events.mjs AND payback_census.mjs all consume them — the §10.60.2 "--write would un-divide port building_cost" trap is CLOSED since §10.61 made cost = vanilla anchor × workforce_mult); industry flags source_file?/clone_from_vanilla?/follows_be?/no_mass_be? (new-economy); plus top-level building_ai_value (map building_key→ai_value for PRESERVED buildings in owned files, e.g. trade center), pm_goods (map pm_key→{in:{good:qty},out:{good:qty}} — per-PM goods overrides applied to the owned PM files; any building's PM. ⚠ REPLACEMENT semantics, not per-line requantify: the override IS the PM's whole goods block, so it can add and remove goods, and a `required_input_goods` naming a good the override no longer consumes is dropped — see §10.43's streetlights, which ADD coal and REMOVE the electricity input), pm_employment (map pm_key→{profession:count} — per-PM EMPLOYMENT override, same replacement semantics into the PM's level_scaled block; config-only, displayed but NOT editable in the UI; today: pm_electric_streetlights = 250 engineers), and building_subsidies (map building_key→AI subsidy policy; see below), and **subsidy_conditional** (EXPERIMENTAL probe-stage, 2026-08-16: `{retire_overrides, retire_trigger}` — emits each of the 7 admin strategies as a MUTUALLY-EXCLUSIVE PAIR, base = the `building_subsidies` mandate with `possible = NOT(retire_trigger)`, `_pmr_mature` variant = `retire_overrides` applied with `possible = retire_trigger`. This is the engine's only conditional-subsidy lever — the `subsidies` block is a flat map with no per-entry triggers (goods_stances has them; subsidies does not). ⚠ `retire_trigger` is raw script pasted into both possible blocks; keep to constructs vanilla itself uses inside ai_strategies (`any_scope_building`/`is_building_type`/`count >=`). ✅ **MEASURED, F64 (2026-08-16): AIs DO re-pick strategies mid-campaign when `possible` flips** — the ports-cond world shows 11 countries on `_pmr_mature` at 1900 → 67 by 1936, GBR's port subsidy £82k→£0 permanently at its modern ports' arrival, colonial access 1.000 for the whole century, world bill −42% to a £204k/wk plateau carried by minors that never reach the count≥2 threshold. ✅ **v2 (F65, same day): the config also takes `exempt_trigger`/`exempt_overrides` (a third `_pmr_ext` variant — the measured form uses vanilla's own `ROOT.market.owner ?= ROOT`, exempting countries in someone else's market) and `retire_share` (emits `common/script_values/zzz_pm_rehaul_subsidy_values.txt`: occupancy-weighted merchant-marine share per port tier from the config's own output_qty; retire_trigger `pmr_port_mm_excess >= 0` — CUSTOM SCRIPT VALUES PROVABLY WORK INSIDE STRATEGY `possible` BLOCKS).** v2 measured: access 1.000 all window at ~30% less cost than count≥2; class transitions track the (violently churning) market topology with 2–8yr event-driven lags; known edges = start-decade over-mandation of members (tick-zero probe not run), and portless own-market countries class mature via 0 ≥ 0 (functional no-op). ⭐⭐ **CANONICAL since 2026-08-16 late evening (Q1+Q2 ruling, §10.60.3)**: the five port tier keys are must_have in building_subsidies (the base mandate, market leaders) and subsidy_conditional carries coverage_share 0.5 + the retire trigger `market_goods_buy_orders <= pmr_mm_high_cov` (mandate retires when the LIKELY-TO-BE-PROFITABLE ports — `coverage_tiers`, EXPLICIT in the config: industrial/modern/motor, validated at build; the t1 steam port is tuned loss-making and deliberately does NOT count — cover ≥ half of the market's MM demand) + the exempt trigger `NOT = { ROOT.market.owner ?= ROOT }` (non-leaders); both land on nice_to_have, never `none`, so nothing rides the unresolved merge-vs-replace semantics. The variant strategies now carry loc for all 11 languages ($key$ references to the base — a variant is a policy STATE, not new content). Railway/power stay nice_to_have), and **research_events** (ROADMAP step 2 — the industry-driven research journal entries. `enabled:false` emits NOTHING and reproduces the plain `techs` arm, `enabled:true` the `techs+events` arm, which is what makes the two a CONFIG VARIANT rather than a build flag — user ruling 2026-08-11, so the arm is expressible as `{kind: config, config: …}` and lands in build_state.json with no harness change. Carries: `thresholds_by_era` (PEOPLE employed in the predecessor tier — user-ruled 15k/45k/135k/405k for tiers 2–5, plus a PROVISIONAL tier-1 5k continuing the ×3 ladder downward, needed since the re-band put researchable rungs at tier 1 and NOT itself ruled — the config's own `_threshold_era1_note` flags it), `stages` (inception/development/implementation), `grant_fraction` 0.5 of the era base cost per stage, `industry_bar_months` 36 / **`war_bar_months` 6** (⭐ 2026-09-03: **`threshold_mult`** — per-industry multiplier on the tier base, a scalar `{arms: 0.4}` or per tier `{arms: {"2": 0.4, "3": 0.17}}`, applied to THAT source's mark; the war and chemical chains carry a fifth to a tenth of the consumer chains' workforce (F101.2); **every JE now names its sources, their marks and the country's live figure** (⚠ in the entry's `_reason` key, the body the journal window renders — until 2026-09-25 the text sat only in `_desc`, which the 1.13 GUI never shows, so no player saw it; BUGS_AND_FIXES 2026-09-25) — ⭐⭐ SINCE 2026-10-21 (polish, user-asked: "similar and more concise, just mentioning the needed number of staffed levels, not number of people") EVERY source and every counted condition reads ONE way, in the entry body AND as a line of the bar tooltip: `<buildings>: N fully staffed levels[ of 5,000 workers] (now X)[; needs <tech>]` (the generated-text pass of the same day, POLISH_1_0.md) — one of our rungs by its SHORT NAME `<key>_pmr_short`, which build.ps1 writes per language as vanilla's building name + the vanilla method ("Textile Mills (Handsewn Clothes)", translated; never the in-game name with the Tier/Recipe BE label; company throughput modifiers use the same key), a vanilla building or group by its vanilla loc key; a people-counted source (a group, a list, an extra entry) is SHOWN in levels of its types' common per-level workforce, or of 5,000 where they differ (a display-only `pmr_srcl_*` value; the tick still compares people, unchanged); the counted condition entries read the same through `research_events.count_display`. ⭐ AND EVERY CONDITION IS A LINE OF THE BAR TOOLTIP, ALWAYS: each is added every month and worth 0 when it fails (vanilla's Divided Monarchists / Ryukyu idiom, `else = { add = { desc … value = 0 } }`), because the tooltip lists only the terms evaluated that month and a bar below every mark used to list nothing (BUGS_AND_FIXES 2026-10-21); literacy is NOT a line (the user, the same day: the body states it, and a source line stays 0 below it); the live figure is a whole number ROUNDED DOWN ("(now 8)", a floored display value); the stage rule is one sentence, "Each 36-month stage grants 50% of the technology’s base research cost"; and in an any-source bar only the FIRST source at its mark carries the +1, so the lines add up to the real tick. (Retired the same day: `Workers in <group>: at least 25,000` and the people figure `P workers at base-method staffing, labour saving and other staffing changes calculated correctly`, user wording of 2026-09-03.) ⚠ No ASCII `'` in any text a progress bar displays — the tooltip pastes each line into a single-quoted data-function argument (BUGS_AND_FIXES 2026-09-30); the emitter THROWS on one, and since 2026-10-21 also on one inside a `$key$` a bar line references, in any of the 11 languages (English `law_worker_protections` is "Workers' Protections", which is why no law name goes into a bar line); every source counts Σ level × occupancy, a people mark converted to levels through the predecessor's base per-level employment; ⭐ ANCHORS ARE PEOPLE TOO (2026-09-03): a vanilla anchor building takes its main group's base method employment from `ui/vanilla.js` (urban centre 4,800, trade centre 1,000, financial district 100 per level), a building-GROUP anchor gets one `pmr_lv_<type>` staffed-level value per building type × that type's employment (bg_mining = coal/iron/lead/sulfur/gold at 5,000 each), and the military groups (bg_army, bg_conscription — soldiers come from combat units, not methods) count SOLDIERS: staffed levels × the land units' `max_manpower` (1,000, read live from common/combat_unit_types). ⭐ ANCHORS RE-RULED 2026-09-03 (user): combustion engine on the motor industry's rungs (the engine trade), telephone on trade centres alone, percussion cap and the explosives first rung on bg_army; urban centres and financial districts — auto-scaling buildings — gate nothing; later rungs keep their predecessor rung (rule A), the vanilla loc idiom, and the entry's description lists them; **a tier's per-level employment is derived by `tierEmp()`** — the config's `employment`, or for a tier whose main method employs nobody (the art academy) the base method of each secondary PMG from `ui/vanilla.js` (the ownership PMG's 5,000/level) — it used to be skipped, so realism/film/sound_film could never fire; and the loc writer escapes line breaks as `
-`) (⚠ NOT `war_bar_weeks` 26 — the 2026-08-18 rebuild made EVERY bar monthly; the weekly war bar no longer exists), **`war_gate`** (⭐ 2026-09-03, user-ruled, staged on canon4-je: **`war_channel: 'unit_types'`** gives the WAR entry to every technology that unlocks a LAND combat unit type, read live from `common/combat_unit_types/00_land_*` with `combat_unit_group_marines` EXCLUDED (the marines' gates — power_of_the_purse, landing_craft — are naval-tree technologies; canon4-je-n5 ran with them in, BUGS_AND_FIXES 2026-09-04) — 6 on the four-rung tree — whatever `scope` says; **`general_battalions_flat` 50** replaces the era ladder; **`front_casualties_min` 0 OMITS the casualties clause**; `war_bar_months` 6 ⇒ two stages grant the technology at base cost; **`naval_channel: false`** drops every fleet technology's entry; and **`consumption_thresholds` {good: T}** serves the new **`good:<name>` necessity anchor** — a military FIRST rung ticks while its market buys ≥ T of the good its output SERVES a week, `market = { mg:<good> = { market_goods_buy_orders >= T } }` — ⚠ IMPLEMENTED BUT UNUSED since 2026-09-04: measured in canon4-je-n5, a market term ticks for every MEMBER of the market (princely states got percussion cap off Britain's 900+ small arms a week; Britain never). **Percussion cap rides `bg_military_industry` instead (user-ruled 2026-09-04): arms + artillery employment across EVERY rung, 12,500 workers** — a group anchor now counts our own rungs beside the vanilla building and leaves out the unlocked industry's; the explosives first rung rides fertilizer's staple-crops anchor. The 2026-08-18 form below is what the six-rung canon still emits: `general_battalions_high` 100 · `front_casualties_min` 50000 · `gate_variable_days` 40. **All three clauses must bind inside ONE front inside ONE war** — our general with ≥100 mobilised battalions; an ENEMY general on that same front whose owner ALREADY HOLDS the technology; and ≥50k of OUR casualties there. The superseded two-term form ("one general ≥100 OR two ≥50, plus a ≥50% mobilised share") let a bare state of war tick, which the ruling forbids. ⭐ It is computed in **`on_monthly_pulse_country`** — a progress bar has no valid ROOT — and handed to the bar as an **EXPIRING country variable `pmr_wargate_<tech>`**, which is why the war channel emits an on_action and not bar script), and `necessity_anchors` — the EIGHT hand-authored demand-pull mappings for industries whose first rung has no predecessor tier. ⚠ An industry whose first rung is gated on a RESEARCHABLE technology (era 2+) and has no anchor gets a research bar with NO source, which can never fill — the emitter used to skip it silently on the reasoning that such rungs are era-1 freebies, which stopped being true when the ladder-era alignment held `percussion_cap` back at era 2. It now THROWS. munition is the case that found it; its anchor is the army (bg_army + bg_conscription) on the six-rung canon and arms + artillery employment (`bg_military_industry`, 12,500 workers across every rung, §10.69) on canon4-je. Everything else is derived by the emitter from the ladder and the live game), and **tech_ai_weight_mult** (per-tree AI research-weight multiplier {production, military, society}, DEFAULT 1/1/1 by ruling 2026-08-17 — no bonus or malus, the research JEs are boost enough; at 1 nothing is emitted; consumed by emit_techs.mjs, editable beside the tech page's spread panel)
-config/start_exceptions.json ⚠ SIX-RUNG ONLY since 2026-09-05 (the canon names config/start_exceptions.vanilla.json, an empty rule set, in `start_exceptions_file`; build.ps1 embeds whichever the config names). Manual 1836-start overrides (force_tier / force_industry_tier / remove, scoped by
-                        country/state, optional `owner` ownership rewrite) — editable. Carries the RATIFIED
-                        §10.60.3 CHAIN SEED (28 rules): 25 anchorages in the GBR/FRA markets → level-1 graded
-                        steam-port stubs (12 subject-owned ones rewritten to the overlord, riding the refined
-                        L14 rule), 2 clipper-yard blocks → metal shipyards (GBR East Anglia, FRA Brittany),
-                        1 FRA Rhône paper mill → motor t1 (Q5c). Steel deliberately NOT seeded. The earlier
-                        §10.59 steamer seed remains REVERTED (F66) — its rules live only in the file's
-                        `_why_steamer_seed` comment. EMBEDDED in ui/data.js (`PMDATA.start_exceptions`) and
-                        served live at /api/start_exceptions so the UI's Mod-changes page can enumerate it
-config/start_baseline.json   GENERATED inventory of the vanilla 1836 start (per-industry/tier/country + drift check)
-config/presets.json          WHICH scenario presets to generate (id/label/group/country + optional market_add/market_drop, sol, measured_market) — editable. A preset carrying a **`placeholder`** block instead of `country` is **SYNTHETIC**: not derived from any country, one level of every ordinary building so each production chain is present exactly once (what BE-solving wants). See `placeholder_defaults` for the shared pops, the SoL multipliers and the exclusion lists. Note `sol.slaves` is the **slave basket level** (what buildings buy for them), not a standard of living, and `defaults.class_mult` deliberately has **no** `slaves` entry — slaves are not on the pop-consumption path at all
-config/pop_distribution.json FITTED within-need consumption distribution (need → good → share), replacing the vanilla `weight` field — which is not an allocation rule (the game allocates by SUPPLY SHARE) and cost 12 pp of scenario demand accuracy. ONE market-independent distribution by design, solved across all 7 preset markets against config/measured_1836.json; re-derive with the balance UI's **fit pops** button and paste the printed JSON back. Absent ⇒ the UI falls back to `weight` per need
-config/measured_1836_pop_identity.json GENERATED (tools/testbed/melted_pop_identity.mjs, from the melted VANILLA 1836.2.1 save
-                        kept by session 20261001_114627_vanilla-18362-save) and COMMITTED: per country and profession the culture-religion
-                        group holding the most people of it, and per state share (STATE|TAG) its peasants, people and the state's
-                        infrastructure capacity/usage. The 1836 craft seeding's source (emit_craft_start PART S, §10.91.5)
-config/measured_1836_professions.json GENERATED (tools/testbed/melted_pops_by_profession.mjs, from a melted VANILLA
-                        1836.2.1 save — since 2026-10-01; before that a 1836.3.1 melt that no longer exists, ≤2.5% apart by profession) and COMMITTED: population BY PROFESSION per COUNTRY — the source the
-                        balance sheet's population row is edited on, and which its wealth strata are the SUM of.
-                        Per country, not per market, because market membership is extract_presets.ps1's job and a
-                        second save-derived definition of it would drift silently. ⚠ A pop's size here is
-                        `workforce + dependents`; measured_1836.json's `by_pop_type` holds WORKFORCE, about a
-                        quarter of it — they are different quantities, do not substitute one for the other
-config/measured_base_wages.json GENERATED by `tools/measure_wage_share.mjs --write-wages` and COMMITTED: the country
-                        NORMAL WAGE RATE in £ per employee per week (a save summary's `base_wage` ÷ POP_SIZE_PACKAGE,
-                        the engine's own unit), per tag per year, median over the vanilla n=16 baseline's seeds with
-                        the seed min/max and n beside it. 17 tags including **UNL**. It is the "the decade and the
-                        economy" half of the 2026-09-20 ruling (§10.87) — GBR runs 0.0610 → 0.0915 across 1840…1935.
-                        ⭐ It IS what buildings pay, × the profession-weighted wage units: `lib_wage_model.WAGE_PREMIUM` is
-                        **1.0** and `PROFIT_WAGE_SHARE` **0** (F152 §10 — the 1.19 and the 0.30 of §8 were artefacts of
-                        approximating revenue, and are kept only as `WAGE_PREMIUM_FLAT_RETIRED` / `WAGE_TWO_TERM_RETIRED`).
-                        ⚠ It is VANILLA's path; a mod arm's own wages are read from that arm's summaries
-config/measured_1836.json    GENERATED (tools/extract_measured.ps1, from a testbed session) and COMMITTED: the things the game FILES cannot answer — per market TRADE (imports/exports per good), SoL per stratum, MILITARY building levels, urban-centre levels as a cross-check, and per market **WAGES** (`-WagesOnly`, a MERGE-only mode that rewrites just the `wages` block and leaves every other field untouched, because a wages session carries none of the other metrics and a full run over it would blank them). The wages block holds **`base_weekly_wage`** — the UI's base £/wk knob, measured, on the F26 basis: **laborers + farmers + machinists, EMPLOYED pops only** (the three professions actually paid a building's market wage; state-salaried and owner professions are excluded, and an unemployed pop would put workers in the wage-unit denominator with nothing in the numerator). Beside it: `base_weekly_labour` on the **superseded** 11-profession basis, kept only for continuity with earlier findings and **not** to be fed to a scenario; the per-profession spread; the game's own per-state average annual wage (mean/median/min/max); the workforce ratio; and a per-pop-type table. Read by extract_presets.ps1; optional (a clone without it still builds, just without those). ⚠ Regenerate after a game patch — a stale table is silently wrong, not obviously missing
-tools/                  dev tooling — NOT shipped in the mod
-  build.ps1             builder: config → generates all mod/ files + all-language loc + ladder_tiers.txt + 1836 start, then lints
-  preflight.ps1         THE GUARDRAIL for TESTBED_LANDMINES.md: walks every entry against what was ACTUALLY
-                        EMITTED and exits non-zero on any breach. Run automatically by build.ps1 (at the end,
-                        AND before the control arm's early exit — that early exit is why a check at the
-                        bottom alone would never see the one arm whose promise is "carries nothing") and by
-                        run_schedule.ps1 (`-RepoOnly`, before a batch is estimated, so a landmine costs two
-                        seconds rather than the first run's build — and, since 2026-08-18, `-Only L20 -Config`
-                        PER SETUP there and once more in build.ps1 BEFORE any file is emitted). Two flags
-                        serve that: **`-Config <path>`** (the config this build will use — L20 reads the
-                        config, not the mod) and **`-Only <ids>`** (run just these entries, so the early
-                        gate is the SAME detector as the full walk rather than a second copy that can
-                        drift). `-NoPreflight` on the builder is for a
-                        BROKEN DETECTOR, not for a hurry. It reads the ARTIFACT, never the generator — same
-                        principle as verify_pms.mjs. Adding a check: entry in the register first, then
-                        `Test-Lm<ID>` here, then PROVE the tripwire trips by breaking it on purpose
-  telemetry_fingerprint.json  GENERATED by `preflight.ps1 -UpdateFingerprint` and COMMITTED: the sha256 of
-                        the canonical telemetry (every metric on, dates/tags/token/stamp pinned) beside the
-                        schema version it was taken at. Landmine L8 — if the hash moves and
-                        TELEMETRY_VERSION does not, the build FAILS. Not a judgement that the change was
-                        breaking; a forced decision between bumping the version and recording that older
-                        sessions stay comparable
-  --- the five-tier pipeline (Node ≥ 24; see "THE FIVE-ERA LADDER" above, now THE FIVE-TIER LADDER) ---
-  ⚠⚠ AN ALTERNATE CONFIG NEEDS A COMPANION TECH-TREE FILE, or the BUILD DIES (2026-08-18).
-                        `emit_techs.mjs` derives its options file from the CONFIG FILENAME: build with
-                        `-Config config/mod_config.<suffix>.json` and it opens
-                        `config/tech_tree_options.<suffix>.json`. Absent ⇒ ENOENT ⇒ build.ps1 throws
-                        "emit_techs.mjs failed - the mod would ship without its technologies", BEFORE the
-                        game is ever launched. Copy the canonical file to the matching suffix when making
-                        any alt config. ⚠ It cost a probe launch (session 20260818_005903, zero runs) and
-                        it is ALSO why an L18 solvency tripwire could not be proven end-to-end through a
-                        full build the same day — the sabotaged config died here first, not at the linter.
-  build_era_ladder.mjs  STRUCTURE: stamps each rung's tier from an explicit per-industry spec, mints the 22
-                        model_only tiers, applies the ×1.5 output ladder. IDEMPOTENT (drops previously invented
-                        tiers first), so run it BEFORE era_scenarios, never after — it discards their volumes
-  era_tech_sync.mjs     ONE TECHNOLOGY, ONE ERA (§10.35). A tier's own unlocking tech is made available in the
-                        tier the ladder placed that rung, and everything else that tech unlocks moves with it —
-                        which is what stops a hand-moved industry producing into a tier where its only
-                        building customer is still locked. **`ERA_TECH_SYNC=1`, default OFF, unmeasured.**
-                        ⚠ It only ever LOWERS a technology's era; the reverse direction is not forced and withdraws PMs
-                        that are correctly available. ⚠ Deliberately NOT inside build_era_ladder.mjs despite
-                        belonging there conceptually: that module runs its build at import time and keys off
-                        `--write`, the same flag `era_scenarios --write` uses, so importing it from the
-                        scenario solver would re-mint the invented tiers and discard its own volumes
-  era_solver.mjs        BALANCE-ONLY reference view: derives a price path from profit margins alone, no scenario.
-                        Writes config/era_prices.json. Superseded for volumes by era_scenarios
-  era_scenarios.mjs     THE solve: prices realised from the order book, tier volumes + building counts + pops +
-                        army solved together per tier, then THE OUTER ITERATION (default 3 passes) re-runs the
-                        whole tier sequence against the final recipe book — a tier's recipe is solved once, in
-                        the tier where it is dominant, so a single pass chooses counts against provisional
-                        recipes (§10.41.3/§10.42). Full run ~8–20 min (halved by §10.48's settled PM
-                        loop). Writes config/era_presets.json AND the
-                        volumes back to config/mod_config.json. Ends in a JOINT FIXED POINT over
-                        prices/PMs/recipes/counts and reports ONLY that final state (§10.14.1) — do not add a
-                        step after it that mutates any of them. Prints, per tier: profit targets, PRICE PATH
-                        realisation, the INDUSTRIAL CEILING pass/fail (§10.15) and ILLOGICALITY — plus, after
-                        the loop, the FINAL PROFIT PASS whose FINAL-STATE ILLOGICALITY is the headline metric
-                        (the in-tier count reads provisional recipes — BUGS_AND_FIXES 2026-08-09).
-                        ⭐ THE RULED-SET DEFAULTS (all §10.42.4, each with a revert knob): ERA_OUTER=3 +
-                        ERA_SHRINK_COARSE (coarse-to-fine reduction), the unified post-solve enforcement pass
-                        (ERA_RAW_SHRINK — §10.18 sheds levels, not types), ERA_STALE_W=0.25,
-                        ERA_SHRINK_STALE_FIRST (stale rungs die first), the DEBUT GUARD + forward-chain rule
-                        (ERA_DATE_GATE — §10.44: a tier is placeable iff its tech_year ≤ the scenario
-                        YEAR; the leading-rung tier arithmetic, the debut guard and its whole exemption
-                        list are LEGACY, read only under ERA_DATE_GATE=0),
-                        ERA_URBAN_FLOOR=-0.10, the RICE BAN (ERA_ALLOW_RICE=1 restores),
-                        ERA_RAW_PRICE_BAND=30 (raw prices float ±30pp; no prescribed path),
-                        ERA_CONSTR_RAMP (8→18% of GDP by tier), ERA_POLISH (final-pass ±1-level polish) and
-                        SHIPYARDS EXCLUDED from the headline profit totals (own line, like gold's tripwire).
-                        Measurement-only knobs, unchanged: PRICE_START / PRICE_DECAY / PRICE_DECAY_INT /
-                        PRICE_FLOOR(_INT), ERA_RATIO (=frozen restores the losing recipe-mix precedence,
-                        §10.25.2), ERA_COUNT_DEADBAND / _OUT (manufactured goods' hysteresis band, 8→15pp;
-                        0 = off and it limit-cycles forever, §10.28), ERA_SETTLE_TRACE=1,
-                        ERA_MIN_LEVELS_MULT (§10.29 — the trap is scale-invariant), ERA_EXTINCT_GRACE
-                        (§10.30), ERA_NO_BUYER=1 (measured, stays off, §10.32), ERA_SHRINK_LOSSMAKERS=0,
-                        ERA_SHRINK_STEPS (default 6000 — a SAFETY NET, not a budget; §10.38),
-                        ERA_WAGE_RAMP (Baumol wage growth — DEAD by measurement, §10.42.5),
-                        ⭐ ERA_PM_MINGAIN (default 0.10 — §10.48: the PM optimiser's hysteresis, shipped
-                        2026-08-10; =0.02 restores the old optimiser) and ⭐ ERA_PM_FREEZE (default ON —
-                        §10.48: best-of-cycle freezing; a PMG returning to a method it held after an
-                        earlier joint round is pinned at that phase; pins yield to legality and to the
-                        ceiling; =0 reverts). Together they settle PM choice in every tier (the old
-                        "never settles" ⚠ is closed) — ⚠ freezing without the hysteresis is measured
-                        HARMFUL, revert both or neither. Related measurement knobs: ERA_PM_SEED=prod
-                        (productivity-first PM seeding — measured 2026-08-10, PARKED: +8% net, worse
-                        illogicality/macro), ERA_SETTLE_ITERS (joint-loop settle iterations, default
-                        40 — 80 measured, no dominance), ERA_BREACH_TRACE=1 (per-step ceiling breach
-                        sets in the shrink loop),
-                        ⭐⭐ THE CONSTRAINT-SET REGIME (§10.49 — SHIPPED AS DEFAULTS by ruling,
-                        2026-08-10 "ship this, this is an obvious improvement"): ERA_PROFIT_BAND
-                        default ON (+ ERA_BAND_LO/HI, default 0.05/0.50 — the dominant recipe's
-                        +5% pin is a BAND, solved to an edge only when the margin leaves it; the
-                        free-entry cap is the band top; =0 restores the target regime),
-                        ERA_PRICE_AVG default ON (+ _RAW/_MFG/_TOL/_GAIN — the mandated aggregate
-                        price decline: class-weighted manufactured price averages track a tier
-                        ladder, raw-fed 120…72 / mfg-fed 130…50 over tiers 1–5 ±10pp, through an
-                        integral offset on the count controller; plateau goods exempt FROM their
-                        last rung's tier — ⚠ `>=`, the `>` version killed textile; tier 0 exempt,
-                        §10.29 floored markets hold its averages down; =0 disables), ERA_GROW
-                        default 2 = STRICT (the INCREASE mechanism, the reduction's mirror: the
-                        top-profit producer ≥20pp above the capital-weighted average margin grows
-                        +10%/+1 alternating with cuts, and may not deepen even verify-only macro
-                        gaps; =1 the measured-harmful plain form, =0 disables), and ERA_PM_LIFT
-                        default 0.25 (pins and settled PM selections yield to DOMINANCE: beaten by
-                        >25pp at current prices re-opens the choice — the tier-0 textile −40%-vs-
-                        +159% pin is why; LAST THREE joint rounds only, ONE appeal per pin per tier,
-                        or every bistable pair re-opens forever and §10.48's settling dies —
-                        BUGS_AND_FIXES 2026-08-10), and ERA_RECIPE_MONO default strong (§10.50, THE
-                        RECIPE RATCHET: a later tier's base recipe may not be less input-efficient
-                        — O:I value at base prices — than the tier below; hard Xmax in
-                        solveInputsAt, mirror of the 4:1 lean floor, feasible by construction;
-                        'weak' = identical one-good-IO pairs only, measured strictly dominated;
-                        =0 reverts. Nothing had ever bounded recipe RICHNESS: t1 tooling once ate
-                        £1,546 of wood to make £1,200 of tools. ⚠ NO absolute ratio floor — sub-1
-                        at base prices is legal when realised prices carry it; only the REGRESSION
-                        is forbidden, §10.50.1. ⚠ The two examples §10.50.1 cites, fertilizer 0.98
-                        and electrics 0.75, BOTH NOW RUN 3.99 — later re-solves fixed them and the
-                        exemption stayed; today's sub-1 population is 6 tiers, worst 0.49),
-                        ⭐⭐ THE SOLVENCY BOUND — TARGET BE ≤ 175 (§10.63, user-ruled 2026-08-17;
-                        the THRESHOLD is a game constant and is NOT tunable — 175 is the engine's
-                        own band edge — but ENFORCEMENT has the measurement switch ERA_SOLVENCY=0,
-                        same shape as ERA_RECIPE_MONO=0, because the cap lives in the CODE not the
-                        config, so without it two solves of two different configs both apply it and
-                        come back byte-identical and there is no A/B baseline at all; never ship
-                        with it off): a tier's full wage-inclusive break-even, i.e. the
-                        OUTPUT price as a % of base at which its BASE PM covers input goods plus
-                        wages WITH INPUTS AT BASE, may not exceed 175 — `Ibase ≤ 1.75·(1−wp)·Obase`,
-                        so O:I ≥ 0.762 at wp 0.25. `Xsolv` clamps it in solveInputsAt beside Xmin
-                        and the ratchet (never fighting Xmin, which sits 5× away), and
-                        `assertSolvency()` THROWS before the config write when minMainInput (the
-                        negative-goods floor, applied per good AFTER the clamp) pushes a tier back
-                        over the line — two hard invariants in conflict must fail loudly, not have
-                        one silently win. Build side: `tools/lint_solvency.mjs`, SEPARATE from
-                        lint_profitability.awk for the two reasons F67 survived — that linter's
-                        scope excludes no_mass_be industries, and its test is circular (target_be
-                        is restated FROM the recipe it checks). SHIPYARDS ARE NOT EXEMPT (costs
-                        nothing today, all seven at ≤128, but the carve-out is gone).
-                        ⚠ It caught THREE tiers on the pre-ruling book — port 270, railway 217,
-                        synthetics 208 — which is what forced the re-solve.
-                        ⚠ It is NOT "may not destroy value at base prices" (that is ≤100, REJECTED):
-                        an early tier is MEANT to be insolvent at base and carried by a higher
-                        output price, so §10.50.1 stands and sub-1 O:I stays legal (power 158,
-                        steel 139/135 all pass). ⚠ A FIRST ruling the same day set the weaker
-                        both-edges line (output ×1.75 AND inputs ×0.25 = target_be ≤ 400); measured
-                        at 0 of 105 before shipping and superseded within the hour —
-                        `lint_solvency.mjs --band` still scores it.
-                        ⚠ Each measured HARMFUL
-                        ALONE (A → £1.5M losses, B → stale explosion, C plain → grows the pithead
-                        artifact) — revert as a set, not singly. Band top 1.0 measured: a stale
-                        rung then dies only if its price HALVES in 2 tiers — 0.5 is the working
-                        top, margins live in 5–50%,
-                        ERA_RAIL_PENALTY (default 0 — MEASURED AND REJECTED, §10.47.1: a target
-                        handicap reaches solveInputsAt and buys richer recipes, making railway
-                        value-poorer at every tier; kept for re-measurement only),
-                        ⭐ ERA_SUBSIDY_TOL (default 0.10 — §10.47.4, user-ruled: vanilla's default AI
-                        strategy subsidises railway/port/power at must_have, so the trio may run down
-                        to −10% before the ladder criterion calls it a fault or the loss-shrink cuts
-                        it. SCORING ONLY — recipes untouched (the ERA_RAIL_PENALTY lesson); the
-                        implied SUBSIDY BILL is printed per tier, structurally ≤ tol × the trio's cost
-                        base. ⚠ mirrored in ui/econ.js LADDER_LOSS_FLOOR — keep the two in step),
-                        ERA_PRUNE (default steel@0,glass@0 — the ruled 1780 prune; empty reverts),
-                        ERA_PROF_WEDGE (default ON — §10.45/F46: per-profession tier multipliers on the
-                        1836 vector, measured from the saves_debut USA campaign; =0 restores the frozen
-                        vector; ERA_PROF_RAMP still multiplies on top),
-                        ERA_LEAD_W (stays 1 by ruling), ERA_RAW_DRIFT (REJECTED by ruling; knob kept for
-                        A/B only), ERA_CEIL_BOOST, ERA_CEIL_PM, ERA_JOINT (also the jitter seed for
-                        3-run ensembles), ERA_PROBE (the removed forward probe — leave it off).
-                        ⭐ TRADE-SUPPLIED GOODS (§10.46): goods on the EXPLICIT TRADE_SUPPLY_GOODS list
-                        (today: hardwood only) with building demand and no building supply are IMPORTED
-                        (trade sell = demand every re-price ⇒ price 100) — the 1780 hardwood ruling.
-                        ⚠ A LIST, NEVER a condition: the condition version disarmed the only-source
-                        ceiling guard and shipped 1900 with ALL its iron imported (§10.46.1). The §10.21
-                        futility guard fires only at the price FLOOR, never at the ceiling (the
-                        1780-iron/tier-2-engines bug), and FIXED_REF_COUNT is EMPTY (the
-                        10-dye-plantation placeholder pin is gone).
-                        ⭐⭐ THE MACROSCENARIO (ERA_MACRO, default usa — §10.47/§10.47.2, user-ruled
-                        2026-08-09): reasonability bounds from tools/era_macro.mjs, applied 1836+
-                        (1780 exempt) — the governance layer the rice ban and the US population
-                        premise already belonged to. Three levels: profession shares of population
-                        (VERIFIED only), industry-GROUP shares and per-INDUSTRY shares (both ENFORCED
-                        post-solve through counts, before the polish, which carries a macro guard).
-                        ⭐ Bounds are DERIVED, not calibrated (§10.47.2): X = the real US industry's
-                        share at the scenario date, import-adjusted for the autarky premise, army-
-                        premise-scaled for the war industries, mapped-or-dropped into our taxonomy and
-                        RENORMALIZED over the mapped commodity economy — gates [X/4,4X] per industry,
-                        [Y/3,2Y] per group; the model's shares are measured on the symmetric
-                        denominator (tier industries + raw refs + subsistence, urban centres excluded),
-                        NOT raw model GDP. Gross product (VA) by ruling — negative pre-wage balance can
-                        never reach a floor by growing; enforcement blocks it and NEGATIVE GROSS
-                        PRODUCT is the standing discussion list. Floors waived where placement
-                        withholds (date gate / prune / chain / extinct outrank); `nofloor` = shipyards
-                        (VA negative by construction) + the unmappable art academy. The EXTRACTION cap
-                        is VERIFY-ONLY: real mining+logging is 4.9–9.3% of the mapped economy, the
-                        model runs ×1.8–4 that because V3 books value at the pithead — a price-vector
-                        property no count can close (§10.47.2). Headline check = the MACRO
-                        REASONABILITY block in the final profit pass. ERA_MACRO=0 disables;
-                        ERA_MACRO_STEPS caps moves (default 400). Railway's derived floors
-                        (1.75–2.75% mapped, from a real ~7–11%) state the full transport gap — the
-                        freight ruling (§10.47.1) is what could move it
-  era_inverse.mjs       ⚗ THE INVERSE SOLVE (user-directed 2026-08-23, EXPERIMENTAL — §10.65): mandate
-                        prices (industrial 175−25pp×tier, raw 100), DERIVE the recipe book from them in
-                        closed form (one pass, no fixed point; same hard invariants as the standing
-                        solve), then SEED counts as a pure feasibility problem (price ⟺ buy:sell ratio).
-                        Pass-1 results: analytic illogicality 7 vs the canon 54 (4 under INV_PLATEAU=1);
-                        the building-fed core seeds coherently in every tier; ⭐ POP-FED GOODS CANNOT BE
-                        MANDATED — supply-share demand makes their ratio composition-invariant (the
-                        central §10.65 finding). ⭐ PASS 3 (§10.65.2, user-ruled 2026-08-24) is the
-                        current default behaviour: "industrial" = a TIERED INDUSTRY'S OUTPUT (consumer
-                        chains included) and every such good DESIGNS at the downward ladder; a
-                        pop-dominated good (>50% of buy) that persistently refuses its design
-                        RE-ANCHORS to what pops support — each yield a NAMED CONFLICT (design →
-                        achieved), thin markets never anchor, every pop price >30pp off base
-                        ⚠-flagged. Results: the ladder HOLDS at t3–t5 (15/21 · 18/21 · 19/21 exact)
-                        with few yields; early-tier conflicts run both ways (durables 150→175 scarce,
-                        groceries/glass/transport below design); illogicality 15 (between pass 1's
-                        all-mandate 7 and pass 2's free-float 22); ⭐ the tier-5 plateau collision is
-                        BILATERAL — permanent food/textile/furniture tiers need ~70–75 while pops fund
-                        ~50 at ANY composition (INV_PLATEAU=1 buys only 15→14). Pass 2 (§10.65.1,
-                        everything pop-fed floating) is SUPERSEDED — it inverted the ruled definition.
-                        ⭐ The §10.15 input ceiling rides along as a VERIFY line (never a control term
-                        — the §10.65.2 tuning discipline), and THE WOOD KNOT IS RESOLVED (2026-08-24):
-                        SINGLE_GOOD_REFS holds the camp's hardwood PMG at base (a LIST, like
-                        MANDATED_PMGS), wood reads 100 in every tier 1+, hardwood 100 via the §10.46
-                        trade channel (ruling EXTENSION, flagged), ceiling breaches 1·0·0·0·0·0 —
-                        which revealed tier 3's uniform ×0.94 glut (a premise-tier statement, §10.65.2).
-                        Writes config/era_inverse.json only; touches nothing canonical.
-                        Standalone prototype — its premise tables are a marked FORK of
-                        era_scenarios.mjs's (that module solves at import time and cannot be imported).
-                        ⭐⭐ TIER-COUNT AGNOSTIC since 2026-08-29 (BALANCE_FRAMEWORK §10.66.4): the tier
-                        count is `FIT.eras.length`, so a four-rung ladder is a DIFFERENT CONFIG + FIT
-                        PAIR, not a different solver. Two kinds of per-tier table and they are treated
-                        differently — genuinely tier-INDEXED ones (the margin ladder, the flat
-                        INV_LADDER fallback) spread over whatever rung count exists; CALENDAR premises
-                        authored on the original six anchor years (population, peasant share,
-                        working-adult ratio, the profession wedge, the construction ramp, the measured
-                        raw price paths) are RESAMPLED BY YEAR via `perEra`, because those series
-                        describe 1900, not "the fourth rung". The two DISCRETE tables (army mix,
-                        construction method) take the nearest source year via `perEraNearest` — a
-                        choice, not a quantity. ⚠ `E1836` is LOOKED UP, never assumed to be tier 1: it
-                        is tier 1 on the six-rung ladder and tier 0 on the four-rung one, and it is what
-                        the §10.65.6 anchor blend rebases on. ✅ Proven a pure refactor — the six-tier
-                        console output is byte-identical before and after.
-                        ⭐⭐ `VANILLA_LADDER_REFS` — AN INDUSTRY HANDED BACK TO VANILLA MUST STILL
-                        CLIMB. `disabled: true` returns the base-game building to the REFERENCE set,
-                        where `refSel()` picks each PMG's first NON-GATED method and keeps it for the
-                        whole century: for the port that is `pm_anchorage`, which PRODUCES NOTHING (so
-                        merchant marine had no domestic producer in any tier), and for the shipyard
-                        `pm_basic_shipbuilding`, i.e. clippers in 1940. The existing repair inside
-                        seedScenario only fires for a building that already has a COUNT, and a
-                        building producing nothing never becomes a producer. So every PMG of exactly
-                        those buildings is advanced to the most advanced method the tier's technology
-                        reaches — vanilla's own ladder on vanilla's own gates. DERIVED FROM THE CONFIG
-                        (disabling another industry needs no code change) and a no-op where nothing is
-                        disabled. ⚠ It was invisible: the run completed, every metric printed, and the
-                        only symptom was one `merchant_marine … trade` line. Fixing it moved the
-                        four-rung 1836 GDP £131k → £221k and tier 2 from 5/46 goods on book to 42/45.
-                        ⚠⚠ `INV_ITERS=400` (the default) IS NOT ENOUGH AT FOUR TIERS, AND THE
-                        UNDER-CONVERGED STATE READS BETTER: 3/4 illogicality at 400 against 9/8 at
-                        1500, with tier 2 at 5/46 goods on book and a ×0.94 common demand shift — the
-                        §10.14.1 defect in a new costume. Quote the CONVERGED numbers
-  recipe_side_by_side.mjs  ONE INDUSTRY'S RUNGS SIDE BY SIDE ACROSS BOOKS (2026-09-13): `--industry steel [--books lab=path,…]` prints
-                        every rung of the canon, canon-je24-a22 and canon-flat-in12 beside vanilla's own method — output, inputs,
-                        values at base prices, O:I, goods margin, VA per level and per worker, cost, VA per 1,000 construction
-                        points (the capital-productivity column behind F110: flat-in12's steel rung 3 reads 30,596 against
-                        vanilla's 2,125), ai_value, target_be. Read-only; the eyeballing tool for the tier pass (HANDOVER §N+1)
-  ladder_options.mjs    ⭐⭐ THE LADDER OPTION TABLE — what a candidate (A, B, cost, in0) does to the THREE things that
-                        fight each other (2026-09-19, FINDINGS F141, BALANCE_FRAMEWORK §10.86.4). Read-only. Per book:
-                        ⭐⭐ **PROFIT IN £ PER LEVEL PER WEEK** and the margin beside it, with the wage bill taken from the
-                        ECONOMY AND THE DECADE (`--economy GBR@1920`, user-ruled 2026-09-20, §10.87) instead of the flat
-                        `wage_pct` 0.25 it used to charge — which, measured exactly (F152 §10), is NOT far out for
-                        manufacturing (15–23% across the century), but is a CONSTANT where the truth is a property of the
-                        economy and the decade, and charged the art academy almost nothing. ⚠ THE WAGE DOES NOT ANSWER BACK:
-                        the bill is `wage × wage units` with NO premium and NO profit term, so the closed form
-                        `(O − I − 1.19·Wm) ÷ 1.30` this entry used to quote is RETIRED with F152 §8's coefficients, and with
-                        it the claim that a recipe cannot set a margin. At GBR@1920 on the canon's ladder the median profit
-                        reads **£11 / £1,690 / £5,982 / £15,309** a level a week (margins 0 / 61 / 147 / 282%) and the wage
-                        share of cost FALLS up the ladder, **32 / 25 / 19 / 14%**. Then F97's DEATH TEST (a rung two
-                        back must hold < 0.20 of the frontier's value added per worker — a DIFFERENCE out_e − in_e, which
-                        is why it and the margin cannot be flattened by the same move); CAPITAL per unit of output; and
-                        ⭐ THE 1836 ANCHOR ERROR (F137) computed EXACTLY — each rung's output against THAT RUNG'S OWN
-                        vanilla method's output, weighted by the LEVELS the emitted 1836 history places on it, replacing
-                        F137's flat 1.33^t approximation and its factory counts. A ladder is a ratio (geometric) or a
-                        /-separated per-tier LIST, which is what "ladders can be more complex than anchor × A^era" means.
-                        `--book "name:out=2.2,in=1.5,cost=1.9,in0=1.2" [--book …] [--industry textile] [--config <book>]`
-                        ⚠ Everything in it is at BASE prices, i.e. a design coordinate and NOT a prediction — canon-a19-gm
-                        measured BETTER obsolescence than the canon while scoring worse on the death test (§10.86.4.3)
-  era0_solvency.mjs     ⭐⭐ THE TIER-0 SOLVENCY CENSUS — what an input penalty does to the 1836 map at the prices the
-                        game actually produces (2026-09-19, FINDINGS F140, the instrument BALANCE_FRAMEWORK §10.86.2’s
-                        price-first ruling asks for on the recipe side). Read-only. Rebuilds each industry’s tier-0 recipe
-                        exactly as make_ab_config does (vanilla’s own first main method, output untouched, inputs rescaled
-                        so their base-price value is I0 × lift) — so **lift 1.0 IS vanilla’s recipe and the vanilla column is
-                        like-for-like** — and scores it against the MEDIAN over the vanilla n=16 baseline’s seeds, per market,
-                        per good, at a dump date. Reports: what each option asks of the output price (target_be); the count
-                        and the OUTPUT-VALUE share of insolvent (industry × market) cells with vanilla’s own count beside it;
-                        the VERY DEAD (margin < −20% AND still negative after the output’s sell orders are divided by 3 and
-                        the price re-derived from the engine’s formula, `!!` = still negative at the 175% band edge) each with
-                        vanilla’s margin in the same cell; **the first-order cost to the 1836 anchor** (the tiered sector’s
-                        value added, which the penalty subtracts one-for-one, and the input goods whose price the extra demand
-                        moves); and `--century` the same rung across all 12 dump dates. `--lifts 1.0,1.2,1.4,1.6 --levels
-                        -0.1,-0.2,-0.3 --date 1836.2.1 --config <book> --dead -0.20 --detail --markets a,b`.
-                        ⭐⭐ ITS WAGES ARE THE ECONOMY’S AND THE DECADE’S SINCE 2026-09-20 (§10.87): each market leader’s own
-                        measured normal rate at the date × its profession-weighted wage units, in place of the seven-entry
-                        hardcoded table it carried — which was derived from F92’s identity, the mixed-units ratio F150
-                        condemned. ⚠ NO premium and NO profit term (F152 §10): the `× 1.19` and the closed form
-                        `(O − I − Wn) ÷ 1.30` this entry used to quote are RETIRED, and with them the claim that a loss-making
-                        rung is charged less wage. `--profit-wage-share` still reproduces that reading for comparison.
-                        ⚠ **F140’s census FIGURES are superseded**;
-                        its SHAPE (1.40 as the raw-input maximum, the ordering of the options) is not, because every column
-                        moved together.
-                        ⚠ BASE METHOD ONLY (no secondaries, no throughput) on both sides, so differences are exact and levels
-                        are a few points pessimistic; prices are held at vanilla’s while the recipe changes, which is the
-                        comparison’s point and also its limit
-  lib_wage_model.mjs    ⭐⭐⭐ THE WAGE MODEL AND THE REPAIRED MARGIN IDENTITY — ONE implementation, because the
-                        alternative is what F150 found: three tools quoting a ratio whose wage term was assumed and
-                        whose units did not match (user-ruled 2026-09-20; CLAUDE.md's own governing section above,
-                        BALANCE_FRAMEWORK §10.87, FINDINGS F152). `W = wage(tag, year) × Σ(employees × wage_weight)
-                        × staffed levels`, with the weights and POP_SIZE_PACKAGE read LIVE from the game and
-                        **£/employee/week = a summary's `base_wage` ÷ 10,000** (the engine's own unit, stated in
-                        `common/defines` on NORMAL_WAGE_RATE_FALLBACK). Exports `economyWage(tag, year)` — the
-                        measured normal rate, with **`WAGE_PREMIUM` 1.0 and `PROFIT_WAGE_SHARE` 0** (F152 §10: the
-                        1.19 premium of §4/§8 and the `0.30 × profit` term were BOTH artefacts of approximating revenue
-                        as base-priced `va_out` × a price multiplier; they survive only as `WAGE_PREMIUM_FLAT_RETIRED`
-                        / `WAGE_TWO_TERM_RETIRED`, and the claim that "a recipe cannot set a margin" is withdrawn with
-                        them) — **`predictProfit()`**, which at those defaults is simply `O − I − W` and keeps the
-                        closed form only so `--profit-wage-share` can reproduce the retired reading —
-                        `tierEmployment()` (the ART ACADEMY fix: a tier with no `employment` of its own falls back to
-                        its industry's secondary PMGs' base methods, 9,500 wage units a level), `priceMultiplier()`
-                        and **`trueMargin(profit, R)`**, which returns NULL rather than a number when it cannot be
-                        computed. ⚠ `TAG_FAMILY` resolves GER→NGF→PRU and NET→UNL, so a wage path does not break
-                        where a country changes tag
-  building_ledger.mjs   ⭐⭐ THE BUILDING'S OWN LEDGER, STRAIGHT OUT OF A MELTED SAVE — no model, no inference,
-                        no fitted coefficient (2026-09-20, FINDINGS F152 §9). Written when the user said of the wage
-                        work "I am asking for quite a simple thing displayed in the interface, that does not contain
-                        any premiums or whatever" — and was right. A building record carries salary_rate (THE
-                        BUILDING'S OWN wage rate, not the country's), goods_cost and goods_sales (inputs and revenue
-                        at MARKET prices), profit_after_reserves, income_taxes, cash_reserves and its dividends.
-                        ⇒ goods_sales/goods_cost make F150's price-multiplier repair unnecessary wherever they can be
-                        read; the repair exists because the SUMMARY carries base-priced va_out/va_in instead.
-                        It prints the implied wage bill against the modelled one, the regression that says what else
-                        is in the residual (the profit term collapses to 0.019 once the building's own rate is used)
-                        and a head-to-head of candidate identities — including the no-weights control that proves the
-                        profession weights belong (1.70 without them against 1.15 with).
-                        ⚠ Takes a MELT, not a save: rakaly melt --format vic3 --unknown-key stringify -c <save.v3>
-  full_recipe_profit.mjs ⭐⭐ THE FULL RECIPE'S PROFIT AT A NAMED SITUATION — the prediction half of the
-                        2026-09-20 ruling, and the piece `ladder_options.mjs` cannot do (it scores a CANDIDATE
-                        ladder from the book's arithmetic: main method only, one level, no throughput).
-                        This scores a BUILT book's ACTUAL shipped recipe: the main method PLUS every secondary
-                        PMG's active method (goods including the negative reductions, and its employment),
-                        ECONOMY OF SCALE (`1 + 0.01 × min(levels,20)` where the building's group has it, read
-                        live from `common/building_groups` — goods only, never wages; the user's own 15-level
-                        furniture manufactory read +15%, so it is per level FROM level 1), the wage from the
-                        ECONOMY AND THE DECADE, and prices either BASE or MEASURED from a named session.
-                        Reports revenue, inputs, wages, PROFIT £ and the WAGES-INCLUSIVE profit%.
-                        `--mod mod --config <book> --economy GBR@1920 --levels 10 --secondaries base|none
-                         --prices <session>[@1935] --industry textile`
-                        ⚠⚠ It reads an EMITTED MOD, so a candidate must be BUILT first (`build.ps1 -SaveTo
-                        <name> -Config <book>`, then `--mod mod_<name>`). Deliberate: emit_secondaries.mjs
-                        rescales the secondaries at BUILD time against whatever main recipe the config carries,
-                        so reading the config alone would re-implement that rule and invite it to drift.
-  fit_wage_model.mjs    ⭐⭐ WHERE THE WAGE MODEL'S TWO COEFFICIENTS COME FROM (FINDINGS F152 §8). Read-only.
-                        Written because the user asked whether workforce COMPOSITION was in the model — it is, and
-                        testing that rather than asserting it split the flat premium in two. Fits, against the actual
-                        wage bill `R − I − profit` (prices repaired the F152 way): (1) an effective multiplier PER
-                        PROFESSION — ⚠ NOT ADOPTED, it buys 0.394 → 0.338 of scatter and returns −11.5 for clergymen,
-                        so the design matrix is not clean enough to trust coefficient by coefficient; (2) the TWO-TERM fit
-                        `W = 1.19 × the normal-rate bill + 0.30 × the building's own profit`, identified (collinearity 0.76)
-                        and stable across all seven countries — ⚠⚠ **ALSO NOT ADOPTED, and it is the one this file used to
-                        say SHIPS**: F152 §10 traced both coefficients to the same cause, approximating revenue as
-                        base-priced `va_out` × a price multiplier, and against the EXACT bill a v9 save reports the plain
-                        `wage × wage units` reads 0.99–1.09 from 1857 on. The library ships `WAGE_PREMIUM` 1.0 and
-                        `PROFIT_WAGE_SHARE` 0; (3) which form predicts a building's own profit best — the test that split
-                        them (26.5% median error against the flat 1.52 premium's 38.7%), superseded by reading
-                        `goods_sales − goods_cost − profit` directly. `node tools/fit_wage_model.mjs <session/run> …`
-  measure_wage_share.mjs ⭐⭐ WHAT DOES THE SAVE'S `profit` CONTAIN, AND WHAT IS THE WAGE SHARE OF AN ECONOMY IN A
-                        DECADE? Read-only; the instrument behind F152 and the calibration the library ships.
-                        Per (country × year) it re-prices value added to MARKET with the building's own active-method
-                        goods mix and reads the implied wage bill `R − I − profit` against the modelled one. Excluded
-                        by name and for a stated reason: shipyards (naval-construction income is not in the goods
-                        flows), subsistence (its own wage rules), subsidised levels, and anything more than 2%
-                        unpriced. `--write-wages` regenerates config/measured_base_wages.json.
-                        `--run <session/run> [--run …] [--years …] [--detail]`
-  vanilla_margins.mjs   ⭐⭐ WHAT MARGIN DOES A VANILLA BUILDING ACTUALLY RUN AT? (FINDINGS F92) —
-                        the anchor the design margin sits on. Read-only. Sources save summaries at
-                        v6+ (the first schema carrying per-building-type `va_out`/`va_in`) and reports
-                        the **PROFIT in £** and, beside it, the margin per building type, class and the whole map.
-                        ⚠⚠ ITS OLD COLLAPSE `margin = profit / (va_out − profit)` WAS A MIXED-UNITS RATIO (F150):
-                        `va_out` is priced at BASE cost and `profit` at MARKET. Since 2026-09-20 it re-prices value
-                        added with the building's own goods mix at that country's market's prices and reports
-                        `profit / (R − profit)`; `--legacy-margin` prints the old one for comparison. It needs
-                        INSTRUMENTED markets, so it scores 507 of 4,002 entries and says so.
-                        ⭐ **THE PUBLISHED 25.8% ANCHOR STANDS**: at 1836 the output price sits at 0.943 of base, so
-                        like-for-like the repair reads 30.5% against the legacy 30.9% — the gap to 25.8% is a SAMPLE
-                        difference (the seven instrumented markets are the rich ones), which it now prints both ways.
-                        ⚠ Classification is by vanilla `building_group` EXACTLY, never a regex over
-                        it — the first cut regexed and put every wheat farm in "manufacturing".
-                        Result at 1836.2.1 (5 vanilla runs): manufacturing 25.8% level-weighted
-                        (IQR 18–31%), extraction 101.8%, agriculture 126.1% — which independently
-                        corroborates §10.22's raw bands. `--json` writes
-                        config/vanilla_margins_1836.json, which build_ui2.mjs renders
-  make_tier4_config.mjs ⭐⭐ THE FOUR-RUNG STRUCTURE, FROM VANILLA (user-ruled 2026-09-04, the third time; §10.72).
-                        Reads the GAME (buildings, production-method groups and methods, English loc, and
-                        tech_tree_spec.mjs's ONSET table for a rung's date) and tools/lib_tier4_spec.mjs — NOTHING
-                        ELSE, no config of any other book. Writes config/mod_config.<TIER4_SUFFIX>.json (default
-                        tier4). A tiered industry IS a vanilla building (the spec's INDUSTRIES list); each rung IS one
-                        of its main-group methods in vanilla order with vanilla's method name, gate (the method's own
-                        technology, else the building's), recipe, staffing, pollution and icon; rung 0 keeps the vanilla
-                        building KEY (load-bearing: a different key hands the vanilla building back as a rival
-                        reference producer), higher rungs are <building>_<method>; the building name is
-                        "<vanilla building> (<vanilla method>)". ⭐⭐ RUNG TIERS FOLLOW THE TIER RULE (2026-09-13): each rung's
-                        tier is DERIVED from its gate technology's game era (1 → t0, 2 → t1, 3 → t1, 4 → t2, 5 → t3,
-                        as the mod ships it, ERA_MOVES included; an addition by its minted year), bumped up only to keep one
-                        rung per tier in vanilla order; the spec's PLACEMENT holds the ruled adjustments where the ladder does
-                        not fit (fertilizer, explosives, motor — first rung at t0), every placement is checked against the
-                        ±1 tolerance and it THROWS beyond it or on an unruled overflow; the report prints each rung's
-                        deviation. (Until 2026-09-13: four methods → 0..3 by order, five short industries hand-placed, which
-                        put electrics on t1 with a game-era-4 technology.) The config carries `era_game_era`,
-                        `era_anchor_years` and `_era_rule`. The spec's ADDITIONS append a top rung (own key, name, minted
-                        technology; recipe/staffing/icon from the rung below). building_cost and ai_value are NOT here — they
-                        are the A/B tool's (by TIER, never per rung: the rung-keyed form was a shipped bug, BUGS_AND_FIXES
-                        2026-08-29 and 2026-09-13). RULE 1's validator THROWS on an addition pegged to a technology
-                        that gates one of the industry's own secondary methods (proven by sabotage). The config carries
-                        `start_exceptions_file` → config/start_exceptions.vanilla.json (no rules): the four-rung 1836
-                        start is vanilla's, converted. ⚠ The previous generator (2026-08-29 → 2026-09-04) cloned every
-                        rung from the THEN-canonical six-rung config (retired for good 2026-09-16) and copied that book's top-level blocks along; its
-                        `--apply-solve` / era_inverse pipeline and the era_prices/measured_price_paths twins are RETIRED
-                        with it (§10.66's four-rung solver-2 arm is history, not regenerable)
-                        ⭐ `--derive <ind,ind>` (2026-10-01, §10.91.5): the named industries IGNORE their PLACEMENT entry and take the
-                        tier rule's own derivation (built for motor: [1,2,3] in place of the entry's [0,2,3]); a flag rather than a spec
-                        edit, so the canon still regenerates as the canon. Write it under its own TIER4_SUFFIX (tier4-e1); the book
-                        records `_placement_derived`
-  make_tier4_techs.mjs  ⭐⭐ THE FOUR-RUNG TECH TREE, FROM VANILLA (§10.72). Reads the game's technologies (era,
-                        category, prerequisites, English name), the four-rung config and the spec; writes
-                        config/tech_tree_options.<suffix>.json (the L20 twin). Every vanilla technology carries
-                        vanilla's era, name and prerequisites; the departures are the spec's ERA_MOVES (the 2026-08-30
-                        top-rung rule — against vanilla's eras only vulcanization moves, 3 → 4; `reEra` marks it so
-                        emit_techs patches the vanilla file), TECH_RENAMES_RULED (empty), PREREQ_ADDS (since 2026-10-03: conveyors appended
-                        to compression_ignition's prerequisites, §10.93 rule 7 — recorded as `vanillaPrereqs` / `prereqsAdded`, which
-                        emit_techs patches into the vanilla file) and the ADDITIONS' minted
-                        technologies (3 since 2026-09-13 — furniture, paper, fertilizer; motor's fell to the tier rule — each placed by
-                        its own year). Validates: no minted technology in tech era 1, none
-                        gating nothing, every prerequisite known, same-category and not in a later era, no technology
-                        gating two rungs of one industry. ⚠ The previous tool copied the SIX-RUNG twin's technologies —
-                        that ladder's era alignment (dynamite, repeaters, breech-loading artillery, combustion engine,
-                        telephone, aniline all lowered), 14 renames, 12 inserted prerequisites — which is how the
-                        four-rung tree carried six-rung tech eras until 2026-09-04. emit_techs' hardcoded aniline
-                        prerequisite swap now follows the tree: applied only where aniline was actually moved
-  make_ab_config.mjs    ⚗⚗ THE A/B LADDER (user-ruled 2026-09-02, BALANCE_FRAMEWORK §10.68 — two arms
-                        under test, nothing canonical changed). Takes the tier4 STRUCTURE (rungs, tiers,
-                        techs, keys, employment) and VANILLA'S OWN lowest-tier recipe per industry.
-                        ⭐⭐ KEYED ON THE RUNG'S TIER SINCE 2026-09-13 (THE TIER RULE): a rung of tier t has
-                        output × A^t, input VALUE × lift × B^t over the rung's own vanilla method's mix,
-                        building_cost = vanilla anchor × A^t (capacity-priced) or flat, ai_value by t,
-                        target_be restated, and the private pool's cost-divisor define scaled to the book
-                        (0.001 × 800 / max cost). ⚠ It used to key on k = tier − the industry's FIRST tier,
-                        which priced a late industry's first rung (automotive t2, electrics, synthetics,
-                        munition) as an 1836 rung — F111; a book records `_ab.keyed_by: 'era'` and its
-                        command (`_ab.command`). A tier-0 rung IS vanilla (× the lift); an industry with
-                        no tier-0 rung has no vanilla-priced rung. `--bar-months N` sets the industry bar
-                        and `--variant "name|base|ruled_by|delta"` writes the `_variant` record, so every
-                        book is regenerable by ONE command (they were hand edits before). Secondaries are
-                        rescaled at build time by emit_secondaries.mjs. `node tools/make_ab_config.mjs --A 2.5 --B 2.5
-                        --suffix ab1` (and 2.0/1.5 → ab2, the user's choice) writes config/mod_config.<sfx>.json plus the
-                        tech-tree twin and prints the whole book. ⚠ F97 §6: vanilla itself runs
-                        A ≈ B ≈ 1.5 per method step; ×2.5 is vanilla's shape at the death ratio the
-                        measured staffing curve needs. ⭐ OUTCOME (F98, 2026-09-02): ab2 (2.0/1.5) lands on
-                        vanilla's late GDP (0.98×/0.97× world, prod/capita 0.72–0.76×, £/worker 1.25–1.32×);
-                        ab1 (2.5/2.5) stalls at 0.39–0.54× in three seeds. ab2 is the book to build on. `--ai-steep <ind,ind>:<ratio>` (2026-09-02) gives the named
-                        industries ai_value = 1000 × ratio^tier instead of 1000 × A^tier; ⭐ `--A-for <ind>:<ratio>` (2026-09-04) gives
-                        ONE industry its own output ratio — output × Ai^k, cost × Ai^k, ai_value 1000 × Ai^tier; ⭐ `--tiers-for
-                        "<ind>:out=1,2,7,16;in=1,1.5,3,4.5;cost=1,2,6,9"` (2026-09-04) gives one industry EXPLICIT per-rung
-                        multipliers over its rung 0 (output, input VALUE over the rung's own mix, cost; ai_value keeps the tier
-                        rule) — the art-academy stress test §10.70 (fine art 5/10/35/80, cost 400/800/2,400/3,600); ⚠ PIN
-                        `--divisor` with either (the auto value follows the dearest rung and would re-score every building),
-                        ⭐ **RELAXED 2026-10-13 (§10.101): `--in0-for <industry>:<mult>` gives ONE industry its own lift for its WHOLE ladder** (recorded `_ab.in0_for` only when set, L31 re-derives it; first use motor:1, the engines unlifted) — one number per industry line, never a per-rung recipe; the closure below still holds for `--in0-level`. ⚠⚠ **`--in0-level` IS A CLOSED DESIGN AXIS since 2026-09-19** (user: "we won't go there, this is 'the
-                        solver' all over again, and we didn't manage to do that, too complex. Vanilla values + uniform ladders
-                        and penalties stay, although ladders can be more complex than anchor*A^era") — it stays in the tool
-                        because F139's book used it and F140's census prices the option, but **no book will use it again:
-                        `in0` is ONE SCALAR and A / B / cost are UNIFORM across industries**. What the same ruling OPENS is
-                        NON-GEOMETRIC ladders: a per-tier LIST is legitimate for output and input as it already is for cost
-                        (`--cost-ladder`), and BALANCE_FRAMEWORK §10.86.4 is what that buys — a B ladder that ACCELERATES
-                        (1 / 1.66 / 3.29 / 6.81) cuts the top margin 233% → 65% with the death test untouched, which no
-                        value of A can do. ⭐ 2026-09-10 (§10.77): `--in0 <mult>` lifts rung 0's input value
-                        (the ladder anchored on it; `--in0-only` lifts rung 0 alone), `--cost-flat` gives every rung the vanilla anchor
-                        (§10.61), `--ai-ladder v0,v1,v2,v3` sets ai_value by tier index explicitly (linear 1000,2000,3000,4000) in place of
-                        AI_BASE × A^tier; the three are recorded in the book's `_ab`. ⭐ 2026-09-14: `--cost-ratio C` prices building_cost
-                        = anchor × C^tier for any C between 1 (flat) and A (the default, capacity-priced) — THE COST-SLOPE DIAL of the sweep
-                        that followed F113/F114 (flat cost at A ≥ 1.9 doubles the world and kills rung 0; ×A^tier keeps rung 0 alive);
-                        recorded as `_ab.cost_ratio`, which `lint_tier_eras.mjs` (L31) reads when it recomputes cost; exclusive with
-                        `--cost-flat`. ⭐ 2026-10-14 (§10.101.2): `--cost1 k` multiplies EVERY rung's building_cost (the level dial beside C, the slope dial;
-                        recorded as `_ab.cost1` only when set, re-derived by L31; first book `jex-dam4s-rs-x25-c18k12`, C 1.8 × cost1 1.2). ⭐ 2026-09-16: `--cost-ladder m1,m2,m3` prices building_cost = anchor × m_tier from an
-                        explicit PER-TIER list (tier 0 = 1): one tier's cost can move alone (`canon-c19-e2soft`: the t2 rungs only) or a changed A/B
-                        can be GAIN-MATCHED per tier to the found book's value added per construction point (`canon-b18-gm`, FINDINGS F127); recorded
-                        as `_ab.cost_ladder`, which L31 reads (proven to trip on a hand-edited t2 cost); exclusive with both. ⭐⭐ 2026-09-20: **`--in-ladder m1,m2,m3`
-                        — THE INPUT LADDER AS AN EXPLICIT PER-TIER LIST, the exact counterpart of `--cost-ladder`, replacing `B^k` with `m_k`.** It is the axis the
-                        2026-09-19 ruling OPENED ("ladders can be more complex than anchor × A^era") and it stays UNIFORM across industries, so it does not reopen
-                        the per-industry axis the same ruling CLOSED. WHY: §10.86.4 / F141 — an ACCELERATING input ladder is the only lever that cuts the FRONTIER's
-                        margin without touching F97's death test, because the test is a ratio of VALUE ADDED between rungs two apart and raising the top rung's
-                        inputs moves numerator and denominator together, where a lower A moves only the numerator. Measured on the real books (slide included):
-                        `1,2.6,4.7` takes mean value added per top-rung level ×0.899 and the unslid t3 median goods margin 360% → 230% (paper 426% → 277%) with the
-                        death test **24/24 in both** and building_cost, the 1836 anchor and every t0/t1 recipe untouched. ⚠ `--B` becomes optional when it is given,
-                        and `_ab.B` is then **null** rather than a stamp that lies; `_ab.in_ladder` carries the truth and **L31 re-derives from it** (proven both
-                        ways by sabotage: stripping the record fails 22 rungs, hand-editing one t3 input names that rung). ⚠ BELOW THE ANCHOR (k < 0 under
-                        `--anchor-for`) the list has no entry and is extended GEOMETRICALLY from its own first step, `m_1^k` — identical to `B^k` for a geometric
-                        ladder, so a slid industry's lowest rung is treated the same either way. Arms: `probe-accel-slide`. ⭐⭐ 2026-09-19: **`--anchor-for <ind>:<era>`
-                        NAMES THE LADDER'S ANCHOR RUNG — the ORIGIN OF THE EXPONENT** (user-proposed, FINDINGS **F148 §9**). By default an industry's ×1 is its
-                        first rung and tier t takes A^t / B^t; this makes tier t take **A^(t−a) / B^(t−a)** over the NAMED rung's own vanilla method, so rungs below
-                        the anchor are divided down. WHY: the 1836 map does not stand on t0 in every industry — tooling's mass is on **t2** (50 of its 95 levels,
-                        the only material t2 presence on the map), gated on a GAME-ERA-2 technology vanilla hands the leaders at the start, yet priced as a 1905
-                        rung at A² = 4.84× its own vanilla method. ⭐ It is a pure LEVEL shift: every ratio BETWEEN rungs is untouched, so **F97's death test is
-                        identical under every anchor** (13/13 either way) — it buys margin and the 1836 anchor error and cannot buy or cost obsolescence.
-                        ⚠ **IT MOVES OUTPUT AND INPUT VALUE ONLY**; `building_cost` and `ai_value` stay functions of the ABSOLUTE tier, because the tier is
-                        what says "this is a 1905 building" (§10.78 rule 3) and both are separately-swept levers. The named consequence: capital per unit of output
-                        moves for the shifted industry (anchor t2: +82% at t2), which barely bites over 21 months and would over a century.
-                        ⚠⚠ **ORIGIN IS 0 UNLESS THE FLAG NAMES THE INDUSTRY — never the industry's own first rung**: munition, synthetics, automotive and electrics
-                        have no t0 rung, and keying them on their own first tier is exactly the rung-index bug **F111** measured and the tier rule forbids. The first
-                        implementation did that and was caught before it generated a book. Recorded as `_ab.anchor_for`, which L31 reads; exclusive with
-                        `--tiers-for` on the same industry and with `--in0-level` / `--in0-stage`. Measured arms: `probe-tool-a1` / `probe-tool-a2`.
-                        the canon's is 0.000125 — ab3 = ab2 + glass,tooling:3
-                        ⭐ 2026-10-01 (§10.91.5): `--down-step <s>` — below the anchor, output AND input value ÷ s per step (the anchor's
-                        margin kept; s 1.5 = vanilla's own method step) in place of A^k/B^k; `--in1-pop <mult>` — the anchor-and-below
-                        rungs of industries whose output sits in a pop need (read live from common/pop_needs) carry this input lift
-                        instead of `--in0`, the rungs above keep the scalar's ladder. Both recorded in `_ab` and re-derived by L31. The tree
-                        twin is now the BASE's own (tech_tree_options.<base suffix>.json), falling back to tier4's — every earlier book was
-                        built on tier4, so none changes (the canon's command regenerates its rungs identically)
-                        (1000/3000/9000/27000), the arm under test in 20260902_223037_ab3-n3
-                        OUTCOME (F99, 2026-09-03): the lever bites — British glass 118%/112% vs ab2's 153–158, Britain
-                        84/201 plastics glassworks vs ab2's 44/97 — GDP 0.95×/0.90× in the two growth seeds, and ONE of
-                        three seeds STALLED at 0.39× (Britain's pool collapsed 1860, India fragmented the market 1880);
-                        the ab2 book family stalls in 1 of 5 seeds
-  build_ui2.mjs         ⚗⚗ UI 2.0 — **THE BALANCE SHEET, POINTED AT THE FOUR-RUNG BOOK** (§10.66.8).
-                        ⭐⭐ IT SHIPS `ui/builder.html` ITSELF, BYTE-FOR-BYTE, with a different data
-                        payload underneath — NOT a lookalike. The first cut built a separate report
-                        page in the sheet's colours; the old UI is the EDITOR (industry cards, a row
-                        per tier, editable goods, the Number column, BE/profit, workforce, the market
-                        panel, the preset bar, the ladder chart, the explorer), and one implementation
-                        of the sheet serving two books is the only version that cannot drift.
-                        ⚠ Built on the RETIRED derivation's tier4 book (§10.72, 2026-09-04): regenerating it now would
-                        swap in the vanilla-built structure with no solver-2 artifact beside it — read it as history.
-                        Swaps: PMDATA.config ← config/mod_config.tier4.json · PMDATA.inverse ←
-                        config/era_inverse.tier4.json (the red `recipes: solver 2` button) · PMPRESETS
-                        ← ui2/gen/presets.tier4.js. ui/econ.js and ui/vanilla.js are used unchanged.
-                        Writes ui2/ladder_sheet.html (a full document) AND ui2/ladder_sheet.artifact.html
-                        (the same page stripped of document tags, since a published artifact supplies its
-                        own `<!doctype>/<head>/<body>` — the strip ASSERTS none survived).
-                        ⚠ `--refresh-presets` runs `extract_presets.ps1 -Config <the tier4 book>`, which
-                        writes ui/presets.js and takes no output path — so it moves the canonical file
-                        aside and restores it in a `finally`. Leaving the real sheet's presets replaced
-                        by another book's would be silent and far-reaching.
-                        ⚠ **Export mod_config.json is INERT in the published artifact** (the viewer
-                        grants no download permission — same as balance_ui_snapshot.html). The injected
-                        banner says so; do not tell anyone to "export from the link".
-                        ⚠ Regenerate after any `era_inverse --write` AND after `--apply-solve`; the
-                        data is a BUILD-TIME copy
-  build_ui2_report.mjs  ⚗ THE WORKBENCH — the analysis page beside the sheet (`build_ui2.mjs --report`
-                        → ui2/ladder_workbench.html). A READING instrument, not an editor: the verdict
-                        table against the six-rung canon, the VANILLA MARGIN ANCHOR (from
-                        config/vanilla_margins_1836.json), the OBSOLESCENCE MATRIX (one row per rung ×
-                        one column per tier, the rung's own tier outlined, a `dies at −2?` verdict per
-                        row), and every good's designed-vs-achieved price path. Wears the sheet's
-                        tokens; emits artifact-safe HTML (no document tags) and asserts it.
-                        ⚠ Its comparison column reads the COMMITTED config/era_inverse.json at that
-                        file's own iteration budget — the like-for-like table is §10.66.3
-  serve_ui2.mjs         a read-only static server for ui2/ (port 8791, `.claude/launch.json` entry
-                        `ui2`). Exists because the browser pane opens a local file as a `data:` URL and
-                        the ~800 KB sheet exceeds that. ⚠ It deliberately does NOT answer /api/config:
-                        builder.html's load banner hardcodes "config/mod_config.json (live)" when that
-                        route answers, which would be a LIE here — letting it 404 puts the page on its
-                        EMBEDDED copy, which IS this book, and makes the banner truthful. The two
-                        console 404s are the honest signal that this server cannot write a config;
-                        tools/ui.ps1 is the one that can. ⚠ statSync().isFile(), never existsSync() —
-                        existsSync is true for a directory and readFileSync on one throws EISDIR and
-                        kills the server (ui2/gen was one stray request away from doing exactly that)
-  make_solver2_config.mjs derives config/mod_config.solver2.json — the SOLVER-2 ARM (user-directed
-                        2026-08-24): canonical config + the inverse-solve recipe book (§10.65.2) +
-                        target_be restated (the era_solver drift-guard rule) + ai_value = 500+1000×(tier+1)
-                        on every tier (the F76 ladder family’s next rung; power/railway’s 7 tiers refuse
-                        it by the standing ruling). Copies the L20 tech-tree twin. Deterministic
-  era_macro.mjs         the macroscenario DATA: per-industry X and per-group Y (real US shares of the
-                        mapped commodity economy, 2 significant figures, adjustment tags (b)asket
-                        (i)mport (a)rmy-premise (s)judgment recorded per row) + profession bands, and
-                        activeMacro()/macroBounds()/macroVerifyOnly()/validateMacro(). Pure data +
-                        helpers, validated fail-loud against the live model at solver start; a future
-                        macroscenario is a NEW entry in MACROS selected by ERA_MACRO=<id>, never an
-                        edit to `usa`. Sources: Historical Statistics of the US / Census of
-                        Manufactures / Gallman's commodity-output series — factor-4 gates need 2sf,
-                        not decimals
-  econ_host.mjs         loads ui/econ.js + the generated ui/*.js under Node — supplies the state containers the
-                        browser would. Contains NO model of its own.
-                        ⚠ The CONFIG comes from config/mod_config.json DIRECTLY, not from the copy embedded in
-                        ui/data.js: data.js is build output, so sourcing it there put a build step inside the
-                        solvers' own write→read loop and made `--write` + re-run silently re-read the PREVIOUS
-                        values (see BUGS_AND_FIXES). data.js still supplies prices + the vanilla extract
-  econ_selftest.mjs     regression check for ui/econ.js against MEASURED numbers already in the docs (F26/F27,
-                        the V3 price formula anchors, and F31's two readings of the supply-share bounds —
-                        above all that a cap YIELDS when no good with supply can absorb what it displaces).
-                        Run it after touching ui/econ.js
-  verify_pms.mjs        audits every PM the tier presets select: is it a REAL vanilla PM, and could this
-                        country legally run it? Reads common/production_methods DIRECTLY rather than our
-                        extract, so an extractor bug cannot hide behind it. Exits non-zero on any failure.
-                        ⚠ It strips the UTF-8 BOM: every PM file starts with one, so the FIRST production
-                        method in each file is invisible to a naive `^name = {` match — which made six real
-                        PMs look hallucinated on this check's first run
-  solve_be_targets.ps1  re-derives every tier's target_be + natural_year from its tech's vanilla era (date ladder; BALANCE_FRAMEWORK §8.1)
-  solve_volumes.ps1     re-derives every tier's output/input volumes from vanilla recipes + target_be (BALANCE_FRAMEWORK §8)
-  solve_building_cost.ps1 LEGACY for tiers on the tier ladder — the older 10yr-payback model (BALANCE_FRAMEWORK §9),
-                        whose assumed 20% return on operating cost is what shipped a ~2-year book.
-                        `payback_census.mjs --write` owns building_cost now (§10.61)
-  audit_tech_content.mjs ⭐⭐ WHAT WOULD BE LOST IF THIS TECHNOLOGY WERE MERGED AWAY OR DELETED?
-                        Read-only. Per technology: its MODIFIER block, every production method /
-                        building / combat unit / decree / company it gates, and every line of vanilla
-                        script that names it. `--all-new` sweeps every technology we add.
-                        ⭐⭐ THE RULE IT ENFORCES (user, 2026-08-12): **THERE ARE NO CONTENTLESS VANILLA
-                        TECHNOLOGIES.** None is a placeholder that only slows research down; if one looks
-                        ✅ **FIXED 2026-08-30 by the VANILLA-LADDER REBUILD** (BUGS_AND_FIXES): a rung IS a vanilla
-                        production method and takes THAT method’s own gate, so orphans are structurally
-                        impossible rather than patched — 0 orphaned, 0 gating two rungs of one industry,
-                        48 technologies gating our tiers (was 25), 3 minted (was 9). Enforced every build
-                        by `tools/lint_tech_content.mjs` against the EMITTED mod.
-                        ⚠⚠ **AND EMPTYING ONE IS AS BAD AS DELETING IT** (user-ruled 2026-08-30: "absolutely
-                        unacceptable ... there is usually no reason to strip vanilla effects from vanilla techs").
-                        The four-rung re-peg left `bessemer_process`, `lathe`, `crystal_glass` and `baking_powder`
-                        gating PMs that NO SHIPPED BUILDING CARRIES: the technology survives, still costs research,
-                        still shows in the tree, and buys nothing. Cause is structural - four rungs need fewer gates
-                        than vanilla has technologies for that chain, and the re-peg picked by date proximity without
-                        checking what it displaced. RULE: prefer the technology that already gates a tier’s own
-                        `vanilla_pm`. See BUGS_AND_FIXES 2026-08-30 for the fix and the validator owed.
-                        like that, you are looking in the wrong place. The tech-tree viewer counts only
-                        BUILDING unlocks, which is exactly why a technology can look empty there and gate
-                        sixteen things — `watertube_boiler` does. Run this before ANY merge or removal and
-                        make the survivor absorb everything listed.
-                        ⚠ ITS FINDING THAT CHANGED THE PLAN: a vanilla technology can essentially never be
-                        DELETED, because vanilla script names it — in production methods, journal entries,
-                        events, ship modifications and COMPANY formation requirements. A merge is therefore
-                        re-pointing OUR tier gates onto one technology, and deleting only technologies WE
-                        added (which have zero vanilla references by construction).
-  vanilla_construction.mjs VANILLA'S CONSTRUCTION DATA, read live from the game files — ONE
-                        implementation, because two tools need it. `requiredConstruction()` (building →
-                        points, depth-aware so a conditional second field cannot win),
-                        `constructionCostValues()` (the `construction_cost_*` script values) and
-                        `constructionMethods()` (the construction sector's methods → £ per point).
-                        Consumed by `payback_census.mjs` (the cost book anchors on it) and
-                        `vanilla_payback_census.mjs` (it prices vanilla with it)
-  vanilla_payback_census.mjs ⭐⭐ WHAT PAYBACK DOES THE BASE GAME RUN AT? Read-only. The REFERENCE the
-                        cost book is anchored to, because `payback_census.mjs` can only compare us
-                        against our own assumption. Vanilla recipe book (each tier's `vanilla_pm`,
-                        invented tiers interpolated along the ×1.5 ladder — the same rule the UI's
-                        `recipes: vanilla` button uses), vanilla `required_construction` read live from
-                        `common/buildings/*.txt` through `common/script_values/building_values.txt`, the
-                        eight vanilla-1836 preset markets at their own realised prices. `--book mod`
-                        re-reads the same scenarios on our book, which is the gap in one number;
-                        `--detail` gives the per-building-type table.
-                        ⚠ The vanilla construction data it reads lives in ONE module,
-                        **`tools/vanilla_construction.mjs`** (`requiredConstruction()` /
-                        `constructionMethods()` / `constructionCostValues()`), shared with
-                        `payback_census.mjs`, which anchors the cost book on the same numbers.
-                        ⭐⭐ **£720 PER CONSTRUCTION POINT IS ONE METHOD'S RATE, NOT A CONSTANT** (F53).
-                        It is `pm_iron_frame_buildings`; the ladder is **wooden 1000 · iron 720 · steel
-                        540 · arc 527**, i.e. the cheapest available rate falls 1000/720/720/540/540/527
-                        across our six tiers. The tool DERIVES it per method from the game files and
-                        takes `--constr-pm` to pick one; 1836 wants iron frame, since all eight markets
-                        hold `urban_planning` from vanilla's own starting inventions. Every £ figure in
-                        `payback_census.mjs` still uses 720 flat, so its late-tier capital stock and
-                        rebuild times read ~27% high.
-                        ⚠ A building at a LOSS has no payback and is reported as a COUNT, never folded
-                        into a median as a large number. The capital-weighted aggregate — Σ(cost×levels)
-                        ÷ Σ(52×profit×levels) — needs no distribution and is the robust reading.
-  payback_census.mjs    ⭐⭐ THE CAPITAL-SIDE CENSUS **AND THE COST-BOOK SOLVER** (`--write` is the one
-                        thing here that writes, and it writes exactly `building_cost`). What a level
-                        COSTS against what it EARNS, across the six tier scenarios: payback per tier at
-                        that scenario's own realised prices, the realised margins behind it, capital
-                        stock, **K/GDP**, and **years of the construction budget the standing capital
-                        stock represents** (the buildability constraint, and the sharpest single reading
-                        of the capital glut). `--rule` derives the cost book, `--write` stores it.
-                        ⭐⭐ THE RULE IT IMPLEMENTS is in the Working-conventions bullet *Building cost
-                        is exactly vanilla's own cost book, flat* (§10.61) — read that first; this is
-                        where it runs.
-                        ⭐⭐ WHY IT EXISTS, and the finding it was written for: `solve_building_cost.ps1`
-                        pays the cost back out of an ASSUMED 20% return on operating cost, while the
-                        shipped economy earns 56–104% (median, dominant rungs) — so the REALISED payback
-                        was **~2 years in every tier**, not the 10 the model names. The model is right; its
-                        one assumption is 3–6× off. Nothing measured that before, because payback is a
-                        property of the RECIPE BOOK and the SCENARIO together and the two live in
-                        different tools. ⚠ A rung is read in the tier where it is DOMINANT, the same
-                        convention the recipe solve uses. ⚠ Its £ figures are all on the flat-£720 basis
-                        (see the ruling) — self-consistent within it, ~27% high on late-tier capital
-  extract_vanilla.ps1   dumps EVERY vanilla building/PMG/PM → ui/vanilla.js (the UI's all-buildings explorer — same editable layout as the tier cards); regenerated each build
-  telemetry_lib.ps1     THE one generator of testbed telemetry script; dot-sourced by build.ps1 so the vanilla
-                        control and every modded arm instrument IDENTICALLY (a control that logs differently is not a control)
-  extract_icons.ps1     converts the vanilla goods icons (.dds) → ui/icons.js (base64 PNGs) for the scenario panel; regenerated each build. ui/icons.js is GITIGNORED — it is Paradox art, never committed or shipped; the UI degrades to text-only without it
-  extract_measured.ps1  testbed session → config/measured_1836.json: the measured 1836 reference the
-                        presets need and the game files cannot give (trade, SoL by stratum, military
-                        levels, urban-centre cross-check). Run it after a game patch, pointing at a
-                        run built with metrics `boot_dump`/`scenario`/`building_inventory`. Reads at
-                        **1836.2.1, not day 0** — construction goods spend is exactly £0 on day 0
-                        (the sector has not ticked yet), so day 0 is history-faithful but
-                        economically unfinished (FINDINGS F14)
-  extract_presets.ps1   derives the scenario panel's market PRESETS from the vanilla 1836 start (config/presets.json → ui/presets.js): per country market, its buildings (re-tiered) + the PMs vanilla runs, treaty goods transfers, the population split into consumption classes, and the **measured base wage** for that market (`base_wage` / `base_wage_note`; absent when the market has no per-pop measurement, in which case the UI leaves the sheet wage alone rather than substituting the per-worker state average, which is a different quantity), plus the buy-package / pop-need tables the UI needs; regenerated each build
-  audit_pm_refs.ps1     scans vanilla events/JEs/effects for references to main PMs our split relocated → MISSING_PM_REFERENCES.md (diagnostic; not run by build)
-  convert_history.ps1   1836 start converter: re-tiers vanilla starting factories, applies start_exceptions.json
-                        ⚠ With NOTHING to seed it REMOVES `common/history/pops/zzz_pm_rehaul_seed_pops.txt` (since 2026-09-24):
-                        build.ps1's clean step never wipes `common/history`, so a retired book's seed survived in `mod/` and the
-                        deployed mod for three weeks while every fresh testbed build lacked it (BUGS_AND_FIXES 2026-09-24)
-                        ⚠⚠ A start rule naming a `disabled` industry is SKIPPED AND COUNTED, not a
-                        fatal "unknown industry" (§10.67.5) — that error is right for a TYPO and
-                        wrong for an industry the book deliberately leaves vanilla; an unknown id
-                        still throws. ⚠ It walks $creates THREE times (placement, pop seeding, and
-                        the no-silent-holes check) and every pass needs the guard: adding it to one
-                        pass of a multi-pass loop is not a guard, it just moves the crash
-                        ⚠ A 1836 block landing on a MERGED rung (`method_of`, §10.91.2) THROWS: it would have to become the host
-                        running that method, with that method's own secondary copies, which neither this tool nor emit_secondaries
-                        does yet. None of the six ruled merges has a 1836 factory (checked 2026-09-30)
-  extract_start.ps1     baseline extractor: vanilla start → start_baseline.json (inventory + version-drift alarm)
-  history_lib.ps1       shared vanilla parsing: ONE history walker (Invoke-HistoryWalk; Walk-HistoryFile = rewriting mode, Read-HistoryBlocks = read-only mode) + Get-TopBlocks / Get-ListTokens / Get-Num, used by the converter, every extractor and the volume solvers
-  ui.ps1                balance-UI server: serves ui/ at localhost:8777 + POST /api/build (writes config, runs build)
-                        + GET /api/config and GET /api/start_exceptions (the LIVE config files, verbatim bytes —
-                        the sheet boots from these when served, falling back to the build-time copy in data.js;
-                        the static branch serves ui/ ONLY, which is why the config needs its own routes)
-  bundle_ui.mjs         inlines ui/builder.html + data.js + vanilla.js + presets.js — **and the whole tech-tree
-                        page, techtree.html with techdata.js folded into it** — into ONE standalone page
-                        (`node tools/bundle_ui.mjs [--out <path>] [--stale-ok]`, or balance-snapshot.cmd).
-                        ⚠ **ui/icons.js is deliberately EXCLUDED** — Paradox art, gitignored because the repo
-                        is public, and a snapshot is something you hand to someone else; the panel already
-                        degrades to text-only good names. "Build now" is disabled in the copy (it POSTs to
-                        ui.ps1); **Export mod_config.json still works IN THE FILE**, so the round trip is tune → export →
-                        bring the file back.
-                        ⚠ **BUT NOT IN THE PUBLISHED ARTIFACT.** The artifact viewer never grants a page
-                        download permission, so Export is INERT there — the button does nothing, silently,
-                        including for `data:`/`blob:` hrefs. The published snapshot is therefore READ-ONLY
-                        in practice: to tune and bring changes back, download the HTML and open it locally,
-                        or use the served UI. Do not tell someone to "export from the link".
-                        Two guards, both exit non-zero: it REFUSES to bundle when
-                        ui/*.js is older than config/mod_config.json (a snapshot of the previous build's
-                        numbers is the failure mode worth preventing — `--stale-ok` overrides), and it fails
-                        if builder.html loads a `<script src>` not listed in its INLINE/OMIT lists, rather
-                        than silently shipping a page missing a whole data set. The tech-tree page has two
-                        more of the same kind: it fails if techtree.html stops loading techdata.js, and if
-                        builder.html stops reading `window.__TECHTREE_HTML` (which would leave the detached
-                        copy quietly falling back to an `<iframe src>` with nothing beside it to serve).
-                        ⚠ The tree page's own data, ui/techdata.js, only WARNS when stale — see techtree.html
-                        below for why. ⚠ The tree block is built before the wrapper strip and appended
-                        AFTER it: that strip is `$`-anchored and deletes every `<meta>` globally, so an
-                        earlier append would both defeat the anchor and eat the tree's own charset meta out
-                        of its string literal
-  testbed/run_observer.ps1  the GAME driver, called BY run_schedule (a hand run is a DIAGNOSTIC, not an
-                        experiment — it has no build step): launches the game headless (no launcher), plays to
-                        a date, harvests, quits; owns crash-resume + the p/r/s/x keys. Telemetry always comes
-                        from the mod under test — it has NO generator of its own and refuses to launch a mod
-                        that carries none
-  testbed/summarise.ps1 THE post-run analysis step: raw logs -> summary.json + TSVs, then optionally
-                        gzips the raws (-Compress, only after the summary verifies). THREE TIERS per run:
-                        summary.json (~100 KB, what meta-batch analysis reads) / TSVs (~7 MB, drill-down)
-                        / logs .gz (~5 MB, archive). **The summary is a CACHE; the raw log is the record** —
-                        the script re-runs over .gz archives, so a field added later is back-filled, not
-                        lost. That is what makes compressing safe under the never-delete rule
-  testbed/analyse_wages.sh  analysis for the `wages` metric (base wage / wage+SoL trajectory / workforce
-                        ratio). Two things in it are load-bearing, not detail: it filters every line by the
-                        run's OWN token from meta.json (the log ring carries other sessions' lines — one run
-                        folder held 976 foreign pop lines for a 187-pop country), and it never
-                        de-duplicates per-pop lines blindly — it uses each country's `WC` pop-object count
-                        as the expected line count, takes a complete single source where one exists, and
-                        reports the shortfall where none does
-  testbed/analyse_slave_basket.ps1  analysis for the `consumption_breakdown` metric's **"purchased for slaves"**
-                        line — the only readable measurement of the slave channel (FINDINGS F27). Like
-                        analyse_wages it filters by each run's OWN token, and it adds a per-block INTEGRITY
-                        CHECK that is load-bearing: the value line does not name its good, only its fence
-                        does, and at British-market volume the log mirror puts values in the wrong block. So
-                        each block's `Current total:` is verified against that good's `GetMarketBuyOrders`
-                        from the run's own `G|` line (reference table built session-wide, because the
-                        breakdown's volume can push a run's `G|` lines out of the ring entirely), and a block
-                        holding more than one candidate is discarded rather than guessed at. Without it the
-                        parse invents goods the game never reported
-  testbed/score_pop_split.mjs  THE scorer for the pop-consumption model against DIRECTLY MEASURED
-                        consumption (`consumption_breakdown`): monetary error per market on the F24 basis,
-                        within-need misallocation, and a per-good diff. Runs the model under each
-                        `S.SPLIT_MODE` in turn (`--modes raw,final`) so two readings of one rule are scored
-                        on byte-identical measured data. Built for FINDINGS F31; not specific to it — any
-                        later change to the pop model is re-scored the same way. It reads a session's logs
-                        directly, with the same four safeguards `analyse_slave_basket` needs (own-token
-                        filter, block verified against the run's `G|` buy orders, K/M/B suffixes, tail-only
-                        matching), plus one of its own: a verified block with **no** pop entry is a real
-                        ZERO, not a miss, or the model is never charged for demand it invents.
-                        ⚠ Its `--need` and cap-violation views must see EVERY good of a need before they
-                        judge — the ring truncates, and a partial denominator invents violations
-  testbed/analyse_debut_goods.mjs  what a good's order book does in the months AFTER it first appears —
-                        the reader for a long dense-cadence `market_goods_scoped` run
-                        (`schedules/debut_good_demand.json`). Finds each (market, good) series that is ZERO
-                        at the first dump and non-zero later — a good already trading in 1836 is not a
-                        debut — and prints the window around it. ⚠ **Demand-side by design**: a good can be
-                        invented in a country we do not watch, so it keys on the first month a market BUYS
-                        it, not the first month anyone makes it, and reports the ORDER of the two. Demand
-                        before local production means the market imported it, which is the case that says
-                        most about where a debut good's demand comes from
-  --- THE SAVEGAME READER: a SECOND instrument, for STATE rather than PROCESS (TESTBED_METRICS §7) ---
-  testbed/save_extract.mjs   a `.v3` save -> its `gamestate` (ASCII header + metadata + a one-entry ZIP;
-                        45.5 MB inflates to 259 MB, so everything downstream STREAMS). There is no
-                        text-save option — checked, so nobody re-checks
-  testbed/lib_savebin.mjs    THE reader for Clausewitz binary — one implementation, like lib_breakdown.
-                        ⚠⚠ TRUSTED ONLY BEFORE ~104 MB: brace depth is stable through the pop table, then
-                        drifts (a rare token with an unconsumed payload) and ends at depth 146. The
-                        states/buildings/market databases live past the drift, which is why per-market pop
-                        analysis and per-state `local` goods supply are NOT yet available
-  testbed/save_survey.mjs    structure + token census — what is in a gamestate and where
-  testbed/save_dump_records.mjs  the raw token sequence around an anchor string, to read a record's shape
-  testbed/save_pops.mjs      the POP TABLE (+ the country tag table, which rides along because a pop
-                        carries its owner as an INDEX and is unlabelled without it) -> TSV
-  testbed/save_summary.mjs   THE readable summary: wealth distribution, need budgets, and the WEALTH
-                        THRESHOLD PER NEED — three needs (communication, leisure, luxury_food) do not
-                        exist below wealth 20 and only 7.9 % of the world reaches it (FINDINGS F38).
-                        ⚠ Field meanings are HYPOTHESES until independently confirmed; the confirmed set
-                        and what confirmed it are tabulated in TESTBED_METRICS §7
-  --- the MELTED-save readers (rakaly melt -> plaintext with real field names). These are what solved
-      the pop-need split (FINDINGS F40); they read STATE, so they need no telemetry of their own ---
-  testbed/melted_pop_need_weights.mjs  the game's OWN computed purchase weight per (state, CULTURE, need,
-                        good), out of `states.database.<id>.pop_needs`. Divide by the base weight from
-                        common/pop_needs and you recover the SUPPLY SHARE the game actually used — a
-                        quantity that exists nowhere else and cannot be derived from the order book.
-                        ⚠ Supersedes melted_state_needs.mjs, which numbered the entries 0,1,2… and threw
-                        the real key away; the keys are CULTURE ids and are not consecutive, so the
-                        counter merged distinct cultures under one label
-  testbed/melted_building_goods.mjs  per-state SUPPLY and NON-POP DEMAND, from every building's
-                        `input_goods` / `output_goods`, plus the prestige share of each output.
-                        ⭐ The market order book is NOT persisted in a save (the market database holds only
-                        `owner`), but the buildings are — so the pair the substitution rule consumes can be
-                        rebuilt for the SAME gamestate the weights come from. Validated against the run's
-                        own telemetry: production matches to ~8 % mean
-  testbed/melted_pops_by_profession.mjs  POPULATION BY PROFESSION per country, out of a melt -> the
-                        committed `config/measured_1836_professions.json`. Written because the balance
-                        sheet edits population by profession and sums the strata from it, and nothing in
-                        history or telemetry supplied that split. ⚠ Size is `workforce + dependents`, and
-                        an unattributable pop (a state with no owner) is REPORTED, never dropped
-  testbed/melted_pop_identity.mjs  WHO each profession is per country (the culture-religion group with the most people of it),
-                        and each state share's PEASANTS, people and infrastructure, out of a melt -> config/measured_1836_pop_identity.json
-                        (2026-10-01, for the craft seeding's identities and its peasant takes; read from a vanilla 1836.2.1 save). Culture
-                        is an INDEX into the save's culture database and is resolved there; an unowned pop is reported, never dropped
-  testbed/melted_cultures.mjs  the culture database and its CURRENT obsessions. ⚠ OBSESSIONS ARE RUNTIME
-                        STATE — common/cultures holds only the 1836 set and the game adds and drops them
-                        all campaign; reading the file instead of the save put Australian wine 220 pp wrong
-  testbed/predict_pop_split.mjs  THE end-to-end check: predict every stored purchase weight in a market
-                        from that market's own supply, non-pop demand and prestige supply. `--no-culture`
-                        scores the mechanism alone. **`--local <mode>`** scores the LOCAL-GOODS readings
-                        against each other and prints their error as its own headline (F43): `off` (market
-                        supply, the pre-F43 reading), `scaled:<f>` (the shipped form — the factor on the
-                        WHOLE availability), `fixed:<f>` (on supply only — ⚠ zeroes electricity out below
-                        f≈0.3 and DROPS those entries, so its low end is not comparable), `state`, and
-                        `gdp` (the real per-state rule with GDP proxied by output-value share).
-                        **`--shares`** emits the SHARES per (need, good) as TSV instead of an aggregate
-                        error — run it under two `--local` modes and join on the observed column, which is a
-                        property of the save and must come back identical or the runs are not comparable. An
-                        error figure cannot distinguish a 0.49-vs-0.23 miss from a 0.05-vs-0.02 one.
-                        Supporting single-term tools: within_need_test.mjs
-                        (candidate availability forms, inside one need — no cross-need scale to invent),
-                        fit_substitution_rule.mjs --sweep (the deduction coefficients),
-                        validate_split_rule.mjs (clamps, prestige and culture terms, isolated),
-                        solve_need_availability.mjs / fit_availability.mjs / identify_availability.mjs /
-                        invert_deduction.mjs (the identification path, kept for re-derivation)
-  --- ⭐⭐ THE SAVEGAME HARVEST — the same instrument, INDUSTRIALISED (2026-08-11, TESTBED_METRICS §7½).
-      Every autosave of every run is archived, melted, summarised and reaped automatically, so a batch
-      yields an ANNUAL per-country state series beside the log telemetry's twelve dump dates ---
-  testbed/save_state_summary.mjs  ONE MELT -> ONE SUMMARY JSON (gzipped, ~400 KB from 2.2 MB raw).
-                        Takes a `.v3` DIRECTLY and melts it in-process with `rakaly -c`, so the 391 MB
-                        plaintext never touches disk and a worker pool needs no shell pipe. Per country:
-                        GDP/prestige/literacy/SoL (last sample of each weekly trend), pop_statistics
-                        incl. POPULATION BY PROFESSION, buildings BY TYPE (count, levels, SUBSIDISED
-                        levels, profit, cash, staffing), the whole budget with `country_building_budget`
-                        itemised by category AND BY BUILDING (⭐ the per-building SUBSIDY line, which
-                        needed no deriving — the save books it directly), last_bankruptcy_date,
-                        technologies held, foreign-owned/owned-abroad levels,
-                        ⭐ COMPANY OWNERSHIP (v7, 2026-08-21 — ROADMAP step 5a, un-deferred for the long
-                        vanilla batch because per-year ownership cannot be back-filled): per-building-type
-                        `company_levels` (owner-building type `building_company_*` OR
-                        `building_regional_company_*` — the regional-HQ half is ~11% of company holdings
-                        and was invisible to the pre-v7 deep-dive, so F77.1's shipped shares are slight
-                        undercounts on both sides), the per-country `companies` register (type, prosperity,
-                        charters, regional-HQ count — resolved to a country via the HQ BUILDING, never the
-                        record's own `country=`, which is a typed handle, not a country_manager id), and
-                        `ownership_levels` (host-side levels by owner class: state / foreign country /
-                        financial district / manor house / company / regional company / other building) —
-                        validated level-exact against `melted_company_ownership.mjs` on mod AND vanilla
-                        1936 endpoints, ⭐ ACTIVE PRODUCTION METHODS (v8, 2026-08-21 — the last-call batch
-                        additions): per-building-type `pms` (pm key → LEVELS of buildings running it;
-                        every save building record carries the full active list incl. secondaries —
-                        within one PMG a type's per-PM levels sum exactly to the type's levels, verified
-                        on gov admin's three PMGs; this is F75's missing vanilla denominator and makes
-                        the tiered panel's secondary-PM bias readable), plus a top-level `states` map
-                        (per-state `infrastructure`/`infrastructure_usage`, owner tag, region — market
-                        ACCESS is not persisted and stays log-side) and per-country `prestige_out`
-                        (good → prestige quantity of the output flow, the tuple-sum reading
-                        `melted_building_goods.mjs` validated), goods in/out, and
-                        TOP PRODUCERS BY GOOD with quantities (top 20 per good, in EVERY summary),
-                        ⭐ TRADE (v10, 2026-09-23, FINDINGS F159 §1): per-state `trade_capacity`/`trade_capacity_usage`,
-                        per-country and world `trade` + per-good SIGNED trade capacity (`goods.<good>.{imp,exp}`, from each
-                        state record's `trade.goods.<index>.value`, which sums exactly to its usage), and
-                        `world.world_market_price.<good>.{last, mean52}` — ⚠ read from a 52-slot WEEKLY RING BUFFER at
-                        (index − 1) mod 52, never the last element; both goods indices are POSITIONAL in 00_goods.txt,
-                        ⭐ LAWS AND TARIFFS (v11, 2026-09-24, FINDINGS F161 §6): per country `laws` (the active law keys),
-                        `trade_policy` (the one in `lawgroup_trade_policy`, resolved through a law → group table read LIVE from
-                        common/laws — it THROWS if that group holds no law) and `tariffs.{import,export}.<good>` = the per-good
-                        LEVEL (max_tariffs / high_tariffs / low_tariffs / no_tariffs_or_subventions / low_subventions / …; a
-                        good with no record is absent, not "none"). ⚠ Trade advantage and each state's local import/export price
-                        are NOT persisted (`not_captured.trade_advantage_and_local_prices`),
-                        ⭐⭐ ONE ENTRY PER COUNTRY RECORD (v12, 2026-09-30, FINDINGS F186, landmine L38): up to v11 `countries`
-                        was keyed by the DEFINITION, so records sharing one — a civil war's two sides, a country a revolt left
-                        behind for decades, two records that both carry `is_main_tag` — overwrote each other in slot order, the
-                        MAIN one as often as not (vanilla n=16 seed 7 read a second, 2.4–4.5M Prussia as `countries.PRU` from 1871
-                        to 1936; seed 5 dropped CHINA at 1936), and `world.gdp`/`world.population`, summed over that map, lost
-                        them. Now the single main keeps TAG and the others are `TAG@<country id>` (two mains → the most populous
-                        keeps TAG, named on stderr); the world totals sum every record; `overlord`, `states.<id>.country`,
-                        `top_producers` and the trade attribution use the same key; each entry carries `tag`, `civil_war`,
-                        `last_civil_war_date`. ⚠ A KEY IS OPAQUE — the definition is `c.tag ?? key.split('@')[0]` in every
-                        version, and a pool member is the plain TAG, i.e. the main record. ⚠⚠ PRE-v12 SUMMARIES CANNOT BE
-                        REPAIRED (their saves are reaped): `tools/testbed/ledger/summary_drops.mjs --session` sizes their drops
-                        from the always-complete `world.buildings` and flags a shortlist member that was not the main record,
-                        ⭐ INTEREST GROUPS (v13, 2026-10-01, user-asked for the craft redesign's Petite Bourgeoisie): per country
-                        `interest_groups.<ig_def>` = {clout (0–1, after the engine's modifiers), ps, rad, loy (political strength,
-                        total / radical / loyalist)}; `ledger/ig_clout.mjs` back-fills ten years from any kept save (FINDINGS F190),
-                        ⭐ IG MEMBERS BY WORKPLACE (v14, 2026-10-01, the user's "tracking only" ruling on the Petite Bourgeoisie's
-                        fall with the crafts and re-rise with urban/trade centres): per country `ig_by_workplace.<class>` = {mem, wm
-                        (8-arrays in `world.ig_order`: engaged members in millions, and × exp(wealth/5)), wf, shop} for the classes
-                        light6 / urban_center / trade_center / owner / other / unemployed, from the pop table's IG support array
-                        (F192); read with `ledger/ig_workplace_series.mjs`. ⚠ Session 20260930_232639 run 1 switched v13 → v14 at
-                        1860 (the swap was made mid-batch; the field is additive),
-                        ⭐ PER-STATE LABOUR AND RESOURCE LEVELS (v15, 2026-10-02, for the user's VALID-INVESTMENT rule — free deposits or
-                        arable land AND ≥ 25k peasants + unemployed in the state, FINDINGS F207): per state `lab` = {peas, unemp}, the
-                        WORKFORCE of its peasant pops and of its other pops with no workplace (Σ over a country's states matches its
-                        `population_unemployed_workforce` within ~5%), and `res` = {building type: [levels, staffing, profit]} for every
-                        resource-capped type (mines, logging, fishing, whaling, oil, rubber, farms, plantations, ranches, orchards,
-                        vineyards; subsistence left out). The caps themselves are static and read from `map_data/state_regions`. First
-                        batch carrying it: 20261002_120946 (every earlier session is v14 or older; a KEPT save can be re-summarised),
-                        ⭐ MILITARY FORMATIONS AND THEIR TRAVEL PATHS (v16, 2026-10-06, for the fleet-loop slowdowns — FINDINGS F218 §8, the
-                        user: collect now, correlate with the per-tick log after the next n=8+): per country `formations` {formations, fleets,
-                        armies, moving, recalled, recalled_moving, loops (recalled AND ≥ 200 path moves), moves, dist (the travel path's own
-                        length = the distance sailed along it), dist_k2 = Σ (dist/1000)², max_moves, max_dist}; `world.formations` = the same
-                        + `by_bucket` (owner id mod 4 — the sub-tick key, stored as the bucket because its hour is an inference) +
-                        `hist_moves` + `supply_moves` + `worst`: ≤ 40 paths (15 longest, 15 most moves, every loop) with owner key AND id,
-                        recall flag, TYPED repair target (state / military_formation / front / prov, and whether it still exists), distinct
-                        nodes, the top-2 nodes' share of the moves (a loop shuttles: 3 nodes, 0.91) and ships (count, hit points, name list).
-                        ⚠ An owner's id can change (Britain was id ≡ 0 in one 1936 save, a re-created country) — use `owner_id` per year.
-                        Cost +~5% per save (13.6 → 14.3 s on a 1936 save); everything else byte-identical to v15. Nothing reads it yet
-                        (`fleet_loops.mjs` remains the tool for a kept save),
-                        ⭐ THE DAM SLOT CHECK (v17, 2026-10-09): the dam types `building_dam_*` join the per-state `res`, and every queued dam
-                        level is recorded per state as `dam_q = { <type>: { <builder key>: n } }` (government and private queues; builder = the
-                        queue's owner) — read by `ledger/dam_slots.mjs`; everything else byte-identical to v16,
-                        ⭐ WAR GOALS AND TREATY PORTS (v19, 2026-10-18, FINDINGS F243): `world.war_goals` = { "<type>[:<article>]": { initial,
-                        added } } over every goal of the ACTIVE plays (`war_goal_manager`; initial = the goal the play opened with; a 1.13
-                        treaty-port demand is `enforce_treaty_article:treaty_port`), `world.treaty_port_goals` = [{ holder, target, initial }],
-                        and `world.treaty_ports` = [{ giver, taker, state }] from `treaty_article_manager`; everything else as v18,
-                        and POP OBJECT COUNTS — total AND non-empty, per country and world-wide.
-                        ⚠ 17.4% of vanilla pop records hold NO people, the game's UI hides them, and
-                        `<id>=none` freed slots sit in the same database (a record test must require the
-                        trailing brace, or the count comes out 2.9% high). Count RECORDS and claim
-                        nothing about the identity tuple — `workplace` is one of its dimensions but
-                        state+culture+religion+profession+workplace+wealth still only reaches 92.8%.
-                        ⚠ It does NOT scan the pop table (8 M of the melt's 16 M lines): each country
-                        record already carries population_by_profession, and that index is ALPHABETICAL
-                        over `common/pop_types/*.txt` — VERIFIED, agreeing to 0.03% world-wide on all 15
-                        professions (`--verify-pops` re-derives it the expensive way). It THROWS if the
-                        game's pop-type count ever differs from the save's own count prefix.
-                        ⚠ SAVE_SUMMARY_VERSION is bump-never-renumber, like TELEMETRY_VERSION.
-                        ⚠ NOT to be confused with `save_summary.mjs` (below), which reads the RAW BINARY
-                        and answers a different question
-  emit_vanilla_refs.mjs ⭐⭐ THE TIER-REFERENCE FIX (2026-10-21, POLISH_1_0.md §2, TIER_REFERENCE_AUDIT.md §5.1 + PART 2) — called by build.ps1
-                        after emit_craft_start, before emit_value_overrides (throws). Every vanilla script position that names a tiered
-                        industry (a rung-0 key, a moved main method, a renamed secondary, a `building_<key>_throughput_add`) rewritten to the
-                        rung set the user ruled for it: 63 vanilla files regenerated from the live game (213 token rewrites, 23 snippets, 52
-                        throughput lines expanded), additive helper triggers / effects / a value, six throughput modifier types (11 languages),
-                        the Montenegro first-arms check (gated on ip3_content). Match counts asserted per file; DLC gates counted per file; a scan
-                        of common/ and events/ THROWS on any tiered reference outside an owned file or its ACCEPTED list. `REFS_LEARN=1` reprints
-                        the counts after a patch. A file another emitter already wrote is transformed in that copy
-  check_dlc_gates.mjs   🛑 THE DLC RULE, ENFORCED (landmine L39) — run by build.ps1 on the FINAL build: every shipped vanilla-path file keeps
-                        vanilla's count of `has_dlc_feature` lines and `dlc =` fields, or the build THROWS (131 files / 19 gated on 2026-10-21)
-  emit_value_overrides.mjs  RULED VANILLA VALUES, CHANGED IN PLACE (2026-10-21, POLISH_1_0.md Q1) — called by build.ps1 LAST among the content
-                        emitters (throws). Config `vanilla_value_overrides` = [{ file, block, key, vanilla, value, why }]: one line of a named
-                        top-level block, at the stated vanilla value (a patch that moves it THROWS); a file an earlier step already wrote is edited
-                        in that copy, any other is copied whole from vanilla; every DLC gate survives (counted). First use: the four flat research
-                        adds ×1/3 (Philips, Advanced Research III, the expedition, Cuba). Absent → nothing
-  emit_research_levers.mjs  THE RESEARCH LEVERS (BALANCE_FRAMEWORK §10.96) — called by build.ps1 after emit_dams (throws). Config
-                        `research_levers` (absent → nothing): `static` {block: {key: value}} REPLACES existing lines of
-                        00_code_static_modifiers.txt (whole-file copy; it edits emit_dams' copy where one exists; a key that is not exactly
-                        once in its block THROWS — it never inserts), `university_innovation_mult` k scales the three university methods'
-                        innovation in a whole-file copy of production_methods/07_government.txt. `make_research_levers_config.mjs --base
-                        <book> --suffix <sfx> [--cap-lit N --cap-base N --innov-base N --spread-base N --spread-lit N --uni-mult k
-                        --dam-staff L,M,E]` writes the book + its tree twin. First book: `jex-dam4s-ra` (candidate A: cap literacy term
-                        150 → 50, universities × 0.5, the dam staffing pinned to F222's measured 50/100/50). ⭐ Since 2026-10-11 a
-                        `dams.staff_per_50` pin INHERITED from the base is DROPPED unless `--dam-staff` is given (user: the deferred dam
-                        workforce reduction, 10/15/10 per 50 electricity, goes into every artmerge book onward)
-  research_model/       ⭐⭐ THE RESEARCH MODEL (BALANCE_FRAMEWORK §10.96, FINDINGS F223, 2026-10-10) — read-only tools; nothing here touches a book.
-                        `lib_tree.mjs` (the tree as the game loads it, vanilla or an emitted mod; the penalty skips can_research = no),
-                        `lib_paths.mjs` (a run's yearly literacy / innovation / country type / laws / holdings from its summaries),
-                        `lib_grants.mjs` (a run's research-entry grants from its debug.log, dated by the TECH lines, names mapped to keys),
-                        `lib_sim.mjs` (the weekly simulation with the MEASURED rules: research min(innovation, cap); the AI in each tree's oldest
-                        era, P ∝ ai_weight⁴; spread uniform in the oldest missing era; levers incl. capLit, innovBase, uniMult, spreadLit,
-                        era4/era5 cost, res_<tree>/spr_<tree>, resEff — 0.95 on the book, 0.80 on vanilla), `lib_metrics.mjs` (the targets);
-                        readers `flow_check.mjs` / `spread_pick.mjs` / `research_pick.mjs` / `innovation_fit.mjs` (need v18 summaries),
-                        `validate.mjs <summaries> [--mod] [--je]` (model against a run), `fit_eff.mjs`, `sources.mjs` (points by source and rank), and `sweep.mjs --runs … --mod …
-                        --tree … [--van …] --set "name:key=v,…"` (candidate levers scored on §10.96's targets). ⚠ GDP is not modelled
-  testbed/ledger/wall_clusters.mjs  ⭐ THE WALL CLOCK IN THE THREE RULED RUN CLUSTERS (2026-10-07): normal / inexplicably slowed (an episode,
-                        no listed bug observed) / a directly observed listed bug (the fleet path loop in the v16 summaries' worst paths);
-                        per arm the cluster-1 and cluster-2 medians, the MAIN median over 1 + 2, and the cluster-3 count and bug.
-                        `<label>=<session>[,<session>][:<setup>] [...] [--runs] [--json <file>]`. Use it for every wall-clock report.
-                        Since 2026-10-08 fill_ledger.sh runs it with --json, and the ledger's row P grades the median over clusters 1 + 2
-                        (a cluster-3 run is named and left out; the yellow edge is the ruled +10% budget)
-  testbed/slow_quarantine.mjs  ⭐ THE SLOWDOWN QUARANTINE JUDGE (user-ruled 2026-10-07; the wall-clock bullet): per run, from the per-tick log,
-                        which yearly saves sit in a slowdown EPISODE (the time per in-game year > 3σ over year X−3, X−6 or X−10, three years running) or the two years after —
-                        `keep` (with its quarantine name) / `release` / `wait`, plus `<run>/slow_periods.json` and
-                        `<run>/quarantine_saves/MANIFEST.md`. Called by harvest_saves.ps1 before every reap; `<runDir> [--final] [--k 3]
-                        [--restore 2]`. Exports `yearTimes()` / `episodes()` for the cluster-2 reading
-  testbed/harvest_saves.ps1  stages B-D: melt -> extract -> VERIFY -> reap, N workers (default 4), with
-                        the queue-depth / GB / drain-rate progress line. ⭐ SINCE 2026-10-07 A SUMMARISED SAVE IS REAPED ONLY ON THE
-                        QUARANTINE JUDGE'S `release` (slow_quarantine.mjs); `keep` moves it to `<run>\quarantine_saves\` for good.
-                        ⚠⚠ IT INVERTS THE REPO'S RULE:
-                        everywhere else "the summary is a CACHE, the raw log is the record", but a reaped
-                        save makes THE SUMMARY THE RECORD. Hence: write to a temp name, VERIFY the
-                        artifact (gunzip, parse, require a version + date + ≥10 countries), rename, and
-                        only THEN delete the .v3 — a failed save is never reaped and keeps a .err beside
-                        it, and the NEWEST save of each run is kept permanently as the escape hatch.
-                        Landmine L12 enforces all of that post-run (`preflight.ps1 -Session <dir>`).
-                        ⭐ IT RUNS CONCURRENTLY WITH THE GAME BY DEFAULT (`-Watch`, user ruling
-                        2026-08-11): a save is summarised and deleted minutes after it is written rather
-                        than tens of gigabytes standing until the run ends. A final synchronous drain
-                        always follows the run, so a dead watcher costs time and nothing else — the queue
-                        is "saves with no summary yet", which makes the pass idempotent.
-                        ⚠ This required the archiver to write ATOMICALLY (copy to `.v3.part`, then
-                        rename): `Copy-Item` is not atomic, so a live harvester could otherwise read a
-                        half-copied save. ⚠ The melt's cost to the GAME is unmeasured (~5 s of one core
-                        per save, 20 cores, mostly single-threaded engine); `-HarvestWorkers 0` restores
-                        the drain-between-runs shape for a batch that needs the machine quiet
-  testbed/verify_save_alignment.mjs  THE GATE: do the two instruments agree on GDP, building count and
-                        population? ⚠ The join is on POPULATION, not on name — telemetry names a country
-                        by DISPLAY NAME, which changes mid-campaign (the country telemetry calls "India"
-                        is tag BHT), while a save names it by TAG, which does not. Matching on GDP and
-                        then reporting GDP agreement would be circular; population is measured
-                        independently on both sides and is not scored. Run it before moving any
-                        state-of-process metric off the logs
-  ⚠ MEASURED COST, and it retires the plan's central worry: melt 2 s, single-pass extract ~4 s,
-      STREAMED end-to-end 5.0 s per 57 MB save. The consumer is several times FASTER than a quarterly
-      producer (one save per 15-35 s of wall clock), so the queue never grows. The binding constraint is
-      the ENGINE: writing a 40-55 MB autosave stalls the game, so ~400 quarterly saves per century cost
-      real game wall clock where ~100 yearly ones do not — which is why a batch measuring wall clock uses
-      YEARLY (also the cadence the earlier vanilla sessions used, keeping them comparable)
-  testbed/score_save.ps1   ONE COMMAND per gamestate: melt an archived autosave, run all three readers,
-                        score it. `-Keep` keeps the 250 MB melt for follow-up work; without it the melt
-                        is deleted. ⚠ It reads the date from the melt anchored at COLUMN 0 — a save is
-                        full of nested `date=` fields and a whitespace-tolerant pattern reads 1.1.1
-  testbed/predict_good_demand.mjs  PREDICTED vs MEASURED pop demand for one good, in UNITS — the end
-                        product, where a purchase weight is only an intermediate. Adds the BUDGET half:
-                        every pop's wealth and size from the save × `common/buy_packages`, × the stored
-                        split, ÷ base price. `--explain` prints the whole arithmetic (per need, the ten
-                        biggest state×culture cells, and one pop end to end); `--peasant-mult` A/Bs the
-                        `consumption_mult`. ⚠ **Measured pop demand is `buy − building input − EXPORTS`**
-                        — exports sit in the buy orders, and forgetting them charged the USA's 4 092
-                        exported cars to its own pops (F42)
-  testbed/debut_series.mjs  a debut good and its need-mate across many gamestates, in RAW UNITS, with the
-                        share rebuilt one term at a time against the game's own stored value. Written
-                        because the automobile story reads BACKWARDS as a ratio — see the ratio principle
-                        above
-  testbed/saves_debut/     ⚠ **KEEP — 356 quarterly autosaves of one VANILLA campaign, 1836.1 → 1921.1**
-                        (9.2 GB, gitignored). The same never-delete rule as `sessions/` applies and for the
-                        same reason: it is a historical observation, not reproducible measurement — a
-                        different seed gives a different world, and a patch gives a different game. It is
-                        the evidence behind F40's vanilla replication and behind the automobile debut
-                        (first traded 1902.1.1). Label any of them without melting via
-                        `map_saves_to_dates.mjs`, which joins the archiver's log to the observer's ticks.
-                        `_score_work/` beside it is a scratch dir for melts and IS disposable
-  testbed/archive_autosaves.ps1  copies every autosave the engine writes into a keep-forever archive
-                        BEFORE its slot is reused. ⚠ Two hazards, both hit in practice: the engine ROTATES
-                        slots by RENAMING, so a per-name dedupe archives the same save up to five times
-                        and fills the disk; and a 45 MB write is not atomic, so a file is only copied once
-                        its size and mtime have been stable for -StableSeconds. Run it alongside a batch
-                        whenever the saves, not the logs, are the instrument
-  testbed/wait_for_session.ps1  the wake-up signal for a batch launched into its own window (which the
-                        agent harness cannot see). Run it with run_in_background; returns DONE on
-                        completion, RUNNING on a heartbeat, DEAD (exit 2) if the game vanished, and
-                        STALLED (exit 3) if nothing anywhere in the session tree has been written for
-                        -StallMinutes (default 20) — landmine L21: "alive" is not "working"
-  testbed/machine_monitor.ps1  ⭐ THE MACHINE-LOAD MONITOR (user-asked 2026-10-06: "an objective external machine load monitoring that
-                        would explain wall clock speed fluctuations"). Launched BESIDE a batch, never part of it: `& 'tools\testbed\launch_detached.ps1'
-                        -File 'tools\testbed\machine_monitor.ps1' -ArgumentList '-Session','<stamp>' -Hidden`; it appends a row every 20 s to
-                        `<session>/machine_load.tsv` (log beside it, `machine_load.log`) and exits by itself on SCHEDULE DONE. A row: the game's cores
-                        and its CUMULATIVE CPU seconds (the discriminator — more game CPU per in-game year = the game did more work; more wall at flat
-                        CPU = it waited), memory, the HARNESS's cores (archiver, harvester melts, watchers) and everything ELSE's (top three named),
-                        busy cores and clock % per core CLASS (this machine is hybrid: P-cores logical 0–11, E-cores 12–19 — Windows can move a
-                        background process onto the E-cores — one hypothesis for run 3 of 20261005_154629, whose game slowed 3–4× over 1890–1903 on
-                        ~3.9 cores against ~7 normally while the harvester's real melts stayed normal), free memory, hard page reads, disk and GPU
-                        busy, ⭐ the system's COMMIT against its commit limit and transition faults (system and the game's own) — added the same
-                        morning when run 6 slowed from in-game 1890 at the minute Windows cut the game's working set 10.5 → 6.6 GB (it holds ~17 GB)
-                        with commit at 37.0 of 38.9 GB; ⚠ the run then RECOVERED (1900) with the working set still cut and commit at 96–98%, so
-                        memory did not cause it — the game's own CPU per in-game year rose 690 → 940 on fewer cores (a game-state episode,
-                        the fleet repair-loop shape of F218) —
-                        the run and its in-game date, and
-                        every 5 min a CANARY (a fixed compute job, ms per 1e7 iterations: slower = a slower machine, whatever the game does).
-                        ⚠ Machine counters come from the WMI perf CLASSES, never `Get-Counter`: counter paths are LOCALISED and a process made by
-                        launch_detached gets the system's ru-RU UI where the agent's shell has en-US, so English paths returned nothing in the
-                        detached monitor while every interactive test passed. Cost: ~2 s a sample, mostly an idle WMI wait. First attached to
-                        20261005_154629 mid-batch (run 5, 07:43 2026-10-06); ⭐ since the same evening `run_schedule.ps1` STARTS IT for every
-                        session (full session path, `-MaxHours` from the estimate; `-NoMachineMonitor` opts out). `-Session` takes a name or a
-                        full path
-  testbed/launch_detached.ps1  ⭐⭐ THE ONLY WAY THE AGENT LAUNCHES A BATCH (2026-09-13, landmine L30): creates the
-                        scheduler (or any harness script) through WMI `Win32_Process.Create`, so it belongs to NO job
-                        object — the agent's tool shells sit in the desktop app's jobs (KILL_ON_JOB_CLOSE) and a
-                        `Start-Process` child stays in one, which is how an app restart killed a whole batch at 18:45:29
-                        on 2026-09-10. It then asks the kernel whether the child is in a job and kills it if so (exit
-                        non-zero): a launch that cannot be verified is not a launch. Visible console by default (the
-                        p/r/s/x keys work), `-Hidden` for the archiver / harvester, `-NoExit` for the scheduler
-  testbed/ledger/       THE BATCH LEDGER — the reusable per-batch report (template + data scripts +
-                        README with the fill procedure). Ruled conventions encoded: normalized/absolute
-                        toggles on every view, world + watchlist pages with selectable countries,
-                        computed per-tag anomaly flags, the whole-economy/tiered-sector scope control.
-                        Published as an Artifact per batch AND copied into the session as REPORT.html.
-                        ⚠ Session paths hardcoded to the first instance (flatcost-n1); --session flag TODO
-                        (the `fill_*` scripts still are; the three `analyse_ai_*`/`analyse_build_*`
-                        scripts now take `--session`/`--config` and discover their runs)
-  testbed/ledger/pop_literacy.mjs  WHO CAN BECOME A MACHINIST, OUT OF ONE SAVE (FINDINGS F183, 2026-09-30): per country the lower class's literacy,
-                        the lower-class pops above 10% (where the machinist qualification starts to grow) and the share of the lower-class WORKFORCE
-                        in them, the people already qualified as machinists (the save's own `qualifications`), and the six light industries' t0
-                        levels (the future crafts). `<save.v3> [--json out] [--top N]`. ⚠ Pop literacy is literate ÷ WORKFORCE (it reproduces the
-                        game's country figure); over workforce + dependents it reads a quarter of it. ⚠ "Lower class" = the default hierarchy's
-                        professions from common/social_classes (farmers are middle class in 1.13), not the pop's own `social_class` record, which
-                        follows its country's hierarchy (castes, the Edo classes). ⚠ Kept saves only: the harvester reaps all but each run's newest
-  testbed/ledger/craft_fill.mjs  WHO IS TO BLAME FOR AN UNDERSTAFFED CRAFT, OUT OF ONE SAVE (FINDINGS F185, 2026-09-30): per craft building its job
-                        slots per profession (every active method's level-scaled employment × levels, read from the EMITTED mod over vanilla),
-                        its workers per profession (the pop table's `workplace`), the BINDING profession (lowest fill — `EMPLOYMENT_PROPORTIONALITY_LIMIT`
-                        holds the others within 10 points, so equal fills prove nothing), and its hiring state from the save (establishment, last layoff,
-                        last failed hire, hiring rate, profit ÷ revenue, value added and profit per employee against the £3 hiring floor, wage ÷ the
-                        country's normal rate, inbound hires from its transfer log); per state, literacy by stratum, unemployed, peasants and the people
-                        QUALIFIED as machinists / shopkeepers outside that job; a blame split in the order the engine's rules bind; `--built`: crafts
-                        CONSTRUCTED during the game (no such craft in the region on the emitted 1836 map — an establishment date alone also resets
-                        when a state changes hands) and expansions of the originals; `--states`: every craft state, and staffing by lower-class literacy.
-                        `<save.v3> <book.json> --mod <the book's emitted mod: build.ps1 -SaveTo <name> -Config <book>> [--max-occ 0.8] [--min-missing 2]
-                        [--top 40] [--built] [--states]`. ⚠ `workplace` is the building record's FULL id — a reused slot's id carries a generation prefix
-                        (slot + k·2^24); the first cut reduced it mod 2^24 and lost every worker of a reused slot. ⚠ A building's `staffing` is STAFFED
-                        LEVELS; its active methods sit on ONE line of the save
-  testbed/ledger/construction_spend.mjs  WHERE THE CONSTRUCTION MONEY WENT, AND HOW MUCH OF IT STANDS EMPTY (FINDINGS F187, 2026-09-30): per run
-                        to `--until`, in construction POINTS and £. (1) THE FLOW = all construction: Σ (government + private queue speed) × weeks
-                        between summaries, and the construction sector's goods bill × weeks (a country's £ per point = its bill ÷ its points, which
-                        prices everything it built). (2) LEVELS ADDED per country and type × the type's own cost (a rung's `building_cost`, else
-                        vanilla's `required_construction` from the build's files), by class — crafts · other tiered rungs · economic untiered ·
-                        non-economic · "e0 of the six" (`--e0-of`, the like-for-like line between a craft book and the canon); >25% country-quarter
-                        jumps and engine-sized types skipped. (3) `--stock`: the run's kept save at `--until` against the build's own 1836 map —
-                        constructed + expanded levels per class with their staffed share, so the EMPTY money is readable (re-established buildings
-                        reported apart). `--arm <session>[:<setup>] --mod <emitted mod dir> [--arm … --mod …] [--until 1866.1.1] [--stock]`; the config
-                        is each run's own. ⚠ Up to 10 points a week per country come from the country_gdp_construction static modifier and buy no
-                        goods — 12% of all points in the craft run — so £ shares understate a poor country's construction; points are the clean unit
-  testbed/ledger/hiring_census.mjs  WHO WORKS WHERE, AND WHO CAN HIRE — EVERY building of one save (FINDINGS F188, 2026-09-30): workers per building
-                        from the pop table (`workplace`, the full record id), job slots from every active method (emitted mod over vanilla),
-                        value added / profit / wage ÷ the country's normal rate, and the hiring class (FAILED-HIRE / LAYING-OFF within a
-                        year, FULL ≥ 98%, PAUSED under 20% profit at ≥ 10% employed, RAMPING), per SECTOR (the book's crafts and tiered
-                        rungs by tier, then vanilla's building-group tree) and per type, plus the labour pool (unemployed, peasants, by
-                        profession). ⭐ THE EARNINGS-FLOOR TEST: non-subsidised buildings holding workers split at £3 of value added per
-                        employee a year, failed-hire and inbound-hire rates per group — the direct test that a group-level hiring setting
-                        stays in its group (F188: every goods-selling sector's floor signature intact, only the crafts' row moved).
-                        `<save.v3> --mod <emitted mod dir> [--book <config>] [--json out]` (the book defaults to the save's own run folder);
-                        `--diff A.json B.json [--top N]` compares two. ⚠ A subsidised building is `subsidies=` > 0 in the save (no yes/no
-                        flag); government, military, construction and owner buildings sell nothing and are read apart
-  testbed/ledger/labour_flows.mjs  WHERE EACH SECTOR'S HIRES CAME FROM — the labour-flow matrix of one save from the buildings' own transfer logs
-                        (FINDINGS F188). ⭐ The log's semantics, verified record by record: in the log of a building of type K, new=K with no
-                        old = a hire from unemployment; old=X, new=K = a hire from building type X; old=K with no new = a layoff into
-                        unemployment; old=K, new=Y = a departure (sitting in Y's log as its hire); old=new=K = a re-typing. Each move is
-                        counted once, on the hiring side, weighted by `transfer_total`. The log holds RECENT moves only — read shares.
-                        Prints each sector's hires by source, the share from other working buildings, each sector as a source, layoffs,
-                        and the crafts' hires by pop type and source. `<save.v3> --mod <emitted mod dir> [--book <config>]`
-  testbed/ledger/ig_clout.mjs  INTEREST-GROUP CLOUT OUT OF ONE SAVE, WITH TEN YEARS OF HISTORY (2026-10-01, FINDINGS F190): every IG record
-                        carries `clout_trend`, a ring of 521 WEEKLY samples (newest at (index − 1) mod 521, its `date=` the newest
-                        sample's), so a kept save back-fills the decade before it — a century run's endpoint 1926–1936, a thirty-year
-                        run's 1856–1866, a ten-year probe's 1836–1846. `<save.v3|melt> [--tags …|all] [--ig ig_petty_bourgeoisie|all]
-                        [--every N] [--json out]`; prints the tags' clout nearest each 1 Jan and the MEAN / MEDIAN over every main
-                        country holding the IG — ⚠ read a lever on those, never on one country: a revolution or a ban puts one
-                        country's IG at 0 for years (Britain's PB 0.0 → 44% within five years in a vanilla seed)
-  testbed/ledger/ig_pop_contrib.mjs  WHO MAKES AN IG'S CLOUT, POP BY POP, BY WORKPLACE (2026-10-01, FINDINGS F192): a pop's
-                        `interest_group_support_array` = its politically ENGAGED MEMBERS of each IG in millions (index = the IG's
-                        alphabetical file order; per head it tracks engagement, not wealth), so the class's share of an IG's MEMBERS is
-                        exact, and its share of the IG's CLOUT is attributed inside each country ∝ members × exp(wealth/5) (the best of
-                        five fitted weights; law modifiers are not in the save). `<save.v3|melt> [--keys <building keys>]
-                        [--ig ig_petty_bourgeoisie] [--minwf 1000000] [--json out]`; prints the world decomposition, the class by
-                        profession, and the cross-country correlations. ⚠ In vanilla the six craft keys are the WHOLE industries
-  testbed/ledger/ig_workplace_series.mjs  AN IG'S CLOUT BY WHERE ITS MEMBERS WORK, YEAR BY YEAR (v14 summaries; 2026-10-01): per run and year
-                        the IG's mean clout (main countries, or `--tags` / `--pool`) split by workplace class — attributed clout
-                        ∝ members × exp(wealth/5) (⚠ over-weights the rich owner class) and the exact members % — beside the
-                        shopkeeper workforce by class. `--arm <session>[:<setup>] [--ig ig_petty_bourgeoisie] [--every 5]`
-  testbed/ledger/health_vs_ref.mjs  IS ANY INDUSTRY DEAD, IS ANY MARKET LEFT WITH A TOKEN? (2026-10-01, user-asked for the craft probe)
-                        An arm's summaries at one date against a reference's: world STAFFED levels per building type (a merged rung
-                        folded into its host on both sides) — DEAD when every arm run is under 0.10 of the reference median AND under
-                        half its minimum; and per market (named by its largest-GDP member) per good, the members' `goods_out` — TOKEN
-                        by the same two tests, on cells the reference median produces ≥ 5 units and ≥ 2% of the world's. The minimum
-                        guard is what keeps a seed's company formation or conquest from reading as a design effect. `--arm
-                        <session>[:<setup>] --ref <session>[:<setup>] [--date 1846.1.1] [--dead 0.10] [--token 0.20]`
-  testbed/ledger/merge_methods.mjs  WHICH MAIN METHOD A MERGED BUILDING RUNS (§10.91.2, 2026-09-30): per run, save date, country and merged
-                        industry, the host's levels on its own method and on the merged one, and the levels whose secondary is the merged
-                        method's own copy (`!!` when those exceed the merged method's levels — the per-method gating broken). Pairs and
-                        method keys from each run's OWN book (`_merge`). `--session <stamp> [--setup <name>] [--tags GBR,FRA] [--every N]`.
-                        ⭐ criteria.mjs's T0–T3 read merge books the same way since 2026-09-30 (commit df5769f: a host's staffing
-                        shared out over its main methods by the levels running each); the old-rung census and obsolescence readers
-                        still count by building type
-  testbed/ledger/mandate_switch.mjs  IS EVERY MANDATED AUTOMATION BESIDE THE MAIN METHOD IT BELONGS TO? (§10.93, 2026-10-03): per run and yearly
-                        summary, the levels on each mandated main method (Sewing Machines, Electric Sewing Machines, Mass Production) against
-                        those on its gated copy, world-wide, and with --detail the countries where they differ — the merged textile building's
-                        switch is the case it exists for (20261002_235755 run 1: one or two stale levels 1913–1926). Pairs from each run's OWN
-                        book through lib_secondary_compat. `--session <stamp> [--setup <name>] [--detail] [--every N]`
-  testbed/ledger/us_history.mjs  THE UNITED STATES' CENTURY PER RUN — the politics to check before reading "the USA is agrarian" as economics
-                        (2026-10-03, FINDINGS F210's addendum): from events.tsv the 1836 Texas revolt, every US–Mexico play and Mexican capitulation,
-                        and every secession or revolution the USA faced with its winner (a side's own win first, then the USA's — secessions can
-                        overlap); from the yearly summaries' `states` map the year California first has an American owner, the Mexican cession's
-                        owners at 1886, the Confederacy's and New Africa's lifetimes, the USA's capitulations and bankruptcies, and the USA's GDP ÷
-                        vanilla's median with U* along the century — SPLIT into population ÷ vanilla's median and GDP per head ÷ vanilla's median
-                        per head, which is what separates a territorial loss from an economic one. `<label>=<session>[:<setup>] [...]` (a pooled
-                        `a,b` session names its runs <time>/runNNN), a label `van` sets the denominators; a tally per arm (California American by
-                        1886, Confederate secessions, the CSA independent by 1900 / at 1936, bankrupt before 1890, ever capitulated). First read
-                        (F211): the compressed-ladder arm's 1935 shortfall is population (0.77×) at 1.45× vanilla's GDP per head
-  testbed/ledger/country_composition.mjs  ONE COUNTRY'S VALUE ADDED BY SECTOR, YEAR BY YEAR, ACROSS ARMS (2026-10-03, F211 §3): Σ (va_out − va_in) × 52
-                        at BASE prices per sector, the sectors from VANILLA's building groups read live (a tiered rung takes its industry's vanilla
-                        anchor's group, a craft rung is "crafts", a dam "power"); medians over each arm's runs of the £M and of the share, the total ÷
-                        the `van` arm's. `[--tag USA] [--years …] [--runs] <label>=<session>[:<setup>] [...]`. Base prices because vanilla's v8
-                        summaries carry no market-priced goods flows (the displayed GDP tracks them within ~0.94–1.08, F178 §9.4)
-  testbed/ledger/return_per_point.mjs  PROFIT PER CONSTRUCTION POINT BESIDE THE AI DESIRE (2026-10-03, F211 §4): per building type, Σ profit ÷ Σ staffed
-                        levels ÷ its construction points (the book's building_cost, else vanilla's), pool or world, median over runs, with the payback at
-                        £600 a point, the ai_value and the staffed levels — does the desire track the return on capital? `[--year 1935] [--scope
-                        pool|world] [--filter <regex>] <label>=<session>[:<setup>] [...]`. ⚠ No validity rule (free deposits, labour): that is
-                        misplaced_capital.mjs's job; this is the per-type reading beside it
-  testbed/ledger/textile_luxury.mjs  TEXTILE'S RUNGS AND THEIR LUXURY LINES IN THE SHORTLIST (2026-10-03, F211 §4): per rung (a merge host split by the
-                        main method each level runs), levels, staffed levels, the levels on Craftsman Sewing / Elastics, profit per staffed level;
-                        medians of the pool's sums over runs. `[--year 1935] [--scope pool|world] [--runs] <label>=<session>[:<setup>] [...]` —
-                        `--scope world` sums every country record, `--runs` adds each run's line under the median (to place a one-seed probe)
-  testbed/ledger/input_price_flags.mjs  ⭐⭐ INPUT-PRICE RED FLAGS — A STANDING CHECK, user-ruled 2026-10-03 (BALANCE_FRAMEWORK §10.94, FINDINGS F212):
-                        HIGH = ≥ 1.70 × base at every reading of a stretch ≥ 2 y (readings ≤ 1.1 y apart); SWING = within 3 years a ≥ 0.5 × base range on
-                        < 10 units a week of SUPPLY (the window's median — "shortages in disguise"); every good ANY industry's production method consumes
-                        (read live from the game) plus the book's rung inputs; LOCAL goods (electricity, transportation, services) EXCLUDED; the major
-                        markets of the eleven tags. Two sources: the MARKET order books (G lines + the yearly GW lines of `market_goods_wide`, which
-                        run_schedule.ps1 now adds to every run — supply = sell orders) and the SAVE SUMMARIES (supply = the market members' production + in a
-                        v10+ summary their imports, trade capacity × the run's traded quantity, a LOWER bound; price = producers' goods_sales ÷ va_out) — `auto` takes the order books where yearly GW lines resolve; the summaries are BLIND where
-                        a market makes none of the good (vanilla's Japan had engine demand and no producer for decades). The summaries give every flag its
-                        context whatever the source: the producers' staffed levels and the BUYERS PRESENT — building · method, most levels at a reading, IN
-                        HOW MANY READINGS (F215: seven Assembly Lines tooling levels at one reading of four once read as "tooling short of oil" in a German
-                        market with no oil economy) — or "no buyer in the market" + the rungs that would eat it — never dismissed for want of demand (the user: an industry that cannot
-                        begin growing shows exactly that). ⭐ The producer map is every game building whose FIRST production-method group outputs one good
-                        (a brace-depth parse: vanilla closes some blocks on an indented " }") plus the book's rungs; it THROWS if the coal/iron/lead/sulfur/
-                        steel/explosives/tools producers move (ON_GAME_UPDATE). ⚠ Until 2026-10-03 afternoon the tiered goods' producers came from the
-                        book alone, so a CONTROL run priced no steel/tools/engines/paper/fertilizer/explosives/glass — F212's first "vanilla never flags"
-                        was that. `<label>=<session>[,<session>][:<setup>] [...] [--ref <label>=<session…>[:<setup>]] [--source auto|market|summary|both]
-                        [--yearly] [--from Y] [--until Y] [--list 40] [--html <file>] [--md] [--json <file>]` (thresholds `--high --years --gap --swing
-                        --window --supply`); `--ref` adds a REFERENCE arm reported as one count line in the prose; `--html` writes the flag-by-flag
-                        LISTING (fill_ledger.sh → redflags_full.html, kept beside the report, OFF the page since 2026-10-08), `--json` keeps every flag
-                        and, since 2026-10-08, the summary-basis flags too (`prodFlags`), `--md` the probe readout's prose; `--yearly` thins quarterly
-                        summaries so arms of mixed cadence compare. ⚠ A --ref read on a v9 summary (no trade: production alone) gets the book's counts on THAT basis
-                        printed beside it (vanilla 0.5 HIGH / 20.8 SWING a run, the arm n=3 1.3 / 26.7). ⚠ At the ruled line vanilla itself throws ~21 SWING flags a century run (books 23–28):
-                        read SWING against the `--ref` line; the HIGH years separate books from vanilla ×5–6. The pinned vanilla n=16 has v8 summaries (no
-                        goods_sales), so the yearly vanilla reference is the eleven-tag set (20260920_225047 + 20260920_192007 run 1, n=4) — say so where quoted
-  testbed/ledger/lib_redflag_metrics.mjs + redflag_metrics.mjs  ⭐ THE RED FLAGS AS A HEADLINE (user-ruled 2026-10-08: the listing — 1,625 flags,
-                        576k characters on the jex n=16 report — "is at least 100 times too large to be readable"). `redflag_metrics.mjs <outDir>
-                        [--json redflags.json] [--span 1836-1935]` writes redflags_metrics.json, redflags_digest.md (~15 KB, what the summary is written
-                        from) and redflags_card.html (the report's `__REDFLAGS__`: the metrics table + `__RF_SUMMARY__` + the rule line). The two numbers:
-                        PROBLEM MARKET-YEARS = Σ over the eight major markets of the years under a HIGH flag on ≥ 10 units/wk of building demand (of 800),
-                        and CHRONIC MARKETS = markets with ≥ 20 such years; beside them the split by period and by market. ⚠ "Years with a problem in any
-                        market" and "markets with ≥ 5 of the 99 two-year windows" SATURATE on the four-rung books (96/100, 8/8) and stay in the JSON only.
-                        ⚠ The like-for-like vanilla column is on the summaries' basis (`prodFlags`), never the order books'. The summary itself is written
-                        with the **redflag-summary skill** (`.claude/skills/redflag-summary/SKILL.md`) into redflags_summary.html; fill_verify refuses a
-                        report without it. First read: jex n=16 212.5 (128–267) problem market-years, 4 (2–6) chronic markets, Japan 60 and Russia 40
-  testbed/ledger/old_rungs_by_industry.mjs  OLD RUNGS BESIDE THEIR REPLACEMENT, PER INDUSTRY, ACROSS ARMS (2026-10-03, F210's addendum): the
-                        ledger's countrySplit rule (a worker on a rung two+ tiers behind the best rung his own country staffs in the industry) per
-                        industry, medians of each arm's runs, as workers and as % of the industry, plus the t0+t1 share, for the shortlist pool and
-                        the world, each run on its own book. `<year> <label>=<session>[:<setup>] [...]`. ⚠ Books with different ladders compare
-                        what each calls two tiers behind (motor is [0,2,3] on the canon, [1,2,3] on the t1-anchor books)
-  testbed/ledger/criteria.mjs  ⭐⭐ THE CRITERIA REGISTER (user-ruled 2026-09-17, BALANCE_FRAMEWORK §10.83 — the governing section near the top of this
-                        file): aim / soft / hard per scope (the shortlist pool and the world), end-state means over 1932–1936, HARD lines per run with the binary
-                        outcome (broken by stall / by runoff — the anchor, the pooled U*, the capital-abundance pair, the end-state GDP lines), SOFT lines, everything else on
-                        the consensus of the intact runs (a divergent pair owes a third run); W, U*, H, Y, GDP, T0…T3 by the rung's TIER from the run's own config, the
-                        price groups PI / PP / PM from markets.tsv and the summaries' base wages; THE LOSS per run and per consensus, and with several `--arm`s the
-                        RANKING (§10.83.4). `--arm <session[,session]>[:<setup>] [--arm …] [--config <book>] [--van …] [--end 1932-1936] [--weights k=v,…] [--soft-pen 10]
-                        [--json out] [--quiet]`. The report, the iterator and the stop watcher read THIS; the older readers below are diagnostics.
-                        ⭐ Its POOL, MEMBER and market lists come from `lib_markets.mjs` since 2026-09-20 (UNL added, the German and Low-Country
-                        families resolved per run), and PI/PP are read on the arm's markets ∩ VANILLA's, with the basis PRINTED beside the index —
-                        an arm on the eleven-tag list has German and Belgian prices the n=16 vanilla baseline does not, and averaging different
-                        baskets on the two sides of a ratio is not a comparison
-                        ⭐ Since 2026-09-30 it prints GDP AT BASE PRICES beside world GDP — 52 × Σ (va_out − va_in) over every building, world and
-                        shortlist, ÷ vanilla's, with the price level (displayed ÷ base-priced, ÷ vanilla's) — a SECONDARY reading, NOT in the loss
-                        (BALANCE_FRAMEWORK §10.90, FINDINGS F178 §9.4); per run it reads "world GDP 1.09× (1.17× at base prices)"
-  testbed/ledger/capital_flags.mjs  ⚠ SUPERSEDED AS A CRITERION 2026-09-17 by §10.83 (a diagnostic printer now) — ⭐ THE HOARD SPLIT AND THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15): per usable run at a year, the
-                        investment-pool hoard ÷ GDP for the WORLD and the SHORTLIST (GBR, USA, FRA, GER — NGF, then PRU, standing in for an unformed
-                        Germany) and TOTAL UNEMPLOYMENT INCLUDING PEASANTS ((unemployed + peasants) ÷ workforce) beside the strict figure, each
-                        shortlist member's own reading, the medians and the vanilla reference. A member under 3% with a hoard over 2 trips ⚑; the
-                        pooled shortlist tripping is a VOID (exit 4) — "complete capital abundance … invalidates the config". Vanilla's own Britain
-                        trips ⚑ in 2 of 16 seeds; the flat A 1.9 pair is the measured VOID (0.3–1.0% at a hoard of 3.1–3.3)
-  testbed/ledger/rung0_path.mjs + rung0_who.mjs + queue_rungs.mjs  ⭐ THE OLD RUNG'S PATH (FINDINGS F122, 2026-09-15): per run and year, rung 0's building COUNT vs LEVELS
-                        (new buildings vs expansions), its staffed levels, and its share of the PRIVATE and GOVERNMENT queues (items and points) —
-                        `rung0_path.mjs <run> <config> 1900 1920 1935`; `rung0_who.mjs <run> <config>` attributes the 1900 → 1935 rung-0 additions per
-                        country beside whether the country holds any t2/t3 building; `queue_rungs.mjs <run> <year> <config>` splits either queue by rung
-                        (world and the GBR/USA/FRA/GER+NGF+PRU shortlist). The diagnostic for a rung-0 lever is the STAFFED count and the building count, never
-                        the level count alone (F122: levels up 12–18% while staffing fell a fifth)
-  testbed/ledger/sector_split.mjs + rung0_split.mjs + rung_econ.mjs  ⭐ THE F127 READERS (2026-09-16, moved in from the scratchpad 2026-09-17):
-                        the SECTOR SPLIT (world building value added and staffing at one date, the tiers beside agriculture / extraction / urban+infra /
-                        construction / subsistence / state — `sector_split.mjs <config> <year> <runDir>…`), RUNG 0 shortlist-vs-rest per industry (levels,
-                        staffed, workers; on a vanilla run by the rung-0 method's share of the `pms` split — `rung0_split.mjs <config> <year> mod|vanilla
-                        <runDir>…`), and the PER-INDUSTRY PER-TIER RUNG ECONOMICS (VA per staffed level and per worker, margin, the rung's share, VA per worker
-                        ÷ the frontier — `rung_econ.mjs <runDir> <config> <year>`). They read the yearly save summaries directly and are what F127 / F128 / F129
-                        quote for the raw sector, the old rung and the realised value added per frontier level. ⚠ A craft level is 500 heads
-                        (`workforce_mult` 0.1): rung0_split and rung_econ count it so since 2026-09-30 (they used 5,000, a 10× error per worker);
-                        rung_econ's RUNG SHARE column stays by staffed LEVELS and says so on a craft book; read a VANILLA run with a non-craft book
-  testbed/ledger/major_series.mjs  ⚠ the plateau test it served is SUPERSEDED by §10.83 (2026-09-17 midday); the columns stay useful — ⭐ THE PER-MAJOR SERIES the plateau test is read from (user-ruled 2026-09-16, CORRECTED 2026-09-17 — §10.82.1):
-                        per major and year, strict unemployment, the peasants' share of the workforce and the salaried workforce from the yearly summaries'
-                        pop_statistics. A PLATEAU is capital abundance persisting at the frictional residual — total unemployment INCLUDING peasants ≤ 10% in
-                        EVERY year 1919 → 1935 while the pool exceeds 2 GDP in any of 1931–1935 — NOT slow depeasantation (a stall at 20% peasants is a
-                        development reading, judged by the bands). `capital_flags.mjs` prints the verdict (PERSISTENT ABUNDANCE); this prints the columns.
-                        `major_series.mjs 1900,1910,1919,1925,1930,1935 <runDir>…`. The found configuration does NOT fail it (Britain alone trips the single-
-                        year flag in one seed, as vanilla's own Britain does in 2 of 16); the 2026-09-16 claim that it did was the over-reading §10.82.1 retracts
-  testbed/ledger/queue_series.mjs  the construction backlog reader (2026-09-15, from the scratchpad): per year, the private and government queues'
-                        items, points left and speed → years of backlog, the private share of speed, the pool ÷ GDP and the construction sector's levels,
-                        world + named tags — `queue_series.mjs <run> 1900,1920,1935 GBR,USA,FRA`. What F119's addendum and F121 read the capacity bound with
-  testbed/stop_watch.ps1 + stop_watch.mjs  ⭐ SINCE 2026-09-17 IT STOPS ON THE REGISTER'S HARD BREAK — it runs criteria.mjs on each completed run and drops STOP when that run is
-                        broken by stall or by runoff (one broken run ends the config, user-ruled); the 1.3× GDP rule below is the FALLBACK when the register cannot be read. Re-arm
-                        it after the register changes (a running watcher keeps the code it loaded). THE RUN-LEVEL STOP between the runs of a live 2+1 batch (2026-09-14, from the scratchpad): polls the
-                        session's save summaries and drops tools/testbed/STOP once a completed run's 1936 GDP exceeds ×1.3 of the vanilla median — armed after
-                        every launch through `launch_detached.ps1 -File 'tools\testbed\stop_watch.ps1' -ArgumentList '-Session','<session>','-Poll','30' -Hidden`
-                        ⚠⚠ **`-Session` TAKES THE SESSION *NAME*, NOT A PATH, AND A PATH USED TO KILL THE WATCHER
-                        SILENTLY** (2026-09-21, BUGS_AND_FIXES): `tools\testbed\sessions\<stamp>` made the watcher's
-                        ROOT a DOUBLED path, so it printed its arming line and then threw on the first tick — invisible,
-                        because it runs `-Hidden` and its own `stop_watch.log` was being written into that same bogus
-                        folder. `launch_detached` had already reported success, so the batch ran believing it was
-                        guarded, which is worse than F151's unarmed watcher. Fixed both ways: the script now NORMALISES
-                        a path to its last segment and REFUSES with exit 2 on a session that does not exist.
-                        ⇒ **After arming, confirm `tools/testbed/sessions/<stamp>/stop_watch.log` exists** — that file
-                        is the only proof the watcher is really on, and it takes ~90 s to appear (it medians vanilla's
-                        eighteen 1936 endpoints first)
-  testbed/ledger/finish_force.mjs  reads the finish boost's FORCE TEST (`finish_boost.force_test`, FINDINGS F160 §6): per arm, the landing
-                        (progress ÷ cost of every forced tech, must sit in [threshold, 1)), the share of NEXT research choices that take the
-                        forced tech, and the wait to acquisition. ⚠ It counts only choices made while the forced tech is still UNACQUIRED —
-                        tech spread finishes the last 1% within weeks when the forced tech is the country's spreading one, and a first
-                        count that missed this read four spread completions as misses. `--session <stamp>` (one arm per setup)
-  testbed/ledger/finish_probe.mjs  reads the diagnostics of the finish boost's RETIRED first form (`finish_boost.diag`, commit `11a5b90`;
-                        FINDINGS F160): the engine's cost against the penalty reconstruction under both sericulture readings,
-                        `has_technology_progress` against progress ÷ cost, the wait from "finishable" to acquired, and the share of research
-                        choices that take an eligible technology. `--session <stamp>` — today only 20260923_203339 carries such lines; the
-                        current emitter writes no diagnostics. ⚠ Months are counted per country from its own PMR_RS lines
-  testbed/ledger/good_market.mjs  ⭐⭐ ONE GOOD'S ORDER BOOK ACROSS ARMS — buy, sell, PRODUCTION and the producing
-                        industry's size, not price alone (2026-09-19, FINDINGS F147 §1a). Written because price could
-                        not settle a reading and had already produced a wrong one: F147 reported "engines consumed
-                        0.62 → 0.95 of vanilla" from BUY ORDERS, which are DEMAND INCLUDING DEMAND NEVER MET — the
-                        order book showed supply moving the other way (sell 104 → 82, production 68 → 60). ⚠⚠ A price
-                        at the 25% or 175% band edge carries NO information (§10.15), so past it only quantities do,
-                        and that is the regime a squeezed chain lives in. THE TEST it exists for: supply success =
-                        production up, the producer's staffed levels up, buy/sell flat; supply FAILURE = production
-                        flat, buy up, buy/sell up. `--good engines --arm <session>:<setup> [--arm …] [--dates a,b,c]`;
-                        the producing building types come from each run's OWN config, so arms with different books are
-                        still comparable. ⇒ QUANTITIES FIRST whenever a good sits at the edge
-  testbed/ledger/war_goal_mix.mjs  WHAT THE WARS ARE ABOUT, OUT OF SAVES (2026-10-18, FINDINGS F243): every war goal of the ACTIVE plays from
-                        a save's `war_goal_manager` — type, and whether it opened the play (`initial_war_goal=yes`) or was added during
-                        it; an enforced treaty article carries its article (a 1.13 treaty-port demand is `enforce_treaty_article:treaty_port`,
-                        never the `take_treaty_port` type). `--label <name> <save.v3> [...] [--label …] [--jobs 4] [--json out]`. A save keeps
-                        only active plays, so pool many snapshots
-  testbed/ledger/treaty_port_trade.mjs  WHAT A TREATY PORT TRADES, AGAINST ITS HOST MARKET (2026-10-19, FINDINGS F245): melts one kept save for its
-                        per-state trade (a summary keeps only the per-country sum, and a port's trade sits under its TAKER while the port stands
-                        in the HOST's market), then per treaty port its capacity, largest flows and each import as a share of the host market's
-                        supply (own production + other imports, units at the book's traded quantities). `<save.v3> <summary.json.gz> <book.json>`;
-                        `--need TAG [--share 0.4]` prints the capacity a port would need to add that share of TAG's consumer-goods supply.
-                        ⚠ The summary's `treaty_ports[].state` is the HOST's part of the region; the port is the taker's own state there
-  testbed/ledger/ai_country_goals.mjs  THE AI'S STANCE TOWARD EACH COUNTRY, OUT OF ONE SAVE (2026-10-19, FINDINGS F244 §10): the `country_goal` records —
-                        owner → target goal scores (threat / protect / befriend / antagonize) with scored reasons, attitude and secret goal — with a
-                        census and every pair carrying one reason (default AI_REASON_WANTS_TREATY_PORTS). `<save.v3> <summary.json.gz> [--reason R]
-                        [--json out]`. Script reads the same through `has_secret_goal` / `has_attitude`
-  testbed/ledger/world_price_rings.mjs + market_good_snapshots.mjs  ONE GOOD'S TRADE OUT OF A PLAYER'S AUTOSAVES (2026-10-18, FINDINGS F242).
-                        A 1.13 save keeps the last 52 WEEKLY world-market prices per good (the ring index advances by exactly 52 between
-                        yearly saves), so yearly autosaves give a continuous weekly world-price series: `world_price_rings.mjs <save.v3>
-                        <out.json>` streams it out (write it as `<summary name>.rings.json` beside the save's summary). `market_good_snapshots.mjs
-                        <summaryDir> --tag CHI --good rubber --units-per-cap 48` prints, per save, the market's building demand, own output,
-                        imports / exports (trade capacity × the units ONE capacity unit moves = traded_quantity × (1 + the trade centres'
-                        state_trade_quantity_mult), an argument because it depends on the build and the importer's trade-centre method), the
-                        market price from its own order book (an estimate) and the world price that week. Copy a live game's saves with
-                        `archive_autosaves.ps1 -Dest tools\testbed\saves_<name>` launched detached, never by touching the save folder
-  testbed/ledger/early_probe.mjs  ⭐⭐ THE SHORT-BATCH READER (2026-09-19, F142/F144/F145) — what a 1836→1838 batch
-                        says about the anchor: world product ÷ a control arm, realised margins BY TIER via F92's
-                        identity, the negative-margin types named and weighted by STAFFED levels, the survival table
-                        of §10.86.5 (retained staffed levels, per industry, all rungs summed) and the British price
-                        path. `--session <stamp> [--also <other sessions>] [--control vanilla] [--years 1836,1837]`.
-                        ⚠ `--also` merges arms from other sessions as references — the graded probes run no vanilla
-                        and no flat arm because an earlier session measured them the same day at the same span and
-                        dump dates. ⚠ The CONTROL arm borrows a mod arm's key map (a tier-0 rung's key IS the vanilla
-                        building's), so vanilla's own shedding is the baseline; its OUTPUT column is suppressed,
-                        because a borrowed map carries the mod's output_qty
-  testbed/ledger/lib_markets.mjs  ⭐⭐ THE SHORTLIST, THE MAJORS AND THE PRICE-TRACKED MARKETS — ONE
-                        definition, because they were nine (user-ruled 2026-09-20; the governing section above).
-                        `POOL` (GBR USA FRA NET BEL **UNL** PRU NGF GER), `MEMBER_FAMILY` / `resolveMembers()` (a
-                        row per STATE, each resolving its live tag: the German one PRU → NGF → GER, and UNL its
-                        own row so it is never counted twice), `MARKET_NAMES` (tag → the display name(s)
-                        markets.tsv can carry — the German market reads Prussian → North German → German and
-                        `UNL_ADJ` is "Dutch", so a NAME does not identify its leader), `PRICE_TAGS` and
-                        `TELEMETRY_TAGS` (the eleven a new schedule carries).
-                        ⚠ UNL is ONE country and it REPLACES NET and BEL where it forms — it stands in 2 of the
-                        16 vanilla baseline seeds and in run 2 of 20260920_114003, so a pool without it silently
-                        lost both members and a £201M economy (F152 §7)
-  testbed/ledger/lib_goods.mjs  THE GOODS TABLE, read live from common/goods: name → base price, vanilla traded_quantity,
-                        `local`/`tradeable` and the POSITIONAL index a save uses (F159 §1). `tradedQuantity(cfg)` gives an
-                        arm's own quantities (the book's `goods_traded_quantity` over vanilla's); `tradeClasses(cfg)` reads
-                        F159 §7's five classes from the trade book's own `_trade.classes`, never from a copy
-  testbed/ledger/lib_era_cols.mjs  THE LEDGER'S EMPLOYMENT-BY-TIER COLUMNS (2026-10-02) — one implementation for `fill_emp.mjs` (world)
-                        and `report_data2.mjs` (watchlist): on a book with craft rungs t0 is SPLIT into `e0 artisans` and `e0 other`
-                        (user-ruled: "for the art- family, split report into e0-artisans and e0-other, where appropriate"), and a merge
-                        host's workers are shared out over its main methods at each method's own tier. `eraCols(cfg)` → labels, `parts(key,
-                        building)`; the ledger carries the labels as `EMP_COLS` and every reader keys on LABELS, never on a column index.
-                        `countrySplit(buildings)` → per column every tier worker and those on a rung TWO OR MORE tiers behind the best rung
-                        the same country staffs in the same industry — the ledger's "old rungs beside their replacement" tables, which
-                        separate the ladder failing to retire a rung from a country that runs nothing newer (backwardness)
-  testbed/ledger/fill_ledger.sh  ⭐ THE LEDGER'S DATA FILL AS ONE COMMAND (2026-10-02): `bash tools/testbed/ledger/fill_ledger.sh <session> <setup>
-                        <book> <outName>` — every data script in the README's order on the arm's COMPLETE runs against the pinned vanilla n=16;
-                        the prose files are written by hand, then fill_assemble + fill_verify
-  testbed/ledger/lib_sumidx.mjs + ustar_path.mjs + craft_path.mjs + us_construction_windows.mjs + pp_goods.mjs + rung_fate.mjs  the small per-batch
-                        readers behind F209, promoted from the scratchpad 2026-10-02 with identical output: the yearly summary index of a run
-                        (first summary of a year, no cache); the shortlist's U* path; the crafts over the century; one country's private-queue
-                        shares by window; the PP index by good and market; per industry and tier the workers, prices, true margin and wage ÷ normal
-  testbed/ledger/misplaced_capital.mjs  ⭐ MISPLACED CAPITAL (FINDINGS F206/F207, BALANCE_FRAMEWORK §10.92; promoted from the session scratchpad
-                        2026-10-02 with identical output): the expected payback of each year's new capital (cost × the country's £ per point ÷
-                        the annual profit per staffed level of the type) against the country's best sector — fine ≤ 1.5× · a bit ≤ 3× ·
-                        GROSS > 3× or loss-making · none = no valid benchmark — on three benchmarks: ALL, OPEN, VALID (free deposits / arable
-                        land and ≥ 25k peasants + unemployed in the state; needs save summary v15). Infrastructure, shipyards, trade centres,
-                        government buildings and gold are out by ruling; military industries are IN. `--batch label:session[:setup]` (yearly,
-                        per decade, century, the like-for-like last decade), `--snap <dir of v15 re-summarised kept saves> --arm label:session`,
-                        `--series <dir>`, `--why` (what the benchmark sector is). A reading, NOT a register term (§10.92.1)
-  testbed/ledger/lib_obsolescence.mjs + trade_obsolescence.mjs  ⭐⭐ OBSOLESCENCE, IN-MARKET vs TRADE — ONE metric set
-                        for both kinds of competition (user-agreed 2026-09-24, FINDINGS F161 §4/§6). Per industry, per rung,
-                        per country and year: the rung is IN-MARKET when its own market's SUPPLY FRONTIER (the highest tier with
-                        ≥ 10% of that market's output of the industry, by `va_out`) is two tiers above it, TRADE-ONLY when only
-                        the WORLD's is, UNCONTESTED otherwise. Read per regime: the loss-making share of LEVELS, the TRUE margin
-                        profit ÷ (sales − profit) (level-weighted median), staffed ÷ levels, the world's output-weighted
-                        realised price (`goods_sales ÷ va_out`) ÷ the rung's break-even, and the signed importer premium
-                        ln(local ÷ world). Trade-only rungs split by market position (importer / not / no trade), and on v11
-                        summaries by the country's own import TARIFF on the good and its TRADE-POLICY law.
-                        `trade_obsolescence.mjs --arm <session>:<setup>:<book> [--arm …] [--label-<setup> <name>] [--years …]
-                        [--pool …] [--override-dir <dir of re-summarised saves>] [--industries …] [--json out]`.
-                        ⚠ Staffing alone is not death (a profitable building can empty for want of labour); loss share and
-                        margin carry the reading. ⚠ Local purchase prices are not in a save: the premium is a PRODUCER price.
-                        ⚠ Until 2026-09-30 it found a year's summary only near the YEARLY file index, so a session with QUARTERLY
-                        autosaves (20260929_002728) printed its run count and NO rows; it now tries both cadences, then every file
-  testbed/ledger/fill_obsolescence.mjs  the ledger's OBS const (the "Obsolescence — in-market vs trade" card on the
-                        world page and its selection mirror on the watchlist): `<outDir> --session --setup --config [--pool]
-                        [--override-dir]` → obsolescence.json; run it BEFORE fill_assemble. Exits 1 if no industry has an
-                        old rung, rather than shipping an empty table
-  testbed/ledger/trade_vs_gdp.mjs  IS THERE MORE TRADE THAN AT THE SAME GDP? (F161 §1) — every complete four-rung MOD
-                        run since `--since` (default 20260905) whose final save survives, re-summarised to v10+ into `--cache`
-                        (`--build-cache` melts the missing ones), trade ÷ world GDP and the classed goods' import share, the arm
-                        against the runs within `--match` (±0.08) of each seed's world GDP. ⚠ Each run is read with ITS OWN book's
-                        traded quantities (`build_state.json` → `deterministic.mod_under_test.built_from_config`; it THROWS where
-                        that book is unreadable) — a first port applied vanilla's to the trade arm and read half its trade.
-                        ⚠ Control arms are excluded by `deterministic.arm`; a first count pooled four vanilla runs in
-  testbed/ledger/market_line_check.mjs  WHAT DOES THE MARKET LINE'S import/export REPORT? (TESTBED_METRICS §2.5) — one
-                        run at one dump date, the `G|` line of each instrumented market against its members' v10 trade capacity ×
-                        the run's own traded quantity: one-way goods match, two-way goods read the DOMINANT direction at gross
-                        effective volume and 0 for the other. The quantity multiplier is estimated per market (the median ratio
-                        over one-way goods). `<runDir> <date> [--config <book>] [--show N]`; book and token from the run itself
-  testbed/ledger/ladder_headlines.mjs  THE FIRST-RUN HEADLINES of F163 (user-asked 2026-09-24), per usable run: world GDP ÷ vanilla (1932–36),
-                        Britain's U*, the shortlist's productive ÷ workforce / U* / gov+mil / W / Y ÷ vanilla, and trade at 1936 (capacity
-                        × the run's own traded quantity × base price) against vanilla seeds within ±0.08 GDP, a previous batch and the canon,
-                        by class A–E. `--arm s:setup [--arm …] --prev s:setup --canon s:setup --ccache <dir> --vcache <dir>`. ⚠ Vanilla's
-                        v8 summaries carry no trade: `--vcache` is a dir of its 1936 saves re-summarised to v10+ (save_state_summary.mjs on
-                        each run's kept save, named <session>__<run>.json.gz), `--ccache` the same for a pre-v10 reference
-  testbed/ledger/country_ustar_hoard.mjs  A country's U* and hoard (investment pool ÷ GDP) at 1926 / 1931 / 1936 per run, beside vanilla n=16's
-                        medians (user-asked 2026-09-25). `--arm s:setup[:label] [--arm …] [--tag GBR]`
-  testbed/ledger/tech_finish_gap.mjs  THE FINISH GAP of F162, by LOG POSITION: (a) is a technology acquired in the same tick as its second
-                        research stage when the ahead-of-time penalty is already zero; (b) on the day the penalty clears when it clears
-                        later. Crash-resume stretches are rolled back. `--arm s:setup[:label] [--arm …] [--list]`
-  testbed/ledger/queue_speed.mjs  Per-element construction speed in a save's queues (streams `rakaly melt -c`): the per-project cap
-                        (`base_construction_speed`, from the `country_max_weekly_construction_progress_add` technologies: 10 + 10/5/5/5/5)
-                        and the speed granted, per country and queue, with each rung's cost ÷ cap in weeks — what sets a building's build
-                        time at full capacity. `<save.v3> <config.json> [TAG,TAG]`
-  testbed/ledger/lib_runs.mjs  ⭐ WHICH RUNS OF A SESSION MAY BE COUNTED — one implementation, because
-                        two analyses of one batch that disagree about n give two incomparable answers.
-                        `usableRuns(root, session)` DISCOVERS the run folders and keeps only those that
-                        reached their own `until` date with no `abandoned_reason` (landmine **L17** —
-                        `status: ok` in session.json is derived from the observer's EXIT CODE and the
-                        observer exits 0 even when it abandons a run, so it is not evidence).
-                        `reportDropped()` PRINTS every exclusion with its reason; a silent exclusion is
-                        indistinguishable from a run that never existed. ⚠ It replaces the hardcoded
-                        `RUNS = [1..6]` lists, which is how canon-n7's stopped-at-1853 run007 would have
-                        entered an n=6 baseline the moment someone re-pointed a script
-                        ⭐⭐ THE VANILLA REFERENCE (2026-10-21, user-ruled; FINDINGS F248): `VANILLA_REF` = the summer n=18
-                        (20260821_131149 + 20260823_113218) + the October n=6 (20261020_121619 + 20261020_222433) = n=24, the
-                        default of criteria.mjs, fill_ledger.sh and the other readers for EVERY reading but the wall clock;
-                        `VANILLA_WALL_REF` = the October six alone, because a play time is not comparable across months (vanilla
-                        ran ×1.08 slower per unit of world in October). Interim until the alternating vanilla + canon batch.
-                        Readers that still name the summer n=16 on purpose: measure_wage_share (config/measured_base_wages.json),
-                        era0_solvency, stop_watch's 1.3× fallback, ladder_headlines, trade_vs_gdp, va_composition, the corpus tools
-                        ⭐ A GROUP OF RUNS (2026-10-08): `session` may be a comma list of sessions and/or
-                        `<session>/runNNN_<setup>` folders. ⭐⭐ `configFamilies(root, runs)` says whether a
-                        group may be pooled — ONE FAMILY = the same tier/building structure (industries,
-                        rung keys and tiers, crafts, merged rungs) read from each run's own config; ladder
-                        coefficients and before/after-bugfix builds MAY differ inside it (user-ruled: "the
-                        hard requirement for the build to be identical is an overkill"), and are printed so
-                        the report can name them. `fill_ledger.sh` stops on more than one family
-  testbed/ledger/summary_drops.mjs  ⭐⭐ WHICH SAVE SUMMARIES LOST A COUNTRY RECORD, AND HOW MUCH (landmine L38,
-                        FINDINGS F186). Up to summary v11 records sharing a definition overwrote each other
-                        (see save_state_summary.mjs above); a pre-v12 summary cannot be re-made, but it can be
-                        CHECKED — `world.buildings` was always summed over country ids, so Σ countries' levels
-                        and value added fall short of the world's by exactly the dropped records'. Report mode
-                        (`--session <stamp>[,<stamp>][:<setup>] [--years 1932-1936] [--all] [--detail]`, the
-                        first summary of each year by default = what criteria.mjs reads): per run and year the
-                        dropped levels, the dropped value added and an ESTIMATE of the dropped GDP (0.6–1.3 of
-                        the exact figure in 18 of 20 checked drops — enough to judge materiality, not to correct
-                        a number), and every SHORTLIST member whose entry is not the main record (⚑⚑ when it
-                        answers to its own tag, i.e. the main was the record dropped). ⚠ Population cannot be
-                        estimated (people per pop object runs 659–75,583). `--check <session>` and `--selftest`
-                        are L38's two halves, run by preflight
-  testbed/ledger/analyse_ai_tier_choice.mjs / analyse_ai_tier_profit.mjs  THE BUILD-CHOICE MEASURE
-                        (FINDINGS **F75**): of the levels a country builds, what share go to a tier BELOW
-                        the best one it already holds, and does the first frontier building stop the
-                        cycle. A ratio over ~62k build decisions INSIDE each run, so it resolves at n=4
-                        where GDP (71% spread at n=6) resolves nothing. `--session <stamp>`
-                        `--config <path>`; no arguments reproduces the canon-n7 baseline exactly
-  testbed/ledger/advanced_panel.mjs  ⭐⭐ THE PRODUCTIVITY CLAIM, READ WHERE IT IS VISIBLE
-                        (user-ruled 2026-08-20: **report these two alongside the world's 1935 GDP
-                        decomposition, every batch**). Pooled over **GBR USA FRA NET BEL PRU NGF GER** (⭐ NGF added 2026-09-17: the North German Federation
-                        stands at 1935 in 1 of 16 vanilla seeds and at 1900 in 3, and was in NO pool until then — the German state is PRU → NGF → GER):
-                        (1) productive workers ÷ TOTAL WORKFORCE, ÷ vanilla; (2) GDP ÷ productive
-                        worker, ÷ vanilla. **Pooled because the world reading is diluted by countries
-                        that never industrialise and the per-tag reading is dominated by SIZE** —
-                        whether France holds Piedmont barely changes how industrialised it is but
-                        moves its worker count a lot. Both are ratios INTERNAL to the group, so
-                        territory moving between members cancels; PRU and GER are both listed because
-                        one usually becomes the other. ⚠ Territory leaving the group does NOT cancel —
-                        the pooled workforce is printed per arm as a composition check.
-                        ⚠⚠ **IT DOES NOT USE THE LEDGER'S OWN "productive workers" DEFINITION, WHICH IS
-                        BROKEN.** `fill_consts.mjs` subtracts the STAFFING of government/university/
-                        military BUILDINGS, and `staffing` in a save summary is a LEVELS-SCALE
-                        quantity, not a headcount: Britain 1935 reads **677** against the save's own
-                        `population_government_workforce + population_military_workforce` of
-                        **1,204,779**. So the published G5 "productive workers ÷ vanilla = 0.86×" is
-                        the SALARIED WORKFORCE ratio under a label it does not earn. This tool uses the
-                        direct fields and prints the legacy pair beside them purely for continuity.
-                        `fill_consts.mjs` still needs moving over — deferred only because it would
-                        silently restate a number the shipped report quotes.
-                        ⚠ `total workforce = Σ workforce_by_profession = salaried + unemployed +
-                        peasants` (an exact identity in the save). `population_subsisting_workforce` is
-                        peasants ÷ 100,000 — a SCALED field, never sum it with the others.
-                        ⚠ GDP is printed FIRST, because £/worker is a ratio and quoting it alone invites
-                        "the mod produces more". It does not: output is at or below vanilla's and
-                        EMPLOYMENT FALLS FASTER, which is what lifts the quotient — the design goal, but
-                        a different claim. First read (2026-08-20): productivity ÷van **1.113×** (aival)
-                        and **1.143×** (canon-n7) against the WORLD's 1.03× and 1.01×, i.e. the lens is
-                        far sharper and both mod arms clear G5's ≥1.11× where the world reading misses
-                        it — but sd runs 5–9% on productivity and 6.6–14.7pp on the share, so the two
-                        mod arms are not separable
-  testbed/ledger/tiered_panel.mjs  THE SAME TWO, RESTRICTED TO THE TIERED INDUSTRIES (user-ruled
-                        2026-08-20) — where a tier ladder can be expected to show at all, the
-                        whole-economy figure being diluted by farms, mines, barracks and urban centres
-                        the ladder never touches. ⭐ WORKERS ARE MODELLED because a summary has NO
-                        per-building headcount — `staffing` counts STAFFED LEVELS, not people (gov
-                        admin: 234 levels, staffing 223.15). So `workers = per-level employment ×
-                        workforce_mult × staffed levels`, and that is DERIVED not assumed: **total
-                        employment per level is constant across an industry's main PMs** (5000
-                        manufacturing, 1000 power/port/railway) and VANILLA'S OWN main PMs read the
-                        same numbers, checked live against common/production_methods; the three that
-                        move (furniture 5000→5500, artillery →5250, explosives 10000→4000) move at the
-                        same rungs on both sides. Vanilla uses its most advanced `vanilla_pm`.
-                        ⚠ Secondary PMs are NOT modelled (automation −1500 laborers/level, and the
-                        summary does not say which are active) — both sides overstated, the ratio
-                        survives better than the level. ⚠ art_academy employs 0 in base on both sides
-                        (jobs live in its ownership PMG), so it contributes no workers to either.
-                        ⚠⚠ **VALUE ADDED WAS MOD-ARMS-ONLY AND IS NOT BACKFILLABLE — NOW CLOSED.**
-                        `va_out`/`va_in` ship in SAVE_SUMMARY_VERSION 6 (2026-08-18) and the OLD pinned
-                        baseline `20260813_083557` is **v4**, so it can never answer this. ✅ The
-                        vanilla runs of 2026-08-21/23 DO: **`20260821_131149_vanilla-baseline-n16`
-                        (n=16, reached 1936.1.1) and `20260823_113218_vanilla-baseline-extra-n2`, both
-                        save_summary_version 8 with `va_out` present** (verified 2026-08-29). Use the
-                        n=16 session as the vanilla denominator — it is a far stronger reference than
-                        any mod arm it is divided into.
-                        ⚠⚠ **PASS `--config-<n>` PER `--arm`, NEVER ONE SHARED `--config`** — workers
-                        are computed from the arm's OWN `workforce_mult`, and arms differ (the graded
-                        ports run 0.1/0.2; an arm handing ports back to vanilla runs 1 everywhere).
-                        Sharing one config computed canon at a 6.29% workforce share and £153.9/worker
-                        against its true 31.43% and £30.8 — **a 5× error in both, with nothing
-                        failing**. Invocation is `--arm <session>:<label>` (repeatable, `--config-1`,
-                        `--config-2`, … in the same order) plus `--van <session>:<label>`. First read (2026-08-20): tiered share of the
-                        workforce vanilla 28.71% · canon-n7 31.43% (1.095×) · aival 29.06% (1.012×) —
-                        ⚠ **the mod puts MORE labour into the tiered sector than vanilla, not less**, so
-                        the whole-economy productivity gain comes from elsewhere; £VA per tiered worker
-                        £30.8 / £32.5 (mod only); and ⭐ **the tiered sector is 67–69% of ALL value
-                        added** in these countries. Three industries run NEGATIVE VA per worker in both
-                        arms — shipyard_steam −£25, power −£15, shipyard −£11 (shipyards by design, the
-                        naval income is unmodelled; **power is not**), automotive barely positive at
-                        £1–3. ⚠ Its LEVELS column is not arm-comparable (graded ports: one vanilla port
-                        = ten mod levels); workers and value added are
-  testbed/ledger/first_run_decomp.mjs  ⭐ THE FIRST-RUN DECOMPOSITION (user-ruled 2026-09-02: report it
-                        after each arm's FIRST run, before the batch completes): GDP = population ×
-                        productive workers per capita × GDP per productive worker, WORLD and SHORTLIST
-                        (GBR USA FRA NET BEL PRU NGF GER pooled — NGF since 2026-09-17), each arm's runs beside the vanilla n=16
-                        median, every ratio printed with both its terms. Same definitions as
-                        advanced_panel (productive = salaried − government − military; population =
-                        Σ strata). `--arm <session>[:<setup>] --van <session> [--years …]`
-  testbed/ledger/majors_workers.mjs  ⚠ its ≥ 1.0 failure line is the register's pooled W SOFT boundary since §10.83 (the same afternoon); kept as the COMPOSITION printer — ⭐ THE MAJORS' WORKERS-PER-CAPITA CEILING (user-ruled 2026-09-17; the criteria register is being streamlined by
-                        the user — BALANCE_FRAMEWORK §10.82.2 will carry the ruled form): the "majors" of §10.82 ruling 3 are the POOLED shortlist GBR / USA / FRA /
-                        NET / BEL / PRU / NGF / GER ("significantly large, significantly high-tech countries" — never RUS, nor an unusually successful CHI / BGL /
-                        BHT / TUR / SPA, whatever their prestige rank), and the pool's productive workers per capita ÷ vanilla's pooled per-run median AT OR
-                        ABOVE 1.0× IS A FAILURE ("the depeasantation is on undesirable vanilla level"); the aim ≤ 0.8×. Prints the verdict per usable run and
-                        the median, with each member's own ratio beneath as the COMPOSITION (a diagnostic, not the criterion; GER = GER, else NGF, else PRU).
-                        `--arm <session[,session]>[:<setup>] [--van …] [--years …] [--fail 1.0] [--aim 0.8] [--no-members]`. First read at 1935: the found
-                        configuration 0.72 / 0.71, the C 1.9 family pair 0.78 / 0.84, the B 1.8 triple 0.61 / 0.87 / 0.55, the A 1.9 pair 1.03 (FAIL) / 0.77
-  testbed/ledger/company_check.mjs  ⭐ THE COMPANY ANOMALY CHECK (user-ruled 2026-09-02, for any arm
-                        carrying the company-target gate): companies formed, countries with one,
-                        prosperity, % prosperous, charters, regional HQs and the company-held share of
-                        owned levels, world + shortlist, arm vs references, plus the company TYPES
-                        present in the reference and absent in the arm. Reference reading on the
-                        flat-cost arm vs vanilla at 1935: world 260 vs 296 companies, shortlist 29 vs
-                        26, prosperity ~99 vs 100, regional HQs 95 vs 96, company-held 39.3% vs 39.1%
-                        — i.e. the chain extension had already put companies at vanilla's level.
-                        `--arm <session>[:<setup>] --ref <session>[:<setup>] [--years …]`
-  testbed/ledger/tech_timing.mjs  ⭐ TECHNOLOGY TIMING AGAINST THE NARRATIVE ONSET, ACROSS ARMS (2026-10-05, BALANCE_FRAMEWORK §10.95):
-                        per run and technology the HALF-MAJORS YEAR (the first yearly summary in which half the tech majors present —
-                        lib_markets.resolveMembers — hold it), the median per arm, ✓ within ten years of the tree's `onset`, « / » an arm's
-                        median outside the control's per-run range; the summary counts on-target / early / late over the technologies
-                        whose onset is 1826–1926. `<label>=<session>[,<session>][:<setup>] ... [--control <label>] [--cat production|military|
-                        society|all] [--book <config>]` (the book marks its extra entries X). First read (control = e1a12-ai1135-tex1140
-                        n=5): production 16 of 43 on target, 24 late, median 11 years late; the canon 15 / 25 / 12 — the tree runs LATE
-                        against the onsets (but ON the anchor principle — tech_census.mjs D)
-  testbed/ledger/tech_census.mjs  ⭐ THE TECHNOLOGY CENSUS AT A RUN'S END, ACROSS ARMS (2026-10-05): A. each top-era technology's holders
-                        at the end (every country counts, mean per run); B. technologies held by the tech majors individually (GBR USA NET
-                        BEL FRA PRU SWE UNL NGF GER — a tag absent from a run is dropped, never replaced); C. the top ten independents by GDP
-                        outside that list; D. THE ANCHOR PRINCIPLE — the share of game era 3 / 4 / 5 technologies the run's tech leader (and
-                        its third) holds at 1875 / 1905 / the end; E. reliance on the research entries — the share of B's acquisitions with
-                        an entry stage and the entries' grants as a share of their base cost (PMR_JE lines, windowed by the run's token).
-                        `<label>=<session>[,<session>][:<setup>] ... [--top-era 5]`. First read: the control's leader holds 52 / 46 / 46% of
-                        game eras 3 / 4 / 5 at 1875 / 1905 / 1936 (the canon 52 / 54 / 54) — on the anchor principle; the entries carry
-                        5–6% of the majors' acquisitions (Britain ~10–12%)
-  testbed/ledger/dam_slots.mjs  ⭐ THE DAM SLOT CHECK (2026-10-09, for dams on resource slots, `dams.layout = resource4`): per run, from its own
-                        book through lib_dams `resourceLayout()` (each project's region and slots) and the v17 summaries — every year a region's
-                        standing levels and standing + queued levels against its slots (BREACHES, exit 1 if any), the queued levels by the
-                        builder's relation to the state owner (own / overlord / family / outside = investment rights), and per class at the
-                        last summary levels against slots and regions started / full. `<session>[:<setup>] [--every N] [--list 30]`; reads
-                        unfinished runs too. ⚠ A level queued and finished between two yearly samples is never seen queued
-  testbed/ledger/dam_yearly.mjs  THE DAMS OF A BATCH WITH YEARLY SAVES (2026-10-05; dam_situation / dam_outcomes need quarterly ones): per arm,
-                        dam levels at the end, projects with a level, the levels hosted by SUBJECTS against their share of the potential, and
-                        who built each level by relation to the host — own / overlord / family / outside (investment rights) — the builder being
-                        the country with that dam in its government queue at the last yearly sample before the PMR_DAM|built line.
-                        `<label>=<session>[,<session>][:<setup>] ...`. First read: the artmerge books 22–35 levels a run (of 312), subjects ~25%
-                        of built ≈ their share of the potential, ~40% built from outside the family; the jex run 1 104 levels (the entries bring
-                        steam turbine and arc welding forward — 28 of its levels need arc welding, none in tex1140), 46% in subjects
-  testbed/ledger/je_tally.mjs  ⭐ THE RESEARCH-JOURNAL-ENTRY TALLY (2026-09-04): unique (country, technology,
-                        stage) completions per run from the debug.log MIRROR — the run's own telemetry TOKEN marks
-                        where its lines begin (a wall-time window fails on a run that crosses midnight) and
-                        completions are DE-DUPLICATED (landmine L28: the mirror re-copies chunks). Per-country
-                        totals, Britain's coverage by the tier of the unlocked rung, the entries outside the tier
-                        ladder (war channel), technologies held, the frontier rungs' British levels at 1905.
-                        `--session <stamp>[:<setup>] [--config <path>]` (the config defaults to the run's own
-                        build_state). ⚠ F101's six-rung counts were raw lines — canon-n7 run 1 reads 2.3× high
-  testbed/ledger/lib_wall.mjs + wall_from_ticks.mjs  ⭐ THE TRUE WALL CLOCK OF A RUN (2026-09-13): the century's play time rebuilt from the
-                        observer's tick lines (elapsed seconds + in-game date every 20 s, per attempt) — load once + play, each crash-resume's
-                        reload and replay subtracted; `report_perf.mjs` reads it by default (`--wall meta` for the observer's own
-                        wall_seconds). Written because meta's wall over-counts crash-prone arms by 1.5–2 min per CTD and a killed-and-
-                        continued run carries only its last launch. `wall_from_ticks.mjs <session> [--detail]` prints meta / play / overhead per run
-  testbed/ledger/vector_effects.mjs  THE TICK-COST VECTORS AS A FACTORIAL (2026-10-09, FINDINGS F221): per run wall s per in-game year (tick stamps,
-                        1 Jan out) and game logic, regressed by OLS on the vectors coded in the setup name `v<digits>` (v0 = none);
-                        `<session> [--from Y] [--to Y] [--interactions 12,24]`; setups without a code (vanilla) are references
-  testbed/ledger/run_sanity.mjs  PER-RUN SANITY FOR A SHORT TIMING BATCH (2026-10-09): reached date, world and British GDP at the dump (the run's
-                        own token's GDP lines) ÷ the session's vanilla runs, error.log lines inside the run's own window (⚠ split on
-                        \r?\n — `.` does not match \r and a first cut read 0 errors everywhere) and their top classes. `<session dir>`
-  testbed/ledger/arm_tick_cost.mjs  ⭐ THE TICK COST OF A FEATURE, ARM AGAINST ARM (2026-10-09, FINDINGS F220): per run and in-game year the wall seconds
-                        from the engine's 1-s tick stamps (the 1 Jan autosave day out) and the GAME-LOGIC time + one daily / weekly / monthly tick's
-                        cost from `logs/custom_automated_stats.log` (vanilla's automation_stats logger, written by every observer run); per setup the
-                        mean ± SE and Δ vs `--ref` (default vanilla). `<session>[,<session>] [--ref vanilla] [--from 1836] [--to 1841] [--runs]
-                        [--exclude <session>/<runNNN_setup>[,…]]` (runs are pooled by SETUP NAME across sessions, so a void run sharing a valid
-                        arm's name must be excluded by name; a run cut short counts only its complete years).
-                        Built for the short feature-switch batches (schedules perf_*_5y.json) and their probe-only config keys: `company_chain:
-                        false`; `dams.perf_off` / `perf_amplify` / `static_mode`; `research_events.perf_off` / `perf_amplify` / `perf_amplify_mode`
-                        / `update_frequency` (MODDING_NOTES → *What script content costs the tick*). Extra game launch arguments: schedule key
-                        `game_args` → `run_observer -ExtraGameArgs` (⚠ `-script_profiling` crashes a headless game)
-  testbed/ledger/tick_overhead.mjs  ⭐ THE ENGINE OVERHEAD A BOOK ADDS, PERIOD BY PERIOD (2026-10-04, FINDINGS F217): seconds per in-game year from the
-                        observer's 20-s ticks with every autosave tick removed (so save cadences compare), minus vanilla's cost scaled to the run's
-                        own world size (F120's pops+GDP and levels-weighted models, both printed), mean ± 2·SE per period.
-                        `--van label=<sessions>:<setup> [--van …] --arm label=<sessions>:<setup> [--arm …] [--json out]` (one setup per spec).
-                        First reading: the mod's "early-game dip" is a near-constant ~+6–7 s per in-game year from 1836 (+12% of a 55-s early tick,
-                        ~+4 by the 1880s), not an early event, not instrumentation and not world size. ⚠ Quarterly-save runs read dearer even
-                        with the save ticks out — compare like cadence with like
-  testbed/ledger/machine_load.mjs  ⭐ WHY WAS A RUN SLOW? (2026-10-06) — reads machine_monitor.ps1's `machine_load.tsv`: per run and in-game
-                        period (`--years 5`), wall and GAME CPU seconds per in-game year, each against the median of the OTHER runs over the same
-                        period (×run — world size moves both, so siblings at the same dates are the yardstick), cores (game / harness / other),
-                        clock %, P/E-core busy, the canary against the session's median, memory, disk, and a stated heuristic DRIVER: MACHINE ·
-                        LOAD · MEMORY · GAME WORK · WAITING. `<session> [--years 5] [--run runNNN_setup]`. Follows a header change mid-file
-  testbed/ledger/slow_episodes.mjs  ⭐ SLOWDOWN EPISODES AND THE FACTORISED WALL CLOCK (user-ruled 2026-10-06): from the observer's tick lines
-                        only (so every session ever run can be read), per run and 5-year period the seconds per in-game year (reloads and
-                        replays excluded) against the arm's median; an EPISODE = ≥ 1.4× for ≥ 2 consecutive periods; per arm the NORMAL
-                        BRANCH (Σ the median pace), the share of runs with an episode and an episode's cost in minutes. `<label>=<session>
-                        [,<session>][:<setup>] ... [--years 5] [--ratio 1.4] [--min 2] [--ref <label>]` (`--ref`: the arm whose medians judge an
-                        arm of under three runs). First read: vanilla 1 of 19 runs; the 2026-09 canon arms 3 of 60, 11–21 min each
-  testbed/ledger/tick_profile.mjs  ⭐ WHERE A RUN'S WALL CLOCK WENT, TICK BY TICK (2026-10-06, FINDINGS **F218**): the game writes `Processing
-                        Tick: Y.M.D[.H]` to dedicated_server.log at every quarter-day tick (hours 0/6/12/18, 1-s stamps), mirrored in
-                        logs_live/; each gap is charged to the earlier tick. Per in-game year: s/yr split by sub-tick and the ticks ≥ 3 s; `--long S`
-                        lists long ticks; `--days a,b --slots 6,12,18 --bin 5` pins a start/end to a few days. `<session>/<run> [--from Y] [--to Y]`.
-                        THE SIGNATURES: hour 0 + ONE other sub-tick rising together for years then dropping within days = a fleet stuck on a
-                        repair loop (read the save with fleet_loops.mjs); all four rising, ending at a peace = a long great-power war; a few
-                        multi-second ticks on a fixed cycle = something periodic (only canon-dams-v2-n1, unexplained). Exports `parseTicks`
-  testbed/ledger/war_tax.mjs  THE "WAR TAX" ON TICK TIME (2026-10-13, FINDINGS **F230**; EXPLANATORY ONLY — user-ruled never to be deducted from a
-                        wall-clock measurement): per run-year, tick time (slow_quarantine's yearTimes) against run FE + ln pops + ln GDP + the number of
-                        major-v-major wars on (rebuilt from events.tsv: WARSTART → both leaders' PEACE) [+ mobilisation above trend]; prints the tax as a
-                        share of century tick time, and each ruled slowdown episode's excess with the share the war terms explain and the wars on.
-                        `[--runs <session>[:<setup>][,…]] [--detail] [--wars] [--json out]`; no --runs = every vanilla century run with an events.tsv.
-                        Vanilla: each concurrent major war +3.5% that year, ~2% of a century; episodes 1.9% of tick time, a quarter to half of it wars
-  testbed/ledger/fleet_loops.mjs  ⭐ FLEETS STUCK ON A REPAIR LOOP, OUT OF ONE SAVE (2026-10-06, F218): streams a .v3 through rakaly and lists every
-                        formation whose travel path holds ≥ --min (200) moves — owner tag, country id and its index mod 4 WITH THE SUB-TICK IT
-                        MAPS TO (F218 §8, from every kept save: ≡ 1 → hour 6, ≡ 0 → hour 12, ≡ 2 → hour 0 alone, ≡ 3 → hour 18 presumed — NOT
-                        6 × (id mod 4), which F218 first assumed), the recall flag, creation date, its ships (type@hit points), moves, current_move, the
-                        DISTANCE SAILED (what the cost tracks: ≲ 125k = 0–10 s a year, ~150–200k = 20–30 s, ~470k = 100–200 s) and the repair target
-                        (`STATE NO LONGER EXISTS` where the target's record is gone). `<save.v3> [...] [--min 200] [--json]`. Over 288 kept endpoints
-                        every such formation was a recalled fleet (vanilla 3 of 30, mod 14 of 258) and none an army. ⚠ A kept save is the run's
-                        newest: a loop that ended earlier is gone — copy a save into the run's `diag_saves/` while an episode is live
-  testbed/ledger/fleet_loop_runs.mjs  ⚠ AN INVESTIGATION AID SINCE 2026-10-07, NOT A VERDICT — the user ruled that no tick pattern can establish
-                        the listed fleet-loop bug; only observing the loop directly can (the "MOD MUST NOT MAKE THE GAME SLOWER" bullet). It
-                        WAS: WHICH RUNS ARE DISQUALIFIED FROM THE WALL CLOCK BY A FLEET LOOP (2026-10-06, F218). From each run's dedicated_server.log: an episode = one of the 06 / 12
-                        / 18 sub-ticks ≥ --threshold (25) s a year above BOTH others, the same one, ≥ --years (3) consecutive years (a war lifts
-                        all three and never fires; hour-0-only load is undetectable and stays). Per run the verdict and its evidence; per arm
-                        the SHARE DISQUALIFIED and the mean play time over all runs and over the qualifying ones; `--dirs` prints the qualifying
-                        run folders for report_perf.mjs. `<label>=<session>[,<session>][:<setup>] [...]`. Exports `detect(runDir)`
-  testbed/ledger/corpus_extract.mjs + corpus_levers.mjs + corpus_early.mjs + corpus_depeasant(_extrap).mjs + lib_corpus_stats.mjs + lib_depeasant.mjs  ⭐ THE WHOLE RUN CORPUS AT ONCE
-                        (2026-09-25, FINDINGS **F165**): the extractor writes one line per usable century run of every four-rung A/B book
-                        (and the vanilla controls) — the lever vector from the run's own `_ab`, yearly world / pool / GBR GDP, W, U*, H and
-                        the pool's tiered workers by tier — to the gitignored `corpus_runs.jsonl` (~20 min for ~170 runs; split the session
-                        list over parallel processes). `corpus_levers.mjs` fits every end-state line on the levers, prints the EXCHANGE RATE
-                        (GBR U* and the hoard per +10% world GDP, per lever) and leave-one-config-out error; `corpus_early.mjs` says how well
-                        a decade's reading predicts the end state across seeds and across configs; `corpus_depeasant.mjs` fits the YEAR Britain's
-                        U* first crosses 30/20/10/5% (right-censored Tobit; `NO_STUCK=1` drops the stuck-Britain runs), which reads the
-                        levers ~2–3× better than end-state U*; `corpus_depeasant_extrap.mjs` back-tests extrapolating the crossing past
-                        the run's end (it does NOT fit better — the censored fit recovers the lever effects within ~0.6 SE from data
-                        ending at 1920–25); the shared Tobit is `lib_depeasant.mjs`. ⭐ `corpus_gbr_extract.mjs` (Britain's yearly
-                        record per run → the gitignored `corpus_gbr.jsonl`), `stuck_britain.mjs` and `stuck_britain_subjects.mjs` read
-                        the STUCK-BRITAIN mode (FINDINGS **F166**: F108's British stall, ~5% of runs on the current family, 0 of 16 in
-                        vanilla; a won British revolt ×5 the risk; indistinguishable from a recovering Britain at 1880; 0 of 15 runs
-                        at cost ratio ≤ 1.64). The finding that motivates them: A, B, the
-                        cost slope and in0 are one axis for GDP / U* / hoard, Britain's U* is seed-dominated (17 pp within a config), and a
-                        config's 1900 world GDP ranks configs at r 0.86 for half the wall clock. ⚠ Runs of one config share a lever vector —
-                        read the standard errors as optimistic
-  testbed/ledger/fit_cost_drivers.mjs  ⭐ THE TICK-COST DRIVER RACE (2026-09-15, FINDINGS **F120**) — is row P's modelled-cost
-                        tripwire (`sec/yr = c0 + cPop·kpops + cLv·klevels`, F72, the constants in `fill_build_perf.mjs`'s `model`)
-                        built on the right DRIVERS? Pools every archived run (complete, ≥50 summaries, yearly cadence — 170 runs /
-                        16,801 year-intervals today, cached in the gitignored `cost_drivers_pool.json`, `--refresh` rebuilds) and races
-                        live pop objects, building LEVELS, building OBJECTS (`Σ world.buildings[*].n` — one record per state × building
-                        type, the thing the engine iterates), GDP and population. ⚠ All four grow together over a campaign, so a pooled
-                        fit alone cannot separate them: it prints leave-one-RUN-out cv, a within-pop-band cut and a regression-free
-                        arm-ratio table, which is where the identification is. **OUTCOME: object count fits WORSE than levels
-                        everywhere** (beyond pop objects it adds nothing, and its sign is wrong across books) — and **levels is a SIZE
-                        proxy, not a per-level charge** (GDP does the same job; the level coefficient collapses beside it). Replaces the
-                        one-off `fit_cost_model.mjs`, whose hardcoded scratchpad path died with the session that wrote it
-  testbed/ledger/batch_tables.mjs  ⭐ THE BATCH TABLES for an arm that spans SEVERAL sessions (2026-09-09, F107 — the 60-run
-                        plan's phase 1 lives in two folders after the L29 harness race): pools ÷ GDP, the tiered goods' prices
-                        (British market + the seven-market pool, per dump date, arm beside vanilla, the 1935 ratio), wage units
-                        (F97's unit), British production ÷ vanilla at 1900 and 1935, and GDP ÷ vanilla — medians over the
-                        USABLE runs pooled across the sessions named, every ratio with both its terms. `--arm <sess[,sess]>:<setup>
-                        [--nb <sess>:<setup>] [--van <sess>] [--config <path>] [--exclude <sess/run,…>]` (--exclude names the
-                        stalls, which are reported on their own line). `assess_gdp_gate.mjs --session a,b` pools sessions the same way
-  testbed/ledger/analyse_build_allocation.mjs  ⭐⭐ THE OVERSHOOT CHECK — WHERE DID CONSTRUCTION GO?
-                        (written 2026-08-19 for the ai_value ladder, user-directed.) The tier-choice
-                        measure asks a WITHIN-industry question, and a ladder can improve it while
-                        failing two ways it cannot see: **between industries** (tier-4 automotive at
-                        ai_value 2500 outbids tier-2 textile at 1500, draining whole chains rather than
-                        climbing them) and **out of the untiered sector entirely** (extraction and
-                        agriculture carry NO ai_value change, so starving them SHOWS UP AS A WIN on the
-                        tier-choice metric). Reports sector / industry / tier shares of every level
-                        ADDED, **absolute beside normalized** — a share that rises because its numerator
-                        grew and one that rises because everything else collapsed are different results
-                        — plus a per-industry `B/A abs` column and a "risk of disappearing" list at
-                        <0.60×. `--a <baseline> --b <arm>` to compare, `--session` for one.
-                        ⚠ Levels REMOVED are ignored, never netted: demolition is a different decision
-                        and netting makes a shrinking industry look like an unbuilt one. ⚠ Ports are
-                        graded, so every total is given raw AND unit-weighted. ⚠ It reads building groups
-                        from vanilla with **`mod/common/buildings` layered over**, because the all-new
-                        steamer chain has no vanilla anchor and otherwise falls into "other"; anything
-                        still unsectored is REPORTED BY NAME rather than swept up. ⚠ Strips the UTF-8
-                        BOM before matching top-level blocks — the same trap `verify_pms.mjs` documents,
-                        and here it silently loses `building_coal_mine` and `building_logging_camp`, two
-                        of the raw industries the analysis exists to watch
-  testbed/run_schedule.ps1  ⭐ A RUN CAN CONTINUE A KEPT SAVE (2026-10-11): run-level `continue_save` (path), `continue_expect_after`
-                        (the landing guard's date, required), `prior_wall_seconds` (the parent's play) and `parent` (<session>/<run>,
-                        provenance) → run_observer `-ContinueSave` (feeds the save under the engine's pointer title before attempt 1, the
-                        L32 feeder's move) and `continuation.json` in the run folder. First use: `jex_dam4s_ra_finish_1936.json`, the
-                        1900→1936 finishes of `20261010_132640`. ⚠ Readers expecting one folder per 1836→1936 run must stitch parent + child:
-                        ⭐ `node tools/testbed/stitch_session.mjs <continuation session> <new session name>` builds a NEW session folder
-                        (copies only; STITCHED.md inside) with one run folder per whole campaign — summaries joined and renumbered, debug.log
-                        joined from each half's token with the continuation's token REWRITTEN to the parent's, run.log / tables / meta
-                        merged, and every ABANDONED RESUME BRANCH dropped (2026-10-15: on a backward in-game date jump that matches a resume in the half's run.log, the earlier copies of the replayed dates leave the summaries, events.tsv, markets.tsv and the game logs, so a reader never takes a branch that did not finish) — so fill_ledger.sh, criteria.mjs and every reader run on it unchanged (proven: lib_runs counts it,
-                        wall_from_ticks reads the reload as overhead, the research-entry grants extract across the rewrite). An absolute
-                        output path + `--partial` = a test outside the sessions folder
-  testbed/run_schedule.ps1  THE entry point for all measurement: ordered schedule JSON -> build each run via
-                        build.ps1 -> run -> harvest -> cross-run markets_all.tsv. Interactive p/r/s/x control;
-                        crash policy. Never call the builder directly for test data. Specs in
-                        testbed/schedules/, results in testbed/sessions/ (the ONE results root).
-                        ⭐⭐ THE RED-FLAG FEED IS ON FOR EVERY RUN (user-ruled 2026-10-03, BALANCE_FRAMEWORK §10.94): it adds
-                        `market_goods_wide` on 1 July of every year from 1836 to the year before `until`, on the eleven tags
-                        read from ledger/lib_markets.mjs's `TELEMETRY_TAGS` (it THROWS if that list cannot be read), MERGED
-                        with the schedule's own wide_dates / wide_tags / metrics (a union — the emitter takes one tag list for
-                        all wide dates); the plan print and each run's log line say so, and `telemetry.json` records it.
-                        `-NoRedFlagFeed` drops it — only for a re-run whose telemetry must match an old batch. ~50 lines a
-                        market a year, ≤ 11 markets (L3-bounded); proven on a throwaway control build (30 July blocks, guarded tags)
-                        ⭐ THE MACHINE-LOAD MONITOR IS ON FOR EVERY SESSION (2026-10-06): `machine_monitor.ps1` is started once, before
-                        run 1, with the session's full path and `-MaxHours` = max(24, 2 × the estimate + 12), proven alive (the log line
-                        "machine monitor alive (pid …)"), and exits by itself at SCHEDULE DONE; a failed start is a WARN, never an abort.
-                        `-NoMachineMonitor` drops it; the plan print says which
-                        ⭐ `tools/testbed/NO_NEW_RUNS` (2026-09-30) is the FILE twin of the [s] key: checked before EVERY
-                        run, it lets a running game finish and starts nothing further — the tool for a user deadline on
-                        STARTING games (the STOP file is the [x] key and closes the running game). Dropped at a set local
-                        time by `testbed/no_new_runs_at.ps1 -At 'yyyy-MM-dd HH:mm'` (launch it detached, -Hidden; it logs to
-                        no_new_runs_at.log). ⚠ REMOVE the file after the batch: while it exists every schedule refuses to
-                        start a run (it says so in session.log). Both files are gitignored
-                        ⭐ It also owns the SAVEGAME HARVEST (default ON, `-NoSaveHarvest` opts out):
-                        `archive_autosaves.ps1` runs CONCURRENTLY with the game into `<run>\saves\`, and
-                        `harvest_saves.ps1` runs BETWEEN runs into `<run>\save_summaries\`, with a
-                        `save_provenance.json` carrying the arm/run/session into every summary.
-                        ⚠ The archiver is launched with `Start-Process`, whose `-ArgumentList` joins an
-                        array with spaces and QUOTES NOTHING — and this repo lives under a path with a
-                        space, so every path there is quoted by hand and the scheduler now PROVES the
-                        archiver is alive rather than reporting it started. It was launched into a hidden
-                        window and died instantly on `Processing -File 'C:\claude-code\victoria' failed`;
-                        the batch played 3.5 in-game years capturing nothing before that was noticed.
-                        ⚠ The harvest is invoked with `& powershell @args`, which quotes each element
-                        ITSELF — so its paths must NOT be pre-quoted. Two calls, two opposite rules
-  testbed/make_vanilla_stub.ps1  derives a "tiering only" config (structure kept, base-game recipes/costs/ai_value)
-                        -> config/mod_config.vanilla_stub.json; the headless twin of the UI's Bring-to-vanilla,
-                        used as the control arm when measuring what the tier split alone does
-  goods_prices.tsv      THE price table — the single source for the builder, both solvers, BOTH linters and the UI
-  lint.sh                profitability + negative-goods linter wrapper (runs both awks below on ONE concatenation: every
-                        vanilla + mod production-method, group and building file, vanilla first so the mod overrides — the mod's own
-                        01_industry.txt with its remapped gates included)
-  lint_profitability.awk / ladder_tiers.txt   BE-vs-ladder linter. ⭐ SINCE 2026-10-03 (BALANCE_FRAMEWORK §10.93 rule 6,
-                        user-ruled: "BE numbers should mean 'under most basic of all secondary PMs available for the building'. Not 'main
-                        PM only'. Skipping checks is wrong") it checks EVERY main method of a building — a merged host's second method
-                        included, which had no drift guard before — under, in every other group, the FIRST member legal beside it
-                        (ungated, or gated on the main method or on a method already chosen; power-bloc gated never chosen): the "off"
-                        method almost everywhere, the mandated copy where one is mandated. It FAILS a main method with nothing legal in
-                        some group. The 2026-10-02 stop-gap that left mandated groups out is gone. ladder_tiers.txt is GENERATED; prices
-                        come from goods_prices.tsv via `-v PRICES=`, never a copy inside the awk
-  lint_negative_goods.awk negative-goods invariant linter (no PM combination drives a good's building total < 0) —
-                        goods only, and lint.sh's result only PRINTS; the HARD rule is lint_pm_combos.mjs below
-  lint_pm_combos.mjs    ⭐⭐ THE PRODUCTION-METHOD COMBINATION RULE — HARD (user-ruled 2026-10-02, BALANCE_FRAMEWORK §10.93), run
-                        by build.ps1 on every build and THROWING. Reads the EMITTED mod over the game, every building the game
-                        loads: (1) no legal combination of one method per group (a PM-gated method only beside a method it names)
-                        takes an input good, an output good OR ANY PROFESSION'S EMPLOYMENT below −0.011; (2) no DEAD method — a
-                        member gated on main methods its building lacks, which the game still SHOWS, greyed, at its own numbers
-                        (vanilla's Elastics / Precision Tools / Bone China on the crafts, the user's playtest); (3) every 1836
-                        history block names only methods its building's groups list; (4) NARRATIVE COMPATIBILITY on tier
-                        buildings — no secondary or automation method beside a main method the pair-by-pair review in
-                        lib_secondary_compat.mjs marked it incompatible with (a carried pair the review never covered only
-                        WARNS); (5) no labour-saving method on a craft rung; (6) every group of a tier building has something to
-                        run beside every main method; (7) a MANDATED automation is the only choice beside its main method and carries
-                        no technology gate its main method does not imply (the building's technology and the method's, with every
-                        prerequisite, in the tree the mod loads — since 2026-10-03; it was "no gate at all"); (8) no group of a tier building
-                        offering nothing but an "off" method (2026-10-21, §10.93 rule d — the crafts showed five such groups).
-                        `node tools/lint_pm_combos.mjs [modDir] [config]`.
-                        Each failure kind proven to trip on a sabotaged copy the day it was written
-  lib_secondary_compat.mjs ⭐⭐ WHICH SECONDARY / AUTOMATION METHOD MAY RUN BESIDE WHICH MAIN METHOD — the table of BALANCE_FRAMEWORK
-                        §10.93, REVIEWED ONE COMBINATION AT A TIME (user, 2026-10-02: "No, no universal rule. Go through all vanilla
-                        combinations one by one"): `REVIEWED` (139 pairs, every vanilla secondary of each tiered industry × every vanilla
-                        main method of it), `NOT_BESIDE` (the 14 incompatible, each with its reason — Assembly Lines not beside Muskets,
-                        Rifles, Cannons, Smoothbores, Percussion Caps, Wrought Iron Tools; no powered automation beside the handcraft
-                        methods; …) and the borderline pairs judged compatible — ACCEPTED by the user. ONE table: emit_secondaries
-                        drops from it, lint_pm_combos verifies against it; `validateCompat(GAME)` THROWS on a key the game does not define.
-                        Keyed by VANILLA method names, so it serves every book (a minted addition takes the vanilla method below it).
-                        ⭐ `MANDATED` (user-ruled 2026-10-02 23:55): an automation that is narratively the same as a main method —
-                        Mechanized Looms ↔ Sewing Machines, Automatic Power Looms ↔ Electric Sewing Machines, Assembly Lines ↔ Mass
-                        Production — is the ONLY choice of its group beside that main method (a vanilla-quantity copy with no law gate and
-                        no technology gate its main method does not imply) and is not allowed beside the main methods listed before it
-                        (derived into NOT_BESIDE)
-                        ⭐ SINCE 2026-10-03 ALSO THE ONE DEFINITION OF "THE MOST BASIC SECONDARY AVAILABLE" (§10.93 rule 6): `basicSecondaries`
-                        (per group, the first member legal beside the rung's vanilla main method — the mandated copy where one is mandated),
-                        `basicTotals` / `basicEmployment` (their goods and jobs, × workforce_mult), `secondaryOptions` (every legal member,
-                        an empty list for a group the building does not carry — the balance sheet's options), and `readTechPrereqs` /
-                        `techClosure` (the prerequisite closure in the tree a mod loads — rule 7's kept gates and lint check 7)
-  basic_secondaries.mjs `node tools/basic_secondaries.mjs --config <book> [--options]` — per rung, the goods of its most basic secondary
-                        methods as QUANTITIES (build.ps1 adds them, priced with its own table, to the building name's "Recipe BE"), or
-                        with --options the sheet's per-rung secondary options (ui/data.js `sec_options`). JSON on stdout; §10.93 rule 6
-  restate_basic_be.mjs  `node tools/restate_basic_be.mjs --config <book> [--write]` — re-applies make_ab_config's target_be / wage_pct
-                        restatement under the most basic secondary methods to a book written before 2026-10-03, without regenerating its
-                        chain. PROVES ITSELF: every rung without a mandate must reproduce its stored numbers exactly, or it prints
-                        UNEXPECTED and writes nothing. --write records `_basic_be` (the rungs changed, before and after)
-  lint_solvency.mjs     THE SOLVENCY LINTER (§10.63 / landmine L18) — every tier's BASE PM must be able to
-                        break even at SOME price inside the engine's own 25–175% band: output ×1.75,
-                        inputs ×0.25, wages included. `--census` ranks every tier by how close it is to
-                        the line; `--config <path>` scores an alternate book; `--goods-only` drops the wage
-                        term for A/B and is NOT the shipped rule. ⚠ SEPARATE from lint_profitability.awk on
-                        purpose, and both reasons are why F67 survived for months: that linter reads
-                        ladder_tiers.txt, which EXCLUDES `no_mass_be` industries (port/railway/power — three
-                        of the six sub-1 tiers), and its test is CIRCULAR (it compares a recipe against
-                        target_be, which era_solver restates FROM that recipe, so the deviation is 0 by
-                        construction). ⚠ Never read target_be here; recompute from the goods block.
-                        ⚠⚠ It passes on the current book — 0 of 105 — BY DESIGN, not by luck: the ruled
-                        threshold is target_be ≤ 400 and the port sits at 270. A passing run is NOT evidence
-                        the port is fine. ✅ WIRED INTO build.ps1 (2026-08-17), immediately after lint.sh, and it
-                        THROWS on a non-zero exit. Kept separate from lint.sh on purpose — see the two
-                        reasons above
-  lint_tier_eras.mjs    ⭐⭐ THE TIER-RULE LINTER (landmine L31, user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78) — runs inside
-                        every build.ps1 (throws) and as preflight `Test-LmL31`. Reads the CONFIG and its PAIRED tree (the tech era
-                        the mod ships): every rung within ±1 of the tier its gate technology's GAME era implies
-                        through `era_game_era` (1 → t0, 2 → t1, 3 → t1, 4 → t2, 5 → t3), one rung per tier, output and value
-                        added per level rising with tier in every industry, and for an A/B book (`_ab` present) output, input
-                        value, cost and ai_value RECOMPUTED from the vanilla first method and `_ab` as functions of the tier —
-                        a book keyed on the rung index (every book before 2026-09-13) fails it on its four late industries.
-                        ⭐ Since 2026-09-19 it honours **`_ab.anchor_for`** (make_ab_config's `--anchor-for`, FINDINGS F148 §9): a shifted
-                        industry's output and input value are recomputed as `A^(era−a)` / `B^(era−a)` over the ANCHOR rung's vanilla
-                        method while cost and ai_value stay on the absolute tier, and the anchor is printed as a note. Taught the field
-                        rather than bypassed — without it the lint fails every rung of a shifted industry, which is the guardrail
-                        working. ⚠ Its origin is 0 unless `anchor_for` names the industry, NEVER the industry's own first rung (the
-                        four industries with no t0 rung are keyed on the absolute tier — the F111 bug).
-                        ⭐ Since 2026-09-30 it checks CRAFT rungs against `_artisan.recipes` (§10.91.1) and MERGED rungs against
-                        `_merge.pairs` (§10.91.2): a `method_of` the record does not name, a host that is not the rung directly below,
-                        a merged rung with no technology, and a host whose cost / ai_value is not the geometric midpoint of the two
-                        rungs' tier-rule values all FAIL (proven on three sabotaged copies of merge6). A pair recorded with `cost_rule: 'own'`
-                        (make_merge_config `--host-cost`, 2026-10-03) has its host's cost checked as its OWN tier's instead, ai_value still the midpoint.
-                        `--config <path>` scores an alternate book, `--census` prints every rung's tier, technology, game era
-                        and deviation. Out of scope, and says so: a book without `era_game_era` (the six-rung one)
-  emit_techs.mjs        THE TECH TREE, EMITTED (ROADMAP step 1) — called by build.ps1, which THROWS if it
-                        fails. Reads config/tech_tree_options.json's SHIPPING option and writes the additive
-                        new-technology file, the era moves into vanilla's production AND military files, the tree's
-                        added prerequisites (a vanilla technology's `prereqsAdded`, appended inside that technology's own block — it
-                        THROWS if vanilla's list is no longer the tree's `vanillaPrereqs`; since 2026-10-03, §10.93 rule 7), the
-                        per-tree AI research weight (config `tech_ai_weight_mult` — DEFAULT 1/1/1 by ruling
-                        2026-08-17, at which it emits NOTHING; the 2026-08-11 society ×0.8 is superseded;
-                        a tree ≠1 gets `multiply` appended in every vanilla ai_weight of its file and sets
-                        the new techs' flat weight; editable beside the tech page's spread panel), the 1836
-                        starting grant, the ahead-of-time define, a minted
-                        placeholder icon and loc for all 11 languages.
-                        ⭐⭐ **THE 1836 GRANT IS DERIVED FROM THE 1836 MAP** (user ruling 2026-08-12): *every
-                        production method vanilla runs in 1836 stays, and the country running it holds the
-                        technology.* For each of our tier buildings standing on the map it takes the
-                        STARTING TIERS of the countries owning one and grants that rung's technology to
-                        exactly those starting-tech tiers, minus what vanilla's own `add_era_researched` already covers
-                        and minus anything vanilla names itself (read live from vanilla's file, so a patch
-                        flows through). It used to name every new tech-era-1 production technology to starting-tech tiers 3,
-                        4 and 5 — 213 countries, of which **two** owned anything of the kind. The grant is
-                        now FOUR lines — at the current tree `steel_railway_cars` to starting-tech tiers 1-2,
-                        `beet_sugar_refining` to starting-tech tiers 3-4 (an OUTCOME of map × tree, so a re-band moves it:
-                        an earlier tree granted `steel_toolmaking` where this one grants `steel_railway_cars`
-                        — verify against the EMITTED 00_starting_inventions.txt, not this note).
-                        ⭐ The predicate is BOTH "owns one on the map" AND "could have built one in
-                        vanilla" (user ruling: match vanilla on could-have-built, even where the
-                        technology is tech era 2 in our tree — all 13 of vanilla's own named grants to starting-tech tier 1 are
-                        tech era 2). Vanilla's side needs the BUILDING's gate as well as the METHOD's, and the
-                        id class must admit a HYPHEN: three of our tiers' `vanilla_pm` values contain one
-                        and an [a-z_0-9]+ class leaves their gate reading EMPTY, i.e. permissive.
-                        ⚠ Starting-tech tiers 1 and 2 keep vanilla's own `add_era_researched = era_1`, so our tech-era-1
-                        technologies reach them regardless — a deliberate, small over-grant (starting-tech tier 2 gets
-                        `fourdrinier_machine` and `leblanc_process` unneeded). Removing vanilla's blanket
-                        would strip vanilla technologies, which the rule forbids.
-                        ⚠ Its source is `config/start_baseline.json`, which is why **build.ps1 now runs
-                        `extract_start.ps1` BEFORE this** — a baseline written later would derive this
-                        build's grant from the previous build's map. Guarded by landmines L14 and L15.
-                        ⚠ **IT EMITS NO TECH-SPREAD CHANGE — spread is exactly vanilla** (user ruling
-                        2026-08-12). It shipped `country_production_tech_spread_mult = 0.5` until then, for
-                        which it owned a whole 900-line vanilla file; the ruling is that the deeper
-                        production tree is compensated **aplenty by the research journal entries**, so the
-                        boost paid twice for the same depth — and on the one lever that works AGAINST the
-                        mod's goal, since spread only ever delivers what somebody else already has. The
-                        BASE terms (flat 25, literacy 75) were never changed: the 2026-08-10 ruling that
-                        raised them to 50/100 was superseded before it was emitted. The knobs stay in the
-                        tech-tree page's spread panel, all at vanilla, because that panel is how the
-                        question gets re-asked. ⇒ we no longer own `common/static_modifiers` at all
-                        ⚠ EVERY vanilla transform asserts its own MATCH COUNT and throws on a no-op — "fix the
-                        transform rather than shipping a silent no-op". That guard earned its keep on
-                        2026-08-12: the ladder-era alignment made the era-move loop try to patch
-                        `regenerative_furnace`, one of OUR technologies, into the vanilla file. The fix is the
-                        `origin === 'vanilla'` filter; the point is that the build stopped rather than
-                        half-emitting a tree
-  emit_research_events.mjs  ⚠ SKIPS `disabled` INDUSTRIES since 2026-08-29 (BALANCE_FRAMEWORK
-                        §10.67.5): a disabled industry is not emitted at all, so a research entry for
-                        its tiers would gate a technology on buildings the mod never ships. It was the
-                        only emitter that did not, and it died on a shipyard tier the moment an arm
-                        disabled shipyards. No-op where nothing is disabled.
-                        ⭐ A MERGED RUNG (`method_of`, §10.91.2, 2026-09-30) is counted as the HOST's levels running its method
-                        (`has_active_production_method = <its main method>` beside `is_building_type = <host>`), and a host
-                        carrying merged methods counts only the levels on its own — every source kind (rule A, group anchors,
-                        lists); its text names "<host> (<method>)". So paper t3 counts sulfite mills on the bleaching method, and
-                        fertilizer t2 chemical plants on the improved method.
-                        THE INDUSTRY-DRIVEN RESEARCH EVENTS (ROADMAP step 2) — called by build.ps1, which
-                        THROWS if it fails. Reads config's `research_events` block and emits nothing when it
-                        is disabled. Derives the per-technology anchor table rather than storing it: rule A
-                        (improvement) from the tier ladder's own N−1 rung, rule B (necessity) from the
-                        hand-authored `necessity_anchors`, rule C (war) for the military tree, rule D
-                        (necessity) for non-tier production technologies, anchored on the building group of
-                        whatever they unlock — parsed LIVE from the game's production_methods, so a patch
-                        cannot leave it quietly wrong. Sources ACCUMULATE: a technology unlocking two
-                        industries' tiers (mechanized_workshops → textile + furniture) gets one journal entry
-                        fed by both, each adding a tick, so holding both fills the bar twice as fast.
-                        Emits journal_entries + scripted_progress_bars + script_values + loc for all 11
-                        languages. ⚠ Tech-era-1 technologies are SKIPPED — `add_era_researched = era_1` hands them
-                        out at the 1836 start — ⚠ but only to starting-tech tiers 1–2 (59 of 444 countries), so since
-                        2026-10-05 `research_events.era1_rule_a` keeps the entry of a tech-era-1 technology gating a
-                        rung WITH a predecessor (lathe, distillation, steelworking). ⭐⭐ `research_events.extra_entries`
-                        (2026-10-05, BALANCE_FRAMEWORK §10.95): production technologies OUTSIDE the tier ladder, each
-                        with its sources (`industries` [+ `crafts: false`] or `buildings` [+ `methods`: count only
-                        levels RUNNING those main methods]), a `mark` in people that must be a whole number of fully
-                        staffed levels of everything it counts (THROWS otherwise), and `requires` (technologies the
-                        country must hold for the bar to advance). Validated against the game: an unknown building,
-                        a method its building does not have, a technology already covered all THROW. Current output:
-                        the canon 40 technologies (34 industry, 6 war) → 120 journal entries; the jex book 68 → 204
-                        (was 126/378 before the 2026-08-30 `tiers_only` scope; counts track the ladder)
-  make_research_extra_config.mjs  THE EXTRA RESEARCH ENTRIES BOOK — `--base <config> --suffix <sfx>` writes the base + the
-                        ruled `research_events.extra_entries` table (25 technologies; THE ONLY PLACE IT LIVES) +
-                        `era1_rule_a` + `_research_extra_variant`, and copies the base's tree twin. Book:
-                        `e1a12-ai1135-tex1140-jex-artmerge` (field diff against its base: those three keys)
-  emit_tech_finish.mjs  ⭐⭐ FINISH WHAT IS ALREADY PAID FOR (user-ruled 2026-09-23, FINDINGS F160) — runs AFTER emit_techs and
-                        emit_research_events. `research_events.finish_boost` {enabled, threshold 0.99, add 10000}: EVERY researchable
-                        technology's ai_weight ends in `if = { limit = { has_technology_progress = { technology = X  progress >= 0.99 } }
-                        add = 10000 }` (181 of 182; sericulture, `can_research = no`, skipped). The trigger reads a FRACTION OF THE PENALISED
-                        cost (verified 219/219), so it covers every source of progress and needs NO reconstruction — tree changes need nothing
-                        by hand. `add`, not multiply, because the ahead-of-time divisor applies outside ai_weight; appended LAST because
-                        ai_weight evaluates top to bottom. ⚠ It OWNS all three vanilla technology files (regenerated from vanilla each
-                        build). ⚠ It THROWS on a doubled boost, on a boost naming the wrong technology, on a CONDITIONAL can_research, and on
-                        a config still carrying the retired form's `diag` / `unresearchable` keys. ⭐⭐ VERIFIED TO CHANGE THE AI'S CHOICE (F160 §6,
-                        forced A/B): with one low-weight tech pushed into [0.99, 1) of its cost in every country, the next choice took it
-                        52 of 52 times with the boost and 0 of 42 without, at penalties Σ 0–4. ⭐ F160: expected to fire rarely — a grant
-                        reaching the cost completes the technology inside the granting effect, and progress crosses the 99–100% band in about
-                        a week. `force_test` {from, to, techs[]} (PROBE BUILDS ONLY) is that A/B's instrument: once in the window each
-                        country gets the first researchable of `techs` stepped into [threshold, 1) — steps derived so it can never reach
-                        100% and auto-complete — and every research choice is logged; it works with `enabled: false` for the control arm.
-                        Read with `testbed/ledger/finish_force.mjs --session <stamp>`. ⚠ The same day's FIRST form (JE-stage flags + a rebuilt penalty per category and era, with probe diagnostics)
-                        is commit `11a5b90`; its diagnostic probe is what measured F160
-  emit_secondaries.mjs  THE PER-TIER SECONDARY METHODS (user-ruled 2026-09-01): every secondary (cannery, luxury lines, rayon,
-                        porcelain, radios, the tank/aeroplane conversions …) is minted per rung with the SAME RATIO to the rung's
-                        main output as vanilla has under the lowest primary method that allows it, its INPUTS following the rung's
-                        own input ratio (per good where the reference method consumes it); labour-saving methods keep vanilla
-                        quantities; employment never scales. Called by build.ps1 after the buildings are emitted; `--write`
-                        stores the resolved goods on each tier as `secondary_goods`. ⚠⚠ FROM 2026-09-01 TO 2026-09-13 ITS INPUT
-                        REGEX HAD NO BACKSLASHES and matched nothing, so every secondary shipped with vanilla INPUTS and scaled
-                        OUTPUTS on every rung of every measured book (BUGS_AND_FIXES 2026-09-13; F111 addendum). Reductions
-                        (negative quantities) now round TOWARD ZERO, so a full conversion can never sum past the main output
-                        ⭐ THE CRAFT AMENDMENT (2026-09-30, §10.91.1): on a rung with `workforce_mult` < 1 the minted secondaries'
-                        employment is × workforce_mult (Craftsman Sewing +500 → +50 shopkeepers); a rung's `exclude_secondary_pms`
-                        are dropped from its minted groups (Vacuum Canning, Patent Stills); and the 1836 history of a rung with
-                        `exclude_secondary_pmgs` loses the dropped groups' methods (the engine rejects a whole create_building over
-                        one invalid method) — ASSERTED per building afterwards. THROWS on a craft rung keeping a labour-saving
-                        method, a group kept by reference with employment, or a non-whole scaled employment
-                        ⭐ THE MERGE AMENDMENT (2026-09-30, §10.91.2): a building carrying merged rungs (`method_of`) gets each rescalable
-                        secondary once PER MAIN METHOD — named <pm>_<that rung's key>, scaled to that rung's output and inputs, and gated
-                        `unlocking_production_methods = { <that rung's main method> }` — so the secondary stays in proportion to whichever
-                        method runs. Plain buildings mint exactly what they did before, under the same names. THROWS on a craft rung
-                        that also hosts a merge. ⚠ The 2026-10-05 `is_hidden_when_unavailable` on PM-gated copies made them
-                        unselectable (BUGS_AND_FIXES 2026-10-11) — never put that flag on a PM-gated copy.
-                        ⭐⭐ THE `top` RULE (2026-10-11, §10.91.2), on for every book with `_merge` or `_artisan` (`secondary_rule`
-                        overrides; earlier books, the canon included, build byte for byte as before): ONE NAME, ONE RECIPE — each
-                        (industry, line) is one method shared by every rung that lists it, sized to the INDUSTRY's t2 rung (ruled; config
-                        `secondary_anchor_era` overrides, "top" = the top rung) against vanilla's most advanced main method, employment vanilla's; a rung leaves out a line that would take a
-                        good or job below zero beside its main method; gated only where a merged building's main method is left out; a
-                        pair negative only together is made mutually exclusive via each other's off method (§10.91.2). Labour-saving
-                        methods the same way. ⚠ The crafts carry no goods line under it (too small for any industry-wide recipe). The
-                        per-main-method copies and the "lowest method that allows it" reference above are the `lowest` rule
-                        ⭐⭐ THE §10.93 AMENDMENT (2026-10-02, the user's playtest): (a) a building no longer carries a method NONE of its
-                        main methods can run — until then a rung that failed a vanilla PM gate KEPT VANILLA'S ORIGINAL, which the game
-                        SHOWED, greyed, at vanilla numbers (Elastics −70 clothes on a craft making 2.7); (b) NARRATIVE COMPATIBILITY from
-                        the pair-by-pair table in lib_secondary_compat.mjs: no member (rescalable, labour-saving or "off") beside a main
-                        method the review marked it incompatible with (Assembly Lines off Muskets, Rifles, Cannons, Smoothbores, Percussion
-                        Caps and Wrought Iron Tools; no powered automation beside the handcraft methods); a rung is judged by its vanilla
-                        main method; on a merged building whose methods disagree, a vanilla-quantity copy per main method that may run it,
-                        gated to that method; a group
-                        kept by reference is copied per building where a member has to go; (c) a MANDATED automation (lib_secondary_compat
-                        MANDATED) becomes the group's only member beside its main method — a vanilla-quantity copy gated to that method,
-                        its law gates removed and its technology gate KEPT only where the main method implies it (every technology of the
-                        gate in the prerequisite closure of the building's and the method's technology, in the tree THIS build emitted —
-                        since 2026-10-03; all three keep theirs once Conveyors precedes Compression Ignition) (a merged building gets one
-                        copy per main method; partly mandated THROWS);
-                        (d) a group left with nothing but an "off" method is dropped from the building. What a building no longer carries,
-                        or carries mandated, is printed under "not carried, or mandated"; a dropped method its 1836 history could name is
-                        stripped there; a history block the rewrite does not change is left byte for byte
-  lib_dams.mjs          ⭐ THE HYDRO-DAM DERIVATION — ONE implementation (BALANCE_FRAMEWORK §10.89): project → LEVELS (≤ 10,000 points each), points per MW = 0.4 × (power-plant points ÷ 50) × 1.2 × m × (MW per part ÷ 560)^−0.2
-                        (the plant's cost READ from the book), electricity 0.52 per MW, staff and upkeep per 50 electricity, the per-LEVEL
-                        technology class (A electrical_generation / B steam_turbine / C arc_welding, shared out over a merged project's
-                        rows by points, earliest first; `tech` = the FIRST level's, which the survey needs too), the survey's months and
-                        bureaucracy, and the survey driver's GDP slot tiers. The financing / capacity-gate / build-slot parameters are GONE (§10.89.11)
-                        ⭐ `resourceLayout(P, projects)` (2026-10-09): the RESOURCE-SLOT layout (`dams.layout = resource4`) — four dam types, a
-                        project's slots per class; with `dams.resource4` the RULED table (§10.89.13: size by project scale, price by head type,
-                        fixed levels, small projects dropped unless in `keep`, each class ASSERTED profitable at the worst prices), without it the
-                        F221 probe's median splits. Shared by emit_dams.mjs and ledger/dam_slots.mjs
-  make_dam4_config.mjs  THE FOUR-CLASS DAM BOOK — `--base <book> --suffix <sfx> [--script-placement]`: the base + `dams.layout = resource4` +
-                        `dams.resource4` (THE RULED TABLE LIVES HERE ONLY) + the four class keys must_have in place of the per-project subsidies
-                        (+ `research_events.placement = script`); records `_dam4_variant`, copies the tree twin. Book: `jex-dam4s`
-  emit_dams.mjs         THE DAMS, EMITTED — called by build.ps1 (throws); `dams.enabled` absent/false → nothing. Writes: the building group
-                        bg_pmr_hydro_dams (under bg_private_infrastructure, NOT government-funded, `stateregion_max_level = yes`) and ONE
-                        expandable building per project, `has_max_level = yes` (⭐ since 2026-10-05 the level cap is the ENGINE's: a
-                        dam's `state_building_dam_<id>_max_level_add` sits in vanilla's `base_values`, i.e. on EVERY country — the build owns a
-                        whole-file copy of `common/static_modifiers/00_code_static_modifiers.txt` with those 144 lines added — because a state
-                        trait carrying it held for the state's owner and was 0 for every foreign builder (user's hand tests); a per-project
-                        site trait `pmr_dam_<id>_site`, added at the campaign start, is the visible label only; the scripted cap it replaced
-                        let a shift+click queue five levels past it and is removed — BUGS_AND_FIXES 2026-10-05),
-                        building_dam_<id>: `potential` = the anchor province's split part once someone surveyed; `can_build_private` always
-                        no; `can_build_government` reads `scope:investor_country` (the anchor owner or its overlord chain, its OWN survey,
-                        the next level's technology, the cap by `level_after_queued_constructions`); `ownership_type = self` (without it the
-                        engine refuses the dam in a FOREIGN state and the AI never builds it — F173); NO `unlocking_technologies` (the
-                        technology is checked on the builder, so an overlord can build in a subject that lacks it); `ai_nationalization_desire`
-                        0.75 (the documented `ai_privatization_deisre` is rejected). Also: its methods, the survey modifier / scripted effect /
-                        PLAYER survey decision (ai_chance 0) / stop decision / counter journal entry (a completed survey claims the site for
-                        two years; it needs the SAME technology as building level 1), the on_building_built/expanded effects, the quarterly
-                        AI DRIVER (on_monthly_pulse_country, 90-day cooldown) — ⭐ SURVEYS ONLY since 2026-09-28 (user-ruled, F173/F174: the
-                        engine's AI builds every level itself, at home and in subjects; the owner-queue starts, the overlord financing with
-                        its journal entry and decisions, and the owner capacity gate are gone), the yearly bureaucracy log, the new state
-                        traits, WHOLE-FILE copies of the four vanilla trait files whose hydro-site electricity lines it comments out, the
-                        PROBE-ONLY machinery (`dams.probe`: technology grants, the contest seeding + monthly level log, electricity consumers
-                        with a control; since 2026-09-28 also `decision_ai` {weight, gate possible|weight|headroom|none, headroom_mult} = the
-                        AI takes the survey decision itself in place of the driver, `release_after` [+ `release_delay_days`] = make a subject
-                        independent while a dam in its state is under construction, `withdraw_rights` = instead, the host leaves its
-                        investment-rights treaties, `open_builders` = no chain clause, `open_survey_tags` = majors hold every survey —
-                        FINDINGS F176: `possible` is re-checked after every take and `ai_chance` is not, but a survey's bureaucracy cost lands
-                        only at the next recalculation, so a spare-bureaucracy check overshoots in either; a 30-day take-cooldown fixes it,
-                        p27/p28) and loc for 11 languages. ⭐ `dams.rules = "family"` (BALANCE_FRAMEWORK §10.89.12, ruled 2026-09-28, THE
-                        CANON since 2026-09-29; book config/mod_config.canon-dams-family.json, probed by p29, measured n=6 in F177): construction rights = the owner, its
-                        overlord chain, or investment rights in the owner or any of that chain (read from the HOST's treaties — vanilla's
-                        has_treaty_foreign_investment_rights_with is a scripted trigger that breaks under PREV); a family survey opens the
-                        dam to the whole top-overlord family; a 12-month block from a survey's start; no survey while a level is queued; no
-                        claim; the AI takes the decision (spare bureaucracy ≥ cost, a 30-day cooldown for the AI only), no driver.
-                        `dams.log_levels` adds the monthly built/queued level log (PMR_DAM|probe_lvl / probe_q). ⚠ No country-tag data function exists: its PMR_DAM log lines carry the
-                        country NAME; log from the country scope, never from a state entered from it
-                        ⭐ `dams.private` (2026-10-16; FINDINGS F239/F240; `all` IN THE CANON since 2026-10-16, §10.89.14): absent =
-                        `can_build_private = { always = no }` (byte-identical output); `all` = can_build_private carries can_build_government's
-                        conditions (rights, survey, technology on scope:investor_country); `laissez_faire` = the same only where the host state's owner
-                        holds law_laissez_faire. Probe books `jex-dam4s-rs-x25-m10ac-dprivall-probe` / `-dprivlf-probe`: the private route builds, the
-                        survey gate held 30 of 30, privately built levels go to the host's financial district or to the dam itself, all subsidised
-  emit_building_costs.mjs  `building_required_construction` {building: points} patched into the building files the build already OWNS
-                        (throws on a building it does not own, or ≠ 1 match) — the power plant at 1,600 in the dam book
-  make_dam_projects.mjs / make_dam_config.mjs  the dam table (from config/dam_sites_research.json + the irrigation EFFECTS table and the
-                        ruled CUTS table in the script — it THROWS on a cut naming a missing project or row) and the dam book (base
-                        canon-b164-trade + power-plant cost + dams; it THROWS on a base that already carries dams; `--probe` for probe builds;
-                        `--probe --contest` = the CONTEST probe (p13/p14): every subject site seeded with eligible builders (`--contest-grant
-                        chain|overlords|top|none` says who gets the technologies), the monthly level log, cost x0.25, electricity demand
-                        (urban centres everywhere, or `--elec-sink PER` in every other dam state with a control); `--grant TAGS`, `--ai-value N`.
-                        ⚠ `--ai-self` is GONE and THROWS: it switched the scripted construction off, which the canon now is)
-  emit_goods.mjs        ⭐ THE PER-GOOD TRADE WEIGHT (ROADMAP step 11, FINDINGS F155 / F159) — called by build.ps1, which THROWS if it
-                        fails. With a top-level `goods_traded_quantity` {good: traded_quantity} in the config it writes a WHOLE-FILE
-                        copy of vanilla's common/goods/00_goods.txt with exactly those goods' traded_quantity changed (each line
-                        annotated with vanilla's value and W before → after); every other line, and the goods ORDER a save's indices
-                        depend on, stays vanilla's. Absent → emits NOTHING and vanilla's file stands (the canon; proven against mod/).
-                        THROWS on an unknown good, a `local`/untradeable good, a good with no traded_quantity line, or a value < 1.
-                        W = cost × traded_quantity is the base-price £ one unit of Trade Capacity moves; the merchant marine a trade
-                        centre consumes is per LEVEL, so raising it costs no convoys (F155)
-  emit_ai_treaty_ports.mjs  THE AI'S DESIRE FOR TREATY PORTS, OPENED TO EVERY COUNTRY (2026-10-18, BACKLOG D, FINDINGS F243; ⭐ DEFERRED
-                        TO MOD 1.1 ON GAME 1.15 by ruling 2026-10-19, waiting on 1.14's AI rework — BALANCE_FRAMEWORK §10.103 holds the
-                        funnel, the five-layer solution and the 1.15 plan) — called by build.ps1 after emit_ai_schooling (throws). Config `ai_treaty_ports` (absent → nothing; the
-                        canon carries none) appends one `treaty_port_value` block to every ADMINISTRATIVE strategy (the mod's own copy of
-                        01_admin_strategies.txt, else vanilla's), additive with vanilla's default and Economic Imperialism terms: + the
-                        target's trade-law points (variants listed before their parent, checked against vanilla's laws) + population ÷
-                        divisor + the host state's population and GDP (≤ 10 together: which port within a country); × 0 under our conquer
-                        stance on the state's region, × protectorate_mult where a protectorate is possible (vanilla's rank rule), ×
-                        existing_port_mult where we already hold a port in their market; ×0 if unreachable, same market or we are
-                        isolationist; capped at `max`; then `tech_add` (−1,000) where our `techs_researched` lead over the target is ≤
-                        `tech_margin` (the helper `pmr_tp_tech_lead`, common/script_values/zzz_pm_rehaul_treaty_ports.txt). THROWS on an
-                        unknown key, a non-vanilla law, a variant listed after its parent, a strategy that already carries the field.
-                        Books: `make_treaty_port_config.mjs --base <book> --suffix <sfx> [--extreme]` (THE TABLE LIVES THERE ONLY; `--extreme`
-                        = +400 flat and cap 1,000, the probe that the engine reads the value at all) → `jex-dam4s-rs-x25-m10ac-dpriv-wm99-tp`
-                        / `-tpx`. ⭐ THE ENGINE PURSUES treaty ports ONLY against unrecognised hosts whatever the desire (FINDINGS F244), so
-                        `driver` { chance, min_value, min_rank, cooldown_years, max_host_rank? } adds a yearly on_action: an eligible AI (recognised,
-                        ≥ min_rank, at peace, in no committed play, not infamous, off cooldown) starts a `dp_take_treaty_port` play on the
-                        recognised-host state with its highest engine-computed desire (`ai_treaty_port_value(root)`) ≥ min_value, the host in no
-                        committed play; logs PMR_TPD lines. The book maker's `--scale k` multiplies every desire term (the driven AI follows a play
-                        through only at large desire); `--driver extreme|production|production-nogp`. ⚗ `probe` { takers, hosts } (PROBE ONLY): a
-                        campaign-start log of is_potential_treaty_port and the desire. The chosen book: `…-wm99-tpd4` (×4, 10% / ≥ 60 / 8 y, no great powers)
-  emit_treaty_port_rules.mjs  THE TREATY-PORT ELIGIBILITY RULES (2026-10-19, FINDINGS F244 §6–§8; ⭐ DEFERRED TO MOD 1.1 ON GAME 1.15,
-                        BALANCE_FRAMEWORK §10.103) — called by build.ps1
-                        after emit_ai_treaty_ports (throws). Config `treaty_port_rules` (absent → nothing; the canon carries none):
-                        `no_port_building` replaces the engine's `is_potential_treaty_port` (which needs a PORT BUILDING in the state — 798 of 1836's
-                        eligible states hold one, 723 ineligible hold none) by the scripted trigger `pmr_treaty_port_candidate` (coastal, not
-                        already a treaty port, the host controls the port province, not the taker's) in whole-file copies of
-                        common/treaty_articles/14_treaty_port.txt and common/war_goal_types/25_take_treaty_port.txt, and drops the war goal's
-                        validate_take_treaty_port; `seed_port_on_cession` builds a level-1 port in the state, if it has none, inside the
-                        article's on_entry_into_force just before vanilla's cede_treaty_port. ⚠⚠ USE THEM TOGETHER: the override alone hands the
-                        port province over as PLAIN TERRITORY (no treaty_port flag, a level-0 port) — the engine sets the status only where the
-                        state has a port at the moment of cession (probed, `20261019_120025` / `20261019_120951`). Every replacement asserts its
-                        match count. ⚗ `probe` { cede, treaty, play, log } (PROBE ONLY): plays at the campaign start, bare cessions and
-                        create_treaty at the first monthly pulse (both do nothing at game start; create_treaty needs named countries), a monthly
-                        holdings log. Books `…-wm99-tpr0`…`-tpr3` (probe books, not arms). ⭐ `trade_center_gate: true | { log: true }`
-                        (2026-10-19, FINDINGS F245): THE AI'S TRADE-CENTRE GDP GATE MOVED INTO SCRIPT, TREATY PORTS EXEMPT — the engine gate
-                        (`TRADE_CENTER_MINIMUM_GDP_*`, no treaty-port term) must be OFF in the book (`ai_defines` MARKET_CAPITAL 1 and
-                        NON_MARKET_CAPITAL 2, i.e. £1 / £2 a year, or it THROWS — ⚠ the engine REJECTS 0, and a NON_MARKET_CAPITAL not above
-                        MARKET_CAPITAL, at load, and the key keeps vanilla's value: landmine L33, whose static table carries both bounds), and vanilla's test (read live from 00_ai.txt: 100k / 500k, inland and
-                        unrecognised ×2, +2% a year, the "(additive)" multipliers read as one summed multiplier) goes into the trade centre's
-                        can_build_government / can_build_private as `pmr_tc_gdp_gate_*` (state GDP ≥ `pmr_tc_gdp_threshold`, unless a treaty
-                        port, or a player's government construction) — in the build's own 11_private_infrastructure.txt where it owns it, else in a
-                        whole-file copy of vanilla's (two lines added). `log` (probe only): a yearly PMR_TCG line per treaty-port state (GDP,
-                        threshold, trade-centre levels). Book `…-wm99-tpd4-tcg`, probed by `tp_tc_gate_probe3.json` (FINDINGS F246: no tick
-                        cost, nothing measurable changes, and the engine gate turned out NOT to keep the Qing treaty ports empty — Macau and
-                        Hong Kong got trade centres at a quarter and a tenth of the threshold; the recognised-host ports were not tested)
-  emit_building_groups.mjs  BUILDING-GROUP AI WEIGHTS (2026-09-30, FINDINGS F178, the capital-export arm; not ruled) — called by
-                        build.ps1 (throws). With a top-level `building_group_ai` {group: {field: number}} it writes a WHOLE-FILE copy
-                        of vanilla's common/building_groups/00_building_groups.txt with exactly those direct-child fields changed
-                        (annotated); absent → emits NOTHING (the canon). THROWS on an unknown group, a field that is not a direct
-                        child of the group's block (nothing is ever inserted), or more than one match. Built for
-                        `bg_manufacturing.foreign_investment_ai_factor` (vanilla 0.25; mines 1.0, plantations 1.25): the engine's
-                        weight on a FOREIGN private investment by building group — why British capital abroad (3.8k–11.5k levels at
-                        1936, canon and vanilla alike) is mines, trade centres, railways and plantations and hardly ever factories
-                        (F178 §2, corrected: the summary's `owned_abroad_levels` counts government ownership only). Book:
-                        config/mod_config.canon-fdi-rgate.json (1.0), measured by 20260930_011604 (F179: it works — British factories
-                        abroad ×3 — and is NOT adopted; the machinery stays for any later book)
-                        ⭐ ALSO NEW GROUPS, ADDITIVELY (2026-09-30): top-level `building_groups_add` {bg_pmr_<x>: {name, <field>: number |
-                        bare key}} → common/building_groups/zzz_pm_rehaul_groups.txt + the name in every language. The craft books use it
-                        for `bg_pmr_crafts` (parent bg_light_industry, economy_of_scale = no, urbanization 2, infrastructure 0.15)
-  make_artisan_config.mjs THE CRAFT BOOK — `--base <config> --suffix <sfx> [--staffing ruled|shop] [--hire-floor X|none]` turns the six light-industry t0
-                        rungs of a canon-shaped book into 500-worker craft rungs (BALANCE_FRAMEWORK §10.91.1): the per-level recipe, a
-                        5,000-head staffing block × `workforce_mult` 0.1, cost = the base t0's ÷ 50, `building_group` bg_pmr_crafts,
-                        `levels_per_mesh` 500, the excluded secondary groups/methods, `craft: true`, the base-price break-even and
-                        `wage_pct` restated at the t0 reference wage; adds `building_groups_add`, `_artisan` (the record L31 checks) and
-                        `_artisan_variant`, and copies the base's tree twin. THE CRAFT TABLE LIVES HERE ONLY. THROWS on a base whose t0
-                        is not vanilla-staffed, an excluded group the industry lacks, or a staffing block that is not 5,000 whole heads.
-                        `--staffing ruled` is the variant in use (user-ruled 2026-09-30 evening); `shop` stays for its record book.
-                        `--hire-floor X` writes `min_productivity_to_hire = X` on bg_pmr_crafts — the per-group override of the engine's £3
-                        `BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES` — and records it as `_artisan.hire_floor`. ⭐ DEFAULT 2 — the RULED
-                        floor, a third off the engine's £3 (corrected 2026-10-01: from 2026-09-30 late evening the default was 0.01, F188's
-                        probe value, written in as the ruling, which named no number — §10.91.3); `--hire-floor none` = the engine's £3, only
-                        for regenerating the pre-ruling records (artisan6, artisan6-shop), whose recorded commands carry no flag. Every command
-                        it records now spells the floor out. It refuses 0 (some group fields read 0 as unset), so "no floor" is 0.01
-                        ⭐ `--craft-rule <share>,<cross>` (§10.91.5, "the 60%"): every craft's recipe from ONE rule — share × its vanilla
-                        first method's goods per worker, inputs set so value added per worker-year meets the floor at `cross` × base
-                        output price (inputs at base) — in place of the table's recipes and `pb_out`; `--seed <cities>` records the
-                        output-matched 1836 seeding (`_artisan.seed`) that emit_craft_start performs. Both keys are written only when set,
-                        so every earlier book still regenerates byte for byte from its own command (proven on artisan6-pb)
-                        ⭐ `--craft-ai <v>` (2026-10-02, user-ruled "artisan 800"): the six crafts' ai_value, recorded as `_artisan.craft_ai`
-                        (only when set), which L31 checks in place of the tier rule's t0 value (proven to trip on a hand-edited craft). Without
-                        the flag the crafts keep the base t0's ai_value, and e1a12-art regenerates identically from its own command
-  emit_craft_start.mjs  THE CRAFT RUNGS' 1836 START (§10.91.1 item 6, "that's a must") — called by build.ps1 AFTER emit_secondaries.
-                        ⭐ PART 1, OWNERSHIP (found by the first craft probe, FINDINGS F181): convert_history's ×10 also multiplied the
-                        ownership entries, and the engine SIZES a financial district or manor house by the levels it owns at the start
-                        (+693 financial-district levels world-wide, urban centres +5%). So an owner-building entry of a craft block keeps its
-                        ORIGINAL levels and the rest becomes self-owned in the craft's own state (government entries keep the ×10).
-                        PART 2, THE WORKFORCE:
-                        From the EMITTED 1836 map it sums each state's craft workforce by profession (levels × (base × workforce_mult +
-                        the active secondaries)), laborers excepted, and CARVES that many people (÷ WORKING_ADULT_RATIO_BASE) out of the
-                        state's own untyped vanilla pops into typed shopkeeper / machinist blocks, largest block first, ≤ 90% of any
-                        block — population unchanged. Ships whole copies of the touched vanilla common/history/pops files (same names,
-                        so they shadow vanilla's). ⚠ build.ps1 never wipes common/history, so a book WITHOUT crafts deletes any file
-                        this tool wrote earlier (recognised by its header). THROWS on a craft state with no region_state block or too
-                        few untyped pops
-                        ⭐ PART S, OUTPUT-MATCHED SEEDING (§10.91.5, only with `_artisan.seed`): tops each country's craft levels up to its
-                        vanilla t0 factories' output, the extra over its N most urbanised states (each capped by spare 1836.2.1
-                        infrastructure, the excess spilling down the urbanisation order), as NEW typed shopkeeper/laborer pops carrying
-                        the country's most numerous culture-religion of that profession (config/measured_1836_pop_identity.json; none →
-                        first primary culture + state religion, reported), and takes the same people off that state's untyped pops (≤ its
-                        1836.2.1 peasants, ≥ 10% of a block kept), else off the country's most-peasant state — head count unchanged; a
-                        country short of peasants is seeded as far as they reach and reported. Without the key the output is byte-identical
-                        to the pre-2026-10-01 emitter (proven by diffing two builds)
-  make_merge_config.mjs THE MERGE BOOK — `--base <config> --suffix <sfx>` turns six add-on rungs into second main METHODS of the
-                        rung below (BALANCE_FRAMEWORK §10.91.2): food t2, textile t3, furniture t3, paper t2, fertilizer t1 and steel t3
-                        gain `method_of: <host key>`, and each host's `building_cost` / `ai_value` becomes the geometric midpoint of the
-                        two rungs' (the ruled "midpoint first"); recipes and staffing verbatim. Adds `_merge` (the pairs, the record L31
-                        checks), `_merge_variant`, and copies the base's tree twin. THE PAIR TABLE LIVES HERE ONLY. THROWS on a base with
-                        a craft rung in a pair, staffing that differs within a pair, or a rung with no technology. ⚗ `--grant TAG,TAG
-                        [--grant-industries a,b]` writes `start_tech_grants` handing the merged methods' technologies to those countries
-                        at the 1836 start — PROBE books only (it THROWS unless the suffix contains "probe"). Books: `merge6`, and
-                        `merge6-probe` (baking powder, chemical bleaching and improved fertilizer to GBR FRA USA PRU BEL)
-                        ⭐ `--host-cost <industry>:own[,…]` (2026-10-03, user-ruled for textile, F211 §4): the named hosts keep their OWN rung's
-                        building_cost instead of the midpoint (ai_value stays the midpoint), recorded per pair as `cost_rule: 'own'`, which L31
-                        re-derives (proven to trip both ways: the record removed, and the record added to a midpoint book). Written only when set,
-                        so every earlier book regenerates byte for byte (proven on the arm's book). Book: `e1a12-ai1135-tex1140-artmerge`
-                        ⭐ `--ai-rule cond` (2026-10-16, user-ruled, BALANCE_FRAMEWORK §10.91.2's last paragraph): the host's ai_value is its OWN
-                        rung's tier value, raised to the merged rung's once the owner holds the merged method's technology — `ai_value_cond
-                        { tech, value }` on the host, emitted by build.ps1 as vanilla's conditional block (`owner ?= { has_technology_researched }`),
-                        recorded per pair as `ai_rule: 'cond'`, re-derived by L31 (proven to trip). ⚗ Probe-only (suffix "probe"):
-                        `--ai-cond-values lo,hi` (extreme values for every host) and `--grant-full TAGS` / `--grant-host TAGS` (the hosts' own AND the
-                        merged technologies, or the hosts' own only, at the 1836 start). Book: `jex-dam4s-rs-x25-m10ac`
-  make_trade_config.mjs THE PER-GOOD TRADE BOOK — `--base <config> --suffix <sfx>` writes config/mod_config.<sfx>.json = the base + 
-                        `goods_traded_quantity` + `_trade` + `_trade_variant` (no base key touched) and the base's tech-tree twin
-                        (L20). It holds F159 §7's FIVE-CLASS TABLE — the only copy: E bulk & perishable UNCHANGED (the untreated
-                        group) · D semi-bulk ×√2 · C manufactures & colonial staples ×2 · B compact ×2√2 · A precious & self-
-                        delivering ×4, all × W 240 — and derives traded_quantity from the GAME's base price, so a re-priced good
-                        keeps its W and an added tradeable good THROWS until it is classed. merchant_marine is excluded (a
-                        separate, systemic lever). ⭐ `--scale k` (user-approved 2026-09-24, ×1.5 — "OK on general trade correction
-                        volume"): EVERY good's W × k on top of the class table, the bulk class included (vanilla traded_quantity × k),
-                        recorded as `_trade.scale`; `--ruled-by "…"` sets the variant's ruling line. At k = 1 the output is proven
-                        identical to the measured trade book (on the base it was made from, `433e2ae`)
-  emit_companies.mjs    THE COMPANY CHAIN EXTENSION (ROADMAP step 5, user-ruled 2026-08-23: "add all industry
-                        tiers to all companies that have the industry") — called by build.ps1, which THROWS if
-                        it fails. Reads the vanilla company_types files LIVE (a patch's new companies flow
-                        through on rebuild) and rewrites every reference to a tiered industry into the WHOLE
-                        chain: `building_types`/`extension_building_types` expanded in place,
-                        `is_building_type`/`has_building` formation tests OR-wrapped over the chain (vanilla's
-                        own multi-type idiom), each `prosperity_modifier` `building_<anchor>_<sfx>` line
-                        expanded to one per tier at the same value, `ai_construction_targets` entries
-                        duplicated per tier (a still-locked tier's entry is inert). Emits ONLY files that
-                        changed (whole-file replacement by path shadowing — today all 22), plus an ADDITIVE
-                        `modifier_type_definitions` file and loc in all 11 languages, because ⭐ VANILLA
-                        HAND-ENUMERATES `building_<key>_throughput_add` MODIFIER TYPES — they are NOT
-                        auto-generated per building (proof: United Fruit uses the plantation GROUP modifier
-                        because `building_banana_plantation_throughput_add` does not exist), so every invented
-                        tier key gets a declared type (body copied from the anchor's vanilla definition) and
-                        per-language loc (the anchor's own line with the `$building_<anchor>$` reference
-                        re-pointed; reused verbatim where a language hardcodes the industry name).
-                        ⚠ SHIPYARD IS ONE INDUSTRY IN VANILLA AND TWO IN THE CONFIG — a company naming
-                        `building_shipyard` gets BOTH chains (clippers + steamers), or every shipbuilding
-                        company dies with the extinct clipper ladder. Every transform asserts its match count,
-                        a mapped key surviving in an unhandled context THROWS with file:line, and brace
-                        balance is checked (L24 re-walks the artifact). Current output: 22 files, 195
-                        companies, +1,584 list tokens, 208 OR-wraps, 85 prosperity lines (= F77's census
-                        exactly), +656 target entries, 75 new modifier types. Tech safety needs nothing here:
-                        the engine's own formation gate ("must have the technology to construct at least one
-                        of the buildings this company specializes in") needs only ONE listed type, and
-                        construction gates on the state owner's techs — so companies form off their lowest
-                        existing rung and follow the country up the ladder. The investor-tech
-                        foreign-investment edge (regional HQ owning abroad what its home country has not
-                        unlocked) is ACCEPTED by the same ruling.
-                        ⭐ CRAFT RUNGS ARE OUT (2026-09-30, §10.91.1): a tier with `craft: true` leaves every list, formation
-                        test, prosperity line and construction target — the vanilla key ITSELF is removed, since the craft IS
-                        the vanilla-keyed rung — and a surviving craft key in any form THROWS with file:line.
-                        ⭐ MERGED RUNGS TOO (2026-09-30, §10.91.2): a `method_of` key names no building type in game, so it leaves
-                        the same lists; its host stays and covers both methods.
-                        ⭐⭐ **A COMPANY TARGETS ITS BEST UNLOCKED RUNG, NOT EVERY RUNG (2026-09-02, user-
-                        approved).** Duplicating `ai_construction_targets` per tier gave every flavoured
-                        company a standing `level = 5` target on its rung-0 building — the engine uses those
-                        targets to pick the type (×5) and state (×20/×50) for the next company it plans to
-                        form — and the AI rebuilt the obsolete rung in company home states all century
-                        (Ile-de-France textile, Leinster food; F97 §4). Each duplicated entry below the
-                        top rung now carries `owner = { NOT = { has_technology_researched = <next rung's
-                        tech> } }` in its state_trigger; formation/`possible`/prosperity/HQs untouched.
-                        Reported in the summary line ("N gated to the best unlocked rung"). ⚠ OPT-IN ONLY
-                        (`company_target_gate: true`), DEFAULT OFF since its one run (20260902_095339 ab1 n=1):
-                        shortlist companies 17 vs 26 in both references, NET/BEL/PRU companyless, regional HQs
-                        20 vs 74, and the rung-0 headcount it targeted ROSE — the user's pre-declared "cure worse
-                        than the disease" criterion. Off in both A/B arms. ⭐ RE-TESTED on canon-4rung (user-ruled 2026-09-03 — hard `possible` gates on rungs REJECTED as
-                        artificial limits, a target CONDITION is a willingness lever): session 20260903_094941_canon4-tgate-n2,
-                        n=2, `config/mod_config.canon4-tgate.json` — OUTCOME (F100): HARMLESS to companies on this book (shortlist 25 vs 26, HQs 104 vs 96; the
-                        ab1 collapse was the stall's) and USELESS against the rung-0 rebuild (company-held 48%/39% vs the
-                        canon's 45–46%): the rebuild is the PRIVATE POOL expanding company-owned buildings, not formation
-                        planning. Stays OFF
-  tech_tree_spec.mjs    THE INDUSTRY TECH TREE — three candidate designs (ROADMAP step 1), authored here and
-                        rendered by ui/techtree.html. `--write` emits config/tech_tree_options.json + ui/techdata.js;
-                        `--chains` prints each industry's ladder per option for review. It is a DESIGN DOCUMENT as
-                        much as a generator — the engine constraints, the shared decisions and the three
-                        philosophies are its header comment. Vanilla technologies, their eras, their prerequisites,
-                        their building unlocks and their DISPLAY NAMES are all parsed LIVE from the game, so a patch
-                        cannot leave it quietly wrong. It VALIDATES: every tier reachable, and no technology sitting
-                        in an earlier era than one of its own prerequisites (which caught two real inversions on the
-                        first run); nothing above tech era 1 without a prerequisite; and NO FULLY EMPTY TECHNOLOGY — one
-                        we add must unlock something or carry a modifier, with every modifier NAME checked against
-                        common/modifier_type_definitions, because an invented one does not error in game, it
-                        silently does nothing (that check caught 10 on its first run). Also carries the NARRATIVE
-                        ONSET table — a real-world date for all 239 technologies, vanilla included — and reports
-                        every conflict with the era's calendar window. ⚠ It does NOT emit anything into mod/ yet
-                        ⭐⭐ **LADDER-ERA ALIGNMENT (user-ruled 2026-08-12).** A technology that unlocks one of our
-                        tiers is placed in the MECHANICAL era that tier maps to — the anchor principle's own
-                        mapping (our t0 AND t1 → tech era 1, then 1:1). Until this existed nothing enforced it, because
-                        a NEW technology that omits `era` gets `gameEra(year)`, and `gameEra` maps a year onto
-                        **VANILLA's** era windows — `1836|1861|1886|1911` against the ladder's own bands
-                        `1790|1850|1885|1912|1932`. **Two calendars, disagreeing everywhere above tech era 1: 41 of the
-                        106 rungs were gated one tech era too high** (the whole tooling ladder above t1, every port
-                        rung, every artillery rung). Not cosmetic — the mechanical eras exist for the ERA BASE
-                        COST and the AHEAD-OF-TIME PENALTY, so a t4 rung on a tech-era-5 technology was dearer AND
-                        penalised at exactly the date it is meant to be the workhorse, and a leader sitting on the
-                        tier-4 anchor (1925) could not have it at all.
-                        ⚠ A RULE RE-DERIVED FROM THE LADDER EVERY RUN, never a table of literals — a re-band
-                        cannot silently reintroduce the drift. (The 2026-08-12 re-band worked around it by stating
-                        `era` by hand on its fifteen new rungs: correct, and exactly the fix that does not scale.)
-                        **Three things it will not do, each a user-stated invariant, each verified against the
-                        EMITTED mod rather than the spec:** it only ever LOWERS; it never lands in **tech era 1**
-                        (`add_era_researched = era_1` hands every tech-era-1 technology to the starting-tech tier-1/2 countries at
-                        the 1836 start, and vanilla gives them none of these); and it never INVERTS a prerequisite
-                        (iterated to a fixed point, since lowering one rung can free the one above it).
-                        **32 moved, 9 held** — 8 that would reach tech era 1 (all t1 rungs whose technology postdates
-                        the start: arms 1849, ports 1840, fertilizer 1842, railways, artillery, munitions,
-                        shipyards) and `telephone`, blocked by `shift_work`/`electrical_generation`. Whatever it
-                        declines it PRINTS: a rule that silently skips is indistinguishable from one that never
-                        ran. Production went 15/14/20/23/20 → **15/18/26/19/14** per tech era, budget 1198k → 1148k
-ui2/                    ⚗ UI 2.0 for the FOUR-RUNG book, GENERATED by tools/build_ui2.mjs (§10.66.8):
-                        **ladder_sheet.html** — `ui/builder.html` ITSELF with the tier4 config, presets
-                        and solver-2 book inlined, i.e. the real editor on the other book; its
-                        `.artifact.html` twin is the same page stripped of document tags for
-                        publishing; **ladder_workbench.html** — the analysis page beside it
-                        (`--report`); **gen/presets.tier4.js** — the tier4 presets, from
-                        extract_presets.ps1 against that config. All BUILD-TIME copies: regenerate
-                        after any `era_inverse --write` or `--apply-solve`. Serve with
-                        `node tools/serve_ui2.mjs` (the pane cannot open an 800 KB file:// page)
-ui/                     browser balance editor — builder.html (hand-authored) + econ.js (hand-authored) + data.js +
-                        vanilla.js + presets.js + icons.js (the last four GENERATED each build; icons.js is gitignored game art)
-                        + techdata.js (GENERATED, but by `tech_tree_spec.mjs --write`, NOT by the builder)
-  data.js               GENERATED each build: `generated` (the copy's build time, UTC, stated — what the
-                        load banner shows when the live /api/config fetch is unavailable), `config` (the
-                        WHOLE ladder, model_only tiers included — the emission path drops those, the UI
-                        must not; ⚠ a BUILD-TIME COPY: when served, the page fetches the live config over
-                        /api/config and this copy is only the snapshot/file:// fallback),
-                        ⭐ `sec_options` (since 2026-10-03, §10.93): per tier key and group, the vanilla secondary methods legal beside
-                        that rung's main method wherever they differ from vanilla's group (an empty list = the building does not carry
-                        it) — the sheet offers exactly these and defaults to the first, so a mandated automation is on by default;
-                        `start_exceptions` (config/start_exceptions.json embedded, so the Mod-changes
-                        page can enumerate the 1836 rules standalone), `prices`, and **`techs`** — a COMPACT
-                        index of the SHIPPING tech tree, `id → {n name, e game era, c category, o
-                        vanilla|new, y onset}`, built from `config/tech_tree_options.json`. It is what
-                        lets every building row and every ladder-chart dot name its unlocking technology
-                        instead of printing a script key. ⚠ The index is the SHIPPING option, the same one
-                        `emit_techs.mjs` writes into the mod, so the sheet cannot name a technology the
-                        game does not have — and `emit_techs.mjs` throws when that file has fallen behind
-                        the config, so the build is what keeps the index honest. ⚠ ~20 KB, deliberately
-                        NOT ui/techdata.js: that is 340 KB and it is the TREE PAGE's data
-  econ.js               THE economic model, hand-authored, shared by builder.html AND the Node solvers. Also
-                        the ONE implementation of **`ladderFaults()`** — the illogicality criterion (§10.11)
-                        — called by both `tools/era_scenarios.mjs` and the UI's **Ladder check** panel, since
-                        the rule that decides whether the ladder works cannot have two definitions. It scores
-                        only buildings a scenario CONTAINS (§10.17). builder.html now loads econ.js for it. One
-                        implementation of the pop-demand rules (F13/F19/F22/F24/F26/F27), the V3 price formula,
-                        wages-from-workforce and the scenario order book — a second copy would drift, and these
-                        are measured results, not conventions. Pure model: no DOM, no formatting.
-                        ⚠ builder.html still carries its own identical copy of these ~260 lines; collapsing that
-                        fork is an open task. Until then, change BOTH or neither.
-  techtree.html         THE TECH TREE VIEWER (ROADMAP step 1) — **the balance UI's SECOND PAGE** (the
-                        `Balance sheet` / `Tech tree` switch at the top left of builder.html) AND still a
-                        complete standalone page openable off the filesystem, reading the GENERATED
-                        techdata.js. It is embedded in an **IFRAME**, deliberately: it is a whole page whose
-                        selectors (`header`, `.row`, `.legend`, `.stats`, `.node`) collide head-on with the
-                        sheet's, and a frame isolates both directions for free while leaving this file
-                        byte-identical and independently openable. **LAZY** — the frame is not filled until
-                        the page is first visited, so the sheet never pays for ~340 KB of tree.
-                        ⚠ TWO SOURCES, one frame: served from `ui/` it loads by `src`; inside the standalone
-                        snapshot the whole page (techdata.js already folded in) arrives as
-                        `window.__TECHTREE_HTML` and goes in by `srcdoc`. `tools/bundle_ui.mjs` FAILS the
-                        bundle if either half has moved, and builder.html shows a named warning rather than a
-                        blank frame if a host's CSP refuses the nested frame.
-                        ⚠ `techdata.js` is generated by `node tools/tech_tree_spec.mjs --write`, which the
-                        BUILDER DOES NOT RUN — refresh it by hand after a ladder change. Whether it is behind
-                        the LADDER is already answered, and THROWN on, by `emit_techs.mjs` inside the build;
-                        the bundler only checks that techdata.js and config/tech_tree_options.json carry the
-                        SAME `generated` stamp, i.e. that the pair came from one run.
-                        ⚠ NOT an mtime check against the config — `--write` writes techdata.js and then
-                        stamps the config, and the build rewrites the config again after that, so techdata.js
-                        is older than mod_config.json after every normal build. The first version of this
-                        guard warned on a perfectly current pair, which is how a guard teaches people to
-                        ignore it. Era is a ROW and progression runs DOWNWARD, as in the
-                        game; unlike the game, COLUMNS ARE INDUSTRIES, so an industry's ladder reads as one
-                        vertical line. Hovering a technology names what blocks it and what it blocks; clicking
-                        pins that. Switches option (1/2/3) and tree (production/military/society) and reports each
-                        combination's research budget against vanilla's. Colours every dating conflict against the
-                        era's calendar window. Carries the **TECH SPREAD panel** — the three constants of the
-                        spread formula are editable and it shows, live, the SHARE OF EACH TREE that spread alone
-                        hands a laggard by 1936, judged against vanilla's own share rather than against zero
-                        (that share, not the multiplier, is what says whether a boost is safe). The panel also
-                        carries its ONE emitted row: **AI research weight ×** per tree (config
-                        `tech_ai_weight_mult`, default 1/1/1 = nothing emitted) — round-tripped to the parent
-                        sheet over postMessage, because the config write path (Export / Build now) lives
-                        there; read-only with a note when the page is opened truly standalone
-mod/                    THE DEPLOYABLE MOD — GENERATED, do not hand-edit
-  .metadata/metadata.json                                (hand-maintained, except the mod `name` which the builder suffixes with the build time; has replace_paths for history)
-  common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt   (generated: WHOLE-FILE replacements of vanilla — 06/11 own the new-economy chains — see MODDING_NOTES)
-  common/ai_strategies/01_admin_strategies.txt            (generated CONDITIONALLY: WHOLE-FILE replacement of vanilla — rewrites the `subsidies` block of all 7 administrative strategies from `building_subsidies`; see AI subsidy policy. ⭐ SINCE 2026-09-16 IT IS EMITTED ONLY WHEN THE BOOK ACTUALLY SETS A POLICY — `building_subsidies` with at least one non-`vanilla` value, or `subsidy_conditional`. THE CANON SETS NEITHER (port, railway and power went back to vanilla, so the industry list is food…art_academy with no infrastructure), and every line we would write there is VANILLA’s own: each strategy’s own entries plus `ai_strategy_default`’s restated into the strategies that had none — a restatement that exists only to make the merge-vs-replace ambiguity harmless once WE add a block. With nothing to add it defends against a hazard we create by writing the file, so owning a 655-line vanilla file and freezing it against the next patch buys nothing. ⚠ The machinery is UNCHANGED and still runs for any book that sets either key — proven both ways 2026-09-16: the canon and canon-4rung (whose one entry is `vanilla`) emit nothing, the six-rung book still writes its 51 KB file)
-  common/{production_methods,production_method_groups}/zzz_pm_rehaul_*.txt   (generated, additive)
-  common/production_methods/<vanilla name>.txt           (generated: WHOLE-FILE replacement, but ONLY for the vanilla PM files we actually CHANGE — secondary-PM gate remap + per-PM `pm_goods`/`pm_employment` overrides. A file we would copy verbatim is NOT emitted: owning it would freeze that vanilla file against the next patch and ship bytes we didn't author, for nothing. Today that means `01_industry.txt` (gate remap) and `06_urban_center.txt` (the §10.43 electric-streetlights override). See below)
-  common/history/buildings/*.txt                         (generated: the re-tiered 1836 start; replaces vanilla via replace_paths)
-  common/goods/00_goods.txt                              (generated CONDITIONALLY by emit_goods.mjs: a WHOLE-FILE copy of vanilla's with only the `traded_quantity` of the goods named in the config's `goods_traded_quantity` changed — the per-good trade weight, FINDINGS F159. THE CANON SETS NONE, so a canon build does not own this file at all)
-  common/company_types/*.txt                             (generated by emit_companies.mjs: WHOLE-FILE replacements of ALL 22 vanilla company files — the COMPANY CHAIN EXTENSION, every tiered-industry reference expanded to the whole chain; see tools/emit_companies.mjs above)
-  common/modifier_type_definitions/zzz_pm_rehaul_company_modifiers.txt  (generated by emit_companies.mjs, ADDITIVE — the hand-enumerated `building_<tierkey>_throughput_add` modifier types the expanded prosperity bonuses need; their loc rides localization/<lang>/replace/zzz_pm_rehaul_companies_l_<lang>.yml in all 11 languages)
-  common/on_actions/zzz_pm_rehaul_wargate.txt            (generated by emit_research_events.mjs when research_events is enabled, ADDITIVE — THE WAR GATE. `on_monthly_pulse_country` evaluates the three-clause front test per covered military technology and, when it passes, sets the expiring country variable `pmr_wargate_<tech>` (`gate_variable_days`). The bar reads only that variable. It lives here rather than in the bar because **a scripted progress bar has no valid ROOT to resolve a front or a general against** — that was the defect the 2026-08-18 rebuild fixed)
-  common/on_actions/zzz_pm_rehaul_diag.txt               (generated: self-diagnostic tripwire; logs PM_TECH_REHAUL init marker to debug.log at game start — see MODDING_NOTES → Self-diagnostics)
-  common/journal_entries/zzz_pm_rehaul_research.txt      (generated by emit_research_events.mjs, ADDITIVE — three journal entries per covered technology: inception / development / implementation. Only the FIRST auto-activates, from `is_shown_when_inactive = { can_research = X }`; the other two are placed by `add_journal_entry` from the one before. Each grants half the era base cost and logs `PMR_JE|<stage>|<tech>|<country>` on completion, which is how a batch counts firings. Absent when research_events.enabled is false)
-  common/scripted_progress_bars/zzz_pm_rehaul_research_bars.txt  (generated, ADDITIVE — one bar per covered technology, shared by its three stages, each instance starting at zero. ⚠⚠ **ALL bars are `monthly_progress` — there is NO `weekly_progress` in the emitted file** (war bars were weekly/26 until the 2026-08-18 rebuild). Industry entries carry `max_value` 36; WAR entries carry `max_value` **6** and tick only while `has_variable = pmr_wargate_<tech>`, the expiring variable the wargate on_action sets. **Classify a bar by that variable, never by its cadence** — both kinds are monthly now, so a shape-based check reports "no war bars exist" and a doc-based one reports the wrong span (both happened, 2026-08-18). One tooltipped `add` term per contributing source, so several qualifying industries fill the bar proportionally faster)
-  common/technology/technologies/zzz_pm_rehaul_techs.txt (generated by emit_techs.mjs, ADDITIVE — the technologies the mod ADDS (42 at the current tree: 27 production, 14 military, 1 society), each with its era, prerequisites, unlocks and the minted placeholder icon)
-  common/defines/01_pm_rehaul_defines.txt                (generated by emit_techs.mjs, ADDITIVE partial override — TECH_AHEAD_OF_TIME_PENALTY_FACTOR. ⚠ ships at 0.25, which IS vanilla's value — currently a NO-OP, flagged on the UI's Mod-changes page: the 0.15 boost was withdrawn by the 2026-08-12 ruling and the emission outlived the setting. ⭐ Since 2026-08-25 it also emits an NAI block from the config's optional top-level **`ai_defines`** map (define key → value; absent/empty ⇒ no NAI block, so the canonical build is unchanged) — built for the INVESTMENT-HOARD levers the user ruled after solver2e measured pools at 47–93% of GDP with peasants unabsorbed: pool-pressure factor 0.75→0.9, wanted-construction thresholds 1.05→1.5 / 0.75→0.9, private-queue cap 0.05→0.10; since 2026-08-26 CANONICAL (§10.65.9 — the solver2f canonization carries them in config/mod_config.json). ⚠⚠ THE LONG-BUILD-TIME THRESHOLDS ARE NOW TAKEN, and this line used to deny it: `PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD` **120** and `..._VERY_LONG_...` **180**, against vanilla’s **40** and **60**. UNITS ARE **WEEKS**, and the raise is a RELAXATION, not a malus: the engine multiplies a building’s AI score by `PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_MULT` **0.5** past the first threshold and **0.25** past the second, and those two MULTs are left at vanilla — so raising the thresholds ×3 keeps an expensive building OUT of the penalty band. ⭐ The ×3 raise vs the tier4 cost ladder’s 1.4³ = **2.744×** top rung is near-exact cover BY COINCIDENCE (k was chosen on payback grounds, the thresholds for the hoard levers) — do not read it as a designed pair. ⚠ The threshold is construction time AT FULL CONSTRUCTION-INDUSTRY USAGE, so it binds on small construction sectors, not on cost alone. Levers still NOT taken: bg_construction strategy weights, AUTONOMOUS_INVESTMENT_UPDATE_COUNT_DIVISOR. ⭐ Since 2026-10-17 it also emits any other vanilla namespace from the config's optional top-level **`game_defines`** = { <namespace>: { <KEY>: value } } (absent ⇒ nothing, so every earlier book builds byte for byte as before; NTechnology / NAI are refused there, they have their own keys; each namespace and key must exist in vanilla 00_defines.txt or emit_techs THROWS — an invented key does nothing in game; values are still range-checked by the ENGINE at load, landmine L33, so read error.log). First use: config/mod_config.monopoly99-probe.json, NEconomy.WORLD_MARKET_MONOPOLY_MIN_SHARE 0.99 (vanilla 0.5), the world-market monopoly probe continued from the user's Japan playtest saves, session 20261017_190800 — ⚠⚠ THAT KEY IS DEAD in 1.13.11 (FINDINGS F241): the engine does not read it at all, and vanilla's own line gets the same "not specified. Maybe a define macro is missing" message in DEBUG.log, so the probe year came back bit-identical. Vanilla's defines files carry 15 such dead keys; emit_techs now REFUSES the dead ones in game_defines' reach, and preflight L33 (-Session) FAILs any dead key our defines file sets. A key existing in vanilla's file is NOT evidence the engine uses it. ⭐ The real key is NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD, found in the exe's define registry and set by no vanilla file; emit_techs accepts it through ENGINE_ONLY_DEFINES. At 0.99 it is read: in week 1 every good whose top exporter holds ≤ 99% of world exports drops by exactly 1 ÷ (1 + MONOPOLY_PRICE_IMPACT 0.2 × that share) — vanilla's default threshold is below 0.36, so the markup sits on every traded good, the world price re-balances within 2–3 weeks, and the lasting effect is on VOLUME (the freed goods' world exports ×0.92 over the year) — F241's corrected addendum, session 20261017_201628)
-  common/technology/technologies/{10_production,20_military,30_society}.txt (generated: WHOLE-FILE replacements of vanilla — 20 and 30 ONLY EXIST WHEN THEY CARRY SOMETHING. 10 carries the ERA MOVES + the tree's ADDED PREREQUISITES (PREREQ_ADDS — since 2026-10-03 conveyors before compression_ignition; emit_techs THROWS if vanilla's list moved) + the `aniline` prerequisite swap; **20 carries era moves too** — until 2026-08-12 emit_techs patched 10 alone, so a re-era on a MILITARY technology was written into the spec, drawn by the viewer, and silently dropped on the way to the mod, with nothing failing anywhere; the ladder-era alignment moves three (repeaters, breech_loading_artillery, bolt_action_rifles) and that is what surfaced it. Any file also takes the per-tree `tech_ai_weight_mult` multiply when ≠1 — **at the ruled default 1/1/1 (2026-08-17) 30_society is NOT emitted at all**; its hardcoded ai_weight ×0.8 (2026-08-11) is superseded — no tree is damped or favoured by default, the research JEs being boost enough. Each transform asserts its own match count and THROWS on a no-op. ⭐ SINCE 2026-09-23 the canon's `finish_boost` makes emit_tech_finish.mjs OWN 20_military AND 30_society too, every researchable technology's ai_weight in all four files ending in one `# pmr_finish_boost` block — 56 / 58 / 64 / 3)
-  common/scripted_effects/00_starting_inventions.txt     (generated: WHOLE-FILE replacement — the new tech-era-1 production technologies added to the 1836 starting sets. ⚠ `add_era_researched = era_1` is the ONLY era granted at the start, which is exactly why the ladder-era alignment refuses to move anything INTO tech era 1)
-  common/script_values/zzz_pm_rehaul_research_values.txt (generated, ADDITIVE — per-source employment sums, `Σ(level × occupancy) × employment-per-level`. ⚠ occupancy is a WEIGHT, never a `limit` filter: the filter form scores seven half-staffed levels as zero while passing three full ones, which is the opposite of the intent)
-  events/zzz_v3tb_probe.txt                              (generated, TESTBED ONLY — the only events/ file the builder ever emits, and only when a telemetry metric asks. Exists because `on_monthly_pulse` is the finest pulse vanilla has: a reading BETWEEN month boundaries is unreachable from an on_action, so a scheduled `trigger_event = { days = N }` is the only route. Never present in a normal build)
-  localization/<lang>/replace/zzz_pm_rehaul_l_<lang>.yml (generated for all 11 languages; replace/ so name overrides win)
+powershell -ExecutionPolicy Bypass -File tools\build.ps1            # build mod/ from config/mod_config.json and deploy it
+powershell -ExecutionPolicy Bypass -File tools\build.ps1 -DryRun    # full build into a throwaway folder, linted, deleted; never deploys
+powershell -ExecutionPolicy Bypass -File tools\build.ps1 -SaveTo x -Config config\mod_config.<book>.json   # build an alternate book into mod_x/
 ```
+Other flags: `-NoDeploy`, `-NoLint`, `-ControlOnly` (vanilla + telemetry; requires `-SaveTo`/`-DryRun`), `-Overlay`, `-Telemetry <spec>`, `-NoPreflight`
+(only for a broken detector). Node ≥ 24 is required; `VIC3_GAME` overrides the game path. The build order and every emitter are in `REPO_GUIDE.md`.
 
-Only `mod/` is the game mod; the whole repo (docs + tools + config + `mod/`) goes on GitHub.
-The deployed mod is a real copy of `mod/` only (see Deployment below), so docs/tools never reach
-the game.
+- **What a build does:** regenerates every `mod/common` and `mod/localization` file from the config, converts the 1836 start, emits the technology tree,
+  research entries, secondaries, companies, dams, goods, references and overrides, then runs the linters and the landmine preflight. Any of these throws
+  and stops the build: the solvency linter (L18), the tech-content linter, the start-conversion linter (L13), the tier-rule linter (L31), the
+  production-method combination linter (`lint_pm_combos.mjs`, §5.4), the DLC-gate check (L39), the reference scan (L40), `Invoke-ModChecks` and
+  `preflight.ps1`. `lint.sh` prints LINT PASSED (break-even vs ladder) and NEGATIVE-GOODS CHECK PASSED; its result is printed, not enforced.
+- **An alternate config needs its tree twin** `config/tech_tree_options.<suffix>.json`, or the build dies in `emit_techs.mjs` (L20). Never "fix" this by
+  falling back to the canonical tree.
+- **The config is stored minified**; edit it with the balance editor or JSON-aware tooling. It holds ACTUAL per-throughput volumes. `target_be` is a
+  derived drift guard (the output price, % of base, at which the rung's base recipe under its most basic secondaries covers inputs + wages), not a design
+  input. An industry-level `disabled: true` hands the industry back to vanilla; every reader loop must skip disabled industries (L27).
+- **Deployment** is a real copy (`robocopy /MIR`) of `mod/` to `Documents\Paradox Interactive\Victoria 3\mod\pm_tech_rehaul` — a junction does not work.
+  Restart the Paradox launcher to rescan; the mod name carries `(built yyyy-MM-dd HH:mm)`.
+- **After an in-game load, read `error.log`** (MODDING_NOTES); the linters check economics, not engine errors. The build emits a self-diagnostic on_action
+  that logs `PM_TECH_REHAUL: init OK … (build <ts>)` to `debug.log` at game start; add a `PM_TECH_REHAUL WARN` tripwire there when a change could break
+  something no linter sees.
+- **The landmine register** (`TESTBED_LANDMINES.md` + `tools/preflight.ps1`) enumerates defects where nothing fails — each with an ID and a detector that
+  `preflight.ps1` walks in every build and before every batch. A new one: register entry first, then `Test-Lm<ID>`, then prove the tripwire trips by
+  breaking it on purpose. A comment in the right place is not a guardrail, and a detector outperforms a hand pass.
 
-## Working conventions
+## 5.4 Content rules — what bites when changing the mod
 
-- ⚠⚠ **COMMIT WITH EXPLICIT PATHS. NEVER `git add -A` / `git add .` — THIS REPO USUALLY HAS ANOTHER SESSION WRITING IN IT.**
-  `ListAgents` routinely shows a couple of dozen peer sessions on this project, and several of them write the SAME
-  shared documents — `FINDINGS.md` above all, plus `ON_GAME_UPDATE.md`, `TESTBED_METRICS.md`, `BALANCE_FRAMEWORK.md`.
-  A blanket add sweeps whatever they have in the tree into YOUR commit, under YOUR message.
-  ⚠ **Nothing fails, and `git status` an hour earlier does not protect you** — the other session writes in between.
-  It happened on 2026-09-21: commit `eb02a4d`, whose message describes only the market-continuity fix, also carries a
-  concurrent session's **F155 (~240 lines), ON_GAME_UPDATE.md +46 and TESTBED_METRICS.md +1**. Nothing was lost or
-  overwritten; the history simply misdescribes that commit, and it is shared, so amending it is not on (see below).
-  ⇒ **`git add <the files you actually wrote>`, then `git status --short` before committing** and account for every
-  staged path. ⚠ **Do NOT force-push or amend to "clean it up"** — the peer may already have pulled; record the
-  provenance and tell them instead.
-  ⭐ **AND CHECK THE FINDINGS NUMBER AT THE MOMENT YOU WRITE IT, not from a `grep` taken earlier in the session** — a
-  peer can mint the next F-number while you work. The same day produced two F155s; mine was renumbered to F156.
-  ⇒ When you find a collision, the number that was committed FIRST stays, and you renumber. Message the peer with
-  `SendMessage` when your change touches data they are analysing.
-- ⚠⚠ **WRITE PROSE WITH THE FILE-EDITING TOOL, NEVER THROUGH BASH — BACKTICKS AND WINDOWS PATHS ARE EATEN SILENTLY.**
-  A backtick inside a double-quoted bash string is COMMAND SUBSTITUTION: bash runs whatever is between the backticks and
-  substitutes its output, so `` `markets.tsv` `` becomes an empty string and the sentence is left with a hole in it —
-  *"so  carries no German prices"*. A quoted heredoc (`<<'EOF'`) does **not** reliably protect it either; a backslash-heavy
-  Windows path was mangled the same way (`'C:\Program Files...'` → `C:\Program Files (x86)SteamsteamappscommonVictoria 3game`).
-  ⚠ **Nothing fails.** The command exits 0, the file is written, the JSON still parses — the only trace is a missing word,
-  which in a design note is exactly the word that carried the meaning. It cost **three separate edits in one pass** on
-  2026-09-20 (a schedule note, a tie-breaker note and the handover itself) after the previous session's handover had already
-  warned about it, which is why it is here and not only there.
-  ⇒ **Prose containing backticks, or any Windows path, goes through Write/Edit.** Bash is for commands, not for documents.
-  ⇒ **Read the result back after any doc edit** — all three were caught only because the tool echoed the file afterwards.
-- 🛑 **NEVER UNLOCK DLC CONTENT — Paradox prohibits it** (user, 2026-10-21: *"This isn't my intention, and that's explicitly prohibited by
-  PDS"*). Every DLC's gameplay ships in the BASE game folder behind `has_dlc_feature = <feature>` triggers and the `dlc = dlcNNN` field of
-  events; `game/dlc/` holds only art, music and sound. So: a vanilla file the mod copies keeps every gate unchanged; a building, method or
-  company the mod generates from a vanilla template keeps the template's gates (`unlocking_principles` included); and any script of ours
-  that fires or grants vanilla DLC content carries that content's DLC condition itself. Checked 2026-10-21: the current build unlocks
-  nothing (`POLISH_1_0.md` §2 holds the evidence and the guard the reference fix must carry).
-- **Keep the docs in sync with reality — always, in the same pass as the change.** Any change
-  that affects behavior, file structure, conventions, scope, or numbers must be reflected in the
-  relevant `.md` (`CLAUDE.md`, `BALANCE_FRAMEWORK.md`, `MODDING_NOTES.md`, `ON_GAME_UPDATE.md`,
-  `README.md`) right then. In particular, any new coupling to a vanilla file/number goes in
-  `ON_GAME_UPDATE.md`.
-  Never leave a doc describing something that is no longer true, and never leave a doc update
-  "hanging" for later. **One narrow exception:** when a change is a *proposed* solution the user is
-  still weighing and its outcome is genuinely uncertain, the doc update may be briefly deferred —
-  but call out the divergence explicitly and reconcile it the moment it settles (bring the docs to
-  the facts, or the facts to the docs). Resolve such gaps as soon as possible, not eventually.
-- **Edit the config, not the generated files.** The mod content lives in
-  `config/mod_config.json`. To change balance or add/split buildings, edit that, then run the
-  builder:
-  ```
-  powershell -ExecutionPolicy Bypass -File tools\build.ps1
-  ```
-  It regenerates every `mod/common/*` and `mod/localization/*` file, regenerates
-  `tools/ladder_tiers.txt`, **converts the 1836 start** (re-tiers vanilla starting factories into
-  `mod/common/history/buildings/` via `convert_history.ps1`), and then runs the linter — which
-  must print **LINT PASSED** (BE-vs-ladder) and **NEGATIVE-GOODS CHECK PASSED** (invariant: no
-  reachable PM combination drives any good's building-level total input/output below zero — see
-  Working conventions), the node linters (solvency L18, tech content, start conversion L13, the tier rule L31 and
-  **PM-COMBINATION CHECK PASSED** — `lint_pm_combos.mjs`, the hard §10.93 rule: goods AND jobs never negative in a legal
-  combination, no dead method, no history block naming a missing method, no pair the compatibility review marked incompatible;
-  every one of these THROWS),
-  then **MOD CHECKS PASSED** (post-build sanity on the finished mod: required files
-  exist + non-empty, one loc file per language, and the **1836 start** — one history file per vanilla
-  history file, none empty, `create_building` blocks actually present, because `replace_paths` makes our
-  copy the *only* history the engine reads, so an empty conversion would silently delete every starting
-  factory in the game. The hook for future mandatory checks lives in `Invoke-ModChecks` in `build.ps1`;
-  note it *throws*, whereas a red linter today only prints). Never hand-edit files under `mod/common` or
-  `mod/localization`; they are overwritten on every build. To build from a **different config
-  file** (e.g. an alternate balance set exported from the UI) without touching
-  `config/mod_config.json`, pass `-Config <path>` — `build.ps1` threads it through the start
-  extractor and history converter too, so the whole build uses that file. Default is
-  `config/mod_config.json`. Other flags: `-NoLint`, `-NoDeploy`.
-- **Build somewhere other than `mod/` (for tests / alternates).** By default the build writes the
-  canonical `mod/` and deploys it. Two flags redirect the output and **never touch `mod/`** (nor
-  `tools/ladder_tiers.txt`, `ui/data.js`, or `config/start_baseline.json` — alt builds only ever
-  write their own folder):
-    - `-DryRun` — build a full, real mod into a throwaway `mod_dryrun_<pid>/`, run the linter +
-      `Invoke-ModChecks` on it, report, then **delete** the folder. Never deploys. Use this to
-      verify a config/build safely (**prefer it for test builds** so a build never silently
-      rewrites `mod/`).
-    - `-SaveTo <name>` — build into `mod_<name>/` inside the repo and **keep** it (not deployed,
-      not deleted; clean up manually). For alternate balance sets you want to compare/keep.
-  `-DryRun` and `-SaveTo` are mutually exclusive.
-- **The 1836 start is converted, not hand-authored.** `convert_history.ps1` reads vanilla
-  `common/history/buildings/*.txt` and maps each split-industry factory (base building + active
-  main PM) onto the correct tier building, keeping ownership + secondary PMs. metadata.json's
-  `replace_paths` makes the mod's copy replace vanilla's, so **rebuild after any game update** to
-  pick up new vanilla history. Uses the `vanilla_pm` field per tier in the config.
-- **Manual start overrides** live in `config/start_exceptions.json`: rules targeting a vanilla base
-  building, optionally scoped to a `country` (region_state tag) and/or `state`, with action
-  `force_tier` (set the rung regardless of vanilla PM), `force_industry_tier` (re-tier onto ANOTHER
-  config industry's rung — fields `industry` + the rung; needed when the target chain is a separate
-  ⭐ **A RULE NAMES ITS RUNG BY `era`** (the TIER RULE, 2026-09-13): `era: 2` = the industry's t2 rung. The
-  legacy `tier` field is a 1-based POSITION and is honoured only on the six-rung book (its 22-rule seed
-  uses it); on a four-rung book (`era_game_era` present) a `tier`-keyed rule THROWS — "tier 1" of
-  automotive would silently mean t2 there and t0 elsewhere (`Resolve-RuleTier` in convert_history.ps1).
-  industry whose base building never appears in vanilla history, i.e. the steamer chain; an unknown
-  industry id THROWS) or `remove` (delete the factory), plus an optional `owner` field that rewrites
-  the block's ownership to another tag (safe only on single-owner blocks — the converter warns). Most
-  specific scope wins. The rules list currently carries the **RATIFIED §10.60.3 CHAIN SEED (28
-  rules)** — the anchorage→steam-stub conversions in the GBR/FRA markets (12 subject-owned ones
-  rewritten to the overlord), the two metal-shipyard seeds and the FRA motor factory; see the
-  repo-layout entry above and the file's own `_why_chain_seed` comment for the design rule. The
-  earlier §10.59 steamer seed stays **REVERTED** (F66: it fed the abnormal from-start steam-port
-  construction — the AI builds one level per overseas state per port building TYPE (F66's MEASURED
-  pattern; the rule itself is NOT identified); the graded
-  ports fixed the disease). To author
-  rules, browse `config/start_baseline.json` (regenerated each build by `extract_start.ps1`) to see
-  which countries/states have which factories. That baseline's `unmapped` list is also the
-  **version-drift alarm**: if a game update renames/adds main PMs, unmapped factories appear there,
-  telling you to refresh the config's `vanilla_pm` fields.
-- **Config holds ACTUAL volumes.** `inputs` and `output_qty` are the real per-throughput numbers
-  the game uses; the builder emits them directly. `target_be` is the design goal (informational) and
-  now means **full** break-even (output revenue = input goods + wages). The linter re-checks each
-  building's actual full break-even (building-level: main PM + the base PM of every other PMG, plus
-  wages = `wage_pct`·inputs) against its configured `target_be` (±6pp). This per-target check supports
-  the date-based ladder (tech-era anchors 125/100/75/50/35 with the H1 −15 pp input adjustment; targets set by
-  `solve_be_targets.ps1`). `tools/ladder_tiers.txt` carries `pm tier target_be wage_pct`.
-- **Negative-goods invariant (second linter).** `tools/lint_negative_goods.awk` (run by `lint.sh` after
-  the BE check) enforces that **no reachable combination of PMs drives any good's building-level total
-  input or output below zero** — across **EVERY building** (vanilla + mod). Reduction PMs legitimately emit
-  negative `goods_output_*_add` (e.g. the aeroplane/tank lines subtract from a car plant's automobiles
-  output; luxury/ceramics/rayon PMs subtract from the base good); the design guarantees the active main
-  output covers the maximum reduction. Because the balance UI lets any PM's goods be edited via `pm_goods`
-  (**negatives allowed**, for those reduction outputs), this check catches an edit — or a tier-volume choice
-  — that would let a player-selectable combination go negative. Method: **brute-force** the Cartesian
-  product of each building's PMGs (one active PM per PMG — counts are tiny), keep only **legal**
-  combinations, sum every good, and flag any total `< 0` — below **−0.011**, since 2026-09-13: vanilla's own
-  automobile plant nets to EXACTLY zero under both conversions, and the per-tier rescaled copies of those
-  reductions net to zero in decimal and to ±1e-15 in doubles, which the strict test flagged on every
-  non-integer ladder (A 1.6, A 2.2) and never on A 2.0. **Gating is respected** — a combination is legal
-  only if every chosen PM's `unlocking_production_methods` gate is satisfied by another chosen PM in that
-  same combination, so a gated secondary (e.g. `pm_elastics`, unlocked only by the sewing/electric main PMs)
-  is never counted against a main PM that can't run it, and a vanilla base PMG's low-tier main PM isn't
-  blamed for a reduction it can't reach. Only "risky" goods (those with a negative contribution in some PM)
-  are checked, so buildings without reductions are skipped outright. **PM names are not all `pm_`-prefixed**
-  (plantations/farms use `default_`/`automatic_`/`worker_`/… ), so every top-level block in a
-  production_methods file is a PM and every token in a `production_methods`/`unlocking_production_methods`
-  list is a PM reference. The check reads all vanilla PMGs, the mod's **owned** production-methods files (so
-  `pm_goods` overrides are seen), and all buildings (vanilla + mod, mod overriding).
-  ⭐⭐ **SINCE 2026-10-02 THE HARD FORM OF THIS RULE IS `tools/lint_pm_combos.mjs`** (BALANCE_FRAMEWORK §10.93, user-ruled: *"Check as a
-  hard rule that no secondary can exist that in combination with an allowed compatible primary takes any number into the negative (one
-  of the input goods or employment)"*). It adds **employment** (every profession) to the goods, **FAILS the build** (this awk's result is
-  only printed), and fails a **DEAD method** — a member gated on main methods its building lacks. ⚠ That last one is the blind spot this
-  awk has by construction: it sums only LEGAL combinations, and a method that can never be legal is never summed, yet **the game still
-  SHOWS it**, greyed, at its own numbers. That is how vanilla's Elastics (−70 clothes) sat on a 500-worker craft making 2.7 with every
-  linter green.
-- **BE targets are derived from tech unlock date.** `tools/solve_be_targets.ps1` reads each tier's
-  unlocking tech's **era** live from vanilla `common/technology/technologies/*.txt` and writes per-tier
-  `target_be` (tech-era anchor − H1 input discount, above) and `natural_year` (the tech era's representative year,
-  shown in the UI). Run it **before** `solve_volumes.ps1` when tech eras/anchors change or after a game patch:
-  `solve_be_targets.ps1` → `solve_volumes.ps1` → `solve_building_cost.ps1` → `build.ps1`. It is a
-  design-target solver, not run by `build.ps1`.
-- **Volumes are derived, not hand-tuned.** `output_qty`/`inputs` come from `tools/solve_volumes.ps1`
-  (BALANCE_FRAMEWORK §8): the first rung's output = its vanilla PM's output, higher rungs ×`output_mult`
-  (default 1.5) per rung, inputs solved from `target_be` (with wages folded in: `I = target_be/100 ·
-  O / (1+wage_pct)`) keeping vanilla input ratios. It re-reads the
-  **current** vanilla recipes (via each tier's `vanilla_pm`), so after changing a `target_be`/`output_mult`
-  or after a game update: run `solve_volumes.ps1`, then `build.ps1`. (The UI edits volumes directly;
-  the solver regenerates them from the methodology.) All three solvers take **`-Config <path>`** (default:
-  the repo-absolute `config/mod_config.json`), so the whole pipeline can be run against an alternate
-  balance set without touching the canonical config — and none of them can silently miss because they
-  were launched from another working directory.
-- ⭐⭐ **BUILDING COST IS EXACTLY VANILLA'S OWN COST BOOK, FLAT** (user-ruled 2026-08-17,
-  BALANCE_FRAMEWORK **§10.61** — superseding §10.57's two-band ×1.5^(tier−1) ladder). Each tier's
-  `building_cost` (construction points) is emitted as the building's `required_construction` (a per-tier
-  number replacing vanilla's flat `construction_cost_*` script-values; the building-level
-  `required_construction` in the config is the anchor CLASS and the fallback for tiers without
-  `building_cost` — the three clone industries now carry it explicitly: power/port
-  `construction_cost_medium`, railway `construction_cost_very_high`). The rule:
-  ```
-  building_cost (points) = VANILLA's required_construction for the industry's anchor building
-                           × the tier's workforce_mult where set (graded ports: ×0.1 / ×0.2)
-  ```
-  **Flat across tiers — no band, no tier exponent, no exceptions.** The whole book is four lines:
-  **400** power, art_academy · **40/40/40/80/80** port · **600** food, textile, furniture, glass,
-  tooling, paper, shipyard, shipyard_steam, arms, artillery · **800** fertilizer, explosives, steel,
-  motor, automotive, munition, synthetics, electrics, railway.
-  ⚠⚠ **THE SHIPPED CANONICAL CONFIG DOES NOT FOLLOW THIS RULE, AND HAS NOT SINCE THE SOLVER-2
-  CANONIZATION** (§10.65.9, 2026-08-26, which POSTDATES this §10.61 ruling of 2026-08-17 and therefore
-  supersedes it for that file). Measured 2026-08-31 against the four lines above: **74 of 100 tiers
-  deviate**, only 26 match. `config/mod_config.json` carries solver2f’s **10-year payback-normalized**
-  book — 21 distinct values in tier 3 alone, per-tier medians **600 → 780 → 838 → 982 → 935 → 934**, max
-  2268. So the flat book described here is **the RULE, and the canonical config is an exception to it
-  that a later ruling created**; do not read the four lines as a description of what ships.
-  ⇒ Two live cost regimes, and a batch must say which it is on: **flat** (this rule, and the four-rung
-  arm of 2026-08-31 — `lib_tier4_spec.mjs` `COST.k = 1`) or **payback-normalized** (solver2f, the
-  canonical six-rung book). `payback_census.mjs --rule --write` is what writes the second.
-  ⭐⭐ **WHY THE EXPONENT DIED — DOUBLE JEOPARDY (the user's word).** Modernising already costs the full
-  price of constructing a NEW building — that is the tier split's whole point — so a tier exponent
-  priced the same thing twice, and the ×2 band compounded it. Tiers are priced by what their recipes eat
-  and the research to unlock them, not by a cost multiplier. §10.57's named-exception table is retired
-  with the ladder. (The ruling was first made for the parity restart — HANDOVER 2026-08-16 §1b's "×1.0
-  flat vanilla anchors" — and ran as the vancost arm; it reached the canonical config only on
-  2026-08-17, when the user caught the UI still showing the exponential book.)
-  ⚠ **Payback is now a READING, not a check**: dominant-rung medians run 9.9 → 1.2 across the tiers
-  (late tiers earn late margins against an 1836-priced building). Accepted consequence of the ruling —
-  do not re-fit costs to restore the old ~11.5y figure; that reintroduces the premium the ruling
-  removed. ⚠ An earlier form derived cost from output value and a measured profit ratio; **rejected as
-  "still per-building fitting"**. Do not reintroduce that either.
-  ⭐ **THE GRADED PORTS RIDE `workforce_mult`** — §10.60.2's regeneration trap ("payback_census --write
-  would un-divide port building_cost") is **CLOSED**: the division is part of the rule itself.
-  ⚠⚠ **NOTHING IN THE RULE TOUCHES PROFIT** — the inputs are a vanilla constant and a config
-  multiplier, so a negative or infinite cost is impossible *by construction*. Explicit user
-  requirement, carried over from §10.57.
-  ⚠ **£720/point is the IRON-FRAME rate and is kept FLAT by the same ruling.** The real rate is
-  **1000 / 720 / 720 / 540 / 540 / 527** across our tiers (wooden → iron → steel → arc, gated by
-  `urban_planning` / `steel_frame_buildings` / `arc_welding`), so a tier-5 building really pays back
-  ~27% faster than the book says and tier 0 ~28% slower. **An accepted, known bias** — F53 has the table.
-  ⚠ `building_cost` is a pure OUTPUT: nothing in the solve reads it back, so writing it needs no
-  re-solve and cannot disturb the fixed point. **`tools/solve_building_cost.ps1` is LEGACY for tiers on
-  this ladder** — its assumed 20% return on operating cost against a 56–104% realised margin is exactly
-  what put the shipped book at a ~2-year payback. It still documents the older model (BALANCE_FRAMEWORK §9)
-  and still serves any rung off the tier ladder. **wages** use the shared `wage_pct` (fraction of total,
-  default 0.25, per-tier `wage_pct` override — the same knob the volume solver, linter, and UI use; §1).
-  The UI preserves `building_cost` through export/Build-now (it deep-clones the config), but does not
-  itself edit it.
-- **Toggle a whole industry** with an industry-level `disabled: true` in the config — the builder,
-  history converter, and UI all skip it, leaving that vanilla building untouched (the mechanism that
-  formerly kept shipyards vanilla; no industry is disabled now). Building-level flags: `heavy_industry_law` (emits the industry-ban /
-  extraction-economy `possible` block), `coastal_only` (emits `potential = { is_coastal = yes }`),
-  and a per-tier `output_good` override (e.g. clippers→steamers). `mod_config.json` is stored
-  **minified**; edit it via the balance UI, or with JSON-aware tooling (add industries by merging
-  with PowerShell `ConvertTo-Json -Compress`), not by hand.
-- **New-economy industries (clone-and-swap) — power / port / railway.** These vanilla buildings carry
-  engine-critical fields our simple schema can't model (`port = yes`, `terrain_manipulator`, big
-  `ai_value`/`should_auto_expand` blocks, `potential`). So an industry with **`clone_from_vanilla: true`**
-  is emitted by *copying its vanilla building block* and surgically swapping only key / tech / PMGs /
-  (construction) — everything else verbatim (`New-ClonedBuilding` in build.ps1). It also needs
-  **`source_file`** (the vanilla `common/buildings/*.txt` we whole-file-own for it — `06_urban_center` for
-  power, `11_private_infrastructure` for port/railway; the builder now owns **01 + 06 + 11**). Two more
-  industry flags: **`follows_be: false`** (stay on vanilla volumes: the volume / BE-target / building-cost
-  solvers skip them, the linter ladder skips them, the building name omits the BE target — **no industry
-  carries it today**; port and railway lost it in `0cdc041` and are on the ladder like everything else) and
-  **`no_mass_be: true`** (all three — excluded from the linter ladder and, in the UI, locked-by-default so
-  the mass BE tools + preset never touch them). Per-tier **`state_infrastructure`** is emitted as a
-  workforce-scaled `state_infrastructure_add` (ports/railways produce infrastructure). Power is on the BE
-  ladder normally (electricity output; `output_override` keeps its vanilla per-tier electricity).
-  ⭐⭐ **PORTS ARE FRACTIONAL-UNIT BUILDINGS (§10.60/§10.60.2, user-ruled + implemented 2026-08-16):** the
-  AI builds one level per overseas state per NEW port TYPE and no script we tried can stop it
-  (F66 — ai_value measured inert), so the port unit was shrunk instead:
-  ⚠ **"PROVISIONING" WAS OUR OWN LABEL FOR AN UNIDENTIFIED RULE and is retired (2026-08-17).** F66
-  establishes the PATTERN on good evidence — arm-independent of the subsidy mandate, magnitude tracking
-  the count of overseas possessions (GBR 12 · FRA 10 · BEL 1 · USA 0 · PRU 0), one level per overseas
-  state per port type in the 1855 save — and says in its own text that *"the exact rule — hardcoded vs
-  NAI — is not identified from files"*. It runs through the PRIVATE CONSTRUCTION QUEUE, so it is
-  ordinary construction, not a separate placement path. Do not cite it as a documented engine feature;
-  the shrink is justified by the measured pattern, which is enough. the five tiers' goods and
-  building_cost are divided by 10/10/10/5/5 EXPLICITLY in the config, and per-tier `workforce_mult` /
-  `effect_mult` (0.1/0.2) scale employment and infra at emission. The 1836 start multiplies port levels
-  by 1/workforce_mult (anchorage entries stay level 1). Validated: the provisioning wave still fires but
-  costs ~1/10 (GBR's whole steam wave ≈ 480 pts, absorbed in weeks, queue share collapsed from 100% to a
-  blip). §10.60.2 lists the regeneration traps; the payback_census one ("--write would un-divide the
-  cost") is CLOSED since §10.61 made cost = vanilla anchor × workforce_mult.
-  ⭐ **POWER = THREE TIERS, NO GAPS (§10.43 + §10.44, 2026-08-09):** coal-fired turbine station
-  (`building_power_plant`, the vanilla key so `has_building` references keep matching; tech
-  `steam_turbine` — deliberate-early; **tier 3, tech_year 1900**, Elberfeld), **pulverized-coal**
-  (`building_power_plant_pulverized` — an ALL-NEW tier like the steamer chain, NO vanilla PM; tech
-  `electrical_capacitors` as the closest grid-equipment gate; tier 4, year 1920) and oil-fired (tier 5,
-  year 1925). The vanilla tier-3 "Early Power Plant" rung is GONE: the 1900 MUNICIPAL engine-house is
-  modelled inside urban centres via the MANDATED electric-streetlights method (`pm_goods`: +1
-  electricity out, −2 coal in (ruled; 1 coal left the mandate too profitable, 3 would force a
-  loss-maker — §10.43.2); `pm_employment`: 250 engineers, laborers gone — the streetlight PMG is a
-  solver PREREQUISITE per tier via `MANDATED_PMGS` in era_pm.mjs: none @0, gas @1-2, electric @3+, never
-  an economic choice). No debut exemption — the DATE GATE (§10.44) places the coal station at 1900 on
-  its own year; hydro is deliberately NOT a market industry (small-scale folds into the UC
-  narrative, large-scale is a site-specific megaproject like a canal, outside the scenario model). Their PMs
-  are our own copies (editable), so `solve_volumes` reads **every** `common/production_methods` file, not
-  just `01_industry`. `trade_center` stays vanilla (no tiers). `1836` ports/railways are re-tiered by
-  `convert_history` like any split industry.
-- **AI subsidy policy (`building_subsidies` → `common/ai_strategies/01_admin_strategies.txt`).** The `subsidies`
-  block inside an ai_strategy is the AI's subsidy **decision rule** (`must_have` / `wants_to_have` / `nice_to_have`
-  — the only three values vanilla uses). It is the **only durable** way to make the AI subsidize a building: the AI
-  re-scores subsidies continuously (defines `NAI` `SUBSIDIZE_*`), so a scripted `set_subsidized` effect is simply
-  undone on its next pass — do NOT try to force subsidies from an on_action.
-  ⭐⭐ **THE BUILDER ONLY OWNS THAT FILE WHEN THE BOOK HAS A POLICY TO PUT IN IT (2026-09-16).** With no
-  `building_subsidies` entry outside `vanilla` and no `subsidy_conditional`, nothing is emitted and the vanilla file
-  stands — because everything we would write there is vanilla’s own, and the restatement below only exists to make
-  the merge-vs-replace ambiguity harmless once we add a block of our own. **The canon is in exactly that state**
-  (infrastructure went back to vanilla, so both keys are null), so it no longer freezes a 655-line vanilla file
-  against the next patch for nothing — the same rule the production_methods files already follow. Everything below
-  describes what still happens for a book that DOES set one.
-  The builder **whole-file-replaces `01_admin_strategies.txt`**, rewriting the `subsidies` block of each of its **7
-  administrative** strategies. We own that (~655-line) file rather than `ai_strategy_default`, which is a single
-  ~8790-line block — a 13× smaller patch surface. Coverage is still universal because every AI country always runs
-  exactly one administrative strategy (`ai_strategy_industrial_expansion` has **no `possible` gate**, so it is always
-  available). Each rewritten block = that strategy's own vanilla entries + our overrides — **plus**, *only* if the
-  strategy had **no `subsidies` block at all** in vanilla, `ai_strategy_default`'s subsidies restated (read **live**
-  from `00_default_strategy.txt` each build — that file is read, never owned, so it can never go stale).
-  **The conditional matters.** Whether a typed strategy's `subsidies` merges with the default's per key or replaces
-  it wholesale is **not conclusively settled** (an in-game probe — since removed — leaned toward *merge* but on
-  late-game data only; see ON_GAME_UPDATE.md drift log 2026-07-23). The rule below is written to be **correct under
-  both readings**, so this never needs resolving for the mod to be right — it only matters for the two loose ends
-  noted after it. The two cases differ:
-    - A strategy that **already has** a block is **authoritative** — under *replace* whatever it omits was omitted
-      deliberately (real vanilla fine-tuning, e.g. `industrial_expansion` subsidizing only its four mines), and
-      under *merge* the default supplies the rest anyway. Restating there would **invent subsidies vanilla never
-      granted**, so we don't.
-    - A strategy with **no** block only becomes replace-exposed *because we add one*, so there we restate to keep
-      vanilla behaviour intact.
-  That rule is correct under both readings and never overwrites a strategy-specific value (e.g. `tooling_workshop`
-  stays `nice_to_have` in `resource_expansion` and `wants_to_have` in `colonial_extraction`). Config values: `vanilla` (or absent) emits nothing;
-  `none` drops the key from every block we write. ⚠ `none` can only reliably suppress entries living in files we
-  own — the trio is also set by `ai_strategy_default`, so suppressing those is semantics-dependent (the UI warns).
-  **Note this does NOT bypass the trade-center GDP gate** (`NAI` `TRADE_CENTER_MINIMUM_GDP_*`), an eligibility
-  filter on which states the AI will even consider; subsidy only re-weights states that already cleared it.
-  ⚠ It is NOT absolute: FINDINGS F246 watched the AI build trade centres in Qing treaty ports (Macau, Hong Kong) at a
-  quarter and a tenth of the threshold, so where exactly the engine applies it is unknown.
-- **Secondary-PM gates (`unlocking_production_methods`).** A few vanilla secondary PMs are gated behind a
-  main PM: `pm_bone_china` (glass porcelain), `pm_elastics` (textile luxury), `pm_precision_tools`
-  (furniture luxury) each have `unlocking_production_methods = { <vanilla main PM> }` — only available when
-  that main PM is present in the building. Splitting each main PM into its own renamed building broke the
-  gate (the secondary silently locked). Fix: the builder **whole-file-replaces `common/production_methods/01_industry.txt`**
-  and, for every `unlocking_production_methods` list, **appends our tier `pm_key`** for each split
-  vanilla main PM it references (map: `vanilla_pm`→`pm_key`). The secondary then unlocks at exactly the
-  tiers whose main PM satisfied it in vanilla (e.g. bone china at glass rungs 3–4). Everything else in the file
-  is copied verbatim; the linter reads vanilla's copy + our `zzz`, so it's untouched. New gated secondaries
-  a patch adds are picked up automatically on rebuild.
-- **Balance UI (for Claude-less iteration):** one-click **`balance-ui.cmd`** (or
-  `powershell -ExecutionPolicy Bypass -File tools\ui.ps1`) opens a browser editor (`ui/builder.html`)
-  showing every building × tier with editable **main-PM** input/output volumes.
-  ⭐ **EVERY BUILDING NAMES ITS UNLOCKING TECHNOLOGY** — on the row (`🔒 Bessemer Process · tech era 2`,
-  hover for tree, onset and vanilla-vs-new) and on every dot of the **Ladder chart in `raw` mode**, where
-  the rung's position is meaningless without knowing what gates it. Our tiers name the MOD's technology
-  (`tech_tree_spec.mjs` stamps it into the config), reference buildings their vanilla one; both resolve
-  through the same `PMDATA.techs` index. ⚠⚠ **A TIER AND A TECH ERA ARE DIFFERENT NUMBERS.** A building's tier is its
-  rung on the mod's SIX-tier ladder; a technology's era is its row in the GAME's five-era tree, where our
-  tier 0 and our tier 1 both sit in game era 1 (the anchor principle). So an `e0` building on `tech era 1` is
-  correct — which is why the label says "tech era" and never bare "era".
-  ⭐ **THREE PAGES, one window** — the `Balance sheet` / `Tech tree` / `Mod changes` switch at the top
-  left. They are views of one config, so they are pages rather than windows; the tree is
-  `ui/techtree.html` in an iframe (see the repo layout for why a frame and how the snapshot carries it),
-  and **Mod changes** (user-ruled 2026-08-16) is an inline READ-ONLY page — the whole set of changes the
-  Build button emits beyond the sheet's per-tier recipes, compressed into readable points grouped by
-  theme (tier split / emission rules / PM surgery / 1836 start / tech tree / research events / AI
-  behaviour / meta+guards). Numbers and lists on it are interpolated from the loaded config + live
-  session state on every visit, so they cannot go stale against the sheet; the prose states the
-  builders' fixed rules and is maintained WITH them (`renderModChanges` in builder.html — same doc-sync
-  convention as this file). There is deliberately NO add/remove-a-point UI, ever: the page is a faithful
-  VIEW of the emitted set. It absorbed the short-lived "Shipped arm" card (2026-08-16's first cut).
-  ⚠ marks on it flag verified divergences between stated intent and what ships (e.g. port/railway names
-  carrying a meaningless BE label; the ahead-of-time define shipping at vanilla's own 0.25 — a no-op);
-  resolving those is a design decision, not the page's. Every header control
-  belongs to the SHEET, so the other two pages hide the lot rather than offering buttons that do nothing
-  to what is on screen.
-  ⭐⭐ **THE SHEET OPENS ON EXACTLY WHAT THE BUILD BUTTON WOULD SHIP** (user-ruled 2026-08-16). Served by
-  `tools/ui.ps1` the page fetches **`GET /api/config`** (the live `config/mod_config.json`, verbatim) and
-  `GET /api/start_exceptions` synchronously at boot and swaps them into `PMDATA` before anything reads it
-  — closing for the UI the same stale-copy trap `econ_host.mjs` closed for the Node solvers (`ui/data.js`
-  is a BUILD-TIME copy, stale the moment a solver `--write` touches the config without a build). The
-  standalone snapshot and a `file://` open have no server and keep the embedded copy (stamped
-  `PMDATA.generated`, UTC); the load banner states which source the page is on either way. No reconcile,
-  no re-solve on load — the config is authoritative and is shown as-is. **Wages now stem from the
-  building's WORKFORCE**, not a fraction of goods: a **base-wage row** — inside the scenario panel, directly
-  under the Population row and above every building, because the wage is a property of the market being
-  modelled and it prices the buildings below it — sets one
-  global **base wage** in two linked terms — **£/week ↔ £/year** (yearly = ×52; V3 is inconsistent about which
-  it shows) — and lists each profession's weekly wage = `base × wage_weight` (the vanilla `common/pop_types`
-  weights: laborers 1, machinists/clerks/soldiers 1.5, farmers 2, shopkeepers/engineers/clergymen 3,
-  bureaucrats/academics 4, officers/aristocrats/capitalists 5, peasants 0.2, slaves 0; everyone
-  non-discriminated). A building's **wage units** = `Σ (employees × wage_weight)` and its wage `W = base × units`.
-  **The base wage is now MEASURED, not guessed.** It was a flat `0.04` £/wk; on the canonical F26 basis
-  (`base_weekly_wage` — laborers + farmers + machinists, EMPLOYED pops only) vanilla 1836 reads **0.0606
-  for the Austrian market and 0.0781 for the Belgian**, so the guess was ~34% low for Austria and ~49% low
-  for an industrial market. (The superseded 11-profession basis, `base_weekly_labour`, read 0.0490 / 0.0741
-  — kept in `measured_1836.json` only for continuity with earlier findings, never fed to a scenario.)
-  A **preset carries its market's `base_wage`** (from `config/measured_1836.json` → `ui/presets.js`) and
-  applies it through `recomputeWages()`, so it obeys the same rule as typing in the panel: unlocked
-  groups inherit, **locked groups keep the wage they were tuned at**. A preset with no measured wage
-  leaves the sheet's wage alone rather than resetting it, and says so in the banner.
-  ⚠ The stored figure is the **LABOUR** base. Capitalists (£59.66/yr) and aristocrats (£7.55) draw
-  dividends and rent through the same income field as a labourer's £3.79 wage, and folding them in
-  inflates Belgium's base from £3.85 to £4.55/yr with money no building ever pays; peasants are excluded
-  because subsistence is not a market wage. Across the eleven working professions the implied base agrees
-  to within ±13% (Belgium cv 0.081) — the game confirming the `base × wage_weight` model the sheet already
-  assumed. Austria's cv is 0.189, it being five countries sharing one market, so a single base describes
-  some markets better than others. See TESTBED_METRICS §5 and FINDINGS.
-  Every building keeps its **own base wage**, so the wages row (bottom of the Input cell) has **three
-  mutually-dependent editable fields**: **base £/wk** ⇄ **total £** ⇄ **% of total cost**. Edit any one and the
-  other two follow (`W = base·units`; `base = W/units`; `% → W = p/(1−p)·goods → base`). Two rules make this
-  behave: (1) a **PM change** that alters the labour mix **preserves the base wage** and recomputes the other two
-  (base is the stored value, the rest derive); (2) changing the **sheet-level** base wage is **inherited by every
-  building in a NON-LOCKED group**, while **locked groups keep their current wage** (pinned to the old sheet value
-  if they were only following it) — so locks protect a tuned group from the global knob. A labour-only building
-  (gov administration) is 100% wages (that field is fixed/disabled — nothing to trade off against) and now has a
-  real £ from its bureaucrats; a building with no workforce shows `—`. Wages remain a **model-only** term (dashed
-  "modelling only · not emitted" fence) — **never emitted** to the game (V3 pays wages from employment). Per-building
-  base wages are **session-only** (like PM selections), not saved to the config.
-  **NOTE:** `reconcileToWageModel` — the old load-time re-solve of every unlocked group to its
-  `target_be` at base prices — is **REMOVED** (tombstone at the bottom of `builder.html`). It was right
-  while the config's volumes came from the legacy wage model at 100% prices; it became actively wrong
-  once `era_scenarios.mjs` solved each tier against its own tier's realised prices (`target_be` is only a
-  drift guard now), because the re-solve threw those volumes away before they could be read. The sheet
-  loads the config **as-is** and shows it; `solve → targets` remains available as an explicit action.
-  **Mass BE tools** (toolbar, whole sheet, skipping **locked** *and* `follows_be:false` groups): **`solve →
-  targets`** re-solves every unlocked tier's INPUT volumes (recipe proportions kept, **output untouched** per §8;
-  an active secondary PM's inputs are held fixed and netted off the goal first) so its full BE hits its Target at
-  the **current** standard wage — **build cost deliberately does not follow** (the payback tools own that); and
-  **`targets −10pp` / `targets +10pp`** shift every unlocked tier's `target_be` by 10 pp (floored at
-  `BE_MIN` = 5) **without** re-solving, so you can stack shifts or change the wage and then re-solve once.
-  Each tier's **secondary-PM selectors** sit under the
-  building name (Building column); switching one distributes that PM's effects across the columns: its input goods
-  appear as extra rows in the **Input** column, its output goods (including negative *reductions* of the main good,
-  e.g. tank production −20 automobiles) as extra rows in the **Output** column, and its employment folds into
-  **Workforce**. The secondary **goods rows are editable** (marked with a `↳`), wired to the shared `pm_goods`
-  override — so editing one changes that PM's recipe everywhere it's used (negatives allowed, for reduction
-  outputs). Contributions are **not summed** with the main good — each active secondary is its own row (you see
-  `automobiles 30` and `↳ automobiles −20` side by side, both editable but independent). **Non-goods outputs**
-  (infrastructure / ship construction / pollution from the config, plus modifiers from active secondaries) are
-  listed at the bottom of the Output cell **read-only**, **merged by kind into a total** (base pollution + an
-  automation PM's pollution ⇒ one `pollution +25`). A **Workforce** column shows each tier's employment (total + per-profession),
-  **tracking the selected PMs** (e.g. automation's −1500 laborers) — **viz-only**: not editable, not saved, not a
-  new emit path (the builder already emits base `employment`; the UI carries it through and adds **every** secondary
-  PMG's active PM employment — *including its base/default PM*, since each PMG always has one active PM in-game.
-  Usually the base is inert, but some carry the jobs, e.g. the art academy's ownership PMG employs academics/
-  clerks/laborers even at its default). Reference-explorer buildings get the same read-only workforce line. Live
-  **full** break-even + per-good-threshold **full
-  profitability** ((output − inputs − wages)/(inputs + wages), shown as **% and weekly £**). Each Input/Output
-  cell ends in a **subtotal** — `total in` (input goods **+ wages**) and `total out` (priced goods only; the
-  non-goods block below it has no £) — so a row reads as one equation: *in − out ⇒ profit*.
-  **EVERY £ IN A BUILDING ROW IS AT THE CURRENT SCENARIO PRICES, INCLUDING THROUGHPUT** — each goods row and both
-  subtotals (`mval()`), so `total out − total in` equals the Profit column **exactly**, always. Wages are the one
-  term throughput does NOT scale (it moves goods, not the workforce — which is precisely why it lifts the margin).
-  ⚠ These used to be at **base** prices with no throughput, which agrees with the Profit column only at 100% prices
-  and no bonus. Once tier presets began unlocking prices and setting throughput, the subtotals and the profit
-  disagreed on screen by default with nothing to explain the gap (a furniture tier showed in £2691 / out £2850
-  beside a profit of £2141). Do not reintroduce a base-price subtotal without a second, clearly-labelled row.
-  **Scenario panel + market prices (session-only).** Every building row has a **Number** column (count of that
-  building in a hypothetical market; default 0, keyed by building key for tiers *and* reference buildings). The
-  **Scenario panel** (which **replaced the old price panel** — it now owns pricing) is **styled after the in-game
-  market screen**: a **goods pictogram** + name/base price, then a two-row grouped header —
-  **Buy orders** (buildings | pops | trade) · **Sell orders** (buildings | trade) · **Balance** · **Price** — with
-  thin proportional bars under Balance and Price. Buy = each building's active-PM **inputs** × its Number, Sell =
-  its **outputs** × Number (secondary reductions net out); **pops** is the derived population demand *plus* the
-  baskets buildings buy for their slaves (read-only, and the hover splits the two — see the preset section
-  below); **trade**
-  (default 0) is everything else — treaty transfers a preset fills
-  in, or anything you dial in by hand. Pops never sell, so the sell side keeps a single **trade** column.
-  **Colour** (gold `#d9a441` / blue `#5c9ede`): **gold = abundance** (sell > buy) **and below-base price**,
-  **blue = deficit and above-base price** — surplus and a low price always co-occur, so a row reads as one market
-  state. ⚠ The game itself appears to colour by **sign** (a *high* price is gold there); we colour by meaning —
-  flip `scenPriceCls()` to mirror vanilla exactly. **Pictograms** come from `ui/icons.js` (generated,
-  gitignored); the UI can never read game files itself, so a fresh clone that has not been built shows clean
-  **text-only** rows, and a good with no icon gets a dashed placeholder so names stay aligned. Assumptions (per design): full employment, no market-access/throughput
-  effects — a building contributes exactly its listed in/out × Number. The good-group **sections are individually
-  foldable** (click the section header; `SCENFOLD` set). The **price column header carries the two price controls**
-  (replacing the removed panel's lock toggle + reset button), wired by **event delegation** since the panel
-  re-renders: a **`locked` checkbox** (default **OFF**) and a **`100%` button**. ⚠ **Prices are UNLOCKED by
-  default — on load and after EVERY preset**, including presets that carry no prices of their own. Realised
-  prices are the whole design; a locked panel shows numbers the scenario in front of you did not produce, and
-  leaving a hand-locked price standing over someone else's order book is worse still. Locking is the
-  deliberate act (pin a price, see what it does), not the resting state. **Locked** = prices are manual —
-  each price cell is an editable **% of base** (the old price-panel behaviour, now inline); the `100%` button
-  (enabled only when locked) resets every good to 100%. **Auto** (unchecked) = prices are computed live from the
-  orders via the **actual V3 formula** `price = base × [1 + 0.75·clamp((BUY−SELL)/min(BUY,SELL), ±1)]` (25–175%
-  band; vic3.paradoxwikis.com/Market) and the cells go read-only. Either way the value lives in the existing
-  **`thresholds`** map (the formula output *is* a "% of base"), so it **propagates to every building's
-  Profit@prices** (tier cells + reference rows) with no other plumbing — `refreshScenPrices()` (called from
-  `updateComputed`) keeps the price column in sync after any change, including the `%→X` payback tools. Hovering an
-  industry flags its goods on their **scenario rows** (the highlight moved off the removed panel). All of this —
-  `BLDNUM`/`ADDBUY`/`ADDSELL`/`SCENFOLD`/lock state — is **session-only** (never saved to config or emitted), like
-  PM selections.
-  **Scenario presets (the preset bar).** A wrapping button strip at the top of the scenario panel (sized to hold a
-  couple of dozen entries, grouped by the preset's `group`). Clicking one **completely overwrites** the scenario:
-  every building **Number**, the **non-pop** buy + sell orders, the **population**, the per-stratum **SoL**, the
-  **base wage**, *and* the
-  **PM selections** (both our tiers' secondaries and the explorer's `REFSEL`, reset to defaults first, then set to
-  what vanilla actually runs there). Always present: a built-in **Empty** preset that zeroes everything — it works
-  even without `ui/presets.js`.
-  **THE INVERSE-SOLVE ROW (§10.65.2)**: a second row of six tier scenarios (`inv0_1780`…`inv5_1945`, group
-  "Inverse solve · designed ladder, pop-limited yields") — the SECOND solver's seeded feasibility scenarios,
-  written by `tools/era_inverse.mjs --write` into `config/era_inverse.json` (`presets`, tier-preset schema by
-  construction) and passed through by `extract_presets.ps1` exactly like the tier row. Counts are FRACTIONAL
-  (that solver's convention); prices in auto mode reproduce the solver's book (verified: tier-3 steel/tools
-  at the 100 mandate, clothes 93, groceries 96, telephones 63 — the named yields). ⚠ They pair with the red
-  `recipes: solver 2` button — the counts were seeded against THAT book, so margins read as the solver saw
-  them only on it. Absent artifact ⇒ the row is simply absent (optional, unlike the tier row).
-  **PLACEHOLDER presets (`ph_sol10/12/14/18/20`)** are synthetic — no country, no trade, no army, base
-  PMs throughout, and **one level of every ordinary building** so every chain appears exactly once.
-  Excluded: `unique` buildings and the monument/canal groups (one-off wonders), the military groups
-  (no army), and **company headquarters** (they exist only once a company is formed). Manor houses and
-  financial districts stay — ordinary ownership buildings that employ the upper stratum and carry no
-  market goods. **Urban centres and subsistence are still DERIVED, not placed at 1**: subsistence from
-  the peasants (`peasants × 0.25 ÷ 5000` staffed levels) and urban centres by the F13 rule
-  (`floor(Σ urbanization / 100)`) — 50 and 6 levels at the current pop counts. Pops are 1 M lower /
-  1 M peasants / 100 k middle / 10 k upper / 0 slaves; within-stratum variation is the UI's own
-  `SOL_SPREAD`, not something the preset carries. SoL is **lower = the scenario's number, middle ×1.5,
-  upper ×3**, and the **base wage comes from FINDINGS F26** (`exp((SoL−37.43)/10.49)`), so these are
-  the first presets whose wage is derived rather than measured. Deliberately uniform and crude — meant
-  to be diversified.
-  **PRINCIPLE — a preset is a one-off overwrite, not a mode you sit in.** The instant you touch a field the
-  scenario is your own, so **nothing in the panel may claim you are "in" a preset**: no STICKY active-button
-  highlight, no standing description of the market / subsistence / lock state.
-  ⚠ **What this forbids is an assertion that can go STALE, not the fact itself.** A preset button carries a
-  **`.same` ✓ badge** meaning *"pressing this would change nothing"* — DERIVED from the live state on every
-  render, so it vanishes the instant anything diverges and returns if you undo. It never claims you are "in"
-  anything and it cannot lie, which is the property the rule was protecting. Built exactly like the recipe
-  badge: `scenarioSnapshot()` is the one definition of the scenario, shared by the fingerprint AND by
-  save/restore. Three things it had to learn, each of which produced a wrong badge first:
-  (1) **a preset's result depends on the state it is applied from** — several write prices, SoL, base wage or
-  the working-adult ratio only when they carry one — so there is NO per-preset cache; the probe applies the
-  preset *from here* through the real `applyScenarioPreset(id, quiet)` and asks whether the state moved;
-  (2) **in AUTO price mode `thresholds` are derived, not state** (render recomputes them from the order
-  book), and the quiet probe does not render — so the probe calls **`syncScenarioPrices()` itself**. Prices
-  are then compared **unconditionally**, which is what keeps a price EDIT clearing the badge, while the
-  **lock toggle is deliberately NOT in the key at all**: locked-vs-auto changes how a price is *decided*,
-  not what the market *is*, so flipping it must leave the badge alone.
-  ⚠⚠ **An earlier attempt excluded prices from the SNAPSHOT instead, and that was destructive** — the
-  snapshot is what `scenarioRestore()` puts back, so a field filtered out of it is a field **destroyed** on
-  the next probe. It emptied the live price table on every refresh; auto mode's own recompute silently
-  repaired it, so the damage only surfaced once the panel was **locked** and every price read **£NaN**. The
-  snapshot is faithful and complete; normalisation for comparison happens in the fingerprint;
-  (3) **`REFSEL` is part scenario, part lazy default** — `refSel()` fills each PMG's base PM the first time a
-  reference building is RENDERED, so it is populated after a click and empty after a quiet probe; entries
-  equal to the default are normalised away. Full pass over ~22 presets costs ~50 ms, so it runs immediately
-  from `render()` and **debounced 200 ms** from `updateComputed()`. Everything a preset knows about itself —
-  market members, building types + levels, the pop split, the subsistence staffing sum, treaty transfers,
-  the price-lock state, the measured base wage, the derived urban-centre count — is reported **once, in the
-  banner**, by `presetReportHTML()` when it is applied. The bar itself holds only live
-  controls. Keep it that way when adding preset features. The rest come from **`ui/presets.js`**, generated by `tools/extract_presets.ps1` from the live
-  vanilla 1836 start (so they refresh on a game patch), and **which** presets exist is `config/presets.json`
-  (id/label/group/country, optional `market_add`/`market_drop` and `sol`). Derivation, per spec:
-  a preset is a country's **whole market** — the lead country plus every subject that shares its market (all
-  subject types share the overlord's by default; `grant_own_market` is the exception, resolved transitively, e.g.
-  GBR → BIC → its Indian puppets); its **buildings** are every `create_building` in `common/history/buildings`
-  owned by a member, counted in **levels** and mapped onto **our tier building** via the active vanilla main PM;
-  **PRINCIPLE — diverge from the history files only where they cannot answer.** Everything the history files
-  contain is taken from them; measurement (`config/measured_1836.json`) covers exactly four things they do
-  not hold: what a market **trades**, each stratum's **standard of living**, the pop class **split**, and
-  which **production methods urban centres run**. Two things that *looked* like they needed measuring did
-  not — **military battalions** are in `common/history/military_formations` (goods from each combat unit
-  type's `upkeep_modifier`, *not* from barracks or logistics centres, whose PMs carry no goods at all), and
-  **urban-centre levels** are derivable (F13). When adding a scenario input, check history first.
-  **Pop class split: SIZE from history, SHARES measured.** History cannot give the split — only 690 of
-  4 454 `create_pop` blocks name a `pop_type`, the engine assigning the rest from available jobs at init.
-  Deriving it from building jobs (as this used to) inverted the dependency, so the pop side inherited every
-  building-side error; the worst was **manor houses**, inferred from `add_ownership` at a **tenth** of the
-  real count. They carry no goods, so it was invisible in market orders while flowing straight into the
-  **upper** class, which buys the most per head. Britain's upper class was 268 707 and is 967 616.
-  **no trade-route trade** is assumed, only `goods_transfer` treaty articles in force in 1836 (a transfer **out**
-  of the market is an extra **buy** order, a transfer **in** an extra **sell** order).
-  ⭐⭐ **Each pop need's money is split across ALL its goods by a rule that is now SOLVED AND MEASURED
-  END TO END — FINDINGS F40 (2026-08-07)** (`needSplit()`):
-  ```
-  availability(g) = ( market sell orders(g) − 0.5 × NON-POP demand(g) ) × BASE price(g) × LOCAL(g)
-  raw share       = availability(g) / Σ availability over the need's own goods
-  purchase weight = base weight(need,g) × clamp( raw , min_supply_share , max_supply_share )
-  units           = need money × (purchase weight / Σ purchase weights) / base price(g)
+- **The production-method combination rule is HARD** (§10.93, `tools/lint_pm_combos.mjs`, throws): no legal combination of one method per group takes
+  any input good, output good or profession's employment below −0.011; no DEAD method (one gated on main methods its building lacks — the game still
+  SHOWS it, greyed, at its own numbers); no 1836 history block naming a method its building lacks (the engine rejects the whole block); no secondary
+  beside a main method the pair-by-pair review (`tools/lib_secondary_compat.mjs`) marked incompatible; no labour-saving method on a craft rung; no group
+  offering only "off"; a mandated automation is the only choice beside its main method.
+- **Never mark a PM-gated copy `is_hidden_when_unavailable`** — the player can then never select it.
+- **`create_building` is gated on the STATE OWNER's technology and fails silently** — whoever `add_ownership` names (L14; check at 1836.2.1, not a year
+  later). A building with no `ownership_type` cannot be built in a foreign state.
+- **Own a vanilla file only when changing it**, and assert every transform's match count (a no-op must throw). A mod `effect` block on a VANILLA on_action
+  replaces vanilla's (L22). An out-of-range define is rejected at load and the key keeps vanilla's value (L33); some vanilla defines are dead — the engine
+  does not read them (F241); `game_defines` refuses the known dead ones.
+- **AI subsidies are set only through the strategies' `subsidies` blocks** (a scripted `set_subsidized` is undone by the AI); the builder owns
+  `01_admin_strategies.txt` only when the book sets a policy.
+- **Companies** (§10.64): every tiered rung is added to every company that has the industry; `building_<key>_throughput_add` modifier types are
+  hand-enumerated in vanilla and must be declared for each new key (`emit_companies.mjs`). Craft and merged keys stay out.
+- **Vanilla script that names a tiered industry** (a rung-0 key, a moved method, a throughput modifier) is rewritten to the ruled rung set by
+  `emit_vanilla_refs.mjs` (`TIER_REFERENCE_AUDIT.md`); the build scan throws on an unhandled reference (L40). A new class of affected reference is
+  catalogued in the `MISSING_*`/audit docs, not fixed inline.
+- **A merged rung is not a building type.** It carries `method_of: <host key>`: the build emits no building for it, its main method joins the host's
+  main group gated by its own technology, and the host carries the midpoint cost and the conditional desire. Every emitter follows (secondaries,
+  research counts by `has_active_production_method`, companies keep merged keys out, the 1836 converter throws on a block landing on one). ⚠ The save
+  summaries cannot tell the two rungs apart by building type: a merged rung's levels are the host's `pms` entries for its method
+  (`tools/testbed/ledger/merge_methods.mjs`). The register's T0–T3 split hosts by method; the old-rung census readers still count by building type.
+- **A craft rung** is a 500-worker rung (`workforce_mult` 0.1 on a 5,000-head staffing block) in `bg_pmr_crafts`: per-worker readers must count it so
+  (a level is 500 heads, not 5,000); its minted secondaries' employment is scaled with it, and labour-saving methods are never carried on it.
+- **Localization is generated for all 11 languages** (an untranslated key shows as a raw placeholder). Tiered building and method names reuse vanilla's
+  own translations; genuinely new names stay English. No ASCII `'` in any text a progress bar displays (the tooltip pastes it into a single-quoted
+  argument).
+- **Building names** read `Tier N. <vanilla building> (<vanilla method>). Recipe BE <n>%` — N is the rung's tier, never its position (an industry
+  legitimately starts at Tier 2); the break-even is goods-only, at base prices, under the most basic secondaries. Crafts read `Tier 0 craft. …`; a merged
+  building is named by its tier span and building alone with one break-even per main method (`Tier 1-2. Paper Mills. Recipe BE 63%/47%`). Every main
+  production-method group is titled "Base" (vanilla's own `$pm_base$`).
+- **The 1836 start** is converted by `tools/convert_history.ps1`; a book's manual overrides live in the file its `start_exceptions_file` names
+  (`force_tier`, `force_industry_tier`, `remove`, optional `owner`, naming rungs by `era`). The canon names `config/start_exceptions.vanilla.json`, an
+  EMPTY rule set — its start is vanilla's, converted; the 22-rule `config/start_exceptions.json` is the six-rung book's; `config/start_baseline.json`'s `unmapped` list is the patch-drift alarm.
+  Rebuild after every game update.
+- Engine and tooling behaviour (load order, localization, metadata, the research-bar tooltip, what script content costs the tick, PowerShell 5.1 traps):
+  `MODDING_NOTES.md`. After a game patch: `ON_GAME_UPDATE.md`.
 
-  LOCAL(g)        = 0.40 if g is `local` (services, transportation, electricity), else 1
-  ```
-  **Availability is a VALUE, not a unit count** — that is the one thing this changes and it is the whole of
-  it. Measured against the purchase weights a savegame stores: a gamestate's own supply and non-pop demand
-  reproduce that same gamestate's weights to **0.82 pp over 16 863 entries** (VANILLA, American market, 1904) with
-  every term switched on — replicated on four gamestates across two arms and two decades (0.66-0.82 pp
-  American, 1.13-2.46 pp British) with every need under 1.45 pp. `S.AVAIL_MODE = 'units'` restores the old count-based reading as an A/B switch.
-  ⭐ It is confirmed by a second, independent measurement: re-scored against the game's own 1836 pop
-  **consumption** telemetry it improves the mean absolute error across 7 markets from **20.0 % to 18.3 %**.
-  ⭐⭐ **THE VALUE READING SURVIVED ITS SHARPEST CHALLENGE (F44, 2026-08-07).** The 1.13 wiki's
-  `market share of good` formula carries **no base price** and the page says outright that pops "never
-  consider either the base price or market price … in choosing which goods to purchase in what amounts" —
-  F40 inverted. Re-scored on the game's stored weights, `--avail units` is worse in **32 of 32** cells
-  (16 vanilla market-dates × non-local/local), **5.85×** and **5.73×** on the means (0.500 vs 2.924 pp,
-  0.828 vs 4.745 pp), with the two distributions **completely disjoint**. Do not adopt the units reading;
-  the switch exists to re-score it, not to configure it.
-  Every good the need lists is a candidate — an unsupplied one scores zero and drops out by itself,
-  which is why there is no separate availability gate. The **slave basket** goes through the same
-  split, fed the same supply and non-pop order book in the same pass.
-  ⚠ **KNOWN DIVERGENCE — an EMPTY need should buy its DEFAULT good, exclusively** (F44). When a need has no
-  supply at all in the scenario, `needSplit` falls back to `config/pop_distribution.json` and then to the
-  vanilla `weight` vector; the game buys the need's `default` good and nothing else. The default is already
-  in our data (`"def"` per need in `ui/presets.js`, from `extract_presets.ps1`) and simply unused on that
-  path. **Not fixed** — it moves scenario demand, so it needs measuring through the tier solve first.
-  ⭐⭐ **THE `local` GOODS MULTIPLIER IS THE ONE THING F43 ADDS (2026-08-07, BALANCE_FRAMEWORK §10.37).**
-  `services`, `transportation` and `electricity` are `local = yes`: a state's *substitution* supply is its
-  own production plus `(1 − its GDP share) × 0.25 ×` the market's. We used to give them the market's whole
-  supply on the argument that our one state IS the market — true, and the wrong question, because pops live
-  in states and a state that is the whole market is the one state the rule does nothing for. We now model a
-  **representative** state — a fifth of the GDP holding a fifth of the local supply — giving
-  `0.2 + 0.8 × 0.25 = 0.40`. **Measured on eight PURE-VANILLA gamestates × two markets: local-good needs err
-  0.835 pp against 4.226 pp unaugmented, better in 16 of 16**, with the derived 0.40 landing 0.03 pp off the
-  swept optimum. ⚠ It multiplies the **whole availability**, not the supply alone — scaling supply while
-  deducting a whole market's industry zeroes electricity out. `S.LOCAL_MULT = 1` (env `LOCAL_MULT=1`) is the
-  A/B, not a setting. ⚠ On the tier ladder it is **neutral** (41/28 → 43/30, inside the jaggedness); it ships
-  because it is closer to the game, not because it scores better.
-  ⚠⚠ **WHAT IS IMPLEMENTED vs ONLY DOCUMENTED — check this before trusting a scenario number.**
-  `needSplit()` implements the **core rule**: value-weighted availability, the −0.5 non-pop deduction, the
-  min/max clamp, and the `local` multiplier above. Already present from earlier work: the peasant
-  `class_mult` 0.05 and the 0.625 dependent factor. **Three measured terms are deliberately absent**
-  (`grep prestige\|obsession\|taboo ui/econ.js` returns nothing) — **prestige goods**, **culture obsession**
-  and **religion taboo**, all genuine no-ops here: our scenarios contain no prestige goods and the model has
-  no culture dimension. Safe to leave out.
-  ⚠ **Three terms of the game's real rule are deliberately NOT modelled, because our scenario has no
-  dimension for them**; each is measured and written up in F40 so the omission is a choice, not an oversight:
-  the **prestige-goods** multiplier (`1 + prestige_goods_demand_increase × prestige share of supply`;
-  measured against the save to 0.6 pp on five goods), culture **obsession** (a floor on the PURCHASE WEIGHT of
-  `clamp(obsession_demand_min × max_supply_share × weight, obsession_demand_min², obsession_demand_min)`) and religion **taboo** (`× 0.5`, exact). ⚠ **Obsessions are
-  RUNTIME state, not file content** — the game adds and drops them all campaign, so reading them from
-  `common/cultures` puts a 1925 culture 220 pp wrong.
-  ⚠⚠ **THE OBSESSION/TABOO OMISSION IS TWICE AS BIG AS THAT — there is a SECOND, CROSS-NEED channel** (F44,
-  2026-08-07). Besides the within-need weight term above, an obsession or taboo moves **the whole NEED'S
-  BUDGET by ±25 %** — `OBSESSION_POP_NEED_EXPENSE_MULT = 0.25` / `TABOO_POP_NEED_EXPENSE_MULT = -0.25`,
-  *"scaled by number of obsessions, money is given or taken from other needs"*, so the pop's total buy
-  package is unchanged and the money moves BETWEEN needs. Still a no-op for us (no culture dimension), but
-  it is not the same no-op we had recorded. Also `MAX_NUM_OBSESSIONS = 3`.
-  ⚠ **Trust the DEFINES over the wiki on these constants**: the wiki states obsession = "min weight 1, ×2",
-  where the game ships `DEFAULT_OBSESSION_DEMAND_MIN = 0.5` / `DEFAULT_OBSESSION_DEMAND_MULT = 1.5` with
-  **no pop need overriding either**, and the wiki's numbers score 1.5–3.5 pp against our 0.3–0.9 pp in 6 of
-  6 cells. Likewise prestige is `1 + 0.5 × share`, not the wiki's "direct proportion" (⇒ 1.0), which we
-  already had right — though the define scopes that share to **local** supply where we use the market's, an
-  open point.
-  ⚠ **The weights the save stores are per (state, CULTURE).** A rate limiter also exists
-  (`MAX_DEMAND_ADJUSTMENT_BASE_AMOUNT` 0.01 + `_SCALED_AMOUNT` 0.09 per update), but ❌ **it is NOT what
-  makes a debut good ramp** — measured over three saves, the observed share sits on its computed target
-  every year (0.11497 vs 0.11195, 0.15474 vs 0.16900, 0.21214 vs 0.21738) with no accumulating lag.
-  ⭐ **THE "DEBUT SPIKE" IS ANSWERED, on vanilla, across the ramp.** Automobiles first trade in the
-  American market at 1902.1.1; by 1904 the game gives them **38.4 %** of `free_movement` on 513 units
-  against transportation's 8 550. Two ordinary terms produce all of it: automobiles cost **£100** against
-  transportation's £30 and availability is a *value*, and **transportation is `local`** so a state sees its
-  own supply plus a quarter of the market's. The local-corrected target tracks the whole ramp
-  (0.068/0.049 · 0.402/0.384 · 0.415/0.412) where market-wide transportation is out by ~1.9× throughout,
-  and it **plateaus** rather than climbing. **Stop looking for a demand mechanism that favours a newcomer —
-  there isn't one, in either direction.**
-  ✅ **THIS WAS THE ONE PLACE OUR MODEL DIVERGED MATERIALLY, AND IT IS NOW FIXED (F43).** Our scenarios are
-  single-state, so `needSplit` used to give a local good its full market supply and a debut good only
-  **21.9 %** where the game gives 38.4 % — under-stating a new good's share in every need containing a
-  `local` good (`free_movement`, `communication`, `leisure`, `services`, `heating`). The 0.40 multiplier
-  above closes it. ⚠ It does **not** rescue §10.32's tier-1 steel case: steel is in no pop need at all, so no
-  pop-demand correction can reach it.
-  ⚠⚠ **THE RESIDUAL NOW POINTS THE OTHER WAY — 0.40 slightly OVER-corrects.** Read as shares: automobiles in
-  `free_movement` predicted **0.2192** before and **0.4124** now, against an observed **0.3768**; leisure's
-  services land at 0.2755 against 0.2319. The miss fell 15.8 pp → 3.6 pp *and changed sign*. So "our model
-  under-states a debut good's share" is a **pre-F43** statement and must not be carried forward. ⭐ The
-  biggest single gain was `leisure/services` (48.7 % predicted against 23.2 % observed), which was starving
-  six competing goods at once; steamers and automobiles in leisure now land at 0.00 and 0.01 pp.
-  ✅ **The weights are VERIFIED correct against the game files** (2026-08-04): all **52 entries across 15
-  needs** match `common/pop_needs/00_pop_needs.txt` exactly — every `weight`, `max_supply_share`,
-  `min_supply_share` and `default` — and **29 of the 52 carry a non-default weight**, so this was a real
-  thing to get wrong. Re-check after a patch. ⚠ But the art-academy story built on top of it was wrong:
-  `fine_art`'s budget is **not** fixed (it grows from 2% to 84% of the leisure need as academies are added);
-  the binding constraint is that fine_art costs **£200**, so even 84% of that budget buys 96 units while one
-  academy level makes 14.4. See BALANCE_FRAMEWORK §10.19 — the lever is academy OUTPUT, not the demand model.
-  ⭐⭐ **AND THE LEVER TURNED OUT TO BE NEITHER — IT WAS A HAND-PINNED COUNT (§10.40, 2026-08-08).** The
-  solver carried `FIXED_COUNTS = { art_academy: {cur:2, m1:2, m2:1} }`, so the count controller's ONLY lever
-  was a constant for this industry and it could never close fine_art's gap to its own price path: **117% of
-  base realised at tier 5 against a path asking 75%**, 42pp adrift, for as long as the pin existed. Removing
-  it puts fine_art **on the path in both tier 4 and tier 5** and takes `art_academy` out of tier 5's inverted
-  list. The observed "old academies are wildly more profitable than new ones" (tier-3 +115% against tier-5
-  +2%) was **manufactured by the pin**: each tier's recipe is solved once at its own tier's price, so a
-  rising output price flatters every older rung. Solving them normally is now the default
-  (`ERA_ART_NORMAL=0` restores all three exceptions — the pin, a 10:1 value-added cap, and exclusion from
-  the ladder criterion).
-  ⚠ **Solving them normally and SCORING them normally are different decisions.** The illogicality excusal
-  exists because countries build academies for **prestige**, which this model does not represent at all —
-  that argument is untouched by this result, and the excusal is kept. The report now prints which set it
-  excused (`excluding shipyards` vs `excluding shipyards/art academies`) so the two can never be silently
-  confused again.
-  ⚠ The **−0.5 × non-pop buy orders** term is the one that matters most and is the least guessable —
-  a good industry consumes heavily is correspondingly less available to pops, and omitting it over-fed
-  grain by half (same-run Belgian test: pop demand error 30.3 % → **16.2 %**, F22).
-  ⚠ The bounds **clamp**. The wiki's **prose** says market share "has no effect" outside them, which reads
-  as reverting to bare `weight`, and that is measurably wrong: liquor is ~95 % of Belgium's intoxicants
-  supply and the reverting reading predicts 102 against 201 observed, where clamping gives 199.
-  ⭐ **But the wiki's own FORMULA agrees with us** (F44): the `<math>` block that prose is glossing writes
-  `purchase weight = weight × ( min < market share < max )` — a clamp. So the wiki is a **third** agreement
-  with the shipped reading, next to the `00_pop_needs.txt` header comment and F31. Scope any "the wiki says
-  otherwise" remark to the page's prose. ⚠ **The page's formulae render as IMAGES**; a text scrape misses
-  all five. Read it as raw wikitext (`?action=raw`).
-  ✅ **WHAT the bounds clamp is SETTLED — the RAW supply share, not the final share of the need**
-  (FINDINGS F31, BALANCE_FRAMEWORK §10.34, 2026-08-05). The rival reading — cap each good's final share and
-  hand the excess to the goods still unclamped — was built, and scored against the game's own consumption
-  telemetry it is worse in **all seven** 1836 markets: **20.0 % → 24.2 %** mean error. It survives only as
-  the A/B switch **`S.SPLIT_MODE = 'final'`** (default `'raw'`), re-scorable with
-  **`tools/testbed/score_pop_split.mjs`**. ⚠ It also **refutes the mechanism it was wanted for**: the point
-  was to hand a debut good a guaranteed slice of its need, and 1836 holds that exact case — Russian heating
-  caps wood at 0.5 with scarce oil beside it, and the reading gives oil ~17 % of the budget where the game
-  gives it **0.8 %**. Whatever produces a new good's demand spike in game, it is not this. Do not re-run
-  this experiment; do not adopt the final-share reading for what it would do to the illogicality score.
-  Goods are equivalent **per pound, not per unit** — a higher base price fulfils the same need with
-  fewer units, which is why units come from money ÷ base price. **No fitted
-  numbers, and nothing stored per scenario.**
-  ✅ **The "units, not money / current, not base price" correction F39 once demanded is WITHDRAWN** — F39's
-  own corrected box already retracted it against the savegame, and F40 confirms the shipped reading
-  (`units ∝ purchase weight / BASE price`) directly. Do not reintroduce it.
-  ✅ **`local` goods (services, transportation, electricity) need NO change on our side, and that is a
-  result rather than an omission.** In the game their substitution supply is *the state's own plus
-  (1 − the state's GDP share) × 0.25 × the market's production*
-  (`LOCAL_GOODS_SUBSTITUTION_SUPPLY_GDP_FACTOR`, "only for goods substitution supply and not for price
-  calculations") — ⭐ the mechanism behind the unexplained `transportation ÷ 1.6–2` the previous session
-  could not name; it was never a divisor. **But a model whose one state IS the whole market has a GDP share
-  of 1, so the augmentation term vanishes and the effective supply is the market's** — which is what
-  `needSplit` already uses. The 2.2× gap is a property of comparing our model against *one state* of a real
-  multi-state game, not an error in the rule we ship. It is not circular and not a time series:
-  pops never sell, so supply does not depend on pop demand, and the split is one pass over the scenario's
-  own sell orders. ⚠ **February, not May** — the same rule scored against May 1836 is worse, so the
-  substitution lag does not pay for the construction drift a wider gap brings in.
-  **In-stratum SoL spread (`SOL_SPREAD` = 8).** A stratum is not one wealth level, and buy packages are
-  steps, so each class's people are spread uniformly over ±8 levels around its mean rather than
-  collapsed onto it. One global constant, not a per-market fit (fitting the width per market buys
-  ~0.5 pp and is deliberately not done).
-  **⚠ HOW ACCURATE THIS ACTUALLY IS — state it plainly, do not round it away.** Scored against the
-  game's **own** pop-consumption figures (`consumption_breakdown` telemetry, not a residual) across
-  seven 1836 markets, mean absolute error is **18.5 %** of pop spending at base prices. The ladder
-  behind that: 49.8 % flat-SoL + fitted weights → 48.2 % measured per-stratum SoL → 25.7 % adding this
-  supply-share split → **18.5 %** adding the spread → 16.7 % if every pop's TRUE SoL is used instead
-  (so the stratum abstraction costs ~1.8 pp and is kept). **These are MEAN errors — individual goods
-  and individual markets are worse**: Japan sits at ~33 % and is a genuine ~1.8× level shortfall that
-  is still unexplained, while Russia and the USA reach ~8–10 %.
-  **The likely culprit is the within-need substitution.** Forcing the predicted total to match the
-  measured total recovers only 0.5 pp (16.7 → 16.2), so the money is right and its *distribution* is
-  wrong. Per-need, the money placed on the wrong good runs **heating 20 %, basic_food 16 %,
-  intoxicants 15 %**, against 0 % for needs with a single available good. What cannot be separated from
-  the order book: 17 of 35 goods belong to **two** needs (meat and fruit are `basic_food` *and*
-  `luxury_food`; opium is `intoxicants` *and* `leisure`), so no need has an observable budget and
-  "wrong budget per need" cannot be told apart from "wrong split within need". See FINDINGS F24.
-  `config/pop_distribution.json` survives only as the **fallback** for a need with no supply at all in
-  the scenario (an empty market must still split sanely); the `fit pops` button re-derives that
-  fallback. It is no longer the model.
-  *(Historical: the fitted market-independent vector this replaced, and the vanilla `weight` field
-  before it — `weight` is not an allocation rule and cost 12 pp on its own.)* `weight` is not an allocation
-  rule — the game allocates by *supply share*, bounded per entry by `max_supply_share` — and using it gave
-  British grain 17 % of the food budget where the real share is ~79 %, understating British grain demand by
-  7 900 units. The fitted split is **market-independent by design** (a supply-share rule would make the
-  panel's demand depend on its own supply) and is solved across all 7 preset markets against the measured
-  order book: mean absolute demand error **49.1 % → 37.0 %**, six markets of seven improving (FINDINGS F15).
-  Re-derive with the **fit pops** button in the preset bar, which prints the JSON to the console; it is
-  session-only until pasted into the config, because a design input belongs in version control.
-  ⚠ The fit is **weighted per market** (each normalised by its own total demand). Unweighted, Britain and
-  the Qing set the answer for everyone and France and the USA get *worse* — that difference is the whole
-  content of "one rule for every country", so don't change the weighting without re-reading F15.
-  **Pop demand** is otherwise computed **live in the UI** (`popSpend()` → `spendToGoods()`), not baked into the
-  preset: the preset carries the
-  population split into **upper / middle / lower / peasants / slaves**, each class buys the **buy package**
-  (`common/buy_packages`) of its wealth level — the **SoL** fields in the bar, default 35 / 16 / 9 — scaled by
-  people ÷ `POP_SIZE_PACKAGE` (10 000), by the **per-head dependent factor** (needs are per *working adult*;
-  dependents need `DEPENDENT_CONSUMPTION_RATIO` = half ⇒ `0.25 + 0.75×0.5` = **0.625** per head) and by its class
-  multiplier (**peasants ×0.05** — the game's own `consumption_mult` in `common/pop_types/peasants.txt`: most of a
-  peasant's needs are met inside the subsistence building and never reach the market; overridable via
-  `defaults.class_mult` in `config/presets.json`). Each **pop need**'s money is split across **every** good that
-  need lists, by the market's own supply share (`needSplit()`, below). Money → quantity at **base price**.
-  **There is no "pop demand fit ×" knob and no per-good availability gate** — both are gone, and neither should
-  come back. The fit multiplier was a global scalar on all pop consumption from before the model was calibrated,
-  and F24 showed forcing the predicted total onto the measured total buys only 0.5 pp, so it had nothing left to
-  correct. The **"Pops may buy" toggles + scenario year** were redundant against supply share: a good the market
-  does not supply already takes a zero share and drops out on its own, so the calendar gate could only make the
-  two disagree.
-  **THE SLAVE CHANNEL IMPLEMENTS F61** (re-derived 2026-08-16 by user ruling — "pick the one that gives
-  the closest result from melting"): **slave pops consume in the POP line at their own wealth**
-  (`popSpend` includes the slaves class at `solOf('slaves')`, 0.75/head via their working_adult_ratio
-  0.5, no class multiplier — melt-scored, the USA closes 0.863→1.003 only with all of them in), **and
-  the "purchased for slaves" building line is an ADDITIONAL purchase = employed (non-subsistence)
-  slaves × per-head package at FULL rate** (no dependent discount, no 0.05 subsistence term —
-  `slaveBasketMult()` is now the employed share alone; F61 measured the old form at USA 1.094 vs this
-  form's 0.984, per-good spend-weighted |err| 1.9%). The employed share still comes from
-  `slaveRealShare()`'s residual-employment derivation, unchanged. `tools/econ_selftest.mjs` carries the
-  F61 checks; ⚠ builder.html's fork mirrors all three functions — change BOTH or neither.
-  **The superseded F27 reading below is kept for the record** (its share derivation and its
-  measurements survive; only the channel split changed):
-  the game never has a slave buy anything — the **building
-  that employs them buys a consumer-goods basket** on their behalf, and the market screen reports it as its own
-  order channel (`GOODS_SLAVE_CONSUMPTION_MARKET_ORDERS`, *"purchased for slaves"*). The panel computes it
-  separately (`slaveSpend()`), then **folds it into the `pops` buy column** — it is a genuinely separate channel
-  but a small and usually-zero one, and a permanent column for it costs every reader width on every row, so the
-  column is the total and **hovering a pops cell breaks the slave part out** in absolute numbers.
-  The basket is a **wealth level**, from `common/defines`: `SLAVE_BASKET_DEFAULT` 8, clamped to
-  `[max(MIN 1, SCALED_MIN 0.5 × lowest non-slave wealth), min(MAX 12, SCALED_MAX 1.0 × that wealth)]` — so the
-  **`slaves` field in the SoL row is that basket level**, not a standard of living, and a preset seeds it from the
-  market's measured slave SoL (which *is* the realised basket: the rule's 8 against a measured 7–8). Per head it
-  uses slaves' **own** `working_adult_ratio = 0.5` ⇒ **0.75**, and **no class multiplier** — the game has no
-  `consumption_mult` for slaves, so the 0.5 that used to be applied was invented.
-  **The dominant term is WHERE THE SLAVES WORK** — `SLAVE_BASKET_SUBSISTENCE_GOODS_MULT = 0.05` makes a slave in
-  a subsistence building cost a twentieth of the basket, and applying the full basket to everyone over-predicts
-  the American market's **directly measured** slave purchases by 3.9×. So the share is **derived**
-  (`slaveRealShare()`), by the same residual-employment logic the peasant/subsistence model uses — buildings hire
-  first, subsistence absorbs the rest:
-  `unqualified jobs (laborers+farmers) in non-subsistence buildings − lower stratum × 0.25` is the surplus, split
-  between slaves and peasants in proportion to their workforce; the basket multiplier is that share plus 0.05 of
-  the rest. It **self-scales**: more industry ⇒ more slaves in real jobs ⇒ more market demand. **Both large slave
-  markets were measured directly and it holds**: the USA derives **0.209** against a measured 0.224 (volumes 94 %
-  of measured) and Britain **0.05** against 0.044 (114 %) — Britain's free lower stratum already exceeds every
-  unqualified job in the market, so none of its 10.5 M rural-India slaves reach a real building.
-  ⚠ Two stated assumptions, neither fitted: slaves fill **laborer/farmer** jobs (using all jobs instead gives the
-  USA 0.235 — the measurement sits between), and slaves/peasants split the surplus **proportionally** ("slaves
-  first" gives 0.383, "peasants first" 0.05). Don't replace either with a global fudge factor.
-  ⚠ **The share is computed MARKET-WIDE, and that is its known failure mode**: France and Russia hold near-identical
-  slave counts but consume 14× apart, because France's slaves sit in colonial plantations while its free workers
-  sit in the metropole, and the market-level aggregate washes that out. Accepted deliberately — those two markets
-  hold 0.4 % of the world's slaves and 13 units of demand between them. See F27.
-  ⭐⭐ **POPULATION IS EDITED BY PROFESSION, AND A STRATUM IS ALWAYS THEIR SUM — never an input.** The
-  **By profession** row carries **all 16 pop types** (`PROF_ORDER`, peasants and slaves included — they are
-  strata in their own right, so with the class row read-only this is the only place to set them), and it is
-  **always rendered with every field present, zero included**. The class row (`upper / middle / lower /
-  peasants / slaves`) is **always read-only** and always the sum; there is no `data-pop` write path at all,
-  so removing the `readonly` attribute cannot silently reintroduce a second source of truth.
-  ⚠ **This used to be conditional and it inverted the model.** A `HAVE_POPPROF` flag gated *both* whether
-  the profession row existed *and* whether the strata were editable, so a preset carrying no professions
-  made the DERIVED quantity the input and the profession row vanish entirely — the sheet silently changed
-  shape depending on which preset was loaded. The flag is gone; do not reintroduce a conditional here.
-  **Every generated preset now carries `pops_by_profession`**, from
-  **`config/measured_1836_professions.json`** (per COUNTRY, summed over the preset's own market members —
-  market membership stays `extract_presets.ps1`'s job, from history, so there is no second definition of
-  it). Placeholders have no country, so their authored stratum totals are split by the **world's own
-  within-stratum profession shares** from the same gamestate — one documented rule, not a per-preset
-  invention. A hand-written preset with only classes still loads: each class goes onto one representative
-  profession (lower→laborers, middle→clerks, upper→aristocrats) and the UI **warns in the banner** that the
-  totals are right but the profession *mix* is fabricated — and the mix is what prices wages.
-  ✅ The two sources cross-check: derived strata vs each preset's independently-derived `pops` agree to
-  **0–1 %** in six of eight country markets. ⚠ **The USA is out by 12–15 % on every stratum and −43 % on
-  slaves, and Russia/France by 63–90 % on slaves** — two independent derivations disagreeing, not yet
-  explained; the save's 2.03 M US slaves is the historically plausible one.
-  **SoL is per stratum, five fields, and a preset fills them from measurement** (`config/measured_1836.json`):
-  peasants carry their **own** wealth level rather than borrowing the lower class's, because the
-  measured spread cannot be expressed otherwise — peasants run 4.5 in Japan against 12.1 in France, and in
-  Britain they sit *above* labourers (F12). **The SoL row and the Population row are ONE class order**
-  (`CLASSES`, upper · middle · lower · peasants · slaves) on one CSS grid template, so each class sits in one
-  column across both — keep it that way; two lists in two orders is how they came to disagree.
-  **Hovering a scenario supply or demand number gives its breakdown by source** — `paper — 840 supply from
-  2 building type(s) / Sulfite Pulping Paper Mills (T2) 10×60 = 600 / …` for the building columns, and the
-  per-**pop-need** split for the pops column (a need is the unit the money is budgeted to, so it is
-  the one that tells you where to look when a good is wrong), **with the slave-basket part broken out below it**
-  in absolute numbers together with the share and multiplier that produced it.
-  The pops column, the SoL fields and the pop counts are all **session-only**.
-  **Buildings the history files never create are inferred**, because two of them dominate the supply side:
-  - **Subsistence farms** (`bg_subsistence_*`) — *the peasants ARE this supply*. The game raises one per state on
-    the arable land the real farms/ranches/plantations leave free (`arable_land` and `subsistence_building` in
-    `map_data/state_regions`, minus the levels of `bg_agriculture`/`bg_ranching`/`bg_plantations` buildings there;
-    state ownership from `common/history/states`, apportioned by owned-province share when a state is split).
-    Each level hires 5 000 peasants (rice paddies 10 000) and its goods are **`workforce_scaled`** — proportional
-    to the peasants actually working, *not* to the level count. So the extractor emits each subsistence type at
-    its **staffed-level equivalent** = free arable × `staffing`, where `staffing = min(1, peasant workforce ÷
-    capacity)` and peasant workforce = peasant pop × `WORKING_ADULT_RATIO_BASE` (0.25). That reproduces the real
-    output exactly under the UI's full-employment model, and it self-scales: peasants are already the residual of
-    the class split, so more industry ⇒ fewer peasants ⇒ less subsistence output. 1836 staffing lands at
-    FRA 79% / GBR 73% / RUS 57% / **CHI 100%** (China is arable-capped: 90.9M peasant workers vs 73.3M jobs).
-  - **Ownership buildings** (**manor houses / financial districts**) — inferred from the `add_ownership` entries
-    (one level per owned level), for any owner type history never `create_building`s.
-  For both, which PM is active is decided by the owner's **LAWS** (`activate_law` in `common/history/countries`)
-  rather than by a history line: `Select-LawPm` picks the first PM that is not power-bloc- or tech-gated, not
-  disallowed by an active law, and either ungated or unlocked by one the country has — so Russia/Qing run
-  `pm_serfdom`, France `pm_peasant_proprietorship`, Britain `pm_serfdom_no`, and everyone gets home workshops
-  rather than the collectivized-agriculture variant the PMG happens to list first.
-  - **Urban centres** — **solved** (FINDINGS F13; the divisor was the missing piece and it is **100**).
-    A state raises `floor(state urbanization / 100)` levels, where each building level contributes its
-    `building_group`'s `urbanization` **except** groups flagged `is_subsistence`, which contribute
-    nothing. Verified exact on **774 of 783 states**; the nine misses are all under-predictions from the
-    technology/law urbanization bonus, which we deliberately ignore (base techs). The floor is taken
-    **per state and then summed** — flooring the market total once would hand a large market the rounding
-    loss of every state at once. A tier building contributes exactly what the vanilla building it replaced
-    did, because the lookup is keyed on `vanilla_pm`'s base building, not on the tier key. PMs are chosen
-    by the market leader's laws (`Select-LawPm`), like the other never-created buildings.
-    ⚠⚠ **IN THE TIER-SCENARIO SOLVER THAT FORMULA IS A CEILING, NOT A COUNT (§10.40; `ERA_URBAN_SHRINK=0` reverts).**
-    F13 measures how many levels urbanization *entitles* a market to; the game then staffs them out of
-    whoever is available, so an urban centre that cannot pay its way **sheds employment** rather than
-    standing fully manned at a loss. Our model has no employment scaling, so holding the entitlement AND
-    full employment modelled a building that would not exist — measured margins **1780 −19% · 1836 −49% ·
-    1870 −2% · 1900 −2% · 1920 +17% · 1945 +15%**. The loss-making reduction may now cut urban centres like
-    any other building, and the level count is `min(entitlement, cap)`. It behaves exactly as the mechanism
-    predicts: it cuts in **1780 (3→1), 1836 (27→18), 1870 and 1900**, and leaves 1920 and 1945 untouched
-    because there the cap genuinely binds. 1836's economy-wide losses fell **£21k → £14k/wk**.
-    ⚠ This is an approximation of employment scaling by level count, not the real thing. Modelling
-    per-building employment properly would be better and is not done.
-  - **Military buildings** (barracks, conscription/logistics centres) come from `config/measured_1836.json`,
-    not history: the engine sizes them to the army, so history carries 31 British barrack levels against
-    705 in game (F14).
-  - **THROUGHPUT** is a per-building-type multiplier on inputs *and* outputs, measured with
-    `Building.GetThroughputBonusCurrent` — the same call the building panel renders — so it is **read,
-    not summed from sub-factors and not fitted**. Belgium's steel mill runs **+31.5 %**, mostly its
-    John Cockerill company bonus. Economy of scale is only the first slice: `building_throughput_add
-    = 0.01` per level (from level 1, capped at 20) for groups flagged `economy_of_scale`; 1 555
-    buildings world-wide match that exactly and 3 033 have no bonus at all (owner, military, trade,
-    infrastructure). It has its own **Thru** column, is editable, and is **never emitted** — the game
-    computes its own.
-  - **SECONDARY production methods** are measured too: history's `activate_production_methods` lists
-    fewer than the game runs, which is why Belgium's fruit and luxury clothes had no source at all.
-    ⚠ The rule is **most popular by levels, per PMG per building type per market — a deliberate
-    distortion**: a country whose farms split 51/49 is rendered as if all ran the winner. The
-    extractor prints a **near-tie warning** whenever the winner holds under 65 % of levels, because
-    that is exactly where it misleads. Belgium's wheat farms are a 4-vs-4 tie, and "no secondary" won
-    — which is why its fruit is still zero.
+## 5.5 Measuring — how a run works, and the short procedure
 
-  **A scenario contains BUILDINGS, not raw order adjustments.** Anything that consumes or produces goods is
-  represented as a building with a count, so it shows up in the sheet, in the hover breakdown, and in the
-  per-building arithmetic. The only non-building columns are the two **trade** columns — treaty
-  `goods_transfer` articles plus the market's actual trade-route flows, filled in by a preset and editable
-  for manual tinkering. **Trade centres consume merchant marine and nothing else**; the goods that move
-  *through* them are trade, and belong in the trade column. An editable **Build cost** column
-  (construction points → `required_construction`, with a muted "model N" hint that turns amber when the
-  stored value diverges from what `solve_building_cost.ps1` would set), a read-only **Payback** column
-  (years = build cost × £720/point ÷ annual net profit at the current prices; wages per the row's
-  wage %, at base input cost; **∞** when unprofitable at current prices), a
-  **ladder chart with TWO SWITCHABLE VIEWS** (a radio in its header; they answer different questions and
-  neither replaces the other, so keep both): **break-even** — full BE at BASE input prices, a property of the
-  RECIPE alone and therefore scenario-independent, with each tier's target band shaded; and **profit** — the
-  margin each tier actually earns at the current scenario's realised prices, PMs, throughput and wages
-  (identical to the row's Profit column, cross-checked), y-axis auto-scaled to the data and always including
-  **0%** (drawn solid, the viability line) plus a dashed **+20%** tier-appropriate target. A line sloping DOWN
-  to the right in profit view IS an inverted ladder. ⚠ The two views disagree by design — a tier can sit
-  exactly on its BE target and still lose money once its output price falls; reading either alone as "the
-  ladder" is the mistake. A **hollow dot** in either view means the scenario contains none of that building
-  (same presence rule as the Ladder check).
-  **A SECOND, independent dimension: raw ⇄ aggregated.** *Raw* is one line per industry (as above).
-  *Aggregated* collapses everything into the mod's **four standard sectors** — the same split
-  `era_scenarios.mjs` reports its composition in, so chart and report can be read against each other:
-  **extraction & logging** (mining/gold/logging/oil/rubber), **agriculture, fishing & whaling**
-  (farms/plantations/ranching/fishing), **manufacturing from raw inputs** and **manufacturing from
-  manufactured inputs** — the last two split **per TIER** by whether that tier's recipe consumes a good our
-  own ladder makes (identical test to the solver's `mfg_high`/`mfg_low`). Drawn as **box plots** (whiskers
-  min–max, box IQR, thin line median) with a **◆ output-weighted centre**: each member weighted by what it
-  contributes to the scenario's output value, so the big producers set the position and an unbuilt building
-  weighs nothing. ⚠ The centre falls back to a plain median when *nothing in that box is built* (a later
-  tier's rung, say) and is then drawn **hollow ◇** — a filled marker there would claim a weighting the
-  scenario never supplied. ⚠ **Extraction and agriculture are UNTIERED** (vanilla buildings, outside the
-  tiering scope): they repeat unchanged in every tier column as a flat baseline to read each manufacturing
-  tier against, and that flatness is the honest statement that they have no ladder.
-  The aggregation shape is **explicitly provisional** — box-plots-plus-weighted-centre is a starting point,
-  not a settled choice.
-  Plus config-part save/load (version-tolerant), and snapshot history. **Payback
-  tools** (selectable X years) come in two actions at three levels: **$ = set build cost** (fix prices,
-  set build cost so payback = X) and **% = set prices** (fix build cost, scale that industry's output +
-  input prices by one factor — keeping the IO ratio + input mix — so an anchor tier's payback = X; flags
-  prices leaving the 25–175% band). The three levels: **tier** (the `$`/`%` buttons on each row, anchor =
-  that tier), **group/vanilla-industry** (the `group $→X`/`group %→X` buttons in each card header, anchor
-  = the group's first rung), and **whole sheet** (the `sheet …` toolbar buttons — every group, anchor = each
-  group's first rung). **Group locks:** each card header has a 🔒 lock toggle (plus toolbar `🔒 all` / `🔓
-  all`); a locked group is **excluded from every mass editor** — the **Restore-defaults** preset, the sheet
-  payback buttons, and its own group/tier payback buttons (which grey out) — while manual field edits stay
-  allowed. Locks are UI-session state (reset on reload).
-  **⭐⭐ THE SHEET IS TWO THINGS IN A TRENCHCOAT, AND THE SEAM IS NOW EXPLICIT.** One is the **RECIPE BOOK** —
-  every tier's `output_qty` + `inputs` and the `pm_goods` overrides, i.e. exactly what the builder EMITS to
-  the game. The other is the **SCENARIO** — building counts, pops, wages, workforce ratios, PM selections,
-  prices — which is session-only and never emitted. THREE recipe books exist, switched by the **red**
-  buttons at the front of the header: **`recipes: vanilla`** (every tier's `vanilla_pm` recipe read live from
-  `vanilla.js`; a tier we invented has no vanilla PM, so its entry is **interpolated** along the ×1.5 ladder
-  from the nearest anchored tier — the same rule `build_era_ladder.mjs` seeds an invented tier with, so the
-  two agree by construction), **`recipes: mod`** (the config as loaded), and **`recipes: solver 2`** (the
-  INVERSE solve's derived book, §10.65.2 — recipes solved at DESIGNED prices: every tiered output on the
-  downward ladder 175−25pp×tier, yielding to pop demand only where pops refuse it. Read from
-  `PMDATA.inverse`, a build-time copy of `config/era_inverse.json`'s `recipes`; its `pm_goods` are the MOD
-  config's, since the inverse solve does not touch overrides; absent artifact ⇒ the button is disabled.
-  ⚠ Refresh rule: after `node tools/era_inverse.mjs --write`, run a build — the artifact reaches the sheet
-  only through `ui/data.js` and `ui/presets.js`). All are **whole-sheet and ignore locks** — which book
-  you are on is a mode, not a per-group tuning decision — and none touches the scenario.
-  **RED MEANS IT WRITES THE RECIPE BOOK.** Exactly four buttons are red: the three above and **`solve →
-  targets`**. Everything else moves the scenario only. ⚠ **Scenario presets write no recipes at all** and
-  must stay that way — `applyScenarioPreset` touches `BLDNUM`, `REFSEL`, `_sec`, `POPS`, `SOL` and wages,
-  and nothing else. That includes the **`Inverse solve` preset row** (below): its six scenarios were SEEDED
-  against the solver-2 book, so reading their margins as the solver saw them means pressing `recipes:
-  solver 2` first — but the preset itself still writes no recipe, deliberately.
-  **The "would this change anything?" badge is DERIVED, never tracked.** A recipe button dims (`.same`,
-  italic) when the sheet already holds that book. It is a comparison of canonical fingerprints recomputed
-  from the state itself — a few thousand numbers, no DOM, microseconds — called from **both** `render()`
-  (page load, book switch, preset) and `updateComputed()` (live field edit), because `render()` does **not**
-  call `updateComputed()`. ⚠ **`recipeSnapshot()` is the ONE definition of what a recipe is**, and both the
-  writer (`recipeApply`) and the fingerprint (`recipeKey`) consume that same shape. Keep it that way: two
-  lists would let a field added to the writer and forgotten in the fingerprint make the badge **lie**,
-  silently, for exactly the field somebody just added. Same reasoning as `ladderFaults()` having one
-  implementation. A maintained dirty-flag was rejected for the same reason — proof it is derived: undo a
-  manual edit and `.same` comes back, which a flag would never do.
-  The **Restore defaults** button resets each in-scope
-  **unlocked** group to its as-loaded config values (target BE, build cost, ai_value, secondary PMs)
-  — honoring current locks. ⚠ It **no longer touches volumes**: rebuilding tiers from the pristine config
-  silently reset `output_qty` + `inputs`, i.e. it was a recipe-book switch wearing a scenario button's
-  clothes. Use the red `recipes: mod` for those. The **Bring to vanilla** button (same scope selector + lock
-  handling) resets each in-scope
-  **unlocked** split building *toward base-game values*: its `ai_value` becomes the **pre-split vanilla building's** value
-  (the first rung's key = the vanilla base building; blank = engine default, e.g. tooling → 2000), its **`building_cost`**
-  becomes the pre-split building's flat `required_construction` (the vanilla `construction_cost_*` script value:
-  low 200 / medium 400 / high 600 / very_high 800 — `VANILLA_CONSTRUCTION` in the UI, mirror
-  `common/script_values/building_values.txt`), and its secondaries reset to base. `target_be` is left as-is, so
-  BE then reflects vanilla economics (usually off-target/amber — expected).
-  **GUIDELINE — what "Bring to vanilla" must (not) touch:** it brings back to vanilla **everything that is
-  neither recipe nor scenario** — `ai_value`, `building_cost`, secondary defaults — **except**
-  (1) the *tier split itself* (the per-tier buildings that replaced one vanilla building stay split — this
-  button is about values, not structure), and (2) any field the UI does **not** yet make editable **and**
-  emittable (today: **workforce**/`employment`). ⚠ **Output, inputs and `pm_goods` are NO LONGER its job** —
-  they are the recipe book's, and `recipes: vanilla` owns them. Uphold this as we add
-  fields: when a field becomes editable+emittable, wire it into whichever of the two it belongs to. *(Future: give every
-  building a "vanilla root" — the recorded base-game values — so any building, not just the tier-split ones,
-  can be brought to vanilla.)* More named presets will come later. **Base `ai_value`**
-  (building AI construction desire) is editable everywhere: on **our tier rows** (per-tier `ai_value` in the
-  config; blank = engine default 1000) and on **every explorer building** (a `data-refaiv` field backed by
-  the top-level **`building_ai_value`** map). The builder emits ai_value for buildings in files it owns via
-  two separate paths — (a) **our tier buildings**, from each tier's own `ai_value` (this is where **tooling =
-  2000 at all four tiers** comes from, matching the vanilla tooling workshop), and (b) **PRESERVED** vanilla
-  buildings inside owned files `01/06/11`, from the top-level `building_ai_value` map via `Set-BuildingAiValue`
-  (today one entry: **`building_trade_center` = 5000**, i.e. 5× the engine default of 1000 — vanilla scripts
-  no `ai_value` for it at all). Explorer edits to non-owned buildings show but don't emit yet. The UI's default display reads
-  each building's vanilla `ai_value` from `vanilla.js` (now extracted). **AI subsidy policy** is editable the same way,
-  on **every** row (tier + explorer), via a 5-option dropdown backed by the top-level **`building_subsidies`** map
-  (building key → `vanilla`/`none`/`nice_to_have`/`wants_to_have`/`must_have`; **default `vanilla` EVERYWHERE**, including `building_trade_center` — it was `must_have` until
-2026-08-11, when F49 measured that mandate at **35% of all government expense** against vanilla's 4.7%,
-and the user parked the question by removing it from the default config. Vanilla's own
-`ai_strategy_montenegro_admin` still subsidises trade centres and we preserve that, as we preserve every
-strategy's own entries). See "AI subsidy policy" below for what it emits and why. **"Build now"** writes the config and runs the full build (needs the `ui.ps1` server — a
-  browser can't run programs). Everything else works **frontend-only**: opening `ui/builder.html`
-  directly still edits + previews + **Export mod_config.json** (then run `build.ps1` yourself).
-  User-facing setup lives in `README.md`.
-- **⭐⭐ PRINCIPLE — REALISED PRICES ARE PLANNED FOR FIRST, AND A BASE-PRICE MARGIN IS NOT EVEN DIRECTIONAL** (user-ruled 2026-09-19, BALANCE_FRAMEWORK §10.86.2, measured in FINDINGS **F140**). *"Realised prices will be far off base, mostly by design, but significantly — by random seed. Industry economics at base prices is not even directional, it is just one of the factors. Realised prices are hardly transferrable between configs, we get only directional guesses. We should always try understanding where prices go, first, and plan configs around that — even if we no longer use a complex building-level solver."* The measurement behind it, over vanilla’s sixteen seeds: the median spread of a good’s price ÷ base is **61 pp of base ACROSS MARKETS and 10 pp across SEEDS at 1836**, and **42 pp across markets against 52 pp across seeds by 1900** — the market decides at the anchor, the seed decides afterwards, and neither is base. The same industry on vanilla’s own recipe runs **−48% to +116%** across the seven instrumented markets at 1836. ⇒ Design a recipe against a measured price DISTRIBUTION (`tools/era0_solvency.mjs` on the recipe side, the register’s PI / PP on the end-state side), never against base prices and never against one run’s prices. ⇒ A margin quoted at base prices must say so and must not be presented as what the building will earn.
-- **⭐⭐ PRINCIPLE — NO CETERIS-PARIBUS EXTRAPOLATION. THE GAME IS ONE INTERCONNECTED SYSTEM.**
-  (User-ruled 2026-08-21, after several in one session.) **Do not reason "X is 5× cheaper, so there
-  will be 5× more of it", or "this change only touches Y".** Every economic quantity in Victoria 3
-  feeds back: buildings → GDP → investment pool and tax revenue → construction → buildings; GDP →
-  education spending → literacy → RESEARCH → which tiers exist at all; war → conquest → the
-  population every aggregate is computed over. A change to one term arrives at every other term
-  within a decade or two of game time.
-  ⚠ **The failure is not usually a wrong direction — it is a confident MAGNITUDE.** Three from one
-  session: (1) "buildings are 1/5 the cost so the AI will build 5× as many" — it built 2.21×, because
-  the smaller sector produced less GDP, so there was less capital to build with (**F78**); (2) reading
-  that 2.21× as a *behavioural response function* of the AI to cheaper buildings, when it is an
-  EQUILIBRIUM outcome of the whole loop and says nothing clean about the chooser; (3) a doubled
-  `ai_value` predicted to do little because the rung ratio was unchanged, when it doubled every rung's
-  contrast with the untiered field and moved the metric more than anything before it (**F76**).
-  ⇒ **State the prediction as a prediction, in the schedule, BEFORE the run** — that is what converts
-  a surprise into a finding instead of a correction. ⇒ **When a result differs from the extrapolation,
-  the first hypothesis is a feedback path you did not draw**, not a broken mechanism. ⇒ **Never present
-  a derived magnitude as a consequence when only its direction is argued** — say which, and say what
-  the loop could do to it.
-- **PRINCIPLE — A REPORTED RATIO CARRIES ITS OWN NUMERATOR AND DENOMINATOR.** (User, 2026-08-06.) If the
-  headline metric of a table is a ratio, the table shows **both terms as their own columns**, and the
-  ratio column names its direction (`ratio = transp ÷ auto`, not `ratio`). A bare `1907: 2033` forces the
-  reader to carry the definition in their head, and a reader who mis-remembers which way up it goes reads
-  the entire trajectory backwards. ⚠ **This is not only a presentation rule — the terms carry the
-  finding.** A compact one-line trajectory of `transportation ÷ automobiles` looked like the incumbent
-  being displaced; printing both columns showed transportation buying nearly flat (×1.66 over 29 years)
-  while automobile buying went ×829, i.e. the ratio collapses because the newcomer grows. That was
-  invisible until the denominator was on the page. Same rule for any derived figure whose inputs are not
-  obvious: **show what it was computed from.**
-- **PRINCIPLE — column alignment: LEFT unless there's a reason.** In the building tables every column aligns
-  **left** (`th,td` default); the `.num` class now only requests **tabular figures**, it does *not* force
-  right-alignment. Right-alignment is **opt-in**, and only justified where a cell holds a **label → value pair**
-  that should read as an equation — the goods rows (`grain 66 £1320`) and the `total in £1560` subtotals, both
-  handled by `.goodrow`'s flex — or in the **scenario panel**, which deliberately mirrors the in-game market
-  screen (order magnitudes line up). Don't reintroduce a right-aligned column without one of those reasons.
-- **PRINCIPLE — ONE UI layout for every building (do not keep re-deriving this).** There is **no separate or
-  lesser UI** for buildings outside the tiering scope. Our tiers, economic-but-out-of-scope buildings (farms,
-  mines, …), and non-economic buildings (government administration, military, …) all render with the **exact
-  same row layout** — same columns, PM selectors under the name, editable goods, the **wages row**, workforce,
-  BE/Profit. A cell or value is blank / `—` **only when the building genuinely lacks it**: no goods output →
-  Output `—`; no *input* goods → wages are **100%** of total with the £ magnitude `—` (not modelable yet); not
-  on the ladder → Target / Build cost / Payback `—`. **Never branch the layout on tiered-vs-reference.** When you add a UI element, add it everywhere
-  and let it show `—` where truly absent. **Macrogroups only organize** buildings (economic-out-of-scope vs
-  non-economic) — they never change the layout. (The wages row uses one shared `wageRowHTML`; reference-building
-  wages are session-only via `REFWAGE`, model-only like everywhere else.)
-- **All-buildings explorer.** The UI **always** shows every vanilla building,
-  not just our tiered industries: our industries stay editable cards (each tier's **secondary PMGs** —
-  canning, luxury, automation, … — are PM dropdowns under the building name; a non-base selection folds into
-  that tier's BE/profit + Workforce and its **goods are editable** (via `pm_goods`) in the Input/Output columns,
-  matching the linter's building-level view; default = base/"off" PM = the PMG's first **non-gated** PM, so nothing
-  moves until you switch). A PM carrying `unlocking_principles` is **power-bloc-gated** (only active with a power-bloc
-  principle, e.g. `pm_principle_freedom_of_movement_3`); `extract_vanilla.ps1` flags these with `gated:true` in
-  `vanilla.js`, and `basePm()` skips them when picking a PMG's default — some PMGs list the gated PM first, and
-  defaulting to it would show effects that are inactive in-game. Below
-  them, **every other vanilla building** (those not on our tier ladder — some economic, just out of scope
-  for now) renders in the **same card + table UI** as our industries: one **category card** per taxonomy
-  group, one **row per building** using the **exact same 11-column layout** as the industry tables (shared
-  `MTABLE_COLS` colgroup, so columns line up). Each building is shown **untiered** (not tier 0, whose pill is bronze — a grey `0`
-  pill); the ladder-only columns (Target / Build cost / Payback / →X) show **—** (genuinely N/A — not on the
-  ladder). Each row has the building's **PM selectors under its name**, **every good editable** in the
-  Input/Output columns (wired to `pm_goods`), the **wages row** at the bottom of the Input cell (editable
-  £↔%, model-only; a building with no *input* goods is **100% wages** (its whole cost is labour) with the £
-  magnitude shown as `—` until wages are per-profession), non-goods outputs
-  (infrastructure, pollution, bureaucracy, trade capacity, ship construction, …) and **workforce** read-only,
-  and informational **BE** + **Profit@thr**. **Each category is locked by default** (a
-  🔒 that excludes it from future mass tools — still fully editable; the amber bar without the dimming);
-  unlock to include it. The **Military** card (battalions, not buildings — two rows per combat unit type,
-  mobilised and not) is a category card like any other: same 13-column layout, **foldable** through the same
-  `REFGRPOPEN` set, collapsed by default with its unit-type and battalion counts in the header. **Goods edits are config-backed and emitted**: they persist to the top-level
-  **`pm_goods`** map, which the builder writes into the owned production-methods files, so an edit to a PM
-  applies to **every** building that uses it (our tier main PMs stay per-tier; every *other* PM — reference
-  buildings' PMs *and* our tiers' secondary PMs, editable both in the reference table and on the tier cards
-  (the `↳` rows) — goes through `pm_goods`). Note **PM names are not all `pm_`-prefixed** (plantations/mines
-  use `default_`/`automatic_`/`picks_and_shovels_`/… ); the extractor, the builder's `pm_goods` writer, and
-  the linter all handle any name — so plantation/mine goods are editable & emittable too. Buildings are
-  sorted into a **custom taxonomy** (not raw `building_group`) grouped into **macrogroups by economic status**
-  (organization only — never a layout change): **economic, out of scope** — *Utilities, trade & arts* →
-  *Food & agriculture* (farms/plantations/ranching) → *Raw resource extraction* (mining, gold fields, logging,
-  oil, rubber, fishing & whaling); then **non-economic** (state, property & special, no market goods) —
-  administration, military consumers, property owners, subsistence, service, construction, Unique buildings.
-  (`#econref` is now emptied and merged into `#reference`.) The map is `GRPCAT`/`CATLABEL`/`ECON_CATS`/`REF_CLUSTERS` in `ui/builder.html`
-  (keyed by vanilla `building_group`; unmapped groups fall back to their own card in the Other cluster).
-  All PM data comes from `ui/vanilla.js` (regenerated every build by `extract_vanilla.ps1`; UI-only, never
-  shipped). PM *selections* in the explorer are session-only (which PM is active is the game's runtime
-  choice); PM *goods* edits are saved/emitted via `pm_goods` (above); category **locks** are UI-session state.
-  **Emission scope for untiered buildings:** we emit their **goods** (via `pm_goods`) and, inside files we
-  already own, their **ai_value** — never a whole building definition. There is deliberately **no switch** for
-  that: an `include_all_buildings` config bool / `-IncludeAllBuildings` flag used to sit in the builder and
-  gated *nothing* (it was read, logged, and never used again), so it was removed. When we do start emitting
-  untiered buildings wholesale, add the scope control together with the code that honours it.
-- **Localization is generated for all 11 languages** — every added key gets an English stub in
-  every language file, ⭐ EXCEPT the tiered buildings' and their main methods' names, which since 2026-10-21 are VANILLA'S OWN
-  TRANSLATIONS (user: "when we simply multiply rungs and the official translation exists, take it for all rungs; for genuinely new names,
-  leave English"): build.ps1 reads each language's vanilla name of the industry's building and its lens text, and a main method's name is a
-  reference to its vanilla method key; "Era N", "Recipe BE" and the three minted methods stay English. It THROWS if a rung's config `name` is
-  not exactly "<vanilla building> (<vanilla method>)" in English, since the translation would then name something else. The rest gets an English stub, because untranslated keys show as raw `<key>` placeholders for non-English
-  players (no reliable English fallback). This is handled by the builder; you never write loc by
-  hand. See MODDING_NOTES.md → Localization. In-game building names are auto-formatted as
-  `Tier N. <name>. Recipe BE <goods-only base-price break-even>%` (e.g. "Tier 1. Textile Mills (Dye Workshops). Recipe BE 67%"; a craft
-  "Tier 0 craft. Food Industries (Bakeries). Recipe BE 65%"; a merged building "Tier 1-2. Food Industries. Recipe BE 77%/57%").
-  ⭐ **"TIER", NOT "ERA", SINCE 2026-10-21** (user-ruled, POLISH_1_0.md Q8 and U3): "Era 2" read as the tech tree's Era II. N is still the
-  rung's tier (the config field is still named era); the docs keep "era" only for technologies, in quotations and in identifiers since the terminology pass of the same night (GLOSSARY §5). Before that the format was
-  `Era N. <name>. Recipe BE …` (e.g. "Era 1. Food Industries (Sweeteners). Recipe BE 77%";
-  the label read "BE target" and was wage-inclusive until ROADMAP step 8 P3). ⭐ Since 2026-10-03 it is the recipe UNDER ITS MOST BASIC
-  SECONDARY METHODS (BALANCE_FRAMEWORK §10.93 rule 6, user-ruled): a mandated automation's goods count — Sewing Machines reads 55%, not 50%.
-  ⭐ **A MERGED BUILDING (a host carrying `method_of` rungs, §10.91.2) IS NAMED BY ITS TIER SPAN AND ITS BUILDING ALONE**
-  (user, 2026-10-02: *"merged industries should have a mixed name, e.g. 'era 1-2. paper mills'"*, BALANCE_FRAMEWORK §10.93):
-  "Era 1-2. Paper Mills. Recipe BE 63%/47%" (the format of the time) — one break-even per main method in tier order. The name is the host's `name` with its
-  trailing "(<method>)" removed. ⭐ **Every main production-method group is titled "Base"** (`$pm_base$`, vanilla's own title, translated
-  in every language; user-agreed 2026-10-02) — it used to carry the rung's method name. A display label only: nothing reads it.
-  ⚠⚠ **N IS THE TIER, NEVER A POSITION — in the game, in the UI and in the config alike.** It used to be a
-  1-based count of emitted tiers, which made the same digit mean different vintages in different industries:
-  the automotive industry's first building is tier 3 and shipped as "Tier 1", while arms' tier-2 rung shipped
-  as "Tier 2" and rendered as "T3" in the scenario panel. Three numberings, all disagreeing. **An industry
-  legitimately starts at "Era 3" or "Era 4" (Tier 3 or Tier 4 in game since 2026-10-21) and that IS the statement** — the missing lower rungs are the
-  claim that the industry did not exist yet, not a gap to be papered over by renumbering from 1.
-  ⚠ The UI's `t.tier` field survives as a 1-based DOM key and `data-` attribute ONLY; every user-facing
-  label goes through `tlab(t)` and reads the tier. Do not print `t.tier`.
-  ⭐⭐ Since 2026-09-13 the same number is also the rung's PLACE ON THE LADDER and is DERIVED from its
-  technology's game era — THE TIER RULE (the governing section near the top of this file, BALANCE_FRAMEWORK
-  §10.78). `start_baseline.json`'s summary labels by `e<era>` too (it was `T<position>`).
-- **After an in-game load, check `error.log`** (see MODDING_NOTES.md) — the linter checks
-  economics, not engine errors. The builder also emits a **self-diagnostic** on_action
-  (`mod/common/on_actions/zzz_pm_rehaul_diag.txt`) that logs a `PM_TECH_REHAUL: init OK … (build <ts>)`
-  marker to `logs/debug.log` at game start (absent marker ⇒ mod failed to load). **Convention:** when a
-  change might trip something the linter can't see, add an invariant tripwire inside `pm_tech_rehaul_diag`
-  (logs `PM_TECH_REHAUL WARN …` on failure), then have the user run the game (init fires at the 1836 start;
-  ~1 in-game day, or to 01.02.1837 for a first pulse) and read back `debug.log` + `error.log`. See
-  MODDING_NOTES → Self-diagnostics.
-- **🛑 THE LANDMINE REGISTER IS WALKED ON EVERY BUILD — `TESTBED_LANDMINES.md` + `tools/preflight.ps1`.**
-  A "landmine" here is a defect where **nothing fails**: the build succeeds, the mod loads, the run
-  completes, the TSV has rows — and the damage is real and invisible. Half a million error lines from an
-  annexed country tag. A script value that reads **zero** instead of erroring. A burst that evicts its own
-  data from the log ring. A spec key that never arrives, so the run looks like the *metric* failed rather
-  than the plumbing. None of these are caught by the linters (economics), by `Invoke-ModChecks`
-  (completeness), or by reading `error.log` (nobody does — it is expected to carry vanilla's noise).
-  So each is enumerated with an **ID and a detector**, and `preflight.ps1` **throws** inside `build.ps1`
-  and `run_schedule.ps1`. Today: L1 tag guards · L2 data-function-as-script · L3 unbounded scope (manual) ·
-  L4 burst phasing (advisory) · L5 dropped spec key · L6 undefined script value · L7 control-arm purity ·
-  L8 telemetry changed without a schema bump · L9 unfiltered ring reads · L10 mid-batch edits (manual) ·
-  L11 a tag that is not the country you think it is (proposed) · **L13 a starting factory converted onto a tier
-  its own production method contradicts (MASKED by the re-band, not fixed)** · **L14 a country starts with a
-  building its own technologies cannot unlock** (`verify_start_techs.mjs --vs-vanilla`, compared against
-  vanilla because vanilla itself fails on three countries).
-  ⭐⭐ **THE GATE BINDS EVERY BUILDING, WHOEVER OWNS IT (re-established 2026-08-17, FINDINGS F68).** A
-  history `create_building` is checked against the **region_state's OWN country**; `add_ownership` is not
-  consulted, so naming an advanced overlord as owner does not help, and a rejected block is dropped
-  **silently** — the mod loads, the build passes, the building is absent. The engine says so in
-  `error.log`: `create_building effect [ … Dutch East Indies … must have invented … ]`.
-  ⚠⚠ **THIS DETECTOR WAS DISARMED FOR A DAY AND SHIPPED 22 BROKEN START RULES.** A 2026-08-16
-  "refinement" made L14 SKIP wholly foreign-owned buildings, on the theory that they ride their owners'
-  technology — and its evidence was a save read at **1837.1.1, a year after init**, so what it actually
-  saw was F66's engine provisioning wave building those ports, not our `create_building` succeeding.
-  ⚠ It then survived a second bug in the same file: `analyse()` counted `add_technology_researched`
-  lines sitting inside a per-country guard (`if = { limit = { this = c:NET } … }`, exactly how
-  `emit_techs.mjs` writes `start_tech_grants`) as though **every** country of that tier held them — so
-  our NET-only `screw_frigate` grant was credited to all 60-odd starting-tech tier-2 countries and DEI, SMB, TID and
-  PON looked entitled to steam ports they cannot build. `startSets()` had already solved this and even
-  warned that over-reporting holdings "is a detector that passes the very failure L14 is for"; the fix
-  is that **both landmines now read `startSets()`**, one definition of what a country starts with.
-  It also killed three standing false positives (vanilla-inherited gaps 6 → 3), because the old path
-  ignored the per-country extras 81 countries carry.
-  ⚠ Re-proved by sabotage: injecting one NET-owned `port_steam` into DEI's territory now exits 1 and
-  names `DEI (tier 2): screw_frigate`. Do not re-introduce an ownership exemption without a reading
-  taken at **1836.2.1** · **L15 a country LOSES a starting technology
-  vanilla gives it** (`verify_start_techs.mjs --diff-vanilla` — L14's converse, and the quiet one: starting-tech tiers 1
-  and 2 draw most of their set from `add_era_researched = era_1`, so re-era-ing a technology OUT of tech era 1
-  withdraws it from 59 countries with no file mentioning it. It expands the era shorthand against EACH
-  root's own eras and includes the per-country extras 81 countries carry) ·
-  **L17 a run that FAILED is recorded as `ok`** — the scheduler derives status from the observer's EXIT
-  CODE alone, and the observer exits 0 even when it ABANDONS a run, so a run that reached 15% of its span
-  counts as complete and the arm's `n` silently shrinks. Everything needed is already in that run's own
-  `meta.json` (`reached_ingame_date`, `self_quit`, `abandoned_reason`) and nothing reads it. Found live
-  2026-08-13; it is the generating cause of the FOUR retrospective n-corrections already in
-  `SESSION_VERDICTS.md`. ✅ AUTO since 2026-08-17: `preflight.ps1 -Session <dir>` compares every
-  ENDED run's `reached_ingame_date` against its `until_date` and fails on any shortfall or non-empty
-  `abandoned_reason`. It does NOT judge WHY — a deliberate STOP is as much a shortfall for COUNTING as a
-  crash, and which it was belongs in the VERDICT. Proven both ways on real sessions ·
-  **L16 a schedule key that works in `defaults` for some fields and is SILENTLY DROPPED for others (AUTO since 2026-08-17)**
-  (`dump_dates` USED TO BE run-only, with no `$defaults` fallback unlike every neighbouring key — a
-  defaults-level one was ignored and every run fell back to ONE dump date instead of twelve, so a
-  per-decade series silently became a single endpoint. Both halves fixed: AUTO since 2026-08-17 — the scheduler throws on any `defaults` key it does not thread through, naming it, and `dump_dates` now falls back to defaults like its neighbours) ·
-  **L20 an ALTERNATE CONFIG WITH NO PAIRED `tech_tree_options.<sfx>.json` (AUTO since 2026-08-18)** —
-  `emit_techs.mjs` and `emit_research_events.mjs` derive their tree file from the CONFIG'S FILENAME
-  (`MOD_CONFIG` first, then argv), so `config/mod_config.foo.json` REQUIRES
-  `config/tech_tree_options.foo.json`. Missing ⇒ ENOENT half-way through the build. `Test-LmL20` reads
-  the config, not the mod, and is wired at three places: `build.ps1` **before a single file is emitted**
-  (`preflight.ps1 -RepoOnly -Only L20 -Config <cfg>`, which throws), `build.ps1`'s two full preflight
-  calls (now passing `-Config`), and **`run_schedule.ps1` per SETUP, before the estimate is printed**.
-  Without `-Config` it WARN-lists every unpaired alternate in `config/`. ⚠ Do NOT "fix" the trap by
-  falling back to the canonical tree — that pairs an alternate config's BUILDINGS with the canonical
-  config's TECHNOLOGIES (BUGS_AND_FIXES 2026-08-12) ·
-  **L21 a FAILED BUILD HANGING THE SCHEDULER (AUTO since 2026-08-18)** — `run_schedule.ps1` builds
-  through `Invoke-BoundedBuild`: a `-BuildTimeoutMinutes` bound (default 10 against a ~7 s build) with a
-  **tree**-kill on expiry, the verdict taken from the PROCESS OBJECT (`Start-Process -PassThru` +
-  `$proc.Handle` + `WaitForExit`), output to FILES rather than a PowerShell pipeline, and a null exit
-  code treated as FAILURE. A failed or timed-out build sets `$fatalExit`: `session.json` and
-  `SCHEDULE DONE` are still written (that marker is what wakes the waiter) with `[ABORTED]` appended,
-  then exit 3. `wait_for_session.ps1` gains **STALLED (exit 3)** when nothing anywhere in the session
-  tree has been written for `-StallMinutes` (default 20) — "alive" is not "working" ·
-  **L24 a GENERATOR'S OWN DIAGNOSTIC TEXT LEAKED INTO AN EMITTED SCRIPT FILE (AUTO since 2026-08-19)** —
-  `Set-BuildingAiValue` returns the LINES of a building block and reported its "won't override a complex
-  ai_value block" note with `Write-Output`, which in PowerShell **joins the return value**, so the note
-  landed in `common/buildings/*.txt` as a literal line. That text contains `<key> = {`, an unbalanced
-  OPENING brace, so the parser opened a bogus block and swallowed the real definition. **Nothing failed**:
-  build ok, every lint passed, mod loaded, init marker written, clock advancing — 96
-  `Duplicated key …` lines in `error.log` were the only trace, caught at the five-minute smoke check.
-  It had never fired because that refusal path is only reached by a CLONED tier carrying a config
-  `ai_value`, which the ai_value ladder is the first thing to do — **a branch that has never executed is
-  not known to work**. `Test-LmL24` reads every emitted `common/**/*.txt` and requires brace balance plus
-  nothing-but-script at depth 0; deliberately NOT a grep for `note:` or for `Write-Output`. Rule for
-  generators: **a function that returns content must never report through the success stream** — use
-  `Write-Warning`/`Write-Host` ·
-  **L27 an analysis script that walks `cfg.industries` for tiers WITHOUT skipping `disabled` industries
-  (AUTO since 2026-09-03, the L25 pattern)** — on a four-rung book a disabled industry's rung-0 KEY IS THE
-  VANILLA BUILDING, so Britain's shipyards and ports read as a growing "e0" on five ledgers before a reader
-  noticed; nine ledger scripts fixed, proven both ways · **L30 A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP (AUTO at launch since 2026-09-13)** — the tool
-  shell sits in the desktop app's job objects and a `Start-Process` child stays in one of them; `tools/testbed/launch_detached.ps1`
-  creates the scheduler through WMI in no job at all and proves it with a kernel check, `run_schedule.ps1` warns when it finds
-  itself inside a job · **L28 the log MIRROR re-copied the current log on a FALSE rotation
-  (AUTO since 2026-09-04)** — `Get-Item`'s directory length lags a file another process holds open, so "length below
-  my read position" fired without a rotation and Read-Tail reset to 0 every 250 ms poll: run 4 of canon4-je-n5
-  appended one 946-line chunk 27 times in eight seconds, canon-n7 run 1 sixteen times. V3TB lines were de-duplicated by
-  the mirror; PMR_JE completions and event lines were multiplied, so any RAW LINE COUNT off a mirror over-reads
-  (F101's canon-n7 figure 2.3×). Observer fixed (an unchanged first-line signature = stale length; ⭐ since 2026-10-21
-  the length is read through a HANDLE, an unreadable signature waits, and a signature taken from a file under 120 bytes is
-  compared as a prefix — the last of these re-copied a file in a test, proven fixed; `tools/testbed/test_log_tail.ps1` re-runs that simulation — run it after any tail change); `Test-LmL28` fails a session where the
-  30 lines after a zero-recovery seam repeat, stamps and all, the lines that began an earlier read of the file (until
-  2026-10-21 it matched them anywhere since the previous seam and fired on floods of identical vanilla error lines — the
-  2026-10-20/21 FAILs were that), and `je_tally.mjs` de-duplicates ·
-  **L33 AN EMITTED DEFINE THE ENGINE REJECTS AT LOAD (AUTO since 2026-09-15)** — a value outside the validator's hardcoded range is discarded with ONE line in error.log and the key keeps VANILLA's, so the run is not the config: the eager set's `TOO_LARGE_INVESTMENT_POOL_FACTOR = 1.0` (vanilla's own comment says "capped at 1"; the range is [0,1)) ran at vanilla's 0.75 — BELOW the 0.9 it was a one-lever test against — and F121 measured three of its four levers; a bound can also cross-reference a sibling (land CRITICAL 1.25 invalidates vanilla's ship EXCESSIVE 1.05). `Test-LmL33` checks the config's `ai_defines` against the bounds the engine has stated (`-RepoOnly`, gates a launch) and, with `-Session`, every run's error.log for `defines.cpp`'s rejection line; `batch_heartbeat.sh` gives it its own DEFINE REJECTED alarm · **L34 A RUN RECORDED COMPLETE IN MINUTES (AUTO since 2026-09-17)** — a CTD before the first autosave, the observer's restart path, and the next attempt launched
-  with `-continuelastsave`, which loads the newest save ON THE MACHINE (the previous run's 1936 endpoint): the engine lands AT the target, the run "finishes" in 169 s
-  with one summary, and L17 (reached == until) and L26 (no backward jump in a one-entry series) both pass it. `Test-LmL34` and `lib_runs.usableRuns` refuse an ended
-  run that reached its until date over ≥ 5 years with ≤ 2 summaries; the observer's early-death restart now launches a FRESH 1836 game (`$freshRestart`) · **L12 savegames reaped without a readable
-  summary** · **L26 ONE RUN FOLDER HOLDING TWO CAMPAIGNS** — a crash-resume whose load fails starts a
-  FRESH 1836 game, and if that fresh campaign reaches the target, the observer's landing guard is
-  structurally unreachable (it sits after `if ($reached -or $timedOut) { break }`), so the run is
-  recorded as clean with `reached_ingame_date` = the target. Found on the wall clock alone: 267 min
-  against 135–146 for its siblings. Detector = any backward in-game date jump across a run's summary
-  series, **> 2y ⇒ FAIL (a second campaign), ≤ 2y ⇒ WARN (the archiver read the rotation ring in one
-  pass, so `autosave_1.v3` sorts after `autosave.v3`; one campaign, a few summaries out of order)**.
-  Swept over all 74 sessions with summaries: 5 hits, of which 4 are already excluded by `lib_runs`/L17
-  or are the sub-year shape — ⭐ `canon-n7`'s is run007, the run L17 already drops, so the six-rung
-  baseline is clean. Generator side fixed too: the abort now fires on the FIRST TICK of a resume (⚠ which was DEAD CODE until 2026-09-03: a missing brace had nested it inside the continuation guard, whose condition needs attempt 1, so session 20260902_223037 played a second 1836 campaign for 26 minutes after a stepped-back resume failed to load — caught by the agent's 30-minute clock check, fixed, parse-checked; BUGS_AND_FIXES 2026-09-03) —
-  the two POST-RUN entries, walked with `preflight.ps1 -Session <dir>` and N/A on a normal build.
-  ⚠⚠ **L14 AND L15 ARE `N/A` FOR AN INSTRUMENT ARM, AND GETTING THAT WRONG MADE THE CONTROL ARM
-  UNBUILDABLE FOR A DAY** (2026-08-12 → 13). They read our own 1836 grant, which a control does not emit,
-  so both died on ENOENT and `build.ps1 -ControlOnly` **threw** — a landmine sitting inside the landmine
-  register's own enforcement, found only when a 20-hour batch stalled on its first build with neither a
-  `build ok` nor a `BUILD FAILED` line anywhere. The skip keys on the mod's METADATA ID (the mechanism L7
-  uses), **never** on the grant file being absent, because a content mod missing its grant must still FAIL.
-  **The MD holds the story and the numbers; the script holds the enforcement.** When a run surfaces a new
-  one: entry first, then `Test-Lm<ID>`, then **prove the tripwire trips** by breaking it on purpose — a
-  guardrail that has never failed is not known to work.
-  ⚠ **A comment in the right place is not a guardrail.** The dropped-spec-key warning was already sitting
-  on the exact line list it describes, and `origin_goods` still slipped past it for weeks. That is the
-  whole case for the check over the note.
-  ⚠ **The detector outperforms reading the code.** The L1 fix covered 6 sites found by hand; the detector
-  then found **13 more**. Do not treat a hand pass as equivalent.
-  The **`preflight` skill** covers only what code cannot decide (L3, L10) and the ritual for adding one.
-- **🛑 HARD RULE — A RUN'S CONFIGURATION MUST BE UNAMBIGUOUS BEFORE IT LAUNCHES. CLARIFY UNTIL CERTAIN.**
-  A request to "run X" is **not** a specification. Before any launch, state back — and get agreement on —
-  **which ARM** — `{kind: control}` = vanilla + telemetry and **nothing else, ever**; `{kind: config,
-  config: <path>}` = a full modded build, and *which* one; plus, once the ❌ below is fixed,
-  `{kind: overlay, config: <path>}` = vanilla + telemetry + a small declared overlay, which is **not a
-  control** and must never be reported as one — plus the **span**,
-  **n**, the **metrics**, and **what is being compared against what**. If any
-  of that is unstated, ASK. Do not infer it from what the last batch happened to use.
-  ✅ **The arm is now RECORDED, machine-read, in every run's `build_state.json`** (schema v2):
-  `deterministic.arm` is `control` / `control+pop_needs` / `config`, and `deviates_from_vanilla` lists
-  every gameplay directory the built mod actually carries. Both are read **off the built mod**, not off
-  the flags it was asked for, so they cannot disagree with what loaded. `built_from_config` +
-  `config_sha256` are populated too — `run_schedule.ps1` never passed `-BuildConfig` before 2026-08-06,
-  which is exactly why the wrong-arm day had to be reconstructed by hand from `schedule.json`.
-  ⚠ **This rule is written in a wasted day (2026-08-05).** A full day of debut-good measurement — five
-  launches, ~6 h of game time, findings F32/F33 — was run on `config/mod_config.json`, the old tiered mod,
-  because that is what the previous balance batch used. The user's expectation was vanilla + telemetry. The
-  result satisfies **neither** purpose: it is not the design we are moving towards, and it is not a clean
-  reference either, since it differs from vanilla in GDP, workforce composition and an unbounded amount
-  else. Everything measured that way needs re-running before it can be trusted.
-  ⭐⭐ **AND WHICH BOOK THE NEW CONFIG BRANCHES FROM — ASK, NEVER ASSUME (user-ruled 2026-10-14).** A lever change ("try C 1.8 and cost1 1.2")
-  names what MOVES, not what it moves FROM. Before generating the book, state its base explicitly — the canon, or the latest hypothesis under
-  test (e.g. an unadopted book whose change the user still means to keep), and which of each one's levers carry over — and get agreement. ⚠ It
-  cost a 3 × 1836→1936 batch (20261014_004734_rs-c18k12-n3, F234): built on the canon while the user meant the latest hypothesis (the unlifted
-  engines of F232/F233), so its reading could not be set beside the line it was meant to extend.
-  ⚠ **"Which arm" is not a detail — it decides what the number MEANS.** A measurement of *the game's*
-  behaviour must be on vanilla; a measurement of *our economy's* behaviour must be on our config; and the
-  two answer different questions. **State the arm in the schedule's `_why`, and in every finding it
-  produces.** A finding that names its session but not its arm is uninterpretable later.
-  ⭐⭐ **WHICH ARM A PROBE BELONGS ON — user-ruled 2026-08-18.** A probe asking **how the ENGINE behaves**
-  (does this trigger mean what its name says, does this on_action merge or replace, does the AI re-pick a
-  strategy) belongs on **vanilla + telemetry**, and sometimes *must* be there: on the mod, our own content
-  is a confound on the very mechanism under test, and a null result cannot be told apart from our content
-  suppressing it. A probe asking **how OUR economy behaves** belongs on the config. Decide which question
-  is being asked before choosing the arm, not after.
-  ⚠ **Right now (2026-08-18) the standing instruction is MOD RUNS ONLY** for ordinary batches — do not
-  spend a slot on a paired control. A **dozen vanilla runs are scheduled for the weekend of 2026-08-22/23**
-  and will supply a far better baseline than any n=1 or n=2 control bought at the cost of a mod run. So a
-  batch's comparison partner today is the **pinned** vanilla baseline `20260813_083557`, quoted with the
-  cross-session caveat (absolute figures do not travel between nights; ratios do). This does not license
-  dropping the arm from the record — every run still states its arm.
-- **⭐⭐ AN ALLOTTED WINDOW IS A STANDING GO-AHEAD — INSIDE IT, GO AND GET THE DATA YOURSELF**
-  (user-ruled 2026-08-14). When the user grants an explicit window for long work — "up to Friday
-  evening", "overnight", "take the next N hours" — that window is permission to run **probes and short
-  tests on your own initiative**, without coming back to ask. If you hit a blocker that is simply
-  *missing data*, or a question that a measurement would close, **run the measurement**. Do not stop and
-  ask; do not hand back a half-answer that a five-minute probe would have finished.
-  ⚠ **NO WORDING SHORTENS THE WINDOW BELOW 12 HOURS FROM THE LAST REPLY.** "Friday evening" can mean
-  many things, but it never means less than that, so never reason yourself into believing the time is
-  nearly gone. The window ends when the allotted time actually runs out, or when the user **explicitly**
-  breaks it with a command to do otherwise.
-  ⚠ **A STATUS REQUEST IS NOT A BREAK.** Asking what is happening, asking for analysis of data already
-  collected, or asking a question about earlier results does **not** end the window and does not require
-  you to re-ask before continuing. Only an instruction to stop, or to do something else instead, does.
-  ⚠ **LONG tests follow the same rule with one bound: do not START one with under 3 hours of the window
-  left** without explicit permission — a long run that cannot finish inside the window is worse than no
-  run, because it monopolises the machine and produces a partial result nobody asked for.
-  ⚠ This does NOT relax the arm-discipline rule below: a probe still has to state its arm, span and
-  metrics in its schedule `_why`, and still gets a `VERDICT.md`. Autonomy is about **not asking**, not
-  about recording less.
-- **NEVER launch a game run without the user's explicit go-ahead — and ask for the whole batch in ONE
-  request.** ⚠ Read this together with the allotted-window rule directly above: inside a granted window
-  the go-ahead is already given and this bullet's "ask first" does not re-apply per probe. Game time is the one cost here that cannot be optimized away, and it monopolizes the
-  machine. ⚠⚠ **DO NOT SIZE A RUN AT "a minute per in-game year" — that is the OPENING rate and it
-  under-states a century by about a third.** The game slows as the economy grows: ~1.0 in-game years per
-  minute in the 1830s against ~0.44 in the 1930s. A full 1836→1936 run is **~2h35 on the mod, ~2h20 on
-  vanilla**. The per-decade curves and a cumulative budget table are in MODDING_NOTES → *Automated
-  headless runs*; regenerate them with `node tools/testbed/run_timing.mjs <sessionDir>`. Three rules:
-  - **Explicit ask or explicit permission, every time.** Only start `run_observer.ps1` (or the game by any
-    other means) when the user has asked for a run or approved the one you proposed. Permission for one
-    batch is **not** permission for the next — re-ask, even for a rerun of the same thing.
-  - **Always quote the cost as `<count> × <span>`** — e.g. *"I need five 1836→1840 runs, ~30 min"* — whether
-    the runs are your idea or the user's. The only exception is when the user has already named the count
-    and span themselves; then just confirm what you're about to do.
-  - **Bundle every run you can foresee, including the branches.** If the outcome forks (*"if tier-1 BE 140
-    reads badly we'll want the same batch at 130"*), ask for **both** in the same request instead of coming
-    back for the second half. The normal working pattern is a batch left running overnight, after which the
-    user is unreachable for hours — one night beats two nights with an idle day between them. When a fork is
-    plausible but not certain, name it and ask for permission to cover it anyway.
-- **The observer (`tools/testbed/run_observer.ps1`) — the game driver `run_schedule` calls.**
-  Deterministic, no agent in the loop: it launches the game **without the Paradox launcher**
-  (`victoria3.exe -handsoff` auto-starts an **observer** game at the 1836 bookmark;
-  `-run_until=<date>` makes the game play to a date and **quit itself**), harvests, and repeats
-  N times. ~5.7 in-game days/sec (+~40 s startup) **in the OPENING YEARS ONLY**, so a 5-year probe is
-  ~5–6 min — do not scale that to a campaign, see the curves above. **Measurement goes
-  through `run_schedule.ps1`** (above); invoking the observer by hand is a *diagnostic* — e.g. the
-  post-patch smoke test in ON_GAME_UPDATE — because it has no build step and can only run a mod
-  someone already built:
-  ```
-  powershell -ExecutionPolicy Bypass -File tools\testbed\run_observer.ps1 -Runs 1 -DumpDates 1836.3.1 -UntilDate 1836.4.1
-  ```
-  Two pieces: (1) it writes **`content_load.json`** to enable the mod under test (`dlc_load.json` is gone
-  in 1.13 — see MODDING_NOTES) and backs up/restores that plus `pdx_settings.json`; (2) it harvests into
-  `tools/testbed/sessions/` — **the one results root** — `markets.tsv` + `events.tsv` + `meta.json` +
-  `harness.log` per run, `markets_all.tsv` + `session.json` + `session.log` per *session*, and the game's
-  logs. **Telemetry is not its job**: it comes from the mod under test (see the next bullet), and the
-  observer **refuses to launch** a mod that carries none rather than burning the game time to harvest
-  nothing. **The game's own logs are a 5×512 KB rotating ring
-  shared by every run**, so the growing ones (`debug`, `error`, `dedicated_server`) are **mirrored
-  continuously** into `logs_live/` — one complete file per log per run, which is the authoritative
-  copy (`logs/` is only the exit-time snapshot, and can contain a previous run's rotated files).
-  Long runs *need* this: a full-length campaign overflows the ring and would otherwise lose its early
-  game. See MODDING_NOTES → *Automated headless runs* for the two rotation hazards and the per-run token
-  that keeps runs from contaminating each other.
-  **One run's results live in exactly one place.** Under `-FlatOut` (how the scheduler always calls it —
-  always `-Runs 1`) the run writes straight into the folder it was given: no `runNN/` level, and no
-  session-level aggregate, because with one run `markets_all.tsv` would be a byte copy of `markets.tsv`
-  and `session.json` a re-wrap of `meta.json`. The cross-run aggregate is the scheduler's
-  `markets_all.tsv`, whose rows carry `run_index` + `setup` so a row identifies its arm on sight.
-  **Every batch writes `build_state.json`** at the session root — what was under test, so the numbers stay
-  interpretable later. It is a two-part tree: **`deterministic`** (machine-read: mod metadata + a
-  file-layout fingerprint, the config it was built from + that config's hash, git branch/commit/dirty, game
-  version, harness args, the harness script's own hash) and **`agentic`** (free text via `-Label` / `-Notes
-  <json>`: what this build *is*, how it differs from the baseline, why it ran, what signal is expected,
-  caveats). The agentic half is a deliberate stopgap for hand-driven experiments — as the sweep driver
-  learns to set a parameter, that parameter moves into `deterministic`; anything added there must be
-  machine-read, never described.
-  Useful flags: **`-DumpDates a,b,c`** (several dump dates per run; each must be the 1st of a month, and
-  extra dates are cheap insurance — a run cut short still has its earlier dumps), **`-ModPath <dir>`** (any
-  absolute path, so an alternate build from `build.ps1 -SaveTo <name>` runs without being deployed),
-  **`-Stamp`** (the session id; the scheduler passes its own so one run has ONE identity across
-  `build_state.json`, the folder name and the telemetry token), `-Label`, `-Notes`, `-BuildConfig`.
-  There is **no `-NoMod`**: the control arm is a real mod built by `build.ps1 -ControlOnly` (vanilla +
-  telemetry), so both arms load a mod and instrument identically.
-  **Crash resilience:** a run that ends early is resumed from its own last autosave
-  (`-AutosaveInterval`, default `five_year` ≈ 19 saves per campaign; engine values are
-  `never/monthly/quarteryear/halfyear/five_year/yearly` — no script effect can save the game).
-  **⚠ Autosaves overwrite the player's own `autosave*.v3` slots.** A CTD is identified by a new
-  `crashes\victoria3_*` minidump, never by exit code. Resume is guarded three ways (own-save-is-newest, and
-  the resumed clock landing neither ahead nor at a fresh 1836 start), because `-continuelastsave` loads the
-  newest save *on the machine* and will otherwise splice in a foreign timeline; see MODDING_NOTES.
-  ✅ **VERIFIED 2026-08-06 (session `resume_diag`): the resume works and KEEPS OBSERVER MODE.** Killed at
-  1837.3.5, it came back at 1837.3.2 — the last autosave — with `continue_game.json` reading
-  `"desc": "Observing Great Britain"`. A silent hand-off to a human player would corrupt every later
-  measurement while looking like a normal run; it does not happen. `-handsoff` does **not** override
-  `-continuelastsave`, and `continuelastsave` is a real flag (it is in the exe's string pool).
-  ⭐⭐ **THE DETERMINISTIC RESUME FEEDER (landmine L32, user-designed 2026-09-14) REPLACES THE LADDER BELOW.** The engine resumes by
-  loading the save whose TITLE `continue_game.json` names (its own pointer, rewritten at every completed save), NOT the newest file —
-  probed with `tools/testbed/probe_resume.ps1`: with `autosave.v3` absent and four intact slots beside it the engine logs `Could not
-  load save game [autosave]` and begins a fresh 1836 game; a save from another campaign copied in under that title loads in 28 s. A
-  CTD during the autosave write (run 2 of 20260914_173832: the 1858 save never completed) therefore defeated every step-back. Now: on
-  a crash a PROCESS opens — the whole autosave set is quarantined into `<run>
-esume_set_<n>`, newest first, frozen — and each attempt
-  FEEDS one member as a COPY under the pointer's title; whatever the engine writes meanwhile is set aside into `resume_attempts` and
-  never fed. A re-crash within `-ResumeWindowYears` (5) of the process's first crash feeds the NEXT-OLDER ORIGINAL (a crash that soon
-  is presumed the same cause); beyond the window a new process opens from the engine's current slots and the old one is trimmed to its
-  newest member. One attempt per member (a failed load and a mid-year death both consume it); the set exhausted → the run is
-  abandoned; `-MaxResumes` (5) caps the attempts per process. meta.json carries `resume_processes`. The paragraph below is the
-  superseded ladder, kept as the record of why the F56 evidence copies exist.
-  ⭐ **FALLBACK LADDER when a resume produces a fresh 1836 game** (i.e. the load failed): retry the same
-  autosave **twice**, then **quarantine it** into the run folder and step back to the previous one; if
-  *that* also fails, stop and record `resume failed from two different autosaves` rather than walking
-  the whole ring. ⚠ Quarantining is not a preference, it is the **only** way to choose a save —
-  `-loadsave=<path>` is rejected by the exe, so the engine always takes the newest. The moved file is
-  **kept**, and `meta.json` → `quarantined_saves` records its byte size against its siblings: much
-  smaller than its neighbours confirms the leading hypothesis (a CTD landing mid-autosave-write leaves a
-  truncated `.v3` that exists, is newest, and fails to load); the same size refutes it.
-  ⭐ **EVERY SAVE A CRASHED RESUME LOADED IS KEPT AS EVIDENCE** (user-approved 2026-08-14, F56): at each
-  resume launch the observer copies the save `-continuelastsave` is about to load into
-  `<run>\quarantined_saves\` as a pending copy — promoted and recorded in `meta.json` →
-  `quarantined_saves` (reason `loaded by a crashed resume`) if that attempt crashes, deleted if it
-  completes. Copy at LAUNCH, not at crash: slot rotation renames the file away and the concurrent
-  harvester reaps the archive within minutes, which is how the 2026-08-14 vanilla run's poisoned ~1896
-  save was lost (the run recovered, so keep-newest kept only its 1936 endpoint). The folder is invisible
-  to `harvest_saves.ps1` and to L12, which both glob `saves\` only. ⚠ Live proof still owed: the hooks
-  are parse-checked and trace-reviewed, but no batch has crashed-and-resumed under them yet — check the
-  first post-2026-08-14 batch with resumes for `quarantined_saves\` entries and their meta records.
-  ⚠⚠ **THE RESUME VERDICT MUST NOT BE READ FROM A STALE TAIL.** The game rotates its logs at startup and
-  the tail keeps reading against the old file's offset, so for ~100 s after any launch it serves the
-  PREVIOUS session's ticks — measured: `in-game 1877.2.13` reported while the game was at 1836.2. Every
-  verdict keys on `$firstTick`, so this is how a *successful* resume gets thrown away (very probably what
-  killed run 19 of the vanilla-retest batch). Fixed by trusting each tick line's **own `[HH:MM:SS]`
-  stamp** and ignoring anything older than the attempt — no rotation detection needed. See
-  BUGS_AND_FIXES. ⚠ And since 2026-09-10 "older" is a signed gap normalised to ±12 h: an attempt started after
-  midnight reading lines stamped 23:5x used to trust them (the gap looked positive), read a stale tick as the landing and kill a
-  resume that was loading — run 5 of 20260909_123746 lost one launch to it (BUGS_AND_FIXES 2026-09-10).
-  **To stop:** press **`q`** (finish this run, then stop) or **`x`** (stop now) in the harness console at
-  any time — no need to kill the game. A `tools/testbed/STOP` file does the same and is the fallback when
-  the harness was launched headlessly (an agent-launched background job has no console).
-  **⚠ LAUNCH IT SO THE KEYS SURVIVE.** The keypress control needs a real console:
-  `[Console]::KeyAvailable` throws when stdio is redirected, which silently sets `HasConsole = $false`
-  and disables `p/r/s/q/x` for the whole session. **Redirecting stdout/stderr is enough to kill it** —
-  `Start-Process … -NoNewWindow -RedirectStandardOutput …` looks harmless and is not. Spawn it into its
-  **own visible window** and leave stdio alone:
-  ```
-  & 'tools\testbed\launch_detached.ps1' -File 'tools\testbed\run_schedule.ps1' -ArgumentList '-Schedule','tools\testbed\schedules\<spec>.json' -NoExit
-  ```
-  ⚠⚠ **CALL THE LAUNCHER DIRECTLY FROM THE PowerShell TOOL (`& '…launch_detached.ps1' …`), NEVER WRAPPED IN
-  `powershell -File tools\testbed\launch_detached.ps1 …`** (2026-09-13, 14:33): the wrapper flattens the `-ArgumentList`
-  array into ONE token, `-Schedule,<spec>`, the scheduler never binds its parameter, and the `-NoExit` window sits idle on
-  the error — the launcher itself reports success (the child is alive and job-free), no session folder ever appears, no game
-  starts. Proven both ways with a scratch echo script; the direct call reaches the scheduler as `-Schedule <spec>`. Check
-  for the session folder within a minute of any launch.
-  ⚠⚠ **AND OUTSIDE THE AGENT'S PROCESS TREE — THE LAUNCHER, NEVER `Start-Process` (landmine L30, 2026-09-13).** The
-  agent's tool shells run inside the desktop app's job objects (KILL_ON_JOB_CLOSE), and a `Start-Process` child only
-  breaks away into a second job of the app's: when the app restarted for a re-auth at 18:45:29 on 2026-09-10, the
-  scheduler, observer, game, archiver and harvester of `20260910_151220` died in the same second, ten months short of
-  run 1's end, with the OS up for eight more hours. `tools/testbed/launch_detached.ps1` creates the process through
-  WMI — in NO job object — and refuses (exit non-zero, child killed) unless the kernel confirms that; the scheduler
-  prints an ALERT if it ever finds itself inside a job. A reboot still kills everything (Windows Update restarted the
-  machine at 03:00 the same night); a resume mode is the open item, TESTBED_LANDMINES L30.
-  For progress, **tail the session log** (`tools/testbed/sessions/<stamp>/session.log`) rather than
-  capturing the process's stdio. Since 2026-07-31 the observer logs a loud `WARN` at startup when it
-  has no console, so a headless launch is at least visible in the log — it used to be indistinguishable
-  from an interactive one, and an entire overnight batch ran with the STOP file as its only control.
-  ⚠ `run_schedule.ps1` takes **no `-Label`** (the label comes from the schedule JSON); passing it kills
-  the launch instantly, which is exactly how the above happened.
-- **🛑 HARD RULE — SMOKE-CHECK EVERY RUN ~5 MINUTES AFTER IT STARTS, AGENTICALLY.** (User, 2026-08-12.)
-  A run that is botched at minute one is still botched at hour three, and the harness will not say so:
-  it reports `SESSION DONE` on a run that loaded no mod at all. Five minutes in, the game has booted,
-  loaded, started and written its first ticks — everything needed to tell a healthy run from a dead one
-  is already on disk. **Look at it then, not at the end.** Four checks, all cheap:
-  1. **Did OUR mod load?** `grep PM_TECH_REHAUL <run>/logs_live/debug.log` — the builder emits that init
-     marker for exactly this. Absent ⇒ stop the run, do not wait.
-  2. **Does the game version match the mod's?** `does not match game version` in `error.log`. A Steam
-     update between two sessions makes them incomparable, and it is invisible unless looked for — it
-     happened on 2026-08-12 **between two runs of the same afternoon** (1.13.9 → 1.13.10).
-  3. **Errors from THIS RUN ONLY — and FILTER BY POSITION, NOT BY TIME.**
-     ⚠⚠ `logs_live/error.log` is a MIRROR of a shared ring, and the mirror copies whatever the ring
-     already held: a run four minutes old can sit at line 12,639 of 12,675, with the first 12,638
-     lines from a previous NIGHT. Comparing `HH:MM:SS` strings then silently admits every one of
-     them, because `"21:52:27" >= "15:24:00"` is true as a string. That inflated a 38-line window to
-     198 and made two unrelated tooltip classes look like a regression (2026-08-29). Find the first
-     line stamped in this run's own clock range and `tail -n +N`; the file is append-ordered, so
-     position is exact where time is not.
-     ⚠ Then still discard the vanilla noise classes below before reading what is left.
-     (superseded wording:) **Errors in THIS RUN'S time window only.** `error.log` is a shared ring carrying other sessions'
-     lines; a raw line count is meaningless. Filter by the run's own start time, then discard vanilla's
-     own noise (the `jomini_spline_network_graphics` flood) and the catalogued
-     `is_production_method_active` PostValidate class (MISSING_PM_REFERENCES). What is left is the signal.
-     ⚠ **A THIRD NOISE CLASS, identified 2026-08-18: `lawgroup_navy_model has no active law`.** It can
-     reach **half a million lines in one run** (canon-n2 run002: 505,787 of 605,475) and appear in NO other
-     run of the same batch (run001: zero), so a first sighting reads as a catastrophic regression.
-     **It is vanilla's, and the evidence is the pure-vanilla arm**: the pinned baseline
-     `20260813_083557/run001_vanilla` carries **140,249** of them. Cause: every law in
-     `common/laws/00_navy_model.txt` is `is_visible = { any_scope_state = { is_coastal = yes } }`, so a
-     country that becomes **landlocked** by conquest has no valid law in the group and vanilla logs it
-     every tick. Intermittent because it depends on who loses their coast in that playthrough.
-     ⚠ It does NOT threaten telemetry: the ring is per log FILE, and our telemetry is in `debug.log`.
-     It does make `error.log` useless for that run past the flood — read it before drawing conclusions
-     from an absence there.
-     ⚠ **A FOURTH NOISE CLASS, identified 2026-08-30: `Could not get leader of interest group
-     '<IG>' in country '<X>'`**, printed with `jomini_script_system.cpp:247 Script system error!`
-     and a `Script location:` in `common/script_values/01_power_bloc_values.txt` or
-     `common/scripted_triggers/00_scripted_triggers.txt`. **It is VANILLA's**, and playthrough-
-     dependent like the navy one: the pinned vanilla baseline `20260821_131149` carries
-     **2,220 / 3,559 / 10,133** across its first three runs, against **2,136-3,859** in a mod arm.
-     Each occurrence prints 4-5 lines, so a few thousand of them inflate an in-window count into the
-     tens of thousands and read as a catastrophic regression. **Judge it by comparing the count
-     against the vanilla baseline, never by the raw line total.**
-     ⚠⚠ **AND FILTER BY A PARSED TIME, NOT BY A TIME-SHAPED PATTERN.** The rule above says "filter by
-     POSITION, not by time" — but finding that position with `grep -n "^[1[23]:"` is still a time
-     filter, and it silently matches an EARLIER session's 12:18 line when the run began at 12:48
-     (measured 2026-08-30: it admitted ~110 foreign lines and I read the result as a new error class).
-     Parse the stamp and compare it numerically against the run's own start time from `meta.json`:
-     `awk 'match($0,/^[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]]/){h=substr($0,2,2);m=substr($0,5,2);s=substr($0,8,2); if(h*3600+m*60+s>=START){print NR; exit}}'`.
-     ⚠⚠ **AND A `>= START` ON SECONDS-OF-DAY IS STILL WRONG FOR A RUN THAT STARTS JUST AFTER MIDNIGHT**
-     (2026-09-06, the 60-run batch's run 1, launched 00:10): every line the previous batch stamped 17:48–23:59
-     passes it, so the window read **17,399 lines instead of 85**. Take the window as a RANGE from the run's
-     start to NOW, wrap-safe (`START <= t <= NOW`, or `t >= START OR t <= NOW` when NOW is past midnight) —
-     `tools/testbed/batch_heartbeat.sh` does that since 2026-09-06; at ~2h45 a run, one run in nine starts
-     inside the hour after midnight.
-     ⚠ **A FIFTH NOISE CLASS, identified 2026-09-06: `untyped trigger [ Scoped object of type 'country' is
-     not valid (Country (4294967295)) ]`** with `Script location: <unknown>:0` — an invalid country handle
-     from code-driven triggers, no script file named. **It is VANILLA's**: the pinned vanilla baseline
-     `20260821_131149` carries **925 / 946** in its first two runs, mod arms 850–1,704 (canon4v-hai3-n2's
-     two runs, canon4v-art3-n5 run 2). The heartbeat filters it with the other four.
-     ⚠ **A SIXTH, RARE AND HEAVY (identified 2026-09-06, run 9 of the 60-run batch): the TRIO `Div/0 near
-     common/political_movements/…`, `Event target link 'religion' returned an invalid object` (locations in
-     01_power_bloc_values, character interactions, coat-of-arms templates) and the assertion `The null hierarchy
-     will never have social classes associated with it`**, all starting together mid-campaign and running to
-     thousands of lines. **VANILLA's**: the n=16 baseline has the trio in run 7 (8,195 / 10,038 / 1) and the
-     religion class in run 8 (7,827); absent from the other fourteen. A game-state anomaly (an entity with no
-     religion), not script of ours. The heartbeat filters the two script classes. ⚠ NOT a noise class but a WATCH
-     item: `Failed to create battle in <Front> due to 'land_battle_size'` (battle_manager.cpp, engine-side) is
-     0–4 a run in vanilla and in ten earlier four-rung runs, but 7,336 / 4,308 in canon4v-hai3-n2 and 1,304 in
-     run 9 of the 60-run batch — if it recurs across many runs of the ai_value-3^tier arms, it may say those arms
-     field armies too small to spawn battles; judge it per batch, not per run.
-     ⚠ **A SEVENTH (identified 2026-09-21): the ENGINE LOC-STRING data errors, `pdx_data_localize.cpp:136 Data error
-     in loc string '<KEY>'`** — seen as `DIPLOMATIC_ACCEPTANCE_DIFFERENT_RELIGION_BUT_SAME_TRAIT` (230 lines in the
-     first third of a run) and `BATTLE_SHIPS_BREAKDOWN_*`, the latter always paired with
-     `pdx_data_factory.cpp:1662 Invalid promote 'NAVAL_BATTLE'(0)`. **They are VANILLA's**, and the naval pair is
-     easy to confirm (3,004–6,766 lines in each of the pinned seeds). ⚠⚠ **THE DIPLOMATIC ONE IS THE TRAP: it is
-     ZERO in all 16 pinned vanilla seeds**, so the usual "compare against the baseline" check reports a class the
-     reference has never produced and it reads as a regression. It is elsewhere in the corpus on VANILLA arms —
-     `20260803_030101_wages-n3/run002_vanilla` 130, `20260803_220658_vanilla-percapita-n3/run002_vanilla` 296,
-     `20260807_005246_popsplit-debut-vanilla/run001_vanilla` 296 — i.e. playthrough-dependent like the navy-model
-     and Div/0 classes, firing only when the AI renders that tooltip for a pair with different religion and a shared
-     trait. ⇒ **When a class is absent from the pinned sixteen, sweep EVERY session before calling it ours**, and
-     check the decisive thing directly: `grep -c zzz_pm_rehaul <error.log>` — our emitted files are all `zzz_pm_rehaul*`,
-     so a **0** there means no error in the file names anything we wrote, whatever the totals look like.
-     ⚠⚠ **READING A LIVE RUN'S FILES USED TO BE ABLE TO KILL THE RUN (fixed 2026-09-07, landmine L29).** The observer
-     wrote every tick to `run.log` with an unguarded `Add-Content` under `Stop` preference, which throws "Stream was
-     not readable" while another process holds the file open — a heartbeat's `tail -1 run.log` landed inside the
-     07:14:40 tick of the 60-run plan's run 12 and unwound the observer with the game still running; the scheduler
-     then burned runs 13–60 in fifteen minutes on the already-running guard (L19). All four harness log writers now
-     retry and never throw, and the scheduler aborts after two consecutive instant failures. Reading is legitimate;
-     the writer tolerates it. If a run.log ever ends in `restored content_load.json` with no verdict line, that is the
-     signature — check for an orphaned `victoria3.exe` before anything else.
-  4. **Is the clock advancing?** The tail of `<run>/run.log` should show `in-game <date>` moving.
-  5. **Is the construction mix reasonable?** (User-directed 2026-08-16, after F66.) As soon as the
-     concurrent save harvest lands its first summary (~10 min for the 1837 autosave), run
-     `node tools/testbed/queue_mix.mjs <run-dir>` — for select majors separately and the world as a
-     whole, the distribution of what is being built, private queue and government queue separately,
-     must be plausible. One building family dominating a major's queue (≥60% of ≥3 items) is a
-     **red flag that can invalidate the run**: F66's port spam read 100%-port on GBR and FRA at the
-     very first 1837 summary, in every arm, and nobody looked until 1855.
-     ⚠⚠ **A QUEUE IS A BACKLOG, SO ITS LENGTH MEASURES DRAIN RATE, NOT ACTIVITY** — and a SHORT queue
-     makes any concentration look extreme, which is how the tool's own ≥60% WARN misfires. On
-     2026-08-29 the four-rung arm read 95 private items against solver2f's 1939 at the same date and
-     83% government_administration, which looks like an economy that cannot build. It was the
-     opposite: world GDP 678M vs 591M, construction sector 924 levels vs 702, total building levels
-     equal. The queue was SHORT because it DRAINED; solver2f's 1939 was a backlog of 207 ports and
-     395 trade centres. **Never read a queue count without the construction sector and GDP beside
-     it** — the three together say whether a thin queue is starvation or speed. Re-run it `--all` post-run;
-     the WARN threshold is advisory — read the lines, don't just gate on the exit code.
-  ⚠ **`mod_loaded=False` in the harness summary is NOT authoritative** — it read False on a run whose
-  init marker is plainly in `debug.log`. Check the marker yourself before believing the summary either way.
-- **ALWAYS pair a batch launch with `tools/testbed/wait_for_session.ps1` in the BACKGROUND.** The
-  visible window that keeps the keys alive is invisible to the agent harness, so nothing signals when
-  the batch ends — on 2026-08-01 a finished 8-hour batch sat unnoticed for ~2 h. The waiter supplies
-  the missing signal: run it with the tool's `run_in_background` (which *is* harness-tracked), and its
-  exit wakes the agent. It returns on whichever comes first — **DONE** (session finished),
-  **RUNNING** (the `-MaxMinutes` heartbeat, default 30; just re-launch it to keep waiting),
-  **DEAD** (exit 2 — no game process and no completion marker, after a **`-DeadGraceSeconds` grace,
-  default 900**, re-checked throughout rather than slept blind), or **STALLED** (exit 3 — the newest
-  write ANYWHERE in the session tree has not moved for **`-StallMinutes`, default 20**, whatever the
-  processes claim). ⭐ STALLED exists because every wait condition in this repo used to match only
-  SUCCESS: on 2026-08-18 a build failed in 3 s, the scheduler blocked on its own output pipeline, and
-  the silence read as a healthy long run for 6 h 40 min (landmine **L21**). **A watcher that matches
-  only success is indistinguishable from a broken watcher.** The heartbeat is the point: without
-  it, a hung run would never wake anyone, because the completion signal is exactly what a hang
-  withholds.
-  ⚠ **Do not confuse the two graces — they are different timers on different scripts.** This one is
-  the **waiter's DEAD grace** (`wait_for_session.ps1 -DeadGraceSeconds`, **900 s**, raised from 90 s
-  because a long harvest looks exactly like a dead session). The other is the **observer's crash
-  grace** (`run_observer.ps1 -StopGraceSeconds`, **still 60 s**) — how long an unexplained game exit
-  waits for a keypress before being treated as a CTD and resumed. ⚠ That 60 s only applies when the
-  harness **has an interactive console**; launched headlessly it logs *"no interactive console -
-  cannot ask; treating as a crash"* and resumes within a second or two.
-  ```
-  powershell -ExecutionPolicy Bypass -File tools\testbed\wait_for_session.ps1 -Session tools\testbed\sessions\<stamp> -MaxMinutes 30
-  ```
-  ⚠ **DEAD IS A FALSE POSITIVE DURING A LONG HARVEST.** Between runs the game is gone and there is no
-  completion marker yet, which is exactly the DEAD signature — but the observer is parsing the mirror, and
-  that takes **minutes** on a big one (measured 2026-08-05: a 496 MB mirror took ~7 min, against the
-  waiter's 90 s grace). Before treating DEAD as real, check `run.log`'s tail for a `run N finished` line and
-  whether the harness PowerShell is still alive; a batch that looks dead may simply be writing
-  `markets.tsv`. Do NOT relaunch the schedule on a DEAD alone — that is how a healthy batch gets killed and
-  restarted from 1836.
-- **Telemetry belongs to the BUILDER, not the harness.** `tools/telemetry_lib.ps1` is the single
-  generator of testbed logging script; `build.ps1` dot-sources it and emits
-  `common/on_actions/zzz_v3tb_telemetry.txt` into whatever mod it builds. Flags: **`-Telemetry <spec.json>`**
-  (`{dump_dates, tags, metrics}`; each dump date must be the 1st of a month), `-TelemetryOn` (defaults),
-  `-TelemetryToken <tok>` (stamps every line so one run cannot read another's output), and
-  **`-ControlOnly`** — the **vanilla control arm**: a complete, loadable mod whose *only* content is that
-  telemetry file plus metadata (no buildings, PMs, localization or history). `-ControlOnly` requires
-  `-SaveTo`/`-DryRun` so it can never overwrite the canonical `mod/`.
-  🛑 **HARD RULE — THE ONLY THING A CONTROL MAY VARY IS ITS TELEMETRY.** (User, 2026-08-06.) A control
-  arm carries **no gameplay content of any kind**. Not one file, not one field, not "just one small
-  well-guarded exception". If an arm needs a gameplay change, however small, it is **not a control** and
-  must not be built by, named after, or documented alongside `-ControlOnly`.
-  ✅ **THE THREE ARMS, and the guarantee is now ENFORCED rather than documented** (fixed 2026-08-06, after
-  the rule above was breached for a day by bolting the pop-need overlay onto `-ControlOnly` itself):
-    1. **`-ControlOnly`** — metadata + telemetry and *nothing else*. It **throws** if handed a `-Config`
-       carrying `pop_need_weight_mult`, and `{kind: control}` **throws** if a schedule gives it a `config`
-       at all. A flag that promises an absence must fail loudly rather than quietly widen.
-    2. **`-Overlay -Config <path>`**, schedule **`{kind: overlay, config: X}`** — vanilla + telemetry +
-       a **declared** overlay. It throws if the config produces no overlay, because an overlay carrying
-       nothing is a control wearing the wrong name. ⚠ Today the only overlay kind is the pop-need weight
-       rescaling; **if a second is ever added it must be named and allow-listed**, or the arm starts
-       quietly accumulating content, which is the whole failure this split exists to prevent.
-    3. **It reports itself as its own thing.** Its own mod id (`com.yurcick.v3_testbed_overlay`), so
-       `build_state.json` records **`arm: overlay+pop_needs`** and landmine **L7** — which requires a
-       *control* to emit nothing outside `.metadata` / `on_actions` / `script_values` / `events` — simply
-       does not apply to it. **Naming the arm honestly is what makes the guardrail work**: L7 keys on the
-       control's metadata id, so an overlay that lied about being a control would trip it, and one that
-       says what it is passes for the right reason.
-    4. **Both share the ONE telemetry generator**, which was always the only thing arms were meant to
-       hold in common and is what makes them comparable.
-  ⚠ **All three guards are tested, not assumed** — a control handed a content config, an overlay handed a
-  contentless one, and a `{kind: control}` with a `config` all fail with a message naming the fix.
-  ⚠ **Setup shape is validated UP FRONT**, in the same pass as the run list, not lazily in `Resolve-Setup`
-  — which runs inside the execution loop and *after* the `-WhatIf` return, so a malformed setup used only
-  by the last run of an overnight schedule went unreported until that run began, hours in.
-  ⚠ **The underlying shape is still a straight-line script with an early `exit 0`**, which is what made
-  the original breach possible. A list of content emitters each arm opts into would be better; the guards
-  above make the current shape safe, they do not make it right.
-  ⚠ **Sessions run on 2026-08-05/06 record `arm: control+pop_needs`.** After the rename that value means
-  **overlay**. Do not back-fill it into their `build_state.json` — a session artifact is a historical
-  record, not a cache.
-  **Why the builder owns this:** an experiment's arms must instrument *identically* or the control isn't a
-  control — one generator guarantees that (verified: control and modded builds emit byte-identical
-  telemetry apart from the build-timestamp comment). **`telemetry_lib.ps1` is the ONLY generator**: the
-  harness used to carry a second one (`Write-InstrumentMod` in `run_observer.ps1`, writing a throwaway
-  `v3_testbed_instr` mod), which had already drifted — its market line stopped at price, with no
-  imports/exports/production, and it emitted no events at all — so a hand-run arm silently logged fewer
-  columns than a scheduled one. It is gone; do not reintroduce a fallback generator.
-  Before adding a metric, read `TESTBED_METRICS.md`.
-  ⚠ `telemetry_lib.ps1` deliberately sets **no** `Set-StrictMode`: it is dot-sourced, and StrictMode
-  applies to the *caller's* scope — switching it on broke the builder's own property tests.
-  ⚠⚠ **NEVER edit `telemetry_lib.ps1` or `build.ps1` while a batch is running.** `run_schedule.ps1`
-  rebuilds the mod **before every run**, so an edit lands in run 2 and run 3 but not run 1 — and the
-  arms silently stop being comparable, which is the one failure a control design cannot survive. This
-  includes edits that look cosmetic, such as bumping `$script:TELEMETRY_VERSION`. Queue them and apply
-  them once the session reports SCHEDULE DONE; if a doc has to describe the new state meanwhile, say
-  which session is affected (see TESTBED_METRICS' v10 note).
-  ⚠⚠ **AND SINCE 2026-09-09 THE SAME RULE COVERS EVERY `tools/testbed/**/*.mjs`**: preflight walks them (L27) inside every
-  build, so ADDING or EDITING an analysis script mid-batch can fail the next run's build and abort the whole schedule — phase 2's
-  first session (`20260909_100930`) died at its run 2 on a ledger script added that morning whose `disabled` guard sat three
-  lines below the loop, outside the detector's two-line window. Run `preflight.ps1 -RepoOnly` before committing any such script
-  while a batch plays; a script that passes it cannot break a build.
-- **ALL measurement goes through `tools/testbed/run_schedule.ps1 -Schedule <x.json>`.** This is the entry
-  point: it owns *schedule JSON → build each run's mod via `build.ps1` → run it → harvest*. **Never invoke
-  the builder directly to produce test data** — that bypasses the record of what was built and why. (Calling
-  `build.ps1 -DryRun` during development, to check a config still lints, is fine: it produces no
-  measurements.) The `runs` list is **explicit and ordered**, so any sequence works including repeats and
-  alternation (`A@1841, B@1841, A@1841, B@1846`); each run carries its **index**, and the schedule JSON is
-  copied verbatim into the session folder so a result always traces back to its plan.
-  ⭐ **BUT DO NOT ALTERNATE CONFIGS** (user-ruled 2026-09-13, twice). A decision-driven test — two runs of one config, a
-  decision on whether a third is needed, that run if so, THEN the next config — runs each config's runs back to back as
-  its own schedule and decides between schedules. The only conceivable case for interleaving is an extremely long,
-  predetermined batch (15 canon vs 15 vanilla), and even the argument for it is unsupported: **there are no recorded
-  confounders from external machine usage or time of day, and any such effect is very likely far below noticeable
-  levels** — so "a Steam update or a slow night hits both arms" justifies nothing. The a16/a22-in12 batch of 2026-09-13
-  interleaved its two configs; by ruling it was left to finish as scheduled (its tie-breakers, if any, run after it).
-  ⚠⚠ **AMENDED 2026-10-21 FOR THE WALL CLOCK** (user: *"It seems that the conclusion that same config gives same wall clock speed was
-  premature"*; FINDINGS **F248**): vanilla on the same game version ran **×1.06–1.08 slower per unit of world in October than in August**
-  (pop-, level- and GDP-matched, in every decade), so a play time is NOT comparable across months, and a wall-clock comparison needs both
-  arms measured in the same days. ⇒ The economic readings still pool across months (`lib_runs.VANILLA_REF`, n=24), and the decision-driven
-  2+1 rule above stands for them; the WALL CLOCK is read against `VANILLA_WALL_REF`, the most recent same-harness vanilla, and is re-measured
-  by an ALTERNATING batch (`tools/testbed/schedules/alt_vanilla_canon_n16.json`: vanilla and the canon run by run, n=16 each, ~4 days —
-  prepared 2026-10-21, launched after the first round of polish).
-  ⭐⭐ **THE 2+1 QUICK CONFIG TEST — THE STANDARD (user-ruled 2026-09-14, FINDINGS F114).** ⚠ Since 2026-09-17 its bands are ONLY the divergence test that decides a third run; what a config is judged by is THE CRITERIA REGISTER (§10.83), whose aims replace the bands' TARGET semantics. Two runs of one config, then
-  `node tools/testbed/ledger/alignment_check.mjs --arm <session[,session]>:<setup>`, then a third run ONLY where the two
-  DIVERGE, the config read as the median of three. **Two criteria, at 1935, as ratios to the vanilla baseline's per-run
-  MEDIAN: world GDP, and productive workers per capita** (salaried − government − military, over the strata population).
-  **Five bands each — GDP: way below <0.6 · noticeably below 0.6–0.9 · TARGET 0.9–1.1 · noticeably above 1.1–1.5 · way
-  above >1.5; workers: way below <0.40 · noticeably below 0.40–0.55 · TARGET 0.55–0.72 · noticeably above 0.72–0.90 · way
-  above >0.90** (the workers target is centred on the design's own goal — phase 2's median worker share of 0.634× vanilla,
-  F109 — so vanilla itself reads "way above" there). **A pair fails an axis only in DIFFERENT bands AND ≥ 0.15 (GDP) /
-  ≥ 0.10 (workers) apart**, in points of the vanilla median. Calibrated on every pair of byte-identical runs (F114): 47%
-  of phase 1's, 40% of phase 2's and 69% of vanilla's pairs pass, i.e. the third run is the NORM for this family's seed
-  spread, by choice. No obsolescence criterion (rung-0 direction, payback, below-best never failed inside a config in 490
-  pairs; they stay in the VERDICT as flags). The five-criterion rule of the 2026-09-13 schedules is retired.
-  ⭐ **THE RUN-LEVEL STOP (user-ruled 2026-09-14, later the same day):** unless a schedule says "full runs" (useful while learning
-  dependencies rather than aiming at every goal), **any run of a 2+1 test that ends above ×1.3 of vanilla's 1936 GDP** (the
-  eighteen-run vanilla median at the 1936.1.1 endpoint; vanilla's own seeds top out at 1.14×) **is the config's LAST run** — the
-  config stops there, be it run 1, 2 or 3, whatever the alignment would say. **Never mid-run**: a failed config still leaves a
-  comparable 1836→1936 result (a mid-run GDP abort was proposed and rejected as too aggressive, and its thresholds as too high).
-  **SCOPE (user, the same message): 2+1 BATCHES ONLY.** A long sequence — any batch not explicitly set up as a series of 2+1 tests
-  under changing configs (a 30-run plan, a 60-run plan, a full-run learning batch) — is NOT subject to it; every run plays.
-  `alignment_check.mjs` prints the stop verdict (exit 3) and `--stop-above 0` is the "full runs" switch; between the runs of a
-  live batch the scratchpad `stop_watch.mjs` enforces it by dropping the STOP file after an offending run's endpoint lands (the
-  next run is abandoned at 1836 and L17-excluded, the phase-2 run-11 shape). Being far BELOW stops nothing (the stall family). ⚠ SUPERSEDED 2026-09-17 by THE CRITERIA REGISTER (§10.83; the governing section near the top of this file) — kept as the record of the calibration it left behind. ⭐ **THE CAPITAL-ABUNDANCE FLAG (user-ruled 2026-09-15):** "a situation of complete capital abundance (total unemployment under 3%, hoard over
-  2 GDP), if not confined to minors, invalidates the config more or less, it just shouldn't happen … it distorts the economy a lot, and other metrics'
-  readings from this config become heavily unreliable". Total unemployment INCLUDES PEASANTS — (unemployed + peasants) ÷ (salaried + unemployed +
-  peasants); the hoard is the investment pool ÷ GDP; read WORLD and the SHORTLIST (GBR, USA, FRA, GER — NGF, then PRU, standing in where Germany never formed) and each
-  shortlist member — `node tools/testbed/ledger/capital_flags.mjs --arm <session[,session]>:<setup>` prints both splits per usable run with the
-  medians and the vanilla reference, marks a tripping member ⚑ and exits 4 on a shortlist-wide trip (VOID); run it in every write-up beside `alignment_check.mjs`. Measured 2026-09-15 at 1935:
-  the flat A 1.9 pair trips it for the whole shortlist (0.3–1.0% at a hoard of 3.1–3.3); C 1.6, the ×1.3 lift and run 1 of the found config trip it for
-  BRITAIN alone (2.7% at 2.28, 2.3% at 6.97, 0.8% at 2.40); vanilla's own Britain trips it in 2 of 16 seeds (0.8% at 2.14, 0.1% at 2.91), so a British
-  reading at vanilla's extreme is a flag, a shortlist-wide one is a void. Vanilla medians: world 41.7% / shortlist 21.7% peasant-inclusive (strict, without
-  peasants: 16.3% / 4.0%); the sweep books run 40–70% peasant-inclusive on the shortlist except the runaways. Setups are
-  `{kind: control}` (vanilla + telemetry, via `build.ps1 -ControlOnly`) or `{kind: config, config: <path>}`.
-  ❌ **`{kind: control, config: <path>}` exists today and is the architectural violation flagged under
-  `-ControlOnly` above** — it builds vanilla + telemetry + a pop-need weight file while still calling
-  itself a control. It is to be replaced by `{kind: overlay, config: <path>}`, a third kind that is
-  honestly named. Until then, any finding from such a run states its arm as **overlay**, not control.
-  ⚠ **EVERY telemetry spec key must be listed in the plan entry that `Resolve-Setup` builds, or it is
-  silently dropped** — the key reaches neither the builder nor the mod, and the run then looks like the
-  *metric* failed rather than the plumbing. That cost a probe run on 2026-08-05 (`breakdown_dates`,
-  `breakdown_tags`, `wide_dates`, `wide_tags` all emitted nothing until they were added).
-  ✅ **Now checked mechanically (landmine L5)** — and it immediately found a live one: **`origin_goods`**
-  was read by `Read-TelemetrySpec`, requested by three schedules, and threaded through nowhere, so every
-  scheduled `origins` run silently measured the hardcoded default goods list. Session
-  `20260801_225108_paper-be20-n3` asked for wood/sulfur/dye and **never instrumented them**; its own
-  `telemetry.json` carries `origins` with no `origin_goods` at all. Fixed, and the check now guards it.
-  **The mod is rebuilt for every run, never cached** — builds are deterministic (same config + same vanilla
-  ⇒ same output) and take ~1 min, whereas caching would hide a setup that isn't reproducible. The only
-  nondeterminism in a build artifact is the timestamp the builder stamps into the mod `name`, so any
-  "did this rebuild change?" check must exclude it. `{kind: recipe}` (ordered solver steps) is deliberately
-  **not** implemented: a recipe encodes balance *methodology*, so its vocabulary dies with the next BE
-  rework — author a config file and reference it instead. Specs live in `tools/testbed/schedules/`,
-  results in `tools/testbed/sessions/` (gitignored, **and never deleted** — see below) — **one results
-  root**; the older `runs/` and
-  `batches/` roots are gone and stay gitignored so a stale folder can't drop game logs into the tree.
-  Each `mod_sched_<setup>/` it builds is deleted when the schedule ends (build output, reproducible from
-  the setup's config; `-KeepMods` keeps them). The session folder ends up as: `schedule.json` +
-  `session.json` + `session.log` + **`markets_all.tsv`** (all runs, each row prefixed `run_index` +
-  `setup`), and one flat `runNNN_<setup>/` per run.
-  **Interactive control** — the runner reads keys, so start it from a console you can type into (or let it
-  be spawned into its own window): **`[p]` pause · `[r]` resume · `[s]` stop after this run · `[x]` stop
-  now**. Pause suspends the watchdog *and* crash detection, so a paused session is never mistaken for a
-  crash; the runner cannot pause the *game*, you do that yourself. On `[r]` it checks whether
-  `victoria3.exe` is still up: if so it just keeps watching, if not it resumes that run from its last
-  autosave. **Crash policy:** an unexplained exit with no keypress within 60 s is treated as a CTD and
-  resumed; **3 crashes from the same autosave** ⇒ permanent failure, move to the next run; **3 crashes
-  before the first autosave ever exists** ⇒ loud alert and the **whole schedule aborts**, because repeated
-  deaths that early mean the mod itself is broken. Exit codes: `0` ok, `2` stopped by user, `3` fatal.
-- **🛑🛑 EVERY SESSION THAT RAN GETS A `VERDICT.md`, AND THE DEADLINE IS THE HANDOVER** (user ruling
-  2026-08-12). A sound session needs one as much as a defective one — its numbers are what a later
-  reader compares against, and "sound" is itself a finding that has to be stated. ⚠ **The right MOMENT
-  cannot be pinned down**, because a verdict often needs the user: whether a result is void, what it is
-  confounded by, and what it means are frequently their call, and that conversation can run for hours
-  after the run ends. So the rule is not "write it when the run finishes" — it is **"a handover may not
-  be written while a session from this session's work lacks a verdict"**. That is a moment that always
-  arrives and is always noticeable.
-  **Check it mechanically rather than from memory** — one line, and it is the last step before the
-  handover:
-  ```bash
-  for d in tools/testbed/sessions/*/; do b=$(basename "$d"); [ "${b:0:8}" -ge 20260812 ] 2>/dev/null && { [ -f "$d/VERDICT.md" ] || echo "MISSING VERDICT: $b"; }; done
-  ```
-  ⚠ **The glob starts at 2026-08-12 ON PURPOSE.** The convention began that day and 77 earlier sessions
-  have no verdict; a check that reports 77 misses every time is a check nobody reads, which is the exact
-  failure mode this register-and-detector habit exists to prevent. Widen the glob only to write a
-  RETROSPECTIVE verdict deliberately — and mark it as retrospective, since it is weaker evidence than one
-  written while the analysis was live.
-  Then add the one-line row to the COMMITTED `tools/testbed/SESSION_VERDICTS.md` — the session folder is
-  gitignored, so the row is the half that survives it.
-- **A SESSION THAT IS SUPERSEDED, DEFECTIVE OR PARTLY VOID NEEDS THE VERDICT MOST.**
-  Everything a session carries about *why* it ran — `schedule.json`'s `_why`/`_comparison`,
-  `build_state.json`'s `agentic` block — is written **before** the run. Nothing anywhere records what it
-  turned out to mean, and since sessions are never deleted (below), a defective batch otherwise sits
-  there indefinitely looking like clean runs. `FINDINGS.md` is the wrong home: it is organised by result,
-  a retracted or partial result does not belong in it, and someone reading a session folder has no reason
-  to go looking there.
-  **So the annotation lives WITH the data**, `tools/testbed/sessions/<stamp>/VERDICT.md`, where it cannot
-  be found separately from what it describes. Write one when: a defect is found in the build after it
-  ran; a later batch supersedes it; part of the result is void and part survives; or a metric turns out
-  not to have been instrumented. Say plainly **what is void, what still reads, and how far** — and
-  distinguish the measured quantity from the proposed cause, because a session's numbers usually outlive
-  the first explanation of them.
-  ⚠⚠ **NAMING THE DEFECT IS NOT THE VERDICT — TRACE WHAT IT DID, AND WHAT IT TOUCHED.** "The military
-  channel was ungated" says nothing a reader can act on. "A clear overshoot on the technology boost,
-  exacerbated by military technology being gated on conditions that are true far too often, so it was
-  shared free and fast" says what happened *and* by what mechanism. Then **follow the knock-ons**: this
-  game is densely interconnected and a defect never stays in its own channel. In the case that produced
-  this rule, one ungated military term plausibly reached four other readings — easier early conquest
-  (13–20 fewer countries surviving, which silently changes the population every median and percentile is
-  computed over), directed research redirected into the *other* trees (so the untreated tree is a weaker
-  control than it looks), the treated tree's own gain partly borrowed from that freed budget, and ~10%
-  more war feeding every economic number. **List those paths even when you cannot measure them** — an
-  unlisted confound reads as an absent one.
-  ⚠ Corollary: be sceptical of your own control. A tree, arm or metric is only a control for the channels
-  it is actually independent of; say which those are.
-  ⚠ **Do not write the verdict off the endpoint alone.** The trajectory is often where the result is:
-  whether a leader plateaued or the century merely ended, when milestones moved, whether two runs of one
-  arm agree. A 1935 snapshot cannot tell those apart.
-  ⚠ A verdict written **retrospectively**, from the documents rather than at the time, says so at the
-  top — it is weaker evidence than one written while the analysis was live, and a later reader needs to
-  know which kind they have.
-  ⚠⚠ **A `VERDICT.md` IS GITIGNORED WITH ITS SESSION, so it is NOT backed up** — the same standing hazard
-  as the data (*gitignored ≠ backed up*, below). That is accepted for the reasoning, which is moot once
-  the data is gone, but **not** for the correction itself: a "this batch is n=2, not n=3" is exactly the
-  kind of thing that must outlive the folder. So every verdict also gets a **one-line row in the
-  COMMITTED `tools/testbed/SESSION_VERDICTS.md`**, carrying the status and the correction. Same division
-  of labour as `FINDINGS.md` and the sessions it describes: detail with the data, conclusion in the repo.
-  ⭐ Writing verdicts over the existing sessions paid for itself immediately — it found three batches
-  claiming more runs than they have (`techtree-full-n3` and `wages-n3` are n=2; `vanilla-retest`'s
-  nineteen runs are sixteen 52-second probes plus three failed resumes), one of which underpins the
-  measured base wage. **Run counts in a session's NAME are not evidence; the run logs are.**
-- **⚠️ TESTBED SESSIONS ARE NEVER DELETED — not even obsolete ones.** Everything under
-  `tools/testbed/sessions/` is **permanent**. This is the one exception to "gitignored ⇒ throwaway":
-  it is gitignored because it is bulky and binary-ish (game logs, minidumps), **not** because it is
-  disposable. Do not delete a session during a cleanup, a refactor, a results-root consolidation, or
-  because a design change made the run's config obsolete. If disk becomes a real problem, **ask the
-  user** and propose archiving (zip the session, or drop only `logs/`, `logs_live/` and
-  `_settings_backup/` while keeping `markets_all.tsv` + `events.tsv` + `meta.json` +
-  `build_state.json` + `schedule.json`) — never a silent `Remove-Item`.
-  **Why.** A session is not reproducible measurement, it is a *historical observation*: 26 h of game
-  time, a specific game version, a config that may no longer exist, and a specific set of RNG
-  playthroughs. Re-running never reproduces it — different seeds, and after a patch a different game.
-  An obsolete run is still the only evidence of what the economy did under that design, which is
-  exactly what you want when a later result looks strange.
-  **This rule is written in blood.** The `runs/`→`sessions/` consolidation (`b6f77cb`) deleted the
-  legacy roots, taking with them the **n=5-per-arm, 1836→1935 tiering-vs-vanilla batch** —
-  `20260729_101106` and `20260729_233413`, ~26 h of runtime (FINDINGS.md F1/F2). Its conclusions
-  survived only because they were reconstructed from a chat transcript, and only the parts that had
-  been *printed* at the time: the underlying `markets_all.tsv` is gone, so any question not asked
-  back then can never be asked of that batch again.
-  **And there is no backup.** `sessions/` is gitignored, so deleted results are NOT on GitHub, not
-  in any branch, and not in the reflog — `git log --all` over `runs/` returns nothing at all.
-  **Gitignored ≠ backed up.** Deletion here is unconditionally final.
-  Hence the companion rule: **write the conclusion into `FINDINGS.md`, with the numbers in full, as
-  part of the same pass that produces it** — don't leave the finding living in the session folder or
-  in chat.
-- **⭐⭐ THE MOD MUST NOT MAKE THE GAME SLOWER — A STANDING CONSTRAINT ON EVERY BATCH, REPORTED HIGH UP**
-  (user-ruled 2026-08-18). Whatever we do to the economy, **Victoria 3 must stay about as fast to play as
-  the base game**. This is a first-class goal, not a footnote: a mod that models a beautiful economy and
-  costs the player a third of their evening in load and tick time has failed at something the balance
-  numbers will never show. **The budget is 10% overall.** It sits in the ledger's verdict table as row
-  **P**, with its own section directly under the verdict — see the ledger README, and
-  `tools/testbed/ledger/report_perf.mjs`, which computes it from artifacts every batch already produces
-  (`meta.json` → `wall_seconds`, and the yearly save archive whose FILENAMES carry the wall-clock stamp).
-  ⭐⭐ **THE GRADE IS THE RAW TOTAL — WHAT A PLAYER ACTUALLY WAITS THROUGH** (user-ruled 2026-08-31,
-  correcting the reading below, which had it backwards). A player never notices that an economy half a
-  world away carries fewer lightly-staffed buildings; they notice the century taking longer. So the
-  budget is spent against **total run time vs vanilla**, and **shrinking what we ask the engine to
-  simulate is a legitimate way to meet it** — not a way of cheating the metric.
-  ⭐ `report_perf.mjs`'s PRINTED labels follow this since 2026-09-30 (section 1 carries "THE GRADE"); until then it still called the
-  pop-matched figure "the verdict" and the total "NOT the verdict" (BUGS_AND_FIXES 2026-09-30). Its JSON keys did not change.
-  ⚠ **The pop-matched figure is the DIAGNOSTIC beside it, not the verdict**: seconds per in-game year
-  compared at the same live pop-object count (`world.pop_objects_live`, in every save summary). It
-  answers a different and narrower question — *is the engine dearer per unit of work?* — which is what
-  you want when the total moves and you need to know whether the cause is a bigger world or a costlier
-  one. Report both, grade the total.
-  ⭐ **AN EXTERNAL SLOWDOWN IS SET ASIDE, NOT GRADED — AND SINCE 2026-10-06 IT IS MEASURED, NOT INFERRED.** The 2026-09-26 ruling stands:
-  a run whose game and save-melt speeds slow and recover TOGETHER is external load, and its wall clock leaves the grade.
-  ⚠⚠ **A SUMMARY'S FILE TIME MINUS ITS SAVE'S STAMP IS NOT A MELT TIME** (found 2026-10-06, BUGS_AND_FIXES): in watch mode the harvester
-  holds the newest save until the NEXT one exists, so that gap is one autosave interval — the game's own wall time per in-game year — and
-  "the melts slowed with the game" read that way is circular. It was, in BOTH cases ever ruled on: canon-dams-v2-n1 (F170's VOID, now
-  marked unsupported) and run 3 of 20261005_154629, whose REAL melts (the harvest.log's in-flight lines) ran 6–13 s a save straight through
-  the game's 3–4× slowdown. Neither case meets the rule.
-  ⭐⭐ **RULED 2026-10-06: A SLOWDOWN COUNTS IN THE WALL CLOCK UNLESS THERE IS HARD EVIDENCE OF A MACHINE-WIDE ONE** (the user: *"unless we have
-  harder evidence for external machine-wide slowdown, do record those as parts of the wall clock"*), so both runs above count again. ⭐ And
-  the wall clock is REPORTED FACTORISED, as diverging branches, never as one line (*"to not conflate cases of 'everything is 10% slower'
-  and cases of 'half of the runs is 10% faster, half is 30% slower'"*): the NORMAL BRANCH (Σ each period's median pace over the arm's runs)
-  beside the SHARE of runs with a slowdown episode and an episode's COST in minutes (`ledger/slow_episodes.mjs`), each against vanilla's.
-  The control (vanilla n=16 + 3): 1 of 19 runs with an episode (10 min, 2.2×); the older mod arms 3 of 60 (11–21 min); the two big ones
-  (57–58 min, over 3×) are canon-dams-v2-n1 and run 3 of 20261005_154629. ⭐ WHAT THEY ARE — FINDINGS **F218** (a peer session, the same
-  day, over 291 runs): mostly a lone ship stuck on a repair voyage whose travel path the engine keeps appending to for decades (run 3's were
-  two US torpedo boats), VANILLA behaviour as common in vanilla as in the mod, plus a few long great-power wars — seed variance, not a mod cost.
-  ⭐⭐⭐ **RULED 2026-10-07 — THREE RUN CLUSTERS, AND ONLY A DIRECTLY OBSERVED LISTED VANILLA BUG EXCLUDES A RUN** (supersedes the
-  2026-10-06 sub-tick disqualification). The user: *"We exclude from wall clock measurements only runs with meaningful slowdowns that are
-  caused by known vanilla bugs. The standard of proof that it's the bug affecting the run is quite high, we need to observe the listed bug
-  directly."* **THE LIST holds one bug: the fleet path looping calculation** (F218 — a fleet recalled for repairs whose travel path the
-  engine keeps appending to). ⚠ **NO TICK PATTERN IS A CRITERION** — *"no tick pattern (3-hour / daily / weekly / monthly ticks suddenly
-  longer for a period, without affecting other types of ticks) can be reliably used as a criterion for a listed bug, and we're unlikely to
-  find such connection in the future, although it could help investigations"* ⇒ `ledger/fleet_loop_runs.mjs`'s one-sub-tick rule is an
-  INVESTIGATION AID now, never a verdict. **The clusters, every one reported in ABSOLUTE numbers:**
-  (1) **NORMAL runs** in-batch; (2) **INEXPLICABLY SLOWED runs** — meaningfully diverging from the median on per-computational-unit wall-clock
-  speed over some prolonged period, with no material explanation; (3) **runs affected by a LISTED bug**. ⇒ For 1 and 2 give SEPARATE medians
-  of the wall clock in writing, but the MAIN reports are based on 1 + 2 COMBINED. For 3 report only the NUMBER of such runs and WHICH listed
-  bug. ⭐ **RULED THE SAME DAY:** cluster 2 = a run with a slowdown EPISODE (the quarantine rule below) and no directly observed listed bug;
-  cluster 3 = a run where, during an episode, a save shows a fleet RECALLED for repairs with **≥ 200 path moves and ≥ 125k distance sailed**,
-  and the loop is GONE once the slowdown ends (an episode running to the end of the game needs only the loop present in its last year).
-  `tools/testbed/ledger/wall_clusters.mjs <label>=<session>[:<setup>] [...] [--runs]` applies both from the tick log and the v16 summaries and
-  prints the three clusters with the ruled medians. ⭐ A run where the listed bug was observed STAYS cluster 3 WHOLE even when most of its excess lies
-  outside the episode (user-ruled 2026-10-13, "for simplicity, let's leave it cluster 3": 20261013_130158 run 2, a 1868–74 fleet loop worth ~6 min of
-  ~45 extra, the rest a gradual all-sub-tick load at the same world size, 191 min against vanilla's 151.5 with 1868–74 left out). A run with no v16 summaries in its episode years is UNOBSERVABLE and stays in cluster 2
-  (first reading: vanilla n=16 10 / 6 / 0, main median 165.0 min; jex-n16 5 / 3 / 0, 184.3 min — every pre-v16 episode unobservable; a kept
-  save from inside an episode, like jex-n16 run 3's `diag_saves/` one F218 read, can establish the loop by hand, but not that it ended).
-  ⭐⭐ **THE SLOWDOWN QUARANTINE (the same ruling, its rule amended the same day) — non-agentic**, so the user can later load a save in
-  **DEBUG MODE, where the game shows each subtask's influence on tick speed in milliseconds** (MODDING_NOTES → Debugging; the investigation
-  tool for cluster 2). THE RULE (user): *"An 'episode' is when at least three consecutive years the difference between year X and year X-3
-  is over 3sigma. The end of the episode is when the speed is restored. We quarantine all saves during the episode and two after, but no
-  more than 5 within episode (earliest four and the last one stays)"* (the two after only "unless the game ended"). Implemented in
-  `tools/testbed/slow_quarantine.mjs`: t(Y) = wall seconds per in-game year from the per-tick log (month-boundary ticks dropped); d3(X) =
-  ln t(X) − ln t(X−3) − the corpus's expected growth; **σ3 = 0.092** (MAD over 32,011 run-years of 354 runs) ⇒ the line is **+32%**.
-  ⭐⭐ **EXTENDED THE SAME DAY TO THREE LAGS, user-approved ("Yep, do that")**: measured on the corpus, the 3-year form MISSED HALF the real
-  slowdowns — of the 140 runs in batches of ≥ 4, it caught 10 of the 22 runs ≥ 10% slower than their batch median, 22 of the 49 with a 5-year
-  stretch ≥ +30%, and 11 of the 21 with the fleet-loop sub-tick signature — because a fleet loop's cost RAMPS ~6–8% a year for a decade and
-  then drops off a cliff, never gaining +32% within three years (canon-je24 run 18: 81 → 272 s/yr over 1882–99; b-gradient run 1: 89 → 364
-  over 1858–89). So the same three-years-running test is also made against **X−6 and X−10** (σ 0.102 / 0.109 ⇒ +36% / +39%), tried in the
-  order 3, 6, 10: 78 of 354 runs carry an episode (12 of 56 vanilla; the 3-year form 51 and 9), and 18 of the 36 missed slow runs are caught,
-  every large ramp among them. Still missed by design: two-year bursts and slowness spread thinly over a whole run. "Speed
-  restored" = t back within **+15% (2σ1, σ1 = 0.070)** of the pre-episode speed (median of X−L−2…X−L, growth-projected) — accepted by the user;
-  an episode that steps up and never comes back (canon-je24 run 9: ~72 → ~96 s/yr in 1866–69) runs to the end of the game, AS INTENDED. ⭐ The
-  save of YEAR X−L (the year the triggering lag compares against) is kept too, as `before` (user-asked the same day), so a save of year Y is
-  judged only once Y + 12 is complete (~13 saves, ~650 MB, unjudged at any time). In use from in-game ~1891 of run 7 of 20261006_193418 (the harvester calls the judge afresh each minute; run 7's earlier saves were judged on the 3-year
-  form). `harvest_saves.ps1` no longer reaps a summarised save at once:
-  the judge answers `keep` (MOVED to `<run>\quarantine_saves\` UNDER A SELF-DESCRIBING NAME, `<session>__<run>__<YYYY-MM-DD>__ep<N>_<role>.v3`,
-  role before / in1–in4 / last / after1 / after2 — a save serving two episodes keeps its first name; the newest save stays in `saves\` and goes
-  in as a copy), `release` (reaped) or `wait` (judged at Y+5; in-episode years past the fourth wait for the episode's end); the post-run
-  drain passes `--final`; a judge failure reaps NOTHING. Beside the saves: **`MANIFEST.md`** (each episode, its pre-episode speed, the speeds
-  through it, every kept file with its role and WHAT TO COMPARE — the `before` save (normal speed), a slowed `in*`/`last` save and a restored
-  `after*` one) and `slow_periods.json`. Proven end to end on synthetic run folders carrying two real tick logs (jex-n16 run 3: 1890–1903 and
-  1911–18, 16 saves; canon-je24 run 9: 1869–94, 8) and mid-run (the X−3 save held until the episode shows, then kept). In use from run 6 of
-  20261006_193418 (runs 1–5 harvested on the old code; run 6 judged by the post-run drain after its harvester died at launch — BUGS_AND_FIXES 2026-10-07; the three-lag rule from in-game ~1891 of run 7). `-NoQuarantine` restores immediate reaping.
-  ⭐ **WHY A YEARLY SAVE SEES A FLEET LOOP** (the "direct observation" question): the loop is persistent state that grows ~340 path moves and
-  ~21k distance a year (run 4 of 20261006_193418: one German fleet id in every save 1899–1905, 220 → 2,248 moves, 15k → 145k), so a loop of
-  material size (≥125k) has been visible in ~5 consecutive yearly saves before it costs anything — not an intermittent state a save can miss.
-  `tools/testbed/machine_monitor.ps1` beside a batch, read by `ledger/machine_load.mjs`, now records the machine every 20 s, so the next
-  case is attributed (machine slower / other load / memory / the game's own work / waiting) instead of inferred from file times.
-  ⭐ **SINCE 2026-09-13 THE TOTAL IS THE CENTURY'S PLAY TIME REBUILT FROM THE OBSERVER'S TICK LINES** (`tools/testbed/ledger/lib_wall.mjs`,
-  `report_perf.mjs`'s default; `--wall meta` restores the observer's `wall_seconds`; `wall_from_ticks.mjs <session>` prints the per-run
-  table). `meta.json → wall_seconds` spans EVERY attempt of a run, so a crash-resume added its grace, reload and the replay of the year
-  since the last autosave (1.5–2 min per CTD — measured: vanilla n=16 5.2 min over 16 runs = 0.20% of play, phase 1 17.8 min over 30 =
-  0.38%), and a run killed and continued by hand carried only its last launch (304 s against 12,952 for run 1 of 20260910_151220).
-  The tick lines carry the elapsed seconds and the in-game date every 20 s per attempt; the landing is the tick after the last
-  backward date jump (the tail serves the previous attempt's lines for its first minute). The crash overhead is printed per arm beside
-  the total; the observer's `-PriorWallSeconds` records a continuation's earlier launch. The user's question that produced it:
-  "all previous wall-clock reports were distorted, and more so for more prone-to-CTD builds" — true, and small (F110 §9).
-  **Measured, session `20260813_083557`: the modded arm ran the century in 134.6–137.2 min against
-  vanilla’s 155.5–186.7 — ×0.86.** That arm ended with **×0.65 the live pop objects and ×0.61 the
-  building levels**; pop-matched the two sit on **one curve** at **−2.5%** (8 of 14 overlapping bins,
-  range 0.935–1.123). Both numbers are real and they say different things: the engine costs about the
-  same per unit, and the player waits meaningfully less because there is less to simulate.
-  ⚠⚠ **THE SUPERSEDED READING, kept because findings written under it quote it:** this bullet used to
-  say the raw total "points the wrong way on our own data", that an underdeveloped arm "barely counts"
-  as evidence about speed, and that the total was shown "only so it can be dismissed" — i.e. it graded
-  on the pop-matched figure. `tools/testbed/ledger/ledger_template.html` never implemented that; it has
-  always graded the total, and the ruling above makes the template right and this file wrong. Any
-  pre-2026-08-31 text calling a raw-total speed-up illusory is void.
-  ⚠ Where the arms never reach a common size, the POP-MATCHED half is unanswerable — if the overlap
-  falls below about a third of the bins, say the per-unit figure cannot be computed for this batch. The
-  TOTAL is always answerable and is still the grade.
-  ⚠ Intervals spanning a resume carry the crash and reload in their wall time and are **dropped**, not
-  smoothed. And the archive stamp is the ARCHIVE time (`archive_autosaves.ps1` waits for the file to go
-  stable), which is a near-constant lag — fine in a *rate*, wrong as "the moment the game reached this date".
-- **Record every measurement batch in `FINDINGS.md`.** After a run batch, append (or update) a finding
-  there with: the claim + effect size, the arms/n-per-arm/span/dates and the actual numbers, the
-  session folder, the confidence, and an explicit **"what it does NOT say"**. Copy the tables in
-  rather than pointing at the session — findings must outlive their raw data, their config, and the
-  game version they ran on. Keep it honest about limits: a stated confound (F2's time-of-day
-  ordering) or an unmeasured question (F1's per-good dispersion) belongs in the doc, not dropped
-  because it complicates the headline.
-- **Published UI snapshot — REGENERATE AND REPUBLISH IT WHENEVER THE SHEET CHANGES.** Once a snapshot has
-  been published in a session (`tools/bundle_ui.mjs` → Artifact), it stops being a one-off and becomes a
-  live deliverable: the user is reading it while you work, and it is the *only* view they have when away
-  from this machine. So after **any** change that alters what it shows — a solver `--write`, a `build.ps1`
-  run, or an edit to `ui/builder.html` / `ui/econ.js` — regenerate it and **republish to the SAME artifact
-  URL** (pass the same file path; do not mint a new one). Do it unprompted, in the same pass as the change,
-  exactly like the status board.
-  ⚠ **Regenerate from the repo copy, not the scratchpad one.** `bundle_ui.mjs` writes
-  `balance_ui_snapshot.html` at the repo root; copy that over the published file path before republishing.
-  Republishing the scratchpad copy without refreshing it ships the previous build — which has happened, and
-  is invisible from the outside because the page still looks current.
-  ⚠ **STAMP IT IN UTC, EXPLICITLY.** Both the snapshot and the status board carry their generation time as
-  **`yyyy-mm-dd, HH:MM UTC`** — the zone spelled out, not implied, and to the minute. A bare timestamp on a
-  detached page is read in the reader's own zone and can be hours out, and telling someone how stale the
-  thing is is the entire job of the stamp.
-  ⚠ **SHOW that it happened.** Report the regeneration in the reply — the banner timestamp, or that the
-  published copy matches the repo copy. A regeneration buried inside a chained command is invisible to the
-  reader, who then has to take it on trust or ask. This has already gone wrong once: `bundle_ui.mjs` was run
-  through `| head -1`, its output began with a blank line, and the confirmation was swallowed, so a snapshot
-  that HAD been regenerated looked skipped.
-  ⚠ **A stale snapshot is worse than none.** It carries its own timestamp and reads as authoritative, so a
-  reader has no way to tell it is describing an economy that no longer exists. If you cannot regenerate it
-  (build broken, mid-refactor), say so rather than leaving the old one standing.
-- **The HANDOVER is a baton, and is NOT COMMITTED** (user ruling 2026-08-12). Write it at the end of a
-  session for the next one — three or four concrete tasks in the user's own order, each with the
-  measurements that motivate it and the traps that cost time. Then **gitignored, like the status board
-  and for the same reason**: it is replaced wholesale each session, and a committed copy rots into a
-  stale second source of truth. ⚠ **The corollary is load-bearing: nothing durable may live only in the
-  handover.** Before writing one, put the results in `FINDINGS.md`, the plan in `ROADMAP.md`, rulings in
-  `BALANCE_FRAMEWORK.md`, guardrails in `TESTBED_LANDMINES.md`. The handover then only has to say what
-  to DO, and can point at those for why.
-  ⚠⚠ **AND EVERY SESSION THAT RAN MUST HAVE ITS `VERDICT.md` FIRST** — the handover is the deadline for
-  that rule, because no earlier moment reliably arrives (see the verdict rule above). Run the
-  missing-verdict check before writing, not after.
-- **Status board — REBUILD it UNPROMPTED, never maintain it.** Publish a status board as an
-  Artifact, and **republish it to the same URL the moment the picture moves — during the session,
-  not at the end, and without being asked.** Closing an item, hitting a blocker or handing a
-  decision back are all triggers; waiting to be told defeats the point, because the user is
-  reading it while you work.
-  **Never commit it.** It is a view, so a committed copy rots into a stale second source of truth.
-  Write it to the scratchpad (outside the repo); `.gitignore` carries `status_board*.html` as a
-  safety net if one is ever written inside. The **template** at
-  `tools/status_board.template.html` IS committed — it is the reusable shell, holds no state, and
-  carries the section rules as comments. Start from it.
-  Closing an item, discovering a blocker, or deferring something to the user all change the board;
-  a board that still shows yesterday's state is worse than none, because the user is reading it.
-  Restructure freely: entries move between sections, sections empty out, the tally changes. It is a
-  *view*, regenerated from current state; it is **not** a document that accumulates. Do not carry numbering,
-  wording or entries across sessions, and do not commit it — the durable records are `FINDINGS.md`
-  (results), `TESTBED_METRICS.md` (what the instrument can do), `MODDING_NOTES.md` (engine gotchas)
-  and `BUGS_AND_FIXES.md` (root causes). If a board entry says something not captured in one of those,
-  **the doc is missing it — go fix the doc**, because the board is disposable and the doc is not.
-  Build it from these sections, in this order:
-    1. **Tally** — blocked / open / awaiting-the-user / closed counts.
-    2. **Open work** — one entry each, with *goal, blocker, consequence, next step*. An entry with no
-       concrete next step is not open work, it is a wish; drop it or turn it into one.
-    3. **Waiting on you** — items where the next move is the user's (a deferred decision, a
-       recommendation of mine they have not ruled on). Say plainly what is being asked.
-    4. **Verified working** — the solid ground, with the numbers that make it checkable. This section
-       is what stops a board of problems reading as a project in trouble.
-    5. **Closed** — a compact table.
-  Two rules on wording, both learned the hard way:
-    - **State outcomes in plain language, never as a reference.** "F3, F4, F5" is not an outcome; "the
-      BE ladder does not yet produce specialisation" is. A reader should never have to open another
-      file to learn what happened.
-    - **Say where the id came from.** Session task ids (`#4`, `#11`) do not survive into a new session,
-      so a board that shows them must say so, or it silently invites the user to cite a dead number.
-- **Missing-reference cataloguing (the `MISSING_*` family).** Replacing/splitting a vanilla entity can make
-  vanilla script or the building's own fields stop matching. **We catalogue every such case rather than fix it
-  piecemeal — one strategic batch pass later.** Document *all* missing references this way, one focused
-  `MISSING_*` doc per class:
-  - **Relocated main-PM references** — external `production_method = <our vanilla_pm>` in vanilla
-    events/JEs/effects/triggers (`is_production_method_active`, `activate_production_method`, …). The PM still
-    exists but isn't active on the split building, so the check errors+returns false. → **`MISSING_PM_REFERENCES.md`**,
-    AUTO-generated by `tools/audit_pm_refs.ps1` (re-run after any tiering change/patch).
-  - **Dropped building conditional fields** — a conditional `ai_value` block, `potential`, `should_auto_expand`,
-    … inside a vanilla building we regenerate but flatten/omit. Fully in our control (directly fixable), just
-    deferred. → **`MISSING_BUILDING_CONDITIONS.md`** (hand-maintained).
-  - **Narrowed building references** — `has_building = <base building>` (457 vanilla uses) now matches only
-    the first rung, missing owners who built only higher rungs. Not a broken reference (the key survives via the first rung's
-    alias) but a completeness gap — and **gameplay-significant, not just flavor**: e.g. **company mandates,
-    monopolies, and similar mechanics latch onto our first-rung building, not all rungs of the industry** (which
-    would make more sense). The **same "make our tier buildings eligible" strategic fix** resolves it and the
-    PM-reference class together. Not separately enumerated.
-  When an in-game run surfaces a new case, **append it to the right `MISSING_*` doc** (or add the PM to the split
-  set and re-run the audit) — don't fix it inline.
-- Read `MODDING_NOTES.md` before touching metadata, load order, or icons.
-- The only hand-maintained file inside `mod/` is `.metadata/metadata.json` — and even there the
-  builder suffixes the mod `name` with `(built yyyy-MM-dd HH:mm)` each build (stripping the prior
-  suffix so it never accumulates), so the Paradox launcher's mod list makes the freshest build
-  obvious. The mod `id` stays fixed, so playset membership is unaffected.
+**How a run works** (each tool in `REPO_GUIDE.md` §4):
+- **Schedule → build.** `tools/testbed/run_schedule.ps1` reads an ordered schedule (`tools/testbed/schedules/*.json`). For every run it rebuilds
+  the mod from that setup's book with `build.ps1`, adds the telemetry script (`tools/telemetry_lib.ps1`, the one generator; a control arm is that
+  script and nothing else) and a per-run token, and records what was built in `build_state.json`.
+- **The game.** `run_observer.ps1` enables that mod (`content_load.json`) and starts `victoria3.exe -handsoff -run_until=<date>`: an observer
+  game from the 1836 bookmark that plays to the date and quits by itself, with no launcher and no player. A crash is resumed from the run's own
+  autosaves (the resume feeder, L32).
+- **Instrument 1 — telemetry, the process.** The mod's own script writes token-stamped lines to `debug.log`: market order books and prices at
+  the dump dates (and every 1 July for the red flags), events, research-entry completions. The game's logs are a small rotating ring shared by
+  every run, so the observer mirrors them continuously into `logs_live/` (the authoritative copy) and harvests `markets.tsv` and `events.tsv`.
+- **Instrument 2 — the saves, the state.** Autosaves (yearly in a century batch) are copied into `saves/` as they appear and melted with
+  `rakaly` into one summary per save in `save_summaries/`: per country GDP, population by profession, buildings by type (levels, staffing,
+  profit, active methods), budgets, companies, trade, laws, per-state labour (TESTBED_METRICS §7½). A save is deleted once its summary
+  verifies, so the summary is then the record; each run's newest save is kept, and a slowdown episode's saves are quarantined for debug-mode
+  inspection (TESTBED_OPERATIONS §7.6).
+- **Which answers what.** The register's GDP, W, U\*, H and T0–T3 come from the save summaries; PI, PP and the order books from `markets.tsv`;
+  research entries and events from the logs; play time from the observer's tick lines in `run.log`.
+- **Beside the run:** the background waiter (wakes the agent: DONE / RUNNING / DEAD / STALLED), the stop watcher (2+1 batches: drops `STOP`
+  after a broken run), the machine-load monitor (started by the scheduler, `machine_load.tsv`), the heartbeat script.
+- **After the run:** `preflight.ps1 -Session` walks the post-run landmines, `criteria.mjs` reads the register, `fill_ledger.sh` builds the
+  report. The session folder's layout is TESTBED_OPERATIONS §8.6.
 
-## Deployment / testing
+**The short procedure.** Full procedure: **`TESTBED_OPERATIONS.md`** (§1 before a batch · §2 arms and schedules · §3 launching · §4 the smoke check and the error-noise
+catalogue · §5 while it runs · §6 deciding between configs · §7 the wall clock · §8 after a batch · §9 changing the harness). Engine behaviour of
+headless runs: MODDING_NOTES §"Automated headless runs".
 
-`build.ps1` deploys a **real copy** of `<repo>\mod` to
-`Documents\Paradox Interactive\Victoria 3\mod\pm_tech_rehaul` (via `robocopy /MIR`) at the end of
-every build. A directory **junction does NOT work** — the Paradox launcher won't traverse it and
-shows the mod as ~48 bytes; a real copy is required. Pass `-NoDeploy` to skip. After a build,
-restart the Paradox launcher if it was open (it only rescans local mods on startup), then add
-"PM and Tech Rehaul" to a playset to load it.
+1. **Plan:** agree arm, base book, span, n, metrics and comparison (§5.1 rule 3); write the predictions into the schedule (§2.8); get the go-ahead.
+2. **Batches are decision-driven:** the **2+1 quick config test** — two runs of one config, a third only where the two diverge, then the next config as its
+   own schedule. Configs are never alternated — except to measure the WALL CLOCK, where both arms must run in the same days (the alternating batch). A run of
+   a 2+1 batch that breaks a hard register line is that config's last run (the stop watcher); a long predetermined batch plays every run.
+3. **Launch** detached, start the waiter, arm the stop watcher where it applies, and smoke-check at ~5 minutes (§5.1 rules 5–6).
+4. **While it runs:** touch nothing it rebuilds from (§5.1 rule 7). Reading its files is fine. Keys in its console: `p` pause · `r` resume · `s` stop after
+   this run · `x` stop now; `tools/testbed/STOP` and `tools/testbed/NO_NEW_RUNS` are the file twins. A crashed run resumes from its own autosaves.
+5. **After:** read the register (`criteria.mjs`), fill the ledger (`tools/testbed/ledger/fill_ledger.sh`, README beside it), write the red-flag summary,
+   the wall-clock clusters, the VERDICT.md, the SESSION_VERDICTS row and the finding.
+
+⚠ `error.log` is a shared ring with vanilla's own noise (navy-model laws on landlocked countries, interest-group leaders, invalid country handles,
+loc-string data errors, battle sizes …): count against the vanilla baseline, filter by the run's own POSITION in the file, and check
+`grep -c zzz_pm_rehaul` — every file we emit is named that way. The catalogue is in `TESTBED_OPERATIONS.md`.
+
+## 5.6 Analysing and reporting
+
+- Quote **profit in £** (§2.10) and ratios with both terms (§2.11); say which **baseline** and which **markets** a number rests on (§3.5).
+- World GDP is the **displayed** figure; GDP at base prices is a secondary reading only (§10.90). The displayed GDP is `52 × weekly value added`
+  (outputs − inputs; pops and trade on neither side — F45), and over a century it tracks value added at BASE prices within 0.94–1.08, so the mod's
+  lower prices take only ~7% off the world's (F178 §9.4). Never calibrate on gross output: its ratio to GDP drifts ×48 → ×37 across the century.
+- A payback in years needs a £ per construction point, and that depends on the construction method: wooden 1000 · iron frame 720 · steel 540 · arc
+  welded 527 (F53). Say which rate a payback uses.
+- Read quantities, not prices, where a good sits at the band edge (§2.7).
+- The standard batch report is **the ledger** (`tools/testbed/ledger/`), published as an Artifact per batch and copied into the session as `REPORT.html`.
+  It carries the register, the verdict table with play speed as a row, the red-flag headline and summary, the obsolescence and old-rung tables, and the
+  world and watchlist pages.
+- A verdict names what is void, what still reads, and how far; it traces the knock-ons of a defect (war, conquest and research redirect everything) and
+  reads the trajectory, not only the endpoint. A retrospective verdict says so.
+
+## 5.7 The balance editor
+
+`balance-ui.cmd` (or `tools/ui.ps1`) serves `ui/builder.html` at localhost:8777; `balance-snapshot.cmd` writes a self-contained snapshot. Three pages:
+the balance sheet, the tech tree, the mod-changes page (a read-only view of everything the build emits beyond recipes). The full description — files,
+the model the sheet implements, presets, and the UI principles — is in `REPO_GUIDE.md` (the UI section); the player-facing one in `README.md`. Rules
+to keep when changing it:
+
+- ⚠ **On a generated book — the canon included — do not edit recipes, costs or `ai_value` in the sheet and do not press Build now / Export over
+  `config/mod_config.json`.** The canon must stay a verbatim copy of its named book, and `lint_tier_eras.mjs` (L31) recomputes every rung from the
+  book's `_ab` / `_artisan` / `_merge` records, so a hand edit fails the next build. A save from the sheet is never byte-identical to the loaded book
+  even with no edit (it adds `input_ratio` to every tier). Change a book through its generator chain (§4.4); use the sheet to read and to explore.
+- On the canon the sheet still has known gaps (it does not read `craft` or `method_of`, so a merged rung shows as its own row; the solver-2 book and
+  the six-rung preset rows are offered; the tech-tree page shows the six-rung candidate trees) — listed in `BACKLOG.md` §F.
+- `ui/econ.js` is THE economic model, shared with the Node solvers; `builder.html` still carries a fork of ~260 of its lines — change both or neither.
+- The served sheet opens on the LIVE `config/mod_config.json` (over `/api/config`); `ui/data.js` is a build-time copy for the snapshot and `file://`.
+- The sheet is two things: the RECIPE BOOK (what the build emits — written only by the four red buttons) and the SCENARIO (counts, pops, wages, prices,
+  PM selections — session-only, never emitted). Scenario presets write no recipes.
+- One layout for every building (tiered or not, economic or not); a cell is blank only when the building lacks the thing. Columns align left unless a
+  label → value pair needs right alignment.
+- A preset is a one-off overwrite: nothing may claim the user is "in" a preset; derived badges are recomputed, never tracked.
+
+## 5.8 Repository map
+
+```
+CLAUDE.md, GLOSSARY.md, README.md, BALANCE_FRAMEWORK.md, FINDINGS.md, ROADMAP.md, BACKLOG.md, POLISH_1_0.md,
+REPO_GUIDE.md, TESTBED_OPERATIONS.md, TESTBED_LANDMINES.md, TESTBED_METRICS.md, MODDING_NOTES.md, ON_GAME_UPDATE.md,
+BUGS_AND_FIXES.md, TIER_REFERENCE_AUDIT.md, MISSING_*.md      the documents (§5.2)
+balance-ui.cmd, balance-snapshot.cmd                         one-click editor launcher and snapshot
+config/      mod_config.json (the canon) + tech_tree_options.json (its tree twin); every named book mod_config.<name>.json with its twin;
+             start rules, measured reference data (1836 professions, wages, pop identity, trade/SoL), the dam tables
+tools/       build.ps1 (the builder) and preflight.ps1; the book generators (make_tier4_config, make_tier4_techs, make_ab_config, make_*_config);
+             the emitters (emit_*.mjs) and linters (lint_*.mjs, lint.sh); analysis tools; goods_prices.tsv (THE price table)
+tools/testbed/          the harness: run_schedule.ps1 (the only entry point), run_observer.ps1, launch_detached.ps1, the waiter, the stop
+                        watcher, the save harvest and quarantine, savegame readers; schedules/ (batch specs); sessions/ (results — gitignored,
+                        never deleted); SESSION_VERDICTS.md
+tools/testbed/ledger/   the batch report and every reader: criteria.mjs, lib_runs.mjs, lib_markets.mjs, misplaced_capital.mjs, wall_clusters.mjs …
+tools/research_model/   the research simulation (§10.96)
+ui/          the balance editor (builder.html, econ.js, techtree.html; data.js / vanilla.js / presets.js / icons.js generated)
+ui2/         the editor pointed at a retired four-rung derivation (record)
+mod/         THE DEPLOYABLE MOD — generated; only .metadata/metadata.json is hand-maintained
+```
+Every file and tool is described in **`REPO_GUIDE.md`**.
+
+## 5.9 The commands used most
+
+Run from the repo root. `<group>` = a session, a comma list of sessions, or `<session>/runNNN_<setup>` folders, optionally `:<setup>`.
+
+| task | command |
+|---|---|
+| build / dry-run / alternate book | `powershell -ExecutionPolicy Bypass -File tools\build.ps1 [-DryRun \| -SaveTo <name>] [-Config config\mod_config.<book>.json]` |
+| walk the landmines | `powershell -File tools\preflight.ps1 [-RepoOnly] [-Config <book>] [-Session tools\testbed\sessions\<stamp>]` |
+| launch a batch | `& 'tools\testbed\launch_detached.ps1' -File 'tools\testbed\run_schedule.ps1' -ArgumentList '-Schedule','tools\testbed\schedules\<spec>.json' -NoExit` |
+| wait for it (background) | `powershell -File tools\testbed\wait_for_session.ps1 -Session tools\testbed\sessions\<stamp> -MaxMinutes 30` |
+| arm the stop watcher (2+1) | `& 'tools\testbed\launch_detached.ps1' -File 'tools\testbed\stop_watch.ps1' -ArgumentList '-Session','<session-name>','-Poll','30' -Hidden` |
+| smoke-check / heartbeat | `bash tools/testbed/batch_heartbeat.sh <session-name>` |
+| the register | `node tools/testbed/ledger/criteria.mjs --arm <group> [--arm …]` |
+| the ledger (batch report) | `bash tools/testbed/ledger/fill_ledger.sh <group> <setup> <book> <outName>` (then the prose, `fill_assemble`, `fill_verify` — ledger README) |
+| misplaced capital | `node tools/testbed/ledger/misplaced_capital.mjs --batch <label>:<session>[:<setup>]` |
+| wall clock in clusters | `node tools/testbed/ledger/wall_clusters.mjs <label>=<group> [...] [--runs]` |
+| red-flag headline | `node tools/testbed/ledger/redflag_metrics.mjs <outDir>` (summary with the `redflag-summary` skill) |
+| technology census | `node tools/testbed/ledger/tech_census.mjs <label>=<group> ...` |
+| first-run decomposition | `node tools/testbed/ledger/first_run_decomp.mjs --arm <group> --van <sessions>` |
+| old rungs per industry | `node tools/testbed/ledger/old_rungs_by_industry.mjs <year> <label>=<group> [...]` |
+| one good's order book (quantities) | `node tools/testbed/ledger/good_market.mjs --good <good> --arm <session>:<setup> [--arm …]` |
+| merged-rung levels by method | `node tools/testbed/ledger/merge_methods.mjs --session <stamp> [--setup <name>]` |
+| stitch a continued campaign | `node tools/testbed/stitch_session.mjs <continuation session> <new session name>` |
+| design a ladder / a recipe | `node tools/ladder_options.mjs --book "name:out=2.2,in=1.64,cost=1.9,in0=1.2"` · `node tools/era0_solvency.mjs` · `node tools/full_recipe_profit.mjs --mod mod_<name> --config <book> --economy GBR@1920` |
+| generate a book | the recorded `_ab.command` (`node tools/make_ab_config.mjs …`) and the `make_*_config.mjs` makers in their recorded order (§4.4) |
+
+## 5.10 Environment
+
+- The user's machine is Windows: Steam Victoria 3, PowerShell 5.1, Node ≥ 24 (`C:\Program Files\nodejs`); the repo path contains a space. The game, the
+  build's deployment and every batch run there.
+- A cloud session (Linux, no game) can edit docs, configs and tools, and read anything committed — but session folders (`tools/testbed/sessions/`) are
+  gitignored and exist only on the user's machine, and a commit pushed here reaches the batch checkout only when the user pulls.
+- `rakaly` melts saves (`rakaly melt --format vic3 --unknown-key stringify -c <save.v3>`); the save summaries are the second instrument beside telemetry
+  (`TESTBED_METRICS.md` §7–§7½).

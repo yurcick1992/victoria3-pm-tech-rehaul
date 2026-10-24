@@ -6,7 +6,7 @@ tech-gated building**, and outputs/inputs are re-sloped into a **break-even ladd
 factories drive obsolete ones out of the market — and modernizing now costs **capital** (you
 *build* the newer plant instead of flipping a PM for free).
 
-Design detail lives in [`CLAUDE.md`](CLAUDE.md) (how it's built), [`BALANCE_FRAMEWORK.md`](BALANCE_FRAMEWORK.md)
+Design detail lives in [`CLAUDE.md`](CLAUDE.md) (goals, principles, metrics, the canon, the working rules), [`REPO_GUIDE.md`](REPO_GUIDE.md) (every file and tool), [`BALANCE_FRAMEWORK.md`](BALANCE_FRAMEWORK.md)
 (the balance methodology + numbers), and [`MODDING_NOTES.md`](MODDING_NOTES.md) (engine gotchas).
 
 Scope today: **22 industries / 67 tier buildings** — all manufacturing (light, heavy, military, and ship

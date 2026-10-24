@@ -68,13 +68,13 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **rung** | one tiered building of one industry — the thing a tier labels |
 | **A** | the **output ratio per tier**: a rung of tier e makes `vanilla's first method × A^e` |
 | **B** | the **input-value ratio per tier**: input value `× B^e` over that rung's own vanilla mix |
-| **r** | **A ÷ B** — the margin's SHAPE, multiplying per tier. Today 2.2 ÷ 1.5 = **1.467** |
+| **r** | **A ÷ B** — the margin's SHAPE, multiplying per tier. Today 2.2 ÷ 1.64 = **1.341** (the canon's A and B, CLAUDE.md §4.1) |
 | **C** | the **cost ratio**: building_cost = the vanilla anchor `× C^era` (`--cost-ratio`; `--cost-ladder` gives it per tier explicitly) |
 | **in0**, **the lift**, **the tier-0 input penalty** | rung 0's input VALUE `× in0`, with the whole ladder anchored on the lifted rung 0 (`--in0`). Today **1.2** |
 | **`--in0-level m`**, "**uniform −X%**" | the same penalty chosen PER INDUSTRY so every industry's tier-0 rung lands on the SAME margin `m` at base prices, in place of one scalar. `lift_i = O0 × (1 − wage_pct) ÷ (I0 × (1 + m))` |
 | **target_be** | the **output price, as % of base, at which a rung covers input goods + wages**. `= 100 ÷ (1 + m)`. Its own drift guard, not a design input |
 | **the book** | one complete `config/mod_config.*.json` — a named point in (A, B, C, in0, ai_value, defines) space |
-| **the canon** / **the incumbent** | the book `config/mod_config.json` currently is; today `canon-c19-in12` |
+| **the canon** / **the incumbent** | the book `config/mod_config.json` currently is; today `jex-dam4s-rs-x25-m10ac-dpriv-wm99` (CLAUDE.md §4.1) |
 
 ## 6. ECONOMICS
 
@@ -96,7 +96,7 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **throughput** | a per-building multiplier on inputs *and* outputs, so it raises the full margin but not the goods margin |
 | **expected payback** (of a new level) | its construction cost (points × the country's £ per point at base prices) ÷ the annual PROFIT per staffed level that building type earned in that country at the time — realised prices, actual wages; a type the country does not run yet takes its market's figure, else the world's (F206). Years |
 | **a VALID option** | a building type a country could productively add: some state of it holds **≥ 25k peasants + unemployed** AND, for a mine / logging camp / wharf / rig, free capped slots of that resource, or for a farm / plantation / ranch, free arable land with the crop allowed; manufacturing needs only the labour (user-ruled 2026-10-02, F207) |
-| ⭐ **MISPLACED CAPITAL** (the user's "ineffectively invested capital") | the share of new capital in mines, agriculture and manufacturing whose expected payback is **> 3× the best valid sector's, or loss-making ("grossly suboptimal")**, beside the share at **1.5–3× ("a bit suboptimal")**; taken WITHIN a run-decade (or country-decade). ⚠ NEVER MEASURED, even where they earn through goods (ruled 2026-10-02, §10.92.1): infrastructure (railways, ports, power plants, dams), trade centres, shipyards, every government-funded building and gold mines — their AI values are set to get them built, not to follow profit. The military industries are NOT exempt (ruled the same day): they are measured like any manufacturing rung. Capital built where no option is valid (a fully employed country) is reported apart, ungraded. Vanilla 10–19% grossly in every decade; the four-rung books climb to 24–38% by 1926–36 (F206/F207). ⭐ **It should be as low as possible, and it is the yardstick of every AI-value change** (§10.92, CLAUDE.md's governing section) |
+| ⭐ **MISPLACED CAPITAL** (the user's "ineffectively invested capital") | the share of new capital in mines, agriculture and manufacturing whose expected payback is **> 3× the best valid sector's, or loss-making ("grossly suboptimal")**, beside the share at **1.5–3× ("a bit suboptimal")**; taken WITHIN a run-decade (or country-decade). ⚠ NEVER MEASURED, even where they earn through goods (ruled 2026-10-02, §10.92.1): infrastructure (railways, ports, power plants, dams), trade centres, shipyards, every government-funded building and gold mines — their AI values are set to get them built, not to follow profit. The military industries are NOT exempt (ruled the same day): they are measured like any manufacturing rung. Capital built where no option is valid (a fully employed country) is reported apart, ungraded. Vanilla 10–19% grossly in every decade; the four-rung books climb to 24–38% by 1926–36 (F206/F207). ⭐ **It should be as low as possible, and it is the yardstick of every AI-value change** (§10.92, CLAUDE.md §2.4) |
 
 ## 7. PROCESS
 
@@ -111,7 +111,7 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 
 ---
 
-**Where the authority lives**: the register in BALANCE_FRAMEWORK §10.83 (+ .4–.7 and §10.85, §10.86), the tier rule in §10.78 and CLAUDE.md's
+**Where the authority lives**: the register in BALANCE_FRAMEWORK §10.83 (+ .4–.7 and §10.85, §10.86), the tier rule in §10.78 and CLAUDE.md §2.3's
 governing section, the price principles in §10.86.2, what the AI levers are for (recipes steer, AI values follow profit) in §10.92, results in
 FINDINGS, engine behaviour in MODDING_NOTES, guardrails in TESTBED_LANDMINES.
 This page names things; it does not rule on them.

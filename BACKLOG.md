@@ -100,7 +100,7 @@ allows, §10.103); GTA VI on 18.11, after which nothing until the new year.
 - **WATCH** · the percussion-cap chain (explosives t0 at 23% and munition t1 at 16% goods margin at base against vanilla's 56% / 39% — the t1 anchor's ×1.2 lift) stays unstaffed in thin markets: 10 of the probe's 13 swings; vanilla has the American case too · F213 addendum
 - **WATCH** · THE GERMAN OIL ECONOMY WAITS FOR A BUILT RUNG: in about a third of four-rung seeds (2 of 3 arm, 2 of 6 canon) the German market has no oil economy until 1910–1925 — one idle oil rig, no buyer — where vanilla's always forms by 1905–1910 through free switches (arms to Bolt Action Rifles, ports to Modern Port, logging to chainsaws); in the books those first buyers are rungs to build (arms/artillery t3, automotive t2), and the ports and logging camps switch only once oil is on offer. The design's own cost; whether to act is the user's · F215
 - **WATCH (accepted for 1.0, user 2026-10-21, POLISH_1_0.md Q7; revisit in 1.1)** · RUBBER IS STRUCTURALLY SHORT IN A RICH LATE GAME (the user's Qing playtest, 1916–1936): the Qing's electrics, tooling t3 (Rubber Grips) and automotive rungs want 74k → 202k rubber a week against a world output of 9–20k; the world price sits at the 175% ceiling 89% of weeks, and the trade AI's 8-week no-reduction lock turns the gap into a ~9–10-week import cycle (median 88k, up to 128k, then a cut and a week at the price floor). Levers if acted on: rubber supply (plantations / a synthetic route), the rungs' rubber inputs, rubber's traded quantity (24, vanilla 5) · F242
-- **OPEN (core)** · the output-price path does not fall (F94); the consumer-chain old rungs stay profitable (87–93%) · CLAUDE.md, F136, F163
+- **OPEN (core)** · the output-price path does not fall (F94); the consumer-chain old rungs stay profitable (87–93%) · CLAUDE.md §2.1, F136, F163
 - **OPEN** · the hoard: pool H ~4× vanilla; the inflow mechanism is a candidate, not measured · F135, F179 §3
 - **OPEN** · P1 early rungs are a money printer (aim at 1850–1880 realised margins) · ROADMAP P1
 - **OPEN** · P8 a t3 takes 2+ years to build (late construction points + goods, the queue define, or the convergence campaign) · ROADMAP P8
@@ -113,10 +113,10 @@ allows, §10.103); GTA VI on 18.11, after which nothing until the new year.
 - **RULING** · P9: the tech tree should be prioritised, not completed (grant fraction, a stage, the ahead-of-time define, depth) · ROADMAP P9, F138
 - **PROPOSED** · per-industry levelling alone (`--in0-level 0.05`) — ⚠ the axis was CLOSED 2026-09-19; *(verify)* drop · ROADMAP step 9
 - **PROPOSED** · per-good price system; rung build-gate + steeper ai_value *(verify — may predate the four-rung canon)* · BALANCE_FRAMEWORK
-- **DEFECT** · minted top rungs rarely reached in play *(verify after the merges)* · CLAUDE.md, F106 §6
-- **DEFECT** · an empty pop need should buy its default good (model only, not the mod) · CLAUDE.md, F44
-- **RESEARCH** · the need-substitution rule's real form; prestige share local vs market; USA strata/slave derivations disagree · CLAUDE.md
-- **RESEARCH** · the urban-centre electricity override's economic effect is unmeasured · CLAUDE.md
+- **DEFECT** · minted top rungs rarely reached in play *(verify after the merges)* · F106 §6, POLISH_1_0.md Q10
+- **DEFECT** · an empty pop need should buy its default good (model only, not the mod) · REPO_GUIDE §5, F44
+- **RESEARCH** · the need-substitution rule's real form; prestige share local vs market; USA strata/slave derivations disagree · REPO_GUIDE §5
+- **RESEARCH** · the urban-centre electricity override's economic effect is unmeasured · BALANCE_FRAMEWORK §10.43.0
 - **RESEARCH** · F45's price basis is qualified, not settled · F178 §9.4
 - **ACCEPTED** · P5 tier-3 output enormous — rides on P1 · ROADMAP P5
 
@@ -159,19 +159,23 @@ its vanilla building wherever vanilla script checks a building or a method; it i
 - **RULING (1.0 polish)** · ⭐ AUDITED 2026-10-21: 86 script blocks (22 dead, 49 narrowed to rung 0, 5 changed meaning) + ~48 rung-0-only throughput modifiers; one generator `emit_vanilla_refs.mjs` proposed, four rulings asked (R2.1–R2.4); covers the three lines below · POLISH_1_0.md §2, TIER_REFERENCE_AUDIT.md
 - **NOW (1.0 polish)** · MISSING_PM_REFERENCES.md — ~28 vanilla events/JEs checking a relocated main PM; one strategic "tiers are eligible" pass (the catalogue is STALE — TIER_REFERENCE_AUDIT.md supersedes it) · MISSING_PM_REFERENCES.md
 - **NOW (1.0 polish)** · the same class for SECONDARY methods, which the audit does not cover: a per-rung copy renames the vanilla method, so e.g. `production_tech_events.210` (radio progress) needs `pm_radios` active and can never fire · ROADMAP step 2 coverage audit
-- **NOW (1.0 polish)** · `has_building` narrowing (457 refs match the first rung only) — the same pass · CLAUDE.md
+- **NOW (1.0 polish)** · `has_building` narrowing (457 refs match the first rung only) — the same pass · TIER_REFERENCE_AUDIT.md
 - **NOW (1.0 polish)** · MISSING_BUILDING_CONDITIONS.md — the art academy's conditional ai_value (1 case) · MISSING_BUILDING_CONDITIONS.md
 
 ## F. UI and tooling
 
-- **OPEN** · collapse `builder.html`'s copy of `econ.js` (~260 lines; change both or neither until then) · CLAUDE.md
-- **OPEN** · the tech-tree page (`ui/techdata.js`) still shows the six-rung candidates · CLAUDE.md
+- **OPEN** · collapse `builder.html`'s copy of `econ.js` (~260 lines; change both or neither until then) · REPO_GUIDE §5
+- **OPEN** · the tech-tree page (`ui/techdata.js`) still shows the six-rung candidates · REPO_GUIDE §5
+- **OPEN** · the balance sheet on the four-rung canon (found 2026-10-24 while rewriting CLAUDE.md): it reads neither `craft` nor `method_of` (a merged rung shows as its own row under a key that names no building in game); the tier pill reads `e<era>`, not t0–t3; `recipes: vanilla` interpolates the three minted t3 rungs by the six-rung ×1.5 rule; the solver-2 book and the six-rung preset rows are still offered; the Build-cost "model N" hint is the legacy model; the Restore defaults / Bring to vanilla tooltips still claim to reset volumes or recipes; and the Mod-changes page's static prose still describes graded ports, the chain seed, 14 renamed technologies, the flat cost book and rewritten admin strategies as shipped (extends POLISH C2) · REPO_GUIDE §5
+- **DEFECT** · `config/mod_config.json` carries a `_canon` record inherited from `canon4v-hai3`, so it does not name the current canon (the `_canon_2026_10_16`, `_wm99_variant` and `_polish_*` records do) · CLAUDE.md §4.1
+- **OPEN** · `emit_techs.mjs`'s missing-technology error still tells the user to run `tech_tree_spec.mjs --write`, which refuses four-rung books · REPO_GUIDE §3
+- **OPEN** · `tools/testbed/ledger/README.md` (~lines 66–73) still presents the pop-matched wall-clock figure as the headline; the grade is the raw total over clusters 1 + 2 (TESTBED_OPERATIONS §7) — edit after the alternating batch (no `tools/testbed/**` edit while it runs)
+- **OPEN** · harness design debt: the control / overlay build path is a straight-line script with an early exit; a list of content emitters each arm opts into would make arm purity structural · TESTBED_OPERATIONS §2.2
 - **DONE 2026-10-21** · research-entry texts uniform and in LEVELS (the user ruled levels, not people), and every condition a line of the bar tooltip · BUGS_AND_FIXES 2026-10-21
-- **OPEN** · the ledger fill scripts' hardcoded session paths (`--session` flag) · CLAUDE.md
+- **(verify)** · the ledger fill scripts' hardcoded session paths (`--session` flag) — `fill_ledger.sh` now takes the session group as an argument; likely moot · REPO_GUIDE §4
 - **DEFECT** · `first_run_decomp.mjs` takes several `--van` but medians and ratios use only the FIRST; the others reprint its numbers under their own label and run count (found 2026-10-22; fix after the alternating batch — no `tools/testbed/**` edit while it runs). Workaround: pass a second vanilla session as `--arm` · `first_run_decomp.mjs`
-- **DEFECT** · `fill_consts.mjs`'s "productive workers" subtracts a levels-scale staffing (held: moving it restates a shipped number) · CLAUDE.md
 - **DEFECT** · `deviates_from_vanilla` is a six-path probe list; it should walk the built mod · ROADMAP DEFERRED FIXES
-- **DEFECT** · the binary save reader is trusted only below ~104 MB (per-market pops, per-state local supply) · CLAUDE.md
+- **DEFECT** · the binary save reader is trusted only below ~104 MB (per-market pops, per-state local supply) · REPO_GUIDE §4
 - **RULING** · THE RED-FLAG HEADLINE'S TWO THRESHOLDS (2026-10-08, BALANCE_FRAMEWORK §10.94 rule 9): a problem year counts a HIGH flag only on ≥ 10 units/wk of building demand, and a market is chronic at ≥ 20 problem years — both proposed (the user's own sketch, any-market years and ≥ 5 of 99 two-year windows, saturates at 96/100 and 8/8 on jex n=16) · `lib_redflag_metrics.mjs`
 - **DONE (POLISH C5): October vanilla n=6 (20261020_*) carries it; the alternating batch adds 16 more — only the red-flag twin needs re-pointing** · a vanilla batch with the yearly order-book feed (`market_goods_wide`, on by default since 2026-10-03) — until one exists the red-flag headline has no vanilla twin on the order books, only on the summaries · §10.94 rule 9
 - Done 2026-10-08 · THE GOAL TABLE RE-GRADED AGAINST THE RULED CRITERIA (G1 the unit-weighted below-best share against the canon family, < 35% ok; G2 t0 and t1 falling; G3 1880–1935 construction over all runs + payback warn 6–8 y; G4/G5 the register's end-state bands and W per head; G7 the tier rule's anchors in a majority format (tiers listed until 50% of tier workers); P over clusters 1 + 2, yellow edge = the +10% budget) · `fill_goals.mjs`, ledger README
@@ -261,6 +265,7 @@ and an independent hunt over the generated mod and six canon century runs' error
 - **OPEN** · release
 
 ## Done (recent; prune freely)
+- Done 2026-08-20 (closed 2026-10-24 on re-check) · `fill_consts.mjs`'s "productive workers" subtracts the save's own government and military workforce, not a levels-scale staffing; the old CLAUDE.md still called it open · `tools/testbed/ledger/fill_consts.mjs` header, ledger README
 - Done 2026-10-11 · MERGED BUILDINGS CARRY ONE SET OF SECONDARIES, EVERY RUNG TAKES VANILLA'S TOP-METHOD SHARE, AUTOMATION INPUTS SCALE (user-ruled; `top` rule in `emit_secondaries.mjs`, on for every `_merge`/`_artisan` book; the canon builds byte for byte as before). Two combinations forbidden: Elastics beside Sewing Machines, Precision Tools beside Mechanized Workshops. It also resolves the Bakeries' Pot stills / canners reference mismatch and canning losing value beside Sweeteners. Plus: `make_research_levers_config.mjs` drops an inherited `dams.staff_per_50` pin, so the 10/15/10 dam staffing is in every artmerge book onward · BALANCE_FRAMEWORK §10.91.2
 - Done 2026-10-11 · THE MERGED HOSTS' SECONDARY COPIES WERE UNSELECTABLE (the playtest of mod_playtest_ra: Pot Stills off but never on, no jars, no luxury lines on the Tier 1-2 food, textile and furniture buildings). `is_hidden_when_unavailable` on a main-method-gated copy blocks selection; isolated in the user's game with Bone China and Precision Tools. The flag is removed and copies are named after their main method ("Cannery (Baking Powder)"); built as `mod_ra_named`, not deployed · BUGS_AND_FIXES 2026-10-11
 
