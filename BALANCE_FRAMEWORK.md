@@ -36,7 +36,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.66 | the band budget, the first four-rung proposal, UI 2.0 | record; 10.66.6 (railway handed back to vanilla) still holds | archive |
 | 10.67 | the battle-test arm: a cost ladder, less productive entries, a vanilla-pegged tree | record; the pegged tree carried into §10.72; 10.67.5 (readers skip `disabled` industries, L27) still holds | archive |
 | 10.68 | the A/B ladder | in force (the values: CLAUDE.md §1.3) | here |
-| 10.69 | `canon-4rung`, declared beside the six-rung canon | record | archive |
+| 10.69 | `canon-4rung`, declared beside the six-rung canon; no artificial limits; the war channel | partly: NO ARTIFICIAL LIMITS (hard build blocks rejected, a willingness lever allowed) and the war channel's rule (land unit-type technologies, a general with a flat 50 mobilised battalions, marines excluded) stand; the book itself is a record | here |
 | 10.70 | the art-academy "hypersonic" stress test | record | archive |
 | 10.71 | the vanilla-first four-rung ladder, `canon4v` | superseded by its restatement, §10.72 | archive |
 | 10.72 | the four-rung canon is built from vanilla and the spec alone | in force | here |
@@ -839,11 +839,209 @@ both `-DryRun` clean (lint 62/62, negative-goods, solvency 62/62, tech content 1
 mod checks, preflight ×2). Nothing canonical changed; `mod_config.json` is still the solver2f book.
 
 
-## §10.69–§10.71 — archived
+## 10.69 `canon-4rung` — the four-rung canon declared beside the six-rung canon (user-ruled 2026-09-03)
+
+**Ruling.** "Declare this new state canon-4rung alongside the older 6rung canon." The state is the **ab3** book of
+§10.68 — tier4 structure (§10.66), vanilla lowest-tier recipes on the A/B ladder A 2.0 / B 1.5 with capacity-priced
+cost and the pool cost-divisor 0.000125, ai_value 1000×2^tier with glass and tooling at 1000×3^tier, company-target
+gate OFF — copied to `config/mod_config.canon-4rung.json` (+ the `tech_tree_options` twin) with a `_canon` stamp
+naming the source (`mod_config.ab3.json`, sha 76054C3C…) and the sessions it was measured in. The six-rung canon
+(`config/mod_config.json`, §10.65.9) is untouched. `mod/` is not re-pointed.
+
+**What it stands on.** F98 (the ab2 base book, n=2: world GDP 0.98× / 0.97× vanilla, productive workers per capita
+0.72–0.76×, £ per productive worker 1.25–1.32×, companies at vanilla) and F99 (ab3, n=3: 0.95× / 0.39× / 0.90×; the
+glass lever biting — British glass 118% / 112% vs 153–158 and vanilla's 105, Britain 84 / 201 plastics
+glassworks vs 44 / 97; t0 lower, not dead). The vanilla comparison (F99 §5): 0 world stalls in 18 reference runs
+against 1 in 5 seeds on this book family.
+
+**Ruling on levers (user, 2026-09-03): NO ARTIFICIAL LIMITS.** "I strongly dislike artificial limits, even if they
+steer the AI in the right direction. If there was something that would modify AI willingness to build it further,
+that'd be OK, but not an outright block (especially not that blunt, which would prevent a high-tech resource-missing
+country from building rungs for which it has input goods)." ⇒ the `possible` build gate on rung k−2 is **REJECTED**,
+as is dropping rung 0 from the company prosperity lines; a CONDITION on a company target (the target gate) is a
+willingness lever and is re-tested: **`20260903_094941_canon4-tgate-n2`** = canon-4rung + `company_target_gate:
+true` (`config/mod_config.canon4-tgate.json`, 310 target entries gated at build), n=2, predictions in the schedule
+(P1 companies must not collapse: shortlist ≥ 24, 6 of 6, HQs ≥ 90; P2 the company-held rung-0 levels and the t0
+levels added per decade fall; P5 glass/tools unchanged).
+**First read (run 1, 2026-09-03 12:31 — this seed lost India in 1847 and still grew; one CTD at 1920, resumed
+cleanly on the fixed observer):** **P1 PASSES** — shortlist companies 28 vs vanilla's 26, 6 of 6 countries, prosperity
+97, regional HQs 84 vs 96, company-held 34.5% vs 39.1%: on this book the gate does NOT collapse companies, so the ab1
+reading was the stall's. **P2 FAILS** — the rebuild is untouched: shortlist rung-0 levels 357 of which 171 (48%)
+company-held (canon 45–46%), t0 levels added per decade 22 / 79 / 36 / 64 / 49 / 27 (canon 25–84), shortlist t0 850k
+(canon 695–773k). France is the mechanism laid bare: DMC owns every textile level at every rung (t0 63 of 63, dye
+192 of 194, electric 42 of 42) and grew rung 0 from 5 → 39 → 63 levels over 1900–1935 alongside dye 49 → 135 → 194 and
+electric 0 → 0 → 42, at £404 / £2,516 / £3,316 profit per level — a company expands ALL its rungs in proportion,
+rung 0 included, regardless of profit per construction point; formation planning (what the gate conditions) was
+never the driver. World GDP 0.79× (Britain small after 1847), shortlist 1.16×; glass 124 / 136 / 152 / 160 and tools
+123 / 144 / 163 / 166 in the British / French / American / Russian markets (canon 112–149 and 84–140) — dearer tools,
+n=1. ⇒ the target gate is harmless and useless here; the lever that reaches company EXPANSION has still to be found
+(the AI's expansion choice among a company's own buildings, and what it weighs).
+**What the private pool weighs (00_ai.txt, read 2026-09-03) and what the seeds say about it.** Autonomous-investment
+scoring per building type: predicted profit per employee (`GOODS_PROFIT_FACTOR` 5000 × 1.5), produced value at base
+(`PRODUCED_VALUE_FACTOR` 0.25 × 1.25), the company multiplier (`AUTONOMOUS_INVESTMENT_COMPANY_MULT` 2.0 ⇒ ×3 for EVERY
+building type an established company lists — our chain extension lists every rung), the cost divisor
+(÷(1 + 0.000125 × points)), shortage multipliers (×5 / ×0.01 by state), and a RANDOM factor of 10 × 2 for the pool. So
+a company's rung 0 gets the same ×3 as its rung 3, the cheapest divisor, and a large random term — no preference,
+just a floor. Measured across seeds, the rung-0 share of levels ADDED 1900→1935 over 14 countries:
+
+| arm | glass + tooling rung-0 share | every other industry |
+|---|---|---|
+| ab2 (glass/tooling ai_value ×2^tier) | 11.1% / 21.3% | 3.7% / 11.0% |
+| ab3 = canon-4rung (×3^tier) | 6.0% / 6.7% | 4.1% / 8.9% |
+| canon-4rung + target gate | 6.2% | 5.2% |
+
+The steeper ai_value ladder roughly HALVED rung-0 building in the two industries it touched; the target gate changed
+nothing. ⇒ the willingness levers, in order: (1) the ai_value ladder on every industry (×3^tier, or ×2.5 as a milder
+dose), gated by `analyse_build_allocation`'s between-sector check because the untiered sector stays at 1000; (2) the
+pool's randomness (`PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_RANDOM_FACTOR_MULT` 2.0 → 1.0, an `ai_defines` entry);
+(3) the company multiplier itself (2.0 → lower), untargeted. The residual after (1) is the random floor, which no
+weight removes entirely.
+**Batch closed (2026-09-03 15:12, n=2, FINDINGS F100, VERDICT in `20260903_094941`):** P1 holds at n=2 — shortlist
+companies 25 vs 26, 6 of 6, HQs 104 vs 96, company-held 34.4% vs 39.1% — and P2 fails at n=2: rung-0 company-held
+48% / 39% (canon 45–46%), t0 850k / 697k, additions per decade in the canon's band. World GDP 0.79× / 0.85×, no stall
+(the book family is 1 in 7 seeds). Tools dearer in both seeds (British 123 / 124 vs 103 / 103) — un-replicated caveat.
+**The target gate stays opt-in and OFF.** Next by the levers read above: the ai_value ladder on every industry (×3 or
+×2.5 per tier) gated by the between-sector allocation check; then the pool's randomness define.
+**The research journal entries (F101, 2026-09-03):** canon-4rung fires ~650 JE completions a run (GBR 15–25, USA 3–9,
+FRA 0–3; 13–20 of 40 technologies) against the six-rung canon's ~4,750 (GBR ~85, USA ~80), because `make_tier4_config`
+re-derived the thresholds to 30k / 120k / 480k (six-rung 5k / 15k / 45k / 135k / 405k) and doubled the bar to 72
+months — and its technology pace is exactly vanilla's. The user's hypothesis: restoring them "to the old level (or
+slightly lower)" balances to a better equilibrium. STAGED, not launched: `canon4-je` (thresholds 5k / 15k / 45k /
+135k by anchor year, bar 36) — `config/mod_config.canon4-je.json`, `schedules/canon4_je_n3.json`.
+**Calibration ruled (user, 2026-09-03):** base marks **t1 25k · t2 75k · t3 235k** workers at full staffing in the
+predecessor rung, **60-month bars per stage**, two stages still granting the technology at base cost, and per-industry
+reductions where the chain is small. F101.2 replayed the emitter's arithmetic on Britain's six non-stalled runs: at
+those bases the consumer and heavy chains (textile, glass, tooling, steel, motor, food t3, fertilizer t1) fire in ≥ 4 of
+6 runs; the marks the others need to fire in ≥ 4 of 6 are arms 30k / 40k (t2 / t3), artillery 10k / — / 25k, explosives
+10k (t2, via dynamite), munition 60k, synthetics 10k, fertilizer 30k (t2), electrics 40k (t2), paper 50k / 200k, food
+60k (t2), furniture 120k (t3); the art academy needed a level-counted source (it had none). Staged in
+`config/mod_config.canon4-je.json` as `threshold_mult`: arms {2: 0.4, 3: 0.17} · artillery {1: 0.4, 2: 0.4, 3: 0.11} ·
+munition 0.8 · explosives 0.13 · synthetics 0.13 · fertilizer {2: 0.4, 3: 0.4} · electrics 0.5 · paper 0.65 · furniture 0.5
+· food 0.8 · art_academy 0.2 — superseded the same hour by the RULING: ONE multiplier ×0.5 for arms, artillery, explosives, munition and synthetics, everything else at base; and marks are keyed by the UNLOCKED RUNG'S TIER, never by rung index (a late-appearing industry's first researchable rung at t2 takes the t2 mark). Not reachable by any mark: technologies Britain researches within
+1–4 years of eligibility (electrical_generation, the machine guns) and rungs eligible only from ~1930 (high-speed
+diesel, transfer machining). Labour-saving methods are NOT penalised: every source counts FULLY STAFFED LEVELS (Σ level × occupancy, occupancy being
+the staffed share of the building's current workforce), and a people mark is converted to levels through the predecessor's
+base per-level employment — a nominal figure; the JE text quotes the levels and calls the people number nominal (the user
+caught the earlier wording "75,000 workers at full staffing", which is true under one secondary method and false under
+another). The JE text now names each source, its mark and the live figure (emitter, 2026-09-03; in-game
+rendering of the data function still to be seen on the next run).
+**Anchors re-ruled (user, 2026-09-03): no JE gates on an auto-scaling building.** Combustion engine (automotive's first
+rung) → the motor industry's watertube and diesel rungs at the t2 mark (15 fully staffed levels each, the bar ticking once
+per qualifying source); telephone (electrics' first rung) → trade centres alone (25 levels at 1,000 a level); percussion cap
+(munition) and the explosives first rung → bg_army alone, counted in SOLDIERS (barracks levels × the battalion's 1,000
+manpower, 12,500 at the ×0.5 mark); urban centres and financial districts gate nothing; every later rung keeps its
+predecessor rung. **How the army-anchored entries fired before this (canon-4rung, six non-stalled runs):** percussion cap
+190–235 stage completions a run over 102–122 countries, intensive agriculture 231–261 over 104–120 — and **none for Britain,
+France or the United States in any run**: the majors research those tech-era-2 technologies within a few years of 1836, so the
+60-month bar never completes for them; the army anchor is a minor-country channel. **The war channel (rule C, the military
+tree on the 2026-08-18 war gate) emits NOTHING on either canon**: `research_events.scope` is absent, so the emitter's
+default `tiers_only` covers only the tiers' own technologies — 0 war journal entries in every build since the four-rung
+re-peg (and in today's six-rung dry run too). Turning it on is a ruling, not a calibration.
+⭐⭐ **THE MILITARY CHANNELS, RULED (user, 2026-09-03 — built into `emit_research_events.mjs`, staged in
+`config/mod_config.canon4-je.json`, NOT yet run).** Four rules, by what the technology gates:
+1. **A technology that unlocks a LAND UNIT TYPE gets the WAR entry** (`research_events.war_channel = 'unit_types'`, the
+   unit types read live from `common/combat_unit_types/00_land_*`): a general of ours with **at least 50 mobilised
+   battalions** (`war_gate.general_battalions_flat`, flat — the tech-era ladder 30×(tech era+1) is the fallback) on a front against
+   an enemy who already holds the technology; **no casualties clause** (`front_casualties_min 0` omits it). Monthly ticks,
+   **6 per stage** (`war_bar_months 6`), so two stages grant the technology at base cost when it is not ahead of time.
+   Eight entries on the four-rung tree: breech_loading_artillery, defense_in_depth, general_staff, landing_craft,
+   mobile_armor, nco_training, power_of_the_purse, trench_works (the tech-era-1 unit techs — line_infantry, artillery,
+   napoleonic_warfare, standing_army — are 1836 grants and get none).
+   ⚠⚠ **TWO OF THE EIGHT ARE NAVAL-TREE TECHNOLOGIES AND SHOULD NOT BE THERE (found 2026-09-03, ~1838 of canon4-je-n5
+   run 1; the user asked "didn't I specify no naval JEs?").** `power_of_the_purse` (prerequisite `admiralty`, "unlocks the
+   Power of the Purse PM in Naval Bases") and `landing_craft` (prerequisites `jeune_ecole`/`monitor_tech`) unlock the mid-
+   and high-tier MARINES — `combat_unit_group_marines`, which vanilla keeps in `00_land_combat_unit_types.txt` because
+   marines fight on land. The classifier read "named in the land file" as "army technology", and the `naval_channel: false`
+   drop keys on SHIP modifications (`isFleetTech`), which neither carries. So the running batch grants a naval technology
+   on an ARMY condition: a general with ≥ 50 battalions on a front against an enemy who holds it. Seen at 1838.11 of run 1:
+   power_of_the_purse inception for the East India Company and the Qing, general_staff for the EIC. Each stage is half
+   the era base cost, so a country at war can take a tech-era-2 naval technology at base cost in a year. Cheap, minor-country
+   flavoured, and NOT stopped — the batch runs as built (user, 2026-09-03: "don't stop the run"), so all five runs carry
+   it; the verdict must list it as a confound on naval-technology pace and on the JE totals (subtract the two
+   technologies' `PMR_JE` lines to read the army channel). **Fix queued behind the batch (L10): exclude unit types whose
+   `group = combat_unit_group_marines` from `UNIT_TECHS`**, which leaves exactly the six army entries: breech_loading_
+   artillery, defense_in_depth, general_staff, mobile_armor, nco_training, trench_works.
+2. **A military-industry rung WITH a predecessor rung keeps the industry rule** — the predecessor's staffing, 60-month stages.
+3. **A military-industry FIRST rung with no predecessor anchors on the CONSUMPTION of the good its output SERVES** —
+   `necessity_anchors` takes `good:<name>` and the term is `market = { mg:<good> = { market_goods_buy_orders >= T } }`, T
+   from `research_events.consumption_thresholds`; industry tick speed (one stage per 60 months above the line).
+   ⚠ **Not the unlocked good's own consumption — REJECTED by the user (2026-09-03)**: "where would those consumers come
+   from before any supply comes?" — an anchor on ammunition buy orders could only ever fire for a catching-up importer,
+   which is neither the country the entry is for nor a plausible one. So **percussion cap → SMALL ARMS consumption at the
+   British market's 1846 level**: `good:small_arms`, **≥ 900 a week**, interpolated 1840→1850 because the dumps are
+   decade-spaced and a save holds no order book (canon-4rung book, five non-stalled runs: British market 487–778 at 1840,
+   428–1,345 at 1850, medians 707 → 1,028; vanilla n=16: 637–885 → 769–1,314). Who clears 900 on the four-rung book:
+   Britain from the mid-1840s in most seeds; France (446–902 at 1850, 444–881 at 1860), Prussia (696–983 at 1860) and the
+   USA (146–987 at 1860) only at the top of their ranges by 1860; Russia (≤ 793) and everyone smaller not by 1860. Market-
+   wide, so a customs-union member reads its overlord's market. **The explosives first rung (intensive_agriculture) rides
+   the staple-crops anchor it shares with fertilizer** (25,000 workers; the explicit `explosives: ['bg_staple_crops']`
+   entry dedupes onto fertilizer's) — no anchor of its own. ⚠ The `mg:` scope inside a progress-bar term is UNVERIFIED
+   in-game — the smoke check must read the first tick's error.log.
+   ⚠ **MEASURED ON RUN 1 OF canon4-je-n5 (2026-09-03): THE TERM READS THE MARKET, SO EVERY MEMBER OF A MARKET TICKS.** The
+   percussion-cap entry completed for ~50 countries — Hyderabad, Travancore, Jaipur, Oudh, the Zulu, Haiti, Aceh… — nearly
+   all of them members of the British market through the East India Company, whose 900+ small arms a week they read as
+   their own. Britain itself never fired it (percussion cap researched within a few years of 1836). So the anchor
+   currently hands a tech-era-2 military technology at base cost to the princely states, which is not the country the entry
+   was written for. Candidate fix, NOT applied mid-batch (L10): AND the term with market ownership — `market.owner = ROOT`
+   (the port strategies' own idiom) — so only the market's owner reads its consumption; a per-country term (own barracks
+   levels) is the alternative the user moved away from.
+   ⭐⭐ **SUPERSEDED 2026-09-04 (user-ruled after F102 §5): percussion cap is gated by ARMS + ARTILLERY EMPLOYMENT, any
+   rung — `necessity_anchors.munition = ['bg_military_industry']`, mark 12,500 workers** (the tier-1 base 25,000 × the
+   war industries' ×0.5, i.e. 2.5 fully staffed levels). A group anchor now counts OUR rungs as well as the vanilla
+   building the extract lists (arms_industry + rifles + bolt_action + stamped, artillery_foundry + smoothbore + recoiled +
+   antiaircraft, at 5,000–5,250 a level), and leaves out the unlocked industry's own rungs. Who clears 12,500 on the
+   four-rung book at 1846 (median over four canon runs, arms + artillery staffed levels × employment): BIC 76k, PRU 65k,
+   FRA 60k, RUS 60k, GBR 45k, AUS 42k, SPA 25k, USA 20k, CHI 19k, NET 15k — ten countries; TUR 12k, SIC 10k, EGY 10k just
+   under; 33 countries hold any. The consumption anchor (`good:<name>`) stays implemented and unused: it ticks for every
+   MEMBER of a market, and a princely state with no foundry is not the country the entry is for.
+4. **No naval entries** (`naval_channel: false` drops every fleet technology's war entry).
+Net on canon4-je: **51 technologies (43 industry, 8 war) → 153 journal entries, 51 bars**, against the 43/0 of the previous
+staged state; the army-in-soldiers anchors of the paragraph above are superseded for percussion cap and the explosives
+first rung (the six-rung canon still carries `bg_army + bg_conscription` for munition).
+
+⭐⭐ **MEASURED — canon4-je-n5 (2026-09-03/04, F102, n = 5, no stall).** The restored research-event parameters double
+Britain's journal-entry completions (29–43 unique a run against the canon's 14–21), meet the tier-3 coverage target in
+every seed and the tier-2 target in one, and leave Britain with 2–12 more technologies at 1935 (163–172 against
+160–165). Downstream, nothing moves: world GDP 0.79× vanilla (canon 0.79–0.85), shortlist 1.09× (1.02–1.16), companies
+at the reference, the tiered workforce's tier mix inside the canon's spread (British t3 rungs 1.3–10.1% of the sector
+against 1.4–5.9%), output prices inside F94's band in pounds and falling in wage units exactly as in the canon, and the
+F75 build-choice measure 3pp WORSE (37.3% below-best against 34.5%). ⇒ Journal entries buy technologies, not
+capacity: the AI holds the tier-3 technologies and does not build the tier-3 rungs — F97's mechanism unchanged. The
+"bring them back and it balances" hypothesis is NOT supported. Instrument findings from the same batch: the two
+marines technologies on the war channel (FIXED — `combat_unit_group_marines` excluded, six war entries), the
+consumption anchor ticking for every market member (OPEN — candidate `market.owner = ROOT`), the log mirror's
+false-rotation duplication (L28, FIXED + detector), the secondaries' missing loc (FIXED). The staged config stays
+committed as `config/mod_config.canon4-je.json`; it is NOT promoted to a canon.
+
+**Names (user-ruled 2026-09-04): a tier or technology name says the GENERATION of plant, not one product.** The artillery
+tier-3 rung "Automatic Anti-Aircraft Foundries" / technology "Automatic Anti-Aircraft Guns" was ruled too specific and is
+now **"Rapid-Fire Ordnance Foundries"** (method "Rapid-Fire Ordnance", technology **"Automatic Ordnance"**; the script id
+`automatic_aa_guns` is unchanged — internal, referenced by nothing in vanilla) in the tier4, canon-4rung, canon4-je and
+canon4-art configs and their tree twins. The audit of every other tier and minted technology name is in the 2026-09-04
+session record; the candidates flagged for the user (NOT applied): arms t3 "Stamped Receiver Arms Industries" /
+"Stamped Receivers"; synthetics t3 "Polyamide Fibre Plants" / "Polyamide Synthesis"; munition t3's technology "Automatic
+Shell Filling"; and the eight auto-suffixed names of the form "<same method> (<technology>)" — food t3, furniture t2,
+paper t3, fertilizer t3, motor t1, synthetics t2, electrics t2 and t3 — which are not too specific but are not names.
+
+**What it does NOT settle — the open list, in the order the user is weighing it.**
+1. **The company rebuild pattern** — a company expands its rung-0 buildings all century (DMC 21 of France's 25
+   rung-0 textile mills in ab3 seed 3; 74 of 75 American rung-0 tooling workshops in seed 1; 82 of 83 French
+   rung-0 motor works in ab2 seed 2). ai_value does not reach it (the AI expands what the company owns). The
+   company-target gate (§10.68, `company_target_gate`) was tried once, on the stalling ab1 book, and rejected on
+   its company collapse; that measurement is confounded by the stall. Candidate levers: (a) a `possible` build
+   gate on every rung k — `owner = { NOT = { has_technology_researched = <rung k+2's tech> } }` — which stops new
+   construction AND expansion of an obsolete rung without demolishing it and without touching the company files;
+   (b) dropping rung 0 from the companies' expanded `prosperity_modifier` lines so the company bonus no longer props
+   the old rung; (c) re-testing the target gate on this book rather than on ab1.
+2. **The stall rate** — pool-side levers (cost divisor, top-rung cost) against the same seeds, or acceptance.
+3. **The rest of the t0 tail** — textile and motor t0 ~180k on the shortlist in the growth seeds, glass t0 halved
+   but 70–90% staffed where the price is still above base (France 140%, America 135–146%).
+
+
+## §10.70–§10.71 — archived
 
 Moved verbatim, under the same numbers, to `BALANCE_FRAMEWORK_ARCHIVE.md` (2026-10-24); status in the index above. Its headings:
 
-- 10.69 `canon-4rung` — the four-rung canon declared beside the six-rung canon (user-ruled 2026-09-03)
 - 10.70 — THE ART-ACADEMY "HYPERSONIC" LADDER — canon4-art (user-directed 2026-09-04, a STRESS TEST, nothing canonical changed)
 - 10.71 — THE VANILLA-FIRST FOUR-RUNG LADDER — `canon4v` (user-ruled, restated 2026-09-04; a CANDIDATE canon awaiting ratification)
 
