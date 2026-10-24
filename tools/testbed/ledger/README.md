@@ -208,6 +208,11 @@ and `e0 other`.
 
 ### The goals table
 
+⚠ **Ruled to go (BALANCE_FRAMEWORK §10.104, 2026-10-24):** the page's scorecard becomes the criteria register's table (from `criteria.mjs --json`),
+and the goals table goes; what it measures that the register does not (G1; G2's t1 decline and t0 payback; G3; G5's GDP per productive worker;
+G6 until the register computes the decade path; G7; P) stays on the page as readings beside the register. Built after the alternating batch;
+until then the page carries the table below.
+
 `fill_goals.mjs` writes G1–G7; the template renders P. Each row grades ok / warn / bad (a near miss is a warn) on both bounds of its band —
 a reading above the upper bound is "above the band", never "met". The end state is the 1932–1936 mean (§10.83). Rows were reviewed against
 the ruled criteria on 2026-10-08.

@@ -431,6 +431,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.101 | per-industry input lift allowed (one number per industry line); the routine levers; cost1 | in force (§2.5) |
 | 10.102 | the world-market monopoly threshold 0.99 | in force (canon since 2026-10-21) |
 | 10.103 | treaty ports: the measured funnel and the layered solution, deferred to mod 1.1 on game 1.15 | deferred |
+| 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays, as readings | in force; built after the alternating batch |
 
 ---
 
@@ -858,8 +859,10 @@ loc-string data errors, battle sizes …): count against the vanilla baseline, f
   welded 527 (F53). Say which rate a payback uses.
 - Read quantities, not prices, where a good sits at the band edge (§2.7).
 - The standard batch report is **the ledger** (`tools/testbed/ledger/`), published as an Artifact per batch and copied into the session as `REPORT.html`.
-  It carries the register, the verdict table with play speed as a row, the red-flag headline and summary, the obsolescence and old-rung tables, and the
-  world and watchlist pages.
+  Its scorecard is **the criteria register** (§10.104): the register's table from `criteria.mjs`, then the readings the register lacks (the share of
+  levels built below the best tier, the t1 decline and the t0 payback, construction volume and the frontier payback, GDP per productive worker, the
+  early growth, the tiers on their anchors) and play speed; then the red-flag headline and summary, the obsolescence and old-rung tables, and the
+  world and watchlist pages. ⚠ Until that is built after the alternating batch, the page still carries the older goals table (G1–G7 + P) instead.
 - A verdict names what is void, what still reads, and how far; it traces the knock-ons of a defect (war, conquest and research redirect everything) and
   reads the trajectory, not only the endpoint. A retrospective verdict says so.
 
