@@ -417,6 +417,8 @@ Priority:
   - Sources: BALANCE_FRAMEWORK §10.103 (:10119-10214); FINDINGS F243–F246; BACKLOG D:136-141; ON_GAME_UPDATE:76-77, 158-177.
 - **The ON_GAME_UPDATE pass for 1.15.N.** It includes the hand re-test that a FOREIGN dam builder still gets the `has_max_level` cap (ON_GAME_UPDATE:150-153) and the 1836 starting-technology check (L14/L15).
 - **Anything that depends on AI behaviour** waits for the 1.15 AI rework (memory `release-timeline-1-0-and-1-1.md`).
+- **Urban-centre electricity ×2 or ×3** (user-ruled 2026-10-24): one candidate vector. `pm_electric_streetlights` goes from 1 to 2–3 electricity a level, with a reasonable coal increase. Measure the canon's urban-centre and total electricity at 1935 first. More hydro variety within the four dam types was dropped.
+  - Sources: BALANCE_FRAMEWORK §10.89.15; BACKLOG D.
 
 ---
 

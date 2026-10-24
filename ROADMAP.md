@@ -1397,6 +1397,8 @@ before step 7.
 3. **~12.11** — a stable **1.15.N**.
 4. **~16.11** — **mod 1.1** for 1.15.N: the ON_GAME_UPDATE pass plus whatever deferred feature the new game supports. The candidate is
    **TREATY PORTS** (BALANCE_FRAMEWORK §10.103, FINDINGS F243–F246) — built and probed on 1.13, deferred by ruling until the 1.15 AI is seen.
+   Another vector on record (user-ruled 2026-10-24, §10.89.15): **urban-centre electricity ×2 or ×3**, with a reasonable coal increase. It is a
+   one-line recipe change, but it moves electricity prices world-wide, so it needs a century measurement.
    ⚠ Only about four days between steps 3 and 4: room for 10-year probes and at most one n=3 century, so 1.1 can carry a feature only if it
    needs no iteration.
 5. **18.11** — GTA VI; no attention for Paradox mods until the new year.
