@@ -4274,3 +4274,9 @@ loss weight) is a separate ruling; none is made here.
 
 **When.** The change is to the measurement tools (`fill_ledger.sh`, the template, `fill_goals.mjs`), so it is built after the alternating batch
 ends (no `tools/testbed/**` edit while it runs). That batch's own report, filled after it, is the first to carry it. BACKLOG G holds the work item.
+
+**The world-GDP chart and tables (ruled the same day).** The report's world-GDP ratio chart shades a fixed 0.8–1.25× band labelled "the target",
+and the trajectory and watchlist tables mark a value outside it red; that band is in no ruling. Offered the register's own lines by date (the
+1836–1845 anchor, the 1886 line, the end-state aim and soft band), one constant register band, or the old band relabelled, the user chose to
+**keep 0.8–1.25× and relabel it a rough visual guide, not the target**; the tables keep flagging values outside it. The register's world-GDP
+lines are read in the register's table, not drawn on the chart. Built in the same change.
