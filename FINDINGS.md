@@ -638,7 +638,9 @@ every read. Bankruptcy counts stay at vanilla-like levels; infrastructure keeps 
   gov-expense subsidy bleed removal is a small part of the GDP delta, not zero, and this batch
   cannot apportion it exactly.
 - Payback figures stay on the flat-£720 basis (F53's ~27% late-tier bias, shared by all arms).
-- "Parity ≈ 0.8×" is an interpolation on two flat points, not a measurement.: the pop-consumption line contains EVERY slave pop at its own wealth (USA 0.863 → 1.003 aggregate), and the "purchased for slaves" line is a SEPARATE building purchase = employed (non-subsistence) slaves × PER-HEAD package at own wealth — exact to 1.9% per-good in the USA. FIVE candidate terms for the remaining ~5% divergence are measured and REFUTED, including F44's obsession/taboo budget shift — whose shipped implementation had never actually fired (a silent culture-parser no-op)**
+- "Parity ≈ 0.8×" is an interpolation on two flat points, not a measurement.
+
+## F61 — [the start of this heading was lost in an old edit that spliced F61 into F62; restored as a heading 2026-10-24, its surviving tail follows unchanged] …: the pop-consumption line contains EVERY slave pop at its own wealth (USA 0.863 → 1.003 aggregate), and the "purchased for slaves" line is a SEPARATE building purchase = employed (non-subsistence) slaves × PER-HEAD package at own wealth — exact to 1.9% per-good in the USA. FIVE candidate terms for the remaining ~5% divergence are measured and REFUTED, including F44's obsession/taboo budget shift — whose shipped implementation had never actually fired (a silent culture-parser no-op)**
 
 **Arm** `control` · vanilla + telemetry · session `20260815_233017_consumption-calib2` (1840.1.1 breakdown + same-date save, melted) · schema v13 · 🟢 ARM-FREE (an engine consumption-accounting property, measured on vanilla)
 
@@ -7086,7 +7088,7 @@ one to the other.
 any building type other than the port ladder — though the check is generic to `create_building` and
 should be assumed to apply to every seeded industry.
 
-## ⭐⭐ THE POSITIVE CONTROL: GRANTING THE TECHNOLOGY FIXES IT COMPLETELY
+### ⭐⭐ THE POSITIVE CONTROL: GRANTING THE TECHNOLOGY FIXES IT COMPLETELY
 
 **Measured the same evening, and it is the other half of the finding — do not read the paragraphs above
 without it.** The century run `20260817_155024` (config `713504a843ccb897`, commit `a5406ac`) carried
