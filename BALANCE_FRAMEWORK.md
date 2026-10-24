@@ -65,7 +65,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.95 | research entries for production technologies outside the ladder | in force | here |
 | 10.96 | the last tech rework; every decade's world GDP a target | in force | here |
 | 10.97 | the research entries reworked; research halved | in force | here |
-| 10.98 | research entries beyond production | in force | here |
+| 10.98 | research entries beyond production | in force; item 10's warning that vanilla's art-academy entries are dead in the mod is resolved — `emit_vanilla_refs.mjs` restores them since 2026-10-21 (TIER_REFERENCE_AUDIT §3.1) | here |
 | 10.99 | the artmerge arm is the canon | record, with a warning (pre-artmerge books lack the performance changes) | here |
 | 10.100 | the world-GDP aim 0.90–1.00; the closed-major term | in force | here |
 | 10.101 | a per-industry input lift; the routine levers; cost1 | in force | here |
