@@ -1,19 +1,21 @@
 # PM & Tech Rehaul — a Victoria 3 economic-realism mod
 
-For **Victoria 3 (1.13 "Matcha")**. It makes a technological edge actually matter: each economic
-building keeps **one** main production method, every former "upgrade" PM becomes **its own
-tech-gated building**, and outputs/inputs are re-sloped into a **break-even ladder** so modern
-factories drive obsolete ones out of the market — and modernizing now costs **capital** (you
-*build* the newer plant instead of flipping a PM for free).
+For **Victoria 3 (1.13 "Matcha")**. It makes a technological edge actually matter. In seventeen
+manufacturing industries each of vanilla's main production methods becomes **its own tech-gated
+building** (a rung), and every newer rung makes more per worker and per unit of capital than the one
+before, so modern factories drive obsolete ones out of the market — and modernising costs **capital**
+(you *build* the newer plant instead of flipping a method for free). Power becomes a real input (cities
+light themselves, power plants are capital-heavy, 122 historical hydro dams), ordinary research is cut
+and earned back by running industry, and a unit of trade capacity moves more of compact, valuable goods.
+The full list of changes is [`CLAUDE.md`](CLAUDE.md) §1.2.
 
 Design detail lives in [`CLAUDE.md`](CLAUDE.md) (goals, principles, metrics, the canon, the working rules), [`REPO_GUIDE.md`](REPO_GUIDE.md) (every file and tool), [`BALANCE_FRAMEWORK.md`](BALANCE_FRAMEWORK.md)
-(the balance methodology + numbers), and [`MODDING_NOTES.md`](MODDING_NOTES.md) (engine gotchas).
+(the balance rulings), and [`MODDING_NOTES.md`](MODDING_NOTES.md) (engine gotchas).
 
-Scope today: **22 industries / 67 tier buildings** — all manufacturing (light, heavy, military, and ship
-construction; the shipyard is split into separate clipper and steamer chains), the new-economy chains
-(**power plants**, **ports**, **railways** — ports and railways keep vanilla economics and are tiered for
-the construction cost alone), and the **art academy**. Raw-resource extraction and agriculture are out of
-scope; the balance editor still shows and can edit every other vanilla building's recipe.
+Scope: **17 tiered industries**, up to four rungs each — food, textile, furniture, glass, tooling, paper,
+fertilizer, explosives, steel, motor, automotive, arms, artillery, munition, synthetics, electrics and the
+art academy. Extraction, agriculture, ports, shipyards, railways, power plants and trade centres keep
+vanilla's buildings; the balance editor still shows every vanilla building's recipe.
 
 ## Requirements
 
@@ -89,15 +91,19 @@ if you have not rebuilt since the last config change.
 
 ## What you edit
 
-`config/mod_config.json` is the source of truth (the editor reads/writes it). `config/start_exceptions.json`
-holds manual overrides for the 1836 start (force a country's factories to a tier, or remove them).
+`config/mod_config.json` is the source of truth (the editor reads it; Build now and Export write it). A
+book's manual overrides for the 1836 start live in the file its `start_exceptions_file` names; the canon's
+(`config/start_exceptions.vanilla.json`) is empty, so its start is vanilla's map converted onto the rungs.
 Everything under `mod/` is **generated** — never hand-edit it.
 
+⚠ The canon is a **generated** book: the build recomputes every rung from the book's own records and fails
+on a hand edit. Use the editor on it to read and explore; change the canon through its generator chain
+(`CLAUDE.md` §4.4, §5.7).
 
-## The canon (2026-09-05)
+## The canon
 
-The balance book the builder ships by default is **`canon4v-hai3`** in `config/mod_config.json` (since 2026-09-06): four rungs per industry, each
-rung one of vanilla's own production methods with vanilla's name, gate and recipe, enriched by the A/B ladder (output ×2
-and input value ×1.5 per rung, construction priced by capacity) — `BALANCE_FRAMEWORK.md` §10.68, §10.72, §10.74 and §10.75 (the ai_value curve and the investment-pool defines). The
-earlier six-rung book is kept at `config/mod_config.six_rung.json` (+ `config/tech_tree_options.six_rung.json`) and builds
-with `powershell -ExecutionPolicy Bypass -File tools\build.ps1 -Config config\mod_config.six_rung.json`.
+The balance book the builder ships by default is **`jex-dam4s-rs-x25-m10ac-dpriv-wm99`**, copied verbatim into
+`config/mod_config.json` (+ `config/tech_tree_options.json`): up to four rungs per industry, each rung one of
+vanilla's own production methods with vanilla's name, gate, staffing and icon, sized by the A/B ladder (output
+×2.2, input value ×1.64 and construction cost ×1.9 per tier). The formula and its exceptions are `CLAUDE.md`
+§1.3; what the book contains and where it stands, `CLAUDE.md` Part 4.

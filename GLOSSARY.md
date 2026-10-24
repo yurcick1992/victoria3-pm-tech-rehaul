@@ -48,8 +48,9 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 
 ## 4. STATISTICS — the two that caused trouble
 
-- ⭐⭐ **"CI" IN THIS PROJECT MEANS THE PERCENTILE INTERVAL OF VANILLA'S SIXTEEN SEEDS, NOT THE CONFIDENCE INTERVAL OF A MEAN.** "vanilla's 90% CI"
-  is `p5 … p95` over the 16 runs; "95% CI" is `p2.5 … p97.5`. The interval of the *mean* would be ~4× narrower and is never what is meant.
+- ⭐⭐ **"CI" IN THIS PROJECT MEANS THE PERCENTILE INTERVAL OF VANILLA'S SEEDS, NOT THE CONFIDENCE INTERVAL OF A MEAN.** "vanilla's 90% CI"
+  is `p5 … p95` over the vanilla reference runs (`lib_runs.VANILLA_REF`, n=24 today; the older readings used the summer n=16); "95% CI" is
+  `p2.5 … p97.5`. The interval of the *mean* would be ~4× narrower and is never what is meant.
 - **AIM / SOFT / HARD** — an AIM is what the iteration is trying to reach; a SOFT boundary is unacceptable but the economy is not broken, so the run
   is still read in full; a HARD boundary means the economy IS broken, the run records only **broken by stall** or **broken by runoff**, and ONE
   broken run ends the config.
@@ -66,12 +67,12 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | ⭐ **tech era 1 … 5**, **game era** (synonyms) | the **MECHANICAL era of a TECHNOLOGY** (the tech tree's Era I–V) — the era base cost and the ahead-of-time penalty. Mapped from tiers by `era_game_era` = [1, 3, 4, 5]. Never a bare "era N" where it could be read as a tier |
 | ⭐ **THE RENAME (user-ruled 2026-10-21, POLISH_1_0.md Q8)** | until 2026-10-21 the docs called a rung's tier its "**narrative era**" or "**era**" and wrote **e0 … e3**; every MD was rewritten to "tier" / t0 … t3 the same night, dated records included (the user: *"every MD, dated records included; config and tool names stay era"*). QUOTATIONS were left verbatim, so a user ruling or an old in-game name may still say "era" or "Era N" for a tier. Before 2026-09-13 some text used "Tier N" / "TN" for a 1-based POSITION in an industry's ladder; the rename turned those into "rung N" / "the Nth rung". Vanilla's STARTING-TECHNOLOGY tiers (`effect_starting_technology_tier_N`, "tier-1/2 countries") are unrelated and are written "starting-tech tier N" |
 | **rung** | one tiered building of one industry — the thing a tier labels |
-| **A** | the **output ratio per tier**: a rung of tier e makes `vanilla's first method × A^e` |
-| **B** | the **input-value ratio per tier**: input value `× B^e` over that rung's own vanilla mix |
-| **r** | **A ÷ B** — the margin's SHAPE, multiplying per tier. Today 2.2 ÷ 1.64 = **1.341** (the canon's A and B, CLAUDE.md §4.1) |
-| **C** | the **cost ratio**: building_cost = the vanilla anchor `× C^era` (`--cost-ratio`; `--cost-ladder` gives it per tier explicitly) |
-| **in0**, **the lift**, **the tier-0 input penalty** | rung 0's input VALUE `× in0`, with the whole ladder anchored on the lifted rung 0 (`--in0`). Today **1.2** |
-| **`--in0-level m`**, "**uniform −X%**" | the same penalty chosen PER INDUSTRY so every industry's tier-0 rung lands on the SAME margin `m` at base prices, in place of one scalar. `lift_i = O0 × (1 − wage_pct) ÷ (I0 × (1 + m))` |
+| **A** | the **output ratio per tier**: a rung of tier t makes `Q₁ × A^(t−1)`, Q₁ = the output of the industry's t1 rung's vanilla method (the ladder is anchored at t1; CLAUDE.md §1.3) |
+| **B** | the **input-value ratio per tier**: input value `V₁ × L × B^(t−1)`, spread over that rung's own vanilla mix |
+| **r** | **A ÷ B** — the margin's SHAPE, multiplying per tier. Today 2.2 ÷ 1.64 = **1.341** (the canon's A and B, CLAUDE.md §1.3) |
+| **C** | the **cost ratio**: building_cost = the vanilla building's cost `× C^(t−1)` (`--cost-ratio`; `--cost-ladder` gives it per tier explicitly). Today **1.9** |
+| **in1**, **L**, **the lift** | the input-value multiplier on the anchor rung, carried up and down the whole ladder (`V(t) = V₁ × L × B^(t−1)`). Today **1.2** (engines 1.0; the pop-good lift `--in1-pop` 1.2). The flag and the book field are still `--in0` / `_ab.in0`, from when the lift sat on rung 0 ("the tier-0 input penalty", §10.77) |
+| **`--in0-level m`**, "**uniform −X%**" | a lift chosen PER INDUSTRY so every industry's tier-0 rung lands on the SAME margin `m` at base prices. CLOSED as a lever (§10.86.4: "the solver all over again"); a per-industry lift is now one ruled number per industry line (§10.101) |
 | **target_be** | the **output price, as % of base, at which a rung covers input goods + wages**. `= 100 ÷ (1 + m)`. Its own drift guard, not a design input |
 | **the book** | one complete `config/mod_config.*.json` — a named point in (A, B, C, in0, ai_value, defines) space |
 | **the canon** / **the incumbent** | the book `config/mod_config.json` currently is; today `jex-dam4s-rs-x25-m10ac-dpriv-wm99` (CLAUDE.md §4.1) |
@@ -96,7 +97,7 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **throughput** | a per-building multiplier on inputs *and* outputs, so it raises the full margin but not the goods margin |
 | **expected payback** (of a new level) | its construction cost (points × the country's £ per point at base prices) ÷ the annual PROFIT per staffed level that building type earned in that country at the time — realised prices, actual wages; a type the country does not run yet takes its market's figure, else the world's (F206). Years |
 | **a VALID option** | a building type a country could productively add: some state of it holds **≥ 25k peasants + unemployed** AND, for a mine / logging camp / wharf / rig, free capped slots of that resource, or for a farm / plantation / ranch, free arable land with the crop allowed; manufacturing needs only the labour (user-ruled 2026-10-02, F207) |
-| ⭐ **MISPLACED CAPITAL** (the user's "ineffectively invested capital") | the share of new capital in mines, agriculture and manufacturing whose expected payback is **> 3× the best valid sector's, or loss-making ("grossly suboptimal")**, beside the share at **1.5–3× ("a bit suboptimal")**; taken WITHIN a run-decade (or country-decade). ⚠ NEVER MEASURED, even where they earn through goods (ruled 2026-10-02, §10.92.1): infrastructure (railways, ports, power plants, dams), trade centres, shipyards, every government-funded building and gold mines — their AI values are set to get them built, not to follow profit. The military industries are NOT exempt (ruled the same day): they are measured like any manufacturing rung. Capital built where no option is valid (a fully employed country) is reported apart, ungraded. Vanilla 10–19% grossly in every decade; the four-rung books climb to 24–38% by 1926–36 (F206/F207). ⭐ **It should be as low as possible, and it is the yardstick of every AI-value change** (§10.92, CLAUDE.md §2.4) |
+| ⭐ **MISPLACED CAPITAL** (the user's "ineffectively invested capital") | the share of new capital in mines, agriculture and manufacturing whose expected payback is **> 3× the best valid sector's, or loss-making ("grossly suboptimal")**, beside the share at **1.5–3× ("a bit suboptimal")**; taken WITHIN a run-decade (or country-decade). ⚠ NEVER MEASURED, even where they earn through goods (ruled 2026-10-02, §10.92.1): infrastructure (railways, ports, power plants, dams), trade centres, shipyards, every government-funded building and gold mines — their AI values are set to get them built, not to follow profit. The military industries are NOT exempt (ruled the same day): they are measured like any manufacturing rung. Capital built where no option is valid (a fully employed country) is reported apart, ungraded. Vanilla 10–19% grossly in every decade; the books of 2026-10 22–29% by 1926–36 (F227, F247; the older books of F206/F207 24–38%). ⭐ **It should be as low as possible, and it is the yardstick of every AI-value change** (§10.92, CLAUDE.md §2.4) |
 
 ## 7. PROCESS
 
@@ -106,7 +107,7 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **setup** | the schedule's name for an arm |
 | **run** | one 1836 → 1936 campaign. **session** — one scheduler invocation's folder. **batch** — the runs a schedule was written for |
 | **the 2+1 rule** | two runs, `alignment_check.mjs`, a third only if they diverge; the config read as the median |
-| **the run-level stop** | a run of a 2+1 batch ending above ×1.3 of vanilla's 1936 world GDP is that config's last run |
+| **the run-level stop** | a run of a 2+1 batch that breaks a hard register line is that config's last run (the stop watcher drops the STOP file); ×1.3 of vanilla's 1936 world GDP survives only as the watcher's fallback threshold (CLAUDE.md §3.2) |
 | **usable** | a run that reached its own `until` date with no `abandoned_reason` (landmine L17) — `lib_runs.usableRuns` is the only definition |
 
 ---

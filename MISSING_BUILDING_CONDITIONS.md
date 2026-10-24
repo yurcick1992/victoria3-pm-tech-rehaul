@@ -1,15 +1,15 @@
 # Vanilla building special conditions dropped by our replace/split
 
 A catalogue of **special conditional fields inside vanilla building definitions we OWN and regenerate**
-(tier-split or clone-and-swap) that our emitted building does **not** reproduce. Unlike
-[MISSING_PM_REFERENCES.md](MISSING_PM_REFERENCES.md) — which is about *external* vanilla scripts
-(events / journal entries / triggers) referencing a main PM our split relocated, and which we can't easily
-fix — the cases here are **fully in our control**: we chose to flatten/omit the field when regenerating the
-building. They are therefore directly fixable; we're just **deferring** them to a batch pass.
+(tier-split or clone-and-swap) that our emitted building does **not** reproduce. Unlike the *external*
+vanilla scripts (events / journal entries / triggers / modifiers) that name a tiered industry — catalogued in
+`TIER_REFERENCE_AUDIT.md` and rewritten by `tools/emit_vanilla_refs.mjs` — the cases here are **fully in our
+control**: we chose to flatten/omit the field when regenerating the building. They are therefore directly
+fixable; we're just **deferring** them to a batch pass.
 
-**Part of the `MISSING_*` family** (see CLAUDE.md §5.4 and `TIER_REFERENCE_AUDIT.md` for the full taxonomy:
-relocated-PM references → `MISSING_PM_REFERENCES.md`; dropped building conditions → this doc; `has_building`
-narrowing → the shared *make-our-tiers-eligible* strategic fix).
+**Part of the `MISSING_*` family** (CLAUDE.md §5.4): vanilla references to the tiered industries →
+`TIER_REFERENCE_AUDIT.md` (it supersedes the older generated `MISSING_PM_REFERENCES.md`); dropped building
+conditions → this doc.
 
 **Convention:** when a tier-split or clone drops a special vanilla building condition (a conditional
 `ai_value` block, `should_auto_expand`, `potential`, `possible`, a `unique` flag, a scripted trigger inside
@@ -19,8 +19,8 @@ the builder emits — a sibling to `tools/audit_pm_refs.ps1`.)*
 
 The non-clone builder path emits a **scalar** `ai_value` (per-tier override, else the config
 `building.ai_value`, else engine default); it cannot emit a conditional `ai_value = { … }` block. The
-clone-and-swap path (power/port/railway) *does* preserve the vanilla block verbatim, so clone-emitted
-buildings are not affected.
+clone-and-swap path (`clone_from_vanilla`; the six-rung book's power, port and railway — the canon clones
+nothing) *does* preserve the vanilla block verbatim, so clone-emitted buildings are not affected.
 
 | Building (replaced) | Our industry | Dropped condition | What it did in vanilla | Vanilla source |
 |---|---|---|---|---|
