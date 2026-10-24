@@ -353,7 +353,7 @@ if ($ControlOnly -or $Overlay) {
     } else {
         Write-Output "  (no buildings, no production methods, no localization, no history, no pop needs)"
     }
-    # PREFLIGHT on the control arm too. It exits early - that early exit is the same one CLAUDE.md
+    # PREFLIGHT on the control arm too. It exits early - that early exit is the same one TESTBED_OPERATIONS.md section 2.2
     # names as the reason a gameplay file ended up on the wrong side of the -ControlOnly guarantee -
     # so a check placed only at the bottom of the script would never see the one arm whose whole
     # promise is "carries nothing". L7 is precisely that promise, checked against the emitted files.
@@ -1767,7 +1767,7 @@ if (-not $NoLint) {
     if (Test-Path $techLint) {
         Write-Output "Running tech-content linter (orphans + duplicate gates)..."
         & node $techLint $modRel $cfgPath
-        if ($LASTEXITCODE -ne 0) { throw "TECH CONTENT LINT FAILED: an orphaned technology, or one gating two rungs of one industry. See CLAUDE.md and BUGS_AND_FIXES 2026-08-30." }
+        if ($LASTEXITCODE -ne 0) { throw "TECH CONTENT LINT FAILED: an orphaned technology, or one gating two rungs of one industry. See CLAUDE.md section 2.6 and BUGS_AND_FIXES 2026-08-30." }
     } else {
         Write-Output "WARN: tools/lint_tech_content.mjs missing - the two hard tech rules are NOT checked"
     }

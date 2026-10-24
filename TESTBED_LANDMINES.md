@@ -495,7 +495,7 @@ wrong arm.
 disagree with what loaded, then require every emitted path to be one of `.metadata`,
 `common/on_actions`, `common/script_values`, `events`. Anything else fails **by name**.
 
-✅ **The architectural fix landed the same day** (see `CLAUDE.md` → the three arms): `-ControlOnly`
+✅ **The architectural fix landed the same day** (see `TESTBED_OPERATIONS.md` §2.2 → the three arms): `-ControlOnly`
 now **throws** if handed a config carrying gameplay content, and the overlay arm — vanilla +
 telemetry + one *declared* change — is its own flag with its own mod id
 (`com.yurcick.v3_testbed_overlay`).
@@ -1723,7 +1723,7 @@ completed. What they measured for those industries (F111): automotive at 1935 ea
 the flat-cost lifted book electrics and munition loss-making at base from their debut, 29% and 27% staffed on 697 and 841 built levels.
 
 ### The rule it enforces
-THE TIER RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78, CLAUDE.md's governing section): technologies by their GAME era, rungs by
+THE TIER RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78, CLAUDE.md §2.3): technologies by their GAME era, rungs by
 their TIER, the tier derived from the technology's game era (1 → t0, 2 → t1, 3 → t1, 4 → t2, 5 → t3, bumped up only to keep one
 rung per tier), a tolerance of ±1 tier, and every economic multiplier a function of the tier. The rung index is never a key.
 
@@ -2079,3 +2079,15 @@ returns false; a `has_building = building_<x>` matches only the rung that keeps 
 ACCEPTED list (a patch that adds one stops the build); (2) MANUAL at the smoke check — the count of `Invalid Production Method` /
 `PostValidate of trigger 'is_production_method_active'` lines whose Script location is a vanilla path, in the run's own error.log window,
 must be 0. ⚠ The second half is a smell (an entry that stays manual): automate it in `preflight.ps1 -Session` when the window logic is shared.
+
+## L41 — A GAME PAUSED BY INPUT LOOKS LIKE A HEALTHY RUN: the observer keeps writing a tick line every 20 s, so nothing goes silent (found 2026-10-23, run 13 of 20261021_224949_alt-vanilla-canon-n16)
+
+At 12:00:31 the game's own log recorded `Pause Toggled! Paused: true, PlayerID: 1` — a pause from PLAYER INPUT (a keypress or click in the
+game window). The engine's automatic pause toggles are `PlayerID: 0` and always resume; every run of the batch carries one or two. This one
+held the in-game clock at 1871.7.24 for over two hours while `run.log` kept printing `in-game 1871.7.24` every 20 s, so
+`wait_for_session.ps1`'s STALLED (no write anywhere for 20 min) never fired, and the run's 330-minute timeout would end it short of 1936.
+⚠ It also corrupts that run's WALL CLOCK: the play time rebuilt from the tick lines counts the paused hours as play, and a slowdown-episode
+reader would see a monstrous year. Remove the paused interval (from the `Paused: true` line to the next `Paused: false`) before reading it.
+**DETECTOR: MANUAL for now** — a watcher on the newest run's last `in-game` date (unchanged for 15 min while the game runs = FROZEN); the
+agent ran one from its scratchpad. Owed: a FROZEN verdict in `wait_for_session.ps1`, and a post-run check that flags any `Paused: true,
+PlayerID: 1` line (both after the batch — no `tools/testbed/**` edit while it runs).

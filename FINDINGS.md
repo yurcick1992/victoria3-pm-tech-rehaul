@@ -3293,7 +3293,7 @@ reaches the same verdict on the floor for an entirely different and much better 
 `config/vanilla_weight_x10.json`, sha `a954f342c1157db4` · control `control` — vanilla + telemetry,
 `deviates_from_vanilla: []` · session `20260805_234555_vanilla-retest`, runs 17–19 · schema v12 ·
 🟢 **ARM-FREE** (both arms are vanilla; the treatment differs from the control in four weight lines).
-⚠ `build_state.json` records the treatment as `control+pop_needs` — see CLAUDE.md, that string means
+⚠ `build_state.json` records the treatment as `control+pop_needs` — see TESTBED_OPERATIONS.md §2.2, that string means
 **overlay** and the naming is a known violation being fixed.
 
 **Claim.** Multiplying `luxury_furniture`'s `weight` by 10 in every need it appears in moves its share of
@@ -11308,6 +11308,11 @@ so a future continuation records its total itself.
   the plan anticipated.
 - The run's two launches are one campaign (the same autosave chain, the same build); the replayed 48 days of 1935 and the reconstructed
   wall clock are stated in its VERDICT.md and meta.json.
+
+**Addendum (moved from CLAUDE.md's tool catalogue, 2026-10-24 — recorded nowhere else).** Capital productivity of the flat-cost book, from
+`tools/recipe_side_by_side.mjs`: canon-flat-in12's steel t3 rung makes **30,596** of value added per 1,000 construction points at base prices
+against vanilla's own best steel method's **2,125**; across the frontier the book's value added per construction point ran ~14× vanilla's, where
+`canon-flat-in12-a16` (A 1.6) was sized to ~2×.
 
 ## F111 — THE INDEX-KEYED LADDER: every four-rung batch priced automotive, munition, synthetics and electrics as 1836 (tier-0) rungs; the world readings stand, the readings about those four industries do not (derived analysis, 2026-09-13)
 
@@ -21445,8 +21450,8 @@ which is the whole shape of F216's per-decade ratios and of its ×1.05 total.
 > ⚠⚠ **2026-10-07 — THE USE OF THIS FINDING FOR WALL CLOCK WAS RE-RULED.** The one-sub-tick signature below is NOT a criterion for
 > excluding a run (user: *"no tick pattern … can be reliably used as a criterion for a listed bug"*); a run leaves the wall clock only when
 > the listed bug (the fleet path loop) is OBSERVED DIRECTLY during a meaningful slowdown. The mechanism this finding describes stands;
-> `fleet_loop_runs.mjs` is an investigation aid. The ruling, the three run clusters and the slowdown quarantine are in CLAUDE.md's
-> wall-clock bullet. First year-by-year test of the owner-id → sub-tick map on v16 data (20261006_193418 runs 1–4): one loop of size,
+> `fleet_loop_runs.mjs` is an investigation aid. The ruling, the three run clusters and the slowdown quarantine are in TESTBED_OPERATIONS.md
+> §7 (CLAUDE.md's wall-clock bullet until 2026-10-24). First year-by-year test of the owner-id → sub-tick map on v16 data (20261006_193418 runs 1–4): one loop of size,
 > GER 124–145k in 1904–05, put +6 s a year on hour 6 against +0.7 s on the other three, as §8 predicts.
 
 **Asked** (user, 2026-10-06): *"Analyse the past runs and try connecting the slowdown periods with in-game events and situations."*

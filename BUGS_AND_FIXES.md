@@ -1955,7 +1955,7 @@ long runs keep dying — halve the breakdown cadence and see.
 ⚠ **`wait_for_session.ps1` reports DEAD during the post-run harvest.** No game process plus no completion
 marker is the DEAD signature, but between runs the observer is parsing the mirror — ~7 minutes for 496 MB
 against a 90 s grace. It looked like a dead batch and was a healthy one. Check `run.log` for
-`run N finished` before believing it; see CLAUDE.md → wait_for_session.
+`run N finished` before believing it; see TESTBED_OPERATIONS.md §3.2 (the background waiter).
 
 ## The answer was in a shipped comment all along (2026-08-05)
 

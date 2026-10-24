@@ -115,7 +115,7 @@ civil war with no way to detect it after the fact. See FINDINGS.md for which fin
 This doc is the **instrument**; what the instrument has actually told us lives in **`FINDINGS.md`** —
 append there after every measurement batch. And note the retention rule that goes with it:
 **testbed sessions under `tools/testbed/sessions/` are NEVER deleted**, not even when a design change
-makes a run obsolete (CLAUDE.md → *TESTBED SESSIONS ARE NEVER DELETED*). Gitignored ≠ throwaway.
+makes a run obsolete (CLAUDE.md §5.1 rule 8, TESTBED_OPERATIONS.md §8.5 — *sessions are never deleted*). Gitignored ≠ throwaway.
 
 ---
 
@@ -1168,6 +1168,10 @@ fifteen. Read it off the save, never off intent.
 
 ## 7⅜ — WALL CLOCK: HOW FAST THE GAME RUNS, AND WHY THE OBVIOUS READING IS WRONG (2026-08-18)
 
+⚠ **SUPERSEDED READING (2026-08-31, user-ruled): the GRADE is the RAW total play time a player waits through**, read since 2026-10-07 as the
+main median over the run clusters 1 + 2 against the same days' vanilla (`TESTBED_OPERATIONS.md` §7, `tools/testbed/ledger/wall_clusters.mjs`); the
+pop-matched figure this section presents as the headline is the DIAGNOSTIC beside it. The instrument description below stands.
+
 **Nothing new is instrumented.** Every batch already writes what this needs, in two places:
 
 | quantity | where | note |
@@ -1632,6 +1636,14 @@ marker; a reader that counts from the top counts the previous run's surveys too 
 `gov_paused` / `gov_backlog` lines. Who queued which dam is read from the save summaries (`queues.government.by_type.building_dam_*` per
 country); older sessions keep their lines, which `tools/testbed/ledger/dam_report.mjs` still reads. ⚠ The country is the NAME (no tag function exists), so a join across a country's formation (Prussia → the North
 German Federation → Germany) must go by name history. ⚠ Not token-stamped: filter a shared ring by the run's own time window.
+
+### The research-entry log lines (content, not telemetry — emitted by `tools/emit_research_events.mjs` when `research_events.enabled`; moved here from CLAUDE.md 2026-10-24)
+`PMR_JE|<stage>|<tech>|<country NAME>` in debug.log when a stage completes (the implementation stages carry their number:
+`implementation<n>`); `PMR_JE|ind_fill|<tech>|<country>` for an extra entry's fill; `PMR_JE|placed_all|-|-` once when script placement
+(`research_events.placement = script`) puts the first stages on the map. Count them per run with `tools/testbed/ledger/je_tally.mjs`, which
+de-duplicates — the log mirror can re-copy chunks (L28), so a raw line count over-reads.
+⚠ **Every research bar is `monthly_progress`** — industry, war and naval alike — so a WAR entry's bar is identified only by the expiring country
+variable it reads, `pmr_wargate_<tech>` (set by `on_monthly_pulse_country` in `zzz_pm_rehaul_wargate.txt`), never by its cadence or span.
 
 ## Other verified Country data functions
 

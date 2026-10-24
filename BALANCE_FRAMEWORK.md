@@ -31,7 +31,7 @@ For a building (or a single PM) at a given set of market prices, let:
   only** — **not** emitted to the game (no wage "goods input"); the game still pays its own wages from
   employment. The solvers, linter, and builder use this same `W`. **The UI has moved on** (transition in
   progress): it now roots wages in the real workforce — `W = Σ (employees × base wage × pop-type wage_weight)`,
-  driven by a global **base wage** in the Workforce panel (see CLAUDE.md → Balance UI). So the UI's BE currently
+  driven by a global **base wage** in the Workforce panel (see REPO_GUIDE.md §5, the balance editor). So the UI's BE currently
   diverges from `wage_pct`-based `target_be`; the pipeline will be switched to the workforce model once the base
   wage is calibrated.
 
@@ -520,7 +520,7 @@ the newer plant) like every other chain — the mod's core goal — while **not*
   quantity PMs change, unchanged from vanilla).
 
 All three are `no_mass_be` (locked-by-default in the UI, excluded from the mass BE tools) and are emitted
-by **clone-and-swap** to preserve their special engine fields (see CLAUDE.md / §ON_GAME_UPDATE).
+by **clone-and-swap** to preserve their special engine fields (see MODDING_NOTES.md → Clone-and-swap / ON_GAME_UPDATE).
 
 ---
 
@@ -5326,7 +5326,7 @@ scenario of the 2026-08-23 survey: companies may own and build **every tier of t
 the **lowest existing rung**, and follow the country up the ladder as technology unlocks. The
 *investor-tech* foreign-investment edge (a regional HQ owning abroad what its home country has not
 unlocked, using the host's pool against the host's tech) is **explicitly ACCEPTED**. Implemented as
-`tools/emit_companies.mjs` (see CLAUDE.md), wired into `build.ps1`, which THROWS if it fails.
+`tools/emit_companies.mjs` (see REPO_GUIDE.md §3), wired into `build.ps1`, which THROWS if it fails.
 
 **Why (F77/F77.1/F79).** Vanilla company types reference a tiered industry only through its first rung —
 `building_types`, `extension_building_types`, all 85 prosperity throughput bonuses, all formation

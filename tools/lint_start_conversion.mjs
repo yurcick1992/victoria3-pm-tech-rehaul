@@ -35,7 +35,7 @@ const cfg = JSON.parse(rd(CFGP));
 
 // ⚠⚠ COVERAGE IS A PROPERTY OF THE VANILLA PMG, NOT OF ONE CONFIG INDUSTRY. The shipyard is ONE
 // vanilla building split across TWO config industries (`shipyard` = clippers, `shipyard_steam` =
-// steamers, CLAUDE.md), so a per-industry check reports all four shipbuilding methods as orphans:
+// steamers, the CLAUDE.md of before 2026-10-24), so a per-industry check reports all four shipbuilding methods as orphans:
 // each industry legitimately covers half. Index the tiers by PMG and ask the question once per group.
 const tiersByGroup = {};
 for (const ind of cfg.industries) {
@@ -46,7 +46,7 @@ for (const ind of cfg.industries) {
 }
 // Two classes of method a 1836 factory can NEVER be running, so their absence is not a gap:
 //   - POWER-BLOC GATED (`unlocking_principles`) — `pm_*_principle_transport_3` and friends. The
-//     solver never selects one and no history file can carry one (CLAUDE.md: extract_vanilla flags
+//     solver never selects one and no history file can carry one (REPO_GUIDE.md §2: extract_vanilla flags
 //     them `gated:true`, basePm() skips them).
 //   - DELIBERATELY DROPPED by the book — `pm_early_power_plant` is GONE by §10.43 ruling (the 1900
 //     municipal engine house is modelled inside urban centres instead), and the tier4 spec drops

@@ -101,5 +101,5 @@ if (orphans.length) { bad++; console.log(`ORPHANED TECHNOLOGIES (${orphans.lengt
   for (const o of orphans) console.log('   ' + o); }
 if (dups.length) { bad++; console.log(`ONE TECHNOLOGY GATING TWO RUNGS OF ONE INDUSTRY (${dups.length}):`);
   for (const d of dups) console.log('   ' + d); }
-if (bad) { console.log('\nTECH CONTENT CHECK FAILED — see CLAUDE.md "no orphaned tech ever" and the two hard rules.'); process.exit(1); }
+if (bad) { console.log('\nTECH CONTENT CHECK FAILED — see CLAUDE.md §2.6 (no contentless or emptied vanilla technology) and BUGS_AND_FIXES 2026-08-30.'); process.exit(1); }
 console.log(`TECH CONTENT CHECK PASSED: ${Object.keys(TECHS).length} technologies, none orphaned, none gating two rungs of one industry.`);

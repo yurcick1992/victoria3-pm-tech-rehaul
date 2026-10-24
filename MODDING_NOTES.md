@@ -49,6 +49,11 @@ Target game version: **1.13.x "Matcha"**.
 - Text files under `common/` and `history/` **should be UTF-8 with BOM** (vanilla is). Without it
   the log warns `lexer.cpp: File … should be in utf8-bom encoding (will try to use it anyways)` —
   non-fatal, but we write BOM to match and keep the log clean.
+  ⚠ The converse bites every tool that READS those files: strip the BOM before matching `^name = {`, or the first block
+  of each file is invisible (six real production methods looked hallucinated on `verify_pms.mjs`'s first run;
+  `building_coal_mine` and `building_logging_camp` vanished from `analyse_build_allocation.mjs`). And an id class must
+  admit a hyphen (`pm_ammonia-soda_process`, `pm_coal-fired_plant`), or `[a-z_0-9]+` silently splits the key
+  (BUGS_AND_FIXES 2026-08-12).
 - The engine loads whole folders, not specific filenames. Never edit vanilla files in place.
 - **Localization load order is the opposite:** loc files are processed **reverse-alphabetical
   (Z→A)**, so an early-letter/`0`-prefixed file is applied *last* and wins. This only matters
@@ -100,7 +105,7 @@ copies with only the header line swapped from `l_english:` to `l_<lang>:`.
   2026-10-07 — this was not known to the agent). It is the investigation tool for a slowdown nobody can
   explain from logs: load a save from inside the slowed period and read which subtask the time goes to.
   The testbed keeps exactly those saves for it — `<run>\quarantine_saves\` (the slowdown quarantine,
-  `tools/testbed/slow_quarantine.mjs`, CLAUDE.md's wall-clock bullet). The menu path and the exact readout
+  `tools/testbed/slow_quarantine.mjs`, TESTBED_OPERATIONS.md §7.6). The menu path and the exact readout
   are the user's; record them here once used.
 - Mods that change checksummed files (most of `common/`) **disable Ironman/achievements** and
   change the game **checksum**; multiplayer requires all players on the same mod + checksum.
@@ -1139,3 +1144,31 @@ speed (vanilla ~55 s/yr in 1836–40).
   longer stages buy nothing; one entry per industry saves what script placement saves.
 - **A bar can be reset from script**: `je:<type> ?= { add_progress = { value = -N name = <bar> } }` (vanilla's French monarchism),
   and `je:<type> ?= { "scripted_bar_progress(<bar>)" >= N }` reads it — so an entry can grant repeatedly without completing.
+
+## AI subsidies live in the strategies' `subsidies` blocks — nowhere else holds (moved from CLAUDE.md, 2026-10-24)
+
+- The `subsidies` block inside an `ai_strategy` is the AI's subsidy DECISION RULE (`must_have` / `wants_to_have` / `nice_to_have`, the only three values
+  vanilla uses). It is the only durable way to make the AI subsidise a building: the AI re-scores subsidies continuously (`NAI` `SUBSIDIZE_*`), so a
+  scripted `set_subsidized` is undone on its next pass.
+- Every AI country always runs exactly one ADMINISTRATIVE strategy (`ai_strategy_industrial_expansion` has no `possible` gate), so the seven blocks of
+  `common/ai_strategies/01_admin_strategies.txt` (~655 lines) reach every country; the alternative, `ai_strategy_default`, is one ~8,790-line block.
+- **Unsettled engine semantics:** whether a typed strategy's `subsidies` MERGES with the default's per key or REPLACES it wholesale (an early probe leaned
+  toward merge, on late-game data only — ON_GAME_UPDATE drift log 2026-07-23). The builder's rule is correct under both readings: a strategy that already
+  has a block is authoritative (whatever it omits was omitted deliberately; restating would invent subsidies vanilla never granted); a strategy with NO
+  block gets the default's subsidies restated (read live from `00_default_strategy.txt`) only because adding our block makes it replace-exposed.
+  Value `none` can reliably suppress only entries living in files we own.
+- The builder owns `01_admin_strategies.txt` only when the book sets a policy (`building_subsidies` with a non-`vanilla` value, or
+  `subsidy_conditional`); otherwise the vanilla file stands.
+- **Conditional subsidies:** the `subsidies` block is a flat map with no per-entry triggers (unlike `goods_stances`). The only conditional lever is a
+  mutually exclusive set of strategy VARIANTS whose `possible` blocks partition the condition — the AI re-picks strategies mid-campaign when `possible`
+  flips (F64), and custom script values work inside strategy `possible` blocks (F65).
+- A subsidy does NOT bypass the trade-centre GDP gate (`NAI` `TRADE_CENTER_MINIMUM_GDP_*`), an eligibility filter on which states the AI considers at
+  all — and that gate is not absolute either: the AI built trade centres in Qing treaty ports at a quarter and a tenth of the threshold (F246).
+
+## Clone-and-swap: some vanilla buildings carry fields our schema cannot model (moved from CLAUDE.md, 2026-10-24)
+
+Ports, railways and power plants carry engine-critical fields — `port = yes`, `terrain_manipulator`, large conditional `ai_value` and
+`should_auto_expand` blocks, `potential` — that a building regenerated from the config's simple schema would lose. A tiered industry flagged
+`clone_from_vanilla: true` (with `source_file` naming the vanilla buildings file the builder then owns) is therefore emitted by COPYING its vanilla block
+and swapping only the key, the technology, the production-method groups and the construction cost (`New-ClonedBuilding` in `tools/build.ps1`). The
+canon tiers none of these industries (they are vanilla); the machinery serves books that do.

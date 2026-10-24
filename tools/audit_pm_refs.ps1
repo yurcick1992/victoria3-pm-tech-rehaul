@@ -54,7 +54,7 @@ $out.Add("content won't detect our tiered buildings. **No crashes; missed conten
 $out.Add("Deduped by (PM, enclosing block): same PM in the same block across country/state copies = one row; the")
 $out.Add("same PM in a different block = a separate row.")
 $out.Add("")
-$out.Add("**Part of the ``MISSING_*`` family** (see CLAUDE.md $dash Missing-reference cataloguing): this doc covers")
+$out.Add("**Part of the ``MISSING_*`` family** (see CLAUDE.md section 5.4 $dash vanilla references to the tiered industries): this doc covers")
 $out.Add("*relocated main-PM references*. Conditional building fields our split drops (e.g. a conditional ``ai_value``")
 $out.Add("block) live in [MISSING_BUILDING_CONDITIONS.md](MISSING_BUILDING_CONDITIONS.md). The related ``has_building``")
 $out.Add("narrowing (checks now match only Tier 1) shares the same *make-our-tiers-eligible* strategic fix.")

@@ -2,7 +2,7 @@
   wait_for_session.ps1 - block until a testbed session finishes, or until a time budget expires.
 
   WHY THIS EXISTS. A batch is launched with Start-Process into its OWN visible window, because
-  that is the only way the p/r/s/x keys survive (redirecting stdio kills them - see CLAUDE.md).
+  that is the only way the p/r/s/x keys survive (redirecting stdio kills them - see TESTBED_OPERATIONS.md section 3.1).
   But a detached window is invisible to the agent harness: nothing notifies Claude when the batch
   ends, so an 8-hour batch can sit finished for hours before anyone looks. That happened on
   2026-08-01.

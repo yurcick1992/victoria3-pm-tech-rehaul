@@ -15,7 +15,7 @@ doc — `BALANCE_FRAMEWORK.md` for balance rulings, `MODDING_NOTES.md` for engin
 ## Step 0 — THE SOLVER (substantially done, "almost happy")
 
 The five-tier ladder, the scenario solve, and the balance UI. Everything the repo does today.
-State of play is in `CLAUDE.md` and `BALANCE_FRAMEWORK.md`; the current numbers are the §10.49–§10.51
+State of play is in `BALANCE_FRAMEWORK.md` (CLAUDE.md held it until 2026-10-24); the current numbers are the §10.49–§10.51
 set (band regime + recipe ratchet + army fixed point).
 
 Everything before it — the balance UI, the builder, the testbed runner and its telemetry — are the
@@ -209,7 +209,7 @@ pointing at it and the `model_only` flags gone. Plus, in the same pass:
 
 ### ⭐⭐ STEP 1b — THE ANCHOR RE-BAND (specified 2026-08-12, NOT yet written)
 
-The governing principle is in `CLAUDE.md` (*the tier anchors are authoritative; technologies and
+The governing principle is in `CLAUDE.md` §2.2 (*the tier anchors are authoritative; technologies and
 industries are calibrated to them, never the reverse*). This is the concrete change that brings the
 tree to it. **Nothing below is implemented yet** — it is a specification the user has ruled on
 clause by clause, held back only by the sequencing constraint at the end.
@@ -687,7 +687,7 @@ remains legacy documentation of the §9 model.
 
 **Status: shipped and in use.** The pipeline exists, is wired into `run_schedule.ps1` by default, and ran
 its first batch (`20260811_094048_three-arm-tc-subsidy`). What it is and what it carries is documented in
-**TESTBED_METRICS §7½** and **CLAUDE.md**'s tool list; the plan below is kept because its *reasoning* is
+**TESTBED_METRICS §7½** and **REPO_GUIDE.md** §4; the plan below is kept because its *reasoning* is
 still the reasoning, and because two of its central assumptions turned out to be wrong in ways worth
 recording.
 

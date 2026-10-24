@@ -8,7 +8,7 @@
 //   B. THE TECH MAJORS, individually: GBR USA NET BEL FRA PRU SWE and the upgraded NET and PRU (UNL, NGF, GER); a tag absent from a run is
 //      dropped for that run, never replaced (user, 2026-10-05). Mean technologies held, total and per tree, over the runs where it exists.
 //   C. THE TOP TEN INDEPENDENT COUNTRIES BY GDP that are NOT in B's list (no overlord), per run: their mean technologies held, and who they are.
-//   D. THE ANCHOR PRINCIPLE (CLAUDE.md): at 1875 / 1905 / the end, the share of game era 3 / 4 / 5 technologies held by the run's TECH LEADER
+//   D. THE ANCHOR PRINCIPLE (CLAUDE.md §2.2): at 1875 / 1905 / the end, the share of game era 3 / 4 / 5 technologies held by the run's TECH LEADER
 //      (most technologies held) and by its third — "a technology leader should hold about half of that era's technologies at the anchor year".
 //   E. RELIANCE ON THE RESEARCH ENTRIES, for B's countries: of the technologies acquired after the first summary, the share with at least one
 //      entry stage completed (a stage can only complete while the technology is unheld), and the entries' grants (stages × half the era base
