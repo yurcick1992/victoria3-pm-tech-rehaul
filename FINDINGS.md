@@ -35,6 +35,7 @@ thing forever.
 | **v8** | **+ ORIGINS**: who supplied whom, per good, per importer market (own phase) | **F9** |
 | **v9** | **+ urban-centre levels** and **people-weighted SoL per stratum** per country; **day-0 read** at game start; **building inventory** (type/level/employment) at day 7; `market_goods_scoped`; construction/government/military goods spend; ACTIVE PMs per building | **F11–F24** |
 | **v10** | **+ WAGES**: `SW` state average annual wage / subsistence / unemployed working adults per state; `WC` pop-object count, states, population, mean SoL per country; `WSTR` per-stratum SoL + workforce, dependents and total population per country; `PW` per POP — income split into workforce/dependent, expenses, workforce ratio, pop type — at the **endpoint dumps only** (TESTBED_METRICS §5.7) | **F25, F26** |
+| **v11–v14** | this table stopped being kept at v10; the full table (today v14) is TESTBED_METRICS → *The telemetry schema*, and an entry still names the schema it was measured under | — |
 
 ### Data-integrity note (the 2026-07-31 mirror bug does NOT affect F3/F4/F5)
 
