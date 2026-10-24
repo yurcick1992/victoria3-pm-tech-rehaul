@@ -396,7 +396,7 @@ if (-not $NoMachineMonitor) {
 
 # ---- build a setup's mod. Rebuilt for EVERY run, deliberately: builds are deterministic
 #      (same config + same vanilla -> same output), they take ~1 min, and caching would hide
-#      a setup whose recipe is not reproducible. See CLAUDE.md.
+#      a setup whose recipe is not reproducible. See TESTBED_OPERATIONS.md section 2.
 function Resolve-Setup {
     param([string]$Id, $Spec, [string]$SpecFile, [string]$Token)
     $kind = Val $Spec "kind" "config"
@@ -441,7 +441,7 @@ function Resolve-Setup {
     }
     # Config is returned so it can be handed to the observer as -BuildConfig. Without that,
     # build_state.json records `built_from_config: ""` and `config_sha256: null` - the two fields
-    # CLAUDE.md requires to be machine-read, and precisely the two that would have caught the
+    # TESTBED_OPERATIONS.md section 2 requires to be machine-read, and precisely the two that would have caught the
     # 2026-08-05 wrong-arm day, where which arm each session ran had to be reconstructed by hand
     # from schedule.json. See run_observer.ps1's build_state block.
     return @{ Args = $args; ModPath = (Join-Path $Repo "mod_$modName"); Kind = $kind; Config = $cfg }

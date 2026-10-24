@@ -9,7 +9,7 @@
 //     the new vanilla file and re-rule; never re-point silently);
 //   • a file the mod already ships when this runs (emit_companies' company files, emit_vanilla_refs' transforms, emit_dams' static modifiers)
 //     is edited IN THAT COPY; any other file is copied whole from vanilla (an ON_GAME_UPDATE coupling);
-//   • every `has_dlc_feature` and `dlc =` line survives (counted before and after; THROWS otherwise) — the DLC rule, CLAUDE.md.
+//   • every `has_dlc_feature` and `dlc =` line survives (counted before and after; THROWS otherwise) — the DLC rule, CLAUDE.md §5.1 rule 1.
 // Called by build.ps1 LAST among the content emitters (after emit_vanilla_refs). usage: node tools/emit_value_overrides.mjs <modDir> <config.json>
 import fs from 'node:fs'; import path from 'node:path';
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';

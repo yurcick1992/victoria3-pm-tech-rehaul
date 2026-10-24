@@ -15,7 +15,7 @@
   machine. Claude must NOT start a session without the user's explicit go-ahead, must state the
   batch as "<count> x <span>" when proposing one, and must ask for every foreseeable run - both
   sides of a fork included - in a SINGLE request, because batches are typically left running
-  overnight. See CLAUDE.md -> Working conventions.
+  overnight. See TESTBED_OPERATIONS.md.
 
   How it works (all of this is verified against V3 1.13.9, see MODDING_NOTES -> Automated runs):
     * binaries\victoria3.exe -handsoff              auto-starts an observer game at the 1836

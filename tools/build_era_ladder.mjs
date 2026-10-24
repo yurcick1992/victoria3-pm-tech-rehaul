@@ -37,7 +37,7 @@ const WRITE = process.argv.includes('--write');
 // ⚠ Era 0 is ~1700 and exists ONLY for industries that existed before ~1780. Fertilizer, explosives,
 // motor, munition and synthetics begin at era 2; automotive and electrics at era 3. Minting a 1700 tier
 // for those would invent a technology, which is the same test every `note` in the SPEC below applies.
-// ⭐⭐ THE ANCHORS ARE AUTHORITATIVE (user ruling 2026-08-12, CLAUDE.md's anchor principle). At an era's
+// ⭐⭐ THE ANCHORS ARE AUTHORITATIVE (user ruling 2026-08-12, CLAUDE.md §2.2, the anchor principle). At an era's
 // anchor year a technology LEADER holds about half of that era's technologies — so the anchor is the
 // MEDIAN of the era's dates, not the midpoint of its band. Era 0 sits well before the 1836 start and
 // era 5 slightly after the 1936 end, both deliberately.

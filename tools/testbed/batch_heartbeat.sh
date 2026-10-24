@@ -2,7 +2,7 @@
 # THE BATCH HEARTBEAT — one command per wake-up while a schedule runs (CLAUDE.md: smoke-check every run ~5 min after it starts;
 # post only on crash / resume / stall). For the session given: every run's clock, CRASHED and resume counts and summary count; for the
 # NEWEST run the smoke items — mod marker, game-version mismatch, this run's error window by PARSED time (BOM-tolerant, wrap-safe
-# across midnight), the classes left after the vanilla noise classes (CLAUDE.md's smoke-check list: the spline flood, the
+# across midnight), the classes left after the vanilla noise classes (TESTBED_OPERATIONS.md §4.2's list: the spline flood, the
 # is_production_method_active PostValidate class, the navy-law flood, the interest-group leader class, the untyped-trigger
 # invalid-country class that vanilla itself logs ~900 times a run, and the rare Div/0-political-movements + religion-link pair
 # that vanilla's baseline runs 7 and 8 carry in the thousands), and anything naming our files; SCHEDULE DONE; and, for the 60-run plan of §10.76, a

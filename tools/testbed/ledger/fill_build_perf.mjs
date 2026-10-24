@@ -5,7 +5,7 @@ import { join } from 'node:path';
 const DIR = process.argv[2];
 const p = JSON.parse(readFileSync(join(DIR, 'perf_raw.json'), 'utf8'));
 const runs = p.runs.filter(r => r.complete);
-// ⭐ THE THREE RUN CLUSTERS (user-ruled 2026-10-07; CLAUDE.md's wall-clock bullet): wall_clusters.json (wall_clusters.mjs --json) tags
+// ⭐ THE THREE RUN CLUSTERS (user-ruled 2026-10-07; TESTBED_OPERATIONS.md §7.4): wall_clusters.json (wall_clusters.mjs --json) tags
 //   each run 1 normal / 2 inexplicably slowed / 3 a directly observed LISTED vanilla bug. The template's MAIN figure is the median over
 //   1 + 2; a cluster-3 run leaves the grade and is reported as a count with its bug. Absent file ⇒ no tags, every run counts (as before).
 const CL = {};

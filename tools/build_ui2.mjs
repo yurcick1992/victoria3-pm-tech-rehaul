@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function(){
     + 'Built ' + u.generated + ' from <code>' + u.config + '</code>. '
     + 'A DETACHED copy: <b>Build now</b> is inert (it POSTs to tools/ui.ps1), and there is no tech tree for this book yet. '
     // ⚠ Export is a download link, and the ARTIFACT VIEWER grants no download permission — the button
-    // does nothing there, silently (CLAUDE.md, bundle_ui.mjs). Saying "Export works" flat would be a
+    // does nothing there, silently (REPO_GUIDE.md §2, bundle_ui.mjs). Saying "Export works" flat would be a
     // lie in exactly the copy most people open, so the banner names both cases.
     + '<b>Export mod_config.json</b> works in a local or downloaded copy; in the published artifact the '
     + 'viewer blocks downloads, so it does nothing — download the page or use the served UI to get a file back.';

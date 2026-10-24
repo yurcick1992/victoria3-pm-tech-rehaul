@@ -80,7 +80,7 @@ line(`  x${mNeeded.toFixed(1)} rather than x10 to produce 96.9/3.1.`);
 
 // ---------------------------------------------------------------------------------------------
 line(`\n=== TEST 3 — CROSS-CHECK IN UNITS: BASE PRICE OR CURRENT PRICE? ===`);
-line(`Our model converts a need's money to units at the BASE price (CLAUDE.md: "Money -> quantity at base`);
+line(`Our model converts a need's money to units at the BASE price (REPO_GUIDE.md §5: "Money -> quantity at base`);
 line(`price"). The panel reports both the money shares AND the unit demands, so the two readings can be`);
 line(`told apart. The V3 price formula (25-175 % band) gives the current prices:`);
 // price = base x [1 + 0.75 x clamp((BUY-SELL)/min(BUY,SELL), +-1)]

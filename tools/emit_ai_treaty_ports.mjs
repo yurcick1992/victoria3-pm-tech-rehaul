@@ -136,7 +136,7 @@ if (TP.driver) {
     `${T}${T}${T}${T}set_variable = { name = pmr_tp_cooldown  years = ${D.cooldown_years} }\n` +
     `${T}${T}${T}${T}scope:pmr_tp_target = { debug_log = "PMR_TPD|[ROOT.GetCountry.GetNameNoFormatting]|[THIS.GetState.GetOwner.GetNameNoFormatting]|[THIS.GetState.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }\n` +
     `${T}${T}${T}}\n${T}${T}}\n${T}}\n}\n`);
-  // the driven play's name (an English stub in every language: an untranslated key shows as a raw <key>, CLAUDE.md → Localization)
+  // the driven play's name (an English stub in every language: an untranslated key shows as a raw <key>, CLAUDE.md §5.4 → Localization)
   for (const lang of ['braz_por', 'english', 'french', 'german', 'japanese', 'korean', 'polish', 'russian', 'simp_chinese', 'spanish', 'turkish'])
     write(`localization/${lang}/replace/zzz_pm_rehaul_treaty_ports_l_${lang}.yml`, `l_${lang}:\n pmr_treaty_port_demand:0 "Treaty Port Demand"\n`);
   console.log(`ai treaty ports: DRIVER — yearly, ${D.chance}% per eligible AI (recognised, ≥ ${D.min_rank}), the best recognised host state at desire ≥ ${D.min_value}, cooldown ${D.cooldown_years}y`);
