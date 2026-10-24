@@ -124,8 +124,8 @@ minted tech-era-5 technologies (spray finishing, continuous web processing, cata
 and one added prerequisite (conveyors before compression ignition, `PREREQ_ADDS`, §10.93). The spec is `tools/lib_tier4_spec.mjs`, the tree is
 written by `tools/make_tier4_techs.mjs`. The deeper tree was never built (F138: 182 technologies, 3 minted); deepening it is one of P9's levers.
 The six-rung candidate trees, merges and renames of August are records in `tools/tech_tree_spec.mjs` (§10.53, §10.56); the canon carries no
-technology rename (`TECH_RENAMES_RULED` is empty; two dating corrections — pumpjacks "Oil Drilling", threshing machine "Steam Threshing" —
-await a ruling of their own).
+technology rename (`TECH_RENAMES_RULED` is empty; the two dating corrections — pumpjacks "Oil Drilling", threshing machine "Steam
+Threshing" — were ruled out on 2026-10-24: vanilla's names stay, POLISH R9).
 
 **Constraints any future change to the tree must respect** (engine facts and user rulings, still true):
 - The engine lays the tree out by itself (`TechTreePanel.GetProductionTechTreeItems` / `…Lines` in `gui/tech_tree.gui`); adding technologies
