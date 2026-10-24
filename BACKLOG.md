@@ -147,7 +147,7 @@ Closed:
 The main part of the 1.0 polish (user, 2026-10-19: "That's the main part of the polish"): one strategic pass making every rung count as
 its vanilla building wherever vanilla script checks a building or a method. Done 2026-10-21 but for the one line below.
 
-- **NOW (1.0 polish)** · MISSING_BUILDING_CONDITIONS.md — the art academy's conditional ai_value (1 case: Metternich +500; we emit a flat value). Not covered by the 2026-10-21 reference fix, and a script change, so under the polish timing rule it now waits for the alternating batch to end · MISSING_BUILDING_CONDITIONS.md
+- **DEFERRED to 1.1** (user, 2026-10-24) · MISSING_BUILDING_CONDITIONS.md — the art academy's conditional ai_value (1 case: vanilla's +500, 1,000 → 1,500, for Austria while `je_metternich` runs; we emit a flat value per rung). For 1.0 the mod diverges from vanilla here on grounds of **timing and scope, not principle**. First a judgment on the alternating batch: how many art academy levels (all tiers) Austria builds in vanilla against the canon while the Metternich entry runs, and whether the canon's Austria still builds enough; a change, if any, goes no earlier than 1.1 · MISSING_BUILDING_CONDITIONS.md
 
 Closed:
 - Done 2026-10-21 (commit `94ae51c`) · the reference fix: TIER_REFERENCE_AUDIT's 86 blocks (22 dead, 49 narrowed to rung 0, 5 changed meaning) + the rung-0-only throughput modifiers, rewritten by `tools/emit_vanilla_refs.mjs` (63 vanilla files) with the DLC-gate check (L39) and the reference scan (L40); the final smoke run had zero invalid-production-method lines (`20261021_220806_polish-final-smoke`) · POLISH_1_0.md §2, TIER_REFERENCE_AUDIT.md

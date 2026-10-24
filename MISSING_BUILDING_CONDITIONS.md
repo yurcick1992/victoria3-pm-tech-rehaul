@@ -26,6 +26,11 @@ nothing) *does* preserve the vanilla block verbatim, so clone-emitted buildings 
 |---|---|---|---|---|
 | `building_art_academy` (+ its 3 new tier buildings) | `art_academy` | conditional `ai_value` block | `value = 1000`, **`+500` when the owner is `c:AUS` and `has_journal_entry = je_metternich`** — AI Metternich wants art academies more. We emit a flat `ai_value = 1000`. | `common/buildings/06_urban_center.txt` |
 
-**Planned fix (batch):** teach the non-clone builder to carry a verbatim `ai_value = { … }` block from the
-vanilla base building onto its split tiers when no scalar override is set — a general capability that would
-cover every future split building with a conditional `ai_value`.
+**Status (user, 2026-10-24):** for mod 1.0 the art academy diverges from vanilla here on grounds of timing and
+scope, not principle. Before any change, the alternating batch is read for how many art academy levels Austria
+builds in vanilla against the canon while `je_metternich` runs, and whether the canon's Austria still builds
+enough. A change, if one is made, ships no earlier than mod 1.1 (BACKLOG E).
+
+**Possible fix:** teach the non-clone builder to carry the vanilla base building's conditional `ai_value = { … }`
+block onto its split tiers, on top of each tier's own value — a general capability that would cover every future
+split building with a conditional `ai_value`.

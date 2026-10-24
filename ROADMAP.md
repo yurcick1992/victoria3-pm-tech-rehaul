@@ -60,7 +60,8 @@ is ruled"). What is left, in order:
      defect in the report (A4).
    - After it: `VANILLA_WALL_REF` set to its vanilla, its runs added to `VANILLA_REF`, the FINDINGS entry, the ledger (A5). It answers with no
      extra runs (A6): the canon's century with private dams; company mandates' first cut (step 5); the urban-centre electricity override's
-     effect; the red-flag vanilla twin.
+     effect; the red-flag vanilla twin; Austria's art academy levels in vanilla against the canon while the Metternich entry runs (BACKLOG E —
+     vanilla's conditional desire is dropped in 1.0 on grounds of timing and scope, not principle).
    - A change that reads badly there is reverted to F247's measured setup before the release build, not replaced by another (POLISH "The
      second pass", timing).
 2. **The no-DLC load test** — after the batch, before the release build (user, 2026-10-21): a load with every DLC disabled and an `error.log`
@@ -89,7 +90,8 @@ feature only if it needs no iteration (step 7's timeline).
 - **The balance levers that are not minor** (POLISH Q4): the cost ladder C 1.8 × cost1 1.2 (F234, measured on an older canon) and paper's own
   input lift (1.0–1.3, §10.101).
 - **Deferred content**: stale looms on the merged textile building (B2, revisit); craft secondary lines (B3); artisanal ownership (step 6½,
-  "1.1 or later"); per-rung building art (R6, "1.1 or later"). Rubber in a rich late game is a watch item (Q7).
+  "1.1 or later"); per-rung building art (R6, "1.1 or later"); the art academy's Austrian conditional desire, if the batch shows the canon's
+  Austria building too few (BACKLOG E). Rubber in a rich late game is a watch item (Q7).
 
 ### Later — no release assigned
 
