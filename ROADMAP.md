@@ -34,7 +34,7 @@ measuring the 1.0 canon now. Everything below the table is per step.
 | 6½ | artisanal ownership | DEFERRED to 1.1 or later | 2026-10-21 | POLISH F1 |
 | 7 | visuals, proofreading, release | IN PROGRESS — the 1.0 polish | target 2026-10-30 | `POLISH_1_0.md` |
 | — | the war and naval research channels | DONE; re-ruled 2026-09-03 and 2026-10-12 | 2026-10-12 | §10.69, §10.98 |
-| 8 | the first playtest's defects P1–P9 | P2 P3 P4 P7 DONE · P5 accepted · P1 P6 P8 OPEN · P9 a ruling | — | BACKLOG B, F137, F138 |
+| 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 OPEN · P9 a ruling | — | BACKLOG B, F137, F138 |
 | 9 | margin compression | CLOSED (batch 1 out; levelling closed) | 2026-09-19 | F139, §10.86.3–.4 |
 | 10 | the tier-0 input penalty | partly superseded by the t1-anchor model; two items OPEN | — | F140–F148, §10.86.6–.7, §10.91.5 |
 | 11 | post-JE tech finishing and broader trade | DONE; three follow-ups OPEN | 2026-09-25 | §10.88, F160–F164 |
@@ -96,7 +96,7 @@ feature only if it needs no iteration (step 7's timeline).
 The balance campaign (BACKLOG "The order" items 2–3, section B), then the final balance check:
 - the price path and the old rung in the consumer chains — the central open problem (CLAUDE.md §2.1, F136);
 - the hoard (F135, F179 §3);
-- what is left of step 8 (P1, P6, P8, P9), step 10 (the graded penalty's century, the output-ladder flag) and step 11's follow-ups (2)–(4).
+- what is left of step 8 (P8, P9), step 10 (the graded penalty's century, the output-ladder flag) and step 11's follow-ups (2)–(4).
 
 ---
 
@@ -470,12 +470,12 @@ dated by it; the canon has since moved to B 1.64 and the t1-anchor model (§10.9
 
 | item | what | status |
 |---|---|---|
-| P1 | the early rungs are a money printer | OPEN (BACKLOG B); the t1 premium is gone since §10.91.5 |
+| P1 | the early rungs are a money printer | DONE — closed by the user 2026-10-24: solved by the t1 anchor (§10.91.5) and B 1.64 |
 | P2 | the urban-centre electricity override was lost | DONE 2026-09-20 |
 | P3 | the building name said "BE target" | DONE 2026-09-18 |
 | P4 | the research tooltip did not state its conditions | DONE 2026-09-18; levels wording 2026-10-21 |
 | P5 | tier-3 output is enormous | ACCEPTED — rides on P1 |
-| P6 | the 1836 anchor over-produces on the supply side | OPEN (BACKLOG B); largely answered by §10.91.5 (F199), not re-read on the canon |
+| P6 | the 1836 anchor over-produces on the supply side | DONE — closed by the user 2026-10-24: solved by the t1 anchor and the seeded crafts (§10.91.5, F199); guarded by the register's hard 1836–1845 line |
 | P7 | a minted top rung was locked out of its industry's gated secondary | DONE 2026-09-18 (landmine L35) |
 | P8 | a t3 takes 2+ years to build | OPEN (BACKLOG B) |
 | P9 | the tech tree should be a thing to prioritise, not to complete | a registered desire; RULING (BACKLOG B) |
@@ -485,6 +485,10 @@ free (F135: the cost axis moves 1.73% of hoard per 1% of world GDP), so one camp
 is the coherent experiment rather than several separate ones.
 
 ### P1 — the early rungs are a money printer
+
+**DONE — closed by the user 2026-10-24.** Base-price margins (wages 25% of cost) of food / textile / furniture: t1 −3 / +13 / +22% and
+t2 +31 / +51 / +63% on the canon, against +55% and +127% in the playtest book; a margin problem the alternating batch finds becomes a new item.
+The record of the complaint follows.
 
 The user: *"Probably need to reduce the A/B diff, or invent a more complex ladder than A^N / ((input_t0_penalty+1)*B^N). The game quite actively
 resist prolonged prices under base for most goods, maybe some ladder of +70 .. +0 (base) between 1830s and 1920s can be constructed?"*
@@ -539,6 +543,8 @@ step. Employment is flat per level, so this is output per worker — the "minimu
 out-earn the old rung at all. It moves with any P1 change and gets no separate lever.
 
 ### P6 — the 1836 anchor over-produces on the supply side
+
+**DONE — closed by the user 2026-10-24.** The record of the defect follows.
 
 A starting factory converted onto rung e produced `vanilla method 1 × A^e`, while the vanilla method it ran makes ~1.33^e: tooling +88% output
 world-wide, munition +65%, food +29%, furniture +25%, glass +23%, textile +18%, paper +15%, and exactly 0% for industries wholly on rung 0 (F137).
