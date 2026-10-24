@@ -42,7 +42,8 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
 - **`BACKLOG.md`** — every open item, one line each with status (NOW / OPEN / RULING / DEFERRED / RESEARCH / DEFECT / WATCH) and a pointer to
   the doc with the detail; committed (unlike the handover) and kept true in the same pass as the change.
 - **`POLISH_1_0.md`** — the mod 1.0 polish register: each item's DONE / RULING / READY / VERIFY state, the rulings asked, the order (script and
-  economics before the alternating batch, text and art after), and the deferred-items sweep and pre-release hunt appendices.
+  economics before the alternating batch, text and art after), and source notes on where the two subagent reports' items went (the
+  appendices were collapsed 2026-10-24).
 - **`MODDING_NOTES.md`** — Victoria 3 engine and tooling gotchas (localization, load order, error.log, headless runs, debug mode).
 - **`ON_GAME_UPDATE.md`** — what to re-run or re-check after a game patch; every coupling to a vanilla file or number, plus the drift log.
 - **`BUGS_AND_FIXES.md`** — root-cause log of non-obvious fixed bugs, newest first under a dated index; consult when investigating a new bug or

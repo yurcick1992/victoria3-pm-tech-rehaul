@@ -20891,6 +20891,15 @@ threshold's economic effect over a century can be read from one arm without its 
 ⭐⭐ **OVERTURNED THE NEXT DAY BY F248:** vanilla itself plays ×1.08 slower in October than in the summer; against the same days' vanilla this book
 reads ×1.09, inside the budget, and the user canonised it (BALANCE_FRAMEWORK §10.102 item 4).
 
+**Addendum 2026-10-24 — two readings of these four runs taken for the 1.0 polish rulings** (POLISH_1_0.md Q5, Q10; `tech_census.mjs`,
+against October's vanilla n=6), recorded here so they outlive the register:
+- **Technologies by tree** (total, then production / military / society): Britain 158.0 (56.3 / 41.0 / 60.8) against vanilla's 159.5
+  (49.2 / 50.2 / 60.2); the USA 146.5 (49.0 / 40.0 / 57.5) against 159.3 (49.2 / 49.7 / 60.5). No country holds any of the ten
+  tech-era-5 military technologies in any of these runs, where vanilla ends with 1–8 holders of most. The shortfall is military.
+- **The three minted top-rung technologies' holders**, countries a run: spray finishing 2.0 (3 runs of 4), continuous web processing 2.3
+  (3 of 4), catalytic synthesis 0.8 (2 of 4) — as often as vanilla's own tech-era-5 production technologies (compression ignition 1.0,
+  oil turbine 0.3, arc welding 0.2).
+
 ## F248 — VANILLA ITSELF PLAYS ~8% SLOWER IN OCTOBER THAN IN AUGUST, AT THE SAME WORLD SIZE AND ON THE SAME GAME VERSION: THE SEEDS DO NOT EXPLAIN IT; IT WAS ALREADY THERE ON 2026-09-20; A PLAY TIME IS NOT COMPARABLE ACROSS MONTHS — AND AGAINST THE SAME DAYS' VANILLA THE MONOPOLY-THRESHOLD BOOK READS ×1.09 (2026-10-21; sessions 20261020_121619_vanilla-now-n8 runs 1–2 + 20261020_222433_vanilla-now-n8-rest runs 1–4, 6 × 1836→1936 vanilla + telemetry on today's harness, against the summer 20260821_131149 + 20260823_113218, n=18, and the September 20260920_225047 + 20260920_192007, n=4)
 
 **Why it ran.** F247 read the wm99 book at ×1.18 of the summer vanilla. The user: *"I wonder whether some PC degradation can cause slower wall clock

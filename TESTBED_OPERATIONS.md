@@ -284,7 +284,11 @@ the first six rows.
 | invalid country handle | `untyped trigger [ Scoped object of type 'country' is not valid (Country (4294967295)) ]`, location `<unknown>:0` | vanilla n=16 runs 1–2: 925 / 946 |
 | religion-less entity | the trio `Div/0 near common/political_movements/…`, `Event target link 'religion' returned an invalid object`, the assertion `The null hierarchy will never have social classes associated with it` — starting together mid-campaign | vanilla n=16 run 7 (8,195 / 10,038 / 1) and run 8 (7,827 religion lines); absent from the other fourteen |
 | naval battle loc | `pdx_data_localize.cpp:136 Data error in loc string 'BATTLE_SHIPS_BREAKDOWN_*'` with `pdx_data_factory.cpp:1662 Invalid promote 'NAVAL_BATTLE'(0)` | 3,004–6,766 lines in each pinned vanilla seed |
-| diplomatic tooltip loc | `Data error in loc string 'DIPLOMATIC_ACCEPTANCE_DIFFERENT_RELIGION_BUT_SAME_TRAIT'` | **zero in all 16 pinned vanilla seeds**, so a baseline comparison flags it — but present on vanilla arms elsewhere (`20260803_030101_wages-n3` run002 130, `20260803_220658_vanilla-percapita-n3` run002 296, `20260807_005246_popsplit-debut-vanilla` run001 296) |
+| diplomatic tooltip loc | `Data error in loc string 'DIPLOMATIC_ACCEPTANCE_DIFFERENT_RELIGION_BUT_SAME_TRAIT'` | **zero in all 16 pinned vanilla seeds**, so a baseline comparison flags it — but present on vanilla arms elsewhere |
+| state vs state-region | `country_bic.txt:1270` "state vs state_region comparison" | looks mod-only (3/6 canon runs, 0/10 vanilla in the 2026-10-21 scan) but is vanilla's own `this = s:STATE_HYDERABAD` inside `any_scope_state`, playthrough-dependent (the pre-release hunt's error-log scan: six canon-family centuries against ten vanilla runs, POLISH_1_0 source notes) |
+| one-run flavour scripts | `ip3_hungary_events`, `ip4_cuba_values`, `india_non_cooperation` | one canon run each in the same scan; vanilla scripts, playthrough-dependent |
+| trade-route events | `trade_route_events` invalid object | also in 3/10 vanilla runs |
+| religious-trait concept | `concept_religious_trait` data-function failures | also in vanilla | (`20260803_030101_wages-n3` run002 130, `20260803_220658_vanilla-percapita-n3` run002 296, `20260807_005246_popsplit-debut-vanilla` run001 296) |
 
 A watch item, not a noise class: `Failed to create battle in <Front> due to 'land_battle_size'` (`battle_manager.cpp`) runs 0–4 a run
 in vanilla but reached thousands in a few runs of the ai_value-3^tier books. Judge it per batch: recurring across many runs of an
