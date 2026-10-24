@@ -54,8 +54,10 @@ are in `20261021_224949_alt-vanilla-canon-n16` (run 13 void, L41); the other 20 
   summary version or machine) is not separated (F248). Unmeasured; the direction is harmless.
 
 **Deferred to mod 1.1 or later:** B2 (stale looms), B3 (craft secondary lines), F1 (artisanal ownership), R6 (rung building art), Q5
-(military research), Q7 (rubber, a watch item), Q4's two book levers (the cost ladder, paper's own lift). Not polish, carried in BACKLOG:
-F2, F3, C2–C4, N2.
+(military research), Q7 (rubber, a watch item), Q4's two book levers (the cost ladder, paper's own lift); and, ruled 2026-10-24, the
+urban-centre electricity ×2 or ×3 (`pm_electric_streetlights` from 1 to 2–3 electricity a level, with a reasonable coal increase; measure the
+canon's urban-centre and total electricity at 1935 first; more hydro variety within the four dam types was dropped — BALANCE_FRAMEWORK
+§10.89.15, BACKLOG D). Not polish, carried in BACKLOG: F2, F3, C2–C4, N2.
 
 ---
 

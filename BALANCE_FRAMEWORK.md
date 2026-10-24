@@ -56,7 +56,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.86 | the world product's hard band; prices planned first; the tier-0 penalty bounded; per-industry levels closed | in force; the per-industry closure relaxed by §10.101 | here |
 | 10.87 | report true profits; the wage model; the margin identity | in force | here |
 | 10.88 | trade ×1 at B 1.64; the finish boost | in force (B moved with later books) | here |
-| 10.89 | hydro dams; the power plant at 4× cost | in force | here |
+| 10.89 | hydro dams; the power plant at 4× cost; .15 dams against real plants, urban-centre electricity ×2 / ×3 | in force; .15's urban-centre ×2 / ×3 deferred to mod 1.1, more dam variety dropped | here |
 | 10.90 | the closed price levers; world GDP read as displayed | in force | here |
 | 10.91 | craft rungs and merged rungs | in force | here |
 | 10.92 | recipes steer production; AI values only follow profit | in force | here |
@@ -2744,6 +2744,9 @@ in the American, British, French and German markets at 1920 (October's vanilla 7
   electrical-equipment good exists; engines are the coal plant's own turbine stand-in) — ~7% of revenue.
 - At the user's expected sale price of ~50% of base, a Dneproges-class dam pays back like a coal plant at 100% (~10 years); Niagara-class
   sites ~5, Hoover ~17, Fort Peck ~26.
+  ⚠ (2026-10-24, §10.89.15) Re-computed at £600 a point and Britain's 1920 wage, inputs at base: this model's Dneproges-class dam pays back in
+  ~27 years at 50% of base and ~12 at 100%, and the 1,600-point coal plant ~44 at 100% (~11 at vanilla's 400 points). The assumptions behind
+  the figures above were not recorded.
 
 ### 10.89.4 — The technology classes (per STAGE)
 A falls / high-head / escarpment / lake-outlet → `electrical_generation` (game era 3); B cascades / gorges / mid dams → `steam_turbine`
@@ -3062,6 +3065,73 @@ constructions (including a foreign private investor under investment rights); th
 Privately built levels go to the host's financial district (GBR, USA, France) or to the dam itself (Austria, Russia). Opened everywhere, private capital
 pre-empts the government route even in interventionist countries, so the government-ownership intent of §10.89.9 is lost there; the laissez-faire variant
 keeps it everywhere else. ⇒ **The choice (all / laissez_faire / leave government-only) is the user's**; nothing reaches a book until ruled.
+
+### 10.89.15 — DAMS AGAINST REAL PLANTS, AND URBAN-CENTRE ELECTRICITY ×2 / ×3 AS A MOD 1.1 VECTOR (user-ruled 2026-10-24; desk analysis, no game time)
+
+**The ruling.** The user, 2026-10-24: *"for 1.1, one possible vector of improvement (along with others, already recorded and deferred) is
+increasing UC electricity output 2x and 3x against how it is now, with reasonable increase in coal inputs as well."* And: *"Tuning hydro to
+actually have more variety of effective plants with four base buildings was considered and dropped."*
+⇒ **DEFERRED to mod 1.1**, one candidate among the deferred vectors (POLISH_1_0.md §4, BACKLOG D): `pm_goods.pm_electric_streetlights` electricity
+1 → 2 or 3 a level, its coal 2 raised by a reasonable amount (the amount is unruled). Nothing changes in 1.0.
+⇒ **DROPPED:** more hydro variety within the four dam types — a state-level dam throughput bonus, vanilla's five site bonuses restored for dams
+alone, finer dam classes.
+
+**What the analysis found** (2026-10-24: the canon's recipe book, F172, F222, external data; no new runs).
+1. **A common unit.** One electricity a week ≈ one MW of average output. The dam model's 0.4 electricity per thermal MW at ~40% load and 0.52 per
+   hydro MW at ~52% both give that. A coal level (50) ≈ 125 MW; a small dam level (300) ≈ 580 MW (Dneproges); a large one (600) ≈ 1,150 MW (Hoover).
+2. **Capital per MW of average output**, in construction points per electricity:
+   - the coal plant (1,600 points) 32;
+   - Great Mountain Scheme 10, Great River Dam 15, Mountain Power Station 16, River Dam 24 (shipped mean 17.0) ⇒ 0.31–0.75 of the coal plant;
+   - the per-project cost model these replaced: 34 on average.
+
+   Real 1930s, $ per average kW (recalled, as in §10.89.3): steam ~$275, Hoover / Grand Coulee type ~$155 (0.56× steam), Bonneville / Conowingo
+   type ~$370 (1.35×). The per-project model had matched that spread. The four-class table halved it (0.53×) to meet the ≥ 300-electricity and
+   ≤ 5-year rulings, so against the canon's coal plant every class is ~1.7–2× cheaper than real life would say.
+3. **Payback at base prices** (£600 a point, Britain's 1920 wage):
+   - coal plant 44 years (at vanilla's 400 points: 11);
+   - dams 4.1 / 6.2 / 6.6 / 9.9 years;
+   - break-even electricity price: coal 0.72× base, dams 0.07× (below the 25% floor).
+
+   Real prices mapped onto the game's at the coal plant's running-cost break-even (0.72× base = $3.7/MWh, so 1.0× ≈ $5.1/MWh): real hydro pays
+   back in the same years as our dams in every price column (Hoover type 4.0 years, Bonneville type 9.7 at 1.0×). The canon's coal plant pays back
+   ~2× slower than a real generating station: it is priced and staffed (8 a MW against the dams' 0.36, Hoover's ~0.4) as a whole utility, the dam
+   as a bare powerhouse.
+4. **Capital per year of sales** (the 2.3 of §10.89.1), re-derived from the book (main method, base prices, £600 a point): vanilla's 53 main
+   methods median 2.3; our 44 rungs 2.5 (t0 1.8 / t1 3.7 / t2 2.7 / t3 2.3); crafts 1.0 — a vanilla property, kept. Real US manufacturing, 1929
+   (Creamer, NBER): 0.43 on fixed capital, 0.88 with working capital.
+   - **Bundling.** Urban centres come free with urbanization (0.2 levels per manufacturing level) while railways, ports and power are built
+     separately. So a building's cost can fairly be read as including its workers' housing, local public works and shops. With those,
+     manufacturing reads 1.02 on net stock (BEA 1929 via FRED: housing $114.6B, government non-residential $42.7B; ~22% allocated by
+     manufacturing's employment share; ~$30B of commercial buildings — the share and the commercial figure recalled).
+   - **Gross stock.** A game building never depreciates, so the comparable real figure is the gross stock: ~1.7 (gross ≈ 1.7× net, recalled).
+     The whole economy: ~1.5 net, ~2.5 gross.
+   - ⇒ The game is ~1.2–1.45× heavier than real manufacturing on the comparable basis, not ~5×. The canon's coal plant (10–12 years of
+     revenue) is ~1.3–1.5× a real utility on gross stock (~5 years net ≈ 8 gross), consistent with §10.89.1's 4×.
+5. **The hydro share is low because of the denominator, not underbuilding.** F222's book at 1935: dams 17.2k of 96k electricity, 18%.
+   - Real 1936: world hydro ~45 GW installed (USGS, 60M hp), ~18–20 GW of average output, ~35–40% of electricity (the share recalled).
+   - The game's dams make ~17–22 GW of average output, the real level.
+   - By 1936 they hold ~35–40% of their slots, ~1.5–2.5× what really stood at the listed sites (the research's status codes: built in the
+     period 17.9 GW, partly 59.8, after the war 52.3).
+   - The long tail (~20–30 GW of real hydro at sites not on the list) is absent; the two roughly cancel.
+   - Total electricity is ~2× real (~80–96k ≈ 80–96 GW of average output against ~43–50). Counting half of urban-centre electricity as hydro
+     (the user's own reading, §10.89.10) already gives ~23–25%.
+6. **Vanilla's five site bonuses restored for dams alone** (+20% Niagara in New York and Ontario, the Hardanger and Trondheim fjords, the Angara;
+   +15% Krka, which has no project): +1,140 electricity, 1.6% of dam potential.
+7. **Urban-centre electricity.** The canon's method makes 1 electricity a level from 2 coal; one recent canon run holds ~14,000 urban-centre
+   levels at 1935 (`gdp_gap_series.tsv`, assuming its `urban` column is that), i.e. ~10–14k electricity. To reach ~37% hydro:
+   - counting half of urban-centre output as hydro: ×2.6–3.7 (urban centres 38% of all electricity, coal and oil plants −35–39%);
+   - counting a third: ×3.9–5.5 (plants −63–65%);
+   - boosting only hydro states (30–50% of levels, all of it counted hydro): ×3–5 there, ×2.0–2.2 overall (plants −18–22%).
+
+   Urban-centre supply follows urbanization, not price, so plants stay the marginal supplier. The risks are lower city electricity prices,
+   longer dam paybacks, and partly undoing §10.89.1. The ruled ×2 / ×3 sits inside that range.
+   ⚠ The 96k, 17.2k and 14k come from F222's book and one canon run: **measure the canon's own urban-centre and total electricity at 1935
+   before choosing between ×2 and ×3.**
+
+**Sources.** BEA fixed assets via FRED (K1X53101ES000, K1YTOTL1ST000, K1YTOTL1EQ000, K1GTOTL1ESNR0); Creamer, *Capital and Output Trends in
+Manufacturing Industries* (NBER chapter c4693); *Nature* 141, 31 (1938) for the USGS world water-power estimate; Minerals Yearbooks 1935–37 for
+coal per kWh (3.04 lb in 1920, 1.46 in 1935, 1.37 in 1940); EIA AEO 2022 and IRENA 2023 for modern costs. Calculation scripts were scratch work,
+not committed; every figure above is reproducible from the canon config, `ui/vanilla.js` and `tools/lib_dams.mjs`.
 
 ## §10.90 — LOW END-GAME PRICES: WHICH LEVERS ARE OPEN, AND WHY WORLD GDP IS READ AS DISPLAYED (user-ruled 2026-09-30)
 

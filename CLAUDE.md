@@ -416,7 +416,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.86 | the world product's derived hard band; prices planned first; the tier-0 penalty bounded by the 1836 map; per-industry levels closed, non-geometric ladders open | in force (per-industry lift relaxed by §10.101) |
 | 10.87 | report true profits; the wage model; the margin identity | in force (§2.10) |
 | 10.88 | trade weights ×1 at B 1.64; the finish boost | in force (B moved with later books) |
-| 10.89 | hydro dams (+ .1 the power plant at 4× cost; .9–.14 the redesign, engine-built, family rules, resource slots, private construction) | in force |
+| 10.89 | hydro dams (+ .1 the power plant at 4× cost; .9–.14 the redesign, engine-built, family rules, resource slots, private construction; .15 dams against real plants, urban-centre electricity ×2 / ×3 deferred to mod 1.1, more dam variety dropped) | in force (.15 deferred) |
 | 10.90 | the closed price levers; world GDP read as displayed | in force (§2.1, §5.6) |
 | 10.91 | craft rungs (line A) and merged rungs (line B), with the staffing, floor, t1 anchors and desire rules of .1–.5 | in force (Part 4) |
 | 10.92 | recipes steer production; AI values only follow profit; the exemptions | in force (§2.4) |
