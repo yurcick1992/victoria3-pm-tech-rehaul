@@ -5,7 +5,7 @@ This is the procedure. It does not repeat what other documents own:
 | topic | lives in |
 |---|---|
 | engine behaviour of headless runs: launch arguments, `content_load.json`, the log ring and its mirror, the per-run token, crash detection by minidump, `-continuelastsave`, autosave enums, the per-decade timing curves | MODDING_NOTES → *Automated headless runs (the testbed)* |
-| every guardrail where nothing fails (IDs L1–L38), its story and its detector | TESTBED_LANDMINES.md |
+| every guardrail where nothing fails (IDs L1–L41), its story and its detector | TESTBED_LANDMINES.md |
 | what telemetry and the save summaries can log; the wall-clock data sources | TESTBED_METRICS.md (§7⅜ wall clock, §7½ the save harvest) |
 | what each tool is and how it is invoked | REPO_GUIDE.md (tools are referred to here by path only) |
 | how a config is judged (aim / soft / hard, the loss, the consensus) | BALANCE_FRAMEWORK §10.83 and CLAUDE.md §3.2 |
@@ -146,7 +146,8 @@ procedure).
 **Autosave cadence.** The script default is `five_year`; schedules use **`yearly`**, because the save harvest (TESTBED_METRICS §7½),
 the yearly summary series every reader expects and the slowdown quarantine (§7.6) all read the 1 January saves — and a batch that
 measures the wall clock must use yearly saves and compare like cadence with like: quarterly runs read dearer per in-game year even
-with the save ticks removed (F217), while what one autosave costs is not yet known (TESTBED_METRICS §7½). Autosaves overwrite
+with the save ticks removed (F217). The save stall itself is measured (~0.9 s vanilla / ~1.1 s mod per save, F217 §1, F218); what a whole
+cadence costs is not (TESTBED_METRICS §7½). Autosaves overwrite
 the player's own `autosave*.v3` slots on the batch machine.
 
 ---
@@ -421,8 +422,8 @@ same days' vanilla.** It is row **P** of the ledger's verdict table with its own
   `world.pop_objects_live`. It answers whether the engine is dearer per unit of work — useful when the total moves and the cause is
   in question. It is valid only within one `pop_consolidation` game rule, and if the arms overlap in under about a third of the bins
   it cannot be computed for that batch (say so). The total is always answerable. TESTBED_METRICS §7⅜ lists the data sources.
-- Intervals spanning a resume are dropped, not smoothed; an archive stamp lags the engine's write by a near-constant margin (fine in
-  a rate, wrong as an instant).
+- Intervals spanning a resume are dropped, not smoothed; an archive stamp is the source autosave's last-write time
+  (`archive_autosaves.ps1`), i.e. when the engine finished writing it.
 
 ### 7.3 The reference and external load
 

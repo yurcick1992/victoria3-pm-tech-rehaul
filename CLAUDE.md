@@ -390,8 +390,9 @@ the finding: a "transportation ÷ automobiles" collapse looked like displacement
 
 ## 2.13 The rulings in force — an index of BALANCE_FRAMEWORK
 
-One line per ruling that still governs something; the § holds the words, the reasons and the history. §1–§10.51 and most of §10.52–§10.67 are the
-six-rung era and the legacy break-even ladder — records, not rules (the solver they describe is closed, §10.80).
+One line per ruling that still governs something; the § holds the words, the reasons and the history. BALANCE_FRAMEWORK's own status index rates
+every §; the six-rung era and the legacy break-even ladder (§1–§10.42, §10.44–§10.53 and most of §10.56–§10.67) are records, not rules (the solver
+they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIVE.md`.
 
 | § | the ruling, in one line | status |
 |---|---|---|
@@ -712,8 +713,8 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 |---|---|---|
 | `CLAUDE.md` (this) | goals, principles, metrics, the canon, hard rules | a ruling changes a principle, the canon moves, a hard rule is added |
 | `GLOSSARY.md` | every term and letter, one meaning each | a quantity needs a name (same pass) |
-| `BALANCE_FRAMEWORK.md` | every balance ruling, §-numbered, with its reasoning — the source of truth | the user rules on design or measurement |
-| `FINDINGS.md` | measured results, F-numbered, numbers in full | a batch or probe establishes something |
+| `BALANCE_FRAMEWORK.md` | every balance ruling, §-numbered, with its reasoning — the source of truth; a status index at the top | the user rules on design or measurement (and add its index row) |
+| `FINDINGS.md` | measured results, F-numbered, numbers in full; an index in number order at the top | a batch or probe establishes something (and add its index row) |
 | `ROADMAP.md` | the plan, step by step | the plan changes |
 | `BACKLOG.md` | every open item, one line each, with status and pointer | an item is found, changes status or closes |
 | `POLISH_1_0.md` | the 1.0 polish register | polish items and their rulings |
@@ -723,7 +724,8 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 | `TESTBED_METRICS.md` | what telemetry and the save summaries can and cannot log | a metric is added or verified |
 | `MODDING_NOTES.md` | engine and tooling behaviour | an engine gotcha is found |
 | `ON_GAME_UPDATE.md` | every coupling to a vanilla file or number; what to re-run after a patch | a new coupling |
-| `BUGS_AND_FIXES.md` | root causes of non-obvious bugs | a bug is fixed whose cause would surprise the next reader |
+| `BUGS_AND_FIXES.md` | root causes of non-obvious bugs, newest first under a dated index | a bug is fixed whose cause would surprise the next reader |
+| `*_ARCHIVE.md` (BALANCE_FRAMEWORK, FINDINGS, BUGS_AND_FIXES, `tools/testbed/SESSION_VERDICTS`) | the superseded sections and entries of the records, verbatim under their own numbers; a stub stays in the live file | never written to except to archive a block the user agrees is fully superseded |
 | `TIER_REFERENCE_AUDIT.md`, `MISSING_BUILDING_CONDITIONS.md` | vanilla references the tier split affects; dropped building conditionals | a new case is found (catalogue, do not fix inline) |
 | `tools/testbed/SESSION_VERDICTS.md` | one committed line per session's verdict | every session |
 | `README.md` | the player-facing setup | the player-facing story changes |

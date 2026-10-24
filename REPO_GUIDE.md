@@ -33,17 +33,20 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
 - **`GLOSSARY.md`** — the terminology sheet: every metric letter (world GDP, pool GDP, W, U\*, H, Y, T0–T3, PI, PP, PM, the loss, σ), the
   scopes, time windows, the two statistics conventions ("CI" = the percentile interval of vanilla's seeds), the ladder terms (tier vs tech era,
   A, B, C, in0, target_be, book, canon), economics and process terms. Names things, rules on nothing.
-- **`BALANCE_FRAMEWORK.md`** — the balance source of truth: methodology, targets, every ruling (§-numbered, §10.x for the rulings log).
-- **`FINDINGS.md`** — what the testbed has established (F-numbered), numbers copied in full; appended after every measurement batch.
-- **`ROADMAP.md`** — the plan, steps 0–14 plus the release timeline; step 8 (the first playtest's defect list), step 10 (the tier-0 input
-  penalty) and steps 11–14 (trade and finishing, crafts, merges, the last tech rework) hold their own detail.
+- **`BALANCE_FRAMEWORK.md`** — the balance source of truth: every ruling, §-numbered, with a status index at the top; the sections that no
+  longer govern anything are verbatim in **`BALANCE_FRAMEWORK_ARCHIVE.md`** (a stub with their headings stays in place).
+- **`FINDINGS.md`** — what the testbed has established (F-numbered), numbers copied in full; appended after every measurement batch. An index
+  in number order sits at the top; entries about retired lines are verbatim in **`FINDINGS_ARCHIVE.md`** (a pointer heading stays in place).
+- **`ROADMAP.md`** — the plan: a status table for steps 0–14, what is ahead for 1.0 / 1.1 / later, then per-step detail (step 8 the first
+  playtest's defect list, steps 10–14 the input penalty, trade and finishing, crafts, merges, the last tech rework).
 - **`BACKLOG.md`** — every open item, one line each with status (NOW / OPEN / RULING / DEFERRED / RESEARCH / DEFECT / WATCH) and a pointer to
   the doc with the detail; committed (unlike the handover) and kept true in the same pass as the change.
 - **`POLISH_1_0.md`** — the mod 1.0 polish register: each item's DONE / RULING / READY / VERIFY state, the rulings asked, the order (script and
   economics before the alternating batch, text and art after), and the deferred-items sweep and pre-release hunt appendices.
 - **`MODDING_NOTES.md`** — Victoria 3 engine and tooling gotchas (localization, load order, error.log, headless runs, debug mode).
 - **`ON_GAME_UPDATE.md`** — what to re-run or re-check after a game patch; every coupling to a vanilla file or number, plus the drift log.
-- **`BUGS_AND_FIXES.md`** — root-cause log of non-obvious fixed bugs; consult when investigating a new bug or after a patch.
+- **`BUGS_AND_FIXES.md`** — root-cause log of non-obvious fixed bugs, newest first under a dated index; consult when investigating a new bug or
+  after a patch. The retired six-rung solver's entries are verbatim in **`BUGS_AND_FIXES_ARCHIVE.md`**.
 - **`TESTBED_METRICS.md`** — what telemetry can and cannot log, with in-game-verified data-function syntax; read before adding a metric.
 - **`TESTBED_LANDMINES.md`** — the register of defects where nothing fails (L-numbered), each with a detector that `tools/preflight.ps1`
   runs inside every `build.ps1` and before every batch. A new landmine gets an entry, a `Test-Lm<ID>`, and a proof that it trips.
@@ -138,7 +141,7 @@ Other books: `disabled: true` (the industry is skipped everywhere and the vanill
 | `goods_traded_quantity` {good: n} (+ `_trade`) | per-good trade weight (35 goods, five classes) | emit_goods → whole-file `00_goods.txt` (F159) |
 | `building_required_construction` {building: points} | construction cost for a building the build owns (power plant 1,600) | emit_building_costs (§10.89.1) |
 | `dams` | `enabled`, `projects_file`, `strip_trait_modifiers`, `effects`, `rules` (`family`), `layout` (`resource4`), `resource4` (the ruled class table), `private` (`all`) | emit_dams; other books: `log_levels`, `probe`, `perf_*`, `static_mode`, `staff_per_50` (§10.89) |
-| `building_subsidies` {building: policy} | AI subsidy policy: `vanilla` / `none` / `nice_to_have` / `wants_to_have` / `must_have`; canon: the four dam classes `must_have`, tooling and explosives `none` | build.ps1 → `01_admin_strategies.txt`, emitted only when a non-vanilla policy exists |
+| `building_subsidies` {building: policy} | AI subsidy policy: `vanilla` / `none` / `nice_to_have` / `wants_to_have` / `must_have`; canon: the four dam classes `must_have`, tooling and explosives `none` | build.ps1 → `01_admin_strategies.txt`, emitted only when a non-vanilla policy exists. Vanilla's own `ai_strategy_montenegro_admin` still subsidises trade centres and is preserved, so one subsidy line in the emitted file is not ours |
 | `building_groups_add` {bg: {...}} | new building groups (`bg_pmr_crafts`, incl. `min_productivity_to_hire` 2) | emit_building_groups |
 | `research_levers` | `static` (static-modifier lines replaced in place), `university_innovation_mult`, `innov_x` (§10.96, §10.101.1) | emit_research_levers |
 | `ai_schooling` | `institution_score`, `law_enact_add` (§10.97 item 7) | emit_ai_schooling |
@@ -1101,7 +1104,8 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   game runs; the final drain is idempotent. Each summary is written under a temp name, verified (gunzip, parse, version + date +
   ≥ 10 countries) and renamed before the `.v3` is deleted; a failed save keeps a `.err`; each run's newest save is kept for good. A save is
   reaped only on `slow_quarantine.mjs`'s `release` (`keep` → `<run>\quarantine_saves\`). Traps: once saves are reaped the summary is the
-  record (L12 checks this post-run); the melt's cost to the game is unmeasured. Refs: TESTBED_METRICS §7½.
+  record (L12 checks this post-run). A concurrent melt costs the game nothing measurable (F217 §1: 5.24 vs 5.17 in-game days per wall second
+  in the mod, 5.69 vs 5.59 in vanilla). Refs: TESTBED_METRICS §7½.
 - **`slow_quarantine.mjs`** — the quarantine judge `harvest_saves` calls before every reap: each yearly save `keep` (with a self-describing
   name and role) / `release` / `wait`, plus `<run>/slow_periods.json` and `quarantine_saves/MANIFEST.md`. `<runDir> [--final] [--k 3]
   [--restore 2]`; exports `yearTimes()` / `episodes()`. The episode rule: TESTBED_OPERATIONS.
@@ -1251,7 +1255,7 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   capita × GDP per productive worker, world and pool, every ratio with both terms; reported after each arm's first run.
 - **`ledger/advanced_panel.mjs`** / **`tiered_panel.mjs`** `--arm <s>:<label> [--arm …] --van <s>:<label> [--year 1935] [--group …]`
   (`tiered_panel` + `--config-<n>` per arm) — productive share of the workforce and GDP per productive worker ÷ vanilla, whole economy /
-  tiered industries (tiered workers modelled from staffed levels). Definitions and readings: `ledger/README.md`. Traps: the default
+  tiered industries (tiered workers modelled from staffed levels). Definitions: `ledger/README.md` §8.3; readings: F76, F78. Traps: the default
   `--group` is GBR,USA,FRA,NET,BEL,PRU,GER (no NGF or UNL, unlike `POOL`); one `--config-<n>` per arm, never one shared `--config`;
   `population_subsisting_workforce` is peasants ÷ 100,000.
 - **`ledger/batch_tables.mjs`** `--arm <sess[,sess]>:<setup> [--nb] [--van] [--config] [--year 1935] [--exclude <sess/run,…>]` — pools ÷ GDP,
