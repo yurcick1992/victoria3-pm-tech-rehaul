@@ -50,6 +50,9 @@ shipping a silent miss. A rebuild does not fix three things:
    then the book's recorded commands in order (`_ab`, `_trade_variant`, `_dams_variant` … `_polish_*`), and read `node tools\lint_tier_eras.mjs
    --census` on the result against §10.78's table. This is the only check on what the build stores rather than re-reads: rung staffing and input
    mixes, technology eras and prerequisites (§2.2.2). Anything that moved is a canonisation, so it goes to the user with the diff.
+   ⚠ **Never skip this step:** the user ruled on 2026-10-24 against an automatic detector for era and prerequisite moves, so this regeneration is
+   the only thing that finds one. In the same step, check by hand that every key in the book's `ai_defines` still appears in the patched
+   `common/defines/00_ai.txt` — neither the build nor the regeneration checks it, and a renamed key is ignored silently (§2.2.1).
 6. **Refresh the snapshots the patch touched** (§2.4). Two feed the build or every reading: `tools/goods_prices.tsv` (the comparison command is in
    §2.4) and `config/measured_1836_pop_identity.json` (the craft seeding; it needs one vanilla 1836.2.1 save of the new version).
 7. **Bump `supported_game_version`** in `mod/.metadata/metadata.json`, the one hand-maintained file in `mod/` (keep its `id`). An unbumped stamp logs a
