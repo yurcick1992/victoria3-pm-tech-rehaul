@@ -600,7 +600,7 @@ probe switches — `dams.perf_off` / `perf_amplify` / `static_mode`, `research_e
   blocks of `common/ai_strategies/01_admin_strategies.txt` (~655 lines) reach every country; the alternative, `ai_strategy_default`, is one
   ~8,790-line block.
 - **Unsettled engine semantics:** whether a typed strategy's `subsidies` MERGES with the default's per key or REPLACES it wholesale (an early
-  probe leaned toward merge, on late-game data only — ON_GAME_UPDATE drift log 2026-07-23). The builder's rule is correct under both
+  probe leaned toward merge, on late-game data only — ON_GAME_UPDATE §2.3.1, "AI subsidies"). The builder's rule is correct under both
   readings: a strategy that already has a block is authoritative (whatever it omits was omitted deliberately; restating would invent
   subsidies vanilla never granted); a strategy with NO block gets the default's subsidies restated (read live from
   `00_default_strategy.txt`) only because adding our block makes it replace-exposed. Value `none` can reliably suppress only entries living
