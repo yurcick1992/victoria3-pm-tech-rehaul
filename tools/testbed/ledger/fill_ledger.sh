@@ -29,8 +29,12 @@ SESSION=$1; SETUP=$2; BOOK=$3; OUT=tools/testbed/ledger/$4
 L=tools/testbed/ledger; S=tools/testbed/sessions
 # the vanilla reference (lib_runs.mjs, ONE definition): VANS = every reading but the wall clock (n=24 since 2026-10-21),
 # VANW = the wall clock (the most recent same-harness vanilla; summer play times are not today's reference, FINDINGS F248)
-VANS=$(node -e "import('./tools/testbed/ledger/lib_runs.mjs').then(m=>console.log(m.VANILLA_REF))") || exit 1
-VANW=$(node -e "import('./tools/testbed/ledger/lib_runs.mjs').then(m=>console.log(m.VANILLA_WALL_REF))") || exit 1
+# ⭐ Both can be OVERRIDDEN from the environment (2026-10-26): VANS_OVERRIDE / VANW_OVERRIDE = a comma list of sessions (and/or
+#   <session>/runNNN_vanilla folders) — e.g. every vanilla run with telemetry for VANS, and an ALTERNATING batch's own vanilla for VANW
+#   (mod-only wall-clock readings are directional; only within-session comparisons against an alternating control are reliable).
+#   Sessions holding two arms are fine: every vanilla list below is read with the setup `vanilla`.
+VANS=${VANS_OVERRIDE:-$(node -e "import('./tools/testbed/ledger/lib_runs.mjs').then(m=>console.log(m.VANILLA_REF))")} || exit 1
+VANW=${VANW_OVERRIDE:-$(node -e "import('./tools/testbed/ledger/lib_runs.mjs').then(m=>console.log(m.VANILLA_WALL_REF))")} || exit 1
 [ -f "$BOOK" ] || { echo "no such book: $BOOK"; exit 1; }
 mkdir -p "$OUT"
 group_runs() {      # $1 group spec, $2 setup → comma-separated sess/run of the USABLE runs (lib_runs), the exclusions printed on stderr
@@ -38,6 +42,7 @@ group_runs() {      # $1 group spec, $2 setup → comma-separated sess/run of th
 }
 MOD=$(group_runs "$SESSION" "$SETUP") || exit 1
 VAN=$(group_runs "$VANS" "vanilla") || exit 1
+VANWRUNS=$(group_runs "$VANW" "vanilla") || exit 1   # the wall-clock vanilla as RUN folders: a two-arm session must not hand its mod runs to report_perf
 [ -n "$MOD" ] || { echo "no usable run of setup $SETUP in $SESSION"; exit 1; }
 node -e "import('./$L/lib_runs.mjs').then(({configFamilies})=>{const f=configFamilies('$S','$MOD'.split(','));for(const x of f){console.log('  family '+x.family+' x'+x.runs.length+': '+x.configs.length+' config(s), '+x.builds.length+' build(s)');for(const c of x.configs)console.log('    config '+String(c.sha).slice(0,16)+' x'+c.runs+'  '+c.path);if(x.changed.length)console.log('    ! config file changed since the run (structure read from today\'s file): '+x.changed.join(' '))}if(f.length>1&&process.env.ALLOW_MIXED!=='1'){console.error('MORE THAN ONE FAMILY (different tier/building structure) IN THE GROUP; ALLOW_MIXED=1 to report it anyway');process.exit(1)}})" || exit 1
 echo "$MOD" > "$OUT/_mod.txt"; echo "$VAN" > "$OUT/_van.txt"
@@ -46,14 +51,14 @@ step() { echo; echo "=== $*"; "$@" || echo "!!! FAILED ($?): $*"; }
 step node $L/analyse_gdp_gap.mjs --session $SESSION --setup $SETUP --config $BOOK --out $OUT
 step node $L/report_data.mjs --mod $MOD --van $VAN --nb none --config $BOOK --out $OUT
 step node $L/report_data2.mjs --mod $MOD --van $VAN --config $BOOK --out $OUT
-step node $L/report_perf.mjs $(echo $MOD | tr ',' '\n' | sed "s|^|$S/|") $(echo $VANW | tr ',' '\n' | sed "s|^|$S/|") --json $OUT/perf_raw.json
+step node $L/report_perf.mjs $(echo $MOD | tr ',' '\n' | sed "s|^|$S/|") $(echo $VANWRUNS | tr ',' '\n' | sed "s|^|$S/|") --json $OUT/perf_raw.json
 # the three wall-clock clusters (user-ruled 2026-10-07) — fill_build_perf tags each run, the grade is the median over clusters 1 + 2
 step node $L/wall_clusters.mjs "$SETUP=$SESSION:$SETUP" "vanilla=$VANW:vanilla" --json $OUT/wall_clusters.json
 step node $L/fill_build_perf.mjs $OUT
 step node $L/fill_consts.mjs $OUT --mod $MOD --van $VAN --nb none
 step node $L/fill_emp.mjs $OUT --mod $MOD --config $BOOK
 step node $L/fill_payback.mjs $OUT --mod $MOD --config $BOOK
-step node $L/fill_research.mjs $OUT --mod $MOD
+step node $L/fill_research.mjs $OUT --mod $MOD --van $VAN --config $BOOK
 step node $L/fill_tierchoice.mjs $OUT --session $SESSION --setup $SETUP --config $BOOK
 step node $L/fill_indecomp.mjs $OUT --mod $MOD --van $VAN --config $BOOK
 step node $L/fill_obsolescence.mjs $OUT --session $SESSION --setup $SETUP --config $BOOK

@@ -27,11 +27,14 @@ if (!arms.length) { console.error('usage: --arm <session>[:<setup>] [--van <sess
 const SHORT = new Set(['GBR', 'USA', 'FRA', 'NET', 'BEL', 'UNL', 'PRU', 'NGF', 'GER']);   // UNL replaces NET+BEL where it forms
 const med = a => { if (!a.length) return NaN; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 
+// A spec is <session>[,<session>…][:<setup>] — several sessions pool into one group (2026-10-26).
 function runDirs(spec) {
-  const [session, setup] = spec.split(':');
-  const root = join(SES, session);
-  return readdirSync(root).filter(d => /^run\d+/.test(d) && statSync(join(root, d)).isDirectory() && (!setup || d.endsWith('_' + setup)))
-    .map(d => ({ session, setup, dir: join(root, d), name: d }));
+  const [sessions, setup] = spec.split(':');
+  return sessions.split(',').filter(Boolean).flatMap(session => {
+    const root = join(SES, session);
+    return readdirSync(root).filter(d => /^run\d+/.test(d) && statSync(join(root, d)).isDirectory() && (!setup || d.endsWith('_' + setup)))
+      .map(d => ({ session, setup, dir: join(root, d), name: d }));
+  });
 }
 // per run: year -> { world: {gdp,pop,prod}, short: {...} }; a run counts only for the years it reached
 function readRun(r) {
@@ -56,7 +59,9 @@ function readRun(r) {
 }
 const groups = [...vans.map(s => ({ label: 'vanilla ' + s.split('_')[0], spec: s, isVan: true })), ...arms.map(s => ({ label: s, spec: s, isVan: false }))];
 for (const g of groups) { g.runs = runDirs(g.spec).map(r => ({ ...r, data: readRun(r) })); }
-const V = groups.find(g => g.isVan);
+// THE REFERENCE is every --van group POOLED (2026-10-26: it used to be the first --van alone, while the other --van rows reprinted
+// the first one's median under their own label — BACKLOG). Each --van row prints its OWN median; the ratios divide by the pooled one.
+const V = groups.some(g => g.isVan) ? { runs: groups.filter(g => g.isVan).flatMap(g => g.runs) } : null;
 const fmt = (x, d = 2) => Number.isFinite(x) ? x.toFixed(d) : '  —  ';
 console.log('GDP = population × productive workers per capita × GDP per productive worker  (productive = salaried − government − military)');
 for (const scope of ['world', 'short']) {
@@ -72,7 +77,7 @@ for (const scope of ['world', 'short']) {
         const pc = d.prod / d.pop, pw = d.gdp / d.prod;
         console.log(`${y}  ${(g.label + (n ? ' [' + n + ']' : '')).slice(0, 37).padEnd(38)} ${String(rows.length).padStart(5)}  ${fmt(d.gdp / 1e6, 0).padStart(8)}  ${fmt(d.pop / 1e6, 0).padStart(7)}   ${fmt(pc, 4).padStart(9)}    ${fmt(pw, 1).padStart(12)}   | ${g.isVan ? '     —' : fmt(d.gdp / vG).padStart(6) + '×'}   ${g.isVan ? '   —' : fmt(pc / vPC).padStart(6) + '×'}   ${g.isVan ? '   —' : fmt(pw / vPW).padStart(6) + '×'}`);
       };
-      if (g.isVan || rows.length === 1) line(g.label, g.isVan ? { gdp: vG, pop: med(vRows.map(d => d.pop)), prod: med(vRows.map(d => d.prod)) } : rows[0].d, g.isVan ? 'median' : rows[0].name);
+      if (g.isVan || rows.length === 1) line(g.label, g.isVan ? { gdp: med(rows.map(r => r.d.gdp)), pop: med(rows.map(r => r.d.pop)), prod: med(rows.map(r => r.d.prod)) } : rows[0].d, g.isVan ? 'median' : rows[0].name);
       else { const m = { gdp: med(rows.map(r => r.d.gdp)), pop: med(rows.map(r => r.d.pop)), prod: med(rows.map(r => r.d.prod)) }; line(g.label, m, 'median'); for (const r of rows) line(g.label, r.d, r.name); }
     }
   }

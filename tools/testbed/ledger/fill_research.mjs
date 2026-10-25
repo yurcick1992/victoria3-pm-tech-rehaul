@@ -15,20 +15,36 @@ const MOD = (() => {
   if (i > 0 && process.argv[i+1]) return process.argv[i+1].split(",").map(s => s.trim()).filter(Boolean);
   throw new Error("fill_research.mjs: --mod <sess/run[,...]> is REQUIRED (it used to default to canon-n7).");
 })();
-const VAN = ['run001_vanilla','run003_vanilla','run005_vanilla','run007_vanilla'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r);
+// ⚠⚠ FIXED 2026-10-26 (POLISH_1_0 Appendix 1 A3): this read the RETIRED six-rung tree (tech_tree_options.canon_n7.json) for every
+//   book and the old pinned vanilla n=4 (20260813_083557). Now: --config <book> → the book's OWN tree twin
+//   (config/tech_tree_options.<suffix>.json, the file emit_techs pairs with it), the arm's runs classed by each technology's `era` as the
+//   mod ships it and the vanilla runs by its `vanillaEra` (technologies the mod mints are absent from vanilla); --van <sess/run,…> = the
+//   vanilla runs (fill_ledger passes its $VAN), default lib_runs.VANILLA_REF's usable vanilla runs.
+const argOf = k => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : null; };
+const BOOK = argOf('--config');
+if (!BOOK) throw new Error('fill_research.mjs: --config <book> is REQUIRED (it names the tech tree twin the eras come from).');
+const TWIN = BOOK.replace(/mod_config\.([^/\\]+)\.json$/, 'tech_tree_options.$1.json').replace(/mod_config\.json$/, 'tech_tree_options.json');
+if (!existsSync(TWIN)) throw new Error(`fill_research.mjs: no tech tree twin ${TWIN} for ${BOOK}`);
+const VAN = await (async () => {
+  const v = argOf('--van'); if (v) return v.split(',').map(s => s.trim()).filter(Boolean);
+  const { usableRuns, VANILLA_REF } = await import('./lib_runs.mjs');
+  return usableRuns(SES, VANILLA_REF, 'vanilla').runs;
+})();
 const YEARS = [1840,1860,1880,1900,1920,1935];
 
-// tech -> {era, tree} from the SHIPPING option of our own tree (vanilla technologies included there)
-const opt = JSON.parse(readFileSync('config/tech_tree_options.canon_n7.json','utf8')).options.find(o => o.ships);
-const TT = {}; const totals = {};
+// tech -> {era, tree}: TT as the mod ships it (the arm), TTV as vanilla has it (the vanilla runs)
+const opt = JSON.parse(readFileSync(TWIN,'utf8')).options.find(o => o.ships) || JSON.parse(readFileSync(TWIN,'utf8')).options[0];
+const TT = {}, TTV = {}; const totals = {};
 for (const t of opt.techs) {
   const tree = t.category || t.tree || 'production';
   const era = t.era ?? 1;
   TT[t.id] = { era, tree };
+  if (t.vanillaEra != null) TTV[t.id] = { era: t.vanillaEra, tree };
   if (era >= 1) totals[tree + '|' + era] = (totals[tree + '|' + era] || 0) + 1;
 }
+console.log(`tree: ${TWIN} (${opt.techs.length} technologies; ${Object.keys(TTV).length} in vanilla) · vanilla runs: ${VAN.length}`);
 const med = a => { const s=[...a].sort((x,y)=>x-y); const m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; };
-function held(dirs) {
+function held(dirs, TT) {
   const perYear = {};
   for (const r of dirs) {
     const dir = join(SES, r, 'save_summaries'); if (!existsSync(dir)) continue;
@@ -55,7 +71,7 @@ function held(dirs) {
 }
 // ---- per-tag technologies held (the selection table used to receive {} and render zeroes) -------
 const TAGS = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SIC', 'POR', 'NET'];
-function heldTags(dirs) {
+function heldTags(dirs, TT) {
   const per = {};                                     // tag -> year -> [rows across runs]
   for (const r of dirs) {
     const dir = join(SES, r, 'save_summaries'); if (!existsSync(dir)) continue;
@@ -140,7 +156,7 @@ function jeTags(dirs) {
   }
   return out;
 }
-const techsT = { totals, flat: { world: held(MOD), tags: heldTags(MOD) }, van: { world: held(VAN), tags: heldTags(VAN) } };
+const techsT = { totals, flat: { world: held(MOD, TT), tags: heldTags(MOD, TT) }, van: { world: held(VAN, TTV), tags: heldTags(VAN, TTV) } };
 const jeT = { world: je(MOD), tags: jeTags(MOD) };
 writeFileSync(join(DIR, 'research.json'), JSON.stringify({ techsT, jeT }));
 console.log('totals per tree|era:', Object.keys(totals).length, 'entries');
