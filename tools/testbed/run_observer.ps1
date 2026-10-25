@@ -929,10 +929,11 @@ try {
         $attempt++
         $attemptStart = Get-Date
         $launchArgs = $gameArgs
+        $attemptFresh = $false   # L42: this attempt is a deliberate fresh 1836 game, not a resume - the landing guard below must not judge it
         if ($freshRestart) {
             # L34: the run died before its first autosave, so there is nothing of ITS OWN to continue from. -continuelastsave here loads the
             # machine's newest save - another run's endpoint - and a save that lands AT the target reads as a completed run (169 s, 2026-09-17).
-            $launchArgs = $gameArgs; $freshRestart = $false
+            $launchArgs = $gameArgs; $freshRestart = $false; $attemptFresh = $true
             Write-Log "run ${run}: attempt $attempt is a FRESH 1836 game (died before any autosave; -continuelastsave would load a foreign save - landmine L34)"
         } elseif ($attempt -gt 1 -or $ContinueFromSave) { $launchArgs = @("-continuelastsave") + $gameArgs }
         $resumeFrom = $lastTick
@@ -1191,7 +1192,10 @@ try {
         #   ahead  - it loaded a newer save belonging to something else, skipping dumps
         #   at the start - the load failed and -handsoff began a FRESH 1836 game instead
         #                  (verified: a bad -loadsave path does exactly this)
-        if ($attempt -gt 1) {
+        # ⚠ L42 (2026-10-26): NOT for a deliberate fresh restart (the early-death path). Its $tickAtStart is "" (that path clears $lastTick),
+        # so ANY landing read as "ahead" and a later ordinary crash of that attempt abandoned the run as a foreign save - run 20 of
+        # 20261023_161802 lost at 1872.5. Such an attempt has no resume process yet: it falls through and its crash opens one below.
+        if ($attempt -gt 1 -and -not $attemptFresh) {
             $landed = ConvertTo-DateNum $firstTick
             $wanted = ConvertTo-DateNum $tickAtStart
             if ($landed -gt $wanted) {
