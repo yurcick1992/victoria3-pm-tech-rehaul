@@ -394,6 +394,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F246 | The AI's trade-centre GDP gate does not keep treaty ports empty; the engine needs NON_MARKET > MARKET minimum GDP | vanilla-mechanics | standing | here |
 | F247 | Monopoly threshold 0.99 over a century n=4: play x1.18 of summer vanilla; 3 intact + 1 stall, loss 8.21 | canon | partly superseded by F248 | here |
 | F248 | Vanilla plays ~8% slower in October than August on the same version; vs same-days vanilla the wm99 book is x1.09 | performance | standing | here |
+| F249 | The 1.0 canon over 16 alternating centuries: 16 intact, world GDP 1.07x, play x1.010 (x1.11 / x0.996 per session); old rungs not pushed out faster than in vanilla | canon | standing | here |
 
 ---
 
@@ -20964,3 +20965,114 @@ of several points either way, and both of its counting runs sit near 194 min. Wh
 it scales with what the run logs and saves, which is the same for both arms; if it is the machine, likewise. ⚠ Every mod-vs-vanilla wall-clock ratio
 quoted between ~2026-09-20 and 2026-10-21 divided a mod run of its own day by the summer vanilla, so it is likely inflated by up to ~8% — F222's ×1.036,
 F239's ×1.06 and F247's ×1.18 among them; ratios from mod runs of late August are not affected.
+
+## F249 — THE 1.0 CANON OVER SIXTEEN ALTERNATING CENTURIES: NO RUN BROKEN, WORLD GDP 1.07× VANILLA, PLAY TIME ×1.010 OF THE SAME SESSIONS' VANILLA (×1.11 AND ×0.996 IN ITS TWO SESSIONS); OLD RUNGS ARE NOT PUSHED OUT FASTER THAN IN VANILLA, IN THE MARKET OR THROUGH TRADE
+
+**Why it ran.** ROADMAP "Mod 1.0 — the remainder" item 1: the 1.0 canon's century and its wall-clock reference in one batch, after F248 found that vanilla
+itself played ~8% slower in October than in August (user: *"Go with the n=16 vs n=16 alternating vanilla/mod"*). Vanilla and canon took turns run by run.
+
+**Arms and runs.** Vanilla `{kind: control}`; canon `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`, sha256 `728f2c7f84e6f467` (the canon as
+canonised on 2026-10-21 night, the polish rulings included), game 1.13.11, yearly save summaries v19. Sessions `20261021_224949_alt-vanilla-canon-n16`
+(runs 1–12; run 13, vanilla, VOID: paused by input, L41), `20261023_161802_alt-vanilla-canon-rest20` (20 runs; run 20, canon, VOID: lost to the
+observer's landing guard, **landmine L42**, fixed `9359eb4`) and `20261026_032622_alt-canon-replace20` (one canon run in its place, played after the batch).
+**n = 16 + 16.** 15 game deaths in 7 canon and 8 vanilla runs, every one recovered by the resume feeder (VERDICT files). ⚠ By ruling (2026-10-24) every
+economic reading is against ALL forty vanilla runs with full telemetry (summer n=18 + October n=6 + this batch's n=16); the wall clock is against this
+batch's own vanilla only.
+
+**1. The register** (`criteria.mjs`, the ruled defaults, end state 1932–36; vanilla n=40):
+
+| line | canon ÷ vanilla | absolute (canon vs vanilla) | aim · soft | verdict |
+|---|---|---|---|---|
+| hard lines | 16 intact / 0 broken | — | — | ✅ |
+| world GDP | **1.07×** (1935 point 1.08×; per run 0.67–1.27) | £4,681M vs £4,362M | 0.90–1.00 · 0.75–1.33 · hard 0.65–1.55 | inside, above the aim |
+| world W | 0.89× | 0.1307 vs 0.1466 | 0.6–0.95 · > 1.0 | at the aim |
+| world U* | 1.13× | 45.9% vs 40.8% | soft < 1.0 | inside |
+| world H | 0.85× | 0.25 vs 0.29 | < 1 | at the aim |
+| shortlist GDP | 1.04× (per head 1.03 = W 0.82 × Y 1.26) | — | 1.1–1.9 · 0.95–2.0 | inside, below the aim |
+| shortlist W | 0.82× | 0.1679 vs 0.2052 | 0.6–0.95 · > 1.0 | at the aim |
+| shortlist U* | 1.74× | **31.1% vs 17.9%** | ≥ 2 · < 1.0 | inside, below the aim |
+| shortlist H | 0.54× | 0.23 vs 0.44 | < 1 | at the aim |
+| PI (building inputs, £) | 0.93×, falling decade over decade | 0.93 of base vs 1.00 | ≤ 0.8 · > 1.0 | inside, above the aim |
+| PP (pop goods, wage units) | 0.95× (PM, war goods, 0.88×) | — | ≤ 0.8 · > 1.1 | inside, above the aim |
+| T0 | 1935 = 0.45 × the 1900s; decades 0.44 / 0.38 / 0.31 / 0.24M | 0.21M of 19.84M shortlist tiered workers | zero or falling · > 1.3 | at the aim |
+| T3 | 27.4% of tiered workers (T3 ÷ rest 0.38) | T0…T3 0.21 / 2.37 / 12.08 / 5.18M | the more the better | — |
+| Germany (closed major) | G 0.43: full employment in the lucky seed, no hoarding | — | aim 0 | full employment |
+| **loss** | **6.60** = PI 1.67 + T3 1.46 + PP 0.96 + gerCM 0.64 + T0 0.64 + world GDP 0.61 + shortlist U* 0.41 + shortlist GDP 0.20 | per run 4.6–16.0 | — | no soft breach |
+
+⚠ Not comparable with F247's 7.69 (a different vanilla set; and the losses are directional, §10.83.7). Soft flags per run: Britain near capital abundance
+in 10 of 16 runs (U* under 5% for 5–17 years) at small hoards except one (1.12 GDP); Germany fully employed in 4, hoarding in one (1.15 GDP).
+
+**2. The decade path** (§10.96; world GDP ÷ vanilla's per-run median, the median of all 16 runs): 1846 0.98 · 1856 0.99 · 1866 0.98 · 1876 0.97 ·
+**1886 0.91** · 1896 0.91 · 1906 0.90 · 1916 0.93 · 1926 1.00 · 1936 1.07. The 1886 line (0.83–1.17) holds. The canon trails vanilla by ~10% through
+1886–1906 — the tier-t2 transition — and overtakes it in the 1930s.
+
+**3. The wall clock** (play time from the tick lines, the ruled clusters; vanilla = this batch's own):
+
+| | canon main (1 + 2) | vanilla main | ratio | canon clusters 1 / 2 / 3 | vanilla clusters 1 / 2 / 3 |
+|---|---|---|---|---|---|
+| first session (n=6 + 6) | 189.0 min | 170.1 min | **×1.111** | 3 / 3 / 0 | 5 / 1 / 0 |
+| second session (n=7 + 10 counted) | 159.9 min | 160.6 min | **×0.996** | 7 / 0 / 2 | 8 / 2 / 0 |
+| pooled (n=14 + 16; the replacement in) | **165.3 min** | **163.6 min** | **×1.010** | 11 / 3 / 2 | 13 / 3 / 0 |
+
+All runs counted: 167.3 against 163.6 min, ×1.023. Pop-matched per-unit diagnostic: **+3.2%** (14 of 14 bins overlapping, 0.977–1.090); by decade the
+canon is dearest in the 1870s–90s (×1.08–1.12 per in-game year) and level with vanilla in the 1930s (×0.99). Cluster 3 = two canon runs with the listed
+fleet-loop bug observed directly: rest20 run 2 (a BEI fleet, 1,028 moves / 468k sailed, episode 1922–27) and run 16 (a BUL fleet, 15,714 moves / 804k
+sailed, 1895–1930, 316 min — 14 min inside the 330-min watchdog).
+⚠⚠ **The two sessions disagree because the machine got faster for BOTH arms between them**: in the second session game CPU per century fell 13% (vanilla)
+and 19% (canon), GPU load fell ~35%, and the machine canary ran ~2.5% faster; the second session's vanilla (160.6 min) is even faster than the summer's
+165.0, i.e. F248's October slowdown was gone. The cause is unidentified (window focus or visibility is the suspect). ⇒ the user, 2026-10-25: *"mod-only
+readings are directional, the only reliable comparisons are within-session, with some alternation with control"*.
+
+**4. Laggards — are old rungs pushed out faster than in vanilla?** Two metrics built for this batch (a scratch reader over the yearly summaries; workers =
+staffed levels × the rung's per-level employment; in vanilla a "rung" is the main method the canon built that rung from; per market = countries sharing
+`market`). The FRONTIER of an industry in a market is the highest tier holding ≥ 10% of that market's workers in it (the world's likewise). An **in-market
+laggard** is a rung ≥ 2 tiers below its own market's frontier; a **trade-only laggard** is ≥ 2 below the world's frontier but not its own market's.
+**Ten-year survival** = a country's workers on such a rung (≥ 5,000 at year Y) at Y+10 ÷ at Y, pooled over Y = 1850…1925; **relative retention** = that
+share ÷ the same share for rungs that are not behind (1.0 = no suppression).
+
+| | in-market laggard share of tiered workers 1870 · 1890 · 1910 · 1935 (median over runs) | trade-only share, same years | in-market: workers kept / median rung / more than halved | trade-only: kept / median / more than halved | not behind: kept |
+|---|---|---|---|---|---|
+| vanilla n=40 | 1.4 · 1.8 · 1.5 · 1.6% | 17.1 · 13.4 · 10.4 · 6.3% | 55.9% / 1.5% / 55.5% (5,157 cases) | 88.9% / 100% / 28.8% (33,188) | 134.1% |
+| canon n=16 | 3.3 · 10.2 · 10.4 · 7.8% | 15.3 · 19.8 · 10.2 · 6.9% | 86.2% / 94.9% / 27.9% (5,947) | 96.1% / 100% / 17.0% (8,638) | 139.3% |
+
+Relative retention, in-market: vanilla **0.42**, canon **0.62** (consumer chains — food, textile, furniture, glass, paper, art — 0.48 against 0.68; heavy and war
+chains 0.28 against 0.42); trade-only: vanilla 0.66, canon 0.69. By industry at 1935 the canon's in-market laggard share is textile 17.2%, furniture 14.7%,
+paper 10.9%, the art academy 23.9%, arms 5.3%, food 5.1%, explosives 3.9%, steel 1.1% — vanilla's 0.7–5.3%, steel 1.0%. By tier pair at 1935: t0 under a
+t2 frontier 3.7%, t1 under t3 3.5%, t0 under t3 1.0% of tiered workers (vanilla 0.7 / 0.7 / 0.2%).
+**Read:** ⚠ vanilla's in-market "suppression" is mostly not competition: a vanilla building switches to the newer method for free once its owner holds the
+technology, so an old method empties without a building dying (the median vanilla laggard keeps 1.5% of its workers). The canon cannot switch, so what it
+shows is price competition, and it is weak: it bites in the heavy and war chains (an old arms / explosives / steel rung keeps 61% of its workers over a
+decade, the median one about half) and hardly in the pop-good chains (consumer in-market laggards keep 92%, the median rung 99%) — F94's / F97's / F136's
+mechanism, unchanged. Through trade the pressure is weak in both arms and a little weaker in the canon. The ladder makes the AI build the frontier; it does
+not make the old consumer rung die.
+
+**5. Other readings.** **Misplaced capital** (F206/F207; VALID benchmark, gross share of each decade's new capital): canon 14–21% (1926–36 21%), this
+batch's vanilla 12–15% (1926–36 14%) — higher in every decade. **Technology** (tech_census, against this batch's vanilla): the leader holds 40 / 31 / 54%
+of game eras 3 / 4 / 5 at 1875 / 1905 / 1936 against vanilla's 50 / 44 / 46%; the majors end with about vanilla's count (Britain 158.9 against 162.9: production
+56.9 against 49.7, military 40.8 against 51.5, society 61.3 against 61.8 — the military gap is the known open item, 1.1); 33% of the majors' acquisitions had
+a research-entry stage. **Companies** (company_check, 1935): 277 against 298 world-wide, prosperity 57.7 against 66.8, company-held levels 26% against 33% of
+owned levels (shortlist 27 against 28 companies, 35% against 40%, regional HQs 129 against 100). **Austria's art academy while `je_metternich` runs**
+(BACKLOG E): one level, fully staffed, in both arms 1838–1846 (median, n=16 each); vanilla adds a second around 1848 (3 by 1870), the canon's single level
+empties by 1855–60 (staffed 0.2, then 0.0). The entry ends at Franz Joseph's adult accession (historically 1848) or on failure, so the divergence comes
+after it: the dropped +500 desire is not its cause, and nothing needs changing for 1.0.
+**The readings the register does not carry** (the report’s second table, §10.104): G1 — 48.5% of levels built below the best tier the country holds
+(unit-weighted; raw 57.5%), the artmerge family’s own level (44–50% in every artmerge report), above the band of 35% calibrated on the pre-artmerge canons;
+G2 — t1 workers not falling since 1920 (world 8.0 → 8.6 → 8.4M at 1920 / 1930 / 1935) and the artisans paying back in 9 years (t0 factories 44); G3 — construction
+0.95× vanilla over 1880–1935 and the frontier rung (t3) paying back in 9.1 years at £720 a point; G5 — GDP per productive worker **1.18×** vanilla’s;
+G7 — the tiers holding half the tiered workers are t2/t1 · t2 · t2 at 1900 · 1920 · 1935, on the anchors. **Input-price red flags**, on the order books against
+this batch’s vanilla (the first like-for-like vanilla line; the earlier reports’ vanilla twin read only the summaries’ production and showed ~0): problem
+market-years 147.5 (72–247) against 120.5 (88–165), chronic markets 3 against 2, the excess early (1836–69 71.5 against 53); Japan carries half (69.5 against
+52): engines (no producer in either arm; the buyers are vanilla railways and urban centres), paper (producers present, supply half of the government
+administrations’ demand) and hardwood.
+
+**6. The harness.** L42 (BUGS_AND_FIXES 2026-10-26): a crash after an early-death fresh restart was read as a foreign save; fixed, `Test-LmL42` proven, one
+earlier case on disk (`20261009_003420_perf-amplify-5y` run 14). L26 learned the feeder's step-back (rest20 run 5: 1914 → 1909, one campaign) as a WARN.
+`first_run_decomp.mjs` pools several `--van` groups and `fill_research.mjs` reads the book's own tree and a passed vanilla set (`fc401bf`).
+
+**Report:** https://claude.ai/artifact/7dR3FWMiYKJbeMjixMcDQK (copied into each of the three sessions as `REPORT_canon.html`, with `redflags_full_canon.html`).
+
+**What it does NOT say.** Why the machine sped up between the sessions: nothing measured separates window state, drivers or background load, so the
+per-session ratios (×1.11, ×0.996) bracket the canon's cost rather than fix it; ×1.010 pooled is the reading, ×1.023 with every run counted. That the
+laggard metric isolates competition in vanilla: its vanilla numbers include free method switches, so they are an upper bound on vanilla's competitive
+suppression, not a measure of it; and the 10% frontier cut and the 5,000-worker case floor are choices, not rulings. That the decade-path dip of 1886–1906
+is a defect: it is inside the ruled line. That the loss of 6.60 ranks the canon against any other book: no other book has been read against n=40.

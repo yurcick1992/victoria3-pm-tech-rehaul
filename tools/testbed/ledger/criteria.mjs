@@ -234,11 +234,19 @@ const GDPHARD = argOf('--gdp-hard', 'ci');
 if (!['ci', 'legacy', 'off'].includes(GDPHARD)) throw new Error('--gdp-hard ci|legacy|off');
 const gci = (() => { const v = vanRuns.map(r => winMean(r.years, 'world', 'gdp')).filter(Number.isFinite); const m = ref['world.gdp'];
   return (v.length >= 8 && m > 0) ? { lo: pct(v, 0.025) / m * 0.8, hi: pct(v, 0.975) / m * 1.2, n: v.length } : null; })();
+// ⭐ THE DECADE PATH (§10.96 rule 3, user-ruled 2026-10-10: "The GDP of every decade is a target by itself"; added to the register by §10.104,
+// 2026-10-24): world GDP as displayed ÷ the vanilla per-run median at the first summary of each decade year 1846…1936, the arm's median over
+// ALL its usable runs (§10.96's own table reads that way, a stall and a runoff included). THE 1886 BREAK LINE: the median more than 2σ of the
+// canon's own 1886 spread from vanilla — σ 0.085 (canon-dams-family n=6), i.e. outside 0.83–1.17 = "we likely just broke it". The other
+// decades carry no ruled band: they are printed, not graded, and they are NOT in the loss (no weight is ruled).
+const DECADES = [1846, 1856, 1866, 1876, 1886, 1896, 1906, 1916, 1926, 1936]; const LINE1886 = [0.83, 1.17];
+const vanDec = {}; for (const y of DECADES) vanDec[y] = med(vanRuns.map(v => at(v.years, y, 'world', 'gdp')));
 const ci = {}; for (let y = 1836; y <= 1845; y++) { const v = vanRuns.map(r => at(r.years, y, 'world', 'gdp')).filter(Number.isFinite); if (v.length >= 8) ci[y] = { lo: pct(v, 0.05), hi: pct(v, 0.95) }; }
 
 // ---- an arm's runs
 function scoreRun(rel, tier) {
   const { years, wage } = readRun(rel, tier); const P = readPrices(rel); const r = { rel, hard: [], soft: [], side: [], famWarn: [] };
+  r.path = {}; for (const y of DECADES) r.path[y] = at(years, y, 'world', 'gdp') / vanDec[y];
   r.gdpW = winMean(years, 'world', 'gdp') / ref['world.gdp']; r.gdp35 = at(years, 1935, 'world', 'gdp') / med(vanRuns.map(v => at(v.years, 1935, 'world', 'gdp'))); r.gdpP = winMean(years, 'pool', 'gdp') / ref['pool.gdp'];
   for (const s of ['world', 'pool']) for (const q of ['W', 'U', 'H', 'Y']) { r[s + q] = winMean(years, s, q) / ref[s + '.' + q]; r[s + q + '_abs'] = winMean(years, s, q); }
   r.realW = winMean(years, 'world', 'real') / ref['world.real']; r.realP = winMean(years, 'pool', 'real') / ref['pool.real']; r.plW = r.gdpW / r.realW; r.plP = r.gdpP / r.realP;
@@ -358,6 +366,8 @@ const consensusOf = runs => { // over intact runs
   const divergent = cons.length === 2 && diverges(cons[0], cons[1]);
   if (divergent) note += ' — DIVERGENT under F114 (world GDP ' + cons.map(r => f2(r.gdpW)).join(' / ') + ', world W ' + cons.map(r => f2(r.worldW)).join(' / ') + '): no consensus, a third run is needed';
   const C = { note, runs: cons.map(r => r.rel), intact: ok.length, broken: runs.length - ok.length, divergent, gerCM: luckySeed(runs) };
+  C.path = {}; for (const y of DECADES) { const v = runs.map(r => r.path && r.path[y]).filter(Number.isFinite); C.path[y] = { med: med(v), sd: sd(v), n: v.length }; }
+  { const m = C.path[1886] && C.path[1886].med; C.line1886 = { lo: LINE1886[0], hi: LINE1886[1], med: m, beyond: Number.isFinite(m) && (r2(m) < LINE1886[0] || r2(m) > LINE1886[1]) }; }
   const keys = ['gdpW', 'gdp35', 'gdpP', 'poolW', 'poolU', 'poolH', 'poolY', 'worldW', 'worldU', 'worldH', 'worldY', 'poolW_abs', 'worldW_abs', 'poolU_abs', 'worldU_abs', 'poolH_abs', 'worldH_abs', 'PI', 'PI_abs', 'PP', 'PM', 'realW', 'realP', 'plW', 'plP'];
   for (const k of keys) C[k] = med(cons.map(r => r[k]));
   C.PIfalling = cons.length ? cons.filter(r => r.PIfalling).length >= cons.length / 2 : false;
@@ -405,6 +415,8 @@ if (!QUIET) {
     if (C.T) { line('T0 ÷ (T1+T2+T3)', C.T.r0, 'the less the better', 'T0 = ' + f2(C.T.end && C.T.end[0] / 1e6, 2) + 'M of ' + f2(C.T.end && C.T.end.reduce((x, y) => x + y, 0) / 1e6, 2) + 'M tiered workers'); line('T0 (1935 ÷ the 1900s)', C.T.ratio0, r2(C.T.ratio0) > 1.3 ? 'BEYOND THE SOFT BOUNDARY' : (C.T.t36 === 0 || C.T.declining) ? 'AT THE AIM' : 'inside, not yet falling', 'decades ' + C.T.dec0.map(v => f2(v / 1e6, 2) + 'M').join(' / ') + '; soft > 1.3'); line('T3 ÷ (T0+T1+T2)', C.T.r3, 'the more the better', 'T3 = ' + pc(C.T.share3) + ' of the tiered workers; T0…T3 ' + C.T.end.map(v => f2(v / 1e6, 2) + 'M').join(' / ')); }
     console.log('  WORLD');
     line('GDP (priority 1)', C.gdpW, verdict(C.gdpW, GDPAIM[0], GDPAIM[1], x => x < 0.75 || x > 1.33), 'the 1935 point ' + f2(C.gdp35) + '×; aim ' + f2(GDPAIM[0]) + '–' + f2(GDPAIM[1]) + ', soft outside 0.75–1.33, ' + (GDPHARD === 'ci' && gci ? 'HARD ' + f2(gci.lo) + '–' + f2(gci.hi) + '×' : GDPHARD === 'legacy' ? 'HARD 0.5–1.5×' : 'no hard line'));
+    console.log('  ' + 'GDP decade path (§10.96)'.padEnd(28) + DECADES.map(y => String(y).slice(2) + ' ' + f2(C.path[y].med)).join(' · ') + '   (median of all ' + a.runs.length + ' usable runs ÷ the vanilla per-run median; not in the loss)');
+    console.log('  ' + '  the 1886 break line'.padEnd(28) + (f2(C.line1886.med) + '×').padStart(7) + '  ' + (C.line1886.beyond ? 'BEYOND THE 1886 LINE' : 'inside').padEnd(26) + ' 0.83–1.17 (2σ of the canon 1886 spread, §10.96)');
     line('GDP at base prices', C.realW, 'secondary, not in the loss', 'price level (displayed ÷ base-priced) ' + f2(C.plW) + '× vanilla\'s; the shortlist ' + f2(C.realP) + '× at base prices, price level ' + f2(C.plP) + '× (§10.90)');
     line('W', C.worldW, verdict(C.worldW, 0.6, 0.95, x => x > 1.0), 'abs ' + f2(C.worldW_abs, 4) + ' vs ' + f2(ref['world.W'], 4) + '; aim 0.6–0.95, soft > 1.0, ' + wband('world'));
     line('U*', C.worldU, r2(C.worldU) < 1.0 ? 'BEYOND THE SOFT BOUNDARY' : 'inside (no aim)', 'abs ' + pc(C.worldU_abs) + ' vs ' + pc(ref['world.U']) + '; soft < 1.0');
@@ -419,4 +431,4 @@ if (!QUIET) {
   console.log('  ' + 'arm'.padEnd(78) + 'intact/broken  loss   worldGDP poolGDP poolW worldW poolU* poolH  PI    PP  T0/rest T3/rest  beyond soft (not final)');
   for (const a of [...arms].sort((x, y) => (x.C.loss ? x.C.loss.L : 1e9) - (y.C.loss ? y.C.loss.L : 1e9))) { const C = a.C; console.log('  ' + a.spec.slice(0, 77).padEnd(78) + (C.intact + '/' + C.broken).padEnd(15) + (C.loss ? f2(C.loss.L, 2) : C.divergent ? 'DIVRG' : ' OUT ').padStart(5) + '  ' + [C.gdpW, C.gdpP, C.poolW, C.worldW, C.poolU, C.poolH, C.PI, C.PP].map(v => f2(v).padStart(6)).join(' ') + ' ' + [C.T && C.T.r0, C.T && C.T.r3].map(v => f2(v, 3).padStart(7)).join(' ') + '  ' + (C.loss && C.loss.soft.length ? C.loss.soft.join(', ') : (C.loss ? '—' : ''))); }
 }
-if (JSON_OUT) { writeFileSync(JSON_OUT, JSON.stringify({ van: VAN, end: [E0, E1], ref, sig, ci, weights: W, arms: arms.map(a => ({ spec: a.spec, config: a.cfg && a.cfg.path, runs: a.runs, consensus: a.C })) }, null, 1)); if (!QUIET) console.log('wrote ' + JSON_OUT); }
+if (JSON_OUT) { writeFileSync(JSON_OUT, JSON.stringify({ van: VAN, vanN: vanRuns.length, end: [E0, E1], ref, sig, ci, gdpAim: GDPAIM, gdpHard: GDPHARD === 'ci' ? gci : GDPHARD === 'legacy' ? { lo: 0.5, hi: 1.5 } : null, vanDec, weights: W, arms: arms.map(a => ({ spec: a.spec, config: a.cfg && a.cfg.path, runs: a.runs, consensus: a.C })) }, null, 1)); if (!QUIET) console.log('wrote ' + JSON_OUT); }

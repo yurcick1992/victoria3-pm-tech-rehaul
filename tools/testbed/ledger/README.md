@@ -61,16 +61,18 @@ writing prose, because `fill_assemble` stops on any missing output.
 | 4 | `report_perf.mjs <mod runs> <wall-ref runs> --json perf_raw.json` | `perf_raw.json` | row P |
 | 5 | `wall_clusters.mjs "<setup>=<group>:<setup>" "vanilla=<wall ref>:vanilla" --json` | `wall_clusters.json` | row P's clusters |
 | 6 | `fill_build_perf.mjs <out>` | `perf_panel.json` | `PERF` |
-| 7 | `fill_consts.mjs <out> --mod --van --nb none` | `consts.json` | `GDP_*`, `PROD_*`, `TRAJ`, `WORLD_*`, G4–G6 |
+| 7 | `fill_consts.mjs <out> --mod --van --nb none` | `consts.json` | `GDP_*`, `PROD_*`, `TRAJ`, `WORLD_*`, G5 |
 | 8 | `fill_emp.mjs <out> --mod --config` | `emp.json`, `emp_cols.json`, `emp_b2.json` | `EMP`, `EMP_COLS`, `EMP_B2`, G2, G7 |
 | 9 | `fill_payback.mjs <out> --mod --config` | `payback.json` | `LADDER`, G2, G3 |
-| 10 | `fill_research.mjs <out> --mod` | `research.json` | `D2.techsT`, `D2.jeT` |
+| 10 | `fill_research.mjs <out> --mod --van --config` | `research.json` | `D2.techsT`, `D2.jeT` |
 | 11 | `fill_tierchoice.mjs <out> --session --setup --config` | `tierchoice.json` | `TIERC`, G1 |
 | 12 | `fill_indecomp.mjs <out> --mod --van --config` | `indecomp.json` | `INDECOMP` |
 | 13 | `fill_obsolescence.mjs <out> --session --setup --config` | `obsolescence.json` | `OBS` |
 | 14 | `input_price_flags.mjs "<setup>=<group>:<setup>" --ref … --yearly --html redflags_full.html --json redflags.json --list 0` | `redflags_full.html`, `redflags.json` | the red-flag card (via 15) |
 | 15 | `redflag_metrics.mjs <out>` | `redflags_metrics.json`, `redflags_digest.md`, `redflags_card.html` | `__REDFLAGS__` |
-| 16 | `fill_goals.mjs <out>/goals.html <out> --config` | `goals.html` | `__GOALS__` (G1–G7) |
+| 16 | `criteria.mjs --arm "<group>:<setup>" --van "<VANS>:vanilla" --json <out>/criteria.json --quiet` | `criteria.json` | the register (via 17) |
+| 17 | `fill_register.mjs <out>` | `register.html` | `__REGISTER__` (the scorecard, §6) |
+| 18 | `fill_goals.mjs <out>/goals.html <out> --config` | `goals.html` | `__GOALS__` (the readings: G1, G2, G3, G5, G7) |
 
 **Traps.**
 - Run the steps through `fill_ledger.sh`, not by hand. Run alone without flags, several scripts fall back to retired sessions:
@@ -79,10 +81,11 @@ writing prose, because `fill_assemble` stops on any missing output.
   `fill_emp`, `fill_payback` and `fill_research` throw without `--mod`.
 - `input_price_flags` takes whole sessions only: a group with single-run items reads those sessions' every run there. Name whole sessions,
   or check its run count in the output.
-- `fill_research.mjs` has two hardcoded inputs and no flag for either: technologies are bucketed by the tech eras of
-  `config/tech_tree_options.canon_n7.json` (the retired six-rung tree; gitignored, present only on the user's machine), and its vanilla
-  column is the August n=4 (`20260813_083557`). A technology the canon_n7 tree lacks is dropped. Quote technology counts from
-  `tech_census.mjs` (§8.2), not from the research panel.
+- `fill_research.mjs` (fixed 2026-10-26, POLISH A3–A6): it buckets technologies by the tech eras of the BOOK's own tree twin
+  (`config/tech_tree_options.<suffix>.json`, required through `--config`) — the mod runs by the mod's eras, the vanilla runs by each
+  technology's `vanillaEra` — and reads the vanilla runs `--van` names (default `lib_runs.VANILLA_REF`). Until then it bucketed by the
+  retired six-rung tree (`tech_tree_options.canon_n7.json`, gitignored) and read the August n=4 as vanilla. Technology counts for prose
+  still come from `tech_census.mjs` (§8.2), which reads the majors.
 - **Never edit `fill_ledger.sh` while it runs**: bash reads a script as it goes, and an edit mid-fill breaks every later step.
 
 ---
@@ -94,7 +97,7 @@ derived by a `fill_*.mjs` (`fill_manifest.json`'s `_rule`). Write these into the
 
 | file | token | what it holds |
 |---|---|---|
-| `lede.html` | `__LEDE__` | what the batch is for and how to read the table. The page has no register panel, so the lede carries `criteria.mjs`'s reading of the same group (consensus, loss, soft and hard breaches; say so where the lucky seed stands in, CLAUDE.md §3.2). It names the configs and builds the family check printed. |
+| `lede.html` | `__LEDE__` | what the batch is for and how to read the register table under it (since §10.104 the table IS `criteria.mjs`'s reading of the same group; the lede names what dominates the loss, the soft and hard breaches, and where the lucky seed stands in, CLAUDE.md §3.2). It names the configs and builds the family check printed. |
 | `incidents.html` | `__INCIDENTS__` | the confounds THIS batch carries, naming its own runs: broken runs, crashes and resumes, excluded runs and why, civil wars and collapses behind notches in the charts |
 | `next.html` | `__NEXT__` | the lever this batch's numbers point at |
 | `footer.html` | `__FOOTER__` | provenance: what was read, how many runs, on what build and game version |
@@ -201,36 +204,40 @@ Re-prove it the same way after changing the checker.
 
 ## 6. What the page shows
 
-**Layout:** the header chips (the seven chip tokens) → the verdict: the red-flag card and the goals table (G1–G7 + P) → section P, the
+**Layout:** the header chips (the seven chip tokens) → the verdict: the red-flag card, THE REGISTER TABLE and the readings table (G1, G2, G3, G5, G7 + P) → section P, the
 wall clock, directly beneath it → the **World** and **Watchlist** pages (tab switcher) → incidents → next lever. Rungs are labelled
 `e0 … e3`: these are tiers t0–t3 (the identifiers predate the rename, CLAUDE.md §2.3); on a craft book t0 is two columns, `e0 artisans`
 and `e0 other`.
 
-### The goals table
+### The scorecard: the register, then the readings (BALANCE_FRAMEWORK §10.104, built 2026-10-26)
 
-⚠ **Ruled to go (BALANCE_FRAMEWORK §10.104, 2026-10-24):** the page's scorecard becomes the criteria register's table (from `criteria.mjs --json`),
-and the goals table goes; what it measures that the register does not (G1; G2's t1 decline and t0 payback; G3; G5's GDP per productive worker;
-G6 until the register computes the decade path; G7; P) stays on the page as readings beside the register. The world-GDP chart and the
-trajectory and watchlist tables keep their fixed 0.8–1.25× band, relabelled a rough visual guide rather than the target. Built after the
-alternating batch; until then the page carries the table below.
+**The register table** (`__REGISTER__`, `fill_register.mjs` from `criteria.mjs --json`; user-ruled 2026-10-24: *"the register metrics come
+later and are better defined and calibrated, so we should mostly be based on them"*). One row per register line, each the consensus ÷ the
+vanilla reference, the absolute figure beside vanilla's, the aim / soft / hard band and criteria.mjs's own verdict (at the aim · inside, off the
+aim · beyond the soft line · broken): the per-run hard outcome; world GDP (aim from the JSON, soft 0.75–1.33, the derived hard band); **the
+decade path** (§10.96: world GDP ÷ vanilla's per-run median at 1846, 1856 … 1936, the median of ALL usable runs, graded only at **1886 against
+0.83–1.17**, not in the loss); world W, U*, H; the shortlist's GDP, W, U*, H; PI and PP (PM read only); T0 and T3; the closed-major term with its
+lucky seed; the loss with its parts. ⚠ `fill_register.mjs` grades nothing of its own; the bands it restates are §10.83's and move with
+`criteria.mjs`.
 
-`fill_goals.mjs` writes G1–G7; the template renders P. Each row grades ok / warn / bad (a near miss is a warn) on both bounds of its band —
-a reading above the upper bound is "above the band", never "met". The end state is the 1932–1936 mean (§10.83). Rows were reviewed against
-the ruled criteria on 2026-10-08.
+**The readings table** (`__GOALS__`, `fill_goals.mjs`; the template renders P): what the old goals table measured that the register does not.
+Each keeps its band and is a READING, not a register line (turning one into a line is a separate ruling). G4 (world GDP) and G6 (the early game)
+are gone — the register's world-GDP line and its decade path carry them; G2 lost its t0 part to the register's T0, G5 its W to the register's W.
 
-| row | goal | graded on | ok | warn | bad · source |
+| row | goal | graded on | ok | warn | source |
 |---|---|---|---|---|---|
-| G1 | A tech edge wins markets | unit-weighted share of tiered levels built below the best tier the country holds (raw share and the leader−p25 tier gap beside it) | < 35% | 35–45% | > 45% · the four-rung canon family measured 34.9–40.2%. A below-best level is a fault even when it out-earns the frontier (user-ruled 2026-10-08) |
-| G2 | Inefficient producers die | t0 workers falling every decade from 1900; every t0 part (artisans and t0 factories apart) paying back in ≥ 30 y; t1 falling every decade from 1920 | all three | otherwise | t0 at 1935 not below 1900, or above 1.3 × 1900 (the register's T0 soft line) |
-| G3 | Modernising costs capital | construction points added 1880–1935 (median of runs ÷ vanilla mean); frontier-rung payback at £720 a point | ≥ 1× and 8–15 y | 0.9–1×, or 6–8 / 15–20 y | under 0.9×, or outside 6–20 y · the floor is vanilla's own manufacturing payback at 1900 (F53); £720 overstates a late payback by ~25% |
-| G4 | GDP stays on vanilla's path | world GDP ÷ vanilla | 0.80–1.20× | to 0.66 / 1.38× (readings weakened) | beyond · §10.83, §10.83.8 |
-| G5 | Fewer workers, more product per worker | productive workers per head ÷ vanilla; GDP per productive worker ÷ vanilla | 0.6–0.95× and > 1× | otherwise | W above 1.0× (the register's soft line) |
-| G6 | Early game still grows | 1837–1860 world GDP ÷ vanilla | 0.9–1.1× | 0.8–1.2× | beyond · this file's own band; the register's hard 1836–1845 anchor is `criteria.mjs`'s |
-| G7 | Tiers arrive on the anchors | the tiers holding half the tiered workers (by descending share, listed until they pass 50%) at 1900 · 1920 · 1935 | every listed tier in the target | one year off | two or more · target = the latest tier whose anchor has passed plus the next if its anchor is within 5 years (`era_anchor_years` from `--config`): t1/t2 · t2 · t2/t3 |
-| P | The game does not get slower | total play time ÷ vanilla, median over clusters 1 + 2 | ≤ +5% | +5–10% | > +10%, the ruled budget (CLAUDE.md §3.4) |
+| G1 | A tech edge wins markets | unit-weighted share of tiered levels built below the best tier the country holds (raw share and the leader−p25 tier gap beside it) | < 35% | 35–45% (bad > 45%) | the four-rung canon family measured 34.9–40.2%. A below-best level is a fault even when it out-earns the frontier (user-ruled 2026-10-08) |
+| G2 | Inefficient producers die (t0: the register's T0) | t1 workers falling every decade from 1920; every t0 part (artisans and t0 factories apart) paying back in ≥ 30 y | both | otherwise | — |
+| G3 | Modernising costs capital | construction points added 1880–1935 (median of runs ÷ vanilla mean); frontier-rung payback at £720 a point | ≥ 1× and 8–15 y | 0.9–1×, or 6–8 / 15–20 y (bad beyond) | the floor is vanilla's own manufacturing payback at 1900 (F53); £720 overstates a late payback by ~25% |
+| G5 | More product per worker (W: the register's) | GDP per productive worker ÷ vanilla, 1932–36 (W printed beside it) | > 1× | otherwise | — |
+| G7 | Tiers arrive on the anchors | the tiers holding half the tiered workers (by descending share, listed until they pass 50%) at 1900 · 1920 · 1935 | every listed tier in the target | one year off (bad: two or more) | target = the latest tier whose anchor has passed plus the next if its anchor is within 5 years (`era_anchor_years` from `--config`): t1/t2 · t2 · t2/t3 |
+| P | The game does not get slower | total play time ÷ vanilla, median over clusters 1 + 2 | ≤ +5% | +5–10% (bad > +10%, the ruled budget) | CLAUDE.md §3.4 |
 
-⚠ **Every row reads positionally:** metric A · metric B → value A · value B → target A · target B. A term with no target carries an
+⚠ **Every reading row is positional:** metric A · metric B → value A · value B → target A · target B. A term with no target carries an
 explicit em-dash; dropping it re-pairs the surviving values against the wrong targets.
+
+⚠ **The world-GDP chart's and the trajectory / watchlist tables' 0.8–1.25× band** is a rough visual guide, not the target (§10.104, labelled so
+on the page); the register's world-GDP lines are read in its table, not drawn on the chart.
 
 ### Row P and the wall-clock section
 
@@ -330,7 +337,9 @@ Each writes one or more files into the out dir; `fill_ledger.sh` runs them in th
   (`OBS`), from `lib_obsolescence.mjs` (§8.1). Exits 1 if no industry has an in-market or trade-only old rung. Summaries before v11 carry no
   tariffs: to split the trade-only row by tariff and trade policy, re-summarise the kept saves and pass `--override-dir` (re-summaries named
   `<session>__<run>.json.gz`); `trade_obsolescence.mjs` prints those splits.
-- **`fill_goals.mjs <outFile> <outDir> [--config <book>]`** → `goals.html`, G1–G7 as in §6, from `consts.json`, `payback.json`, `emp.json`,
+- **`fill_register.mjs <outDir> [--json <criteria.json>]`** → `register.html` (`__REGISTER__`), the register table of §6 from `criteria.mjs --json`
+  (ONE arm, or it exits 1). It grades nothing of its own.
+- **`fill_goals.mjs <outFile> <outDir> [--config <book>]`** → `goals.html`, the readings G1, G2, G3, G5, G7 as in §6, from `consts.json`, `payback.json`, `emp.json`,
   `emp_cols.json`, `tierchoice.json` and `report_data.json`. Without `--config` G7 assumes the anchors 1836 / 1875 / 1905 / 1940.
 - **`fill_assemble.mjs`, `fill_verify.mjs`** — §3, §4. **`fill_manifest.json`** — the contract between shell and batch: every token
   (`name`, `from`, `required`, `means`), every const (`minKeys`), every table (`minRows`), every control, and the staleness list.
@@ -370,7 +379,7 @@ These print to stdout and the prose quotes them; nothing in the fill reads them.
 
 | reader | what it reads | status |
 |---|---|---|
-| `criteria.mjs --arm <group>` | the criteria register: consensus, loss, soft and hard lines | the register (CLAUDE.md §3.2); no panel shows it, so the lede carries it |
+| `criteria.mjs --arm <group>` | the criteria register: consensus, loss, soft and hard lines, the decade path | the register (CLAUDE.md §3.2); since §10.104 the fill runs it (step 16) and the scorecard shows it; run it by hand for the per-run detail |
 | `misplaced_capital.mjs --batch <label>:<session>[:<setup>]` | the share of new capital placed far from the best valid alternative (F206/F207) | read in every batch report (CLAUDE.md §3.3) |
 | `tech_census.mjs <label>=<group>` | the majors' technology against vanilla, the anchor-principle share | read in every batch report (§3.3) |
 | `old_rungs_by_industry.mjs <year> <label>=<group>`, `trade_obsolescence.mjs` | old rungs per industry; the obsolescence census by regime | read in every batch report (§3.3) |

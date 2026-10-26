@@ -89,7 +89,7 @@ s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
 {
   const tokFile = join(DIR, 'tokens.json');
   const tok = existsSync(tokFile) ? JSON.parse(readFileSync(tokFile, 'utf8')) : {};
-  for (const [name, file] of [['__LEDE__','lede.html'],['__GOALS__','goals.html'],
+  for (const [name, file] of [['__LEDE__','lede.html'],['__GOALS__','goals.html'],['__REGISTER__','register.html'],
                               ['__INCIDENTS__','incidents.html'],['__NEXT__','next.html'],
                               ['__FOOTER__','footer.html'],['__REDFLAGS__','redflags.html']]) {
     const p = join(DIR, file);

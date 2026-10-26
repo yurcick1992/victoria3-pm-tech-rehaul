@@ -71,7 +71,8 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.101 | a per-industry input lift; the routine levers; cost1 | in force | here |
 | 10.102 | the world-market monopoly threshold 0.99 | in force (canon since 2026-10-21) | here |
 | 10.103 | treaty ports | deferred to mod 1.1 on game 1.15 | here |
-| 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings | in force; built after the alternating batch | here |
+| 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings | in force; built 2026-10-26 (`fill_register.mjs`, the decade path in `criteria.mjs`) | here |
+| 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 
 ---
 
@@ -4350,3 +4351,22 @@ and the trajectory and watchlist tables mark a value outside it red; that band i
 1836–1845 anchor, the 1886 line, the end-state aim and soft band), one constant register band, or the old band relabelled, the user chose to
 **keep 0.8–1.25× and relabel it a rough visual guide, not the target**; the tables keep flagging values outside it. The register's world-GDP
 lines are read in the register's table, not drawn on the chart. Built in the same change.
+
+## §10.105 — WHY SHIPYARDS STAY VANILLA AND THE ART ACADEMY IS TIERED (the user's reasons, recorded 2026-10-26)
+
+**Nothing changes; this records why the scope is what it is**, so a later reading does not take either choice for a principle it is not.
+
+1. **Shipyards are left vanilla on UI grounds and because ship construction is hard to track and balance — not on principle.** The user:
+   *"This is not a principled objection, but the game UI has a special place for shipyards in the shipbuildings menu, and it has exactly one
+   slot, so adding different shipyards would require an additional UI rework, which I'd rather not do."* A shipyard's naval output (ship
+   construction) is also outside every economic reading the testbed has (the margin and wage tools exclude shipyards for that reason). So the
+   shipyard tiers that existed in earlier books (the clipper and steamer chains of the six-rung book, `disabled` in the four-rung ones) are not a
+   design that failed; they would come back only with that UI rework.
+2. **The art academy is tiered because it behaves exactly like an industry.** The user: *"Art Academies, while are named and placed not where
+   industries are, in fact behave exactly like industries. Closer to them than, say, infrastructure buildings are (art output is a regular good
+   and nothing else; and the good is not local)."* Fine art is an ordinary tradeable good sold into a pop need, so the ladder's price-driven
+   obsolescence applies to it as to any consumer chain; infrastructure buildings (ports, railways, power) produce local or non-goods output and stay
+   vanilla. Its ladder is the regular one since §10.74 (no infinite money printers).
+
+Ports, railways and power plants stay vanilla for their own reasons (§10.66, §10.43.0, the power-plant cost of §10.89.1); trade centres were never
+tiered.

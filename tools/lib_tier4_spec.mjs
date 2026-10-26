@@ -81,7 +81,9 @@ export const LOC = { basename: 'zzz_pm_rehaul',
   languages: ['english', 'braz_por', 'french', 'german', 'japanese', 'korean', 'polish', 'russian', 'simp_chinese', 'spanish', 'turkish'] };
 
 // The tiered industries: id (what every tool, anchor and ledger calls it) -> the vanilla building it IS.
-// Port, shipyard, railway and power are NOT here: they stay vanilla, untouched, and appear in no config.
+// Port, shipyard, railway and power are NOT here: they stay vanilla, untouched, and appear in no config. Shipyards on UI grounds (the
+// shipbuilding menu has ONE shipyard slot) and because ship construction is hard to track, not on principle; the art academy IS here
+// because it behaves exactly like an industry (fine art is a regular, non-local good) — BALANCE_FRAMEWORK §10.105 (user, 2026-10-26).
 export const INDUSTRIES = [
   { id: 'food',        building: 'building_food_industry' },
   { id: 'textile',     building: 'building_textile_mill' },

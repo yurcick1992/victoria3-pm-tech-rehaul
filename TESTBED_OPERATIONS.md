@@ -394,11 +394,13 @@ capital-abundance hard line (§10.83); the script stays as a diagnostic printer.
 
 ### 6.4 References
 
-- **Economic readings:** `lib_runs.VANILLA_REF` in `tools/testbed/ledger/lib_runs.mjs` — the summer n=18 + the October n=6 = n=24;
+- **Economic readings:** `lib_runs.VANILLA_REF` in `tools/testbed/ledger/lib_runs.mjs` — the summer n=18 + the October n=6 + the alternating batch's
+  n=16 = n=40 (since 2026-10-26);
   the default of `criteria.mjs`, `fill_ledger.sh` and the other readers. Where a job needs a market only the eleven-tag n=3 vanilla
   carries, say so where the number is quoted (CLAUDE.md, the instrumented-tags section).
-- **Wall clock:** `lib_runs.VANILLA_WALL_REF` — the most recent same-harness vanilla (the October six), interim until the alternating
-  batch.
+- **Wall clock:** `lib_runs.VANILLA_WALL_REF` — the alternating batch's vanilla n=16 (2026-10-26). ⚠ It is a reference of its own days: the
+  batch's two sessions disagree by ×1.11 against ×0.996 for the same book (F249), so only a run that alternated with vanilla in the same session
+  is a reliable wall-clock reading.
 - Absolute figures do not travel between sessions; ratios do.
 
 ---

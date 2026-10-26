@@ -68,8 +68,14 @@ step node $L/fill_obsolescence.mjs $OUT --session $SESSION --setup $SETUP --conf
 #   ⭐ 2026-10-08 (user: the listing "is at least 100 times too large to be readable"): the flag-by-flag listing goes to redflags_full.html, KEPT
 #   beside the report and off the page; the page carries redflag_metrics.mjs's card (problem market-years, chronic markets) and the 3–15-sentence
 #   summary the redflag-summary skill writes from redflags_digest.md into redflags_summary.html
-step node $L/input_price_flags.mjs "$SETUP=$SESSION:$SETUP" --ref "vanilla (eleven-tag set, n=4)=20260920_225047_schedule,20260920_192007_schedule:vanilla" --yearly --html $OUT/redflags_full.html --json $OUT/redflags.json --list 0
+#   ⭐ 2026-10-26: the vanilla twin is VANW — the same-harness vanilla (the alternating batch's n=16 by default), whose runs carry the yearly GW
+#   lines, so both sides read the MARKET source; the September eleven-tag n=4 read only the summaries' production (BACKLOG F, the red-flag twin).
+step node $L/input_price_flags.mjs "$SETUP=$SESSION:$SETUP" --ref "vanilla (same-harness, $(echo "$VANWRUNS" | tr ',' '\n' | grep -c .) runs)=$VANW:vanilla" --yearly --html $OUT/redflags_full.html --json $OUT/redflags.json --list 0
 step node $L/redflag_metrics.mjs $OUT
+# ⭐ THE SCORECARD IS THE CRITERIA REGISTER (BALANCE_FRAMEWORK §10.104, 2026-10-24): criteria.mjs on the same group against the same vanilla,
+#   each run on its own config; fill_register renders it, fill_goals keeps only the readings the register does not carry.
+step node $L/criteria.mjs --arm "$SESSION:$SETUP" --van "$VANS:vanilla" --json $OUT/criteria.json --quiet
+step node $L/fill_register.mjs $OUT
 step node $L/fill_goals.mjs $OUT/goals.html $OUT --config $BOOK
 echo; echo "data filled in $OUT — now write lede.html incidents.html next.html footer.html tokens.json title.txt, and redflags_summary.html with the"
 echo "redflag-summary skill (.claude/skills/redflag-summary/SKILL.md, from redflags_digest.md); then fill_assemble + fill_verify, and copy redflags_full.html"

@@ -52,7 +52,8 @@ Old plants are never forbidden or penalised. They lose their market when the new
 until a rung two tiers behind cannot pay its workers (§2.1). Secondary and automation methods stay, one recipe per line per industry, shown only
 beside the main methods they make sense with; an automation that is the same thing as a main method comes with it (Mechanized Looms with Sewing
 Machines, Automatic Power Looms with Electric Sewing Machines, Assembly Lines with Mass Production). Every company that has an industry gets all
-of its rungs. Extraction, agriculture, ports, shipyards, railways, power plants and trade centres keep vanilla's buildings.
+of its rungs. Extraction, agriculture, ports, shipyards, railways, power plants and trade centres keep vanilla's buildings (why shipyards stay
+vanilla and the art academy is tiered: BALANCE_FRAMEWORK §10.105).
 (§10.64, §10.68, §10.72, §10.78, §10.93)
 
 ### Artisans and merged methods
@@ -551,8 +552,10 @@ The budget: **the century's play time within +10% of vanilla's**. The grade is t
 the pop-matched per-unit cost is a diagnostic beside it, never the verdict — shrinking what the engine simulates is a legitimate way to meet the budget.
 
 - **Same-days vanilla only.** Vanilla on the same game version played ×1.06–1.08 slower per unit of world in October than in August (F248), so a play
-  time is not comparable across months: the reference is `VANILLA_WALL_REF` (the most recent same-harness vanilla, `lib_runs.mjs`), and the alternating
-  vanilla + canon batch measures both in the same days.
+  time is not comparable across months: the reference is `VANILLA_WALL_REF` (the most recent same-harness vanilla, `lib_runs.mjs`). ⭐ Even inside
+  one batch the machine moved: the alternating batch's two sessions read the canon at ×1.11 and ×0.996 of the vanilla beside it, both arms faster in the
+  second (F249). So a mod-only reading is DIRECTIONAL, and a reliable wall clock is a comparison within a session against an alternating control (user,
+  2026-10-25).
 - **Three run clusters** (user-ruled 2026-10-07): (1) normal; (2) inexplicably slowed — a slowdown episode with no listed bug observed; (3) a LISTED
   vanilla bug directly observed in the run's saves. Main reports use clusters 1 + 2 combined; cluster 3 is reported as a count and the bug's name. The
   list holds one bug: **the fleet path loop** (a fleet recalled for repairs whose travel path the engine keeps extending; ≥ 200 path moves and ≥ 125k
@@ -562,8 +565,9 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 
 ## 3.5 References, pools and which runs count
 
-- **Vanilla references** (`tools/testbed/ledger/lib_runs.mjs`): `VANILLA_REF` = the summer n=18 + the October n=6 = **n=24**, the default for every
-  reading but the wall clock; `VANILLA_WALL_REF` = the October six alone. Interim until the alternating batch.
+- **Vanilla references** (`tools/testbed/ledger/lib_runs.mjs`): `VANILLA_REF` = the summer n=18 + the October n=6 + the alternating batch's n=16 =
+  **n=40** (since 2026-10-26; every vanilla run with full telemetry, pooled by ruling), the default for every reading but the wall clock;
+  `VANILLA_WALL_REF` = the alternating batch's vanilla n=16 (F249).
 - **The instrumented tags are eleven:** GBR · FRA · USA · PRU · NGF · GER · NET · BEL · UNL · RUS · JAP. `tools/testbed/ledger/lib_markets.mjs` is the ONE
   definition of the shortlist pool, the majors, the per-country members and the price-tracked markets. UNL (the United Netherlands) replaces NET and
   BEL where it forms. A market is named after its leader's adjective, so prices are keyed by TAG and resolved per run.

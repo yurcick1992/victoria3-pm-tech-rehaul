@@ -53,17 +53,17 @@ Already done for 1.0 (2026-10-21): the engine-compatibility pass (POLISH §2, `T
 `94ae51c`), the research-entry texts (POLISH §1), the generated-text pass, and every polish question Q1–Q11 ruled and canonised (POLISH "Every Q
 is ruled"). What is left, in order:
 
-1. **The alternating batch** — vanilla + canon run by run, n=16 + 16, 1836→1936 (sessions `20261021_224949_…`, runs 1–12, and
-   `20261023_161802_alt-vanilla-canon-rest20`, the 20 remaining). It is the 1.0 canon's century and its wall-clock reference in one. While it
-   runs nothing is canonised and no emitter, `build.ps1` or `tools/testbed/**` file is edited in its checkout (CLAUDE.md §4.4, §5.1 rule 7).
-   - Before reading it: fix `fill_research.mjs` (it reads the retired six-rung tree, POLISH A3); label `fill_consts.mjs`'s productive-workers
-     defect in the report (A4).
-   - After it: `VANILLA_WALL_REF` set to its vanilla, its runs added to `VANILLA_REF`, the FINDINGS entry, the ledger (A5). It answers with no
-     extra runs (A6): the canon's century with private dams; company mandates' first cut (step 5); the urban-centre electricity override's
-     effect; the red-flag vanilla twin; Austria's art academy levels in vanilla against the canon while the Metternich entry runs (BACKLOG E —
-     vanilla's conditional desire is dropped in 1.0 on grounds of timing and scope, not principle).
-   - A change that reads badly there is reverted to F247's measured setup before the release build, not replaced by another (POLISH "The
-     second pass", timing).
+1. ✅ **The alternating batch — READ 2026-10-26 (FINDINGS F249; report https://claude.ai/artifact/7dR3FWMiYKJbeMjixMcDQK).** Vanilla + canon
+   run by run, n=16 + 16, 1836→1936 (`20261021_224949_alt-vanilla-canon-n16` runs 1–12, `20261023_161802_alt-vanilla-canon-rest20`, and
+   `20261026_032622_alt-canon-replace20` for rest20 run 20, lost to landmine L42). 16 intact, world GDP 1.07× vanilla n=40, loss 6.60, play time
+   ×1.010 of the same sessions' vanilla (×1.11 and ×0.996 in its two sessions — the machine sped up for both arms).
+   - A3 fixed (`fill_research.mjs` reads the book's own tree, commit `fc401bf`). A4 needed no label: `fill_consts.mjs` reads the save's own
+     government and military workforce since 2026-08-20 (BACKLOG Done, closed on re-check 2026-10-24), so the report's productive workers are right.
+   - A5 done: `VANILLA_WALL_REF` = the batch's vanilla, `VANILLA_REF` = n=40; the ledger, built on the criteria register (§10.104).
+   - A6 read in F249: the canon's century with private dams (16 intact); company mandates' first cut (companies a little smaller than vanilla's);
+     the red-flag vanilla twin (on the order books, vanilla 120.5 problem market-years against the canon's 147.5); Austria's art academy (no
+     difference while the Metternich entry runs). NOT separated: the urban-centre electricity override's effect (no arm without it ran).
+   - Nothing read badly enough to revert (POLISH "The second pass").
 2. **The no-DLC load test** — after the batch, before the release build (user, 2026-10-21): a load with every DLC disabled and an `error.log`
    read, the only proof of the DLC rule beyond the file comparison. The harness must first fill `disabledDLC` in `content_load.json`.
 3. **The release build (~2026-10-26/27)**: the first RELEASE build kind — no telemetry or logging but a start-up manifest line (POLISH H8);

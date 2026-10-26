@@ -35,9 +35,16 @@ import { createHash } from 'node:crypto';
 //   ⚠⚠ THE WALL CLOCK IS NOT POOLED: the same vanilla ran ×1.06–1.08 slower per unit of world in October than in August (FINDINGS
 //   F248), so a summer play time is not today's reference. VANILLA_WALL_REF is the most recent same-harness vanilla, an INTERIM
 //   reference until the alternating vanilla + canon batch the user planned on 2026-10-21 replaces it.
+// ⭐ SINCE 2026-10-26 (the alternating batch read, FINDINGS F249): VANILLA_REF adds that batch's 16 vanilla runs (n=40; the user, 2026-10-24:
+//   "on everything but wall clock pull all data for a single config where reasonably full telemetry exists"), and VANILLA_WALL_REF IS that
+//   batch's vanilla — the most recent vanilla that alternated with a mod arm. ⚠ Even it is a reading of its own days: the same vanilla ran
+//   ×1.06 faster in the batch's second session than in its first (F249 §3), so a mod run's wall clock is reliable only against vanilla runs that
+//   alternated with it in the same session; outside one, quote a ratio against this reference as DIRECTIONAL. Sessions holding two arms are
+//   read with the setup "vanilla" (every caller passes it).
 export const VANILLA_REF = ['20260821_131149_vanilla-baseline-n16', '20260823_113218_vanilla-baseline-extra-n2',
-  '20261020_121619_vanilla-now-n8', '20261020_222433_vanilla-now-n8-rest'].join(',');
-export const VANILLA_WALL_REF = ['20261020_121619_vanilla-now-n8', '20261020_222433_vanilla-now-n8-rest'].join(',');
+  '20261020_121619_vanilla-now-n8', '20261020_222433_vanilla-now-n8-rest',
+  '20261021_224949_alt-vanilla-canon-n16', '20261023_161802_alt-vanilla-canon-rest20'].join(',');
+export const VANILLA_WALL_REF = ['20261021_224949_alt-vanilla-canon-n16', '20261023_161802_alt-vanilla-canon-rest20'].join(',');
 
 const parseDate = s => String(s || '').split('.').map(Number);
 const reached = (got, want) => {

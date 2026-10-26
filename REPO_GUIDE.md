@@ -1236,9 +1236,10 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   `abandoned_reason` (L17; `session.json`'s `ok` is not evidence) and drops L34's minutes-long "complete" runs; `reportDropped()` prints
   exclusions; a group is a comma list of sessions and/or `<session>/runNNN_<setup>` folders. `configFamilies()` says whether a group may
   pool (same tier/building structure from each run's own config; coefficients and minor-fix builds may differ and are printed).
-  `VANILLA_REF` = the summer n=18 (`20260821_131149` + `20260823_113218`) + the October n=6 (`20261020_121619` + `20261020_222433`), the
-  default for every reading but the wall clock; `VANILLA_WALL_REF` = the October six (play time is not comparable across months, F248);
-  interim until the alternating batch. Still on the summer n=16 on purpose: `measure_wage_share`, `era0_solvency`, `stop_watch`'s
+  `VANILLA_REF` = the summer n=18 (`20260821_131149` + `20260823_113218`) + the October n=6 (`20261020_121619` + `20261020_222433`) + the
+  alternating batch's n=16 (`20261021_224949` + `20261023_161802`, setup `vanilla`) = n=40 since 2026-10-26, the default for every reading but
+  the wall clock; `VANILLA_WALL_REF` = the alternating batch's vanilla (play time is not comparable across months, F248, nor fully across sessions,
+  F249). Still on the summer n=16 on purpose: `measure_wage_share`, `era0_solvency`, `stop_watch`'s
   fallback, `ladder_headlines`, `trade_vs_gdp`, `va_composition`, the corpus tools.
 - **`ledger/lib_markets.mjs`** — the shortlist, the majors and the price-tracked markets: `POOL` (GBR USA FRA NET BEL UNL PRU NGF GER),
   `MEMBER_FAMILY` / `resolveMembers()` (one row per state; the German one PRU → NGF → GER, UNL its own row), `MARKET_NAMES`,

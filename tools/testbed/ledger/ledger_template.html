@@ -100,12 +100,22 @@ a{color:var(--accent)}
 
 <!-- ============ VERDICT (always visible) ============ -->
 <section class="sec">
-  <h2>Verdict — is the mod at its goals?</h2>
+  <h2>Verdict — the criteria register</h2>
   __LEDE__
   __REDFLAGS__
+  <!-- ⭐ BALANCE_FRAMEWORK §10.104 (user-ruled 2026-10-24): the scorecard IS the criteria register (criteria.mjs --json → fill_register.mjs);
+       the old goals table is gone, and what it measured that the register does not stays below as READINGS with their own bands. -->
   <div class="card tablewrap">
+  <h3>The register <span class="dim">— aim / soft / hard per line (§10.83 and its amendments)</span></h3>
   <table>
-    <tr><th></th><th>Goal, in game terms</th><th>Headline metric</th><th class="num">This batch</th><th class="num">Target</th><th>Verdict</th></tr>
+    <tr><th>scope</th><th>Line</th><th class="num">This batch ÷ vanilla</th><th class="num">absolute <span class="dim">(arm vs vanilla)</span></th><th class="num">aim · soft · hard</th><th>Verdict</th></tr>
+    __REGISTER__
+  </table>
+  </div>
+  <div class="card tablewrap">
+  <h3>Readings the register does not carry <span class="dim">— each keeps its own band; none is a register line</span></h3>
+  <table>
+    <tr><th></th><th>Goal, in game terms</th><th>Headline metric</th><th class="num">This batch</th><th class="num">Band</th><th>Reading</th></tr>
     __GOALS__
     <tr><td><b>P</b></td><td class="goalcell"><b>The game does not get slower</b></td><td><b>Total run time</b> vs vanilla <span class="dim">(per-unit, pop-matched, beside it)</span></td><td class="num" id="v-perf">—</td><td class="num dim">≤+5% / +5–10% / >+10% <span class="dim">(clusters 1+2)</span></td><td id="v-perfpill"><span class="pill dim">—</span></td></tr>
   </table>
@@ -391,7 +401,7 @@ function renderPerf(mode){
   </figure>
 
   <div class="card tablewrap">
-  <h3 id="decomp-h">Fewer workers × more product per worker — the G4/G5 decomposition</h3>
+  <h3 id="decomp-h">Fewer workers × more product per worker — the world GDP / W decomposition</h3>
   <table id="t-decomp"></table>
   <p class="small" id="decomp-cap"></p>
   </div>
@@ -489,7 +499,7 @@ function renderPerf(mode){
   </div>
 
   <div class="card tablewrap">
-  <h3>Trajectory — this arm ÷ vanilla baseline</h3>
+  <h3>Trajectory — this arm ÷ vanilla baseline <span class="dim">· red GDP = outside 0.8–1.25×, a rough visual guide, not the target</span></h3>
   <table id="t-traj">
     <tr><th>year</th><th class="num">GDP ×van</th><th class="num">econ levels ×van</th><th class="num">construction ×van</th><th class="num">non-productive adults <span class="dim">(vs van)</span></th><th class="num">pure unemployment <span class="dim">(vs van)</span></th></tr>
   </table>
@@ -519,11 +529,11 @@ function renderPerf(mode){
     <figcaption>Sum over the selected tags. The ratio uses only tags alive in <i>both</i> arms in a given year, so
     a dissolution narrows the basis rather than faking a collapse; the absolute view shows this run (blue) against
     the vanilla mean of the same selection (grey). Single-year spikes on a selected tag are usually a civil war —
-    see the ⚠ flags above.</figcaption>
+    see the ⚠ flags above. The shaded 0.8–1.25× band is a rough visual guide, not the target.</figcaption>
   </figure>
 
   <div class="card tablewrap">
-  <h3>Fewer workers × more product per worker — the G4/G5 decomposition, selection</h3>
+  <h3>Fewer workers × more product per worker — the world GDP / W decomposition, selection</h3>
   <table id="t-wdecomp"></table>
   <p class="small">Same construction as the world table, summed over the selected tags (tags alive in both arms
   only, per year). This is where the premise splits between leaders and the periphery — select subsets to see who
@@ -601,7 +611,7 @@ function renderPerf(mode){
   </div>
 
   <div class="card tablewrap">
-  <h3>The tech edge (watchlist-wide, not filtered)</h3>
+  <h3>The tech edge (watchlist-wide, not filtered) <span class="dim">· red GDP = outside 0.8–1.25×, a rough visual guide</span></h3>
   <table id="t-watch">
     <tr><th>year</th><th class="num">GDP ×van</th><th class="num">mean stock era <span class="dim">· GBR · p25</span></th><th class="num">non-productive <span class="dim">(vs van)</span></th><th class="num">frontier share of output</th></tr>
   </table>
@@ -695,7 +705,7 @@ let SCOPE='all';
 function renderDecompWorld(){
   const t=document.getElementById('t-decomp');
   if(SCOPE==='all'){
-    document.getElementById('decomp-h').textContent='Fewer workers × more product per worker — the G4/G5 decomposition (whole economy)';
+    document.getElementById('decomp-h').textContent='Fewer workers × more product per worker — the world GDP / W decomposition (whole economy)';
     t.innerHTML='<tr><th>year</th><th class="num">productive workers <span class="dim">mod / van</span></th><th class="num">workers ×van</th><th class="num">GDP per worker £/yr <span class="dim">mod / van</span></th><th class="num">product per worker ×van</th><th class="num">= GDP ×van</th></tr>';
     for(const y of EYRS){
       const f=PROD_FLAT[y],v=PROD_VAN[y];if(!f||!v)continue;
@@ -1076,7 +1086,7 @@ function render1(mode) {
       { pts: flatPts.filter(([y]) => GDP_VAN[y]).map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--accent', label: '__ARMLABEL__' }].concat(hasNb ? [
       { pts: nbPts.filter(([y]) => GDP_VAN[y]).map(([y, g]) => [y, g / GDP_VAN[y]]), c: '--gold', label: '__NBLABEL__' }] : []),
       { ymin: 0.2, ymax: 1.8, grid: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75], emph: 1, band: [0.8, 1.25], fmt: v => v.toFixed(2) + '×', label: 'World GDP ratio' });
-    document.getElementById('cap1').innerHTML = 'Yearly world GDP ÷ the vanilla baseline (__VANLABEL__); the mod line is the median of this batch’s runs. Shaded band = the 0.8–1.25× target. ⚠ A median hides the spread — __SPREAD__ Sharp notches are civil wars and collapses (see incidents), not business cycles.' + scopeNote;
+    document.getElementById('cap1').innerHTML = 'Yearly world GDP ÷ the vanilla baseline (__VANLABEL__); the mod line is the median of this batch’s runs. Shaded band = 0.8–1.25×, a rough visual guide, not the target (the register’s world-GDP lines are in its table above, §10.104). ⚠ A median hides the spread — __SPREAD__ Sharp notches are civil wars and collapses (see incidents), not business cycles.' + scopeNote;
   } else {
     lineChart(document.getElementById('chart1'), [
       { pts: flatPts, c: '--accent', label: '__ARMLABEL__' },

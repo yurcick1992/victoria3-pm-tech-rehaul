@@ -63,10 +63,16 @@
       "means": "3–15 sentences on the red flags: what dominates, where, why (2026-10-08)"
     },
     {
+      "name": "__REGISTER__",
+      "from": "fill_register.mjs (register.html, from criteria.mjs --json → criteria.json)",
+      "required": true,
+      "means": "the scorecard: the criteria register's lines (consensus ÷ vanilla, absolute, aim / soft / hard, verdict), the decade path with the 1886 line, the closed-major term, the loss and the per-run hard outcome (BALANCE_FRAMEWORK §10.104)"
+    },
+    {
       "name": "__GOALS__",
       "from": "fill_goals.mjs",
       "required": true,
-      "means": "G-rows; POSITIONAL: metric A B -> value A B -> target A B"
+      "means": "the READINGS the register does not carry (G1; G2's t1 decline and t0 payback; G3; G5's GDP per productive worker; G7), each with its own band (§10.104); POSITIONAL: metric A B -> value A B -> target A B"
     },
     {
       "name": "__INCIDENTS__",

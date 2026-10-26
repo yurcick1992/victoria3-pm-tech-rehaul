@@ -23,6 +23,7 @@ appended oldest first after the July ones); no entry's text changed.
 
 | date | entry | area | status | note |
 |---|---|---|---|---|
+| 2026-10-26 | a run lost to the observer's own landing guard: a crash after an early-death fresh restart read as a foreign save | testbed/harness | live | landmine L42 |
 | 2026-10-21 | the power-bloc canning switch pointed at a method our food building does not carry | build/emitters | live |  |
 | 2026-10-21 | the research bars' tooltips never named the conditions: a term behind a failing `if` is... | build/emitters | live |  |
 | 2026-10-21 | L28 fired on floods of identical log lines; and three latent ways the log mirror could ... | testbed/harness | live |  |
@@ -142,6 +143,26 @@ appended oldest first after the July ones); no entry's text changed.
    format numbers with `InvariantCulture`. Three separate bugs below share this one root.
 
 ---
+
+## 2026-10-26 — a run lost to the observer's own landing guard: a crash after an early-death fresh restart read as a foreign save
+
+**Symptom.** Run 20 of `20261023_161802_alt-vanilla-canon-rest20` (canon) ended at 1872.5.18 with `abandoned_reason: resume loaded a save
+ahead of the run`. Its `run.log`: `resume landed at 1836.1.1, AHEAD of  - foreign save, abandoning run 1` — the expected date is EMPTY.
+L17 excluded the run, so the arm read n=15 until a replacement ran (`20261026_032622_alt-canon-replace20`).
+
+**Root cause.** The run died at 1836.12.8, before its first autosave. The early-death path (the L34 fix) restarts it as a FRESH 1836 game and,
+to do that, clears the last tick (`$lastTick = ""`), so that attempt's `$tickAtStart` was empty. When the same attempt later crashed in an
+ordinary way, the post-attempt landing guard (`if ($attempt -gt 1)`, the check that a resume did not land on a foreign save) compared the
+attempt's landing, 1836.1.1, against the empty date, read it as AHEAD, and abandoned the run. Nothing was foreign: the crash should have opened a
+resume process. The guard was written for resumes and never asked whether the attempt it judged was one.
+
+**Fix.** `run_observer.ps1` (commit `9359eb4`): the fresh-restart path sets `$attemptFresh = $true` for that attempt, and the landing guard
+reads `if ($attempt -gt 1 -and -not $attemptFresh)`; such an attempt falls through and its crash opens a resume process like any other.
+
+**Detect / prevent.** Landmine **L42**, `Test-LmL42` (post-run, `preflight.ps1 -Session`): any `run.log` with an `AHEAD of` verdict whose
+expected date is empty FAILs. Proven on the run that found it (FAIL) and the batch's two other sessions (PASS); a sweep of every session found one
+earlier case, `20261009_003420_perf-amplify-5y/run014_fullprof` (a 5-year probe). The general lesson: a guard keyed on an attempt number must
+also know what kind of attempt it is — the early-death fresh restart is the second attempt that is not a resume.
 
 ## 2026-10-21 — the power-bloc canning switch pointed at a method our food building does not carry
 

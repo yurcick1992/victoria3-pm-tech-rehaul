@@ -96,12 +96,13 @@ const shrinks = e0of(Y) < e0of(1900);
 const softT0 = e0of(Y) > 1.3 * e0of(1900);
 const parts = 'staleArt' in p ? [['artisans', p.staleArt], ['e0 factories', p.staleOther]] : [['e0', p.stale]];
 const stillPays = parts.filter(([, v]) => v != null && v < 30);
+// ⭐ SINCE §10.104 (2026-10-24) the t0 decline is the register's T0 line (fill_register.mjs); this reading keeps what the register lacks: t1
+//   falling every decade from 1920, and every t0 part paying back in ≥ 30 y. softT0 / shrinks / e0fall stay computed for the console line only.
 const g2bits = [];
-if (softT0) g2bits.push('e0 grows (soft breach)'); else if (!shrinks) g2bits.push('e0 still grows'); else if (!e0fall) g2bits.push('e0 falls unevenly');
-if (shrinks && stillPays.length) g2bits.push(stillPays.map(([n, v]) => n + ' pay back in ' + v.toFixed(0) + ' y').join(', '));
+if (stillPays.length) g2bits.push(stillPays.map(([n, v]) => n + ' pay back in ' + v.toFixed(0) + ' y').join(', '));
 if (!e1fall) g2bits.push('e1 not falling since 1920');
-const g2cls = softT0 || !shrinks ? 'bad' : g2bits.length ? 'warn' : 'ok';
-const g2pill = g2bits.length ? g2bits.join('; ') : 'old rungs die';
+const g2cls = g2bits.length ? 'warn' : 'ok';
+const g2pill = g2bits.length ? g2bits.join('; ') : 'e1 falls, e0 does not pay';
 // ---- G3 — capital demand: construction at or above vanilla's (warn 0.9–1, bad under 0.9), and the frontier rung's payback 8–15 y at
 //   £720 a point (vanilla's realised manufacturing payback, F53: 21 y in 1838 → 8.2 y in 1900; the band floor is vanilla's own late
 //   figure), warn 6–8 or 15–20 y, bad outside. ⚠ £720 is the iron-frame rate held flat (§10.61): with steel/arc frames a late building
@@ -119,10 +120,9 @@ const g4cls = band3(gdpR, 0.8, 1.2, 0.66, 1.38);
 const g4pill = g4cls === 'ok' ? 'met' : g4cls === 'warn' ? (gdpR < 1 ? 'low (weakened readings)' : 'high (weakened readings)') : (gdpR < 1 ? 'stall territory' : 'runoff territory');
 // ---- G5 — the register's world W aim 0.6–0.95, soft above 1.0 (a W under the aim is a stall's signature, a warn); product per worker
 //   must exceed vanilla's — it is the goal's "more product per worker", and with GDP near 1 it follows from W.
-const g5w = wR == null ? 'warn' : wR > 1.0 ? 'bad' : (wR >= 0.6 && wR <= 0.95) ? 'ok' : 'warn';
-const g5cls = g5w === 'bad' ? 'bad' : (g5w === 'warn' || !(ppwR > 1)) ? 'warn' : 'ok';
-const g5pill = wR > 1.0 ? 'more workers than vanilla (soft breach)' : wR < 0.6 ? 'very few workers (stall?)' : wR > 0.95 ? 'workers barely below vanilla'
-  : !(ppwR > 1) ? 'productivity not above vanilla' : 'met';
+// ⭐ SINCE §10.104 W is the register's (world and pool); this reading keeps GDP per productive worker, which the register does not carry.
+const g5cls = ppwR == null ? 'warn' : ppwR > 1 ? 'ok' : 'warn';
+const g5pill = ppwR > 1 ? 'more product per worker' : 'productivity not above vanilla';
 // ---- G6 — the opening quarter-century's world GDP. ⚠ This file's band, not a ruling: 0.9–1.1 ok, 0.8–1.2 warn. The register's HARD
 //   anchor (1836–1845, per run, against vanilla's seed interval ± 10%) is criteria.mjs's job and is not graded here.
 const g6cls = band3(early, 0.9, 1.1, 0.8, 1.2);
@@ -145,26 +145,22 @@ const rows = [
   row('G1', 'A tech edge wins markets',
       'Levels built below the best held rung, unit-weighted <span class="dim">· raw · leader−p25 era gap</span>',
       (unit == null ? '—' : '<b>' + unit.toFixed(1) + '%</b>') + ' <span class="dim">· ' + (raw == null ? '—' : raw.toFixed(1) + '%') + ' · ' + (gap0 == null ? '' : gap0.toFixed(2) + '→') + (gap1 == null ? '—' : gap1.toFixed(2)) + '</span>',
-      '&lt;35% <span class="dim">(canon 35–40) · — · widening</span>', g1pill, g1cls),
-  row('G2', 'Inefficient producers die',
-      'e0 workers, M, ' + DEC.join('/') + ' <span class="dim">· e1 workers · e0 payback</span>',
-      '<b>' + e0s.map(v => v.toFixed(1)).join('→') + '</b> <span class="dim">· ' + e1s.map(v => v.toFixed(1)).join('→') + ' · '
+      '&lt;35% <span class="dim">(pre-artmerge canons 35–40; artmerge books 44–50) · — · widening</span>', g1pill, g1cls),
+  row('G2', 'Inefficient producers die <span class="dim">(t0: the register’s T0)</span>',
+      'e1 workers, M, ' + DEC.join('/') + ' <span class="dim">· e0 payback</span>',
+      '<b>' + e1s.map(v => v.toFixed(1)).join('→') + '</b> <span class="dim">· '
         + parts.map(([n, v]) => (parts.length > 1 ? n.replace('e0 ', '') + ' ' : '') + (v == null ? 'loss' : v.toFixed(0) + ' y')).join(', ') + '</span>',
-      '↓ from 1900 <span class="dim">· ↓ from 1920 · ≥30 y</span>', g2pill, g2cls),
+      '↓ from 1920 <span class="dim">· ≥30 y</span>', g2pill, g2cls),
   row('G3', 'Modernising costs capital',
       'Construction ÷ vanilla, ' + constrLab + ' <span class="dim">· frontier-rung (e' + (p.topEra ?? '?') + ') payback at £720/pt</span>',
       f2(constrR) + ' <span class="dim">· <b>' + (fr == null ? 'loss' : fr.toFixed(1) + ' y') + '</b></span>', '≥1× <span class="dim">· 8–15 y (warn 6–8, 15–20)</span>',
       g3pill, g3cls),
-  row('G4', 'GDP stays on vanilla’s path', 'World GDP ÷ vanilla, 1932–36 mean',
-      '<b>' + gdpR.toFixed(2) + '×</b>', '0.80–1.20× <span class="dim">(weakened to 0.66 / 1.38)</span>', g4pill, g4cls),
-  row('G5', 'Fewer workers, more product per worker',
-      'Productive workers' + (perHead ? ' per head' : ' (absolute)') + ' ÷ van <span class="dim">· GDP per worker ÷ van, 1932–36</span>',
-      '<b>' + f2(wR) + '</b> <span class="dim">· <b>' + f2(ppwR) + '</b></span>',
-      '0.6–0.95× <span class="dim">· &gt;1×</span>', g5pill, g5cls),
-  row('G6', 'Early game still grows', '1837–1860 world GDP ÷ vanilla', early.toFixed(2) + '×', '0.9–1.1× <span class="dim">(warn 0.8–1.2)</span>',
-      g6cls === 'ok' ? 'met' : early < 1 ? 'slow start' : 'fast start', g6cls),
-  row('G7', 'Eras arrive on the anchors',
-      'Eras holding half the tier workers, ' + G7Y.join(' · '),
+  row('G5', 'More product per worker <span class="dim">(W: the register’s)</span>',
+      'GDP per productive worker ÷ vanilla, 1932–36',
+      '<b>' + f2(ppwR) + '</b> <span class="dim">· W ' + f2(wR) + (perHead ? '' : ' (absolute)') + '</span>',
+      '&gt;1×', g5pill, g5cls),
+  row('G7', 'Tiers arrive on the anchors',
+      'Tiers holding half the tiered workers, ' + G7Y.join(' · '),
       g7.map(r => (r.ok ? '' : '<b>') + eraList(r.f) + (r.ok ? '' : '</b>')).join(' · '),
       g7.map(r => eraList(r.a)).join(' · '), g7pill, g7cls),
 ];

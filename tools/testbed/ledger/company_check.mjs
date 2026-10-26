@@ -7,12 +7,15 @@
 // and `ownership_levels` (host-side levels by owner class).
 //
 //   node tools/testbed/ledger/company_check.mjs --arm <session>[:<setup>] [--ref <session>[:<setup>]] … [--years 1860,1900,1935]
+// ⭐ <session> may be a GROUP since 2026-10-26 (a comma list of sessions and/or <session>/runNNN_<setup> folders, read through
+//   lib_runs.usableRuns, so the L17-excluded runs are left out and printed) — the alternating batch spans three sessions.
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SES = join(HERE, '..', 'sessions');
+const { usableRuns, reportDropped } = await import('file:///' + join(HERE, 'lib_runs.mjs').replace(/\\/g, '/'));
 const argv = process.argv.slice(2);
 const specs = []; let YEARS = [1860, 1900, 1935];
 for (let i = 0; i < argv.length; i++) {
@@ -23,8 +26,8 @@ if (!specs.length) { console.error('usage: --arm <session>[:<setup>] [--ref <ses
 const SHORT = new Set(['GBR', 'USA', 'FRA', 'NET', 'BEL', 'UNL', 'PRU', 'NGF', 'GER']);   // UNL replaces NET+BEL where it forms
 const med = a => { if (!a.length) return NaN; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 const fmt = (x, d = 1) => Number.isFinite(x) ? x.toFixed(d) : '—';
-function runDirs(spec) { const [session, setup] = spec.split(':'); const root = join(SES, session);
-  return readdirSync(root).filter(d => /^run\d+/.test(d) && statSync(join(root, d)).isDirectory() && (!setup || d.endsWith('_' + setup))).map(d => join(root, d)); }
+function runDirs(spec) { const [session, setup] = spec.split(':'); const { runs, dropped } = usableRuns(SES, session, setup || ''); reportDropped(dropped);
+  return runs.map(r => join(SES, r)); }
 function readRun(dir) {
   const out = {}; const sdir = join(dir, 'save_summaries'); if (!existsSync(sdir)) return out; const seen = new Set();
   for (const f of readdirSync(sdir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort()) {

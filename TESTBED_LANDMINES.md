@@ -97,7 +97,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L31 | a rung placed or priced by its order in the industry, not by its tier | `lint_tier_eras.mjs`; `Test-LmL31` | lint, build, repo | AUTO, proven |
 | L32 | a CTD during the autosave write leaves the continue pointer aimed at a save that does not exist | `Test-LmL32`; the resume feeder | session, harness | AUTO, proven |
 | L33 | an emitted define the engine rejects at load, or never reads | `Test-LmL33` | build, repo, session | AUTO, proven |
-| L34 | a run recorded complete in minutes | `Test-LmL34`; `lib_runs` | session | AUTO, proven; fix's live proof owed |
+| L34 | a run recorded complete in minutes | `Test-LmL34`; `lib_runs` | session | AUTO, proven; fix proved live 2026-10-26 |
 | L35 | a rung silently locked out of its industry's gated secondary method | `Test-LmL35` | build | AUTO, proven |
 | L36 | a telemetry metric name that matches nothing | `Test-LmL36` | build, repo | AUTO, proven |
 | L37 | the stop watcher goes blind to the register on a multi-config schedule | — | — | OPEN |
@@ -105,6 +105,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L39 | a replaced vanilla file that loses a DLC gate | `check_dlc_gates.mjs` | every build | AUTO, proven |
 | L40 | vanilla script that names a rung-0 key or a renamed method | `emit_vanilla_refs.mjs` scan; smoke check | every build; by hand | AUTO + MANUAL |
 | L41 | a game paused by input looks like a healthy run | — | while a batch runs | MANUAL; OPEN |
+| L42 | a run lost to the observer's landing guard after an early-death fresh restart | `Test-LmL42` | session | AUTO, proven; fixed |
 
 ---
 
@@ -612,7 +613,10 @@ order; readers that diff consecutive files diff 1931 against 1837. The only symp
 
 **Detector.** `Test-LmL26` (session): read every summary's `provenance.date` in filename order. A backward jump over 2 years ⇒ FAIL, a
 second campaign; ≤ 2 years ⇒ WARN, one campaign whose archiver read several ring slots in one pass (`autosave_1.v3`, the older save, sorts
-after `autosave.v3`).
+after `autosave.v3`). ⭐ A THIRD SHAPE since 2026-10-26: a jump over 2 years (≤ 10) in a run whose `run.log` says the resume feeder
+"feeding the next-older original" ⇒ WARN, one campaign: a repeat crash within 5 in-game years makes the feeder (L32) load an older autosave, so the
+replayed years carry two summaries each (rest20 run 5 of `20261023_161802`: 1914 → 1909; it used to FAIL here). Proven both ways the same day:
+rest20 WARN, `20260830_191950` still FAIL.
 
 **Proven.** FAIL on `20260830_191950` (naming the seam) and on canon-n7 run007; WARN on `port-ramp-monthly-n3`; PASS on
 `20260829_152435_tier4-n1`. A sweep of the 74 sessions then holding summaries found one hit inside a published n (that run004; measured
@@ -819,7 +823,8 @@ must carry more than two save summaries (a century carries ≥ 15 at five-year c
 Proven: FAIL naming run 2 of that session; PASS on a clean one.
 
 **Generator side.** The early-death restart sets `$freshRestart`, and the next attempt launches a fresh 1836 game without
-`-continuelastsave`. Live proof owed: parse-checked only, with the detector behind it.
+`-continuelastsave`. ⭐ PROVED LIVE 2026-10-26: run 20 of `20261023_161802_alt-vanilla-canon-rest20` died at 1836.12.8 before its first autosave and the
+observer began a fresh 1836 game, which played 36 years — and its next crash exposed L42 (the landing guard misreading such an attempt).
 
 ### L35 — a rung silently locked out of its industry's gated secondary method
 
@@ -951,3 +956,18 @@ hours (SESSION_VERDICTS: run 13 void).
 **Detector.** MANUAL for now: watch the newest run's last `in-game` date; unchanged for 15 minutes while the game runs means frozen. Owed:
 a FROZEN verdict in `wait_for_session.ps1` and a post-run check that flags any `Paused: true, PlayerID: 1` line — both after the batch, since
 no `tools/testbed/**` edit may land while one runs.
+
+### L42 — a run lost to the observer's own landing guard: a crash after an early-death fresh restart is read as a foreign save
+
+**Defect.** A game that dies before its first autosave is restarted as a fresh 1836 game (the L34 fix), and that path clears the last tick.
+When the same attempt later crashed in an ordinary way, the observer's post-attempt landing guard compared its landing against the EMPTY
+tick-at-start, read it as AHEAD, and abandoned the run: `resume landed at 1836.1.1, AHEAD of  - foreign save`. L17 then excludes the run,
+so the arm's n shrinks and the recorded reason names the wrong cause.
+
+**Found.** 2026-10-26, run 20 of `20261023_161802_alt-vanilla-canon-rest20` (died 1836.12.8, fresh restart, crashed again 1872.5.18;
+replaced by `20261026_032622_alt-canon-replace20`). One earlier case on disk: `20261009_003420_perf-amplify-5y/run014_fullprof`.
+
+**Detector.** `Test-LmL42` (`preflight.ps1 -Session`): any run's `run.log` carrying an `AHEAD of` landing verdict whose expected date is
+empty FAILs; a real foreign-save abandonment always names the date it expected. Proven: FAIL on rest20, PASS on the batch's other two sessions.
+**Fix.** `run_observer.ps1` marks the fresh-restart attempt (`$attemptFresh`) and the landing guard skips it (commit `9359eb4`).
+BUGS_AND_FIXES 2026-10-26.

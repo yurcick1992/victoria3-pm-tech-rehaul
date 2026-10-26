@@ -1082,6 +1082,37 @@ function Test-LmL34 {
     else { Add-Result 'L34' $T 'PASS' "$checked ended run(s), every completed one has a campaign behind it" }
 }
 
+function Test-LmL42 {
+    <#
+      L42 - A RUN LOST TO THE OBSERVER'S OWN LANDING GUARD AFTER AN EARLY-DEATH FRESH RESTART (found 2026-10-26, run 20 of
+      20261023_161802_alt-vanilla-canon-rest20).
+
+      A game that dies before its first autosave is restarted as a FRESH 1836 game (the L34 fix), and that path clears the last
+      tick, so the attempt's tick-at-start was empty. When the same attempt later crashed in an ordinary way (1872.5.18), the
+      post-attempt landing guard compared its landing against that empty date, read it as AHEAD, and abandoned the run as a
+      foreign save - 'resume landed at 1836.1.1, AHEAD of  - foreign save' (note the empty date). Nothing was foreign: the run
+      simply should have opened a resume process. L17 excludes the run (reached < until), so n shrinks quietly, and the reason
+      recorded ('resume loaded a save ahead of the run') names the wrong cause.
+
+      DETECTOR: any run.log carrying an 'AHEAD of' landing verdict whose expected date is EMPTY. A real foreign-save abandonment
+      always names the date it expected. GENERATOR FIX: run_observer.ps1 marks a fresh-restart attempt ($attemptFresh) and the
+      landing guard skips it (commit 9359eb4). Proven on the run that found it. N/A without -Session.
+    #>
+    $T = 'a run abandoned as a foreign save after an early-death fresh restart (empty expected date)'
+    if (-not $Session) { Add-Result 'L42' $T 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L42' $T 'FAIL' "no such session: $Session"; return }
+    $bad = @(); $checked = 0
+    foreach ($run in @(Get-ChildItem $Session -Directory)) {
+        $log = Join-Path $run.FullName 'run.log'; if (-not (Test-Path $log)) { continue }
+        $checked++
+        $hit = @(Select-String -Path $log -Pattern 'AHEAD of[ ]+-[ ]+foreign save' -ErrorAction SilentlyContinue)
+        if ($hit.Count) { $bad += "$($run.Name): $($hit[0].Line.Trim())" }
+    }
+    if ($bad.Count) { Add-Result 'L42' $T 'FAIL' ("$($bad.Count) run(s) lost to the observer's landing guard, not to a foreign save - the run is excluded (L17) and owes a replacement: " + ($bad -join '; ')) }
+    elseif ($checked -eq 0) { Add-Result 'L42' $T 'N/A' 'no run logs in this session yet' }
+    else { Add-Result 'L42' $T 'PASS' "$checked run log(s), no landing verdict against an empty date" }
+}
+
 function Test-LmL29 {
     <#
       L29, THE READER SIDE (2026-10-01, 20261001_215119_e1a-lift-probe-10y) - A SESSION LOG THAT LOST ITS LINES TO A READER
@@ -1150,11 +1181,16 @@ function Test-LmL26 {
     if (-not (Test-Path $Session)) { Add-Result 'L26' 'two campaigns in one run folder' 'FAIL' "no such session: $Session"; return }
     $node = Get-Command node -ErrorAction SilentlyContinue
     if (-not $node) { Add-Result 'L26' 'two campaigns in one run folder' 'N/A' 'node not on PATH (the summaries are gzipped JSON)'; return }
-    $bad = @(); $soft = @(); $checked = 0
+    $bad = @(); $soft = @(); $feed = @(); $checked = 0
     foreach ($run in @(Get-ChildItem $Session -Directory)) {
         $dir = Join-Path $run.FullName 'save_summaries'
         if (-not (Test-Path $dir)) { continue }
         $checked++
+        # THE FEEDER'S STEP-BACK (2026-10-26, rest20 run 5 of 20261023_161802): a repeat crash within 5 in-game years of the first makes the
+        # resume feeder (L32) load the NEXT-OLDER autosave, so the summaries jump back by up to ~6 years inside ONE campaign (1914 -> 1909
+        # there). Its run.log says so; such a jump is a WARN of its own, never a second campaign.
+        $rl = Join-Path $run.FullName 'run.log'
+        $stepBack = (Test-Path $rl) -and [bool](Select-String -Path $rl -Pattern 'feeding the next-older original' -Quiet -ErrorAction SilentlyContinue)
         # Read through node: the summaries are gzipped and PowerShell has no streaming gunzip
         # one-liner. It prints "<years>|<from> -> <to>" per backward jump, nothing when monotone.
         $js = @'
@@ -1181,14 +1217,17 @@ for(const f of fs.readdirSync(dir).filter(x=>x.endsWith('.json.gz')&&!x.includes
             $yrs = 0.0; $txt = $line
             if ($line -match '^([0-9.]+)\|(.+)') { $yrs = [double]$Matches[1]; $txt = $Matches[2] }
             $row = "$($run.Name): $txt [$yrs y]"
-            if ($yrs -gt 2) { $bad += $row } else { $soft += $row }
+            if ($yrs -gt 2 -and $stepBack -and $yrs -le 10) { $feed += $row } elseif ($yrs -gt 2) { $bad += $row } else { $soft += $row }
         }
     }
     if ($checked -eq 0) { Add-Result 'L26' 'two campaigns in one run folder' 'N/A' 'no save_summaries in this session'; return }
     if ($bad.Count) {
         Add-Result 'L26' 'two campaigns in one run folder' 'FAIL' ("SECOND CAMPAIGN - backward jump over 2y in " + $bad.Count + " place(s): " + ($bad -join ' | '))
-    } elseif ($soft.Count) {
-        Add-Result 'L26' 'two campaigns in one run folder' 'WARN' ("one campaign, summaries OUT OF ORDER (archiver read the rotation ring in one pass) in " + $soft.Count + " place(s): " + ($soft -join ' | '))
+    } elseif ($soft.Count -or $feed.Count) {
+        $msg = @()
+        if ($soft.Count) { $msg += "one campaign, summaries OUT OF ORDER (archiver read the rotation ring in one pass) in " + $soft.Count + " place(s): " + ($soft -join ' | ') }
+        if ($feed.Count) { $msg += "one campaign, the resume feeder STEPPED BACK to an older autosave (its run.log says so) in " + $feed.Count + " place(s) - the replayed years hold two summaries each, read the LAST: " + ($feed -join ' | ') }
+        Add-Result 'L26' 'two campaigns in one run folder' 'WARN' ($msg -join ' || ')
     } else {
         Add-Result 'L26' 'two campaigns in one run folder' 'PASS' "$checked run(s), every summary series monotone in game date"
     }
@@ -1666,6 +1705,8 @@ $CHECKS = @(
     @{ Id = 'L15'; Artifact = $true;  Fn = { Test-LmL15 } },
     @{ Id = 'L17'; Artifact = $false; Fn = { Test-LmL17 } },
     @{ Id = 'L34'; Artifact = $false; Fn = { Test-LmL34 } },
+    # L42: a run abandoned as a foreign save by the landing guard after an early-death fresh restart (post-run, N/A without -Session)
+    @{ Id = 'L42'; Artifact = $false; Fn = { Test-LmL42 } },
     # L29's reader side: a session.log that lost its run lines to a reader holding it open (WARN only; post-run)
     @{ Id = 'L29'; Artifact = $false; Fn = { Test-LmL29 } },
     # L20 reads the CONFIG, not the mod, so it gates a batch before anything is built - which is the
