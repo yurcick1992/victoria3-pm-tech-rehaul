@@ -394,7 +394,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F246 | The AI's trade-centre GDP gate does not keep treaty ports empty; the engine needs NON_MARKET > MARKET minimum GDP | vanilla-mechanics | standing | here |
 | F247 | Monopoly threshold 0.99 over a century n=4: play x1.18 of summer vanilla; 3 intact + 1 stall, loss 8.21 | canon | partly superseded by F248 | here |
 | F248 | Vanilla plays ~8% slower in October than August on the same version; vs same-days vanilla the wm99 book is x1.09 | performance | standing | here |
-| F249 | The 1.0 canon over 16 alternating centuries: 16 intact, world GDP 1.07x, play x1.010 (x1.11 / x0.996 per session); old rungs not pushed out faster than in vanilla | canon | standing | here |
+| F249 | The 1.0 canon over 16 alternating centuries: 16 intact, world GDP 1.07x, play x1.010 (x1.11 / x0.996 per session); where neither arm can switch, in-market pressure on backward industry is clearly stronger than vanilla's, through trade weak in both | canon | standing | here |
 
 ---
 
@@ -20966,7 +20966,7 @@ it scales with what the run logs and saves, which is the same for both arms; if 
 quoted between ~2026-09-20 and 2026-10-21 divided a mod run of its own day by the summer vanilla, so it is likely inflated by up to ~8% — F222's ×1.036,
 F239's ×1.06 and F247's ×1.18 among them; ratios from mod runs of late August are not affected.
 
-## F249 — THE 1.0 CANON OVER SIXTEEN ALTERNATING CENTURIES: NO RUN BROKEN, WORLD GDP 1.07× VANILLA, PLAY TIME ×1.010 OF THE SAME SESSIONS' VANILLA (×1.11 AND ×0.996 IN ITS TWO SESSIONS); OLD RUNGS ARE NOT PUSHED OUT FASTER THAN IN VANILLA, IN THE MARKET OR THROUGH TRADE
+## F249 — THE 1.0 CANON OVER SIXTEEN ALTERNATING CENTURIES: NO RUN BROKEN, WORLD GDP 1.07× VANILLA, PLAY TIME ×1.010 OF THE SAME SESSIONS' VANILLA (×1.11 AND ×0.996 IN ITS TWO SESSIONS); WHERE NEITHER ARM CAN SWITCH, A BACKWARD INDUSTRY UNDER A FAR BETTER ONE IN ITS OWN MARKET SHRINKS IN THE CANON AND GROWS IN VANILLA; THROUGH TRADE THE PRESSURE IS WEAK IN BOTH
 
 **Why it ran.** ROADMAP "Mod 1.0 — the remainder" item 1: the 1.0 canon's century and its wall-clock reference in one batch, after F248 found that vanilla
 itself played ~8% slower in October than in August (user: *"Go with the n=16 vs n=16 alternating vanilla/mod"*). Vanilla and canon took turns run by run.
@@ -21039,12 +21039,55 @@ Relative retention, in-market: vanilla **0.42**, canon **0.62** (consumer chains
 chains 0.28 against 0.42); trade-only: vanilla 0.66, canon 0.69. By industry at 1935 the canon's in-market laggard share is textile 17.2%, furniture 14.7%,
 paper 10.9%, the art academy 23.9%, arms 5.3%, food 5.1%, explosives 3.9%, steel 1.1% — vanilla's 0.7–5.3%, steel 1.0%. By tier pair at 1935: t0 under a
 t2 frontier 3.7%, t1 under t3 3.5%, t0 under t3 1.0% of tiered workers (vanilla 0.7 / 0.7 / 0.2%).
-**Read:** ⚠ vanilla's in-market "suppression" is mostly not competition: a vanilla building switches to the newer method for free once its owner holds the
-technology, so an old method empties without a building dying (the median vanilla laggard keeps 1.5% of its workers). The canon cannot switch, so what it
-shows is price competition, and it is weak: it bites in the heavy and war chains (an old arms / explosives / steel rung keeps 61% of its workers over a
-decade, the median one about half) and hardly in the pop-good chains (consumer in-market laggards keep 92%, the median rung 99%) — F94's / F97's / F136's
-mechanism, unchanged. Through trade the pressure is weak in both arms and a little weaker in the canon. The ladder makes the AI build the frontier; it does
-not make the old consumer rung die.
+**Read — ⚠ CORRECTED the same day: this table does NOT compare competitive pressure** (the user: *"those comparisons are inherently flawed, when vanilla
+can switch"*). A vanilla building switches to the newer method for free once its owner holds the technology, so an old vanilla method empties without any
+building dying (the median vanilla laggard keeps 1.5% of its workers), while a canon rung can only die. The vanilla column measures upgrading, not
+competition; the first version of this entry read "old rungs are not pushed out faster than in vanilla" off it, and that reading is withdrawn. What the
+table does show about the canon alone stands: its old rungs survive in the pop-good chains (consumer in-market laggards keep 92% of their workers, the
+median rung 99%) and lose about half in the heavy and war chains — F94's / F97's / F136's split. The like-for-like comparison is §4a.
+Reader: `tools/testbed/ledger/laggard_census.mjs`.
+
+**4a. Where neither arm can switch** (`tools/testbed/ledger/laggard_pressure.mjs`, 2026-10-26; the user: *"try seeing how do the economies where vanilla
+can't switch (as the tech is too low) feel under competitive pressure"*). A **stuck laggard** is a country's industry whose BEST rung sits ≥ 2 tiers under
+its own market's frontier and which still lacks the technology of its next rung TEN YEARS LATER — so in vanilla it cannot switch and in the canon it cannot
+build up, in the whole interval (the next rung's technology is the same in both arms: a canon rung keeps its vanilla method's gate). ≥ 5,000 workers;
+y = 1850…1920 → y + 10; profit = the industry's building profit per week per 1,000 workers at y. A **stuck trade-only laggard** is ≥ 2 tiers under the
+WORLD's frontier but not its own market's; the control is a stuck industry not behind its market's frontier.
+
+| | stuck in-market laggard: cases · workers kept · median case · profit | stuck trade-only laggard | control (stuck, not behind) | relative retention, in-market |
+|---|---|---|---|---|
+| vanilla n=40 | 313 · **126.9%** · 104.8% · £78 | 683 · 113.0% · 105.0% · £66 | 53,074 · 135.8% · 120.4% · £150 | **0.94** |
+| canon n=16 | 83 · **91.7%** · 92.6% · £39 | 109 · 109.2% · 106.6% · £56 | 20,193 · 131.6% · 118.4% · £157 | **0.70** |
+
+By chain — in-market: consumer (food, textile, furniture, glass, paper, art) canon 41 cases · 101.1% kept · £28 against vanilla 228 · 132.0% · £72; heavy and
+war canon 42 · 76.9% (median case 47.9%) · £93 against vanilla 85 · 110.8% (median 100.0%) · £91. Trade-only: consumer canon 100.0% · £33 against 110.5% · £56;
+heavy and war 140.6% · £88 against 137.0% · £89.
+**Read:** where the technology is missing in both arms, **in-market pressure is clearly stronger in the canon**: a backward industry two tiers under its own
+market's frontier keeps growing in vanilla (127% of its workers a decade later, 0.94 of a non-lagging industry's growth) and shrinks in the canon (92%, 0.70),
+at half vanilla's profit per worker (£39 against £78). In the consumer chains the canon halts the laggard (101%) where vanilla grows it (132%) and cuts its
+profit by three fifths; in the heavy and war chains the median canon case loses half its workers in a decade where vanilla's holds. **Through trade alone**
+the pressure is weak in both arms and only slightly stronger in the canon (109% against 113%; consumer profit £33 against £56). ⚠ Few canon cases (83
+in-market, 109 trade-only over 16 runs): directional (§2.9).
+
+**4b. Backward members of advanced-led markets.** A market's leader is the member holding the most technologies; a follower holds ≥ 15 fewer and has ≥ 1M
+people; markets led by a shortlist country only (§3.2). The followers are mostly British India, the Indian princely states, the Dutch East Indies and
+colonial subjects (Portugal leads its own market in 9–13 of 14–16 canon runs and 26–31 of 37–40 vanilla runs, so it is rarely one). Median over market-years:
+
+| 1935 | followers' tiered workers per head (÷ their leader's) | GDP per head £ (÷ leader's) | SoL (gap to leader) | their share of the market's tiered value added ÷ their share of its people |
+|---|---|---|---|---|
+| vanilla, all advanced-led markets (108) | 0.0560 (0.61) | 4.0 (0.87) | 15.1 (3.6) | 0.67 |
+| canon (51) | 0.0285 (0.37) | 3.6 (0.71) | 14.9 (3.7) | 0.38 |
+| vanilla, the British market (30) | 0.0568 (0.59) | 4.3 (0.88) | 15.0 (4.1) | 0.70 |
+| canon, the British market (15) | 0.0397 (0.51) | 3.7 (0.62) | 14.2 (7.1) | 0.64 |
+
+The technology gap is the same in both arms (median 34–35 technologies; 35–45 in the British market). **Read:** a backward member of an advanced market
+industrialises about half as far in the canon (0.37 of its leader's tiered workers per head against 0.61) and its share of its market's manufacturing
+value falls from two thirds of its population share to two fifths; it is ~10% poorer per head in absolute terms and ends further behind its leader (0.71
+against 0.87 of the leader's GDP per head), while its standard of living is nearly vanilla's (14.9 against 15.1). In the British market the backward members
+end ~14% poorer per head than in vanilla (3.7 against 4.3) and 7.1 SoL levels behind Britain against vanilla's 4.1. ⚠ A follower's numbers move with
+the canon's slower depeasantation everywhere (goal 4), so the absolute figures carry that too; the ÷ leader columns separate it.
+**Portugal itself** (mostly leading its own market): at 1935 0.0267 tiered workers per head against vanilla's 0.0403, GDP per head 2.7 against 2.9, SoL
+14.0 against 14.1, U\* 36.0% against 9.6% — the canon-wide capital scarcity, not market competition.
 
 **5. Other readings.** **Misplaced capital** (F206/F207; VALID benchmark, gross share of each decade's new capital): canon 14–21% (1926–36 21%), this
 batch's vanilla 12–15% (1926–36 14%) — higher in every decade. **Technology** (tech_census, against this batch's vanilla): the leader holds 40 / 31 / 54%
