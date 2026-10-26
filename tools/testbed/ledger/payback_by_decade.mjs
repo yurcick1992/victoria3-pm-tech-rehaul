@@ -11,7 +11,7 @@
 //
 // payback (years) = building_cost (construction points) × £/point ÷ (52 × weekly profit per level)
 //   ⚠ £/point is F53's IRON-FRAME rate, 720, flat. The real cheapest rate falls 1000 / 720 / 720 / 540 / 540 / 527
-//     across the eras, so late-era payback here reads roughly 27% LONG. A known, accepted bias (CLAUDE.md §10.61).
+//     across the eras, so late-era payback here reads roughly 27% LONG. A known, accepted bias (BALANCE_FRAMEWORK §10.61, F53).
 //   ⚠ A rung at a LOSS has no payback and is COUNTED, never folded into a median as a large number (the payback_census
 //     convention). The capital-weighted aggregate — Σ(cost × levels) ÷ Σ(52 × profit × levels) — needs no distribution
 //     and is the robust reading; it is printed beside the median.

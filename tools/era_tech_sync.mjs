@@ -4,7 +4,7 @@
 // `build_era_ladder.mjs`, beside the historical judgements it implements — but that module runs its whole
 // build at import time and keys off `--write`, the SAME flag `era_scenarios --write` uses. Importing it
 // from the scenario solver would re-mint the invented tiers and discard the volumes that solver had just
-// produced, which is exactly the ordering CLAUDE.md warns never to invert. So the code lives here and the
+// produced, which is exactly the ordering REPO_GUIDE.md §2 (six-rung machinery) warns never to invert. So the code lives here and the
 // reasoning is cross-referenced from there.
 //
 // THE PROBLEM. The ladder places three industries EARLIER than their vanilla unlocking technology's era,

@@ -1,4 +1,4 @@
-// THE WALL CLOCK IN THREE RUN CLUSTERS (user-ruled 2026-10-07; CLAUDE.md's wall-clock bullet is the record).
+// THE WALL CLOCK IN THREE RUN CLUSTERS (user-ruled 2026-10-07; TESTBED_OPERATIONS.md §7.4 holds the ruling).
 //   (1) NORMAL runs · (2) INEXPLICABLY SLOWED runs = a slowdown EPISODE (slow_quarantine.mjs's rule: wall s per in-game year > 3σ3 = +32%
 //   over year X−3, growth-adjusted, three years running; it ends when the speed is back within +15% of the pre-episode speed) with no
 //   directly observed listed bug · (3) runs affected by a LISTED vanilla bug, OBSERVED DIRECTLY.

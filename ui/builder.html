@@ -1938,7 +1938,7 @@ const SEC_LBL = { subsistence:'subsistence', agriculture:'agriculture, fishing &
   extraction:'extraction &amp; logging', mfg_raw:'mfg — raw inputs', mfg_mfg:'mfg — mfg inputs',
   military:'military', other:'other non-economic' };
 const SEC_TIP = {
-  subsistence: 'Subsistence farms/pastures/paddies. Not placed by history — derived from the peasants (see CLAUDE.md), and their goods are workforce-scaled, so this is the STAFFED-level equivalent.',
+  subsistence: 'Subsistence farms/pastures/paddies. Not placed by history — derived from the peasants (see REPO_GUIDE.md §5), and their goods are workforce-scaled, so this is the STAFFED-level equivalent.',
   agriculture: 'Farms, plantations, ranching, fishing and whaling. Untiered — vanilla buildings, outside the tiering scope.',
   extraction: 'Mines, logging camps, oil, rubber, gold. Untiered.',
   mfg_raw: 'Our tier buildings whose recipe consumes NO good our own ladder makes.',
@@ -2079,7 +2079,7 @@ function presetReportHTML(p){
   if(p.notes&&p.notes.length) rows.push(['Treaties', esc(p.notes.join(' · '))]);
   rows.push(['Prices', PRICES_LOCKED ? 'LOCKED — untick “locked” in the price column to price this market' : 'auto — recomputed from these orders']);
   // The wage is reported here, once, like everything else a preset knows about itself — the panel
-  // must never carry a standing "you are in preset X" claim (see the preset PRINCIPLE in CLAUDE.md).
+  // must never carry a standing "you are in preset X" claim (see the preset principle in REPO_GUIDE.md §5, UI principles).
   rows.push(['Base wage', p.base_wage>0
     ? `<b>£${(+p.base_wage).toFixed(4)}/wk</b> (£${round2(p.base_wage*WEEKS_PER_YEAR)}/yr) per weight-1 employee — `
       + `${esc(p.base_wage_note||'measured from this market’s own pops')}. Locked groups kept the wage they were tuned at.`
@@ -3006,7 +3006,7 @@ function prettyGroup(g){ return String(g).replace(/^bg_/,'').replace(/_/g,' ').r
 
 // Custom taxonomy: vanilla building_group -> our display category. Unmapped groups fall back to a
 // category of their own (id 'grp_<group>'), sorted into the last cluster. Everything the user
-// reorganized maps cleanly by group. See CLAUDE.md (UI explorer categories).
+// reorganized maps cleanly by group. See REPO_GUIDE.md §5 (the all-buildings explorer).
 const GRPCAT = {
   // ECONOMIC — rendered with our industries (read-only, not tiered yet)
   bg_private_infrastructure:'utilities_trade', bg_trade:'utilities_trade', bg_power:'utilities_trade',

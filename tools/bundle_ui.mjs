@@ -13,7 +13,7 @@
 // someone reading last week's numbers and believing them. Regenerate rather than trusting an old one.
 //
 // ⚠ ONCE PUBLISHED IN A SESSION, REGENERATE AND REPUBLISH AFTER EVERY CHANGE THAT ALTERS WHAT IT SHOWS —
-// a solver `--write`, a build, or an edit to ui/builder.html or ui/econ.js. See CLAUDE.md → "Published UI
+// a solver `--write`, a build, or an edit to ui/builder.html or ui/econ.js. See CLAUDE.md §5.2 → "Published UI
 // snapshot". A stale snapshot reads as authoritative and gives its reader no way to tell.
 //
 // ⚠ ui/icons.js IS DELIBERATELY EXCLUDED, and this is not a size decision. It is Paradox art converted

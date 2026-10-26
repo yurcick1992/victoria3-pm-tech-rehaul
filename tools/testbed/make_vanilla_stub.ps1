@@ -7,7 +7,7 @@
   flipping a production method for free - from the effect of our re-sloped recipes.
 
   It is the headless equivalent of the balance UI's "Bring to vanilla" button, and follows the
-  same guideline (CLAUDE.md): everything editable+emittable goes back to base-game values,
+  same guideline (REPO_GUIDE.md section 5, Bring to vanilla): everything editable+emittable goes back to base-game values,
   EXCEPT the tier split itself. Per tier, read live from the game:
 
     output_qty     <- the tier's own vanilla_pm output (NO x1.5 ladder)
@@ -113,7 +113,7 @@ $changed = 0; $skipped = @()
 foreach ($ind in $cfg.industries) {
     if ($ind.PSObject.Properties.Name -contains 'disabled' -and $ind.disabled) { continue }
 
-    # the pre-split vanilla building: Tier-1's key IS the vanilla base building (see CLAUDE.md)
+    # the pre-split vanilla building: Tier-1's key IS the vanilla base building (see MODDING_NOTES.md, content-specific reminders)
     $baseKey = $ind.tiers[0].key
     $baseVan = $(if ($vanBuildings.ContainsKey($baseKey)) { $vanBuildings[$baseKey] } else { $null })
     if (-not $baseVan) { $skipped += "$($ind.id): no vanilla building '$baseKey' (all-new chain) - cost/ai_value left as configured" }

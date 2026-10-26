@@ -26,7 +26,7 @@
 // ⚠ £720 PER POINT IS KEPT FLAT BY THE SAME RULING, and it is the IRON-FRAME method's rate. The real
 // rate is 1000/720/720/540/540/527 across the eras (wooden → iron → steel → arc), so a late-era
 // building really pays back ~27% faster than this file's £ figures say, and era-0 ~28% slower. That is
-// an ACCEPTED, KNOWN bias, not an oversight — see F53 for the table and CLAUDE.md for the standing
+// an ACCEPTED, KNOWN bias, not an oversight — see F53 for the table and BALANCE_FRAMEWORK §10.61 for the standing
 // caveat. Every £ figure below reads on the 720 basis and is self-consistent within it.
 //
 // THREE QUANTITIES, and the third is the one that decides:

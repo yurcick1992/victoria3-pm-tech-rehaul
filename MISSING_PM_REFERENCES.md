@@ -12,7 +12,7 @@ content won't detect our tiered buildings. **No crashes; missed content.** See B
 Deduped by (PM, enclosing block): same PM in the same block across country/state copies = one row; the
 same PM in a different block = a separate row.
 
-**Part of the `MISSING_*` family** (see CLAUDE.md — Missing-reference cataloguing): this doc covers
+**Part of the `MISSING_*` family** (see CLAUDE.md §5.4 — vanilla references to the tiered industries): this doc covers
 *relocated main-PM references*. Conditional building fields our split drops (e.g. a conditional `ai_value`
 block) live in [MISSING_BUILDING_CONDITIONS.md](MISSING_BUILDING_CONDITIONS.md). The related `has_building`
 narrowing (checks now match only Tier 1) shares the same *make-our-tiers-eligible* strategic fix.

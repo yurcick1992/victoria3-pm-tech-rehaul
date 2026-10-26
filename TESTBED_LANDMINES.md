@@ -1,2093 +1,953 @@
 # TESTBED LANDMINES — the register the build walks on every change
 
-**What a landmine is, here:** a defect where **nothing fails**. The build succeeds, the mod loads,
-the run completes, the TSV has rows in it — and the damage is real and invisible. Half a million
-error lines. A metric reading zero instead of erroring. A burst that evicts its own data from the
-log ring. A key that never arrives, so the run looks like the *metric* failed rather than the
-plumbing.
+A landmine here is a defect where **nothing fails**. The build succeeds, the mod loads, the run completes, the TSV has rows — and the
+damage is real and invisible: half a million error lines, a metric reading zero instead of erroring, a burst that evicts its own data
+from the log ring, a key that never arrives so the run looks as if the metric failed. The linters check economics, `Invoke-ModChecks`
+checks completeness, and `error.log` is expected to carry vanilla's noise, so nobody reads it. These get caught by someone happening to
+look, usually months later and while investigating something else.
 
-These do not get caught by the linters (which check economics), by `Invoke-ModChecks` (which checks
-completeness), or by reading `error.log` (which nobody reads, because it is expected to carry
-vanilla's noise). They get caught by someone happening to look, months later, usually while
-investigating something else.
-
-**So they are enumerated here and enforced by `tools/preflight.ps1`, which runs inside the build and
-throws.** Every entry has an ID; every automated entry's ID is the name of a function in that script.
+So they are enumerated here and enforced in code. An entry enforced by `tools/preflight.ps1` has a function `Test-Lm<ID>` there; the rest
+name the build step or harness code that enforces them. This document holds the defect, how it was found and the detector; the root cause
+and the measurements live in BUGS_AND_FIXES and FINDINGS where they are recorded, and the entry points there.
 
 ---
 
 ## How this is enforced
 
 ```
-powershell -ExecutionPolicy Bypass -File tools\preflight.ps1                 # walk them against mod\
-powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -Mod mod_foo    # against an alt build
-powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -UpdateFingerprint
+powershell -ExecutionPolicy Bypass -File tools\preflight.ps1                          # every check, against mod\
+powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -Mod mod_foo -Config config\mod_config.foo.json
+powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -RepoOnly [-Config <book>]   # the checks that need no built mod
+powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -RepoOnly -Only L20,L33 -Config <book>
+powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -Session tools\testbed\sessions\<stamp>   # + the post-run checks
+powershell -ExecutionPolicy Bypass -File tools\preflight.ps1 -UpdateFingerprint                        # L8, after a deliberate change
 ```
 
-It runs **automatically**, and throws on any FAIL:
+Other flags: `-WarnOnly` (report, always exit 0), `-Quiet` (print only FAIL and WARN). Exit 0 = every check passed, warned or was N/A;
+exit 1 = at least one FAIL. A detector that throws is itself a FAIL (`(detector error)`).
 
-| Chokepoint | When | Why there |
+**Three kinds of check.** *Artifact* checks read the built mod and run only in a full walk. *Repo* checks read configs, schedules and
+scripts, so they also run under `-RepoOnly` and can gate a batch before anything is built. *Post-run* checks read a session and report
+N/A without `-Session`, so they cost a build nothing.
+
+**Where it runs, automatically, and throws on any FAIL:**
+
+| where | when | what |
 |---|---|---|
-| `tools/build.ps1` | end of **every** build, canonical / `-SaveTo` / `-DryRun` | any change to the mod, in the broad sense, passes through here |
-| `tools/build.ps1`, control-arm path | before its **early exit** | the control arm exits before the bottom of the script — a check only at the end would never see the one arm whose whole promise is "carries nothing" |
-| `tools/testbed/run_schedule.ps1` | before the first run of a batch | game time is the expensive thing; a landmine found after 8 h of campaign is found too late |
+| `tools/build.ps1`, before any file is emitted | every build | `preflight.ps1 -RepoOnly -Only L20 -Config <book>` — a missing tree twin fails in two seconds |
+| `tools/build.ps1`, the control and overlay arms | before their early exit | the full walk (the arm whose whole promise is "carries nothing" must not skip the check) |
+| `tools/build.ps1`, the end | every build: canonical, `-SaveTo`, `-DryRun` | the full walk against the built mod, with `-Config` |
+| `tools/testbed/run_schedule.ps1` | before the estimate of every batch | `-RepoOnly`, then `-Only L20 -Config` per setup |
+| by hand | after every batch (TESTBED_OPERATIONS §8.1) | `-Session <session folder>` |
 
-`-NoPreflight` exists **for a broken detector, not for a hurry.**
+**Checks outside preflight**, in `build.ps1`: the reference scan in `emit_vanilla_refs.mjs` (L40) and `check_dlc_gates.mjs` (L39) on every
+build; then the linter block — `lint.sh` (prints, never throws), `lint_solvency.mjs` (L18), `lint_tech_content.mjs`,
+`lint_start_conversion.mjs` (L13), `lint_tier_eras.mjs` (L31), `lint_pm_combos.mjs` — which `-NoLint`, or a schedule setup with
+`lint: false`, skips. The harness carries the rest: the scheduler (L16, L17, L19, L21, L29, L30), the observer (L19, L26, L28, L32, L34),
+the launcher (L30) and the waiter (L21).
 
-**It checks the ARTIFACT, not the intent.** Every detector reads the files the build emitted, never
-the generator that produced them or the flags it was handed — the same principle as
-`verify_pms.mjs` re-reading `common/production_methods` rather than our own extract. A generator bug
-cannot hide behind a checker that only reads the generator.
+`-NoPreflight` exists for a broken detector, not for a hurry.
+
+**It checks the artifact, not the intent.** An artifact detector reads the files the build emitted, never the generator that produced
+them or the flags it was handed — the principle of `verify_pms.mjs`, which re-reads `common/production_methods` rather than our own
+extract. A generator bug cannot hide behind a checker that reads only the generator. Where the defect lives in the source itself (a reader
+script, a schedule, a config), the source is the artifact.
 
 ---
 
 ## The register
 
-Status column: **AUTO** = `preflight.ps1` decides it. **ADVISORY** = it warns, a human judges.
-**MANUAL** = no detector is possible; the `preflight` skill walks it. **OPEN** = known live, not yet
-closed.
+**Runs:** *build* = the preflight walk at the end of every build · *repo* = also under `-RepoOnly`, the pre-batch gate · *session* =
+`-Session` after a batch · *lint* = a build step outside preflight (skipped by `-NoLint`) · *harness* = scheduler, observer, launcher or
+waiter. **Status:** AUTO = a detector fails the build, the batch or the post-run walk · WARN = it warns and a human judges · MANUAL = no
+detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose and seen to trip.
 
-| ID | Landmine | Status |
-|---|---|---|
-| L1 | A named country tag with no existence guard | AUTO |
-| L2 | A data function written as script | AUTO |
-| L3 | A scope that is bounded today and unbounded in 1900 | MANUAL |
-| L4 | Two heavy sweeps in one tick | ADVISORY |
-| L5 | A telemetry spec key the scheduler never passes on | AUTO |
-| L6 | Telemetry reads a script value nothing defines | AUTO |
-| L7 | A control arm carrying gameplay content | AUTO |
-| L8 | The emitted telemetry changed and the schema version did not | AUTO |
-| L9 | Reading the shared log ring without filtering by the run's own identity | AUTO (regression) + OPEN |
-| L10 | Editing the generator while a batch is running | MANUAL |
-| L11 | A named tag that is not the country you think it is | **PROPOSED — AUTO, detector not yet written** |
-| L12 | Savegames reaped without a readable summary | AUTO (post-run, `-Session`) |
-| L13 | A starting factory converted onto a tier its own production method contradicts | AUTO |
-| L14 | A country starts with a building its own technologies cannot unlock | AUTO |
-| L15 | A country LOSES a starting technology vanilla gives it | AUTO |
-| L16 | A schedule key honoured in `defaults` for some fields and silently dropped for others | AUTO |
-| L17 | A run that FAILED is recorded as `ok`, and the arm count silently shrinks | AUTO (post-run, `-Session`) |
-| L18 | A tier that cannot break even at ANY price the engine can produce | AUTO |
-| L19 | An orphaned game process makes the next run fail instantly and silently | **REGISTERED, DETECTOR OWED** |
-| L20 | An alternate config with no paired `tech_tree_options.<sfx>.json` | AUTO |
-| L21 | A failed build hangs the scheduler instead of aborting it | AUTO (bounded build + fail-aware waiter) |
-| L22 | A mod `effect` block silently replacing a vanilla on_action's | AUTO |
-| L23 | A telemetry line counted RAW when a burst repeats it | **REGISTERED, DETECTOR OWED** |
-| L24 | A generator's own diagnostic text leaked into an emitted script file | AUTO |
-| L25 | A summary reader globs *.json.gz and reads the harvester's in-progress file | AUTO |
-| L27 | An analysis script walks cfg.industries for tiers without skipping `disabled` industries (their rung-0 key IS the vanilla building) | AUTO |
-| L28 | The log MIRROR re-copied the current log on a FALSE rotation — a stale directory length below the read position reset the tail to 0 every poll; non-telemetry lines (PMR_JE, events) multiplied ×2–28 in bursts | AUTO (post-run) | `Test-LmL28` — any `recovered 0 chars from []` seam in a run's `logs_live/*.log` FAILS; observer fixed 2026-09-04 |
-| L29 | The OBSERVER DIED ON ITS OWN LOG LINE — `Add-Content` to run.log throws "Stream was not readable" while another process reads the file (a heartbeat's `tail -1`), and under `Stop` preference the unguarded tick write unwound the observer with the game still running; the scheduler then burned 48 runs in 15 minutes behind the orphan (L19's cascade) | FIXED (generator) + PROOF OWED | all four harness log writers retry and never throw (2026-09-07); `run_schedule.ps1` aborts after TWO consecutive instant failures (non-zero exit < 90 s after launch) — live proof owed at the next idle window; L17 catches the artifact (a run with no meta.json). ⚠ READER SIDE (2026-10-01): a reader that KEEPS the file open (`tail -F`, an agent Monitor — whose expiry leaves the tail running) defeats the eight-try retry and the lines are dropped silently; `Test-LmL29` (`-Session`, WARN) flags a session.log missing a run's `=== run N/M` line. ⚠ (2026-10-17, session 20261017_190800 run 1: two minutes of run.log lost) STOPPING such a Monitor does NOT kill the `tail.exe` / `grep.exe` it spawned under Git Bash on Windows — they kept run.log blocked until killed by PID. Watch a live run with short reads only (a background `until` loop that runs `tail -n 3` each poll and exits), never `tail -F`; after any stopped watcher, check `Get-CimInstance Win32_Process` for a leftover `tail.exe` |
-| L30 | A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP — the shell sits in the desktop app's job object (KILL_ON_JOB_CLOSE), a `Start-Process` child silently breaks away into a SECOND app job, and an app restart (a forced re-auth, 2026-09-10 18:45:29) tore both down: scheduler, observer, game, archiver and harvester died in one second, ten months short of run 1's end | AUTO (launch) + WARN (scheduler) | `tools/testbed/launch_detached.ps1` creates the process through WMI (in NO job) and FAILS unless the kernel confirms it; `run_schedule.ps1` prints an ALERT when it finds itself inside a job. Found 2026-09-13 |
-| L31 | A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY RATHER THAN BY ITS TIER — the A/B generator keyed output, input value, cost and the lift on k = tier − the industry's first tier, so a late industry's first rung (automotive t2, electrics, synthetics, munition) was priced as an 1836 rung and electrics' only rung sat one tier below its game-era-4 technology; eleven batches passed every lint | AUTO | `tools/lint_tier_eras.mjs` inside build.ps1 (throws) and `Test-LmL31` (the config + its paired tree); the generator derives tiers from the technologies and throws beyond ±1. Found 2026-09-13 |
-| L32 | A CTD DURING THE AUTOSAVE WRITE LEAVES THE CONTINUE POINTER AIMED AT A SAVE THAT DOES NOT EXIST — the engine resumes by the TITLE its own `continue_game.json` names, not the newest file, so a truncated write defeats every step-back and the resume begins a FRESH 1836 game | AUTO | the deterministic resume feeder (quarantined set, one attempt per member, the `-ResumeWindowYears` process rule) + `Test-LmL32`: any run whose debug.log carries `Could not load save game [`. Found 2026-09-14 |
-| L33 | AN EMITTED DEFINE THE ENGINE REJECTS AT LOAD — a value outside the validator's hardcoded range is discarded with ONE line in error.log and the key keeps VANILLA's, so the arm is not the book: the eager set's `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR = 1.0` (vanilla's own comment says "capped at 1"; the range is [0,1)) ran at vanilla's 0.75, BELOW the 0.9 it was a one-lever test against, and F121 measured three of its four levers. A bound can also be a cross-reference: land `CRITICAL_THRESHOLD` 1.25 invalidates vanilla's ship `EXCESSIVE_THRESHOLD` 1.05, a define we never set | AUTO | `Test-LmL33` — (a) the config's `ai_defines` against the bounds the engine has stated (`-RepoOnly`, gates a launch), (b) with `-Session`, every run's error.log for `defines.cpp` "not valid with given value", which needs no table; `batch_heartbeat.sh` gives it its own DEFINE REJECTED alarm. Found 2026-09-15 ⚠ (2026-10-17) A SECOND SHAPE: a DEAD key — one the engine does not read at all. It is reported in DEBUG.log as `Define 'X' defined in '<file>' not specified. Maybe a define macro is missing`, for vanilla's own line too (15 keys in 1.13.11, FINDINGS F241). `Test-LmL33 -Session` now also reads debug.log and FAILs a dead key named in OUR defines file (proven on 20261017_190800: FAIL on both 0.99 runs, PASS on 20261016_192119); `emit_techs.mjs` refuses the known dead keys in `game_defines` at build |
-| L34 | A run recorded complete in minutes — a crash before the first autosave restarted through `-continuelastsave`, which loaded the previous run's endpoint | AUTO (post-run, `-Session`) |
-| L35 | A minted rung that no gate admits to its industry's gated secondary method | AUTO |
-| L36 | A telemetry metric name that matches nothing, so the run measures nothing and says so nowhere | AUTO (repo-side) |
-| L37 | The stop watcher goes blind to the register on any multi-config schedule, and says so only in its own hidden log | **REGISTERED, DETECTOR OWED** |
-| L38 | A save summary that keeps ONE country record per definition — a civil war's other side, or a country a revolt left behind, vanishes from `countries` and from `world.gdp` / `world.population` (up to v11; found 2026-09-30, F186) | AUTO (repo-side self-test + post-run, `-Session`) |
-
----
-
-### L13 — a starting factory converted onto a tier its own production method contradicts · AUTO
-
-**DETECTOR (written 2026-08-30): `tools/lint_start_conversion.mjs`, run by build.ps1 beside the other
-linters.** Three checks against the EMITTED history and the vanilla files it derives from: COVERAGE
-(every vanilla main method maps to some tier, own rung or `vanilla_pm_alias`), PLACEMENT (a method
-absorbed as an alias may not shift the factory more than a third of the ladder from its vanilla
-position), KEYS (every `building=` in the emitted history is one of ours or a real vanilla building).
-Proven by sabotage: stripping one alias makes it fail naming the method and the industry.
-⚠ It found a real case on its first run — automotive’s `pm_mass_automobile_production`, vanilla’s LAST
-method, converted onto the industry’s FIRST rung because the alias rule picked the nearest rung BY YEAR
-(1913 is closer to 1899 than to 1936). Fixed at source: the alias rule now respects ladder position.
-
-⚠⚠ **IT WAS PROVEN ON ONE BOOK AND SHIPPED BROKEN FOR THE OTHER (fixed 2026-08-31).** Written and
-sabotage-tested against the FOUR-RUNG book, wired into `build.ps1`, and it then **failed the canonical
-six-rung build** with 8 false positives — caught on the next canonical build, not by review. Three
-causes, all of them the config saying something the check did not know:
-
-* **COVERAGE was per INDUSTRY where it is a property of the vanilla PMG.** The shipyard is ONE vanilla
-  building split across TWO config industries (`shipyard` = clippers, `shipyard_steam` = steamers), so
-  each legitimately covers half the group and all four shipbuilding methods read as orphans. The check
-  now indexes tiers by PMG and asks once per group.
-* **A RULED-AWAY rung is not a gap.** `pm_early_power_plant` is GONE by the §10.43 ruling (the 1900
-  municipal engine house lives inside urban centres instead); the tier4 spec likewise drops
-  `pm_improved_fertilizer`. A deliberate removal must not read as a coverage defect.
-* **POWER-BLOC-GATED methods are unreachable by construction.** `pm_*_principle_transport_3` needs a
-  power-bloc principle; the solver never selects one and no 1836 history can carry one.
-
-⇒ **A detector must be proven against EVERY book it will run against, not only the one it was written
-for.** The repo now holds two configs; a check wired into `build.ps1` runs on whichever is built, so
-"it passes and it trips on sabotage" is only half the proof. ⚠ Related: the tool takes an emitted mod
-AND the config it was built from, and a MISMATCHED pair reports every stray tier key individually,
-which reads as the mod being broken. No threshold separates that from a real defect reliably (the two
-books share most keys), so it simply **prints the pair it is comparing** and lets the reader see it.
-
-**The failure.** The 1836 start converter maps each vanilla factory onto one of our tiers by reading the
-main production method it runs. When the mapping silently fails, the factory does **not** disappear and
-is **not** reported — it passes through carrying the vanilla building key, which some tier still owns, so
-it lands on that tier regardless of what it was running.
-
-Everything downstream looks healthy. The build succeeds, both linters pass, `Invoke-ModChecks` passes
-(its test is that `create_building` blocks are *present*, which they are), the history files are the
-right size, and `start_baseline.json`'s **`unmapped` list — the drift alarm built for exactly this
-class — reads 0**, because a factory whose base key is absent from the map is never examined at all
-rather than being examined and failing.
-
-**Found live, 2026-08-12, at 30%.** `Get-SplitMaps` (`tools/history_lib.ps1:61`) keys the base-building
-map on the **first** rung. That held while the first rung was the vanilla building; the tier ladder then minted
-non-`model_only` **t0 rungs** for nine industries, so slot 0 became an invented key and the vanilla one
-it displaced went invisible. **98 of 327 starting factories** were emitted on tier 1 against their own
-methods — textile 21, tooling 25 (nine of them a **two-tier** demotion), furniture 18, glass 12, food 12,
-paper 10. Vanilla and converted `create_building` counts were **identical** for all nine industries,
-which is what proves no conversion ran. Full root cause and the fix in `ROADMAP.md` → *Deferred fixes*.
-
-**The detector.** Walk the **emitted** history against vanilla's: for every `create_building`, read its
-active main production method, look up the tier that method belongs to, and fail if the emitted building
-key is not that tier's. It reads the artifact, never the generator — the same rule as `verify_pms.mjs`,
-and the reason a check on the mapping code would not have caught this one. A second, cheaper assertion
-is worth having beside it: **no vanilla base building key may survive into the emitted history unless a
-tier legitimately owns it**, and `unmapped` must account for every factory the map declined.
-
-⚠⚠ **CURRENTLY MASKED, NOT FIXED (2026-08-12).** The re-band dropped the seven invented ~1700 rungs, so
-the vanilla building key is back in slot 0 and conversion works again — the 1836 start now genuinely
-re-tiers, and block counts and ownership levels match vanilla exactly (2954 and 8224). **But
-`Get-SplitMaps` still keys on `tiers[0]`**, so the day anyone mints a new first rung for an industry it
-breaks again, silently and at the same scale. The detector below is still worth writing for exactly that
-reason; the fix is one line and the guard is what makes it stay fixed.
-⭐ **And it was hiding L14.** While conversion was broken, the mis-tiered workshops sat on a rung nothing
-gated, so the starting-technology fault below was invisible. Fixing one landmine exposed another.
+| ID | landmine | detector | runs | status |
+|---|---|---|---|---|
+| L1 | a named country tag with no existence guard | `Test-LmL1` | build | AUTO, proven |
+| L2 | a data function written as script | `Test-LmL2` | build | AUTO |
+| L3 | a scope bounded in 1836 and unbounded by 1900 | — (`preflight` skill) | before a batch | MANUAL |
+| L4 | two heavy sweeps in one tick | `Test-LmL4` | build | WARN |
+| L5 | a telemetry spec key the scheduler never passes on | `Test-LmL5` | build, repo | AUTO |
+| L6 | telemetry reads a script value nothing defines | `Test-LmL6` | build | AUTO |
+| L7 | a control arm carrying gameplay content | `Test-LmL7`; `-ControlOnly` throws | build | AUTO |
+| L8 | the emitted telemetry changed and the schema version did not | `Test-LmL8` | build, repo | AUTO |
+| L9 | reading the shared log ring without filtering by the run's own identity | `Test-LmL9` (regression test) | build, repo | AUTO + OPEN |
+| L10 | editing the generator while a batch is running | — (`preflight` skill) | while a batch runs | MANUAL |
+| L11 | a named tag that is not the country you think it is | proposed | — | OPEN |
+| L12 | savegames reaped without a readable summary | `Test-LmL12` | session | AUTO, proven |
+| L13 | a starting factory converted onto a tier its own production method contradicts | `lint_start_conversion.mjs` | lint | AUTO, proven |
+| L14 | a country starts with a building its own technologies cannot unlock | `Test-LmL14` | build | AUTO, proven |
+| L15 | a country loses a starting technology vanilla gives it | `Test-LmL15` | build | AUTO, proven |
+| L16 | a schedule key honoured in `defaults` for some fields and silently dropped for others | `run_schedule.ps1` | harness (batch start) | AUTO, proven |
+| L17 | a run that failed is recorded as `ok`, and the arm count silently shrinks | `Test-LmL17`; scheduler; `lib_runs` | session, harness | AUTO, proven |
+| L18 | a tier that cannot break even at any price the engine can produce | `lint_solvency.mjs` | lint | AUTO, proven |
+| L19 | an orphaned game process makes the next run fail instantly and silently | observer and scheduler guards | harness | partly guarded; OPEN |
+| L20 | an alternate config with no paired `tech_tree_options.<sfx>.json` | `Test-LmL20` | build (twice), repo | AUTO, proven |
+| L21 | a failed build hangs the scheduler instead of aborting it | `Invoke-BoundedBuild`; waiter | harness | AUTO, proven |
+| L22 | a mod `effect` block silently replacing a vanilla on_action's | `Test-LmL22` | build | AUTO, proven |
+| L23 | a log line counted raw when a burst repeats it | L28 (the mirror); reader rule | analysis | OPEN |
+| L24 | a generator's own diagnostic text leaked into an emitted script file | `Test-LmL24` | build | AUTO, proven |
+| L25 | a summary reader globs `*.json.gz` and reads the harvester's in-progress file | `Test-LmL25` | build, repo | AUTO, proven |
+| L26 | one run folder holding two campaigns, recorded as a clean run | `Test-LmL26` | session | AUTO, proven; live check owed |
+| L27 | an industry loop that keeps the disabled industries | `Test-LmL27` | build, repo | AUTO, proven |
+| L28 | the log mirror re-copied the current log on a false rotation | `Test-LmL28` | session | AUTO, proven |
+| L29 | the observer died on its own log line; a reader holding a log open drops lines | retrying writers; scheduler abort; `Test-LmL29` | harness, session (WARN) | fixed; abort proof owed |
+| L30 | a batch launched from the agent's tool shell dies with the app | `launch_detached.ps1`; scheduler ALERT | harness | AUTO, proven |
+| L31 | a rung placed or priced by its order in the industry, not by its tier | `lint_tier_eras.mjs`; `Test-LmL31` | lint, build, repo | AUTO, proven |
+| L32 | a CTD during the autosave write leaves the continue pointer aimed at a save that does not exist | `Test-LmL32`; the resume feeder | session, harness | AUTO, proven |
+| L33 | an emitted define the engine rejects at load, or never reads | `Test-LmL33` | build, repo, session | AUTO, proven |
+| L34 | a run recorded complete in minutes | `Test-LmL34`; `lib_runs` | session | AUTO, proven; fix's live proof owed |
+| L35 | a rung silently locked out of its industry's gated secondary method | `Test-LmL35` | build | AUTO, proven |
+| L36 | a telemetry metric name that matches nothing | `Test-LmL36` | build, repo | AUTO, proven |
+| L37 | the stop watcher goes blind to the register on a multi-config schedule | — | — | OPEN |
+| L38 | a save summary that keeps one country record per definition | `Test-LmL38` | build, repo, session | AUTO, proven |
+| L39 | a replaced vanilla file that loses a DLC gate | `check_dlc_gates.mjs` | every build | AUTO, proven |
+| L40 | vanilla script that names a rung-0 key or a renamed method | `emit_vanilla_refs.mjs` scan; smoke check | every build; by hand | AUTO + MANUAL |
+| L41 | a game paused by input looks like a healthy run | — | while a batch runs | MANUAL; OPEN |
 
 ---
 
-### L14 — a country starts with a building its own technologies cannot unlock · AUTO
+## What no script checks
 
-**The failure.** The build succeeds, the mod loads, the game runs, and a great power simply owns a
-factory it could never have constructed. Nothing errors: the engine places what history tells it to
-place and never audits that against the country's technology set. The economy then comes out different
-from vanilla's for a reason no log mentions — and the countries it bites are the ones whose 1836
-industry matters most.
+Walk these by hand. The `preflight` skill (`.claude/skills/preflight/SKILL.md`) carries L3 and L10.
 
-⚠⚠ **IT IS BLIND TO `vanilla_pm_aliases`, AND THAT IS EXACTLY HOW IT MISSES (found 2026-08-31, NOT YET
-FIXED).** `verify_start_techs.mjs:274` skips any tier without a `vanilla_pm` and builds `vanillaNeeds`
-from `vpm[t.vanilla_pm]` alone. A rung that ABSORBED another vanilla method as an alias — which the
-four-rung ladder does whenever an industry has more rungs than vanilla has methods — is therefore
-checked only against the method it is NAMED for, never against the one the converter actually places
-through it.
-
-The live case: four-rung tooling t1 is `pm_steel` (gate `mechanical_tools`) with `pm_pig_iron` (gate
-`steelworking`) as its alias. Ten countries run pig iron in vanilla 1836 holding `steelworking`; the
-converter puts them on t1; the engine drops the block for want of `mechanical_tools`. L14 asks *"what
-does vanilla need for `pm_steel`?"* against *"what do we need?"*, gets `mechanical_tools` both sides,
-and **PASSES**. The ten dropped buildings appear only in `error.log`, found by the 5-minute smoke
-check. `emit_techs.mjs` has the same blind spot on the granting side — see BUGS_AND_FIXES 2026-08-31
-for the mechanism and the two-line fix owed.
-
-⇒ **The register’s own recurring lesson, twice in two days**: a guardrail that reads a NARROWER key
-than the code it guards passes for the wrong reason. L13’s COVERAGE check was per-industry where the
-property is per-PMG; L14 is per-`vanilla_pm` where placement is per-alias-set. When a key is widened,
-sweep every consumer of it — `grep -rl vanilla_pm tools/` lists three, and two of them are the grant
-and this check.
-
-**Found live, 2026-08-12, and only because an unrelated bug was fixed first.** While the converter
-silently failed to re-tier the 1836 start (**L13**), vanilla's steel-tooling workshops stayed on the base
-rung and nothing was gated wrongly. The moment conversion started working, **five great powers — BEL,
-FRA, GBR, PRU, USA — owned a tooling workshop gated on `steel_toolmaking`**, an 1865 technology of ours
-that had replaced vanilla's `mechanical_tools` gate. 16 of the map's 35 tooling workshops run that
-method in vanilla, and vanilla can run them because `mechanical_tools` sits in its own named grant.
-⇒ **One landmine was hiding another.** Fixing L13 is what made L14 visible, which is the argument for
-detectors over inspection: nobody would have gone looking.
-
-**The fix that shipped** was to name `steel_toolmaking` in our own starting grant, starting-tech tiers 1 and 2, exactly
-as vanilla names the three technologies its own 1836 map needs (`central_archives`, `mechanical_tools`,
-`intensive_agriculture`).
-
-**The detector.** `tools/verify_start_techs.mjs --vs-vanilla`, over the EMITTED history — ours is the
-only history the engine reads, via `replace_paths`. It resolves each building's and each production
-method's `unlocking_technologies` against vanilla plus our owned files, expands
-`add_era_researched` (which is most of the grant), and reports **per country**.
-
-⭐⭐ **THE GATE BINDS EVERY BUILDING, WHOEVER OWNS IT** (re-established 2026-08-17, **FINDINGS F68**).
-The engine checks a history `create_building` against the **region_state's own country**;
-`add_ownership` is not consulted. Its own words, at world init:
-
-```
-Error: create_building effect [ … Dutch East Indies … must have invented … The Screw Steamer … ]
-Script location: common/history/buildings/12_indonesia.txt:683
-```
-
-⚠⚠ **THIS ENTRY IS THE CASE STUDY FOR THE WHOLE REGISTER: THE DETECTOR WAS SWITCHED OFF AND 22 BROKEN
-START RULES SHIPPED GREEN.** A "refinement" of 2026-08-16 night (§10.60.3 Q5a) made L14 SKIP any
-building owned entirely by foreign countries, on the theory that it rides its owners' technology. It
-was wrong, and it failed **twice over**:
-
-1. **Its evidence was a snapshot taken a year late.** *"the engine provisions steam ports into subject
-   states whose owners lack the tech (measured: SIL held one by 1837.1)"* — read at **1837.1.1**, so
-   what it saw was **F66's engine provisioning wave** building that port over the intervening year, not
-   our `create_building` succeeding. Re-measured at **1836.2.1 over 10 runs**: every subject-state stub
-   rejected, **110 error lines, 22 locations, identical in all ten**.
-2. **Its second leg was true but inert.** Vanilla does ship foreign-owned ports (GBR's in SIL's
-   Senegal) — but they are t0 `building_port` gated on `navigation`, which every country holds, so
-   vanilla never creates the conflict that would test the rule.
-
-⚠⚠ **AND A SECOND BUG IN THE SAME FILE HID IT EVEN AFTER THE SKIP WAS REMOVED.** `analyse()` counted
-`add_technology_researched` lines sitting inside a per-country guard —
-`if = { limit = { this = c:NET } … }`, exactly how `emit_techs.mjs` writes `start_tech_grants` — as
-though **every** country of that tier held them. Our NET-only `screw_frigate` grant was therefore
-credited to all 60-odd starting-tech tier-2 countries, so DEI, SMB, TID and PON looked entitled to steam ports they
-cannot build. `startSets()` (L15's path) had already solved this and its own comment warned that
-over-reporting holdings *"is a detector that passes the very failure L14 is for"* — correctly, about
-the function beside it. **Both landmines now read `startSets()`**: one definition of what a country
-starts with. That also removed three standing false positives (vanilla-inherited gaps **6 → 3**),
-because the old path ignored the per-country extras 81 countries carry.
-
-**Tripwire re-proved by sabotage, 2026-08-17.** Injecting one NET-owned `port_steam` into DEI's
-territory in a copy of the emitted mod makes the check **exit 1** and print
-`DEI (tier 2, 46 buildings): screw_frigate`; the real build exits 0. ⚠ It failed this same test
-*before* the `startSets()` fix — passing a mod carrying the exact defect — which is why "removed the
-skip" was not the end of the work.
-
-⚠ **Do not re-introduce an ownership exemption without a reading taken at 1836.2.1.** A late snapshot
-cannot tell "never created" from "created, then supplied by the engine anyway", and those demand
-opposite fixes.
-
-⚠ **IT COMPARES AGAINST VANILLA RATHER THAN DEMANDING ZERO.** Vanilla itself fails on three countries, so
-an absolute pass is unreachable and a build demanding one could never go green. What we hold ourselves to
-is introducing **no new** gap — the real requirement, and computable because the same analysis runs
-unchanged against the game's own directory.
-
-⚠ **Three ways this check reported a false answer before it worked**, all worth knowing because they are
-the generic traps of this kind of detector:
-- **It passed vacuously.** Wrong tag regexes for these file shapes matched zero countries and it printed
-  PASSED. Hence `assertNonTrivial()`, which refuses to report success unless it found countries,
-  buildings and starting sets. **A check that cannot fail is worse than no check.**
-- **It failed spuriously on 24 countries.** The starting sets grant most of their content through
-  `add_era_researched = era_1`, not by naming technologies, so reading only `add_technology_researched`
-  made Britain and France look as though they lacked `manufacturies`.
-- **It lost its own error message.** The detector called node with `2>&1`, and PowerShell 5.1 wraps a
-  native executable's stderr lines in ErrorRecords — so a real FAIL reported `(detector error)` and named
-  nobody. The tool now writes its verdict to **stdout** and signals only through the exit code.
-
-**Tripwire proven** by deleting the two grant lines from the emitted file: preflight went
-`L14 FAIL … PREFLIGHT FAILED: 1 landmine(s) live`, naming GBR, FRA and BEL. Restored, it passes.
+- **Before a batch.** L3: size every scope at the run's end date, not at 1836. L10: is a batch already running? L11: resolve every tag a
+  schedule names against the game files. L37: on a schedule with more than one setup the stop watcher enforces only its GDP fallback.
+- **While a batch runs.** L10: queue every edit on the build path. L26: an in-game date that falls more than two years between two
+  readings of one run is a second campaign — stop and relaunch. L29: never `tail -F` a live harness log. L41: an in-game date unchanged
+  for 15 minutes while the game runs is frozen — look for `Paused: true, PlayerID: 1`. L40: count the vanilla-path
+  `is_production_method_active` lines at the smoke check.
+- **After a batch.** `preflight.ps1 -Session`. L9: `error_log_lines` is an upper bound. L23: count non-telemetry log lines as distinct
+  tuples. L19: an orphaned `victoria3.exe` is invisible from the session that left it.
 
 ---
-
-### L12 — savegames reaped without a readable summary · AUTO (post-run)
-
-**The failure.** The savegame instrument (ROADMAP step 3½, built 2026-08-11) archives every autosave,
-melts it, writes one summary JSON, and then **deletes the save**. That inverts the rule the rest of the
-repo runs on — *"the summary is a CACHE; the raw log is the record"*, which is exactly what makes
-compressing raw logs safe. Here **the summary IS the record.** A save deleted without a readable summary
-beside it is evidence that exists nowhere else, and re-running does not recover it: a different seed is
-a different world, and after a patch a different game.
-
-**Why nothing fails.** Every other signal stays green. The batch completes, `session.json` reports every
-run finished, `markets_all.tsv` is full, the mod loaded, `error.log` is quiet — and the disk is
-pleasantly empty, which is precisely the symptom read as success. Nothing anywhere announces that run 4
-put 100 saves through a reader that crashed on all of them, or that a worker died mid-write and left
-`.partial` files that look like summaries to anything that counts rather than reads.
-
-**The design that makes it survivable, and which the detector checks is actually in force:**
-1. `harvest_saves.ps1` writes to a temp name, **verifies the artifact** (gunzips, parses, requires a
-   `save_summary_version`, a `provenance.date` and ≥10 countries), and only then renames it into place;
-2. **only then** is the `.v3` deleted — a failed save is never reaped, so it stays as the only remaining
-   copy of its own evidence, with a `.err` beside it;
-3. the **newest save of every run is kept permanently** (user-agreed) as the escape hatch for questions
-   the schema did not anticipate. ~57 MB per run against ~4 GB for the run's full set.
-
-**Detector — `Test-LmL12`, run with `-Session <dir>`.** For every run folder holding `saves\`: require a
-`save_summaries\` beside it; require it non-empty; **read one** and require a `save_summary_version`
-(a directory of zero-byte files counts perfectly well); reject leftover `.partial.json.gz`; report any
-`.err`; and require at least one `.v3` still kept. It reports **N/A** when no `-Session` is given, so it
-costs a build nothing — this and **L26** are the register's two post-run entries.
-
-⚠ **Proved by breaking it** (2026-08-11), on both shapes: `save_summaries\` renamed away ⇒ FAIL; every
-save reaped with none kept ⇒ FAIL *"the escape hatch is gone"*; restored ⇒ PASS; no `-Session` ⇒ N/A.
-
-⚠ **Two bugs found while building the harvester, both of which produce this landmine's exact
-signature** and are why the verify-before-reap order is not optional. `Start-Process -ArgumentList`
-quotes nothing, and the repo path contains a space, so every worker was handed
-`C:\claude-code\victoria` as its script and exited 1. And a local `$out` inside a function **is** the
-script's `$Out` parameter — PowerShell variable names are case-insensitive — so the first launch rewrote
-the output directory to a per-save path. Under a reap-first design either one would have deleted a
-century of saves and left an empty folder.
-
----
-
-### L11 — a named tag that is not the country you think it is · PROPOSED (AUTO)
-
-**The failure.** A metric names countries by three-letter tag. A tag that resolves to **no** country
-errors every tick and silently covers nothing; a tag that resolves to a **different** country covers
-the wrong thing and looks entirely healthy. Neither shows up as a failure: the sweep runs, rows appear
-for the tags that do resolve, and the missing country is simply never in the output.
-
-**Found 2026-08-06, in `market_goods_wide`'s 50-tag list — two of the fifty are wrong:**
-
-| tag in the list | what it actually is | intended |
-|---|---|---|
-| **`QIN`** | **not a country at all** — no definition exists | the Qing, which is **`CHI`** |
-| **`COL`** | **British Columbia** (`capital = STATE_BRITISH_COLUMBIA`) | Colombia, which is **`CLM`** |
-
-⚠ **The Qing is the largest economy in the game, and the wide sweep has never covered it.** That sweep
-exists to answer *"did anyone, anywhere, produce this good first?"* — so **FINDINGS F33's "first
-telephone production ANYWHERE (50-market sweep) = 1920.9, British Market" is weaker than it reads**: it
-is first among the 48 tags that resolved, China not among them. The other 194 error lines per campaign
-(L1's residual) are all `Failed to find country! Country: QIN` — not an annexation, a tag that never
-existed.
-
-**Detector (straightforward, not yet written).** Every `c:TAG` in the emitted telemetry must match a
-country defined in `common/country_definitions/*.txt`. That catches `QIN` outright. It cannot catch
-`COL`, because British Columbia is a perfectly real country — **only a human comparing intent against
-`capital = STATE_…` catches that one**, which is why the entry also asks that any tag list carry a
-comment naming what each unobvious tag is.
-
-**How it happened, twice in one hour.** A three-letter tag was *assumed* to name a country without
-being checked — first by the agent, asserting `DNK` was Denmark in a comparison of small nations (it is
-an African minor owning `STATE_EQUATORIA`; Denmark is `DEN` and owns **eight** states including
-Greenland, Iceland, the West Indies, the Gold Coast, Madras and Pegu), then discovered in the shipped
-tag list. **Resolve a tag against the game files before believing it**, exactly as with everything else
-here.
-
----
-
-### L1 — a named country tag with no existence guard · AUTO
-
-`c:TAG` on a country that no longer exists does **not** evaluate to false in Jomini; it raises
-`Invalid right side during comparison 'c'`. Tags valid at 1836 are routinely gone by 1900 — annexed,
-or formed into a successor — so any metric that names countries starts erroring partway through a
-campaign and never stops. Because these filters sit inside `every_market`, the whole `OR` is
-re-evaluated once per market: cost is *dead tags × markets × dump dates*.
-
-**Measured:** 574 455 `error.log` lines over one campaign, **48 659 naming our own telemetry file**
-(2026-08-06). Story and evidence: `BUGS_AND_FIXES.md`; the rule: `TESTBED_METRICS.md`.
-
-**Fix idiom — one function, `Get-GuardedOwnerLimit` in `telemetry_lib.ps1`:**
-```
-limit = { OR = { AND = { exists = c:GBR owner = c:GBR }  AND = { exists = c:FRA owner = c:FRA } } }
-```
-or filter on a **property** instead of on identity. Entering a named country's scope takes
-`Get-GuardedCountryBlock` (`if = { limit = { exists = c:X }  c:X = { … } }`).
-
-**Detector:** brace-depth scan of the emitted `on_actions` / `events` files. A tag *use* is legal
-only if `exists = c:<that same tag>` was asserted in its own block or an enclosing one.
-
-⚠ **It does not judge tags inside loc strings** (`[c:GBR.market_capital…]` in a `debug_log`). Those
-are data functions resolved by a different subsystem, which fails differently — a loc-string data
-error, not a comparison error. Whether *that* also floods is **unmeasured**; the count is printed
-each run so it stays visible rather than forgotten.
-
-**✅ MEASURED 2026-08-06 — the guard removes 99.6%, and the residual is irreducible while tags are
-named at all.** First guarded campaign (`20260806_110926_vanilla-retest-2` run 1, control arm, to
-in-game 1882), counting only lines stamped inside the run's own window (L9):
-
-| our error, in-window | before | after |
-|---|--:|--:|
-| `Invalid right side during comparison 'c'` | 48 659 | **0** |
-| `Failed to find country! Country: QIN` (`eventtargetlinks.cpp`) | — | **194** |
-
-⚠ **`exists = c:X` does not silence everything, and cannot.** The residual comes from
-`eventtargetlinks.cpp`, i.e. **resolving** the scope link — which `exists` must do in order to test
-it. So the guard removes the *comparison* error and leaves the *resolution* notice. 194 lines over 46
-in-game years is ~4/year against 48 659, so this is a rounding error rather than a flood, but it means
-**"anything naming our telemetry should be zero" is not reachable by guarding**; only by not naming
-tags. Read the detection rule as *zero comparison errors*, and treat a `Failed to find country` count
-that grows beyond a few hundred as the signal instead.
-
-⚠ **Stated assumption, not proof:** guarding is treated as behaviour-preserving because the evidence
-says the metric emitted correct lines for every country that did exist, i.e. the errored sub-trigger
-was already behaving as false. It has not been separately verified that an errored comparison inside
-an `OR` never evaluated *true*.
-
-**History:** found at 6 sites, fixed, and the detector immediately found **13 more** — including a
-`this = c:TAG` form nobody had considered. That gap between "I fixed it" and "it is fixed" is the
-whole argument for the checker.
-
----
-
-### L2 — a data function written as script · AUTO
-
-Data functions (`GetGoods('grain')`, `THIS.GetCountry.GetGDP`) live **only** inside the quoted text
-of a `debug_log`. Written as script they are a parse error, and Paradox **abandons the file from the
-error onward** — so one bad `limit = { is_goods = GetGoods('grain') }` silently took all three dumps
-defined below it, and that run harvested nothing.
-
-**Detector:** `Test-TelemetryScript` in `telemetry_lib.ps1` — strip every quoted string, then require
-what remains to contain no `Something(` and no `[`. It already ran on the generated text at build
-time; preflight runs **the same one implementation** over the emitted files, which is the check that
-survives someone bypassing the generator.
-
----
-
-### L3 — a scope that is bounded today and unbounded in 1900 · MANUAL
-
-`market = c:BEL.market` was never wrong — it was **unbounded**. Which market a country belongs to
-*changes*: by 1850 Belgium had joined the British market, so a per-pop sweep verified cheap at 1836
-(178 pops, 3 states) tried to emit **20 686** lines and only **5 212** survived the ring. Every
-surviving line was individually valid, which is what made it dangerous — the data was a 75 % subset
-chosen by ring position, and therefore biased in an unknown direction.
-
-**No detector is possible.** How many markets a scope covers in 1900 is a property of the campaign,
-not of the script. **Size it at the END date of the run, not at 1836**, with an untruncatable script
-value rather than by counting the sweep's own lines. See `BUGS_AND_FIXES.md`.
-
----
-
-### L4 — two heavy sweeps in one tick · ADVISORY
-
-The game's log is a **5 × 512 KB ring shared by every run**. One unphased dump was ~1.96 MB — 78 % of
-the whole ring — so segments rotated away before any poll could read them (**6 015 telemetry lines
-lost**, measured). **No poll rate fixes this**: you cannot read a ring faster than it is destroyed.
-Phasing exists to spread the burst, and stacking two heavy blocks on one date reintroduces it
-(origins on phase 0 with market goods: **5 980 of ~6 000 lines lost**).
-
-**Detector is advisory by necessity** — how many lines a sweep produces depends on how many markets
-exist at that date, which is not knowable at build time. It counts **nested iterations**, the shape
-that multiplies, per trigger date, and warns when a date carries more than one. A WARN is a prompt to
-check the phasing, not a verdict.
-
----
-
-### L5 — a telemetry spec key the scheduler never passes on · AUTO
-
-`run_schedule.ps1` rebuilds each run's spec from an **explicit key list**. A key read by
-`Read-TelemetrySpec` but missing from that list is silently dropped: it reaches neither the builder
-nor the mod, the metric falls back to its default, and the run looks like the *metric* failed.
-
-**Cost so far:** a probe run on 2026-08-05 (`breakdown_dates`, `breakdown_tags`, `wide_dates`,
-`wide_tags` all emitted nothing), and then `origin_goods` — found by this detector on 2026-08-06,
-requested by three schedules and threaded through nowhere. Session
-`20260801_225108_paper-be20-n3` asked for `paper, wood, sulfur, dye, tools, steel, clothes, silk,
-tea, coal`; its own `run001_paper/telemetry.json` carries `origins` in `metrics` and **no
-`origin_goods` at all**, so it measured the hardcoded default instead — **wood, sulfur and dye were
-never instrumented**, and `glass, iron, opium` were logged unasked. The other two schedules happened
-to request exactly the default list, so they were unharmed by coincidence.
-
-⚠ **A warning comment was already sitting on that key list**, added after the 2026-08-05 loss, and
-`origin_goods` still slipped past it. That is the entire case for enforcement over documentation.
-
-**Detector:** every key `Read-TelemetrySpec` consumes must appear somewhere in `run_schedule.ps1`.
-Deliberately a mention test rather than a parse of its two hand-maintained lists — the lists move,
-and a key that appears **nowhere** in the scheduler is unambiguously dropped.
-
----
-
-### L6 — telemetry reads a script value nothing defines · AUTO
-
-An undefined `ScriptValue` does not error. **It reads zero.** A run logged standard of living = 0 for
-every one of ~285 countries, with the urban-centre figures on the *same line* correct, because
-`v3tb_solw_*` lived in the probe values file and that file is only emitted when a probe metric asks
-for it. No `error.log` line, no data-error line, nothing to notice.
-
-**Detector:** every `v3tb_*` name the emitted telemetry reads must be defined in an emitted
-`common/script_values` file. Only our own names are judged — vanilla's are not ours to account for.
-
----
-
-### L7 — a control arm carrying gameplay content · AUTO
-
-`CLAUDE.md`, hard rule: **the only thing a control may vary is its telemetry.** Not one file, not one
-field. A reader who sees `{kind: control}` in a schedule must be able to assume vanilla without
-opening the build. A whole day of measurement (2026-08-05, findings F32/F33) was lost to running the
-wrong arm.
-
-**Detector:** identify the arm by the **mod's own metadata id**, read off the built mod so it cannot
-disagree with what loaded, then require every emitted path to be one of `.metadata`,
-`common/on_actions`, `common/script_values`, `events`. Anything else fails **by name**.
-
-✅ **The architectural fix landed the same day** (see `CLAUDE.md` → the three arms): `-ControlOnly`
-now **throws** if handed a config carrying gameplay content, and the overlay arm — vanilla +
-telemetry + one *declared* change — is its own flag with its own mod id
-(`com.yurcick.v3_testbed_overlay`).
-
-⚠ **Which means L7 keys on honesty, and that is deliberate.** The detector only applies to a mod
-claiming the control id, so an overlay that lied about being a control would trip it, and one that
-says what it is passes for the right reason. The guard and the naming hold each other up; neither
-alone is sufficient, and a future arm that carries content while borrowing the control id is exactly
-what this catches.
-
----
-
-### L8 — the emitted telemetry changed and the schema version did not · AUTO
-
-A finding cites the schema version it was measured under, and that citation has to keep meaning the
-same thing forever. `TELEMETRY_VERSION` is bumped **by hand**, which means it is forgotten by hand:
-nothing noticed that the emitted script changed while the number stayed put, and the cost lands
-months later on whoever compares two sessions that were never comparable.
-
-**Detector:** hash the **canonical telemetry** — every metric the library knows turned on, dates,
-tags, token and build stamp all pinned — and store it beside the version in
-`tools/telemetry_fingerprint.json`. If the hash moved and the version did not, **fail**.
-
-The metric list is read out of the library's own source, not hardcoded, so a metric added tomorrow is
-fingerprinted tomorrow without anyone remembering to add it here.
-
-**This is the entry that makes the guardrail bite on "any change, including telemetry"** rather than
-only on the changes someone thought to check. It is not a judgement about whether the change *was*
-breaking — the script cannot know that. It is a forced decision point:
-
-- the change **is** breaking → bump `$script:TELEMETRY_VERSION`, record it in the `TESTBED_METRICS.md`
-  table and tag the affected findings, then `-UpdateFingerprint`;
-- the change is **not** breaking → `-UpdateFingerprint`, and say so in the commit.
-
-*(Worked example: the L1 guards changed the emitted script text and not the emitted data — dead tags
-produced no lines before and produce no lines now — so the fingerprint was refreshed at v12 rather
-than bumped.)*
-
----
-
-### L9 — reading the shared log ring without filtering by the run's own identity · AUTO (regression) + **OPEN**
-
-The game's logs are a ring shared by **every** run, and the game rotates them at startup. Anything
-read out of them must be filtered by the run's own identity or it reads a previous session's output
-as this one's. Three places, three outcomes:
-
-| Reader | Filtered by | State |
-|---|---|---|
-| telemetry lines | the per-run **token** | fixed, long-standing |
-| the in-game clock | the line's own `[HH:MM:SS]` | fixed — it had thrown away a *successful* resume verdict |
-| **error counts** | *nothing* | **OPEN** |
-
-⚠ So `meta.json` → **`error_log_lines` is not a per-run number** — it is an upper bound including
-whatever the ring still held from earlier sessions. A run measured 313 508 error lines of which
-**zero** were its own; the give-away was errors citing `zzz_v3tb_telemetry.txt:20954` while that run's
-telemetry file was **41 lines long**.
-
-**Detector is a regression test on the two fixes that exist**, not a proof of correctness — it
-catches someone deleting the token filter, not a newly-written unfiltered reader.
-
-**Next step to close the OPEN part:** count only lines stamped inside the run's own wall-clock window,
-the same fix the clock got.
-
----
-
-### L10 — editing the generator while a batch is running · MANUAL
-
-`run_schedule.ps1` **rebuilds the mod before every run**, so an edit to `telemetry_lib.ps1` or
-`build.ps1` lands in run 2 and run 3 but not run 1 — and the arms silently stop being comparable,
-which is the one failure a control design cannot survive. This includes edits that look cosmetic,
-such as bumping the schema version.
-
-**No detector**: the build cannot tell whether the batch running beside it is one it belongs to.
-Queue the edit; apply it once the session reports `SCHEDULE DONE`.
-
----
-
-**⭐ A RUN THAT ARCHIVED NOTHING CANNOT HAVE LOST ANYTHING (refined 2026-09-16).** The run-level stop leaves an
-1836 stub whose archiver started, saw STOP and exited: `saves\` exists (the archiver creates it) and holds no
-`.v3` at all, so "0 summaries" read as the L12 failure on EVERY stopped configuration since the stop rule
-shipped — 20260915_002935 and 20260916_122445 both. A detector that cries wolf on a DESIGNED outcome is the failure
-this register exists to prevent, so such a run is now skipped and the skip is PRINTED, never silent.
-⚠ NOT loosened to "`saves\` is empty ⇒ skip": empty is ambiguous between *nothing was archived* and *everything
-was archived and reaped without a summary*, and the second is precisely what L12 is for. The discriminator is the
-ARCHIVER’S OWN RECORD — its closing line reads `ARCHIVE DONE - <n> saves in …`, so a run whose log says **0**
-archived nothing and is N/A, while a run whose log says 100 is judged exactly as before.
-Proven three ways the same hour: both stopped sessions PASS with the skip line, and run 1 of 20260916_122445
-(100 saves archived) with its `save_summaries` renamed aside still FAILS.
 
 ## Adding a landmine
 
 When a run surfaces a new one:
 
-1. **Write the entry here first** — it owns the ID, the story, the numbers and the fix idiom. Link
-   out to `BUGS_AND_FIXES.md` for the root cause rather than restating it, so the two cannot drift.
-2. **Write the detector** as `Test-Lm<ID>` in `tools/preflight.ps1` and register it in `$CHECKS`.
-   Read the **emitted artifact**, not the generator.
-3. **Prove the tripwire trips.** Break the thing on purpose, watch preflight fail, revert, watch it
-   pass. A guardrail that has never failed is not known to work.
+1. **Write the entry here first** — the ID (the next free number; check the register before claiming one, and never reuse or renumber an
+   ID), the defect, how it was found, the fix idiom and the numbers. Link to BUGS_AND_FIXES for the root cause and to FINDINGS for the
+   measurements rather than restating them, so the two cannot drift. Add the row to the register.
+2. **Write the detector** as `Test-Lm<ID>` in `tools/preflight.ps1` and register it in `$CHECKS` (`Artifact = $true` if it needs a built
+   mod). Read the emitted artifact, not the generator.
+3. **Prove the tripwire trips.** Break the thing on purpose, watch preflight fail, revert, watch it pass, and record the proof in the
+   entry. A guardrail that has never failed is not known to work.
 
-**A detector that can be code becomes code.** An entry that stays MANUAL forever is a smell: a manual
-step is one that gets skipped, and the failures in this file are precisely the ones nobody notices
-being skipped. L3 and L10 are MANUAL because the information genuinely is not available at build
-time — not because writing the check was inconvenient.
+**A detector that can be code becomes code.** A manual step is one that gets skipped, and the failures in this file are the ones nobody
+notices being skipped. L3 and L10 are manual because the information is not available at build time, not because the check was
+inconvenient.
 
-## L15 — a country silently LOSES a starting technology vanilla gives it
-
-**The shape.** L14 asks whether a country can unlock the buildings it owns. This asks the converse, and
-it is the user's rule of 2026-08-12: *every production method vanilla runs in 1836 stays, and the country
-running it holds the technology that unlocks it.* Nothing in the build enforced the "stays" half.
-
-**Why nothing fails.** We whole-file-replace `common/scripted_effects/00_starting_inventions.txt`, so a
-transform that drops a line removes that technology from every country of that tier. Worse and quieter:
-starting-tech tiers 1 and 2 get most of their set from `add_era_researched = era_1`, so **re-era-ing a technology OUT
-of era 1 silently withdraws it from 59 countries** — no file mentions it, no check reads it, the mod
-loads, and the first symptom is a production method a great power can no longer run. We move eras
-routinely (the ladder-era alignment moved 32 technologies in one commit), which is exactly the operation
-that can do this.
-
-**The detector.** `tools/verify_start_techs.mjs --diff-vanilla`, over the EMITTED files. Two things make
-it correct rather than approximately correct:
-- it expands the era shorthand **against each root's own era assignments**, because the whole hazard is
-  that ours differ from vanilla's;
-- it includes the **per-country `add_technology_researched` extras** that 81 countries carry in their own
-  history (Russia's `fractional_distillation`, Japan's `sericulture`, Britain's `joint_stock_companies`).
-  A set built from the tier effect alone is the wrong set for a fifth of the world.
-
-It FAILS on any loss and merely REPORTS the gains, grouped — gains are intended and ruled, but their
-shape belongs on screen so an unexpected one is visible. Today: 338 countries gain nothing, starting-tech tier 3 gains
-`beet_sugar_refining`, starting-tech tier 2 gains five era-1 technologies, starting-tech tier 1 those five plus `steel_toolmaking`.
-
-**Proven.** Deleting `add_technology_researched = railways` from the starting-tech tier-1 grant makes it name FRA, GBR,
-PRU and USA and exit non-zero.
-
-**⚠⚠ L14 AND L15 ARE `N/A` FOR AN INSTRUMENT ARM, AND THAT EXEMPTION IS ITSELF A LANDMINE STORY
-(2026-08-13).** Both read *our own* 1836 grant, which only a content arm has. A control emits
-`.metadata` + telemetry and nothing else — the hard rule — so it carries no
-`common/scripted_effects/00_starting_inventions.txt`, and both detectors died on **ENOENT** reading it.
-That made **`build.ps1 -ControlOnly` THROW**, i.e. **the control arm was unbuildable from the moment
-these two landed (2026-08-12) until it was fixed (2026-08-13)** — the purest form of the defect this
-register exists for, sitting *inside* the register's own enforcement. Nobody noticed because every arm
-built in between was a content arm.
-
-It surfaced when a 20-hour vanilla-vs-mod batch stalled on its first run: `session.log` stopped at
-`building setup 'vanilla'` with **neither** `build ok` **nor** `BUILD FAILED`, `build.log` ended
-mid-build with no error, and the scheduler sat idle with no children and 1.1 s of CPU. The message went
-to the scheduler's detached window — unreadable by design, since that window is what keeps `p/r/s/x`
-alive. Diagnosis required reproducing the build by hand in the foreground.
-
-**The skip is keyed on the mod's own METADATA ID** (`Get-InstrumentArmSkip`, the mechanism L7 already
-uses, read off the BUILT mod), **never on the grant file being absent** — "the grant file is missing"
-must stay a FAILURE for a content mod, which is exactly what L15 catches. **Proven both ways:** the
-control now builds green with L14/L15 reporting `N/A`, and deleting the grant from the real mod still
-fails both.
+**Traps this register has already hit while writing detectors:**
+- **It must be able to fail.** Refuse to report success over an empty population (`assertNonTrivial` in `verify_start_techs.mjs`, L14).
+  Parse BOM-tolerantly and never swallow a parse error in a silent `catch` (L36). A silent skip is indistinguishable from a check that ran.
+- **Prove it against every book and every session shape it will meet.** L13 was proven on one book and failed the other with eight false
+  positives on its first build.
+- **A check that reads a narrower key than the code it guards passes for the wrong reason** (L13 per industry where the property is per
+  vanilla method group; L14 per `vanilla_pm` where placement is per alias set). When a key widens, sweep every consumer.
+- **It must not cry wolf on a designed outcome** — runs in flight (L12, L17), stopped stubs (L12), accepted residuals (L33), floods of
+  identical lines (L28). A detector that always fires is not read.
+- **A walk over `tools/testbed/` skips `tools/testbed/sessions/`**: those scripts are frozen copies, and sessions are never rewritten
+  (L25, L27).
+- **PowerShell.** Register the verdict with `Add-Result`; a returned hashtable prints into the output stream and is never counted, so
+  preflight once reported PASSED under a visible FAIL (L36). Call node as `& cmd /c "node ""<tool>"" … 2>&1"`, or have the tool print its
+  verdict to stdout and signal only by exit code: `& node … 2>&1` under the Stop preference wraps a stderr line in an ErrorRecord and throws
+  (L14, L31, L38). Variable names are case-insensitive, so `$T` and `$t` are one variable (L35). `run_schedule.ps1` runs under StrictMode,
+  which reaches preflight through `&`: read optional properties through `PSObject.Properties`, or a missing one throws and blocks a launch
+  (L36).
+- **A watcher matches failure, process death and stall, not only success** (L21).
 
 ---
 
-## L16 — a schedule key that works in `defaults` for some fields and is SILENTLY DROPPED for others
+## The entries
 
-**Status: REGISTERED, DETECTOR OWED.** Found 2026-08-13; the fix could not be written the same hour
-because `preflight.ps1` is invoked by `build.ps1` before every run and a 20-hour batch was live.
+### L1 — a named country tag with no existence guard
 
-**The defect.** `run_schedule.ps1:153` resolves a run's dump dates as
-
-```powershell
-$dumps = @(Val $r "dump_dates" @())
-```
-
-— run-level only, with **no `$defaults` fallback**, unlike `tags`, `metrics`, `autosave_interval`,
-`timeout_minutes`, `wide_dates`, `wide_tags` and `origin_goods`, which all have one. So a schedule that
-puts `dump_dates` in `defaults` — the obvious place, and where every neighbouring key belongs — has it
-**silently ignored**, and every run falls back to the built-in default of *1 January of the year before
-`until`*: **one dump date instead of twelve**.
-
-**Why nothing fails.** The build succeeds, the mod loads, the run completes, the TSVs have rows. The run
-simply has one twelfth of the intended time series, and a metric that was supposed to be sampled per
-decade is a single endpoint. Every trajectory question — when a technology arrived, when a rung was
-first built, whether a leader plateaued — becomes unanswerable, and the summary looks perfectly normal.
-
-**Caught by** the `-WhatIf` line, which prints the resolved dump list per run and read
-`dumps: 1935.1.1`. That is luck, not a guard: `-WhatIf` is optional and the batch would have run
-without it.
-
-**Not covered by L5.** L5 walks the *telemetry* spec keys (`breakdown_dates`, `wide_dates`, `origin_goods`,
-…) against what `Resolve-Setup` threads. `dump_dates` reaches the observer by a different path — a
-`-DumpDates` argument — so it is outside L5's population entirely.
-
-**DETECTOR (to write).** In `preflight.ps1 -RepoOnly`: parse every `tools/testbed/schedules/*.json` and
-fail if any `defaults` block carries a key the resolver reads run-only. Derive the run-only set from
-`run_schedule.ps1` itself rather than listing it, so a key that later gains a fallback stops being
-flagged automatically. Prove it by putting `dump_dates` back into a schedule's `defaults`.
-
-⚠ **The real fix is arguably in the scheduler** — give `dump_dates` the same `Val $r … (Val $defaults …)`
-treatment as its neighbours. The detector is still wanted: it is the general case, and the next key added
-without a fallback will be silent in the same way.
-
----
-
-## L17 — a run that FAILED is recorded as `ok`, and the arm count silently shrinks
-
-**Status: REGISTERED, DETECTOR OWED.** Found live 2026-08-13, mid-batch, in
-`20260813_083557_vanilla-vs-mod-n4`.
-
-**What happened.** Run 4 (the mod arm) crashed at **1851.1.27**, its resume made no progress, and
-`run_observer.ps1` abandoned it — correctly, and it said so in its own log:
-
-```
-[16:31:59] [WARN] run 1: game CRASHED at 1851.1.27 (crash dump: victoria3_01260713_163156) - resuming
-[16:32:37] [WARN] resume made no progress (still 1851.1.27) - abandoning run 1
-[16:32:37] [INFO] run 1 finished: 1165,7s wall over 2 attempt(s), in-game 1851.1.27,
-                  exit resume made no progress
-```
-
-The **session** log, one line later, says:
-
-```
-[16:32:55] [INFO] run 4 finished: ok
-```
-
-**Root cause.** `run_schedule.ps1:464` derives the status from the observer's EXIT CODE and nothing else:
-`switch ($rc) { 0 { "ok" } 2 { "stopped_by_user" } 3 { "fatal_early_crashes" } ... }`. The observer exits
-**0** when it abandons a run, so an abandoned run is indistinguishable from a completed one. That status
-is then written into `session.json`'s index, which is what a later reader counts arms from.
-
-**Why nothing fails.** The batch continues, the folder exists, the TSVs have rows, and the summary is
-well-formed. The run simply covers **15 of 100 years** — 3 of 12 dump dates, 15 save summaries against a
-century's 100 — and `n=4 per arm` is really n=3. Everything needed to know better is already in that
-run's own `meta.json`: `reached_ingame_date: 1851.1.27`, `self_quit: false`, `resumes: 1`,
-`abandoned_reason: "resume made no progress"`. The scheduler never reads it.
-
-⚠⚠ **THIS IS THE MOST-REPEATED DEFECT IN THE WHOLE REGISTER'S HISTORY, seen from the generating side.**
-`SESSION_VERDICTS.md` already carries four retrospective corrections of exactly this shape —
-`techtree-full-n3` is n=2, `wages-n3` is n=2, `vanilla-retest`'s "19 runs" are 16 smoke probes, and
-`vanilla-retest-2` reached 1936 once in three. Every one of them had to be reconstructed by hand from
-run logs, long after the analysis that used the wrong n. This entry is why they keep happening.
-
-**DETECTOR.** Two halves, and the first is a real fix rather than a check:
-1. **In `run_schedule.ps1`**, after each run, read that run's `meta.json` and downgrade the status when
-   `self_quit` is false, or `abandoned_reason` is non-empty, or `reached_ingame_date` is short of the
-   plan's `until`. Record `partial(<date>)`, not `ok`. The information is already on disk.
-2. **In `preflight.ps1 -Session <dir>`** (where L12 already runs post-run), fail if any run's recorded
-   status disagrees with its own `meta.json`, and print a per-arm table of runs that actually reached
-   `until`. That table is the thing a verdict should quote instead of the folder count.
-
-Prove it by pointing the check at `20260813_083557_vanilla-vs-mod-n4`, where run 4 must come out
-`partial(1851.1.27)` and the mod arm must count 3 completed, not 4.
-
-⚠ Neither half could be written when this was found: `preflight.ps1` is invoked by `build.ps1` before
-every run and the batch was live. Editing it mid-batch would have changed the instrument between arms.
-
----
-
-## L18 — a tier that cannot break even at ANY price the engine can produce
-
-**Status: DETECTOR BUILT AND PROVEN — build wiring owed.** Found 2026-08-17 while diagnosing F67, from
-the economy's behaviour in flight rather than from any check. The rule was **ruled by the user the same
-day (§10.63)** and both halves are implemented:
-
-- **Solver** — `Xsolv`, a hard clamp in `solveInputsAt()` beside `Xmin` and the ratchet, plus
-  `assertSolvency()`, which **throws before the config write** if the negative-goods floor pushes a tier
-  back over the line after clamping. The solve refuses to write a config it knows is unsolvable.
-- **Build** — `tools/lint_solvency.mjs`, standalone, covering **every** tier including the `no_mass_be`
-  industries. Proven to trip: pointed at a config with `building_port` at 2.5 clippers it exits 1 with
-  *"needs its output at 444% of base to break even; the engine stops at 175%"*, and stays silent on
-  everything else.
-
-⚠ **The one-line call in `build.ps1`/`lint.sh` is still owed.** `canon-ports-n2` was live when this was
-written and the scheduler rebuilds the mod before every run, so editing the build path would have changed
-the instrument between run 1 and run 2 — **L10**. Wire it the moment the batch reports.
-
-⚠ **THE THRESHOLD WAS RULED TWICE ON THE SAME DAY, AND THE FIRST ONE WAS TOO WEAK TO MATTER.** The first
-ruling let BOTH prices go to their favourable edges — output ×1.75 *and* inputs ×0.25, i.e.
-`target_be ≤ 400` — which was measured at **0 of 105** before it shipped: the port is 270 and cleared it
-by ×1.48. Holding **inputs at base** is what makes the bound bite, and that is the shipped rule
-(`target_be ≤ 175`, §10.63). It catches port 270, railway 217 and synthetics 208, which is what forced
-the re-solve. `lint_solvency.mjs --band` still scores the superseded line for comparison.
-
-**The defect.** `building_port` (tier 0) consumes **15.2 clippers to make 9 merchant marine** —
-£912 of input for £450 of output at base prices, a ratio of **0.49**. Vanilla's own
-`pm_basic_port` is 6 → 9, i.e. **+£90**. Its stored `target_be` is **270**, which states plainly
-that the building needs its output at 270% of base to break even. **The engine's price band tops
-out at 175%.** So the tier cannot break even at any price the game is capable of producing, and
-it never could — it survives only on subsidy, and dies the moment subsidy lapses (F67 traces the
-rest: coverage decays 87% → 78%, staffing follows, world merchant-marine output falls in absolute
-terms, and two markets clamp at the +75% ceiling).
-
-**Why nothing fails.** Four layers each had a reason to catch it, and each has a specific,
-non-obvious reason it did not:
-
-1. **Scope.** `build.ps1:584` writes the linter's tier map only for industries where
-   `follows_be -ne $false -and -not $ind.no_mass_be`. Port, railway and power carry
-   `no_mass_be: true`, so no port tier is ever in `tools/ladder_tiers.txt` — the map has 93 entries
-   and the linter dutifully reports "93 in-scope buildings". The flag was introduced to keep the
-   mass BE tools and the UI preset off the new-economy chains; that it also removes them from the
-   linter is a side effect nobody chose.
-2. **The test is circular.** `era_solver.mjs:764` writes
-   `target_be = Ibase / ((1 − wage_pct) · Obase) · 100` — whatever the solved recipe implies — and
-   `lint_profitability.awk:55` then recomputes exactly that quantity and compares. The deviation is
-   **0 by construction**. The solver's own comment says so: *"demotes lint_profitability.awk from a
-   design check to a DRIFT GUARD: it can no longer tell us the balance is wrong"*.
-   ⚠ **This alone is sufficient, so fixing scope would not have helped**: `building_synthetics_plant`
-   carries `target_be` **208**, IS in scope, IS linted, and PASSES.
-3. **No absolute bound exists in the solver.** `era_scenarios.mjs:982` sets
-   `Xmin = (Obase / ioCapFor(ind.id)) / unitBase` — a **hard floor on leanness** (the 4:1 cap) — and
-   the only bound on richness is `monoCapInfo()`, the §10.50 ratchet, which is **relative to the tier
-   below**. A ladder's bottom rung has no tier below it, so it is bounded on one side only.
-   `building_port` is a bottom rung.
-4. **The ruling that removed the floor is now argued from stale cases.** §10.50.1 states there is
-   *"deliberately NO absolute floor"*, justified by *"fertilizer runs 0.98 for three eras, electrics
-   debuts at 0.75, both viable at their realised prices"*. **Both now run 3.99** — later re-solves
-   fixed them and the exemption stayed. The current sub-1 population is six tiers and the worst is
-   **0.49**, twice as far under as the worst case the ruling was argued from.
-
-**The census (2026-08-17, canonical config, 6 of 105 tiers destroy value at base prices):**
-
-| O:I | tier | target_be | in the linter? | building |
-|---|---|---|---|---|
-| 0.49 | t0 | 270 | **no** (`no_mass_be`) | `building_port` |
-| 0.61 | t1 | 217 | **no** (`no_mass_be`) | `building_railway` |
-| 0.64 | t2 | 208 | **yes — and it passes** | `building_synthetics_plant` |
-| 0.84 | t3 | 158 | **no** (`no_mass_be`) | `building_power_plant` |
-| 0.96 | t2 | 139 | yes | `building_steel_mill_bessemer` |
-| 0.96 | t0 | 135 | yes | `building_steel_mill` |
-
-**DETECTOR — as RULED and as BUILT (§10.63).** Inputs stay at BASE; only the output price moves to its
-band edge:
-
-> For every tier, take the **base PM** and compute from the goods block and the shared
-> `tools/goods_prices.tsv`: **THROW if `I_base / ((1 − wage_pct) · O_base) · 100 > 175`** — i.e. the
-> output price, as a % of base, at which the tier breaks even, against the engine's own +75% band edge.
-> 175 is a game constant rather than a tuning choice. Scope is **every tier**, explicitly including
-> `no_mass_be` industries — two of the three offenders live inside them and are invisible to
-> `lint_profitability.awk`. **Shipyards are not exempt.**
-
-Implemented as `tools/lint_solvency.mjs` (build side) and `Xsolv` + `assertSolvency()` in
-`solveInputsAt()` (solver side).
-
-⚠ **Do not implement it as a bound on `target_be`.** That field is solver output restated from the
-recipe, so a check against it inherits the circularity of layer 2. Recompute from the goods block.
-
-⚠ **A ratio below 1 is NOT the trigger, and must not be.** §10.50.1's reasoning is still sound —
-a tier may legitimately destroy value at base prices when realised prices carry it. The trigger is
-the sharper claim: *no reachable price makes this building solvent*. Steel's two 0.96 rungs are fine
-and must keep passing. **The §10.50 recipe ratchet is untouched and stays** — it is relative (a tier
-against the one below), this is absolute (a tier against the engine), and neither subsumes the other.
-
-**Proven on the real config.** `node tools/lint_solvency.mjs --census` against `acaf6ad` exits **1** and
-names exactly three tiers — `building_port` 270%, `building_railway` 217%, `building_synthetics_plant`
-208% — while staying silent on the three tiers that destroy value at base prices but remain reachable
-(`building_power_plant` 158, `building_steel_mill_bessemer` 139, `building_steel_mill` 135). Those three
-passing is as much a part of the proof as the three failing: the rule must not degenerate into "no sub-1
-recipes", which §10.50.1 forbids.
-
----
-
-## L19 — an ORPHANED GAME PROCESS makes the next run fail instantly, and nothing says so
-
-**Status: REGISTERED, DETECTOR OWED.** Found live 2026-08-17, immediately after a run was stopped by
-ruling. Cost one wasted launch; overnight it would have cost the night.
-
-**What happened.** `canon-ports-n2` run 2 was stopped mid-campaign with the STOP file. The observer did
-everything right — logged the stop, called `Stop-Process -Id $proc.Id -Force`, drained the harvest,
-closed the session (`run 2 finished: failed(1)`, `SCHEDULE DONE`). **But `victoria3.exe` outlived it**:
-PID 8420, started 13:33:01, still running at 14:58.
-
-Victoria 3 is effectively single-instance, so the *next* schedule's game could never start. That run
-reported `failed(1)` **twenty seconds** in, with zero rows, no `build_state.json`, no `logs/`, and a
-`run.log` of exactly one line:
-
-```
-[14:55:42] [INFO] restored content_load.json + pdx_settings.json
-```
-
-Killing the orphan by hand and relaunching the identical schedule worked first time.
-
-**Why nothing fails — and why this one is nastier than most.** The build succeeded and passed all four
-gates. The archiver and the harvester both reported alive. The scheduler reported `SCHEDULE DONE: 1/1`.
-The single log line describes the **tidy-up path**, so the only evidence reads like an orderly shutdown
-rather than a failure to launch. Every visible signal points at the config or the mod, which are
-blameless. ⚠ And the preceding batch looked *completely clean* — the orphan is invisible from inside the
-session that created it, because that session had already written its last line.
-
-**DETECTOR.** Two halves, and the first is a fix rather than a check:
-
-1. **In `run_observer.ps1`, make the kill verifiable.** After `Stop-Process`, poll for the process to
-   actually be gone (a few seconds, then a second `-Force`), and **log the outcome either way**. A kill
-   that reports success and leaves the process running is the whole defect.
-2. **At the START of every run — in `run_observer.ps1`, before the settings backup — refuse to launch
-   while a `victoria3.exe` this session did not start is alive.** Fail loudly with the offending PID and
-   its start time. That is the check that would have turned twenty silent seconds into one clear line.
-   ⚠ Do NOT auto-kill it: a process from a *concurrent* session is somebody else's run, and killing it
-   would convert a wasted launch into a destroyed campaign. Report and stop.
-
-Worth adding to `preflight.ps1 -RepoOnly` as well, since that already runs before a batch is estimated —
-a stale game process is exactly the kind of thing to catch before the first build rather than after it.
-
-**Prove it** by starting the game by hand, then launching any schedule: the run must refuse with the PID
-named, instead of exiting after one line.
-
----
-
-**Scope widened 2026-09-09 — the batch's build path is wider than the mod's.** `run_schedule.ps1` builds before every run and
-that build runs preflight, and preflight walks `tools/testbed/**/*.mjs` (L27, L25). So an ANALYSIS script — nothing the mod
-ever reads — is on the batch's build path: `batch_tables.mjs`, added at 10:43 on 2026-09-09 while phase 2 of the §10.76 plan
-played, failed L27 (its `disabled` guard three lines below the loop, outside the detector's two-line window) at run 2's 12:35
-build and the scheduler aborted the schedule after one clean run (BUGS_AND_FIXES 2026-09-09). Rule: while a batch plays, run
-`preflight.ps1 -RepoOnly` before committing ANY file under `tools/testbed` — two seconds — and treat a new analysis script as
-an L10 edit until it passes.
-
-### L16 — a `defaults` key honoured for some fields and silently dropped for others · AUTO
-
-**The failure.** The schedule JSON accepts the key, nothing reads it, and the run proceeds on a
-fallback. Nothing errors. The result looks like the METRIC failed rather than the plumbing.
-
-**The case it was registered from:** `dump_dates` was read as `Val $r "dump_dates" @()` — from the RUN
-ONLY — while `tags` and `metrics` on the next two lines both fall back to `$defaults`. A defaults-level
-`dump_dates` therefore did nothing, and every run fell back to ONE computed dump date instead of the
-twelve asked for. **A per-decade series silently becomes a single endpoint.**
-
-**Fixed and guarded, 2026-08-17.** `dump_dates` now falls back to `$defaults` like its neighbours; and
-the scheduler **throws on any `defaults` key it does not thread through**, naming the key, before it
-builds or launches anything. Keys prefixed `_` are treated as comments. Adding a defaults key now means
-adding it to `$KNOWN_DEFAULT_KEYS` and threading it, or the batch refuses to start.
-
-⚠ **The guard matters more than the fix** — the next key added has the identical hazard. Same argument
-as L5 about spec keys: a comment on the right line did not prevent this the first time.
-
-**Tripwire proven both ways:** a real schedule passes `-WhatIf`; the same schedule with a
-`dump_dates_typo` key added to `defaults` throws, naming `dump_dates_typo`.
-
----
-
-### L17 — a run that FAILED is recorded as `ok`, and the arm's n silently shrinks · AUTO (post-run)
-
-**The failure.** The scheduler derives a run's status from the **observer's exit code alone**, and the
-observer exits 0 even when it ABANDONS a run — on a watchdog timeout, on a STOP file, on a resume it
-gave up on. A run that reached 1838 of a planned 1936 is then counted beside three that reached 1936:
-the arm reports n=4, and every mean is computed over a population that never existed.
-
-**Nothing was missing to catch it.** Each run's own `meta.json` already carries `reached_ingame_date`,
-`until_date`, `self_quit` and `abandoned_reason`. Nothing read them. This is the generating cause of the
-**four retrospective n-corrections** in `SESSION_VERDICTS.md` — `techtree-full-n3` and `wages-n3` are
-n=2, `vanilla-retest`'s nineteen runs are sixteen probes plus three failed resumes, and
-`canon-ports-n2` is n=1 for the century.
-
-**The detector** (`preflight.ps1 -Session <dir>`, N/A at build time like L12): for every ENDED run,
-compare `reached_ingame_date` against `until_date` and report any run that fell short or carries a
-non-empty `abandoned_reason`. It deliberately does **not** judge why — a deliberate STOP is as much a
-shortfall for COUNTING as a crash is, and which it was belongs in the session's `VERDICT.md`.
-⚠ Runs still in flight are counted separately and never failed; a detector that cries wolf on every
-mid-batch check is one people learn to ignore, which loses the register.
-
-**Tripwire proven both ways, 2026-08-17:** PASS on `20260817_225120_port-ramp-monthly-n3` (3 ended runs,
-all reached 1841.2.1); **FAIL** on `20260817_152516_anchorage-netseed-n1`, a run killed by the STOP file
-— and the whole preflight goes red with it.
-
----
-
-## L20 — an ALTERNATE CONFIG WITHOUT ITS PAIRED `tech_tree_options.<sfx>.json` cannot be built, and the batch dies at the first build
-
-**Status: ✅ FIXED AND GUARDED 2026-08-18 · AUTO.** Found 2026-08-18.
-**Cost at discovery: 6 h 40 min of an overnight window, zero runs.**
-
-**The convention nobody states.** `emit_techs.mjs` and `emit_research_events.mjs` derive a **parallel
-tree file** from the config's *filename*:
-
-```js
-const m = bn.match(/^mod_config\.(.+)\.json$/);   // mod_config.foo.json -> '.foo'
-const TREE_PATH = join(REPO, 'config', 'tech_tree_options' + SFX + '.json');
-```
-
-So `config/mod_config.foo.json` **requires** `config/tech_tree_options.foo.json` to exist. Every
-alternate in the repo has one; nothing says so, and nothing checks it.
-
-**What happened.** A full-century n=2 batch was launched against a *frozen byte copy* of the canonical
-config (`mod_config.canon_n2.json`) — a deliberate L10 mitigation, so that a second agent session editing
-`config/mod_config.json` mid-batch could not silently change the arm between run 1 and run 2. The freeze
-had no paired tree, so the build threw:
-
-```
-Error: ENOENT: no such file or directory, open '…/config/tech_tree_options.canon_n2.json'
-    at emit_techs.mjs:51
-emit_techs.mjs failed (exit 1) - the mod would ship without its technologies.
-```
-
-⚠ **The mitigation was what broke it.** The freeze is still the right call — do not conclude "never
-freeze". Conclude that a frozen config is a *new alternate* and needs its pair.
-
-**Why it is silent for six hours.** The build fails in **3 seconds** with a perfectly clear message — but
-into `build.log`, which nobody reads while a batch is believed to be running. The scheduler then failed
-to abort (**L21**), so `session.log` ended mid-sentence at `building setup 'canonfull'…`, the harness sat
-alive at 9.5 s CPU with no child process, and no game ever launched. From outside, an idle machine and a
-silent log are indistinguishable from a healthy long run.
-
-**Do NOT "fix" it by falling back to the canonical tree.** That would pair an alternate config's
-BUILDINGS with the canonical config's TECHNOLOGIES — precisely the defect BUGS_AND_FIXES 2026-08-12
-records, caught one run before it voided an overnight batch. It must fail; it must fail *loudly and
-early*, naming the missing file and the one-line fix.
-
-**Census at registration — 5 of 21 alternates are unbuildable today**, one of them a day old:
-`2x_thresholds`, `baseline175ab` (2026-08-17), `paper_be20`, `vanilla_stub`, `x10`. So this is a live
-trap, not a one-off self-inflicted wound.
-
-✅ **DETECTOR: `Test-LmL20` in `tools/preflight.ps1`**, registered in $CHECKS as a REPO check (it reads
-the config, not a built mod), and wired at **three** call sites:
-- **`build.ps1`, immediately after the config is resolved and before a single file is emitted** —
-  `preflight.ps1 -RepoOnly -Only L20 -Config $cfgPath`, which throws. The `-Only` filter exists for
-  exactly this: the full walk still runs at the end, so the rule has ONE definition run twice, not a
-  second copy that can drift.
-- **`build.ps1`'s two full preflight calls**, which now pass `-Config` (the control arm's early exit
-  included).
-- **`run_schedule.ps1`, per SETUP, before the estimate is printed** — the repo-wide pass only WARNs
-  because it does not know which config a batch will build; this names each setup's own config, so a
-  batch pointed at an unpaired alternate dies in two seconds instead of at its first build.
-
-**What it reports.** With `-Config`: PASS/FAIL for that one config, and the FAIL prints the exact
-`Copy-Item` that fixes it. Without: a WARN listing every unpaired alternate in `config/`, which alone
-would have caught this — `-WhatIf` ran `preflight -RepoOnly` seconds before the lost launch and printed
-`PREFLIGHT PASSED`.
-
-⚠ **It mirrors the emitters' suffix rule rather than restating it loosely**, `MOD_CONFIG` precedence
-included (both `emit_techs.mjs` and `emit_research_events.mjs` read `process.env.MOD_CONFIG || argv[3]`).
-A redirected run is therefore checked against the pair it will actually open, and the message names the
-file the suffix came FROM — a message naming the wrong file is how a redirected run gets "fixed" in the
-wrong place.
-
-⚠ **Tripwire PROVEN on real data, all four paths (2026-08-18):** repo survey WARNs the same five
-alternates the census below names; PASS on the canonical config; **FAIL + build refused before any
-emission** on `mod_config.baseline175ab.json`, exit 1; and `MOD_CONFIG=…x10.json` overriding a
-canonical `-Config` FAILs against the x10 tree. A full `-DryRun` on the canonical config passes with
-the check live.
-
----
-
-## L21 — a FAILED BUILD hangs the scheduler instead of aborting it, and the whole window is lost
-
-**Status: ✅ FIXED AND GUARDED 2026-08-18 · AUTO.** Found 2026-08-18, the same incident as **L20**. This is the entry
-that turned a 3-second, clearly-reported failure into a **6 h 40 min** loss, and it is the more dangerous
-of the two because it is arm- and config-independent: *any* build failure, from any cause, costs the
-whole window.
-
-**The intended behaviour exists and is correct** (`run_schedule.ps1`):
-
-```powershell
-& powershell @($resolved.Args) 2>&1 | Out-File -FilePath (Join-Path $runDir "build.log") -Encoding utf8
-if ($LASTEXITCODE -ne 0) { Log "BUILD FAILED for setup … - see build.log; aborting schedule" "ALERT" ; … }
-```
-
-**It never ran.** `session.log` — written by `Log` via `Add-Content`, so it is the record of what the
-scheduler actually reached — contains no `BUILD FAILED`, no `ALERT`, no `aborting`. Its last line is
-`building setup 'canonfull'…`. The scheduler was therefore blocked **on the pipeline itself**, never
-reaching the exit-code test. Observed state: harness PowerShell alive, **9.5 s CPU over 6 h 40 min**, a
-`conhost.exe` and **no build child at all**, `build.log` truncated mid-stream with the node error absent
-from it.
-
-⚠ **The exact blocking mechanism is NOT identified** and is not claimed here. Candidates, none confirmed:
-`2>&1` on a native command in PS 5.1 wrapping stderr into `NativeCommandError` records (the hazard
-CLAUDE.md already warns about for the Bash/PowerShell tools); `Out-File` holding the pipeline open; or a
-console-selection freeze (QuickEdit) blocking a write. **Do not write the cause into the fix** — write
-the *timeout*, which is correct regardless of which it is.
-
-**Why nothing fails.** Every guardrail in the repo assumes the scheduler is running or has finished. A
-scheduler that is *blocked* satisfies neither: `wait_for_session.ps1` sees no completion marker and a
-live harness, so it reports `RUNNING` forever — the heartbeat is indistinguishable from a healthy
-2½-hour run.
-
-**And the agent-side failure is the same shape, which is the lesson worth keeping.** The smoke check
-mandated in CLAUDE.md was armed as a background waiter conditioned on `logs_live/debug.log` **appearing**
-— a happy-path signal. The build failed, that file was never created, the waiter never fired, and the
-silence was read as "still running". **A watcher that matches only success is indistinguishable from a
-broken watcher.** Every wait condition must also match failure, process death, and stall.
-
-✅ **FIX + DETECTOR SHIPPED 2026-08-18, all three parts.** `run_schedule.ps1` builds through
-**`Invoke-BoundedBuild`**:
-1. **The build is BOUNDED.** `-BuildTimeoutMinutes`, default **10** against a ~7 s build. On expiry the
-   child is killed as a **TREE** (`taskkill /T /F`, then `$proc.Kill()` as a backstop) — `Kill()` alone
-   on PS 5.1 orphans the node and robocopy children the builder spawns.
-2. **The verdict comes off the PROCESS OBJECT, never the pipeline.** `Start-Process -PassThru` +
-   `WaitForExit(ms)` + `$proc.ExitCode`, with output redirected to **files** and merged into one
-   greppable `build.log` (stdout, then a `----- stderr -----` fence). A **null** exit code is treated as
-   **failure**, not success: the whole point of moving the verdict onto the object is that it can be
-   trusted, and null means it cannot.
-3. **The waiter is fail-aware.** `wait_for_session.ps1` gains **STALLED (exit 3)** — nothing anywhere in
-   the session tree has been written for `-StallMinutes` (default 20) — beside the existing DEAD. It
-   watches the newest write across the whole tree rather than one happy-path file, because the game
-   mirrors its logs continuously, the concurrent harvest writes summaries, and a build writes
-   `build.log`: under any healthy stage something ticks within seconds.
-
-A failed or timed-out build now sets `$fatalExit`, so the schedule **still writes `session.json` and
-still prints `SCHEDULE DONE`** (that marker is what the waiter wakes on — a batch that dies at the first
-build must wake the agent in seconds, not look like a live run) with `[ABORTED]` appended, and then
-**exits 3**. Per-run `status` is `build_failed` / `build_timeout`.
-
-⚠ **THREE THINGS WERE PROVEN BY DELIBERATE BREAKAGE, and the third was a real bug found by proving:**
-- **exit code**: a paired-but-invalid-JSON config → `BUILD FAILED … (exit 1)`, schedule exit 3, **1 s**.
-  The first attempt reported `exit -1`, i.e. the unverifiable fallback — `Start-Process -PassThru`
-  WITHOUT `-Wait` hands back a Process whose `ExitCode` reads `$null` unless the handle has been
-  touched, so `$null = $proc.Handle` is load-bearing.
-- **timeout**: `tools/build.ps1` temporarily replaced by a stub that hangs and spawns a child, run at
-  `-BuildTimeoutMinutes 1` → `BUILD TIMED OUT … after 1 min - child killed`, exit 3, **63 s**; the
-  child's survival marker never appeared, so the tree-kill holds. The real builder was restored and
-  **sha256-verified**.
-- ⚠⚠ **the empty-stream bug the timeout proof exposed:** `$x = [string](Get-Content -Raw)` on an
-  **empty** file leaves `$x` **null**, not `""` — the cast has nothing to act on — and under
-  `Set-StrictMode 2.0` the next `.Trim()` is a terminating error. That is precisely the TIMEOUT case (a
-  hung build has usually written no stderr at all), so the first timeout run aborted with
-  `InvokeMethodOnNull` and **never printed `BUILD TIMED OUT`**. A guard that has only been tested on the
-  happy path is not known to work — this one was two lines from being another silent hang.
-
-⚠⚠ **AND THE WAITER'S OWN STALL CHECK SHIPPED WITH TWO BUGS THAT HID EACH OTHER — caught within minutes
-of shipping, on the live canon-n7 batch (2026-08-18).** It reported **STALLED against a run that was
-healthy and advancing**, printing `newest write: 01.01.0001 0:00:00`, i.e. it had found *no files at all*.
-Two independent faults, in series:
-1. **The session path it was handed was mangled** (an escaping layer between the caller and the script ate
-   the separators), so it watched a directory that never existed. **A watcher that cannot tell a broken
-   ARGUMENT from a broken RUN is the same defect as one that cannot tell failure from success** — it just
-   fails in the flattering direction. Fixed: a non-existent session is **BAD SESSION, exit 4**, named,
-   before any waiting; and a tree that enumerates *nothing* is exit 4 too, not staleness.
-2. **The exclusion filter was an invalid regex.** It tested the full path against a pattern of escaped
-   separators, and the same escaping layer collapsed the doubling, leaving a regex that **threw on every
-   file**. It could not surface while fault 1 was present, because an empty enumeration never reaches the
-   filter. Fixed by removing the escaping entirely — the check now compares the parent **directory's
-   name**, which nothing can mangle.
-⭐ **The lesson is the register's own, turned on itself:** a guard is not known to work until it has been
-run against the thing it guards. This one was proven against a fabricated stall and never against a real
-session, and it had a 100% false-positive rate on the first live one. It now reports RUNNING correctly on
-canon-n7 and sees writes 7 seconds old.
-
-⚠ The blocking mechanism of the original incident is **still not identified**, and deliberately so: the
-fix is the timeout, which is correct whichever candidate it was.
-
----
-
-## L22 — a mod `effect` block on a VANILLA on_action SILENTLY REPLACES vanilla's, and the engine says so in one line nobody reads
-
-**Status: ✅ FIXED AND GUARDED 2026-08-18 · AUTO.** `emit_research_events.mjs` now registers
-`on_monthly_pulse_country = { on_actions = { pmr_wargate_eval } }` and puts the effect in that named
-action, the idiom the telemetry and diag files already used. Verified against the EMITTED artifact: the
-only direct `effect` child sits under `pmr_wargate_eval`, and `on_monthly_pulse_country` carries an
-`on_actions` list. Vanilla's 1005-line effect is no longer displaced.
-✅ **DETECTOR: `Test-LmL22` in `tools/preflight.ps1`**, registered in \$CHECKS as an artifact check, so
-it runs inside every build. It reads the EMITTED `common/on_actions/*.txt`, and any top-level block that
-is a VANILLA on_action must not carry a direct `effect = {` child. The **262 vanilla on_action names are
-parsed LIVE from the game**, so a patch that adds one is covered without editing the check; an `on_` prefix
-is the documented fallback when the game path is unreadable — preflight must keep working on a machine
-with no game installed.
-⚠ **Tripwire PROVEN by deliberate breakage.** Reintroducing the bare `effect` on
-`on_monthly_pulse_country` made preflight exit 1 with
-`L22 FAIL … 'on_monthly_pulse_country' declares its own effect block`, naming the file and printing the
-two-line fix; restoring it returned PASS, and a full dry-run build passes with the check live.
-⚠ It is deliberately **NOT** a grep for the engine's own warning string — that needs a RUN, and the point
-is to fail at BUILD time. Same principle as reading the artifact rather than the generator, which is what
-caught both this bug and the zero-fleet-technologies bug on the same day.
-
-**Original status: REGISTERED, DETECTOR + FIX OWED** (both queued behind the live `canon-n2` batch — `emit_research_events.mjs`
-is in the build path and the scheduler rebuilds between runs, so changing it mid-batch is an L10 breach).
-Found 2026-08-18, while checking whether the rebuilt war gate fires as designed. **It was not what we were
-looking for**, which is the point of reading `error.log` at all.
-
-**The rule.** An on_action may carry `events`, `random_events` and `effect`. `events` lists *merge* across
-files. **`effect` does NOT.** Two files defining an `effect` for the same on_action do not compose — the
-engine keeps the **most recently loaded one** and discards the other, then logs exactly one line:
-
-```
-[08:43:14][jomini_onaction.cpp:124]: There is more than one 'effect' defined
-          using most recent:common/on_actions/zzz_pm_rehaul_wargate.txt:5
-```
-
-**What happened.** `zzz_pm_rehaul_wargate.txt` declares `on_monthly_pulse_country = { effect = { … } }`.
-Vanilla declares that same on_action in `common/on_actions/00_code_on_actions.txt:475` **with its own
-`effect` block of 1 005 lines**. Our file is `zzz_`-prefixed, so it loads last and **wins**: vanilla's
-entire monthly country effect is discarded for the whole campaign. It carries Ottoman and Portuguese
-monarchy succession (`ottoman_monarchs.1`, `.2`), ruler-trait rolls, and content scoped to
-**AUS BIC FRA GBR HAI HYD JAP MON MOR POR SPA SPC SWI TUR VEN**.
-
-**Why it is silent.** Nothing fails. The mod loads, the build passes every gate, the run completes, the
-war gate itself works. The only evidence is one `error.log` line among ~12 700, sitting in a file that is
-*expected* to carry vanilla's own noise — the exact reason nobody reads it.
-
-**THE CORRECT IDIOM, AND WE ALREADY USE IT EVERYWHERE ELSE.** Register a named action instead of writing a
-bare `effect`:
-
-```
-on_monthly_pulse_country = { on_actions = { pmr_wargate_eval } }   # merges
-pmr_wargate_eval = { effect = { … } }                              # our own block, no collision
-```
-
-`zzz_v3tb_telemetry.txt` does this for `on_game_started_after_lobby`, `on_monthly_pulse`,
-`on_acquired_technology` and the rest; `zzz_pm_rehaul_diag.txt` does it for
-`on_game_started_after_lobby`. **The war gate is the only file in the repo that does not** — so the
-convention was established and simply not followed by the newest emitter. ✅ Both other files were audited
-and are clean, which also means **every control arm is unaffected**.
-
-**DETECTOR (owed).** Parse the EMITTED `common/on_actions/*.txt`. Any top-level block that is a **vanilla
-on_action** (name parsed live from the game's own `common/on_actions/*.txt`; `on_`-prefixed is the
-fallback rule) must **not** contain a direct `effect = {` child. FAIL naming the file, the on_action and
-the two-line rewrite. Cheap, artifact-based, and it would have caught this at the first build.
-⚠ Do not implement it by grepping for the engine's warning string — that requires a *run*, and the whole
-point is to fail at build time.
-
-**Prove it** by re-adding a bare `effect` to a vanilla on_action: preflight must fail before the game
-is ever launched.
-
-⚠ **What is NOT established:** that vanilla's monthly events *observably* stopped firing. The engine
-message and the two declarations are conclusive about which block is kept; the gameplay consequence is
-inferred, not measured. Confirming it is a probe on **vanilla + telemetry** for the baseline rate of
-`ottoman_monarchs.1` against a modded arm — the shape of question that belongs on a control arm
-(user ruling 2026-08-18).
-
-**Scope of contamination.** The wargate file first shipped 2026-08-18, so only that day's sessions carry
-it: the three `wargate-*` probes and the `canon-n2` batch. Earlier sessions are clean.
----
-
-## L23 — a LOG LINE COUNTED RAW, when a burst repeats it: JE firing counts inflated 2.29x
-
-**Status: REGISTERED, DETECTOR OWED.** Found 2026-08-19, ~2 h into canon-n7 run 1, while answering
-"anything egregious in the first run?". Nothing in the run was wrong; the way its telemetry was being
-COUNTED was.
-
-**The failure.** `PMR_JE|<stage>|<tech>|<country>` is logged once when a research journal entry
-completes, and every analysis so far has counted those LINES. In canon-n7 run 1 to 1926 the log holds
-**12,143 PMR_JE lines against 5,293 distinct `(stage, tech, country)` triples — 2.29x inflation.**
-It is not spread out: it lives in a handful of SECONDS, 136 duplicated lines in 22:24:42 alone, and
-the steady state is clean. One country, Yogyakarta, appears **16 times** completing `percussion_cap`,
-all at the same wall-clock second, in verbatim 655-line blocks that repeat — blocks whose md5s are
-identical and which carry unrelated lines (party creation) along with the JE lines.
-
-⚠ **THE CAUSE IS NOT IDENTIFIED, AND THE FIX DOES NOT DEPEND ON IT.** Two candidates: the observer's
-continuous log MIRROR re-appending an overlapping chunk when the 5x512KB ring rotates rapidly under a
-burst (the bursts are exactly where the game emits thousands of lines in one tick), or the engine
-genuinely re-emitting. Evidence leans to the mirror — the repeated blocks are byte-identical including
-unrelated content, and a line-for-line comparison against the GAME'S OWN live `debug.log` in a
-steady-state window matches 1:1 (game=1, mirror=1 on three sampled lines). It could not be checked at
-the burst itself: the ring had rotated that window away by the time it was found. **Do not write the
-cause into the fix.**
-
-**THE RULE: COUNT DISTINCT `(stage, tech, country)` TRIPLES, NEVER RAW LINES.** That is correct under
-either cause, and a journal entry completes once per country per technology by construction, so a
-triple cannot legitimately recur. Raw lines are an UPPER bound, distinct triples a LOWER bound; the
-truth sits at or near the lower one.
-
-⚠⚠ **IT REACHES BACK INTO A SHIPPED FINDING. F73's "10,093 firings", its 1840s peak of 2,221 and its
-87.2%-to-minors split were all counted RAW**, and the inflation is concentrated in exactly the early
-window that produced that peak. The SHAPE of F73 very likely survives — the duplication is not
-selective by country or technology — but its MAGNITUDES do not, and no threshold ruling should be taken
-on the raw numbers. Re-derive from distinct triples before using them.
-
-**DETECTOR (owed).** Two halves, and the second is the one that lasts:
-1. The analysis path: every reader of `PMR_JE` (and any other per-event telemetry line) de-duplicates on
-   its identity tuple, and REPORTS the raw/distinct ratio rather than silently collapsing — a large ratio
-   is itself a signal about the ring.
-2. A mirror-fidelity check: after a run, compare the mirror against the game's own retained log over an
-   overlapping window and fail if the mirror holds lines the source does not. That is the artifact-vs-
-   generator principle applied to the instrument itself.
-
-⚠ This is L9's sibling — that entry is about reading the shared ring without filtering by the run's own
-token, this one about trusting line COUNTS from a ring under burst. The same instinct fixes both: a log
-line is evidence that something happened, never evidence of how many times.
-
----
-
-## L24 — a GENERATOR'S OWN DIAGNOSTIC TEXT LEAKED INTO AN EMITTED SCRIPT FILE
-
-**Status: AUTO** — `Test-LmL24` in `tools/preflight.ps1`, artifact-side, so it runs on every build and
-before every batch. Proven to trip by re-injecting the exact damage.
-
-**Found 2026-08-19**, at the five-minute smoke check of the `aival-n4` batch's first run, which was
-stopped and relaunched. Cost: five minutes. Had the smoke check not been done, it would have cost the
-whole ten-hour window and produced an arm whose power and railway buildings may not have existed.
-
-### What happened
-
-`build.ps1`'s `Set-BuildingAiValue` **returns the lines of a building block**, and reported its
-"won't override a complex `ai_value` block" note with `Write-Output`. In PowerShell a bare
-`Write-Output` inside a function **joins that function's return value**, so the note was written into
-`common/buildings/06_urban_center.txt` and `11_private_infrastructure.txt` as a literal line:
-
-```
-note: building_power_plant = { has a complex ai_value block - not overriding
-building_power_plant = {
-	building_group = bg_power
-	...
-```
-
-⚠⚠ **The note text itself contains `<key> = {` — an unbalanced OPENING brace.** So the parser opened a
-bogus block and the real definition nested inside it; the file's depth never returned to zero and every
-subsequent block shifted a level. Seven such lines, one per cloned tier with a complex vanilla block
-(3 power + 4 railway).
-
-**And nothing failed.** The build succeeded. `lint.sh`, `lint_solvency.mjs` and `Invoke-ModChecks` all
-passed — they check *economics* and *completeness*, not syntax. The mod loaded. The init marker
-`PM_TECH_REHAUL: init OK` was written. The clock advanced. The only trace was 96 lines of
-`gamedatabase.h:378 Duplicated key note: will not be created from file: …` in `error.log`, a file that
-is *expected* to carry vanilla's noise and that the smoke check exists to read.
-
-### Why it had never fired
-
-`Set-BuildingAiValue` refuses complex blocks **by design** — mangling railway's 164-line
-Trans-Siberian / Shinkansen / Trans-Continental `ai_value` block would be far worse. But it is only
-*called* on a cloned tier when that tier carries an `ai_value` in the config, and until the ai_value
-ladder **no power or railway tier ever did**. The F66 port probe set ai_values on cloned tiers, but
-ports carry no complex block, so it took the scalar path and the note never printed.
-
-⇒ **A refusal path that has never executed is not known to work.** The same is true of any
-`else`-branch in a generator that only a new config shape can reach.
-
-### DETECTOR
-
-Read every **EMITTED** `common/**/*.txt` — the artifact, never the generator — and require that it is
-syntactically a Paradox script file:
-
-* brace depth ends at **0** and never goes negative;
-* every non-blank, non-comment line at depth 0 is either `}` or `<key> =`.
-
-Prose cannot satisfy the second rule, and that is the whole point. `#` counts as a comment only outside
-quotes.
-
-⚠ **Deliberately NOT a grep for `note:`, and not a lint of `build.ps1` for `Write-Output`.** The bug
-class is *a generator leaking its own output into its output*, and the next instance will use a
-different word in a different function. Verified **zero false positives** across all 36 emitted files
-of both the canonical and the aival builds; **proven to FAIL** (exit 1) with the original bad line
-re-injected, naming both the stray line and the resulting brace imbalance.
-
-### The rule for generators
-
-**A function that returns content must never report through the success stream.** In PowerShell use
-`Write-Warning` (or `Write-Host`); the note is *more* visible there, not less, which is what you want
-for a silent skip. The same trap exists wherever a helper both builds text and narrates — check any
-generator whose return value is assembled from a pipeline.
-
-⚠ This is L2's sibling one level up: L2 is a *data function* used where a script value belongs, this is
-a *diagnostic string* used where script belongs. Both produce a file the engine half-reads.
-
----
-
-## L25 — a SUMMARY READER GLOBS `*.json.gz` AND SO READS THE HARVESTER'S IN-PROGRESS FILE
-
-**Status: AUTO** — `Test-LmL25` in `tools/preflight.ps1`, repo-side, so it gates a batch before
-anything is harvested. The check was deferred while a batch ran (preflight is a build-path file and
-the scheduler rebuilds before every run) and wired in the moment the machine was free.
-
-**Found 2026-08-20**, from a `.partial` filename appearing in a routine construction-mix smoke check.
-
-### The mechanism
-
-`harvest_saves.ps1` writes each summary to a temp name and renames only after verifying it —
-`$tmp = Join-Path $Out "$stem.partial.json.gz"` (line 107). That discipline is correct and is the
-reason L12 exists: a reaped save makes the summary the record, so it must never be half-written.
-
-But **`"0001_x.partial.json.gz".endsWith('.json.gz')` is TRUE**, and every reader globbed exactly that.
-Fourteen of them: all the `analyse_*`, `fill_*`, `report_*` and panel scripts, plus `queue_mix.mjs`.
-
-### Why nothing fails
-
-Two outcomes, both silent:
-
-* **the temp file is still truncated** — `gunzipSync` throws, and every reader wraps the parse in
-  `try { … } catch { continue; }`, so the year is **silently skipped**. A mid-batch read quietly loses
-  data and reports a smaller series as though it were complete.
-* **the temp file is complete but not yet renamed** — both names are in the listing, so the same year
-  is **read twice**. In the diff-based analysers that inserts a spurious zero-delta year, diluting
-  every per-year rate.
-
-Neither raises anything. The reader prints a normal-looking table either way.
-
-### Blast radius, checked rather than assumed
-
-Completed-batch analysis is **unaffected** — once a harvest finishes there are no `.partial` files
-left, which is why every number reported off `canon-n7`, `aival-n4` and the vanilla baseline stands.
-The exposure is to **mid-batch reads**, and one was done on 2026-08-20 (run 1 of `aival-n4`, at the
-user's request). That read is safe for a second reason: the only run still harvesting was `run002`,
-which `lib_runs.usableRuns()` had already excluded for having no readable `meta.json`. Verified, not
-assumed.
-
-### FIX
-
-```js
-.filter(f => f.endsWith('.json.gz') && !f.includes('.partial.'))
-```
-
-applied to all 14. `analyse_ai_tier_choice.mjs` re-run afterwards reproduces the canon-n7 baseline
-byte for byte (52.94% mean, 3.17pp sd, per-run 55.22/47.42/57.08/52.37/50.92/54.65), which is the
-regression check.
-
-### DETECTOR (owed)
-
-A static check: no reader under `tools/testbed/` may test `endsWith('.json.gz')` without also
-excluding `.partial.`. Cheap, repo-side, and it belongs beside L20's config check — both are
-"the file you are about to read is not the file you think it is".
-
-⚠ The general shape is **L9's and L23's**, one layer down: L9 is reading a shared log ring without
-filtering to your own run, L23 is trusting line counts from that ring, and this is trusting a
-directory listing to contain only committed files. **A glob is not a manifest.**
-
-### What the detector found that the hand pass missed
-
-The fix had been applied by walking `tools/testbed/ledger/*.mjs` plus `queue_mix.mjs` — fourteen files,
-found by grepping the directory I happened to be thinking about. On its first run the detector found a
-fifteenth: **`tools/testbed/port_ramp_table.mjs`**, which lives one level up and was never in that list.
-
-⚠ **This is the L1 lesson again** — that fix covered 6 sites found by hand and its detector then found
-13 more. **A hand pass over "the files I know about" is not equivalent to a check over the tree.**
-
-⚠ It also had to learn one scope rule: the walk **skips `tools\testbed\sessions\`**. Those `.mjs` are
-frozen copies archived inside finished sessions — the record of how a past batch was analysed. Sessions
-are never deleted and never rewritten, so "fixing" one would be editing history to make a check pass,
-and the race cannot recur for a batch that finished long ago. Four such files tripped the first run and
-are correctly excluded, not corrected.
-
-**Proven both ways:** PASS on the clean tree (15 readers, every glob site guarded), and FAIL with exit 1
-naming `peek_run.mjs` when its guard is removed.
-
-## L26 — ONE RUN FOLDER HOLDING TWO CAMPAIGNS, recorded as a clean run that reached its target
-
-**Status: AUTO** — `Test-LmL26` in `tools/preflight.ps1`, post-run
-(`preflight.ps1 -Session <dir>`), N/A without `-Session` so it costs a build nothing. The second
-post-run entry after L12.
-
-**Found 2026-08-31**, from a wall-clock outlier: run004 of
-`20260830_191950_tier4-vanilla-ladder-n4` took **267.3 min** against 135.1 / 145.5 / 145.7 for its
-siblings. It had played 1836→1936 **twice**.
-
-### The mechanism
-
-A crash-resume whose load fails does not error — `-handsoff` **begins a fresh 1836 game** (verified,
-MODDING_NOTES). `run_observer.ps1` has a guard for exactly that, and the guard is correct. It is
-just unreachable in the case that matters, because it sits **after**
-`if ($reached -or $timedOut) { break }`: a fresh campaign that runs all the way to the target exits
-through the `break` and the landing is never examined.
-
-Here: CTD at 1931.1.13 → four failed resumes → attempt 4 started fresh at 1836 and crashed at 1864
-→ attempt 5 continued *that* campaign to 1936.1.1 → `reached_ingame_date 1936.1.1`, `self_quit
-true`, `abandoned_reason ""`.
-
-### Why nothing fails
-
-- `meta.json` is entirely well-formed and says the run completed.
-- L17 passes — the run *did* reach its `until` date.
-- The markets TSV is complete (the observer even notes `2358 row(s) re-dumped after a resume`).
-- The summary folder holds 195 files over 100 distinct in-game dates, and readers keyed on the DATE
-  silently take the later campaign, which is coherent — by luck of filename order, not by design.
-- Readers that DIFF CONSECUTIVE FILES cross the seam once and diff 1931 against 1837.
-
-The only visible symptom is the wall clock, and only if someone compares it against sibling runs.
-
-### DETECTOR
-
-Read every `provenance.date` in filename order; classify each backward jump. **Two shapes, and they
-are different defects — collapsing them would file a doubled century next to a filename wobble:**
-
-* **> 2 years ⇒ FAIL, a SECOND CAMPAIGN.** This entry's subject.
-* **≤ 2 years ⇒ WARN, summaries OUT OF ORDER.** The archiver read several slots of the rotation ring
-  in one pass, so `autosave_1.v3` — the *older* save — sorts after `autosave.v3` by filename. One
-  campaign; a handful of summaries in the wrong order. Small, real, separately caused.
-
-Proven both ways when written: FAIL on `20260830_191950` naming the exact seam, FAIL on `canon-n7`
-run007 (38y), WARN on `port-ramp-monthly-n3` (0.01–0.89y), PASS on `20260829_152435_tier4-n1`, N/A
-on a normal build.
-
-### Blast radius, swept rather than assumed
-
-All **74 sessions holding summaries**: 5 hits. Four are already excluded by `lib_runs`/L17 or are the
-sub-year shape. **Exactly one — this batch's run004 — enters a published `n`**, and its effect was
-measured: below-best 38.14% against a 36.84–38.38% sibling spread, adoption lag unchanged. ⭐ Notably
-`canon-n7`'s doubled campaign is **run007, the run L17 already drops**, so the six-rung baseline the
-whole project compares against is clean.
-
-### The generator side
-
-Fixed in `run_observer.ps1`: the fresh-start abort now fires on the **first tick** of a resume, so
-such an attempt can never reach the target and control always falls through to the existing
-quarantine/step-back ladder. Same `> 20000` threshold, no new constant, and deliberately without
-setting `$timedOut`/`$abandoned` (those would break out of the ladder that must run).
-
-⚠ **The register entry is not redundant with that fix.** A fix in the generator says nothing about
-the sessions already on disk, and sessions are never deleted — so the artifact-side check is the
-half that can still be wrong tomorrow.
-
-### 2026-09-03 — the generator-side abort was DEAD CODE, and L26 fired a second time
-
-`20260902_223037_ab3-n3` run001: CTD at 1890.3.9; two resumes from `autosave.v3` loaded it and died without
-advancing (the STUCK branch); the observer quarantined it and stepped back one autosave; **that load failed and
-`-handsoff` began a fresh 1836 game, which played 26 minutes to 1858 with nothing aborting it** — 22 summaries of
-a second campaign written into the same folder, the exact shape this entry describes. The "abort on the FIRST
-TICK of a resume" added on 2026-08-31 never ran: a missing closing brace had nested it inside the CONTINUATION
-guard's `if`, whose condition requires `$attempt -eq 1`, so on every crash resume (attempt ≥ 2) it was
-unreachable. Nothing failed — the script parsed, the guard's log line simply never appeared.
-
-Caught live, not by `Test-LmL26`: the agent's 30-minute heartbeat read the run clock at 1858 where the previous
-heartbeat had read 1890, and a clock that goes BACKWARDS between two readings of one run is this landmine on
-sight. **Add that to the heartbeat**: compare each reading's in-game date with the previous one; a fall of more
-than two years means a second campaign — STOP the batch (the whole schedule; there is no per-run abort) and
-relaunch, or the run plays the century twice. The batch was stopped at 00:03 and relaunched as
-`20260903_000418_ab3-n3`; the fix (one brace moved, parse-checked, BUGS_AND_FIXES 2026-09-03) went in at 00:25
-while that batch was on its run 1, so its run 1 ran the old observer and runs 2–3 the fixed one — a
-crash-handling change only, recorded by the per-run harness hash in `build_state.json`.
-
-**Detector reminder**: `Test-LmL26` remains post-run and would have failed this session's run001 on the 54-year
-backward jump; the live heartbeat is the only thing that saves the machine time.
-
-
-## L27 — AN INDUSTRY LOOP THAT KEEPS THE DISABLED INDUSTRIES, so vanilla ports and shipyards read as "e0"
-
-**Status: AUTO** — `Test-LmL27` in `tools/preflight.ps1`, repo-side (`-RepoOnly`), the L25 pattern: every
-industry loop in `tools	estbed***.mjs` must mention `disabled` on the line or within the next two. Sessions
-are skipped. Proven both ways on 2026-09-03: an unguarded probe file FAILS (`_lm27_probe.mjs:2`), its removal
-PASSES (13 scripts with industry loops, every one guarded).
-
-**Found 2026-09-03**, from the user reading the ab3 growth-seeds ledger: t0 employment for GBR+FRA "growing era
-to era" while glass t0 had halved. The page's British t0 series ran 0.16M → 0.83M (1930) → 0.68M; the tier-0 rungs
-of the ENABLED industries, staffing-weighted, ran 0.16M → 0.13M → 0.09M. The difference was `building_shipyard`
-(5,000 per level) and `building_port` (1,000): 469k and 365k "e0 people" at 1935.
-
-### The mechanism
-On a four-rung book `port`, `shipyard`, `shipyard_steam`, `railway` and `power` carry `disabled: true`
-(§10.66/§10.67.5): the industry is handed back to vanilla, but its tiers stay in the config and its rung-0 KEY IS
-THE VANILLA BUILDING. A rung→tier map built without the filter labels every vanilla port, shipyard and railway
-level a tiered rung — usually rung 0 — and those buildings grow all century. Nine ledger scripts and one melt
-reader had the omission (`report_data2`, `fill_emp`, `fill_indecomp`, `tiered_panel`, `report_data`,
-`analyse_ai_tier_profit`, `analyse_build_allocation`, `analyse_gdp_gap`, `peek_run`,
-`melted_company_ownership`); `fill_payback` and `analyse_ai_tier_choice` had the filter, which is why payback
-and below-best were right while every employment-by-tier panel was wrong. **Nothing failed**: the panel rendered,
-the verify gate passed, goal G2 read "oldest rung still grows" from it. On the six-rung canon nothing is
-disabled, so the defect could not show until a four-rung book met the ledger — and it sat there through five
-four-rung ledgers before a reader noticed.
-
-### What it touched
-The employment-by-tier panels (world and per country) of every four-rung ledger since 2026-08-29, goal G2 on all of
-them, the "tiered sector" employment share in `tiered_panel`, and the world rung headcounts quoted in F98 §2 and
-F99 §1 (corrected there: ab2 seed 1 at 1935 t0 8.2M, not 10.7M). Prices, GDP, payback, below-best, companies and
-the first-run decomposition were never affected (they do not walk tiers, or they filtered).
-
-### The rule
-A config walker that means "our tiered industries" says so: `cfg.industries.filter(i => !i.disabled)`, or
-`if (ind.disabled) continue;` as the loop's first statement. The emitters learned this on 2026-08-29
-(`emit_research_events` died on a disabled shipyard tier); the analysis side did not fail loudly, which is exactly
-why it needed a detector rather than a note.
-
-## L28 — THE LOG MIRROR RE-COPIED THE CURRENT LOG ON A FALSE ROTATION (found 2026-09-04, canon4-je-n5 run 4)
-
-**Status: AUTO** — `Test-LmL28` in `tools/preflight.ps1`, post-run (`-Session <dir>`): for every zero-recovery seam
-(`--- harness: source log rotated at HH:MM:SS, recovered 0 chars from [] ---`) in a run's `logs_live/*.log`, the THIRTY
-non-empty lines after the seam are checked for an identical consecutive run anywhere in the mirror since the previous
-seam — found ⇒ a re-copy ⇒ FAIL (one line, or five, matched error.log's periodic bursts by coincidence and missed the
-loop). ⚠ The seam alone is NOT the signature: a real rotation whose rotated segment was already fully consumed prints
-the same seam and then correctly reads the new file from 0 (canon4-art-n2, recorded after the fix, holds 1–4 per mirror,
-hours apart, nothing duplicated). Proven: PASS on 20260904_100656_canon4-art-n2, FAIL on 20260903_173810_canon4-je-n5
-and on the vanilla n=16 baseline. Opens the mirror with ReadWrite|Delete sharing so an in-flight session can be walked.
-
-**What happened.** `Read-Tail` in `run_observer.ps1` took "the file's length is below the position I have read to"
-as proof of a rotation. `Get-Item` reads the DIRECTORY entry, which NTFS updates lazily for a file another process
-holds open, while `Read-Chunk` reads through a handle and sees the true size — so for seconds at a time the directory
-length sat below `Pos`. The rotation branch drained nothing (no unseen rotated segment), reset `Pos` to 0, and the
-current-file branch re-copied the whole current log; on the next 250 ms poll the directory length was still stale, and
-again. Run 4 of canon4-je-n5 appended one 946-line chunk **27 times in eight seconds** (03:48:30–38); canon-n7 run 1
-**16 times** (1844.11); sporadic ×2 elsewhere (63 doubled completions in run 1, spread over forty years).
-
-**Why nothing failed.** The `V3TB|` telemetry lines are de-duplicated by the mirror's `Seen2` set (added on
-2026-08-01 for the multi-rotation drain), so every TSV and every summary was right. Every OTHER line was multiplied:
-the research journal's `PMR_JE|stage|tech|country` completions, the game's own event lines, the error mirror. A
-reader counting those lines over-reads silently — the same (country, technology, stage) appearing 28 times in one
-second looked like a journal-entry loop and cost an hour of diagnosis before the seam lines gave it away.
-
-**Impact on the record.** F101's six-rung per-run counts are RAW LINES: canon-n7 run 1's 12,004 are 5,232 unique
-completions (×2.3); solver2f run 1's 4,805 are 4,576; the four-rung 620–690 are within 10% of unique. Per-country
-readings and coverage percentages (distinct technologies) are unaffected. Smoke-check error counts read off
-`logs_live/error.log` in an affected window are inflated the same way.
-
-**Fix.** `Read-Tail`: on a shrunk length, take the current file's first-line signature; if it equals the remembered
-one, the length is stale — return without touching `Pos`. A real rotation gives the current path a new first line
-(or an empty file, whose signature is `""`), so the drain still runs for those. Readers: count UNIQUE
-(country, technology, stage) triplets — `tools/testbed/ledger/je_tally.mjs` does, and prints the raw line count
-beside the unique one so the duplication is visible per run.
-
-**Rule.** A count taken off a mirror is a count of what the MIRROR holds, not of what the game did. Anything that
-tallies non-telemetry lines de-duplicates first, and a burst of identical lines in one second is the mirror, not the
-engine, until a unique game line in the same second is shown NOT to be duplicated.
-
-⭐⭐ **CORRECTED 2026-10-21 — THE TWO "SEEN AGAIN" FAILS BELOW WERE THE DETECTOR, NOT THE MIRROR.** Both mirrors were in floods of IDENTICAL
-error lines (wm99 run 1: `lawgroup_navy_model`, 705k lines, the same text every line; vanilla-now run 2: the spline spam, a 3-line cycle with one
-stamp per second). The old test asked whether the 30 lines after a zero-recovery seam appeared ANYWHERE since the previous seam — in a flood they
-always do. Each of those seams was a REAL rotation whose old segment we had already read to its end (hence 0 chars recovered), followed by more of
-the same spam with LATER stamps: e.g. vanilla-now run 2's seam at mirror line 120,334 follows a 524,200-byte region (one 512 KB segment) and its next
-line is stamped 18:18:41 where that segment began at 18:18:31. **The detector now asks the right question**: a false rotation re-reads the current
-file from offset 0, so its first 30 lines repeat, STAMPS AND ALL, the 30 lines that began an earlier read of that file (the mirror's start or the
-lines after an earlier seam). Checked: canon4-je-n5 run 4's debug mirror reads 26 (the documented 27 copies), canon-n7 run001's 14 (sixteen
-documented), both October mirrors 0; the sweep over every mirror since 2026-08 is in BUGS_AND_FIXES 2026-10-21.
-⭐ **And the observer was hardened the same day** (`run_observer.ps1`, no batch running): the length is read through a HANDLE (`Get-TrueLength`),
-so a stale directory length can no longer fake a shrink at all; a signature that cannot be read this instant WAITS instead of being taken for a
-rotation; and a signature remembered from a file under 120 bytes is compared as a PREFIX (`Test-SameSegment`) and refreshed until full — a
-simulated short-signature rotation re-copied 6 lines on the old code and none on the new (five simulated cases, all exact on the new code).
-
-**(Superseded — read as the detector's false positives.) Seen again after the fix (2026-10-20, session `20261019_225952_wm99-n4` run 1).** `Test-LmL28` FAILED on run 1's `error.log` mirror alone:
-5 false rotations, during a 705,356-line flood of vanilla's `lawgroup_navy_model` errors (a country gone landlocked). Runs 2–4 and every other
-mirror of that session passed, as did the F239 and treaty-port century sessions. So the first-line-signature guard does not catch every case
-when a log grows that fast; the cause is not traced. ⚠ Nothing measured reads error.log, so the damage is error-line counts in that one file. A fix
-would be an observer edit, which waits for a time with no batch running (never mid-batch, CLAUDE.md).
-⚠ **And again on a VANILLA run, without the flood (2026-10-21, session `20261020_121619_vanilla-now-n8` run 2):** 2 false rotations in the
-`error.log` mirror, which holds 167,884 lines and only 766 `lawgroup_navy_model` ones. So a fast-growing log is not the whole condition, and the
-defect is the harness's, not the mod's. Same damage (error-line counts in that one file), same deferred fix.
-
----
-
-## L29 — THE OBSERVER DIED ON ITS OWN LOG LINE, and the batch burned its run list behind the orphaned game (found 2026-09-07, the 60-run plan's run 12)
-
-**Status: FIXED in the generators, PROOF OF THE SCHEDULER'S ABORT OWED.** Root cause and reproduction in
-BUGS_AND_FIXES 2026-09-07.
-
-**What happened.** `Write-Log` in `run_observer.ps1` — `Add-Content -Path run.log`, every 20-second tick and every
-telemetry `BEGIN`/`MARKET` line — runs under `$ErrorActionPreference = "Stop"` inside a poll loop whose body is
-`try … finally` with no `catch`. `Add-Content` opens the file for read+write to seek to its end and throws **"Stream
-was not readable"** while any other process holds it open. The batch heartbeat reads the live run's `run.log` with
-`tail -1` and `grep -c` every 25 minutes; its 07:14 wake began at 07:14:40, the tick's write. The observer unwound at
-1917 with the game still running (PID 19656 lived on for half an hour), exit 1, `meta.json` never written. Every later
-run's observer then refused on its own already-running guard (L19 half-2, correct) — nineteen seconds a run, forty-eight
-runs, `SCHEDULE DONE: 60/60`. Reproduced: 1,041 of 2,677 appends failed against Git Bash readers in 45 s.
-
-**Why nothing failed.** The observer's last line is the `finally` block's tidy-up (`restored content_load.json …`),
-which reads as an orderly stop; the scheduler recorded `failed(1)` and moved on; the exception text went to a console
-window with no scrollback; the archiver and harvester of every ghost run reported alive; the waiter saw a live session.
-The heartbeat that caused it printed a healthy clock two seconds before the death, and its NEXT wake — sixteen minutes
-later — is what noticed.
-
-**Fix.** (1) All four harness log writers (`run_observer` `Write-Log`, `run_schedule` `Log`, `archive_autosaves`
-`Log`, `harvest_saves` `Log`) retry `Add-Content` eight times with a growing pause, then keep the console line only —
-re-tested under the same hammer with 0 unhandled exceptions. (2) `run_schedule.ps1` counts consecutive INSTANT failures
-(observer exit non-zero under 90 s after launch) and aborts the schedule at two, with an ALERT naming this entry: a
-future orphan costs two launches, not a run list.
-
-**DETECTOR.** The artifact side is L17 (a run with no `meta.json` / short of its target is excluded and reported);
-nothing new is needed there. The generator side is the fix itself. **Prove the abort** at the next idle window: start
-the game by hand, launch a throwaway 3-run schedule, expect two `failed … after launch` ALERT lines and an abort —
-cannot be run beside a live batch because a second scheduler shares the `STOP_ARCHIVE` / `STOP_HARVEST` signal files.
-
-**Rule.** A harness that supervises a game may die on nothing but the game. Every periodic write in the poll loop is
-wrapped; readers of a live run's files stay legitimate — the writer tolerates them, not the other way round. And a
-console window is not a log: anything a harness says on its way down must also reach a file.
-
-⚠⚠ **ADDENDUM 2026-10-01 — THE READER SIDE: A *PERSISTENT* READER DEFEATS THE RETRY, AND THE LINES ARE DROPPED
-SILENTLY** (found on `20261001_215119_e1a-lift-probe-10y`). The fix above tolerates a reader that opens, reads and
-closes (`grep`, `tail -1`, `Select-String`): eight tries over ~0.9 s outlast it. It does NOT tolerate a reader that
-KEEPS the file open. The agent armed a Monitor on `session.log` with `tail -n 0 -F … | grep --line-buffered` at 21:59;
-from then on every `Log` call in `run_schedule.ps1` failed all eight tries and fell back to the console line
-(`[log line not written to session.log after 8 tries …]`), so `session.log` stopped at 21:51:37 — run 1's end, run 2's
-start, build and end, and run 3's start were never written. The runs themselves were unaffected (each run folder's
-`run.log` and `meta.json` are complete). ⚠ **And the Monitor's 30-minute expiry did NOT kill the `tail`** (Windows,
-Git Bash): the process sat on as an orphan holding the handle, found by `ps -ef` at 22:29 and killed by hand. Left
-alone it would have swallowed `SCHEDULE DONE` too — the marker `wait_for_session.ps1` waits for — so the batch's
-completion would have read as DEAD after the 900-s grace. ⇒ **RULE: never `tail -f` / `tail -F` a live harness log
-(`session.log`, any `run.log`, `archive.log`, `harvest.log`); watch with a POLLING loop that opens and closes the file
-(`until grep -q … ; do sleep 10; done` in a background shell), and after any Monitor on a log expires, check
-`ps -ef | grep "tail -"` for an orphan.** ✅ DETECTOR (added the same night, once the batch had ended): `Test-LmL29` in
-`preflight.ps1 -Session` — every run folder with a `meta.json` must have its `=== run N/M:` line in `session.log`; a
-missing one is a **WARN** naming the runs (never a FAIL: the runs' own `run.log` / `meta.json` / summaries are the
-record). Proven both ways: it WARNs on `20261001_215119` (runs 2 and 3 named) and PASSes on `20260929_002728`; N/A
-without `-Session`.
-
-## L30 — A BATCH LAUNCHED FROM THE AGENT'S TOOL SHELL DIES WITH THE APP: the whole process tree sat in the desktop app's job objects (found 2026-09-13, the flat-cost ×1.2 arm's run 1)
-
-**Status: FIXED (launcher + scheduler self-check), the launcher PROVEN on its first use.** Root cause and measurements in
-BUGS_AND_FIXES 2026-09-13.
-
-**What happened.** `20260910_151220_canon-flat-in12-n30` was launched at 15:12 on 2026-09-10 the way every batch had been
-launched — `Start-Process powershell … run_schedule.ps1` from the agent's PowerShell tool shell, into its own visible
-window — and was built to finish on its own: 30 runs, no gate, nothing an agent had to be present for. At **18:45:29** the
-game's tick log, the observer's `run.log`, the autosave archiver's `archive.log` and the save harvester's `harvest.log`
-all stopped in the same second, with run 1 at in-game 1935.2 — ten months short of its end — in the middle of the
-March-1935 telemetry dump. No minidump, no observer verdict, no `meta.json`, no run 2 folder. The OS stayed up for eight
-more hours (the event log shows no sleep, no unexpected shutdown; Windows Update rebooted the box at 03:00 the next day,
-long after). What did happen at 18:45 was the desktop app restarting for a forced web re-auth.
-
-**Why.** Measured on 2026-09-13 with `IsProcessInJob` / `QueryInformationJobObject` from inside the tool shell: the
-shell runs in a job object whose limits are **KILL_ON_JOB_CLOSE | BREAKAWAY_OK | SILENT_BREAKAWAY_OK |
-DIE_ON_UNHANDLED_EXCEPTION**; a child created with `Start-Process` breaks away from that job silently — and lands in a
-**second** job of the app's (BREAKAWAY_OK only). Both jobs belong to the app; when it went down it took every process in
-them: scheduler → observer → game, plus the archiver and harvester the scheduler had spawned. A job kill is
-simultaneous and silent, which is exactly the signature on disk. The three earlier multi-day batches survived only
-because the app never restarted while they ran.
-
-**Why nothing failed.** From the outside a killed tree and a sleeping machine look identical: no process, no error,
-no marker, no last line. The waiter had been re-armed at 18:10 and returned at 18:35 with RUNNING; the agent session
-itself died in the same restart, so nothing was left to notice the silence.
-
-**Fix.** (1) **`tools/testbed/launch_detached.ps1`** creates the process through **WMI `Win32_Process.Create`**, whose
-creator is the WMI provider host — outside every job of ours — so the child belongs to **no job object at all**
-(measured: `IsProcessInJob` false, a real console with `KeyAvailable` readable, session 1, the working directory
-honoured). It then OPENS the child and asks the kernel; a child that is in any job is killed and the script exits
-non-zero — a launch that cannot be verified is not a launch. The two obvious alternatives were measured and rejected:
-a Task Scheduler task and `CreateProcess(CREATE_BREAKAWAY_FROM_JOB)` both left the child inside a job (limit flags 0,
-owner unknown). (2) **`run_schedule.ps1` checks itself at startup** and prints an ALERT into the session log when it
-is inside a job object — the batch will die with whatever owns that job — naming this entry and the launcher. Not
-fatal: a plain user console can legitimately sit in a benign job, and a human at the keyboard is the case the keys
-were kept for. (3) First use: the interrupted run was finished from its 1935.1.1 autosave through the launcher, all
-three helpers reported `outside any job object`.
-
-**DETECTOR.** AUTO at launch (the launcher's kernel check, exit 2 on failure) and WARN at scheduler start. Not an
-artifact check: the only artifact a job kill leaves is an absence, which L17 already reports as a run short of its
-target.
-
-**Rule.** A batch that is meant to outlive the agent may not be a descendant of the agent's process tree in any job
-the agent's host owns. The agent launches through the launcher and NOTHING else — `Start-Process` from a tool shell is
-the pattern that died. ⚠ **And it calls the launcher DIRECTLY** (`& 'tools\testbed\launch_detached.ps1' -File … -ArgumentList
-'-Schedule','<spec>' -NoExit` from the PowerShell tool), never wrapped in `powershell -File tools\testbed\launch_detached.ps1 …`:
-measured 2026-09-13 14:33 on the first real launch through it, the wrapper's `-File` mode flattened the `-ArgumentList` array
-into the single token `-Schedule,<spec>`, the scheduler never bound its parameter, the `-NoExit` window sat idle on the binding
-error, and the launcher REPORTED SUCCESS — its kernel proof says the child is alive and job-free, nothing about whether the
-child parsed its arguments. No session folder, no game, no children after a minute was the only trace (pid 15392, killed).
-Proven both ways on a scratch echo script (`Schedule=[<unbound>]` through the wrapper, `Schedule=[<spec>]` direct). Rule: after
-any launch, a session folder appears within a minute or the launch did not happen. And the other class stays open: a reboot (Windows Update restarted the machine at 03:00 on
-2026-09-11, outside active hours) kills everything, launcher or not — a batch that must survive that needs a resume
-mode (an at-logon task that re-enters the schedule at its last completed run) or Windows Update held back for the
-batch's window; neither exists yet.
-
-## L31 — A RUNG PLACED OR PRICED BY ITS ORDER IN THE INDUSTRY, NOT BY ITS TIER (found 2026-09-13, the tier pass)
-
-### Why nothing fails
-The four-rung books carry a tier on every rung (`t.era`, 0–3), and every label, name and ledger reads it. But two things
-never did: `make_tier4_config.mjs` ASSIGNED tiers by vanilla method order (four methods → 0, 1, 2, 3; five short industries by a hand
-table), and `make_ab_config.mjs` keyed the whole economic ladder on **k = tier − the industry's first tier** — output × A^k, input value
-× B^k, cost × A^k, the ×1.2 lift on k = 0. So a late-starting industry's first rung was priced as an 1836 rung whatever its tier said:
-automotive's t2 rung had vanilla's recipe at vanilla's margin, electrics' only rung sat on t1 (telephone is a game-era-4 technology →
-t2) with an 1836 recipe, synthetics' and munition's likewise. The build passed every lint, the mod loaded, eleven batches (F98–F110)
-completed. What they measured for those industries (F111): automotive at 1935 earning £2,700 of value added per staffed level against
-£10,200 for steel's t2 and £5,900 for arms' t2 in the same runs; synthetics at a seventh of vanilla's share of world value added; on
-the flat-cost lifted book electrics and munition loss-making at base from their debut, 29% and 27% staffed on 697 and 841 built levels.
-
-### The rule it enforces
-THE TIER RULE (user-ruled 2026-09-13, BALANCE_FRAMEWORK §10.78, CLAUDE.md's governing section): technologies by their GAME era, rungs by
-their TIER, the tier derived from the technology's game era (1 → t0, 2 → t1, 3 → t1, 4 → t2, 5 → t3, bumped up only to keep one
-rung per tier), a tolerance of ±1 tier, and every economic multiplier a function of the tier. The rung index is never a key.
-
-### DETECTOR
-`tools/lint_tier_eras.mjs [--config <path>] [--census]` — reads the CONFIG and its PAIRED tree (the tech era the mod ships, ERA_MOVES
-included): (1) every rung within ±1 of the tier its technology implies, strictly increasing tiers, inside 0..3; (2) for an A/B book
-(`_ab` present) output = vanilla first-method output × A^tier, input value = vanilla × lift × B^tier, cost = anchor × A^tier or flat,
-ai_value = the tier list or base × ratio^tier — recomputed from the game files and `_ab`; (3) output and value added per level rising
-with tier in every industry. Wired into `build.ps1` after the L13 lint (throws) and into `preflight.ps1` as `Test-LmL31` (with
-`-Config` that config; without, the canon alone — the frozen pre-pass records such as canon-4rung are expected to fail it). The
-generator throws at generation on the same rules. Proven: every pre-pass book fails on its four re-keyed industries; every regenerated
-book passes; the six-rung book is out of scope (no `era_game_era`) and says so.
-
-### The generator side
-`make_tier4_config.mjs` derives placement (`derivePlacement` / `placementFaults` in `lib_tier4_spec.mjs`; `PLACEMENT` now holds only the
-ruled adjustments — fertilizer, explosives, motor — and every entry is validated); `make_ab_config.mjs` keys on `t.era` and stamps
-`_ab.keyed_by: 'era'` + `_ab.command`; `convert_history.ps1` resolves a start rule by `era` and throws on a `tier` (position) rule on a
-four-rung book; `extract_start.ps1` labels the baseline by tier; `emit_research_events.mjs` converts a rule-D technology's game era to a
-tier before reading `thresholds_by_era`.
-
-## L32 — A CTD DURING THE AUTOSAVE WRITE LEAVES THE CONTINUE POINTER AIMED AT A SAVE THAT DOES NOT EXIST; THE STEP-BACK LADDER IS INERT AGAINST IT (found 2026-09-14, run 2 of 20260914_173832_canon-c19-in12-n2)
-
-**What fails silently.** The engine resumes (`-continuelastsave`) by loading the save whose TITLE its own pointer names —
-`Documents\Paradox Interactive\Victoria 3\continue_game.json`, rewritten at every completed save — NOT the newest file in the save
-folder. PROVED 2026-09-14 23:44 with `tools/testbed/probe_resume.ps1`: (P0) with `autosave.v3` absent and four intact newer slots
-(`autosave_1..4.v3`, 48–50 MB) beside it, the engine logged `Could not load save game [autosave]. Going to main menu.` and `-handsoff`
-began a fresh 1836 game; (P1) a save from a DIFFERENT campaign (the void run's archived 1857 autosave) copied in as `autosave.v3` under
-the same pointer (whose `date` named the other campaign) LOADED and ticked at 1857.1.1 within 28 s. So a crash that lands during the
-autosave write — the 1858.1.1 crash of the run above: the 1857 save had just been rotated into `autosave_1.v3` and the 1858
-`autosave.v3` never completed — leaves the pointer aimed at a file that is absent (or truncated), and EVERY resume fails identically:
-seven launches in 3.5 min, the observer's ladder quarantining the intact 1857 and 1856 saves in between to no effect, then the run
-abandoned as `partial(1836.1.1)`. Nothing errors on our side: the observer's log reads like a corrupt save set, and the intact saves
-sit in the run folder as "evidence" of a truncation that never happened.
-
-**Damage.** A usable run lost (2.5 h of game time) and, with the `-loadsave` flag rejected by the exe, no way for the old ladder to
-recover it. The premise the ladder rested on ("the engine always takes the newest file", MODDING_NOTES, superseded) was wrong.
-
-**Fix (the deterministic resume feeder, run_observer.ps1, 2026-09-14/15 — HANDOVER "THE RESUME FIX"):** on a crash, quarantine the
-whole autosave set into the run folder and feed ONE original member per attempt, newest first, as a COPY under the pointer's own title;
-a re-crash within `-ResumeWindowYears` (5) of the process's first crash feeds the next-older ORIGINAL (the engine's new saves are set
-aside, never fed); beyond the window a new process opens from the engine's current slots; the set exhausted → abandon.
-
-**Detector `Test-LmL32`** (`preflight.ps1 -Session`): any run whose `logs_live/debug.log` carries `Could not load save game [` →
-FAIL naming the run and the count; after the feeder, a `resume feed` line in run.log beside it for the same attempt turns it into a
-WARN (the feeder handled it). Proven on run002 of 20260914_173832 (FAIL) and on the r2 session (PASS).
-
-## L33 — AN EMITTED DEFINE THE ENGINE REJECTS AT LOAD, so the lever silently reverts to VANILLA — and can move BACKWARDS (found 2026-09-15, run 1 of 20260915_232404_canon-c19-in12-eager-n2; retrospectively in every F121 run)
-
-### Why nothing fails
-Defines are a PARTIAL override and the engine VALIDATES each value as it loads it, against ranges that are hardcoded, undocumented,
-and in one case a cross-reference to a sibling define. A value outside the range is DISCARDED with **one line in error.log** and the
-key keeps the value it already had — vanilla's. Everything downstream looks perfect: `build.ps1` passes every linter, `preflight`
-passes, the mod loads, the init marker is written, the smoke check shows the clock advancing, the run completes, the ledger fills. The
-arm is simply not the configuration anybody authored, and no artifact says so.
-
-### What it actually did
-The eager-spending set (§10.79) raised `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` from the canon's **0.9** to
-**1.0** — the cap vanilla's own comment names in `common/defines/00_ai.txt` (*"capped at 1"*). The validator's range is **[0,1) and
-excludes 1**:
-
-```
-[defines.cpp:167]: Define 'NAI::MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR' not valid with given value,
-                   reason: Must be between 0 (included) and 1 (excluded)
-```
-
-So the arm ran at **vanilla's 0.75** — *less* eager than the book it was a one-lever test against, on precisely the lever the batch
-existed to measure. **F121 measured three of its four levers**, and the one it lost was the pool-pressure factor, the one aimed
-straight at the hoard. Its conclusions about the QUEUE (both backlogs cut, in 3 of 3 seeds) stand on the three that loaded; its
-statement that the define family is *spent* as a hoard lever is weakened by exactly one untried value.
-
-### And one define's value can invalidate another we never set
-With the land `MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD` at 1.25, the engine rejects **vanilla's own**
-`MONEY_SPENDING_SHIP_CONSTRUCTION_EXCESSIVE_THRESHOLD = 1.05` — *"Must be greater than 1.25"* — a define no book of ours sets. The
-bound can therefore be a cross-reference to a sibling, which no table of per-key ranges can fully anticipate. ⚠ Accepted as a named
-residual in every eager arm rather than fixed: it is naval construction only, it is identical across the eager books, and setting it
-would add a naval lever to a batch that exists to isolate the spending set. What value the engine holds after rejecting a value that
-came from vanilla itself is **not known** — say so, do not assume 1.05 survives.
-
-### The rule
-**A define is not applied because we wrote it.** Emitting a define is a request; the engine's validator decides. So the emitted value
-must be inside the bound, and the run's own error log is the only proof that it was.
-
-### DETECTOR `Test-LmL33` (`preflight.ps1`), two halves — the second needs no table
-- **(a) STATIC, before a batch** (reads the CONFIG, so `-RepoOnly -Only L33 -Config <cfg>` gates a launch in two seconds): every
-  `ai_defines` value against KNOWN bounds. The table is small by construction — a bound enters it only once the engine has *stated*
-  it. Today: `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR` ∈ [0,1) → FAIL; land `CRITICAL_THRESHOLD` ≥ the ship
-  `EXCESSIVE_THRESHOLD` (vanilla 1.05 unless overridden) → WARN, since that one is a deliberate trade; ⭐ (2026-10-19) both
-  `TRADE_CENTER_MINIMUM_GDP_MARKET_CAPITAL` and `_NON_MARKET_CAPITAL` must be > 0 → FAIL (kind `gt`; 0 rejected, session
-  20261019_172655), and `_NON_MARKET_CAPITAL` must EXCEED `_MARKET_CAPITAL` (ours, else vanilla's 100,000) → FAIL (kind `gt_other`;
-  1 / 1 rejected with "Must be greater than 1", session 20261019_174541). The second is the cross-reference shape again, but here the
-  KEY ITSELF is rejected, not a sibling, so it fails rather than warns. Both proven to trip: the 0 book and the 1 / 1 book FAIL the
-  static half, both sessions FAIL the log half, and the 1 / 2 book passes (FINDINGS F246).
-- **(b) POST-RUN** (`-Session <dir>`): every run's `logs_live\error.log` for `defines.cpp`'s *"not valid with given value"*, which
-  catches ANY define including ones no table knows, and names the run and the keys.
-
-Proven three ways on the day it was written: the unregenerated `canon-c205-in12-eager` (still 1.0) → FAIL on the static half; the
-aborted session → FAIL on the log half, naming both keys; `canon-c19-in12` → PASS clean.
-
-`tools/testbed/batch_heartbeat.sh` prints the same line as its own **DEFINE REJECTED AT LOAD (L33)** alarm, never folded into the
-"top classes" tally — the run that found this had both lines in its error window at minute five and they read as ordinary noise,
-which is the whole reason the alarm is separate.
-
-**EXPECTED vs UNEXPECTED (added 2026-09-16, the first time the two halves disagreed).** The two halves share one source
-of truth: when the static half raises a cross-reference WARN, it records that sibling as an EXPECTED rejection, and the
-log half then reports it as a **WARN** rather than a FAIL. Any other rejected key is still a FAIL, and is named alone.
-Without this, every run of a book whose residual we have deliberately accepted fails the check forever — and a detector
-that always fires is one nobody reads, which is the failure this whole register exists to prevent. Proven both ways on
-the day: the clean eager session WARNs naming the accepted ship key per run, and the aborted session still FAILs, now
-naming only the pool factor.
-
-### The generator side
-`ai_defines` reaches the mod through `emit_techs.mjs` unchanged, and a book's values come from `make_ab_config --ai-defines`. Fix a
-breach by regenerating from the book's own `_ab.command` with the value moved inside the bound — never by hand-editing `ai_defines`,
-which would leave `_ab.command` describing a book that no longer exists.
-
-
-## L34 — A RUN RECORDED COMPLETE IN MINUTES: a crash before the first autosave, restarted through `-continuelastsave`, loaded the PREVIOUS run's endpoint and landed AT the target (found 2026-09-17, run 2 of 20260917_132449_canon-c19-in12-confirm-n2)
-
-**What happened.** Run 2 of the found configuration's confirmation pair crashed to desktop at 1836.7.24 (minidump `victoria3_01260817_160629`),
-two minutes in and before its first autosave. The observer's early-death path logged *"died before any autosave existed (attempt 1 of 3)
-… restarting run from the beginning"* — and the attempt loop then built attempt 2's arguments by the general rule `if ($attempt -gt 1)
-{ -continuelastsave }`. `-continuelastsave` loads the newest save ON THE MACHINE: run 1's `autosave.v3` of 1936.1.1, written 16:03 and still
-sitting in the game's save folder. The engine loaded it, the first tick read 1936.1.1 — the target — and the observer recorded
-*"run finished: 169.4 s wall over 2 attempts, in-game 1936.1.1, exit self-quit"*. `meta.json` says reached 1936.1.1 of 1936.1.1, no
-`abandoned_reason`, one save summary. The scheduler wrote SCHEDULE DONE 2/2.
-
-**Why nothing failed.** L17 compares reached against until — equal. L26 looks for a backward date jump across the summary series — a
-one-entry series has none. The landing guard *"resume landed AHEAD of the run — foreign save"* compares against the run's own last tick,
-which the restart path had just cleared (`(was at )` in the log), and the target check fires before the guard anyway (the structural order
-L26 already notes). `lib_runs.usableRuns` counted the run the moment its meta.json was readable: a 169-second "century" with one summary
-would have entered the found configuration's n as its fourth seed.
-
-**The detector (AUTO, post-run, `preflight.ps1 -Session` → `Test-LmL34`; and `lib_runs.usableRuns` refuses the run):** an ENDED run whose
-reached date equals its until date over a span of five years or more must carry MORE THAN TWO save summaries — a century run has ≥ 15 at
-five_year cadence and ~100 at yearly; a foreign landing has one or two. Proven on the session that found it (FAIL names run 2) and on a
-clean one (PASS).
-
-**The generator fix (`run_observer.ps1`):** the early-death restart sets `$freshRestart`, and the next attempt launches WITHOUT
-`-continuelastsave` — a fresh 1836 game, which is what "restarting from the beginning" meant. ⚠ Live proof owed: parse-checked only until
-the next early crash; the detector stands behind it either way.
-
-**What it touched.** Batch 4 ended as 1 real seed + 1 void stub; the pair's second run was relaunched from the tie-breaker schedule
-(one run). No analysis consumed the stub: the register's read at 16:04 ran before the stub's meta existed and dropped it as unreadable.
-
-## L35 — A RUNG SILENTLY LOCKED OUT OF ITS INDUSTRY'S GATED SECONDARY METHOD: a MINTED rung has no `vanilla_pm`, so no gate ever names it (found 2026-09-18 by the user, playing the canon: "T3 furniture doesn't allow adding top luxury furniture secondary PM")
-
-### Why nothing fails
-Vanilla gates a handful of secondary methods by naming the MAIN methods they may sit beside (`unlocking_production_methods`). The whole
-game has exactly **three**: `pm_elastics` (textile luxury), `pm_precision_tools` (furniture luxury), `pm_bone_china` (glass porcelain).
-Our tier split renames every main method, so the builder owns `01_industry.txt` and appends OUR rung `pm_key` for each vanilla method a
-gate names — through the map `vanilla_pm` → `pm_key`. **A MINTED rung (a spec ADDITION: furniture spray finishing, paper continuous web,
-fertilizer catalytic synthesis) has no `vanilla_pm`, so it was in no map and was never appended.** `emit_secondaries.mjs` then makes the
-same test a second time when it mints the per-rung copies (`[t.vanilla_pm, ...aliases].some(v => gatedOn.includes(v))`), fails it for the
-same reason, and leaves the rung with vanilla's original secondary — which names main methods the rung does not have.
-
-Everything downstream is green: `build.ps1` passes, every linter passes, `Invoke-ModChecks` passes, `preflight` passed, the mod loads,
-the game runs, the building exists and works. **The only symptom is a method that is not in the list when a player opens the building** —
-which nobody can see from any artifact, and which took a full human campaign to notice.
-
-⚠ It bites in proportion to how many additions the spec carries, and only where the industry ALSO has a gated secondary. Today that is
-exactly one case (furniture t3), and paper and fertilizer are unaffected only because their industries have no gated secondary. **Every
-future addition is a fresh instance.**
-
-### The fix (2026-09-18)
-**A rung with no `vanilla_pm` inherits the gate membership of the nearest rung BELOW it that has one** — the rung the generator already
-copies its recipe, staffing and icon from, so an addition is "the method after X" and belongs wherever X belongs. A gate that does not
-name that lower method still excludes the addition, which is correct. Applied at BOTH sites: `$script:pmRemap` in `build.ps1` (now
-`vanilla_pm` → a LIST of `pm_key`s, not one) and the `gatedOn` test in `emit_secondaries.mjs`. Verified in a real build: the furniture
-gate in the owned `01_industry.txt` now names `pm_main_furniture_spray_finishing`, and
-`pm_precision_tools_furniture_manufactory_spray_finishing` is minted beside the t1 and t2 copies (6 per-rung copies → 7).
-
-### The detector — `Test-LmL35` in `tools/preflight.ps1`
-Reads the **EMITTED** production_methods, never the generator. For every `unlocking_production_methods` list in a file we own that is NOT
-one of ours: **if any rung of industry I is named, every HIGHER-tier rung of I must be named too.** A gate naming no rung of ours is
-ignored, as is one naming only the top rung.
-
-⚠ **It deliberately SKIPS `zzz_pm_rehaul_*`.** Our own per-rung secondary file gates each minted copy to exactly ONE rung by
-construction, so the completeness rule is meaningless there — the first cut did not skip it and reported five false positives on the
-correct output. The gate list in the owned vanilla file is the CAUSE; a missing per-rung copy is the SYMPTOM, and checking the cause
-catches both.
-
-⚠ **PowerShell variables are CASE-INSENSITIVE.** The first cut named the detector's title `$T` and the tier loop variable `$t`, so the
-title was silently overwritten with a tier object and the FAIL line printed a config record instead of a sentence. Any `Test-Lm*` that
-loops over `$t`, `$i`, `$f` must not also hold a scalar under the same letter.
-
-**Proven both ways (2026-09-18):** removing `pm_main_furniture_spray_finishing` from a built mod's furniture gate ⇒ `L35 FAIL … a gate
-admits furniture from era 1 upward but omits pm_main_furniture_spray_finishing (era 3)`; restoring it ⇒ `L35 PASS`.
-
-## L36 — A TELEMETRY METRIC NAME THAT MATCHES NOTHING, SO THE RUN MEASURES NOTHING AND SAYS SO NOWHERE (found 2026-09-20, session `20260920_192007_schedule`, both runs)
-
-### Why nothing fails
-`tools/telemetry_lib.ps1` selects every telemetry block with `if ($metrics -contains "<name>")`. An entry in a schedule's `metrics` list
-that matches no such test is **never emitted, and nothing anywhere reports it** — not the scheduler, not the builder, not the observer,
-not preflight. There is no list of valid names to check against and no complaint about an unmatched one.
-
-**MEASURED.** That session's schedule asked for `markets, gdp, buildings, pops, construction, research, companies, queues`, of which
-**only `construction` exists**. Run 1 played a clean, complete 1836→1936 century — `reached_ingame_date 1936.1.1`, `self_quit: true`,
-empty `abandoned_reason`, `mod_loaded: true`, all twelve dump dates in `dumps_seen`, `dump_complete: true`, 100 save summaries — and
-produced `goods_rows: 0`, `markets: {}`, `markets_not_found: {}` and a **94-byte `markets.tsv`: the header, no rows.** Of its 2,917
-`V3TB|` records, **2,891 were `CON`** plus 12 `BEGIN`, 12 `END`, one `SEED`, one `BOOT`, and **not one `G|` goods row.** The market
-block's real name is `market_goods_scoped`. ~2h52 of machine time; the batch's entire purpose unmeasured.
-
-⚠ **It is NOT L5.** There a spec KEY is dropped between the schedule and the builder. Here the key `metrics` arrives intact and its
-VALUES are nonsense, so L5's check cannot see it.
-⚠ **Every surface check passes,** including the ones written for exactly this family: the run is `status: ok`, L17 passes (it reached its
-`until` date), L26 passes, L34 passes. The only trace is a number nobody reads — `goods_rows: 0`.
-⚠ **A wrong name is also silently a COMPARABILITY failure.** A baseline must instrument the same metrics as the arms it will be divided
-into; that list shared ONE name of six with the arms', so even a `markets` that happened to work would not have been comparable.
-
-### Detector — `Test-LmL36`, repo-only, so it gates a batch before anything is built
-Every `metrics` entry in every `tools/testbed/schedules/*.json` (`defaults`, per `setups` entry, per `runs` entry) must appear in
-telemetry_lib.ps1's own `-contains` tests. **The valid set is DERIVED from the generator on every run, never copied into the detector** —
-a second hardcoded list is precisely what would drift, and the check exists because the first list drifted.
-
-⚠ **Read the schedule with a BOM-tolerant parser.** A first pass written in Node with a silent `catch` reported every schedule clean and
-was WRONG: `goodsfilter_probe.json` carries a UTF-8 BOM, `JSON.parse` threw, the catch swallowed it, and the one real offender in the repo
-was invisible. `ConvertFrom-Json` handles the BOM. Same trap as `verify_pms.mjs`, and the same lesson as `lib_runs.reportDropped` — a
-silent exclusion is indistinguishable from a thing that was checked.
-
-⚠ **A detector registers its verdict with `Add-Result`; it does NOT return a hashtable.** The first version returned one, which printed
-raw into the output stream and was never counted, so preflight reported `PASSED` with a `FAIL` visible above it. That is L24's shape
-(a function that returns content must not report through the success stream) reappearing inside the landmine register's own enforcement.
-
-### What it found beyond the session that produced it
-`goodsfilter_probe.json` asked for `consumption_goods` — a name referenced **nowhere** in the repo, evidently a pre-rename leftover for
-what is now `filter_probe`, which is what that schedule's own `_why` describes. It had **never been launched**, so no session is
-invalidated; repaired in place and recorded in the file's `_metric_name_repaired`.
-
-**Proven both ways (2026-09-20):** setting `accel_slide_n2.json`'s metrics to `markets, country_state` ⇒
-`L36 FAIL … accel_slide_n2.json [defaults]: 'markets'` and `PREFLIGHT FAILED`; restoring the real six ⇒ `L36 PASS`.
-
-## L37 — THE STOP WATCHER GOES BLIND TO THE REGISTER ON ANY MULTI-CONFIG SCHEDULE, AND SAYS SO ONLY IN ITS OWN HIDDEN LOG (found 2026-09-22, session `20260922_084038_b-gradient-4x3`, from run 4 onward)
-
-**What happens.** `tools/testbed/stop_watch.mjs` evaluates the criteria register by shelling out to
-`criteria.mjs --arm <SESSION NAME> --quiet --json …` — the session name **with no `:setup` suffix**. That is correct for a
-single-config batch and wrong for every other kind: the moment a schedule's SECOND setup produces its first run folder,
-`lib_runs.usableRuns` refuses the call by design —
-
-```
-Error: 20260922_084038_b-gradient-4x3 holds 2 arms (probe-sm-b152, probe-sm-b155) — pass a setup name;
-folding two arms into one n averages two different experiments
-    at usableRuns (lib_runs.mjs:58:11)
-```
-
-— and `stop_watch` catches the non-zero status, logs `criteria.mjs failed (status 1): … — falling back to the 1936 GDP
-rule`, and carries on **on the weaker rule for the whole remaining batch**.
-
-⚠⚠ **NOTHING FAILS, AND THE ONE TRACE IS UNREADABLE IN PRACTICE.** The watcher runs `-Hidden`, its log is
-`sessions/<stamp>/stop_watch.log`, and the message is a 300-character stderr TAIL — which on this repo's path
-(`C:\claude-code\victoria 3 PM and tech rehaul`, spaces percent-encoded into the `file:///` URL) truncates to
-`203%20PM%20and%20tech%20rehaul/tools/…:336:19` and a Node stack, with **the actual `Error:` line cut off the front**.
-So the log says the check failed and does not say why. The batch keeps running, the scheduler reports nothing, and every
-later run is guarded only by the GDP threshold.
-
-**What is lost.** The register's hard lines — capital abundance, the stall floor, the 1836 anchor — stop enforcing.
-The fallback only compares 1936 world GDP against `--threshold ×` the vanilla median, i.e. it catches a RUNAWAY and
-nothing else: a **stall** below 0.66 and a **capital-abundance runoff** both pass it. Measured live here: run 3 of
-`probe-sm-b152` broke by runoff (GBR, 17 consecutive years under 5% U\* at a mean hoard of 1.51) and the watcher read
-only its 1.164× GDP, under the 1.4 threshold, and did nothing.
-
-⭐ **In THIS batch the degradation is harmless and arguably right**, which is exactly why it would have gone unnoticed:
-the schedule's own `_the_discard_rule` says *"a run can be BROKEN (stall/runoff) and still be a valid point on the B
-gradient"*, so a config-ending STOP is not wanted here, and the four configs are four experiments that must not stop one
-another. The defect bites on a **single-config** batch that happens to be launched from a multi-setup schedule, and on
-any future multi-config schedule that DOES want the register enforced per config.
-
-**DETECTOR (owed, not yet written — `Test-LmL37`).** Two halves, both cheap:
-1. **Repo-side, gating a launch:** a schedule with more than one entry in `setups` is incompatible with the watcher's
-   current invocation — either the watcher must pass `--arm <session>:<setup>` derived from the run folder it just
-   scored, or the schedule must declare that it does not want per-config stopping.
-2. **Session-side, post-run:** `stop_watch.log` containing `criteria.mjs failed` at all. That string is the whole
-   signal and nothing reads it today.
-
-⚠ **NOT FIXED IN PLACE while the batch runs** — the standing rule forbids editing `tools/testbed/**/*.mjs` mid-batch
-(preflight walks them in every build, L27), and a running watcher keeps the code it loaded, so a fix would need it
-killed and re-armed. The repair is one line: derive the setup from the completed run's folder name and pass
-`--arm ${NAME}:${setup}`.
-
-## L38 — A SAVE SUMMARY THAT KEEPS ONE COUNTRY RECORD PER DEFINITION, SO A CIVIL WAR'S OTHER SIDE — OR A WHOLE COUNTRY — VANISHES FROM `countries` AND FROM THE WORLD TOTALS (found 2026-09-30, `20260930_181601_craft-merge-30y` run 1, FINDINGS F186)
-
-### What happens
-Up to `SAVE_SUMMARY_VERSION` 11, `tools/testbed/save_state_summary.mjs` built its per-country output as `countries[c.tag] = {…}`
-over every record of the save's `country_manager` — keyed by the country's **definition**. Records sharing a definition are
-common, and they come in three shapes (census of 221 same-definition groups in 23 saves, F186 §2): a live civil war (the main
-record + a `civil_war=yes` side, 192), a revolt that ended in a separate country beside the main one, often for decades (20), and
-two records that BOTH carry `is_main_tag` (6). The record later in the save's slot order overwrote the other — **the main one as
-often as not** — and `world.gdp` / `world.population`, summed over that map, lost every overwritten record.
-
-**MEASURED.** At 1866.1.1 of the run that found it, `countries.PRU` and `countries.JAP` were the REBEL sides (3.6M / 8.9M
-people) where the main Prussia and Japan hold 12.2M / 29.7M; world GDP read 2.5% low and world population 45M low. At the
-1936 endpoint of the vanilla n=16 baseline, seed 5 dropped the main **China** (251.5M people — world population read 13.8%
-low) and seed 7 read a second, 2.4–4.5M Prussia as `countries.PRU` in every summary **from 1871 to 1936**. In the register's
-1932–1936 window every summary of every run of the canon n=6 and the vanilla n=16 carries at least one dropped record.
-It also mis-attributed trade: v10/v11 found a state's owner entry by TAG, so a dropped record's trade capacity was added to
-the surviving entry (the rebel Prussia of 1866 carried the main one's 156).
-
-### Why nothing fails
-The harvester verifies a summary has a version, a date and ≥ 10 countries — it has 370. L12 reads one and finds a version.
-Every reader looks up `countries.GBR` or sums `Object.values(countries)` and gets a number. `world.buildings` — summed over
-country IDS, not over the map — stayed complete, so the two disagree silently: Σ countries' building levels falls short of the
-world's by exactly the dropped records' levels, and nothing compares them. `--verify-pops`, which re-derives the professions the
-expensive way, reads **"MAPPING SUSPECT", 4.0%** on the 1866 save — it was validated once, on a 1936 save whose drops were
-small, and never run again. ⚠⚠ **And the saves are reaped**: a summary that dropped a record is the only record there will ever
-be. Pre-v12 summaries cannot be repaired.
-
-### Fix (v12)
-One entry per country record. The single `is_main_tag` record keeps the plain TAG; every other record of its definition is keyed
-`TAG@<country id>`; a record alone on its definition keeps TAG whatever its flag; a group with two mains (or none) gives the plain
-TAG to its most populous main (else record) and names the group on stderr — giving it to nobody would make `countries.TAG` vanish
-and drop a pool member from the pool. `world.gdp` / `world.population` sum over every record; `overlord`, `states.<id>.country`,
-the `top_producers` rows and the trade attribution all use the same key; each entry carries `tag`, `civil_war` and
-`last_civil_war_date`. Readers treat keys as opaque (audited — no reader parses one); `c.tag ?? key.split('@')[0]` is the
-definition in every version.
-
-### Detector — `Test-LmL38`, both halves through `tools/testbed/ledger/summary_drops.mjs`
-1. **Repo-side, so it gates every build and every batch (`-RepoOnly`)**: `--selftest` writes a synthetic melt with two records of
-   one definition (the second later in slot order, i.e. the one a definition-keyed writer lets win), runs the **real writer** on
-   it and requires both entries (`AAA` = the main record, `AAA@2`), `world.population` and `world.gdp` over every record, no
-   building-level gap, keys `tag` or `tag@id`, and the second record's state keyed `AAA@2`. A regression is caught **before** a
-   batch reaps a single save — which is the only moment it can still be caught cheaply.
-2. **Post-run (`-Session`)**: `--check` requires every sampled v12+ summary (each run's newest and every 10th) to satisfy
-   Σ countries = world on building levels, population and GDP, with every key its tag or `tag@<id>`. Pre-v12 summaries are
-   COUNTED, not failed — they cannot be repaired; `summary_drops.mjs --session <stamp>` sizes their drops from the
-   `world.buildings` gap (the dropped value added × 52 × the survivors' displayed-to-base-priced ratio: 0.6–1.3 of the exact
-   dropped GDP in 18 of 20 checked drops, median 0.97) and flags every shortlist member whose entry is not a main record (⚑⚑ when
-   it answers to its own tag — the main it answers to was the one dropped).
-
-**Proven both ways (2026-09-30):** putting `countries[c.tag] = {` back into the writer ⇒ `L38 FAIL … countries.AAA is record 2 —
-it must be the main record 1; countries['AAA@2'] is absent — the second AAA record was dropped; Σ countries' levels short of the
-world's by 5` and `PREFLIGHT FAILED`; restored ⇒ `PASS`. A scratch session of three v12 re-summaries ⇒ `PASS`; the same with one
-`TAG@id` entry deleted from the newest ⇒ `L38 FAIL … Σ countries' levels short of the world's by 190; world.population differs
-from Σ countries by 2168519; world.gdp differs from Σ countries by 512489`.
-
-⚠ **The lesson is general: a map keyed by a field is a claim that the field is unique. Check it on the data** — here one pass
-over one save's country records would have shown six definitions held twice.
-
-
-## L39 — A REPLACED VANILLA FILE THAT LOSES A DLC GATE, SO DLC CONTENT REACHES PLAYERS WITHOUT THE DLC (registered 2026-10-21, the polish; the user: "This isn't my intention, and that's explicitly prohibited by PDS")
-
-Every DLC's gameplay ships in the BASE game folder behind `has_dlc_feature = <feature>` triggers and the `dlc = dlcNNN` field of events; `game/dlc/`
-holds only art, music and sound. A vanilla file the build replaces wholesale (companies, the tier-reference fix's 63 files, the value overrides,
-defines, technologies, history) that drops one of those lines would unlock DLC content, and NOTHING FAILS: the mod loads, every lint passes.
-**DETECTOR (AUTO, every build):** `tools/check_dlc_gates.mjs <mod>` runs in `build.ps1` after the last content emitter and THROWS unless every
-shipped vanilla-path file keeps vanilla's count of `has_dlc_feature` lines and `dlc =` fields (2026-10-21: 131 files, 19 of them gated).
-Proven to trip by removing one `dlc = dlc014` line. The generators guard their own copies too (`emit_vanilla_refs.mjs`, `emit_value_overrides.mjs`).
-
-## L40 — VANILLA SCRIPT THAT NAMES A RUNG-0 KEY OR A RENAMED METHOD, SO IT ERRORS OR NARROWS SILENTLY (registered 2026-10-21; the tier-reference fix)
-
-A vanilla trigger naming a main or secondary method our tier split moved (`is_production_method_active`) logs `Invalid Production Method` and
-returns false; a `has_building = building_<x>` matches only the rung that keeps the vanilla key. The canon carried 44–46 such error lines a run
-(the industrial-accident events, `pm_events`, the two vanilla scripted-trigger/effect files). **DETECTOR, two halves:** (1) AUTO at build time —
-`tools/emit_vanilla_refs.mjs` scans `common/` and `events/` and THROWS on any tiered reference left outside a file it transforms or its
-ACCEPTED list (a patch that adds one stops the build); (2) MANUAL at the smoke check — the count of `Invalid Production Method` /
-`PostValidate of trigger 'is_production_method_active'` lines whose Script location is a vanilla path, in the run's own error.log window,
-must be 0. ⚠ The second half is a smell (an entry that stays manual): automate it in `preflight.ps1 -Session` when the window logic is shared.
-
-## L41 — A GAME PAUSED BY INPUT LOOKS LIKE A HEALTHY RUN: the observer keeps writing a tick line every 20 s, so nothing goes silent (found 2026-10-23, run 13 of 20261021_224949_alt-vanilla-canon-n16)
-
-At 12:00:31 the game's own log recorded `Pause Toggled! Paused: true, PlayerID: 1` — a pause from PLAYER INPUT (a keypress or click in the
-game window). The engine's automatic pause toggles are `PlayerID: 0` and always resume; every run of the batch carries one or two. This one
-held the in-game clock at 1871.7.24 for over two hours while `run.log` kept printing `in-game 1871.7.24` every 20 s, so
-`wait_for_session.ps1`'s STALLED (no write anywhere for 20 min) never fired, and the run's 330-minute timeout would end it short of 1936.
-⚠ It also corrupts that run's WALL CLOCK: the play time rebuilt from the tick lines counts the paused hours as play, and a slowdown-episode
-reader would see a monstrous year. Remove the paused interval (from the `Paused: true` line to the next `Paused: false`) before reading it.
-**DETECTOR: MANUAL for now** — a watcher on the newest run's last `in-game` date (unchanged for 15 min while the game runs = FROZEN); the
-agent ran one from its scratchpad. Owed: a FROZEN verdict in `wait_for_session.ps1`, and a post-run check that flags any `Paused: true,
-PlayerID: 1` line (both after the batch — no `tools/testbed/**` edit while it runs).
+**Defect.** `c:TAG` on a country that no longer exists does not evaluate to false in Jomini; it raises `Invalid right side during
+comparison 'c'`. Tags valid in 1836 are often gone by 1900, so a metric that names countries starts erroring mid-campaign and never
+stops. Inside `every_market` the cost is dead tags × markets × dump dates.
+
+**Found.** 2026-08-06: 574,455 `error.log` lines over one campaign, 48,659 naming our telemetry (BUGS_AND_FIXES 2026-08-06; the rule is in
+TESTBED_METRICS).
+
+**Fix idiom.** `Get-GuardedOwnerLimit` in `telemetry_lib.ps1` — `limit = { OR = { AND = { exists = c:GBR owner = c:GBR } … } }` — and
+`Get-GuardedCountryBlock` (`if = { limit = { exists = c:X } c:X = { … } }`) to enter a named country's scope; or filter on a property
+instead of identity.
+
+**Detector.** `Test-LmL1` (build): a brace-depth scan of the emitted `on_actions` and `events`; a tag use is legal only if `exists =
+c:<same tag>` is asserted in its block or an enclosing one. Not judged: tags inside loc strings (data functions, resolved by another
+subsystem; the count is printed), and the files `emit_vanilla_refs.mjs` regenerates from vanilla (vanilla's own `c:TAG` uses, recognised
+by their header line).
+
+**Proven.** The hand fix covered 6 sites; the detector's first run found 13 more, including a `this = c:TAG` form.
+
+**Residual.** The guard took comparison errors from 48,659 to 0 in the first guarded campaign, but it cannot silence `Failed to find
+country!` from `eventtargetlinks.cpp`: `exists` must resolve the link to test it. That left 194 lines over 46 in-game years, all `QIN`
+(L11). Read the rule as zero comparison errors; a `Failed to find country` count beyond a few hundred is the signal.
+
+### L2 — a data function written as script
+
+**Defect.** Data functions (`GetGoods('grain')`, `THIS.GetCountry.GetGDP`) live only inside the quoted text of a `debug_log`. Written as
+script they are a parse error, and the engine abandons the file from the error onward: one `limit = { is_goods = GetGoods('grain') }` took
+every dump defined below it, and the run harvested nothing (BUGS_AND_FIXES 2026-08-02).
+
+**Detector.** `Test-LmL2` (build): `Test-TelemetryScript` from `telemetry_lib.ps1` — strip the quoted strings; no `Something(` and no `[`
+may remain — over the emitted `on_actions` and `events`. The generator runs the same function on its own text; preflight's pass is the one
+that survives someone bypassing the generator.
+
+### L3 — a scope that is bounded today and unbounded in 1900
+
+**Defect.** Which market a country belongs to changes. A per-pop sweep keyed on `market = c:BEL.market` covered 178 pops in 3 states in
+1836; by 1850 Belgium had joined the British market, the sweep tried to emit 20,686 lines and 5,212 survived the ring — a 75% subset chosen
+by ring position, every line individually valid (BUGS_AND_FIXES 2026-08-03).
+
+**Detector.** MANUAL. None is possible: how many markets a scope covers is a property of the campaign, not of the script. Size every scope
+at the run's END date with an untruncatable script value, not by counting the sweep's own lines. Anything keyed on one country's market is
+the shape to distrust.
+
+### L4 — two heavy sweeps in one tick
+
+**Defect.** The game's log is a 5 × 512 KB ring shared by every run. One unphased dump was ~1.96 MB, and 6,015 telemetry lines rotated
+away before any poll could read them; no poll rate fixes that. Phasing spreads the burst, and stacking two heavy blocks on one date brings
+it back (origins on phase 0 with market goods: 5,980 of ~6,000 lines lost; TESTBED_METRICS).
+
+**Detector.** `Test-LmL4` (build), advisory: in the emitted telemetry it counts nested iterations (`every_market_goods`,
+`GetMarketBuyOrdersBreakdown`, `every_scope_building`, `every_scope_pop`) per trigger date and WARNs when a date carries more than one. A
+WARN is a prompt to check the phasing: how many lines a sweep writes depends on how many markets exist on that date, which no build can
+know.
+
+### L5 — a telemetry spec key the scheduler never passes on
+
+**Defect.** `run_schedule.ps1` rebuilds each run's telemetry spec from an explicit key list. A key `Read-TelemetrySpec` reads but the
+scheduler does not pass on reaches neither the builder nor the mod; the metric falls back to its default and the run looks as if the metric
+failed.
+
+**Found.** 2026-08-05: a probe's `breakdown_dates`, `breakdown_tags`, `wide_dates` and `wide_tags` emitted nothing. 2026-08-06, by this
+detector: `origin_goods` was threaded nowhere. `20260801_225108_paper-be20-n3` asked for `paper, wood, sulfur, dye, tools, steel, clothes,
+silk, tea, coal` and measured the hardcoded default, so wood, sulfur and dye were never instrumented and glass, iron and opium were logged
+unasked. A warning comment already sat on that key list.
+
+**Detector.** `Test-LmL5` (build, repo): every key `Read-TelemetrySpec` consumes must appear somewhere in `run_schedule.ps1`. A mention
+test, not a parse of the two hand-kept lists: a key mentioned nowhere is certainly dropped.
+
+### L6 — telemetry reads a script value nothing defines
+
+**Defect.** An undefined script value does not error; it reads zero. A run logged standard of living = 0 for all ~285 countries, with the
+urban-centre figures on the same line correct, because `v3tb_solw_*` lived in a probe values file emitted only when a probe metric asked
+for it (BUGS_AND_FIXES 2026-08-02).
+
+**Detector.** `Test-LmL6` (build): every `ScriptValue('v3tb_*')` the emitted telemetry reads must be defined in an emitted
+`common/script_values` file. Only our own names are judged.
+
+### L7 — a control arm carrying gameplay content
+
+**Defect.** A control may vary only its telemetry (CLAUDE.md §5.1 rule 3). A reader of `{kind: control}` in a schedule must be able to
+assume vanilla without opening the build. A day of measurement (2026-08-05, F32/F33) ran on the full mod when the question was about the
+base game (BUGS_AND_FIXES 2026-08-06, the provenance entry).
+
+**Detector.** `Test-LmL7` (build, and before the control arm's early exit): identify the arm by the built mod's metadata id; a mod claiming
+`com.yurcick.v3_testbed_control` may emit only `.metadata`, `common/on_actions`, `common/script_values` and `events`. Anything else fails
+by name.
+
+**Generator side.** `build.ps1 -ControlOnly` throws when handed a config with gameplay content (`pop_need_weight_mult`). Vanilla +
+telemetry + one declared change is the overlay arm (`-Overlay`, id `com.yurcick.v3_testbed_overlay`; TESTBED_OPERATIONS §2.2), which L7
+does not judge. The check keys on the arm being named honestly: an arm that carries content while borrowing the control id is what it
+catches.
+
+### L8 — the emitted telemetry changed and the schema version did not
+
+**Defect.** A finding cites the telemetry schema version it was measured under. `TELEMETRY_VERSION` is bumped by hand and forgotten by
+hand: the emitted script changes, the number stays, and two sessions that were never comparable look comparable.
+
+**Detector.** `Test-LmL8` (build, repo): hash the canonical telemetry — every metric the library knows turned on (the list read from the
+library's own source), dates, tags, token and build stamp pinned — and compare with `tools/telemetry_fingerprint.json`. Hash moved, version
+not ⇒ FAIL; version moved, hash not ⇒ WARN.
+
+**On a FAIL, decide.** Breaking → bump `$script:TELEMETRY_VERSION`, record it in the TESTBED_METRICS table, tag the affected findings, then
+`-UpdateFingerprint`. Not breaking → `-UpdateFingerprint` and say so in the commit. The hash does not move on a game patch: it hashes our
+generator's output (ON_GAME_UPDATE).
+
+### L9 — reading the shared log ring without filtering by the run's own identity
+
+**Defect.** The game's logs are a ring shared by every run and rotated at startup; anything read from them must be filtered by the run's
+own identity, or it reads a previous session's output as this one's. A run measured 313,508 error lines, none of them its own: they cited
+`zzz_v3tb_telemetry.txt:20954` while its telemetry file was 41 lines long (BUGS_AND_FIXES 2026-08-06).
+
+| reader | filtered by | state |
+|---|---|---|
+| telemetry lines | the per-run token | fixed |
+| the in-game clock | the line's own `[HH:MM:SS]` | fixed (it had discarded a successful resume verdict) |
+| `meta.json` → `error_log_lines` | nothing: the line count of the run's `logs_live/error.log` mirror, which begins with the ring's leftovers | OPEN — an upper bound, not a per-run number |
+
+The smoke check reads the run's own window instead: `batch_heartbeat.sh` keeps the error lines stamped between the run's start and now,
+wrap-safe across midnight (TESTBED_OPERATIONS §4.1); `je_tally.mjs` windows the debug mirror by the run token's position.
+
+**Detector.** `Test-LmL9` (build, repo): a regression test that the two fixes are still present (the token filter in `summarise.ps1`, the
+timestamp regex in `run_observer.ps1`). It catches someone deleting a filter, not a new unfiltered reader. Owed: `error_log_lines` counted
+inside the run's own window.
+
+### L10 — editing the generator while a batch is running
+
+**Defect.** `run_schedule.ps1` rebuilds the mod before every run, so an edit to `build.ps1`, an emitter, `telemetry_lib.ps1`, a setup's
+config or any file under `tools/testbed/**` lands in run 2 but not run 1, and the arms stop being comparable — the one failure a control
+design cannot survive. Cosmetic edits count (a schema-version bump). Preflight walks `tools/testbed/**/*.mjs` (L25, L27), so even a new
+analysis script is on the batch's build path: one added mid-batch on 2026-09-09 failed L27 at the next run's build and the scheduler
+aborted the schedule after one run (BUGS_AND_FIXES 2026-09-09).
+
+**Detector.** MANUAL: the build cannot tell whether a batch it belongs to runs beside it. Queue the edit until the session reports
+`SCHEDULE DONE` (CLAUDE.md §5.1 rule 7); run `preflight.ps1 -RepoOnly` before committing any `tools/testbed` file while a batch plays. A
+frozen copy of a config — the usual mitigation against another session editing it mid-batch — is a new alternate and needs its tree twin
+(L20).
+
+### L11 — a named tag that is not the country you think it is
+
+**Defect.** A metric names countries by tag. A tag that resolves to no country covers nothing and errors every tick; a tag that resolves to
+a different country covers the wrong one and looks healthy.
+
+**Found.** 2026-08-06, in `market_goods_wide`'s 50-tag list:
+
+| tag in the list | what it actually is | intended |
+|---|---|---|
+| `QIN` | no country — no definition exists | the Qing, `CHI` |
+| `COL` | British Columbia (`capital = STATE_BRITISH_COLUMBIA`) | Colombia, `CLM` |
+
+So the wide sweep never covered the Qing, and F33's "first telephone production anywhere" is first among the 48 tags that resolved
+(FINDINGS F33's own note). The same hour, `DNK` was assumed to be Denmark: it is an African minor owning `STATE_EQUATORIA`; Denmark is
+`DEN`. `QIN` is still in three old schedules: `debut_good_full_v11.json`, `vanilla_retest.json`, `vanilla_retest_2.json`.
+
+**The same hazard with names.** `PMR_JE` lines carry the country's display name, not its tag, and a country renames itself mid-campaign
+(Britain became the "British Republic" in 8 of the 30 phase-1 runs, F107). `je_tally.mjs` and `fill_research.mjs` join through curated
+alias maps; a name the map does not know is dropped, never guessed.
+
+**Detector.** Proposed, not written: every `c:TAG` in the emitted telemetry must match a country in `common/country_definitions/*.txt`.
+That catches `QIN`, not `COL` — only a human comparing intent against `capital = STATE_…` catches that, so a tag list should carry a
+comment naming each unobvious tag. Resolve a tag against the game files before believing it.
+
+### L12 — savegames reaped without a readable summary
+
+**Defect.** The savegame instrument archives each autosave, melts it, writes one summary JSON and deletes the save. That makes the summary
+the record: a save reaped without a readable summary is evidence that exists nowhere else, and a re-run is a different world. Every other
+signal stays green, and an empty disk reads as success.
+
+**The design the detector holds in force.** `harvest_saves.ps1` writes to a temp name, verifies the artifact (gunzips, parses, requires a
+`save_summary_version`, a `provenance.date` and ≥ 10 countries), renames it, and only then deletes the `.v3`; a save that fails is kept,
+with a `.err` beside it; the newest save of every run is kept for good (~57 MB a run against ~4 GB for the full set).
+
+**Detector.** `Test-LmL12` (session): for every ended run with a `saves\` folder, require a non-empty `save_summaries\`, read one summary and
+require a version (a folder of zero-byte files counts perfectly well), reject leftover `.partial.json.gz`, report `.err` files, and require
+at least one `.v3` kept. Runs in flight are not judged. A run whose `archive.log` reads `ARCHIVE DONE - 0 saves` (a stopped 1836 stub)
+is skipped and the skip printed; "an empty `saves\`" is not the test, because a full reap without summaries looks the same.
+
+**Proven.** `save_summaries\` renamed away ⇒ FAIL; every save reaped ⇒ FAIL "the escape hatch is gone"; restored ⇒ PASS; the stub skip
+holds on `20260915_002935` and `20260916_122445`, while run 1 of `20260916_122445` with its summaries renamed aside still FAILs. Two
+harvester bugs that would have produced this signature under a reap-first design: BUGS_AND_FIXES 2026-08-11.
+
+### L13 — a starting factory converted onto a tier its own production method contradicts
+
+**Defect.** The 1836 start converter maps each vanilla factory onto a rung by its active main method. When the mapping fails, the factory
+passes through on the vanilla building key, which some rung still owns, and lands there whatever it was running. The build, the linters
+and `Invoke-ModChecks` pass, and `start_baseline.json`'s `unmapped` drift alarm reads 0, because a factory whose base key is absent from
+the map is never examined at all.
+
+**Found.** 2026-08-12: 98 of 327 starting factories sat one or two tiers off their own methods (ROADMAP.md, the L13 entry under *Deferred
+fixes*).
+
+**Still masked, not fixed.** `Get-SplitMaps` in `tools/history_lib.ps1` keys the base-building map on each industry's first rung. Every
+canon industry's first rung carries the vanilla key, so conversion works; a book that mints a rung below the vanilla one breaks it again,
+silently and at the same scale. The detector is what catches that.
+
+**Detector.** `tools/lint_start_conversion.mjs <mod> <config>` (lint, throws), against the emitted history and the vanilla files:
+COVERAGE — every vanilla main method maps to some rung (its own or a `vanilla_pm_aliases` entry), asked once per vanilla method group, with
+ruled-away and power-bloc-gated methods exempt; PLACEMENT — a method absorbed as an alias may not shift its factory more than a third of
+the ladder; KEYS — every `building=` in the emitted history is one the config defines. A mismatched mod/config pair reports every stray key,
+so the tool prints the pair it compares. A factory on a rung that lacks its method also fails `lint_pm_combos.mjs`'s history check.
+
+**Proven.** Stripping one alias fails it, naming the method and the industry. Its first run found a real case (automotive's last method
+converted onto the first rung).
+
+### L14 — a country starts with a building its own technologies cannot unlock
+
+**Defect.** The engine places what history tells it and never audits that against the country's technologies, so a great power can start
+owning a factory it could never build, and the economy diverges from vanilla for a reason no log names.
+
+**Found.** 2026-08-12, once L13's fix let conversion work: BEL, FRA, GBR, PRU and USA owned a tooling workshop gated on a technology of
+ours that had replaced vanilla's `mechanical_tools`. The fix named it in our starting grant, as vanilla names the three technologies its own
+1836 map needs.
+
+**The gate binds every building, whoever owns it.** A history `create_building` is checked against the state's own country; `add_ownership`
+is not consulted (F68; CLAUDE.md §5.4). An exemption for foreign-owned buildings once switched this detector off and broken start rules
+shipped green — its evidence was a snapshot taken a year late, after the engine's own provisioning had built the port. Do not reintroduce
+an ownership exemption without a reading taken at 1836.2.1.
+
+**Detector.** `Test-LmL14` (build): `tools/verify_start_techs.mjs <mod> --vs-vanilla` over the emitted history (ours is the only history
+the engine reads). It resolves each building's and method's `unlocking_technologies` against vanilla plus our files, expands
+`add_era_researched`, reads every method that lands on a rung (its `vanilla_pm` and its `vanilla_pm_aliases`), and reports per country.
+It demands no new gap rather than zero: vanilla itself fails on three countries, and the same analysis runs unchanged against the game's
+directory. L14 and L15 share `startSets()`, one definition of what a country starts with, per-country extras and guarded grants included.
+N/A on an instrument arm (L15).
+
+**Proven.** Deleting the two grant lines ⇒ FAIL naming GBR, FRA and BEL; a NET-owned `port_steam` injected into DEI's territory ⇒ exit 1
+naming `screw_frigate`. The alias blind spot (a rung checked only against the method it is named for) and an allow-list that hid the
+failing technology were fixed on 2026-08-31 (BUGS_AND_FIXES 2026-08-31).
+
+⚠ **Three ways it reported a false answer before it worked:** it passed vacuously on wrong tag regexes (hence `assertNonTrivial()`); it
+failed 24 countries spuriously by reading only `add_technology_researched` (most of the grant is `add_era_researched = era_1`); and it lost
+its own error message through `2>&1` (the tool now prints its verdict to stdout and signals only by exit code).
+
+### L15 — a country silently loses a starting technology vanilla gives it
+
+**Defect.** The user's rule of 2026-08-12: every production method vanilla runs in 1836 stays, and the country running it holds its
+technology (§10.55). We replace `common/scripted_effects/00_starting_inventions.txt` whole, so a transform that drops a line removes that
+technology from a whole starting tier — and starting-tech tiers 1 and 2 get most of their set from `add_era_researched = era_1`, so moving a
+technology out of tech era 1 silently withdraws it from 59 countries. The first symptom is a method a great power can no longer run.
+
+**Detector.** `Test-LmL15` (build): `verify_start_techs.mjs <mod> --diff-vanilla` over the emitted files. It expands the era shorthand
+against each side's own era assignments (the whole hazard is that ours differ) and includes the per-country `add_technology_researched`
+extras 81 countries carry. It FAILs on any loss and reports the gains grouped, so an unexpected one is visible.
+
+**Proven.** Deleting `add_technology_researched = railways` from the starting-tech tier-1 grant ⇒ FAIL naming FRA, GBR, PRU and USA.
+
+**Instrument arms.** L14 and L15 read our own grant, which a control or overlay arm does not emit, so they report N/A — keyed on the built
+mod's metadata id (`Get-InstrumentArmSkip`, L7's mechanism), never on the grant file being absent, which must stay a FAIL for a content mod.
+Before that skip existed the control arm could not be built at all (2026-08-12 to 2026-08-13).
+
+### L16 — a schedule key honoured in `defaults` for some fields and silently dropped for others
+
+**Defect.** `dump_dates` was read from the run only (`Val $r "dump_dates" @()`) while `tags` and `metrics` fell back to `defaults`, so a
+defaults-level `dump_dates` did nothing and every run fell back to one computed dump date instead of twelve. A per-decade series became a
+single endpoint.
+
+**Found.** 2026-08-13, by luck: the `-WhatIf` line printed `dumps: 1935.1.1`. Outside L5's reach — dump dates reach the observer as
+`-DumpDates`, not through the telemetry spec.
+
+**Detector.** `run_schedule.ps1` (harness, at batch start, before anything is built): `dump_dates` falls back to `defaults` like its
+neighbours, and the scheduler throws on any `defaults` key not in `$KNOWN_DEFAULT_KEYS`, naming it (keys prefixed `_` are comments). A new
+defaults key must be added to that list and threaded through, or the batch refuses to start.
+
+**Proven.** A real schedule passes `-WhatIf`; the same schedule with a `dump_dates_typo` key in `defaults` throws, naming it.
+
+### L17 — a run that failed is recorded as `ok`, and the arm count silently shrinks
+
+**Defect.** The scheduler took a run's status from the observer's exit code alone, and the observer exits 0 when it abandons a run
+(watchdog timeout, STOP file, a resume given up on). A run that reached 1851 of a planned 1936 counted beside three that reached 1936 — an
+`n=4` that was `n=3` — while the run's own `meta.json` held every fact needed (`reached_ingame_date`, `until_date`, `self_quit`,
+`abandoned_reason`).
+
+**Found.** 2026-08-13, run 4 of `20260813_083557_vanilla-vs-mod-n4` (crashed at 1851.1.27, recorded `ok`). The generating cause of the
+retrospective n-corrections in SESSION_VERDICTS: `techtree-full-n3` and `wages-n3` are n=2, `vanilla-retest`'s nineteen runs are sixteen
+probes and three failed resumes, `canon-ports-n2` is n=1 for the century.
+
+**Detectors.** (1) `run_schedule.ps1` reads each run's `meta.json` and records `partial(<date>)` instead of `ok`. (2) `Test-LmL17`
+(session): every ended run must have reached its `until_date` with an empty `abandoned_reason`. It does not judge why — a STOP is a
+shortfall for counting too, and the reason belongs in the session's VERDICT — and runs in flight are counted, never failed. (3)
+`lib_runs.usableRuns` is the only definition of a usable run and prints what it drops (CLAUDE.md §3.5).
+
+**Proven.** PASS on `20260817_225120_port-ramp-monthly-n3`; FAIL on `20260817_152516_anchorage-netseed-n1`, a run stopped by the STOP file.
+
+### L18 — a tier that cannot break even at any price the engine can produce
+
+**Defect.** The engine's price band stops at 175% of base. A rung whose base recipe cannot cover its inputs and wages even there survives
+only on subsidy and dies when the subsidy lapses.
+
+**Found.** 2026-08-17, diagnosing F67 on the six-rung book: `building_port` ate 15.2 clippers to make 9 merchant marine (break-even 270% of
+base). `lint.sh` could not see it: its tier map leaves out `no_mass_be` industries, and its test is circular — it compares a recipe with a
+`target_be` the solver restated from that same recipe.
+
+**Rule** (§10.63). Inputs at base, output at the band edge: THROW if `I_base / ((1 − wage_pct) · O_base) · 100 > 175`, wages included. A
+ratio below 1 is not the trigger: an early rung may destroy value at base prices when realised prices carry it, and only the unreachable
+case is forbidden. Shipyards are not exempt. Recompute from the goods block; never implement it as a bound on `target_be`.
+
+**Detector.** `tools/lint_solvency.mjs --config <book>` (lint, throws): every tier of every enabled industry, priced from
+`tools/goods_prices.tsv`. A disabled industry is vanilla's and skipped; the canon has none.
+
+**Proven.** `--census` on the six-rung book named exactly the port (270%), the railway (217%) and synthetics (208%), and stayed silent on
+three rungs that destroy value at base but stay reachable (power 158, Bessemer steel 139, steel 135) — the three passing are part of the
+proof.
+
+### L19 — an orphaned game process makes the next run fail instantly, and nothing says so
+
+**Defect.** The observer calls `Stop-Process -Force`, logs a clean stop — and the game outlives it. The game is single-instance, so every
+later run fails at once, its `run.log` holding one line from the tidy-up path (`restored content_load.json + pdx_settings.json`) that reads
+as an orderly shutdown; every visible signal blames the config. The orphan is invisible from the session that left it.
+
+**Found.** 2026-08-17: `canon-ports-n2` run 2 was stopped with the STOP file, the game (PID 8420) kept running, and the next schedule's run
+failed 20 s in (SESSION_VERDICTS, `20260817_145526_anchorage-netseed-n1`). It struck again in the L29 incident: 48 runs burned.
+
+**Guards in place.** The observer refuses to start while any `victoria3.exe` runs and throws naming the PID — it never kills it, because the
+process may be another session's run or a game the user is playing. `run_schedule.ps1` aborts after two consecutive instant failures
+(observer exit non-zero under 90 s after launch), with an ALERT naming L19/L29. L17 drops the dead runs from n.
+
+**Owed.** A verifiable kill: after `Stop-Process`, poll until the process is gone, kill again, and log the outcome either way (today it
+is `Stop-Process -Force` and a 3-second sleep, unverified). A running game reported by `preflight.ps1 -RepoOnly` before a batch. Proof:
+start the game by hand, launch a schedule, expect the refusal with the PID named.
+
+### L20 — an alternate config without its paired `tech_tree_options.<sfx>.json` cannot be built
+
+**Defect.** `emit_techs.mjs` and `emit_research_events.mjs` derive the tree file from the config's filename (`mod_config.<sfx>.json` →
+`tech_tree_options.<sfx>.json`; `MOD_CONFIG` outranks the argument), so an alternate config without its twin cannot be built. The build
+fails in 3 seconds with a clear ENOENT — into `build.log`, which nobody reads while a batch is believed to run.
+
+**Found.** 2026-08-18: a frozen byte copy of the canon (an L10 mitigation) had no twin; with L21 the batch sat idle for 6 h 40 min of an
+overnight window, zero runs. Five of 21 alternates were unbuildable at the time.
+
+**Detector.** `Test-LmL20` (repo), wired three times: `build.ps1` runs `preflight.ps1 -RepoOnly -Only L20 -Config <book>` before emitting
+a file; both full walks in `build.ps1` pass `-Config`; `run_schedule.ps1` runs it per setup before the estimate. With `-Config`: PASS/FAIL
+for that config, the FAIL printing the one-line `Copy-Item` fix; without: a WARN listing every unpaired alternate. It mirrors the
+emitters' suffix rule, `MOD_CONFIG` included, and names the file the suffix came from.
+
+⚠ Never fix it by falling back to the canonical tree: that pairs one book's buildings with another's technologies (BUGS_AND_FIXES
+2026-08-12).
+
+**Proven** on all four paths (2026-08-18): the repo survey WARNs the unpaired alternates; PASS on the canon; FAIL, with the build refused
+before any emission, on an unpaired book; `MOD_CONFIG` overriding `-Config` FAILs against the overriding book's tree.
+
+### L21 — a failed build hangs the scheduler instead of aborting it
+
+**Defect.** A failed build blocked the scheduler before its exit-code test: `session.log` stopped at `building setup '…'` with no `BUILD
+FAILED`, the harness sat at 9.5 s CPU for 6 h 40 min with no child, and `wait_for_session.ps1` reported RUNNING throughout. Any build
+failure, from any cause, cost the whole window. The blocking mechanism was never identified (candidates: PS 5.1 `2>&1` on a native
+command, `Out-File` holding the pipe, a console QuickEdit freeze); the fix is a timeout, which is right whichever it was.
+
+**Found.** 2026-08-18, the L20 incident.
+
+**Fix and detector.** `run_schedule.ps1` builds through `Invoke-BoundedBuild`: `Start-Process -PassThru` with output to files merged into one
+`build.log`; `WaitForExit` bounded by `-BuildTimeoutMinutes` (default 10, against a ~7 s build); on expiry the child is killed as a tree
+(`taskkill /T /F`; `Kill()` alone orphans node and robocopy); the verdict is the process's `ExitCode`, and a null exit code is a failure. A
+failed or timed-out build writes `session.json`, prints `SCHEDULE DONE … [ABORTED]` (the waiter's wake-up marker) and exits 3; the run's
+status is `build_failed` or `build_timeout`. `wait_for_session.ps1` returns STALLED (exit 3) when nothing in the session tree has been
+written for `-StallMinutes` (20), and BAD SESSION (exit 4) for a path that does not exist or enumerates nothing.
+
+**Proven** by breakage: an invalid config ⇒ `BUILD FAILED … (exit 1)`, exit 3 in 1 s; a hanging stub builder at a 1-minute bound ⇒ `BUILD
+TIMED OUT`, exit 3 in 63 s, its child's survival marker absent. Two traps the proofs exposed: `Start-Process -PassThru` without `-Wait`
+reports a null `ExitCode` unless the handle is touched (`$null = $proc.Handle` is load-bearing); `[string](Get-Content -Raw)` on an empty
+file is null, not `""`, so `.Trim()` under StrictMode throws — exactly the timeout case, where the build wrote no stderr. The waiter's
+first STALLED called a healthy run stalled (a mangled path, then an invalid regex), which is why a bad path is its own verdict.
+
+**Rule.** A watcher that matches only success is indistinguishable from a broken one: every wait condition also matches failure, process
+death and stall.
+
+### L22 — a mod `effect` block on a vanilla on_action silently replaces vanilla's
+
+**Defect.** An on_action's `events` and `on_actions` lists merge across files; its `effect` block does not. With two `effect` blocks for
+one on_action the engine keeps the most recently loaded and discards the other, logging one line (`jomini_onaction.cpp:124 There is more
+than one 'effect' defined using most recent: …`).
+
+**Found.** 2026-08-18, in `error.log`: `zzz_pm_rehaul_wargate.txt` declared `on_monthly_pulse_country = { effect = { … } }` and, loading
+last, replaced vanilla's 1,005-line monthly country effect (Ottoman and Portuguese succession, ruler-trait rolls, content for fifteen tags)
+for the whole campaign. Only that day's sessions carry it: the three `wargate-*` probes and `canon-n2`. The gameplay consequence was
+inferred from the engine's message, not measured.
+
+**Idiom.** Register a named action: `on_monthly_pulse_country = { on_actions = { pmr_wargate_eval } }` and `pmr_wargate_eval = { effect =
+{ … } }`, as the telemetry and diag files do (MODDING_NOTES).
+
+**Detector.** `Test-LmL22` (build): in the emitted `common/on_actions/*.txt`, no top-level block that is a vanilla on_action may have a
+direct `effect = {` child. The vanilla names are parsed live from the game, so a patch that adds one is covered; `on_`-prefixed is the
+fallback on a machine without the game. Deliberately not a grep for the engine's warning, which needs a run.
+
+**Proven.** The bare `effect` re-added ⇒ FAIL naming the file and the on_action, with the two-line fix; restored ⇒ PASS.
+
+### L23 — a log line counted raw when a burst repeats it
+
+**Defect.** `PMR_JE|<stage>|<tech>|<country>` is logged once per research-entry completion, and analyses counted lines. Canon-n7 run 1 to
+1926 held 12,143 lines against 5,293 distinct `(stage, tech, country)` triples (×2.29), the excess packed into a few seconds — Yogyakarta
+completing `percussion_cap` 16 times in one second, in byte-identical repeated blocks.
+
+**Cause.** The log mirror's false rotation (L28, identified 2026-09-04): canon-n7 run 1 re-copied one chunk 16 times.
+
+**Rule.** Count distinct identity tuples, never raw lines, and print the raw count beside the distinct one. A stage completes once per
+country per technology, so a triple cannot recur. F73's firing counts were raw, and its magnitudes do not stand (FINDINGS F73).
+
+**Detector.** The mirror half is L28's detector. The reader half is owed: `je_tally.mjs`, `tech_census.mjs`, `fill_research.mjs`,
+`peek_run.mjs` and `tech_finish_gap.mjs` de-duplicate, but `je_distribution.mjs`'s "firings" still counts raw lines, and nothing checks a
+new reader. A log line is evidence that something happened, never of how many times.
+
+### L24 — a generator's own diagnostic text leaked into an emitted script file
+
+**Defect.** `build.ps1`'s `Set-BuildingAiValue` returns a building block's lines and reported a note with `Write-Output`, which in
+PowerShell joins the function's return value. The note (`note: building_power_plant = { has a complex ai_value block - not overriding`)
+carried an unbalanced `{`, so every later block of two building files nested one level deeper. The build, every linter and
+`Invoke-ModChecks` passed and the mod loaded; only 96 `Duplicated key note` lines in `error.log` showed it.
+
+**Found.** 2026-08-19, at the five-minute smoke check of `aival-n4` run 1 (BUGS_AND_FIXES 2026-08-19). The refusal path had never run: no
+power or railway rung had carried an `ai_value` before.
+
+**Detector.** `Test-LmL24` (build): every emitted `common/**/*.txt` must end at brace depth 0, never go negative, and hold nothing at depth
+0 but `}` or `<key> =` (`#` is a comment only outside quotes; a key may start with a digit, as vanilla's `1848_popular_radical` does).
+Deliberately not a grep for `note:` — the next leak will use another word in another function.
+
+**Proven.** The original line re-injected ⇒ FAIL naming the stray line and the brace imbalance; no false positives over the emitted files
+of both builds of the time.
+
+**Rule.** A function that returns content never reports through the success stream; use `Write-Warning` or `Write-Host`. A refusal path
+that has never executed is not known to work.
+
+### L25 — a summary reader globs `*.json.gz` and so reads the harvester's in-progress file
+
+**Defect.** `harvest_saves.ps1` writes each summary as `<stem>.partial.json.gz` and renames it after verifying (the L12 discipline), but
+that name ends in `.json.gz`, and every reader globbed `.json.gz`. Mid-harvest, a still-truncated temp file throws in `gunzipSync` and the
+reader's `try … catch { continue }` skips the year silently; a complete, not yet renamed one is read twice, inserting a zero-delta year
+into readers that diff consecutive years.
+
+**Found.** 2026-08-20, from a `.partial` name in a smoke check. Finished batches are unaffected (no temp file survives a harvest).
+
+**Fix.** `.filter(f => f.endsWith('.json.gz') && !f.includes('.partial.'))` in every reader.
+
+**Detector.** `Test-LmL25` (build, repo): in `tools/testbed/**/*.mjs`, every `endsWith('.json.gz')` site must be matched by an
+`includes('.partial.')` guard; `tools/testbed/sessions/` is skipped. Not a point-in-time check that the folder is clean — the race is
+real only during a harvest.
+
+**Proven.** PASS on the clean tree; FAIL naming `peek_run.mjs` with its guard removed. Its first run found a fifteenth reader,
+`port_ramp_table.mjs`, which the hand pass over fourteen had missed. A glob is not a manifest.
+
+### L26 — one run folder holding two campaigns, recorded as a clean run that reached its target
+
+**Defect.** A crash-resume whose load fails begins a fresh 1836 game under `-handsoff` (MODDING_NOTES). If that game reaches the target,
+`meta.json` says reached, self-quit, no abandon reason, and L17 passes. Readers keyed on the date take the later campaign by luck of filename
+order; readers that diff consecutive files diff 1931 against 1837. The only symptom is a doubled wall clock.
+
+**Found.** 2026-08-31: run004 of `20260830_191950_tier4-vanilla-ladder-n4` took 267.3 min against 135–146 for its siblings (BUGS_AND_FIXES
+2026-08-31). Again on 2026-09-03 (`20260902_223037_ab3-n3` run001), because the observer's fix was dead code behind a misplaced brace
+(BUGS_AND_FIXES 2026-09-03).
+
+**Detector.** `Test-LmL26` (session): read every summary's `provenance.date` in filename order. A backward jump over 2 years ⇒ FAIL, a
+second campaign; ≤ 2 years ⇒ WARN, one campaign whose archiver read several ring slots in one pass (`autosave_1.v3`, the older save, sorts
+after `autosave.v3`).
+
+**Proven.** FAIL on `20260830_191950` (naming the seam) and on canon-n7 run007; WARN on `port-ramp-monthly-n3`; PASS on
+`20260829_152435_tier4-n1`. A sweep of the 74 sessions then holding summaries found one hit inside a published n (that run004; measured
+harmless).
+
+**Generator side.** `run_observer.ps1` stops a resume whose first tick is a fresh 1836 game (before 1837.1.1 when the run had passed it);
+a fed older save landing years behind is by design (L32). The entry is not redundant with the fix: a generator fix says nothing about
+sessions already on disk.
+
+**Owed.** A live check: an in-game date that falls more than two years between two readings of one run means stop the batch and
+relaunch, or the run plays the century twice. The 2026-09-03 case was caught that way by hand; `batch_heartbeat.sh` does not compare
+readings.
+
+### L27 — an industry loop that keeps the disabled industries
+
+**Defect.** A `disabled: true` industry is handed back to vanilla but keeps its tiers in the config, and its rung-0 key is the vanilla
+building. A rung→tier map built without the filter counts every vanilla port, shipyard and railway level as a tiered rung. Nothing fails;
+the employment-by-tier panels are wrong.
+
+**Found.** 2026-09-03, by the user reading the ab3 ledger: Britain's t0 employment climbed 0.16M → 0.83M while the real t0 rungs fell to
+0.09M (BUGS_AND_FIXES 2026-09-03; F98 §2 and F99 §1 corrected there).
+
+**Today.** Only three frozen books carry disabled industries (`canon-4rung`, `canon4-art`, `canon4-je`); the canon carries just its 17
+tiered industries. The rule stays for those books' sessions and any future book (CLAUDE.md §5.3).
+
+**Rule.** `cfg.industries.filter(i => !i.disabled)`, or `if (ind.disabled) continue;` as the loop's first statement.
+
+**Detector.** `Test-LmL27` (build, repo): every industry loop in `tools/testbed/**/*.mjs` (`for (const x of …industries…)`,
+`.industries….forEach|map|filter|flatMap(`) must mention `disabled` on its line or the next two; sessions skipped. This is what puts a new
+analysis script on the batch's build path (L10).
+
+**Proven.** An unguarded probe file ⇒ FAIL naming `_lm27_probe.mjs:2`; removed ⇒ PASS.
+
+### L28 — the log mirror re-copied the current log on a false rotation
+
+**Defect.** The observer's `Read-Tail` took "the file is shorter than my read position" as a rotation. `Get-Item` reads the directory
+entry, which NTFS updates lazily for a file another process holds open, so the length sat below the position for seconds and the whole
+current file was re-appended on every 250 ms poll. `V3TB|` telemetry was saved by the mirror's de-duplication, so TSVs and summaries were
+right; every other line — `PMR_JE` completions, the game's event lines, the error mirror — was multiplied.
+
+**Found.** 2026-09-04: run 4 of `canon4-je-n5` appended one 946-line chunk 27 times in eight seconds; canon-n7 run 1, 16 times
+(BUGS_AND_FIXES 2026-09-04). F101's six-rung per-run counts are raw lines: canon-n7 run 1's 12,004 are 5,232 unique completions.
+
+**Fix.** `run_observer.ps1` reads the length through a handle (`Get-TrueLength`); an unchanged first-line signature means the same file,
+not a rotation (`Test-SameSegment`, a prefix compare while the signature comes from a file under 120 bytes); a signature that cannot be
+read this instant waits (2026-10-21).
+
+**Detector.** `Test-LmL28` (session): in each run's `logs_live/*.log`, a zero-recovery seam (`--- harness: source log rotated at …,
+recovered 0 chars from [] ---`) whose next 30 non-empty lines repeat, stamps and all, the 30 lines that began an earlier read of that
+file (the mirror's start or another seam) ⇒ FAIL. The seam alone is not the signature: a real rotation whose old segment was already read
+prints the same seam.
+
+**Proven.** canon4-je-n5 run 4's debug mirror reads 26, canon-n7 run001's 14, the October mirrors 0. An earlier test (the 30 lines
+anywhere since the previous seam) fired on floods of identical error lines; the two FAILs of 2026-10-20/21 (`wm99-n4` run 1,
+`vanilla-now-n8` run 2) were that detector's false positives, not the mirror (BUGS_AND_FIXES 2026-10-21).
+
+**Rule.** A count off a mirror counts what the mirror holds. Tally non-telemetry lines only after de-duplicating (L23); a burst of
+identical lines in one second is the mirror until a unique game line in the same second is shown not to be duplicated.
+
+### L29 — the observer died on its own log line, and the batch burned its run list behind the orphaned game
+
+**Defect.** `Write-Log` in `run_observer.ps1` (`Add-Content` to `run.log`, every 20 s tick) ran under `$ErrorActionPreference = "Stop"` in
+a poll loop with no `catch`, and `Add-Content` throws "Stream was not readable" while another process holds the file. A heartbeat's
+`tail -1` at the wrong second unwound the observer with the game still running; every later observer refused beside the orphan (L19), and
+the scheduler burned 48 runs in 15 minutes and printed `SCHEDULE DONE: 60/60`. The last line read as an orderly stop; the exception went
+to a console window.
+
+**Found.** 2026-09-07, run 12 of the 60-run plan (BUGS_AND_FIXES 2026-09-07; reproduced: 1,041 of 2,677 appends failed against Git Bash
+readers in 45 s).
+
+**Fix.** All four harness log writers (`run_observer`, `run_schedule`, `archive_autosaves`, `harvest_saves`) retry `Add-Content` eight
+times with a growing pause, then keep the console line only; `run_schedule.ps1` aborts after two consecutive instant failures (L19). L17
+catches the artifact, a run with no `meta.json`.
+
+**The reader side** (2026-10-01, `20261001_215119_e1a-lift-probe-10y`). The retry outlasts a reader that opens and closes (`grep`,
+`tail -1`), not one that keeps the file open. A Monitor running `tail -n 0 -F session.log` dropped every scheduler line for half an hour,
+and the Monitor's expiry did not kill the `tail` (Windows, Git Bash); left alone it would have swallowed `SCHEDULE DONE`, the waiter's
+marker. On 2026-10-17 (`20261017_190800` run 1) a stopped Monitor's `tail.exe` and `grep.exe` kept `run.log` blocked for two minutes until
+killed by PID.
+
+**Rule.** Never `tail -f` or `tail -F` a live harness log (`session.log`, any `run.log`, `archive.log`, `harvest.log`). Watch with a polling
+loop that opens and closes the file (a background `until` loop running `tail -n 3`). After stopping any watcher, check
+`Get-CimInstance Win32_Process` for a leftover `tail.exe`. A harness may die on nothing but the game, and anything it says on the way down
+must reach a file.
+
+**Detector.** `Test-LmL29` (session, WARN only — the runs' own `run.log`, `meta.json` and summaries are the record): every run folder with a
+`meta.json` must have its `=== run N/M:` line in `session.log`. Proven: WARN on `20261001_215119` (runs 2 and 3 named), PASS on
+`20260929_002728`.
+
+**Owed.** A live proof of the scheduler's abort: start the game by hand, launch a throwaway 3-run schedule, expect two ALERTs and an abort.
+Not beside a live batch — a second scheduler shares the `STOP_ARCHIVE` / `STOP_HARVEST` signal files.
+
+### L30 — a batch launched from the agent's tool shell dies with the app
+
+**Defect.** The agent's tool shell sits in a job object of the desktop app (KILL_ON_JOB_CLOSE). A `Start-Process` child breaks away
+silently into a second job of the app's, and an app restart (a forced re-auth) killed scheduler, observer, game, archiver and harvester in
+the same second. A job kill leaves no error, no marker and no last line — from outside it looks like a sleeping machine.
+
+**Found.** 2026-09-13, from `20260910_151220_canon-flat-in12-n30`, killed at 18:45:29 on 2026-09-10 with run 1 ten months short of its end
+(BUGS_AND_FIXES 2026-09-13).
+
+**Fix and detector.** `tools/testbed/launch_detached.ps1` creates the process through WMI `Win32_Process.Create`, outside every job, then
+asks the kernel and exits non-zero, killing the child, if it is in any job. `run_schedule.ps1` checks itself at startup and logs an ALERT
+when it runs inside a job (not fatal: a user's console may sit in a benign one). A Task Scheduler task and `CREATE_BREAKAWAY_FROM_JOB`
+were measured and both left the child in a job.
+
+**Rule.** Launch through the launcher, called directly from the PowerShell tool — `& 'tools\testbed\launch_detached.ps1' -File …
+-ArgumentList '-Schedule','<spec>' -NoExit` — never wrapped in `powershell -File`: that flattens the argument array into one token, the
+scheduler never binds `-Schedule`, and the launcher still reports success, since its kernel proof says nothing about the child's
+arguments. A session folder appears within a minute or the launch did not happen.
+
+**The other class stays open.** A reboot (Windows Update restarted the machine at 03:00 on 2026-09-11) kills everything, launcher or not.
+Surviving it needs a resume mode (an at-logon task that re-enters the schedule at its last completed run) or Windows Update held back for
+the batch's window; neither exists (BACKLOG §G).
+
+### L31 — a rung placed or priced by its order in the industry, not by its tier
+
+**Defect.** `make_tier4_config.mjs` assigned tiers by vanilla method order and `make_ab_config.mjs` keyed the ladder on k = tier − the
+industry's first tier, so a late industry's first rung was priced as an 1836 rung: automotive's t2 rung carried vanilla's recipe at
+vanilla's margin, electrics' only rung sat on t1 with an 1836 recipe, synthetics and munition likewise. Eleven batches (F98–F110) passed
+every lint.
+
+**Found.** 2026-09-13, the tier pass (F111; BUGS_AND_FIXES 2026-09-13).
+
+**Rule.** The tier rule (CLAUDE.md §2.3; §10.78): the rung's index within its industry is never a key to anything.
+
+**Detector.** `tools/lint_tier_eras.mjs` (lint, throws) and `Test-LmL31` (build, repo; with `-Config` that book, without it the canon alone
+— frozen pre-pass books such as `canon-4rung` fail by design). It reads the config and its paired tree (the tech eras the mod ships) and
+checks: every rung within ±1 tier of its technology's, tiers strictly rising, inside 0–3; for an A/B book, output, input value, building
+cost (flat, × C^tier, or a per-tier list) and `ai_value` recomputed from the game files and `_ab`; craft and merged rungs against their
+`_artisan` and `_merge` records; output and value added per level rising with tier. A book with no `era_game_era` (the six-rung book) is
+out of scope and says so. The A/B check needs the game files.
+
+**Proven.** Every pre-pass book fails on its re-keyed industries; every regenerated book passes.
+
+**Generator side.** `make_tier4_config.mjs` derives placement (`derivePlacement` / `placementFaults` in `lib_tier4_spec.mjs`; `PLACEMENT`
+holds only ruled adjustments) and throws beyond ±1; `make_ab_config.mjs` keys on `t.era` and stamps `_ab.keyed_by: 'era'` and
+`_ab.command`; `convert_history.ps1` resolves start rules by `era`.
+
+### L32 — a CTD during the autosave write leaves the continue pointer aimed at a save that does not exist
+
+**Defect.** The engine resumes (`-continuelastsave`) the save whose TITLE its pointer — `Documents\Paradox Interactive\Victoria
+3\continue_game.json`, rewritten at every completed save — names, not the newest file. A crash during the autosave write leaves the
+pointer aimed at a file that is absent or truncated; every resume then logs `Could not load save game [autosave]. Going to main menu.` and
+`-handsoff` begins a fresh 1836 game. The old step-back ladder was inert against it, with intact older saves sitting unused beside it.
+
+**Found.** 2026-09-14, run 2 of `20260914_173832_canon-c19-in12-n2`: a crash at 1858.1.1, seven launches in 3.5 minutes, abandoned as
+`partial(1836.1.1)`; proved with `probe_resume.ps1` (BUGS_AND_FIXES 2026-09-14/15; MODDING_NOTES).
+
+**Fix.** The deterministic resume feeder in `run_observer.ps1`: on a crash, quarantine the whole autosave set and feed one original per
+attempt, newest first, copied under the pointer's title; a re-crash within `-ResumeWindowYears` (5) of the process's first crash feeds the
+next-older original; beyond it, a new process opens from the engine's current saves; the set exhausted ⇒ abandon (FINDINGS F117).
+
+**Detector.** `Test-LmL32` (session): a run whose `logs_live/debug.log` carries `Could not load save game [` ⇒ FAIL, or WARN when its
+`run.log` shows a `resume feed N/M` line (the feeder handled it).
+
+**Proven.** FAIL on run002 of `20260914_173832`; PASS on its re-run session.
+
+### L33 — an emitted define the engine rejects at load, so the lever silently reverts to vanilla
+
+**Defect.** Defines are a partial override, and the engine validates each value against ranges that are hardcoded and undocumented. A
+value outside its range is discarded with one `error.log` line and the key keeps vanilla's value. The build, preflight, the smoke check and
+the ledger all pass; the arm is simply not the book.
+
+**Found.** 2026-09-15, run 1 of `20260915_232404_canon-c19-in12-eager-n2`: `MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR =
+1.0` (vanilla's comment says "capped at 1"; the range is [0,1)) ran at vanilla's 0.75 — below the 0.9 of the book it was a one-lever test
+against. F121 measured three of its four levers.
+
+**Three shapes.**
+- *Out of range:* `[defines.cpp:167]: Define 'NAI::…' not valid with given value, reason: Must be between 0 (included) and 1 (excluded)`.
+- *Bounded by another define:* land `MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD` 1.25 makes vanilla's ship `EXCESSIVE_THRESHOLD`
+  1.05 invalid ("Must be greater than 1.25") — a define no book sets, so no per-key table can anticipate it; what value the engine then
+  holds is not known. Accepted as a named residual in the eager books (naval construction only). The key itself can be bounded too:
+  `TRADE_CENTER_MINIMUM_GDP_NON_MARKET_CAPITAL` must exceed `_MARKET_CAPITAL` (1 / 1 rejected), and both must be > 0 (F246).
+- *Dead* (2026-10-17): a key the engine does not read at all, reported in `debug.log` as `Define 'X' defined in '<file>' not specified.
+  Maybe a define macro is missing` — vanilla's own line too (15 keys in 1.13.11, F241).
+
+**Detector.** `Test-LmL33`, two halves. (a) Repo (gating a launch: `-RepoOnly -Only L33 -Config <book>`): the config's `ai_defines`
+against bounds the engine has stated — a bound enters the table only then: the pool factor's [0,1) and the two trade-centre bounds FAIL;
+land `CRITICAL_THRESHOLD` ≥ the ship `EXCESSIVE_THRESHOLD` WARNs (a deliberate trade). (b) Session: every run's `error.log` for "not valid
+with given value", which catches any define, table or not ⇒ FAIL, except a sibling the static half predicted ⇒ WARN; and `debug.log` for a
+dead key named in our defines file (`common/defines/01_pm_rehaul_defines.txt`) ⇒ FAIL. `emit_techs.mjs` also refuses the known dead keys
+in `game_defines` at build, and `batch_heartbeat.sh` prints rejected defines as their own DEFINE REJECTED AT LOAD alarm at the smoke check.
+
+**Proven.** The unregenerated eager book ⇒ FAIL (static); its aborted session ⇒ FAIL (log), naming both keys; `canon-c19-in12` ⇒ PASS; the
+trade-centre 0 and 1 / 1 books and their sessions FAIL and the 1 / 2 book passes; the dead key FAILs both 0.99 runs of `20261017_190800`
+and PASSes `20261016_192119`.
+
+**Rule.** A define is a request; the run's own logs are the only proof it applied. Fix a breach by regenerating from the book's
+`_ab.command` with the value inside the bound — never by hand-editing `ai_defines`, which leaves `_ab.command` describing a book that no
+longer exists.
+
+### L34 — a run recorded complete in minutes
+
+**Defect.** A crash before the first autosave restarted the run with `-continuelastsave`, which loads the newest save on the machine — the
+previous run's 1936.1.1 endpoint, still in the game's save folder. The first tick read the target, and the run "completed" in 169 s with
+one summary. L17 passes (reached = until), L26 cannot see it (a one-entry series), and the landing guard compared against a tick the
+restart had just cleared.
+
+**Found.** 2026-09-17, run 2 of `20260917_132449_canon-c19-in12-confirm-n2` (BUGS_AND_FIXES 2026-09-17); no analysis consumed the stub.
+
+**Detector.** `Test-LmL34` (session) and `lib_runs.usableRuns`: an ended run that reached its until date over a span of five years or more
+must carry more than two save summaries (a century carries ≥ 15 at five-year cadence, ~100 at yearly; a foreign landing one or two).
+Proven: FAIL naming run 2 of that session; PASS on a clean one.
+
+**Generator side.** The early-death restart sets `$freshRestart`, and the next attempt launches a fresh 1836 game without
+`-continuelastsave`. Live proof owed: parse-checked only, with the detector behind it.
+
+### L35 — a rung silently locked out of its industry's gated secondary method
+
+**Defect.** Vanilla gates three secondary methods by naming the main methods they may sit beside (`unlocking_production_methods`):
+`pm_elastics` (textile), `pm_precision_tools` (furniture), `pm_bone_china` (glass). The builder owns `01_industry.txt` and appends our
+rung's `pm_key` for each vanilla method a gate names, through `vanilla_pm` → `pm_key`. A minted rung (furniture spray finishing, paper
+continuous web, fertilizer catalytic synthesis) has no `vanilla_pm`, so it was never appended, and `emit_secondaries.mjs` failed the same
+test. Every check passed; the method was simply missing when a player opened the building.
+
+**Found.** 2026-09-18, by the user playing the canon: "T3 furniture doesn't allow adding top luxury furniture secondary PM" (ROADMAP step 8
+P7). Only furniture is affected today (paper's and fertilizer's industries have no gated secondary); every future addition is a fresh
+instance.
+
+**Fix.** A rung with no `vanilla_pm` inherits the gate membership of the nearest rung below it that has one, at both sites:
+`$script:pmRemap` in `build.ps1` (now `vanilla_pm` → a list of `pm_key`s) and the `gatedOn` test in `emit_secondaries.mjs`.
+
+**Detector.** `Test-LmL35` (build): in every `unlocking_production_methods` list of an owned vanilla file, if any rung of an industry is
+named, every higher-tier rung of it must be named too. Our own `zzz_pm_rehaul_*` files are skipped: each per-rung copy there is gated to
+exactly one rung by construction, and the gate list in the vanilla file is the cause the symptom comes from.
+
+**Proven.** Removing `pm_main_furniture_spray_finishing` from the furniture gate ⇒ FAIL naming it; restored ⇒ PASS.
+
+### L36 — a telemetry metric name that matches nothing, so the run measures nothing and says so nowhere
+
+**Defect.** `telemetry_lib.ps1` selects each block with `if ($metrics -contains "<name>")`. A schedule `metrics` entry that matches no such
+test emits nothing, and nothing reports it. Every surface check passes — status `ok`, L17, L26, L34 — and the only trace is `goods_rows:
+0`. Not L5: there a key is dropped; here the key arrives and its values are nonsense.
+
+**Found.** 2026-09-20, `20260920_192007_schedule`: of `markets, gdp, buildings, pops, construction, research, companies, queues` only
+`construction` exists. Run 1 played a clean century and wrote a 94-byte, header-only `markets.tsv` (2,891 of its 2,917 `V3TB|` records were
+`CON`); the market block is `market_goods_scoped`. The batch's price half was void (FINDINGS F153). A wrong name is also a comparability
+failure: a baseline must instrument the same metrics as the arms it is divided into.
+
+**Detector.** `Test-LmL36` (build, repo): every `metrics` entry in every `tools/testbed/schedules/*.json` (`defaults`, each setup, each run)
+must appear in `telemetry_lib.ps1`'s own `-contains` tests — the valid set derived from the library on every run, never copied. Read with
+`ConvertFrom-Json`: a UTF-8 BOM broke a Node first pass whose silent `catch` reported every schedule clean.
+
+**Proven.** `markets, country_state` in a schedule ⇒ FAIL naming the file and `'markets'`; restored ⇒ PASS. Its first run also found
+`goodsfilter_probe.json` asking for `consumption_goods` (never launched; repaired in place, recorded in `_metric_name_repaired`).
+
+### L37 — the stop watcher goes blind to the register on any multi-config schedule
+
+**Defect.** `tools/testbed/stop_watch.mjs` scores each finished run by calling `criteria.mjs --arm <session name>` with no `:setup`. On a
+schedule with more than one setup, `lib_runs.usableRuns` refuses that call by design ("holds 2 arms … pass a setup name"), and the watcher
+logs `criteria.mjs failed … falling back to the 1936 GDP rule` and runs the rest of the batch on the fallback, which catches a runaway only:
+a stall and a capital-abundance runoff pass it. The one trace is a 300-character stderr tail in the hidden `stop_watch.log`, which on this
+repo's path loses the `Error:` line off its front.
+
+**Found.** 2026-09-22, `20260922_084038_b-gradient-4x3` from run 4: run 3 of `probe-sm-b152` broke by runoff (GBR 17 consecutive years
+under 5% U\* at a mean hoard of 1.51) and the watcher read only its 1.164× GDP. Harmless there — that schedule's four configs were not
+meant to stop one another.
+
+**Status.** Live: `stop_watch.mjs` still passes `--arm` with the session name alone. The repair is one line: derive the setup from the
+completed run's folder name and pass `--arm ${NAME}:${setup}`. A running watcher keeps the code it loaded, so a fix needs it re-armed.
+
+**Detector (owed, `Test-LmL37`).** Repo, gating a launch: a schedule with more than one setup is incompatible with the watcher's current
+invocation unless it declares it does not want per-config stopping. Session: `criteria.mjs failed` anywhere in `stop_watch.log`.
+
+### L38 — a save summary that keeps one country record per definition
+
+**Defect.** Up to `SAVE_SUMMARY_VERSION` 11, `save_state_summary.mjs` keyed `countries` by the country's definition tag, so records sharing
+a definition — a civil war's two sides, a country a revolt left behind for decades, two records both carrying `is_main_tag` — overwrote
+each other in slot order, the main one as often as not, and `world.gdp` / `world.population` lost the dropped records. Trade capacity was
+mis-attributed the same way. The harvester's checks passed, L12 read a version, every reader got a number; `world.buildings`, summed over
+country ids, disagreed silently. And the saves are reaped: a summary that dropped a record is the only record.
+
+**Found.** 2026-09-30, `20260930_181601_craft-merge-30y` run 1 (FINDINGS F186; BUGS_AND_FIXES 2026-09-30): at 1866 `countries.PRU` and
+`countries.JAP` were the rebel sides; vanilla n=16 seed 5 dropped the main China at 1936 (world population 13.8% low); every 1932–1936
+summary of the canon n=6 and the vanilla n=16 carries a drop. Pre-v12 summaries cannot be repaired; `summary_drops.mjs --session <stamp>`
+sizes their drops (CLAUDE.md §3.5).
+
+**Fix (v12).** One entry per country record: the main record keeps the plain tag, every other record of its definition is `TAG@<country
+id>` (a group with two mains, or none, gives the plain tag to its most populous record and names the group on stderr); world totals sum
+every record; overlords, states, top producers and trade use the same key. Readers treat keys as opaque; `c.tag ?? key.split('@')[0]` is
+the definition in every version.
+
+**Detector.** `Test-LmL38`, both halves through `tools/testbed/ledger/summary_drops.mjs`. (a) Build, repo: `--selftest` runs the real
+writer on a synthetic melt with two records of one definition and requires both entries (`AAA`, `AAA@2`), world totals over both, no
+building-level gap, and the second record's state keyed `AAA@2` — a regression is caught before a batch reaps a save. (b) Session:
+`--check` requires every sampled v12+ summary (each run's newest and every 10th) to satisfy Σ countries = world on building levels,
+population and GDP, every key its tag or `tag@<id>`; pre-v12 summaries are counted, not failed.
+
+**Proven.** The definition-keyed line put back ⇒ FAIL naming the dropped record; restored ⇒ PASS; a scratch session with one `TAG@id`
+entry deleted ⇒ FAIL with the three gaps.
+
+**Rule.** A map keyed by a field is a claim that the field is unique; check it on the data.
+
+### L39 — a replaced vanilla file that loses a DLC gate, so DLC content reaches players without the DLC
+
+**Defect.** Every DLC's gameplay ships in the base game folder behind `has_dlc_feature = <feature>` triggers and the `dlc = dlcNNN` field of
+events; `game/dlc/` holds only art, music and sound. A vanilla file the build replaces whole (companies, the tier-reference fix's copies,
+value overrides, defines, technologies, history) that drops one of those lines unlocks DLC content, which Paradox prohibits (CLAUDE.md §5.1
+rule 1). Nothing fails: the mod loads, every lint passes.
+
+**Registered.** 2026-10-21, the polish (the user: "This isn't my intention, and that's explicitly prohibited by PDS").
+
+**Detector.** `tools/check_dlc_gates.mjs <mod>` in `build.ps1` after the last content emitter, every build (not skipped by `-NoLint`):
+every shipped file under `common/` or `events/` at a vanilla path must keep vanilla's count of `has_dlc_feature` lines and `dlc =` fields,
+or it throws (131 files, 19 of them gated, at registration). Additive files are not checked: a hook of ours that fires vanilla DLC
+content carries the condition itself. `emit_vanilla_refs.mjs` and `emit_value_overrides.mjs` guard their own copies too.
+
+**Proven.** Removing one `dlc = dlc014` line ⇒ the build throws.
+
+### L40 — vanilla script that names a rung-0 key or a renamed method, so it errors or narrows silently
+
+**Defect.** A vanilla trigger naming a main or secondary method the tier split moved (`is_production_method_active`) logs `Invalid
+Production Method` and returns false; a `has_building = building_<x>` matches only the rung that keeps the vanilla key. The canon carried
+44–46 such error lines a run (the industrial-accident events, `pm_events`, two vanilla scripted-trigger and -effect files).
+
+**Registered.** 2026-10-21, the tier-reference fix (TIER_REFERENCE_AUDIT.md).
+
+**Detector, two halves.** (1) Every build: `tools/emit_vanilla_refs.mjs` scans `common/` and `events/` and throws on any tiered reference
+left outside a file it transforms or its ACCEPTED list, so a patch that adds one stops the build. (2) MANUAL at the smoke check: the run's
+own error window must hold 0 `Invalid Production Method` / `PostValidate of trigger 'is_production_method_active'` lines whose script
+location is a vanilla path. `batch_heartbeat.sh` filters the `is_production_method_active` class as noise (TESTBED_OPERATIONS §4.2), so
+count it separately. Owed: half 2 in `preflight.ps1 -Session` once the window logic is shared.
+
+### L41 — a game paused by input looks like a healthy run: the observer keeps writing a tick line every 20 s, so nothing goes silent
+
+**Defect.** The engine's automatic pause toggles are `PlayerID: 0` and always resume (every run carries one or two). `Pause Toggled! Paused:
+true, PlayerID: 1` is player input — a keypress or click in the game window. While paused, `run.log` keeps printing the same in-game date
+every 20 s, so `wait_for_session.ps1`'s STALLED (no write anywhere for 20 minutes) never fires, and the run's timeout ends it short of
+its target. It also corrupts the run's wall clock: play time rebuilt from the tick lines counts the paused hours, and a slowdown-episode
+reader sees a monstrous year. Remove the interval from the `Paused: true` line to the next `Paused: false` before reading it.
+
+**Found.** 2026-10-23, run 13 of `20261021_224949_alt-vanilla-canon-n16`: paused at 12:00:31, the clock held at 1871.7.24 for over two
+hours (SESSION_VERDICTS: run 13 void).
+
+**Detector.** MANUAL for now: watch the newest run's last `in-game` date; unchanged for 15 minutes while the game runs means frozen. Owed:
+a FROZEN verdict in `wait_for_session.ps1` and a post-run check that flags any `Paused: true, PlayerID: 1` line — both after the batch, since
+no `tools/testbed/**` edit may land while one runs.

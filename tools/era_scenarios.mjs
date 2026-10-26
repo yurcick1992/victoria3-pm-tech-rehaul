@@ -247,7 +247,7 @@ const setProfRatio = eIx => {
 // placed for others — which is what the vanilla data says actually happens.
 //
 // ⚠ These are 1836 shares, not late-game ones. No session carries the `building_inventory` metric, so
-// late-game telemetry does not exist yet (see CLAUDE.md); swap these numbers in when it does.
+// late-game telemetry does not exist yet (see the CLAUDE.md of before 2026-10-24, in git history); swap these numbers in when it does.
 const PROF_SOURCE = [
   { prof: 'bureaucrats', bld: 'building_government_administration' },
   { prof: 'aristocrats', bld: 'building_manor_house' },
@@ -1789,7 +1789,7 @@ function buildScenario(eIx, finalPass) {
       if (t.tech_year == null) throw new Error(`${t.key} has no tech_year — re-run build_era_ladder.mjs --write`);
     }
     // ⭐⭐ THE GATE APPLIES TO LATER-ERA RUNGS ONLY (user ruling 2026-08-12). A scenario at era N must
-    // contain every industry's era-N rung — CLAUDE.md's anchor principle says so explicitly, and gives
+    // contain every industry's era-N rung — CLAUDE.md §2.2 (the anchor principle) says so explicitly, and gives
     // the reason: a scenario is not one country but an AMALGAMATION of several technology leaders, each
     // ahead in a different subfield, with NO international trade, so it must hold every chain to be
     // solvable at all. The date gate was reading `tech_year <= SCEN_YEAR` for EVERY rung, which withheld
@@ -3885,7 +3885,7 @@ for (let e = 0; e < FIT.eras.length; e++) {
     const dom = sorted.find(t => t.era === meta.era);
     score(dom, TG.minus1, 'dom');
     // A PLATEAUED industry has neither: its ladder ended below this era, and its last tier is PERMANENT
-    // rather than stale (CLAUDE.md — the good's price holds it up instead of deflating past it). Score it
+    // rather than stale (BALANCE_FRAMEWORK §10.23 — the good's price holds it up instead of deflating past it). Score it
     // against the plateau target, or the industry silently contributes nothing to its own era's objective.
     if (!dom && sorted.length) {
       const last = sorted[sorted.length - 1];
@@ -4491,7 +4491,7 @@ console.log('  that oil is filed under "agriculture + fish/whaling" above, so oi
 console.log('  "no oil RIGS yet" (Drake\'s well is 1859), not "no oil". Same shape of caveat for any good with');
 console.log('  producers in more than one category.');
 console.log('\n⚠ NOT yet checked against vanilla telemetry. The measurement that would settle it is a run\n'
-  + '  with the `building_inventory` metric, which no existing session carries — see CLAUDE.md.');
+  + '  with the `building_inventory` metric, which no existing session carries — see the CLAUDE.md of before 2026-10-24 (git history).');
 
 // ⚗ end of one outer pass — restore the console and print the convergence one-liner for quiet passes
 console.log = LOG_REAL;

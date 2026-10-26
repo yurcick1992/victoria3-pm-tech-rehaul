@@ -6,8 +6,9 @@ description: Walk the testbed landmine register before a measurement batch, and 
 # Preflight — the half a script cannot check
 
 `tools/preflight.ps1` runs inside `build.ps1` and `run_schedule.ps1` and **throws**. It already
-covers L1, L2, L4, L5, L6, L7, L8, L9. **Do not re-do its work by hand** — read
-`TESTBED_LANDMINES.md` for what each ID means, and trust the exit code.
+covers 27 entries — L1, L2, L4–L9, L12, L14, L15, L17, L20, L22, L24–L29, L31–L36, L38 — and other build steps
+enforce L13, L16, L18, L21, L30, L39 and L40 (the register table in `TESTBED_LANDMINES.md` says which).
+**Do not re-do their work by hand** — read `TESTBED_LANDMINES.md` for what each ID means, and trust the exit code.
 
 This skill is the remainder: the entries whose answer is not available at build time, and the
 discipline for adding new ones.
@@ -37,7 +38,7 @@ fine", it has not been checked.
 `victoria3.exe` and for a session folder with no completion marker. If one is running, **queue the
 edit** — including edits that look cosmetic, such as a schema-version bump.
 
-Then state the arm, span, n and metrics back to the user per the hard rule in `CLAUDE.md`, and wait
+Then state the arm, span, n and metrics back to the user per the hard rule in `CLAUDE.md` (§5.1 rule 3; procedure in `TESTBED_OPERATIONS.md` §1.1), and wait
 for an explicit go-ahead.
 
 ## After a run that looks wrong

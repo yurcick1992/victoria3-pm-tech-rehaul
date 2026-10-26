@@ -1,5 +1,5 @@
 // Regression check for ui/econ.js, run headless. Every expected value below is a MEASURED number already
-// recorded in CLAUDE.md / FINDINGS — not a snapshot of whatever the code happened to print. That is the
+// recorded in REPO_GUIDE.md §5 / FINDINGS — not a snapshot of whatever the code happened to print. That is the
 // point: if the extraction changed the model, these fail against the game, not against themselves.
 //
 //   node tools/econ_selftest.mjs

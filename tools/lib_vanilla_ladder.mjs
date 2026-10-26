@@ -4,7 +4,7 @@
 // the four-rung line consults NO six-rung data. This library reads the game only; make_tier4_config.mjs builds the four-rung
 // structure from it and tools/lib_tier4_spec.mjs, the linters read it to check an emitted mod against vanilla.
 // ⚠ Token class must admit a HYPHEN — `pm_ammonia-soda_process`, `pm_coal-fired_plant`. An
-// [a-z_0-9]+ class silently splits them (CLAUDE.md flags the same trap in emit_techs).
+// [a-z_0-9]+ class silently splits them (REPO_GUIDE.md §3 flags the same trap in emit_techs).
 import {readFileSync, readdirSync} from 'fs';
 
 const rd = p => readFileSync(p, 'utf8').replace(/^\uFEFF/, '');

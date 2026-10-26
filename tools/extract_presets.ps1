@@ -5,7 +5,7 @@
   WHOLE MARKET (count + the PMs vanilla actually runs), the non-building buy/sell orders from
   intergovernmental goods transfers, and the market's population split into consumption classes.
   The UI turns the class counts into pop BUY orders live (buy packages x pop needs x supply share)
-  - see ui/builder.html and CLAUDE.md.
+  - see ui/builder.html and REPO_GUIDE.md section 5.
 
   Everything here is DERIVED FROM THE LIVE GAME, so a patch is a one-command refresh (build.ps1 runs
   it). It never touches config/ or mod/. Which presets to emit lives in config/presets.json.
@@ -660,7 +660,7 @@ function New-PlaceholderPreset($p, $defs) {
         if ($t1 -and $t1.key -and -not $buildings.Contains($t1.key)) { $buildings[$t1.key] = 1; $urbTotal += (Get-Urbanization $t1.key) }
     }
 
-    # --- derived: subsistence from the PEASANTS (the peasants ARE this supply, CLAUDE.md) ---
+    # --- derived: subsistence from the PEASANTS (the peasants ARE this supply, REPO_GUIDE.md section 5) ---
     $peasants = [double]$defs.pops.peasants
     $peasantWork = $peasants * $WORK_RATIO_BASE
     $subsLevels = [int][math]::Round($peasantWork / 5000.0)
