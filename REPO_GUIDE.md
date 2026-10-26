@@ -973,7 +973,21 @@ stale tree twins; re-run the chain from its root rather than one step.
 - **`tools/lib_image.mjs`** — the mod's own image handling, no image library: `readPNG` (8-bit RGB/RGBA, non-interlaced; any other PNG
   throws with its type named), `writePNG` (adaptive row filters; `{ alpha: false }` writes RGB), `resample` (area average in premultiplied
   alpha), `writeDDS` (uncompressed A8R8G8B8 with the full mip chain; the header matches vanilla's `lathe.dds` but for the exporter's tag in
-  bytes 68–75). Used by emit_techs, emit_method_icons and make_icon. Status: current.
+  bytes 68–75), `readDDS` (the top mip of an uncompressed or DXT5 DDS). Used by emit_techs, emit_method_icons, make_icon and dds_to_png.
+  Status: current.
+- **`tools/dds_to_png.mjs`** — `node tools/dds_to_png.mjs one <in.dds> <out.png> [--scale s]` or `sheet <out.png> --cols N --cell N [--bg hex]
+  <in…>`: vanilla's pictures as PNG, one at a time or laid out on a sheet (DDS or PNG inputs, each scaled to its cell) — the references of an
+  art brief. ⚠ What it converts is Paradox's art: write it somewhere gitignored (`art_brief/references/`). Status: current.
+- **`tools/launcher_mods.mjs`** — `node tools/launcher_mods.mjs [--db <launcher-v2.sqlite>]`: every mod the Paradox launcher knows, from a copy of
+  its database (the launcher holds the original open): name, source, directory, and where its picture comes from (`thumbnailPath` /
+  `thumbnailUrl`). Established the `.metadata/thumbnail.png` rule (MODDING_NOTES); after the Workshop upload it shows which picture Steam got.
+  Node's built-in sqlite (an ExperimentalWarning). Status: current.
+- **`tools/tech_probe.ps1`** + **`tools/make_tech_probe.mjs`** — `powershell -ExecutionPolicy Bypass -File tools\tech_probe.ps1 [-Techs a,b]`:
+  a LOCAL probe mod for looking at rungs and methods in game — the canon built into `mod_probe_alltech/` (gitignored), the player's country
+  granted the named technologies and their prerequisites (or every technology) at the start, its own metadata id, deployed to
+  `Documents\…\mod\pm_tech_rehaul_probe_alltech`. Refuses while the game runs. Traps: turn the real mod OFF in the playset (they share every
+  file) and start a new game; all 182 technologies made the 1836 start take 5–10 minutes (unexplained), so grant a chain where you can.
+  Never shipped, never measured. Status: current (used 2026-10-26 for R5, R10 and B4).
 - **`tools/make_icon.mjs`** — `node tools/make_icon.mjs --kind tech|method --src <picture.png> --out <icon.png> [--region x,y,w,h]
   [--size N]`: cuts one icon out of an image-model picture painted on flat green (the panel found inside `--region`, the key against its
   measured green, edge specks dropped and printed, the object's longer side scaled to `--size`, vanilla's soft black outline). `--kind tech`

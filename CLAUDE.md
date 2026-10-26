@@ -596,6 +596,12 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 else — proven by field diff). The alternating batch (F249) and the no-DLC test (F250) measured `728f2c7f84e6f467`, which differs from today's book by
 those strings alone. `mod/` and the deployed copy are its default build. Verify with `sha256sum config/mod_config.json`.
 
+**The canon build** (canonised 2026-10-26 by the user, commit `52e3eea` and after): the book above, built by today's emitters. Beyond the measured
+build it carries changes made in the emitters, none in the book: the art (`art/`: the square and the 16:9 thumbnail, three technology icons, three
+method icons; POLISH R2, R5, R10) and vanilla's electricity gate on our main methods (`required_input_goods = electricity`, POLISH B4). The
+electricity BUILD condition of §10.106 is NOT in it (deferred to mod 1.1; a known issue). None of these was in the builds F249 and F250 measured;
+the gate only refuses an electric method in a state without electricity.
+
 **What it contains is everything §1.2 describes, built by the formula of §1.3 at the values given there.** The provenance records inside the book —
 `_ab`, `_artisan`, `_merge`, `_*_variant`, `_canon_*`, `_polish_*` — carry the commands that regenerate it. ⚠ The book's plain `_canon` record is
 inherited from `canon4v-hai3` and does NOT name the current canon; `_canon_2026_10_16`, `_wm99_variant` and the `_polish_*` records do.

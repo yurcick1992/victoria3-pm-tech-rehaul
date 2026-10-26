@@ -17,7 +17,8 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
    the lineage §4.3): the artmerge arm canonised 2026-10-12 (§10.99, F227) → one innovation parameter x = 25 (2026-10-13, §10.101.1) →
    private dam construction, engines unlifted and the conditional merge-host desire (2026-10-16; §10.89.14, §10.101, §10.91.2; F239, F240)
    → the world-market monopoly threshold 0.99, canonised 2026-10-21 against the same days' vanilla (§10.102; F247, F248) → the polish
-   rulings (`POLISH_1_0.md`).
+   rulings (`POLISH_1_0.md`). The canon BUILD was canonised 2026-10-26 (`52e3eea` and after): the same book, plus the art and vanilla's
+   electricity method gate from the emitters (CLAUDE.md §4.1).
 2. ✅ **The alternating batch is read** (vanilla + canon run by run, n=16 each, 2026-10-21 → 10-26; FINDINGS **F249**, the report
    https://claude.ai/artifact/7dR3FWMiYKJbeMjixMcDQK): 16 intact, world GDP 1.07× vanilla n=40, loss 6.60, play ×1.010 of the same sessions’ vanilla.
    Its harness bug L42 is fixed; the report is the first on the criteria register (§10.104).
@@ -218,12 +219,12 @@ The lines below are its headline items.
 
 - **DONE 2026-10-26** · the thumbnail (the user's image: `art/thumbnail.png` square in the mod root, `art/thumbnail_launcher.png` 16:9 in `.metadata/` for the launcher) · POLISH_1_0.md R2
 - **OPEN** (found by the R4 proofread, 2026-10-26; needs plumbing, not wording) · the research entries' urban-centre lines show no live figure (a `count_display` value for the largest urban centre would add "(now N)"); industry names in research labels are hard-coded English ("Food Industries (every tier)", "Grain Farms …") where vanilla translates them — a per-language bare-name key, built like `_pmr_short`, would fix the other ten languages; the naval entries say "a ship of this kind" where the technology unlocks several ship types or none (Sea Lane Strategies, Self-Propelled Torpedoes) — name them from `SHIP_BY_TECH` with vanilla keys · POLISH_1_0.md R4
-- **DONE 2026-10-26** · per-technology icons (`art/invention_icons/`, cut by `tools/make_icon.mjs`; one in-game look at the tech tree owed) · POLISH_1_0.md R5
-- **DONE 2026-10-26** (found that day in the all-tech probe) · the three minted methods' icons: each showed the method below's (Spray Finishing duplicated Mechanized Workshops in one picker); new bronze method icons in `art/production_method_icons/` (`tools/make_icon.mjs --kind method`, `tools/emit_method_icons.mjs`); one in-game look owed · POLISH_1_0.md R10
+- **DONE 2026-10-26** · per-technology icons (`art/invention_icons/`, cut by `tools/make_icon.mjs`; looked OK in game) · POLISH_1_0.md R5
+- **DONE 2026-10-26** (found that day in the all-tech probe) · the three minted methods' icons: each showed the method below's (Spray Finishing duplicated Mechanized Workshops in one picker); new bronze method icons in `art/production_method_icons/` (`tools/make_icon.mjs --kind method`, `tools/emit_method_icons.mjs`); looked OK in game · POLISH_1_0.md R10
 - **DONE 2026-10-26** (the user's catch in the all-tech probe) · five electricity-consuming rungs could be switched to without electricity: vanilla's method gate restored in `build.ps1` (lint check 9) · POLISH_1_0.md B4, BUGS_AND_FIXES 2026-10-26
 - **DEFERRED to mod 1.1 or later (user, 2026-10-26: performance risk) — a 1.0 KNOWN ISSUE** · a building that runs only on electricity (explosives t3, motor t2, automotive t3, art academy t3) can be BUILT without a grid; the build condition is ruled, built and seen working (`emit_electricity_gate.mjs`, not called; lint check 10 prints the four); before restoring it, measure its tick cost · BALANCE_FRAMEWORK §10.106, POLISH_1_0.md B4
 - **DEFERRED to mod 1.1 or later (user, 2026-10-21)** · per-tier building artwork · POLISH_1_0.md R6
-- **OPEN** · release: a final build, every lint, an in-game load and an `error.log` read · POLISH_1_0.md "Where it stands"
+- **OPEN** · release: a final RELEASE build (`build.ps1 -Release` into `mod/`, every lint, `list_replaced_files.mjs`), an in-game load and an `error.log` read, and a VISUAL check that everything is OK in it (the user, 2026-10-26: "make a release build and ensure that everything's OK, visually") — the launcher's 16:9 thumbnail, the three technology icons, the three method icons, building names without "Recipe BE"; the probe mod OFF in the playset · POLISH_1_0.md "Where it stands"
 
 Closed:
 - Done 2026-10-26 · the short description in `metadata.json`, the user's choice of two drafts: "Economic realism: each technology step is a new building, so modernising costs capital and old plants lose their markets. Research follows industry. 122 historical hydro dams; artisan crafts in 1836." (199 characters; the launcher caps a Paradox Mods short description at 200) · POLISH_1_0.md R1

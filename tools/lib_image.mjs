@@ -4,6 +4,8 @@
 //   writePNG(img)           -> Buffer         8-bit RGBA, per-row adaptive filter, zlib level 9
 //   resample(img, w, h)     -> img            area-average (box) resampling in premultiplied alpha
 //   writeDDS(img)           -> Buffer         uncompressed A8R8G8B8 with the full mip chain, the form of vanilla's icons
+//   readDDS(buf)            -> { w, h, px }   the top mip of an uncompressed A8R8G8B8 / X8R8G8B8 or a DXT5 DDS (vanilla's icons and loading
+//                                             screens use these; anything else throws with its format named)
 //
 // ⚠ readPNG takes 8-bit RGB or RGBA, non-interlaced: what an editor saves by default and what writePNG writes. A palette,
 //   greyscale, 16-bit or interlaced file THROWS with its type named; convert it rather than teach this file every PNG form.
@@ -106,6 +108,36 @@ export function resample({ w, h, px }, W, H) {
     res[i * 4 + 3] = Math.min(255, Math.round(a));
   }
   return { w: W, h: H, px: res };
+}
+
+export function readDDS(b) {
+  if (b.toString('ascii', 0, 4) !== 'DDS ') throw new Error('readDDS: not a DDS file');
+  const h = b.readUInt32LE(12), w = b.readUInt32LE(16), pf = b.readUInt32LE(80), four = b.toString('ascii', 84, 88);
+  const bits = b.readUInt32LE(88), rmask = b.readUInt32LE(92), px = Buffer.alloc(w * h * 4);
+  if ((pf & 0x40) && bits === 32 && rmask === 0x00ff0000) {          // A8R8G8B8 (or X8R8G8B8 without the alpha flag), BGRA bytes
+    const hasA = !!(pf & 0x1);
+    for (let i = 0; i < w * h; i++) { const o = 128 + i * 4; px[i * 4] = b[o + 2]; px[i * 4 + 1] = b[o + 1]; px[i * 4 + 2] = b[o]; px[i * 4 + 3] = hasA ? b[o + 3] : 255; }
+    return { w, h, px };
+  }
+  if ((pf & 0x4) && four === 'DXT5') {                                  // BC3: 4 x 4 blocks of 8 alpha bytes + 8 colour bytes
+    const c565 = v => [((v >> 11) & 31) * 255 / 31, ((v >> 5) & 63) * 255 / 63, (v & 31) * 255 / 31];
+    let o = 128;
+    for (let by = 0; by < h; by += 4) for (let bx = 0; bx < w; bx += 4, o += 16) {
+      const a0 = b[o], a1 = b[o + 1], al = [a0, a1];
+      if (a0 > a1) for (let i = 1; i < 7; i++) al.push(((7 - i) * a0 + i * a1) / 7);
+      else { for (let i = 1; i < 5; i++) al.push(((5 - i) * a0 + i * a1) / 5); al.push(0, 255); }
+      let abits = 0n; for (let i = 0; i < 6; i++) abits |= BigInt(b[o + 2 + i]) << BigInt(8 * i);
+      const c0 = c565(b.readUInt16LE(o + 8)), c1 = c565(b.readUInt16LE(o + 10));
+      const col = [c0, c1, c0.map((v, i) => (2 * v + c1[i]) / 3), c0.map((v, i) => (v + 2 * c1[i]) / 3)], cbits = b.readUInt32LE(o + 12);
+      for (let i = 0; i < 16; i++) {
+        const x = bx + (i & 3), y = by + (i >> 2); if (x >= w || y >= h) continue;
+        const c = col[(cbits >>> (2 * i)) & 3], d = (y * w + x) * 4;
+        px[d] = Math.round(c[0]); px[d + 1] = Math.round(c[1]); px[d + 2] = Math.round(c[2]); px[d + 3] = Math.round(al[Number((abits >> BigInt(3 * i)) & 7n)]);
+      }
+    }
+    return { w, h, px };
+  }
+  throw new Error(`readDDS: format not read (pixel-format flags 0x${pf.toString(16)}, fourCC "${four.replace(/\0/g, '')}", ${bits} bits)`);
 }
 
 // Mips halve with the remainder dropped down to 1 px, as vanilla's are: 256 px gives 9 levels, a 104 px method icon 7
