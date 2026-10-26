@@ -4,7 +4,7 @@
 	"version" : "1.0.0",
 	"game_id" : "victoria3",
 	"supported_game_version" : "1.13.*",
-	"short_description" : "Economic realism: every step of an industry's technology is its own building, so modernising costs capital. Old plants lose their market to newer ones; research follows industry; hydro dams; artisans.",
+	"short_description" : "Economic realism: each technology step is a new building, so modernising costs capital and old plants lose their markets. Research follows industry. 122 historical hydro dams; artisan crafts in 1836.",
 	"tags" : ["Gameplay", "Economy", "Balance", "Buildings", "Technologies"],
 	"relationships" : [],
 	"replace_paths" : ["common/history/buildings"],
