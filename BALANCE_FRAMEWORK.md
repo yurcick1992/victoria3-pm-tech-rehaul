@@ -3119,7 +3119,8 @@ alone, finer dam classes.
 6. **Vanilla's five site bonuses restored for dams alone** (+20% Niagara in New York and Ontario, the Hardanger and Trondheim fjords, the Angara;
    +15% Krka, which has no project): +1,140 electricity, 1.6% of dam potential.
 7. **Urban-centre electricity.** The canon's method makes 1 electricity a level from 2 coal; one recent canon run holds ~14,000 urban-centre
-   levels at 1935 (`gdp_gap_series.tsv`, assuming its `urban` column is that), i.e. ~10–14k electricity. To reach ~37% hydro:
+   levels at 1935 (`gdp_gap_series.tsv`, assuming its `urban` column is that — the file left the repo root 2026-10-26, POLISH C7; read it at commit
+   `08e1f0a`), i.e. ~10–14k electricity. To reach ~37% hydro:
    - counting half of urban-centre output as hydro: ×2.6–3.7 (urban centres 38% of all electricity, coal and oil plants −35–39%);
    - counting a third: ×3.9–5.5 (plants −63–65%);
    - boosting only hydro states (30–50% of levels, all of it counted hydro): ×3–5 there, ×2.0–2.2 overall (plants −18–22%).

@@ -58,7 +58,6 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
   Status: superseded by `TIER_REFERENCE_AUDIT.md` (stale: lists railway and shipyard methods, old paths).
 - **`MISSING_BUILDING_CONDITIONS.md`** — conditional fields inside vanilla buildings we regenerate that our emitted building drops; hand-
   maintained, directly fixable, deferred. Still accurate.
-- **`gdp_gap_series.tsv`** — a stray output of `tools/testbed/ledger/analyse_gdp_gap.mjs`, tracked by accident (flagged in POLISH_1_0.md).
 - Gitignored, never committed: `HANDOVER.md` (the next session's baton), `status_board*.html`, `balance_ui_snapshot*.html`, `mod_*/`.
 
 ### config/ — the canon and its twin

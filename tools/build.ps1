@@ -1901,7 +1901,8 @@ if ($SaveTo) {
 # so we deploy an actual copy. build.ps1 re-mirrors on every build, keeping iteration one command.
 if (-not $NoDeploy) {
     $src  = Join-Path $repo 'mod'
-    $dest = Join-Path $env:USERPROFILE 'Documents\Paradox Interactive\Victoria 3\mod\pm_tech_rehaul'
+    # The shell's Documents folder, not %USERPROFILE%\Documents: OneDrive often redirects it on Windows 11 (POLISH_1_0.md H10).
+    $dest = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Paradox Interactive\Victoria 3\mod\pm_tech_rehaul'
     if (Test-Path $dest) {
         $di = Get-Item $dest -Force
         if ($di.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {

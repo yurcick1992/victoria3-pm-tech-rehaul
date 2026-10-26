@@ -61,7 +61,7 @@ $OVERLAY_MOD_ID  = 'com.yurcick.v3_testbed_overlay'
 # L22 needs the VANILLA on_action names. Read live so a patch that adds one is covered without editing
 # this file. ⚠ Every check that uses it must degrade to a documented fallback when the path is absent —
 # preflight has to keep working on a machine without the game installed.
-$GameDir = 'C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game'
+$GameDir = if ($env:VIC3_GAME) { $env:VIC3_GAME } else { 'C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game' }   # VIC3_GAME first, as every other tool (POLISH_1_0.md H10)
 
 # ⚠⚠ L14 AND L15 VERIFY *OUR OWN* 1836 TECHNOLOGY GRANT, WHICH ONLY A CONTENT ARM HAS.
 # A control emits `.metadata` + telemetry and nothing else — that is CLAUDE.md's hard rule — so it
