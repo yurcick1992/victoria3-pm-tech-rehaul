@@ -1293,7 +1293,10 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   under its own market's frontier and that lacks the next rung's technology at the start of the decade — `--stuck y`, the default), in-market and
   trade-only, by chain and by whether the technology arrived within the decade; ten-year retention of the INDUSTRY's workers on every rung (a switch
   or a build-up counts as surviving) and profit per 1,000 workers, against stuck industries not behind; B. backward members of shortlist-led markets
-  (the leader = the member with the most technologies) against their leader, all markets and the British one; C. named countries. A vanilla arm
+  (the leader = the member with the most technologies) against their leader, all markets and the British one; C. named countries; D. every backward
+  country (≥ GAP technologies under the world's most advanced) split by whether its market holds a frontier country (leader within 5 technologies),
+  with the difference of differences between the two per arm (GDP per head, tiered workers per head, industries, SoL) and who they are (subject
+  shares). Section A also splits each class by whether the country already HOLDS the next technology at y (read with `--stuck none`). A vanilla arm
   (setup name contains "vanilla") maps each method to the canon rung built from it; the book gives the tiers and each rung's technology. Traps:
   `--stuck y10` (still lacking the technology ten years later) keeps only industries whose research entry never filled — a size filter, kept for
   the record; `--stuck none` mixes in the cost of modernising (vanilla upgrades a country holding the technology for free); the canon has fewer

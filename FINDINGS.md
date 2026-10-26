@@ -21098,6 +21098,37 @@ the canon's slower depeasantation everywhere (goal 4), so the absolute figures c
 **Portugal itself** (mostly leading its own market): at 1935 0.0267 tiered workers per head against vanilla's 0.0403, GDP per head 2.7 against 2.9, SoL
 14.0 against 14.1, U\* 36.0% against 9.6% — the canon-wide capital scarcity, not market competition.
 
+**4c. Backward countries, with and without a frontier country in their market** (`laggard_pressure.mjs` section D, 2026-10-26; the user: *"what about the
+overall economy size and industrialization for laggards in markets with frontier-tech countries?"*). Backward = ≥ 15 technologies under the world's most
+advanced country, ≥ 1M people; **frontier-led** = its market's leader is within 5 technologies of the world's most advanced; **backward-led** = not (it leads
+its own market or shares one with other backward countries). Comparing the two INSIDE each arm separates the frontier neighbour's pressure from the canon's
+general slower industrialisation. ⚠ The two groups differ in kind: frontier-led backward countries are subjects in 93% (canon) / 89% (vanilla) of
+country-years — the Indian princely states, British India, colonies — the backward-led only 21% / 22%; so the comparison is within each arm, never across groups.
+Per run at 1935: canon 32.1 frontier-led and 69.8 backward-led backward countries, vanilla 18.5 and 82.6 (about 102 / 101 in all).
+
+| 1935, median per country | GDP per head £ | tiered workers per head | tiered industries ≥ 5,000 workers (share with none) | in-market laggard share of tiered workers | SoL | U\* |
+|---|---|---|---|---|---|---|
+| frontier-led — vanilla | 4.02 | 0.0651 | 7 (1.6%) | 3.3% | 14.6 | 2.2% |
+| frontier-led — canon | 3.96 | 0.0459 | 6 (3.3%) | 14.8% | 14.5 | 3.1% |
+| backward-led — vanilla | 1.49 | 0.0225 | 5 (8.6%) | 2.0% | 11.0 | 28.9% |
+| backward-led — canon | 1.03 | 0.0115 | 4 (16.8%) | 9.2% | 10.4 | 47.6% |
+
+The difference of differences (frontier-led ÷ backward-led): GDP per head canon 2.92 / 3.27 / 3.31 / **3.86** against vanilla 2.67 / 2.70 / 2.69 / **2.71** at
+1880 / 1900 / 1920 / 1935; tiered workers per head canon 2.41 / 3.64 / 3.68 / **3.99** against vanilla 2.69 / 2.88 / 2.95 / **2.90**.
+**Read:** **a frontier neighbour does not make a backward economy poorer in the canon than in vanilla — being backward ALONE does.** Inside a frontier
+country's market, a backward country ends as rich as in vanilla (GDP per head £3.96 against £4.02, SoL 14.5 against 14.6) with ~30% fewer tiered workers per
+head and slightly fewer industries (6 against 7); its industry lags more (14.8% of its tiered workers on in-market laggards against 3.3%). Outside one, the canon's
+backward country is a third poorer than vanilla's (£1.03 against £1.49), half as industrialised, with nearly half its workforce in subsistence or unemployment
+(47.6% against 28.9%) and one in six without a single tiered industry of 5,000 workers. So being in a frontier market is worth MORE in the canon (×3.9 the
+GDP per head of a backward-led peer against ×2.7). The mechanism is not measured here (cheap frontier inputs and the overlord's investment are the candidates;
+93% of these countries are subjects).
+**Absence** (the user: *"maybe the absence is actually a stronger form of evidence than existing at a smaller scale"*): the canon is NOT short of laggard
+industries. Per run it carries 94.8 in-market laggard industries of ≥ 5,000 workers against vanilla's 83.5 — but **84.4 of them already hold the next rung's
+technology** (vanilla 64.9): in the canon a laggard lags for want of capital, not technology (goal 3), which is why so few pass §4a's "lacks the technology"
+filter (10.4 a run against 18.6). Where the laggard holds the technology, it keeps 97.1% of its workers over a decade against vanilla's 132.4% — the vanilla
+side upgrading for free, so that pair is not a competition reading. Industries that are absent outright are a smaller effect: a frontier-led backward country
+runs 6 tiered industries of 5,000+ workers against 7, and 3.3% have none against 1.6%.
+
 **5. Other readings.** **Misplaced capital** (F206/F207; VALID benchmark, gross share of each decade's new capital): canon 14–21% (1926–36 21%), this
 batch's vanilla 12–15% (1926–36 14%) — higher in every decade. **Technology** (tech_census, against this batch's vanilla): the leader holds 40 / 31 / 54%
 of game eras 3 / 4 / 5 at 1875 / 1905 / 1936 against vanilla's 50 / 44 / 46%; the majors end with about vanilla's count (Britain 158.9 against 162.9: production

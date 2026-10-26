@@ -72,7 +72,7 @@ const res = {};
 for (const g of groups) {
   const runs = usableRuns(SES, g.s, g.setup).runs; const map = g.vanilla ? VAN : MOD;
   const A = { stuck: [], ctrl: [], stuckW: [0, 0], ctrlW: [0, 0], stuckP: [], ctrlP: [] }; const AX = {};
-  const B = {}; const Cc = {};                             // B[year] = [{...per market}], C[tag][year] = [...]
+  const B = {}; const Cc = {}; const D = {};               // B[year] = [{...per market}], C[tag][year] = [...], D[year][type] = [...per country]
   for (const rel of runs) {
     const Y = readRun(join(SES, rel), map);
     for (const y of YEARS) { const d = Y[y]; if (!d) continue;
@@ -95,7 +95,8 @@ for (const g of groups) {
           const p = (c.prof[i] || 0) / w * 1000;                      // weekly profit per 1,000 workers
           { const st = fm >= best + 2 ? 'inm' : GF[i] >= best + 2 ? 'trade' : fm <= best ? 'ctrl' : null;
             if (st) { const ch = ['food_industry', 'textile_mill', 'furniture_manufactory', 'glassworks', 'paper_mill', 'art_academy'].includes(INDNAME[i]) ? 'consumer' : 'heavy+war';
-              for (const k of [st, st + '|' + ch, st + '|' + got]) { const o = (AX[k] ||= { a: [], w: [0, 0], p: [] }); o.a.push(w2 / w); o.w[0] += w; o.w[1] += w2; o.p.push(p); } } }
+              const has = c.techs.has(nx) ? 'holds' : 'lacks';           // the next rung's technology at y
+              for (const k of [st, st + '|' + ch, st + '|' + got, st + '|' + has]) { const o = (AX[k] ||= { a: [], w: [0, 0], p: [] }); o.a.push(w2 / w); o.w[0] += w; o.w[1] += w2; o.p.push(p); } } }
           if (fm >= best + 2) { A.stuck.push(w2 / w); A.stuckW[0] += w; A.stuckW[1] += w2; A.stuckP.push(p); }
           else if (fm <= best) { A.ctrl.push(w2 / w); A.ctrlW[0] += w; A.ctrlW[1] += w2; A.ctrlP.push(p); } } }
       // B: backward members of markets led by an advanced (shortlist) country
@@ -112,20 +113,34 @@ for (const g of groups) {
           sol: med(fol.map(k => d[k].sol)), solGap: L.sol - med(fol.map(k => d[k].sol)), U: med(fol.map(k => d[k].U)),
           vaShare: mVA > 0 ? fVA / mVA : NaN, popShare: fPop / mPop, intensity: mVA > 0 ? (fVA / mVA) / (fPop / mPop) : NaN, tags: fol.map(k => d[k].tag) });
       }
+      // D: BACKWARD COUNTRIES BY MARKET TYPE (2026-10-26, the user: "what about the overall economy size and industrialization for laggards
+      //    in markets with frontier-tech countries?"). Backward = >= GAP technologies under the world's most advanced country, >= MINPOP people,
+      //    a main record. 'frontier' = its market's leader is within 5 technologies of the world's most advanced; 'backward-led' = it is not
+      //    (the country leads its own market, or shares one with other backward countries). Comparing the two inside each arm separates the
+      //    canon's competition from its general slower industrialisation (goal 4): a difference of differences.
+      { const keys = Object.keys(d).filter(k => !k.includes('@')); const maxT = Math.max(...keys.map(k => d[k].ntech));
+        for (const k of keys) { const c = d[k]; if (c.pop < MINPOP || maxT - c.ntech < GAP) continue;
+          const L = d[leaderOf[c.m]]; const type = (L && maxT - L.ntech <= 5) ? 'frontier' : 'backward-led';
+          const byInd = Object.entries(c.W).map(([i, eras]) => { const w = sum(Object.values(eras)); const best = w > 0 ? Math.max(...Object.entries(eras).filter(([, x]) => x > 0.05 * w).map(([e]) => +e)) : -1;
+            const lagW = sum(Object.entries(eras).filter(([e]) => F[c.m][i] >= +e + 2).map(([, x]) => x)); return { w, lag: w >= 5000 && F[c.m][i] >= best + 2, lagW }; });
+          const tw = sum(byInd.map(x => x.w));
+          (((D[y] ||= {})[type]) ||= []).push({ run: rel, tag: c.tag, subj: !!c.overlord, gap: maxT - c.ntech, pop: c.pop, gdp: c.gdp, tw, va: c.va, sol: c.sol, U: c.U,
+            inds: byInd.filter(x => x.w >= 5000).length, lagInds: byInd.filter(x => x.lag).length, lagW: sum(byInd.map(x => x.lagW)) }); } }
       // C: named tags
       for (const t of TAGS) { const ck = Object.keys(d).find(k => d[k].tag === t && !k.includes('@')); if (!ck) continue; const c = d[ck]; const L = d[leaderOf[c.m]];
         const tw = sum(Object.values(c.W).flatMap(e => Object.values(e))); const ltw = sum(Object.values(L.W).flatMap(e => Object.values(e)));
         ((Cc[t] ||= {})[y] ||= []).push({ leader: L.tag, gap: L.ntech - c.ntech, ntech: c.ntech, twpc: tw / c.pop, twRel: (tw / c.pop) / (ltw / L.pop), gdppc: c.gdp / c.pop, gdpRel: (c.gdp / c.pop) / (L.gdp / L.pop), sol: c.sol, U: c.U, pop: c.pop }); }
     }
   }
-  res[g.label] = { n: runs.length, A, AX, B, C: Cc };
+  res[g.label] = { n: runs.length, A, AX, B, C: Cc, D };
 }
 const pc = x => Number.isFinite(x) ? (100 * x).toFixed(1) + '%' : '—', f2 = (x, d = 2) => Number.isFinite(x) ? x.toFixed(d) : '—';
 console.log(`A. STUCK LAGGARDS — a country's industry whose best rung is >= 2 tiers under its own market's frontier; technology condition --stuck ${STUCK} (${({ y: 'lacks the next rung’s technology at y', y10: 'still lacks it 10 years on', none: 'none' })[STUCK]}); >= 5,000 workers; the industry's workers on every rung, y = 1850…1920 → y+10`);
 for (const g of groups) { const a = res[g.label].A;
   console.log(`  ${g.label.padEnd(10)} n=${res[g.label].n}  stuck laggards: cases ${a.stuck.length}, workers kept ${pc(a.stuckW[1] / a.stuckW[0])}, median case ${pc(med(a.stuck))}, profit £${f2(med(a.stuckP), 0)}/wk per 1,000 workers  ·  stuck, not behind: cases ${a.ctrl.length}, kept ${pc(a.ctrlW[1] / a.ctrlW[0])}, median ${pc(med(a.ctrl))}, profit £${f2(med(a.ctrlP), 0)}  ·  relative retention ${f2((a.stuckW[1] / a.stuckW[0]) / (a.ctrlW[1] / a.ctrlW[0]))}`); }
 console.log('  by status and chain (cases · workers kept · median case · profit £/wk per 1,000 workers):');
-for (const k of ['inm', 'trade', 'ctrl', 'inm|consumer', 'inm|heavy+war', 'trade|consumer', 'trade|heavy+war', 'ctrl|consumer', 'ctrl|heavy+war', 'inm|got', 'inm|not', 'trade|got', 'trade|not', 'ctrl|got', 'ctrl|not']) console.log('  ' + k.padEnd(18) + groups.map(g => { const o = res[g.label].AX[k]; return o ? (g.label + ' ' + o.a.length + ' · ' + pc(o.w[1] / o.w[0]) + ' · ' + pc(med(o.a)) + ' · £' + f2(med(o.p), 0)).padEnd(50) : ''; }).join(''));
+console.log('  (cases per run: ' + groups.map(g => g.label + ' in-market ' + ((res[g.label].AX.inm || { a: [] }).a.length / res[g.label].n).toFixed(1) + ' (holding the next technology ' + ((res[g.label].AX['inm|holds'] || { a: [] }).a.length / res[g.label].n).toFixed(1) + ')').join(' · ') + ')');
+for (const k of ['inm', 'trade', 'ctrl', 'inm|consumer', 'inm|heavy+war', 'trade|consumer', 'trade|heavy+war', 'ctrl|consumer', 'ctrl|heavy+war', 'inm|got', 'inm|not', 'trade|got', 'trade|not', 'ctrl|got', 'ctrl|not', 'inm|holds', 'inm|lacks', 'trade|holds', 'trade|lacks']) console.log('  ' + k.padEnd(18) + groups.map(g => { const o = res[g.label].AX[k]; return o ? (g.label + ' ' + o.a.length + ' · ' + pc(o.w[1] / o.w[0]) + ' · ' + pc(med(o.a)) + ' · £' + f2(med(o.p), 0)).padEnd(50) : ''; }).join(''));
 console.log(`\nB. BACKWARD MEMBERS of markets led by a shortlist country (leader = most technologies; follower >= ${GAP} technologies behind it, >= ${MINPOP / 1e6}M people) — median over market-years`);
 console.log('  year arm        cases  gap  tiered workers/head  ÷leader  GDP/head £  ÷leader  SoL (gap to leader)  U*     share of the market\'s tiered VA ÷ share of its people');
 for (const y of [1880, 1900, 1920, 1935, 'GBR1880', 'GBR1900', 'GBR1920', 'GBR1935']) for (const g of groups) { const r = res[g.label].B[y] || []; if (!r.length) continue;
@@ -138,3 +153,27 @@ for (const t of TAGS) { console.log(`\nC. ${t}: per year, median over runs [the 
   for (const y of [1860, 1880, 1900, 1920, 1935]) for (const g of groups) { const r = ((res[g.label].C[t] || {})[y]) || []; if (!r.length) continue;
     const L = {}; r.forEach(x => L[x.leader] = (L[x.leader] || 0) + 1);
     console.log(`  ${y} ${g.label.padEnd(10)} ${String(r.length).padStart(4)}  ${Object.entries(L).sort((a, b) => b[1] - a[1]).map(([k, v]) => k + ' ' + v).join(',').padEnd(20)} ${f2(med(r.map(x => x.gap)), 0).padStart(5)}  ${f2(med(r.map(x => x.ntech)), 0).padStart(5)}  ${f2(med(r.map(x => x.twpc)), 4).padStart(10)}  ${f2(med(r.map(x => x.twRel))).padStart(5)}   ${f2(med(r.map(x => x.gdppc)), 1).padStart(6)} ${f2(med(r.map(x => x.gdpRel))).padStart(5)}  ${f2(med(r.map(x => x.sol)), 1)}  ${pc(med(r.map(x => x.U)))}`); } }
+// ---- D: backward countries, frontier-led markets against backward-led ones (a difference of differences)
+console.log(`\nD. BACKWARD COUNTRIES (>= ${GAP} technologies under the world's most advanced, >= ${MINPOP / 1e6}M people) — in a market whose leader is within 5 technologies of the frontier ('frontier') or not ('backward-led')`);
+console.log('  per country, median over country-years [pooled Σ ÷ Σ in brackets]; "industries" = tiered industries with >= 5,000 workers; "laggard industries" (a MEAN) = of those, ≥ 2 tiers under the market frontier');
+console.log('  year arm        market         per run  gap   pop M   GDP/head £        tiered workers/head      industries (none)  laggard ind.  laggard share of tiered workers  SoL    U*');
+const pooled = (r, a, b) => sum(r.map(a)) / sum(r.map(b));
+const DD = {};
+for (const y of [1880, 1900, 1920, 1935]) for (const type of ['frontier', 'backward-led']) for (const g of groups) {
+  const r = ((res[g.label].D[y] || {})[type]) || []; if (!r.length) continue;
+  const row = { n: r.length / res[g.label].n, gap: med(r.map(x => x.gap)), pop: med(r.map(x => x.pop)) / 1e6,
+    gdp: med(r.map(x => x.gdp / x.pop)), gdpP: pooled(r, x => x.gdp, x => x.pop), tw: med(r.map(x => x.tw / x.pop)), twP: pooled(r, x => x.tw, x => x.pop),
+    inds: med(r.map(x => x.inds)), none: r.filter(x => x.inds === 0).length / r.length, lag: sum(r.map(x => x.lagInds)) / r.length, lagShare: pooled(r, x => x.lagW, x => x.tw),
+    sol: med(r.map(x => x.sol)), U: med(r.map(x => x.U)) };
+  ((DD[y] ||= {})[g.label] ||= {})[type] = row;
+  console.log(`  ${y} ${g.label.padEnd(10)} ${type.padEnd(13)} ${f2(row.n, 1).padStart(6)}  ${f2(row.gap, 0).padStart(4)}  ${f2(row.pop, 1).padStart(6)}   ${f2(row.gdp, 2)} [${f2(row.gdpP, 2)}]     ${f2(row.tw, 4)} [${f2(row.twP, 4)}]     ${f2(row.inds, 0).padStart(3)} (${pc(row.none)})       ${f2(row.lag, 2).padStart(4)}           ${pc(row.lagShare).padStart(6)}                    ${f2(row.sol, 1)}  ${pc(row.U)}`);
+}
+console.log('\n  THE DIFFERENCE OF DIFFERENCES — frontier-market ÷ backward-led, per arm (median per country): a lower canon ratio = being next to a frontier country costs a backward country more in the canon');
+console.log('  year  arm        GDP/head  tiered workers/head  industries  SoL');
+for (const y of Object.keys(DD)) for (const g of groups) { const o = DD[y][g.label]; if (!o || !o.frontier || !o['backward-led']) continue; const a = o.frontier, b = o['backward-led'];
+  console.log(`  ${y}  ${g.label.padEnd(10)} ${f2(a.gdp / b.gdp).padStart(6)}    ${f2(a.tw / b.tw).padStart(6)}              ${f2(a.inds / b.inds).padStart(5)}      ${f2(a.sol / b.sol)}`); }
+
+console.log('\n  who: the most frequent backward countries in frontier-led markets (country-years) · share that are subjects');
+for (const g of groups) { const r = Object.values(res[g.label].D).flatMap(o => o.frontier || []); const cnt = {}; for (const x of r) cnt[x.tag] = (cnt[x.tag] || 0) + 1;
+  console.log('  ' + g.label.padEnd(10) + 'subjects ' + pc(r.filter(x => x.subj).length / r.length) + ' · ' + Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 16).map(([t, n]) => t + ' ' + (n / res[g.label].n).toFixed(1)).join(' · ')); }
+console.log('  backward-led, subjects: ' + groups.map(g => { const r = Object.values(res[g.label].D).flatMap(o => o['backward-led'] || []); return g.label + ' ' + pc(r.filter(x => x.subj).length / r.length); }).join(' · '));
