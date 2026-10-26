@@ -605,22 +605,37 @@ What §1.2 and §1.3 leave out:
   upkeep 1 tools + 1 engines per 50 electricity; the four dam types `must_have` in every administrative strategy.
 - **Trade and defines:** the five-class traded-quantity table at ×1 (F159 §7); `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99`.
 
-## 4.2 Where it stands (2026-10-24)
+## 4.2 Where it stands (2026-10-26)
 
-- **The latest century of the canon's economics** (F247: the wm99 book, n=4, before the 2026-10-21 polish): 3 intact + 1 stall (the USA collapsing
-  after 1880); consensus loss 8.21; world GDP 1.08×; pool W 1.00× (on its soft line), pool U\* ≈ vanilla's (22.0% against 21.3%, far under the ≥ 2×
-  aim), pool H 0.25 against 0.33; PI 0.96 (not falling), PP 0.94; T3 22.7% of tiered workers; the closed-major term 0; misplaced capital 22.5% over the
-  century; the majors at 0.94 of vanilla's technology; red flags 140 problem market-years a run.
-- **The price path** (§2.1): the ladder works completely in the war and heavy chains (arms, artillery, explosives and steel shed 92–98% of their old
-  rung's peak workers) and barely in the consumer chains (glass, motor and textile shed 14–29%; the old rung keeps earning ~21%) — the split is by who
-  buys the output (F136). The price indices fell well below vanilla on `canon-c19-in12` (PI 0.84, PP 0.83) but sit near vanilla on the current book
-  (PI 0.96, PP 0.94 — F247).
-- **Play speed** (§3.4): the wm99 book read ×1.18 of the summer vanilla and ×1.09 of the same days' (F247, F248) — thin (two counting runs).
-- **The 1.0 canon (post-polish) is being measured** by the alternating vanilla + canon batch (n=16 + 16; sessions `20261021_224949_…` and
-  `20261023_161802_alt-vanilla-canon-rest20`): its century and its wall clock in one.
-- **Known open problems:** the price path and the old rung in the consumer chains; one broken seed in three to four (runoff or a stalled USA/Britain —
-  F166, F227, F247); Britain near capital abundance in most healthy seeds; military technology ~10 behind vanilla's count with no tech-era-5 military
-  technology held anywhere (deferred to mod 1.1, with the user's AI-weight approach); the play-speed budget. The live list is `BACKLOG.md`.
+- **The 1.0 canon's century** (F249: the alternating batch, 16 canon centuries against vanilla's n=40; sessions `20261021_224949_alt-vanilla-canon-n16`,
+  `20261023_161802_alt-vanilla-canon-rest20`, `20261026_032622_alt-canon-replace20`):
+  - **16 intact, none broken**; consensus loss 6.60.
+  - **World GDP 1.07×**, above the 0.90–1.00 aim and inside the soft band (per run 0.67–1.27). The path sits at 0.90–0.91 over 1886–1906 (the 1886
+    line holds) and is level with vanilla by 1926.
+  - **The pool:** W 0.82×; U\* 31.1% against vanilla's 17.9% (1.74×, under the ≥ 2× aim); H 0.23 against 0.44.
+  - **Prices and tiers:** PI 0.93, falling decade over decade; PP 0.95. T0 is falling (1935 = 0.45 × the 1900s); T3 holds 27.4% of tiered workers.
+  - **Germany:** fully employed in the lucky seed, without hoarding (G 0.43).
+  - **Misplaced capital** 14–21% a decade, against this batch's vanilla's 12–15%.
+  - **Technology:** the majors hold about vanilla's count (Britain 158.9 against 162.9; military 40.8 against 51.5).
+  - **Red flags:** 147.5 problem market-years a run, against vanilla's 120.5 on the same order-book basis.
+- **The price path and competition** (§2.1):
+  - **The war and heavy chains:** the ladder retires the old rung completely there (arms, artillery, explosives and steel shed 92–98% of their old
+    rung's peak workers, F136).
+  - **The consumer chains:** the main good's price does fall in £ (1930s pool output index: textile 0.73, furniture 0.71, against vanilla's 0.90 and
+    0.91; inputs flat), and the frontier is built until it earns the average return of new capital. The old t1 textile and furniture rungs live on
+    their luxury line: a secondary is sized on t2 and makes the same amount per level on every rung (F249 §4d; the lever is deferred to 1.1).
+  - **Competition where neither arm can switch:** a backward industry under a far better rung in its own market shrinks in the canon (96% of its
+    workers kept over a decade) and grows in vanilla (121%). Through trade the pressure is weak in both (F249 §4a).
+- **Play speed** (§3.4): ×1.010 of the same sessions' vanilla pooled (165.3 against 163.6 minutes a century), inside the +10% budget. The two sessions
+  read ×1.11 and ×0.996 because the machine sped up for both arms, so a mod-only reading is directional (F249).
+- **Known open problems:**
+  - the old rung in the consumer chains (its luxury line);
+  - Britain near capital abundance (U\* under 5% for 5–17 years in 10 of 16 runs, at small hoards);
+  - broken seeds: one in three to four in earlier books (F166, F227, F247), none in F249's sixteen;
+  - misplaced capital above vanilla's;
+  - military technology behind vanilla's count (deferred to mod 1.1, with the user's AI-weight approach).
+
+  The live list is `BACKLOG.md`.
 
 ## 4.3 Lineage
 
@@ -657,8 +672,9 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
   makers are catalogued in `REPO_GUIDE.md`. ⚠ Almost every intermediate book of the canon's chain is gitignored, so a full regeneration starts from
   the structure: `TIER4_SUFFIX=tier4-e1 node tools/make_tier4_config.mjs --derive motor`, then `make_tier4_techs.mjs`, then the recorded commands in
   order. A change made from an intermediate copy can pick up a stale tree twin — prove the result by field diff.
-- ⚠ **While the alternating batch runs** (from 2026-10-21): nothing may be canonised into the named copy, and no emitter, `build.ps1` or `tools/testbed/**`
-  file may be edited in the checkout the batch runs from — the scheduler rebuilds the mod before every run.
+- ⚠ **While a batch runs**, nothing may be canonised into the named copy it measures, and no emitter, `build.ps1` or `tools/testbed/**` file may be
+  edited in the checkout it runs from — the scheduler rebuilds the mod before every run (§5.1 rule 7). The alternating batch's freeze ended on
+  2026-10-26 (F249).
 
 ---
 

@@ -14,10 +14,11 @@ renumber or retitle them.
 
 ---
 
-## Where the plan stands (2026-10-24)
+## Where the plan stands (2026-10-26)
 
-Mod 1.0 ships on game 1.13 on **2026-10-30**; mod 1.1 follows on game 1.15.N around **2026-11-16**. The alternating vanilla + canon batch is
-measuring the 1.0 canon now. Everything below the table is per step.
+Mod 1.0 ships on game 1.13 on **2026-10-30**; mod 1.1 follows on game 1.15.N around **2026-11-16**. The alternating vanilla + canon batch has
+measured the 1.0 canon (F249: 16 intact, world GDP 1.07×, play time ×1.010 of the same sessions' vanilla). What is left for 1.0 is the no-DLC load
+test and the release build ("Mod 1.0 — the remainder" below). Everything below the table is per step.
 
 | step | what | status | closed | pointers |
 |---|---|---|---|---|
@@ -28,7 +29,7 @@ measuring the 1.0 canon now. Everything below the table is per step.
 | 3 | building costs, then the first real build | DONE; today `K(t) = K₁ · C^k`, C 1.9, t1-anchored (canon 2026-10-12) | 2026-08-17 | CLAUDE.md §1.3, §10.68, §10.91.5 |
 | 3½ | savegames as the instrument for state | DONE; alignment proven | 2026-08-15 | TESTBED_METRICS §7½, §9 |
 | 4 | measurement runs and the loop back | IN PROGRESS, permanently: the criteria register is its form | — | §10.83, CLAUDE.md Part 3 |
-| 5 | company mandates over every rung | DONE (first cut), unmeasured; the alternating batch reads it | 2026-08-23 | §10.64, F77, F79, POLISH F3 |
+| 5 | company mandates over every rung | DONE (first cut); read by F249 §5 — companies a little smaller than vanilla's, no change proposed | 2026-08-23 | §10.64, F77, F79, F249, POLISH F3 |
 | 5a | company instrumentation | item (1) DONE (summary v7); item (2) OPEN | 2026-08-21 | BACKLOG D |
 | 6 | hydro-dam megaprojects | DONE; canon since 2026-09-27, redesigned to 2026-10-16 | 2026-10-16 | §10.89 (.1, .9–.14), F168–F177 |
 | 6½ | artisanal ownership | DEFERRED to 1.1 or later | 2026-10-21 | POLISH F1 |

@@ -19,7 +19,7 @@ first) · **OPEN** · **DEFERRED**.
 
 ---
 
-## Where it stands (2026-10-24)
+## Where it stands (2026-10-26)
 
 **Built and canonised 2026-10-21 (night).** Every ruling that changes script or economics went into the canon before the batch (the
 user, correcting a launch prepared without them:
@@ -30,16 +30,15 @@ Both canon copies carry `secondary_goods_override`, `vanilla_value_overrides`, t
 (`83dcd0f`). Smoke run 1 × 1836→1841, `20261021_220806_polish-final-smoke`: loads clean, zero invalid-production-method lines (were 46),
 none naming a file the build writes.
 
-**Running: the alternating batch** — vanilla + canon run by run, n=16 each, the 1.0 canon's century and its wall clock in one. Runs 1–12
-are in `20261021_224949_alt-vanilla-canon-n16` (run 13 void, L41); the other 20 in `20261023_161802_alt-vanilla-canon-rest20`.
+**The alternating batch is read** (FINDINGS F249, 2026-10-26): vanilla + canon run by run, n=16 each, in `20261021_224949_alt-vanilla-canon-n16`
+(runs 1–12; run 13 void, L41), `20261023_161802_alt-vanilla-canon-rest20` (run 20 void, L42) and `20261026_032622_alt-canon-replace20`. 16 intact, world
+GDP 1.07× vanilla n=40, loss 6.60, play time ×1.010 of the same sessions' vanilla. Nothing read badly enough to revert. Its reader updates are done
+(`lib_runs.mjs`'s references, the red-flag vanilla twin, `fill_research.mjs`); the readers still on the summer vanilla n=16 stay in BACKLOG F.
 
-**After the batch, before the release build:**
+**Before the release build:**
 - **The no-DLC load test** — SCHEDULED by the user 2026-10-21 (*"Run the no-DLC load test after the batch, before the release build"*): a
   load with no DLC enabled and an `error.log` read, the only proof of the DLC rule (§2) beyond the file comparison; never done. The harness
-  needs an option that fills `disabledDLC` in `content_load.json` (it writes an empty list today; the entry format is to be found) — a
-  `tools/testbed/**` edit, so not while the batch runs.
-- Read the batch. The reference and reader updates it unlocks are in BACKLOG F (the vanilla references in `lib_runs.mjs`, the readers
-  still on the summer vanilla n=16, the red-flag vanilla twin, `fill_research.mjs`).
+  needs an option that fills `disabledDLC` in `content_load.json` (it writes an empty list today; the entry format is to be found).
 
 **For the release build (~26–27.10)** — text, metadata and build switches, no economics:
 - **H8** the debug/release switch in `build.ps1`.
@@ -117,7 +116,7 @@ conditions can only restrict construction, never allow what the engine would not
 | B3 | Crafts carry no secondary line (no canning, stills, luxury) | DEFERRED to mod 1.1 or later (user, 2026-10-21); BACKLOG A | M |
 | F1 | Artisanal ownership — "the last feature pass", live since the crafts were canonised | DEFERRED to mod 1.1 or later (user, 2026-10-21); BACKLOG A | L |
 | F2 | Craft extras: a Muskets craft; spreading the 1836 craft levels over the largest states; trimming automation that duplicates a main-method upgrade | DEFERRED, not polish; BACKLOG A | M |
-| F3 | Company mandates: the first cut (shipped 2026-08-23) never measured — the company-held rung mix (ROADMAP step 5) | OPEN — the alternating batch can read it (`company_check.mjs`); BACKLOG D | S |
+| F3 | Company mandates: the first cut (shipped 2026-08-23) never measured — the company-held rung mix (ROADMAP step 5) | READ 2026-10-26 (F249 §5, `company_check.mjs`): 277 companies at 1935 against vanilla's 298, company-held levels 26% against 33% — smaller than vanilla's, not absent; no change proposed; BACKLOG D | S |
 | N1 | "Recipe BE N%" rides along wherever a building name is referenced (company modifiers: "Era 2. Arms Industries (Bolt Action Rifles). Recipe BE 55% building Throughput") | DONE 2026-10-21 for the company modifiers and the research texts (the per-language short name `<key>_pmr_short`); company FORMATION lines still print the full name until "Recipe BE" goes at release (R1) | S |
 | N2 | Ten non-English languages ship English stubs for new content (by design, MODDING_NOTES) | not for 1.0; at most a line in the release notes | — |
 | C1 | `TECH_AHEAD_OF_TIME_PENALTY_FACTOR = 0.25` shipped at vanilla's value with a false comment | DONE 2026-10-21 (emitted only when it differs from vanilla's) | S |
