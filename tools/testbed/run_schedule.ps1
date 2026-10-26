@@ -179,7 +179,7 @@ function Get-RedFlagDates {
 # here despite working. Reconciled 2026-08-21; wage_pop_endpoints added with telemetry v14.
 $KNOWN_DEFAULT_KEYS = @('tags','metrics','autosave_interval','timeout_minutes','dump_dates',
                         'wage_pop_markets','wage_pop_endpoints','breakdown_dates','breakdown_tags',
-                        'wide_dates','wide_tags','origin_goods','game_args')
+                        'wide_dates','wide_tags','origin_goods','game_args','no_dlc')
 if ($defaults) {
     $unknown = @($defaults.PSObject.Properties | ForEach-Object { $_.Name } |
                  Where-Object { $KNOWN_DEFAULT_KEYS -notcontains $_ -and $_ -notlike '_*' })
@@ -280,6 +280,8 @@ foreach ($r in $runs) {
         timeout  = [int](Val $r "timeout_minutes" $defTimeout)
         # extra game launch arguments (space-separated string, run else defaults) -> run_observer -ExtraGameArgs (2026-10-08)
         game_args = [string](Val $r "game_args" (Val $defaults "game_args" ""))
+        # ⭐ the no-DLC load test (2026-10-26): every installed DLC disabled for the run (run else defaults) -> run_observer -DisableAllDlc
+        no_dlc = [bool](Val $r "no_dlc" (Val $defaults "no_dlc" $false))
         # ⭐ A CONTINUATION (2026-10-11): play on from a NAMED save instead of a fresh 1836 game -> run_observer -ContinueSave (fed under
         # the engine's pointer title, the L32 feeder's move) + -ContinueExpectAfter (the landing guard) + -PriorWallSeconds (the parent's
         # play, so meta.wall_seconds is the whole campaign). `parent` (<session>/<run>) is provenance only, written to continuation.json.
@@ -331,7 +333,7 @@ $years = 0; foreach ($p in $plan) { $years += ([int]$p.until.Split('.')[0] - 183
 $estMin = [int]($years * 85 / 60)          # ~85 s per in-game year, measured on a 1836-1935 run
 Write-Host ""
 Write-Host "schedule '$label': $($plan.Count) run(s) over $($setupNames.Count) setup(s)"
-foreach ($p in $plan) { Write-Host ("  #{0,-3} {1,-12} -> {2}   dumps: {3}" -f $p.index, $p.setup, $p.until, ($p.dump_dates -join ', ')) }
+foreach ($p in $plan) { Write-Host ("  #{0,-3} {1,-12} -> {2}   dumps: {3}{4}" -f $p.index, $p.setup, $p.until, ($p.dump_dates -join ', '), $(if ($p.no_dlc) { "   NO DLC" } else { "" })) }
 if ($NoRedFlagFeed) { Write-Host "red-flag feed: OFF (-NoRedFlagFeed) - the input-price red flags will read only the dump dates and the save summaries" }
 else { Write-Host ("red-flag feed: market_goods_wide on 1 July of every year on {0} tags ({1}); run #1 carries {2} reading date(s)" -f $RedFlagTags.Count, ($RedFlagTags -join ' '), $plan[0].red_flag_feed) }
 Write-Host ("machine monitor: {0}" -f $(if ($NoMachineMonitor) { "OFF (-NoMachineMonitor)" } else { "ON - machine_load.tsv beside the session (ledger/machine_load.mjs reads it)" }))
@@ -602,6 +604,7 @@ foreach ($p in $plan) {
     # with no config passes nothing, and build_state then reads as the pure-vanilla arm it is.
     if ($resolved.Config) { $obsArgs += @("-BuildConfig",$resolved.Config) }
     if ($p.game_args -and $p.game_args.Trim()) { $obsArgs += @("-ExtraGameArgs","`"$($p.game_args.Trim())`"") }
+    if ($p.no_dlc) { $obsArgs += @("-DisableAllDlc"); Log "run $($p.index) is a NO-DLC run: every installed DLC disabled (run_observer -DisableAllDlc)" }
     if ($p.continue_save) {
         # & powershell @obsArgs quotes each element itself, so the path goes in unquoted (the harvest's rule)
         $obsArgs += @("-ContinueSave",$p.continue_save,"-ContinueExpectAfter",$p.continue_expect_after)

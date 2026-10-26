@@ -1,0 +1,49 @@
+{
+  "schedule_version": 1,
+  "label": "no-dlc-load-test",
+  "_why": "THE NO-DLC LOAD TEST (POLISH_1_0.md 'Where it stands'; the user, 2026-10-21: \"Run the no-DLC load test after the batch, before the release build\"). The only proof of the DLC rule (CLAUDE.md §5.1 rule 1) beyond the file comparison of check_dlc_gates.mjs: a game with every installed DLC disabled loads the 1.0 canon, plays five years, and its error.log is read by position. A vanilla control arm with the same DLCs disabled separates vanilla's own no-DLC noise from anything the mod adds, since errors in the ~146 vanilla-path files the mod replaces do not name a zzz_pm_rehaul file. Every run sets no_dlc: run_observer -DisableAllDlc writes each installed DLC's pops_id into content_load.json's disabledDLC, and meta.json records dlc_mounted and no_dlc_verified from debug.log's 'Mounted Data: ...\\game\\dlc\\...' lines.",
+  "_arms": {
+    "vanilla": "{kind: control} - vanilla + telemetry and nothing else, every installed DLC disabled",
+    "canon": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json} - the 1.0 canon, sha256 728f2c7f84e6f467 (tree twin 04ac513168388956), a debug build (telemetry on), every installed DLC disabled"
+  },
+  "_comparison": "canon no-DLC error.log against vanilla no-DLC error.log (same span, same telemetry), and both against the canon's ordinary smoke run 20261021_220806_polish-final-smoke (1 x 1836->1841 with every DLC) for the classes that disabling DLC adds",
+  "_predictions": "Both runs load and play to 1841.1.1, and both meta.json files read no_dlc_verified true. No error line names a zzz_pm_rehaul file, and the canon adds no error class beyond the vanilla no-DLC arm's except classes the vanilla-noise catalogue already lists. Magnitude not argued: vanilla's own no-DLC noise has never been measured here.",
+  "_stop_rule": "none: two fixed short runs",
+  "_cost": "2 x 1836 -> 1841, ~10 min each with the build (the smoke run played 1836->1841 in 7.3 min)",
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA"
+    ],
+    "metrics": [
+      "country_state",
+      "events"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60,
+    "no_dlc": true
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    },
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "vanilla",
+      "until": "1841.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1841.1.1"
+    }
+  ]
+}

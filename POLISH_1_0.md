@@ -38,7 +38,9 @@ GDP 1.07× vanilla n=40, loss 6.60, play time ×1.010 of the same sessions' vani
 **Before the release build:**
 - **The no-DLC load test** — SCHEDULED by the user 2026-10-21 (*"Run the no-DLC load test after the batch, before the release build"*): a
   load with no DLC enabled and an `error.log` read, the only proof of the DLC rule (§2) beyond the file comparison; never done. The harness
-  needs an option that fills `disabledDLC` in `content_load.json` (it writes an empty list today; the entry format is to be found).
+  option is BUILT (2026-10-26): schedule key `no_dlc` → `run_observer -DisableAllDlc`, which writes every installed DLC's `pops_id` as
+  `{"paradoxAppId": …}` into `content_load.json` (the launcher's own format) and checks `debug.log`'s DLC mount lines; dry-tested, unproven in
+  game. The test is `tools/testbed/schedules/no_dlc_load_test.json` (vanilla and canon, 2 × 1836→1841), waiting on the user's go-ahead.
 
 **For the release build (~26–27.10)** — text, metadata and build switches, no economics:
 - **H8** the debug/release switch in `build.ps1`.

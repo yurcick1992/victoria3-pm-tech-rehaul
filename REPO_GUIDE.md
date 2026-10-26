@@ -1031,14 +1031,17 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   start only warns). It runs `archive_autosaves.ps1` → `<run>\saves\` and `harvest_saves.ps1 -Watch` → `<run>\save_summaries\`
   concurrently with the game, plus a final drain after each run (`-HarvestWorkers 0` = drain only), and checks `NO_NEW_RUNS` before
   every run. Continuation runs: run keys `continue_save`, `continue_expect_after` (required), `prior_wall_seconds`, `parent` → observer
-  `-ContinueSave` and `continuation.json`; read them through `stitch_session.mjs`. Schedule key `game_args` → observer `-ExtraGameArgs`.
+  `-ContinueSave` and `continuation.json`; read them through `stitch_session.mjs`. Schedule key `game_args` → observer `-ExtraGameArgs`;
+  `no_dlc` (run or defaults, true/false) → observer `-DisableAllDlc` (the no-DLC load test, `schedules/no_dlc_load_test.json`).
   Status: current. Traps: the archiver's `Start-Process -ArgumentList` quotes nothing (paths hand-quoted) while the harvester's
   `& powershell @args` quotes each element itself (never pre-quote). Unthreaded spec keys are dropped (L5) or throw from `defaults`
   (L16); builds are time-bounded and a failed one aborts the schedule (L21). Refs: §10.94, L19, L29.
 - **`run_observer.ps1`** — the game driver `run_schedule` calls (`-Runs 1 -FlatOut`): headless `victoria3.exe -handsoff -run_until`,
   no launcher; writes `content_load.json` and restores the player's settings; mirrors the rotating logs into `logs_live/`; harvests
   `markets.tsv`, `events.tsv`, `meta.json`, `run.log`; resumes crashes through the deterministic resume feeder (`<run>\resume_set_<n>`).
-  Flags include `-DumpDates`, `-ModPath`, `-Stamp`, `-AutosaveInterval`, `-ContinueSave`, `-PriorWallSeconds`, `-ExtraGameArgs`. Refuses a
+  Flags include `-DumpDates`, `-ModPath`, `-Stamp`, `-AutosaveInterval`, `-ContinueSave`, `-PriorWallSeconds`, `-ExtraGameArgs`,
+  `-DisableAllDlc` (every installed DLC's `pops_id` into `content_load.json`'s `disabledDLC`; meta.json records `disabled_dlc`, the
+  `dlc_mounted` read off debug.log's mount lines, and `no_dlc_verified`; MODDING_NOTES has the format). Refuses a
   mod without telemetry (it has no generator). Status: current; a hand run is a diagnostic. Traps: `-script_profiling` crashes a headless
   game. Refs: MODDING_NOTES (Automated headless runs), L17, L26, L28, L32, L34.
 - **`launch_detached.ps1`** — creates a process through WMI `Win32_Process.Create`, in no job object of the caller (the agent's shells

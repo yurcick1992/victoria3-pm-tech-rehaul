@@ -217,7 +217,7 @@ The lines below are its headline items.
 
 - **OPEN** · release metadata (version 0.1.0, the "(built …)" name stamp, short description, `supported_game_version` "1.13.\*"), thumbnail, LICENSE, a player README with the replaced-file list · POLISH_1_0.md R1–R3, Q9, H9
 - **OPEN (ruled 2026-10-21)** · the debug/release build switch in `build.ps1`: release builds carry no telemetry or logging except a start-up manifest line · POLISH_1_0.md H8
-- **OPEN (scheduled by the user: after the batch, before the release build)** · the no-DLC load test, with a harness option that fills `disabledDLC` in `content_load.json` · POLISH_1_0.md "Where it stands"
+- **OPEN (scheduled by the user: after the batch, before the release build)** · the no-DLC load test. The harness option is built (2026-10-26: `no_dlc` → `run_observer -DisableAllDlc`, dry-tested); the run `schedules/no_dlc_load_test.json` (vanilla + canon, 2 × 1836→1841) waits on the user's go-ahead · POLISH_1_0.md "Where it stands"
 - **OPEN** · proofread every new technology name and description, widened to every generated player-facing text · POLISH_1_0.md R4
 - **OPEN** · per-technology icons (one placeholder ships; the specification is written, the images are the user's) · POLISH_1_0.md R5
 - **OPEN** · builders off the default paths (`preflight.ps1`'s game path, the deploy's Documents folder) · POLISH_1_0.md H10

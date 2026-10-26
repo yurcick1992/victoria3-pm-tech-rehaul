@@ -152,6 +152,12 @@ param(
     [string]   $TelemetryToken = "",
     # hard watchdog: kill the process if a single run exceeds this
     [int]      $TimeoutMinutes = 45,
+    # ⭐ THE NO-DLC LOAD TEST (2026-10-26; POLISH_1_0.md "Where it stands", CLAUDE.md §5.1 rule 1): disable EVERY installed DLC for this
+    #   run. Each DLC's `pops_id` (read from its descriptor, <game>\dlc\<folder>\<name>.dlc) goes into content_load.json's `disabledDLC` as
+    #   { "paradoxAppId": "<pops_id>" } - the form the Paradox launcher writes (its content-load schema; its DLC id is the descriptor's
+    #   pops_id). Throws when no descriptor is found. The game logs a "Mounted Data: ...\game\dlc\<folder>" line for every DLC it loads, so
+    #   meta.json records what was asked (`disabled_dlc`), what was mounted (`dlc_mounted`) and whether no DLC was (`no_dlc_verified`).
+    [switch]   $DisableAllDlc,
     # leave content_load.json / pdx_settings.json as the harness set them
     [switch]   $NoRestore
 )
@@ -474,12 +480,30 @@ function Get-V3tbPayload {
 }
 
 function Set-ContentLoad {
-    param([string[]]$ModDirs)
+    param([string[]]$ModDirs, [string[]]$DisabledDlc = @())
     $entries = @()
     foreach ($d in $ModDirs) { $entries += ('{"path":"' + ($d -replace '\\', '/') + '"}') }
-    $json = '{"enabledMods":[' + ($entries -join ',') + '],"disabledDLC":[],"enabledUGC":[]}'
+    $dlcEntries = @()
+    foreach ($id in $DisabledDlc) { $dlcEntries += ('{"paradoxAppId":"' + $id + '"}') }
+    $json = '{"enabledMods":[' + ($entries -join ',') + '],"disabledDLC":[' + ($dlcEntries -join ',') + '],"enabledUGC":[]}'
     [System.IO.File]::WriteAllText((Join-Path $Doc "content_load.json"), $json, $Utf8NoBom)
     return $json
+}
+
+function Get-InstalledDlcIds {
+    # every installed DLC's pops_id, from its descriptor <game>\dlc\<folder>\<name>.dlc (`pops_id = "dlc001_preorder"`) - the id the
+    # launcher writes into content_load.json's disabledDLC (-DisableAllDlc)
+    $dir = Join-Path $Game "dlc"
+    $ids = @()
+    foreach ($sub in @(Get-ChildItem $dir -Directory -ErrorAction SilentlyContinue)) {
+        foreach ($f in @(Get-ChildItem $sub.FullName -Filter '*.dlc' -File -ErrorAction SilentlyContinue)) {
+            $m = [regex]::Match([System.IO.File]::ReadAllText($f.FullName), '(?m)^\s*pops_id\s*=\s*"([^"]+)"')
+            if (-not $m.Success) { throw "-DisableAllDlc: $($f.FullName) has no pops_id, so this DLC cannot be named in content_load.json" }
+            $ids += $m.Groups[1].Value
+        }
+    }
+    if ($ids.Count -eq 0) { throw "-DisableAllDlc: no DLC descriptor under $dir - there is nothing to disable, and the run would prove nothing" }
+    return ,$ids
 }
 
 function Set-JsonSetting {
@@ -875,7 +899,12 @@ try {
     Write-Log "mod under test: $ModPath"
     Write-Log "plan: $Runs run(s), dump $($Tags -join '+') markets on $($DumpDates -join ', '), quit at $UntilDate"
 
-    $cl = Set-ContentLoad -ModDirs @($ModPath)
+    $script:DisabledDlc = @()
+    if ($DisableAllDlc) {
+        $script:DisabledDlc = Get-InstalledDlcIds
+        Write-Log "NO-DLC RUN: disabling $($script:DisabledDlc.Count) installed DLC(s): $($script:DisabledDlc -join ' ')"
+    }
+    $cl = Set-ContentLoad -ModDirs @($ModPath) -DisabledDlc $script:DisabledDlc
     Write-Log "content_load.json = $cl"
     Set-RunSettings
     Write-Log "pdx_settings.json: display_mode=windowed, language=l_english"
@@ -908,6 +937,7 @@ try {
         $null = New-Item -ItemType Directory -Force -Path $liveDir
         $streamed = New-Object System.Collections.Generic.List[string]
         $lastTick = ""; $timedOut = $false; $modLoaded = $false; $modInit = $false
+        $dlcMounted = New-Object 'System.Collections.Generic.HashSet[string]'   # "Mounted Data: ...\game\dlc\<folder>" lines (-DisableAllDlc's proof)
         $targetNum = ConvertTo-DateNum $UntilDate
         $attempt = 0; $resumes = 0; $abandoned = ""
         $attemptLog = @()
@@ -1002,6 +1032,7 @@ try {
                 }
                 if ($line -match "successfully matched game version") { $modLoaded = $true }
                 if ($line -match "PM_TECH_REHAUL: init OK")           { $modInit = $true }
+                if ($line -match 'Mounted Data: .*[/\\]game[/\\]dlc[/\\]([^/\\\s]+)') { $null = $dlcMounted.Add($Matches[1]) }
             }
             foreach ($line in (Read-Tail $tailTick)) {
                 if ($line -match "Processing Tick: ([0-9]+\.[0-9]+\.[0-9]+)") {
@@ -1136,6 +1167,7 @@ try {
             if ($payload -and $payload.StartsWith("V3TB|$token|")) { $null = $streamed.Add($payload) }
             if ($line -match "successfully matched game version") { $modLoaded = $true }
             if ($line -match "PM_TECH_REHAUL: init OK")           { $modInit = $true }
+            if ($line -match 'Mounted Data: .*[/\\]game[/\\]dlc[/\\]([^/\\\s]+)') { $null = $dlcMounted.Add($Matches[1]) }
         }
         $null = Read-Tail $tailTick
         $null = Read-Tail $tailError
@@ -1412,6 +1444,9 @@ try {
             resume_processes = @($script:ResumeProcesses | ForEach-Object { $_ })   # L32: each process's frozen set, feeds and outcomes
             attempt_log = $attemptLog; autosave_interval = $AutosaveInterval
             mod_loaded = $modLoaded; mod_init_marker = $modInit
+            # -DisableAllDlc: asked to disable / mounted anyway / verified (null on an ordinary run, which mounts every DLC)
+            disabled_dlc = @($script:DisabledDlc); dlc_mounted = @($dlcMounted | Sort-Object)
+            no_dlc_verified = $(if ($DisableAllDlc) { $dlcMounted.Count -eq 0 } else { $null })
             dump_complete = $sawEnd; dumps_seen = @($dumpsSeen.Keys | Sort-Object); dump_date_ingame = $ingameDate
             goods_rows = $rows.Count; markets = $markets; markets_not_found = $notFound
             error_log_lines = $errorLines; autosaves_written = $savesAfter - $savesBefore
@@ -1422,6 +1457,10 @@ try {
         $session.runs += $meta
 
         Write-Log ("run ${run}: {0} goods rows, dump_complete={1}, mod_loaded={2}, error.log {3} lines" -f $rows.Count, $sawEnd, $modLoaded, $errorLines)
+        if ($DisableAllDlc) {
+            if ($dlcMounted.Count -eq 0) { Write-Log "run ${run}: NO-DLC VERIFIED - debug.log shows no DLC folder mounted" }
+            else { Write-Log "run ${run}: WARN NO-DLC FAILED - the game still mounted $($dlcMounted.Count) DLC(s): $(@($dlcMounted | Sort-Object) -join ' ') - this run is no no-DLC test" }
+        }
 
         if ($stopAfterRun -or (Test-StopRequested)) {
             Write-Log "stopping after run $run of $Runs as requested" "WARN"

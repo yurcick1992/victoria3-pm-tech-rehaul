@@ -97,7 +97,7 @@ run has one identity across its folder, `build_state.json` and its telemetry tok
   The schedule JSON is copied verbatim into the session folder.
 - **The `runs` list is explicit and ordered**; each run carries its index. `-WhatIf` prints the plan, the builds it implies and a
   time estimate, and launches nothing.
-- **`defaults`** may carry `tags`, `metrics`, `autosave_interval`, `timeout_minutes`, `dump_dates`, `game_args` and the
+- **`defaults`** may carry `tags`, `metrics`, `autosave_interval`, `timeout_minutes`, `dump_dates`, `game_args`, `no_dlc` and the
   wage / breakdown / wide / origin telemetry keys; any other key (not prefixed `_`, which marks a comment) is refused with its name
   (L16). A run's `dump_dates` default to 1 January of the year before `until`; each dump date must be the 1st of a month.
 - **Setup shape is validated up front**, before the first run, so a malformed setup used only by the last run of an overnight
@@ -109,6 +109,9 @@ run has one identity across its folder, `build_state.json` and its telemetry tok
 - **An alternate config needs its paired tree twin** `config/tech_tree_options.<suffix>.json`, or the build dies half-way (L20,
   checked per setup before the estimate prints).
 - **Extra game arguments**: schedule key `game_args` → `run_observer -ExtraGameArgs`. `-script_profiling` crashes a headless game.
+- **A run without DLC** (2026-10-26): schedule key `no_dlc: true` (run or defaults) → `run_observer -DisableAllDlc`; every installed DLC is
+  written into `content_load.json`'s `disabledDLC`, and meta.json's `no_dlc_verified` says whether the game mounted none. `-WhatIf` marks such
+  runs "NO DLC". The schedule for the release's no-DLC load test is `schedules/no_dlc_load_test.json`.
 - **Continuing a kept save**: run-level `continue_save` / `continue_expect_after` / `prior_wall_seconds` / `parent`; join the two
   halves into whole campaigns with `tools/testbed/stitch_session.mjs` before reading them (REPO_GUIDE has both).
 
