@@ -13,7 +13,7 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
 
 ## The order (from ROADMAP and the user's rulings; updated 2026-10-24)
 
-1. ✅ **The canon** is `jex-dam4s-rs-x25-m10ac-dpriv-wm99` with the 2026-10-21 polish rulings (sha256 `728f2c7f84e6f467`; CLAUDE.md §4.1,
+1. ✅ **The canon** is `jex-dam4s-rs-x25-m10ac-dpriv-wm99` with the 2026-10-21 polish rulings and the 2026-10-26 proofread's display text (sha256 `7ba2de4f235a5b41`, measured as `728f2c7f84e6f467`; CLAUDE.md §4.1,
    the lineage §4.3): the artmerge arm canonised 2026-10-12 (§10.99, F227) → one innovation parameter x = 25 (2026-10-13, §10.101.1) →
    private dam construction, engines unlifted and the conditional merge-host desire (2026-10-16; §10.89.14, §10.101, §10.91.2; F239, F240)
    → the world-market monopoly threshold 0.99, canonised 2026-10-21 against the same days' vanilla (§10.102; F247, F248) → the polish
@@ -215,15 +215,16 @@ Closed:
 The 1.0 polish register is **`POLISH_1_0.md`** (2026-10-21): every polish item with its status, the rulings, and where the work stands.
 The lines below are its headline items.
 
-- **OPEN** · CHANGELOG · POLISH_1_0.md R2
+- **RULING** · the CHANGELOG draft (`CHANGELOG.md`, 1.0.0 against vanilla 1.13, in PDS granularity) waits on the user's review · POLISH_1_0.md R2
 - **RULING** · the thumbnail image (`thumbnail.png` in the mod root) is the user's · POLISH_1_0.md R2
 - **RULING** · the new player short description in `mod/.metadata/metadata.json` (written 2026-10-26 with R1) waits on the user's approval · POLISH_1_0.md R1
-- **OPEN** · proofread every new technology name and description, widened to every generated player-facing text · POLISH_1_0.md R4
+- **OPEN** (found by the R4 proofread, 2026-10-26; needs plumbing, not wording) · the research entries' urban-centre lines show no live figure (a `count_display` value for the largest urban centre would add "(now N)"); industry names in research labels are hard-coded English ("Food Industries (every tier)", "Grain Farms …") where vanilla translates them — a per-language bare-name key, built like `_pmr_short`, would fix the other ten languages; the naval entries say "a ship of this kind" where the technology unlocks several ship types or none (Sea Lane Strategies, Self-Propelled Torpedoes) — name them from `SHIP_BY_TECH` with vanilla keys · POLISH_1_0.md R4
 - **OPEN** · per-technology icons (one placeholder ships; the specification is written, the images are the user's) · POLISH_1_0.md R5
 - **DEFERRED to mod 1.1 or later (user, 2026-10-21)** · per-tier building artwork · POLISH_1_0.md R6
 - **OPEN** · release: a final build, every lint, an in-game load and an `error.log` read · POLISH_1_0.md "Where it stands"
 
 Closed:
+- Done 2026-10-26 · the R4 proofread of every generated English text (3,612 strings): building names, technologies, companies and secondaries clean; dams — "36-month", "Cancel the survey of the …", joined effect lists, the survey and builder tooltips (vanilla's $foreign_investment_rights$), the journal entry's family rule, "A single level …", Big Bend of the Missouri, Tenryū, head nouns for three project names, three trait descriptions; research — "tier" for "era" in 20 labels, qualifiers after the live figure ("(now N); halved", "; not under …"), no false "halved" where it rounds to the full mark, naval and war wording, title case, commas and law phrasing in labels. Canon text only (sha256 `7ba2de4f235a5b41`, field diff: 19 strings) · POLISH_1_0.md R4
 - Done 2026-10-26 · LICENSE: CC0 1.0 Universal for the repository's own work, Victoria 3's material carved out as Paradox Interactive's, the legal code verbatim from creativecommons.org (the user: as permissive as possible, no attribution required) · POLISH_1_0.md R2
 - Done 2026-10-26 · the README (R3 re-scoped by the user: players come from the Steam Workshop, the repo README is for building and editing the mod): the replaced-file list from the build (H9, `tools/list_replaced_files.mjs`: 146 files in 26 folders + `common/history/buildings/`) and building from source · POLISH_1_0.md R3, H9
 - Done 2026-10-26 · builders off the default paths (H10: `preflight.ps1` reads `VIC3_GAME`, the deploy uses the shell's Documents folder) and the stray root file `gdp_gap_series.tsv` removed (C7) · POLISH_1_0.md H10, C7

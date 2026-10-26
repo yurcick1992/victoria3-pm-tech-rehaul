@@ -120,7 +120,9 @@ const fxText = p => (p.effects || []).map(e => {
   const parts = [e.arable && `+${e.arable} arable land`, e.add_trait && `$${e.add_trait}$`, e.remove_trait && `an end to $${e.remove_trait}$`].filter(Boolean);
   return parts.length ? `${parts.join(' and ')} in ${stateRef(e.state)}` + (k > 1 ? (k === p.stages ? ' (with the last level)' : ` (with level ${k})`) : '') : '';
 }).filter(Boolean);
-const fxSentence = (p, fx) => fx.length ? ` ${p.stages > 1 ? 'The dams also bring' : 'The dam also brings'} ${fx.join('; ')}.` : '';
+// a list in prose: "a", "a and b", "a, b and c" (R4 proofread, 2026-10-26: a bare "; " read as a fragment)
+const andList = xs => xs.length < 2 ? (xs[0] || '') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`;
+const fxSentence = (p, fx) => fx.length ? ` ${p.stages > 1 ? 'The dams also bring' : 'The dam also brings'} ${andList(fx)}.` : '';
 
 // ---------------------------------------------------------------- shared triggers
 // the country in scope (ROOT) owns the anchor province, or sits above its owner in the overlord chain
@@ -270,9 +272,9 @@ for (const p of projects) {
   // requirement lines are evaluated for scope:investor_country = the country trying to build, i.e. the reader: "we / our"
   // ("this state" is the state holding the site: the building's potential lists it nowhere else)
   loc.push([key, nm(p)], [`${key}_lens_option`, `Expand $${key}$`],
-    [`${v}_builder_tt`, R2 ? `We own this state, are an overlord of its owner, or hold investment rights in its owner or one of its overlords`
+    [`${v}_builder_tt`, R2 ? `We own this state, are an overlord of its owner, or hold $foreign_investment_rights$ in its owner or one of its overlords`
       : `We own this state, or are an overlord of its owner`],
-    [`${v}_surveyed_tt`, R2 ? `We have surveyed the ${nm(p)}, or it was surveyed from within our overlord family while the state belonged to it`
+    [`${v}_surveyed_tt`, R2 ? `We have surveyed the ${nm(p)}, or a country of our overlord family surveyed the site while the state belonged to that family`
       : `We have completed our own survey of the ${nm(p)}`],
     ...(R2 ? [[`${v}_block_tt`, `No other country has started a survey of the ${nm(p)} in the past 12 months`],
       [`${v}_queued_tt`, `No level of ${LAYOUT === 'resource4' ? `$${key}$ at the ${nm(p)}` : `the ${nm(p)}`} is queued or under construction`]] : []));
@@ -344,7 +346,7 @@ for (const p of projects) {
         `with construction rights in it. No other country may start a survey of the site in the 12 months after ours begins.`
       : `Once the survey is complete we may build the dams, in our own state or in a subject’s; for 2 years no other country may ` +
         `survey the site. Countries that have surveyed it share its levels, each owning what it builds.`)],
-    [`${v}_stop_survey_decision`, `Cancel the ${nm(p)} survey`],
+    [`${v}_stop_survey_decision`, `Cancel the survey of the ${nm(p)}`],
     [`${v}_stop_survey_decision_desc`, `Abandon the survey of the ${nm(p)}. Its bureaucracy is freed and other countries may start their own survey; ` +
       `a later survey of ours starts from scratch.`]);
   jes.push(`je_${v}_survey = {\n${T}icon = "gfx/interface/icons/event_icons/event_map.dds"\n${T}group = je_group_technology\n\n` +
@@ -377,9 +379,9 @@ for (const p of projects) {
     `${T}progressbar = yes\n${T}weight = 10\n${T}transferable = no\n${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
   loc.push([`je_${v}_survey`, `Surveying the ${nm(p)}`],
     [`je_${v}_survey_reason`, `Our engineers are surveying the ${nm(p)} in ${stateRef(p.state)}: river gauging, foundation borings and the reservoir line. ` + (R2
-      ? `When they finish, ${JE_WHO} may build there, and so may the rest of our overlord family if the state belongs to it.`
+      ? `When they finish, ${JE_WHO} may build there, and so may every country of our overlord family with construction rights there, if the state belongs to that family.`
       : `When they finish we may build the dams, in our own state or in a subject’s.`)],
-    [`je_${v}_survey_goal`, `Await the completion of the #bold ${p.survey_months} month#! survey`]);
+    [`je_${v}_survey_goal`, `Await the completion of the #bold ${p.survey_months}-month#! survey`]);
 }
 // ⚗ V1 resource4: the per-project blocks above share their class's key; fold them into ONE building per class — the potential and
 // can_build_government become an OR over the class's projects, each branch opened by its state region (one project per region)
@@ -455,7 +457,7 @@ for (const p of projects) {
   // the trait stands on the map from 1836 and is the player's one pointer to the content: what can be built, what it needs, what it brings
   const fx = fxText(p);
   loc.push([siteTrait(p), `Dam Site: ${nm(p)}`],
-    [`${siteTrait(p)}_desc`, `${p.stages > 1 ? `Up to ${p.stages} levels` : '1 level'} of $${BKEY(p)}$ can be built here once the site has been surveyed. ` +
+    [`${siteTrait(p)}_desc`, `${p.stages > 1 ? `Up to ${p.stages} levels` : 'A single level'} of $${BKEY(p)}$ can be built here once the site has been surveyed. ` +
       `The survey needs $${p.stage_techs[0]}$.` + fxSentence(p, fx)]);
   // the cap modifier's names exist only where the modifier type does: under resource4 the cap is the state region's resource slots
   // and no such type is declared or used, so the names would be dead keys

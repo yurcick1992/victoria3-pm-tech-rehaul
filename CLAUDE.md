@@ -588,8 +588,10 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 
 **`config/mod_config.json` + `config/tech_tree_options.json` are verbatim copies of the named book
 `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` + `config/tech_tree_options.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`** — sha256 prefix
-**`728f2c7f84e6f467`** (the tree twin `04ac513168388956`), canonised 2026-10-21 with the night's polish rulings (§10.102; `_polish_2026_10_21`,
-`_polish_2026_10_21b`). `mod/` and the deployed copy are its default build. Verify with `sha256sum config/mod_config.json`.
+**`7ba2de4f235a5b41`** (the tree twin `04ac513168388956`), canonised 2026-10-21 with the night's polish rulings (§10.102; `_polish_2026_10_21`,
+`_polish_2026_10_21b`) and given the R4 proofread's display text on 2026-10-26 (`_polish_2026_10_26_proofread`: 19 labels and descriptions, nothing
+else — proven by field diff). The alternating batch (F249) and the no-DLC test (F250) measured `728f2c7f84e6f467`, which differs from today's book by
+those strings alone. `mod/` and the deployed copy are its default build. Verify with `sha256sum config/mod_config.json`.
 
 **What it contains is everything §1.2 describes, built by the formula of §1.3 at the values given there.** The provenance records inside the book —
 `_ab`, `_artisan`, `_merge`, `_*_variant`, `_canon_*`, `_polish_*` — carry the commands that regenerate it. ⚠ The book's plain `_canon` record is

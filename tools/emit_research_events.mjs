@@ -393,7 +393,8 @@ const sourceDisplay = (tech, i, { name, mark, half = mark / 2, nowSv, mixed, req
   const dFull = `pmr_term_${tech}_${i}`, dHalf = dFull + '_half';
   const full = `${name}: ${fmtN(mark)} ${lvl(mark)}${of} (now ${live(nowSv)})${req}`;
   loc.push([dFull, full]);
-  if (HALF) loc.push([dHalf, `${name}: ${fmtN(half)} ${lvl(half)}${of}, halved (now ${live(nowSv)})${req}`]);
+  // the qualifier after the live figure, as "needs" (R4 proofread 2026-10-26); a halved mark that rounds back to the full one is the full line
+  if (HALF) loc.push([dHalf, fmtN(half) === fmtN(mark) ? full : `${name}: ${fmtN(half)} ${lvl(half)}${of} (now ${live(nowSv)}); halved${req}`]);
   return { dFull, dHalf, bullet: full };
 };
 // a condition entry's line: a COUNT named in `research_events.count_display` (keyed by the script value its trigger compares) reads like a
@@ -434,11 +435,11 @@ const condDisplay = (tech, e) => {
     let nowSv = m[1];
     if (per !== 1) { nowSv = `${m[1]}_lv`; if (!condSv.has(nowSv)) { condSv.add(nowSv); sv.push(`${nowSv} = {\n${T}value = ${m[1]}\n${T}divide = ${per}\n}`); } }
     const of = per !== 1 ? ` of ${fmtN(per)} workers` : '';
-    const notes = cd.note ? `, ${cd.note}` : '';
+    const notes = cd.note ? `; ${cd.note}` : '';   // after the live figure, like "needs" (R4 proofread 2026-10-26)
     const unit = x => (cd.unit || 'fully staffed levels').replace(/levels$/, x === 1 ? 'level' : 'levels');
-    const full = `${cd.name}: ${fmtN(+m[2] / per)} ${unit(+m[2] / per)}${of}${notes} (now ${live(nowSv)})`;
+    const full = `${cd.name}: ${fmtN(+m[2] / per)} ${unit(+m[2] / per)}${of} (now ${live(nowSv)})${notes}`;
     loc.push([dFull, full]);
-    if (mh) loc.push([dHalf, `${cd.name}: ${fmtN(+mh[2] / per)} ${unit(+mh[2] / per)}${of}${notes}, halved (now ${live(nowSv)})`]);
+    if (mh) loc.push([dHalf, fmtN(+mh[2] / per) === fmtN(+m[2] / per) ? full : `${cd.name}: ${fmtN(+mh[2] / per)} ${unit(+mh[2] / per)}${of} (now ${live(nowSv)}); halved${notes}`]);
     return { dFull, dHalf, bullet: full };
   }
   const lawRefs = [...e.label.matchAll(/\$(law_[a-z_0-9]+)\$/g)].map(x => x[1]);
@@ -446,7 +447,7 @@ const condDisplay = (tech, e) => {
   loc.push([dFull, barText]);
   if (e.half_trigger) {
     const nf = (/>=\s*([\d.]+)\D*$/.exec(e.trigger) || [])[1], nh = (/>=\s*([\d.]+)\D*$/.exec(e.half_trigger) || [])[1];
-    loc.push([dHalf, (nf && nh && barText.split(nf).length === 2 ? barText.replace(nf, nh) : barText) + ', halved']);
+    loc.push([dHalf, (nf && nh && barText.split(nf).length === 2 ? barText.replace(nf, nh) : barText) + '; halved']);
   }
   return { dFull, dHalf, bullet: e.label + ((e.lines || []).length ? ` (${e.lines.join('; ')})` : '') };
 };
@@ -887,7 +888,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     let flavour, rule;
     if (a.rule === 'war' && isFleetTech(tech)) {
       flavour = 'A navy learns by looking.';
-      rule = RE.naval_any ? 'The bar advances by one each month while we, a rival of ours or a great power field a ship of this kind.'
+      rule = RE.naval_any ? 'The bar advances by one each month while we field a ship of this kind, or a rival of ours or a great power does.'
         : 'The bar advances by two each month while a ship of this kind sails under our flag, by one while a rival of ours fields one.';
     } else if (a.rule === 'war') {
       flavour = 'Hard fighting concentrates the mind.';
@@ -1011,10 +1012,10 @@ if (NONADD && LIT && GENERIC) for (const [e, v] of Object.entries(LIT)) {
   loc.push([`pmr_term_lit_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`} (${Math.round(100 * v)}% needed): the bar is paused`]);
   loc.push([`pmr_term_litok_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`} (${Math.round(100 * v)}% needed)`]);
 }
-if (WAR_TECHS.length) loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilized battalions on a front against an enemy that has researched it`]);
+if (WAR_TECHS.length) loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilized battalions on a front against an enemy that has already researched this technology`]);
 // the fleet lines: ours supersedes a rival's (the older books), or any of ours, a rival's or a great power's (naval_any)
-if (NAV_TECHS.length && !RE.naval_any) { loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']); loc.push(['pmr_term_nav_rival', 'A rival of ours fields a ship of this kind']); loc.push(['pmr_term_nav_none', 'Neither we nor a rival of ours field a ship of this kind']); }
-if (NAV_TECHS.length && RE.naval_any) loc.push(['pmr_term_nav_any', 'We, a rival of ours or a great power field a ship of this kind']);
+if (NAV_TECHS.length && !RE.naval_any) { loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']); loc.push(['pmr_term_nav_rival', 'A rival of ours fields a ship of this kind']); loc.push(['pmr_term_nav_none', 'Neither we nor a rival of ours fields a ship of this kind']); }
+if (NAV_TECHS.length && RE.naval_any) loc.push(['pmr_term_nav_any', 'A ship of this kind sails under our flag, a rival’s or a great power’s']);
 if (Object.keys(COND).length && GENERIC) { loc.push(['pmr_term_cond', 'The condition in the entry holds']); loc.push(['pmr_term_cond_half', 'The condition in the entry holds, at its halved mark']); }
 // §10.98: the script values the condition entries read
 for (const [n, body] of Object.entries(RE.condition_values || {})) sv.push(`${n} = {\n${body.replace(/^/gm, T)}\n}`);

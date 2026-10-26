@@ -55,10 +55,10 @@ const REG = `OR = { ${['west_africa', 'equatorial_africa', 'east_africa', 'south
 const SUBJ = `OR = { ${['colony', 'dominion', 'personal_union', 'crown_land', 'puppet', 'vassal', 'chartered_company'].map(s => `is_subject_type = subject_type_${s}`).join('  ')} }`;
 for (const t of ['quinine', 'malaria_prevention'])
   CE[t] = { trigger: `OR = { any_scope_state = { ${REG} }  any_subject_or_below = { ${SUBJ}  any_scope_state = { ${REG} } } }`,
-    label: 'We or a subject of ours other than a $subject_type_tributary_no_icon$ hold land in $region_west_africa$, $region_equatorial_africa$, $region_east_africa$, $region_southern_africa$ or $region_indonesia$',
+    label: 'We, or a subject of ours other than a $subject_type_tributary_no_icon$, hold land in $region_west_africa$, $region_equatorial_africa$, $region_east_africa$, $region_southern_africa$ or $region_indonesia$',
     intro: 'Those who rule the tropics must learn to survive them.' };
 CE.civilizing_mission = { trigger: `country_rank >= rank_value:major_power  NOT = { ${law('law_no_colonial_affairs')} }`,
-  label: 'We are a great or major power and do not have $law_no_colonial_affairs$', intro: 'An empire looks for a mission.' };
+  label: 'We are a great or major power and are not under $law_no_colonial_affairs$', intro: 'An empire looks for a mission.' };
 // script values: staffed levels of a building type
 const staffed = b => `value = 0\nevery_scope_building = {\n\tlimit = { is_building_type = ${b} }\n\tadd = { value = this.level  multiply = occupancy }\n}`;
 CV.pmr_cv_uni = staffed('building_university'); CV.pmr_cv_gov = staffed('building_government_administration');
@@ -97,7 +97,7 @@ const COUNT_DISPLAY = {
   pmr_cv_gov: { name: '$building_government_administration$' },
   pmr_cv_uni: { name: '$building_university$' },
   pmr_cv_fin: { name: '$building_financial_district$', unit: 'levels', note: 'not under $law_traditionalism$' },
-  pmr_cv_chem: { name: 'Chemical Industries (Fertilizer Plants, Explosives Factory, Synthetics Plants)', per_level: 5000 },
+  pmr_cv_chem: { name: 'Fertilizer Plants, Explosives Factory and Synthetics Plants', per_level: 5000 },
 };
 Object.assign(RE, {
   exclude_techs: ['realism', 'camera', 'film'],

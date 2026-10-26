@@ -535,7 +535,7 @@
    "id": "missouri_big_bend",
    "state": "STATE_SOUTH_DAKOTA",
    "state_name": "South Dakota",
-   "name": "Great Bend of the Missouri",
+   "name": "Big Bend of the Missouri",
    "anchor_province": "xE37FAD",
    "owner_1836": "LKT/USA",
    "rows": [
@@ -601,7 +601,7 @@
    "id": "kiso_tenryu",
    "state": "STATE_TOKAI",
    "state_name": "Tokai",
-   "name": "Kiso & Tenryu Rivers",
+   "name": "Kiso & Tenryū Rivers",
    "anchor_province": "x3050C0",
    "owner_1836": "JAP",
    "rows": [
@@ -1525,7 +1525,7 @@
    "id": "rybinsk_uglich",
    "state": "STATE_YAROSLAVL",
    "state_name": "Yaroslavl",
-   "name": "Rybinsk & Uglich",
+   "name": "Rybinsk & Uglich Dams",
    "anchor_province": "xB9892E",
    "owner_1836": "RUS",
    "rows": [
@@ -1995,7 +1995,7 @@
    "id": "lochaber_affric",
    "state": "STATE_HIGHLANDS",
    "state_name": "Highlands",
-   "name": "Lochaber & Glen Affric",
+   "name": "Lochaber & Glen Affric Schemes",
    "anchor_province": "xB7B8EA",
    "owner_1836": "GBR",
    "rows": [
@@ -2014,7 +2014,7 @@
    "id": "galloway_tummel",
    "state": "STATE_LOWLANDS",
    "state_name": "Lowlands",
-   "name": "Galloway & Tummel",
+   "name": "Galloway & Tummel Schemes",
    "anchor_province": "x206080",
    "owner_1836": "GBR",
    "rows": [
