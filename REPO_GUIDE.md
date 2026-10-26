@@ -1316,6 +1316,11 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   gap to the next rung split into MIX and LOCATION; and per rung, records bucketed by the share of levels on a side-good secondary (margin, profit per
   staffed level). Lists the side lines it found. Traps: `--mod` must be a build of the book the runs played (default `mod/`, the canon); countries
   inside another's market are skipped and counted; one price date stands for the year.
+- **`ledger/error_classes.mjs`** `<label>=<run>/logs_live/error.log [...] [--mod mod]` — several runs' error logs side by side (FINDINGS F250):
+  per run, non-empty lines and classes (a line with its numbers, strings and handles reduced to tokens); the classes no other listed run has;
+  and every line naming a file the mod emits or one of the vanilla-path files it replaces (any file under `--mod` that also exists in the game
+  folder, matched by relative path). Traps: read each run's own mirror, never the shared ring; it needs the game folder (`VIC3_GAME`) for the
+  replaced-file list, and throws without it.
 - **`ledger/laggard_census.mjs`** `<book> <label>=<group> [...]` — the raw old-rung census (in-market and trade-only laggard shares of tiered
   workers, ten-year survival, by industry and tier pair). ⚠ Its vanilla column is confounded by vanilla's free method switch: read it for the canon
   alone, and `laggard_pressure.mjs` for the comparison (F249 §4).

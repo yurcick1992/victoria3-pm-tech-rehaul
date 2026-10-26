@@ -655,8 +655,8 @@ Paradox launcher overwrites this file whenever it runs, so the harness backs it 
 **objects with a `paradoxAppId`**, whose value is the DLC's `pops_id` from its descriptor `game\dlc\<folder>\<name>.dlc` (today the
 folder name, e.g. `{"paradoxAppId":"dlc001_preorder"}`). The game logs one `virtualfilesystem_physfs.cpp: Mounted Data: …/game/dlc/<folder>`
 line per DLC it loads, so a run's `debug.log` says which DLCs were active (all 17 installed ones in an ordinary run). `run_observer
--DisableAllDlc` writes every installed DLC there and checks that no mount line appears (meta.json `no_dlc_verified`). ⚠ Unproven in game
-until the first no-DLC run reads true.
+-DisableAllDlc` writes every installed DLC there and checks that no mount line appears (meta.json `no_dlc_verified`). Proven in game
+2026-10-26: both runs of the no-DLC load test mounted none of the 17 (F250).
 
 **`pdx_settings.json` is rewritten by the game on exit**, dropping keys it considers default — never assume a key survived. The harness
 sets `Graphics.display_mode=windowed` (a run cannot hijack the desktop), `System.language=l_english` (logged strings stay stable),

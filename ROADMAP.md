@@ -17,8 +17,8 @@ renumber or retitle them.
 ## Where the plan stands (2026-10-26)
 
 Mod 1.0 ships on game 1.13 on **2026-10-30**; mod 1.1 follows on game 1.15.N around **2026-11-16**. The alternating vanilla + canon batch has
-measured the 1.0 canon (F249: 16 intact, world GDP 1.07×, play time ×1.010 of the same sessions' vanilla). What is left for 1.0 is the no-DLC load
-test and the release build ("Mod 1.0 — the remainder" below). Everything below the table is per step.
+measured the 1.0 canon (F249: 16 intact, world GDP 1.07×, play time ×1.010 of the same sessions' vanilla), and the no-DLC load test passed (F250).
+What is left for 1.0 is the release build ("Mod 1.0 — the remainder" below). Everything below the table is per step.
 
 | step | what | status | closed | pointers |
 |---|---|---|---|---|
@@ -65,8 +65,9 @@ is ruled"). What is left, in order:
      the red-flag vanilla twin (on the order books, vanilla 120.5 problem market-years against the canon's 147.5); Austria's art academy (no
      difference while the Metternich entry runs). NOT separated: the urban-centre electricity override's effect (no arm without it ran).
    - Nothing read badly enough to revert (POLISH "The second pass").
-2. **The no-DLC load test** — after the batch, before the release build (user, 2026-10-21): a load with every DLC disabled and an `error.log`
-   read, the only proof of the DLC rule beyond the file comparison. The harness must first fill `disabledDLC` in `content_load.json`.
+2. ✅ **The no-DLC load test — PASSED 2026-10-26 (FINDINGS F250).** Vanilla and the canon, 2 × 1836→1841, with all 17 installed DLCs disabled and
+   none mounted (the harness's new `no_dlc` / `run_observer -DisableAllDlc`). Both played clean; no error names a mod file or a replaced vanilla
+   file, and the canon adds no error class beyond vanilla's.
 3. **The release build (~2026-10-26/27)**: the first RELEASE build kind — no telemetry or logging but a start-up manifest line (POLISH H8);
    release metadata — version 1.0.0, no "(built …)" stamp, a current description, `supported_game_version` "1.13.\*" (R1, Q9); "Recipe BE"
    out of the building names (R1); thumbnail and licence (R2); a player README with the list of replaced vanilla files (R3, H9); a proofread

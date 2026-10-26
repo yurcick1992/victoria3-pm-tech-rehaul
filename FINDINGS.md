@@ -395,6 +395,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F247 | Monopoly threshold 0.99 over a century n=4: play x1.18 of summer vanilla; 3 intact + 1 stall, loss 8.21 | canon | partly superseded by F248 | here |
 | F248 | Vanilla plays ~8% slower in October than August on the same version; vs same-days vanilla the wm99 book is x1.09 | performance | standing | here |
 | F249 | The 1.0 canon over 16 alternating centuries: 16 intact, world GDP 1.07x, play x1.010 (x1.11 / x0.996 per session); where vanilla cannot switch, in-market pressure on backward industry is clearly stronger than vanilla's, through trade weak in both; the consumer chains' main-good price falls below vanilla's and the old rung lives on its luxury line, sized for t2 (§4d) | canon | standing | here |
+| F250 | The no-DLC load test: all 17 installed DLCs disabled (verified, none mounted), the 1.0 canon plays 1836-1841 with no error beyond vanilla's and nothing naming a mod or replaced file | release | standing | here |
 
 ---
 
@@ -21250,3 +21251,46 @@ per-session ratios (×1.11, ×0.996) bracket the canon's cost rather than fix it
 laggard metric isolates competition in vanilla: its vanilla numbers include free method switches, so they are an upper bound on vanilla's competitive
 suppression, not a measure of it; and the 10% frontier cut and the 5,000-worker case floor are choices, not rulings. That the decade-path dip of 1886–1906
 is a defect: it is inside the ruled line. That the loss of 6.60 ranks the canon against any other book: no other book has been read against n=40.
+
+## F250 — THE NO-DLC LOAD TEST: WITH ALL 17 INSTALLED DLCS DISABLED, THE 1.0 CANON LOADS, PLAYS 1836→1841 AND ADDS NO ERROR OF ITS OWN; THE HARNESS'S DLC SWITCH IS PROVEN IN GAME (2026-10-26; session `20261026_124125_no-dlc-load-test`, vanilla + canon, 2 × 1836→1841)
+
+**Why it ran.** POLISH_1_0.md "Where it stands": the only proof of the DLC rule (CLAUDE.md §5.1 rule 1) beyond `check_dlc_gates.mjs`'s file
+comparison, scheduled by the user for after the alternating batch and before the release build (user, 2026-10-26: *"launch the no-DLC load test
+… and read it"*).
+
+**Arms and runs.** Vanilla `{kind: control}` and the canon (`config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`, sha256 `728f2c7f84e6f467`,
+a debug build with telemetry), each with every installed DLC disabled through the new schedule key `no_dlc` → `run_observer -DisableAllDlc`
+(commit `9eb61f9`, its first use in game). Game 1.13.11; schedule `tools/testbed/schedules/no_dlc_load_test.json`; n = 1 per arm.
+
+**1. The switch works.** Both runs wrote the 17 installed DLCs (dlc001–dlc018 but dlc005) into `content_load.json` as `{"paradoxAppId": <pops_id>}`,
+and the game mounted none of them: neither debug.log has a `Mounted Data: …/game/dlc/…` line (an ordinary run has 17), and both meta.json files
+read `no_dlc_verified: true`. The format taken from the Paradox launcher's content-load schema is proven in game (MODDING_NOTES).
+
+**2. Both runs played clean.** Each reached 1841.1.1 and quit by itself on its first attempt, with no crash and no resume (vanilla 350.9 s,
+canon 295.5 s of play). The canon matched game version 1.13.11 and wrote its init marker; no `PM_TECH_REHAUL WARN` line.
+
+**3. error.log** (each run's own mirror; `tools/testbed/ledger/error_classes.mjs`; a class is a line with its numbers, strings and handles
+reduced to tokens):
+
+| run | non-empty lines | classes | lines naming a mod file or one of the 146 vanilla-path files the mod replaces |
+|---|---|---|---|
+| vanilla, no DLC | 56 | 20 | 0 |
+| canon, no DLC | 66 | 19 | 0 |
+| canon with every DLC (the smoke run `20261021_220806_polish-final-smoke`, same span, for reference) | 109 | 19 | 4 |
+
+- **Neither no-DLC run** has a line naming an invalid production method or a DLC.
+- **Classes only in the canon's no-DLC run:** three engine assertions about one dead Spanish army formation (4 lines: "Trying to reposition a
+  dead formation", "…update exile status for dead Formation", "…make dead Formation … loiter"). All 17 vanilla runs of the alternating batch
+  throw this family (119 lines), so it is vanilla's war noise in a run that happened to have a war.
+- **Classes only in the vanilla no-DLC run:** an agitator law event's unset scope (4 classes).
+- **The with-DLC smoke run's 4 lines** naming a replaced file are vanilla's royal-wedding event failing inside
+  `common/scripted_effects/00_scripted_effects.txt`, a vanilla effect in a file the mod copies. They are absent from both no-DLC runs.
+
+**Read.** The DLC rule holds in game. With no DLC the canon loads and plays five years with no error class beyond what vanilla's own no-DLC
+run and vanilla's centuries throw, and nothing names a file the mod writes or replaces. The schedule's predictions were met.
+
+**What it does NOT say.**
+- **Nothing after 1841.** DLC-gated events, laws and buildings that fire mid-century were not reached in a five-year window.
+- **Nothing about a partial DLC set.** Only the all-off case ran.
+- **Nothing about the release build.** This was a debug build with telemetry; the release build drops it (POLISH H8).
+- **n = 1 per arm.**

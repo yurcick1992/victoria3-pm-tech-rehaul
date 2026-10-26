@@ -21,8 +21,8 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
 2. ✅ **The alternating batch is read** (vanilla + canon run by run, n=16 each, 2026-10-21 → 10-26; FINDINGS **F249**, the report
    https://claude.ai/artifact/7dR3FWMiYKJbeMjixMcDQK): 16 intact, world GDP 1.07× vanilla n=40, loss 6.60, play ×1.010 of the same sessions’ vanilla.
    Its harness bug L42 is fixed; the report is the first on the criteria register (§10.104).
-3. **Next:** the no-DLC load test (H); the readers that still name the summer vanilla directly (F); the harness edits queued behind the batch
-   (F, G).
+3. ✅ **The no-DLC load test** passed 2026-10-26 (F250). **Next:** the release build (H; `POLISH_1_0.md`); then, not release-blocking, the
+   readers that still name the summer vanilla directly (F) and the harness edits queued behind the batch (F, G).
 4. **Polish and release on 30.10** (H; `POLISH_1_0.md`).
 5. **Mod 1.1 on game 1.15.N:** the ON_GAME_UPDATE pass, treaty ports if the new AI allows (D, §10.103), military research (C), the book
    levers left for 1.1 (B), the polish items deferred to 1.1 (A, H; `POLISH_1_0.md`).
@@ -217,7 +217,6 @@ The lines below are its headline items.
 
 - **OPEN** · release metadata (version 0.1.0, the "(built …)" name stamp, short description, `supported_game_version` "1.13.\*"), thumbnail, LICENSE, a player README with the replaced-file list · POLISH_1_0.md R1–R3, Q9, H9
 - **OPEN (ruled 2026-10-21)** · the debug/release build switch in `build.ps1`: release builds carry no telemetry or logging except a start-up manifest line · POLISH_1_0.md H8
-- **OPEN (scheduled by the user: after the batch, before the release build)** · the no-DLC load test. The harness option is built (2026-10-26: `no_dlc` → `run_observer -DisableAllDlc`, dry-tested); the run `schedules/no_dlc_load_test.json` (vanilla + canon, 2 × 1836→1841) waits on the user's go-ahead · POLISH_1_0.md "Where it stands"
 - **OPEN** · proofread every new technology name and description, widened to every generated player-facing text · POLISH_1_0.md R4
 - **OPEN** · per-technology icons (one placeholder ships; the specification is written, the images are the user's) · POLISH_1_0.md R5
 - **OPEN** · builders off the default paths (`preflight.ps1`'s game path, the deploy's Documents folder) · POLISH_1_0.md H10
@@ -225,6 +224,7 @@ The lines below are its headline items.
 - **OPEN** · release: a final build, every lint, an in-game load and an `error.log` read · POLISH_1_0.md "Where it stands"
 
 Closed:
+- Done 2026-10-26 · the no-DLC load test: all 17 installed DLCs disabled and none mounted, vanilla + canon 2 × 1836→1841 clean, no error naming a mod or replaced file, no class beyond vanilla's (session `20261026_124125_no-dlc-load-test`; harness option `no_dlc` → `run_observer -DisableAllDlc`, commit `9eb61f9`) · F250, POLISH_1_0.md "Where it stands"
 - Done 2026-10-26 · `lib_runs`: `VANILLA_REF` = n=40 (the alternating batch's 16 vanilla added), `VANILLA_WALL_REF` = that batch's vanilla · `tools/testbed/ledger/lib_runs.mjs`, CLAUDE.md §3.5
 - Done 2026-10-26 · the red-flag headline's vanilla twin is `VANW`, the same-harness vanilla read on the ORDER BOOKS like the arm (the September n=4 read only the summaries' production and showed ~0; on the same basis vanilla has 120.5 problem market-years against the canon's 147.5, F249) · `fill_ledger.sh`
 - Done 2026-10-26 · `fill_research.mjs` buckets by the book's own tree twin (`--config`, required) and reads the vanilla set `--van` names; the BEL / NGF / GER / UNL rows are still missing there and in `fill_indecomp.mjs` (ledger README §9) · commit `fc401bf`
