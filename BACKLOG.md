@@ -215,7 +215,8 @@ Closed:
 The 1.0 polish register is **`POLISH_1_0.md`** (2026-10-21): every polish item with its status, the rulings, and where the work stands.
 The lines below are its headline items.
 
-- **OPEN** · thumbnail, LICENSE, CHANGELOG, a player README with the replaced-file list · POLISH_1_0.md R2, R3, H9
+- **OPEN** · CHANGELOG · POLISH_1_0.md R2
+- **RULING** · the LICENSE (which licence the repository and the mod carry) and the thumbnail image (`thumbnail.png` in the mod root) are the user's · POLISH_1_0.md R2
 - **RULING** · the new player short description in `mod/.metadata/metadata.json` (written 2026-10-26 with R1) waits on the user's approval · POLISH_1_0.md R1
 - **OPEN** · proofread every new technology name and description, widened to every generated player-facing text · POLISH_1_0.md R4
 - **OPEN** · per-technology icons (one placeholder ships; the specification is written, the images are the user's) · POLISH_1_0.md R5
@@ -223,6 +224,7 @@ The lines below are its headline items.
 - **OPEN** · release: a final build, every lint, an in-game load and an `error.log` read · POLISH_1_0.md "Where it stands"
 
 Closed:
+- Done 2026-10-26 · the player README (R3, H9): playing the mod (game version, no DLC needed, install, new games only, never removed mid-campaign, reading the names, languages), the compatibility list from the build (`tools/list_replaced_files.mjs`: 146 files in 26 folders + `common/history/buildings/`), building from source · POLISH_1_0.md R3, H9
 - Done 2026-10-26 · builders off the default paths (H10: `preflight.ps1` reads `VIC3_GAME`, the deploy uses the shell's Documents folder) and the stray root file `gdp_gap_series.tsv` removed (C7) · POLISH_1_0.md H10, C7
 - Done 2026-10-26 · the debug/release build switch (H8): `build.ps1 -Release` — no logging but a version manifest line (`tools/strip_release_logging.mjs`, 1,789 lines on the canon), no telemetry accepted, no "Recipe BE" in the names, no build stamp; release metadata (R1, Q9): version 1.0.0, "1.13.\*", a new short description. Lints and mod checks pass on a release build; the in-game load is the release step's · POLISH_1_0.md H8, R1, N1
 - Done 2026-10-26 · the no-DLC load test: all 17 installed DLCs disabled and none mounted, vanilla + canon 2 × 1836→1841 clean, no error naming a mod or replaced file, no class beyond vanilla's (session `20261026_124125_no-dlc-load-test`; harness option `no_dlc` → `run_observer -DisableAllDlc`, commit `9eb61f9`) · F250, POLISH_1_0.md "Where it stands"

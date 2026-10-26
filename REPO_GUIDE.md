@@ -767,6 +767,11 @@ stale output except under `common/history`, which an emitter writing there must 
 - **`tools/check_dlc_gates.mjs`** — landmine L39, the DLC rule: every shipped `.txt` at a vanilla path keeps vanilla's count of
   `has_dlc_feature` lines and `dlc =` fields (comments excluded). Additive files are not checked — our own hooks that fire DLC content must
   carry the condition themselves. `node tools/check_dlc_gates.mjs [modDir]`. Status: current (build step, on the final state).
+- **`tools/list_replaced_files.mjs`** — the player README's compatibility list (POLISH_1_0.md H9): every file of the built mod at a vanilla
+  path (it replaces vanilla's whole), grouped by folder, plus the metadata's `replace_paths`, written into `README.md` between
+  `<!-- replaced-files:start -->` and `<!-- replaced-files:end -->` (throws without them). `node tools/list_replaced_files.mjs [--mod mod]
+  [--readme README.md] [--print]`. Needs the game folder (`VIC3_GAME`). Status: current; re-run on the build you ship (146 files in 26 folders
+  on 2026-10-26).
 - **`tools/strip_release_logging.mjs`** — the release build's logging pass (POLISH_1_0.md H8): in every `zzz_pm_rehaul*` script file under
   `common/` and `events/` but the diag manifest, removes each line that is only `debug_log = "…"` or only `<scope> = { debug_log = "…" }`;
   throws on any other `debug_log` left there and on a `zzz_v3tb_*` telemetry file. Blocks a removed line leaves empty stay (valid no-ops);
