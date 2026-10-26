@@ -41,12 +41,22 @@
     -SaveTo <name>  Build into mod_<name>/ inside the repo and KEEP it (not deployed, not deleted).
                     For alternate balance sets you want to compare/keep. Clean up manually.
   -DryRun and -SaveTo are mutually exclusive. Both leave the canonical mod/ untouched.
+
+  TWO BUILD KINDS (POLISH_1_0.md H8, user-ruled 2026-10-21). Every build is a DEBUG build unless -Release is passed:
+    debug (default)  the mod's own logging (dam and research-entry debug_log lines, the init marker and tripwires), "Recipe BE N%" in the
+                     building names, "(built yyyy-MM-dd HH:mm)" in the mod name; telemetry only when asked (-Telemetry / -TelemetryOn).
+    -Release         what players get: no telemetry and no logging but one start-up manifest line ("PM_TECH_REHAUL: init OK - PM and Tech
+                     Rehaul <version> loaded (release build)"), no "Recipe BE" in the names, no build stamp in the mod name. The version is
+                     mod/.metadata/metadata.json's. tools/strip_release_logging.mjs removes the logging after every content emitter, and
+                     throws on a form it does not know. -Release refuses -Telemetry, -TelemetryOn, -ControlOnly and -Overlay.
 #>
 param([switch]$NoLint, [switch]$NoDeploy, [string]$Config, [switch]$DryRun, [string]$SaveTo,
       [string]$Telemetry, [switch]$TelemetryOn, [string]$TelemetryToken, [switch]$ControlOnly,
       # -Overlay: vanilla + telemetry + a small DECLARED gameplay overlay. NOT a control - it gets its
       # own mod id so preflight's L7 can tell them apart, and it must never be reported as one.
       [switch]$Overlay,
+      # -Release: the player build (header: TWO BUILD KINDS)
+      [switch]$Release,
       [switch]$NoPreflight)
 $ErrorActionPreference = 'Stop'
 $INV = [System.Globalization.CultureInfo]::InvariantCulture
@@ -162,6 +172,9 @@ $Game = $(if ($env:VIC3_GAME) { $env:VIC3_GAME } else { "C:\Program Files (x86)\
 # --- resolve output mod directory (relative name under repo) --------------------------------------
 #   default 'mod' (canonical, deploys); -SaveTo X -> 'mod_X' (kept); -DryRun -> throwaway (deleted).
 if ($DryRun -and $SaveTo) { throw "-DryRun and -SaveTo are mutually exclusive." }
+if ($Release -and ($Telemetry -or $TelemetryOn -or $ControlOnly -or $Overlay)) {
+    throw "-Release builds carry no telemetry (POLISH_1_0.md H8): drop -Telemetry / -TelemetryOn / -ControlOnly / -Overlay, or build a debug build."
+}
 $isAlt = $DryRun -or $SaveTo
 if ($DryRun) {
     $modRel = "mod_dryrun_$PID"
@@ -709,7 +722,8 @@ foreach ($ind in $cfg.industries) {
         # ⭐ SINCE 2026-10-03 IT IS THE RECIPE UNDER ITS MOST BASIC SECONDARY METHODS (§10.93, user-ruled): the methods a building runs
         # beside its main one by default are part of what it costs - Sewing Machines' recipe BE carries its mandated Mechanized Looms' tools.
         $goodsBe = if ($basicO -gt 0) { $basicI / $basicO * 100 } else { 0 }
-        $beLabel = if ($ind.follows_be -eq $false) { "" } else { ". Recipe BE $([math]::Round($goodsBe))%" }
+        # A RELEASE build names no recipe break-even (POLISH_1_0.md R1/N1: "the final build also drops the recipe detail"); debug builds keep it.
+        $beLabel = if ($Release -or $ind.follows_be -eq $false) { "" } else { ". Recipe BE $([math]::Round($goodsBe))%" }
         # ⚠ THE NUMBER A PLAYER READS IS THE ERA, NOT A POSITION. It used to be `$tierNo`, a 1-based count
         # of EMITTED tiers, which meant the same digit described different vintages in different industries:
         # the automotive industry's first building is era 3, and it shipped as "Tier 1". It also disagreed
@@ -746,7 +760,7 @@ foreach ($ind in $cfg.industries) {
                 foreach ($p in $mt.inputs.PSObject.Properties) { $mtI += [double]$p.Value * $prices[$p.Name] }
                 $bes += [math]::Round($(if ($mtO -gt 0) { $mtI / $mtO * 100 } else { 0 }))
             }
-            $beM = if ($ind.follows_be -eq $false) { "" } else { ". Recipe BE $(($bes | ForEach-Object { "$_%" }) -join '/')" }
+            $beM = if ($Release -or $ind.follows_be -eq $false) { "" } else { ". Recipe BE $(($bes | ForEach-Object { "$_%" }) -join '/')" }
             if ($baseName -ne $vanEn[$anchorKey]) { throw "merged host $($t.key): its name '$baseName' is not vanilla's English '$($vanEn[$anchorKey])' for $anchorKey - the translated name would describe another building" }
             $bldName = "Tier $($eraSpan[0])-$($eraSpan[-1]). @@VB:$anchorKey@@$beM"
         }
@@ -1485,6 +1499,13 @@ foreach ($lang in $cfg.languages) {
 # an absent init marker => the mod failed to load (check error.log). Add invariant tripwires inside
 # pm_tech_rehaul_diag whenever a risky change might trip - log "PM_TECH_REHAUL WARN: ..." on failure.
 $diagTs = Get-Date -Format 'yyyy-MM-dd HH:mm'
+# ⭐ A RELEASE BUILD'S ONE LOG LINE IS THE MANIFEST (H8): the mod's name and version (mod/.metadata/metadata.json), still prefixed
+#   "PM_TECH_REHAUL: init OK" so a smoke check finds it; no build time, no tripwires.
+$diagLine = if ($Release) {
+    $relMeta = Get-Content (Join-Path $repo 'mod\.metadata\metadata.json') -Raw | ConvertFrom-Json
+    if (-not $relMeta.version) { throw "-Release: mod\.metadata\metadata.json has no version - the manifest line cannot name one" }
+    "PM_TECH_REHAUL: init OK - PM and Tech Rehaul $($relMeta.version) loaded (release build)"
+} else { "PM_TECH_REHAUL: init OK - mod loaded, game started (build $diagTs) on [TimeKeeper.GetCurrentDate.GetString]" }
 $diag = @(
     $genHeader.TrimEnd(), "",
     "on_game_started_after_lobby = {",
@@ -1492,11 +1513,11 @@ $diag = @(
     "}", "",
     "pm_tech_rehaul_diag = {",
     "`teffect = {",
-    "`t`tdebug_log = `"PM_TECH_REHAUL: init OK - mod loaded, game started (build $diagTs) on [TimeKeeper.GetCurrentDate.GetString]`"",
-    "`t`t# --- invariant tripwires: add checks for risky changes; log PM_TECH_REHAUL WARN on failure ---",
+    "`t`tdebug_log = `"$diagLine`"",
+    $(if (-not $Release) { "`t`t# --- invariant tripwires: add checks for risky changes; log PM_TECH_REHAUL WARN on failure ---" }),
     "`t}",
     "}"
-)
+) | Where-Object { $null -ne $_ }
 WriteText "$modRel\common\on_actions\zzz_pm_rehaul_diag.txt" (($diag -join "`n") + "`n") $bom
 
 # testbed telemetry, from the same generator the control arm uses
@@ -1719,6 +1740,14 @@ if ($LASTEXITCODE -ne 0) { throw "emit_vanilla_refs.mjs failed (exit $LASTEXITCO
 & node (Join-Path $PSScriptRoot 'emit_value_overrides.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_value_overrides.mjs failed (exit $LASTEXITCODE) - a ruled vanilla value would ship at vanilla's number." }
 
+# ⭐ A RELEASE BUILD CARRIES NO LOGGING (POLISH_1_0.md H8): after the last content emitter, every debug_log line the build wrote into its own
+#   zzz_pm_rehaul* script files goes (the manifest in zzz_pm_rehaul_diag.txt stays; vanilla files keep vanilla's lines). It throws on a log
+#   line in a form it does not know, so a new emitter's logging cannot ship silently.
+if ($Release) {
+    & node (Join-Path $PSScriptRoot 'strip_release_logging.mjs') $modAbs
+    if ($LASTEXITCODE -ne 0) { throw "strip_release_logging.mjs failed - this release build would ship debug logging." }
+}
+
 # 🛑 NEVER UNLOCK DLC CONTENT (CLAUDE.md, the user 2026-10-21): every vanilla-path file the build ships keeps vanilla's count of
 #   `has_dlc_feature` lines and `dlc =` fields. On the FINAL state, after every content emitter.
 & node (Join-Path $PSScriptRoot 'check_dlc_gates.mjs') $modAbs
@@ -1819,9 +1848,15 @@ $metaPath = Join-Path $modAbs '.metadata\metadata.json'
 $ts = Get-Date -Format 'yyyy-MM-dd HH:mm'
 $meta = Get-Content $metaPath -Raw
 $meta = [regex]::Replace($meta, '("name"\s*:\s*"[^"]*?)\s*\(built[^)]*\)(")', '${1}${2}')          # strip any prior "(built ...)"
-$meta = [regex]::Replace($meta, '("name"\s*:\s*"[^"]*)(")', ('${1} (built ' + $ts + ')${2}'))       # append fresh timestamp
-[System.IO.File]::WriteAllText($metaPath, $meta, $noBom)
-Write-Output "Build timestamp: $ts (mod name)"
+if ($Release) {
+    # a release build's name is the mod's name alone (POLISH_1_0.md R1)
+    [System.IO.File]::WriteAllText($metaPath, $meta, $noBom)
+    Write-Output "RELEASE BUILD: no build stamp in the mod name; version $((ConvertFrom-Json $meta).version)"
+} else {
+    $meta = [regex]::Replace($meta, '("name"\s*:\s*"[^"]*)(")', ('${1} (built ' + $ts + ')${2}'))   # append fresh timestamp
+    [System.IO.File]::WriteAllText($metaPath, $meta, $noBom)
+    Write-Output "Build timestamp: $ts (mod name)"
+}
 
 # --- post-build checks on the FINISHED mod (the dry-run guarantee; also guards deploy) ---
 $problems = Invoke-ModChecks $modAbs $cfg

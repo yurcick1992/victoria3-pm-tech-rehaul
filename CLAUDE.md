@@ -763,9 +763,14 @@ to what it shows; stamp `yyyy-mm-dd, HH:MM UTC`; say in the reply that it was re
 powershell -ExecutionPolicy Bypass -File tools\build.ps1            # build mod/ from config/mod_config.json and deploy it
 powershell -ExecutionPolicy Bypass -File tools\build.ps1 -DryRun    # full build into a throwaway folder, linted, deleted; never deploys
 powershell -ExecutionPolicy Bypass -File tools\build.ps1 -SaveTo x -Config config\mod_config.<book>.json   # build an alternate book into mod_x/
+powershell -ExecutionPolicy Bypass -File tools\build.ps1 -Release   # the player build: no logging but a version manifest line, no "Recipe BE", no build stamp
 ```
 Other flags: `-NoDeploy`, `-NoLint`, `-ControlOnly` (vanilla + telemetry; requires `-SaveTo`/`-DryRun`), `-Overlay`, `-Telemetry <spec>`, `-NoPreflight`
 (only for a broken detector). Node ≥ 24 is required; `VIC3_GAME` overrides the game path. The build order and every emitter are in `REPO_GUIDE.md`.
+- **Two build kinds** (POLISH_1_0.md H8): every build is a DEBUG build (the mod's logging, "Recipe BE" in the names, "(built …)" in the mod name;
+  telemetry only when asked) unless `-Release` is passed. A release build refuses telemetry, and `tools/strip_release_logging.mjs` removes every
+  `debug_log` line the build wrote into its own files after the last emitter, throwing on a form it does not know. The version and the player
+  description live in `mod/.metadata/metadata.json`. Measurement runs always use debug builds.
 
 - **What a build does:** regenerates every `mod/common` and `mod/localization` file from the config, converts the 1836 start, emits the technology tree,
   research entries, secondaries, companies, dams, goods, references and overrides, then runs the linters and the landmine preflight. Any of these throws

@@ -1,10 +1,10 @@
 {
 	"name" : "PM and Tech Rehaul (built 2026-10-21 22:44)",
 	"id" : "com.yurcick.pm_tech_rehaul",
-	"version" : "0.1.0",
+	"version" : "1.0.0",
 	"game_id" : "victoria3",
-	"supported_game_version" : "1.13.11",
-	"short_description" : "Removes main-PM diversity from manufacturing buildings and splits each tier into its own tech-gated building type.",
+	"supported_game_version" : "1.13.*",
+	"short_description" : "Economic realism: every step of an industry's technology is its own building, so modernising costs capital. Old plants lose their market to newer ones; research follows industry; hydro dams; artisans.",
 	"tags" : ["Gameplay", "Economy", "Balance", "Buildings", "Technologies"],
 	"relationships" : [],
 	"replace_paths" : ["common/history/buildings"],

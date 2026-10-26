@@ -369,9 +369,14 @@ yearly summaries; written for the stage design, F168). For yearly-save books use
 - **`tools/build.ps1`** — the builder: config → every `mod/common/*` file, loc for all 11 languages,
   `tools/ladder_tiers.txt`, the converted 1836 start, then the linters, preflight and `Invoke-ModChecks`, then deploys
   a real copy to Documents. `powershell -ExecutionPolicy Bypass -File tools\build.ps1 [-Config <book>] [-DryRun | -SaveTo <name>]
-  [-ControlOnly | -Overlay] [-Telemetry <spec.json> | -TelemetryOn] [-TelemetryToken <t>] [-NoLint] [-NoDeploy] [-NoPreflight]`.
+  [-ControlOnly | -Overlay] [-Telemetry <spec.json> | -TelemetryOn] [-TelemetryToken <t>] [-Release] [-NoLint] [-NoDeploy] [-NoPreflight]`.
+  `-Release` makes the player build (POLISH_1_0.md H8; the header's TWO BUILD KINDS): no "Recipe BE" in the building names, the start-up line
+  reduced to a version manifest ("PM_TECH_REHAUL: init OK - PM and Tech Rehaul <version> loaded (release build)"), `strip_release_logging.mjs`
+  after the last content emitter, no "(built …)" in the mod name; it refuses `-Telemetry`, `-TelemetryOn`, `-ControlOnly` and `-Overlay`.
   Status: current (the only way a mod is produced; measurement builds go through `run_schedule.ps1`).
   Traps:
+  - `mod/.metadata/metadata.json` is hand-maintained: the version (1.0.0), `supported_game_version` ("1.13.\*") and the player description live
+    there and ride into every build kind; the build only edits the name's "(built …)" stamp.
   - An alternate config `config/mod_config.<sfx>.json` needs its paired `config/tech_tree_options.<sfx>.json`:
     `emit_techs.mjs` and `emit_research_events.mjs` derive the tree file from the config's filename. Without it the build
     stops at the early L20 gate (the book generators write the twin; a hand-made book needs a copy). Never "fix" this by
@@ -763,6 +768,11 @@ stale output except under `common/history`, which an emitter writing there must 
 - **`tools/check_dlc_gates.mjs`** — landmine L39, the DLC rule: every shipped `.txt` at a vanilla path keeps vanilla's count of
   `has_dlc_feature` lines and `dlc =` fields (comments excluded). Additive files are not checked — our own hooks that fire DLC content must
   carry the condition themselves. `node tools/check_dlc_gates.mjs [modDir]`. Status: current (build step, on the final state).
+- **`tools/strip_release_logging.mjs`** — the release build's logging pass (POLISH_1_0.md H8): in every `zzz_pm_rehaul*` script file under
+  `common/` and `events/` but the diag manifest, removes each line that is only `debug_log = "…"` or only `<scope> = { debug_log = "…" }`;
+  throws on any other `debug_log` left there and on a `zzz_v3tb_*` telemetry file. Blocks a removed line leaves empty stay (valid no-ops);
+  vanilla-path files keep vanilla's own lines. `node tools/strip_release_logging.mjs <modDir>`. Status: current (build step, `-Release`
+  only; 1,789 lines from 8 files on the canon, 2026-10-26).
 
 ### Content emitters
 
