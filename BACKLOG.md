@@ -215,9 +215,9 @@ Closed:
 The 1.0 polish register is **`POLISH_1_0.md`** (2026-10-21): every polish item with its status, the rulings, and where the work stands.
 The lines below are its headline items.
 
-- **RULING** · the thumbnail image (`thumbnail.png` in the mod root) is the user's · POLISH_1_0.md R2
+- **DONE 2026-10-26** · the thumbnail (the user's image, `art/thumbnail.png`, copied to the mod root by every build) · POLISH_1_0.md R2
 - **OPEN** (found by the R4 proofread, 2026-10-26; needs plumbing, not wording) · the research entries' urban-centre lines show no live figure (a `count_display` value for the largest urban centre would add "(now N)"); industry names in research labels are hard-coded English ("Food Industries (every tier)", "Grain Farms …") where vanilla translates them — a per-language bare-name key, built like `_pmr_short`, would fix the other ten languages; the naval entries say "a ship of this kind" where the technology unlocks several ship types or none (Sea Lane Strategies, Self-Propelled Torpedoes) — name them from `SHIP_BY_TECH` with vanilla keys · POLISH_1_0.md R4
-- **OPEN** · per-technology icons (one placeholder ships; the specification is written, the images are the user's) · POLISH_1_0.md R5
+- **DONE 2026-10-26** · per-technology icons (`art/invention_icons/`, cut by `tools/make_tech_icon.mjs`; one in-game look at the tech tree owed) · POLISH_1_0.md R5
 - **DEFERRED to mod 1.1 or later (user, 2026-10-21)** · per-tier building artwork · POLISH_1_0.md R6
 - **OPEN** · release: a final build, every lint, an in-game load and an `error.log` read · POLISH_1_0.md "Where it stands"
 

@@ -13,6 +13,10 @@ config/start_baseline.json
 # public) and they are never shipped in mod/. The UI degrades gracefully if this file is absent.
 ui/icons.js
 
+# Reference images for the image-model art brief (art/, POLISH_1_0.md R2/R5): PARADOX ART converted from the
+# game's .dds files and other authors' Workshop thumbnails. Attach them to the image model; never commit them.
+art_brief/references/
+
 # Self-contained balance-UI snapshots (tools/bundle_ui.mjs / balance-snapshot.cmd). Generated on
 # demand from whatever ui/ currently holds, so committing one would be a second, silently stale copy
 # of the config - and it is ~0.7 MB of inlined build output besides. Regenerate, never commit.

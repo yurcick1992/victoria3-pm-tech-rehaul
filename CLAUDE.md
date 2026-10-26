@@ -933,6 +933,7 @@ tools/research_model/   the research simulation (§10.96)
 ui/          the balance editor (builder.html, econ.js, techtree.html; data.js / vanilla.js / presets.js / icons.js generated)
 ui2/         the editor pointed at a retired four-rung derivation (record)
 mod/         THE DEPLOYABLE MOD — generated; only .metadata/metadata.json is hand-maintained
+art/         the mod's own pictures: thumbnail.png (copied to the mod root) and invention_icons/*.png (emitted as DDS); source/ the originals
 ```
 Every file and tool is described in **`REPO_GUIDE.md`**.
 

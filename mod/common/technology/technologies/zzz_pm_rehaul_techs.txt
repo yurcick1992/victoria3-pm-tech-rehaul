@@ -4,7 +4,7 @@
 catalytic_synthesis = {
 	# Unlocks Fertilizer Plants (Catalytic Synthesis)
 	era = era_5
-	texture = "gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds"
+	texture = "gfx/interface/icons/invention_icons/zzz_pm_rehaul_catalytic_synthesis.dds"
 	category = production
 	unlocking_technologies = {
 		nitrogen_fixation
@@ -23,7 +23,7 @@ catalytic_synthesis = {
 continuous_web_processing = {
 	# Unlocks Paper Mills (Continuous Web Processing)
 	era = era_5
-	texture = "gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds"
+	texture = "gfx/interface/icons/invention_icons/zzz_pm_rehaul_continuous_web_processing.dds"
 	category = production
 	unlocking_technologies = {
 		chemical_bleaching
@@ -42,7 +42,7 @@ continuous_web_processing = {
 spray_finishing = {
 	# Unlocks Furniture Manufacturies (Spray Finishing)
 	era = era_5
-	texture = "gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds"
+	texture = "gfx/interface/icons/invention_icons/zzz_pm_rehaul_spray_finishing.dds"
 	category = production
 	unlocking_technologies = {
 		pneumatic_tools

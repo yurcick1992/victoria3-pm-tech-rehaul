@@ -836,4 +836,8 @@ evidence).
   `dwPitchOrLinearSize` = width × 4, `ddspf.dwSize` 32, `ddspf.dwFlags` 0x41, `dwRGBBitCount` 32, masks R `0x00ff0000` G `0x0000ff00`
   B `0x000000ff` A `0xff000000`, `dwCaps` 0x1000 (byte-compared against `manufacturies.dds`: identical but for the mipmap flag and
   `dwCaps`). ⚠ Pixels are **BGRA byte order** — the masks describe a little-endian A8R8G8B8 word. `emit_techs.mjs` writes the mod's
-  `zzz_pm_rehaul_placeholder.dds` this way.
+  `zzz_pm_rehaul_placeholder.dds` this way. A real icon carries the full mip chain like vanilla's (`dwFlags` 0x2100F, mip count 9,
+  `dwCaps` 0x401008, 349,652 bytes at 256 px): `tools/lib_image.mjs` `writeDDS` writes that form for the technology icons in `art/`.
+- **Vanilla's invention icons share one soft black glow** (measured on nitrogen_fixation, pneumatic_tools, improved_fertilizer, lathe): the
+  black's alpha 2–8 px outside the silhouette is 145 103 68 41 22 10 4 on all four — a full-black edge 1.9 px out, softened as a Gaussian of
+  σ 2.4 px. `tools/make_tech_icon.mjs` draws it, so an image model need not.

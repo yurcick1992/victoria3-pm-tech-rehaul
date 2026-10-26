@@ -61,7 +61,11 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
 - **`LICENSE`** — the repository's own work is dedicated to the public domain under CC0 1.0 Universal (the user, 2026-10-26: as permissive as
   possible, no attribution required); Victoria 3's material in the mod stays Paradox Interactive's. A short header, then the CC0 legal code
   verbatim from creativecommons.org.
-- Gitignored, never committed: `HANDOVER.md` (the next session's baton), `status_board*.html`, `balance_ui_snapshot*.html`, `mod_*/`.
+- **`art/`** — the mod's own pictures, the sources the build copies or converts: `thumbnail.png` (the Workshop preview, copied to the mod
+  root), `invention_icons/<technology>.png` (256 × 256, emitted as DDS by emit_techs), and `source/` (the image model's originals the two
+  were made from). Made 2026-10-26 with Gemini's Nano Banana (POLISH_1_0.md R2, R5).
+- Gitignored, never committed: `art_brief/references/` (Paradox icons and other authors' thumbnails, the image model's references),
+  `HANDOVER.md` (the next session's baton), `status_board*.html`, `balance_ui_snapshot*.html`, `mod_*/`.
 
 ### config/ — the canon and its twin
 
@@ -947,6 +951,17 @@ stale tree twins; re-run the chain from its root rather than one step.
 
 ### Shared libraries and helpers
 
+- **`tools/lib_image.mjs`** — the mod's own image handling, no image library: `readPNG` (8-bit RGB/RGBA, non-interlaced; any other PNG
+  throws with its type named), `writePNG` (adaptive row filters; `{ alpha: false }` writes RGB), `resample` (area average in premultiplied
+  alpha), `writeDDS` (uncompressed A8R8G8B8 with the full mip chain; the header matches vanilla's `lathe.dds` but for the exporter's tag in
+  bytes 68–75). Used by emit_techs and make_tech_icon. Status: current.
+- **`tools/make_tech_icon.mjs`** — `node tools/make_tech_icon.mjs --src <picture.png> --out art/invention_icons/<technology>.png
+  [--region x,y,w,h] [--size 215]`: cuts one technology icon out of an image-model picture painted on flat green (the panel found inside
+  `--region`, the key against its measured green, edge specks dropped and printed, the object's longer side scaled to `--size`, vanilla's soft
+  black glow measured from four vanilla icons). Writes the 256 × 256 PNG that emit_techs turns into the game's DDS. Traps: PNG input only —
+  convert a JPEG first (`[System.Drawing.Image]::FromFile(jpg).Save(png, 'Png')` in PowerShell); an object that touches its panel's edge is
+  cut off there and the tool says so. Status: current (POLISH_1_0.md R5; the canon's three icons were cut from
+  `art/source/tech_icons_nano_banana.jpg` with regions `0,0,1000,1000` / `1000,0,1000,1000` / `0,1000,1000,1000`).
 - **`tools/goods_prices.tsv`** — the one base-price table, read by build.ps1, the linters, the solvers and the UI. Status: current.
   Traps: never copy prices into a tool; refresh after a patch (ON_GAME_UPDATE).
 - **`tools/lib_secondary_compat.mjs`** — which secondary / automation method may run beside which main method, reviewed pair by pair
@@ -1005,7 +1020,9 @@ not traversed by the launcher). "Whole-file" = a vanilla path the mod shadows; "
 | `common/modifier_type_definitions/zzz_pm_rehaul_company_modifiers.txt` | emit_companies | additive | always |
 | `common/goods/00_goods.txt` | emit_goods | whole-file | `goods_traded_quantity` (canon: yes) |
 | `common/building_groups/00_building_groups.txt` / `zzz_pm_rehaul_groups.txt` | emit_building_groups | whole-file / additive | `building_group_ai` / `building_groups_add` (canon: the latter) |
-| `common/technology/technologies/zzz_pm_rehaul_techs.txt`, `gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds` | emit_techs | additive | always (canon: 3 minted technologies) |
+| `common/technology/technologies/zzz_pm_rehaul_techs.txt`, `gfx/interface/icons/invention_icons/zzz_pm_rehaul_<technology>.dds` | emit_techs (the icons from `art/invention_icons/<technology>.png`) | additive | always (canon: 3 minted technologies, 3 icons) |
+| `gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds` | emit_techs | additive | a minted technology has no picture in `art/invention_icons/` (canon: absent) |
+| `thumbnail.png` (the mod root) | build.ps1, a copy of `art/thumbnail.png` | the Workshop preview | always; `Invoke-ModChecks` fails a missing one or one ≥ 1,000,000 bytes |
 | `common/technology/technologies/{10_production,20_military,30_society}.txt` | emit_techs, then emit_tech_finish | whole-file | carries a tech-era move / added prerequisite / weight multiplier / the finish boost (canon: all three) |
 | `common/defines/01_pm_rehaul_defines.txt` | emit_techs | additive (partial override) | `ai_defines` / `game_defines` set (canon: NAI + NEconomy) |
 | `common/scripted_effects/00_starting_inventions.txt` | emit_techs | whole-file | the derived 1836 grant differs from vanilla (canon: absent) |

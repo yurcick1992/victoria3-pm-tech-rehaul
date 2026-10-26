@@ -391,13 +391,17 @@ function Invoke-ModChecks($modRoot, $config) {
         'common\buildings\01_industry.txt',
         'common\production_methods\zzz_pm_rehaul_01_industry.txt',
         'common\production_method_groups\zzz_pm_rehaul_01_industry.txt',
-        '.metadata\metadata.json'
+        '.metadata\metadata.json',
+        'thumbnail.png'
     )
     foreach ($r in $required) {
         $p = Join-Path $modRoot $r
         if (-not (Test-Path $p)) { $problems += "missing: $r" }
         elseif ((Get-Item $p).Length -eq 0) { $problems += "empty: $r" }
     }
+    # Steam refuses a preview image of 1 MB or more; held under 1,000,000 bytes to leave no doubt about which megabyte.
+    $thumb = Join-Path $modRoot 'thumbnail.png'
+    if ((Test-Path $thumb) -and (Get-Item $thumb).Length -ge 1000000) { $problems += "thumbnail.png is $((Get-Item $thumb).Length) bytes - Steam's preview limit is 1 MB (scale art\thumbnail.png down)" }
     foreach ($lang in $config.languages) {
         $p = Join-Path $modRoot "localization\$lang\replace\$($config.loc_basename)_l_$lang.yml"
         if (-not (Test-Path $p)) { $problems += "missing loc: $lang" }
@@ -450,6 +454,12 @@ foreach ($d in Get-ChildItem $modAbs -Force -ErrorAction SilentlyContinue) {
     }
     Remove-Item $d.FullName -Recurse -Force -ErrorAction SilentlyContinue
 }
+
+# --- the Workshop thumbnail (POLISH_1_0.md R2): art\thumbnail.png, copied to the mod root where the uploader looks for it.
+#   It lives in art\ because the clean above empties mod\ on every build. Invoke-ModChecks holds it under Steam's 1 MB limit.
+$thumbSrc = Join-Path $repo 'art\thumbnail.png'
+if (-not (Test-Path -LiteralPath $thumbSrc)) { throw "art\thumbnail.png is missing - the Workshop listing needs it (POLISH_1_0.md R2)" }
+Copy-Item -LiteralPath $thumbSrc -Destination (Join-Path $modAbs 'thumbnail.png') -Force
 
 $pmOut = @($genHeader); $pmgOut = @($genHeader)
 $genByBase = @{}        # base building key -> generated text for that whole industry (base + tiers)
