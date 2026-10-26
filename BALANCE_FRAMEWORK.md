@@ -3761,6 +3761,16 @@ goods or employment — measured over all 292 buildings the game loads, vanilla'
    - ⚠ **What else it moves:** Compression Ignition also gates motor's t3 (Diesel Engines), compression-ignition tractors, the five mines' diesel pumps
      and diesel trains — all now wait on Conveyors (tech era 4: vulcanization, shift work, electrical generation) as well. Vanilla's onset dates run the other way
      (compression ignition 1897, conveyors 1913), and at the anchor principle's tech-era-5 position the practical delay should be small; unmeasured.
+8. **⭐ NO PER-METHOD COPIES OF A SECONDARY LINE, EXCEPT POSSIBLY AUTOMATION** (user-ruled 2026-10-26, on the tier-scaled secondary lines deferred to 1.1
+   from F249 §4d: *"let's avoid that for everything except possibly automation"*). A per-method copy is one named copy of a line for each main method of
+   a merged building, each gated to its own method so that exactly one is valid at a time.
+   - **Where it is allowed:** automation only, and only possibly. Today the canon's only per-method copies are rule 5's three mandated automations
+     (Mechanized Looms on Sewing Machines, Automatic Power Looms on Electric Sewing Machines, Assembly Lines on Mass Production).
+   - **Where it is not:** every other line — luxury, canning, stills, ceramics and the rest. Under the `top` sizing rule (§10.91.2) each of them is ONE
+     copy per building, with the same numbers under every main method and gated to a subset where needed, so the canon already complies. The
+     per-method copies `emit_secondaries.mjs` mints under the `lowest` rule belong to pre-artmerge books and are records.
+   - **What it does to the deferred lever:** "one name — one recipe" stands. A strictly tiered industry would need new names for its rungs' scaled
+     lines. For a merged building, where one line serves two tiers, per-method copies are not the answer, so that case is open (BACKLOG B).
 
 **Measured the same night:** the overnight n=3 of the arm (session `20261002_235755_e1a12-ai1135-n3`, the third launch at 23:57 — the first, on the
 universal rule, and the second, before the mandates, were stopped and are VOID) is the first batch built with all five; its book is the 2+1's byte for byte

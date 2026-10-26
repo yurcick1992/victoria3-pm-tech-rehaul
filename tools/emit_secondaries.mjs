@@ -216,6 +216,8 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
     // the building's main methods: its own rung, then the rungs merged into it (method_of, §10.91.2)
     const variants = [t, ...(industry.tiers || []).filter(x => x.method_of === bkey)];
     if (variants.length > 1 && wmT < 1) throw new Error(`emit_secondaries: ${bkey} is a craft rung (workforce_mult ${wmT}) and a merge host — the two amendments were never designed together`);
+    // (Per-method copies of a line exist only on the `lowest` rule's path; since 2026-10-26 they are ruled out for every line except possibly
+    //   automation, BALANCE_FRAMEWORK §10.93 rule 8. The `top` rule's mandated automation copies carry their plain names.)
     // ⭐ A MERGED BUILDING'S COPIES ARE NAMED AFTER THEIR MAIN METHOD, AND NEVER HIDDEN (2026-10-11). A merged building gets one copy of a
     //   secondary per main method, each scaled to that method and gated to it, so exactly one is valid at a time. The panel lists both; each
     //   is named "<line> (<its main method>)" — "Cannery (Baking Powder)" — so the greyed twin is readable instead of a same-name clone.
@@ -471,6 +473,8 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
           report.push({ bkey, pm: p, Rout: +Rout.toFixed(2), Rin: +Rin.toFixed(2), ref: ref ? ref.pm : '(none)' });
           continue;
         }
+        // ⛔ THE `lowest` RULE ONLY (pre-artmerge books, kept as records): since 2026-10-26 per-method copies are ruled out for every line except
+        //   possibly automation (BALANCE_FRAMEWORK §10.93 rule 8) — do not extend this path to the `top` rule.
         // ⭐ ONE COPY PER MAIN METHOD OF THE BUILDING (BALANCE_FRAMEWORK §10.91.2, 2026-09-30): its own rung, then any rung
         //   merged into it as a second main method (`method_of`). Each copy is scaled to ITS method's output and input bill
         //   and is available only beside that method, so a merged building's secondaries stay in proportion to whichever

@@ -421,7 +421,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.90 | the closed price levers; world GDP read as displayed | in force (§2.1, §5.6) |
 | 10.91 | craft rungs (line A) and merged rungs (line B), with the staffing, floor, t1 anchors and desire rules of .1–.5 | in force (Part 4) |
 | 10.92 | recipes steer production; AI values only follow profit; the exemptions | in force (§2.4) |
-| 10.93 | secondary and automation methods: none shown that cannot run, none negative, reviewed compatibility, mandates, "Base", tier-span names | in force (§5.4) |
+| 10.93 | secondary and automation methods: none shown that cannot run, none negative, reviewed compatibility, mandates, "Base", tier-span names; no per-method copies except possibly automation | in force (§5.4) |
 | 10.94 | input-price red flags, a standing check on every batch | in force (§3.3) |
 | 10.95 | research entries for production technologies outside the ladder, one by one, on the narrative onset | in force |
 | 10.96 | the last tech rework: shift research levers, no new principle; world GDP of every decade a target, with the 1886 break line | in force (§3.2) |
