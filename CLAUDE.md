@@ -749,7 +749,7 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 | `*_ARCHIVE.md` (BALANCE_FRAMEWORK, FINDINGS, BUGS_AND_FIXES, `tools/testbed/SESSION_VERDICTS`) | the superseded sections and entries of the records, verbatim under their own numbers; a stub stays in the live file | never written to except to archive a block the user agrees is fully superseded |
 | `TIER_REFERENCE_AUDIT.md`, `MISSING_BUILDING_CONDITIONS.md` | vanilla references the tier split affects; dropped building conditionals | a new case is found (catalogue, do not fix inline) |
 | `tools/testbed/SESSION_VERDICTS.md` | one committed line per session's verdict | every session |
-| `README.md` | the player-facing setup | the player-facing story changes |
+| `README.md` | building and editing the mod (players come from the Steam Workshop): what it changes, the vanilla files it replaces, the build, the editor | the build, the editor or the replaced files change |
 
 **Not committed, by design:** the **handover** (a baton for the next session: the user's next tasks in order, their motivating measurements and the
 traps; replaced wholesale; nothing durable may live only there), the **status board** (an Artifact rebuilt unprompted whenever the picture moves —
@@ -895,7 +895,7 @@ loc-string data errors, battle sizes …): count against the vanilla baseline, f
 
 `balance-ui.cmd` (or `tools/ui.ps1`) serves `ui/builder.html` at localhost:8777; `balance-snapshot.cmd` writes a self-contained snapshot. Three pages:
 the balance sheet, the tech tree, the mod-changes page (a read-only view of everything the build emits beyond recipes). The full description — files,
-the model the sheet implements, presets, and the UI principles — is in `REPO_GUIDE.md` (the UI section); the player-facing one in `README.md`. Rules
+the model the sheet implements, presets, and the UI principles — is in `REPO_GUIDE.md` (the UI section); the user-facing one in `README.md`. Rules
 to keep when changing it:
 
 - ⚠ **On a generated book — the canon included — do not edit recipes, costs or `ai_value` in the sheet and do not press Build now / Export over

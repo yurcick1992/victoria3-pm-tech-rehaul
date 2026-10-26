@@ -17,24 +17,9 @@ fertilizer, explosives, steel, motor, automotive, arms, artillery, munition, syn
 art academy. Extraction, agriculture, ports, shipyards, railways, power plants and trade centres keep
 vanilla's buildings; the balance editor still shows every vanilla building's recipe.
 
-## Playing the mod
+Players get the mod from the Steam Workshop; this README is for building and editing it.
 
-- **Game version:** Victoria 3 **1.13** (any 1.13.x). **No DLC is needed**, and the mod never unlocks DLC content: it was tested with every
-  DLC disabled.
-- **Install:** copy the release's `mod` folder to `Documents\Paradox Interactive\Victoria 3\mod\pm_tech_rehaul` (the folder that holds
-  `.metadata\metadata.json` and `common\`). **Restart the Paradox launcher**, add **“PM and Tech Rehaul”** to a playset, and play.
-- **New games only.** The mod replaces the 1836 start (every country's starting buildings, re-tiered), and it sets up the dam sites and the
-  research journal entries when a game starts. A save begun without the mod has none of that.
-- **Do not remove it mid-campaign.** The tiered buildings exist only in the mod, so a save that contains them does not load correctly
-  without it.
-- **Reading the building names.** “Tier 2. Textile Mills (Sewing Machines)” is the industry's rung 2, built from vanilla's Sewing Machines
-  method. The number is the rung's place on its industry's ladder (tiers 0–3, anchored at 1836, 1875, 1905 and 1940), **not** the tech
-  tree's era. “Tier 0 craft” is an artisan workshop. A building that runs two rungs as switchable methods names its tier span:
-  “Tier 1-2. Paper Mills”.
-- **Languages.** Buildings and methods reuse vanilla's own translations in every language; texts the mod adds (research entries, dams) are
-  in English.
-
-### Compatibility
+## Vanilla files the mod replaces
 
 <!-- replaced-files:start -->
 The mod replaces **146 vanilla files** whole, in 26 folders (generated from the 1.0.0 build by `tools/list_replaced_files.mjs`),
@@ -73,7 +58,8 @@ any of these files conflicts with this one: the one loaded later wins the whole 
 </details>
 <!-- replaced-files:end -->
 
-Map mods and mods that overhaul companies, technologies, production methods or the 1836 history are the likely conflicts.
+Map mods and mods that overhaul companies, technologies, production methods or the 1836 history are the likely conflicts. What a game
+patch can break in these files, and what to re-run after one, is in [`ON_GAME_UPDATE.md`](ON_GAME_UPDATE.md).
 
 ## Building from source
 
