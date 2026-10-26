@@ -392,7 +392,8 @@ function Invoke-ModChecks($modRoot, $config) {
         'common\production_methods\zzz_pm_rehaul_01_industry.txt',
         'common\production_method_groups\zzz_pm_rehaul_01_industry.txt',
         '.metadata\metadata.json',
-        'thumbnail.png'
+        'thumbnail.png',
+        '.metadata\thumbnail.png'
     )
     foreach ($r in $required) {
         $p = Join-Path $modRoot $r
@@ -400,8 +401,18 @@ function Invoke-ModChecks($modRoot, $config) {
         elseif ((Get-Item $p).Length -eq 0) { $problems += "empty: $r" }
     }
     # Steam refuses a preview image of 1 MB or more; held under 1,000,000 bytes to leave no doubt about which megabyte.
-    $thumb = Join-Path $modRoot 'thumbnail.png'
-    if ((Test-Path $thumb) -and (Get-Item $thumb).Length -ge 1000000) { $problems += "thumbnail.png is $((Get-Item $thumb).Length) bytes - Steam's preview limit is 1 MB (scale art\thumbnail.png down)" }
+    # Every picture of our own that the script names (a texture or icon path with zzz_pm_rehaul in it) must be in the mod: the engine
+    # draws a fallback for a missing one and says so only in error.log (MODDING_NOTES).
+    $commonDir = Join-Path $modRoot 'common'
+    if (Test-Path $commonDir) {
+        $named = Get-ChildItem $commonDir -Recurse -Filter *.txt | Select-String -Pattern 'gfx/[^"\s]*zzz_pm_rehaul[^"\s]*\.dds' -AllMatches |
+            ForEach-Object { $_.Matches } | ForEach-Object { $_.Value } | Sort-Object -Unique
+        foreach ($g in $named) { if (-not (Test-Path -LiteralPath (Join-Path $modRoot $g))) { $problems += "missing picture: $g is named in common\ but not in the mod" } }
+    }
+    foreach ($t in 'thumbnail.png', '.metadata\thumbnail.png') {
+        $thumb = Join-Path $modRoot $t
+        if ((Test-Path $thumb) -and (Get-Item $thumb).Length -ge 1000000) { $problems += "$t is $((Get-Item $thumb).Length) bytes - Steam's preview limit is 1 MB (scale art\thumbnail.png down)" }
+    }
     foreach ($lang in $config.languages) {
         $p = Join-Path $modRoot "localization\$lang\replace\$($config.loc_basename)_l_$lang.yml"
         if (-not (Test-Path $p)) { $problems += "missing loc: $lang" }
@@ -455,11 +466,19 @@ foreach ($d in Get-ChildItem $modAbs -Force -ErrorAction SilentlyContinue) {
     Remove-Item $d.FullName -Recurse -Force -ErrorAction SilentlyContinue
 }
 
-# --- the Workshop thumbnail (POLISH_1_0.md R2): art\thumbnail.png, copied to the mod root where the uploader looks for it.
-#   It lives in art\ because the clean above empties mod\ on every build. Invoke-ModChecks holds it under Steam's 1 MB limit.
-$thumbSrc = Join-Path $repo 'art\thumbnail.png'
-if (-not (Test-Path -LiteralPath $thumbSrc)) { throw "art\thumbnail.png is missing - the Workshop listing needs it (POLISH_1_0.md R2)" }
-Copy-Item -LiteralPath $thumbSrc -Destination (Join-Path $modAbs 'thumbnail.png') -Force
+# --- the thumbnails (POLISH_1_0.md R2), two pictures in two places:
+#   thumbnail.png (mod root)    <- art\thumbnail.png, the square Workshop preview (the root is where every Workshop mod here keeps one);
+#   .metadata\thumbnail.png     <- art\thumbnail_launcher.png, 16:9. The launcher shows a local mod's picture from this path only (its
+#                                  database records it for the Workshop mods that carry one there, and nothing for ours while it sat in
+#                                  the root alone), in a 16:9 tile cropped to fill, which cut the square's title off (2026-10-26).
+#                                  tools/make_launcher_thumbnail.mjs makes it from the square.
+#   They live in art\ because the clean above empties mod\ on every build. Invoke-ModChecks holds both under Steam's 1 MB limit.
+New-Item -ItemType Directory -Force -Path (Join-Path $modAbs '.metadata') | Out-Null
+foreach ($pair in @(@('art\thumbnail.png', 'thumbnail.png'), @('art\thumbnail_launcher.png', '.metadata\thumbnail.png'))) {
+    $thumbSrc = Join-Path $repo $pair[0]
+    if (-not (Test-Path -LiteralPath $thumbSrc)) { throw "$($pair[0]) is missing - the Workshop listing and the launcher need it (POLISH_1_0.md R2)" }
+    Copy-Item -LiteralPath $thumbSrc -Destination (Join-Path $modAbs $pair[1]) -Force
+}
 
 $pmOut = @($genHeader); $pmgOut = @($genHeader)
 $genByBase = @{}        # base building key -> generated text for that whole industry (base + tiers)
@@ -590,9 +609,20 @@ foreach ($ind in $cfg.industries) {
         # §10.60 graded port factorisation: workforce/effect multipliers, 1 for every unfactored tier.
         $wfM = if ($null -ne $t.workforce_mult) { [double]$t.workforce_mult } else { 1.0 }
         $fxM = if ($null -ne $t.effect_mult) { [double]$t.effect_mult } else { 1.0 }
-        $pm = @("$($t.pm_key) = {", "`ttexture = `"$($t.texture)`"")
+        # the method's icon: the mod's own picture where art\production_method_icons has one (emit_method_icons.mjs writes the DDS,
+        # POLISH_1_0.md R10), else the book's (vanilla's own method icon; a minted method carries the method below's)
+        $pmTexture = $t.texture
+        if (Test-Path -LiteralPath (Join-Path $repo "art\production_method_icons\$($t.pm_key).png")) {
+            $pmTexture = "gfx/interface/icons/production_method_icons/zzz_pm_rehaul_$($t.pm_key).dds"
+        }
+        $pm = @("$($t.pm_key) = {", "`ttexture = `"$pmTexture`"")
         # a merged rung's method is gated by the rung's own technology (the building that carries it is the host's)
         if ($t.method_of) { $pm += "`tunlocking_technologies = { $($t.tech) }" }
+        # VANILLA'S ELECTRICITY GATE: every vanilla method that consumes electricity (30 of 30) carries `required_input_goods =
+        # electricity`, which stops the building being built, or the method being chosen, in a state without electricity. This writer
+        # rebuilds a main method from the book's recipe fields and dropped it until 2026-10-26 (textile t3, explosives t3, steel t3,
+        # motor t2, art academy t3 could be built anywhere; the user's catch). lint_pm_combos check 9 holds the rule over every method.
+        if ($t.inputs.PSObject.Properties.Name -contains 'electricity' -and [double]$t.inputs.electricity -gt 0) { $pm += "`trequired_input_goods = electricity" }
         # state modifiers (workforce-scaled): pollution + infrastructure (ports/railways produce infra).
         $stateMods = @()
         if ([double]$t.pollution -gt 0) { $stateMods += "state_pollution_generation_add = $(QtyMul $t.pollution $fxM)" }
@@ -1560,6 +1590,9 @@ if ($telemetryOn) {
 if (-not $isAlt) { & (Join-Path $PSScriptRoot 'extract_start.ps1') -Repo $repo -Config $cfgPath }
 & node (Join-Path $PSScriptRoot 'emit_techs.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_techs.mjs failed (exit $LASTEXITCODE) - the mod would ship without its technologies." }
+# the mod's own method icons (art\production_method_icons -> DDS); the methods above already point at them
+& node (Join-Path $PSScriptRoot 'emit_method_icons.mjs') $modAbs
+if ($LASTEXITCODE -ne 0) { throw "emit_method_icons.mjs failed (exit $LASTEXITCODE) - methods would point at icons that do not exist." }
 
 # --- INDUSTRY-DRIVEN RESEARCH EVENTS (ROADMAP step 2) --------------------------------------------
 # Reads config/mod_config.json's `research_events` block and emits nothing at all when it is
@@ -1749,6 +1782,12 @@ if ($LASTEXITCODE -ne 0) { throw "emit_vanilla_refs.mjs failed (exit $LASTEXITCO
 #   the reference fix's transforms, the static modifiers) is edited in that copy, never re-copied from vanilla. Absent -> nothing.
 & node (Join-Path $PSScriptRoot 'emit_value_overrides.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_value_overrides.mjs failed (exit $LASTEXITCODE) - a ruled vanilla value would ship at vanilla's number." }
+
+# ⚠ THE ELECTRICITY BUILD CONDITION IS DEFERRED TO MOD 1.1 OR LATER (the user, 2026-10-26, BALANCE_FRAMEWORK §10.106): built and seen working in
+#   the probe, but a `possible` that scans the state's buildings "can have unexpected performance consequences". For 1.0 it is a known issue
+#   that a building running only on electricity can be built without a grid (its methods still carry vanilla's gate, check 9). To bring it
+#   back, call it here, after every building writer (dams included), and turn lint_pm_combos check 10 from a warning into a failure:
+#     & node (Join-Path $PSScriptRoot 'emit_electricity_gate.mjs') $modAbs $cfgPath
 
 # ⭐ A RELEASE BUILD CARRIES NO LOGGING (POLISH_1_0.md H8): after the last content emitter, every debug_log line the build wrote into its own
 #   zzz_pm_rehaul* script files goes (the manifest in zzz_pm_rehaul_diag.txt stays; vanilla files keep vanilla's lines). It throws on a log

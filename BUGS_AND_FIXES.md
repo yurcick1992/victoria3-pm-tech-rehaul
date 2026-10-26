@@ -23,6 +23,7 @@ appended oldest first after the July ones); no entry's text changed.
 
 | date | entry | area | status | note |
 |---|---|---|---|---|
+| 2026-10-26 | five electricity-consuming rungs could be built in a state without electricity | build/emitters | live | lint_pm_combos check 9 |
 | 2026-10-26 | a run lost to the observer's own landing guard: a crash after an early-death fresh restart read as a foreign save | testbed/harness | live | landmine L42 |
 | 2026-10-21 | the power-bloc canning switch pointed at a method our food building does not carry | build/emitters | live |  |
 | 2026-10-21 | the research bars' tooltips never named the conditions: a term behind a failing `if` is... | build/emitters | live |  |
@@ -143,6 +144,33 @@ appended oldest first after the July ones); no entry's text changed.
    format numbers with `InvariantCulture`. Three separate bugs below share this one root.
 
 ---
+
+## 2026-10-26 — five electricity-consuming rungs could be built in a state without electricity
+
+**Symptom.** The user, in the all-tech probe: textile t3 (Electric Sewing Machines) could be built and chosen in a state with no
+electricity supply, while the same building's automation (Automatic Power Looms) refused. The same held for explosives t3 (Brine
+Electrolysis), steel t3 (Electric Arc Process), motor t2 (Electric Engines) and art academy t3 (Film Art). Every lint passed.
+
+**Root cause.** Vanilla gates a method that consumes electricity with `required_input_goods = electricity`: all 30 of its electricity
+consumers carry it, and no other method does. `build.ps1` rebuilds each tier building's main method from the book's recipe fields
+(texture, technology, modifiers, goods, jobs), so any vanilla field the book does not record was dropped, and this gate was one. The
+secondaries keep it because `emit_secondaries.mjs` copies vanilla's own blocks.
+
+**Fix.** `build.ps1` writes `required_input_goods = electricity` on every main method whose recipe consumes electricity (vanilla's rule,
+derived from the emitted recipe, so the book and its checksum are unchanged). **That was not enough**: the user then built a motor t2 in a
+state with no electricity — the gate stops a method being chosen, not a building being built, and vanilla never needs more because every
+gated vanilla method has an ungated alternative in its group. So a building with a group in which every method requires electricity now also
+carries a build condition in its `possible`, the state producing electricity (user-ruled, BALANCE_FRAMEWORK §10.106;
+`tools/emit_electricity_gate.mjs`): explosives t3, motor t2, art academy t3, and automotive t3, whose mandated Assembly Lines need
+electricity. Nothing happens when a state later loses its electricity (the user: acceptable). The condition worked in the probe and was then
+DEFERRED to mod 1.1 for its possible performance cost (§10.106): in 1.0 the method gate ships, and the four buildings can be built without a
+grid, a known issue (check 10 prints them).
+
+**Detect / prevent.** `lint_pm_combos.mjs` check 9 (every build, throws): over every method the game loads, a method consuming electricity
+requires it, and a method requiring it consumes some. Proven on the unfixed build (FAIL, exactly the five) and the fixed one (PASS, 43
+consumers). Check 10: a building that runs only on electricity carries the build condition (FAIL on the build before it, four buildings;
+PASS after). The general lesson: a writer that rebuilds a vanilla object from recorded fields drops every field nobody recorded; audit such
+writers against vanilla's full field list, not against the fields they were written for.
 
 ## 2026-10-26 — a run lost to the observer's own landing guard: a crash after an early-death fresh restart read as a foreign save
 

@@ -164,7 +164,7 @@ function sub(text, re, repl, n, what) {
 // 1. THE NEW TECHNOLOGIES — additive
 // ===================================================================================================
 const NEWT = OPT.techs.filter(t => t.origin === 'new');
-// Each minted technology's picture is art/invention_icons/<id>.png (256 x 256, made by tools/make_tech_icon.mjs); section 7 writes
+// Each minted technology's picture is art/invention_icons/<id>.png (256 x 256, made by tools/make_icon.mjs --kind tech); section 7 writes
 // it as a DDS. A technology without one keeps the shared placeholder, and section 7 names it — an alternate book can mint others.
 const ART = join(REPO, 'art', 'invention_icons');
 const ICON = new Map(NEWT.map(t => [t.id, existsSync(join(ART, `${t.id}.png`))
@@ -604,7 +604,7 @@ write('common/defines/01_pm_rehaul_defines.txt',
 for (const t of NEWT) {
   if (ICON.get(t.id) === PLACEHOLDER) continue;
   const src = join(ART, `${t.id}.png`), img = readPNG(readFileSync(src));
-  if (img.w !== 256 || img.h !== 256) throw new Error(`${src}: ${img.w}x${img.h} — a technology icon is 256x256 (tools/make_tech_icon.mjs makes one)`);
+  if (img.w !== 256 || img.h !== 256) throw new Error(`${src}: ${img.w}x${img.h} — a technology icon is 256x256 (tools/make_icon.mjs --kind tech makes one)`);
   writeBin(ICON.get(t.id), writeDDS(img));
 }
 const NO_ART = NEWT.filter(t => ICON.get(t.id) === PLACEHOLDER).map(t => t.id);

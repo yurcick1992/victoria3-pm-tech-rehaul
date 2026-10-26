@@ -99,6 +99,7 @@ pm_main_textile_sewing_machines = {
 pm_main_textile_electric_sewing_machines = {
 	texture = "gfx/interface/icons/production_method_icons/electric_sewing_machines.dds"
 	unlocking_technologies = { electrical_capacitors }
+	required_input_goods = electricity
 	building_modifiers = {
 		workforce_scaled = {
 			goods_input_fabric_add = 71.7
@@ -173,7 +174,7 @@ pm_main_furniture_mechanized_workshops = {
 }
 
 pm_main_furniture_spray_finishing = {
-	texture = "gfx/interface/icons/production_method_icons/mechanized_workshops.dds"
+	texture = "gfx/interface/icons/production_method_icons/zzz_pm_rehaul_pm_main_furniture_spray_finishing.dds"
 	unlocking_technologies = { spray_finishing }
 	state_modifiers = {
 		workforce_scaled = {
@@ -398,7 +399,7 @@ pm_main_paper_bleached_paper = {
 }
 
 pm_main_paper_continuous_web_processing = {
-	texture = "gfx/interface/icons/production_method_icons/bleached_paper.dds"
+	texture = "gfx/interface/icons/production_method_icons/zzz_pm_rehaul_pm_main_paper_continuous_web_processing.dds"
 	state_modifiers = {
 		workforce_scaled = {
 			state_pollution_generation_add = 5
@@ -489,7 +490,7 @@ pm_main_fertilizer_nitrogen_fixation = {
 }
 
 pm_main_fertilizer_catalytic_synthesis = {
-	texture = "gfx/interface/icons/production_method_icons/nitrogen_fixation.dds"
+	texture = "gfx/interface/icons/production_method_icons/zzz_pm_rehaul_pm_main_fertilizer_catalytic_synthesis.dds"
 	state_modifiers = {
 		workforce_scaled = {
 			state_pollution_generation_add = 15
@@ -581,6 +582,7 @@ pm_main_explosives_vacuum_evaporation = {
 
 pm_main_explosives_brine_electrolysis = {
 	texture = "gfx/interface/icons/production_method_icons/vaccum_brine_electrolysis.dds"
+	required_input_goods = electricity
 	state_modifiers = {
 		workforce_scaled = {
 			state_pollution_generation_add = 25
@@ -672,6 +674,7 @@ pm_main_steel_open_hearth_process = {
 pm_main_steel_electric_arc_process = {
 	texture = "gfx/interface/icons/production_method_icons/electric_arc_process.dds"
 	unlocking_technologies = { electric_arc_process }
+	required_input_goods = electricity
 	state_modifiers = {
 		workforce_scaled = {
 			state_pollution_generation_add = 25
@@ -716,6 +719,7 @@ pm_main_motor_steam_engines = {
 
 pm_main_motor_electric_engines = {
 	texture = "gfx/interface/icons/production_method_icons/electric_engines.dds"
+	required_input_goods = electricity
 	state_modifiers = {
 		workforce_scaled = {
 			state_pollution_generation_add = 5
@@ -1061,6 +1065,7 @@ pm_main_art_academy_photographic_art = {
 
 pm_main_art_academy_film_art = {
 	texture = "gfx/interface/icons/production_method_icons/film_art.dds"
+	required_input_goods = electricity
 	building_modifiers = {
 		workforce_scaled = {
 			goods_input_tools_add = 14.5

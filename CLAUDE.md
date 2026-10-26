@@ -184,7 +184,9 @@ canon:  A = 2.2   B = 1.64   C = 1.9   L = in1 = 1.2
   beautiful economy and costs the player a third of their evening has failed at something the balance numbers never show.
 - **Simulation purity: no artificial limits.** No hard build blocks, no `possible` gates that forbid the AI an old rung, and never a
   technology-triggered penalty on old rungs (the user: *"never ever, for simulation purity"*). Production is steered by economics
-  (recipes, costs); the AI levers are willingness levers only (§2.4).
+  (recipes, costs); the AI levers are willingness levers only (§2.4). The one allowed build condition is an input a building's only
+  methods cannot run without: a building that runs only on electricity needs a state that produces some (§10.106 — ruled, then deferred to
+  mod 1.1 for its performance risk; in 1.0 such a building can be built without a grid, a known issue).
 - **Vanilla values plus uniform rules.** Rungs are vanilla's own methods; ladders are uniform across industries; per-rung recipe fitting is
   out (§2.5, §2.6). As few special rulings as possible.
 - **No DLC content is ever unlocked** — Paradox prohibits it (§5.1).
@@ -433,6 +435,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.102 | the world-market monopoly threshold 0.99 | in force (canon since 2026-10-21) |
 | 10.103 | treaty ports: the measured funnel and the layered solution, deferred to mod 1.1 on game 1.15 | deferred |
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays, as readings | in force; built after the alternating batch |
+| 10.106 | a building that runs only on electricity can be built only where the state produces some (power plant, dam, electric streetlights); nothing happens when a state loses it | deferred to mod 1.1 (performance risk); 1.0 known issue |
 
 ---
 
@@ -799,7 +802,10 @@ Other flags: `-NoDeploy`, `-NoLint`, `-ControlOnly` (vanilla + telemetry; requir
   any input good, output good or profession's employment below −0.011; no DEAD method (one gated on main methods its building lacks — the game still
   SHOWS it, greyed, at its own numbers); no 1836 history block naming a method its building lacks (the engine rejects the whole block); no secondary
   beside a main method the pair-by-pair review (`tools/lib_secondary_compat.mjs`) marked incompatible; no labour-saving method on a craft rung; no group
-  offering only "off"; a mandated automation is the only choice beside its main method.
+  offering only "off"; a mandated automation is the only choice beside its main method; a method that consumes electricity requires it
+  (`required_input_goods = electricity`, vanilla's rule), and no other method does. The method gate stops a method being chosen, not a
+  building being built: a building with a group in which every method requires electricity is printed as a known issue until the build
+  condition of §10.106 (`emit_electricity_gate.mjs`, deferred to mod 1.1) comes back.
 - **Never mark a PM-gated copy `is_hidden_when_unavailable`** — the player can then never select it.
 - **`create_building` is gated on the STATE OWNER's technology and fails silently** — whoever `add_ownership` names (L14; check at 1836.2.1, not a year
   later). A building with no `ownership_type` cannot be built in a foreign state.
@@ -933,7 +939,7 @@ tools/research_model/   the research simulation (§10.96)
 ui/          the balance editor (builder.html, econ.js, techtree.html; data.js / vanilla.js / presets.js / icons.js generated)
 ui2/         the editor pointed at a retired four-rung derivation (record)
 mod/         THE DEPLOYABLE MOD — generated; only .metadata/metadata.json is hand-maintained
-art/         the mod's own pictures: thumbnail.png (copied to the mod root) and invention_icons/*.png (emitted as DDS); source/ the originals
+art/         the mod's own pictures: thumbnail.png (square, the mod root), thumbnail_launcher.png (16:9, .metadata/), invention_icons/ and production_method_icons/ *.png (emitted as DDS); source/ the originals
 ```
 Every file and tool is described in **`REPO_GUIDE.md`**.
 

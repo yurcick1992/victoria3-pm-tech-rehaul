@@ -108,8 +108,10 @@ export function resample({ w, h, px }, W, H) {
   return { w: W, h: H, px: res };
 }
 
+// Mips halve with the remainder dropped down to 1 px, as vanilla's are: 256 px gives 9 levels, a 104 px method icon 7
+// (104 52 26 13 6 3 1; `nitrogen_fixation.dds` in production_method_icons, 57,772 bytes).
 export function writeDDS(img) {
-  if (img.w !== img.h || (img.w & (img.w - 1))) throw new Error(`writeDDS: a square power-of-two image is expected, got ${img.w}x${img.h}`);
+  if (img.w !== img.h) throw new Error(`writeDDS: a square image is expected, got ${img.w}x${img.h}`);
   const levels = []; for (let m = img; ; m = resample(m, m.w >> 1, m.h >> 1)) { levels.push(m); if (m.w === 1) break; }
   const hdr = Buffer.alloc(128);
   hdr.write('DDS ', 0, 'ascii');

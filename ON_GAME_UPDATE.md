@@ -416,6 +416,16 @@ The emitters, when a book enables them:
 
 #### 2.3.1 The design
 
+- **Vanilla's electricity gate** (2026-10-26): every vanilla method that consumes electricity carries `required_input_goods = electricity`
+  (30 of 30 in 1.13), and `build.ps1` writes the same on our main methods from their recipes. `lint_pm_combos.mjs` check 9 holds the rule over
+  every method the game loads, vanilla's included, so a patch that adds a gated method fails nothing, while a patch that changes the rule (a
+  consumer without the gate, another good gated) fails the build: re-read vanilla's methods and decide whether the rule moved.
+- **The electricity build condition** (§10.106; DEFERRED to mod 1.1, not emitted in 1.0 — the lines below apply once it is restored):
+  `emit_electricity_gate.mjs` derives the producers from every method that outputs electricity and gates the buildings whose groups run only
+  on electricity. A patch that makes `required_input_goods` block construction by itself makes the
+  condition redundant (harmless); one that renames `building_power_plant`, `pm_electric_streetlights` or the trigger `level` changes the
+  producer clauses — the emitter prints the producers it found, so compare that line with the previous build's.
+
 - **Defines** are a partial override, and each value is range-checked at load against hardcoded, undocumented bounds that are not always what
   vanilla's comment says (`MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR`: "capped at 1", validated as [0, 1)). A bound can refer to a
   sibling define. Rejected values keep vanilla's (L33, §2.2.1).

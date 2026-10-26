@@ -32,6 +32,17 @@
 //   6. EVERY GROUP HAS SOMETHING TO RUN BESIDE EVERY MAIN METHOD of a tier building (PM gates; technology aside) — a merged building's
 //      mandated group holds only copies each gated to one main method, so a gap would leave the engine nothing valid to select.
 //   8. NO GROUP OFFERS NOTHING BUT AN "OFF" METHOD (2026-10-21, §10.93 rule d) — such a group is no choice and the building must not carry it.
+//   9. A METHOD THAT CONSUMES ELECTRICITY REQUIRES IT, AND ONLY SUCH A METHOD (2026-10-26) — over every method the game loads: vanilla's
+//      rule exactly (30 of its 30 electricity consumers carry `required_input_goods = electricity`, no other method carries it). The gate
+//      keeps a building from being built, or a method from being chosen, in a state with no electricity. Our tier buildings' main
+//      methods were rebuilt from the book's recipe fields and lost it (the user: textile t3 could be built without electricity while
+//      its automation, a copied vanilla block, still checked). build.ps1 now writes the gate wherever a main method consumes electricity.
+//  10. A BUILDING WITH A GROUP IN WHICH EVERY METHOD REQUIRES ELECTRICITY CAN BE BUILT ONLY WHERE THERE IS ELECTRICITY (user-ruled
+//      2026-10-26, BALANCE_FRAMEWORK §10.106): its `possible` names `pmr_state_produces_electricity` (tools/emit_electricity_gate.mjs). The
+//      method gate of check 9 stops a method being chosen, not a building being built (the user built a motor t2 with no electricity).
+//      ⚠ DEFERRED TO MOD 1.1 (the user, 2026-10-26: performance risk): build.ps1 does not call the emitter, and this check PRINTS the
+//      buildings as a known issue instead of failing. It failed on the four (explosives t3, motor t2, automotive t3, art academy t3) before
+//      the emitter ran and passed after, so restoring the failure is one line.
 //   7. A MANDATED AUTOMATION (lib_secondary_compat MANDATED, user-ruled 2026-10-02: Mechanized Looms with Sewing Machines, Automatic
 //      Power Looms with Electric Sewing Machines, Assembly Lines with Mass Production) is offered by exactly one group beside its main
 //      method, is the ONLY method of that group legal there, and carries no technology gate its main method does not imply (the building's
@@ -223,7 +234,32 @@ for (const [bk, body] of Object.entries(BLD)) {
   fails.histBlocks = nBlocks;
 }
 
-const labels = { neg: 'A NUMBER GOES NEGATIVE', dead: 'A DEAD METHOD IS SHOWN', hist: 'A 1836 BLOCK NAMES A METHOD ITS BUILDING LACKS',
+// 9. a method consuming electricity requires it, and only such a method
+{
+  fails.elec = [];
+  let consumers = 0;
+  for (const k of Object.keys(PMB)) {
+    const p = pm(k), req = [...noComments(PMB[k]).matchAll(/\brequired_input_goods\s*=\s*([a-z_]+)/g)].map(m => m[1]);
+    const uses = (p.in.electricity || 0) > 0, gated = req.includes('electricity');
+    if (uses) consumers++;
+    if (uses && !gated) fails.elec.push(`${k} consumes ${p.in.electricity} electricity but does not require it (required_input_goods = electricity)`);
+    if (gated && !uses) fails.elec.push(`${k} requires electricity but consumes none`);
+  }
+  fails.elecConsumers = consumers;
+  // 10. every building whose group offers nothing but electricity-gated methods carries the build condition
+  const elecBld = []; let gatedBld = 0;   // a WARNING while the condition is deferred (§10.106): the failure comes back with it
+  const reqElec = k => /\brequired_input_goods\s*=\s*electricity\b/.test(noComments(PMB[k] || ''));
+  for (const [bk, raw] of Object.entries(BLD)) {
+    const b = noComments(raw);
+    const g = listOf(b, 'production_method_groups').find(g => { const pms = listOf(noComments(PMG[g] || ''), 'production_methods'); return pms.length && pms.every(reqElec); });
+    if (!g) continue;
+    gatedBld++;
+    if (!/\bpmr_state_produces_electricity\s*=\s*yes\b/.test(sub(b, 'possible'))) elecBld.push(`${bk} (every method of ${g} needs electricity)`);
+  }
+  fails.elecGatedBld = gatedBld; fails.elecWarn = elecBld;
+}
+
+const labels = { neg: 'A NUMBER GOES NEGATIVE', elec: 'AN ELECTRICITY CONSUMER WITHOUT THE ELECTRICITY GATE (OR A GATE WITHOUT CONSUMPTION)', dead: 'A DEAD METHOD IS SHOWN', hist: 'A 1836 BLOCK NAMES A METHOD ITS BUILDING LACKS',
   compat: 'A METHOD BESIDE A MAIN METHOD THE REVIEW MARKED IT INCOMPATIBLE WITH', mandate: 'A MANDATED AUTOMATION NOT ALWAYS ON, OR A GROUP WITH NOTHING TO RUN OR NOTHING BUT "OFF"', craft: 'A LABOUR-SAVING METHOD ON A CRAFT RUNG', missing: 'AN UNDEFINED GROUP OR METHOD', cap: 'TOO MANY COMBINATIONS TO CHECK' };
 let n = 0;
 for (const [k, lbl] of Object.entries(labels)) {
@@ -233,10 +269,11 @@ for (const [k, lbl] of Object.entries(labels)) {
   for (const x of list.slice(0, 40)) console.log('   ' + x);
   if (list.length > 40) console.log(`   … and ${list.length - 40} more`);
 }
+if (fails.elecWarn.length) console.log(`WARN  KNOWN ISSUE (deferred to mod 1.1, BALANCE_FRAMEWORK §10.106): ${fails.elecWarn.length} building(s) run only on electricity and can be built without it: ${fails.elecWarn.join('; ')}`);
 if (unreviewed.size) {
   console.log(`WARN  ${unreviewed.size} carried pair(s) the compatibility review never looked at — add them to REVIEWED (and NOT_BESIDE if incompatible) in tools/lib_secondary_compat.mjs:`);
   for (const x of [...unreviewed].slice(0, 30)) console.log('   ' + x);
 }
-const tail = `${nBld} buildings, ${nCombos} legal combinations checked for goods and employment, ${nTier} tier buildings checked against the compatibility table and the craft rule, ${fails.histBlocks} history blocks`;
+const tail = `${nBld} buildings, ${nCombos} legal combinations checked for goods and employment, ${nTier} tier buildings checked against the compatibility table and the craft rule, ${fails.histBlocks} history blocks, ${fails.elecConsumers} electricity-consuming methods checked for the electricity gate, ${fails.elecGatedBld} building(s) that run only on electricity (a known issue while §10.106 is deferred)`;
 if (n) { console.log(`PM-COMBINATION CHECK FAILED: ${n} case(s). ${tail}.`); process.exit(1); }
-console.log(`PM-COMBINATION CHECK PASSED: no legal method combination takes an input, an output or a job below zero; no dead method; no history block names a method its building lacks; no secondary beside a main method the review marked it incompatible with; every mandated automation the only choice beside its main method; no group with nothing to run or nothing but an off method; no labour-saving method on a craft rung. ${tail}.`);
+console.log(`PM-COMBINATION CHECK PASSED: no legal method combination takes an input, an output or a job below zero; no dead method; no history block names a method its building lacks; no secondary beside a main method the review marked it incompatible with; every mandated automation the only choice beside its main method; no group with nothing to run or nothing but an off method; no labour-saving method on a craft rung; every method that consumes electricity requires it. ${tail}.`);

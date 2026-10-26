@@ -159,6 +159,7 @@ Closed:
 
 ## F. UI and tooling
 
+- **OPEN** (the user, 2026-10-26) · REWORK THE STANDARD REPORT ONCE AGAIN: the ledger (`tools/testbed/ledger/`, the batch report published per batch), built on the criteria register since 2026-10-26 (§10.104, the H line below). What changes is the user's to set · ledger README, §10.104
 - **OPEN** · the balance sheet on the four-rung canon (found 2026-10-24 while rewriting CLAUDE.md): it reads neither `craft` nor `method_of` (a merged rung shows as its own row under a key that names no building in game); the tier pill reads `e<era>`, not t0–t3; `recipes: vanilla` interpolates the three minted t3 rungs by the six-rung ×1.5 rule; the solver-2 book and the six-rung preset rows are still offered; the Build-cost "model N" hint is the legacy model; the Restore defaults / Bring to vanilla tooltips still claim to reset volumes or recipes; and the Mod-changes page's static prose still describes graded ports, the chain seed, 14 renamed technologies, the flat cost book and rewritten admin strategies as shipped (extends POLISH C2) · REPO_GUIDE §5
 - **OPEN** · collapse `builder.html`'s copy of `econ.js` (~260 lines; change both or neither until then) · REPO_GUIDE §5, POLISH C4
 - **OPEN** · the tech-tree page (`ui/techdata.js`) still shows the six-rung candidates · REPO_GUIDE §5, POLISH C3
@@ -215,9 +216,12 @@ Closed:
 The 1.0 polish register is **`POLISH_1_0.md`** (2026-10-21): every polish item with its status, the rulings, and where the work stands.
 The lines below are its headline items.
 
-- **DONE 2026-10-26** · the thumbnail (the user's image, `art/thumbnail.png`, copied to the mod root by every build) · POLISH_1_0.md R2
+- **DONE 2026-10-26** · the thumbnail (the user's image: `art/thumbnail.png` square in the mod root, `art/thumbnail_launcher.png` 16:9 in `.metadata/` for the launcher) · POLISH_1_0.md R2
 - **OPEN** (found by the R4 proofread, 2026-10-26; needs plumbing, not wording) · the research entries' urban-centre lines show no live figure (a `count_display` value for the largest urban centre would add "(now N)"); industry names in research labels are hard-coded English ("Food Industries (every tier)", "Grain Farms …") where vanilla translates them — a per-language bare-name key, built like `_pmr_short`, would fix the other ten languages; the naval entries say "a ship of this kind" where the technology unlocks several ship types or none (Sea Lane Strategies, Self-Propelled Torpedoes) — name them from `SHIP_BY_TECH` with vanilla keys · POLISH_1_0.md R4
-- **DONE 2026-10-26** · per-technology icons (`art/invention_icons/`, cut by `tools/make_tech_icon.mjs`; one in-game look at the tech tree owed) · POLISH_1_0.md R5
+- **DONE 2026-10-26** · per-technology icons (`art/invention_icons/`, cut by `tools/make_icon.mjs`; one in-game look at the tech tree owed) · POLISH_1_0.md R5
+- **DONE 2026-10-26** (found that day in the all-tech probe) · the three minted methods' icons: each showed the method below's (Spray Finishing duplicated Mechanized Workshops in one picker); new bronze method icons in `art/production_method_icons/` (`tools/make_icon.mjs --kind method`, `tools/emit_method_icons.mjs`); one in-game look owed · POLISH_1_0.md R10
+- **DONE 2026-10-26** (the user's catch in the all-tech probe) · five electricity-consuming rungs could be switched to without electricity: vanilla's method gate restored in `build.ps1` (lint check 9) · POLISH_1_0.md B4, BUGS_AND_FIXES 2026-10-26
+- **DEFERRED to mod 1.1 or later (user, 2026-10-26: performance risk) — a 1.0 KNOWN ISSUE** · a building that runs only on electricity (explosives t3, motor t2, automotive t3, art academy t3) can be BUILT without a grid; the build condition is ruled, built and seen working (`emit_electricity_gate.mjs`, not called; lint check 10 prints the four); before restoring it, measure its tick cost · BALANCE_FRAMEWORK §10.106, POLISH_1_0.md B4
 - **DEFERRED to mod 1.1 or later (user, 2026-10-21)** · per-tier building artwork · POLISH_1_0.md R6
 - **OPEN** · release: a final build, every lint, an in-game load and an `error.log` read · POLISH_1_0.md "Where it stands"
 

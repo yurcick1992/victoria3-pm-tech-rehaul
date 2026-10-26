@@ -838,6 +838,25 @@ evidence).
   `dwCaps`). ⚠ Pixels are **BGRA byte order** — the masks describe a little-endian A8R8G8B8 word. `emit_techs.mjs` writes the mod's
   `zzz_pm_rehaul_placeholder.dds` this way. A real icon carries the full mip chain like vanilla's (`dwFlags` 0x2100F, mip count 9,
   `dwCaps` 0x401008, 349,652 bytes at 256 px): `tools/lib_image.mjs` `writeDDS` writes that form for the technology icons in `art/`.
+- **`required_input_goods` gates CHOOSING a method, not BUILDING the building** (2026-10-26, the user in game): a building whose only main
+  method carries `required_input_goods = electricity` was still buildable in a state with no electricity. Vanilla never meets the case (every
+  gated vanilla method has an ungated alternative in its group). A construction gate needs the building's `possible`; ours is
+  `pmr_state_produces_electricity` (BALANCE_FRAMEWORK §10.106 — it worked in the probe, then was deferred to mod 1.1 for its possible tick
+  cost: a `possible` that scans the state's buildings is evaluated wherever construction is considered). Inside a building scope `level >= N`
+  counts built levels (vanilla uses it in `any_scope_building`).
+- **Method icons are a different form from technology icons:** 104 × 104 px, A8R8G8B8 with 7 mips (104 52 26 13 6 3 1; 57,772
+  bytes; header `dwFlags` 0x2100F, `dwCaps` 0x401008), and in style flat bronze embossed pictograms, not paintings. Measured on vanilla's
+  (2026-10-26): the object's longer side 83–93 px; the bronze reaches the edge, with a thin black soft outline outside it (alpha about
+  220 120 35 7 at 1–4 px out, the same on every side: a black edge 1.9 px out softened as a Gaussian of σ 1.1); the bronze's mean
+  160 / 141 / 109 with a spread of 29 / 33 / 35 over ten icons. `tools/make_icon.mjs --kind method` holds those numbers.
+- **The launcher shows a local mod's thumbnail only from `.metadata/thumbnail.png`.** Its database (`Documents\Paradox
+  Interactive\Victoria 3\launcher-v2.sqlite`, table `mods`, column `thumbnailPath`) records that path for the Workshop mods that carry a
+  copy there and a Steam-cache URL for the rest; for our local mod with `thumbnail.png` in the root alone it recorded nothing and showed no
+  picture (2026-10-26). Read the database from a copy: the launcher holds it open.
+- **The launcher draws that picture in a 16:9 tile, cropped to fill from the centre** (measured on its mods list, 2026-10-26: a 140 × 78 px
+  tile; a square picture lost its top and bottom 22%, and with them our title). So the `.metadata` copy is a 16:9 picture
+  (`art/thumbnail_launcher.png`) and the square stays in the mod root for the Workshop. Which file the uploader sends to Steam is not
+  established.
 - **Vanilla's invention icons share one soft black glow** (measured on nitrogen_fixation, pneumatic_tools, improved_fertilizer, lathe): the
   black's alpha 2–8 px outside the silhouette is 145 103 68 41 22 10 4 on all four — a full-black edge 1.9 px out, softened as a Gaussian of
-  σ 2.4 px. `tools/make_tech_icon.mjs` draws it, so an image model need not.
+  σ 2.4 px. `tools/make_icon.mjs` draws it, so an image model need not.

@@ -61,8 +61,9 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
 - **`LICENSE`** — the repository's own work is dedicated to the public domain under CC0 1.0 Universal (the user, 2026-10-26: as permissive as
   possible, no attribution required); Victoria 3's material in the mod stays Paradox Interactive's. A short header, then the CC0 legal code
   verbatim from creativecommons.org.
-- **`art/`** — the mod's own pictures, the sources the build copies or converts: `thumbnail.png` (the Workshop preview, copied to the mod
-  root), `invention_icons/<technology>.png` (256 × 256, emitted as DDS by emit_techs), and `source/` (the image model's originals the two
+- **`art/`** — the mod's own pictures, the sources the build copies or converts: `thumbnail.png` (the square Workshop preview, copied to the
+  mod root), `thumbnail_launcher.png` (16:9, copied to `.metadata/`, where the launcher reads it; made by `make_launcher_thumbnail.mjs`),
+  `production_method_icons/<method key>.png` (104 × 104, emitted as DDS by emit_method_icons), `invention_icons/<technology>.png` (256 × 256, emitted as DDS by emit_techs), and `source/` (the image model's originals the two
   were made from). Made 2026-10-26 with Gemini's Nano Banana (POLISH_1_0.md R2, R5).
 - Gitignored, never committed: `art_brief/references/` (Paradox icons and other authors' thumbnails, the image model's references),
   `HANDOVER.md` (the next session's baton), `status_board*.html`, `balance_ui_snapshot*.html`, `mod_*/`.
@@ -715,7 +716,8 @@ every `node` step throws the build on a non-zero exit unless noted. Order as of 
 11. `emit_secondaries` → `emit_craft_start` → `emit_vanilla_refs` → `emit_value_overrides` (last content emitter) → `check_dlc_gates` (on the final state).
 12. Linters, all skipped by `-NoLint`: `lint.sh` (bash; prints, never fails the build), then `lint_solvency` → `lint_tech_content` →
     `lint_start_conversion` → `lint_tier_eras` → `lint_pm_combos` (each throws).
-13. Build time stamped into the metadata `name`; `Invoke-ModChecks` (completeness, throws); `preflight.ps1 -Mod -Config` (the landmine
+13. Build time stamped into the metadata `name`; `Invoke-ModChecks` (completeness, every `zzz_pm_rehaul` picture the script names present
+   in the mod, the two thumbnails under 1 MB; throws); `preflight.ps1 -Mod -Config` (the landmine
     register, throws unless `-NoPreflight`).
 14. `-DryRun` deletes the folder; `-SaveTo` keeps `mod_<name>/`; otherwise `robocopy /MIR` to Documents' `mod\pm_tech_rehaul` (unless `-NoDeploy`).
 
@@ -770,7 +772,11 @@ stale output except under `common/history`, which an emitter writing there must 
   building's groups list; (4) no secondary beside a main method `lib_secondary_compat.mjs` marks incompatible (an unreviewed carried pair only
   warns); (5) no labour-saving method on a craft rung; (6) every group of a tier building has something to run beside every main method;
   (7) a mandated automation is the only choice beside its main method and carries no technology gate its main method does not imply;
-  (8) no group of a tier building offering only an "off" method. `node tools/lint_pm_combos.mjs [modDir] [config]`. Status: current (build step).
+  (8) no group of a tier building offering only an "off" method; (9) every method consuming electricity carries `required_input_goods =
+  electricity` and no other method does (vanilla's rule, 30 of 30; added 2026-10-26, BUGS_AND_FIXES); (10) a building with a group in which
+  every method requires electricity carries `pmr_state_produces_electricity` in its `possible` (§10.106) — while that condition is deferred to
+  mod 1.1, a WARNING listing the four buildings (a known issue), not a failure. `node tools/lint_pm_combos.mjs [modDir] [config]`. Status:
+  current (build step).
 - **`tools/check_dlc_gates.mjs`** — landmine L39, the DLC rule: every shipped `.txt` at a vanilla path keeps vanilla's count of
   `has_dlc_feature` lines and `dlc =` fields (comments excluded). Additive files are not checked — our own hooks that fire DLC content must
   carry the condition themselves. `node tools/check_dlc_gates.mjs [modDir]`. Status: current (build step, on the final state).
@@ -787,6 +793,19 @@ stale output except under `common/history`, which an emitter writing there must 
 
 ### Content emitters
 
+- **`tools/emit_electricity_gate.mjs`** — `node tools/emit_electricity_gate.mjs <modRoot> [config]` (meant to run after every building
+  writer, dams included; ⚠ NOT CALLED since 2026-10-26: §10.106 is deferred to mod 1.1 for its performance risk, the call is a comment in
+  `build.ps1`): the electricity build condition of §10.106. From the built mod over the game it derives the PRODUCERS (every building
+  with a method that outputs electricity: a built level, and that method active where the building has others — canon: power plant, four dams,
+  urban centre with electric streetlights), writes the state-scope scripted trigger `pmr_state_produces_electricity` under a custom tooltip
+  (`common/scripted_triggers/zzz_pm_rehaul_electricity.txt`, loc `zzz_pm_rehaul_electricity_l_<lang>.yml`, English text in every language), and
+  adds it to the `possible` of every building in the mod's own building files with a group in which every method requires electricity (canon:
+  explosives t3, motor t2, automotive t3, art academy t3). Prints both lists. lint_pm_combos check 10 guards it (a warning while deferred).
+  Status: deferred — works (seen in the motor-t2 probe), not emitted in 1.0.
+- **`tools/emit_method_icons.mjs`** — `node tools/emit_method_icons.mjs <modRoot>` (a build step, right after emit_techs): every
+  `art/production_method_icons/<method key>.png` (104 × 104) as `gfx/interface/icons/production_method_icons/zzz_pm_rehaul_<method key>.dds`
+  (7 mips, 57,772 bytes, vanilla's form). build.ps1 points that method's `texture` at it whenever the picture exists, over the book's icon,
+  so pictures change no canon checksum. Canon: the three minted methods (POLISH_1_0.md R10). Status: current.
 - **`tools/emit_techs.mjs`** — the tech tree from the book's paired `tech_tree_options.<sfx>.json` (the option marked `ships`). Writes:
   additive `technology/technologies/zzz_pm_rehaul_techs.txt` (minted technologies; 3 in the canon), the placeholder invention icon, tech loc;
   `common/defines/01_pm_rehaul_defines.txt` (NAI from `ai_defines`; any other vanilla namespace from `game_defines`; NTechnology only if the
@@ -954,14 +973,21 @@ stale tree twins; re-run the chain from its root rather than one step.
 - **`tools/lib_image.mjs`** — the mod's own image handling, no image library: `readPNG` (8-bit RGB/RGBA, non-interlaced; any other PNG
   throws with its type named), `writePNG` (adaptive row filters; `{ alpha: false }` writes RGB), `resample` (area average in premultiplied
   alpha), `writeDDS` (uncompressed A8R8G8B8 with the full mip chain; the header matches vanilla's `lathe.dds` but for the exporter's tag in
-  bytes 68–75). Used by emit_techs and make_tech_icon. Status: current.
-- **`tools/make_tech_icon.mjs`** — `node tools/make_tech_icon.mjs --src <picture.png> --out art/invention_icons/<technology>.png
-  [--region x,y,w,h] [--size 215]`: cuts one technology icon out of an image-model picture painted on flat green (the panel found inside
-  `--region`, the key against its measured green, edge specks dropped and printed, the object's longer side scaled to `--size`, vanilla's soft
-  black glow measured from four vanilla icons). Writes the 256 × 256 PNG that emit_techs turns into the game's DDS. Traps: PNG input only —
-  convert a JPEG first (`[System.Drawing.Image]::FromFile(jpg).Save(png, 'Png')` in PowerShell); an object that touches its panel's edge is
-  cut off there and the tool says so. Status: current (POLISH_1_0.md R5; the canon's three icons were cut from
-  `art/source/tech_icons_nano_banana.jpg` with regions `0,0,1000,1000` / `1000,0,1000,1000` / `0,1000,1000,1000`).
+  bytes 68–75). Used by emit_techs, emit_method_icons and make_icon. Status: current.
+- **`tools/make_icon.mjs`** — `node tools/make_icon.mjs --kind tech|method --src <picture.png> --out <icon.png> [--region x,y,w,h]
+  [--size N]`: cuts one icon out of an image-model picture painted on flat green (the panel found inside `--region`, the key against its
+  measured green, edge specks dropped and printed, the object's longer side scaled to `--size`, vanilla's soft black outline). `--kind tech`
+  writes the 256 × 256 PNG emit_techs turns into an invention icon (longer side 215, outline σ 2.4); `--kind method` the 104 × 104 PNG
+  emit_method_icons turns into a method icon (longer side 90, outline σ 1.1, and the bronze's per-channel mean and spread set to those of ten
+  vanilla method icons). Every number measured on vanilla's icons (the header comment). Traps: PNG input only — convert a JPEG first
+  (`[System.Drawing.Image]::FromFile(jpg).Save(png, 'Png')` in PowerShell); an object that touches its panel's edge is cut off there and the
+  tool says so. Status: current (POLISH_1_0.md R5, R10; the canon's technology icons were cut from `art/source/tech_icons_nano_banana.jpg`
+  with regions `0,0,1000,1000` / `1000,0,1000,1000` / `0,1000,1000,1000`, its method icons from the three `art/source/method_*.jpg` whole).
+  Was `make_tech_icon.mjs` until the method kind came, 2026-10-26.
+- **`tools/make_launcher_thumbnail.mjs`** — `node tools/make_launcher_thumbnail.mjs --src <square.png> --out art/thumbnail_launcher.png
+  [--height 540]`: the launcher's 16:9 picture from the square Workshop thumbnail — the whole square at full height in the middle, the same
+  picture blurred and darkened beside it, a soft shadow between. The launcher crops a mod's picture to a 16:9 tile, which cut the square's
+  title off (MODDING_NOTES). Made 2026-10-26 from `art/source/thumbnail_nano_banana.jpg` (through a PNG). Status: current.
 - **`tools/goods_prices.tsv`** — the one base-price table, read by build.ps1, the linters, the solvers and the UI. Status: current.
   Traps: never copy prices into a tool; refresh after a patch (ON_GAME_UPDATE).
 - **`tools/lib_secondary_compat.mjs`** — which secondary / automation method may run beside which main method, reviewed pair by pair
@@ -1022,7 +1048,9 @@ not traversed by the launcher). "Whole-file" = a vanilla path the mod shadows; "
 | `common/building_groups/00_building_groups.txt` / `zzz_pm_rehaul_groups.txt` | emit_building_groups | whole-file / additive | `building_group_ai` / `building_groups_add` (canon: the latter) |
 | `common/technology/technologies/zzz_pm_rehaul_techs.txt`, `gfx/interface/icons/invention_icons/zzz_pm_rehaul_<technology>.dds` | emit_techs (the icons from `art/invention_icons/<technology>.png`) | additive | always (canon: 3 minted technologies, 3 icons) |
 | `gfx/interface/icons/invention_icons/zzz_pm_rehaul_placeholder.dds` | emit_techs | additive | a minted technology has no picture in `art/invention_icons/` (canon: absent) |
-| `thumbnail.png` (the mod root) | build.ps1, a copy of `art/thumbnail.png` | the Workshop preview | always; `Invoke-ModChecks` fails a missing one or one ≥ 1,000,000 bytes |
+| `common/scripted_triggers/zzz_pm_rehaul_electricity.txt`, `localization/<lang>/replace/zzz_pm_rehaul_electricity_l_<lang>.yml`; the `possible` of the electricity-only buildings in `common/buildings/` | emit_electricity_gate (patches the building files after build.ps1 and the other writers) | additive / a patch | NOT EMITTED in 1.0 (§10.106 deferred to mod 1.1) |
+| `gfx/interface/icons/production_method_icons/zzz_pm_rehaul_<method key>.dds` | emit_method_icons (from `art/production_method_icons/<method key>.png`) | additive | a picture exists (canon: the 3 minted methods) |
+| `thumbnail.png`, `.metadata/thumbnail.png` | build.ps1: copies of `art/thumbnail.png` (square) and `art/thumbnail_launcher.png` (16:9) | the Workshop preview; the launcher's picture (it reads only the `.metadata` copy, in a 16:9 tile cropped to fill) | always; `Invoke-ModChecks` fails a missing one or one ≥ 1,000,000 bytes |
 | `common/technology/technologies/{10_production,20_military,30_society}.txt` | emit_techs, then emit_tech_finish | whole-file | carries a tech-era move / added prerequisite / weight multiplier / the finish boost (canon: all three) |
 | `common/defines/01_pm_rehaul_defines.txt` | emit_techs | additive (partial override) | `ai_defines` / `game_defines` set (canon: NAI + NEconomy) |
 | `common/scripted_effects/00_starting_inventions.txt` | emit_techs | whole-file | the derived 1836 grant differs from vanilla (canon: absent) |

@@ -134,7 +134,8 @@ export const PLACEMENT = {
 
 // ⭐ THE ADDITIONS (rule 2): a rung vanilla does not have, appended as the industry's TOP rung, each with its own key,
 //   building name, method name, year and MINTED technology. Its recipe, staffing, pollution and icon are the rung
-//   below's (the A/B book re-scales the recipe). THREE, each where vanilla's top method sits on a game era below 5 so the
+//   below's (the A/B book re-scales the recipe; build.ps1 replaces the icon with art/production_method_icons/<method key>.png
+//   where one exists — the canon's three have their own since 2026-10-26, POLISH_1_0.md R10). THREE, each where vanilla's top method sits on a game era below 5 so the
 //   e3 (1940) slot is EMPTY under the era rule, and no secondary group of the building covers the theme (rule 3). "Mint
 //   them" was ruled 2026-08-30; four survived the 2026-09-04 rules; motor's fell to the era rule on 2026-09-13 (below).
 export const ADDITIONS = [

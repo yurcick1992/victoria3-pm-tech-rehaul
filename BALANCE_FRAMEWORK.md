@@ -73,6 +73,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.103 | treaty ports | deferred to mod 1.1 on game 1.15 | here |
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings | in force; built 2026-10-26 (`fill_register.mjs`, the decade path in `criteria.mjs`) | here |
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
+| 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 
 ---
 
@@ -4381,3 +4382,37 @@ lines are read in the register's table, not drawn on the chart. Built in the sam
 
 Ports, railways and power plants stay vanilla for their own reasons (§10.66, §10.43.0, the power-plant cost of §10.89.1); trade centres were never
 tiered.
+
+## §10.106 — A BUILDING THAT RUNS ONLY ON ELECTRICITY CAN BE BUILT ONLY WHERE THE STATE PRODUCES SOME (user-ruled 2026-10-26)
+
+**The finding** (the user, in an in-game probe): five rungs could be built or switched to in a state with no electricity. Our main methods had
+lost vanilla's `required_input_goods = electricity` (BUGS_AND_FIXES 2026-10-26); restoring it stopped a method being CHOSEN, but a building
+whose group offers nothing else could still be BUILT there (a motor t2, Electric Engines, built in a state without electricity). Vanilla never
+meets the case: every gated vanilla method has an ungated alternative in its group.
+
+**The ruling.** The user: *"While the rule describes a different situation, and a rule 'blocking when there's no electricity' would be
+acceptable narratively, but requiring a regular power plant is overly harsh. There can be a dam, there can be an electricity-providing UC."*
+And: *"it's acceptable to do nothing if a state loses electricity."* So:
+1. A building with a production-method group in which every method requires electricity carries a build condition: the state produces
+   electricity — a built level of any building with a method that outputs it, with that method active where the building has others. In the
+   canon: a power plant, any of the four dam types, or an urban centre running electric streetlights (the trigger
+   `pmr_state_produces_electricity`, derived by `tools/emit_electricity_gate.mjs` from the built mod, so a new producer joins by itself).
+2. In the canon that is four buildings: explosives t3 (Brine Electrolysis), motor t2 (Electric Engines), art academy t3 (Film Art), and
+   automotive t3 (Mass Automobile Production, whose mandated Assembly Lines need electricity: §10.93 rule 5).
+3. Nothing happens to a built building whose state later loses its electricity.
+4. **The scope of the exception.** §10.69 and CLAUDE.md §1.4 stand: no hard build blocks to steer production, none on an old rung, no
+   technology-triggered penalty. "The rule describes a different situation": this condition steers nothing, but enforces at construction the
+   input gate the building's only methods already carry. It is the one allowed kind — an input the building cannot run without — and is not a
+   precedent for build blocks in general.
+
+Guarded by `lint_pm_combos.mjs` check 9 (a method consuming electricity requires it; vanilla's rule, 30 of 30) and check 10 (a building that
+runs only on electricity carries the condition); both proved by failing on the build before the fix. Not measured over a century: the batch of
+F249 ran without either; the condition only stops construction where the building could never run.
+
+**⚠ DEFERRED TO MOD 1.1 OR LATER (the user, 2026-10-26, the same evening).** Seen working in the motor-t2 probe (*"the blocking works as
+intended"*), then: *"However, it can have unexpected performance consequences, so as a whole this gets deferred to at least 1.1. Right now it's
+a known issue that anyone can build electric stuff without the grid."* For 1.0: `build.ps1` does not call `emit_electricity_gate.mjs` (the call
+is kept there as a comment) and check 10 prints the four buildings as a known issue instead of failing. The method gate (item 1's check 9,
+vanilla's own `required_input_goods`) stays: it is vanilla's mechanism on vanilla's terms, and it is what stops a merged electric method
+(textile t3, steel t3) being switched on without electricity. Before restoring the condition, measure its tick cost (an A/B of the tick
+profile, F220's method).
