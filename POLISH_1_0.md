@@ -49,8 +49,8 @@ GDP 1.07× vanilla n=40, loss 6.60, play time ×1.010 of the same sessions' vani
 - ✅ **R1 + Q9 + N1** — DONE 2026-10-26 in `mod/.metadata/metadata.json` and the release kind: version 1.0.0, `supported_game_version` "1.13.\*",
   a new short description (for the user to approve), no build stamp and no "Recipe BE" in a release build (debug builds keep both). The
   wildcard version is unproven in game until the release build's in-game load.
-- **R2** thumbnail (the user's image), ✅ LICENSE (CC0 1.0, 2026-10-26), CHANGELOG (drafted 2026-10-26 in PDS granularity, `CHANGELOG.md`,
-  for the user's review) · ✅ **R3 + H9** the README, for mod editors (no player README: players come from the Workshop; the Workshop item is the
+- **R2** thumbnail (the user's image), ✅ LICENSE (CC0 1.0, 2026-10-26), ✅ CHANGELOG (`CHANGELOG.md`, 2026-10-26, PDS granularity, reviewed by the
+  user) · ✅ **R3 + H9** the README, for mod editors (no player README: players come from the Workshop; the Workshop item is the
   mod folder alone), with the replaced-file list (2026-10-26) · ✅ **R4** proofread (2026-10-26) · **R5** the three technology icons (waiting on the user's images) · ✅ **H10** builders off the
   default paths and ✅ **C7** the stray root file (both 2026-10-26).
 - A final build (`build.ps1 -Release`), every lint, `node tools/list_replaced_files.mjs` on it (the README's list), an in-game load and an

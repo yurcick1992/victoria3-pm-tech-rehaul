@@ -215,7 +215,6 @@ Closed:
 The 1.0 polish register is **`POLISH_1_0.md`** (2026-10-21): every polish item with its status, the rulings, and where the work stands.
 The lines below are its headline items.
 
-- **RULING** · the CHANGELOG draft (`CHANGELOG.md`, 1.0.0 against vanilla 1.13, in PDS granularity) waits on the user's review · POLISH_1_0.md R2
 - **RULING** · the thumbnail image (`thumbnail.png` in the mod root) is the user's · POLISH_1_0.md R2
 - **RULING** · the new player short description in `mod/.metadata/metadata.json` (written 2026-10-26 with R1) waits on the user's approval · POLISH_1_0.md R1
 - **OPEN** (found by the R4 proofread, 2026-10-26; needs plumbing, not wording) · the research entries' urban-centre lines show no live figure (a `count_display` value for the largest urban centre would add "(now N)"); industry names in research labels are hard-coded English ("Food Industries (every tier)", "Grain Farms …") where vanilla translates them — a per-language bare-name key, built like `_pmr_short`, would fix the other ten languages; the naval entries say "a ship of this kind" where the technology unlocks several ship types or none (Sea Lane Strategies, Self-Propelled Torpedoes) — name them from `SHIP_BY_TECH` with vanilla keys · POLISH_1_0.md R4
@@ -224,6 +223,7 @@ The lines below are its headline items.
 - **OPEN** · release: a final build, every lint, an in-game load and an `error.log` read · POLISH_1_0.md "Where it stands"
 
 Closed:
+- Done 2026-10-26 · CHANGELOG.md, the 1.0.0 entry against vanilla 1.13 in PDS granularity, reviewed by the user ("Otherwise, good") with two additions: modern tiers stay profitable at lower output prices; why the six merged steps are methods (retrofits at ~5–20% of a new plant) · POLISH_1_0.md R2
 - Done 2026-10-26 · the R4 proofread of every generated English text (3,612 strings): building names, technologies, companies and secondaries clean; dams — "36-month", "Cancel the survey of the …", joined effect lists, the survey and builder tooltips (vanilla's $foreign_investment_rights$), the journal entry's family rule, "A single level …", Big Bend of the Missouri, Tenryū, head nouns for three project names, three trait descriptions; research — "tier" for "era" in 20 labels, qualifiers after the live figure ("(now N); halved", "; not under …"), no false "halved" where it rounds to the full mark, naval and war wording, title case, commas and law phrasing in labels. Canon text only (sha256 `7ba2de4f235a5b41`, field diff: 19 strings) · POLISH_1_0.md R4
 - Done 2026-10-26 · LICENSE: CC0 1.0 Universal for the repository's own work, Victoria 3's material carved out as Paradox Interactive's, the legal code verbatim from creativecommons.org (the user: as permissive as possible, no attribution required) · POLISH_1_0.md R2
 - Done 2026-10-26 · the README (R3 re-scoped by the user: players come from the Steam Workshop, the repo README is for building and editing the mod): the replaced-file list from the build (H9, `tools/list_replaced_files.mjs`: 146 files in 26 folders + `common/history/buildings/`) and building from source · POLISH_1_0.md R3, H9

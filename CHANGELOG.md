@@ -11,7 +11,7 @@ Features
    * Seventeen manufacturing industries no longer modernise by switching their main production method: Food Industries, Textile Mills, Furniture Manufacturies, Glassworks, Tooling Workshops, Paper Mills, Fertilizer Plants, Explosives Factory, Steel Mills, Motor Industries, Automotive Industries, Arms Industries, Artillery Foundry, Munition Plants, Synthetics Plants, Electrics Industries and Arts Academy (vanilla's building names).
    * Each of vanilla's main production methods in these industries is now its own building, a rung, unlocked by the technology that unlocked the method, with vanilla's name, staffing and icon. An industry has up to four rungs, on tiers anchored at 1836, 1875, 1905 and 1940.
    * Modernising now means constructing the newer plant. An older plant is never forbidden or penalised: it loses its market when the newer rungs' output pushes its price down relative to wages.
-   * A rung one tier up makes 2.2 times the output for 1.64 times the input value, and costs 1.9 times as much to build, so it earns more per worker and slightly more per construction point.
+   * A rung one tier up makes 2.2 times the output for 1.64 times the input value, and costs 1.9 times as much to build, so it earns more per worker and slightly more per construction point. Also, more modern tiers are able to stay profitable under lower output prices.
    * A tier-1 rung makes its vanilla method's output from inputs worth 20% more than the method's (motor industry rungs: the same inputs). A non-craft tier-0 rung makes two thirds of the tier-1 output from two thirds of its input value.
    * Construction costs run from 600 or 800 points for a tier-1 rung (the vanilla building's cost; the Arts Academy 400) up to 2,166 or 2,888 points for a tier-3 rung.
    * Late industries start late: Motor Industries have tiers 1–3, Munition Plants tiers 1–2, Synthetics Plants tier 1, Automotive Industries tiers 2–3 and Electrics Industries tier 2.
@@ -24,7 +24,7 @@ Features
    * Companies do not build crafts or form from them, and crafts carry no secondary production methods.
    * The 1836 map carries as many craft levels as vanilla's 1836 output of their goods needs.
 * Merged methods
-   * Six of vanilla's steps that are a recipe change rather than a new kind of plant are a second main production method of the building below them, switched without construction: Baking Powder, Electric Sewing Machines, Spray Finishing, Paper Bleaching, Improved Fertilizers and Electric Arc Process.
+   * Six of vanilla's steps that are a recipe change rather than a new kind of plant are a second main production method of the building below them, switched without construction: Baking Powder, Electric Sewing Machines, Spray Finishing, Paper Bleaching, Improved Fertilizers and Electric Arc Process. Historically each of these was a retrofit of an existing plant (one new department or a new drive) costing roughly 5–20% of a new plant, so modelling it as a new building would overstate the capital it took. A step that cost more than about 30% of a new plant stays a separate building.
    * A building with two main methods is named by its tier span ("Tier 1-2. Paper Mills") and costs the geometric midpoint of the two rungs' costs (Textile Mills keep their own).
 * New technologies
    * Added Spray Finishing (furniture, tech era 5), Continuous Web Processing (paper, tech era 5) and Catalytic Synthesis (fertilizer, tech era 5), each unlocking the top rung of its industry.
