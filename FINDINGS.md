@@ -21212,8 +21212,10 @@ market are skipped.
 **What it does NOT say.**
 - **That removing or rescaling the line would kill the old rung.** The counterfactual holds prices still (§2.8): luxury prices would rise with less supply,
   and t2's own luxury line would carry more of the demand.
-- **Which lever, if any.** A proposal, unruled: scale a secondary's goods with its host rung's tier (× A^k, the ladder's output step), so the luxury share is
-  the same on every rung — a recipe change under §1.3 exception 6, not a penalty.
+- **Which lever, if any.** The candidate is to scale a secondary's goods with its host rung's tier (× A^k, the ladder's output step), so the luxury share is
+  the same on every rung — a recipe change under §1.3 exception 6, not a penalty. **Deferred to 1.1 as a possible lever** (user, 2026-10-26).
+  "One name — one recipe" stands (§10.93): a strictly tiered industry would need new names for its secondaries, and a merged building, where one
+  secondary serves two tiers, is a harder question (BACKLOG B).
 - **Why the AI still builds t1 textile.** It does so at a return of ~55 against t2's ~80 (10–22k points a decade); not measured here which countries do, and
   whether they hold t2's technology.
 - **That the 1 January price is the year's price.** The prediction uses one date; the realised index is the summary's weekly flow at that date.

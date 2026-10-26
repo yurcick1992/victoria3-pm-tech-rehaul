@@ -92,6 +92,9 @@ feature only if it needs no iteration (step 7's timeline).
   item 8).
 - **The balance levers that are not minor** (POLISH Q4): the cost ladder C 1.8 × cost1 1.2 (F234, measured on an older canon) and paper's own
   input lift (1.0–1.3, §10.101).
+- **Tier-scaled secondary lines — a possible lever, not ruled** (user, 2026-10-26; F249 §4d): the textile and furniture t1 live on a luxury line
+  sized for t2; scaling a line's goods with its rung's tier would take that away. "One name — one recipe" stands (§10.93), so a strictly tiered
+  industry needs new names for its secondaries, and a merged building, where one secondary serves two tiers, is a harder question (BACKLOG B).
 - **Deferred content**: stale looms on the merged textile building (B2, revisit); craft secondary lines (B3); artisanal ownership (step 6½,
   "1.1 or later"); per-rung building art (R6, "1.1 or later"); the art academy's Austrian conditional desire, if the batch shows the canon's
   Austria building too few (BACKLOG E). Rubber in a rich late game is a watch item (Q7).
