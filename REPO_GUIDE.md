@@ -1288,13 +1288,16 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   the premium is a producer price; a merge host is counted by building type, not split by main method. Refs: F161 §4/§6.
 - **`ledger/old_rungs_by_industry.mjs`** `<year> <label>=<group> [...]` — `countrySplit`'s old-rung share per industry, pool and world, each
   run on its own book. Traps: different ladders compare what each calls two tiers behind.
-- **`ledger/laggard_pressure.mjs`** `<book> <label>=<group> [...] [--gap 15] [--minpop 1e6] [--tags POR,…]` — competitive pressure on backward
-  industry where NEITHER arm can switch (FINDINGS F249 §4a): A. stuck laggards (a country's industry whose best rung is ≥ 2 tiers under its own
-  market's frontier and that still lacks the next rung's technology ten years later), in-market and trade-only, by chain, ten-year workforce
-  retention and profit per 1,000 workers against stuck industries not behind; B. backward members of shortlist-led markets (the leader = the member
-  with the most technologies) against their leader, all markets and the British one; C. named countries. A vanilla arm (setup name contains
-  "vanilla") maps each method to the canon rung built from it; the book gives the tiers and each rung's technology. Traps: the canon has few stuck
-  cases (~5 a run); the follower sets differ by seed.
+- **`ledger/laggard_pressure.mjs`** `<book> <label>=<group> [...] [--stuck y|y10|none] [--gap 15] [--minpop 1e6] [--tags POR,…]` — competitive
+  pressure on backward industry where vanilla CANNOT switch (FINDINGS F249 §4a): A. stuck laggards (a country's industry whose best rung is ≥ 2 tiers
+  under its own market's frontier and that lacks the next rung's technology at the start of the decade — `--stuck y`, the default), in-market and
+  trade-only, by chain and by whether the technology arrived within the decade; ten-year retention of the INDUSTRY's workers on every rung (a switch
+  or a build-up counts as surviving) and profit per 1,000 workers, against stuck industries not behind; B. backward members of shortlist-led markets
+  (the leader = the member with the most technologies) against their leader, all markets and the British one; C. named countries. A vanilla arm
+  (setup name contains "vanilla") maps each method to the canon rung built from it; the book gives the tiers and each rung's technology. Traps:
+  `--stuck y10` (still lacking the technology ten years later) keeps only industries whose research entry never filled — a size filter, kept for
+  the record; `--stuck none` mixes in the cost of modernising (vanilla upgrades a country holding the technology for free); the canon has fewer
+  stuck cases (~10 a run); the follower sets differ by seed.
 - **`ledger/laggard_census.mjs`** `<book> <label>=<group> [...]` — the raw old-rung census (in-market and trade-only laggard shares of tiered
   workers, ten-year survival, by industry and tier pair). ⚠ Its vanilla column is confounded by vanilla's free method switch: read it for the canon
   alone, and `laggard_pressure.mjs` for the comparison (F249 §4).

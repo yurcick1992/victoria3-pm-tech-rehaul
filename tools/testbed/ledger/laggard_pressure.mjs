@@ -2,9 +2,12 @@
 // "try seeing how do the economies where vanilla can't switch (as the tech is too low) feel under competitive pressure").
 // BACKWARD ECONOMIES UNDER COMPETITIVE PRESSURE, vanilla against the canon — where vanilla CANNOT switch methods because the
 // technology is missing, so the comparison is not confounded by vanilla's free upgrades (the user, 2026-10-26).
-// A. STUCK LAGGARDS: a country's industry whose BEST rung sits >= 2 tiers under its own market's frontier, and which still lacks the
-//    technology of the next rung TEN YEARS LATER (so neither arm can move it up in the interval). Ten-year workforce retention and
-//    profit per worker, against the same country-industry cut that is NOT behind (control).
+// A. STUCK LAGGARDS: a country's industry whose BEST rung sits >= 2 tiers under its own market's frontier, and which lacks the technology
+//    of its next rung at year y (so vanilla cannot switch it at y). Ten-year retention of the INDUSTRY's workers on every rung (a vanilla
+//    switch or a canon build-up later in the decade counts as the industry surviving, not dying) and profit per worker, against the same
+//    cut that is NOT behind (control). --stuck y (default, the user's correction of 2026-10-26) | y10 (the first version: still lacking
+//    the technology TEN YEARS LATER — that keeps only industries whose research entry never filled, i.e. small ones: a size filter) | none.
+//    The by-status table splits each class by whether the country acquired the next rung's technology within the decade.
 // B. BACKWARD MEMBERS of markets led by an advanced country (leader = the member holding the most technologies; a follower holds
 //    >= GAP fewer and has >= MINPOP people): their tiered workers per head, GDP per head, SoL, U*, their share of the market's tiered
 //    value added ÷ their share of its population — all also against their own leader.
@@ -20,6 +23,7 @@ const { usableRuns } = await import('./lib_runs.mjs');
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(k); return i > 0 ? args[i + 1] : d; };
 const GAP = +opt('--gap', 15), MINPOP = +opt('--minpop', 1e6), TAGS = opt('--tags', 'POR').split(',');
+const STUCK = opt('--stuck', 'y'); if (!['y', 'y10', 'none'].includes(STUCK)) throw new Error('--stuck y|y10|none');
 const cfg = JSON.parse(readFileSync(join(REPO, args[0]), 'utf8'));
 const groups = args.slice(1).filter(a => a.includes('=') && !a.startsWith('--')).map(a => { const [label, rest] = a.split('='); const [s, setup] = rest.split(':'); return { label, s, setup, vanilla: /vanilla/.test(setup) }; });
 const YEARS = [1850, 1860, 1870, 1880, 1890, 1900, 1910, 1920, 1930, 1935];
@@ -83,12 +87,15 @@ for (const g of groups) {
       if (d2) for (const [ck, c] of Object.entries(d)) { if (!d2[ck]) continue;
         for (const [i, eras] of Object.entries(c.W)) { const w = sum(Object.values(eras)); if (w < 5000) continue;
           const best = Math.max(...Object.entries(eras).filter(([, x]) => x > 0.05 * w).map(([e]) => +e)); const nx = NEXT[i][best];
-          if (!nx || d2[ck].techs.has(nx)) continue;                 // can move up within the decade (or no rung above): not "stuck"
+          if (!nx) continue;                                          // no rung above: nothing to be stuck under
+          if (STUCK === 'y' && c.techs.has(nx)) continue;             // it could switch / build up already at y
+          if (STUCK === 'y10' && d2[ck].techs.has(nx)) continue;      // it could within the decade (the size-filtered first version)
+          const got = d2[ck].techs.has(nx) ? 'got' : 'not';           // acquired the next rung's technology within the decade
           const fm = F[c.m][i]; const w2 = sum(Object.values(d2[ck].W[i] || {}));
           const p = (c.prof[i] || 0) / w * 1000;                      // weekly profit per 1,000 workers
           { const st = fm >= best + 2 ? 'inm' : GF[i] >= best + 2 ? 'trade' : fm <= best ? 'ctrl' : null;
             if (st) { const ch = ['food_industry', 'textile_mill', 'furniture_manufactory', 'glassworks', 'paper_mill', 'art_academy'].includes(INDNAME[i]) ? 'consumer' : 'heavy+war';
-              for (const k of [st, st + '|' + ch]) { const o = (AX[k] ||= { a: [], w: [0, 0], p: [] }); o.a.push(w2 / w); o.w[0] += w; o.w[1] += w2; o.p.push(p); } } }
+              for (const k of [st, st + '|' + ch, st + '|' + got]) { const o = (AX[k] ||= { a: [], w: [0, 0], p: [] }); o.a.push(w2 / w); o.w[0] += w; o.w[1] += w2; o.p.push(p); } } }
           if (fm >= best + 2) { A.stuck.push(w2 / w); A.stuckW[0] += w; A.stuckW[1] += w2; A.stuckP.push(p); }
           else if (fm <= best) { A.ctrl.push(w2 / w); A.ctrlW[0] += w; A.ctrlW[1] += w2; A.ctrlP.push(p); } } }
       // B: backward members of markets led by an advanced (shortlist) country
@@ -114,11 +121,11 @@ for (const g of groups) {
   res[g.label] = { n: runs.length, A, AX, B, C: Cc };
 }
 const pc = x => Number.isFinite(x) ? (100 * x).toFixed(1) + '%' : '—', f2 = (x, d = 2) => Number.isFinite(x) ? x.toFixed(d) : '—';
-console.log(`A. STUCK LAGGARDS — a country's industry whose best rung is >= 2 tiers under its own market's frontier and which still lacks the next rung's technology 10 years on (neither arm can move it up); >= 5,000 workers; y = 1850…1920 → y+10`);
+console.log(`A. STUCK LAGGARDS — a country's industry whose best rung is >= 2 tiers under its own market's frontier; technology condition --stuck ${STUCK} (${({ y: 'lacks the next rung’s technology at y', y10: 'still lacks it 10 years on', none: 'none' })[STUCK]}); >= 5,000 workers; the industry's workers on every rung, y = 1850…1920 → y+10`);
 for (const g of groups) { const a = res[g.label].A;
   console.log(`  ${g.label.padEnd(10)} n=${res[g.label].n}  stuck laggards: cases ${a.stuck.length}, workers kept ${pc(a.stuckW[1] / a.stuckW[0])}, median case ${pc(med(a.stuck))}, profit £${f2(med(a.stuckP), 0)}/wk per 1,000 workers  ·  stuck, not behind: cases ${a.ctrl.length}, kept ${pc(a.ctrlW[1] / a.ctrlW[0])}, median ${pc(med(a.ctrl))}, profit £${f2(med(a.ctrlP), 0)}  ·  relative retention ${f2((a.stuckW[1] / a.stuckW[0]) / (a.ctrlW[1] / a.ctrlW[0]))}`); }
 console.log('  by status and chain (cases · workers kept · median case · profit £/wk per 1,000 workers):');
-for (const k of ['inm', 'trade', 'ctrl', 'inm|consumer', 'inm|heavy+war', 'trade|consumer', 'trade|heavy+war', 'ctrl|consumer', 'ctrl|heavy+war']) console.log('  ' + k.padEnd(18) + groups.map(g => { const o = res[g.label].AX[k]; return o ? (g.label + ' ' + o.a.length + ' · ' + pc(o.w[1] / o.w[0]) + ' · ' + pc(med(o.a)) + ' · £' + f2(med(o.p), 0)).padEnd(50) : ''; }).join(''));
+for (const k of ['inm', 'trade', 'ctrl', 'inm|consumer', 'inm|heavy+war', 'trade|consumer', 'trade|heavy+war', 'ctrl|consumer', 'ctrl|heavy+war', 'inm|got', 'inm|not', 'trade|got', 'trade|not', 'ctrl|got', 'ctrl|not']) console.log('  ' + k.padEnd(18) + groups.map(g => { const o = res[g.label].AX[k]; return o ? (g.label + ' ' + o.a.length + ' · ' + pc(o.w[1] / o.w[0]) + ' · ' + pc(med(o.a)) + ' · £' + f2(med(o.p), 0)).padEnd(50) : ''; }).join(''));
 console.log(`\nB. BACKWARD MEMBERS of markets led by a shortlist country (leader = most technologies; follower >= ${GAP} technologies behind it, >= ${MINPOP / 1e6}M people) — median over market-years`);
 console.log('  year arm        cases  gap  tiered workers/head  ÷leader  GDP/head £  ÷leader  SoL (gap to leader)  U*     share of the market\'s tiered VA ÷ share of its people');
 for (const y of [1880, 1900, 1920, 1935, 'GBR1880', 'GBR1900', 'GBR1920', 'GBR1935']) for (const g of groups) { const r = res[g.label].B[y] || []; if (!r.length) continue;
