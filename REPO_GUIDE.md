@@ -1301,6 +1301,18 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   `--stuck y10` (still lacking the technology ten years later) keeps only industries whose research entry never filled — a size filter, kept for
   the record; `--stuck none` mixes in the cost of modernising (vanilla upgrades a country holding the technology for free); the canon has fewer
   stuck cases (~10 a run); the follower sets differ by seed.
+- **`ledger/frontier_supply.mjs`** `<book> <label>=<group>:<setup> [--scope pool|world] [--industries food,textile,…]` — the supply side of the
+  price path (FINDINGS F249 §4d): per decade, points built by sector (positive Δlevels × construction cost), the capital-weighted return of new
+  profit-seeking capital (£ a year per point of a staffed level) and the top types built; per industry, the output and input price indices and, per
+  building type, points built, return, margin, its own output / input index and staffed levels at the decade's ends. A vanilla arm (setup name contains
+  "vanilla") keeps the rung-0 key at vanilla's cost, labelled `tv`. Traps: returns are pooled over the scope's countries at the step's start; the
+  index of a type covers its whole output mix (secondaries included) — `price_mix.mjs` splits it.
+- **`ledger/price_mix.mjs`** `<book> <group>:<setup> [--years 1910,1930] [--industries textile,furniture,glass] [--mod mod]` — why a rung's realised
+  output price differs from its frontier's (F249 §4d): each staffed building's output rebuilt from its active methods and valued at its country's own
+  market's 1 January price (markets.tsv); realised against predicted index, the main good's and the side goods' indices, the side goods' share, the
+  gap to the next rung split into MIX and LOCATION; and per rung, records bucketed by the share of levels on a side-good secondary (margin, profit per
+  staffed level). Lists the side lines it found. Traps: `--mod` must be a build of the book the runs played (default `mod/`, the canon); countries
+  inside another's market are skipped and counted; one price date stands for the year.
 - **`ledger/laggard_census.mjs`** `<book> <label>=<group> [...]` — the raw old-rung census (in-market and trade-only laggard shares of tiered
   workers, ten-year survival, by industry and tier pair). ⚠ Its vanilla column is confounded by vanilla's free method switch: read it for the canon
   alone, and `laggard_pressure.mjs` for the comparison (F249 §4).

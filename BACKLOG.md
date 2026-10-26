@@ -78,7 +78,7 @@ Closed:
 
 ## B. Balance and the economy
 
-- **OPEN (core)** · the output-price path does not fall (F94); the consumer-chain old rungs stay profitable (87–93%) · CLAUDE.md §2.1, F136, F163
+- **OPEN (core)** · the output-price path does not fall (F94); the consumer-chain old rungs stay profitable (87–93%) · CLAUDE.md §2.1, F136, F163. On the 1.0 canon (F249 §4d) the main good's price DOES fall (1930s pool output index: textile 0.73, furniture 0.71 against vanilla's 0.90 / 0.91), and the textile and furniture t1 live on their luxury line (≈ 2/3 of a level's base output; it adds ~£700 / ~£1,070 a week a level against a whole t1 profit of ~£650), because a secondary is sized on t2 and is the same per level on every rung. Proposed for 1.1, unruled: scale a secondary's goods with its host's tier (× A^k)
 - **OPEN** · the runoff / stall tail: one broken seed in three to four (runoff, or a stalled USA or Britain) · F166, F227, F247, CLAUDE.md §4.2
 - **OPEN** · the hoard: pool H ~4× vanilla on the pre-artmerge canons; on the current canon pool H reads 0.25 against vanilla's 0.33 (F247), but Britain sits near capital abundance in most healthy seeds (CLAUDE.md §4.2); the inflow mechanism is a candidate, not measured · F135, F179 §3, F247
 - **DEFERRED to mod 1.1 (POLISH_1_0.md Q4)** · the book levers not minor enough for the polish: paper's own lift (1.0–1.3, today 1.2; §10.101 item 5) and the cost ladder C 1.8 × cost1 1.2 (F234: loss 5.37 against 7.28, measured on the x25 canon, unmeasured on today's) · F234, §10.101

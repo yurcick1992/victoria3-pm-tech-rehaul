@@ -394,7 +394,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F246 | The AI's trade-centre GDP gate does not keep treaty ports empty; the engine needs NON_MARKET > MARKET minimum GDP | vanilla-mechanics | standing | here |
 | F247 | Monopoly threshold 0.99 over a century n=4: play x1.18 of summer vanilla; 3 intact + 1 stall, loss 8.21 | canon | partly superseded by F248 | here |
 | F248 | Vanilla plays ~8% slower in October than August on the same version; vs same-days vanilla the wm99 book is x1.09 | performance | standing | here |
-| F249 | The 1.0 canon over 16 alternating centuries: 16 intact, world GDP 1.07x, play x1.010 (x1.11 / x0.996 per session); where vanilla cannot switch, in-market pressure on backward industry is clearly stronger than vanilla's, through trade weak in both | canon | standing | here |
+| F249 | The 1.0 canon over 16 alternating centuries: 16 intact, world GDP 1.07x, play x1.010 (x1.11 / x0.996 per session); where vanilla cannot switch, in-market pressure on backward industry is clearly stronger than vanilla's, through trade weak in both; the consumer chains' main-good price falls below vanilla's and the old rung lives on its luxury line, sized for t2 (§4d) | canon | standing | here |
 
 ---
 
@@ -21128,6 +21128,95 @@ technology** (vanilla 64.9): in the canon a laggard lags for want of capital, no
 filter (10.4 a run against 18.6). Where the laggard holds the technology, it keeps 97.1% of its workers over a decade against vanilla's 132.4% — the vanilla
 side upgrading for free, so that pair is not a competition reading. Industries that are absent outright are a smaller effect: a frontier-led backward country
 runs 6 tiered industries of 5,000+ workers against 7, and 3.3% have none against 1.6%.
+
+**4d. What holds the consumer chains' old rung up: the main good's price falls, supply follows profit, and the luxury line does not fall**
+(`tools/testbed/ledger/frontier_supply.mjs` and `price_mix.mjs`, 2026-10-26; the user: *"I still don't understand what resists negative prices so much"*).
+The pool, 16 canon runs against this batch's 16 vanilla runs, the last summary of each 1 January, medians over runs. Points built = positive Δlevels ×
+the type's construction cost; return = £ a year per construction point of a staffed level (52 × profit ÷ staffed levels ÷ cost); output index = goods
+sales ÷ base-priced output, input index = goods cost ÷ base-priced inputs, both over the type's whole output mix, secondaries included.
+
+*(i) The price does fall, in £, and further than vanilla's; the inputs do not.*
+
+| pool, output / input index | 1860s canon | 1930s canon | 1860s vanilla | 1930s vanilla |
+|---|---|---|---|---|
+| textile | 1.06 / 0.90 | **0.73** / 0.99 | 0.93 / 0.96 | 0.90 / 0.95 |
+| furniture | 1.11 / 1.17 | **0.71** / 1.00 | 1.07 / 1.12 | 0.91 / 0.93 |
+| glass | 1.01 / 1.04 | **0.88** / 1.10 | 1.10 / 1.02 | 0.93 / 1.00 |
+
+The consumer chains' terms of trade (output index ÷ input index) end at 0.74 / 0.71 / 0.80 against vanilla's 0.95 / 0.98 / 0.93. The squeeze §2.1 asks for
+is there.
+
+*(ii) The frontier is built until it earns what other new capital earns; it never stalls while still earning well above that.*
+- **New profit-seeking capital earns** £68–100 a point a year from the 1840s to the 1930s (vanilla £68–113).
+- **Textile's t2** earns 121 / 99 / 87 / 78 / 79 / 76 / 83 / 86 from the 1860s to the 1930s and takes 47–129k points a decade from the 1870s.
+- **Furniture's t2** earns 61 / 49 / 50 / 46 / 51 / 52 / 62 / 79, below the average from the 1870s, and still takes 33–64k points a decade.
+- **Glass:** t2 earns 61–88; t3 earns 86–97 and takes 84–227k points a decade from the 1910s.
+- **Most capital goes to steel.** Open-hearth steel takes the most capital of any type in every decade from the 1880s, at 62–92.
+
+So capital does not avoid the consumer frontier. Its price falls until the frontier earns about the average return of new capital.
+
+*(iii) The old rung realises a higher price than its frontier.* In the 1930s t1 sells at 0.82 against t2's 0.71 in textile, 1.03 against 0.70 in furniture,
+and 1.05 against 0.90 (t3 0.83) in glass. Its margin is 24% / 20% / 19% and its return 56 / 52 / 28. Its staffed levels over the decade go 150 → 169
+(textile), 35 → 27 (furniture) and 22 → 20 (glass).
+
+*(iv) Why it sells dearer — mix and location* (`price_mix.mjs`). Each staffed building's output is rebuilt from its active methods and valued at its own
+market's 1 January price. Weights are base-priced output, over pool country-runs on their own market: 613 records at 1930, and 67 in another country's
+market are skipped.
+
+| 1930 | rung | actual | predicted | main good | side goods | side goods' share of base output |
+|---|---|---|---|---|---|---|
+| textile | t1 | 0.82 | 0.83 | 0.71 | 0.90 | 63% |
+|  | t2 | 0.70 | 0.72 | 0.66 | 0.87 | 28% |
+| furniture | t1 | 1.02 | 1.02 | 0.76 | 1.18 | 63% |
+|  | t2 | 0.69 | 0.71 | 0.55 | 1.17 | 26% |
+| glass | t1 | 1.09 | 1.08 | 1.11 | 0.99 | 30% |
+|  | t2 | 0.90 | 0.95 | 0.91 | 1.01 | 38% |
+|  | t3 | 0.81 | 0.87 | 0.86 | 0.97 | 6% |
+
+- **The prediction holds.** It matches the realised index within 0.06 on every rung, so market prices and the output mix explain it. The crafts are the
+  exception: they realise ~0.1 above prediction in textile and glass, which suggests dearer states inside the market.
+- **Splitting the t1 − t2 gap at 1930.** MIX is t1's index minus t1's index at t2's side share; LOCATION is the rest.
+  - textile: 0.11 = mix 0.07 + location 0.04;
+  - furniture: 0.31 = mix 0.16 + location 0.16;
+  - glass: 0.13 = mix 0.01 + location 0.12.
+- **At 1910** location dominates in all three: textile 0.08 of 0.08, furniture 0.20 of 0.25, glass 0.08 of 0.09.
+- **What carries the price.** The side goods are luxury clothes, luxury furniture and porcelain, and they hold at 0.87–1.18 of base while the main good
+  falls to 0.55–0.76.
+
+*(v) The luxury line is sized for the t2 rung, so it is half of the old rung.*
+- **Sizing.** A secondary is one recipe per line per industry, sized on the t2 rung (CLAUDE.md §1.3 exception 6).
+  - Craftsman Sewing turns 28.28 clothes into luxury clothes: 47% of the dye workshop's 60, 21% of sewing machines' 132.
+  - The luxury-furniture line turns 32.5 furniture into luxury furniture: 50% of the lathe's 65, 23% of mechanized workshops' 143.
+- **The luxury lines do not scale with the ladder.** A line makes the same amount per level on every rung that runs it. The later lines run from t2 up
+  only and are sized at half of t2's output: Elastics makes 66 luxury clothes, Precision Tools 71.5 luxury furniture. Through the same line a frontier
+  level adds no more luxury supply than an old one, so the ladder's ×2.2 never reaches the luxury goods. The pool's t2 levels average a 26–28% side
+  share at 1930, so they mostly run the small lines or none.
+- **Almost every old rung runs the line.** At 1930, 2,681 of 2,753 staffed t1 textile levels (summed over runs) and 527 of 573 furniture levels run it on
+  ≥ 80% of their levels.
+- **What the line is worth, at 1930's t1-weighted prices and the 1930 wage, before throughput:**
+  - textile: goods +£819 a week per fully staffed level; its 500 shopkeepers cost £104 (USA) to £130 (Britain); net +£689 to +£715;
+  - furniture: goods +£1,195; net +£1,065 to +£1,091.
+- **Against the old rung's whole profit.** The observed t1 profit is £668 (textile) and £647 (furniture) per staffed level a week, throughput included.
+  At these prices the old rung's own main good earns about nothing in textile and loses in furniture: **the old consumer rung lives on its luxury line.**
+- **Glass is the exception.** Its porcelain lines are a similar share on every rung, so the old rung's edge there is location: glass dearer where t1 sits.
+- **The heavy and war chains carry no luxury line.** That fits F136's split, where they shed 92–98% of their old rung's peak workers.
+
+**Read.**
+- **Nothing resists the price of the main good.** It falls below vanilla's, and capital flows to the frontier until the frontier earns the economy's going
+  return.
+- **What survives is the part of the old rung that the ladder does not touch.** About two-thirds of a t1 textile or furniture level's base output is
+  luxury goods, made in the same quantity per level by the frontier. Glass's old rung survives where glass is dear.
+- **This sharpens F211 §4.** That finding saw the dye workshops "mostly making luxury clothes" and called Craftsman Sewing not the root cause, because the
+  frontier was under-built then. In the canon the frontier is built and the price has fallen, and the line is what is left.
+
+**What it does NOT say.**
+- **That removing or rescaling the line would kill the old rung.** The counterfactual holds prices still (§2.8): luxury prices would rise with less supply,
+  and t2's own luxury line would carry more of the demand.
+- **Which lever, if any.** A proposal, unruled: scale a secondary's goods with its host rung's tier (× A^k, the ladder's output step), so the luxury share is
+  the same on every rung — a recipe change under §1.3 exception 6, not a penalty.
+- **Why the AI still builds t1 textile.** It does so at a return of ~55 against t2's ~80 (10–22k points a decade); not measured here which countries do, and
+  whether they hold t2's technology.
+- **That the 1 January price is the year's price.** The prediction uses one date; the realised index is the summary's weekly flow at that date.
 
 **5. Other readings.** **Misplaced capital** (F206/F207; VALID benchmark, gross share of each decade's new capital): canon 14–21% (1926–36 21%), this
 batch's vanilla 12–15% (1926–36 14%) — higher in every decade. **Technology** (tech_census, against this batch's vanilla): the leader holds 40 / 31 / 54%
