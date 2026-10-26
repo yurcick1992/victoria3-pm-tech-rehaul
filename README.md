@@ -157,3 +157,8 @@ The balance book the builder ships by default is **`jex-dam4s-rs-x25-m10ac-dpriv
 vanilla's own production methods with vanilla's name, gate, staffing and icon, sized by the A/B ladder (output
 ×2.2, input value ×1.64 and construction cost ×1.9 per tier). The formula and its exceptions are `CLAUDE.md`
 §1.3; what the book contains and where it stands, `CLAUDE.md` Part 4.
+
+## Licence
+
+The original work here is public domain under **CC0 1.0 Universal**: copy, change and reuse it freely, without credit. The game's own
+material that the mod copies or references remains Paradox Interactive's. See [`LICENSE`](LICENSE).

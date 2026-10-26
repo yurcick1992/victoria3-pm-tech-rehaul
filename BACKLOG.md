@@ -216,7 +216,7 @@ The 1.0 polish register is **`POLISH_1_0.md`** (2026-10-21): every polish item w
 The lines below are its headline items.
 
 - **OPEN** · CHANGELOG · POLISH_1_0.md R2
-- **RULING** · the LICENSE (which licence the repository and the mod carry) and the thumbnail image (`thumbnail.png` in the mod root) are the user's · POLISH_1_0.md R2
+- **RULING** · the thumbnail image (`thumbnail.png` in the mod root) is the user's · POLISH_1_0.md R2
 - **RULING** · the new player short description in `mod/.metadata/metadata.json` (written 2026-10-26 with R1) waits on the user's approval · POLISH_1_0.md R1
 - **OPEN** · proofread every new technology name and description, widened to every generated player-facing text · POLISH_1_0.md R4
 - **OPEN** · per-technology icons (one placeholder ships; the specification is written, the images are the user's) · POLISH_1_0.md R5
@@ -224,6 +224,7 @@ The lines below are its headline items.
 - **OPEN** · release: a final build, every lint, an in-game load and an `error.log` read · POLISH_1_0.md "Where it stands"
 
 Closed:
+- Done 2026-10-26 · LICENSE: CC0 1.0 Universal for the repository's own work, Victoria 3's material carved out as Paradox Interactive's, the legal code verbatim from creativecommons.org (the user: as permissive as possible, no attribution required) · POLISH_1_0.md R2
 - Done 2026-10-26 · the README (R3 re-scoped by the user: players come from the Steam Workshop, the repo README is for building and editing the mod): the replaced-file list from the build (H9, `tools/list_replaced_files.mjs`: 146 files in 26 folders + `common/history/buildings/`) and building from source · POLISH_1_0.md R3, H9
 - Done 2026-10-26 · builders off the default paths (H10: `preflight.ps1` reads `VIC3_GAME`, the deploy uses the shell's Documents folder) and the stray root file `gdp_gap_series.tsv` removed (C7) · POLISH_1_0.md H10, C7
 - Done 2026-10-26 · the debug/release build switch (H8): `build.ps1 -Release` — no logging but a version manifest line (`tools/strip_release_logging.mjs`, 1,789 lines on the canon), no telemetry accepted, no "Recipe BE" in the names, no build stamp; release metadata (R1, Q9): version 1.0.0, "1.13.\*", a new short description. Lints and mod checks pass on a release build; the in-game load is the release step's · POLISH_1_0.md H8, R1, N1

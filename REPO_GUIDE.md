@@ -58,6 +58,9 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
   Status: superseded by `TIER_REFERENCE_AUDIT.md` (stale: lists railway and shipyard methods, old paths).
 - **`MISSING_BUILDING_CONDITIONS.md`** — conditional fields inside vanilla buildings we regenerate that our emitted building drops; hand-
   maintained, directly fixable, deferred. Still accurate.
+- **`LICENSE`** — the repository's own work is dedicated to the public domain under CC0 1.0 Universal (the user, 2026-10-26: as permissive as
+  possible, no attribution required); Victoria 3's material in the mod stays Paradox Interactive's. A short header, then the CC0 legal code
+  verbatim from creativecommons.org.
 - Gitignored, never committed: `HANDOVER.md` (the next session's baton), `status_board*.html`, `balance_ui_snapshot*.html`, `mod_*/`.
 
 ### config/ — the canon and its twin
