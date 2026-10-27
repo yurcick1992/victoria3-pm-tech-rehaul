@@ -396,6 +396,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F248 | Vanilla plays ~8% slower in October than August on the same version; vs same-days vanilla the wm99 book is x1.09 | performance | standing | here |
 | F249 | The 1.0 canon over 16 alternating centuries: 16 intact, world GDP 1.07x, play x1.010 (x1.11 / x0.996 per session); where vanilla cannot switch, in-market pressure on backward industry is clearly stronger than vanilla's, through trade weak in both; the consumer chains' main-good price falls below vanilla's and the old rung lives on its luxury line, sized for t2 (§4d) | canon | standing | here |
 | F250 | The no-DLC load test: all 17 installed DLCs disabled (verified, none mounted), the 1.0 canon plays 1836-1841 with no error beyond vanilla's and nothing naming a mod or replaced file | release | standing | here |
+| F251 | The 1.0 canon's USA ends at 0.58x vanilla's GDP (median, vanilla's population): its raw sector is not built 1890-1910, which separates rich from poor US seeds; capture by the merged hosts is real (22% of 1866-86) but not the separator | canon | reading | here |
 
 ---
 
@@ -21294,3 +21295,41 @@ run and vanilla's centuries throw, and nothing names a file the mod writes or re
 - **Nothing about a partial DLC set.** Only the all-off case ran.
 - **Nothing about the release build.** This was a debug build with telemetry; the release build drops it (POLISH H8).
 - **n = 1 per arm.**
+
+## F251 — THE 1.0 CANON'S USA ENDS AT 0.58× VANILLA'S GDP IN THE MEDIAN, WITH VANILLA'S POPULATION: ITS RAW SECTOR IS NOT BUILT 1890–1910, AND THAT, NOT LAWS OR SECESSION, SEPARATES A RICH US FROM A POOR ONE (2026-10-27; a reading of F249's sessions `20261021_224949_alt-vanilla-canon-n16`, `20261023_161802_alt-vanilla-canon-rest20`, `20261026_032622_alt-canon-replace20`, canon n=16 against those sessions' vanilla n=16; no new runs)
+
+**Why it was read.** BACKLOG A1 (F204, the USA's agrarian end state on the e1a12 book) was to be deferred to 1.1; the user asked to check it on the
+1.0 canon first ("Check to decide before deferring and abandoning").
+
+**Readers.** `tools/testbed/ledger/us_history.mjs` (GDP, population and U\* against vanilla's median USA, the political history),
+`tools/testbed/ledger/us_construction_windows.mjs` (where the US private queue's points go), and a scratchpad tabulation of each run's US laws,
+investment pool and building levels by class at 1870 / 1890 / 1910 / 1935 from the save summaries.
+
+**1. The USA is poor in most canon seeds.** US GDP ÷ vanilla's median USA, 1935: median **0.58**; 5 of 16 at 0.88 or above (0.88, 1.18, 1.40,
+1.58, 1.75), 9 below 0.60 (0.19–0.58). The path: 1.10 at 1840, ~1.00 to 1860, 0.88 at 1875, 0.74 at 1890, 0.67–0.70 at 1910–1920, 0.58 by
+1930. Population is vanilla's (median ×1.03 at 1935; one seed ×0.71 after losing the South in 1866): the shortfall is **GDP per head, 0.56×**.
+U\* at 1935: median 47% against vanilla's 12%; salaried workforce ~16–17M against vanilla's ~25M.
+
+**2. Not politics, not laws.** Secessions and land-law switches (Tenant Farmers, Commercialized Agriculture) occur in rich and poor seeds alike,
+and vanilla's seeds carry them too; interventionism and protectionism are vanilla's usual US laws. Two of the three richest canon seeds run
+laissez-faire from 1870 or 1890, but so do two poor ones by 1935.
+
+**3. The separator is the raw sector (mines, logging camps, oil rigs, wharves) built by 1910.** Its levels at 1910: canon median **341**,
+vanilla **570**. Every canon seed with ≥ 590 levels ends at 1.18–1.75; every seed with ≤ 345 ends at 0.19–0.75; the three between (471–532)
+end at 0.58–0.88. Manufacturing levels at 1910 are near vanilla's (they count craft levels and denser rungs, so they are not comparable 1:1).
+
+**4. Where the points went.** The US private queue's share in textile + furniture (the merged hosts' industries, F204's capture) is **~22% in
+1866–1886** (vanilla ~3%), and raw + infrastructure ~25% (vanilla ~30–40%). F204 saw the capture in 1846–1866; under the canon's conditional
+host desire (§10.91.2) it arrives a generation later. But capture alone does not separate the seeds: the seed with the most (61%) ends at 0.75,
+one with 33% at 1.75, one with 10% at 0.19.
+
+**5. A candidate mechanism, not measured.** Our rungs carry `ai_value` 1,000 / 3,000 / 5,000 at t1 / t2 / t3 (the calibrated desire ladder,
+§10.92); vanilla's mines carry 1,000. A frontier economy whose growth runs through extraction loses construction to the higher-desire rungs, which
+would show as F249's misplaced capital (14–21% against vanilla's 12–15%) concentrated where raw deposits sit idle. Not checked: the US share of
+misplaced capital, the payback of the raw options, and whether the rich seeds simply drew an early raw boom.
+
+**What it does NOT say.**
+- **Not that the ladder causes it.** The mechanism of §5 is a hypothesis; a lever (e.g. raw `ai_value`, or the desire ladder's slope) is untested.
+- **Not vanilla's spread.** The ratios are to vanilla's MEDIAN USA; vanilla's own per-run US spread was not read here.
+- **Not other frontier economies.** Russia, Brazil, Argentina and Canada were not read.
+- **n = 16** for the canon, one config; seeds differ in politics as well as economics.
