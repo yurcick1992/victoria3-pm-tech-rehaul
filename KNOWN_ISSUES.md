@@ -18,6 +18,9 @@ Balance
   stay profitable on their luxury clothes and luxury furniture lines long after newer tiers exist.
 * Britain often reaches near-full employment: in 10 of 16 test campaigns, its unemployment (peasants included) stayed under 5% for 5 to
   17 years.
+* The United States often industrialises late: in most test campaigns it builds too few mines, logging camps and oil rigs between 1890
+  and 1910, and by 1936 its GDP is about 0.6 of vanilla's (in 9 of 16 campaigns under 0.6; in 5 it matches or beats vanilla), with
+  vanilla's population but far more peasants.
 * The AI invests less efficiently than in vanilla: 14–21% of each decade's new capital goes into buildings that pay back far worse than
   the best alternative, against 12–15% in vanilla.
 * In testing of earlier versions, about one campaign in three or four ran away (a few economies grew far beyond vanilla's range) or
