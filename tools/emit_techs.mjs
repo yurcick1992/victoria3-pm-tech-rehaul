@@ -85,7 +85,8 @@ const CFG = JSON.parse(readFileSync(CFGPATH, 'utf8'));
     throw new Error(
       `${unknown.length} emitted tier(s) name a technology the shipping tree does not contain, so the ` +
       `mod would carry buildings nothing can unlock:\n  ${unknown.join('\n  ')}\n` +
-      `  Config: ${CFGPATH}\n  Fix: node tools/tech_tree_spec.mjs --write`);
+      `  Config: ${CFGPATH}\n  Fix: regenerate the book's tree twin through its chain (make_tier4_techs.mjs, CLAUDE.md §4.4) — ` +
+      `never fall back to the canonical tree (L20)`);
   }
   console.log(`techs: ${startAvail.length} emitted tier(s) carry no unlocking technology (available at the ` +
     `1836 start): ${startAvail.join(', ') || '(none)'}`);

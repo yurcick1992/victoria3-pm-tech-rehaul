@@ -13,7 +13,7 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
 
 ## The order (from ROADMAP and the user's rulings; updated 2026-10-24)
 
-1. ✅ **The canon** is `jex-dam4s-rs-x25-m10ac-dpriv-wm99` with the 2026-10-21 polish rulings, the 2026-10-26 proofread's display text and the 2026-10-27 urban-centre live figure (sha256 `6a2fb8a5122ceb5b`, measured as `728f2c7f84e6f467`; CLAUDE.md §4.1,
+1. ✅ **The canon** is `jex-dam4s-rs-x25-m10ac-dpriv-wm99` with the 2026-10-21 polish rulings, the 2026-10-26 proofread's display text and the 2026-10-27 urban-centre live figure (sha256 `9a05d36da42c1511`, measured as `728f2c7f84e6f467`; CLAUDE.md §4.1,
    the lineage §4.3): the artmerge arm canonised 2026-10-12 (§10.99, F227) → one innovation parameter x = 25 (2026-10-13, §10.101.1) →
    private dam construction, engines unlifted and the conditional merge-host desire (2026-10-16; §10.89.14, §10.101, §10.91.2; F239, F240)
    → the world-market monopoly threshold 0.99, canonised 2026-10-21 against the same days' vanilla (§10.102; F247, F248) → the polish
@@ -170,8 +170,6 @@ Closed:
 - **OPEN** · `health_vs_ref.mjs`'s token guard (under half the reference MINIMUM) is disarmed where a reference seed lacks the market (the canon's Prussian minimum is 0): add the vanilla n=16 as a second reference, or a both-seeds-agree rule · F199 §8
 - **OPEN** · `--craft-table <file>` override so a variant never edits the ruled `CRAFTS` table in place · this file
 - **OPEN** · teach the old-rung readers (`rung_econ`, `rung0_*`, `lib_obsolescence`, `tiered_panel`) the merged methods · ROADMAP step 13 item 3
-- **DEFECT** · `config/mod_config.json` carries a `_canon` record inherited from `canon4v-hai3`, so it does not name the current canon (the `_canon_2026_10_16`, `_wm99_variant` and `_polish_*` records do) · CLAUDE.md §4.1
-- **OPEN** · `emit_techs.mjs`'s missing-technology error still tells the user to run `tech_tree_spec.mjs --write`, which refuses four-rung books · REPO_GUIDE §3
 - **OPEN** · harness design debt: the control / overlay build path is a straight-line script with an early exit; a list of content emitters each arm opts into would make arm purity structural · TESTBED_OPERATIONS §2.2
 - **DEFECT** · `deviates_from_vanilla` is a six-path probe list; it should walk the built mod · ROADMAP DEFERRED FIXES
 - **DEFECT** · the binary save reader is trusted only below ~104 MB (per-market pops, per-state local supply) · REPO_GUIDE §4
@@ -180,6 +178,7 @@ Closed:
 - **OPEN** · copy the redone jex n=16 report (artifact BjmxoKZjkYL6fUypJd5XPf v5) and its full red-flag listing (KdPDv6wH1hb77iJ9GNBtdX) into `20261006_193418_jex-n8-v16` on the machine — the 2026-10-08 redo ran in a cloud session without the session folder; a fresh `fill_ledger.sh` there writes redflags.json and the summary-basis column too
 
 Closed:
+- Done 2026-10-27 · the canon's inherited `_canon` record renamed `_canon_canon4v_hai3_inherited` (no reader used it; book record `_polish_2026_10_27`); `emit_techs.mjs`'s missing-technology error points at the tree twin's chain (`make_tier4_techs.mjs`) instead of `tech_tree_spec.mjs --write`
 - Done 2026-10-21 · research-entry texts uniform and in LEVELS (the user ruled levels, not people), and every condition a line of the bar tooltip · BUGS_AND_FIXES 2026-10-21, POLISH_1_0.md §1
 - Done (POLISH C5) · a vanilla batch with the yearly order-book feed: October's vanilla n=6 (`20261020_*`) carries it (the twin's re-pointing is the OPEN line above) · §10.94 rule 9
 - Done 2026-10-08 · the goal table re-graded against the ruled criteria (G1–G7, P over clusters 1 + 2) · `fill_goals.mjs`, ledger README
@@ -228,7 +227,7 @@ The lines below are its headline items.
 
 Closed:
 - Done 2026-10-27 · the public known-issues list: `KNOWN_ISSUES.md` (the user's choice of place), the electricity build gap, weak forced obsolescence and the economy-level lines (Britain near full employment, misplaced capital, broken seeds in earlier books); every later deferral of a noticeable issue adds its line there · POLISH_1_0.md R11
-- Done 2026-10-27 · two of R4's three plumbing items: the urban-centre research lines show the largest urban centre live ("(now N)", `pmr_cv_urban`, book record `_polish_2026_10_27`, sha256 `6a2fb8a5122ceb5b`); the naval entries name their ship types in vanilla's translated names. Found on the way and fixed: Carrier Tech had no naval entry (a multi-line block in vanilla's ship types; BUGS_AND_FIXES 2026-10-27, a count guard now throws) · POLISH_1_0.md R4
+- Done 2026-10-27 · two of R4's three plumbing items: the urban-centre research lines show the largest urban centre live ("(now N)", `pmr_cv_urban`, book record `_polish_2026_10_27`); the naval entries name their ship types in vanilla's translated names. Found on the way and fixed: Carrier Tech had no naval entry (a multi-line block in vanilla's ship types; BUGS_AND_FIXES 2026-10-27, a count guard now throws) · POLISH_1_0.md R4
 - Done 2026-10-26 · the short description in `metadata.json`, the user's choice of two drafts: "Economic realism: each technology step is a new building, so modernising costs capital and old plants lose their markets. Research follows industry. 122 historical hydro dams; artisan crafts in 1836." (199 characters; the launcher caps a Paradox Mods short description at 200) · POLISH_1_0.md R1
 - Done 2026-10-26 · CHANGELOG.md, the 1.0.0 entry against vanilla 1.13 in PDS granularity, reviewed by the user ("Otherwise, good") with two additions: modern tiers stay profitable at lower output prices; why the six merged steps are methods (retrofits at ~5–20% of a new plant) · POLISH_1_0.md R2
 - Done 2026-10-26 · the R4 proofread of every generated English text (3,612 strings): building names, technologies, companies and secondaries clean; dams — "36-month", "Cancel the survey of the …", joined effect lists, the survey and builder tooltips (vanilla's $foreign_investment_rights$), the journal entry's family rule, "A single level …", Big Bend of the Missouri, Tenryū, head nouns for three project names, three trait descriptions; research — "tier" for "era" in 20 labels, qualifiers after the live figure ("(now N); halved", "; not under …"), no false "halved" where it rounds to the full mark, naval and war wording, title case, commas and law phrasing in labels. Canon text only (sha256 `7ba2de4f235a5b41`, field diff: 19 strings) · POLISH_1_0.md R4
