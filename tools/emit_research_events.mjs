@@ -497,20 +497,34 @@ const SHIP_BY_TECH = (() => {
   let src = '';
   try { src = readFileSync(join(GAME, 'common/ship_types/00_ship_types.txt'), 'utf8'); } catch { return map; }
   let cur = null;
+  let nBlocks = 0;   // blocks read, against the file's own count below — a block the reader cannot parse stops the build
+  let open = null;   // an unlocking_technologies block that spans lines (vanilla 1.13: the aircraft carrier's) — missed until 2026-10-27
   for (const raw of src.split(/\r?\n/)) {
     const line = raw.replace(/#.*$/, '').trim();
     let m;
+    if (open) {
+      const [body, rest] = line.split('}');
+      open.push(...body.trim().split(/\s+/).filter(Boolean));
+      if (rest !== undefined) { if (cur) for (const tk of open) (map[tk] ??= []).push(cur); open = null; nBlocks++; }
+      continue;
+    }
+    if (/^unlocking_technologies\s*=\s*\{[^}]*$/.test(line)) { open = line.replace(/^[^{]*\{/, '').trim().split(/\s+/).filter(Boolean); continue; }
     // ⚠ ORDER MATTERS: `unlocking_technologies = {` also satisfies the block-open pattern, so testing
     // that first swallowed every one of these lines and silently produced ZERO fleet technologies.
     if ((m = /^unlocking_technologies\s*=\s*\{([^}]*)\}/.exec(line))) {
+      nBlocks++;
       if (cur) for (const tk of m[1].trim().split(/\s+/).filter(Boolean)) (map[tk] ??= []).push(cur);
     } else if ((m = /^([a-z_0-9]+)\s*=\s*\{/.exec(line))) {
       // only a COLUMN-0 block is a ship type; nested blocks (upkeep_modifier, …) must not reassign it
       if (/^[a-z_0-9]+\s*=\s*\{/.test(raw)) cur = m[1];
     }
   }
+  const nFile = (src.replace(/#.*$/gm, '').match(/^\s*unlocking_technologies\s*=/gm) || []).length;
+  if (nBlocks !== nFile) throw new Error(`emit_research_events: read ${nBlocks} of the ${nFile} unlocking_technologies blocks in 00_ship_types.txt — the reader misses a form`);
   return map;
 })();
+// "A, B or C" in vanilla's own (translated) ship-type names
+const shipNames = (tech) => { const n = (SHIP_BY_TECH[tech] || []).map(s => `$${s}$`); return n.length > 1 ? n.slice(0, -1).join(', ') + ' or ' + n[n.length - 1] : n[0]; };
 const isFleetTech = (tech) => Array.isArray(SHIP_BY_TECH[tech]) && SHIP_BY_TECH[tech].length > 0;
 const keep = (tech) => (isFleetTech(tech) ? NAV_TECHS : WAR_TECHS).push(tech);
 
@@ -564,8 +578,8 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     nWar++;
     keep(tech);
     if (RE.naval_any) {   // §10.98: ours, a rival's OR a great power's — any one ticks once
-      terms.push({ desc: 'pmr_term_nav_any', trigger: `OR = { has_variable = ${navOwnVar(tech)}  has_variable = ${navRivalVar(tech)}  has_global_variable = ${navGpVar(tech)} }`, value: 1 });
-      lines.push([terms[0], { desc: 'pmr_term_nav_any', value: 0 }]);
+      terms.push({ desc: `pmr_term_nav_any_${tech}`, trigger: `OR = { has_variable = ${navOwnVar(tech)}  has_variable = ${navRivalVar(tech)}  has_global_variable = ${navGpVar(tech)} }`, value: 1 });
+      lines.push([terms[0], { desc: `pmr_term_nav_any_${tech}`, value: 0 }]);
     } else {
     terms.push({ desc: 'pmr_term_nav_own',   trigger: `has_variable = ${navOwnVar(tech)}`,   value: 2, exclusive: true });
     terms.push({ desc: 'pmr_term_nav_rival', trigger: `has_variable = ${navRivalVar(tech)}`, value: 1, exclusive: true });
@@ -888,7 +902,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     let flavour, rule;
     if (a.rule === 'war' && isFleetTech(tech)) {
       flavour = 'A navy learns by looking.';
-      rule = RE.naval_any ? 'The bar advances by one each month while we field a ship of this kind, or a rival of ours or a great power does.'
+      rule = RE.naval_any ? `The bar advances by one each month while we, a rival of ours or a great power field a ship of type ${shipNames(tech)}.`
         : 'The bar advances by two each month while a ship of this kind sails under our flag, by one while a rival of ours fields one.';
     } else if (a.rule === 'war') {
       flavour = 'Hard fighting concentrates the mind.';
@@ -1015,7 +1029,8 @@ if (NONADD && LIT && GENERIC) for (const [e, v] of Object.entries(LIT)) {
 if (WAR_TECHS.length) loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilized battalions on a front against an enemy that has already researched this technology`]);
 // the fleet lines: ours supersedes a rival's (the older books), or any of ours, a rival's or a great power's (naval_any)
 if (NAV_TECHS.length && !RE.naval_any) { loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']); loc.push(['pmr_term_nav_rival', 'A rival of ours fields a ship of this kind']); loc.push(['pmr_term_nav_none', 'Neither we nor a rival of ours fields a ship of this kind']); }
-if (NAV_TECHS.length && RE.naval_any) loc.push(['pmr_term_nav_any', 'A ship of this kind sails under our flag, a rival’s or a great power’s']);
+// each fleet entry names its ship types in vanilla's own translated names (R4, 2026-10-27)
+if (RE.naval_any) for (const tech of NAV_TECHS) loc.push([`pmr_term_nav_any_${tech}`, `We, a rival of ours or a great power field a ship of type ${shipNames(tech)}`]);
 if (Object.keys(COND).length && GENERIC) { loc.push(['pmr_term_cond', 'The condition in the entry holds']); loc.push(['pmr_term_cond_half', 'The condition in the entry holds, at its halved mark']); }
 // §10.98: the script values the condition entries read
 for (const [n, body] of Object.entries(RE.condition_values || {})) sv.push(`${n} = {\n${body.replace(/^/gm, T)}\n}`);

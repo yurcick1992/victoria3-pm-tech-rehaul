@@ -591,14 +591,17 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 
 **`config/mod_config.json` + `config/tech_tree_options.json` are verbatim copies of the named book
 `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` + `config/tech_tree_options.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`** — sha256 prefix
-**`7ba2de4f235a5b41`** (the tree twin `04ac513168388956`), canonised 2026-10-21 with the night's polish rulings (§10.102; `_polish_2026_10_21`,
-`_polish_2026_10_21b`) and given the R4 proofread's display text on 2026-10-26 (`_polish_2026_10_26_proofread`: 19 labels and descriptions, nothing
-else — proven by field diff). The alternating batch (F249) and the no-DLC test (F250) measured `728f2c7f84e6f467`, which differs from today's book by
-those strings alone. `mod/` and the deployed copy are its default build. Verify with `sha256sum config/mod_config.json`.
+**`6a2fb8a5122ceb5b`** (the tree twin `04ac513168388956`), canonised 2026-10-21 with the night's polish rulings (§10.102; `_polish_2026_10_21`,
+`_polish_2026_10_21b`), given the R4 proofread's display text on 2026-10-26 (`_polish_2026_10_26_proofread`: 19 labels and descriptions, nothing
+else — proven by field diff) and on 2026-10-27 the urban-centre entries' live figure (`_polish_2026_10_27`: the four urban-centre research
+conditions read the largest urban centre through a script value, same marks; 11 fields by field diff). The alternating batch (F249) and the no-DLC
+test (F250) measured `728f2c7f84e6f467`, which differs from today's book by those records alone. `mod/` and the deployed copy are its default build. Verify with `sha256sum config/mod_config.json`.
 
 **The canon build** (canonised 2026-10-26 by the user, commit `52e3eea` and after): the book above, built by today's emitters. Beyond the measured
 build it carries changes made in the emitters, none in the book: the art (`art/`: the square and the 16:9 thumbnail, three technology icons, three
-method icons; POLISH R2, R5, R10) and vanilla's electricity gate on our main methods (`required_input_goods = electricity`, POLISH B4). The
+method icons; POLISH R2, R5, R10), vanilla's electricity gate on our main methods (`required_input_goods = electricity`, POLISH B4), and since
+2026-10-27 the aircraft carrier's naval research entry (the ship-type reader missed vanilla's one multi-line `unlocking_technologies`) with
+every naval entry naming its ship types (BUGS_AND_FIXES 2026-10-27). The
 electricity BUILD condition of §10.106 is NOT in it (deferred to mod 1.1; a known issue). None of these was in the builds F249 and F250 measured;
 the gate only refuses an electric method in a state without electricity.
 

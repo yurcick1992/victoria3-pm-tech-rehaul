@@ -23,6 +23,7 @@ appended oldest first after the July ones); no entry's text changed.
 
 | date | entry | area | status | note |
 |---|---|---|---|---|
+| 2026-10-27 | the aircraft carrier's technology had no naval research entry: vanilla's one multi-line `unlocking_technologies` | build/emitters | live | emit_research_events.mjs SHIP_BY_TECH |
 | 2026-10-26 | five electricity-consuming rungs could be built in a state without electricity | build/emitters | live | lint_pm_combos check 9 |
 | 2026-10-26 | a run lost to the observer's own landing guard: a crash after an early-death fresh restart read as a foreign save | testbed/harness | live | landmine L42 |
 | 2026-10-21 | the power-bloc canning switch pointed at a method our food building does not carry | build/emitters | live |  |
@@ -142,6 +143,28 @@ appended oldest first after the July ones); no entry's text changed.
    writing.** Every non-ASCII round trip through a tool is a silent corruption risk that reproduces only
    here — read with `-Encoding UTF8`, write with `[IO.File]::WriteAllText(..., UTF8Encoding($false))`,
    format numbers with `InvariantCulture`. Three separate bugs below share this one root.
+
+---
+
+## 2026-10-27 — the aircraft carrier's technology had no naval research entry
+
+**Symptom.** Every technology that unlocks a ship type has a naval research entry (`naval_any`, §10.98) — except Carrier Tech, which had none.
+Found while scoping the R4 plumbing item "name the ship types in the naval entries", not by a player or a run.
+
+**Root cause.** `SHIP_BY_TECH` in `tools/emit_research_events.mjs` reads `common/ship_types/00_ship_types.txt` line by line and matched
+`unlocking_technologies = { … }` only when the braces close on the same line. Vanilla 1.13 writes eighteen ship types that way and one —
+`ship_type_aircraft_carrier` — over three lines (`unlocking_technologies = {` / `carrier_tech` / `}`), so `carrier_tech` never entered the map,
+`isFleetTech` said no, and no entry was emitted. Nothing failed: a missing technology is indistinguishable from one that unlocks no ship.
+
+**Fix (2026-10-27).** The reader collects a block that opens without closing until its `}`. The build now emits `je_pmr_carrier_tech_*` (three
+stages, like the other nine fleet technologies) and the carrier's great-power flag and wargate lines. In the same pass each naval entry names its
+ship types in vanilla's translated names (`$ship_type_…$`) instead of "a ship of this kind" (POLISH R4).
+
+**Detector.** The reader now counts the blocks it parsed against the file's own count of `unlocking_technologies` and throws on a difference;
+the old reader against the same check reads 18 of 19 and would have thrown.
+
+**Next time.** A reader of a vanilla block format must accept the block on one line or several, and count what it finds against the file. A
+gameplay change after the F249 measurement: one more tech-era-5 research path.
 
 ---
 
