@@ -398,6 +398,8 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F250 | The no-DLC load test: all 17 installed DLCs disabled (verified, none mounted), the 1.0 canon plays 1836-1841 with no error beyond vanilla's and nothing naming a mod or replaced file | release | standing | here |
 | F251 | The 1.0 canon's USA ends at 0.58x vanilla's GDP (median, vanilla's population): its raw sector is not built 1890-1910, which separates rich from poor US seeds; capture by the merged hosts is real (22% of 1866-86) but not the separator | canon | reading | here |
 | F252 | The crafts are staffed (87-98% to the 1890s at ~15-20% profit on sales): no pause line binds; Forest Glass alone hollows out by 1845, world glass output 0.62-0.71x vanilla 1845-55 with the price at vanilla's | canon | reading | here |
+| F253 | The crafts do not bring early revolutions: revolutions started before 1848 median 16 a run in both arms; Austria at or before 1845 in 4/17 canon against 3/17 vanilla | canon | reading | here |
+| F254 | The merged methods are staffed on the 1.0 canon (79-98% when switched); hosts left on the older method are the ones that empty; F182's two-thirds-staffed chemical plants are gone | canon | reading | here |
 
 ---
 
@@ -21365,3 +21367,41 @@ track vanilla's over the same years. The glass PRICE does not follow: in the Bri
   the wage were not read (`craft_fill.mjs` on a kept save would read them).
 - **Not that the glass dip matters.** With the price at vanilla's, the lost output does not show as a shortage; who would have bought it is unread.
 - **World totals only**, n = 16; per-market craft staffing was not read.
+
+## F253 — THE CRAFTS DO NOT BRING EARLY REVOLUTIONS: REVOLUTIONS STARTED BEFORE 1848 AND AUSTRIA'S EARLY ONES ARE VANILLA'S ON THE 1.0 CANON (2026-10-27; a reading of F249's sessions' `events.tsv`, canon n=17 against vanilla n=17 usable early windows; no new runs)
+
+**Why it was read.** BACKLOG A14 (F184, one seed of the craft book: an early Austrian revolution set off the People's Springtime in 1840),
+accepted as a 1.0 watch item (POLISH_1_0.md Q11).
+
+**Reading.** Each run's `DIPPLAY` lines whose first party is "Revolutionary <country>" (the revolution's diplomatic play), counting those
+before 1848 and the first year for Austria, Prussia and France; runs that died before 1848 (0–1 plays) left out.
+- **Revolutions started before 1848, per run:** vanilla median **16** (7–23), canon median **16** (5–25).
+- **Austria's first revolution at 1845 or earlier:** vanilla 3 of 17 runs (1843, 1844, 1845), canon 4 of 17 (1843, 1844, 1844, 1844).
+  Its first revolution before 1848 at all: vanilla 9 of 17, canon 7 of 17.
+- Prussia and France: early revolutions are rare in both arms (one canon France 1837, one vanilla France 1847).
+
+**What it does NOT say.**
+- **Not the Springtime itself.** The journal entry's start date was not read, only the revolutions that can trigger it.
+- **Not where the radicals come from.** Craft shopkeepers' radicalism (F184 §2) was not read.
+
+## F254 — THE MERGED METHODS ARE STAFFED ON THE 1.0 CANON: A HOST SWITCHED TO ITS MERGED METHOD RUNS 79–98% STAFFED (F182'S TWO-THIRDS-STAFFED CHEMICAL PLANTS ARE GONE), AND HOSTS LEFT ON THE OLDER METHOD ARE THE ONES THAT EMPTY (2026-10-27; a reading of F249's canon n=16 save summaries; no new runs)
+
+**Why it was read.** BACKLOG A15 *(verify)*: F182 saw merged-method secondaries not re-selected after a switch and switched chemical plants
+two-thirds staffed, before merged buildings carried one set of secondaries (2026-10-11, §10.91.2).
+
+**Reading.** Per country and year, each merged host's building record grouped by the main method its buildings run (a country whose buildings run
+both counts as "mixed"); levels and staffed levels summed over countries and the 16 runs. Staffed share at 1890 / 1910 / 1935:
+
+| host | on the merged method | on the host's own method |
+|---|---|---|
+| food (Baking Powder over Sweeteners) | 93% / 85% / 79% | 72% / 38% / 30% |
+| paper (Bleached Paper over Sulfite Pulping) | 98% / 95% / 82% | 55% / 42% / 21% |
+| fertilizer (Improved Fertilizer over Artificial Fertilizers) | 93% / 85% / 56% | 57% / 52% / 38% |
+| textile (Electric Sewing Machines) | — / 87% / 92% | 96% / 93% / 87% |
+| furniture (Spray Finishing) | — / 87% / 94% | 86% / 89% / 86% |
+| steel (Electric Arc Process) | — / 69% (3 levels) / 82% | 90% / 76% / 72% |
+
+**What it does NOT say.**
+- **Not the secondaries.** Which secondary methods a switched host runs was not read; since 2026-10-11 a merged building carries one set of
+  secondaries, so F182's re-selection case cannot arise in the old form.
+- **Not why fertilizer's merged method falls to 56% by 1935.** Its newer t2 rung (Nitrogen Fixation) competing is the obvious candidate, unread.
