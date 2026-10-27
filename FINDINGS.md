@@ -397,6 +397,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F249 | The 1.0 canon over 16 alternating centuries: 16 intact, world GDP 1.07x, play x1.010 (x1.11 / x0.996 per session); where vanilla cannot switch, in-market pressure on backward industry is clearly stronger than vanilla's, through trade weak in both; the consumer chains' main-good price falls below vanilla's and the old rung lives on its luxury line, sized for t2 (§4d) | canon | standing | here |
 | F250 | The no-DLC load test: all 17 installed DLCs disabled (verified, none mounted), the 1.0 canon plays 1836-1841 with no error beyond vanilla's and nothing naming a mod or replaced file | release | standing | here |
 | F251 | The 1.0 canon's USA ends at 0.58x vanilla's GDP (median, vanilla's population): its raw sector is not built 1890-1910, which separates rich from poor US seeds; capture by the merged hosts is real (22% of 1866-86) but not the separator | canon | reading | here |
+| F252 | The crafts are staffed (87-98% to the 1890s at ~15-20% profit on sales): no pause line binds; Forest Glass alone hollows out by 1845, world glass output 0.62-0.71x vanilla 1845-55 with the price at vanilla's | canon | reading | here |
 
 ---
 
@@ -21333,3 +21334,34 @@ misplaced capital, the payback of the raw options, and whether the rich seeds si
 - **Not vanilla's spread.** The ratios are to vanilla's MEDIAN USA; vanilla's own per-run US spread was not read here.
 - **Not other frontier economies.** Russia, Brazil, Argentina and Canada were not read.
 - **n = 16** for the canon, one config; seeds differ in politics as well as economics.
+
+## F252 — THE CRAFTS ARE STAFFED: 87–98% OF THEIR LEVELS UNTIL THE 1890s AT A STEADY ~15–20% PROFIT ON SALES, SO NO "PAUSE LINE" BINDS THEM; THE ONE EXCEPTION IS FOREST GLASS, WHICH HOLLOWS OUT BY 1845 AND TAKES WORLD GLASS OUTPUT TO 0.62–0.71× VANILLA'S FOR 1845–1855 WITHOUT MOVING THE GLASS PRICE (2026-10-27; a reading of F249's sessions, canon n=16 and the same sessions' vanilla n=16, from the save summaries and `markets.tsv`; no new runs)
+
+**Why it was read.** BACKLOG A10: "crafts sitting on the engine's 20% profit pause line — a few % more output if the century batch shows it
+binds" (F188). F249 is that century batch. The define F188 named is not read by the engine (F241; BACKLOG G), so the reading is of the
+observable: how full the craft buildings are and what they earn.
+
+**1. Staffing and profit, world, median over the canon runs** (levels / staffed share / profit ÷ goods sales):
+
+| craft | 1837 | 1845 | 1855 | 1870 | 1890 | 1910 | 1935 |
+|---|---|---|---|---|---|---|---|
+| food (Bakeries) | 682 / 98% / 21% | 729 / 95% / 19% | 836 / 91% / 17% | 959 / 87% / 15% | 1,077 / 80% / 15% | 1,106 / 73% / 14% | 1,081 / 61% / 13% |
+| textile (Handsewn Clothes) | 2,394 / 91% / 18% | 2,335 / 96% / 21% | 2,499 / 95% / 23% | 2,748 / 94% / 23% | 2,898 / 92% / 21% | 2,817 / 86% / 17% | 2,636 / 74% / 16% |
+| furniture (Handcrafted) | 1,489 / 95% / 15% | 1,479 / 69% / 17% | 1,531 / 68% / 18% | 1,712 / 78% / 17% | 1,863 / 85% / 16% | 1,904 / 82% / 15% | 1,795 / 69% / 14% |
+| glass (Forest Glass) | 1,410 / 91% / 15% | **975 / 37% / 15%** | **798 / 27% / 15%** | 671 / 34% / 15% | 602 / 47% / 15% | 494 / 49% / 15% | 543 / 49% / 15% |
+| tooling (Crude Tools) | 170 / 91% / 17% | 178 / 83% / 20% | 254 / 75% / 18% | 372 / 72% / 18% | 498 / 74% / 18% | 584 / 68% / 17% | 705 / 53% / 15% |
+| paper (Pulp Pressing) | 2,191 / 95% / 16% | 2,172 / 97% / 18% | 2,248 / 94% / 18% | 2,430 / 93% / 18% | 2,547 / 92% / 17% | 2,561 / 87% / 15% | 2,330 / 72% / 14% |
+
+The fall after 1890 is the intended obsolescence (newer rungs take the market). Furniture dips to 68–69% in 1845–1855 and recovers.
+
+**2. Glass.** World glass output (median): vanilla 2,601 / 2,549 / 2,708 / 2,892 / 3,981 at 1837 / 1845 / 1850 / 1855 / 1870; canon 3,212 / 1,810 /
+1,685 / 1,949 / 4,408 — **0.71× / 0.62× / 0.67×** vanilla's for 1845 / 1850 / 1855, above it again by 1870 (1.11×). Furniture, tools and clothes
+track vanilla's over the same years. The glass PRICE does not follow: in the British, French, Prussian, American and Russian markets the canon's
+1840 / 1850 / 1860 median sits within about ±0.15 of base of vanilla's (e.g. British 1850: 0.98 against 1.00 of base; Prussian 1850: 0.99 against
+0.86; Russian 1840: 0.77 against 0.97), never at the ceiling.
+
+**What it does NOT say.**
+- **Not why Forest Glass empties.** Its margin stays at 15% while its staffing falls to a third; the binding profession, the inputs' prices and
+  the wage were not read (`craft_fill.mjs` on a kept save would read them).
+- **Not that the glass dip matters.** With the price at vanilla's, the lost output does not show as a shortage; who would have bought it is unread.
+- **World totals only**, n = 16; per-market craft staffing was not read.
