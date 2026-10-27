@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # THE BATCH LEDGER'S DATA FILL FOR ONE CONFIGURATION, AS ONE COMMAND (promoted from the session scratchpad 2026-10-02; it pays off the README's
 # "not yet a single command" TODO for the data half). It runs every data script in the README's order on the arm's COMPLETE runs against the
-# pinned vanilla n=16 baseline; the prose half (lede / incidents / next / footer .html, tokens.json, title.txt) is written by hand afterwards,
+# vanilla reference of lib_runs.mjs (VANILLA_REF, n=40 since 2026-10-26; the wall clock against VANILLA_WALL_REF); the prose half (lede / incidents / next / footer .html, tokens.json, title.txt) is written by hand afterwards,
 # then `node tools/testbed/ledger/fill_assemble.mjs <outDir>` and `node tools/testbed/ledger/fill_verify.mjs <outDir>` (exit 0 = publishable).
 #
 #   bash tools/testbed/ledger/fill_ledger.sh <session> <setup> <book> <outName>
@@ -27,7 +27,7 @@ cd "$(dirname "$0")/../../.."
 [ $# -eq 4 ] || { echo "usage: fill_ledger.sh <session[,session|session/runNNN_setup…]> <setup> <book> <outName>"; exit 1; }
 SESSION=$1; SETUP=$2; BOOK=$3; OUT=tools/testbed/ledger/$4
 L=tools/testbed/ledger; S=tools/testbed/sessions
-# the vanilla reference (lib_runs.mjs, ONE definition): VANS = every reading but the wall clock (n=24 since 2026-10-21),
+# the vanilla reference (lib_runs.mjs, ONE definition): VANS = every reading but the wall clock (n=40 since 2026-10-26),
 # VANW = the wall clock (the most recent same-harness vanilla; summer play times are not today's reference, FINDINGS F248)
 # ⭐ Both can be OVERRIDDEN from the environment (2026-10-26): VANS_OVERRIDE / VANW_OVERRIDE = a comma list of sessions (and/or
 #   <session>/runNNN_vanilla folders) — e.g. every vanilla run with telemetry for VANS, and an ALTERNATING batch's own vanilla for VANW

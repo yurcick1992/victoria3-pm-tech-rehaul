@@ -1,7 +1,7 @@
 // THE ADVANCED-MAJORS PANEL, RESTRICTED TO THE TIERED INDUSTRIES (user-ruled 2026-08-20).
 //
 // `advanced_panel.mjs` asks the two G5 questions over a pooled shortlist of advanced majors. This
-// asks the same two INSIDE the 22 industries the mod actually reshapes, which is where a tier ladder
+// asks the same two INSIDE the industries the mod actually reshapes (22 in the six-rung era, 17 in the four-rung canon), which is where a tier ladder
 // can be expected to show up at all — the whole-economy figure includes farms, mines, barracks,
 // manor houses and urban centres, none of which the ladder touches.
 //
@@ -35,11 +35,9 @@
 // ⚠ art_academy employs 0 in its base PM on BOTH sides (its jobs live in the ownership PMG, which the
 // summary does not break out), so it contributes no workers to either — consistently, not silently.
 //
-// ⚠⚠ VALUE ADDED IS MOD-ARMS-ONLY, AND CANNOT BE BACKFILLED.
-// `va_out`/`va_in` ship in SAVE_SUMMARY_VERSION 6 (2026-08-18). The pinned vanilla baseline
-// 20260813_083557 is **v4**, no vanilla arm anywhere in sessions/ is above v5, and the saves behind
-// them are reaped. So metric 2 has NO vanilla denominator today and is reported mod-vs-mod. The
-// vanilla runs scheduled for 2026-08-22/23 will be v6 and close it.
+// ⚠ VALUE ADDED NEEDS SAVE_SUMMARY_VERSION 6 (2026-08-18), and summaries cannot be backfilled (the saves are reaped).
+// The first pinned vanilla baseline, 20260813_083557, is v4 and has none. Every vanilla reference since 2026-08-21
+// (lib_runs.VANILLA_REF) carries v6+, so against it metric 2 has a vanilla side; against the old baseline it is mod-vs-mod.
 //
 // USAGE
 //   node tools/testbed/ledger/tiered_panel.mjs \

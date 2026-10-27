@@ -4,43 +4,43 @@
   "tokens": [
     {
       "name": "__SESSION__",
-      "from": "fill_tokens.mjs",
+      "from": "tokens.json (written by hand; fill_tokens.mjs is legacy, README §2)",
       "required": true,
       "means": "session folder name; also the staleness key"
     },
     {
       "name": "__ARM__",
-      "from": "fill_tokens.mjs",
+      "from": "tokens.json (written by hand; fill_tokens.mjs is legacy, README §2)",
       "required": true,
       "means": "arm kind + the frozen config and its sha"
     },
     {
       "name": "__N__",
-      "from": "fill_tokens.mjs",
+      "from": "tokens.json (written by hand; fill_tokens.mjs is legacy, README §2)",
       "required": true,
       "means": "runs COUNTED, after L17 excludes incomplete ones"
     },
     {
       "name": "__GAME__",
-      "from": "fill_tokens.mjs",
+      "from": "tokens.json (written by hand; fill_tokens.mjs is legacy, README §2)",
       "required": true,
       "means": "game build every run actually ran on"
     },
     {
       "name": "__DELTA__",
-      "from": "fill_tokens.mjs",
+      "from": "tokens.json (written by hand; fill_tokens.mjs is legacy, README §2)",
       "required": true,
       "means": "what changed vs the previous batch's arm"
     },
     {
       "name": "__BASE__",
-      "from": "fill_tokens.mjs",
+      "from": "tokens.json (written by hand; fill_tokens.mjs is legacy, README §2)",
       "required": true,
       "means": "comparison baseline + whether it is same-night"
     },
     {
       "name": "__HEALTH__",
-      "from": "fill_tokens.mjs",
+      "from": "tokens.json (written by hand; fill_tokens.mjs is legacy, README §2)",
       "required": true,
       "means": "one-line batch health chip"
     },

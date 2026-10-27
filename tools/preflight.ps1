@@ -362,7 +362,7 @@ function Test-LmL14 {
       DETECTOR. tools/verify_start_techs.mjs --vs-vanilla, over the EMITTED history - ours is the only
       history the engine reads, via replace_paths.
 
-      IT COMPARES AGAINST VANILLA RATHER THAN DEMANDING ZERO. Vanilla itself fails on six countries,
+      IT COMPARES AGAINST VANILLA RATHER THAN DEMANDING ZERO. Vanilla itself fails on three countries (1.13),
       so an absolute pass is unreachable and a build demanding one could never go green. What we hold
       ourselves to is introducing no NEW gap, which is the real requirement and is computable because
       the same analysis runs unchanged against the game's own directory.
@@ -960,9 +960,10 @@ function Test-LmL28 {
       the length is read through a handle, an unreadable signature waits, and a signature taken from a short file is
       compared as a prefix).
       This entry is the ARTIFACT-side check: every false rotation left a seam line reading
-      `recovered 0 chars from []`, so a session on disk says for itself whether its mirrors carry
-      duplicated chunks. FAIL = at least one such seam in any run; count PMR_JE and event lines from
-      such a mirror only after de-duplicating (tools/testbed/ledger/je_tally.mjs does).
+      `recovered 0 chars from []` and re-read the current file from offset 0, so the lines after such a seam
+      repeat the lines that began that file's reading (THE TEST below, 2026-10-21; a bare zero-recovery seam
+      is not enough — a real rotation leaves one too). FAIL = at least one such re-read in any run; count
+      PMR_JE and event lines from such a mirror only after de-duplicating (tools/testbed/ledger/je_tally.mjs does).
     #>
     if (-not $Session) { Add-Result 'L28' 'log mirror re-copied on a false rotation' 'N/A' 'no -Session given (this entry is post-run)'; return }
     if (-not (Test-Path $Session)) { Add-Result 'L28' 'log mirror re-copied on a false rotation' 'FAIL' "no such session: $Session"; return }
@@ -1694,10 +1695,10 @@ $CHECKS = @(
     @{ Id = 'L7'; Artifact = $true;  Fn = { Test-LmL7 } },
     @{ Id = 'L8'; Artifact = $false; Fn = { Test-LmL8 } },
     @{ Id = 'L9'; Artifact = $false; Fn = { Test-LmL9 } },
-    # L12 needs a finished SESSION, not a mod - it and L26 are the two post-run entries, and both report N/A
-    # (never FAIL) when no -Session is given, so it costs a build nothing.
+    # L12 needs a finished SESSION, not a mod - like every post-run entry (L12, L17, L26, L28, L29, L32, L34, L42, and L38's
+    # second half) it reports N/A (never FAIL) when no -Session is given, so it costs a build nothing.
     @{ Id = 'L12'; Artifact = $false; Fn = { Test-LmL12 } },
-    # L26 is the SECOND post-run entry, same N/A-without--Session rule as L12.
+    # L26 is another post-run entry, same N/A-without--Session rule as L12.
     @{ Id = 'L26'; Artifact = $false; Fn = { Test-LmL26 } },
     @{ Id = 'L28'; Artifact = $false; Fn = { Test-LmL28 } },
     @{ Id = 'L32'; Artifact = $false; Fn = { Test-LmL32 } },

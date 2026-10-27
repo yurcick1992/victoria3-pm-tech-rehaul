@@ -134,7 +134,7 @@ derived by a `fill_*.mjs` (`fill_manifest.json`'s `_rule`). Write these into the
   left in the shell never wears the class, so the exemption cannot fire by accident.
 - **Do not run `fill_tokens.mjs`.** It is a legacy filler with a previous batch's values hardcoded (canon-n7, and a deliberately obvious
   `HEALTH CHIP NOT SUPPLIED` placeholder); `fill_assemble` takes every token from `tokens.json` and the prose files. (The manifest's
-  `from` field still names `fill_tokens.mjs` for the seven chip tokens.)
+  `from` field names `tokens.json` for the seven chip tokens since 2026-10-27.)
 - The analysis rules of CLAUDE.md §5.6 apply to the prose: profit in £, ratios with both terms, the baseline and markets named.
 
 ---

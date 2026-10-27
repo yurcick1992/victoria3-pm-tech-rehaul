@@ -184,7 +184,7 @@ export const PREREQ_ADDS = {
 
 // Rule 1 for TECHNOLOGY names: vanilla's, unless ruled here as { id: [name, why] }. Empty. (The six-rung tree renamed
 // fourteen; none is ruled for this line. The two dating corrections — pumpjacks "Oil Drilling", threshing_machine "Steam
-// Threshing" — await a ruling of their own.)
+// Threshing" — were ruled out 2026-10-24: vanilla's names stay, POLISH R9.)
 export const TECH_RENAMES_RULED = {};
 
 // ⭐⭐ PER-PM OVERRIDES ON VANILLA'S OWN METHODS — the four-rung book's copy of the rulings that are NOT about our rungs.

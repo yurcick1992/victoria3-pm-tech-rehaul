@@ -746,10 +746,10 @@ function Get-NewCrashDirs {
 }
 
 function Test-OwnSaveIsNewest {
-    # -continuelastsave loads the newest save ON THE MACHINE, not "this run's last save". If the
-    # newest save predates this run it belongs to an earlier run or to the player, and resuming
-    # would splice a foreign timeline into the data (measured: a resume once jumped FORWARD from
-    # 1836.8 to 1837.1 and skipped a dump). So only resume when this run owns the newest save.
+    # ⚠ The premise first written here — "-continuelastsave loads the newest save on the machine" — was DISPROVED
+    # (L32): the engine loads the save continue_game.json names, which the resume feeder below now writes. This
+    # check survives as a guard: a newest save older than this run belongs to an earlier run or to the player,
+    # and resuming from it would splice a foreign timeline into the data.
     param([datetime]$RunStart)
     $newest = Get-ChildItem $SaveDir -Filter *.v3 -ErrorAction SilentlyContinue |
               Sort-Object LastWriteTime -Descending | Select-Object -First 1
@@ -758,7 +758,7 @@ function Test-OwnSaveIsNewest {
     return $newest
 }
 
-# ⭐⭐ THE DETERMINISTIC RESUME FEEDER (user-designed 2026-09-14, landmine L32; HANDOVER "THE RESUME FIX", FINDINGS F117).
+# ⭐⭐ THE DETERMINISTIC RESUME FEEDER (user-designed 2026-09-14, landmine L32; the record is BUGS_AND_FIXES 2026-09-14/15).
 # The engine resumes by loading the save whose TITLE continue_game.json names - its own pointer, rewritten at every completed
 # save - NOT the newest file (probed 2026-09-14: with autosave.v3 absent and four intact slots beside it the engine logs
 # "Could not load save game [autosave]" and -handsoff begins a fresh 1836 game; a save from another campaign copied in as

@@ -554,7 +554,7 @@ pmr_mon_first_arms_factory = {
 emitMap(TRIG, 'common/scripted_triggers/zzz_pm_rehaul_industry_triggers.txt',
   '# Building scope: pmr_is_<industry>[_<set>], pmr_runs_<vanilla main method>, pmr_runs_sec_<vanilla secondary>, pmr_can_promise_*.\n' +
   '# State or country scope: pmr_has_<industry>[_<set>], pmr_has_active_<industry>, pmr_state_runs_*. A set is all, nc (crafts out), e<k>plus,\n' +
-  '# e<k> or e<a>_e<b> by the rung\'s narrative era; a merged rung is its host building running its main method.\n');
+  '# e<k> or e<a>_e<b> by the rung\'s tier (the config field is still era); a merged rung is its host building running its main method.\n');
 
 // ------------------------------------------------------------------------------------------------ throughput modifier types
 // vanilla hand-enumerates building_<key>_throughput_add; emit_companies declares the ones company prosperity names. Declare the rest.

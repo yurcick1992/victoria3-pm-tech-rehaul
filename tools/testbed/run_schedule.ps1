@@ -68,7 +68,7 @@ param(
     # ~nothing per run. A final synchronous drain always follows the run, so a dead watcher costs
     # nothing but time.
     # ⚠ The concurrent melt costs ~5 s of ONE core per save, on a 20-core machine against a mostly
-    # single-threaded engine. Believed negligible; NOT measured. `-HarvestWorkers 0` restores the old
+    # single-threaded engine. Measured negligible (FINDINGS F217 §1). `-HarvestWorkers 0` restores the old
     # drain-between-runs shape for a batch that needs the machine perfectly quiet.
     [switch] $NoSaveHarvest,
     [int]    $HarvestWorkers = 4,

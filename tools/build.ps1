@@ -2,14 +2,14 @@
   PM & Tech Rehaul - mod builder.
 
   Reads config/mod_config.json and generates the whole mod:
-    mod/common/buildings/{01_industry,06_urban_center,11_private_infrastructure}.txt
+    mod/common/buildings/01_industry.txt + each industry's source_file (the canon: 06_urban_center)
                                                          (WHOLE-FILE replacements of vanilla)
     mod/common/production_methods/zzz_pm_rehaul_01_industry.txt        (our tier main PMs, additive)
     mod/common/production_method_groups/zzz_pm_rehaul_01_industry.txt  (additive)
     mod/common/production_methods/<vanilla file>.txt     (whole-file replacement, but ONLY for the
                                                          files we actually change: the secondary-PM
                                                          gate remap and any pm_goods override)
-    mod/common/ai_strategies/01_admin_strategies.txt     (WHOLE-FILE replacement: AI subsidy policy — emitted ONLY when the book sets building_subsidies (non-vanilla) or subsidy_conditional; the canon sets neither, so it is left vanilla)
+    mod/common/ai_strategies/01_admin_strategies.txt     (WHOLE-FILE replacement: AI subsidy policy — emitted ONLY when the book sets building_subsidies (non-vanilla) or subsidy_conditional; the canon sets building_subsidies — the four dam types must_have, tooling workshop and explosives factory none)
     mod/common/on_actions/zzz_pm_rehaul_diag.txt         (self-diagnostic tripwire)
     mod/common/on_actions/zzz_v3tb_telemetry.txt         (testbed telemetry, when asked for)
     mod/common/history/buildings/*.txt                   (the re-tiered 1836 start, via convert_history)
@@ -854,8 +854,8 @@ if ($isAlt) {
 
 # --- buildings: REPLACE each OWNED vanilla buildings file (same filename) ---
 # V3 rejects a redefined building key that comes from a different file, so the mod must OWN the whole
-# file. We own 01_industry.txt (manufacturing) plus any industry's source_file (06_urban_center for
-# power, 11_private_infrastructure for port/railway). For each owned file: copy vanilla, swap each of
+# file. We own 01_industry.txt (manufacturing) plus any industry's source_file (in the canon only the art
+# academy's 06_urban_center; the retired port/railway books also named 11_private_infrastructure). For each owned file: copy vanilla, swap each of
 # OUR base building blocks (that belong to that file) for our (base + tier) set, keep everything else
 # verbatim; append any of our new industries that have no vanilla anchor in that file.
 # ai_value overrides for PRESERVED buildings in owned files (config top-level building_ai_value map).
