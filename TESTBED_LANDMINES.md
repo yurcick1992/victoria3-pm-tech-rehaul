@@ -92,7 +92,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L26 | one run folder holding two campaigns, recorded as a clean run | `Test-LmL26` | session | AUTO, proven; live check owed |
 | L27 | an industry loop that keeps the disabled industries | `Test-LmL27` | build, repo | AUTO, proven |
 | L28 | the log mirror re-copied the current log on a false rotation | `Test-LmL28` | session | AUTO, proven |
-| L29 | the observer died on its own log line; a reader holding a log open drops lines | retrying writers; scheduler abort; `Test-LmL29` | harness, session (WARN) | fixed; abort proof owed |
+| L29 | the observer died on its own log line; a reader holding a log open drops lines | retrying writers; scheduler abort; `Test-LmL29` | harness, session (WARN) | fixed; abort proven live 2026-10-28 |
 | L30 | a batch launched from the agent's tool shell dies with the app | `launch_detached.ps1`; scheduler ALERT | harness | AUTO, proven |
 | L31 | a rung placed or priced by its order in the industry, not by its tier | `lint_tier_eras.mjs`; `Test-LmL31` | lint, build, repo | AUTO, proven |
 | L32 | a CTD during the autosave write leaves the continue pointer aimed at a save that does not exist | `Test-LmL32`; the resume feeder | session, harness | AUTO, proven |
@@ -137,7 +137,9 @@ When a run surfaces a new one:
 2. **Write the detector** as `Test-Lm<ID>` in `tools/preflight.ps1` and register it in `$CHECKS` (`Artifact = $true` if it needs a built
    mod). Read the emitted artifact, not the generator.
 3. **Prove the tripwire trips.** Break the thing on purpose, watch preflight fail, revert, watch it pass, and record the proof in the
-   entry. A guardrail that has never failed is not known to work.
+   entry. A guardrail that has never failed is not known to work. Run it the way the scheduler does too —
+   `powershell -Command "Set-StrictMode -Version 2.0; & '.\tools\preflight.ps1' -RepoOnly -Only <ID>"` — because `run_schedule.ps1`'s
+   StrictMode is inherited, and a check that passes by hand can throw there and stop a batch at its gate (BUGS_AND_FIXES 2026-10-28).
 
 **A detector that can be code becomes code.** A manual step is one that gets skipped, and the failures in this file are the ones nobody
 notices being skipped. L3 and L10 are manual because the information is not available at build time, not because the check was
@@ -725,7 +727,10 @@ must reach a file.
 `meta.json` must have its `=== run N/M:` line in `session.log`. Proven: WARN on `20261001_215119` (runs 2 and 3 named), PASS on
 `20260929_002728`.
 
-**Owed.** A live proof of the scheduler's abort: start the game by hand, launch a throwaway 3-run schedule, expect two ALERTs and an abort.
+**Proven live** 2026-10-28 (`20261028_205335_l29-abort-proof`, schedule `l29_abort_proof.json`, control arm, no game launched): a stand-in
+`victoria3.exe` started after the scheduler's preflight gate (which since that day fails a batch while a game runs, L19); runs 1 and 2
+failed at once with an ALERT each, the scheduler aborted on the second, run 3 never started. It also found the observer's refusal reaching
+the console only — each `run.log` held just the settings-restore line — so the refusal is now written to `run.log` as an ERROR first.
 Not beside a live batch — a second scheduler shares the `STOP_ARCHIVE` / `STOP_HARVEST` signal files.
 
 ### L30 — a batch launched from the agent's tool shell dies with the app

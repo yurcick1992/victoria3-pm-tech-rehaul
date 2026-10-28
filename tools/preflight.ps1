@@ -1811,7 +1811,8 @@ function Test-LmL11 {
       Proven 2026-10-28: the three schedules carrying QIN fail it until their record names it.
     #>
     $T = 'a named tag that is no country'
-    $defDirs = @((Join-Path $GameDir 'common\country_definitions'), (Join-Path $Mod 'common\country_definitions')) | Where-Object { Test-Path $_ }
+    # @( ) around the whole pipeline: run_schedule.ps1 calls preflight under StrictMode 2.0, where .Count on a lone string throws
+    $defDirs = @(@((Join-Path $GameDir 'common\country_definitions'), (Join-Path $Mod 'common\country_definitions')) | Where-Object { Test-Path $_ })
     if (-not $defDirs.Count) { Add-Result 'L11' $T 'WARN' "no country_definitions found under $GameDir - set VIC3_GAME"; return }
     $known = @{}
     foreach ($d in $defDirs) {

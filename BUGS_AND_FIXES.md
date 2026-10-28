@@ -23,6 +23,7 @@ appended oldest first after the July ones); no entry's text changed.
 
 | date | entry | area | status | note |
 |---|---|---|---|---|
+| 2026-10-28 | a new preflight check passed when run by hand and threw inside the scheduler: StrictMode 2.0 is inherited | testbed/preflight | live | every Test-Lm* run under the scheduler's StrictMode |
 | 2026-10-28 | the save summaries froze every old country's GDP at early January 1936 in any later save: a trend ring read by position | testbed/readers | live | save_state_summary.mjs trends; landmine L43 |
 | 2026-10-27 | the aircraft carrier's technology had no naval research entry: vanilla's one multi-line `unlocking_technologies` | build/emitters | live | emit_research_events.mjs SHIP_BY_TECH |
 | 2026-10-26 | five electricity-consuming rungs could be built in a state without electricity | build/emitters | live | lint_pm_combos check 9 |
@@ -144,6 +145,24 @@ appended oldest first after the July ones); no entry's text changed.
    writing.** Every non-ASCII round trip through a tool is a silent corruption risk that reproduces only
    here — read with `-Encoding UTF8`, write with `[IO.File]::WriteAllText(..., UTF8Encoding($false))`,
    format numbers with `InvariantCulture`. Three separate bugs below share this one root.
+
+---
+
+## 2026-10-28 — a new preflight check passed when run by hand and threw inside the scheduler
+
+**Symptom.** `Test-LmL11`, built and proven the same afternoon (`preflight.ps1 -RepoOnly -Only L11` → PASS), stopped the next batch at the
+scheduler's gate: `L11 FAIL (detector error) — The property 'Count' cannot be found on this object`. Nothing was built or launched; the
+batch's console sat at its `-NoExit` prompt with no session folder.
+
+**Cause.** `run_schedule.ps1` sets `Set-StrictMode -Version 2.0` and calls `preflight.ps1` with `&`, and a script called that way inherits
+the caller's strict mode. Under StrictMode, `.Count` on a single object that is not a collection throws; the check's `Where-Object` over two
+candidate folders returned one string (the mod has no `country_definitions`). By hand, without StrictMode, `.Count` of a scalar is 1.
+
+**Fix.** Wrap the pipeline in `@( )`. Every check added that day (L9, L11, L19, L23, L37, L40, L41, L43) was then run under
+`Set-StrictMode -Version 2.0; $ErrorActionPreference = 'Stop'`: none throws.
+
+**Rule.** Prove a new `Test-Lm*` the way the scheduler calls it — `powershell -Command "Set-StrictMode -Version 2.0; & '.\tools\preflight.ps1' -RepoOnly -Only <ID>"` —
+not only by hand. Found by the L29 live proof (`20261028_205335_l29-abort-proof`), whose first launch it stopped.
 
 ---
 

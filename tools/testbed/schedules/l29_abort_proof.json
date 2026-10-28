@@ -1,0 +1,26 @@
+{
+  "schedule_version": 1,
+  "label": "l29-abort-proof",
+  "_why": "The live proof owed by TESTBED_LANDMINES L29 / L19: run_schedule.ps1 aborts the whole schedule after two consecutive instant failures (an observer that exits non-zero under 90 s never got the game running). A stand-in process named victoria3.exe (ping.exe copied, the L19 proof's stand-in) is started AFTER the scheduler's preflight gate has passed, so every observer refuses beside it, as it would beside a game orphaned mid-batch. The user, 2026-10-28: 'Go on now.'",
+  "_arms": { "control": "{kind: control} - vanilla + telemetry; chosen so that, if the refusal somehow did not fire, the run would be a vanilla game that quits at 1836.3.1" },
+  "_predictions": {
+    "run 1": "the observer refuses ('Victoria 3 is already running (PID ...)'), exits non-zero in seconds; the scheduler logs an ALERT naming L19/L29",
+    "run 2": "the same; the scheduler logs a second ALERT and 'TWO CONSECUTIVE INSTANT FAILURES ... Aborting the whole schedule'",
+    "run 3": "never started; no game launched at any point"
+  },
+  "_stop_rule": "the abort under test",
+  "_cost": "3 builds of the control arm at most and no game time; a few minutes",
+  "defaults": {
+    "tags": ["GBR"],
+    "metrics": ["country_state"],
+    "timeout_minutes": 10
+  },
+  "setups": {
+    "control": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "control", "until": "1836.3.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "control", "until": "1836.3.1", "dump_dates": ["1836.2.1"] },
+    { "setup": "control", "until": "1836.3.1", "dump_dates": ["1836.2.1"] }
+  ]
+}

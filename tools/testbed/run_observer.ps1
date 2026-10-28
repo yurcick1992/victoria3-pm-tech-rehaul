@@ -940,7 +940,11 @@ try {
     # the process might be a game the user is actually playing.
     $running = @(Get-Process victoria3 -ErrorAction SilentlyContinue)
     if ($running.Count -gt 0) {
-        throw "Victoria 3 is already running (PID $($running[0].Id)). Close it first - a second instance would write to the same logs\ folder and corrupt this session's harvest."
+        # to run.log as well (L29: what a harness says on the way down must reach a file; the 2026-10-28 live proof found this
+        # refusal only in the console, the run's run.log holding just the settings-restore line)
+        $why = "Victoria 3 is already running (PID $($running[0].Id)). Close it first - a second instance would write to the same logs\ folder and corrupt this session's harvest. (L19)"
+        Write-Log $why "ERROR"
+        throw $why
     }
 
     Write-Log "session $Stamp -> $SessionDir"
