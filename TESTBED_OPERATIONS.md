@@ -208,6 +208,7 @@ powershell -ExecutionPolicy Bypass -File tools\testbed\wait_for_session.ps1 -Ses
 | `DEAD` | 2 | no game process and no completion marker for `-DeadGraceSeconds` (default 900) |
 | `STALLED` | 3 | nothing anywhere in the session tree written for `-StallMinutes` (default 20), whatever the processes claim (L21) |
 | — | 4 | the session path does not exist (a mangled argument, never reported as a stall) |
+| `FROZEN` | 5 | the game runs and the harness writes, but the newest run's in-game date has not moved for `-FrozenMinutes` (default 15) — a game paused by a click in its window (L41; the player pause is quoted if on record): unpause it, or stop and resume the run |
 
 Read the printed status, not the exit code (DONE and RUNNING are both 0). A watcher that matched only success could not be told
 apart from a broken one, which is why STALLED and the heartbeat exist.

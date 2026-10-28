@@ -1686,6 +1686,41 @@ function Test-LmL38 {
     Add-Result 'L38' $T 'PASS' ((($out2.Trim() -split "`r?`n")[-1]) + " | $self")
 }
 
+function Test-LmL41 {
+    <#
+      L41 - A GAME PAUSED BY INPUT LOOKS LIKE A HEALTHY RUN (found 2026-10-23, run 13 of 20261021_224949_alt-vanilla-canon-n16, vanilla).
+
+      The engine's automatic pause toggles carry PlayerID 0 and always resume. 'Pause Toggled! Paused: true, PlayerID: 1' is PLAYER INPUT
+      - a click or keypress in the game window. While paused the observer keeps writing the same in-game date every 20 s, so the waiter's
+      STALLED never fires (the live half is wait_for_session.ps1's FROZEN, exit 5, since 2026-10-28), and the run's timeout ends it short
+      of its target. Even a pause that was lifted corrupts the run's wall clock: play time rebuilt from the tick lines counts the paused
+      interval, and a slowdown-episode reader sees a monstrous year.
+
+      DETECTOR (post-run): any run whose mirrored dedicated_server.log carries a player pause; it prints each pause and the next unpause,
+      the interval to remove before reading the run's wall clock. Proven on the run that found it. N/A without -Session.
+    #>
+    $T = 'a game paused by input looks like a healthy run'
+    if (-not $Session) { Add-Result 'L41' $T 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L41' $T 'FAIL' "no such session: $Session"; return }
+    $bad = @(); $checked = 0
+    foreach ($run in @(Get-ChildItem $Session -Directory -Filter 'run*')) {
+        $ds = Join-Path $run.FullName 'logs_live\dedicated_server.log'; if (-not (Test-Path $ds)) { continue }
+        $checked++
+        $toggles = @(Select-String -LiteralPath $ds -Pattern 'Pause Toggled! Paused: (true|false), PlayerID: (\d+)' -ErrorAction SilentlyContinue)
+        for ($i = 0; $i -lt $toggles.Count; $i++) {
+            $m = $toggles[$i].Matches[0]
+            if ($m.Groups[1].Value -ne 'true' -or $m.Groups[2].Value -eq '0') { continue }
+            $from = ($toggles[$i].Line -split '\]')[0].TrimStart('[')
+            $next = $toggles | Select-Object -Skip ($i + 1) | Where-Object { $_.Matches[0].Groups[1].Value -eq 'false' } | Select-Object -First 1
+            $to = $(if ($next) { ($next.Line -split '\]')[0].TrimStart('[') } else { 'never unpaused' })
+            $bad += "$($run.Name): paused by player $from -> $to"
+        }
+    }
+    if ($bad.Count) { Add-Result 'L41' $T 'FAIL' ("$($bad.Count) player pause(s) - remove each interval from the run's wall clock, and check the run reached its target: " + ($bad -join '; ')) }
+    elseif ($checked -eq 0) { Add-Result 'L41' $T 'N/A' 'no mirrored dedicated_server.log in this session yet' }
+    else { Add-Result 'L41' $T 'PASS' "$checked run(s), no player pause" }
+}
+
 function Test-LmL43 {
     <#
       L43 - A SAVE SUMMARY READS A COUNTRY'S TREND RING BY POSITION, NOT BY ITS INDEX (found 2026-10-28, the price-band
@@ -1731,6 +1766,8 @@ $CHECKS = @(
     @{ Id = 'L34'; Artifact = $false; Fn = { Test-LmL34 } },
     # L42: a run abandoned as a foreign save by the landing guard after an early-death fresh restart (post-run, N/A without -Session)
     @{ Id = 'L42'; Artifact = $false; Fn = { Test-LmL42 } },
+    # L41: a player pause in a run's mirrored dedicated_server.log (post-run, N/A without -Session; the live half is the waiter's FROZEN)
+    @{ Id = 'L41'; Artifact = $false; Fn = { Test-LmL41 } },
     # L29's reader side: a session.log that lost its run lines to a reader holding it open (WARN only; post-run)
     @{ Id = 'L29'; Artifact = $false; Fn = { Test-LmL29 } },
     # L20 reads the CONFIG, not the mod, so it gates a batch before anything is built - which is the

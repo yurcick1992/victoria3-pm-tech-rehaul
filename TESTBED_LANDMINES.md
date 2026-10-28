@@ -104,7 +104,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L38 | a save summary that keeps one country record per definition | `Test-LmL38` | build, repo, session | AUTO, proven |
 | L39 | a replaced vanilla file that loses a DLC gate | `check_dlc_gates.mjs` | every build | AUTO, proven |
 | L40 | vanilla script that names a rung-0 key or a renamed method | `emit_vanilla_refs.mjs` scan; smoke check | every build; by hand | AUTO + MANUAL |
-| L41 | a game paused by input looks like a healthy run | — | while a batch runs | MANUAL; OPEN |
+| L41 | a game paused by input looks like a healthy run | waiter FROZEN (exit 5); `Test-LmL41` | harness, session | AUTO, proven; the observer's own recovery owed |
 | L42 | a run lost to the observer's landing guard after an early-death fresh restart | `Test-LmL42` | session | AUTO, proven; fixed |
 | L43 | a save summary reads a country's trend ring by position, not by its index | `Test-LmL43` | build, repo | AUTO, proven; fixed |
 
@@ -954,9 +954,15 @@ reader sees a monstrous year. Remove the interval from the `Paused: true` line t
 **Found.** 2026-10-23, run 13 of `20261021_224949_alt-vanilla-canon-n16`: paused at 12:00:31, the clock held at 1871.7.24 for over two
 hours (SESSION_VERDICTS: run 13 void).
 
-**Detector.** MANUAL for now: watch the newest run's last `in-game` date; unchanged for 15 minutes while the game runs means frozen. Owed:
-a FROZEN verdict in `wait_for_session.ps1` and a post-run check that flags any `Paused: true, PlayerID: 1` line — both after the batch, since
-no `tools/testbed/**` edit may land while one runs.
+**Detector** (since 2026-10-28), two halves:
+- **Live:** `wait_for_session.ps1` returns **FROZEN (exit 5)** when the newest run's in-game date stands still for `-FrozenMinutes` (15)
+  while the game runs, and quotes the player pause if one is on record. Proven on a scratch session with a stand-in `victoria3` process:
+  a run log stuck at 1871.7.24 → FROZEN after one minute; an advancing one → RUNNING.
+- **Post-run:** `Test-LmL41` (`preflight.ps1 -Session`) FAILs on any `Paused: true, PlayerID: 1` in a run's mirrored `dedicated_server.log`
+  and prints each pause with the next unpause, the interval to remove from the run's wall clock. Proven: FAIL on `20261021_224949`
+  (run013_vanilla, 12:00:31 → 16:16:26), PASS on `20261023_161802`'s 20 runs.
+
+Still owed: the observer recovering by itself (kill the frozen game and resume it through the feeder).
 
 ### L42 — a run lost to the observer's own landing guard: a crash after an early-death fresh restart is read as a foreign save
 

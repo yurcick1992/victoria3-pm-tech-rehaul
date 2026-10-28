@@ -18,7 +18,9 @@
   Exit 3 means STALLED: the harness is alive but NOTHING in the session tree has been written for
   -StallMinutes. Exit 4 means BAD SESSION - the path does not exist, or its tree enumerates nothing;
   that is a broken ARGUMENT, and reporting it as STALLED would be a watcher failing in the flattering
-  direction (it happened, on the day STALLED shipped).
+  direction (it happened, on the day STALLED shipped). Exit 5 means FROZEN (L41, 2026-10-28): the game
+  runs and the harness writes, but the newest run's in-game date has not moved for -FrozenMinutes -
+  a game paused by a click in its window looks exactly like that, and STALLED cannot see it.
 
   WHY STALLED EXISTS (landmine L21, 2026-08-18). "Alive" is not "working". A build failed in 3
   seconds and the scheduler blocked on its own output pipeline: no game, no completion marker, a
@@ -40,7 +42,7 @@
 
   Usage:
     wait_for_session.ps1 -Session <dir> [-MaxMinutes 30] [-PollSeconds 30] [-DeadGraceSeconds 900]
-                         [-StallMinutes 20]
+                         [-StallMinutes 20] [-FrozenMinutes 15]
 #>
 param(
     [Parameter(Mandatory=$true)][string]$Session,
@@ -57,7 +59,12 @@ param(
     # seconds, and a build writes build.log - so under any healthy stage something ticks within
     # seconds. 20 min is ~2 orders of magnitude of slack and still 20x better than the 6 h 40 min L21
     # cost. 0 disables the check.
-    [int]$StallMinutes = 20
+    [int]$StallMinutes = 20,
+    # How long the newest run's IN-GAME date may stand still, while the game runs, before this calls it FROZEN (exit 5; landmine
+    # L41, 2026-10-28). A game paused by input keeps the observer writing a tick line every 20 s, so STALLED never fires; the date is
+    # what stops. A healthy run advances its date within a minute even in the dense 1930s; loading at the start is not counted.
+    # 0 disables the check.
+    [int]$FrozenMinutes = 15
 )
 $ErrorActionPreference = 'Stop'
 
@@ -106,8 +113,21 @@ function Get-NewestWrite {
     return $newest
 }
 
+function Get-NewestRunClock {
+    # The run being played is the one whose run.log was written last; its newest tick line names the in-game date.
+    $rl = Get-ChildItem $Session -Directory -Filter 'run*' -ErrorAction SilentlyContinue |
+          ForEach-Object { Get-Item -LiteralPath (Join-Path $_.FullName 'run.log') -ErrorAction SilentlyContinue } |
+          Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    if (-not $rl) { return $null }
+    $m = Get-Content -LiteralPath $rl.FullName -Tail 40 -ErrorAction SilentlyContinue | Select-String -Pattern 'in-game (\S+)' | Select-Object -Last 1
+    if (-not $m) { return $null }
+    return [pscustomobject]@{ Run = $rl.Directory.Name; Dir = $rl.Directory.FullName; Date = $m.Matches[0].Groups[1].Value }
+}
+
 $lastWrite   = Get-NewestWrite
 $lastWriteAt = Get-Date
+$clockKey    = $null
+$clockAt     = Get-Date
 
 while ($true) {
     $done = $false
@@ -158,6 +178,24 @@ while ($true) {
             Write-Output "  (L21: a failed build used to block the scheduler here for hours - check build.log first)"
             Write-Output ((Get-Content $log -ErrorAction SilentlyContinue | Select-Object -Last 5) -join "`n")
             exit 3
+        }
+    }
+
+    # ---- FROZEN: the game runs and the harness writes, but the newest run's in-game date has not moved for FrozenMinutes (L41).
+    if ($FrozenMinutes -gt 0 -and $alive) {
+        $clk = Get-NewestRunClock
+        if ($clk -and $clk.Date -ne 'loading') {
+            $key = "$($clk.Run)|$($clk.Date)"
+            if ($key -ne $clockKey) { $clockKey = $key; $clockAt = Get-Date }
+            elseif (((Get-Date) - $clockAt).TotalMinutes -ge $FrozenMinutes) {
+                Write-Output ("FROZEN - {0} has stood at in-game {1} for {2} min while the game runs" -f $clk.Run, $clk.Date, $FrozenMinutes)
+                $ds = Join-Path $clk.Dir 'logs_live\dedicated_server.log'
+                $pause = $(if (Test-Path -LiteralPath $ds) { Select-String -LiteralPath $ds -SimpleMatch 'Paused: true, PlayerID: 1' -ErrorAction SilentlyContinue | Select-Object -Last 1 })
+                if ($pause) { Write-Output "  a PLAYER pause is on record (L41: a click or keypress in the game window): $($pause.Line.Trim())" }
+                else { Write-Output "  no player pause on record - a hang or a livelock; check the game window and debug.log" }
+                Write-Output "  (the run's own timeout would end it short of its target; unpause the game, or stop and resume the run)"
+                exit 5
+            }
         }
     }
 

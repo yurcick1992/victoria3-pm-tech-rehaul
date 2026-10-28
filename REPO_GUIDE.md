@@ -1130,8 +1130,9 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   `pdx_settings.json` and every autosave slot, sets monthly autosave (first save 1836.2.1). `[-WithMod] [-Autosave monthly]`; `-Restore`
   puts it all back. Status: current.
 - **`wait_for_session.ps1`** — the wake-up signal for a batch in its own window (run with `run_in_background`).
-  `-Session <dir> [-MaxMinutes 30] [-PollSeconds 30] [-DeadGraceSeconds 900] [-StallMinutes 20]` → DONE · RUNNING · DEAD (exit 2) ·
-  STALLED (exit 3, no write anywhere in the session tree; 0 disables). Traps: DEAD can be a long post-run harvest. Refs: L21.
+  `-Session <dir> [-MaxMinutes 30] [-PollSeconds 30] [-DeadGraceSeconds 900] [-StallMinutes 20] [-FrozenMinutes 15]` → DONE · RUNNING ·
+  DEAD (exit 2) · STALLED (exit 3, no write anywhere in the session tree; 0 disables) · FROZEN (exit 5, the newest run's in-game date stuck
+  while the game runs; 0 disables). Traps: DEAD can be a long post-run harvest. Refs: L21, L41.
 - **`batch_heartbeat.sh`** — one read-only command per wake-up: each run's clock, CRASHED / resume / summary counts; for the newest run
   the mod marker, game-version mismatch, its `error.log` window by parsed time (wrap-safe), the classes left after the known vanilla
   noise classes (the list lives here), anything naming our files; `SCHEDULE DONE`. `bash tools/testbed/batch_heartbeat.sh <session-name>`.

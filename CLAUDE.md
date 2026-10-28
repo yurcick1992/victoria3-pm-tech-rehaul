@@ -870,7 +870,7 @@ Other flags: `-NoDeploy`, `-NoLint`, `-ControlOnly` (vanilla + telemetry; requir
   inspection (TESTBED_OPERATIONS §7.6).
 - **Which answers what.** The register's GDP, W, U\*, H and T0–T3 come from the save summaries; PI, PP and the order books from `markets.tsv`;
   research entries and events from the logs; play time from the observer's tick lines in `run.log`.
-- **Beside the run:** the background waiter (wakes the agent: DONE / RUNNING / DEAD / STALLED), the stop watcher (2+1 batches: drops `STOP`
+- **Beside the run:** the background waiter (wakes the agent: DONE / RUNNING / DEAD / STALLED / FROZEN — the in-game date stuck, L41), the stop watcher (2+1 batches: drops `STOP`
   after a broken run), the machine-load monitor (started by the scheduler, `machine_load.tsv`), the heartbeat script.
 - **After the run:** `preflight.ps1 -Session` walks the post-run landmines, `criteria.mjs` reads the register, `fill_ledger.sh` builds the
   report. The session folder's layout is TESTBED_OPERATIONS §8.6.
