@@ -16,6 +16,9 @@ Balance
 * Old plants are not pushed out as strongly as intended. Prices fall less than the design aims for: by the 1930s, building inputs cost
   about 0.93 of vanilla's price and consumer goods about 0.95 in wage terms, against an aim of 0.8. Older textile and furniture plants
   stay profitable on their luxury clothes and luxury furniture lines long after newer tiers exist.
+* Competition through trade is weak. A backward industry shrinks when a far better plant opens in its own market, but cheaper goods made
+  in other markets hardly push it out, and many markets have little or no trade capacity. Prices do not even out between markets as
+  much as intended.
 * Britain often reaches near-full employment: in 10 of 16 test campaigns, its unemployment (peasants included) stayed under 5% for 5 to
   17 years.
 * The United States often industrialises late: in most test campaigns it builds too few mines, logging camps and oil rigs between 1890

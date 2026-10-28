@@ -38,7 +38,7 @@ What is left for 1.0 is the release build ("Mod 1.0 — the remainder" below). E
 | 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 CLOSED (F255, not an issue) · P9 a ruling | — | BACKLOG B, F137, F138 |
 | 9 | margin compression | CLOSED (batch 1 out; levelling closed) | 2026-09-19 | F139, §10.86.3–.4 |
 | 10 | the tier-0 input penalty | partly superseded by the t1-anchor model; both open items CLOSED 2026-10-28 | — | F140–F148, §10.86.6–.7, §10.91.5 |
-| 11 | post-JE tech finishing and broader trade | DONE; three follow-ups OPEN | 2026-09-25 | §10.88, F160–F164 |
+| 11 | post-JE tech finishing and broader trade | DONE; follow-ups (3)(4) DEFERRED to 1.1 as known issues | 2026-09-25 | §10.88, F160–F164 |
 | 12 | craft t0 rungs | DONE (canon) | 2026-10-12 | §10.91.1, .3, .5, §10.99 |
 | 13 | six merged rungs | DONE (canon); item 3 OPEN | 2026-10-12 | §10.91.2, §10.99 |
 | 14 | the last tech rework, then the canonisation decision | DONE: the arm is the canon | 2026-10-12 | §10.96–§10.99, F223–F227 |
@@ -106,7 +106,7 @@ feature only if it needs no iteration (step 7's timeline).
 The balance campaign (BACKLOG "The order" items 2–3, section B), then the final balance check:
 - the price path and the old rung in the consumer chains — the central open problem (CLAUDE.md §2.1, F136);
 - the hoard (F135, F179 §3);
-- what is left of step 8 (P9), and step 11's follow-ups (2)–(4).
+- what is left of step 8 (P9) and step 11's follow-ups (2)–(4).
 
 ---
 
@@ -700,9 +700,9 @@ constraint (CLAUDE.md §3.2).
 **Status: DONE — canonised 2026-09-25** as trade ×1 at B 1.64 with the finish boost (§10.88). The follow-ups, numbered as when it closed:
 1. A century on the combination — answered by the later canons' centuries (F177 on).
 2. The consumer-chain old rungs still pay (87–93% of their levels profitable, F163) — the central open problem (CLAUDE.md §2.1).
-3. Britain fully employed in most seeds, with no relation to B — OPEN (BACKLOG B).
-4. A uniform trade weight is absorbed by less trade capacity, so price convergence needs another lever (trade capacity itself?) — OPEN
-   (BACKLOG B). F178 §9: in textile, furniture and tooling 28–44% of the rest of the world's old rungs sit in markets with no trade capacity.
+3. Britain fully employed in most seeds, with no relation to B — DEFERRED to 1.1, a 1.0 known issue (BACKLOG B).
+4. A uniform trade weight is absorbed by less trade capacity, so price convergence needs another lever (trade capacity itself?) — DEFERRED
+   to 1.1, a 1.0 known issue (BACKLOG B). F178 §9: in textile, furniture and tooling 28–44% of the rest of the world's old rungs sit in markets with no trade capacity.
 
 Instrument notes: size a step against the seed spread, not the hoped-for effect (F158: within-config world GDP spread 0.37–0.50); the reading
 gate applies (§10.83.8); landmine L37 (the stop watcher blind on multi-config schedules) still owes its detector.
