@@ -186,7 +186,6 @@ Closed:
 ## G. Testbed instrument (TESTBED_LANDMINES)
 
 - **OPEN (the observer half only)** · A FROZEN IN-GAME CLOCK READS AS A LIVE RUN (L41): the waiter's FROZEN (exit 5) and the post-run `Test-LmL41` are built and proven (2026-10-28); still owed: the observer recovering by itself (same in-game date for N min ⇒ kill and resume through the feeder) · run_observer.ps1, TESTBED_LANDMINES L41
-- **OPEN** · a post-run check that FAILS when a technology gating a tier is held by zero countries at the campaign end (beside the ledger, not in `preflight`) · BUGS_AND_FIXES 2026-08-30
 - **OPEN** · L37 the stop watcher goes blind on a multi-setup schedule
 - **OPEN** · detectors owed: L19 orphaned game process, L23 raw-counted repeated log lines, L11 wrong/nonexistent tag, L9 per-run error windows
 - **OPEN** · live proofs owed: quarantined-save resume hooks, L29 scheduler abort (L34’s fresh-start restart was proved live 2026-10-26 by rest20 run 20 of the alternating batch, and exposed L42)
@@ -203,6 +202,7 @@ Closed:
 - Declined 2026-10-24 by the user · an automatic detector comparing the tree twin's tech eras and prerequisites, and the `ai_defines` keys, with the installed game: covered by the update routine's full regeneration and field diff, plus a hand check of the `ai_defines` keys, both now marked "never skip" · ON_GAME_UPDATE §1 step 5
 
 Closed:
+- Done 2026-10-28 · a post-run check for dead tier gates: `ledger/dead_gates.mjs --arm <group>` fails on a gate technology held by no country in any run of the arm (pooled; a t3 gate missing from single runs is expected); PASS on the 1.0 canon's 16 runs (all 42 gates held; catalytic synthesis in 3 of 16), FAIL with one gate renamed on purpose · BUGS_AND_FIXES 2026-08-30
 - Done 2026-10-28 (user-worded) · the PAUSED hiring class relabelled in hiring_census.mjs, craft_fill.mjs, F185 and F188: it likely should depend on BUILDING_MAX_PROFIT_TO_PAUSE_HIRES, but the 1.13 engine does not read that define (F241), so in 1.13 it is a heuristic (≥ 10% employed, profit under 20% of revenue); no number changed
 - Done 2026-10-28 · L40's automated half: `Test-LmL40` (`preflight.ps1 -Session`) fails on any `Invalid Production Method` line in a run's mirrored error.log, with methods and script locations; proven FAIL on a pre-fix session (44 a run), PASS on the alternating batch · TESTBED_LANDMINES L40
 - Done 2026-10-27 · the stale comments of the 2026-10-24 doc pass (G): `build.ps1` (owned files, the canon's `building_subsidies`), `run_observer.ps1` (the disproved -continuelastsave premise, the resume record), `preflight.ps1` (three vanilla start gaps, nine post-run entries, L28's test), the ledger template (refill path, row P's grade, the v6 caption), `fill_manifest.json`, `fill_ledger.sh` (n=40), `tiered_panel.mjs`, `run_schedule.ps1` (melt cost measured, F217), `emit_vanilla_refs.mjs` (tier), `lib_tier4_spec.mjs` (R9 ruled out), `ui/builder.html`, the wage `_comment` (premium 1.0) — comments only, parse-checked. Left: `emit_ai_schooling`'s "vanilla 1.13 has 6" is right (six `ai_strategy_` blocks); `verify_tech_era_drift.mjs` already derives REPO; the `ui2` copies are a record

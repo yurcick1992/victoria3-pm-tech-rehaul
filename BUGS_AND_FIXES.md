@@ -1494,6 +1494,8 @@ it is a hypothesis with n=3 behind the observation and nothing behind the cause.
 AI demonstrably researches, or make the two reachable. And add the validator that would have caught it
 — **FAIL when a technology gating a tier is held by zero countries at the campaign end**, which is a
 post-run check rather than a build-time one, so it belongs beside the ledger, not in `preflight`.
+**Validator built 2026-10-28:** `tools/testbed/ledger/dead_gates.mjs --arm <group>` FAILs on a gate held by no country in ANY run of
+the arm (a t3 gate absent from single runs is expected, CLAUDE.md §2.2); PASS on the 1.0 canon's 16 runs, FAIL with one gate renamed.
 
 **Lesson (unchanged, and the reason the wrong version still found something real).** `payback`,
 `illogicality`, `below-best` and every macro bound are computed over buildings that EXIST. None can

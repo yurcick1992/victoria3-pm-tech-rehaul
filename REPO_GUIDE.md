@@ -1334,6 +1334,10 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
 - **`ledger/summary_drops.mjs`** — which pre-v12 summaries lost a country record and how much (Σ countries vs the complete
   `world.buildings`; dropped levels, value added, an estimated dropped GDP good for materiality only; shortlist members not on their main
   record). `--session <group> [--years 1932-1936] [--all] [--detail]`; `--check <session>` / `--selftest` are L38's halves. Refs: F186.
+- **`ledger/dead_gates.mjs`** `--arm <session[,session]>[:<setup>] [--config <book>]` — every rung's gate technology, with the runs in which
+  any country holds it at the campaign end and the median holders; exits 1 when a gate is held by no country in ANY run (dead content, the
+  2026-08-30 bug). A t3 gate missing from single runs is expected (§2.2). The book comes from `--config`, the run's `build_state.json` or the
+  session's schedule. Beside the ledger, not in preflight. Proven 2026-10-28: PASS on the 1.0 canon's 16 runs, FAIL with one gate renamed.
 - **`ledger/summary_trend_ring.mjs`** `--selftest` — L43's detector: a synthetic melt with one wrapped and one unfilled GDP ring through the
   real summary writer, which must read each at `(index − 1) mod n`. Run by `preflight.ps1` every build and before every batch. Refs: F257.
 - **`ledger/first_run_decomp.mjs`** `--arm <s>[:<setup>] [--arm …] --van <s> [--years …]` — GDP = population × productive workers per
