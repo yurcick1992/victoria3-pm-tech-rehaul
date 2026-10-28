@@ -754,7 +754,9 @@ arguments. A session folder appears within a minute or the launch did not happen
 
 **The other class stays open.** A reboot (Windows Update restarted the machine at 03:00 on 2026-09-11) kills everything, launcher or not.
 Surviving it needs a resume mode (an at-logon task that re-enters the schedule at its last completed run) or Windows Update held back for
-the batch's window; neither exists (BACKLOG §G).
+the batch's window. The resume mode was DROPPED by the user on 2026-10-28 ("a lot of work and a lot of uncertainty"): unattended it would
+also need automatic Windows login (the game wants a logged-in desktop) and a standing logon task, and nothing would wake the agent. So the
+rule is to pause Windows Update for a long batch's window, or accept the risk and relaunch the remaining runs by hand.
 
 ### L31 — a rung placed or priced by its order in the industry, not by its tier
 
