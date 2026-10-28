@@ -72,9 +72,9 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L6 | telemetry reads a script value nothing defines | `Test-LmL6` | build | AUTO |
 | L7 | a control arm carrying gameplay content | `Test-LmL7`; `-ControlOnly` throws | build | AUTO |
 | L8 | the emitted telemetry changed and the schema version did not | `Test-LmL8` | build, repo | AUTO |
-| L9 | reading the shared log ring without filtering by the run's own identity | `Test-LmL9` (regression test) | build, repo | AUTO + OPEN |
+| L9 | reading the shared log ring without filtering by the run's own identity | `Test-LmL9` | build, repo, session | AUTO, proven (2026-10-28: the error count windowed) |
 | L10 | editing the generator while a batch is running | — (`preflight` skill) | while a batch runs | MANUAL |
-| L11 | a named tag that is not the country you think it is | proposed | — | OPEN |
+| L11 | a named tag that is not the country you think it is | `Test-LmL11` (no-country tags; a wrong-country tag stays a human check) | build, repo | AUTO, proven |
 | L12 | savegames reaped without a readable summary | `Test-LmL12` | session | AUTO, proven |
 | L13 | a starting factory converted onto a tier its own production method contradicts | `lint_start_conversion.mjs` | lint | AUTO, proven |
 | L14 | a country starts with a building its own technologies cannot unlock | `Test-LmL14` | build | AUTO, proven |
@@ -82,11 +82,11 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L16 | a schedule key honoured in `defaults` for some fields and silently dropped for others | `run_schedule.ps1` | harness (batch start) | AUTO, proven |
 | L17 | a run that failed is recorded as `ok`, and the arm count silently shrinks | `Test-LmL17`; scheduler; `lib_runs` | session, harness | AUTO, proven |
 | L18 | a tier that cannot break even at any price the engine can produce | `lint_solvency.mjs` | lint | AUTO, proven |
-| L19 | an orphaned game process makes the next run fail instantly and silently | observer and scheduler guards | harness | partly guarded; OPEN |
+| L19 | an orphaned game process makes the next run fail instantly and silently | `Test-LmL19`; the observer's verified kill and refusal; the scheduler's abort | build, repo, harness | AUTO, proven |
 | L20 | an alternate config with no paired `tech_tree_options.<sfx>.json` | `Test-LmL20` | build (twice), repo | AUTO, proven |
 | L21 | a failed build hangs the scheduler instead of aborting it | `Invoke-BoundedBuild`; waiter | harness | AUTO, proven |
 | L22 | a mod `effect` block silently replacing a vanilla on_action's | `Test-LmL22` | build | AUTO, proven |
-| L23 | a log line counted raw when a burst repeats it | L28 (the mirror); reader rule | analysis | OPEN |
+| L23 | a log line counted raw when a burst repeats it | L28 (the mirror); `Test-LmL23` (the readers) | build, repo | AUTO, proven |
 | L24 | a generator's own diagnostic text leaked into an emitted script file | `Test-LmL24` | build | AUTO, proven |
 | L25 | a summary reader globs `*.json.gz` and reads the harvester's in-progress file | `Test-LmL25` | build, repo | AUTO, proven |
 | L26 | one run folder holding two campaigns, recorded as a clean run | `Test-LmL26` | session | AUTO, proven; live check owed |
@@ -115,14 +115,15 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 Walk these by hand. The `preflight` skill (`.claude/skills/preflight/SKILL.md`) carries L3 and L10.
 
 - **Before a batch.** L3: size every scope at the run's end date, not at 1836. L10: is a batch already running? L11: resolve every tag a
-  schedule names against the game files. L37: a broken run's `STOP` abandons the next run whatever its setup — on a multi-setup
+  schedule names against the game files (`Test-LmL11` checks it is a country; whether it is the country you mean stays yours). L37: a broken run's `STOP` abandons the next run whatever its setup — on a multi-setup
   schedule whose configs should not stop one another, do not arm the stop watcher.
 - **While a batch runs.** L10: queue every edit on the build path. L26: an in-game date that falls more than two years between two
   readings of one run is a second campaign — stop and relaunch. L29: never `tail -F` a live harness log. L41: an in-game date unchanged
   for 15 minutes while the game runs is frozen — look for `Paused: true, PlayerID: 1`. L40: count the vanilla-path
   `is_production_method_active` lines at the smoke check.
-- **After a batch.** `preflight.ps1 -Session`. L9: `error_log_lines` is an upper bound. L23: count non-telemetry log lines as distinct
-  tuples. L19: an orphaned `victoria3.exe` is invisible from the session that left it.
+- **After a batch.** `preflight.ps1 -Session`. L9: `error_log_lines` is the run's own window from 2026-10-28 (an upper bound before;
+  `-Session` says which sessions carry another run's lines). L23: count non-telemetry log lines as distinct tuples. L19: an orphaned
+  `victoria3.exe` is invisible from the session that left it — `preflight.ps1 -RepoOnly` names it before the next batch.
 
 ---
 
@@ -281,14 +282,21 @@ own identity, or it reads a previous session's output as this one's. A run measu
 |---|---|---|
 | telemetry lines | the per-run token | fixed |
 | the in-game clock | the line's own `[HH:MM:SS]` | fixed (it had discarded a successful resume verdict) |
-| `meta.json` → `error_log_lines` | nothing: the line count of the run's `logs_live/error.log` mirror, which begins with the ring's leftovers | OPEN — an upper bound, not a per-run number |
+| `meta.json` → `error_log_lines` | the line's own `[HH:MM:SS]`, inside the run's start-to-end window (wrap-safe; an unstamped line goes with the entry above it); `error_log_foreign_lines` beside it | fixed 2026-10-28; earlier sessions hold the raw mirror line count |
 
 The smoke check reads the run's own window instead: `batch_heartbeat.sh` keeps the error lines stamped between the run's start and now,
 wrap-safe across midnight (TESTBED_OPERATIONS §4.1); `je_tally.mjs` windows the debug mirror by the run token's position.
 
-**Detector.** `Test-LmL9` (build, repo): a regression test that the two fixes are still present (the token filter in `summarise.ps1`, the
-timestamp regex in `run_observer.ps1`). It catches someone deleting a filter, not a new unfiltered reader. Owed: `error_log_lines` counted
-inside the run's own window.
+**Since the L28 rotation handling** (September) a run's mirror starts at the game's own rotation, so it holds only the run's lines: all 39
+runs checked of the alternating batch and `b-gradient-4x3` pass, and their recorded `error_log_lines` equals the windowed count. The
+2026-08-18 `canon-n2` mirrors do not: run 1 holds 1,060 lines of an earlier session (the first stamped 22:59:17 in a run started 08:41:40),
+run 2 13,166 of run 1's. A mirror's duplicated chunk (L28) is still counted, being stamped inside the window: L28 names those runs.
+
+**Detector.** `Test-LmL9`. Repo half (build, batch gate): the three fixes are present (the token filter in `summarise.ps1`, the timestamp
+regex in `run_observer.ps1`, and `$errorLines = $errOwn` — the windowed count). It catches someone deleting a filter, not a new unfiltered
+reader. Session half (`-Session`): every run's mirrored `error.log` holds only lines stamped inside its own window, or the run is named
+with its foreign line count. **Proven** 2026-10-28: the session half fails `20260818_084128_canon-n2` (both runs) and passes the three
+later sessions; the repo half fails with the raw count restored.
 
 ### L10 — editing the generator while a batch is running
 
@@ -323,9 +331,13 @@ So the wide sweep never covered the Qing, and F33's "first telephone production 
 (Britain became the "British Republic" in 8 of the 30 phase-1 runs, F107). `je_tally.mjs` and `fill_research.mjs` join through curated
 alias maps; a name the map does not know is dropped, never guessed.
 
-**Detector.** Proposed, not written: every `c:TAG` in the emitted telemetry must match a country in `common/country_definitions/*.txt`.
+**Detector.** `Test-LmL11` (build, repo, every batch gate): every tag in every schedule's tag lists (any key `tags` or `*_tags`, at any
+depth) must be a country in the game's `common/country_definitions/*.txt` (and the mod's, if it ever has any). A schedule that already
+RAN with a bad tag keeps its record and names the tag in `_l11_known_bad_tags` (`{tag: why}`), which is printed, not failed: the three
+`QIN` schedules and `state_probe_1848.json`, whose `TWO` was meant as the Two Sicilies (`SIC`) — found by the detector's first pass.
 That catches `QIN`, not `COL` — only a human comparing intent against `capital = STATE_…` catches that, so a tag list should carry a
-comment naming each unobvious tag. Resolve a tag against the game files before believing it.
+note naming each unobvious tag. Resolve a tag against the game files before believing it. **Proven** 2026-10-28: the four schedules fail
+it until their records name the tags; a scratch schedule naming `QIN` fails it after.
 
 ### L12 — savegames reaped without a readable summary
 
@@ -481,9 +493,12 @@ failed 20 s in (SESSION_VERDICTS, `20260817_145526_anchorage-netseed-n1`). It st
 process may be another session's run or a game the user is playing. `run_schedule.ps1` aborts after two consecutive instant failures
 (observer exit non-zero under 90 s after launch), with an ALERT naming L19/L29. L17 drops the dead runs from n.
 
-**Owed.** A verifiable kill: after `Stop-Process`, poll until the process is gone, kill again, and log the outcome either way (today it
-is `Stop-Process -Force` and a 3-second sleep, unverified). A running game reported by `preflight.ps1 -RepoOnly` before a batch. Proof:
-start the game by hand, launch a schedule, expect the refusal with the PID named.
+**Built 2026-10-28.** A verified kill: every one of the observer's five kills goes through `Stop-GameVerified` — `Stop-Process`, wait up
+to 30 s for the process to be gone, `taskkill /F /T` if not, wait again, and log the outcome either way (`verified gone after N s (kill k)`,
+or an ERROR that it survived two kills). `Test-LmL19`: a running `victoria3.exe` FAILs the `-RepoOnly` batch gate (so `run_schedule.ps1`
+stops before it creates a session) and WARNs in a build; it never kills anything. **Proven** with a stand-in (`ping.exe` copied as
+`victoria3.exe`): the gate fails and names the PID, a build warns, and the verified kill takes all three paths — gone at once; a first kill
+stubbed to do nothing, taken by `taskkill` (kill 2); a process that never reads as gone, reported as SURVIVED.
 
 ### L20 — an alternate config without its paired `tech_tree_options.<sfx>.json` cannot be built
 
@@ -561,9 +576,11 @@ completing `percussion_cap` 16 times in one second, in byte-identical repeated b
 **Rule.** Count distinct identity tuples, never raw lines, and print the raw count beside the distinct one. A stage completes once per
 country per technology, so a triple cannot recur. F73's firing counts were raw, and its magnitudes do not stand (FINDINGS F73).
 
-**Detector.** The mirror half is L28's detector. The reader half is owed: `je_tally.mjs`, `tech_census.mjs`, `fill_research.mjs`,
-`peek_run.mjs` and `tech_finish_gap.mjs` de-duplicate, but `je_distribution.mjs`'s "firings" still counts raw lines, and nothing checks a
-new reader. A log line is evidence that something happened, never of how many times.
+**Detector.** The mirror half is L28's detector. The reader half is `Test-LmL23` (build, repo): every `.mjs` that parses `PMR_JE`
+lines (emitters excluded) must de-duplicate through a set named `seen` (`seen.has` + `seen.add`), the shape all seven readers use — it
+catches a reader with no de-dup set, not one keyed wrongly. `je_distribution.mjs`, the last raw counter, de-duplicates since 2026-10-28
+and prints both counts (canon-n2: 10,030 distinct triples from 10,189 raw lines). **Proven**: with its old version restored the detector
+fails naming it. A log line is evidence that something happened, never of how many times.
 
 ### L24 — a generator's own diagnostic text leaked into an emitted script file
 

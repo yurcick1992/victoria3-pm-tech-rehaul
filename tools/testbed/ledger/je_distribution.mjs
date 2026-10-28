@@ -24,7 +24,9 @@ const NAME2TAG={'Great Britain':'GBR','United Kingdom':'GBR','Russia':'RUS','Fra
  'Brazil':'BRZ','Two Sicilies':'SIC','Portugal':'POR','Netherlands':'NET'};
 
 const rows=[];            // {tech, tag|null, stage, year}
+let rawLines=0;           // L23: a stage completes once per (stage, tech, country); the log mirror can repeat a line, so count DISTINCT triples
 for(const run of RUNS){
+  const seen=new Set();
   // wall-clock -> in-game year, from the observer's own tick lines
   const rl=readFileSync(join(S,run,'run.log'),'utf8');
   const ticks=[...rl.matchAll(/^\[(\d\d):(\d\d):(\d\d)\].*?in-game (\d{4})\.(\d+)\.(\d+)/gm)]
@@ -41,11 +43,13 @@ for(const run of RUNS){
     const m=L.match(/^\[(\d\d:\d\d:\d\d)\].*PMR_JE\|([a-z]+)\|([a-z0-9_]+)\|(.+)$/);
     if(!m||m[1]<START) continue;
     if(warSet.has(m[3])) continue;                     // industry channel only
+    rawLines++;
+    const key=m[2]+'|'+m[3]+'|'+m[4].trim(); if(seen.has(key)) continue; seen.add(key);   // the first line of a triple carries its time
     const [h,mi,se]=m[1].split(':').map(Number);
     rows.push({tech:m[3], stage:m[2], tag:NAME2TAG[m[4].trim()]||null, year:at(h*3600+mi*60+se), run});
   }
 }
-console.log(`industry JE firings parsed: ${rows.length}`);
+console.log(`industry JE firings: ${rows.length} distinct (stage, tech, country) triples from ${rawLines} raw lines`);
 
 // ---- most EGREGIOUS: implementation completed farthest before the tech's own onset ----
 const impl=rows.filter(r=>r.stage==='implementation'&&TI[r.tech]?.onset);

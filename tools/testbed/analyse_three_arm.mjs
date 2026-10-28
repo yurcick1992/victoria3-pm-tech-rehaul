@@ -94,7 +94,8 @@ say('| run | arm | wall | reached | resumes | error.log lines | ours | autosaves
 say('|---|---|---|---|---|---|---|---|---|');
 for (const r of runs) {
   const m = r.meta || {};
-  // ⚠ error_log_lines is an UPPER BOUND (L9): the ring is shared, so it carries other runs' lines too.
+  // ⚠ error_log_lines is an UPPER BOUND (L9) in sessions before 2026-10-28: the ring is shared, so it can carry other runs' lines too
+  // (the observer windows it by stamp since then; `preflight.ps1 -Session` says whether a session's mirrors held foreign lines).
   // What is ours by definition is the count naming our own telemetry file, and that should be ZERO.
   let ours = '—';
   const el = join(r.runDir, 'logs_live', 'error.log');

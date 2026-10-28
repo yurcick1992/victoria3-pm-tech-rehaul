@@ -1,6 +1,7 @@
 ﻿{
     "schedule_version":  1,
     "label":  "debut-good-full-v11",
+    "_l11_known_bad_tags":  { "QIN": "no country - meant the Qing, CHI; this schedule RAN with it (20260805_150128), so the record stays as run (TESTBED_LANDMINES L11, 2026-10-28)" },
     "_why":  "Where does a newly invented good\u0027s demand come from? F28 eliminated the max_supply_share mechanism, so the largest block in the ladder has no explanation. This watches, in ONE run: the monthly order book for three deep markets, the pop-vs-nonpop channel split for two of them, a yearly wide sweep over 50 plausibly-advanced countries, and every technology acquired by every country.",
     "_note":  "EVERYTHING MUST BE IN THE SAME RUN. Dates discovered in one run do not transfer to another - seeds differ, so a targeted follow-up cannot revisit them. That is why the expensive channel split rides along instead of being deferred. CADENCE: order book monthly (3 markets); channel split YEARLY and ONE MARKET PER TICK (GBR in March, USA in April) because two markets in one tick truncates the ring; wide order-book sweep yearly in September over 50 tags - Qing, Persia or Buganda will not be first to automobiles, so naming a plausible set is legitimate and costs ~53 lines per market instead of ~5300 for all 304. MEASURED LIMIT: one good\u0027s breakdown can reach 76 KB and a whole market-tick can exceed the 2.5 MB ring, so each split dump is PARTIALLY TRUNCATED at a different good - the analyser must UNION across dumps and runs rather than expect any single dump to be complete.",
     "defaults":  {

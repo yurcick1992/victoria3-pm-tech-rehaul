@@ -857,12 +857,14 @@ function Test-LmL9 {
       startup. Anything read out of them must be filtered by the run's own identity or it reads a
       PREVIOUS session's output as this one's. Three places, three outcomes: telemetry lines are
       filtered by token (fixed, long-standing); the in-game clock was not, which threw away a
-      successful resume verdict (fixed, by the line's own [HH:MM:SS]); error counts are STILL not
-      filtered, which is why meta.json's error_log_lines is an upper bound and not a measurement.
+      successful resume verdict (fixed, by the line's own [HH:MM:SS]); the error count is filtered
+      since 2026-10-28 (meta.json's error_log_lines = the lines stamped inside the run's own window,
+      Measure-OwnErrorLines; before that the raw mirror line count, an upper bound).
 
-      DETECTOR is a presence test on the two fixes that exist, not a proof of correctness - it
-      catches a REGRESSION (someone deleting the token filter), not a new unfiltered reader. The
-      third case is open work and is reported as such rather than silently passing.
+      DETECTOR. Repo half: a presence test on the three fixes, not a proof of correctness - it
+      catches a REGRESSION (someone deleting a filter), not a new unfiltered reader. Session half
+      (-Session): every run's mirrored error.log holds only lines stamped inside its own window.
+      Proven 2026-10-28: fails 20260818_084128_canon-n2, passes the later sessions.
     #>
     $sum = Join-Path $PSScriptRoot 'testbed\summarise.ps1'
     if (-not (Test-Path $sum)) { Add-Result 'L9' 'reads the shared log ring unfiltered' 'N/A' 'summarise.ps1 not found'; return }
@@ -873,8 +875,35 @@ function Test-LmL9 {
         # the clock filter is a timestamp regex; absence of any timestamp pattern means it went away
         if ([System.IO.File]::ReadAllText($obs) -notmatch '\[\\d') { $missing += 'run_observer.ps1 no longer stamps ticks by their own clock time' }
     }
-    if ($missing.Count) { Add-Result 'L9' 'reads the shared log ring unfiltered' 'FAIL' ($missing -join '; ') }
-    else { Add-Result 'L9' 'reads the shared log ring unfiltered' 'PASS' 'token filter and clock stamp both present; error counts remain unfiltered by design (open, see register)' }
+    # the error count (2026-10-28): run_observer.ps1 counts only the lines stamped inside the run's own window
+    if ((Test-Path $obs) -and ([System.IO.File]::ReadAllText($obs) -notmatch '\$errorLines = \$errOwn')) { $missing += 'run_observer.ps1 no longer counts error_log_lines inside the run''s own window (Measure-OwnErrorLines)' }
+    if ($missing.Count) { Add-Result 'L9' 'reads the shared log ring unfiltered' 'FAIL' ($missing -join '; '); return }
+    if (-not $Session) { Add-Result 'L9' 'reads the shared log ring unfiltered' 'PASS' 'token filter, clock stamp and windowed error count all present (the post-run half needs -Session)'; return }
+    # POST-RUN half: a run's mirrored error.log must hold only lines stamped inside its own window, or its error count
+    # (and any reading of its error.log) is not the run's own. Same window as Measure-OwnErrorLines: wrap-safe, 30 s before
+    # the start to 2 min after the end, an unstamped line belonging to the entry above it.
+    $bad = @(); $checked = 0
+    foreach ($run in @(Get-ChildItem $Session -Directory -Filter 'run*')) {
+        $el = Join-Path $run.FullName 'logs_live\error.log'; $mj = Join-Path $run.FullName 'meta.json'
+        if (-not (Test-Path $el) -or -not (Test-Path $mj)) { continue }
+        try { $m = Get-Content -LiteralPath $mj -Raw | ConvertFrom-Json; $from = [datetime]$m.started; $to = [datetime]$m.ended } catch { continue }
+        $checked++
+        $s0 = $from.TimeOfDay.TotalSeconds - 30; $span = ($to - $from).TotalSeconds + 150
+        $foreign = 0; $firstForeign = $null; $mine = $true
+        foreach ($l in [IO.File]::ReadLines($el)) {
+            if ($l.StartsWith('--- harness')) { continue }
+            if ($l -match '^\[(\d\d):(\d\d):(\d\d)\]') {
+                $d = (([int]$Matches[1] * 3600 + [int]$Matches[2] * 60 + [int]$Matches[3]) - $s0) % 86400; if ($d -lt 0) { $d += 86400 }
+                $mine = ($span -ge 86400) -or ($d -le $span)
+                if (-not $mine -and -not $firstForeign) { $firstForeign = "$($Matches[1]):$($Matches[2]):$($Matches[3])" }
+            }
+            if (-not $mine) { $foreign++ }
+        }
+        if ($foreign) { $bad += "$($run.Name): $foreign line(s) outside $($from.ToString('HH:mm:ss'))-$($to.ToString('HH:mm:ss')), the first at $firstForeign" }
+    }
+    if ($bad.Count) { Add-Result 'L9' 'reads the shared log ring unfiltered' 'FAIL' ("$($bad.Count) run(s) whose mirrored error.log carries another run's lines - its error_log_lines is an upper bound; read the run's own window: " + ($bad -join '; ')) }
+    elseif ($checked -eq 0) { Add-Result 'L9' 'reads the shared log ring unfiltered' 'N/A' 'no mirrored error.log with a meta.json in this session' }
+    else { Add-Result 'L9' 'reads the shared log ring unfiltered' 'PASS' "$checked run(s), every mirrored error line inside its run's own window" }
 }
 
 # ============================================================== L12 ====
@@ -1751,6 +1780,97 @@ function Test-LmL41 {
     else { Add-Result 'L41' $T 'PASS' "$checked run(s), no player pause" }
 }
 
+function Test-LmL19 {
+    <#
+      L19 - AN ORPHANED GAME PROCESS MAKES THE NEXT RUN FAIL INSTANTLY, AND NOTHING SAYS SO (found 2026-08-17).
+
+      The game is single-instance: one left running (an orphan of a stopped run, or a game the user is playing) makes every
+      run of a batch refuse to start. The observer refuses and names the PID, and since 2026-10-28 it verifies its own kills
+      (Stop-GameVerified); this entry says it before a batch spends anything. FAIL under -RepoOnly (the batch gate in
+      run_schedule.ps1), WARN in a build (a build is not a run, and the user may be playing). Never kills anything.
+      Proven 2026-10-28 with a stand-in process named victoria3.exe.
+    #>
+    $T = 'a game process left running makes every run of a batch fail at once'
+    $running = @(Get-Process victoria3 -ErrorAction SilentlyContinue)
+    if (-not $running.Count) { Add-Result 'L19' $T 'PASS' 'no victoria3.exe running'; return }
+    $who = ($running | ForEach-Object { "PID $($_.Id) since $(try { $_.StartTime.ToString('yyyy-MM-dd HH:mm') } catch { '?' })" }) -join ', '
+    $msg = "victoria3.exe is running ($who) - a run cannot start while it lives; close it (a game you play) or end it (an orphaned run)"
+    Add-Result 'L19' $T $(if ($RepoOnly) { 'FAIL' } else { 'WARN' }) $msg
+}
+
+function Test-LmL11 {
+    <#
+      L11 - A NAMED TAG THAT IS NOT THE COUNTRY YOU THINK IT IS (found 2026-08-06: QIN in market_goods_wide's tag list).
+
+      A tag that resolves to no country covers nothing - the telemetry's existence test keeps it quiet, so nothing fails.
+      DETECTOR (repo, every build and batch gate): every tag in every schedule's tag lists (any key named 'tags' or ending in
+      '_tags', at any depth) must be a country in the game's common/country_definitions (and the mod's, if it has any). A
+      schedule that already RAN with a bad tag keeps its record and names the tag in '_l11_known_bad_tags' {tag: why}; those
+      are printed, not failed. It cannot catch a tag that is a DIFFERENT country (COL is British Columbia, not Colombia;
+      DNK an African minor, not Denmark): name every unobvious tag in a note beside the list.
+      Proven 2026-10-28: the three schedules carrying QIN fail it until their record names it.
+    #>
+    $T = 'a named tag that is no country'
+    $defDirs = @((Join-Path $GameDir 'common\country_definitions'), (Join-Path $Mod 'common\country_definitions')) | Where-Object { Test-Path $_ }
+    if (-not $defDirs.Count) { Add-Result 'L11' $T 'WARN' "no country_definitions found under $GameDir - set VIC3_GAME"; return }
+    $known = @{}
+    foreach ($d in $defDirs) {
+        foreach ($f in Get-ChildItem $d -Filter '*.txt' -File) {
+            foreach ($m in [regex]::Matches([IO.File]::ReadAllText($f.FullName), '(?m)^\s*([A-Z][A-Z0-9]{2})\s*=\s*\{')) { $known[$m.Groups[1].Value] = $true }
+        }
+    }
+    function Get-TagLists($node, $key, [System.Collections.ArrayList]$acc) {
+        if ($null -eq $node) { return }
+        if ($node -is [System.Array]) {
+            if ($key -and ($key -eq 'tags' -or $key -like '*_tags')) { foreach ($v in $node) { if ($v -is [string]) { [void]$acc.Add($v) } } }
+            else { foreach ($v in $node) { Get-TagLists $v $null $acc } }
+            return
+        }
+        if ($node -is [System.Management.Automation.PSCustomObject]) {
+            foreach ($p in $node.PSObject.Properties) { if ($p.Name -notlike '_*') { Get-TagLists $p.Value $p.Name $acc } }
+        }
+    }
+    $bad = @(); $excused = @(); $n = 0
+    foreach ($f in Get-ChildItem (Join-Path $Repo 'tools\testbed\schedules') -Filter '*.json' -File) {
+        try { $j = Get-Content -LiteralPath $f.FullName -Raw | ConvertFrom-Json } catch { continue }   # L36 and the scheduler judge malformed specs
+        $acc = New-Object System.Collections.ArrayList
+        Get-TagLists $j $null $acc
+        $n++
+        $ok = @{}; if ($j.PSObject.Properties['_l11_known_bad_tags']) { foreach ($p in $j._l11_known_bad_tags.PSObject.Properties) { $ok[$p.Name] = $true } }
+        foreach ($tag in @($acc | Select-Object -Unique)) {   # not $t: PowerShell names are case-blind, and $T is the title
+            if ($known.ContainsKey($tag)) { continue }
+            if ($ok.ContainsKey($tag)) { $excused += "$($f.Name): $tag" } else { $bad += "$($f.Name): $tag" }
+        }
+    }
+    $note = $(if ($excused.Count) { " (recorded as run with a bad tag: $($excused -join ', '))" } else { '' })
+    if ($bad.Count) { Add-Result 'L11' $T 'FAIL' ("$($bad.Count) tag(s) that are no country in the game's country_definitions - a metric on them covers nothing: " + ($bad -join '; ') + $note) }
+    else { Add-Result 'L11' $T 'PASS' "$n schedule(s), every tag a country ($($known.Count) defined)$note" }
+}
+
+function Test-LmL23 {
+    <#
+      L23 - A LOG LINE COUNTED RAW WHEN A BURST REPEATS IT (found 2026-09-04, canon-n7 run 1: 12,143 PMR_JE lines, 5,293 distinct).
+
+      A research-entry stage completes once per (stage, technology, country), but the log mirror can repeat a chunk (L28),
+      so a reader that counts lines over-counts. The reader half (the mirror half is L28): every .mjs that PARSES PMR_JE lines
+      (a regex 'PMR_JE\|' or the string 'PMR_JE|'; emitters excluded) must de-duplicate through a set named 'seen'
+      (seen.has + seen.add), the shape every reader uses. It catches a reader with no de-dup set, not one keyed wrongly.
+      Proven 2026-10-28: je_distribution.mjs, the one raw counter, fails it until fixed (10,189 raw lines, 10,030 distinct).
+    #>
+    $T = 'a research-entry log line counted raw when a burst repeats it'
+    $files = @(Get-ChildItem (Join-Path $Repo 'tools') -Recurse -Filter '*.mjs' -File |
+        Where-Object { $_.FullName -notmatch '\\sessions\\|\\node_modules\\' -and $_.Name -notlike 'emit_*' })
+    $readers = @(); $bad = @()
+    foreach ($f in $files) {
+        $src = [IO.File]::ReadAllText($f.FullName)
+        if ($src -notmatch "PMR_JE\\\||'PMR_JE\|'") { continue }
+        $readers += $f.Name
+        if ($src -notmatch 'seen\.has\(' -or $src -notmatch 'seen\.add\(') { $bad += $f.FullName.Substring($Repo.Length + 1) }
+    }
+    if ($bad.Count) { Add-Result 'L23' $T 'FAIL' ("$($bad.Count) PMR_JE reader(s) without a de-duplicating 'seen' set - count distinct (stage, tech, country) triples and print the raw count beside them: " + ($bad -join ', ')) }
+    else { Add-Result 'L23' $T 'PASS' "$($readers.Count) PMR_JE reader(s), each de-duplicating: $($readers -join ', ')" }
+}
+
 function Test-LmL37 {
     <#
       L37 - THE STOP WATCHER GOES BLIND TO THE REGISTER ON A MULTI-SETUP SCHEDULE (found 2026-09-22, 20260922_084038_b-gradient-4x3).
@@ -1823,6 +1943,12 @@ $CHECKS = @(
     @{ Id = 'L42'; Artifact = $false; Fn = { Test-LmL42 } },
     # L41: a player pause in a run's mirrored dedicated_server.log (post-run, N/A without -Session; the live half is the waiter's FROZEN)
     @{ Id = 'L41'; Artifact = $false; Fn = { Test-LmL41 } },
+    # L11: every tag a schedule names is a country in the game's country_definitions (repo)
+    @{ Id = 'L11'; Artifact = $false; Fn = { Test-LmL11 } },
+    # L23: every PMR_JE reader de-duplicates (repo)
+    @{ Id = 'L23'; Artifact = $false; Fn = { Test-LmL23 } },
+    # L19: a running victoria3.exe (FAIL at the -RepoOnly batch gate, WARN in a build)
+    @{ Id = 'L19'; Artifact = $false; Fn = { Test-LmL19 } },
     # L37: the stop watcher passes each run's setup to criteria.mjs (repo), and with -Session no run fell back to the GDP rule
     @{ Id = 'L37'; Artifact = $false; Fn = { Test-LmL37 } },
     # L40 half 2: Invalid Production Method lines in a run's mirrored error.log (post-run, N/A without -Session)

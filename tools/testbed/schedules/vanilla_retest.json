@@ -1,6 +1,7 @@
 {
   "schedule_version": 1,
   "label": "vanilla-retest",
+  "_l11_known_bad_tags": { "QIN": "no country - meant the Qing, CHI; this schedule RAN with it (20260805_234555), so the record stays as run (TESTBED_LANDMINES L11, 2026-10-28)" },
   "_why": "THE RE-TEST. Every consumer-behaviour conclusion of 2026-08-05 (F31/F32/F33 and the debut-good family) was measured on config/mod_config.json - our full tiered mod - when the question was about the GAME. This session re-takes all of it on TRUE VANILLA, and adds the weight experiment as a treatment arm against that same vanilla control. Two programmes in one launch, probes first so a late crash cannot cost them.",
   "_arms": "vanilla = {kind: control}, vanilla + telemetry, zero gameplay content (build_state.json records arm=control, deviates_from_vanilla=[]). vanilla_x10 = {kind: control, config: config/vanilla_weight_x10.json}, which is vanilla + telemetry + common/pop_needs/00_pop_needs.txt and NOTHING else - 4 weight lines changed across 3 goods (automobiles in free_movement and leisure, steamers in leisure, luxury_furniture in luxury_items). Its control is runs 17-18 of THIS session.",
   "_programme1": "Runs 1-16, 1836 only, ~35 min total. Runs 1-14 re-take the pop-consumption measurement behind F19/F22/F23/F24/F27/F31 (one market per run, twice each, mirroring 20260802_233029_rescore-direct exactly except for the arm). Runs 15-16 regenerate config/measured_1836.json, which was itself built from a CONFIG-arm session and feeds every scenario preset in the balance UI.",

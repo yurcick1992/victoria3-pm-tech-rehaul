@@ -46,9 +46,10 @@ for an explicit go-ahead.
 The landmines all present as *plausible* data, so "the numbers look odd" is the symptom. In order:
 
 1. `meta.json` → `error_log_lines`. Low thousands is normal for a control; hundreds of thousands
-   means a metric is erroring every tick. ⚠ It is **not a per-run number** (L9) — it includes
-   whatever the shared ring still held, so treat it as an upper bound and confirm by looking for
-   lines naming `zzz_v3tb_telemetry.txt`, which are ours by definition and should be **zero**.
+   means a metric is erroring every tick. ⚠ It is the run's own window only from 2026-10-28 (L9;
+   `error_log_foreign_lines` beside it should be 0); in an older session it is an upper bound —
+   `preflight.ps1 -Session` says which. Confirm by looking for lines naming
+   `zzz_v3tb_telemetry.txt`, which are ours by definition and should be **zero**.
 2. `summary.json` → `integrity.partial_dumps`. A truncated dump is ring loss (L4), not a finding.
 3. The run's own `telemetry.json`. Compare it against what the schedule asked for — a key present in
    the schedule and absent here was dropped in transit (L5).

@@ -1,6 +1,7 @@
 {
   "schedule_version": 1,
   "label": "state-probe-1848",
+  "_l11_known_bad_tags": { "TWO": "no country - meant the Two Sicilies, SIC; this schedule RAN with it (20260731_222719), so the record stays as run (TESTBED_LANDMINES L11, 2026-10-28)" },
   "_why": "Validate the v4 STATE metric (at_war / civil_war / revolutionary / in_default) against the 1848 revolution wave, which is near-guaranteed. Snapshots are dense through 1846-1853 so a revolutionary tag is caught while it exists - they are temporary. Tag list widened to the European majors most likely to revolt. If every STATE value comes back 0 the metric is broken, not the world at peace.",
   "defaults": {
     "tags": ["GBR", "FRA", "PRU", "GER", "NGF", "AUS", "HUN", "RUS", "USA", "CHI", "BIC", "TUR", "SPA", "POR", "SAR", "TWO", "PAP", "BAV", "NET", "BEL", "DEN", "SWE"],

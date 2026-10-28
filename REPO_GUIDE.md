@@ -1118,8 +1118,11 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   Flags include `-DumpDates`, `-ModPath`, `-Stamp`, `-AutosaveInterval`, `-ContinueSave`, `-PriorWallSeconds`, `-ExtraGameArgs`,
   `-DisableAllDlc` (every installed DLC's `pops_id` into `content_load.json`'s `disabledDLC`; meta.json records `disabled_dlc`, the
   `dlc_mounted` read off debug.log's mount lines, and `no_dlc_verified`; MODDING_NOTES has the format). Refuses a
-  mod without telemetry (it has no generator). Status: current; a hand run is a diagnostic. Traps: `-script_profiling` crashes a headless
-  game. Refs: MODDING_NOTES (Automated headless runs), L17, L26, L28, L32, L34.
+  mod without telemetry (it has no generator). Refuses to start while any `victoria3.exe` runs; every kill is verified
+  (`Stop-GameVerified`: waits for the process to be gone, `taskkill /T` if not, logs the outcome, L19). meta.json's `error_log_lines` counts
+  only the mirrored error lines stamped inside the run's own window, `error_log_foreign_lines` the rest (L9, since 2026-10-28). Status:
+  current; a hand run is a diagnostic. Traps: `-script_profiling` crashes a headless game. Refs: MODDING_NOTES (Automated headless runs),
+  L9, L17, L19, L26, L28, L32, L34.
 - **`launch_detached.ps1`** — creates a process through WMI `Win32_Process.Create`, in no job object of the caller (the agent's shells
   sit in the desktop app's kill-on-close jobs), and kills it if the kernel says it is in one.
   `& 'tools\testbed\launch_detached.ps1' -File <script.ps1> -ArgumentList '<a>','<b>' [-Hidden] [-NoExit] [-WorkingDirectory] [-VerifySeconds 4]`

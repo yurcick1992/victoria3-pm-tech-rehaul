@@ -744,6 +744,50 @@ function Set-GlobalStop {
     Set-Content -Path $GlobalStopFile -Value $Why -Encoding utf8   # seen by a parent batch driver
 }
 
+function Measure-OwnErrorLines {
+    # L9: the game's logs are a ring shared by every run, so a mirror can begin with an earlier run's lines (the 2026-08-18
+    # canon-n2 mirrors did; since the L28 rotation handling a mirror starts at the run's own rotation). Count only the lines
+    # whose [HH:MM:SS] stamp falls inside this run's own window - wrap-safe across midnight; a line without a stamp belongs
+    # to the entry above it; the harness's own '---' lines count nowhere. Returns @(own, foreign).
+    param([string]$Path, [datetime]$From, [datetime]$To)
+    if (-not (Test-Path -LiteralPath $Path)) { return @(0, 0) }
+    $s0 = $From.TimeOfDay.TotalSeconds - 30; $span = ($To - $From).TotalSeconds + 150
+    $own = 0; $foreign = 0; $mine = $true
+    foreach ($l in [IO.File]::ReadLines($Path)) {
+        if ($l.StartsWith('--- harness')) { continue }
+        if ($l -match '^\[(\d\d):(\d\d):(\d\d)\]') {
+            $d = (([int]$Matches[1] * 3600 + [int]$Matches[2] * 60 + [int]$Matches[3]) - $s0) % 86400; if ($d -lt 0) { $d += 86400 }
+            $mine = ($span -ge 86400) -or ($d -le $span)
+        }
+        if ($mine) { $own++ } else { $foreign++ }
+    }
+    return @($own, $foreign)
+}
+
+function Stop-GameVerified {
+    # L19: 'Stop-Process -Force' and a 3-second sleep once logged a clean stop while the game outlived it (2026-08-17,
+    # PID 8420); the game is single-instance, so every later run then failed in seconds and blamed the config. Kill,
+    # WAIT for the process to be gone, kill again with taskkill /T if it is not, and log the outcome either way.
+    param($Proc)
+    $id = $Proc.Id
+    Stop-Process -Id $id -Force -ErrorAction SilentlyContinue
+    for ($round = 1; $round -le 2; $round++) {
+        for ($i = 0; $i -lt 60; $i++) {
+            if (-not (Get-Process -Id $id -ErrorAction SilentlyContinue)) {
+                Write-Log "game PID $id stopped - verified gone after $([math]::Round($i * 0.5, 1)) s (kill $round)"
+                return $true
+            }
+            Start-Sleep -Milliseconds 500
+        }
+        if ($round -eq 1) {
+            Write-Log "game PID $id still running 30 s after Stop-Process - killing again with taskkill /T (L19)" "WARN"
+            $null = & cmd /c "taskkill /F /T /PID $id 2>&1"   # through cmd: a native stderr line under Stop preference throws
+        }
+    }
+    Write-Log "game PID $id SURVIVED two kills - the next run will refuse to start while it lives; end it by hand (L19)" "ERROR"
+    return $false
+}
+
 function Get-NewCrashDirs {
     param([datetime]$Since)
     if (-not (Test-Path $CrashDir)) { return @() }
@@ -1076,7 +1120,7 @@ try {
                         if ($ContinueFromSave -and $attempt -eq 1 -and $ContinueExpectAfter -and
                             (ConvertTo-DateNum $firstTick) -lt (ConvertTo-DateNum $ContinueExpectAfter)) {
                             Write-Log "continuation landed at $firstTick, BEFORE the expected $ContinueExpectAfter - the save did not load; stopping the game" "WARN"
-                            Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+                            $null = Stop-GameVerified $proc
                             $timedOut = $true; $abandoned = "continuation load failed (fresh start at $firstTick)"
                             Start-Sleep -Seconds 3
                         }
@@ -1103,7 +1147,7 @@ try {
                         if ($attempt -gt 1 -and $tickAtStart -and $firstTick -and
                             (ConvertTo-DateNum $firstTick) -lt 18370101 -and (ConvertTo-DateNum $tickAtStart) -ge 18370101) {   # L32: a FRESH 1836 game, not merely "behind" - a fed older member lands years behind by design
                             Write-Log "resume landed at $firstTick, far behind $tickAtStart - the save did not load; stopping the game NOW rather than replaying the campaign" "WARN"
-                            Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+                            $null = Stop-GameVerified $proc
                             Start-Sleep -Seconds 3
                         }
                     }
@@ -1136,7 +1180,7 @@ try {
             if ($key -eq "now") {
                 Write-Log "[x/Esc] stopping NOW - closing the game; this run is abandoned" "WARN"
                 Set-GlobalStop "stopped by keypress"
-                Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+                $null = Stop-GameVerified $proc
                 $timedOut = $true; $abandoned = "stopped by user (keypress)"
                 Start-Sleep -Seconds 3
                 break
@@ -1148,7 +1192,7 @@ try {
             }
             if (Test-StopRequested -and -not $stopAfterRun) {
                 Write-Log "STOP requested - ending the batch and closing the game" "WARN"
-                Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+                $null = Stop-GameVerified $proc
                 $timedOut = $true; $abandoned = "stopped by user (STOP file)"
                 Start-Sleep -Seconds 3
                 break
@@ -1156,7 +1200,7 @@ try {
             if (-not $alive) { break }
             if ($elapsed -gt ($TimeoutMinutes * 60)) {
                 Write-Log "run $run exceeded ${TimeoutMinutes}m - terminating the game process" "WARN"
-                Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+                $null = Stop-GameVerified $proc
                 $timedOut = $true; $abandoned = "watchdog timeout"
                 Start-Sleep -Seconds 3
                 break
@@ -1431,7 +1475,10 @@ try {
             Write-Log "  $($events.Count) one-off event(s) -> events.tsv"
         }
 
-        $errorLines = $mirrored["error.log"]   # from the mirror: the copied ring can be short
+        # from the mirror (the copied ring can be short), and only the lines stamped inside this run's own window (L9, 2026-10-28;
+        # before that the raw mirror line count, an upper bound). Foreign lines are counted apart and should be 0.
+        $errOwn, $errForeign = Measure-OwnErrorLines (Join-Path $liveDir "error.log") $runStart $runEnd
+        $errorLines = $errOwn
         $savesAfter = @(Get-ChildItem $SaveDir -Filter "autosave*.v3" -ErrorAction SilentlyContinue |
                         Where-Object { $_.LastWriteTime -ge $runStart }).Count
 
@@ -1455,7 +1502,7 @@ try {
             no_dlc_verified = $(if ($DisableAllDlc) { $dlcMounted.Count -eq 0 } else { $null })
             dump_complete = $sawEnd; dumps_seen = @($dumpsSeen.Keys | Sort-Object); dump_date_ingame = $ingameDate
             goods_rows = $rows.Count; markets = $markets; markets_not_found = $notFound
-            error_log_lines = $errorLines; autosaves_written = $savesAfter - $savesBefore
+            error_log_lines = $errorLines; error_log_foreign_lines = $errForeign; autosaves_written = $savesAfter - $savesBefore
             foreign_token_lines_skipped = $foreign
             mirrored_lines = $mirrored; logs_copied = $copied
         }

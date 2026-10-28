@@ -231,7 +231,9 @@ file — BUGS_AND_FIXES, L1).
 **Rule:** every filter on a named tag goes through **one** function — `Get-GuardedOwnerLimit` (emits
 `OR = { AND = { exists = c:GBR owner = c:GBR } … }`) or `Get-GuardedCountryBlock` for a scope switch (`if = { limit = { exists =
 c:GBR } c:GBR = { … } }`) — or iterates and filters on a **property** instead of identity. L1 checks the emitted files on every
-build. ⚠ `meta.json` → `error_log_lines` is **not a per-run number** (L9): it includes whatever the shared ring still held. Lines
+build. ⚠ `meta.json` → `error_log_lines` is the run's own count only from 2026-10-28 (L9: the lines stamped inside the run's window,
+`error_log_foreign_lines` beside it); before that it is the raw mirror line count, an upper bound — `preflight.ps1 -Session` says
+whether a session's mirrors held another run's lines. Lines
 naming `zzz_v3tb_telemetry.txt` are ours by definition and should be **zero**.
 
 ⚠ A tag may not be the country you think: the Netherlands is **`NET`**, not `NED` (`c:NED` reports absent for a country that plainly
