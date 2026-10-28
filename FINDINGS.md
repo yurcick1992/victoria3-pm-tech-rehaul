@@ -402,7 +402,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F254 | The merged methods are staffed on the 1.0 canon (79-98% when switched); hosts left on the older method are the ones that empty; F182's two-thirds-staffed chemical plants are gone | canon | reading | here |
 | F255 | A t3 level takes 60-85 weeks to build because vanilla caps each construction at ~35-40 points a week, not because the queue is shared; only Britain's and the USA's 1935 private queues are congested (~3.5-4 years) | canon | reading | here |
 | F256 | Germany's oil economy waits for a built buyer on the 1.0 canon too: first staffed oil rig median 1920 (vanilla ~1905), none by 1935 in 5 of 17 runs (vanilla 1 of 17); 1935 staffed levels 25.5 against 75.5 | canon | reading | here |
-| F257 | The displayed GDP is base-priced value added: holding every price within 10% of base raised market-priced value added 55% and world GDP 6% (base-priced +0.5-1.5%); ~0.11-0.13 of a market price deviation passes through; countries move differently | canon | probe | here |
+| F257 | The displayed GDP is base-priced value added: holding every price within 10% of base raised market-priced value added 55% and world GDP 6% (base-priced +0.5-1.5%); ~0.11-0.13 of a market price deviation passes through. Addendum: world GDP is the sum of countries; a country's GDP is roughly its own soil's value added corrected toward foreign owners, no tested rule better than ~20-28% | canon | probe | here |
 
 ---
 
@@ -21511,3 +21511,27 @@ comparison against vanilla is close to a comparison of base-priced quantities.
 - **Not per-country GDP.** The per-country response ranges from −9% to +35% and is unexplained; the register's per-country readings are
   shares and levels of population, not GDP ratios, but any per-country GDP comparison should be read with this in mind.
 - **Not a fresh game or a longer span.** Three months from one 1936 save, inside the canon.
+
+**Addendum (2026-10-28, the same day) — world GDP IS the sum of the countries; it is the attribution to countries that is unexplained.**
+- **The sum.** The summary's `world.gdp` is built as the sum of every country record's `gdp` (`save_state_summary.mjs`, v12); there is no
+  separate world figure in the save. Σ countries' GDP = 0.95–1.00 of Σ countries' base-priced value added (the 1936.3.1 save: £4,357M against
+  £4,577M), so the gaps between countries cancel: at 1935 in one F249 canon run, +£413M of countries above their own value added against
+  −£438M below.
+- **Who is above and below** (one F249 canon run, 1935; GDP − own buildings' base-priced value added): Britain +£235M (GDP 1.85× its value
+  added), the Netherlands +£40M, Russia +£20M, Egypt +£16M; Germany −£75M, Argentina −£34M, Bengal −£30M, Cuba −£22M. It is not the overlord:
+  Britain's 25 subjects together fall £21M short themselves.
+- **Tested on the probe's melted canon save (1936.3.1, 18,344 buildings, 32,366 ownership records), the rms log error of GDP against each
+  candidate over the 114 countries with GDP above £2M:**
+  - value added where the building stands: **0.30** (Britain 1.61, the Netherlands 1.61, Egypt 1.23, the USA 1.00, Germany 0.82, Argentina
+    0.66, Bengal 0.73, Cuba 0.72);
+  - value added by the owner's country (shares from `building_ownership_manager`; an owning building's state gives its country): **0.83**
+    (Britain owns £1,443M of the world's value added);
+  - leaving out the inputs of buildings with no goods output (construction, the military, administration): 0.35; construction only: 0.31;
+  - where it stands, plus a share f of the profit (`profit_after_reserves`) of foreign-owned levels moved to the owner's country: best at
+    f ≈ 0.4–0.5, **0.28** (countries above £30M 0.21): Britain 0.95–1.04 and Egypt 0.95–0.99, but the Netherlands 1.27–1.33, Argentina
+    0.72–0.74, Bengal 0.81–0.83, Cuba 0.77–0.78, Germany 0.83.
+- **So:** a country's GDP is roughly the value added produced on its soil, corrected towards the owners of foreign-held buildings, but no
+  rule tested fits better than ~20–28%. Trade centres' `trade_revenue` (£250M world-wide a year, Britain £25M) does not close it either.
+- **What it touches.** Every world reading is safe (the sum). Per-country and pool GDP readings (the pool's GDP, its H = hoard ÷ GDP, GDP
+  per productive worker) carry this attribution in both arms; against vanilla they compare like with like only if the attribution behaves the
+  same in both, which was not tested.
