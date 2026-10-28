@@ -516,7 +516,8 @@ subtask's tick time in milliseconds (MODDING_NOTES → *Debugging & validation*)
 ### 7.7 What a wall-clock report contains
 
 Per arm, against the same days' vanilla: the main median (clusters 1 + 2) and its ratio to the budget line; the cluster counts and
-the cluster 1 and cluster 2 medians; the cluster-3 count and its bug; the factorised branches; the crash overhead; the pop-matched
+the cluster 1 and cluster 2 medians (the normal and the slowed branch — the factorised report of 2026-10-06 was dropped on 2026-10-28 as
+superseded by them); the cluster-3 count and its bug; the crash overhead; the pop-matched
 diagnostic where it is computable; and any machine-load evidence used to set a run aside.
 
 ---
