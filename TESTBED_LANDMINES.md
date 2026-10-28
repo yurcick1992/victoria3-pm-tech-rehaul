@@ -103,7 +103,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L37 | the stop watcher goes blind to the register on a multi-config schedule | — | — | OPEN |
 | L38 | a save summary that keeps one country record per definition | `Test-LmL38` | build, repo, session | AUTO, proven |
 | L39 | a replaced vanilla file that loses a DLC gate | `check_dlc_gates.mjs` | every build | AUTO, proven |
-| L40 | vanilla script that names a rung-0 key or a renamed method | `emit_vanilla_refs.mjs` scan; smoke check | every build; by hand | AUTO + MANUAL |
+| L40 | vanilla script that names a rung-0 key or a renamed method | `emit_vanilla_refs.mjs` scan; `Test-LmL40` | every build; session | AUTO, proven |
 | L41 | a game paused by input looks like a healthy run | waiter FROZEN (exit 5); `Test-LmL41` | harness, session | AUTO, proven; the observer's own recovery owed |
 | L42 | a run lost to the observer's landing guard after an early-death fresh restart | `Test-LmL42` | session | AUTO, proven; fixed |
 | L43 | a save summary reads a country's trend ring by position, not by its index | `Test-LmL43` | build, repo | AUTO, proven; fixed |
@@ -938,10 +938,11 @@ Production Method` and returns false; a `has_building = building_<x>` matches on
 **Registered.** 2026-10-21, the tier-reference fix (TIER_REFERENCE_AUDIT.md).
 
 **Detector, two halves.** (1) Every build: `tools/emit_vanilla_refs.mjs` scans `common/` and `events/` and throws on any tiered reference
-left outside a file it transforms or its ACCEPTED list, so a patch that adds one stops the build. (2) MANUAL at the smoke check: the run's
-own error window must hold 0 `Invalid Production Method` / `PostValidate of trigger 'is_production_method_active'` lines whose script
-location is a vanilla path. `batch_heartbeat.sh` filters the `is_production_method_active` class as noise (TESTBED_OPERATIONS §4.2), so
-count it separately. Owed: half 2 in `preflight.ps1 -Session` once the window logic is shared.
+left outside a file it transforms or its ACCEPTED list, so a patch that adds one stops the build. (2) Post-run since 2026-10-28:
+`Test-LmL40` (`preflight.ps1 -Session`) FAILs on any `Invalid Production Method` line in a run's mirrored `error.log` (the run's own window)
+and prints the count, the methods and the script locations. `batch_heartbeat.sh` still files the `is_production_method_active` class as
+noise (TESTBED_OPERATIONS §4.2), which is why this half counts it on its own. Proven: FAIL on `20261013_110054_rs-m10-30y-n3` (44 lines a
+run, before the fix), PASS on the alternating batch's two sessions (0 in both arms).
 
 ### L41 — a game paused by input looks like a healthy run: the observer keeps writing a tick line every 20 s, so nothing goes silent
 

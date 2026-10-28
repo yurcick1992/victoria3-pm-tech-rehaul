@@ -1686,6 +1686,36 @@ function Test-LmL38 {
     Add-Result 'L38' $T 'PASS' ((($out2.Trim() -split "`r?`n")[-1]) + " | $self")
 }
 
+function Test-LmL40 {
+    <#
+      L40, HALF 2 - VANILLA SCRIPT THAT NAMES A METHOD THE TIER SPLIT MOVED, SEEN IN THE RUN (registered 2026-10-21; this half automated
+      2026-10-28). A vanilla trigger naming a moved main or secondary method logs 'Invalid Production Method' and returns false; the canon
+      carried 44-46 such lines a run before the tier-reference fix (TIER_REFERENCE_AUDIT.md). Half 1 is the build's scan in
+      emit_vanilla_refs.mjs. batch_heartbeat.sh files the is_production_method_active class as noise, so this counts it on its own.
+
+      DETECTOR (post-run): every run's mirrored error.log (logs_live, the run's own window) must hold no 'Invalid Production Method' line;
+      it prints the count, the methods and the script locations. Proven: FAIL on 20261013_110054_rs-m10-30y-n3 (44 a run, before the
+      fix), PASS on the alternating batch (0 in both arms). N/A without -Session.
+    #>
+    $T = 'vanilla script that names a method the tier split moved (Invalid Production Method in the run)'
+    if (-not $Session) { Add-Result 'L40' $T 'N/A' 'no -Session given (half 2 is post-run; half 1 runs in every build)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L40' $T 'FAIL' "no such session: $Session"; return }
+    $bad = @(); $checked = 0
+    foreach ($run in @(Get-ChildItem $Session -Directory -Filter 'run*')) {
+        $el = Join-Path $run.FullName 'logs_live\error.log'; if (-not (Test-Path $el)) { continue }
+        $checked++
+        $hits = @(Select-String -LiteralPath $el -SimpleMatch 'Invalid Production Method' -Context 0, 1 -ErrorAction SilentlyContinue)
+        if (-not $hits.Count) { continue }
+        $pms  = @($hits | ForEach-Object { if ($_.Line -match "Invalid Production Method '([^']+)'") { $Matches[1] } } | Sort-Object -Unique)
+        $locs = @($hits | ForEach-Object { $_.Context.PostContext } | ForEach-Object { if ($_ -match 'Script location:\s*(\S+?)(:\d+)?\s*$') { $Matches[1] } } | Sort-Object -Unique)
+        $bad += ("{0}: {1} line(s), methods {2}{3}; in {4}" -f $run.Name, $hits.Count, (($pms | Select-Object -First 6) -join ', '),
+                 $(if ($pms.Count -gt 6) { " (+$($pms.Count - 6))" } else { '' }), (($locs | Select-Object -First 4) -join ', '))
+    }
+    if ($bad.Count) { Add-Result 'L40' $T 'FAIL' ("$($bad.Count) run(s) logged invalid production methods - a vanilla reference the tier split moved (TIER_REFERENCE_AUDIT.md, emit_vanilla_refs.mjs): " + ($bad -join ' | ')) }
+    elseif ($checked -eq 0) { Add-Result 'L40' $T 'N/A' 'no mirrored error.log in this session yet' }
+    else { Add-Result 'L40' $T 'PASS' "$checked run(s), no Invalid Production Method line" }
+}
+
 function Test-LmL41 {
     <#
       L41 - A GAME PAUSED BY INPUT LOOKS LIKE A HEALTHY RUN (found 2026-10-23, run 13 of 20261021_224949_alt-vanilla-canon-n16, vanilla).
@@ -1768,6 +1798,8 @@ $CHECKS = @(
     @{ Id = 'L42'; Artifact = $false; Fn = { Test-LmL42 } },
     # L41: a player pause in a run's mirrored dedicated_server.log (post-run, N/A without -Session; the live half is the waiter's FROZEN)
     @{ Id = 'L41'; Artifact = $false; Fn = { Test-LmL41 } },
+    # L40 half 2: Invalid Production Method lines in a run's mirrored error.log (post-run, N/A without -Session)
+    @{ Id = 'L40'; Artifact = $false; Fn = { Test-LmL40 } },
     # L29's reader side: a session.log that lost its run lines to a reader holding it open (WARN only; post-run)
     @{ Id = 'L29'; Artifact = $false; Fn = { Test-LmL29 } },
     # L20 reads the CONFIG, not the mod, so it gates a batch before anything is built - which is the
