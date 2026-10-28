@@ -11,7 +11,7 @@ import { requiredConstruction } from 'file:///C:/claude-code/victoria%203%20PM%2
 // --session <dir-or-name>: the session whose run*/save_summaries to decompose (default: the
 // original vanilla-vs-mod batch). A bare name is resolved under tools/testbed/sessions.
 const argsG = process.argv.slice(2);
-const sessArg = (() => { const i = argsG.indexOf('--session'); return i >= 0 && argsG[i + 1] ? argsG[i + 1] : '20260813_083557_vanilla-vs-mod-n4'; })();
+const sessArg = (() => { const i = argsG.indexOf('--session'); if (i >= 0 && argsG[i + 1]) return argsG[i + 1]; console.error('analyse_gdp_gap.mjs: --session required (fill_ledger.sh passes it; the old default named a retired session, removed 2026-10-28)'); process.exit(2); })();
 // ⭐ (2026-10-08) --session may also be a GROUP: a comma list of session names and/or single `<session>/runNNN_<setup>` folders, read
 //   through lib_runs (L17/L34-usable runs only). A full path (drive letter, leading slash or backslash) keeps the old one-folder reading.
 const SESROOT = 'C:/claude-code/victoria 3 PM and tech rehaul/tools/testbed/sessions';

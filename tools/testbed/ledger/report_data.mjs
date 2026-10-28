@@ -154,12 +154,13 @@ function walk(runDir, isFlat) {
 // flatMean the template can plot; `flat` stays the FIRST run for shape compatibility.
 const args = process.argv.slice(2);
 const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
-const MODRUNS = argOf('--mod', '20260815_153825_flatcost-n1/run001_flatcost').split(',');
+if (!argOf('--mod', null) || !argOf('--van', null)) { console.error('report_data.mjs: --mod and --van required (fill_ledger.sh passes them; the old defaults named retired sessions, removed 2026-10-28)'); process.exit(2); }
+const MODRUNS = argOf('--mod').split(',');
 const flats = MODRUNS.map(r => walk(r, true));
 const flat = flats[0];
 // --van / --nb <sess/run[,sess/run...]>: the vanilla-baseline and reference-arm run lists
-// (defaults reproduce the original pinned-n4 fill)
-const van = argOf('--van', ['run001_vanilla', 'run003_vanilla', 'run005_vanilla', 'run007_vanilla'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r).join(',')).split(',').map(r => walk(r, false));
+// (both required since 2026-10-28)
+const van = argOf('--van').split(',').map(r => walk(r, false));
 // --nb <sess/run[,...]> | none (default): the reference series is OPT-IN since 2026-09-13 (user-ruled: one config per report) - the old
 // default reproduced the 2026-08-13 pinned arm silently, which is how a ledger came to show a series nobody asked for
 const nbArg = argOf('--nb', 'none');

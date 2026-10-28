@@ -38,9 +38,9 @@ const SES = 'tools/testbed/sessions';
 // batch's own FROZEN ladder. Both default to canon-n7, so the published baseline still reproduces
 // with no arguments. Run folders are DISCOVERED, never listed: a hardcoded list silently counts a
 // run that L17 says did not finish, and silently omits one that did.
-const SESSION = argOf('--session', '20260818_221216_canon-n7');
-const CFGPATH = argOf('--config', SESSION === '20260818_221216_canon-n7'
-  ? 'config/mod_config.canon_n7.json' : 'config/mod_config.json');
+const SESSION = argOf('--session', null);
+if (!SESSION) { console.error('analyse_ai_tier_choice.mjs: --session required (the old default named a retired session, removed 2026-10-28)'); process.exit(2); }
+const CFGPATH = argOf('--config', 'config/mod_config.json');
 const SETUP = argOf('--setup', null);   // a multi-arm session must name its arm (lib_runs refuses to fold two arms into one n)
 const { runs: USABLE, dropped: DROPPED } = usableRuns(SES, SESSION, SETUP);
 const RUNS = USABLE.slice(0, +argOf('--runs', '99'));

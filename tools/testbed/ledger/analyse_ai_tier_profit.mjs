@@ -25,9 +25,9 @@ const ARGV = process.argv.slice(2);
 const argOf = (n, d) => { const i = ARGV.indexOf(n); return i >= 0 && ARGV[i + 1] ? ARGV[i + 1] : d; };
 const SES = 'tools/testbed/sessions';
 // See analyse_ai_tier_choice.mjs for why the run list is DISCOVERED rather than written down.
-const SESSION = argOf('--session', '20260818_221216_canon-n7');
-const CFGPATH = argOf('--config', SESSION === '20260818_221216_canon-n7'
-  ? 'config/mod_config.canon_n7.json' : 'config/mod_config.json');
+const SESSION = argOf('--session', null);
+if (!SESSION) { console.error('analyse_ai_tier_profit.mjs: --session required (the old default named a retired session, removed 2026-10-28)'); process.exit(2); }
+const CFGPATH = argOf('--config', 'config/mod_config.json');
 const SETUP = argOf('--setup', null);   // a multi-arm session must name its arm
 const { runs: USABLE, dropped: DROPPED } = usableRuns(SES, SESSION, SETUP);
 const RUNS = USABLE.slice(0, +argOf('--runs', '99'));

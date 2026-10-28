@@ -1,5 +1,6 @@
 // Derive every world-level const the ledger template carries, from THIS batch's save summaries.
-// n=6: run007 is INCOMPLETE (L17) and is excluded everywhere.
+//   node tools/testbed/ledger/fill_consts.mjs <outDir> --mod <session/run,…> --van <session/run,…> [--nb <session/run,…>|none]
+// fill_ledger.sh passes the usable runs (lib_runs, L17) of the batch and of the vanilla reference.
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
@@ -9,11 +10,13 @@ const OUT = process.argv[2];
 //   other batch silently published canon-n7's numbers under the new batch's title — the exact failure
 //   fill_manifest.json exists to prevent, sitting inside the fill pipeline itself. Caught 2026-08-31
 //   when GDP_FLAT read 3562M at 1935 against the batch's own median of 2668M.
-//   Now: --mod / --van / --nb, comma-separated `session/run` lists, defaults preserved for continuity.
+//   Now: --mod / --van / --nb, comma-separated `session/run` lists. Since 2026-10-28 --mod and --van are REQUIRED: the old defaults
+//   (canon-n7 and the 2026-08-13 vanilla n=4) were a hand-run's way back into the same failure.
 const argOf = (n, d) => { const i = process.argv.indexOf(n); return i > 0 && process.argv[i+1] ? process.argv[i+1] : d; };
 const list = (v, d) => v ? v.split(',').map(x => x.trim()).filter(Boolean) : d;
-const MOD = list(argOf('--mod', null), [1,2,3,4,5,6].map(i => `20260818_221216_canon-n7/run00${i}_canonfull`));
-const VAN = list(argOf('--van', null), ['run001_vanilla','run003_vanilla','run005_vanilla','run007_vanilla'].map(r => '20260813_083557_vanilla-vs-mod-n4/' + r));
+const MOD = list(argOf('--mod', null), []);
+const VAN = list(argOf('--van', null), []);
+if (!OUT || !MOD.length || !VAN.length) { console.error('usage: fill_consts.mjs <outDir> --mod <session/run,…> --van <session/run,…> [--nb …|none] (fill_ledger.sh passes them)'); process.exit(2); }
 const nbArg = argOf('--nb', null);   // opt-in since 2026-09-13 (one config per report); 'none' or absent = no reference series
 const NB  = (!nbArg || nbArg === 'none') ? [] : list(nbArg, []);
 

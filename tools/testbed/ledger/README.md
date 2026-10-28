@@ -75,10 +75,10 @@ writing prose, because `fill_assemble` stops on any missing output.
 | 18 | `fill_goals.mjs <out>/goals.html <out> --config` | `goals.html` | `__GOALS__` (the readings: G1, G2, G3, G5, G7) |
 
 **Traps.**
-- Run the steps through `fill_ledger.sh`, not by hand. Run alone without flags, several scripts fall back to retired sessions:
-  `report_data` / `report_data2` default `--mod` to flatcost-n1 and `--van` to the August n=4 (`20260813_083557`), `fill_consts` to
-  canon-n7 and the August n=4, `analyse_gdp_gap` to the August vanilla-vs-mod session, the `analyse_ai_tier_*` tools to canon-n7.
-  `fill_emp`, `fill_payback` and `fill_research` throw without `--mod`.
+- Run the steps through `fill_ledger.sh`, not by hand. Since 2026-10-28 no step falls back to a retired session: `report_data`,
+  `report_data2` and `fill_consts` refuse to run without `--mod` and `--van`, `analyse_gdp_gap` and the `analyse_ai_tier_*` tools without
+  `--session`, and `fill_emp`, `fill_payback` and `fill_research` without `--mod` (they used to default to flatcost-n1, canon-n7 and the
+  August vanilla n=4).
 - `input_price_flags` takes whole sessions only: a group with single-run items reads those sessions' every run there. Name whole sessions,
   or check its run count in the output.
 - `fill_research.mjs` (fixed 2026-10-26, POLISH A3–A6): it buckets technologies by the tech eras of the BOOK's own tree twin
@@ -132,9 +132,8 @@ derived by a `fill_*.mjs` (`fill_manifest.json`'s `_rule`). Write these into the
   each with its own report"), naming the other reports.
 - **Mark a deliberate cross-batch reference** `<code class="xref">…</code>`: the staleness check exempts it and prints it by name. Prose
   left in the shell never wears the class, so the exemption cannot fire by accident.
-- **Do not run `fill_tokens.mjs`.** It is a legacy filler with a previous batch's values hardcoded (canon-n7, and a deliberately obvious
-  `HEALTH CHIP NOT SUPPLIED` placeholder); `fill_assemble` takes every token from `tokens.json` and the prose files. (The manifest's
-  `from` field names `tokens.json` for the seven chip tokens since 2026-10-27.)
+- **Tokens come from `tokens.json` alone**: `fill_assemble` takes every token from it and the prose files. The legacy `fill_tokens.mjs`,
+  which carried a previous batch's values hardcoded (canon-n7), was removed on 2026-10-28.
 - The analysis rules of CLAUDE.md §5.6 apply to the prose: profit in £, ratios with both terms, the baseline and markets named.
 
 ---
@@ -343,8 +342,6 @@ Each writes one or more files into the out dir; `fill_ledger.sh` runs them in th
   `emp_cols.json`, `tierchoice.json` and `report_data.json`. Without `--config` G7 assumes the anchors 1836 / 1875 / 1905 / 1940.
 - **`fill_assemble.mjs`, `fill_verify.mjs`** — §3, §4. **`fill_manifest.json`** — the contract between shell and batch: every token
   (`name`, `from`, `required`, `means`), every const (`minKeys`), every table (`minRows`), every control, and the staleness list.
-- **`fill_tokens.mjs`** — legacy; do not run (§2).
-
 ---
 
 ## 8. The readers
