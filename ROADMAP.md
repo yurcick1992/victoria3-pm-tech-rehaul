@@ -35,7 +35,7 @@ What is left for 1.0 is the release build ("Mod 1.0 — the remainder" below). E
 | 6½ | artisanal ownership | DEFERRED to 1.1 or later | 2026-10-21 | POLISH F1 |
 | 7 | visuals, proofreading, release | IN PROGRESS — the 1.0 polish | target 2026-10-30 | `POLISH_1_0.md` |
 | — | the war and naval research channels | DONE; re-ruled 2026-09-03 and 2026-10-12 | 2026-10-12 | §10.69, §10.98 |
-| 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 OPEN · P9 a ruling | — | BACKLOG B, F137, F138 |
+| 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 READ (F255) · P9 a ruling | — | BACKLOG B, F137, F138 |
 | 9 | margin compression | CLOSED (batch 1 out; levelling closed) | 2026-09-19 | F139, §10.86.3–.4 |
 | 10 | the tier-0 input penalty | partly superseded by the t1-anchor model; two items OPEN | — | F140–F148, §10.86.6–.7, §10.91.5 |
 | 11 | post-JE tech finishing and broader trade | DONE; three follow-ups OPEN | 2026-09-25 | §10.88, F160–F164 |
@@ -488,7 +488,7 @@ dated by it; the canon has since moved to B 1.64 and the t1-anchor model (§10.9
 | P5 | tier-3 output is enormous | ACCEPTED — rides on P1 |
 | P6 | the 1836 anchor over-produces on the supply side | DONE — closed by the user 2026-10-24: solved by the t1 anchor and the seeded crafts (§10.91.5, F199); guarded by the register's hard 1836–1845 line |
 | P7 | a minted top rung was locked out of its industry's gated secondary | DONE 2026-09-18 (landmine L35) |
-| P8 | a t3 takes 2+ years to build | OPEN (BACKLOG B) |
+| P8 | a t3 takes 2+ years to build | READ (F255: 60–85 weeks at vanilla's per-construction ceiling; 2+ years only in late British and American private queues); disposition the user's (BACKLOG B) |
 | P9 | the tech tree should be a thing to prioritise, not to complete | a registered desire; RULING (BACKLOG B) |
 
 P1 (the money printer), P8 (build time) and the hoard (F135) point at the same two dials — the A/B gap and the top of the cost ladder. Neither is
@@ -585,7 +585,10 @@ cost are one dial.
   / 126 — the 1,000 is the cap (`CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED_MAX` 999), reached through the coefficient §10.75
   doubled from 0.05 to 0.1 — and the private pool took 74–83% of Britain's construction speed. Not read out of the engine: the allocation rule
   (an even split reproduces the figures).
-- **Since:** the canon's t3 costs ×3.6 of vanilla (t1-anchored), not ×6.86; its build time is unmeasured. The queue coefficient is still 0.1.
+- **Since:** the canon's t3 costs ×3.6 of vanilla (t1-anchored), not ×6.86. The queue coefficient is still 0.1. **Read on the 1.0 canon (F255):**
+  the binding limit is vanilla's per-construction ceiling (`country_max_weekly_construction_progress`: 10 base + 30 from five society
+  technologies), not the even split — canon elements get 31–36 points a week, so a t3 level takes 60–85 weeks; 2+ years only in Britain's and the
+  USA's 1935 private queues (477 / 264 elements at ~11 points each). A further option: (e) raise that ceiling — shorter builds, capital cost kept.
 - **Options:** (a) flatten the top of the cost ladder (`--cost-ladder`) — also the hoard's and world GDP's dial (F135: log world GDP on log C at
   −3.34); (b) make construction faster by tech era in step with the cost ladder — vanilla's construction methods give 2 → 5 → 10 → 15 points a
   level (base, iron frame, steel frame, arc welded); a t3 at arc welding now needs 2,166 ÷ 15 = 144 level-weeks against a vanilla-cost t1's 600 ÷

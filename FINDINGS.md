@@ -400,6 +400,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F252 | The crafts are staffed (87-98% to the 1890s at ~15-20% profit on sales): no pause line binds; Forest Glass alone hollows out by 1845, world glass output 0.62-0.71x vanilla 1845-55 with the price at vanilla's | canon | reading | here |
 | F253 | The crafts do not bring early revolutions: revolutions started before 1848 median 16 a run in both arms; Austria at or before 1845 in 4/17 canon against 3/17 vanilla | canon | reading | here |
 | F254 | The merged methods are staffed on the 1.0 canon (79-98% when switched); hosts left on the older method are the ones that empty; F182's two-thirds-staffed chemical plants are gone | canon | reading | here |
+| F255 | A t3 level takes 60-85 weeks to build because vanilla caps each construction at ~35-40 points a week, not because the queue is shared; only Britain's and the USA's 1935 private queues are congested (~3.5-4 years) | canon | reading | here |
 
 ---
 
@@ -21405,3 +21406,34 @@ both counts as "mixed"); levels and staffed levels summed over countries and the
 - **Not the secondaries.** Which secondary methods a switched host runs was not read; since 2026-10-11 a merged building carries one set of
   secondaries, so F182's re-selection case cannot arise in the old form.
 - **Not why fertilizer's merged method falls to 56% by 1935.** Its newer t2 rung (Nitrogen Fixation) competing is the obvious candidate, unread.
+
+## F255 — A TIER-3 LEVEL TAKES OVER A YEAR TO BUILD BECAUSE VANILLA CAPS EACH CONSTRUCTION AT ~35–40 POINTS A WEEK, NOT BECAUSE THE QUEUE IS SHARED; ONLY THE LATE BRITISH AND AMERICAN PRIVATE QUEUES ARE CONGESTED (2026-10-28; a reading of F249's sessions `20261021_224949_alt-vanilla-canon-n16`, `20261023_161802_alt-vanilla-canon-rest20`, `20261026_032622_alt-canon-replace20`, canon n=16 against the same sessions' vanilla n=16, from the save summaries' `queues`; no new runs)
+
+**Why it was read.** BACKLOG B / ROADMAP P8: *"a t3 takes 2+ years to build"*, measured on `canon-c19-in12` (t3 at ×6.86 of vanilla's
+cost) and read then as the queue dividing the construction sector evenly. The 1.0 canon's t3 costs ×3.61 (600-point industries 2,166, 800-point
+2,888); its build time was unmeasured.
+
+**Reading.** Per country, year and queue: points a week per queued element (`speed ÷ n`), medians over the runs. GBR / USA / FRA / GER (NGF,
+PRU before it), 1880 / 1900 / 1920 / 1935:
+- **The canon's elements get 31–36 points a week almost everywhere** (government and private, every tag, 1880–1935), the same ceiling vanilla's
+  elements reach when its queues are short (33–35 in GBR and USA 1880, USA 1900). The ceiling is vanilla's `country_max_weekly_construction_progress`:
+  10 in `base_values`, +10 Urbanization, +5 each Urban Planning, Modern Sewerage, Steel Frame Buildings and Elevator (40 at most; +10 for one
+  Asian company). Vanilla's elements run lower later (19–28 points in its British, American and German private queues 1900–1935) because its
+  queues are longer relative to its sector.
+- **At the ceiling a canon t3 level takes 60–85 weeks** (2,166 ÷ 31–36 for a 600-point industry; ~80–95 for an 800-point one), a t1 17–23
+  weeks, against vanilla's 17–28 weeks for any level.
+- **The exception is the late private queue of the two economies with the largest pools:** at 1935 Britain's holds 477 elements at 11.9
+  points each (vanilla 167 at 21.7) and the USA's 264 at 11.0 (vanilla 114 at 22.6) — a t3 there takes ~180–200 weeks, 3.5–4 years, and the
+  whole queue 63–70 weeks to drain (vanilla 16–18). France and Germany stay at the ceiling (38 / 144 elements at 33 points).
+
+**What it says.** The 2+-year build time of P8 is now the late British and American private queue only. Elsewhere a t3 takes the 1–1.7 years its
+cost ÷ vanilla's per-construction ceiling gives — part of the capital cost the design charges (goal 3), and a lever of its own if it is too
+slow: raising the ceiling (the five technologies' `country_max_weekly_construction_progress_add`) shortens build times without making capital
+cheaper, which ROADMAP P8's option (b) (faster construction methods, goods scaled with points) also aimed at.
+
+**What it does NOT say.**
+- **The allocation rule is not read out of the engine.** `speed ÷ n` is a mean; elements of several levels, and the ceiling's exact value per
+  country (which of the five technologies it holds, construction efficiency), were not read.
+- **Not why the late British and American queues are long** — the private pool's inflow and the queue coefficient (0.1, §10.75) are the
+  candidates (ROADMAP P8 options (c), (d)); the queue length was read, its cause was not.
+- **Not a player's build time**, which depends on the player's own queue.
