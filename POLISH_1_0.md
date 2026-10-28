@@ -54,6 +54,15 @@ GDP 1.07× vanilla n=40, loss 6.60, play time ×1.010 of the same sessions' vani
   user) · ✅ **R3 + H9** the README, for mod editors (no player README: players come from the Workshop; the Workshop item is the
   mod folder alone), with the replaced-file list (2026-10-26) · ✅ **R4** proofread (2026-10-26) · ✅ **R5** the three technology icons (2026-10-26; looked OK in game) · ✅ **R10** the three minted methods' own icons (2026-10-26) · ✅ **H10** builders off the
   default paths and ✅ **C7** the stray root file (both 2026-10-26).
+- ✅ **The release build is made** (2026-10-28 ~22:10 local, the user: "Prepare it now"): `build.ps1 -Release` of the canon (sha256
+  `9a05d36da42c1511`) into `mod/`, deployed (the deployed copy identical to `mod/`). Every lint, the landmine walk and the mod checks
+  passed; 1,792 `debug_log` lines stripped from 8 files, the one left ours the manifest ("PM and Tech Rehaul 1.0.0 loaded (release build)")
+  — `debug_log_scopes` in the replaced vanilla `00_victoria_scripted_effects.txt` is vanilla's own; no "Recipe BE" in any localization file,
+  no telemetry file; metadata "PM and Tech Rehaul" 1.0.0, "1.13.\*", no build stamp; the launcher picture is `art/thumbnail_launcher.png`
+  deployed as `.metadata/thumbnail.png`. `list_replaced_files.mjs` on it: 146 files in 26 folders plus `common/history/buildings`, the
+  README's list unchanged. The known issue of §10.106 printed as designed. STILL OWED, at the machine: the in-game load and the visual pass
+  below. ⚠ The next ordinary (debug) build overwrites `mod/` and the deployed copy; re-run `build.ps1 -Release` before the in-game check if
+  one happens in between.
 - A final build (`build.ps1 -Release`), every lint, `node tools/list_replaced_files.mjs` on it (the README's list), an in-game load and an
   `error.log` read by position; the load also proves the "1.13.\*" game version and the release manifest line. Then a VISUAL pass in that
   build (the user, 2026-10-26: "make a release build and ensure that everything's OK, visually"): the launcher's 16:9 thumbnail, the three
