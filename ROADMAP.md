@@ -35,7 +35,7 @@ What is left for 1.0 is the release build ("Mod 1.0 — the remainder" below). E
 | 6½ | artisanal ownership | DEFERRED to 1.1 or later | 2026-10-21 | POLISH F1 |
 | 7 | visuals, proofreading, release | IN PROGRESS — the 1.0 polish | target 2026-10-30 | `POLISH_1_0.md` |
 | — | the war and naval research channels | DONE; re-ruled 2026-09-03 and 2026-10-12 | 2026-10-12 | §10.69, §10.98 |
-| 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 READ (F255) · P9 a ruling | — | BACKLOG B, F137, F138 |
+| 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 CLOSED (F255, not an issue) · P9 a ruling | — | BACKLOG B, F137, F138 |
 | 9 | margin compression | CLOSED (batch 1 out; levelling closed) | 2026-09-19 | F139, §10.86.3–.4 |
 | 10 | the tier-0 input penalty | partly superseded by the t1-anchor model; two items OPEN | — | F140–F148, §10.86.6–.7, §10.91.5 |
 | 11 | post-JE tech finishing and broader trade | DONE; three follow-ups OPEN | 2026-09-25 | §10.88, F160–F164 |
@@ -106,7 +106,7 @@ feature only if it needs no iteration (step 7's timeline).
 The balance campaign (BACKLOG "The order" items 2–3, section B), then the final balance check:
 - the price path and the old rung in the consumer chains — the central open problem (CLAUDE.md §2.1, F136);
 - the hoard (F135, F179 §3);
-- what is left of step 8 (P8, P9), step 10 (the graded penalty's century, the output-ladder flag) and step 11's follow-ups (2)–(4).
+- what is left of step 8 (P9), step 10 (the graded penalty's century, the output-ladder flag) and step 11's follow-ups (2)–(4).
 
 ---
 
@@ -488,7 +488,7 @@ dated by it; the canon has since moved to B 1.64 and the t1-anchor model (§10.9
 | P5 | tier-3 output is enormous | ACCEPTED — rides on P1 |
 | P6 | the 1836 anchor over-produces on the supply side | DONE — closed by the user 2026-10-24: solved by the t1 anchor and the seeded crafts (§10.91.5, F199); guarded by the register's hard 1836–1845 line |
 | P7 | a minted top rung was locked out of its industry's gated secondary | DONE 2026-09-18 (landmine L35) |
-| P8 | a t3 takes 2+ years to build | READ (F255: 60–85 weeks at vanilla's per-construction ceiling; 2+ years only in late British and American private queues); disposition the user's (BACKLOG B) |
+| P8 | a t3 takes 2+ years to build | CLOSED 2026-10-28 by the user: not an issue (F255: 60–85 weeks at vanilla's per-construction ceiling; 2+ years only in late British and American private queues) |
 | P9 | the tech tree should be a thing to prioritise, not to complete | a registered desire; RULING (BACKLOG B) |
 
 P1 (the money printer), P8 (build time) and the hoard (F135) point at the same two dials — the A/B gap and the top of the cost ladder. Neither is
@@ -577,7 +577,9 @@ higher rung must be.
 
 ### P8 — a t3 takes 2+ years to build
 
-**OPEN.** Build time is a building's cost ÷ the points per week it is allocated (V3 has no construction-time field), so build time and capital
+**CLOSED 2026-10-28 by the user: not an issue** (F255; nothing deferred). What follows is the record.
+
+**Was OPEN.** Build time is a building's cost ÷ the points per week it is allocated (V3 has no construction-time field), so build time and capital
 cost are one dial.
 - **Measured on `canon-c19-in12`** (t3 at ×6.86 of vanilla's cost): Britain's government queue at 1900 ran 327 points a week over 10 items, ~33
   each, so 4,115 ÷ 33 = 126 weeks = 2.4 years — the user's figure (vanilla 600 ÷ 33 = 18 weeks). Britain's construction sector was ample (65 levels
