@@ -320,16 +320,16 @@ ahead*). Procedure: `TESTBED_OPERATIONS.md`.
 
 ### Parked
 
-Instrument questions parked since 2026-08-11; nothing here is abandoned, nothing is scheduled.
-- **Runs 4–6 of the three-arm batch** (`schedules/three_arm_tc_subsidy.json`) — the trade-centre subsidy question (F49 measured the mandate at
-  35% of government expense against vanilla's 4.7%; the mandate was removed from the default config, the question left open).
+Instrument questions parked since 2026-08-11, reviewed by the user on 2026-10-28: two DEFERRED to an unspecified future, nothing scheduled.
 - **The autosave cadence experiment** (`schedules/autosave_cadence_vanilla.json`) — the only design that separates a save's cost from the yearly
-  pulse it fires with (TESTBED_METRICS §7½).
-- **A stronger concentration metric** — top-3 share and HHI, value-weighted, splitting the tiered goods from the rest, before goal 2 is
-  re-reported (a top-1 share over all goods gave a wrong reading once).
-- **The tick-speed regression** — wall clock against continuous predictors (pop objects, live pop objects, people, GDP, building count).
+  pulse it fires with (TESTBED_METRICS §7½). Kept (user, 2026-10-28) as a possible way to speed up every measurement run, vanilla and mod
+  alike, whether or not it differs from vanilla.
 - **Do empty pop records cost the engine anything?** If it iterates them they are overhead; if it skips them, the live count is the better
-  regressor (TESTBED_METRICS §7½, the pop-objects box).
+  regressor (TESTBED_METRICS §7½, the pop-objects box). Kept on the same grounds.
+
+Dropped 2026-10-28 (user): runs 4–6 of the three-arm batch (the trade-centre subsidy mandate, long removed, on the closed six-rung config); a
+stronger concentration metric (for re-reporting goal 2 in the goals table §10.104 retires); the tick-speed regression (the pop-matched
+diagnostic and the run clusters cover play speed).
 
 ---
 
