@@ -101,7 +101,7 @@ Closed:
 - **ACCEPTED** · P5 tier-3 output enormous — rides on P1 · ROADMAP P5
 
 Closed:
-- Closed 2026-10-28 by the user · the German oil economy waits for a built rung (F215; on the 1.0 canon the first staffed rig in 1920 against vanilla's ~1905, none by 1935 in 5 of 17 runs, F256): not an issue — the reasons are likely geographic; no known-issues line · F215, F256
+- Closed 2026-10-28 by the user · the German oil economy waits for a built rung (F215; on the 1.0 canon the first staffed rig in 1920 against vanilla's ~1905, none by 1935 in 5 of 17 runs, F256): not an issue — happenstance, likely geographic, and not a consequence of the design; no known-issues line · F215, F256
 - Closed 2026-10-28 by the user · P8 a t3 takes 2+ years to build: not an issue — F255 read 60–85 weeks at vanilla’s per-construction ceiling (2+ years only in Britain’s and the USA’s 1935 private queues); nothing deferred, no known-issues line · ROADMAP P8, F255
 - Closed 2026-10-28 by the user · measure the universities' innovation × x/150 on its own (in the canon since 2026-10-13): not measured — the deliberate research is in a good place and this is not a likely lever · §10.101.1
 - Closed 2026-10-24 by the user · P1 early rungs are a money printer: solved by the t1 anchor (a t1 rung is its own vanilla method, inputs × in1) and B 1.64 — at base prices, wages 25% of cost, food / textile / furniture t1 −3 / +13 / +22% against +55% in the playtest book, t2 +31–63% against +127%; a later margin problem found in the alternating batch becomes a new item · ROADMAP P1
