@@ -97,7 +97,8 @@ run has one identity across its folder, `build_state.json` and its telemetry tok
   The schedule JSON is copied verbatim into the session folder.
 - **The `runs` list is explicit and ordered**; each run carries its index. `-WhatIf` prints the plan, the builds it implies and a
   time estimate, and launches nothing.
-- **`defaults`** may carry `tags`, `metrics`, `autosave_interval`, `timeout_minutes`, `dump_dates`, `game_args`, `no_dlc` and the
+- **`defaults`** may carry `tags`, `metrics`, `autosave_interval`, `timeout_minutes`, `dump_dates`, `game_args`, `no_dlc`, `frozen_minutes`
+  (L41: minutes of an unmoving in-game date before the observer stops the game and resumes the run; default 15, 0 disables) and the
   wage / breakdown / wide / origin telemetry keys; any other key (not prefixed `_`, which marks a comment) is refused with its name
   (L16). A run's `dump_dates` default to 1 January of the year before `until`; each dump date must be the 1st of a month.
 - **Setup shape is validated up front**, before the first run, so a malformed setup used only by the last run of an overnight
@@ -208,7 +209,7 @@ powershell -ExecutionPolicy Bypass -File tools\testbed\wait_for_session.ps1 -Ses
 | `DEAD` | 2 | no game process and no completion marker for `-DeadGraceSeconds` (default 900) |
 | `STALLED` | 3 | nothing anywhere in the session tree written for `-StallMinutes` (default 20), whatever the processes claim (L21) |
 | — | 4 | the session path does not exist (a mangled argument, never reported as a stall) |
-| `FROZEN` | 5 | the game runs and the harness writes, but the newest run's in-game date has not moved for `-FrozenMinutes` (default 15) — a game paused by a click in its window (L41; the player pause is quoted if on record): unpause it, or stop and resume the run |
+| `FROZEN` | 5 | the game runs and the harness writes, but the newest run's in-game date has not moved for `-FrozenMinutes` (default 25) — a game paused by a click in its window (L41; the player pause is quoted if on record). The observer stops and resumes a game frozen 15 min by itself (2026-10-28), so FROZEN means that recovery did not happen: look at the run's `run.log`, then stop and resume the run by hand |
 
 Read the printed status, not the exit code (DONE and RUNNING are both 0). A watcher that matched only success could not be told
 apart from a broken one, which is why STALLED and the heartbeat exist.

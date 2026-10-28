@@ -104,7 +104,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L38 | a save summary that keeps one country record per definition | `Test-LmL38` | build, repo, session | AUTO, proven |
 | L39 | a replaced vanilla file that loses a DLC gate | `check_dlc_gates.mjs` | every build | AUTO, proven |
 | L40 | vanilla script that names a rung-0 key or a renamed method | `emit_vanilla_refs.mjs` scan; `Test-LmL40` | every build; session | AUTO, proven |
-| L41 | a game paused by input looks like a healthy run | waiter FROZEN (exit 5); `Test-LmL41` | harness, session | AUTO, proven; the observer's own recovery owed |
+| L41 | a game paused by input looks like a healthy run | the observer's frozen-date stop and resume; waiter FROZEN (exit 5); `Test-LmL41` | harness, session | AUTO, proven (the recovery live 2026-10-28) |
 | L42 | a run lost to the observer's landing guard after an early-death fresh restart | `Test-LmL42` | session | AUTO, proven; fixed |
 | L43 | a save summary reads a country's trend ring by position, not by its index | `Test-LmL43` | build, repo | AUTO, proven; fixed |
 
@@ -119,7 +119,8 @@ Walk these by hand. The `preflight` skill (`.claude/skills/preflight/SKILL.md`) 
   schedule whose configs should not stop one another, do not arm the stop watcher.
 - **While a batch runs.** L10: queue every edit on the build path. L26: an in-game date that falls more than two years between two
   readings of one run is a second campaign — stop and relaunch. L29: never `tail -F` a live harness log. L41: an in-game date unchanged
-  for 15 minutes while the game runs is frozen — look for `Paused: true, PlayerID: 1`. L40: count the vanilla-path
+  for 15 minutes while the game runs is frozen — the observer stops and resumes it; the waiter's FROZEN (25 min) means it did not, so read
+  the run's `run.log` and look for `Paused: true, PlayerID: 1`. L40: count the vanilla-path
   `is_production_method_active` lines at the smoke check.
 - **After a batch.** `preflight.ps1 -Session`. L9: `error_log_lines` is the run's own window from 2026-10-28 (an upper bound before;
   `-Session` says which sessions carry another run's lines). L23: count non-telemetry log lines as distinct tuples. L19: an orphaned
@@ -985,14 +986,20 @@ reader sees a monstrous year. Remove the interval from the `Paused: true` line t
 hours (SESSION_VERDICTS: run 13 void).
 
 **Detector** (since 2026-10-28), two halves:
-- **Live:** `wait_for_session.ps1` returns **FROZEN (exit 5)** when the newest run's in-game date stands still for `-FrozenMinutes` (15)
-  while the game runs, and quotes the player pause if one is on record. Proven on a scratch session with a stand-in `victoria3` process:
+- **Live:** `wait_for_session.ps1` returns **FROZEN (exit 5)** when the newest run's in-game date stands still for `-FrozenMinutes` (15 when
+  built; 25 since the observer's own 15-min recovery, so it now means that recovery did not happen) while the game runs, and quotes the player pause if one is on record. Proven on a scratch session with a stand-in `victoria3` process:
   a run log stuck at 1871.7.24 → FROZEN after one minute; an advancing one → RUNNING.
 - **Post-run:** `Test-LmL41` (`preflight.ps1 -Session`) FAILs on any `Paused: true, PlayerID: 1` in a run's mirrored `dedicated_server.log`
   and prints each pause with the next unpause, the interval to remove from the run's wall clock. Proven: FAIL on `20261021_224949`
   (run013_vanilla, 12:00:31 → 16:16:26), PASS on `20261023_161802`'s 20 runs.
 
-Still owed: the observer recovering by itself (kill the frozen game and resume it through the feeder).
+**The observer recovers by itself** (built 2026-10-28): an in-game date unmoved for `-FrozenMinutes` (default 15; schedule key
+`frozen_minutes`, 0 disables) with the game running, counted from the attempt's first tick, makes the observer log it (quoting a player
+pause if the tick log shows one), stop the game (`Stop-GameVerified`) and resume the run from its newest autosave through the L32 feeder —
+a frozen stop never steps back to an older save, skips the keypress grace and is not an early death; `meta.json` records `frozen_stops`.
+**Proven live** (`20261028_220033_l41-frozen-proof`, vanilla control 1836→1837.1.1, monthly autosaves, `frozen_minutes` 2): the game
+process was suspended at 22:03:20; at 22:05:20 the observer logged the date frozen at 1836.8.4, the game was verified gone in 1.5 s, attempt 2
+loaded the newest autosave and the run self-quit at 1837.1.1 — `frozen_stops` 1, `resumes` 1, recorded `ok`.
 
 ### L42 — a run lost to the observer's own landing guard: a crash after an early-death fresh restart is read as a foreign save
 

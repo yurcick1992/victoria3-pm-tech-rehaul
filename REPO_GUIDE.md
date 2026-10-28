@@ -1108,7 +1108,8 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   concurrently with the game, plus a final drain after each run (`-HarvestWorkers 0` = drain only), and checks `NO_NEW_RUNS` before
   every run. Continuation runs: run keys `continue_save`, `continue_expect_after` (required), `prior_wall_seconds`, `parent` → observer
   `-ContinueSave` and `continuation.json`; read them through `stitch_session.mjs`. Schedule key `game_args` → observer `-ExtraGameArgs`;
-  `no_dlc` (run or defaults, true/false) → observer `-DisableAllDlc` (the no-DLC load test, `schedules/no_dlc_load_test.json`).
+  `no_dlc` (run or defaults, true/false) → observer `-DisableAllDlc` (the no-DLC load test, `schedules/no_dlc_load_test.json`);
+  `frozen_minutes` (run or defaults) → observer `-FrozenMinutes` (L41).
   Status: current. Traps: the archiver's `Start-Process -ArgumentList` quotes nothing (paths hand-quoted) while the harvester's
   `& powershell @args` quotes each element itself (never pre-quote). Unthreaded spec keys are dropped (L5) or throw from `defaults`
   (L16); builds are time-bounded and a failed one aborts the schedule (L21). Refs: §10.94, L19, L29.
@@ -1119,7 +1120,8 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   `-DisableAllDlc` (every installed DLC's `pops_id` into `content_load.json`'s `disabledDLC`; meta.json records `disabled_dlc`, the
   `dlc_mounted` read off debug.log's mount lines, and `no_dlc_verified`; MODDING_NOTES has the format). Refuses a
   mod without telemetry (it has no generator). Refuses to start while any `victoria3.exe` runs; every kill is verified
-  (`Stop-GameVerified`: waits for the process to be gone, `taskkill /T` if not, logs the outcome, L19). meta.json's `error_log_lines` counts
+  (`Stop-GameVerified`: waits for the process to be gone, `taskkill /T` if not, logs the outcome, L19). An in-game date unmoved for
+  `-FrozenMinutes` (15) with the game running is stopped and resumed from the newest autosave (L41; meta.json `frozen_stops`). meta.json's `error_log_lines` counts
   only the mirrored error lines stamped inside the run's own window, `error_log_foreign_lines` the rest (L9, since 2026-10-28). Status:
   current; a hand run is a diagnostic. Traps: `-script_profiling` crashes a headless game. Refs: MODDING_NOTES (Automated headless runs),
   L9, L17, L19, L26, L28, L32, L34.
@@ -1133,9 +1135,9 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   `pdx_settings.json` and every autosave slot, sets monthly autosave (first save 1836.2.1). `[-WithMod] [-Autosave monthly]`; `-Restore`
   puts it all back. Status: current.
 - **`wait_for_session.ps1`** — the wake-up signal for a batch in its own window (run with `run_in_background`).
-  `-Session <dir> [-MaxMinutes 30] [-PollSeconds 30] [-DeadGraceSeconds 900] [-StallMinutes 20] [-FrozenMinutes 15]` → DONE · RUNNING ·
+  `-Session <dir> [-MaxMinutes 30] [-PollSeconds 30] [-DeadGraceSeconds 900] [-StallMinutes 20] [-FrozenMinutes 25]` → DONE · RUNNING ·
   DEAD (exit 2) · STALLED (exit 3, no write anywhere in the session tree; 0 disables) · FROZEN (exit 5, the newest run's in-game date stuck
-  while the game runs; 0 disables). Traps: DEAD can be a long post-run harvest. Refs: L21, L41.
+  while the game runs, past the observer's own 15-min stop-and-resume — so that recovery did not happen; 0 disables). Traps: DEAD can be a long post-run harvest. Refs: L21, L41.
 - **`batch_heartbeat.sh`** — one read-only command per wake-up: each run's clock, CRASHED / resume / summary counts; for the newest run
   the mod marker, game-version mismatch, its `error.log` window by parsed time (wrap-safe), the classes left after the known vanilla
   noise classes (the list lives here), anything naming our files; `SCHEDULE DONE`. `bash tools/testbed/batch_heartbeat.sh <session-name>`.

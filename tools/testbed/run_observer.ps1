@@ -152,6 +152,10 @@ param(
     [string]   $TelemetryToken = "",
     # hard watchdog: kill the process if a single run exceeds this
     [int]      $TimeoutMinutes = 45,
+    # ⭐ L41 (2026-10-28): the in-game date unmoved this many minutes while the game runs (a player pause by a click or key in the game
+    #   window, or a hang) => stop the game (Stop-GameVerified) and resume the run from its autosaves through the L32 feeder, instead of
+    #   letting the watchdog end the run short. 0 disables. Not counted before the attempt's first tick (a slow load is not a freeze).
+    [int]      $FrozenMinutes = 15,
     # ⭐ THE NO-DLC LOAD TEST (2026-10-26; POLISH_1_0.md "Where it stands", CLAUDE.md §5.1 rule 1): disable EVERY installed DLC for this
     #   run. Each DLC's `pops_id` (read from its descriptor, <game>\dlc\<folder>\<name>.dlc) goes into content_load.json's `disabledDLC` as
     #   { "paradoxAppId": "<pops_id>" } - the form the Paradox launcher writes (its content-load schema; its DLC id is the descriptor's
@@ -993,7 +997,7 @@ try {
         $lastTick = ""; $timedOut = $false; $modLoaded = $false; $modInit = $false
         $dlcMounted = New-Object 'System.Collections.Generic.HashSet[string]'   # "Mounted Data: ...\game\dlc\<folder>" lines (-DisableAllDlc's proof)
         $targetNum = ConvertTo-DateNum $UntilDate
-        $attempt = 0; $resumes = 0; $abandoned = ""
+        $attempt = 0; $resumes = 0; $abandoned = ""; $frozenStops = 0
         $attemptLog = @()
         $earlyDeaths = 0; $sameSaveTries = 0; $lastResumeSave = ""
         # Resume fallback ladder, per run. TWO faults reach it, and they look nothing alike:
@@ -1074,6 +1078,7 @@ try {
         $tickAtStart = $lastTick
         $firstTick = ""
         $paused = $false; $pauseStart = Get-Date; $pausedFor = 0.0
+        $tickMovedAt = Get-Date; $frozenStop = $false; $playerPauseAt = ""   # L41
 
         while ($true) {
             $alive = $null -ne (Get-Process -Id $proc.Id -ErrorAction SilentlyContinue)
@@ -1089,6 +1094,8 @@ try {
                 if ($line -match 'Mounted Data: .*[/\\]game[/\\]dlc[/\\]([^/\\\s]+)') { $null = $dlcMounted.Add($Matches[1]) }
             }
             foreach ($line in (Read-Tail $tailTick)) {
+                # L41: a pause by PLAYER input (PlayerID > 0; the engine's own toggles carry 0) - quoted if the date then freezes
+                if ($line -match 'Pause Toggled! Paused: true, PlayerID: [1-9]') { $playerPauseAt = ($line -split '\]')[0].TrimStart('[') }
                 if ($line -match "Processing Tick: ([0-9]+\.[0-9]+\.[0-9]+)") {
                     # ⚠ CAPTURE FIRST: the staleness test below runs its own -match, which overwrites
                     # $Matches. Reading the tick after it yields the HOUR, not the date.
@@ -1117,6 +1124,7 @@ try {
                         if ($clockGap -gt 43200) { $clockGap -= 86400 } elseif ($clockGap -le -43200) { $clockGap += 86400 }
                         if ($clockGap -lt 0) { continue }
                     }
+                    if ($tickHere -ne $lastTick) { $tickMovedAt = Get-Date }   # L41: the frozen-date clock
                     $lastTick = $tickHere
                     if (-not $firstTick) {
                         $firstTick = $lastTick
@@ -1177,6 +1185,7 @@ try {
                 $paused = $false
                 $pausedFor += ((Get-Date) - $pauseStart).TotalSeconds
                 $stillUp = $null -ne (Get-Process -Id $proc.Id -ErrorAction SilentlyContinue)
+                $tickMovedAt = Get-Date   # L41: an observer pause is not a frozen game
                 if ($stillUp) { Write-Log "[r] resumed - game still running, continuing to watch" }
                 else { Write-Log "[r] resumed - game is gone; will resume this run from its last autosave" "WARN" }
             }
@@ -1209,6 +1218,18 @@ try {
                 Start-Sleep -Seconds 3
                 break
             }
+            # ⭐ L41: THE IN-GAME DATE FROZEN WITH THE GAME RUNNING. A player pause (found 2026-10-23, run 13 of 20261021_224949) left the
+            #   observer reporting the same date every 20 s until the watchdog ended the run short. Stop the game and fall through to the
+            #   resume ladder below, which treats it as an exit without a crash dump (no keypress grace) and resumes from the autosaves.
+            if ($FrozenMinutes -gt 0 -and $alive -and $firstTick -and ((Get-Date) - $tickMovedAt).TotalMinutes -ge $FrozenMinutes) {
+                Write-Log ("run ${run}: in-game date FROZEN at $lastTick for $FrozenMinutes min with the game running (L41)" +
+                    $(if ($playerPauseAt) { " - the tick log shows a PLAYER pause at $playerPauseAt" } else { " - no player pause in the tick log (a hang?)" }) +
+                    " - stopping the game and resuming the run from its autosaves") "WARN"
+                $null = Stop-GameVerified $proc
+                $frozenStop = $true; $frozenStops++
+                Start-Sleep -Seconds 3
+                break
+            }
             # 200ms, not 800: a single market-goods dump writes ~0.93 MB (two ring segments) in one
             # tick, so a slow poll lets segments age out before the drain sees them. Measured at
             # 800ms: 3815 telemetry lines lost. Polling is cheap; losing a dump is not.
@@ -1238,6 +1259,7 @@ try {
             seconds = [math]::Round(((Get-Date) - $attemptStart).TotalSeconds, 1)
             resumed_from = $(if ($attempt -gt 1) { $resumeFrom } else { "" })
             ended_at_ingame = $lastTick; reached_target = $reached
+            frozen_stop = $frozenStop   # L41: the observer stopped a game whose in-game date had frozen
             crash_dirs = @($crashDirs | ForEach-Object { $_.Name })
         }
 
@@ -1301,9 +1323,12 @@ try {
                 $att.outcome = $(if ($freshStart) { "load failed (fresh 1836)" } elseif ($crashDirs.Count -gt 0) { "loaded, crashed" } else { "loaded, exited" })
                 $member = $P.set[$P.cursor].name
                 $sinceNum = (ConvertTo-DateNum $lastTick) - (ConvertTo-DateNum $P.crash_tick)
-                if (-not $freshStart -and $sinceNum -gt ($ResumeWindowYears * 10000)) {
-                    Write-Log "resume from $member loaded and the game died at $lastTick - more than $ResumeWindowYears years past process $($P.n)'s crash at $($P.crash_tick): a NEW process" "WARN"
-                    Close-ResumeProcess "superseded by a crash at $lastTick"
+                # L41: a frozen-date stop is not a bad save - never step back to an older member for it; open a NEW process from
+                # the engine's current slots, so the run resumes from its newest autosave
+                if (-not $freshStart -and ($frozenStop -or $sinceNum -gt ($ResumeWindowYears * 10000))) {
+                    if ($frozenStop) { Write-Log "resume from $member loaded and the observer stopped it frozen at $lastTick (L41): a NEW process from the newest autosaves" "WARN" }
+                    else { Write-Log "resume from $member loaded and the game died at $lastTick - more than $ResumeWindowYears years past process $($P.n)'s crash at $($P.crash_tick): a NEW process" "WARN" }
+                    Close-ResumeProcess "superseded by a $(if ($frozenStop) { 'frozen-date stop' } else { 'crash' }) at $lastTick"
                     $p = Open-ResumeProcess $runDir $runStart $lastTick
                     if (@($p.set).Count -eq 0) { $abandoned = "resume set empty at $lastTick"; break }
                 } else {
@@ -1342,8 +1367,8 @@ try {
             # Nothing to resume from: the run died before its first autosave (with five_year,
             # inside the first 5 in-game years). Repeated deaths this early are a broken-mod
             # signature, not bad luck - count them and let the scheduler abort everything.
-            $earlyDeaths++
-            Write-Log "run ${run}: died at $lastTick before any autosave existed (attempt $earlyDeaths of 3)" "WARN"
+            if (-not $frozenStop) { $earlyDeaths++ }   # L41: a frozen game the observer stopped is not a broken-mod signature
+            Write-Log "run ${run}: $(if ($frozenStop) { 'stopped frozen' } else { 'died' }) at $lastTick before any autosave existed (early deaths $earlyDeaths of 3)" "WARN"
             if ($earlyDeaths -ge 3) {
                 Write-Log "" "ALERT"
                 Write-Log "*** THREE CRASHES BEFORE THE FIRST AUTOSAVE ***" "ALERT"
@@ -1371,6 +1396,8 @@ try {
 
         if ($crashDirs.Count -gt 0) {
             Write-Log "run ${run}: game CRASHED at $lastTick (crash dump: $($crashDirs[0].Name)) - resuming" "WARN"
+        } elseif ($frozenStop) {
+            Write-Log "run ${run}: stopped by the observer at $lastTick (in-game date frozen, L41) - resuming from its autosaves" "WARN"
         } else {
             Write-Log "run ${run}: game exited early at $lastTick with no crash dump" "WARN"
             if (Wait-ForUserVerdict $StopGraceSeconds) {
@@ -1493,7 +1520,7 @@ try {
             continue_save = $ContinueSave; continue_expect_after = $ContinueExpectAfter
             args = $gameArgs; dump_dates = $DumpDates; until_date = $UntilDate
             reached_ingame_date = $lastTick; self_quit = ((-not $timedOut) -and (-not $abandoned)); timed_out = $timedOut
-            attempts = $attempt; resumes = $resumes; abandoned_reason = $abandoned
+            attempts = $attempt; resumes = $resumes; frozen_stops = $frozenStops; abandoned_reason = $abandoned
             # Saves the fallback ladder moved aside, with their byte sizes against their siblings.
             # This is the EVIDENCE for the mid-write-truncation hypothesis: a quarantined file that is
             # much smaller than the autosaves around it confirms it; one the same size refutes it.

@@ -185,7 +185,7 @@ Closed:
 
 ## G. Testbed instrument (TESTBED_LANDMINES)
 
-- **OPEN (the observer half only)** · A FROZEN IN-GAME CLOCK READS AS A LIVE RUN (L41): the waiter's FROZEN (exit 5) and the post-run `Test-LmL41` are built and proven (2026-10-28); still owed: the observer recovering by itself (same in-game date for N min ⇒ kill and resume through the feeder) · run_observer.ps1, TESTBED_LANDMINES L41
+- **DONE 2026-10-28** · A FROZEN IN-GAME CLOCK READS AS A LIVE RUN (L41): the waiter's FROZEN (exit 5), the post-run `Test-LmL41`, and the observer's own recovery (date unmoved `-FrozenMinutes`, default 15 ⇒ stop and resume from the newest autosave; proven live in `20261028_220033_l41-frozen-proof`) · run_observer.ps1, TESTBED_LANDMINES L41
 - **DONE 2026-10-28** · L37 the stop watcher goes blind on a multi-setup schedule: each run scored on its own setup; `Test-LmL37` (repo + session halves) built and proven · stop_watch.mjs, TESTBED_LANDMINES L37
 - **DONE 2026-10-28** · detectors owed: L19 orphaned game process (verified kill + `Test-LmL19`), L23 raw-counted repeated log lines (`je_distribution.mjs` de-duplicates + `Test-LmL23`), L11 nonexistent tag (`Test-LmL11`; found `TWO` beside `QIN`), L9 per-run error windows (`error_log_lines` windowed + `Test-LmL9` session half) — all proven · TESTBED_LANDMINES L9, L11, L19, L23
 - **OPEN** · live proofs owed: quarantined-save resume hooks — wait for a batch where a slowdown episode and a crash meet (the L29 scheduler abort was proven live 2026-10-28, `20261028_205335_l29-abort-proof`; L34’s fresh-start restart was proved live 2026-10-26 by rest20 run 20 of the alternating batch, and exposed L42)

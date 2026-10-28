@@ -42,7 +42,7 @@
 
   Usage:
     wait_for_session.ps1 -Session <dir> [-MaxMinutes 30] [-PollSeconds 30] [-DeadGraceSeconds 900]
-                         [-StallMinutes 20] [-FrozenMinutes 15]
+                         [-StallMinutes 20] [-FrozenMinutes 25]
 #>
 param(
     [Parameter(Mandatory=$true)][string]$Session,
@@ -63,8 +63,9 @@ param(
     # How long the newest run's IN-GAME date may stand still, while the game runs, before this calls it FROZEN (exit 5; landmine
     # L41, 2026-10-28). A game paused by input keeps the observer writing a tick line every 20 s, so STALLED never fires; the date is
     # what stops. A healthy run advances its date within a minute even in the dense 1930s; loading at the start is not counted.
-    # 0 disables the check.
-    [int]$FrozenMinutes = 15
+    # 0 disables the check. 25, above the observer's own 15-min frozen stop (run_observer -FrozenMinutes, 2026-10-28): the observer stops
+    # and resumes a frozen game itself, so FROZEN here means its recovery did not happen - the case that needs a person.
+    [int]$FrozenMinutes = 25
 )
 $ErrorActionPreference = 'Stop'
 

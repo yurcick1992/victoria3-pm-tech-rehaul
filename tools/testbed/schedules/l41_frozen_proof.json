@@ -1,0 +1,26 @@
+{
+  "schedule_version": 1,
+  "label": "l41-frozen-proof",
+  "_why": "The live proof of L41's observer half (built 2026-10-28; the user: 'Build it now'): a run whose in-game date stops moving while the game runs is stopped by the observer and resumed from its autosaves, instead of being ended short by the watchdog. The freeze is made on purpose by SUSPENDING the game process (NtSuspendProcess) once the run is past its first monthly autosaves - the date stops, the process stays alive, which is exactly what a player pause looks like to the observer. frozen_minutes 2 so the proof takes minutes, not the default 15.",
+  "_arms": { "control": "{kind: control} - vanilla + telemetry; no economic reading is taken" },
+  "_predictions": {
+    "the freeze": "about 2 min after the suspension the observer logs 'in-game date FROZEN at <date> for 2 min with the game running (L41) - no player pause in the tick log (a hang?)', stops the game (verified gone), and logs 'stopped by the observer ... resuming from its autosaves'",
+    "the resume": "attempt 2 loads the newest monthly autosave (a date at or before the frozen one), the date moves again, and the run reaches 1837.1.1 and self-quits",
+    "meta.json": "frozen_stops 1, resumes 1, self_quit true, reached 1837.1.1, abandoned_reason empty; the scheduler records the run 'ok'"
+  },
+  "_stop_rule": "none: one run",
+  "_cost": "1 run x 1836.1.1 -> 1837.1.1 of vanilla + telemetry, about 5-10 min including the 2-min freeze and the reload",
+  "defaults": {
+    "tags": ["GBR"],
+    "metrics": ["country_state"],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 30,
+    "frozen_minutes": 2
+  },
+  "setups": {
+    "control": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "control", "until": "1837.1.1", "dump_dates": ["1836.6.1"] }
+  ]
+}

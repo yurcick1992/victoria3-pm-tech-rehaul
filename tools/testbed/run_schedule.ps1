@@ -179,7 +179,7 @@ function Get-RedFlagDates {
 # here despite working. Reconciled 2026-08-21; wage_pop_endpoints added with telemetry v14.
 $KNOWN_DEFAULT_KEYS = @('tags','metrics','autosave_interval','timeout_minutes','dump_dates',
                         'wage_pop_markets','wage_pop_endpoints','breakdown_dates','breakdown_tags',
-                        'wide_dates','wide_tags','origin_goods','game_args','no_dlc')
+                        'wide_dates','wide_tags','origin_goods','game_args','no_dlc','frozen_minutes')
 if ($defaults) {
     $unknown = @($defaults.PSObject.Properties | ForEach-Object { $_.Name } |
                  Where-Object { $KNOWN_DEFAULT_KEYS -notcontains $_ -and $_ -notlike '_*' })
@@ -282,6 +282,9 @@ foreach ($r in $runs) {
         game_args = [string](Val $r "game_args" (Val $defaults "game_args" ""))
         # ⭐ the no-DLC load test (2026-10-26): every installed DLC disabled for the run (run else defaults) -> run_observer -DisableAllDlc
         no_dlc = [bool](Val $r "no_dlc" (Val $defaults "no_dlc" $false))
+        # L41 (2026-10-28): minutes of an unmoving in-game date, game running, before the observer stops the game and resumes the run from
+        # its autosaves (run else defaults) -> run_observer -FrozenMinutes; 0 disables; unset = the observer's default (15)
+        frozen_minutes = (Val $r "frozen_minutes" (Val $defaults "frozen_minutes" $null))
         # ⭐ A CONTINUATION (2026-10-11): play on from a NAMED save instead of a fresh 1836 game -> run_observer -ContinueSave (fed under
         # the engine's pointer title, the L32 feeder's move) + -ContinueExpectAfter (the landing guard) + -PriorWallSeconds (the parent's
         # play, so meta.wall_seconds is the whole campaign). `parent` (<session>/<run>) is provenance only, written to continuation.json.
@@ -604,6 +607,7 @@ foreach ($p in $plan) {
     # with no config passes nothing, and build_state then reads as the pure-vanilla arm it is.
     if ($resolved.Config) { $obsArgs += @("-BuildConfig",$resolved.Config) }
     if ($p.game_args -and $p.game_args.Trim()) { $obsArgs += @("-ExtraGameArgs","`"$($p.game_args.Trim())`"") }
+    if ($null -ne $p.frozen_minutes) { $obsArgs += @("-FrozenMinutes","$([int]$p.frozen_minutes)") }
     if ($p.no_dlc) { $obsArgs += @("-DisableAllDlc"); Log "run $($p.index) is a NO-DLC run: every installed DLC disabled (run_observer -DisableAllDlc)" }
     if ($p.continue_save) {
         # & powershell @obsArgs quotes each element itself, so the path goes in unquoted (the harvest's rule)
