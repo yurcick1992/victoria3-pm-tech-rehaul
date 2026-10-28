@@ -42,7 +42,7 @@ What is left for 1.0 is the release build ("Mod 1.0 — the remainder" below). E
 | 12 | craft t0 rungs | DONE (canon) | 2026-10-12 | §10.91.1, .3, .5, §10.99 |
 | 13 | six merged rungs | DONE (canon); item 3 OPEN | 2026-10-12 | §10.91.2, §10.99 |
 | 14 | the last tech rework, then the canonisation decision | DONE: the arm is the canon | 2026-10-12 | §10.96–§10.99, F223–F227 |
-| — | DEFERRED FIXES | one DEFECT open (`deviates_from_vanilla`); the rest fixed or moot | — | below |
+| — | DEFERRED FIXES | all fixed or moot (`deviates_from_vanilla` fixed 2026-10-28) | — | below |
 
 ---
 
@@ -766,7 +766,11 @@ majors at 0.97 of vanilla's technology, play ×1.005). Returning to the pre-artm
 
 ## DEFERRED FIXES — known, not scheduled
 
-### `deviates_from_vanilla` names only six directories (DEFECT, found 2026-08-12)
+### `deviates_from_vanilla` names only six directories (DEFECT, found 2026-08-12; FIXED 2026-10-28)
+
+**Fixed 2026-10-28:** `run_observer.ps1` walks the built mod (every directory holding a file, minus telemetry's `zzz_v3tb_*` files,
+`.metadata/` and root files); a control reads `[]`, the pop-need overlay `[common/pop_needs]`, the canon's build 28 directories. Sessions
+before the fix under-report their content and are not back-filled.
 
 `run_observer.ps1` builds `build_state.json`'s `deviates_from_vanilla` from a hard-coded probe list — `common/buildings`,
 `common/production_methods`, `common/history`, `common/pop_needs`, `common/ai_strategies`, `localization` — while the canon's build carries 24

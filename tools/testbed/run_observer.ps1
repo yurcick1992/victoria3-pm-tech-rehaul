@@ -619,10 +619,16 @@ function Write-BuildState {
     if ($ModPath -and (Test-Path $ModPath)) {
         $isControl = ($modMeta -and $modMeta.id -eq "com.yurcick.v3_testbed_control")
         $isOverlay = ($modMeta -and $modMeta.id -eq "com.yurcick.v3_testbed_overlay")
-        foreach ($probe in @('common\buildings','common\production_methods','common\history',
-                             'common\pop_needs','common\ai_strategies','localization')) {
-            if (Test-Path (Join-Path $ModPath $probe)) { $deviates += ($probe -replace '\\','/') }
-        }
+        # WALK the built mod (since 2026-10-28; it was a six-path probe list that could not see any other kind of content): every
+        # directory that holds a file, as `common/<dir>` under common and its top folder elsewhere, leaving out the instrument
+        # (`zzz_v3tb_*`, telemetry's own files in every arm), `.metadata/` and the files at the mod's root (the thumbnail).
+        $modRoot = (Resolve-Path -LiteralPath $ModPath).Path.TrimEnd('\')
+        $deviates = @(Get-ChildItem -LiteralPath $modRoot -Recurse -File |
+            Where-Object { $_.Name -notlike 'zzz_v3tb_*' } |
+            ForEach-Object { $rel = $_.FullName.Substring($modRoot.Length + 1); $seg = $rel -split '\\'
+                if ($seg.Count -lt 2 -or $seg[0] -eq '.metadata') { return }
+                if ($seg[0] -eq 'common' -and $seg.Count -ge 3) { "common/$($seg[1])" } else { $seg[0] } } |
+            Sort-Object -Unique)
         $arm = if ($isOverlay) {
                    # name WHAT the overlay is, not merely that there is one - "overlay" alone would
                    # be as uninterpretable later as the bare session name that started all this.
