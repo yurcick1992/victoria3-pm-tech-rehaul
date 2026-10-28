@@ -37,7 +37,7 @@ const load = p => {
     const og = t.output_good || ind.output_good;
     const O = (t.output_qty || 0) * (PRICES[og] || 0);
     let I = 0; for (const [g, q] of Object.entries(t.inputs || {})) I += q * (PRICES[g] || 0);
-    const wp = t.wage_pct != null ? +t.wage_pct : 0.25;
+    const wp = t.wage_pct != null ? +t.wage_pct : 0.25;   // ⚠ a very simplistic convention, not a realistic wage factor (CLAUDE.md §2.10)
     m.set(t.key, {
       ind: ind.id, era: t.era, name: t.name, O, I, wp, outQty: t.output_qty,
       inputs: { ...(t.inputs || {}) }, be: O > 0 ? I / ((1 - wp) * O) * 100 : NaN,

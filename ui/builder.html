@@ -714,7 +714,7 @@ function makeTiers(i){ return i.tiers.map((t,ix)=>({
     output_good:t.output_good,   // optional per-tier override (e.g. shipyard clippers→steamers)
     vanilla_pm:t.vanilla_pm,     // base-game main PM this tier replaces (used by "Bring to vanilla")
     building_cost:(t.building_cost!=null?+t.building_cost:null),   // construction points (→ required_construction)
-    wage_pct:(t.wage_pct!=null?+t.wage_pct:null),   // LEGACY config field (still read by the solvers/linter/builder); the UI now derives wages from the workforce × base wage. Carried through on export.
+    wage_pct:(t.wage_pct!=null?+t.wage_pct:null),   // LEGACY config field (still read by the solvers/linter/builder); the UI now derives wages from the workforce × base wage. Carried through on export. A very simplistic convention, NOT a realistic wage factor (CLAUDE.md §2.10).
     _baseWage:null,   // this tier's own base wage (£/wk); null ⇒ follows the sheet-level BASE_WAGE
     ai_value:(t.ai_value!=null?+t.ai_value:null),   // per-tier AI construction desire; null = engine default (AIVAL_DEFAULT)
     solve_profit:(t.solve_profit!=null?+t.solve_profit:null),   // §10.59 per-tier recipe-solve margin override (solver-side; carried so the fork stays faithful to the config — ui/econ.js makeTiers carries it too)

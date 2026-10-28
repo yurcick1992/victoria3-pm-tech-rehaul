@@ -2628,6 +2628,11 @@ gate on the shipped book, and restating `target_be` would move every building's 
 electricity canonization (§10.43.0) being the provable two-key diff it had to be. Re-basing those two on the wage model is
 OPEN and needs its own ruling and its own pass.
 
+**Closed by the user, 2026-10-28: the re-basing is not done.** `wage_pct` stays as it is: NOT a realistic wage factor but a very
+simplistic convention, and every place that still reads it says so in a comment. (Since this pass `make_ab_config` stores a per-rung
+`wage_pct` from one reference wage per tier at its anchor year, every country alike, at base prices; an older book falls back to the
+flat 0.25.) Anything that predicts or reports a wage uses `lib_wage_model.mjs` (§10.87, CLAUDE.md §2.10).
+
 ### 10.87.3 — ⭐⭐ THE MARGIN IDENTITY, REPAIRED (F150 → F152)
 
 F92 shipped `margin = profit ÷ (va_out − profit)` on the reasoning that total cost is revenue minus profit. The reasoning is

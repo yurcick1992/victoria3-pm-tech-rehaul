@@ -368,8 +368,9 @@ User-ruled 2026-09-20, §10.87, F152.
 4. **The margin identity:** `margin = profit ÷ (R − profit)` with `R = va_out × (market price ÷ base)` — because `va_out`/`va_in` are BASE-priced and
    `profit` is MARKET-priced (F150). From save summary v9 on, `goods_sales` and `goods_cost` are at market and `wages = goods_sales − goods_cost −
    profit` is exact. A building with no goods flows (financial districts, manor houses, company HQs) has profit only, no margin.
-5. The wage share of total cost is 15–23% in manufacturing (54% → 29% for the whole economy). `wage_pct` (0.25) survives only as the config-side
-   convention behind `target_be` and `lint_solvency.mjs`.
+5. The wage share of total cost is 15–23% in manufacturing (54% → 29% for the whole economy). `wage_pct` survives only as the config-side
+   convention behind `target_be` and `lint_solvency.mjs`: NOT a realistic wage factor but a very simplistic one (one reference wage per tier,
+   every country alike, or the flat 0.25); re-basing it was closed by the user on 2026-10-28.
 
 ## 2.11 A reported ratio carries its own numerator and denominator
 

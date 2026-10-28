@@ -19,6 +19,8 @@
 # basicEmployment); tools/restate_basic_be.mjs re-applies it to a book written before the ruling. Wages are the
 # wage_pct fraction of TOTAL cost (wage_pct comes from the tier map, default 0.25), so BE = I/(1-wage)/O. Checked
 # against the tier's target_be in BALANCE_FRAMEWORK.md §8.1.
+# !! wage_pct is NOT A REALISTIC WAGE FACTOR, only a very simplistic convention (user, 2026-10-28): one reference wage per
+# tier at its anchor year for every country, or the flat 0.25. Real wages: lib_wage_model.mjs (CLAUDE.md §2.10).
 #
 # Inputs (-v PRICES=<goods_prices.tsv>, file1 = tier map "pm tier target_be wage_pct", file2 =
 # concatenated vanilla+mod defs, vanilla first so mod overrides). Driven by lint.sh. Exit 1 if any

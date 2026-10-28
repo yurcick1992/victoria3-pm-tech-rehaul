@@ -9,6 +9,7 @@
 // need not be regenerated through its whole chain (tier4 → techs → A/B → trade → dams → crafts → merges) to carry it. The formula, per rung:
 //   I = the recipe's inputs + its basic secondaries' inputs, O = its output + theirs, W = the rung's era reference wage × the wage units of its own
 //   jobs plus its basic secondaries' (lib_secondary_compat basicTotals / basicEmployment); wage_pct = W / (I + W), target_be = (I + W) / O.
+//   ⚠ wage_pct is NOT A REALISTIC WAGE FACTOR, only a very simplistic convention (one reference wage per tier for every country; CLAUDE.md §2.10).
 // ⭐ IT PROVES ITSELF: an "off" method adds nothing, so every rung whose basic secondaries are "off" must come back with its stored numbers to the
 //   last digit — that is the check that this reproduces make_ab_config's (and make_artisan_config's) restatement. Any other rung that moves is
 //   reported UNEXPECTED and nothing is written.

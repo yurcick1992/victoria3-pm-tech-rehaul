@@ -22,7 +22,11 @@
 
   WAGES ARE NEVER EMITTED. `wage_pct` is a model-only accounting term: the wage fraction of TOTAL
   cost (goods + wages), default 0.25, so total = goods/(1-0.25). It exists to compute break-even in
-  our tools; V3 pays its own wages endogenously from employment and we do not touch that. (0.25 of
+  our tools; V3 pays its own wages endogenously from employment and we do not touch that.
+  !! wage_pct is NOT A REALISTIC WAGE FACTOR, only a very simplistic convention (user, 2026-10-28): a generated
+  book stores one per rung from ONE reference wage per tier (its anchor year, every country alike) at base prices,
+  an older book falls back to the flat 0.25. Real wage shares vary by country and decade (vanilla 55% -> 30% of
+  total cost over the century); a realistic wage is lib_wage_model.mjs (CLAUDE.md 2.10). (0.25 of
   total is the same number as the older "+33% over goods" spelling - reparameterized 2026-07-19, so
   a stray 0.33 in an old comment is the same value, not a different setting.) See BALANCE_FRAMEWORK §1/§8.
 
@@ -603,7 +607,7 @@ foreach ($ind in $cfg.industries) {
         # inputs/output_qty are actual volumes; the builder emits them directly.
         $outGood = if ($t.output_good) { $t.output_good } else { $ind.output_good }
         $Oval = [double]$t.output_qty * $prices[$outGood]
-        $wage = if ($null -ne $t.wage_pct) { [double]$t.wage_pct } else { 0.25 }   # wages as fraction of TOTAL cost (input goods + wages); default 0.25 (BALANCE_FRAMEWORK §1)
+        $wage = if ($null -ne $t.wage_pct) { [double]$t.wage_pct } else { 0.25 }   # wages as fraction of TOTAL cost (input goods + wages); default 0.25 (BALANCE_FRAMEWORK §1) - a simplistic convention, not a realistic wage (see the header)
 
         # ---- PM ----
         # §10.60 graded port factorisation: workforce/effect multipliers, 1 for every unfactored tier.

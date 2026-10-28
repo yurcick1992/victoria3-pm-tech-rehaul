@@ -24,6 +24,10 @@
 // ⚠ WAGES ARE INCLUDED, on the repo's standard full-break-even basis: `wage_pct` is the wage fraction of
 // TOTAL cost, so W = Ibase·wp/(1−wp) — the same quantity `lint_profitability.awk` uses. Excluding them
 // would slacken the bound to O:I ≥ 0.571.
+// ⚠ `wage_pct` IS NOT A REALISTIC WAGE FACTOR, only a very simplistic convention (user, 2026-10-28; its re-basing closed): a
+// generated book stores one per rung from ONE reference wage per tier (the tier's anchor year, every country alike) at base
+// prices, and an older book falls back to the flat 0.25. Real wage shares vary by country and decade (vanilla 55% → 30% of
+// total cost over the century); a realistic wage is `lib_wage_model.mjs` (CLAUDE.md §2.10). This gate needs only a bound.
 //
 // ⚠ WHY THIS EXISTS AS ITS OWN CHECK rather than a line in lint_profitability.awk — both reasons are
 // load-bearing and both are why the port slipped through for months (F67):

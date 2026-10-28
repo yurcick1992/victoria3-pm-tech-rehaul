@@ -584,7 +584,7 @@
         output_good:t.output_good,                     // optional per-tier override (e.g. shipyard clippers→steamers)
         vanilla_pm:t.vanilla_pm,                       // base-game main PM this tier replaces
         building_cost:(t.building_cost != null ? +t.building_cost : null),
-        wage_pct:(t.wage_pct != null ? +t.wage_pct : null),   // LEGACY config field, carried through on export
+        wage_pct:(t.wage_pct != null ? +t.wage_pct : null),   // LEGACY config field, carried through on export; a very simplistic convention, NOT a realistic wage factor (CLAUDE.md §2.10)
         // ⭐ per-tier recipe-solve profit override (§10.59, user-ruled 2026-08-16): replaces the band
         // edge AND the industry handicap for THIS tier's recipe solve (shipyard_steam e1 at +0.05).
         // Must survive into the model — same lesson as tech_year/input_ratio above: a dropped config

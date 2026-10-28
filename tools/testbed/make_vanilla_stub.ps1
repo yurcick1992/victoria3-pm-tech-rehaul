@@ -151,7 +151,8 @@ foreach ($ind in $cfg.industries) {
         Set-Prop $t 'output_qty' $outQty
         Set-Prop $t 'inputs'     ([pscustomobject]$newIn)
 
-        # descriptive break-even of the vanilla recipe (wage-inclusive, same convention as the ladder)
+        # descriptive break-even of the vanilla recipe (wage-inclusive, same convention as the ladder;
+        # wage_pct is NOT a realistic wage factor, only a very simplistic convention - CLAUDE.md 2.10)
         $wage = $(if ($t.PSObject.Properties.Name -contains 'wage_pct' -and $null -ne $t.wage_pct) { [double]$t.wage_pct } else { $WagePct })
         $inVal = 0.0; foreach ($g in $newIn.Keys) { $inVal += $newIn[$g] * $prices[$g] }
         $outVal = $outQty * $prices[$outGood]

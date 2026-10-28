@@ -190,6 +190,7 @@ for (const [id, c] of Object.entries(CRAFTS)) {
   t.exclude_secondary_pmgs = [...c.exclude_pmgs];
   if (c.exclude_pms.length) t.exclude_secondary_pms = [...c.exclude_pms];
   // the base-price break-even, restated exactly as make_ab_config does it: W = the e0 reference wage × the rung's wage units
+  // (⚠ wage_pct is NOT A REALISTIC WAGE FACTOR, only a very simplistic convention: one 1836 wage for every country; CLAUDE.md §2.10)
   const O = t.output_qty * PRICE[t.output_good || ind.output_good], I = val(t.inputs);
   const W = W0 * wageUnits(tierEmployment(t, ind, {}));
   t.wage_pct = Math.round(W / (I + W) * 10000) / 10000;

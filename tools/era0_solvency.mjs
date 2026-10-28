@@ -82,7 +82,7 @@ for (const ind of cfg.industries) { if (ind.disabled) continue;
   const tiers = ind.tiers.slice().sort((a, b) => a.era - b.era), t0 = tiers[0], r0 = rec(t0.vanilla_pm);
   if (!r0 || !Object.keys(r0.in).length) continue;
   const og = t0.output_good || ind.output_good, out0 = r0.out[og]; if (!(out0 > 0)) continue;
-  const wp = t0.wage_pct != null ? +t0.wage_pct : 0.25;
+  const wp = t0.wage_pct != null ? +t0.wage_pct : 0.25;   // ⚠ a very simplistic convention, not a realistic wage factor (CLAUDE.md §2.10)
   // ⭐ wage units through tierEmployment (2026-09-20): a tier with no `employment` of its own — the ART ACADEMY, whose
   // jobs live in its ownership PMG — used to score ZERO wage units here and so looked free to run (F143 §1a).
   IND.push({ id: ind.id, pm: t0.vanilla_pm, og, out0, mix: r0.in, I0: val(r0.in), O0: out0 * PRICE[og], wp,

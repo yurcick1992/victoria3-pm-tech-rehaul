@@ -17,6 +17,8 @@
       I = target_be/100 * O * (1 - wage_pct):
         scale = (target_be/100 * outputValue * (1-wage_pct)) / vanillaInputValue ; qty[g] = round(vanilla_qty[g]*scale)
       wage_pct defaults to 25% (a per-tier `wage_pct` in the config overrides it). See BALANCE_FRAMEWORK §1/§8.
+      !! wage_pct is NOT A REALISTIC WAGE FACTOR, only a very simplistic convention (user, 2026-10-28); real wages
+      vary by country and decade (CLAUDE.md 2.10, lib_wage_model.mjs).
 
   Usage:  powershell -ExecutionPolicy Bypass -File tools\solve_volumes.ps1 [-Game "<...\Victoria 3\game>"] [-Config <path>]
 

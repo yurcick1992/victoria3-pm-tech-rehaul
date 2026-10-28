@@ -443,6 +443,9 @@ for (const ind of cfg.industries) {
     // lint_solvency's L18 gate, the balance UI's wages row), so the whole chain moves to the measured wage with no
     // second implementation and no new field. A book generated before this — or the six-rung one — carries no per-tier
     // value and falls back to the flat 0.25, which is why nothing older breaks.
+    // ⚠ "Measured" only in the sense above: it is still NOT A REALISTIC WAGE FACTOR, only a very simplistic convention (user,
+    // 2026-10-28) — one reference wage per tier, every country alike, at base prices. A realistic wage is lib_wage_model's
+    // economyWage(tag, year) (CLAUDE.md §2.10); never quote this field as what a building pays.
     if (!BE_WAGE_FLAT) t.wage_pct = Math.round(Wbe / (Ib + Wbe) * 10000) / 10000;
     t.target_be = Math.round((Ib + Wbe) / Ob * 100);   // ≡ Ib / ((1 − wage_pct) × Ob) × 100 at that wage_pct
     cmax = Math.max(cmax, t.building_cost);
