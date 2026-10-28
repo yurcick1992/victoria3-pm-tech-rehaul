@@ -37,7 +37,7 @@ What is left for 1.0 is the release build ("Mod 1.0 — the remainder" below). E
 | — | the war and naval research channels | DONE; re-ruled 2026-09-03 and 2026-10-12 | 2026-10-12 | §10.69, §10.98 |
 | 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 CLOSED (F255, not an issue) · P9 a ruling | — | BACKLOG B, F137, F138 |
 | 9 | margin compression | CLOSED (batch 1 out; levelling closed) | 2026-09-19 | F139, §10.86.3–.4 |
-| 10 | the tier-0 input penalty | partly superseded by the t1-anchor model; the graded penalty CLOSED 2026-10-28; the output-ladder flag OPEN | — | F140–F148, §10.86.6–.7, §10.91.5 |
+| 10 | the tier-0 input penalty | partly superseded by the t1-anchor model; both open items CLOSED 2026-10-28 | — | F140–F148, §10.86.6–.7, §10.91.5 |
 | 11 | post-JE tech finishing and broader trade | DONE; three follow-ups OPEN | 2026-09-25 | §10.88, F160–F164 |
 | 12 | craft t0 rungs | DONE (canon) | 2026-10-12 | §10.91.1, .3, .5, §10.99 |
 | 13 | six merged rungs | DONE (canon); item 3 OPEN | 2026-10-12 | §10.91.2, §10.99 |
@@ -106,7 +106,7 @@ feature only if it needs no iteration (step 7's timeline).
 The balance campaign (BACKLOG "The order" items 2–3, section B), then the final balance check:
 - the price path and the old rung in the consumer chains — the central open problem (CLAUDE.md §2.1, F136);
 - the hoard (F135, F179 §3);
-- what is left of step 8 (P9), step 10 (the output-ladder flag) and step 11's follow-ups (2)–(4).
+- what is left of step 8 (P9), and step 11's follow-ups (2)–(4).
 
 ---
 
@@ -644,8 +644,8 @@ the penalty does at the anchor (F140–F147).
 
 **Status: partly superseded.** Since §10.91.5 (canon 2026-10-12) every industry is anchored at t1 (`--anchor-for` on all 17), t0 steps down ÷1.5
 on output and on input value, and the lift (1.2, the pop-good lift 1.2) sits on the anchor. The graded penalty's century was CLOSED by the user on
-2026-10-28, overtaken by the t1 anchor and the crafts (the generator still refuses `--anchor-for` with `--in0-stage`); the output-ladder flag
-(§3 candidate 4) stays OPEN in BACKLOG B.
+2026-10-28, overtaken by the t1 anchor and the crafts (the generator still refuses `--anchor-for` with `--in0-stage`); so was the output-ladder
+flag (§3 candidate 4): no open question needs it.
 
 ### §1 — what was settled (2026-09-19)
 
