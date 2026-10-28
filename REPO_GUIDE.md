@@ -1232,11 +1232,9 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   goods indices are positional in `00_goods.txt`. In v16 an owner's id can change (key on `owner_id` per year). Pop objects are records
   (17% of vanilla's are empty); the pop table is not scanned (`population_by_profession` is indexed alphabetically over `common/pop_types`;
   the reader throws if the count changes). A pop's `workplace` is the building's full record id. Refs: TESTBED_METRICS §7½.
-- **Binary readers** (record — melting is the standing route, TESTBED_METRICS §7): **`save_extract.mjs`** `<save.v3> [--out]` → the
-  `gamestate` (there is no text-save option); **`lib_savebin.mjs`**, trusted only before ~104 MB (depth drifts after the pop table);
-  **`save_survey.mjs`** `<gamestate> [--limit-mb N]`; **`save_dump_records.mjs`** `<gamestate> --anchor <string> [--records 3]`;
-  **`save_pops.mjs`** `<gamestate> [--tsv]` (pop + tag tables); **`save_summary.mjs`** `<pops.tsv> [--game] [--band 10-20]` (wealth,
-  need budgets, wealth threshold per need; field meanings are hypotheses).
+- **Binary readers — REMOVED 2026-10-28** (in git history): `save_extract.mjs`, `lib_savebin.mjs`, `save_survey.mjs`, `save_dump_records.mjs`,
+  `save_pops.mjs`, `save_summary.mjs` and `save_market_goods.mjs`. `rakaly melt` does everything they did — it unpacks a `.v3` itself and
+  yields the whole gamestate as text, without `lib_savebin`'s brace-depth drift past ~104 MB — and the melted readers below cover the pop data.
 - **Melted readers** (`rakaly melt --format vic3 --unknown-key stringify`; they need no telemetry):
   **`melted_pop_need_weights.mjs`** `<melt> --tsv out [--region STATE_X] [--weights <json>]` — the game's purchase weight per (state,
   culture, need, good), ÷ base weight = the supply share used (an overlay arm needs `--weights`; F40). **`melted_building_goods.mjs`**
@@ -1552,7 +1550,7 @@ Kept as the record of how a finding was reached; most hardcode a session, market
 - `consumption_calib.mjs`, `slave_channel_ab.mjs` (F61), `state_good_units.mjs`, `wage_calib.mjs` — save-side consumption, slave channel,
   per-state units, save `base_wage` vs telemetry.
 - `melted_pop_needs.mjs`, `melted_state_needs.mjs` (superseded by `melted_pop_need_weights.mjs`), `melted_good_consumers.mjs` (who consumes
-  a good), `save_market_goods.mjs` (misnamed: its records are not market orders).
+  a good).
 - `score_vanilla_window.sh` — scores the vanilla campaign's saves around a debut.
 - `analyse_tech_picture.mjs`, `analyse_techtree_run.mjs`, `analyse_three_arm.mjs` — readers of the 2026-08 tech-tree and three-arm batches.
 - `market_lifespans.mjs` — how long each tracked market lasted (an annexed market silently stops producing rows).

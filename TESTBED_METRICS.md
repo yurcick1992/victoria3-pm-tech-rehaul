@@ -1066,9 +1066,9 @@ uint16 tokens, a few structural (`0x0001 =`, `0x0003 {`, `0x0004 }`, `0x000C` in
 text-save option** (no `save_as_text` / `plaintext` flag in the exe, no save-format key in `pdx_settings.json`).
 
 The hand-written binary readers (`save_extract.mjs`, `lib_savebin.mjs`, `save_survey.mjs`, `save_dump_records.mjs`, `save_pops.mjs`,
-`save_summary.mjs`) are records: `lib_savebin.mjs`'s brace depth drifts after ~104 MB, a known jomini format quirk ("hidden objects" —
-containers the byte stream implies rather than braces), so it is trusted only for streaming scans that need no depth. **For anything
-structural, melt first.** The pop-record tokens those readers use, as the melt names them:
+`save_summary.mjs`, `save_market_goods.mjs`) were **removed on 2026-10-28** (in git history): `rakaly melt` does everything they did, and
+`lib_savebin.mjs`'s brace depth drifted after ~104 MB, a known jomini format quirk ("hidden objects" — containers the byte stream implies
+rather than braces). **Melt every save.** The pop-record tokens those readers used, as the melt names them (kept for reading old findings):
 
 | token | field |
 |---|---|
@@ -1107,7 +1107,7 @@ world.
   culture, religion, wealth and size.
 - **The 177 `consumption_tax` blocks are the AI's tax evaluation**, not consumption: `{ type=consumption_tax goods="<good>"
   direction=increase_spending country=<id> priority={ priority=must_have score_before_random=A score=B } cost=100 valid=yes|no }`.
-  `save_market_goods.mjs` is misnamed and reports these; do not use it for market data.
+  The removed `save_market_goods.mjs` reported these under a market name; they are not market data.
 - ⚠ **THE MARKET ORDER BOOK IS NOT IN A SAVE AT ALL.** The market database holds only `owner` per market; orders are recomputed on load.
 
 ⚠ **A record id carries a GENERATION prefix once its slot has been reused** (`slot + k·2^24`: a Kaffa textile mill read `16785323` = 2^24 +
