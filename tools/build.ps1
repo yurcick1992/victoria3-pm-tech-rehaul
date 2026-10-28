@@ -693,7 +693,7 @@ foreach ($ind in $cfg.industries) {
         if ($t.method_of) {
             # no group and no building of its own: the method lives in the host's main group. Loc for the method only.
             $locBody += " $($t.pm_key):0 `"$(PmNameLoc $t)`""
-            $locBody += " $($t.key)_pmr_short:0 `"$(RungNameLoc $t $anchorKey)`""   # the rung's short name, which research texts use (2026-10-21)
+            $locBody += " $($t.key)_pmr_short:0 `"Tier $([int]$t.era). $(RungNameLoc $t $anchorKey)`""   # the rung's short name, which research texts use (2026-10-21; with its tier since 2026-10-29)
             if ($ind.follows_be -ne $false -and -not $ind.no_mass_be) { $tierMap += "$($t.pm_key) $tierNo $($t.target_be) $(Fmt $wage)" }
             $summary += [pscustomobject]@{ Building="$($t.key) (method of $($t.method_of))"; Tier=$tierNo; TargetBE=$t.target_be; ActualBE=[math]::Round($actualBe) }
             continue
@@ -824,9 +824,12 @@ foreach ($ind in $cfg.industries) {
         }
         $locBody += " $($t.key):0 `"$bldName`""
         $locBody += " $($t.key)_lens_option:0 `"@@LENS:$($anchorKey):$($t.key)@@`""
-        # ⭐ THE RUNG'S SHORT NAME (2026-10-21): "<vanilla building> (<vanilla method>)" per language, without "Era N." and "Recipe BE" — what a research
-        #   entry and a company modifier call this rung (tools/emit_research_events.mjs shortName, tools/emit_companies.mjs)
-        $locBody += " $($t.key)_pmr_short:0 `"$(RungNameLoc $t $anchorKey)`""
+        # ⭐ THE RUNG'S SHORT NAME (2026-10-21): "<vanilla building> (<vanilla method>)" per language, without "Recipe BE" — what a research
+        #   entry, a company modifier and a throughput modifier call this rung (tools/emit_research_events.mjs shortName, tools/emit_companies.mjs,
+        #   tools/emit_vanilla_refs.mjs). ⭐ WITH ITS TIER since 2026-10-29 (POLISH P4, the user on the Militarized Industry principle: "why some of
+        #   these say 'tier N', and some don't?"): vanilla's own texts name a rung-0 key, which resolves to the full building name "Tier 0. Arms
+        #   Industries (Muskets)", so the short name carries the same "Tier N." / "Tier 0 craft." and one rung reads the same everywhere.
+        $locBody += " $($t.key)_pmr_short:0 `"$tierWord. $(RungNameLoc $t $anchorKey)`""
         $locBody += " $($t.pmg_key):0 `"$pmgName`""
         $locBody += " $($t.pm_key):0 `"$(PmNameLoc $t)`""
 

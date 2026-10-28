@@ -112,20 +112,42 @@ pmr_bar_aniline = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_aniline_1 >= 10000 }  NOT = { OR = { AND = { pmr_src_aniline_0 >= 13 } } }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_aniline_1 >= 10000 }
 			}
-			add = {
-				desc = "pmr_term_aniline_1_half"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_aniline_0 >= 13 } } }
+				}
+				add = {
+					desc = "pmr_term_aniline_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_aniline_1_half_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_aniline_1 >= 15000 }  NOT = { OR = { AND = { pmr_src_aniline_0 >= 25 } } }
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_aniline  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_aniline_1 >= 15000 }
 			}
-			add = {
-				desc = "pmr_term_aniline_1"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_aniline_0 >= 25 } } }
+				}
+				add = {
+					desc = "pmr_term_aniline_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_aniline_1_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
@@ -979,20 +1001,42 @@ pmr_bar_combustion_engine = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_combustion_engine_1 >= 8 }  NOT = { OR = { AND = { pmr_src_combustion_engine_0 >= 8 } } }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_combustion_engine_1 >= 8 }
 			}
-			add = {
-				desc = "pmr_term_combustion_engine_1_half"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_combustion_engine_0 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_combustion_engine_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_combustion_engine_1_half_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_combustion_engine_1 >= 15 }  NOT = { OR = { AND = { pmr_src_combustion_engine_0 >= 15 } } }
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_combustion_engine_1 >= 15 }
 			}
-			add = {
-				desc = "pmr_term_combustion_engine_1"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_combustion_engine_0 >= 15 } } }
+				}
+				add = {
+					desc = "pmr_term_combustion_engine_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_combustion_engine_1_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
@@ -1056,20 +1100,42 @@ pmr_bar_compression_ignition = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_1 >= 24 }  NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 24 } } }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_1 >= 24 }
 			}
-			add = {
-				desc = "pmr_term_compression_ignition_1_half"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 24 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_1_half_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_compression_ignition_1 >= 47 }  NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 47 } } }
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_compression_ignition_1 >= 47 }
 			}
-			add = {
-				desc = "pmr_term_compression_ignition_1"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 47 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_1_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
@@ -1633,20 +1699,42 @@ pmr_bar_dynamite = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_dynamite_1 >= 4 }  NOT = { OR = { AND = { pmr_src_dynamite_0 >= 4 } } }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_dynamite_1 >= 4 }
 			}
-			add = {
-				desc = "pmr_term_dynamite_1_half"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_dynamite_0 >= 4 } } }
+				}
+				add = {
+					desc = "pmr_term_dynamite_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_dynamite_1_half_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_dynamite_1 >= 8 }  NOT = { OR = { AND = { pmr_src_dynamite_0 >= 8 } } }
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_dynamite_1 >= 8 }
 			}
-			add = {
-				desc = "pmr_term_dynamite_1"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_dynamite_0 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_dynamite_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_dynamite_1_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
@@ -1824,20 +1912,42 @@ pmr_bar_electrical_capacitors = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electrical_capacitors_1 >= 14 }  NOT = { OR = { AND = { pmr_src_electrical_capacitors_0 >= 24 } } }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_electrical_capacitors_1 >= 14 }
 			}
-			add = {
-				desc = "pmr_term_electrical_capacitors_1_half"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_electrical_capacitors_0 >= 24 } } }
+				}
+				add = {
+					desc = "pmr_term_electrical_capacitors_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_electrical_capacitors_1_half_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_electrical_capacitors_1 >= 27 }  NOT = { OR = { AND = { pmr_src_electrical_capacitors_0 >= 47 } } }
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_electrical_capacitors  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_electrical_capacitors_1 >= 27 }
 			}
-			add = {
-				desc = "pmr_term_electrical_capacitors_1"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_electrical_capacitors_0 >= 47 } } }
+				}
+				add = {
+					desc = "pmr_term_electrical_capacitors_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_electrical_capacitors_1_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
@@ -2471,20 +2581,42 @@ pmr_bar_lathe = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.25  has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_lathe_1 >= 25 }  NOT = { OR = { AND = { pmr_src_lathe_0 >= 25 } } }
+				literacy_rate >= 0.25  has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_lathe_1 >= 25 }
 			}
-			add = {
-				desc = "pmr_term_lathe_1_half"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_lathe_0 >= 25 } } }
+				}
+				add = {
+					desc = "pmr_term_lathe_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_lathe_1_half_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.25  NOT = { AND = { has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_lathe_1 >= 50 }  NOT = { OR = { AND = { pmr_src_lathe_0 >= 50 } } }
+				literacy_rate >= 0.25  NOT = { AND = { has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_lathe_1 >= 50 }
 			}
-			add = {
-				desc = "pmr_term_lathe_1"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_lathe_0 >= 50 } } }
+				}
+				add = {
+					desc = "pmr_term_lathe_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_lathe_1_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
@@ -2504,20 +2636,42 @@ pmr_bar_lathe = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.25  has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_lathe_2 >= 25 }  NOT = { OR = { AND = { pmr_src_lathe_0 >= 25 }  AND = { pmr_src_lathe_1 >= 25 } } }
+				literacy_rate >= 0.25  has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_lathe_2 >= 25 }
 			}
-			add = {
-				desc = "pmr_term_lathe_2_half"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_lathe_0 >= 25 }  AND = { pmr_src_lathe_1 >= 25 } } }
+				}
+				add = {
+					desc = "pmr_term_lathe_2_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_lathe_2_half_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.25  NOT = { AND = { has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_lathe_2 >= 50 }  NOT = { OR = { AND = { pmr_src_lathe_0 >= 50 }  AND = { pmr_src_lathe_1 >= 50 } } }
+				literacy_rate >= 0.25  NOT = { AND = { has_global_variable = pmr_held_lathe  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_lathe_2 >= 50 }
 			}
-			add = {
-				desc = "pmr_term_lathe_2"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_lathe_0 >= 50 }  AND = { pmr_src_lathe_1 >= 50 } } }
+				}
+				add = {
+					desc = "pmr_term_lathe_2"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_lathe_2_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
@@ -2695,20 +2849,42 @@ pmr_bar_mechanical_tools = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_1 >= 25 }  NOT = { OR = { AND = { pmr_src_mechanical_tools_0 >= 3 } } }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_1 >= 25 }
 			}
-			add = {
-				desc = "pmr_term_mechanical_tools_1_half"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_mechanical_tools_0 >= 3 } } }
+				}
+				add = {
+					desc = "pmr_term_mechanical_tools_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_mechanical_tools_1_half_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_mechanical_tools_1 >= 50 }  NOT = { OR = { AND = { pmr_src_mechanical_tools_0 >= 5 } } }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_mechanical_tools_1 >= 50 }
 			}
-			add = {
-				desc = "pmr_term_mechanical_tools_1"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_mechanical_tools_0 >= 5 } } }
+				}
+				add = {
+					desc = "pmr_term_mechanical_tools_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_mechanical_tools_1_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
@@ -2816,20 +2992,42 @@ pmr_bar_mechanized_workshops = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanized_workshops_1 >= 8 }  NOT = { OR = { AND = { pmr_src_mechanized_workshops_0 >= 8 } } }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanized_workshops_1 >= 8 }
 			}
-			add = {
-				desc = "pmr_term_mechanized_workshops_1_half"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_mechanized_workshops_0 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_mechanized_workshops_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_mechanized_workshops_1_half_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_mechanized_workshops_1 >= 15 }  NOT = { OR = { AND = { pmr_src_mechanized_workshops_0 >= 15 } } }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_mechanized_workshops  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_mechanized_workshops_1 >= 15 }
 			}
-			add = {
-				desc = "pmr_term_mechanized_workshops_1"
-				value = 1
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_mechanized_workshops_0 >= 15 } } }
+				}
+				add = {
+					desc = "pmr_term_mechanized_workshops_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_mechanized_workshops_1_also"
+					value = 0
+				}
 			}
 		}
 		else_if = {

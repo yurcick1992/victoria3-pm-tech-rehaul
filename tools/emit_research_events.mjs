@@ -110,7 +110,8 @@ const nameOf = key => { const t = TIER_BY_KEY[key]; return t && (t.method_of || 
 //   "Tier 0 craft. Textile Mills (Handsewn Clothes). Recipe BE 65%" (noise in a requirement); a vanilla building by its vanilla loc key
 // ⭐ since 2026-10-21 (the translation ruling: "when we simply multiply rungs and the official translation exists, take it for all rungs") a rung is named
 //   through `<key>_pmr_short`, which build.ps1 writes per language as vanilla's building name + a reference to the vanilla method (the minted
-//   methods stay English) — the same words as the in-game name, without its "Tier N." and "Recipe BE". The apostrophe guard below checks its parts.
+//   methods stay English) — the same words as the in-game name, without its "Recipe BE" ("Tier N." kept since 2026-10-29, POLISH P4). The
+//   apostrophe guard below checks its parts.
 const shortName = key => { const t = TIER_BY_KEY[key]; return t && t.name ? `$${key}_pmr_short$` : `$${key}$`; };
 // a short-name key's vanilla parts (the industry's building and the rung's vanilla method), for the apostrophe guard
 const SHORT_PARTS = new Map();
@@ -397,9 +398,10 @@ const sourceDisplay = (tech, i, { name, mark, half = mark / 2, nowSv, mixed, req
   const req = requires.length ? `; needs ${requires.map(r => '$' + r + '$').join(' and ')}` : '';
   const dFull = `pmr_term_${tech}_${i}`, dHalf = dFull + '_half';
   const full = `${name}: ${fmtN(mark)} ${lvl(mark)}${of} (now ${live(nowSv)})${req}`;
-  loc.push([dFull, full]);
+  loc.push([dFull, full]); ALSO_TEXT.set(dFull, full);
   // the qualifier after the live figure, as "needs" (R4 proofread 2026-10-26); a halved mark that rounds back to the full one is the full line
-  if (HALF) loc.push([dHalf, fmtN(half) === fmtN(mark) ? full : `${name}: ${fmtN(half)} ${lvl(half)}${of} (now ${live(nowSv)}); halved${req}`]);
+  const halfText = fmtN(half) === fmtN(mark) ? full : `${name}: ${fmtN(half)} ${lvl(half)}${of} (now ${live(nowSv)}); halved${req}`;
+  if (HALF) { loc.push([dHalf, halfText]); ALSO_TEXT.set(dHalf, halfText); }
   return { dFull, dHalf, bullet: full };
 };
 // a condition entry's line: a COUNT named in `research_events.count_display` (keyed by the script value its trigger compares) reads like a
@@ -429,6 +431,19 @@ const aposKeys = () => {
   APOS_KEYS = new Set([...readVanLoc(ks)].filter(([, v]) => v.some(([, t]) => hasApos(t))).map(([k]) => k));
   return APOS_KEYS;
 };
+// ⭐ A BAR LINE IS A NOUN PHRASE (the user, 2026-10-29: "clumsily worded / capitalised"): the game prints it as "0.0 from <text>", so a
+//   condition label — a sentence in the book, and still one in the entry's body — is rephrased for the bar line only. The forms are listed;
+//   a label of any other form THROWS (add its form here), so no sentence reaches a bar line unconverted.
+const BAR_PHRASES = [
+  [/^A country not in revolt, anywhere, lives under /, 'a country anywhere, not in revolt, living under '],
+  [/^A great power or a neighbor of ours, not in revolt, lives under /, 'a great power or a neighbor of ours, not in revolt, living under '],
+  [/^We are a great or major power and are not under /, 'our standing as a great or major power, not under '],
+  [/^We, or a subject of ours other than (.+?), hold land in /, 'land of ours, or of a subject of ours other than $1, in '],
+];
+const barPhrase = label => {
+  for (const [re, to] of BAR_PHRASES) if (re.test(label)) return label.replace(re, to);
+  throw new Error(`research_events: no bar-line phrasing for the condition label "${label}" — add its form to BAR_PHRASES`);
+};
 const condSv = new Set();
 const condDisplay = (tech, e) => {
   const dFull = `pmr_term_${tech}_0`, dHalf = dFull + '_half';
@@ -448,7 +463,7 @@ const condDisplay = (tech, e) => {
     return { dFull, dHalf, bullet: full };
   }
   const lawRefs = [...e.label.matchAll(/\$(law_[a-z_0-9]+)\$/g)].map(x => x[1]);
-  const barText = lawRefs.some(k => aposKeys().has(k)) ? e.label.replace(/ under \$.*$/, ' under one of the laws named in the entry') : e.label;
+  const barText = barPhrase(lawRefs.some(k => aposKeys().has(k)) ? e.label.replace(/ under \$.*$/, ' under one of the laws named in the entry') : e.label);
   loc.push([dFull, barText]);
   if (e.half_trigger) {
     const nf = (/>=\s*([\d.]+)\D*$/.exec(e.trigger) || [])[1], nh = (/>=\s*([\d.]+)\D*$/.exec(e.half_trigger) || [])[1];
@@ -459,24 +474,40 @@ const condDisplay = (tech, e) => {
 const heldOn = tech => `has_global_variable = ${heldVar(tech)}  ${notIso}`;
 // one condition line: its tick when it holds (under the halved mark once the held flag is up), else 0. `before` = the sources listed above it in an
 //   any-source bar: only the FIRST source at its mark carries the +1, so the lines add up to the bar's real tick.
+// ⭐ POLISH P2 (the user, 2026-10-29: "the condition lists reads like two would sum … they don't sum, despite second condition being fulfilled"):
+//   a later source at its mark while an earlier one already carries the month used to show 0.0 exactly like an unmet one. It now shows its
+//   own "also met" text at 0 — NESTED inside its own met branch, so the source's script value is still evaluated once a month and the
+//   earlier sources only when this one is met, as before. Its loc is written here, from the text sourceDisplay left in ALSO_TEXT.
+const ALSO_TEXT = new Map(), alsoWritten = new Set();
+const alsoKey = d => {
+  if (!alsoWritten.has(d)) {
+    if (!ALSO_TEXT.has(d)) throw new Error(`internal: no "also met" text for ${d}`);
+    alsoWritten.add(d); loc.push([`${d}_also`, `${ALSO_TEXT.get(d)}; also met (the bar gains one month at most)`]);
+  }
+  return `${d}_also`;
+};
 const sourceLine = ({ litT, halfOn, hf, trig, half, dFull, dHalf, before }) => {
   const j = (...xs) => xs.filter(Boolean).join('  ');
   const notBefore = k => before.length ? `NOT = { OR = { ${before.map(b => `AND = { ${b[k]} }`).join('  ')} } }` : '';
-  if (!halfOn) return [{ trigger: j(litT, `AND = { ${trig} }`, notBefore('trig')), desc: dFull, value: 1 }, { desc: dFull, value: 0 }];
+  // a met source: +1 unless an earlier source is met, then "also met" at 0
+  const met = (d, k) => before.length ? { nested: [{ trigger: notBefore(k), desc: d, value: 1 }, { desc: alsoKey(d), value: 0 }] } : { desc: d, value: 1 };
+  if (!halfOn) return [{ trigger: j(litT, `AND = { ${trig} }`), ...met(dFull, 'trig') }, { desc: dFull, value: 0 }];
   return [
-    { trigger: j(litT, hf, `AND = { ${half} }`, notBefore('half')), desc: dHalf, value: 1 },
-    { trigger: j(litT, `NOT = { AND = { ${hf} } }`, `AND = { ${trig} }`, notBefore('trig')), desc: dFull, value: 1 },
+    { trigger: j(litT, hf, `AND = { ${half} }`), ...met(dHalf, 'half') },
+    { trigger: j(litT, `NOT = { AND = { ${hf} } }`, `AND = { ${trig} }`), ...met(dFull, 'trig') },
     { trigger: hf, desc: dHalf, value: 0 },
     { desc: dFull, value: 0 },
   ];
 };
 // if / else_if / else, each branch an `add` carrying its own desc (the P4 idiom: never a desc on an add that wraps an `if`)
-const renderLine = ln => ln.map((b, k) => {
+//   A branch with `nested` holds its own if / else of adds instead of one add (P2's "also met"), one level deeper.
+const renderLine = (ln, ind = `${T}${T}`) => ln.map((b, k) => {
   const head = k === 0 ? 'if' : (b.trigger ? 'else_if' : 'else');
   if (k === 0 && !b.trigger) throw new Error('internal: a bar line opening without a condition');
   if (k < ln.length - 1 && !b.trigger) throw new Error('internal: an unconditional branch before the last');
-  return `${T}${T}${head} = {\n` + (b.trigger ? `${T}${T}${T}limit = {\n${T}${T}${T}${T}${b.trigger}\n${T}${T}${T}}\n` : '') +
-    `${T}${T}${T}add = {\n${T}${T}${T}${T}desc = "${b.desc}"\n${T}${T}${T}${T}value = ${b.value}\n${T}${T}${T}}\n${T}${T}}`;
+  const body = b.nested ? renderLine(b.nested, ind + T) + '\n'
+    : `${ind}${T}add = {\n${ind}${T}${T}desc = "${b.desc}"\n${ind}${T}${T}value = ${b.value}\n${ind}${T}}\n`;
+  return `${ind}${head} = {\n` + (b.trigger ? `${ind}${T}limit = {\n${ind}${T}${T}${b.trigger}\n${ind}${T}}\n` : '') + body + `${ind}}`;
 }).join('\n');
 const barDescSpans = new Set();
 // the literacy figure is shown only by the generic probe terms (the shipped tooltip carries no literacy line: the user, 2026-10-21, "it's OK that
@@ -810,9 +841,9 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   }
   if (!lines.length) throw new Error(`research events: ${tech} has no bar lines`);
   const barDesc = `pmr_bar_desc_${span}`; barDescSpans.add(span);
-  barLocKeys.add(barName(tech)); barLocKeys.add(barDesc); for (const ln of lines) for (const b of ln) barLocKeys.add(b.desc);
+  barLocKeys.add(barName(tech)); barLocKeys.add(barDesc); for (const ln of lines) for (const b of ln) for (const x of b.nested || [b]) barLocKeys.add(x.desc);
   bars.push(`${barName(tech)} = {\n${T}name = "${barName(tech)}"\n${T}desc = "${barDesc}"\n${T}default_green = yes\n${T}start_value = 0\n${T}min_value = 0\n${T}max_value = ${span}\n${T}${cadence} = {\n` +
-    lines.map(renderLine).join('\n') +
+    lines.map(ln => renderLine(ln)).join('\n') +
     // ⚗ PERF PROBE (§10.98): research_events.perf_amplify_terms = k evaluates every term k − 1 more times in a separate zero-value `if`, so
     //   the cost of an ACTIVE bar's conditions shows (copies of script-placed entries are never placed, so perf_amplify cannot). Probe only.
     (RE.perf_amplify_terms > 1 ? '\n' + Array.from({ length: Math.round(RE.perf_amplify_terms) - 1 }, () => terms.map(t => `${T}${T}if = {\n${T}${T}${T}limit = {\n${T}${T}${T}${T}${t.trigger}\n${T}${T}${T}}\n${T}${T}${T}add = {\n${T}${T}${T}${T}desc = "${t.desc}"\n${T}${T}${T}${T}value = 0\n${T}${T}${T}}\n${T}${T}}`).join('\n')).join('\n') : '') +
@@ -911,7 +942,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     let flavour, rule;
     if (a.rule === 'war' && isFleetTech(tech)) {
       flavour = 'A navy learns by looking.';
-      rule = RE.naval_any ? `The bar advances by one each month while we, a rival of ours or a great power field a ship of type ${shipNames(tech)}.`
+      rule = RE.naval_any ? `The bar advances by one each month while our navy, a rival’s or a great power’s has at least one ${shipNames(tech)}.`
         : 'The bar advances by two each month while a ship of this kind sails under our flag, by one while a rival of ours fields one.';
     } else if (a.rule === 'war') {
       flavour = 'Hard fighting concentrates the mind.';
@@ -1035,11 +1066,13 @@ if (NONADD && LIT && GENERIC) for (const [e, v] of Object.entries(LIT)) {
   loc.push([`pmr_term_lit_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`} (${Math.round(100 * v)}% needed): the bar is paused`]);
   loc.push([`pmr_term_litok_${e}`, `Literacy ${`[ROOT.GetCountry.MakeScope.ScriptValue('pmr_lit')|%0]`} (${Math.round(100 * v)}% needed)`]);
 }
-if (WAR_TECHS.length) loc.push(['pmr_term_war_engaged', `A general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilized battalions on a front against an enemy that has already researched this technology`]);
+if (WAR_TECHS.length) loc.push(['pmr_term_war_engaged', `a general of ours with at least ${(RE.war_gate || {}).general_battalions_flat || 'the era-scaled number of'} mobilized battalions on a front against an enemy that has already researched this technology`]);
 // the fleet lines: ours supersedes a rival's (the older books), or any of ours, a rival's or a great power's (naval_any)
 if (NAV_TECHS.length && !RE.naval_any) { loc.push(['pmr_term_nav_own', 'A ship of this kind sails under our flag']); loc.push(['pmr_term_nav_rival', 'A rival of ours fields a ship of this kind']); loc.push(['pmr_term_nav_none', 'Neither we nor a rival of ours fields a ship of this kind']); }
-// each fleet entry names its ship types in vanilla's own translated names (R4, 2026-10-27)
-if (RE.naval_any) for (const tech of NAV_TECHS) loc.push([`pmr_term_nav_any_${tech}`, `We, a rival of ours or a great power field a ship of type ${shipNames(tech)}`]);
+// each fleet entry names its ship types in vanilla's own translated names (R4, 2026-10-27). The game prints a bar line as "0.0 from <text>",
+//   so the text is a lower-case noun phrase (the user, 2026-10-29, on "from We, a rival of ours or a great power field a ship of type …":
+//   "clumsily worded / capitalised"); typographic ’, never ASCII, in a bar line
+if (RE.naval_any) for (const tech of NAV_TECHS) loc.push([`pmr_term_nav_any_${tech}`, `at least one ${shipNames(tech)} in our navy, a rival’s or a great power’s`]);
 if (Object.keys(COND).length && GENERIC) { loc.push(['pmr_term_cond', 'The condition in the entry holds']); loc.push(['pmr_term_cond_half', 'The condition in the entry holds, at its halved mark']); }
 // §10.98: the script values the condition entries read
 for (const [n, body] of Object.entries(RE.condition_values || {})) sv.push(`${n} = {\n${body.replace(/^/gm, T)}\n}`);
