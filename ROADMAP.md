@@ -35,7 +35,7 @@ What is left for 1.0 is the release build ("Mod 1.0 — the remainder" below). E
 | 6½ | artisanal ownership | DEFERRED to 1.1 or later | 2026-10-21 | POLISH F1 |
 | 7 | visuals, proofreading, release | IN PROGRESS — the 1.0 polish | target 2026-10-30 | `POLISH_1_0.md` |
 | — | the war and naval research channels | DONE; re-ruled 2026-09-03 and 2026-10-12 | 2026-10-12 | §10.69, §10.98 |
-| 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 CLOSED (F255, not an issue) · P9 a ruling | — | BACKLOG B, F137, F138 |
+| 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 CLOSED (F255, not an issue) · P9 DEFERRED to an unspecified later version | — | BACKLOG B, F137, F138 |
 | 9 | margin compression | CLOSED (batch 1 out; levelling closed) | 2026-09-19 | F139, §10.86.3–.4 |
 | 10 | the tier-0 input penalty | partly superseded by the t1-anchor model; both open items CLOSED 2026-10-28 | — | F140–F148, §10.86.6–.7, §10.91.5 |
 | 11 | post-JE tech finishing and broader trade | DONE; follow-ups (3)(4) DEFERRED to 1.1 as known issues | 2026-09-25 | §10.88, F160–F164 |
@@ -106,7 +106,7 @@ feature only if it needs no iteration (step 7's timeline).
 The balance campaign (BACKLOG "The order" items 2–3, section B), then the final balance check:
 - the price path and the old rung in the consumer chains — the central open problem (CLAUDE.md §2.1, F136);
 - the hoard (F135, F179 §3);
-- what is left of step 8 (P9) and step 11's follow-ups (2)–(4).
+- step 8's P9, the tech tree to prioritise rather than complete (deferred by the user 2026-10-28), and step 11's follow-up (2).
 
 ---
 
@@ -599,6 +599,8 @@ cost are one dial.
   vanilla's 0.05 — F125 exonerated it for the hoard, but it speeds only the AI; (d) shrink the private pool's inflow (P1, the hoard).
 
 ### P9 — the tech tree should be a thing to prioritise, not to complete
+
+**DEFERRED by the user, 2026-10-28, to an unspecified later version.**
 
 The user, after a Brazil campaign: *"I'd prefer the late game techs to be less accessible … I ended up maybe 5 techs short from the absolute full
 tech situation … please register the desire to make the tech tree less a thing 'to complete', and more a thing to prioritise."* A standing

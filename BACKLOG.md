@@ -87,7 +87,7 @@ Closed:
 - **WATCH** · the percussion-cap chain (explosives t0 at 23% and munition t1 at 16% goods margin at base against vanilla's 56% / 39% — the t1 anchor's ×1.2 lift) stays unstaffed in thin markets: 10 of the probe's 13 swings; vanilla has the American case too; accepted as a 1.0 watch item (POLISH_1_0.md Q11) · F213 addendum
 - **DEFERRED to mod 1.1 as two 1.0 KNOWN ISSUES (user, 2026-10-28)** · Britain fully employed with no relation to B (KNOWN_ISSUES: near-full employment in 10 of 16 campaigns); which lever converges prices between markets (trade capacity?) — KNOWN_ISSUES: competition through trade is weak (F249 §4a; F178 §9: 28–44% of the rest of the world's old textile, furniture and tooling rungs in markets with no trade capacity) · ROADMAP step 11 (3)(4)
 - **RULING, for a session of its own before 1.0 (user, 2026-10-28: likely that evening)** · the register: O_shed in place of T0; the four loss fixes; pool U* aim contradicting pool W; "GDP per capita" vs total; the reading-gate cut · §10.83.3–.8, §10.85, F136
-- **RULING** · P9: the tech tree should be prioritised, not completed (grant fraction, a stage, the ahead-of-time define, depth) · ROADMAP P9, F138
+- **DEFERRED to an unspecified later version (user, 2026-10-28)** · P9: the tech tree should be prioritised, not completed (grant fraction, a stage, the ahead-of-time define, depth) · ROADMAP P9, F138
 - **PROPOSED** · a per-good price system *(verify — may predate the four-rung canon)* · BALANCE_FRAMEWORK
 - **DEFECT** · an empty pop need should buy its default good (model only, not the mod) · REPO_GUIDE §5, F44
 - **RESEARCH** · the need-substitution rule's real form; prestige share local vs market; USA strata/slave derivations disagree · REPO_GUIDE §5
