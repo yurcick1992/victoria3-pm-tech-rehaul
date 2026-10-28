@@ -23,7 +23,7 @@ appended oldest first after the July ones); no entry's text changed.
 
 | date | entry | area | status | note |
 |---|---|---|---|---|
-| 2026-10-28 | the save summaries froze every old country's GDP at early January 1936 in any later save: a trend ring read by position | testbed/readers | live | save_state_summary.mjs trends; no landmine yet |
+| 2026-10-28 | the save summaries froze every old country's GDP at early January 1936 in any later save: a trend ring read by position | testbed/readers | live | save_state_summary.mjs trends; landmine L43 |
 | 2026-10-27 | the aircraft carrier's technology had no naval research entry: vanilla's one multi-line `unlocking_technologies` | build/emitters | live | emit_research_events.mjs SHIP_BY_TECH |
 | 2026-10-26 | five electricity-consuming rungs could be built in a state without electricity | build/emitters | live | lint_pm_combos check 9 |
 | 2026-10-26 | a run lost to the observer's own landing guard: a crash after an early-death fresh restart read as a foreign save | testbed/harness | live | landmine L42 |
@@ -165,8 +165,8 @@ they read correctly, and the world sum came out as a mixture.
 the price-band probe (`20261028_104518`) and any continuation into 1936 are affected. F241's continuations ran 1934→1936 and are not re-read
 here.
 
-**Detector.** None registered yet; the fix reads by index, so the wrong slot cannot be chosen any more. A landmine with a tripwire is still owed
-(TESTBED_LANDMINES).
+**Detector.** Landmine L43: `Test-LmL43` runs `tools/testbed/ledger/summary_trend_ring.mjs --selftest` in every build and before every batch
+(a synthetic wrapped ring through the real writer); proven to fail with the last-slot read restored.
 
 **Next time.** A trend block is a ring: read it by its `index`, never by position. The world-market price ring (`world_market.price_trend`) was
 already read that way.

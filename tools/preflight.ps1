@@ -1686,6 +1686,29 @@ function Test-LmL38 {
     Add-Result 'L38' $T 'PASS' ((($out2.Trim() -split "`r?`n")[-1]) + " | $self")
 }
 
+function Test-LmL43 {
+    <#
+      L43 - A SAVE SUMMARY READS A COUNTRY'S TREND RING BY POSITION, NOT BY ITS INDEX (found 2026-10-28, the price-band
+      probe 20261028_104518, FINDINGS F257, BUGS_AND_FIXES 2026-10-28).
+
+      A country's gdp / prestige / literacy / avgsoltrend is a ring of weekly samples. An old country's ring fills at the
+      turn of 1936; after that the CURRENT sample is slot (index - 1) mod n, and the array's last slot is stale. The
+      reader took the last slot, so every old country's GDP froze at early January 1936 in any later save (the probe read
+      world GDP +6.2% where the saves held +25.5%). A batch that stops at 1936.1.1 never reaches the wrap.
+
+      DETECTOR (repo-side, every build and every batch gate): tools\testbed\ledger\summary_trend_ring.mjs --selftest feeds
+      a synthetic melt with one wrapped ring and one unfilled ring through the REAL writer and requires the slot at the
+      index. Proven 2026-10-28: with the last-slot read restored it fails (AAA 30, expected 600).
+    #>
+    $T = 'a save summary reads a trend ring by position, not by its index'
+    $tool = Join-Path $Repo 'tools\testbed\ledger\summary_trend_ring.mjs'
+    if (-not (Test-Path $tool)) { Add-Result 'L43' $T 'FAIL' "detector missing: $tool"; return }
+    # through cmd, never '& node ... 2>&1' (see L31): a native stderr line under Stop preference throws.
+    $out = & cmd /c "node ""$tool"" --selftest 2>&1" | Out-String
+    if ($LASTEXITCODE -ne 0) { Add-Result 'L43' $T 'FAIL' ($out.Trim() + [Environment]::NewLine + 'FIX: read the trend values at slot (index - 1) mod n (the TREND_KEYS block of save_state_summary.mjs).'); return }
+    Add-Result 'L43' $T 'PASS' (($out.Trim() -split "`r?`n")[-1])
+}
+
 $CHECKS = @(
     @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
     @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
@@ -1732,6 +1755,8 @@ $CHECKS = @(
     # L38 runs the SUMMARY WRITER on a synthetic melt (repo-side, so it gates a batch before any save is reaped) and,
     # with -Session, checks every sampled v12+ summary holds every country record.
     @{ Id = 'L38'; Artifact = $false; Fn = { Test-LmL38 } }
+    # L43 runs the SUMMARY WRITER on a synthetic melt with a wrapped trend ring (repo-side, like L38's first half).
+    @{ Id = 'L43'; Artifact = $false; Fn = { Test-LmL43 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

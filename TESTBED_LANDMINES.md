@@ -106,6 +106,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L40 | vanilla script that names a rung-0 key or a renamed method | `emit_vanilla_refs.mjs` scan; smoke check | every build; by hand | AUTO + MANUAL |
 | L41 | a game paused by input looks like a healthy run | — | while a batch runs | MANUAL; OPEN |
 | L42 | a run lost to the observer's landing guard after an early-death fresh restart | `Test-LmL42` | session | AUTO, proven; fixed |
+| L43 | a save summary reads a country's trend ring by position, not by its index | `Test-LmL43` | build, repo | AUTO, proven; fixed |
 
 ---
 
@@ -971,3 +972,20 @@ replaced by `20261026_032622_alt-canon-replace20`). One earlier case on disk: `2
 empty FAILs; a real foreign-save abandonment always names the date it expected. Proven: FAIL on rest20, PASS on the batch's other two sessions.
 **Fix.** `run_observer.ps1` marks the fresh-restart attempt (`$attemptFresh`) and the landing guard skips it (commit `9359eb4`).
 BUGS_AND_FIXES 2026-10-26.
+
+### L43 — a save summary reads a country's trend ring by position, not by its index
+
+**Defect.** A country's `gdp`, `prestige`, `literacy` and `avgsoltrend` are rings of weekly samples. A country alive since 1836 fills its
+5,214 slots at the turn of 1936; from then on the channel's `index` keeps counting and new samples overwrite slot 0, 1, 2 … The current value
+is slot (index − 1) mod n. `save_state_summary.mjs` took the array's last slot, so in any save after the wrap every old country's GDP froze at
+its early-January-1936 sample, while younger countries, whose rings were not full, read correctly. Nothing failed: the summaries verified and
+the world totals looked plausible.
+
+**Found.** 2026-10-28, the price-band probe `20261028_104518_gdp-price-basis-probe`: the summaries read world GDP +6.2% where the melted saves
+held +25.5% (F257). A batch that stops at 1936.1.1 never reaches the wrap, so F249 and every earlier century are untouched; a continuation
+into 1936 or a longer run is not.
+
+**Detector.** `Test-LmL43` (every build, and `-RepoOnly` before a batch): `tools/testbed/ledger/summary_trend_ring.mjs --selftest` feeds a
+synthetic melt with one wrapped ring (n 5, index 7) and one unfilled ring through the REAL writer and requires the slot at the index (600, not
+the stale 30). Proven 2026-10-28: with the last-slot read restored it FAILs (AAA 30, world 37). **Fix.** The reader collects the whole array
+and takes slot (index − 1) mod n (commit `4e2707e`). BUGS_AND_FIXES 2026-10-28.

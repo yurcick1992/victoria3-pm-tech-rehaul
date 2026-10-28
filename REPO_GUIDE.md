@@ -1226,7 +1226,9 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   | 19 | `world.war_goals`, `treaty_port_goals`, `treaty_ports` (F243) |
 
   Traps: from v12 a country key is opaque — definition = `c.tag ?? key.split('@')[0]`, a pool member is the plain TAG; pre-v12 summaries
-  cannot be repaired (`ledger/summary_drops.mjs` sizes their drops). The world price is a 52-slot weekly ring read at `(index − 1) mod 52`;
+  cannot be repaired (`ledger/summary_drops.mjs` sizes their drops). A country's `gdp` / `prestige` / `literacy` / `avg_sol` trend is a
+  ring too, read at `(index − 1) mod n` since 2026-10-28 (L43): summaries written earlier hold a stale early-January-1936 value for old
+  countries in any save AFTER the ring wrapped (none that stops at 1936.1.1). The world price is a 52-slot weekly ring read at `(index − 1) mod 52`;
   goods indices are positional in `00_goods.txt`. In v16 an owner's id can change (key on `owner_id` per year). Pop objects are records
   (17% of vanilla's are empty); the pop table is not scanned (`population_by_profession` is indexed alphabetically over `common/pop_types`;
   the reader throws if the count changes). A pop's `workplace` is the building's full record id. Refs: TESTBED_METRICS §7½.
@@ -1333,6 +1335,8 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
 - **`ledger/summary_drops.mjs`** — which pre-v12 summaries lost a country record and how much (Σ countries vs the complete
   `world.buildings`; dropped levels, value added, an estimated dropped GDP good for materiality only; shortlist members not on their main
   record). `--session <group> [--years 1932-1936] [--all] [--detail]`; `--check <session>` / `--selftest` are L38's halves. Refs: F186.
+- **`ledger/summary_trend_ring.mjs`** `--selftest` — L43's detector: a synthetic melt with one wrapped and one unfilled GDP ring through the
+  real summary writer, which must read each at `(index − 1) mod n`. Run by `preflight.ps1` every build and before every batch. Refs: F257.
 - **`ledger/first_run_decomp.mjs`** `--arm <s>[:<setup>] [--arm …] --van <s> [--years …]` — GDP = population × productive workers per
   capita × GDP per productive worker, world and pool, every ratio with both terms; reported after each arm's first run.
 - **`ledger/advanced_panel.mjs`** / **`tiered_panel.mjs`** `--arm <s>:<label> [--arm …] --van <s>:<label> [--year 1935] [--group …]`
