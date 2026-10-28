@@ -16155,7 +16155,9 @@ cost, wage, recent hires. Per state: literacy by stratum (the default hierarchy'
 the people QUALIFIED for machinist or shopkeeper work who do not hold that job (the save's per-pop `qualifications`).
 The engine's hiring rules this reads against (common/defines, NEconomy): a building tries to hire at a profit margin ≥ 0.25 and considers
 raising wages only at ≥ 0.25 (`BUILDING_PROFIT_TARGET_TO_HIRE_EMPLOYEES`, `_TO_RAISE_WAGES`); at ≤ 0.15 it lowers wages (`_TO_LOWER_WAGES`);
-it may pause hiring once ≥ 10% employed and under 0.20 of revenue in profit (`BUILDING_MAX_PROFIT_TO_PAUSE_HIRES`); it will not hire below
+it may pause hiring once ≥ 10% employed and under 0.20 of revenue in profit (`BUILDING_MAX_PROFIT_TO_PAUSE_HIRES` — ⚠ *2026-10-28:* the
+PAUSED class likely should depend on this define, but in practice it isn't read by the 1.13 engine (F241), so in 1.13 the class is based on the
+following heuristic instead: ≥ 10% employed and profit under 0.20 of revenue, the dead define's vanilla value; not a measured engine rule); it will not hire below
 **£3 a year of earnings per employee** (`BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES`, overridable per building group — vanilla's owner
 buildings set `min_productivity_to_hire = 10`); it prefers laying off pops at ≤ 0.66 of their expected SoL
 (`BUILDING_PREFER_LAYOFFS_TARGET_WEALTH_MULT`); a pop moves jobs only for ≥ 10% more wage (`MIN_RAISE_TO_HIRE`).
@@ -16479,6 +16481,8 @@ against 7.0% / 5.8% over it; extraction 62.7% / 65.6% against 9.9% / 6.6%), and 
 inbound hires ×5.5. ⇒ The group field is read for the crafts alone; nothing leaks to the parent group or anywhere else.
 
 **2. The crafts.**
+- ⚠ *2026-10-28:* "paused" below likely should depend on `BUILDING_MAX_PROFIT_TO_PAUSE_HIRES`, but in practice that define isn't read by the
+  1.13 engine (F241), so in 1.13 the class is based on the following heuristic instead: ≥ 10% employed and profit under 20% of revenue (F185).
 - **Hiring states** (craft_fill, levels / unstaffed levels, A → B): failed to hire **1,297 / 275 → 306 / 154** · paused 1,882 / 62 → 3,166 / 126
   · laying off 111 / 57 → 156 / 86 · ramping 1,884 / 66 → 1,709 / 40. Unstaffed 460 → 406 of 5,174 → 5,337 levels. Understaffed crafts under
   £3 with an inbound hire: **3% → 36%**. ⇒ The floor was the main brake in the first decade (60% of unstaffed craft levels in A), and with it

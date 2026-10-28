@@ -15,7 +15,11 @@
 // hiring rate) and inbound hires (its transfer log); the labour pool (unemployed and peasants, per profession and country).
 // Per building the class the engine's hiring rules put it in (common/defines): FAILED-HIRE (a failed hire within the last year — it tried
 // and found nobody at its wage, or the earnings floor stopped it), LAYING-OFF (a layoff within the last year), FULL (≥ 98% staffed),
-// PAUSED (profit under 20% of revenue and ≥ 10% employed: BUILDING_MAX_PROFIT_TO_PAUSE_HIRES), RAMPING (the rest).
+// PAUSED (profit under 20% of revenue and ≥ 10% employed), RAMPING (the rest).
+// ⚠ PAUSED likely should depend on BUILDING_MAX_PROFIT_TO_PAUSE_HIRES, but in practice that define isn't read by the 1.13 engine (F241's
+//   dead-define list; its registry holds only BUILDING_MIN_EMPLOYMENT_FRACTION_TO_PAUSE_HIRES and BUILDING_PAUSE_HIRES_CASH_RESERVES_THRESHOLD),
+//   so in 1.13 the class is based on the following heuristic instead: profit under 20% of revenue (the dead define's vanilla value) and
+//   ≥ 10% employed. It is not a measured engine rule.
 // The earnings floor, BUILDING_DEFAULT_MIN_EARNINGS_TO_HIRE_EMPLOYEES = 3 ("non-subsidized buildings will not hire if it would result in
 // their annual earnings/employee falling below this threshold"), is read as VALUE ADDED per employee a year — F185 §2 found that reading
 // separates staffed from understaffed crafts and the profit reading does not. Subsidised buildings are exempt from it and are counted apart.

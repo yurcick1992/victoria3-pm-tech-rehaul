@@ -13,9 +13,10 @@
 //   professions of one building may differ by more than 10 points of fill. A building missing its machinists therefore cannot hire its
 //   laborers either, and every profession reads short alike: equal fills are what ANY single-profession shortage looks like.
 // ⭐ THE ENGINE'S HIRING RULES THE CLASSES READ (common/defines): a building TRIES to hire at a profit margin ≥ 0.25
-//   (BUILDING_PROFIT_TARGET_TO_HIRE_EMPLOYEES); it may PAUSE hiring once it holds ≥ 10% of its jobs and makes < 20% of revenue in profit
-//   (BUILDING_MIN_EMPLOYMENT_FRACTION_TO_PAUSE_HIRES / BUILDING_MAX_PROFIT_TO_PAUSE_HIRES) — unless its cash reserves are high and it is
-//   under half employed; a pop only switches jobs for ≥ 10% more wage (MIN_RAISE_TO_HIRE); weekly hiring is 1–10% of full employment per
+//   (BUILDING_PROFIT_TARGET_TO_HIRE_EMPLOYEES); the PAUSED class likely should depend on BUILDING_MAX_PROFIT_TO_PAUSE_HIRES, but in practice
+//   that define isn't read by the 1.13 engine (F241's dead-define list), so in 1.13 the class is based on the following heuristic instead:
+//   ≥ 10% of its jobs held (BUILDING_MIN_EMPLOYMENT_FRACTION_TO_PAUSE_HIRES, which IS read) and profit under 20% of revenue (the dead define's
+//   vanilla value) — unless its cash reserves are high and it is under half employed (BUILDING_PAUSE_HIRES_CASH_RESERVES_THRESHOLD); a pop only switches jobs for ≥ 10% more wage (MIN_RAISE_TO_HIRE); weekly hiring is 1–10% of full employment per
 //   profession (DEFAULT_MIN/MAX_HIRING_RATE). A FAILED hire (`last_failed_hire_date`) means it tried and found nobody at its wage.
 // ⚠⚠ A POP'S `workplace` IS THE BUILDING RECORD'S FULL ID — a reused slot's id carries a generation prefix (slot + k·2^24). Never reduce it.
 // ⚠ "Lower / middle / upper" = the professions of the DEFAULT social hierarchy (common/social_classes/00_default.txt), read live; a pop's
