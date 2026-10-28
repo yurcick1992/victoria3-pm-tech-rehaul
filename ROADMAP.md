@@ -694,7 +694,7 @@ slightly BELOW the GDP target — the under-side rule (CLAUDE.md §2.5, §10.79)
 constraint (CLAUDE.md §3.2).
 
 1. **Post-JE tech finishing**: the finish boost — +10,000 AI weight on a technology at ≥ 99% progress (`emit_tech_finish.mjs`; F160, F162; no
-   wall-clock cost, F164). Any further scope (stage length, per-tree AI weight, spread) is a ruling owed (BACKLOG C).
+   wall-clock cost, F164). Any further scope: nothing planned (the user, 2026-10-28); per-tree AI weights and tech spread are likely levers in the distant future.
 2. **Broader trade**: the traded quantity per unit of trade capacity set by good class — five classes, bulk at vanilla (F155, F159;
    `make_trade_config.mjs`, `emit_goods.mjs`). F161: trade ×1.9 and world GDP 0.87 → 1.13 with one runoff; F163: ×1.5 bought only ×1.03 the trade
    of ×1.

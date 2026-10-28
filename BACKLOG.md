@@ -117,11 +117,11 @@ Closed:
 - **DEFERRED to mod 1.1 (user, 2026-10-21, POLISH_1_0.md Q5)** · military research ~10 technologies behind vanilla and no tech-era-5 military technology held anywhere (re-counted on F247). The first approach to try: *"a bit higher ai weights for military techs over societal techs over most production techs (exceptions with also higher priority on production where there are no JEs, like Shift Work)"* — i.e. the AI research weights, military > society > production, with production technologies that have no research entry raised too · §10.99 item 3, POLISH_1_0.md Q5
 - **DEFERRED** · tech spread ×2 and a society research multiplier (§10.97 item 8: "let's see how it all works, first"); society research is on vanilla's count since the §10.98 entries (F227) · §10.97
 - **IDEA (the user, 2026-10-28: "Not sure"), possibly 1.1** · the electric engines may get a redo, with a new technology for a new t2 engine rung (the motor industry is t1 Steam Engines · t2 Electric Engines · t3 Diesel Engines; Electric Engines is one of the four electricity-only buildings, KNOWN_ISSUES). Unscoped · ROADMAP step 1
-- **RULING** · the scope of post-JE tech finishing beyond the shipped finish boost · ROADMAP step 11
 - **RESEARCH** · F162's anomalies (Spain's intensive_agriculture, Ecuador's and Alwar's aniline) · F162
 - **RESEARCH** · ai_weight depth *(verify — likely moot since `tech_ai_weight_mult`)* · ROADMAP step 1
 
 Closed:
+- Closed 2026-10-28 by the user · the scope of post-JE tech finishing beyond the shipped finish boost: nothing planned; per-tree AI weights and tech spread are likely levers in the distant future · ROADMAP step 11
 - Closed 2026-10-28 by the user as a separate item · step 1's rework never deepened the tree (182 technologies = vanilla's 179 + 3 minted): possible in the future, not planned at scale for 1.1; depth stays one of P9's levers · ROADMAP step 1, P9, F138
 - Done 2026-10-21 · the four flat research bonuses ×1/3 (Philips, Advanced Research III, Cuba, the expedition; `tools/emit_value_overrides.mjs`, commit `ad1b306`); vanilla's event research grants left as they are · POLISH_1_0.md Q1, Q2
 - Closed 2026-10-24 · "tech era 5 fell 20 → 14 technologies after the merges": the six-rung tree's; the canon's tech era 5 holds 26 (vanilla's 23 + 3 minted; `config/tech_tree_options.json`) · POLISH_1_0.md C6
