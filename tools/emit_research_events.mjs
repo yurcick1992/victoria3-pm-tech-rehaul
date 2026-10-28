@@ -80,7 +80,7 @@ const buildingEmp = (key) => { for (const ind of CFG.industries) for (const t of
 // the building types of a vanilla building group (from the extract), with their per-level employment
 // a battalion's men: the land combat unit types' max_manpower (1,000 in 1.13), read live — a barracks or conscription
 // level holds one battalion and employs it as soldiers, not through a production method
-const UNIT_MANPOWER = (() => { try { const dir = join(GAME, 'common/combat_unit_types'); const vals = readdirSync(dir).filter(f => f.endsWith('.txt')).flatMap(f => [...readFileSync(join(dir, f), 'utf8').matchAll(/max_manpower\s*=\s*(\d+)/g)].map(m => +m[1])); return vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 1000; } catch { return 1000; } })();
+const UNIT_MANPOWER = (() => { try { const dir = join(GAME, 'common/combat_unit_types'); const vals = readdirSync(dir).filter(f => f.endsWith('.txt')).flatMap(f => [...readFileSync(join(dir, f), 'utf8').matchAll(/max_manpower\s*=\s*(\d+)/g)].map(m => +m[1])); if (!vals.length) throw new Error('no max_manpower value'); return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length); } catch (e) { throw new Error(`emit_research_events: the land unit types' max_manpower could not be read (${e.message}) under ${GAME} - every barracks and conscription anchor would count 1,000 men by a silent default (ON_GAME_UPDATE §2.2)`); } })();
 const MILITARY_GROUPS = new Set(['bg_army', 'bg_conscription']);
 // ⭐ A GROUP ANCHOR COUNTS OUR RUNGS TOO (user-ruled 2026-09-04: "percussion cap is gated by any small arms or artillery
 //   foundry employees over X"). The extract knows only the VANILLA buildings of a group, and a tiered industry's rung 0
@@ -219,6 +219,11 @@ for (const ind of CFG.industries) {
 //   "named in 00_land_*" as "army technology" put two naval technologies on the war channel for all five runs of
 //   canon4-je-n5 (BUGS_AND_FIXES 2026-09-03). So each unit-type block is parsed and `combat_unit_group_marines` skipped.
 const UNIT_TECHS = (() => { const out = new Set(); try { const dir = join(GAME, 'common/combat_unit_types'); for (const f of readdirSync(dir)) { if (!/^00_land/.test(f)) continue; const txt = readFileSync(join(dir, f), 'utf8').replace(/#.*$/mg, ''); const re = /^([a-z_0-9]+)\s*=\s*\{/gm; let m; while ((m = re.exec(txt))) { let i = re.lastIndex, d = 1; while (i < txt.length && d > 0) { if (txt[i] === '{') d++; else if (txt[i] === '}') d--; i++; } const body = txt.slice(re.lastIndex, i - 1); re.lastIndex = i; const g = (body.match(/^\s*group\s*=\s*([a-z_0-9]+)/m) || [])[1]; if (g === 'combat_unit_group_marines') continue; const u = body.match(/unlocking_technologies\s*=\s*\{([^}]*)\}/); if (u) for (const t of u[1].trim().split(/\s+/).filter(Boolean)) out.add(t); } } } catch (e) { throw new Error('combat_unit_types unreadable: ' + e.message); } return out; })();
+// ⚠ AN EMPTY OR SHORT READ STOPS THE BUILD (user-ruled 2026-10-24, CLAUDE.md §2.12): a patch that renames or splits the land file would
+//   otherwise emit no war entries at all, silently. Floor ~75% of game 1.13's count (10 technologies); a patch that legitimately cuts
+//   below it is checked by hand and the floor lowered in the same pass (ON_GAME_UPDATE §2.2).
+const UNIT_TECHS_FLOOR = 8;
+if (UNIT_TECHS.size < UNIT_TECHS_FLOOR) throw new Error(`emit_research_events: only ${UNIT_TECHS.size} technologies unlock a land unit type in ${GAME}/common/combat_unit_types/00_land* (1.13: 10, floor ${UNIT_TECHS_FLOOR}) - the war entries would be missing; check the files, then the reader (ON_GAME_UPDATE §2.2)`);
 const JE_SCOPE = (RE.scope || 'tiers_only');
 // ⭐ rule C on the unit-type technologies alone (user-ruled 2026-09-03), whatever the scope: `research_events.war_channel = 'unit_types'`
 if (RE.war_channel === 'unit_types')
@@ -495,7 +500,7 @@ const NAV_TECHS = [];                       // fleet: observation, no war needed
 const SHIP_BY_TECH = (() => {
   const map = {};
   let src = '';
-  try { src = readFileSync(join(GAME, 'common/ship_types/00_ship_types.txt'), 'utf8'); } catch { return map; }
+  try { src = readFileSync(join(GAME, 'common/ship_types/00_ship_types.txt'), 'utf8'); } catch (e) { throw new Error(`emit_research_events: ${GAME}/common/ship_types/00_ship_types.txt unreadable (${e.message}) - the naval entries would be missing (ON_GAME_UPDATE §2.2)`); }
   let cur = null;
   let nBlocks = 0;   // blocks read, against the file's own count below — a block the reader cannot parse stops the build
   let open = null;   // an unlocking_technologies block that spans lines (vanilla 1.13: the aircraft carrier's) — missed until 2026-10-27
@@ -521,6 +526,10 @@ const SHIP_BY_TECH = (() => {
   }
   const nFile = (src.replace(/#.*$/gm, '').match(/^\s*unlocking_technologies\s*=/gm) || []).length;
   if (nBlocks !== nFile) throw new Error(`emit_research_events: read ${nBlocks} of the ${nFile} unlocking_technologies blocks in 00_ship_types.txt — the reader misses a form`);
+  // an empty or short read stops the build (user-ruled 2026-10-24): floor ~75% of 1.13's 11 fleet technologies; lower it by hand only
+  // after checking a patch that legitimately cuts below it (ON_GAME_UPDATE §2.2)
+  const SHIP_TECHS_FLOOR = 8;
+  if (Object.keys(map).length < SHIP_TECHS_FLOOR) throw new Error(`emit_research_events: only ${Object.keys(map).length} technologies unlock a ship type in 00_ship_types.txt (1.13: 11, floor ${SHIP_TECHS_FLOOR}) - the naval entries would be missing; check the file, then the reader (ON_GAME_UPDATE §2.2)`);
   return map;
 })();
 // "A, B or C" in vanilla's own (translated) ship-type names

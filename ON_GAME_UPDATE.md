@@ -314,10 +314,11 @@ Tables and rules in our code that name vanilla keys or lean on vanilla's order; 
 
 `emit_research_events.mjs` (§10.95–§10.98):
 - **Read live, throws on a miss:** era base costs (`common/technology/eras`, fewer than five throws); `law_isolationism` in `common/laws`, tested with
-  `has_law_or_variant`, so a new variant is covered and a renamed key throws; the shipping tree's technologies.
-- **Read live, silent on a miss:** the land unit technologies of the war channel from `common/combat_unit_types/00_land*` (marines skipped by unit
-  group) and the fleet technologies of the naval channel from `common/ship_types/00_ship_types.txt`. A renamed file yields no war or naval entries
-  and no error; battalion manpower falls back to 1,000.
+  `has_law_or_variant`, so a new variant is covered and a renamed key throws; the shipping tree's technologies; and since 2026-10-28 (ruled
+  2026-10-24) the war and naval channels' reads — the land unit technologies from `common/combat_unit_types/00_land*` (marines skipped by unit
+  group; fewer than 8 throws, 1.13 has 10), the fleet technologies from `common/ship_types/00_ship_types.txt` (an unreadable file, or fewer than
+  8, throws; 1.13 has 11 over 19 ship types), and the battalion manpower (no `max_manpower` value throws; it used to fall back to 1,000). A patch
+  that legitimately cuts a channel below its floor: check it by hand, then lower `UNIT_TECHS_FLOOR` / `SHIP_TECHS_FLOOR` in the same pass.
 - **Read from `ui/vanilla.js`:** building groups and the anchor buildings' per-level employment — refreshed after this emitter (routine step 3).
 - **Raw script, not validated by the build:** the condition entries, condition values and monthly global effect name vanilla laws (law_council_republic,
   law_factory_councils, law_collectivized_agriculture, law_traditionalism, law_no_colonial_affairs and others), regions, subject types,
