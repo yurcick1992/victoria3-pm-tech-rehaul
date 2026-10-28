@@ -23,6 +23,7 @@ appended oldest first after the July ones); no entry's text changed.
 
 | date | entry | area | status | note |
 |---|---|---|---|---|
+| 2026-10-28 | the save summaries froze every old country's GDP at early January 1936 in any later save: a trend ring read by position | testbed/readers | live | save_state_summary.mjs trends; no landmine yet |
 | 2026-10-27 | the aircraft carrier's technology had no naval research entry: vanilla's one multi-line `unlocking_technologies` | build/emitters | live | emit_research_events.mjs SHIP_BY_TECH |
 | 2026-10-26 | five electricity-consuming rungs could be built in a state without electricity | build/emitters | live | lint_pm_combos check 9 |
 | 2026-10-26 | a run lost to the observer's own landing guard: a crash after an early-death fresh restart read as a foreign save | testbed/harness | live | landmine L42 |
@@ -143,6 +144,32 @@ appended oldest first after the July ones); no entry's text changed.
    writing.** Every non-ASCII round trip through a tool is a silent corruption risk that reproduces only
    here — read with `-Encoding UTF8`, write with `[IO.File]::WriteAllText(..., UTF8Encoding($false))`,
    format numbers with `InvariantCulture`. Three separate bugs below share this one root.
+
+---
+
+## 2026-10-28 — the save summaries froze every old country's GDP at early January 1936 in any later save
+
+**Symptom.** The price-band probe (F257) read world GDP +6.2% in the narrowed-band arm. Read straight from the melted saves, it was +25.5%.
+Britain's summary GDP was £499M in both arms at 1936.3.1, identical to the pound.
+
+**Root cause.** A country's `gdp` (and `prestige`, `literacy`, `avgsoltrend`) is a trend block whose `values` array is a RING of weekly samples.
+`save_state_summary.mjs` took the array's LAST number as the current value. That holds until the ring is full. A country alive since 1836 fills
+its 5,214 slots at the turn of 1936, after which `index` keeps counting and new samples overwrite slot 0, 1, 2 … So in any save after the wrap
+the reader returned the sample from just before it (early January 1936), for old countries only. Younger countries' rings were not full, so
+they read correctly, and the world sum came out as a mixture.
+
+**Fix (2026-10-28).** The reader collects the whole array and takes slot (index − 1) mod n. Re-summarising both probe saves gives world GDP
+£4,367M and £5,482M, the rings' newest samples.
+
+**Reach.** Only saves dated after a country's ring wrapped: every batch that stops at 1936.1.1 (F249 and all centuries before it) is untouched;
+the price-band probe (`20261028_104518`) and any continuation into 1936 are affected. F241's continuations ran 1934→1936 and are not re-read
+here.
+
+**Detector.** None registered yet; the fix reads by index, so the wrong slot cannot be chosen any more. A landmine with a tripwire is still owed
+(TESTBED_LANDMINES).
+
+**Next time.** A trend block is a ring: read it by its `index`, never by position. The world-market price ring (`world_market.price_trend`) was
+already read that way.
 
 ---
 

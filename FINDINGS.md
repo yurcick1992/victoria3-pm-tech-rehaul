@@ -402,7 +402,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F254 | The merged methods are staffed on the 1.0 canon (79-98% when switched); hosts left on the older method are the ones that empty; F182's two-thirds-staffed chemical plants are gone | canon | reading | here |
 | F255 | A t3 level takes 60-85 weeks to build because vanilla caps each construction at ~35-40 points a week, not because the queue is shared; only Britain's and the USA's 1935 private queues are congested (~3.5-4 years) | canon | reading | here |
 | F256 | Germany's oil economy waits for a built buyer on the 1.0 canon too: first staffed oil rig median 1920 (vanilla ~1905), none by 1935 in 5 of 17 runs (vanilla 1 of 17); 1935 staffed levels 25.5 against 75.5 | canon | reading | here |
-| F257 | The displayed GDP is base-priced value added: holding every price within 10% of base raised market-priced value added 55% and world GDP 6% (base-priced +0.5-1.5%); ~0.11-0.13 of a market price deviation passes through. Addendum: world GDP is the sum of countries; a country's GDP is roughly its own soil's value added corrected toward foreign owners, no tested rule better than ~20-28% | canon | probe | here |
+| F257 | Displayed GDP = a country's goods producers' value added on its soil at its own market's prices (construction, military, administration not subtracted; ownership moves nothing); looked base-priced because two offsets cancel; the canon's GDP sits at ~0.95 of vanilla's price level from 1920. First reading (base-priced, +6%) VOID: a summary reader bug | canon | probe | here |
 
 ---
 
@@ -1675,9 +1675,9 @@ goods used as inputs** — value added, on the production side only. Annual GDP 
 ⚠⚠ **QUALIFIED 2026-09-30 (F178 §9.4): the PRICE BASIS is not established.** Vanilla's prices sit near base, so this data cannot tell
 market-priced from base-priced value added. Where they differ, the displayed GDP tracks 52 × BASE-priced value added (0.94–1.08 over a
 century, vanilla and the mod), and the buildings' own market ledgers (goods sales − goods cost) reach only ~0.63–0.70 of it, in vanilla too.
-"Value added" stands; "at market prices" does not. ⭐ **SETTLED 2026-10-28 by a probe (F257): BASE prices, for world GDP** — holding
-every price within 10% of base raised market-priced value added 55% and world GDP 6%; about a tenth of a market price deviation passes
-through. Per-country GDP is not its own buildings' value added at either price (F257).
+"Value added" stands; "at market prices" does not. ⭐ **SETTLED 2026-10-28 by a probe (F257): MARKET prices, but only GOODS PRODUCERS' value added** — a
+country's GDP is its producers' output minus their inputs at its own market's prices; construction, military and administration purchases
+are not subtracted. The two offset each other, which is why base-priced value added of all buildings tracked it.
 
 **Evidence.** The `gdp` series a savegame persists, read beside the *same* saves' building
 `input_goods` / `output_goods` (so the two sides come from one gamestate, not from two instruments):
@@ -21466,72 +21466,68 @@ later than vanilla's in the median, and in five runs of seventeen not at all bef
 - **Not the run count of usable runs.** Every run folder of each arm was read (17 each); F249's usable canon count is 16.
 - **Not what it costs Germany** in GDP or in the register's German term.
 
-## F257 — THE DISPLAYED GDP IS BASE-PRICED VALUE ADDED: HOLDING EVERY PRICE WITHIN 10% OF BASE RAISED MARKET-PRICED VALUE ADDED BY 55% AND WORLD GDP BY ONLY 6%, SO ABOUT A TENTH OF A MARKET PRICE DEVIATION PASSES THROUGH (2026-10-28; session `20261028_104518_gdp-price-basis-probe`, the canon against the canon + `NEconomy.PRICE_RANGE` 0.10, n=1 per arm, 1936.1.1 → 1936.4.1 continued from F249's `20261023_161802_alt-vanilla-canon-rest20/run002_canon` save; and a reading of F249's saves)
+## F257 — THE DISPLAYED GDP IS THE VALUE ADDED OF A COUNTRY'S GOODS PRODUCERS, ON ITS OWN SOIL, AT ITS OWN MARKET'S PRICES: CONSTRUCTION, THE MILITARY AND ADMINISTRATION ARE NOT SUBTRACTED, AND FOREIGN OWNERSHIP MOVES NOTHING; IT LOOKED BASE-PRICED ONLY BECAUSE TWO OFFSETS CANCEL (2026-10-28, corrected the same day; session `20261028_104518_gdp-price-basis-probe`, the canon against the canon + `NEconomy.PRICE_RANGE` 0.10, n=1 per arm, 1936.1.1 → 1936.4.1 continued from F249's `20261023_161802_alt-vanilla-canon-rest20/run002_canon` save; the two kept 1936.3.1 saves melted; and a reading of F249's saves)
 
-**Why.** F45 settled that GDP is 52 × weekly value added but left its PRICE BASIS open (F178 §9.4: vanilla's prices sit near base, so the data
-could not tell market-priced from base-priced value added). BACKLOG B; the user, 2026-10-28: *"Can't you use existing data? If no, go ahead
-with the probe."*
+**Why.** F45 settled that GDP is 52 × weekly value added but left its PRICE BASIS open (F178 §9.4). BACKLOG B; the user, 2026-10-28: *"Can't
+you use existing data? If no, go ahead with the probe."*, then *"Keep digging. Sure it's not local prices effects?"* and *"This is quite
+unnatural for a metric that has D in its name."*
 
-**The existing data could not settle it** (F249's sessions, both arms; scratch readers). Here B = 52 × Σ(`va_out` − `va_in`), base-priced value
-added; M = 52 × Σ(`goods_sales` − `goods_cost`), the buildings' own market-priced ledger.
-- **World:** GDP ÷ B is 1.007 (vanilla) and 0.997 (canon), p5–p95 0.94–1.05 over 327 run-years each, while GDP ÷ M runs 1.43–1.64. But within one
-  year across runs, the residue of GDP ÷ B follows the realised output price (`goods_sales ÷ va_out`): elasticity 1.5, r 0.76.
-- **Per country:** no combination of the four aggregates fits better than ~10% (residual sd of log 0.10–0.15 over 3,277 country-years).
-  Pricing the eleven instrumented owners' goods flows at their own markets' telemetry prices fitted worse than base (sd of log 0.29–0.37
-  against 0.24–0.27).
+**⚠ The first reading of this finding is VOID.** It said world GDP rose 6% when every price was held near base, so GDP was base-priced with
+~0.1 pass-through. Those numbers came from the save summaries, whose reader froze every old country's GDP at its early-January-1936 sample
+in any save after the GDP ring wrapped (BUGS_AND_FIXES 2026-10-28, fixed). Read from the rings' newest samples, world GDP rose 25.5%.
 
 **The probe.** A continuation is deterministic (F241), so one kept save was continued for three months in two arms that differ only in
-vanilla's price band: `PRICE_RANGE` 0.75 → 0.10, every price held within 10% of base. Quantities start identical (the 1936.1.1 summaries match
-to the pound) and barely move in three months, and the reading is a ratio inside each summary. **The band took:** pr10's tracked market prices
-sit at 0.900–1.100 of base at both dumps, the canon's at 0.250–1.750 (median 0.98, p10 0.60, p90 1.32).
+vanilla's price band: `PRICE_RANGE` 0.75 → 0.10. Quantities start identical. The band took: pr10's tracked market prices sit at 0.900–1.100
+of base at both dumps, the canon's at 0.250–1.750. World, 1936.3.1, from the melted saves:
 
-| world, £bn a year | canon 1936.2.1 | pr10 1936.2.1 | change | canon 1936.3.1 | pr10 1936.3.1 | change |
-|---|---|---|---|---|---|---|
-| displayed GDP | 4.413 | 4.688 | +6.2% | 4.357 | 4.629 | +6.2% |
-| base-priced value added (B) | 4.557 | 4.582 | +0.5% | 4.577 | 4.646 | +1.5% |
-| market-priced value added (M) | 2.780 | 4.310 | +55.0% | 2.782 | 4.332 | +55.7% |
-| GDP ÷ B | 0.969 | 1.023 | +5.6% | 0.952 | 0.997 | +4.7% |
-| `goods_sales ÷ va_out` | 0.829 | 0.978 | | 0.829 | 0.976 | |
+| £M a year | canon | pr10 | change |
+|---|---|---|---|
+| displayed GDP (Σ countries, newest ring samples) | 4,367 | 5,482 | +25.5% |
+| value added of ALL buildings at base prices | 4,577 | 4,646 | +1.5% |
+| value added of goods PRODUCERS at base prices | 5,534 | 5,711 | +3.2% |
+| the buildings' own ledger (`goods_sales − goods_cost`), all | 2,782 | 4,332 | +55.7% |
 
-The pass-through: Δ log(GDP ÷ B) ÷ Δ log(M ÷ B) = 0.055 ÷ 0.433 = **0.13** (February) and 0.046 ÷ 0.428 = **0.11** (March). Had GDP been
-market-priced value added it would have risen ~55%. It is not a lag: the ratio is the same at one month and at two.
+**The rule, per country.** Producers = buildings with any goods output. Construction sectors, barracks and logistics centres, administration,
+universities and trade centres produce none; their purchases are final demand and are not subtracted. GDP ÷ (producers' net goods flow in the
+country, valued at that country's market prices from the telemetry, `markets.tsv` at 1936.3.1):
 
-**Countries move differently.** GDP ÷ B from the canon to pr10 at 1936.2.1 / 1936.3.1: Japan 0.85 → 1.12 / 0.82 → 1.11 (+32–35%), Russia
-+2–5%, Germany +1–3%, Britain −1%, France +1% / −6%, the USA −4% / −9%. Britain's GDP is 1.6–2.0× its own buildings' base-priced value added in
-both arms. A country's GDP is therefore not its own buildings' value added at either price; how the engine attributes GDP to countries
-was not read.
+| | GBR | NET | USA | FRA | GER | RUS | JAP |
+|---|---|---|---|---|---|---|---|
+| canon | 1.02 | 1.01 | 0.99 | 1.00 | 0.97 | 1.03 | 1.00 |
+| pr10 | 1.02 | 1.03 | 0.99 | 1.00 | 0.98 | 1.01 | 1.00 |
 
-**What it says.** For world GDP, the working rule of CLAUDE.md §5.6 stands and is now measured: the displayed figure is value added at BASE
-prices, with about a tenth of the market-price deviation passing through. The mod's lower prices move world GDP little, and a world-GDP
-comparison against vanilla is close to a comparison of base-priced quantities.
+Against ALL buildings at base the same countries read 0.78–1.64 (canon) and 1.11–2.02 (pr10). In pr10, where every price sits within 10% of
+base, producers' BASE-priced value added fits the 123 countries with GDP above £2M with an rms log error of 0.068 (all buildings: 0.176).
+Market prices outside the eleven instrumented markets are not in the save, so the canon's other countries were not priced.
+
+**What was ruled out on the way.**
+- **Foreign ownership.** The game's text (`concept_gdp_ownership_desc`) says foreign-owned levels' GDP counts to the owner; booking value
+  added by the owner's country (from `building_ownership_manager`) fits far worse (rms 0.83 against 0.30 by location), and no owner kind or
+  share of profits fits. Britain's 1.6× its buildings' value added is its construction and military purchases, which GDP does not subtract.
+  Whatever the ownership text describes, it is not visible in the GDP figure the save stores.
+- **Local prices.** The buildings' realised prices (their ledgers) give the wrong level: the market prices from the telemetry fit, the
+  realised ones do not (the ledger reaches 0.64 of GDP in the canon).
+- **The overlord.** Britain's subjects fall short together.
+
+**Why it looked base-priced for a century.** Producers' value added is ~1.21× all buildings' (the unsubtracted final demand), and the market
+price level of producers' value added is ~0.80–0.88 of base, so the two nearly cancel at world level (F178 §9.4's 0.94–1.08). Over F249
+(summaries before the ring wraps, unaffected), world GDP ÷ producers' base-priced value added, the price level GDP is computed at:
+
+| | 1840 | 1860 | 1880 | 1900 | 1910 | 1920 | 1930 | 1935 |
+|---|---|---|---|---|---|---|---|---|
+| vanilla (16–17) | 0.831 | 0.865 | 0.852 | 0.848 | 0.842 | 0.851 | 0.853 | 0.844 |
+| canon (16–17) | 0.841 | 0.879 | 0.857 | 0.831 | 0.819 | 0.809 | 0.811 | 0.803 |
+| canon ÷ vanilla | 1.012 | 1.016 | 1.007 | 0.980 | 0.973 | 0.951 | 0.951 | 0.952 |
+
+**What it says.**
+- Displayed GDP is a market-priced, production-side figure for the goods producers in a country; the government's, the military's and
+  construction's purchases count as final demand. The D holds: ownership does not move it.
+- The mod's lower prices DO lower displayed GDP: from 1920 on the canon's GDP is computed at ~0.95 of vanilla's price level, so ~5% of world GDP
+  is price (CLAUDE.md §5.6 read ~7% from F178).
+- Every register reading on GDP stands as measured: the summaries of F249 and earlier batches stop at 1936.1.1, before the ring wraps.
 
 **What it does NOT say.**
-- **Not the engine's formula.** A 0.11–0.13 pass-through fits some market-priced component, such as one sector or one side of the ledger,
-  but which one was not identified.
-- **Not per-country GDP.** The per-country response ranges from −9% to +35% and is unexplained; the register's per-country readings are
-  shares and levels of population, not GDP ratios, but any per-country GDP comparison should be read with this in mind.
-- **Not a fresh game or a longer span.** Three months from one 1936 save, inside the canon.
-
-**Addendum (2026-10-28, the same day) — world GDP IS the sum of the countries; it is the attribution to countries that is unexplained.**
-- **The sum.** The summary's `world.gdp` is built as the sum of every country record's `gdp` (`save_state_summary.mjs`, v12); there is no
-  separate world figure in the save. Σ countries' GDP = 0.95–1.00 of Σ countries' base-priced value added (the 1936.3.1 save: £4,357M against
-  £4,577M), so the gaps between countries cancel: at 1935 in one F249 canon run, +£413M of countries above their own value added against
-  −£438M below.
-- **Who is above and below** (one F249 canon run, 1935; GDP − own buildings' base-priced value added): Britain +£235M (GDP 1.85× its value
-  added), the Netherlands +£40M, Russia +£20M, Egypt +£16M; Germany −£75M, Argentina −£34M, Bengal −£30M, Cuba −£22M. It is not the overlord:
-  Britain's 25 subjects together fall £21M short themselves.
-- **Tested on the probe's melted canon save (1936.3.1, 18,344 buildings, 32,366 ownership records), the rms log error of GDP against each
-  candidate over the 114 countries with GDP above £2M:**
-  - value added where the building stands: **0.30** (Britain 1.61, the Netherlands 1.61, Egypt 1.23, the USA 1.00, Germany 0.82, Argentina
-    0.66, Bengal 0.73, Cuba 0.72);
-  - value added by the owner's country (shares from `building_ownership_manager`; an owning building's state gives its country): **0.83**
-    (Britain owns £1,443M of the world's value added);
-  - leaving out the inputs of buildings with no goods output (construction, the military, administration): 0.35; construction only: 0.31;
-  - where it stands, plus a share f of the profit (`profit_after_reserves`) of foreign-owned levels moved to the owner's country: best at
-    f ≈ 0.4–0.5, **0.28** (countries above £30M 0.21): Britain 0.95–1.04 and Egypt 0.95–0.99, but the Netherlands 1.27–1.33, Argentina
-    0.72–0.74, Bengal 0.81–0.83, Cuba 0.77–0.78, Germany 0.83.
-- **So:** a country's GDP is roughly the value added produced on its soil, corrected towards the owners of foreign-held buildings, but no
-  rule tested fits better than ~20–28%. Trade centres' `trade_revenue` (£250M world-wide a year, Britain £25M) does not close it either.
-- **What it touches.** Every world reading is safe (the sum). Per-country and pool GDP readings (the pool's GDP, its H = hoard ÷ GDP, GDP
-  per productive worker) carry this attribution in both arms; against vanilla they compare like with like only if the attribution behaves the
-  same in both, which was not tested.
+- **Not the engine's code.** The fit is 0.97–1.03 on seven countries in two arms and 0.068 rms over 123 at near-base prices; small terms (the
+  trade centres' `trade_revenue`, rounding of the price used) are not resolved.
+- **Not other dates.** One 1936 save in two arms, and F249's world readings.
+- **Not what the ownership text refers to.** It may describe the prestige and minting split of GDP rather than the GDP number.

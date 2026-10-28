@@ -318,7 +318,7 @@ const closePop = () => {
 let mode = 'top', depth = 0;
 // country_manager state
 let cid = null, cur = null, path = [];       // path = block names by depth inside a country record
-let budgetCat = null, budgetSide = null, trendKey = null, trendVals = null, inValues = false;
+let budgetCat = null, budgetSide = null, trendKey = null, trendVals = null, trendIdx = null, inValues = false;
 let qEl = null;                              // in-flight construction-queue element (v5)
 // states
 let sid = null;
@@ -470,21 +470,31 @@ for await (const line of rl) {
       }
       const p0 = path[0];
       // --- trends: {sample_rate, count, channels={ 0={date,index,values={ ... }}}}.  The CURRENT value is
-      //     the LAST number of the values array; there is one channel on all four of these.
+      //     slot (index − 1) mod n of the values array (the last slot until the ring wraps); one channel on all four of these.
       // ⚠ The commit must be tested against the depth AFTER this line's braces, not before it: the block's
       //   own closing brace is read at depth 4 and only then drops to 3, so a pre-update test never fires
       //   and every trend came back null.  `trendVals` is also reset on ENTRY, or prestige would inherit
       //   gdp's last number whenever a country happened to carry no prestige samples.
+      // ⚠⚠ (2026-10-28) THE VALUES ARRAY IS A RING once it is full: a country alive since 1836 fills its 5,214 weekly slots by about
+      //   1936.1.1, and from then on the channel's `index` keeps counting while new samples overwrite slot 0, 1, 2 … The CURRENT
+      //   value is slot (index − 1) mod n, which equals the last slot only until the ring wraps. Reading the last slot froze every
+      //   old country's GDP at its early-January-1936 value in any later save (the price-band probe, F257: the world read +6% where it
+      //   was +25.5%). BUGS_AND_FIXES 2026-10-28.
       if (TREND_KEYS.has(p0)) {
-        if (depth === 3 && blk) { trendKey = p0; trendVals = null; inValues = false; }
-        if (t === 'values={') inValues = true;
+        if (depth === 3 && blk) { trendKey = p0; trendVals = null; trendIdx = null; inValues = false; }
+        let mi;
+        if (t === 'values={') { inValues = true; trendVals = []; }
         else if (inValues) {
           if (t.startsWith('}')) inValues = false;
-          else { const v = numsOf(t); if (v.length) trendVals = v[v.length - 1]; }
+          else trendVals.push(...numsOf(t));
         }
+        else if ((mi = /^index=(\d+)$/.exec(t))) trendIdx = +mi[1];
         if (trendKey && depth + opens - closes <= 3) {
-          if (trendVals != null) cur[TREND_KEYS.get(trendKey)] = trendVals;
-          trendKey = null; trendVals = null; inValues = false;
+          if (trendVals && trendVals.length) {
+            const n = trendVals.length, k = trendIdx != null ? ((trendIdx - 1) % n + n) % n : n - 1;
+            cur[TREND_KEYS.get(trendKey)] = trendVals[k];
+          }
+          trendKey = null; trendVals = null; trendIdx = null; inValues = false;
         }
       }
       if (p0 === 'budget') {

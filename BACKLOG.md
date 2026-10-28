@@ -92,7 +92,7 @@ Closed:
 - **DEFERRED — the balance editor is kept but not improved for now (user, 2026-10-28)** · RESEARCH: the need-substitution rule's real form; prestige share local vs market; USA strata/slave derivations disagree · REPO_GUIDE §5
 
 Closed:
-- Closed 2026-10-28 by a probe · F45's price basis: BASE prices for world GDP, about a tenth of a market price deviation passing through; per-country GDP is not its buildings' value added at either price (session `20261028_104518_gdp-price-basis-probe`) · F257, F178 §9.4
+- Closed 2026-10-28 by a probe · F45's price basis: GDP is a country's goods producers' value added on its soil at its own market's prices (construction, military, administration not subtracted; ownership moves nothing); the first, base-priced reading was void (a summary reader bug, fixed) (session `20261028_104518_gdp-price-basis-probe`) · F257, F178 §9.4
 - Closed 2026-10-28 · P5 tier-3 output enormous: accepted earlier, riding on P1, which the user closed 2026-10-24 · ROADMAP P5
 - Closed 2026-10-28 by the user · the urban-centre electricity override's own economic effect: not measured on its own; the 1.1 streetlight item (section D, §10.89.15) reads the canon's urban-centre electricity first · §10.43.0
 - Closed 2026-10-28 (verified moot) · a per-good price system: the six-rung solver's granular price system (F85, §10.65.5), closed with that solver (§10.80); nothing on the four-rung canon proposes one · F85

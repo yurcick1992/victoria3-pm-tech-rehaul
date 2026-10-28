@@ -897,9 +897,9 @@ loc-string data errors, battle sizes …): count against the vanilla baseline, f
 
 - Quote **profit in £** (§2.10) and ratios with both terms (§2.11); say which **baseline** and which **markets** a number rests on (§3.5).
 - World GDP is the **displayed** figure; GDP at base prices is a secondary reading only (§10.90). The displayed GDP is `52 × weekly value added`
-  (outputs − inputs; pops and trade on neither side — F45), priced at BASE prices with about a tenth of a market price deviation passing
-  through (probed, F257); over a century it tracks base-priced value added within 0.94–1.08, so the mod's lower prices take only ~7% off the
-  world's (F178 §9.4). A country's GDP is not its own buildings' value added at either price (F257). Never calibrate on gross output: its ratio to GDP drifts ×48 → ×37 across the century.
+  of a country's GOODS PRODUCERS on its own soil at its own MARKET's prices (F45, F257): construction, the military and administration are final
+  demand, not subtracted; ownership moves nothing; pops and trade are on neither side. Two offsets make it track ALL buildings' base-priced
+  value added within 0.94–1.08 over a century (F178 §9.4); the mod's lower prices take ~5% off world GDP from 1920 on (F257). Never calibrate on gross output: its ratio to GDP drifts ×48 → ×37 across the century.
 - A payback in years needs a £ per construction point, and that depends on the construction method: wooden 1000 · iron frame 720 · steel 540 · arc
   welded 527 (F53). Say which rate a payback uses.
 - Read quantities, not prices, where a good sits at the band edge (§2.7).
