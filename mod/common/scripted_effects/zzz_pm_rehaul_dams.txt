@@ -11,7 +11,6 @@ pmr_dam_columbia_river_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_laurentian_rivers_begin_survey = {
@@ -25,7 +24,6 @@ pmr_dam_laurentian_rivers_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_norrland_rivers_begin_survey = {
@@ -39,7 +37,6 @@ pmr_dam_norrland_rivers_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|norrland_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_lower_columbia_begin_survey = {
@@ -53,7 +50,6 @@ pmr_dam_lower_columbia_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|lower_columbia|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_nelson_winnipeg_begin_survey = {
@@ -67,7 +63,6 @@ pmr_dam_nelson_winnipeg_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|nelson_winnipeg|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_black_canyon_sierra_begin_survey = {
@@ -81,7 +76,6 @@ pmr_dam_black_canyon_sierra_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|black_canyon_sierra|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_western_fjords_begin_survey = {
@@ -95,7 +89,6 @@ pmr_dam_western_fjords_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|western_fjords|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_niagara_long_sault_begin_survey = {
@@ -109,7 +102,6 @@ pmr_dam_niagara_long_sault_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|niagara_long_sault|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_waitaki_southern_lakes_begin_survey = {
@@ -123,7 +115,6 @@ pmr_dam_waitaki_southern_lakes_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|waitaki_southern_lakes|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_grisons_ticino_begin_survey = {
@@ -137,7 +128,6 @@ pmr_dam_grisons_ticino_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|grisons_ticino|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_rhone_isere_begin_survey = {
@@ -151,7 +141,6 @@ pmr_dam_rhone_isere_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|rhone_isere|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_niagara_ottawa_begin_survey = {
@@ -165,7 +154,6 @@ pmr_dam_niagara_ottawa_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_tennessee_valley_begin_survey = {
@@ -179,7 +167,6 @@ pmr_dam_tennessee_valley_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|tennessee_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_valais_alps_begin_survey = {
@@ -193,7 +180,6 @@ pmr_dam_valais_alps_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|valais_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_nechako_kootenay_begin_survey = {
@@ -207,7 +193,6 @@ pmr_dam_nechako_kootenay_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|nechako_kootenay|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_shinano_kurobe_begin_survey = {
@@ -221,7 +206,6 @@ pmr_dam_shinano_kurobe_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|shinano_kurobe|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_lower_rhone_durance_begin_survey = {
@@ -235,7 +219,6 @@ pmr_dam_lower_rhone_durance_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|lower_rhone_durance|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_missouri_big_bend_begin_survey = {
@@ -249,7 +232,6 @@ pmr_dam_missouri_big_bend_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|missouri_big_bend|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_austrian_danube_begin_survey = {
@@ -263,7 +245,6 @@ pmr_dam_austrian_danube_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|austrian_danube|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_danube_bavarian_alps_begin_survey = {
@@ -277,7 +258,6 @@ pmr_dam_danube_bavarian_alps_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|danube_bavarian_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_kiso_tenryu_begin_survey = {
@@ -291,7 +271,6 @@ pmr_dam_kiso_tenryu_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|kiso_tenryu|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_douro_gorge_cavado_begin_survey = {
@@ -305,7 +284,6 @@ pmr_dam_douro_gorge_cavado_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|douro_gorge_cavado|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_tsaritsyn_volga_begin_survey = {
@@ -319,7 +297,6 @@ pmr_dam_tsaritsyn_volga_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|tsaritsyn_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_muscle_shoals_coosa_begin_survey = {
@@ -333,7 +310,6 @@ pmr_dam_muscle_shoals_coosa_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|muscle_shoals_coosa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_grand_canal_alsace_begin_survey = {
@@ -347,7 +323,6 @@ pmr_dam_grand_canal_alsace_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|grand_canal_alsace|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_arribes_duero_begin_survey = {
@@ -361,7 +336,6 @@ pmr_dam_arribes_duero_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|arribes_duero|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_adda_lombard_alps_begin_survey = {
@@ -375,7 +349,6 @@ pmr_dam_adda_lombard_alps_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|adda_lombard_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_snowy_tumut_begin_survey = {
@@ -389,7 +362,6 @@ pmr_dam_snowy_tumut_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|snowy_tumut|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_yellow_river_gorges_begin_survey = {
@@ -403,7 +375,6 @@ pmr_dam_yellow_river_gorges_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|yellow_river_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_hohe_tauern_ziller_begin_survey = {
@@ -417,7 +388,6 @@ pmr_dam_hohe_tauern_ziller_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|hohe_tauern_ziller|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_iron_gates_arges_begin_survey = {
@@ -431,7 +401,6 @@ pmr_dam_iron_gates_arges_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_inga_rapids_begin_survey = {
@@ -445,7 +414,6 @@ pmr_dam_inga_rapids_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|inga_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_rion_ingur_begin_survey = {
@@ -459,7 +427,6 @@ pmr_dam_rion_ingur_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|rion_ingur|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_yalu_river_begin_survey = {
@@ -473,7 +440,6 @@ pmr_dam_yalu_river_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|yalu_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_maurienne_tarentaise_begin_survey = {
@@ -487,7 +453,6 @@ pmr_dam_maurienne_tarentaise_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|maurienne_tarentaise|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_waikato_river_begin_survey = {
@@ -501,7 +466,6 @@ pmr_dam_waikato_river_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|waikato_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_sevan_zanga_vorotan_begin_survey = {
@@ -515,7 +479,6 @@ pmr_dam_sevan_zanga_vorotan_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|sevan_zanga_vorotan|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_dnieper_rapids_begin_survey = {
@@ -529,7 +492,6 @@ pmr_dam_dnieper_rapids_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|dnieper_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_glommen_falls_begin_survey = {
@@ -543,7 +505,6 @@ pmr_dam_glommen_falls_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|glommen_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_alcantara_gorge_begin_survey = {
@@ -557,7 +518,6 @@ pmr_dam_alcantara_gorge_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|alcantara_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_aura_nordland_begin_survey = {
@@ -571,7 +531,6 @@ pmr_dam_aura_nordland_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|aura_nordland|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_ossola_dora_baltea_begin_survey = {
@@ -585,7 +544,6 @@ pmr_dam_ossola_dora_baltea_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|ossola_dora_baltea|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_cubatao_escarpment_begin_survey = {
@@ -599,7 +557,6 @@ pmr_dam_cubatao_escarpment_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|cubatao_escarpment|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_derwent_great_lake_begin_survey = {
@@ -613,7 +570,6 @@ pmr_dam_derwent_great_lake_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|derwent_great_lake|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_kaema_plateau_begin_survey = {
@@ -627,7 +583,6 @@ pmr_dam_kaema_plateau_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|kaema_plateau|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_dordogne_gorges_begin_survey = {
@@ -641,7 +596,6 @@ pmr_dam_dordogne_gorges_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|dordogne_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_koyna_western_ghats_begin_survey = {
@@ -655,7 +609,6 @@ pmr_dam_koyna_western_ghats_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|koyna_western_ghats|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_tone_river_begin_survey = {
@@ -669,7 +622,6 @@ pmr_dam_tone_river_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|tone_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_tadami_river_begin_survey = {
@@ -683,7 +635,6 @@ pmr_dam_tadami_river_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|tadami_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_kainji_rapids_begin_survey = {
@@ -697,7 +648,6 @@ pmr_dam_kainji_rapids_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|kainji_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_segre_lower_ebro_begin_survey = {
@@ -711,7 +661,6 @@ pmr_dam_segre_lower_ebro_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|segre_lower_ebro|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_mantaro_canon_del_pato_begin_survey = {
@@ -725,7 +674,6 @@ pmr_dam_mantaro_canon_del_pato_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|mantaro_canon_del_pato|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_dal_klar_rivers_begin_survey = {
@@ -739,7 +687,6 @@ pmr_dam_dal_klar_rivers_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|dal_klar_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_travancore_highlands_begin_survey = {
@@ -753,7 +700,6 @@ pmr_dam_travancore_highlands_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|travancore_highlands|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_chirchik_cascade_begin_survey = {
@@ -767,7 +713,6 @@ pmr_dam_chirchik_cascade_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|chirchik_cascade|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_cheboksary_volga_begin_survey = {
@@ -781,7 +726,6 @@ pmr_dam_cheboksary_volga_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|cheboksary_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_lower_kama_begin_survey = {
@@ -795,7 +739,6 @@ pmr_dam_lower_kama_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|lower_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_kiev_kanev_begin_survey = {
@@ -809,7 +752,6 @@ pmr_dam_kiev_kanev_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|kiev_kanev|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_gorodets_volga_begin_survey = {
@@ -823,7 +765,6 @@ pmr_dam_gorodets_volga_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|gorodets_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_perm_kama_begin_survey = {
@@ -837,7 +778,6 @@ pmr_dam_perm_kama_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|perm_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_zhiguli_volga_begin_survey = {
@@ -851,7 +791,6 @@ pmr_dam_zhiguli_volga_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|zhiguli_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_balakovo_volga_begin_survey = {
@@ -865,7 +804,6 @@ pmr_dam_balakovo_volga_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|balakovo_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_votkinsk_kama_begin_survey = {
@@ -879,7 +817,6 @@ pmr_dam_votkinsk_kama_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|votkinsk_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_rybinsk_uglich_begin_survey = {
@@ -893,7 +830,6 @@ pmr_dam_rybinsk_uglich_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|rybinsk_uglich|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_irkutsk_angara_begin_survey = {
@@ -907,7 +843,6 @@ pmr_dam_irkutsk_angara_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|irkutsk_angara|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_xinan_river_begin_survey = {
@@ -921,7 +856,6 @@ pmr_dam_xinan_river_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|xinan_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_mequinenza_aragon_pyrenees_begin_survey = {
@@ -935,7 +869,6 @@ pmr_dam_mequinenza_aragon_pyrenees_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|mequinenza_aragon_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_asahan_toba_begin_survey = {
@@ -949,7 +882,6 @@ pmr_dam_asahan_toba_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|asahan_toba|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_bhagirathi_upper_ganges_begin_survey = {
@@ -963,7 +895,6 @@ pmr_dam_bhagirathi_upper_ganges_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|bhagirathi_upper_ganges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_achelous_gorges_begin_survey = {
@@ -977,7 +908,6 @@ pmr_dam_achelous_gorges_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|achelous_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_moldau_cascade_begin_survey = {
@@ -991,7 +921,6 @@ pmr_dam_moldau_cascade_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|moldau_cascade|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_narenta_drina_begin_survey = {
@@ -1005,7 +934,6 @@ pmr_dam_narenta_drina_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|narenta_drina|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_sulak_canyon_begin_survey = {
@@ -1019,7 +947,6 @@ pmr_dam_sulak_canyon_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|sulak_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_nepal_hill_rivers_begin_survey = {
@@ -1033,7 +960,6 @@ pmr_dam_nepal_hill_rivers_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|nepal_hill_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_hells_canyon_begin_survey = {
@@ -1047,7 +973,6 @@ pmr_dam_hells_canyon_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|hells_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_garrison_missouri_begin_survey = {
@@ -1061,7 +986,6 @@ pmr_dam_garrison_missouri_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|garrison_missouri|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_upper_drave_begin_survey = {
@@ -1075,7 +999,6 @@ pmr_dam_upper_drave_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|upper_drave|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_adige_valley_begin_survey = {
@@ -1089,7 +1012,6 @@ pmr_dam_adige_valley_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|adige_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_sungari_gorge_begin_survey = {
@@ -1103,7 +1025,6 @@ pmr_dam_sungari_gorge_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|sungari_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_malta_valley_begin_survey = {
@@ -1117,7 +1038,6 @@ pmr_dam_malta_valley_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|malta_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_bhutan_duars_begin_survey = {
@@ -1131,7 +1051,6 @@ pmr_dam_bhutan_duars_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|bhutan_duars|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_high_rhine_baden_begin_survey = {
@@ -1145,7 +1064,6 @@ pmr_dam_high_rhine_baden_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|high_rhine_baden|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_paulo_afonso_falls_begin_survey = {
@@ -1159,7 +1077,6 @@ pmr_dam_paulo_afonso_falls_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|paulo_afonso_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_lower_tennessee_cumberland_begin_survey = {
@@ -1173,7 +1090,6 @@ pmr_dam_lower_tennessee_cumberland_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|lower_tennessee_cumberland|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_necaxa_tilostoc_begin_survey = {
@@ -1187,7 +1103,6 @@ pmr_dam_necaxa_tilostoc_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|necaxa_tilostoc|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_lower_susquehanna_begin_survey = {
@@ -1201,7 +1116,6 @@ pmr_dam_lower_susquehanna_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|lower_susquehanna|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_lochaber_affric_begin_survey = {
@@ -1215,7 +1129,6 @@ pmr_dam_lochaber_affric_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|lochaber_affric|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_galloway_tummel_begin_survey = {
@@ -1229,7 +1142,6 @@ pmr_dam_galloway_tummel_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|galloway_tummel|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_rhodope_cascades_begin_survey = {
@@ -1243,7 +1155,6 @@ pmr_dam_rhodope_cascades_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|rhodope_cascades|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_min_tung_rivers_begin_survey = {
@@ -1257,7 +1168,6 @@ pmr_dam_min_tung_rivers_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|min_tung_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_upper_ob_begin_survey = {
@@ -1271,7 +1181,6 @@ pmr_dam_upper_ob_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|upper_ob|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_tabqa_narrows_begin_survey = {
@@ -1285,7 +1194,6 @@ pmr_dam_tabqa_narrows_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|tabqa_narrows|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_bigorre_bearn_pyrenees_begin_survey = {
@@ -1299,7 +1207,6 @@ pmr_dam_bigorre_bearn_pyrenees_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|bigorre_bearn_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_upper_euphrates_begin_survey = {
@@ -1313,7 +1220,6 @@ pmr_dam_upper_euphrates_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|upper_euphrates|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_onega_vyg_begin_survey = {
@@ -1327,7 +1233,6 @@ pmr_dam_onega_vyg_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|onega_vyg|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_truyere_gorges_begin_survey = {
@@ -1341,7 +1246,6 @@ pmr_dam_truyere_gorges_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|truyere_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_lufira_lualaba_begin_survey = {
@@ -1355,7 +1259,6 @@ pmr_dam_lufira_lualaba_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|lufira_lualaba|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_niva_tuloma_begin_survey = {
@@ -1369,7 +1272,6 @@ pmr_dam_niva_tuloma_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|niva_tuloma|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_drina_gorge_begin_survey = {
@@ -1383,7 +1285,6 @@ pmr_dam_drina_gorge_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|drina_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_mingechaur_gorge_begin_survey = {
@@ -1397,7 +1298,6 @@ pmr_dam_mingechaur_gorge_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|mingechaur_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_uryu_ishikari_begin_survey = {
@@ -1411,7 +1311,6 @@ pmr_dam_uryu_ishikari_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|uryu_ishikari|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_volkhov_svir_begin_survey = {
@@ -1425,7 +1324,6 @@ pmr_dam_volkhov_svir_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|volkhov_svir|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_mimi_river_begin_survey = {
@@ -1439,7 +1337,6 @@ pmr_dam_mimi_river_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|mimi_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_kamianske_dnieper_begin_survey = {
@@ -1453,7 +1350,6 @@ pmr_dam_kamianske_dnieper_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|kamianske_dnieper|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_kremenchug_dnieper_begin_survey = {
@@ -1467,7 +1363,6 @@ pmr_dam_kremenchug_dnieper_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|kremenchug_dnieper|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_sariyar_gorge_begin_survey = {
@@ -1481,7 +1376,6 @@ pmr_dam_sariyar_gorge_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|sariyar_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_pescara_sangro_begin_survey = {
@@ -1495,7 +1389,6 @@ pmr_dam_pescara_sangro_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|pescara_sangro|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_guatape_falls_begin_survey = {
@@ -1509,7 +1402,6 @@ pmr_dam_guatape_falls_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|guatape_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_pyramid_canyon_begin_survey = {
@@ -1523,7 +1415,6 @@ pmr_dam_pyramid_canyon_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|pyramid_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_zezere_gorges_begin_survey = {
@@ -1537,7 +1428,6 @@ pmr_dam_zezere_gorges_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|zezere_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_sila_plateau_begin_survey = {
@@ -1551,7 +1441,6 @@ pmr_dam_sila_plateau_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|sila_plateau|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_tequendama_falls_begin_survey = {
@@ -1565,7 +1454,6 @@ pmr_dam_tequendama_falls_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|tequendama_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_savannah_river_begin_survey = {
@@ -1579,7 +1467,6 @@ pmr_dam_savannah_river_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|savannah_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_lower_karun_begin_survey = {
@@ -1593,7 +1480,6 @@ pmr_dam_lower_karun_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|lower_karun|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_nilgiri_hills_begin_survey = {
@@ -1607,7 +1493,6 @@ pmr_dam_nilgiri_hills_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|nilgiri_hills|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_bistritza_gorge_begin_survey = {
@@ -1621,7 +1506,6 @@ pmr_dam_bistritza_gorge_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|bistritza_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_lajes_serra_do_mar_begin_survey = {
@@ -1635,7 +1519,6 @@ pmr_dam_lajes_serra_do_mar_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|lajes_serra_do_mar|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_santee_saluda_begin_survey = {
@@ -1649,7 +1532,6 @@ pmr_dam_santee_saluda_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|santee_saluda|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_piave_valley_begin_survey = {
@@ -1663,7 +1545,6 @@ pmr_dam_piave_valley_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|piave_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_yili_river_begin_survey = {
@@ -1677,7 +1558,6 @@ pmr_dam_yili_river_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|yili_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_first_cataract_begin_survey = {
@@ -1691,7 +1571,6 @@ pmr_dam_first_cataract_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|first_cataract|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_sennar_blue_nile_begin_survey = {
@@ -1705,7 +1584,6 @@ pmr_dam_sennar_blue_nile_begin_survey = {
 		set_variable = { name = pmr_dam_active_surveys value = 0 }
 	}
 	change_variable = { name = pmr_dam_active_surveys add = 1 }
-	debug_log = "PMR_DAM|survey_start|sennar_blue_nile|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]"
 }
 
 pmr_dam_add_caps = {
@@ -1836,44 +1714,34 @@ pmr_dam_add_caps = {
 pmr_dam_columbia_river_on_level = {
 	if = {
 		limit = { level >= 9 }
-		owner ?= { debug_log = "PMR_DAM|built|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 9/9" }
 	}
 	else_if = {
 		limit = { level >= 8 }
-		owner ?= { debug_log = "PMR_DAM|built|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 8/9" }
 	}
 	else_if = {
 		limit = { level >= 7 }
-		owner ?= { debug_log = "PMR_DAM|built|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 7/9" }
 	}
 	else_if = {
 		limit = { level >= 6 }
-		owner ?= { debug_log = "PMR_DAM|built|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 6/9" }
 	}
 	else_if = {
 		limit = { level >= 5 }
-		owner ?= { debug_log = "PMR_DAM|built|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 5/9" }
 	}
 	else_if = {
 		limit = { level >= 4 }
-		owner ?= { debug_log = "PMR_DAM|built|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 4/9" }
 	}
 	else_if = {
 		limit = { level >= 3 }
-		owner ?= { debug_log = "PMR_DAM|built|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 3/9" }
 	}
 	else_if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/9" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/9" }
 	}
 	if = {
 		limit = { level >= 9  NOT = { has_global_variable = pmr_dam_columbia_river_complete } }
 		set_global_variable = pmr_dam_columbia_river_complete
-		owner ?= { debug_log = "PMR_DAM|complete|columbia_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_columbia_river_fx_1 } }
@@ -1887,120 +1755,95 @@ pmr_dam_columbia_river_on_level = {
 pmr_dam_laurentian_rivers_on_level = {
 	if = {
 		limit = { level >= 7 }
-		owner ?= { debug_log = "PMR_DAM|built|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 7/7" }
 	}
 	else_if = {
 		limit = { level >= 6 }
-		owner ?= { debug_log = "PMR_DAM|built|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 6/7" }
 	}
 	else_if = {
 		limit = { level >= 5 }
-		owner ?= { debug_log = "PMR_DAM|built|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 5/7" }
 	}
 	else_if = {
 		limit = { level >= 4 }
-		owner ?= { debug_log = "PMR_DAM|built|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 4/7" }
 	}
 	else_if = {
 		limit = { level >= 3 }
-		owner ?= { debug_log = "PMR_DAM|built|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 3/7" }
 	}
 	else_if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/7" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/7" }
 	}
 	if = {
 		limit = { level >= 7  NOT = { has_global_variable = pmr_dam_laurentian_rivers_complete } }
 		set_global_variable = pmr_dam_laurentian_rivers_complete
-		owner ?= { debug_log = "PMR_DAM|complete|laurentian_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_norrland_rivers_on_level = {
 	if = {
 		limit = { level >= 3 }
-		owner ?= { debug_log = "PMR_DAM|built|norrland_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 3/3" }
 	}
 	else_if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|norrland_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/3" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|norrland_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/3" }
 	}
 	if = {
 		limit = { level >= 3  NOT = { has_global_variable = pmr_dam_norrland_rivers_complete } }
 		set_global_variable = pmr_dam_norrland_rivers_complete
-		owner ?= { debug_log = "PMR_DAM|complete|norrland_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_lower_columbia_on_level = {
 	if = {
 		limit = { level >= 5 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_columbia|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 5/5" }
 	}
 	else_if = {
 		limit = { level >= 4 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_columbia|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 4/5" }
 	}
 	else_if = {
 		limit = { level >= 3 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_columbia|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 3/5" }
 	}
 	else_if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_columbia|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/5" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_columbia|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/5" }
 	}
 	if = {
 		limit = { level >= 5  NOT = { has_global_variable = pmr_dam_lower_columbia_complete } }
 		set_global_variable = pmr_dam_lower_columbia_complete
-		owner ?= { debug_log = "PMR_DAM|complete|lower_columbia|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_nelson_winnipeg_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|nelson_winnipeg|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_nelson_winnipeg_complete } }
 		set_global_variable = pmr_dam_nelson_winnipeg_complete
-		owner ?= { debug_log = "PMR_DAM|complete|nelson_winnipeg|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_black_canyon_sierra_on_level = {
 	if = {
 		limit = { level >= 4 }
-		owner ?= { debug_log = "PMR_DAM|built|black_canyon_sierra|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 4/4" }
 	}
 	else_if = {
 		limit = { level >= 3 }
-		owner ?= { debug_log = "PMR_DAM|built|black_canyon_sierra|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 3/4" }
 	}
 	else_if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|black_canyon_sierra|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/4" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|black_canyon_sierra|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/4" }
 	}
 	if = {
 		limit = { level >= 4  NOT = { has_global_variable = pmr_dam_black_canyon_sierra_complete } }
 		set_global_variable = pmr_dam_black_canyon_sierra_complete
-		owner ?= { debug_log = "PMR_DAM|complete|black_canyon_sierra|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_black_canyon_sierra_fx_1 } }
@@ -2014,120 +1857,97 @@ pmr_dam_black_canyon_sierra_on_level = {
 pmr_dam_western_fjords_on_level = {
 	if = {
 		limit = { level >= 3 }
-		owner ?= { debug_log = "PMR_DAM|built|western_fjords|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 3/3" }
 	}
 	else_if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|western_fjords|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/3" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|western_fjords|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/3" }
 	}
 	if = {
 		limit = { level >= 3  NOT = { has_global_variable = pmr_dam_western_fjords_complete } }
 		set_global_variable = pmr_dam_western_fjords_complete
-		owner ?= { debug_log = "PMR_DAM|complete|western_fjords|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_niagara_long_sault_on_level = {
 	if = {
 		limit = { level >= 3 }
-		owner ?= { debug_log = "PMR_DAM|built|niagara_long_sault|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 3/3" }
 	}
 	else_if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|niagara_long_sault|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/3" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|niagara_long_sault|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/3" }
 	}
 	if = {
 		limit = { level >= 3  NOT = { has_global_variable = pmr_dam_niagara_long_sault_complete } }
 		set_global_variable = pmr_dam_niagara_long_sault_complete
-		owner ?= { debug_log = "PMR_DAM|complete|niagara_long_sault|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_waitaki_southern_lakes_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|waitaki_southern_lakes|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|waitaki_southern_lakes|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_waitaki_southern_lakes_complete } }
 		set_global_variable = pmr_dam_waitaki_southern_lakes_complete
-		owner ?= { debug_log = "PMR_DAM|complete|waitaki_southern_lakes|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_grisons_ticino_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|grisons_ticino|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|grisons_ticino|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_grisons_ticino_complete } }
 		set_global_variable = pmr_dam_grisons_ticino_complete
-		owner ?= { debug_log = "PMR_DAM|complete|grisons_ticino|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_rhone_isere_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|rhone_isere|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|rhone_isere|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_rhone_isere_complete } }
 		set_global_variable = pmr_dam_rhone_isere_complete
-		owner ?= { debug_log = "PMR_DAM|complete|rhone_isere|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_niagara_ottawa_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_niagara_ottawa_complete } }
 		set_global_variable = pmr_dam_niagara_ottawa_complete
-		owner ?= { debug_log = "PMR_DAM|complete|niagara_ottawa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_tennessee_valley_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|tennessee_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|tennessee_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_tennessee_valley_complete } }
 		set_global_variable = pmr_dam_tennessee_valley_complete
-		owner ?= { debug_log = "PMR_DAM|complete|tennessee_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_tennessee_valley_fx_1 } }
@@ -2141,164 +1961,134 @@ pmr_dam_tennessee_valley_on_level = {
 pmr_dam_valais_alps_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|valais_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|valais_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_valais_alps_complete } }
 		set_global_variable = pmr_dam_valais_alps_complete
-		owner ?= { debug_log = "PMR_DAM|complete|valais_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_nechako_kootenay_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|nechako_kootenay|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|nechako_kootenay|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_nechako_kootenay_complete } }
 		set_global_variable = pmr_dam_nechako_kootenay_complete
-		owner ?= { debug_log = "PMR_DAM|complete|nechako_kootenay|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_shinano_kurobe_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|shinano_kurobe|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|shinano_kurobe|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_shinano_kurobe_complete } }
 		set_global_variable = pmr_dam_shinano_kurobe_complete
-		owner ?= { debug_log = "PMR_DAM|complete|shinano_kurobe|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_lower_rhone_durance_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_rhone_durance|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_rhone_durance|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_lower_rhone_durance_complete } }
 		set_global_variable = pmr_dam_lower_rhone_durance_complete
-		owner ?= { debug_log = "PMR_DAM|complete|lower_rhone_durance|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_missouri_big_bend_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|missouri_big_bend|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|missouri_big_bend|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_missouri_big_bend_complete } }
 		set_global_variable = pmr_dam_missouri_big_bend_complete
-		owner ?= { debug_log = "PMR_DAM|complete|missouri_big_bend|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_austrian_danube_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|austrian_danube|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|austrian_danube|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_austrian_danube_complete } }
 		set_global_variable = pmr_dam_austrian_danube_complete
-		owner ?= { debug_log = "PMR_DAM|complete|austrian_danube|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_danube_bavarian_alps_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|danube_bavarian_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_danube_bavarian_alps_complete } }
 		set_global_variable = pmr_dam_danube_bavarian_alps_complete
-		owner ?= { debug_log = "PMR_DAM|complete|danube_bavarian_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_kiso_tenryu_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|kiso_tenryu|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_kiso_tenryu_complete } }
 		set_global_variable = pmr_dam_kiso_tenryu_complete
-		owner ?= { debug_log = "PMR_DAM|complete|kiso_tenryu|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_douro_gorge_cavado_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|douro_gorge_cavado|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_douro_gorge_cavado_complete } }
 		set_global_variable = pmr_dam_douro_gorge_cavado_complete
-		owner ?= { debug_log = "PMR_DAM|complete|douro_gorge_cavado|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_tsaritsyn_volga_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|tsaritsyn_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|tsaritsyn_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_tsaritsyn_volga_complete } }
 		set_global_variable = pmr_dam_tsaritsyn_volga_complete
-		owner ?= { debug_log = "PMR_DAM|complete|tsaritsyn_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_muscle_shoals_coosa_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|muscle_shoals_coosa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|muscle_shoals_coosa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_muscle_shoals_coosa_complete } }
 		set_global_variable = pmr_dam_muscle_shoals_coosa_complete
-		owner ?= { debug_log = "PMR_DAM|complete|muscle_shoals_coosa|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_muscle_shoals_coosa_fx_1 } }
@@ -2312,60 +2102,49 @@ pmr_dam_muscle_shoals_coosa_on_level = {
 pmr_dam_grand_canal_alsace_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|grand_canal_alsace|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|grand_canal_alsace|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_grand_canal_alsace_complete } }
 		set_global_variable = pmr_dam_grand_canal_alsace_complete
-		owner ?= { debug_log = "PMR_DAM|complete|grand_canal_alsace|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_arribes_duero_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|arribes_duero|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|arribes_duero|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_arribes_duero_complete } }
 		set_global_variable = pmr_dam_arribes_duero_complete
-		owner ?= { debug_log = "PMR_DAM|complete|arribes_duero|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_adda_lombard_alps_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|adda_lombard_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|adda_lombard_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_adda_lombard_alps_complete } }
 		set_global_variable = pmr_dam_adda_lombard_alps_complete
-		owner ?= { debug_log = "PMR_DAM|complete|adda_lombard_alps|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_snowy_tumut_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|snowy_tumut|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_snowy_tumut_complete } }
 		set_global_variable = pmr_dam_snowy_tumut_complete
-		owner ?= { debug_log = "PMR_DAM|complete|snowy_tumut|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_snowy_tumut_fx_1 } }
@@ -2379,136 +2158,111 @@ pmr_dam_snowy_tumut_on_level = {
 pmr_dam_yellow_river_gorges_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|yellow_river_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|yellow_river_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_yellow_river_gorges_complete } }
 		set_global_variable = pmr_dam_yellow_river_gorges_complete
-		owner ?= { debug_log = "PMR_DAM|complete|yellow_river_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_hohe_tauern_ziller_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|hohe_tauern_ziller|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|hohe_tauern_ziller|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_hohe_tauern_ziller_complete } }
 		set_global_variable = pmr_dam_hohe_tauern_ziller_complete
-		owner ?= { debug_log = "PMR_DAM|complete|hohe_tauern_ziller|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_iron_gates_arges_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_iron_gates_arges_complete } }
 		set_global_variable = pmr_dam_iron_gates_arges_complete
-		owner ?= { debug_log = "PMR_DAM|complete|iron_gates_arges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_inga_rapids_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|inga_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|inga_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_inga_rapids_complete } }
 		set_global_variable = pmr_dam_inga_rapids_complete
-		owner ?= { debug_log = "PMR_DAM|complete|inga_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_rion_ingur_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|rion_ingur|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_rion_ingur_complete } }
 		set_global_variable = pmr_dam_rion_ingur_complete
-		owner ?= { debug_log = "PMR_DAM|complete|rion_ingur|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_yalu_river_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|yalu_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|yalu_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_yalu_river_complete } }
 		set_global_variable = pmr_dam_yalu_river_complete
-		owner ?= { debug_log = "PMR_DAM|complete|yalu_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_maurienne_tarentaise_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|maurienne_tarentaise|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|maurienne_tarentaise|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_maurienne_tarentaise_complete } }
 		set_global_variable = pmr_dam_maurienne_tarentaise_complete
-		owner ?= { debug_log = "PMR_DAM|complete|maurienne_tarentaise|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_waikato_river_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|waikato_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|waikato_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_waikato_river_complete } }
 		set_global_variable = pmr_dam_waikato_river_complete
-		owner ?= { debug_log = "PMR_DAM|complete|waikato_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_sevan_zanga_vorotan_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|sevan_zanga_vorotan|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_sevan_zanga_vorotan_complete } }
 		set_global_variable = pmr_dam_sevan_zanga_vorotan_complete
-		owner ?= { debug_log = "PMR_DAM|complete|sevan_zanga_vorotan|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_sevan_zanga_vorotan_fx_1 } }
@@ -2522,16 +2276,13 @@ pmr_dam_sevan_zanga_vorotan_on_level = {
 pmr_dam_dnieper_rapids_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|dnieper_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|dnieper_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_dnieper_rapids_complete } }
 		set_global_variable = pmr_dam_dnieper_rapids_complete
-		owner ?= { debug_log = "PMR_DAM|complete|dnieper_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_dnieper_rapids_fx_2 } }
@@ -2546,584 +2297,484 @@ pmr_dam_dnieper_rapids_on_level = {
 pmr_dam_glommen_falls_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|glommen_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|glommen_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_glommen_falls_complete } }
 		set_global_variable = pmr_dam_glommen_falls_complete
-		owner ?= { debug_log = "PMR_DAM|complete|glommen_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_alcantara_gorge_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|alcantara_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|alcantara_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_alcantara_gorge_complete } }
 		set_global_variable = pmr_dam_alcantara_gorge_complete
-		owner ?= { debug_log = "PMR_DAM|complete|alcantara_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_aura_nordland_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|aura_nordland|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|aura_nordland|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_aura_nordland_complete } }
 		set_global_variable = pmr_dam_aura_nordland_complete
-		owner ?= { debug_log = "PMR_DAM|complete|aura_nordland|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_ossola_dora_baltea_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|ossola_dora_baltea|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|ossola_dora_baltea|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_ossola_dora_baltea_complete } }
 		set_global_variable = pmr_dam_ossola_dora_baltea_complete
-		owner ?= { debug_log = "PMR_DAM|complete|ossola_dora_baltea|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_cubatao_escarpment_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|cubatao_escarpment|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|cubatao_escarpment|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_cubatao_escarpment_complete } }
 		set_global_variable = pmr_dam_cubatao_escarpment_complete
-		owner ?= { debug_log = "PMR_DAM|complete|cubatao_escarpment|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_derwent_great_lake_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|derwent_great_lake|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|derwent_great_lake|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_derwent_great_lake_complete } }
 		set_global_variable = pmr_dam_derwent_great_lake_complete
-		owner ?= { debug_log = "PMR_DAM|complete|derwent_great_lake|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_kaema_plateau_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|kaema_plateau|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|kaema_plateau|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_kaema_plateau_complete } }
 		set_global_variable = pmr_dam_kaema_plateau_complete
-		owner ?= { debug_log = "PMR_DAM|complete|kaema_plateau|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_dordogne_gorges_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|dordogne_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_dordogne_gorges_complete } }
 		set_global_variable = pmr_dam_dordogne_gorges_complete
-		owner ?= { debug_log = "PMR_DAM|complete|dordogne_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_koyna_western_ghats_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|koyna_western_ghats|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_koyna_western_ghats_complete } }
 		set_global_variable = pmr_dam_koyna_western_ghats_complete
-		owner ?= { debug_log = "PMR_DAM|complete|koyna_western_ghats|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_tone_river_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|tone_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_tone_river_complete } }
 		set_global_variable = pmr_dam_tone_river_complete
-		owner ?= { debug_log = "PMR_DAM|complete|tone_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_tadami_river_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|tadami_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_tadami_river_complete } }
 		set_global_variable = pmr_dam_tadami_river_complete
-		owner ?= { debug_log = "PMR_DAM|complete|tadami_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_kainji_rapids_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|kainji_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_kainji_rapids_complete } }
 		set_global_variable = pmr_dam_kainji_rapids_complete
-		owner ?= { debug_log = "PMR_DAM|complete|kainji_rapids|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_segre_lower_ebro_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|segre_lower_ebro|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_segre_lower_ebro_complete } }
 		set_global_variable = pmr_dam_segre_lower_ebro_complete
-		owner ?= { debug_log = "PMR_DAM|complete|segre_lower_ebro|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_mantaro_canon_del_pato_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|mantaro_canon_del_pato|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_mantaro_canon_del_pato_complete } }
 		set_global_variable = pmr_dam_mantaro_canon_del_pato_complete
-		owner ?= { debug_log = "PMR_DAM|complete|mantaro_canon_del_pato|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_dal_klar_rivers_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|dal_klar_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_dal_klar_rivers_complete } }
 		set_global_variable = pmr_dam_dal_klar_rivers_complete
-		owner ?= { debug_log = "PMR_DAM|complete|dal_klar_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_travancore_highlands_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|travancore_highlands|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_travancore_highlands_complete } }
 		set_global_variable = pmr_dam_travancore_highlands_complete
-		owner ?= { debug_log = "PMR_DAM|complete|travancore_highlands|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_chirchik_cascade_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|chirchik_cascade|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_chirchik_cascade_complete } }
 		set_global_variable = pmr_dam_chirchik_cascade_complete
-		owner ?= { debug_log = "PMR_DAM|complete|chirchik_cascade|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_cheboksary_volga_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|cheboksary_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_cheboksary_volga_complete } }
 		set_global_variable = pmr_dam_cheboksary_volga_complete
-		owner ?= { debug_log = "PMR_DAM|complete|cheboksary_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_lower_kama_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_lower_kama_complete } }
 		set_global_variable = pmr_dam_lower_kama_complete
-		owner ?= { debug_log = "PMR_DAM|complete|lower_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_kiev_kanev_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|kiev_kanev|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_kiev_kanev_complete } }
 		set_global_variable = pmr_dam_kiev_kanev_complete
-		owner ?= { debug_log = "PMR_DAM|complete|kiev_kanev|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_gorodets_volga_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|gorodets_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_gorodets_volga_complete } }
 		set_global_variable = pmr_dam_gorodets_volga_complete
-		owner ?= { debug_log = "PMR_DAM|complete|gorodets_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_perm_kama_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|perm_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_perm_kama_complete } }
 		set_global_variable = pmr_dam_perm_kama_complete
-		owner ?= { debug_log = "PMR_DAM|complete|perm_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_zhiguli_volga_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|zhiguli_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_zhiguli_volga_complete } }
 		set_global_variable = pmr_dam_zhiguli_volga_complete
-		owner ?= { debug_log = "PMR_DAM|complete|zhiguli_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_balakovo_volga_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|balakovo_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_balakovo_volga_complete } }
 		set_global_variable = pmr_dam_balakovo_volga_complete
-		owner ?= { debug_log = "PMR_DAM|complete|balakovo_volga|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_votkinsk_kama_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|votkinsk_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_votkinsk_kama_complete } }
 		set_global_variable = pmr_dam_votkinsk_kama_complete
-		owner ?= { debug_log = "PMR_DAM|complete|votkinsk_kama|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_rybinsk_uglich_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|rybinsk_uglich|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_rybinsk_uglich_complete } }
 		set_global_variable = pmr_dam_rybinsk_uglich_complete
-		owner ?= { debug_log = "PMR_DAM|complete|rybinsk_uglich|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_irkutsk_angara_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|irkutsk_angara|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_irkutsk_angara_complete } }
 		set_global_variable = pmr_dam_irkutsk_angara_complete
-		owner ?= { debug_log = "PMR_DAM|complete|irkutsk_angara|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_xinan_river_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|xinan_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_xinan_river_complete } }
 		set_global_variable = pmr_dam_xinan_river_complete
-		owner ?= { debug_log = "PMR_DAM|complete|xinan_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_mequinenza_aragon_pyrenees_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|mequinenza_aragon_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_mequinenza_aragon_pyrenees_complete } }
 		set_global_variable = pmr_dam_mequinenza_aragon_pyrenees_complete
-		owner ?= { debug_log = "PMR_DAM|complete|mequinenza_aragon_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_asahan_toba_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|asahan_toba|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_asahan_toba_complete } }
 		set_global_variable = pmr_dam_asahan_toba_complete
-		owner ?= { debug_log = "PMR_DAM|complete|asahan_toba|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_bhagirathi_upper_ganges_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|bhagirathi_upper_ganges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_bhagirathi_upper_ganges_complete } }
 		set_global_variable = pmr_dam_bhagirathi_upper_ganges_complete
-		owner ?= { debug_log = "PMR_DAM|complete|bhagirathi_upper_ganges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_achelous_gorges_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|achelous_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_achelous_gorges_complete } }
 		set_global_variable = pmr_dam_achelous_gorges_complete
-		owner ?= { debug_log = "PMR_DAM|complete|achelous_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_moldau_cascade_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|moldau_cascade|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_moldau_cascade_complete } }
 		set_global_variable = pmr_dam_moldau_cascade_complete
-		owner ?= { debug_log = "PMR_DAM|complete|moldau_cascade|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_narenta_drina_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|narenta_drina|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_narenta_drina_complete } }
 		set_global_variable = pmr_dam_narenta_drina_complete
-		owner ?= { debug_log = "PMR_DAM|complete|narenta_drina|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_sulak_canyon_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|sulak_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_sulak_canyon_complete } }
 		set_global_variable = pmr_dam_sulak_canyon_complete
-		owner ?= { debug_log = "PMR_DAM|complete|sulak_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_nepal_hill_rivers_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|nepal_hill_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_nepal_hill_rivers_complete } }
 		set_global_variable = pmr_dam_nepal_hill_rivers_complete
-		owner ?= { debug_log = "PMR_DAM|complete|nepal_hill_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_hells_canyon_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|hells_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_hells_canyon_complete } }
 		set_global_variable = pmr_dam_hells_canyon_complete
-		owner ?= { debug_log = "PMR_DAM|complete|hells_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_garrison_missouri_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|garrison_missouri|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_garrison_missouri_complete } }
 		set_global_variable = pmr_dam_garrison_missouri_complete
-		owner ?= { debug_log = "PMR_DAM|complete|garrison_missouri|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_upper_drave_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|upper_drave|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_upper_drave_complete } }
 		set_global_variable = pmr_dam_upper_drave_complete
-		owner ?= { debug_log = "PMR_DAM|complete|upper_drave|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_adige_valley_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|adige_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_adige_valley_complete } }
 		set_global_variable = pmr_dam_adige_valley_complete
-		owner ?= { debug_log = "PMR_DAM|complete|adige_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_sungari_gorge_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|sungari_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_sungari_gorge_complete } }
 		set_global_variable = pmr_dam_sungari_gorge_complete
-		owner ?= { debug_log = "PMR_DAM|complete|sungari_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_malta_valley_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|malta_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_malta_valley_complete } }
 		set_global_variable = pmr_dam_malta_valley_complete
-		owner ?= { debug_log = "PMR_DAM|complete|malta_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_bhutan_duars_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|bhutan_duars|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_bhutan_duars_complete } }
 		set_global_variable = pmr_dam_bhutan_duars_complete
-		owner ?= { debug_log = "PMR_DAM|complete|bhutan_duars|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_high_rhine_baden_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|high_rhine_baden|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_high_rhine_baden_complete } }
 		set_global_variable = pmr_dam_high_rhine_baden_complete
-		owner ?= { debug_log = "PMR_DAM|complete|high_rhine_baden|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_paulo_afonso_falls_on_level = {
 	if = {
 		limit = { level >= 2 }
-		owner ?= { debug_log = "PMR_DAM|built|paulo_afonso_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 2/2" }
 	}
 	else_if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|paulo_afonso_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/2" }
 	}
 	if = {
 		limit = { level >= 2  NOT = { has_global_variable = pmr_dam_paulo_afonso_falls_complete } }
 		set_global_variable = pmr_dam_paulo_afonso_falls_complete
-		owner ?= { debug_log = "PMR_DAM|complete|paulo_afonso_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_lower_tennessee_cumberland_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_tennessee_cumberland|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_lower_tennessee_cumberland_complete } }
 		set_global_variable = pmr_dam_lower_tennessee_cumberland_complete
-		owner ?= { debug_log = "PMR_DAM|complete|lower_tennessee_cumberland|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_lower_tennessee_cumberland_fx_1 } }
@@ -3137,192 +2788,160 @@ pmr_dam_lower_tennessee_cumberland_on_level = {
 pmr_dam_necaxa_tilostoc_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|necaxa_tilostoc|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_necaxa_tilostoc_complete } }
 		set_global_variable = pmr_dam_necaxa_tilostoc_complete
-		owner ?= { debug_log = "PMR_DAM|complete|necaxa_tilostoc|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_lower_susquehanna_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_susquehanna|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_lower_susquehanna_complete } }
 		set_global_variable = pmr_dam_lower_susquehanna_complete
-		owner ?= { debug_log = "PMR_DAM|complete|lower_susquehanna|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_lochaber_affric_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|lochaber_affric|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_lochaber_affric_complete } }
 		set_global_variable = pmr_dam_lochaber_affric_complete
-		owner ?= { debug_log = "PMR_DAM|complete|lochaber_affric|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_galloway_tummel_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|galloway_tummel|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_galloway_tummel_complete } }
 		set_global_variable = pmr_dam_galloway_tummel_complete
-		owner ?= { debug_log = "PMR_DAM|complete|galloway_tummel|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_rhodope_cascades_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|rhodope_cascades|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_rhodope_cascades_complete } }
 		set_global_variable = pmr_dam_rhodope_cascades_complete
-		owner ?= { debug_log = "PMR_DAM|complete|rhodope_cascades|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_min_tung_rivers_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|min_tung_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_min_tung_rivers_complete } }
 		set_global_variable = pmr_dam_min_tung_rivers_complete
-		owner ?= { debug_log = "PMR_DAM|complete|min_tung_rivers|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_upper_ob_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|upper_ob|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_upper_ob_complete } }
 		set_global_variable = pmr_dam_upper_ob_complete
-		owner ?= { debug_log = "PMR_DAM|complete|upper_ob|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_tabqa_narrows_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|tabqa_narrows|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_tabqa_narrows_complete } }
 		set_global_variable = pmr_dam_tabqa_narrows_complete
-		owner ?= { debug_log = "PMR_DAM|complete|tabqa_narrows|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_bigorre_bearn_pyrenees_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|bigorre_bearn_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_bigorre_bearn_pyrenees_complete } }
 		set_global_variable = pmr_dam_bigorre_bearn_pyrenees_complete
-		owner ?= { debug_log = "PMR_DAM|complete|bigorre_bearn_pyrenees|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_upper_euphrates_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|upper_euphrates|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_upper_euphrates_complete } }
 		set_global_variable = pmr_dam_upper_euphrates_complete
-		owner ?= { debug_log = "PMR_DAM|complete|upper_euphrates|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_onega_vyg_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|onega_vyg|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_onega_vyg_complete } }
 		set_global_variable = pmr_dam_onega_vyg_complete
-		owner ?= { debug_log = "PMR_DAM|complete|onega_vyg|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_truyere_gorges_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|truyere_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_truyere_gorges_complete } }
 		set_global_variable = pmr_dam_truyere_gorges_complete
-		owner ?= { debug_log = "PMR_DAM|complete|truyere_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_lufira_lualaba_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|lufira_lualaba|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_lufira_lualaba_complete } }
 		set_global_variable = pmr_dam_lufira_lualaba_complete
-		owner ?= { debug_log = "PMR_DAM|complete|lufira_lualaba|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_niva_tuloma_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|niva_tuloma|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_niva_tuloma_complete } }
 		set_global_variable = pmr_dam_niva_tuloma_complete
-		owner ?= { debug_log = "PMR_DAM|complete|niva_tuloma|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_drina_gorge_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|drina_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_drina_gorge_complete } }
 		set_global_variable = pmr_dam_drina_gorge_complete
-		owner ?= { debug_log = "PMR_DAM|complete|drina_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_mingechaur_gorge_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|mingechaur_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_mingechaur_gorge_complete } }
 		set_global_variable = pmr_dam_mingechaur_gorge_complete
-		owner ?= { debug_log = "PMR_DAM|complete|mingechaur_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_mingechaur_gorge_fx_1 } }
@@ -3339,252 +2958,210 @@ pmr_dam_mingechaur_gorge_on_level = {
 pmr_dam_uryu_ishikari_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|uryu_ishikari|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_uryu_ishikari_complete } }
 		set_global_variable = pmr_dam_uryu_ishikari_complete
-		owner ?= { debug_log = "PMR_DAM|complete|uryu_ishikari|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_volkhov_svir_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|volkhov_svir|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_volkhov_svir_complete } }
 		set_global_variable = pmr_dam_volkhov_svir_complete
-		owner ?= { debug_log = "PMR_DAM|complete|volkhov_svir|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_mimi_river_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|mimi_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_mimi_river_complete } }
 		set_global_variable = pmr_dam_mimi_river_complete
-		owner ?= { debug_log = "PMR_DAM|complete|mimi_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_kamianske_dnieper_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|kamianske_dnieper|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_kamianske_dnieper_complete } }
 		set_global_variable = pmr_dam_kamianske_dnieper_complete
-		owner ?= { debug_log = "PMR_DAM|complete|kamianske_dnieper|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_kremenchug_dnieper_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|kremenchug_dnieper|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_kremenchug_dnieper_complete } }
 		set_global_variable = pmr_dam_kremenchug_dnieper_complete
-		owner ?= { debug_log = "PMR_DAM|complete|kremenchug_dnieper|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_sariyar_gorge_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|sariyar_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_sariyar_gorge_complete } }
 		set_global_variable = pmr_dam_sariyar_gorge_complete
-		owner ?= { debug_log = "PMR_DAM|complete|sariyar_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_pescara_sangro_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|pescara_sangro|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_pescara_sangro_complete } }
 		set_global_variable = pmr_dam_pescara_sangro_complete
-		owner ?= { debug_log = "PMR_DAM|complete|pescara_sangro|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_guatape_falls_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|guatape_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_guatape_falls_complete } }
 		set_global_variable = pmr_dam_guatape_falls_complete
-		owner ?= { debug_log = "PMR_DAM|complete|guatape_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_pyramid_canyon_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|pyramid_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_pyramid_canyon_complete } }
 		set_global_variable = pmr_dam_pyramid_canyon_complete
-		owner ?= { debug_log = "PMR_DAM|complete|pyramid_canyon|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_zezere_gorges_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|zezere_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_zezere_gorges_complete } }
 		set_global_variable = pmr_dam_zezere_gorges_complete
-		owner ?= { debug_log = "PMR_DAM|complete|zezere_gorges|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_sila_plateau_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|sila_plateau|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_sila_plateau_complete } }
 		set_global_variable = pmr_dam_sila_plateau_complete
-		owner ?= { debug_log = "PMR_DAM|complete|sila_plateau|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_tequendama_falls_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|tequendama_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_tequendama_falls_complete } }
 		set_global_variable = pmr_dam_tequendama_falls_complete
-		owner ?= { debug_log = "PMR_DAM|complete|tequendama_falls|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_savannah_river_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|savannah_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_savannah_river_complete } }
 		set_global_variable = pmr_dam_savannah_river_complete
-		owner ?= { debug_log = "PMR_DAM|complete|savannah_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_lower_karun_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|lower_karun|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_lower_karun_complete } }
 		set_global_variable = pmr_dam_lower_karun_complete
-		owner ?= { debug_log = "PMR_DAM|complete|lower_karun|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_nilgiri_hills_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|nilgiri_hills|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_nilgiri_hills_complete } }
 		set_global_variable = pmr_dam_nilgiri_hills_complete
-		owner ?= { debug_log = "PMR_DAM|complete|nilgiri_hills|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_bistritza_gorge_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|bistritza_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_bistritza_gorge_complete } }
 		set_global_variable = pmr_dam_bistritza_gorge_complete
-		owner ?= { debug_log = "PMR_DAM|complete|bistritza_gorge|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_lajes_serra_do_mar_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|lajes_serra_do_mar|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_lajes_serra_do_mar_complete } }
 		set_global_variable = pmr_dam_lajes_serra_do_mar_complete
-		owner ?= { debug_log = "PMR_DAM|complete|lajes_serra_do_mar|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_santee_saluda_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|santee_saluda|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_santee_saluda_complete } }
 		set_global_variable = pmr_dam_santee_saluda_complete
-		owner ?= { debug_log = "PMR_DAM|complete|santee_saluda|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_piave_valley_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|piave_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_piave_valley_complete } }
 		set_global_variable = pmr_dam_piave_valley_complete
-		owner ?= { debug_log = "PMR_DAM|complete|piave_valley|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_yili_river_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|yili_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_yili_river_complete } }
 		set_global_variable = pmr_dam_yili_river_complete
-		owner ?= { debug_log = "PMR_DAM|complete|yili_river|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 }
 
 pmr_dam_first_cataract_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|first_cataract|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_first_cataract_complete } }
 		set_global_variable = pmr_dam_first_cataract_complete
-		owner ?= { debug_log = "PMR_DAM|complete|first_cataract|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_first_cataract_fx_1 } }
@@ -3599,12 +3176,10 @@ pmr_dam_first_cataract_on_level = {
 pmr_dam_sennar_blue_nile_on_level = {
 	if = {
 		limit = { level >= 1 }
-		owner ?= { debug_log = "PMR_DAM|built|sennar_blue_nile|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|level 1/1" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_sennar_blue_nile_complete } }
 		set_global_variable = pmr_dam_sennar_blue_nile_complete
-		owner ?= { debug_log = "PMR_DAM|complete|sennar_blue_nile|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]" }
 	}
 	if = {
 		limit = { level >= 1  NOT = { has_global_variable = pmr_dam_sennar_blue_nile_fx_1 } }

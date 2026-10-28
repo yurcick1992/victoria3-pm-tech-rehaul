@@ -35,6 +35,8 @@ pmr_research_global = {
 		every_country = { limit = { NOT = { is_revolutionary = yes }  OR = { has_law = law_type:law_private_health_insurance  has_law = law_type:law_public_health_insurance } }  every_country = { limit = { is_adjacent_to_country = PREV }  set_variable = { name = pmr_ideanb_pharmaceuticals  days = 40 } } }
 		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { is_ship_type = ship_type:ship_type_super_dreadnought } } }  set_global_variable = pmr_navgp_battleship_tech }
 		else_if = { limit = { has_global_variable = pmr_navgp_battleship_tech }  remove_global_variable = pmr_navgp_battleship_tech }
+		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { is_ship_type = ship_type:ship_type_aircraft_carrier } } }  set_global_variable = pmr_navgp_carrier_tech }
+		else_if = { limit = { has_global_variable = pmr_navgp_carrier_tech }  remove_global_variable = pmr_navgp_carrier_tech }
 		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { is_ship_type = ship_type:ship_type_destroyer } } }  set_global_variable = pmr_navgp_destroyer }
 		else_if = { limit = { has_global_variable = pmr_navgp_destroyer }  remove_global_variable = pmr_navgp_destroyer }
 		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { OR = { is_ship_type = ship_type:ship_type_dreadnought  is_ship_type = ship_type:ship_type_light_cruiser  is_ship_type = ship_type:ship_type_seaplane_tender } } } }  set_global_variable = pmr_navgp_dreadnought_tech }

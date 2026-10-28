@@ -157,6 +157,24 @@ pmr_wargate_eval = {
 		if = {
 			limit = {
 				any_scope_ship = {
+					is_ship_type = ship_type:ship_type_aircraft_carrier
+				}
+			}
+			set_variable = { name = pmr_navown_carrier_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_rival_country = {
+					any_scope_ship = {
+						is_ship_type = ship_type:ship_type_aircraft_carrier
+					}
+				}
+			}
+			set_variable = { name = pmr_navrival_carrier_tech  days = 40 }
+		}
+		if = {
+			limit = {
+				any_scope_ship = {
 					is_ship_type = ship_type:ship_type_destroyer
 				}
 			}

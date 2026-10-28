@@ -14,7 +14,6 @@ on_building_expanded = {
 
 pmr_dam_campaign_start = {
 	effect = {
-		debug_log = "PMR_DAM|start|122 projects|-|[TimeKeeper.GetCurrentDate.GetString]"
 		pmr_dam_add_caps = yes
 		s:STATE_MIDDLE_EGYPT = {
 			add_state_trait = state_trait_pmr_basin_irrigation
@@ -532,7 +531,6 @@ pmr_dam_yearly = {
 	effect = {
 		if = {
 			limit = { has_technology_researched = electrical_generation }
-			debug_log = "PMR_DAM|bur_year|-|[THIS.GetCountry.GetNameNoFormatting]|[TimeKeeper.GetCurrentDate.GetString]|bur [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_produced')|0]/[THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_bur_used')|0]|surveys [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_active')|0] building [THIS.GetCountry.MakeScope.ScriptValue('pmr_dam_building_now')|0]"
 		}
 	}
 }

@@ -540,6 +540,11 @@ pmr_implv_canneries = {
 	if = { limit = { has_variable = pmr_impl_canneries }  value = var:pmr_impl_canneries }
 }
 
+pmr_implv_carrier_tech = {
+	value = 0
+	if = { limit = { has_variable = pmr_impl_carrier_tech }  value = var:pmr_impl_carrier_tech }
+}
+
 pmr_src_catalytic_synthesis_0 = {
 	value = 0
 	every_scope_building = {
@@ -1033,6 +1038,11 @@ pmr_srcl_electrical_generation_0_fl = {
 pmr_implv_electrical_generation = {
 	value = 0
 	if = { limit = { has_variable = pmr_impl_electrical_generation }  value = var:pmr_impl_electrical_generation }
+}
+
+pmr_cv_urban_fl = {
+	value = pmr_cv_urban
+	floor = yes
 }
 
 pmr_implv_elevator = {
@@ -2432,4 +2442,13 @@ pmr_cv_chem = {
 	add = { value = pmr_cv_chem_explosives_factory_vacuum_evaporation  multiply = 4500 }
 	add = { value = pmr_cv_chem_explosives_factory_brine_electrolysis  multiply = 4000 }
 	add = { value = pmr_cv_chem_synthetics_plant  multiply = 5000 }
+}
+
+pmr_cv_urban = {
+	value = 0
+	ordered_scope_building = {
+		limit = { is_building_type = building_urban_center }
+		order_by = this.level
+		add = this.level
+	}
 }

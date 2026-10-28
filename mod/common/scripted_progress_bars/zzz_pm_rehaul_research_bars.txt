@@ -467,13 +467,13 @@ pmr_bar_battleship_tech = {
 				OR = { has_variable = pmr_navown_battleship_tech  has_variable = pmr_navrival_battleship_tech  has_global_variable = pmr_navgp_battleship_tech }
 			}
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_battleship_tech"
 				value = 1
 			}
 		}
 		else = {
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_battleship_tech"
 				value = 0
 			}
 		}
@@ -676,6 +676,32 @@ pmr_bar_canneries = {
 		else = {
 			add = {
 				desc = "pmr_term_canneries_0"
+				value = 0
+			}
+		}
+	}
+}
+
+pmr_bar_carrier_tech = {
+	name = "pmr_bar_carrier_tech"
+	desc = "pmr_bar_desc_36"
+	default_green = yes
+	start_value = 0
+	min_value = 0
+	max_value = 36
+	monthly_progress = {
+		if = {
+			limit = {
+				OR = { has_variable = pmr_navown_carrier_tech  has_variable = pmr_navrival_carrier_tech  has_global_variable = pmr_navgp_carrier_tech }
+			}
+			add = {
+				desc = "pmr_term_nav_any_carrier_tech"
+				value = 1
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_nav_any_carrier_tech"
 				value = 0
 			}
 		}
@@ -1393,13 +1419,13 @@ pmr_bar_destroyer = {
 				OR = { has_variable = pmr_navown_destroyer  has_variable = pmr_navrival_destroyer  has_global_variable = pmr_navgp_destroyer }
 			}
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_destroyer"
 				value = 1
 			}
 		}
 		else = {
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_destroyer"
 				value = 0
 			}
 		}
@@ -1551,13 +1577,13 @@ pmr_bar_dreadnought_tech = {
 				OR = { has_variable = pmr_navown_dreadnought_tech  has_variable = pmr_navrival_dreadnought_tech  has_global_variable = pmr_navgp_dreadnought_tech }
 			}
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_dreadnought_tech"
 				value = 1
 			}
 		}
 		else = {
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_dreadnought_tech"
 				value = 0
 			}
 		}
@@ -1886,7 +1912,7 @@ pmr_bar_elevator = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 40 } } }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_urban >= 40 } }
 			}
 			add = {
 				desc = "pmr_term_elevator_0_half"
@@ -1895,7 +1921,7 @@ pmr_bar_elevator = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 80 } } }
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_urban >= 80 } }
 			}
 			add = {
 				desc = "pmr_term_elevator_0"
@@ -2319,13 +2345,13 @@ pmr_bar_ironclad_tech = {
 				OR = { has_variable = pmr_navown_ironclad_tech  has_variable = pmr_navrival_ironclad_tech  has_global_variable = pmr_navgp_ironclad_tech }
 			}
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_ironclad_tech"
 				value = 1
 			}
 		}
 		else = {
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_ironclad_tech"
 				value = 0
 			}
 		}
@@ -2904,7 +2930,7 @@ pmr_bar_modern_sewerage = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_modern_sewerage  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 15 } } }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_modern_sewerage  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_urban >= 15 } }
 			}
 			add = {
 				desc = "pmr_term_modern_sewerage_0_half"
@@ -2913,7 +2939,7 @@ pmr_bar_modern_sewerage = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_modern_sewerage  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 30 } } }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_modern_sewerage  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_urban >= 30 } }
 			}
 			add = {
 				desc = "pmr_term_modern_sewerage_0"
@@ -2951,13 +2977,13 @@ pmr_bar_monitor_tech = {
 				OR = { has_variable = pmr_navown_monitor_tech  has_variable = pmr_navrival_monitor_tech  has_global_variable = pmr_navgp_monitor_tech }
 			}
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_monitor_tech"
 				value = 1
 			}
 		}
 		else = {
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_monitor_tech"
 				value = 0
 			}
 		}
@@ -3246,7 +3272,7 @@ pmr_bar_organized_sports = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_organized_sports  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 20 } } }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_organized_sports  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_urban >= 20 } }
 			}
 			add = {
 				desc = "pmr_term_organized_sports_0_half"
@@ -3255,7 +3281,7 @@ pmr_bar_organized_sports = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_organized_sports  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 40 } } }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_organized_sports  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_urban >= 40 } }
 			}
 			add = {
 				desc = "pmr_term_organized_sports_0"
@@ -3334,7 +3360,7 @@ pmr_bar_paved_roads = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 80 } } }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_urban >= 80 } }
 			}
 			add = {
 				desc = "pmr_term_paved_roads_0_half"
@@ -3343,7 +3369,7 @@ pmr_bar_paved_roads = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { any_scope_building = { is_building_type = building_urban_center  level >= 160 } } }
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_urban >= 160 } }
 			}
 			add = {
 				desc = "pmr_term_paved_roads_0"
@@ -3653,13 +3679,13 @@ pmr_bar_pre_dreadnought_tech = {
 				OR = { has_variable = pmr_navown_pre_dreadnought_tech  has_variable = pmr_navrival_pre_dreadnought_tech  has_global_variable = pmr_navgp_pre_dreadnought_tech }
 			}
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_pre_dreadnought_tech"
 				value = 1
 			}
 		}
 		else = {
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_pre_dreadnought_tech"
 				value = 0
 			}
 		}
@@ -4101,13 +4127,13 @@ pmr_bar_sea_lane_strategies = {
 				OR = { has_variable = pmr_navown_sea_lane_strategies  has_variable = pmr_navrival_sea_lane_strategies  has_global_variable = pmr_navgp_sea_lane_strategies }
 			}
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_sea_lane_strategies"
 				value = 1
 			}
 		}
 		else = {
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_sea_lane_strategies"
 				value = 0
 			}
 		}
@@ -4127,13 +4153,13 @@ pmr_bar_self_propelled_torpedoes = {
 				OR = { has_variable = pmr_navown_self_propelled_torpedoes  has_variable = pmr_navrival_self_propelled_torpedoes  has_global_variable = pmr_navgp_self_propelled_torpedoes }
 			}
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_self_propelled_torpedoes"
 				value = 1
 			}
 		}
 		else = {
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_self_propelled_torpedoes"
 				value = 0
 			}
 		}
@@ -4443,13 +4469,13 @@ pmr_bar_submarine = {
 				OR = { has_variable = pmr_navown_submarine  has_variable = pmr_navrival_submarine  has_global_variable = pmr_navgp_submarine }
 			}
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_submarine"
 				value = 1
 			}
 		}
 		else = {
 			add = {
-				desc = "pmr_term_nav_any"
+				desc = "pmr_term_nav_any_submarine"
 				value = 0
 			}
 		}
