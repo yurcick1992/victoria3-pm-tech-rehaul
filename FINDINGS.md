@@ -401,6 +401,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F253 | The crafts do not bring early revolutions: revolutions started before 1848 median 16 a run in both arms; Austria at or before 1845 in 4/17 canon against 3/17 vanilla | canon | reading | here |
 | F254 | The merged methods are staffed on the 1.0 canon (79-98% when switched); hosts left on the older method are the ones that empty; F182's two-thirds-staffed chemical plants are gone | canon | reading | here |
 | F255 | A t3 level takes 60-85 weeks to build because vanilla caps each construction at ~35-40 points a week, not because the queue is shared; only Britain's and the USA's 1935 private queues are congested (~3.5-4 years) | canon | reading | here |
+| F256 | Germany's oil economy waits for a built buyer on the 1.0 canon too: first staffed oil rig median 1920 (vanilla ~1905), none by 1935 in 5 of 17 runs (vanilla 1 of 17); 1935 staffed levels 25.5 against 75.5 | canon | reading | here |
 
 ---
 
@@ -21437,3 +21438,27 @@ cheaper, which ROADMAP P8's option (b) (faster construction methods, goods scale
 - **Not why the late British and American queues are long** — the private pool's inflow and the queue coefficient (0.1, §10.75) are the
   candidates (ROADMAP P8 options (c), (d)); the queue length was read, its cause was not.
 - **Not a player's build time**, which depends on the player's own queue.
+
+## F256 — GERMANY'S OIL ECONOMY WAITS FOR A BUILT BUYER ON THE 1.0 CANON TOO: ITS FIRST STAFFED OIL RIG COMES IN 1920 IN THE MEDIAN AGAINST VANILLA'S ~1905, AND IN 5 OF 17 RUNS NONE BY 1935 (2026-10-28; a reading of F249's sessions `20261021_224949_alt-vanilla-canon-n16`, `20261023_161802_alt-vanilla-canon-rest20`, `20261026_032622_alt-canon-replace20`, every run folder of each arm, 17 canon and 17 vanilla, from the save summaries; no new runs)
+
+**Why it was read.** BACKLOG B's watch item from F215 (older books): in about a third of four-rung seeds the German market had no oil economy
+until 1910–1925, where vanilla's formed by 1905–1910 through free method switches; whether to act was left to the user.
+
+**Reading.** Germany = GER, else NGF, else PRU. Staffed levels of `building_oil_rig`, the median over runs, 1895–1935 every five years:
+
+| arm | 1900 | 1905 | 1910 | 1915 | 1920 | 1925 | 1930 | 1935 |
+|---|---|---|---|---|---|---|---|---|
+| vanilla (17) | 0 | 2.0 | 4.0 | 13.0 | 18.5 | 33.0 | 53.5 | 75.5 |
+| canon (17) | 0 | 0 | 0 | 0 | 3.0 | 7.5 | 16.5 | 25.5 |
+
+The first five-year reading with a staffed level: vanilla 1895 ×2, 1900 ×4, 1905 ×3, 1915 ×2, 1920 ×3, 1925, 1930, after 1935 ×1 (median 1905);
+canon 1905, 1910 ×4, 1920 ×4, 1925 ×2, 1935, after 1935 ×5 (median 1920).
+
+**What it says.** F215's pattern holds on the 1.0 canon and is stronger than its "a third of seeds": the German oil economy starts about 15 years
+later than vanilla's in the median, and in five runs of seventeen not at all before 1936; by 1935 it is a third of vanilla's.
+
+**What it does NOT say.**
+- **Not the cause on this canon.** F215's mechanism (the first buyers are rungs to build, the ports and logging camps switch only once oil is
+  on offer) was not re-read here; nor German oil imports, which may cover part of the demand.
+- **Not the run count of usable runs.** Every run folder of each arm was read (17 each); F249's usable canon count is 16.
+- **Not what it costs Germany** in GDP or in the register's German term.
