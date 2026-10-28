@@ -100,7 +100,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L34 | a run recorded complete in minutes | `Test-LmL34`; `lib_runs` | session | AUTO, proven; fix proved live 2026-10-26 |
 | L35 | a rung silently locked out of its industry's gated secondary method | `Test-LmL35` | build | AUTO, proven |
 | L36 | a telemetry metric name that matches nothing | `Test-LmL36` | build, repo | AUTO, proven |
-| L37 | the stop watcher goes blind to the register on a multi-config schedule | — | — | OPEN |
+| L37 | the stop watcher goes blind to the register on a multi-config schedule | `Test-LmL37` | build, repo, session | FIXED 2026-10-28; AUTO, proven |
 | L38 | a save summary that keeps one country record per definition | `Test-LmL38` | build, repo, session | AUTO, proven |
 | L39 | a replaced vanilla file that loses a DLC gate | `check_dlc_gates.mjs` | every build | AUTO, proven |
 | L40 | vanilla script that names a rung-0 key or a renamed method | `emit_vanilla_refs.mjs` scan; `Test-LmL40` | every build; session | AUTO, proven |
@@ -115,7 +115,8 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 Walk these by hand. The `preflight` skill (`.claude/skills/preflight/SKILL.md`) carries L3 and L10.
 
 - **Before a batch.** L3: size every scope at the run's end date, not at 1836. L10: is a batch already running? L11: resolve every tag a
-  schedule names against the game files. L37: on a schedule with more than one setup the stop watcher enforces only its GDP fallback.
+  schedule names against the game files. L37: a broken run's `STOP` abandons the next run whatever its setup — on a multi-setup
+  schedule whose configs should not stop one another, do not arm the stop watcher.
 - **While a batch runs.** L10: queue every edit on the build path. L26: an in-game date that falls more than two years between two
   readings of one run is a second campaign — stop and relaunch. L29: never `tail -F` a live harness log. L41: an in-game date unchanged
   for 15 minutes while the game runs is frozen — look for `Paused: true, PlayerID: 1`. L40: count the vanilla-path
@@ -878,11 +879,15 @@ repo's path loses the `Error:` line off its front.
 under 5% U\* at a mean hoard of 1.51) and the watcher read only its 1.164× GDP. Harmless there — that schedule's four configs were not
 meant to stop one another.
 
-**Status.** Live: `stop_watch.mjs` still passes `--arm` with the session name alone. The repair is one line: derive the setup from the
-completed run's folder name and pass `--arm ${NAME}:${setup}`. A running watcher keeps the code it loaded, so a fix needs it re-armed.
+**Status.** FIXED 2026-10-28: `stop_watch.mjs` takes the setup from the completed run's folder name (`runNNN_<setup>`) and passes
+`--arm ${NAME}:${setup}`. A watcher armed before the fix keeps the code it loaded; re-arm it. What stays: a broken run's `STOP` abandons
+the schedule's next run whatever its setup, so a multi-setup schedule whose configs should not stop one another is not armed at all.
 
-**Detector (owed, `Test-LmL37`).** Repo, gating a launch: a schedule with more than one setup is incompatible with the watcher's current
-invocation unless it declares it does not want per-config stopping. Session: `criteria.mjs failed` anywhere in `stop_watch.log`.
+**Detector (`Test-LmL37`).** Repo half (every build and batch gate): the watcher's criteria call must not pass the bare session name.
+Session half (`-Session`): `criteria.mjs failed` or `threw` in the session's `stop_watch.log` names each run judged on the GDP fallback.
+**Proven** 2026-10-28: with the bare `--arm', NAME` call restored the repo half fails; on `20260922_084038_b-gradient-4x3` the session half
+fails naming runs 3–5; with the fix the repo half passes. On that session the old call fails as the entry says, and the new call
+`--arm 20260922_084038_b-gradient-4x3:probe-sm-b152` reads run 3 as broken by runoff, the run the watcher missed.
 
 ### L38 — a save summary that keeps one country record per definition
 

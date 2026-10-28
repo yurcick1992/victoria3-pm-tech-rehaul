@@ -236,8 +236,10 @@ For a 2+1 test (§6.2), arm the run-level stop watcher right after launch:
   acts mid-run and removes the STOP file once the scheduler has exited.
 - **`-Session` takes the session name.** A path is normalised, and a session that does not exist is refused with exit 2.
   **Confirm `tools/testbed/sessions/<stamp>/stop_watch.log` exists** (~90 s after arming) — it is the only proof the watcher is on.
-- **Single-config schedules only.** On a schedule with several setups the watcher's register call is refused and it silently falls
-  back to the GDP rule for the rest of the batch (L37, detector owed).
+- **Each run is scored on its own setup** (taken from the run's folder name), so a schedule with several setups is read by the register
+  too (L37, repaired 2026-10-28). A broken run still drops `STOP`, which abandons the schedule's NEXT run whatever its setup: on a
+  multi-setup schedule whose configs should not stop one another, do not arm the watcher. `criteria.mjs failed` in `stop_watch.log`
+  means that run was judged on the GDP fallback; `preflight.ps1 -Session` flags it (L37).
 - A running watcher keeps the code it loaded: re-arm it after the register or the watcher changes.
 - Do not arm it on a fixed-n, full-run or long-sequence batch (§6.3).
 

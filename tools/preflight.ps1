@@ -1751,6 +1751,31 @@ function Test-LmL41 {
     else { Add-Result 'L41' $T 'PASS' "$checked run(s), no player pause" }
 }
 
+function Test-LmL37 {
+    <#
+      L37 - THE STOP WATCHER GOES BLIND TO THE REGISTER ON A MULTI-SETUP SCHEDULE (found 2026-09-22, 20260922_084038_b-gradient-4x3).
+
+      stop_watch.mjs scored each finished run with 'criteria.mjs --arm <session name>' and no setup; on a schedule with two setups
+      lib_runs refuses that by design, and the watcher fell back to the 1936 GDP rule, which catches a runoff by GDP only - a stall and
+      a capital-abundance runoff pass it. Repaired 2026-10-28: the setup comes from the finished run's folder name (runNNN_<setup>).
+
+      DETECTOR. Repo half (every build and batch gate): the watcher's criteria call must not pass the bare session name. Session half
+      (-Session): 'criteria.mjs failed' or 'criteria.mjs threw' in the session's stop_watch.log - the run was judged on the fallback.
+      Proven 2026-10-28: the bare call restored fails the repo half; the 2026-09-22 session fails the session half.
+    #>
+    $T = 'the stop watcher goes blind to the register on a multi-setup schedule'
+    $sw = Join-Path $Repo 'tools\testbed\stop_watch.mjs'
+    if (-not (Test-Path $sw)) { Add-Result 'L37' $T 'FAIL' "missing: $sw"; return }
+    $src = Get-Content -LiteralPath $sw -Raw
+    if ($src -match "'--arm',\s*NAME\s*,") { Add-Result 'L37' $T 'FAIL' "stop_watch.mjs calls criteria.mjs with the bare session name - pass `${NAME}:`${setup} (the run folder's setup), or a multi-setup schedule runs on the GDP fallback"; return }
+    if (-not $Session) { Add-Result 'L37' $T 'PASS' 'the watcher passes the run''s setup (the post-run half needs -Session)'; return }
+    $log = Join-Path $Session 'stop_watch.log'
+    if (-not (Test-Path $log)) { Add-Result 'L37' $T 'PASS' 'the watcher passes the run''s setup; no stop_watch.log in this session (not armed)'; return }
+    $hits = @(Select-String -LiteralPath $log -Pattern 'stop_watch: (run\d+_\S+): criteria\.mjs (failed|threw)' | ForEach-Object { $_.Matches[0].Groups[1].Value } | Select-Object -Unique)
+    if ($hits.Count) { Add-Result 'L37' $T 'FAIL' ("$($hits.Count) run(s) judged on the 1936 GDP fallback, not the register - read them with criteria.mjs by hand: " + ($hits -join ', ')) }
+    else { Add-Result 'L37' $T 'PASS' 'the watcher passes the run''s setup; every run in stop_watch.log was judged by the register' }
+}
+
 function Test-LmL43 {
     <#
       L43 - A SAVE SUMMARY READS A COUNTRY'S TREND RING BY POSITION, NOT BY ITS INDEX (found 2026-10-28, the price-band
@@ -1798,6 +1823,8 @@ $CHECKS = @(
     @{ Id = 'L42'; Artifact = $false; Fn = { Test-LmL42 } },
     # L41: a player pause in a run's mirrored dedicated_server.log (post-run, N/A without -Session; the live half is the waiter's FROZEN)
     @{ Id = 'L41'; Artifact = $false; Fn = { Test-LmL41 } },
+    # L37: the stop watcher passes each run's setup to criteria.mjs (repo), and with -Session no run fell back to the GDP rule
+    @{ Id = 'L37'; Artifact = $false; Fn = { Test-LmL37 } },
     # L40 half 2: Invalid Production Method lines in a run's mirrored error.log (post-run, N/A without -Session)
     @{ Id = 'L40'; Artifact = $false; Fn = { Test-LmL40 } },
     # L29's reader side: a session.log that lost its run lines to a reader holding it open (WARN only; post-run)

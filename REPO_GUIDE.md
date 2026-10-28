@@ -1141,7 +1141,8 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   median. Never mid-run; removes `STOP` after the scheduler exits.
   `launch_detached.ps1 -File 'tools\testbed\stop_watch.ps1' -ArgumentList '-Session','<session-name>','-Poll','30' -Hidden`.
   Status: current, 2+1 batches only. Traps: `-Session` is the name (a path is cut to its last segment; an unknown session exits 2); the
-  proof it is armed is `sessions/<stamp>/stop_watch.log` (~90 s); a running watcher keeps the code it loaded. Refs: §10.83.
+  proof it is armed is `sessions/<stamp>/stop_watch.log` (~90 s); a running watcher keeps the code it loaded. Each run is scored on its
+  own setup (`--arm <session>:<setup>`, the setup from the run's folder name; L37, repaired 2026-10-28). Refs: §10.83.
 - **`NO_NEW_RUNS`, `STOP`, `no_new_runs_at.ps1`** — flag files the scheduler reads (gitignored): `NO_NEW_RUNS` = `[s]` (the running game
   finishes, nothing new starts), `STOP` = `[x]` (the running game is closed). `no_new_runs_at.ps1 -At 'yyyy-MM-dd HH:mm'` (detached,
   `-Hidden`) drops `NO_NEW_RUNS` at a local time, logging to `no_new_runs_at.log`. Traps: while `NO_NEW_RUNS` exists every schedule
@@ -1319,8 +1320,8 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   `VANILLA_REF` = the summer n=18 (`20260821_131149` + `20260823_113218`) + the October n=6 (`20261020_121619` + `20261020_222433`) + the
   alternating batch's n=16 (`20261021_224949` + `20261023_161802`, setup `vanilla`) = n=40 since 2026-10-26, the default for every reading but
   the wall clock; `VANILLA_WALL_REF` = the alternating batch's vanilla (play time is not comparable across months, F248, nor fully across sessions,
-  F249). Still on the summer n=16 on purpose: `measure_wage_share`, `era0_solvency`, `stop_watch`'s
-  fallback, `ladder_headlines`, `trade_vs_gdp`, `va_composition`, the corpus tools.
+  F249). Since 2026-10-28 every reader is on it, the last ones that held the summer n=16 included (`measure_wage_share`, `era0_solvency`,
+  `stop_watch`'s fallback, `ladder_headlines`, `trade_vs_gdp`, `va_composition`, the corpus tools).
 - **`ledger/lib_markets.mjs`** — the shortlist, the majors and the price-tracked markets: `POOL` (GBR USA FRA NET BEL UNL PRU NGF GER),
   `MEMBER_FAMILY` / `resolveMembers()` (one row per state; the German one PRU → NGF → GER, UNL its own row), `MARKET_NAMES`,
   `MARKET_FAMILY` / `seriesOf()` / `groupBySeries()` (a state's market is one series across tag changes, the Commune included),

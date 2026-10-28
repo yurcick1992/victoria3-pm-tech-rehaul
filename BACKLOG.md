@@ -186,7 +186,7 @@ Closed:
 ## G. Testbed instrument (TESTBED_LANDMINES)
 
 - **OPEN (the observer half only)** · A FROZEN IN-GAME CLOCK READS AS A LIVE RUN (L41): the waiter's FROZEN (exit 5) and the post-run `Test-LmL41` are built and proven (2026-10-28); still owed: the observer recovering by itself (same in-game date for N min ⇒ kill and resume through the feeder) · run_observer.ps1, TESTBED_LANDMINES L41
-- **OPEN** · L37 the stop watcher goes blind on a multi-setup schedule
+- **DONE 2026-10-28** · L37 the stop watcher goes blind on a multi-setup schedule: each run scored on its own setup; `Test-LmL37` (repo + session halves) built and proven · stop_watch.mjs, TESTBED_LANDMINES L37
 - **OPEN** · detectors owed: L19 orphaned game process, L23 raw-counted repeated log lines, L11 wrong/nonexistent tag, L9 per-run error windows
 - **OPEN** · live proofs owed: quarantined-save resume hooks, L29 scheduler abort (L34’s fresh-start restart was proved live 2026-10-26 by rest20 run 20 of the alternating batch, and exposed L42)
 - **OPEN** · L30: a resume mode after a machine reboot (none exists; over a multi-day batch the user pauses Windows Update or accepts the risk)

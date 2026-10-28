@@ -707,7 +707,7 @@ constraint (CLAUDE.md §3.2).
    to 1.1, a 1.0 known issue (BACKLOG B). F178 §9: in textile, furniture and tooling 28–44% of the rest of the world's old rungs sit in markets with no trade capacity.
 
 Instrument notes: size a step against the seed spread, not the hoped-for effect (F158: within-config world GDP spread 0.37–0.50); the reading
-gate applies (§10.83.8); landmine L37 (the stop watcher blind on multi-config schedules) still owes its detector.
+gate applies (§10.83.8); landmine L37 (the stop watcher blind on multi-config schedules) was repaired with its detector on 2026-10-28.
 
 ---
 

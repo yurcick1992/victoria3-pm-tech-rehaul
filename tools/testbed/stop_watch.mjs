@@ -50,8 +50,9 @@ const tick = () => {
     // THE REGISTER: is this run broken? (criteria.mjs reads the session; its JSON names each run's `broken` side)
     let broken = null, viaRegister = false;
     try {
-      const out = join(ROOT, d, 'criteria.json');
-      const r = spawnSync(process.execPath, [join(REPO, 'tools/testbed/ledger/criteria.mjs'), '--arm', NAME, '--quiet', '--json', out], { cwd: REPO, encoding: 'utf8', timeout: 600000 });
+      // L37: the run's own setup, from its folder name (runNNN_<setup>) — on a multi-setup schedule usableRuns refuses a bare session name
+      const out = join(ROOT, d, 'criteria.json'), setup = d.replace(/^run\d+_/, '');
+      const r = spawnSync(process.execPath, [join(REPO, 'tools/testbed/ledger/criteria.mjs'), '--arm', `${NAME}:${setup}`, '--quiet', '--json', out], { cwd: REPO, encoding: 'utf8', timeout: 600000 });
       if (r.status === 0 && existsSync(out)) { const j = JSON.parse(readFileSync(out, 'utf8')); const run = ((j.arms[0] && j.arms[0].runs) || []).find(x => x.rel.endsWith('/' + d)); if (run) { viaRegister = true; broken = run.broken; if (broken) log(`${d}: THE REGISTER — BROKEN BY ${String(broken).toUpperCase()}: ${run.hard.join(' | ')}`); else log(`${d}: the register — intact (${run.hard.length} hard, ${run.soft.length} soft line(s))`); } }
       else log(`${d}: criteria.mjs failed (status ${r.status}): ${(r.stderr || '').slice(-300)} — falling back to the 1936 GDP rule`);
     } catch (e) { log(`${d}: criteria.mjs threw ${e.message} — falling back to the 1936 GDP rule`); }
