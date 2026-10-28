@@ -326,33 +326,47 @@ if ($ControlOnly -or $Overlay) {
     }
     if ($meta.PSObject.Properties.Name -contains 'replace_paths') { $meta.PSObject.Properties.Remove('replace_paths') }
     [System.IO.File]::WriteAllText($dstMeta, ($meta | ConvertTo-Json -Depth 12), (New-Object System.Text.UTF8Encoding($false)))
-    # WriteText/$bom are defined further down the script, so write directly here.
-    # Game content must be UTF-8 WITH BOM (the lexer warns otherwise).
-    $telDir = Join-Path $modAbs 'common\on_actions'
-    New-Item -ItemType Directory -Force -Path $telDir | Out-Null
-    [System.IO.File]::WriteAllText((Join-Path $telDir 'zzz_v3tb_telemetry.txt'), $telemetryText, (New-Object System.Text.UTF8Encoding($true)))
-    $svDir = Join-Path $modAbs 'common\script_values'
-    New-Item -ItemType Directory -Force -Path $svDir | Out-Null
-    [System.IO.File]::WriteAllText((Join-Path $svDir 'zzz_v3tb_values.txt'), $telemetryValues, (New-Object System.Text.UTF8Encoding($true)))
-    if ($telemetryProbeValues) { [System.IO.File]::WriteAllText((Join-Path $svDir 'zzz_v3tb_probe_values.txt'), $telemetryProbeValues, (New-Object System.Text.UTF8Encoding($true))) }
-    if ($telemetryEvents) {
-        $evDir = Join-Path $modAbs 'events'
-        New-Item -ItemType Directory -Force -Path $evDir | Out-Null
-        [System.IO.File]::WriteAllText((Join-Path $evDir 'zzz_v3tb_probe.txt'), $telemetryEvents, (New-Object System.Text.UTF8Encoding($true)))
-    }
-    # THE OVERLAY, and only for -Overlay. A control never reaches this with content: the guard at the
-    # top of this block throws first, so the absence is enforced rather than merely intended.
-    # ⚠ ONE DECLARED THING ONLY. If a second overlay kind is ever added, it must be named in the
-    # config and refused when not on the allow-list - an arm that quietly accumulates content is the
-    # failure this whole split exists to prevent, and it would be just as bad under a new name.
-    $pnEmitted = $false
-    if ($Overlay) {
-        Write-PopNeedWeights $cfg $Game $modAbs $genHeader $modRel
-        $pnEmitted = Test-Path -LiteralPath (Join-Path $modAbs 'common\pop_needs\00_pop_needs.txt')
-        if (-not $pnEmitted) {
-            throw "-Overlay was given $(Split-Path $cfgPath -Leaf), which produced no overlay at all. An overlay arm that carries nothing is a control wearing the wrong name - pass -ControlOnly, or give it a config with pop_need_weight_mult."
+    # ⭐ THE ARM'S CONTENT IS DECLARED, AND NOTHING ELSE CAN LAND (2026-10-28, TESTBED_OPERATIONS §2.2). Each content PART names
+    # its writer and every path it may produce; each ARM names the parts it opts into. The branch runs exactly the arm's parts,
+    # then requires every file in the built folder to belong to one of them (or to .metadata). An emitter added to this branch
+    # without a declared part, or a part writing outside its paths, FAILS THE BUILD instead of quietly widening the arm - the
+    # purity of a control used to rest on this branch being a straight line that exits before the content emitters run.
+    # ⚠ A NEW OVERLAY KIND is a new part plus the arm's opt-in, never a write slipped into an existing part.
+    # Game content must be UTF-8 WITH BOM (the lexer warns otherwise); WriteText/$bom are defined further down the script.
+    $utf8Bom = New-Object System.Text.UTF8Encoding($true)
+    $putFile = { param($rel, $text) $p = Join-Path $modAbs $rel; New-Item -ItemType Directory -Force -Path (Split-Path $p -Parent) | Out-Null; [System.IO.File]::WriteAllText($p, $text, $utf8Bom) }
+    $ARM_PARTS = [ordered]@{
+        telemetry = @{
+            paths = @('common/on_actions/zzz_v3tb_telemetry.txt', 'common/script_values/zzz_v3tb_values.txt',
+                      'common/script_values/zzz_v3tb_probe_values.txt', 'events/zzz_v3tb_probe.txt')
+            emit  = {
+                & $putFile 'common\on_actions\zzz_v3tb_telemetry.txt' $telemetryText
+                & $putFile 'common\script_values\zzz_v3tb_values.txt' $telemetryValues
+                if ($telemetryProbeValues) { & $putFile 'common\script_values\zzz_v3tb_probe_values.txt' $telemetryProbeValues }
+                if ($telemetryEvents) { & $putFile 'events\zzz_v3tb_probe.txt' $telemetryEvents }
+            }
+        }
+        # the pop-need weight rescaling; a control never reaches it (the config guard above throws first, and the arm does not opt in)
+        pop_needs = @{
+            paths = @('common/pop_needs/00_pop_needs.txt')
+            emit  = {
+                Write-PopNeedWeights $cfg $Game $modAbs $genHeader $modRel
+                if (-not (Test-Path -LiteralPath (Join-Path $modAbs 'common\pop_needs\00_pop_needs.txt'))) {
+                    throw "-Overlay was given $(Split-Path $cfgPath -Leaf), which produced no overlay at all. An overlay arm that carries nothing is a control wearing the wrong name - pass -ControlOnly, or give it a config with pop_need_weight_mult."
+                }
+            }
         }
     }
+    $ARMS = @{ '-ControlOnly' = @('telemetry'); '-Overlay' = @('telemetry', 'pop_needs') }
+    $armParts = $ARMS[$armFlag]
+    foreach ($part in $armParts) { & $ARM_PARTS[$part].emit }
+    $allowed = @{}; foreach ($part in $armParts) { foreach ($r in $ARM_PARTS[$part].paths) { $allowed[$r] = $part } }
+    $stray = @(Get-ChildItem -LiteralPath $modAbs -Recurse -File | ForEach-Object { $_.FullName.Substring($modAbs.Length + 1).Replace('\', '/') } |
+               Where-Object { $_ -notlike '.metadata/*' -and -not $allowed.ContainsKey($_) })
+    if ($stray.Count) {
+        throw "$armFlag wrote file(s) outside its declared parts ($($armParts -join ', ')): $($stray -join ', '). Declare a part in `$ARM_PARTS and opt the arm into it, or remove the write."
+    }
+    $pnEmitted = $armParts -contains 'pop_needs'
     Write-Output ""
     if ($Overlay) {
         Write-Output "OVERLAY BUILD (NOT a control): vanilla + telemetry + a declared overlay -> $modRel"

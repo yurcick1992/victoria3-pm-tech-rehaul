@@ -134,6 +134,13 @@ identically.
 **The control rule is absolute: the only thing a control may vary is its telemetry.** Not one gameplay file, not one field. An arm
 that needs any gameplay change is an overlay or a config and must not be built by, named after or reported as a control.
 
+**The control and overlay arms' content is declared, so their purity is structural** (since 2026-10-28). In `build.ps1`'s early branch,
+`$ARM_PARTS` names each content part (`telemetry`, `pop_needs`) with its writer and every path it may produce, and `$ARMS` names the parts
+each arm opts into (control: `telemetry`; overlay: `telemetry` + `pop_needs`). The branch runs exactly those parts, then fails the build if
+any file outside `.metadata/` belongs to none of them. A new overlay kind is a new part plus the arm's opt-in. Proven 2026-10-28: a stray
+write added to the telemetry part failed the control build by name. Before this the purity rested on the branch being a straight line
+that exits before the content emitters run; L7 still checks the emitted control on top.
+
 **The arm is recorded off the built mod.** Each run's `build_state.json` carries `deterministic.arm` (`control` / `overlay+<what>`
 / `config`), `deviates_from_vanilla` (every gameplay directory the built mod carries), `built_from_config` and `config_sha256`, plus
 the git state, game version, harness arguments and the harness script's hash, plus the free-text `agentic` block (a stopgap for
