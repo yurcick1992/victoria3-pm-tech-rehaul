@@ -88,7 +88,6 @@ Closed:
 - **DEFERRED to mod 1.1 as two 1.0 KNOWN ISSUES (user, 2026-10-28)** · Britain fully employed with no relation to B (KNOWN_ISSUES: near-full employment in 10 of 16 campaigns); which lever converges prices between markets (trade capacity?) — KNOWN_ISSUES: competition through trade is weak (F249 §4a; F178 §9: 28–44% of the rest of the world's old textile, furniture and tooling rungs in markets with no trade capacity) · ROADMAP step 11 (3)(4)
 - **RULING, for a session of its own before 1.0 (user, 2026-10-28: likely that evening)** · the register: O_shed in place of T0; the four loss fixes; pool U* aim contradicting pool W; "GDP per capita" vs total; the reading-gate cut · §10.83.3–.8, §10.85, F136
 - **DEFERRED to an unspecified later version (user, 2026-10-28)** · P9: the tech tree should be prioritised, not completed (grant fraction, a stage, the ahead-of-time define, depth) · ROADMAP P9, F138
-- **PROPOSED** · a per-good price system *(verify — may predate the four-rung canon)* · BALANCE_FRAMEWORK
 - **DEFECT** · an empty pop need should buy its default good (model only, not the mod) · REPO_GUIDE §5, F44
 - **RESEARCH** · the need-substitution rule's real form; prestige share local vs market; USA strata/slave derivations disagree · REPO_GUIDE §5
 - **RESEARCH** · the urban-centre electricity override's economic effect is unmeasured · BALANCE_FRAMEWORK §10.43.0
@@ -96,6 +95,7 @@ Closed:
 - **ACCEPTED** · P5 tier-3 output enormous — rides on P1 · ROADMAP P5
 
 Closed:
+- Closed 2026-10-28 (verified moot) · a per-good price system: the six-rung solver's granular price system (F85, §10.65.5), closed with that solver (§10.80); nothing on the four-rung canon proposes one · F85
 - Closed 2026-10-28 by the user · re-basing `wage_pct` in `make_ab_config`'s target_be and `lint_solvency` (L18): not done; every use now carries a comment that it is a very simplistic convention, not a realistic wage factor · §10.87, CLAUDE.md §2.10
 - Closed 2026-10-28 by the user · the `--out-ladder` flag: no open question needs it · ROADMAP step 10
 - Closed 2026-10-28 by the user · the graded tier-0 penalty's century (`--in0-stage 1.40,1.20,1.10 --in0-supplier 0.5`, only ever 21 months): overtaken by the t1 anchor and the crafts (§10.91.5); the generator's refusal of `--anchor-for` with `--in0-stage` stays · ROADMAP step 10, F147
