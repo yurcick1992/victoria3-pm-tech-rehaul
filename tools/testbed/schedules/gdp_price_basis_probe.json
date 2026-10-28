@@ -1,0 +1,40 @@
+{
+  "schedule_version": 1,
+  "label": "gdp-price-basis-probe",
+  "_why": "F45 / F178 §9.4 (BACKLOG B): is the displayed GDP 52 x value added at BASE prices or at MARKET prices? The F249 saves cannot settle it (2026-10-28): world GDP matches base-priced value added to ~3% with no fitted scale, but its run-to-run residue follows the realised output price (elasticity ~1.5 within a year), and per country no combination of base- and market-priced flows fits better than ~10%. The user, 2026-10-28: 'Can't you use existing data? If no, go ahead with the probe.' A perturbation: narrow vanilla's price band (NEconomy.PRICE_RANGE 0.75 -> 0.10) so every price sits within 10% of base, and continue ONE kept save for three months in both arms. A continuation is deterministic (F241), so n=1 per arm; quantities start identical and move little in three months, and the reading is a RATIO measured inside each summary (gdp / 52 x base-priced value added), so it holds even where quantities drift.",
+  "_arms": {
+    "canon": "{kind: config, config: config/mod_config.json} - the canon jex-dam4s-rs-x25-m10ac-dpriv-wm99 (sha256 9a05d36da42c1511), today's build; + telemetry",
+    "pr10": "{kind: config, config: config/mod_config.pricerange10-probe.json} - the canon + game_defines.NEconomy.PRICE_RANGE 0.10, nothing else (field diff: game_defines.NEconomy.PRICE_RANGE + the _price_range_probe record); + telemetry"
+  },
+  "_comparison": "pr10 against canon at each monthly save (1936.2.1, 1936.3.1, 1936.4.1): world and per-country gdp / (52 x (va_out - va_in)) and gdp / (52 x (goods_sales - goods_cost)) from the save summaries; the tagged markets' prices (markets.tsv) prove the band took (every price within 0.90-1.10 of base in pr10).",
+  "_predictions": {
+    "if GDP is base-priced": "world gdp / base-priced VA the same in both arms (~1.0) at every save; the market-priced ledger moves toward base in pr10 (goods_sales / va_out from ~0.85 toward ~1.0) without GDP following",
+    "if GDP is market-priced": "pr10's world gdp / base-priced VA moves with its prices: the owner markets' market/base VA index sits at ~0.81-0.86 in the canon (F249 telemetry), so GDP would rise ~15-20% relative to base-priced VA within the first month",
+    "the define": "PRICE_RANGE is a live define (not in the dead list, F241); if the markets' prices in pr10 are not inside 0.90-1.10 the probe is void, not a result"
+  },
+  "_stop_rule": "none: a fixed n=2, each run plays its three months.",
+  "_cost": "2 runs x 3 in-game months (1936.1.1 -> 1936.4.1) from a late save, about 5-8 min each with monthly autosaves",
+  "_caveats": [
+    "The save is F249's run002_canon of 20261023_161802_alt-vanilla-canon-rest20 at 1936.1.1, built from the measured canon 728f2c7f84e6f467 with the emitters of 2026-10-23; both arms load it with today's build (the urban-centre entries' live figure, the carrier entry, the electricity method gate). Identical in both arms, so the A/B holds.",
+    "The harness copies the save; the kept original stays in the session folder.",
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30). Not a 2+1 batch: no stop watcher."
+  ],
+  "defaults": {
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "market_goods_scoped", "events"],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 45
+  },
+  "setups": {
+    "canon": { "kind": "config", "config": "config/mod_config.json" },
+    "pr10":  { "kind": "config", "config": "config/mod_config.pricerange10-probe.json" }
+  },
+  "runs": [
+    { "setup": "canon", "until": "1936.4.1", "parent": "F249 20261023_161802 run002_canon (1936.1.1)",
+      "continue_save": "tools/testbed/sessions/20261023_161802_alt-vanilla-canon-rest20/run002_canon/saves/0101_20261023_221832_autosave.v3",
+      "continue_expect_after": "1935.12.1", "dump_dates": ["1936.2.1", "1936.3.1"] },
+    { "setup": "pr10", "until": "1936.4.1", "parent": "F249 20261023_161802 run002_canon (1936.1.1)",
+      "continue_save": "tools/testbed/sessions/20261023_161802_alt-vanilla-canon-rest20/run002_canon/saves/0101_20261023_221832_autosave.v3",
+      "continue_expect_after": "1935.12.1", "dump_dates": ["1936.2.1", "1936.3.1"] }
+  ]
+}

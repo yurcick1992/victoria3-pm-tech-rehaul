@@ -402,6 +402,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F254 | The merged methods are staffed on the 1.0 canon (79-98% when switched); hosts left on the older method are the ones that empty; F182's two-thirds-staffed chemical plants are gone | canon | reading | here |
 | F255 | A t3 level takes 60-85 weeks to build because vanilla caps each construction at ~35-40 points a week, not because the queue is shared; only Britain's and the USA's 1935 private queues are congested (~3.5-4 years) | canon | reading | here |
 | F256 | Germany's oil economy waits for a built buyer on the 1.0 canon too: first staffed oil rig median 1920 (vanilla ~1905), none by 1935 in 5 of 17 runs (vanilla 1 of 17); 1935 staffed levels 25.5 against 75.5 | canon | reading | here |
+| F257 | The displayed GDP is base-priced value added: holding every price within 10% of base raised market-priced value added 55% and world GDP 6% (base-priced +0.5-1.5%); ~0.11-0.13 of a market price deviation passes through; countries move differently | canon | probe | here |
 
 ---
 
@@ -1674,7 +1675,9 @@ goods used as inputs** — value added, on the production side only. Annual GDP 
 ⚠⚠ **QUALIFIED 2026-09-30 (F178 §9.4): the PRICE BASIS is not established.** Vanilla's prices sit near base, so this data cannot tell
 market-priced from base-priced value added. Where they differ, the displayed GDP tracks 52 × BASE-priced value added (0.94–1.08 over a
 century, vanilla and the mod), and the buildings' own market ledgers (goods sales − goods cost) reach only ~0.63–0.70 of it, in vanilla too.
-"Value added" stands; "at market prices" does not.
+"Value added" stands; "at market prices" does not. ⭐ **SETTLED 2026-10-28 by a probe (F257): BASE prices, for world GDP** — holding
+every price within 10% of base raised market-priced value added 55% and world GDP 6%; about a tenth of a market price deviation passes
+through. Per-country GDP is not its own buildings' value added at either price (F257).
 
 **Evidence.** The `gdp` series a savegame persists, read beside the *same* saves' building
 `input_goods` / `output_goods` (so the two sides come from one gamestate, not from two instruments):
@@ -21462,3 +21465,49 @@ later than vanilla's in the median, and in five runs of seventeen not at all bef
   on offer) was not re-read here; nor German oil imports, which may cover part of the demand.
 - **Not the run count of usable runs.** Every run folder of each arm was read (17 each); F249's usable canon count is 16.
 - **Not what it costs Germany** in GDP or in the register's German term.
+
+## F257 — THE DISPLAYED GDP IS BASE-PRICED VALUE ADDED: HOLDING EVERY PRICE WITHIN 10% OF BASE RAISED MARKET-PRICED VALUE ADDED BY 55% AND WORLD GDP BY ONLY 6%, SO ABOUT A TENTH OF A MARKET PRICE DEVIATION PASSES THROUGH (2026-10-28; session `20261028_104518_gdp-price-basis-probe`, the canon against the canon + `NEconomy.PRICE_RANGE` 0.10, n=1 per arm, 1936.1.1 → 1936.4.1 continued from F249's `20261023_161802_alt-vanilla-canon-rest20/run002_canon` save; and a reading of F249's saves)
+
+**Why.** F45 settled that GDP is 52 × weekly value added but left its PRICE BASIS open (F178 §9.4: vanilla's prices sit near base, so the data
+could not tell market-priced from base-priced value added). BACKLOG B; the user, 2026-10-28: *"Can't you use existing data? If no, go ahead
+with the probe."*
+
+**The existing data could not settle it** (F249's sessions, both arms; scratch readers). Here B = 52 × Σ(`va_out` − `va_in`), base-priced value
+added; M = 52 × Σ(`goods_sales` − `goods_cost`), the buildings' own market-priced ledger.
+- **World:** GDP ÷ B is 1.007 (vanilla) and 0.997 (canon), p5–p95 0.94–1.05 over 327 run-years each, while GDP ÷ M runs 1.43–1.64. But within one
+  year across runs, the residue of GDP ÷ B follows the realised output price (`goods_sales ÷ va_out`): elasticity 1.5, r 0.76.
+- **Per country:** no combination of the four aggregates fits better than ~10% (residual sd of log 0.10–0.15 over 3,277 country-years).
+  Pricing the eleven instrumented owners' goods flows at their own markets' telemetry prices fitted worse than base (sd of log 0.29–0.37
+  against 0.24–0.27).
+
+**The probe.** A continuation is deterministic (F241), so one kept save was continued for three months in two arms that differ only in
+vanilla's price band: `PRICE_RANGE` 0.75 → 0.10, every price held within 10% of base. Quantities start identical (the 1936.1.1 summaries match
+to the pound) and barely move in three months, and the reading is a ratio inside each summary. **The band took:** pr10's tracked market prices
+sit at 0.900–1.100 of base at both dumps, the canon's at 0.250–1.750 (median 0.98, p10 0.60, p90 1.32).
+
+| world, £bn a year | canon 1936.2.1 | pr10 1936.2.1 | change | canon 1936.3.1 | pr10 1936.3.1 | change |
+|---|---|---|---|---|---|---|
+| displayed GDP | 4.413 | 4.688 | +6.2% | 4.357 | 4.629 | +6.2% |
+| base-priced value added (B) | 4.557 | 4.582 | +0.5% | 4.577 | 4.646 | +1.5% |
+| market-priced value added (M) | 2.780 | 4.310 | +55.0% | 2.782 | 4.332 | +55.7% |
+| GDP ÷ B | 0.969 | 1.023 | +5.6% | 0.952 | 0.997 | +4.7% |
+| `goods_sales ÷ va_out` | 0.829 | 0.978 | | 0.829 | 0.976 | |
+
+The pass-through: Δ log(GDP ÷ B) ÷ Δ log(M ÷ B) = 0.055 ÷ 0.433 = **0.13** (February) and 0.046 ÷ 0.428 = **0.11** (March). Had GDP been
+market-priced value added it would have risen ~55%. It is not a lag: the ratio is the same at one month and at two.
+
+**Countries move differently.** GDP ÷ B from the canon to pr10 at 1936.2.1 / 1936.3.1: Japan 0.85 → 1.12 / 0.82 → 1.11 (+32–35%), Russia
++2–5%, Germany +1–3%, Britain −1%, France +1% / −6%, the USA −4% / −9%. Britain's GDP is 1.6–2.0× its own buildings' base-priced value added in
+both arms. A country's GDP is therefore not its own buildings' value added at either price; how the engine attributes GDP to countries
+was not read.
+
+**What it says.** For world GDP, the working rule of CLAUDE.md §5.6 stands and is now measured: the displayed figure is value added at BASE
+prices, with about a tenth of the market-price deviation passing through. The mod's lower prices move world GDP little, and a world-GDP
+comparison against vanilla is close to a comparison of base-priced quantities.
+
+**What it does NOT say.**
+- **Not the engine's formula.** A 0.11–0.13 pass-through fits some market-priced component, such as one sector or one side of the ledger,
+  but which one was not identified.
+- **Not per-country GDP.** The per-country response ranges from −9% to +35% and is unexplained; the register's per-country readings are
+  shares and levels of population, not GDP ratios, but any per-country GDP comparison should be read with this in mind.
+- **Not a fresh game or a longer span.** Three months from one 1936 save, inside the canon.
