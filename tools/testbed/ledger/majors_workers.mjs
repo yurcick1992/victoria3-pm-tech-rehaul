@@ -18,7 +18,7 @@ import { usableRuns, reportDropped, VANILLA_REF } from './lib_runs.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SES = join(HERE, '..', 'sessions');
 const argv = process.argv.slice(2);
-const arms = []; let van = VANILLA_REF, YEARS = [1935], FAIL = 1.0, AIM = 0.8, MEMBERS = true;
+const arms = []; let van = VANILLA_REF + ':vanilla', YEARS = [1935], FAIL = 1.0, AIM = 0.8, MEMBERS = true;
 for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--arm') arms.push(argv[++i]);
   else if (argv[i] === '--van') van = argv[++i];

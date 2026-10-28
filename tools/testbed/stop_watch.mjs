@@ -11,6 +11,7 @@ import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { usableRuns, VANILLA_REF } from './ledger/lib_runs.mjs';
 const REPO = fileURLToPath(new URL('../../', import.meta.url));   // this file sits in tools/testbed/, so the repo root is two levels up
 const A = process.argv.slice(2); const arg = (n, d) => { const i = A.indexOf(n); return i >= 0 && A[i + 1] ? A[i + 1] : d; };
 const SESSION = A[0]; const THRESHOLD = +arg('--threshold', '1.3'); const POLL = +arg('--poll', '60') * 1000;
@@ -32,7 +33,8 @@ const log = m => { const line = `[${new Date().toISOString().slice(11, 19)}] sto
 function gdpAt(run, yr) { const dir = join(run, 'save_summaries'); if (!existsSync(dir)) return null; for (const f of readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort()) { let j; try { j = JSON.parse(gunzipSync(readFileSync(join(dir, f)))); } catch { continue; } if (((j.provenance && j.provenance.date) || '').startsWith(yr + '.')) return j.world.gdp; } return null; }
 const med = a => { const s = [...a].sort((x, y) => x - y); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 const van = [];
-for (const s of ['20260821_131149_vanilla-baseline-n16', '20260823_113218_vanilla-baseline-extra-n2']) for (const d of readdirSync(join(SES, s)).filter(d => /^run\d+_vanilla$/.test(d))) { const g = gdpAt(join(SES, s, d), '1936'); if (g) van.push(g); }
+// the vanilla reference's usable vanilla runs (lib_runs VANILLA_REF, n=40 since 2026-10-28; the summer n=18 before)
+for (const rel of usableRuns(SES, VANILLA_REF, 'vanilla').runs) { const g = gdpAt(join(SES, rel), '1936'); if (g) van.push(g); }
 const VM = med(van);
 log(`armed on ${NAME}: threshold ${THRESHOLD}× vanilla's 1936 median £${Math.round(VM / 1e6).toLocaleString('en-US')}M (n=${van.length}); poll ${POLL / 1000}s`);
 const seen = new Set();

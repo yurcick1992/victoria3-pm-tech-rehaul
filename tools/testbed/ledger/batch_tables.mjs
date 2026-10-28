@@ -58,7 +58,7 @@ const runsOf = spec => { // "sess[,sess]:setup" -> [sess/run...], usable only, m
   return out;
 };
 const armRuns = runsOf(ARM).filter(r => !EXCL.has(r)), armStalls = runsOf(ARM).filter(r => EXCL.has(r));
-const nbRuns = runsOf(NB), vanRuns = usableRuns(SES, VAN).runs;
+const nbRuns = runsOf(NB), vanRuns = usableRuns(SES, VAN, 'vanilla').runs;   // the reference holds two-arm sessions (the alternating batch): read its vanilla arm
 console.log(`BATCH TABLES — arm ${ARM}: ${armRuns.length} usable run(s)${armStalls.length ? ` + ${armStalls.length} excluded by --exclude (${armStalls.map(r => r.split('/')[1]).join(', ')})` : ''} · nb ${NB || '—'}: ${nbRuns.length} · van ${VAN}: ${vanRuns.length}`);
 
 // ---- summaries ----

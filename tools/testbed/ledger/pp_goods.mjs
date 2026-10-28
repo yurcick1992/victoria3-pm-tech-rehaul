@@ -26,7 +26,7 @@ function read(sess, setup) {
 }
 if (!all('--arm').length) { console.error('usage: pp_goods.mjs --arm label:session[:setup] [--markets a,b]'); process.exit(1); }
 const [, aSess, aSetup] = all('--arm')[0].split(':');
-const arm = read(aSess, aSetup); const van = read(VANILLA_REF, null);
+const arm = read(aSess, aSetup); const van = read(VANILLA_REF, 'vanilla');   // the reference holds two-arm sessions (the alternating batch): read its vanilla arm
 console.log(`pop goods: arm (${arm.length} run) ÷ vanilla's median — price ÷ base in pounds · price ÷ normal wage (wage units) · the arm's normal wage ÷ vanilla's`);
 for (const y of YEARS) for (const m of MARKETS) {
   const vw = med(van.map(R => R[y]?.[m]?.wage)); const aw = med(arm.map(R => R[y]?.[m]?.wage));

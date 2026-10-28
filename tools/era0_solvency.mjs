@@ -11,8 +11,9 @@
 //   • Each industry's era-0 recipe is rebuilt exactly as `make_ab_config.mjs` builds it — vanilla's own FIRST main method, output
 //     untouched, inputs rescaled so their BASE-price value is I0 × lift, the mix kept, the same 0.1 rounding. lift = 1.0 IS vanilla's
 //     own recipe, which is why the vanilla column is like-for-like and not a different model.
-//   • Prices are the MEDIAN over the vanilla baseline's sixteen seeds, per market, per good, at a dump date (default 1836.2.1 — the
-//     anchor; `--date 1840.1.1` for the settled early game). Seven markets are instrumented.
+//   • Prices are the MEDIAN over the vanilla reference's usable seeds (lib_runs VANILLA_REF, n=40 since 2026-10-28; the summer n=16
+//     before), per market, per good, at a dump date (default 1836.2.1 — the anchor; `--date 1840.1.1` for the settled early game).
+//     Seven markets were instrumented in the summer runs, eleven tags since; a market only some runs carry has a smaller n.
 //   • ⭐ THE WAGE IS THE ECONOMY'S AND THE DECADE'S (user-ruled 2026-09-20): the market leader's own NORMAL WAGE RATE at this date,
 //     median over the vanilla seeds (config/measured_base_wages.json), × the measured **1.19×** premium — through
 //     tools/lib_wage_model.mjs. It was a seven-entry hardcoded table derived from F92's identity, which F150 showed to be a
@@ -43,13 +44,14 @@ import { fileURLToPath } from 'node:url';
 import { readVanilla } from './lib_vanilla_ladder.mjs';
 import { tierEmployment, wageUnits, economyWage, PROFIT_WAGE_SHARE } from './lib_wage_model.mjs';
 import { MARKET_NAMES } from './testbed/ledger/lib_markets.mjs';
+import { VANILLA_REF, usableRuns } from './testbed/ledger/lib_runs.mjs';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const argOf = (k, d) => { const i = process.argv.indexOf(k); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
 const LIFTS = argOf('--lifts', '1.0,1.2,1.4,1.6').split(',').filter(Boolean).map(Number);
 const LEVELS = argOf('--levels', '-0.10,-0.20,-0.30').split(',').filter(Boolean).map(Number);
 const DATE = argOf('--date', '1836.2.1');
-const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16');
+const VAN = argOf('--van', VANILLA_REF);   // a session or a comma list; only rows of setup "vanilla" are read (2026-10-28: was the summer n=16)
 const CFG = argOf('--config', 'config/mod_config.json');
 const DEAD = +argOf('--dead', '-0.20');
 const PSHARE = +argOf('--profit-wage-share', PROFIT_WAGE_SHARE);
@@ -97,7 +99,10 @@ const recipeAt = (i, lift) => { const V = i.I0 * lift, inp = {};
 const levelLift = (i, m) => i.O0 * (1 - i.wp) / (i.I0 * (1 + m));
 
 // ---- realised prices: the median over the vanilla baseline's seeds
-const rows = readFileSync(join(REPO, 'tools/testbed/sessions', VAN, 'markets_all.tsv'), 'utf8').split(/\r?\n/).slice(1).filter(Boolean).map(l => l.split('\t'));
+// a two-arm session (the alternating batch) carries both arms in one file: keep the vanilla rows of USABLE runs only (lib_runs, L17)
+const USABLE = new Set(usableRuns(join(REPO, 'tools/testbed/sessions'), VAN, 'vanilla').runs.map(rel => { const [s, d] = rel.split('/'); return s + '|' + parseInt(d.slice(3), 10); }));
+const rows = VAN.split(',').map(s => s.trim()).filter(Boolean).flatMap(s => readFileSync(join(REPO, 'tools/testbed/sessions', s, 'markets_all.tsv'), 'utf8')
+  .split(/\r?\n/).slice(1).filter(Boolean).map(l => [s, ...l.split('\t')])).filter(r => r[2] === 'vanilla' && USABLE.has(r[0] + '|' + +r[1])).map(r => r.slice(1));
 const acc = {};
 for (const r of rows) { if (r[2] !== DATE) continue; const mk = r[3], g = r[5];
   ((acc[mk] ||= {})[g] ||= { p: [], buy: [], sell: [], prod: [] });

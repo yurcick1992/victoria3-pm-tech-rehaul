@@ -3,6 +3,8 @@
 // subject at 1900 goes with 7/67 stuck runs, India gone with 6/78. Reads the save summaries directly (~2 min).
 //   node tools/testbed/ledger/stuck_britain_subjects.mjs [corpus_runs.jsonl]
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { VANILLA_REF } from './lib_runs.mjs';
+const VREF = new Set(VANILLA_REF.split(','));   // the vanilla reference's sessions (the summer n=16 alone before 2026-10-28; F165/F166 were read on it)
 import { gunzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 const SES = fileURLToPath(new URL('../sessions', import.meta.url));
@@ -10,7 +12,7 @@ const L = readFileSync(process.argv[2] || new URL('corpus_runs.jsonl', import.me
 const st = r => [1900, 1910, 1920, 1930, 1936].every(y => r.years[y].g.U >= 0.45);
 const want = [1860, 1880, 1890, 1900, 1910, 1920];
 const out = [];
-for (const r of L) { if (r.arm === 'vanilla' && !r.session.startsWith('20260821_131149')) continue;
+for (const r of L) { if (r.arm === 'vanilla' && !VREF.has(r.session)) continue;
   const sd = SES + '/' + r.rel + '/save_summaries'; if (!existsSync(sd)) continue; const rec = {};
   for (const fn of readdirSync(sd).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort()) { const y0 = null;
     const j = JSON.parse(gunzipSync(readFileSync(sd + '/' + fn))); const y = +j.provenance.date.split('.')[0]; if (!want.includes(y) || rec[y]) continue;

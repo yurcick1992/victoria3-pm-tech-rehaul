@@ -13,7 +13,7 @@ import { MEMBER_FAMILY } from './lib_markets.mjs';
 import { VANILLA_REF } from './lib_runs.mjs';
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'sessions');
 const args = process.argv.slice(2); const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
-const VAN = opt('--van', VANILLA_REF), YEAR = +opt('--year', 1885), GY = +opt('--gdp-year', 1845);
+const VAN = opt('--van', VANILLA_REF + ':vanilla'), YEAR = +opt('--year', 1885), GY = +opt('--gdp-year', 1845);
 const YEARS = opt('--years', '1845,1855,1865,1875,1885').split(',').map(Number), RUNS = args.includes('--runs');
 const TECH_LINE = +opt('--tech-line', 0.70), GDP_LINE = +opt('--gdp-line', 0.80);
 const ROWS = { ...MEMBER_FAMILY, SWE: ['SWE'] };

@@ -4,7 +4,7 @@
 // is legitimately NEGATIVE). Written 2026-08-24 to answer "what are these shares in vanilla?"
 // against the inverse solver's per-era table (BALANCE_FRAMEWORK §10.65.2) — FINDINGS F80.
 //
-//   node tools/testbed/ledger/va_composition.mjs                       # the pinned vanilla n=18 baseline
+//   node tools/testbed/ledger/va_composition.mjs                       # the vanilla reference (lib_runs VANILLA_REF)
 //   node tools/testbed/ledger/va_composition.mjs --session <stamp> …   # any session(s) with v6+ summaries
 //   node tools/testbed/ledger/va_composition.mjs --years 1837,1900     # default 1837,1870,1900,1920,1936
 //
@@ -18,7 +18,7 @@ import fs from 'node:fs';
 import zlib from 'node:zlib';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { usableRuns, reportDropped } from './lib_runs.mjs';
+import { usableRuns, reportDropped, VANILLA_REF } from './lib_runs.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SES = path.resolve(HERE, '..', 'sessions');
@@ -29,8 +29,9 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--session') argSessions.push(argv[++i]);
   else if (argv[i] === '--years') YEARS = argv[++i].split(',').map(Number);
 }
-const SESSIONS = argSessions.length ? argSessions
-  : ['20260821_131149_vanilla-baseline-n16', '20260823_113218_vanilla-baseline-extra-n2'];
+// default: the vanilla reference (lib_runs VANILLA_REF, n=40 since 2026-10-28; the summer n=18 before), its vanilla arm only
+const SESSIONS = argSessions.length ? argSessions : VANILLA_REF.split(',');
+const SETUP = argSessions.length ? '' : 'vanilla';
 const POOL7 = ['GBR', 'USA', 'FRA', 'NET', 'BEL', 'UNL', 'PRU', 'NGF', 'GER'];
 
 const TIERED = new Set(['building_food_industry', 'building_textile_mill', 'building_furniture_manufactory',
@@ -53,7 +54,7 @@ const SECTORS = ['extraction', 'agriculture', 'logging', 'subsistence', 'urban',
 const acc = {}, gdpChk = {}, tieredDetail = {};
 let nRuns = 0;
 for (const ses of SESSIONS) {
-  const { runs, dropped } = usableRuns(SES, ses);
+  const { runs, dropped } = usableRuns(SES, ses, SETUP);
   reportDropped(dropped);
   for (const run of runs) {
     const dir = path.join(SES, run, 'save_summaries');

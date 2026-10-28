@@ -5,7 +5,7 @@
 // Same GDP definition as first_run_decomp / the ledger's G4: the save's own world.gdp at 1935.1.1.
 //
 // usage: node tools/testbed/ledger/assess_gdp_gate.mjs --session <stamp> [--setup <name>] [--threshold 0.95] [--min-runs 30]
-//        [--van 20260821_131149_vanilla-baseline-n16] [--year 1935]
+//        [--van <session[,session]>, default lib_runs VANILLA_REF] [--year 1935]
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, dirname } from 'node:path';
@@ -27,7 +27,7 @@ const med = a => { const b = a.filter(Number.isFinite).sort((x, y) => x - y); re
 const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : NaN;
 const sd = a => { if (a.length < 2) return NaN; const m = mean(a); return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / (a.length - 1)); };
 
-const van = usableRuns(SES, VAN);
+const van = usableRuns(SES, VAN, 'vanilla');   // the reference holds two-arm sessions (the alternating batch): read its vanilla arm
 const vanGdp = med(van.runs.map(r => worldGdpAt(join(SES, r), YEAR)));
 // ONE PLAN, POSSIBLY SEVERAL SESSIONS (2026-09-07): the 60-run plan's first session died at run 12 (a harness race, BUGS_AND_FIXES
 // 2026-09-07) and continued in a second session, so the plan's "first 30 usable runs" straddle two folders. `--session a,b` pools

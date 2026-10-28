@@ -8,8 +8,10 @@
 // nearer the config count); levers that change together over the project's history are only partly separable.
 //   node tools/testbed/ledger/corpus_levers.mjs [corpus.jsonl] [lever,lever,…] [since-session-prefix]
 import { load, med, mean, sd, corr, ols, f } from './lib_corpus_stats.mjs';
+import { VANILLA_REF } from './lib_runs.mjs';
+const VREF = new Set(VANILLA_REF.split(','));   // the vanilla reference's sessions (the summer n=16 alone before 2026-10-28; F165/F166 were read on it)
 const C = load(process.argv[2] || new URL('corpus_runs.jsonl', import.meta.url));
-const van = C.filter(r => r.arm === 'vanilla' && r.session.startsWith('20260821_131149'));
+const van = C.filter(r => r.arm === 'vanilla' && VREF.has(r.session));
 const win = (r, k, sub) => mean([1932, 1933, 1934, 1935, 1936].map(y => r.years[y] && r.years[y][k][sub]));
 const vEnd = med(van.map(r => win(r, 'w', 'gdp'))), vPool = med(van.map(r => win(r, 'p', 'gdp'))), vPH = med(van.map(r => win(r, 'p', 'H'))), vGU = med(van.map(r => win(r, 'g', 'U')));
 console.log('vanilla n', van.length, '· GBR U* median', f(vGU * 100, 1) + '%', '· pool H', f(vPH));

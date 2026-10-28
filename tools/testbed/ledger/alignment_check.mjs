@@ -25,7 +25,7 @@
 //
 // USAGE: node tools/testbed/ledger/alignment_check.mjs --arm <session[,session]>:<setup> [--van <session>] [--year 1935]
 //   --arm   the config's runs (usable = reached their until date, L17), pooled over the sessions named
-//   --van   the vanilla baseline session (default 20260821_131149_vanilla-baseline-n16); its per-run medians are the
+//   --van   the vanilla baseline session(s) (default lib_runs VANILLA_REF, n=40; the summer n=16 before 2026-10-28); its per-run medians are the
 //           denominators, computed live from its summaries
 // Exit 0 = aligned (no tie-breaker), 2 = divergent (run the third), 3 = THE RUN-LEVEL STOP (a run above --stop-above × vanilla's
 // 1936 GDP; read even at n=1, since run 1 alone can end a config), 1 = cannot read / only one run and no stop.
@@ -72,7 +72,7 @@ function readRun(runRel) {
 }
 const med = a => { const s = [...a].sort((x, y) => x - y); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 
-const van = usableRuns(SES, VAN);
+const van = usableRuns(SES, VAN, 'vanilla');   // the reference holds two-arm sessions (the alternating batch): read its vanilla arm
 const vanRows = van.runs.map(readRun).filter(Boolean);
 if (vanRows.length < 4) { console.error(`vanilla baseline ${VAN}: only ${vanRows.length} readable runs at ${YEAR}`); process.exit(1); }
 const vanGdp = med(vanRows.map(r => r.gdp)), vanPc = med(vanRows.map(r => r.prodPerCap));

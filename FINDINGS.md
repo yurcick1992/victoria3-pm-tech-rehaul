@@ -14615,6 +14615,9 @@ ladder levers do not move the register's three contested lines independently: th
 unemployment and the hoard at nearly the same rate. (2) An early reading predicts the end state well enough to rank
 CONFIGS by 1900, but not to classify a single SEED as a stall before 1920.
 
+⚠ *(2026-10-28)* The corpus readers now take vanilla as the reference's sessions (lib_runs VANILLA_REF): on this corpus that is the
+summer n=16 plus its two extra runs, n=18; the readings below were made on the n=16 alone and are not re-read.
+
 **Data.** `tools/testbed/ledger/corpus_extract.mjs` over every session from 20260902 on plus the vanilla n=16 baseline
 (`20260821_131149`): 145 mod runs over 42 configs (80 runs / 31 configs since the tier rule, 20260913), lib_runs' usable
 rule, until ≥ 1936, ≥ 80 yearly summaries. End state = the 1932–36 mean ÷ the vanilla n=16 median of the same window
@@ -14781,6 +14784,9 @@ here measures a mechanism; the one-axis reading is about these levers only, not 
 one failure mode, the one F108 described on the canon-je24 books: Britain never builds the capital to industrialise. It
 has not gone away: 7 of 65 runs before the tier rule, 4 of 40 in the tier-rule books of 09-13..18, **2 of 40 in the anchor-
 slide books from 09-19** (canon-slide-b158-trade run 2, trade15-b164 run 2).
+
+⚠ *(2026-10-28)* `stuck_britain.mjs` and `stuck_britain_subjects.mjs` now take vanilla as the reference's sessions (n=18 on this
+corpus: the summer n=16 plus its two extra runs); the vanilla columns below were read on the n=16 alone and are not re-read.
 
 **Data.** `tools/testbed/ledger/corpus_gbr_extract.mjs` (Britain's yearly record per run: government, money, credit, pool,
 GDP, population, construction sector, queues, laws where carried) and `stuck_britain.mjs` (the shocks from each run's

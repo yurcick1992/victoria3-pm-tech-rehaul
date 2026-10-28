@@ -3,8 +3,10 @@
 // deviations from the config mean) and BETWEEN configs (config means); Britain's U* the same way; how early a stall
 // (< 0.66) or a runoff (> 1.38) can be flagged. Read-only.  node tools/testbed/ledger/corpus_early.mjs [corpus.jsonl]
 import { load, med, mean, sd, corr, spearman, f } from './lib_corpus_stats.mjs';
+import { VANILLA_REF } from './lib_runs.mjs';
+const VREF = new Set(VANILLA_REF.split(','));   // the vanilla reference's sessions (the summer n=16 alone before 2026-10-28; F165/F166 were read on it)
 const C = load(process.argv[2] || new URL('corpus_runs.jsonl', import.meta.url));
-const van = C.filter(r => r.arm === 'vanilla' && r.session.startsWith('20260821_131149'));
+const van = C.filter(r => r.arm === 'vanilla' && VREF.has(r.session));
 const mod = C.filter(r => r.arm === 'mod');
 console.log('runs: vanilla ref', van.length, '· mod', mod.length, '· configs', new Set(mod.map(r => r.config)).size);
 const win = (r, k, sub) => mean([1932, 1933, 1934, 1935, 1936].map(y => r.years[y] && r.years[y][k][sub]));

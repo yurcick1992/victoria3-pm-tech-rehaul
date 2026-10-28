@@ -10,15 +10,16 @@
 // ⚠ Comparison runs' yearly summaries may predate v10: their kept 1936 SAVE is re-summarised into --cache (named
 // <session>__<run>.json.gz); --build-cache melts the missing ones (≈ 6 s each, three at a time).
 // usage: node tools/testbed/ledger/trade_vs_gdp.mjs --arm <session>:<setup> [--arm …] --cache <dir> [--build-cache]
-//          [--since 20260905] [--match 0.08] [--van 20260821_131149_vanilla-baseline-n16]
+//          [--since 20260905] [--match 0.08] [--van <session[,session]>, default lib_runs VANILLA_REF]
 import fs from 'node:fs'; import zlib from 'node:zlib'; import path from 'node:path'; import { spawn } from 'node:child_process';
 import { goodsTable, tradedQuantity, tradeClasses } from './lib_goods.mjs';
 import { REPO, SES } from './lib_obsolescence.mjs';
+import { usableRuns, VANILLA_REF } from './lib_runs.mjs';
 const argv = process.argv.slice(2); const argOf = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const allOf = k => argv.flatMap((a, i) => a === k ? [argv[i + 1]] : []);
 const ARMS = allOf('--arm').map(s => { const [session, setup] = s.split(':'); return { session, setup }; });
 const CACHE = argOf('--cache', null), SINCE = argOf('--since', '20260905'), MATCH = +argOf('--match', '0.08');
-const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16');
+const VAN = argOf('--van', VANILLA_REF);   // a session or a comma list; its usable vanilla runs (the summer n=16 before 2026-10-28)
 if (!ARMS.length || !CACHE) { console.error('usage: --arm <session>:<setup> [--arm …] --cache <dir> [--build-cache]'); process.exit(1); }
 fs.mkdirSync(CACHE, { recursive: true });
 const G = goodsTable(), { classes, classOf } = tradeClasses(null), K = Object.keys(classes);
@@ -50,7 +51,7 @@ if (missing.length && argv.includes('--build-cache')) {
   await Promise.all([worker(), worker(), worker()]); console.log(`cache: built ${missing.length} summaries into ${CACHE}`);
 } else if (missing.length) console.log(`⚠ ${missing.length} run(s) have no cached 1936 summary and read without trade intensity (pass --build-cache)`);
 // ---- vanilla medians of world GDP per year 1932–1936
-const vg = {}; for (const r of fs.readdirSync(path.join(SES, VAN)).filter(d => /^run\d+/.test(d))) { const sd_ = path.join(SES, VAN, r, 'save_summaries');
+const vg = {}; for (const rel of usableRuns(SES, VAN, 'vanilla').runs) { const sd_ = path.join(SES, rel, 'save_summaries');
   for (const f of fs.readdirSync(sd_).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort().slice(-10)) { const j = load(path.join(sd_, f)); const d = j.provenance?.date; if (/^193[2-6]\.1\.1$/.test(d)) (vg[d.slice(0, 4)] ??= []).push(j.world.gdp); } }
 const vmed = Object.fromEntries(Object.entries(vg).map(([y, a]) => [y, med(a)]));
 function endGdp(dir) { const sd_ = path.join(dir, 'save_summaries'); const v = {}; for (const f of fs.readdirSync(sd_).filter(x => x.endsWith('.json.gz') && !x.includes('.partial.')).sort().slice(-10)) { let j; try { j = load(path.join(sd_, f)); } catch { continue; } const d = j.provenance?.date; if (/^193[2-6]\.1\.1$/.test(d)) v[d.slice(0, 4)] = j.world.gdp / vmed[d.slice(0, 4)]; }

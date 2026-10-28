@@ -6,11 +6,13 @@
 // can be compared: the share of variance the levers explain, and the leave-one-config-out error.
 //   node tools/testbed/ledger/corpus_depeasant.mjs [corpus.jsonl] [since-session-prefix]
 import { load, mean, sd, ols, f } from './lib_corpus_stats.mjs';
+import { VANILLA_REF } from './lib_runs.mjs';
+const VREF = new Set(VANILLA_REF.split(','));   // the vanilla reference's sessions (the summer n=16 alone before 2026-10-28; F165/F166 were read on it)
 import { LEV, X, cross, tobit, isStuck } from './lib_depeasant.mjs';
 const C = load(process.argv[2] || new URL('corpus_runs.jsonl', import.meta.url)); const since = process.argv[3] || '';
 const win = r => mean([1932, 1933, 1934, 1935, 1936].map(y => r.years[y] && r.years[y].g.U));
 const mod = C.filter(r => r.arm === 'mod' && r.lev && r.session >= since && !(process.env.NO_STUCK && isStuck(r)));
-const van = C.filter(r => r.arm === 'vanilla' && r.session.startsWith('20260821_131149'));
+const van = C.filter(r => r.arm === 'vanilla' && VREF.has(r.session));
 console.log('mod runs', mod.length, since ? '(since ' + since + ')' : '', '· configs', new Set(mod.map(r => r.config)).size);
 // the "stuck" mode: Britain never leaves the peasant economy (U* ≥ 45% at every point 1900–1936)
 const stuck = mod.filter(r => [1900, 1910, 1920, 1930, 1936].every(y => r.years[y] && r.years[y].g.U >= 0.45));

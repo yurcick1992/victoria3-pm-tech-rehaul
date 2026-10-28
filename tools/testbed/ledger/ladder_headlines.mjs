@@ -8,17 +8,17 @@
 //     vanilla seeds within ±0.08 of the run's GDP, against the previous batch (trade arm) and the canon (no trade weights).
 // Definitions mirror criteria.mjs (peasants = population_subsisting_workforce × 1e5; productive = salaried − gov − mil).
 //   node tools/testbed/ledger/ladder_headlines.mjs --arm <session>:<setup> [--arm …] --prev <session>:<setup> --canon <session>:<setup> --ccache <dir>
-//        --van <session> --vcache <dir> [--match 0.08]
+//        [--van <session[,session]>] --vcache <dir> [--match 0.08]   (--van defaults to lib_runs VANILLA_REF since 2026-10-28; the summer n=16 before)
 import fs from 'node:fs'; import zlib from 'node:zlib'; import path from 'node:path'; import { pathToFileURL } from 'node:url';
 const REPO = 'C:/claude-code/victoria 3 PM and tech rehaul'; const SES = REPO + '/tools/testbed/sessions';
 const imp = p => import(pathToFileURL(REPO + '/tools/testbed/ledger/' + p).href);
 const { POOL } = await imp('lib_markets.mjs'); const { goodsTable, tradedQuantity, tradeClasses } = await imp('lib_goods.mjs');
-const { usableRuns } = await imp('lib_runs.mjs');
+const { usableRuns, VANILLA_REF } = await imp('lib_runs.mjs');
 const argv = process.argv.slice(2); const argOf = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const allOf = k => argv.flatMap((a, i) => a === k ? [argv[i + 1]] : []);
 const sp = s => { const [session, setup] = s.split(':'); return { session, setup }; };
 const ARMS = allOf('--arm').map(sp), PREV = argOf('--prev') ? sp(argOf('--prev')) : null, CANON = argOf('--canon') ? sp(argOf('--canon')) : null;
-const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16'), VCACHE = argOf('--vcache'), CCACHE = argOf('--ccache'), MATCH = +argOf('--match', '0.08');
+const VAN = argOf('--van', VANILLA_REF), VCACHE = argOf('--vcache'), CCACHE = argOf('--ccache'), MATCH = +argOf('--match', '0.08');
 const G = goodsTable(), { classOf } = tradeClasses(null), K = ['A', 'B', 'C', 'D', 'E'];
 const load = f => JSON.parse(zlib.gunzipSync(fs.readFileSync(f)));
 const med = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); if (!s.length) return NaN; const m = (s.length - 1) / 2; return (s[Math.floor(m)] + s[Math.ceil(m)]) / 2; };
@@ -44,7 +44,7 @@ function endState(runDir) {
   return { per, j36: S[1936] };
 }
 // vanilla
-const V = usableRuns(SES, VAN).runs.map(rel => ({ rel, e: endState(path.join(SES, rel)) })).filter(x => x.e);
+const V = usableRuns(SES, VAN, 'vanilla').runs.map(rel => ({ rel, e: endState(path.join(SES, rel)) })).filter(x => x.e);
 const vmed = Object.fromEntries(END.map(y => [y, med(V.map(v => v.e.per.find(p => p.y === y).gdp))]));
 const summ = e => { const f = k => mean(e.per.map(p => p[k])); return { gdp: mean(e.per.map(p => p.gdp / vmed[p.y])), gbrU: f('gbrU'), share: f('share'), U: f('U'), gm: f('gm'), W: f('W'), Y: f('Y') }; };
 const tradeOf = (j, TQ) => { if (!j?.world?.trade_goods) return null; let V_ = 0; const vc = {}; for (const [g, x] of Object.entries(j.world.trade_goods)) { if (!G[g]?.cost || !classOf[g]) continue; const v = (x.imp + x.exp) * (TQ[g] || 0) * G[g].cost / 2; V_ += v; vc[classOf[g]] = (vc[classOf[g]] || 0) + v; }

@@ -35,7 +35,7 @@ import { fileURLToPath } from 'node:url';
 import { gunzipSync } from 'node:zlib';
 import { readVanilla } from './lib_vanilla_ladder.mjs';
 import { WAGE_WEIGHT, POP_SIZE_PACKAGE, wageUnits, priceMultiplier } from './lib_wage_model.mjs';
-import { usableRuns, reportDropped } from './testbed/ledger/lib_runs.mjs';
+import { usableRuns, reportDropped, VANILLA_REF } from './testbed/ledger/lib_runs.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
@@ -63,8 +63,10 @@ const f = (x, d = 0) => Number.isFinite(x) ? x.toLocaleString('en', { maximumFra
 
 // ---------------------------------------------------------------- --write-wages
 if (has('--write-wages')) {
-  const VAN = argOf('--van', '20260821_131149_vanilla-baseline-n16');
-  const { runs, dropped } = usableRuns(SES, VAN, '');
+  // the vanilla reference (n=40 since 2026-10-28). ⚠ The committed config/measured_base_wages.json was written from the summer n=16;
+  // re-writing it from this default moves the wage model of every report - a deliberate event, not a side effect.
+  const VAN = argOf('--van', VANILLA_REF);
+  const { runs, dropped } = usableRuns(SES, VAN, 'vanilla');
   reportDropped(dropped);
   console.log('vanilla runs: ' + runs.length);
   const cell = new Map();

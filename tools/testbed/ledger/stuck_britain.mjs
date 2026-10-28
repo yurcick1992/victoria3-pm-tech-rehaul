@@ -4,6 +4,8 @@
 // bankruptcy, the construction sector, the pool, GDP), mod against vanilla, stuck against not.
 //   node tools/testbed/ledger/stuck_britain.mjs [corpus_runs.jsonl] [corpus_gbr.jsonl]
 import { readFileSync, existsSync } from 'node:fs';
+import { VANILLA_REF } from './lib_runs.mjs';
+const VREF = new Set(VANILLA_REF.split(','));   // the vanilla reference's sessions (the summer n=16 alone before 2026-10-28; F165/F166 were read on it)
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load, med, mean, f } from './lib_corpus_stats.mjs';
@@ -34,7 +36,7 @@ const rows = C.map(r => { const g = G.get(r.rel) || {}; const s = shocks(r.rel);
     cons: [1850, 1860, 1870, 1880, 1900, 1920, 1935].map(y => yr(y).cons), pool: [1860, 1880, 1900, 1920, 1935].map(y => yr(y).pool / 1e6),
     gdp: [1850, 1880, 1900, 1935].map(y => yr(y).gdp / 1e6), gov1880: yr(1880).gov, gov1900: yr(1900).gov };
 }).filter(r => r.s);
-const van = rows.filter(r => r.arm === 'vanilla' && r.rel.startsWith('20260821_131149')), mod = rows.filter(r => r.arm === 'mod');
+const van = rows.filter(r => r.arm === 'vanilla' && VREF.has(r.rel.split('/')[0])), mod = rows.filter(r => r.arm === 'mod');
 const stuck = mod.filter(r => r.stuck), rest = mod.filter(r => !r.stuck);
 console.log('runs: vanilla', van.length, '· mod', mod.length, '(stuck', stuck.length + ', rest', rest.length + ')');
 const share = (S, fn) => f(S.filter(fn).length / S.length * 100, 0) + '% (' + S.filter(fn).length + '/' + S.length + ')';
