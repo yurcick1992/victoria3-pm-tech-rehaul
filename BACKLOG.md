@@ -118,9 +118,9 @@ Closed:
 - **DEFERRED** · tech spread ×2 and a society research multiplier (§10.97 item 8: "let's see how it all works, first"); society research is on vanilla's count since the §10.98 entries (F227) · §10.97
 - **IDEA (the user, 2026-10-28: "Not sure"), possibly 1.1** · the electric engines may get a redo, with a new technology for a new t2 engine rung (the motor industry is t1 Steam Engines · t2 Electric Engines · t3 Diesel Engines; Electric Engines is one of the four electricity-only buildings, KNOWN_ISSUES). Unscoped · ROADMAP step 1
 - **RESEARCH** · F162's anomalies (Spain's intensive_agriculture, Ecuador's and Alwar's aniline) · F162
-- **RESEARCH** · ai_weight depth *(verify — likely moot since `tech_ai_weight_mult`)* · ROADMAP step 1
 
 Closed:
+- Closed 2026-10-28 (verified moot) · ai_weight depth: answered by F160 §6 — the AI chooses only when its current research completes, and a conditional `add` in `ai_weight` does steer it (ROADMAP step 1; MODDING_NOTES) · F160
 - Closed 2026-10-28 by the user · the scope of post-JE tech finishing beyond the shipped finish boost: nothing planned; per-tree AI weights and tech spread are likely levers in the distant future · ROADMAP step 11
 - Closed 2026-10-28 by the user as a separate item · step 1's rework never deepened the tree (182 technologies = vanilla's 179 + 3 minted): possible in the future, not planned at scale for 1.1; depth stays one of P9's levers · ROADMAP step 1, P9, F138
 - Done 2026-10-21 · the four flat research bonuses ×1/3 (Philips, Advanced Research III, Cuba, the expedition; `tools/emit_value_overrides.mjs`, commit `ad1b306`); vanilla's event research grants left as they are · POLISH_1_0.md Q1, Q2
