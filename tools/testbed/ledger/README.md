@@ -206,8 +206,8 @@ Re-prove it the same way after changing the checker.
    `http://localhost:8792/<outName>/REPORT.html`. The browser pane cannot open the file directly (too large) nor the published URL (not
    signed in to claude.ai).
 2. **Publish `REPORT.html` as an Artifact.** Republishing the same file updates the same URL — ⚠ **except a link the user has shared
-   externally**, which is never republished (user, 2026-10-29, F249's https://claude.ai/artifact/7dR3FWMiYKJbeMjixMcDQK, the reference
-   example of the canonical form): a refill of that batch, or a later form, goes to a new artifact.
+   externally**, which is never republished (user, 2026-10-29: F249's final report at https://claude.ai/artifact/Lq61LKzZVKoyJGTHyUfCr5,
+   the reference example of the canonical form): a refill of that batch, or a later form, goes to a new artifact.
 3. **Copy into the session folder** `REPORT.html` (`REPORT_<setup>.html` when the session holds several configs) and `redflags_full.html`
    beside it. The out dir is scratch; the session is the record.
 4. Quote the report's link in the batch's finding (CLAUDE.md §5.1 rule 9), as FINDINGS entries do.

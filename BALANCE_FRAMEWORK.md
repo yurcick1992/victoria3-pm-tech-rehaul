@@ -71,7 +71,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.101 | a per-industry input lift; the routine levers; cost1 | in force | here |
 | 10.102 | the world-market monopoly threshold 0.99 | in force (canon since 2026-10-21) | here |
 | 10.103 | treaty ports | deferred to mod 1.1 on game 1.15 | here |
-| 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings (.1: one four-column scorecard for everything above the play-time block, the loss to the footer, old plants per industry, world / shortlist views, nothing past the right edge, 2026-10-29) | in force; built 2026-10-26, rebuilt and CANONISED 2026-10-29 (`fill_scorecard.mjs`, the decade path in `criteria.mjs`; the reference example F249's report, shared externally, never republished) | here |
+| 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings (.1: one four-column scorecard for everything above the play-time block, the loss to the footer, old plants per industry, world / shortlist views, nothing past the right edge, 2026-10-29) | in force; built 2026-10-26, rebuilt and CANONISED 2026-10-29 (`fill_scorecard.mjs`, the decade path in `criteria.mjs`; the reference example F249's report at Lq61LKzZVKoyJGTHyUfCr5, shared externally, never republished) | here |
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 
@@ -4431,10 +4431,11 @@ edge, and prose carrying measurements no table showed. Offered a proposal (a moc
 `fill_old_plants.mjs`, `--json` on `laggard_pressure.mjs`, `tech_census.mjs` and `misplaced_capital.mjs`, the template, the assembler, the gate;
 F249's report regenerated as the proof (ledger README §6).
 
-**CANONISED the same day** (the user: *"Good. Canonise this ledger form."*): this is the standard form of every batch report from now on,
-and F249's regenerated report (https://claude.ai/artifact/7dR3FWMiYKJbeMjixMcDQK) is its reference example. ⚠ The user shares that link
-EXTERNALLY: nothing is ever republished to it (*"Don't republish anything in the same link"*); a later fill of the same batch, or a change to
-the form, publishes a new artifact.
+**CANONISED the same day** (the user: *"Good. Canonise this ledger form."*): this is the standard form of every batch report from now on.
+Its reference example is F249's final regenerated report, published at its own link for the user to share EXTERNALLY:
+**https://claude.ai/artifact/Lq61LKzZVKoyJGTHyUfCr5** (*"publish the final updated version somewhere, and after that, don't touch that
+specific link"*). ⚠ Nothing is ever republished to it; a later fill of the same batch, or a change to the form, publishes a new artifact.
+F249's own report link (7dR3FWMiYKJbeMjixMcDQK) shows the same page.
 
 ## §10.105 — WHY SHIPYARDS STAY VANILLA AND THE ART ACADEMY IS TIERED (the user's reasons, recorded 2026-10-26)
 

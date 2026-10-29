@@ -21265,7 +21265,8 @@ earlier case on disk (`20261009_003420_perf-amplify-5y` run 14). L26 learned the
 
 **Report:** https://claude.ai/artifact/7dR3FWMiYKJbeMjixMcDQK (copied into each of the three sessions as `REPORT_canon.html`, with `redflags_full_canon.html`).
 ⭐ **Regenerated 2026-10-29 in the canonical ledger form** (§10.104.1: one scorecard, the World / Shortlist views, the old-plant table) at the same
-link, which the user then shared EXTERNALLY — never republish it. Same runs, same numbers, except: the 1886 line is the re-centred 0.73–1.07
+link, and published as the form's reference example at its own link, https://claude.ai/artifact/Lq61LKzZVKoyJGTHyUfCr5, which the user shares
+EXTERNALLY — never republish to it. Same runs, same numbers, except: the 1886 line is the re-centred 0.73–1.07
 (§10.96.1; 0.91 stays inside); the technology lines now read all 40 vanilla runs (the leader 50 · 41 · 46% at the anchors, Britain 161.9 — §5
 above quotes this batch's 16: 50 · 44 · 46%, 162.9); Germany's line is its unspent pool ÷ GDP, 0.07 against vanilla's 0.09. The first
 publication is kept in each session as `REPORT_canon_first_publication_2026-10-26.html`.
