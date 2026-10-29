@@ -705,7 +705,9 @@ explosives for the mines) is left to the market.
    (a) keep the percent over buildings of all rungs, (b) count the share of LEVELS on the target rung or newer, (c) drop the percent. **Ruled (c):**
    "drop the share; one building of the right rung at the right level is enough". je_realism completes on one realist (t1) academy ≥ 90% staffed
    (vanilla's own clause; it has no level); je_camera / je_film on one level-5 academy of their rung (t2 / t3); production_tech_events.200 on one
-   level-5 plastics (t3) glassworks. The percent clauses and their occupancy lines go.
+   level-5 plastics (t3) glassworks. The percent clauses and their occupancy lines go. (Noted 2026-10-29 in the changelog pass: the emitted
+   production_tech_events.200 also drops vanilla's `weekly_profit > 10`, `cash_reserves_ratio > 0.25` and `weekly_profit > 0`, so one level-5
+   plastics glassworks fires it whatever its profit; the ruling did not name those clauses.)
 2. **Crafts in economy_laws.6 "Industry Suffers"** ((B) 1). **Ruled:** crafts count, beside every factory rung.
 3. **Crafts in the Serbian slander button** ((B) 2). **Ruled:** any paper rung, the craft and every industrial rung.
 4. **The Occitan agricultural branch** ((B) 3). **Ruled:** food factory rungs only, at level 3; the craft does not count.

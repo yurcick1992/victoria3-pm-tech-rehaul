@@ -62,11 +62,12 @@ vanilla and the art academy is tiered: BALANCE_FRAMEWORK §10.105).
 
 The first rung of food, clothes, furniture, glass, tools and paper is an artisan craft — Bakeries, Handsewn Clothes, Handcrafted Furniture,
 Forest Glass, Crude Tools, Pulp Pressing: 500 workers a level (30% shopkeepers, 70% laborers), labour-heavy, cheap to build, without economy of
-scale. The 1836 map carries as many craft levels as vanilla's 1836 output of those goods needs. Companies do not build them or form off them.
+scale. On the 1836 map each country's crafts make what its vanilla factories on the craft's method made. Companies do not build them or form
+off them.
 
-Six of vanilla's steps that are a recipe change rather than a new kind of plant — Baking Powder, Electric Sewing Machines, Spray Finishing,
-Paper Bleaching, Improved Fertilizers, Electric Arc Process — are a second production method of the building below them, switched without
-construction. (§10.91)
+Six steps that are a recipe change rather than a new kind of plant — vanilla's Baking Powder, Electric Sewing Machines, Paper Bleaching,
+Improved Fertilizers and Electric Arc Process, and the minted Spray Finishing — are a second production method of the building below them,
+switched without construction. (§10.91)
 
 ### Electricity
 
@@ -79,7 +80,9 @@ Power becomes a real input with a supply that has to be built:
   Dam, Great Mountain Scheme, Great River Dam — of 300 or 600 electricity a level, each level built within five years, on the state's own dam
   slots. A site is surveyed first (a bureaucracy cost and the first level's technology): a survey by the owner's own family of countries opens
   it to that family, one by an outside investor only to that investor. Governments and private investors with construction rights (the owner,
-  its overlords, holders of investment rights) build; dams are always subsidised; some add arable land or end an irrigation penalty. Vanilla's hydro-themed state traits lose their electricity bonuses, which the dams replace. (§10.89)
+  its overlords, holders of investment rights) build; the AI always subsidises them (the building group's `subsidized` flag acts only at game
+  start, so a player's dams are not subsidised automatically); some add arable land or end an irrigation penalty. Vanilla's hydro-themed state
+  traits lose their electricity bonuses, which the dams replace (Dalmatia's Krka Falls has no dam). (§10.89)
 
 ### Research: technology follows industry
 
@@ -95,8 +98,8 @@ Power becomes a real input with a supply that has to be built:
   technologies outside the ladder have entries of their own, tied to the industries that would use them. (§10.95, §10.97)
 - **Beyond factories.** A land unit's technology advances (12-month stages) while one of our generals with 50 mobilised battalions faces an
   enemy who already holds it; a ship's technology while we, a rival or a great power has the ship; radical and advanced laws spread from
-  other countries; tropical colonies, a civilizing mission, a large state apparatus, big cities, universities and financial districts each
-  advance their own technologies. (§10.98)
+  other countries; tropical colonies, a civilizing mission, a large state apparatus, big cities, universities, financial districts and the
+  chemical industries (Antibiotics) each advance their own technologies. (§10.98)
 - **The AI schools its people like a player would, and finishes a technology it has nearly paid for.** With the entries, the technology majors
   still gain 0.94–0.97 of vanilla's technology by 1935 (F227, F247).
 
@@ -110,8 +113,9 @@ Power becomes a real input with a supply that has to be built:
 
 ### Smaller changes
 
-- The 1836 start is vanilla's map with each factory on the rung its method belongs to; a country holds the technology of every method it runs.
-  (§10.55)
+- The 1836 start is vanilla's map with each factory on the rung its method belongs to. Starting technologies are vanilla's: every rung keeps
+  its method's technology, so a country already holds the technology of every rung it starts with (§10.55; the derived grant equals vanilla's).
+- Vulcanization moves from tech era 3 to 4 (it gates a t3 rung), and Conveyors becomes a prerequisite of Compression Ignition (§10.93).
 - Vanilla events, journal entries, decrees and company bonuses that name a tiered industry point at the right rungs (`TIER_REFERENCE_AUDIT.md`).
 - The investment AI spends a large pool more readily (the investment-pool defines) and weighs a newer rung more (AI desire by tier); vanilla's AI
   subsidies of tooling workshops and explosives factories are off. (§10.75, §10.92)
@@ -249,7 +253,7 @@ User-ruled 2026-09-13, §10.78; the code-side statement is the header of `tools/
 4. **Guarded three ways:** the generator derives and throws; `tools/lint_tier_eras.mjs` runs in every build and as landmine L31 (placement,
    one rung per tier, output and value added rising with tier, every A/B multiplier recomputed from `_ab`); a book records `_ab.keyed_by: 'era'`
    and its own regenerating command.
-5. In-game names say **"Tier N."** ("Tier 2. Electrics Industries (Telephones). …", §5.4); a start rule names its rung by `era`; where a rung's
+5. In-game names say **"Tier N."** ("Tier 2. Electrics Industries (Telephone Production)", §5.4); a start rule names its rung by `era`; where a rung's
    position survives (the UI's `t.tier`, a six-rung start rule's `tier`) it is a lookup key nobody reads.
 
 ## 2.4 Recipes steer production; AI values only make the AI follow profit

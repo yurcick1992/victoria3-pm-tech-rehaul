@@ -51,7 +51,7 @@ GDP 1.07× vanilla n=40, loss 6.60, play time ×1.010 of the same sessions' vani
   and no "Recipe BE" in a release build (debug builds keep both). The
   wildcard version is unproven in game until the release build's in-game load.
 - ✅ **R2** thumbnail (the user's image, 2026-10-26), ✅ LICENSE (CC0 1.0, 2026-10-26), ✅ CHANGELOG (`CHANGELOG.md`, 2026-10-26, PDS granularity, reviewed by the
-  user) · ✅ **R3 + H9** the README, for mod editors (no player README: players come from the Workshop; the Workshop item is the
+  user; rewritten 2026-10-30 as the full list of changes from vanilla, terse, awaiting the user's review, BACKLOG H) · ✅ **R3 + H9** the README, for mod editors (no player README: players come from the Workshop; the Workshop item is the
   mod folder alone), with the replaced-file list (2026-10-26) · ✅ **R4** proofread (2026-10-26) · ✅ **R5** the three technology icons (2026-10-26; looked OK in game) · ✅ **R10** the three minted methods' own icons (2026-10-26) · ✅ **H10** builders off the
   default paths and ✅ **C7** the stray root file (both 2026-10-26).
 - ✅ **The release build is made** (2026-10-28 ~22:10 local, the user: "Prepare it now"): `build.ps1 -Release` of the canon (sha256
