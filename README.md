@@ -1,4 +1,7 @@
-# PM & Tech Rehaul — a Victoria 3 economic-realism mod
+# No Free Upgrades: An industrial realism overhaul — a Victoria 3 mod
+
+Its working name, PM & Tech Rehaul, survives in this repository and in every identifier (the mod folder `pm_tech_rehaul`, the id
+`com.yurcick.pm_tech_rehaul`, the `PM_TECH_REHAUL` log lines).
 
 For **Victoria 3 (1.13 "Matcha")**. It makes a technological edge actually matter. In seventeen
 manufacturing industries each of vanilla's main production methods becomes **its own tech-gated
@@ -80,7 +83,7 @@ powershell -ExecutionPolicy Bypass -File tools\build.ps1 -Release
 
 This regenerates the mod, converts the 1836 start, lints the economy, and deploys a real copy to your
 `Documents\Paradox Interactive\Victoria 3\mod\pm_tech_rehaul`. Then **restart the Paradox
-launcher**, add **“PM and Tech Rehaul”** to a playset, and play. `-Release` makes the player build. Without it the build is a
+launcher**, add **“No Free Upgrades: An industrial realism overhaul”** to a playset, and play. `-Release` makes the player build. Without it the build is a
 **debug build**: it logs the mod's dam and research activity to `debug.log`, shows each building's recipe break-even in its name
 (“Recipe BE 48%”) and stamps the build time into the mod's name.
 

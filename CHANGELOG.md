@@ -1,4 +1,4 @@
-# PM & Tech Rehaul — changelog
+# No Free Upgrades: An industrial realism overhaul — changelog
 
 ## 1.0.0 (for Victoria 3 1.13)
 

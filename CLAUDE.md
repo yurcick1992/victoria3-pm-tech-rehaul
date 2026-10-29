@@ -1,7 +1,9 @@
 # PM & Tech Rehaul — Victoria 3 mod
 
 An economic-realism mod for **Victoria 3 1.13** ("Matcha"). Mod 1.0 ships on game 1.13 (target 2026-10-30); mod 1.1 follows on game
-1.15. This repository holds the mod's generator (`config/` + `tools/`), the generated mod (`mod/`), a balance editor (`ui/`), a
+1.15. Players see it as **No Free Upgrades: An industrial realism overhaul** (the name in `mod/.metadata/metadata.json` and the public files'
+titles since 2026-10-29; the Workshop item's title is set on its Steam page). "PM & Tech Rehaul" is the working name and lives on in every identifier — the folder
+`pm_tech_rehaul`, the id `com.yurcick.pm_tech_rehaul`, the `PM_TECH_REHAUL` log markers — which stay so subscribed playsets keep working. This repository holds the mod's generator (`config/` + `tools/`), the generated mod (`mod/`), a balance editor (`ui/`), a
 headless measurement harness (`tools/testbed/`) and the design record (the `.md` files).
 
 **How this file is organised.** Part 1 is the GOALS, what the mod changes to reach them, and the recipe formula. Part 2 is the PRINCIPLES that turn them into design rules. Part 3 is the METRICS:

@@ -1,4 +1,4 @@
-# PM & Tech Rehaul — known issues
+# No Free Upgrades: An industrial realism overhaul — known issues
 
 Issues a player may notice in the current release, version 1.0.0 for Victoria 3 1.13. Each line goes when a release fixes it; the fix is then in
 `CHANGELOG.md`. Figures come from sixteen 1836–1936 test campaigns of the mod, compared with forty of vanilla.

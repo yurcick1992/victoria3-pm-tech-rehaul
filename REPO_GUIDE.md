@@ -378,7 +378,7 @@ yearly summaries; written for the stage design, F168). For yearly-save books use
   a real copy to Documents. `powershell -ExecutionPolicy Bypass -File tools\build.ps1 [-Config <book>] [-DryRun | -SaveTo <name>]
   [-ControlOnly | -Overlay] [-Telemetry <spec.json> | -TelemetryOn] [-TelemetryToken <t>] [-Release] [-NoLint] [-NoDeploy] [-NoPreflight]`.
   `-Release` makes the player build (POLISH_1_0.md H8; the header's TWO BUILD KINDS): no "Recipe BE" in the building names, the start-up line
-  reduced to a version manifest ("PM_TECH_REHAUL: init OK - PM and Tech Rehaul <version> loaded (release build)"), `strip_release_logging.mjs`
+  reduced to a manifest of metadata.json's name and version ("PM_TECH_REHAUL: init OK - <name> <version> loaded (release build)"), `strip_release_logging.mjs`
   after the last content emitter, no "(built …)" in the mod name; it refuses `-Telemetry`, `-TelemetryOn`, `-ControlOnly` and `-Overlay`.
   Status: current (the only way a mod is produced; measurement builds go through `run_schedule.ps1`).
   Traps:

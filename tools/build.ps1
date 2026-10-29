@@ -49,9 +49,9 @@
   TWO BUILD KINDS (POLISH_1_0.md H8, user-ruled 2026-10-21). Every build is a DEBUG build unless -Release is passed:
     debug (default)  the mod's own logging (dam and research-entry debug_log lines, the init marker and tripwires), "Recipe BE N%" in the
                      building names, "(built yyyy-MM-dd HH:mm)" in the mod name; telemetry only when asked (-Telemetry / -TelemetryOn).
-    -Release         what players get: no telemetry and no logging but one start-up manifest line ("PM_TECH_REHAUL: init OK - PM and Tech
-                     Rehaul <version> loaded (release build)"), no "Recipe BE" in the names, no build stamp in the mod name. The version is
-                     mod/.metadata/metadata.json's. tools/strip_release_logging.mjs removes the logging after every content emitter, and
+    -Release         what players get: no telemetry and no logging but one start-up manifest line ("PM_TECH_REHAUL: init OK - <name>
+                     <version> loaded (release build)"), no "Recipe BE" in the names, no build stamp in the mod name. The name and version
+                     are mod/.metadata/metadata.json's. tools/strip_release_logging.mjs removes the logging after every content emitter, and
                      throws on a form it does not know. -Release refuses -Telemetry, -TelemetryOn, -ControlOnly and -Overlay.
 #>
 param([switch]$NoLint, [switch]$NoDeploy, [string]$Config, [switch]$DryRun, [string]$SaveTo,
@@ -1565,7 +1565,10 @@ $diagTs = Get-Date -Format 'yyyy-MM-dd HH:mm'
 $diagLine = if ($Release) {
     $relMeta = Get-Content (Join-Path $repo 'mod\.metadata\metadata.json') -Raw | ConvertFrom-Json
     if (-not $relMeta.version) { throw "-Release: mod\.metadata\metadata.json has no version - the manifest line cannot name one" }
-    "PM_TECH_REHAUL: init OK - PM and Tech Rehaul $($relMeta.version) loaded (release build)"
+    # the name without a "(built ...)" stamp: a debug build of mod/ writes one into this very file, and it is stripped only further down
+    $relName = ($relMeta.name -replace '\s*\(built[^)]*\)', '').Trim()
+    if (-not $relName) { throw "-Release: mod\.metadata\metadata.json has no name - the manifest line cannot name the mod" }
+    "PM_TECH_REHAUL: init OK - $relName $($relMeta.version) loaded (release build)"
 } else { "PM_TECH_REHAUL: init OK - mod loaded, game started (build $diagTs) on [TimeKeeper.GetCurrentDate.GetString]" }
 $diag = @(
     $genHeader.TrimEnd(), "",
