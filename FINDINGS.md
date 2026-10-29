@@ -21271,6 +21271,27 @@ afternoon (§10.96.1), which the user then ruled 0.79–1.01 — 0.91 is inside 
 above quotes this batch's 16: 50 · 44 · 46%, 162.9); Germany's line is its unspent pool ÷ GDP, 0.07 against vanilla's 0.09. The first
 publication is kept in each session as `REPORT_canon_first_publication_2026-10-26.html`.
 
+**7. The tiered industries' OUTPUT prices (read 2026-10-29, the user: "the ledger reads building-input prices … What about output? For tiered
+industries").** The register's PI / PP / PM lines are the tiered industries' main goods split by buyer, unweighted medians over goods ×
+markets; read by seller instead, weighted by value, main and secondary goods together (Σ sales at market ÷ Σ the same output at base,
+`tools/testbed/ledger/tiered_output_prices.mjs`): the canon n=16 against the 22 vanilla runs that carry sales (October n=6 + this batch's 16; the
+summer 18 predate the field). Median of runs, first summary of each decade year:
+
+| output price ÷ base | 1840 | 1860 | 1880 | 1900 | 1920 | 1935 |
+|---|---|---|---|---|---|---|
+| shortlist, canon | 1.05 | 1.12 | 1.00 | 0.92 | 0.85 | 0.83 |
+| shortlist, vanilla | 1.00 | 1.06 | 1.01 | 0.97 | 0.97 | 0.95 |
+| world, canon | 1.02 | 1.14 | 1.02 | 0.94 | 0.88 | 0.85 |
+| world, vanilla | 0.99 | 1.06 | 1.01 | 0.98 | 0.96 | 0.95 |
+
+By industry at 1935 (shortlist, canon / vanilla): arms 0.47 / 0.69 · textile 0.72 / 0.90 · furniture 0.70 / 0.89 · explosives 0.74 / 0.92 ·
+motor 0.95 / 1.14 · paper 0.87 / 1.01 · steel 0.89 / 1.02 · art academy 1.14 / 1.43 · food 1.02 / 1.12 · fertilizer 0.93 / 0.90 · synthetics
+0.99 / 0.92 · glass 0.89 / 0.89 · tooling 0.85 / 0.85. **Read:** the canon's tiered output starts ~5% dearer than vanilla's (the input lift) and
+ends 13% cheaper on the shortlist (×0.87), falling every decade from 1860 while vanilla's stays within 0.95–1.06 — the price decline §2.1 asks
+for, in £, across the whole tiered output and not only the seven building inputs PI reads. Fertilizer, synthetics and glass do not fall below
+vanilla's. ⚠ Weighted by value, so the big pop-good industries dominate; not in wage units. Chart (the ledger's input-price design):
+https://claude.ai/artifact/826p2XXcAGQXgsCANY4JUv. Into the ledger itself: a 1.1 item (BACKLOG F).
+
 **What it does NOT say.** Why the machine sped up between the sessions: nothing measured separates window state, drivers or background load, so the
 per-session ratios (×1.11, ×0.996) bracket the canon's cost rather than fix it; ×1.010 pooled is the reading, ×1.023 with every run counted. That the
 laggard metric isolates competition in vanilla: its vanilla numbers include free method switches, so they are an upper bound on vanilla's competitive

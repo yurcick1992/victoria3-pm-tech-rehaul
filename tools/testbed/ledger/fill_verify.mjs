@@ -16,7 +16,7 @@
 import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -176,9 +176,8 @@ async function layoutCheck(file) {
   const prof = mkdtempSync(join(tmpdir(), 'ledger-verify-'));
   const proc = spawn(exe, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--disable-extensions',
     '--remote-debugging-port=0', '--user-data-dir=' + prof, 'about:blank'], { stdio: 'ignore' });
-  let ws = null;
+  let ws = null, port = null;
   try {
-    let port = null;
     for (let i = 0; i < 150 && !port; i++) { await sleep(100); const f = join(prof, 'DevToolsActivePort'); if (existsSync(f)) port = readFileSync(f, 'utf8').split('\n')[0].trim() || null; }
     if (!port) return { skipped: 'the browser opened no debugging port' };
     const page = (await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()).find(t => t.type === 'page');
@@ -202,7 +201,19 @@ async function layoutCheck(file) {
     }
     return { found };
   } catch (e) { return { skipped: 'the browser check failed: ' + e.message }; }
-  finally { try { ws && ws.close(); } catch {} proc.kill(); await sleep(300); try { rmSync(prof, { recursive: true, force: true }); } catch {} }
+  finally {
+    // ⚠ END THE WHOLE BROWSER (2026-10-29): killing the launched process alone left its renderer, GPU and utility children running — 45 headless
+    //   Edge processes after six gate runs — and a tree kill misses them too, because Edge's launched process hands off to a separate browser
+    //   process. So: ask the browser to close (Browser.close on its own endpoint), then end every process still holding this run's private
+    //   profile (its folder name is unique), then remove the folder. Proven by a process count after the gate: zero left.
+    try { ws && ws.close(); } catch {}
+    if (port) try { const v = await (await fetch(`http://127.0.0.1:${port}/json/version`)).json(); const b = new WebSocket(v.webSocketDebuggerUrl);
+      await new Promise((res, rej) => { b.onopen = res; b.onerror = rej; setTimeout(rej, 3000); }); b.send(JSON.stringify({ id: 1, method: 'Browser.close' })); await sleep(800); try { b.close(); } catch {} } catch {}
+    try { proc.kill(); } catch {}
+    if (process.platform === 'win32') { const tag = prof.split(/[\\/]/).pop().replace(/[^A-Za-z0-9_-]/g, '');
+      spawnSync('powershell', ['-NoProfile', '-Command', `Get-CimInstance Win32_Process -Filter "Name='msedge.exe' or Name='chrome.exe'" | Where-Object { $_.CommandLine -like '*${tag}*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`], { stdio: 'ignore' }); }
+    for (let i = 0; i < 20; i++) { await sleep(250); try { rmSync(prof, { recursive: true, force: true }); if (!existsSync(prof)) break; } catch {} }
+  }
 }
 { const L = await layoutCheck(REPORT);
   if (L.skipped) warn('layout not checked — ' + L.skipped);

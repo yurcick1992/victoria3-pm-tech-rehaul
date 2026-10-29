@@ -23,6 +23,7 @@ appended oldest first after the July ones); no entry's text changed.
 
 | date | entry | area | status | note |
 |---|---|---|---|---|
+| 2026-10-29 | the report gate's browser check left 45 headless Edge processes running: Edge's launched process hands off to another | testbed/ledger | live | fill_verify.mjs layout check cleanup |
 | 2026-10-28 | a new preflight check passed when run by hand and threw inside the scheduler: StrictMode 2.0 is inherited | testbed/preflight | live | every Test-Lm* run under the scheduler's StrictMode |
 | 2026-10-28 | the save summaries froze every old country's GDP at early January 1936 in any later save: a trend ring read by position | testbed/readers | live | save_state_summary.mjs trends; landmine L43 |
 | 2026-10-27 | the aircraft carrier's technology had no naval research entry: vanilla's one multi-line `unlocking_technologies` | build/emitters | live | emit_research_events.mjs SHIP_BY_TECH |
@@ -147,6 +148,22 @@ appended oldest first after the July ones); no entry's text changed.
    format numbers with `InvariantCulture`. Three separate bugs below share this one root.
 
 ---
+
+## 2026-10-29 — the report gate's browser check left 45 headless Edge processes running
+
+**Symptom.** After six runs of `fill_verify.mjs` (its new real-browser layout check, §4.6 of the ledger README) the machine held 45 `msedge.exe`
+processes, every one with a `--user-data-dir` under `%TEMP%`, named `ledger-verify-*`, and five profile folders that could not be removed.
+
+**Root cause.** The check spawned Edge headless and, when done, killed the spawned process. Edge's launched process is not the browser: it
+hands off to a separate browser process with its own renderer, GPU and utility children, so killing the spawned PID ends nothing that
+matters. A Windows tree kill (`taskkill /PID … /T`) on the same PID missed them too (16 left after one run): the browser is not in that tree.
+
+**Fix.** The check now asks the browser to close (`Browser.close` on its own DevTools endpoint, `/json/version`), then ends every
+`msedge.exe` / `chrome.exe` whose command line names this run's private profile (a unique folder name), then removes the folder with
+retries. Proven by counting after a gate run: zero processes and zero folders left.
+
+**Next time.** Any tool that launches a Chromium browser must close it by protocol and sweep by its unique profile, never trust the
+spawned PID, and count what is left after a run as part of its proof.
 
 ## 2026-10-28 — a new preflight check passed when run by hand and threw inside the scheduler
 

@@ -1515,6 +1515,11 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   holders, the tech majors, other independents, the anchor-principle share (leader's share of game eras 3 / 4 / 5 at 1875 / 1905 / end),
   reliance on research entries; the JSON carries D, B and E for the ledger's technology lines. It keeps only the years it reads (the first,
   the anchors, the last): every year of every run ran the heap out on the n=40 vanilla reference (2026-10-29).
+- **`ledger/tiered_output_prices.mjs`** `--mod <group>:<setup> [--van <group>:vanilla] --config <book> [--json <file>]` — the tiered
+  industries' OUTPUT prices by seller (2026-10-29): Σ `goods_sales` ÷ Σ `va_out` over every tiered building (main and secondary goods,
+  weighted by value), shortlist and world, per decade year 1840 … 1935, the median of runs with the runs' range, and per industry at 1935;
+  vanilla reads each industry's base building and only runs whose summaries carry sales (v9+; the summer 18 are left out and counted).
+  Not in the ledger yet (a 1.1 item); its chart is a separate artifact. Refs: F249 §7.
 - **`ledger/tech_gain_check.mjs`** `<label>=<group> [...] [--van] [--year 1885] [--gdp-year 1845] [--years] [--runs]` — majors' technology
   gain (line 0.70) and early world GDP (line 0.80) ÷ vanilla. Refs: §10.97.
 - **`ledger/je_tally.mjs`** `--session <stamp>[:<setup>] [--config]` — unique research-entry completions per run, token-windowed and
