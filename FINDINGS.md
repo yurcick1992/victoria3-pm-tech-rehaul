@@ -403,6 +403,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F255 | A t3 level takes 60-85 weeks to build because vanilla caps each construction at ~35-40 points a week, not because the queue is shared; only Britain's and the USA's 1935 private queues are congested (~3.5-4 years) | canon | reading | here |
 | F256 | Germany's oil economy waits for a built buyer on the 1.0 canon too: first staffed oil rig median 1920 (vanilla ~1905), none by 1935 in 5 of 17 runs (vanilla 1 of 17); 1935 staffed levels 25.5 against 75.5 | canon | reading | here |
 | F257 | Displayed GDP = a country's goods producers' value added on its soil at its own market's prices (construction, military, administration not subtracted; ownership moves nothing); looked base-priced because two offsets cancel; the canon's GDP sits at ~0.95 of vanilla's price level from 1920. First reading (base-priced, +6%) VOID: a summary reader bug | canon | probe | here |
+| F258 | The 1.0 release build loads and plays 1836-1852 (n=1, stopped by the user) with no crash, no stall and no error of its own; its release manifest line is logged. Early play time 16.2 min to 1849 against 14.4 / 13.9 a week earlier is no reading: the machine was in active use | release | standing | here |
 
 ---
 
@@ -21568,3 +21569,42 @@ price level of producers' value added is ~0.80–0.88 of base, so the two nearly
   trade centres' `trade_revenue`, rounding of the price used) are not resolved.
 - **Not other dates.** One 1936 save in two arms, and F249's world readings.
 - **Not what the ownership text refers to.** It may describe the prestige and minting split of GDP rather than the GDP number.
+
+## F258 — THE 1.0 RELEASE BUILD LOADS AND PLAYS 1836→1852 WITH NO CRASH, NO STALL AND NO ERROR OF ITS OWN; ITS RELEASE MANIFEST LINE IS LOGGED; AN EARLY PLAY TIME READ ON A MACHINE IN ACTIVE USE IS NOT A READING (2026-10-29; session `20261029_224512_release-century-n1`, the release build, n=1, 1836→1852.2.24, stopped by the user)
+
+**Why.** The release build (`build.ps1 -Release`: no telemetry, logging stripped but the init manifest line, no "Recipe BE", no build stamp) had
+never played a game; every earlier run was a debug build. The user, 2026-10-29: *"Go on with observer n=1 on the release build. I understand
+that it will lack telemetry, we just want to understant it doesn't crash or stall"*; twenty minutes later *"Stop the run, we'll publish the mod
+in steam workshop, and you'll go full n=3 on the release version on my go-ahead."* The scheduler's new `{kind: release}` setup ran it
+(`run_observer -NoTelemetry`, commit `73eeeac`; TESTBED_OPERATIONS §2.2).
+
+**Arm.** The canon book (sha256 `9a05d36da42c1511`, tree twin `04ac513168388956`) built as the release, byte-identical to the deployed `mod/`.
+Game 1.13.11, every installed DLC. Compared against F249's alternating batch (the canon's DEBUG build of `728f2c7f84e6f467`, n=17 runs with an
+early window, and the same sessions' vanilla n=17), a week earlier.
+
+**Readings.**
+- **It loads:** `PM_TECH_REHAUL: init OK - PM and Tech Rehaul 1.0.0 loaded (release build)` at the 1836 start; the mod matched game version
+  1.13.11. The manifest line had not been seen in game before.
+- **It plays:** one attempt to 1852.2.24 in 1,263.7 s, 0 crash resumes, 0 freeze stops; 16 yearly save summaries.
+- **error.log** (the run's own window, 2,152 lines): no line names a `zzz_pm_rehaul` file. The large classes are vanilla's —
+  `command_values.txt:373` (2,120 lines in vanilla run001 of F249 alone), `03_political_strategies.txt:13` (in 12 vanilla runs of the corpus),
+  the naval-battle loc strings, `british_dictates.txt`.
+- **Early play time**, from the 1836.1.1 landing:
+
+| reaches | release (n=1) | canon debug, F249 (n=17) | vanilla, F249 (n=17; 16 to 1849) |
+|---|---|---|---|
+| 1840.1.1 | 4.45 min | 4.02 (3.7–4.7) | 4.02 (3.7–4.3) |
+| 1845.1.1 | 11.17 min | 9.72 (9.1–10.4) | 9.38 (9.0–10.4) |
+| 1849.1.1 | 16.18 min | 14.40 (13.4–15.8) | 13.91 (13.4–15.4) |
+
+  Over 1837–1849 (`machine_load.tsv`): wall 76.6 s per in-game year (canon 65.8, vanilla 63.9); the game's CPU 473 s per in-game year (423,
+  409); CPU clock 122% of rated (120%, 119%); canary 18.1 ms (17.6, 17.6); other load 1.4 cores (1.7, 1.7).
+
+**What it says.** The release build is a working game for its first sixteen years: it loads, plays, harvests and adds no error of its own.
+
+**What it does NOT say.**
+- **Not a play time.** The user was using the machine very actively throughout and called the slower pace a false positive. The monitor did
+  not see that use as load (1.4 other cores, a canary within 3%), so the game's CPU per year rising ~12% at the same clock is no evidence that
+  the release build does more work: contention it does not measure raises a process's CPU time too. One run, another week, no alternating
+  control (F248, F249: a mod-only wall clock is directional at best).
+- **Not a crash rate, and nothing after 1852.** The n=3 release century (`schedules/release_century_n3.json`, on the user's go-ahead) is the check.

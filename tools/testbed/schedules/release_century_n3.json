@@ -1,0 +1,45 @@
+{
+  "schedule_version": 1,
+  "label": "release-century-n3",
+  "_why": "THE RELEASE BUILD'S CRASH AND STALL CHECK, FULL. The user, 2026-10-29, stopping the n=1 run (F258) for the Workshop publication: \"Stop the run, we'll publish the mod in steam workshop, and you'll go full n=3 on the release version on my go-ahead.\" Three observer centuries on the 1.0 PLAYER build (build.ps1 -Release: no telemetry, logging stripped but the init manifest line) through `kind: release` (run_observer -NoTelemetry). Not a measurement: no markets.tsv; the yearly save summaries, the tick lines (wall clock, the L41 freeze watch), the crash resumes and each run's own error window. LAUNCH ONLY ON THE USER'S GO-AHEAD.",
+  "_arms": {
+    "release": "{kind: release, config: config/mod_config.json} - the 1.0 canon book (sha256 9a05d36da42c1511, tree twin 04ac513168388956) built as the release (build.ps1 -Release -SaveTo sched_release), byte-identical to the build deployed and published on 2026-10-29/30"
+  },
+  "_comparison": "against itself: each run reaches 1936.1.1 or not, its crash resumes (meta.json resumes), freeze stops (frozen_stops), any error class naming a zzz_pm_rehaul file. World GDP and the register lines that come from the save summaries may be read beside F249's canon n=16 (the same book's debug build) as a sanity check, never pooled. Play time is not a reading unless the machine is otherwise idle (F258).",
+  "_predictions": "All three reach 1936.1.1 with 0-1 crash resumes each (F249's sixteen canon centuries were all intact; their resumes were vanilla-engine crashes in both arms) and no freeze stop. No error line names a zzz_pm_rehaul file. World GDP and the save-summary readings inside F249's canon spread, since the release differs from the measured debug build by its stripped logging and the post-F249 emitter changes (display text, icons, the electricity gate, the urban-centre script value, the carrier's naval entry, the additive research bars). Magnitude not argued.",
+  "_stop_rule": "none: a fixed n=3, every run plays to 1936; stop watcher NOT armed (fixed-n).",
+  "_cost": "3 x 1836 -> 1936, ~3-3.5 h each, ~10 h",
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1"
+    ],
+    "tags": [
+      "GBR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "release": {
+      "kind": "release",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "release",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "release",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "release",
+      "until": "1936.1.1"
+    }
+  ]
+}

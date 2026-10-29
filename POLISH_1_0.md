@@ -63,6 +63,13 @@ GDP 1.07× vanilla n=40, loss 6.60, play time ×1.010 of the same sessions' vani
   README's list unchanged. The known issue of §10.106 printed as designed. STILL OWED, at the machine: the in-game load and the visual pass
   below. ⚠ The next ordinary (debug) build overwrites `mod/` and the deployed copy; re-run `build.ps1 -Release` before the in-game check if
   one happens in between.
+- ✅ **The release build in game — 2026-10-29.** Rebuilt and deployed (`build.ps1 -Release`, the deployed copy identical to `mod/`, the
+  playtest's visual cleanup P1, P2, P4, P5 in it). A 1935 canon save (F249's `20261021_224949_alt-vanilla-canon-n16/run012_canon`,
+  1935-01-01) loaded into it for the user's late-game screenshots and proofreading: every content key the save names exists in the build, no
+  error.log line names a mod file; the user: *"All right. Looks fine."* A release-build observer run (F258, the scheduler's new
+  `{kind: release}`) played 1836→1852 with no crash, no stall and no error of its own; the manifest line was logged and "1.13.\*" matched.
+  Stopped by the user for the Workshop publication; the n=3 release centuries follow on the user's go-ahead
+  (`tools/testbed/schedules/release_century_n3.json`).
 - A final build (`build.ps1 -Release`), every lint, `node tools/list_replaced_files.mjs` on it (the README's list), an in-game load and an
   `error.log` read by position; the load also proves the "1.13.\*" game version and the release manifest line. Then a VISUAL pass in that
   build (the user, 2026-10-26: "make a release build and ensure that everything's OK, visually"): the launcher's 16:9 thumbnail, the three
@@ -72,7 +79,8 @@ GDP 1.07× vanilla n=40, loss 6.60, play time ×1.010 of the same sessions' vani
   Industry principle tooltip is the one panel no in-game check opened; its lines name every arms, artillery and automotive rung since §2
   (`mod/common/power_bloc_principles/00_power_bloc_principles.txt:903–908`).
 - The release build drops telemetry (H8), so it is a build no run has timed: the cause of vanilla's October ×1.08 drift (telemetry tags,
-  summary version or machine) is not separated (F248). Unmeasured; the direction is harmless.
+  summary version or machine) is not separated (F248). Unmeasured; the direction is harmless. F258 timed its first thirteen years on a machine
+  in active use, which is no reading.
 
 **Deferred to mod 1.1 or later:** B2 (stale looms), B3 (craft secondary lines), F1 (artisanal ownership), R6 (rung building art), Q5
 (military research), Q7 (rubber, a watch item), Q4's two book levers (the cost ladder, paper's own lift); and, ruled 2026-10-24, the
