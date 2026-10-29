@@ -6,6 +6,6 @@ on_game_started_after_lobby = {
 
 pm_tech_rehaul_diag = {
 	effect = {
-		debug_log = "PM_TECH_REHAUL: init OK - PM and Tech Rehaul 1.0.0 loaded (release build)"
+		debug_log = "PM_TECH_REHAUL: init OK - No Free Upgrades: An industrial realism overhaul 1.0.0 loaded (release build)"
 	}
 }
