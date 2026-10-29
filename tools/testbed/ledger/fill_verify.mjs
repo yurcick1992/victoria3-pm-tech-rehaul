@@ -13,9 +13,11 @@
 // USAGE:  node tools/testbed/ledger/fill_verify.mjs <dir-holding-REPORT.html>
 // Exit 0 = safe to publish. Exit 1 = do not publish; every failure is named with its fix.
 
-import { readFileSync, existsSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
+import { join, dirname, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { spawn } from 'node:child_process';
+import { tmpdir } from 'node:os';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DIR = process.argv[2] || '.';
@@ -140,6 +142,73 @@ for (const [id, el] of reg) {
       fail(`chart #${id} drew nothing`, 'its series is empty — fill the const it reads');
   }
 }
+
+// ------------------------------------------- 6. LAYOUT: nothing runs past the right edge ----
+// ⭐ THE REPORT IS READ AS AN EXTERNAL DOCUMENT (user, 2026-10-29: "some text gets past the rightmost alignment line"). The fake DOM above
+//   has no layout, so this step opens the finished page in a REAL headless browser (Edge or Chrome over the DevTools protocol; LEDGER_BROWSER
+//   names another) at 1000 px and at a 390 px phone width, on both pages with every <details> open, and fails on: the page scrolling
+//   sideways; any element crossing the content's right edge outside a scrolling box (only the OUTERMOST offender is named); a chart label
+//   drawn past its chart's edge, where the SVG clips it. It found the three offenders of F249's first publication (the health pill, the lede's
+//   laggard table, the red-flag card's table — all text set never to wrap). No browser found = a WARN, not a pass.
+const CHECK = `(() => {
+  const out = [];
+  const scan = label => {
+    document.querySelectorAll('details').forEach(d => d.open = true);
+    const W = document.documentElement.clientWidth, wrap = document.querySelector('.wrap'); if (!wrap) return;
+    const wr = wrap.getBoundingClientRect(), edge = Math.min(W, wr.right - parseFloat(getComputedStyle(wrap).paddingRight || 0));
+    if (document.documentElement.scrollWidth > W + 1) out.push(label + ': the page scrolls sideways (' + document.documentElement.scrollWidth + ' px wide in a ' + W + ' px window)');
+    const clipped = e => { for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) { if (a.tagName.toLowerCase() === 'svg') return true; const cs = getComputedStyle(a); if (cs.overflowX !== 'visible' || cs.display === 'none') return true; } return false; };
+    const crosses = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > edge + 1; };
+    for (const e of wrap.querySelectorAll('*')) { if (!crosses(e) || clipped(e)) continue; if (e.parentElement && e.parentElement !== wrap && crosses(e.parentElement) && !clipped(e.parentElement)) continue;
+      out.push(label + ': <' + e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ').join('.') : '') + '> ends at ' + Math.round(e.getBoundingClientRect().right) + ' px, the content edge is ' + Math.round(edge) + ' px — "' + (e.textContent || '').trim().slice(0, 60) + '"'); }
+    for (const t of wrap.querySelectorAll('svg text')) { const svg = t.closest('svg'), r = t.getBoundingClientRect(), s = svg.getBoundingClientRect();
+      if (r.width && (r.right > s.right + 1 || r.left < s.left - 1)) out.push(label + ': a chart label is clipped by its chart — "' + t.textContent.trim().slice(0, 50) + '"'); }
+  };
+  scan('World page');
+  const tab = document.getElementById('tab-watch'); if (tab) { tab.click(); scan('Shortlist page'); }
+  return out;
+})()`;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function layoutCheck(file) {
+  const exe = [process.env.LEDGER_BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
+    'C:/Program Files/Google/Chrome/Application/chrome.exe', '/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome'].filter(Boolean).find(p => existsSync(p));
+  if (!exe) return { skipped: 'no Edge or Chrome found (set LEDGER_BROWSER to one)' };
+  const prof = mkdtempSync(join(tmpdir(), 'ledger-verify-'));
+  const proc = spawn(exe, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--disable-extensions',
+    '--remote-debugging-port=0', '--user-data-dir=' + prof, 'about:blank'], { stdio: 'ignore' });
+  let ws = null;
+  try {
+    let port = null;
+    for (let i = 0; i < 150 && !port; i++) { await sleep(100); const f = join(prof, 'DevToolsActivePort'); if (existsSync(f)) port = readFileSync(f, 'utf8').split('\n')[0].trim() || null; }
+    if (!port) return { skipped: 'the browser opened no debugging port' };
+    const page = (await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()).find(t => t.type === 'page');
+    if (!page) return { skipped: 'the browser has no page to drive' };
+    ws = new WebSocket(page.webSocketDebuggerUrl);
+    await new Promise((res, rej) => { ws.onopen = res; ws.onerror = () => rej(new Error('websocket')); });
+    let id = 0; const pending = new Map(), events = [];
+    ws.onmessage = ev => { const m = JSON.parse(ev.data); if (m.id && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } else events.push(m); };
+    const send = (method, params = {}) => new Promise((res, rej) => { const i = ++id; pending.set(i, res); ws.send(JSON.stringify({ id: i, method, params }));
+      setTimeout(() => { if (pending.has(i)) { pending.delete(i); rej(new Error(method + ' timed out')); } }, 30000); });
+    await send('Page.enable');
+    const found = [];
+    for (const [w, mobile] of [[1000, false], [390, false]]) {   // 390 px without the mobile flag: a local REPORT.html has no viewport meta (the Artifact skeleton adds it), so mobile emulation would lay out at 980 px
+      await send('Emulation.setDeviceMetricsOverride', { width: w, height: 900, deviceScaleFactor: 1, mobile });
+      events.length = 0; await send('Page.navigate', { url: pathToFileURL(resolve(file)).href });
+      for (let i = 0; i < 400 && !events.some(e => e.method === 'Page.loadEventFired'); i++) await sleep(50);
+      await sleep(400);
+      const r = await send('Runtime.evaluate', { expression: CHECK, returnByValue: true });
+      if (r.result?.exceptionDetails) return { skipped: 'the check threw in the page: ' + r.result.exceptionDetails.text };
+      for (const x of r.result?.result?.value || []) found.push(w + ' px · ' + x);
+    }
+    return { found };
+  } catch (e) { return { skipped: 'the browser check failed: ' + e.message }; }
+  finally { try { ws && ws.close(); } catch {} proc.kill(); await sleep(300); try { rmSync(prof, { recursive: true, force: true }); } catch {} }
+}
+{ const L = await layoutCheck(REPORT);
+  if (L.skipped) warn('layout not checked — ' + L.skipped);
+  else { for (const x of L.found.slice(0, 25)) fail('LAYOUT ' + x, 'let the text wrap (no white-space:nowrap on prose), or put the table or chart in a scrolling box (class tablewrap)');
+    if (L.found.length > 25) fail(`LAYOUT … and ${L.found.length - 25} more`, 'as above');
+    if (!L.found.length) console.log('  layout: nothing crosses the right edge at 1000 px or 390 px, on either page'); } }
 
 // ------------------------------------------------------------------ verdict ----
 console.log('\nFILL VERIFY — ' + REPORT);

@@ -427,7 +427,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.93 | secondary and automation methods: none shown that cannot run, none negative, reviewed compatibility, mandates, "Base", tier-span names; no per-method copies except possibly automation | in force (§5.4) |
 | 10.94 | input-price red flags, a standing check on every batch | in force (§3.3) |
 | 10.95 | research entries for production technologies outside the ladder, one by one, on the narrative onset | in force |
-| 10.96 | the last tech rework: shift research levers, no new principle; world GDP of every decade a target, with the 1886 break line | in force (§3.2) |
+| 10.96 | the last tech rework: shift research levers, no new principle; world GDP of every decade a target, with the 1886 break line (.1: centred on the expected dip, 0.73–1.07) | in force (§3.2) |
 | 10.97 | research entries reworked: non-additive, literacy-gated, 20 stages; research halved for everyone | in force |
 | 10.98 | research entries beyond production (ships, contagious ideas, the country's condition); frontline entries at 12 months | in force |
 | 10.99 | the artmerge arm canonised; returning to the pre-artmerge family needs the performance changes reimplemented | record + warning |
@@ -435,7 +435,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.101 | per-industry input lift allowed (one number per industry line); the routine levers; cost1 | in force (§2.5) |
 | 10.102 | the world-market monopoly threshold 0.99 | in force (canon since 2026-10-21) |
 | 10.103 | treaty ports: the measured funnel and the layered solution, deferred to mod 1.1 on game 1.15 | deferred |
-| 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays, as readings | in force; built after the alternating batch |
+| 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays, as readings (.1: one four-column scorecard, the loss to the footer, world / shortlist views, nothing past the right edge; the canonical ledger form since 2026-10-29) | in force (§5.6) |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (power plant, dam, electric streetlights); nothing happens when a state loses it | deferred to mod 1.1 (performance risk); 1.0 known issue |
 
 ---
@@ -451,7 +451,7 @@ state (the 1932–1936 mean) unless a date is given.
 | quantity | vanilla | expected in the mod | why | read by |
 |---|---|---|---|---|
 | the 1836 start: map, output, prices | — | the same, inside vanilla's seed spread | 1836 stays vanilla (§1.4); the crafts are seeded to vanilla's output; the input lift is the one ruled exception | register (the 1836–1845 anchor) |
-| world GDP, as displayed | 1.0 | 0.90–1.00× at the end; a dip around 1890–1910 is expected, but 1886 inside 0.83–1.17× | modernising costs capital, so the world ends slightly poorer; capital abundance must be hard to reach (§10.100) | register |
+| world GDP, as displayed | 1.0 | 0.90–1.00× at the end; a dip around 1890–1910 is expected, 1886 inside 0.73–1.07× (centred on 0.90) | modernising costs capital, so the world ends slightly poorer; capital abundance must be hard to reach (§10.100) | register |
 | productive workers per capita (W), world and pool | 1.0 | 0.6–0.95× | goal 4: capital is scarce, so fewer people find productive work | register |
 | unemployment including peasants (U\*), the pool | ≈ 21% | ≥ 2× (≈ 42% or more); never under 10% pooled | goal 4, seen from the other side | register (10% is a hard line) |
 | GDP of the shortlist pool | 1.0 | 1.1–1.9× | those in work produce much more each (up to ~2× per productive worker) | register |
@@ -523,7 +523,8 @@ world H 0.5 · gerCM 1.5. T0 enters as T0 ÷ (T1+T2+T3), the less the better. Lo
 
 **The path: a mid-game dip is expected, within limits.** Around 1890–1910 world GDP may sag below vanilla, because countries hold technologies before
 they have built the rungs, where vanilla just switches methods (§10.82). But the world GDP of EVERY DECADE is a target in its own right (§10.96): an
-arm whose 1886 world GDP sits more than 2σ of the canon's own 1886 spread from vanilla (0.83 / 1.17 when ruled) has likely broken something.
+arm whose 1886 world GDP sits more than 2σ of the canon's own 1886 spread from the expected dip has likely broken something: the line is centred on
+0.90, not on vanilla, and reads **0.73–1.07** (§10.96.1, 2026-10-29; the four-rung runs that end level with vanilla in 1930 sit at 0.90 in 1886).
 
 **Superseded as criteria** (their scripts stay as diagnostics): the 2026-09-15 capital-abundance flag (`capital_flags.mjs`), §10.79's hoarding tests,
 §10.82's workers ceilings and plateau test (`majors_workers.mjs`, `major_series.mjs`), F114's target bands (still the divergence test of the 2+1 rule,
@@ -904,10 +905,13 @@ loc-string data errors, battle sizes …): count against the vanilla baseline, f
   welded 527 (F53). Say which rate a payback uses.
 - Read quantities, not prices, where a good sits at the band edge (§2.7).
 - The standard batch report is **the ledger** (`tools/testbed/ledger/`), published as an Artifact per batch and copied into the session as `REPORT.html`.
-  Its scorecard is **the criteria register** (§10.104): the register's table from `criteria.mjs`, then the readings the register lacks (the share of
-  levels built below the best tier, the t1 decline and the t0 payback, construction volume and the frontier payback, GDP per productive worker, the
-  early growth, the tiers on their anchors) and play speed; then the red-flag headline and summary, the obsolescence and old-rung tables, and the
-  world and watchlist pages. ⚠ Until that is built after the alternating batch, the page still carries the older goals table (G1–G7 + P) instead.
+  Its form is CANONISED (user, 2026-10-29); the reference example is F249's report, which the user shares externally — never republish a
+  shared report's link: a refill or a later form publishes a new artifact. It is written to be read from outside the project (§10.104.1): a preface (observer runs, no player), the batch's description, then **one
+  scorecard table** (`fill_scorecard.mjs`) in four columns — line, this batch / vanilla, aim, verdict — grouped by goal: the criteria register's
+  lines (§10.104), the readings it lacks, play time, the red-flag headline, the backward-industry test, misplaced capital (mod only) and the
+  technology census; the register's loss sits in the footer. Then the play-time block, two charts (building-input prices by decade, world GDP run
+  by run), and the World and Shortlist views with the old-plant table on both. Cut only what repeats another panel at the same grain; finer detail
+  goes in a collapsed section. `fill_verify.mjs` refuses a page where anything runs past the right edge (a real browser, 1000 and 390 px).
 - A verdict names what is void, what still reads, and how far; it traces the knock-ons of a defect (war, conquest and research redirect everything) and
   reads the trajectory, not only the endpoint. A retrospective verdict says so.
 

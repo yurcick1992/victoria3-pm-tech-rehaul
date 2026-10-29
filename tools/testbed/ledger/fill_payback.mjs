@@ -25,7 +25,7 @@ for (const ind of (cfg.industries || []).filter(i => !i.disabled))   // ⚠ a DI
 // ⭐ ON A BOOK WITH CRAFT RUNGS THE STALE (e0) PAYBACK IS ALSO SPLIT (2026-10-02, user: "for the art- family, split report into e0-artisans
 //   and e0-other, where appropriate"): a craft costs a fiftieth of a factory and employs a tenth, so the pooled per-level figure mixed two
 //   buildings with nothing in common. `stale` stays the pooled figure (the LADDER table and G2's grade read it); `staleArt` / `staleOther`
-//   are the crafts and the e0 factories alone (null = loss-making), and fill_goals prints them beside it.
+//   are the crafts and the e0 factories alone (null = loss-making), and fill_scorecard prints them beside it.
 const HAS_CRAFT = Object.values(tier).some(t => t.craft);
 const PPP = 720;
 const SES = 'tools/testbed/sessions';

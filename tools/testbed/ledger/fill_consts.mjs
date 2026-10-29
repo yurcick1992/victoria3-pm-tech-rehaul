@@ -75,7 +75,7 @@ const merge = dirs => {
 };
 const mod = merge(MOD), van = merge(VAN), nb = merge(NB);
 // productive workers, millions
-// ⭐ `p` = world population, millions (2026-10-08): fill_goals' G5 grades the register's W, productive workers PER HEAD — it used to
+// ⭐ `p` = world population, millions (2026-10-08): fill_scorecard (once fill_goals' G5) reads the register's W, productive workers PER HEAD — it used to
 //   grade the absolute count, which a smaller or larger world moves without any change in how industrialised it is
 const prod = s => Object.fromEntries(Object.entries(s).map(([y, r]) =>
   [y, { w: +((r.sal - r.govMilStaff) / 1e6).toFixed(1), g: Math.round(r.gdp), ...(r.pop ? { p: +(r.pop / 1e6).toFixed(1) } : {}) }]));

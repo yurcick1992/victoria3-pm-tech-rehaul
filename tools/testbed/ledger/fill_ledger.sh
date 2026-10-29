@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # THE BATCH LEDGER'S DATA FILL FOR ONE CONFIGURATION, AS ONE COMMAND (promoted from the session scratchpad 2026-10-02; it pays off the README's
 # "not yet a single command" TODO for the data half). It runs every data script in the README's order on the arm's COMPLETE runs against the
-# vanilla reference of lib_runs.mjs (VANILLA_REF, n=40 since 2026-10-26; the wall clock against VANILLA_WALL_REF); the prose half (lede / incidents / next / footer .html, tokens.json, title.txt) is written by hand afterwards,
+# vanilla reference of lib_runs.mjs (VANILLA_REF, n=40 since 2026-10-26; the wall clock against VANILLA_WALL_REF); the prose half (lede / incidents / footer .html, tokens.json, title.txt) is written by hand afterwards,
 # then `node tools/testbed/ledger/fill_assemble.mjs <outDir>` and `node tools/testbed/ledger/fill_verify.mjs <outDir>` (exit 0 = publishable).
 #
 #   bash tools/testbed/ledger/fill_ledger.sh <session> <setup> <book> <outName>
@@ -72,11 +72,19 @@ step node $L/fill_obsolescence.mjs $OUT --session $SESSION --setup $SETUP --conf
 #   lines, so both sides read the MARKET source; the September eleven-tag n=4 read only the summaries' production (BACKLOG F, the red-flag twin).
 step node $L/input_price_flags.mjs "$SETUP=$SESSION:$SETUP" --ref "vanilla (same-harness, $(echo "$VANWRUNS" | tr ',' '\n' | grep -c .) runs)=$VANW:vanilla" --yearly --html $OUT/redflags_full.html --json $OUT/redflags.json --list 0
 step node $L/redflag_metrics.mjs $OUT
-# ⭐ THE SCORECARD IS THE CRITERIA REGISTER (BALANCE_FRAMEWORK §10.104, 2026-10-24): criteria.mjs on the same group against the same vanilla,
-#   each run on its own config; fill_register renders it, fill_goals keeps only the readings the register does not carry.
+# ⭐ THE SCORECARD (BALANCE_FRAMEWORK §10.104, 2026-10-24; ONE TABLE since §10.104.1, 2026-10-29): criteria.mjs on the same group against the
+#   same vanilla, each run on its own config, plus the readers whose lines the lede used to carry in prose — the backward-industry test
+#   (laggard_pressure, against the same vanilla), the technology census (tech_census, on the book's tree twin), misplaced capital (mod only, by
+#   ruling) — and the old-plant census; fill_scorecard renders the one table (it replaces fill_register + fill_goals).
+#   ⚠ misplaced_capital takes whole sessions: a group with single-run items reads those sessions' every run there.
+TREE=$(echo "$BOOK" | sed 's/mod_config\./tech_tree_options./')
+[ -f "$TREE" ] || TREE=config/tech_tree_options.json
 step node $L/criteria.mjs --arm "$SESSION:$SETUP" --van "$VANS:vanilla" --json $OUT/criteria.json --quiet
-step node $L/fill_register.mjs $OUT
-step node $L/fill_goals.mjs $OUT/goals.html $OUT --config $BOOK
-echo; echo "data filled in $OUT — now write lede.html incidents.html next.html footer.html tokens.json title.txt, and redflags_summary.html with the"
+step node $L/laggard_pressure.mjs $BOOK "$SETUP=$SESSION:$SETUP" "vanilla=$VANS:vanilla" --json $OUT/laggards.json
+step node $L/tech_census.mjs "$SETUP=$SESSION:$SETUP" "vanilla=$VANS:vanilla" --tree $TREE --json $OUT/tech.json
+step node $L/misplaced_capital.mjs --batch "$SETUP:$SESSION:$SETUP" --json $OUT/misplaced.json
+step node $L/fill_old_plants.mjs $OUT --mod $MOD --config $BOOK
+step node $L/fill_scorecard.mjs $OUT --config $BOOK
+echo; echo "data filled in $OUT — now write lede.html incidents.html footer.html tokens.json title.txt, and redflags_summary.html with the"
 echo "redflag-summary skill (.claude/skills/redflag-summary/SKILL.md, from redflags_digest.md); then fill_assemble + fill_verify, and copy redflags_full.html"
 echo "into the session folder beside REPORT.html"

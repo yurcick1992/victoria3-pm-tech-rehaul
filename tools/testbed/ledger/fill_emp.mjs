@@ -2,7 +2,7 @@
 // per-tier employment (workforce_mult applied, as the builder emits it). No proxy, no guesswork.
 //   node tools/testbed/ledger/fill_emp.mjs <outDir> --mod <sess/run[,...]> --config <the arm's book>
 //   → emp.json {year: [workers M per column]} + emp_cols.json [the column labels] + emp_b2.json {year: {w, p, pAll}} (old rungs beside
-//     their replacement, world and the shortlist pool), all read by fill_assemble / fill_goals.
+//     their replacement, world and the shortlist pool), all read by fill_assemble / fill_scorecard.
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';

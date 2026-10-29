@@ -7,8 +7,10 @@ const DIR = process.argv[2];
 const J = n => JSON.parse(readFileSync(join(DIR, n), 'utf8'));
 const C = J('consts.json'), EMP = J('emp.json'), PERF = J('perf_panel.json'), RD = J('report_data.json');
 const D2raw = JSON.parse(readFileSync(join(DIR, 'report_data2.json'), 'utf8'));
-const R = J('research.json'); const PB = J('payback.json'); const TIERC = J('tierchoice.json');
+const R = J('research.json'); const PB = J('payback.json');
 const IDC = J('indecomp.json');
+// ⭐ 2026-10-29: the old-plant census (fill_old_plants.mjs) and the two charts above the pages (fill_scorecard.mjs → intro.json)
+const OLDP = J('old_plants.json'), INTRO = J('intro.json');
 const OBS = J('obsolescence.json');   // fill_obsolescence.mjs — the in-market vs trade panel (2026-09-24, permanent, BOTH pages)
 D2raw.techsT = R.techsT; D2raw.jeT = R.jeT;   // sections report_data2.mjs does not emit yet
 const D2 = JSON.stringify(D2raw);
@@ -41,22 +43,7 @@ for (const y of YEARS) {
   const cm = cms.length ? (cms.length % 2 ? cms[cms.length >> 1] : (cms[cms.length / 2 - 1] + cms[cms.length / 2]) / 2) : null, cv = RD.vanMean[y]?.ptsAdd;
   TRAJ[y] = [t[0], t[1], cm && cv ? +(cm / cv).toFixed(2) : 0];
 }
-// --- WATCH: seven POSITIONAL slots, matching the template's t-watch renderer EXACTLY:
-//     [0] GDP ×van · [1] mean stock era · [2] GBR · [3] p25 tag · [4] non-productive % mod ·
-//     [5] non-productive % van · [6] frontier share of output %.
-// ⚠ 2026-08-25: the frontier share used to be written into slot 4 — the template renders that slot
-// as "non-productive (vs van)", so three published reports showed the frontier share under the
-// wrong label and a hard 0 in its own column. Positional rows are the fill_goals hazard, here too.
-const WATCH = {};
-for (const y of YEARS) {
-  const yr = RD.flat.years[y]; if (!yr) continue;
-  const tagEras = Object.values(yr.meanEraByTag || {}).filter(Number.isFinite).sort((a, b) => a - b);
-  const p25 = tagEras.length ? tagEras[Math.floor(tagEras.length * 0.25)] : 0;
-  WATCH[y] = [C.TRAJ[y]?.[0] ?? 0, +(yr.era ? Object.entries(yr.era).reduce((a,[k,v])=>a+(+k)*v.lv,0)/Object.values(yr.era).reduce((a,v)=>a+v.lv,0) : 0).toFixed(2),
-              +(yr.gbr?.meanEra ?? 0).toFixed(2), +p25.toFixed(2),
-              C.WORLD_FULL[y]?.[0] ?? 0, C.WORLD_FULL[y]?.[1] ?? 0,
-              +(100 * (yr.frontierShareMedian ?? 0)).toFixed(0)];
-}
+// (WATCH, the tech-edge panel's seven positional slots, went with the panel on 2026-10-29, user)
 rep(/^const GDP_FLAT=\{.*$/m, 'const GDP_FLAT=' + JSON.stringify(C.GDP_FLAT) + ';', 'GDP_FLAT');
 rep(/^const GDP_VAN=\{.*$/m,  'const GDP_VAN='  + JSON.stringify(C.GDP_VAN)  + ';', 'GDP_VAN');
 rep(/^const GDP_NB=\{.*$/m,   'const GDP_NB='   + JSON.stringify(C.GDP_NB)   + ';', 'GDP_NB');
@@ -72,10 +59,10 @@ rep(/^const PROD_VAN=\{.*$/m, 'const PROD_VAN=' + JSON.stringify(C.PROD_VAN) + '
 rep(/^const TRAJ=\{.*$/m,     'const TRAJ='     + JSON.stringify(TRAJ)       + ';', 'TRAJ');
 rep(/^const WORLD_FULL=\{.*$/m,'const WORLD_FULL='+JSON.stringify(C.WORLD_FULL)+';', 'WORLD_FULL');
 rep(/^const WORLD_PURE=\{.*$/m,'const WORLD_PURE='+JSON.stringify(C.WORLD_PURE)+';', 'WORLD_PURE');
-rep(/^const WATCH=\{.*$/m,    'const WATCH='    + JSON.stringify(WATCH)      + ';', 'WATCH');
 rep(/^const LADDER=\{.*$/m,   'const LADDER=' + JSON.stringify(LADDER) + ';', 'LADDER');
 rep(/^const PERF=\{.*$/m,     'const PERF='     + JSON.stringify(PERF)       + ';', 'PERF');
-rep(/^const TIERC=\{.*$/m,    'const TIERC='    + JSON.stringify(TIERC)      + ';', 'TIERC');
+rep(/^const OLDP=\{.*$/m,     'const OLDP='     + JSON.stringify(OLDP)       + ';', 'OLDP');
+rep(/^const INTRO=\{.*$/m,    'const INTRO='    + JSON.stringify(INTRO)      + ';', 'INTRO');
 rep(/^const INDECOMP=\{.*$/m, 'const INDECOMP=' + JSON.stringify(IDC)        + ';', 'INDECOMP');
 rep(/^const OBS=\{.*$/m,      'const OBS='      + JSON.stringify(OBS)        + ';', 'OBS');
 rep(/^const VA=\{flat:\{\},.*$/m, 'const VA=' + JSON.stringify(RD.VA) + ';', 'VA');
@@ -89,12 +76,19 @@ s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
 {
   const tokFile = join(DIR, 'tokens.json');
   const tok = existsSync(tokFile) ? JSON.parse(readFileSync(tokFile, 'utf8')) : {};
-  for (const [name, file] of [['__LEDE__','lede.html'],['__GOALS__','goals.html'],['__REGISTER__','register.html'],
-                              ['__INCIDENTS__','incidents.html'],['__NEXT__','next.html'],
-                              ['__FOOTER__','footer.html'],['__REDFLAGS__','redflags.html']]) {
+  // ⭐ 2026-10-29: the scorecard (fill_scorecard.mjs) replaces the register and goals rows, its loss line goes to the footer, and the
+  //   next-lever section is gone (user).
+  for (const [name, file] of [['__LEDE__','lede.html'],['__SCORECARD__','scorecard.html'],['__LOSS__','scorecard_loss.html'],
+                              ['__INCIDENTS__','incidents.html'],['__FOOTER__','footer.html'],['__REDFLAGS__','redflags.html']]) {
     const p = join(DIR, file);
     if (existsSync(p)) tok[name] = readFileSync(p, 'utf8');
   }
+  // A TABLE WRITTEN INTO THE PROSE (lede, incidents, footer) is wrapped in a scrolling box here, so it can never run past the page's right
+  //   edge — the laggard table of F249's lede did (2026-10-29).
+  for (const k of ['__LEDE__', '__INCIDENTS__', '__FOOTER__']) if (tok[k])
+    tok[k] = tok[k].replace(/(<div class="tablewrap">\s*)?<table([\s\S]*?)<\/table>/g, (m, w, body) => w ? m : '<div class="tablewrap"><table' + body + '</table></div>');
+  // the run the one-run panels of the Shortlist page read (report_data2.mjs's `flat`): the group's first usable run
+  if (!tok.__FIRSTRUN__ && existsSync(join(DIR, '_mod.txt'))) tok.__FIRSTRUN__ = readFileSync(join(DIR, '_mod.txt'), 'utf8').trim().split(',')[0];
   // ⭐ SINCE 2026-10-08 THE PAGE CARRIES THE RED FLAGS' HEADLINE AND A SUMMARY, NOT THE LISTING (user: "at least 100 times too large to be
   //   readable"): redflag_metrics.mjs writes redflags_card.html with a __RF_SUMMARY__ token, the redflag-summary skill writes
   //   redflags_summary.html (3–15 sentences), and the flag-by-flag listing stays in redflags_full.html beside the report. The card wins over a

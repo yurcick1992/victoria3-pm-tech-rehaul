@@ -27,10 +27,21 @@ for (const arm of ['van', 'mod']) {
     if (a.lv.length) levels[arm][y] = Math.round(med(a.lv));
   }
 }
+// ⭐ BY SESSION (2026-10-29): the play-time ratio inside each session that holds BOTH arms (an alternating batch), clusters 1 + 2 — the
+//   caveat a reader needs beside the pooled grade, since the machine's speed drifts between sessions (F248, F249: ×1.11 then ×0.996).
+const bySession = [];
+{ const ses = {};
+  for (const r of runs) { const c = CL[r.label]; if (c && c.cluster === 3) continue; const s = String(r.label).split('/')[0];
+    ((ses[s] ||= { mod: [], van: [] })[r.isVanilla ? 'van' : 'mod']).push(r.wall_seconds / 60); }
+  for (const [s, o] of Object.entries(ses)) if (o.mod.length && o.van.length)
+    bySession.push({ session: s, mod: +med(o.mod).toFixed(1), van: +med(o.van).toFixed(1), nMod: o.mod.length, nVan: o.van.length, ratio: +(med(o.mod) / med(o.van)).toFixed(3) }); }
+const sessions = [...new Set(runs.map(r => String(r.label || '').split('/')[0]))];
 const PERF = {
   // ⚠ DERIVED, never a literal. This line names the sessions compared; hardcoding it republished
-  //   canon-n7 provenance under every later batch. fill_verify catches it as a staleness hit.
-  source: (p.runs && p.runs.length ? [...new Set(p.runs.map(r => String(r.label||"").split("/")[0]))].join(" vs ") : "unknown") + " — DIFFERENT NIGHTS unless stated",
+  //   canon-n7 provenance under every later batch. fill_verify catches it as a staleness hit. It says whether the arms alternated in the
+  //   same sessions (2026-10-29: it read "DIFFERENT NIGHTS unless stated" on the alternating batch itself).
+  source: (sessions.length ? sessions.join(', ') : 'unknown') + (bySession.length ? ' — the two arms alternated within ' + (bySession.length === sessions.length ? 'every session' : bySession.length + ' of these sessions') : ' — the arms ran in different sessions, so machine drift is not controlled'),
+  bySession,
   runs: runs.map(r => ({ label: r.label.split('/').pop(), van: !!r.isVanilla, min: +(r.wall_seconds / 60).toFixed(1), pops: r.endPops, levels: r.endLevels,
     ...(CL[r.label] ? { cluster: CL[r.label].cluster, ...(CL[r.label].bug ? { bug: CL[r.label].bug } : {}) } : {}) })),
   clustered: Object.keys(CL).length > 0,

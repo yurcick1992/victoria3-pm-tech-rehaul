@@ -1289,7 +1289,7 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   edit the script while it runs.
 - **`ledger/report_perf.mjs`** `<sessionDir|runDir> [...] [--json] [--bins N] [--wall play|meta]` — wall clock against vanilla: the total
   play time (the grade) and pop-matched s per in-game year (the diagnostic); play time from `lib_wall` by default. `fill_build_perf.mjs`
-  turns it plus `wall_clusters.json` into row P.
+  turns it plus `wall_clusters.json` into the play-time block (and its per-session ratios).
 - **`ledger/input_price_flags.mjs`** — the standing input-price red-flag check: HIGH = ≥ 1.70 × base through a ≥ 2-year stretch; SWING =
   a ≥ 0.5 × base range within 3 years on < 10 units/week of supply; every good a production method consumes, local goods excluded, the
   eleven tags' markets. Sources: order books (`G` + yearly `GW` lines) or save summaries (supply = production + v10 imports, a lower bound;
@@ -1304,7 +1304,14 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   ≥ 10 units/week of building demand) and chronic markets (≥ 20 such years). The summary is written with the `redflag-summary` skill into
   `redflags_summary.html`; `fill_verify` refuses a report without it. Traps: the vanilla column uses `prodFlags`, never order books.
 - **`ledger/fill_obsolescence.mjs`** `<outDir> --session --setup --config [--pool 1920,1930,1935] [--override-dir]` → `obsolescence.json`
-  (the `OBS` card), before `fill_assemble`; exits 1 if no industry has an old rung.
+  (the `OBS` detail, collapsed under the old-plant table), before `fill_assemble`; exits 1 if no industry has an old rung.
+- **`ledger/fill_old_plants.mjs`** `<outDir> --mod <runs> --config <book>` → `old_plants.json` (`OLDP`, 2026-10-29): "Do old plants die?" —
+  per industry and year, the workers on plants two or more tiers behind their own market's frontier (≥ 10% of the market's workers) and all
+  its workers, the mean over runs, world / shortlist / each watchlist tag. Reproduces F249 §4's per-industry shares. Mod only.
+- **`ledger/fill_scorecard.mjs`** `<outDir> [--config <book>]` → `scorecard.html` (`__SCORECARD__`), `scorecard_loss.html` (`__LOSS__`),
+  `intro.json` (`INTRO`), 2026-10-29: the report's one four-column table (line · this batch / vanilla · aim · verdict) grouped by goal, from
+  `criteria.json` and the other fill outputs; the register's loss for the footer; the price-path and run-by-run charts' data. Replaces
+  `fill_register.mjs` and `fill_goals.mjs` (removed). Refs: §10.104.1, ledger README §6.
 
 ### Register, run selection and market definitions
 
@@ -1369,8 +1376,9 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
 
 - **`ledger/misplaced_capital.mjs`** — misplaced capital: each year's new capital's expected payback against the country's best sector
   (fine ≤ 1.5× · a bit ≤ 3× · gross > 3× or loss-making) on ALL / OPEN / VALID benchmarks (VALID needs v15); infrastructure, shipyards,
-  trade centres, government buildings and gold exempt, military measured. `--batch label:session[:setup]`, `--snap <dir of v15
-  re-summarised saves> --arm label:session`, `--series <dir>`, `--why`. A reading, not a register term. Refs: §10.92, F206, F207.
+  trade centres, government buildings and gold exempt, military measured. `--batch label:session[,session][:setup] [--json <file>]`
+  (the JSON: per decade the median VALID gross share over runs, the ledger's line), `--snap <dir of v15 re-summarised saves> --arm
+  label:session`, `--series <dir>`, `--why`. A reading, not a register term; the ledger shows it mod only (§10.104.1). Refs: §10.92, F206, F207.
 - **`ledger/return_per_point.mjs`** `[--year 1935] [--scope pool|world] [--filter <regex>] <label>=<group> [...]` — profit per staffed level
   ÷ construction points beside ai_value, per type (no validity rule). Refs: F211 §4.
 - **`ledger/lib_obsolescence.mjs` + `trade_obsolescence.mjs`** — in-market vs trade obsolescence: a rung is in-market when its market's
@@ -1380,7 +1388,8 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   the premium is a producer price; a merge host is counted by building type, not split by main method. Refs: F161 §4/§6.
 - **`ledger/old_rungs_by_industry.mjs`** `<year> <label>=<group> [...]` — `countrySplit`'s old-rung share per industry, pool and world, each
   run on its own book. Traps: different ladders compare what each calls two tiers behind.
-- **`ledger/laggard_pressure.mjs`** `<book> <label>=<group> [...] [--stuck y|y10|none] [--gap 15] [--minpop 1e6] [--tags POR,…]` — competitive
+- **`ledger/laggard_pressure.mjs`** `<book> <label>=<group> [...] [--stuck y|y10|none] [--gap 15] [--minpop 1e6] [--tags POR,…] [--json <file>]`
+  (the JSON: section A per class — cases, workers kept, median case, profit — the ledger's two backward-industry lines) — competitive
   pressure on backward industry where vanilla CANNOT switch (FINDINGS F249 §4a): A. stuck laggards (a country's industry whose best rung is ≥ 2 tiers
   under its own market's frontier and that lacks the next rung's technology at the start of the decade — `--stuck y`, the default), in-market and
   trade-only, by chain and by whether the technology arrived within the decade; ten-year retention of the INDUSTRY's workers on every rung (a switch
@@ -1499,8 +1508,10 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
 
 - **`ledger/tech_timing.mjs`** `<label>=<group> ... [--control <label>] [--cat production|military|society|all] [--book]` — half-majors
   year per technology against the tree's onset. Refs: §10.95, F219.
-- **`ledger/tech_census.mjs`** `<label>=<group> ... [--top-era 5]` — technologies at the end: top-era holders, the tech majors, other
-  independents, the anchor-principle share (leader's share of game eras 3 / 4 / 5 at 1875 / 1905 / end), reliance on research entries.
+- **`ledger/tech_census.mjs`** `<label>=<group> ... [--tree <twin>] [--top-era 5] [--json <file>]` — technologies at the end: top-era
+  holders, the tech majors, other independents, the anchor-principle share (leader's share of game eras 3 / 4 / 5 at 1875 / 1905 / end),
+  reliance on research entries; the JSON carries D, B and E for the ledger's technology lines. It keeps only the years it reads (the first,
+  the anchors, the last): every year of every run ran the heap out on the n=40 vanilla reference (2026-10-29).
 - **`ledger/tech_gain_check.mjs`** `<label>=<group> [...] [--van] [--year 1885] [--gdp-year 1845] [--years] [--runs]` — majors' technology
   gain (line 0.70) and early world GDP (line 0.80) ÷ vanilla. Refs: §10.97.
 - **`ledger/je_tally.mjs`** `--session <stamp>[:<setup>] [--config]` — unique research-entry completions per run, token-windowed and

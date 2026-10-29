@@ -20,6 +20,7 @@
 // year's new capital is classed against it — beside the old benchmark (all types), so the effect of the rule is visible.
 //   --series <dir of v15 summaries of ONE campaign, ~yearly>              exact: every year's validity from that year's own summary
 //   --arm label:session[:setup] --snap <dir of v15 kept-save summaries>   the decade before each run's kept save; validity from that save
+//   --batch label:session[,session][:setup] [--json <file>]                 v15+ batches: yearly steps per run and decade, medians over runs
 import fs from 'node:fs'; import path from 'node:path'; import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { usableRuns } from './lib_runs.mjs';
@@ -201,7 +202,13 @@ for (const a of all('--batch')) {
     console.log(line(`like-for-like ${+R.lastD.split('.')[0] - 10}-${R.lastD.split('.')[0].slice(2)}`, R.accLast));
   }
   const decs = [...new Set(runs.flatMap(R => Object.keys(R.byDec)))].sort();
+  // --json (2026-10-29, the ledger's scorecard): per decade the MEDIAN over runs of the gross share against the VALID benchmark ("misplaced
+  //   capital", GLOSSARY) and of the 'a bit' share; the century likewise. Several sessions of one arm: --batch label:s1,s2:setup.
+  (globalThis.__JOUT ||= {})[l] = { runs: runs.length, decades: Object.fromEntries(decs.map(d => { const As = runs.map(R => R.byDec[d]).filter(Boolean);
+    return [d, { gross: med(As.map(A => sh(A.val, 'gross'))), bit: med(As.map(A => sh(A.val, 'bit'))), none: med(As.map(A => sh(A.val, 'none'))), n: As.length }]; })),
+    century: { gross: med(runs.map(R => sh(R.cent.val, 'gross'))), bit: med(runs.map(R => sh(R.cent.val, 'bit'))) } };
   if (runs.length > 1) { console.log(` MEDIAN over ${runs.length} runs:`); for (const d of decs) { const As = runs.map(R => R.byDec[d]).filter(Boolean);
       const M = k => med(As.map(k)); console.log(`  ${(d + '-' + String(+d + 10).slice(2)).padEnd(18)} ALL: ${p0(M(A => sh(A.all, 'gross')))}/${p0(M(A => sh(A.all, 'bit')))}  VALID: ${p0(M(A => sh(A.val, 'gross')))}/${p0(M(A => sh(A.val, 'bit')))}/${p0(M(A => sh(A.val, 'none')))}   mfg gross ${p0(M(A => sh(A.all.sec.manufacturing, 'gross')))} / ${p0(M(A => sh(A.val.sec.manufacturing, 'gross')))}  (n=${As.length})`); } }
   if (globalThis.__why) { const T = newAcc(); for (const R of runs) merge(T, R.cent); if (T.gb) globalThis.__why(l + ' (century, pooled)', T.gb, T.gk || {}); const L = newAcc(); for (const R of runs) merge(L, R.accLast); if (L.gb) globalThis.__why(l + ' (like-for-like decade, pooled)', L.gb, L.gk || {}); }
 }
+{ const jf = argOf('--json', null); if (jf && globalThis.__JOUT) { fs.writeFileSync(jf, JSON.stringify(globalThis.__JOUT, null, 1)); console.log('json → ' + jf); } }

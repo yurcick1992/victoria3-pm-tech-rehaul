@@ -25,7 +25,11 @@
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif}
-.wrap{max-width:960px;margin:0 auto;padding:32px 20px 64px;display:flex;flex-direction:column;gap:26px}
+/* ⭐ READS AS AN EXTERNAL DOCUMENT (user, 2026-10-29): the artifact gutter (16px + the phone's safe-area inset), every flex child free to shrink
+   (min-width:0), headers that wrap, and every table inside a scrolling box — text never runs past the right edge; fill_verify checks it in a
+   real browser at 1000px and 390px. */
+.wrap{max-width:960px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:26px}
+.wrap>*,.sec>*,.page>*,figure>*{min-width:0}
 h1{font:700 30px/1.15 Georgia,'Times New Roman',serif;margin:0;text-wrap:balance}
 h2{font:700 20px/1.2 Georgia,serif;margin:0}
 h3{font:600 15px/1.3 "Segoe UI",system-ui,sans-serif;margin:0;color:var(--ink)}
@@ -37,11 +41,11 @@ h3{font:600 15px/1.3 "Segoe UI",system-ui,sans-serif;margin:0;color:var(--ink)}
 .chip.mono{font-family:Consolas,monospace;font-size:12px}
 .sec{display:flex;flex-direction:column;gap:12px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:16px 18px}
-.lede{margin:0;max-width:70ch;color:var(--ink)}
+.lede,.sec>p{margin:0;max-width:78ch;color:var(--ink)}
 .small{font-size:12.5px;color:var(--ink2)}
 .tablewrap{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:13.5px}
-th{font:600 11px/1.3 "Segoe UI",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);text-align:left;padding:7px 10px;border-bottom:2px solid var(--line);white-space:nowrap}
+th{font:600 11px/1.3 "Segoe UI",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);text-align:left;padding:7px 10px;border-bottom:2px solid var(--line);vertical-align:bottom}
 td{padding:7px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;vertical-align:top}
 tr:last-child td{border-bottom:none}
 td.num,th.num{text-align:right}
@@ -72,11 +76,22 @@ svg text{font-family:"Segoe UI",system-ui,sans-serif}
 .ctag:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .ctagbar{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
 .linkbtn{border:0;background:none;color:var(--accent);font:600 12px "Segoe UI",sans-serif;cursor:pointer;padding:2px 4px}
-.next{border-left:3px solid var(--accent);padding:10px 16px;background:var(--panel);border-radius:0 5px 5px 0}
 ul{margin:6px 0;padding-left:20px}li{margin:3px 0}
 a{color:var(--accent)}
-.footer{font-size:12px;color:var(--ink3);border-top:1px solid var(--line);padding-top:14px}
-.goalcell{max-width:210px}
+.footer{font-size:12px;color:var(--ink3);border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:8px}
+.footer p{margin:0}
+/* the scorecard: four columns, rows grouped under the question they answer */
+table.score td:first-child{min-width:220px}
+table.score td:nth-child(3){min-width:110px}
+table.score td:nth-child(4){min-width:170px}
+table.score td.num{white-space:nowrap}
+tr.grp td{background:var(--panel2);font:700 14px/1.3 Georgia,serif;color:var(--ink);padding:9px 10px}
+tr.grp td span{display:block;font:400 12.5px/1.4 "Segoe UI",sans-serif;color:var(--ink2);margin-top:2px}
+.v{font-size:12.5px;color:var(--ink2)}
+.pill.dim{background:var(--panel2);color:var(--ink2)}
+details>summary{cursor:pointer}
+details.card[open]>summary{margin-bottom:10px}
+.charts2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:14px}
 .mono{font-family:Consolas,monospace}
 .page{display:none;flex-direction:column;gap:26px}
 .page.on{display:flex}
@@ -85,58 +100,29 @@ a{color:var(--accent)}
 <div class="wrap">
 <header class="mast">
   <div class="eyebrow">PM &amp; Tech Rehaul — batch report</div>
-  <h1>Rehaul Batch Ledger</h1>
-  <div class="meta">
-    <span class="chip mono">__SESSION__</span>
-    <span class="chip"><b>arm</b> __ARM__</span>
-    <span class="chip"><b>n</b> __N__ · 1836→1936 · game __GAME__</span>
-    <span class="chip"><b>Δ vs shipped</b> __DELTA__</span>
-    <span class="chip"><b>baseline</b> __BASE__</span>
-  </div>
-  <div class="meta">
-    <span class="pill ok">__HEALTH__</span>
-  </div>
+  <h1>__HEADLINE__</h1>
+  <div class="small">__SUBTITLE__</div>
 </header>
 
-<!-- ============ VERDICT (always visible) ============ -->
+<!-- ============ THE SCORECARD (always visible) ============ -->
+<!-- ⭐ ONE TABLE (user, 2026-10-29): everything above the play-time block is a line of it — the criteria register (§10.83), the readings the
+     register does not carry (§10.104), play time, the input-price red flags, the laggard test, misplaced capital and the technology census —
+     in four columns (Line · this batch / vanilla · aim · verdict), grouped by the question each answers (fill_scorecard.mjs). The register's
+     loss is in the footer; the session, arm and baseline chips are there too. -->
 <section class="sec">
-  <h2>Verdict — the criteria register</h2>
+  <p class="lede"><b>How these runs are played.</b> Every run is an observer game: the game plays itself from the 1836 start to 1936 with no player, and the AI runs every country. The numbers show where the economy goes on its own, not what a player would make of it.</p>
   __LEDE__
+  <div class="card tablewrap">
+    <h3 style="margin-bottom:6px">Where the mod stands</h3>
+    __SCORECARD__
+  </div>
   __REDFLAGS__
-  <!-- ⭐ BALANCE_FRAMEWORK §10.104 (user-ruled 2026-10-24): the scorecard IS the criteria register (criteria.mjs --json → fill_register.mjs);
-       the old goals table is gone, and what it measured that the register does not stays below as READINGS with their own bands. -->
-  <div class="card tablewrap">
-  <h3>The register <span class="dim">— aim / soft / hard per line (§10.83 and its amendments)</span></h3>
-  <table>
-    <tr><th>scope</th><th>Line</th><th class="num">This batch ÷ vanilla</th><th class="num">absolute <span class="dim">(arm vs vanilla)</span></th><th class="num">aim · soft · hard</th><th>Verdict</th></tr>
-    __REGISTER__
-  </table>
-  </div>
-  <div class="card tablewrap">
-  <h3>Readings the register does not carry <span class="dim">— each keeps its own band; none is a register line</span></h3>
-  <table>
-    <tr><th></th><th>Goal, in game terms</th><th>Headline metric</th><th class="num">This batch</th><th class="num">Band</th><th>Reading</th></tr>
-    __GOALS__
-    <tr><td><b>P</b></td><td class="goalcell"><b>The game does not get slower</b></td><td><b>Total run time</b> vs vanilla <span class="dim">(per-unit, pop-matched, beside it)</span></td><td class="num" id="v-perf">—</td><td class="num dim">≤+5% / +5–10% / >+10% <span class="dim">(clusters 1+2)</span></td><td id="v-perfpill"><span class="pill dim">—</span></td></tr>
-  </table>
-  </div>
 </section>
 
-<!-- ============ PERFORMANCE (hard constraint — user-ruled 2026-08-18) ============ -->
+<!-- ============ PLAY TIME (hard constraint — user-ruled 2026-08-18; graded on the total, 2026-08-31; prose cut 2026-10-29) ============ -->
 <section class="sec">
-  <h2>P — Performance: does our meddling make the game slower than vanilla?</h2>
-  <p class="lede"><b>A standing constraint on every batch.</b> Whatever the mod does to the economy, it must not
-  make Victoria&nbsp;3 materially slower to play. Graded on the total: <b>≤+5%</b> acceptable, <b>+5–10%</b> needs improvement, <b>&gt;+10%</b> (the ruled budget) too slow — over the wall-clock clusters 1 + 2; a run with a directly observed listed vanilla bug (cluster 3) is left out and named (user-ruled 2026-10-07). Speed is reported as <b>in-game years per
-  minute</b> — the rate you actually feel — so <b>higher is better</b> everywhere on this page.</p>
-  <p class="lede"><b>Total run time is the quantity that matters</b> — a player never notices that the economy
-  half a world away carries more lightly-staffed buildings, they notice the century taking longer. So the aim is
-  to keep the <i>total</i> down, and shrinking what we ask the engine to simulate is as legitimate a way to do
-  that as making each unit cheaper.</p>
-  <p class="lede">The normalised views exist for a different job. ⚠ They must be read <b>at a comparable economy
-  size</b>: an underdeveloped arm finishes sooner while being slower per unit of work, so the fair arm-vs-arm
-  verdict is <b>pop-matched</b>. And <b>÷ modelled cost</b> is a <b>diagnostic tripwire</b>: it should sit near
-  1.0 and near-flat, and if a build suddenly lifts or destabilises it, that build made each unit of world dearer
-  — a fault that a change in economy size would otherwise mask.</p>
+  <h2>Play time</h2>
+  <p class="lede">Minutes to play 1836–1936, the mod against the vanilla runs of the same sessions; runs that hit a listed vanilla bug are left out of the grade, and the speed chart reads in-game years per minute, so higher is better.</p>
 
   <div class="card" id="perf-head"></div>
 
@@ -157,15 +143,31 @@ a{color:var(--accent)}
     <figcaption class="small" id="perf-cap"></figcaption>
   </figure>
 
-  <div class="card tablewrap">
-    <h3 style="margin-top:0">By decade</h3>
-    <table id="t-perfyear"></table>
-  </div>
-
-  <div class="card tablewrap">
-    <h3 style="margin-top:0">Pop-matched — the reading the budget is written against</h3>
-    <table id="t-perf"></table>
+  <details class="card">
+    <summary>By decade, and at equal population (the per-unit diagnostic)</summary>
+    <div class="tablewrap"><table id="t-perfyear"></table></div>
+    <h3 style="margin:14px 0 4px">At equal live population</h3>
+    <div class="tablewrap"><table id="t-perf"></table></div>
     <p class="small" id="perf-note"></p>
+  </details>
+</section>
+
+<!-- ============ TWO CHARTS BEFORE THE PAGES (user, 2026-10-29: "both building-input prices and world GDP run by run go up, before the view
+     selector, and after the wall clock speed"); INTRO from fill_scorecard.mjs → intro.json; their own script, so a failure blanks only them -->
+<section class="sec">
+  <div class="charts2">
+    <figure class="card">
+      <h3>Building-input prices, decade by decade</h3>
+      <div class="legend" id="pi-legend"></div>
+      <div id="chart-pi"></div>
+      <figcaption id="pi-cap"></figcaption>
+    </figure>
+    <figure class="card">
+      <h3>World GDP, run by run</h3>
+      <div class="legend" id="runs-legend"></div>
+      <div id="chart-runs"></div>
+      <figcaption id="runs-cap"></figcaption>
+    </figure>
   </div>
 </section>
 
@@ -201,9 +203,8 @@ function renderPerf(mode){
   const c3=PERF.runs.filter(r=>r.cluster===3);
   const van=PERF.runs.filter(r=>r.van&&r.cluster!==3), mod=PERF.runs.filter(r=>!r.van&&r.cluster!==3);
   const cl=a=>({n1:a.filter(r=>r.cluster===1).length,n2:a.filter(r=>r.cluster===2).length});
-  const clTxt=PERF.clustered?(' <span class="dim">Clusters (2026-10-07 ruling): mod '+cl(mod).n1+' normal + '+cl(mod).n2+' inexplicably slowed, vanilla '+cl(van).n1+' + '+cl(van).n2+
-    '; the grade is their median. '+(c3.length?c3.length+' run(s) left out for a listed vanilla bug ('+[...new Set(c3.map(r=>r.bug||'listed bug'))].join(', ')+': '+
-    c3.map(r=>r.label+(r.van?' (vanilla)':'')).join(', ')+').':'No run carried a listed bug.')+'</span>'):
+  const clTxt=PERF.clustered?(' <span class="dim">'+(c3.length?c3.length+' run(s) left out for a listed vanilla bug ('+[...new Set(c3.map(r=>r.bug||'listed bug'))].join(', ')+').':'No run hit a listed vanilla bug.')+
+    ' Slowed runs with no listed bug count: mod '+cl(mod).n2+' of '+mod.length+', vanilla '+cl(van).n2+' of '+van.length+'.</span>'):
     ' <span class="dim">⚠ Runs not clustered (no wall_clusters.json in this fill): every run counts.</span>';
   const mv=med(van.map(r=>r.min)), mm=med(mod.map(r=>r.min));
   const raw=mm/mv, pr=med(mod.map(r=>r.pops))/med(van.map(r=>r.pops));
@@ -222,26 +223,25 @@ function renderPerf(mode){
   // when the arm is faster — the earlier hedge to "no slowdown" deferred to a CLAUDE.md reading that
   // has since been corrected. The pop-matched figure sits beside it as the per-unit diagnostic.
   const lab=pctTotal<=GY?(pctTotal<-0.05?'faster':pctTotal<=0.05?'no change':'acceptable'):pctTotal<=RY?'needs improvement':'too slow';
-  document.getElementById('v-perf').innerHTML='<b>'+spd(pctTotal)+'</b>'+
-    ' <span class="dim">total</span><br><span class="dim" style="font-size:12px">'+spd(pct)+' per unit</span>';
-  document.getElementById('v-perfpill').innerHTML='<span class="pill '+cls+'">'+lab+'</span>';
+  // (the grade's own line is in the scorecard since 2026-10-29, fill_scorecard.mjs, on the same clusters and edges)
   // WHY the total differs is DERIVED from the two numbers, never written: this sentence used to say "a bigger world,
   // not a dearer engine" on every batch, and printed it beside ×0.97 the pops and +6.9% per unit (trade15-b164, 2026-09-25).
   const why=(Math.abs(pctTotal)<1&&Math.abs(pct)<1)?'the two arms cost about the same at every size'
     :(Math.sign(pct)===Math.sign(pctTotal)&&pct/pctTotal>=0.5)
       ?'most of the '+(pctTotal>0?'extra':'saved')+' time is per unit of work &mdash; a <b>'+(pctTotal>0?'dearer':'cheaper')+' engine</b>, not the size of the world'
       :'most of the '+(pctTotal>0?'extra':'saved')+' time is the <b>'+(pr>=1?'bigger':'smaller')+' world</b>, not the cost per unit of work';
+  // \u2b50 BY SESSION (2026-10-29): the ratio inside each session that holds both arms \u2014 the machine's speed drifts between sessions (F248, F249),
+  //   so a reader needs it beside the pooled grade (fill_build_perf.mjs \u2192 PERF.bySession)
+  const bs=PERF.bySession||[];
+  const big=(c,t)=>'<div style="font:700 30px/1.1 Segoe UI,sans-serif;color:var(--'+c+');margin:4px 0">'+t+'</div>';
   document.getElementById('perf-head').innerHTML=
-    '<div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">'+
-      '<div style="flex:1 1 260px"><div class="eyebrow">THE GRADE &mdash; total run time</div>'+
-        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--'+(cls==='wa'?'warn':cls==='ok'?'ok':'bad')+');margin:6px 0">'+spd(pctTotal)+'</div>'+
-        '<div class="small">Vanilla <b>'+mv.toFixed(1)+'</b> min vs mod <b>'+mm.toFixed(1)+'</b> min for the century. '+
-        'This is what a player feels, so it sets the grade: &le;+'+GY+'% acceptable, +'+GY+'\u2013'+RY+'% needs improvement, &gt;+'+RY+'% (the ruled budget) too slow.'+clTxt+'</div></div>'+
-      '<div style="flex:1 1 290px"><div class="eyebrow">Per unit of work &mdash; pop-matched</div>'+
-        '<div style="font:700 34px/1.1 Segoe UI,sans-serif;color:var(--ink2);margin:6px 0">'+spd(pct)+'</div>'+
-        '<div class="small">At equal live pop objects ('+PERF.overlapping+' overlapping bins). The <b>fair arm-vs-arm</b> figure, '+
-        'and the gap to the total is the point: the mod ended with <b>&times;'+pr.toFixed(2)+'</b> the live pop objects, so '+
-        why+'. Both are real \u2014 the player pays the total.</div></div>'+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:22px;align-items:start">'+
+      '<div><div class="eyebrow">The grade: total play time</div>'+big(cls==='wa'?'warn':cls==='ok'?'ok':'bad',spd(pctTotal))+
+        '<div class="small">'+mm.toFixed(1)+' min against vanilla\u2019s '+mv.toFixed(1)+' for the century; '+lab+' (budget +'+RY+'%).'+clTxt+'</div></div>'+
+      '<div><div class="eyebrow">Per unit of work</div>'+big('ink2',spd(pct))+
+        '<div class="small">At equal live population: a diagnostic, not the grade. The mod ended with \u00d7'+pr.toFixed(2)+' the live pops, so '+why+'.</div></div>'+
+      (bs.length>1?'<div><div class="eyebrow">By session</div>'+big('ink2',bs.map(s=>'\u00d7'+s.ratio.toFixed(2)).join(' \u00b7 '))+
+        '<div class="small">The same comparison inside each session. Where they differ, the machine\u2019s speed moved between sessions for both arms, so read play time only within a session.</div></div>':'')+
     '</div>';
 
   const yrs=Object.keys(PERF.byYear.van).map(Number).filter(y=>PERF.byYear.mod[y]!=null).sort((x,y)=>x-y);
@@ -376,14 +376,74 @@ function renderPerf(mode){
 })();
 </script>
 
+<script>
+// ---------- the two charts above the pages (2026-10-29): INTRO = fill_scorecard.mjs → intro.json, spliced by fill_assemble ----------
+// Their own script, like the play-time panel: a failure here blanks these two charts only.
+const INTRO={"pi":{"years":[],"mod":[],"lo":[],"hi":[],"van":[]},"runs":{"gdp":[]}};
+(function(){
+  const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const fin=Number.isFinite, sw=(c,t,band)=>'<span><span class="sw" style="background:'+c+(band?';opacity:.35':'')+'"></span>'+t+'</span>';
+  // building-input prices, £ ÷ base, the shortlist: the arm's median per decade with its runs' range, against vanilla's
+  const P=INTRO.pi||{}, ys=P.years||[], host=document.getElementById('chart-pi');
+  if(!ys.length||!(P.mod||[]).some(fin)){ host.innerHTML='<p class="small">No price path in this fill (criteria.json carries no PIpath).</p>'; }
+  else{
+    const W=640,H=250,L=46,R=60,T=14,B=28, all=[...P.mod,...P.lo,...P.hi,...P.van,1].filter(fin);
+    const lo=Math.floor(Math.min(...all)*20)/20, hi=Math.ceil(Math.max(...all)*20)/20;
+    const X=y=>L+(y-ys[0])/(ys[ys.length-1]-ys[0])*(W-L-R), Y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
+    let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Building-input prices as a share of base, by decade" style="width:100%;height:auto">';
+    for(let g=lo;g<=hi+1e-9;g+=0.05){ const em=Math.abs(g-1)<1e-9;
+      s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" stroke="'+css('--line')+'"'+(em?' stroke-width="1.5" stroke-dasharray="5 4"':'')+'/>'+
+         '<text x="'+(L-6)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="'+css('--ink3')+'">'+g.toFixed(2)+'</text>'; }
+    for(const y of ys) s+='<text x="'+X(y)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+y+'</text>';
+    const ok=ys.map((y,i)=>[y,P.lo[i],P.hi[i]]).filter(q=>fin(q[1])&&fin(q[2]));
+    if(ok.length>1) s+='<path d="'+ok.map((q,i)=>(i?'L':'M')+X(q[0])+' '+Y(q[2])).join('')+ok.slice().reverse().map(q=>'L'+X(q[0])+' '+Y(q[1])).join('')+'Z" fill="'+css('--accent')+'" opacity="0.13"/>';
+    const line=(vals,c,dy)=>{ const pts=ys.map((y,i)=>[y,vals[i]]).filter(q=>fin(q[1])); if(!pts.length) return '';
+      const e=pts[pts.length-1];
+      return '<path d="'+pts.map((q,i)=>(i?'L':'M')+X(q[0]).toFixed(1)+' '+Y(q[1]).toFixed(1)).join('')+'" fill="none" stroke="'+c+'" stroke-width="2.2" stroke-linejoin="round"/>'+
+        pts.map(q=>'<circle cx="'+X(q[0])+'" cy="'+Y(q[1])+'" r="3" fill="'+c+'"/>').join('')+
+        '<text x="'+(X(e[0])+7)+'" y="'+(Y(e[1])+dy)+'" font-size="12" font-weight="600" fill="'+c+'">'+e[1].toFixed(2)+'</text>'; };
+    const lastM=P.mod[P.mod.length-1], lastV=P.van[P.van.length-1];
+    s+=line(P.van,css('--ink3'),lastV>=lastM?-3:12)+line(P.mod,css('--accent'),lastM>lastV?-3:12)+'</svg>';
+    host.innerHTML=s;
+    document.getElementById('pi-legend').innerHTML=sw(css('--accent'),'this batch, median of '+(P.n||'?')+' runs')+sw(css('--accent'),'its runs’ range',1)+sw(css('--ink3'),'vanilla, median of '+(P.vanN||'?')+' runs');
+    const i0=0,i1=ys.length-1, r0=P.mod[i0]/P.van[i0], r1=P.mod[i1]/P.van[i1];
+    document.getElementById('pi-cap').innerHTML='Steel, tools, engines, fertilizer, explosives, dye and paper, £ ÷ base price, the shortlist. Falling prices are how the mod retires old plants; the scorecard grades only the end point. '+
+      (fin(r0)&&fin(r1)?'This batch starts at ×'+r0.toFixed(2)+' of vanilla’s in '+ys[i0]+' and ends at ×'+r1.toFixed(2)+' in '+ys[i1]+'.':'');
+  }
+  // world GDP, run by run: each run's end state ÷ vanilla's median, against the aim, vanilla's own spread and the consensus
+  const Rn=INTRO.runs||{}, g=(Rn.gdp||[]).filter(o=>fin(o.v)), h2=document.getElementById('chart-runs');
+  if(!g.length){ h2.innerHTML='<p class="small">No per-run world GDP in this fill.</p>'; return; }
+  const W=640,H=170,L=16,R=16,T=26,B=34, vals=g.map(o=>o.v).concat(Rn.van95||[],Rn.aim||[]).filter(fin);
+  const lo=Math.min(0.6,Math.floor(Math.min(...vals)*10)/10), hi=Math.max(1.4,Math.ceil(Math.max(...vals)*10)/10);
+  const X=v=>L+(v-lo)/(hi-lo)*(W-L-R), mid=T+(H-T-B)/2;
+  let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="World GDP of each run divided by the vanilla median" style="width:100%;height:auto">';
+  if(Rn.van95) s+='<rect x="'+X(Rn.van95[0])+'" y="'+T+'" width="'+(X(Rn.van95[1])-X(Rn.van95[0]))+'" height="'+(H-T-B)+'" fill="'+css('--panel2')+'"/>';
+  if(Rn.aim) s+='<rect x="'+X(Rn.aim[0])+'" y="'+T+'" width="'+(X(Rn.aim[1])-X(Rn.aim[0]))+'" height="'+(H-T-B)+'" fill="'+css('--okbg')+'" stroke="'+css('--ok')+'"/>';
+  for(let t=Math.ceil(lo*10)/10;t<=hi+1e-9;t+=0.2){ s+='<line x1="'+X(t)+'" x2="'+X(t)+'" y1="'+(H-B)+'" y2="'+(H-B+4)+'" stroke="'+css('--ink3')+'"/><text x="'+X(t)+'" y="'+(H-B+17)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+t.toFixed(1)+'×</text>'; }
+  s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+(H-B)+'" y2="'+(H-B)+'" stroke="'+css('--line')+'"/>';
+  const seen={}; for(const o of g.slice().sort((a,b)=>a.v-b.v)){ const k=Math.round(o.v*60), n=seen[k]=(seen[k]||0)+1;
+    s+='<circle cx="'+X(o.v)+'" cy="'+(mid+(n%2?-1:1)*Math.floor(n/2)*13)+'" r="5.5" fill="'+css(o.broken?'--bad':'--accent')+'" fill-opacity="0.85" stroke="'+css('--panel')+'"/>'; }
+  if(fin(Rn.consensus)){ const cx=X(Rn.consensus), right=cx>W-140;
+    s+='<line x1="'+cx+'" x2="'+cx+'" y1="'+(T-6)+'" y2="'+(H-B)+'" stroke="'+css('--ink')+'" stroke-width="1.5" stroke-dasharray="3 2"/>'+
+       '<text x="'+(cx+(right?-5:5))+'" y="'+(T-10)+'" text-anchor="'+(right?'end':'start')+'" font-size="12" font-weight="600" fill="'+css('--ink')+'">consensus '+Rn.consensus.toFixed(2)+'×</text>'; }
+  h2.innerHTML=s+'</svg>';
+  document.getElementById('runs-legend').innerHTML=sw(css('--accent'),'one run')+(g.some(o=>o.broken)?sw(css('--bad'),'a broken run'):'')+
+    '<span><span class="sw" style="background:'+css('--okbg')+';border:1px solid '+css('--ok')+'"></span>aim</span>'+(Rn.van95?'<span><span class="sw" style="background:'+css('--panel2')+';border:1px solid '+css('--line')+'"></span>vanilla’s own runs, central 95%</span>':'');
+  const vs=g.map(o=>o.v), below=vs.filter(v=>Rn.aim&&v<Rn.aim[0]).length, above=vs.filter(v=>Rn.aim&&v>Rn.aim[1]).length;
+  document.getElementById('runs-cap').innerHTML='World GDP as displayed, '+(Rn.end?Rn.end[0]+'–'+String(Rn.end[1]).slice(2)+' mean, ':'')+'each run ÷ the median of '+(Rn.vanN||'?')+' vanilla runs. '+
+    vs.length+' runs from '+Math.min(...vs).toFixed(2)+'× to '+Math.max(...vs).toFixed(2)+'×: '+below+' below the aim, '+(vs.length-below-above)+' inside it, '+above+' above it'+
+    (Rn.van95?'; vanilla’s own runs spread '+Rn.van95[0].toFixed(2)+'–'+Rn.van95[1].toFixed(2)+'×':'')+'. The spread is why the scorecard’s figures are read for their direction.';
+})();
+</script>
+
 <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
   <div class="tabs" role="tablist" aria-label="Report page">
-    <button id="tab-world" aria-pressed="true">World</button><button id="tab-watch" aria-pressed="false">Watchlist</button>
+    <button id="tab-world" aria-pressed="true">World</button><button id="tab-watch" aria-pressed="false">Shortlist</button>
   </div>
   <div class="toggle" role="group" aria-label="Sector scope">
     <button id="sc-all" aria-pressed="true">whole economy</button><button id="sc-tier" aria-pressed="false">tiered sector</button>
   </div>
-  <span class="small">Scope and page apply to every view below, world GDP included (it reads tiered-sector value added when the batch carries it, and says so when it does not). Urban centres are always excluded from "tiered".</span>
+  <span class="small">World = every country; Shortlist = the countries chosen below it (the shortlist by default). The scope applies to every view, world GDP included; urban centres are never counted as tiered.</span>
 </div>
 
 <!-- ============ WORLD PAGE ============ -->
@@ -408,38 +468,32 @@ function renderPerf(mode){
 
   <figure class="card">
     <div class="fighead">
-      <h3>Who works where — employment in tier buildings, by era</h3>
+      <h3>Who works where — employment in tier buildings, by tier</h3>
       <div class="toggle" role="group" aria-label="Employment chart mode">
         <button id="c2-abs" aria-pressed="true">millions</button><button id="c2-norm" aria-pressed="false">100%</button>
       </div>
     </div>
     <div class="legend" id="legend2"></div>
     <div id="chart2"></div>
-    <figcaption>Estimated workers employed in the mod's tier buildings (staffed-level-equivalents × the tier's base
-    employment; unemployed and subsistence excluded by construction; automation PMs not netted; a merge host's
-    workers shared over its main methods at each method's own era). On a book with craft rungs the e0 band is split
-    into <b>e0 artisans</b> (the crafts, tan) and <b>e0 other</b> (the e0 factories, rose). Unlike counting
-    built levels, this view shows contraction: <span id="emp-shape">…</span></figcaption>
+    <figcaption>Estimated workers in the mod's tier buildings (staffed levels × the tier's employment; a merged
+    method's workers counted at its own tier). On a book with craft rungs tier 0 is split into <b>t0 artisans</b> (the
+    crafts, tan) and <b>t0 other</b> (the tier-0 factories, rose). Unlike counting built levels, this view shows
+    contraction: <span id="emp-shape">…</span></figcaption>
+    <details>
+      <summary class="small">The same numbers by decade, with each decade's change in brackets</summary>
+      <div class="tablewrap"><table id="t-emp"></table></div>
+      <p class="small">Negative brackets are a tier's workforce contracting while its buildings still stand. <span id="emp-note">…</span></p>
+    </details>
   </figure>
 
   <div class="card tablewrap">
-  <h3>Tier employment by era, with the decade's change in brackets (millions)</h3>
-  <table id="t-emp"></table>
-  <p class="small">Δ in brackets = change since the previous row. Negative brackets are the obsolescence signal
-  the level-addition view cannot show — a rung's workforce contracting while its buildings still stand.
-  <span id="emp-note">…</span></p>
-  </div>
-
-  <div class="card tablewrap">
-  <h3>Old rungs beside their replacement — the non-obsolescence that is the ladder's failure (millions)</h3>
+  <h3>Old rungs beside their replacement, by tier (millions)</h3>
   <table id="t-empb2"></table>
-  <p class="small">Workers on a rung <b>two or more eras behind a rung their own country already staffs in the same
-  industry</b> — the old rung surviving next to its replacement, which the ladder's death rule says cannot last (a tier-N
-  building cannot stay profitable once tier N+2 floods the market). The by-era chart above counts every old-rung worker,
-  and most of them sit in countries that run <i>nothing newer</i> in that industry: that is backwardness (technology or
-  capital), not obsolescence, and it is <b>not</b> counted here. Country-level reading; the in-market vs trade panel
-  reads the same question per market. Shortlist = the register's pool (GBR USA FRA NET BEL UNL PRU NGF GER, main
-  records). Median over the batch's runs.</p>
+  <p class="small">Workers on a rung <b>two or more tiers behind a rung their own country already staffs in the same
+  industry</b>: the old plant surviving next to its replacement, which the ladder says cannot last. A country that runs
+  nothing newer in the industry is backward, not failing to retire a plant, and is not counted here (the old-plant table
+  below reads the same question per market instead of per country). Shortlist = GBR USA FRA NET BEL UNL PRU NGF GER, main
+  records. Median over the batch's runs.</p>
   </div>
 
   <div class="card tablewrap">
@@ -452,23 +506,27 @@ function renderPerf(mode){
   (naval income unmodelled).</p>
   </div>
 
+  <!-- ⭐ "DO OLD PLANTS DIE?" (user, 2026-10-29: the obsolescence table reworked completely, with less data; fill_old_plants.mjs → OLDP).
+       The earlier in-market vs trade table stays below it, collapsed: more detail at a finer grain is allowed in a details section. -->
   <div class="card tablewrap">
-  <h3>Obsolescence — in-market vs trade (world, <span id="obs-pool">…</span> pooled)</h3>
-  <table id="t-obs"></table>
-  <p class="small">One metric set for both kinds of competition (FINDINGS F161 §4). An old rung is <b>in-market</b> when its own
-  market's supply frontier — the highest era holding at least 10% of that market's output of the industry — is two eras
-  above it, and <b>trade-only</b> when only the WORLD's frontier is. Cells read <b>loss-making share of the rung's levels ·
-  median TRUE margin (wages in) · staffed share</b>, over every country, not only the instrumented markets. <b>World price ÷
-  break-even</b>: the world's output-weighted realised price of the industry against each trade-only rung's own break-even
-  price — below 1, the rung would lose money at the world price. <b>Importers</b>: trade-only rungs in markets that import
-  their good — loss share and the signed premium of their local price over the world price (log; +0.35 ≈ ×1.4). The
-  <b>gap</b> is how far all producers' prices sit from the world price. Obsolescence works between markets when the
-  trade-only row looks like the in-market one.</p>
+  <h3>Do old plants die? <span class="dim">— world</span></h3>
+  <table id="t-oldp"></table>
+  <p class="small" id="oldp-cap"></p>
+  <details>
+    <summary class="small">Margins and prices of old plants, in-market against trade-only (<span id="obs-pool">…</span> pooled)</summary>
+    <div class="tablewrap"><table id="t-obs"></table></div>
+    <p class="small">An old rung is <b>in-market</b> when its own market's frontier (the highest tier holding at least 10% of
+    that market's output of the industry) is two tiers above it, and <b>trade-only</b> when only the world's is. Cells read
+    <b>loss-making share of the rung's levels · median margin with wages · staffed share</b>. <b>World price ÷ break-even</b>
+    below 1 means the rung would lose money at the world price. <b>Importers</b>: trade-only rungs in markets that import their
+    good, their loss share and the premium of their local price over the world price (log; +0.35 ≈ ×1.4). The <b>gap</b> is how
+    far all producers' prices sit from the world price.</p>
+  </details>
   </div>
 
   <div class="card tablewrap">
   <div class="fighead">
-    <h3>Research — technologies held (mean per country, by game era) and journal entries</h3>
+    <h3>Research — technologies held (mean per country, by tech era) and journal entries</h3>
     <div class="ctagbar" id="trees-w"></div>
   </div>
   <table id="t-tech-w"></table>
@@ -480,42 +538,38 @@ function renderPerf(mode){
   JEs only on the §10.98 books; before them, none by design). No per-date JE series yet — PMR_JE lines carry no game date; the wall-clock join against
   run.log's ticks is the route.</p>
   </div>
-<div class="card tablewrap">
-  <h3>Build choice — how much construction goes below the frontier</h3>
-  <table id="t-tierc"></table>
-  <table id="t-tierc-dec" style="margin-top:8px"></table>
-  <p class="small" id="tierc-cap"></p>
-  </div>
 
   <div class="card tablewrap">
   <h3>The ladder — climb and death</h3>
   <table id="t-ladder">
-    <tr><th>year</th><th>most-built era</th><th class="num">e0 share of builds</th><th class="num">frontier rung payback</th><th class="num">stale rung payback</th><th class="num">stale staffing</th></tr>
+    <tr><th>year</th><th>most-built tier</th><th class="num">tier-0 share of builds</th><th class="num">newest rung’s payback</th><th class="num">stale rung’s payback</th><th class="num">stale staffing</th></tr>
   </table>
-  <p class="small">Frontier = newest rung with ≥50 world levels; stale = two eras below the most-built era
-  (e0 where none). Payback = years of realised weekly profit to repay construction at £720/pt. ⚠ "Most-built" and
-  "e0 share" come from gross level additions (positive year-on-year deltas only — blind to contraction); the
-  employment view above is the contraction-aware complement. Vanilla's own payback runs 10–15y (F53): <span id="ladder-note">…</span></p>
+  <p class="small">Newest rung = the newest with at least 50 world levels; stale = two tiers below the most-built tier
+  (t0 where none). Payback = years of realised profit to repay construction at £720 a point. ⚠ "Most-built" and the
+  tier-0 share count gross level additions (blind to contraction); the employment chart above is the contraction-aware
+  view. Vanilla's own payback runs 10–15 years (F53): <span id="ladder-note">…</span></p>
   </div>
 
   <div class="card tablewrap">
-  <h3>Trajectory — this arm ÷ vanilla baseline <span class="dim">· red GDP = outside 0.8–1.25×, a rough visual guide, not the target</span></h3>
+  <h3>Trajectory — this batch ÷ vanilla</h3>
   <table id="t-traj">
-    <tr><th>year</th><th class="num">GDP ×van</th><th class="num">econ levels ×van</th><th class="num">construction ×van</th><th class="num">non-productive adults <span class="dim">(vs van)</span></th><th class="num">pure unemployment <span class="dim">(vs van)</span></th></tr>
+    <tr><th>year</th><th class="num">economic building levels ×van</th><th class="num">construction ×van</th><th class="num">unemployed + peasants <span class="dim">(vs van)</span></th><th class="num">unemployed only <span class="dim">(vs van)</span></th></tr>
   </table>
-  <p class="small">Non-productive adults = unemployed + peasant workforce ÷ all employable non-dependants.
-  Construction = points delivered per year, inferred from level additions × cost.</p>
+  <p class="small">Unemployed + peasants = their share of all employable adults; unemployed only = of the salaried and
+  unemployed. Construction = points delivered per year, inferred from level additions × cost. (World GDP ÷ vanilla is in
+  the decomposition table above.)</p>
   </div>
 
   </div>
 
-<!-- ============ WATCHLIST PAGE ============ -->
+<!-- ============ SHORTLIST PAGE (the watchlist; user, 2026-10-29: "after the introduction, the views are filtered for WW/shortlist") ============ -->
 <div class="page" id="page-watch">
   <div class="card">
-    <h3>Countries — click to include / exclude</h3>
+    <h3>Countries in this view — the shortlist by default; click to include or exclude</h3>
     <div class="ctagbar" id="ctags" style="margin-top:8px"></div>
-    <div style="margin-top:6px"><button class="linkbtn" id="sel-all">all</button>·<button class="linkbtn" id="sel-none">none</button>·<button class="linkbtn" id="sel-gp">great powers</button>·<button class="linkbtn" id="sel-sl">shortlist</button></div>
+    <div style="margin-top:6px"><button class="linkbtn" id="sel-sl">shortlist</button>·<button class="linkbtn" id="sel-gp">great powers</button>·<button class="linkbtn" id="sel-all">all</button>·<button class="linkbtn" id="sel-none">none</button></div>
     <p class="small" id="flagnote" style="margin-bottom:0"></p>
+    <p class="small" style="margin-bottom:0">⚠ Most panels on this page read one run, the batch's first (__FIRSTRUN__); the old-plant table reads all of them.</p>
   </div>
 
   <figure class="card">
@@ -542,30 +596,26 @@ function renderPerf(mode){
 
   <figure class="card">
     <div class="fighead">
-      <h3>Employment in tier buildings, by era — selection</h3>
+      <h3>Employment in tier buildings, by tier — selection</h3>
       <div class="toggle" role="group" aria-label="Watchlist employment mode">
         <button id="c4-abs" aria-pressed="true">millions</button><button id="c4-norm" aria-pressed="false">100%</button>
       </div>
     </div>
     <div class="legend" id="legend4"></div>
     <div id="chart4"></div>
-    <figcaption>Same estimate as the world chart, summed over the selected tags only — this is where "does era 0
-    die on time in the leaders?" is answerable, unobscured by the periphery.</figcaption>
+    <figcaption>Same estimate as the world chart, summed over the selected countries: whether tier 0 dies on time in the
+    leaders, unobscured by the periphery.</figcaption>
+    <details>
+      <summary class="small">The same numbers by decade, with each decade's change in brackets</summary>
+      <div class="tablewrap"><table id="t-wemp"></table></div>
+    </details>
   </figure>
 
   <div class="card tablewrap">
-  <h3>Tier employment by era, with the decade's change in brackets (millions) — selection</h3>
-  <table id="t-wemp"></table>
-  <p class="small">Same construction as the world table, summed over the selected tags. Negative brackets =
-  the selection's obsolete rungs shedding real workers.</p>
-  </div>
-
-  <div class="card tablewrap">
-  <h3>Old rungs beside their replacement — selection (millions)</h3>
+  <h3>Old rungs beside their replacement, by tier — selection (millions)</h3>
   <table id="t-wempb2"></table>
-  <p class="small">The world table's construction summed over the selected tags: workers on a rung two or more eras
-  behind a rung the same country already staffs in the same industry, and their share of the selection's tier workers.
-  First run only, like every per-country panel here.</p>
+  <p class="small">The world table's construction summed over the selected countries: workers on a rung two or more
+  tiers behind a rung the same country already staffs in the same industry, and their share of the selection's tier workers.</p>
   </div>
 
     <div class="card tablewrap">
@@ -577,29 +627,28 @@ function renderPerf(mode){
   </div>
 
   <div class="card tablewrap">
-  <h3>Obsolescence — in-market vs trade — selection</h3>
-  <table id="t-wobs"></table>
-  <p class="small">The world panel's regimes (each rung classed against its own market's and the world's supply frontier),
-  summed over the rungs the selected tags OWN: loss-making share of levels · staffed share · levels. Margins, the price
-  premium and the break-even ratio are medians over cells and do not sum, so this mirror carries the shares only — a
-  stated divergence from the world panel.</p>
+  <h3 id="woldp-h">Do old plants die? <span class="dim">— selection</span></h3>
+  <table id="t-woldp"></table>
+  <p class="small">The world table's rule (a plant two or more tiers behind its own market's best), summed over the
+  plants the selected countries own; the mean of all the batch's runs.</p>
+  <details>
+    <summary class="small">Old plants in-market against trade-only, loss and staffing — selection</summary>
+    <div class="tablewrap"><table id="t-wobs"></table></div>
+    <p class="small">The world panel's regimes summed over the rungs the selected countries own: loss-making share of
+    levels · staffed share · levels. Margins and prices are medians over cells and do not sum, so this mirror carries the
+    shares only.</p>
+  </details>
   </div>
 
 <div class="card tablewrap">
   <div class="fighead">
-    <h3>Research — technologies held (mean per country, by game era) and journal entries — selection</h3>
+    <h3>Research — technologies held (mean per country, by tech era) and journal entries — selection</h3>
     <div class="ctagbar" id="trees-s"></div>
   </div>
   <table id="t-tech-s"></table>
   <table id="t-je-s" style="margin-top:10px"></table>
   <p class="small">Same construction as the world tables, over the selected tags (techs: selection mean vs the
   same tags' vanilla mean; JEs: cumulative firings by the selected countries), filtered by the tree chips.</p>
-  </div>
-  <div class="card tablewrap">
-  <h3>Build choice — how much construction goes below the frontier</h3>
-  <table id="t-tierc2"></table>
-  <p class="small">⚠ WORLD-WIDE totals, identical to the World page — the build-choice measure is not yet computed
-  per country, so this panel does not follow the selection (the one deliberate divergence between the two pages).</p>
   </div>
 
 <div class="card tablewrap">
@@ -610,37 +659,27 @@ function renderPerf(mode){
   weights, so composition shifts cancel.</p>
   </div>
 
-  <div class="card tablewrap">
-  <h3>The tech edge (watchlist-wide, not filtered) <span class="dim">· red GDP = outside 0.8–1.25×, a rough visual guide</span></h3>
-  <table id="t-watch">
-    <tr><th>year</th><th class="num">GDP ×van</th><th class="num">mean stock era <span class="dim">· GBR · p25</span></th><th class="num">non-productive <span class="dim">(vs van)</span></th><th class="num">frontier share of output</th></tr>
-  </table>
-  <p class="small">Stock era = level-weighted mean era of a country's tier buildings. Frontier share = of the
-  15 industrial goods, the median share of world output produced by countries holding that industry's newest
-  researched technology. Who loses a market to a better-equipped rival is read in the Obsolescence panel (in-market vs trade).</p>
   </div>
 
-
-  </div>
-
-<!-- ============ INCIDENTS + NEXT (always visible) ============ -->
+<!-- ============ INCIDENTS (always visible; the "next lever" section went 2026-10-29) ============ -->
 <section class="sec">
-  <!-- ⚠ BATCH-SPECIFIC PROSE IS A TOKEN, NOT SHELL CONTENT. These three carried the flatcost-n1
-       batch's incidents, its CTD, and a "next lever" built on an OVERSHOOT, into a report whose
-       economy undershoots - every sentence wrong, none of it obviously so. If a paragraph names a
-       year, a country, a run or a number, it belongs in the fill. -->
-  <h2>Incidents &amp; confounds</h2>
+  <!-- ⚠ BATCH-SPECIFIC PROSE IS A TOKEN, NOT SHELL CONTENT. These carried the flatcost-n1 batch's incidents and its CTD into a
+       report whose economy undershoots - every sentence wrong, none of it obviously so. If a paragraph names a year, a country,
+       a run or a number, it belongs in the fill. -->
+  <h2>What disturbed the runs</h2>
   <div class="card">
     __INCIDENTS__
   </div>
-
-  <h2>Next lever</h2>
-  <div class="next">
-    __NEXT__
-  </div>
 </section>
 
+<!-- the provenance the header chips used to carry (moved here 2026-10-29), the register's loss, then the batch's own footer prose -->
 <footer class="footer">
+  <p><b>Runs.</b> __N__</p>
+  <p><b>Sessions.</b> <span class="mono">__SESSION__</span> · game __GAME__</p>
+  <p><b>Arm.</b> __ARM__</p>
+  <p><b>Changed against the shipped canon.</b> __DELTA__</p>
+  <p><b>Baseline.</b> __BASE__</p>
+  __LOSS__
   __FOOTER__
 </footer>
 </div>
@@ -666,10 +705,10 @@ const TRAJ={1840:[0.98,0.95,1.06],1860:[0.98,0.95,1.26],1880:[1.14,1.13,1.02],19
 const WORLD_FULL={1840:[77.2,76.5],1860:[71.2,69.7],1880:[62.2,63.9],1900:[48.8,52.1],1920:[22.0,40.7],1935:[27.5,39.5]};
 const WORLD_PURE={1840:[17.7,18.2],1860:[30.0,30.1],1880:[28.7,30.1],1900:[23.2,26.0],1920:[15.8,21.3],1935:[10.5,16.0]};
 const LADDER={1840:['e1',39,'e2',5.7,'e0',14.8,0.89],1860:['e1',29,'e2',9.4,'e0',12.6,0.83],1880:['e1–e2',22,'e3',6.1,'e0',12.3,0.80],1900:['e3',10,'e4',3.5,'e1',9.1,0.78],1920:['e4',6,'e5',3.8,'e2',7.5,0.79],1935:['e4',5,'e5',3.3,'e2',10.9,0.64]};
-const WATCH={1840:[1.02,0.38,0.79,0.10,67.0,65.7,76],1860:[1.08,0.56,0.97,0.21,65.2,63.4,72],1880:[1.18,0.82,1.22,0.56,58.1,59.6,73],1900:[1.28,1.25,1.56,1.18,48.8,52.1,48],1920:[2.03,2.02,2.30,1.67,22.0,40.7,51],1935:[1.95,2.44,2.64,2.19,6.3,25.6,52]};
-const TIERC={rows:[],cap:''};
 const INDECOMP={years:[],mod:{},van:{}};
 const OBS={pool:[],industries:{},tags:{}};
+// OLDP = the old-plant census (fill_old_plants.mjs → old_plants.json, 2026-10-29): per year the mean over runs of old and all workers per industry
+const OLDP={years:[],world:{},pool:{},tags:{}};
 const YEARS=[1840,1860,1880,1900,1920,1935];
 const EYRS=Object.keys(EMP).map(Number);
 // ---------- per-country data (watchlist) ----------
@@ -684,6 +723,8 @@ const GP=['GBR','RUS','FRA','USA','PRU','TUR','AUS'];
 const SL=['GBR','USA','FRA','NET','BEL','UNL','PRU','NGF','GER'];
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const tip=document.getElementById('tip');
+// a rung's number is its TIER (CLAUDE.md §2.3); the data's column labels still say e0…e3 (lib_era_cols), so the page relabels them on display
+const tl=l=>String(l).replace(/^e([0-9])/,'t$1');
 
 // ---------- tabs ----------
 function page(which){
@@ -747,13 +788,14 @@ renderDecompWorld();
 const traj=document.getElementById('t-traj');
 for(const y of YEARS){
   const t=TRAJ[y];
-  traj.insertRow().innerHTML='<td>'+y+'</td><td class="num '+((t[0]>=0.8&&t[0]<=1.25)?'':'vbad')+'">'+t[0].toFixed(2)+'×</td><td class="num">'+t[1].toFixed(2)+'×</td><td class="num">'+t[2].toFixed(2)+'×</td>'+
+  // (its GDP column went 2026-10-29: the decomposition table above carries world GDP ÷ vanilla per decade)
+  traj.insertRow().innerHTML='<td>'+y+'</td><td class="num">'+t[1].toFixed(2)+'×</td><td class="num">'+t[2].toFixed(2)+'×</td>'+
     '<td class="num">'+cmp(WORLD_FULL[y][0],WORLD_FULL[y][1])+'</td><td class="num">'+cmp(WORLD_PURE[y][0],WORLD_PURE[y][1])+'</td>';
 }
 function empTable(el,data,yrs){
   // headers from EMP_COLS, as many as the data carries (the literal six 'era i' headers misaligned every four-rung table's total column)
   const nc=Math.max(0,...yrs.map(y=>(data[y]||[]).length));
-  el.innerHTML='<tr><th>year</th>'+EMP_COLS.slice(0,nc).map(l=>'<th class="num">'+l+'</th>').join('')+'<th class="num">total</th></tr>';
+  el.innerHTML='<tr><th>year</th>'+EMP_COLS.slice(0,nc).map(l=>'<th class="num">'+tl(l)+'</th>').join('')+'<th class="num">total</th></tr>';
   let prev=null;
   for(const y of yrs){
     const e=data[y]; if(!e)continue;
@@ -778,7 +820,7 @@ function b2Table(el,rows,withPool){
   const nc=Math.max(...yrs.map(y=>(rows[y].b2||[]).length));
   const cs=[...Array(nc).keys()].filter(i=>yrs.some(y=>((rows[y].b2||[])[i]||0)>=0.005));
   const sm=a=>(a||[]).reduce((x,y)=>x+y,0), pc=(a,b)=>b>0?(100*a/b).toFixed(1)+'%':'—';
-  el.innerHTML='<tr><th>year</th>'+cs.map(i=>'<th class="num">'+(EMP_COLS[i]||('era '+i))+'</th>').join('')+'<th class="num">beside, total</th><th class="num">share of tier workers</th>'+(withPool?'<th class="num">shortlist, beside</th><th class="num">share of its tier workers</th>':'')+'</tr>';
+  el.innerHTML='<tr><th>year</th>'+cs.map(i=>'<th class="num">'+tl(EMP_COLS[i]||('tier '+i))+'</th>').join('')+'<th class="num">beside, total</th><th class="num">share of tier workers</th>'+(withPool?'<th class="num">shortlist, beside</th><th class="num">share of its tier workers</th>':'')+'</tr>';
   for(const y of yrs){
     const r=rows[y], b=sm(r.b2);
     el.insertRow().innerHTML='<td>'+y+'</td>'+cs.map(i=>'<td class="num">'+(((r.b2||[])[i]||0)>=0.005?r.b2[i].toFixed(2):'<span class="dim">—</span>')+'</td>').join('')+
@@ -800,7 +842,7 @@ function b2Table(el,rows,withPool){
     const v=yrs.map(y=>EMP[y][e]||0); if(!v.some(x=>x>0)) continue;
     let pi=0; v.forEach((x,i)=>{ if(x>v[pi]) pi=i; });
     const first=yrs[v.findIndex(x=>x>0)];
-    const lbl=EMP_COLS[e]||('era '+e);
+    const lbl=tl(EMP_COLS[e]||('tier '+e));
     if(pi<yrs.length-1){ parts.push(lbl+' peaks in '+yrs[pi]+' at '+v[pi].toFixed(1)+'M and falls to '+v[v.length-1].toFixed(1)+'M'); falling.push(e); }
     else parts.push(lbl+(first>yrs[0]?' (from '+first+')':'')+' still grows through '+last+' ('+v[v.length-1].toFixed(1)+'M)');
   }
@@ -808,12 +850,12 @@ function b2Table(el,rows,withPool){
   if(sh) sh.textContent=parts.join('; ')+(falling.length?' — obsolete rungs shedding real workers while the newer ones absorb them.':' — no rung sheds workers in this batch, so the obsolescence signal this view exists for is absent here.');
   // e0 = every column labelled e0 (artisans + other on a craft book); the note names the split when there is one
   const E0=EMP_COLS.map((l,i)=>l.startsWith('e0')?i:-1).filter(i=>i>=0&&i<nE), e0of=y=>E0.reduce((a,i)=>a+(EMP[y][i]||0),0);
-  const e0name=E0.length>1?'e0 (artisans + other)':'e0';
+  const e0name=E0.length>1?'t0 (artisans + other)':'t0';
   let dec=null; for(let i=1;i<yrs.length;i++){ if(e0of(yrs[i])<e0of(yrs[i-1])){ dec=yrs[i]; break; } }
   const e0=yrs.map(e0of), d0=e0.length>1?e0[e0.length-1]-e0[e0.length-2]:0;
   const nt=document.getElementById('emp-note');
-  if(nt) nt.innerHTML=dec?('⚠ '+e0name+' first declines in the '+dec+' row; whether that lateness is the book’s doing is a watchlist-level question — check per-country on the Watchlist page.')
-    :('⚠ '+e0name+' never declines in this batch — it still adds workers in the last row ('+(d0>=0?'+':'')+d0.toFixed(1)+'M to '+last+'); whether the ladder retires it anywhere is a watchlist-level question — check per-country on the Watchlist page.');
+  if(nt) nt.innerHTML=dec?('⚠ '+e0name+' first declines in the '+dec+' row; whether that lateness is the book’s doing is read per country on the Shortlist page.')
+    :('⚠ '+e0name+' never declines in this batch — it still adds workers in the last row ('+(d0>=0?'+':'')+d0.toFixed(1)+'M to '+last+'); whether the ladder retires it anywhere is read per country on the Shortlist page.');
 })();
 // ---------- research tables (tree-aware; keys tree|era for techs, stage|tree|era for JEs) ----------
 const TREES=['production','military','society'];
@@ -886,31 +928,17 @@ renderResearchW();
 const lad=document.getElementById('t-ladder');
 for(const y of YEARS){
   const l=LADDER[y];
-  lad.insertRow().innerHTML='<td>'+y+'</td><td>'+l[0]+'</td><td class="num">'+l[1]+'%</td><td class="num '+((l[3]>=8&&l[3]<=15)?'':'vwarn')+'">'+l[2]+' · '+l[3].toFixed(1)+'y</td>'+
-    '<td class="num">'+l[4]+' · '+l[5].toFixed(1)+'y</td><td class="num">'+l[6].toFixed(2)+'</td>';
+  lad.insertRow().innerHTML='<td>'+y+'</td><td>'+tl(l[0])+'</td><td class="num">'+l[1]+'%</td><td class="num '+((l[3]>=8&&l[3]<=15)?'':'vwarn')+'">'+tl(l[2])+' · '+l[3].toFixed(1)+'y</td>'+
+    '<td class="num">'+tl(l[4])+' · '+l[5].toFixed(1)+'y</td><td class="num">'+l[6].toFixed(2)+'</td>';
 }
 // ⭐ DERIVED (2026-09-05): "the frontier column sitting at 3–6y is the overshoot engine" was a shell literal from
 //   the first fill (2026-08-15); a four-rung book reads 8.7–18.5y here. Classified on the LAST year's frontier payback.
 (function(){
   const fr=YEARS.map(y=>LADDER[y]&&LADDER[y][3]).filter(Number.isFinite); const el=document.getElementById('ladder-note'); if(!el||!fr.length) return;
   const lo=Math.min(...fr), hi=Math.max(...fr), lastV=fr[fr.length-1];
-  el.textContent='the frontier column reads '+lo.toFixed(1)+'–'+hi.toFixed(1)+'y here'+(lastV<8?', below that band at the end — the overshoot engine.':lastV<=15?', inside that band at the end — no overshoot on this book.':', above that band at the end — the frontier pays back slower than vanilla’s own buildings.');
+  el.textContent='the newest-rung column reads '+lo.toFixed(1)+'–'+hi.toFixed(1)+'y here'+(lastV<8?', below that band at the end — the overshoot engine.':lastV<=15?', inside that band at the end — no overshoot on this book.':', above that band at the end — the frontier pays back slower than vanilla’s own buildings.');
 })();
-const tct=document.getElementById('t-tierc');
-if(TIERC.rows.length){
-  tct.insertRow().innerHTML='<th>arm</th><th class="num">below-best share of levels built</th><th class="num">unit-weighted</th><th class="num">excluding ports</th><th class="num">…and LESS efficient than the frontier</th>';
-  for(const r of TIERC.rows)
-    tct.insertRow().innerHTML='<td>'+r.arm+'</td><td class="num">'+(r.raw!=null?r.raw.toFixed(1)+'%':'—')+'</td><td class="num">'+(r.unit!=null?r.unit.toFixed(1)+'%':'—')+'</td>'+
-      '<td class="num">'+(r.exports!=null?r.exports.toFixed(1)+'%':'—')+'</td><td class="num">'+(r.less!=null?'<b>'+r.less.toFixed(1)+'%</b>':'—')+'</td>';
-  document.getElementById('tierc-cap').innerHTML=TIERC.cap;
-}else{
-  tct.insertRow().innerHTML='<td class="small">No build-choice data for this batch — run analyse_ai_tier_choice.mjs + analyse_ai_tier_profit.mjs (or fill_tierchoice.mjs) and refill.</td>';
-}
-if(TIERC.dec&&TIERC.dec.length){
-  const td=document.getElementById('t-tierc-dec');
-  td.insertRow().innerHTML='<th>this batch, by decade</th>'+TIERC.dec.map(d=>'<th class="num">'+d[0]+'s</th>').join('');
-  td.insertRow().innerHTML='<td>below-best share</td>'+TIERC.dec.map(d=>'<td class="num">'+d[1].toFixed(0)+'%</td>').join('');
-}
+// (the build-choice panel went 2026-10-29, user; its headline — new plants built below the best tier — is a scorecard line)
 // ---- industry composition (scope-aware; the same builder serves world AND selection) ----------
 function compTable(el,getM,getV,rowLabel){
   el.innerHTML='';
@@ -963,12 +991,32 @@ function renderObsSel(sel){
   if(!rows)el.insertRow().innerHTML='<td class="small" colspan="3">The selected tags own no old rung in either regime in these years.</td>';
 }
 renderObsWorld();
-const wat=document.getElementById('t-watch');
-for(const y of YEARS){
-  const w=WATCH[y];
-  wat.insertRow().innerHTML='<td>'+y+'</td><td class="num '+((w[0]>=0.8&&w[0]<=1.25)?'':'vbad')+'">'+w[0].toFixed(2)+'×</td><td class="num">'+w[1].toFixed(2)+' <span class="dim">· '+w[2].toFixed(2)+' · '+w[3].toFixed(2)+'</span></td>'+
-    '<td class="num">'+cmp(w[4],w[5])+'</td><td class="num">'+w[6]+'%</td>';
+// (the tech-edge panel went 2026-10-29, user)
+// ---- DO OLD PLANTS DIE? (user, 2026-10-29; fill_old_plants.mjs → OLDP). One row per industry: workers on plants two or more tiers behind
+//      their own market's best, at their peak over the century and at the last reading, and their share of the industry then. `scopeOf`
+//      returns {industry: {old:[per year], tot:[per year]}} — the world, or the sum over the selected countries.
+function oldpTable(el,scopeOf){
+  el.innerHTML='';
+  const ys=OLDP.years||[], S=scopeOf()||{}, last=ys.length-1;
+  if(!ys.length){el.insertRow().innerHTML='<td class="small">No old-plant census in this fill — run fill_old_plants.mjs and refill.</td>';return 0;}
+  const k=v=>v>=1e6?(v/1e6).toFixed(2)+'M':Math.round(v/1e3)+'k';
+  const rows=Object.entries(S).map(([i,A])=>{const pk=Math.max(...A.old);return {i,pk,py:ys[A.old.indexOf(pk)],end:A.old[last],sh:A.tot[last]?A.old[last]/A.tot[last]:0};})
+    .filter(r=>r.pk>=500);
+  const cons=new Set(OLDP.consumer||[]);
+  el.insertRow().innerHTML='<th>industry</th><th class="num">workers on old plants: peak → '+ys[last]+'</th><th>shed since the peak</th><th class="num">old plants’ share of the industry’s workers, '+ys[last]+'</th>';
+  if(!rows.length){el.insertRow().innerHTML='<td class="small" colspan="4">No industry here has a plant two tiers behind its market’s best.</td>';return 0;}
+  for(const [lab,test] of [['Bought by pops',r=>cons.has(r.i)],['Bought by buildings and armies',r=>!cons.has(r.i)]]){
+    const rs=rows.filter(test).sort((a,b)=>b.sh-a.sh); if(!rs.length) continue;
+    el.insertRow().innerHTML='<td colspan="4" class="dim" style="font-weight:600;background:var(--panel2)">'+lab+'</td>';
+    for(const r of rs){ const shed=Math.max(0,Math.round(100*(1-r.end/r.pk)));
+      el.insertRow().innerHTML='<td>'+((OLDP.names||{})[r.i]||r.i)+'</td><td class="num">'+k(r.pk)+' <span class="dim">('+r.py+')</span> → '+k(r.end)+'</td>'+
+        '<td><div style="display:flex;gap:8px;align-items:center;min-width:120px"><div style="flex:1;height:9px;background:var(--panel2);border-radius:2px;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:'+shed+'%;background:var(--accent);border-radius:2px"></div></div><b style="min-width:3.2ch;text-align:right">'+shed+'%</b></div></td>'+
+        '<td class="num">'+(100*r.sh).toFixed(1)+'%</td>'; } }
+  return rows.length;
 }
+oldpTable(document.getElementById('t-oldp'),()=>OLDP.world);
+document.getElementById('oldp-cap').innerHTML='An old plant is two or more tiers behind the best tier in its own market (the highest tier holding at least 10% of that market’s workers in the industry). '+
+  'World total, the mean of '+(OLDP.n||'?')+' runs, '+((OLDP.years||[])[0]||'')+'–'+((OLDP.years||[]).slice(-1)[0]||'')+'. Mod only: a vanilla factory upgrades in place and has no old plant to count; the like-for-like comparison with vanilla is the scorecard’s ten-year change of backward industries.';
 
 // ---------- generic line chart ----------
 function lineChart(el,series,opts){
@@ -995,6 +1043,8 @@ function lineChart(el,series,opts){
   for(const g of [1840,1860,1880,1900,1920,1936])s+='<text x="'+x(g)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+g+'</text>';
   const path=pts=>pts.map((p,i)=>(i?'L':'M')+x(p[0]).toFixed(1)+' '+yp(Math.max(opts.ymin,Math.min(opts.ymax,p[1]))).toFixed(1)).join('');
   for(const sr of series)if(sr.pts.length)s+='<path d="'+path(sr.pts)+'" fill="none" stroke="'+css(sr.c)+'" stroke-width="2" stroke-linejoin="round"/>';
+  // ⭐ END LABELS CARRY THE VALUE ONLY, the series names go in a legend above the chart (2026-10-29): a long label such as "the 1.0 canon
+  //   (n=16 median) 1.07×" ran past the drawing's right edge and was clipped.
   const usedY=[];
   for(const sr of series){
     if(!sr.pts.length)continue;
@@ -1003,10 +1053,10 @@ function lineChart(el,series,opts){
     while(usedY.some(u=>Math.abs(u-ly)<14))ly+=14;
     usedY.push(ly);
     s+='<circle cx="'+x(e[0])+'" cy="'+yp(e[1])+'" r="4" fill="'+css(sr.c)+'" stroke="'+css('--panel')+'" stroke-width="2"/>';
-    s+='<text x="'+(x(e[0])+8)+'" y="'+(ly+4)+'" font-size="12" font-weight="600" fill="'+css('--ink')+'">'+sr.label+' <tspan fill="'+css('--ink2')+'">'+opts.fmt(Math.round(e[1]*100)/100)+'</tspan></text>';
+    s+='<text x="'+(x(e[0])+8)+'" y="'+(ly+4)+'" font-size="12" font-weight="600" fill="'+css('--ink')+'">'+opts.fmt(Math.round(e[1]*100)/100)+'</text>';
   }
   s+='<line class="xh" x1="0" y1="'+T+'" x2="0" y2="'+(H-B)+'" stroke="'+css('--ink3')+'" stroke-width="1" opacity="0"/></svg>';
-  el.innerHTML=s;
+  el.innerHTML='<div class="legend" style="margin-bottom:4px">'+series.filter(sr=>sr.pts.length).map(sr=>'<span><span class="sw" style="background:'+css(sr.c)+'"></span>'+sr.label+'</span>').join('')+'</div>'+s;
   const svg=el.querySelector('svg'),xh=el.querySelector('.xh');
   svg.onmousemove=ev=>{
     const r=svg.getBoundingClientRect();
@@ -1105,7 +1155,7 @@ render1('ratio');
 // the employment columns are LABELLED (EMP_COLS): 'e0 artisans' takes a warm tan, 'e0 other' (the e0 FACTORIES, the rung that should die) a rose, 'eN' its era blue
 const eras=EMP_COLS,cols=EMP_COLS.map(l=>l==='e0 artisans'?'--eA':l==='e0 other'?'--eO':'--'+l);
 const darkBar=l=>/^e[345]$/.test(l);   // the dark bars take light text (index-based before the artisan split shifted the columns)
-function legendHTML(txt){return eras.map((e,i)=>'<span><span class="sw" style="background:var('+cols[i]+')"></span>'+e+'</span>').join('')+'<span class="dim" style="margin-left:auto">'+txt+'</span>';}
+function legendHTML(txt){return eras.map((e,i)=>'<span><span class="sw" style="background:var('+cols[i]+')"></span>'+tl(e)+'</span>').join('')+'<span class="dim" style="margin-left:auto">'+txt+'</span>';}
 document.getElementById('legend2').innerHTML=legendHTML('workers in tier buildings (est.)');
 document.getElementById('legend4').innerHTML=legendHTML('selection only (est.)');
 function stacked(el,data,yrs,mode){
@@ -1142,7 +1192,7 @@ function stacked(el,data,yrs,mode){
   el.innerHTML=s;
   el.querySelectorAll('rect[data-d]').forEach(rc=>{
     rc.addEventListener('mousemove',ev=>{
-      tip.innerHTML='<b>'+rc.dataset.d+'</b> '+(eras[+rc.dataset.e]||('era '+rc.dataset.e))+': '+rc.dataset.v+'M workers · '+rc.dataset.p+'%';
+      tip.innerHTML='<b>'+rc.dataset.d+'</b> '+tl(eras[+rc.dataset.e]||('tier '+rc.dataset.e))+': '+rc.dataset.v+'M workers · '+rc.dataset.p+'%';
       tip.style.opacity=1;tip.style.left=(ev.clientX+14)+'px';tip.style.top=(ev.clientY-10)+'px';
     });
     rc.addEventListener('mouseleave',()=>tip.style.opacity=0);
@@ -1153,11 +1203,12 @@ document.getElementById('c2-norm').onclick=()=>{press('c2-norm','c2-abs');stacke
 stacked(document.getElementById('chart2'),EMP,EYRS,'abs');
 
 // ---------- watchlist: selection state ----------
-let SEL=new Set(TAGS);
+// ⭐ THE SHORTLIST BY DEFAULT (user, 2026-10-29: the views after the introduction are filtered world / shortlist)
+let SEL=new Set(SL.filter(t=>TAGS.includes(t)));
 const bar=document.getElementById('ctags');
 for(const tag of TAGS){
   const b=document.createElement('button');
-  b.className='ctag';b.id='ct-'+tag;b.setAttribute('aria-pressed','true');
+  b.className='ctag';b.id='ct-'+tag;b.setAttribute('aria-pressed',SEL.has(tag));
   const fl=D2.flags[tag]||[];
   b.innerHTML=tag+(fl.length?' <span class="flag" title="'+fl.join('; ')+'">⚠</span>':'');
   b.title=fl.join('; ')||'no anomalies detected';
@@ -1284,14 +1335,8 @@ function renderWatch(){
   compTable(document.getElementById('t-windecomp'),y=>sumSel('mod',y),y=>sumSel('van',y),SCOPE==='tier'?'industry':'sector');
   // obsolescence, in-market vs trade — the selection's own rungs (shares only; see the caption)
   renderObsSel(sel);
-  // build choice, mirrored (world-wide — see the caption)
-  const tc2=document.getElementById('t-tierc2');
-  tc2.innerHTML='';
-  if(TIERC.rows.length){
-    tc2.insertRow().innerHTML='<th>arm</th><th class="num">below-best share of levels built</th><th class="num">unit-weighted</th><th class="num">excluding ports</th><th class="num">…and LESS efficient than the frontier</th>';
-    for(const r of TIERC.rows)
-      tc2.insertRow().innerHTML='<td>'+r.arm+'</td><td class="num">'+(r.raw!=null?r.raw.toFixed(1)+'%':'—')+'</td><td class="num">'+(r.unit!=null?r.unit.toFixed(1)+'%':'—')+'</td><td class="num">'+(r.exports!=null?r.exports.toFixed(1)+'%':'—')+'</td><td class="num">'+(r.less!=null?'<b>'+r.less.toFixed(1)+'%</b>':'—')+'</td>';
-  }
+  // the old-plant table for the selection: the per-country series summed (all runs' mean, unlike the one-run panels above)
+  oldpTable(document.getElementById('t-woldp'),()=>{const o={};for(const tg of sel){const T=(OLDP.tags||{})[tg];if(!T)continue;for(const [i,A] of Object.entries(T)){const a=o[i]||(o[i]={old:A.old.map(()=>0),tot:A.tot.map(()=>0)});A.old.forEach((v,j)=>a.old[j]+=v);A.tot.forEach((v,j)=>a.tot[j]+=v);}}return o;});
   // labour table (pop-weighted)
   const t=document.getElementById('t-wlab');
   t.innerHTML='<tr><th>year</th><th class="num">pure unemployment <span class="dim">(vs van)</span></th><th class="num">non-productive adults <span class="dim">(vs van)</span></th><th class="num">tags in cell</th></tr>';

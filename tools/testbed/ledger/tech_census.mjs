@@ -1,6 +1,7 @@
 // ⭐ THE TECHNOLOGY CENSUS AT THE END OF A RUN, ACROSS ARMS (2026-10-05, the extra research entries' batch; BALANCE_FRAMEWORK §10.95).
 //
-//   node tools/testbed/ledger/tech_census.mjs <label>=<session>[,<session>][:<setup>] [...] [--tree config/tech_tree_options.json] [--top-era 5]
+//   node tools/testbed/ledger/tech_census.mjs <label>=<session>[,<session>][:<setup>] [...] [--tree config/tech_tree_options.json] [--top-era 5] [--json <file>]
+// --json (2026-10-29, the ledger's scorecard): per arm, D's anchor shares, B's majors (mean held, per tree) and E's reliance.
 //
 // Read on each run's LAST yearly save summary (the 1936 endpoint), except the anchors:
 //   A. TOP-LEVEL TECHNOLOGIES (the last game era, --top-era): per technology, how many countries hold it — every main country record, two
@@ -14,7 +15,7 @@
 //      entry stage completed (a stage can only complete while the technology is unheld), and the entries' grants (stages × half the era base
 //      cost) as a share of the era base cost of those acquisitions. From the run's debug.log mirror (PMR_JE lines, display names; windowed
 //      by the run's telemetry token and de-duplicated, as je_tally.mjs does).
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gunzipSync } from 'node:zlib';
@@ -41,18 +42,25 @@ const arms = args.filter((a, i) => a.includes('=') && !args[i - 1]?.startsWith('
   return { label, runs: ses.split(',').flatMap(s => usableRuns(SES, s, setup).runs) };
 });
 if (!arms.length) { console.error('usage: tech_census.mjs <label>=<session>[,<session>][:<setup>] ...'); process.exit(2); }
+const JOUT = {};
 const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : NaN;
 const med = a => { const s = a.slice().sort((x, y) => x - y); return s.length ? s[Math.floor(s.length / 2)] : NaN; };
 const f1 = x => Number.isFinite(x) ? x.toFixed(1) : '—';
 const catCount = held => Object.fromEntries(CATS.map(c => [c, held.filter(t => T[t] && T[t].category === c).length]));
 
 function readRun(rel) {
-  const dir = join(SES, rel, 'save_summaries'); const byYear = {};
+  // ⚠ ONLY THE YEARS THE CENSUS READS are kept — the first, the first at or after each anchor (1875, 1905) and the last (2026-10-29: holding
+  //   every year of every run ran the heap out on the n=40 vanilla reference). The first summary of a year, as before.
+  const dir = join(SES, rel, 'save_summaries'); const byYear = {}, seen = new Set(), keep = new Set(), anchorAt = {}; let prev = null;
   for (const f of readdirSync(dir).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort()) {
     const j = JSON.parse(gunzipSync(readFileSync(join(dir, f))).toString());
-    const y = +String(j.provenance.date).split('.')[0]; if (byYear[y]) continue;
+    const y = +String(j.provenance.date).split('.')[0]; if (seen.has(y)) continue;
     const c = {}; for (const [k, v] of Object.entries(j.countries)) if (!k.includes('@')) c[k] = { held: v.technologies_held || [], gdp: v.gdp || 0, overlord: v.overlord || null };
-    byYear[y] = c;
+    if (!seen.size) keep.add(y);                                                   // the first year
+    for (const a of [1875, 1905]) if (y >= a && anchorAt[a] == null) { anchorAt[a] = y; keep.add(y); }
+    seen.add(y);
+    if (prev != null && !keep.has(prev)) delete byYear[prev];                      // the rolling last year
+    byYear[y] = c; prev = y;
   }
   const ys = Object.keys(byYear).map(Number).sort((a, b) => a - b);
   // the run's entry completions, unique (country, technology, stage)
@@ -85,7 +93,7 @@ for (const a of arms) {
   // B
   console.log('B. the tech majors, technologies held at the end (production / military / society), runs where the tag exists');
   const bRows = MAJ.map(tag => { const xs = a.R.map(R => R.last[tag]).filter(Boolean); if (!xs.length) return `${tag} —`;
-    const cc = xs.map(x => catCount(x.held)); return `${tag} ${f1(mean(xs.map(x => x.held.length)))} (${CATS.map(c => f1(mean(cc.map(z => z[c])))).join('/')}; n ${xs.length})`; });
+    const cc = xs.map(x => catCount(x.held)); ((JOUT[a.label] ||= {}).majors ||= {})[tag] = { held: mean(xs.map(x => x.held.length)), ...Object.fromEntries(CATS.map(c => [c, mean(cc.map(z => z[c]))])), n: xs.length }; return `${tag} ${f1(mean(xs.map(x => x.held.length)))} (${CATS.map(c => f1(mean(cc.map(z => z[c])))).join('/')}; n ${xs.length})`; });
   console.log('   ' + bRows.slice(0, 5).join(' · ') + '\n   ' + bRows.slice(5).join(' · '));
   // C
   const cTech = [], who = {};
@@ -99,6 +107,7 @@ for (const a of arms) {
     const lead = [], third = [];
     for (const R of a.R) { const S = y === 9999 ? R.last : at(R, y); if (!S) continue; const rank = Object.values(S).sort((p, q) => q.held.length - p.held.length);
       const share = x => x ? x.held.filter(t => ids.includes(t)).length / ids.length : NaN; lead.push(share(rank[0])); third.push(share(rank[2])); }
+    ((JOUT[a.label] ||= {}).anchors ||= []).push({ year: y === 9999 ? 'end' : y, endYear: y === 9999 ? a.R[0]?.lastYear : y, era, leader: med(lead), third: med(third) });
     return `${y === 9999 ? 'end' : y} game era ${era}: leader ${f1(100 * med(lead))}%, third ${f1(100 * med(third))}%`; });
   console.log('D. anchor principle (median over runs; the aim is about half for the leader): ' + d.join(' · '));
   // E
@@ -111,6 +120,7 @@ for (const a of arms) {
       const k = got.reduce((x, t) => x + (ERACOST[T[t].era] || 0), 0);
       (per[tag] ||= { help: 0, acq: 0, grant: 0, cost: 0 }); per[tag].help += h; per[tag].acq += got.length; per[tag].grant += g; per[tag].cost += k;
       help += h; acq += got.length; grant += g; cost += k; }
+    (JOUT[a.label] ||= {}).reliance = { acquisitions: acq, withStage: help, share: acq ? help / acq : null, grantShare: cost ? grant / cost : null };
     console.log(`E. reliance on the entries (B's countries pooled): ${f1(100 * help / acq)}% of acquisitions had an entry stage; entry grants ${f1(100 * grant / cost)}% of their base cost · ` +
       Object.entries(per).map(([t, p]) => `${t} ${f1(100 * p.help / p.acq)}%/${f1(100 * p.grant / p.cost)}%`).join(' '));
   } else console.log('E. reliance: no debug.log mirror in some runs — skipped');
@@ -123,3 +133,4 @@ for (const a of arms) {
     console.log('F. who fires them — countries completing a stage, mean per run (of which majors):\n   ' + rows.join(' · '));
   }
 }
+{ const i = args.indexOf('--json'); if (i >= 0 && args[i + 1]) { for (const a of arms) (JOUT[a.label] ||= {}).n = a.R.length; writeFileSync(args[i + 1], JSON.stringify(JOUT, null, 1)); console.log('json → ' + args[i + 1]); } }

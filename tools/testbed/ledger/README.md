@@ -1,4 +1,4 @@
-# The ledger — the standard batch report
+# The ledger — the standard batch report (the canonical form since 2026-10-29, BALANCE_FRAMEWORK §10.104.1)
 
 The ledger is one HTML report per configuration: one group of runs of one config family, read against vanilla. It is published as an
 Artifact and copied into the session folder as `REPORT.html` (CLAUDE.md §5.6). This file is the operator's manual: how to fill it, the
@@ -46,9 +46,9 @@ bash tools/testbed/ledger/fill_ledger.sh <group> <setup> <book> <outName>
 - **`<outName>`** — the out dir, created as `tools/testbed/ledger/<outName>/` (`out_*` is gitignored scratch; the session folder is the
   record). The usable run lists land in `_mod.txt` and `_van.txt`.
 
-**References** (`lib_runs.mjs`, the one definition, CLAUDE.md §3.5): every reading is against `VANILLA_REF` (n=24: the summer 18 + the
-October 6); the wall clock against `VANILLA_WALL_REF` (the October 6, the most recent same-harness vanilla; F248). The red flags' vanilla
-line is the eleven-tag set `20260920_225047_schedule,20260920_192007_schedule` (n=4, v9+ summaries, which price goods) — name it as such.
+**References** (`lib_runs.mjs`, the one definition, CLAUDE.md §3.5): every reading is against `VANILLA_REF` (n=40 since 2026-10-26: the
+summer 18, the October 6 and the alternating batch's 16); the wall clock and the red flags' vanilla line against `VANILLA_WALL_REF` (the
+alternating batch's vanilla n=16, the most recent same-harness vanilla, which reads the order books like the arm; F248, F249).
 
 **The steps, in order.** A step that fails prints `!!! FAILED (<code>): <command>` and the fill goes on; read the log for `FAILED` before
 writing prose, because `fill_assemble` stops on any missing output.
@@ -56,23 +56,26 @@ writing prose, because `fill_assemble` stops on any missing output.
 | # | step | writes | feeds |
 |---|---|---|---|
 | 1 | `analyse_gdp_gap.mjs --session --setup --config --out` | `gdp_gap_series.tsv` | nothing on the page; the world trajectory per run and year, for the prose |
-| 2 | `report_data.mjs --mod --van --nb none --config --out` | `report_data.json` | the ladder, trajectory and watchlist tables, the tiered-sector GDP (`VA`), G3 |
-| 3 | `report_data2.mjs --mod --van --config --out` | `report_data2.json` | the watchlist page (`D2`) |
-| 4 | `report_perf.mjs <mod runs> <wall-ref runs> --json perf_raw.json` | `perf_raw.json` | row P |
-| 5 | `wall_clusters.mjs "<setup>=<group>:<setup>" "vanilla=<wall ref>:vanilla" --json` | `wall_clusters.json` | row P's clusters |
-| 6 | `fill_build_perf.mjs <out>` | `perf_panel.json` | `PERF` |
-| 7 | `fill_consts.mjs <out> --mod --van --nb none` | `consts.json` | `GDP_*`, `PROD_*`, `TRAJ`, `WORLD_*`, G5 |
-| 8 | `fill_emp.mjs <out> --mod --config` | `emp.json`, `emp_cols.json`, `emp_b2.json` | `EMP`, `EMP_COLS`, `EMP_B2`, G2, G7 |
-| 9 | `fill_payback.mjs <out> --mod --config` | `payback.json` | `LADDER`, G2, G3 |
+| 2 | `report_data.mjs --mod --van --nb none --config --out` | `report_data.json` | the ladder and trajectory tables, the tiered-sector GDP (`VA`), the scorecard's construction line |
+| 3 | `report_data2.mjs --mod --van --config --out` | `report_data2.json` | the Shortlist page (`D2`) |
+| 4 | `report_perf.mjs <mod runs> <wall-ref runs> --json perf_raw.json` | `perf_raw.json` | the play-time block |
+| 5 | `wall_clusters.mjs "<setup>=<group>:<setup>" "vanilla=<wall ref>:vanilla" --json` | `wall_clusters.json` | the play-time clusters |
+| 6 | `fill_build_perf.mjs <out>` | `perf_panel.json` | `PERF` (with the per-session ratios), the scorecard's play-time line |
+| 7 | `fill_consts.mjs <out> --mod --van --nb none` | `consts.json` | `GDP_*`, `PROD_*`, `TRAJ`, `WORLD_*`, GDP per productive worker |
+| 8 | `fill_emp.mjs <out> --mod --config` | `emp.json`, `emp_cols.json`, `emp_b2.json` | `EMP`, `EMP_COLS`, `EMP_B2`, the tier-1 and anchors lines |
+| 9 | `fill_payback.mjs <out> --mod --config` | `payback.json` | `LADDER`, the payback lines |
 | 10 | `fill_research.mjs <out> --mod --van --config` | `research.json` | `D2.techsT`, `D2.jeT` |
-| 11 | `fill_tierchoice.mjs <out> --session --setup --config` | `tierchoice.json` | `TIERC`, G1 |
+| 11 | `fill_tierchoice.mjs <out> --session --setup --config` | `tierchoice.json` | the "built below the best tier" line |
 | 12 | `fill_indecomp.mjs <out> --mod --van --config` | `indecomp.json` | `INDECOMP` |
-| 13 | `fill_obsolescence.mjs <out> --session --setup --config` | `obsolescence.json` | `OBS` |
+| 13 | `fill_obsolescence.mjs <out> --session --setup --config` | `obsolescence.json` | `OBS` (the collapsed in-market vs trade detail) |
 | 14 | `input_price_flags.mjs "<setup>=<group>:<setup>" --ref … --yearly --html redflags_full.html --json redflags.json --list 0` | `redflags_full.html`, `redflags.json` | the red-flag card (via 15) |
-| 15 | `redflag_metrics.mjs <out>` | `redflags_metrics.json`, `redflags_digest.md`, `redflags_card.html` | `__REDFLAGS__` |
-| 16 | `criteria.mjs --arm "<group>:<setup>" --van "<VANS>:vanilla" --json <out>/criteria.json --quiet` | `criteria.json` | the register (via 17) |
-| 17 | `fill_register.mjs <out>` | `register.html` | `__REGISTER__` (the scorecard, §6) |
-| 18 | `fill_goals.mjs <out>/goals.html <out> --config` | `goals.html` | `__GOALS__` (the readings: G1, G2, G3, G5, G7) |
+| 15 | `redflag_metrics.mjs <out>` | `redflags_metrics.json`, `redflags_digest.md`, `redflags_card.html` | `__REDFLAGS__`, the scorecard's shortage line |
+| 16 | `criteria.mjs --arm "<group>:<setup>" --van "<VANS>:vanilla" --json <out>/criteria.json --quiet` | `criteria.json` | the register's lines, the two charts above the pages |
+| 17 | `laggard_pressure.mjs <book> "<setup>=<group>:<setup>" "vanilla=<VANS>:vanilla" --json <out>/laggards.json` | `laggards.json` | the two backward-industry lines |
+| 18 | `tech_census.mjs "<setup>=<group>:<setup>" "vanilla=<VANS>:vanilla" --tree <twin> --json <out>/tech.json` | `tech.json` | the technology lines |
+| 19 | `misplaced_capital.mjs --batch "<setup>:<group>:<setup>" --json <out>/misplaced.json` | `misplaced.json` | the misplaced-capital line (mod only) |
+| 20 | `fill_old_plants.mjs <out> --mod --config` | `old_plants.json` | `OLDP` (the old-plant table, both pages) |
+| 21 | `fill_scorecard.mjs <out> --config` | `scorecard.html`, `scorecard_loss.html`, `intro.json` | `__SCORECARD__`, `__LOSS__`, `INTRO` |
 
 **Traps.**
 - Run the steps through `fill_ledger.sh`, not by hand. Since 2026-10-28 no step falls back to a retired session: `report_data`,
@@ -97,25 +100,25 @@ derived by a `fill_*.mjs` (`fill_manifest.json`'s `_rule`). Write these into the
 
 | file | token | what it holds |
 |---|---|---|
-| `lede.html` | `__LEDE__` | what the batch is for and how to read the register table under it (since §10.104 the table IS `criteria.mjs`'s reading of the same group; the lede names what dominates the loss, the soft and hard breaches, and where the lucky seed stands in, CLAUDE.md §3.2). It names the configs and builds the family check printed. |
-| `incidents.html` | `__INCIDENTS__` | the confounds THIS batch carries, naming its own runs: broken runs, crashes and resumes, excluded runs and why, civil wars and collapses behind notches in the charts |
-| `next.html` | `__NEXT__` | the lever this batch's numbers point at |
-| `footer.html` | `__FOOTER__` | provenance: what was read, how many runs, on what build and game version |
+| `lede.html` | `__LEDE__` | ONE paragraph after the template's fixed preface (observer runs, no player): what this batch compares against what, and why the wall clock reads a different vanilla set than the economy. It names the configs and builds the family check printed. Every measured reading is a scorecard line, not prose (§10.104.1); a table written here is wrapped in a scrolling box by `fill_assemble`. |
+| `incidents.html` | `__INCIDENTS__` | "What disturbed the runs": the confounds THIS batch carries, naming its own runs — broken runs, crashes and resumes, excluded runs and why, civil wars and collapses behind notches in the charts |
+| `footer.html` | `__FOOTER__` | provenance: what was read, how many runs, on what build and game version, which reader each line comes from |
 | `redflags_summary.html` | `__RF_SUMMARY__` | 3–15 sentences in one to three `<p>`, written with the **redflag-summary skill** (`.claude/skills/redflag-summary/SKILL.md`) from `redflags_digest.md`; without it the gate refuses the report |
 | `title.txt` | `<title>` | the page's title, one line (each batch is its own Artifact; absent, the template's title stands) |
-| `tokens.json` | the eleven below | `{"__SESSION__": "…", …}` |
+| `tokens.json` | the twelve below | `{"__SESSION__": "…", …}` |
 
 `tokens.json` carries:
 
 | token | means |
 |---|---|
-| `__SESSION__` | the session folder name(s) |
-| `__ARM__` | arm kind + the config and its sha (may hold HTML) |
-| `__N__` | runs counted, after L17 exclusions |
-| `__GAME__` | the game build every run ran on |
-| `__DELTA__` | what the arm changes against the shipped canon (the chip reads "Δ vs shipped") |
-| `__BASE__` | the references (VANILLA_REF n=24; wall clock VANILLA_WALL_REF n=6) and whether they ran in the same days |
-| `__HEALTH__` | the one-line batch health chip |
+| `__HEADLINE__` | the page's heading, in words a reader outside the project understands ("The 1.0 canon against vanilla") |
+| `__SUBTITLE__` | one line under it: the runs compared, the span, the game version, the date read |
+| `__SESSION__` | the session folder name(s) (footer) |
+| `__ARM__` | arm kind + the config and its sha, may hold HTML (footer) |
+| `__N__` | runs counted, after L17 exclusions (footer) |
+| `__GAME__` | the game build every run ran on (footer) |
+| `__DELTA__` | what the arm changes against the shipped canon (footer: "Changed against the shipped canon") |
+| `__BASE__` | the references (VANILLA_REF n=40; wall clock VANILLA_WALL_REF) and whether they ran in the same days (footer) |
 | `__ARMLABEL__` | the legend label of this arm's GDP line |
 | `__NBLABEL__` | the legend label of a reference series — fill it even when there is none (the token sits in the script either way) |
 | `__VANLABEL__` | how the GDP chart names vanilla, e.g. `n=24 median` (`GDP_VAN` is the median of the reference runs) |
@@ -127,8 +130,8 @@ derived by a `fill_*.mjs` (`fill_manifest.json`'s `_rule`). Write these into the
   `'` into `’` in every token and warns about any straight quote left; keep these four on one line. The HTML fragments (`lede.html` …) are
   spliced into markup and may use either apostrophe.
 - **One configuration per report** (user-ruled 2026-09-13): the ledger compares its arm against vanilla and nothing else — no reference
-  series on the GDP chart (`--nb none`), no other arms' rows in the build-choice table (no `fill_tierchoice --baseline`), no other batch's
-  numbers in the verdict. Cross-batch remarks go in ONE labelled closing paragraph of the lede ("Cross-reference — other configurations,
+  series on the GDP chart (`--nb none`), no `fill_tierchoice --baseline` rows (the scorecard reads the last row), no other batch's numbers
+  in the scorecard. Cross-batch remarks go in ONE labelled closing paragraph of the lede ("Cross-reference — other configurations,
   each with its own report"), naming the other reports.
 - **Mark a deliberate cross-batch reference** `<code class="xref">…</code>`: the staleness check exempts it and prints it by name. Prose
   left in the shell never wears the class, so the exemption cannot fire by accident.
@@ -144,15 +147,17 @@ derived by a `fill_*.mjs` (`fill_manifest.json`'s `_rule`). Write these into the
 by relative path) writes `<outDir>/REPORT.html`.
 
 - **Reads** `consts.json`, `emp.json`, `emp_cols.json`, `emp_b2.json`, `perf_panel.json`, `report_data.json`, `report_data2.json`,
-  `research.json`, `payback.json`, `tierchoice.json`, `indecomp.json`, `obsolescence.json`; any missing file stops it.
+  `research.json`, `payback.json`, `indecomp.json`, `obsolescence.json`, `old_plants.json`, `intro.json`; any missing file stops it.
 - **Splices every const** over the template's line (`const X=…;`); a missing anchor exits 1 (`ANCHOR MISSING`). It never leaves the
   template's shipped values in place, which would publish a previous batch's numbers under this title.
-- **Computes three consts itself:** `LADDER` (most-built tier and t0 share from the decade's additions summed over every run; frontier and
-  stale payback from `payback.json`; t0 staffing from run 1), `TRAJ` (GDP and levels ÷ vanilla from `consts.json`, construction ÷ vanilla
-  as the median over runs) and `WATCH` (seven positional slots: GDP ÷ vanilla · the world's mean stock tier · GBR's · the p25 tag's ·
-  non-productive % mod · non-productive % vanilla · frontier share of output %; the tier and share slots from run 1). `VA` comes from
-  `report_data.json`; `D2` is `report_data2.json` with `research.json`'s `techsT` and `jeT` added.
-- **Splices the tokens** from `tokens.json` plus `lede`, `goals`, `incidents`, `next`, `footer` `.html`. The red-flag card
+- **Computes two consts itself:** `LADDER` (most-built tier and t0 share from the decade's additions summed over every run; frontier and
+  stale payback from `payback.json`; t0 staffing from run 1) and `TRAJ` (levels ÷ vanilla from `consts.json`, construction ÷ vanilla as the
+  median over runs; its GDP slot is no longer shown). `VA` comes from `report_data.json`; `D2` is `report_data2.json` with
+  `research.json`'s `techsT` and `jeT` added; `OLDP` is `old_plants.json`, `INTRO` is `intro.json`. (`WATCH` and `TIERC` went with their
+  panels on 2026-10-29.)
+- **Splices the tokens** from `tokens.json` plus `lede`, `scorecard` (→ `__SCORECARD__`), `scorecard_loss` (→ `__LOSS__`), `incidents`,
+  `footer` `.html`; `__FIRSTRUN__` is the first run of `_mod.txt` unless `tokens.json` names one. A `<table>` in the lede, incidents or
+  footer is wrapped in a scrolling box (`tablewrap`). The red-flag card
   (`redflags_card.html`) gets `redflags_summary.html` spliced in before the token map is applied; without the summary it prints a warning
   and the gate will refuse. With no card at all the page says the red flags were not read. An out dir from before 2026-10-08 holding a
   `redflags.html` listing is used as the card if no `redflags_card.html` exists.
@@ -179,6 +184,12 @@ files, numbers in a `fill_*.mjs`.
 5. **Every table carries data.** After the controls have run, every element whose id starts `t-` must hold a data row with a nonzero
    digit that is not a year, and every `chart*` element must have drawn something. Generic on purpose: a new panel is covered the day it is
    added.
+6. **Nothing runs past the right edge** (2026-10-29, §10.104.1). The page is opened in a real headless browser (Edge or Chrome over the
+   DevTools protocol; `LEDGER_BROWSER=<path>` names another) at 1000 px and 390 px, on the World and the Shortlist page with every
+   `<details>` open; it fails on the page scrolling sideways, on any element crossing the content's right edge outside a scrolling box (the
+   outermost offender is named), and on a chart label drawn past its chart (the SVG clips it). No browser found is a WARN, not a pass.
+   Proven on F249's first publication, which it fails on the health pill, the lede's laggard table, the red-flag card's table and two
+   clipped chart labels; the regenerated page passes.
 
 **Every graph and table is checked working before publishing** (user-ruled 2026-08-24): not "the page renders" — each panel carries
 data. Section 5 is the mechanical half; the other half is a person looking at the assembled page in a browser, because the gate catches
@@ -194,7 +205,9 @@ Re-prove it the same way after changing the checker.
 1. **Eyeball the page.** The preview config `ledger` in `.claude/launch.json` serves `tools/testbed/ledger/` read-only on port 8792:
    `http://localhost:8792/<outName>/REPORT.html`. The browser pane cannot open the file directly (too large) nor the published URL (not
    signed in to claude.ai).
-2. **Publish `REPORT.html` as an Artifact.** Republishing the same file updates the same URL.
+2. **Publish `REPORT.html` as an Artifact.** Republishing the same file updates the same URL — ⚠ **except a link the user has shared
+   externally**, which is never republished (user, 2026-10-29, F249's https://claude.ai/artifact/7dR3FWMiYKJbeMjixMcDQK, the reference
+   example of the canonical form): a refill of that batch, or a later form, goes to a new artifact.
 3. **Copy into the session folder** `REPORT.html` (`REPORT_<setup>.html` when the session holds several configs) and `redflags_full.html`
    beside it. The out dir is scratch; the session is the record.
 4. Quote the report's link in the batch's finding (CLAUDE.md §5.1 rule 9), as FINDINGS entries do.
@@ -203,70 +216,80 @@ Re-prove it the same way after changing the checker.
 
 ## 6. What the page shows
 
-**Layout:** the header chips (the seven chip tokens) → the verdict: the red-flag card, THE REGISTER TABLE and the readings table (G1, G2, G3, G5, G7 + P) → section P, the
-wall clock, directly beneath it → the **World** and **Watchlist** pages (tab switcher) → incidents → next lever. Rungs are labelled
-`e0 … e3`: these are tiers t0–t3 (the identifiers predate the rename, CLAUDE.md §2.3); on a craft book t0 is two columns, `e0 artisans`
-and `e0 other`.
+**Layout (BALANCE_FRAMEWORK §10.104.1, 2026-10-29; written to be read from outside the project):** the heading (`__HEADLINE__`, `__SUBTITLE__`)
+→ the fixed preface (observer runs, no player: the numbers show the economy's natural progression) → the batch's description (`lede.html`) →
+**the scorecard**, one table → the red-flag detail, collapsed → **play time** → two charts, building-input prices by decade and world GDP run
+by run → the view selector, **World** / **Shortlist**, with the scope toggle → the two pages → "What disturbed the runs" (incidents) → the
+footer: runs, sessions, arm, the change against the shipped canon, the baseline, the register's loss, the batch's provenance. Rungs show as
+`t0 … t3` (the data's column labels still say `e0 …`, `lib_era_cols`; the page relabels them); on a craft book t0 is two columns, artisans
+and the tier-0 factories. A table written into the prose is wrapped in a scrolling box by `fill_assemble`, and the gate checks the page in a
+real browser (§4.6).
 
-### The scorecard: the register, then the readings (BALANCE_FRAMEWORK §10.104, built 2026-10-26)
+### The scorecard (`__SCORECARD__`, `fill_scorecard.mjs`)
 
-**The register table** (`__REGISTER__`, `fill_register.mjs` from `criteria.mjs --json`; user-ruled 2026-10-24: *"the register metrics come
-later and are better defined and calibrated, so we should mostly be based on them"*). One row per register line, each the consensus ÷ the
-vanilla reference, the absolute figure beside vanilla's, the aim / soft / hard band and criteria.mjs's own verdict (at the aim · inside, off the
-aim · beyond the soft line · broken): the per-run hard outcome; world GDP (aim from the JSON, soft 0.75–1.33, the derived hard band); **the
-decade path** (§10.96: world GDP ÷ vanilla's per-run median at 1846, 1856 … 1936, the median of ALL usable runs, graded only at **1886 against
-0.83–1.17**, not in the loss); world W, U*, H; the shortlist's GDP, W, U*, H; PI and PP (PM read only); T0 and T3; the closed-major term with its
-lucky seed; the loss with its parts. ⚠ `fill_register.mjs` grades nothing of its own; the bands it restates are §10.83's and move with
-`criteria.mjs`.
+Everything above the play-time block is a line of ONE table, in four columns (user, 2026-10-29): **Line** (the scope in prose), **this
+batch / vanilla** (one metric, absolute or ratio as fits the line), **aim**, **verdict** (a pill and at most a short note). A line above the
+table says how to read it: the consensus of the runs (`criteria.mjs`'s note), the end-state window, the vanilla n, and what "the shortlist" is.
+The rows, grouped by the question they answer; where one quantity is split over rows the world comes first, then the shortlist, then any
+country (user, 2026-10-29):
 
-**The readings table** (`__GOALS__`, `fill_goals.mjs`; the template renders P): what the old goals table measured that the register does not.
-Each keeps its band and is a READING, not a register line (turning one into a line is a separate ruling). G4 (world GDP) and G6 (the early game)
-are gone — the register's world-GDP line and its decade path carry them; G2 lost its t0 part to the register's T0, G5 its W to the register's W.
+| group | lines | source |
+|---|---|---|
+| Are the runs sound? | runs broken · play time against the same sessions' vanilla (with the per-session ratios) · market-years short of an industrial input against this batch's own vanilla (of 800 = 8 major markets × 100 years, the markets named) | `criteria.json` · `perf_panel.json` · `redflags_metrics.json` |
+| Does the world economy stay near vanilla's size? | world GDP 1932–36 (with the per-run range) · world GDP in 1886, the expected dip | `criteria.json` |
+| Does a technological edge win markets, and do efficient producers push out the rest? | backward industries (two tiers behind the best producer, without the technology to upgrade yet) with a far better producer in the same market, and with the better producers all abroad: the ten-year change in their workers against vanilla's · T0 · T3 · tier-1 workers 1900 → 1935 · tier-0 paybacks (crafts, factories) · new plants built below the best tier · PI · PP | `laggards.json` · `criteria.json` · `emp.json` · `payback.json` · `tierchoice.json` |
+| Does modernising cost capital? | construction 1880–1935 · the newest tier's payback · capital abundance (unspent investment pool ÷ GDP): world, shortlist, Germany (`gerH`; the register's closed-major term is in the loss, its full-employment half the note) · misplaced capital (MOD ONLY, by ruling) | `report_data.json` · `payback.json` · `criteria.json` · `misplaced.json` |
+| Do fewer people find productive work, each producing more? | W world and shortlist · U\* world and shortlist (as %) · GDP per productive worker · the shortlist's GDP | `criteria.json` · `consts.json` |
+| Do the tiers arrive on time? | the leader's share of a tier's technologies at its anchor · Britain's technology count (military beside it) · the tiers holding half the tiered workers | `tech.json` · `emp.json` |
 
-| row | goal | graded on | ok | warn | source |
-|---|---|---|---|---|---|
-| G1 | A tech edge wins markets | unit-weighted share of tiered levels built below the best tier the country holds (raw share and the leader−p25 tier gap beside it) | < 35% | 35–45% (bad > 45%) | the four-rung canon family measured 34.9–40.2%. A below-best level is a fault even when it out-earns the frontier (user-ruled 2026-10-08) |
-| G2 | Inefficient producers die (t0: the register's T0) | t1 workers falling every decade from 1920; every t0 part (artisans and t0 factories apart) paying back in ≥ 30 y | both | otherwise | — |
-| G3 | Modernising costs capital | construction points added 1880–1935 (median of runs ÷ vanilla mean); frontier-rung payback at £720 a point | ≥ 1× and 8–15 y | 0.9–1×, or 6–8 / 15–20 y (bad beyond) | the floor is vanilla's own manufacturing payback at 1900 (F53); £720 overstates a late payback by ~25% |
-| G5 | More product per worker (W: the register's) | GDP per productive worker ÷ vanilla, 1932–36 (W printed beside it) | > 1× | otherwise | — |
-| G7 | Tiers arrive on the anchors | the tiers holding half the tiered workers (by descending share, listed until they pass 50%) at 1900 · 1920 · 1935 | every listed tier in the target | one year off (bad: two or more) | target = the latest tier whose anchor has passed plus the next if its anchor is within 5 years (`era_anchor_years` from `--config`): t1/t2 · t2 · t2/t3 |
-| P | The game does not get slower | total play time ÷ vanilla, median over clusters 1 + 2 | ≤ +5% | +5–10% (bad > +10%, the ruled budget) | CLAUDE.md §3.4 |
+**Verdicts.** A register line's verdict is `criteria.mjs`'s bands (§10.83 and amendments; the world-GDP aim and the 1886 line come from
+`criteria.json`): at the aim · above / below the aim (inside the soft band) · beyond the soft line. The readings keep the bands the goals table
+had (§10.104): built below the best tier < 35% (bad > 45%); tier 1 falling from 1920; tier-0 paybacks ≥ 30 y; construction ≥ 1× (bad < 0.9);
+newest-tier payback 8–15 y (warn 6–8 or 15–20); GDP per productive worker > 1×; the tiers on the anchors (one year off warn). The lines added
+on 2026-10-29 carry no ruled band and say what they are graded on: the backward industries against vanilla's change (±5 points = "about
+vanilla's"), the shortages against vanilla's level (×1.1), the technology shares against "about half" (35–65%), Britain's count within ±10%;
+misplaced capital is a reading. Play time: ≤ +5% inside the budget, +5–10% needs improvement, beyond +10% too slow. A source that is missing
+prints its line as "not read" rather than dropping it.
 
-⚠ **Every reading row is positional:** metric A · metric B → value A · value B → target A · target B. A term with no target carries an
-explicit em-dash; dropping it re-pairs the surviving values against the wrong targets.
+**The register's loss** (`__LOSS__`, `scorecard_loss.html`) is in the footer with its parts and the per-run range: the config search's
+objective, opaque to an outside reader and directional only (§10.83.7).
 
-⚠ **The world-GDP chart's and the trajectory / watchlist tables' 0.8–1.25× band** is a rough visual guide, not the target (§10.104, labelled so
-on the page); the register's world-GDP lines are read in its table, not drawn on the chart.
+⚠ **The world-GDP chart's 0.8–1.25× band** is a rough visual guide, not the target (§10.104); the register's lines are read in the scorecard.
 
-### Row P and the wall-clock section
+### Play time
 
-TESTBED_OPERATIONS §7 holds the wall-clock procedure; the page shows its result.
-- **The grade is the total play time** (user-ruled 2026-08-31): what a player waits through. Shrinking what the engine simulates is a
-  legitimate way to meet the budget. The pill reads faster / no change / acceptable / needs improvement / too slow.
-- **Clusters** (user-ruled 2026-10-07): the main figure is the median over clusters 1 + 2; a cluster-3 run (a directly observed listed
-  vanilla bug — today the fleet path loop) leaves the grade and is named with its bug. Without `wall_clusters.json` every run counts and
-  the page says so.
-- **The pop-matched figure is the per-unit diagnostic beside it:** seconds per in-game year compared at equal `world.pop_objects_live`,
-  over bins where both arms have samples (`no overlap` bins are shown, never folded in). It answers "is the engine dearer per unit of
-  work?", not "did the batch pass?". With overlap under about a third of the bins the arms did not simulate a comparable economy and the
-  per-unit figure cannot be compared.
-- The sentence under the per-unit number is derived: when the per-unit figure carries at least half the total with the same sign, the gap
-  is a dearer (or cheaper) engine; otherwise it is the size of the world.
-- Speeds are shown in in-game years per minute (higher is better). The ÷ modelled-cost view is a tripwire (F72's coefficients, fixed in
-  `fill_build_perf.mjs`): near 1.0 and flat; a build that lifts it made each unit of world dearer.
+TESTBED_OPERATIONS §7 holds the wall-clock procedure; the page shows its result in one sentence, a card and a chart.
+- **The grade is the total play time** (user-ruled 2026-08-31), the median over clusters 1 + 2 (user-ruled 2026-10-07); a cluster-3 run (a
+  directly observed listed vanilla bug — today the fleet path loop) leaves the grade and is counted. Without `wall_clusters.json` every run
+  counts and the card says so.
+- **Per unit of work** (pop-matched, equal `world.pop_objects_live`, overlapping bins only) is the diagnostic beside it; the sentence under it
+  is derived (a dearer engine, or the size of the world).
+- **By session** (`PERF.bySession`, from `wall_clusters.json`): the ratio inside each session holding both arms — the reader's caveat that the
+  machine's speed drifts between sessions (F248, F249). Shown when there are two or more.
+- The speed chart keeps its scale and normalisation buttons (÷ modelled cost is F72's tripwire); the by-decade and pop-matched tables sit in a
+  collapsed details section.
+
+### The two charts above the pages (`INTRO`, from `intro.json`)
+
+Their own script, so a failure blanks only them. **Building-input prices, decade by decade**: the arm's median PI path (£ ÷ base, the shortlist,
+1900 … 1935, each run's `PIpath` in `criteria.json`) with its runs' range, against vanilla's (`ref.PI.<year>`); the register grades only the
+end point, and falling prices are the mod's core mechanism (CLAUDE.md §2.1). ⚠ The consumer-goods path in wage units is not in `criteria.json`
+yet. **World GDP, run by run**: every run's end-state ratio as a dot, the aim band, vanilla's own runs' central 95% (back-derived from the
+hard band: `gdpHard.lo / 0.8`, `gdpHard.hi / 1.2`), the consensus line; a broken run is red.
 
 ### The two pages
 
-Both pages carry **the same panels in the same order** (user-ruled 2026-08-24; the layout may gain panels, never lose them): GDP → the
-G4/G5 decomposition (workers × product per worker) → employment in tier buildings by tier (chart + table, decade change in brackets) →
-old rungs beside their replacement → industry composition of value added → obsolescence, in-market vs trade → research (technologies held,
-journal entries) → build choice. Then page extras — world: the ladder (climb and death), the trajectory ÷ vanilla; watchlist: labour, the
-tech edge. A view diverges only for a reason written in its caption; today one does: the watchlist build-choice panel shows world totals.
+**World** (every country) and **Shortlist** (the watchlist's 16 tags, the shortlist `lib_markets.POOL` selected by default, chips to change
+it). Both carry the same panels in the same order (user-ruled 2026-08-24): GDP → workers × product per worker → employment in tier buildings
+by tier (the by-decade table with its brackets collapsed under the chart) → old rungs beside their replacement → industry composition of value
+added → **Do old plants die?** (the in-market vs trade detail collapsed under it) → research. Then page extras — World: the ladder, the
+trajectory ÷ vanilla (without its GDP column: the decomposition table carries that figure per decade); Shortlist: labour. Removed on
+2026-10-29 (user): the build-choice panel (its headline is a scorecard line), the tech edge, the next lever. **What gets cut is a duplicate at
+the same grain**; finer detail may sit in a collapsed section (user, 2026-10-29).
 
-- **The watchlist** covers 16 tags (GBR RUS FRA USA PRU TUR AUS SPA BRZ SIC POR NET BEL NGF GER UNL) with country chips and a `shortlist`
-  button that selects the register's pool (`lib_markets.POOL`: GBR USA FRA NET BEL UNL PRU NGF GER; an absent tag contributes nothing).
-  ⚠ It reads the group's FIRST usable run only (`report_data2.json`'s `flat`), and its per-tag anomaly flags (dissolution, a civil war or
-  collapse — population −25% in a year —, an annexation-scale jump of +25%) come from that run.
+- ⚠ **The Shortlist page reads the group's FIRST usable run** for most panels (`report_data2.json`'s `flat`; `__FIRSTRUN__` names it on the
+  page), and its per-tag anomaly flags (dissolution, a civil war or collapse — population −25% in a year —, an annexation-scale jump of +25%)
+  come from that run. The old-plant table reads every run.
 - ⚠ **A per-tag panel understates a colonial power.** Subjects are separate countries sharing the overlord's market, so their buildings and
   GDP sit on their own tags: in F67 the Dutch subjects held 238 port levels at 67% modern against the Netherlands' own 161 at 39%. Check a
   colonial power's development against its market (each country record in a save summary carries a numeric `market` id).
@@ -277,19 +300,23 @@ tech edge. A view diverges only for a reason written in its caption; today one d
 - **Old rungs beside their replacement** (`t-empb2`, `t-wempb2`): workers on a rung two or more tiers behind a rung their own country
   already staffs in the same industry, world-wide and in the pool, with their share of tier workers. It separates the ladder failing to
   retire a rung from a country that runs nothing newer (CLAUDE.md §3.3).
-- **Obsolescence, in-market vs trade** (`t-obs`, `t-wobs`; F161 §4/§6): an old rung is in-market when its own market's supply frontier is
-  two tiers above it, trade-only when only the world's is. Per industry and regime: the loss-making share of levels, the true margin,
-  staffed ÷ levels, the world price ÷ the rung's break-even, the importers' loss share and signed premium. The watchlist mirror shows the
-  selection's shares; a rung's regime is still decided by its own market's and the world's frontier.
-- **The red-flag card** (§10.94) is collapsed by default: its summary line carries the two headline numbers per run, median · range —
-  **problem market-years** (Σ over the eight major markets, British American French Dutch Belgian German Russian Japanese, of in-game years
-  under a HIGH flag on ≥ 10 units/week of building demand, of 800) and **chronic markets** (≥ 20 such years). The table (also split by
-  period and market), the summary and the rule line open on a click. ⚠ Basis: the order books price a good with demand and no producer at
-  the band edge, the save summaries leave it unpriced, so the two bases read several-fold apart; the vanilla line uses the book's
-  summary-basis `prodFlags`. The flag-by-flag listing stays in `redflags_full.html`, off the page. Not a loss term.
+- **Do old plants die?** (`t-oldp`, `t-woldp`; `fill_old_plants.mjs`, user, 2026-10-29): per industry, the workers on plants two or more
+  tiers behind their OWN MARKET's best (the highest tier with ≥ 10% of the market's workers in the industry — the in-market rule of the table
+  below it and of `laggard_census.mjs`) at their century peak and at 1935, the share shed since the peak (a bar), and their share of the
+  industry's workers at 1935; industries bought by pops first. The mean of all runs; the Shortlist page sums the selected tags. Mod only:
+  vanilla upgrades in place and has no old plant (the backward-industry scorecard lines are the vanilla comparison).
+- **Margins and prices of old plants, in-market vs trade** (`t-obs`, `t-wobs`, collapsed; F161 §4/§6): per industry and regime the loss
+  share, the true margin, staffed ÷ levels, the world price ÷ the rung's break-even, the importers' loss share and signed premium; the
+  Shortlist mirror shows the selection's shares.
+- **The red-flag detail** (§10.94), collapsed under the scorecard: the two headline numbers per run, median · range — **problem
+  market-years** (Σ over the eight major markets, British American French Dutch Belgian German Russian Japanese, of in-game years under a HIGH
+  flag on ≥ 10 units/week of building demand, of 800) and **chronic markets** (≥ 20 such years) — the reference beside them on the same basis
+  (the order books, when it carries them), split by period and market, the summary and the rule line. The flag-by-flag listing stays in
+  `redflags_full.html`, off the page. Not a loss term.
 
 **Conventions every panel follows:** a normalised / absolute toggle unless there is a local reason not to; a ratio beside its absolute twin;
-contraction-aware measures (employment with bracketed deltas) over gross level additions; per-tag anomaly flags computed, never hand-listed.
+contraction-aware measures (employment with bracketed deltas) over gross level additions; per-tag anomaly flags computed, never hand-listed;
+chart end labels carry the value only, the series names sit in a legend above the chart (a long name ran past the drawing).
 
 ---
 
@@ -299,8 +326,9 @@ Each writes one or more files into the out dir; `fill_ledger.sh` runs them in th
 
 - **`fill_build_perf.mjs <out>`** → `perf_panel.json` (`PERF`). From `perf_raw.json` (`report_perf`) and `wall_clusters.json`: the complete
   runs with their cluster and bug, speeds by year in in-game years per minute, the pop-matched bins, the grade edges (green 5, yellow 10).
-  The `source` line is derived from the run labels. ⚠ It maps `report_perf`'s bins (`{bin, vanilla, mod}`, seconds per year) onto the
-  renderer's shape (`{b, v, m, nV, nM}`, years per minute; a side with no samples is null, never 0).
+  The `source` line is derived from the run labels and says whether the arms alternated within the sessions. `bySession` (2026-10-29) is
+  the clusters 1 + 2 median ratio inside each session holding both arms. ⚠ It maps `report_perf`'s bins (`{bin, vanilla, mod}`, seconds
+  per year) onto the renderer's shape (`{b, v, m, nV, nM}`, years per minute; a side with no samples is null, never 0).
 - **`fill_consts.mjs <out> --mod --van [--nb none]`** → `consts.json`: `GDP_FLAT` / `GDP_VAN` / `GDP_NB` (yearly world GDP, median of runs),
   `PROD_FLAT` / `PROD_VAN` (productive workers `w`, GDP `g`, world population `p`, millions), `TRAJ`, `WORLD_FULL` (non-productive adults
   %: unemployed + peasants ÷ workforce) and `WORLD_PURE` (pure unemployment %). **Productive workers** = `population_salaried_workforce −
@@ -315,14 +343,14 @@ Each writes one or more files into the out dir; `fill_ledger.sh` runs them in th
 - **`fill_payback.mjs <out> --mod --config`** → `payback.json`, at 1840/1860/1880/1900/1920/1935: frontier and stale (t0) rung payback =
   building cost × £720 ÷ annual profit per level at realised prices, the frontier tier, and the leader−p25 stock-tier gap. On a craft book
   also `staleArt` / `staleOther`, because a craft costs a fiftieth of a factory and employs a tenth; the pooled `stale` stays what the
-  ladder table and G2 read, and G2 prints both parts. ⚠ A loss-making rung has no payback: it is counted, never folded into a median as a
+  ladder table reads, and the scorecard's tier-0 payback line prints both parts. ⚠ A loss-making rung has no payback: it is counted, never folded into a median as a
   large number.
 - **`fill_research.mjs <out> --mod`** → `research.json`: `techsT` (technologies held per tech era and tree, mean per country, world and
   per tag, both arms, from `technologies_held`) and `jeT` (research-entry firings by stage, tree and tech era). Firings are DISTINCT
   `(stage, technology, country)` triples, never raw log lines (raw lines overcount 2.25×, L23). Per-tag firings join `PMR_JE` display names
   to tags through a curated alias map (the L11 hazard); an unknown name is dropped, never guessed. ⚠ The two hardcoded inputs of §1.
 - **`fill_tierchoice.mjs <out> --session --setup --config [--label] [--baseline "label|raw|unit|exports|less"]`** → `tierchoice.json`
-  (`TIERC`, table `t-tierc`, by decade `t-tierc-dec`). It SPAWNS `analyse_ai_tier_choice.mjs` (raw, unit-weighted and ex-ports below-best
+  (the scorecard's "built below the best tier" line; its own panel went 2026-10-29). It SPAWNS `analyse_ai_tier_choice.mjs` (raw, unit-weighted and ex-ports below-best
   shares, the decade trajectory) and `analyse_ai_tier_profit.mjs` §c (below-best AND earning less per level than the country's standing
   frontier) and parses their headline lines: one source per number, so a measured quantity is never defined twice. Any parse miss exits 1.
   The two tools qualify country-industry-years slightly differently (~0.5 pp on the raw share); each figure is quoted on its own basis and
@@ -336,10 +364,17 @@ Each writes one or more files into the out dir; `fill_ledger.sh` runs them in th
   (`OBS`), from `lib_obsolescence.mjs` (§8.1). Exits 1 if no industry has an in-market or trade-only old rung. Summaries before v11 carry no
   tariffs: to split the trade-only row by tariff and trade policy, re-summarise the kept saves and pass `--override-dir` (re-summaries named
   `<session>__<run>.json.gz`); `trade_obsolescence.mjs` prints those splits.
-- **`fill_register.mjs <outDir> [--json <criteria.json>]`** → `register.html` (`__REGISTER__`), the register table of §6 from `criteria.mjs --json`
-  (ONE arm, or it exits 1). It grades nothing of its own.
-- **`fill_goals.mjs <outFile> <outDir> [--config <book>]`** → `goals.html`, the readings G1, G2, G3, G5, G7 as in §6, from `consts.json`, `payback.json`, `emp.json`,
-  `emp_cols.json`, `tierchoice.json` and `report_data.json`. Without `--config` G7 assumes the anchors 1836 / 1875 / 1905 / 1940.
+- **`fill_old_plants.mjs <out> --mod <runs> --config <book>`** → `old_plants.json` (`OLDP`, 2026-10-29): per industry and year (1840 …
+  1930, 1935) the workers on plants two or more tiers behind their own market's frontier and all its workers, the mean over the runs, for
+  the world, the shortlist pool and each of the 16 watchlist tags; workers by `pms` levels (merged methods at their own tier, crafts ×
+  `workforce_mult`), the LAST 1 January summary of a year (a resume's replay overwrites the abandoned branch). On the 1.0 canon it
+  reproduces F249 §4's per-industry 1935 shares exactly.
+- **`fill_scorecard.mjs <out> [--config <book>]`** → `scorecard.html` (`__SCORECARD__`), `scorecard_loss.html` (`__LOSS__`) and `intro.json`
+  (`INTRO`), §6 (2026-10-29; it replaces `fill_register.mjs` and `fill_goals.mjs`). Reads `criteria.json` (ONE arm, or it exits 1),
+  `consts.json`, `payback.json`, `emp.json`, `emp_cols.json`, `tierchoice.json`, `report_data.json`, and where present `perf_panel.json`,
+  `redflags_metrics.json`, `laggards.json`, `tech.json`, `misplaced.json` (a missing one prints its line as "not read"). Without
+  `--config` the anchors line assumes 1836 / 1875 / 1905 / 1940. It grades nothing the register grades: the register's bands are §10.83's,
+  restated, and move with `criteria.mjs`.
 - **`fill_assemble.mjs`, `fill_verify.mjs`** — §3, §4. **`fill_manifest.json`** — the contract between shell and batch: every token
   (`name`, `from`, `required`, `means`), every const (`minKeys`), every table (`minRows`), every control, and the staleness list.
 ---
@@ -354,7 +389,11 @@ Each writes one or more files into the out dir; `fill_ledger.sh` runs them in th
 - **`report_data.mjs`** — tier stocks and additions by decade (every run in `flats`; run 1 in `flat`), construction points per year (all
   runs; vanilla's mean in `vanPtsByYear`), the frontier share, panel GDP and the `VA` block (`{flat, van, nb}` per year in £M/yr, each
   `{tier, all}`, plus coverage counts).
-- **`report_data2.mjs`** — the watchlist dataset per tag: yearly GDP and population, labour, tier employment (`lib_era_cols` columns), old
+- **`laggard_pressure.mjs <book> <label>=<group>:<setup> … --json`**, **`tech_census.mjs <label>=<group> … --tree --json`**,
+  **`misplaced_capital.mjs --batch <label>:<sessions>:<setup> --json`** — the scorecard's backward-industry, technology and misplaced-capital
+  lines (2026-10-29; until then the prose quoted them by hand). `tech_census` keeps only the years it reads (the first, the anchors, the
+  last): holding every year ran the heap out on the n=40 vanilla reference.
+- **`report_data2.mjs`** — the Shortlist page's dataset per tag: yearly GDP and population, labour, tier employment (`lib_era_cols` columns), old
   rungs (`b2`), productive workers (`pw`), the tiered sector (workers and weekly value added, world and per tag), and the anomaly flags. All
   runs are walked (`flatRuns`); the page reads `flat`, run 1.
 - **`report_perf.mjs`** — the century's play time per run, rebuilt from the observer's tick lines (`lib_wall.mjs`; each crash-resume's
@@ -376,9 +415,8 @@ These print to stdout and the prose quotes them; nothing in the fill reads them.
 
 | reader | what it reads | status |
 |---|---|---|
-| `criteria.mjs --arm <group>` | the criteria register: consensus, loss, soft and hard lines, the decade path | the register (CLAUDE.md §3.2); since §10.104 the fill runs it (step 16) and the scorecard shows it; run it by hand for the per-run detail |
-| `misplaced_capital.mjs --batch <label>:<session>[:<setup>]` | the share of new capital placed far from the best valid alternative (F206/F207) | read in every batch report (CLAUDE.md §3.3) |
-| `tech_census.mjs <label>=<group>` | the majors' technology against vanilla, the anchor-principle share | read in every batch report (§3.3) |
+| `criteria.mjs --arm <group>` | the criteria register: consensus, loss, soft and hard lines, the decade path | the register (CLAUDE.md §3.2); the fill runs it (step 16) and the scorecard shows it; run it by hand for the per-run detail |
+| `misplaced_capital.mjs`, `tech_census.mjs`, `laggard_pressure.mjs` | §8.1 | the fill runs them (steps 17–19); by hand for their full printouts (per run, per tree, sections B–D) |
 | `old_rungs_by_industry.mjs <year> <label>=<group>`, `trade_obsolescence.mjs` | old rungs per industry; the obsolescence census by regime | read in every batch report (§3.3) |
 | `dam_slots.mjs <session>[:<setup>]` | dam slot breaches (must be 0), who builds | read in every batch report (§3.3) |
 | `first_run_decomp.mjs --arm --van` | GDP = population × W × GDP per productive worker, world and pool | after each arm's first run (§3.3) |
@@ -451,7 +489,7 @@ evidence.
   catches an unfilled token and a listed string, never a plausible literal. A script's run list comes from its flags and throws without
   them; a default that is a previous batch produces a believable wrong report. When one script is parameterised, sweep its siblings for the
   same hardcoded value in the same pass (BUGS_AND_FIXES 2026-09-01).
-- **Positional rows** (`fill_goals`, `WATCH`, `LADDER`) must match their renderer slot for slot.
+- **Positional rows** (`LADDER`, `TRAJ`) must match their renderer slot for slot.
 - **One source per measured number.** If `analyse_ai_tier_choice` or `analyse_ai_tier_profit` changes a headline line, update
   `fill_tierchoice`'s regexes (a miss exits 1, as it should).
 - **Grade every band on both bounds**; a one-sided target says so in its target text.
@@ -501,3 +539,7 @@ The ratios barely moved because government and military were a near-identical sh
 - Before 2026-10-08: G1 was graded against 39% (a retired six-rung figure), G3 read run 1's single year 1934→35, G5 graded absolute
   workers, G7 used the six-rung target "t2 · t3 · t3", P's yellow edge was +15% and the runs were not clustered. From 2026-10-03 to
   2026-10-08 the red flags were the full flag-by-flag listing.
+- Before 2026-10-29: the top of a report was a health line, the lede's paragraphs (play time, laggards, technology and misplaced capital in
+  prose), the register table and the readings table (G1–G7 + P), a red-flag banner, and a next-lever section; the second page was the
+  Watchlist (every tag selected) with the build-choice and tech-edge panels; the 1886 line read 0.83–1.17. The health line, the lede's
+  table and the red-flag table ran past the page's right edge, and long chart end labels were clipped.

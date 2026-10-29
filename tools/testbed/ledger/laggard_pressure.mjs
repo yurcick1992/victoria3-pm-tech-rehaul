@@ -12,8 +12,10 @@
 //    >= GAP fewer and has >= MINPOP people): their tiered workers per head, GDP per head, SoL, U*, their share of the market's tiered
 //    value added ÷ their share of its population — all also against their own leader.
 // C. PORTUGAL (and any --tags): its market, tech gap to its leader, tiered workers per head, GDP per head, SoL, U*.
-//   node backward.mjs <book> <label>=<sessions>:<setup> [...] [--gap 15] [--minpop 1e6] [--tags POR]
-import { readdirSync, readFileSync, existsSync } from 'node:fs';
+//   node tools/testbed/ledger/laggard_pressure.mjs <book> <label>=<sessions>:<setup> [...] [--gap 15] [--minpop 1e6] [--tags POR] [--json <file>]
+// --json (2026-10-29, the ledger's scorecard, fill_ledger.sh): section A per group and class — cases, workers kept (Σ at y+10 ÷ Σ at y),
+//   the median case and the median profit per 1,000 workers; classes inm / trade / ctrl and their chain, status and holds/lacks splits.
+import { readdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gunzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
@@ -177,3 +179,10 @@ console.log('\n  who: the most frequent backward countries in frontier-led marke
 for (const g of groups) { const r = Object.values(res[g.label].D).flatMap(o => o.frontier || []); const cnt = {}; for (const x of r) cnt[x.tag] = (cnt[x.tag] || 0) + 1;
   console.log('  ' + g.label.padEnd(10) + 'subjects ' + pc(r.filter(x => x.subj).length / r.length) + ' · ' + Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 16).map(([t, n]) => t + ' ' + (n / res[g.label].n).toFixed(1)).join(' · ')); }
 console.log('  backward-led, subjects: ' + groups.map(g => { const r = Object.values(res[g.label].D).flatMap(o => o['backward-led'] || []); return g.label + ' ' + pc(r.filter(x => x.subj).length / r.length); }).join(' · '));
+// ---- --json: section A for the ledger's scorecard (2026-10-29)
+{ const JSONOUT = opt('--json', null);
+  if (JSONOUT) { const out = { stuck: STUCK };
+    for (const g of groups) { const r = res[g.label], o = { n: r.n };
+      for (const [k, v] of Object.entries(r.AX)) o[k] = { cases: v.a.length, kept: v.w[0] > 0 ? v.w[1] / v.w[0] : null, median: med(v.a), profit: med(v.p) };
+      out[g.label] = o; }
+    writeFileSync(JSONOUT, JSON.stringify(out, null, 1)); console.log('json → ' + JSONOUT); } }

@@ -39,12 +39,6 @@
       "means": "comparison baseline + whether it is same-night"
     },
     {
-      "name": "__HEALTH__",
-      "from": "tokens.json (written by hand, README §2)",
-      "required": true,
-      "means": "one-line batch health chip"
-    },
-    {
       "name": "__LEDE__",
       "from": "lede.html",
       "required": true,
@@ -63,28 +57,10 @@
       "means": "3–15 sentences on the red flags: what dominates, where, why (2026-10-08)"
     },
     {
-      "name": "__REGISTER__",
-      "from": "fill_register.mjs (register.html, from criteria.mjs --json → criteria.json)",
-      "required": true,
-      "means": "the scorecard: the criteria register's lines (consensus ÷ vanilla, absolute, aim / soft / hard, verdict), the decade path with the 1886 line, the closed-major term, the loss and the per-run hard outcome (BALANCE_FRAMEWORK §10.104)"
-    },
-    {
-      "name": "__GOALS__",
-      "from": "fill_goals.mjs",
-      "required": true,
-      "means": "the READINGS the register does not carry (G1; G2's t1 decline and t0 payback; G3; G5's GDP per productive worker; G7), each with its own band (§10.104); POSITIONAL: metric A B -> value A B -> target A B"
-    },
-    {
       "name": "__INCIDENTS__",
       "from": "incidents.html",
       "required": true,
       "means": "confounds THIS batch carries; must name its own runs"
-    },
-    {
-      "name": "__NEXT__",
-      "from": "next.html",
-      "required": true,
-      "means": "the lever this batch's numbers point at"
     },
     {
       "name": "__FOOTER__",
@@ -115,6 +91,36 @@
       "from": "tokens.json",
       "required": true,
       "means": "the sentence after 'A median hides the spread —': this batch's per-run GDP ratio range at 1935 and how to read it (was a literal 0.59–1.02× from an earlier batch)"
+    },
+    {
+      "name": "__HEADLINE__",
+      "from": "tokens.json (written by hand, README §2)",
+      "required": true,
+      "means": "the page heading, in words a reader outside the project understands (e.g. \"The 1.0 canon against vanilla\")"
+    },
+    {
+      "name": "__SUBTITLE__",
+      "from": "tokens.json (written by hand, README §2)",
+      "required": true,
+      "means": "one line under the heading: the runs compared, the span, the game version, the date read"
+    },
+    {
+      "name": "__SCORECARD__",
+      "from": "fill_scorecard.mjs (scorecard.html)",
+      "required": true,
+      "means": "the scorecard: one table of every reading above the play-time block, four columns (line · this batch / vanilla · aim · verdict), grouped by goal (user, 2026-10-29)"
+    },
+    {
+      "name": "__LOSS__",
+      "from": "fill_scorecard.mjs (scorecard_loss.html)",
+      "required": true,
+      "means": "the criteria register's loss and its parts, in the footer (out of the table by ruling, 2026-10-29)"
+    },
+    {
+      "name": "__FIRSTRUN__",
+      "from": "fill_assemble.mjs (the first run of _mod.txt), or tokens.json",
+      "required": true,
+      "means": "the run the one-run panels of the Shortlist page read"
     }
   ],
   "consts": [
@@ -203,13 +209,6 @@
       "means": "climb and death: most-built era, e0 share, frontier/stale payback, staffing"
     },
     {
-      "name": "WATCH",
-      "from": "fill_assemble.mjs",
-      "required": true,
-      "minKeys": 4,
-      "means": "watchlist summary row per anchor year"
-    },
-    {
       "name": "PERF",
       "from": "fill_build_perf.mjs",
       "required": true,
@@ -231,13 +230,6 @@
       "means": "per-country dataset; must carry techsT + jeT (fill_research.mjs supplies them)"
     },
     {
-      "name": "TIERC",
-      "from": "fill_tierchoice.mjs",
-      "required": true,
-      "minKeys": 2,
-      "means": "build choice: below-best share (F75 basis: raw/unit-weighted/ex-ports) + the below-best-AND-less-efficient-than-frontier share (tier_profit §c) — user-required 2026-08-24"
-    },
-    {
       "name": "INDECOMP",
       "from": "fill_indecomp.mjs",
       "required": true,
@@ -250,6 +242,20 @@
       "required": true,
       "minKeys": 4,
       "means": "obsolescence, in-market vs trade: {session, setup, runs, pool, thr, industries, tags} - per industry the IN-MARKET / TRADE-ONLY / UNCONTESTED rows and the trade-only splits by market position, tariff and trade policy; per tag the regime sums for the selection mirror; user-agreed 2026-09-24 (F161 §4), permanent, BOTH pages"
+    },
+    {
+      "name": "OLDP",
+      "from": "fill_old_plants.mjs (old_plants.json)",
+      "required": true,
+      "minKeys": 5,
+      "means": "the old-plant census: per industry and year the workers on plants two or more tiers behind their own market's best, world / shortlist / per watchlist tag (the obsolescence table, 2026-10-29)"
+    },
+    {
+      "name": "INTRO",
+      "from": "fill_scorecard.mjs (intro.json)",
+      "required": true,
+      "minKeys": 2,
+      "means": "the two charts above the pages: building-input prices by decade, world GDP run by run (2026-10-29)"
     }
   ],
   "tables": [
@@ -279,24 +285,9 @@
       "means": "world trajectory vs vanilla"
     },
     {
-      "id": "t-watch",
-      "minRows": 4,
-      "means": "watchlist summary"
-    },
-    {
-      "id": "t-tierc",
-      "minRows": 2,
-      "means": "build choice - construction below the frontier"
-    },
-    {
       "id": "t-indecomp",
       "minRows": 10,
       "means": "industry decomposition of tiered VA"
-    },
-    {
-      "id": "t-tierc-dec",
-      "minRows": 2,
-      "means": "build choice by decade"
     },
     {
       "id": "t-wdecomp",
@@ -344,11 +335,6 @@
       "means": "industry composition of the selection (VA)"
     },
     {
-      "id": "t-tierc2",
-      "minRows": 2,
-      "means": "build choice, watchlist mirror (world-wide)"
-    },
-    {
       "id": "t-obs",
       "minRows": 5,
       "means": "obsolescence, in-market vs trade (world)"
@@ -357,6 +343,16 @@
       "id": "t-wobs",
       "minRows": 3,
       "means": "obsolescence, in-market vs trade, selection"
+    },
+    {
+      "id": "t-oldp",
+      "minRows": 4,
+      "means": "do old plants die? per industry, world (2026-10-29)"
+    },
+    {
+      "id": "t-woldp",
+      "minRows": 2,
+      "means": "do old plants die? per industry, the selection (the shortlist by default)"
     }
   ],
   "controls": [
@@ -374,7 +370,10 @@
     "c4-abs",
     "c4-norm",
     "tab-watch",
-    "tab-world"
+    "tab-world",
+    "sel-all",
+    "sel-gp",
+    "sel-sl"
   ],
   "staleness": {
     "_why": "A report that still names a PREVIOUS batch is the failure that prompted this file. These strings must NOT appear in a freshly filled report; add each retired session id and arm label as it is superseded.",

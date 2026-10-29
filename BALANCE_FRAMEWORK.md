@@ -63,7 +63,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.93 | secondary and automation methods | in force | here |
 | 10.94 | input-price red flags | in force | here |
 | 10.95 | research entries for production technologies outside the ladder | in force | here |
-| 10.96 | the last tech rework; every decade's world GDP a target | in force | here |
+| 10.96 | the last tech rework; every decade's world GDP a target (.1: the 1886 line centred on the expected dip, 0.73–1.07, 2026-10-29) | in force | here |
 | 10.97 | the research entries reworked; research halved | in force | here |
 | 10.98 | research entries beyond production | in force; item 10's warning that vanilla's art-academy entries are dead in the mod is resolved — `emit_vanilla_refs.mjs` restores them since 2026-10-21 (TIER_REFERENCE_AUDIT §3.1) | here |
 | 10.99 | the artmerge arm is the canon | record, with a warning (pre-artmerge books lack the performance changes) | here |
@@ -71,7 +71,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.101 | a per-industry input lift; the routine levers; cost1 | in force | here |
 | 10.102 | the world-market monopoly threshold 0.99 | in force (canon since 2026-10-21) | here |
 | 10.103 | treaty ports | deferred to mod 1.1 on game 1.15 | here |
-| 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings | in force; built 2026-10-26 (`fill_register.mjs`, the decade path in `criteria.mjs`) | here |
+| 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings (.1: one four-column scorecard for everything above the play-time block, the loss to the footer, old plants per industry, world / shortlist views, nothing past the right edge, 2026-10-29) | in force; built 2026-10-26, rebuilt and CANONISED 2026-10-29 (`fill_scorecard.mjs`, the decade path in `criteria.mjs`; the reference example F249's report, shared externally, never republished) | here |
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 
@@ -3923,6 +3923,23 @@ depend on the literacy and all levers"*. Base book: `jex-dam4s` (§10.89.13).
    cut is mostly a cost lever once the AI rebuilds to its cap; a spread raise lifts the leader too. Every setting that puts the leader near half
    costs production-onset timing (26 → 19–22 of 43) — a trade-off for the user, not yet ruled. Candidates await the user's choice; none has run.
 
+### §10.96.1 — THE 1886 LINE IS CENTRED ON THE EXPECTED DIP, 0.90 (user, 2026-10-29)
+
+**The question.** The user: *"0.83–1.17 is the same ± in percentage around 1. If we speak of 'a dip', the intervals should be around a number
+less than 1. I propose 0.9."* Asked for reasons for and against, and how deep the dip is in runs that end level with vanilla:
+
+- **Runs that end on vanilla's world GDP at 1930 (within ±5%) sit below vanilla in 1886**: the four-rung corpus (`corpus_runs.jsonl`, 219 runs
+  of every four-rung book to 2026-10-12) **0.90** median (n=36, range 0.80–0.98); its artmerge family 0.94 (n=7); the 1.0 canon (F249, n=16) 0.97–0.98
+  for its three such runs, and a fit of 1886 on 1930 over its sixteen gives 0.92 at 1930 = 1.00. Vanilla's own runs near their 1930 median sit at
+  1.02 in 1886 (0.91–1.14). So the dip is structural (§10.82), and a line centred on 1.0 treats a dipless arm as the expected case.
+- **Against 0.90:** the canon family dips less than the corpus (0.92–0.97 by the readings above), and the 1886 trough is shallow beside the
+  1896–1906 one (F249: 0.91 · 0.91 · 0.90).
+
+**Applied:** the centre moves to 0.90 with the ruled half-width (2σ = 0.17 of the canon's 1886 spread): the line is **0.73–1.07**. An arm above
+1.07 in 1886 has no dip at all — its modernisation is cheaper than the design means — and one under 0.73 has broken something. `criteria.mjs`
+(`LINE1886`); not in the loss, as before. F249 reads 0.91: inside, as it was under 0.83–1.17. ⚠ The width was not re-derived: F249's own
+1886 spread (σ 0.057) would make it 0.79–1.01.
+
 ## §10.97 — THE RESEARCH ENTRIES REWORKED: SLOWER, NON-ADDITIVE, LITERACY-GATED, OPEN-ENDED; RESEARCH HALVED FOR EVERYONE (user-ruled 2026-10-11; ROADMAP step 14; BUILT as jex-dam4s-rb, F226; CANON since 2026-10-12 as part of jex-dam4s-rs, §10.99)
 
 **The complaint (user, after playing candidate A of §10.96):** *"tech JEs are overdoing it. Playing a wide-ish major (GBR, USA, FRA, PRU, AUS, RUS,
@@ -4368,6 +4385,56 @@ and the trajectory and watchlist tables mark a value outside it red; that band i
 1836–1845 anchor, the 1886 line, the end-state aim and soft band), one constant register band, or the old band relabelled, the user chose to
 **keep 0.8–1.25× and relabel it a rough visual guide, not the target**; the tables keep flagging values outside it. The register's world-GDP
 lines are read in the register's table, not drawn on the chart. Built in the same change.
+
+### §10.104.1 — ONE SCORECARD TABLE; THE REPORT READS AS AN EXTERNAL DOCUMENT (user-ruled 2026-10-29)
+
+**The question.** F249's report (the first on the register) was hard to read from outside: twelve paragraphs and four tables before the
+play-time block, the register and the readings in two tables with six columns, a health line and red-flag banner that ran past the page's right
+edge, and prose carrying measurements no table showed. Offered a proposal (a mock-up on F249's numbers), the user ruled point by point:
+
+1. **A preface first:** the runs are observer games, no player, so the numbers show the economy's natural progression. The batch's own
+   description of what is compared against what stays as it was.
+2. **One table for everything above the play-time block**, in four columns: *Line* (the scope in prose), *this batch / vanilla* (one metric,
+   absolute or ratio as fits the line), *aim*, *verdict*. The register's lines, the readings, play time, the input-price red flags, the
+   backward-industry test, misplaced capital and the technology census are its rows, grouped by the question each answers.
+3. **Cuts: "no" on all proposed cuts except the register's loss** (it moves to the footer). World U\*, world H, the tier-1 workers line (with
+   1900 and 1910 added: the whole path from 1900), the tier-0 paybacks and the tiers-on-the-anchors line all stay.
+4. **Misplaced capital is mod only** (*"Remove vanilla reference, the metrics are uncomparable. However, leave as the mod-only number."*).
+5. **Capital abundance is three lines in a row, then misplaced capital** (the closed-major term read "too wordy and still incoherent", and
+   its first rewording was still unclear): *Capital abundance. Unspent investment pool ÷ GDP* — world, shortlist, Germany. Germany's line is
+   its own pool ÷ GDP over the end window against vanilla's (`criteria.mjs` `gerH`, a reading); the register's closed-major term (§10.100)
+   stays in the loss, and its full-employment half is the line's note.
+6. **The backward-industry lines are reworded** (*"even I don't understand them"*, then "still unreadable"): *Backward industries with a far
+   better producer in the same market* / *whose better producers are all abroad: change in their workers over ten years*, with one plain
+   definition under the first (two tiers behind the best producer, without the technology to upgrade yet).
+6a. **Where one quantity is split over rows, the world comes first, then the shortlist, then any country.** The shortage line says what its
+   800 is: 8 major markets × 100 years, the markets named.
+7. **The dam slot line is not wanted** ("Not needed, at least here"); a "bug prevalence tracking" section at the very end was mentioned as a
+   possibility, not ruled, and is not built.
+8. **The play-time block stays with less prose** (one sentence, the grade card with the per-session reading).
+9. **The obsolescence table is reworked completely with less data:** *Do old plants die?* — per industry, workers on plants two or more tiers
+   behind their own market's best at their peak, at 1935, and their share of the industry. The user: "rather good, it stays". It needs a
+   shortlist view, so both pages carry it.
+10. **Removed:** the build-choice panel (its headline stays as the scorecard's "built below the best tier" line), the tech edge, the next lever.
+11. **Two charts go up, after the play-time block and before the view selector:** building-input prices decade by decade, and world GDP run
+    by run.
+12. **The views after the introduction are filtered world / shortlist** — the old approach restored: the second page is the Shortlist page,
+    selecting the shortlist by default, its country chips kept.
+13. **What gets cut is a duplicate:** *"What definitely gets cut is when the two points describe the same or almost the same, and on the same
+    granularity level"*; a more detailed dataset may sit in a collapsed details section. So the tier-employment tables fold under their charts,
+    the old in-market vs trade table under the new one, the trajectory table loses only its GDP column (the decomposition table carries the same
+    per-decade figure), and nothing else of the pages goes.
+14. **The page must read cleanly as a published Artifact:** nothing past the right edge. `fill_verify.mjs` checks it in a real browser at 1000
+    and 390 px on both pages (it caught the health pill, the lede's table, the red-flag table and two clipped chart labels on F249's first page).
+
+**Built** the same day: `fill_scorecard.mjs` (replaces `fill_register.mjs` and `fill_goals.mjs`; the bands are theirs, §10.83 and §10.104),
+`fill_old_plants.mjs`, `--json` on `laggard_pressure.mjs`, `tech_census.mjs` and `misplaced_capital.mjs`, the template, the assembler, the gate;
+F249's report regenerated as the proof (ledger README §6).
+
+**CANONISED the same day** (the user: *"Good. Canonise this ledger form."*): this is the standard form of every batch report from now on,
+and F249's regenerated report (https://claude.ai/artifact/7dR3FWMiYKJbeMjixMcDQK) is its reference example. ⚠ The user shares that link
+EXTERNALLY: nothing is ever republished to it (*"Don't republish anything in the same link"*); a later fill of the same batch, or a change to
+the form, publishes a new artifact.
 
 ## §10.105 — WHY SHIPYARDS STAY VANILLA AND THE ART ACADEMY IS TIERED (the user's reasons, recorded 2026-10-26)
 

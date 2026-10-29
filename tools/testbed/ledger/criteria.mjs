@@ -197,6 +197,11 @@ const ref = {}, sig = {};
 const setRef = (key, vals) => { const m = med(vals); ref[key] = m; sig[key] = m ? sd(vals.map(v => v / m)) : NaN; };
 for (const scope of ['world', 'pool']) for (const q of ['gdp', 'W', 'U', 'H', 'Y']) setRef(scope + '.' + q, vanRuns.map(r => winMean(r.years, scope, q)));
 for (const scope of ['world', 'pool']) setRef(scope + '.real', vanRuns.map(r => winMean(r.years, scope, 'real')));   // GDP at base prices (secondary)
+// GERMANY'S OWN END STATE (2026-10-29, the batch report's capital-abundance lines: world · shortlist · Germany): the member record GER (GER, else NGF,
+// else PRU — MEMBER_FAMILY), its investment pool ÷ GDP and unemployment incl. peasants over the end window. A READING, not a loss term: the
+// register's Germany term stays gerCM (§10.100).
+const gerMean = (years, q) => mean([...years.entries()].filter(([y]) => y >= E0 && y <= E1).map(([, v]) => v.members && v.members.GER && v.members.GER[q]));
+for (const q of ['H', 'U']) setRef('ger.' + q, vanRuns.map(r => gerMean(r.years, q)));
 // ⭐ THE PRICE BASIS: the market names the VANILLA reference actually carries, per year. An arm is scored on the
 // INTERSECTION of its own markets with this — so an arm instrumented with the ten-tag list of 2026-09-20 (which adds
 // the German and Belgian markets) is still compared against vanilla like for like. Those markets enter PI/PP the day
@@ -238,9 +243,11 @@ const gci = (() => { const v = vanRuns.map(r => winMean(r.years, 'world', 'gdp')
 // ⭐ THE DECADE PATH (§10.96 rule 3, user-ruled 2026-10-10: "The GDP of every decade is a target by itself"; added to the register by §10.104,
 // 2026-10-24): world GDP as displayed ÷ the vanilla per-run median at the first summary of each decade year 1846…1936, the arm's median over
 // ALL its usable runs (§10.96's own table reads that way, a stall and a runoff included). THE 1886 BREAK LINE: the median more than 2σ of the
-// canon's own 1886 spread from vanilla — σ 0.085 (canon-dams-family n=6), i.e. outside 0.83–1.17 = "we likely just broke it". The other
-// decades carry no ruled band: they are printed, not graded, and they are NOT in the loss (no weight is ruled).
-const DECADES = [1846, 1856, 1866, 1876, 1886, 1896, 1906, 1916, 1926, 1936]; const LINE1886 = [0.83, 1.17];
+// canon's own 1886 spread from the EXPECTED DIP — σ 0.085 (canon-dams-family n=6), so 2σ = 0.17 either side of 0.90 (user, 2026-10-29: a dip
+// band centred on 1.0 is no dip band; the four-rung runs that end level with vanilla in 1930 sit at 0.90 in 1886, n=36 of 219 — §10.96.1).
+// Until 2026-10-29 the line was 0.83–1.17, centred on vanilla. The other decades carry no ruled band: they are printed, not graded, and they
+// are NOT in the loss (no weight is ruled).
+const DECADES = [1846, 1856, 1866, 1876, 1886, 1896, 1906, 1916, 1926, 1936]; const LINE1886 = [0.73, 1.07];
 const vanDec = {}; for (const y of DECADES) vanDec[y] = med(vanRuns.map(v => at(v.years, y, 'world', 'gdp')));
 const ci = {}; for (let y = 1836; y <= 1845; y++) { const v = vanRuns.map(r => at(r.years, y, 'world', 'gdp')).filter(Number.isFinite); if (v.length >= 8) ci[y] = { lo: pct(v, 0.05), hi: pct(v, 0.95) }; }
 
@@ -250,6 +257,7 @@ function scoreRun(rel, tier) {
   r.path = {}; for (const y of DECADES) r.path[y] = at(years, y, 'world', 'gdp') / vanDec[y];
   r.gdpW = winMean(years, 'world', 'gdp') / ref['world.gdp']; r.gdp35 = at(years, 1935, 'world', 'gdp') / med(vanRuns.map(v => at(v.years, 1935, 'world', 'gdp'))); r.gdpP = winMean(years, 'pool', 'gdp') / ref['pool.gdp'];
   for (const s of ['world', 'pool']) for (const q of ['W', 'U', 'H', 'Y']) { r[s + q] = winMean(years, s, q) / ref[s + '.' + q]; r[s + q + '_abs'] = winMean(years, s, q); }
+  for (const q of ['H', 'U']) { r['ger' + q + '_abs'] = gerMean(years, q); r['ger' + q] = r['ger' + q + '_abs'] / ref['ger.' + q]; }
   r.realW = winMean(years, 'world', 'real') / ref['world.real']; r.realP = winMean(years, 'pool', 'real') / ref['pool.real']; r.plW = r.gdpW / r.realW; r.plP = r.gdpP / r.realP;
   // the price basis: this run's markets ∩ vanilla's, per year (see VANBASIS)
   const bas = {};
@@ -369,7 +377,7 @@ const consensusOf = runs => { // over intact runs
   const C = { note, runs: cons.map(r => r.rel), intact: ok.length, broken: runs.length - ok.length, divergent, gerCM: luckySeed(runs) };
   C.path = {}; for (const y of DECADES) { const v = runs.map(r => r.path && r.path[y]).filter(Number.isFinite); C.path[y] = { med: med(v), sd: sd(v), n: v.length }; }
   { const m = C.path[1886] && C.path[1886].med; C.line1886 = { lo: LINE1886[0], hi: LINE1886[1], med: m, beyond: Number.isFinite(m) && (r2(m) < LINE1886[0] || r2(m) > LINE1886[1]) }; }
-  const keys = ['gdpW', 'gdp35', 'gdpP', 'poolW', 'poolU', 'poolH', 'poolY', 'worldW', 'worldU', 'worldH', 'worldY', 'poolW_abs', 'worldW_abs', 'poolU_abs', 'worldU_abs', 'poolH_abs', 'worldH_abs', 'PI', 'PI_abs', 'PP', 'PM', 'realW', 'realP', 'plW', 'plP'];
+  const keys = ['gdpW', 'gdp35', 'gdpP', 'poolW', 'poolU', 'poolH', 'poolY', 'worldW', 'worldU', 'worldH', 'worldY', 'poolW_abs', 'worldW_abs', 'poolU_abs', 'worldU_abs', 'poolH_abs', 'worldH_abs', 'gerH', 'gerH_abs', 'gerU', 'gerU_abs', 'PI', 'PI_abs', 'PP', 'PM', 'realW', 'realP', 'plW', 'plP'];
   for (const k of keys) C[k] = med(cons.map(r => r[k]));
   C.PIfalling = cons.length ? cons.filter(r => r.PIfalling).length >= cons.length / 2 : false;
   if (cons.length && cons[0].T) { C.T = { ratio0: med(cons.map(r => r.T.ratio0)), r3: med(cons.map(r => r.T.r3)), r0: med(cons.map(r => r.T.r0)), share3: med(cons.map(r => r.T.share3)), t36: med(cons.map(r => r.T.t36)), dec0: [0, 1, 2, 3].map(i => med(cons.map(r => r.T.dec0[i]))), end: [0, 1, 2, 3].map(i => med(cons.map(r => r.T.end[i]))) }; C.T.declining = C.T.dec0.every((v, i, a) => i === 0 || !(Number.isFinite(v) && Number.isFinite(a[i - 1])) || v < a[i - 1]); }
@@ -417,7 +425,7 @@ if (!QUIET) {
     console.log('  WORLD');
     line('GDP (priority 1)', C.gdpW, verdict(C.gdpW, GDPAIM[0], GDPAIM[1], x => x < 0.75 || x > 1.33), 'the 1935 point ' + f2(C.gdp35) + '×; aim ' + f2(GDPAIM[0]) + '–' + f2(GDPAIM[1]) + ', soft outside 0.75–1.33, ' + (GDPHARD === 'ci' && gci ? 'HARD ' + f2(gci.lo) + '–' + f2(gci.hi) + '×' : GDPHARD === 'legacy' ? 'HARD 0.5–1.5×' : 'no hard line'));
     console.log('  ' + 'GDP decade path (§10.96)'.padEnd(28) + DECADES.map(y => String(y).slice(2) + ' ' + f2(C.path[y].med)).join(' · ') + '   (median of all ' + a.runs.length + ' usable runs ÷ the vanilla per-run median; not in the loss)');
-    console.log('  ' + '  the 1886 break line'.padEnd(28) + (f2(C.line1886.med) + '×').padStart(7) + '  ' + (C.line1886.beyond ? 'BEYOND THE 1886 LINE' : 'inside').padEnd(26) + ' 0.83–1.17 (2σ of the canon 1886 spread, §10.96)');
+    console.log('  ' + '  the 1886 break line'.padEnd(28) + (f2(C.line1886.med) + '×').padStart(7) + '  ' + (C.line1886.beyond ? 'BEYOND THE 1886 LINE' : 'inside').padEnd(26) + ' ' + f2(LINE1886[0]) + '–' + f2(LINE1886[1]) + ' (0.90 ± 2σ of the canon 1886 spread, §10.96.1)');
     line('GDP at base prices', C.realW, 'secondary, not in the loss', 'price level (displayed ÷ base-priced) ' + f2(C.plW) + '× vanilla\'s; the shortlist ' + f2(C.realP) + '× at base prices, price level ' + f2(C.plP) + '× (§10.90)');
     line('W', C.worldW, verdict(C.worldW, 0.6, 0.95, x => x > 1.0), 'abs ' + f2(C.worldW_abs, 4) + ' vs ' + f2(ref['world.W'], 4) + '; aim 0.6–0.95, soft > 1.0, ' + wband('world'));
     line('U*', C.worldU, r2(C.worldU) < 1.0 ? 'BEYOND THE SOFT BOUNDARY' : 'inside (no aim)', 'abs ' + pc(C.worldU_abs) + ' vs ' + pc(ref['world.U']) + '; soft < 1.0');

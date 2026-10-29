@@ -84,7 +84,7 @@ function walk(runDir, isFlat) {
       }
     }
     prev = lv;
-    // ⭐ construction points added, SUMMED per calendar year over every summary (yearly or quarterly cadence alike) — fill_goals' G3 reads
+    // ⭐ construction points added, SUMMED per calendar year over every summary (yearly or quarterly cadence alike) — fill_scorecard's construction line reads
     //   the 1880–1935 total (2026-10-08); `years[y].ptsAdd` below stays the single step into y, which TRAJ plots
     out.ptsByYear[y] = (out.ptsByYear[y] || 0) + ptsAdd;
     if (!YEARS.includes(y)) continue;
@@ -187,7 +187,7 @@ for (const y of Object.keys(van[0].gdpByYear)) {
   const vals = van.map(v => v.gdpByYear[y]).filter(Boolean);
   vanGdpByYear[y] = vals.reduce((a, b) => a + b, 0) / vals.length;
 }
-// vanilla's construction points per calendar year, the MEAN over its runs (n=16) — fill_goals' G3 denominator
+// vanilla's construction points per calendar year, the MEAN over its runs (n=16) — fill_scorecard's construction denominator
 const vanPtsByYear = {};
 for (const y of new Set(van.flatMap(v => Object.keys(v.ptsByYear)))) {
   const vals = van.map(v => v.ptsByYear[y]).filter(x => x != null);
