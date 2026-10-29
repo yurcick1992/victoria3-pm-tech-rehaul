@@ -243,11 +243,12 @@ const gci = (() => { const v = vanRuns.map(r => winMean(r.years, 'world', 'gdp')
 // ⭐ THE DECADE PATH (§10.96 rule 3, user-ruled 2026-10-10: "The GDP of every decade is a target by itself"; added to the register by §10.104,
 // 2026-10-24): world GDP as displayed ÷ the vanilla per-run median at the first summary of each decade year 1846…1936, the arm's median over
 // ALL its usable runs (§10.96's own table reads that way, a stall and a runoff included). THE 1886 BREAK LINE: the median more than 2σ of the
-// canon's own 1886 spread from the EXPECTED DIP — σ 0.085 (canon-dams-family n=6), so 2σ = 0.17 either side of 0.90 (user, 2026-10-29: a dip
-// band centred on 1.0 is no dip band; the four-rung runs that end level with vanilla in 1930 sit at 0.90 in 1886, n=36 of 219 — §10.96.1).
-// Until 2026-10-29 the line was 0.83–1.17, centred on vanilla. The other decades carry no ruled band: they are printed, not graded, and they
-// are NOT in the loss (no weight is ruled).
-const DECADES = [1846, 1856, 1866, 1876, 1886, 1896, 1906, 1916, 1926, 1936]; const LINE1886 = [0.73, 1.07];
+// canon's own 1886 spread from the EXPECTED DIP, 0.90 (user, 2026-10-29: a dip band centred on 1.0 is no dip band; the four-rung runs that end
+// level with vanilla in 1930 sit at 0.90 in 1886, n=36 of 219 — §10.96.1). σ is the 1.0 canon's own, 0.057 at 1886 over F249's 16 runs, so the
+// line is 0.79–1.01 (user, 2026-10-29: "from now on"). It read 0.83–1.17 (centred on vanilla, σ 0.085 of canon-dams-family n=6) until
+// 2026-10-29, and 0.73–1.07 for a few hours that day. The other decades carry no ruled band: they are printed, not graded, and they are NOT in
+// the loss (no weight is ruled).
+const DECADES = [1846, 1856, 1866, 1876, 1886, 1896, 1906, 1916, 1926, 1936]; const LINE1886 = [0.79, 1.01];
 const vanDec = {}; for (const y of DECADES) vanDec[y] = med(vanRuns.map(v => at(v.years, y, 'world', 'gdp')));
 const ci = {}; for (let y = 1836; y <= 1845; y++) { const v = vanRuns.map(r => at(r.years, y, 'world', 'gdp')).filter(Number.isFinite); if (v.length >= 8) ci[y] = { lo: pct(v, 0.05), hi: pct(v, 0.95) }; }
 

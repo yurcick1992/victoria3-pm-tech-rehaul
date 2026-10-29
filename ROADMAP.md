@@ -14,11 +14,12 @@ renumber or retitle them.
 
 ---
 
-## Where the plan stands (2026-10-26)
+## Where the plan stands (2026-10-29)
 
 Mod 1.0 ships on game 1.13 on **2026-10-30**; mod 1.1 follows on game 1.15.N around **2026-11-16**. The alternating vanilla + canon batch has
 measured the 1.0 canon (F249: 16 intact, world GDP 1.07×, play time ×1.010 of the same sessions' vanilla), and the no-DLC load test passed (F250).
-What is left for 1.0 is the release build ("Mod 1.0 — the remainder" below). Everything below the table is per step.
+What is left for 1.0 is the release build’s in-game load and the visual cleanup playtest, in the next session; everything else is deferred to 1.1
+(user, 2026-10-29; "Mod 1.0 — the remainder" below). Everything below the table is per step.
 
 | step | what | status | closed | pointers |
 |---|---|---|---|---|
@@ -72,7 +73,9 @@ is ruled"). What is left, in order:
    release metadata — version 1.0.0, no "(built …)" stamp, a current description, `supported_game_version` "1.13.\*" (R1, Q9); "Recipe BE"
    out of the building names (R1); thumbnail and licence (R2); a player README with the list of replaced vanilla files (R3, H9); a proofread
    of every generated player-facing text (R4); the three minted technologies' icons from the user's images (R5); then a final build, every
-   lint, an in-game load and an `error.log` read.
+   lint, an in-game load and an `error.log` read. ✅ Made 2026-10-28; the release playtest's visual cleanup (POLISH §6) built 2026-10-29.
+   **Owed, in the next session (user, 2026-10-29):** the in-game load, the `error.log` read and the visual cleanup playtest, with any
+   last-minute fixes they bring. Nothing else goes into 1.0: every other open item is deferred to 1.1 (BACKLOG "The order").
 4. **Release, 2026-10-30.**
 
 ### Mod 1.1 (game 1.15.N, ~2026-11-16)

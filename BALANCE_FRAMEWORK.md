@@ -63,7 +63,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.93 | secondary and automation methods | in force | here |
 | 10.94 | input-price red flags | in force | here |
 | 10.95 | research entries for production technologies outside the ladder | in force | here |
-| 10.96 | the last tech rework; every decade's world GDP a target (.1: the 1886 line centred on the expected dip, 0.73–1.07, 2026-10-29) | in force | here |
+| 10.96 | the last tech rework; every decade's world GDP a target (.1: the 1886 line centred on the expected dip, 0.79–1.01, 2026-10-29) | in force | here |
 | 10.97 | the research entries reworked; research halved | in force | here |
 | 10.98 | research entries beyond production | in force; item 10's warning that vanilla's art-academy entries are dead in the mod is resolved — `emit_vanilla_refs.mjs` restores them since 2026-10-21 (TIER_REFERENCE_AUDIT §3.1) | here |
 | 10.99 | the artmerge arm is the canon | record, with a warning (pre-artmerge books lack the performance changes) | here |
@@ -3935,10 +3935,11 @@ less than 1. I propose 0.9."* Asked for reasons for and against, and how deep th
 - **Against 0.90:** the canon family dips less than the corpus (0.92–0.97 by the readings above), and the 1886 trough is shallow beside the
   1896–1906 one (F249: 0.91 · 0.91 · 0.90).
 
-**Applied:** the centre moves to 0.90 with the ruled half-width (2σ = 0.17 of the canon's 1886 spread): the line is **0.73–1.07**. An arm above
-1.07 in 1886 has no dip at all — its modernisation is cheaper than the design means — and one under 0.73 has broken something. `criteria.mjs`
-(`LINE1886`); not in the loss, as before. F249 reads 0.91: inside, as it was under 0.83–1.17. ⚠ The width was not re-derived: F249's own
-1886 spread (σ 0.057) would make it 0.79–1.01.
+**Ruled (the user, the same day: *"From now on, have 0.79–1.01 for the 1886 spread."*):** the line is **0.79–1.01** — centred on 0.90, with
+the half-width re-derived as 2σ of the 1.0 canon's own 1886 spread (σ 0.057 over F249's 16 runs) in place of the canon-dams-family's 0.085.
+An arm above 1.01 in 1886 has no dip at all — its modernisation is cheaper than the design means — and one under 0.79 has likely broken
+something. `criteria.mjs` (`LINE1886`); not in the loss, as before. F249 reads 0.91: inside. (For a few hours the line read 0.73–1.07, the
+old half-width on the new centre; the shared F249 report, frozen, still prints that band.)
 
 ## §10.97 — THE RESEARCH ENTRIES REWORKED: SLOWER, NON-ADDITIVE, LITERACY-GATED, OPEN-ENDED; RESEARCH HALVED FOR EVERYONE (user-ruled 2026-10-11; ROADMAP step 14; BUILT as jex-dam4s-rb, F226; CANON since 2026-10-12 as part of jex-dam4s-rs, §10.99)
 
