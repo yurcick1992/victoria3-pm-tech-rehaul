@@ -157,7 +157,9 @@ Closed:
 ## E. Engine compatibility (vanilla references our split breaks)
 
 The main part of the 1.0 polish (user, 2026-10-19: "That's the main part of the polish"): one strategic pass making every rung count as
-its vanilla building wherever vanilla script checks a building or a method. Done 2026-10-21 but for the one line below.
+its vanilla building wherever vanilla script checks a building or a method. Done 2026-10-21 but for the lines below.
+
+- **PROPOSED for 1.1 (user, 2026-10-30), unruled** · building groups wherever possible, one per industry for the buildings with the same output, so a compatibility patch (and our own reference rewrites) can name one group instead of every rung key. To check before ruling: which references take a group at all (`is_building_group`, group modifiers) and which only a type (`has_building`, companies' `building_types`); whether a group's modifiers must be declared by hand like the building ones; that a building has ONE group, and the crafts already sit in `bg_pmr_crafts` (no economy of scale), so a per-industry group must carry or inherit its parent's economic fields; what a new group does to the build menu and to the readers keyed on building type · README "Compatibility with other mods", TIER_REFERENCE_AUDIT.md
 
 - **DEFERRED to 1.1** (user, 2026-10-24) · MISSING_BUILDING_CONDITIONS.md — the art academy's conditional ai_value (1 case: vanilla's +500, 1,000 → 1,500, for Austria while `je_metternich` runs; we emit a flat value per rung). For 1.0 the mod diverges from vanilla here on grounds of **timing and scope, not principle**. JUDGED 2026-10-26 on the alternating batch (F249 §5): both arms hold one level, fully staffed, 1838–1846 (median, n=16 each); vanilla adds a second around 1848, the canon's single level empties by 1855–60 — after the entry ends, so the dropped +500 is not the cause; nothing changes for 1.0 · MISSING_BUILDING_CONDITIONS.md
 

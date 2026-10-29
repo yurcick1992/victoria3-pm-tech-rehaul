@@ -22,7 +22,7 @@ vanilla's buildings; the balance editor still shows every vanilla building's rec
 
 Players get the mod from the Steam Workshop; this README is for building and editing it.
 
-## Vanilla files the mod replaces
+## Compatibility with other mods
 
 <!-- replaced-files:start -->
 The mod replaces **146 vanilla files** whole, in 26 folders (generated from the 1.0.0 build by `tools/list_replaced_files.mjs`),
@@ -59,10 +59,35 @@ any of these files conflicts with this one: the one loaded later wins the whole 
 - `map_data/state_regions/` (15): `00_west_europe.txt`, `01_south_europe.txt`, `02_east_europe.txt`, `03_north_africa.txt`, `04_subsaharan_africa.txt`, `05_north_america.txt`, `07_south_america.txt`, `08_middle_east.txt`, `09_central_asia.txt`, `10_india.txt`, `11_east_asia.txt`, `12_indonesia.txt`, `13_australasia.txt`, `14_siberia.txt`, `15_russia.txt`
 
 </details>
+
+Beyond whole files, from the same build:
+- **Defines**, set key by key (another mod that sets the same key wins or loses by load order): `NAI.PRODUCTION_BUILDING_AUTONOMOUS_INVESTMENT_CONSTRUCTION_COST_DIVISOR_SCALING`, `NAI.MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR`, `NAI.MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD`, `NAI.MONEY_SPENDING_CONSTRUCTION_EXCESSIVE_THRESHOLD`, `NAI.CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED`, `NAI.PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD`, `NAI.PRODUCTION_BUILDING_VERY_LONG_CONSTRUCTION_TIME_THRESHOLD`, `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD`.
+- **Vanilla objects redefined by a file the mod adds:** none. The mod's on-action hooks are not counted: the engine
+  joins them to vanilla's.
+- **Vanilla localization overridden:** 34 English keys (17 building names, 17 map-lens labels), and the same 34 in each of the other 10 languages.
+  A translation or renaming mod that sets them conflicts key by key.
 <!-- replaced-files:end -->
 
-Map mods and mods that overhaul companies, technologies, production methods or the 1836 history are the likely conflicts. What a game
-patch can break in these files, and what to re-run after one, is in [`ON_GAME_UPDATE.md`](ON_GAME_UPDATE.md).
+The lists above cannot show the systems the mod changes, which another mod can collide with from files of its own:
+- **The 17 tiered industries.** Each industry's vanilla building key (`building_steel_mill`, `building_textile_mill`, …) now names only its
+  first rung. The newer rungs are new building types (`building_steel_mill_bessemer_process`, …). Another mod's script that names a vanilla key
+  (a `has_building`, a `building_<key>_throughput_add` modifier, a company's or an AI strategy's building list, a `create_building`) reaches the
+  first rung only. A mod that adds or rebalances these industries' production methods reaches no rung at all: every rung carries its own copies
+  of its methods and method groups. The mod rewrites vanilla's own references of this kind (`tools/emit_vanilla_refs.mjs`,
+  [`TIER_REFERENCE_AUDIT.md`](TIER_REFERENCE_AUDIT.md)); another mod's need a compatibility patch.
+- **Research.** Base innovation, the innovation cap and its literacy term are cut (`static_modifiers/00_code_static_modifiers.txt`), as are
+  universities' innovation (`production_methods/07_government.txt`) and four flat research bonuses; research journal entries earn it back.
+  A mod that rebalances research speed stacks with the cut. The entries name vanilla technologies by key, so a mod that removes or renames a
+  technology silences its entry.
+- **The investment AI:** the defines above, the subsidies and the schooling weight in `ai_strategies/01_admin_strategies.txt`, and the tiered
+  industries named in `00_default_strategy.txt`.
+- **Trade:** the traded quantities in `goods/00_goods.txt`. A mod that adds or changes a good replaces the file.
+- **Electricity:** the urban centre's streetlights and the power plant's cost (`buildings/` and `production_methods/06_urban_center.txt`), the
+  dams' slots in 15 state-region files, and five hydro state traits without their electricity bonus.
+- **The 1836 start:** the converted buildings folder, and the craft workers carved out of 13 pop-history files. A mod that changes 1836
+  buildings or populations conflicts.
+
+What a game patch can break in these files, and what to re-run after one, is in [`ON_GAME_UPDATE.md`](ON_GAME_UPDATE.md).
 
 ## Building from source
 

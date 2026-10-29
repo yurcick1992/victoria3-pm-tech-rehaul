@@ -2,8 +2,8 @@
 
 What to do when Paradox patches the game, and every place the mod depends on a vanilla file, a vanilla number or an engine behaviour. The mod is
 built against **1.13.11** (`mod/.metadata/metadata.json` → `supported_game_version`). Mod 1.1 moves to game 1.15 (BACKLOG: 1.15 on 2026-11-05, a
-stable 1.15.N about 11-12, mod 1.1 about 11-16), and this file is that pass's checklist. Add a coupling here in the same pass that creates it
-(CLAUDE.md §5.1 rule 10).
+stable 1.15.N about 11-12, mod 1.1 about 11-16), and this file is that pass's checklist; §4 lists what 1.15's patch notes touch. Add a coupling here
+in the same pass that creates it (CLAUDE.md §5.1 rule 10).
 
 **How the mod meets a patch.** Every build re-reads the installed game (`VIC3_GAME`, default the Steam path). Each vanilla file the mod owns is a
 fresh copy of the installed file with our edits re-applied, and every edit asserts how often it matched, so a moved anchor stops the build instead of
@@ -613,4 +613,75 @@ different versions are not comparable without saying so.
   unchanged, no unmapped method, the same inherited 1836 gaps). Its behaviour was not compared directly: "more war from the sway fix" did not show at
   n=18, and revolts ran ×1.30 (F79). Every `VANILLA_REF` session and the 2026-10-21 canon are 1.13.11; the older pins `20260813_083557` (vanilla
   n=4) and `20260818_221216_canon-n7` are 1.13.10.
-- **1.15** — expected 2026-11-05, with 1.14's AI rework. Mod 1.1 follows this file's routine; treaty ports are re-measured (§2.2.10).
+- **1.15** — expected 2026-11-05, with 1.14's AI rework. Mod 1.1 follows this file's routine; treaty ports are re-measured (§2.2.10). What the
+  preliminary patch notes touch: §4.
+
+---
+
+## 4. Game 1.15: what the patch notes touch
+
+Read on 2026-10-30 from the preliminary 1.15 notes (the Modding and Bugfixes lists) against §2. The 1.1 pass re-reads the final changelog (routine
+step 1) and confirms each item on the installed files; an item that turns out wrong is corrected here, not left.
+
+**What a 1.0 install does on 1.15.** This is the first thing a rebuild does not fix (the list at the top of this file). Until mod 1.1 is released,
+every 1.0 install overrides the 1.15 game with 1.13.11 copies of the 146 owned files (§2.1). The notes name these:
+- `ship_interest_gain_mult` is removed (replaced by `ship_power_projection_mult` / `_add`). The 1.0 copy of
+  `power_bloc_principles/00_power_bloc_principles.txt` still carries it in `principle_navy_1`, `_2` and `_3`.
+- The AI rework adds `will_incorporate_state` and regional objectives to AI strategies. The 1.0 copies of `ai_strategies/00_default_strategy.txt` and
+  `01_admin_strategies.txt` hold 1.13's strategies.
+- `static_modifiers/00_code_static_modifiers.txt` is the engine's global block. Any base value 1.15 adds there is missing under the 1.0 copy.
+- Map and history: the notes change harbour connections, a lake in China and North Angola's population. Only the diff of routine step 1 shows whether
+  any of it sits in the 15 owned `state_regions` files or the owned 1836 history (`history/buildings` under `replace_paths`, 13 `history/pops` files).
+
+On rebuild all of these follow 1.15. For 1.1 the work is to confirm that with the diff and the count lines (routine step 8).
+
+**Script the notes rename or remove: none of it is ours.** None of these appears in `tools/` or the built `mod/` (checked 2026-10-30):
+- `pop_type_percent_country` (now takes a script value);
+- the war-exhaustion commands (now war support: `add_war_support_change`, …);
+- `enemy_contested_wargoals`, `strait_trade_importance_by`;
+- `has_employee_slots_filled` (operand order fixed);
+- `primary_cultures_percent_state` / `_country` (now take a target country).
+
+The only war-exhaustion name in the build is the modifier `country_war_exhaustion_casualties_mult`. It sits in four vanilla copies
+(`technologies/20_military`, `power_bloc_principles/00_power_bloc_principles`, `static_modifiers/content_1_modifiers` and `content_4_modifiers`), which a
+rebuild refreshes.
+
+Two more fixes that do not reach us:
+- 1.15 no longer substitutes script arguments inside quoted strings. No emitted `zzz_pm_rehaul*` file puts a `$arg$` inside quotes (the one `$…$` in
+  `telemetry_lib.ps1` is PowerShell interpolation).
+- The `dlc` field of events and journal entries may now list several DLCs. `check_dlc_gates.mjs` (L39) compares each copy with vanilla's file from the
+  same game folder, so it holds whatever the syntax. Read its PASSED line.
+
+**Engine behaviour the design rests on (§2.3.1, routine step 10).** Three bugfixes change how buildings hire and pay. The old-plant mechanism runs
+through wages (CLAUDE.md §2.1, F97), and the direction of none of the three is argued. Read the laggard test (`laggard_pressure.mjs`), the old-rung
+census and T0 on the first 1.15 canon batch against a 1.15 vanilla before carrying F249's readings over.
+- *"Buildings now compare their productivity against their own building type rather than all types when deciding whether to raise wages."* In vanilla a
+  building type is a whole industry. Here each rung is its own type, so a frontier rung now compares itself only with frontier rungs of its industry.
+  That narrows the wage competition by which the frontier draws workers off the old rung.
+- *Profitable buildings no longer lay off and rehire in a loop, and buildings still gaining workers no longer lower their hiring rate.* New rungs
+  likely fill faster. Re-read the dead-define list (§2.2.1): if `BUILDING_MAX_PROFIT_TO_PAUSE_HIRES` is now read, the PAUSED class of
+  `hiring_census.mjs` / `craft_fill.mjs` can follow the define instead of its heuristic (F185, F188).
+- *New buildings take the dominant production methods of their own type, not of all types* (for countries born of a revolution too). This changes
+  which secondaries a newly built rung opens on. Read it beside the luxury-line problem (F249 §4d).
+- The wage and hiring changes move `config/measured_base_wages.json` (§2.4) more than an ordinary patch does. Refresh it from the 1.15 vanilla batch
+  before any profit is quoted on 1.15.
+
+**The testbed (§2.3.2).**
+- **The fleet path loop** (F218, the one listed bug of wall-clock cluster 3). The notes fix *fleet repair progress* and send *fleets sent home after
+  losing a naval battle back to their naval mission once repaired*, which plausibly is the loop. Run `fleet_loop_runs.mjs` over the 1.15 vanilla
+  batch. If no run carries the signature, cluster 3's list empties and the calibration (F218 §7) is moot. If one does, a fix is open again (the user,
+  2026-10-15: no fix unless 1.15 still has the loop).
+- *Building profit predictions and goods availability no longer show no supply until the first day passes.* The `EARLY|boot` lines read the market
+  from `on_game_started_after_lobby`, so compare them with a 1.13 session's.
+- The console command `print_world_gdp` prints the combined yearly GDP of every country. One debug game is a direct check of the displayed world GDP
+  the register reads (F45, F257).
+
+**Research entries.** Scripted progress bars can take a script value or a math block for `min_value` / `max_value`. Since 2026-10-27 the urban-centre
+entries read their figure through a script value (CLAUDE.md §4.1), and this could simplify them. Not needed for 1.1. New script hooks that may serve
+later: `global_average_gdp_per_capita`, `has_building_levels_in_state_region` (country scope, one state region), `gdp_owned_by`.
+
+**Treaty ports (§2.2.10).** The notes add:
+- AI regional objectives, `will_incorporate_state`, the strait dependence links and `has_military_reach`;
+- a rule that a country can no longer release one that could invalidate a treaty port it ceded inside its market.
+
+Nothing in them touches the pursuit filter, the never-added rule or the port-building requirement, so the §2.2.10 list stands as written.
