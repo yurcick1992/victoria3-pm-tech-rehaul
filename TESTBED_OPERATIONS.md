@@ -124,13 +124,21 @@ dot-sourced by `build.ps1`, which emits `common/on_actions/zzz_v3tb_telemetry.tx
 byte-identical telemetry apart from the build stamp. There is no fallback generator in the harness and there must never be one (the
 old one had drifted and logged fewer columns); the observer refuses to launch a mod that carries no telemetry rather than spend the
 game time harvesting nothing. There is no `-NoMod`: the control arm is a real mod, so every arm loads a mod and instruments
-identically.
+identically. The one exception is the **release-build check** below the table, which is not a measurement arm.
 
 | arm | schedule | built by | carries | guard |
 |---|---|---|---|---|
 | **control** | `{kind: control}` | `build.ps1 -ControlOnly` (needs `-SaveTo` or `-DryRun`, never writes `mod/`) | metadata + telemetry, nothing else | throws if handed a config with content, and the scheduler throws on `{kind: control}` with any `config`; L7 checks the emitted mod |
 | **overlay** | `{kind: overlay, config: X}` | `build.ps1 -Overlay -Config X` | vanilla + telemetry + one declared overlay (today only the pop-need weight rescaling) | throws if the config produces no overlay; own mod id `com.yurcick.v3_testbed_overlay`; a second overlay kind must be named and allow-listed |
 | **config** | `{kind: config, config: X}` | `build.ps1 -SaveTo …` | the full mod built from book X | the build's linters and preflight |
+
+**The release-build check** (`{kind: release, config: X}`, X defaulting to `config/mod_config.json`; 2026-10-29) runs the PLAYER build
+(`build.ps1 -Release -SaveTo …`, which refuses telemetry) through the observer with `-NoTelemetry`, the one waiver of the refusal above
+(the observer throws if the mod it is handed carries telemetry after all). It answers "does what ships load, crash or stall over a
+century", nothing else: no `markets.tsv`, so no PI/PP, red flags or anything else read from telemetry; the yearly save summaries, the
+tick lines (wall clock, the L41 freeze watch), the crash resumes and the run's own error window still come out. `meta.json` records
+`telemetry: false`; the arm reads `config` in `build_state.json` (the release build carries the real mod's id), so a release run is
+told apart by its setup kind (`save_provenance.json` `arm_kind: release`) and never pooled with the measurement arms.
 
 **The control rule is absolute: the only thing a control may vary is its telemetry.** Not one gameplay file, not one field. An arm
 that needs any gameplay change is an overlay or a config and must not be built by, named after or reported as a control.

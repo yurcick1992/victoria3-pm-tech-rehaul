@@ -1109,7 +1109,9 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   every run. Continuation runs: run keys `continue_save`, `continue_expect_after` (required), `prior_wall_seconds`, `parent` → observer
   `-ContinueSave` and `continuation.json`; read them through `stitch_session.mjs`. Schedule key `game_args` → observer `-ExtraGameArgs`;
   `no_dlc` (run or defaults, true/false) → observer `-DisableAllDlc` (the no-DLC load test, `schedules/no_dlc_load_test.json`);
-  `frozen_minutes` (run or defaults) → observer `-FrozenMinutes` (L41).
+  `frozen_minutes` (run or defaults) → observer `-FrozenMinutes` (L41). Setup `{kind: release}` builds the player build
+  (`build.ps1 -Release`, no telemetry) and passes the observer `-NoTelemetry`: the release-build crash / stall check
+  (`schedules/release_century_n1.json`; TESTBED_OPERATIONS §2.2), never a measurement arm.
   Status: current. Traps: the archiver's `Start-Process -ArgumentList` quotes nothing (paths hand-quoted) while the harvester's
   `& powershell @args` quotes each element itself (never pre-quote). Unthreaded spec keys are dropped (L5) or throw from `defaults`
   (L16); builds are time-bounded and a failed one aborts the schedule (L21). Refs: §10.94, L19, L29.
@@ -1119,7 +1121,8 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   Flags include `-DumpDates`, `-ModPath`, `-Stamp`, `-AutosaveInterval`, `-ContinueSave`, `-PriorWallSeconds`, `-ExtraGameArgs`,
   `-DisableAllDlc` (every installed DLC's `pops_id` into `content_load.json`'s `disabledDLC`; meta.json records `disabled_dlc`, the
   `dlc_mounted` read off debug.log's mount lines, and `no_dlc_verified`; MODDING_NOTES has the format). Refuses a
-  mod without telemetry (it has no generator). Refuses to start while any `victoria3.exe` runs; every kill is verified
+  mod without telemetry (it has no generator) unless `-NoTelemetry` (a release-build run; then it refuses a mod WITH telemetry, and
+  meta.json records `telemetry: false`). Refuses to start while any `victoria3.exe` runs; every kill is verified
   (`Stop-GameVerified`: waits for the process to be gone, `taskkill /T` if not, logs the outcome, L19). An in-game date unmoved for
   `-FrozenMinutes` (15) with the game running is stopped and resumed from the newest autosave (L41; meta.json `frozen_stops`). meta.json's `error_log_lines` counts
   only the mirrored error lines stamped inside the run's own window, `error_log_foreign_lines` the rest (L9, since 2026-10-28). Status:

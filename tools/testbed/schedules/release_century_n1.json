@@ -1,0 +1,37 @@
+{
+  "schedule_version": 1,
+  "label": "release-century-n1",
+  "_why": "THE RELEASE BUILD'S CRASH AND STALL CHECK. The user, 2026-10-29, after the 1935 save loaded into the release build: \"Go on with observer n=1 on the release build. I understand that it will lack telemetry, we just want to understant it doesn't crash or stall (I'll check stalling myself).\" One observer century on the 1.0 PLAYER build (build.ps1 -Release: no telemetry, logging stripped but the init manifest line, no Recipe BE, no build stamp), through the new `kind: release` setup (run_observer -NoTelemetry). Not a measurement: no markets.tsv, no register reading from telemetry; the yearly save summaries, the tick lines (wall clock, the L41 freeze watch), the crash resumes and the run's own error window are what it yields.",
+  "_arms": {
+    "release": "{kind: release, config: config/mod_config.json} - the 1.0 canon book (sha256 9a05d36da42c1511, tree twin 04ac513168388956) built as the release (build.ps1 -Release -SaveTo sched_release), the same build deployed for the 2026-10-29 release playtest"
+  },
+  "_comparison": "against itself only: does it reach 1936.1.1, how many crash resumes (meta.json resumes), any freeze stop (frozen_stops), any error class naming a zzz_pm_rehaul file. Its play time may be read beside the canon's debug-build centuries (F249) as a direction only (different days, different build kind).",
+  "_predictions": "Reaches 1936.1.1 with 0-1 crash resumes (the canon's sixteen F249 centuries were all intact; resumes there were vanilla-engine crashes in both arms) and no freeze stop. No error line names a zzz_pm_rehaul file. Play time within ~10% of the debug canon's ~165-195 min, a little faster if anything (no telemetry dumps, no debug_log lines). Magnitude of the speed-up not argued.",
+  "_stop_rule": "none: one fixed run, plays to 1936; stop watcher NOT armed (fixed-n).",
+  "_cost": "1 x 1836 -> 1936, ~3-3.5 h",
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1"
+    ],
+    "tags": [
+      "GBR"
+    ],
+    "metrics": [
+      "country_state"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "release": {
+      "kind": "release",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "release",
+      "until": "1936.1.1"
+    }
+  ]
+}

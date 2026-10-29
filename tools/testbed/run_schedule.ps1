@@ -52,6 +52,9 @@
   A run's dump_dates default to 1 January of the year before `until`. Relative paths resolve
   against the repo root. `kind: recipe` (ordered solver steps) is deliberately NOT implemented
   yet - see the note at Resolve-Setup.
+  `kind: release` (config optional, default config/mod_config.json) builds the PLAYER build
+  (build.ps1 -Release) and runs it with no telemetry: a crash / stall / load check of what ships,
+  never a measurement - it yields the save summaries, the wall clock and the error log, no markets.
 #>
 [CmdletBinding()]
 param(
@@ -210,6 +213,9 @@ foreach ($sn in $setupNames) {
             if (-not (Test-Path (RepoPath $sc))) { throw "setup '$sn': config not found: $(RepoPath $sc)" }
         }
         "config"  {
+            if ($sc -and -not (Test-Path (RepoPath $sc))) { throw "setup '$sn': config not found: $(RepoPath $sc)" }
+        }
+        "release" {
             if ($sc -and -not (Test-Path (RepoPath $sc))) { throw "setup '$sn': config not found: $(RepoPath $sc)" }
         }
         "recipe"  { throw "setup '$sn': kind 'recipe' is not implemented yet - use kind 'config' with a prepared config file" }
@@ -406,8 +412,9 @@ function Resolve-Setup {
     param([string]$Id, $Spec, [string]$SpecFile, [string]$Token)
     $kind = Val $Spec "kind" "config"
     $modName = "sched_$($Id -replace '[^A-Za-z0-9._-]','_')"
-    $args = @("-ExecutionPolicy","Bypass","-File",$Builder,"-SaveTo",$modName,
-              "-Telemetry",$SpecFile,"-TelemetryToken",$Token)
+    $args = @("-ExecutionPolicy","Bypass","-File",$Builder,"-SaveTo",$modName)
+    # a release build refuses telemetry (build.ps1 -Release); every other kind carries this run's spec and token
+    if ($kind -ne "release") { $args += @("-Telemetry",$SpecFile,"-TelemetryToken",$Token) }
     $cfg = $null
     switch ($kind) {
         "control" {
@@ -434,6 +441,13 @@ function Resolve-Setup {
             if (-not (Test-Path $cfg)) { throw "setup '$Id': config not found: $cfg" }
             $args += @("-Config", $cfg)
             if (-not [bool](Val $Spec "lint" $true)) { $args += "-NoLint" }
+        }
+        "release" {
+            # THE PLAYER BUILD (POLISH_1_0.md H8): no telemetry, logging stripped but the init manifest line, which the
+            # observer still reads as its mod-loaded marker. Every lint runs, as in the shipped build.
+            $cfg = RepoPath (Val $Spec "config" "config/mod_config.json")
+            if (-not (Test-Path $cfg)) { throw "setup '$Id': config not found: $cfg" }
+            $args += @("-Release", "-Config", $cfg)
         }
         "recipe"  {
             # Deliberately unimplemented. A recipe encodes BALANCE METHODOLOGY (solve BE, then
@@ -606,6 +620,7 @@ foreach ($p in $plan) {
     # PROVENANCE: the arm this run was built from, machine-read into build_state.json. A control arm
     # with no config passes nothing, and build_state then reads as the pure-vanilla arm it is.
     if ($resolved.Config) { $obsArgs += @("-BuildConfig",$resolved.Config) }
+    if ($resolved.Kind -eq "release") { $obsArgs += "-NoTelemetry"; Log "run $($p.index) is a RELEASE-BUILD run: no telemetry, so no markets.tsv - saves, wall clock and error log only" }
     if ($p.game_args -and $p.game_args.Trim()) { $obsArgs += @("-ExtraGameArgs","`"$($p.game_args.Trim())`"") }
     if ($null -ne $p.frozen_minutes) { $obsArgs += @("-FrozenMinutes","$([int]$p.frozen_minutes)") }
     if ($p.no_dlc) { $obsArgs += @("-DisableAllDlc"); Log "run $($p.index) is a NO-DLC run: every installed DLC disabled (run_observer -DisableAllDlc)" }

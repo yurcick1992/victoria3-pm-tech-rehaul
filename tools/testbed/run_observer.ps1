@@ -162,6 +162,10 @@ param(
     #   pops_id). Throws when no descriptor is found. The game logs a "Mounted Data: ...\game\dlc\<folder>" line for every DLC it loads, so
     #   meta.json records what was asked (`disabled_dlc`), what was mounted (`dlc_mounted`) and whether no DLC was (`no_dlc_verified`).
     [switch]   $DisableAllDlc,
+    # ⭐ A RELEASE-BUILD RUN (2026-10-29; run_schedule `kind: release`): the player build carries no telemetry by design (build.ps1 -Release
+    #   refuses it), so the no-telemetry refusal below is waived. Nothing is harvested from the markets; the run still yields its saves,
+    #   tick lines (wall clock, the L41 freeze watch), crash resumes and error log, which is what a crash / stall check of the shipped build needs.
+    [switch]   $NoTelemetry,
     # leave content_load.json / pdx_settings.json as the harness set them
     [switch]   $NoRestore
 )
@@ -191,8 +195,10 @@ if ($ContinueSave) {
 # Telemetry lives in the mod under test - there is no fallback generator here any more, so a mod
 # without it would run for the full span and harvest nothing. Fail before burning the game time.
 $TelemetryFile = Join-Path $ModPath "common\on_actions\zzz_v3tb_telemetry.txt"
-if (-not (Test-Path $TelemetryFile)) {
-    throw "the mod under test carries no telemetry: $TelemetryFile is missing. Build it with build.ps1 -Telemetry <spec.json> (or -TelemetryOn), or -ControlOnly for the vanilla control arm."
+if ($NoTelemetry) {
+    if (Test-Path $TelemetryFile) { throw "-NoTelemetry: the mod under test carries telemetry ($TelemetryFile) - a release-build run takes the release build, which has none." }
+} elseif (-not (Test-Path $TelemetryFile)) {
+    throw "the mod under test carries no telemetry: $TelemetryFile is missing. Build it with build.ps1 -Telemetry <spec.json> (or -TelemetryOn), or -ControlOnly for the vanilla control arm (or pass -NoTelemetry for a release-build run)."
 }
 if ($FlatOut -and $Runs -ne 1) { throw "-FlatOut writes ONE run straight into -OutRoot; use -Runs 1 (the scheduler always does)." }
 # `powershell -File script.ps1 -DumpDates a,b` hands the whole "a,b" over as ONE string (-File
@@ -1527,7 +1533,7 @@ try {
             quarantined_saves = $script:QuarantinedSaves
             resume_processes = @($script:ResumeProcesses | ForEach-Object { $_ })   # L32: each process's frozen set, feeds and outcomes
             attempt_log = $attemptLog; autosave_interval = $AutosaveInterval
-            mod_loaded = $modLoaded; mod_init_marker = $modInit
+            mod_loaded = $modLoaded; mod_init_marker = $modInit; telemetry = (-not $NoTelemetry)
             # -DisableAllDlc: asked to disable / mounted anyway / verified (null on an ordinary run, which mounts every DLC)
             disabled_dlc = @($script:DisabledDlc); dlc_mounted = @($dlcMounted | Sort-Object)
             no_dlc_verified = $(if ($DisableAllDlc) { $dlcMounted.Count -eq 0 } else { $null })
