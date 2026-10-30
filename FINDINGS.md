@@ -21683,6 +21683,11 @@ watcher.
 - **Not that the crash rate is the mod's or vanilla's.** 1.33 a run is above the schedule's predicted 0–1 and above both F249 arms. Three
   runs cannot tell that rate from theirs. The addresses differ, so there is no sign of one deterministic fault, and no symbols tie any
   crash to content.
-- **Not a play time.** Wall 165.9 / 180.3 / 183.3 min, crash restarts included, against 165.3 (canon) and 163.6 (vanilla) in F249's
-  sessions. There was no alternating control. The machine's use overnight is unknown (F258: it was in active use the evening before).
+- **Not a play time.** In clusters (`wall_clusters.mjs`, §3.4):
+  - Run 1 is cluster 2 (164.7 min, a 1860–1864 episode with no listed bug), and run 2 is cluster 1 (176.9 min).
+  - Run 3 is cluster 3 (181.7 min): the fleet path loop, a Swedish fleet recalled for repairs on a 994-move path over 1862–1873.
+  - The MAIN figure (clusters 1 + 2) is 170.8 min at n=2. Against F249's 165.3 (canon, n=14) and 163.6 (vanilla, n=16), that is ×1.03
+    and ×1.04, inside the +10% budget.
+  - It is directional only: two runs a week later, no alternating control, and the machine's use overnight is unknown (F258: it was in
+    active use the evening before).
 - **Not PI, PP or any telemetry reading.** The release build carries none.
