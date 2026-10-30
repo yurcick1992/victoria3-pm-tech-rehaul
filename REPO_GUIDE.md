@@ -1357,6 +1357,13 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   any country holds it at the campaign end and the median holders; exits 1 when a gate is held by no country in ANY run (dead content, the
   2026-08-30 bug). A t3 gate missing from single runs is expected (§2.2). The book comes from `--config`, the run's `build_state.json` or the
   session's schedule. Beside the ledger, not in preflight. Proven 2026-10-28: PASS on the 1.0 canon's 16 runs, FAIL with one gate renamed.
+- **`ledger/downsize_series.mjs`** — auto-downsizing read from a series of SAVES (not summaries). `extract <out.json>` reads one melted save
+  on stdin (`tools/vendor/rakaly/rakaly.exe melt --format vic3 --unknown-key stringify -c <save.v3> | node … extract <dir>/<name>.json`) and
+  writes a compact per-building record (type, state, owner, levels, private and government levels, staffing, `auto_downsize_start_date`,
+  `last_layoff_date`); `read <dir>` classifies every pair of consecutive saves (the rule is in the header) and, where the series is
+  quarterly, adds the speed against the timer, the rebuild lag, and the half-yearly and yearly undercount. Traps: yearly saves catch ~74% of
+  the quarterly count and the miss depends on how fast buildings empty; summaries do not carry the fields, and a batch deletes its saves
+  once summarised, so past batches cannot be read (only kept saves: `saves_debut`, quarantined and newest saves). Refs: F260.
 - **`ledger/summary_trend_ring.mjs`** `--selftest` — L43's detector: a synthetic melt with one wrapped and one unfilled GDP ring through the
   real summary writer, which must read each at `(index − 1) mod n`. Run by `preflight.ps1` every build and before every batch. Refs: F257.
 - **`ledger/first_run_decomp.mjs`** `--arm <s>[:<setup>] [--arm …] --van <s> [--years …]` — GDP = population × productive workers per

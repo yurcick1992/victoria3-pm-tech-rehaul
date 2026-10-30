@@ -405,6 +405,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F257 | Displayed GDP = a country's goods producers' value added on its soil at its own market's prices (construction, military, administration not subtracted; ownership moves nothing); looked base-priced because two offsets cancel; the canon's GDP sits at ~0.95 of vanilla's price level from 1920. First reading (base-priced, +6%) VOID: a summary reader bug | canon | probe | here |
 | F258 | The 1.0 release build loads and plays 1836-1852 (n=1, stopped by the user) with no crash, no stall and no error of its own; its release manifest line is logged. Early play time 16.2 min to 1849 against 14.4 / 13.9 a week earlier is no reading: the machine was in active use | release | standing | here |
 | F259 | The 1.0 release build plays three centuries 1836-1936 intact (n=3): every run self-quits at 1936.1.1, 4 engine crashes (3 different addresses, one empty dump) all recovered from the run's own autosaves, 0 freeze stops, no error of its own; 1.33 crashes a run against F249's 0.69 (canon debug) / 0.56 (vanilla), inside small-n chance; world GDP 0.93x at the aim | release | standing | here |
+| F260 | Auto-downsizing has no hook but is measurable from saves: after the 6-month timer a building loses ~1 empty private level a week (87.8% of available steps); the timer alone predicts little (0-27% shrink within a year); a private-level drop on a building understaffed at the earlier save is the event; yearly saves catch 74%, half-yearly 93% | vanilla-mechanics | standing | here |
 
 ---
 
@@ -21691,3 +21692,69 @@ watcher.
   - It is directional only: two runs a week later, no alternating control, and the machine's use overnight is unknown (F258: it was in
     active use the evening before).
 - **Not PI, PP or any telemetry reading.** The release build carries none.
+
+## F260 — AUTO-DOWNSIZING CAN BE MEASURED FROM SAVES, NOT HOOKED: ONCE ITS 6-MONTH TIMER RUNS OUT A BUILDING LOSES ABOUT ONE EMPTY PRIVATE LEVEL A WEEK; THE TIMER ALONE PREDICTS LITTLE, A PRIVATE-LEVEL DROP ON A BUILDING UNDERSTAFFED AT THE EARLIER SAVE IS THE EVENT; YEARLY SAVES CATCH 74% OF IT, HALF-YEARLY 93% (2026-10-30; savegame archaeology, no run: the `saves_debut` vanilla campaign, 336 quarterly saves 1836.4.1 → 1921.1.1, game 1.13.9; and the eight slowdown saves kept from `20261030_005628_release-century-n3/run001_release`, the release build, 1857 and 1860 → 1866 yearly)
+
+**Why it was read.** The user (2026-10-30): a privately owned level downsized because its building is understaffed and cannot hire is one of
+the two ways capital is destroyed against the player's wishes (the other is coastal bombardment); can a log event mark it? Expected: more
+of it than vanilla, on obsolete rungs. Deferred to mod 1.1 or later the same day (BACKLOG G).
+
+**The engine.** `00_defines.txt:395-399`: a non-trade-centre building that misses ≥ 1 privately held level of staffing and ≥ 10% of its
+staffing waits `AUTO_DOWNSIZE_BUILDING_MONTHS_TO_WAIT` = 6 months, then (the tooltip `BUILDING_AUTO_DOWNSIZING`) downsizes *"by a single
+privately owned level each week until it has reached a more appropriate size"*. There is no hook: the only building on_actions are
+`on_building_built`, `on_start_expanding_building` and `on_building_expanded`, and the binary names no downsize trigger or on_action (only
+the tick task `UpdateAutoDownsizing` and the GUI functions `IsAutoDownsizing`, `GetAutoDownsizeTooltip`, `IsAllowedToAutoDownsize`). The
+SAVE keeps, per building, `auto_downsize_start_date` (the timer's end), `last_layoff_date`, `levels` and `staffing` (in levels), and
+`building_ownership_manager` splits the levels by owner (a `country` identity is the government; any other is private). Instrument:
+`tools/testbed/ledger/downsize_series.mjs` (`extract` per melted save, `read` over the series; the rule is in its header).
+
+**The rule.** A drop counts when a building's total and private levels fall between two saves, its government levels do not, its state keeps
+its owner, it was understaffed at the earlier save (≥ 1 empty level, ≤ 90% staffed), and fewer than three buildings of its state lost levels
+(a split, a merger or a bombardment). Government, military, ownership, urban-centre and trade-centre buildings are left out.
+
+**Speed (vanilla, quarterly).** 1,000 quarterly drops, 2,568 private levels over 1836–1921.
+- **The 6-month wait holds:** 2,504 of the 2,568 levels (97.5%) were on buildings whose timer was already set at the start of the quarter,
+  and no building lost levels while its timer still lay beyond the quarter's end.
+- **About one level a week:** where the timer ran out inside the quarter, 634 of 799 drops took every weekly step available (min(weeks after
+  the timer, empty levels)) — 1,921 of 2,189 levels, 87.8%. Where it had run out before the quarter began, 583 of 825 (70.7%): downsizing
+  pauses. Why it pauses is not read (that it resumes hiring is a guess).
+- **Short episodes:** of 660 episodes (consecutive quarters with drops), 568 lie within one quarter and 89 span two; levels per episode
+  1 (301), 2 (118), 3 (75), 4–5 (82), 6+ (84). A building shrinks until less than about one level stands empty: a 10-level building with one
+  level staffed is down to 1–2 levels in about two months.
+- **Rebuilds are rare:** of the 2,568 lost levels, the first gain after the drop came 1 quarter later for 24 levels, 2 for 72, 3 for 31, 4
+  for 32 (159 within a year, 6.2%), and 65 more in the second year.
+
+**The timer alone predicts little.** Of the timers set at a 1 January save, the share whose building lost private levels within the year:
+vanilla 1857–1865 0–27% a year (36 of 244); the release build 1860–1865 11–25% (43 of 298). Most timers are fresh: in the release build's
+1860.1.1 save, 33 of the 56 timers (all building types) end in June 1860, so they were set in the last four weeks.
+
+**Coarser saves against the quarterly count** (the same rule, vanilla):
+
+| cadence | levels counted | recall | precision | missed: building staffed at the earlier save | missed: rebuilt inside the span | missed: the state-wide filter | other |
+|---|---|---|---|---|---|---|---|
+| half-yearly (1 Jan, 1 Jul) | 2,373 of 2,548 | 0.929 | 0.997 | 0 | 18 | 152 | 2 |
+| yearly (1 Jan) | 1,883 of 2,520 | 0.740 | 0.991 | 420 | 102 | 80 | 27 |
+
+Any cadence of 6 months or less sees every building that shrinks understaffed, with its timer set, at an earlier save; a yearly save misses
+the building that empties, waits and shrinks within one year. Quarterly saves themselves miss a shrink rebuilt inside the same quarter,
+under ~1% by the rebuild lag.
+
+**A first comparison (yearly rule, 1860 → 1866, one run each).** Vanilla's campaign lost 68 private levels (2, 5, 2, 10, 10, 39 a year), the
+release build's run 129 (15, 23, 18, 12, 44, 17). The release build's include a 102-level Handcrafted Furniture craft at ~14% staffed that
+lost 3, 0, 0, 0, 11 and 1 levels.
+
+**What it says.** The event the user asked for is measurable without game script, from saves at most 6 months apart, as a private-level drop
+on a building understaffed at the earlier save; the timer field labels it but does not predict it. Yearly saves undercount by about a
+quarter, and the undercount depends on how fast buildings empty — which the mod changes — so a mod-vs-vanilla comparison on yearly saves
+could be biased between the arms. Half-yearly autosaves or a monthly script poll (a building's levels against last month's) are the two
+instruments; both are deferred to mod 1.1 or later (user, 2026-10-30).
+
+**What it does NOT say.**
+- **Not whether the mod downsizes more than vanilla.** The comparison above is two runs, six early years, and the yearly rule's undercount
+  may differ between the arms.
+- **Not every cause separated.** The state-wide filter drops real downsizings where three buildings of a state shrink at once (152 levels at
+  half-yearly cadence) and keeps a split that touches fewer; gold fields running out and farms losing land may pass the rule. Coastal
+  bombardment is not read at all.
+- **Not why the timer is so often reset, or why downsizing pauses** — read from saves, not from the engine.
+- **Not a player's game.** Observer campaigns; a player can downsize by hand and protect private buildings by law
+  (`country_private_buildings_protected_bool`).

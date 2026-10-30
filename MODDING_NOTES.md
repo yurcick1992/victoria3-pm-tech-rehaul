@@ -253,6 +253,20 @@ nothing errors: our streetlights generate electricity, so with vanilla's line ke
 builder's `pm_goods` writer drops a `required_input_goods` whose good is no longer among the override's inputs (BALANCE_FRAMEWORK
 §10.43.2).
 
+### Auto-downsizing has no hook; the save keeps its timer
+
+A building (not a trade centre) that misses ≥ 1 privately held level of staffing and ≥ 10% of its staffing waits 6 months, then loses one
+PRIVATE level a week until less than about one level stands empty (`NEconomy.AUTO_DOWNSIZE_BUILDING_*`; measured on vanilla's quarterly
+saves, F260). Government levels are never removed this way; trade centres downsize on unused trade capacity instead.
+- **Nothing fires.** The building on_actions are `on_building_built`, `on_start_expanding_building` and `on_building_expanded`; the binary
+  names no downsize trigger or on_action. `Building.IsAutoDownsizing` is a GUI data function (a `debug_log` string can print it; a `limit`
+  cannot test it).
+- **The warning icon misleads.** It shows whenever the timer is set, and the timer is reset so often that only 0–27% of the buildings
+  carrying it at a 1 January save shrink within the year (F260).
+- **The save holds it:** per building `auto_downsize_start_date` (when the timer runs out), `last_layoff_date`, `levels`, `staffing` (in
+  levels); `building_ownership_manager` gives each owner's levels (a `country` identity is the government). A private-level drop between
+  two saves at most 6 months apart, on a building understaffed at the earlier one, is the event (`tools/testbed/ledger/downsize_series.mjs`).
+
 ### Content-specific reminders (this mod)
 
 - A production method group with exactly one method = that method is always active (no choice): "one main method".
