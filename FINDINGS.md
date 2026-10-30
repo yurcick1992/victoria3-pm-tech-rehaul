@@ -35,7 +35,7 @@ thing forever.
 | **v8** | **+ ORIGINS**: who supplied whom, per good, per importer market (own phase) | **F9** |
 | **v9** | **+ urban-centre levels** and **people-weighted SoL per stratum** per country; **day-0 read** at game start; **building inventory** (type/level/employment) at day 7; `market_goods_scoped`; construction/government/military goods spend; ACTIVE PMs per building | **F11–F24** |
 | **v10** | **+ WAGES**: `SW` state average annual wage / subsistence / unemployed working adults per state; `WC` pop-object count, states, population, mean SoL per country; `WSTR` per-stratum SoL + workforce, dependents and total population per country; `PW` per POP — income split into workforce/dependent, expenses, workforce ratio, pop type — at the **endpoint dumps only** (TESTBED_METRICS §5.7) | **F25, F26** |
-| **v11–v14** | this table stopped being kept at v10; the full table (today v14) is TESTBED_METRICS → *The telemetry schema*, and an entry still names the schema it was measured under | — |
+| **v11–v15** | this table stopped being kept at v10; the full table (today v15) is TESTBED_METRICS → *The telemetry schema*, and an entry still names the schema it was measured under | — |
 
 ### Data-integrity note (the 2026-07-31 mirror bug does NOT affect F3/F4/F5)
 
@@ -406,6 +406,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F258 | The 1.0 release build loads and plays 1836-1852 (n=1, stopped by the user) with no crash, no stall and no error of its own; its release manifest line is logged. Early play time 16.2 min to 1849 against 14.4 / 13.9 a week earlier is no reading: the machine was in active use | release | standing | here |
 | F259 | The 1.0 release build plays three centuries 1836-1936 intact (n=3): every run self-quits at 1936.1.1, 4 engine crashes (3 different addresses, one empty dump) all recovered from the run's own autosaves, 0 freeze stops, no error of its own; 1.33 crashes a run against F249's 0.69 (canon debug) / 0.56 (vanilla), inside small-n chance; world GDP 0.93x at the aim | release | standing | here |
 | F260 | Auto-downsizing has no hook but is measurable from saves: after the 6-month timer a building loses ~1 empty private level a week (87.8% of available steps); the timer alone predicts little (0-27% shrink within a year); a private-level drop on a building understaffed at the earlier save is the event; yearly saves catch 74%, half-yearly 93% | vanilla-mechanics | standing | here |
+| F261 | Auto-downsizing is logged by a monthly telemetry poll, on in every telemetry run (v15): against monthly saves it logs 116 of 118 drops with the same size and private split (the 117th without identity, the 118th before the first poll); a building holds no variables, so the memory lives on the state; "private" = not owned by a country (`private_ownership_fraction` misses self-owned buildings) | instrument | standing | here |
 
 ---
 
@@ -21697,7 +21698,8 @@ watcher.
 
 **Why it was read.** The user (2026-10-30): a privately owned level downsized because its building is understaffed and cannot hire is one of
 the two ways capital is destroyed against the player's wishes (the other is coastal bombardment); can a log event mark it? Expected: more
-of it than vanilla, on obsolete rungs. Deferred to mod 1.1 or later the same day (BACKLOG G).
+of it than vanilla, on obsolete rungs. Deferred to mod 1.1 the same day, then reversed: the monthly script poll went into the basic
+telemetry stack (F261, BACKLOG G).
 
 **The engine.** `00_defines.txt:395-399`: a non-trade-centre building that misses ≥ 1 privately held level of staffing and ≥ 10% of its
 staffing waits `AUTO_DOWNSIZE_BUILDING_MONTHS_TO_WAIT` = 6 months, then (the tooltip `BUILDING_AUTO_DOWNSIZING`) downsizes *"by a single
@@ -21747,7 +21749,7 @@ lost 3, 0, 0, 0, 11 and 1 levels.
 on a building understaffed at the earlier save; the timer field labels it but does not predict it. Yearly saves undercount by about a
 quarter, and the undercount depends on how fast buildings empty — which the mod changes — so a mod-vs-vanilla comparison on yearly saves
 could be biased between the arms. Half-yearly autosaves or a monthly script poll (a building's levels against last month's) are the two
-instruments; both are deferred to mod 1.1 or later (user, 2026-10-30).
+instruments; the poll is the one built, on in every telemetry run since 2026-10-30 (F261).
 
 **What it does NOT say.**
 - **Not whether the mod downsizes more than vanilla.** The comparison above is two runs, six early years, and the yearly rule's undercount
@@ -21758,3 +21760,74 @@ instruments; both are deferred to mod 1.1 or later (user, 2026-10-30).
 - **Not why the timer is so often reset, or why downsizing pauses** — read from saves, not from the engine.
 - **Not a player's game.** Observer campaigns; a player can downsize by hand and protect private buildings by law
   (`country_private_buildings_protected_bool`).
+
+---
+
+## F261 — AUTO-DOWNSIZING IS NOW LOGGED BY A MONTHLY TELEMETRY POLL, ON IN EVERY TELEMETRY RUN (v15): AGAINST MONTHLY SAVES IT LOGS 116 OF 118 DROPS WITH THE SAME SIZE AND PRIVATE SPLIT; A BUILDING HOLDS NO VARIABLES, SO THE MEMORY LIVES ON THE STATE, AND "PRIVATE" HAS TO BE READ AS "NOT OWNED BY A COUNTRY" (2026-10-30; three vanilla probes with monthly saves and a four-run alternating cost check, game 1.13.11, telemetry v15)
+
+**Why.** The user, 2026-10-30, reversing the same day's deferral (F260): *"Add downsizing as a telemetry option (that can be later turned
+off without too much work), but now it stays within the basic telemetry stack."* Probes were allowed for three hours.
+
+**The instrument** (TESTBED_METRICS §2.4¾; `Get-DownsizeBlock` in `tools/telemetry_lib.ps1`). The scheduler's downsize feed adds the
+metric `downsizing` to every telemetry run; `-NoDownsizeFeed`, the schedule key `downsize_feed: false` or `$DOWNSIZE_FEED_DEFAULT =
+$false` in `run_schedule.ps1` turn it off. On every 1st of the month it remembers each producing building that qualifies for
+auto-downsizing (level ≥ 1, not wholly owned by a country, under 90% staffed, at least one level empty). At the next poll it logs every
+remembered building whose level fell: levels and private levels before and after, employment, the engine's warning flag and the
+building id (DZ, DZX). A DZM line closes each poll with its counts. Read with `ledger/downsize_telemetry.mjs`.
+
+**Arms.** All `{kind: control}`: vanilla + telemetry v15 and nothing else, game 1.13.11, every installed DLC, inside the user's probe
+window.
+
+**Probe 1** (`20261030_220510_downsize-probe-1836`, 1836, stopped after four polls, monthly saves). The first design kept each building's
+level in a variable on the building. **A building scope holds no variables:** `error.log` reads *"set_variable effect [ This scope
+doesn't support variables. Scope: Building …"*, and the same for `change_variable` and `has_variable`: about 120,000 error lines in four
+polls. About 5,000 buildings a poll sat under 90% staffed in 1836, so the redesign tracks only buildings that qualify.
+
+**Probe 2** (`20261030_221503_downsize-probe-1836-v2`, 1836.1.1 → 1841.1.1, 60 monthly saves kept). The memory moved to the STATE:
+variable lists of building scopes, with a building's level and private levels written as 12 bits across lists and two generations
+alternating.
+- **The memory round-trips exactly:** 46 of 46 DZR lines read back the remembered level and private levels equal to the live ones,
+  mixed ownership included (a Tennessee maize farm at 10 levels / 5 private, a Virginia arms industry at 3 / 2).
+- **Every poll ran:** 60 DZM lines, and each poll's `read` equals the previous poll's `tracked`.
+- **The drops it saw are real:** 4 unique drops, each matched by a save-side drop of the same building (`GetIDString` = the save's id),
+  month and size.
+- **⚠ It missed 12 save-side drops**, nearly all on buildings that own themselves (the save's `identity={ building=<itself> }`, e.g. a
+  fishing wharf at 4.5% staffing). `private_ownership_fraction` leaves self-ownership out, so such a building looked wholly
+  government-owned; one matched drop (a glassworks, 4 → 1 levels, all non-government in the save) was split 1 private / 3 government.
+  Fixed: private = not owned by a country (`country_ownership_fraction`).
+- **⚠ About 250 error lines a poll**: *"ownership_fraction requires the building to be built"*, on buildings under their first
+  construction. Fixed: `level >= 1` comes first.
+
+**Probe 3** (`20261030_222514_downsize-probe-1884`: the `saves_debut` vanilla campaign continued from 1884.1.1 to 1887.1.1, 36 monthly
+saves kept; 1884–1886 because that campaign had 12–41 qualifying drops a year there, against about 3 a year in probe 2's 1837–1840).
+- **No error line names the telemetry file.**
+- **Tracked:** 254 buildings at the first poll, 279 on average; the saves count 241 → 293 qualifying buildings.
+- **Against the saves:** 118 save-side drops on buildings that qualified at the earlier save, 1884.2 → 1886.12.
+  - 116 were logged by the poll with the same size and the same private split before and after.
+  - One fell in January 1884, before a continuation's first poll could remember anything.
+  - One was a gold field losing its last level (2 → 0). The poll logged it too, from the state's list, which keeps the destroyed
+    building, but with an empty country, `NULL_STATE` and id −1.
+  - The poll's remaining lines are later than the last save (January 1887) or duplicates (below).
+- **What it counts:** 119 auto-downsizing drops, 306 private levels lost in three years (75 on tea plantations, 32 on textile mills,
+  28 on tooling workshops, 25 on glassworks, 22 on furniture manufactories). No drop lost more than 5 levels between two polls.
+  `IsAutoDownsizing` reads 1 at the poll after about two thirds of the drops.
+- **F260's state-wide rule does not suit the poll.** Nine drops fell in states where three or more buildings dropped in the same poll:
+  six in Shandong over two polls, all flagged by the engine (a state in decline), and three in Bosna in one poll. The save route
+  needed the rule against splits and mergers; the poll tracks only buildings that already qualify. So the reader prints such clusters
+  and keeps them, and sets apart instead a drop of more than 5 levels between two monthly polls, which is too fast for one level a week.
+- **⚠ harness.log holds each line with a non-ASCII character twice.** The observer reads its log copies without an encoding
+  (PowerShell 5.1 decodes them as ANSI), then appends the correctly decoded streamed copy, because the two texts differ. The reader
+  keys a drop by date and building id. Other readers keyed on names are not yet checked (BACKLOG G).
+
+**The cost** (`20261030_223204_downsize-cost-1921`: four continuations of the vanilla 1921.1.1 save to 1926.1.1, alternating the poll
+off and on, read with `arm_tick_cost.mjs`). Pending while the batch plays; this paragraph is replaced by its reading.
+
+**What it says.** The event the user asked for is now logged by the game itself, in every telemetry run, at monthly resolution. Against
+monthly saves it is complete for the producing buildings: 116 of the 117 drops a poll can see, with the same size and private split, and
+the 117th without its identity. The memory has to live on the state, and "private" has to mean "not owned by a country".
+
+**What it does NOT say.**
+- Nothing about the mod's rate of downsizing against vanilla's: every probe ran vanilla, and probe 3 is three years of one continuation.
+- The completeness was checked on vanilla in 1836–1840 and 1884–1886; not late in the century, and not on the mod.
+- Ports, railways, trade centres and the mod's dams are outside the groups; their downsizing is not logged.
+- Whether the poll's first month after a continuation is complete: it cannot be (nothing is remembered before the first poll).

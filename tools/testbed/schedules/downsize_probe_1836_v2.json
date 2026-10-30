@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "downsize-probe-1836-v2",
+  "_why": "THE DOWNSIZING POLL, SECOND DESIGN. Probe 1 (20261030_220510, downsize_probe_1836.json) showed that a BUILDING scope holds no variables (\"This scope doesn't support variables. Scope: Building\", ~120k error lines in four polls) and that ~5,000 buildings a poll sit under 90% staffed in 1836. Now: only buildings that QUALIFY are remembered (some private ownership, under 90% staffed, at least one empty level), in variable lists on their STATE - level and private levels as 12 bits each, two generations alternating. Unverified: state-scope variable lists of building targets, is_target_in_variable_list / every_in_list / clear_variable_list on a state, global_var: in a comparison, `private_ownership_fraction > global_var:x`, GetGlobalVariable / IsAutoDownsizing / GetIDString in a building-scope debug_log. Ground truth: MONTHLY autosaves kept (-KeepSaves) read by ledger/downsize_series.mjs over the same months.",
+  "_arms": {
+    "vanilla": "{kind: control} - vanilla + telemetry (country_state, downsize_probe, the red-flag feed) and nothing else"
+  },
+  "_comparison": "the DZ drops against the monthly saves' drops on buildings that qualified at the earlier save, building by building (GetIDString = the save's building id); the DZR round trip (decoded level and private levels = the live ones on a building that did not change); error.log lines naming zzz_v3tb; DZM tracked against the saves' qualifying count.",
+  "_predictions": "No zzz_v3tb error line. DZM every month from 1836.2.1; tracked a few hundred to ~1,500 (the qualifying set), read = the previous tracked. DZR: decoded = live on every building whose level did not move. DZ in 1837-1840 at a few a month, each matched by a save-side drop of the same size and private split. Magnitudes not argued.",
+  "_stop_rule": "none: one short probe",
+  "_cost": "1 x 1836 -> 1841 with monthly saves, ~10-15 min",
+  "defaults": {
+    "dump_dates": ["1836.2.1"],
+    "tags": ["GBR"],
+    "metrics": ["country_state", "downsize_probe"],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 45
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1841.1.1" }
+  ]
+}

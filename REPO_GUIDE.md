@@ -1103,10 +1103,12 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   cached) → `run_observer.ps1` → harvest → the session's `markets_all.tsv` (rows prefixed `run_index`, `setup`). Keys `[p]` pause ·
   `[r]` resume · `[s]` stop after this run · `[x]` stop now; 3 crashes from one autosave fail the run, 3 before the first autosave abort
   the schedule; exit 0 ok · 2 stopped · 3 fatal.
-  `-Schedule <spec.json> [-WhatIf] [-OutRoot] [-KeepMods] [-KeepSaves] [-NoSaveHarvest] [-HarvestWorkers 4] [-BuildTimeoutMinutes 10] [-NoRedFlagFeed] [-NoMachineMonitor]`
+  `-Schedule <spec.json> [-WhatIf] [-OutRoot] [-KeepMods] [-KeepSaves] [-NoSaveHarvest] [-HarvestWorkers 4] [-BuildTimeoutMinutes 10] [-NoRedFlagFeed] [-NoDownsizeFeed] [-NoMachineMonitor]`
   (`-WhatIf` = plan, builds and time estimate only; there is no `-Label`). Per run it adds the red-flag feed (`market_goods_wide` on
   1 July of every year to the year before `until`, on `lib_markets.TELEMETRY_TAGS`, merged with the schedule's own wide keys, recorded in
-  `telemetry.json`; `-NoRedFlagFeed` only to match an old batch); per session it starts `machine_monitor.ps1` (proven alive; a failed
+  `telemetry.json`; `-NoRedFlagFeed` only to match an old batch) and the downsize feed (the metric `downsizing`, telemetry v15; off with
+  `-NoDownsizeFeed`, or per run with the key `downsize_feed: false`; `$DOWNSIZE_FEED_DEFAULT` is the one place to turn it off for good);
+  per session it starts `machine_monitor.ps1` (proven alive; a failed
   start only warns). It runs `archive_autosaves.ps1` → `<run>\saves\` and `harvest_saves.ps1 -Watch` → `<run>\save_summaries\`
   concurrently with the game, plus a final drain after each run (`-HarvestWorkers 0` = drain only), and checks `NO_NEW_RUNS` before
   every run. Continuation runs: run keys `continue_save`, `continue_expect_after` (required), `prior_wall_seconds`, `parent` → observer
@@ -1364,6 +1366,13 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   quarterly, adds the speed against the timer, the rebuild lag, and the half-yearly and yearly undercount. Traps: yearly saves catch ~74% of
   the quarterly count and the miss depends on how fast buildings empty; summaries do not carry the fields, and a batch deletes its saves
   once summarised, so past batches cannot be read (only kept saves: `saves_debut`, quarantined and newest saves). Refs: F260.
+- **`ledger/downsize_telemetry.mjs`** `<label>=<group>[:<setup>] [...] [--list] [--types N] [--from Y] [--to Y]` — auto-downsizing read
+  from the telemetry poll (v15 `downsizing`, on in every telemetry run; TESTBED_METRICS §2.4¾): per run the auto-downsizing drops and the
+  private levels lost, the polls read and the buildings tracked; every drop by reason (auto, government levels fell, state-wide, no
+  private level lost); private levels lost by decade, by building type and, for a tiered book (the run's `build_state.json`), by tier.
+  Traps: harness.log can hold a DZ line twice with its place names decoded two ways, so a drop is keyed by date and building id (the
+  DZX line) and the duplicates are counted; a run without DZM lines carried no poll (pre-v15 or the feed off) and its zero is flagged,
+  not a measurement. Refs: F261.
 - **`ledger/summary_trend_ring.mjs`** `--selftest` — L43's detector: a synthetic melt with one wrapped and one unfilled GDP ring through the
   real summary writer, which must read each at `(index − 1) mod n`. Run by `preflight.ps1` every build and before every batch. Refs: F257.
 - **`ledger/first_run_decomp.mjs`** `--arm <s>[:<setup>] [--arm …] --van <s> [--years …]` — GDP = population × productive workers per

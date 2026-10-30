@@ -87,6 +87,11 @@ param(
     # 1 July of every year on the eleven telemetry tags, so ledger/input_price_flags.mjs can read a 2-year stretch from the order books.
     # This switch drops it, for a re-run whose telemetry must match an old batch byte for byte. Not for saving log lines.
     [switch] $NoRedFlagFeed,
+    # ⭐ THE DOWNSIZE FEED IS ON BY DEFAULT (user, 2026-10-30, FINDINGS F260): every telemetry run carries the metric `downsizing`, a
+    # monthly poll that logs each level a producing building loses while understaffed (telemetry v15, read with
+    # ledger/downsize_telemetry.mjs). This switch drops it for the whole schedule; the schedule key `downsize_feed: false` (run, else
+    # defaults) drops it for one run - the A/B of its own cost. TO TURN IT OFF FOR GOOD: flip $DOWNSIZE_FEED_DEFAULT below.
+    [switch] $NoDownsizeFeed,
     # ⭐ THE MACHINE-LOAD MONITOR IS ON BY DEFAULT (2026-10-06, BACKLOG G): tools/testbed/machine_monitor.ps1 runs beside the whole session
     # and writes <session>\machine_load.tsv every 20 s (the game's CPU per in-game year, other load, P/E-core load, a canary, memory),
     # read with ledger/machine_load.mjs. It touches no build, telemetry or game. This switch drops it.
@@ -159,6 +164,8 @@ if (-not $NoRedFlagFeed) {
     $RedFlagTags = @([regex]::Matches($mt.Groups[1].Value, "'([A-Z]{3})'") | ForEach-Object { $_.Groups[1].Value })
     if ($RedFlagTags.Count -lt 8) { throw "red-flag feed: read only $($RedFlagTags.Count) tag(s) from TELEMETRY_TAGS - refusing a feed that would miss the majors" }
 }
+# The downsize feed's default for a run that does not say (`downsize_feed` in the run or the defaults); -NoDownsizeFeed overrides all.
+$DOWNSIZE_FEED_DEFAULT = $true
 function Get-RedFlagDates {
     param([string]$Until)
     $u = $Until.Split('.'); $uy = [int]$u[0]; $um = [int]$u[1]
@@ -182,7 +189,7 @@ function Get-RedFlagDates {
 # here despite working. Reconciled 2026-08-21; wage_pop_endpoints added with telemetry v14.
 $KNOWN_DEFAULT_KEYS = @('tags','metrics','autosave_interval','timeout_minutes','dump_dates',
                         'wage_pop_markets','wage_pop_endpoints','breakdown_dates','breakdown_tags',
-                        'wide_dates','wide_tags','origin_goods','game_args','no_dlc','frozen_minutes')
+                        'wide_dates','wide_tags','origin_goods','game_args','no_dlc','frozen_minutes','downsize_feed')
 if ($defaults) {
     $unknown = @($defaults.PSObject.Properties | ForEach-Object { $_.Name } |
                  Where-Object { $KNOWN_DEFAULT_KEYS -notcontains $_ -and $_ -notlike '_*' })
@@ -247,10 +254,14 @@ foreach ($r in $runs) {
         $runWideDates = @(@($runWideDates) + $feedDates | Select-Object -Unique)
         $runWideTags  = @(@($runWideTags) + $RedFlagTags | Select-Object -Unique)
     }
+    # the downsize feed (above): added to what the run asks for, unless switched off; a run that names `downsizing` itself keeps it
+    $dzFeed = (-not $NoDownsizeFeed) -and [bool](Val $r "downsize_feed" (Val $defaults "downsize_feed" $DOWNSIZE_FEED_DEFAULT))
+    if ($dzFeed -and $runMetrics -notcontains 'downsizing' -and $runMetrics -notcontains 'downsize_probe') { $runMetrics += 'downsizing' }
     $plan += [ordered]@{
         index = $i; setup = $sid; until = $until; dump_dates = $dumps
         tags = @(Val $r "tags" $defTags); metrics = $runMetrics
         red_flag_feed = $feedDates.Count
+        downsize_feed = $dzFeed
         # Which markets get PER-POP lines (metric `wages`): group -> successor chain. An OBJECT, so
         # it is passed through as-is rather than through the array-coercing Val defaults above.
         # ⚠ Both lookups are guarded: this script runs under StrictMode, where reading a property an
@@ -345,6 +356,8 @@ Write-Host "schedule '$label': $($plan.Count) run(s) over $($setupNames.Count) s
 foreach ($p in $plan) { Write-Host ("  #{0,-3} {1,-12} -> {2}   dumps: {3}{4}" -f $p.index, $p.setup, $p.until, ($p.dump_dates -join ', '), $(if ($p.no_dlc) { "   NO DLC" } else { "" })) }
 if ($NoRedFlagFeed) { Write-Host "red-flag feed: OFF (-NoRedFlagFeed) - the input-price red flags will read only the dump dates and the save summaries" }
 else { Write-Host ("red-flag feed: market_goods_wide on 1 July of every year on {0} tags ({1}); run #1 carries {2} reading date(s)" -f $RedFlagTags.Count, ($RedFlagTags -join ' '), $plan[0].red_flag_feed) }
+$dzRuns = @($plan | Where-Object { $_.downsize_feed }).Count
+Write-Host ("downsize feed: {0}" -f $(if ($NoDownsizeFeed) { "OFF (-NoDownsizeFeed)" } else { "the monthly downsizing poll on $dzRuns of $($plan.Count) run(s) (ledger/downsize_telemetry.mjs reads it)" }))
 Write-Host ("machine monitor: {0}" -f $(if ($NoMachineMonitor) { "OFF (-NoMachineMonitor)" } else { "ON - machine_load.tsv beside the session (ledger/machine_load.mjs reads it)" }))
 Write-Host ("estimate: ~{0:N1} h of game time (rough - late years run slower)" -f ($estMin / 60))
 Write-Host ""
@@ -579,6 +592,7 @@ foreach ($p in $plan) {
     Log "=== run $($p.index)/$($plan.Count): setup '$($p.setup)' -> $($p.until) ==="
     if ($p.red_flag_feed) { Log "red-flag feed: market_goods_wide on $($p.red_flag_feed) yearly 1 July date(s) over $(@($p.wide_tags).Count) tag(s) (BALANCE_FRAMEWORK §10.94)" }
     else                  { Log "red-flag feed: none for this run$(if ($NoRedFlagFeed) { ' (-NoRedFlagFeed)' } else { ' (its span holds no 1 July)' })" "WARN" }
+    Log "downsize feed: $(if ($p.downsize_feed) { 'on' } elseif ($NoDownsizeFeed) { 'off (-NoDownsizeFeed)' } else { 'off (downsize_feed: false)' }); metrics [$($p.metrics -join ', ')]"
     $setupSpec = $setups.$($p.setup)
     $resolved = Resolve-Setup -Id $p.setup -Spec $setupSpec -SpecFile $specFile -Token $token
 

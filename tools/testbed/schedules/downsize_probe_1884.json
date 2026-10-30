@@ -1,0 +1,26 @@
+{
+  "schedule_version": 1,
+  "label": "downsize-probe-1884",
+  "_why": "THE DOWNSIZING POLL, THIRD CHECK, AGAINST MORE EVENTS. Probe 2 (20261030_221503) proved the state-list memory (46 of 46 round trips exact, mixed ownership included; 4 unique drops, each matched by a save drop of the same size) but missed SELF-OWNED buildings: `private_ownership_fraction` leaves out a building that owns itself (`identity={ building=<itself> }`), which the engine downsizes as private (12 save-side drops unseen, e.g. fishing wharf 2492). Now private = not owned by a country (`country_ownership_fraction`), and `level >= 1` comes before it (an ownership trigger on a building under its first construction logs an error). 1884-1887 because the vanilla quarterly campaign ran ~12-40 drops a year there (F260's archive) against ~2 a year in 1837-1840. Ground truth: MONTHLY autosaves kept (-KeepSaves) read by ledger/downsize_series.mjs.",
+  "_arms": {
+    "vanilla": "{kind: control} - vanilla + telemetry (country_state, downsize_probe, the red-flag feed), continued from the saves_debut vanilla campaign at 1884.1.1"
+  },
+  "_comparison": "every DZ drop against the monthly saves' drops on qualifying buildings (not wholly government-owned, levels - staffing >= 1, staffing < 0.9 x levels), by building id and month: matched, same size, same private split; save-only and poll-only listed; error.log lines naming zzz_v3tb.",
+  "_predictions": "No zzz_v3tb error line. Tracked a few hundred a poll; tens of drops over the three years, nearly all matched with equal size and private split; save-only only on buildings the poll cannot see (outside the groups, or the last level lost). Magnitudes not argued.",
+  "_stop_rule": "none: one short probe",
+  "_cost": "1 x 1884 -> 1887 continuation with monthly saves, ~10 min",
+  "defaults": {
+    "dump_dates": ["1886.1.1"],
+    "tags": ["GBR"],
+    "metrics": ["country_state", "downsize_probe"],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 45
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1887.1.1", "parent": "saves_debut 20260807_005246 vanilla 1884.1.1",
+      "continue_save": "tools/testbed/saves_debut/0188_20260807_014614_autosave.v3", "continue_expect_after": "1883.12.1" }
+  ]
+}

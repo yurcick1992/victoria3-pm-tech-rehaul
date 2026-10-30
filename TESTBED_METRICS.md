@@ -39,6 +39,7 @@ Read off the current schedules (e.g. `tools/testbed/schedules/alt_vanilla_canon_
   `tools/testbed/ledger/lib_markets.mjs` (`TELEMETRY_TAGS`: GBR FRA USA PRU NGF GER NET BEL UNL RUS JAP), at twelve dump dates:
   1836.2.1, 1840.1.1, then 1 January of every decade to 1930, and 1935.1.1;
 - the red-flag feed, which the scheduler adds to every run: `market_goods_wide` on 1 July of every year (§2.4½);
+- the downsize feed, which the scheduler adds to every telemetry run: `downsizing`, the monthly poll of auto-downsized levels (§2.4¾);
 - yearly autosaves, each melted into a summary (v19 today); each run's newest save is kept (§7½);
 - the observer's tick lines in `run.log`, `meta.json`, and the machine-load monitor (§7⅜).
 
@@ -59,6 +60,7 @@ Every metric `telemetry_lib.ps1` knows (it tests `$metrics -contains '<name>'`; 
 | `origins` | `ORIG` | dump, p3 | the tags' markets as importers × the tags' markets as exporters × `origin_goods` | bilateral import volume | verified | §2.5 |
 | `events` | `EV` | on_actions + a monthly bankruptcy poll | world | DEFAULT, DIPPLAY, WARSTART, REVOLT, SECESSION, CIVILWARWON, PEACE, CAPIT, BANKRUPTCY | verified (REVOLT, SECESSION, CIVILWARWON: in use, root not probed) | §1, §3.8 |
 | `tech_log` | `TECH` | `on_acquired_technology` | world | every acquisition, to the day | verified | §6 |
+| `downsizing` | `DZ`, `DZX`, `DZM` | every 1st of the month (`on_monthly_pulse`) | every producing building under 90% staffed | each level lost since the last poll: levels and private levels before and after, employment, the engine's warning flag, the building id; buildings tracked per poll | on in every telemetry run (the downsize feed) | §2.4¾ |
 | `wages` | `WMKT`, `WC`, `SW`, `WSTR`, `PW`, `PWG` | dump, p0 (all of it) | `WC`/`SW`: members of the tags' markets; `WSTR`, `PW`: lead + subjects of `wage_pop_markets`, `PW` at endpoint dumps only | state wages, pop income, workforce ratio | verified | §5 |
 | `scenario` | `MKT`, `SCEN` | dump, p1 | every country | urban-centre count and levels, SoL and workforce by stratum, market | verified | §4.2 |
 | `boot_dump` | `BEGIN`/`END`, `MARKET`, `G`, `MKT`, `SCEN` (+ `CON`) | game start (day 0) | as `market_goods(_scoped)` | the start-state read | verified | §4.2, §4.3 |
@@ -70,7 +72,7 @@ Every metric `telemetry_lib.ps1` knows (it tests `$metrics -contains '<name>'`; 
 | `pop_sol` | `POP1` | dump, p0 | pops of the tags | per-pop SoL | superseded by `wages` and the save's pop table | — |
 | `consumption_breakdown` | `CP` + tooltip payload | dump, p0 | the tags' markets | buy orders split by channel | verified, ~1 MB per market per dump; validation runs only | §3.3, §9 |
 | `breakdown_sparse` | `CP` + tooltip payload | its own `breakdown_dates`, one market (`breakdown_tags`) per month | one market per tick | as above | as above | §3.3.1 |
-| probes: `probe`, `treasury_probe`, `route_probe`, `origins_probe`, `scenario_probe`, `wage_probe`, `wage_probe2`, `consumption_probe`, `filter_probe` | `P`, `TP`, `RP`, `OP`, `SP`, `WP`, `W2`, `CP`, `FP` | p0 or their own on_actions | — | one-off diagnostics; emit nothing unless asked for | — | §3.3.0, §4, §5 |
+| probes: `probe`, `treasury_probe`, `route_probe`, `origins_probe`, `scenario_probe`, `wage_probe`, `wage_probe2`, `consumption_probe`, `filter_probe`, `downsize_probe` | `P`, `TP`, `RP`, `OP`, `SP`, `WP`, `W2`, `CP`, `FP`, `DZP`/`DZV` | p0 or their own on_actions | — | one-off diagnostics; emit nothing unless asked for | — | §3.3.0, §4, §5 |
 
 The `BOOT` line (`V3TB|<token>|BOOT|v<schema>|<date>`) and the `SEED` line (`[GetGlobalRandomSeed]`, MODDING_NOTES → *RNG seed*) are
 emitted at game start in every build.
@@ -83,7 +85,7 @@ Two counters, both **consecutive and monotonic**. A finding cites the version it
 meaning the same thing forever: never reuse or renumber a version. **Bump by one** whenever the output changes so that an older
 session or summary is no longer comparable — a new metric or field, a changed line format, a dropped field.
 
-### The telemetry schema — `$script:TELEMETRY_VERSION` in `tools/telemetry_lib.ps1` (today **14**)
+### The telemetry schema — `$script:TELEMETRY_VERSION` in `tools/telemetry_lib.ps1` (today **15**)
 
 Stamped into every generated telemetry file and each run's `BOOT` line, so a session's schema is readable off its own log. Record a
 bump here **and** in the schema table at the top of FINDINGS.md. Changing the emitted telemetry without a bump trips L8
@@ -106,6 +108,7 @@ scheduler (L5).
 | **v12** | `filter_probe` (§3.3.0), diagnostic only |
 | **v13** | `state_access` (`SMA`) and `construction_queue` (`CQ`), §9 |
 | **v14** | `state_access` moves phase 1 → 3 (it pushed phase 1 past the ~1,500-line threshold late-century, §5.7); `wages` gains the spec key `wage_pop_endpoints` (`both` \| `first` \| `last` \| `none`, default `both`) choosing which dumps carry the heavy `PW` sweep — `none` for century batches |
+| **v15** | `downsizing` (§2.4¾): the monthly poll of auto-downsized levels, `DZ` / `DZX` / `DZM`, added to every telemetry run by the scheduler's downsize feed; `downsize_probe` for its diagnostics |
 
 ⚠ Sessions `20260803_014037` and `20260803_022027` stamp v9 while carrying early v10 content (both were stopped part-way and are the
 evidence for §5.6 and §5.7, not usable runs). Read their schema from `schedule.json`, not the `BOOT` line.
@@ -415,6 +418,33 @@ bounded at any end date (L3), July so it never shares a tick with the January du
 mirror re-copies (L28). They exist for the input-price red flags — a 2-year stretch needs a reading a year, which the decadal dumps
 cannot give — and they are the only source that prices a good in a market that makes none of it (the save summaries price a good
 from its producers). Sessions before 2026-10-03 carry none; their flags come from the save summaries and say so.
+
+### 2.4¾ The monthly downsizing poll — `downsizing` in EVERY telemetry run (user, 2026-10-30; FINDINGS F260, F261)
+
+Auto-downsizing (a building missing ≥ 1 private level of staffing and ≥ 10% of it waits 6 months, then loses one private level a
+week) has no hook (MODDING_NOTES → *Auto-downsizing*), so the poll looks for the drop itself. On every 1st of the month
+(`on_monthly_pulse`, emitted last in `zzz_v3tb_telemetry.txt` by `Get-DownsizeBlock`) it remembers every building of the producing
+groups (manufacturing, agriculture, ranching, plantations, extraction, power, arts; not subsistence) that QUALIFIES — level ≥ 1, not
+wholly owned by a country, under 90% staffed, at least one level empty — and, at the next poll, logs each remembered building whose
+level fell:
+```
+V3TB|<token>|DZ|<date>|<country>|<state>|<type>|<level before>|<level now>|<private before>|<private now>|<employment now>
+V3TB|<token>|DZX|<date>|<country>|<state>|<type>|auto=<IsAutoDownsizing 0/1>|id=<the save's building id>
+V3TB|<token>|DZM|<date>|tracked=<remembered now>|read=<remembered last poll, still there>|drops=<DZ lines>|over=<4,096+ levels>
+```
+- **Private = not owned by a country** (`country_ownership_fraction`), so a building that owns itself counts; `private_ownership_fraction`
+  leaves those out (probe `20261030_221503`). Government = the rest; the reader counts a drop as auto-downsizing when private levels
+  fell and government levels did not, and three or more drops in one state in one poll as a split, merger or bombardment.
+- **The memory lives on the state**: a building scope holds no variables (probe `20261030_220510`), so each state keeps variable lists
+  of building scopes, a building's level and private levels written as 12 bits across lists, two generations alternating.
+- **A building that loses its LAST level** is still logged, from the state's list, which keeps the dead reference: its DZ line names
+  the type and the levels (`2|0|2|0`) but the country is empty, the state `NULL_STATE` and the id −1 (probe `20261030_222514`).
+- **Not seen:** ports, railways, trade centres and the mod's dams (outside the groups — a mod-only group name would void the limit in a
+  vanilla control); a drop in the month before a continuation's second poll (nothing is remembered before the first).
+- **Volume:** one DZM line a month plus two lines a drop. **Cost:** F261.
+- Read with `ledger/downsize_telemetry.mjs <label>=<group>[:<setup>]` (per run, by decade, by type, by tier for a tiered book). Off:
+  `run_schedule.ps1 -NoDownsizeFeed`, the schedule key `downsize_feed: false`, or `$DOWNSIZE_FEED_DEFAULT = $false`. Sessions before v15
+  carry none; for them only F260's save route exists (`ledger/downsize_series.mjs`, kept saves only).
 
 ### 2.5 Where a market's imports come from — `origins`, VERIFIED, with one limit
 

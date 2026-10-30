@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "downsize-probe-1836",
+  "_why": "DOES THE DOWNSIZING POLL WORK? (user, 2026-10-30: \"Add downsizing as a telemetry option (that can be later turned off without too much work), but now it stays within the basic telemetry stack\"; probes allowed freely for 3 hours.) Telemetry v15's `downsizing` metric, here as `downsize_probe` (the same poll + a DZP scan count + a MakeScope.Var line). Unverified mechanics it rests on: variables on BUILDING scope (no vanilla example), `occupancy` / `private_ownership_fraction` in an every_scope_building limit, `private_ownership_fraction > var:x`, GetGlobalVariable in a building-scope debug_log, IsAutoDownsizing / GetIDString in a loc string. Ground truth: MONTHLY autosaves kept (-KeepSaves) and read by ledger/downsize_series.mjs (F260's save-based classifier) over the same months.",
+  "_arms": {
+    "vanilla": "{kind: control} - vanilla + telemetry (country_state, downsize_probe, the red-flag feed) and nothing else; an engine probe belongs on vanilla"
+  },
+  "_comparison": "the poll's DZ drops against the monthly saves' drops in private levels on buildings understaffed at the earlier save, building by building (state + type + month); DZP scanned vs tracked; error.log lines naming zzz_v3tb.",
+  "_predictions": "DZM on every 1st of the month from 1836.2.1 (59 polls); tracked well under scanned (a few hundred to ~2,000 of ~8,000 producing buildings), proving occupancy filters; DZ lines in 1837-1840 at a rate near F260's quarterly vanilla (1,000 drops over 1836-1921, so a few dozen here), each matched by a save-side drop of the same size, private counts equal to the saves' private levels; IsAutoDownsizing = yes on nearly every DZX; no zzz_v3tb error. Magnitudes not argued. If building variables are unsupported: no DZ line, tracked = scanned or 0, and errors naming set_variable.",
+  "_stop_rule": "none: one short probe",
+  "_cost": "1 x 1836 -> 1841 with monthly saves, ~10-15 min",
+  "defaults": {
+    "dump_dates": ["1836.2.1"],
+    "tags": ["GBR"],
+    "metrics": ["country_state", "downsize_probe"],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 45
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1841.1.1" }
+  ]
+}

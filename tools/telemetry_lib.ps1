@@ -67,7 +67,12 @@
 #       WHICH dump dates carry the heavy per-pop PW sweep. `none` is the century-batch setting:
 #       the cheap WC/SW/WSTR trajectory stays, and the per-pop distribution comes from a dedicated
 #       1836 probe instead of a late-century tick the ring is known to truncate.
-$script:TELEMETRY_VERSION = 14
+#   v15 (2026-10-30, FINDINGS F260/F261): + `downsizing` - a monthly poll of the producing buildings that qualify for
+#       auto-downsizing (private, under 90% staffed, a level empty), remembered in variable lists on their STATE (a building
+#       scope holds no variables); a level drop since the last poll prints DZ (levels and private levels before and after) +
+#       DZX (the engine's warning flag, the building id); DZM closes every poll. On by default through the scheduler's downsize
+#       feed (-NoDownsizeFeed drops it). `downsize_probe` = the same plus DZR, the memory's round trip (Get-DownsizeBlock).
+$script:TELEMETRY_VERSION = 15
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 
@@ -1978,6 +1983,14 @@ v3tb_ev_capit = {
 "@
     }
 
+    # ---- AUTO-DOWNSIZING (v15, FINDINGS F260): a monthly poll, ON BY DEFAULT through the scheduler's downsize feed
+    # (run_schedule.ps1 -NoDownsizeFeed / the schedule key `downsize_feed: false` drop it). Emitted LAST in the file
+    # (Get-DownsizeBlock), so a parse failure inside it cannot take any other metric with it.
+    $downsize = ""
+    if ($metrics -contains "downsizing" -or $metrics -contains "downsize_probe") {
+        $downsize = Get-DownsizeBlock -Token $Token -Probe ($metrics -contains "downsize_probe")
+    }
+
     # ---- what rides in the GAME-START effect.
     # Assembled here as a plain string rather than inline in the return: a here-string nested inside
     # a $(...) subexpression inside another here-string does not parse in Windows PowerShell.
@@ -2034,7 +2047,7 @@ on_game_started_after_lobby = {
 }
 
 on_monthly_pulse = {
-	on_actions = { $($dumpNames -join ' ')$(if ($extraNames.Count) { ' ' + ($extraNames -join ' ') })$(if ($metrics -contains 'events') { ' v3tb_bankruptcy_poll' }) }
+	on_actions = { $($dumpNames -join ' ')$(if ($extraNames.Count) { ' ' + ($extraNames -join ' ') })$(if ($metrics -contains 'events') { ' v3tb_bankruptcy_poll' })$(if ($downsize) { ' v3tb_dz' }) }
 }
 
 v3tb_boot = {
@@ -2047,7 +2060,213 @@ v3tb_boot = {
 		debug_log = "V3TB|$Token|SEED|[GetGlobalRandomSeed]|custom=[GetGlobalRandomSeedString]"$bootExtra
 	}
 }
-$dumpBody$extraBody$events$techlog
+$dumpBody$extraBody$events$techlog$downsize
+"@
+}
+
+function Get-DownsizeBlock {
+    <#
+      THE AUTO-DOWNSIZING POLL (v15, FINDINGS F260/F261). The engine has no hook for it: a building (not a trade centre) that misses
+      >= 1 privately held level of staffing and >= 10% of its staffing waits 6 months, then loses one PRIVATE level a week
+      (NEconomy.AUTO_DOWNSIZE_BUILDING_*). The GUI's warning icon (IsAutoDownsizing) can sit on a building for years without a
+      loss, so the event is the level DROP itself, on a building that qualified at the previous poll.
+
+      Monthly, every building of the producing groups (manufacturing, agriculture, ranching, plantations, extraction, power, arts;
+      not subsistence) that QUALIFIES - not wholly owned by a country, under 90% staffed, at least one level empty - is remembered with its
+      level and its private levels. A remembered building whose level fell by the next poll prints
+        DZ|date|country|state|type|level before|level now|private before|private now|employment now
+      (the reader, ledger/downsize_telemetry.mjs, classifies: a private drop with government levels flat is auto-downsizing;
+      several buildings of one state dropping in one poll is a split, a merger or a bombardment), then
+        DZX|date|country|state|type|auto=<IsAutoDownsizing>|id=<GetIDString>
+      on its own line (two GUI functions not otherwise verified in a loc string). DZM closes every poll:
+        DZM|date|tracked=<remembered now>|read=<remembered last poll and still there>|drops=<DZ lines>|over=<too large to remember>
+
+      ⚠ WHERE THE MEMORY LIVES (probe 20261030_220510, F261): a BUILDING scope does not support variables ("This scope doesn't
+      support variables. Scope: Building"). So it lives on the STATE, in variable lists of building scopes: `_t` = remembered,
+      `_fp` = fully private, `_l<i>` / `_p<i>` = bit i of the level / of the private levels (12 bits, levels up to 4,095). Two
+      generations alternate (`a`, `b`, by the global flag v3tb_dz_odd): a poll reads last poll's generation, writes the other, and
+      clears what it read. PRIVATE = not owned by a country, read through `country_ownership_fraction` (a trigger, not a value):
+      none owned by a country = the level, all = 0, mixed = the smallest k with country fraction >= 1 - (k + 0.5) / level.
+      ⚠ NOT `private_ownership_fraction`: it leaves out a building that owns itself (`identity={ building=<itself> }`, common in
+      1836), which the engine downsizes like any private level (probe 20261030_221503, F261). `level >= 1` comes first: an
+      ownership trigger on a building still under its first construction logs "ownership_fraction requires the building to be
+      built". The numbers reach the log through GLOBAL variables (GetGlobalVariable('x').GetValue is vanilla's own loc form).
+      Not seen: a building that loses its LAST level vanishes before the next poll (3 of 1,319 vanished buildings in the vanilla
+      quarterly saves had a running timer, F260). Ports, railways, trade centres and the mod's dams are outside the groups (a
+      mod-only group name in a vanilla control would void the limit).
+
+      -Probe adds a DZR line for every remembered building read back in the first polls (to 1836.7.1): the decoded level and
+      private levels beside the live ones, the round trip of the memory.
+    #>
+    param([string]$Token, [bool]$Probe)
+    $BITS  = 12
+    $date  = '[TimeKeeper.GetCurrentDate.GetString]'
+    $who   = '[THIS.GetBuilding.GetState.GetCountry.GetNameNoFormatting]|[THIS.GetBuilding.GetState.GetNameNoFormatting]|[THIS.GetBuilding.GetBuildingType.GetKey]'
+    $inList = { param($list) "scope:v3tb_dz_s = { is_target_in_variable_list = { name = $list target = scope:v3tb_dz_b } }" }
+    $addTo  = { param($list) "scope:v3tb_dz_s = { add_to_variable_list = { name = $list target = scope:v3tb_dz_b } }" }
+    # private levels of THIS building now -> global v3tb_dz_k
+    # (k + 0.5) / level, turned into the country-fraction bound 1 - (k + 0.5) / level -> global v3tb_dz_q
+    $bound = @"
+									set_global_variable = { name = v3tb_dz_q value = global_var:v3tb_dz_k }
+									change_global_variable = { name = v3tb_dz_q add = 0.5 }
+									change_global_variable = { name = v3tb_dz_q divide = this.level }
+									change_global_variable = { name = v3tb_dz_q multiply = -1 }
+									change_global_variable = { name = v3tb_dz_q add = 1 }
+"@
+    $privNow = @"
+							if = {
+								limit = { country_ownership_fraction <= 0 }
+								set_global_variable = { name = v3tb_dz_k value = this.level }
+							}
+							else_if = {
+								limit = { country_ownership_fraction >= 1 }
+								set_global_variable = { name = v3tb_dz_k value = 0 }
+							}
+							else = {
+								set_global_variable = { name = v3tb_dz_k value = 0 }
+$bound
+								while = {
+									limit = {
+										country_ownership_fraction < global_var:v3tb_dz_q
+										level > global_var:v3tb_dz_k
+									}
+									change_global_variable = { name = v3tb_dz_k add = 1 }
+$bound
+								}
+							}
+"@
+    $pass = {
+        param([string]$rd, [string]$wr)
+        $decL = ""; $decP = ""; $clear = ""; $encL = ""; $encP = ""
+        for ($i = 0; $i -lt $BITS; $i++) {
+            $v = [int][math]::Pow(2, $i)
+            $decL += "`r`n`t`t`t`t`t`tif = { limit = { $(& $inList "v3tb_dz${rd}_l$i") } change_global_variable = { name = v3tb_dz_l0 add = $v } }"
+            $decP += "`r`n`t`t`t`t`t`t`tif = { limit = { $(& $inList "v3tb_dz${rd}_p$i") } change_global_variable = { name = v3tb_dz_p0 add = $v } }"
+            $clear += "`r`n`t`t`t`t`tclear_variable_list = v3tb_dz${rd}_l$i`r`n`t`t`t`t`tclear_variable_list = v3tb_dz${rd}_p$i"
+        }
+        for ($i = $BITS - 1; $i -ge 0; $i--) {
+            $v = [int][math]::Pow(2, $i)
+            $encL += "`r`n`t`t`t`t`t`tif = { limit = { global_var:v3tb_dz_w >= $v } $(& $addTo "v3tb_dz${wr}_l$i") change_global_variable = { name = v3tb_dz_w subtract = $v } }"
+            $encP += "`r`n`t`t`t`t`t`t`tif = { limit = { global_var:v3tb_dz_w >= $v } $(& $addTo "v3tb_dz${wr}_p$i") change_global_variable = { name = v3tb_dz_w subtract = $v } }"
+        }
+        $probeLine = ""
+        if ($Probe) {
+            $probeLine = "`r`n`t`t`t`t`t`tif = {`r`n`t`t`t`t`t`t`tlimit = { NOT = { game_date >= 1836.7.1 } }`r`n$privNow`r`n" +
+                "`t`t`t`t`t`t`tset_global_variable = { name = v3tb_dz_p1 value = global_var:v3tb_dz_k }`r`n" +
+                "`t`t`t`t`t`t`tdebug_log = `"V3TB|$Token|DZR|$date|$who|[GetGlobalVariable('v3tb_dz_l0').GetValue|0]|[THIS.GetBuilding.GetExpansionLevel]|[GetGlobalVariable('v3tb_dz_p0').GetValue|0]|[GetGlobalVariable('v3tb_dz_p1').GetValue|0]|id=[THIS.GetBuilding.GetIDString]`"`r`n" +
+                "`t`t`t`t`t`t}"
+        }
+        return @"
+				if = {
+					limit = { has_variable = v3tb_dz$rd }
+					every_in_list = {
+						variable = v3tb_dz${rd}_t
+						save_scope_as = v3tb_dz_b
+						change_global_variable = { name = v3tb_dz_r add = 1 }
+						set_global_variable = { name = v3tb_dz_l0 value = 0 }$decL
+						set_global_variable = { name = v3tb_dz_p0 value = 0 }
+						if = {
+							limit = { $(& $inList "v3tb_dz${rd}_fp") }
+							set_global_variable = { name = v3tb_dz_p0 value = global_var:v3tb_dz_l0 }
+						}
+						else = {$decP
+						}$probeLine
+						if = {
+							limit = { level < global_var:v3tb_dz_l0 }
+$privNow
+							set_global_variable = { name = v3tb_dz_p1 value = global_var:v3tb_dz_k }
+							change_global_variable = { name = v3tb_dz_d add = 1 }
+							debug_log = "V3TB|$Token|DZ|$date|$who|[GetGlobalVariable('v3tb_dz_l0').GetValue|0]|[THIS.GetBuilding.GetExpansionLevel]|[GetGlobalVariable('v3tb_dz_p0').GetValue|0]|[GetGlobalVariable('v3tb_dz_p1').GetValue|0]|[THIS.GetBuilding.GetEmploymentPercentage|2]"
+							debug_log = "V3TB|$Token|DZX|$date|$who|auto=[THIS.GetBuilding.IsAutoDownsizing]|id=[THIS.GetBuilding.GetIDString]"
+						}
+					}
+					clear_variable_list = v3tb_dz${rd}_t
+					clear_variable_list = v3tb_dz${rd}_fp$clear
+					remove_variable = v3tb_dz$rd
+				}
+				every_scope_building = {
+					limit = {
+						occupancy < 0.9
+						OR = {
+							is_building_group = bg_manufacturing
+							is_building_group = bg_agriculture
+							is_building_group = bg_ranching
+							is_building_group = bg_plantations
+							is_building_group = bg_extraction
+							is_building_group = bg_power
+							is_building_group = bg_arts
+						}
+						NOT = { is_building_group = bg_subsistence_agriculture }
+						NOT = { is_building_group = bg_subsistence_ranching }
+						level >= 1
+						country_ownership_fraction < 1
+						OR = {
+							level >= 10
+							AND = { level = 9 occupancy <= 0.899 }
+							AND = { level = 8 occupancy <= 0.885 }
+							AND = { level = 7 occupancy <= 0.867 }
+							AND = { level = 6 occupancy <= 0.843 }
+							AND = { level = 5 occupancy <= 0.81 }
+							AND = { level = 4 occupancy <= 0.76 }
+							AND = { level = 3 occupancy <= 0.677 }
+							AND = { level = 2 occupancy <= 0.51 }
+							AND = { level = 1 occupancy <= 0.01 }
+						}
+					}
+					if = {
+						limit = { level >= 4096 }
+						change_global_variable = { name = v3tb_dz_o add = 1 }
+					}
+					else = {
+						save_scope_as = v3tb_dz_b
+						$(& $addTo "v3tb_dz${wr}_t")
+						scope:v3tb_dz_s = { set_variable = { name = v3tb_dz$wr value = 1 } }
+						set_global_variable = { name = v3tb_dz_w value = this.level }$encL
+						if = {
+							limit = { country_ownership_fraction <= 0 }
+							$(& $addTo "v3tb_dz${wr}_fp")
+						}
+						else = {
+$privNow
+							set_global_variable = { name = v3tb_dz_w value = global_var:v3tb_dz_k }$encP
+						}
+						change_global_variable = { name = v3tb_dz_n add = 1 }
+					}
+				}
+"@
+    }
+    $passA = & $pass 'a' 'b'
+    $passB = & $pass 'b' 'a'
+    return @"
+
+v3tb_dz = {
+	effect = {
+		set_global_variable = { name = v3tb_dz_n value = 0 }
+		set_global_variable = { name = v3tb_dz_r value = 0 }
+		set_global_variable = { name = v3tb_dz_d value = 0 }
+		set_global_variable = { name = v3tb_dz_o value = 0 }
+		if = {
+			limit = { has_global_variable = v3tb_dz_odd }
+			remove_global_variable = v3tb_dz_odd
+			every_country = {
+				every_scope_state = {
+					save_scope_as = v3tb_dz_s
+$passA
+				}
+			}
+		}
+		else = {
+			set_global_variable = { name = v3tb_dz_odd value = 1 }
+			every_country = {
+				every_scope_state = {
+					save_scope_as = v3tb_dz_s
+$passB
+				}
+			}
+		}
+		debug_log = "V3TB|$Token|DZM|$date|tracked=[GetGlobalVariable('v3tb_dz_n').GetValue|0]|read=[GetGlobalVariable('v3tb_dz_r').GetValue|0]|drops=[GetGlobalVariable('v3tb_dz_d').GetValue|0]|over=[GetGlobalVariable('v3tb_dz_o').GetValue|0]"
+	}
+}
 "@
 }
 

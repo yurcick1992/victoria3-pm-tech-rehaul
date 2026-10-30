@@ -868,7 +868,8 @@ Other flags: `-NoDeploy`, `-NoLint`, `-ControlOnly` (vanilla + telemetry; requir
   game from the 1836 bookmark that plays to the date and quits by itself, with no launcher and no player. A crash is resumed from the run's own
   autosaves (the resume feeder, L32).
 - **Instrument 1 — telemetry, the process.** The mod's own script writes token-stamped lines to `debug.log`: market order books and prices at
-  the dump dates (and every 1 July for the red flags), events, research-entry completions. The game's logs are a small rotating ring shared by
+  the dump dates (and every 1 July for the red flags), events, research-entry completions, and every level a producing building loses
+  while understaffed (the monthly downsizing poll, on by default; TESTBED_METRICS §2.4¾). The game's logs are a small rotating ring shared by
   every run, so the observer mirrors them continuously into `logs_live/` (the authoritative copy) and harvests `markets.tsv` and `events.tsv`.
 - **Instrument 2 — the saves, the state.** Autosaves (yearly in a century batch) are copied into `saves/` as they appear and melted with
   `rakaly` into one summary per save in `save_summaries/`: per country GDP, population by profession, buildings by type (levels, staffing,

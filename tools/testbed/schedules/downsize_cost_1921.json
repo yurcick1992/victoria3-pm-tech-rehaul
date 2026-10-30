@@ -1,0 +1,34 @@
+{
+  "schedule_version": 1,
+  "label": "downsize-cost-1921",
+  "_why": "WHAT THE DOWNSIZING POLL COSTS LATE IN THE CENTURY. The user, 2026-10-30, put the poll into the basic telemetry stack; the play-time budget (§3.4) and every same-session wall-clock reading carry it from now on, so its tick cost is measured where it is largest: a 1921 world (~13,800 buildings in the vanilla save). Four continuations of ONE vanilla save (saves_debut 0336, 1921.1.1, the 20260807_005246 vanilla campaign), ALTERNATING the poll off and on, read with ledger/arm_tick_cost.mjs (the monthly pulse's hour-0 sub-tick of the 1st, where the poll runs, apart from the rest). Same start state for every run, so the arms differ by the poll and the seed's divergence only.",
+  "_arms": {
+    "vanilla": "{kind: control} - vanilla + the standard telemetry stack (country_state, population, tech_log, treasury, events, market_goods_scoped, the red-flag feed), downsize_feed false: no poll",
+    "vanilla_dz": "{kind: control} - the same + the downsize feed (metric `downsizing`, telemetry v15)"
+  },
+  "_comparison": "arm_tick_cost.mjs vanilla_dz against vanilla over 1921-1926 (2 runs an arm, alternating): the 1st-of-month hour-0 seconds a year, the rest, and the total; plus the poll's own DZM counts (tracked buildings a poll) and its DZ lines in the dz arm.",
+  "_predictions": "The poll adds 0-2 s a year at the 1st-of-month sub-tick against ~100-150 s of play a year in 1921 (under 2%), the rest unchanged within the noise (the machine is in use: directional only, F258). Tracked a few hundred buildings a poll. Magnitude not argued.",
+  "_stop_rule": "none: fixed n=4",
+  "_cost": "4 x 1921 -> 1926 continuations, ~10-12 min each, ~45 min",
+  "defaults": {
+    "dump_dates": ["1925.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "vanilla": { "kind": "control" },
+    "vanilla_dz": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1926.1.1", "downsize_feed": false, "parent": "saves_debut 20260807_005246 vanilla 1921.1.1",
+      "continue_save": "tools/testbed/saves_debut/0336_20260807_024556_autosave.v3", "continue_expect_after": "1920.12.1" },
+    { "setup": "vanilla_dz", "until": "1926.1.1", "downsize_feed": true, "parent": "saves_debut 20260807_005246 vanilla 1921.1.1",
+      "continue_save": "tools/testbed/saves_debut/0336_20260807_024556_autosave.v3", "continue_expect_after": "1920.12.1" },
+    { "setup": "vanilla", "until": "1926.1.1", "downsize_feed": false, "parent": "saves_debut 20260807_005246 vanilla 1921.1.1",
+      "continue_save": "tools/testbed/saves_debut/0336_20260807_024556_autosave.v3", "continue_expect_after": "1920.12.1" },
+    { "setup": "vanilla_dz", "until": "1926.1.1", "downsize_feed": true, "parent": "saves_debut 20260807_005246 vanilla 1921.1.1",
+      "continue_save": "tools/testbed/saves_debut/0336_20260807_024556_autosave.v3", "continue_expect_after": "1920.12.1" }
+  ]
+}

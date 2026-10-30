@@ -266,6 +266,16 @@ saves, F260). Government levels are never removed this way; trade centres downsi
 - **The save holds it:** per building `auto_downsize_start_date` (when the timer runs out), `last_layoff_date`, `levels`, `staffing` (in
   levels); `building_ownership_manager` gives each owner's levels (a `country` identity is the government). A private-level drop between
   two saves at most 6 months apart, on a building understaffed at the earlier one, is the event (`tools/testbed/ledger/downsize_series.mjs`).
+- **A building scope holds no variables.** `set_variable` / `change_variable` / `has_variable` on a building log *"This scope doesn't
+  support variables. Scope: Building …"* (probe `20261030_220510`, F261); a limit testing one is ignored, so it passes everything. A
+  per-building memory has to live on the STATE: the telemetry poll (`downsizing`, `Get-DownsizeBlock` in `tools/telemetry_lib.ps1`)
+  keeps variable lists of building scopes there and writes a building's numbers as bits across lists. A list keeps a building that
+  has since been destroyed: `every_in_list` still visits it, `level` reads 0, and its loc functions print an empty country,
+  `NULL_STATE` and `GetIDString` −1 (probe `20261030_222514`).
+- **`private_ownership_fraction` leaves out a building that owns itself** (`identity={ building=<itself> }` in the save's
+  `building_ownership_manager`, common in 1836), and an ownership trigger on a building still under its first construction logs
+  *"ownership_fraction requires the building to be built"*. For "not government", use `country_ownership_fraction < 1` after
+  `level >= 1` (F261).
 
 ### Content-specific reminders (this mod)
 

@@ -159,7 +159,10 @@ historical record, not a cache).
 
 **The red-flag feed is on for every run** (ruled 2026-10-03, BALANCE_FRAMEWORK §10.94): the scheduler adds `market_goods_wide` on
 1 July of every year on the eleven telemetry tags, merged with the schedule's own spec. `-NoRedFlagFeed` only for a re-run whose
-telemetry must match an old batch byte for byte. Before adding any metric, read TESTBED_METRICS.md (§9 here for the rest of the
+telemetry must match an old batch byte for byte. **The downsize feed is on for every telemetry run** (user, 2026-10-30): the
+scheduler adds the metric `downsizing` (telemetry v15, a monthly poll of the producing buildings, TESTBED_METRICS §2.4¾).
+`-NoDownsizeFeed` drops it for a schedule, `downsize_feed: false` (run, else defaults) for one run; `$DOWNSIZE_FEED_DEFAULT` in
+`run_schedule.ps1` turns it off for good. Before adding any metric, read TESTBED_METRICS.md (§9 here for the rest of the
 procedure).
 
 **Autosave cadence.** The script default is `five_year`; schedules use **`yearly`**, because the save harvest (TESTBED_METRICS §7½),
