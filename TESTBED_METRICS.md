@@ -433,15 +433,18 @@ V3TB|<token>|DZX|<date>|<country>|<state>|<type>|auto=<IsAutoDownsizing 0/1>|id=
 V3TB|<token>|DZM|<date>|tracked=<remembered now>|read=<remembered last poll, still there>|drops=<DZ lines>|over=<4,096+ levels>
 ```
 - **Private = not owned by a country** (`country_ownership_fraction`), so a building that owns itself counts; `private_ownership_fraction`
-  leaves those out (probe `20261030_221503`). Government = the rest; the reader counts a drop as auto-downsizing when private levels
-  fell and government levels did not, and three or more drops in one state in one poll as a split, merger or bombardment.
+  leaves those out (probe `20261030_221503`). Government = the rest. The reader leads with the VOLUME (every level lost on a tracked
+  building) and counts a drop as auto-downsizing when private levels fell, government levels did not, and it lost at most 5 levels
+  since the last poll (one level a week); state clusters are printed and kept (F261).
 - **The memory lives on the state**: a building scope holds no variables (probe `20261030_220510`), so each state keeps variable lists
   of building scopes, a building's level and private levels written as 12 bits across lists, two generations alternating.
 - **A building that loses its LAST level** is still logged, from the state's list, which keeps the dead reference: its DZ line names
   the type and the levels (`2|0|2|0`) but the country is empty, the state `NULL_STATE` and the id −1 (probe `20261030_222514`).
 - **Not seen:** ports, railways, trade centres and the mod's dams (outside the groups — a mod-only group name would void the limit in a
   vanilla control); a drop in the month before a continuation's second poll (nothing is remembered before the first).
-- **Volume:** one DZM line a month plus two lines a drop. **Cost:** F261.
+- **Volume:** one DZM line a month plus two lines a drop (a 1921 vanilla world: ~990 buildings tracked, ~70 drops a year). **Cost:**
+  nothing measurable — in a 1921 vanilla world the poll's sub-tick grows ~0.4 s a game year, and the year's ~127 s moved −0.3 ± 0.4 s
+  (F261).
 - Read with `ledger/downsize_telemetry.mjs <label>=<group>[:<setup>]` (per run, by decade, by type, by tier for a tiered book). Off:
   `run_schedule.ps1 -NoDownsizeFeed`, the schedule key `downsize_feed: false`, or `$DOWNSIZE_FEED_DEFAULT = $false`. Sessions before v15
   carry none; for them only F260's save route exists (`ledger/downsize_series.mjs`, kept saves only).

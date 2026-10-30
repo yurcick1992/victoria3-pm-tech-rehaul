@@ -406,7 +406,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F258 | The 1.0 release build loads and plays 1836-1852 (n=1, stopped by the user) with no crash, no stall and no error of its own; its release manifest line is logged. Early play time 16.2 min to 1849 against 14.4 / 13.9 a week earlier is no reading: the machine was in active use | release | standing | here |
 | F259 | The 1.0 release build plays three centuries 1836-1936 intact (n=3): every run self-quits at 1936.1.1, 4 engine crashes (3 different addresses, one empty dump) all recovered from the run's own autosaves, 0 freeze stops, no error of its own; 1.33 crashes a run against F249's 0.69 (canon debug) / 0.56 (vanilla), inside small-n chance; world GDP 0.93x at the aim | release | standing | here |
 | F260 | Auto-downsizing has no hook but is measurable from saves: after the 6-month timer a building loses ~1 empty private level a week (87.8% of available steps); the timer alone predicts little (0-27% shrink within a year); a private-level drop on a building understaffed at the earlier save is the event; yearly saves catch 74%, half-yearly 93% | vanilla-mechanics | standing | here |
-| F261 | Auto-downsizing is logged by a monthly telemetry poll, on in every telemetry run (v15): against monthly saves it logs 116 of 118 drops with the same size and private split (the 117th without identity, the 118th before the first poll); a building holds no variables, so the memory lives on the state; "private" = not owned by a country (`private_ownership_fraction` misses self-owned buildings) | instrument | standing | here |
+| F261 | Auto-downsizing is logged by a monthly telemetry poll, on in every telemetry run (v15), at no measurable cost (−0.3 ± 0.4 s of ~127 s a game year in 1921): against monthly saves it logs 116 of 118 vanilla drops and 214 of 216 canon drops with the same size and private split; a building holds no variables, so the memory lives on the state; "private" = not owned by a country; a craft level is 1/10 of a vanilla level's staffing, so compare volumes weighted | instrument | standing | here |
 
 ---
 
@@ -21802,7 +21802,8 @@ alternating.
 saves kept; 1884–1886 because that campaign had 12–41 qualifying drops a year there, against about 3 a year in probe 2's 1837–1840).
 - **No error line names the telemetry file.**
 - **Tracked:** 254 buildings at the first poll, 279 on average; the saves count 241 → 293 qualifying buildings.
-- **Against the saves:** 118 save-side drops on buildings that qualified at the earlier save, 1884.2 → 1886.12.
+- **Against the saves** (`ledger/downsize_vs_saves.mjs` on `downsize_series.mjs` extracts of the kept saves): 118 save-side drops on
+  buildings that qualified at the earlier save, 1884.2 → 1886.12.
   - 116 were logged by the poll with the same size and the same private split before and after.
   - One fell in January 1884, before a continuation's first poll could remember anything.
   - One was a gold field losing its last level (2 → 0). The poll logged it too, from the state's list, which keeps the destroyed
@@ -21819,15 +21820,42 @@ saves kept; 1884–1886 because that campaign had 12–41 qualifying drops a yea
   (PowerShell 5.1 decodes them as ANSI), then appends the correctly decoded streamed copy, because the two texts differ. The reader
   keys a drop by date and building id. Other readers keyed on names are not yet checked (BACKLOG G).
 
-**The cost** (`20261030_223204_downsize-cost-1921`: four continuations of the vanilla 1921.1.1 save to 1926.1.1, alternating the poll
-off and on, read with `arm_tick_cost.mjs`). Pending while the batch plays; this paragraph is replaced by its reading.
+**The cost** (`20261030_223204_downsize-cost-1921`: four continuations of one vanilla save, `saves_debut` 1921.1.1 → 1926.1.1,
+alternating the poll off and on; read with `arm_tick_cost.mjs`; all four intact, no resume). The poll costs nothing measurable.
+- **Wall seconds per game year** (the 1 January autosave day left out), mean ± SE of two runs: 127.2 ± 0.4 without the poll, 126.9 ± 0.1
+  with it; Δ = −0.3 ± 0.4 s.
+- **The sub-tick where the poll runs** (hour 0 of the 1st of the month): 3.2 → 3.6 s a year, about +0.4 s, 0.3% of the year.
+- **Whole runs:** 693.3 and 688.9 s without the poll; 689.3 and 689.0 s with it.
+- **The continuations are deterministic:** the two poll-on runs logged the same 342 drops, and every run's years agree to within a
+  second. The arms therefore differ by the poll alone.
+- **What a 1921 vanilla world shows:** about 990 buildings tracked a poll; 786 levels lost in 342 drops over the five years, 780 of them
+  private levels lost to auto-downsizing (logging camps 66, silk plantations 64, steel mills 62, food industries 54, iron mines 48);
+  10 drops where government levels fell; 50 drops in state clusters, kept; no telemetry error line.
+- The user went to sleep as run 2 began, so runs 2–4 most likely played on an idle machine.
 
-**What it says.** The event the user asked for is now logged by the game itself, in every telemetry run, at monthly resolution. Against
-monthly saves it is complete for the producing buildings: 116 of the 117 drops a poll can see, with the same size and private split, and
-the 117th without its identity. The memory has to live on the state, and "private" has to mean "not owned by a country".
+**On the mod** (`20261030_232154_downsize-canon-smoke-1836`: the 1.0 canon book, debug build, 1836.1.1 → 1840.1.1, 46 monthly saves
+kept; the downsize feed added the metric by default). Intact, no resume, no error line names the telemetry file.
+- **Tracked:** 61 → 110 buildings, the same as the saves' qualifying counts.
+- **Against the saves:** 216 save-side drops; 214 logged with the same size and private split. The other two were gold fields, one losing
+  a level and one its last level. Why the poll misses a gold field is not read (a gold field's levels follow its discovered gold, which
+  may not be auto-downsizing at all).
+- **What it counts:** 546 levels lost in 214 drops over four years, 523 of them on t0 craft rungs (textile 191, glass 175, paper 91,
+  furniture 51, tooling 13). Against probe 2's 8 vanilla levels this is not yet a comparison: probe 2 ran before the self-ownership fix,
+  and **a craft level staffs 500 workers against a vanilla level's 5,000** (§1.3, exception 1), so levels are not a common unit between
+  the arms. Weigh them by staffing or by construction cost before comparing.
+
+**What it says.** The event the user asked for is now logged by the game itself, in every telemetry run, at monthly resolution, at a
+cost lost in the noise. Against monthly saves it is complete for the producing buildings: on vanilla, 116 of the 117 drops a poll can
+see, with the same size and private split, and the 117th without its identity; on the canon, 214 of 216. The memory has to live on the
+state, and "private" has to mean "not owned by a country". The user, going to sleep: *"what's important is to catch the downsize volumes
+reasonably reliably … we don't absolutely have to measure the reason for the downsizing"*. So the reader leads with every level lost
+and gives the auto-downsizing subset beside it.
 
 **What it does NOT say.**
-- Nothing about the mod's rate of downsizing against vanilla's: every probe ran vanilla, and probe 3 is three years of one continuation.
-- The completeness was checked on vanilla in 1836–1840 and 1884–1886; not late in the century, and not on the mod.
+- Nothing about the mod's rate of downsizing against vanilla's: the probes are short, single runs, and levels are not a common unit
+  across the arms (crafts).
+- The completeness was checked on vanilla in 1836–1840 and 1884–1886 and on the canon in 1836–1839; not late in the century against saves
+  (the 1921 runs had yearly saves only).
+- The cost on the mod: measured on vanilla (1921) only.
 - Ports, railways, trade centres and the mod's dams are outside the groups; their downsizing is not logged.
 - Whether the poll's first month after a continuation is complete: it cannot be (nothing is remembered before the first poll).

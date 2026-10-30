@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "downsize-canon-smoke-1836",
+  "_why": "THE DOWNSIZING POLL ON THE MOD. Every probe so far ran vanilla (F261); the next batch (the peer session's 48 + 16 alternating canon/vanilla centuries) carries the poll through the downsize feed, mostly on the canon. One short canon run with MONTHLY saves kept: does the poll run error-free on the mod's buildings (crafts at 500 workers a level, tiered rungs, merged hosts, dams outside the groups), and do its drops match the saves' drops there too. The user, 2026-10-30, going to sleep: \"what's important is to catch the downsize volumes reasonably reliably\".",
+  "_arms": {
+    "canon": "{kind: config, config: config/mod_config.json} - the 1.0 canon book (sha256 9a05d36da42c1511), debug build, telemetry v15 (country_state, the downsize feed's `downsizing`, the red-flag feed)"
+  },
+  "_comparison": "the DZ drops against the monthly saves' drops on qualifying buildings, by building id and month (downsize_series.mjs extracts; the comparison was committed afterwards as ledger/downsize_vs_saves.mjs); DZM every month; error.log lines naming zzz_v3tb.",
+  "_predictions": "No zzz_v3tb error line; DZM every month; tracked more than vanilla's 9-57 in 1836-1840 (crafts and obsolete rungs); every drop matched by a save drop of the same size. Magnitudes not argued.",
+  "_stop_rule": "none: one short probe",
+  "_cost": "1 x 1836 -> 1840 with monthly saves, ~10 min",
+  "defaults": {
+    "dump_dates": ["1836.2.1"],
+    "tags": ["GBR"],
+    "metrics": ["country_state"],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 45
+  },
+  "setups": {
+    "canon": { "kind": "config", "config": "config/mod_config.json" }
+  },
+  "runs": [
+    { "setup": "canon", "until": "1840.1.1" }
+  ]
+}

@@ -2091,9 +2091,10 @@ function Get-DownsizeBlock {
       1836), which the engine downsizes like any private level (probe 20261030_221503, F261). `level >= 1` comes first: an
       ownership trigger on a building still under its first construction logs "ownership_fraction requires the building to be
       built". The numbers reach the log through GLOBAL variables (GetGlobalVariable('x').GetValue is vanilla's own loc form).
-      Not seen: a building that loses its LAST level vanishes before the next poll (3 of 1,319 vanished buildings in the vanilla
-      quarterly saves had a running timer, F260). Ports, railways, trade centres and the mod's dams are outside the groups (a
-      mod-only group name in a vanilla control would void the limit).
+      A building that loses its LAST level is still logged: the state's list keeps the destroyed building, `level` reads 0 and its
+      loc functions print an empty country, NULL_STATE and id -1 (probe 20261030_222514). Not seen: ports, railways, trade centres
+      and the mod's dams, outside the groups (a mod-only group name in a vanilla control would void the limit). Cost: the 1st-of-
+      month sub-tick grows ~0.4 s a game year in a 1921 world (~990 buildings tracked), inside the noise of ~127 s (F261).
 
       -Probe adds a DZR line for every remembered building read back in the first polls (to 1836.7.1): the decoded level and
       private levels beside the live ones, the round trip of the memory.
