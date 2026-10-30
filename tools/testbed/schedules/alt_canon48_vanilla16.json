@@ -1,0 +1,329 @@
+{
+  "schedule_version": 1,
+  "label": "alt-canon48-vanilla16",
+  "_why": "THE 1.0 CANON AT n=48 BESIDE VANILLA AT n=16, ALTERNATING 3:1, WITH THE DOWNSIZING POLL IN BOTH ARMS. The user, 2026-10-30: \"Run a n=48 mod 1.0 + telemetry vs n=16 vanilla + telemetry, alternating (so 3vs1vs3vs1 etc). Telemetry includes the downsizing buildings tracker that the other session now builds, wait for it to finish.\" Three canon runs then one vanilla run, sixteen times over, so any drift of the machine over the ~9 days lands on both arms alike (the alternating-batch case, F248/F249). The canon arm triples F249's n=16 for the register and the ledger; both arms carry telemetry v15's monthly downsizing poll (F261), which no earlier session has, so the batch is the first mod-vs-vanilla reading of auto-downsizing (F260 asked it; the user expects more of it in the mod, on obsolete rungs). Launched on the tracker session's handover (HEAD c7153d1: telemetry v15, the downsize feed on by default; its cost batch 20261030_223204 and canon smoke 20261030_232154 done, F261).",
+  "_arms": {
+    "canon": "{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json} - the 1.0 canon's named copy, sha256 9a05d36da42c1511 (tree twin 04ac513168388956), byte-identical to config/mod_config.json; the DEBUG build (measurement runs always use debug builds; the release build refuses telemetry) by today's emitters, i.e. the canon build of CLAUDE.md §4.1 with its logging and Recipe BE names. Not the build F249 measured (728f2c7f84e6f467 + the emitters of that week): it adds the display-text, urban-centre and naval-entry records and the post-F249 emitter changes.",
+    "vanilla": "{kind: control} - vanilla + telemetry and nothing else (telemetry v15, the downsize feed on)."
+  },
+  "_comparison": "Each arm against the other, as wholes and block by block (each vanilla run beside the three canon runs before it). The register: criteria.mjs on the canon (n=48) against VANILLA_REF (n=40, plus these sixteen once they land, by ruling). Downsizing: ledger/downsize_telemetry.mjs on both arms (the volume first, the auto-downsizing subset beside it; per run, by decade, by building type, by tier for the canon). LEVELS ARE NOT A COMMON UNIT between the arms (a craft level staffs 500 against a vanilla level's 5,000, F261): compare workers' places lost (levels x staffing) and construction points lost, never levels; pool no pre-v15 vanilla session (no DZ lines). Play time: wall_clusters.mjs on this batch's two arms only (same days), the canon's main median against this vanilla's. The ledger as the canonical form (§10.104.1), a NEW artifact (never F249's shared link).",
+  "_predictions": {
+    "register": "the canon reads as F249's n=16 (world GDP ~1.07x, inside the soft band; pool U* ~31% against vanilla ~18%; PI ~0.93, PP ~0.95; T0 falling), its spread narrower at n=48; 0-3 broken runs (none in F249's sixteen, one in three to four in earlier books). Magnitude not argued beyond F249.",
+    "downsizing": "the canon loses more workers' places (levels x staffing) to auto-downsizing than vanilla over the century, the crafts dominating the early decades (F261's canon smoke: 523 of 546 lost levels in 1836-1839 on crafts) and rungs two or more tiers behind their country's frontier later (F136). Direction argued; magnitude not (F260's one-run 1860-1866 levels, 129 against 68, are in levels).",
+    "wall_clock": "the canon at x1.00-1.05 of this batch's vanilla (F249: x1.010 pooled); the poll costs both arms alike (F261's cost reading)."
+  },
+  "_stop_rule": "none: a fixed n=48 + 16 (the user), every run plays to 1936; the stop watcher is NOT armed (fixed-n).",
+  "_cost": "64 x 1836 -> 1936.1.1 (48 canon at ~194 min, 16 vanilla at ~178.5 min): ~203 h of play, ~8.5-9 days with builds and harvests",
+  "_launch_checklist": [
+    "setups.canon.config points at the canon's NAMED copy (never config/mod_config.json, L10); do NOT canonise anything into that file while the batch runs.",
+    "Launch through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (L30); confirm the session folder within a minute.",
+    "Five-minute smoke check on run 1 (canon) AND run 4 (the first vanilla); the DZM line of the first monthly poll in both.",
+    "Do NOT edit the observer, the scheduler, telemetry_lib, build.ps1, the book or any tools/testbed/** file for the ~9 days - both arms are the instrument."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    },
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    }
+  ]
+}
