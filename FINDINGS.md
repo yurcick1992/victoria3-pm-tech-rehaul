@@ -404,6 +404,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F256 | Germany's oil economy waits for a built buyer on the 1.0 canon too: first staffed oil rig median 1920 (vanilla ~1905), none by 1935 in 5 of 17 runs (vanilla 1 of 17); 1935 staffed levels 25.5 against 75.5 | canon | reading | here |
 | F257 | Displayed GDP = a country's goods producers' value added on its soil at its own market's prices (construction, military, administration not subtracted; ownership moves nothing); looked base-priced because two offsets cancel; the canon's GDP sits at ~0.95 of vanilla's price level from 1920. First reading (base-priced, +6%) VOID: a summary reader bug | canon | probe | here |
 | F258 | The 1.0 release build loads and plays 1836-1852 (n=1, stopped by the user) with no crash, no stall and no error of its own; its release manifest line is logged. Early play time 16.2 min to 1849 against 14.4 / 13.9 a week earlier is no reading: the machine was in active use | release | standing | here |
+| F259 | The 1.0 release build plays three centuries 1836-1936 intact (n=3): every run self-quits at 1936.1.1, 4 engine crashes (3 different addresses, one empty dump) all recovered from the run's own autosaves, 0 freeze stops, no error of its own; 1.33 crashes a run against F249's 0.69 (canon debug) / 0.56 (vanilla), inside small-n chance; world GDP 0.93x at the aim | release | standing | here |
 
 ---
 
@@ -21608,3 +21609,80 @@ early window, and the same sessions' vanilla n=17), a week earlier.
   the release build does more work: contention it does not measure raises a process's CPU time too. One run, another week, no alternating
   control (F248, F249: a mod-only wall clock is directional at best).
 - **Not a crash rate, and nothing after 1852.** The n=3 release century (`schedules/release_century_n3.json`, on the user's go-ahead) is the check.
+  It ran the next night: F259.
+
+## F259 — THE 1.0 RELEASE BUILD PLAYS THREE CENTURIES INTACT: EVERY RUN REACHES 1936.1.1 AND QUITS BY ITSELF; FOUR ENGINE CRASHES, ALL RECOVERED FROM THE RUN'S OWN AUTOSAVES, NONE TRACEABLE TO THE MOD; NO FREEZE, NO ERROR OF ITS OWN; THE ECONOMY READS AS THE CANON'S (2026-10-30; session `20261030_005628_release-century-n3`, the release build, n=3, 1836→1936.1.1)
+
+**Why.** F258 proved the release build for sixteen years only. The schedule `release_century_n3.json` is the release build's crash and stall
+check over the full century, a check of what ships rather than a measurement. The user, 2026-10-30: *"Launch n=3"*. Fixed n, no stop
+watcher.
+
+**Arm.**
+- The canon book (sha256 `9a05d36da42c1511`, tree twin `04ac513168388956`), built before every run by `build.ps1 -Release`. This is the
+  player build: no telemetry, logging stripped except the manifest line, no "Recipe BE", no build stamp.
+- It was built after the rename to *No Free Upgrades* (commit `4186eff`).
+- Game 1.13.11, every installed DLC.
+- Crash baseline: F249's alternating batch a week earlier, the canon's DEBUG build and vanilla, 16 usable runs each, from `meta.json`
+  `resumes`.
+- Economic baseline: the register's vanilla n=40.
+
+**Readings.**
+- **It loads every time.** `PM_TECH_REHAUL: init OK - No Free Upgrades: An industrial realism overhaul 1.0.0 loaded (release build)`
+  appears in every run's `debug.log` at the 1836 start.
+- **It plays to the end every time.** All three runs reached 1936.1.1 and self-quit, with no abandonment and 0 freeze stops (L41). Each
+  produced 102 / 103 / 102 yearly save summaries.
+- **Crashes: 4 in 3 runs, every one recovered** by the resume feeder (L32) from the run's own newest autosave:
+
+| run | in-game date | address (low 16 bits) |
+|---|---|---|
+| 1 | 1860.4.1 | 0x00007FF7F32A1FD8 (`1FD8`) |
+| 2 | 1848.12.12 | 0x00007FF7F484D93D (`D93D`) |
+| 2 | 1864.5.15 | 0x00007FF7F3BAE755 (`E755`) |
+| 3 | 1907.1.31 | none: an empty dump (a 0-byte `meta.yml`, no `exception.txt` or minidump) |
+
+  - Every dump that was written is `EXCEPTION_ACCESS_VIOLATION` in `victoria3.exe`, without symbols.
+  - The three addresses are different places in the program, and none matches the low 16 bits of the 22 kept September dumps.
+
+| arm | usable runs | crash resumes | per run | most in one run |
+|---|---|---|---|---|
+| release (this batch) | 3 | 4 | 1.33 | 2 |
+| canon debug build (F249) | 16 | 11 | 0.69 | 3 |
+| vanilla (F249) | 16 | 9 | 0.56 | 2 |
+
+  At the canon's rate, four or more crashes in three runs has a probability of about 15% (Poisson); at vanilla's, about 9%.
+- **error.log** (each run's own mirror: 19,098 / 54,343 / 70,328 lines): no line names a `zzz_pm_rehaul` file. The large classes all
+  appear in F249's vanilla runs at equal or larger volumes:
+  - `lawgroup_navy_model has no active law`: 43,293 lines in run 3, against up to 434,630 in a vanilla run.
+  - The graphics `Spline strip … was not found`: 17,417 lines in run 2, against up to 231,538 in a vanilla run.
+  - `command_values.txt` wrong type, the naval-battle loc strings, `Event target link 'leader'`.
+  - Run 1's startup logged 17 `Could not find item in store backend` lines, one per installed DLC. The same DLCs then loaded, and the
+    lines did not recur.
+- **The register** (`criteria.mjs`, without PI and PP, which need telemetry):
+
+| line | run 1 | run 2 | run 3 | consensus (runs 1 + 3) | vanilla n=40 | aim |
+|---|---|---|---|---|---|---|
+| world GDP | 0.95× | 1.17× | 0.91× | 0.93× | 1.0 (£4,362M) | 0.90–1.00 |
+| pool U\* | 31.2% | 11.4% | 32.5% | 31.9% | 17.9% | ≥ 2× |
+| pool W | | | | 0.75× (0.1543 against 0.2052) | | 0.6–0.95 |
+| pool H | | | | 0.24 | 0.44 | < 1× |
+| T0, 1935 ÷ the 1900s | | | | 0.53 | | falling |
+| T3 share of tiered workers | | | | 32.2% | | more |
+
+  - The 1886 point is 0.89× (the 0.79–1.01 line).
+  - The decade path, as the median of all three runs, is 0.98 / 0.98 / 0.99 / 0.94 / 0.89 / 0.81 / 0.83 / 0.80 / 0.84 / 0.95 for
+    1846–1936.
+  - The loss without PI and PP is 3.19, which is not comparable to F249's 6.60.
+  - Soft flags are all near capital abundance at small hoards: GBR in runs 1 and 3, GER in run 1, FRA in run 2.
+
+**What it says.**
+- The release build is a working game over the whole century. It loads, plays to the end, and adds no error of its own.
+- Every crash it met was recovered from the game's own autosave, the way a player would recover.
+- Its economy sits inside the canon's spread: F249's canon ran 0.67–1.27 per run on world GDP.
+
+**What it does NOT say.**
+- **Not that the crash rate is the mod's or vanilla's.** 1.33 a run is above the schedule's predicted 0–1 and above both F249 arms. Three
+  runs cannot tell that rate from theirs. The addresses differ, so there is no sign of one deterministic fault, and no symbols tie any
+  crash to content.
+- **Not a play time.** Wall 165.9 / 180.3 / 183.3 min, crash restarts included, against 165.3 (canon) and 163.6 (vanilla) in F249's
+  sessions. There was no alternating control. The machine's use overnight is unknown (F258: it was in active use the evening before).
+- **Not PI, PP or any telemetry reading.** The release build carries none.

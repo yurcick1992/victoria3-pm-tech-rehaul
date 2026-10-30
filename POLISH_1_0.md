@@ -68,8 +68,11 @@ GDP 1.07× vanilla n=40, loss 6.60, play time ×1.010 of the same sessions' vani
   1935-01-01) loaded into it for the user's late-game screenshots and proofreading: every content key the save names exists in the build, no
   error.log line names a mod file; the user: *"All right. Looks fine."* A release-build observer run (F258, the scheduler's new
   `{kind: release}`) played 1836→1852 with no crash, no stall and no error of its own; the manifest line was logged and "1.13.\*" matched.
-  Stopped by the user for the Workshop publication; the n=3 release centuries follow on the user's go-ahead
-  (`tools/testbed/schedules/release_century_n3.json`).
+  Stopped by the user for the Workshop publication. ✅ **The n=3 release centuries, 2026-10-30** (F259, the build carrying the
+  *No Free Upgrades* name): all three reached 1936.1.1 and quit by themselves. Four engine crashes, at three different addresses plus
+  one empty dump, were all recovered from the run's own autosaves. There were no freeze stops, no error line names a mod file, and
+  world GDP is 0.93× at the aim. 1.33 crashes a run, against F249's 0.69 (canon debug) and 0.56 (vanilla): small-n chance cannot
+  be ruled out.
 - A final build (`build.ps1 -Release`), every lint, `node tools/list_replaced_files.mjs` on it (the README's list), an in-game load and an
   `error.log` read by position; the load also proves the "1.13.\*" game version and the release manifest line. Then a VISUAL pass in that
   build (the user, 2026-10-26: "make a release build and ensure that everything's OK, visually"): the launcher's 16:9 thumbnail, the three
