@@ -74,6 +74,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings (.1: one four-column scorecard for everything above the play-time block, the loss to the footer, old plants per industry, world / shortlist views, nothing past the right edge, 2026-10-29) | in force; built 2026-10-26, rebuilt and CANONISED 2026-10-29 (`fill_scorecard.mjs`, the decade path in `criteria.mjs`; the reference example F249's report at Lq61LKzZVKoyJGTHyUfCr5, shared externally, never republished) | here |
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
+| 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs | in force (2026-10-31); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split queued until the alternating batch's `SCHEDULE DONE` | here |
 
 ---
 
@@ -4490,3 +4491,23 @@ is kept there as a comment) and check 10 prints the four buildings as a known is
 vanilla's own `required_input_goods`) stays: it is vanilla's mechanism on vanilla's terms, and it is what stops a merged electric method
 (textile t3, steel t3) being switched on without electricity. Before restoring the condition, measure its tick cost (an A/B of the tick
 profile, F220's method).
+
+## §10.107 — AUTO-DOWNSIZING IS REPORTED IN LEVELS, KEPT APART BY TIER, THE t0 CRAFTS APART (user-ruled 2026-10-31)
+
+**The question.** A craft level employs 500 people and most other levels about 5,000 (§1.3, exception 1), so a total of downsized levels mixes
+units (F261). The schedule of the alternating batch `20261030_233342_alt-canon48-vanilla16` planned to convert levels into workers' places
+(levels × staffing) or construction points.
+
+**The ruling.** The user: *"Rather, speak in levels, just separately by tiers and the artisan (craft) / non-artisan for t0. This is a general
+ruling for this measurement."* So:
+1. Downsizing is counted in levels: the private levels the monthly poll sees lost (TESTBED_METRICS §2.4¾). No conversion to workers or
+   construction points.
+2. The levels are reported apart by tier class: t0 crafts, t0 non-craft rungs, t1, t2, t3, and the buildings outside the ladder. A total across
+   classes is printed only beside its parts.
+3. A merged host's levels are split by the share of its levels on each main method; a vanilla industry building's levels go to the tier of the
+   canon rung made from its active method, by the same share (the drop line does not name the method). In vanilla, "t0 crafts" are the six
+   craft industries' first methods, at full vanilla size.
+
+First applied in the batch's interim chart (2026-10-31, published as an Artifact). `ledger/downsize_telemetry.mjs` gets the tier split, and the
+schedule's `_comparison` and `_predictions` lose their workers'-places wording, once that batch ends (its files are frozen while it plays,
+§5.1 rule 7).
