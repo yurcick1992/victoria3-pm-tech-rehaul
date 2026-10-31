@@ -442,6 +442,16 @@ V3TB|<token>|DZM|<date>|tracked=<remembered now>|read=<remembered last poll, sti
   the type and the levels (`2|0|2|0`) but the country is empty, the state `NULL_STATE` and the id −1 (probe `20261030_222514`).
 - **Not seen:** ports, railways, trade centres and the mod's dams (outside the groups — a mod-only group name would void the limit in a
   vanilla control); a drop in the month before a continuation's second poll (nothing is remembered before the first).
+- **Seen but left out by the reading** (BALANCE_FRAMEWORK §10.107.5): gold fields, which sit in the extraction group but cannot be built
+  (35–55 private levels a century run, the only excluded type the poll ever logged in the first four runs of `20261030_233342`).
+- **Changes of owner (civil wars, secessions, cessions):** the memory sits on the STATE, and a state keeps it when it changes hands, so the
+  next poll still compares the building and the drop is counted once, filed under whoever owns the state at that poll. Measured on the first
+  four runs of `20261030_233342` as `tracked` of one poll against `read` of the next: 0.02–0.07% of the remembered building-months were not
+  read back (253–432 of 0.59–1.03M, in ~110 of 1,200 polls a run) — the state itself gone, a merger or a destroyed state. A partition that
+  moves levels out of a building reads as a drop there; it falls among the drops of a state where three or more buildings fell in one poll,
+  1–5% of the auto-downsized levels in those runs (kept, printed). ⚠ The DZ line names the country by its DISPLAY NAME, not its tag, and a
+  revolution can take an existing country's name ("Spain", "Great Qing" among run 1's revolt names), so a per-country reading of the poll is
+  ambiguous; the world and tier totals are not affected.
 - **Volume:** one DZM line a month plus two lines a drop (a 1921 vanilla world: ~990 buildings tracked, ~70 drops a year). **Cost:**
   nothing measurable — in a 1921 vanilla world the poll's sub-tick grows ~0.4 s a game year, and the year's ~127 s moved −0.3 ± 0.4 s
   (F261).

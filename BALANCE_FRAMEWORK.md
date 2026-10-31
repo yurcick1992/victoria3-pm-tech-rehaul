@@ -74,7 +74,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings (.1: one four-column scorecard for everything above the play-time block, the loss to the footer, old plants per industry, world / shortlist views, nothing past the right edge, 2026-10-29) | in force; built 2026-10-26, rebuilt and CANONISED 2026-10-29 (`fill_scorecard.mjs`, the decade path in `criteria.mjs`; the reference example F249's report at Lq61LKzZVKoyJGTHyUfCr5, shared externally, never republished) | here |
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
-| 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them | in force (2026-10-31); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
+| 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure | in force (2026-10-31); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 
 ---
 
@@ -4513,6 +4513,12 @@ ruling for this measurement."* So:
    - **capital destroyed** = levels lost × the building type's `required_construction` in construction points (a canon rung at its tier's cost, a
      merged host at its midpoint, a vanilla building at its one cost; a gold field cannot be built and carries none).
    Both are printed by tier class, for the ladder and outside it, per run and as the arm's mean with its spread.
+5. **Left out of every measure** — levels, workforce and capital alike (the user, the same day: *"Gold fields and auto-scaling buildings
+   (subsistence buildings of any type, urban centers, manor houses, financial districts, company HQs and regional HQs) should be ignored from
+   all metrics, including raw counts and workplaces destroyed, not only from capital destroyed (they obviously don't have any capital costs).
+   Neither should non-economic buildings count, like armies etc."*): gold fields; every auto-scaling building; every non-economic one
+   (military, government administration, universities, construction sectors, monuments, canals). The reader prints what it left out, by type.
+   The poll already watches only the producing groups, so of these only gold fields reach its lines (TESTBED_METRICS §2.4¾).
 
 First applied in the batch's interim chart (2026-10-31, the Artifact VyqZ37S2duyDSU3v1oBaTg). A poll on the 1st reports the month before it, so a
 drop logged on 1 January belongs to the year before. `ledger/downsize_telemetry.mjs` gets the tier split and the two measures, and the
