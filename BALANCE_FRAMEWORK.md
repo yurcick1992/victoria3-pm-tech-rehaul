@@ -74,7 +74,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings (.1: one four-column scorecard for everything above the play-time block, the loss to the footer, old plants per industry, world / shortlist views, nothing past the right edge, 2026-10-29) | in force; built 2026-10-26, rebuilt and CANONISED 2026-10-29 (`fill_scorecard.mjs`, the decade path in `criteria.mjs`; the reference example F249's report at Lq61LKzZVKoyJGTHyUfCr5, shared externally, never republished) | here |
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
-| 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs | in force (2026-10-31); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split queued until the alternating batch's `SCHEDULE DONE` | here |
+| 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them | in force (2026-10-31); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 
 ---
 
@@ -4500,14 +4500,21 @@ units (F261). The schedule of the alternating batch `20261030_233342_alt-canon48
 
 **The ruling.** The user: *"Rather, speak in levels, just separately by tiers and the artisan (craft) / non-artisan for t0. This is a general
 ruling for this measurement."* So:
-1. Downsizing is counted in levels: the private levels the monthly poll sees lost (TESTBED_METRICS §2.4¾). No conversion to workers or
-   construction points.
+1. Downsizing is counted in levels: the private levels the monthly poll sees lost (TESTBED_METRICS §2.4¾).
 2. The levels are reported apart by tier class: t0 crafts, t0 non-craft rungs, t1, t2, t3, and the buildings outside the ladder. A total across
    classes is printed only beside its parts.
 3. A merged host's levels are split by the share of its levels on each main method; a vanilla industry building's levels go to the tier of the
    canon rung made from its active method, by the same share (the drop line does not name the method). In vanilla, "t0 crafts" are the six
    craft industries' first methods, at full vanilla size.
+4. **Like-for-like with vanilla** (the user, the same day: *"Let's still have some like-for-like comparisons with vanilla. Say, in possible
+   workforce and in capital destroyed (in construction points)."*), beside the levels and never instead of them:
+   - **possible workforce** = levels lost × the jobs a level of that building type offered: its production methods' `building_employment_*_add`,
+     weighted by the type's world-wide method mix at the nearest sampled save, read from the run's own built mod (vanilla's files for a control);
+   - **capital destroyed** = levels lost × the building type's `required_construction` in construction points (a canon rung at its tier's cost, a
+     merged host at its midpoint, a vanilla building at its one cost; a gold field cannot be built and carries none).
+   Both are printed by tier class, for the ladder and outside it, per run and as the arm's mean with its spread.
 
-First applied in the batch's interim chart (2026-10-31, published as an Artifact). `ledger/downsize_telemetry.mjs` gets the tier split, and the
-schedule's `_comparison` and `_predictions` lose their workers'-places wording, once that batch ends (its files are frozen while it plays,
+First applied in the batch's interim chart (2026-10-31, the Artifact VyqZ37S2duyDSU3v1oBaTg). A poll on the 1st reports the month before it, so a
+drop logged on 1 January belongs to the year before. `ledger/downsize_telemetry.mjs` gets the tier split and the two measures, and the
+schedule's `_comparison` and `_predictions` are reworded to this ruling, once that batch ends (its files are frozen while it plays,
 §5.1 rule 7).
