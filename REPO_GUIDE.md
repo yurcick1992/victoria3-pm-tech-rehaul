@@ -564,6 +564,16 @@ not a prediction (§10.86.2).
   technology than their rung and whether it can drop an era without inverting a prerequisite; and which technologies must rise so
   no top rung is gated below a target tech era (with everything that would be dragged along). Status: record — they key on the
   rung index (pre-tier-rule) and read the tier4 book; superseded by the tier rule and `lint_tier_eras.mjs` (L31).
+- **`tools/obsolete_construction.mjs`** — obsolete construction (GLOSSARY): the share of new tiered capacity (construction points,
+  levels, job slots) added to a building while, at the start of that year, the same country holds the technology of a higher-tier
+  building of the same industry, has one standing, and gets more value added per worker from it than from the obsolete building's
+  own average; the funnel (1) → (1)+(2) → (1)+(2)+(3), a profit-per-point variant, splits by tier, gap, decade, industry and run, and
+  the same share with the denominator cut to country-industry-years where an obsolete build was possible at all.
+  `node tools/obsolete_construction.mjs <group> [--setup <name>] [--config <book>] [--mod <mod folder>]`. Status: current. Traps:
+  a merged rung is a method of its host (building the host is never obsolete); net yearly additions from the save summaries, so
+  levels built and lost in one year are missed; points are the emitted costs of the mod folder given, so pass the folder built from
+  the book measured; mod only (vanilla upgrades in place). Written while `tools/testbed/**` was frozen; moves to `ledger/` after the
+  2026-10-30 batch (BACKLOG G). Refs: F262.
 
 ### Extractors and the 1836 conversion
 
@@ -1485,7 +1495,9 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   first-run headlines incl. trade by class against vanilla seeds at similar GDP (caches = 1936 saves re-summarised to v10+, named
   `<session>__<run>.json.gz`). Refs: F163.
 - **`ledger/analyse_ai_tier_choice.mjs`** / **`analyse_ai_tier_profit.mjs`** `--session <stamp> --config <path>` — share of built levels
-  below the best tier held, and the indefensible cases. Refs: F75, ledger README.
+  below the best tier held, and the indefensible cases. Traps: on the artmerge books a merged rung counts as the best tier once its
+  technology is held, never stands as a building, and makes every new host level "below-best" (57.5% on the 1.0 canon, food 95.5%);
+  use `tools/obsolete_construction.mjs` instead. Refs: F75, F262, ledger README.
 - **`ledger/analyse_build_allocation.mjs`** `--a <baseline> --b <arm>` or `--session` — where construction went by sector / industry /
   tier, absolute beside normalised. Traps: removed levels are ignored; strips the UTF-8 BOM. Refs: ledger README.
 - **`ledger/company_check.mjs`** `--arm <s> --ref <s> [--years 1860,1900,1935]` — companies, prosperity, charters, regional HQs, missing types.

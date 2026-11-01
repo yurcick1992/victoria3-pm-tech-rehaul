@@ -407,6 +407,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F259 | The 1.0 release build plays three centuries 1836-1936 intact (n=3): every run self-quits at 1936.1.1, 4 engine crashes (3 different addresses, one empty dump) all recovered from the run's own autosaves, 0 freeze stops, no error of its own; 1.33 crashes a run against F249's 0.69 (canon debug) / 0.56 (vanilla), inside small-n chance; world GDP 0.93x at the aim | release | standing | here |
 | F260 | Auto-downsizing has no hook but is measurable from saves: after the 6-month timer a building loses ~1 empty private level a week (87.8% of available steps); the timer alone predicts little (0-27% shrink within a year); a private-level drop on a building understaffed at the earlier save is the event; yearly saves catch 74%, half-yearly 93% | vanilla-mechanics | standing | here |
 | F261 | Auto-downsizing is logged by a monthly telemetry poll, on in every telemetry run (v15), at no measurable cost (−0.3 ± 0.4 s of ~127 s a game year in 1921): against monthly saves it logs 116 of 118 vanilla drops and 214 of 216 canon drops with the same size and private split; a building holds no variables, so the memory lives on the state; "private" = not owned by a country; a craft level is 1/10 of a vanilla level's staffing, so compare volumes weighted | instrument | standing | here |
+| F262 | Obsolete construction on the 1.0 canon: 7.9% of tiered construction points (19.9% of levels) go to a building while the same country holds, runs and gets more per worker from a higher-tier one; mostly t1 beside a standing t2 and one tier behind; rising 1% → 9% over the century; only where a choice existed (83.6% of the points), 9.4% of points and 30.7% of levels. Misplaced capital 18.6% against the same sessions' vanilla 13.7%; the whole excess is in the tiered industries (contribution 15.2% against 9.6%), outside them 3.4% against 4.1%. The old below-best share is inflated on the artmerge books by merged rungs: F249's report line reads 26.5% corrected, not 48.5% | canon | reading | here |
 
 ---
 
@@ -21254,7 +21255,9 @@ owned levels (shortlist 27 against 28 companies, 35% against 40%, regional HQs 1
 empties by 1855–60 (staffed 0.2, then 0.0). The entry ends at Franz Joseph's adult accession (historically 1848) or on failure, so the divergence comes
 after it: the dropped +500 desire is not its cause, and nothing needs changing for 1.0.
 **The readings the register does not carry** (the report’s second table, §10.104): G1 — 48.5% of levels built below the best tier the country holds
-(unit-weighted; raw 57.5%), the artmerge family’s own level (44–50% in every artmerge report), above the band of 35% calibrated on the pre-artmerge canons;
+(unit-weighted; raw 57.5%), the artmerge family’s own level (44–50% in every artmerge report), above the band of 35% calibrated on the pre-artmerge canons
+⚠ VOID (2026-11-01, F262): the tool counts every level of a merged rung’s host as below-best once the merged method is held; with merged rungs mapped to
+their hosts the same measure reads **26.5%** (raw 39.7%), under the 35% band, and the artmerge reports’ 44–50% carry the same miscount;
 G2 — t1 workers not falling since 1920 (world 8.0 → 8.6 → 8.4M at 1920 / 1930 / 1935) and the artisans paying back in 9 years (t0 factories 44); G3 — construction
 0.95× vanilla over 1880–1935 and the frontier rung (t3) paying back in 9.1 years at £720 a point; G5 — GDP per productive worker **1.18×** vanilla’s;
 G7 — the tiers holding half the tiered workers are t2/t1 · t2 · t2 at 1900 · 1920 · 1935, on the anchors. **Input-price red flags**, on the order books against
@@ -21859,3 +21862,150 @@ and gives the auto-downsizing subset beside it.
 - The cost on the mod: measured on vanilla (1921) only.
 - Ports, railways, trade centres and the mod's dams are outside the groups; their downsizing is not logged.
 - Whether the poll's first month after a continuation is complete: it cannot be (nothing is remembered before the first poll).
+
+## F262 — OBSOLETE CONSTRUCTION ON THE 1.0 CANON: 7.9% OF TIERED CONSTRUCTION POINTS (19.9% OF LEVELS) GO TO A BUILDING WHILE THE SAME COUNTRY HOLDS, RUNS AND GETS MORE PER WORKER FROM A HIGHER-TIER ONE; MISPLACED CAPITAL 18.6% AGAINST VANILLA'S 13.7%, AND THE WHOLE EXCESS IS IN THE TIERED INDUSTRIES; THE OLD "BELOW-BEST" SHARE IS INFLATED ON THE ARTMERGE BOOKS (2026-11-01; a reading of F249's runs, no new run)
+
+**Arm** `config` · the 1.0 canon book as F249 measured it (`728f2c7f84e6f467`), debug build, 16 usable centuries in sessions `20261021_224949_alt-vanilla-canon-n16`, `20261023_161802_alt-vanilla-canon-rest20`, `20261026_032622_alt-canon-replace20` (run020 of the second excluded, L17) · against `control` vanilla n=16 of the same two alternating sessions for misplaced capital · save summaries v16+ · 🟡 ARM-BOUND (a property of this book's ladder and AI values)
+
+**Why.** The user, 2026-11-01, after the downsizing work (capital destroyed): *"Now another angle, not the destruction of capital, but its
+wrong allocation. Just what share of tiered industries get built when all these conditions are fulfilled? 1) a more high tech factory of
+the same type can be built, by tech restrictions 2) at least one is already built domestically 3) it has a higher productivity than the
+average for the obsolete tier that's being built instead."* Then: *"how are canon and vanilla on total 'wrongly placed' capital, not
+limiting to obsolete tiers of industry? How about the diff, wrongly placed capital not in the industry that gets tiered at all? I
+understand that the comparisons are a bit unfair, but I'd still like to see the numbers."*
+
+**1. Obsolete construction** (`tools/obsolete_construction.mjs`; GLOSSARY). For each country, year and tiered BUILDING type, the net level
+additions between yearly summaries count as obsolete when, at the start of the year, the country (1) holds the technology of a higher-tier
+building of the same industry, (2) has one standing, and (3) that building's value added per worker (goods_sales − goods_cost ÷ staffing ×
+the main method's employment) exceeds the obsolete building's own domestic average (the world's where the country has none staffed:
+5,713 levels; 2 levels had no comparator). A merged rung is a method of its host: building the host is never obsolete. Construction points
+are the emitted `required_construction` (a craft level costs 6). 3,818 annexation-scale country-years (> +25% of all levels) skipped.
+
+All tiered construction: 407,222 levels · 314.3M construction points · 1,375.7M job slots.
+
+| share of all tiered construction | points | levels | job slots |
+|---|---|---|---|
+| (1) a higher building's technology is held | 14.1% | 43.7% | 24.9% |
+| (1)+(2) and one stands at home | 8.3% | 22.1% | 14.5% |
+| **(1)+(2)+(3) and it makes more per worker** | **7.9%** | **19.9%** | **13.5%** |
+| variant (3′): more weekly profit per construction point instead | 6.0% | 10.1% | 9.5% |
+
+- **Condition 3 barely filters:** the best qualifying building's value added per worker ÷ the obsolete building's average, level-weighted:
+  p25 2.12 · median 3.44 · p75 5.86.
+- **By the obsolete building's tier** (share of that tier's own construction meeting all three; its levels and points):
+  crafts 35.5% of points and levels (124,525 levels, 747,150 points) · t0 non-craft 28.1% of points, 30.1% of levels (27,289; 9,909,169) ·
+  t1 18.5% / 21.2% (105,071; 76,014,819) · t2 4.4% / 5.0% (126,576; 173,218,581) · t3 0 (23,761; 54,407,032).
+  So of the obsolete capital: t1 beside a standing t2 or t3 ~57%, t2 beside a t3 ~31%, t0 non-craft ~11%, crafts ~1% (crafts are 57% of the
+  obsolete LEVELS).
+- **How far behind** (share of the obsolete points): one tier 92.1% (53,822 levels), two 7.5% (24,977), three 0.4% (2,146).
+- **By decade** (points / levels): 1830s 1.0% / 13.2% · 1840s 1.8 / 5.3 · 1850s 3.1 / 8.7 · 1860s 5.3 / 12.7 · 1870s 5.6 / 13.9 · 1880s
+  6.4 / 18.3 · 1890s 6.4 / 20.0 · 1900s 7.0 / 20.7 · 1910s 7.8 / 20.3 · 1920s 8.4 / 24.5 · 1930s 9.2 / 23.6.
+- **By industry** (share of its own construction, points / levels): textile 13.7 / 25.8 · explosives 12.4 / 20.2 · art academy 11.7 /
+  19.2 · glass 11.3 / 26.2 · tooling 8.8 / 23.2 · furniture 8.4 / 27.9 · motor 7.8 / 9.0 · arms 7.4 / 13.5 · artillery 6.9 / 11.6 · steel
+  4.6 / 12.9 · munition 3.2 / 4.7 · fertilizer 2.9 / 4.4 · automotive 2.3 / 2.5 · paper 2.2 / 15.2 · food 0.2 / 17.5 (food's only obsolete
+  building is the craft).
+- **Per run** (points): 6.7 · 8.3 · 7.0 · 9.0 · 7.8 · 6.7 · 7.9 · 8.0 · 8.3 · 7.8 · 9.1 · 7.3 · 8.1 · 8.5 · 7.8 · 7.5.
+
+**1b. Only where a choice existed.** The user, the same day: *"How would numbers look like if we remove from the denominator cases when
+there's no possible variety? Wouldn't the acceptable '20% of buildings, 10% of capital' turn into 50%, when we discard the beginning of the
+game when a country just can't build an obsolete factory, every factory is state-of-the-art?"* The denominator cut to the industry's
+construction in country-industry-years where, at the start of the year, some building was buildable (its technology held) beside a
+standing higher-tier one that made more per worker than its average. Every obsolete level falls inside such years (0 outside), so this is
+the narrowest year-level denominator the numerator allows, and any looser "variety" cut (say, two buildings' technologies held) reads
+lower.
+- Those years carry **83.6% of all tiered construction points**, 64.8% of its levels and 76.2% of its job slots: the capital is built late,
+  when nearly every country-industry has a choice.
+- **Obsolete construction inside them: 9.4% of points, 30.7% of levels, 17.8% of job slots** (all years: 7.9 / 19.9 / 13.5%). Per run
+  (points) 7.8–11.1% (7.9 · 10.0 · 8.5 · 11.0 · 9.0 · 7.8 · 9.7 · 9.2 · 9.7 · 9.2 · 11.1 · 9.0 · 9.7 · 10.3 · 9.5 · 9.3).
+- **By the building's tier** (the obsolete share of its construction inside those years; its levels there): crafts 98.9% (44,700) · t0
+  non-craft 99.7% of points, 99.8% of levels (8,225) · t1 26.6% of points, 30.0% of levels (74,352) · t2 4.9% / 5.5% (114,244) · t3 0
+  (22,365). Where a better building stands and pays more per worker, almost every craft and t0 level built is obsolete by definition; the
+  share is decided by how much is built on them, against the frontier.
+- **By decade** (obsolete share of points / levels inside the choice years; the choice years' share of all points / levels): 1830s 4.7% /
+  74.7% (20.6% / 17.6%) · 1840s 7.0 / 55.5 (25.4 / 9.5) · 1850s 7.1 / 46.8 (43.5 / 18.7) · 1860s 8.8 / 41.5 (60.3 / 30.7) · 1870s 8.0 /
+  34.3 (70.1 / 40.7) · 1880s 8.4 / 35.0 (76.2 / 52.5) · 1890s 7.9 / 32.5 (81.1 / 61.5) · 1900s 8.4 / 30.6 (83.8 / 67.7) · 1910s 9.1 / 27.3
+  (85.6 / 74.4) · 1920s 9.6 / 30.4 (86.6 / 80.5) · 1930s 10.5 / 28.3 (87.5 / 83.4).
+- So no: the share does not approach half. In LEVELS, discarding the no-choice years moves it from one in five to one in three, and early on
+  it is three in four (crafts built beside a standing t1 factory). In CAPITAL it moves from 7.9% to 9.4%, because the early game, where the
+  denominator held no choice, carries little capital (the 1830s–1850s are 1.6% of the century's tiered points), and an obsolete level is
+  cheap against the frontier level it stands in for (a craft 6 points, a t1 600–800, a t2 1,140–1,520, a t3 2,166–2,888; the art academy
+less).
+
+**2. The older measure on the same runs.** `ledger/analyse_ai_tier_choice.mjs` (F75's "below-best": levels built below the best tier the
+country holds, in country-industry-years where the market could absorb one more): **57.5%** of levels (165,006 of 286,929; per session
+56.3 / 58.2 / 61.9%). `ledger/analyse_ai_tier_profit.mjs` §c (below-best AND less profit per level than a standing best rung): **≈16.8%**
+(61,700 levels; per session 17.6 / 16.4 / 14.7%). ⚠ **The below-best share is inflated on every artmerge book:** a merged rung has a key in
+the book but no building, so once its technology is held it is the "best" tier and never stands, and every new level of its host counts
+as below-best (food 95.5%, paper 92.6%, textile 76.0%, furniture 74.0% in the second session). F209's and F210's 57.8–58.5% carry the same
+inflation. §c's sharper cut escapes most of it (no standing best rung, no comparison) and lands near this finding's 19.9% of levels, but it
+counts levels only and compares profit per level, where a 500-worker craft level always loses.
+
+**The correction, on the tool's own definition** (a scratch copy of `analyse_ai_tier_choice.mjs` that drops merged rungs from the ladder,
+so the host is the building and its tier; nothing else changed): **26.5% unit-weighted (a craft level a tenth), 39.7% raw** (113,682 of
+286,108 levels; 115,671 qualifying country-industry-years), against the 48.5% / 57.5% the F249 report printed. One tier behind 70.3% of
+the below-best levels, two 27.2%, three 2.4%. Raw share by decade: 1830s 85.4% · 1840s 71.1 · 1850s 68.0 · 1860s 56.1 · 1870s 47.3 · 1880s
+46.1 · 1890s 41.1 · 1900s 37.7 · 1910s 34.9 · 1920s 37.3 · 1930s 35.0. Most below-best levels: textile 27,106 · tooling 21,390 · furniture
+13,175 · glass 11,001 · paper 8,920 · food 8,537 · art academy 5,837 · steel 5,440. ⚠ **The F249 report's scorecard line "New plants built
+below the best tier their owner already runs (a craft counts a tenth)" read 48.5% with the verdict "old designs still built"; on the
+corrected count it is 26.5%, under the line's 35% aim ("mostly the best tier").** That report is shared externally and its link is never
+republished; F249's text carries the correction.
+
+**3. Misplaced capital, split by sector** (`ledger/misplaced_capital.mjs --batch`, unchanged logic, with a printout of the sector split
+added in a scratch copy because `tools/testbed/**` is frozen by the running batch; its decade medians reproduce F249's published line).
+Gross = expected payback > 3× the country's best VALID sector's, or loss-making; shares of the new capital (construction points × the
+country's £ per point). "Tiered" = the manufacturing sector of the measure, which is the 17 tiered industries (in vanilla their vanilla
+buildings); "untiered" = mines and agriculture, the measure's other two sectors. Infrastructure, shipyards, trade centres, government
+buildings and gold stay outside, as ruled.
+
+| century, pooled over runs | canon | vanilla |
+|---|---|---|
+| misplaced (gross), all new capital | 18.6% | 13.7% |
+| the tiered industries' share of new capital | 68.7% | 58.1% |
+| gross rate inside the tiered industries | 22.0% | 16.5% |
+| gross rate inside mines + agriculture | 11.0% | 9.9% |
+| misplaced in the tiered industries, as a share of ALL new capital | 15.2% | 9.6% |
+| misplaced in mines + agriculture, as a share of ALL new capital | 3.4% | 4.1% |
+
+Medians over runs read the same (canon 18.0 / 68.8 / 21.2 / 10.8 / 14.3 / 3.5%; vanilla 13.9 / 58.5 / 16.5 / 10.1 / 9.5 / 4.1%); the last
+ten years pooled: canon 20.0 / 78.2 / 22.6 / 10.4 / 17.7 / 2.3%, vanilla 13.4 / 66.5 / 16.0 / 8.2 / 10.6 / 2.7%.
+
+By decade (medians over 16 runs each; gross all · tiered share of capital · gross rate tiered · gross rate untiered):
+
+| decade | canon | vanilla |
+|---|---|---|
+| 1836–45 | 13.7 · 20.5 · 20.0 · 12.3 | 11.8 · 24.2 · 17.3 · 9.6 |
+| 1846–55 | 16.5 · 28.4 · 22.0 · 13.5 | 12.9 · 32.9 · 15.4 · 10.7 |
+| 1856–65 | 17.8 · 42.9 · 21.0 · 14.9 | 13.8 · 40.9 · 17.1 · 11.7 |
+| 1866–75 | 16.3 · 53.3 · 19.3 · 13.1 | 15.0 · 51.0 · 17.1 · 12.4 |
+| 1876–85 | 17.7 · 61.7 · 21.7 · 10.6 | 12.9 · 52.3 · 15.1 · 10.6 |
+| 1886–95 | 15.6 · 63.9 · 19.8 · 9.9 | 11.8 · 52.7 · 13.5 · 9.6 |
+| 1896–05 | 16.3 · 65.6 · 18.5 · 10.2 | 12.5 · 54.8 · 13.7 · 10.8 |
+| 1906–15 | 16.1 · 68.4 · 18.9 · 9.1 | 13.8 · 58.0 · 15.9 · 9.8 |
+| 1916–25 | 17.4 · 72.9 · 21.2 · 8.3 | 14.5 · 61.9 · 17.1 · 9.1 |
+| 1926–35 | 20.7 · 77.2 · 23.8 · 9.7 | 14.0 · 65.3 · 16.8 · 7.8 |
+
+**The difference, decomposed.** The canon misplaces +4.9 pp more of its new capital. The tiered industries add +5.6 pp (15.2 against 9.6):
+about +3.8 pp from a higher gross rate there ((22.0 − 16.5) × 0.687) and +1.7 pp from more of the capital going there ((0.687 − 0.581) ×
+16.5). Mines and agriculture take −0.7 pp (3.4 against 4.1): a slightly higher gross rate (11.0 against 9.9%) on a smaller share of the
+capital (31% against 42%).
+
+**What it says.** On the 1.0 canon about one construction point in thirteen of the tiered industries goes to a building the same country
+could have replaced with a standing, better one, and it is mostly the step just below the frontier, not the 1836 crafts. Misplaced capital
+runs about five points above vanilla's, and all of that excess sits in the tiered industries; outside them the canon misplaces about what
+vanilla does.
+
+**Confidence.** n=16 for both arms; obsolete construction per run 6.7–9.1% of points, misplaced capital's decade medians match F249's
+published line. The tiered gross rate sits above vanilla's in every decade (by 2.2–7.0 points; 3.0–7.0 from 1876); the untiered one is
+2.7–3.2 points above it before 1866 and within −0.8 to +1.9 from 1876.
+
+**What it does NOT say.**
+- Who builds the obsolete levels (the investment AI, governments, companies, foreign investors) or why; nothing here is a defect diagnosis.
+- How much of the tiered industries' misplaced capital IS obsolete construction: the overlap is not measured. Misplaced capital compares a
+  level's payback with the country's best SECTOR, not with the better rung; obsolete construction compares rungs, by output per worker.
+- A like-for-like comparison with vanilla: vanilla's manufacturing upgrades in place for free and has no obsolete construction at all, and
+  its manufacturing takes less of the capital (the user: *"a bit unfair"*); the ledger shows misplaced capital mod-only for this reason
+  (§10.104.1).
+- Anything about levels built and lost within one year, or built in the year the newer building first appears: net yearly additions and
+  start-of-year conditions miss both, so obsolete construction is a lower bound.
+- Output per worker ignores automation methods' staffing change and compares the art academy per staffed level (its staffing sits in a
+  patronage group, the same on every rung).
