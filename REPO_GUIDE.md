@@ -574,6 +574,17 @@ not a prediction (§10.86.2).
   levels built and lost in one year are missed; points are the emitted costs of the mod folder given, so pass the folder built from
   the book measured; mod only (vanilla upgrades in place). Written while `tools/testbed/**` was frozen; moves to `ledger/` after the
   2026-10-30 batch (BACKLOG G). Refs: F262.
+- **`tools/trade_fade.mjs`** — why a mod arm's lead in world trade over vanilla shrinks, and where trade stops. (A) per yearly save
+  summary: trade capacity and the share used, capacity units traded, goods moved (units × each arm's traded quantity) by F159 trade
+  class, their value at world prices (the four-metric page's trade line), trade-centre levels and profit per level, as medians and
+  mod ÷ vanilla; (B) from `markets.tsv` at the decade dumps: the gap (market price − world price) ÷ base for every tracked market and
+  tradeable good with buy orders, the share importing by gap, the importers' residual gap by class, decade and market, and paired
+  on the same market × good × date (≥ 3 importing runs per arm), with and without Japan and Russia, and for the tiered industries'
+  goods. `node tools/trade_fade.mjs <mod group>[:<setup>] <vanilla group>[:<setup>] [--config <book>]`. Status: current. Traps:
+  runs whose summaries lack `world.trade_goods` / `world_market_price` (save summary < v19, e.g. the summer vanilla) are skipped and
+  listed; the gap is read AFTER trade has acted on it; "importing" is any import at all; `--config` gives the mod arm's traded
+  quantities (default the canon). Written while `tools/testbed/**` was frozen; moves to `ledger/` after the 2026-10-30 batch
+  (BACKLOG G). Refs: F263.
 
 ### Extractors and the 1836 conversion
 

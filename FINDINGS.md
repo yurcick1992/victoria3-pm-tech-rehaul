@@ -408,6 +408,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F260 | Auto-downsizing has no hook but is measurable from saves: after the 6-month timer a building loses ~1 empty private level a week (87.8% of available steps); the timer alone predicts little (0-27% shrink within a year); a private-level drop on a building understaffed at the earlier save is the event; yearly saves catch 74%, half-yearly 93% | vanilla-mechanics | standing | here |
 | F261 | Auto-downsizing is logged by a monthly telemetry poll, on in every telemetry run (v15), at no measurable cost (−0.3 ± 0.4 s of ~127 s a game year in 1921): against monthly saves it logs 116 of 118 vanilla drops and 214 of 216 canon drops with the same size and private split; a building holds no variables, so the memory lives on the state; "private" = not owned by a country; a craft level is 1/10 of a vanilla level's staffing, so compare volumes weighted | instrument | standing | here |
 | F262 | Obsolete construction on the 1.0 canon: 7.9% of tiered construction points (19.9% of levels) go to a building while the same country holds, runs and gets more per worker from a higher-tier one; mostly t1 beside a standing t2 and one tier behind; rising 1% → 9% over the century; only where a choice existed (83.6% of the points), 9.4% of points and 30.7% of levels. Misplaced capital 18.6% against the same sessions' vanilla 13.7%; the whole excess is in the tiered industries (contribution 15.2% against 9.6%), outside them 3.4% against 4.1%. The old below-best share is inflated on the artmerge books by merged rungs: F249's report line reads 26.5% corrected, not 48.5% | canon | reading | here |
+| F263 | The canon's trade lead (1.83x in 1837: vanilla's 1836 capacity carrying ~2x the goods) fades because its AI builds less trade capacity: 0.59-0.68x vanilla's from 1875 (trade-centre levels 0.71-0.78x), so trade value 1.08-1.26x; neither trades nor trade-centre construction read ai_value (a potential-over-GDP score). The residual gap at which a market's imports stop: canon 0.134 of base against 0.157 (median); paired, lower by 0.070 at weight x4 and 0.015 at x1.41, +0.015 at vanilla's weights, less than in proportion, and widening by 0.03-0.08 to 1910-35 as the thin capacity binds | canon | reading | here |
 
 ---
 
@@ -22009,3 +22010,150 @@ published line. The tiered gross rate sits above vanilla's in every decade (by 2
   start-of-year conditions miss both, so obsolete construction is a lower bound.
 - Output per worker ignores automation methods' staffing change and compares the art academy per staffed level (its staffing sits in a
   patronage group, the same on every rung).
+
+---
+
+## F263 — THE CANON'S LEAD IN WORLD TRADE FADES BECAUSE ITS AI BUILDS LESS TRADE CAPACITY (0.59–0.68× VANILLA'S FROM 1875), SO TWICE THE GOODS PER UNIT LEAVE 1.1–1.2× VANILLA'S TRADE VALUE; THE PRICE GAP AT WHICH A MARKET'S IMPORTS STOP FALLS WITH THE TRADE WEIGHT (−0.07 OF BASE AT ×4, ABOUT NONE AT ×1.41) BUT LESS THAN IN PROPORTION, AND WIDENS AGAIN AS THE THIN CAPACITY BINDS; NEITHER TRADES NOR TRADE CENTRES READ `ai_value` (2026-11-02; a reading of F249's runs, no new run)
+
+**Arm** `config` · the 1.0 canon book as F249 measured it (`728f2c7f84e6f467`; its traded quantities are today's canon's), debug build, 16
+usable centuries in sessions `20261021_224949_alt-vanilla-canon-n16`, `20261023_161802_alt-vanilla-canon-rest20`,
+`20261026_032622_alt-canon-replace20` (run020 of the second excluded, L17) · against `control` vanilla n=22: every vanilla run whose save
+summaries carry the trade record (v19) — the October n=6 (`20261020_121619_vanilla-now-n8`, `20261020_222433_vanilla-now-n8-rest`) and the
+alternating sessions' n=16 (run013 of the second excluded, L17); the summer n=18 predate it · save summaries and `markets.tsv` · tool
+`tools/trade_fade.mjs` · 🟡 ARM-BOUND (a property of this book's trade weights and of vanilla's trade AI)
+
+**Why.** The user, 2026-11-01, on the year-by-year comparison page (world GDP, play speed, buildings destroyed, world trade value): *"Weird
+that the diff in trade decreases with time to zero, and only slightly rebounds. Why so?"* Then, 2026-11-02: *"But just what decides
+whether a gap is worth trading? Because we widen the gaps deliberately in the mod, and it doesn't seem to work or help. Is there some
+non-building-ai-value calculation that makes a country decide 'well, I have enough'?"* And on the post-trade premium: *"Is it in a
+different place than vanilla?"*
+
+**1. The fade: less capacity, not less per unit.** World figures from the 1 January summaries, each arm's median over runs, mod ÷ vanilla
+unless two figures are given. Value = (imports + exports) ÷ 2 in capacity units × each arm's traded quantity per unit × the world market
+price (mean52), the comparison page's trade line.
+
+| year | trade value | capacity | capacity used (mod / van) | units traded | goods moved | trade-centre levels | profit per trade-centre level, £/week (mod / van, ratio) |
+|---|---|---|---|---|---|---|---|
+| 1837 | 1.83 | 0.96 | 85% / 93% | 0.88 | 1.69 | 1.01 | 237 / 277, 0.86 |
+| 1845 | 1.91 | 0.91 | 87% / 91% | 0.87 | 1.77 | 0.97 | 170 / 178, 0.96 |
+| 1855 | 1.61 | 0.81 | 86% / 92% | 0.76 | 1.55 | 0.88 | 33 / 102, 0.32 |
+| 1865 | 1.36 | 0.71 | 87% / 93% | 0.65 | 1.32 | 0.86 | 21 / 86, 0.24 |
+| 1875 | 1.26 | 0.64 | 88% / 94% | 0.60 | 1.16 | 0.78 | 48 / 90, 0.54 |
+| 1885 | 1.22 | 0.64 | 90% / 94% | 0.62 | 1.18 | 0.76 | 67 / 74, 0.91 |
+| 1895 | 1.17 | 0.63 | 91% / 93% | 0.61 | 1.15 | 0.76 | 60 / 94, 0.64 |
+| 1905 | 1.11 | 0.62 | 93% / 93% | 0.61 | 1.12 | 0.77 | 67 / 100, 0.66 |
+| 1915 | 1.08 | 0.59 | 94% / 94% | 0.58 | 1.11 | 0.74 | 69 / 101, 0.68 |
+| 1925 | 1.14 | 0.65 | 95% / 95% | 0.64 | 1.15 | 0.75 | 105 / 115, 0.91 |
+| 1935 | 1.20 | 0.68 | 95% / 95% | 0.67 | 1.24 | 0.71 | 120 / 116, 1.04 |
+
+Goods moved by F159 trade class (the canon's goods per capacity unit against vanilla's), mod ÷ vanilla, and the class's share of the
+canon's trade value:
+
+| year | A ×4 | B ×2.83 | C ×2 | D ×1.41 | E ×1 (vanilla's weights) |
+|---|---|---|---|---|---|
+| 1837 | 2.68 (31%) | 1.35 (10%) | 2.13 (27%) | 1.48 (21%) | 1.07 (12%) |
+| 1855 | 2.23 (32%) | 1.26 (12%) | 1.80 (28%) | 1.32 (14%) | 1.08 (13%) |
+| 1875 | 1.71 (27%) | 1.21 (10%) | 1.48 (32%) | 1.22 (17%) | 0.71 (13%) |
+| 1895 | 1.46 (22%) | 1.27 (8%) | 1.49 (32%) | 1.35 (24%) | 0.65 (14%) |
+| 1915 | 1.21 (20%) | 1.12 (8%) | 1.35 (32%) | 1.41 (25%) | 0.62 (13%) |
+| 1925 | 1.17 (20%) | 1.15 (9%) | 1.45 (32%) | 1.45 (24%) | 0.61 (15%) |
+| 1935 | 1.10 (20%) | 1.19 (9%) | 1.67 (33%) | 1.70 (23%) | 0.82 (15%) |
+
+- **The lead is inherited.** The canon starts with vanilla's 1836 trade centres (1.01× the levels) and moves about twice the goods per
+  unit, so its trade is worth 1.83× vanilla's in 1837.
+- **Then the AI builds less.** Trade-centre levels fall to 0.88× by 1855 and stay at 0.71–0.78× from 1875; capacity at 0.59–0.68×, units
+  traded at 0.58–0.67×. Twice the goods on two-thirds of the units leaves 1.11–1.24× the goods and 1.08–1.26× the value from 1875.
+- **The canon's capacity runs emptier until the 1890s** (85–91% used against 91–94%), and its trade centres earned 0.24–0.68× vanilla's
+  profit per level in 1855–1915 (0.91 in 1885), back to par only in 1925–35. Why a level earns less is not measured here.
+- **The bulk class moves less than vanilla's.** At vanilla's weights, class E moves 0.61–0.72× vanilla's goods over 1875–1925 (0.82 in
+  1935); class A falls from 2.68× to 1.10×.
+- **The late rebound** (value 1.08 → 1.20, 1915 → 1935) comes with capacity 0.59 → 0.68 and is carried by manufactures and semi-bulk goods
+  (C 1.35 → 1.67, D 1.41 → 1.70), as world GDP closes on vanilla's and passes it (F249: 0.90–0.91 over 1886–1906, level by 1926).
+
+**2. Where a market stops importing.** Per run, decade dump (1840 … 1930, 1935), tracked market and tradeable good with buy orders (the
+local goods and merchant marine left out): the gap = (market price − world market price `last`) ÷ base price. The gap is read AFTER trade
+has acted on it, so for an importer it is the RESIDUAL TRADE GAP (GLOSSARY), the premium left when trade stops growing. Canon 16 runs,
+vanilla 22.
+
+There is no threshold. The share of market-goods importing, canon / vanilla, by gap: −0.05…0.05 33% / 28% · 0.05…0.15 53 / 49 · 0.15…0.25
+64 / 65 · 0.25…0.35 67 / 72 · 0.35…0.50 70 / 75 · 0.50…0.75 61 / 66 · 0.75…1.50 21 / 27. At a gap of 0.35 of base or more, 38% of 3,912
+canon market-goods import nothing (vanilla 32% of 4,719); of those, Japan 41% (vanilla 38%), Belgium 22% (15%), Russia 10% (12%), the
+Netherlands 9% (12%).
+
+**The residual gap, canon against vanilla.** Importers' p25 / median / p75: canon 0.025 / 0.134 / 0.259, vanilla 0.050 / 0.157 / 0.275;
+37% of the canon's market-goods import against 34%. Exporters sell closer to the world price too (median −0.099 against −0.127). The
+small difference in the medians hides two effects pulling opposite ways.
+
+- **(a) The trade weights lower it, in the order of the weight.** Paired on the same market × good × date (each arm's median over the runs
+  importing it, at least 3 runs in each), the median of (canon − vanilla), in base-price units (pairs):
+
+| class | 1840–1870 | 1880–1900 | 1910–1935 | whole span | whole span, all markets |
+|---|---|---|---|---|---|
+| A ×4 | −0.111 (70) | −0.067 (95) | −0.060 (128) | −0.070 (293) | −0.062 (363) |
+| B ×2.83 | −0.124 (27) | −0.052 (31) | −0.040 (51) | −0.070 (109) | −0.051 (141) |
+| C ×2 | −0.068 (97) | −0.027 (116) | −0.020 (177) | −0.037 (390) | −0.020 (531) |
+| D ×1.41 | −0.038 (98) | −0.014 (117) | −0.007 (147) | −0.015 (362) | −0.003 (444) |
+| E ×1 (vanilla's weights) | −0.001 (84) | +0.013 (73) | +0.035 (137) | +0.015 (294) | +0.016 (360) |
+
+  The first four columns leave out Japan and Russia; over all markets the canon's gap is lower in 57% of 1,839 pairs (median −0.015).
+- **Less than in proportion.** If a trade needed a fixed revenue per capacity unit, the residual gap would fall as 1 ÷ the weight:
+  pooled importers' medians would go from vanilla's 0.152 / 0.147 / 0.173 / 0.172 (A / B / C / D) to 0.038 / 0.052 / 0.087 / 0.122. The canon
+  reads 0.081 / 0.082 / 0.154 / 0.161: about two-thirds of that fall in A and B (62%, 68%), about a fifth in C and D (22%, 22%). This
+  arithmetic is on pooled medians, not paired ones.
+- **(b) It widens again over time.** Every class drifts upward by 0.03–0.08 of base from 1840–70 to 1910–35, and class E, whose weights are
+  vanilla's, goes from level to +0.035. By decade, importers' medians: 1840 0.174 / 0.276 · 1850 0.149 / 0.195 · 1860 0.134 / 0.185 · 1870
+  0.113 / 0.170 · 1880 0.119 / 0.168 · 1890 0.106 / 0.142 · 1900 0.130 / 0.131 · 1910 0.137 / 0.134 · 1920 0.133 / 0.141 · 1930 0.135 / 0.134 ·
+  1935 0.145 / 0.141; from 1900 the canon's p75 is the wider (0.261–0.271 against 0.233–0.245). The timing matches §1: the inherited
+  capacity carries twice the goods early, and the canon's capacity sits at 0.59–0.68× vanilla's from 1875.
+- **By market** (importers' median, canon / vanilla): lower in Britain 0.051 / 0.074, France 0.085 / 0.110, the Netherlands 0.149 / 0.198,
+  Prussia 0.108 / 0.188, the USA 0.121 / 0.153, Belgium 0.171 / 0.193, Germany 0.128 / 0.145; higher in Japan 0.364 / 0.335, Russia
+  0.242 / 0.221 and the North German market 0.152 / 0.118 (245 against 582 importer readings).
+- **The tiered industries' goods** sit mostly in the classes the weights barely help: groceries, fabric, glass, paper, steel and explosives
+  in D, furniture and fertilizer in E. Paired, without Japan and Russia (1840–70 · 1880–1900 · 1910–35): furniture +0.004 · +0.014 ·
+  +0.037 (12, 10, 15 pairs), clothes −0.024 · −0.006 · −0.011, fabric −0.040 · −0.025 · −0.013, groceries −0.041 · −0.010 · +0.009, glass
+  −0.103 · −0.065 · −0.086, tools −0.093 · −0.021 · −0.031, fine art (A) −0.166 · −0.092 from 1880. Cells of 4–20 pairs: direction at best
+  (clothes read −0.050 late against the alternating vanilla alone, −0.011 against n=22).
+
+**3. What decides a trade, and a trade centre — vanilla's own descriptions** (`common/defines/00_ai.txt`; the formulas are in the
+executable, the comments are vanilla's and unverified here, §2.12; some defines are dead, F241; none of these was perturbed). Neither
+reads `ai_value`.
+- **Which trades a state makes** (autonomous trade, weekly, per state with trade centres): a capacity of 10 per staffed level and one
+  trade change per staffed level a week; a failed attempt costs 0.2 of them (`AUTONOMOUS_TRADE_WEEKLY_TRADES_FRACTION_USED_FOR_FAILED_TRADE`).
+  A trade's desirability is its revenue after tariffs and subventions, + 100 × subventions %, − 25 × tariffs %, − 1,000 × the country's
+  share of the world's trade in that good in the opposite direction, + 300 × the shortage penalty's severity (imports only), with a
+  random factor 0.5. A trade grows only at ≥ 50 per base traded quantity (`…_MIN_DESIRABILITY_PER_QUANTITY_TO_INCREASE_TRADE`), is cut
+  under 25 (`…_TO_MAINTAIN_TRADE`), and is not cut for 8 weeks after it grew. With capacity full, a new trade must bring 2× the revenue
+  of the one it replaces (`AUTONOMOUS_TRADE_STICKYNESS` 2.0).
+- **Whether the AI builds a trade centre** (the "I have enough"): the construction score is 10,000 × the capacity added × the state's
+  available trade potential ÷ (state GDP + 10,000) (`PRODUCTION_BUILDING_PRODUCED_TRADE_CAPACITY_FACTOR`, `…_GDP_ADDED_FOR_DIVISOR`),
+  × 1.5 for the autonomous investment pool, × 5 in a treaty port; a capacity unit is "loosely expected" to earn £25
+  (`…_EXPECTED_REVENUE_PER_UNIT`). Trade potential is the profitable trade a state could still add, normalised against 25% of each good's
+  base cost (`AUTONOMOUS_TRADE_POTENTIAL_REVENUE_BASE_COST_FACTOR`), so it falls as the state's trades are taken up. A state must also
+  clear a yearly GDP floor (£100k for a market capital, £500k otherwise, × 2 inland, × 2 unrecognised, × (1 + 0.02 × years since 1836);
+  F246: it does not bind treaty ports as stated), and a trade centre with ≥ 10% and ≥ 20 units unused downsizes. Trade centres are
+  exempt infrastructure under §2.4 (§10.92.1): weighting them to get them built is within the rules.
+
+**What it says.** The canon's trade lead is the 1836 capacity carrying twice the goods; it fades because the AI then builds about
+two-thirds of vanilla's trade capacity, whose construction is decided by a potential-over-GDP score and not by `ai_value`. The higher
+trade weights do let trade close more of a price gap, more for the classes they raise most, but far less than in proportion; and as the
+thin capacity binds, the gap trade leaves widens back to vanilla's, wider than vanilla's for the bulk goods. Most of the consumer chains'
+goods sit in the classes where the weights help least, so a wider gap there mostly stays open.
+
+**Confidence.** n=16 against n=22, medians over runs. The ordering of the paired shift by class holds in every period, with and without
+Japan and Russia; the late widening of class E holds in both. The trade-capacity shortfall from 1875 is 0.59–0.68× at every printed year.
+Single-good cells are noisy.
+
+**What it does NOT say.**
+- Why the AI builds fewer trade centres. That trade potential is counted in capacity units, so that twice the goods per unit halves it,
+  is a hypothesis; the low profit per level of 1855–1875 is measured, its cause is not.
+- That the upward drift of the residual gap comes from the thin capacity: it is inferred from its timing and from class E, not
+  perturbed.
+- Which reading of "per base traded quantity" the engine uses: the data say the weights lower the bar in part, not by how much each
+  term contributes (capacity, tariffs and the trade price's advantage factor, the 2× replacement rule).
+- That a wider gap would draw trade: a market-good with no imports at a large gap may lack capacity, a partner or demand.
+- What any define does when changed: nothing was changed. The candidate levers are the trade-centre construction score
+  (`PRODUCTION_BUILDING_PRODUCED_TRADE_CAPACITY_FACTOR`, `…_EXPECTED_REVENUE_PER_UNIT`, the GDP floors) for how much capacity is built, and
+  the desirability thresholds, the replacement rule and the shortage factor for which trades happen (those change vanilla trade
+  everywhere); a probe has to come first.
+- Anything net of the price level: the gap is in base-price units at each date's world price, and the canon's prices sit lower
+  (~0.95 of vanilla's from 1920, F257).
