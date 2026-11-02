@@ -1,0 +1,73 @@
+[h1]1.0.0 (for Victoria 3 1.13)[/h1]
+Every change is against vanilla Victoria 3 1.13. Known issues are in KNOWN_ISSUES.md.
+A fuller changelog, free of Steam's length limit, is on the [url=FORUM_LINK]Paradox forum[/url].
+[h2]Features[/h2]
+[list]
+[*][b]Production: a building for every technology step[/b]
+[list]
+[*]Seventeen industries (food, textiles, furniture, glass, tools, paper, fertilizer, explosives, steel, motors, automobiles, arms, artillery, munitions, synthetics, electrics, arts academy) no longer modernise by switching their main production method.
+[*]Each vanilla main method is now its own building, a rung, with vanilla's name, staffing and icon: 56 rungs in 50 buildings, up to four per industry, on tiers anchored at 1836, 1875, 1905 and 1940.
+[*]Modernising means building the newer plant. An old plant is never forbidden or penalised: it loses its market when newer rungs push its output price down relative to wages.
+[*]One tier up makes 2.2× the output from 1.64× the input value at 1.9× the cost: more per worker, slightly more per construction point, and profitable at lower prices.
+[*]A tier-1 rung makes its vanilla method's output from 20% more inputs (motors: the same) at the vanilla building's cost; a tier-0 rung, two thirds of that from two thirds of the inputs.
+[*]The technology that unlocked a main method unlocks its rung; the Artillery Foundry needs Artillery, not Gunsmithing.
+[*]Companies can build every rung of their industries but the craft, and their throughput bonuses reach them.
+[/list]
+[*][b]Artisan crafts[/b]: the first rung of food, textiles, furniture, glass, tools and paper (Bakeries, Handsewn Clothes, Handcrafted Furniture, Forest Glass, Crude Tools, Pulp Pressing). A level employs 500 (30% shopkeepers, 70% laborers), costs 6 points, makes 60% of its vanilla method's output per worker, has no economy of scale and hires down to a productivity of 2. Own building group under Light Industry; no secondary methods; no companies.
+[*][b]Merged methods[/b]: six steps that were historically a cheap retrofit (5–20% of a new plant) are a second main method of the building below, switched without construction: Baking Powder, Electric Sewing Machines, Paper Bleaching, Improved Fertilizers, Electric Arc Process and the new Spray Finishing. Such a building is named by its tier span ("Tier 1-2. Paper Mills") and costs the geometric midpoint of its two rungs.
+[*][b]New technologies[/b]: Spray Finishing, Continuous Web Processing and Catalytic Synthesis (tech era 5) unlock the top rungs of furniture, paper and fertilizer.
+[*][b]Secondary methods[/b]: one recipe per industry for all its rungs, sized on tier 2; a building offers only those it can run with its main method. An automation that is the same thing as a main method comes with it (Mechanized Looms, Automatic Power Looms, Assembly Lines).
+[*][b]Electricity[/b]: Electric Streetlights in urban centres burn 2 coal and produce 1 electricity (250 engineers) instead of consuming 3. Power Plants cost 1,600 points (vanilla 400).
+[*][b]Hydroelectric dams[/b]
+[list]
+[*]122 historical projects as four buildings: Mountain Power Station and River Dam (300 electricity a level), Great Mountain Scheme and Great River Dam (600); 4,800–9,000 points a level; Electrical Generation, Steam Turbine or Arc Welding.
+[*]Built only on its site, up to the site's levels, after a survey: a decision costing bureaucracy for 12–36 months. A survey by the owner's family of countries opens the site to that family; one by an outside investor, to that investor only.
+[*]The owner, its overlords and holders of investment rights build, through the government or private investors. Eleven dams add arable land, end an irrigation penalty or grant a flood or drought trait.
+[/list]
+[*][b]Research: technology follows industry[/b]
+[list]
+[*]Base innovation and the cap's base cut from 50 to 25, the cap's literacy term from 150 to 25; universities make a sixth of vanilla's innovation.
+[*]113 research journal entries grant research toward a technology: for rungs, other production technologies, land units, ships, laws spreading from abroad and the country's condition (colonies, cities, universities…).
+[*]An entry fills one stage every 36 months while its condition holds (land units: 12), each granting half the technology's tech-era base cost, up to 20 stages.
+[*]An industry's mark: 25,000 workers for a tier-1 rung's technology, 75,000 for tier 2, 235,000 for tier 3 (half for military industries, explosives and synthetics), halved once a country outside Isolationism has it.
+[*]Entries pause under 25/35/45/55/65% literacy for tech eras 1–5 (not land units or ships).
+[/list]
+[*][b]Trade[/b]: a unit of trade capacity moves more of compact or valuable goods (about £340–960 at base prices by class, instead of £200–300); bulk and perishables unchanged. The monopoly markup (vanilla: +7–20% on almost every traded good) applies only above 99% of world exports.
+[/list]
+[h2]AI[/h2]
+[list]
+[*]Desire to build a rung rises with its tier: 1,000 for tiers 0–1, 3,000 for tier 2, 5,000 for tier 3, 800 for a craft.
+[*]Seven construction defines changed: the AI spends a large investment pool more readily on costly buildings.
+[*]Finishes a technology it has nearly paid for (+10,000 weight at 99% of its cost).
+[*]Schools its people: Education institution +100 in every administrative strategy, school laws +500 while it has none.
+[*]No subsidies for Tooling Workshops and Explosives Factory; dams always subsidised, surveyed (one new survey per 30 days at most) and built eagerly.
+[/list]
+[h2]Balance[/h2]
+[list]
+[*]Four flat research bonuses cut to a third: Philips, Advanced Research III, Geographic Study Undertaken, Investing in the Future (Cuba).
+[*]Vulcanization moved from tech era 3 to 4; Conveyors now a prerequisite of Compression Ignition.
+[*]Niagara Falls, Krka Falls, Angara River, Trondhjemsfjorden and Hardangerfjorden lose their electricity bonus to the dams (Krka Falls has no dam).
+[*]Middle and Upper Egypt start with Basin Irrigation (−10% agriculture), Blue Nile with Rain-fed Plain (−20%); the Nile dams end them, except in Upper Egypt.
+[*]Efficient Canning Practices makes 85 groceries instead of 70.
+[/list]
+[h2]Content[/h2]
+[list]
+[*]1836 is vanilla's map with each factory on its method's rung; crafts are topped up per country to vanilla's output. Starting technologies are vanilla's.
+[*]159 companies list every rung of their industries but the craft.
+[*]Vanilla events, journal entries, decisions, laws and modifiers naming a tiered industry count its rungs (63 files): e.g. the art journal entries need one academy of their tier, and Industry Banned demolishes every rung.
+[/list]
+[h2]Interface[/h2]
+[list]
+[*]Buildings are named after their rung: "Tier 2. Glassworks (Crystal Glass)", "Tier 0 craft. Paper Mills (Pulp Pressing)". The number is the rung's tier, not the tech era.
+[*]Research entries share one style; the progress bar's tooltip lists every condition. Each dam site has a state trait describing it.
+[*]Tiered buildings and methods use vanilla's translations; the mod's own texts are in English.
+[/list]
+[h2]Performance[/h2]
+A century plays about as fast as vanilla (×1.01 over sixteen campaigns alternated with sixteen of vanilla).
+[h2]Modding[/h2]
+[list]
+[*]Replaces 146 vanilla files whole and common/history/buildings (list in the repository's README).
+[*]The 17 industries' vanilla building keys belong to their first rungs; their vanilla methods stay defined but unused.
+[*]Never unlocks DLC content; tested with every DLC disabled.
+[*]Source, tools and design record are public, in the public domain (CC0 1.0).
+[/list]

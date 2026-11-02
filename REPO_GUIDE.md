@@ -58,6 +58,10 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
   Status: superseded by `TIER_REFERENCE_AUDIT.md` (stale: lists railway and shipyard methods, old paths).
 - **`MISSING_BUILDING_CONDITIONS.md`** — conditional fields inside vanilla buildings we regenerate that our emitted building drops; hand-
   maintained, directly fixable, deferred. Still accurate.
+- **`CHANGELOG.md`** — the public list of changes per release, against vanilla (1.0.0: the full list at PDS granularity). **`CHANGELOG_WORKSHOP.txt`** —
+  the same entry in Steam Workshop BBCode, trimmed to the change-note limit (8,000 bytes; tags and the CRLF a browser submits count: 1.0.0 is
+  7,868 bytes with a 115-character forum URL in place of `FORUM_LINK`); it points to the fuller text on the Paradox forum. **`KNOWN_ISSUES.md`** —
+  the public list of issues a player would notice in the current release.
 - **`LICENSE`** — the repository's own work is dedicated to the public domain under CC0 1.0 Universal (the user, 2026-10-26: as permissive as
   possible, no attribution required); Victoria 3's material in the mod stays Paradox Interactive's. A short header, then the CC0 legal code
   verbatim from creativecommons.org.

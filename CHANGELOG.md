@@ -63,7 +63,7 @@ Balance
 * Reduced four flat research bonuses to a third: Philips, Advanced Research III, Geographic Study Undertaken and Investing in the Future (Cuba).
 * Vulcanization moved from tech era 3 to 4.
 * Conveyors is now a prerequisite of Compression Ignition.
-* Removed the electricity bonus from Niagara Falls, Krka Falls, Angara River, Trondhjemsfjorden and Hardangerfjorden; the dams replace them.
+* Removed the electricity bonus from Niagara Falls, Krka Falls, Angara River, Trondhjemsfjorden and Hardangerfjorden; the dams replace them (Dalmatia, Krka Falls' state, has no dam site).
 * Middle Egypt and Upper Egypt start with Basin Irrigation (−10% agriculture) and Blue Nile with Rain-fed Plain (−20%); the Nile dams end them, except in Upper Egypt.
 * Efficient Canning Practices (Food Standardization 3) makes 85 groceries instead of 70.
 
