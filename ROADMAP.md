@@ -95,6 +95,10 @@ feature only if it needs no iteration (step 7's timeline).
   approach: *"a bit higher ai weights for military techs over societal techs over most production techs (exceptions with also higher
   priority on production where there are no JEs, like Shift Work)"*. Tech spread ×2 and a society research multiplier stay deferred (§10.97
   item 8).
+- **A research-status entry for the player** (user, 2026-11-03): one journal entry that shows the literacy lines by tech era and counts the
+  technologies with research entries by state (researched · blocked by prerequisites · blocked by literacy · open · ticking now), so a
+  player can see why an entry is missing. Script-placed in non-AI countries only, so it adds no measurable tick cost (F220, F221); it needs
+  no balance iteration, only a load test and an in-game look. Detail and the build conditions: BACKLOG C.
 - **The balance levers that are not minor** (POLISH Q4): the cost ladder C 1.8 × cost1 1.2 (F234, measured on an older canon) and paper's own
   input lift (1.0–1.3, §10.101).
 - **Tier-scaled secondary lines — a possible lever, not ruled** (user, 2026-10-26; F249 §4d): the textile and furniture t1 live on a luxury line

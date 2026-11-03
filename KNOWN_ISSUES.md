@@ -9,6 +9,10 @@ Mechanical
 * Four buildings run only on electricity: Tier 3 Explosives Factory, Tier 2 Motor Industries, Tier 3 Automotive Industries and Tier 3 Arts
   Academy. They can be built in a state that produces no electricity, and they cannot run there. Before building one, make sure the state
   has a power plant, a dam or electric streetlights. A build condition is planned for a later version.
+* A research journal entry (other than the military and naval ones) appears only once the country's literacy reaches the line for its
+  technology's era: 25% for era 1, 35% for era 2, 45% for era 3, 55% for era 4 and 65% for era 5. Below that the entry is simply missing,
+  with nothing saying why; an entry already open pauses, and its text gives the line. A journal entry that shows these lines and counts
+  the technologies held back by literacy or by missing prerequisites is planned for version 1.1.
 
 
 Balance
