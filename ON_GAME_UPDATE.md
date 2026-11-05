@@ -767,9 +767,9 @@ line per stage.
   the cloud and reaches the machine only at the next visit.
 - **Steam may update the game at any time.** That includes the 1.15 update itself, possibly before Sunday, and the 1.15.N hotfix expected about
   2026-11-12, mid-week. So the plan does not prevent a version boundary. It survives one:
-  - **The order inside the schedule:** the short probes come first, so they finish before the hotfix is likely. Then the two century arms
-    ALTERNATE run by run. Any stretch of the week on one game version then holds both arms in about equal numbers, and is a complete comparison
-    on its own.
+  - **The order inside the schedule:** a vanilla-only week (the expected case, below) needs no pairing, because a boundary just splits it into
+    two vanilla references. If a canon arm is in the schedule after all, the short probes come first and the century arms ALTERNATE run by run,
+    so that every one-version stretch holds both arms and is a complete comparison on its own.
   - **Each run is stamped with its game version** at launch and at every crash resume. A run whose resume crossed a version is cut at the
     boundary or left out. Readings pool only runs of one version, and they say which. This stamp is machinery to build before Sunday (BACKLOG §I).
   - The 1.13 batch `alt_canon48_vanilla16` (from 2026-10-30) may itself straddle the 1.15 update. On Sunday, read which of its runs launched on
@@ -807,8 +807,8 @@ line per stage.
   year), the downsizing poll on. About 16 × 3 h ≈ 48 h. An interim read after the first 4 runs (~12 h) checks only that nothing is broken.
 - **Comparison:** each reading against vanilla 1.13.11's `VANILLA_REF` (n=40), both terms printed (CLAUDE.md §2.11).
 - **What it becomes:** the 1.15 vanilla reference, beside the 1.13 one (which stays as the 1.13 record): `config/measured_base_wages.json`, the
-  error-noise catalogue, the 1836–1845 anchor band, the register's per-run vanilla medians. Run alternating with the canon (the week's
-  schedule, below), it is also the same-days `VANILLA_WALL_REF` for 1.15.
+  error-noise catalogue, the 1836–1845 anchor band, the register's per-run vanilla medians. The wall-clock reference is NOT taken from it:
+  `VANILLA_WALL_REF` for 1.15 comes from the vanilla runs that alternate with the canon in stage 3 (CLAUDE.md §3.4).
 
 What it answers, each a reading of 1.15 vanilla against 1.13 vanilla:
 - **misplaced capital**: the decomposition below;
@@ -873,22 +873,33 @@ The readings that separate them:
 
 ### Stage 3: the 1.1 canon against 1.15 vanilla (alternating)
 
-- **Arms and size:** the 1.1 canon book against `{kind: control}`, alternating run by run. Under the one-visit constraint stages 1 and 3 are one
-  alternating schedule of 16 + 16 centuries (the week's schedule, below), and its vanilla half is stage 1.
+- **Arms and size:** the 1.1 canon book against `{kind: control}`, alternating run by run. Expected at the visit after the week, once a 1.15 canon
+  builds: 16 + 16 centuries (~110 h), with the canon's probes ahead of it. Its vanilla half joins stage 1's 1.15 reference and gives the same-days
+  wall clock.
 - **Reads:** the register and the ledger (§10.104.1), the wall clock (same days), M1–M6 on both arms, F262's obsolete construction, the old-rung
   census and the laggard test, downsizing by §10.107's classes.
 
 **The week's schedule** (stages 1–3 as one schedule, under the constraints above):
-- **Sunday, with the user:** stage 0. The 1.1 candidate build has to pass its dry run that day, and its first runs are smoke-checked.
-  - **If it passes:** the schedule is the probes, then the century arms alternating, vanilla and canon, 16 + 16. That is about 8 h of probes
-    plus 32 × ~3.2 h ≈ 110 h, ~5 days. It ends about Friday, with slack for resumes. Stage 1 is the vanilla half (n=16) and stage 3 the pairs.
-  - **If it does not pass** (the canon cannot be built on 1.15 that day): vanilla only, about n=30 centuries over the week. The vanilla-only
-    probes (P4 on a vanilla save, P6) run first. The canon's probes and stage 3 wait for the next visit.
-- **The probes inside the schedule** are the ones stage 0 leaves runnable without a decision: P1 paper (only if its wish is engine-side), P3,
-  P4, P5. P2 needs stage 1's prices, P6 needs a single save, and P7 follows §10.103's plan. Those are readings or later runs, not part of this
-  schedule.
-- **Mod 1.1's release** needs the user at the machine (an in-game load, the release build, the upload). So it is the next visit after the week
-  at the earliest, not 2026-11-16 as planned before, and it is read on whichever version stretch is complete.
+- **The expected case: vanilla only** (the user, 2026-11-05: *"It's likely that we won't be able to make a mod version fit for 1.15 on Sunday.
+  If that is the case, the following runs will be vanilla-only."*).
+  - **Sunday, with the user:** stage 0. The canon's dry run on 1.15 still runs that day, because its throws are the 1.1 work list for the week
+    in the cloud. Its passing is not expected and nothing waits on it.
+  - **The week:** stage 1 alone, a vanilla reference larger than 16. That is about n=36 centuries in ~7 days at ~3–3.5 h each, with slack for
+    resumes. The schedule simply runs until it is stopped, and it needs no pairing: a version boundary splits it into two vanilla references.
+    1.15.N, the version 1.1 ships on, is the one that counts, and whichever stretch is larger is read first.
+  - **One vanilla engine probe at its head:** 2 runs, 1836→1856, with monthly autosaves. It shows the new hiring and wage behaviour at a
+    month's grain (fill rates, lay-off and re-hire churn, wage moves), and it checks the downsizing poll against the saves on 1.15 (as F261 did on
+    1.13). An engine question belongs on vanilla (CLAUDE.md §5.1 rule 3), so it does not wait for the canon.
+  - **What waits for the next visit** (all of it needs a 1.15 canon build): the canon's probes P1 (if its paper wish is engine-side), P3 and P5;
+    P4 (the monopoly continuation A/B, on the canon's own define); stage 3, which then runs alternating against FRESH vanilla runs of the same
+    days for the wall clock. A week-old vanilla reference cannot serve as `VANILLA_WALL_REF` (CLAUDE.md §3.4). P2 and P6 are readings (P2 needs
+    stage 1's prices, P6 one save). P7 follows §10.103's plan.
+- **If the canon does pass its dry run on Sunday** (not expected): the probes first, then vanilla and canon alternating, 16 + 16 (about 8 h of
+  probes plus 32 × ~3.2 h ≈ 110 h, ending about Friday). Stage 1 is then the vanilla half, stage 3 the pairs.
+- **Mod 1.1's release** needs the user at the machine (an in-game load, the release build, the upload). Stage 3 can launch only at the
+  visit after the week, so the canon is measured on 1.15 a week after that at the earliest. 2026-11-16 is out. ⚠ **For the user:** release at
+  the next visit on a short canon test (a few runs read against stage 1), or after stage 3, which may push the release past the
+  pause the timeline sets after 2026-11-18 (BACKLOG, the release timeline).
 - ⚠ **Before Sunday** (cloud work, committed so the machine pulls it on Sunday): the per-run version stamp and the version split in the
   readers, the check of what the scheduler does unattended, and the schedule file itself with its predictions (§2.8). The readers M2, M5 and M6
   are not needed before the data lands, so they wait (the user: *"Don't write the machinery now"*). This list is only what the launch itself
