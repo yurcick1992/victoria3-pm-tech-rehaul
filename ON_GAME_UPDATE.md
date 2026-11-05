@@ -759,11 +759,27 @@ like misplaced capital truly changed, or whether there's just more ways to mispl
 the user's go-ahead, asked once for the whole batch (CLAUDE.md §5.1 rule 4), and its predictions go into its schedule (§2.8). BACKLOG §I holds one
 line per stage.
 
-**Before the update.**
-- The alternating batch `alt_canon48_vanilla16` (from 2026-10-30) is the last 1.13 data. Steam must not update the game before its
-  `SCHEDULE DONE`: a batch that straddles a patch is two batches (routine step 2).
-- Keep 1.13.11's `game\common`, `game\events` and `game\map_data` aside before updating (routine step 1).
-- Hold Steam's automatic updates during every stage below. A 1.15.N hotfix (expected ~11-12) inside stage 1 would split the new reference.
+**The constraints** (the user, 2026-11-05: *"I'll only be near the machine physically on Sunday, and then I'm gone for the week again"*, and
+*"I don't really have ways to influence the updates now. So let's plan around it, and hope for the best."*):
+- **One visit.** Stage 0 and the launch happen on Sunday 2026-11-08, with the user at the machine. Everything after that runs unattended for a
+  week, so it is ONE predetermined schedule launched that day, with no decision points inside it. The go-ahead is asked once, on Sunday, for the
+  whole schedule (CLAUDE.md §5.1 rule 4). Nothing in the checkout it runs from is edited during the week (rule 7). The 1.1 build pass goes on in
+  the cloud and reaches the machine only at the next visit.
+- **Steam may update the game at any time.** That includes the 1.15 update itself, possibly before Sunday, and the 1.15.N hotfix expected about
+  2026-11-12, mid-week. So the plan does not prevent a version boundary. It survives one:
+  - **The order inside the schedule:** the short probes come first, so they finish before the hotfix is likely. Then the two century arms
+    ALTERNATE run by run. Any stretch of the week on one game version then holds both arms in about equal numbers, and is a complete comparison
+    on its own.
+  - **Each run is stamped with its game version** at launch and at every crash resume. A run whose resume crossed a version is cut at the
+    boundary or left out. Readings pool only runs of one version, and they say which. This stamp is machinery to build before Sunday (BACKLOG §I).
+  - The 1.13 batch `alt_canon48_vanilla16` (from 2026-10-30) may itself straddle the 1.15 update. On Sunday, read which of its runs launched on
+    which version (the heartbeat's `does not match game version` lines) before any of it is quoted.
+- **Unattended runs.** No agent watches during the week: crash resumes, FROZEN and STALLED runs must be handled by the scheduler alone. Before
+  launching, check what the scheduler does unaided with each waiter state (L41). Where it needs an agent, it skips the run and goes on rather
+  than waiting. Smoke-check the first runs of each arm while the user is still at the machine (rule 6).
+- Keep 1.13.11's `game\common`, `game\events` and `game\map_data` aside if the game has not updated yet (routine step 1). If it has, the 1.13
+  data is gone from the install, and the diff falls back to the repository's extracts (`ui/vanilla.js`, `config/start_baseline.json`, the owned
+  copies in `mod/`).
 
 ### Stage 0: the update day (file reads and minute-long runs, no batch)
 
@@ -791,8 +807,8 @@ line per stage.
   year), the downsizing poll on. About 16 × 3 h ≈ 48 h. An interim read after the first 4 runs (~12 h) checks only that nothing is broken.
 - **Comparison:** each reading against vanilla 1.13.11's `VANILLA_REF` (n=40), both terms printed (CLAUDE.md §2.11).
 - **What it becomes:** the 1.15 vanilla reference, beside the 1.13 one (which stays as the 1.13 record): `config/measured_base_wages.json`, the
-  error-noise catalogue, the 1836–1845 anchor band, the register's per-run vanilla medians. It is a provisional `VANILLA_WALL_REF` until
-  stage 3 runs the same days.
+  error-noise catalogue, the 1836–1845 anchor band, the register's per-run vanilla medians. Run alternating with the canon (the week's
+  schedule, below), it is also the same-days `VANILLA_WALL_REF` for 1.15.
 
 What it answers, each a reading of 1.15 vanilla against 1.13 vanilla:
 - **misplaced capital**: the decomposition below;
@@ -857,14 +873,23 @@ The readings that separate them:
 
 ### Stage 3: the 1.1 canon against 1.15 vanilla (alternating)
 
-- **Arms and size:** the 1.1 canon book against `{kind: control}`, alternating run by run, n=8 + 8 centuries (~48 h). It grows to 16 + 16 if the
-  register cannot read it. Its vanilla runs join stage 1's 1.15 reference.
+- **Arms and size:** the 1.1 canon book against `{kind: control}`, alternating run by run. Under the one-visit constraint stages 1 and 3 are one
+  alternating schedule of 16 + 16 centuries (the week's schedule, below), and its vanilla half is stage 1.
 - **Reads:** the register and the ledger (§10.104.1), the wall clock (same days), M1–M6 on both arms, F262's obsolete construction, the old-rung
   census and the laggard test, downsizing by §10.107's classes.
 
-**The timing.**
-- Stage 0 is the update day. Stage 1 is ~2 days of machine, and the 1.1 build pass runs beside it in another checkout. Stage 2 is about a day,
-  and stage 3 ~2 days.
-- That is ~5 days of machine from about 2026-11-08. It meets the 2026-11-16 target for mod 1.1 only if nothing breaks, and the expected 1.15.N
-  hotfix falls inside it.
-- ⚠ **For the user:** whether mod 1.1 can ship on stage 2 and a short canon test, with stage 3 after the release.
+**The week's schedule** (stages 1–3 as one schedule, under the constraints above):
+- **Sunday, with the user:** stage 0. The 1.1 candidate build has to pass its dry run that day, and its first runs are smoke-checked.
+  - **If it passes:** the schedule is the probes, then the century arms alternating, vanilla and canon, 16 + 16. That is about 8 h of probes
+    plus 32 × ~3.2 h ≈ 110 h, ~5 days. It ends about Friday, with slack for resumes. Stage 1 is the vanilla half (n=16) and stage 3 the pairs.
+  - **If it does not pass** (the canon cannot be built on 1.15 that day): vanilla only, about n=30 centuries over the week. The vanilla-only
+    probes (P4 on a vanilla save, P6) run first. The canon's probes and stage 3 wait for the next visit.
+- **The probes inside the schedule** are the ones stage 0 leaves runnable without a decision: P1 paper (only if its wish is engine-side), P3,
+  P4, P5. P2 needs stage 1's prices, P6 needs a single save, and P7 follows §10.103's plan. Those are readings or later runs, not part of this
+  schedule.
+- **Mod 1.1's release** needs the user at the machine (an in-game load, the release build, the upload). So it is the next visit after the week
+  at the earliest, not 2026-11-16 as planned before, and it is read on whichever version stretch is complete.
+- ⚠ **Before Sunday** (cloud work, committed so the machine pulls it on Sunday): the per-run version stamp and the version split in the
+  readers, the check of what the scheduler does unattended, and the schedule file itself with its predictions (§2.8). The readers M2, M5 and M6
+  are not needed before the data lands, so they wait (the user: *"Don't write the machinery now"*). This list is only what the launch itself
+  needs, and it is built only on the user's word.

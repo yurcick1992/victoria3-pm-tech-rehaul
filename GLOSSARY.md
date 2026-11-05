@@ -15,7 +15,7 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 |---|---|---|
 | **world GDP** / **the world product** | the combined GDP of **all countries** | ⭐ NO LETTER, deliberately — "GDP" is good enough and "W" is taken. In code `gdpW`. The register's priority-1 metric |
 | **pool GDP** | the same, summed over the SHORTLIST POOL only | `gdpP`. ⚠ it is TOTAL pool GDP; the per-capita reading is printed beside it and is a different number |
-| **W** | **productive workers per capita** = (salaried − government − military) ÷ Σ strata population | the depeasantation axis. NOT "workers", NOT "workforce" |
+| **W** | **productive workers per capita** = (salaried − government − military) ÷ Σ strata population | from game 1.15 a Cossack Host's workforce is not productive (§10.108). The depeasantation axis. NOT "workers", NOT "workforce" |
 | **U\*** | **total unemployment INCLUDING peasants** = (unemployed + peasants) ÷ (salaried + unemployed + peasants) | from game 1.15 a Cossack Host's workforce counts with the peasants (§10.108). the star is part of the name: plain "U" would read as the strict figure, which is a different number (world 16.3% against U\* 41.7% in vanilla) |
 | **H** | the **investment-pool hoard ÷ GDP** | a stock over a flow. ⚠ vanilla's own H spans 0.56–1.93× between seeds, so it is *"hardly comparable with vanilla"* (user, 2026-09-19) and carries no vanilla-derived bound |
 | **Y** | **GDP ÷ productive worker** | so that `W × Y` = GDP per capita. The productivity axis |
