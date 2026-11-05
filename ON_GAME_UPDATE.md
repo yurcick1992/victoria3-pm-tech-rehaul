@@ -613,8 +613,8 @@ different versions are not comparable without saying so.
   unchanged, no unmapped method, the same inherited 1836 gaps). Its behaviour was not compared directly: "more war from the sway fix" did not show at
   n=18, and revolts ran ×1.30 (F79). Every `VANILLA_REF` session and the 2026-10-21 canon are 1.13.11; the older pins `20260813_083557` (vanilla
   n=4) and `20260818_221216_canon-n7` are 1.13.10.
-- **1.15** — expected 2026-11-05, with 1.14's AI rework. Mod 1.1 follows this file's routine; treaty ports are re-measured (§2.2.10). What the
-  preliminary patch notes touch: §4.
+- **1.15** — the final changelog was published 2026-11-05; the project moves to it about 2026-11-08 (the user). It includes 1.14's AI rework.
+  Mod 1.1 follows this file's routine, and treaty ports are re-measured (§2.2.10). What the patch notes touch: §4. The measurement plan: §5.
 
 ---
 
@@ -685,3 +685,186 @@ later: `global_average_gdp_per_capita`, `has_building_levels_in_state_region` (c
 - a rule that a country can no longer release one that could invalidate a treaty port it ceded inside its market.
 
 Nothing in them touches the pursuit filter, the never-added rule or the port-building requirement, so the §2.2.10 list stands as written.
+
+### 4.1 What the final changelog adds (read 2026-11-05)
+
+The final notes confirm everything above. They add the items below, which the preliminary lists did not have. Each is checked on the installed
+files in the 1.1 pass. The questions that need a run go to §5.
+
+**Things that throw or change the canon on regeneration:**
+- **Copper, a new good.** It can be mined from the start, and its demand *"climbs rapidly with the advent of electricity"*.
+  - `make_trade_config.mjs` throws on a tradeable good that has no class (§2.1, `goods_traded_quantity`). Its class among the five of §10.88 is a
+    user ruling.
+  - If copper enters a vanilla method that is some industry's M₁, that industry's V₁ and input mix change on regeneration (routine step 5),
+    which is a canonisation. The electrics, motor and power-plant methods are the likely ones.
+  - `tools/goods_prices.tsv` needs the row (§2.4). The save readers' good order shifts, so pre-patch saves need the old order (§2.3.3). The
+    red-flag good list gains an industrially consumed good.
+  - The notes give copper mines to General Electric, Ericsson, Basic Electrics and five other companies. `emit_companies.mjs` extends the
+    electrics companies, so read its output on the rebuild.
+- **Russian state regions redrawn.**
+  - Kostroma is split out of Yaroslavl and Nizhny Novgorod, Tula is split into Tula and Oryol, and Chukotka and Kamchatka are merged.
+  - Two dam projects sit in affected regions: `gorodets_volga` (STATE_NIZHNY_NOVGOROD, anchor `x202BAA`) and `rybinsk_uglich` (STATE_YAROSLAVL,
+    anchor `xB9892E`). `emit_dams` throws if an anchor moved to Kostroma. The fix is a new anchor in the same state (§2.2.3).
+  - The redrawn regions also touch the owned `state_regions` files (§2.1).
+- **The 1836 map moved in vanilla.**
+  - Russia's starting wood and hardwood are lower, and Ottoman tea is halved.
+  - Starting trade routes and trade centres are reworked, and Uruguay gains a trade centre.
+  - The converted start follows by itself. `config/measured_1836_pop_identity.json` (the craft seeding) needs its 1.15 save (routine step 6).
+- **New companies.** Five free companies and five State and Revolution companies in Eastern Europe. The reference scan (L40) and the company
+  chain extension pick up any of them with a tiered industry.
+
+**Engine and AI behaviour the design rests on** (stage 1 of §5 measures each):
+- **More hiring and wage changes** (Balance list, beyond the three bugfixes above): *"Buildings are now a bit more conservative when it comes to
+  hiring and wage decisions and should have an easier time reaching a stable equilibrium at partial employment."* This is the old-rung
+  mechanism of CLAUDE.md §2.1 again, and its direction is not argued. Also: *"standard of living being below expected now radicalizes pops at a
+  slower rate"*. The mod runs at about twice vanilla's unemployment, so this should make that unemployment less destabilising.
+- **The investment AI:**
+  - *"Enhanced the AI's ability to predict the future profitability of constructions and production methods"* (misplaced capital, CLAUDE.md
+    §2.4; the per-book desire ladder may need recalibrating);
+  - *"the AI now builds more construction when it lacks sufficient construction to tap its investment pool"* (the hoard, and Britain near
+    capital abundance);
+  - *"the AI now always wants enough paper to cover its bureaucracy needs"*. Paper is tiered. If this wish sits in script that names
+    `building_paper_mills`, L40 finds it. If it sits in the engine and is keyed to vanilla's building type, the canon's paper rungs may be
+    invisible to it (§5, probe P1).
+  - Other AI changes: the AI raises and lowers government and military wages, and it values prestige goods correctly when its company owns
+    levels.
+- **Trade topology.**
+  - A market can have up to four world-market hubs, and trade between hubs spreads across several sea routes.
+  - The Cold system lowers the world-market access of trade centres on frozen sea nodes.
+  - Fully occupied states keep half their market access.
+  - These touch the trade findings (F155, F263), the known issue that competition through trade is weak, and §10.103.
+- **The 1836–1845 anchor window.** The Hungry Forties are recentred on the mid-1840s and hit standard of living harder, and crop failures are
+  more lethal. The register's 1836–1845 hard line is derived from vanilla, so it is re-derived on 1.15.
+- **War.**
+  - War support is reworked, and wars where both sides are exhausted end in stalemate with no automatic capitulation.
+  - War goals can be enforced mid-war.
+  - Conquest moves every per-country level (CLAUDE.md §2.8), and the land-unit research entries need a war against a holder.
+  - Warship modules now take more artillery, ammunition and radios, which is demand on the tiered arms, munition and electrics industries.
+  - Early Troopships is a new ship type from the start. The naval-entry ship-type count of §2.2 moves (1.13: 11 over 19), which throws only
+    under 8. `common/ai_ship_categories` is new.
+- **Cossack Hosts** are subsistence-like buildings that reserve up to 20% of arable land in Russian states. They count as peasants in U\*
+  (§10.108).
+- **Performance.** Building-modifier re-evaluation and several AI evaluations are faster. This moves the wall-clock reference (a new
+  `VANILLA_WALL_REF` is owed anyway) and possibly the tick cost that deferred the electricity build condition (§10.106).
+- **Journal panel overhaul.** Entries now show what activates them and what drives their progress, and themed entries are grouped. Look at the
+  ~80 research entries in-game before 1.1 ships.
+
+---
+
+## 5. Game 1.15: the measurement plan (planned 2026-11-05)
+
+The user, 2026-11-05: *"once we update (likely this Sunday), plan a large new-vanilla sequence that will answer the questions, and as many probes as
+you need (including, say, paper). Don't write the machinery now"* — and the central question: *"We really need to understand whether the things
+like misplaced capital truly changed, or whether there's just more ways to misplace capital."* Nothing here is built or launched. Each batch needs
+the user's go-ahead, asked once for the whole batch (CLAUDE.md §5.1 rule 4), and its predictions go into its schedule (§2.8). BACKLOG §I holds one
+line per stage.
+
+**Before the update.**
+- The alternating batch `alt_canon48_vanilla16` (from 2026-10-30) is the last 1.13 data. Steam must not update the game before its
+  `SCHEDULE DONE`: a batch that straddles a patch is two batches (routine step 2).
+- Keep 1.13.11's `game\common`, `game\events` and `game\map_data` aside before updating (routine step 1).
+- Hold Steam's automatic updates during every stage below. A 1.15.N hotfix (expected ~11-12) inside stage 1 would split the new reference.
+
+### Stage 0: the update day (file reads and minute-long runs, no batch)
+
+1. **The diff** of the old and new game folders (routine step 1), and **the dry run** of the canon (routine step 4) in a checkout no batch runs
+   from. Its throws are the 1.1 work list.
+2. **The harness.**
+   - The observer diagnostic (§2.3.2).
+   - rakaly melts a 1.15 save, and the save-summary extractor reads it, including the new objects (copper, Cossack Hosts, hubs). The good order
+     shifts with copper.
+   - Telemetry dumps copper's market.
+3. **Questions a file or one save answers:**
+   - *copper*: which vanilla methods take or make it, whose M₁ moves, and a proposed trade class;
+   - *paper*: where the bureaucracy-paper wish lives (script naming a building or the good, a define, or the engine). This decides probe P1;
+   - *Cossack Hosts*: their building group and professions, and whether `population_subsisting_workforce` in a 1836.2.1 save already counts them
+     (§10.108);
+   - *defines*: every `ai_defines` key of the canon still exists (routine step 5). Re-read the dead-define list (§2.2.1;
+     `BUILDING_MAX_PROFIT_TO_PAUSE_HIRES`). Any new `NAI` define on construction-sector building or on profitability prediction is a possible
+     willingness lever (CLAUDE.md §2.4);
+   - *GDP*: `print_world_gdp` in one debug game, against the displayed world GDP the register reads (F45, F257).
+
+### Stage 1: the 1.15 vanilla reference (the large batch)
+
+- **Arm:** `{kind: control}`, vanilla 1.15 with telemetry and nothing else.
+- **Size:** n=16 centuries, 1836→1936, yearly autosaves with per-state labour and resources in every summary (misplaced capital needs them each
+  year), the downsizing poll on. About 16 × 3 h ≈ 48 h. An interim read after the first 4 runs (~12 h) checks only that nothing is broken.
+- **Comparison:** each reading against vanilla 1.13.11's `VANILLA_REF` (n=40), both terms printed (CLAUDE.md §2.11).
+- **What it becomes:** the 1.15 vanilla reference, beside the 1.13 one (which stays as the 1.13 record): `config/measured_base_wages.json`, the
+  error-noise catalogue, the 1836–1845 anchor band, the register's per-run vanilla medians. It is a provisional `VANILLA_WALL_REF` until
+  stage 3 runs the same days.
+
+What it answers, each a reading of 1.15 vanilla against 1.13 vanilla:
+- **misplaced capital**: the decomposition below;
+- **hiring and wages**: the wage path per tag and year; the staffed share of levels; downsized levels by §10.107's classes (vanilla's methods
+  mapped to the tiers); lay-off and re-hire churn;
+- **construction and capital**: the construction sector's share of new capital; the hoard H, for the world, the pool and Britain; W and U\*;
+  world GDP by decade. If vanilla's own path moves, every register ratio rebases, so read it before reading any canon ratio;
+- **trade**: trade ÷ GDP (`trade_vs_gdp.mjs`); the spread of prices across markets at 1836 and by decade; the start's shortages (red flags
+  1836–1845); hubs per market;
+- **the 1840s**: the 1836–1845 anchor and its band;
+- **war**: wars, how they end (stalemate, enforcement mid-war, peace), territory changes of the eleven tags, revolts;
+- **research**: `tech_census.mjs`, the majors' technology counts after the AI rework;
+- **new content**: copper (production, price, buyers); Cossack Hosts (levels, workforce, Russia's U\* with and without them);
+- **paper**: government paper demand against supply, the paper price, shortage years (the vanilla side of P1);
+- **the fleet path loop**: `fleet_loop_runs.mjs`. If no run carries the signature, wall-clock cluster 3's list empties.
+
+**Misplaced capital: changed, or more ways to misplace it?** The metric (`misplaced_capital.mjs`, F206/F207) is the share of new capital in mines,
+agriculture and manufacturing whose expected payback is over 3× the country's best valid alternative, or loss-making. 1.15 can move it in three
+ways that mean different things. Its choices among the old options can change, which is the real change. New building types can be misplaced
+themselves, which is more ways to misplace. And a new, better alternative can raise the benchmark, so an unchanged choice reads as misplaced.
+The readings that separate them:
+- **M1, the level:** the same definition as F207, per decade, with both terms (misplaced £ and all new capital in the three sectors), against
+  1.13 vanilla's 10–19%. Is the difference beyond the seed spread of n=16 against n=40?
+- **M2, like for like:**
+  - Recompute M1 with 1.13's set of building types only. The new types (copper mines, Cossack Hosts if they take capital, buildings that come
+    only with the new companies) leave both the investments and the alternatives. Then recompute with the full set.
+  - The difference between the two splits into three parts: (a) capital put into new types and misplaced there (more ways); (b) old choices that
+    become misplaced only because a new type sets the benchmark (a moved yardstick); (c) the rest, which is choices among the old types (the true
+    change).
+- **M3, where:** by sector and by building type (F262's split).
+- **M4, why:** loss-making against payback over 3×, and the ungraded share with no valid benchmark (1.13's late full employment).
+- **M5, the AI's forecast** (the notes' claim, read directly): for each year's new levels, the type's payback at the decision (the step's start)
+  against the same type's realised payback 3 and 5 years later, as realised ÷ expected. Better prediction shows as a narrower spread and as
+  misplaced-at-decision ≈ misplaced-at-outcome.
+- **M6, the denominator:** all new capital per decade, and its split over every building group, the exempt ones included (construction sector,
+  infrastructure, government). *"Builds more construction"* moves this split, and a share is meaningless without it.
+- **Stage 3** reads M1–M6 on the canon beside its vanilla. On 1.13 the canon misplaced 18.6% against vanilla's 13.7% (F262).
+- **Machinery owed** (after stage 0, not now): M2's type filter and M5's lagged realisation in `misplaced_capital.mjs`; M6 as a reader of
+  construction by group.
+
+### Stage 2: the probes (on the 1.1 candidate build, the canon regenerated on 1.15, unless said)
+
+- **P1, paper.** Does the AI's bureaucracy-paper wish see the canon's paper rungs (the Pulp Pressing craft, the t1 paper mills with bleaching
+  merged in, the t3 continuous web)?
+  - If stage 0 finds the wish in script that names a building key: the fix is the reference rewrite (`emit_vanilla_refs.mjs`, L40), and there
+    is no run.
+  - If it is in the engine: run the canon against vanilla, 1836→1876, n=2 each (~4 × 1.2 h). Read government paper demand ÷ domestic supply,
+    the paper price ÷ base, and paper construction by rung and by builder (government or private).
+  - The prediction, stated before the run: if the engine keys on vanilla's building type, the canon's governments show paper shortages that
+    vanilla 1.15 does not.
+- **P2, copper on the ladder.** If copper entered an M₁: the regenerated rung's solvency and its 1836–1880 margins (`era0_solvency.mjs` against
+  stage 1's 1.15 prices). A run only if the numbers call for one.
+- **P3, research force test** (§2.3.1, F160): `finish_boost_p45_force_ab.json`, two short runs. Also check that vanilla's heaviest `ai_weight`
+  stays far below 10,000.
+- **P4, the monopoly markup** (§2.3.1, F241): a continuation A/B from a 1.15 save, n=1 per arm.
+- **P5, the electricity build condition's tick cost** (§10.106): with and without, alternating, 1836→1900, n=2 each. On 1.15 the condition
+  may be cheap enough to restore.
+- **P6, the Cossack reader** (§10.108): one 1.15 save, Russia's U\* with and without the Hosts.
+- **P7, treaty ports**: the open questions of §10.103 (whether the AI pursues recognised hosts by itself), on the plan already in §10.103.
+- **The hiring and wage changes on the ladder** (the laggard test, the old-rung census, T0, downsizing by tier class) come from stage 3. A
+  probe of their own only if stage 3 slips.
+
+### Stage 3: the 1.1 canon against 1.15 vanilla (alternating)
+
+- **Arms and size:** the 1.1 canon book against `{kind: control}`, alternating run by run, n=8 + 8 centuries (~48 h). It grows to 16 + 16 if the
+  register cannot read it. Its vanilla runs join stage 1's 1.15 reference.
+- **Reads:** the register and the ledger (§10.104.1), the wall clock (same days), M1–M6 on both arms, F262's obsolete construction, the old-rung
+  census and the laggard test, downsizing by §10.107's classes.
+
+**The timing.**
+- Stage 0 is the update day. Stage 1 is ~2 days of machine, and the 1.1 build pass runs beside it in another checkout. Stage 2 is about a day,
+  and stage 3 ~2 days.
+- That is ~5 days of machine from about 2026-11-08. It meets the 2026-11-16 target for mod 1.1 only if nothing breaks, and the expected 1.15.N
+  hotfix falls inside it.
+- ⚠ **For the user:** whether mod 1.1 can ship on stage 2 and a short canon test, with stage 3 after the release.

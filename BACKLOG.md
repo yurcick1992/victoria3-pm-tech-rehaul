@@ -27,7 +27,7 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
 4. **Next — the next session (user, 2026-10-29): the release build's in-game load and the visual cleanup playtest, with any last-minute
    fixes they bring** (H; `POLISH_1_0.md`), then **release on 30.10**. ⚠ Nothing else before 1.0: every other open item is DEFERRED to
    mod 1.1 (user, 2026-10-29: *"Defer everything but the release build and visual cleanup playtest to 1.1"*).
-5. **Mod 1.1 on game 1.15.N:** the ON_GAME_UPDATE pass, treaty ports if the new AI allows (D, §10.103), military research (C), the book
+5. **Mod 1.1 on game 1.15.N:** the 1.15 measurement plan (§I; ON_GAME_UPDATE §5, planned 2026-11-05), the ON_GAME_UPDATE pass, treaty ports if the new AI allows (D, §10.103), military research (C), the book
    levers left for 1.1 (B), the polish items deferred to 1.1 (A, H; `POLISH_1_0.md`), and what was deferred on 2026-10-29: the register
    rulings (B, the four loss fixes, O_shed, the pool U\* aim, the reading gate), the core open problems (B), the readers and harness debts
    (F, G), the report lines the rework left (F).
@@ -265,6 +265,22 @@ Closed:
 - Done 2026-10-21 · the generated-text pass (research, dams, company names, config labels): uniform style, current design, no internals · POLISH_1_0.md "Text pass"
 - Done 2026-10-21 · dam build tooltips: checked in game, no per-project list renders (U4 closed) · POLISH_1_0.md H3
 - Done 2026-10-21 · era band dividers in the tech-tree GUI: checked in game, they line up (no fix) · POLISH_1_0.md R7
+
+## I. Game 1.15: the measurement plan (user, 2026-11-05; the update about 2026-11-08)
+
+Planned, not built: no machinery until stage 0 has read the new files (user: *"Don't write the machinery now"*). Each batch needs its own go-ahead.
+The plan is ON_GAME_UPDATE §5, and what the final changelog touches is §4–§4.1.
+
+- **OPEN — before the update** · hold Steam updates until `alt_canon48_vanilla16` reports `SCHEDULE DONE` (the last 1.13 data), keep 1.13.11's `common`, `events`, `map_data` aside, and hold updates again through every stage (a 1.15.N hotfix ~11-12 would split the reference) · ON_GAME_UPDATE §5
+- **OPEN — stage 0 (the update day)** · the diff, the canon's dry run (its throws are the 1.1 work list), the harness diagnostic and a 1.15 save summary (copper, Cossack Hosts, hubs, the shifted good order), and the file reads: copper's methods and class, where the AI's bureaucracy-paper wish lives, Cossack Hosts in `population_subsisting_workforce`, the `ai_defines` keys, the dead defines, new `NAI` construction defines, `print_world_gdp` · ON_GAME_UPDATE §5
+- **OPEN — stage 1 (go-ahead owed)** · THE 1.15 VANILLA REFERENCE: control, n=16 centuries (~48 h), yearly v15+ summaries, the downsizing poll on; read against 1.13's `VANILLA_REF` n=40 on misplaced capital, hiring and wages, construction and the hoard, trade, the 1840s anchor, war, research, copper, Cossack Hosts, paper and the fleet loop; it replaces the wage table, the noise catalogue and the anchor band for 1.15 · ON_GAME_UPDATE §5
+- **OPEN — the central question (user, 2026-11-05)** · MISPLACED CAPITAL ON 1.15: did it truly change, or are there just more ways to misplace capital? M1 the level · M2 like for like (1.13's building types only, against all), split into new types misplaced / a benchmark moved by new types / the true change among old choices · M3 by sector and type · M4 by reason · M5 the AI's forecast (payback at the decision against 3 and 5 years later) · M6 the denominator by building group. Machinery (M2's filter, M5's lag, M6's reader) after stage 0 · ON_GAME_UPDATE §5, F206/F207, F262
+- **OPEN — stage 2 probes (go-ahead owed)** · P1 paper (does the AI's bureaucracy-paper wish see our paper rungs: a fix with no run if it sits in script, else canon vs vanilla 1836→1876 n=2+2) · P2 copper on the ladder · P3 the research force test · P4 the monopoly continuation A/B · P5 the electricity build condition's tick cost (§10.106) · P6 the Cossack reader · P7 treaty ports (§10.103) · ON_GAME_UPDATE §5
+- **OPEN — stage 3 (go-ahead owed)** · the 1.1 canon against 1.15 vanilla, alternating, n=8+8 (~48 h; 16+16 if the register needs it): the register, the ledger, the wall clock, M1–M6 on both arms, obsolete construction (F262), the old rungs and the laggard test under 1.15's hiring and wage changes · ON_GAME_UPDATE §5
+- **RULING** · mod 1.1's release against the plan's ~5 machine days from ~11-08: ship on stage 2 and a short canon test, with stage 3 after, or wait for stage 3 · ON_GAME_UPDATE §5
+- **RULING** · copper's trade class among the five of §10.88 (`make_trade_config.mjs` throws until it has one) · ON_GAME_UPDATE §4.1
+- **RULING (proposed)** · Cossack Hosts' workforce also leaves W's productive workers, in line with §10.108 · BALANCE_FRAMEWORK §10.108
+- **OPEN** · the readers follow §10.108 (Cossack Hosts count as peasants in U\*) once stage 0 shows whether the engine already counts them · BALANCE_FRAMEWORK §10.108
 
 ## Done (older; prune freely)
 

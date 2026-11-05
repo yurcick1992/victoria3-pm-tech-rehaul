@@ -75,6 +75,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure | in force (2026-10-31); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
+| 10.108 | Cossack Hosts (game 1.15) count as peasants in U\* | in force (2026-11-05); the readers follow on the first 1.15 save (ON_GAME_UPDATE §5) | here |
 
 ---
 
@@ -4524,3 +4525,17 @@ First applied in the batch's interim chart (2026-10-31, the Artifact VyqZ37S2duy
 drop logged on 1 January belongs to the year before. `ledger/downsize_telemetry.mjs` gets the tier split and the two measures, and the
 schedule's `_comparison` and `_predictions` are reworded to this ruling, once that batch ends (its files are frozen while it plays,
 §5.1 rule 7).
+
+## §10.108 — COSSACK HOSTS COUNT AS PEASANTS IN U\* (user-ruled 2026-11-05)
+
+**The question.** Game 1.15 adds Cossack Hosts: *"new subsistence-like buildings that are established in states through a new map interaction …
+available to Russia at game start. Cossack Hosts reserve up to 20% of arable land in any given state region and in return provide migration
+attraction and policing services."* Russia is one of the eleven instrumented tags, so their workers enter U\* and W on 1.15.
+
+**The ruling.** The user: *"cossacks are peasants in U\* terms."* A Cossack Host's workforce counts with the peasants in U\* = (unemployed +
+peasants) ÷ (salaried + unemployed + peasants), whatever profession or class the engine gives it.
+
+**Not yet known, read on the first 1.15 save** (ON_GAME_UPDATE §5, stage 0): whether the engine's `population_subsisting_workforce`, which
+`criteria.mjs` reads for the peasants, already includes them. If it does, nothing changes in the readers. If not, the readers add the Hosts'
+employment to the peasants. ⚠ PROPOSED, not ruled: the same workforce leaves W's productive workers (W counts salaried workers outside
+government and the military, so a salaried Host worker would otherwise count as productive while counting as a peasant in U\*).
