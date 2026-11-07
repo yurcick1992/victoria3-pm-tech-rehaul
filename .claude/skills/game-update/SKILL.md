@@ -39,8 +39,8 @@ notes, so never work from a text diff or the notes alone:
 ```
 node tools/game_diff.mjs <old game dir> <new game dir> --out <scratch>/game_diff.txt
 ```
-It prints the entity counts per database (a new good is its first line), every new entity with — for a new good — every method that makes or
-uses it, removals and renames, changed fields with old and new values, the order changes the save readers depend on, the engine vocabulary
+It prints the entity counts per database (a new good is its first line), every new entity with every entity of the new version that names it
+(and, for a new good, every method that makes or uses it): phase 4 starts from those lists. Then removals and renames, changed fields with old and new values, the order changes the save readers depend on, the engine vocabulary
 diff (exe strings, and script_docs where both exist) and every other changed file. Then read the patch notes in full, from the forum changelog,
 for what no file shows: engine behaviour in the exe (1.13.10's notes summary said "localization-only"; it was a substantial hotfix).
 **Every diff item that bears on the mod, and every note, gets a register line.** Items that bear on nothing of ours may be summarised in one

@@ -4,8 +4,9 @@
 // A text diff of thousands of files buries a change as large as a new good (one block in 00_goods.txt among thousands of changed lines). This
 // reads both game trees as databases and prints, in this order:
 //   1. the count of entities per database, old → new (the databases that changed only);
-//   2. every NEW entity, by database, the ones the mod reads first (goods, buildings, methods, technologies …); each new good with every
-//      method that makes or uses it and every other entity that names it;
+//   2. every NEW entity, by database, the ones the mod reads first (goods, buildings, methods, technologies …), each with the entities of the
+//      new version that name it (a new building with its methods' groups and the technologies, journal entries and events that refer to it);
+//      a new good in full, every method that makes or uses it and every other entity that names it;
 //   3. every REMOVED entity, a removal and an addition with near-identical content paired as a RENAME;
 //   4. CHANGED fields of entities in both versions, with old and new values (the read databases first);
 //   5. ORDER changes the save readers depend on (goods by position, the pop types' sorted file names, the interest groups);
@@ -133,11 +134,30 @@ for (const d of dbs) {
 
 say('## 2. New entities');
 any = false;
+// Who names each new entity in the new version: an index of every name-like token of every entity (a dotted run and its pieces, so an event
+// id `ns.12` and a path segment both match), built once.
+let NAMED = null;
+function namedBy(key) {
+  if (!NAMED) {
+    NAMED = new Map();
+    for (const d of Object.keys(B.db)) for (const [k, e] of Object.entries(B.db[d])) {
+      const toks = new Set();
+      for (const l of e.lines) for (const run of l.match(/[A-Za-z0-9_.\-]+/g) || []) { toks.add(run); if (run.includes('.')) for (const p of run.split('.')) toks.add(p); }
+      for (const t of toks) { let s = NAMED.get(t); if (!s) NAMED.set(t, (s = [])); s.push(`${d}: ${k}`); }
+    }
+  }
+  return NAMED.get(key) || [];
+}
+const INLINE = 10;
 for (const d of dbs) {
   if (!added[d].length) continue; any = true;
   say(`### ${d} (+${added[d].length})`);
-  for (const l of cap(added[d], k => `- ${k}  (${B.db[d][k].file})`)) say(l);
-  if (d === 'goods') for (const g of added[d]) usersOf(g.split(' @')[0]);
+  if (d === 'goods') { for (const g of added[d]) { say(`- ${g}  (${B.db[d][g].file})`); usersOf(g.split(' @')[0]); } continue; }
+  for (const l of cap(added[d], k => {
+    const refs = namedBy(k.split(' @')[0]).filter(r => r !== `${d}: ${k}`);
+    const tail = refs.length ? ` — named by ${refs.length}: ${refs.slice(0, INLINE).join('; ')}${refs.length > INLINE ? ` … (+${refs.length - INLINE})` : ''}` : ' — named by nothing';
+    return `- ${k}  (${B.db[d][k].file})${tail}`;
+  })) say(l);
 }
 if (!any) say('- none');
 say();
