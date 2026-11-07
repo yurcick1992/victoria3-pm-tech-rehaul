@@ -39,7 +39,9 @@ const cfg = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const IND = {};
 for (const ind of cfg.industries || []) {
   if (ind.disabled) continue;   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
-  const tiers = (ind.tiers || []).map((t, i) => ({ key: t.key, idx: i, tech: t.tech, wm: +(t.workforce_mult ?? 1) }))
+  // ⚠ a MERGED rung (`method_of`) is a method of its host, never a building: dropped BEFORE indexing, so the host is the rung (see
+  //   analyse_ai_tier_choice.mjs; left in, every host level was below-best once the merged method was held — F262)
+  const tiers = (ind.tiers || []).filter(t => !t.method_of).map((t, i) => ({ key: t.key, idx: i, tech: t.tech, wm: +(t.workforce_mult ?? 1) }))
     .filter(t => t.key && t.tech);
   if (tiers.length > 1) IND[ind.id] = tiers;
 }

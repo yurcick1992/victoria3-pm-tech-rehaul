@@ -75,6 +75,8 @@ writing prose, because `fill_assemble` stops on any missing output.
 | 18 | `tech_census.mjs "<setup>=<group>:<setup>" "vanilla=<VANS>:vanilla" --tree <twin> --json <out>/tech.json` | `tech.json` | the technology lines |
 | 19 | `misplaced_capital.mjs --batch "<setup>:<group>:<setup>" --json <out>/misplaced.json` | `misplaced.json` | the misplaced-capital line (mod only) |
 | 20 | `fill_old_plants.mjs <out> --mod --config` | `old_plants.json` | `OLDP` (the old-plant table, both pages) |
+| 20a | `downsize_telemetry.mjs "<setup>=<mod runs>" "vanilla=<van runs>" --config <book> --types 0 --json <out>/downsize.json` | `downsize.json` | the two downsizing lines, and step 20b (§10.107.6, since 2026-11-08) |
+| 20b | `fill_downsizing.mjs <out>` | `downsize_world.html`, `downsize_pool.html` | `__DOWNSIZE_W__`, `__DOWNSIZE_S__` (levels by tier class, after the old-plant tables) |
 | 21 | `fill_scorecard.mjs <out> --config` | `scorecard.html`, `scorecard_loss.html`, `intro.json` | `__SCORECARD__`, `__LOSS__`, `INTRO` |
 
 **Traps.**
@@ -353,8 +355,9 @@ Each writes one or more files into the out dir; `fill_ledger.sh` runs them in th
   (the scorecard's "built below the best tier" line; its own panel went 2026-10-29). It SPAWNS `analyse_ai_tier_choice.mjs` (raw, unit-weighted and ex-ports below-best
   shares, the decade trajectory) and `analyse_ai_tier_profit.mjs` §c (below-best AND earning less per level than the country's standing
   frontier) and parses their headline lines: one source per number, so a measured quantity is never defined twice. Any parse miss exits 1.
-  The two tools qualify country-industry-years slightly differently (~0.5 pp on the raw share); each figure is quoted on its own basis and
-  the caption says so. ⚠ `--baseline` rows come FIRST and the arm's row LAST; every reader takes the last row. One configuration per
+  The two tools qualify country-industry-years differently: §c has no market-absorption test, so its raw basis runs ~10 pp above the
+  tier-choice tool's (49.9% against 39.7% on F249; the caption prints the gap); each figure is quoted on its own basis and the caption says
+  so. Since 2026-11-07 both map a merged rung to its host (F262): reports filled before then carry the miscount. ⚠ `--baseline` rows come FIRST and the arm's row LAST; every reader takes the last row. One configuration per
   report: no `--baseline`.
 - **`fill_indecomp.mjs <out> --mod --van --config`** → `indecomp.json` (`INDECOMP`): each tiered industry's weekly value added and the broad
   sectors', world and per tag, both arms, at 1840, 1860, 1880, 1900, 1920 and 1935, absolute £/week so the renderer can follow scope and
@@ -458,7 +461,8 @@ read canon-n7. They discover runs through `lib_runs.usableRuns` (L17); `session.
 evidence.
 
 - **`analyse_ai_tier_choice`** — of the levels a country builds, the share going to a tier BELOW the best one it already holds (raw,
-  unit-weighted, ex-ports; per decade; per-run spread), and whether the first frontier building breaks the cycle (F75).
+  unit-weighted, ex-ports; per decade; per-run spread), and whether the first frontier building breaks the cycle (F75). A merged rung
+  (`method_of`) is its host building, not a rung of its own (since 2026-11-07, F262); "tiers behind" counts ladder steps.
 - **`analyse_ai_tier_profit`** — the worst industries, normalised: the indefensible case (the frontier pays, a lower rung loses, and the
   loser is still built); §c, the share of all building that is below-best AND to a rung earning less per level than the standing frontier.
 - **`analyse_build_allocation`** (`--session`, or `--a <baseline> --b <arm>` with `--config-a` / `--config-b`) — the overshoot check: where

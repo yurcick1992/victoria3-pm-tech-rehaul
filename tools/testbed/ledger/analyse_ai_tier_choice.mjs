@@ -60,7 +60,13 @@ for (const ind of cfg.industries || []) {
   //   "excluding ports" all disagreed on a book that has no tiered ports at all (user-spotted
   //   2026-08-31). Nothing failed; the numbers were simply about a different economy.
   if (ind.disabled) continue;
-  const tiers = (ind.tiers || []).map((t, i) => ({
+  // ⚠⚠ DROP A MERGED RUNG BEFORE INDEXING (`method_of`, BALANCE_FRAMEWORK §10.91.2, CLAUDE.md §5.4). On the artmerge books a merged
+  //   rung is a second main METHOD of its host building, not a building type: its key never stands in a save. Left in the ladder it
+  //   became the "best" tier the moment its technology was held and every new level of its HOST — the very building that runs it —
+  //   counted as below-best: 57.5% raw / 48.5% unit-weighted on the 1.0 canon (F249's report), food 95.6%, paper 93.7%. The host is
+  //   the rung, so the ladder is indexed over buildings only: 39.7% / 26.5% on the same runs (F262). A book with no merged rung
+  //   reads exactly as before. ⚠ "N tier(s) behind" below counts ladder STEPS, so on paper and fertilizer it skips the merged tier.
+  const tiers = (ind.tiers || []).filter(t => !t.method_of).map((t, i) => ({
     key: t.key, idx: i, era: t.era ?? 0, tech: t.tech,
     good: t.output_good || ind.output_good,
     out: +(t.output_qty || 0),

@@ -41,10 +41,15 @@ import { createHash } from 'node:crypto';
 //   ×1.06 faster in the batch's second session than in its first (F249 §3), so a mod run's wall clock is reliable only against vanilla runs that
 //   alternated with it in the same session; outside one, quote a ratio against this reference as DIRECTIONAL. Sessions holding two arms are
 //   read with the setup "vanilla" (every caller passes it).
+// ⭐ SINCE 2026-11-08 (the 1.0 canon's alternating batch, 20261030_233342: 48 canon + 16 vanilla): VANILLA_REF adds its 16 vanilla runs (n=56,
+//   by the same 2026-10-24 rule; they carry telemetry v15, the downsizing poll included, which F261 measured as costing nothing), and
+//   VANILLA_WALL_REF becomes that batch's vanilla. The F249 report and the "since 0.99" page read the n=40 reference: quote which.
+//   ⚠ ALL of it is game 1.13.11. From game 1.15 on (mod 1.1) every vanilla reference is re-measured (ON_GAME_UPDATE.md §1 step 2).
 export const VANILLA_REF = ['20260821_131149_vanilla-baseline-n16', '20260823_113218_vanilla-baseline-extra-n2',
   '20261020_121619_vanilla-now-n8', '20261020_222433_vanilla-now-n8-rest',
-  '20261021_224949_alt-vanilla-canon-n16', '20261023_161802_alt-vanilla-canon-rest20'].join(',');
-export const VANILLA_WALL_REF = ['20261021_224949_alt-vanilla-canon-n16', '20261023_161802_alt-vanilla-canon-rest20'].join(',');
+  '20261021_224949_alt-vanilla-canon-n16', '20261023_161802_alt-vanilla-canon-rest20',
+  '20261030_233342_alt-canon48-vanilla16'].join(',');
+export const VANILLA_WALL_REF = ['20261030_233342_alt-canon48-vanilla16'].join(',');
 
 const parseDate = s => String(s || '').split('.').map(Number);
 const reached = (got, want) => {

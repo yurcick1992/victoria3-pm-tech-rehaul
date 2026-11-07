@@ -1,5 +1,6 @@
 // TRADE FADE — why a mod arm's lead in world trade over vanilla shrinks, and where trade stops. The user's questions of 2026-11-01/02
-// (FINDINGS F263). Written while the 2026-10-30 batch froze tools/testbed/**; it belongs in tools/testbed/ledger/ once that batch ends.
+// (FINDINGS F263). Written in tools/ while the 2026-10-30 batch froze tools/testbed/**; moved here on 2026-11-07 (BACKLOG G), only its
+// imports, paths and usage lines changed.
 //   A. Per run and yearly save summary (1 January): the world's trade capacity and its usage, the capacity units traded ((imports +
 //      exports) ÷ 2 over world.trade_goods), the goods they move (units × the arm's traded quantity per unit) by F159 trade class, their
 //      value at the world market price (mean52) — the "trade value" line of the four-metric page — and the trade centres' levels and
@@ -9,20 +10,20 @@
 //      The gap is read AFTER trade has acted on it. Printed: share importing by gap, the importers' residual gap by class / decade /
 //      market, and PAIRED on the same market × good × date (each arm's median over the runs importing it, ≥ 3 runs each).
 //   A run without world.trade_goods or world_market_price in its summaries (save summary < v19) is skipped and listed.
-// USAGE: node tools/trade_fade.mjs <mod group>[:<setup>] <vanilla group>[:<setup>] [--config <book>]
+// USAGE: node tools/testbed/ledger/trade_fade.mjs <mod group>[:<setup>] <vanilla group>[:<setup>] [--config <book>]
 //        <group> = a session, a comma list of sessions or <session>/runNNN_<setup> folders (lib_runs.usableRunsPooled);
 //        --config = the mod arm's book, for its traded quantities (default config/mod_config.json); the vanilla arm reads the game's.
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { usableRuns, reportDropped } from './testbed/ledger/lib_runs.mjs';
-import { goodsTable, tradedQuantity, tradeClasses } from './testbed/ledger/lib_goods.mjs';
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+import { usableRuns, reportDropped } from './lib_runs.mjs';
+import { goodsTable, tradedQuantity, tradeClasses } from './lib_goods.mjs';
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 const ARGV = process.argv.slice(2);
 const argOf = (n, d) => { const i = ARGV.indexOf(n); return i >= 0 && ARGV[i + 1] ? ARGV[i + 1] : d; };
 const POS = ARGV.filter((a, i) => !a.startsWith('--') && !(i > 0 && ARGV[i - 1].startsWith('--')));
-if (POS.length < 2) { console.error('usage: node tools/trade_fade.mjs <mod group>[:<setup>] <vanilla group>[:<setup>] [--config <book>]'); process.exit(2); }
+if (POS.length < 2) { console.error('usage: node tools/testbed/ledger/trade_fade.mjs <mod group>[:<setup>] <vanilla group>[:<setup>] [--config <book>]'); process.exit(2); }
 const SES = join(ROOT, 'tools/testbed/sessions');
 const G = goodsTable(), { classOf } = tradeClasses(null);
 const CFG = JSON.parse(readFileSync(resolve(ROOT, argOf('--config', 'config/mod_config.json')), 'utf8'));

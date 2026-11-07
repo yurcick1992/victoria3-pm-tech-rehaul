@@ -564,27 +564,8 @@ not a prediction (§10.86.2).
   technology than their rung and whether it can drop an era without inverting a prerequisite; and which technologies must rise so
   no top rung is gated below a target tech era (with everything that would be dragged along). Status: record — they key on the
   rung index (pre-tier-rule) and read the tier4 book; superseded by the tier rule and `lint_tier_eras.mjs` (L31).
-- **`tools/obsolete_construction.mjs`** — obsolete construction (GLOSSARY): the share of new tiered capacity (construction points,
-  levels, job slots) added to a building while, at the start of that year, the same country holds the technology of a higher-tier
-  building of the same industry, has one standing, and gets more value added per worker from it than from the obsolete building's
-  own average; the funnel (1) → (1)+(2) → (1)+(2)+(3), a profit-per-point variant, splits by tier, gap, decade, industry and run, and
-  the same share with the denominator cut to country-industry-years where an obsolete build was possible at all.
-  `node tools/obsolete_construction.mjs <group> [--setup <name>] [--config <book>] [--mod <mod folder>]`. Status: current. Traps:
-  a merged rung is a method of its host (building the host is never obsolete); net yearly additions from the save summaries, so
-  levels built and lost in one year are missed; points are the emitted costs of the mod folder given, so pass the folder built from
-  the book measured; mod only (vanilla upgrades in place). Written while `tools/testbed/**` was frozen; moves to `ledger/` after the
-  2026-10-30 batch (BACKLOG G). Refs: F262.
-- **`tools/trade_fade.mjs`** — why a mod arm's lead in world trade over vanilla shrinks, and where trade stops. (A) per yearly save
-  summary: trade capacity and the share used, capacity units traded, goods moved (units × each arm's traded quantity) by F159 trade
-  class, their value at world prices (the four-metric page's trade line), trade-centre levels and profit per level, as medians and
-  mod ÷ vanilla; (B) from `markets.tsv` at the decade dumps: the gap (market price − world price) ÷ base for every tracked market and
-  tradeable good with buy orders, the share importing by gap, the importers' residual gap by class, decade and market, and paired
-  on the same market × good × date (≥ 3 importing runs per arm), with and without Japan and Russia, and for the tiered industries'
-  goods. `node tools/trade_fade.mjs <mod group>[:<setup>] <vanilla group>[:<setup>] [--config <book>]`. Status: current. Traps:
-  runs whose summaries lack `world.trade_goods` / `world_market_price` (save summary < v19, e.g. the summer vanilla) are skipped and
-  listed; the gap is read AFTER trade has acted on it; "importing" is any import at all; `--config` gives the mod arm's traded
-  quantities (default the canon). Written while `tools/testbed/**` was frozen; moves to `ledger/` after the 2026-10-30 batch
-  (BACKLOG G). Refs: F263.
+- `tools/obsolete_construction.mjs` and `tools/trade_fade.mjs` moved to the ledger on 2026-11-07 (BACKLOG G): see
+  `ledger/obsolete_construction.mjs` under the economy readers and `ledger/trade_fade.mjs` under the trade readers (§4).
 
 ### Extractors and the 1836 conversion
 
@@ -1362,7 +1343,8 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   alternating batch's n=16 (`20261021_224949` + `20261023_161802`, setup `vanilla`) = n=40 since 2026-10-26, the default for every reading but
   the wall clock; `VANILLA_WALL_REF` = the alternating batch's vanilla (play time is not comparable across months, F248, nor fully across sessions,
   F249). Since 2026-10-28 every reader is on it, the last ones that held the summer n=16 included (`measure_wage_share`, `era0_solvency`,
-  `stop_watch`'s fallback, `ladder_headlines`, `trade_vs_gdp`, `va_composition`, the corpus tools).
+  `stop_watch`'s fallback, `ladder_headlines`, `trade_vs_gdp`, `va_composition`, the corpus tools). Since 2026-11-08 `VANILLA_REF` adds the
+  1.0 canon batch's 16 vanilla runs (`20261030_233342`, n=56) and `VANILLA_WALL_REF` is that batch's vanilla; all of it is game 1.13.11.
 - **`ledger/lib_markets.mjs`** — the shortlist, the majors and the price-tracked markets: `POOL` (GBR USA FRA NET BEL UNL PRU NGF GER),
   `MEMBER_FAMILY` / `resolveMembers()` (one row per state; the German one PRU → NGF → GER, UNL its own row), `MARKET_NAMES`,
   `MARKET_FAMILY` / `seriesOf()` / `groupBySeries()` (a state's market is one series across tag changes, the Commune included),
@@ -1387,15 +1369,27 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   quarterly, adds the speed against the timer, the rebuild lag, and the half-yearly and yearly undercount. Traps: yearly saves catch ~74% of
   the quarterly count and the miss depends on how fast buildings empty; summaries do not carry the fields, and a batch deletes its saves
   once summarised, so past batches cannot be read (only kept saves: `saves_debut`, quarantined and newest saves). Refs: F260.
-- **`ledger/downsize_telemetry.mjs`** `<label>=<group>[:<setup>] [...] [--list] [--types N] [--from Y] [--to Y]` — auto-downsizing read
+- **`ledger/downsize_telemetry.mjs`** `<label>=<group>[:<setup>] [...] [--list] [--types N] [--from Y] [--to Y] [--config <book>]
+  [--json <out>]` — auto-downsizing read
   from the telemetry poll (v15 `downsizing`, on in every telemetry run; TESTBED_METRICS §2.4¾): per run the VOLUME first (every level
   lost on a tracked building), then the auto-downsizing drops and their private levels, the polls read and the buildings tracked; every
   drop by reason (auto; government levels fell; no private level lost; too fast, > 5 levels between monthly polls), with the last-level
   losses (no country, state or id) and the state clusters (3+ drops in one state in one poll, kept) counted apart; private levels lost
   by decade, by building type and, for a tiered book (the run's `build_state.json`), by tier.
   Traps: harness.log can hold a DZ line twice with its place names decoded two ways, so a drop is keyed by date and building id (the
-  DZX line) and the duplicates are counted; a run without DZM lines carried no poll (pre-v15 or the feed off) and its zero is flagged,
-  not a measurement. Refs: F261.
+  DZX line) and the duplicates are counted; a run without DZM lines carried no poll (pre-v15 or the feed off) and is left out of the arm,
+  printed, never read as zero. Since 2026-11-08 it also prints BALANCE_FRAMEWORK §10.107's reading: levels by tier class (t0 crafts, t0
+  non-craft, t1–t3, outside the ladder; a merged host split by its methods, a vanilla building at the tier of the canon rung made from its
+  method, mapped by `--config`), possible workforce and construction points beside them, world and shortlist, with gold fields, auto-scaling
+  and non-economic buildings left out of every measure and a 1 January poll counted in the year before; `--json` feeds the ledger. Traps: the
+  like-for-like measures read the runs' built mod (the scheduler's `mod_sched_*` folder, overwritten by the next batch) and vanilla's files from
+  `VIC3_GAME` (after a game patch, point it at a copy of the batch's version); a DZ line before 2026-11-08 names the country by display name,
+  placed in the shortlist by the game's name tables (base and dynamic names) — a revolution under a shortlist name counts with it, unplaced
+  names are printed; a later line's `tag=` places it exactly. Refs: F261, §10.107.
+- **`ledger/fill_downsizing.mjs`** `<outDir>` — the ledger's downsizing section (§10.107.6): from `downsize.json` writes
+  `downsize_world.html` / `downsize_pool.html` (`__DOWNSIZE_W__` / `__DOWNSIZE_S__`, after the old-plant tables): levels per decade by tier
+  class, mod / vanilla, mean a run, and the century's levels, jobs and construction points. A missing json or an arm without the poll writes
+  a "not read" card. The two scorecard lines are `fill_scorecard.mjs`'s, from the same json.
 - **`ledger/downsize_vs_saves.mjs`** `<dir of downsize_series extracts> <run>/harness.log` — the poll checked against the run's own kept
   saves: every save-side drop on a qualifying building matched with the DZ lines by building id and month; prints matched, the same
   size, the same private split, and the unmatched on each side. Needs `-KeepSaves` (monthly autosaves for a fine check) and the saves
@@ -1428,7 +1422,25 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   (fine ≤ 1.5× · a bit ≤ 3× · gross > 3× or loss-making) on ALL / OPEN / VALID benchmarks (VALID needs v15); infrastructure, shipyards,
   trade centres, government buildings and gold exempt, military measured. `--batch label:session[,session][:setup] [--json <file>]`
   (the JSON: per decade the median VALID gross share over runs, the ledger's line), `--snap <dir of v15 re-summarised saves> --arm
-  label:session`, `--series <dir>`, `--why`. A reading, not a register term; the ledger shows it mod only (§10.104.1). Refs: §10.92, F206, F207.
+  label:session`, `--series <dir>`, `--why`. `--batch` also prints the SECTOR SPLIT below the medians (F262 §3, since 2026-11-07): against
+  the VALID benchmark, the gross share of all new capital, the tiered industries' share of the capital (the measure's manufacturing
+  sector; in vanilla their vanilla buildings), the gross rate inside the tiered industries and inside mines + agriculture, and each
+  side's gross capital as a share of ALL new capital (the two sum to the first); per decade as the median over runs, the century as the
+  median and pooled (capital-weighted), and the like-for-like decade pooled; the same keys in the JSON under `split` (`decades`,
+  `century`, `century_pooled`, `like_for_like_pooled`). Traps: `--batch` takes whole sessions (a group of `<session>/runNNN` items breaks
+  the path join); decade labels read `1836-46` for the steps from 1836.1.1 to 1846.1.1 (F262's table printed the same decades as
+  `1836–45`). A reading, not a register term; the ledger shows it mod only (§10.104.1). Refs: §10.92, F206, F207, F262.
+- **`ledger/obsolete_construction.mjs`** — obsolete construction (GLOSSARY): the share of new tiered capacity (construction points,
+  levels, job slots) added to a building while, at the start of that year, the same country holds the technology of a higher-tier
+  building of the same industry, has one standing, and gets more value added per worker from it than from the obsolete building's
+  own average; the funnel (1) → (1)+(2) → (1)+(2)+(3), a profit-per-point variant, splits by tier, gap, decade, industry and run, and
+  the same share with the denominator cut to country-industry-years where an obsolete build was possible at all.
+  `node tools/testbed/ledger/obsolete_construction.mjs <group> [--setup <name>] [--config <book>] [--mod <mod folder>]` (`--config` and
+  `--mod` resolve from the repo root; defaults the canon and `mod/`). Status: current, not in the ledger fill. Traps: a merged rung is a
+  method of its host (building the host is never obsolete); net yearly additions from the save summaries, so levels built and lost in
+  one year are missed; points are the emitted costs of the mod folder given, so pass the folder built from the book measured; mod only
+  (vanilla upgrades in place). Written in `tools/` while `tools/testbed/**` was frozen, moved here 2026-11-07 (BACKLOG G) with only its
+  paths changed (identical output on `20261026_032622_alt-canon-replace20`). Refs: F262.
 - **`ledger/return_per_point.mjs`** `[--year 1935] [--scope pool|world] [--filter <regex>] <label>=<group> [...]` — profit per staffed level
   ÷ construction points beside ai_value, per type (no validity rule). Refs: F211 §4.
 - **`ledger/lib_obsolescence.mjs` + `trade_obsolescence.mjs`** — in-market vs trade obsolescence: a rung is in-market when its market's
@@ -1506,9 +1518,12 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   first-run headlines incl. trade by class against vanilla seeds at similar GDP (caches = 1936 saves re-summarised to v10+, named
   `<session>__<run>.json.gz`). Refs: F163.
 - **`ledger/analyse_ai_tier_choice.mjs`** / **`analyse_ai_tier_profit.mjs`** `--session <stamp> --config <path>` — share of built levels
-  below the best tier held, and the indefensible cases. Traps: on the artmerge books a merged rung counts as the best tier once its
-  technology is held, never stands as a building, and makes every new host level "below-best" (57.5% on the 1.0 canon, food 95.5%);
-  use `tools/obsolete_construction.mjs` instead. Refs: F75, F262, ledger README.
+  below the best tier held, and the indefensible cases. Since 2026-11-07 a merged rung (`method_of`) maps to its host building: the
+  ladder drops it before numbering, so the host is the rung (F249: 26.5% unit-weighted / 39.7% raw, F262's corrected figures). ⚠ Reports
+  filled before then carry the miscount, every new host level counted "below-best" once the merged method's technology was held
+  (F209/F210 57.8–58.5%, F249's shared report 48.5%, every artmerge report 44–50%). "N tier(s) behind" counts ladder steps, so on paper and
+  fertilizer it skips the merged tier. For capacity built behind a better building the same owner already runs in the same market, read
+  `ledger/obsolete_construction.mjs`. Refs: F75, F262, ledger README.
 - **`ledger/analyse_build_allocation.mjs`** `--a <baseline> --b <arm>` or `--session` — where construction went by sector / industry /
   tier, absolute beside normalised. Traps: removed levels are ignored; strips the UTF-8 BOM. Refs: ledger README.
 - **`ledger/company_check.mjs`** `--arm <s> --ref <s> [--years 1860,1900,1935]` — companies, prosperity, charters, regional HQs, missing types.
@@ -1597,6 +1612,19 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   moves only, read shares). Refs: F188.
 - **`ledger/trade_vs_gdp.mjs`** `--arm <s>:<setup> [--arm …] --cache <dir> [--build-cache] [--since 20260905] [--match 0.08]` — trade ÷
   world GDP against runs at similar GDP. Traps: each run uses its own book's traded quantities. Refs: F161 §1.
+- **`ledger/trade_fade.mjs`** — why a mod arm's lead in world trade over vanilla shrinks, and where trade stops. (A) per yearly save
+  summary: trade capacity and the share used, capacity units traded, goods moved (units × each arm's traded quantity) by F159 trade
+  class, their value at world prices (the four-metric page's trade line), trade-centre levels and profit per level, as medians and
+  mod ÷ vanilla; (B) from `markets.tsv` at the decade dumps: the gap (market price − world price) ÷ base for every tracked market and
+  tradeable good with buy orders, the share importing by gap, the importers' residual gap by class, decade and market, and paired
+  on the same market × good × date (≥ 3 importing runs per arm), with and without Japan and Russia, and for the tiered industries'
+  goods. `node tools/testbed/ledger/trade_fade.mjs <mod group>[:<setup>] <vanilla group>[:<setup>] [--config <book>]`. Status: current,
+  not in the ledger fill. Traps: runs whose summaries lack `world.trade_goods` / `world_market_price` (save summary < v19, e.g. the
+  summer vanilla) are skipped and listed; the gap is read AFTER trade has acted on it; "importing" is any import at all; `--config`
+  gives the mod arm's traded quantities (default the canon, resolved from the repo root); the trade classes come from
+  `lib_goods.REF_TRADE_BOOK`, an absolute path into the main checkout. Written in `tools/` while `tools/testbed/**` was frozen, moved
+  here 2026-11-07 (BACKLOG G) with only its paths changed (identical output on `20261026_032622_alt-canon-replace20` against
+  `20261020_121619_vanilla-now-n8`). Refs: F263.
 - **`ledger/market_line_check.mjs`** `<runDir> <date> [--config] [--show N]` — the market line's import/export against v10 trade capacity.
   Refs: TESTBED_METRICS §2.5.
 - **`ledger/world_price_rings.mjs`** `<save.v3> <out.json>` + **`market_good_snapshots.mjs`** `<summaryDir> --tag CHI --good rubber

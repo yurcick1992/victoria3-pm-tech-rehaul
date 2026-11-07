@@ -2077,7 +2077,7 @@ function Get-DownsizeBlock {
         DZ|date|country|state|type|level before|level now|private before|private now|employment now
       (the reader, ledger/downsize_telemetry.mjs, classifies: a private drop with government levels flat is auto-downsizing;
       several buildings of one state dropping in one poll is a split, a merger or a bombardment), then
-        DZX|date|country|state|type|auto=<IsAutoDownsizing>|id=<GetIDString>
+        DZX|date|country|state|type|auto=<IsAutoDownsizing>|id=<GetIDString>|tag=<the state owner's tag, GetTagName>
       on its own line (two GUI functions not otherwise verified in a loc string). DZM closes every poll:
         DZM|date|tracked=<remembered now>|read=<remembered last poll and still there>|drops=<DZ lines>|over=<too large to remember>
 
@@ -2174,11 +2174,16 @@ $bound
 						}$probeLine
 						if = {
 							limit = { level < global_var:v3tb_dz_l0 }
+							# a building that lost its LAST level reads level 0: no ownership trigger on it (it logs "ownership_fraction requires the building to be built")
+							if = {
+								limit = { level >= 1 }
 $privNow
+							}
+							else = { set_global_variable = { name = v3tb_dz_k value = 0 } }
 							set_global_variable = { name = v3tb_dz_p1 value = global_var:v3tb_dz_k }
 							change_global_variable = { name = v3tb_dz_d add = 1 }
 							debug_log = "V3TB|$Token|DZ|$date|$who|[GetGlobalVariable('v3tb_dz_l0').GetValue|0]|[THIS.GetBuilding.GetExpansionLevel]|[GetGlobalVariable('v3tb_dz_p0').GetValue|0]|[GetGlobalVariable('v3tb_dz_p1').GetValue|0]|[THIS.GetBuilding.GetEmploymentPercentage|2]"
-							debug_log = "V3TB|$Token|DZX|$date|$who|auto=[THIS.GetBuilding.IsAutoDownsizing]|id=[THIS.GetBuilding.GetIDString]"
+							debug_log = "V3TB|$Token|DZX|$date|$who|auto=[THIS.GetBuilding.IsAutoDownsizing]|id=[THIS.GetBuilding.GetIDString]|tag=[THIS.GetBuilding.GetState.GetCountry.GetTagName]"
 						}
 					}
 					clear_variable_list = v3tb_dz${rd}_t

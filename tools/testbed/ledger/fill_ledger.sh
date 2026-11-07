@@ -84,6 +84,12 @@ step node $L/laggard_pressure.mjs $BOOK "$SETUP=$SESSION:$SETUP" "vanilla=$VANS:
 step node $L/tech_census.mjs "$SETUP=$SESSION:$SETUP" "vanilla=$VANS:vanilla" --tree $TREE --json $OUT/tech.json
 step node $L/misplaced_capital.mjs --batch "$SETUP:$SESSION:$SETUP" --json $OUT/misplaced.json
 step node $L/fill_old_plants.mjs $OUT --mod $MOD --config $BOOK
+# ⭐ AUTO-DOWNSIZING (BALANCE_FRAMEWORK §10.107.6, 2026-11-07): two scorecard lines and a section by tier in each view. The vanilla side is
+#   every VANS run that carried the downsizing poll (telemetry v15 on); a run without the poll is left out and printed, never read as zero.
+#   ⚠ The like-for-like measures read the runs' own built mod (the scheduler's build folder, overwritten by the next batch) and vanilla's
+#   files from VIC3_GAME: after a game patch, point VIC3_GAME at a copy of the version the batch ran on.
+step node $L/downsize_telemetry.mjs "$SETUP=$MOD" "vanilla=$VAN" --config $BOOK --types 0 --json $OUT/downsize.json
+step node $L/fill_downsizing.mjs $OUT
 step node $L/fill_scorecard.mjs $OUT --config $BOOK
 echo; echo "data filled in $OUT — now write lede.html incidents.html footer.html tokens.json title.txt, and redflags_summary.html with the"
 echo "redflag-summary skill (.claude/skills/redflag-summary/SKILL.md, from redflags_digest.md); then fill_assemble + fill_verify, and copy redflags_full.html"

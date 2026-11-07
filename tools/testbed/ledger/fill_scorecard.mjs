@@ -8,7 +8,7 @@
 //   the 1886 line's and the world-GDP aim's come from criteria.json). The readings keep the bands fill_goals.mjs carried (§10.104: "a reading
 //   keeps its current band"); the four lines added on 2026-10-29 carry no ruled band and say so (laggards, misplaced capital, red flags, technology).
 // Reads <outDir>: criteria.json, consts.json, payback.json, emp.json, emp_cols.json, tierchoice.json, report_data.json, perf_panel.json,
-//   redflags_metrics.json, laggards.json, tech.json, misplaced.json. A missing optional source prints its line as "not read".
+//   redflags_metrics.json, laggards.json, tech.json, misplaced.json, downsize.json. A missing optional source prints its line as "not read".
 // Writes <outDir>/scorecard.html (the table's rows), scorecard_loss.html (the footer's loss line) and intro.json (the two charts above the pages:
 //   building-input prices decade by decade, world GDP run by run).
 //   node tools/testbed/ledger/fill_scorecard.mjs <outDir> [--config <book>]
@@ -27,7 +27,7 @@ const CR = J('criteria.json');
 if (!CR.arms || CR.arms.length !== 1) { console.error('fill_scorecard: expected ONE arm in criteria.json, found ' + (CR.arms || []).length); process.exit(1); }
 const A = CR.arms[0], C = A.consensus, R = CR.ref, RUNS = A.runs;
 const CON = J('consts.json'), PB = J('payback.json'), EMP = J('emp.json'), TC = J('tierchoice.json'), RD = J('report_data.json');
-const PERF = JO('perf_panel.json'), RF = JO('redflags_metrics.json'), LAG = JO('laggards.json'), TECH = JO('tech.json'), MIS = JO('misplaced.json');
+const PERF = JO('perf_panel.json'), RF = JO('redflags_metrics.json'), LAG = JO('laggards.json'), TECH = JO('tech.json'), MIS = JO('misplaced.json'), DZ = JO('downsize.json');
 
 // ---- formatting
 const r2 = x => Math.round(x * 100) / 100;
@@ -158,6 +158,18 @@ if (MIS) { const arm = MIS[Object.keys(MIS)[0]], decs = Object.entries(arm.decad
   row(`New capital placed far from its best use (payback over 3× the best open option, or a loss), ${last ? last[0] + '–' + String(+last[0] + 10).slice(2) : ''}`,
     `<b>${last ? pc(last[1].gross, 0) : '—'}</b>`, 'as low as possible', pill('dim', 'a reading') + note(g.length > 1 ? (100 * Math.min(...g)).toFixed(0) + '–' + pc(Math.max(...g), 0) + ' by decade' : ''));
 } else notRead('New capital placed far from its best use', 'as low as possible', 'no misplaced.json');
+
+// ⭐ AUTO-DOWNSIZING (BALANCE_FRAMEWORK §10.107.6, user-ruled 2026-11-07: two scorecard lines in a group of their own, and one section by
+//   tier in each view, fill_downsizing.mjs). No aim is ruled. Vanilla = its runs that carried the downsizing poll (telemetry v15 on).
+grp('How much capital does auto-downsizing destroy?', 'An under-staffed building that cannot hire loses a level a week. Levels by tier are in the World and Shortlist views.');
+{ const arms = DZ ? Object.values(DZ).filter(a => a.n > 0) : [], m = arms.find(a => a.kind === 'config'), v = arms.find(a => a.kind === 'control');
+  const W = (a, i) => a.totals.world.all.mean[i];
+  const lines = [['Capital destroyed by auto-downsizing over the century, world, a run (construction points)', 2, x => Math.round(x / 1e3).toLocaleString('en-GB') + 'k'],
+    ['Jobs lost to auto-downsizing over the century, world, a run (the jobs those levels offered)', 1, x => (x / 1e6).toFixed(1) + 'M']];
+  for (const [line, i, f] of lines)
+    if (m && v) row(line, `<b>${f(W(m, i))} vs ${f(W(v, i))}</b>`, 'no aim ruled',
+      pill('dim', 'a reading') + note(`×${(W(m, i) / W(v, i)).toFixed(2)} of vanilla; ${m.n} runs against ${v.n}`));
+    else notRead(line, 'no aim ruled', !DZ ? 'no downsize.json' : 'an arm carried no downsizing poll'); }
 
 // ================================================================ GOAL 4
 grp('Do fewer people find productive work, each producing more?');

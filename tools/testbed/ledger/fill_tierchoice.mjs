@@ -5,10 +5,14 @@
 // ⚠ ONE SOURCE PER NUMBER, deliberately: the raw / unit-weighted / ex-ports trio comes from
 // analyse_ai_tier_choice.mjs (the F75/F76-family basis — its numbers are what the canon→aival→
 // aival2 ladder table is quoted in), and the less-efficient share from analyse_ai_tier_profit.mjs
-// section (c). The two tools qualify country-industry-years slightly differently (~0.5pp on the
-// raw share), so each figure is quoted on ITS OWN basis and the caption says so — re-deriving
-// either here would be a second definition of a measured quantity (the ladderFaults lesson).
+// section (c). The two tools qualify country-industry-years differently (the profit tool has no
+// market-absorption test: 49.9% against 39.7% raw on F249), so each figure is quoted on ITS OWN
+// basis and the caption prints the gap — re-deriving either here would be a second definition of
+// a measured quantity (the ladderFaults lesson).
 // This script SPAWNS the tools and parses their stable headline lines; any parse miss exits 1.
+// ⚠ Both tools map a merged rung (`method_of`) to its HOST building since 2026-11-07 (F262): before,
+// every host level counted as below-best once the merged method was held (F249 printed 48.5%
+// unit-weighted where the corrected count is 26.5%). Reports filled before then carry the miscount.
 //
 // USAGE: node tools/testbed/ledger/fill_tierchoice.mjs <outDir> --session <stamp> --config <path>
 //        [--baseline "label|raw|unit|exports|less" ...]   (extra comparison rows, pre-measured)
@@ -55,8 +59,9 @@ rows.push({ arm: argOf('--label', SESSION), raw, unit, exports: exports_, less }
 const cap = `Below-best = levels a country adds to a tier BELOW the best one it already holds (F75; the trio is on
 analyse_ai_tier_choice.mjs's basis, the same the canon→aival→aival2 family is quoted in). The last column is the
 user-requested sharper cut: below-best AND the rung was earning LESS per level than that country's standing frontier
-at that moment (analyse_ai_tier_profit.mjs §c — its own qualification set reads below-best ${rawB.toFixed(1)}% here,
-~0.5pp off the trio's basis; ${lessOfCmp.toFixed(0)}% of comparable below-best levels are the less-efficient kind).
+at that moment (analyse_ai_tier_profit.mjs §c — its own qualification set, which has no market-absorption test, reads
+below-best ${rawB.toFixed(1)}% here, ${(rawB - raw).toFixed(1)}pp off the trio's raw basis; ${lessOfCmp.toFixed(0)}% of comparable below-best
+levels are the less-efficient kind). A merged rung counts as its host building (F262).
 Baseline rows are prior batches' published figures, measured by the same tools on their own sessions.`;
 
 writeFileSync(join(OUT, 'tierchoice.json'), JSON.stringify({ rows, dec, cap: cap.replace(/\n/g, ' ') }));

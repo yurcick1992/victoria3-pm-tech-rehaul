@@ -79,9 +79,15 @@ s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
   // ⭐ 2026-10-29: the scorecard (fill_scorecard.mjs) replaces the register and goals rows, its loss line goes to the footer, and the
   //   next-lever section is gone (user).
   for (const [name, file] of [['__LEDE__','lede.html'],['__SCORECARD__','scorecard.html'],['__LOSS__','scorecard_loss.html'],
-                              ['__INCIDENTS__','incidents.html'],['__FOOTER__','footer.html'],['__REDFLAGS__','redflags.html']]) {
+                              ['__INCIDENTS__','incidents.html'],['__FOOTER__','footer.html'],['__REDFLAGS__','redflags.html'],
+                              ['__DOWNSIZE_W__','downsize_world.html'],['__DOWNSIZE_S__','downsize_pool.html']]) {
     const p = join(DIR, file);
     if (existsSync(p)) tok[name] = readFileSync(p, 'utf8');
+  }
+  // ⭐ 2026-11-07 (§10.107.6): the auto-downsizing section, one per view (fill_downsizing.mjs). An out dir from before it says so ON THE PAGE.
+  for (const k of ['__DOWNSIZE_W__', '__DOWNSIZE_S__']) if (!tok[k]) {
+    tok[k] = '<div class="card"><h3>Plants shrunk by auto-downsizing</h3><p class="dim">Not read for this report (no downsize_world.html / downsize_pool.html — run downsize_telemetry.mjs --json, then fill_downsizing.mjs).</p></div>';
+    console.log('  ⚠ ' + k + ': no downsizing section in this out dir — the page says it was not read');
   }
   // A TABLE WRITTEN INTO THE PROSE (lede, incidents, footer) is wrapped in a scrolling box here, so it can never run past the page's right
   //   edge — the laggard table of F249's lede did (2026-10-29).

@@ -20,7 +20,8 @@
 // year's new capital is classed against it — beside the old benchmark (all types), so the effect of the rule is visible.
 //   --series <dir of v15 summaries of ONE campaign, ~yearly>              exact: every year's validity from that year's own summary
 //   --arm label:session[:setup] --snap <dir of v15 kept-save summaries>   the decade before each run's kept save; validity from that save
-//   --batch label:session[,session][:setup] [--json <file>]                 v15+ batches: yearly steps per run and decade, medians over runs
+//   --batch label:session[,session][:setup] [--json <file>]                 v15+ batches: yearly steps per run and decade, medians over runs,
+//                                                                            and the sector split (tiered vs mines + agriculture, F262 §3)
 import fs from 'node:fs'; import path from 'node:path'; import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { usableRuns } from './lib_runs.mjs';
@@ -181,6 +182,17 @@ const merge = (T, A) => { for (const b of ['all', 'val', 'open']) { for (const c
   if (A.gb) { const g = T.gb ??= { sec: {}, ty: {} }; for (const [k, v] of Object.entries(A.gb.sec)) g.sec[k] = (g.sec[k] || 0) + v; for (const [k, v] of Object.entries(A.gb.ty)) g.ty[k] = (g.ty[k] || 0) + v; }
   if (A.gk) { const g = T.gk ??= {}; for (const [k, v] of Object.entries(A.gk)) g[k] = (g[k] || 0) + v; } return T; };
 const secLine = A => ['mines', 'agriculture', 'manufacturing'].map(s => { const o = A.all.sec[s]; const t = o.fine + o.bit + o.gross + o.none; const T = ['fine', 'bit', 'gross', 'none'].reduce((x, c) => x + A.all[c], 0); return `${s} ${p0(t / T)} of capital, ${p0(sh(o, 'gross'))} gross`; }).join(' · ');
+// THE SECTOR SPLIT (F262 §3, promoted 2026-11-07 from the scratch copy that printed it; BACKLOG G) — against the VALID benchmark only.
+//   "tiered" = the measure's manufacturing sector, i.e. the tiered industries (in vanilla their vanilla buildings); "untiered" = mines +
+//   agriculture, its other two sectors. Per accumulator: the gross share of all new capital (= the VALID gross line), the tiered share of
+//   the capital, the gross rate inside each side, and each side's gross capital as a share of ALL new capital (the two sum to the first).
+//   Printed below the medians: per decade the median over runs; the century as the median over runs and pooled (capital-weighted over all
+//   runs); the like-for-like decade pooled (validity from each run's last summary). In --json under `split`, the same keys.
+const SPLIT_F = ['gross', 'tiered_capital', 'tiered_gross', 'untiered_gross', 'tiered_of_all', 'untiered_of_all'];
+const splitOf = A => { const t = ss => ss.reduce((o, s) => { const x = A.val.sec[s]; o.t += x.fine + x.bit + x.gross + x.none; o.g += x.gross; return o; }, { t: 0, g: 0 });
+  const a = t(['manufacturing', 'mines', 'agriculture']), ti = t(['manufacturing']), un = t(['mines', 'agriculture']);
+  return { gross: a.g / a.t, tiered_capital: ti.t / a.t, tiered_gross: ti.g / ti.t, untiered_gross: un.g / un.t, tiered_of_all: ti.g / a.t, untiered_of_all: un.g / a.t }; };
+const p1 = x => Number.isFinite(x) ? (100 * x).toFixed(1) + '%' : '-';
 for (const a of all('--batch')) {
   const [l, s, st] = a.split(':'); const runs = [];
   for (const r of runsOf(path.join(S, s), st || null)) {
@@ -209,6 +221,19 @@ for (const a of all('--batch')) {
     century: { gross: med(runs.map(R => sh(R.cent.val, 'gross'))), bit: med(runs.map(R => sh(R.cent.val, 'bit'))) } };
   if (runs.length > 1) { console.log(` MEDIAN over ${runs.length} runs:`); for (const d of decs) { const As = runs.map(R => R.byDec[d]).filter(Boolean);
       const M = k => med(As.map(k)); console.log(`  ${(d + '-' + String(+d + 10).slice(2)).padEnd(18)} ALL: ${p0(M(A => sh(A.all, 'gross')))}/${p0(M(A => sh(A.all, 'bit')))}  VALID: ${p0(M(A => sh(A.val, 'gross')))}/${p0(M(A => sh(A.val, 'bit')))}/${p0(M(A => sh(A.val, 'none')))}   mfg gross ${p0(M(A => sh(A.all.sec.manufacturing, 'gross')))} / ${p0(M(A => sh(A.val.sec.manufacturing, 'gross')))}  (n=${As.length})`); } }
+  { // the sector split (splitOf above), for any n
+    const medS = Ss => Object.fromEntries(SPLIT_F.map(k => [k, med(Ss.map(o => o[k]))]));
+    const pooled = key => splitOf(runs.reduce((T, R) => merge(T, R[key]), newAcc()));
+    const row = (lab, o, tail) => console.log(`  ${lab.padEnd(24)}` + SPLIT_F.map(k => p1(o[k]).padStart(12)).join('') + `   ${tail}`);
+    const SP = { decades: {}, century: medS(runs.map(R => splitOf(R.cent))), century_pooled: pooled('cent'), like_for_like_pooled: pooled('accLast') };
+    console.log(`\n SECTOR SPLIT ${l} (VALID benchmark; shares of the new capital = construction points × the country's £ per point; tiered = the tiered industries, untiered = mines + agriculture)`);
+    console.log(`  ${'period'.padEnd(24)}` + ['gross, all', 'tiered cap', 'tiered gr.', 'untier. gr.', 'tiered÷all', 'untier.÷all'].map(x => x.padStart(12)).join(''));
+    for (const d of decs) { const Ss = runs.map(R => R.byDec[d]).filter(Boolean).map(splitOf); SP.decades[d] = { ...medS(Ss), n: Ss.length }; row(d + '-' + String(+d + 10).slice(2), SP.decades[d], `median, n=${Ss.length}`); }
+    row('century', SP.century, `median, n=${runs.length}`);
+    row('century, pooled', SP.century_pooled, 'capital-weighted over all runs');
+    row('like-for-like, pooled', SP.like_for_like_pooled, 'the decade before each run\'s last summary, validity from it');
+    globalThis.__JOUT[l].split = SP;
+  }
   if (globalThis.__why) { const T = newAcc(); for (const R of runs) merge(T, R.cent); if (T.gb) globalThis.__why(l + ' (century, pooled)', T.gb, T.gk || {}); const L = newAcc(); for (const R of runs) merge(L, R.accLast); if (L.gb) globalThis.__why(l + ' (like-for-like decade, pooled)', L.gb, L.gk || {}); }
 }
 { const jf = argOf('--json', null); if (jf && globalThis.__JOUT) { fs.writeFileSync(jf, JSON.stringify(globalThis.__JOUT, null, 1)); console.log('json → ' + jf); } }

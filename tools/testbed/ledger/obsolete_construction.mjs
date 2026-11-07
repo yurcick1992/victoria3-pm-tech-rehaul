@@ -1,8 +1,8 @@
 // OBSOLETE CONSTRUCTION — of all new tiered capacity, how much goes to an obsolete building: one that, at the start of that year, the same
 // country could have replaced, because it (1) holds the technology of a higher-tier BUILDING of the same industry, (2) already has one
 // standing, and (3) that building's value added per worker exceeds the obsolete building's own average (domestic, else the world's that
-// year). The user's question of 2026-11-01 (FINDINGS F262). Written while the 2026-10-30 batch froze tools/testbed/**; it belongs in
-// tools/testbed/ledger/ beside misplaced_capital.mjs once that batch ends (BACKLOG G).
+// year). The user's question of 2026-11-01 (FINDINGS F262). Written in tools/ while the 2026-10-30 batch froze tools/testbed/**; moved
+// here beside misplaced_capital.mjs on 2026-11-07 (BACKLOG G), only its imports, paths and usage lines changed.
 //   Merged rungs are methods of their host, not buildings: building the host while holding its merged method is never obsolete.
 //   Levels are NET yearly additions per (country, building type) between the yearly save summaries, so a level built and lost in one year
 //   is missed; annexation-scale country-years (> +25% of all building levels) are skipped, as in analyse_ai_tier_choice.mjs.
@@ -11,17 +11,17 @@
 //   so it is compared per staffed level. Construction points are the EMITTED required_construction of the mod folder given.
 //   Variant (3'): the standing building earns more weekly profit per construction point than the obsolete one.
 //   ⚠ Vanilla has no equivalent — one building per industry switches methods — so this reads a mod arm only.
-// USAGE: node tools/obsolete_construction.mjs <group> [--setup <name>] [--config <book>] [--mod <mod folder>]
+// USAGE: node tools/testbed/ledger/obsolete_construction.mjs <group> [--setup <name>] [--config <book>] [--mod <mod folder>]
 //        <group> = a session, a comma list of sessions or <session>/runNNN_<setup> folders (lib_runs.usableRunsPooled)
 import { readFileSync, readdirSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { usableRuns, reportDropped } from './testbed/ledger/lib_runs.mjs';
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+import { usableRuns, reportDropped } from './lib_runs.mjs';
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 const ARGV = process.argv.slice(2);
 const argOf = (n, d) => { const i = ARGV.indexOf(n); return i >= 0 && ARGV[i + 1] ? ARGV[i + 1] : d; };
-if (!ARGV[0] || ARGV[0].startsWith('--')) { console.error('usage: node tools/obsolete_construction.mjs <group> [--setup <name>] [--config <book>] [--mod <dir>]'); process.exit(2); }
+if (!ARGV[0] || ARGV[0].startsWith('--')) { console.error('usage: node tools/testbed/ledger/obsolete_construction.mjs <group> [--setup <name>] [--config <book>] [--mod <dir>]'); process.exit(2); }
 const SES = join(ROOT, 'tools/testbed/sessions');
 const { runs: RUNS, dropped } = usableRuns(SES, ARGV[0], argOf('--setup', ''));
 if (!RUNS.length) { console.error('no usable runs in ' + ARGV[0]); process.exit(1); }
