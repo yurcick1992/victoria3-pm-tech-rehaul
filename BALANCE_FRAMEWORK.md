@@ -74,7 +74,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays as readings (.1: one four-column scorecard for everything above the play-time block, the loss to the footer, old plants per industry, world / shortlist views, nothing past the right edge, 2026-10-29) | in force; built 2026-10-26, rebuilt and CANONISED 2026-10-29 (`fill_scorecard.mjs`, the decade path in `criteria.mjs`; the reference example F249's report at Lq61LKzZVKoyJGTHyUfCr5, shared externally, never republished) | here |
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
-| 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure | in force (2026-10-31); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
+| 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 | 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value | ruled for mod 1.1 (game 1.15), not built | here |
 
 ---
@@ -4526,6 +4526,17 @@ First applied in the batch's interim chart (2026-10-31, the Artifact VyqZ37S2duy
 drop logged on 1 January belongs to the year before. `ledger/downsize_telemetry.mjs` gets the tier split and the two measures, and the
 schedule's `_comparison` and `_predictions` are reworded to this ruling, once that batch ends (its files are frozen while it plays,
 §5.1 rule 7).
+
+### §10.107.6 — Downsizing in the ledger: two scorecard lines and one section (user-ruled 2026-11-07)
+
+The ledger's form is canonised (§10.104.1) and had no downsizing panel. Asked how this measurement enters it, the user chose the proposal
+"two scorecard lines plus one section":
+1. **Two scorecard lines** in a group of their own: **capital destroyed** (construction points lost to auto-downsizing over the century) and
+   **possible workforce lost** (jobs), each as the arm's per-run mean beside vanilla's. No aim is ruled, so the verdict column reads
+   "reading".
+2. **One section**, after the old-plant tables: the levels lost per decade by tier class (t0 crafts, t0 non-craft, t1, t2, t3, outside the
+   ladder), World and Shortlist, with the two like-for-like measures beside them, never instead of them (§10.107.2, .4).
+The batch's interim chart (Artifact VyqZ37S2duyDSU3v1oBaTg) is a record; the ledger section replaces it for every later batch.
 
 ## §10.108 — COPPER IN MOD 1.1: THE DAMS CARRY IT IN PROPORTION, TAKEN OUT OF THE ENGINES (user-ruled 2026-11-07)
 
