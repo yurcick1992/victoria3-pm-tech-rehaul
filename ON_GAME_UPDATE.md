@@ -685,3 +685,25 @@ later: `global_average_gdp_per_capita`, `has_building_levels_in_state_region` (c
 - a rule that a country can no longer release one that could invalidate a treaty port it ceded inside its market.
 
 Nothing in them touches the pursuit filter, the never-added rule or the port-building requirement, so the §2.2.10 list stands as written.
+
+**Copper, the new good** (read 2026-11-07 from a third-party parse of the 1.15.0 files, `vanilla_parsed/` in the public repository
+`jakeOmega/Vic3TimelineExtended`, game version 1.15.0 per its manifest; not from the installed files, so confirm in routine step 1). Base price 40.
+- *Who consumes it, per level:* the power plant 2 / 4 / 5 (early / coal-fired / oil-fired, replacing 5 wood, 5 of 20 coal, 5 of 25 oil); arc-welded
+  construction 10 (replacing 10 of 40 tools; tech era 5); telephones 30 (replacing 10 of 20 iron and all 20 lead); electric engines 10 (replacing 10
+  of 30 electricity); percussion caps 5 and explosive shells 10 (replacing lead); two new artillery main methods, bronze cannons (10 copper for 15
+  iron) and bronze smoothbores (20 for 25 iron), on the same technologies as cannons and smoothbores; 2 on electric sewing machines, automatic power
+  looms and pot stills, 4 on patent stills, 1 on every assembly line, refrigeration method, the automated bakery and arcades. The copper mine makes
+  20 / 40 / 60 / 70 by pump plus 12 / 20 by explosives. Neither our dams (6 tools + 6 engines per 300 electricity) nor our electric
+  streetlights (2 coal) use any.
+- *The main methods' swaps are value-neutral at base prices* (copper 40 for iron, lead and tools at 40; the electric engines' +£100). The ladder's
+  anchors (steam engines, percussion caps, telephones, cannons) keep their input values, so `lint_tier_eras.mjs` (L31), which checks a rung's input
+  VALUE and not its mix, passes on the 1.0 book. **A rebuild of the 1.0 book on 1.15 therefore ships every rung on its 1.13 mix, with no copper, and
+  nothing throws.** Only the regeneration of routine step 5 brings copper into the rungs.
+- *Step 5 will throw on artillery:* `make_tier4_config.mjs` refuses more than four main methods, and the foundry now has six. The bronze pair needs a
+  ruling (a second main method on the cannon and smoothbore rungs, or left out).
+- *Trade:* `make_trade_config.mjs` throws on a tradeable good in no class (§2.1, `goods/00_goods.txt`). F159 §5 has copper's historical wedge at
+  32.7% falling to ~0, which puts it with the low-wedge classes (B or C). `tools/goods_prices.tsv` gains copper in step 6.
+- *A 1.0 install on 1.15:* the owned 1.13 copies of `production_methods/01_industry.txt` and `06_urban_center.txt` replace 1.15's. Under them the
+  power plants, telephones, motor and munition methods, sewing, stills, assembly lines and arcades consume no copper. The only vanilla consumers
+  left are arc-welded construction and refrigeration. The copies also lack `pm_bronze_cannons` and `pm_bronze_smoothbores`, which 1.15's
+  `pmg_foundries` names; expect `error.log` lines for them.
