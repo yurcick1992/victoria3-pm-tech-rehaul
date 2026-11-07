@@ -2,8 +2,12 @@
 
 What to do when Paradox patches the game, and every place the mod depends on a vanilla file, a vanilla number or an engine behaviour. The mod is
 built against **1.13.11** (`mod/.metadata/metadata.json` → `supported_game_version`). Mod 1.1 moves to game 1.15 (BACKLOG: 1.15 on 2026-11-05, a
-stable 1.15.N about 11-12, mod 1.1 about 11-16), and this file is that pass's checklist; §4 lists what 1.15's patch notes touch. Add a coupling here
-in the same pass that creates it (CLAUDE.md §5.1 rule 10).
+stable 1.15.N about 11-12, mod 1.1 about 11-16). Add a coupling here in the same pass that creates it (CLAUDE.md §5.1 rule 10).
+
+**How the pass is run** (since 2026-11-07): the procedure is the `game-update` skill (`.claude/skills/game-update/SKILL.md`, eight phases from
+keeping the old version to the release). Each version's findings and decisions live in its own register, `GAME_UPDATE_<version>.md` (1.15's:
+`GAME_UPDATE_1_15.md`). This file is the skill's reference: §1 is the mechanical routine of its breakage phase, §2 the couplings, §3 the version
+log, §5 the three tables its reconciliation and adoption phases walk.
 
 **How the mod meets a patch.** Every build re-reads the installed game (`VIC3_GAME`, default the Steam path). Each vanilla file the mod owns is a
 fresh copy of the installed file with our edits re-applied, and every edit asserts how often it matched, so a moved anchor stops the build instead of
@@ -17,6 +21,9 @@ shipping a silent miss. A rebuild does not fix three things:
 ---
 
 ## 1. The update routine
+
+The mechanical routine of the skill's phase 2 (breakage). The intake (an entity diff of the two game versions, `tools/game_diff.mjs`) comes before
+it, and the reconciliation and adoption walks (§5) after it.
 
 1. **Read the patch notes themselves**, from the forum changelog, not a search summary of it (one called 1.13.10 "localization-only"; it was a
    substantial hotfix). Check whether `binaries\victoria3.exe` changed: engine changes live there, and a count of touched script files cannot see
@@ -229,7 +236,9 @@ removes the pops files it wrote earlier, by their header.
 vanilla names (§2.2): they hook vanilla on-actions (`on_game_started_after_lobby`, `on_monthly_pulse[_country]`, `on_yearly_pulse[_country]`,
 `on_acquired_technology`, `on_building_built`, `on_building_expanded`; L22 forbids an `effect` block on a vanilla on-action), the crafts' group
 `bg_pmr_crafts` names `bg_light_industry` as its parent, and the dam and research files point at vanilla icons (`hydroelectric_plant.dds`, `power_plant.dds`,
-`event_industry.dds` and others). A renamed on-action, group or icon fails only in the engine (`error.log`, or missing art).
+`event_industry.dds` and others). A renamed on-action, group or icon fails only in the engine (`error.log`, or missing art), and in
+`tools/lint_vanilla_names.mjs` (2026-11-07; standalone until it is wired into the build, GAME_UPDATE_1_15.md U19), which resolves every name our
+emitted script takes from vanilla against the installed game.
 
 ### 2.2 Vanilla numbers, keys and defines the mod reads or overrides
 
@@ -323,7 +332,8 @@ Tables and rules in our code that name vanilla keys or lean on vanilla's order; 
 - **Raw script, not validated by the build:** the condition entries, condition values and monthly global effect name vanilla laws (law_council_republic,
   law_factory_councils, law_collectivized_agriculture, law_traditionalism, law_no_colonial_affairs and others), regions, subject types,
   `rank_value:major_power`, and building types (building_university, building_government_administration, building_financial_district,
-  building_chemical_plant, building_urban_center). A renamed key fails only in the engine.
+  building_chemical_plant, building_urban_center). A renamed key fails only in the engine, and in `tools/lint_vanilla_names.mjs` (§2.1,
+  additive files).
 - *Check:* the build line `research events: N technologies (n industry, n war) -> …` against the last build; `error.log` lines naming
   `zzz_pm_rehaul_research*`.
 
@@ -618,105 +628,111 @@ different versions are not comparable without saying so.
   (`VIC3_GAME=C:\claude-code\vic3_game_1.13.11\game`). The exe itself is kept beside it, `binaries\victoria3.exe` (97 MB, the same sha256): its
   strings name every trigger, effect and modifier type the engine registers, with their descriptions, so a strings diff against 1.15's
   exe stands in for the `script_docs` dump if none was made on 1.13.11. The folder is outside the repository and in no git repository.
-- **1.15** — expected 2026-11-05, with 1.14's AI rework. Mod 1.1 follows this file's routine; treaty ports are re-measured (§2.2.10). What the
-  preliminary patch notes touch: §4.
+- **1.15** — expected 2026-11-05, with 1.14's AI rework. Mod 1.1 follows the `game-update` skill; treaty ports are re-measured (§2.2.10). The
+  pass's register is `GAME_UPDATE_1_15.md`. On 2026-11-07 Steam had the 1.15 build (26453692) downloaded and queued over 1.13.11 (24799966), with
+  automatic updates on.
 
 ---
 
 ## 4. Game 1.15: what the patch notes touch
 
-Read on 2026-10-30 from the preliminary 1.15 notes (the Modding and Bugfixes lists) against §2. The 1.1 pass re-reads the final changelog (routine
-step 1) and confirms each item on the installed files; an item that turns out wrong is corrected here, not left.
+Moved on 2026-11-07 to the 1.15 update register, `GAME_UPDATE_1_15.md`: its lines U01–U70, and this section verbatim as its appendix (the
+copper consumers, the mining map, the bronze artillery methods, the hiring and wage bugfixes, the fleet loop). References elsewhere to
+"ON_GAME_UPDATE §4" mean that appendix.
 
-**What a 1.0 install does on 1.15.** This is the first thing a rebuild does not fix (the list at the top of this file). Until mod 1.1 is released,
-every 1.0 install overrides the 1.15 game with 1.13.11 copies of the 146 owned files (§2.1). The notes name these:
-- `ship_interest_gain_mult` is removed (replaced by `ship_power_projection_mult` / `_add`). The 1.0 copy of
-  `power_bloc_principles/00_power_bloc_principles.txt` still carries it in `principle_navy_1`, `_2` and `_3`.
-- The AI rework adds `will_incorporate_state` and regional objectives to AI strategies. The 1.0 copies of `ai_strategies/00_default_strategy.txt` and
-  `01_admin_strategies.txt` hold 1.13's strategies.
-- `static_modifiers/00_code_static_modifiers.txt` is the engine's global block. Any base value 1.15 adds there is missing under the 1.0 copy.
-- Map and history: the notes change harbour connections, a lake in China and North Angola's population. Only the diff of routine step 1 shows whether
-  any of it sits in the 15 owned `state_regions` files or the owned 1836 history (`history/buildings` under `replace_paths`, 13 `history/pops` files).
+---
 
-On rebuild all of these follow 1.15. For 1.1 the work is to confirm that with the diff and the count lines (routine step 8).
+## 5. Premises, relative rulings and what we author
 
-**Script the notes rename or remove: none of it is ours.** None of these appears in `tools/` or the built `mod/` (checked 2026-10-30):
-- `pop_type_percent_country` (now takes a script value);
-- the war-exhaustion commands (now war support: `add_war_support_change`, …);
-- `enemy_contested_wargoals`, `strait_trade_importance_by`;
-- `has_employee_slots_filled` (operand order fixed);
-- `primary_cultures_percent_state` / `_country` (now take a target country).
+The three tables the skill's phases 3 and 4 walk for every new version. §2 says what of ours BREAKS when vanilla moves; these say what of ours
+may become WRONG, or may need the new thing, while nothing breaks. Every walk's outcome is a register line. Started 2026-11-07; a feature, ruling
+or authored item the mod gains gets its row in the same pass (CLAUDE.md §5.1 rule 10).
 
-The only war-exhaustion name in the build is the modifier `country_war_exhaustion_casualties_mult`. It sits in four vanilla copies
-(`technologies/20_military`, `power_bloc_principles/00_power_bloc_principles`, `static_modifiers/content_1_modifiers` and `content_4_modifiers`), which a
-rebuild refreshes.
+### 5.1 The premises: the vanilla state each feature rests on
 
-Two more fixes that do not reach us:
-- 1.15 no longer substitutes script arguments inside quoted strings. No emitted `zzz_pm_rehaul*` file puts a `$arg$` inside quotes (the one `$…$` in
-  `telemetry_lib.ps1` is PowerShell interpolation).
-- The `dlc` field of events and journal entries may now list several DLCs. `check_dlc_gates.mjs` (L39) compares each copy with vanilla's file from the
-  same game folder, so it holds whatever the syntax. Read its PASSED line.
+Per feature of CLAUDE.md §1.2. For each, the walk asks: is the premise unchanged, moved (our feature may now be wrong or unnecessary), taken
+over (vanilla now does it itself: keep ours, drop it or merge), or contradicted? Every answer but "unchanged" goes to the user.
+- **A building for every technology step** (the whole mod, goals 1–3). Vanilla modernises a factory by switching its main method, with no
+  construction and no capital; a vanilla building's main methods form one ladder in technology order, front-loaded (the tier rule, §10.78). If
+  vanilla prices a switch, adds a construction step to it or splits buildings itself, part of goal 3 becomes vanilla's.
+- **Old plants die by price** (CLAUDE.md §2.1, F97). The engine lays a building off when its wages fall under ~0.66× the expected standard of
+  living; buildings compete for workers through wages across building types; pop wealth growth re-absorbs a glut, so prices hold near base in £;
+  the price band is 25–175% of base. A change to hiring, wage-setting or the band moves the mechanism itself (1.15: U30–U31).
+- **Crafts and merged methods** (§10.91). Vanilla has no artisan production and its first methods are the 1836 factories' methods; the six merged
+  steps are recipe changes within one vanilla building.
+- **Electricity** (§10.43.0, §10.89). Vanilla's streetlights consume electricity; the power plant costs `construction_cost_medium`; hydro
+  electricity comes only from five state traits; vanilla has no dams; every electricity consumer carries `required_input_goods = electricity`
+  (§2.3.1); the AI builds dam levels where an ownership type and local demand exist.
+- **Research** (§10.97, §10.101.1). Base innovation 50 and cap 50, cap per literacy 150; the universities' innovation; the four flat bonuses;
+  spread 25 + 75 × literacy, the ahead-of-time penalty 0.25 (§2.2.8); progress read as a fraction of the penalised cost, and a grant that reaches
+  it acquires the technology on the spot (F160).
+- **The research entries** (§10.95, §10.98). The industries, unit types, ship types, laws, regions and building types they name exist and keep
+  their roles; isolationism is a law; vanilla has no industry-driven research.
+- **Trade** (§10.88, §10.102, F155, F263). A good's `traded_quantity` sets the goods one unit of capacity moves; world-market trade pays no
+  convoys and merchant marine is paid per staffed level; the monopoly markup applies above a built-in threshold (below 0.36 in 1.13.11);
+  autonomous trade and the trade-centre construction score as F263 §3 describes them.
+- **The investment AI** (§10.75, §10.92, F158). The investment-pool defines mean what F158 measured on 1.13's AI; the AI weighs `ai_value`;
+  subsidies come from the strategies' blocks; vanilla subsidises tooling workshops and explosives factories.
+- **The 1836 start** (§10.55, L14). A history `create_building` is checked against the state owner's technology; `replace_paths` makes ours the
+  only history; vanilla's grant names three technologies its map needs early.
+- **Companies** (§10.64). Vanilla's companies name buildings, and the engine forms a company from one listed building type with 5 levels in a
+  state.
+- **The measurement** (CLAUDE.md §2.10, §5.6). Displayed GDP is 52 × the weekly value added of a country's goods producers at its market's prices
+  (F45, F257); the wage model's weights are `wage_weight` and `POP_SIZE_PACKAGE`; saves key goods by position; the telemetry's data functions and
+  the tick schedule (§2.3.2–§2.3.3).
 
-**Engine behaviour the design rests on (§2.3.1, routine step 10).** Three bugfixes change how buildings hire and pay. The old-plant mechanism runs
-through wages (CLAUDE.md §2.1, F97), and the direction of none of the three is argued. Read the laggard test (`laggard_pressure.mjs`), the old-rung
-census and T0 on the first 1.15 canon batch against a 1.15 vanilla before carrying F249's readings over.
-- *"Buildings now compare their productivity against their own building type rather than all types when deciding whether to raise wages."* In vanilla a
-  building type is a whole industry. Here each rung is its own type, so a frontier rung now compares itself only with frontier rungs of its industry.
-  That narrows the wage competition by which the frontier draws workers off the old rung.
-- *Profitable buildings no longer lay off and rehire in a loop, and buildings still gaining workers no longer lower their hiring rate.* New rungs
-  likely fill faster. Re-read the dead-define list (§2.2.1): if `BUILDING_MAX_PROFIT_TO_PAUSE_HIRES` is now read, the PAUSED class of
-  `hiring_census.mjs` / `craft_fill.mjs` can follow the define instead of its heuristic (F185, F188).
-- *New buildings take the dominant production methods of their own type, not of all types* (for countries born of a revolution too). This changes
-  which secondaries a newly built rung opens on. Read it beside the luxury-line problem (F249 §4d).
-- The wage and hiring changes move `config/measured_base_wages.json` (§2.4) more than an ordinary patch does. Refresh it from the 1.15 vanilla batch
-  before any profit is quoted on 1.15.
+### 5.2 Rulings defined relative to a vanilla number
 
-**The testbed (§2.3.2).**
-- **The fleet path loop** (F218, the one listed bug of wall-clock cluster 3). The notes fix *fleet repair progress* and send *fleets sent home after
-  losing a naval battle back to their naval mission once repaired*, which plausibly is the loop. Run `fleet_loop_runs.mjs` over the 1.15 vanilla
-  batch. If no run carries the signature, cluster 3's list empties and the calibration (F218 §7) is moot. If one does, a fix is open again (the user,
-  2026-10-15: no fix unless 1.15 still has the loop).
-- *Building profit predictions and goods availability no longer show no supply until the first day passes.* The `EARLY|boot` lines read the market
-  from `on_game_started_after_lobby`, so compare them with a 1.13 session's.
-- The console command `print_world_gdp` prints the combined yearly GDP of every country. One debug game is a direct check of the displayed world GDP
-  the register reads (F45, F257).
+Each holds a vanilla number inside it. If that number moves, the ruling either follows (it is a multiplier or is read live), or must be
+re-derived or re-ruled. The guard column says whether a move is noticed.
 
-**Research entries.** Scripted progress bars can take a script value or a math block for `min_value` / `max_value`. Since 2026-10-27 the urban-centre
-entries read their figure through a script value (CLAUDE.md §4.1), and this could simplify them. Not needed for 1.1. New script hooks that may serve
-later: `global_average_gdp_per_capita`, `has_building_levels_in_state_region` (country scope, one state region), `gdp_owned_by`.
+| ruling | relative to | if vanilla's number moves | noticed by |
+|---|---|---|---|
+| the power plant's 1,600 (§10.89.1) | 4 × `construction_cost_medium` (400) | re-derive or re-rule | nothing: the line's comment names vanilla's value |
+| innovation base and cap 25 (§10.101.1) | half of vanilla's 50 / 50 | re-derive (x is a ruled level, the ratio is its reading) | nothing: the override writes 25 over any value (U18 for 1.15) |
+| the cap's literacy term 25 | a sixth of vanilla's 150 | as above | nothing |
+| universities × 1/6 | vanilla's innovation per university method | follows (a multiplier) | — |
+| the four flat research adds × 1/3 (POLISH Q1) | their vanilla values | re-rule | the build throws (each entry states vanilla's value) |
+| the trade classes (§10.88, F159) | vanilla's `traded_quantity` × the class factor, classes from vanilla's `cost` | re-generate through the trade maker | a new tradeable good throws; a changed price or quantity does not |
+| the ladder (§1.3: Q₁, V₁, the input mixes) | each industry's vanilla anchor method | follows on regeneration | L31 throws on a changed anchor recipe |
+| K₁ and the cost ladder | `construction_cost_low` … `_very_high` (200 / 400 / 600 / 800) | change the four mirrors (§2.2.2) | nothing |
+| the craft rule (0.6 of the first method's goods per worker, staffing 0.1 of the block) | vanilla's first method | follows on regeneration | the regeneration's field diff (routine step 5) |
+| the secondaries' sizes (§10.93) | vanilla's share in its most advanced main method | follows on every build (read live) | the combination lint's new-pair warning |
+| the research marks (25k / 75k / 235k) | whole fully staffed levels of the anchor building | follows after the extract refresh (routine step 3) | the build's `research events:` line |
+| the research grant (half the tech era's base cost) | `common/technology/eras` | follows (read live) | the build throws on fewer than five eras |
+| the gold mine's `ai_value` 5000 (§10.92.1) | vanilla's own line | rides it silently | nothing (§2.2.5) |
+| the Nile maluses (−0.1) | `state_trait_nile_river` (+0.2) | re-rule | nothing (§2.2.5) |
+| the investment-pool defines (§10.75) | measured on 1.13's AI | re-measure misplaced capital | nothing (U33 for 1.15) |
+| the dams' economics (§10.89.15) | priced against vanilla's power plants | re-read §10.89.15 if a plant's recipe or cost moves | nothing |
+| the AI subsidies removed (§10.92) | vanilla's strategy `subsidies` blocks | follows (read live) | — |
+| the monopoly threshold 0.99 (§10.102) | the engine's built-in rule | re-measure (F241's continuation A/B) | the engine key's presence (§2.2.1) |
+| vulcanization at tech era 4, conveyors before compression ignition (§10.93) | vanilla's era and prerequisites | re-rule | `emit_techs` throws if compression ignition's prerequisites move; an era move shows only in the regeneration |
 
-**Treaty ports (§2.2.10).** The notes add:
-- AI regional objectives, `will_incorporate_state`, the strait dependence links and `has_military_reach`;
-- a rule that a country can no longer release one that could invalidate a treaty port it ceded inside its market.
+### 5.3 What we author
 
-Nothing in them touches the pursuit filter, the never-added rule or the port-building requirement, so the §2.2.10 list stands as written.
-
-**Copper, the new good** (read 2026-11-07 from a third-party parse of the 1.15.0 files, `vanilla_parsed/` in the public repository
-`jakeOmega/Vic3TimelineExtended`, game version 1.15.0 per its manifest; not from the installed files, so confirm in routine step 1). Base price 40.
-- *Who consumes it, per level:* the power plant 2 / 4 / 5 (early / coal-fired / oil-fired, replacing 5 wood, 5 of 20 coal, 5 of 25 oil); arc-welded
-  construction 10 (replacing 10 of 40 tools; tech era 5); telephones 30 (replacing 10 of 20 iron and all 20 lead); electric engines 10 (replacing 10
-  of 30 electricity); percussion caps 5 and explosive shells 10 (replacing lead); two new artillery main methods, bronze cannons (10 copper for 15
-  iron) and bronze smoothbores (20 for 25 iron), on the same technologies as cannons and smoothbores; 2 on electric sewing machines, automatic power
-  looms and pot stills, 4 on patent stills, 1 on every assembly line, refrigeration method, the automated bakery and arcades. The copper mine makes
-  20 / 40 / 60 / 70 by pump plus 12 / 20 by explosives. Neither our dams (6 tools + 6 engines per 300 electricity) nor our electric
-  streetlights (2 coal) use any today. For 1.1 the dams take it in proportion, out of the engines (§10.108: 6 tools + 3 engines + 4.5 copper per
-  300). The streetlights stay exactly as in 1.0, with no copper and no engines (§10.108.1); the field diff of routine step 5 must show
-  their `pm_goods` and `pm_employment` unchanged.
-- *Where it is mined:* `building_copper_mine` is a capped resource like lead's, unlocked by shaft mining, with the lead mine's methods. Read from a
-  mod's copy of the 1.15 `state_regions` (`elfindel69/domus_iagiellonica`): **609 levels in 84 states**, against ~2,900 for lead and ~7,900 for
-  iron. Two other copies agree state by state where they carry the file; a third (`real-tyrone/tyrone-mp`) adds 12 states of its own. The largest:
-  Michigan 36, Katanga 30, Antofagasta 30, Zambia, Arizona and Tarapacá 18, South Australia 14, the West Country and Montana 12, Lower Silesia and
-  Kanto 10. France and Belgium have none, and the Netherlands none in Europe. Confirm on the installed files in routine step 1.
-- *The main methods' swaps are value-neutral at base prices* (copper 40 for iron, lead and tools at 40; the electric engines' +£100). The ladder's
-  anchors (steam engines, percussion caps, telephones, cannons) keep their input values, so `lint_tier_eras.mjs` (L31), which checks a rung's input
-  VALUE and not its mix, passes on the 1.0 book. **A rebuild of the 1.0 book on 1.15 therefore ships every rung on its 1.13 mix, with no copper, and
-  nothing throws.** Only the regeneration of routine step 5 brings copper into the rungs.
-- *Step 5 will throw on artillery:* `make_tier4_config.mjs` refuses more than four main methods, and the foundry now has six. Ruled (§10.108.2): the
-  bronze pair becomes a switchable second main method on the t0 and t1 rungs at the same input value, so the generator must pair each with its iron
-  twin instead of throwing.
-- *Trade:* `make_trade_config.mjs` throws on a tradeable good in no class (§2.1, `goods/00_goods.txt`). F159 §5 has copper's historical wedge at
-  32.7% falling to ~0, which puts it with the low-wedge classes (B or C). `tools/goods_prices.tsv` gains copper in step 6.
-- *A 1.0 install on 1.15:* the owned 1.13 copies of `production_methods/01_industry.txt` and `06_urban_center.txt` replace 1.15's. Under them the
-  power plants, telephones, motor and munition methods, sewing, stills, assembly lines and arcades consume no copper. The only vanilla consumers
-  left are arc-welded construction and refrigeration. The copies also lack `pm_bronze_cannons` and `pm_bronze_smoothbores`, which 1.15's
-  `pmg_foundries` names; expect `error.log` lines for them.
+What the mod writes that new vanilla content does not reach by itself. Phase 4 walks every new vanilla good, building, method, technology,
+mechanic or script hook through the groups below and asks of each entry whether it belongs there narratively (would the period's engineers have
+used it?) and mechanically (does vanilla's nearest content use it?). The default for a new input is §10.108's: where vanilla puts it, and in
+proportion in the similar cases vanilla lacks; anything else is argued.
+- **Regenerated from vanilla (check only that it arrived):** the rungs' recipes, staffing, names and icons (routine step 5), the merged rungs,
+  the secondaries (read live on every build), the crafts' input mix (vanilla's first method), the company chain extension, the rewritten vanilla
+  references (the whole-tree scan), the 1836 start (converted live), the technology tree with its `ERA_MOVES` and `PREREQ_ADDS`, localization
+  reusing vanilla's keys.
+- **Copied from the rung below:** the three minted top rungs (furniture's spray finishing, paper's continuous web, fertilizer's catalytic
+  synthesis) take the rung below's input mix and staffing. A new input in the rung below arrives; whether the minted step should differ is a
+  narrative question.
+- **Our own numbers, which nothing vanilla adds reaches:**
+  - the ladder's values (A, B, C, cost1, in1 and the per-industry lifts), the crafts' staffing and £2 floor, the AI desire ladder;
+  - the dams: the four classes, their slots, staffing and upkeep (`tools/lib_dams.mjs`), the project list (`config/dam_projects.json`);
+  - the electric streetlights (`PM_GOODS_RULED` / `PM_EMPLOYMENT_RULED` in `tools/lib_tier4_spec.mjs`) and the power plant's cost;
+  - the research levers, the finish boost, the AI's schooling;
+  - the research entries (`emit_research_events.mjs`): which industries each technology's entry counts, the marks and literacy gates, and the
+    channels beyond factories (units, ships, laws, colonies, cities, universities, financial districts, the chemical industries);
+  - the investment-pool defines, the monopoly threshold, the trade classes, the hydro traits whose electricity bonus is removed (five, by name);
+  - the start rules (empty in the canon).
+- **The measurement's hand lists:** the PI basket (steel, tools, engines, fertilizer, explosives, dye, paper), the PP basket (groceries, clothes,
+  furniture, glass, fine art, automobiles, telephones, radios) and the war goods (`tools/testbed/ledger/criteria.mjs`); the red flags' one-good
+  producers and `NOT_INDUSTRY` list (`input_price_flags.mjs`); the instrumented tags and markets (`lib_markets.mjs`); the telemetry's good and
+  tag lists; the editor's `GOOD_GROUPS` and `LOCAL_GOODS`.
+- **Player-facing:** names for minted things (English, generated for all 11 languages), the mod's description, KNOWN_ISSUES, the changelog, the
+  Workshop text, the minted icons (`art/`).
