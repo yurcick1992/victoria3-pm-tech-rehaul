@@ -114,6 +114,9 @@ an intermediate one.
 
 - **U70** · T · `supported_game_version`, the release build, README's list of replaced files (`tools/list_replaced_files.mjs`), KNOWN_ISSUES, the
   changelog, the Workshop text, the version log (ON_GAME_UPDATE §3), the findings, new couplings into ON_GAME_UPDATE §2 · OPEN.
+- **U71** · T · the docs that name the 2026-11-07 additions: REPO_GUIDE entries for `tools/game_diff.mjs`, `tools/lint_vanilla_names.mjs`,
+  `tools/lib_pdx_script.mjs` and the `game-update` skill; a CLAUDE.md §5.2 row for the per-version register; a BACKLOG line pointing here ·
+  OPEN: waiting for the batch session's close-out commit, which holds those three files uncommitted in main tonight.
 
 ---
 
