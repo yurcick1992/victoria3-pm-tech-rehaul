@@ -696,6 +696,11 @@ Nothing in them touches the pursuit filter, the never-added rule or the port-bui
   20 / 40 / 60 / 70 by pump plus 12 / 20 by explosives. Neither our dams (6 tools + 6 engines per 300 electricity) nor our electric
   streetlights (2 coal) use any today. For 1.1 the dams take it in proportion, out of the engines (§10.108: 6 tools + 3 engines + 4.5 copper per
   300); the streetlights are open (BACKLOG D).
+- *Where it is mined:* `building_copper_mine` is a capped resource like lead's, unlocked by shaft mining, with the lead mine's methods. Read from a
+  mod's copy of the 1.15 `state_regions` (`elfindel69/domus_iagiellonica`): **609 levels in 84 states**, against ~2,900 for lead and ~7,900 for
+  iron. Two other copies agree state by state where they carry the file; a third (`real-tyrone/tyrone-mp`) adds 12 states of its own. The largest:
+  Michigan 36, Katanga 30, Antofagasta 30, Zambia, Arizona and Tarapacá 18, South Australia 14, the West Country and Montana 12, Lower Silesia and
+  Kanto 10. France and Belgium have none, and the Netherlands none in Europe. Confirm on the installed files in routine step 1.
 - *The main methods' swaps are value-neutral at base prices* (copper 40 for iron, lead and tools at 40; the electric engines' +£100). The ladder's
   anchors (steam engines, percussion caps, telephones, cannons) keep their input values, so `lint_tier_eras.mjs` (L31), which checks a rung's input
   VALUE and not its mix, passes on the 1.0 book. **A rebuild of the 1.0 book on 1.15 therefore ships every rung on its 1.13 mix, with no copper, and

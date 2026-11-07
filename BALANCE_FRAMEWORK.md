@@ -4536,7 +4536,10 @@ question asked: is there a narrative case that dams need less copper than would 
 **1 tools + 0.5 engines + 0.75 copper**, in place of 1 tools + 1 engines: 6 tools + 3 engines + 4.5 copper a 300-electricity level, 12 + 6 + 9 a
 600 one. The copper is taken out of the engines value for value, so the upkeep stays £600 a 300 level at base prices (~7% of revenue).
 - *Why the engines.* §10.89.3 gave the dam engines because *"no electrical-equipment good exists; engines are the coal plant's own turbine
-  stand-in"*. Copper is now that good, and it replaces the generator's part of the stand-in.
+  stand-in"*. Copper is not that good either. The user, the same day: *"Since copper is dug in mines, it's narratively a raw resource, not
+  machinery from this resource."* So copper stands for the raw metal the electrical side's upkeep consumes (generator rewinds, cables, busbars),
+  with no separate fabrication step, as vanilla's own plants and telephone works take copper itself. Taking it out of the engines moves that
+  upkeep from bought machinery to bought metal; the figures are unchanged.
 - *Why this amount.* In vanilla 1.15's coal-fired plant, copper is 31% of the equipment inputs (6 engines £360 + 4 copper £160). In the early and
   oil-fired plants it is 25%. The dam's £600 at ~30% gives £180 of copper.
 - *The readings not taken.* Parity per unit of electricity (24 copper a 300 level, as six coal-fired levels use) prices the dam as a fuelled
