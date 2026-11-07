@@ -706,8 +706,9 @@ Nothing in them touches the pursuit filter, the never-added rule or the port-bui
   anchors (steam engines, percussion caps, telephones, cannons) keep their input values, so `lint_tier_eras.mjs` (L31), which checks a rung's input
   VALUE and not its mix, passes on the 1.0 book. **A rebuild of the 1.0 book on 1.15 therefore ships every rung on its 1.13 mix, with no copper, and
   nothing throws.** Only the regeneration of routine step 5 brings copper into the rungs.
-- *Step 5 will throw on artillery:* `make_tier4_config.mjs` refuses more than four main methods, and the foundry now has six. The bronze pair needs a
-  ruling (a second main method on the cannon and smoothbore rungs, or left out).
+- *Step 5 will throw on artillery:* `make_tier4_config.mjs` refuses more than four main methods, and the foundry now has six. Ruled (§10.108.2): the
+  bronze pair becomes a switchable second main method on the t0 and t1 rungs at the same input value, so the generator must pair each with its iron
+  twin instead of throwing.
 - *Trade:* `make_trade_config.mjs` throws on a tradeable good in no class (§2.1, `goods/00_goods.txt`). F159 §5 has copper's historical wedge at
   32.7% falling to ~0, which puts it with the low-wedge classes (B or C). `tools/goods_prices.tsv` gains copper in step 6.
 - *A 1.0 install on 1.15:* the owned 1.13 copies of `production_methods/01_industry.txt` and `06_urban_center.txt` replace 1.15's. Under them the

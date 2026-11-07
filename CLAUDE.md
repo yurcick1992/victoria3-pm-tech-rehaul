@@ -443,7 +443,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.103 | treaty ports: the measured funnel and the layered solution, deferred to mod 1.1 on game 1.15 | deferred |
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays, as readings (.1: one four-column scorecard, the loss to the footer, world / shortlist views, nothing past the right edge; the canonical ledger form since 2026-10-29) | in force (§5.6) |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (power plant, dam, electric streetlights); nothing happens when a state loses it | deferred to mod 1.1 (performance risk); 1.0 known issue |
-| 10.108 | copper (mod 1.1): the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights stay exactly as in 1.0 (no copper, no engines), all their work deferred to 1.2 or later | ruled for 1.1, not built |
+| 10.108 | copper (mod 1.1): the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights stay exactly as in 1.0 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery: a switchable second main method on the t0 and t1 rungs, at the same input value | ruled for 1.1, not built |
 
 ---
 

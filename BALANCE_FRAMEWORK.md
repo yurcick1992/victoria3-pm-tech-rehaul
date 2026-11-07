@@ -75,7 +75,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure | in force (2026-10-31); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
-| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later | ruled for mod 1.1 (game 1.15), not built | here |
+| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value | ruled for mod 1.1 (game 1.15), not built | here |
 
 ---
 
@@ -4588,3 +4588,36 @@ measured first, and for 1.1 express compatch we just don't have time for that. D
   with none is unmeasured; the first 1.15 vanilla batch can read it (`good_market.mjs`, copper in the French and Belgian markets).
 - *Withdrawn:* that the method already lowers copper demand against vanilla. It compares totals with vanilla rather than giving a reason for
   zero, and it holds only if the freed electricity is not consumed elsewhere.
+
+### §10.108.2 — BRONZE ARTILLERY: A SWITCHABLE SECOND MAIN METHOD ON THE t0 AND t1 RUNGS, AT THE SAME INPUT VALUE (user-ruled 2026-11-07)
+
+**The question.** Vanilla 1.15 gives the artillery foundry two new main methods, read from the parse of ON_GAME_UPDATE §4. Bronze Cannons (Artillery
+technology) takes 10 copper + 15 hardwood where Cannons takes 15 iron + 10 hardwood. Bronze Smoothbores (Shell Gun) takes 20 copper + 20 hardwood
+where Smoothbores takes 25 iron + 15 hardwood. Each has its twin's output, staffing and technology, and its input value at base prices (£1,000 and
+£1,600). The foundry now has six main methods, and `make_tier4_config.mjs` throws above four.
+
+**The ruling.** The user: *"go with the switchable PMs path, with identical input value between metals, the way you proposed it."* So:
+- The **t0 rung** (Cannons, `building_artillery_foundry`) and the **t1 rung** (Smoothbores, `building_artillery_foundry_smoothbores`) each get a
+  second main method, the bronze one, switched without construction like a merged method.
+- **Same rung, same tier.** Each bronze method has the same technology, output and staffing as its iron twin, and the same input value: the rung's
+  own, split over the bronze method's vanilla inputs by base-price value. At the canon's sizes:
+  - t0: 19.2 iron + 12.8 hardwood → **12.8 copper + 19.2 hardwood** (£1,280 either way);
+  - t1: 30 iron + 18 hardwood → **24 copper + 24 hardwood** (£1,920 either way).
+- **Not a merged rung.** There is no tier step, no midpoint cost and no conditional desire; the rung's cost and `ai_value` do not change. At base
+  prices both methods break even at the same output price, so the building's name carries one figure.
+- **Why it fits** (2026-11-07):
+  - It is a material substitution, not a technology step, so it costs no capital (goal 3 does not apply) and keeps vanilla's copper where vanilla
+    put it (§10.108).
+  - Historically it happened in a single works. Tredegar recast the Army of Northern Virginia's bronze 6-pounders as bronze Napoleons in 1863,
+    then cast the same gun in iron from January 1864, once the Ducktown copper mines were lost.
+  - Britain kept bronze (the Royal Brass Foundry, Woolwich, 1716–~1860) and iron (private ironmasters, Sussex and Carron) in separate plants for a
+    well over a century. That split reflected who owned the furnaces (a state bronze foundry, a private iron trade casting at its blast
+    furnaces), not a different kind of gun shop.
+  - In the game each market picks the metal by price, with iron as the fallback when copper is short.
+
+**Built in the 1.1 pass, on game 1.15 only.** The generator pairs each bronze method with its iron twin (same technology, output and staffing) rather
+than throwing at six main methods, and records the pairing in the book. Every emitter and check that reads a rung's main methods has to follow:
+- the tier lint (L31): each alternative's input value equals its rung's;
+- the method-combination lint: the secondaries beside both methods;
+- the research counts (`has_active_production_method`);
+- the 1836 converter, if vanilla's history starts any foundry on a bronze method. The start extraction's `DRIFT` line shows it.

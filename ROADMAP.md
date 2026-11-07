@@ -89,7 +89,8 @@ feature only if it needs no iteration (step 7's timeline).
   AI rework) is seen. Open on 1.15: does the AI pursue recognised hosts by itself; does the never-added rule hold (`skip_build_list`
   untested); why do ports in recognised markets build no trade capacity.
 - **Copper** (§10.108): the rungs take it wherever their vanilla 1.15 methods do, by the regeneration (a rebuild of the 1.0 book alone ships
-  none, ON_GAME_UPDATE §4); the dams in proportion, out of the engines; the artillery foundry's two bronze methods need a ruling.
+  none, ON_GAME_UPDATE §4); the dams in proportion, out of the engines; the artillery foundry's two bronze methods as a switchable second main method on its t0 and t1 rungs, at the same input
+  value (§10.108.2).
 - **Not in 1.1: the streetlights** (user, 2026-11-07, §10.108.1). `pm_electric_streetlights` stays exactly as in 1.0, with no copper and no
   engines. All work on it moves to mod 1.2 or later: its copper, and the urban-centre electricity ×2 or ×3 of §10.89.15 (from 1 to 2–3
   electricity a level with a reasonable coal increase; it moves electricity prices world-wide, so it needs a century measurement). More hydro
