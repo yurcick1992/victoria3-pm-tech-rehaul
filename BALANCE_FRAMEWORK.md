@@ -75,6 +75,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure | in force (2026-10-31); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
+| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper | ruled for mod 1.1 (game 1.15), not built | here |
 
 ---
 
@@ -4524,3 +4525,30 @@ First applied in the batch's interim chart (2026-10-31, the Artifact VyqZ37S2duy
 drop logged on 1 January belongs to the year before. `ledger/downsize_telemetry.mjs` gets the tier split and the two measures, and the
 schedule's `_comparison` and `_predictions` are reworded to this ruling, once that batch ends (its files are frozen while it plays,
 §5.1 rule 7).
+
+## §10.108 — COPPER IN MOD 1.1: THE DAMS CARRY IT IN PROPORTION, TAKEN OUT OF THE ENGINES (user-ruled 2026-11-07)
+
+**The frame** (the user, 2026-11-07): game 1.15 adds copper (its consumers: ON_GAME_UPDATE §4). *"We will have to introduce it everywhere where
+vanilla does, and in similar cases that simply don't exist in vanilla. By default, proportionally, everything else needs to be argued."* The
+question asked: is there a narrative case that dams need less copper than would follow proportionally from their other inputs?
+
+**The ruling** (*"Ruled for 1.1: dams have copper proportionally, as you suggest here"*). Per 50 electricity a dam's upkeep becomes
+**1 tools + 0.5 engines + 0.75 copper**, in place of 1 tools + 1 engines: 6 tools + 3 engines + 4.5 copper a 300-electricity level, 12 + 6 + 9 a
+600 one. The copper is taken out of the engines value for value, so the upkeep stays £600 a 300 level at base prices (~7% of revenue).
+- *Why the engines.* §10.89.3 gave the dam engines because *"no electrical-equipment good exists; engines are the coal plant's own turbine
+  stand-in"*. Copper is now that good, and it replaces the generator's part of the stand-in.
+- *Why this amount.* In vanilla 1.15's coal-fired plant, copper is 31% of the equipment inputs (6 engines £360 + 4 copper £160). In the early and
+  oil-fired plants it is 25%. The dam's £600 at ~30% gives £180 of copper.
+- *The readings not taken.* Parity per unit of electricity (24 copper a 300 level, as six coal-fired levels use) prices the dam as a fuelled
+  plant. A share of the plant's whole input bill (12.5–17%, 1.9–2.6 copper a 300 level) spreads the copper over a fuel bill the dam does not have.
+- *No case for less than this was found.* The steam-only copper argues less: condenser and feedwater-heater tubes (admiralty brass, ~70% copper)
+  and the auxiliaries' motors. The hydro powerhouse's larger electrical side argues more: the generator is a bigger share of its machinery than of
+  a steam station's. The grid is outside the dam either way (§10.89.15: the coal plant priced as the whole utility, the dam as a bare powerhouse).
+  The split of a steam station's own copper between the two was not found in a period source, so neither side was argued to win.
+- *What it costs.* At this rate a dam uses about a sixth of the copper that coal-fired plants use for the same electricity. F222's ~17,200 dam
+  electricity a week at 1935 is ~230 copper a week, about three late copper-mine levels.
+
+**Built in the 1.1 pass, on game 1.15 only** (1.13 has no copper good). The 1.1 book carries `dams.inputs_per_50 = { tools: 1, engines: 0.5,
+copper: 0.75 }`. It is a book field, merged over `DAM_DEFAULTS` in `tools/lib_dams.mjs`, so the field diff shows it and the 1.13 books still
+build as measured. `BASE_PRICE` in `lib_dams.mjs` gains copper at 40. Without it the profitability assertion in `resourceLayout()` reads NaN and
+throws, so a missing price cannot ship silently. A value-for-value swap leaves the assertion's worst case unchanged (every input at 175% of base).
