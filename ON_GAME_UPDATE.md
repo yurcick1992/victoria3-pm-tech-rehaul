@@ -615,7 +615,9 @@ different versions are not comparable without saying so.
   n=4) and `20260818_221216_canon-n7` are 1.13.10. The last batch on it is `20261030_233342_alt-canon48-vanilla16` (launched 2026-10-30, its last run ending on 2026-11-08). Before
   the 1.15 update, its `game\common`, `events`, `map_data`, `localization` and `gui` were copied to `C:\claude-code\vic3_game_1.13.11\game`
   (2026-11-07, 240 MB; `binaries_hash.txt` holds the exe's sha256) for routine step 1's diff and for readers of 1.13 sessions
-  (`VIC3_GAME=C:\claude-code\vic3_game_1.13.11\game`).
+  (`VIC3_GAME=C:\claude-code\vic3_game_1.13.11\game`). The exe itself is kept beside it, `binaries\victoria3.exe` (97 MB, the same sha256): its
+  strings name every trigger, effect and modifier type the engine registers, with their descriptions, so a strings diff against 1.15's
+  exe stands in for the `script_docs` dump if none was made on 1.13.11. The folder is outside the repository and in no git repository.
 - **1.15** — expected 2026-11-05, with 1.14's AI rework. Mod 1.1 follows this file's routine; treaty ports are re-measured (§2.2.10). What the
   preliminary patch notes touch: §4.
 
