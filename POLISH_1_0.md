@@ -87,7 +87,7 @@ GDP 1.07× vanilla n=40, loss 6.60, play time ×1.010 of the same sessions' vani
 
 **Deferred to mod 1.1 or later:** B2 (stale looms), B3 (craft secondary lines), F1 (artisanal ownership), R6 (rung building art), Q5
 (military research), Q7 (rubber, a watch item), Q4's two book levers (the cost ladder, paper's own lift); and, ruled 2026-10-24, the
-urban-centre electricity ×2 or ×3 (`pm_electric_streetlights` from 1 to 2–3 electricity a level, with a reasonable coal increase; measure the
+urban-centre electricity ×2 or ×3, moved to 1.2 or later on 2026-11-07 (BALANCE_FRAMEWORK §10.108.1) (`pm_electric_streetlights` from 1 to 2–3 electricity a level, with a reasonable coal increase; measure the
 canon's urban-centre and total electricity at 1935 first; more hydro variety within the four dam types was dropped — BALANCE_FRAMEWORK
 §10.89.15, BACKLOG D). Not polish, carried in BACKLOG: F2, F3, C2–C4, N2.
 

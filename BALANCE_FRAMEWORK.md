@@ -56,7 +56,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.86 | the world product's hard band; prices planned first; the tier-0 penalty bounded; per-industry levels closed | in force; the per-industry closure relaxed by §10.101 | here |
 | 10.87 | report true profits; the wage model; the margin identity | in force | here |
 | 10.88 | trade ×1 at B 1.64; the finish boost | in force (B moved with later books) | here |
-| 10.89 | hydro dams; the power plant at 4× cost; .15 dams against real plants, urban-centre electricity ×2 / ×3 | in force; .15's urban-centre ×2 / ×3 deferred to mod 1.1, more dam variety dropped | here |
+| 10.89 | hydro dams; the power plant at 4× cost; .15 dams against real plants, urban-centre electricity ×2 / ×3 | in force; .15's urban-centre ×2 / ×3 deferred to mod 1.2 or later (§10.108.1; was 1.1), more dam variety dropped | here |
 | 10.90 | the closed price levers; world GDP read as displayed | in force | here |
 | 10.91 | craft rungs and merged rungs | in force | here |
 | 10.92 | recipes steer production; AI values only follow profit | in force | here |
@@ -75,7 +75,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure | in force (2026-10-31); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
-| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper | ruled for mod 1.1 (game 1.15), not built | here |
+| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later | ruled for mod 1.1 (game 1.15), not built | here |
 
 ---
 
@@ -3082,6 +3082,7 @@ increasing UC electricity output 2x and 3x against how it is now, with reasonabl
 actually have more variety of effective plants with four base buildings was considered and dropped."*
 ⇒ **DEFERRED to mod 1.1**, one candidate among the deferred vectors (POLISH_1_0.md §4, BACKLOG D): `pm_goods.pm_electric_streetlights` electricity
 1 → 2 or 3 a level, its coal 2 raised by a reasonable amount (the amount is unruled). Nothing changes in 1.0.
+⚠ (2026-11-07, §10.108.1) Moved to mod 1.2 or later: in 1.1 the streetlights stay exactly as in 1.0.
 ⇒ **DROPPED:** more hydro variety within the four dam types — a state-level dam throughput bonus, vanilla's five site bonuses restored for dams
 alone, finer dam classes.
 
@@ -4555,3 +4556,35 @@ question asked: is there a narrative case that dams need less copper than would 
 copper: 0.75 }`. It is a book field, merged over `DAM_DEFAULTS` in `tools/lib_dams.mjs`, so the field diff shows it and the 1.13 books still
 build as measured. `BASE_PRICE` in `lib_dams.mjs` gains copper at 40. Without it the profitability assertion in `resourceLayout()` reads NaN and
 throws, so a missing price cannot ship silently. A value-for-value swap leaves the assertion's worst case unchanged (every input at 175% of base).
+
+### §10.108.1 — THE STREETLIGHTS STAY AS IN 1.0: NO COPPER, NO ENGINES, NO OTHER CHANGE IN 1.1 (user-ruled 2026-11-07)
+
+**The question.** Should the urban centre's electric streetlights (2 coal → 10 services + 1 electricity, 250 engineers; §10.43.0) consume copper
+in 1.1?
+
+**The ruling.** The user: *"For 1.1, let's have no copper (or engine, for that matter) consumption on the urban center latest streetlights PM.
+This is not a principled ruling, rather a safe option when going the more correct way will have a lot of balance implications that need to
+measured first, and for 1.1 express compatch we just don't have time for that. Defer the work with streetlights to 1.2 or later. In 1.1 for
+1.15, they work exactly the same as in 1.0 for 1.13, not even "get a proportional addition of the new resource"."* So:
+- **In 1.1 `pm_electric_streetlights` keeps 1.0's recipe and staffing exactly** (`PM_GOODS_RULED` / `PM_EMPLOYMENT_RULED` in
+  `tools/lib_tier4_spec.mjs`, unchanged). The override replaces the method's whole goods block, so it holds whatever 1.15 does to vanilla's
+  method (in 1.15.0 vanilla's is unchanged: 3 electricity in, no copper). The rest of the urban centre follows 1.15: the arcades' 1 copper is
+  vanilla's.
+- **It is not a principle.** §10.108's default stands: copper where vanilla puts it and, in proportion, in the similar cases vanilla lacks. This
+  is an exception made for time.
+- **Deferred to mod 1.2 or later: all work on the streetlights.** That is their copper and engines, and also the ×2 / ×3 urban-centre
+  electricity of §10.89.15, which was a 1.1 vector until now.
+
+**The record for 1.2** (the arguments of 2026-11-07):
+- *For none:* vanilla 1.15's street lighting takes none. In proportion to the method's own inputs it rounds to zero: the generating part is ~9% of
+  the output value, so ~0.02 copper a level, and zero on §10.108's equipment basis (the method has no equipment input).
+- *For copper:* the method is a small fuelled plant, so parity with a coal-fired plant per unit of electricity fits it (0.08 → 0.1 a level,
+  ~1,000–1,400 a week at the canon's 10–14k levels, 2–3% of the world's late-method ceiling). Narratively, small urban generation is at least as
+  copper-heavy per unit as a central plant: copper dynamo windings, and low-voltage distribution, where copper was the largest cost of Edison's
+  mains and his feeder-and-main and three-wire systems existed to save it. The proportional ~0 comes from the method's cheap coal (§10.43.2), not
+  from history.
+- *Supply:* France and Belgium have no copper deposits (ON_GAME_UPDATE §4). Vanilla 1.15 already makes their power plants, construction and
+  telephones depend on imported copper, so the streetlights would add to an import they need anyway. Whether a major's market can ever be left
+  with none is unmeasured; the first 1.15 vanilla batch can read it (`good_market.mjs`, copper in the French and Belgian markets).
+- *Withdrawn:* that the method already lowers copper demand against vanilla. It compares totals with vanilla rather than giving a reason for
+  zero, and it holds only if the freed electricity is not consumed elsewhere.

@@ -426,7 +426,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.86 | the world product's derived hard band; prices planned first; the tier-0 penalty bounded by the 1836 map; per-industry levels closed, non-geometric ladders open | in force (per-industry lift relaxed by §10.101) |
 | 10.87 | report true profits; the wage model; the margin identity | in force (§2.10) |
 | 10.88 | trade weights ×1 at B 1.64; the finish boost | in force (B moved with later books) |
-| 10.89 | hydro dams (+ .1 the power plant at 4× cost; .9–.14 the redesign, engine-built, family rules, resource slots, private construction; .15 dams against real plants, urban-centre electricity ×2 / ×3 deferred to mod 1.1, more dam variety dropped) | in force (.15 deferred) |
+| 10.89 | hydro dams (+ .1 the power plant at 4× cost; .9–.14 the redesign, engine-built, family rules, resource slots, private construction; .15 dams against real plants, urban-centre electricity ×2 / ×3 deferred to mod 1.2 or later by §10.108.1, more dam variety dropped) | in force (.15 deferred) |
 | 10.90 | the closed price levers; world GDP read as displayed | in force (§2.1, §5.6) |
 | 10.91 | craft rungs (line A) and merged rungs (line B), with the staffing, floor, t1 anchors and desire rules of .1–.5 | in force (Part 4) |
 | 10.92 | recipes steer production; AI values only follow profit; the exemptions | in force (§2.4) |
@@ -443,7 +443,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.103 | treaty ports: the measured funnel and the layered solution, deferred to mod 1.1 on game 1.15 | deferred |
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays, as readings (.1: one four-column scorecard, the loss to the footer, world / shortlist views, nothing past the right edge; the canonical ledger form since 2026-10-29) | in force (§5.6) |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (power plant, dam, electric streetlights); nothing happens when a state loses it | deferred to mod 1.1 (performance risk); 1.0 known issue |
-| 10.108 | copper (mod 1.1): the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper | ruled for 1.1, not built |
+| 10.108 | copper (mod 1.1): the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights stay exactly as in 1.0 (no copper, no engines), all their work deferred to 1.2 or later | ruled for 1.1, not built |
 
 ---
 

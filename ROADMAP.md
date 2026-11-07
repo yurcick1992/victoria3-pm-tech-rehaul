@@ -88,9 +88,12 @@ feature only if it needs no iteration (step 7's timeline).
 - **Treaty ports** (§10.103, F243–F246): five layers built and probed on 1.13, none in the canon; deferred until the 1.15 AI (1.14's promised
   AI rework) is seen. Open on 1.15: does the AI pursue recognised hosts by itself; does the never-added rule hold (`skip_build_list`
   untested); why do ports in recognised markets build no trade capacity.
-- **Urban-centre electricity ×2 or ×3** (user-ruled 2026-10-24, §10.89.15): `pm_electric_streetlights` from 1 to 2–3 electricity a level,
-  with a reasonable coal increase. A one-line recipe change, but it moves electricity prices world-wide, so it needs a century measurement;
-  measure the canon's urban-centre and total electricity at 1935 first. More hydro variety within the four dam types was dropped.
+- **Copper** (§10.108): the rungs take it wherever their vanilla 1.15 methods do, by the regeneration (a rebuild of the 1.0 book alone ships
+  none, ON_GAME_UPDATE §4); the dams in proportion, out of the engines; the artillery foundry's two bronze methods need a ruling.
+- **Not in 1.1: the streetlights** (user, 2026-11-07, §10.108.1). `pm_electric_streetlights` stays exactly as in 1.0, with no copper and no
+  engines. All work on it moves to mod 1.2 or later: its copper, and the urban-centre electricity ×2 or ×3 of §10.89.15 (from 1 to 2–3
+  electricity a level with a reasonable coal increase; it moves electricity prices world-wide, so it needs a century measurement). More hydro
+  variety within the four dam types was dropped.
 - **Military research** — ~10 technologies behind vanilla and no tech-era-5 military technology held anywhere (POLISH Q5). The user's first
   approach: *"a bit higher ai weights for military techs over societal techs over most production techs (exceptions with also higher
   priority on production where there are no JEs, like Shift Work)"*. Tech spread ×2 and a society research multiplier stay deferred (§10.97
@@ -408,8 +411,8 @@ polish — and it became live when the crafts were canonised (step 12).
 2. **05.11** — Victoria 3 **1.15** (1.14 folded in by the developers; 1.14 is where an AI decision-making rework was promised).
 3. **~12.11** — a stable **1.15.N**.
 4. **~16.11** — **mod 1.1** for 1.15.N: the ON_GAME_UPDATE pass plus whatever deferred feature the new game supports; the candidate is
-   **treaty ports** (§10.103, F243–F246), built and probed on 1.13, deferred until the 1.15 AI is seen; another vector on record is the
-   urban-centre electricity ×2 or ×3 (§10.89.15), which needs a century measurement. Only about four days between items 3 and
+   **treaty ports** (§10.103, F243–F246), built and probed on 1.13, deferred until the 1.15 AI is seen. The urban-centre electricity ×2 or ×3 (§10.89.15)
+   moved to 1.2 or later on 2026-11-07 (§10.108.1). Only about four days between items 3 and
    4: room for 10-year probes and at most one n=3 century, so 1.1 can carry a feature only if it needs no iteration.
 5. **18.11** — GTA VI; no attention for Paradox mods until the new year.
 
