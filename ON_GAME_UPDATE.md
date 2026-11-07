@@ -612,7 +612,10 @@ different versions are not comparable without saying so.
 - **1.13.11** — from 2026-08-19, the current version. It fixes the sway recursion. The update pass found no vanilla data change (all 53 base prices
   unchanged, no unmapped method, the same inherited 1836 gaps). Its behaviour was not compared directly: "more war from the sway fix" did not show at
   n=18, and revolts ran ×1.30 (F79). Every `VANILLA_REF` session and the 2026-10-21 canon are 1.13.11; the older pins `20260813_083557` (vanilla
-  n=4) and `20260818_221216_canon-n7` are 1.13.10.
+  n=4) and `20260818_221216_canon-n7` are 1.13.10. The last batch on it is `20261030_233342_alt-canon48-vanilla16` (launched 2026-10-30, its last run ending on 2026-11-08). Before
+  the 1.15 update, its `game\common`, `events`, `map_data`, `localization` and `gui` were copied to `C:\claude-code\vic3_game_1.13.11\game`
+  (2026-11-07, 240 MB; `binaries_hash.txt` holds the exe's sha256) for routine step 1's diff and for readers of 1.13 sessions
+  (`VIC3_GAME=C:\claude-code\vic3_game_1.13.11\game`).
 - **1.15** — expected 2026-11-05, with 1.14's AI rework. Mod 1.1 follows this file's routine; treaty ports are re-measured (§2.2.10). What the
   preliminary patch notes touch: §4.
 
