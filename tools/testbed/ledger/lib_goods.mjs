@@ -4,7 +4,8 @@
 // ⚠ A book with `goods_traded_quantity` overrides tq for the goods it names — use tradedQuantity(cfg) for an arm's own values.
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-export const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+// VIC3_GAME points at a copy of the game version a batch ran on (after a patch; ON_GAME_UPDATE §3), like vanilla_construction.mjs
+export const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 export function goodsTable(game = GAME) {
   const out = {}; let idx = 0;
   for (const f of readdirSync(join(game, 'common/goods')).filter(x => x.endsWith('.txt')).sort()) {

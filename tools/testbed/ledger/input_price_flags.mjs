@@ -53,7 +53,8 @@ const TAG_SERIES = [['GBR', 'British Market'], ['USA', 'American Market'], ['FRA
 // ---- the game's own production data, read live and parsed by BRACE DEPTH: vanilla closes some blocks on an indented brace (building_iron_mine
 // and building_lead_mine in 03_mines.txt end on " }"), so a column-0 parser merges a block into its neighbour — the first cut of the producer
 // map below lost the lead and sulfur mines that way
-const GAME_COMMON = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game/common';
+const GAME_ROOT = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';   // VIC3_GAME: the batch's game version after a patch
+const GAME_COMMON = GAME_ROOT + '/common';
 function topBlocks(file) {                                      // [[key, body]] of every top-level `key = { … }`; comments and strings respected
   const t = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '').replace(/"[^"\n]*"|#[^\n]*/g, s => s[0] === '"' ? s : '');
   const out = [], re = /([A-Za-z_0-9\-.:@]+)\s*=\s*\{|\{|\}/g; let m, depth = 0, key = null, start = 0;
@@ -114,7 +115,7 @@ function industrialGoods(cfg) {
 // and the build's minted secondary copies (pm_<vanilla>_<rung key>), matched to the vanilla method they copy by the longest vanilla prefix.
 // ⭐ A consumer is reported as BUILDING · METHOD (2026-10-03, the user: "tooling workshop hardly eats oil (maybe as automation?)") — a
 // building listed alone read as if its main recipe ate the good, where the German oil was eaten by the tooling workshop's Assembly Lines
-const GAME_LOC = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game/localization/english';
+const GAME_LOC = GAME_ROOT + '/localization/english';
 const PM_NAME = new Map();
 for (const f of fs.readdirSync(GAME_LOC).filter(f => /^production_methods.*_l_english\.yml$/.test(f)))
   for (const l of fs.readFileSync(path.join(GAME_LOC, f), 'utf8').split(/\r?\n/)) { const m = /^\s*([a-z_0-9\-]+):\d*\s+"(.*)"\s*$/.exec(l); if (m) PM_NAME.set(m[1], m[2]); }
