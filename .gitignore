@@ -380,3 +380,8 @@ tools/testbed/no_new_runs_at.log
 !config/tech_tree_options.jex-dam4s-rs-x25-m10ac-dpriv.json
 !config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json
 !config/tech_tree_options.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json
+# THE 1.15 UPDATE PASS (2026-11-08): the canon's chain replayed on game 1.15.0 (tools/replay_canon_chain.mjs --prefix g115) + the bronze
+# variants (make_variant_config, §10.108.2) + dam copper (make_dam_inputs_config, §10.108). An update-pass candidate, measured by the
+# g115_probe_1856 schedule; NOT the canon. Its intermediate books (g115-*) are regenerable and stay ignored.
+!config/mod_config.g115-canon-bz-dcu.json
+!config/tech_tree_options.g115-canon-bz-dcu.json

@@ -545,7 +545,7 @@ $D = [char]36           # literal '$' for loc interpolation
 $vanKeys = @{}
 foreach ($ind in $cfg.industries) {
     if ($ind.disabled) { continue }
-    $a = ($ind.tiers | Where-Object { $null -ne $_.vanilla_pm } | Sort-Object { [int]$_.era } | Select-Object -First 1)
+    $a = ($ind.tiers | Where-Object { $null -ne $_.vanilla_pm -and -not $_.method_of } | Sort-Object { [int]$_.era } | Select-Object -First 1)
     if ($a) { $vanKeys[$a.key] = $true; $vanKeys["$($a.key)_lens_option"] = $true }
 }
 function Read-VanillaLoc([string]$lang) {
@@ -598,7 +598,7 @@ foreach ($ind in $cfg.industries) {
     # THE ANCHOR TIER: the one that reuses the vanilla building key, so vanilla's `has_building` and
     # history references keep matching. It is the lowest-era tier carrying a vanilla_pm — NOT tiers[0],
     # which since the era-0 rungs were switched on is an invented key. See the genByBase note below.
-    $anchor = ($ind.tiers | Where-Object { $null -ne $_.vanilla_pm } | Sort-Object { [int]$_.era } | Select-Object -First 1)
+    $anchor = ($ind.tiers | Where-Object { $null -ne $_.vanilla_pm -and -not $_.method_of } | Sort-Object { [int]$_.era } | Select-Object -First 1)
     if ($null -eq $anchor) { $anchor = $ind.tiers[0] }
     $anchorKey = $anchor.key
     # ⭐ A RUNG MAY BE A SECOND MAIN METHOD OF THE RUNG BELOW (the six merges, BALANCE_FRAMEWORK §10.91.2): a tier carrying
@@ -820,7 +820,9 @@ foreach ($ind in $cfg.industries) {
             }
             $beM = if ($Release -or $ind.follows_be -eq $false) { "" } else { ". Recipe BE $(($bes | ForEach-Object { "$_%" }) -join '/')" }
             if ($baseName -ne $vanEn[$anchorKey]) { throw "merged host $($t.key): its name '$baseName' is not vanilla's English '$($vanEn[$anchorKey])' for $anchorKey - the translated name would describe another building" }
-            $bldName = "Tier $($eraSpan[0])-$($eraSpan[-1]). @@VB:$anchorKey@@$beM"
+            # a host whose second methods sit at its own tier (the variants, §10.108.2: bronze cannons beside cannons) reads one tier
+            $spanTxt = if ($eraSpan[0] -eq $eraSpan[-1]) { "$($eraSpan[0])" } else { "$($eraSpan[0])-$($eraSpan[-1])" }
+            $bldName = "Tier $spanTxt. @@VB:$anchorKey@@$beM"
         }
         $locBody += " $($t.key):0 `"$bldName`""
         $locBody += " $($t.key)_lens_option:0 `"@@LENS:$($anchorKey):$($t.key)@@`""
@@ -1447,9 +1449,33 @@ function Scale-PmBlock($blkLines, $div) {
 }
 
 $pmEmitted = @(); $pmSkipped = 0; $pmOverridden = New-Object System.Collections.Generic.HashSet[string]
+#   (4) THE ELECTRICITY GATE (CLAUDE.md §5.4, lint_pm_combos check 9): a vanilla method that consumes electricity without vanilla's own
+#       `required_input_goods = electricity` gets it. Vanilla holds the rule for every electric method but one - game 1.15's
+#       pm_automated_bakery (5 electricity, no gate; 30 of 31 gated) - and our lint holds it for every method we ship. Each gate is printed.
+$elecGated = @()
 foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Filter *.txt)) {
     $orig = [System.IO.File]::ReadAllText($pf.FullName)
     $txt = [regex]::Replace($orig, 'unlocking_production_methods\s*=\s*\{([^{}]*)\}', $gateEval)
+    if ($txt -match 'goods_input_electricity_add') {
+        $eBefore = $elecGated.Count
+        $eLines = $txt -split "`r?`n"; $eOut = New-Object System.Collections.Generic.List[string]; $eDepth = 0; $eStart = -1
+        for ($q = 0; $q -lt $eLines.Count; $q++) {
+            $ln = $eLines[$q]
+            if ($eDepth -eq 0 -and $ln -match '^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*\{') { $eStart = $eOut.Count; $eName = $Matches[1] }
+            $code = ($ln -split '#')[0]
+            $eDepth += ([regex]::Matches($code, '\{')).Count - ([regex]::Matches($code, '\}')).Count
+            if ($eDepth -eq 0 -and $eStart -ge 0) {
+                $blkTxt = (($eOut.GetRange($eStart, $eOut.Count - $eStart)) -join "`n") + "`n" + $ln
+                $blkCode = [regex]::Replace($blkTxt, '#[^\n]*', '')
+                if ($blkCode -match 'goods_input_electricity_add\s*=\s*[0-9.]*[1-9]' -and $blkCode -notmatch 'required_input_goods\s*=\s*electricity') {
+                    $eOut.Add("`trequired_input_goods = electricity"); $elecGated += "$eName ($($pf.Name))"
+                }
+                $eStart = -1
+            }
+            $eOut.Add($ln)
+        }
+        if ($elecGated.Count -gt $eBefore) { $txt = $eOut -join "`r`n" }   # only a file that gained a gate is rewritten (and so owned)
+    }
     if ($pmGoods.Count -gt 0 -or $pmEmp.Count -gt 0 -or $granPms.Count -gt 0) {
         $lines = $txt -split "`r?`n"; $touched = $false
         $outL = New-Object System.Collections.Generic.List[string]
@@ -1533,6 +1559,7 @@ foreach ($pm in @($pmGoods.Keys) + @($pmEmp.Keys) | Select-Object -Unique) {
     if (-not $pmOverridden.Contains($pm)) { throw "pm_goods/pm_employment override names '$pm', which no vanilla production_methods file defines" }
 }
 Write-Output ("production_methods: owning {0} file(s) [{1}]; {2} left vanilla (unchanged); {3} PM override(s) applied" -f $pmEmitted.Count, ($pmEmitted -join ', '), $pmSkipped, $pmOverridden.Count)
+if ($elecGated.Count) { Write-Output ("production_methods: the electricity gate added to {0} vanilla method(s) that consume electricity without it: {1}" -f $elecGated.Count, ($elecGated -join ', ')) }
 
 # --- localization for every language (UTF-8 WITH BOM), in a replace/ folder so our building-name
 #     overrides win over vanilla (and new keys are still defined) ---

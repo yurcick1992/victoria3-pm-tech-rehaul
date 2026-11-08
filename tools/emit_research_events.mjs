@@ -38,6 +38,11 @@ if (!MOD) { console.error('usage: node tools/emit_research_events.mjs <modRoot> 
 // back an exact rerun of the batch it was meant to be compared against.
 const CFGPATH = process.argv[3] || join(REPO, 'config/mod_config.json');
 const CFG = JSON.parse(readFileSync(CFGPATH, 'utf8'));
+// ⭐ A VARIANT (`variant: true`, make_variant_config.mjs, §10.108.2 — game 1.15's bronze cannons beside cannons) is a second main method of
+//   its rung at the rung's own tier: no rung, no step, no count of its own. Every count of the rung reads its host building by type, which
+//   takes in the levels running either method, so the variants are dropped here before anything reads the ladder (unlike a merged rung,
+//   whose levels belong to another tier and are counted by method).
+for (const ind of CFG.industries || []) if (ind.tiers) ind.tiers = ind.tiers.filter(t => !t.variant);
 const RE = CFG.research_events;
 if (!RE || !RE.enabled) { console.log('research events: DISABLED in config - nothing emitted (this is the `techs` arm)'); process.exit(0); }
 

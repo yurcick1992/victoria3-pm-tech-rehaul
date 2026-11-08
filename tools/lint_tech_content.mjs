@@ -60,6 +60,8 @@ const tierTech = {}, perIndustry = {};
 for (const i of cfg.industries) { if (i.disabled) continue;
   for (const t of i.tiers || []) if (t.tech) {
     tierTech[t.tech] = true;
+    // a variant (§10.108.2) is a second main method of its rung at the rung's own step, no rung of its own: rule 2 counts rungs only
+    if (t.variant) continue;
     (perIndustry[i.id] = perIndustry[i.id] || {})[t.tech] = ((perIndustry[i.id] || {})[t.tech] || []).concat(`e${t.era}`); } }
 
 // every vanilla script line that names a technology, EXCLUDING the technology files themselves (so a

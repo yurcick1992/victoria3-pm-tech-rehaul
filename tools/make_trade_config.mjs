@@ -41,7 +41,9 @@ const CLASSES = {
   C: { name: 'manufactures & colonial staples (4-6%)', weight: 2,
        goods: ['clothes', 'tools', 'engines', 'coffee', 'tobacco', 'liquor', 'porcelain', 'artillery', 'ammunition', 'automobiles', 'aeroplanes', 'luxury_furniture'] },
   D: { name: 'semi-bulk (8-15%)', weight: Math.SQRT2,
-       goods: ['fabric', 'sugar', 'lead', 'steel', 'groceries', 'paper', 'wine', 'hardwood', 'glass', 'explosives'] },
+       // copper: game 1.15's new good (vanilla prices it as lead and iron: cost 40, traded_quantity 5) — classed beside lead
+       // PROVISIONALLY, so the 1.15 book can be generated; the class is an open question for the user (GAME_UPDATE_1_15 U45).
+       goods: ['fabric', 'sugar', 'lead', 'copper', 'steel', 'groceries', 'paper', 'wine', 'hardwood', 'glass', 'explosives'] },
   E: { name: 'bulk & perishable (>= 20%) - UNCHANGED, vanilla values', weight: null,
        goods: ['coal', 'wood', 'iron', 'fertilizer', 'meat', 'fruit', 'fish', 'sulfur', 'grain', 'oil', 'furniture'] },
 };
@@ -65,6 +67,12 @@ for (const l of src.split(/\r?\n/)) {
 }
 const tradeable = Object.keys(G).filter(g => !G[g].local && G[g].tradeable);
 const seen = new Map();
+// a good a later game version added: skipped, and said so, when the game read lacks it (the 1.13.11 replay of the canon's chain)
+const SINCE = { copper: '1.15' };
+for (const [k, c] of Object.entries(CLASSES)) c.goods = c.goods.filter(g => {
+  if (G[g] || !SINCE[g]) return true;
+  console.log(`  class ${k}: '${g}' skipped - the game read has no such good (new in ${SINCE[g]})`); return false;
+});
 for (const [k, c] of Object.entries(CLASSES)) for (const g of c.goods) {
   if (!G[g]) die(`class ${k} names '${g}', which the game does not define`);
   if (seen.has(g)) die(`'${g}' is in classes ${seen.get(g)} and ${k}`);

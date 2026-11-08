@@ -26,7 +26,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { blocks } from './lib_vanilla_ladder.mjs';
-import { N, ERA_YEARS, LOC, INDUSTRIES, PLACEMENT, ADDITIONS, ERA_MOVES, RESEARCH_EVENTS, CANON, PM_GOODS_RULED, PM_EMPLOYMENT_RULED, bldName, slug,
+import { N, ERA_YEARS, LOC, INDUSTRIES, PLACEMENT, ADDITIONS, ERA_MOVES, RESEARCH_EVENTS, CANON, PM_GOODS_RULED, PM_EMPLOYMENT_RULED, VARIANTS, bldName, slug,
          GAME_ERA_OF_ERA, ERA_TOLERANCE, eraOfGameEra, gameEraOfYear, derivePlacement, placementFaults } from './lib_tier4_spec.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -67,12 +67,20 @@ const employmentOf = b => Object.fromEntries([...b.matchAll(/building_employment
 const pollutionOf = b => { const m = b.match(/state_pollution_generation_add\s*=\s*([0-9.]+)/); return m ? +m[1] : 0; };
 
 // ---- the structure ----------------------------------------------------------------------------------------------
-const report = [], out = { industries: [] };
+const report = [], out = { industries: [] }, variantNotes = [];
 for (const { id, building } of INDUSTRIES) {
   const bb = BLD[building]; if (!bb) throw new Error(`${id}: vanilla building ${building} not found`);
   const pmgs = list(bb, 'production_method_groups'); if (!pmgs.length) throw new Error(`${id}: ${building} has no production_method_groups`);
   const [base, ...secondaries] = pmgs;
-  const methods = list(PMG[base] || '', 'production_methods'); if (!methods.length) throw new Error(`${id}: base group ${base} has no methods`);
+  const allMethods = list(PMG[base] || '', 'production_methods'); if (!allMethods.length) throw new Error(`${id}: base group ${base} has no methods`);
+  // the ruled variants (VARIANTS, §10.108.2) are no rungs: left out here, added as second main methods by make_variant_config.mjs
+  const V = VARIANTS[id] || {};
+  const methods = allMethods.filter(pm => !(pm in V));
+  for (const [pm, host] of Object.entries(V)) {
+    if (!allMethods.includes(pm)) { variantNotes.push(`${id}: variant ${pm} not in ${base} on this game — skipped`); continue; }
+    if (!methods.includes(host)) throw new Error(`${id}: variant ${pm} names ${host}, which is not a main method of ${base}`);
+    variantNotes.push(`${id}: variant ${pm} of ${host} left out of the rungs (make_variant_config.mjs adds it)`);
+  }
   if (methods.length > N) throw new Error(`${id}: vanilla has ${methods.length} main methods, more than ${N} rungs — needs a ruling`);
   const bldGate = list(bb, 'unlocking_technologies')[0] || null;
   const vb = name(building);
@@ -193,6 +201,7 @@ writeFileSync(join(REPO, `config/mod_config.${SUFFIX}.json`), JSON.stringify(cfg
 
 console.log(`THE FOUR-RUNG LADDER FROM VANILLA — ${N} rungs, era anchors ${ERA_YEARS.join(' / ')} ↔ game eras ${GAME_ERA_OF_ERA.join(' / ')} (era 2 rounds up to e1)`);
 console.log('  industry     rungs  placement  (* = addition; ±n = eras from the technology\'s own era, tolerance ±' + ERA_TOLERANCE + '; "ruled" = a PLACEMENT entry)');
+for (const v of variantNotes) console.log("  variant: " + v);
 for (const r of report) console.log('  ' + r.id.padEnd(12) + String(r.n).padStart(3) + '   ' + r.placed.padEnd(8) + r.note);
 const nb = out.industries.reduce((a, i) => a + i.tiers.length, 0);
 console.log(`\n  ${out.industries.length} tiered industries · ${nb} tier buildings · ${ADDITIONS.length} additions · vanilla untouched: port, shipyards, railway, power`);

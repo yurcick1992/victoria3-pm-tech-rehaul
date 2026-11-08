@@ -1,0 +1,31 @@
+{
+  "schedule_version": 1,
+  "label": "g115-probe-1856",
+  "_why": "THE FIRST RUNS ON GAME 1.15.0 (the update pass, GAME_UPDATE_1_15.md; the user's go-ahead of 2026-11-08 02:05 UTC: probes without asking for three hours, to refine the open-questions list for mod 1.1). (1) Does the 1.15 book (the canon's chain replayed on 1.15 + bronze artillery §10.108.2 + dams copper §10.108) load and run: init marker, no zzz_pm_rehaul error lines beyond vanilla's noise, the research entries (rewritten as 1.15 outcomes, U21) complete and grant, the bronze methods chosen anywhere, copper bought. (2) What 1.15 vanilla does to the 1836-1856 economy against 1.13.11's n=56 (U36 hiring and wages, U38 the AI's construction, U39 trade, U22 the map): GDP, W, U*, wages, prices at the same dump dates. (3) A 1836.2.1 vanilla save for config/measured_1836_pop_identity.json (U22).",
+  "_arms": {
+    "g115": "{kind: config, config: config/mod_config.g115-canon-bz-dcu.json} - the canon's recorded chain replayed on game 1.15.0 (tools/replay_canon_chain.mjs) + the bronze variants (make_variant_config) + dam upkeep 1 tools + 0.5 engines + 0.75 copper (make_dam_inputs_config); debug build, telemetry v16. NOT the canon: an update-pass candidate.",
+    "vanilla": "{kind: control} - vanilla 1.15.0 + telemetry v16 and nothing else",
+    "vanilla_1836": "{kind: control} - the same control, two months with monthly saves, for its 1836.2.1 save"
+  },
+  "_comparison": "g115 against vanilla 1.15 (this batch) and against the 1.13.11 references (VANILLA_REF n=56 and the canon's F264 n=48) at 1840 / 1850 / 1855; one run each, so every number is a direction, not a result (CLAUDE.md §2.9).",
+  "_predictions": "g115: init OK, no error line of ours that vanilla 1.15 lacks, the first research-entry stages complete from 1839 on (36-month stages) and grant; bronze cannons chosen by few or none before 1856 (copper is new, little mined, and the iron method is the same value); world GDP at 1855 within the 1.13 canon's seed spread of its own vanilla (direction only). Vanilla 1.15: world GDP at 1840-1855 within 1.13.11 vanilla's 90% interval, wages slightly lower (U36: more conservative hiring and wage raising), U* not lower. Magnitudes not argued.",
+  "_stop_rule": "none: three short probes",
+  "_cost": "2 x 1836 -> 1856 (~35-45 min each on 1.13 timings) + 1 x 1836 -> 1836.4.1 (~5 min); about 1.5 h",
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1855.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 120
+  },
+  "setups": {
+    "g115": { "kind": "config", "config": "config/mod_config.g115-canon-bz-dcu.json" },
+    "vanilla": { "kind": "control" },
+    "vanilla_1836": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "g115", "until": "1856.1.1" },
+    { "setup": "vanilla", "until": "1856.1.1" },
+    { "setup": "vanilla_1836", "until": "1836.4.1", "autosave_interval": "monthly", "timeout_minutes": 30 }
+  ]
+}

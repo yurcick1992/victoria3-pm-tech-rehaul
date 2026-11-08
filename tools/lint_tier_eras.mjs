@@ -71,11 +71,15 @@ for (const ind of cfg.industries || []) {
   if (ind.disabled) continue;
   const tiers = [...(ind.tiers || [])].filter(t => !t.model_only).sort((a, b) => (a.era ?? 0) - (b.era ?? 0));
   if (!tiers.length) continue;
+  // ⭐ A VARIANT (`variant: true`, make_variant_config.mjs, §10.108.2) is a second main method of its rung at the rung's own tier: it is no
+  //   step of the ladder, so the one-rung-per-era order and the rising output below read the ladder without it; it is checked against its
+  //   own record in section 4b, and like any rung by the era rule in section 2 (output, input value, cost and ai_value by its era).
+  const ladder = tiers.filter(t => !t.variant);
   // ---- 1. placement ---------------------------------------------------------------------------------------------
-  tiers.forEach((t, k) => {
-    const e = t.era;
+  tiers.forEach(t => {
+    const e = t.era, k = ladder.indexOf(t);
     if (!Number.isInteger(e) || e < 0 || e > N - 1) { faults.push(`${ind.id} ${t.key}: era ${e} outside 0..${N - 1}`); return; }
-    if (k && !(e > tiers[k - 1].era)) faults.push(`${ind.id} ${t.key}: era ${e} not above the rung below (e${tiers[k - 1].era}) — one rung per era`);
+    if (k > 0 && !(e > ladder[k - 1].era)) faults.push(`${ind.id} ${t.key}: era ${e} not above the rung below (e${ladder[k - 1].era}) — one rung per era`);
     const ge = t.tech ? TECH_ERA[t.tech] : 1;
     if (ge == null) { faults.push(`${ind.id} ${t.key}: technology ${t.tech} is not in the paired tree`); return; }
     const imp = eraOfGameEra(ge); const d = e - imp;
@@ -83,8 +87,8 @@ for (const ind of cfg.industries || []) {
     if (Math.abs(d) > TOL) faults.push(`${ind.id} ${t.key}: sits at e${e} but its technology ${t.tech} is game era ${ge} → e${imp}, ${Math.abs(d)} eras off (tolerance ±${TOL})`);
   });
   // ---- 3. uniform effectiveness --------------------------------------------------------------------------------
-  for (let k = 1; k < tiers.length; k++) {
-    const a = tiers[k - 1], b = tiers[k];
+  for (let k = 1; k < ladder.length; k++) {
+    const a = ladder[k - 1], b = ladder[k];
     const vaA = (a.output_qty || 0) * (PRICE[a.output_good || ind.output_good] || 0) - val(a.inputs), vaB = (b.output_qty || 0) * (PRICE[b.output_good || ind.output_good] || 0) - val(b.inputs);
     if (!(b.output_qty > a.output_qty)) faults.push(`${ind.id}: e${b.era} makes ${b.output_qty} against e${a.era}'s ${a.output_qty} — a later era must out-produce the one below`);
     if (!(vaB > vaA)) faults.push(`${ind.id}: e${b.era} adds £${vaB.toFixed(0)} a level against e${a.era}'s £${vaA.toFixed(0)} — a later era must add more value per level at base prices`);
@@ -94,14 +98,30 @@ for (const ind of cfg.industries || []) {
   //   contract: a `method_of` the record does not name, or a record the config does not carry out, is a hand edit.
   const MP = cfg._merge && cfg._merge.pairs ? cfg._merge.pairs[ind.id] : null;
   for (const t of tiers) {
-    if (!t.method_of) continue;
+    if (!t.method_of || t.variant) continue;
     const h = tiers.find(x => x.key === t.method_of);
     if (!MP || MP.added !== t.key || MP.host !== t.method_of) faults.push(`${ind.id} ${t.key}: method_of ${t.method_of} with no matching _merge record — regenerate with make_merge_config`);
     if (!h) { faults.push(`${ind.id} ${t.key}: method_of names ${t.method_of}, which is not a rung of ${ind.id}`); continue; }
     if (h.method_of || h.craft) faults.push(`${ind.id} ${t.key}: its host ${h.key} is itself ${h.craft ? 'a craft rung' : 'merged'}`);
-    const k = tiers.indexOf(t); if (tiers[k - 1] !== h) faults.push(`${ind.id} ${t.key}: merged into ${h.key}, which is not the rung directly below it`);
+    const k = ladder.indexOf(t); if (ladder[k - 1] !== h) faults.push(`${ind.id} ${t.key}: merged into ${h.key}, which is not the rung directly below it`);
     if (!t.tech) faults.push(`${ind.id} ${t.key}: a merged rung needs a technology to gate its method`);
   }
+  // ---- 4b. variants (`variant: true`, make_variant_config.mjs, §10.108.2): the record `_method_variants` is the contract ------------------
+  const VR = (cfg._method_variants && cfg._method_variants.variants && cfg._method_variants.variants[ind.id]) || [];
+  for (const t of tiers.filter(x => x.variant)) {
+    const h = tiers.find(x => x.key === t.method_of), r = VR.find(x => x.key === t.key);
+    if (!r) { faults.push(`${ind.id} ${t.key}: a variant with no _method_variants record — regenerate with make_variant_config`); continue; }
+    if (!h) { faults.push(`${ind.id} ${t.key}: variant of ${t.method_of}, which is not a rung of ${ind.id}`); continue; }
+    if (h.method_of || h.craft || h.variant) faults.push(`${ind.id} ${t.key}: its host ${h.key} is not a building of its own`);
+    if (r.host !== h.key || t.era !== h.era) faults.push(`${ind.id} ${t.key}: recorded on ${r.host}, carried on ${h.key} at e${t.era} against the host's e${h.era} — a variant sits at its host's tier`);
+    if (JSON.stringify(t.inputs) !== JSON.stringify(r.inputs)) faults.push(`${ind.id} ${t.key}: inputs differ from the _method_variants record — hand-edited?`);
+    const vt = val(t.inputs), vh = val(h.inputs);
+    if (Math.abs(vt - vh) > 0.005 * vh + 1) faults.push(`${ind.id} ${t.key}: input value £${vt.toFixed(0)} against its host's £${vh.toFixed(0)} — a variant runs at its host's input value (§10.108.2)`);
+    if (t.output_qty !== h.output_qty || t.building_cost !== h.building_cost || t.ai_value !== h.ai_value) faults.push(`${ind.id} ${t.key}: output, cost or ai_value differs from its host ${h.key}`);
+    if (!t.tech) faults.push(`${ind.id} ${t.key}: a variant needs a technology to gate its method`);
+    notes.push(`${ind.id} e${t.era}: ${t.key} is a variant of ${h.key} (§10.108.2) — at the host's input value £${vh.toFixed(0)}, checked against its record`);
+  }
+  for (const r of VR) if (!tiers.some(t => t.key === r.key && t.variant)) faults.push(`${ind.id}: _method_variants records ${r.key}, which the config does not carry`);
   if (MP && !tiers.some(t => t.method_of === MP.host && t.key === MP.added)) faults.push(`${ind.id}: _merge records ${MP.added} as a method of ${MP.host}, which the config does not carry`);
   if (MP) notes.push(`${ind.id}: e${MP.added_era} is a second main method of the e${MP.host_era} building — ` + (MP.cost_rule === 'own'
     ? `the host's cost checked as its own era's (cost_rule own), its ai_value as the geometric midpoint of the two rungs'`

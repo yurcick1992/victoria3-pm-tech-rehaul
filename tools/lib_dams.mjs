@@ -167,7 +167,7 @@ export function deriveProject(p, P) {
 // Staff and upkeep follow the electricity (staff_per_50 / inputs_per_50); the ruled table is ASSERTED profitable once built at any
 // price: electricity at the 25% band floor, its inputs at the 175% ceiling and a wage of £0.15 an employee a week (twice Britain's
 // 1935 rate) must still leave a profit.
-const BASE_PRICE = { electricity: 30, tools: 40, engines: 60 };
+const BASE_PRICE = { electricity: 30, tools: 40, engines: 60, copper: 40 };   // copper: game 1.15 (the dams carry it since §10.108)
 export function resourceLayout(P, projects) {
   const med = a => { const s = [...a].sort((x, y) => x - y), n = s.length; return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2; };
   const costMult = P.probe?.cost_mult ?? 1;

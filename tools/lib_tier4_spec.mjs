@@ -161,6 +161,15 @@ export const ADDITIONS = [
   //   launches and generators rather than one at a time for ships."
 ];
 
+// ⭐ MAIN-METHOD VARIANTS (game 1.15; BALANCE_FRAMEWORK §10.108.2, user-ruled 2026-11-07): a vanilla main method that is the SAME step
+//   as another in a different material is not a rung. It becomes a switchable second main method of that method's rung, at the rung's own
+//   tier, output and input value, its input mix and staffing its own vanilla method's (make_variant_config.mjs adds it after the chain;
+//   make_tier4_config.mjs leaves it out of the rung derivation). industry → { variant vanilla method: the vanilla method of its rung }.
+//   A variant absent from the installed game (1.13) is skipped and printed.
+export const VARIANTS = {
+  artillery: { pm_bronze_cannons: 'pm_cannons', pm_bronze_smoothbores: 'pm_smoothbores' },
+};
+
 // ⭐ ERA MOVES (user-ruled 2026-08-30): a TOP rung may not be gated below era 4 ("e3 techs will be discovered en masse in
 //   the late 19th century, we can't have narratively 1940s industries gated by them"). Read against VANILLA's eras, only
 //   vulcanization (era 3, tooling's top rung) actually moves; the other four already sit in era 4 in the game files and

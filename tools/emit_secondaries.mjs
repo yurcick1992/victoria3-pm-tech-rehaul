@@ -754,6 +754,18 @@ for (const [k, lines] of Object.entries(cfg.secondary_goods_override || {})) {
   }
 }
 if (minted) {
+  // VANILLA'S ELECTRICITY GATE on every copy (CLAUDE.md §5.4, lint_pm_combos check 9): a method that consumes electricity requires it.
+  // Vanilla holds the rule for every electric method but one: game 1.15's pm_automated_bakery consumes 5 electricity with no gate (30 of
+  // 31 gated), so a copy of it would inherit the gap. Each gate added is printed.
+  const gated = [];
+  for (let i = 0; i < outPMs.length; i++) {
+    const s = outPMs[i];
+    if (/goods_input_electricity_add\s*=\s*[0-9.]*[1-9]/.test(s) && !/required_input_goods\s*=\s*electricity/.test(s)) {
+      outPMs[i] = s.replace(/\}\s*$/, '\trequired_input_goods = electricity\n}');
+      gated.push(s.slice(0, s.indexOf(' ')));
+    }
+  }
+  if (gated.length) console.log(`emit_secondaries: electricity gate added to ${gated.length} copied method(s) vanilla left without it: ${gated.join(', ')}`);
   // ⚠ UTF-8 BOM: the engine's lexer warns `should be in utf8-bom encoding` on every load without it (two lines per run in
   // error.log, seen 2026-09-02/03); every vanilla script file carries one, so match it.
   writeFileSync(join(MOD, 'common/production_methods/zzz_pm_rehaul_secondaries.txt'), BOM +

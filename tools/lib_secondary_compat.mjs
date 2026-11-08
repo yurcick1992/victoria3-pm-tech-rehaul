@@ -50,6 +50,13 @@ export const NOT_BESIDE = {
   pm_smoothbores: {
     pm_assembly_lines_building_arms_industry: 'smoothbore shell guns were obsolete by the 1870s; conveyor lines arrive in the 1910s',
   },
+  // game 1.15's bronze variants (§10.108.2) take their host's verdicts: the same piece cast in another metal (2026-11-08)
+  pm_bronze_cannons: {
+    pm_assembly_lines_building_arms_industry: 'cast bronze cannon were obsolete by the 1870s; conveyor lines arrive in the 1910s',
+  },
+  pm_bronze_smoothbores: {
+    pm_assembly_lines_building_arms_industry: 'bronze smoothbore guns were obsolete by the 1870s; conveyor lines arrive in the 1910s',
+  },
   pm_percussion_caps: {
     pm_assembly_lines_building_munition_plant: 'cap-and-ball ammunition gave way to the metallic cartridge in the 1870s; conveyor lines arrive in the 1910s',
   },
@@ -97,7 +104,8 @@ export const REVIEWED = {
     secondaries: ['pm_aeroplane_production', 'pm_tank_production', 'pm_assembly_lines_building_automotive_industry'] },
   arms: { mains: ['pm_muskets', 'pm_rifles', 'pm_repeaters', 'pm_bolt_action_rifles'],
     secondaries: ['pm_rotary_valve_engine_building_arms_industry', 'pm_assembly_lines_building_arms_industry'] },
-  artillery: { mains: ['pm_cannons', 'pm_smoothbores', 'pm_breech_loaders', 'pm_recoiled_barrels'],
+  // each bronze variant (game 1.15, §10.108.2) right after its host, which it reviews like (2026-11-08)
+  artillery: { mains: ['pm_cannons', 'pm_bronze_cannons', 'pm_smoothbores', 'pm_bronze_smoothbores', 'pm_breech_loaders', 'pm_recoiled_barrels'],
     secondaries: ['pm_rotary_valve_engine_building_arms_industry', 'pm_assembly_lines_building_arms_industry'] },
   munition: { mains: ['pm_percussion_caps', 'pm_explosive_shells'],
     secondaries: ['pm_rotary_valve_engine_building_munition_plant', 'pm_assembly_lines_building_munition_plant'] },
