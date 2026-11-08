@@ -54,6 +54,16 @@ for (const k of PERF_OFF) if (!['static', 'traits', 'events', 'buildings'].inclu
 if (PERF_OFF.has('buildings') && !PERF_OFF.has('events')) die(`perf_off: 'buildings' needs 'events' (the decisions and journal entries name the buildings)`);
 const W = (rel, s) => { const f = join(MOD, rel); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, '\uFEFF' + s, 'utf8'); };
 const T = '\t';
+// Game 1.15 replaced a journal entry's complete / on_complete / invalid / on_invalid with `outcome` blocks (GAME_UPDATE_1_15 U21; the
+// same forms as emit_research_events.mjs): a completion outcome with the standard header, an ending a hidden invalid_outcome
+const tab = (s, n = 1) => s.replace(/^(?=.)/gm, T.repeat(n));
+const outcomeDone = (trigger, effect) => `${T}outcome = {\n${T}${T}header = je_standard_completion_header\n` +
+  `${T}${T}effect_header = je_standard_on_completion_header\n${T}${T}color = "gold_positive"\n` +
+  `${T}${T}conclusion_desc = je_standard_completion_conclusion_desc\n${T}${T}trigger = {\n${trigger}${T}${T}}\n` +
+  `${T}${T}effect = {\n${effect}${T}${T}}\n${T}}\n\n`;
+const outcomeEnd = (trigger, effect) => `${T}outcome = {\n${T}${T}flags = { hidden invalid_outcome }\n` +
+  `${T}${T}conclusion_desc = je_standard_failure_conclusion_desc\n${T}${T}trigger = {\n${trigger}${T}${T}}\n` +
+  `${T}${T}effect = {\n${effect}${T}${T}}\n${T}}\n\n`;
 const stripBom = s => s.replace(/^\uFEFF/, '');
 const { P, projects: ALL_PROJECTS } = deriveAll(CFG);
 // ⚗ V1 (2026-10-09, the tick-cost vectors; user-ruled "two dam sizes, and for each two dam prices, four building types"):
@@ -351,8 +361,8 @@ for (const p of projects) {
       `a later survey of ours starts from scratch.`]);
   jes.push(`je_${v}_survey = {\n${T}icon = "gfx/interface/icons/event_icons/event_map.dds"\n${T}group = je_group_technology\n\n` +
     `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}${T}change_variable = { name = ${v}_months add = 1 }\n${T}${T}${T}${T}debug_log = "PMR_DAM|survey_month|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
-    `${T}complete = {\n${T}${T}scope:journal_entry = { is_goal_complete = yes }\n${T}}\n\n` +
-    `${T}on_complete = {\n${T}${T}remove_modifier = ${v}_surveying\n${T}${T}remove_variable = ${v}_months\n${T}${T}remove_global_variable = ${v}_surveying\n` +
+    outcomeDone(`${T}${T}${T}scope:journal_entry = { is_goal_complete = yes }\n`, tab(
+    `${T}${T}remove_modifier = ${v}_surveying\n${T}${T}remove_variable = ${v}_months\n${T}${T}remove_global_variable = ${v}_surveying\n` +
     `${T}${T}set_variable = ${v}_surveyed\n${T}${T}set_global_variable = ${v}_surveyed_any\n` +
     (R2
       // rules 'family': no claim (user: the 12-month head start does its job); a surveyor inside the owner's top-overlord family opens
@@ -368,14 +378,14 @@ for (const p of projects) {
       `${T}${T}${T}${T}if = {\n${T}${T}${T}${T}${T}limit = { can_construct_building = ${key} }\n${T}${T}${T}${T}${T}debug_log = "PMR_DAM|probe_can_build|${p.id}|yes|${DATE}"\n${T}${T}${T}${T}}\n` +
       `${T}${T}${T}${T}else = {\n${T}${T}${T}${T}${T}debug_log = "PMR_DAM|probe_can_build|${p.id}|no|${DATE}"\n${T}${T}${T}${T}}\n${T}${T}${T}}\n${T}${T}}\n` +
       '' : '') +
-    `${T}${T}debug_log = "PMR_DAM|survey_complete|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n\n` +
+    `${T}${T}debug_log = "PMR_DAM|survey_complete|${p.id}|${TAG}|${DATE}|${BUR}"\n`)) +
     `${T}current_value = {\n${T}${T}value = 0\n${T}${T}if = {\n${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}value = root.var:${v}_months\n${T}${T}}\n${T}}\n\n${T}goal_add_value = {\n${T}${T}value = ${p.survey_months}\n${T}}\n\n` +
-    `${T}invalid = {\n${T}${T}OR = {\n${T}${T}${T}NOT = { has_variable = ${v}_months }\n${T}${T}${T}NOT = {\n${T}${T}${T}${T}${(R2 ? rightsOf(p, 'ROOT') : chainOf(p)).replace(/\n/g, `\n${T}${T}`)}\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
-    `${T}on_invalid = {\n${T}${T}if = {\n${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}remove_variable = ${v}_months\n${T}${T}}\n` +
+    outcomeEnd(tab(`${T}${T}OR = {\n${T}${T}${T}NOT = { has_variable = ${v}_months }\n${T}${T}${T}NOT = {\n${T}${T}${T}${T}${(R2 ? rightsOf(p, 'ROOT') : chainOf(p)).replace(/\n/g, `\n${T}${T}`)}\n${T}${T}${T}}\n${T}${T}}\n`), tab(
+    `${T}${T}if = {\n${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}remove_variable = ${v}_months\n${T}${T}}\n` +
     // rules 'family': an abandoned survey (cancelled, or the surveyor lost its construction rights) lifts the 12-month block at once
     (R2 ? `${T}${T}remove_global_variable = ${v}_block\n` : '') +
     `${T}${T}remove_global_variable = ${v}_surveying\n${T}${T}remove_modifier = ${v}_surveying\n${T}${T}change_variable = { name = ${ACTIVE} add = -1 }\n` +
-    `${T}${T}debug_log = "PMR_DAM|survey_ended|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}}\n\n` +
+    `${T}${T}debug_log = "PMR_DAM|survey_ended|${p.id}|${TAG}|${DATE}|${BUR}"\n`)) +
     `${T}progressbar = yes\n${T}weight = 10\n${T}transferable = no\n${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
   loc.push([`je_${v}_survey`, `Surveying the ${nm(p)}`],
     [`je_${v}_survey_reason`, `Our engineers are surveying the ${nm(p)} in ${stateRef(p.state)}: river gauging, foundation borings and the reservoir line. ` + (R2

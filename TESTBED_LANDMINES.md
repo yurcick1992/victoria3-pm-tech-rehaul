@@ -108,6 +108,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L42 | a run lost to the observer's landing guard after an early-death fresh restart | `Test-LmL42` | session | AUTO, proven; fixed |
 | L43 | a save summary reads a country's trend ring by position, not by its index | `Test-LmL43` | build, repo | AUTO, proven; fixed |
 | L44 | a run that completes while its save summaries stopped part-way (the archiver stopped on low disk) | `Test-LmL44` | session | AUTO, proven; the harness side open (BACKLOG) |
+| L45 | a journal entry in the old syntax (complete / invalid / fail) ships dead on a game that dropped it (1.15) | `Test-LmL45` | every build | AUTO, proven; fixed |
 
 ---
 
@@ -1054,3 +1055,20 @@ hand as #51–#55; 1887–1931 are lost; recorded in the run's `save_summaries\G
 this session before the acceptance file (`run064_vanilla: 55 summaries for 100 years, the archiver stopped on low disk`), PASS with it (printed),
 PASS on `20261021_224949_alt-vanilla-canon-n16` (13 runs). **Fix: open** — the harness does not stop or flag a batch whose archiver stopped
 (BACKLOG); until it does, the smoke check and the heartbeat should read free disk (a century batch of 64 runs takes ~18 GB).
+
+### L45 — a journal entry in the old syntax ships dead on a game that dropped it
+
+**Defect.** Game 1.15 replaced a journal entry's `complete` / `on_complete` / `invalid` / `on_invalid` / `fail` / `on_fail` with `outcome` blocks
+(a completion is an outcome with the standard completion header, the old `invalid` a hidden `invalid_outcome`); vanilla keeps none of the old
+keys in any of its 182 files. An entry still written the old way loads with nothing to end it. The research entries are the mod's research
+(§10.95–§10.98): written the old way none of them would grant a stage, every country would research at a quarter to a half of vanilla's pace,
+and nothing in the build fails — no linter of ours reads journal-entry syntax, and the engine says so only in `error.log`.
+
+**Found.** 2026-11-08, the 1.15 update pass (GAME_UPDATE_1_15 U21): the 1.0 build carries 452 `complete =` lines in the research entries, the dam
+surveys' `complete` / `invalid` / `on_invalid`, and the 1.13 copies of ten owned vanilla journal-entry files.
+
+**Detector.** `Test-LmL45` (every build, on the built mod): when the installed game's own journal entries use `outcome` and none of the old keys,
+no `common/journal_entries` file of the build may use them; on a game that still does (1.13) it is N/A. Proven 2026-11-08: FAIL on the 1.0
+build's `mod/` against 1.15 (10 files), PASS on the 1.15 build, N/A against the 1.13.11 snapshot. **Fix.** `emit_research_events.mjs` and
+`emit_dams.mjs` write outcomes (2026-11-08); the owned vanilla copies are regenerated from the installed game. ⚠ The detector proves only that
+the old keys are gone, not that the new outcomes behave: the first in-game load checks that a research stage completes (a `PMR_JE` line).

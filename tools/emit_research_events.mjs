@@ -316,6 +316,16 @@ for (const [tech, e] of Object.entries(COND)) {
 
 // ---- emit ----------------------------------------------------------------------------------------
 const T = '\t';
+// Game 1.15 replaced a journal entry's complete / on_complete / invalid / on_invalid with `outcome` blocks (GAME_UPDATE_1_15 U21; read
+// from 1.15's own journal entries): a completion is an outcome with the standard completion header, an ending without one (the old
+// `invalid`) a hidden invalid_outcome. Both take content lines at three tabs, ending in a newline.
+const tab = (s, n = 1) => s.replace(/^(?=.)/gm, T.repeat(n));
+const outcomeDone = (trigger, effect) => `${T}outcome = {\n${T}${T}header = je_standard_completion_header\n` +
+  `${T}${T}effect_header = je_standard_on_completion_header\n${T}${T}color = "gold_positive"\n` +
+  `${T}${T}conclusion_desc = je_standard_completion_conclusion_desc\n${T}${T}trigger = {\n${trigger}${T}${T}}\n` +
+  `${T}${T}effect = {\n${effect}${T}${T}}\n${T}}\n\n`;
+const outcomeEnd = trigger => `${T}outcome = {\n${T}${T}flags = { hidden invalid_outcome }\n` +
+  `${T}${T}conclusion_desc = je_standard_failure_conclusion_desc\n${T}${T}trigger = {\n${trigger}${T}${T}}\n${T}}\n\n`;
 const sv = [], bars = [], jes = [], loc = [];
 // ⚗ the 2026-10-09 vectors: V2 script placement, V4 per-industry compression (see their uses)
 const PLACE = RE.placement === 'script', COMPRESS = RE.compress === 'industry';
@@ -893,7 +903,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         `${T}${T}${T}${T}debug_log = "PMR_JE|${stage}[THIS.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n` +
         `${T}${T}${T}${T}je:${key} ?= { add_progress = { value = -${span}  name = ${barName(tech)} } }\n` +
         `${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
-        `${T}invalid = {\n${T}${T}OR = {\n${T}${T}${T}has_technology_researched = ${tech}\n${T}${T}${T}AND = { has_variable = ${implVar(tech)}  var:${implVar(tech)} >= ${REP} }\n${T}${T}}\n${T}}\n\n` +
+        outcomeEnd(`${T}${T}${T}OR = {\n${T}${T}${T}${T}has_technology_researched = ${tech}\n${T}${T}${T}${T}AND = { has_variable = ${implVar(tech)}  var:${implVar(tech)} >= ${REP} }\n${T}${T}${T}}\n`) +
         `${T}weight = 1\n${T}transferable = no\n${T}can_revolution_inherit = yes\n` +
         `${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
     } else
@@ -911,14 +921,12 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       // on_acquired_technology instead (below), so the engine has no inactive entry type to check every month
       (first ? (PLACE ? '' : `${T}is_shown_when_inactive = { can_research = ${tech} }\n`) + `${T}possible = { can_research = ${tech} }\n\n` : '') +
       `${T}scripted_progress_bar = ${barName(tech)}\n\n` +
-      `${T}complete = {\n${T}${T}scope:journal_entry ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} }\n${T}}\n\n` +
-      `${T}on_complete = {\n` +
-      grantBlock + halfLog +
-      // the next stage only where it is not already there (a country holding two stages at once — ~30 a run on F227's batch)
-      (next ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech}  NOT = { has_journal_entry = ${jeName(tech, next)} } }\n${T}${T}${T}add_journal_entry = { type = ${jeName(tech, next)} }\n${T}${T}}\n` : '') +
-      `${T}${T}debug_log = "PMR_JE|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n` +
-      `${T}}\n\n` +
-      `${T}invalid = { has_technology_researched = ${tech} }\n\n` +
+      outcomeDone(`${T}${T}${T}scope:journal_entry ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} }\n`, tab(
+        grantBlock + halfLog +
+        // the next stage only where it is not already there (a country holding two stages at once — ~30 a run on F227's batch)
+        (next ? `${T}${T}if = {\n${T}${T}${T}limit = { can_research = ${tech}  NOT = { has_journal_entry = ${jeName(tech, next)} } }\n${T}${T}${T}add_journal_entry = { type = ${jeName(tech, next)} }\n${T}${T}}\n` : '') +
+        `${T}${T}debug_log = "PMR_JE|${stage}|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n`)) +
+      outcomeEnd(`${T}${T}${T}has_technology_researched = ${tech}\n`) +
       `${T}weight = 1\n${T}transferable = no\n${T}can_revolution_inherit = yes\n` +
       `${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
     const nice = (TECH[tech].name || tech).replace(/"/g, '');
@@ -998,7 +1006,8 @@ for (const [ind, list] of Object.entries(compressed)) {
     list.map((x, i) => grantOf(x, i).replace(/^/gm, T)).join('') +
     `${T}${T}${T}${T}je:${je} ?= { add_progress = { value = -${span}  name = ${bar} } }\n${T}${T}${T}${T}pmr_retarget_${ind} = yes\n${T}${T}${T}}\n` +
     `${T}${T}${T}else_if = {\n${T}${T}${T}${T}limit = { NOT = { ${cur} } }\n${T}${T}${T}${T}pmr_retarget_${ind} = yes\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
-    `${T}invalid = { NOT = { ${avail} } }\n\n${T}weight = 1\n${T}transferable = no\n${T}can_revolution_inherit = yes\n${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
+    outcomeEnd(`${T}${T}${T}NOT = { ${avail} }\n`) +
+    `${T}weight = 1\n${T}transferable = no\n${T}can_revolution_inherit = yes\n${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
   const indName = (CFG.industries.find(x => x.id === ind) || {}).name || ind;
   loc.push([bar, `Towards the next advance in ${indName}`], [je, `Advances in ${indName}`]);
   const body = `The trade already knows its own shortcomings. Each month the bar advances by one for every source of the current target at or above its mark; when it fills (${span} months), the target gains ${Math.round(100 * (RE.grant_fraction ?? 0.5))}% of its base research cost — at most ${NF} times — and the entry moves on to the next technology of the trade.\n\n` +

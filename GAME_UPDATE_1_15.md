@@ -90,6 +90,11 @@ an intermediate one.
   journal entry keeps a `complete` block (all 182 files use `outcome = { header … trigger = { … } effect = { … } }`, a failure being an outcome
   with the failure header), and `on_journal_entry_completed` / `on_journal_entry_failed` are gone. ⚠ No linter of ours reads journal-entry
   syntax, so a build can pass with every research entry dead: verify in game before anything is measured.
+  **The emitters DONE 2026-11-08** (unverified in game): `emit_research_events.mjs` and `emit_dams.mjs` write 1.15's outcomes — `complete` +
+  `on_complete` → a standard completion outcome (trigger = the old complete, effect = the old on_complete), `invalid` (+ `on_invalid`) → a hidden
+  `invalid_outcome` (its effect = the old on_invalid); the kept 1.15 build (`mod_u115`) has 565 outcomes in the research entries and none of the
+  old keys anywhere in `journal_entries/`, braces balanced; the ten owned vanilla copies come from 1.15 already. Guard: landmine **L45**
+  (`Test-LmL45`, every build). Still OPEN: the in-game proof that a stage completes and grants (a `PMR_JE` line in `debug.log`; needs the go-ahead).
 - **U22** · C · the map: Tula split into Tula and Oryol; Kostroma split from Yaroslavl and Nizhny Novgorod; Chukotka and Kamchatka merged; Northern
   Kazakhstan redrawn; the North Caucasus's Russian pops cut; North Angola's pops made African (culture, not number) · the owned `state_regions`
   files, the dam table (a site in any of those states), the 1836 conversion, `measured_1836_pop_identity.json`, Russia's instrumented series ·

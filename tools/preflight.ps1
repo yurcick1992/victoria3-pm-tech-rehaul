@@ -1962,6 +1962,45 @@ function Test-LmL44 {
     else { Add-Result 'L44' $T 'PASS' ("$checked run(s) with yearly autosaves, every one summarised over at least 90% of its years or its gap accepted" + $note) }
 }
 
+function Test-LmL45 {
+    <#
+      L45 - A JOURNAL ENTRY IN THE OLD SYNTAX SHIPS DEAD ON A GAME THAT DROPPED IT (found 2026-11-08, game 1.15).
+
+      Game 1.15 replaced a journal entry's complete / on_complete / invalid / on_invalid / fail / on_fail with `outcome` blocks (vanilla keeps
+      none of the old keys in any of its 182 files). An entry still written the old way loads with nothing to end it: the mod's research
+      entries are the mod's research (§10.95-10.98), so they would never grant a stage, and nothing in the build fails - no linter of ours
+      reads journal-entry syntax, and the engine says so only in error.log.
+
+      DETECTOR (version-aware): when the installed game's own journal entries use `outcome` and none of the old keys, every
+      common/journal_entries file of the built mod must carry none of them either. On a game that still uses them (1.13) it is N/A.
+      FIX: emit_research_events.mjs and emit_dams.mjs write outcomes (2026-11-08, GAME_UPDATE_1_15 U21); the owned vanilla copies follow
+      the game they are regenerated from. Proven on 2026-11-08: FAIL on the 1.0 build's mod/ against 1.15, PASS on the 1.15 build, N/A
+      against the 1.13.11 snapshot.
+    #>
+    $T = 'a journal entry in the old syntax ships dead on a game that dropped it'
+    $game = if ($env:VIC3_GAME) { $env:VIC3_GAME } else { 'C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game' }
+    $vdir = Join-Path $game 'common\journal_entries'
+    if (-not (Test-Path $vdir)) { Add-Result 'L45' $T 'N/A' "no game journal entries at $vdir"; return }
+    $old = '(?m)^\s*(complete|on_complete|invalid|on_invalid|fail|on_fail)\s*='
+    $vOld = 0; $vOut = 0
+    foreach ($f in Get-ChildItem $vdir -Filter *.txt -File) {
+        $txt = [regex]::Replace([System.IO.File]::ReadAllText($f.FullName), '#[^\r\n]*', '')
+        $vOld += [regex]::Matches($txt, $old).Count; $vOut += [regex]::Matches($txt, '(?m)^\s*outcome\s*=').Count
+    }
+    if ($vOld -gt 0 -or $vOut -eq 0) { Add-Result 'L45' $T 'N/A' "the installed game still writes the old keys ($vOld) - nothing to check"; return }
+    $mdir = Join-Path $Mod 'common\journal_entries'
+    if (-not (Test-Path $mdir)) { Add-Result 'L45' $T 'N/A' "no journal entries in $Mod"; return }
+    $bad = @(); $files = 0
+    foreach ($f in Get-ChildItem $mdir -Filter *.txt -File) {
+        $files++
+        $txt = [regex]::Replace([System.IO.File]::ReadAllText($f.FullName), '#[^\r\n]*', '')
+        $n = [regex]::Matches($txt, $old).Count
+        if ($n) { $bad += "$($f.Name) ($n)" }
+    }
+    if ($bad.Count) { Add-Result 'L45' $T 'FAIL' ("$($bad.Count) journal-entry file(s) of the build still use complete / invalid / fail, which the installed game ($vOut outcome blocks, none of the old keys) no longer reads: " + ($bad -join ', ') + '. FIX: write `outcome` blocks (emit_research_events.mjs, emit_dams.mjs); rebuild the owned vanilla copies from the installed game') }
+    else { Add-Result 'L45' $T 'PASS' "$files journal-entry file(s), none in the old syntax (the game uses outcome: $vOut blocks)" }
+}
+
 $CHECKS = @(
     @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
     @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
@@ -2023,7 +2062,9 @@ $CHECKS = @(
     # L43 runs the SUMMARY WRITER on a synthetic melt with a wrapped trend ring (repo-side, like L38's first half).
     @{ Id = 'L43'; Artifact = $false; Fn = { Test-LmL43 } },
     # L44 counts each run's summaries against its years and reads the archiver's log for a disk stop (post-run).
-    @{ Id = 'L44'; Artifact = $false; Fn = { Test-LmL44 } }
+    @{ Id = 'L44'; Artifact = $false; Fn = { Test-LmL44 } },
+    # L45 reads the BUILT mod's journal entries against the installed game's syntax (an artifact check).
+    @{ Id = 'L45'; Artifact = $true;  Fn = { Test-LmL45 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {
