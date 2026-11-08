@@ -451,7 +451,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (power plant, dam, electric streetlights); nothing happens when a state loses it | deferred (performance risk): mod 1.2 or 1.3, undecided; a known issue |
 | 10.108 | copper (mod 1.1): the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights stay exactly as in 1.0 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery: a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2) | in force (the canon since 2026-11-08) |
 | 10.109 | the game 1.15 pass rulings, one per question of GAME_UPDATE_1_15 phase 5: .1 the two new flat research adds ×1/3; .2 vanilla's journal-entry-conditional AI desire carried onto every non-craft rung (L47); .3 the contagious-ideas entries follow 1.15's laws; .4 crafts out of 1.15's new level counts, by native counts; .5 the 1.15 canon; canonisation declares the main line, not a quality stamp; .6 detectors L48 (level counts that see crafts) and L49 (dropped building fields), the negotiation promise crafts out; .7 the 1.15 wage rebalance measured first | in force (the canon since 2026-11-08; .2 and .4 are build steps) |
-| 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 around 2026-12-20: major changes, extraction first, revisiting §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark; .4 copper scarcity follows Paradox | .1 the plan (ROADMAP); .2 and .4 in force; .3 for 1.2, not built |
+| 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 around 2026-12-20: major changes, extraction first, revisiting §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed; a bonus to hydro alone is allowed, none planned); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark; .4 copper scarcity follows Paradox | .1 the plan (ROADMAP); .2 and .4 in force; .3 for 1.2, not built |
 
 ---
 
@@ -671,8 +671,8 @@ What §1.2 and §1.3 leave out:
   - **The pool:** W 0.88×; U\* 24.6% against vanilla's 19.1% (1.29×, under the ≥ 2× aim); H 0.24 against 0.42.
   - **Prices and tiers:** PI 0.93, falling decade over decade; PP 0.87. T0 is falling (1935 = 0.43 × the 1900s); T3 holds 25.1% of tiered workers.
   - **Germany:** fully employed in the lucky seed, without hoarding (G 0.88).
-  - **Misplaced capital** 18.5% of the century's new capital against the same session's vanilla 14.0%; the whole excess is in the tiered
-    industries (F262, F264). New plants built below the best tier their owner runs: 27.9% (the corrected count, F262).
+  - **Misplaced capital** 18.5% of the century's new capital against the same session's vanilla 14.0% (a reference, not like for like: the
+    ladder offers more ways to invest badly); the whole excess is in the tiered industries (F262, F264). New plants built below the best tier their owner runs: 27.9% (the corrected count, F262).
   - **Auto-downsizing** (§10.107): 1.77× vanilla's lost levels a run for the same jobs (27.6M against 27.7M) and 1.22× its construction
     points; half the canon's lost levels are crafts, the excess points on t0–t2 factory rungs.
   - **Technology:** the majors hold about vanilla's count (Britain 160.0 against 161.6; military 41.8 against 51.2).
@@ -693,7 +693,9 @@ What §1.2 and §1.3 leave out:
   - the old rung in the consumer chains (its luxury line);
   - Britain near capital abundance (U\* under 5% for 5–17 years in 30 of 48 runs, mostly at small hoards; in capital abundance in one);
   - broken seeds: one in three to four in earlier books (F166, F227, F247), 4 of 48 in F264 (none in F249's 16);
-  - misplaced capital above vanilla's;
+  - misplaced capital is still fairly high: 18.5% of the century's new capital over F264's 48 runs, 22% in 1926–36, and 19.7% in F268's one
+    1.15 run. Vanilla's 14.0% (F264's session) and 14.9% (F268) are a reference, not like for like: the mod's ladder offers more ways to
+    invest badly than vanilla's method switch does, and the whole excess is in the tiered industries;
   - military technology behind vanilla's count (planned for mod 1.2, with the user's AI-weight approach);
   - **game 1.15** (mod 1.1; installed 2026-11-08, 1.15.0): the pass is `GAME_UPDATE_1_15.md`, its phase-5 questions walked with the user one
     at a time (Q0–Q4, Q6, Q7, Q9–Q11 ruled 2026-11-08; the canon moved to 1.15 with Q1). The hiring and wage rebalance moves the premise of

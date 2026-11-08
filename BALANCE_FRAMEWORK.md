@@ -77,7 +77,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 | 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | in force: the canon since 2026-11-08 (§10.109.5) | here |
 | 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission); .4 crafts out of 1.15's three new level counts, by native counts (the group minus the craft group, never a loop); .5 the 1.15 canon (`a52b0aca`), and canonisation declares the main line, not a quality stamp; .6 detectors L48 / L49 and IP4's negotiation promise crafts out (G7); .7 1.15's wage and hiring rebalance: measure first, no pre-emptive ladder change | in force: the canon since 2026-11-08 (.1 and .3 in the book through their makers; .2 and .4 build steps — `emit_ai_value_adds.mjs`, L47; `emit_vanilla_refs.mjs` G4–G6 + an init tripwire) | here |
-| 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 ~20 December: major changes, extraction first, which revisits §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark (Mechanical Tools 25,000 → 75,000); .4 copper scarcity follows Paradox, no copper lever | .1 the plan (ROADMAP, BACKLOG); .2 and .4 in force; .3 ruled for 1.2, not built | here |
+| 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 ~20 December: major changes, extraction first, which revisits §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed; a bonus to hydro alone is allowed, none planned); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark (Mechanical Tools 25,000 → 75,000); .4 copper scarcity follows Paradox, no copper lever | .1 the plan (ROADMAP, BACKLOG); .2 and .4 in force; .3 ruled for 1.2, not built | here |
 
 ---
 
@@ -4828,9 +4828,15 @@ tiering or otherwise ensuring foreign PMs) for extraction will come in 1.3, arou
 ### §10.110.2 — No state trait gives a bonus to every source of electricity
 
 The user: *"No to any state traits that give bonuses to all sources of electricity, ever."* Krka Falls (Dalmatia) keeps the loss of its
-+15% electricity (§10.89.8) although no dam site lies in Dalmatia, so nothing replaces it there; the BACKLOG item is closed. A trait's
-`goods_output_electricity_mult` boosts every electricity producer in its state (power plants and streetlights as much as hydro), and the
-dams carry the mod's hydro. The user gave the rule, not a reason; the reason given here is §10.89.8's, an inference.
++15% electricity (§10.89.8) although no dam site lies in Dalmatia, so nothing replaces it there; the BACKLOG item is closed.
+
+**Why** (confirmed by the user the same day): a trait's `goods_output_electricity_mult` boosts every electricity producer in its state,
+power plants and streetlights as much as hydro. The user: *"We're redoing electricity on a more realistic level, and on that level we don't
+need a broad bonus 'to explain that there's also some hydro'. If there is hydro, it is there, if it's not build, there's no bonus."*
+
+**Not covered by the rule:** a bonus to hydro alone is not ruled out (*"bonuses to hydro itself (to differentiate the output better while
+keeping the number of building types low) are not taboo"*), for example a dam modifier that sets one site's output apart from another's within
+the four dam types. None is planned (*"we're not actively planning to have those"*).
 
 ### §10.110.3 — A technology that unlocks rungs of two tiers takes the higher tier's research mark
 
