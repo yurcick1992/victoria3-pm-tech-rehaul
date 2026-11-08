@@ -17,7 +17,7 @@
 // Usage: node tools/testbed/ledger/dam_outcomes.mjs <modDir> <runDir> [<runDir> ...]
 import fs from 'node:fs'; import zlib from 'node:zlib'; import path from 'node:path';
 const [modDir, ...runs] = process.argv.slice(2);
-const G = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const G = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 
 const dams = {};
 { const txt = fs.readFileSync(path.join(modDir, 'common/buildings/zzz_pm_rehaul_dams.txt'), 'utf8');

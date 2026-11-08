@@ -11,7 +11,7 @@
 import fs from 'node:fs'; import path from 'node:path';
 import { usableRuns, reportDropped } from './lib_runs.mjs';
 import { indexRun, firstOf, readSum, SESSIONS, med } from './lib_sumidx.mjs';
-const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const argv = process.argv.slice(2); const opt = (k, d) => { const i = argv.indexOf(k); if (i < 0) return d; const v = argv[i + 1]; argv.splice(i, 2); return v; };
 const flag = k => { const i = argv.indexOf(k); if (i < 0) return false; argv.splice(i, 1); return true; };
 const TAG = opt('--tag', 'USA'); const YEARS = opt('--years', '1840,1850,1860,1870,1880,1890,1900,1910,1920,1930,1936').split(',').map(Number); const PER_RUN = flag('--runs');

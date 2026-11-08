@@ -31,7 +31,7 @@ const IG = argOf('--ig', 'ig_petty_bourgeoisie');
 const TOP = +argOf('--top', '12');
 const MINWF = +argOf('--minwf', '1000000');
 const OUT = argOf('--json', '');
-const GAME = argOf('--game', 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game');
+const GAME = argOf('--game', process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game');
 if (!SRC) { console.error('usage: ig_pop_contrib.mjs <save.v3|melt.txt> [--keys …] [--ig …] [--top N] [--minwf N] [--json out]'); process.exit(2); }
 const IGS = readdirSync(join(GAME, 'common/interest_groups')).filter(f => /^00_[a-z_]+\.txt$/.test(f)).sort().map(f => 'ig_' + f.slice(3, -4));
 const IGI = IGS.indexOf(IG);

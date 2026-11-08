@@ -85,7 +85,7 @@ Two counters, both **consecutive and monotonic**. A finding cites the version it
 meaning the same thing forever: never reuse or renumber a version. **Bump by one** whenever the output changes so that an older
 session or summary is no longer comparable — a new metric or field, a changed line format, a dropped field.
 
-### The telemetry schema — `$script:TELEMETRY_VERSION` in `tools/telemetry_lib.ps1` (today **15**)
+### The telemetry schema — `$script:TELEMETRY_VERSION` in `tools/telemetry_lib.ps1` (today **16**)
 
 Stamped into every generated telemetry file and each run's `BOOT` line, so a session's schema is readable off its own log. Record a
 bump here **and** in the schema table at the top of FINDINGS.md. Changing the emitted telemetry without a bump trips L8
@@ -109,6 +109,7 @@ scheduler (L5).
 | **v13** | `state_access` (`SMA`) and `construction_queue` (`CQ`), §9 |
 | **v14** | `state_access` moves phase 1 → 3 (it pushed phase 1 past the ~1,500-line threshold late-century, §5.7); `wages` gains the spec key `wage_pop_endpoints` (`both` \| `first` \| `last` \| `none`, default `both`) choosing which dumps carry the heavy `PW` sweep — `none` for century batches |
 | **v15** | `downsizing` (§2.4¾): the monthly poll of auto-downsized levels, `DZ` / `DZX` / `DZM`, added to every telemetry run by the scheduler's downsize feed; `downsize_probe` for its diagnostics |
+| **v16** | (2026-11-08) the `DZX` line ends in `tag=` (the state owner's tag), and the downsizing read step tests `level >= 1` first (§2.4¾); unverified in game until the first v16 run. A v15 session's DZX lines carry no `tag=` — the reader places them by name, as before |
 
 ⚠ Sessions `20260803_014037` and `20260803_022027` stamp v9 while carrying early v10 content (both were stopped part-way and are the
 evidence for §5.6 and §5.7, not usable runs). Read their schema from `schedule.json`, not the `BOOT` line.
@@ -429,7 +430,7 @@ wholly owned by a country, under 90% staffed, at least one level empty — and, 
 level fell:
 ```
 V3TB|<token>|DZ|<date>|<country>|<state>|<type>|<level before>|<level now>|<private before>|<private now>|<employment now>
-V3TB|<token>|DZX|<date>|<country>|<state>|<type>|auto=<IsAutoDownsizing 0/1>|id=<the save's building id>
+V3TB|<token>|DZX|<date>|<country>|<state>|<type>|auto=<IsAutoDownsizing 0/1>|id=<the save's building id>|tag=<the state owner's tag; since 2026-11-08>
 V3TB|<token>|DZM|<date>|tracked=<remembered now>|read=<remembered last poll, still there>|drops=<DZ lines>|over=<4,096+ levels>
 ```
 - **Private = not owned by a country** (`country_ownership_fraction`), so a building that owns itself counts; `private_ownership_fraction`
@@ -451,11 +452,17 @@ V3TB|<token>|DZM|<date>|tracked=<remembered now>|read=<remembered last poll, sti
   moves levels out of a building reads as a drop there; it falls among the drops of a state where three or more buildings fell in one poll,
   1–5% of the auto-downsized levels in those runs (kept, printed). ⚠ The DZ line names the country by its DISPLAY NAME, not its tag, and a
   revolution can take an existing country's name ("Spain", "Great Qing" among run 1's revolt names), so a per-country reading of the poll is
-  ambiguous; the world and tier totals are not affected.
+  ambiguous; the world and tier totals are not affected. **Since 2026-11-08** the DZX line ends in `tag=` (vanilla's own loc function
+  `GetTagName`, which its state debug tooltip uses), and the reader places a drop by it. A line without it is placed by the game's own name
+  tables (a name is the shortlist's when every tag that can bear it, base or dynamic name, is in the pool), and the reader prints what it
+  could not place. The same change tests `level >= 1` before the read step's ownership trigger, so a building that lost its last level no
+  longer writes an *"ownership_fraction requires the building to be built"* line. ⚠ Both are unverified until the first game run after it.
 - **Volume:** one DZM line a month plus two lines a drop (a 1921 vanilla world: ~990 buildings tracked, ~70 drops a year). **Cost:**
   nothing measurable — in a 1921 vanilla world the poll's sub-tick grows ~0.4 s a game year, and the year's ~127 s moved −0.3 ± 0.4 s
   (F261).
-- Read with `ledger/downsize_telemetry.mjs <label>=<group>[:<setup>]` (per run, by decade, by type, by tier for a tiered book). Off:
+- Read with `ledger/downsize_telemetry.mjs <label>=<group>[:<setup>] [--config <book>] [--json <out>]`: per run, by decade and by type,
+  then the reading of BALANCE_FRAMEWORK §10.107 — levels by tier class with possible workforce and construction points beside them, world
+  and shortlist; the ledger carries it as two scorecard lines and a section (`fill_downsizing.mjs`, §10.107.6). Off:
   `run_schedule.ps1 -NoDownsizeFeed`, the schedule key `downsize_feed: false`, or `$DOWNSIZE_FEED_DEFAULT = $false`. Sessions before v15
   carry none; for them only F260's save route exists (`ledger/downsize_series.mjs`, kept saves only).
 

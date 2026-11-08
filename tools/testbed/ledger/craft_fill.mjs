@@ -33,7 +33,7 @@ const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1
 const pos = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--') && !['--states', '--built'].includes(args[i - 1])));
 const [SAVE, BOOK] = pos;
 const MOD = argOf('--mod', null);
-const GAME = argOf('--game', 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game');
+const GAME = argOf('--game', process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game');
 if (!SAVE || !BOOK || !MOD) { console.error('usage: node tools/testbed/ledger/craft_fill.mjs <save.v3> <book.json> --mod <emitted mod dir> [--max-occ 0.8] [--min-missing 2] [--top 40] [--states] [--built]'); process.exit(2); }
 const MAXOCC = +argOf('--max-occ', 0.8), MINMISS = +argOf('--min-missing', 2), TOP = +argOf('--top', 40);
 const SHOW_STATES = args.includes('--states'), SHOW_BUILT = args.includes('--built');

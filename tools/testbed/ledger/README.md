@@ -46,9 +46,10 @@ bash tools/testbed/ledger/fill_ledger.sh <group> <setup> <book> <outName>
 - **`<outName>`** — the out dir, created as `tools/testbed/ledger/<outName>/` (`out_*` is gitignored scratch; the session folder is the
   record). The usable run lists land in `_mod.txt` and `_van.txt`.
 
-**References** (`lib_runs.mjs`, the one definition, CLAUDE.md §3.5): every reading is against `VANILLA_REF` (n=40 since 2026-10-26: the
-summer 18, the October 6 and the alternating batch's 16); the wall clock and the red flags' vanilla line against `VANILLA_WALL_REF` (the
-alternating batch's vanilla n=16, the most recent same-harness vanilla, which reads the order books like the arm; F248, F249).
+**References** (`lib_runs.mjs`, the one definition, CLAUDE.md §3.5): every reading is against `VANILLA_REF` (n=56 since 2026-11-08: the
+summer 18, the October 6, F249's alternating batch's 16 and F264's 16; n=40 from 2026-10-26); the wall clock and the red flags' vanilla line
+against `VANILLA_WALL_REF` (F264's own vanilla n=16, the most recent same-harness vanilla, which reads the order books like the arm; F248,
+F249, F264). All are game 1.13.11.
 
 **The steps, in order.** A step that fails prints `!!! FAILED (<code>): <command>` and the fill goes on; read the log for `FAILED` before
 writing prose, because `fill_assemble` stops on any missing output.
@@ -120,7 +121,7 @@ derived by a `fill_*.mjs` (`fill_manifest.json`'s `_rule`). Write these into the
 | `__N__` | runs counted, after L17 exclusions (footer) |
 | `__GAME__` | the game build every run ran on (footer) |
 | `__DELTA__` | what the arm changes against the shipped canon (footer: "Changed against the shipped canon") |
-| `__BASE__` | the references (VANILLA_REF n=40; wall clock VANILLA_WALL_REF) and whether they ran in the same days (footer) |
+| `__BASE__` | the references (VANILLA_REF n=56; wall clock VANILLA_WALL_REF) and whether they ran in the same days (footer) |
 | `__ARMLABEL__` | the legend label of this arm's GDP line |
 | `__NBLABEL__` | the legend label of a reference series — fill it even when there is none (the token sits in the script either way) |
 | `__VANLABEL__` | how the GDP chart names vanilla, e.g. `n=24 median` (`GDP_VAN` is the median of the reference runs) |

@@ -1920,6 +1920,48 @@ function Test-LmL43 {
     Add-Result 'L43' $T 'PASS' (($out.Trim() -split "`r?`n")[-1])
 }
 
+function Test-LmL44 {
+    <#
+      L44 - A RUN THAT COMPLETES WHILE ITS SAVE SUMMARIES STOPPED PART-WAY (found 2026-11-08, run 64 of
+      20261030_233342_alt-canon48-vanilla16).
+
+      archive_autosaves.ps1 stops for good when the disk falls under its floor ('only N GB free (< 8) - STOPPING before the disk
+      fills'). The game plays on: the run reaches its until date, self-quits, and L17 counts it usable, but every autosave after the
+      stop is never archived, so the run has no summaries for those years. Run 64 lost 1887-1931 (the archiver stopped at 1887.1.1,
+      one second after a crash, and the resumed process's saves were never picked up); its telemetry, mirrored from the logs, is
+      whole. Every year-path reader then reads that run as missing (a vanilla n of 15 from 1886), and an end-state reader would read
+      nothing at all had the game's own five autosave slots not still held 1932-36.
+
+      DETECTOR: per run with yearly autosaves, the summaries must cover at least 90% of the years from 1836 to the date it reached,
+      and saves\archive.log must carry no disk STOPPING line. A gap that has been dealt with is accepted only by a GAP_ACCEPTED.txt in
+      the run's save_summaries\ saying what is missing and what was done; it is printed. N/A without -Session.
+    #>
+    $T = 'a run that completes while its save summaries stopped part-way (archiver stopped on low disk)'
+    if (-not $Session) { Add-Result 'L44' $T 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L44' $T 'FAIL' "no such session: $Session"; return }
+    $bad = @(); $accepted = @(); $checked = 0
+    foreach ($run in @(Get-ChildItem $Session -Directory | Where-Object { $_.Name -match '^run\d{3}_' })) {
+        $metaF = Join-Path $run.FullName 'meta.json'; if (-not (Test-Path $metaF)) { continue }
+        $m = Get-Content $metaF -Raw | ConvertFrom-Json
+        if ($m.autosave_interval -ne 'yearly' -or -not $m.reached_ingame_date) { continue }
+        $checked++
+        $endY = [int](($m.reached_ingame_date -split '\.')[0]); $want = $endY - 1836
+        $sumDir = Join-Path $run.FullName 'save_summaries'
+        $have = @(Get-ChildItem $sumDir -Filter '*.json.gz' -ErrorAction SilentlyContinue | Where-Object { $_.Name -notmatch '\.partial\.' }).Count
+        $arch = Join-Path $run.FullName 'saves\archive.log'
+        $stop = (Test-Path $arch) -and [bool](Select-String -Path $arch -Pattern 'STOPPING before the disk fills' -Quiet)
+        $short = $want -gt 0 -and $have -lt [Math]::Floor(0.9 * $want)
+        if (-not ($short -or $stop)) { continue }
+        $why = "$($run.Name): $have summaries for $want years$(if ($stop) { ', the archiver stopped on low disk' })"
+        $acc = Join-Path $sumDir 'GAP_ACCEPTED.txt'
+        if (Test-Path $acc) { $accepted += "$why - accepted: $((Get-Content $acc -Raw).Trim() -replace '\s+', ' ')" } else { $bad += $why }
+    }
+    $note = if ($accepted.Count) { ' | ACCEPTED: ' + ($accepted -join '; ') } else { '' }
+    if ($bad.Count) { Add-Result 'L44' $T 'FAIL' ("$($bad.Count) run(s) completed with their save summaries stopped part-way - the year-path and end-state readers read them as missing: " + ($bad -join '; ') + '. FIX: free disk, melt what the game''s autosave slots still hold (harvest_saves.ps1), then record the gap in <run>\save_summaries\GAP_ACCEPTED.txt' + $note) }
+    elseif ($checked -eq 0) { Add-Result 'L44' $T 'N/A' 'no run with yearly autosaves in this session' }
+    else { Add-Result 'L44' $T 'PASS' ("$checked run(s) with yearly autosaves, every one summarised over at least 90% of its years or its gap accepted" + $note) }
+}
+
 $CHECKS = @(
     @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
     @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
@@ -1979,7 +2021,9 @@ $CHECKS = @(
     # with -Session, checks every sampled v12+ summary holds every country record.
     @{ Id = 'L38'; Artifact = $false; Fn = { Test-LmL38 } }
     # L43 runs the SUMMARY WRITER on a synthetic melt with a wrapped trend ring (repo-side, like L38's first half).
-    @{ Id = 'L43'; Artifact = $false; Fn = { Test-LmL43 } }
+    @{ Id = 'L43'; Artifact = $false; Fn = { Test-LmL43 } },
+    # L44 counts each run's summaries against its years and reads the archiver's log for a disk stop (post-run).
+    @{ Id = 'L44'; Artifact = $false; Fn = { Test-LmL44 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

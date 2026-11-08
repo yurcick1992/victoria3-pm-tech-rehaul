@@ -12,7 +12,7 @@ const args = process.argv.slice(2); const dir = args[0];
 const opt = k => { const i = args.indexOf('--' + k); return i > 0 ? args[i + 1] : null; };
 const TAG = opt('tag') || 'CHI', G = opt('good') || 'rubber', Q = +(opt('units-per-cap') || 0);
 if (!dir || !(Q > 0)) { console.error('usage: market_good_snapshots.mjs <summaryDir> --tag CHI --good rubber --units-per-cap 48'); process.exit(2); }
-const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const base = (() => { const t = fs.readFileSync(`${GAME}/common/goods/00_goods.txt`, 'utf8'); const m = new RegExp(`^${G}\\s*=\\s*\\{[^}]*?cost\\s*=\\s*([\\d.]+)`, 'ms').exec(t); if (!m) throw new Error(`no cost for ${G}`); return +m[1]; })();
 // the V3 price rule (common/defines PRICE_RANGE 0.75, BUY_SELL_DIFF_AT_MAX_FACTOR 2): ceiling at buy >= 2 x sell, floor at sell >= 2 x buy
 const price = (buy, sell) => buy <= 0 ? base * 0.25 : sell <= 0 ? base * 1.75 : base * (1 + 0.75 * Math.max(-1, Math.min(1, (buy - sell) / Math.min(buy, sell))));

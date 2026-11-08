@@ -46,6 +46,10 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
   appendices were collapsed 2026-10-24).
 - **`MODDING_NOTES.md`** — Victoria 3 engine and tooling gotchas (localization, load order, error.log, headless runs, debug mode).
 - **`ON_GAME_UPDATE.md`** — what to re-run or re-check after a game patch; every coupling to a vanilla file or number, plus the drift log.
+  The `game-update` skill's reference (its §5: the premises, the relative rulings, the authored tables).
+- **`GAME_UPDATE_1_15.md`** — the 1.15 update register (written 2026-11-07): one line per change the update raises (U01–U71), with its
+  class, what of ours it touches, the decision and its status. The procedure that works it is the `game-update` skill
+  (`.claude/skills/game-update/SKILL.md`); a later version gets its own `GAME_UPDATE_<version>.md`, closed at release.
 - **`BUGS_AND_FIXES.md`** — root-cause log of non-obvious fixed bugs, newest first under a dated index; consult when investigating a new bug or
   after a patch. The retired six-rung solver's entries are verbatim in **`BUGS_AND_FIXES_ARCHIVE.md`**.
 - **`TESTBED_METRICS.md`** — what telemetry can and cannot log, with in-game-verified data-function syntax; read before adding a metric.
@@ -601,6 +605,21 @@ All take `-Repo` / `-Game` / `-Config` where relevant and are run by `build.ps1`
   not day 0 (construction spend is £0 before the first weekly tick, F14); `-WagesOnly` merges only the `wages` block.
 - **`tools/audit_pm_refs.ps1`** — scanned vanilla events/JEs/effects for references to main PMs the split relocated →
   `MISSING_PM_REFERENCES.md`. Status: superseded by `emit_vanilla_refs.mjs` and its build-time scan (L40, TIER_REFERENCE_AUDIT.md).
+- **`tools/game_diff.mjs`** — the ENTITY DIFF of two game versions, phase 1 of the `game-update` skill: both trees read as databases, then
+  (1) entity counts per database, (2) every new entity with what names it (a new good with every method that makes or uses it), (3) removals,
+  with near-identical pairs as renames, (4) changed fields with old and new values, (5) the order changes the save readers depend on (goods,
+  pop types, interest groups), (6) the executables' identifier vocabulary and the script_docs logs where both versions have them, (7) every
+  other changed file. `node tools/game_diff.mjs <old game dir> <new game dir> [--out f] [--only db,…] [--old-exe e] [--new-exe e]
+  [--old-docs d] [--new-docs d] [--max n]`; the 1.13.11 tree is `C:\claude-code\vic3_game_1.13.11\game`. Status: current (tested on
+  1.13.11 against itself and planted changes; GAME_UPDATE_1_15.md U03). Traps: every empty section says "none" and every file it could
+  not parse is listed in section 7 — read those before trusting a silent section.
+- **`tools/lint_vanilla_names.mjs`** — every vanilla name our emitted `zzz_pm_rehaul*` script and `01_pm_rehaul_defines.txt` use (laws,
+  regions, building and ship types, technologies, on-actions, journal entries, triggers, effects, event targets, modifier types, icons)
+  resolves against the game it is built for; an unresolved token prints with its first file and line, and the exit code is 1 unless it is
+  in the reasoned ACCEPTED list. `node tools/lint_vanilla_names.mjs [--mod dir] [--game dir] [--exe exe] [--docs dir] [--all]` (`--game`
+  defaults to `$VIC3_GAME`). Status: standalone (2026-11-07) — passes on the 1.0 release build against 1.13.11, caught six planted
+  removals; wiring it into `build.ps1` / `preflight.ps1` is GAME_UPDATE_1_15.md U19. Traps: run it on a build made from the SAME game — the
+  owned vanilla copies count as the mod's names, so a stale build's 1.13 copies hide a name 1.15 removed.
 
 ### UI tooling
 
@@ -975,6 +994,9 @@ stale tree twins; re-run the chain from its root rather than one step.
 
 ### Shared libraries and helpers
 
+- **`tools/lib_pdx_script.mjs`** — the shared Paradox-script parser of `game_diff.mjs` and `lint_vanilla_names.mjs`: `parse` (statements with
+  key, operator, value and line; throws on an unbalanced brace, with the line), `flatten` (a block as `path = value` lines, repeated keys
+  numbered), `stripBom`, `exeIdentifiers` (the identifier strings of an executable). Status: current.
 - **`tools/lib_image.mjs`** — the mod's own image handling, no image library: `readPNG` (8-bit RGB/RGBA, non-interlaced; any other PNG
   throws with its type named), `writePNG` (adaptive row filters; `{ alpha: false }` writes RGB), `resample` (area average in premultiplied
   alpha), `writeDDS` (uncompressed A8R8G8B8 with the full mip chain; the header matches vanilla's `lathe.dds` but for the exporter's tag in

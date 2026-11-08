@@ -6,8 +6,9 @@ description: Walk the testbed landmine register before a measurement batch, and 
 # Preflight — the half a script cannot check
 
 `tools/preflight.ps1` runs inside `build.ps1` and `run_schedule.ps1` and **throws**. It already
-covers 27 entries — L1, L2, L4–L9, L12, L14, L15, L17, L20, L22, L24–L29, L31–L36, L38 — and other build steps
-enforce L13, L16, L18, L21, L30, L39 and L40 (the register table in `TESTBED_LANDMINES.md` says which).
+covers every entry whose register row names a `Test-Lm` detector, and other build steps enforce L13, L16, L18,
+L21, L30, L39 and L40 (the register table in `TESTBED_LANDMINES.md` says which; the post-run entries, L44 among
+them, need `-Session`).
 **Do not re-do their work by hand** — read `TESTBED_LANDMINES.md` for what each ID means, and trust the exit code.
 
 This skill is the remainder: the entries whose answer is not available at build time, and the

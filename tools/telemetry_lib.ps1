@@ -72,7 +72,7 @@
 #       scope holds no variables); a level drop since the last poll prints DZ (levels and private levels before and after) +
 #       DZX (the engine's warning flag, the building id); DZM closes every poll. On by default through the scheduler's downsize
 #       feed (-NoDownsizeFeed drops it). `downsize_probe` = the same plus DZR, the memory's round trip (Get-DownsizeBlock).
-$script:TELEMETRY_VERSION = 15
+$script:TELEMETRY_VERSION = 16
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 

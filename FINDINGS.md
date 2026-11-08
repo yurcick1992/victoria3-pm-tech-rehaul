@@ -35,7 +35,7 @@ thing forever.
 | **v8** | **+ ORIGINS**: who supplied whom, per good, per importer market (own phase) | **F9** |
 | **v9** | **+ urban-centre levels** and **people-weighted SoL per stratum** per country; **day-0 read** at game start; **building inventory** (type/level/employment) at day 7; `market_goods_scoped`; construction/government/military goods spend; ACTIVE PMs per building | **F11–F24** |
 | **v10** | **+ WAGES**: `SW` state average annual wage / subsistence / unemployed working adults per state; `WC` pop-object count, states, population, mean SoL per country; `WSTR` per-stratum SoL + workforce, dependents and total population per country; `PW` per POP — income split into workforce/dependent, expenses, workforce ratio, pop type — at the **endpoint dumps only** (TESTBED_METRICS §5.7) | **F25, F26** |
-| **v11–v15** | this table stopped being kept at v10; the full table (today v15) is TESTBED_METRICS → *The telemetry schema*, and an entry still names the schema it was measured under | — |
+| **v11–v16** | this table stopped being kept at v10; the full table (today v16) is TESTBED_METRICS → *The telemetry schema*, and an entry still names the schema it was measured under | — |
 
 ### Data-integrity note (the 2026-07-31 mirror bug does NOT affect F3/F4/F5)
 
@@ -409,6 +409,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F261 | Auto-downsizing is logged by a monthly telemetry poll, on in every telemetry run (v15), at no measurable cost (−0.3 ± 0.4 s of ~127 s a game year in 1921): against monthly saves it logs 116 of 118 vanilla drops and 214 of 216 canon drops with the same size and private split; a building holds no variables, so the memory lives on the state; "private" = not owned by a country; a craft level is 1/10 of a vanilla level's staffing, so compare volumes weighted | instrument | standing | here |
 | F262 | Obsolete construction on the 1.0 canon: 7.9% of tiered construction points (19.9% of levels) go to a building while the same country holds, runs and gets more per worker from a higher-tier one; mostly t1 beside a standing t2 and one tier behind; rising 1% → 9% over the century; only where a choice existed (83.6% of the points), 9.4% of points and 30.7% of levels. Misplaced capital 18.6% against the same sessions' vanilla 13.7%; the whole excess is in the tiered industries (contribution 15.2% against 9.6%), outside them 3.4% against 4.1%. The old below-best share is inflated on the artmerge books by merged rungs: F249's report line reads 26.5% corrected, not 48.5% | canon | reading | here |
 | F263 | The canon's trade lead (1.83x in 1837: vanilla's 1836 capacity carrying ~2x the goods) fades because its AI builds less trade capacity: 0.59-0.68x vanilla's from 1875 (trade-centre levels 0.71-0.78x), so trade value 1.08-1.26x; neither trades nor trade-centre construction read ai_value (a potential-over-GDP score). The residual gap at which a market's imports stop: canon 0.134 of base against 0.157 (median); paired, lower by 0.070 at weight x4 and 0.015 at x1.41, +0.015 at vanilla's weights, less than in proportion, and widening by 0.03-0.08 to 1910-35 as the thin capacity binds | canon | reading | here |
+| F264 | The 1.0 canon over 48 alternating centuries (game 1.13.11, against vanilla n=56; play time against the batch's own 16): world GDP 1.04x (1886 0.93x, the line holds), shortlist U* 24.6% against 19.1%, W 0.88x, PI 0.93 falling, PP 0.87, loss 6.98; 4 of 48 runs broken by runoff (F249 0 of 16: about one chance in four at this rate); play time x1.045 (x1.042 without a run slowed by the report's rehearsal); auto-downsizing loses 1.77x vanilla's levels for the same jobs (27.6M against 27.7M) and 1.22x its construction points, the excess on t0 non-craft, t1 and t2; below-best 27.9%, obsolete construction 8.5%, misplaced capital 18.5% against 14.0% (all of the excess in the tiered industries); against 0.99 nothing meaningful moved | canon | standing | here |
 
 ---
 
@@ -21950,6 +21951,10 @@ the below-best levels, two 27.2%, three 2.4%. Raw share by decade: 1830s 85.4% �
 below the best tier their owner already runs (a craft counts a tenth)" read 48.5% with the verdict "old designs still built"; on the
 corrected count it is 26.5%, under the line's 35% aim ("mostly the best tier").** That report is shared externally and its link is never
 republished; F249's text carries the correction.
+⭐ *2026-11-08:* the tools carry the fix (`analyse_ai_tier_choice.mjs`, `analyse_ai_tier_profit.mjs`, `fill_tierchoice.mjs` drop merged rungs
+before indexing): F249 reproduces at 26.5% / 39.7%, and `analyse_ai_tier_profit.mjs` §c (below-best AND less profit per level) reads 21.6%
+of all building on the corrected ladder, not the ≈16.8% above (its own below-best basis is 49.9%, ~10 pp above the tier-choice tool's
+39.7% because it has no market-absorption test). The 2026-10-30 batch's ledger is the first report to print the corrected line.
 
 **3. Misplaced capital, split by sector** (`ledger/misplaced_capital.mjs --batch`, unchanged logic, with a printout of the sector split
 added in a scratch copy because `tools/testbed/**` is frozen by the running batch; its decade medians reproduce F249's published line).
@@ -21994,6 +21999,9 @@ capital (31% against 42%).
 could have replaced with a standing, better one, and it is mostly the step just below the frontier, not the 1836 crafts. Misplaced capital
 runs about five points above vanilla's, and all of that excess sits in the tiered industries; outside them the canon misplaces about what
 vanilla does.
+
+⭐ *2026-11-08:* the sector split is in the tool (`ledger/misplaced_capital.mjs --batch` prints it; json `<label>.split`), and
+`obsolete_construction.mjs` and F263's `trade_fade.mjs` moved into `tools/testbed/ledger/`; all three reproduce this finding digit for digit.
 
 **Confidence.** n=16 for both arms; obsolete construction per run 6.7–9.1% of points, misplaced capital's decade medians match F249's
 published line. The tiered gross rate sits above vanilla's in every decade (by 2.2–7.0 points; 3.0–7.0 from 1876); the untiered one is
@@ -22157,3 +22165,171 @@ Single-good cells are noisy.
   everywhere); a probe has to come first.
 - Anything net of the price level: the gap is in base-price units at each date's world price, and the canon's prices sit lower
   (~0.95 of vanilla's from 1920, F257).
+
+## F264 — THE 1.0 CANON OVER 48 ALTERNATING CENTURIES: WORLD GDP 1.04× VANILLA, 1886 AT 0.93×, PLAY TIME ×1.045 OF THE SAME SESSION'S VANILLA; 4 OF 48 RUNS CROSS THE RUNOFF LINE (F249: 0 OF 16), THE SHORTLIST'S U* 24.6% AGAINST VANILLA'S 19.1%; AUTO-DOWNSIZING LOSES 1.77× VANILLA'S LEVELS FOR THE SAME JOBS AND 1.22× ITS CONSTRUCTION POINTS; AGAINST 0.99 NOTHING MEANINGFUL MOVED (2026-11-08; session `20261030_233342_alt-canon48-vanilla16`, the 1.0 canon n=48 against vanilla + telemetry n=16, alternating three canon to one vanilla, 1836→1936.1.1, game 1.13.11)
+
+**Why it ran.** The user, 2026-10-30: *"Run a n=48 mod 1.0 + telemetry vs n=16 vanilla + telemetry, alternating (so 3vs1vs3vs1 etc).
+Telemetry includes the downsizing buildings tracker"*. The 1.0 canon's century at three times F249's n, the first batch to carry the monthly
+downsizing poll (F261) in both arms, and the last batch on game 1.13 (Steam's 1.15 update was held back until it ended).
+
+**Arms and runs.** Canon `{kind: config, config: config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json}`, sha256 `9a05d36da42c1511` (the
+canon of CLAUDE.md §4.1: F249's book plus the 2026-10-26 proofread and the 2026-10-27 urban-centre script value; built by the canon-build
+emitters: the electricity method gate, the carrier's naval entry, the art); vanilla `{kind: control}`. Order c,c,c,v ×16, fixed n, no stop
+watcher. Telemetry v15 with the downsizing feed in both arms; yearly save summaries. n = 48 + 16, all reached 1936.1.1 and self-quit. Game
+deaths: 17 in 14 canon runs (run 50 also died before its first autosave and restarted from scratch) and 6 in 5 vanilla runs, every one
+recovered by the resume feeder. Every economic reading is against vanilla's 56 runs with full telemetry (`VANILLA_REF`: the summer n=18,
+October n=6, F249's n=16 and this batch's n=16, pooled by the ruling of 2026-10-24); the wall clock, the red flags and the downsizing poll
+against this batch's own vanilla only. ⚠ Vanilla run 64 has no save summaries for 1887–1931 (§8): its end state is whole, so every
+end-state line reads 56 runs and every 1890s–1920s path line 55.
+
+**1. The register** (`criteria.mjs`, the ruled defaults, end state 1932–36; vanilla n=56; consensus = the median of the 44 intact runs):
+
+| line | canon ÷ vanilla | absolute (canon vs vanilla) | aim · soft | verdict |
+|---|---|---|---|---|
+| hard lines | 44 intact / 4 broken, all by runoff | — | — | ⛔ 4 runs |
+| world GDP | **1.04×** (1935 point 1.05×; per run 0.71–1.41) | — | 0.90–1.00 · 0.75–1.33 · hard 0.64–1.52 | inside, above the aim |
+| world GDP at base prices | 1.07× (price level 0.97× vanilla's) | — | secondary | — |
+| world W | 0.89× | 0.130 vs 0.146 | 0.6–0.95 · > 1.0 | at the aim |
+| world U* | 1.15× | 46.4% vs 40.5% | soft < 1.0 | inside |
+| world H | 0.79× | 0.22 vs 0.27 | < 1 | at the aim |
+| shortlist GDP | 1.11× (W 0.88 × Y 1.27) | — | 1.1–1.9 · 0.95–2.0 | at the aim |
+| shortlist W | 0.88× | 0.177 vs 0.202 | 0.6–0.95 · > 1.0 | at the aim |
+| shortlist U* | 1.29× | **24.6% vs 19.1%** | ≥ 2 · < 1.0 | inside, below the aim |
+| shortlist H | 0.59× | 0.24 vs 0.42 | < 1 | at the aim |
+| PI (building inputs, £) | 0.93×, falling decade over decade | 0.94 of base vs 1.01 | ≤ 0.8 · > 1.0 | inside, above the aim |
+| PP (pop goods, wage units) | 0.87× (PM, war goods, 0.86×) | — | ≤ 0.8 · > 1.1 | inside, above the aim |
+| T0 | 1935 = 0.43 × the 1900s; decades 0.37 / 0.26 / 0.20 / 0.14M | 0.14M of 21.08M shortlist tiered workers | zero or falling · > 1.3 | at the aim |
+| T3 | 25.1% of tiered workers (T3 ÷ rest 0.34) | T0…T3 0.14 / 2.79 / 12.75 / 5.39M | the more the better | — |
+| Germany (closed major) | G 0.88: full employment in the lucky seed (run 42), no hoarding (H 0.10 vs 0.10) | — | aim 0 | full employment |
+| **loss** | **6.98** = PI 1.67 + T3 1.64 + gerCM 1.32 + shortlist U* 1.13 + PP 0.45 + T0 0.43 + world GDP 0.35 | intact runs 4.1–17.5 | — | no soft breach |
+
+Soft flags per run: Britain near capital abundance (U* under 5% for 5–17 years) in 30 of 48 runs (and in capital abundance in run 31,
+below), at hoards of 0.11–1.30 GDP; Germany in 16 (hoards 0.05–1.29); France in 6; the USA in 2. F249: Britain in 10 of 16.
+
+**2. The broken runs.** Four canon runs cross a hard line, all on the runoff side, none on the stall side:
+
+| run | the line | world GDP | the shortlist's U* |
+|---|---|---|---|
+| 2 | the shortlist's pooled U* under 10% at the end state | 1.36× | 5.7% |
+| 21 | the same | 1.15× | 9.7% |
+| 31 | Britain (81M) in capital abundance: U* under 5% in 9 consecutive years 1920–28 at a mean hoard of 1.65 GDP (1.33–1.86) | 1.03× | 26.0% |
+| 62 | the shortlist's pooled U* under 10% | 1.40× | 6.8% |
+
+F249 had none of 16; at this batch's rate (4 of 48, 8.3%) 0 of 16 comes up about one time in four, so the two batches do not differ.
+Vanilla's own batches cross the same line more often: 15 of their 56 runs when each is read as an arm against the 40-run reference (2 of 18
+in the summer, 5 of 6 in mid-October, 7 of 16 beside F249, 1 of 16 here). Three of the four are the rich tail of one distribution: runs 62
+and 2 are the second- and third-richest worlds of the batch (the richest, run 29 at 1.41×, keeps the shortlist's U* at 12.0%), and run 31
+broke through Britain alone at a median world GDP.
+
+**3. The decade path** (§10.96; world GDP ÷ vanilla's per-run median, the median of all 48 usable runs): 1846 0.98 · 1856 0.99 · 1866 0.99 ·
+1876 0.98 · **1886 0.93** · 1896 0.94 · 1906 0.95 · 1916 0.93 · 1926 0.99 · 1936 1.06. The 1886 line (0.79–1.01) holds. The dip is shallower
+and longer than F249's (0.90–0.91 over 1886–1906): the canon trails vanilla by 5–7% from 1886 to 1916 and catches up by 1926.
+
+**4. The wall clock** (play time from the tick lines; the ruled clusters; vanilla = this batch's own; `wall_clusters.mjs`, `report_perf.mjs`):
+
+| | canon | vanilla | ratio |
+|---|---|---|---|
+| main wall clock (clusters 1 + 2), median | **182.1 min** (44 runs) | **174.2 min** (12) | **×1.045** |
+| all usable runs, median | 182.8 | 176.4 | ×1.036 |
+| clusters 1 / 2 / 3 | 37 / 7 / 4 | 12 / 0 / 4 | — |
+| seconds per in-game year by decade | ×1.03–1.06 1830s–60s · ×1.06–1.08 1870s–90s · ×1.03–1.04 1900s–10s · ×1.09 1920s · **×1.10 1930s** | — | — |
+| pop-matched per-unit diagnostic | +1.6% (13 of 14 bins overlapping, 0.991–1.072) | — | — |
+
+Inside the +10% budget. Cluster 3 is the listed fleet path loop in 4 runs of each arm (canon runs 22, 30, 49, 50, American fleets, run 50 also
+North German ones; vanilla runs 12, 20, 24, 32: Philippine and Spanish, American, Prussian, Norwegian fleets). ⚠ Canon run 62 is the slowest
+normal run (207.8 min, +14% over the median); its last hours overlapped the 140-minute rehearsal of this report's fill on the same machine.
+Without it the main median is 181.6 min, ×1.042. The canon's 1930s are dearer than F249 read them (×0.99 there): live pop objects ×1.03 and
+building levels ×0.94 of vanilla's over the century, so the arms do not simulate the same thing, and a single session's ratio is directional
+(§3.4). One session with alternation is the reliable form, and this is one.
+
+**5. Auto-downsizing** (the monthly poll, F261; `ledger/downsize_telemetry.mjs`, the §10.107 reading: private levels lost, by tier class, with
+the jobs those levels offered and their construction cost; gold fields, auto-scaling and non-economic buildings out; vanilla's 16 runs of
+this batch, the only vanilla runs with the poll):
+
+| world, mean a run | levels | jobs | construction points |
+|---|---|---|---|
+| canon | **11,052** (sd 1,776) | 27.6M | **3.06M** |
+| vanilla | 6,230 (sd 1,516) | 27.7M | 2.50M |
+| canon ÷ vanilla | 1.77× | **0.99×** | **1.22×** |
+
+| world, by tier class (canon / vanilla, a run) | t0 craft | t0 non-craft | t1 | t2 | t3 | outside the ladder |
+|---|---|---|---|---|---|---|
+| levels | 5,329 / 154 | 411 / 102 | 1,419 / 608 | 746 / 1,003 | 56 / 214 | 3,091 / 4,148 |
+| jobs (thousands) | 2,664 / 683 | 1,708 / 454 | 5,763 / 2,472 | 2,721 / 3,959 | 187 / 782 | 14,556 / 19,394 |
+| construction points (thousands) | 32 / 93 | 152 / 57 | 960 / 435 | 950 / 662 | 108 / 128 | 855 / 1,128 |
+
+(A vanilla building counts at the tier of the canon rung made from its active method; a merged host is split by its methods.) **The canon loses
+1.77× vanilla's levels but the same jobs**: half its lost levels are craft levels of 500 jobs, a tenth of a vanilla level. Weighted by what they
+cost, the canon destroys 1.22× vanilla's construction (+0.55M points a run). The excess is on the factory rungs below the frontier: t0
+non-craft and t1 lose 1.11M points against 0.49M (+0.62M), t2 0.95M against 0.66M (+0.29M; fewer levels and jobs, but each canon t2 level
+costs 1.9× a vanilla one). The crafts (−0.06M), t3 (−0.02M) and the buildings outside the ladder (−0.27M) lose less than vanilla. The old
+rungs shedding is what §2.1 expects when newer rungs take their market; that it costs 1.22× vanilla's construction and not more is because
+the canon's cheapest levels, the crafts, carry half its losses. By decade the canon's losses run 605 / 705 levels a run in the 1830s / 1840s
+(the crafts settling in; F252 found them staffed, with Forest Glass hollowing out by 1845), fall to 336 in the 1860s and rise to 2,235 in the
+1920s; vanilla's rise from 17 to 1,859. The shortlist: canon 1,985 levels (6.76M jobs, 1.07M points) against 1,398 (5.75M, 0.66M). Unplaced:
+3.9% of the canon's levels and 4.8% of vanilla's carry a display name the name tables do not resolve (colonial names such as "British
+Senegal", and one name the log mis-encodes, Württemberg); no shortlist member is among them, so they count in the world only; another 0.4%
+lose a building's last level, logged without a country. ⚠ The canon arm's build folder (`mod_sched_canon`, which the reader takes jobs and
+costs from) was deleted by the scheduler at `SCHEDULE DONE` and rebuilt from the book with the same emitters (276 files against the run's
+278: the two telemetry files).
+
+**6. The other readings of the scorecard.**
+- **New plants built below the best tier their owner already runs** (the corrected tool, F262: a merged rung is its host): **27.9%** unit-
+  weighted, 40.2% raw, under the 35% aim ("mostly the best tier"); F249 corrected 26.5% / 39.7%. Below-best and earning less per level than a
+  standing best rung: 21.4%.
+- **Obsolete construction** (F262's measure, `ledger/obsolete_construction.mjs`): 8.5% of tiered construction points, 19.9% of levels, 14.1%
+  of jobs (F249's runs 7.9%); where a choice existed (84.2% of the points), 10.1% of points and 30.5% of levels.
+- **Misplaced capital** (VALID benchmark, `ledger/misplaced_capital.mjs --batch` with the sector split): pooled over the century canon 18.5%
+  against this batch's vanilla 14.0%; 1926–36 22%. The tiered industries take 68.2% of the canon's new capital (vanilla 57.5%) and misplace
+  22.2% of it (16.5%); mines and agriculture misplace 11.1% (10.3%). As shares of ALL new capital: tiered 14.9% against 9.5%, mines +
+  agriculture 3.5% against 4.4%. F262's reading holds at n=48: the whole excess is in the tiered industries.
+- **Backward industries with a far better producer in the same market** (`laggard_pressure.mjs`, where vanilla cannot switch either):
+  workers kept over ten years canon 91.9% against vanilla's 120.0% (380 cases against 983; relative retention 0.69 against 0.89); the heavy
+  and war chains 67.9% against 106.8%, the consumer chains 103.2% against 125.3%. Through trade alone: 109.0% against 115.8%. F249's reading
+  holds: in-market pressure is clearly stronger in the canon, through trade it is weak in both.
+- **Old plants, world** (workers on a rung two or more tiers behind their market's frontier, 1935, share of the industry): art academy 16.2%,
+  textile 13.9%, furniture 11.9%, paper 11.5%, each at or near its peak; arms 5.5%, its old workers a third of their 1890 peak; explosives
+  4.3% (half of 1910's); artillery 3.7%.
+- **Tier-1 workers, world** 5.7 → 6.8 → 8.0 → 8.7 → 9.1M over 1900–1935, not falling (aim: falling from 1920).
+- **Payback at realised prices**: a t0 craft 9 years, a t0 factory 50; a t3 plant 9.1 years (aim 8–15).
+- **Construction delivered 1880–1935**: 0.95× vanilla's.
+- **Input-price red flags** (§10.94; this batch's vanilla as the line): problem market-years 136.5 a run (87–279) against 120.5 (58–196),
+  ×1.13, the excess before 1900; chronic markets 2 against 2. Japanese engines and hardwood and paper in four markets dominate; paper is the
+  pair that departs from vanilla, a capacity lag behind government administration and universities (the report's summary).
+- **Technology** (against vanilla n=56): Britain 160.0 against 161.6 (production 56.9 / military 41.8 / society 61.3 against 49.5 / 51.2 /
+  60.9); Germany 159.7 against 163.7; France 151.1 against 136.8; the USA 152.6 against 157.8. The anchor test: the leader holds 40% of tech
+  era 3 at 1875, 31% of tech era 4 at 1905, 50% of tech era 5 at 1936 (vanilla 50 / 41 / 46%): tier 2 late, as in F249. 34.5% of the majors'
+  acquisitions had a research-entry stage.
+
+**7. Against F249** (the "since 0.99" page at full n, https://claude.ai/artifact/JBGUe5wipSPTzJWzkF1hwo; Mann–Whitney over intact runs, on
+the 40-run vanilla base F249 used, so its 1.0 values differ slightly from §1's): of 19 scorecard lines, 1.0's 48 runs differ from 0.99's 16 at
+p < 0.05 on two, pop-goods prices (0.88× against 0.95×, p 0.03) and the tier-0 share (0.7% of the newer tiers' workforce against 1.1%,
+p 0.03), both the way the mod intends and both small. The first and second halves of the 1.0 runs (one build) differ on one line, output per
+productive worker (p 0.04): two lines in 19 is chance level. World GDP 1.05× against 1.07× (p 0.73), 1886 0.92× against 0.91× (p 0.37); the
+shortlist's U* 24.6% against 31.1% (p 0.16); misplaced capital 18.5% against 18.0% over the century; the majors hold one to four more
+technologies (the carrier's naval entry). This batch's vanilla against the 40-run reference: one line of 16 below 0.05 (the world's pool,
+0.24 against 0.29 of GDP); against F249's vanilla alone, input prices 1.02× against 0.99× (p 0.002). The build changes since F249 (the
+electricity method gate above all) moved nothing that reads above chance.
+
+**8. The harness.** Every canon run built the same mod (one config fingerprint, one build family). The monthly downsizing poll ran in all
+64 runs; after the batch the DZX line gained `tag=` and the read step a `level >= 1` guard (telemetry v16, TESTBED_METRICS §2.4¾), both
+unverified in game. ⚠ **The disk ran low in the last run** (landmine L44, found here): vanilla run 64's save archiver stopped at 4.8 GB free at
+1887.1.1, one second after the run's first crash (1887.1.4, the likely cause), and archived nothing after; the resume feeder restarted the
+run from its 1886.1.1 save (a second crash at 1887.1.17 on the newest save sent it one save further back), and it played to 1936.1.1. The
+game's five autosave slots still held 1932–36 and were melted by hand into the run, so its end state is whole and on one trajectory; its
+1887–1931 summaries are lost (recorded in the run's `save_summaries\GAP_ACCEPTED.txt`; `Test-LmL44`). No other run was affected. Steam had
+also tried to commit the 1.15 update on 2026-11-05 during a run and stopped on a locked file, moving nothing (GAME_UPDATE_1_15 U02): every
+run is 1.13.11. After the 1.15 update a reader of this session needs `VIC3_GAME=C:\claude-code\vic3_game_1.13.11\game` (the 1.13.11 game
+files, copied 2026-11-07); `downsize_telemetry.mjs` also needs `mod_sched_canon`, which the next scheduled batch overwrites.
+
+**Report:** https://claude.ai/artifact/VADuN2GwKBjKZegmvnrxo7 (copied into the session as `REPORT.html`, with `redflags_full.html`).
+
+**Confidence.** n=48 against vanilla n=56 (the wall clock, the red flags and the downsizing poll against this batch's 16): the register's
+medians are the steadiest yet for this book, but the statistics stay directional (§2.9). The broken-run rate is 4 of 48 with a wide interval
+(about 2–20%).
+
+**What it does NOT say.** It does not say the build changes since F249 (the electricity method gate above all) moved the economy: the since-0.99
+comparison finds nothing above chance. It does not say why the shortlist's U* reads lower than F249's 31.1% (24.6%): the vanilla reference
+moved too (19.1% against 17.9%), and the per-run spread is wide (10.9–42.2%, middle half 19.0–33.6%). It does not say auto-downsizing is a
+cost the player feels: the poll counts levels a building loses while it cannot hire, and a craft level carries a tenth of a factory level's
+jobs; whether the extra 0.55M points a run is capital the economy needed elsewhere is not measured. Nothing here was read on 1.15.

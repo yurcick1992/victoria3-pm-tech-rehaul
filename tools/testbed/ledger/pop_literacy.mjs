@@ -24,7 +24,7 @@ import { gunzipSync } from 'node:zlib';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const args = process.argv.slice(2);
 const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
-const GAME = argOf('--game', 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game');
+const GAME = argOf('--game', process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game');
 const SAVE = args.find(a => a.endsWith('.v3'));
 if (!SAVE) { console.error('usage: node tools/testbed/ledger/pop_literacy.mjs <save.v3> [--json out.json] [--top N] [--game <dir>]'); process.exit(2); }
 const JOUT = argOf('--json', null), TOP = +argOf('--top', 25);

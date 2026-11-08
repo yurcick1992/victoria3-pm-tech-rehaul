@@ -8,7 +8,7 @@
 // a "gone" element is only a wasted construction when the MONTHLY log confirms it (CONFIRMED lines); the rest are an upper bound (FINDINGS F177).
 import fs from 'node:fs'; import zlib from 'node:zlib'; import path from 'node:path';
 const [run, modDir] = process.argv.slice(2);
-const G = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const G = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 
 // ---- dam definitions: cost and the technology each level needs (tech_1 always; tech_k once level_after_queued >= T) ----
 const dams = {};

@@ -577,9 +577,10 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 
 ## 3.5 References, pools and which runs count
 
-- **Vanilla references** (`tools/testbed/ledger/lib_runs.mjs`): `VANILLA_REF` = the summer n=18 + the October n=6 + the alternating batch's n=16 =
-  **n=40** (since 2026-10-26; every vanilla run with full telemetry, pooled by ruling), the default for every reading but the wall clock;
-  `VANILLA_WALL_REF` = the alternating batch's vanilla n=16 (F249).
+- **Vanilla references** (`tools/testbed/ledger/lib_runs.mjs`): `VANILLA_REF` = the summer n=18 + the October n=6 + the F249 batch's n=16 + the
+  n=48 batch's n=16 = **n=56** (since 2026-11-08; every vanilla run with full telemetry, pooled by ruling; n=40 before), the default for every
+  reading but the wall clock; `VANILLA_WALL_REF` = the n=48 batch's own vanilla n=16 (F264). ⚠ All of them are game 1.13.11: nothing measured on
+  1.15 compares with them until a 1.15 vanilla batch replaces them (ON_GAME_UPDATE §1 step 10).
 - **The instrumented tags are eleven:** GBR · FRA · USA · PRU · NGF · GER · NET · BEL · UNL · RUS · JAP. `tools/testbed/ledger/lib_markets.mjs` is the ONE
   definition of the shortlist pool, the majors, the per-country members and the price-tracked markets. UNL (the United Netherlands) replaces NET and
   BEL where it forms. A market is named after its leader's adjective, so prices are keyed by TAG and resolved per run.
@@ -612,7 +613,8 @@ method icons; POLISH R2, R5, R10), vanilla's electricity gate on our main method
 2026-10-27 the aircraft carrier's naval research entry (the ship-type reader missed vanilla's one multi-line `unlocking_technologies`) with
 every naval entry naming its ship types (BUGS_AND_FIXES 2026-10-27). The
 electricity BUILD condition of §10.106 is NOT in it (deferred to mod 1.1; a known issue). None of these was in the builds F249 and F250 measured;
-the gate only refuses an electric method in a state without electricity.
+the gate only refuses an electric method in a state without electricity. **F264 measured the canon build itself** (the book `9a05d36d`, 48
+centuries, 2026-10-30 → 11-08) and found it the same as F249's within the seed spread.
 
 **What it contains is everything §1.2 describes, built by the formula of §1.3 at the values given there.** The provenance records inside the book —
 `_ab`, `_artisan`, `_merge`, `_*_variant`, `_canon_*`, `_polish_*` — carry the commands that regenerate it. The record inherited from
@@ -628,35 +630,43 @@ What §1.2 and §1.3 leave out:
   upkeep 1 tools + 1 engines per 50 electricity; the four dam types `must_have` in every administrative strategy.
 - **Trade and defines:** the five-class traded-quantity table at ×1 (F159 §7); `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99`.
 
-## 4.2 Where it stands (2026-10-26)
+## 4.2 Where it stands (2026-11-08, game 1.13.11)
 
-- **The 1.0 canon's century** (F249: the alternating batch, 16 canon centuries against vanilla's n=40; sessions `20261021_224949_alt-vanilla-canon-n16`,
-  `20261023_161802_alt-vanilla-canon-rest20`, `20261026_032622_alt-canon-replace20`):
-  - **16 intact, none broken**; consensus loss 6.60.
-  - **World GDP 1.07×**, above the 0.90–1.00 aim and inside the soft band (per run 0.67–1.27). The path sits at 0.90–0.91 over 1886–1906 (the 1886
-    line holds) and is level with vanilla by 1926.
-  - **The pool:** W 0.82×; U\* 31.1% against vanilla's 17.9% (1.74×, under the ≥ 2× aim); H 0.23 against 0.44.
-  - **Prices and tiers:** PI 0.93, falling decade over decade; PP 0.95. T0 is falling (1935 = 0.45 × the 1900s); T3 holds 27.4% of tiered workers.
-  - **Germany:** fully employed in the lucky seed, without hoarding (G 0.43).
-  - **Misplaced capital** 14–21% a decade, against this batch's vanilla's 12–15%.
-  - **Technology:** the majors hold about vanilla's count (Britain 158.9 against 162.9; military 40.8 against 51.5).
-  - **Red flags:** 147.5 problem market-years a run, against vanilla's 120.5 on the same order-book basis.
+- **The 1.0 canon's century** (F264: the n=48 alternating batch, 48 canon centuries against vanilla's n=56, the canon build `9a05d36d`; session
+  `20261030_233342_alt-canon48-vanilla16`; F249's 16 centuries of `728f2c7f` read the same within the seed spread):
+  - **44 intact, 4 broken by runoff** (the shortlist's pooled U\* under 10% in three, Britain in capital abundance 1920–28 in one; F249 had
+    none of 16, which this rate gives about one time in four); consensus loss 6.98.
+  - **World GDP 1.04×**, above the 0.90–1.00 aim and inside the soft band (per run 0.71–1.41). The path sits at 0.93–0.95 over 1886–1916
+    (the 1886 line holds at 0.93) and is level with vanilla by 1926.
+  - **The pool:** W 0.88×; U\* 24.6% against vanilla's 19.1% (1.29×, under the ≥ 2× aim); H 0.24 against 0.42.
+  - **Prices and tiers:** PI 0.93, falling decade over decade; PP 0.87. T0 is falling (1935 = 0.43 × the 1900s); T3 holds 25.1% of tiered workers.
+  - **Germany:** fully employed in the lucky seed, without hoarding (G 0.88).
+  - **Misplaced capital** 18.5% of the century's new capital against the same session's vanilla 14.0%; the whole excess is in the tiered
+    industries (F262, F264). New plants built below the best tier their owner runs: 27.9% (the corrected count, F262).
+  - **Auto-downsizing** (§10.107): 1.77× vanilla's lost levels a run for the same jobs (27.6M against 27.7M) and 1.22× its construction
+    points; half the canon's lost levels are crafts, the excess points on t0–t2 factory rungs.
+  - **Technology:** the majors hold about vanilla's count (Britain 160.0 against 161.6; military 41.8 against 51.2).
+  - **Red flags:** 136.5 problem market-years a run, against this session's vanilla's 120.5; the excess is paper (government administration's
+    demand) and before 1900.
 - **The price path and competition** (§2.1):
-  - **The war and heavy chains:** the ladder retires the old rung completely there (arms, artillery, explosives and steel shed 92–98% of their old
-    rung's peak workers, F136).
-  - **The consumer chains:** the main good's price does fall in £ (1930s pool output index: textile 0.73, furniture 0.71, against vanilla's 0.90 and
-    0.91; inputs flat), and the frontier is built until it earns the average return of new capital. The old t1 textile and furniture rungs live on
-    their luxury line: a secondary is sized on t2 and makes the same amount per level on every rung (F249 §4d; the lever is deferred to 1.1).
-  - **Competition where neither arm can switch:** a backward industry under a far better rung in its own market shrinks in the canon (96% of its
-    workers kept over a decade) and grows in vanilla (121%). Through trade the pressure is weak in both (F249 §4a).
-- **Play speed** (§3.4): ×1.010 of the same sessions' vanilla pooled (165.3 against 163.6 minutes a century), inside the +10% budget. The two sessions
-  read ×1.11 and ×0.996 because the machine sped up for both arms, so a mod-only reading is directional (F249).
+  - **The war and heavy chains:** the ladder retires the old rung there (arms, artillery, explosives and steel shed most of their old rung's peak
+    workers, F136; a backward heavy or war industry under a far better rung in its own market keeps 68% of its workers over a decade, vanilla 107%).
+  - **The consumer chains:** the main good's price does fall in £ (F249: 1930s pool output index textile 0.73, furniture 0.71, against vanilla's
+    0.90 and 0.91; inputs flat), and the frontier is built until it earns the average return of new capital. The old t1 textile and furniture rungs
+    live on their luxury line: a secondary is sized on t2 and makes the same amount per level on every rung (F249 §4d; the lever is deferred to 1.1).
+  - **Competition where neither arm can switch:** a backward industry under a far better rung in its own market shrinks in the canon (92% of its
+    workers kept over a decade) and grows in vanilla (120%). Through trade the pressure is weak in both (109% against 116%; F249 §4a, F264).
+- **Play speed** (§3.4): ×1.045 of the same session's vanilla (182.1 against 174.2 minutes a century, clusters 1 + 2), inside the +10% budget;
+  by decade the canon is dearest in the 1930s (×1.10 per in-game year). F249's two sessions read ×1.11 and ×0.996 (×1.010 pooled) because the
+  machine sped up for both arms, so a mod-only reading is directional.
 - **Known open problems:**
   - the old rung in the consumer chains (its luxury line);
-  - Britain near capital abundance (U\* under 5% for 5–17 years in 10 of 16 runs, at small hoards);
-  - broken seeds: one in three to four in earlier books (F166, F227, F247), none in F249's sixteen;
+  - Britain near capital abundance (U\* under 5% for 5–17 years in 30 of 48 runs, mostly at small hoards; in capital abundance in one);
+  - broken seeds: one in three to four in earlier books (F166, F227, F247), 4 of 48 in F264 (none in F249's 16);
   - misplaced capital above vanilla's;
-  - military technology behind vanilla's count (deferred to mod 1.1, with the user's AI-weight approach).
+  - military technology behind vanilla's count (deferred to mod 1.1, with the user's AI-weight approach);
+  - **game 1.15** (mod 1.1): the journal-entry outcome rework breaks the research entries until they are converted, and the hiring and wage
+    rebalance moves the premise of §2.1; the pass is `GAME_UPDATE_1_15.md`.
 
   The live list is `BACKLOG.md`.
 
@@ -720,7 +730,7 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
    ENGINE behaves belongs on vanilla + telemetry (our content would confound it); a probe of how OUR economy behaves belongs on the config. Write the
    arm and the prediction in the schedule's `_why`, and name the arm in every finding it produces.
 4. **Never launch a game run without the user's explicit go-ahead,** and ask for the whole batch, branches included, in ONE request, quoting the cost as
-   `<count> × <span>` with a time (a 1836→1936 run is ~3–3.5 h: the canon's book 194 min, the same days' vanilla 178.5 min, F247/F248). Permission for
+   `<count> × <span>` with a time (a 1836→1936 run is ~3–3.5 h: the canon 182 min and the same days' vanilla 174 min on 1.13.11, F264). Permission for
    one batch is not permission for the next. **An allotted window is a standing go-ahead** for probes and short tests inside it: run the measurement
    instead of asking; a window never ends sooner than 12 hours after the last reply, a status request does not end it, and no long test starts with
    under 3 hours of it left.
@@ -767,7 +777,8 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 | `TESTBED_LANDMINES.md` | defects where nothing fails, each with a detector | a run surfaces a new one (register + detector + proof it trips) |
 | `TESTBED_METRICS.md` | what telemetry and the save summaries can and cannot log | a metric is added or verified |
 | `MODDING_NOTES.md` | engine and tooling behaviour | an engine gotcha is found |
-| `ON_GAME_UPDATE.md` | every coupling to a vanilla file or number; what to re-run after a patch | a new coupling |
+| `ON_GAME_UPDATE.md` | the game-update skill's reference: every coupling to a vanilla file or number, what to re-run after a patch, the version log, the premises / relative-rulings / authored tables (§5) | a new coupling |
+| `GAME_UPDATE_<version>.md` | the version's update register: one line per change the update raises, with its class, what of ours it touches, the decision and its status (the game-update skill) | through each update pass; closed at release |
 | `BUGS_AND_FIXES.md` | root causes of non-obvious bugs, newest first under a dated index | a bug is fixed whose cause would surprise the next reader |
 | `*_ARCHIVE.md` (BALANCE_FRAMEWORK, FINDINGS, BUGS_AND_FIXES, `tools/testbed/SESSION_VERDICTS`) | the superseded sections and entries of the records, verbatim under their own numbers; a stub stays in the live file | never written to except to archive a block the user agrees is fully superseded |
 | `TIER_REFERENCE_AUDIT.md`, `MISSING_BUILDING_CONDITIONS.md` | vanilla references the tier split affects; dropped building conditionals | a new case is found (catalogue, do not fix inline) |

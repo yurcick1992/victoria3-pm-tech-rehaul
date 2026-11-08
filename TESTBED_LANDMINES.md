@@ -107,6 +107,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L41 | a game paused by input looks like a healthy run | the observer's frozen-date stop and resume; waiter FROZEN (exit 5); `Test-LmL41` | harness, session | AUTO, proven (the recovery live 2026-10-28) |
 | L42 | a run lost to the observer's landing guard after an early-death fresh restart | `Test-LmL42` | session | AUTO, proven; fixed |
 | L43 | a save summary reads a country's trend ring by position, not by its index | `Test-LmL43` | build, repo | AUTO, proven; fixed |
+| L44 | a run that completes while its save summaries stopped part-way (the archiver stopped on low disk) | `Test-LmL44` | session | AUTO, proven; the harness side open (BACKLOG) |
 
 ---
 
@@ -1032,3 +1033,24 @@ into 1936 or a longer run is not.
 synthetic melt with one wrapped ring (n 5, index 7) and one unfilled ring through the REAL writer and requires the slot at the index (600, not
 the stale 30). Proven 2026-10-28: with the last-slot read restored it FAILs (AAA 30, world 37). **Fix.** The reader collects the whole array
 and takes slot (index − 1) mod n (commit `4e2707e`). BUGS_AND_FIXES 2026-10-28.
+
+### L44 — a run that completes while its save summaries stopped part-way: the archiver stopped on low disk and the game played on
+
+**Defect.** `archive_autosaves.ps1` stops for good when free disk falls under its floor (`only N GB free (< 8) - STOPPING before the disk
+fills`, in the run's `saves\archive.log`). The game does not stop with it: the run reaches its until date, self-quits, and L17 counts it
+usable, but no autosave after the stop is archived, so the run has no save summaries for those years. Nothing fails: L12 passes (every
+archived save has its summary), the waiter reports DONE, and the year-path readers quietly read the run as missing (a vanilla n of 15 from
+1886 in `misplaced_capital.mjs`, a technology census ending at 1886). Had the game's own five autosave slots not still held 1932–36, every
+end-state line would have lost the run as well.
+
+**Found.** 2026-11-08, run 64 (vanilla, the last run) of `20261030_233342_alt-canon48-vanilla16`: the archiver stopped at 00:27:05 local
+with 4.8 GB free, one second after the game crashed at 1887.1.4 (the low disk is the likely cause of the crash). The resume feeder restarted
+the run from its 1886.1.1 save, and the resumed process played to 1936.1.1 with nothing archived. Repair: the five slots (1932–36) melted by
+hand as #51–#55; 1887–1931 are lost; recorded in the run's `save_summaries\GAP_ACCEPTED.txt`.
+
+**Detector.** `Test-LmL44` (`preflight.ps1 -Session`): per run with yearly autosaves, the summaries must cover at least 90% of the years from
+1836 to the date the run reached, and `saves\archive.log` must carry no disk STOPPING line; a gap that has been dealt with is accepted only by a
+`GAP_ACCEPTED.txt` in the run's `save_summaries\` saying what is missing and what was done, and the detector prints it. Proven 2026-11-08: FAIL on
+this session before the acceptance file (`run064_vanilla: 55 summaries for 100 years, the archiver stopped on low disk`), PASS with it (printed),
+PASS on `20261021_224949_alt-vanilla-canon-n16` (13 runs). **Fix: open** — the harness does not stop or flag a batch whose archiver stopped
+(BACKLOG); until it does, the smoke check and the heartbeat should read free disk (a century batch of 64 runs takes ~18 GB).

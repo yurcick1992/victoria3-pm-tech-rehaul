@@ -22,7 +22,7 @@ import { usableRuns, reportDropped } from './lib_runs.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..', '..', '..');
 const ROOT = join(REPO, 'tools', 'testbed', 'sessions');
-const GAME = 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
+const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const args = process.argv.slice(2);
 const sessions = []; for (let i = 0; i < args.length; i++) if (args[i] === '--session') sessions.push(args[++i]);
 if (!sessions.length) { console.error('usage: finish_probe.mjs --session <stamp> [--session …]'); process.exit(2); }
