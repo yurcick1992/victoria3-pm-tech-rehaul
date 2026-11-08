@@ -106,8 +106,10 @@ rung) and are outside this catalogue.
 industry and ship construction (GBR 1836: 28 manufacturing buildings), and F180 §1 notes that vanilla's decrees test `bg_manufacturing`, which
 holds no building directly. So every `is_building_group = bg_light_industry` / `bg_manufacturing` reaches the crafts, and the group modifiers
 (`building_group_bg_light_industry_*`) reach them too. **Not verified, likely:** that `state_has_building_group_levels`,
-`country_has_building_group_levels` and `pop_employment_building_group` also count child groups. The one case that depends on it (G3) is built
-so that it does not matter.
+`country_has_building_group_levels` and `pop_employment_building_group` also count child groups. G3–G6 depend on it since 2026-11-08 (two native
+counts, the group's minus the craft group's, chosen over a script loop for performance, GAME_UPDATE_1_15 Q11). The evidence is vanilla's own:
+its AI decrees count `bg_manufacturing` and `bg_extraction`, which hold no building directly. A debug build's init on_action checks it once a
+game on one country with crafts (`PM_TECH_REHAUL WARN` if the engine's light-industry count falls below a loop over its buildings).
 
 Where the groups DO change meaning (the other 70 group lines are fine — appendix C):
 * **Craft levels inflate level thresholds and level sums:** `06_vernacular_buttons.txt:137,210,449,618` (`bg_light_industry level >= 5/6/10/8` on
@@ -570,7 +572,10 @@ light-industry content for most of the world, never for the industrial core.
 |---|---|---|---|---|
 | G1 | vernacular Aragonese / Asturleonese / Francoprovençal / Occitan manufacturing branch · `06_vernacular_buttons.txt:137,210,449,618` (`bg_light_industry` level ≥ 5 / 6 / 10 / 8 on ONE building, with the MANUFACTURING decree) | the homeland is an industrial region | crafts out — a 5-level craft is 2,500 workers against vanilla's 25,000, and Spain starts with textile and paper crafts, so untransformed these are near-free | `snippet`: `NOT = { is_building_group = bg_pmr_crafts }` beside the group test |
 | G2 | fra_weekly_pulse_orleanist_progress · `00_victoria_scripted_effects.txt:2264`; **since game 1.15** `divided_monarchists_orleanist_progress_bar` · `scripted_progress_bars/00_victoria_progress_bars.txt:207,215` (the effect removed) | July-Monarchy progress from Σ levels of profitable manufacturing ÷ 100 (1.15: ÷ 200) | crafts out; France starts with no craft, so the 1836 anchor is untouched and only later cheap crafts are kept from inflating it | `snippet`, the same NOT (1.15: twice, the limit and the sum) |
-| G3 | je_spa_economic_regeneration · `journal_entries/06_economic_regeneration.txt:449,481,538,589` (`state_has_building_group_levels bg_light_industry ≥ 16 / 7`) | Regeneracionismo: industrialise four states | crafts out ((F) 12) | `snippet`: `pmr_light_industry_levels_nc >= N`, a state script value summing non-craft light-industry levels — right whichever way the vanilla counter treats child groups |
+| G3 | je_spa_economic_regeneration · `journal_entries/06_economic_regeneration.txt:449,481,538,589` (`state_has_building_group_levels bg_light_industry ≥ 16 / 7`) | Regeneracionismo: industrialise four states | crafts out ((F) 12) | `snippet`: `pmr_light_industry_levels_nc >= N`, a state script value: light-industry levels minus craft levels, two native counts (until 2026-11-08 an every_scope_building loop; GAME_UPDATE_1_15 Q11) |
+| G4 | **since game 1.15** the five-year plan's light-industry goal · `script_values/ip5_je_values.txt` (`five_year_plan_light_industry_levels_value`) and its baseline · `journal_entries/00_communism.txt` (`five_year_plan_light_industry_initial_var`) | a command economy's plan: initial light-industry levels × 1.25, at least +10 | crafts out (GAME_UPDATE_1_15 Q11, BALANCE_FRAMEWORK §10.109.4: ten craft levels, ~60 points, would meet the minimum) | `snippet`: the value → `pmr_country_light_industry_levels_nc`; the baseline → an inline value, the same two native counts |
+| G5 | **since game 1.15** the Tsar's favourite-industry mission · `journal_entries/08_tsarpoints.txt` (baseline and completion; IP5) | grow the favoured group (heavy, light or military industry) over its baseline | crafts out when the group is light industry (Q11) | `snippet`: the baseline → an inline value subtracting the craft group when `var:tp_fav_industry_group ?= bg:bg_light_industry`; the completion → `pmr_tp_fav_industry_levels_nc >= target` |
+| G6 | **since game 1.15** the AI's manufacturing-decree states · `scripted_effects/00_ai_decree_effects.txt` (the top five states by `state_has_building_group_levels(bg_manufacturing)` ≥ 10; every AI country, monthly) | where the AI encourages manufacturing | crafts out (Q11: craft-heavy states would rank as industrial) | `snippet`: both counts → `pmr_manufacturing_levels_nc`, manufacturing levels minus craft levels (native) |
 
 ---
 

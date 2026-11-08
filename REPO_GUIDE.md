@@ -932,7 +932,8 @@ stale output except under `common/history`, which an emitter writing there must 
   method, a renamed secondary, a `building_<key>_throughput_add`) rewritten to the ruled rung set — whole-file transforms of ~63 vanilla files
   from the live game (or the build's own copy where an earlier emitter wrote it), additive helper triggers / effects / a value
   (`pmr_is_<ind>`, `pmr_has_<ind>`, `pmr_runs_<pm>` …, only those used), six throughput modifier types with loc, the Montenegro first-arms check
-  (gated on its DLC). Every snippet and token count asserted; DLC gates counted per file; a scan of the game tree throws on any tiered
+  (gated on its DLC), and the craft-excluded level counts G3–G6 as script values that subtract the craft group's native count from the parent
+  group's (never a loop; GAME_UPDATE_1_15 Q11). Every snippet and token count asserted; DLC gates counted per file; a scan of the game tree throws on any tiered
   reference left in an unowned file not on its ACCEPTED list. After a patch: `REFS_LEARN=1 node tools/emit_vanilla_refs.mjs <modDir> [config]`
   prints the counts without dying. Status: current (build step). Refs: POLISH_1_0.md §2, TIER_REFERENCE_AUDIT.md, ON_GAME_UPDATE.md.
 - **`tools/emit_ai_value_adds.mjs`** — `<modDir> <config> [--check]`: appends the if / else_if blocks of each tiered industry's vanilla

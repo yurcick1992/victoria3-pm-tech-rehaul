@@ -238,6 +238,27 @@ const SPEC = {
     crafts: true,
     snips: [{ re: /state_has_building_group_levels\s*=\s*\{\s*type\s*=\s*bg_light_industry\s*value\s*>=\s*(\d+)\s*\}/g,
       to: (_, v) => `${reg(VAL, 'pmr_light_industry_levels_nc', lightLevelsNc)} >= ${v}`, n: 4 }], n: 0 },
+  // ---- game 1.15's three new level counts, crafts out (G4–G6; GAME_UPDATE_1_15.md Q11, BALANCE_FRAMEWORK §10.109.4), native counts
+  'common/script_values/ip5_je_values.txt': {                                                  // G4: the five-year plan's light-industry goal
+    crafts: true,
+    snips: [{ within: 'five_year_plan_light_industry_levels_value', re: /value\s*=\s*"country_has_building_group_levels\(bg_light_industry\)"/g,
+      to: () => `value = ${reg(VAL, 'pmr_country_light_industry_levels_nc', countryLightLevelsNc)}`, n: 1 }], n: 0 },
+  'common/journal_entries/00_communism.txt': {                                                 // G4: the plan's light-industry baseline
+    crafts: true,
+    snips: [{ re: /value\s*=\s*"root\.country_has_building_group_levels\(bg_light_industry\)"/g,
+      to: () => `value = {\n\t\t\t\t\tvalue = "root.country_has_building_group_levels(bg_light_industry)"\n\t\t\t\t\tsubtract = "root.country_has_building_group_levels(${CRAFT_BG})"\n\t\t\t\t}`, n: 1 }], n: 0 },
+  'common/journal_entries/08_tsarpoints.txt': {                                                // G5: the Tsar's favourite-industry mission
+    crafts: true,
+    snips: [
+      { re: /value\s*=\s*"root\.country_has_building_group_levels\(var:tp_fav_industry_group\)"/g,      // the baseline (journal-entry scope)
+        to: () => `value = {\n\t\t\t\t\tvalue = "root.country_has_building_group_levels(var:tp_fav_industry_group)"\n\t\t\t\t\tif = {\n\t\t\t\t\t\tlimit = { root.var:tp_fav_industry_group ?= bg:bg_light_industry }\n\t\t\t\t\t\tsubtract = "root.country_has_building_group_levels(${CRAFT_BG})"\n\t\t\t\t\t}\n\t\t\t\t}`, n: 1 },
+      { re: /country_has_building_group_levels\s*=\s*\{\s*type\s*=\s*var:tp_fav_industry_group\s*value\s*>=\s*(scope:journal_entry\.var:tp_fav_industry_target)\s*\}/g,
+        to: (_, tgt) => `${reg(VAL, 'pmr_tp_fav_industry_levels_nc', tpFavLevelsNc)} >= ${tgt}`, n: 1 },   // the goal (country scope)
+    ], n: 0 },
+  'common/scripted_effects/00_ai_decree_effects.txt': {                                        // G6: the AI's manufacturing-decree states
+    crafts: true,
+    snips: [{ re: /"state_has_building_group_levels\(bg_manufacturing\)"/g,
+      to: () => reg(VAL, 'pmr_manufacturing_levels_nc', manufacturingLevelsNc), n: 2 }], n: 0 },
   'common/laws/01_economic_system.txt': {                                                      // A17: the ban demolishes EVERY rung
     snips: [{ re: /if\s*=\s*\{\s*limit\s*=\s*\{\s*has_building\s*=\s*(building_[a-z_0-9]+)\s*\}\s*remove_building\s*=\s*\1\s*\}/g,
       to: (whole, k) => {
@@ -405,8 +426,20 @@ const ACCEPTED = {
 };
 
 // ------------------------------------------------------------------------------------------------ helper bodies needing the game
-function lightLevelsNc() {
-  return `\tvalue = 0\n\tevery_scope_building = {\n\t\tlimit = {\n\t\t\tis_building_group = bg_light_industry\n\t\t\tNOT = { is_building_group = bg_pmr_crafts }\n\t\t}\n\t\tadd = this.level\n\t}\n`;
+// ⭐ CRAFTS OUT BY NATIVE COUNTS, NEVER A SCRIPT LOOP (GAME_UPDATE_1_15.md Q11, BALANCE_FRAMEWORK §10.109.4; the user, 2026-11-08, on
+//   performance). The engine's group-level counters include child groups — vanilla's own AI decrees count bg_manufacturing and bg_extraction,
+//   which hold no building directly — and every craft sits in ONE child group of light industry (CRAFT_BG, bg_pmr_crafts). So "crafts out"
+//   is the parent group's count minus the craft group's: two engine lookups, vanilla's cost. (Until 2026-11-08 G3 summed levels in an
+//   every_scope_building loop.) The init on_action checks the child-group premise once a game in debug builds (build.ps1, PM_TECH_REHAUL WARN).
+const CRAFT_BGS = [...new Set((cfg.industries || []).filter(i => !i.disabled).flatMap(i => (i.tiers || []).filter(t => t.craft).map(t => t.building_group)))];
+if (CRAFT_BGS.length > 1 || CRAFT_BGS.some(b => !b)) die(`the crafts sit in ${CRAFT_BGS.length} building groups (${CRAFT_BGS.join(', ')}) - the native craft-out counts assume one`);
+const CRAFT_BG = CRAFT_BGS[0] || null;
+const minusCrafts = (fn, group) => `\tvalue = "${fn}(${group})"\n\tsubtract = "${fn}(${CRAFT_BG})"\n`;
+function lightLevelsNc() { return minusCrafts('state_has_building_group_levels', 'bg_light_industry'); }               // state (G3)
+function manufacturingLevelsNc() { return minusCrafts('state_has_building_group_levels', 'bg_manufacturing'); }        // state (G6)
+function countryLightLevelsNc() { return minusCrafts('country_has_building_group_levels', 'bg_light_industry'); }      // country (G4)
+function tpFavLevelsNc() {                                                                                             // country (G5)
+  return `\tvalue = "country_has_building_group_levels(var:tp_fav_industry_group)"\n\tif = {\n\t\tlimit = { var:tp_fav_industry_group ?= bg:bg_light_industry }\n\t\tsubtract = "country_has_building_group_levels(${CRAFT_BG})"\n\t}\n`;
 }
 // the build's own copy where an earlier emitter wrote this path (theirs, regenerated from vanilla), else the live game text; never a copy
 // this emitter wrote itself (a re-run over the same folder would transform twice)
@@ -557,7 +590,8 @@ const emitMap = (map, rel, note) => {
 emitMap(EFF, 'common/scripted_effects/zzz_pm_rehaul_industry_effects.txt',
   '# The negotiation promises (A34): the most advanced rung of the industry the IG\'s country already holds.\n');
 emitMap(VAL, 'common/script_values/zzz_pm_rehaul_industry_values.txt',
-  '# State scope: light-industry levels with the crafts left out (G3, je_spa_economic_regeneration).\n');
+  '# Building-group levels with the crafts left out, as two native counts (the group minus the craft group; never a loop, GAME_UPDATE_1_15 Q11):\n' +
+  '# G3 je_spa_economic_regeneration (state), G4 the five-year plan (country), G5 the Tsar\'s favourite industry (country), G6 the AI decree states (state).\n');
 
 // the Montenegro "True Aim" event (A18/F11): vanilla's monthly check sees only the musket rung; this fires it for any other arms rung,
 // with the event's own DLC gate (dlc014, National Awakening = ip3_content) carried explicitly. Registered through on_actions (L22).
@@ -625,6 +659,9 @@ for (const lang of LANGS) {
     }
   }
   if (VAL.has('pmr_light_industry_levels_nc')) out.push(` pmr_light_industry_levels_nc:0 "Light industry levels (crafts excluded)"`);
+  if (VAL.has('pmr_country_light_industry_levels_nc')) out.push(` pmr_country_light_industry_levels_nc:0 "Light industry levels (crafts excluded)"`);
+  if (VAL.has('pmr_tp_fav_industry_levels_nc')) out.push(` pmr_tp_fav_industry_levels_nc:0 "Levels of the favored industry (crafts excluded)"`);
+  if (VAL.has('pmr_manufacturing_levels_nc')) out.push(` pmr_manufacturing_levels_nc:0 "Manufacturing levels (crafts excluded)"`);
   W(`localization/${lang}/replace/zzz_pm_rehaul_vanilla_refs_l_${lang}.yml`, BOM + out.join('\n') + '\n');
 }
 

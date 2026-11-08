@@ -231,6 +231,11 @@ removes the pops files it wrote earlier, by their header.
     `scripted_buttons/08_tsarpoints_buttons`; `static_modifiers/` 00_ip5_06_modifiers, 00_rlit_static_modifiers; `events/` rlit_cluster1_golden_age,
     rlit_cluster2_crossroads, russia_events/ip5_russian_events_03 (72 files transformed on the 1.15 dry run). `00_art_jes` takes 12 token rewrites
     on 1.15 (9 on 1.13.11): the outcome rework gave `je_romanticism` a level target.
+  - **and four for 1.15's level counts** (2026-11-08, G4–G6, GAME_UPDATE_1_15 Q11, BALANCE_FRAMEWORK §10.109.4): `script_values/ip5_je_values`,
+    `journal_entries/00_communism`, `journal_entries/08_tsarpoints`, `scripted_effects/00_ai_decree_effects` (76 files). Their counts leave the
+    crafts out as the parent group's count minus `bg_pmr_crafts`'s — two native lookups, which assumes the engine's group-level counters include
+    child groups (vanilla's decrees rely on it; a debug build's init on_action checks it once a game, `PM_TECH_REHAUL WARN`). A patch that
+    moves the crafts out of `bg_light_industry`, or counts a new parent group, owes these a look.
 - *Breaks:* every snippet and token count is asserted (throws). A scan of the whole game tree throws on a tiered vanilla key, a vanilla main method or
   a renamed secondary in any file nobody owns, unless `ACCEPTED` names it (10 entries on 1.15, each with its reason: the 1.15 `99_ru_custom_loc_V3`
   and the Montenegro check moved to `scripted_effects/00_victoria_on_actions_effects`).

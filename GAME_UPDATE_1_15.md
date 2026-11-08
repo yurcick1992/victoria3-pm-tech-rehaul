@@ -319,7 +319,7 @@ an intermediate one.
   goal (initial × 1.25, at least +10 levels — ten craft levels, ~60 construction points, meet it), the Tsar's favourite-industry mission (light
   industry picked), and the AI decree effect that takes the top five states by manufacturing levels (≥ 10) · TIER_REFERENCE_AUDIT G1–G3 (crafts
   out, R2.2's lean; each G row was ruled case by case) · OPEN (Q11): crafts out as rows G4–G6 in G3's form (a script value summing non-craft
-  levels), RECOMMENDED; not built — it owns four new vanilla files (`journal_entries/00_communism.txt`, `script_values/ip5_je_values.txt`,
+  levels), RECOMMENDED · RULED and BUILT 2026-11-08 (Q11, §10.109.4) by native counts, not G3's old loop. It owns four new vanilla files (`journal_entries/00_communism.txt`, `script_values/ip5_je_values.txt`,
   `journal_entries/08_tsarpoints.txt`, `scripted_effects/00_ai_decree_effects.txt`; README's replaced-file list, L39's DLC gates), handles three
   syntaxes (a data function in a variable, a dynamic group variable, an `order_by` over states) and needs an in-game check, about an hour. Without
   it, KNOWN_ISSUES gets a line: a five-year plan's light-industry goal can be met with crafts.
@@ -428,11 +428,18 @@ the 45% literacy line both hold it back, and the probe's Russia meets neither by
 
 **Q10 · detectors (U56).** The reference scan (L40) reads only `building_` / `pm_` tokens outside `common/buildings`, so neither Q7 nor Q11
 tripped it. **Recommended: a scan for level counts on the tiered building groups (both syntaxes) and the building-block diff.** (Q7's case
-has its own detector since 2026-11-08, L47; Q11's has none yet.)
+has its own detector since 2026-11-08, L47; Q11's four rewrites assert their counts at build, and its premise has an init tripwire.)
 
 **Q11 · crafts in 1.15's new level counts (U55).** The five-year plan's light-industry goal, the Tsar's favourite-industry mission and the AI's
 decree targeting count group levels, which the crafts inflate tenfold per worker (ten craft levels meet the plan's +10). **Recommended: crafts
-out (G4–G6, G3's form; about an hour and an in-game check); otherwise a KNOWN_ISSUES line.**
+out (G4–G6, G3's form; about an hour and an in-game check); otherwise a KNOWN_ISSUES line.** The user asked first whether vanilla counts with a
+script too, for performance: it does not (engine counters, one lookup each), and G3's form was a script loop over buildings, which in the
+AI decree's monthly pulse would touch every building of every AI country. **RULED 2026-11-08 (user): "The recommended way"** — crafts out of
+all three by NATIVE counts, the parent group's levels minus the craft group's (`bg_pmr_crafts`), G3 switched to the same form, with an init
+tripwire on the child-group premise — BALANCE_FRAMEWORK §10.109.4, TIER_REFERENCE_AUDIT G4–G6. BUILT (`emit_vanilla_refs.mjs`, four new owned
+files; `build.ps1`'s init tripwire); a build of the candidate + Q6 + Q9 on 1.15.0 passed every lint, the DLC-gate check and the preflight; the
+tripwire's line is read in the first 1.15 batch run. With it the user asked to remember for mod 1.2 an audit of needless script iteration
+(building groups the first candidate; BACKLOG). · CLOSED.
 
 **Q12 · the re-measure (U60, U62, U35h, U34).** A 1.15 vanilla batch (it re-baselines `VANILLA_REF`, `VANILLA_WALL_REF`,
 `measured_base_wages.json`, the noise catalogue, the fleet-loop calibration) and the canonised candidate against it, alternating; the
@@ -479,11 +486,16 @@ made to reproduce the committed file (U22: the five proofread names and Saratov 
   replaced-file list grows by ten files on 1.15 (`list_replaced_files.mjs` on the candidate's build against 1.0's `mod/`): `00_companies_ip5.txt`,
   `00_ip5_06_modifiers.txt`, `00_rlit_progress_bars.txt`, `00_rlit_scripted_triggers.txt`, `00_rlit_static_modifiers.txt`,
   `00_victoria_progress_bars.txt`, `08_tsarpoints_buttons.txt`, `ip5_russian_events_03.txt`, `rlit_cluster1_golden_age.txt`,
-  `rlit_cluster2_crossroads.txt` (U05's A79–A86 and G2); regenerate the list from the release build.
+  `rlit_cluster2_crossroads.txt` (U05's A79–A86 and G2), and since Q11 four more: `ip5_je_values.txt`, `00_communism.txt`, `08_tsarpoints.txt`,
+  `00_ai_decree_effects.txt`; regenerate the list from the release build.
 - **U71** · T · the docs that name the 2026-11-07 additions: REPO_GUIDE entries for `tools/game_diff.mjs`, `tools/lint_vanilla_names.mjs`,
   `tools/lib_pdx_script.mjs` and the `game-update` skill; a CLAUDE.md §5.2 row for the per-version register; a BACKLOG line pointing here ·
   DONE 2026-11-08 in the batch session's close-out commit (REPO_GUIDE: the three tools, this register beside ON_GAME_UPDATE with the skill's
   path; CLAUDE.md §5.2: the ON_GAME_UPDATE and `GAME_UPDATE_<version>.md` rows, the user's approval; BACKLOG §E and order item 5).
+- **U72** · T · the repository builds for game 1.15 only since this pass: on the kept 1.13.11 game the build stops at `emit_dams` (the dam
+  table names `STATE_SARATOV`, a 1.15 state region, U22) and `emit_vanilla_refs` at `00_art_jes.txt` (the 1.15 count, 12) · found 2026-11-08
+  while testing Q11; nothing to fix: a hotfix of mod 1.0 on game 1.13 would build from a commit before the 1.15 pass began (2026-11-07; the
+  1.0 release build is `796ce9f`, the player name `87f5744`), not from main · NOTED.
 
 ---
 

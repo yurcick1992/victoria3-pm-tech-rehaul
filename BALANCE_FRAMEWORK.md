@@ -76,7 +76,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 | 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | ruled for mod 1.1 (game 1.15); .1 and .2 built 2026-11-08 in the 1.15 candidate book `g115-canon-bz-dcu` (not canonised); .3 in the trade maker, reaching a book at the 1.15 regeneration | here |
-| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission) | ruled for mod 1.1; .1 and .3 built in makers (`make_value_overrides_config.mjs`, `make_research_conditions_config.mjs`), reaching a book at the 1.15 regeneration; .2 built as a build step (`emit_ai_value_adds.mjs`, L47), every build | here |
+| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission); .4 crafts out of 1.15's three new level counts, by native counts (the group minus the craft group, never a loop) | ruled for mod 1.1; .1 and .3 built in makers (`make_value_overrides_config.mjs`, `make_research_conditions_config.mjs`), reaching a book at the 1.15 regeneration; .2 and .4 built as build steps (`emit_ai_value_adds.mjs`, L47; `emit_vanilla_refs.mjs` G4–G6 + an init tripwire), every build | here |
 
 ---
 
@@ -4730,3 +4730,29 @@ emitted both conditions and labels and passed every lint, the vanilla-name lint 
 great or major power not under no colonial affairs). The entry still cannot run for Russia in 1836: every entry also needs `can_research` (the
 technology's prerequisites, Quinine and Nationalism) and the literacy line of its tech era (45% for tech era 3). In the 1.15 probe Russia holds
 neither Quinine nor 45% literacy by 1856 (literacy 15% in 1836, 19–22% in 1856, both arms; Nationalism from ~1847).
+
+### §10.109.4 — CRAFTS OUT OF GAME 1.15'S THREE NEW LEVEL COUNTS, BY NATIVE COUNTS (user-ruled 2026-11-08, Q11: "The recommended way")
+
+The ruling: the three level counts game 1.15 adds leave the crafts out, as the 1.0 audit's G1–G3 do (TIER_REFERENCE_AUDIT G4–G6): the five-year
+plan's light-industry goal and baseline, the Tsar's favourite-industry mission when the favoured group is light industry, and the AI's choice of
+the five states it encourages manufacturing in. A craft level is 500 workers against a factory level's 5,000 and costs a fiftieth, so a count of
+levels sees crafts ten times over per worker and nearly free.
+
+**How (the user's condition, on performance):** vanilla counts with the engine's own counters (`country_has_building_group_levels`,
+`state_has_building_group_levels`), one lookup each. The crafts are one child group of light industry (`bg_pmr_crafts`), so "crafts out" is the
+parent group's count minus the craft group's: two lookups, vanilla's cost, never a script loop over buildings. The decree count runs in every AI
+country's monthly pulse, where a loop would touch every building of every AI country each month. G3 (Spain's regeneration, 1.0), which summed
+levels in an `every_scope_building` loop, takes the same native form. G1 and G2 add a craft filter inside vanilla's own loops and cost nothing extra.
+
+**The premise and its guard:** the subtraction is right only if the engine's counters include child groups. Not measured; vanilla relies on it
+(its AI decrees count `bg_manufacturing` and `bg_extraction`, which hold no building directly). A debug build's init on_action checks it once a
+game on one country with crafts and logs `PM_TECH_REHAUL WARN` if the engine's light-industry count falls below a loop over that country's
+buildings; the first 1.15 batch run reads it.
+
+**Built 2026-11-08** in `tools/emit_vanilla_refs.mjs` (four new owned vanilla files: `script_values/ip5_je_values.txt`,
+`journal_entries/00_communism.txt`, `journal_entries/08_tsarpoints.txt`, `scripted_effects/00_ai_decree_effects.txt`; each snippet's count asserted,
+DLC gates kept) and `build.ps1` (the tripwire). A build of the candidate with the Q6 and Q9 sets on 1.15.0 passed every lint, the DLC-gate check
+(145 replaced files, 27 gated) and the preflight. A build step, every book.
+
+**Remembered for mod 1.2 (the user):** audit the mod's own script for needless iteration where an engine counter, a building group or another
+native construct would do (BACKLOG).

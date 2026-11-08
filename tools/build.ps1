@@ -1599,6 +1599,30 @@ $diagLine = if ($Release) {
     if (-not $relName) { throw "-Release: mod\.metadata\metadata.json has no name - the manifest line cannot name the mod" }
     "PM_TECH_REHAUL: init OK - $relName $($relMeta.version) loaded (release build)"
 } else { "PM_TECH_REHAUL: init OK - mod loaded, game started (build $diagTs) on [TimeKeeper.GetCurrentDate.GetString]" }
+# ⭐ TRIPWIRE (GAME_UPDATE_1_15 Q11, BALANCE_FRAMEWORK §10.109.4): emit_vanilla_refs counts "crafts out" as a parent group's levels minus the
+#   craft group's - right only if the engine's group-level counters include child groups (inferred from vanilla's own AI decrees, which
+#   count bg_manufacturing and bg_extraction, groups with no building of their own; never measured). Once a game, on one country with
+#   crafts: the engine's light-industry count against a one-time loop over its buildings. Debug builds only.
+$craftBgs = @($cfg.industries | Where-Object { -not $_.disabled } | ForEach-Object { $_.tiers } | Where-Object { $_.craft } | ForEach-Object { $_.building_group } | Select-Object -Unique)
+$childTrip = @()
+if (-not $Release -and $craftBgs.Count -eq 1) {
+    $cbg = $craftBgs[0]
+    $childTrip = @(
+        "`t`t# the craft-excluded level counts (G3-G6) assume the engine's group-level counters include child groups ($cbg under bg_light_industry)",
+        "`t`trandom_country = {",
+        "`t`t`tlimit = { `"country_has_building_group_levels($cbg)`" > 0 }",
+        "`t`t`tif = {",
+        "`t`t`t`tlimit = { `"country_has_building_group_levels(bg_light_industry)`" < pmr_diag_light_levels_loop }",
+        "`t`t`t`tdebug_log = `"PM_TECH_REHAUL WARN: the engine's group-level counters leave out child groups - the craft-excluded level counts G3-G6 (emit_vanilla_refs) are wrong`"",
+        "`t`t`t}",
+        "`t`t`telse = { debug_log = `"PM_TECH_REHAUL: group-level counters include child groups - the craft-excluded level counts G3-G6 hold`" }",
+        "`t`t}")
+    $diagVals = @($genHeader.TrimEnd(), "",
+        "# Country scope, the init tripwire only (once a game): light-industry levels by a loop, crafts included.",
+        "pmr_diag_light_levels_loop = {", "`tvalue = 0", "`tevery_scope_building = {", "`t`tlimit = { is_building_group = bg_light_industry }",
+        "`t`tadd = this.level", "`t}", "}")
+    WriteText "$modRel\common\script_values\zzz_pm_rehaul_diag_values.txt" (($diagVals -join "`n") + "`n") $bom
+}
 $diag = @(
     $genHeader.TrimEnd(), "",
     "on_game_started_after_lobby = {",
@@ -1608,9 +1632,10 @@ $diag = @(
     "`teffect = {",
     "`t`tdebug_log = `"$diagLine`"",
     $(if (-not $Release) { "`t`t# --- invariant tripwires: add checks for risky changes; log PM_TECH_REHAUL WARN on failure ---" }),
+    $childTrip,
     "`t}",
     "}"
-) | Where-Object { $null -ne $_ }
+) | ForEach-Object { $_ } | Where-Object { $null -ne $_ }   # ForEach-Object unrolls $childTrip's lines into the list
 WriteText "$modRel\common\on_actions\zzz_pm_rehaul_diag.txt" (($diag -join "`n") + "`n") $bom
 
 # testbed telemetry, from the same generator the control arm uses
