@@ -152,7 +152,17 @@ const args = process.argv.slice(2);
 const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
 const SRC = args.filter(a => !a.startsWith('--'))[0];
 const OUT = argOf('--out', '');
-const GAME = argOf('--game', 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game');
+const GAME = argOf('--game', process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game');
+// ⭐ THE SAVE'S GAME VERSION MUST BE THE GAME FOLDER'S (GAME_UPDATE_1_15 U08): goods, pop types and interest groups are keyed BY POSITION, and
+//   game 1.15 inserted copper at goods index 27 — a 1.13.11 save read against 1.15's tables puts 26 goods one place off with no other error.
+//   The folder's version: the launcher settings beside it (an install) or the SNAPSHOT.txt of a kept copy. Compared on major.minor.
+const GAME_VERSION = (() => {
+  try { const j = JSON.parse(readFileSync(join(GAME, '..', 'launcher', 'launcher-settings.json'), 'utf8')); if (j.rawVersion) return j.rawVersion; } catch {}
+  try { const m = /game (\d+\.\d+(?:\.\d+)?)/.exec(readFileSync(join(GAME, '..', 'SNAPSHOT.txt'), 'utf8')); if (m) return m[1]; } catch {}
+  return null;
+})();
+const majMin = v => (v || '').split('.').slice(0, 2).join('.');
+let saveVersion = null;
 const PROV = argOf('--provenance', '');          // extra JSON merged into .provenance
 const VERIFY_POPS = args.includes('--verify-pops');
 // ⭐ TOP PRODUCERS PER GOOD, IN EVERY SUMMARY — 20 by user ruling (2026-08-11), "at least top-10, or
@@ -385,6 +395,11 @@ for await (const line of rl) {
   // is a single null comparison per line once it has been found, and this loop is hot (~7.2 M lines).
   if (gameRules === null && line.charCodeAt(0) === 9 && line.indexOf('"achievements_allowed"') > 0) {
     gameRules = (line.match(/"[a-z_]+"/g) || []).map(x => x.slice(1, -1));
+  }
+  if (saveVersion === null && line.charCodeAt(0) === 9 && line.startsWith('\tversion="')) {
+    saveVersion = line.slice(10, line.indexOf('"', 10));
+    if (GAME_VERSION && majMin(saveVersion) !== majMin(GAME_VERSION))
+      throw new Error(`save is game ${saveVersion}, the tables are read from game ${GAME_VERSION} (${GAME}) — goods and pop types are keyed by position; pass --game (or VIC3_GAME) for the save's own version (GAME_UPDATE_1_15 U08)`);
   }
   if (mode === 'top') {
     if (line.charCodeAt(0) === 125) continue;                       // stray '}' — cannot happen at top
