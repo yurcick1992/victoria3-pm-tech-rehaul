@@ -18,11 +18,25 @@ an intermediate one.
   2026-11-07 (ON_GAME_UPDATE §3).
 - **U02** · T · the engine's 1.13.11 vocabulary (`script_docs`, `dump_data_types`) · no game file holds it · the batch session runs the dump at its
   `SCHEDULE DONE`, before its report, with no mods and an exe-hash guard against a Steam update; the strings of the kept exe are the fallback ·
-  OPEN (in hand).
+  DONE 2026-11-08 as the FALLBACK: the command-line route does not work. On the 1.13.11 exe, with no mods, every launch carrying
+  `run_console_action_main` (as `-…=script_docs`, `--…=script_docs`, `-… script_docs`, with and without `-debug_mode` and `-handsoff`) quits
+  with exit code 0 within 2–10 s, before the game writes a log; the same launch without it starts (logs written in 2 s), and `-debug_mode`
+  alone starts. So no 1.13.11 script_docs or data-types dump exists, and `game_diff.mjs` section 6 reads the two executables' identifier
+  strings (`--old-exe C:\claude-code\vic3_game_1.13.11\binaries\victoria3.exe`). The exe does carry both console commands, so a 1.15 dump
+  is made BY HAND in game: a `-debug_mode` launch, the console (`` ` ``), `script_docs`, then `dump_data_types` (where the files land is not
+  yet seen on this machine: look under the user folder `Documents\Paradox Interactive\Victoria 3\` first). ⭐ The same evening Steam's content log showed that it had tried to COMMIT the update on 2026-11-05 13:04 during a batch run
+  (6,132 files) and stopped on `File locked` (`game\sound\banks\Ambient.bank`, held by the running game). Nothing was moved: no file of the
+  install is newer than 2026-11-05 12:00 and the staged tree is whole in `steamapps\downloading\529340`, so the batch and the snapshot are
+  1.13.11 throughout.
 - **U03** · T · the entity diff · `tools/game_diff.mjs`, written 2026-11-07 and tested on 1.13.11 (no change found) and on synthetic changes · run
   it 1.13.11 → 1.15 when 1.15 is installed; every item it prints gets a line here · OPEN (1.15 session).
 - **U04** · T · the final patch notes · the preliminary notes were read on 2026-10-30 (appendix); read the forum changelog itself for engine
-  behaviour the diff cannot show · OPEN (1.15 session).
+  behaviour the diff cannot show · DONE 2026-11-08 from Paradox's own Steam posts (the forum showed a bot check): DD#196 *State and Revolution
+  & Update 1.15 NOW LIVE* (2026-11-05, the final notes, checksum fc93), DD#195 (the preliminary changelog, 2026-10-29), DD#194 *1.15 Modding*
+  (2026-10-22). The version is **1.15.0 "Ivan-Chai"** (Steam's staged build 26453692); no Victoria 3 hotfix exists as of 2026-11-07 23:31 UTC
+  ("Crown" is Crusader Kings III's 1.15). What the final notes add to the appendix is U21–U26, U36–U39, U49, U53 and U61's extra fixes. ⚠ The
+  notes give **no per-method copper figures and no bronze artillery**: U41's swaps and U44 rest on the third-party parse until the diff (U03)
+  confirms them.
 
 ## Phase 2 — breakage: a 1.0 install on 1.15, and the rebuild
 
@@ -53,6 +67,27 @@ an intermediate one.
   `pmg_foundries` names (expect `error.log` lines), and the power plants, telephones, motor and munition methods, sewing, stills, assembly lines
   and arcades consume no copper (appendix) · a player on 1.15 before mod 1.1 sees it · OPEN: whether KNOWN_ISSUES gets a line until 1.1 (the
   user's call; nothing there names 1.15 today).
+- **U21** · B/R · ⚠ **journal-entry outcomes** (DD#194, not in the changelog): a new scripted outcome system replaces a journal entry's
+  `complete` / `fail`; the diary says journal entries stay broken until updated and scripted progress bars must be retrofitted · the 1.0 build
+  carries 452 `complete =` lines in `zzz_pm_rehaul_research.txt` (every research entry; ~126 progress bars, `zzz_pm_rehaul_research_bars.txt`),
+  the dams' entry, and the owned vanilla copies in `common/journal_entries/` (10 files carry a `complete`; `03_russia.txt` is reworked by State
+  and Revolution) · the research entries ARE the mod's research (§10.95–§10.98): without them every country researches at a quarter to a half of
+  vanilla's pace · OPEN — the largest phase-2 item: read the new syntax in 1.15's own journal entries, then convert the emitters
+  (`emit_research_events.mjs`, `emit_dams.mjs`) and re-own the vanilla copies from 1.15.
+- **U22** · C · the map: Tula split into Tula and Oryol; Kostroma split from Yaroslavl and Nizhny Novgorod; Chukotka and Kamchatka merged; Northern
+  Kazakhstan redrawn; the North Caucasus's Russian pops cut; North Angola's pops made African (culture, not number) · the owned `state_regions`
+  files, the dam table (a site in any of those states), the 1836 conversion, `measured_1836_pop_identity.json`, Russia's instrumented series ·
+  OPEN (the diff; widens U13).
+- **U23** · C · starting technologies: Italian countries gain Empiricism (tech era 1), Nassau and Limburg Egalitarianism (tech era 2) · the 1836
+  grant is derived from the map (§10.55) and these are not production technologies · OPEN (confirm the derived grant still equals vanilla's).
+- **U24** · N · a new ship type, Early Troopships, available from the start; AI ship categories move to `common/ai_ship_categories` · the naval
+  research-entry emitter reads the ship types (the 2026-10-27 carrier fix) · OPEN (the emitter's floors: 8 land / 8 fleet technologies).
+- **U25** · N · five new Eastern European companies (some with prestige goods); requirement fixes for three companies; Fiume foundable in Croatia ·
+  the company chain extension (§10.64) and the `building_<key>_throughput_add` declarations (`emit_companies.mjs`) · OPEN (mechanical on rebuild;
+  check that every new company's tiered industry gets all its rungs).
+- **U26** · N · Cossack Hosts, a subsistence-like building reserving up to 20% of a state's arable land (Russia at start) · every reader that
+  excludes auto-scaling and subsistence buildings (`downsize_telemetry.mjs` §10.107.5, W and U\* by profession, misplaced capital's valid
+  benchmark of free land) · OPEN (classify it in the readers; U53 for the design side).
 
 ## Phase 3 — reconciliation: the mod's premises against 1.15
 
@@ -69,6 +104,19 @@ an intermediate one.
   `will_incorporate_state`, the strait dependence links, `has_military_reach` and a release rule, none of which touches the pursuit filter, the
   never-added rule or the port-building requirement · OPEN (phase 6).
 - **U35** · T · the rest of the premises table (ON_GAME_UPDATE §5.1), feature by feature, against the diff · OPEN (1.15 session).
+- **U36** · B · a deliberate rebalance, in the final notes only: buildings are *"a bit more conservative when it comes to hiring and wage
+  decisions"*, aimed at an easier stable equilibrium at partial employment · beside U30–U31 the largest premise move: obsolescence through wages
+  (§2.1, F97), W and U\* (goal 4), `measured_base_wages.json`, the downsizing poll (§10.107) · OPEN (read on the first 1.15 canon batch against
+  the 1.15 vanilla).
+- **U37** · B · a standard of living below expected radicalises more slowly (to stop unemployment-driven revolution cycles) · the canon's pool runs
+  at ~1.3–1.7× vanilla's U\*, so revolutions, civil wars and the broken seeds may move · OPEN (read with U36).
+- **U38** · B · the AI: better predicted profitability of constructions and methods; more construction when short of it to tap the pool; always
+  enough paper for its bureaucracy; prestige goods valued right for company buildings; no railways built against temporary infrastructure
+  penalties · misplaced capital (§2.4) and the desire ladder (U33), the pool defines (§10.75, F158), H; paper is a tiered industry with a merged
+  rung · OPEN (widens U33).
+- **U39** · C/B · trade: starting trade routes and trade centres reworked so the majors start without severe shortages; Ottoman tea output halved
+  at start (exports moved to China); up to four world-market hubs per market area with a fallback; the Cold system on frozen sea nodes; routes
+  spread over sea paths of similar length · the 1836–1845 anchor, world trade (×2, F159/F161), the treaty-port facts (U34) · OPEN.
 
 ## Phase 4 — adoption: what 1.15 adds, against what we author
 
@@ -92,6 +140,10 @@ an intermediate one.
 - **U48** · T · the rest of the what-we-author walk for copper (ON_GAME_UPDATE §5.3): the minted top rungs, the crafts, the research entries
   (does an entry that counts mines need the copper mine?), the PI basket (copper is now a building input), the red-flag goods, the telemetry's
   good lists · OPEN (1.15 session).
+- **U49** · C · warship modules consume more artillery, ammunition and radios · artillery and munitions are tiered industries (their demand and
+  the PM war-goods reading); radios sit in the PP basket · OPEN (read on the first 1.15 batch).
+- **U53** · N · Cossack Hosts against what we author (ON_GAME_UPDATE §5.3): their arable-land reservation beside the dams that add arable land,
+  Russia's peasants in U\* · OPEN (likely nothing to author; U26 for the readers).
 - **U50** · N · new script hooks: `global_average_gdp_per_capita`, `has_building_levels_in_state_region`, `gdp_owned_by`; progress bars taking a
   script value or a math block for `min_value` / `max_value` · candidates that could simplify our script (the urban-centre entries); not needed
   for 1.1 · OPEN (note only).
@@ -107,7 +159,10 @@ an intermediate one.
   OPEN (needs the go-ahead).
 - **U61** · B · the fleet path loop (F218, the one listed bug of wall-clock cluster 3) is plausibly fixed by *"fleet repair progress"* and the
   return of beaten fleets to their mission · `fleet_loop_runs.mjs` over the 1.15 vanilla batch: no signature empties cluster 3's list; one opens
-  a fix again (the user, 2026-10-15) · OPEN.
+  a fix again (the user, 2026-10-15) · OPEN. The final notes add more: the travel network rebuilt for consistent pathfinding, the AI no longer
+  sends fleets out of port while they repair, a docked fleet can be recalled for repairs. The notes also list engine speed-ups (building-modifier
+  re-evaluation, company availability by state, cached sway / laws / legitimacy, faster late naval battles) that touch our many rungs and
+  companies: `VANILLA_WALL_REF` is re-measured in any case (U60).
 - **U62** · T · a canon batch on 1.15 against the 1.15 vanilla, read through the criteria register and U30–U33 · OPEN (needs the go-ahead).
 
 ## Phase 7 — release and record
@@ -116,7 +171,8 @@ an intermediate one.
   changelog, the Workshop text, the version log (ON_GAME_UPDATE §3), the findings, new couplings into ON_GAME_UPDATE §2 · OPEN.
 - **U71** · T · the docs that name the 2026-11-07 additions: REPO_GUIDE entries for `tools/game_diff.mjs`, `tools/lint_vanilla_names.mjs`,
   `tools/lib_pdx_script.mjs` and the `game-update` skill; a CLAUDE.md §5.2 row for the per-version register; a BACKLOG line pointing here ·
-  OPEN: waiting for the batch session's close-out commit, which holds those three files uncommitted in main tonight.
+  DONE 2026-11-08 in the batch session's close-out commit (REPO_GUIDE: the three tools, this register beside ON_GAME_UPDATE with the skill's
+  path; CLAUDE.md §5.2: the ON_GAME_UPDATE and `GAME_UPDATE_<version>.md` rows, the user's approval; BACKLOG §E and order item 5).
 
 ---
 

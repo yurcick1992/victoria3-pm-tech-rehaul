@@ -27,9 +27,10 @@ intermediate one (user, 2026-11-07).
 Only possible while the old version is installed (Steam updates Victoria 3 automatically on this machine). Keep, outside the repository and
 in no git repository (Paradox's files; the 1.13.11 copy is `C:\claude-code\vic3_game_1.13.11`):
 - `game\common`, `events`, `map_data`, `localization`, `gui`, and `binaries\victoria3.exe` with its sha256;
-- the engine's vocabulary, which no game file holds: one debug game with no mods, `script_docs` and `dump_data_types`, run from the command
-  line (`--run_console_action_main=<command>`, found in the 1.13.11 exe); copy the `docs/` and `data_types/` output beside the snapshot. If it
-  cannot be made, the exe's strings stand in (names and descriptions, no scopes or data types).
+- the engine's vocabulary, which no game file holds: one debug game with no mods, `script_docs` and `dump_data_types` typed into the
+  in-game console of a `-debug_mode` launch (needs the user at the machine). ⚠ Not from the command line: every launch carrying
+  `run_console_action_main` (the option the 1.13.11 exe names) quits before it writes a log (GAME_UPDATE_1_15 U02). Copy the output beside
+  the snapshot. If it cannot be made, the exe's strings stand in (names and descriptions, no scopes or data types).
 Record the snapshot in ON_GAME_UPDATE §3.
 
 ## Phase 1 — intake: what changed, listed in full

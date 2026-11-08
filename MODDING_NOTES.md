@@ -662,6 +662,11 @@ The full CLI table sits in the exe's string pool near `game_setup.cpp` (`start_t
 `no_save_after_failed_test`, `gamestate_validation`, `host_server`, `automated_test`, …). `game/tools/scripted_tests/scripted_tests.md`
 documents a separate pass/fail suite (daily triggers, no effects) — it yields PASS/FAIL, not numbers. `-loadsave=<absolute path>` is
 rejected (`Could not load save game [...]. Going to main menu.`), so a save cannot be named on the command line.
+⚠ **`run_console_action_main` cannot be used from the command line** (2026-11-08, 1.13.11, no mods): the exe names it (*"runs once the game
+has been initialized"*), but every launch carrying it — `-run_console_action_main=script_docs`, the help text's `--` spelling, the value as
+a separate argument, with or without `-debug_mode` and `-handsoff` — quits with exit code 0 within 2–10 s, before the game writes a log.
+The same launch without it starts, and `-debug_mode` alone starts. So `script_docs` and `dump_data_types` are typed into the console of
+a `-debug_mode` game by hand (GAME_UPDATE_1_15 U02).
 
 **Enabling mods from a script is `content_load.json`, not `dlc_load.json`** (gone in 1.13 / launcher v2). The exe reads
 `Documents\Paradox Interactive\Victoria 3\content_load.json`; entries are **objects with a `path`**, absolute, with forward slashes:
