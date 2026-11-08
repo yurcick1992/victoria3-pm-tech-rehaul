@@ -24,6 +24,7 @@ economy_laws.1 = {
 	cooldown = { days = normal_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_law_checkpoint_advance
 		is_enacting_law = law_type:law_command_economy
 		bureaucracy > 0 # the state bureaucracy is not overworked
 	}
@@ -80,6 +81,7 @@ economy_laws.2 = {
 	cooldown = { days = normal_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_law_checkpoint_debate
 		is_enacting_law = law_type:law_command_economy
 		NOT = {
 			has_variable = command_economy_law_debate_timer
@@ -170,6 +172,7 @@ economy_laws.3 = { # Stall event
 	cooldown = { days = normal_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_law_checkpoint_stall
 		is_enacting_law = law_type:law_command_economy
 		NOT = {
 			has_variable = command_economy_law_stall_timer
@@ -254,6 +257,7 @@ economy_laws.4 = {
 	cooldown = { days = normal_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_law_checkpoint_advance
 		is_enacting_law = law_type:law_free_trade
 		any_interest_group = {
 			is_in_government = yes
@@ -336,6 +340,7 @@ economy_laws.5 = {
 	cooldown = { days = normal_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_law_checkpoint_debate
 		not = { has_variable = free_trade_law_debate_timer }
 		is_enacting_law = law_type:law_free_trade
 		any_interest_group = {
@@ -437,6 +442,7 @@ economy_laws.6 = {
 	cooldown = { days = normal_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_law_checkpoint_stall
 		is_enacting_law = law_type:law_free_trade
 		any_scope_state = {
 			OR = {

@@ -50,6 +50,8 @@ anarchism_events.1 = {
 	cooldown = { days = long_modifier_time }
 
 	trigger = {
+		# triggered by journal entry - je_spanish_anarchism [on_monthly_pulse]
+		# triggered by on_action - on_half_yearly_events
 		has_dlc_feature = ip4_content
 		has_variable = propaganda_of_the_deed_var
 		has_technology_researched = anarchism
@@ -97,6 +99,7 @@ anarchism_events.1 = {
 				}
 			}
 			save_scope_as = propaganda_of_the_deed_victim
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
 		random_scope_state = {
 			limit = {
@@ -130,7 +133,17 @@ anarchism_events.1 = {
 	option = {
 		name = anarchism_events.1.a
 		default_option = yes
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_avoids_radicals = yes
+				}
+				add = 10
+			}
+		}
 		scope:propaganda_of_the_deed_victim = {
+			revoke_temporary_event_immortality = { CHARACTER = scope:propaganda_of_the_deed_victim }
 			kill_character = yes
 		}
 		add_modifier = {
@@ -145,7 +158,17 @@ anarchism_events.1 = {
 
 	option = {
 		name = anarchism_events.1.b
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_wants_radicals = yes
+				}
+				add = 10
+			}
+		}
 		scope:propaganda_of_the_deed_victim = {
+			revoke_temporary_event_immortality = { CHARACTER = scope:propaganda_of_the_deed_victim }
 			kill_character = yes
 		}
 		add_modifier = {
@@ -166,6 +189,7 @@ anarchism_events.1 = {
 
 	after = {
 		clear_generated_names = yes
+		revoke_temporary_event_immortality = { CHARACTER = scope:propaganda_of_the_deed_victim }
 	}
 }
 
@@ -218,6 +242,8 @@ anarchism_events.2 = {
 	cooldown = { days = long_modifier_time }
 
 	trigger = {
+		# triggered by journal entry - je_spanish_anarchism [on_monthly_pulse]
+		# triggered by on_action - on_half_yearly_events
 		has_dlc_feature = ip4_content
 		has_variable = propaganda_of_the_deed_var
 		has_technology_researched = anarchism
@@ -266,6 +292,7 @@ anarchism_events.2 = {
 				}
 			}
 			save_scope_as = propaganda_of_the_deed_victim
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
 		random_scope_state = {
 			limit = {
@@ -298,7 +325,17 @@ anarchism_events.2 = {
 	option = {
 		name = anarchism_events.2.a
 		default_option = yes
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_avoids_radicals = yes
+				}
+				add = 10
+			}
+		}
 		scope:propaganda_of_the_deed_victim = {
+			revoke_temporary_event_immortality = { CHARACTER = scope:propaganda_of_the_deed_victim }
 			kill_character = yes
 		}
 		add_modifier = {
@@ -313,7 +350,17 @@ anarchism_events.2 = {
 
 	option = {
 		name = anarchism_events.2.b
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_wants_radicals = yes
+				}
+				add = 10
+			}
+		}
 		scope:propaganda_of_the_deed_victim = {
+			revoke_temporary_event_immortality = { CHARACTER = scope:propaganda_of_the_deed_victim }
 			kill_character = yes
 		}
 		add_modifier = {
@@ -334,6 +381,7 @@ anarchism_events.2 = {
 
 	after = {
 		clear_generated_names = yes
+		revoke_temporary_event_immortality = { CHARACTER = scope:propaganda_of_the_deed_victim }
 	}
 }
 
@@ -361,6 +409,8 @@ anarchism_events.3 = {
 	cooldown = { days = long_modifier_time }
 
 	trigger = {
+		# triggered by journal entry - je_spanish_anarchism [on_monthly_pulse]
+		# triggered by on_action - on_half_yearly_events
 		has_dlc_feature = ip4_content
 		has_variable = propaganda_of_the_deed_var
 		has_technology_researched = anarchism
@@ -423,6 +473,15 @@ anarchism_events.3 = {
 	option = {
 		name = anarchism_events.3.a
 		default_option = yes
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_avoids_radicals = yes
+				}
+				add = 10
+			}
+		}
 		scope:anarchist_terror_state_scope.state_region ?= {
 			add_devastation = 10
 		}
@@ -439,6 +498,15 @@ anarchism_events.3 = {
 
 	option = {
 		name = anarchism_events.3.b
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_wants_radicals = yes
+				}
+				add = 10
+			}
+		}
 		scope:anarchist_terror_state_scope.state_region ?= {
 			add_devastation = 10
 		}
@@ -492,6 +560,8 @@ anarchism_events.4 = {
 	cooldown = { days = long_modifier_time }
 
 	trigger = {
+		# triggered by journal entry - je_spanish_anarchism [on_monthly_pulse]
+		# triggered by on_action - on_monthly_pulse_country
 		has_dlc_feature = ip4_content
 		NOT = {
 			has_variable = propaganda_of_the_deed_var
@@ -532,11 +602,29 @@ anarchism_events.4 = {
 	option = {
 		name = anarchism_events.4.a
 		default_option = yes
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_avoids_radicals = yes
+				}
+				add = 10
+			}
+		}
 		custom_tooltip = anarchist_terrorism_start_tt
 	}
 
 	option = {
 		name = anarchism_events.4.b
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_wants_radicals = yes
+				}
+				add = 10
+			}
+		}
 		trigger = {
 			OR = {
 				institution_investment_level = {
@@ -602,6 +690,7 @@ anarchism_events.5 = {
 	immediate = {
 		ruler = {
 			save_scope_as = ruler_scope
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
 		random_political_movement = {
 			limit = {
@@ -634,6 +723,11 @@ anarchism_events.5 = {
 			text = side_with_anarchists_tt
 			play_as = scope:revolutionary_country_scope
 		}
+	}
+
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:ruler_scope }
+		je_spanish_anarchism_cleanup = yes
 	}
 }
 
@@ -701,6 +795,10 @@ anarchism_events.6 = {
 			name = modifier_anarchism_depoliticisation
 			days = normal_modifier_time
 		}
+	}
+
+	after = {
+		je_spanish_anarchism_cleanup = yes
 	}
 }
 
@@ -772,6 +870,7 @@ anarchism_events.7 = {
 						is_historical = yes
 					}
 					save_scope_as = international_man_scope
+					set_temporary_event_immortality = { DURATION = 3 }
 				}
 			}
 			else = {
@@ -780,6 +879,7 @@ anarchism_events.7 = {
 						has_ideology = ideology:ideology_anarchist
 					}
 					save_scope_as = international_man_scope
+					set_temporary_event_immortality = { DURATION = 3 }
 				}
 			}
 		}
@@ -803,6 +903,7 @@ anarchism_events.7 = {
 					has_variable = international_man
 				}
 				save_scope_as = international_man_scope
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 		}
 	}
@@ -876,5 +977,9 @@ anarchism_events.7 = {
 				days = long_modifier_time
 			}
 		}
+	}
+
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:international_man_scope }
 	}
 }

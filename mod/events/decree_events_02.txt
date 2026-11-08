@@ -22,9 +22,10 @@ type = country_event
 	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			is_incorporated = yes
-			has_decree = decree_encourage_manufacturing_industry
+			state_has_decree_variant = { DECREE = decree_encourage_manufacturing_industry }
 			any_scope_building = {
 				OR = {
 					pmr_is_food_nc = yes
@@ -59,7 +60,7 @@ type = country_event
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
-				has_decree = decree_encourage_manufacturing_industry
+				state_has_decree_variant = { DECREE = decree_encourage_manufacturing_industry }
 				NOR = {
 					has_modifier = decree_manufacturing_throughput
 					has_modifier = decree_minimum_wealth
@@ -143,9 +144,10 @@ type = country_event
 	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			is_incorporated = yes
-			has_decree = decree_encourage_manufacturing_industry
+			state_has_decree_variant = { DECREE = decree_encourage_manufacturing_industry }
 			any_scope_building = {
 				OR = {
 					pmr_is_food_nc = yes
@@ -181,7 +183,7 @@ type = country_event
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
-				has_decree = decree_encourage_manufacturing_industry
+				state_has_decree_variant = { DECREE = decree_encourage_manufacturing_industry }
 				NOR = {
 					has_modifier = decree_manufacturing_industrialist_attraction
 					has_modifier = decree_manufacturing_trade_attraction
@@ -266,9 +268,10 @@ type = country_event
 	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			is_incorporated = yes
-			has_decree = decree_encourage_agricultural_industry
+			state_has_decree_variant = { DECREE = decree_encourage_agricultural_industry }
 			any_scope_building = {
 				OR = {
 					is_building_type = building_coffee_plantation
@@ -301,7 +304,7 @@ type = country_event
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
-				has_decree = decree_encourage_agricultural_industry
+				state_has_decree_variant = { DECREE = decree_encourage_agricultural_industry }
 				NOR = {
 					has_modifier = decree_agricultural_throughput
 					has_modifier = decree_minimum_wealth
@@ -383,9 +386,10 @@ type = country_event
 	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			is_incorporated = yes
-			has_decree = decree_encourage_agricultural_industry
+			state_has_decree_variant = { DECREE = decree_encourage_agricultural_industry }
 			any_scope_building = {
 				OR = {
 					is_building_type = building_coffee_plantation
@@ -419,7 +423,7 @@ type = country_event
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
-				has_decree = decree_encourage_agricultural_industry
+				state_has_decree_variant = { DECREE = decree_encourage_agricultural_industry }
 				NOR = {
 					has_modifier = decree_agricultural_landowners_attraction
 					has_modifier = decree_agricultural_rural_folk_attraction
@@ -502,9 +506,10 @@ type = country_event
 	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			is_incorporated = yes
-			has_decree = decree_encourage_resource_industry
+			state_has_decree_variant = { DECREE = decree_encourage_resource_industry }
 			any_scope_building = {
 				OR = {
 					is_building_type = building_logging_camp
@@ -532,7 +537,7 @@ type = country_event
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
-				has_decree = decree_encourage_resource_industry
+				state_has_decree_variant = { DECREE = decree_encourage_resource_industry }
 				NOR = {
 					has_modifier = decree_resource_throughput
 					has_modifier = decree_minimum_wealth
@@ -609,9 +614,10 @@ type = country_event
 	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			is_incorporated = yes
-			has_decree = decree_encourage_resource_industry
+			state_has_decree_variant = { DECREE = decree_encourage_resource_industry }
 			any_scope_building = {
 				OR = {
 					is_building_type = building_logging_camp
@@ -640,7 +646,7 @@ type = country_event
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
-				has_decree = decree_encourage_resource_industry
+				state_has_decree_variant = { DECREE = decree_encourage_resource_industry }
 				NOR = {
 					has_modifier = decree_resource_industrialists_attraction
 					has_modifier = decree_resource_landowners_attraction
@@ -691,7 +697,7 @@ type = country_event
  			days = long_modifier_time
  		}
 	}
-	option = { #Trade unions pisses off other two
+	option = { #Trade Unions pisses off other two
 		name = decree_events.105.c
  		add_modifier = {
  			name = decree_resource_trade_union_attraction
@@ -721,14 +727,15 @@ type = country_event
 	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			is_incorporated = yes
 			has_building = building_barrack
-			has_decree = decree_enlistment_efforts
+			state_has_decree_variant = { DECREE = decree_enlistment_efforts }
 			any_neighbouring_state = {
 				owner = ROOT
 				is_incorporated = yes
-				NOT = { has_decree = decree_enlistment_efforts }
+				NOT = { state_has_decree_variant = { DECREE = decree_enlistment_efforts } }
 				has_building = building_barrack
 			}
 		}
@@ -745,11 +752,11 @@ type = country_event
 			limit = {
 				is_incorporated = yes
 				has_building = building_barrack
-				has_decree = decree_enlistment_efforts
+				state_has_decree_variant = { DECREE = decree_enlistment_efforts }
 				any_neighbouring_state = {
 					owner = ROOT
 					is_incorporated = yes
-					NOT = { has_decree = decree_enlistment_efforts }
+					NOT = { state_has_decree_variant = { DECREE = decree_enlistment_efforts } }
 					has_building = building_barrack
 				}
 			}
@@ -762,7 +769,7 @@ type = country_event
 					has_variable = decree_enlistment_origin
 				}
 				is_incorporated = yes
-				NOT = { has_decree = decree_enlistment_efforts }
+				NOT = { state_has_decree_variant = { DECREE = decree_enlistment_efforts } }
 				has_building = building_barrack
 			}
 			save_scope_as = decree_enlistment
@@ -775,6 +782,15 @@ type = country_event
 	option = { #regimental resentment
 		name = decree_events.106.a
 		default_option = yes
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_wants_radicals = yes
+				}
+				add = 10
+			}
+		}
 		add_modifier = {
 			name = decree_resentful_military
 			days = long_modifier_time
@@ -788,6 +804,15 @@ type = country_event
 	}
 	option = { #invest into troops and get loyalists
 		name = decree_events.106.b
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_avoids_radicals = yes
+				}
+				add = 10
+			}
+		}
 		scope:decree_enlistment = {
 			add_modifier = {
 				name = decree_increased_pay
@@ -822,9 +847,10 @@ type = country_event
 	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			is_incorporated = yes
-			has_decree = decree_enlistment_efforts
+			state_has_decree_variant = { DECREE = decree_enlistment_efforts }
 		}
 	}
 
@@ -832,7 +858,7 @@ type = country_event
 		random_scope_state = {
 			limit = {
 				is_incorporated = yes
-				has_decree = decree_enlistment_efforts
+				state_has_decree_variant = { DECREE = decree_enlistment_efforts }
 			}
 			save_scope_as = decree_elite_research
 		}
@@ -905,6 +931,7 @@ type = country_event
 	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			is_incorporated = yes
 			has_decree = decree_violent_suppression
@@ -924,6 +951,15 @@ type = country_event
 	option = { #get loyalists but more radicals
 		name = decree_events.108.a
 		default_option = yes
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_avoids_radicals = yes
+				}
+				add = 10
+			}
+		}
 		scope:decree_violent_supp = {
 			add_modifier = {
 				name = decree_let_them_riot
@@ -933,6 +969,15 @@ type = country_event
 	}
 	option = { #more mortality but less radicals
 		name = decree_events.108.b
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_wants_radicals = yes
+				}
+				add = 10
+			}
+		}
 		scope:decree_violent_supp = {
 			add_modifier = {
 				name = decree_put_the_riot_down
@@ -963,6 +1008,7 @@ type = country_event
 	cooldown = { days = stupidly_long_modifier_time }
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			is_incorporated = yes
 			NOT = { has_decree = decree_violent_suppression }

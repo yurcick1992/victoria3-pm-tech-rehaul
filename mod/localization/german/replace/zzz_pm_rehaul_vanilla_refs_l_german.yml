@@ -12,3 +12,6 @@
  building_glassworks_leaded_glass_throughput_add: "$building_glassworks_leaded_glass_pmr_short$-[concept_throughput]"
  building_glassworks_leaded_glass_throughput_add_desc: "Ein Bonus oder Abzug sowohl auf die Zufuhr als auch auf den Ausstoß von $building_glassworks_leaded_glass_pmr_short$."
  pmr_light_industry_levels_nc:0 "Light industry levels (crafts excluded)"
+ pmr_country_light_industry_levels_nc:0 "Light industry levels (crafts excluded)"
+ pmr_tp_fav_industry_levels_nc:0 "Levels of the favored industry (crafts excluded)"
+ pmr_manufacturing_levels_nc:0 "Manufacturing levels (crafts excluded)"

@@ -75,8 +75,8 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
-| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | ruled for mod 1.1 (game 1.15); .1 and .2 built 2026-11-08 in the 1.15 candidate book `g115-canon-bz-dcu` (not canonised); .3 in the trade maker, reaching a book at the 1.15 regeneration | here |
-| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission); .4 crafts out of 1.15's three new level counts, by native counts (the group minus the craft group, never a loop) | ruled for mod 1.1; .1 and .3 built in makers (`make_value_overrides_config.mjs`, `make_research_conditions_config.mjs`), reaching a book at the 1.15 regeneration; .2 and .4 built as build steps (`emit_ai_value_adds.mjs`, L47; `emit_vanilla_refs.mjs` G4–G6 + an init tripwire), every build | here |
+| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | in force: the canon since 2026-11-08 (§10.109.5) | here |
+| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission); .4 crafts out of 1.15's three new level counts, by native counts (the group minus the craft group, never a loop); .5 the 1.15 canon (`a52b0aca`), and canonisation declares the main line, not a quality stamp | in force: the canon since 2026-11-08 (.1 and .3 in the book through their makers; .2 and .4 build steps — `emit_ai_value_adds.mjs`, L47; `emit_vanilla_refs.mjs` G4–G6 + an init tripwire) | here |
 
 ---
 
@@ -4756,3 +4756,20 @@ DLC gates kept) and `build.ps1` (the tripwire). A build of the candidate with th
 
 **Remembered for mod 1.2 (the user):** audit the mod's own script for needless iteration where an engine counter, a building group or another
 native construct would do (BACKLOG).
+
+### §10.109.5 — THE 1.15 CANON, AND WHAT CANONISATION MEANS (user-ruled 2026-11-08, Q1)
+
+The ruling: the regenerated 1.15 book is the canon, now, before the 1.15 batch measures it — *"Yes, canonise now. The non-canon arms are for
+hypotheses-testing branches which can be genuinely retracted if don't work. Canonisation is the declaration that the approach is main, not a
+quality stamp."*
+
+- **The canon:** `config/mod_config.g115c-canon-bz-dcu-ra-il.json` + its tree twin, copied verbatim over `config/mod_config.json` +
+  `config/tech_tree_options.json` — sha256 **`a52b0acacd6b6b6e`** (twin `db96307af17c22ee`). The 1.0 canon's chain replayed on game 1.15.0
+  (`replay_canon_chain.mjs --prefix g115c`) + bronze artillery (§10.108.2) + dam copper (§10.108) + copper in class C (§10.108.3) + the two flat
+  research adds ×1/3 (§10.109.1) + the idea entries' 1.15 laws (§10.109.3). Field diff against the 1.0 canon (`9a05d36da42c1511`): copper in five
+  rungs where vanilla 1.15 puts it, value for value; the two bronze variants; copper's traded quantity 12; `dams.inputs_per_50`; two
+  `vanilla_value_overrides`; the two idea-entry labels and the monthly global effect. Nothing else. Built, linted (every lint, the DLC-gate check
+  on 145 files, the preflight with L47) and deployed 2026-11-08; `mod/` and the deployed copy are its debug build.
+- **The principle:** canonisation declares an approach the main line. It does not certify that the approach measured well; a ruled change is
+  canonised before the batch that measures it, and only a hypothesis that may be genuinely retracted runs as a non-canon arm (CLAUDE.md §4.4).
+- **The 1.0 canon** (`jex-dam4s-rs-x25-m10ac-dpriv-wm99`, mod 1.0 on game 1.13) stays as the record; its release build is commit `796ce9f`.

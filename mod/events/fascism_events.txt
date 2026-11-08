@@ -19,7 +19,10 @@ fascism_events.1 = {
 
 	on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
 
+	fire_only_once = yes
+
 	trigger = {
+		# triggered by journal entry - je_fascism_2 [on_monthly_pulse]
 		any_interest_group = {
 			has_variable = og_fascist_ig
 			is_in_government = yes
@@ -29,9 +32,6 @@ fascism_events.1 = {
 					has_ideology = ideology:ideology_integralist
 				}
 			}
-		}
-		NOT = {
-			has_variable = long_knives_var
 		}
 	}
 
@@ -43,6 +43,7 @@ fascism_events.1 = {
 			save_scope_as = fascist_ig
 			leader = {
 				save_scope_as = fascist_leader
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 			set_variable = chose_fascism
 		}
@@ -56,6 +57,7 @@ fascism_events.1 = {
 				is_immortal = no
 			}
 			save_scope_as = general_1
+			set_temporary_event_immortality = { DURATION = 3 }
 			set_variable = general_1_var
 			interest_group ?= {
 				set_variable = fascism_traitor_ig_var
@@ -71,6 +73,7 @@ fascism_events.1 = {
 				NOT = { has_variable = general_1_var }
 			}
 			save_scope_as = general_2
+			set_temporary_event_immortality = { DURATION = 3 }
 			set_variable = general_2_var
 			interest_group ?= {
 				set_variable = fascism_traitor_ig_var
@@ -88,6 +91,7 @@ fascism_events.1 = {
 				NOT = { THIS = scope:fascist_leader }
 			}
 			save_scope_as = general_3
+			set_temporary_event_immortality = { DURATION = 3 }
 			interest_group ?= {
 				set_variable = fascism_traitor_ig_var
 			}
@@ -125,19 +129,21 @@ fascism_events.1 = {
 				ideology = ideology_fascist
 			}
 		}
-		set_variable = long_knives_var
 	}
 
 	option = { #do it secretly
 		name = fascism_events.1.a
 		default_option = yes
 		custom_tooltip = night_of_the_long_knives.tt
+		revoke_temporary_event_immortality = { CHARACTER = scope:general_1 }
 		scope:general_1 = {
 			kill_character = yes
 		}
+		revoke_temporary_event_immortality = { CHARACTER = scope:general_2 }
 		scope:general_2 = {
 			kill_character = yes
 		}
+		revoke_temporary_event_immortality = { CHARACTER = scope:general_3 }
 		scope:general_3 = {
 			kill_character = yes
 		}
@@ -162,12 +168,15 @@ fascism_events.1 = {
 	option = { #take care of them publicly
 		name = fascism_events.1.b
 		custom_tooltip = night_of_the_long_knives.tt
+		revoke_temporary_event_immortality = { CHARACTER = scope:general_1 }
 		scope:general_1 = {
 			kill_character = yes
 		}
+		revoke_temporary_event_immortality = { CHARACTER = scope:general_2 }
 		scope:general_2 = {
 			kill_character = yes
 		}
+		revoke_temporary_event_immortality = { CHARACTER = scope:general_3 }
 		scope:general_3 = {
 			kill_character = yes
 		}
@@ -204,12 +213,15 @@ fascism_events.1 = {
 		custom_tooltip = fascism_to_jail_tt
 		custom_tooltip = night_of_the_long_knives.tt
 		hidden_effect = {
+			revoke_temporary_event_immortality = { CHARACTER = scope:general_1 }
 			scope:general_1 = {
 				retire_character = yes
 			}
+			revoke_temporary_event_immortality = { CHARACTER = scope:general_2 }
 			scope:general_2 = {
 				retire_character = yes
 			}
+			revoke_temporary_event_immortality = { CHARACTER = scope:general_3 }
 			scope:general_3 = {
 				retire_character = yes
 			}
@@ -241,6 +253,12 @@ fascism_events.1 = {
 			}
 		}
 	}
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:fascist_leader }
+		revoke_temporary_event_immortality = { CHARACTER = scope:general_1 }
+		revoke_temporary_event_immortality = { CHARACTER = scope:general_2 }
+		revoke_temporary_event_immortality = { CHARACTER = scope:general_3 }
+	}
 }
 
 fascism_events.2 = { #fascist leader gains popularity
@@ -264,6 +282,7 @@ fascism_events.2 = { #fascist leader gains popularity
 	cooldown = { days = normal_modifier_time }
 
 	trigger = {
+		# triggered by journal entry - je_fascism_1 [on_monthly_pulse]
 		any_scope_character = {
 			OR = {
 				has_ideology = ideology:ideology_fascist
@@ -281,6 +300,7 @@ fascism_events.2 = { #fascist leader gains popularity
 				}
 			}
 			save_scope_as = fascist_leader
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
 		if = {
 			limit = {
@@ -303,6 +323,7 @@ fascism_events.2 = { #fascist leader gains popularity
 				}
 			}
 			save_scope_as = fascist_leader_2
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
 		if = {
 			limit = {
@@ -383,6 +404,10 @@ fascism_events.2 = { #fascist leader gains popularity
 			}
 		}
 	}
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:fascist_leader }
+		revoke_temporary_event_immortality = { CHARACTER = scope:fascist_leader_2 }
+	}
 }
 
 fascism_events.3 = { #fascist reward
@@ -418,6 +443,15 @@ fascism_events.3 = { #fascist reward
 
 	option = { #loyalty
 		name = fascism_events.3.b
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_avoids_radicals = yes
+				}
+				add = 10
+			}
+		}
 		add_modifier = {
 			name = fascist_loyalty_modifier
 			days = normal_modifier_time
@@ -427,6 +461,9 @@ fascism_events.3 = { #fascist reward
 				value = very_large_radicals
 			}
 		}
+	}
+	after = {
+		je_fascism_2_cleanup = yes
 	}
 }
 
@@ -451,6 +488,7 @@ fascism_events.4 = { #fascist ideology spread
 	cooldown = { days = normal_modifier_time }
 
 	trigger = {
+		# triggered by journal entry - je_fascism_2 [on_monthly_pulse]
 		#triggered by JE
 		trigger_if = {
 			limit = {
@@ -565,6 +603,7 @@ fascism_events.4 = { #fascist ideology spread
 				order_by = prominence
 				position = 0
 				save_scope_as = fascisising_leader_scope
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 		}
 		random_interest_group = {
@@ -674,6 +713,9 @@ fascism_events.4 = { #fascist ideology spread
 			}
 		}
 	}
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:fascisising_leader_scope }
+	}
 }
 
 fascism_events.5 = { #building reward
@@ -720,6 +762,9 @@ fascism_events.5 = { #building reward
 			}
 		}
 	}
+	after = {
+		je_modernization_program_cleanup = yes
+	}
 }
 
 fascism_events.6 = { #ethno-nationalist reward
@@ -758,6 +803,7 @@ fascism_events.6 = { #ethno-nationalist reward
 			save_scope_as = ethno_nationalist_ig
 			leader = {
 				save_scope_as = ethno_nationalist_leader
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 		}
 	}
@@ -815,6 +861,10 @@ fascism_events.6 = { #ethno-nationalist reward
 				}
 			}
 		}
+	}
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:ethno_nationalist_leader }
+		je_ethno_nationalist_cleanup = yes
 	}
 }
 
@@ -942,6 +992,7 @@ fascism_events.8 = { #national anthem
 	}
 
 	trigger = {
+		# triggered by on_action - on_yearly_events
 		has_technology_researched = nationalism
 		NOT = { has_variable = national_anthem_var }
 		any_scope_state = {
@@ -1053,7 +1104,7 @@ fascism_events.8 = { #national anthem
 		}
 		set_variable = national_anthem_var
 	}
-	
+
 	cancellation_trigger = {
 		NOT = {
 			exists = scope:rival_country
@@ -1108,6 +1159,7 @@ fascism_events.9 = {
 			leader = {
 				set_variable = var_fascism_1_char_checked
 				save_scope_as = new_fascist_leader_scope
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 			if = {
 				limit = {
@@ -1132,6 +1184,7 @@ fascism_events.9 = {
 						}
 					}
 					save_scope_as = non_fascist_leader
+					set_temporary_event_immortality = { DURATION = 3 }
 				}
 			}
 			else = {
@@ -1141,6 +1194,9 @@ fascism_events.9 = {
 						ideology = ideology_moderate
 						interest_group = scope:new_fascist_leader_ig
 						save_scope_as = non_fascist_leader
+						on_created = {
+							set_temporary_event_immortality = { DURATION = 3 }
+						}
 					}
 				}
 			}
@@ -1189,6 +1245,10 @@ fascism_events.9 = {
 			}
 		}
 	}
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:new_fascist_leader_scope }
+		revoke_temporary_event_immortality = { CHARACTER = scope:non_fascist_leader }
+	}
 }
 
 fascism_events.10 = {
@@ -1217,6 +1277,15 @@ fascism_events.10 = {
 	option = {
 		name = fascism_events.10.a
 		default_option = yes
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_avoids_radicals = yes
+				}
+				add = 10
+			}
+		}
 		add_loyalists = {
 			value = small_radicals
 			strata = lower
@@ -1286,7 +1355,7 @@ fascism_events.10 = {
 		random_interest_group = {
 			limit = {
 				OR = {
-					has_ideology = ideology:ideology_socialist
+					#has_ideology = ideology:ideology_socialist
 					leader = {
 						OR = {
 							has_socialist_ideology = yes
@@ -1302,6 +1371,9 @@ fascism_events.10 = {
 				}
 			}
 		}
+	}
+	after = {
+		je_fascism_1_cleanup = yes
 	}
 }
 
@@ -1350,7 +1422,7 @@ fascism_events.11 = { # March on Rome
 				save_scope_as = fascist_ig
 				leader = {
 					save_scope_as = fascist_leader
-					set_character_busy_and_immortal = yes
+					set_temporary_event_immortality = { DURATION = 3 }
 				}
 			}
 		}
@@ -1376,7 +1448,7 @@ fascism_events.11 = { # March on Rome
 						}
 					}
 					save_scope_as = fascist_leader
-					set_character_busy_and_immortal = yes
+					set_temporary_event_immortality = { DURATION = 3 }
 				}
 			}
 		}
@@ -1384,6 +1456,15 @@ fascism_events.11 = { # March on Rome
 
 	option = {
 		name = fascism_events.11.a
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_avoids_radicals = yes
+				}
+				add = 10
+			}
+		}
 		trigger = {
 			NOT = {
 				has_law_or_variant = law_type:law_council_republic
@@ -1439,11 +1520,6 @@ fascism_events.11 = { # March on Rome
 		add_journal_entry = {
 			type = je_modernization_program
 		}
-		hidden_effect = {
-			scope:fascist_leader = {
-				set_character_busy_and_immortal = no
-			}
-		}
 	}
 
 	option = {
@@ -1459,23 +1535,22 @@ fascism_events.11 = { # March on Rome
 			value = very_large_radicals
 			interest_group = scope:fascist_ig
 		}
-		hidden_effect = {
-			scope:fascist_leader = {
-				set_character_busy_and_immortal = no
-			}
-		}
 	}
 
 	option = {
 		name = fascism_events.11.c
+		ai_chance = {
+			base = 1
+			modifier = {
+				trigger = {
+					ai_wants_radicals = yes
+				}
+				add = 10
+			}
+		}
 		trigger = {
 			NOT = {
 				has_law_or_variant = law_type:law_protected_speech
-			}
-		}
-		hidden_effect = {
-			scope:fascist_leader = {
-				set_character_busy_and_immortal = no
 			}
 		}
 		scope:fascist_leader = {
@@ -1504,5 +1579,9 @@ fascism_events.11 = { # March on Rome
 				}
 			}
 		}
+	}
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:fascist_leader }
+		je_fascism_1_cleanup = yes
 	}
 }

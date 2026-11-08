@@ -29,7 +29,7 @@
 				add_ownership={
 					country={
 						country="c:SWE"
-						levels=3
+						levels=6
 					}
 				}
 				reserves=1
@@ -51,7 +51,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:SWE"
-						levels=44
+						levels=43
 						region="STATE_SVEALAND"
 					}
 				}
@@ -138,19 +138,6 @@
 				reserves=1
 				activate_production_methods={ "pm_simple_sailor_recruitment" }
 			}
-			create_building={
-				building="building_paper_mill"
-				add_ownership={
-					building={
-						type="building_paper_mill"
-						country="c:SWE"
-						levels=14
-						region="STATE_SVEALAND"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" }
-			}
 		}
 	}
 	s:STATE_GOTALAND={
@@ -172,7 +159,7 @@
 				add_ownership={
 					country={
 						country="c:SWE"
-						levels=1
+						levels=2
 					}
 				}
 				reserves=1
@@ -204,7 +191,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SWE"
-						levels=23
+						levels=35
 						region="STATE_GOTALAND"
 					}
 				}
@@ -299,7 +286,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:SWE"
-						levels=5
+						levels=6
 						region="STATE_GOTALAND"
 					}
 				}
@@ -476,7 +463,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SWE"
-						levels=1
+						levels=3
 						region="STATE_NORRLAND"
 					}
 				}
@@ -1485,7 +1472,7 @@
 					building={
 						type="building_financial_district"
 						country="c:GBR"
-						levels=1
+						levels=2
 						region="STATE_HOME_COUNTIES"
 					}
 				}
@@ -2258,6 +2245,17 @@
 				reserves=1
 				activate_production_methods={ "pm_atmospheric_engine_pump_building_coal_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
+			create_building={
+				building="building_trade_center"
+				activate_production_methods={ "pm_trade_center_trade_quantity_normal" }
+				add_ownership={
+					country={
+						country="c:GBR"
+						levels=3
+					}
+				}
+				reserves=1
+			}
 		}
 	}
 	s:STATE_WEST_COUNTRY={
@@ -2392,6 +2390,19 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_atmospheric_engine_pump_building_lead_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+			}
+			create_building={
+				building="building_copper_mine"
+				add_ownership={
+					building={
+						type="building_financial_district"
+						country="c:GBR"
+						levels=6
+						region="STATE_WEST_COUNTRY"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_picks_and_shovels_building_copper_mine" }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -2676,6 +2687,17 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
+			}
+			create_building={
+				building="building_trade_center"
+				activate_production_methods={ "pm_trade_center_trade_quantity_normal" }
+				add_ownership={
+					country={
+						country="c:GBR"
+						levels=2
+					}
+				}
+				reserves=1
 			}
 		}
 	}
@@ -4989,7 +5011,7 @@
 					building={
 						type="building_financial_district"
 						country="c:NET"
-						levels=6
+						levels=9
 						region="STATE_HOLLAND"
 					}
 				}
@@ -5638,7 +5660,7 @@
 					building={
 						type="building_financial_district"
 						country="c:BEL"
-						levels=6
+						levels=8
 						region="STATE_FLANDERS"
 					}
 				}
@@ -6014,7 +6036,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:AUS"
-						levels=54
+						levels=40
 						region="STATE_AUSTRIA"
 					}
 				}
@@ -6236,7 +6258,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:AUS"
-						levels=3
+						levels=17
 						region="STATE_BOHEMIA"
 					}
 				}
@@ -7181,6 +7203,19 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_farming"  "pm_tools_disabled" "pm_potatoes" }
+			}
+			create_building={
+				building="building_copper_mine"
+				add_ownership={
+					building={
+						type="building_copper_mine"
+						country="c:PRU"
+						levels=1
+						region="STATE_ANHALT"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_picks_and_shovels_building_copper_mine" }
 			}
 		}
 		region_state:ANH={

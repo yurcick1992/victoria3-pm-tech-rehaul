@@ -581,7 +581,7 @@ POPS = {
 		region_state:PRG = {
 			create_pop = { # Creoles + Mixed (~3/4)
 				culture = platinean
-				size = 119720
+				size = 119672
 			}
 			create_pop = { pop_type = shopkeepers culture = platinean size = 6000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
@@ -947,7 +947,7 @@ POPS = {
 		region_state:PRG = {
 			create_pop = {
 				culture = guarani
-				size = 12044
+				size = 12092
 			}
 			create_pop = {
 				culture = guarani
@@ -979,7 +979,7 @@ POPS = {
 			}
 			create_pop = {
 				culture = amazonian
-				size = 38466
+				size = 37669
 			}
 		}
 		region_state:BOL = {
@@ -1185,7 +1185,7 @@ POPS = {
 			}
 			create_pop = {
 				culture = afro_brazilian
-				size = 87850
+				size = 80534
 			}
 		}
 	}
@@ -1206,7 +1206,7 @@ POPS = {
 			}
 			create_pop = {
 				culture = afro_brazilian
-				size = 6080
+				size = 6877
 			}
 		}
 	}
@@ -1227,7 +1227,7 @@ POPS = {
 			}
 			create_pop = {
 				culture = afro_brazilian
-				size = 252525
+				size = 253841
 			}
 			create_pop = { pop_type = shopkeepers culture = afro_brazilian size = 18000 }   # craft rung workforce (emit_craft_start)
 			create_pop = { pop_type = shopkeepers culture = nordestino religion = catholic size = 5400 }   # seeded craft workforce (emit_craft_start, F197)
@@ -1257,7 +1257,7 @@ POPS = {
 			}
 			create_pop = {
 				culture = afro_brazilian
-				size = 35245
+				size = 41245
 			}
 			create_pop = { pop_type = shopkeepers culture = afro_brazilian size = 6000 }   # craft rung workforce (emit_craft_start)
 		}

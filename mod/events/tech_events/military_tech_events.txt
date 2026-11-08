@@ -12,7 +12,7 @@ military_tech_events.401 = {
 
 	duration = 3
 
-	cooldown = { days = never_fire_again_modifier_time }
+	fire_only_once = yes
 
 	event_image = {
 		video = "unspecific_gears_pistons"
@@ -23,6 +23,7 @@ military_tech_events.401 = {
 	icon = "gfx/interface/icons/event_icons/event_industry.dds"
 
 	trigger = {
+		# triggered by on_action - tech_monthly_events
 		any_scope_state = {
 			any_scope_building = {
 				pmr_is_arms = yes
@@ -94,7 +95,7 @@ military_tech_events.402 = {
 
 	duration = 3
 
-	cooldown = { days = never_fire_again_modifier_time }
+	fire_only_once = yes
 
 	event_image = {
 		video = "europenorthamerica_before_the_battle"
@@ -105,6 +106,7 @@ military_tech_events.402 = {
 	icon = "gfx/interface/icons/event_icons/event_military.dds"
 
 	trigger = {
+		# triggered by on_action - tech_monthly_events
 		army_mobilization_option_fraction = {
 			target = mobilization_option:mobilization_option_machinegunners
 			value >= 0.2
@@ -150,6 +152,7 @@ military_tech_events.402 = {
 						}
 					}
 					save_scope_as = machine_gun_general
+					set_temporary_event_immortality = { DURATION = 3 }
 				}
 			}
 			random_country = {
@@ -226,6 +229,10 @@ military_tech_events.402 = {
 			}
 		}
 	}
+
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:machine_gun_general }
+	}
 }
 
 # Ironclads
@@ -239,7 +246,7 @@ military_tech_events.403 = {
 
 	duration = 3
 
-	cooldown = { days = never_fire_again_modifier_time }
+	fire_only_once = yes
 
 	event_image = {
 		video = "unspecific_naval_battle"
@@ -250,6 +257,7 @@ military_tech_events.403 = {
 	icon = "gfx/interface/icons/event_icons/event_military.dds"
 
 	trigger = {
+		# triggered by on_action - tech_monthly_events
 		has_technology_researched = ironclad_tech
 		any_scope_fleet = {
 			exists = commander
@@ -276,6 +284,7 @@ military_tech_events.403 = {
 			}
 			commander ?= {
 				save_scope_as = ironclad_admiral
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 		}
 	}
@@ -302,6 +311,10 @@ military_tech_events.403 = {
 			days = long_modifier_time
 		}
 	}
+
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:ironclad_admiral }
+	}
 }
 
 # Monitors
@@ -315,7 +328,7 @@ military_tech_events.404 = {
 
 	duration = 3
 
-	cooldown = { days = never_fire_again_modifier_time }
+	fire_only_once = yes
 
 	event_image = {
 		video = "unspecific_naval_battle"
@@ -326,6 +339,7 @@ military_tech_events.404 = {
 	icon = "gfx/interface/icons/event_icons/event_military.dds"
 
 	trigger = {
+		# triggered by on_action - tech_monthly_events
 		has_technology_researched = monitor_tech
 		any_scope_fleet = {
 			exists = commander
@@ -352,6 +366,7 @@ military_tech_events.404 = {
 			}
 			commander ?= {
 				save_scope_as = monitor_admiral
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 		}
 	}
@@ -377,6 +392,10 @@ military_tech_events.404 = {
 			days = long_modifier_time
 		}
 	}
+
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:monitor_admiral }
+	}
 }
 
 namespace = flamethrowers_event
@@ -387,7 +406,7 @@ flamethrowers_event.1 = {
 
  	duration = 3
 
-	cooldown = { days = never_fire_again_modifier_time }
+	fire_only_once = yes
 
  	event_image = {
  		video = "unspecific_fire"
@@ -402,6 +421,7 @@ flamethrowers_event.1 = {
  	flavor = flamethrowers_event.1.f
 
  	trigger = {
+		# triggered by on_action - tech_monthly_events
 		is_at_war = yes
 		army_mobilization_option_fraction = {
 		   target = mobilization_option:mobilization_option_flamethrowers

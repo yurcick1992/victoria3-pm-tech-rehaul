@@ -6,7 +6,8 @@ pm_dam_large_dear = {
 	building_modifiers = {
 		workforce_scaled = {
 			goods_input_tools_add = 12
-			goods_input_engines_add = 12
+			goods_input_engines_add = 6
+			goods_input_copper_add = 9
 			goods_output_electricity_add = 600
 		}
 
@@ -24,7 +25,8 @@ pm_dam_small_dear = {
 	building_modifiers = {
 		workforce_scaled = {
 			goods_input_tools_add = 6
-			goods_input_engines_add = 6
+			goods_input_engines_add = 3
+			goods_input_copper_add = 4.5
 			goods_output_electricity_add = 300
 		}
 
@@ -42,7 +44,8 @@ pm_dam_large_cheap = {
 	building_modifiers = {
 		workforce_scaled = {
 			goods_input_tools_add = 12
-			goods_input_engines_add = 12
+			goods_input_engines_add = 6
+			goods_input_copper_add = 9
 			goods_output_electricity_add = 600
 		}
 
@@ -60,7 +63,8 @@ pm_dam_small_cheap = {
 	building_modifiers = {
 		workforce_scaled = {
 			goods_input_tools_add = 6
-			goods_input_engines_add = 6
+			goods_input_engines_add = 3
+			goods_input_copper_add = 4.5
 			goods_output_electricity_add = 300
 		}
 

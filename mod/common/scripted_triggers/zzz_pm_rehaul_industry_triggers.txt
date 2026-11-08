@@ -37,6 +37,15 @@ pmr_can_promise_munition = {
 	}
 }
 
+pmr_country_art_academy_levels = {
+	OR = {
+		country_has_building_type_levels = { target = bt:building_art_academy value >= $V$ }
+		country_has_building_type_levels = { target = bt:building_art_academy_realist_art value >= $V$ }
+		country_has_building_type_levels = { target = bt:building_art_academy_photographic_art value >= $V$ }
+		country_has_building_type_levels = { target = bt:building_art_academy_film_art value >= $V$ }
+	}
+}
+
 pmr_has_active_arms = {
 	OR = {
 		has_active_building = building_arms_industry
@@ -319,6 +328,14 @@ pmr_is_munition = {
 	}
 }
 
+pmr_is_paper = {
+	OR = {
+		is_building_type = building_paper_mill
+		is_building_type = building_paper_mill_sulfite_pulping
+		is_building_type = building_paper_mill_continuous_web
+	}
+}
+
 pmr_is_paper_nc = {
 	OR = {
 		is_building_type = building_paper_mill_sulfite_pulping
@@ -401,6 +418,10 @@ pmr_runs_watertube_boiler = {
 		has_active_production_method = pm_watertube_boiler_building_steel_mill_steel
 		has_active_production_method = pm_watertube_boiler_building_motor_industry_motor
 	}
+}
+
+pmr_state_runs_pm_realist_art = {
+	has_building = building_art_academy_realist_art
 }
 
 pmr_state_runs_pm_traditional_art = {

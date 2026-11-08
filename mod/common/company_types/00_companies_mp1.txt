@@ -37,16 +37,24 @@ company_ludwig_moser_and_sons = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_BOHEMIA
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_glassworks_leaded_glass
-					is_building_type = building_glassworks_crystal_glass
-					is_building_type = building_glassworks_houseware_plastics
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_BOHEMIA
+				building = building_glassworks_leaded_glass
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_BOHEMIA
+				building = building_glassworks_crystal_glass
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_BOHEMIA
+				building = building_glassworks_houseware_plastics
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -131,13 +139,11 @@ company_compania_sansinena_de_carnes_congeladas = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_BUENOS_AIRES
+		has_building_levels_in_state_region = {
+			region = STATE_BUENOS_AIRES
+			building = building_food_industry_sweeteners
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_food_industry_sweeteners
-				level >= 5
-			}
 		}
 		any_scope_state = {
 			region = sr:region_la_plata
@@ -223,16 +229,24 @@ company_konigliche_porzellan_manufaktur_meissen = {
 
 	possible = {
 		has_technology_researched = chemical_bleaching
-		any_scope_state = {
-			state_region = s:STATE_SAXONY
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_glassworks_leaded_glass
-					is_building_type = building_glassworks_crystal_glass
-					is_building_type = building_glassworks_houseware_plastics
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_SAXONY
+				building = building_glassworks_leaded_glass
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_SAXONY
+				building = building_glassworks_crystal_glass
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_SAXONY
+				building = building_glassworks_houseware_plastics
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -564,15 +578,18 @@ company_maison_worth = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_ILE_DE_FRANCE
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_textile_mill_dye_workshops
-					is_building_type = building_textile_mill_sewing_machines
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_ILE_DE_FRANCE
+				building = building_textile_mill_dye_workshops
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_ILE_DE_FRANCE
+				building = building_textile_mill_sewing_machines
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -607,6 +624,12 @@ company_maison_worth = {
 
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
+		if = {
+			limit = {
+				divided_monarchists_ai_backs_orleanist = yes
+			}
+			add = 6
+		}
 	}
 }
 
@@ -737,17 +760,30 @@ company_colt_firearms = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_CONNECTICUT
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_arms_industry
-					is_building_type = building_arms_industry_rifles
-					is_building_type = building_arms_industry_repeaters
-					is_building_type = building_arms_industry_bolt_action_rifles
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_CONNECTICUT
+				building = building_arms_industry
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_CONNECTICUT
+				building = building_arms_industry_rifles
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_CONNECTICUT
+				building = building_arms_industry_repeaters
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_CONNECTICUT
+				building = building_arms_industry_bolt_action_rifles
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -837,15 +873,18 @@ company_gebruder_thonet = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_AUSTRIA
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_furniture_manufactory_lathe
-					is_building_type = building_furniture_manufactory_mechanized_workshops
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_AUSTRIA
+				building = building_furniture_manufactory_lathe
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_AUSTRIA
+				building = building_furniture_manufactory_mechanized_workshops
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -923,16 +962,24 @@ company_kinkozan_sobei = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_KANSAI
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_glassworks_leaded_glass
-					is_building_type = building_glassworks_crystal_glass
-					is_building_type = building_glassworks_houseware_plastics
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_KANSAI
+				building = building_glassworks_leaded_glass
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_KANSAI
+				building = building_glassworks_crystal_glass
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_KANSAI
+				building = building_glassworks_houseware_plastics
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -1014,15 +1061,18 @@ company_maple_and_co = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_HOME_COUNTIES
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_furniture_manufactory_lathe
-					is_building_type = building_furniture_manufactory_mechanized_workshops
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_HOME_COUNTIES
+				building = building_furniture_manufactory_lathe
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_HOME_COUNTIES
+				building = building_furniture_manufactory_mechanized_workshops
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -1171,13 +1221,11 @@ company_anglo_sicilian_sulphur_company = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_SICILY
+		has_building_levels_in_state_region = {
+			region = STATE_SICILY
+			building = building_sulfur_mine
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_sulfur_mine
-				level >= 5
-			}
 		}
 		NOT = {
 			c:GBR ?= {
@@ -1325,6 +1373,7 @@ company_norsk_hydro = {
 
 	extension_building_types = {
 		building_sulfur_mine
+		building_copper_mine
 	}
 
 	potential = {
@@ -1454,16 +1503,24 @@ company_massey_harris = {
 
 	possible = {
 		has_technology_researched = railways
-		any_scope_state = {
-			state_region = s:STATE_ONTARIO
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_motor_industry
-					is_building_type = building_motor_industry_electric_engines
-					is_building_type = building_motor_industry_diesel_engines
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_ONTARIO
+				building = building_motor_industry
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_ONTARIO
+				building = building_motor_industry_electric_engines
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_ONTARIO
+				building = building_motor_industry_diesel_engines
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}

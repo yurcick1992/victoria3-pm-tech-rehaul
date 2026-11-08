@@ -37,15 +37,18 @@ company_misr = {
 
 	possible = {
 		has_technology_researched = corporate_charters
-		any_scope_state = {
-			state_region = s:STATE_LOWER_EGYPT
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_textile_mill_dye_workshops
-					is_building_type = building_textile_mill_sewing_machines
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_LOWER_EGYPT
+				building = building_textile_mill_dye_workshops
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_LOWER_EGYPT
+				building = building_textile_mill_sewing_machines
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}

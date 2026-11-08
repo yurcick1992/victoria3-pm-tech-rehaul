@@ -182,7 +182,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SAR"
-						levels=3
+						levels=5
 						region="STATE_PIEDMONT"
 					}
 				}
@@ -748,7 +748,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SIC"
-						levels=2
+						levels=4
 						region="STATE_CAMPANIA"
 					}
 					building={
@@ -2909,7 +2909,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SPA"
-						levels=6
+						levels=5
 						region="STATE_OLD_CASTILE"
 					}
 				}
@@ -3251,7 +3251,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SPA"
-						levels=2
+						levels=4
 						region="STATE_CATALONIA"
 					}
 				}
@@ -3299,7 +3299,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:SPA"
-						levels=12
+						levels=13
 						region="STATE_CATALONIA"
 					}
 				}
@@ -3510,7 +3510,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SPA"
-						levels=2
+						levels=3
 						region="STATE_LOWER_ANDALUSIA"
 					}
 				}
@@ -3638,7 +3638,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SPA"
-						levels=6
+						levels=7
 						region="STATE_LOWER_ANDALUSIA"
 					}
 				}
@@ -4124,7 +4124,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:SPA"
-						levels=4
+						levels=3
 						region="STATE_VALENCIA"
 					}
 				}
@@ -4921,7 +4921,7 @@
 					building={
 						type="building_financial_district"
 						country="c:TUR"
-						levels=2
+						levels=4
 						region="STATE_EASTERN_THRACE"
 					}
 				}
@@ -4983,7 +4983,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:TUR"
-						levels=48
+						levels=49
 						region="STATE_EASTERN_THRACE"
 					}
 				}
@@ -5073,7 +5073,7 @@
 					building={
 						type="building_glassworks"
 						country="c:TUR"
-						levels=6
+						levels=4
 						region="STATE_EASTERN_THRACE"
 					}
 				}
@@ -5086,7 +5086,7 @@
 					building={
 						type="building_food_industry"
 						country="c:TUR"
-						levels=3
+						levels=6
 						region="STATE_EASTERN_THRACE"
 					}
 				}
@@ -5318,7 +5318,7 @@
 					building={
 						type="building_glassworks"
 						country="c:TUR"
-						levels=4
+						levels=3
 						region="STATE_BOSNIA"
 					}
 				}
@@ -5331,7 +5331,7 @@
 					building={
 						type="building_food_industry"
 						country="c:TUR"
-						levels=1
+						levels=2
 						region="STATE_BOSNIA"
 					}
 				}
@@ -6392,7 +6392,7 @@
 					building={
 						type="building_food_industry"
 						country="c:TUR"
-						levels=10
+						levels=20
 						region="STATE_MACEDONIA"
 					}
 				}
@@ -6478,7 +6478,7 @@
 					building={
 						type="building_glassworks"
 						country="c:TUR"
-						levels=49
+						levels=52
 						region="STATE_WESTERN_THRACE"
 					}
 					building={
@@ -6547,7 +6547,7 @@
 					building={
 						type="building_food_industry"
 						country="c:TUR"
-						levels=1
+						levels=2
 						region="STATE_WESTERN_THRACE"
 					}
 				}

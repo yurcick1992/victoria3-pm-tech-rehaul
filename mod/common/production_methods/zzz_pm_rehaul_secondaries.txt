@@ -10,7 +10,7 @@ pm_mechanized_looms_textile_mill_sewing_machines = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_tools_add = 2.75				# x40 =  200
+			goods_input_tools_add = 3.44				# x40 =  200
 		}
 
 		level_scaled = {
@@ -30,7 +30,8 @@ pm_automatic_power_looms_textile_mill_electric_sewing_machines = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_tools_add = 2.75				# x40 =  200
+			goods_input_tools_add = 2.06				# x40 =  120
+			goods_input_copper_add = 1.46				# x40 =  80
 			goods_input_electricity_add = 7.29			# x30 =  300
 		}
 
@@ -58,7 +59,8 @@ pm_assembly_lines_building_automotive_industry_automotive_industry_mass_automobi
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_tools_add = 7.02
+			goods_input_tools_add = 5.62
+			goods_input_copper_add = 1.4
 			goods_input_oil_add = 4.9
 			goods_input_electricity_add = 7.02
 		}
@@ -189,10 +191,12 @@ pm_pot_stills_food = {
 		workforce_scaled = {
 			# input goods
 			goods_input_sugar_add = 24.58				# x30 =  750
+			goods_input_glass_add = 2.95				# x40 =  120
+			goods_input_copper_add = 1.97				# x40 =  80
 
 			# output goods
 			goods_output_liquor_add = 71.5				# x30 = 1800
-			goods_output_groceries_add = -35.75 		# x30 = -900
+			goods_output_groceries_add = -29.79 		# x30 = -750
 		}
 
 		level_scaled = {
@@ -213,7 +217,8 @@ pm_patent_stills_food = {
 		workforce_scaled = {
 			# input goods
 			goods_input_sugar_add = 24.58				# x30 =   750
-			goods_input_glass_add = 9.84				# x40 =   400
+			goods_input_glass_add = 5.9				# x40 =   240
+			goods_input_copper_add = 3.93				# x40 =   160
 
 			# output goods
 			goods_output_liquor_add = 119.17			# x30 =  3000
@@ -242,7 +247,9 @@ pm_automated_bakery_food = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_tools_add = 9.84		# x40 = 400
+			goods_input_electricity_add = 4.92		# x30 = 150
+			goods_input_copper_add = 0.98			# x40 = 40
+			goods_input_tools_add = 1.97			# x40 = 80
 		}
 
 		level_scaled = {
@@ -250,6 +257,7 @@ pm_automated_bakery_food = {
 			building_employment_laborers_add = -2500
 		}
 	}
+	required_input_goods = electricity
 }
 pm_craftsman_sewing_textile = {
 	texture = "gfx/interface/icons/production_method_icons/craftsman_sewing.dds"
@@ -395,7 +403,8 @@ pm_assembly_lines_building_furniture_manufactory_furniture = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_tools_add = 6.15
+			goods_input_tools_add = 4.92
+			goods_input_copper_add = 1.23
 			goods_input_oil_add = 6.15
 			goods_input_electricity_add = 6.15
 		}
@@ -578,7 +587,8 @@ pm_assembly_lines_building_tooling_workshop_tooling = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_oil_add = 14.49
+			goods_input_oil_add = 13.05
+			goods_input_copper_add = 1.45
 			goods_input_electricity_add = 7.25
 		}
 
@@ -764,7 +774,7 @@ pm_rotary_valve_engine_building_motor_industry_motor = {
 		workforce_scaled = {
 			# input goods
 			goods_input_tools_add = 2.73
-			goods_input_coal_add = 5.46
+			goods_input_coal_add = 5.47
 		}
 
 		level_scaled = {
@@ -788,7 +798,8 @@ pm_assembly_lines_building_motor_industry_motor = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_tools_add = 2.73
+			goods_input_tools_add = 2.19
+			goods_input_copper_add = 0.55
 			goods_input_oil_add = 2.73
 			goods_input_electricity_add = 2.73
 		}
@@ -853,7 +864,7 @@ pm_radios_electrics = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_electricity_add = 98.5
+			goods_input_electricity_add = 98.43
 			goods_output_telephones_add = -44
 			goods_output_radios_add = 88
 		}
@@ -880,7 +891,8 @@ pm_rotary_valve_engine_building_arms_industry_arms = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_coal_add = 12.49
+			goods_input_tools_add = 2.4
+			goods_input_coal_add = 8.33
 		}
 
 		level_scaled = {
@@ -903,7 +915,9 @@ pm_assembly_lines_building_arms_industry_arms = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_oil_add = 8.33
+			goods_input_tools_add = 2.4
+			goods_input_copper_add = 0.83
+			goods_input_oil_add = 4.16
 			goods_input_electricity_add = 4.16
 		}
 
@@ -929,7 +943,8 @@ pm_rotary_valve_engine_building_arms_industry_artillery = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_coal_add = 14.78
+			goods_input_tools_add = 3.08
+			goods_input_coal_add = 9.85
 		}
 
 		level_scaled = {
@@ -952,7 +967,9 @@ pm_assembly_lines_building_arms_industry_artillery = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_oil_add = 9.85
+			goods_input_tools_add = 3.08
+			goods_input_copper_add = 0.98
+			goods_input_oil_add = 4.92
 			goods_input_electricity_add = 4.92
 		}
 
@@ -978,7 +995,8 @@ pm_rotary_valve_engine_building_munition_plant_munition = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_coal_add = 16.61
+			goods_input_tools_add = 4.43
+			goods_input_coal_add = 11.07
 		}
 
 		level_scaled = {
@@ -1001,7 +1019,9 @@ pm_assembly_lines_building_munition_plant_munition = {
 
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_oil_add = 11.07
+			goods_input_tools_add = 4.43
+			goods_input_copper_add = 1.11
+			goods_input_oil_add = 5.54
 			goods_input_electricity_add = 5.54
 		}
 

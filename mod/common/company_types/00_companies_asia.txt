@@ -130,13 +130,11 @@ company_imperial_arsenal = {
 
 	possible = {
 		has_technology_researched = hydraulic_cranes
-		any_scope_state = {
-			state_region = s:STATE_EASTERN_THRACE
+		has_building_levels_in_state_region = {
+			region = STATE_EASTERN_THRACE
+			building = building_shipyard
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_shipyard
-				level >= 5
-			}
 		}
 	}
 
@@ -280,13 +278,11 @@ company_allatini_mills = {
 			has_modifier = sick_man_of_europe
 			is_country_type = unrecognized
 		}
-		any_scope_state = {
-			state_region = s:STATE_MACEDONIA
+		has_building_levels_in_state_region = {
+			region = STATE_MACEDONIA
+			building = building_wheat_farm
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_wheat_farm
-				level >= 5
-			}
 		}
 	}
 
@@ -720,15 +716,18 @@ company_nam_dinh = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_TONKIN
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_textile_mill_dye_workshops
-					is_building_type = building_textile_mill_sewing_machines
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_TONKIN
+				building = building_textile_mill_dye_workshops
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_TONKIN
+				building = building_textile_mill_sewing_machines
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 		has_technology_researched = corporate_charters
@@ -959,16 +958,24 @@ company_william_sandford = {
 
 	possible = {
 		has_technology_researched = bessemer_process
-		any_scope_state = {
-			state_region = s:STATE_NEW_SOUTH_WALES
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_steel_mill
-					is_building_type = building_steel_mill_bessemer_process
-					is_building_type = building_steel_mill_open_hearth_process
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_NEW_SOUTH_WALES
+				building = building_steel_mill
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_NEW_SOUTH_WALES
+				building = building_steel_mill_bessemer_process
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_NEW_SOUTH_WALES
+				building = building_steel_mill_open_hearth_process
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -1054,13 +1061,11 @@ company_b_grimm = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_BANGKOK
+		has_building_levels_in_state_region = {
+			region = STATE_BANGKOK
+			building = building_rice_farm
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_rice_farm
-				level >= 5
-			}
 		}
 	}
 

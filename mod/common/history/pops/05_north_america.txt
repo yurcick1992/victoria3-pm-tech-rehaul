@@ -58,7 +58,7 @@ POPS = {
 		region_state:USA = {
 			create_pop = {
 				culture = yankee
-				size = 2111288
+				size = 2103328
 			}
 			create_pop = {
 				culture = yankee
@@ -90,7 +90,7 @@ POPS = {
 		region_state:USA = {
 			create_pop = {
 				culture = dixie
-				size = 415597
+				size = 423581
 			}
 			create_pop = {
 				culture = dixie
@@ -626,7 +626,7 @@ POPS = {
 		region_state:USA = {
 			create_pop = {
 				culture = dixie
-				size = 369316
+				size = 369292
 			}
 			create_pop = {
 				culture = cherokee
@@ -1674,7 +1674,7 @@ POPS = {
 		region_state:MEX = {
 			create_pop = {
 				culture = mexican
-				size = 691486
+				size = 685486
 			}
 			create_pop = { pop_type = shopkeepers culture = mexican size = 30000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
@@ -1694,12 +1694,12 @@ POPS = {
 				culture = afro_caribeno
 				size = 54000
 			}
-			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 3600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 5400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 12600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 2400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 5600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 9800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 6000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 14000 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
 		}
@@ -1711,7 +1711,7 @@ POPS = {
 		region_state:MEX = {
 			create_pop = {
 				culture = mexican
-				size = 104874
+				size = 110874
 			}
 			create_pop = {
 				culture = zapotec
@@ -1731,10 +1731,6 @@ POPS = {
 			}
 			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 1200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 2800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = mexican religion = catholic size = 600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = mexican religion = catholic size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
 		}

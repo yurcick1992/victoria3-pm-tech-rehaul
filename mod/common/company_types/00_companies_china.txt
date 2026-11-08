@@ -138,17 +138,30 @@ company_hanyang_arsenal = {
 
 	possible = {
 		has_technology_researched = breech_loading_artillery
-		any_scope_state = {
-			state_region = s:STATE_EASTERN_HUBEI
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_arms_industry
-					is_building_type = building_arms_industry_rifles
-					is_building_type = building_arms_industry_repeaters
-					is_building_type = building_arms_industry_bolt_action_rifles
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_EASTERN_HUBEI
+				building = building_arms_industry
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_EASTERN_HUBEI
+				building = building_arms_industry_rifles
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_EASTERN_HUBEI
+				building = building_arms_industry_repeaters
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_EASTERN_HUBEI
+				building = building_arms_industry_bolt_action_rifles
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -241,13 +254,11 @@ company_foochow_arsenal = {
 	possible = {
 		has_technology_researched = ironclad_tech
 		has_technology_researched = gantry_cranes
-		any_scope_state = {
-			state_region = s:STATE_FUJIAN
+		has_building_levels_in_state_region = {
+			region = STATE_FUJIAN
+			building = building_shipyard
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_shipyard
-				level >= 5
-			}
 		}
 	}
 
@@ -316,16 +327,24 @@ company_jingdezhen = {
 
 	possible = {
 		has_technology_researched = chemical_bleaching
-		any_scope_state = {
-			state_region = s:STATE_JIANGXI
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_glassworks_leaded_glass
-					is_building_type = building_glassworks_crystal_glass
-					is_building_type = building_glassworks_houseware_plastics
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_JIANGXI
+				building = building_glassworks_leaded_glass
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_JIANGXI
+				building = building_glassworks_crystal_glass
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_JIANGXI
+				building = building_glassworks_houseware_plastics
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}

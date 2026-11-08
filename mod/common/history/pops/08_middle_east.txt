@@ -272,7 +272,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 3000
 			}
 			create_pop = {
@@ -305,7 +305,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 100
 			}
 			create_pop = {
@@ -326,7 +326,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 200
 			}
 			create_pop = {
@@ -358,7 +358,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 360
 			}
 			create_pop = {
@@ -397,7 +397,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 100
 			}
 			create_pop = {
@@ -445,7 +445,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 1200
 			}
 			create_pop = {
@@ -502,7 +502,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 2000
 			}
 			create_pop = {
@@ -546,7 +546,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 3000
 			}
 			create_pop = {
@@ -615,7 +615,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 4000
 			}
 			create_pop = {
@@ -675,7 +675,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 5000
 			}
 			create_pop = {
@@ -720,7 +720,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 3200
 			}
 			create_pop = {
@@ -752,7 +752,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 300
 			}
 			create_pop = {
@@ -784,7 +784,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 2000
 			}
 			create_pop = {
@@ -1429,7 +1429,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 2000
 			}
 			create_pop = {
@@ -1439,12 +1439,12 @@ POPS = {
 			}
 			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 2400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 5600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 1200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 2800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 9800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 6600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 15400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 6000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 14000 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 3600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
 		}
@@ -1483,7 +1483,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 2400
 			}
 			create_pop = {
@@ -1527,7 +1527,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 100
 			}
 			create_pop = {
@@ -1553,7 +1553,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 3000
 			}
 			create_pop = {
@@ -1595,7 +1595,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 5000
 			}
 			create_pop = {
@@ -1630,7 +1630,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 400
 			}
 			create_pop = {
@@ -1654,7 +1654,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 100
 			}
 			create_pop = {
@@ -1690,7 +1690,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 8732
 			}
 			create_pop = {
@@ -1745,7 +1745,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 4300
 			}
 			create_pop = {
@@ -1790,7 +1790,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 2300
 			}
 			create_pop = {
@@ -1854,7 +1854,7 @@ POPS = {
 			}
 			create_pop = {
 				pop_type = slaves
-				culture = north_caucasian
+				culture = circassian
 				size = 1000
 			}
 			create_pop = {

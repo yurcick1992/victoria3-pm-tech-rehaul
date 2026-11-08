@@ -432,6 +432,18 @@ mass_communication = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		if = {
+			limit = {
+				is_in_geographic_region = geographic_region_italy_old
+			}
+			add = 2
+		}
+		if = {
+			limit = {
+				c:RUS ?= this
+			}
+			add = 5
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = mass_communication  progress >= 0.99 } }
@@ -449,6 +461,7 @@ empiricism = {
 	modifier = {
 		country_influence_mult = 0.25
 		country_diplomatic_play_maneuvers_mult = 0.25
+		country_infamy_generation_mult = -0.05
 		country_institution_schools_max_investment_add = 1
 		state_education_access_wealth_add = 0.005
 	}
@@ -499,11 +512,17 @@ egalitarianism = {
 				add_involved_country = ROOT
 			}
 		}
+		forest_of_bayonets_involve_country_effect = yes
 	}
 
 	ai_weight = {
 		value = 1
-
+		if = {
+			limit = {
+				is_in_geographic_region = geographic_region_italy_old
+			}
+			add = 2
+		}
 		if = {
 			limit = {
 				has_strategy = ai_strategy_progressive_agenda
@@ -706,6 +725,24 @@ central_archives = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+
+		if = {
+			limit = {
+				OR = {
+					has_journal_entry = je_tp_pool_secret_police
+					AND = {
+						has_journal_entry = je_tp_tsar_unshakable_autocracy
+						NOT = { has_variable = je_tp_tsar_unshakable_autocracy_button_1_complete }
+					}
+					AND = {
+						has_journal_entry = je_tp_tsar_great_reform
+						NOT = { has_variable = je_great_reforms_bureaucratic_complete }
+						has_law = law_type:law_third_section
+					}
+				}
+			}
+			add = 5
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = central_archives  progress >= 0.99 } }
@@ -797,6 +834,7 @@ psychiatry = {
 	modifier = {
 		country_influence_mult = 0.25
 		country_diplomatic_play_maneuvers_mult = 0.25
+		country_infamy_generation_mult = -0.05
 		state_bureaucracy_population_base_cost_factor_mult = -0.05
 	}
 
@@ -848,6 +886,7 @@ nationalism = {
 	modifier = {
 		country_authority_mult = 0.1
 		country_voting_power_mult = 0.1
+		country_homeland_infamy_reduction_bool = yes
 	}
 
 	unlocking_technologies = {
@@ -857,6 +896,13 @@ nationalism = {
 
 	ai_weight = {
 		value = 2 # Important in general
+
+		if = {
+			limit = {
+				c:RUS ?= this
+			}
+			add = 10
+		}
 
 		# Extra-important for major unifications
 		if = {
@@ -995,6 +1041,7 @@ human_rights = {
 
 	modifier = {
 		country_institution_social_security_max_investment_add = 1
+		country_ban_slavery_no_infamy_bool = yes
 	}
 
 	unlocking_technologies = {
@@ -1061,6 +1108,13 @@ feminism = {
 					}
 					remove_ideology = ideology_egalitarian
 					add_ideology = ideology_egalitarian_modern
+				}
+				every_interest_group = {
+					limit = {
+						has_ideology = ideology:ideology_universalist
+					}
+					remove_ideology = ideology_universalist
+					add_ideology = ideology_universalist_modern
 				}
 			}
 		}
@@ -1228,9 +1282,6 @@ socialism = {
 				NOT = { has_variable = socialism_researched }
 			}
 			set_variable = socialism_researched
-			ig:ig_trade_unions ?= {
-				add_ideology = ideology_socialist
-			}
 		}
 	}
 
@@ -1348,7 +1399,7 @@ corporatism = {
 
 	unlocking_technologies = {
 		labor_movement
-		nationalism
+		pan-nationalism
 	}
 
 	ai_weight = {
@@ -1388,6 +1439,7 @@ pan-nationalism = {
 		country_authority_mult = 0.1
 		country_support_separatism_strength_mult = 0.25
 		country_voting_power_mult = 0.1
+		country_shared_language_infamy_reduction_bool = yes
 	}
 
 	unlocking_technologies = {
@@ -1410,6 +1462,14 @@ pan-nationalism = {
 					country_has_primary_culture = cu:slovene
 					country_has_primary_culture = cu:bosniak
 				}
+			}
+			add = 5
+		}
+
+		if = {
+			limit = {
+				has_journal_entry = je_tp_tsar_unshakable_autocracy
+				NOT = { has_variable = je_tp_tsar_unshakable_autocracy_button_2_complete }
 			}
 			add = 5
 		}
@@ -1505,6 +1565,7 @@ philosophical_pragmatism = {
 	modifier = {
 		country_influence_mult = 0.25
 		country_diplomatic_play_maneuvers_mult = 0.25
+		country_infamy_generation_mult = -0.05
 		state_bureaucracy_population_base_cost_factor_mult = -0.05
 		state_literacy_growth_add = 0.0001
 	}
@@ -1776,6 +1837,7 @@ psychoanalysis = {
 	modifier = {
 		country_influence_mult = 0.25
 		country_diplomatic_play_maneuvers_mult = 0.25
+		country_infamy_generation_mult = -0.05
 		state_bureaucracy_population_base_cost_factor_mult = -0.05
 	}
 
@@ -1914,6 +1976,8 @@ mass_propaganda = {
 		state_expected_sol_from_literacy = 1
 		country_agitator_slots_add = 1
 		country_support_separatism_strength_mult = 0.25
+		country_war_support_battles_increase_mult = 0.25
+		country_war_support_battles_decrease_mult = -0.2
 	}
 
 	unlocking_technologies = {
@@ -1987,6 +2051,7 @@ behaviorism = {
 	modifier = {
 		country_influence_mult = 0.5
 		country_diplomatic_play_maneuvers_mult = 0.5
+		country_infamy_generation_mult = -0.05
 		state_bureaucracy_population_base_cost_factor_mult = -0.05
 	}
 

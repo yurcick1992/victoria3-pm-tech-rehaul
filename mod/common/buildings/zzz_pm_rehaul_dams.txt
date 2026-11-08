@@ -991,7 +991,7 @@ building_dam_small_dear = {
 				has_global_variable = pmr_dam_zhiguli_volga_surveyed_any
 			}
 			AND = {
-				state_region = s:STATE_TARTARIA
+				state_region = s:STATE_SARATOV
 				owner ?= p:x5DC7DF.state.owner
 				has_global_variable = pmr_dam_balakovo_volga_surveyed_any
 			}
@@ -1829,7 +1829,7 @@ building_dam_small_dear = {
 				}
 			}
 			AND = {
-				state_region = s:STATE_TARTARIA
+				state_region = s:STATE_SARATOV
 				custom_tooltip = {
 					text = pmr_dam_balakovo_volga_builder_tt
 					p:x5DC7DF ?= {
@@ -3603,7 +3603,7 @@ building_dam_small_dear = {
 				}
 			}
 			AND = {
-				state_region = s:STATE_TARTARIA
+				state_region = s:STATE_SARATOV
 				custom_tooltip = {
 					text = pmr_dam_balakovo_volga_builder_tt
 					p:x5DC7DF ?= {

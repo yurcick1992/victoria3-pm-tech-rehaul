@@ -96,13 +96,11 @@ company_united_fruit = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_LOUISIANA
+		has_building_levels_in_state_region = {
+			region = STATE_LOUISIANA
+			building = building_sugar_plantation
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_sugar_plantation
-				level >= 5
-			}
 		}
 		any_state_in_latin_america = {
 			any_scope_building = {
@@ -213,16 +211,24 @@ company_us_steel = {
 
 	possible = {
 		has_technology_researched = open_hearth_process
-		any_scope_state = {
-			state_region = s:STATE_PENNSYLVANIA
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_steel_mill
-					is_building_type = building_steel_mill_bessemer_process
-					is_building_type = building_steel_mill_open_hearth_process
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_PENNSYLVANIA
+				building = building_steel_mill
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_PENNSYLVANIA
+				building = building_steel_mill_bessemer_process
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_PENNSYLVANIA
+				building = building_steel_mill_open_hearth_process
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -284,6 +290,7 @@ company_general_electric = {
 		building_motor_industry
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
+		building_copper_mine
 	}
 
 	possible_prestige_goods = {
@@ -489,16 +496,24 @@ company_ford_motor = {
 
 	possible = {
 		has_technology_researched = combustion_engine
-		any_scope_state = {
-			state_region = s:STATE_MICHIGAN
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_motor_industry
-					is_building_type = building_motor_industry_electric_engines
-					is_building_type = building_motor_industry_diesel_engines
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_MICHIGAN
+				building = building_motor_industry
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_MICHIGAN
+				building = building_motor_industry_electric_engines
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_MICHIGAN
+				building = building_motor_industry_diesel_engines
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}

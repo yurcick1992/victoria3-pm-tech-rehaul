@@ -311,6 +311,15 @@ lead = {
 	traded_quantity = 8.49 # pm_tech_rehaul: vanilla 5; W = cost x traded_quantity 200 -> 339.6 (FINDINGS F159)
 }
 
+copper = {
+	texture = "gfx/interface/icons/goods_icons/copper.dds"
+	cost = 40
+	category = industrial
+
+	prestige_factor = 3
+	traded_quantity = 12 # pm_tech_rehaul: vanilla 5; W = cost x traded_quantity 200 -> 480 (FINDINGS F159)
+}
+
 hardwood = {
 	texture = "gfx/interface/icons/goods_icons/hardwood.dds"
 	cost = 40

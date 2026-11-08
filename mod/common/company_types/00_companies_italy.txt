@@ -43,16 +43,24 @@ company_ilva = {
 
 	possible = {
 		has_technology_researched = arc_welding
-		any_scope_state = {
-			state_region = s:STATE_PIEDMONT
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_steel_mill
-					is_building_type = building_steel_mill_bessemer_process
-					is_building_type = building_steel_mill_open_hearth_process
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_PIEDMONT
+				building = building_steel_mill
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_PIEDMONT
+				building = building_steel_mill_bessemer_process
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_PIEDMONT
+				building = building_steel_mill_open_hearth_process
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -291,17 +299,30 @@ company_ricordi = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_LOMBARDY
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_art_academy
-					is_building_type = building_art_academy_realist_art
-					is_building_type = building_art_academy_photographic_art
-					is_building_type = building_art_academy_film_art
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_LOMBARDY
+				building = building_art_academy
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_LOMBARDY
+				building = building_art_academy_realist_art
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_LOMBARDY
+				building = building_art_academy_photographic_art
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_LOMBARDY
+				building = building_art_academy_film_art
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -503,13 +524,11 @@ company_stt = {
 
 	possible = {
 		has_technology_researched = gantry_cranes
-		any_scope_state = {
-			state_region = s:STATE_ISTRIA
+		has_building_levels_in_state_region = {
+			region = STATE_ISTRIA
+			building = building_shipyard
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_shipyard
-				level >= 5
-			}
 		}
 	}
 

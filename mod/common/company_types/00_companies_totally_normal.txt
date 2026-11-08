@@ -15,6 +15,7 @@ company_ingolstadt_electrical_company = {
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
 		building_livestock_ranch
+		building_copper_mine
 	}
 
 	possible_prestige_goods = {

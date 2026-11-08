@@ -6,6 +6,16 @@ on_game_started_after_lobby = {
 
 pm_tech_rehaul_diag = {
 	effect = {
-		debug_log = "PM_TECH_REHAUL: init OK - No Free Upgrades: An industrial realism overhaul 1.0.0 loaded (release build)"
+		debug_log = "PM_TECH_REHAUL: init OK - mod loaded, game started (build 2026-11-08 12:08) on [TimeKeeper.GetCurrentDate.GetString]"
+		# --- invariant tripwires: add checks for risky changes; log PM_TECH_REHAUL WARN on failure ---
+		# the craft-excluded level counts (G3-G6) assume the engine's group-level counters include child groups (bg_pmr_crafts under bg_light_industry)
+		random_country = {
+			limit = { "country_has_building_group_levels(bg_pmr_crafts)" > 0 }
+			if = {
+				limit = { "country_has_building_group_levels(bg_light_industry)" < pmr_diag_light_levels_loop }
+				debug_log = "PM_TECH_REHAUL WARN: the engine's group-level counters leave out child groups - the craft-excluded level counts G3-G6 (emit_vanilla_refs) are wrong"
+			}
+			else = { debug_log = "PM_TECH_REHAUL: group-level counters include child groups - the craft-excluded level counts G3-G6 hold" }
+		}
 	}
 }

@@ -24,6 +24,8 @@ montenegrin_raiding.1 = {
 
 	# cooldown = Only fires once due to var Njegos_brother_dead
 
+	fire_only_once = yes
+
 	trigger = {
 		NOR = {
 			has_variable = Njegos_brother_dead
@@ -467,6 +469,10 @@ mon_state_formation.1 = {
 		russia_breaks_independence_pact = yes
 		change_infamy = 15
 	}
+
+	after = {
+		je_mon_state_formation_cleanup = yes
+	}
 }
 
 #Russian Visit Event
@@ -579,7 +585,12 @@ mon_state_formation.3 = {
 		set_variable = mon_saint_made
 		ruler = {
 			save_scope_as = ruler_scope
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
+	}
+
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:ruler_scope }
 	}
 
 	cancellation_trigger = {
@@ -709,6 +720,10 @@ mon_state_formation.4 = {
 			days = very_long_modifier_time
 			is_decaying = yes
 		}
+	}
+
+	after = {
+		je_mon_austria_alliance_cleanup = yes
 	}
 }
 
@@ -842,6 +857,10 @@ mon_state_formation.5 = {
 			}
 		}
 	}
+
+	after = {
+		je_mon_serb_unity_cleanup = yes
+	}
 }
 
 #Petar II dies of Tuberculosis. Danilo takes throne.
@@ -900,8 +919,6 @@ mon_state_formation.6 = {
 
 	duration = 3
 
-	dlc = dlc014
-
 	cooldown = { days = normal_modifier_time }
 
 	trigger = { #Triggers checked in on_actions. This event fires if the ruler dies. The ruler will be killed by Tuberculosis eventually if not.
@@ -920,24 +937,28 @@ mon_state_formation.6 = {
 					has_template = mon_petar_II_petrovic_njegos
 				}
 				save_scope_as = petar
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 			random_scope_character = {
 				limit = {
 					has_template = mon_danilo_petrovic_njegos
 				}
 				save_scope_as = danilo
-				set_character_busy_and_immortal = yes
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 			create_character = {
 				template = mon_nikola_petrovic_njegos
 				save_scope_as = nikola
+				on_created = {
+					set_temporary_event_immortality = { DURATION = 3 }
+				}
 			}
 			random_scope_character = {
 				limit = {
 					has_template = mon_dordije_petrovic_njegos
 				}
 				save_scope_as = betrayer
-				set_character_immortal = yes
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 		}
 		if = { #set character to display
@@ -971,6 +992,7 @@ mon_state_formation.6 = {
 			limit = {
 				exists = scope:petar
 			}
+			revoke_temporary_event_immortality = { CHARACTER = scope:petar }
 			scope:petar = {
 				kill_character = yes
 			}
@@ -978,11 +1000,9 @@ mon_state_formation.6 = {
 		c:MON ?= {
 			set_heir = scope:nikola
 		}
-		hidden_effect = {
-			scope:danilo = {
-				set_character_busy_and_immortal = no
-			}
-		}
+		revoke_temporary_event_immortality = { CHARACTER = scope:nikola }
+		revoke_temporary_event_immortality = { CHARACTER = scope:danilo }
+		revoke_temporary_event_immortality = { CHARACTER = scope:betrayer }
 	}
 
 	option = { # Go Theology. Make Saint
@@ -1022,9 +1042,6 @@ mon_state_formation.6 = {
 			}
 			custom_tooltip = {
 				text = forgive_betrayer_tt
-				scope:betrayer = {
-					set_character_immortal = no
-				}
 			}
 		}
 	}
@@ -1084,9 +1101,6 @@ mon_state_formation.6 = {
 				}
 				custom_tooltip = {
 					text = forgive_betrayer_tt
-					scope:betrayer = {
-						set_character_immortal = no
-					}
 				}
 			}
 			add_loyalists = {
@@ -1149,9 +1163,7 @@ mon_state_formation.7 = {
 
 	icon = "gfx/interface/icons/event_icons/event_newspaper.dds"
 
-	duration = 6
-
-	dlc = dlc014
+	duration = 3
 
 	cooldown = { days = normal_modifier_time }
 
@@ -1181,7 +1193,7 @@ mon_state_formation.7 = {
 	immediate = {
 		ruler ?= {
 			save_scope_as = danilo
-			set_character_busy_and_immortal = yes
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
 		c:RUS ?= {
 			save_scope_as = russia
@@ -1191,13 +1203,12 @@ mon_state_formation.7 = {
 		}
 	}
 
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:danilo }
+	}
+
 	option = { # Vestments
 		name = mon_state_formation.7.a
-		hidden_effect = {
-			scope:danilo = {
-				set_character_busy_and_immortal = no
-			}
-		}
 		add_enactment_modifier = {
 			name = mon_monarchy_enact_1
 		}
@@ -1206,22 +1217,20 @@ mon_state_formation.7 = {
 	option = { # Marriage
 		name = mon_state_formation.7.b
 		default_option = yes
-		hidden_effect = {
-			scope:danilo = {
-				set_character_busy_and_immortal = no
-			}
-		}
 		add_enactment_modifier = {
 			name = mon_monarchy_enact_2
 		}
-		custom_tooltip = {
-			text = danilo_will_get_married_tt
-			trigger_event = {
-				id = mon_state_formation.8
-				months = 2
-				popup = yes
+		if = {
+			limit = { has_dlc_feature = ip3_content }
+			custom_tooltip = {
+				text = danilo_will_get_married_tt
+				trigger_event = {
+					id = mon_state_formation.8
+					months = 2
+					popup = yes
+				}
+				set_variable = wedding_announced #affects loc in wedding
 			}
-			set_variable = wedding_announced #affects loc in wedding
 		}
 		scope:devout = {
 			add_modifier = {
@@ -1234,11 +1243,6 @@ mon_state_formation.7 = {
 
 	option = { # "working women"
 		name = mon_state_formation.7.c
-		hidden_effect = {
-			scope:danilo = {
-				set_character_busy_and_immortal = no
-			}
-		}
 		add_enactment_modifier = {
 			name = mon_monarchy_enact_3
 		}
@@ -1255,11 +1259,6 @@ mon_state_formation.7 = {
 		name = mon_state_formation.7.e
 		trigger = {
 			has_journal_entry = je_montenegrin_raiding
-		}
-		hidden_effect = {
-			scope:danilo = {
-				set_character_busy_and_immortal = no
-			}
 		}
 		scope:danilo = {
 			add_trait = ruthless
@@ -1282,11 +1281,6 @@ mon_state_formation.7 = {
 		name = mon_state_formation.7.g
 		trigger = {
 			has_journal_entry = je_montenegrin_raiding
-		}
-		hidden_effect = {
-			scope:danilo = {
-				set_character_busy_and_immortal = no
-			}
 		}
 		activate_law = law_type:law_monarchy
 		scope:danilo = {
@@ -1365,22 +1359,15 @@ mon_state_formation.8 = {
 
 	icon = "gfx/interface/icons/event_icons/event_default.dds"
 
-	duration = 6
+	duration = 3
 
 	dlc = dlc014
 
 	cooldown = { days = normal_modifier_time }
 
-	after = {
-		hidden_effect = {
-			ruler ?= {
-				set_variable = married_man
-				set_character_busy_and_immortal = no
-			}
-		}
-	}
-
 	trigger = { #can be triggered after passing Monarchy, no matter the monarch.
+		# triggered by on_action - montenegro_half_yearly_events
+		has_dlc_feature = ip3_content
 		exists = ruler
 		ruler ?= {
 			NOT = {
@@ -1420,8 +1407,17 @@ mon_state_formation.8 = {
 		}
 		set_variable = mon_state_formation_8_fired
 		ruler ?= {
-			set_character_busy_and_immortal = yes
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
+	}
+
+	after = {
+		hidden_effect = {
+			ruler ?= {
+				set_variable = married_man
+			}
+		}
+		revoke_temporary_event_immortality = { CHARACTER = scope:danilo }
 	}
 
 	option = { # Marry Princess Kleopatra Karadjordević from Serbia for duty
@@ -1565,8 +1561,6 @@ type = country_event
 
 	duration = 3
 
-	dlc = dlc014
-
 	cooldown = { days = normal_modifier_time }
 
 	trigger = {
@@ -1598,11 +1592,11 @@ type = country_event
 		set_variable = mon_state_formation_10_fired
 		ruler ?= {
 			save_scope_as = danilo
-			set_character_busy_and_immortal = yes
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
 		heir ?= {
 			save_scope_as = nikola
-			set_character_busy_and_immortal = yes
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
 		c:RUS ?= {
 			save_scope_as = russia
@@ -1613,15 +1607,11 @@ type = country_event
 	}
 
 	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:danilo }
 		scope:danilo = {
-			hidden_effect = {
-				set_character_busy_and_immortal = no
-			}
 			kill_character = yes
 		}
-		scope:nikola = {
-			set_character_busy_and_immortal = no
-		}
+		revoke_temporary_event_immortality = { CHARACTER = scope:nikola }
 	}
 
 	option = { # Default We must not let the turks take advantage
@@ -1688,8 +1678,6 @@ type = country_event
 
 	duration = 3
 
-	dlc = dlc014
-
 	cooldown = { days = normal_modifier_time }
 
 	trigger = { #Triggered by law_enactment
@@ -1749,8 +1737,6 @@ type = country_event
 
 	duration = 3
 
-	dlc = dlc014
-
 	cooldown = { days = normal_modifier_time }
 
 	trigger = { #Triggered by law_enactment_started
@@ -1763,7 +1749,12 @@ type = country_event
 		set_variable = mon_state_formation_12_fired
 		ruler ?= {
 			save_scope_as = ruler
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
+	}
+
+	after = {
+		revoke_temporary_event_immortality = { CHARACTER = scope:ruler }
 	}
 
 	cancellation_trigger = {
@@ -1846,9 +1837,7 @@ type = country_event
 
 	icon = "gfx/interface/icons/event_icons/event_fire.dds"
 
-	duration = 6
-
-	dlc = dlc014
+	duration = 3
 
 	cooldown = { days = normal_modifier_time }
 
@@ -1926,7 +1915,7 @@ type = country_event
 
 	icon = "gfx/interface/icons/event_icons/event_skull.dds"
 
-	duration = 6
+	duration = 3
 
 	dlc = dlc014
 
@@ -1987,6 +1976,10 @@ type = country_event
 			culture = scope:serbian
 			value = 0.10
 		}
+	}
+
+	after = {
+		je_tur_raided_cleanup = yes
 	}
 }
 
@@ -2197,7 +2190,7 @@ mon_state_formation.17 = {
 					}
 					remove_variable = is_away
 				}
-				set_character_busy_and_immortal = yes
+				set_temporary_event_immortality = { DURATION = 3 }
 			}
 		}
 		if = { # create ali_pasha_rizvanbegovic if he's not too old
@@ -2208,6 +2201,7 @@ mon_state_formation.17 = {
 				template = mon_ali_pasha_rizvanbegovic
 				save_scope_as = pasha
 				on_created = {
+					set_temporary_event_immortality = { DURATION = 3 }
 					place_character_in_void = 12
 				}
 			}
@@ -2220,6 +2214,13 @@ mon_state_formation.17 = {
 				has_modifier = modifier_no_minting
 			}
 			remove_modifier = modifier_no_minting
+		}
+		revoke_temporary_event_immortality = { CHARACTER = scope:ruler }
+		if = {
+			limit = {
+				exists = scope:pasha
+			}
+			revoke_temporary_event_immortality = { CHARACTER = scope:pasha }
 		}
 	}
 
@@ -2312,10 +2313,8 @@ mon_state_formation.17 = {
 			limit = {
 				exists = scope:ruler
 			}
+			revoke_temporary_event_immortality = { CHARACTER = scope:ruler }
 			scope:ruler = {
-				hidden_effect = {
-					set_character_busy_and_immortal = no
-				}
 				kill_character = yes
 			}
 		}
@@ -2383,7 +2382,9 @@ mon_state_formation.18 = {
 
 	cooldown = { days = normal_modifier_time }
 
-	trigger = { # triggered in montenegro_half_yearly_events
+	trigger = {
+		# triggered by on_action - montenegro_half_yearly_events
+ # triggered in montenegro_half_yearly_events
 		c:MON ?= this
 		has_variable = biljarda_built
 		ruler ?= {
@@ -2406,17 +2407,13 @@ mon_state_formation.18 = {
 			save_scope_as = montenegro
 		}
 		ruler ?= {
-			set_character_busy_and_immortal = yes
+			set_temporary_event_immortality = { DURATION = 3 }
 			save_scope_as = danilo
 		}
 	}
 
 	after = {
-		hidden_effect = {
-			ruler ?= {
-				set_character_busy_and_immortal = no
-			}
-		}
+		revoke_temporary_event_immortality = { CHARACTER = scope:danilo }
 	}
 
 	option = { # Agree with her
@@ -2482,9 +2479,7 @@ mon_state_formation.19 = {
 
 	duration = 3
 
-	dlc = dlc014
-
-	cooldown = { days = never_fire_again_modifier_time }
+	fire_only_once = yes
 
 	trigger = { # triggered by Ottomans no longer existing. Serves as completion event to JE_Raiding, but will fire even without this JE
 		c:MON ?= this
@@ -2563,9 +2558,7 @@ mon_state_formation.20 = {
 
 	icon = "gfx/interface/icons/event_icons/event_portrait.dds"
 
-	dlc = dlc014
-
-	cooldown = { days = never_fire_again_modifier_time }
+	fire_only_once = yes
 
 	trigger = { # triggered by on actions after 1910.08.27
 		c:MON ?= this
@@ -2586,16 +2579,12 @@ mon_state_formation.20 = {
 		set_variable = mon_state_formation_20_fired
 		ruler ?= {
 			save_scope_as = ruler
-			set_character_busy_and_immortal = yes
+			set_temporary_event_immortality = { DURATION = 3 }
 		}
 	}
 
 	after = {
-		hidden_effect = {
-			ruler ?= {
-				set_character_busy_and_immortal = no
-			}
-		}
+		revoke_temporary_event_immortality = { CHARACTER = scope:ruler }
 	}
 
 	cancellation_trigger = {

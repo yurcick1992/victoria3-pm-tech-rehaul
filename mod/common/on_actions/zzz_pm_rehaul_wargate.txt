@@ -139,7 +139,10 @@ pmr_wargate_eval = {
 		if = {
 			limit = {
 				any_scope_ship = {
-					is_ship_type = ship_type:ship_type_super_dreadnought
+					OR = {
+						is_ship_type = ship_type:ship_type_super_dreadnought
+						is_ship_type = ship_type:ship_type_light_cruiser
+					}
 				}
 			}
 			set_variable = { name = pmr_navown_battleship_tech  days = 40 }
@@ -148,7 +151,10 @@ pmr_wargate_eval = {
 			limit = {
 				any_rival_country = {
 					any_scope_ship = {
-						is_ship_type = ship_type:ship_type_super_dreadnought
+						OR = {
+							is_ship_type = ship_type:ship_type_super_dreadnought
+							is_ship_type = ship_type:ship_type_light_cruiser
+						}
 					}
 				}
 			}
@@ -195,7 +201,6 @@ pmr_wargate_eval = {
 				any_scope_ship = {
 					OR = {
 						is_ship_type = ship_type:ship_type_dreadnought
-						is_ship_type = ship_type:ship_type_light_cruiser
 						is_ship_type = ship_type:ship_type_seaplane_tender
 					}
 				}
@@ -208,7 +213,6 @@ pmr_wargate_eval = {
 					any_scope_ship = {
 						OR = {
 							is_ship_type = ship_type:ship_type_dreadnought
-							is_ship_type = ship_type:ship_type_light_cruiser
 							is_ship_type = ship_type:ship_type_seaplane_tender
 						}
 					}

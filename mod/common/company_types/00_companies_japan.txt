@@ -41,15 +41,18 @@ company_mitsui = {
 
 	possible = {
 		has_technology_researched = cotton_gin
-		any_scope_state = {
-			state_region = s:STATE_KANSAI
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_textile_mill_dye_workshops
-					is_building_type = building_textile_mill_sewing_machines
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_KANSAI
+				building = building_textile_mill_dye_workshops
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_KANSAI
+				building = building_textile_mill_sewing_machines
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -137,13 +140,11 @@ company_mitsubishi = {
 			text = is_meiji_japan
 			has_variable = japan_restoration_complete
 		}
-		any_scope_state = {
-			state_region = s:STATE_KYUSHU
+		has_building_levels_in_state_region = {
+			region = STATE_KYUSHU
+			building = building_shipyard
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_shipyard
-				level >= 5
-			}
 		}
 	}
 

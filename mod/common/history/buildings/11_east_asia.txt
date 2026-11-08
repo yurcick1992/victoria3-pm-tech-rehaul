@@ -171,7 +171,7 @@
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=102
+						levels=103
 						region="STATE_GUIZHOU"
 					}
 				}
@@ -236,7 +236,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:CHI"
-						levels=72
+						levels=71
 						region="STATE_GUIZHOU"
 					}
 				}
@@ -527,7 +527,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:CHI"
-						levels=102
+						levels=101
 						region="STATE_BEIJING"
 					}
 				}
@@ -580,7 +580,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:CHI"
-						levels=43
+						levels=64
 						region="STATE_BEIJING"
 					}
 				}
@@ -593,7 +593,7 @@
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=64
+						levels=72
 						region="STATE_BEIJING"
 					}
 				}
@@ -606,7 +606,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:CHI"
-						levels=75
+						levels=74
 						region="STATE_BEIJING"
 					}
 				}
@@ -899,7 +899,7 @@
 					building={
 						type="building_trade_center"
 						country="c:CHI"
-						levels=40
+						levels=45
 						region="STATE_GUANGDONG"
 					}
 				}
@@ -1016,25 +1016,12 @@
 				activate_production_methods={ "pm_naval_fortification_basic"  }
 			}
 			create_building={
-				building="building_textile_mill"
-				add_ownership={
-					building={
-						type="building_textile_mill"
-						country="c:CHI"
-						levels=45
-						region="STATE_GUANGDONG"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
-			}
-			create_building={
 				building="building_glassworks"
 				add_ownership={
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=141
+						levels=165
 						region="STATE_GUANGDONG"
 					}
 				}
@@ -1047,7 +1034,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:CHI"
-						levels=69
+						levels=70
 						region="STATE_GUANGDONG"
 					}
 				}
@@ -1060,7 +1047,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:CHI"
-						levels=99
+						levels=102
 						region="STATE_GUANGDONG"
 					}
 				}
@@ -1159,7 +1146,7 @@
 					building={
 						type="building_manor_house"
 						country="c:CHI"
-						levels=3
+						levels=8
 						region="STATE_FUJIAN"
 					}
 				}
@@ -1498,7 +1485,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:CHI"
-						levels=180
+						levels=179
 						region="STATE_ZHILI"
 					}
 				}
@@ -1537,7 +1524,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:CHI"
-						levels=19
+						levels=43
 						region="STATE_ZHILI"
 					}
 				}
@@ -1697,7 +1684,7 @@
 					building={
 						type="building_glassworks"
 						country="c:CHI"
-						levels=46
+						levels=13
 						region="STATE_SOUTHERN_ANHUI"
 					}
 				}
@@ -2730,7 +2717,7 @@
 				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={ # Ashio copper mine, directly owned by the Shogunate
-				building="building_lead_mine"
+				building="building_copper_mine"
 				add_ownership={
 					country={
 						country="c:JAP"
@@ -2738,7 +2725,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_lead_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_picks_and_shovels_building_copper_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
 				building="building_textile_mill"
@@ -3622,7 +3609,7 @@
 				activate_production_methods={ "pm_no_hardwood" "pm_simple_forestry" "pm_no_equipment" "pm_road_carts"  }
 			}
 			create_building={ # Besshi copper mine, operated by the Sumitomo clan
-				building="building_lead_mine"
+				building="building_copper_mine"
 				add_ownership={
 					building={
 						type="building_financial_district"
@@ -3632,7 +3619,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_lead_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_picks_and_shovels_building_copper_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 		}
 	}

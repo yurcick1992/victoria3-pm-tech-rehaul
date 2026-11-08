@@ -15,7 +15,7 @@ camera_film_pm_events.1 = {
 
 	duration = 3
 
-	cooldown = { days = never_fire_again_modifier_time }
+	fire_only_once = yes
 
 	title = camera_film_pm_events.1.t
 	desc = camera_film_pm_events.1.d
@@ -62,6 +62,10 @@ camera_film_pm_events.1 = {
 		}
 		add_technology_progress = { progress = 6000 technology = film }
 	}
+
+	after = {
+		je_camera_cleanup = yes
+	}
 }
 
 camera_film_pm_events.2 = {
@@ -78,7 +82,7 @@ camera_film_pm_events.2 = {
 
 	duration = 3
 
-	cooldown = { days = never_fire_again_modifier_time }
+	fire_only_once = yes
 
 	title = camera_film_pm_events.2.t
 	desc = camera_film_pm_events.2.d
@@ -141,5 +145,9 @@ camera_film_pm_events.2 = {
 			can_research = mass_propaganda
 		}
 		add_technology_progress = { progress = 5850 technology = mass_propaganda }
+	}
+
+	after = {
+		je_film_cleanup = yes
 	}
 }

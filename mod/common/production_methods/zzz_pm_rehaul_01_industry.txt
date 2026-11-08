@@ -104,7 +104,8 @@ pm_main_textile_electric_sewing_machines = {
 		workforce_scaled = {
 			goods_input_fabric_add = 71.7
 			goods_input_dye_add = 23.9
-			goods_input_tools_add = 12
+			goods_input_tools_add = 9.6
+			goods_input_copper_add = 2.4
 			goods_input_electricity_add = 12
 			goods_output_clothes_add = 290.4
 		}
@@ -727,8 +728,9 @@ pm_main_motor_electric_engines = {
 	}
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_steel_add = 33.9
-			goods_input_electricity_add = 25.4
+			goods_input_steel_add = 32.8
+			goods_input_electricity_add = 16.4
+			goods_input_copper_add = 8.2
 			goods_output_engines_add = 88
 		}
 		level_scaled = {
@@ -894,12 +896,47 @@ pm_main_artillery_cannons = {
 	}
 }
 
+pm_main_artillery_bronze_cannons = {
+	texture = "gfx/interface/icons/production_method_icons/artillery_production.dds"
+	unlocking_technologies = { artillery }
+	building_modifiers = {
+		workforce_scaled = {
+			goods_input_copper_add = 12.8
+			goods_input_hardwood_add = 19.2
+			goods_output_artillery_add = 30
+		}
+		level_scaled = {
+			building_employment_shopkeepers_add = 500
+			building_employment_laborers_add = 3500
+			building_employment_machinists_add = 1000
+		}
+	}
+}
+
 pm_main_artillery_smoothbores = {
 	texture = "gfx/interface/icons/production_method_icons/smoothbores.dds"
 	building_modifiers = {
 		workforce_scaled = {
 			goods_input_iron_add = 30
 			goods_input_hardwood_add = 18
+			goods_output_artillery_add = 45
+		}
+		level_scaled = {
+			building_employment_shopkeepers_add = 500
+			building_employment_laborers_add = 3250
+			building_employment_machinists_add = 1000
+			building_employment_engineers_add = 250
+		}
+	}
+}
+
+pm_main_artillery_bronze_smoothbores = {
+	texture = "gfx/interface/icons/production_method_icons/smoothbores.dds"
+	unlocking_technologies = { shell_gun }
+	building_modifiers = {
+		workforce_scaled = {
+			goods_input_copper_add = 24
+			goods_input_hardwood_add = 24
 			goods_output_artillery_add = 45
 		}
 		level_scaled = {
@@ -957,7 +994,8 @@ pm_main_munition_percussion_caps = {
 	building_modifiers = {
 		workforce_scaled = {
 			goods_input_explosives_add = 24
-			goods_input_lead_add = 24
+			goods_input_lead_add = 18
+			goods_input_copper_add = 6
 			goods_output_ammunition_add = 50
 		}
 		level_scaled = {
@@ -979,7 +1017,8 @@ pm_main_munition_explosive_shells = {
 	building_modifiers = {
 		workforce_scaled = {
 			goods_input_explosives_add = 44.3
-			goods_input_lead_add = 33.2
+			goods_input_lead_add = 22.1
+			goods_input_copper_add = 11.1
 			goods_output_ammunition_add = 110
 		}
 		level_scaled = {
@@ -1017,9 +1056,9 @@ pm_main_electrics_telephones = {
 	texture = "gfx/interface/icons/production_method_icons/telephones.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_iron_add = 39.4
+			goods_input_iron_add = 19.7
 			goods_input_rubber_add = 39.4
-			goods_input_lead_add = 39.4
+			goods_input_copper_add = 59
 			goods_input_tools_add = 19.7
 			goods_output_telephones_add = 132
 		}

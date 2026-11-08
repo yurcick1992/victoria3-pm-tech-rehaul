@@ -213,12 +213,12 @@ POPS = {
 				religion = sunni
 				size = 16000
 			}
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 13200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 30800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 13800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 32200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 29400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = han religion = confucian size = 68600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 43200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 100800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 42600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 99400 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 	}
 	s:STATE_SHAOZHOU = {
@@ -344,7 +344,7 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 11099600
+				size = 11045600
 			}
 			create_pop = { pop_type = shopkeepers culture = han size = 30000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
@@ -361,14 +361,14 @@ POPS = {
 				culture = manchu
 				size = 81994
 			}
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 25800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 60200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 38400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = han religion = confucian size = 89600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 31200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 72800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 45000 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 105000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 43200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 100800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 30600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 71400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 44400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 103600 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 	}
 	s:STATE_SHENGJING = {
@@ -425,7 +425,7 @@ POPS = {
 				size = 2821200
 			}
 			create_pop = {
-				culture = siberian
+				culture = evenki
 				size = 32000
 			}
 			create_pop = {
@@ -590,7 +590,7 @@ POPS = {
 			}
 			create_pop = {
 				culture = yue
-				size = 5040000
+				size = 5074000
 				religion = mahayana
 			}
 			create_pop = {
@@ -642,14 +642,12 @@ POPS = {
 				size = 70000
 				religion = mahayana
 			}
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 27000 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 63000 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 84600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 197400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 41400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 96600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 59400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 138600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 99000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 231000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 42000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 98000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 61200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 142800 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 		region_state:POR = {
 			create_pop = {
@@ -815,7 +813,7 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 6504040
+				size = 6458040
 			}
 			create_pop = { pop_type = shopkeepers culture = han size = 102000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
@@ -832,14 +830,14 @@ POPS = {
 				religion = sunni
 				size = 54528
 			}
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 11400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 26600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 25800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 60200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 36000 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = han religion = confucian size = 84000 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 28800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = han religion = confucian size = 67200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 42000 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 98000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 41400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 96600 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 	}
 	s:STATE_JIANGXI = {
@@ -886,7 +884,7 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 17045408
+				size = 17111408
 			}
 			create_pop = { pop_type = shopkeepers culture = han size = 96000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
@@ -907,8 +905,8 @@ POPS = {
 				religion = sunni
 				size = 304004
 			}
-			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 27600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = han religion = confucian size = 64400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 7800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = han religion = confucian size = 18200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 29400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = han religion = confucian size = 68600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = han religion = confucian size = 42600 }   # seeded craft workforce (emit_craft_start, F197)
@@ -1730,12 +1728,12 @@ POPS = {
 	s:STATE_SAKHALIN = {
 		region_state:SKH = {
 			create_pop = {
-				culture = siberian
+				culture = evenki
 				size = 1731
 			}
 			# Ahistorical pops for gameplay purposes (+x2)
 			create_pop = {
-				culture = siberian
+				culture = evenki
 				size = 3462
 			}			
 		}
@@ -1745,7 +1743,7 @@ POPS = {
 				size = 95
 			}
 			create_pop = {
-				culture = siberian
+				culture = evenki
 				size = 612
 			}
 			# Ahistorical pops for gameplay purposes (+x5)
@@ -1754,7 +1752,7 @@ POPS = {
 				size = 475
 			}
 			create_pop = {
-				culture = siberian
+				culture = evenki
 				size = 3060
 			}
 		}
@@ -1764,7 +1762,7 @@ POPS = {
 				size = 2184
 			}
 			create_pop = {
-				culture = siberian
+				culture = evenki
 				size = 243
 			}
 			# Ahistorical pops for gameplay purposes (+x2)
@@ -1773,7 +1771,7 @@ POPS = {
 				size = 4368
 			}
 			create_pop = {
-				culture = siberian
+				culture = evenki
 				size = 486
 			}
 		}
@@ -1797,7 +1795,7 @@ POPS = {
 				size = 126
 			}
 			create_pop = {
-				culture = siberian
+				culture = evenki
 				religion = orthodox
 				size = 101
 			}

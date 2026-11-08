@@ -30,12 +30,10 @@ company_societe_mokta_el_hadid = {
 
 	possible = {
 		has_technology_researched = bessemer_process
-		any_scope_state = {
-			state_region = s:STATE_CONSTANTINE
-			any_scope_building = {
-				is_building_type = building_iron_mine
-				level >= 5
-			}
+		has_building_levels_in_state_region = {
+			region = STATE_CONSTANTINE
+			building = building_iron_mine
+			levels >= 5
 		}
 	}
 
@@ -111,16 +109,24 @@ company_schneider_creusot = {
 
 	possible = {
 		has_technology_researched = steelworking
-		any_scope_state = {
-			state_region = s:STATE_BURGUNDY
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_steel_mill
-					is_building_type = building_steel_mill_bessemer_process
-					is_building_type = building_steel_mill_open_hearth_process
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_BURGUNDY
+				building = building_steel_mill
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_BURGUNDY
+				building = building_steel_mill_bessemer_process
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_BURGUNDY
+				building = building_steel_mill_open_hearth_process
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -161,6 +167,12 @@ company_schneider_creusot = {
 
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
+		if = {
+			limit = {
+				divided_monarchists_ai_backs_orleanist = yes
+			}
+			add = 6
+		}
 	}
 }
 
@@ -208,15 +220,18 @@ company_dmc = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_BURGUNDY
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_textile_mill_dye_workshops
-					is_building_type = building_textile_mill_sewing_machines
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_BURGUNDY
+				building = building_textile_mill_dye_workshops
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_BURGUNDY
+				building = building_textile_mill_sewing_machines
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 		has_technology_researched = cotton_gin
@@ -250,6 +265,12 @@ company_dmc = {
 
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
+		if = {
+			limit = {
+				divided_monarchists_ai_backs_orleanist = yes
+			}
+			add = 6
+		}
 	}
 }
 
@@ -285,13 +306,11 @@ company_cgv = {
 
 	possible = {
 		has_technology_researched = joint_stock_companies
-		any_scope_state = {
-			state_region = s:STATE_CHAMPAGNE
+		has_building_levels_in_state_region = {
+			region = STATE_CHAMPAGNE
+			building = building_vineyard
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_vineyard
-				level >= 5
-			}
 		}
 	}
 
@@ -370,17 +389,30 @@ company_saint_etienne = {
 
 	possible = {
 		has_technology_researched = bolt_action_rifles
-		any_scope_state = {
-			state_region = s:STATE_RHONE
-			is_incorporated = yes
-			any_scope_building = {
-				OR = {
-					is_building_type = building_arms_industry
-					is_building_type = building_arms_industry_rifles
-					is_building_type = building_arms_industry_repeaters
-					is_building_type = building_arms_industry_bolt_action_rifles
-				}
-				level >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_RHONE
+				building = building_arms_industry
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_RHONE
+				building = building_arms_industry_rifles
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_RHONE
+				building = building_arms_industry_repeaters
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_RHONE
+				building = building_arms_industry_bolt_action_rifles
+				levels >= 5
+				is_incorporated = yes
 			}
 		}
 	}
@@ -427,6 +459,12 @@ company_saint_etienne = {
 
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
+		if = {
+			limit = {
+				divided_monarchists_ai_backs_orleanist = yes
+			}
+			add = 6
+		}
 	}
 }
 
@@ -465,13 +503,11 @@ company_fcm = {
 
 	possible = {
 		has_technology_researched = ironclad_tech
-		any_scope_state = {
-			state_region = s:STATE_PROVENCE
+		has_building_levels_in_state_region = {
+			region = STATE_PROVENCE
+			building = building_shipyard
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_shipyard
-				level >= 5
-			}
 		}
 	}
 
@@ -499,6 +535,12 @@ company_fcm = {
 
 	ai_weight = {
 		value = 3 # Higher base value for flavored companies
+		if = {
+			limit = {
+				divided_monarchists_ai_backs_orleanist = yes
+			}
+			add = 6
+		}
 	}
 }
 
@@ -532,13 +574,11 @@ company_mines_anzin = {
 	}
 
 	possible = {
-		any_scope_state = {
-			state_region = s:STATE_FRENCH_LOW_COUNTRIES
+		has_building_levels_in_state_region = {
+			region = STATE_FRENCH_LOW_COUNTRIES
+			building = building_coal_mine
+			levels >= 5
 			is_incorporated = yes
-			any_scope_building = {
-				is_building_type = building_coal_mine
-				level >= 5
-			}
 		}
 	}
 

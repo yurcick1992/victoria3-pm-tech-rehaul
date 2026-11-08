@@ -3504,7 +3504,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:MEX"
-						levels=29
+						levels=30
 						region="STATE_MEXICO"
 					}
 				}
@@ -3517,7 +3517,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:MEX"
-						levels=26
+						levels=27
 						region="STATE_MEXICO"
 					}
 				}
@@ -3595,7 +3595,7 @@
 					building={
 						type="building_tooling_workshop"
 						country="c:MEX"
-						levels=3
+						levels=4
 						region="STATE_MEXICO"
 					}
 				}
@@ -3836,38 +3836,12 @@
 				activate_production_methods={ "pm_saw_mills"  "pm_no_equipment" "pm_road_carts" "pm_hardwood" }
 			}
 			create_building={
-				building="building_tooling_workshop"
-				add_ownership={
-					building={
-						type="building_tooling_workshop"
-						country="c:MEX"
-						levels=1
-						region="STATE_GUERRERO"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_tooling_crude_tools" }
-			}
-			create_building={
-				building="building_furniture_manufactory"
-				add_ownership={
-					building={
-						type="building_furniture_manufactory"
-						country="c:MEX"
-						levels=1
-						region="STATE_GUERRERO"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
-			}
-			create_building={
 				building="building_textile_mill"
 				add_ownership={
 					building={
 						type="building_textile_mill"
 						country="c:MEX"
-						levels=2
+						levels=1
 						region="STATE_GUERRERO"
 					}
 				}

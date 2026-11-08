@@ -6,13 +6,13 @@ on_monthly_pulse = {
 
 pmr_research_global = {
 	effect = {
-		if = { limit = { any_country = { NOT = { is_revolutionary = yes }  OR = { has_law = law_type:law_council_republic  has_law = law_type:law_factory_councils  has_law = law_type:law_collectivized_agriculture } } }  set_global_variable = pmr_idea_socialism }
+		if = { limit = { any_country = { NOT = { is_revolutionary = yes }  OR = { has_law = law_type:law_council_republic  has_factory_councils_law_or_amendment = yes  has_law = law_type:law_collectivized_agriculture } } }  set_global_variable = pmr_idea_socialism }
 		else_if = { limit = { has_global_variable = pmr_idea_socialism }  remove_global_variable = pmr_idea_socialism }
 		if = { limit = { any_country = { NOT = { is_revolutionary = yes }  OR = { has_law = law_type:law_anarchy } } }  set_global_variable = pmr_idea_anarchism }
 		else_if = { limit = { has_global_variable = pmr_idea_anarchism }  remove_global_variable = pmr_idea_anarchism }
 		if = { limit = { any_country = { NOT = { is_revolutionary = yes }  OR = { has_law = law_type:law_corporate_state  has_law = law_type:law_corporatized_unions } } }  set_global_variable = pmr_idea_corporatism }
 		else_if = { limit = { has_global_variable = pmr_idea_corporatism }  remove_global_variable = pmr_idea_corporatism }
-		if = { limit = { any_country = { NOT = { is_revolutionary = yes }  OR = { has_law = law_type:law_single_party_state  has_law = law_type:law_outlawed_dissent } } }  set_global_variable = pmr_idea_political_agitation }
+		if = { limit = { any_country = { NOT = { is_revolutionary = yes }  OR = { has_law = law_type:law_single_party_state  has_law = law_type:law_outlawed_dissent  has_law = law_type:law_extraordinary_commission } } }  set_global_variable = pmr_idea_political_agitation }
 		else_if = { limit = { has_global_variable = pmr_idea_political_agitation }  remove_global_variable = pmr_idea_political_agitation }
 		if = { limit = { any_country = { NOT = { is_revolutionary = yes }  OR = { has_law = law_type:law_command_economy } } }  set_global_variable = pmr_idea_central_planning }
 		else_if = { limit = { has_global_variable = pmr_idea_central_planning }  remove_global_variable = pmr_idea_central_planning }
@@ -33,13 +33,13 @@ pmr_research_global = {
 		if = { limit = { any_country = { NOT = { is_revolutionary = yes }  country_rank >= rank_value:great_power  OR = { has_law = law_type:law_private_health_insurance  has_law = law_type:law_public_health_insurance } } }  set_global_variable = pmr_ideagp_pharmaceuticals }
 		else_if = { limit = { has_global_variable = pmr_ideagp_pharmaceuticals }  remove_global_variable = pmr_ideagp_pharmaceuticals }
 		every_country = { limit = { NOT = { is_revolutionary = yes }  OR = { has_law = law_type:law_private_health_insurance  has_law = law_type:law_public_health_insurance } }  every_country = { limit = { is_adjacent_to_country = PREV }  set_variable = { name = pmr_ideanb_pharmaceuticals  days = 40 } } }
-		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { is_ship_type = ship_type:ship_type_super_dreadnought } } }  set_global_variable = pmr_navgp_battleship_tech }
+		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { OR = { is_ship_type = ship_type:ship_type_super_dreadnought  is_ship_type = ship_type:ship_type_light_cruiser } } } }  set_global_variable = pmr_navgp_battleship_tech }
 		else_if = { limit = { has_global_variable = pmr_navgp_battleship_tech }  remove_global_variable = pmr_navgp_battleship_tech }
 		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { is_ship_type = ship_type:ship_type_aircraft_carrier } } }  set_global_variable = pmr_navgp_carrier_tech }
 		else_if = { limit = { has_global_variable = pmr_navgp_carrier_tech }  remove_global_variable = pmr_navgp_carrier_tech }
 		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { is_ship_type = ship_type:ship_type_destroyer } } }  set_global_variable = pmr_navgp_destroyer }
 		else_if = { limit = { has_global_variable = pmr_navgp_destroyer }  remove_global_variable = pmr_navgp_destroyer }
-		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { OR = { is_ship_type = ship_type:ship_type_dreadnought  is_ship_type = ship_type:ship_type_light_cruiser  is_ship_type = ship_type:ship_type_seaplane_tender } } } }  set_global_variable = pmr_navgp_dreadnought_tech }
+		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { OR = { is_ship_type = ship_type:ship_type_dreadnought  is_ship_type = ship_type:ship_type_seaplane_tender } } } }  set_global_variable = pmr_navgp_dreadnought_tech }
 		else_if = { limit = { has_global_variable = pmr_navgp_dreadnought_tech }  remove_global_variable = pmr_navgp_dreadnought_tech }
 		if = { limit = { any_country = { country_rank >= rank_value:great_power  any_scope_ship = { OR = { is_ship_type = ship_type:ship_type_monitor  is_ship_type = ship_type:ship_type_early_ironclad  is_ship_type = ship_type:ship_type_iron_frigate  is_ship_type = ship_type:ship_type_troop_ship } } } }  set_global_variable = pmr_navgp_ironclad_tech }
 		else_if = { limit = { has_global_variable = pmr_navgp_ironclad_tech }  remove_global_variable = pmr_navgp_ironclad_tech }

@@ -192,12 +192,12 @@ pmg_main_arms_bolt_action_rifles = {
 
 pmg_main_artillery_cannons = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
-	production_methods = { pm_main_artillery_cannons }
+	production_methods = { pm_main_artillery_cannons pm_main_artillery_bronze_cannons }
 }
 
 pmg_main_artillery_smoothbores = {
 	texture = "gfx/interface/icons/generic_icons/mixed_icon_base.dds"
-	production_methods = { pm_main_artillery_smoothbores }
+	production_methods = { pm_main_artillery_smoothbores pm_main_artillery_bronze_smoothbores }
 }
 
 pmg_main_artillery_breech_loaders = {
