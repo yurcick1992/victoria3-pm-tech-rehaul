@@ -497,6 +497,10 @@ made to reproduce the committed file (U22: the five proofread names and Saratov 
   re-evaluation, company availability by state, cached sway / laws / legitimacy, faster late naval battles) that touch our many rungs and
   companies: `VANILLA_WALL_REF` is re-measured in any case (U60).
 - **U62** · T · a canon batch on 1.15 against the 1.15 vanilla, read through the criteria register and U30–U33 · OPEN (needs the go-ahead).
+  First half-step DONE 2026-11-08 (Q4's n=1 vs n=1, session `20261108_163746_g115-alt-canon1-vanilla1`, F268): vanilla 1.15 ends at world GDP
+  1.18× vanilla 1.13 with the shortlist's U* at 4.1%, so the register's absolute 10% pooled-U* hard line breaks vanilla itself; the canon
+  against it 1.11× world GDP, W 0.87×, pooled U* 5.3%, "broken" on the same line. Which of the register's absolute lines need a 1.15 basis
+  (pooled U* 10%, capital abundance) is for the user, from U60's vanilla batch.
 
 ## Phase 7 — release and record
 
@@ -509,6 +513,11 @@ made to reproduce the committed file (U22: the five proofread names and Saratov 
   `00_victoria_progress_bars.txt`, `08_tsarpoints_buttons.txt`, `ip5_russian_events_03.txt`, `rlit_cluster1_golden_age.txt`,
   `rlit_cluster2_crossroads.txt` (U05's A79–A86 and G2), and since Q11 four more: `ip5_je_values.txt`, `00_communism.txt`, `08_tsarpoints.txt`,
   `00_ai_decree_effects.txt`, and since Q10 two: `negotiation_values.txt`, `00_negotiation_quests_je.txt`; regenerate the list from the release build.
+  **RELEASED 2026-11-08 as mod 1.1.0** (the user: "Create a release build for steam workshop upload. Commit and push to main."): `version` 1.1.0;
+  the release build (`build.ps1 -Release`: 1,792 debug-log lines stripped, the version line kept, no build stamp, no "Recipe BE") deployed for
+  the upload; README's list regenerated from it (163 files, 29 folders, + `common/history/buildings`); `CHANGELOG.md` 1.1.0 and
+  `KNOWN_ISSUES.md` from the "Mod 1.1 changelogs" session's `release_notes/1.1.0/` texts (the Great Works line and the 163 added to them); the
+  version log (ON_GAME_UPDATE §3); the findings (F265–F268) · DONE.
 - **U71** · T · the docs that name the 2026-11-07 additions: REPO_GUIDE entries for `tools/game_diff.mjs`, `tools/lint_vanilla_names.mjs`,
   `tools/lib_pdx_script.mjs` and the `game-update` skill; a CLAUDE.md §5.2 row for the per-version register; a BACKLOG line pointing here ·
   DONE 2026-11-08 in the batch session's close-out commit (REPO_GUIDE: the three tools, this register beside ON_GAME_UPDATE with the skill's
@@ -528,7 +537,10 @@ made to reproduce the committed file (U22: the five proofread names and Saratov 
   user's playtest, 2026-11-08 (*"Let's group our JEs into 'tech advancements and inventions' group"*): `emit_research_events.mjs` writes
   `je_group_pmr_tech_advancements` ("Tech Advancements and Inventions", English in every language, vanilla's technology illustration) in a file
   of its own, and every research entry names it; vanilla's group file stays vanilla's, nothing in vanilla keys on the Development group, and the
-  dam surveys stay there (projects, not research) · DONE 2026-11-08, built, not yet seen in game.
+  dam surveys stay there (projects, not research) — and so have no block of their own: an unthemed group's entries are listed loose, active
+  ones under "Additional journal entries", concluded ones in the generic concluded block (the user's correction, 2026-11-08) · DONE 2026-11-08, built; seen in the 1v1 batch's canon run. The user then asked for the
+  group LAST (it is long, cannot be collapsed, and vanilla's `journal.gui` draws every themed group above the other blocks); RULED the same day:
+  no GUI ownership for 1.1, a known issue instead (`KNOWN_ISSUES.md`, BACKLOG §H).
 - **U75** · T · the 1.15 playtest: *"'socialism: inception' starts with a lowercase s … Check all."* Vanilla writes `socialism:0 "Socialism" # is
   when no smartphone`; the tree twin's extractor (`make_tier4_techs.mjs`) required the line to end at the quote, so it recorded the key as the
   name (on 1.13 too: the canon twins all carry it) · `emit_research_events.mjs` reads vanilla's English technology names live, comment-tolerant,
@@ -544,6 +556,18 @@ made to reproduce the committed file (U22: the five proofread names and Saratov 
   crafts out"*). The fix is for every merged host: the company and
   throughput modifiers read a new `<key>_pmr_bname` (build.ps1), the building's name without "Recipe BE" ("Tier 2-3. Textile Mills"); the
   research entries keep `_pmr_short`, which counts one method · DONE 2026-11-08.
+- **U77** · N · the canals and the dam surveys in a themed group of their own (the user, 2026-11-08: *"I'd rather add a category and then add
+  canals to it together with dams"*): vanilla's four canal entries and our 122 surveys sat in the unthemed `je_group_technology`, listed loose.
+  `emit_vanilla_refs.mjs` defines `je_group_pmr_great_works` ("Great Works", RULED by the user 2026-11-08: "Keep great works"; English in every language,
+  vanilla's technology illustration, `context = country`, no stance flag, like the group it leaves) and owns `00_canals.txt` (four `group =`
+  lines, the count asserted; no DLC gate in the file); `emit_dams.mjs` names it for the surveys. Purely visual: no vanilla script reads a
+  journal entry's group, and the entry keys stay · DONE 2026-11-08, built and deployed, not yet seen in game. README's replaced-file list gains
+  `00_canals.txt` at U70's regeneration.
+- **U78** · T · the Tsar's educational reform is a vanilla AI draw the mod must leave alone (the user, 2026-11-08: *"It's important to not have
+  something in our mod that breaks this AI draw"*; F268 §5): `tools/lint_protected_vanilla.mjs` in every build — the chain's seven vanilla files
+  not shipped, its blocks in our owned `08_tsarpoints` / `ip5_je_values` identical to vanilla's, our school-law lines pure adds, none of its eight
+  keys redefined; proven on four sabotaged copies · DONE 2026-11-08. Beside it the save summaries' v20 (subject pacts read live from
+  `common/subject_types`: crown lands and chartered companies, which `overlord` missed on 1.13 and 1.15 alike).
 
 ---
 

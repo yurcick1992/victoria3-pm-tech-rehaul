@@ -1,0 +1,273 @@
+{
+  "schedule_version": 1,
+  "label": "g115-alt-canon24-vanilla24",
+  "_why": "MOD 1.1 AGAINST VANILLA 1.15.0, n=24 EACH, ALTERNATING 1:1 (vanilla first), 1836→1936. The user, 2026-11-08: \"The lines will need a vanilla batch. We won't have a truly pure vanilla batch, rather alternating mod 1.1 vs vanilla 1.15.0, starting tonight (I'll give an explicit go-ahead), and finishing early next Sunday, 24 vs 24.\" It is GAME_UPDATE_1_15 U60 (the 1.15 vanilla reference, here this batch's 24 vanilla runs, which carry telemetry like every VANILLA_REF member) and U62 / Q12 (the canon re-measured against it) in one batch, after F268's n=1 + 1. The alternation puts any drift of the machine over the ~6.5 days on both arms alike (F248/F249), so the wall clock reads within the session. Its vanilla runs are the basis on which the user re-rules the register's absolute lines for 1.15 (the 10% pooled-U* hard line and capital abundance, which vanilla 1.15 itself broke in F268).",
+  "_arms": {
+    "canon": "{kind: config, config: config/mod_config.g115c-canon-bz-dcu-ra-il.json} - the 1.15 canon's named copy (mod 1.1), sha256 a52b0acacd6b6b6e (tree twin db96307af17c22ee), byte-identical to config/mod_config.json; the DEBUG build by the emitters at launch (measurement runs always use debug builds): the 2026-11-08 additions included - the research entries' and the Great Works journal groups, technology names read live, the merged hosts' building names (GAME_UPDATE_1_15 U74-U77), the protected-vanilla lint (U78); telemetry v16 with the monthly downsizing poll; save summaries v20.",
+    "vanilla": "{kind: control} - vanilla 1.15.0 + telemetry v16 and nothing else."
+  },
+  "_comparison": "The canon (n=24) against this batch's vanilla (n=24) through criteria.mjs --van <session>:vanilla, the register's lines in full (aims and soft bands are ratios to vanilla; the absolute lines read as they are and as the user re-rules them); vanilla 1.15 (n=24) against VANILLA_REF (1.13.11, n=56) as the version reading; the canon against F264's 1.0 canon (n=48) for what 1.15 did to the mod. Readings: misplaced capital; downsizing in levels by tier (§10.107); the technology census and literacy by country (the research-entry gates; Russia's educational reform as a per-arm share); red flags (copper above all); the old-rung census and the laggard test; play time with wall_clusters.mjs on this batch's two arms only. The ledger as the canonical form (§10.104.1), a NEW artifact.",
+  "_predictions": {
+    "register": "Canon ÷ vanilla 1.15 world GDP in 1.00-1.15 at the end (F268: 1.11 at n=1; the canon's world runs bigger), with the dip: the 1886 point under 0.95 (F268 0.84). W below vanilla's (F268 0.87 world, 0.95 pool). Pooled U* for the canon ≥ vanilla's but under 2× (F268 1.29×). Pool H under 1× of vanilla's. Direction argued, magnitudes from one seed.",
+    "vanilla_vs_113": "Vanilla 1.15 ÷ vanilla 1.13 world GDP 1.05-1.20 (F268 1.18), pooled U* under 10% in most vanilla 1.15 runs (F268 4.1%), literacy above 1.13's in nearly every run, the early shortlist hoard under 1.13's. Direction argued.",
+    "absolute_lines": "Under the 1.13-calibrated 10% pooled-U* hard line, most runs of BOTH arms read 'broken by runoff' (F268: both). The line is the user's to re-rule on this batch's vanilla.",
+    "ladder": "T0 at 1935 under 0.3 of its 1900s mean in the canon (F268 0.16; F264 0.43); T3 above 25% of tiered workers (F268 31.7%).",
+    "misplaced_capital": "Canon 18-21% against vanilla 14-16% of the century's new capital (F268 19.7 / 14.9; F264 18.5 / 14.0).",
+    "literacy_and_russia": "Russia takes the Tsar's educational reform (public schools before 1880) in a minority of runs in both arms, about alike (an AI draw on the tsar's ideology, F268 §5; the protected-vanilla lint keeps the chain vanilla's). China under the Qing stays under 25% to ~1910 in both arms.",
+    "red_flags": "Copper the top red-flag good in both arms, more in the canon (F268 ~100 against ~62 flag-years).",
+    "scripted_wars": "Hungary's war and the Kazakh revolt spread across 1836-1870 in both arms, no arm difference (AI draws; F266, F268).",
+    "play_time": "Canon ÷ vanilla ×1.03-1.10 in clusters 1+2 (F264 ×1.045; F268's ×1.11 carried the agent's own load, which this batch avoids: analyses only between runs or lightly).",
+    "build": "Init OK and the crafts tripwire in every canon run; no error line naming a file of ours; every launch mounts all 18 DLCs (L50), or the run is stopped and relaunched."
+  },
+  "_stop_rule": "none: a fixed-n batch plays every run (never arm the stop watcher on it).",
+  "_cost": "48 × 1836 → 1936.1.1. From F268's same-day pair: vanilla ~178 min and canon ~197 min of play, plus ~4 min per run of build, load and harvest: ~153 h (~6.4 days). Launched around midnight 2026-11-08/09, it ends around Sunday 2026-11-15 late morning; crashes add their replays.",
+  "_launch_checklist": [
+    "The user's explicit go-ahead for this batch (CLAUDE.md §5.1 rule 4).",
+    "No game running (L19); the working tree's emitters committed or at least unchanged until SCHEDULE DONE (L10): no emitter, build.ps1 or tools/testbed/** edit while it plays.",
+    "Launch through tools/testbed/launch_detached.ps1 called directly from the PowerShell tool (L30); confirm the session folder within a minute; start the background waiter.",
+    "Five-minute smoke check on the first vanilla and the first canon run (the canon: init marker AND the tripwire line), then on every run's start as the agent's turns allow; the heartbeat's 'DLC (L50)' line must read ok, or that run is stopped (x) and relaunched.",
+    "Keep the agent's own analysis load off the machine while runs play (F268's wall clock was inflated by it)."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.g115c-canon-bz-dcu-ra-il.json"
+    },
+    "vanilla": {
+      "kind": "control"
+    }
+  },
+  "runs": [
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    }
+  ]
+}

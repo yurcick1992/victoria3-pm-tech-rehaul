@@ -25,7 +25,7 @@ Players get the mod from the Steam Workshop; this README is for building and edi
 ## Compatibility with other mods
 
 <!-- replaced-files:start -->
-The mod replaces **146 vanilla files** whole, in 26 folders (generated from the 1.0.0 build by `tools/list_replaced_files.mjs`),
+The mod replaces **163 vanilla files** whole, in 29 folders (generated from the 1.1.0 build by `tools/list_replaced_files.mjs`),
 and the whole folder `common/history/buildings/` (the converted 1836 start). Another mod that changes
 any of these files conflicts with this one: the one loaded later wins the whole file.
 
@@ -34,27 +34,30 @@ any of these files conflicts with this one: the one loaded later wins the whole 
 - `common/ai_strategies/` (2): `00_default_strategy.txt`, `01_admin_strategies.txt`
 - `common/amendments/` (1): `00_amendments_enactment_04.txt`
 - `common/buildings/` (2): `01_industry.txt`, `06_urban_center.txt`
-- `common/company_types/` (22): `00_companies_africa.txt`, `00_companies_americas.txt`, `00_companies_asia.txt`, `00_companies_austria_hungary.txt`, `00_companies_china.txt`, `00_companies_cots.txt`, `00_companies_ep2.txt`, `00_companies_europe.txt`, `00_companies_france.txt`, `00_companies_germany.txt`, `00_companies_great_britain.txt`, `00_companies_ip2.txt`, `00_companies_ip3.txt`, `00_companies_ip4.txt`, `00_companies_italy.txt`, `00_companies_japan.txt`, `00_companies_mp1.txt`, `00_companies_russia.txt`, `00_companies_soi.txt`, `00_companies_totally_normal.txt`, `00_companies_usa.txt`, `99_basic_companies.txt`
+- `common/company_types/` (23): `00_companies_africa.txt`, `00_companies_americas.txt`, `00_companies_asia.txt`, `00_companies_austria_hungary.txt`, `00_companies_china.txt`, `00_companies_cots.txt`, `00_companies_ep2.txt`, `00_companies_europe.txt`, `00_companies_france.txt`, `00_companies_germany.txt`, `00_companies_great_britain.txt`, `00_companies_ip2.txt`, `00_companies_ip3.txt`, `00_companies_ip4.txt`, `00_companies_ip5.txt`, `00_companies_italy.txt`, `00_companies_japan.txt`, `00_companies_mp1.txt`, `00_companies_russia.txt`, `00_companies_soi.txt`, `00_companies_totally_normal.txt`, `00_companies_usa.txt`, `99_basic_companies.txt`
 - `common/decisions/` (1): `grand_exhibition_decision.txt`
 - `common/goods/` (1): `00_goods.txt`
 - `common/history/buildings/` (16): `00_west_europe.txt`, `01_south_europe.txt`, `02_east_europe.txt`, `03_north_africa.txt`, `04_subsaharan_africa.txt`, `05_north_america.txt`, `06_central_america.txt`, `07_south_america.txt`, `08_middle_east.txt`, `09_central_asia.txt`, `10_india.txt`, `11_east_asia.txt`, `12_indonesia.txt`, `13_australasia.txt`, `14_siberia.txt`, `15_russia.txt`
 - `common/history/pops/` (13): `00_west_europe.txt`, `01_south_europe.txt`, `02_east_europe.txt`, `03_north_africa.txt`, `04_subsaharan_africa.txt`, `05_north_america.txt`, `06_central_america.txt`, `07_south_america.txt`, `08_middle_east.txt`, `09_central_asia.txt`, `10_india.txt`, `11_east_asia.txt`, `15_russia.txt`
-- `common/journal_entries/` (8): `00_art_jes.txt`, `00_belle_epoque.txt`, `00_liberalism.txt`, `00_player_objectives_economic_dominance.txt`, `00_prohibition_laws.txt`, `00_trade_route_event_missions.txt`, `03_russia.txt`, `06_economic_regeneration.txt`
+- `common/journal_entries/` (12): `00_art_jes.txt`, `00_belle_epoque.txt`, `00_canals.txt`, `00_communism.txt`, `00_liberalism.txt`, `00_negotiation_quests_je.txt`, `00_player_objectives_economic_dominance.txt`, `00_prohibition_laws.txt`, `00_trade_route_event_missions.txt`, `03_russia.txt`, `06_economic_regeneration.txt`, `08_tsarpoints.txt`
 - `common/laws/` (2): `01_economic_system.txt`, `01_education_system.txt`
 - `common/power_bloc_principles/` (1): `00_power_bloc_principles.txt`
 - `common/production_methods/` (3): `01_industry.txt`, `06_urban_center.txt`, `07_government.txt`
-- `common/scripted_buttons/` (4): `00_balkan_wars_buttons.txt`, `03_paraguay_scripted_buttons.txt`, `05_serbia_buttons.txt`, `06_vernacular_buttons.txt`
-- `common/scripted_effects/` (3): `00_scripted_effects.txt`, `00_victoria_scripted_effects.txt`, `04_negotiation_scripted_effects.txt`
-- `common/scripted_triggers/` (1): `00_scripted_triggers.txt`
+- `common/script_values/` (2): `ip5_je_values.txt`, `negotiation_values.txt`
+- `common/scripted_buttons/` (5): `00_balkan_wars_buttons.txt`, `03_paraguay_scripted_buttons.txt`, `05_serbia_buttons.txt`, `06_vernacular_buttons.txt`, `08_tsarpoints_buttons.txt`
+- `common/scripted_effects/` (4): `00_ai_decree_effects.txt`, `00_scripted_effects.txt`, `00_victoria_scripted_effects.txt`, `04_negotiation_scripted_effects.txt`
+- `common/scripted_progress_bars/` (2): `00_rlit_progress_bars.txt`, `00_victoria_progress_bars.txt`
+- `common/scripted_triggers/` (2): `00_rlit_scripted_triggers.txt`, `00_scripted_triggers.txt`
 - `common/state_traits/` (4): `01_scandinavia_traits.txt`, `03_north_america_traits.txt`, `06_eastern_europe_traits.txt`, `11_far_east_asia_traits.txt`
-- `common/static_modifiers/` (19): `00_code_static_modifiers.txt`, `00_ip3_02_modifiers.txt`, `00_ip3_03_modifiers.txt`, `00_ip3_04_modifiers.txt`, `00_ip4_03_modifiers.txt`, `00_ip4_04_modifiers.txt`, `02_event_modifiers.txt`, `104_modifiers.txt`, `105_modifiers.txt`, `agitators_4_modifiers.txt`, `agitators_4_revolution_modifiers.txt`, `brazil_2_modifiers.txt`, `content_1_modifiers.txt`, `content_2_modifiers.txt`, `content_3_modifiers.txt`, `content_4_modifiers.txt`, `cuban_modifiers.txt`, `japan_single_fire_events_modifiers.txt`, `montenegrin_modifiers.txt`
+- `common/static_modifiers/` (21): `00_code_static_modifiers.txt`, `00_ip3_02_modifiers.txt`, `00_ip3_03_modifiers.txt`, `00_ip3_04_modifiers.txt`, `00_ip4_03_modifiers.txt`, `00_ip4_04_modifiers.txt`, `00_ip5_06_modifiers.txt`, `00_rlit_static_modifiers.txt`, `02_event_modifiers.txt`, `104_modifiers.txt`, `105_modifiers.txt`, `agitators_4_modifiers.txt`, `agitators_4_revolution_modifiers.txt`, `brazil_2_modifiers.txt`, `content_1_modifiers.txt`, `content_2_modifiers.txt`, `content_3_modifiers.txt`, `content_4_modifiers.txt`, `cuban_modifiers.txt`, `japan_single_fire_events_modifiers.txt`, `montenegrin_modifiers.txt`
 - `common/technology/technologies/` (3): `10_production.txt`, `20_military.txt`, `30_society.txt`
-- `events/` (11): `assassination_events.txt`, `belle_epoque_events.txt`, `decree_events.txt`, `decree_events_02.txt`, `fascism_events.txt`, `ig_suppression_events.txt`, `industrial_accidents_events.txt`, `krakatoa_events.txt`, `liberalism.txt`, `pm_events.txt`, `trade_route_events.txt`
+- `events/` (13): `assassination_events.txt`, `belle_epoque_events.txt`, `decree_events.txt`, `decree_events_02.txt`, `fascism_events.txt`, `ig_suppression_events.txt`, `industrial_accidents_events.txt`, `krakatoa_events.txt`, `liberalism.txt`, `pm_events.txt`, `rlit_cluster1_golden_age.txt`, `rlit_cluster2_crossroads.txt`, `trade_route_events.txt`
 - `events/balkans_events/` (3): `03_ip3_austria_events.txt`, `montenegro_events.txt`, `national_awakening.txt`
 - `events/brazil/` (2): `amazonas.txt`, `paraguay.txt`
 - `events/iberia_events/` (1): `ip4_anarchism_events.txt`
 - `events/japan_events/` (1): `ep2_japan_events_03.txt`
 - `events/law_events/` (2): `citizenship_laws.txt`, `economy_laws.txt`
+- `events/russia_events/` (1): `ip5_russian_events_03.txt`
 - `events/tech_events/` (5): `camera_film_pm_events.txt`, `military_tech_events.txt`, `production_tech_events.txt`, `society_tech_events.txt`, `war_crimes_events.txt`
 - `map_data/state_regions/` (15): `00_west_europe.txt`, `01_south_europe.txt`, `02_east_europe.txt`, `03_north_africa.txt`, `04_subsaharan_africa.txt`, `05_north_america.txt`, `07_south_america.txt`, `08_middle_east.txt`, `09_central_asia.txt`, `10_india.txt`, `11_east_asia.txt`, `12_indonesia.txt`, `13_australasia.txt`, `14_siberia.txt`, `15_russia.txt`
 

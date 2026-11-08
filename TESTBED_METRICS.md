@@ -40,7 +40,7 @@ Read off the current schedules (e.g. `tools/testbed/schedules/alt_vanilla_canon_
   1836.2.1, 1840.1.1, then 1 January of every decade to 1930, and 1935.1.1;
 - the red-flag feed, which the scheduler adds to every run: `market_goods_wide` on 1 July of every year (§2.4½);
 - the downsize feed, which the scheduler adds to every telemetry run: `downsizing`, the monthly poll of auto-downsized levels (§2.4¾);
-- yearly autosaves, each melted into a summary (v19 today); each run's newest save is kept (§7½);
+- yearly autosaves, each melted into a summary (v20 today); each run's newest save is kept (§7½);
 - the observer's tick lines in `run.log`, `meta.json`, and the machine-load monitor (§7⅜).
 
 ## The metric catalogue
@@ -114,7 +114,7 @@ scheduler (L5).
 ⚠ Sessions `20260803_014037` and `20260803_022027` stamp v9 while carrying early v10 content (both were stopped part-way and are the
 evidence for §5.6 and §5.7, not usable runs). Read their schema from `schedule.json`, not the `BOOT` line.
 
-### The save-summary schema — `SAVE_SUMMARY_VERSION` in `tools/testbed/save_state_summary.mjs` (today **19**)
+### The save-summary schema — `SAVE_SUMMARY_VERSION` in `tools/testbed/save_state_summary.mjs` (today **20**)
 
 Written into every summary as `save_summary_version`; the version notes in the reader's header are the authoritative list. A field
 absent from a summary older than the version that added it means "not captured", never zero. Saves are reaped, so a summary
@@ -140,6 +140,7 @@ version cannot be back-filled: add fields between batches, never during one (the
 | v17 | dam types in `res`; per-state `dam_q` (queued dam levels by builder) |
 | v18 | research flows: `innovation`, `max_innovation`, `population_incorporated`, `spreading`, `progress_unheld` |
 | v19 | `world.war_goals`, `world.treaty_port_goals`, `world.treaty_ports` |
+| v20 | `overlord` from the subject pacts read live from `common/subject_types` (+ `protectorate`): crown lands and chartered companies now count (Hungary under Austria read as independent before, F268) |
 
 ---
 

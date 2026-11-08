@@ -1,5 +1,69 @@
 # No Free Upgrades: An industrial realism overhaul — changelog
 
+## 1.1.0 (for Victoria 3 1.15)
+
+*Unlike all my other public communication, this changelog is AI-generated. Claude wrote it from the mod's repository and design record.*
+
+Mod 1.1 brings mod 1.0 to Victoria 3 1.15 "Ivan-Chai". It requires game 1.15 and does not run on 1.13. The design, recipes, costs, research marks and AI values of 1.0 are unchanged, except where 1.15 added something the mod has to take in, mostly copper. Small adjustments that only follow vanilla 1.15's own renames and moves are not listed. Known issues are in `KNOWN_ISSUES.md`. The full changelog against vanilla 1.15 is on the [Paradox forum](https://forum.paradoxplaza.com/forum/threads/mod-no-free-upgrades-an-industrial-realism-overhaul.1947073/).
+
+
+Testing and balance
+
+* Mod 1.1 was neither measured nor tuned as thoroughly as mod 1.0. Mod 1.0 played 64 automated 1836–1936 campaigns with full telemetry (48 of 1.0 itself and 16 of its 0.99 pre-release; observer runs with no player) against 56 of vanilla. This was done after balance finalisation to ensure that the targets are met.
+* Mod 1.1 carries that balance over to game 1.15 without retuning it. On 1.15 it was tested with one automated campaign beside one of vanilla 1.15.0 and several hours of manual play.
+* The proper way would be to measure the mod on 1.15, rebalance it, and measure again to make sure the targets are met. That is planned for mod 1.2 and should take about a month; vanilla 1.15 will likely get a couple of hotfixes in the meantime.
+
+Game 1.15
+
+* Built on vanilla 1.15.0. The vanilla files the mod replaces are now 1.15's own copies with the mod's edits, so 1.15's map, AI strategies, companies, events and journal entries come through.
+* The 1836 start is converted from vanilla 1.15's, and its crafts are topped up to vanilla 1.15's output.
+
+Copper
+
+* Five rungs now use copper, where vanilla 1.15's methods use it, at the same input value: Electric Sewing Machines (2.4 a level), Tier 2 Motor Industries (8.2), Tier 1 and Tier 2 Munition Plants (6 and 11.1), Tier 2 Electrics Industries (59).
+* Secondary and automation methods use vanilla 1.15's copper, sized like the rest of their recipe.
+* **Bronze artillery:** the Tier 0 and Tier 1 Artillery Foundry can switch to Bronze Cannons and Bronze Smoothbores without construction, at the input value of the iron method (12.8 copper and 19.2 hardwood a level at Tier 0, 24 and 24 at Tier 1).
+* Dams: 6 tools, 3 engines and 4.5 copper per 300 electricity (1.0: 6 tools and 6 engines), at the same value at base prices.
+* Trade: one unit of trade capacity moves 12 copper (£480 at base prices; vanilla 5).
+* Electric Streetlights are as in 1.0, with no copper. Power Plants keep vanilla's recipes, now including copper, at 1,600 points.
+
+Research
+
+* 1.15's two new flat research bonuses are cut to a third: Russisch-Baltische Waggon-Fabrik (innovation cap +15 → +5) and The Social Revolution (+25 → +8.33).
+
+AI
+
+* In vanilla 1.15, some journal entries increase the AI's desire to build certain industries (The Five-Year Plan and others). These increases now apply to every rung of those industries except the crafts.
+* The AI chooses its manufacturing-decree states without counting crafts.
+
+Content
+
+* Crafts are excluded from 1.15's new level counts: The Five-Year Plan's light-industry goal, the Tsar's Favorite's industry mission and the AI's decree states.
+* 1.15's new companies, events, journal entries and modifiers that name a tiered industry cover all its rungs, as in 1.0.
+* The Automated Bakery requires electricity, like every other method that consumes it.
+
+Fixes
+
+* Crafts can no longer satisfy an interest group's demand to expand Light Industries.
+* The Socialism research entries were titled "socialism" in lowercase.
+* Company bonuses now name a merged building by its tier span ("Tier 2-3. Textile Mills") instead of its first method.
+
+Interface
+
+* Research entries are in their own journal group, Tech Advancements and Inventions.
+* The canals (Suez, Panama) and the dam surveys share another, Great Works.
+
+Modding
+
+* The mod replaces 163 vanilla files whole (146 in 1.0) and the folder common/history/buildings.
+* Level counts that exclude crafts use the engine's own counters, not script loops.
+
+Not yet in 1.1
+
+* Buildings that run only on electricity can still be built without it (see the known issues).
+* The balance has not been retuned for 1.15 (see Testing and balance above).
+
+
 ## 1.0.0 (for Victoria 3 1.13)
 
 Every change below is against vanilla Victoria 3 1.13. Known issues are in `KNOWN_ISSUES.md`.

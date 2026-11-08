@@ -99,7 +99,10 @@ import { fileURLToPath } from 'node:url';
 // Readers: a key is opaque. `c.tag ?? key.split('@')[0]` is the definition in every version; a pool member is the plain
 // TAG, i.e. the MAIN record — a rebel side, or a country a revolt left behind, is a country of its own. FINDINGS F186,
 // landmine L38. ⚠ A pre-v12 summary cannot be repaired (its save is reaped); summary_drops.mjs says which ones are hit.
-export const SAVE_SUMMARY_VERSION = 19;
+export const SAVE_SUMMARY_VERSION = 20;
+// v20 (2026-11-08): the subject pacts read live from the game's common/subject_types (+ `protectorate`), so `overlord` now also names a
+//   crown-land and a chartered-company overlord (F268: Hungary under Austria read as independent). Readers of `overlord` on v19 and earlier
+//   miss those two kinds; nothing else changed.
 // v19 (2026-10-18): + WAR GOALS AND TREATY PORTS (FINDINGS F243, the treaty-port desire probes). `world.war_goals` = { "<type>[:<article>]":
 // { initial, added } } over every goal of the ACTIVE plays in `war_goal_manager.database` (initial = `initial_war_goal=yes`, the goal the play
 // opened with); an enforced treaty article carries its article, so a 1.13 treaty-port demand is `enforce_treaty_article:treaty_port`.
@@ -222,7 +225,15 @@ for (const f of readdirSync(join(GAME, 'common/laws')).filter(x => x.endsWith('.
 }
 if (!Object.values(LAW_GROUP).includes('lawgroup_trade_policy')) throw new Error('no law of lawgroup_trade_policy found in common/laws — the group moved');
 
-const SUBJECT = new Set(['puppet', 'protectorate', 'colony', 'vassal', 'dominion', 'tributary', 'personal_union']);
+// ⭐ THE SUBJECT PACTS, READ LIVE (v20, 2026-11-08, F268): a save names a subject pact by its action, `subject_type_<x>` → action="<x>". The
+//   hard-coded list missed `crown_land` (Hungary under Austria from 1836 in vanilla 1.15, read as independent until 1851) and `chartered_company`;
+//   both exist on 1.13.11 too. `protectorate` stays: the saves still record it though no subject type of that name exists.
+const SUBJECT = (() => {
+  const dir = join(GAME, 'common/subject_types'); const out = new Set(['protectorate']);
+  for (const f of readdirSync(dir).filter(x => x.endsWith('.txt'))) for (const m of readFileSync(join(dir, f), 'utf8').matchAll(/^subject_type_([a-z_]+)\s*=\s*\{/gm)) out.add(m[1]);
+  if (out.size < 8) throw new Error(`common/subject_types gave only ${out.size - 1} subject types (${[...out].join(', ')}) - the folder moved or changed shape`);
+  return out;
+})();
 const TREND_KEYS = new Map([['gdp', 'gdp'], ['prestige', 'prestige'], ['literacy', 'literacy'], ['avgsoltrend', 'avg_sol']]);
 // Sections we actually walk.  Everything else is skipped in O(1) per line: a top-level section always
 // closes with a `}` in COLUMN 0, so skipping never needs brace arithmetic.

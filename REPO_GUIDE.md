@@ -614,6 +614,12 @@ All take `-Repo` / `-Game` / `-Config` where relevant and are run by `build.ps1`
   [--old-docs d] [--new-docs d] [--max n]`; the 1.13.11 tree is `C:\claude-code\vic3_game_1.13.11\game`. Status: current (tested on
   1.13.11 against itself and planted changes; GAME_UPDATE_1_15.md U03). Traps: every empty section says "none" and every file it could
   not parse is listed in section 7 — read those before trusting a silent section.
+- **`tools/lint_protected_vanilla.mjs`** — vanilla AI draws the mod must not touch; today one, the Tsar's educational reform (State and
+  Revolution; F268 §5). Fails the build when the mod ships one of the chain's seven vanilla files, changes the chain's blocks in an owned copy
+  (`08_tsarpoints`, `ip5_je_values`), adds anything but a plain `if … add = N` tagged line to the school laws (the AI-schooling weight,
+  §10.97), or redefines one of its eight keys in a file of its own. `node tools/lint_protected_vanilla.mjs [--mod dir] [--game dir]`. Status:
+  current (build step after `lint_vanilla_names`, 2026-11-08); proven on four sabotaged copies, one per check. Traps: a patch that moves the
+  chain stops the build on purpose — re-read the chain, then update the lists at the top.
 - **`tools/lint_vanilla_names.mjs`** — every vanilla name our emitted `zzz_pm_rehaul*` script and `01_pm_rehaul_defines.txt` use (laws,
   regions, building and ship types, technologies, on-actions, journal entries, triggers, effects, event targets, modifier types, icons)
   resolves against the game it is built for; an unresolved token prints with its first file and line, and the exit code is 1 unless it is
@@ -937,7 +943,9 @@ stale output except under `common/history`, which an emitter writing there must 
   from the live game (or the build's own copy where an earlier emitter wrote it), additive helper triggers / effects / a value
   (`pmr_is_<ind>`, `pmr_has_<ind>`, `pmr_runs_<pm>` …, only those used), six throughput modifier types with loc, the Montenegro first-arms check
   (gated on its DLC), and the craft-excluded level counts G3–G6 as script values that subtract the craft group's native count from the parent
-  group's (never a loop; GAME_UPDATE_1_15 Q11). Every snippet and token count asserted; DLC gates counted per file; a scan of the game tree throws on any tiered
+  group's (never a loop; GAME_UPDATE_1_15 Q11). Since 2026-11-08 also the **Great Works** journal group (`je_group_pmr_great_works`, themed,
+  `zzz_pm_rehaul_great_works_groups.txt` + its name in every language): vanilla's four canal entries (`00_canals.txt`, four `group =` lines)
+  and `emit_dams.mjs`'s surveys sit in it (GAME_UPDATE_1_15 U77). Every snippet and token count asserted; DLC gates counted per file; a scan of the game tree throws on any tiered
   reference left in an unowned file not on its ACCEPTED list. After a patch: `REFS_LEARN=1 node tools/emit_vanilla_refs.mjs <modDir> [config]`
   prints the counts without dying. Status: current (build step). Refs: POLISH_1_0.md §2, TIER_REFERENCE_AUDIT.md, ON_GAME_UPDATE.md.
 - **`tools/emit_ai_value_adds.mjs`** — `<modDir> <config> [--check]`: appends the if / else_if blocks of each tiered industry's vanilla
@@ -1300,7 +1308,8 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
 
 ### The savegame instrument
 
-- **`save_state_summary.mjs`** — one save → one gzipped summary JSON, the yearly per-country series of every batch.
+- **`save_state_summary.mjs`** — one save → one gzipped summary JSON, the yearly per-country series of every batch. Since v20 (2026-11-08)
+  the subject pacts behind `overlord` are read live from the game's `common/subject_types` (crown lands and chartered companies were missed).
   `<save.v3|melt.txt|-> --out summary.json [--provenance p.json] [--verify-pops]` (a `.v3` is melted in-process with `rakaly -c`, ~5 s a
   save). Generous by default, since the summary becomes the record; `NOT_CAPTURED` in the script names what is left out on purpose (the
   market order book is in no save; per-state goods flows; purchase weights; cultures; technology acquisition dates). `SAVE_SUMMARY_VERSION`

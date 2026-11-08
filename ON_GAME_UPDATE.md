@@ -231,6 +231,8 @@ removes the pops files it wrote earlier, by their header.
     `scripted_buttons/08_tsarpoints_buttons`; `static_modifiers/` 00_ip5_06_modifiers, 00_rlit_static_modifiers; `events/` rlit_cluster1_golden_age,
     rlit_cluster2_crossroads, russia_events/ip5_russian_events_03 (72 files transformed on the 1.15 dry run). `00_art_jes` takes 12 token rewrites
     on 1.15 (9 on 1.13.11): the outcome rework gave `je_romanticism` a level target.
+  - **and one for the Great Works journal group** (2026-11-08, GAME_UPDATE_1_15 U77): `journal_entries/00_canals`, its four `group =` lines
+    pointed at `je_group_pmr_great_works` (the match count asserted; the group defined by the same emitter, beside the dam surveys).
   - **and four for 1.15's level counts** (2026-11-08, G4–G6, GAME_UPDATE_1_15 Q11, BALANCE_FRAMEWORK §10.109.4): `script_values/ip5_je_values`,
     `journal_entries/00_communism`, `journal_entries/08_tsarpoints`, `scripted_effects/00_ai_decree_effects` (76 files). Their counts leave the
     crafts out as the parent group's count minus `bg_pmr_crafts`'s — two native lookups, which assumes the engine's group-level counters include
@@ -386,6 +388,11 @@ Tables and rules in our code that name vanilla keys or lean on vanilla's order; 
 - **The Nile start maluses** (§10.89) — `Basin Irrigation` (−0.1) in Middle and Upper Egypt is sized against vanilla's `state_trait_nile_river`
   agriculture bonus (+0.2); a patch that changes that bonus changes the net 1836 value.
 - **The power plant's 1,600** and **the trade weights' classes** (§2.1) — each defined relative to a vanilla number.
+- **The Tsar's educational reform draw** (State and Revolution, 2026-11-08, F268 §5) — a vanilla AI draw the mod must leave alone, guarded by
+  `tools/lint_protected_vanilla.mjs` in every build: seven vanilla files the chain lives in are never shipped (05_tsarpoints_scripted_effects,
+  05_tsarpoints_scripted_triggers, tsarpoints_values, 00_ai_triggers, 03_political_strategies, 00_decree, 07_government), the chain's blocks in
+  our owned 08_tsarpoints and ip5_je_values stay vanilla's, our school-law lines stay pure adds, and no file of ours redefines its eight keys.
+  A patch that renames or moves any of them stops the build ("the chain moved"): re-read the chain and update the lint's lists.
 
 #### 2.2.6 The wage model
 
@@ -677,7 +684,9 @@ different versions are not comparable without saying so.
   It was applied by launching the game through Steam after the n=48 batch's close-out; no session has run on it yet, so the first session on
   1.15 starts the version boundary. Every `VANILLA_REF` run, `measured_base_wages.json`, the error-noise catalogue and the fleet-loop
   calibration are 1.13.11 until a 1.15 vanilla batch replaces them (§1 step 10). Mod 1.1 follows the `game-update` skill; treaty ports are
-  re-measured (§2.2.10). The pass's register is `GAME_UPDATE_1_15.md`.
+  re-measured (§2.2.10). The pass's register is `GAME_UPDATE_1_15.md`. The first sessions on it are `20261108_061520_g115-probe-1856` and
+  the n=1 + 1 century `20261108_163746_g115-alt-canon1-vanilla1` (F268). **Mod 1.1.0** (release build of the canon `a52b0aca` on 1.15.0,
+  `supported_game_version` "1.15.*") was built for the Workshop on 2026-11-08; its build is the commit that carries this line.
 
 ---
 

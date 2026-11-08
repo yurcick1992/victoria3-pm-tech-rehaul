@@ -613,8 +613,8 @@ canon's recorded chain replayed on game 1.15 (`tools/replay_canon_chain.mjs --pr
 (§10.109.1) + the idea entries' 1.15 laws (§10.109.3). Its field diff against the 1.0 canon: copper in the five rungs where vanilla 1.15 puts it,
 value for value; the two bronze variants; copper's traded quantity 12; `dams.inputs_per_50`; two `vanilla_value_overrides`; two idea-entry
 labels and the monthly global effect — nothing else. `mod/` and the deployed copy are its default (debug) build. Verify with
-`sha256sum config/mod_config.json`. Unmeasured over a century; the first 1.15 probe (F265, n=1 to 1856) ran its candidate before Q2/Q6/Q9,
-and without any DLC (F266).
+`sha256sum config/mod_config.json`. One century so far, beside one vanilla 1.15 century (F268, n=1 each); the first 1.15 probe (F265, n=1
+to 1856) ran its candidate before Q2/Q6/Q9, and without any DLC (F266).
 
 **The 1.0 canon** (mod 1.0, game 1.13.11; canonised 2026-10-21, kept as the record) is `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`,
 sha256 **`9a05d36da42c1511`** (tree twin `04ac513168388956`): the polish rulings (§10.102), the R4 proofread's text and the urban-centre entries'
@@ -627,7 +627,8 @@ main methods (`required_input_goods = electricity`, POLISH B4; on 1.15 also on v
 naming their ship types (BUGS_AND_FIXES 2026-10-27), the 1.15 journal-entry syntax (`outcome`, `activation_description`; U21, U27), vanilla's
 journal-entry-conditional AI desire on every non-craft rung (§10.109.2, L47), and the crafts kept out of 1.15's new level counts and IP4's negotiation promise by native counts
 (§10.109.4, §10.109.6, with an init tripwire on its premise; landmines L48 and L49 guard the class), and the research entries in a themed
-journal group of their own, "Tech Advancements and Inventions" (1.15's `themed = yes`, GAME_UPDATE_1_15 U74). The electricity BUILD condition of §10.106 is NOT in it (deferred; a known issue). The
+journal group of their own, "Tech Advancements and Inventions" (1.15's `themed = yes`, GAME_UPDATE_1_15 U74), the canals and dam surveys in
+another, "Great Works" (U77), and a lint that keeps the Tsar's educational reform draw vanilla's (U78). The electricity BUILD condition of §10.106 is NOT in it (deferred; a known issue). The
 repository builds for game 1.15 only (GAME_UPDATE_1_15 U72).
 
 **What it contains is everything §1.2 describes, built by the formula of §1.3 at the values given there.** The provenance records inside the book —
@@ -649,11 +650,16 @@ What §1.2 and §1.3 leave out:
 
 ## 4.2 Where it stands (2026-11-08)
 
-- **The 1.15 canon** (game 1.15.0, since 2026-11-08) has not run a century. The first 1.15 probe (F265; one run each to 1856, its candidate before
-  Q2/Q6/Q9): the mod loads with no error line of ours (the activation-description warnings since fixed), the research entries grant (245 stages
-  by 1856), Britain runs bronze cannons on 2 of 3 foundry levels. ⚠ Its mod run played WITHOUT ANY DLC (the store lookup failed at launch,
-  L50, F266), so its comparisons with vanilla 1.15 (world GDP, technology) are void. The re-measure is GAME_UPDATE_1_15 Q12. Everything below
-  is **the 1.0 canon on game 1.13.11**, the last measured state.
+- **The 1.15 canon** (game 1.15.0, since 2026-11-08) has run ONE century, beside one vanilla 1.15 century the same evening (F268, session
+  `20261108_163746_g115-alt-canon1-vanilla1`; directional, n=1 each).
+  - **Vanilla 1.15 against 1.13:** world GDP 1.18×; the shortlist's U* 4.1% against 19%, so vanilla 1.15 itself reads "broken by runoff" on the
+    register's absolute 10% line; literacy and the early shortlist hoard sit outside the 1.13 seed spread.
+  - **The canon against that vanilla:** world GDP 1.11× (the 1886 point 0.84), W 0.87×, pooled U* 5.3%, pool H 0.91×, PI 0.84 falling,
+    PP 0.82, T0 ≈ 0, T3 31.7% of tiered workers; misplaced capital 19.7% against 14.9%; play ×1.11 (inflated by the agent's own load);
+    "broken" on the same absolute line.
+  - **Re-basing the register's absolute lines** on a 1.15 vanilla reference is unruled (GAME_UPDATE_1_15 Q12 / U60). The earlier 1.15 probe
+    (F265, to 1856) played its mod run without any DLC (L50, F266). Everything below is **the 1.0 canon on game 1.13.11**, the last full
+    measurement.
 - **The 1.0 canon's century** (F264: the n=48 alternating batch, 48 canon centuries against vanilla's n=56, the canon build `9a05d36d`; session
   `20261030_233342_alt-canon48-vanilla16`; F249's 16 centuries of `728f2c7f` read the same within the seed spread):
   - **44 intact, 4 broken by runoff** (the shortlist's pooled U\* under 10% in three, Britain in capital abundance 1920–28 in one; F249 had
@@ -839,7 +845,8 @@ Other flags: `-NoDeploy`, `-NoLint`, `-ControlOnly` (vanilla + telemetry; requir
 - **What a build does:** regenerates every `mod/common` and `mod/localization` file from the config, converts the 1836 start, emits the technology tree,
   research entries, secondaries, companies, dams, goods, references and overrides, then runs the linters and the landmine preflight. Any of these throws
   and stops the build: the solvency linter (L18), the tech-content linter, the start-conversion linter (L13), the tier-rule linter (L31), the
-  production-method combination linter (`lint_pm_combos.mjs`, §5.4), the DLC-gate check (L39), the reference scan (L40), `Invoke-ModChecks` and
+  production-method combination linter (`lint_pm_combos.mjs`, §5.4), the DLC-gate check (L39), the reference scan (L40), the vanilla-name
+  lint, the protected-vanilla lint (`lint_protected_vanilla.mjs`: vanilla AI draws we must not touch), `Invoke-ModChecks` and
   `preflight.ps1`. `lint.sh` prints LINT PASSED (break-even vs ladder) and NEGATIVE-GOODS CHECK PASSED; its result is printed, not enforced.
 - **An alternate config needs its tree twin** `config/tech_tree_options.<suffix>.json`, or the build dies in `emit_techs.mjs` (L20). Never "fix" this by
   falling back to the canonical tree.

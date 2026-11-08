@@ -1900,6 +1900,11 @@ if ($LASTEXITCODE -ne 0) { throw "check_dlc_gates.mjs failed - a replaced vanill
 #   §2.2.4; GAME_UPDATE_1_15 U19). On the FINAL state, after every content emitter. Honors $env:VIC3_GAME like the emitters.
 & node (Join-Path $PSScriptRoot 'lint_vanilla_names.mjs') --mod $modAbs
 if ($LASTEXITCODE -ne 0) { throw "lint_vanilla_names.mjs failed - a name our script takes from vanilla does not exist in the game it is built against." }
+# VANILLA AI DRAWS THE MOD MUST NOT TOUCH (2026-11-08, the user on the Tsar's educational reform: "It's important to not have something in our mod
+#   that breaks this AI draw"): the chain's files not shipped, its blocks in our owned copies identical to vanilla's, our school-law lines pure adds,
+#   no file of ours redefining a chain key (FINDINGS F268 §5). On the FINAL state, after every content emitter.
+& node (Join-Path $PSScriptRoot 'lint_protected_vanilla.mjs') --mod $modAbs
+if ($LASTEXITCODE -ne 0) { throw "lint_protected_vanilla.mjs failed - the mod reaches into a vanilla AI draw it must leave alone (the Tsar's educational reform)." }
 
 if (-not $NoLint) {
     $bashPath = $null

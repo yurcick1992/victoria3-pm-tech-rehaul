@@ -396,7 +396,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F248 | Vanilla plays ~8% slower in October than August on the same version; vs same-days vanilla the wm99 book is x1.09 | performance | standing | here |
 | F249 | The 1.0 canon over 16 alternating centuries: 16 intact, world GDP 1.07x, play x1.010 (x1.11 / x0.996 per session); where vanilla cannot switch, in-market pressure on backward industry is clearly stronger than vanilla's, through trade weak in both; the consumer chains' main-good price falls below vanilla's and the old rung lives on its luxury line, sized for t2 (§4d) | canon | standing | here |
 | F250 | The no-DLC load test: all 17 installed DLCs disabled (verified, none mounted), the 1.0 canon plays 1836-1841 with no error beyond vanilla's and nothing naming a mod or replaced file | release | standing | here |
-| F251 | The 1.0 canon's USA ends at 0.58x vanilla's GDP (median, vanilla's population): its raw sector is not built 1890-1910, which separates rich from poor US seeds; capture by the merged hosts is real (22% of 1866-86) but not the separator | canon | reading | here |
+| F251 | The 1.0 canon's USA ends at 0.58x vanilla's GDP (median, vanilla's population): its raw sector is not built 1890-1910, which separates rich from poor US seeds; capture by the merged hosts is real (22% of 1866-86) but not the separator. ⚠ MAGNITUDE CORRECTED by F267: the 0.58x is against its own batch's vanilla, whose USA ran rich; against vanilla's pooled 56 runs the same 16 runs read 0.74x and F264's 48 read 0.89x | canon | reading | here |
 | F252 | The crafts are staffed (87-98% to the 1890s at ~15-20% profit on sales): no pause line binds; Forest Glass alone hollows out by 1845, world glass output 0.62-0.71x vanilla 1845-55 with the price at vanilla's | canon | reading | here |
 | F253 | The crafts do not bring early revolutions: revolutions started before 1848 median 16 a run in both arms; Austria at or before 1845 in 4/17 canon against 3/17 vanilla | canon | reading | here |
 | F254 | The merged methods are staffed on the 1.0 canon (79-98% when switched); hosts left on the older method are the ones that empty; F182's two-thirds-staffed chemical plants are gone | canon | reading | here |
@@ -412,6 +412,8 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F264 | The 1.0 canon over 48 alternating centuries (game 1.13.11, against vanilla n=56; play time against the batch's own 16): world GDP 1.04x (1886 0.93x, the line holds), shortlist U* 24.6% against 19.1%, W 0.88x, PI 0.93 falling, PP 0.87, loss 6.98; 4 of 48 runs broken by runoff (F249 0 of 16: about one chance in four at this rate); play time x1.045 (x1.042 without a run slowed by the report's rehearsal); auto-downsizing loses 1.77x vanilla's levels for the same jobs (27.6M against 27.7M) and 1.22x its construction points, the excess on t0 non-craft, t1 and t2; below-best 27.9%, obsolete construction 8.5%, misplaced capital 18.5% against 14.0% (all of the excess in the tiered industries); against 0.99 nothing meaningful moved | canon | standing | here |
 | F265 | The first runs on game 1.15.0 (n=1+1+1, 1836-1856): the 1.15 candidate book loads and plays with no error line of its own but one load-time warning per journal entry (activation_description, fixed since); its research entries complete and grant (245 stages by 1856); Britain runs bronze cannons on 2 of 3 foundry levels; world GDP 0.94-0.99x the same batch's vanilla 1.15, inside the 1.13 canon's seed spread; vanilla 1.15 within +-3% of vanilla 1.13 over 1840-1855; rakaly 0.8.19 stops at the last section of every 1.15 save (worked around in the summariser); the 1836 pop-identity table refreshed. ⚠ CORRECTED by F266: the g115 run played without any DLC, so the world GDP and technology comparisons are void |
 | F266 | The early Hungarian and Kazakh wars of the user's 1.15 playtest are vanilla 1.15's: the Twelve Points button opens to legitimacy >= 75 and a governing liberal / universalist / populist IG from 1836 (1.13: the springtime, or a radical-led IG), and an overlord's play against its own subject adds +25 liberty desire (new define); the playtest's Austria opened the Hungarian play 1836.2.25, Russia's reduce-autonomy play on the Junior Horde (1836.11.4) put it at 71 by 1837, and Pacify the Steppes failed on opening (1837.11.23); the mod replaces none of the chain's files but 03_russia.txt (one unrelated line). The 1.15 probe's canon run played WITHOUT ANY DLC (18 store misses, 0 mounted): F265's comparisons void; two more such first launches in the archive (release batch run 1, 1836-1860; an August run stopped at 1839); L50 | canon, vanilla | standing | here |
+| F267 | The 1.0 canon's USA against vanilla's pooled 56 runs: 0.89x vanilla's median USA GDP at 1935 over F264's 48 runs (11 under 0.6x, 19 at or above 1.0x), 0.74x over F249's 16; vanilla's own 56 runs put 11 under 0.6x of their median. F251's 0.58x was against F249's own 16 vanilla runs, whose median USA is 1.8x F264's 16: the "USA industrialises late" known issue of 1.0 does not hold at that size | canon, vanilla | reading | here |
+| F268 | The first 1.15 centuries (n=1 canon + n=1 vanilla, same day, all DLC mounted): vanilla 1.15 ends at world GDP 1.18x vanilla 1.13 (1.21x at base prices), W 1.15x, the shortlist's U* 4.1% against 1.13's 19%, so vanilla 1.15 ITSELF reads "broken by runoff" on the register's 10% hard line; literacy and the early shortlist hoard sit outside 1.13's 56-seed spread at every checkpoint. The canon against that vanilla: world GDP 1.11x (1.18x at base), the 1886 point 0.84 (the dip, inside 0.79-1.01), W 0.87x, pool U* 5.3% (1.29x vanilla's, under the >=2x aim), pool H 0.91x, PI 0.84 falling, PP 0.82, T0 ~0, T3 31.7% of tiered workers; "broken by runoff" on the same line vanilla breaks. Misplaced capital 19.7% vs 14.9%; play x1.11 (inflated by the agent's own load). The register's absolute lines need a 1.15 vanilla basis (Q12) | canon, vanilla | n=1 directional | here |
 
 ---
 
@@ -21354,6 +21356,10 @@ run and vanilla's centuries throw, and nothing names a file the mod writes or re
 
 ## F251 — THE 1.0 CANON'S USA ENDS AT 0.58× VANILLA'S GDP IN THE MEDIAN, WITH VANILLA'S POPULATION: ITS RAW SECTOR IS NOT BUILT 1890–1910, AND THAT, NOT LAWS OR SECESSION, SEPARATES A RICH US FROM A POOR ONE (2026-10-27; a reading of F249's sessions `20261021_224949_alt-vanilla-canon-n16`, `20261023_161802_alt-vanilla-canon-rest20`, `20261026_032622_alt-canon-replace20`, canon n=16 against those sessions' vanilla n=16; no new runs)
 
+⚠ **Magnitude corrected by F267 (2026-11-08):** the 0.58× below divides by those sessions' own 16 vanilla runs, whose median USA is 1.8× that of
+F264's 16. Against vanilla's pooled 56 runs (`VANILLA_REF`) these 16 canon runs read 0.74× and F264's 48 read 0.89×, with about vanilla's own
+share of poor US runs. The mechanism below (the raw sector not built 1890–1910) was not re-read.
+
 **Why it was read.** BACKLOG A1 (F204, the USA's agrarian end state on the e1a12 book) was to be deferred to 1.1; the user asked to check it on the
 1.0 canon first ("Check to decide before deferring and abandoning").
 
@@ -22460,3 +22466,170 @@ Item 3 compares one 1.15 game with one 1.13 game a quarter apart: a direction. I
 **What it does NOT say.** Not how often vanilla 1.15 gets either war before 1840: one AI draw each, and the 1v1 runs carry the watch point
 (their schedule's `scripted_wars` prediction). Not why the store lookup failed: three first launches of a session, one on the morning the game
 updated. Not how far the release batch's run 1 diverged: its later years played with DLC on a save begun without it.
+
+## F267 — THE 1.0 CANON'S USA AGAINST VANILLA'S POOLED 56 RUNS: 0.89× VANILLA'S MEDIAN USA GDP AT 1935 OVER F264'S 48 RUNS, 0.74× OVER F249'S 16, WITH ABOUT VANILLA'S OWN SHARE OF POOR US RUNS; F251'S 0.58× DIVIDED BY ONE BATCH'S VANILLA, WHOSE USA RAN 1.8× ANOTHER BATCH'S (2026-11-08; a reading of F249's sessions `20261021_224949_alt-vanilla-canon-n16`, `20261023_161802_alt-vanilla-canon-rest20`, `20261026_032622_alt-canon-replace20` and F264's `20261030_233342_alt-canon48-vanilla16`, against `VANILLA_REF` n=56; game 1.13.11; no new runs)
+
+**Why it was read.** Writing the 1.1 known-issues list. 1.0's list says the United States often industrialises late, "about 0.6 of
+vanilla's GDP by 1936, in 9 of 16 campaigns under 0.6", from F251 (F249's 16 canon runs). F264's 48 runs were the larger sample.
+
+**Reader.** `tools/testbed/ledger/us_history.mjs` (the USA's GDP path ÷ the median USA of the arm labelled `van`), the 1935 column, with
+`VIC3_GAME` pointing at the 1.13.11 game copy. Three invocations: `van` = F264's own 16 vanilla runs; `van` = `VANILLA_REF` (n=56) with both
+canon arms; `van` = `VANILLA_REF` against itself (its spread).
+
+**1. The USA's GDP at 1935 ÷ vanilla's median USA:**
+
+| arm | n | ÷ VANILLA_REF (n=56) median | under 0.6× | at or above 1.0× | ÷ F264's own 16 vanilla |
+|---|---|---|---|---|---|
+| vanilla, `VANILLA_REF` | 56 | 1.00 (about p10 0.42, p90 1.68) | 11 | 30 | — |
+| F264 canon (`9a05d36d`) | 48 | **0.885** | 11 | 19 | 1.255 (7 under 0.6, 31 at or above) |
+| F249 canon (`728f2c7f`) | 16 | **0.735** | 6 | 5 | 1.045 (4, 9) |
+| F249's vanilla | 16 | — | — | — | 1.815 (1, 13) |
+
+**2. The denominator moved the reading, not the mod.** Between seeds, vanilla's own USA at 1935 spreads about fourfold from p10 to p90
+(secessions, the Mexican wars, the Confederacy as a separate country in many runs). F249's 16 vanilla runs put the median USA at 1.8× that of
+F264's 16. F251 divided F249's canon by F249's own vanilla: 1.045 ÷ 1.815 = 0.58, which reproduces F251's 0.58. Against the pooled 56 runs, the
+canon's USA is poorer than vanilla's in the median, 0.89× in F264's 48 runs and 0.74× in F249's 16, while world GDP ends at 1.04× (F264). Its
+share of very poor US runs (under 0.6× of vanilla's median) is 23% and 38% respectively, against vanilla's own 20%.
+
+**Confidence.** One reader over the same save summaries that F251 and F264 read; the medians are directional (§2.9). 6 of 16 against 11 of 48
+under 0.6× does not separate the two canon builds at these n, and neither does either from vanilla's 11 of 56.
+
+**What it does NOT say.** Not that the USA never ends poor: a quarter of the canon's runs do, as a fifth of vanilla's do. Not that F251's
+mechanism (a raw sector not built 1890–1910 separates rich and poor US runs) is wrong: it was not re-read. Not why two vanilla batches of 16
+differ 1.8× in the median USA. Nothing about game 1.15.
+
+---
+
+## F268 — THE FIRST 1.15 CENTURIES: VANILLA 1.15 ENDS RICHER AND NEARLY FULLY EMPLOYED (WORLD GDP 1.18× VANILLA 1.13, THE SHORTLIST'S U* 4.1% AGAINST 19%), SO THE REGISTER'S ABSOLUTE 10% RUNOFF LINE BREAKS VANILLA ITSELF; THE CANON AGAINST IT ENDS AT 1.11× WORLD GDP WITH THE 1886 DIP, FEWER IN WORK (W 0.87×) AND 5.3% POOLED U*, "BROKEN" ON THE SAME LINE (2026-11-08; session `20261108_163746_g115-alt-canon1-vanilla1`, n = 1 + 1, 1836→1936)
+
+**Arms.** Run 1 `{kind: control}`: vanilla 1.15.0 + telemetry v16, three attempts (crashes at 1850.3.1 and 1932.3.12, both resumed). Run 2
+`{kind: config, config: config/mod_config.g115c-canon-bz-dcu-ra-il.json}`: the 1.15 canon (sha256 `a52b0aca`), its debug build at commit
+`1f3edb1` (today's journal group, technology names and building names in), one attempt. Same machine, same evening, vanilla first (the user's
+order; a first launch with the canon first was stopped at its loading screen, session `20261108_163333`). All four launches mounted all 18 DLCs
+(L50). Smoke checks: init OK and the crafts tripwire line in the canon; no error line names a file of ours; a vanilla treaty-article error
+(`Event target link 'market' returned an invalid object`, three treaty articles, the trade-route events, the Corn Laws entry) burst to ~6,300
+lines in the canon's first minutes (in-game ~1839–41) against 702 in vanilla's whole century. References: vanilla 1.13 `VANILLA_REF` (n=56,
+38 with country literacy), the 1.0 canon F264 (n=48).
+
+**1. Vanilla 1.15 against vanilla 1.13** (the register read with vanilla 1.15 as the arm; end state the 1932–36 mean):
+
+| line | vanilla 1.15 | ÷ vanilla 1.13 median |
+|---|---|---|
+| world GDP (displayed) | — | **1.18×** (1.21× at base prices; 1935 point 1.20×) |
+| world GDP path 1846 / 1866 / 1886 / 1896 / 1906 / 1926 / 1936 | — | 1.03 / 1.06 / 1.07 / 0.95 / 0.97 / 1.11 / 1.15 |
+| world W | 16.7% | 1.15× |
+| world U* | 31.5% | 0.78× |
+| world H | 0.21 | 0.76× |
+| pool U* | **4.1%** (1.13: 19%) | 0.22× |
+| pool W | 23.4% | 1.16× |
+| pool H | 0.24 | 0.57× |
+| pool literacy, 1935 | 81.2% (1.13: 72.1%) | 1.13×, above all 56 from 1845 |
+| tech majors at 1936 (GBR / USA / GER) | 170 / 160 / 166 | the Oct-30 vanilla n=16: 161 / 156 / 164 |
+
+- **Register:** ⛔ BROKEN BY RUNOFF (pooled U* 4.1% < 10%); soft capital abundance for GBR (U* < 5% in 1929–36 at a mean hoard 0.56) and the
+  USA (1931–36, hoard 0.06).
+- **The 1890–1905 dip is prices, not production.** World GDP fell from 1.075× (1885) to 0.948× (1890) while value added at base prices stayed
+  1.05× → 1.04× (1895); market ÷ base 0.914 against 1.13's 1.018, as the British East India Company dissolved (£164M of GDP in 1888, gone by
+  1890). 1.13's own runs without the Company price at 0.99–1.00 (range 0.88–1.08).
+- **Two version effects outside the 1.13 seed spread at every checkpoint:**
+  - pool literacy, 93rd–100th percentile from 1845;
+  - the pool's hoard, 0th–5th percentile from 1837 to 1905, already ×0.22 in 1837, before the 52-week pool rule could bind; the WORLD hoard ran
+    higher (×1.25–1.51 in 1855–65).
+- **Copper** mining's own value added is 0.01–0.05% of world GDP (0.2–1.6% of the gap to 1.13).
+- **Wall:** 177.6 min (cluster 1) against the October n=16's 172.9 (other days: directional).
+
+**2. The 1.15 canon against vanilla 1.15** (the register with this batch's vanilla as the reference; n=1 each):
+
+| line | canon 1.15 | ÷ vanilla 1.15 | aim | the 1.0 canon ÷ vanilla 1.13 (F264) |
+|---|---|---|---|---|
+| world GDP | — | **1.11×** (1.18× at base; 1935 1.12×) | 0.90–1.00 | 1.04× |
+| path 1846 / 1866 / 1886 / 1896 / 1906 / 1916 / 1936 | — | 0.97 / 0.92 / **0.84** / 0.97 / 1.06 / 1.08 / 1.14 | 1886 inside 0.79–1.01 | 1886 0.93 |
+| pool GDP | — | 1.27× | 1.1–1.9 | — |
+| world W | 14.5% | 0.87× | 0.6–0.95 | — |
+| pool W | 22.2% | 0.95× | 0.6–0.95 | 0.88× |
+| world U* | 39.7% | 1.26× | higher | — |
+| pool U* | **5.3%** | 1.29× | ≥ 2× | 24.6% (1.29×) |
+| pool H | 0.217 | 0.91× | < 1× | 0.24 |
+| world H | 0.116 | 0.55× | < 1× | — |
+| PI (£ ÷ base, ÷ vanilla) | path 1.13 → 1.01 → 0.98 → 0.89 → 0.85 | 0.84, falling | ≤ 0.8 | 0.93 |
+| PP (wage units) | — | 0.82 | ≤ 0.8 | 0.87 |
+| T0 (pool) | 1935 = 0.16 × its 1900s mean; T0 ÷ rest 0.001 | — | 0 / falling | 0.43 |
+| T3 share of tiered pool workers | 31.7% | — | more | 25.1% |
+| misplaced capital, century (VALID) | 19.7% | vanilla 1.15: 14.9% | low | 18.5% vs 14.0% |
+| play (clusters 1 + 2) | 197.2 min | ×1.110 | ≤ ×1.10 | ×1.045 |
+
+- **Register:** ⛔ BROKEN BY RUNOFF on the same absolute line (pooled U* 5.3% < 10%), with vanilla 1.15 below it at 4.1%; soft: GBR near
+  capital abundance (U* < 5% in 1931–36 at a mean hoard of 0.08 — after Britain's socialist revolution, below).
+- **Against the 1.0 canon (n=48):**
+  - world GDP 0.99× to 1860 (31st percentile), 0.93× at 1870, back to 1.03× at 1900, then 1.10× (1910), 1.16× (1920), 1.22× (1925) and
+    1.20× (1930, 88th percentile; 1.31× at base prices);
+  - the world is bigger: population 1.04–1.06×, at the 98th percentile and above from 1910;
+  - GDP per productive worker at base prices fell to 0.93× at 1870 and recovered by 1900 (0.995×). The canon put 3–7% MORE people in work
+    than 1.0, outside the ladder: crafts' share of productive workers was LOWER (world 3.2% against 3.6% in 1890), the ladder's share 12.4%
+    against 13.8%.
+- **Canon ÷ vanilla in each version** (this batch's pair against the 1.13 medians), world GDP:
+
+  | | 1850 | 1870 | 1900 | 1910 | 1920 | 1930 |
+  |---|---|---|---|---|---|---|
+  | 1.15 pair | 0.945 | 0.863 | 1.012 | 1.077 | 1.051 | 1.059 |
+  | 1.13 pair | 0.991 | 0.993 | 0.935 | 0.954 | 0.966 | 1.031 |
+
+  Shortlist U* canon ÷ vanilla, 1.15 against 1.13: 0.92 vs 1.09 (1900), 0.78 vs 1.16 (1910), 0.73 vs 1.21 (1920), 1.17 vs 1.36 (1930) — the
+  1910–25 reversal unwound by 1930.
+- **Technology:** GBR 164 (canon) against vanilla 1.15's 170 (military 43 against 55, the known deficit); 39.2% of the majors' acquisitions had
+  an entry stage; anchor principle leader 42.5% / 43.6% / 53.8% at 1875 / 1905 / end.
+- **Red flags** (market source, flags not market-years): canon HIGH 108 · SWING 111, vanilla 1.15 HIGH 66 · SWING 47. Copper is the top good in
+  both (~100 against ~62 flag-years: high on almost no supply).
+
+**3. The runs' history** (read before any pool line):
+- **Canon:** the Taiping replaced the Qing before 1850; Prussia shrank to 6.3M while France grew to 99M and absorbed Belgium; Germany never
+  formed; Britain's socialist revolution (revolt 1927.7.7, the revolt won 1928.9.14, the "Commonwealth of Britain") wiped Britain's hoard
+  (1.05 → 0.02 GDP).
+- **Vanilla:** the CSA independent 1860–~1885; the East India Company dissolved 1888–90; the NGF formed by 1895.
+
+**4. The scripted wars (the user's watch point):**
+- **Vanilla 1.15:** the Kazakh Khanate's play 1847.11.22, peace 1848.7.15; a Hungarian radical revolt 1853–54 that the government won, then
+  Austria's play 1862.2.7, war 1862.5.23–12.17, Hungary independent.
+- **Canon:** Austria's play 1836.3.27, war 1836.7.5, Hungary capitulated 1837.3.9 and was absorbed (gone 1838–52); no Kazakh revolt (the
+  hordes absorbed by 1847).
+- The prediction (no arm difference argued; AI draws) holds: the same vanilla chain gave 1836, 1852 (the morning probe) and 1862.
+
+**5. Literacy** (the user's question; `lit_gates.mjs`-style reading of national literacy):
+- **The mechanism.** The only general 1.15 change is the base growth ×4 (`state_literacy_growth_add`); literacy moves toward each pop's
+  education access, which 1.15 does not change. Russia gains State-and-Revolution content: the tsar's `je_tp_pool_educational_reform`, a tsar
+  decree (+30% access), development targets, a company, Ukrainian modifiers.
+- **Vanilla 1.15's Russia** took public schools in 1870 (never in 1.13's runs with law data), rose 27% → 60% by 1890, and passed every gate
+  (25/35/45/55/65%) 20–40 years before 1.13.
+- **The canon's Russia** drew no reform (its tsar was not a reformer when missions were drawn): no schools to 1891, 23%.
+- **China under the Qing** is unchanged (17–20% to 1910, 25% only in 1931); the canon's Taiping China passed 25% in 1871 and 35% in 1890.
+- **The reform chain** runs through vanilla files only; the mod's AI-schooling +500 is a pure add at the top of a block that only adds.
+
+**Predictions** (the schedule's `_predictions`, written before the launch):
+- **q4, wages and hiring:**
+  - "old rungs survive more than on 1.13" was WRONG for the canon: T0 retired faster (0.16 of its 1900s mean against F264's 0.43);
+  - "W higher, U* lower in both 1.15 arms" was RIGHT.
+- **q5, literacy higher by 1880 and more technologies:** RIGHT for vanilla and the canon's world; the canon's pool only ×1.01–1.08.
+- **q8, the hoard lower in both arms:** RIGHT at the end (vanilla 0.24 against 0.42; canon 0.217 against F264's 0.24), with the canon's rising
+  to 0.316 by 1925 before Britain's revolution.
+- **The register, canon ÷ vanilla within 0.75–1.33 with the dip:** RIGHT (1.11; 0.84 at 1886).
+- **The build:** init and tripwire, no error of ours, research entries all century, 100 summaries for each run: RIGHT; dam copper upkeep not
+  read.
+- **Play ≤ ×1.10:** ×1.11 — at the line, and inflated: the agent's analysis scripts ran during the canon run (other cores 1.6–2.1 in its
+  1840s–1890s against 1.4 for vanilla's), beside the early error burst.
+
+**Confidence.**
+- **Strong** where a reading lies outside a 56-seed spread at every checkpoint (vanilla 1.15's literacy and early hoard), and in the register
+  check itself: vanilla 1.15 breaks the absolute pooled-U* line, so on 1.15 that line no longer separates a broken mod economy from vanilla.
+- **Everything else is n=1 per arm and directional** (§2.9): this vanilla run sits high in 1.13's spread early (95th percentile at 1855) and
+  the canon low in its own at 1870 (8th), so the canon-to-vanilla ratios carry both seeds.
+
+**What it does NOT say.**
+- Not that the canon is broken on game 1.15: its "runoff" is the 1.13-calibrated absolute line that vanilla 1.15 also fails.
+- Not vanilla 1.15's spread (n=1), nor that the canon systematically ends above vanilla 1.15: its world is bigger and this vanilla seed's
+  prices sagged 1890–1905.
+- Not why the canon outgrows vanilla 1.15 after 1900, nor whether copper's shortages are the mod's (vanilla's are the same kind, fewer).
+- Not a reliable play time.
+- Nothing about Germany: the gerCM reading is Prussia's rump.
+
+The re-basing of the register's absolute lines (the 10% pooled-U* hard line, capital abundance) on a 1.15 vanilla reference is the user's to
+rule — GAME_UPDATE_1_15 Q12 / U60.

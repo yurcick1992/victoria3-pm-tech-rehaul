@@ -1,9 +1,9 @@
 {
   "schedule_version": 1,
   "label": "g115-alt-canon1-vanilla1",
-  "_why": "THE FIRST CENTURY ON GAME 1.15.0: the 1.15 canon beside vanilla 1.15, one run each, the same day. The user, 2026-11-08 (GAME_UPDATE_1_15 Q4): \"A for now. We'll go an n=1 vs n=1 today and will see.\" It reads, as directions only (n=1, CLAUDE.md §2.9), what the 1.15 premise moves do to the mod over a century (Q4: wages, hiring, the productivity comparison by own type; Q5: literacy x4; Q8: the AI's pool rule) and checks the 1.15 build end to end (the research entries, the copper chain, bronze, the dams' copper, the carried AI desire, the crafts-out counts and their init tripwire). It is the first half-step of Q12's re-measure, not a replacement for it.",
+  "_why": "THE FIRST CENTURY ON GAME 1.15.0: the 1.15 canon beside vanilla 1.15, one run each, the same day. The user, 2026-11-08 (GAME_UPDATE_1_15 Q4): \"A for now. We'll go an n=1 vs n=1 today and will see.\" It reads, as directions only (n=1, CLAUDE.md §2.9), what the 1.15 premise moves do to the mod over a century (Q4: wages, hiring, the productivity comparison by own type; Q5: literacy x4; Q8: the AI's pool rule) and checks the 1.15 build end to end (the research entries, the copper chain, bronze, the dams' copper, the carried AI desire, the crafts-out counts and their init tripwire). It is the first half-step of Q12's re-measure, not a replacement for it. ORDER (the user, 2026-11-08, after a first launch that put the canon first and was stopped at its loading screen, session 20261108_163333: \"No, start with vanilla. And the 1.1 must include the latest stuff as well.\"): vanilla runs first, the canon second, built from the checkout at that run's start.",
   "_arms": {
-    "canon": "{kind: config, config: config/mod_config.g115c-canon-bz-dcu-ra-il.json} - the 1.15 canon's named copy, sha256 a52b0acacd6b6b6e (tree twin db96307af17c22ee), byte-identical to config/mod_config.json since 2026-11-08 (§10.109.5); the DEBUG build by today's emitters (L47-L49 green, the init tripwire on), telemetry v16 with the monthly downsizing poll.",
+    "canon": "{kind: config, config: config/mod_config.g115c-canon-bz-dcu-ra-il.json} - the 1.15 canon's named copy, sha256 a52b0acacd6b6b6e (tree twin db96307af17c22ee), byte-identical to config/mod_config.json since 2026-11-08 (§10.109.5); the DEBUG build by today's emitters (L47-L49 green, the init tripwire on), telemetry v16 with the monthly downsizing poll. 'The latest stuff' (the user): the build carries every emitter change through commit 1f3edb1 - the research entries' themed journal group, the technology names read live (Socialism), the merged hosts' building names in company bonuses (GAME_UPDATE_1_15 U74-U76) - checked in the built mod at the canon run's smoke check.",
     "vanilla": "{kind: control} - vanilla 1.15.0 + telemetry v16 and nothing else."
   },
   "_comparison": "The canon against this batch's vanilla 1.15 run (the register's lines read by hand from the two runs: criteria.mjs's references are 1.13.11 and do not compare, CLAUDE.md §3.5); each 1.15 arm also against its 1.13.11 counterpart (F264's canon n=48, VANILLA_REF n=56) to separate what 1.15 did to vanilla from what it did to the mod. Lines: world GDP by decade; the shortlist's W, U*, H; T0 / T3 and the old-rung census (old_rungs_by_industry.mjs), the laggard test (laggard_pressure.mjs); misplaced capital; downsizing in levels by tier; the majors' technology count and literacy; red flags; play time (wall_clusters.mjs, same day, directional).",
@@ -21,7 +21,7 @@
   "_launch_checklist": [
     "setups.canon.config points at the canon's NAMED copy; nothing is canonised and no emitter, build.ps1 or tools/testbed/** file is edited until SCHEDULE DONE (L10).",
     "Launch through tools/testbed/launch_detached.ps1 called directly from the PowerShell tool (L30); confirm the session folder within a minute.",
-    "Five-minute smoke check on run 1 (canon: the init marker AND the tripwire line) and run 2 (vanilla).",
+    "Five-minute smoke check on run 1 (vanilla: the telemetry token, no init marker of ours) and run 2 (canon: the init marker AND the tripwire line, and the built mod carries the U74-U76 changes: journal_entry_groups/zzz_pm_rehaul_research_groups.txt, 'Socialism: Inception', the _pmr_bname keys).",
     "At each smoke check the heartbeat's 'DLC (L50)' line must read ok (listed = mounted, no store misses). A FAIL line means the launch mounted no DLC and plays without any DLC content (F266: the 1.15 probe's canon run): stop that run (x) and relaunch it before reading anything from it.",
     "Start the background waiter after the launch."
   ],
@@ -37,7 +37,7 @@
     "vanilla": { "kind": "control" }
   },
   "runs": [
-    { "setup": "canon", "until": "1936.1.1" },
-    { "setup": "vanilla", "until": "1936.1.1" }
+    { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }
   ]
 }

@@ -1,0 +1,222 @@
+[B]Disclaimer:[/B] unlike all my other public communication, on this forum or anywhere else, the two changelogs in this post are AI-generated. Claude wrote them from the mod's repository and design record.
+
+[B][SIZE=5]What changed in mod 1.1 since mod 1.0[/SIZE][/B]
+[SPOILER="Changelog: mod 1.1.0 over mod 1.0.0"]
+[B][SIZE=4]1.1.0 (for Victoria 3 1.15)[/SIZE][/B]
+
+Mod 1.1 brings mod 1.0 to Victoria 3 1.15 "Ivan-Chai". It requires game 1.15 and does not run on 1.13. The design, recipes, costs, research marks and AI values of 1.0 are unchanged, except where 1.15 added something the mod has to take in, mostly copper. Small adjustments that only follow vanilla 1.15's own renames and moves are not listed. Known issues are in this thread's first post.
+
+[B]Testing and balance[/B]
+[LIST]
+[*]Mod 1.1 was neither measured nor tuned as thoroughly as mod 1.0. Mod 1.0 played 64 automated 1836–1936 campaigns with full telemetry (48 of 1.0 itself and 16 of its 0.99 pre-release; observer runs with no player) against 56 of vanilla. This was done after balance finalisation to ensure that the targets are met.
+[*]Mod 1.1 carries that balance over to game 1.15 without retuning it. On 1.15 it was tested with one automated campaign beside one of vanilla 1.15.0 and several hours of manual play.
+[*]The proper way would be to measure the mod on 1.15, rebalance it, and measure again to make sure the targets are met. That is planned for mod 1.2 and should take about a month; vanilla 1.15 will likely get a couple of hotfixes in the meantime.
+[/LIST]
+
+[B]Game 1.15[/B]
+[LIST]
+[*]Built on vanilla 1.15.0. The vanilla files the mod replaces are now 1.15's own copies with the mod's edits, so 1.15's changes in them come through: the map, AI strategies, companies, events and journal entries.
+[*]The 1836 start is converted from vanilla 1.15's, and its crafts are topped up to vanilla 1.15's output.
+[/LIST]
+
+[B]Copper[/B]
+[LIST]
+[*]Five rungs now use copper, where vanilla 1.15's methods use it, at the same input value per level:
+[LIST]
+[*]Electric Sewing Machines (Tier 2-3 Textile Mills): 2.4 copper instead of 2.4 of its 12 tools.
+[*]Tier 2 Motor Industries (Electric Engines): 8.2 copper; steel 33.9 → 32.8, electricity 25.4 → 16.4.
+[*]Tier 1 Munition Plants (Percussion Caps): 6 copper instead of 6 of its 24 lead.
+[*]Tier 2 Munition Plants (Explosive Shells): 11.1 copper instead of 11.1 of its 33.2 lead.
+[*]Tier 2 Electrics Industries (Telephone Production): 59 copper instead of all 39.4 lead and 19.7 of its 39.4 iron.
+[/LIST]
+[*]Secondary and automation methods (assembly lines, automatic power looms, the automated bakery, the stills) use vanilla 1.15's copper, sized like the rest of their recipe.
+[*][B]Bronze artillery:[/B] the Tier 0 and Tier 1 Artillery Foundry can switch to vanilla 1.15's Bronze Cannons and Bronze Smoothbores without construction, at the input value of the iron method: 12.8 copper and 19.2 hardwood per level at Tier 0, 24 copper and 24 hardwood at Tier 1. They are unlocked by the same technologies as Cannons and Smoothbores.
+[*]Dams need copper: a 300-electricity level takes 6 tools, 3 engines and 4.5 copper (1.0: 6 tools and 6 engines), at the same value at base prices. A 600-electricity level takes twice as much.
+[*]Trade: copper is in the class of manufactures and colonial staples, so one unit of trade capacity moves 12 copper (£480 at base prices; vanilla 5).
+[*]Electric Streetlights use no copper; their recipe and staffing are the same as in 1.0. Power Plants keep vanilla's recipes, now including 1.15's copper, and still cost 1,600 points.
+[/LIST]
+
+[B]Research[/B]
+[LIST]
+[*]1.15's two new flat research bonuses are cut to a third, like the four in 1.0: Russisch-Baltische Waggon-Fabrik (innovation cap +15 → +5) and The Social Revolution (+25 → +8.33).
+[/LIST]
+
+[B]AI[/B]
+[LIST]
+[*]In vanilla 1.15, some journal entries increase the AI's desire to build certain industries: The Five-Year Plan (thirteen industries), the Tsar's Great Reforms (munitions), and others for paper and the arts academy. These increases now apply to every rung of those industries except the crafts, on top of the tier value.
+[*]The AI chooses the states for its manufacturing decrees by manufacturing levels, not counting crafts.
+[/LIST]
+
+[B]Content[/B]
+[LIST]
+[*]Crafts are excluded from 1.15's new counts of building levels: The Five-Year Plan's light-industry goal (otherwise ten craft levels, about 60 construction points, would meet its +10), the Tsar's Favorite's industry mission when the chosen group is Light Industries, and the AI's decree states above.
+[*]1.15's new companies, events, journal entries and modifiers that name a tiered industry cover all its rungs, as in 1.0.
+[*]The Automated Bakery requires electricity, like every other method that consumes it (vanilla 1.15 does not require it).
+[/LIST]
+
+[B]Fixes (these issues were also in 1.0)[/B]
+[LIST]
+[*]Crafts can no longer satisfy an interest group's negotiation demand to expand Light Industries.
+[*]The Socialism research entries were titled "socialism" in lowercase.
+[*]Company bonuses named a merged building after its first method, "Tier 2. Textile Mills (Sewing Machines)", as if they applied only to that method. They now use its tier span, "Tier 2-3. Textile Mills". Company bonuses still do not apply to crafts.
+[/LIST]
+
+[B]Interface[/B]
+[LIST]
+[*]Research entries are in their own journal group, Tech Advancements and Inventions, with vanilla's technology illustration.
+[*]The canals (Suez, Panama) and the dam surveys share another, Great Works, instead of being listed loose among the other journal entries.
+[*]Artillery foundries that can switch to bronze keep their rung names: "Tier 0. Artillery Foundry (Cannons)", "Tier 1. Artillery Foundry (Smoothbores)".
+[/LIST]
+
+[B]Performance[/B]
+[LIST]
+[*]Every count of building levels that excludes crafts, including Spain's Economic Regeneration from 1.0, now uses the engine's own counters instead of a loop over buildings.
+[/LIST]
+
+[B]Modding[/B]
+[LIST]
+[*]The mod replaces 163 vanilla files whole (146 in 1.0) and the folder common/history/buildings. The list is in the repository's README.
+[*]Research entries and dam surveys are written as 1.15 outcomes, each with an activation description. The research entries' journal group is je_group_pmr_tech_advancements; the canals' and dam surveys' is je_group_pmr_great_works (vanilla's 00_canals.txt is replaced for its four group lines).
+[*]New script values give building-group levels without crafts: pmr_country_light_industry_levels_nc, pmr_manufacturing_levels_nc, pmr_tp_fav_industry_levels_nc.
+[*]The mod still never unlocks DLC content. The build checks every DLC gate in the vanilla files it replaces.
+[/LIST]
+
+[B]Not yet in 1.1[/B]
+[LIST]
+[*]Four buildings run only on electricity, and they can still be built in a state without electricity (see the known issues). A build condition is still planned for a later version.
+[*]The balance has not been retuned for 1.15 (see Testing and balance above).
+[/LIST]
+[/SPOILER]
+
+[B][SIZE=5]Everything mod 1.1 changes from vanilla Victoria 3 1.15.0[/SIZE][/B]
+[SPOILER="Changelog: mod 1.1.0 over vanilla 1.15.0"]
+[B][SIZE=4]1.1.0 (for Victoria 3 1.15)[/SIZE][/B]
+
+Every change below is against vanilla Victoria 3 1.15.0. Known issues are in this thread's first post.
+
+[B]Testing and balance[/B]
+[LIST]
+[*]Mod 1.1 was neither measured nor tuned as thoroughly as mod 1.0. Mod 1.0 played 64 automated 1836–1936 campaigns with full telemetry (48 of 1.0 itself and 16 of its 0.99 pre-release; observer runs with no player) against 56 of vanilla. This was done after balance finalisation to ensure that the targets are met.
+[*]Mod 1.1 carries that balance over to game 1.15 without retuning it. On 1.15 it was tested with one automated campaign beside one of vanilla 1.15.0 and several hours of manual play.
+[*]The proper way would be to measure the mod on 1.15, rebalance it, and measure again to make sure the targets are met. That is planned for mod 1.2 and should take about a month; vanilla 1.15 will likely get a couple of hotfixes in the meantime.
+[/LIST]
+
+[B]Features[/B]
+[LIST]
+[*][B]Production: a building for every technology step[/B]
+[LIST]
+[*]Seventeen manufacturing industries no longer modernise by switching their main production method: Food Industries, Textile Mills, Furniture Manufacturies, Glassworks, Tooling Workshops, Paper Mills, Fertilizer Plants, Explosives Factory, Steel Mills, Motor Industries, Automotive Industries, Arms Industries, Artillery Foundry, Munition Plants, Synthetics Plants, Electrics Industries and Arts Academy.
+[*]Each of vanilla's main production methods in these industries is now its own building, called a rung, with vanilla's name, staffing and icon: 56 rungs in 50 buildings. Each industry has up to four rungs, on tiers anchored at 1836, 1875, 1905 and 1940; late industries start at a later tier.
+[*]To modernise, you now construct the newer plant. An older plant is never forbidden or penalised: it loses its market when the newer rungs' output pushes its price down relative to wages.
+[*]A rung one tier up makes 2.2 times the output from 1.64 times the input value and costs 1.9 times as much to build, so it earns more per worker and slightly more per construction point. More modern tiers also stay profitable at lower output prices.
+[*]A tier-1 rung makes its vanilla method's output from inputs worth 20% more (Motor Industries: the same inputs) and costs the vanilla building's 600 or 800 points (Arts Academy 400). A tier-0 rung makes two thirds of that from two thirds of the inputs.
+[*]A rung keeps its vanilla method's mix of inputs, including copper where vanilla 1.15 uses it (Electric Sewing Machines, Electric Engines, Percussion Caps, Explosive Shells, Telephone Production).
+[*]The Tier 0 and Tier 1 Artillery Foundry can switch to Bronze Cannons and Bronze Smoothbores without construction, at the input value of the iron method.
+[*]A technology that unlocked a main method now unlocks that method's rung. The Artillery Foundry is now unlocked by Artillery instead of Gunsmithing.
+[*]Every company with an industry can build all of its rungs except the craft, and the company's throughput bonuses apply to them.
+[/LIST]
+[*][B]Artisan crafts[/B]
+[LIST]
+[*]The first rung of Food Industries, Textile Mills, Furniture Manufacturies, Glassworks, Tooling Workshops and Paper Mills is an artisan craft: Bakeries, Handsewn Clothes, Handcrafted Furniture, Forest Glass, Crude Tools and Pulp Pressing.
+[*]A craft level employs 500 workers (30% shopkeepers, 70% laborers), costs 6 construction points, makes 60% of its vanilla method's output per worker, has no economy of scale, and keeps hiring until productivity falls to 2.
+[*]Crafts have their own building group, Crafts, under Light Industry. Companies do not build crafts or form from them, and crafts have no secondary production methods.
+[/LIST]
+[*][B]Merged methods[/B]
+[LIST]
+[*]Six steps that are a recipe change rather than a new kind of plant are a second main method of the building below them, which you switch to without construction: vanilla's Baking Powder, Electric Sewing Machines, Paper Bleaching, Improved Fertilizers and Electric Arc Process, and the new Spray Finishing. Historically each of these was a retrofit of an existing plant costing roughly 5–20% of a new plant; a step that cost more than about 30% stays a separate building.
+[*]A building with two main methods is named by its tier span ("Tier 1-2. Paper Mills") and costs the geometric midpoint of the two rungs' costs.
+[/LIST]
+[*][B]New technologies[/B]
+[LIST]
+[*]Added Spray Finishing (furniture), Continuous Web Processing (paper) and Catalytic Synthesis (fertilizer), in tech era 5. Each unlocks the top rung of its industry and has new technology and production method icons.
+[/LIST]
+[*][B]Secondary and automation methods[/B]
+[LIST]
+[*]Each industry has its own copy of vanilla's secondary and automation methods: one recipe for all its rungs, sized on its tier-2 rung.
+[*]A building offers only the methods it can run with its main method: none that would take a good or a job below zero, and none judged incompatible (16 pairs).
+[*]An automation that is the same thing as a main method comes with that method as the only choice: Mechanized Looms with Sewing Machines, Automatic Power Looms with Electric Sewing Machines, Assembly Lines with Mass Production.
+[/LIST]
+[*][B]Electricity[/B]
+[LIST]
+[*]Electric Streetlights in urban centres now burn 2 coal and produce 1 electricity, staffed by 250 engineers, instead of consuming 3 electricity.
+[*]Power Plants now cost 1,600 construction points (vanilla 400).
+[/LIST]
+[*][B]Hydroelectric dams[/B]
+[LIST]
+[*]Added 122 historical hydroelectric projects as four new buildings: Mountain Power Station and River Dam (300 electricity a level), Great Mountain Scheme and Great River Dam (600). Levels cost 4,800 to 9,000 points and need Electrical Generation, Steam Turbine or Arc Welding. Upkeep is 6 tools, 3 engines and 4.5 copper per 300 electricity.
+[*]A dam can only be built on its own site, up to the site's levels, which are resource slots in its state region.
+[*]A site must be surveyed first, through a decision that costs bureaucracy for 12 to 36 months. A survey by the owner's family of countries opens the site to that family; a survey by an outside investor opens it to that investor only.
+[*]The owner, its overlords and holders of investment rights may build dams, through the government or private investors.
+[*]Eleven dams add arable land, end an irrigation penalty or grant a flood or drought trait.
+[/LIST]
+[*][B]Research: technology follows industry[/B]
+[LIST]
+[*]Base innovation and the innovation cap's base are reduced from 50 to 25, and the cap's literacy term from 150 to 25. Universities produce a sixth of their vanilla innovation.
+[*]Added 113 research journal entries that grant research toward a technology: 34 for the rungs, 25 for production technologies outside the ladder, 6 for land units, 10 for ships, 11 for laws that spread from other countries and 27 for the country's condition (colonies, a civilizing mission, administration, cities, universities, financial districts, chemical industries).
+[*]An entry fills one stage every 36 months while its condition holds (land units: 12 months). Each stage grants half the technology's tech-era base cost, for up to 20 stages.
+[*]An industry entry needs 25,000 workers for a tier-1 rung's technology, 75,000 for tier 2 and 235,000 for tier 3 (half that for arms, artillery, munitions, explosives and synthetics). The requirement halves once a country outside Isolationism holds the technology.
+[*]Entries pause while literacy is under 25%, 35%, 45%, 55% or 65% for tech eras 1–5. Land-unit and ship entries ignore literacy.
+[/LIST]
+[*][B]Trade[/B]
+[LIST]
+[*]One unit of trade capacity now moves more of compact or valuable goods: about £340, £480 (copper among them), £680 or £960 of goods at base prices depending on class, instead of £200–300. Bulk and perishable goods are unchanged.
+[*]The world-market monopoly markup, which in vanilla can add up to 20% to a good's world price, now applies only above 99% of world exports.
+[/LIST]
+[/LIST]
+
+[B]AI[/B]
+[LIST]
+[*]The AI's desire to build a rung rises with its tier: 1,000 for tiers 0 and 1, 3,000 for tier 2, 5,000 for tier 3, 800 for a craft. Vanilla's increases while a journal entry runs (The Five-Year Plan and others) are added on every rung except the crafts.
+[*]Changed seven investment-AI construction defines so the AI spends a large investment pool more readily on costly buildings.
+[*]The AI finishes a technology it has nearly paid for: +10,000 research weight at 99% of its cost.
+[*]The AI schools its people: every administrative strategy scores the Education institution at +100, and school laws get +500 enactment weight while a country has none.
+[*]The AI no longer subsidises Tooling Workshops and Explosives Factory buildings.
+[*]The AI always subsidises dams, surveys dam sites by itself (at most one new survey every 30 days) and builds them eagerly.
+[/LIST]
+
+[B]Balance[/B]
+[LIST]
+[*]Six flat research bonuses are reduced to a third: Philips, Advanced Research III, Geographic Study Undertaken, Investing in the Future (Cuba), Russisch-Baltische Waggon-Fabrik and The Social Revolution.
+[*]Vulcanization moved from tech era 3 to 4.
+[*]Conveyors is now a prerequisite of Compression Ignition.
+[*]Removed the electricity bonus from Niagara Falls, Krka Falls, Angara River, Trondhjemsfjorden and Hardangerfjorden; the dams replace them (Krka Falls has no dam).
+[*]Middle Egypt and Upper Egypt start with Basin Irrigation (−10% agriculture), and Blue Nile with Rain-fed Plain (−20%). The Nile dams end these penalties, except in Upper Egypt.
+[*]Efficient Canning Practices (Food Standardization 3) makes 85 groceries instead of 70.
+[*]The Automated Bakery requires electricity, like every other method that consumes it.
+[/LIST]
+
+[B]Content[/B]
+[LIST]
+[*]The 1836 start is vanilla 1.15's map with each factory on the rung its method belongs to. Each vanilla level of a craft factory becomes ten craft levels, topped up per country to vanilla's output; their workers start as shopkeepers and laborers instead of untyped pops.
+[*]Starting technologies are vanilla's.
+[*]170 companies now list every rung of their industries except the craft, and their bonuses, formation requirements and AI targets follow.
+[*]Vanilla events, journal entries, decisions, laws, buttons and modifiers that name a tiered industry now count all its rungs (78 vanilla files). Among the visible changes: the art journal entries complete on one academy of their tier instead of a share of all academies, and Industry Banned demolishes every rung of a banned industry.
+[*]Vanilla's counts of building-group levels exclude the crafts: Spain's Economic Regeneration, The Five-Year Plan's light-industry goal, the Tsar's Favorite's industry mission, interest groups' negotiation demands and the AI's manufacturing decrees.
+[/LIST]
+
+[B]Interface[/B]
+[LIST]
+[*]Tiered buildings are named after their rung: "Tier 2. Glassworks (Crystal Glass)", "Tier 0 craft. Paper Mills (Pulp Pressing)". The number is the rung's tier, not the tech tree's era.
+[*]Every main production method group is titled "Base".
+[*]Research entries share one style and have their own journal group, Tech Advancements and Inventions. Requirements read "<what>: <mark> (now <figure>)", and the progress bar's tooltip lists every condition.
+[*]The canals and the dam surveys have a journal group of their own, Great Works.
+[*]Dam decisions state their requirements as sentences, and each dam site has a state trait describing it.
+[*]Tiered buildings and methods use vanilla's translations; texts the mod adds are in English.
+[/LIST]
+
+[B]Performance[/B]
+[LIST]
+[*]Dams are capped by resource slots, research entries are placed by script, and the level counts that exclude crafts use the engine's own counters. This keeps the mod's cost per game tick low.
+[*]On Victoria 3 1.13, a century with mod 1.0 took about as long to play as vanilla: ×1.01 over sixteen campaigns alternated with sixteen vanilla ones, ×1.045 over forty-eight.
+[/LIST]
+
+[B]Modding[/B]
+[LIST]
+[*]The mod replaces 163 vanilla files whole and the folder common/history/buildings. The list is in the repository's README.
+[*]The vanilla building keys of the 17 industries belong to their first rungs; vanilla's methods of these buildings stay defined but unused.
+[*]Added scripted triggers, effects, values and modifier types for testing and boosting an industry across its rungs, and for building-group levels without crafts.
+[*]The monopoly threshold is set through NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD.
+[*]The mod never unlocks DLC content. The build checks every DLC gate in the vanilla files it replaces.
+[*]The mod is built by a generator from a configuration file. Its source, tools and design record are public and dedicated to the public domain (CC0 1.0).
+[/LIST]
+[/SPOILER]
