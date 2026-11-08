@@ -410,6 +410,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F262 | Obsolete construction on the 1.0 canon: 7.9% of tiered construction points (19.9% of levels) go to a building while the same country holds, runs and gets more per worker from a higher-tier one; mostly t1 beside a standing t2 and one tier behind; rising 1% → 9% over the century; only where a choice existed (83.6% of the points), 9.4% of points and 30.7% of levels. Misplaced capital 18.6% against the same sessions' vanilla 13.7%; the whole excess is in the tiered industries (contribution 15.2% against 9.6%), outside them 3.4% against 4.1%. The old below-best share is inflated on the artmerge books by merged rungs: F249's report line reads 26.5% corrected, not 48.5% | canon | reading | here |
 | F263 | The canon's trade lead (1.83x in 1837: vanilla's 1836 capacity carrying ~2x the goods) fades because its AI builds less trade capacity: 0.59-0.68x vanilla's from 1875 (trade-centre levels 0.71-0.78x), so trade value 1.08-1.26x; neither trades nor trade-centre construction read ai_value (a potential-over-GDP score). The residual gap at which a market's imports stop: canon 0.134 of base against 0.157 (median); paired, lower by 0.070 at weight x4 and 0.015 at x1.41, +0.015 at vanilla's weights, less than in proportion, and widening by 0.03-0.08 to 1910-35 as the thin capacity binds | canon | reading | here |
 | F264 | The 1.0 canon over 48 alternating centuries (game 1.13.11, against vanilla n=56; play time against the batch's own 16): world GDP 1.04x (1886 0.93x, the line holds), shortlist U* 24.6% against 19.1%, W 0.88x, PI 0.93 falling, PP 0.87, loss 6.98; 4 of 48 runs broken by runoff (F249 0 of 16: about one chance in four at this rate); play time x1.045 (x1.042 without a run slowed by the report's rehearsal); auto-downsizing loses 1.77x vanilla's levels for the same jobs (27.6M against 27.7M) and 1.22x its construction points, the excess on t0 non-craft, t1 and t2; below-best 27.9%, obsolete construction 8.5%, misplaced capital 18.5% against 14.0% (all of the excess in the tiered industries); against 0.99 nothing meaningful moved | canon | standing | here |
+| F265 | The first runs on game 1.15.0 (n=1+1+1, 1836-1856): the 1.15 candidate book loads and plays with no error line of its own but one load-time warning per journal entry (activation_description, fixed since); its research entries complete and grant (245 stages by 1856); Britain runs bronze cannons on 2 of 3 foundry levels; world GDP 0.94-0.99x the same batch's vanilla 1.15, inside the 1.13 canon's seed spread; vanilla 1.15 within +-3% of vanilla 1.13 over 1840-1855; rakaly 0.8.19 stops at the last section of every 1.15 save (worked around in the summariser); the 1836 pop-identity table refreshed |
 
 ---
 
@@ -22333,3 +22334,50 @@ comparison finds nothing above chance. It does not say why the shortlist's U* re
 moved too (19.1% against 17.9%), and the per-run spread is wide (10.9–42.2%, middle half 19.0–33.6%). It does not say auto-downsizing is a
 cost the player feels: the poll counts levels a building loses while it cannot hire, and a craft level carries a tenth of a factory level's
 jobs; whether the extra 0.55M points a run is capital the economy needed elsewhere is not measured. Nothing here was read on 1.15.
+
+## F265 — THE FIRST RUNS ON GAME 1.15.0: THE 1.15 CANDIDATE BOOK LOADS AND PLAYS 1836→1856 WITH NO ERROR LINE OF ITS OWN BUT ONE LOAD-TIME WARNING PER JOURNAL ENTRY (FIXED SINCE), ITS RESEARCH ENTRIES COMPLETE AND GRANT (245 STAGES BY 1856), BRITAIN RUNS BRONZE CANNONS ON 2 OF 3 FOUNDRY LEVELS, AND ITS WORLD GDP RUNS 0.94–0.99× THE SAME BATCH'S VANILLA 1.15, INSIDE THE 1.13 CANON'S SEED SPREAD; VANILLA 1.15 SITS WITHIN ±3% OF VANILLA 1.13 OVER 1840–1855; RAKALY 0.8.19 STOPS AT THE LAST SECTION OF EVERY 1.15 SAVE (WORKED AROUND) (2026-11-08; session `20261108_061520_g115-probe-1856`, n = 1 + 1 + 1, game 1.15.0)
+
+**Arms.** (1) `g115` = `{kind: config, config: config/mod_config.g115-canon-bz-dcu.json}`: the canon's recorded chain replayed on game 1.15.0
+(`tools/replay_canon_chain.mjs`, proven to reproduce the canon on 1.13.11) + bronze artillery (§10.108.2) + dam copper (§10.108), debug build,
+telemetry v16 — an update-pass candidate, NOT the canon; built before U27's activation fix. (2) `vanilla` = `{kind: control}` (vanilla 1.15.0 +
+telemetry). Both 1836→1856.1.1, yearly saves, dumps 1836.2.1 / 1840 / 1850 / 1855. (3) `vanilla_1836` = the control, 1836→1836.4.1, monthly saves,
+for its 1836.2.1 save. Compared against the 1.13.11 references of F264 (the 1.0 canon n=48, vanilla n=16, same telemetry). The user's go-ahead
+of 2026-11-08 02:05 UTC (probes for three hours, to refine the open questions of the 1.15 pass). Predictions are in the schedule's `_predictions`.
+
+**What it shows.**
+1. **The mod runs on 1.15.** `PM_TECH_REHAUL: init OK` at load; no `error.log` line names a file of ours (1,937 lines: 461 are
+   `Journal entry je_pmr_… is missing an activation_description trigger!`, once per research or dam entry at load — every 1.15 journal entry
+   carries the trigger, ours did not; written since, GAME_UPDATE_1_15 U27, L45 widened; the rest are vanilla classes, TESTBED_OPERATIONS §4.2).
+   Run 1 played 28.1 min wall, no crash; the vanilla run 27.2 min over two attempts (one engine crash, resumed).
+2. **The research entries work in 1.15's outcome syntax (U21).** Placed at start; 155 first, 66 second and 24 third stages complete by 1856,
+   each `PMR_JE` line written by the outcome's effect after its grant. Technologies held before 1856 (telemetry TECH lines, held at start +
+   acquired): Britain 34 (1.13 canon median 32, vanilla 1.15 37), France 28 (21.5, 30), Prussia 27 (29, 31), USA 18 (18, 23), Russia 49 (47, 50).
+   Japan reads 22 against 46–48, a telemetry artefact: its starting technologies are logged under "Japan" in some runs and not in this one.
+3. **Copper and bronze (U41–U44).** Britain mines ~170 copper a week from 1836 and exports 68–110; France, the United States and Russia import
+   8–25; thin markets sit at the band edges (America 10, Belgium 70). In Britain's 1856 save the Tier 0 foundry runs bronze cannons on 2 of its
+   3 levels (`pm_main_artillery_bronze_cannons` 2, `pm_main_artillery_cannons` 1).
+4. **World GDP (save summaries, `first_run_decomp.mjs`):**
+
+   | year | vanilla 1.15 £M | g115 £M | g115 ÷ vanilla 1.15 | its terms: productive per capita, £ per productive worker | vanilla 1.13 median £M (n=16) |
+   |---|---|---|---|---|---|
+   | 1840 | 439 | 436 | 0.99 | 1.04×, 0.96× | 450 |
+   | 1845 | 531 | 522 | 0.98 | 1.03×, 0.96× | — |
+   | 1850 | 596 | 563 | 0.94 | 1.00×, 0.95× | 581 |
+   | 1855 | 651 | 627 | 0.96 | 0.98×, 0.98× | 648 |
+
+   The 1.0 canon on 1.13.11 against its own vanilla, per run at 1855: 0.88–1.05×. Telemetry (Σ country GDP, de-duplicated) agrees: g115 563 at
+   1850 inside the 1.13 canon's 48-seed range 538–602; vanilla 1.15 442 at 1840 (1.13 range 446–456) and 594 at 1850 (553–595).
+5. **rakaly v0.8.19 (1.13's tokens) stops on every 1.15 save** with a bare token error (`0d04`) inside `state_has_building_group_levels`, the
+   save's last section (new in 1.15), after every section the summariser reads. `save_state_summary.mjs` now keeps a summary in that one case
+   (U07; any other failure still throws — proven on the 1856 save and on the same save cut short), and the 43 saves were re-harvested. The
+   summariser also refuses a save of another game version than its tables' (copper sits at goods index 27, so every later good shifts; L46).
+6. **The 1836.2.1 vanilla save** refreshed `config/measured_1836_pop_identity.json` (U22): 449 countries (was 443), 1,157 states (was 1,147),
+   the renamed and removed Russian states gone; the 1836 craft seeding of the candidate moves from 3,393 to 3,448 levels in the same 61 countries.
+
+**Confidence.** Items 1–3, 5 and 6 are observations of mechanism (they either happen or not). Item 4 is ONE run per arm: a direction, not a
+level (CLAUDE.md §2.9) — at n=1 a 4–6% gap at 1850–1855 sits inside the 1.13 canon's own per-seed spread against its vanilla.
+
+**What it does NOT say.** Nothing about 1.15's hiring and wage rebalance (U36, U35g) or the AI's new pool rule (U35e): twenty years show no
+obsolescence, no hoard and no capital abundance. It does not say the candidate is balanced on 1.15, nor that vanilla 1.15 matches vanilla 1.13
+beyond 1855. It does not measure play time (one run each, the machine in use). It does not test the activation fix, the bronze naming, the
+summariser's two guards or the refreshed identity table in game: they were built after these runs (the dry run passes with all of them).

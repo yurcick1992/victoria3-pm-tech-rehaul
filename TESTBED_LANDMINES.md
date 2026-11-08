@@ -108,7 +108,8 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L42 | a run lost to the observer's landing guard after an early-death fresh restart | `Test-LmL42` | session | AUTO, proven; fixed |
 | L43 | a save summary reads a country's trend ring by position, not by its index | `Test-LmL43` | build, repo | AUTO, proven; fixed |
 | L44 | a run that completes while its save summaries stopped part-way (the archiver stopped on low disk) | `Test-LmL44` | session | AUTO, proven; the harness side open (BACKLOG) |
-| L45 | a journal entry in the old syntax (complete / invalid / fail) ships dead on a game that dropped it (1.15) | `Test-LmL45` | every build | AUTO, proven; fixed |
+| L45 | a journal entry in the old syntax (complete / invalid / fail) ships dead on a game that dropped it (1.15); widened: an entry without the `activation_description` every 1.15 entry carries | `Test-LmL45` | every build | AUTO, proven; fixed |
+| L46 | a save summarised against another game version's tables: goods keyed by position, one place off from copper on (1.15) | `save_state_summary.mjs`'s own version check (throws) | every summary | AUTO, proven; fixed |
 
 ---
 
@@ -1072,3 +1073,24 @@ no `common/journal_entries` file of the build may use them; on a game that still
 build's `mod/` against 1.15 (10 files), PASS on the 1.15 build, N/A against the 1.13.11 snapshot. **Fix.** `emit_research_events.mjs` and
 `emit_dams.mjs` write outcomes (2026-11-08); the owned vanilla copies are regenerated from the installed game. ⚠ The detector proves only that
 the old keys are gone, not that the new outcomes behave: the first in-game load checks that a research stage completes (a `PMR_JE` line).
+Proven in game 2026-11-08 (the first 1.15 probe, `20261108_061520_g115-probe-1856`: 245 stages completed by 1856).
+
+**Widened 2026-11-08 (GAME_UPDATE_1_15 U27).** 1.15 also gives every journal entry an `activation_description` trigger (449 of 449 in vanilla,
+369 of them `always = yes`). An entry without one works, but the engine writes `Journal entry … is missing an activation_description trigger!`
+once per entry type at load — 461 lines in the first 1.15 probe, every one ours (339 research entries, 122 dam surveys). When every top-level
+entry of the installed game carries the trigger, every top-level entry of the build must too. Proven: FAIL on the probe's build
+(`mod_sched_g115`, before the fix), PASS on the build with `activation_description = { always = yes }` written by both emitters.
+
+### L46 — a save summarised against another game version's tables
+
+**Defect.** `save_state_summary.mjs` keys goods, pop types and interest groups BY POSITION, from the game folder it reads (`--game`, which until
+2026-11-08 defaulted to the Steam install and ignored `VIC3_GAME`; `harvest_saves.ps1` passes none). Game 1.15 inserted copper at goods index 27,
+so a 1.13.11 save summarised on a machine updated to 1.15 puts 26 goods (hardwood onward) one place off. The pop-type and interest-group counts
+were guarded; the goods count was not, and a goods count cannot tell which version a save is anyway. Nothing fails: the summary is plausible.
+
+**Found.** 2026-11-08, the 1.15 pass (GAME_UPDATE_1_15 U08). Nothing was corrupted: the n=64 batch's last summary was written before the update.
+
+**Detector and fix.** The reader compares the save's `meta_data` `version` (major.minor) with the game folder's (its launcher settings, or a kept
+copy's `SNAPSHOT.txt`) and throws on a mismatch; `--game` defaults to `VIC3_GAME`. Proven: a 1.13.11 save of the n=64 batch read against 1.15
+throws ("save is game 1.13.11, the tables are read from game 1.15.0"); the same save with `VIC3_GAME` at the 1.13.11 copy summarises.
+Re-summarising an old session: `VIC3_GAME=C:claude-codeic3_game_1.13.11game`.

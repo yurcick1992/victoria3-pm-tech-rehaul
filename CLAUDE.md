@@ -665,8 +665,11 @@ What §1.2 and §1.3 leave out:
   - broken seeds: one in three to four in earlier books (F166, F227, F247), 4 of 48 in F264 (none in F249's 16);
   - misplaced capital above vanilla's;
   - military technology behind vanilla's count (deferred to mod 1.1, with the user's AI-weight approach);
-  - **game 1.15** (mod 1.1): the journal-entry outcome rework breaks the research entries until they are converted, and the hiring and wage
-    rebalance moves the premise of §2.1; the pass is `GAME_UPDATE_1_15.md`.
+  - **game 1.15** (mod 1.1; installed 2026-11-08, 1.15.0): the pass is `GAME_UPDATE_1_15.md`. The research entries are converted and proven in
+    game; the 1.15 candidate book `config/mod_config.g115-canon-bz-dcu.json` (the canon's chain replayed on 1.15 + bronze artillery + dam copper)
+    builds and plays, NOT canonised; the hiring and wage rebalance moves the premise of §2.1 (its ~0.66× line is game 1.13.11's until
+    measured); rakaly 0.8.19 stops at the last section of a 1.15 save, which `save_state_summary.mjs` tolerates (U07), so the register
+    reads 1.15 runs. The open questions are the register's phase 5.
 
   The live list is `BACKLOG.md`.
 

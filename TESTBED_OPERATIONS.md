@@ -315,6 +315,16 @@ the first six rows.
 | trade-route events | `trade_route_events` invalid object | also in 3/10 vanilla runs |
 | religious-trait concept | `concept_religious_trait` data-function failures | also in vanilla | (`20260803_030101_wages-n3` run002 130, `20260803_220658_vanilla-percapita-n3` run002 296, `20260807_005246_popsplit-debut-vanilla` run001 296) |
 
+**Game 1.15.0 additions** (2026-11-08, the first 1.15 probe `20261108_061520_g115-probe-1856`, one candidate run and one vanilla run of
+1836→1856, so a first reading, not a baseline — U60's vanilla batch re-baselines the catalogue): in BOTH arms `dlc.cpp` `Could not find item in
+store backend.` (18 at load); `Invalid right side during comparison 'scope'` at `journal_entries/…_treaty_of_london.txt` (31);
+`has_journal_entry trigger [ Wrong scope for trigger: state, expected country ]` from `events/paralegal_discrimination_events.txt` and
+`scripted_triggers/00_ai_triggers.txt` (12–26); the invalid-country-handle class above (~210–230). In the vanilla run only:
+`pdx_persistent_reader.cpp` `Failed to read key reference` (72), `…_corn_laws.txt` (47), `Event target link 'market' returned an invalid object`
+(27), `character_interactions/…_additional_interactions.txt` (24); in the candidate only, `events/heavenly_kingdom_events.txt` (30) —
+playthrough-dependent vanilla scripts. ⚠ A 1.15 build of ours before U27's fix also writes `Journal entry je_pmr_… is missing an
+activation_description trigger!` once per entry at load (461): mod-caused, fixed, and caught by L45.
+
 A watch item, not a noise class: `Failed to create battle in <Front> due to 'land_battle_size'` (`battle_manager.cpp`) runs 0–4 a run
 in vanilla but reached thousands in a few runs of the ai_value-3^tier books. Judge it per batch: recurring across many runs of an
 arm could mean the arm fields armies too small to spawn battles.

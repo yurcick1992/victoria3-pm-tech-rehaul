@@ -1103,6 +1103,10 @@ tools/vendor/rakaly/rakaly.exe melt --format vic3 --unknown-key stringify -c <sa
 redistribute. Re-fetch with `gh release download v0.8.19 --repo rakaly/cli --pattern '*windows-msvc.zip'`. ⚠ Its README lists only
 EU4/CK3/HOI4/Imperator; **`--format vic3` is supported anyway** — check `melt --help`, not the docs. Built on
 [jomini](https://github.com/rakaly/jomini); tokens are compiled into the release, so nothing needs extracting from the game executable.
+⚠ **Game 1.15 (2026-11-08, GAME_UPDATE_1_15 U07):** v0.8.19 stops on every 1.15 save with a bare token error (`0d04`) inside
+`state_has_building_group_levels`, the save's last section (new in 1.15), after every section the summariser reads. `save_state_summary.mjs`
+keeps the summary in that one case and records `provenance.melt_tail_error`; any other failure still throws (a save truncated by a crash stops
+earlier). A melt to a file (`-o`) holds everything up to that section. The newest release, v0.8.22 (2026-10-13), predates 1.15.
 
 ### The format, for the record
 

@@ -61,11 +61,18 @@ an intermediate one.
   release; the newest is v0.8.22 (2026-10-13, before 1.15's release on 2026-11-05), so whether any release reads 1.15 is unknown. The failed saves
   stay on disk (the harvest deletes a save only once its summary verifies) and can be re-harvested — but a century batch on 1.15 then keeps
   every yearly save (~40 MB each late in a run; L44's disk watch matters) · OPEN (Q3): it blocks U60 / U62 · cost: one download to try.
+  **WORKED AROUND 2026-11-08:** the melt stops at the save's LAST section (`state_has_building_group_levels`, new in 1.15), after every section
+  the summariser reads; `save_state_summary.mjs` now keeps the summary in that one case (a bare token error, that trailing section, every wanted
+  section read; `provenance.melt_tail_error` records it) and still throws on any other failure. Proven on the probe's 1856 autosave (401
+  countries; Britain runs bronze cannons on 2 of 3 foundry levels) and refused on the same save cut short. The other melting readers
+  (`melted_*.mjs`, `score_save.ps1`) still stop; a rakaly release with 1.15's tokens remains the real fix.
 - **U08** · T · `save_state_summary.mjs` reads its tables (goods, pop types, interest groups) from `--game` (default the Steam path), not
   `VIC3_GAME`, and `harvest_saves.ps1` passes none; it throws on a changed pop-type or interest-group count but not on the goods count. A 1.13.11
   save summarised now would put 26 goods (hardwood onward) one place off with no error. Nothing is corrupted (the n=64 batch's last summary was
   written before the update) · the skill's trap and ON_GAME_UPDATE §2.3.3 say `VIC3_GAME`, which this reader ignores · OPEN (mechanical: a
-  goods-count guard against the save, and `--game` from `VIC3_GAME`; `tools/testbed/` is frozen while the probe runs).
+  goods-count guard against the save, and `--game` from `VIC3_GAME`; `tools/testbed/` is frozen while the probe runs). DONE 2026-11-08: the
+  reader compares the save's `meta_data` version with the game folder's and throws on a mismatch; `--game` defaults to `VIC3_GAME` (landmine L46,
+  proven both ways).
 - **U04** · T · the final patch notes · the preliminary notes were read on 2026-10-30 (appendix); read the forum changelog itself for engine
   behaviour the diff cannot show · DONE 2026-11-08 from Paradox's own Steam posts (the forum showed a bot check): DD#196 *State and Revolution
   & Update 1.15 NOW LIVE* (2026-11-05, the final notes, checksum fc93), DD#195 (the preliminary changelog, 2026-10-29), DD#194 *1.15 Modding*
@@ -100,11 +107,13 @@ an intermediate one.
   every has_dlc_feature and dlc = line kept`.
 - **U18** · T · the innovation override writes 25 over whatever vanilla holds and does not check that vanilla still holds 50 (the four flat bonuses
   do check) · `tools/emit_research_levers.mjs` should assert vanilla's 50 / 50 / 150 · DEFERRED to the 1.15 session (an emitter: frozen while the
-  batch runs, CLAUDE.md §5.1 rule 7). 1.15 still holds 50 / 50 / 150 (U12); the assertion itself is queued with U27's patch.
+  batch runs, CLAUDE.md §5.1 rule 7). 1.15 still holds 50 / 50 / 150 (U12). DONE 2026-11-08: `emit_research_levers.mjs` throws unless vanilla
+  holds 150 / 50 / 50 and the universities 1 / 1.5 / 2.
 - **U19** · T · the vanilla names in our own generated script · `tools/lint_vanilla_names.mjs`, written 2026-11-07 and calibrated on the 1.13.11
   build · run it on the 1.15 rebuild; wire it into `build.ps1` or `preflight.ps1` · the wiring DEFERRED to the 1.15 session (`build.ps1` is frozen
   while the batch runs). RUN 2026-11-08 on the 1.15 build of the candidate (`mod_sched_g115`): VANILLA NAMES PASSED — 103,904 tokens of 33 files
-  of ours resolve against 1.15.0 (six vanilla `dna_data` files do not parse; their names are unread). The wiring waits for the probe batch's end.
+  of ours resolve against 1.15.0 (six vanilla `dna_data` files do not parse; their names are unread). DONE 2026-11-08: `build.ps1` runs it on the
+  final state beside the DLC check, and throws on an unresolved name.
 - **U20** · N · a 1.0 install on 1.15: the owned 1.13 method files lack `pm_bronze_cannons` / `pm_bronze_smoothbores` that 1.15's
   `pmg_foundries` names (expect `error.log` lines), and the power plants, telephones, motor and munition methods, sewing, stills, assembly lines
   and arcades consume no copper (appendix) · a player on 1.15 before mod 1.1 sees it · OPEN: whether KNOWN_ISSUES gets a line until 1.1 (the
@@ -131,7 +140,8 @@ an intermediate one.
   ours have none, and the engine writes `Journal entry je_pmr_… is missing an activation_description trigger!` once per entry type at load —
   461 lines in the first probe, all ours (the research entries and the dam surveys). It does not stop an entry (U21's proof ran with it) ·
   `emit_research_events.mjs` (three entry headers) and `emit_dams.mjs` (one) · DONE as a queued patch (`activation_description = { always = yes }`
-  after each `group =`), applied when the probe batch ends (emitters are frozen while it runs); L45's detector widens to it.
+  after each `group =`), applied when the probe batch ends (emitters are frozen while it runs); L45's detector widens to it. DONE 2026-11-08
+  (339 research + 122 dam entries; L45 proven FAIL on the probe's build, PASS on the fixed one).
 - **U28** · C · vanilla 1.15's `pm_automated_bakery` (the food industry's automation) consumes 5 electricity with no `required_input_goods`, the
   only one of 31 electricity consumers without it — our rule (ON_GAME_UPDATE §2.3.1, `lint_pm_combos` check 9) failed the dry run on it ·
   `build.ps1` transform (4) adds vanilla's gate to a vanilla method that consumes electricity without it and prints it; `emit_secondaries` does the
@@ -143,7 +153,10 @@ an intermediate one.
   OPEN (the diff; widens U13). The diff (U03): state regions `STATE_TARTARIA` → `STATE_SARATOV` and `STATE_KAUNAS` → `STATE_LITHUANIA`
   renamed, `STATE_CHUKOTKA` and `STATE_GALICH` removed, three added. DONE for the dams: only Balakovo was affected (U05); every other dam's state
   and anchor province holds on 1.15. Still open: `measured_1836_pop_identity.json` names KAUNAS / CHUKOTKA / GALICH and needs a 1.15 vanilla
-  1836.2.1 save (a game run), `config/dam_sites_research.json` (the research notes behind the table) still says Tartaria.
+  1836.2.1 save (a game run), `config/dam_sites_research.json` (the research notes behind the table) still says Tartaria. DONE 2026-11-08: the
+  dam notes say Saratov (and `make_dam_projects.mjs` now reproduces the committed table); `measured_1836_pop_identity.json` refreshed from the
+  probe's vanilla 1.15 1836.2.1 save (449 countries, was 443; 1,157 states, was 1,147; Kaunas, Chukotka, Galich and Tartaria gone), so the
+  candidate's 1836 craft seeding moves from 3,393 to 3,448 levels in the same 61 countries.
 - **U23** · C · starting technologies: Italian countries gain Empiricism (tech era 1), Nassau and Limburg Egalitarianism (tech era 2) · the 1836
   grant is derived from the map (§10.55) and these are not production technologies · DONE 2026-11-08 by the 1.15 build of the candidate: `1836 map grant: EMPTY` and `00_starting_inventions.txt
   not shipped` — the start keeps vanilla 1.15's own technologies, the Italian and Dutch-Belgian additions included.
@@ -310,7 +323,8 @@ an intermediate one.
   with U35f): add it (a book change with a field diff; small).
 - **U59** · C · the bronze hosts' names read "Tier 0. Artillery Foundry. Recipe BE 61%/61%" — the merged-host naming, which drops "(Cannons)" /
   "(Smoothbores)" and prints two figures where §10.108.2 says one · RULED (§10.108.2: "the building's name carries one figure"): a host whose
-  second methods are all variants is named as an ordinary rung; built when the probe batch ends (`build.ps1` is frozen while it runs).
+  second methods are all variants is named as an ordinary rung · DONE 2026-11-08: "Tier 0. Artillery Foundry (Cannons). Recipe BE 61%", "Tier 1.
+  Artillery Foundry (Smoothbores). Recipe BE 61%".
 - **U50** · N · new script hooks: `global_average_gdp_per_capita`, `has_building_levels_in_state_region`, `gdp_owned_by`; progress bars taking a
   script value or a math block for `min_value` / `max_value` · candidates that could simplify our script (the urban-centre entries); not needed
   for 1.1 · OPEN (note only).
@@ -349,8 +363,9 @@ colonial staples, ×2), B (×2√2). **Recommended: C.**
 GDP, W, U\*, H, T0–T3, misplaced capital and downsizing go dark; telemetry still works. rakaly compiles each game's tokens into its release;
 the newest, **v0.8.22** (2026-10-13, `rakaly-0.8.22-x86_64-pc-windows-msvc.zip` from github.com/rakaly/cli, ~2 MB like 0.8.19's), predates
 1.15 and may or may not read it. Options: (a) fetch 0.8.22 now and test it on the probe's kept saves; (b) wait for a release after 1.15;
-(c) both. Until it works, a 1.15 batch keeps every save it cannot summarise (disk: 22 GB free now). **Recommended: (a), now.** Nothing in
-phase 6 is readable without it.
+(c) both. **Worked around since (U07):** the summariser keeps a 1.15 summary when rakaly stops in the save's trailing section, after
+everything it reads, so the register reads 1.15 runs without a download; the other melting readers (`melted_*.mjs`) still stop. **Recommended:
+(a) when convenient, no longer blocking.**
 
 **Q4 · the wage and hiring rebalance moves §2.1's premise (U30, U31, U35g, U36, U37).** 1.15's new `BUILDING_WAGES_EXPECTED_SOL_TARGET_FACTOR`
 0.67 scales the three wage targets (read literally: layoffs below ~0.44 of expected standard of living, was 0.66); buildings hire at a 15%
@@ -406,9 +421,15 @@ only one of 31; the build adds vanilla's own gate to it and to our copy); the ac
 vanilla anchors (U18); the vanilla-name lint in the build (U19); the bronze hosts named as rungs (U59, §10.108.2); the dam table's generator
 made to reproduce the committed file (U22: the five proofread names and Saratov moved into `config/dam_sites_research.json`).
 
-**The first 1.15 probe** (`20261108_061520_g115-probe-1856`, 2026-11-08; one run each, so directions only, CLAUDE.md §2.9): see U63.
+**The first 1.15 probe** (`20261108_061520_g115-probe-1856`, 2026-11-08; one run each, so directions only, CLAUDE.md §2.9): U63, FINDINGS F265.
 
 ## Phase 6 — re-measure
+
+- **U63** · T · the first 1.15 probe (`20261108_061520_g115-probe-1856`; FINDINGS F265): the candidate and vanilla 1.15 + telemetry 1836→1856,
+  and a vanilla 1836.2.1 save · DONE: the mod loads (no error line of ours but U27's warnings, fixed since); the research entries complete (245
+  stages by 1856); Britain runs bronze cannons on 2 of 3 foundry levels and mines ~170 copper a week; world GDP 0.99 / 0.98 / 0.94 / 0.96× the
+  batch's vanilla 1.15 at 1840 / 1845 / 1850 / 1855 (the 1.0 canon on 1.13 per seed at 1855: 0.88–1.05×); vanilla 1.15 within ±3% of vanilla
+  1.13's median over 1840–1855. n = 1 each: directions only.
 
 - **U60** · T · a vanilla batch on 1.15 · `VANILLA_REF` / `VANILLA_WALL_REF`, `config/measured_base_wages.json` (the hiring and wage fixes move it
   more than an ordinary patch does: refresh it before any profit is quoted on 1.15), the error-noise catalogue, the fleet-loop calibration ·
@@ -426,7 +447,11 @@ made to reproduce the committed file (U22: the five proofread names and Saratov 
 - **U70** · T · `supported_game_version`, the release build, README's list of replaced files (`tools/list_replaced_files.mjs`), KNOWN_ISSUES, the
   changelog, the Workshop text, the version log (ON_GAME_UPDATE §3), the findings, new couplings into ON_GAME_UPDATE §2 · OPEN. Done so far
   (2026-11-08): `supported_game_version` "1.15.*" in `mod/.metadata/metadata.json` (ON_GAME_UPDATE §1 step 7; `version` stays 1.0.0 until the
-  release); the couplings of U27, U28, U42, U44 and U45 in ON_GAME_UPDATE §2.2.3 and §2.3.1; REPO_GUIDE entries for the four new tools.
+  release); the couplings of U27, U28, U42, U44 and U45 in ON_GAME_UPDATE §2.2.3 and §2.3.1; REPO_GUIDE entries for the four new tools. README's
+  replaced-file list grows by ten files on 1.15 (`list_replaced_files.mjs` on the candidate's build against 1.0's `mod/`): `00_companies_ip5.txt`,
+  `00_ip5_06_modifiers.txt`, `00_rlit_progress_bars.txt`, `00_rlit_scripted_triggers.txt`, `00_rlit_static_modifiers.txt`,
+  `00_victoria_progress_bars.txt`, `08_tsarpoints_buttons.txt`, `ip5_russian_events_03.txt`, `rlit_cluster1_golden_age.txt`,
+  `rlit_cluster2_crossroads.txt` (U05's A79–A86 and G2); regenerate the list from the release build.
 - **U71** · T · the docs that name the 2026-11-07 additions: REPO_GUIDE entries for `tools/game_diff.mjs`, `tools/lint_vanilla_names.mjs`,
   `tools/lib_pdx_script.mjs` and the `game-update` skill; a CLAUDE.md §5.2 row for the per-version register; a BACKLOG line pointing here ·
   DONE 2026-11-08 in the batch session's close-out commit (REPO_GUIDE: the three tools, this register beside ON_GAME_UPDATE with the skill's
