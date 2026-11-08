@@ -262,6 +262,12 @@ const add = (m, k, v) => m.set(k, (m.get(k) || 0) + v);
 // save, no shell pipe to arrange, and the 391 MB plaintext intermediate never touches disk (a quarterly
 // century would otherwise write ~150 GB through it for nothing).
 let rakalyDone = Promise.resolve();
+// ⭐ A MELT THAT STOPS IN A TRAILING SECTION THIS READER NEVER READS (GAME_UPDATE_1_15 U07): rakaly 0.8.19 compiles 1.13's tokens and stops on
+//   1.15 saves with a bare token error (`0d04`) inside `state_has_building_group_levels`, the save's LAST section — after pops, countries,
+//   states, markets, buildings and companies, which all melt. That one case is accepted, and only when every section in WANT and `pops` was
+//   read; any other non-zero exit (a save truncated by a crash stops somewhere earlier) still throws. The summary records it in provenance.
+const MELT_TAIL_TOLERATED = new Set(['state_has_building_group_levels']);
+let meltTailErr = null, lastTop = null; const seenTop = new Set();
 function meltStream(savePath) {
   const here = dirname(fileURLToPath(import.meta.url));
   const rak = argOf('--rakaly', join(here, '..', 'vendor', 'rakaly', 'rakaly.exe'));
@@ -276,7 +282,8 @@ function meltStream(savePath) {
   // throws — the harvester must never reap a save whose summary is a partial read of it.
   rakalyDone = new Promise((res, rej) => {
     p.on('error', rej);
-    p.on('close', code => code === 0 ? res() : rej(new Error(`rakaly exited ${code} on ${basename(savePath)}: ${err.trim().slice(0, 400)}`)));
+    p.on('close', code => code === 0 ? res() : /^[0-9a-f]{4}$/.test(err.trim()) ? (meltTailErr = `rakaly exited ${code} on ${basename(savePath)}: ${err.trim()}`, res())
+      : rej(new Error(`rakaly exited ${code} on ${basename(savePath)}: ${err.trim().slice(0, 400)}`)));
   });
   p.stdout.setEncoding('utf8');
   return p.stdout;
@@ -406,6 +413,7 @@ for await (const line of rl) {
     if (!saveDate) { const d = /^date=(\d+\.\d+\.\d+)/.exec(line); if (d) { saveDate = d[1]; continue; } }
     const s = /^([a-z_]+)=\{$/.exec(line);
     if (!s) continue;
+    lastTop = s[1]; seenTop.add(s[1]);
     if (s[1] === 'pops') { mode = 'pops'; continue; }
     if (WANT.has(s[1])) { mode = s[1]; depth = 1; }
     else mode = 'skip';
@@ -998,6 +1006,12 @@ for await (const line of rl) {
 
 // ---------------------------------------------------------------- integrity gates (fail loud)
 await rakalyDone;                       // a melt that failed must not yield a summary — see meltStream
+if (meltTailErr) {
+  const missing = [...WANT, 'pops'].filter(k => !seenTop.has(k));
+  if (!MELT_TAIL_TOLERATED.has(lastTop) || missing.length)
+    throw new Error(`${meltTailErr} — stopped in section '${lastTop}'${missing.length ? ', before ' + missing.join(', ') : ''}: not the tolerated trailing section, so the save may be truncated`);
+  console.error(`note: ${meltTailErr} in the trailing section '${lastTop}', after every section this reader reads (GAME_UPDATE_1_15 U07) - summary kept`);
+}
 if (!gameRules) console.error('WARN: no game_rules settings line found in the header');
 if (!saveDate) throw new Error('no top-level `date=` found — is this a melted vic3 gamestate?');
 if (!C.size) throw new Error('no countries parsed — the save layout has moved');
@@ -1345,6 +1359,7 @@ const out = {
     date: saveDate,
     generated_utc: new Date().toISOString(),
     reader: 'tools/testbed/save_state_summary.mjs',
+    ...(meltTailErr ? { melt_tail_error: `${meltTailErr} in '${lastTop}'` } : {}),
     // ⚠ `strip` is not decoration. PowerShell 5.1's `Out-File -Encoding utf8` writes a BOM, so a
     // provenance file authored by hand rather than by the scheduler's BOM-less WriteAllText makes
     // JSON.parse throw — and it throws AFTER the whole melt has been parsed, so the save is never
