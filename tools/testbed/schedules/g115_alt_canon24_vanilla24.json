@@ -1,7 +1,7 @@
 {
   "schedule_version": 1,
   "label": "g115-alt-canon24-vanilla24",
-  "_why": "MOD 1.1 AGAINST VANILLA 1.15.0, n=24 EACH, ALTERNATING 1:1 (vanilla first), 1836→1936. The user, 2026-11-08: \"The lines will need a vanilla batch. We won't have a truly pure vanilla batch, rather alternating mod 1.1 vs vanilla 1.15.0, starting tonight (I'll give an explicit go-ahead), and finishing early next Sunday, 24 vs 24.\" It is GAME_UPDATE_1_15 U60 (the 1.15 vanilla reference, here this batch's 24 vanilla runs, which carry telemetry like every VANILLA_REF member) and U62 / Q12 (the canon re-measured against it) in one batch, after F268's n=1 + 1. The alternation puts any drift of the machine over the ~6.5 days on both arms alike (F248/F249), so the wall clock reads within the session. Its vanilla runs are the basis on which the user re-rules the register's absolute lines for 1.15 (the 10% pooled-U* hard line and capital abundance, which vanilla 1.15 itself broke in F268).",
+  "_why": "MOD 1.1 AGAINST VANILLA 1.15.0, n=24 EACH, ALTERNATING 1:1 (the mod first: odd runs mod, even runs vanilla — the user, 2026-11-09: \"No, the odd runs are mod now, and the even ones -- vanilla.\"), 1836→1936. The user, 2026-11-08: \"The lines will need a vanilla batch. We won't have a truly pure vanilla batch, rather alternating mod 1.1 vs vanilla 1.15.0, starting tonight (I'll give an explicit go-ahead), and finishing early next Sunday, 24 vs 24.\" It is GAME_UPDATE_1_15 U60 (the 1.15 vanilla reference, here this batch's 24 vanilla runs, which carry telemetry like every VANILLA_REF member) and U62 / Q12 (the canon re-measured against it) in one batch, after F268's n=1 + 1. The alternation puts any drift of the machine over the ~6.5 days on both arms alike (F248/F249), so the wall clock reads within the session. Its vanilla runs are the basis on which the user re-rules the register's absolute lines for 1.15 (the 10% pooled-U* hard line and capital abundance, which vanilla 1.15 itself broke in F268).",
   "_arms": {
     "canon": "{kind: config, config: config/mod_config.g115c-canon-bz-dcu-ra-il.json} - the 1.15 canon's named copy (mod 1.1), sha256 a52b0acacd6b6b6e (tree twin db96307af17c22ee), byte-identical to config/mod_config.json; the DEBUG build by the emitters at launch (measurement runs always use debug builds): the 2026-11-08 additions included - the research entries' and the Great Works journal groups, technology names read live, the merged hosts' building names (GAME_UPDATE_1_15 U74-U77), the protected-vanilla lint (U78); telemetry v16 with the monthly downsizing poll; save summaries v20.",
     "vanilla": "{kind: control} - vanilla 1.15.0 + telemetry v16 and nothing else."
@@ -25,7 +25,7 @@
     "The user's explicit go-ahead for this batch (CLAUDE.md §5.1 rule 4).",
     "No game running (L19); the working tree's emitters committed or at least unchanged until SCHEDULE DONE (L10): no emitter, build.ps1 or tools/testbed/** edit while it plays.",
     "Launch through tools/testbed/launch_detached.ps1 called directly from the PowerShell tool (L30); confirm the session folder within a minute; start the background waiter.",
-    "Five-minute smoke check on the first vanilla and the first canon run (the canon: init marker AND the tripwire line), then on every run's start as the agent's turns allow; the heartbeat's 'DLC (L50)' line must read ok, or that run is stopped (x) and relaunched.",
+    "Five-minute smoke check on run 1 (canon: the init marker AND the tripwire line) and run 2 (vanilla), then on every run's start as the agent's turns allow; the heartbeat's 'DLC (L50)' line must read ok, or that run is stopped (x) and relaunched.",
     "Keep the agent's own analysis load off the machine while runs play (F268's wall clock was inflated by it)."
   ],
   "defaults": {
@@ -78,10 +78,6 @@
   },
   "runs": [
     {
-      "setup": "vanilla",
-      "until": "1936.1.1"
-    },
-    {
       "setup": "canon",
       "until": "1936.1.1"
     },
@@ -267,6 +263,10 @@
     },
     {
       "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "vanilla",
       "until": "1936.1.1"
     }
   ]
