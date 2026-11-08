@@ -16,6 +16,15 @@ const die = m => { console.error('emit_research_levers: ' + m); process.exit(1);
 const cfg = JSON.parse(fs.readFileSync(CFG, 'utf8')); const RL = cfg.research_levers;
 if (!RL) { console.log('research levers: none (vanilla)'); process.exit(0); }
 const stripBom = s => s.replace(/^\uFEFF/, '');
+// ⭐ THE VANILLA NUMBERS THE RULING IS RELATIVE TO (§10.96, §10.101.1: x = 25 "from 50"; ON_GAME_UPDATE §5.2; GAME_UPDATE_1_15 U18): a patch that
+// moves one of them changes what x means, so the emitter throws instead of writing x over a new number. Checked on 1.13.11 and 1.15.0.
+const VANILLA_ANCHOR = {
+  'country_literacy_rate.country_weekly_innovation_max_add': 150,
+  'base_values.country_weekly_innovation_max_add': 50,
+  'base_values.country_weekly_innovation_add': 50,
+  'pm_scholastic_education': 1, 'pm_philosophy_department': 1.5, 'pm_analytical_philosophy_department': 2,
+};
+const anchor = (k, old) => { if (k in VANILLA_ANCHOR && +old !== VANILLA_ANCHOR[k]) die(`vanilla's ${k} is ${old}, not the ${VANILLA_ANCHOR[k]} the research levers are ruled against (§10.101.1) - re-read ON_GAME_UPDATE §5.2 and decide with the user before changing VANILLA_ANCHOR`); };
 const readOwnedOrVanilla = rel => { const m = path.join(MOD, rel); return stripBom(fs.readFileSync(fs.existsSync(m) ? m : path.join(GAME, rel), 'utf8')); };
 const write = (rel, txt) => { const p = path.join(MOD, rel); fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, '\uFEFF' + txt); };
 // the line range of a top-level block `<name> = {` … its closing `}`
@@ -40,6 +49,7 @@ if (RL.static) {
       const hits = []; for (let i = a; i <= b; i++) if (new RegExp(`^\\s*${key}\\s*=`).test(lines[i])) hits.push(i);
       if (hits.length !== 1) die(`${rel}: ${blk}.${key} occurs ${hits.length} times (need exactly 1 — this emitter replaces, it never inserts)`);
       const old = /=\s*(-?[\d.]+)/.exec(lines[hits[0]])?.[1];
+      anchor(`${blk}.${key}`, old);
       lines[hits[0]] = lines[hits[0]].replace(/=\s*-?[\d.]+/, `= ${val}`) + `   # pm_tech_rehaul research lever (vanilla ${old}; BALANCE_FRAMEWORK §10.96)`;
       report.push(`${blk}.${key} ${old} → ${val}`);
     }
@@ -55,6 +65,7 @@ if (RL.university_innovation_mult != null) {
     const hits = []; for (let i = a; i <= b; i++) if (/^\s*country_weekly_innovation_add\s*=/.test(lines[i])) hits.push(i);
     if (hits.length !== 1) die(`${rel}: ${pm} holds ${hits.length} country_weekly_innovation_add lines (need 1)`);
     const old = +/=\s*(-?[\d.]+)/.exec(lines[hits[0]])[1]; const nv = +(old * k).toFixed(4);
+    anchor(pm, old);
     lines[hits[0]] = lines[hits[0]].replace(/=\s*-?[\d.]+/, `= ${nv}`) + `   # pm_tech_rehaul research lever: vanilla ${old} × ${k} (BALANCE_FRAMEWORK §10.96)`;
     report.push(`${pm} innovation ${old} → ${nv}`);
   }

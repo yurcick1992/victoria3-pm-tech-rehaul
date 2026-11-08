@@ -359,7 +359,7 @@ for (const p of projects) {
     [`${v}_stop_survey_decision`, `Cancel the survey of the ${nm(p)}`],
     [`${v}_stop_survey_decision_desc`, `Abandon the survey of the ${nm(p)}. Its bureaucracy is freed and other countries may start their own survey; ` +
       `a later survey of ours starts from scratch.`]);
-  jes.push(`je_${v}_survey = {\n${T}icon = "gfx/interface/icons/event_icons/event_map.dds"\n${T}group = je_group_technology\n\n` +
+  jes.push(`je_${v}_survey = {\n${T}icon = "gfx/interface/icons/event_icons/event_map.dds"\n${T}group = je_group_technology\n${T}activation_description = { always = yes }\n\n` +
     `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { has_variable = ${v}_months }\n${T}${T}${T}${T}change_variable = { name = ${v}_months add = 1 }\n${T}${T}${T}${T}debug_log = "PMR_DAM|survey_month|${p.id}|${TAG}|${DATE}|${BUR}"\n${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
     outcomeDone(`${T}${T}${T}scope:journal_entry = { is_goal_complete = yes }\n`, tab(
     `${T}${T}remove_modifier = ${v}_surveying\n${T}${T}remove_variable = ${v}_months\n${T}${T}remove_global_variable = ${v}_surveying\n` +

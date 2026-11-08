@@ -806,7 +806,9 @@ foreach ($ind in $cfg.industries) {
         # paper mills'"): the era span of its main methods and the building's own name without any one method's - "Era 1-2. Paper
         # Mills" - since it runs either. The recipe break-even is each method's, in era order ("Recipe BE 51%/43%").
         # A method name in the building's name would describe half of what it runs.
-        if ($methodsOf.ContainsKey($t.key)) {
+        # ⭐ A HOST WHOSE SECOND METHODS ARE ALL VARIANTS (§10.108.2: bronze cannons beside cannons, same tier, same input value) is NOT a merged
+        #   building: it keeps the ordinary rung name with ONE break-even ("the building's name carries one figure"; GAME_UPDATE_1_15 U59).
+        if ($methodsOf.ContainsKey($t.key) -and @($methodsOf[$t.key] | Where-Object { -not $_.variant }).Count -gt 0) {
             $mts = @($methodsOf[$t.key] | Sort-Object { [int]$_.era })
             $eraSpan = @($eraNo) + @($mts | ForEach-Object { [int]$_.era })
             $baseName = ($t.name -replace '\s*\([^()]*\)\s*$', '').Trim()
@@ -820,7 +822,7 @@ foreach ($ind in $cfg.industries) {
             }
             $beM = if ($Release -or $ind.follows_be -eq $false) { "" } else { ". Recipe BE $(($bes | ForEach-Object { "$_%" }) -join '/')" }
             if ($baseName -ne $vanEn[$anchorKey]) { throw "merged host $($t.key): its name '$baseName' is not vanilla's English '$($vanEn[$anchorKey])' for $anchorKey - the translated name would describe another building" }
-            # a host whose second methods sit at its own tier (the variants, §10.108.2: bronze cannons beside cannons) reads one tier
+            # a span whose ends are equal reads one tier (a variant beside a merged method would sit at the host's own tier)
             $spanTxt = if ($eraSpan[0] -eq $eraSpan[-1]) { "$($eraSpan[0])" } else { "$($eraSpan[0])-$($eraSpan[-1])" }
             $bldName = "Tier $spanTxt. @@VB:$anchorKey@@$beM"
         }
@@ -1852,6 +1854,11 @@ if ($Release) {
 #   `has_dlc_feature` lines and `dlc =` fields. On the FINAL state, after every content emitter.
 & node (Join-Path $PSScriptRoot 'check_dlc_gates.mjs') $modAbs
 if ($LASTEXITCODE -ne 0) { throw "check_dlc_gates.mjs failed - a replaced vanilla file lost a DLC gate." }
+# EVERY VANILLA NAME OUR OWN SCRIPT USES MUST RESOLVE in the game it is built against (laws, regions, building and ship types, technologies,
+#   on-actions, triggers, effects, modifier types, icons, defines): a missing one fails only in the engine, as error.log lines (ON_GAME_UPDATE
+#   §2.2.4; GAME_UPDATE_1_15 U19). On the FINAL state, after every content emitter. Honors $env:VIC3_GAME like the emitters.
+& node (Join-Path $PSScriptRoot 'lint_vanilla_names.mjs') --mod $modAbs
+if ($LASTEXITCODE -ne 0) { throw "lint_vanilla_names.mjs failed - a name our script takes from vanilla does not exist in the game it is built against." }
 
 if (-not $NoLint) {
     $bashPath = $null

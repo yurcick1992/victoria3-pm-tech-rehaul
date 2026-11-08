@@ -1976,6 +1976,9 @@ function Test-LmL45 {
       FIX: emit_research_events.mjs and emit_dams.mjs write outcomes (2026-11-08, GAME_UPDATE_1_15 U21); the owned vanilla copies follow
       the game they are regenerated from. Proven on 2026-11-08: FAIL on the 1.0 build's mod/ against 1.15, PASS on the 1.15 build, N/A
       against the 1.13.11 snapshot.
+      WIDENED (2026-11-08, U27): 1.15 also gives every journal entry an `activation_description` trigger (449 of 449); an entry without one
+      works but writes "missing an activation_description trigger!" to error.log once per type at load (461 lines in the first 1.15 probe).
+      When every top-level entry of the installed game's journal entries carries one, every top-level entry of the build's must too.
     #>
     $T = 'a journal entry in the old syntax ships dead on a game that dropped it'
     $game = if ($env:VIC3_GAME) { $env:VIC3_GAME } else { 'C:\Program Files (x86)\Steam\steamapps\common\Victoria 3\game' }
@@ -1990,15 +1993,25 @@ function Test-LmL45 {
     if ($vOld -gt 0 -or $vOut -eq 0) { Add-Result 'L45' $T 'N/A' "the installed game still writes the old keys ($vOld) - nothing to check"; return }
     $mdir = Join-Path $Mod 'common\journal_entries'
     if (-not (Test-Path $mdir)) { Add-Result 'L45' $T 'N/A' "no journal entries in $Mod"; return }
-    $bad = @(); $files = 0
+    # the activation trigger: required only when the installed game puts one on every top-level entry
+    $top = '(?m)^[^\s#=]+\s*=\s*\{'; $act = '(?m)^\s+activation_description\s*='
+    $vTop = 0; $vAct = 0
+    foreach ($f in Get-ChildItem $vdir -Filter *.txt -File) {
+        $txt = [regex]::Replace([System.IO.File]::ReadAllText($f.FullName), '#[^\r\n]*', '')
+        $vTop += [regex]::Matches($txt, $top).Count; $vAct += [regex]::Matches($txt, $act).Count
+    }
+    $needAct = ($vTop -gt 0 -and $vAct -ge $vTop)
+    $bad = @(); $files = 0; $noAct = @()
     foreach ($f in Get-ChildItem $mdir -Filter *.txt -File) {
         $files++
         $txt = [regex]::Replace([System.IO.File]::ReadAllText($f.FullName), '#[^\r\n]*', '')
         $n = [regex]::Matches($txt, $old).Count
         if ($n) { $bad += "$($f.Name) ($n)" }
+        if ($needAct) { $mt = [regex]::Matches($txt, $top).Count; $ma = [regex]::Matches($txt, $act).Count; if ($ma -lt $mt) { $noAct += "$($f.Name) ($($mt - $ma) of $mt)" } }
     }
+    if ($noAct.Count) { Add-Result 'L45' $T 'FAIL' ("$($noAct.Count) journal-entry file(s) of the build have entries without the activation_description trigger every entry of the installed game carries ($vAct of $vTop): " + ($noAct -join ', ') + '. FIX: write activation_description = { always = yes } in each entry (emit_research_events.mjs, emit_dams.mjs)'); return }
     if ($bad.Count) { Add-Result 'L45' $T 'FAIL' ("$($bad.Count) journal-entry file(s) of the build still use complete / invalid / fail, which the installed game ($vOut outcome blocks, none of the old keys) no longer reads: " + ($bad -join ', ') + '. FIX: write `outcome` blocks (emit_research_events.mjs, emit_dams.mjs); rebuild the owned vanilla copies from the installed game') }
-    else { Add-Result 'L45' $T 'PASS' "$files journal-entry file(s), none in the old syntax (the game uses outcome: $vOut blocks)" }
+    else { Add-Result 'L45' $T 'PASS' ("$files journal-entry file(s), none in the old syntax (the game uses outcome: $vOut blocks)" + $(if ($needAct) { "; every entry carries activation_description (the game: $vAct of $vTop)" } else { '' })) }
 }
 
 $CHECKS = @(

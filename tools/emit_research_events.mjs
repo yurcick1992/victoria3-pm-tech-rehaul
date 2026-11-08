@@ -898,7 +898,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       jes.push(
         `${key} = {\n` +
         `${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n` +
-        `${T}group = je_group_technology\n\n` +
+        `${T}group = je_group_technology\n${T}activation_description = { always = yes }\n\n` +
         `${T}scripted_progress_bar = ${barName(tech)}\n\n` +
         `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { je:${key} ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} } }\n` +
         ind1(grantBlock) +
@@ -915,7 +915,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     jes.push(
       `${key} = {\n` +
       `${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n` +
-      `${T}group = je_group_technology\n\n` +
+      `${T}group = je_group_technology\n${T}activation_description = { always = yes }\n\n` +
       // ⚗ PERF PROBE (2026-10-08): `research_events.update_frequency` = { active, inactive } (days) writes the engine's
       // per-type overrides of JOURNAL_ENTRY_UPDATE_ACTIVE (4) / _INACTIVE (14) — fields named in the exe, used by no vanilla file.
       (RE.update_frequency ? (RE.update_frequency.active ? `${T}active_update_frequency = ${RE.update_frequency.active}\n` : '') +
@@ -1004,7 +1004,7 @@ for (const [ind, list] of Object.entries(compressed)) {
     `${T}${T}${T}${T}debug_log = "PMR_JE|ind_fill|${x.tech}|[THIS.GetCountry.GetNameNoFormatting]"\n${T}${T}${T}}\n`;
   const cur = `OR = { ${list.map((x, i) => `AND = { has_variable = ${tg(i)}  ${open(x)} }`).join('  ')} }`;
   firsts.push({ key: je, cond: avail, reentrant: true });
-  jes.push(`${je} = {\n${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n${T}group = je_group_technology\n\n` +
+  jes.push(`${je} = {\n${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n${T}group = je_group_technology\n${T}activation_description = { always = yes }\n\n` +
     (PLACE ? '' : `${T}is_shown_when_inactive = { ${avail} }\n`) + `${T}possible = { ${avail} }\n\n` +
     `${T}immediate = { pmr_retarget_${ind} = yes }\n\n${T}scripted_progress_bar = ${bar}\n\n` +
     `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { je:${je} ?= { "scripted_bar_progress(${bar})" >= ${span} } }\n` +
