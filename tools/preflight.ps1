@@ -2014,6 +2014,35 @@ function Test-LmL45 {
     else { Add-Result 'L45' $T 'PASS' ("$files journal-entry file(s), none in the old syntax (the game uses outcome: $vOut blocks)" + $(if ($needAct) { "; every entry carries activation_description (the game: $vAct of $vTop)" } else { '' })) }
 }
 
+function Test-LmL47 {
+    <#
+      L47 - VANILLA'S JOURNAL-ENTRY-CONDITIONAL AI DESIRE DROPPED ON THE RUNGS (found 2026-11-08, game 1.15, GAME_UPDATE_1_15 U35d / U54).
+
+      Vanilla raises an industry building's ai_value while some journal entries run (game 1.15: the five-year plan +2,500 on thirteen
+      industries, the Tsar's Great Reforms on munitions, the art academy's renaissances; Metternich since 1.13). Each rung is its own
+      building with ONE tier value, so the build dropped every add, and nothing failed: no linter reads the emitted ai_value, and the
+      game simply builds less of what its journal entries ask for. Ruled carried (BALANCE_FRAMEWORK §10.109.2, user 2026-11-08, Q7).
+
+      DETECTOR: `emit_ai_value_adds.mjs --check` on the BUILT mod: every non-craft building of every industry whose vanilla building has
+      conditional ai_value adds must carry them exactly once, with vanilla's count of conditional children; no craft may.
+      FIX: emit_ai_value_adds.mjs in build.ps1 (after emit_vanilla_refs). Proven 2026-11-08: PASS on the 1.15 candidate's build (36 rung
+      buildings), FAIL on the 1.0 build in mod/ (36 missing).
+    #>
+    $T = "vanilla's journal-entry-conditional AI desire dropped on the rungs"
+    $skip = Get-InstrumentArmSkip
+    if ($skip) { Add-Result 'L47' $T 'N/A' $skip; return }
+    if (-not (Test-Path (Join-Path $Mod 'common\buildings'))) { Add-Result 'L47' $T 'N/A' "no buildings in $Mod"; return }
+    $script = Join-Path $PSScriptRoot 'emit_ai_value_adds.mjs'
+    if (-not (Test-Path $script)) { Add-Result 'L47' $T 'FAIL' "detector missing: $script"; return }
+    $cfgFile = if ($Config) { $Config } else { Join-Path $Repo 'config\mod_config.json' }
+    if (-not [System.IO.Path]::IsPathRooted($cfgFile)) { $cfgFile = Join-Path $Repo $cfgFile }
+    if (-not (Test-Path $cfgFile)) { Add-Result 'L47' $T 'FAIL' "config not found: $cfgFile"; return }
+    # through cmd, never `& node … 2>&1` (an ErrorRecord would throw under Stop preference; see L31)
+    $out = & cmd /c "node ""$script"" ""$Mod"" ""$cfgFile"" --check 2>&1" | Out-String
+    if ($LASTEXITCODE -eq 0) { Add-Result 'L47' $T 'PASS' (($out.Trim() -split "`r?`n")[-1]) }
+    else { Add-Result 'L47' $T 'FAIL' ($out.Trim() + [Environment]::NewLine + 'FIX: emit_ai_value_adds.mjs must run in build.ps1 after emit_vanilla_refs.mjs (BALANCE_FRAMEWORK §10.109.2)') }
+}
+
 $CHECKS = @(
     @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
     @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
@@ -2077,7 +2106,9 @@ $CHECKS = @(
     # L44 counts each run's summaries against its years and reads the archiver's log for a disk stop (post-run).
     @{ Id = 'L44'; Artifact = $false; Fn = { Test-LmL44 } },
     # L45 reads the BUILT mod's journal entries against the installed game's syntax (an artifact check).
-    @{ Id = 'L45'; Artifact = $true;  Fn = { Test-LmL45 } }
+    @{ Id = 'L45'; Artifact = $true;  Fn = { Test-LmL45 } },
+    # L47 reads the BUILT mod's rung ai_values against vanilla's journal-entry-conditional adds (an artifact check).
+    @{ Id = 'L47'; Artifact = $true;  Fn = { Test-LmL47 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

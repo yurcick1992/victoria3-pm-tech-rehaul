@@ -34,3 +34,9 @@ enough. A change, if one is made, ships no earlier than mod 1.1 (BACKLOG E).
 **Possible fix:** teach the non-clone builder to carry the vanilla base building's conditional `ai_value = { … }`
 block onto its split tiers, on top of each tier's own value — a general capability that would cover every future
 split building with a conditional `ai_value`.
+
+**FIXED for mod 1.1 (2026-11-08; GAME_UPDATE_1_15.md Q7, the user: "A"; BALANCE_FRAMEWORK §10.109.2).** Game 1.15 made
+this one row fifteen industries (the five-year plan on thirteen, the Tsar's Great Reforms on munitions, a
+bureaucratic reform on paper, the renaissances on the art academy). `tools/emit_ai_value_adds.mjs` carries each
+tiered industry's vanilla conditional adds onto every NON-CRAFT rung, on top of its tier value (36 rung buildings
+on 1.15; a vanilla key inside them becomes an OR over the industry's non-craft rungs); landmine L47 checks the build.

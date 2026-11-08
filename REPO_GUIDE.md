@@ -734,7 +734,7 @@ every `node` step throws the build on a non-zero exit unless noted. Order as of 
 9. Canonical build only: `ui/data.js` (config, prices, tech index, `basic_secondaries.mjs --options`, the era_inverse subset, start rules),
    then `extract_vanilla.ps1`, `extract_icons.ps1`, `extract_presets.ps1`.
 10. `convert_history.ps1` — the 1836 start into `common/history/buildings`.
-11. `emit_secondaries` → `emit_craft_start` → `emit_vanilla_refs` → `emit_value_overrides` (last content emitter) → `check_dlc_gates` (on the final state).
+11. `emit_secondaries` → `emit_craft_start` → `emit_vanilla_refs` → `emit_ai_value_adds` → `emit_value_overrides` (last content emitter) → `check_dlc_gates` (on the final state).
 12. Linters, all skipped by `-NoLint`: `lint.sh` (bash; prints, never fails the build), then `lint_solvency` → `lint_tech_content` →
     `lint_start_conversion` → `lint_tier_eras` → `lint_pm_combos` (each throws).
 13. Build time stamped into the metadata `name`; `Invoke-ModChecks` (completeness, every `zzz_pm_rehaul` picture the script names present
@@ -746,7 +746,7 @@ Order dependencies the code relies on: emit_tech_finish after emit_techs and emi
 emit_research_levers after emit_dams (both edit `00_code_static_modifiers.txt`); emit_ai_schooling then emit_ai_treaty_ports (both edit
 `01_admin_strategies.txt`); emit_secondaries after convert_history (it rewrites the buildings' group lists and the 1836 history's methods);
 emit_craft_start after emit_secondaries (reads the final 1836 map and the scaled secondary jobs); emit_vanilla_refs after both and before
-emit_value_overrides (which edits two of its copies).
+emit_value_overrides (which edits two of its copies); emit_ai_value_adds after emit_vanilla_refs (it edits the final building files).
 
 Conventions every node emitter follows: `node tools/<x>.mjs <modDir> <config>`, game path from `VIC3_GAME`; config key absent → emits
 nothing; a vanilla file is owned only when the build changes it (a verbatim copy would freeze it against the next patch); whole-file copies
@@ -935,6 +935,12 @@ stale output except under `common/history`, which an emitter writing there must 
   (gated on its DLC). Every snippet and token count asserted; DLC gates counted per file; a scan of the game tree throws on any tiered
   reference left in an unowned file not on its ACCEPTED list. After a patch: `REFS_LEARN=1 node tools/emit_vanilla_refs.mjs <modDir> [config]`
   prints the counts without dying. Status: current (build step). Refs: POLISH_1_0.md §2, TIER_REFERENCE_AUDIT.md, ON_GAME_UPDATE.md.
+- **`tools/emit_ai_value_adds.mjs`** — `<modDir> <config> [--check]`: appends the if / else_if blocks of each tiered industry's vanilla
+  `ai_value` (journal-entry-conditional adds: the five-year plan, the Tsar's reforms, Metternich, the renaissances) to every NON-CRAFT rung's
+  ai_value on top of its tier value — a scalar becomes a block, a merge host's conditional block receives them before its close. A vanilla key
+  inside them becomes an OR over the industry's non-craft rungs; any other form of reference, any other top-level child, or a second run over
+  its own output throws. `--check` verifies a built mod (landmine L47). Runs after emit_vanilla_refs, before emit_value_overrides; no config
+  key (vanilla's behaviour carried for every book). Status: current (the 1.15 pass). Refs: BALANCE_FRAMEWORK §10.109.2, TESTBED_LANDMINES L47.
 - **`tools/emit_value_overrides.mjs`** — `vanilla_value_overrides` [{file, block, key, vanilla, value, why}]: one line of a named top-level block
   set to `value`; the key must sit exactly once in its block at the stated `vanilla` value (a patch that moves it throws — re-rule, never
   re-point); edits the build's copy if one exists, else copies vanilla whole; DLC gates counted before and after. Canon: the four flat research

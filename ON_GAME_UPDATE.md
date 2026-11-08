@@ -140,6 +140,15 @@ removes the pops files it wrote earlier, by their header.
 - *Breaks:* each key must sit exactly once in its block (throws). The file is the engine's always-applied global block: any patch to it reaches the
   game only through a rebuild.
 
+**Vanilla's journal-entry-conditional AI desire on the tiered industries** — `emit_ai_value_adds.mjs` (BALANCE_FRAMEWORK §10.109.2, from 1.15).
+- *What:* the if / else_if blocks of the `ai_value` of each tiered industry's vanilla building (`common/buildings/01_industry.txt`,
+  `06_urban_center.txt`), read live every build and carried onto every non-craft rung on top of its tier value (1.15.0: 36 rung buildings in 15
+  industries — the five-year plan on thirteen, the Tsar's Great Reforms on munitions, a bureaucratic reform on paper, Metternich and the
+  renaissances on the art academy). A vanilla key inside them becomes an OR over the industry's non-craft rungs.
+- *Breaks:* throws on an `ai_value` block that does not open with `value = N`, on a top-level child other than if / else_if / else, and on a
+  tiered vanilla key named in any form but `is_building_type`: read the new vanilla block and rule how to carry it. A patch that adds or drops
+  a block is carried automatically; L47 checks the build.
+
 **The four flat research adds** — `emit_value_overrides.mjs` (config `vanilla_value_overrides`, POLISH_1_0.md Q1, ×1/3).
 - *What:* `company_philips` innovation cap 15 → 5 (`company_types/00_companies_europe.txt`), `principle_advanced_research_3` cap 5 → 1.5
   (`power_bloc_principles/00_power_bloc_principles.txt`), `modifier_expedition_geographic_study` weekly innovation 10 → 3

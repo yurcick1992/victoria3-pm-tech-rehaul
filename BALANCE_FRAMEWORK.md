@@ -76,7 +76,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 | 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | ruled for mod 1.1 (game 1.15); .1 and .2 built 2026-11-08 in the 1.15 candidate book `g115-canon-bz-dcu` (not canonised); .3 in the trade maker, reaching a book at the 1.15 regeneration | here |
-| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33) | ruled for mod 1.1; .1 built in `make_value_overrides_config.mjs`, reaching a book at the 1.15 regeneration | here |
+| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat | ruled for mod 1.1; .1 built in `make_value_overrides_config.mjs`, reaching a book at the 1.15 regeneration; .2 built as a build step (`emit_ai_value_adds.mjs`, L47), every build | here |
 
 ---
 
@@ -4686,3 +4686,26 @@ whole base cap for twenty years.
 (recorded in `_value_overrides_variant`; a second add of the same line throws); `emit_value_overrides.mjs` asserts vanilla's 15 and 25 at build.
 Both files are owned already (`content_1_modifiers.txt` since 1.0; `00_companies_ip5.txt` by emit_companies on 1.15), so no new coupling file. A
 build of the candidate + the set on 1.15.0 (scratch, deleted) emitted both lines and passed every lint, the DLC-gate check and the preflight.
+
+### §10.109.2 — VANILLA'S JOURNAL-ENTRY-CONDITIONAL AI DESIRE CARRIED ONTO EVERY NON-CRAFT RUNG, FLAT (user-ruled 2026-11-08, Q7: "A")
+
+The ruling: the conditional `ai_value` adds of each tiered industry's vanilla building are carried onto every non-craft rung of the industry, as
+vanilla wrote them, on top of the rung's tier value (1,000 / 1,000 / 3,000 / 5,000). Not scaled to the tier value (option b, which would have
+put +12,500 on a t3 rung during a five-year plan), not left dropped (c). Crafts stay out: cheap craft levels would meet a five-year plan's level
+goal (Q11's lean).
+
+- **What vanilla carries (game 1.15.0):** the five-year plan (`je_five_year_plan`, command economies, no DLC) +2,500 on thirteen industries while
+  its light- or heavy-industry goal is unmet — food, textile, furniture, glass, tooling, paper; fertilizer, explosives, steel, motor, automotive,
+  synthetics, electrics; the Tsar's Great Reforms (IP5) munitions +2,000 while Russia has no munition plant at level 3, +3,000 more once it has
+  one; a bureaucratic reform paper +250; the art academy Metternich +500 (since 1.13), the Ukrainian / Belarusian renaissance +1,000, the Tsar's
+  Crown of Perfection +1,000. Arms and artillery carry none.
+- **Why §2.4 allows it:** §2.4 governs OUR AI values — tuned only so the AI follows profit. These are vanilla's own steering of its AI toward its
+  journal goals, carried unchanged; their reach is command economies and Russia while an entry runs. On 1.0 (game 1.13) only Metternich's existed;
+  F249 §5 found its absence changed nothing in Austria (BACKLOG, 2026-10-26).
+- **How it is carried:** `tools/emit_ai_value_adds.mjs`, a build step after `emit_vanilla_refs.mjs`: vanilla's if / else_if blocks appended to each
+  non-craft rung's ai_value (a scalar becomes a block; a merge host's own technology condition, §10.91.2, stays first). Vanilla's
+  `is_building_type = building_munition_plant` becomes an OR over the munition rungs, so "a munition plant at level 3" is any munition rung at
+  level 3. Any other form of reference to a tiered key throws. It is vanilla's behaviour, not a book field: every book built from 2026-11-08
+  carries it (a rebuild of the 1.0 canon on game 1.13 would carry Metternich's +500).
+- **Guarded:** landmine L47 (`Test-LmL47`, the step's `--check` on the built mod). Proven: PASS on the candidate's 1.15 build (36 rung buildings in
+  15 industries), FAIL on the 1.0 build (36 missing); the step throws on a doctored vanilla reference and on a second run.

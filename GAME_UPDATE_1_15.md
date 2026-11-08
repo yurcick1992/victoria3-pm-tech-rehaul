@@ -208,7 +208,9 @@ an intermediate one.
 - **U35d** · N/B · vanilla now raises the tiered industries' `ai_value` while journal entries run: the new five-year plan (`je_five_year_plan`, no
   DLC) +2,500 on food, textile, furniture, glass, tooling, paper, explosives, synthetics, steel, motor, automotive, electrics; munitions
   +2,000 / +3,000 under the Tsar's Great Reform, paper +250, the art academy +1,000 twice (dlc019) · every rung carries the flat tier ladder, so
-  the boosts vanish on the 17 industries (they stay on shipyards and power plants) · OPEN (Q7).
+  the boosts vanish on the 17 industries (they stay on shipyards and power plants) · RULED 2026-11-08 (Q7, BALANCE_FRAMEWORK §10.109.2): carried
+  onto every non-craft rung, flat; BUILT (`tools/emit_ai_value_adds.mjs`, a build step; L47). The plan covers thirteen industries, fertilizer
+  among them (the list above missed it).
 - **U35e** · B · `MONEY_SPENDING_CONSTRUCTION_MAX_INVESTMENT_POOL_WEEKS` 52 (new): a construction shortfall becomes a must-have once the pool holds a
   year of inflow — with the canon's CRITICAL 1.0, any shortfall; three private-scorer keys removed from file and exe · §10.75's set, H, misplaced
   capital (widens U33, U38) · OPEN (Q8): measure U62 on the canon's set, or add an arm with vanilla's pool defines.
@@ -308,8 +310,8 @@ an intermediate one.
   touched, 59 levels-in-region tests) · DONE.
 - **U54** · N · = U35d: vanilla 1.15's journal-entry-conditional `ai_value` on 16 of the 17 tiered industries' buildings is dropped on every rung
   (the building emitter writes the flat tier value only; in the probe build only the shipyard and the power plant keep the block) ·
-  `MISSING_BUILDING_CONDITIONS.md` already proposes the fix (one row today, 17 otherwise) · OPEN (Q7): carry vanilla's adds onto every non-craft
-  rung on top of its tier value, or not (§2.4).
+  `MISSING_BUILDING_CONDITIONS.md` already proposes the fix (one row today, 17 otherwise) · DONE 2026-11-08 (Q7): carried onto every non-craft
+  rung on top of its tier value by `emit_ai_value_adds.mjs`; 36 rung buildings in 15 industries on 1.15.0; landmine L47 checks the build.
 - **U55** · N · three new vanilla tests count building-group LEVELS, which the crafts inflate ×10 per worker: the five-year plan's light-industry
   goal (initial × 1.25, at least +10 levels — ten craft levels, ~60 construction points, meet it), the Tsar's favourite-industry mission (light
   industry picked), and the AI decree effect that takes the top five states by manufacturing levels (≥ 10) · TIER_REFERENCE_AUDIT G1–G3 (crafts
@@ -400,7 +402,11 @@ every lint); in a book at Q1's regeneration. · CLOSED.
 no DLC), the Tsar's Great Reforms (munitions +2,000 / +3,000), paper +250, the art academy +1,000 twice (dlc019) — every rung carries the flat
 tier value, so these vanish on the 17 industries. They are vanilla's own steering of its AI toward its journal goals, not a design lever of
 ours (§2.4 concerns our levers). **Recommended: carry them onto every non-craft rung, on top of the tier value
-(`MISSING_BUILDING_CONDITIONS.md`'s fix).**
+(`MISSING_BUILDING_CONDITIONS.md`'s fix).** **RULED 2026-11-08 (user): "A", flat on every non-craft rung** — BALANCE_FRAMEWORK §10.109.2.
+BUILT as a build step, `tools/emit_ai_value_adds.mjs` (after `emit_vanilla_refs`): 36 rung buildings in 15 industries carry vanilla's adds
+(the five-year plan on thirteen, fertilizer included; munitions' Great Reforms with its `building_munition_plant` test widened to every
+munition rung; paper +250; the art academy's three); landmine L47 (`Test-LmL47`) proven both ways; a dry build of the candidate passes. Not a
+book field: every book built from now on carries it. · CLOSED.
 
 **Q8 · the AI's new pool rule (U35e, U57).** `MONEY_SPENDING_CONSTRUCTION_MAX_INVESTMENT_POOL_WEEKS` 52 makes a construction shortfall a
 must-have once the pool holds a year of inflow; with the canon's CRITICAL threshold 1.0 that is any shortfall; three private-scorer defines
@@ -413,7 +419,8 @@ the two laws that entry counts. **Recommended: test vanilla's `has_factory_counc
 agitation set (a book change in Q1's regeneration).**
 
 **Q10 · detectors (U56).** The reference scan (L40) reads only `building_` / `pm_` tokens outside `common/buildings`, so neither Q7 nor Q11
-tripped it. **Recommended: a scan for level counts on the tiered building groups (both syntaxes) and the building-block diff.**
+tripped it. **Recommended: a scan for level counts on the tiered building groups (both syntaxes) and the building-block diff.** (Q7's case
+has its own detector since 2026-11-08, L47; Q11's has none yet.)
 
 **Q11 · crafts in 1.15's new level counts (U55).** The five-year plan's light-industry goal, the Tsar's favourite-industry mission and the AI's
 decree targeting count group levels, which the crafts inflate tenfold per worker (ten craft levels meet the plan's +10). **Recommended: crafts

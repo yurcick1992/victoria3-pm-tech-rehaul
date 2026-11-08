@@ -110,6 +110,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L44 | a run that completes while its save summaries stopped part-way (the archiver stopped on low disk) | `Test-LmL44` | session | AUTO, proven; the harness side open (BACKLOG) |
 | L45 | a journal entry in the old syntax (complete / invalid / fail) ships dead on a game that dropped it (1.15); widened: an entry without the `activation_description` every 1.15 entry carries | `Test-LmL45` | every build | AUTO, proven; fixed |
 | L46 | a save summarised against another game version's tables: goods keyed by position, one place off from copper on (1.15) | `save_state_summary.mjs`'s own version check (throws) | every summary | AUTO, proven; fixed |
+| L47 | vanilla's journal-entry-conditional AI desire (the five-year plan, the Tsar's reforms, Metternich) dropped on every rung, each its own building with one tier value (1.15) | `Test-LmL47` (`emit_ai_value_adds.mjs --check`) | every build | AUTO, proven; fixed |
 
 ---
 
@@ -1093,4 +1094,22 @@ were guarded; the goods count was not, and a goods count cannot tell which versi
 **Detector and fix.** The reader compares the save's `meta_data` `version` (major.minor) with the game folder's (its launcher settings, or a kept
 copy's `SNAPSHOT.txt`) and throws on a mismatch; `--game` defaults to `VIC3_GAME`. Proven: a 1.13.11 save of the n=64 batch read against 1.15
 throws ("save is game 1.13.11, the tables are read from game 1.15.0"); the same save with `VIC3_GAME` at the 1.13.11 copy summarises.
-Re-summarising an old session: `VIC3_GAME=C:claude-codeic3_game_1.13.11game`.
+Re-summarising an old session: `VIC3_GAME=C:\claude-code\vic3_game_1.13.11\game`.
+
+### L47 — vanilla's journal-entry-conditional AI desire dropped on the rungs
+
+**Defect.** Vanilla raises an industry building's `ai_value` while some journal entries run. Game 1.15 added the five-year plan (+2,500 on
+thirteen industries while the plan's light- or heavy-industry goal is unmet), the Tsar's Great Reforms (munitions +2,000 / +3,000), a
+bureaucratic reform (paper +250) and the art academy's renaissances (+1,000); Metternich's +500 on the art academy dates from 1.13. Each rung of
+ours is its own building carrying ONE value from the tier ladder, written by `build.ps1`, so every add was dropped. Nothing fails: no linter
+reads the emitted `ai_value`, and the game simply builds less of what its journal entries ask for.
+
+**Found.** 2026-11-08, the 1.15 pass (GAME_UPDATE_1_15 U35d, U54; `MISSING_BUILDING_CONDITIONS.md` had listed Metternich's since 1.0). Ruled
+carried onto every non-craft rung, on top of its tier value (BALANCE_FRAMEWORK §10.109.2, the user, Q7).
+
+**Detector and fix.** `tools/emit_ai_value_adds.mjs` runs in `build.ps1` after `emit_vanilla_refs.mjs`: it appends the if / else_if blocks of
+each tiered industry's vanilla `ai_value` to every non-craft rung (a vanilla key inside them becomes an OR over the industry's non-craft rungs;
+any other form of reference throws), and refuses a second run. `Test-LmL47` runs it with `--check` on the BUILT mod: every non-craft
+building of every industry whose vanilla building has conditional adds must carry them once, with vanilla's count of children; no craft may.
+Proven 2026-11-08: PASS on the 1.15 candidate's build (36 rung buildings in 15 industries), FAIL on the 1.0 build in `mod/` (36 missing); the
+emitter throws on a doctored vanilla file naming the munition plant through `has_building`, and on a second run over its own output.

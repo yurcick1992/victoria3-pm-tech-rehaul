@@ -1830,6 +1830,13 @@ if ($LASTEXITCODE -ne 0) { throw "emit_craft_start.mjs failed (exit $LASTEXITCOD
 & node (Join-Path $PSScriptRoot 'emit_vanilla_refs.mjs') $modAbs $cfgPath
 if ($LASTEXITCODE -ne 0) { throw "emit_vanilla_refs.mjs failed (exit $LASTEXITCODE) - vanilla script would keep pointing at rung 0." }
 
+# ⭐ VANILLA'S JOURNAL-ENTRY-CONDITIONAL AI DESIRE ONTO THE RUNGS (BALANCE_FRAMEWORK §10.109.2, user-ruled 2026-11-08, GAME_UPDATE_1_15 Q7):
+#   the if / else_if blocks of each tiered industry's vanilla ai_value (the five-year plan, the Tsar's reforms, Metternich ...) appended to
+#   every NON-CRAFT rung's ai_value on top of its tier value; a vanilla key inside them rewritten to the industry's non-craft rungs. Edits
+#   the building files this script wrote; throws on a form it does not know. Preflight L47 checks the result.
+& node (Join-Path $PSScriptRoot 'emit_ai_value_adds.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_ai_value_adds.mjs failed (exit $LASTEXITCODE) - vanilla's journal-entry AI desire would be dropped on the rungs." }
+
 # ⭐ RULED VANILLA VALUES, CHANGED IN PLACE (config `vanilla_value_overrides`, tools/emit_value_overrides.mjs; first use: the four flat
 #   research bonuses x1/3, POLISH_1_0.md Q1). LAST among the content emitters: a file an earlier step already wrote (the company files,
 #   the reference fix's transforms, the static modifiers) is edited in that copy, never re-copied from vanilla. Absent -> nothing.
