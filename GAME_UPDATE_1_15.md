@@ -345,7 +345,12 @@ pace; the foundry group names two bronze methods 1.0's owned method file lacks; 
 engine expects. The 1.0 book alone cannot be rebuilt for 1.15 (the start conversion stops on the bronze methods), so any fix ships at least the
 bronze variants. Options: (a) a KNOWN_ISSUES line and a Workshop notice now ("1.0 is for game 1.13; on 1.15 research is broken; 1.1 follows");
 (b) an early release of the candidate (Q1), unmeasured over a century on 1.15; (c) both, (b) once Q1–Q3 are settled. **Recommended: (a) now,
-then (b) after one century of the candidate reads intact.**
+then (b) after one century of the candidate reads intact.** **RULED 2026-11-08 (user): no KNOWN_ISSUES line** — *"The version compatibility is
+explicitly declared. No-one would expect 1.0 to even launch with 1.15."* The published 1.0 declares `supported_game_version` 1.13.* (the
+deployed copy confirms it), so the launcher marks it out of date on 1.15. The same reasoning covers the Workshop notice (an inference, not
+ruled in words). With no player expected on the old build, the early release (b) loses its urgency: the 1.1 release waits on Q1 and Q12 like
+any other. ⚠ The repository's `mod/.metadata/metadata.json` already says 1.15.* over the 1.0 build (U70), so the Workshop item must not be
+re-uploaded from `mod/` until the 1.1 build replaces it. · CLOSED.
 
 **Q1 · canonise the 1.15 candidate (U06; CLAUDE.md §4.4).** `config/mod_config.g115-canon-bz-dcu.json` is the canon's chain replayed on 1.15
 (proven on 1.13.11: the canon field for field) + bronze artillery (§10.108.2) + dam copper (§10.108). Its whole field diff against the canon:
