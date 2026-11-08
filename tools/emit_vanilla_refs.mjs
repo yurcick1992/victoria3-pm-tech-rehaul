@@ -259,6 +259,16 @@ const SPEC = {
     crafts: true,
     snips: [{ re: /"state_has_building_group_levels\(bg_manufacturing\)"/g,
       to: () => reg(VAL, 'pmr_manufacturing_levels_nc', manufacturingLevelsNc), n: 2 }], n: 0 },
+  // ---- G7: an interest group's negotiation promise to expand a building group (IP4; since 1.13, missed by the 1.0 audit; found for
+  //      GAME_UPDATE_1_15 Q10 / landmine L48): crafts out when the promised group is light industry, native counts as G4–G6
+  'common/script_values/negotiation_values.txt': {                                            // G7: the existing levels and the target
+    crafts: true,
+    snips: [{ re: /add\s*=\s*"owner\.country_has_building_group_levels\(scope:ig_for_calc\.var:promised_building_group\)"/g,
+      to: () => `add = { value = "owner.country_has_building_group_levels(scope:ig_for_calc.var:promised_building_group)"  if = { limit = { scope:ig_for_calc.var:promised_building_group ?= bg:bg_light_industry }  subtract = "owner.country_has_building_group_levels(${CRAFT_BG})" } }`, n: 2 }], n: 0 },
+  'common/journal_entries/00_negotiation_quests_je.txt': {                                    // G7: the promise's completion
+    crafts: true,
+    snips: [{ re: /country_has_building_group_levels\s*=\s*\{\s*type\s*=\s*scope:ig\.var:promised_building_group\s*value\s*>=\s*(scope:ig\.var:building_group_level_increase)\s*\}/g,
+      to: (_, tgt) => `scope:ig.building_group_levels_existing >= ${tgt}`, n: 1 }], n: 0 },
   'common/laws/01_economic_system.txt': {                                                      // A17: the ban demolishes EVERY rung
     snips: [{ re: /if\s*=\s*\{\s*limit\s*=\s*\{\s*has_building\s*=\s*(building_[a-z_0-9]+)\s*\}\s*remove_building\s*=\s*\1\s*\}/g,
       to: (whole, k) => {

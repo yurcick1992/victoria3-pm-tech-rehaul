@@ -448,7 +448,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays, as readings (.1: one four-column scorecard, the loss to the footer, world / shortlist views, nothing past the right edge; the canonical ledger form since 2026-10-29) | in force (§5.6) |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (power plant, dam, electric streetlights); nothing happens when a state loses it | deferred to mod 1.1 (performance risk); 1.0 known issue |
 | 10.108 | copper (mod 1.1): the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights stay exactly as in 1.0 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery: a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2) | in force (the canon since 2026-11-08) |
-| 10.109 | the game 1.15 pass rulings, one per question of GAME_UPDATE_1_15 phase 5: .1 the two new flat research adds ×1/3; .2 vanilla's journal-entry-conditional AI desire carried onto every non-craft rung (L47); .3 the contagious-ideas entries follow 1.15's laws; .4 crafts out of 1.15's new level counts, by native counts; .5 the 1.15 canon; canonisation declares the main line, not a quality stamp | in force (the canon since 2026-11-08; .2 and .4 are build steps) |
+| 10.109 | the game 1.15 pass rulings, one per question of GAME_UPDATE_1_15 phase 5: .1 the two new flat research adds ×1/3; .2 vanilla's journal-entry-conditional AI desire carried onto every non-craft rung (L47); .3 the contagious-ideas entries follow 1.15's laws; .4 crafts out of 1.15's new level counts, by native counts; .5 the 1.15 canon; canonisation declares the main line, not a quality stamp; .6 detectors L48 (level counts that see crafts) and L49 (dropped building fields), the negotiation promise crafts out | in force (the canon since 2026-11-08; .2 and .4 are build steps) |
 
 ---
 
@@ -623,8 +623,8 @@ live figure (by field diff). F249 and F250 measured `728f2c7f84e6f467` (the same
 (`art/`: the square and the 16:9 thumbnail, three technology icons, three method icons; POLISH R2, R5, R10), vanilla's electricity gate on our
 main methods (`required_input_goods = electricity`, POLISH B4; on 1.15 also on vanilla's own automated bakery, U28), the naval research entries
 naming their ship types (BUGS_AND_FIXES 2026-10-27), the 1.15 journal-entry syntax (`outcome`, `activation_description`; U21, U27), vanilla's
-journal-entry-conditional AI desire on every non-craft rung (§10.109.2, L47), and the crafts kept out of 1.15's new level counts by native counts
-(§10.109.4, with an init tripwire on its premise). The electricity BUILD condition of §10.106 is NOT in it (deferred; a known issue). The
+journal-entry-conditional AI desire on every non-craft rung (§10.109.2, L47), and the crafts kept out of 1.15's new level counts and IP4's negotiation promise by native counts
+(§10.109.4, §10.109.6, with an init tripwire on its premise; landmines L48 and L49 guard the class). The electricity BUILD condition of §10.106 is NOT in it (deferred; a known issue). The
 repository builds for game 1.15 only (GAME_UPDATE_1_15 U72).
 
 **What it contains is everything §1.2 describes, built by the formula of §1.3 at the values given there.** The provenance records inside the book —
@@ -684,7 +684,7 @@ What §1.2 and §1.3 leave out:
   - misplaced capital above vanilla's;
   - military technology behind vanilla's count (deferred to mod 1.1, with the user's AI-weight approach);
   - **game 1.15** (mod 1.1; installed 2026-11-08, 1.15.0): the pass is `GAME_UPDATE_1_15.md`, its phase-5 questions walked with the user one
-    at a time (Q0–Q3, Q6, Q7, Q9, Q11 ruled 2026-11-08; the canon moved to 1.15 with Q1). The hiring and wage rebalance moves the premise of
+    at a time (Q0–Q3, Q6, Q7, Q9–Q11 ruled 2026-11-08; the canon moved to 1.15 with Q1). The hiring and wage rebalance moves the premise of
     §2.1 (its ~0.66× line is game 1.13.11's until measured); rakaly melts a 1.15 save whole but for one unnamed key and a stop at its last
     token, which `save_state_summary.mjs` tolerates and the other readers avoid with `--unknown-key ignore` (U07, Q3; TESTBED_METRICS §7), so
     the register reads 1.15 runs; the vanilla references are all 1.13.11 until a 1.15 vanilla batch (Q12).

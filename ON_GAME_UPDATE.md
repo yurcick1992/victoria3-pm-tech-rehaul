@@ -236,6 +236,10 @@ removes the pops files it wrote earlier, by their header.
     crafts out as the parent group's count minus `bg_pmr_crafts`'s — two native lookups, which assumes the engine's group-level counters include
     child groups (vanilla's decrees rely on it; a debug build's init on_action checks it once a game, `PM_TECH_REHAUL WARN`). A patch that
     moves the crafts out of `bg_light_industry`, or counts a new parent group, owes these a look.
+  - **and two for IP4's negotiation promise** (G7, Q10): `script_values/negotiation_values`, `journal_entries/00_negotiation_quests_je` (78
+    files). **Landmine L48** (`lint_group_levels.mjs`) fails the build on any level count that sees the crafts and is neither native nor
+    reviewed, so a patch that adds one is caught; **L49** (`lint_building_blocks.mjs`) fails it on a field of a tiered industry's vanilla
+    building that the rungs lack or change.
 - *Breaks:* every snippet and token count is asserted (throws). A scan of the whole game tree throws on a tiered vanilla key, a vanilla main method or
   a renamed secondary in any file nobody owns, unless `ACCEPTED` names it (10 entries on 1.15, each with its reason: the 1.15 `99_ru_custom_loc_V3`
   and the Montenegro check moved to `scripted_effects/00_victoria_on_actions_effects`).

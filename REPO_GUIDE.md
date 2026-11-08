@@ -995,6 +995,13 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
   `.trigger`, `monthly_global_effect`) and records `_research_conditions_variant`; each `from` must occur exactly once (a moved base or a second
   application throws). Sets: `g115-idea-laws` (socialism counts factory councils as a law or an amendment; political agitation counts the
   extraordinary commission). Status: current (the 1.15 pass). Refs: §10.109.3.
+- **`tools/lint_group_levels.mjs`** — `<modDir> <config>`: landmine L48. Every `country_has_building_group_levels` / `state_has_building_group_levels`
+  (data function or trigger) in the game's text as the mod ships it, on a group that holds the craft group or on a variable group, must subtract
+  the craft group's count in its block or be in `REVIEWED` with its exact count and reason; exit 1 otherwise. Status: current (preflight).
+  Refs: §10.109.4, §10.109.6, TESTBED_LANDMINES L48.
+- **`tools/lint_building_blocks.mjs`** — `<modDir> <config>`: landmine L49. Every top-level field of each tiered industry's vanilla building must
+  reach every non-craft rung with vanilla's content (technology, method groups and cost per rung; `ai_value`'s adds by L47; `aliases` on the
+  anchor only), or be in `KNOWN` with its reason; exit 1 otherwise. Status: current (preflight). Refs: §10.109.6, TESTBED_LANDMINES L49.
 
 - **`tools/make_artisan_config.mjs`** — turns the six light-industry t0 rungs into 500-worker craft rungs: per-level recipe, a 5,000-head
   staffing block × `workforce_mult` 0.1, cost ÷ 50, group `bg_pmr_crafts` (+ `building_groups_add`), `levels_per_mesh` 500, excluded

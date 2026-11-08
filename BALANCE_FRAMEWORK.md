@@ -76,7 +76,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 | 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | in force: the canon since 2026-11-08 (§10.109.5) | here |
-| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission); .4 crafts out of 1.15's three new level counts, by native counts (the group minus the craft group, never a loop); .5 the 1.15 canon (`a52b0aca`), and canonisation declares the main line, not a quality stamp | in force: the canon since 2026-11-08 (.1 and .3 in the book through their makers; .2 and .4 build steps — `emit_ai_value_adds.mjs`, L47; `emit_vanilla_refs.mjs` G4–G6 + an init tripwire) | here |
+| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission); .4 crafts out of 1.15's three new level counts, by native counts (the group minus the craft group, never a loop); .5 the 1.15 canon (`a52b0aca`), and canonisation declares the main line, not a quality stamp; .6 detectors L48 / L49 and IP4's negotiation promise crafts out (G7) | in force: the canon since 2026-11-08 (.1 and .3 in the book through their makers; .2 and .4 build steps — `emit_ai_value_adds.mjs`, L47; `emit_vanilla_refs.mjs` G4–G6 + an init tripwire) | here |
 
 ---
 
@@ -4773,3 +4773,17 @@ quality stamp."*
 - **The principle:** canonisation declares an approach the main line. It does not certify that the approach measured well; a ruled change is
   canonised before the batch that measures it, and only a hypothesis that may be genuinely retracted runs as a non-canon arm (CLAUDE.md §4.4).
 - **The 1.0 canon** (`jex-dam4s-rs-x25-m10ac-dpriv-wm99`, mod 1.0 on game 1.13) stays as the record; its release build is commit `796ce9f`.
+
+### §10.109.6 — TWO DETECTORS, AND THE NEGOTIATION PROMISE'S CRAFTS OUT (user-ruled 2026-11-08, Q10: "A")
+
+The ruling: both detectors the agenda proposed, and the case the first one found fixed the way Q11 fixed its own.
+- **L48, the group-level count scan** (`tools/lint_group_levels.mjs`, in every build's preflight): every count of a building group's levels
+  that sees the crafts (light industry, manufacturing, a variable group) takes them out natively or is reviewed with its reason.
+- **L49, the building-block diff** (`tools/lint_building_blocks.mjs`): every field of a tiered industry's vanilla building reaches every
+  non-craft rung with vanilla's content, or is catalogued; today none differs.
+- **G7, IP4's negotiation promise** (since 1.13, missed by the 1.0 audit): an interest group's demand to raise a building group's levels counts
+  the crafts when the group is light industry, so cheap craft levels met it. Its existing count, its target and its completion now subtract the
+  craft group's count (§10.109.4's native form; `emit_vanilla_refs.mjs`, two more owned vanilla files: `script_values/negotiation_values.txt`,
+  `journal_entries/00_negotiation_quests_je.txt`). Kept as vanilla: `building_group_can_be_promised` (an existence test, ≥ 1 level — a craft is
+  light industry, and promising to expand light industry where only crafts stand is sound).
+Built 2026-11-08 into the canon build (147 replaced files), deployed; L47–L49 pass on it. A build step, every book.

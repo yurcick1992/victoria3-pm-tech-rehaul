@@ -111,6 +111,8 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L45 | a journal entry in the old syntax (complete / invalid / fail) ships dead on a game that dropped it (1.15); widened: an entry without the `activation_description` every 1.15 entry carries | `Test-LmL45` | every build | AUTO, proven; fixed |
 | L46 | a save summarised against another game version's tables: goods keyed by position, one place off from copper on (1.15) | `save_state_summary.mjs`'s own version check (throws) | every summary | AUTO, proven; fixed |
 | L47 | vanilla's journal-entry-conditional AI desire (the five-year plan, the Tsar's reforms, Metternich) dropped on every rung, each its own building with one tier value (1.15) | `Test-LmL47` (`emit_ai_value_adds.mjs --check`) | every build | AUTO, proven; fixed |
+| L48 | a count of a building group's LEVELS that sees the crafts (light industry, manufacturing or a variable group), each craft level a tenth of a factory's workers and nearly free (1.15; IP4's promise since 1.13) | `Test-LmL48` (`tools/lint_group_levels.mjs`) | every build | AUTO, proven; fixed |
+| L49 | a field of a tiered industry's vanilla building that the tier split drops or changes (1.15's conditional ai_value was one) | `Test-LmL49` (`tools/lint_building_blocks.mjs`) | every build | AUTO, proven; clean |
 
 ---
 
@@ -1113,3 +1115,33 @@ any other form of reference throws), and refuses a second run. `Test-LmL47` runs
 building of every industry whose vanilla building has conditional adds must carry them once, with vanilla's count of children; no craft may.
 Proven 2026-11-08: PASS on the 1.15 candidate's build (36 rung buildings in 15 industries), FAIL on the 1.0 build in `mod/` (36 missing); the
 emitter throws on a doctored vanilla file naming the munition plant through `has_building`, and on a second run over its own output.
+
+### L48 — a level count that sees the crafts
+
+**Defect.** A craft level is 500 workers against a factory level's 5,000 and costs a fiftieth, so a count of a building group's LEVELS on light
+industry, manufacturing or a variable group counts the crafts ten times over per worker and nearly free. The reference scan (L40) reads only
+building and method keys, so a new count fails nothing: game 1.15 added three (the five-year plan, the Tsar's favourite industry, the AI's
+decree states; GAME_UPDATE_1_15 Q11), and IP4's interest-group promise to expand a building group had one since 1.13 that the 1.0 audit missed.
+
+**Found.** 2026-11-08, GAME_UPDATE_1_15 Q10 (the user: build the detectors). Fixed: G4–G7 take the crafts out natively (§10.109.4, §10.109.6).
+
+**Detector and fix.** `tools/lint_group_levels.mjs <modDir> <config>` reads the game's text as the mod ships it (the mod's copy where it ships
+the path, plus its own files) and finds every `country_has_building_group_levels` / `state_has_building_group_levels`, data function or
+trigger, whose group holds the craft group (from `common/building_groups`) or is a variable. Each must be followed in its block by a subtract
+of the craft group's count, or be reviewed in the tool's `REVIEWED` table with its exact count and reason (IP4's existence test
+`building_group_can_be_promised`; the debug build's own init tripwire). `Test-LmL48` runs it on the built mod. Proven 2026-11-08: FAIL on the
+canon build made before G7 (the promise's three counts), PASS after (10 counts: 8 native, 2 reviewed).
+
+### L49 — a vanilla building field the tier split drops
+
+**Defect.** `build.ps1` writes each rung's building block from the config, not by copying vanilla's, so a field a patch adds to an industry's
+vanilla building — or a value it changes — never reaches the rungs, and nothing fails. Game 1.15 did exactly that with the conditional
+`ai_value` (U54; carried since, checked by L47). `MISSING_BUILDING_CONDITIONS.md` proposed this diff in 1.0.
+
+**Found.** 2026-11-08, GAME_UPDATE_1_15 Q10.
+
+**Detector.** `tools/lint_building_blocks.mjs <modDir> <config>`: for each tiered industry, every top-level field of its vanilla building must
+reach every non-craft rung with vanilla's content (comments stripped, whitespace collapsed); the rung's technology, method groups and cost
+differ by design, `ai_value`'s adds are L47's, `aliases` belong to the anchor only, and anything else that differs must be listed in the tool's
+`KNOWN` table and in `MISSING_BUILDING_CONDITIONS.md`. `Test-LmL49` runs it on the built mod. Proven 2026-11-08: FAIL on a rung doctored to drop
+`possible` and change `levels_per_mesh`, FAIL on a vanilla steel mill doctored to gain `unique = yes`, PASS on the canon build (44 rungs; KNOWN empty).

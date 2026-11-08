@@ -324,8 +324,8 @@ an intermediate one.
   syntaxes (a data function in a variable, a dynamic group variable, an `order_by` over states) and needs an in-game check, about an hour. Without
   it, KNOWN_ISSUES gets a line: a five-year plan's light-industry goal can be met with crafts.
 - **U56** · T · the vanilla-references scan (L40) matches only `building_` / `pm_` tokens and skips `common/buildings`, so neither U54 nor U55
-  tripped anything · OPEN (Q10): a scan for level counts on the tiered building groups (both syntaxes) and the building-block diff
-  `MISSING_BUILDING_CONDITIONS.md` proposes.
+  tripped anything · RULED 2026-11-08 (Q10, §10.109.6) and BUILT: L48 (`tools/lint_group_levels.mjs`, the level-count scan) and L49
+  (`tools/lint_building_blocks.mjs`, the building-block diff), both proven; L48's first run found IP4's negotiation promise (G7), fixed.
 - **U57** · = U35e (the pool-weeks define) · OPEN (Q8).
 - **U58** · N · `law_extraordinary_commission` is unlocked by Political Agitation, like the two laws that idea entry already counts · RULED
   2026-11-08 (Q9, §10.109.3): counted; BUILT in the same set as U35f, in a book at Q1's regeneration.
@@ -444,6 +444,11 @@ the 45% literacy line both hold it back, and the probe's Russia meets neither by
 **Q10 · detectors (U56).** The reference scan (L40) reads only `building_` / `pm_` tokens outside `common/buildings`, so neither Q7 nor Q11
 tripped it. **Recommended: a scan for level counts on the tiered building groups (both syntaxes) and the building-block diff.** (Q7's case
 has its own detector since 2026-11-08, L47; Q11's four rewrites assert their counts at build, and its premise has an init tripwire.)
+**RULED 2026-11-08 (user): "A"** — both detectors, and the negotiation promise crafts out (BALANCE_FRAMEWORK §10.109.6). BUILT: L48 found
+exactly the promise's three counts on the canon build made before the fix (and the debug init tripwire, reviewed), and passes after it (10
+counts: 8 native, 2 reviewed — the existence test `building_group_can_be_promised` and the tripwire); L49 passes (44 rungs, nothing catalogued)
+and fails on a rung doctored to drop `possible` and on a vanilla building doctored to gain a field. G7 owns two more vanilla files. The
+canon was rebuilt and deployed with it. · CLOSED.
 
 **Q11 · crafts in 1.15's new level counts (U55).** The five-year plan's light-industry goal, the Tsar's favourite-industry mission and the AI's
 decree targeting count group levels, which the crafts inflate tenfold per worker (ten craft levels meet the plan's +10). **Recommended: crafts
@@ -502,7 +507,7 @@ made to reproduce the committed file (U22: the five proofread names and Saratov 
   `00_ip5_06_modifiers.txt`, `00_rlit_progress_bars.txt`, `00_rlit_scripted_triggers.txt`, `00_rlit_static_modifiers.txt`,
   `00_victoria_progress_bars.txt`, `08_tsarpoints_buttons.txt`, `ip5_russian_events_03.txt`, `rlit_cluster1_golden_age.txt`,
   `rlit_cluster2_crossroads.txt` (U05's A79–A86 and G2), and since Q11 four more: `ip5_je_values.txt`, `00_communism.txt`, `08_tsarpoints.txt`,
-  `00_ai_decree_effects.txt`; regenerate the list from the release build.
+  `00_ai_decree_effects.txt`, and since Q10 two: `negotiation_values.txt`, `00_negotiation_quests_je.txt`; regenerate the list from the release build.
 - **U71** · T · the docs that name the 2026-11-07 additions: REPO_GUIDE entries for `tools/game_diff.mjs`, `tools/lint_vanilla_names.mjs`,
   `tools/lib_pdx_script.mjs` and the `game-update` skill; a CLAUDE.md §5.2 row for the per-version register; a BACKLOG line pointing here ·
   DONE 2026-11-08 in the batch session's close-out commit (REPO_GUIDE: the three tools, this register beside ON_GAME_UPDATE with the skill's

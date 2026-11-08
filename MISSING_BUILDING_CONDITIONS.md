@@ -15,7 +15,8 @@ conditions → this doc.
 `ai_value` block, `should_auto_expand`, `potential`, `possible`, a `unique` flag, a scripted trigger inside
 the building, …), **append it here** rather than fixing it piecemeal. Re-audit after any tiering change or
 game patch. *(Future: a tool could generate this by diffing each replaced vanilla building block against what
-the builder emits — a sibling to `tools/audit_pm_refs.ps1`.)*
+the builder emits — a sibling to `tools/audit_pm_refs.ps1`.)* **Built 2026-11-08: `tools/lint_building_blocks.mjs`, landmine L49** — it fails the
+build on any field the rungs drop or change unless its `KNOWN` table names it; an entry there belongs here too (GAME_UPDATE_1_15 Q10).
 
 The non-clone builder path emits a **scalar** `ai_value` (per-tier override, else the config
 `building.ai_value`, else engine default); it cannot emit a conditional `ai_value = { … }` block. The

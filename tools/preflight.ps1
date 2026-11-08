@@ -2043,6 +2043,47 @@ function Test-LmL47 {
     else { Add-Result 'L47' $T 'FAIL' ($out.Trim() + [Environment]::NewLine + 'FIX: emit_ai_value_adds.mjs must run in build.ps1 after emit_vanilla_refs.mjs (BALANCE_FRAMEWORK §10.109.2)') }
 }
 
+# L48 and L49 run a node lint on the BUILT mod and the config; one helper keeps their plumbing alike.
+function Invoke-ModLint([string]$Id, [string]$Title, [string]$ScriptName, [string]$Fix) {
+    $skip = Get-InstrumentArmSkip
+    if ($skip) { Add-Result $Id $Title 'N/A' $skip; return }
+    if (-not (Test-Path (Join-Path $Mod 'common'))) { Add-Result $Id $Title 'N/A' "no common/ in $Mod"; return }
+    $script = Join-Path $PSScriptRoot $ScriptName
+    if (-not (Test-Path $script)) { Add-Result $Id $Title 'FAIL' "detector missing: $script"; return }
+    $cfgFile = if ($Config) { $Config } else { Join-Path $Repo 'config\mod_config.json' }
+    if (-not [System.IO.Path]::IsPathRooted($cfgFile)) { $cfgFile = Join-Path $Repo $cfgFile }
+    if (-not (Test-Path $cfgFile)) { Add-Result $Id $Title 'FAIL' "config not found: $cfgFile"; return }
+    $out = & cmd /c "node ""$script"" ""$Mod"" ""$cfgFile"" 2>&1" | Out-String
+    if ($LASTEXITCODE -eq 0) { Add-Result $Id $Title 'PASS' (($out.Trim() -split "`r?`n")[-1]) }
+    else { Add-Result $Id $Title 'FAIL' ($out.Trim() + [Environment]::NewLine + "FIX: $Fix") }
+}
+
+function Test-LmL48 {
+    <#
+      L48 - A LEVEL COUNT THAT SEES THE CRAFTS (found 2026-11-08, GAME_UPDATE_1_15 Q10/Q11).
+      A craft level is a tenth of a factory level's workers and a fiftieth of its cost, so any count of a building group's LEVELS on light industry,
+      manufacturing or a variable group counts crafts ten times over and nearly free. The reference scan (L40) reads only building and method keys;
+      game 1.15 added three such counts (Q11) and IP4's negotiation promise had one since 1.13 that the 1.0 audit missed (G7) - nothing failed.
+      DETECTOR: tools/lint_group_levels.mjs on the BUILT mod (the game's text as the mod ships it): every such count takes the crafts out natively
+      (a subtract of the craft group's count in the same block) or is reviewed in its REVIEWED table with its reason and exact count.
+      Proven 2026-11-08: FAIL on the canon build made before G7 (the promise's three counts), PASS after.
+    #>
+    Invoke-ModLint 'L48' 'a level count that sees the crafts' 'lint_group_levels.mjs' 'take the crafts out (the group count minus the craft group''s, emit_vanilla_refs.mjs, BALANCE_FRAMEWORK §10.109.4) or review the count in lint_group_levels.mjs REVIEWED'
+}
+
+function Test-LmL49 {
+    <#
+      L49 - A VANILLA BUILDING FIELD THE TIER SPLIT DROPS (found 2026-11-08, GAME_UPDATE_1_15 Q10; MISSING_BUILDING_CONDITIONS.md proposed it in 1.0).
+      The builder writes each rung's block from the config, not from vanilla's block, so a field a patch adds to an industry's vanilla building
+      (1.15's conditional ai_value, U54) or changes (a possible, a levels_per_mesh) never reaches the rungs, and nothing fails.
+      DETECTOR: tools/lint_building_blocks.mjs on the BUILT mod: every field of each tiered industry's vanilla building reaches every non-craft rung
+      with vanilla's content (technology, method groups and cost per rung; ai_value's adds by L47; aliases on the anchor only), or is listed in its
+      KNOWN table with a reason. Proven 2026-11-08: FAIL on a rung doctored to drop `possible` and change levels_per_mesh, FAIL on a vanilla
+      steel mill doctored to gain `unique = yes`, PASS on the canon build.
+    #>
+    Invoke-ModLint 'L49' 'a vanilla building field the tier split drops' 'lint_building_blocks.mjs' 'carry the field in build.ps1''s building emitter, or list it in lint_building_blocks.mjs KNOWN and MISSING_BUILDING_CONDITIONS.md with its reason'
+}
+
 $CHECKS = @(
     @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
     @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
@@ -2108,7 +2149,10 @@ $CHECKS = @(
     # L45 reads the BUILT mod's journal entries against the installed game's syntax (an artifact check).
     @{ Id = 'L45'; Artifact = $true;  Fn = { Test-LmL45 } },
     # L47 reads the BUILT mod's rung ai_values against vanilla's journal-entry-conditional adds (an artifact check).
-    @{ Id = 'L47'; Artifact = $true;  Fn = { Test-LmL47 } }
+    @{ Id = 'L47'; Artifact = $true;  Fn = { Test-LmL47 } },
+    # L48 / L49 read the BUILT mod: level counts that see the crafts; vanilla building fields the tier split drops.
+    @{ Id = 'L48'; Artifact = $true;  Fn = { Test-LmL48 } },
+    @{ Id = 'L49'; Artifact = $true;  Fn = { Test-LmL49 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {
