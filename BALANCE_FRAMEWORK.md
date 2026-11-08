@@ -77,6 +77,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 | 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | in force: the canon since 2026-11-08 (§10.109.5) | here |
 | 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission); .4 crafts out of 1.15's three new level counts, by native counts (the group minus the craft group, never a loop); .5 the 1.15 canon (`a52b0aca`), and canonisation declares the main line, not a quality stamp; .6 detectors L48 / L49 and IP4's negotiation promise crafts out (G7); .7 1.15's wage and hiring rebalance: measure first, no pre-emptive ladder change | in force: the canon since 2026-11-08 (.1 and .3 in the book through their makers; .2 and .4 build steps — `emit_ai_value_adds.mjs`, L47; `emit_vanilla_refs.mjs` G4–G6 + an init tripwire) | here |
+| 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 ~20 December: major changes, extraction first, which revisits §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark (Mechanical Tools 25,000 → 75,000); .4 copper scarcity follows Paradox, no copper lever | .1 the plan (ROADMAP, BACKLOG); .2 and .4 in force; .3 ruled for 1.2, not built | here |
 
 ---
 
@@ -4801,3 +4802,45 @@ favours old rungs surviving (goal 2, §2.1); the magnitude is unknown. The user:
 - CLAUDE.md §2.1's ~0.66× line is marked as game 1.13.11's; F97's ~0.2 value-added line likewise until measured.
 - A first canon-vs-vanilla century on 1.15 (n=1 each, the same day) reads the laggard test, the old-rung census, T0, W and U* against
   vanilla 1.15; its schedule carries the predictions (§2.8). A pre-emptive steepening was the rejected option (b).
+
+---
+
+## §10.110 — AFTER 1.1: THE RELEASE PLAN FOR 1.2 AND 1.3, AND THREE SMALL RULINGS (user, 2026-11-09)
+
+Mod 1.1 shipped on 2026-11-08 with 1.0's balance carried to game 1.15 untuned (one automated century beside vanilla 1.15, F268, and several
+hours of manual play). On the next day the user set the plan for the next two releases, and sorted the backlog into them item by item; the
+assignments are in ROADMAP "What is ahead" and on each BACKLOG line.
+
+### §10.110.1 — The release plan
+
+The user: *"The way it looks now, 1.2 in late November will include 1) balance retune to get the numbers back where we need them after likely
+runoffs on 1.1. This will rely heavily on the soon-to-come n=24 vs n=24 batch 2) minor changes. And major changes (including, for example,
+tiering or otherwise ensuring foreign PMs) for extraction will come in 1.3, around 20th of December."*
+
+- **Mod 1.2, late November 2026:** the retune, read from the 24 vs 24 batch (`g115_alt_canon24_vanilla24.json`: mod 1.1 against vanilla 1.15.0,
+  alternating), then re-measured; and the minor changes. A minor change that moves the economy goes into the build that the re-measure plays
+  (the ruled-changes rule).
+- **Mod 1.3, around 2026-12-20:** the major changes, extraction first among them.
+- ⚠ **Extraction in 1.3 revisits §10.58's veto B**, which rejected tiering agriculture and extraction on narrative grounds (tiers stand for the
+  rebuilding of a production process). The user named tiering only as one option ("or otherwise ensuring foreign PMs"); the approach needs a
+  ruling of its own before work starts.
+
+### §10.110.2 — No state trait gives a bonus to every source of electricity
+
+The user: *"No to any state traits that give bonuses to all sources of electricity, ever."* Krka Falls (Dalmatia) keeps the loss of its
++15% electricity (§10.89.8) although no dam site lies in Dalmatia, so nothing replaces it there; the BACKLOG item is closed. A trait's
+`goods_output_electricity_mult` boosts every electricity producer in its state (power plants and streetlights as much as hydro), and the
+dams carry the mod's hydro. The user gave the rule, not a reason; the reason given here is §10.89.8's, an inference.
+
+### §10.110.3 — A technology that unlocks rungs of two tiers takes the higher tier's research mark
+
+Mechanical Tools unlocks Tooling Workshops' tier-2 rung (Steel Tools) and Paper Mills' tier-1 rung. Its research entry counted the tier-1
+mark (25,000 workers: 5 levels of Tier 1 Wrought Iron Tools), because `emit_research_events.mjs` gives a mixed-tier technology the LOWER
+tier's mark (`a.era = Math.min(a.era, era)`). Ruled (the user agreed to the proposal, 2026-11-09): the higher tier's mark, here tier 2's
+75,000 (§10.97). It is the only mixed-tier technology where this matters. For mod 1.2; not built.
+
+### §10.110.4 — Copper scarcity on 1.15 follows Paradox
+
+The user: *"Our approach to copper scarcity will depend on PDS own actions, and it's likely that we won't really touch it."* Copper is the top
+input-price red flag in both 1.15 arms (F268), vanilla's own included. The mod adds no copper lever in 1.2; vanilla's hotfixes are watched,
+and the 1.1 rulings on copper (§10.108) stand.

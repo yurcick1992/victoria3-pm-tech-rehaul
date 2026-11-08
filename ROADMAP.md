@@ -10,16 +10,16 @@ went. Other files cite steps by number ("ROADMAP step 2", "step 8 P1", "step 9 �
 title: *COVERAGE AUDIT OF THE PRODUCTION TREE*, *The NAVAL channel*, *The war channel — RULED IN DETAIL*, *DEFERRED FIXES*, *Parked*. Never
 renumber or retitle them.
 
-**Status words:** DONE · IN PROGRESS · OPEN (planned, unscheduled) · DEFERRED to 1.1 (or later) · DROPPED · CLOSED (tried and ended).
+**Status words:** DONE · IN PROGRESS · OPEN (planned, unscheduled) · FOR 1.2 / FOR 1.3 (assigned to a release) · DEFERRED (later, no release) · DROPPED · CLOSED (tried and ended).
 
 ---
 
-## Where the plan stands (2026-10-29)
+## Where the plan stands (2026-11-09)
 
-Mod 1.0 ships on game 1.13 on **2026-10-30**; mod 1.1 follows on game 1.15.N around **2026-11-16**. The alternating vanilla + canon batch has
-measured the 1.0 canon (F249: 16 intact, world GDP 1.07×, play time ×1.010 of the same sessions' vanilla), and the no-DLC load test passed (F250).
-What is left for 1.0 is the release build’s in-game load and the visual cleanup playtest, in the next session; everything else is deferred to 1.1
-(user, 2026-10-29; "Mod 1.0 — the remainder" below). Everything below the table is per step.
+Mod 1.0 shipped on game 1.13 on **2026-10-30** (measured over 64 centuries: F249, F264). Mod 1.1 shipped on game 1.15.0 on **2026-11-08**,
+carrying 1.0's balance untuned (one automated century beside vanilla 1.15, F268, and several hours of manual play). Next, by the user's plan
+of 2026-11-09 (§10.110.1): **mod 1.2 in late November**, the balance retune on the 24 vs 24 batch plus minor changes; **mod 1.3 around
+2026-12-20**, the major changes, extraction first. What goes where is in "What is ahead"; everything below the table is per step.
 
 | step | what | status | closed | pointers |
 |---|---|---|---|---|
@@ -33,13 +33,13 @@ What is left for 1.0 is the release build’s in-game load and the visual cleanu
 | 5 | company mandates over every rung | DONE (first cut); read by F249 §5 — companies a little smaller than vanilla's, no change proposed | 2026-08-23 | §10.64, F77, F79, F249, POLISH F3 |
 | 5a | company instrumentation | item (1) DONE (summary v7); item (2) OPEN | 2026-08-21 | BACKLOG D |
 | 6 | hydro-dam megaprojects | DONE; canon since 2026-09-27, redesigned to 2026-10-16 | 2026-10-16 | §10.89 (.1, .9–.14), F168–F177 |
-| 6½ | artisanal ownership | DEFERRED to 1.1 or later | 2026-10-21 | POLISH F1 |
-| 7 | visuals, proofreading, release | IN PROGRESS — the 1.0 polish | target 2026-10-30 | `POLISH_1_0.md` |
+| 6½ | artisanal ownership | might make 1.3 (user, 2026-11-09) | 2026-10-21 | POLISH F1 |
+| 7 | visuals, proofreading, release | DONE — mod 1.0 released 2026-10-30, mod 1.1 2026-11-08 | 2026-11-08 | `POLISH_1_0.md`, `GAME_UPDATE_1_15.md` |
 | — | the war and naval research channels | DONE; re-ruled 2026-09-03 and 2026-10-12 | 2026-10-12 | §10.69, §10.98 |
 | 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 CLOSED (F255, not an issue) · P9 DEFERRED to an unspecified later version | — | BACKLOG B, F137, F138 |
 | 9 | margin compression | CLOSED (batch 1 out; levelling closed) | 2026-09-19 | F139, §10.86.3–.4 |
 | 10 | the tier-0 input penalty | partly superseded by the t1-anchor model; both open items CLOSED 2026-10-28 | — | F140–F148, §10.86.6–.7, §10.91.5 |
-| 11 | post-JE tech finishing and broader trade | DONE; follow-ups (3)(4) DEFERRED to 1.1 as known issues | 2026-09-25 | §10.88, F160–F164 |
+| 11 | post-JE tech finishing and broader trade | DONE; follow-ups (3)(4) are known issues, read by the 1.2 retune | 2026-09-25 | §10.88, F160–F164 |
 | 12 | craft t0 rungs | DONE (canon) | 2026-10-12 | §10.91.1, .3, .5, §10.99 |
 | 13 | six merged rungs | DONE (canon); item 3 OPEN | 2026-10-12 | §10.91.2, §10.99 |
 | 14 | the last tech rework, then the canonisation decision | DONE: the arm is the canon | 2026-10-12 | §10.96–§10.99, F223–F227 |
@@ -49,7 +49,7 @@ What is left for 1.0 is the release build’s in-game load and the visual cleanu
 
 ## What is ahead
 
-### Mod 1.0 — the remainder (game 1.13; release 2026-10-30)
+### Mod 1.0 — the remainder (game 1.13; DONE, released 2026-10-30)
 
 Already done for 1.0 (2026-10-21): the engine-compatibility pass (POLISH §2, `TIER_REFERENCE_AUDIT.md`, `emit_vanilla_refs.mjs`, commit
 `94ae51c`), the research-entry texts (POLISH §1), the generated-text pass, and every polish question Q1–Q11 ruled and canonised (POLISH "Every Q
@@ -78,7 +78,16 @@ is ruled"). What is left, in order:
    last-minute fixes they bring. Nothing else goes into 1.0: every other open item is deferred to 1.1 (BACKLOG "The order").
 4. **Release, 2026-10-30.**
 
-### Mod 1.1 (game 1.15.N, ~2026-11-16)
+### Mod 1.1 (game 1.15.0; DONE, released 2026-11-08)
+
+**What shipped:** the 1.15 update pass (`GAME_UPDATE_1_15.md`); copper on five rungs, on the dams and in trade class C, and bronze artillery
+(§10.108); 1.15's research adds ×1/3 and the idea entries' new laws (§10.109.1, .3); vanilla's journal-entry AI desire on every non-craft rung,
+which also carries the art academy's Austrian desire (§10.109.2); crafts out of 1.15's level counts (§10.109.4); the playtest fixes. The
+balance is 1.0's, untuned on 1.15 (F268).
+
+**Where the rest of the plan below went** (user, 2026-11-09): treaty ports → 1.3; the streetlights → as the 24 vs 24 batch shows, possibly 1.2;
+military research, the two balance levers and the tier-scaled secondary lines → 1.2; the stale looms → checked on the 24 vs 24 batch (1.2);
+the craft secondary lines → 1.2; artisanal ownership → might make 1.3; per-rung art → later; rubber stays a watch item. The list as planned:
 
 The schedule leaves about four days between a stable 1.15.N and 1.1 — room for 10-year probes and at most one n=3 century, so 1.1 can carry a
 feature only if it needs no iteration (step 7's timeline).
@@ -108,12 +117,59 @@ feature only if it needs no iteration (step 7's timeline).
   "1.1 or later"); per-rung building art (R6, "1.1 or later"); the art academy's Austrian conditional desire, if the batch shows the canon's
   Austria building too few (BACKLOG E). Rubber in a rich late game is a watch item (Q7).
 
+### Mod 1.2 (game 1.15; late November 2026)
+
+The retune and the minor changes (§10.110.1). A change that moves the economy goes into the build that the re-measure plays.
+
+1. **The measurement:** the 24 vs 24 batch (`g115_alt_canon24_vanilla24.json`: mod 1.1 against vanilla 1.15.0, alternating; it needs the
+   user's go-ahead) re-bases every vanilla reference on 1.15 (GAME_UPDATE_1_15 Q12, U60, U62).
+2. **The register on 1.15, first:** the absolute lines that vanilla 1.15 itself breaks (the 10% pooled-U\* hard line and capital abundance,
+   F268), and the register rulings parked since 1.0: O_shed in place of T0, the four loss fixes, the pool U\* aim against pool W, GDP per
+   capita or total, the reading-gate cut (§10.83.3–.8). The retune is scored by the register.
+3. **The retune** with the routine levers (§2.5), among them the cost ladder (C 1.8 × cost1 1.2, F234) and paper's own input lift, aimed at
+   1.1's likely runoffs and at 1.15's wage and hiring rebalance (§10.109.7); then a re-measure.
+4. **Military research:** higher AI research weights for military technologies than for society, and for society than for most production
+   technologies; production technologies without a research entry are raised too (POLISH Q5; the per-tree weights of §10.62).
+5. **Tier-scaled secondary lines** (F249 §4d): the textile and furniture old rungs live on luxury lines sized for t2. "One name — one recipe"
+   (§10.93) stands, so a strictly tiered line needs new names; a merged host, where one secondary serves two tiers, is the harder case.
+   **The crafts' secondary lines** as well (today none, §10.91.2).
+6. **Possible for 1.2, depending on the 24 vs 24 batch:** the urban-centre electricity ×2 or ×3 and the streetlights' copper (§10.89.15,
+   §10.108.1).
+7. **1.2 or 1.3, not yet decided:** the electricity build condition (§10.106). It is built and was deferred for its tick cost, which a
+   continuation A/B from late-game saves can measure.
+8. **Minor fixes:**
+   - the craft seeding defects: Valencia's doubled Pulp Pressing, and New York's Bakeries written inside a DLC block;
+   - Mechanical Tools' research mark (§10.110.3);
+   - the tropical entries' text;
+   - the industry names in the research labels, in every language (POLISH R4);
+   - crafts as research sources (POLISH P3);
+   - the in-game check of technology tooltips for the methods no building carries;
+   - the mandated looms on the merged textile building (`mandate_switch.mjs` on the batch);
+   - the script performance audit (BACKLOG D).
+
+Copper scarcity on 1.15 is not a 1.2 lever: it follows Paradox (§10.110.4).
+
+### Mod 1.3 (around 2026-12-20)
+
+The major changes (§10.110.1):
+- **Extraction**: "tiering or otherwise ensuring foreign PMs". ⚠ It revisits §10.58's veto B, which rejected tiering extraction on narrative
+  grounds, so the approach needs a ruling first.
+- **Treaty ports** (§10.103, F243–F246): five layers built and probed on 1.13, none in the canon. Open on 1.15: whether the AI pursues
+  recognised hosts by itself.
+- **Building groups per industry**, so a compatibility patch, and our own reference rewrites, can name one group (BACKLOG E). It touches
+  vanilla's level counts (the L48 class).
+- **The electric engines redo** (likely 1.3): a new technology for a new t2 engine rung.
+- **Artisanal ownership** (step 6½) might make 1.3.
+- Possibly the electricity build condition (1.2 item 7).
+
 ### Later — no release assigned
 
-The balance campaign (BACKLOG "The order" items 2–3, section B), then the final balance check:
-- the price path and the old rung in the consumer chains — the central open problem (CLAUDE.md §2.1, F136);
-- the hoard (F135, F179 §3);
-- step 8's P9, the tech tree to prioritise rather than complete (deferred by the user 2026-10-28), and step 11's follow-up (2).
+- The price path and the old rung in the consumer chains: the central open problem (CLAUDE.md §2.1, F136). The 1.2 retune and the
+  tier-scaled lines work on it. Also open: which lever converges prices between markets (trade capacity?).
+- The hoard (F135, F179 §3), read again under the 1.2 retune.
+- Step 8's P9, the tech tree to prioritise rather than complete (deferred by the user 2026-10-28); step 11's follow-up (2); tech spread ×2
+  and a society research multiplier (§10.97 item 8).
+- Craft extras (a Muskets craft, spreading the 1836 craft levels); the merge branch if the hosts run hot; per-rung building art (POLISH R6).
 
 ---
 
@@ -416,6 +472,10 @@ polish — and it became live when the crafts were canonised (step 12).
    moved to 1.2 or later on 2026-11-07 (§10.108.1). Only about four days between items 3 and
    4: room for 10-year probes and at most one n=3 century, so 1.1 can carry a feature only if it needs no iteration.
 5. **18.11** — GTA VI; no attention for Paradox mods until the new year.
+
+**As it went, and the plan since 2026-11-09 (§10.110.1):** mod 1.0 shipped on 30.10; mod 1.1 shipped on **08.11** on game 1.15.0 itself, with
+1.0's balance carried over untuned; **mod 1.2 in late November** (the retune on the 24 vs 24 batch, and minor changes); **mod 1.3 around
+20.12** (major changes, extraction first). Item 5's pause no longer holds. The content of each release is in "What is ahead".
 
 ---
 

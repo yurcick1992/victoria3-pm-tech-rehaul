@@ -82,7 +82,8 @@ Power becomes a real input with a supply that has to be built:
   it to that family, one by an outside investor only to that investor. Governments and private investors with construction rights (the owner,
   its overlords, holders of investment rights) build; the AI always subsidises them (the building group's `subsidized` flag acts only at game
   start, so a player's dams are not subsidised automatically); some add arable land or end an irrigation penalty. Vanilla's hydro-themed state
-  traits lose their electricity bonuses, which the dams replace (Dalmatia's Krka Falls has no dam). (§10.89)
+  traits lose their electricity bonuses, which the dams replace (Dalmatia's Krka Falls has no dam and gets nothing back: no state trait
+  boosts every source of electricity, §10.110.2). (§10.89)
 
 ### Research: technology follows industry
 
@@ -195,8 +196,8 @@ canon:  A = 2.2   B = 1.64   C = 1.9   L = in1 = 1.2
 - **Simulation purity: no artificial limits.** No hard build blocks, no `possible` gates that forbid the AI an old rung, and never a
   technology-triggered penalty on old rungs (the user: *"never ever, for simulation purity"*). Production is steered by economics
   (recipes, costs); the AI levers are willingness levers only (§2.4). The one allowed build condition is an input a building's only
-  methods cannot run without: a building that runs only on electricity needs a state that produces some (§10.106 — ruled, then deferred to
-  mod 1.1 for its performance risk; in 1.0 such a building can be built without a grid, a known issue).
+  methods cannot run without: a building that runs only on electricity needs a state that produces some (§10.106 — ruled, then deferred for
+  its performance risk, now to mod 1.2 or 1.3; until then such a building can be built without a grid, a known issue).
 - **Vanilla values plus uniform rules.** Rungs are vanilla's own methods; ladders are uniform across industries; per-rung recipe fitting is
   out (§2.5, §2.6). As few special rulings as possible.
 - **No DLC content is ever unlocked** — Paradox prohibits it (§5.1).
@@ -445,11 +446,12 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.100 | the world-GDP aim 0.90–1.00; the closed-major term on Germany; a lucky seed stands in for a skilled player | in force (§3.2) |
 | 10.101 | per-industry input lift allowed (one number per industry line); the routine levers; cost1 | in force (§2.5) |
 | 10.102 | the world-market monopoly threshold 0.99 | in force (canon since 2026-10-21) |
-| 10.103 | treaty ports: the measured funnel and the layered solution, deferred to mod 1.1 on game 1.15 | deferred |
+| 10.103 | treaty ports: the measured funnel and the layered solution, deferred to mod 1.1 on game 1.15, now planned for mod 1.3 (§10.110.1) | deferred |
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays, as readings (.1: one four-column scorecard, the loss to the footer, world / shortlist views, nothing past the right edge; the canonical ledger form since 2026-10-29) | in force (§5.6) |
-| 10.106 | a building that runs only on electricity can be built only where the state produces some (power plant, dam, electric streetlights); nothing happens when a state loses it | deferred to mod 1.1 (performance risk); 1.0 known issue |
+| 10.106 | a building that runs only on electricity can be built only where the state produces some (power plant, dam, electric streetlights); nothing happens when a state loses it | deferred (performance risk): mod 1.2 or 1.3, undecided; a known issue |
 | 10.108 | copper (mod 1.1): the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights stay exactly as in 1.0 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery: a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2) | in force (the canon since 2026-11-08) |
 | 10.109 | the game 1.15 pass rulings, one per question of GAME_UPDATE_1_15 phase 5: .1 the two new flat research adds ×1/3; .2 vanilla's journal-entry-conditional AI desire carried onto every non-craft rung (L47); .3 the contagious-ideas entries follow 1.15's laws; .4 crafts out of 1.15's new level counts, by native counts; .5 the 1.15 canon; canonisation declares the main line, not a quality stamp; .6 detectors L48 (level counts that see crafts) and L49 (dropped building fields), the negotiation promise crafts out; .7 the 1.15 wage rebalance measured first | in force (the canon since 2026-11-08; .2 and .4 are build steps) |
+| 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 around 2026-12-20: major changes, extraction first, revisiting §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark; .4 copper scarcity follows Paradox | .1 the plan (ROADMAP); .2 and .4 in force; .3 for 1.2, not built |
 
 ---
 
@@ -681,7 +683,7 @@ What §1.2 and §1.3 leave out:
     workers, F136; a backward heavy or war industry under a far better rung in its own market keeps 68% of its workers over a decade, vanilla 107%).
   - **The consumer chains:** the main good's price does fall in £ (F249: 1930s pool output index textile 0.73, furniture 0.71, against vanilla's
     0.90 and 0.91; inputs flat), and the frontier is built until it earns the average return of new capital. The old t1 textile and furniture rungs
-    live on their luxury line: a secondary is sized on t2 and makes the same amount per level on every rung (F249 §4d; the lever is deferred to 1.1).
+    live on their luxury line: a secondary is sized on t2 and makes the same amount per level on every rung (F249 §4d; tier-scaled secondary lines are planned for mod 1.2).
   - **Competition where neither arm can switch:** a backward industry under a far better rung in its own market shrinks in the canon (92% of its
     workers kept over a decade) and grows in vanilla (120%). Through trade the pressure is weak in both (109% against 116%; F249 §4a, F264).
 - **Play speed** (§3.4): ×1.045 of the same session's vanilla (182.1 against 174.2 minutes a century, clusters 1 + 2), inside the +10% budget;
@@ -692,14 +694,15 @@ What §1.2 and §1.3 leave out:
   - Britain near capital abundance (U\* under 5% for 5–17 years in 30 of 48 runs, mostly at small hoards; in capital abundance in one);
   - broken seeds: one in three to four in earlier books (F166, F227, F247), 4 of 48 in F264 (none in F249's 16);
   - misplaced capital above vanilla's;
-  - military technology behind vanilla's count (deferred to mod 1.1, with the user's AI-weight approach);
+  - military technology behind vanilla's count (planned for mod 1.2, with the user's AI-weight approach);
   - **game 1.15** (mod 1.1; installed 2026-11-08, 1.15.0): the pass is `GAME_UPDATE_1_15.md`, its phase-5 questions walked with the user one
     at a time (Q0–Q4, Q6, Q7, Q9–Q11 ruled 2026-11-08; the canon moved to 1.15 with Q1). The hiring and wage rebalance moves the premise of
     §2.1 (its ~0.66× line is game 1.13.11's until measured); rakaly melts a 1.15 save whole but for one unnamed key and a stop at its last
     token, which `save_state_summary.mjs` tolerates and the other readers avoid with `--unknown-key ignore` (U07, Q3; TESTBED_METRICS §7), so
     the register reads 1.15 runs; the vanilla references are all 1.13.11 until a 1.15 vanilla batch (Q12).
 
-  The live list is `BACKLOG.md`.
+  The live list is `BACKLOG.md`. The releases ahead (§10.110.1, ROADMAP "What is ahead"): **mod 1.2 in late November**, the retune on the
+  24 vs 24 batch and minor changes; **mod 1.3 around 2026-12-20**, major changes, extraction first.
 
 ## 4.3 Lineage
 
@@ -871,7 +874,7 @@ Other flags: `-NoDeploy`, `-NoLint`, `-ControlOnly` (vanilla + telemetry; requir
   offering only "off"; a mandated automation is the only choice beside its main method; a method that consumes electricity requires it
   (`required_input_goods = electricity`, vanilla's rule), and no other method does. The method gate stops a method being chosen, not a
   building being built: a building with a group in which every method requires electricity is printed as a known issue until the build
-  condition of §10.106 (`emit_electricity_gate.mjs`, deferred to mod 1.1) comes back.
+  condition of §10.106 (`emit_electricity_gate.mjs`, deferred: mod 1.2 or 1.3) comes back.
 - **Never mark a PM-gated copy `is_hidden_when_unavailable`** — the player can then never select it.
 - **`create_building` is gated on the STATE OWNER's technology and fails silently** — whoever `add_ownership` names (L14; check at 1836.2.1, not a year
   later). A building with no `ownership_type` cannot be built in a foreign state.
