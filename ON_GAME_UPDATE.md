@@ -214,8 +214,14 @@ removes the pops files it wrote earlier, by their header.
     national_awakening; brazil/ amazonas, paraguay; iberia_events/ip4_anarchism_events; japan_events/ep2_japan_events_03; law_events/
     citizenship_laws, economy_laws; tech_events/ camera_film_pm_events, military_tech_events, production_tech_events, society_tech_events,
     war_crimes_events.
+  - **game 1.15 adds nine** (2026-11-08, TIER_REFERENCE_AUDIT A79–A86 and G2): `scripted_progress_bars/` 00_victoria_progress_bars (G2, moved
+    from the removed `fra_weekly_pulse_orleanist_progress`) and 00_rlit_progress_bars; `scripted_triggers/00_rlit_scripted_triggers`;
+    `scripted_buttons/08_tsarpoints_buttons`; `static_modifiers/` 00_ip5_06_modifiers, 00_rlit_static_modifiers; `events/` rlit_cluster1_golden_age,
+    rlit_cluster2_crossroads, russia_events/ip5_russian_events_03 (72 files transformed on the 1.15 dry run). `00_art_jes` takes 12 token rewrites
+    on 1.15 (9 on 1.13.11): the outcome rework gave `je_romanticism` a level target.
 - *Breaks:* every snippet and token count is asserted (throws). A scan of the whole game tree throws on a tiered vanilla key, a vanilla main method or
-  a renamed secondary in any file nobody owns, unless `ACCEPTED` names it (8 files today, each with its reason).
+  a renamed secondary in any file nobody owns, unless `ACCEPTED` names it (10 entries on 1.15, each with its reason: the 1.15 `99_ru_custom_loc_V3`
+  and the Montenegro check moved to `scripted_effects/00_victoria_on_actions_effects`).
 - *Check:* re-read the file's `TIER_REFERENCE_AUDIT.md` row; on a kept build (`-SaveTo`), `$env:REFS_LEARN = '1'; node tools\emit_vanilla_refs.mjs
   <modDir> config\mod_config.json` prints every file's counts beside the spec's without dying; record the new counts in `SPEC`.
 
@@ -547,7 +553,7 @@ alternating batch's first twelve runs had five, all resumed). The kit to test a 
 
 Nothing warns when one of these goes stale.
 
-- **`tools/goods_prices.tsv`** — vanilla's base price (`cost` in `common/goods/00_goods.txt`) for each of the 53 goods: the one price table, read by
+- **`tools/goods_prices.tsv`** — vanilla's base price (`cost` in `common/goods/00_goods.txt`) for each of the 54 goods (53 before game 1.15; copper added 2026-11-08): the one price table, read by
   `build.ps1` (the Recipe BE in building names), `make_ab_config`, `lint_tier_eras`, `lint_solvency`, `restate_basic_be`, `emit_secondaries`, the
   linters through `lint.sh`, and the ledger (`criteria.mjs`'s PI and PP are £ ÷ base). A good it lacks is priced £0. A new or renamed good also
   belongs in `GOOD_GROUPS` in `ui/builder.html` (an unlisted good lands in "Other"). Compare it with the installed game, in PowerShell from the
@@ -622,15 +628,19 @@ different versions are not comparable without saying so.
 - **1.13.11** — from 2026-08-19, the current version. It fixes the sway recursion. The update pass found no vanilla data change (all 53 base prices
   unchanged, no unmapped method, the same inherited 1836 gaps). Its behaviour was not compared directly: "more war from the sway fix" did not show at
   n=18, and revolts ran ×1.30 (F79). Every `VANILLA_REF` session and the 2026-10-21 canon are 1.13.11; the older pins `20260813_083557` (vanilla
-  n=4) and `20260818_221216_canon-n7` are 1.13.10. The last batch on it is `20261030_233342_alt-canon48-vanilla16` (launched 2026-10-30, its last run ending on 2026-11-08). Before
+  n=4) and `20260818_221216_canon-n7` are 1.13.10. The last batch on it is `20261030_233342_alt-canon48-vanilla16` (launched 2026-10-30, its last run ending on 2026-11-08 02:27 local; F264). Before
   the 1.15 update, its `game\common`, `events`, `map_data`, `localization` and `gui` were copied to `C:\claude-code\vic3_game_1.13.11\game`
   (2026-11-07, 240 MB; `binaries_hash.txt` holds the exe's sha256) for routine step 1's diff and for readers of 1.13 sessions
   (`VIC3_GAME=C:\claude-code\vic3_game_1.13.11\game`). The exe itself is kept beside it, `binaries\victoria3.exe` (97 MB, the same sha256): its
   strings name every trigger, effect and modifier type the engine registers, with their descriptions, so a strings diff against 1.15's
   exe stands in for the `script_docs` dump if none was made on 1.13.11. The folder is outside the repository and in no git repository.
-- **1.15** — expected 2026-11-05, with 1.14's AI rework. Mod 1.1 follows the `game-update` skill; treaty ports are re-measured (§2.2.10). The
-  pass's register is `GAME_UPDATE_1_15.md`. On 2026-11-07 Steam had the 1.15 build (26453692) downloaded and queued over 1.13.11 (24799966), with
-  automatic updates on.
+- **1.15.0 "Ivan-Chai"** — installed **2026-11-08 05:02 local** (Steam build 26453692, over 1.13.11's 24799966; exe sha256 `473186E8D8DEBA99…`,
+  dated 2026-11-05), with 1.14's AI rework; the final notes are Paradox's DD#196 (GAME_UPDATE_1_15 U04). Steam had downloaded and staged it on
+  2026-11-05 and tried to commit it at 13:04 that day during a batch run; the commit stopped on a file the running game held and moved nothing.
+  It was applied by launching the game through Steam after the n=48 batch's close-out; no session has run on it yet, so the first session on
+  1.15 starts the version boundary. Every `VANILLA_REF` run, `measured_base_wages.json`, the error-noise catalogue and the fleet-loop
+  calibration are 1.13.11 until a 1.15 vanilla batch replaces them (§1 step 10). Mod 1.1 follows the `game-update` skill; treaty ports are
+  re-measured (§2.2.10). The pass's register is `GAME_UPDATE_1_15.md`.
 
 ---
 

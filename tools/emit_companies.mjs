@@ -170,6 +170,7 @@ for (const f of readdirSync(CDIR).sort()) {
   const raw = stripBom(readFileSync(join(CDIR, f), 'utf8'));
   const lines = raw.split(/\r?\n/);
   const out = [];
+  const handled = new Set();          // out indices of `building = <rung>` lines a levels-in-region OR wrote (the catch-all accepts them)
   let changed = false;
   const stack = [];                   // open block names, innermost last
   let curCompany = null;
@@ -241,6 +242,34 @@ for (const f of readdirSync(CDIR).sort()) {
       }
     }
 
+    // -- has_building_levels_in_state_region = { … building = <anchor> … } (game 1.15: the companies' `possible` tests moved from
+    //    any_scope_building / is_building_type to this trigger): one copy of the block per rung, in an OR — the same per-rung reading
+    //    the is_building_type wrap gives (each rung alone must hold the levels), so a 1.15 company forms exactly where a 1.13 one did.
+    const lv = /^\s*has_building_levels_in_state_region\s*=\s*\{\s*$/.exec(code);
+    if (lv) {
+      const blockLines = [line];
+      let d = 1, j = i;
+      while (d > 0) { j++; const c = lines[j].split('#')[0]; d += (c.match(/\{/g) || []).length - (c.match(/\}/g) || []).length; blockLines.push(lines[j]); }
+      const bl = blockLines.findIndex(l => /^\s*building\s*=\s*building_[a-z_0-9]+\s*$/.test(l.split('#')[0]));
+      const k = bl >= 0 ? resolveKey(/building_[a-z_0-9]+/.exec(blockLines[bl].split('#')[0])[0]) : null;
+      if (k) {
+        const chain = expand.get(k);
+        const wrap = chain.length > 1;
+        if (wrap) out.push(indent + 'OR = {');
+        for (const c of chain) {
+          for (let b = 0; b < blockLines.length; b++) {
+            const l = b === bl ? blockLines[b].replace(/building_[a-z_0-9]+/, c) : blockLines[b];
+            out.push(wrap ? '\t' + l : l);
+            if (b === bl) handled.add(out.length - 1);
+          }
+        }
+        if (wrap) out.push(indent + '}');
+        changed = true; counts.levelsWraps = (counts.levelsWraps || 0) + 1; counts.companies.add(f + ':' + curCompany);
+        i = j;
+        continue;
+      }
+    }
+
     // -- prosperity_modifier: expand building_<base>_<suffix> lines -------------------------------
     if (ctx === 'prosperity_modifier') {
       const pm = /^\s*(building_[a-z_0-9]+)\s*=\s*(-?[0-9.]+)\s*$/.exec(code);
@@ -298,7 +327,8 @@ for (const f of readdirSync(CDIR).sort()) {
     for (const m2 of c.matchAll(/building_[a-z_0-9]+/g)) {
       const tok = m2[0];
       if (!resolveKey(tok)) continue;
-      const ok = /^\s*(is_building_type|has_building)\s*=/.test(c) ||          // wrapped or single-tier chains
+      const ok = handled.has(i2) ||                                             // a rung line of a levels-in-region OR (1.15)
+        /^\s*(is_building_type|has_building)\s*=/.test(c) ||          // wrapped or single-tier chains
         /^\s*building_[a-z_0-9]+\s*=\s*\{/.test(c) ||                          // ai_construction_targets entry
         /^\s*building_[a-z_0-9]+\s*$/.test(c);                                 // token list member
       if (!ok) throw new Error(`emit_companies: unhandled reference to ${tok} at ${f}:${i2 + 1}: "${ls[i2].trim()}"`);
@@ -366,6 +396,6 @@ for (const lang of LANGS) {
 }
 
 console.log(`emit_companies: ${counts.files} company files rewritten, ${counts.companies.size} companies touched; ` +
-  `+${counts.listTokens} list tokens, ${counts.orWraps} OR-wrapped triggers, ${counts.prosperity} prosperity lines expanded, ` +
+  `+${counts.listTokens} list tokens, ${counts.orWraps} OR-wrapped triggers, ${counts.levelsWraps || 0} levels-in-region tests per rung, ${counts.prosperity} prosperity lines expanded, ` +
   `+${counts.aiTargets} ai_construction_targets entries (${counts.gatedTargets || 0} gated to the best unlocked rung); ${neededModTypes.size} new modifier types, ${locKeys} en loc keys x ${LANGS.length} languages.` +
   (EXCLUDE.size ? ` Craft and merged rungs kept out of every company: ${EXCLUDE.size} key(s), ${counts.craftDropped || 0} reference(s) dropped or re-pointed.` : ''));

@@ -29,7 +29,20 @@ an intermediate one.
   install is newer than 2026-11-05 12:00 and the staged tree is whole in `steamapps\downloading\529340`, so the batch and the snapshot are
   1.13.11 throughout.
 - **U03** · T · the entity diff · `tools/game_diff.mjs`, written 2026-11-07 and tested on 1.13.11 (no change found) and on synthetic changes · run
-  it 1.13.11 → 1.15 when 1.15 is installed; every item it prints gets a line here · OPEN (1.15 session).
+  it 1.13.11 → 1.15 when 1.15 is installed; every item it prints gets a line here · RUN 2026-11-08 (1.15.0 installed 05:02 local): 45,155 lines,
+  kept outside the repository in the batch session's scratchpad (`u115/game_diff.txt`; regenerate with the command above). The counts: goods
+  53 → 54 (copper), buildings 115 → 122 (the copper mine, Cossack Hosts, five Russian monuments), production methods 436 → 450, method groups
+  197 → 203, technologies unchanged in number, state regions 781 → 782, defines +222 (58 removed; most of the 163 "renames" are one-line
+  defines paired by equal values, not renames), journal entries +30 (17 removed), `on_journal_entry_completed` removed. The diff's items that
+  bear on us are the lines below (U13, U21, U22, U41, U44, U47 confirmed or widened); the walk of sections 4–6 (changed fields, order, the exe
+  vocabulary) is still OPEN — it is the next session's first reading.
+- **U05** · T · the phase-2 dry run on 1.15 (2026-11-08), fix by fix, every one a spec table or a recorded count (none an assertion):
+  `emit_companies` gains a rule for 1.15's `has_building_levels_in_state_region` formation tests (59: one copy per rung in an OR, the
+  `is_building_type` wrap's reading); the Balakovo dam's state `STATE_TARTARIA` → `STATE_SARATOV` in `config/dam_projects.json` (its anchor province
+  moved with the rename; the 143 other sites unchanged); `emit_vanilla_refs`: `00_art_jes` 9 → 12 token rewrites, G2 moved to
+  `00_victoria_progress_bars`, nine new files ruled A79–A86 by the standing rules (TIER_REFERENCE_AUDIT), two ACCEPTED. The dry run then stops at the
+  start-conversion lint (L13): `pm_bronze_cannons` / `pm_bronze_smoothbores` map to no rung — U44, which needs the generator. Steps not yet reached:
+  the research entries (U21), secondaries, the remaining linters. · IN HAND (the dry run's state at the hand-over).
 - **U04** · T · the final patch notes · the preliminary notes were read on 2026-10-30 (appendix); read the forum changelog itself for engine
   behaviour the diff cannot show · DONE 2026-11-08 from Paradox's own Steam posts (the forum showed a bot check): DD#196 *State and Revolution
   & Update 1.15 NOW LIVE* (2026-11-05, the final notes, checksum fc93), DD#195 (the preliminary changelog, 2026-10-29), DD#194 *1.15 Modding*
@@ -73,11 +86,17 @@ an intermediate one.
   the dams' entry, and the owned vanilla copies in `common/journal_entries/` (10 files carry a `complete`; `03_russia.txt` is reworked by State
   and Revolution) · the research entries ARE the mod's research (§10.95–§10.98): without them every country researches at a quarter to a half of
   vanilla's pace · OPEN — the largest phase-2 item: read the new syntax in 1.15's own journal entries, then convert the emitters
-  (`emit_research_events.mjs`, `emit_dams.mjs`) and re-own the vanilla copies from 1.15.
+  (`emit_research_events.mjs`, `emit_dams.mjs`) and re-own the vanilla copies from 1.15. Confirmed by the installed files (2026-11-08): no 1.15
+  journal entry keeps a `complete` block (all 182 files use `outcome = { header … trigger = { … } effect = { … } }`, a failure being an outcome
+  with the failure header), and `on_journal_entry_completed` / `on_journal_entry_failed` are gone. ⚠ No linter of ours reads journal-entry
+  syntax, so a build can pass with every research entry dead: verify in game before anything is measured.
 - **U22** · C · the map: Tula split into Tula and Oryol; Kostroma split from Yaroslavl and Nizhny Novgorod; Chukotka and Kamchatka merged; Northern
   Kazakhstan redrawn; the North Caucasus's Russian pops cut; North Angola's pops made African (culture, not number) · the owned `state_regions`
   files, the dam table (a site in any of those states), the 1836 conversion, `measured_1836_pop_identity.json`, Russia's instrumented series ·
-  OPEN (the diff; widens U13).
+  OPEN (the diff; widens U13). The diff (U03): state regions `STATE_TARTARIA` → `STATE_SARATOV` and `STATE_KAUNAS` → `STATE_LITHUANIA`
+  renamed, `STATE_CHUKOTKA` and `STATE_GALICH` removed, three added. DONE for the dams: only Balakovo was affected (U05); every other dam's state
+  and anchor province holds on 1.15. Still open: `measured_1836_pop_identity.json` names KAUNAS / CHUKOTKA / GALICH and needs a 1.15 vanilla
+  1836.2.1 save (a game run), `config/dam_sites_research.json` (the research notes behind the table) still says Tartaria.
 - **U23** · C · starting technologies: Italian countries gain Empiricism (tech era 1), Nassau and Limburg Egalitarianism (tech era 2) · the 1836
   grant is derived from the map (§10.55) and these are not production technologies · OPEN (confirm the derived grant still equals vanilla's).
 - **U24** · N · a new ship type, Early Troopships, available from the start; AI ship categories move to `common/ai_ship_categories` · the naval
@@ -124,17 +143,26 @@ an intermediate one.
   don't exist in vanilla. By default, proportionally, everything else needs to be argued."* · the lines U41–U48.
 - **U41** · C · copper in vanilla's main methods (value-neutral swaps at base prices) · the rungs' input mixes: only the regeneration of
   ON_GAME_UPDATE §1 step 5 brings copper into them; a rebuild of the 1.0 book ships every rung on its 1.13 mix and nothing throws · OPEN (phase 2,
-  step 5).
+  step 5). Confirmed by the installed files (U03, 2026-11-08): copper enters pot stills 2 / patent stills 4, the automated bakery 1, electric
+  sewing machines 2, automatic power looms 2, every assembly-lines automation 1, electric engines 10, telephones 30, percussion caps 5, explosive
+  shells 10, arcades 1, the three power plants 2 / 4 / 5, refrigeration on wharves and whaling stations 1, arc-welded buildings 10, and five ship
+  armour modifications; the copper mine makes 20 → 70 by its pump method.
 - **U42** · N · copper on the dams · per 50 electricity 1 tools + 0.5 engines + 0.75 copper (6 + 3 + 4.5 a 300 level), the book field
   `dams.inputs_per_50`, copper at 40 in `lib_dams.mjs` `BASE_PRICE` · RULED §10.108, not built.
 - **U43** · N · copper on the electric streetlights · none: 1.0's recipe and staffing exactly; the field diff must show `pm_goods` /
   `pm_employment` unchanged · RULED §10.108.1 (all streetlight work DEFERRED to mod 1.2 or later).
 - **U44** · N · bronze cannons and bronze smoothbores (the foundry now has six main methods; `make_tier4_config` throws above four) · a switchable
   second main method on the t0 and t1 rungs at the rung's own input value (t0 12.8 copper + 19.2 hardwood, t1 24 + 24) · RULED §10.108.2, not
-  built (the generator's pairing, L31, the combination lint, the research counts, the 1836 converter).
+  built (the generator's pairing, L31, the combination lint, the research counts, the 1836 converter). Confirmed by the installed files: in
+  `pmg_foundries` beside cannons / smoothbores, `pm_bronze_cannons` 10 copper + 15 hardwood → 25 artillery (gated by artillery, like cannons),
+  `pm_bronze_smoothbores` 20 copper; no 1836 factory runs either. ⚠ **It blocks the 1.15 build**: the start-conversion lint (L13) fails while
+  either method maps to no rung (U05).
 - **U45** · N · copper's trade class · `make_trade_config` throws on a tradeable good in no class; F159 §5's historical wedge (32.7% falling to ~0)
   puts it with B or C · OPEN: needs a ruling.
-- **U46** · N · copper in `tools/goods_prices.tsv` (40) and in `GOOD_GROUPS` of `ui/builder.html` · OPEN (mechanical, phase 2 step 6).
+- **U46** · N · copper in `tools/goods_prices.tsv` (40) and in `GOOD_GROUPS` of `ui/builder.html` · DONE 2026-11-08 (the table matches 1.15's 54
+  goods by ON_GAME_UPDATE §2.4's comparison; copper in the editor's raw-industrial group). Without it every reader priced copper at £0: the
+  tier-rule lint (L31) read munition's and electrics' anchors £200 and £1,200 low and failed. With it L31 passes on the 1.0 book, so 1.15's copper
+  swaps are value-neutral at base prices.
 - **U47** · N · where copper is mined: `building_copper_mine`, a capped resource unlocked by shaft mining with the lead mine's methods; 609 levels
   in 84 states by a third-party copy of the files; France and Belgium none · OPEN: confirm on the installed files.
 - **U48** · T · the rest of the what-we-author walk for copper (ON_GAME_UPDATE §5.3): the minted top rungs, the crafts, the research entries

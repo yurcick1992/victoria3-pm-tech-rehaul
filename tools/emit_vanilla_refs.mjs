@@ -224,7 +224,10 @@ const SPEC = {
       // je_camera / je_film complete: the "> 75% of academies" clause goes; the level-5 academy of the rung stays (F1 c)
       { re: /\n[ \t]*any_scope_building\s*=\s*\{\s*filter\s*=\s*\{\s*is_building_type\s*=\s*building_art_academy\s*\}\s*percent\s*>\s*0\.75\s*has_active_production_method\s*=\s*pm_(?:photographic|film)_art\s*occupancy\s*>\s*0\.75\s*\}/g,
         to: '', n: 2 },
-    ], n: 9 },
+    // 1.15: 12 (1.13.11: 9). The outcome rework gave je_romanticism a level target (2 + the largest traditional-art academy's level,
+    // read in `immediate` by has_active_production_method = pm_traditional_art) and two branches of its completion test, each naming the
+    // academy and pm_traditional_art: three more tokens of the same class, rewritten to the t0 rung like the one 1.13 had.
+    ], n: 12 },
   'common/journal_entries/00_belle_epoque.txt': { n: 4 },                                      // A9 (e2+ through the method rule), A10
   'common/journal_entries/00_liberalism.txt': { n: 1 },                                        // A11
   'common/journal_entries/00_player_objectives_economic_dominance.txt': { n: 4 },              // A12, A13
@@ -267,11 +270,40 @@ const SPEC = {
     snips: [{ re: /is_building_group\s*=\s*bg_light_industry(\s+)level\s*>=\s*(\d+)/g,
       to: (_, ws, v) => `is_building_group = bg_light_industry${ws}NOT = { is_building_group = bg_pmr_crafts }${ws}level >= ${v}`, n: 4 }],
     n: 6 },
-  'common/scripted_effects/00_victoria_scripted_effects.txt': {                                // A33, G2
-    crafts: true,
-    snips: [{ within: 'fra_weekly_pulse_orleanist_progress', re: /is_building_group\s*=\s*bg_manufacturing(\s+)weekly_profit\s*>\s*0/g,
-      to: (_, ws) => `is_building_group = bg_manufacturing${ws}NOT = { is_building_group = bg_pmr_crafts }${ws}weekly_profit > 0`, n: 1 }],
+  'common/scripted_effects/00_victoria_scripted_effects.txt': {                                // A33
     n: 1 },
+  // G2 since game 1.15: the July-Monarchy progress moved from fra_weekly_pulse_orleanist_progress (removed from scripted_effects) into
+  // the divided_monarchists_orleanist_progress_bar, whose "from factories" term tests profitable manufacturing twice (the limit and the
+  // level sum). Both are that bar's — the file names bg_manufacturing nowhere else — so the snippet runs on the whole file (the bar's
+  // definition line is indented by one space, which topBlocks does not read as top level).
+  'common/scripted_progress_bars/00_victoria_progress_bars.txt': {                             // G2
+    crafts: true,
+    snips: [{ re: /is_building_group\s*=\s*bg_manufacturing(\s+)weekly_profit\s*>\s*0/g,
+      to: (_, ws) => `is_building_group = bg_manufacturing${ws}NOT = { is_building_group = bg_pmr_crafts }${ws}weekly_profit > 0`, n: 2 }],
+    n: 0 },
+  // ---------------------------------------------------------------- game 1.15: the Russian content (State and Revolution, ip5) — A79–A84
+  // A79 the literature-golden-age bars: a country's academy levels >= N is one test per rung (A4's reading: any rung alone at the level);
+  // a main-method share (rlit_art_academy_pm with a realist / photographic / film method) loses its share clause as F1 (c) ruled for the
+  // art journal entries — old academies never empty, so "over half the academies on film" is out of reach — and reads "an academy runs it"
+  'common/scripted_progress_bars/00_rlit_progress_bars.txt': {                                 // A79
+    snips: [
+      { re: /country_has_building_type_levels\s*=\s*\{\s*target\s*=\s*bt:building_art_academy\s*value\s*>=\s*(\d+)\s*\}/g,
+        to: (_, v) => `${reg(TRIG, 'pmr_country_art_academy_levels', () => orBody(bTerms('art_academy', rungSet('art_academy', 'all')).whole
+          .map(k => `country_has_building_type_levels = { target = bt:${k} value >= $V$ }`)))} = { V = ${v} }`, n: 2 },
+      { re: /rlit_art_academy_pm\s*=\s*\{\s*PM\s*=\s*(pm_(?:realist|photographic|film)_art)\s*\}/g,
+        to: (_, pm) => `any_scope_building = { ${runsMainH(pm)} = yes }`, n: 3 },
+    ], n: 0 },
+  // A80 the share trigger itself: its filter covers every academy rung, so the calls with a secondary method (patronage, independent
+  // artists — on every rung) keep their meaning, share included
+  'common/scripted_triggers/00_rlit_scripted_triggers.txt': { n: 1 },                           // A80
+  'common/scripted_buttons/08_tsarpoints_buttons.txt': { n: 1 },                                // A81: a munition plant of level 3, any rung
+  'events/rlit_cluster1_golden_age.txt': { n: 8 },                                              // A82: a random academy / paper mill, any rung
+  // A85 the same in the crossroads cluster; its four create_building = { building = building_art_academy } (a theatre founding an
+  // academy where none stands) stay on rung 0, as A35's ad hoc steel mill does — the one rung no state owner lacks the technology for
+  'events/rlit_cluster2_crossroads.txt': { n: 11 },                                             // A85
+  'events/russia_events/ip5_russian_events_03.txt': { n: 7 },                                    // A86: the Peredvizhniki on the realist rung
+  'common/static_modifiers/00_ip5_06_modifiers.txt': { tpn: 2 },                               // A83: Hromada's academy throughput, every rung
+  'common/static_modifiers/00_rlit_static_modifiers.txt': { tpn: 3 },                          // A84: academy and paper throughput, every rung
   'common/scripted_effects/04_negotiation_scripted_effects.txt': {                             // A34: the highest rung held
     snips: ['art_academy', 'artillery', 'munition', 'arms'].flatMap(x => {
       const k = ind(x).r0;
@@ -362,6 +394,8 @@ const SPEC = {
 const ACCEPTED = {
   'common/achievements/mp1_charters_of_commerce_achievements.txt': 'A1: achievements are off with any mod',
   'common/customizable_localization/99_ru_custom_loc.txt': 'Russian grammatical forms of the rung-0 names; cosmetic (higher rungs take the default form)',
+  'common/customizable_localization/99_ru_custom_loc_V3.txt': 'game 1.15: the same Russian grammatical forms of the rung-0 names (the V3 set); cosmetic',
+  'common/scripted_effects/00_victoria_on_actions_effects.txt': "A18/F11 since game 1.15: vanilla's Montenegro check moved here from 00_code_on_actions.txt; it stays, and the additive check in zzz_pm_rehaul_vanilla_refs.txt covers every other arms rung",
   'common/modifier_type_definitions/01_building_modifier_types.txt': "vanilla's own declarations of the rung-0 modifier types",
   'common/scripted_triggers/00_gfx_route_graphics_triggers.txt': 'A32: map train visuals; cosmetic',
   'common/on_actions/00_code_on_actions.txt': "A18/F11: vanilla's Montenegro check stays (7,963 lines); the additive check in zzz_pm_rehaul_vanilla_refs.txt covers every other arms rung",

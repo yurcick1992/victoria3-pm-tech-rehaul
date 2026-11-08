@@ -863,8 +863,9 @@ stale output except under `common/history`, which an emitter writing there must 
   outside it); owns all three vanilla technology files when on. Throws on a doubled or misnamed boost, a conditional `can_research`, the
   retired `diag` / `unresearchable` keys. `force_test` is a probe-only A/B (`testbed/ledger/finish_force.mjs`). Status: current. Refs: F160.
 - **`tools/emit_companies.mjs`** — the company chain extension: every vanilla `company_types` reference to a tiered industry becomes the whole
-  chain (type lists expanded, `is_building_type` / `has_building` formation tests OR-wrapped, prosperity `building_<anchor>_throughput_add`
-  lines one per rung, `ai_construction_targets` duplicated per rung). Emits only changed files + the additive `zzz_pm_rehaul_company_modifiers.txt`
+  chain (type lists expanded, `is_building_type` / `has_building` formation tests OR-wrapped, game 1.15's `has_building_levels_in_state_region`
+  formation tests copied once per rung inside an OR (each rung alone must hold the levels, as the `is_building_type` wrap reads; 59 on 1.15),
+  prosperity `building_<anchor>_throughput_add` lines one per rung, `ai_construction_targets` duplicated per rung). Emits only changed files + the additive `zzz_pm_rehaul_company_modifiers.txt`
   declaring a `building_<key>_throughput_add` type per rung key (vanilla hand-enumerates them) + loc. Craft and merged keys leave every list
   (a survivor throws with file:line). `company_target_gate: true` (opt-in, off) gates targets below the best unlocked rung (no effect, F100).
   Status: current (build step). Traps: where shipyards are tiered (two industries, one vanilla building), `building_shipyard` maps to both chains. Refs: F77.
