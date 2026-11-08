@@ -989,6 +989,11 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
   `SETS`, each with its ruling) to `vanilla_value_overrides` and records `_value_overrides_variant`; throws on an unknown set or on a line the base
   already overrides. The vanilla values are asserted at build time by `emit_value_overrides.mjs`. Sets: `g115-research-adds` (game 1.15's two new
   flat innovation adds ×1/3). Status: current (the 1.15 pass). Refs: §10.109.1.
+- **`tools/make_research_conditions_config.mjs`** — `--base <book> --suffix <sfx> --set <name>`: applies a ruled SET of exact text edits (path,
+  from, to; kept in the script's `SETS`) to the research entries' condition strings (`research_events.condition_entries.<tech>.label` /
+  `.trigger`, `monthly_global_effect`) and records `_research_conditions_variant`; each `from` must occur exactly once (a moved base or a second
+  application throws). Sets: `g115-idea-laws` (socialism counts factory councils as a law or an amendment; political agitation counts the
+  extraordinary commission). Status: current (the 1.15 pass). Refs: §10.109.3.
 
 - **`tools/make_artisan_config.mjs`** — turns the six light-industry t0 rungs into 500-worker craft rungs: per-level recipe, a 5,000-head
   staffing block × `workforce_mult` 0.1, cost ÷ 50, group `bg_pmr_crafts` (+ `building_groups_add`), `levels_per_mesh` 500, excluded

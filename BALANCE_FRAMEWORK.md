@@ -76,7 +76,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 | 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | ruled for mod 1.1 (game 1.15); .1 and .2 built 2026-11-08 in the 1.15 candidate book `g115-canon-bz-dcu` (not canonised); .3 in the trade maker, reaching a book at the 1.15 regeneration | here |
-| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat | ruled for mod 1.1; .1 built in `make_value_overrides_config.mjs`, reaching a book at the 1.15 regeneration; .2 built as a build step (`emit_ai_value_adds.mjs`, L47), every build | here |
+| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission) | ruled for mod 1.1; .1 and .3 built in makers (`make_value_overrides_config.mjs`, `make_research_conditions_config.mjs`), reaching a book at the 1.15 regeneration; .2 built as a build step (`emit_ai_value_adds.mjs`, L47), every build | here |
 
 ---
 
@@ -4709,3 +4709,24 @@ goal (Q11's lean).
   carries it (a rebuild of the 1.0 canon on game 1.13 would carry Metternich's +500).
 - **Guarded:** landmine L47 (`Test-LmL47`, the step's `--check` on the built mod). Proven: PASS on the candidate's 1.15 build (36 rung buildings in
   15 industries), FAIL on the 1.0 build (36 missing); the step throws on a doctored vanilla reference and on a second run.
+
+### §10.109.3 — THE CONTAGIOUS-IDEAS ENTRIES FOLLOW GAME 1.15'S LAWS (user-ruled 2026-11-08, Q9: "A")
+
+The ruling: the two research entries of §10.98 whose laws game 1.15 moved count what vanilla now ties to their technologies:
+- **Socialism** ticks while a country not in revolt, anywhere, lives under council republic, factory councils **as a law or as an amendment**
+  (IP5's amendment to another labour-associations law), or collectivized agriculture. The test is vanilla's own scripted trigger
+  `has_factory_councils_law_or_amendment` (ungated: without IP5 its amendment half is simply false); it was `has_law = law_type:law_factory_councils`.
+- **Political Agitation** also counts `law_extraordinary_commission` (new in 1.15, base game, internal security), which the same technology
+  unlocks, beside the single-party state and outlawed dissent.
+
+**Why:** an idea's entry counts the laws its technology unlocks (§10.98); 1.15 added a form of one and a new one. The effect is small: the two
+entries tick somewhat more often once a country runs those laws.
+
+**Built 2026-11-08:** `tools/make_research_conditions_config.mjs --set g115-idea-laws` (four exact edits to the labels and the monthly global
+effect, each asserted to occur once; recorded in `_research_conditions_variant`). A scratch build of the candidate + Q6 + this set on 1.15.0
+emitted both conditions and labels and passed every lint, the vanilla-name lint included. In a book at Q1's regeneration.
+
+**Noted with it (no ruling):** Russia now starts under `law_internal_colonization`, which passes the civilizing-mission entry's own condition (a
+great or major power not under no colonial affairs). The entry still cannot run for Russia in 1836: every entry also needs `can_research` (the
+technology's prerequisites, Quinine and Nationalism) and the literacy line of its tech era (45% for tech era 3). In the 1.15 probe Russia holds
+neither Quinine nor 45% literacy by 1856 (literacy 15% in 1836, 19–22% in 1856, both arms; Nationalism from ~1847).

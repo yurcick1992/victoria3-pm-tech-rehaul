@@ -215,8 +215,11 @@ an intermediate one.
   year of inflow — with the canon's CRITICAL 1.0, any shortfall; three private-scorer keys removed from file and exe · §10.75's set, H, misplaced
   capital (widens U33, U38) · OPEN (Q8): measure U62 on the canon's set, or add an arm with vanilla's pool defines.
 - **U35f** · C · the contagious-ideas laws moved: council republic needs factory councils as a law or the IP5 amendment and a first proletarian
-  revolution; ten new laws, none named by our entries; Russia starts with `law_internal_colonization` (passes the civilizing-mission condition) ·
-  the socialism entry tests `has_law = law_type:law_factory_councils`, which misses the amendment · OPEN (Q9).
+  revolution; ten new laws, none named by our entries; Russia starts with `law_internal_colonization` (passes the civilizing-mission entry's own
+  condition, but not its other two gates: `can_research` needs Quinine and Nationalism, and tech era 3 needs 45% literacy — the 1.15 probe's
+  Russia has neither by 1856, literacy 15% → 19–22%) · the socialism entry tests `has_law = law_type:law_factory_councils`, which misses the
+  amendment · RULED 2026-11-08 (Q9, BALANCE_FRAMEWORK §10.109.3): vanilla's `has_factory_councils_law_or_amendment`; BUILT
+  (`make_research_conditions_config.mjs --set g115-idea-laws`).
 - **U35g** · B · `BUILDING_WAGES_EXPECTED_SOL_TARGET_FACTOR` 0.67 (new) scales the three wage targets: read literally, raise wages below ~0.60 of
   expected SoL (was 0.9), lower above ~0.80 (was 1.2), prefer layoffs below ~0.44 (was 0.66); hiring at a 15% margin (was 25%), raise 0.20 (0.25),
   lower 0.10 (0.15), withdraw 0.10 (0.15); firing only beyond a 0.3 proportionality imbalance (new 0.2 tolerance); and the productivity comparison
@@ -324,8 +327,8 @@ an intermediate one.
   tripped anything · OPEN (Q10): a scan for level counts on the tiered building groups (both syntaxes) and the building-block diff
   `MISSING_BUILDING_CONDITIONS.md` proposes.
 - **U57** · = U35e (the pool-weeks define) · OPEN (Q8).
-- **U58** · N · `law_extraordinary_commission` is unlocked by Political Agitation, like the two laws that idea entry already counts · OPEN (Q9,
-  with U35f): add it (a book change with a field diff; small).
+- **U58** · N · `law_extraordinary_commission` is unlocked by Political Agitation, like the two laws that idea entry already counts · RULED
+  2026-11-08 (Q9, §10.109.3): counted; BUILT in the same set as U35f, in a book at Q1's regeneration.
 - **U59** · C · the bronze hosts' names read "Tier 0. Artillery Foundry. Recipe BE 61%/61%" — the merged-host naming, which drops "(Cannons)" /
   "(Smoothbores)" and prints two figures where §10.108.2 says one · RULED (§10.108.2: "the building's name carries one figure"): a host whose
   second methods are all variants is named as an ordinary rung · DONE 2026-11-08: "Tier 0. Artillery Foundry (Cannons). Recipe BE 61%", "Tier 1.
@@ -364,7 +367,8 @@ the two bronze variants; copper's traded quantity (Q2); `dams.inputs_per_50`. No
 prerequisite, no urban-centre key. **Recommended: yes, regenerated with Q2's class (and Q6 / Q9 if ruled yes) under a new name, then
 measured (Q12).** *The regeneration as the walk has ruled so far:* `node tools/replay_canon_chain.mjs --prefix <p>` (its trade step now classes
 copper C, Q2) → `make_variant_config` and `make_dam_inputs_config` (the candidate's recorded commands) → `make_value_overrides_config --set
-g115-research-adds` (Q6) → the later rulings' steps; field-diff against the canon and against the candidate.
+g115-research-adds` (Q6) → `make_research_conditions_config --set g115-idea-laws` (Q9) → the later rulings' steps; field-diff against the
+canon and against the candidate. (Q7 is a build step, not a book change.)
 
 **Q2 · copper's trade class (U45).** Vanilla prices copper as lead and iron (cost 40, traded quantity 5). The candidate classes it semi-bulk
 (D, √2 × 240 ÷ 40 = 8.49) beside lead, PROVISIONALLY. F159 §5's yardstick: copper's price gap fell from 32.7% to about 0 by 1913 (cotton
@@ -416,7 +420,11 @@ from its H and misplaced capital.**
 **Q9 · the contagious-ideas laws (U35f, U58).** Council republic now needs factory councils as a law or as IP5's amendment (and a first
 proletarian revolution); our socialism entry tests the law only; `law_extraordinary_commission` (new) is unlocked by Political Agitation like
 the two laws that entry counts. **Recommended: test vanilla's `has_factory_councils_law_or_amendment`, and add the new law to the political-
-agitation set (a book change in Q1's regeneration).**
+agitation set (a book change in Q1's regeneration).** **RULED 2026-11-08 (user): "A", both** — BALANCE_FRAMEWORK §10.109.3. BUILT as
+`make_research_conditions_config.mjs --set g115-idea-laws` (four exact edits, each asserted once); a scratch build of the candidate + Q6 + the set
+on 1.15.0 emitted both conditions and both labels in 11 languages and passed every lint, the vanilla-name lint included. The user then asked
+whether Russia's civilizing-mission entry really runs from 1836 (the agenda said so): it does not — `can_research` (Quinine, Nationalism) and
+the 45% literacy line both hold it back, and the probe's Russia meets neither by 1856 (U35f). · CLOSED.
 
 **Q10 · detectors (U56).** The reference scan (L40) reads only `building_` / `pm_` tokens outside `common/buildings`, so neither Q7 nor Q11
 tripped it. **Recommended: a scan for level counts on the tiered building groups (both syntaxes) and the building-block diff.** (Q7's case

@@ -358,7 +358,10 @@ Tables and rules in our code that name vanilla keys or lean on vanilla's order; 
   law_factory_councils, law_collectivized_agriculture, law_traditionalism, law_no_colonial_affairs and others), regions, subject types,
   `rank_value:major_power`, and building types (building_university, building_government_administration, building_financial_district,
   building_chemical_plant, building_urban_center). A renamed key fails only in the engine, and in `tools/lint_vanilla_names.mjs` (§2.1,
-  additive files).
+  additive files). From game 1.15 (BALANCE_FRAMEWORK §10.109.3, `make_research_conditions_config.mjs --set g115-idea-laws`): socialism tests
+  vanilla's scripted trigger `has_factory_councils_law_or_amendment` (in `scripted_triggers/00_ip5_victoria_scripted_triggers.txt`, ungated),
+  and political agitation counts `law_extraordinary_commission` — the laws an idea's technology unlocks; a patch that unlocks a new law by one
+  of these technologies owes the entry a look.
 - *Check:* the build line `research events: N technologies (n industry, n war) -> …` against the last build; `error.log` lines naming
   `zzz_pm_rehaul_research*`.
 
