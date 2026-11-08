@@ -143,7 +143,7 @@ function parseVanillaLoc() {
   const out = {};
   const txt = readFileSync(join(GAME, 'localization/english/inventions_l_english.yml'), 'utf8').replace(/^﻿/, '');
   const title = s => s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-  for (const m of txt.matchAll(/^ ([a-z_0-9-]+):\d* "(.*)"$/gm)) {
+  for (const m of txt.matchAll(/^ ([a-z_0-9-]+):\d* "(.*?)"\s*(?:#.*)?$/gm)) {   // a trailing comment allowed (vanilla's Socialism line, 2026-11-08)
     if (m[1].endsWith('_desc')) continue;
     // Several naval technology names are themselves loc references — "$ship_type_modern_ironclad$".
     // Resolving them properly means reading another file for a display string we only show as a node

@@ -687,6 +687,12 @@ line per DLC it loads, so a run's `debug.log` says which DLCs were active (all 1
 -DisableAllDlc` writes every installed DLC there and checks that no mount line appears (meta.json `no_dlc_verified`). Proven in game
 2026-10-26: both runs of the no-DLC load test mounted none of the 17 (F250).
 
+**A launch can lose every DLC on its own** (found 2026-11-08, F266, L50). When the store lookup fails, `debug.log` still lists every installed DLC
+under `jominiapplication.cpp: DLC:`, prints `dlc.cpp:822: Could not find item in store backend.` once per DLC, mounts none, and the game plays
+on with no DLC content: every `has_dlc_feature` false, every `dlc = …` event and journal entry dead, the global history's DLC-gated entries and
+scheduled events never placed. Nothing else in the logs or the save marks it. Seen three times in 1,324 launches, each a session's first launch
+(once on the morning of a game update); a later launch of the same run mounted everything again. `tools/testbed/dlc_mounts.mjs` reads it.
+
 **`pdx_settings.json` is rewritten by the game on exit**, dropping keys it considers default — never assume a key survived. The harness
 sets `Graphics.display_mode=windowed` (a run cannot hijack the desktop), `System.language=l_english` (logged strings stay stable),
 `game.save_on_exit=false`, and `game.autosave` to `-AutosaveInterval`.

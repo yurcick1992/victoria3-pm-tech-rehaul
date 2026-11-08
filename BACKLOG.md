@@ -208,6 +208,15 @@ Closed:
 
 ## G. Testbed instrument (TESTBED_LANDMINES)
 
+- **OPEN (found 2026-11-08, L50, F266)** · a launch whose store lookup failed mounts no DLC and plays on without any DLC content. Detected
+  now: `Test-LmL50` on `-Session` and the heartbeat's `DLC (L50)` line at the smoke check (stop and relaunch by hand). Proposed, not built: the
+  observer reads the mount lines a few seconds after launch and kills and relaunches on a store miss (`run_observer.ps1` already collects
+  `dlc_mounted`). Three launches in the archive, each a session's first: the 1.15 probe's canon run (F265's comparisons void), the 1.0
+  release batch's run 1 (1836→1860.4), `20260819_213936` run 1 (stopped).
+- **WATCH (the user, 2026-11-08)** · when the Hungarian revolution and the Kazakh revolt happen in the 1.15 runs: the playtest saw both in
+  1836–38, 1.13 in the 1840s–1860s. Both are vanilla 1.15 script, widened in 1.15 (F266); the 1v1 schedule `g115_alt_canon1_vanilla1.json`
+  carries the reading and the prediction (`scripted_wars`).
+
 - **DONE 2026-10-28** · A FROZEN IN-GAME CLOCK READS AS A LIVE RUN (L41): the waiter's FROZEN (exit 5), the post-run `Test-LmL41`, and the observer's own recovery (date unmoved `-FrozenMinutes`, default 15 ⇒ stop and resume from the newest autosave; proven live in `20261028_220033_l41-frozen-proof`) · run_observer.ps1, TESTBED_LANDMINES L41
 - **DONE 2026-10-28** · L37 the stop watcher goes blind on a multi-setup schedule: each run scored on its own setup; `Test-LmL37` (repo + session halves) built and proven · stop_watch.mjs, TESTBED_LANDMINES L37
 - **DONE 2026-10-28** · detectors owed: L19 orphaned game process (verified kill + `Test-LmL19`), L23 raw-counted repeated log lines (`je_distribution.mjs` de-duplicates + `Test-LmL23`), L11 nonexistent tag (`Test-LmL11`; found `TWO` beside `QIN`), L9 per-run error windows (`error_log_lines` windowed + `Test-LmL9` session half) — all proven · TESTBED_LANDMINES L9, L11, L19, L23

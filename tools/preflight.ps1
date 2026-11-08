@@ -1962,6 +1962,34 @@ function Test-LmL44 {
     else { Add-Result 'L44' $T 'PASS' ("$checked run(s) with yearly autosaves, every one summarised over at least 90% of its years or its gap accepted" + $note) }
 }
 
+function Test-LmL50 {
+    <#
+      L50 - A LAUNCH THAT MOUNTED NO DLC (found 2026-11-08, the 1.15 probe 20261108_061520_g115-probe-1856, FINDINGS F266).
+
+      The game's store lookup failed at launch ('Could not find item in store backend.', dlc.cpp, once per DLC): debug.log still
+      LISTS every installed DLC, but no DLC folder is mounted, and the game plays an ordinary-looking run with no DLC content -
+      every has_dlc_feature check false, every `dlc = ...` event and journal entry dead. The probe's canon run played 1836-1856
+      that way beside a vanilla run with every DLC; the release batch's run 1 played 1836-1860.4 that way and resumed WITH DLC.
+
+      DETECTOR: tools\testbed\dlc_mounts.mjs over the session - per launch matched to the run's own attempts, FAIL on any store
+      miss or on nothing mounted out of a non-empty list. Declines (printed): no-DLC tests, launches of an earlier run left in the
+      ring, a partial mount with no store miss (the mirror's gap, L28/L29). N/A without -Session.
+    #>
+    $T = 'a launch that mounted no DLC (the store lookup failed)'
+    if (-not $Session) { Add-Result 'L50' $T 'N/A' 'no -Session given (this entry is post-run)'; return }
+    if (-not (Test-Path $Session)) { Add-Result 'L50' $T 'FAIL' "no such session: $Session"; return }
+    $tool = Join-Path $Repo 'tools\testbed\dlc_mounts.mjs'
+    if (-not (Test-Path $tool)) { Add-Result 'L50' $T 'FAIL' "detector missing: $tool"; return }
+    # through cmd, never '& node ... 2>&1' (see L31): a native stderr line under Stop preference throws.
+    $out = & cmd /c "node ""$tool"" ""$Session"" 2>&1" | Out-String
+    $code = $LASTEXITCODE
+    $lines = @($out.Trim() -split "`r?`n")
+    $fails = @($lines | Where-Object { $_ -like 'FAIL *' } | ForEach-Object { $_.Substring(5) })
+    if ($code -eq 1) { Add-Result 'L50' $T 'FAIL' ("$($fails.Count) launch(es) played without their DLCs - that span is not the arm it claims to be: " + ($fails -join '; ') + '. FIX: discard the span (a whole run: rerun it); for the future, the smoke check reads dlc_mounts.mjs --live at five minutes and a run without its DLCs is stopped and relaunched.') }
+    elseif ($code -ne 0) { Add-Result 'L50' $T 'FAIL' ("(detector error) " + $out.Trim()) }
+    else { Add-Result 'L50' $T 'PASS' $lines[-1] }
+}
+
 function Test-LmL45 {
     <#
       L45 - A JOURNAL ENTRY IN THE OLD SYNTAX SHIPS DEAD ON A GAME THAT DROPPED IT (found 2026-11-08, game 1.15).
@@ -2152,7 +2180,8 @@ $CHECKS = @(
     @{ Id = 'L47'; Artifact = $true;  Fn = { Test-LmL47 } },
     # L48 / L49 read the BUILT mod: level counts that see the crafts; vanilla building fields the tier split drops.
     @{ Id = 'L48'; Artifact = $true;  Fn = { Test-LmL48 } },
-    @{ Id = 'L49'; Artifact = $true;  Fn = { Test-LmL49 } }
+    @{ Id = 'L49'; Artifact = $true;  Fn = { Test-LmL49 } },
+    @{ Id = 'L50'; Artifact = $false; Fn = { Test-LmL50 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

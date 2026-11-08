@@ -362,6 +362,10 @@ Tables and rules in our code that name vanilla keys or lean on vanilla's order; 
   group; fewer than 8 throws, 1.13 has 10), the fleet technologies from `common/ship_types/00_ship_types.txt` (an unreadable file, or fewer than
   8, throws; 1.13 has 11 over 19 ship types), and the battalion manpower (no `max_manpower` value throws; it used to fall back to 1,000). A patch
   that legitimately cuts a channel below its floor: check it by hand, then lower `UNIT_TECHS_FLOOR` / `SHIP_TECHS_FLOOR` in the same pass.
+  Since 2026-11-08 (GAME_UPDATE_1_15 U74, U75): the technologies' English names from `localization/english/inventions_l_english.yml` (fewer
+  than 100 throws; a displayed name that reads like a key throws), and the journal group's illustration
+  `gfx/interface/illustrations/journal/je_group_illu_technology.dds` (missing throws). The group itself leans on game 1.15's `themed = yes`
+  field of `common/journal_entry_groups` (a patch that renames or drops it fails only in the engine: the entries would list one by one again).
 - **Read from `ui/vanilla.js`:** building groups and the anchor buildings' per-level employment — refreshed after this emitter (routine step 3).
 - **Raw script, not validated by the build:** the condition entries, condition values and monthly global effect name vanilla laws (law_council_republic,
   law_factory_councils, law_collectivized_agriculture, law_traditionalism, law_no_colonial_affairs and others), regions, subject types,

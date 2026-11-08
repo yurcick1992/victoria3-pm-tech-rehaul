@@ -271,6 +271,10 @@ command (and gives L33's define rejection its own alarm).
 3. **Errors from this run only** (procedure below), with the vanilla noise classes discarded, then `grep -c zzz_pm_rehaul` on the
    window: our emitted files are all `zzz_pm_rehaul*`, so 0 means no error names anything we wrote.
 4. **The clock advances** — the tail of `<run>/run.log` shows `in-game <date>` moving.
+4½. **Every DLC is mounted (L50)** — the heartbeat's `DLC (L50)` line (`node tools/testbed/dlc_mounts.mjs --live <runDir>`) must read
+   `ok` with listed = mounted and no store misses. A `FAIL` means the store lookup failed at launch: the game lists every DLC, mounts
+   none and plays on without any DLC content (F266: the 1.15 probe's canon run, 1836→1856). Stop that run (`x`) and relaunch it; nothing
+   it plays is the arm. So far it has struck only a session's first launch.
 5. **The construction mix is plausible** — once the first save summary lands (~10 min, the 1837 autosave):
    `node tools/testbed/queue_mix.mjs <runDir>` (`--all` post-run). One building family dominating a major's queue (≥ 60% of ≥ 3
    items) is a red flag that can void the run (F66's port spam read 100% port on GBR and FRA at the first summary). The WARN is

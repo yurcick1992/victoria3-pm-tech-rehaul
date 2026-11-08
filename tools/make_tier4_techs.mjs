@@ -29,8 +29,12 @@ const gameEra = gameEraOfYear;
 const ERA_COST = { 1: 7500, 2: 10000, 3: 12500, 4: 15000, 5: 17500 };   // the era base costs, as the viewer shows them
 
 // ---- the game ---------------------------------------------------------------------------------------------------
-const list = (body, key) => { const m = body.match(new RegExp('(^|\\s)' + key + '\\s*=\\s*\\{([^}]*)\\}')); return m ? m[2].trim().split(/\s+/).filter(Boolean) : []; };
-const ENLOC = (() => { const loc = {}; const walk = d => { for (const f of readdirSync(d, { withFileTypes: true })) { const p = join(d, f.name); if (f.isDirectory()) walk(p); else if (f.name.endsWith('_l_english.yml')) { for (const line of rd(p).split(/\r?\n/)) { const m = line.match(/^\s*([A-Za-z_0-9\-.]+):\d*\s*"(.*)"\s*$/); if (m && !(m[1] in loc)) loc[m[1]] = m[2]; } } } }; walk(join(GAME, 'localization/english')); return loc; })();
+// ENLOC: every English loc line, a trailing `# comment` allowed since 2026-11-08 — vanilla's `socialism:0 "Socialism" # is when no smartphone`
+//   failed the old end-anchored pattern, so the twin recorded the key ("socialism") as the name. ⚠ The canon's tree twin (db96307a) and every
+//   earlier one carry that "socialism"; a regeneration now reads "Socialism" — a cosmetic field (no emitter prints it: emit_techs writes names
+//   only for minted and renamed technologies, emit_research_events reads vanilla's name live). Expect it in a field diff against those twins.
+const list =(body, key) => { const m = body.match(new RegExp('(^|\\s)' + key + '\\s*=\\s*\\{([^}]*)\\}')); return m ? m[2].trim().split(/\s+/).filter(Boolean) : []; };
+const ENLOC = (() => { const loc = {}; const walk = d => { for (const f of readdirSync(d, { withFileTypes: true })) { const p = join(d, f.name); if (f.isDirectory()) walk(p); else if (f.name.endsWith('_l_english.yml')) { for (const line of rd(p).split(/\r?\n/)) { const m = line.match(/^\s*([A-Za-z_0-9\-.]+):\d*\s*"(.*?)"\s*(?:#.*)?$/); if (m && !(m[1] in loc)) loc[m[1]] = m[2]; } } } }; walk(join(GAME, 'localization/english')); return loc; })();
 const ONSET = (() => { const src = rd(join(REPO, 'tools/tech_tree_spec.mjs')); const i = src.indexOf('const ONSET = {'); if (i < 0) throw new Error('tech_tree_spec.mjs: ONSET table not found'); let j = i + 'const ONSET = '.length, d = 0; const st = j; do { if (src[j] === '{') d++; else if (src[j] === '}') d--; j++; } while (d > 0); return new Function('return (' + src.slice(st, j) + ')')(); })();
 const VT = {};   // vanilla technologies
 for (const f of readdirSync(join(GAME, 'common/technology/technologies'))) if (f.endsWith('.txt'))

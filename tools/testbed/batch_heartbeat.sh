@@ -20,6 +20,9 @@ echo "runs with a folder: $(ls -d $S/run0*/ 2>/dev/null | wc -l) · complete (me
 RUN=$(ls -d $S/run0*/ 2>/dev/null | tail -1); RUN=${RUN%/}
 if [ -n "$RUN" ] && [ -f $RUN/run.log ]; then
   echo "--- newest run $(basename $RUN): marker $(grep -c PM_TECH_REHAUL $RUN/logs_live/debug.log 2>/dev/null) · version-mismatch lines $(grep -c 'does not match game version' $RUN/logs_live/error.log 2>/dev/null)"
+  # L50: a launch whose store lookup failed lists every DLC and mounts none, then plays on without any DLC content (F266). Read it at
+  # the smoke check: a FAIL line means stop this run and relaunch it - the span it plays is not the arm.
+  echo "    DLC (L50): $(node tools/testbed/dlc_mounts.mjs --live $RUN 2>&1 | grep -E '^(ok|FAIL|skip) ' | head -1)"
   START=$(sed '1s/^\xEF\xBB\xBF//' $RUN/run.log | grep -m1 -o -E '^\[[0-9]{2}:[0-9]{2}:[0-9]{2}\]' | tr -d '[]')
   if [ -n "$START" ] && [ -f $RUN/logs_live/error.log ]; then
     SS=$(echo $START | awk -F: '{print $1*3600+$2*60+$3}')

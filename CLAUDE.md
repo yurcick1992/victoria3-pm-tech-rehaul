@@ -613,7 +613,8 @@ canon's recorded chain replayed on game 1.15 (`tools/replay_canon_chain.mjs --pr
 (§10.109.1) + the idea entries' 1.15 laws (§10.109.3). Its field diff against the 1.0 canon: copper in the five rungs where vanilla 1.15 puts it,
 value for value; the two bronze variants; copper's traded quantity 12; `dams.inputs_per_50`; two `vanilla_value_overrides`; two idea-entry
 labels and the monthly global effect — nothing else. `mod/` and the deployed copy are its default (debug) build. Verify with
-`sha256sum config/mod_config.json`. Unmeasured over a century; the first 1.15 probe (F265, n=1 to 1856) ran its candidate before Q2/Q6/Q9.
+`sha256sum config/mod_config.json`. Unmeasured over a century; the first 1.15 probe (F265, n=1 to 1856) ran its candidate before Q2/Q6/Q9,
+and without any DLC (F266).
 
 **The 1.0 canon** (mod 1.0, game 1.13.11; canonised 2026-10-21, kept as the record) is `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`,
 sha256 **`9a05d36da42c1511`** (tree twin `04ac513168388956`): the polish rulings (§10.102), the R4 proofread's text and the urban-centre entries'
@@ -625,7 +626,8 @@ live figure (by field diff). F249 and F250 measured `728f2c7f84e6f467` (the same
 main methods (`required_input_goods = electricity`, POLISH B4; on 1.15 also on vanilla's own automated bakery, U28), the naval research entries
 naming their ship types (BUGS_AND_FIXES 2026-10-27), the 1.15 journal-entry syntax (`outcome`, `activation_description`; U21, U27), vanilla's
 journal-entry-conditional AI desire on every non-craft rung (§10.109.2, L47), and the crafts kept out of 1.15's new level counts and IP4's negotiation promise by native counts
-(§10.109.4, §10.109.6, with an init tripwire on its premise; landmines L48 and L49 guard the class). The electricity BUILD condition of §10.106 is NOT in it (deferred; a known issue). The
+(§10.109.4, §10.109.6, with an init tripwire on its premise; landmines L48 and L49 guard the class), and the research entries in a themed
+journal group of their own, "Tech Advancements and Inventions" (1.15's `themed = yes`, GAME_UPDATE_1_15 U74). The electricity BUILD condition of §10.106 is NOT in it (deferred; a known issue). The
 repository builds for game 1.15 only (GAME_UPDATE_1_15 U72).
 
 **What it contains is everything §1.2 describes, built by the formula of §1.3 at the values given there.** The provenance records inside the book —
@@ -649,8 +651,9 @@ What §1.2 and §1.3 leave out:
 
 - **The 1.15 canon** (game 1.15.0, since 2026-11-08) has not run a century. The first 1.15 probe (F265; one run each to 1856, its candidate before
   Q2/Q6/Q9): the mod loads with no error line of ours (the activation-description warnings since fixed), the research entries grant (245 stages
-  by 1856), Britain runs bronze cannons on 2 of 3 foundry levels, world GDP 0.94–0.99× vanilla 1.15 over 1840–1855. The re-measure is
-  GAME_UPDATE_1_15 Q12. Everything below is **the 1.0 canon on game 1.13.11**, the last measured state.
+  by 1856), Britain runs bronze cannons on 2 of 3 foundry levels. ⚠ Its mod run played WITHOUT ANY DLC (the store lookup failed at launch,
+  L50, F266), so its comparisons with vanilla 1.15 (world GDP, technology) are void. The re-measure is GAME_UPDATE_1_15 Q12. Everything below
+  is **the 1.0 canon on game 1.13.11**, the last measured state.
 - **The 1.0 canon's century** (F264: the n=48 alternating batch, 48 canon centuries against vanilla's n=56, the canon build `9a05d36d`; session
   `20261030_233342_alt-canon48-vanilla16`; F249's 16 centuries of `728f2c7f` read the same within the seed spread):
   - **44 intact, 4 broken by runoff** (the shortlist's pooled U\* under 10% in three, Britain in capital abundance 1920–28 in one; F249 had
@@ -888,7 +891,8 @@ Other flags: `-NoDeploy`, `-NoLint`, `-ControlOnly` (vanilla + telemetry; requir
 - **Building names** read `Tier N. <vanilla building> (<vanilla method>). Recipe BE <n>%` — N is the rung's tier, never its position (an industry
   legitimately starts at Tier 2); the break-even is goods-only, at base prices, under the most basic secondaries. Crafts read `Tier 0 craft. …`; a merged
   building is named by its tier span and building alone with one break-even per main method (`Tier 1-2. Paper Mills. Recipe BE 63%/47%`). Every main
-  production-method group is titled "Base" (vanilla's own `$pm_base$`).
+  production-method group is titled "Base" (vanilla's own `$pm_base$`). Without the break-even: a rung's short name `<key>_pmr_short` names its
+  method (research entries); a building's `<key>_pmr_bname` names the building, a merged host by its span (company and throughput modifiers, GAME_UPDATE_1_15 U76).
 - **The 1836 start** is converted by `tools/convert_history.ps1`; a book's manual overrides live in the file its `start_exceptions_file` names
   (`force_tier`, `force_industry_tier`, `remove`, optional `owner`, naming rungs by `era`). The canon names `config/start_exceptions.vanilla.json`, an
   EMPTY rule set — its start is vanilla's, converted; the 22-rule `config/start_exceptions.json` is the six-rung book's; `config/start_baseline.json`'s `unmapped` list is the patch-drift alarm.

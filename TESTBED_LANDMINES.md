@@ -113,6 +113,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L47 | vanilla's journal-entry-conditional AI desire (the five-year plan, the Tsar's reforms, Metternich) dropped on every rung, each its own building with one tier value (1.15) | `Test-LmL47` (`emit_ai_value_adds.mjs --check`) | every build | AUTO, proven; fixed |
 | L48 | a count of a building group's LEVELS that sees the crafts (light industry, manufacturing or a variable group), each craft level a tenth of a factory's workers and nearly free (1.15; IP4's promise since 1.13) | `Test-LmL48` (`tools/lint_group_levels.mjs`) | every build | AUTO, proven; fixed |
 | L49 | a field of a tiered industry's vanilla building that the tier split drops or changes (1.15's conditional ai_value was one) | `Test-LmL49` (`tools/lint_building_blocks.mjs`) | every build | AUTO, proven; clean |
+| L50 | a launch whose store lookup failed lists every DLC, mounts none, and plays on without any DLC content | `Test-LmL50` (`tools/testbed/dlc_mounts.mjs`); the heartbeat's `DLC (L50)` line | session; the smoke check | AUTO, proven; the harness remedy open (BACKLOG) |
 
 ---
 
@@ -1145,3 +1146,32 @@ reach every non-craft rung with vanilla's content (comments stripped, whitespace
 differ by design, `ai_value`'s adds are L47's, `aliases` belong to the anchor only, and anything else that differs must be listed in the tool's
 `KNOWN` table and in `MISSING_BUILDING_CONDITIONS.md`. `Test-LmL49` runs it on the built mod. Proven 2026-11-08: FAIL on a rung doctored to drop
 `possible` and change `levels_per_mesh`, FAIL on a vanilla steel mill doctored to gain `unique = yes`, PASS on the canon build (44 rungs; KNOWN empty).
+
+### L50 — a launch that mounted no DLC
+
+**Defect.** At launch the game looks each DLC up in the store backend. When the lookup fails, `debug.log` still LISTS every installed
+DLC under `jominiapplication.cpp: DLC:`, prints `dlc.cpp:822: Could not find item in store backend.` once per DLC, mounts no
+`game\dlc\<folder>`, and plays on. Nothing fails: the run loads, ticks, autosaves and quits at its date, the mod's init marker is there,
+and `meta.json` reads like any other. But the game has no DLC content: every `has_dlc_feature` is false and every event or journal
+entry carrying `dlc = …` is dead. The arm is not the arm it claims to be, and it diverges from a DLC run from the first week (the global
+history's DLC-gated journal entries and scheduled events never happen).
+
+**How it was found.** 2026-11-08, chasing the user's playtest observation that the Hungarian and Kazakh wars came in 1836–38 (F266): the
+1.15 probe's canon run never scheduled Kenesary's ride, Congress Poland or the Caucasian War, and Garibaldi's event failed its DLC
+trigger, while the same batch's vanilla run had all four. Its `debug.log`: 18 DLCs listed, 18 store misses, 0 mounted; `meta.json`'s
+`dlc_mounted` (the observer's union over the run's launches, written for the no-DLC test) is empty. A sweep of every session (1,324
+launches matched to their runs) finds three such launches, all a session's FIRST: the probe's canon run (1836→1856, whole), the 1.0
+release batch's run 1 (`20261030_005628`, 1836→1860.4, then resumed from that save WITH its DLCs) and `20260819_213936` run 1 (stopped by
+the user at 1839). The root cause outside the game (why the store backend was not ready) is unknown; a launch shortly after a game
+update or a machine start is the common factor so far.
+
+**Detector.** `tools/testbed/dlc_mounts.mjs` reads `logs_live/debug.log` per launch (header to header), keeps the launches whose time
+matches one of the run's own attempts (the mirror can carry an earlier run's launch out of the shared ring, L9), and FAILS a launch with
+any store miss or with nothing mounted out of a non-empty list. It declines, and prints: no-DLC tests (`disabled_dlc`), foreign launches,
+logs whose start was not mirrored, and a PARTIAL mount with no store miss — the mirror's gap (L28/L29: seven runs show the third mount
+line cut mid-word and the log jumping ahead), which is unreadable, not a failure. `Test-LmL50` runs it on `-Session`; `--live <run>`
+judges the newest launch and is the heartbeat's `DLC (L50)` line at the five-minute smoke check, where a FAIL means stop the run and
+relaunch it. Proven 2026-11-08 under StrictMode: FAIL on `20261108_061520_g115-probe-1856` (run 1, the one launch), PASS on F264's
+`20261030_233342_alt-canon48-vanilla16` (88 launches of 64 runs), N/A without `-Session`; `--all` names exactly the three launches above.
+**Open:** the observer could check the mount lines itself a few seconds after launch and relaunch on a miss (BACKLOG); until then the
+smoke check carries it.

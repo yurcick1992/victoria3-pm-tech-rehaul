@@ -13,7 +13,8 @@
     "q8_pool": "The hoard H lower than 1.13's in both arms (the new 52-week pool rule makes a construction shortfall a must-have once the pool holds a year of inflow): canon below F264's 0.24, vanilla below 0.42. Direction argued.",
     "register": "World GDP canon / vanilla 1.15 within 0.75-1.33 (the soft band) at the end, with the 1886-1916 dip; magnitude not argued (one seed each; F264's per-run spread was 0.71-1.41).",
     "build": "Init OK and the tripwire line 'group-level counters include child groups' in the canon's debug.log; no error.log line naming a file of ours beyond vanilla 1.15's own noise; research-entry stages complete all century; bronze artillery and copper bought; dams built with copper upkeep; save summaries written for every yearly save (the melt-tail tolerance).",
-    "play_time": "Canon within x1.10 of the same day's vanilla (directional at n=1)."
+    "play_time": "Canon within x1.10 of the same day's vanilla (directional at n=1).",
+    "scripted_wars": "THE USER'S WATCH POINT (2026-11-08; the playtest saw both wars in 1836-38, 1.13 in the 1840s-1860s): when the Hungarian revolution and the Kazakh revolt happen in each arm. Both are vanilla 1.15 script the mod does not touch (03_russia.txt is ours only for one unrelated rewrite; no Hungarian file is ours) - F266. Read: events.tsv (DIPPLAY / WARSTART of the Habsburg monarchy against Hungary; Russia against Kazakhstan), the yearly summaries' overlord field for KZH / UZH / OZH / KAZ / HUN, and the kept final save's journal-entry records and globals (kazakhstan_revolt_happened, kazakhstan_victory_var / kazakhstan_defeat_var, hungarian_ultimatum_sent_var). Prediction, both arms alike: Pacify the Steppes opens on its scheduled day 690 (late Nov 1837) and fails on opening only if Russia has opened a play against a horde first (1.15's +25 liberty desire per overlord play) - otherwise Russia pacifies the hordes in the 1840s (the vanilla probe: 1844.9.29); the Hungarian war comes when Hungary's AI presses the Twelve Points (1.15: legitimacy >= 75 and a governing IG of liberal, universalist or populist ideology - possible from 1836) and AI Austria refuses the April Laws (weights 200 : 50) - any year from 1836 (the playtest, a human Austria: the play 1836.2.25; the vanilla probe: 1852.9.10). No arm difference argued: n=1, and both dates are AI draws."
   },
   "_stop_rule": "none: two fixed runs, both play to 1936; the stop watcher is NOT armed.",
   "_cost": "2 x 1836 -> 1936.1.1 (~3-3.5 h each on 1.13 timings; the 1.15 probe ran 20 years in 28 min): ~6.5-7 h with builds and harvests.",
@@ -21,6 +22,7 @@
     "setups.canon.config points at the canon's NAMED copy; nothing is canonised and no emitter, build.ps1 or tools/testbed/** file is edited until SCHEDULE DONE (L10).",
     "Launch through tools/testbed/launch_detached.ps1 called directly from the PowerShell tool (L30); confirm the session folder within a minute.",
     "Five-minute smoke check on run 1 (canon: the init marker AND the tripwire line) and run 2 (vanilla).",
+    "At each smoke check the heartbeat's 'DLC (L50)' line must read ok (listed = mounted, no store misses). A FAIL line means the launch mounted no DLC and plays without any DLC content (F266: the 1.15 probe's canon run): stop that run (x) and relaunch it before reading anything from it.",
     "Start the background waiter after the launch."
   ],
   "defaults": {

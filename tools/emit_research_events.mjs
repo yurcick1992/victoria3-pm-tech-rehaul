@@ -21,7 +21,7 @@
 //   · `root.` is mandatory when comparing against ROOT from inside an inner scope — without it the
 //     value silently resolves in the inner scope
 //   · `THIS.GetCountry` works in a JE effect; `ROOT.GetCountry` does not
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -56,6 +56,27 @@ const TREEFILE = join(REPO, 'config/tech_tree_options' + TREE_SFX + '.json');
 const OPT = JSON.parse(readFileSync(TREEFILE, 'utf8')).options.find(o => o.ships);
 if (!OPT) throw new Error('no option marked `ships` in config/tech_tree_options.json');
 const TECH = Object.fromEntries(OPT.techs.map(t => [t.id, t]));
+// ⭐ A TECHNOLOGY'S DISPLAY NAME (2026-11-08, the 1.15 playtest: "'socialism: inception' starts with a lowercase s"): vanilla's English
+//   name, read LIVE and tolerant of a trailing comment. Vanilla writes `socialism:0 "Socialism" # is when no smartphone`, which the tree
+//   twin's extractor (make_tier4_techs.mjs) could not parse, so the twin recorded the key; the twin is a canon record and stays as it is.
+//   A renamed or minted technology keeps the twin's name (emit_techs writes its loc). A name that still reads like a key throws.
+const VAN_TECH_EN = (() => {
+  const out = {};
+  const txt = readFileSync(join(GAME, 'localization/english/inventions_l_english.yml'), 'utf8');
+  for (const m of txt.matchAll(/^\s*([A-Za-z_0-9-]+):\d*\s*"(.*?)"\s*(?:#.*)?$/gm)) if (!(m[1] in out)) out[m[1]] = m[2];
+  if (Object.keys(out).length < 100) throw new Error(`inventions_l_english.yml gave only ${Object.keys(out).length} names - the file moved or changed shape`);
+  return out;
+})();
+const techName = id => {
+  const t = TECH[id];
+  const n = ((t && !t.renamed && t.origin === 'vanilla' && VAN_TECH_EN[id]) || (t && t.name) || id).replace(/"/g, '');
+  if (!n.startsWith('$') && (/^[a-z]/.test(n) || n.includes('_'))) throw new Error(`technology ${id}: display name "${n}" reads like a key (no vanilla English name found and none in the tree twin)`);
+  return n;
+};
+// ⭐ THE ENTRIES' OWN JOURNAL GROUP (2026-11-08, the 1.15 playtest: "Game now uses neat nesting for journal entries. Let's group our JEs into
+//   'tech advancements and inventions' group"): game 1.15's `themed = yes` lists a group's entries under one heading with its illustration,
+//   where an unthemed group (vanilla's je_group_technology, "Development") lists every entry on its own. Vanilla's technology illustration.
+const JE_GROUP = 'je_group_pmr_tech_advancements';
 
 // ---- era base costs, read LIVE from the game so a patch cannot leave the grants wrong -----------
 const ERACOST = {};
@@ -837,7 +858,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   const cadence = 'monthly_progress';
   // ⚠ A bar's `name` is a LOC KEY, not a label. The first smoke run logged 122 lines of
   // "Unrecognized loc key pmr_bar_<tech>" because only the shared `desc` had one.
-  loc.push([barName(tech), `Towards ${(TECH[tech].name || tech).replace(/"/g, '')}`]);
+  loc.push([barName(tech), `Towards ${techName(tech)}`]);
   // ⚠⚠ THE TOOLTIP IDIOM IS `if { limit … add { desc … value } }`, NOT `add { desc … if { limit … value } }`.
   // Both parse, and the game's own scripted_progress_bars.md even documents the second — but with the `desc` on
   // the OUTER add the engine IGNORES it and auto-describes the nested condition instead, so the player reads
@@ -898,7 +919,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       jes.push(
         `${key} = {\n` +
         `${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n` +
-        `${T}group = je_group_technology\n${T}activation_description = { always = yes }\n\n` +
+        `${T}group = ${JE_GROUP}\n${T}activation_description = { always = yes }\n\n` +
         `${T}scripted_progress_bar = ${barName(tech)}\n\n` +
         `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { je:${key} ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} } }\n` +
         ind1(grantBlock) +
@@ -915,7 +936,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
     jes.push(
       `${key} = {\n` +
       `${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n` +
-      `${T}group = je_group_technology\n${T}activation_description = { always = yes }\n\n` +
+      `${T}group = ${JE_GROUP}\n${T}activation_description = { always = yes }\n\n` +
       // ⚗ PERF PROBE (2026-10-08): `research_events.update_frequency` = { active, inactive } (days) writes the engine's
       // per-type overrides of JOURNAL_ENTRY_UPDATE_ACTIVE (4) / _INACTIVE (14) — fields named in the exe, used by no vanilla file.
       (RE.update_frequency ? (RE.update_frequency.active ? `${T}active_update_frequency = ${RE.update_frequency.active}\n` : '') +
@@ -934,7 +955,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       outcomeEnd(`${T}${T}${T}has_technology_researched = ${tech}\n`) +
       `${T}weight = 1\n${T}transferable = no\n${T}can_revolution_inherit = yes\n` +
       `${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
-    const nice = (TECH[tech].name || tech).replace(/"/g, '');
+    const nice = techName(tech);
     loc.push([key, `${nice}: ${stage.charAt(0).toUpperCase() + stage.slice(1)}`]);
     // ⚠⚠ THE TEXT THE PLAYER READS IS `_reason`, NOT `_desc` (found 2026-09-24): the 1.13 journal window renders
     //   JournalEntry.GetReason (the body), GetStatusDesc, GetGoalDesc and GetCompletionTooltip — nothing renders `_desc`.
@@ -1004,7 +1025,7 @@ for (const [ind, list] of Object.entries(compressed)) {
     `${T}${T}${T}${T}debug_log = "PMR_JE|ind_fill|${x.tech}|[THIS.GetCountry.GetNameNoFormatting]"\n${T}${T}${T}}\n`;
   const cur = `OR = { ${list.map((x, i) => `AND = { has_variable = ${tg(i)}  ${open(x)} }`).join('  ')} }`;
   firsts.push({ key: je, cond: avail, reentrant: true });
-  jes.push(`${je} = {\n${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n${T}group = je_group_technology\n${T}activation_description = { always = yes }\n\n` +
+  jes.push(`${je} = {\n${T}icon = "gfx/interface/icons/event_icons/event_industry.dds"\n${T}group = ${JE_GROUP}\n${T}activation_description = { always = yes }\n\n` +
     (PLACE ? '' : `${T}is_shown_when_inactive = { ${avail} }\n`) + `${T}possible = { ${avail} }\n\n` +
     `${T}immediate = { pmr_retarget_${ind} = yes }\n\n${T}scripted_progress_bar = ${bar}\n\n` +
     `${T}on_monthly_pulse = {\n${T}${T}effect = {\n${T}${T}${T}if = {\n${T}${T}${T}${T}limit = { je:${je} ?= { "scripted_bar_progress(${bar})" >= ${span} } }\n` +
@@ -1016,7 +1037,7 @@ for (const [ind, list] of Object.entries(compressed)) {
   const indName = (CFG.industries.find(x => x.id === ind) || {}).name || ind;
   loc.push([bar, `Towards the next advance in ${indName}`], [je, `Advances in ${indName}`]);
   const body = `The trade already knows its own shortcomings. Each month the bar advances by one for every source of the current target at or above its mark; when it fills (${span} months), the target gains ${Math.round(100 * (RE.grant_fraction ?? 0.5))}% of its base research cost — at most ${NF} times — and the entry moves on to the next technology of the trade.\n\n` +
-    list.map(x => `${(TECH[x.tech].name || x.tech).replace(/"/g, '')}:\n` + x.srcLines.map(l => '• ' + l).join('\n')).join('\n\n');
+    list.map(x => `${techName(x.tech)}:\n` +x.srcLines.map(l => '• ' + l).join('\n')).join('\n\n');
   loc.push([je + '_desc', `$${je}_reason$`], [je + '_reason', body]);
 }
 // ⚗ V2 (2026-10-09): `research_events.placement = 'script'` — the first stage of every entry (and V4's per-industry entries) carries no
@@ -1144,6 +1165,11 @@ const W = (rel, text) => { const p = join(MOD, rel); mkdirSync(dirname(p), { rec
 W('common/script_values/zzz_pm_rehaul_research_values.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' + sv.join('\n\n') + '\n');
 W('common/scripted_progress_bars/zzz_pm_rehaul_research_bars.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' + bars.join('\n\n') + '\n');
 W('common/journal_entries/zzz_pm_rehaul_research.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' + jes.join('\n\n') + '\n');
+// the entries' journal group (JE_GROUP above): a new key in a file of its own, so vanilla's 00_journal_entries.txt stays vanilla's
+if (!existsSync(join(GAME, 'gfx/interface/illustrations/journal/je_group_illu_technology.dds'))) throw new Error('vanilla has no je_group_illu_technology.dds - the journal group illustration moved');
+W('common/journal_entry_groups/zzz_pm_rehaul_research_groups.txt', '# AUTO-GENERATED by tools/emit_research_events.mjs - do not edit by hand.\n' +
+  `${JE_GROUP} = {\n${T}context = country\n${T}illustration = "gfx/interface/illustrations/journal/je_group_illu_technology.dds"\n${T}themed = yes\n}\n`);
+loc.push([JE_GROUP, 'Tech Advancements and Inventions']);
 // ⚗ A PERFORMANCE PROBE AMPLIFIER (2026-10-08, the user: "tests to worsen" — if N entries cost X, 10N should cost ~10X and be clearly
 // visible). `research_events.perf_amplify = k` appends k − 1 COPIES of every journal entry, bar and script value, renamed `_a<i>`,
 // each bar threshold raised by i × 0.001 (close, never identical, so nothing can be shared or cached), WITHOUT the research grant and

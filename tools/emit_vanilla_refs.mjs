@@ -665,7 +665,8 @@ for (const lang of LANGS) {
     for (const suff of ['', '_desc']) {
       const m = new RegExp(`^\\s*(${r0}_throughput_add${suff}):(\\S*)\\s*(".*")\\s*$`, 'm').exec(van);
       if (!m) continue;
-      out.push(` ${k}_throughput_add${suff}:${m[2]} ${m[3].replaceAll(`$${r0}$`, () => `$${k}_pmr_short$`)}`);
+      // the BUILDING's short name (`<key>_pmr_bname`, build.ps1, 2026-11-08): a merged host's throughput reaches both its tiers
+      out.push(` ${k}_throughput_add${suff}:${m[2]} ${m[3].replaceAll(`$${r0}$`, () => `$${k}_pmr_bname$`)}`);
     }
   }
   if (VAL.has('pmr_light_industry_levels_nc')) out.push(` pmr_light_industry_levels_nc:0 "Light industry levels (crafts excluded)"`);

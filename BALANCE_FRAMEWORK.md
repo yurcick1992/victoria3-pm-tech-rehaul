@@ -3231,6 +3231,9 @@ unacceptable. Cost = the canon t0's ÷ 50 (600 → 12, 316 → 6).
    government entries keep the ×10.
 7. **Companies can neither build nor form off craft rungs** (*"Companies, by themselves or with mandates, should not be able to build
    'artisanship' t0s"*): the craft keys leave every company list, formation test, prosperity line and construction target.
+   **Prosperity bonuses included — ruled 2026-11-08** (the 1.15 playtest on Erste Brünner, whose textile bonus reaches Tier 1 and the Tier 2-3
+   host but not the craft; asked whether a company's bonus should still reach its industry's craft rung, the user: *"Leave crafts out"*). The
+   prosperity exclusion had been the emitter's reading of item 7, never asked on its own; it is now ruled. GAME_UPDATE_1_15 U76.
 8. **Cost ÷50 is kept** — the local session found a periphery craft repays itself in about a year at 1836 prices (F180 §4) and the user
    ruled: *"keep ÷1/50. Faster payback is narratively deliberate."*
 9. **The staffing risk is accepted and tracked** (F180 §2: machinists need literacy above 10%, and a building cannot fill one profession

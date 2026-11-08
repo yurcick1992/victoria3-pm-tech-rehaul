@@ -75,7 +75,8 @@ const combinedShipyard = [...(chains.get('shipyard') || []), ...(chains.get('shi
 // line and construction target blocks both routes, and the hardcoded formation gate (levels of listed types in one state) can no
 // longer be met by 500-worker craft levels. ⚠ The craft key IS the vanilla building key, so the vanilla reference itself is
 // rewritten to the e1+ keys, never left in place. A company whose industry exists only as crafts in a country cannot form there
-// until the e1 rung is built — intended.
+// until the e1 rung is built — intended. The prosperity lines' exclusion was RULED on its own on 2026-11-08 (the user, asked whether a
+// company's bonus should still reach its industry's craft: "Leave crafts out"; §10.91.1 item 7, GAME_UPDATE_1_15 U76).
 // ⭐ A MERGED RUNG (`method_of`, §10.91.2) is excluded the same way for a different reason: it is a main METHOD of its host
 // building, not a building, so its key names no building type in game. The host stays in every list, which covers both methods.
 const EXCLUDE = new Set();
@@ -387,7 +388,9 @@ for (const lang of LANGS) {
       if (!src) continue;
       // the rung's SHORT name (2026-10-21, polish): `<key>_pmr_short` (build.ps1, per language) reads "Arms Industries (Bolt Action Rifles)",
       //   where the building key would print the whole in-game name "Tier 3. Arms Industries (Bolt Action Rifles). Recipe BE 24%"
-      const text = src[3].replaceAll(`$${info.base}$`, () => `$${info.tierKey}_pmr_short$`);
+      // ⭐ the BUILDING's short name since 2026-11-08 (`<key>_pmr_bname`, build.ps1): a merged host's bonus reaches both its tiers, so it
+      //   reads "Tier 2-3. Textile Mills", not its own method's "Tier 2. Textile Mills (Sewing Machines)" (the Erste Brünner tooltip)
+      const text = src[3].replaceAll(`$${info.base}$`, () => `$${info.tierKey}_pmr_bname$`);
       lines.push(` ${name}${suff}:${src[2]} ${text}`);
       if (lang === 'english') locKeys++;
     }

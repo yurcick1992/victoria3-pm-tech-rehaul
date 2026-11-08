@@ -404,13 +404,14 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F256 | Germany's oil economy waits for a built buyer on the 1.0 canon too: first staffed oil rig median 1920 (vanilla ~1905), none by 1935 in 5 of 17 runs (vanilla 1 of 17); 1935 staffed levels 25.5 against 75.5 | canon | reading | here |
 | F257 | Displayed GDP = a country's goods producers' value added on its soil at its own market's prices (construction, military, administration not subtracted; ownership moves nothing); looked base-priced because two offsets cancel; the canon's GDP sits at ~0.95 of vanilla's price level from 1920. First reading (base-priced, +6%) VOID: a summary reader bug | canon | probe | here |
 | F258 | The 1.0 release build loads and plays 1836-1852 (n=1, stopped by the user) with no crash, no stall and no error of its own; its release manifest line is logged. Early play time 16.2 min to 1849 against 14.4 / 13.9 a week earlier is no reading: the machine was in active use | release | standing | here |
-| F259 | The 1.0 release build plays three centuries 1836-1936 intact (n=3): every run self-quits at 1936.1.1, 4 engine crashes (3 different addresses, one empty dump) all recovered from the run's own autosaves, 0 freeze stops, no error of its own; 1.33 crashes a run against F249's 0.69 (canon debug) / 0.56 (vanilla), inside small-n chance; world GDP 0.93x at the aim | release | standing | here |
+| F259 | The 1.0 release build plays three centuries 1836-1936 intact (n=3): every run self-quits at 1936.1.1, 4 engine crashes (3 different addresses, one empty dump) all recovered from the run's own autosaves, 0 freeze stops, no error of its own; 1.33 crashes a run against F249's 0.69 (canon debug) / 0.56 (vanilla), inside small-n chance; world GDP 0.93x at the aim. ⚠ F266: run 1 played 1836-1860.4 without any DLC (L50), then resumed with them | release | standing | here |
 | F260 | Auto-downsizing has no hook but is measurable from saves: after the 6-month timer a building loses ~1 empty private level a week (87.8% of available steps); the timer alone predicts little (0-27% shrink within a year); a private-level drop on a building understaffed at the earlier save is the event; yearly saves catch 74%, half-yearly 93% | vanilla-mechanics | standing | here |
 | F261 | Auto-downsizing is logged by a monthly telemetry poll, on in every telemetry run (v15), at no measurable cost (−0.3 ± 0.4 s of ~127 s a game year in 1921): against monthly saves it logs 116 of 118 vanilla drops and 214 of 216 canon drops with the same size and private split; a building holds no variables, so the memory lives on the state; "private" = not owned by a country; a craft level is 1/10 of a vanilla level's staffing, so compare volumes weighted | instrument | standing | here |
 | F262 | Obsolete construction on the 1.0 canon: 7.9% of tiered construction points (19.9% of levels) go to a building while the same country holds, runs and gets more per worker from a higher-tier one; mostly t1 beside a standing t2 and one tier behind; rising 1% → 9% over the century; only where a choice existed (83.6% of the points), 9.4% of points and 30.7% of levels. Misplaced capital 18.6% against the same sessions' vanilla 13.7%; the whole excess is in the tiered industries (contribution 15.2% against 9.6%), outside them 3.4% against 4.1%. The old below-best share is inflated on the artmerge books by merged rungs: F249's report line reads 26.5% corrected, not 48.5% | canon | reading | here |
 | F263 | The canon's trade lead (1.83x in 1837: vanilla's 1836 capacity carrying ~2x the goods) fades because its AI builds less trade capacity: 0.59-0.68x vanilla's from 1875 (trade-centre levels 0.71-0.78x), so trade value 1.08-1.26x; neither trades nor trade-centre construction read ai_value (a potential-over-GDP score). The residual gap at which a market's imports stop: canon 0.134 of base against 0.157 (median); paired, lower by 0.070 at weight x4 and 0.015 at x1.41, +0.015 at vanilla's weights, less than in proportion, and widening by 0.03-0.08 to 1910-35 as the thin capacity binds | canon | reading | here |
 | F264 | The 1.0 canon over 48 alternating centuries (game 1.13.11, against vanilla n=56; play time against the batch's own 16): world GDP 1.04x (1886 0.93x, the line holds), shortlist U* 24.6% against 19.1%, W 0.88x, PI 0.93 falling, PP 0.87, loss 6.98; 4 of 48 runs broken by runoff (F249 0 of 16: about one chance in four at this rate); play time x1.045 (x1.042 without a run slowed by the report's rehearsal); auto-downsizing loses 1.77x vanilla's levels for the same jobs (27.6M against 27.7M) and 1.22x its construction points, the excess on t0 non-craft, t1 and t2; below-best 27.9%, obsolete construction 8.5%, misplaced capital 18.5% against 14.0% (all of the excess in the tiered industries); against 0.99 nothing meaningful moved | canon | standing | here |
-| F265 | The first runs on game 1.15.0 (n=1+1+1, 1836-1856): the 1.15 candidate book loads and plays with no error line of its own but one load-time warning per journal entry (activation_description, fixed since); its research entries complete and grant (245 stages by 1856); Britain runs bronze cannons on 2 of 3 foundry levels; world GDP 0.94-0.99x the same batch's vanilla 1.15, inside the 1.13 canon's seed spread; vanilla 1.15 within +-3% of vanilla 1.13 over 1840-1855; rakaly 0.8.19 stops at the last section of every 1.15 save (worked around in the summariser); the 1836 pop-identity table refreshed |
+| F265 | The first runs on game 1.15.0 (n=1+1+1, 1836-1856): the 1.15 candidate book loads and plays with no error line of its own but one load-time warning per journal entry (activation_description, fixed since); its research entries complete and grant (245 stages by 1856); Britain runs bronze cannons on 2 of 3 foundry levels; world GDP 0.94-0.99x the same batch's vanilla 1.15, inside the 1.13 canon's seed spread; vanilla 1.15 within +-3% of vanilla 1.13 over 1840-1855; rakaly 0.8.19 stops at the last section of every 1.15 save (worked around in the summariser); the 1836 pop-identity table refreshed. ⚠ CORRECTED by F266: the g115 run played without any DLC, so the world GDP and technology comparisons are void |
+| F266 | The early Hungarian and Kazakh wars of the user's 1.15 playtest are vanilla 1.15's: the Twelve Points button opens to legitimacy >= 75 and a governing liberal / universalist / populist IG from 1836 (1.13: the springtime, or a radical-led IG), and an overlord's play against its own subject adds +25 liberty desire (new define); the playtest's Austria opened the Hungarian play 1836.2.25, Russia's reduce-autonomy play on the Junior Horde (1836.11.4) put it at 71 by 1837, and Pacify the Steppes failed on opening (1837.11.23); the mod replaces none of the chain's files but 03_russia.txt (one unrelated line). The 1.15 probe's canon run played WITHOUT ANY DLC (18 store misses, 0 mounted): F265's comparisons void; two more such first launches in the archive (release batch run 1, 1836-1860; an August run stopped at 1839); L50 | canon, vanilla | standing | here |
 
 ---
 
@@ -21621,6 +21622,10 @@ early window, and the same sessions' vanilla n=17), a week earlier.
 
 ## F259 — THE 1.0 RELEASE BUILD PLAYS THREE CENTURIES INTACT: EVERY RUN REACHES 1936.1.1 AND QUITS BY ITSELF; FOUR ENGINE CRASHES, ALL RECOVERED FROM THE RUN'S OWN AUTOSAVES, NONE TRACEABLE TO THE MOD; NO FREEZE, NO ERROR OF ITS OWN; THE ECONOMY READS AS THE CANON'S (2026-10-30; session `20261030_005628_release-century-n3`, the release build, n=3, 1836→1936.1.1)
 
+⚠ **Corrected by F266 (2026-11-08): run 1's first launch mounted NO DLC** (the store lookup failed; L50) and played 1836 → 1860.4.1 without
+any DLC content, then resumed from that save with its 17 DLCs. "Every installed DLC" below holds for runs 2–3 only; run 1 is a hybrid, and its
+economic readings are not the release build's with DLC. The crash and stall verdict stands.
+
 **Why.** F258 proved the release build for sixteen years only. The schedule `release_century_n3.json` is the release build's crash and stall
 check over the full century, a check of what ships rather than a measurement. The user, 2026-10-30: *"Launch n=3"*. Fixed n, no stop
 watcher.
@@ -22337,6 +22342,10 @@ jobs; whether the extra 0.55M points a run is capital the economy needed elsewhe
 
 ## F265 — THE FIRST RUNS ON GAME 1.15.0: THE 1.15 CANDIDATE BOOK LOADS AND PLAYS 1836→1856 WITH NO ERROR LINE OF ITS OWN BUT ONE LOAD-TIME WARNING PER JOURNAL ENTRY (FIXED SINCE), ITS RESEARCH ENTRIES COMPLETE AND GRANT (245 STAGES BY 1856), BRITAIN RUNS BRONZE CANNONS ON 2 OF 3 FOUNDRY LEVELS, AND ITS WORLD GDP RUNS 0.94–0.99× THE SAME BATCH'S VANILLA 1.15, INSIDE THE 1.13 CANON'S SEED SPREAD; VANILLA 1.15 SITS WITHIN ±3% OF VANILLA 1.13 OVER 1840–1855; RAKALY 0.8.19 STOPS AT THE LAST SECTION OF EVERY 1.15 SAVE (WORKED AROUND) (2026-11-08; session `20261108_061520_g115-probe-1856`, n = 1 + 1 + 1, game 1.15.0)
 
+⚠ **Corrected by F266 (2026-11-08): the `g115` run played WITHOUT ANY DLC** (the store lookup failed at its launch; L50), against a vanilla
+run with every DLC. Item 4 (world GDP) and item 2's technology counts against vanilla are void as comparisons; items 1 and 3 stand as
+observations of the mod without DLC; items 5–6, read from the vanilla runs, stand.
+
 **Arms.** (1) `g115` = `{kind: config, config: config/mod_config.g115-canon-bz-dcu.json}`: the canon's recorded chain replayed on game 1.15.0
 (`tools/replay_canon_chain.mjs`, proven to reproduce the canon on 1.13.11) + bronze artillery (§10.108.2) + dam copper (§10.108), debug build,
 telemetry v16 — an update-pass candidate, NOT the canon; built before U27's activation fix. (2) `vanilla` = `{kind: control}` (vanilla 1.15.0 +
@@ -22381,3 +22390,73 @@ level (CLAUDE.md §2.9) — at n=1 a 4–6% gap at 1850–1855 sits inside the 1
 obsolescence, no hoard and no capital abundance. It does not say the candidate is balanced on 1.15, nor that vanilla 1.15 matches vanilla 1.13
 beyond 1855. It does not measure play time (one run each, the machine in use). It does not test the activation fix, the bronze naming, the
 summariser's two guards or the refreshed identity table in game: they were built after these runs (the dry run passes with all of them).
+
+---
+
+## F266 — THE EARLY HUNGARIAN AND KAZAKH WARS ARE VANILLA 1.15'S: THE TWELVE POINTS OPEN TO A LIBERAL GOVERNMENT FROM 1836, AND AN OVERLORD'S PLAY AGAINST ITS OWN SUBJECT NOW ADDS +25 LIBERTY DESIRE; THE MOD TOUCHES NEITHER CHAIN. THE 1.15 PROBE'S CANON RUN PLAYED WITHOUT ANY DLC (THE STORE LOOKUP FAILED AT LAUNCH), SO F265'S CANON-AGAINST-VANILLA READINGS ARE VOID (2026-11-08; readings of the user's 1.15 playtest saves, the probe session `20261108_061520_g115-probe-1856` and every session's `debug.log`; no new runs)
+
+**Sources.** The user's playtest of 2026-11-08: the 1.1 canon's debug build of 12:47, game 1.15.0, a human Austria, 11 DLCs including Sphere of
+Influence, National Awakening and State and Revolution; its autosaves at 1837.1.1, 1838.1.1, 1839.1.1 and 1840.1.1, copied and melted with
+rakaly 0.8.22 (`--unknown-key ignore`). Only quoted strings, dates, the subject pacts' liberty desire and the war records are read: other
+field names in a 1.15 melt are 1.13's tokens and are not trusted. Also the user's vanilla + telemetry save at 1836.4.1; the probe's kept 1856
+saves and yearly summaries; two kept 1.13.9 vanilla saves of `saves_debut` (1836.4.1, 1837.4.1); the game files of 1.15.0 against the kept
+1.13.11 install.
+
+**What it shows.**
+1. **The Hungarian war.** The chain: Hungary presses the Twelve Points, a scripted button of `je_hungarian_revolution`, which Hungary holds
+   from 1836 under National Awakening. Austria then gets `hungary_events.9` (Hungary Enacts April Laws): accept (AI weight 50) or refuse (200).
+   Refusing fires `hungary_events.6` (Austrian Ultimatum), and Austria opens `dp_hungarian_revolution` with Hungary's independence war goal.
+   1.15 widened the button. On 1.13 the AI could press it only while Austria held the Springtime of the Peoples entry; anyone else needed
+   legitimacy ≥ 75 and a governing IG whose LEADER is radical. On 1.15 it takes legitimacy ≥ 75 (or the springtime) and any governing IG
+   whose own ideology is liberal, universalist or populist, or whose leader is radical or socialist. The Intelligentsia's base ideology is
+   liberal. In the playtest Austria opened the play on 1836.2.25 and the war began on 1836.6.5 (the 1837.1.1 save;
+   `hungarian_ultimatum_sent_var` set; Hungary no longer Austria's subject by 1840). The probe's vanilla run: the play on 1852.9.10, after its
+   springtime; Hungary capitulated on 1854.6.22.
+2. **The Kazakh revolt.** The global history schedules Pacify the Steppes for day 690 (≈1837.11.21), behind `has_dlc_feature` Sphere of
+   Influence or State and Revolution (1.13: Sphere of Influence alone), at the same delay as on 1.13. The entry fails if any horde's liberty
+   desire is ≥ 80, Russia falls below great-power rank, or a Russian civil war passes 75%. On failure Kenesary's revolt follows
+   (`kazakhstan_events.1`: the Senior Horde becomes KAZ, independent). Otherwise it times out after ten years (≈1847) into the same revolt,
+   and it succeeds when every Kazakh subject is a puppet below the low-liberty-desire threshold. Its substance did not change 1.13 → 1.15: it
+   was ported to the outcome syntax, made contextless and scoped by involvement. In the playtest it opened and FAILED on 1837.11.23; Russia then
+   won The Last Kazakh Khan on 1838.8.22 (the war ran 1838.3.3 → 1838.9.16). At 1837.1.1 the Junior Horde (KZH) stood at liberty desire 71.4
+   (the Middle 46.6, the Senior 40.7), and Russia had opened `dp_reduce_autonomy` against KZH on 1836.11.4. 1.15's new define
+   `LIBERTY_DESIRE_FROM_OVERLORD_DIPLOMATIC_PLAY = 25` adds 25 to a direct subject when its overlord starts a play against it (and
+   `LIBERTY_DESIRE_FROM_OVERLORD_WAR_GOAL_MAX = 25` up to 25 more per enforced war goal). The probe's vanilla run: the entry opened, never
+   failed, and Russia pacified the hordes on 1844.9.29; the hordes are gone from 1845.
+3. **The starting liberty desire is not new.** At 1836.4.1 vanilla 1.15 (the user's control save) and vanilla 1.13.9 read alike: the hordes
+   54–57 in both, Hungary 50.6 / 50.9, Croatia 58.1 / 58.1, Transylvania 48.5 / 48.0, Kraków 45.7 / 46.2. A year on, 1.13.9 at 1837.4.1 has KZH
+   at 37.6 and Hungary at 56.0; the playtest at 1837.1.1 has KZH at 71.4 and Hungary at 80.9, each about 25 higher, one overlord play each. The
+   playtest's other subjects sit within about 10 of 1.13's a quarter later (Finland 45.0 / 34.6, Transylvania 43.1 / 37.7, Croatia 34.6 / 49.4).
+4. **The mod touches neither chain.** Of the files involved the mod replaces only `common/journal_entries/03_russia.txt` (Pacify the Steppes,
+   The Last Kazakh Khan), regenerated from vanilla 1.15 every build by `emit_vanilla_refs.mjs`. Its diff against vanilla is one line in another
+   entry (`is_building_type = building_munition_plant` → `pmr_is_munition = yes`). The Hungarian entry, buttons, events and decisions and
+   Hungary's history are vanilla's files. The mod's on_actions register through `on_actions = { }`, never an effect block (L22). The mod can
+   move only the inputs. The liberty-desire formula (`00_diplomacy_values.txt`) reads cultural fervour, relations, infamy, the prestige and
+   army-power-projection ratios, the lobbies, economic dependence (trade) and, new in 1.15, low war support in an overlord's war. Hungary's
+   government and legitimacy follow IG clout, which the 1836 crafts move a little (peasants carved into shopkeepers and laborers). None of
+   these is a trigger. The triggers are AI choices: Russia's reduce-autonomy play, and Hungary's button with Austria's refusal (in the
+   playtest, the player's).
+5. **The probe's canon run played without any DLC (L50).** Its `debug.log` at 06:16:01 lists 18 DLCs, prints 18
+   `Could not find item in store backend.` and mounts no DLC folder; the vanilla run at 06:45 mounted 18. Its 1856 save agrees:
+   - `je_caucasian_war`, added by the global history behind `has_dlc_feature`, is inactive (vanilla: active);
+   - Congress Poland never opened (vanilla: concluded 1855.3.29);
+   - Kenesary was never created and `kazakhstan_revolt_happened` is unset;
+   - Garibaldi's fame variable is unset (vanilla: set);
+   - the ungated Peru–Bolivia event fired in both runs.
+
+   So F265's canon arm is the mod WITHOUT DLC against vanilla WITH DLC. Void as comparisons: F265 item 4 (world GDP 0.94–0.99×) and item 2's
+   technology counts against vanilla. Standing, as observations of the mod without DLC: items 1 (the mod loads, no error of its own) and 3
+   (copper, bronze). Items 5–6 come from the vanilla runs and stand. A sweep of every session (1,324 launches matched to their runs) finds two
+   more such launches, each a session's first:
+   - `20261030_005628_release-century-n3` run 1 played 1836 → 1860.4.1 without DLC, then resumed from that save with its 17 DLCs (F259's
+     run 1 is a hybrid; its runs 2–3 are clean);
+   - `20260819_213936_aival-n4` run 1, stopped by the user at 1839.
+
+   F264 (88 launches of 64 runs) and F249 are clean.
+
+**Confidence.** Items 1, 2 and 4 are traced through the game's files and read from the user's saves: mechanism, and one game's dates.
+Item 3 compares one 1.15 game with one 1.13 game a quarter apart: a direction. Item 5 is mechanical (the logs and the saves agree).
+
+**What it does NOT say.** Not how often vanilla 1.15 gets either war before 1840: one AI draw each, and the 1v1 runs carry the watch point
+(their schedule's `scripted_wars` prediction). Not why the store lookup failed: three first launches of a session, one on the morning the game
+updated. Not how far the release batch's run 1 diverged: its later years played with DLC on a save begun without it.

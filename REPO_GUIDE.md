@@ -124,7 +124,8 @@ Other books: `disabled: true` (the industry is skipped everywhere and the vanill
 - identity: `key` (rung 0 keeps the vanilla building key — load-bearing, since a different key returns the vanilla building as a rival
   producer), `name` and `pm_name` (on a rung with a `vanilla_pm` they must equal vanilla's English "<building> (<method>)" and method name,
   or `build.ps1` throws — the in-game name and the short name `<key>_pmr_short` are built from vanilla's own translations; minted rungs stay
-  English), `pm_key`, `pmg_key`, `vanilla_pm` (the vanilla main method the rung is; absent on the three minted additions), `texture`.
+  English; `<key>_pmr_bname`, the BUILDING's short name, is the same but for a merged host, which reads its tier span ("Tier 2-3. Textile
+  Mills") — the company and throughput modifiers name a building with it, the research entries name a method with `_pmr_short`), `pm_key`, `pmg_key`, `vanilla_pm` (the vanilla main method the rung is; absent on the three minted additions), `texture`.
 - placement: `tech` (the gating technology), `era` (the rung's TIER 0–3; derived from the technology's game era through `era_game_era`,
   checked by `lint_tier_eras.mjs`), `tech_year` (the slot's real onset, shown in the UI), `natural_year` (config-only).
 - economics: `output_good`, `output_qty`, `inputs` {good: qty}, `employment` {profession: count}, `pollution`, `building_cost` (construction
@@ -849,7 +850,10 @@ stale output except under `common/history`, which an emitter writing there must 
   `extra_entries` (§10.95; a `mark` must be a whole number of fully staffed levels), `condition_entries` / `condition_values` (§10.98), plus
   the §10.97 keys (`sources_additive`, `literacy_by_era`, `follower_halving`, `implementation_repeats`, `placement`, `count_display`,
   `marks_whole_levels`, `era1_rule_a`, `exclude_techs`). Writes journal entries, progress bars (all `monthly_progress`), script values,
-  effects, the war-gate and placement on_actions, loc. A completed stage logs `PMR_JE|<stage>|<tech>|<country name>` to debug.log (counted by
+  effects, the war-gate and placement on_actions, loc, and the entries' own themed journal group `je_group_pmr_tech_advancements` ("Tech
+  Advancements and Inventions", `common/journal_entry_groups/zzz_pm_rehaul_research_groups.txt`, game 1.15's `themed = yes`; GAME_UPDATE_1_15
+  U74). A technology's displayed name is vanilla's English, read live from `inventions_l_english.yml` (a trailing comment allowed), or the
+  twin's for a minted or renamed one; a name that reads like a key throws (U75). A completed stage logs `PMR_JE|<stage>|<tech>|<country name>` to debug.log (counted by
   `testbed/ledger/je_tally.mjs`, de-duplicated — L28). Every anchor lookup throws when missing. Status: current (build step).
   - Skips `disabled` industries and tech-era-1 technologies (except, under `era1_rule_a`, one gating a rung with a predecessor). A merged
     rung counts as its host's levels running its method (`has_active_production_method`); the host's own source counts only its own method.
@@ -1222,7 +1226,14 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   while the game runs, past the observer's own 15-min stop-and-resume — so that recovery did not happen; 0 disables). Traps: DEAD can be a long post-run harvest. Refs: L21, L41.
 - **`batch_heartbeat.sh`** — one read-only command per wake-up: each run's clock, CRASHED / resume / summary counts; for the newest run
   the mod marker, game-version mismatch, its `error.log` window by parsed time (wrap-safe), the classes left after the known vanilla
-  noise classes (the list lives here), anything naming our files; `SCHEDULE DONE`. `bash tools/testbed/batch_heartbeat.sh <session-name>`.
+  noise classes (the list lives here), anything naming our files, the newest launch's DLC mounts (L50); `SCHEDULE DONE`.
+  `bash tools/testbed/batch_heartbeat.sh <session-name>`.
+- **`dlc_mounts.mjs`** — L50: per game launch of a run, the DLCs `debug.log` LISTED against the DLC folders it MOUNTED; FAIL on any
+  `Could not find item in store backend.` or on nothing mounted (that launch played without any DLC content, F266). Launches are matched to
+  the run's own attempts (`meta.json` `attempt_log`, within 3 min). Declined and printed: no-DLC tests, an earlier run's launch left in the
+  ring, logs whose start was not mirrored, a partial mount with no store miss (the mirror's gap). `node tools/testbed/dlc_mounts.mjs
+  <session|run> [...]`, `--all` (every session), `--live <run>` (the newest launch: the smoke check). Streams the log (a mirror can pass
+  512 MB). Exit 1 on a failed launch. `Test-LmL50` runs it on `preflight.ps1 -Session`.
 - **`stop_watch.ps1` + `stop_watch.mjs`** — the run-level stop of a 2+1 batch: on each completed run it runs `ledger/criteria.mjs` and
   drops `STOP` when the run is broken; fallback when the register cannot be read: 1936 world GDP > `-Threshold` (1.3) × vanilla's
   median. Never mid-run; removes `STOP` after the scheduler exits.

@@ -517,6 +517,33 @@ made to reproduce the committed file (U22: the five proofread names and Saratov 
   table names `STATE_SARATOV`, a 1.15 state region, U22) and `emit_vanilla_refs` at `00_art_jes.txt` (the 1.15 count, 12) · found 2026-11-08
   while testing Q11; nothing to fix: a hotfix of mod 1.0 on game 1.13 would build from a commit before the 1.15 pass began (2026-11-07; the
   1.0 release build is `796ce9f`, the player name `87f5744`), not from main · NOTED.
+- **U73** · N · two scripted wars come early on 1.15 (the user's playtest, 2026-11-08: Hungary 1836, the Kazakhs 1837–38; 1.13 in the
+  1840s–1860s), both vanilla 1.15 changes the mod does not touch (F266): the Twelve Points button opens to legitimacy ≥ 75 and a governing
+  IG of liberal, universalist or populist ideology (1.13: the springtime, or a radical-led IG), and `LIBERTY_DESIRE_FROM_OVERLORD_DIPLOMATIC_PLAY
+  = 25` puts a horde Russia plays against over Pacify the Steppes' 80 line before the entry opens (day 690). Our only file in either chain is
+  `03_russia.txt`, regenerated from vanilla with one unrelated rewrite · nothing to change; WATCHED in the 1v1 runs (their `scripted_wars`
+  prediction) and in Q12. Found beside it: the 1.15 probe's canon run played without any DLC (L50), so F265's comparisons are void.
+- **U74** · N · journal-entry groups gain `themed = yes` (the journal lists a themed group's entries under one heading with its illustration;
+  an unthemed group's entries stand alone) · our 339 research entries sat in vanilla's unthemed `je_group_technology` ("Development") · the
+  user's playtest, 2026-11-08 (*"Let's group our JEs into 'tech advancements and inventions' group"*): `emit_research_events.mjs` writes
+  `je_group_pmr_tech_advancements` ("Tech Advancements and Inventions", English in every language, vanilla's technology illustration) in a file
+  of its own, and every research entry names it; vanilla's group file stays vanilla's, nothing in vanilla keys on the Development group, and the
+  dam surveys stay there (projects, not research) · DONE 2026-11-08, built, not yet seen in game.
+- **U75** · T · the 1.15 playtest: *"'socialism: inception' starts with a lowercase s … Check all."* Vanilla writes `socialism:0 "Socialism" # is
+  when no smartphone`; the tree twin's extractor (`make_tier4_techs.mjs`) required the line to end at the quote, so it recorded the key as the
+  name (on 1.13 too: the canon twins all carry it) · `emit_research_events.mjs` reads vanilla's English technology names live, comment-tolerant,
+  and throws on a name that reads like a key; the extractors (`make_tier4_techs.mjs`, `tech_tree_spec.mjs`) accept the comment, so a
+  regenerated twin reads "Socialism" (a cosmetic field diff against today's twins). The check of all: every journal entry, bar and group the
+  mod defines, resolved through the loc chain in all 11 languages — nothing else flagged but vanilla's own data-function names and two vanilla
+  bars with no name in vanilla either · DONE 2026-11-08.
+- **U76** · T · the 1.15 playtest on Erste Brünner (*"either really only provides bonuses to lower tiers of textile factories, or is worded
+  weirdly"*): wording. Its +10% textile throughput reaches every non-craft textile building — Tier 1 (Dye Workshops) and the Tier 2-3 host, which
+  also runs Electric Sewing Machines — but the modifier named the host by its own method, "Tier 2. Textile Mills (Sewing Machines)". The t0 craft
+  is left out because `emit_companies.mjs` drops a craft key from every company reference, its prosperity lines included — the ruling
+  (§10.91.1 item 7) is that companies do not build crafts, and RULED 2026-11-08 that their bonuses do not reach one either (the user: *"Leave
+  crafts out"*). The fix is for every merged host: the company and
+  throughput modifiers read a new `<key>_pmr_bname` (build.ps1), the building's name without "Recipe BE" ("Tier 2-3. Textile Mills"); the
+  research entries keep `_pmr_short`, which counts one method · DONE 2026-11-08.
 
 ---
 

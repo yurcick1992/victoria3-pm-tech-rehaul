@@ -23,6 +23,7 @@ appended oldest first after the July ones); no entry's text changed.
 
 | date | entry | area | status | note |
 |---|---|---|---|---|
+| 2026-11-08 | "socialism: Inception": vanilla's loc line for Socialism ends in a comment, so the tree twin recorded the key as the name | build/emitters | live | emit_research_events.mjs techName; the extractors |
 | 2026-10-29 | the report gate's browser check left 45 headless Edge processes running: Edge's launched process hands off to another | testbed/ledger | live | fill_verify.mjs layout check cleanup |
 | 2026-10-28 | a new preflight check passed when run by hand and threw inside the scheduler: StrictMode 2.0 is inherited | testbed/preflight | live | every Test-Lm* run under the scheduler's StrictMode |
 | 2026-10-28 | the save summaries froze every old country's GDP at early January 1936 in any later save: a trend ring read by position | testbed/readers | live | save_state_summary.mjs trends; landmine L43 |
@@ -148,6 +149,23 @@ appended oldest first after the July ones); no entry's text changed.
    format numbers with `InvariantCulture`. Three separate bugs below share this one root.
 
 ---
+
+## 2026-11-08 — "socialism: Inception": a vanilla loc line that ends in a comment
+
+**Symptom.** The 1.15 playtest (the user): the research entry for Socialism read "socialism: Inception", its bar "Towards socialism"; every
+other entry was capitalised. Present on 1.13 too — the entry had simply not been seen before.
+
+**Root cause.** Vanilla writes `socialism:0 "Socialism" # is when no smartphone`. The tree twin's extractor (`make_tier4_techs.mjs`, ENLOC)
+matched a loc line only when it ENDED at the closing quote, so this one line did not match, and the generator fell back to the key — silently
+(`ENLOC[id] || id`). The twin recorded `name: "socialism"`, every book since carries it, and `emit_research_events.mjs` printed the twin's name.
+`tech_tree_spec.mjs` had the same end-anchored pattern.
+
+**Fix.** `emit_research_events.mjs` reads vanilla's English technology names live with a comment-tolerant pattern (`techName`) and throws on a
+displayed name that starts lower-case or carries an underscore; the two extractors accept a trailing comment. The canon's twin keeps its
+"socialism" (a canon record; no emitter prints that field now); a regenerated twin reads "Socialism" — expect that one field in a field diff.
+
+**Next time.** A fallback to the key is a silent skip (CLAUDE.md §2.12): a loc reader that falls back prints or throws. Every visible name the
+mod defines was swept the same day, in all 11 languages (GAME_UPDATE_1_15 U75): nothing else.
 
 ## 2026-10-29 — the report gate's browser check left 45 headless Edge processes running
 

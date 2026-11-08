@@ -799,6 +799,8 @@ foreach ($ind in $cfg.industries) {
         # says so (U3): "Tier 0 craft. Textile Mills (Handsewn Clothes)".
         $tierWord = if ($t.craft) { "Tier $eraNo craft" } else { "Tier $eraNo" }
         $bldName = "$tierWord. $(RungNameLoc $t $anchorKey)$beLabel"
+        # the BUILDING's name without "Recipe BE" (`<key>_pmr_bname`, below): the rung's short name, except a merged host's, which is its span
+        $bldShort = "$tierWord. $(RungNameLoc $t $anchorKey)"
         # ⭐ EVERY MAIN GROUP IS TITLED "BASE", AS VANILLA TITLES ITS OWN (`$pm_base$`, translated in every language; user-agreed 2026-10-02).
         # It used to carry the rung's method name, which half-describes a merged building's group (two switchable methods in one group).
         $pmgName = "${D}pm_base$D"
@@ -825,15 +827,22 @@ foreach ($ind in $cfg.industries) {
             # a span whose ends are equal reads one tier (a variant beside a merged method would sit at the host's own tier)
             $spanTxt = if ($eraSpan[0] -eq $eraSpan[-1]) { "$($eraSpan[0])" } else { "$($eraSpan[0])-$($eraSpan[-1])" }
             $bldName = "Tier $spanTxt. @@VB:$anchorKey@@$beM"
+            $bldShort = "Tier $spanTxt. @@VB:$anchorKey@@"
         }
         $locBody += " $($t.key):0 `"$bldName`""
         $locBody += " $($t.key)_lens_option:0 `"@@LENS:$($anchorKey):$($t.key)@@`""
         # ⭐ THE RUNG'S SHORT NAME (2026-10-21): "<vanilla building> (<vanilla method>)" per language, without "Recipe BE" — what a research
-        #   entry, a company modifier and a throughput modifier call this rung (tools/emit_research_events.mjs shortName, tools/emit_companies.mjs,
-        #   tools/emit_vanilla_refs.mjs). ⭐ WITH ITS TIER since 2026-10-29 (POLISH P4, the user on the Militarized Industry principle: "why some of
+        #   entry calls this rung (tools/emit_research_events.mjs shortName; the company and throughput modifiers read `_pmr_bname` since
+        #   2026-11-08, below). ⭐ WITH ITS TIER since 2026-10-29 (POLISH P4, the user on the Militarized Industry principle: "why some of
         #   these say 'tier N', and some don't?"): vanilla's own texts name a rung-0 key, which resolves to the full building name "Tier 0. Arms
         #   Industries (Muskets)", so the short name carries the same "Tier N." / "Tier 0 craft." and one rung reads the same everywhere.
         $locBody += " $($t.key)_pmr_short:0 `"$tierWord. $(RungNameLoc $t $anchorKey)`""
+        # ⭐ THE BUILDING'S SHORT NAME (2026-11-08, the 1.15 playtest on Erste Brünner: "either really only provides bonuses to lower tiers of
+        #   textile factories, or is worded weirdly"): a throughput modifier acts on a BUILDING, every method it runs, so its name is the
+        #   building's: a merged host reads its span ("Tier 2-3. Textile Mills"), where `_pmr_short` names its own method only ("Tier 2. Textile
+        #   Mills (Sewing Machines)") — right for a research mark that counts the method, wrong for a bonus that also reaches the merged tier.
+        #   Read by tools/emit_companies.mjs and tools/emit_vanilla_refs.mjs; equal to `_pmr_short` on every other building.
+        $locBody += " $($t.key)_pmr_bname:0 `"$bldShort`""
         $locBody += " $($t.pmg_key):0 `"$pmgName`""
         $locBody += " $($t.pm_key):0 `"$(PmNameLoc $t)`""
 
