@@ -979,6 +979,10 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
   default 1 tools + 1 engines) and records `_dam_inputs_variant`; prints the upkeep's base-price value before and after; throws on a good
   without a price in `tools/goods_prices.tsv`. The §10.108 setting is `--inputs tools:1,engines:0.5,copper:0.75` (£100 per 50 electricity
   either way). Status: current (the 1.15 pass). Refs: §10.108.
+- **`tools/make_value_overrides_config.mjs`** — `--base <book> --suffix <sfx> --set <name>`: appends a ruled SET of entries (kept in the script's
+  `SETS`, each with its ruling) to `vanilla_value_overrides` and records `_value_overrides_variant`; throws on an unknown set or on a line the base
+  already overrides. The vanilla values are asserted at build time by `emit_value_overrides.mjs`. Sets: `g115-research-adds` (game 1.15's two new
+  flat innovation adds ×1/3). Status: current (the 1.15 pass). Refs: §10.109.1.
 
 - **`tools/make_artisan_config.mjs`** — turns the six light-industry t0 rungs into 500-worker craft rungs: per-level recipe, a 5,000-head
   staffing block × `workforce_mult` 0.1, cost ÷ 50, group `bg_pmr_crafts` (+ `building_groups_add`), `levels_per_mesh` 500, excluded

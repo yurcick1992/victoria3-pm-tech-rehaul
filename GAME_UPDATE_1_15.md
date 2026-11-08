@@ -202,8 +202,9 @@ an intermediate one.
   and x = 25 (§10.101.1) are re-based against a faster vanilla · OPEN (Q5) · cost: free from U60 (literacy and technology in the save summaries).
 - **U35b** · = U28 (the automated bakery's gate) · DONE.
 - **U35c** · N · two new flat innovation adds sized for vanilla's research: `company_russo-baltic_wagon_factory` +15 cap (IP5-gated) and
-  `modifier_social_revolution` +25 cap (the new `je_social_revolution`) · POLISH Q1's ×1/3 covers the four 1.13 adds only · OPEN (Q6): extend
-  `vanilla_value_overrides` to them (→ 5 and 8.33).
+  `modifier_social_revolution` +25 cap (the new `je_social_revolution`) · POLISH Q1's ×1/3 covers the four 1.13 adds only · RULED 2026-11-08
+  (Q6, BALANCE_FRAMEWORK §10.109.1): ×1/3 → 5 and 8.33; BUILT in `tools/make_value_overrides_config.mjs --set g115-research-adds`, reaching a
+  book at Q1's regeneration.
 - **U35d** · N/B · vanilla now raises the tiered industries' `ai_value` while journal entries run: the new five-year plan (`je_five_year_plan`, no
   DLC) +2,500 on food, textile, furniture, glass, tooling, paper, explosives, synthetics, steel, motor, automotive, electrics; munitions
   +2,000 / +3,000 under the Tsar's Great Reform, paper +250, the art academy +1,000 twice (dlc019) · every rung carries the flat tier ladder, so
@@ -359,7 +360,9 @@ re-uploaded from `mod/` until the 1.1 build replaces it. · CLOSED.
 copper in five rungs where vanilla 1.15 puts it, value for value (textile t3 2.4, motor t2 8.2, munition t1 6 and t2 11.1, electrics t2 59);
 the two bronze variants; copper's traded quantity (Q2); `dams.inputs_per_50`. Nothing else moved — no staffing, cost, technology era or
 prerequisite, no urban-centre key. **Recommended: yes, regenerated with Q2's class (and Q6 / Q9 if ruled yes) under a new name, then
-measured (Q12).**
+measured (Q12).** *The regeneration as the walk has ruled so far:* `node tools/replay_canon_chain.mjs --prefix <p>` (its trade step now classes
+copper C, Q2) → `make_variant_config` and `make_dam_inputs_config` (the candidate's recorded commands) → `make_value_overrides_config --set
+g115-research-adds` (Q6) → the later rulings' steps; field-diff against the canon and against the candidate.
 
 **Q2 · copper's trade class (U45).** Vanilla prices copper as lead and iron (cost 40, traded quantity 5). The candidate classes it semi-bulk
 (D, √2 × 240 ÷ 40 = 8.49) beside lead, PROVISIONALLY. F159 §5's yardstick: copper's price gap fell from 32.7% to about 0 by 1913 (cotton
@@ -389,7 +392,9 @@ literacy and the technology pace (free from U60).**
 
 **Q6 · two new flat innovation adds (U35c).** The Russo-Baltic company (IP5) +15 cap and `modifier_social_revolution` +25 cap are sized for
 vanilla's research; POLISH Q1's ×1/3 covers the four 1.13 adds. **Recommended: extend `vanilla_value_overrides` to them (→ 5 and 8.33), a
-book change in Q1's regeneration.**
+book change in Q1's regeneration.** **RULED 2026-11-08 (user): "A", both ×1/3 (→ 5 and 8.33)** — BALANCE_FRAMEWORK §10.109.1; built as
+`make_value_overrides_config.mjs --set g115-research-adds` (a scratch build of the candidate + the set on 1.15.0 emitted both lines and passed
+every lint); in a book at Q1's regeneration. · CLOSED.
 
 **Q7 · vanilla's journal-entry-conditional AI desire on the tiered industries (U35d, U54).** The new five-year plan (+2,500 on 12 industries,
 no DLC), the Tsar's Great Reforms (munitions +2,000 / +3,000), paper +250, the art academy +1,000 twice (dlc019) — every rung carries the flat

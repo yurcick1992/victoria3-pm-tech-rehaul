@@ -145,6 +145,9 @@ removes the pops files it wrote earlier, by their header.
   (`power_bloc_principles/00_power_bloc_principles.txt`), `modifier_expedition_geographic_study` weekly innovation 10 → 3
   (`static_modifiers/02_event_modifiers.txt`), `cuba_success_modernise` cap 30 → 10 (`static_modifiers/cuban_modifiers.txt`). Only
   `cuban_modifiers.txt` is owned for this alone; the other three are edited in the copies `emit_companies` and `emit_vanilla_refs` already write.
+  From game 1.15 (BALANCE_FRAMEWORK §10.109.1, added by `make_value_overrides_config.mjs --set g115-research-adds`): `company_russo-baltic_wagon_factory`
+  cap 15 → 5 (`company_types/00_companies_ip5.txt`, IP5) and `modifier_social_revolution` cap 25 → 8.33 (`static_modifiers/content_1_modifiers.txt`),
+  both in copies other emitters already write.
 - *Breaks:* each entry states vanilla's value. A patch that moves the line or changes the value throws: read the new vanilla line and re-rule. DLC
   lines are counted before and after.
 

@@ -76,6 +76,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 | 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | ruled for mod 1.1 (game 1.15); .1 and .2 built 2026-11-08 in the 1.15 candidate book `g115-canon-bz-dcu` (not canonised); .3 in the trade maker, reaching a book at the 1.15 regeneration | here |
+| 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33) | ruled for mod 1.1; .1 built in `make_value_overrides_config.mjs`, reaching a book at the 1.15 regeneration | here |
 
 ---
 
@@ -4663,3 +4664,25 @@ traded quantity of **12** (vanilla 5; class D, beside lead, would be 8.49; class
   the effect on world GDP is expected small (unmeasured).
 - **Built:** `tools/make_trade_config.mjs` `CLASSES` (2026-11-08). The 1.15 candidate book `g115-canon-bz-dcu` keeps the provisional D (8.49) it
   was measured with; the class reaches a book at the regeneration that GAME_UPDATE_1_15.md Q1 rules.
+
+## §10.109 — THE GAME 1.15 PASS: THE RULINGS ON WHAT 1.15 CHANGED (user, 2026-11-08 →)
+
+The phase-5 agenda of the 1.15 update pass (`GAME_UPDATE_1_15.md` Q0–Q13), walked with the user one question at a time. Copper's own rulings sit
+under §10.108 (Q2 is §10.108.3); the others are numbered here in the order ruled. Each reaches a book at the regeneration that Q1 rules.
+
+### §10.109.1 — GAME 1.15'S TWO NEW FLAT RESEARCH ADDS ×1/3 (user-ruled 2026-11-08, Q6: "A")
+
+The ruling: the two flat innovation adds game 1.15 brings are cut to a third, the rule POLISH_1_0.md Q1 set for the four of game 1.13:
+- the Russo-Baltic Wagon Factory company (IP5-gated; automotive, motor; Riga), prosperity modifier `country_weekly_innovation_max_add` **+15 → +5**,
+  exactly Philips';
+- `modifier_social_revolution` (an outcome of the new communism journal entry `je_social_revolution`, 20 years), the same key **+25 → +8.33**; its
+  political participation (+10%) and working-adult ratio (+5%) untouched.
+
+**Why:** the mod's innovation base and cap are 25 against vanilla's 50 and universities a sixth of vanilla's (§10.101.1), so a literate major's cap
+is ~0.26–0.33 of vanilla's and a flat add weighs 3–4× as much against it; ×1/3 restores each add's vanilla share. A +25 cap would equal the mod's
+whole base cap for twenty years.
+
+**Built 2026-11-08:** `tools/make_value_overrides_config.mjs --set g115-research-adds` appends the two entries to `vanilla_value_overrides`
+(recorded in `_value_overrides_variant`; a second add of the same line throws); `emit_value_overrides.mjs` asserts vanilla's 15 and 25 at build.
+Both files are owned already (`content_1_modifiers.txt` since 1.0; `00_companies_ip5.txt` by emit_companies on 1.15), so no new coupling file. A
+build of the candidate + the set on 1.15.0 (scratch, deleted) emitted both lines and passed every lint, the DLC-gate check and the preflight.
