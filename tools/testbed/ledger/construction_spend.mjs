@@ -224,7 +224,7 @@ function history(mod) {
 }
 
 async function readStock(savePath) {
-  const rak = spawn(join(REPO, 'tools/vendor/rakaly/rakaly.exe'), ['melt', '--format', 'vic3', '--unknown-key', 'stringify', '-c', savePath]);
+  const rak = spawn(join(REPO, 'tools/vendor/rakaly/rakaly.exe'), ['melt', '--format', 'vic3', '--unknown-key', 'ignore', '-c', savePath]);
   let err = ''; rak.stderr.on('data', d => { err += d; });
   const done = new Promise((res, rej) => rak.on('close', code => (code === 0 ? res() : rej(new Error(`rakaly exited ${code}: ${err.slice(0, 300)}`)))));
   const rl = createInterface({ input: rak.stdout, crlfDelay: Infinity });

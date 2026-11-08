@@ -38,7 +38,7 @@ for (const ind of book.industries || []) { if (ind.disabled) continue; for (cons
 const SG = { bg_subsistence_agriculture: 'subsistence', bg_subsistence_ranching: 'subsistence', bg_service: 'urban', bg_owner_buildings: 'owners', bg_construction: 'construction', bg_military: 'military', bg_government: 'government', bg_staple_crops: 'agriculture', bg_agriculture: 'agriculture', bg_plantations: 'plantations', bg_ranching: 'ranching', bg_extraction: 'extraction', bg_private_infrastructure: 'infrastructure', bg_power: 'infrastructure', bg_public_infrastructure: 'infrastructure', bg_canals: 'infrastructure', bg_light_industry: 'light industry (untiered)', bg_manufacturing: 'manufacturing (untiered)', bg_urban_facilities: 'urban', bg_monuments: 'monuments', bg_monuments_hidden: 'monuments' };
 const sec = key => { if (!key) return 'UNEMPLOYED'; const t = TIER[key]; if (t) return t.craft ? 'crafts' : `tiered e${t.era}`; if (/^building_(regional_)?company_/.test(key)) return 'owners'; for (let g = GROUP[key], h = 0; g && h < 12; g = PARENT[g], h++) if (SG[g]) return SG[g]; return 'other'; };
 
-const rak = spawn(join(REPO, 'tools/vendor/rakaly/rakaly.exe'), ['melt', '--format', 'vic3', '--unknown-key', 'stringify', '-c', SAVE]);
+const rak = spawn(join(REPO, 'tools/vendor/rakaly/rakaly.exe'), ['melt', '--format', 'vic3', '--unknown-key', 'ignore', '-c', SAVE]);
 let rakErr = ''; rak.stderr.on('data', x => { rakErr += x; });
 const rl = createInterface({ input: rak.stdout, crlfDelay: Infinity });
 let b = false, key = null, t = false, rec = null, date = null, records = 0;

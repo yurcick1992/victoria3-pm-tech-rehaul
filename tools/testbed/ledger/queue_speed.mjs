@@ -10,7 +10,7 @@ const cfg = JSON.parse(readFileSync(cfgPath, 'utf8'));
 const rung = {};
 for (const ind of cfg.industries) { if (ind.disabled) continue; for (const t of ind.tiers) rung[t.key] = { ind: ind.id, era: t.era, cost: t.building_cost }; }
 const TAGS = (tagArg || 'GBR,USA,FRA,GER,NGF,PRU,NET,BEL,UNL,RUS,JAP').split(',');
-const rak = spawn(REPO + '/tools/vendor/rakaly/rakaly.exe', ['melt', '--format', 'vic3', '--unknown-key', 'stringify', '-c', save]);
+const rak = spawn(REPO + '/tools/vendor/rakaly/rakaly.exe', ['melt', '--format', 'vic3', '--unknown-key', 'ignore', '-c', save]);
 const rl = readline.createInterface({ input: rak.stdout, crlfDelay: Infinity });
 let depth = 0, inCM = false, cmDepth = 0, rec = null, q = null, el = null, date = null;
 const out = [];

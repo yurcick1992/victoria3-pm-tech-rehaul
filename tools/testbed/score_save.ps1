@@ -34,7 +34,7 @@ $melt  = Join-Path $work "$stem.melted.txt"
 
 if (-not (Test-Path $melt)) {
   Write-Host "melting $Save ..."
-  & $rakaly melt --format vic3 --unknown-key stringify -o $melt $Save | Out-Null
+  & $rakaly melt --format vic3 --unknown-key ignore -o $melt $Save | Out-Null
 }
 # ⚠ anchor at column 0: the save is full of nested `date=` fields (last_civil_war_date, price trends,
 # migration records) and a leading-whitespace-tolerant pattern picks one of those instead — it read 1.1.1.

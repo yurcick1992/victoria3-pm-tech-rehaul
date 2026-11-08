@@ -684,10 +684,10 @@ What §1.2 and §1.3 leave out:
   - misplaced capital above vanilla's;
   - military technology behind vanilla's count (deferred to mod 1.1, with the user's AI-weight approach);
   - **game 1.15** (mod 1.1; installed 2026-11-08, 1.15.0): the pass is `GAME_UPDATE_1_15.md`, its phase-5 questions walked with the user one
-    at a time (Q0, Q1, Q2, Q6, Q7, Q9, Q11 ruled 2026-11-08; the canon moved to 1.15 with Q1). The hiring and wage rebalance moves the premise of
-    §2.1 (its ~0.66× line is game 1.13.11's until measured); rakaly 0.8.19 stops at the last section of a 1.15 save, which
-    `save_state_summary.mjs` tolerates (U07), so the register reads 1.15 runs; the vanilla references are all 1.13.11 until a 1.15 vanilla
-    batch (Q12).
+    at a time (Q0–Q3, Q6, Q7, Q9, Q11 ruled 2026-11-08; the canon moved to 1.15 with Q1). The hiring and wage rebalance moves the premise of
+    §2.1 (its ~0.66× line is game 1.13.11's until measured); rakaly melts a 1.15 save whole but for one unnamed key and a stop at its last
+    token, which `save_state_summary.mjs` tolerates and the other readers avoid with `--unknown-key ignore` (U07, Q3; TESTBED_METRICS §7), so
+    the register reads 1.15 runs; the vanilla references are all 1.13.11 until a 1.15 vanilla batch (Q12).
 
   The live list is `BACKLOG.md`.
 

@@ -14,7 +14,7 @@ for (let i = 0; i < args.length; i++) {
 }
 if (!groups.some(g => g.saves.length)) { console.error('usage: war_goal_mix.mjs --label <name> <save.v3> [...] [--label ...]'); process.exit(2); }
 const readSave = save => new Promise(resolve => {
-  const p = spawn('tools/vendor/rakaly/rakaly.exe', ['melt', '--format', 'vic3', '--unknown-key', 'stringify', '-c', save]);
+  const p = spawn('tools/vendor/rakaly/rakaly.exe', ['melt', '--format', 'vic3', '--unknown-key', 'ignore', '-c', save]);
   const rl = readline.createInterface({ input: p.stdout });
   let st = 0, date = '', cur = null; const c = {};
   const flush = () => { if (cur && cur.t) { const k = cur.t + (cur.art ? ':' + cur.art : '') + (cur.init ? '|initial' : '|added'); c[k] = (c[k] || 0) + 1; } cur = null; };

@@ -39,7 +39,7 @@ const LOWER = (() => {
 })();
 const QUAL_RE = new RegExp('(?:^|\\s)' + IMACH + '=([\\d.]+)');
 
-const rak = spawn(join(REPO, 'tools/vendor/rakaly/rakaly.exe'), ['melt', '--format', 'vic3', '--unknown-key', 'stringify', '-c', SAVE]);
+const rak = spawn(join(REPO, 'tools/vendor/rakaly/rakaly.exe'), ['melt', '--format', 'vic3', '--unknown-key', 'ignore', '-c', SAVE]);
 let rakErr = ''; rak.stderr.on('data', d => { rakErr += d; });
 const rakDone = new Promise((res, rej) => rak.on('close', code => code === 0 ? res() : rej(new Error(`rakaly exited ${code}: ${rakErr.slice(0, 300)}`))));
 const rl = createInterface({ input: rak.stdout, crlfDelay: Infinity });

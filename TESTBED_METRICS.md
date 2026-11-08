@@ -1103,10 +1103,16 @@ tools/vendor/rakaly/rakaly.exe melt --format vic3 --unknown-key stringify -c <sa
 redistribute. Re-fetch with `gh release download v0.8.19 --repo rakaly/cli --pattern '*windows-msvc.zip'`. ⚠ Its README lists only
 EU4/CK3/HOI4/Imperator; **`--format vic3` is supported anyway** — check `melt --help`, not the docs. Built on
 [jomini](https://github.com/rakaly/jomini); tokens are compiled into the release, so nothing needs extracting from the game executable.
-⚠ **Game 1.15 (2026-11-08, GAME_UPDATE_1_15 U07):** v0.8.19 stops on every 1.15 save with a bare token error (`0d04`) inside
-`state_has_building_group_levels`, the save's last section (new in 1.15), after every section the summariser reads. `save_state_summary.mjs`
-keeps the summary in that one case and records `provenance.melt_tail_error`; any other failure still throws (a save truncated by a crash stops
-earlier). A melt to a file (`-o`) holds everything up to that section. The newest release, v0.8.22 (2026-10-13), predates 1.15.
+⚠ **Game 1.15 (2026-11-08, GAME_UPDATE_1_15 U07, Q3):** rakaly melts a 1.15 save WHOLE but for one key it has no name for, `0x0d04` —
+1,223 lines `__unknown_0xd04=0` inside `military_formation_manager` on a 1836 save, nowhere else. With `--unknown-key stringify` it writes
+those lines and then exits 1 with the bare token `0d04` at the save's very last token; with `--unknown-key ignore` it drops those lines and
+exits 0, and the two outputs are otherwise identical (proven on the probe's 1836 save: stringify minus its unknown lines = the ignore melt,
+byte for byte). The last section, which rakaly's table names `state_has_building_group_levels`, holds AI regional objectives — the name is
+rakaly's token label, not the content. v0.8.22 (2026-10-13, the newest; 1.15 was in open beta before its release) behaves exactly like
+v0.8.19 on all three probe saves, so v0.8.19 stays vendored. **So:** `save_state_summary.mjs` keeps stringify and its narrow tolerance of that
+final stop (`provenance.melt_tail_error`; any other failure still throws, so a save truncated by a crash is still refused); every other melt
+reader (`score_save.ps1` and the eight ledger readers that spawn rakaly) melts with `--unknown-key ignore` since 2026-11-08 and works on 1.15
+saves (`pop_literacy.mjs` and `queue_speed.mjs` proven on the probe's 1856 save). A melt by hand on 1.15: use `--unknown-key ignore`.
 
 ### The format, for the record
 

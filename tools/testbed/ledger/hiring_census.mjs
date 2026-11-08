@@ -155,7 +155,7 @@ const sectorOf = key => {
 const lightGroupOf = key => { for (let g = GROUP[key], hop = 0; g && hop < 12; g = PARENT[g], hop++) if (g === 'bg_light_industry') return true; return false; };
 
 // --- the melt
-const rak = spawn(join(REPO, 'tools/vendor/rakaly/rakaly.exe'), ['melt', '--format', 'vic3', '--unknown-key', 'stringify', '-c', SAVE]);
+const rak = spawn(join(REPO, 'tools/vendor/rakaly/rakaly.exe'), ['melt', '--format', 'vic3', '--unknown-key', 'ignore', '-c', SAVE]);
 let rakErr = ''; rak.stderr.on('data', x => { rakErr += x; });
 const rakDone = new Promise((res, rej) => rak.on('close', code => code === 0 ? res() : rej(new Error(`rakaly exited ${code}: ${rakErr.slice(0, 300)}`))));
 const rl = createInterface({ input: rak.stdout, crlfDelay: Infinity });

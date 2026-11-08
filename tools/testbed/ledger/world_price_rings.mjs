@@ -11,7 +11,7 @@ const [save, out] = process.argv.slice(2);
 if (!save || !out) { console.error('usage: world_price_rings.mjs <save.v3> <out.json>'); process.exit(2); }
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const GOODS = [...fs.readFileSync(`${GAME}/common/goods/00_goods.txt`, 'utf8').replace(/^\uFEFF/, '').matchAll(/^([a-z_]+)\s*=\s*\{/gm)].map(m => m[1]);
-const p = spawn('tools/vendor/rakaly/rakaly.exe', ['melt', '--format', 'vic3', '--unknown-key', 'stringify', '-c', save]);
+const p = spawn('tools/vendor/rakaly/rakaly.exe', ['melt', '--format', 'vic3', '--unknown-key', 'ignore', '-c', save]);
 const rl = readline.createInterface({ input: p.stdout });
 let st = 0, ch = null, idx = 0, date = '', vals = null, game = ''; const rings = {};
 rl.on('line', l => {

@@ -390,7 +390,14 @@ the newest, **v0.8.22** (2026-10-13, `rakaly-0.8.22-x86_64-pc-windows-msvc.zip` 
 1.15 and may or may not read it. Options: (a) fetch 0.8.22 now and test it on the probe's kept saves; (b) wait for a release after 1.15;
 (c) both. **Worked around since (U07):** the summariser keeps a 1.15 summary when rakaly stops in the save's trailing section, after
 everything it reads, so the register reads 1.15 runs without a download; the other melting readers (`melted_*.mjs`) still stop. **Recommended:
-(a) when convenient, no longer blocking.**
+(a) when convenient, no longer blocking.** **RULED 2026-11-08 (user): "Try it"** (1.15 was in open beta before 0.8.22's release, so it might
+have 1.15's tokens). DONE: v0.8.22 downloaded (sha256 matching the release's), tested on the three probe saves and deleted — it behaves exactly
+like v0.8.19. The test found the real shape of the problem: rakaly melts a 1.15 save WHOLE but for one unnamed key, `0x0d04` (1,223 lines
+`= 0`, all inside `military_formation_manager`); under `--unknown-key stringify` it then exits 1 at the save's very last token, under `ignore`
+it drops those lines and exits 0, and the two melts are otherwise byte-identical. The last section rakaly calls `state_has_building_group_levels`
+holds AI regional objectives (rakaly's label, not the content). So nothing is lost: the summariser keeps its tolerance; `score_save.ps1` and
+the eight ledger readers that spawn rakaly now melt with `--unknown-key ignore` and work on 1.15 (two proven on the probe's 1856 save);
+TESTBED_METRICS §7 says how to melt by hand. v0.8.19 stays vendored. · CLOSED.
 
 **Q4 · the wage and hiring rebalance moves §2.1's premise (U30, U31, U35g, U36, U37).** 1.15's new `BUILDING_WAGES_EXPECTED_SOL_TARGET_FACTOR`
 0.67 scales the three wage targets (read literally: layoffs below ~0.44 of expected standard of living, was 0.66); buildings hire at a 15%
