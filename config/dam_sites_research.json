@@ -880,7 +880,7 @@
   "state": "STATE_SOUTH_DAKOTA",
   "state_name": "South Dakota",
   "owner_1836": "LKT/USA",
-  "name": "Great Bend of the Missouri",
+  "name": "Big Bend of the Missouri",
   "rows": [
    {
     "research_id": 25,
@@ -1027,7 +1027,7 @@
   "state": "STATE_TOKAI",
   "state_name": "Tokai",
   "owner_1836": "JAP",
-  "name": "Kiso & Tenryu Rivers",
+  "name": "Kiso & Tenryū Rivers",
   "rows": [
    {
     "research_id": 59,
@@ -2732,7 +2732,7 @@
  },
  {
   "id": "balakovo_volga",
-  "state": "STATE_TARTARIA",
+  "state": "STATE_SARATOV",
   "state_name": "Saratov",
   "owner_1836": "RUS",
   "name": "Balakovo Volga Dam",
@@ -2762,7 +2762,7 @@
   "anchor_province": "x5DC7DF",
   "anchor_in_state": false,
   "anchor_dist_px": 2.8,
-  "anchor_note": "nearest province: principal site projects into STATE_SAMARA at px 5182,796; nearest STATE_TARTARIA province x5DC7DF at 2.8 px"
+  "anchor_note": "nearest province: principal site projects into STATE_SAMARA at px 5182,796; nearest STATE_TARTARIA province x5DC7DF at 2.8 px (the state is STATE_SARATOV since game 1.15, the same province)"
  },
  {
   "id": "votkinsk_kama",
@@ -2803,7 +2803,7 @@
   "state": "STATE_YAROSLAVL",
   "state_name": "Yaroslavl",
   "owner_1836": "RUS",
-  "name": "Rybinsk & Uglich",
+  "name": "Rybinsk & Uglich Dams",
   "rows": [
    {
     "research_id": 70,
@@ -3697,7 +3697,7 @@
   "state": "STATE_HIGHLANDS",
   "state_name": "Highlands",
   "owner_1836": "GBR",
-  "name": "Lochaber & Glen Affric",
+  "name": "Lochaber & Glen Affric Schemes",
   "rows": [
    {
     "research_id": 40,
@@ -3731,7 +3731,7 @@
   "state": "STATE_LOWLANDS",
   "state_name": "Lowlands",
   "owner_1836": "GBR",
-  "name": "Galloway & Tummel",
+  "name": "Galloway & Tummel Schemes",
   "rows": [
    {
     "research_id": 40,

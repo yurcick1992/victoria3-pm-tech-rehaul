@@ -953,7 +953,32 @@ The canon's chain, read from its records: `tier4-e1` (make_tier4_config `--deriv
 --seed 5 --craft-ai 800`) → make_merge_config (`--host-cost textile:own --ai-rule cond`) → make_research_extra_config → make_dam4_config
 `--script-placement` → make_research_levers_config `--innov-x 25` → make_research_rework_config → make_research_society_config, then by
 hand: `dams.private = all`, `game_defines` (monopoly threshold 0.99), the 2026-10-21 polish keys. ⚠ Intermediate books on disk may carry
-stale tree twins; re-run the chain from its root rather than one step.
+stale tree twins; re-run the chain from its root rather than one step. **`tools/replay_canon_chain.mjs` runs exactly this chain** (below).
+
+- **`tools/replay_canon_chain.mjs`** — `node tools/replay_canon_chain.mjs --prefix <p> [--game <game dir>]`: re-runs the canon's chain above on
+  the named game (default `$VIC3_GAME` or the Steam path), every book under `config/mod_config.<p>-*.json`, then applies the canon's hand steps
+  copied from `config/mod_config.json` (dams.private, the dam trait descriptions, building_subsidies, game_defines, secondary_goods_override,
+  vanilla_value_overrides, the four urban-centre condition entries, pmr_cv_urban, marks_whole_levels, the inherited records) and writes
+  `config/mod_config.<p>-canon.json` + twin in the canon's key order with `_replay` (command, game version, the canon's sha256 prefix).
+  ⭐ Proven 2026-11-08: `--prefix r113 --game C:\claude-code\vic3_game_1.13.11\game` reproduces the canon field for field (`book_diff --ignore _`:
+  0 differences). Traps: the hand steps COPY rulings, so `game_defines` and `vanilla_value_overrides` keep the canon's vanilla anchors — a new game
+  version owes them a check (ON_GAME_UPDATE §1 step 5); a maker that changes breaks the proof, so re-prove on the old game after any maker edit.
+  Status: current (the 1.15 pass). Refs: CLAUDE.md §4.4, GAME_UPDATE_1_15.md.
+- **`tools/book_diff.mjs`** — `node tools/book_diff.mjs <bookA> <bookB> [--ignore <prefix>] [--only <prefix>] [--max n] [--json]`: the field
+  diff of CLAUDE.md §4.4. Flattens both books to path = value (an array of objects is keyed by its `id` / `key` / `name` when unique, else by
+  index), prints CHANGED / ONLY IN A / ONLY IN B with a count per top-level key; exit 1 on any difference. `--ignore _` drops the provenance
+  records. Status: current.
+- **`tools/make_variant_config.mjs`** — `--base <book> --suffix <sfx>`: the §10.108.2 VARIANTS (`tools/lib_tier4_spec.mjs`: a vanilla main method
+  added as a switchable second main method of a rung of the SAME tier — bronze cannons on t0 cannons, bronze smoothbores on t1 smoothbores). Each
+  becomes a tier entry `{method_of: <host>, variant: true}` after its host, at the host's output, cost, staffing and tier, its input value equal
+  to the host's spread over the variant's own vanilla mix (rounded 0.1); records `_method_variants` (checked by lint_tier_eras section 4b) and
+  `_method_variants_variant`. A variant is never a rung: make_tier4_config leaves it out of the ladder, lint_tier_eras / lint_tech_content /
+  emit_research_events skip it, build.ps1 never anchors on it. Throws on a variant whose host is not in the book. Status: current (the 1.15
+  pass). Refs: §10.108.2.
+- **`tools/make_dam_inputs_config.mjs`** — `--base <book> --suffix <sfx> --inputs good:q[,good:q]`: sets `dams.inputs_per_50` (lib_dams's
+  default 1 tools + 1 engines) and records `_dam_inputs_variant`; prints the upkeep's base-price value before and after; throws on a good
+  without a price in `tools/goods_prices.tsv`. The §10.108 setting is `--inputs tools:1,engines:0.5,copper:0.75` (£100 per 50 electricity
+  either way). Status: current (the 1.15 pass). Refs: §10.108.
 
 - **`tools/make_artisan_config.mjs`** — turns the six light-industry t0 rungs into 500-worker craft rungs: per-level recipe, a 5,000-head
   staffing block × `workforce_mult` 0.1, cost ÷ 50, group `bg_pmr_crafts` (+ `building_groups_add`), `levels_per_mesh` 500, excluded
@@ -969,7 +994,8 @@ stale tree twins; re-run the chain from its root rather than one step.
   a rung with no technology. Status: current. Refs: §10.91.2.
 - **`tools/make_trade_config.mjs`** — adds `goods_traded_quantity` + `_trade`: the five-class table (bulk unchanged, semi-bulk ×√2,
   manufactures ×2, compact ×2√2, precious ×4, all × W 240) derived from the game's base prices; an unclassed tradeable good throws;
-  `merchant_marine` excluded. `--scale k` (all W × k, recorded as `_trade.scale`), `--ruled-by "…"`. Status: current (canon ×1). Refs: F159 §7, F163.
+  `merchant_marine` excluded; a classed good the game read lacks is skipped only when listed in `SINCE` (copper, new in 1.15: classed
+  semi-bulk beside lead PROVISIONALLY, GAME_UPDATE_1_15 U45). `--scale k` (all W × k, recorded as `_trade.scale`), `--ruled-by "…"`. Status: current (canon ×1). Refs: F159 §7, F163.
 - **`tools/make_dam_projects.mjs`** — `node tools/make_dam_projects.mjs config/dam_sites_research.json` writes `config/dam_projects.json`: the
   research rows per state + the irrigation `EFFECTS` table and the ruled `CUTS` table (both in the script; a cut naming a missing project or row
   throws). Status: current. Refs: §10.89.9–10.

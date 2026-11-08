@@ -75,7 +75,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
-| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value | ruled for mod 1.1 (game 1.15), not built | here |
+| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value | ruled for mod 1.1 (game 1.15); built 2026-11-08 in the 1.15 candidate book `g115-canon-bz-dcu` (not canonised) | here |
 
 ---
 
@@ -4567,6 +4567,9 @@ question asked: is there a narrative case that dams need less copper than would 
 copper: 0.75 }`. It is a book field, merged over `DAM_DEFAULTS` in `tools/lib_dams.mjs`, so the field diff shows it and the 1.13 books still
 build as measured. `BASE_PRICE` in `lib_dams.mjs` gains copper at 40. Without it the profitability assertion in `resourceLayout()` reads NaN and
 throws, so a missing price cannot ship silently. A value-for-value swap leaves the assertion's worst case unchanged (every input at 175% of base).
+**Built 2026-11-08** in the update-pass candidate `config/mod_config.g115-canon-bz-dcu.json` (not the canon) by `tools/make_dam_inputs_config.mjs
+--inputs tools:1,engines:0.5,copper:0.75` (record `_dam_inputs_variant`), and copper at 40 in `lib_dams.mjs` `BASE_PRICE`. The streetlights are
+untouched (§10.108.1: the candidate's field diff against the canon shows no urban-centre key).
 
 ### §10.108.1 — THE STREETLIGHTS STAY AS IN 1.0: NO COPPER, NO ENGINES, NO OTHER CHANGE IN 1.1 (user-ruled 2026-11-07)
 
@@ -4632,3 +4635,16 @@ than throwing at six main methods, and records the pairing in the book. Every em
 - the method-combination lint: the secondaries beside both methods;
 - the research counts (`has_active_production_method`);
 - the 1836 converter, if vanilla's history starts any foundry on a bronze method. The start extraction's `DRIFT` line shows it.
+
+**Built 2026-11-08** (the 1.15 pass), in the update-pass candidate book `config/mod_config.g115-canon-bz-dcu.json` — NOT the canon; its
+canonisation is the user's (GAME_UPDATE_1_15.md). `tools/make_variant_config.mjs` reads `VARIANTS` in `tools/lib_tier4_spec.mjs` and adds each
+bronze method as a tier entry `{method_of: <host>, variant: true}` beside its host: t0 12.8 copper + 19.2 hardwood = £1,280, t1 24 copper + 24
+hardwood = £1,920, the host's output, cost, staffing, tier and technology, recorded in `_method_variants`. What follows it:
+- the tier lint (L31) checks each variant against `_method_variants` (section 4b: host, tier, inputs, value within 0.5% of the host's, output,
+  cost and `ai_value` the host's) and keeps it out of the one-rung-per-tier and rising-output checks;
+- the method-combination lint passes; `tools/lib_secondary_compat.mjs` reviews both bronze methods (the arms industry's assembly lines are not
+  beside them, as with their iron twins);
+- the research entries count the host building whatever its method (`emit_research_events.mjs` drops variants as rungs), and the technology
+  linter does not count a variant as a second rung of its tier;
+- the 1836 converter needs nothing: no 1836 foundry runs a bronze method on 1.15 (no `DRIFT` line).
+The dry run on 1.15.0 passes (2026-11-08). The first 1.15 probe (`20261108_061520_g115-probe-1856`) runs this book.

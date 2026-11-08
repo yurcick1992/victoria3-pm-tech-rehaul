@@ -3,7 +3,7 @@
 	"id" : "com.yurcick.pm_tech_rehaul",
 	"version" : "1.0.0",
 	"game_id" : "victoria3",
-	"supported_game_version" : "1.13.*",
+	"supported_game_version" : "1.15.*",
 	"short_description" : "Economic realism: each technology step is a new building, so modernising costs capital and old plants lose their markets. Research follows industry. 122 historical hydro dams; artisan crafts in 1836.",
 	"tags" : ["Gameplay", "Economy", "Balance", "Buildings", "Technologies"],
 	"relationships" : [],

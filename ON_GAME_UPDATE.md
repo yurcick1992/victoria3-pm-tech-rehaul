@@ -307,8 +307,12 @@ Two more silent couplings of the ladder:
 
 Tables and rules in our code that name vanilla keys or lean on vanilla's order; all but the last bullet throw when a key is gone:
 - **`tools/lib_tier4_spec.mjs`** — `INDUSTRIES` (vanilla building keys), `PLACEMENT`, `ERA_MOVES`, `PREREQ_ADDS`, `ADDITIONS`, `PM_GOODS_RULED` /
-  `PM_EMPLOYMENT_RULED`. `make_tier4_config` throws on a missing building, method or technology, on more than four main methods, and on an era-rule
-  overflow; `make_tier4_techs` throws on a stale `PREREQ_ADDS` entry (a technology gone, or the prerequisite already vanilla's).
+  `PM_EMPLOYMENT_RULED`, `VARIANTS` (1.15: `pm_bronze_cannons` → `pm_cannons`, `pm_bronze_smoothbores` → `pm_smoothbores`, §10.108.2).
+  `make_tier4_config` throws on a missing building, method or technology, on more than four main methods (a `VARIANTS` method is left out of the
+  count; one whose host is gone throws, one the game lacks is skipped and printed as `variant: …`), and on an era-rule overflow;
+  `make_tier4_techs` throws on a stale `PREREQ_ADDS` entry (a technology gone, or the prerequisite already vanilla's). `make_variant_config.mjs`
+  sizes each variant from the vanilla method's inputs: a patch that changes a bronze method's mix moves the variant's split, which the field diff
+  shows.
 - **`tools/lib_secondary_compat.mjs`** — the reviewed compatibility table (`REVIEWED`, `NOT_BESIDE`, `MANDATED`) names vanilla secondary methods;
   `validateCompat` throws on a renamed key. `lint_pm_combos.mjs` (fatal, §10.93) prints `WARN … carried pair(s) the compatibility review never
   looked at` when a patch adds a secondary to a tiered industry's group: review the new pairs and add them. Read `emit_secondaries`' "not
@@ -317,6 +321,9 @@ Tables and rules in our code that name vanilla keys or lean on vanilla's order; 
   vanilla's before touching ours.
 - **`emit_secondaries.mjs`** — a copied `replacement_if_valid` must name its own copy (the Food Standardization 3 canning switch, 85 groceries,
   POLISH_1_0.md Q3); a new vanilla `replacement_if_valid` on a tiered building's secondary throws until it has a copy.
+- **Copper** (1.15): `tools/lib_dams.mjs` `BASE_PRICE` (copper 40, for the dams' profitability assertion; a good without a price throws as NaN),
+  `tools/make_trade_config.mjs` `CLASSES` (copper semi-bulk, PROVISIONAL, GAME_UPDATE_1_15 U45) and `SINCE` (a classed good the game read lacks is
+  skipped only when listed there), `tools/goods_prices.tsv` (§2.4). The dams' copper itself is a book field (`dams.inputs_per_50`, §10.108).
 - **`tools/lib_dams.mjs`** `tech_by_class` (electrical_generation, steam_turbine, arc_welding) and **`config/dam_projects.json`** (state keys, anchor
   provinces): `emit_dams` throws on a missing technology, state region or anchor province. The fix for a redrawn region is a new anchor province in
   the same state, never dropping the check. A class technology that changes era moves every dam of its class.
@@ -434,7 +441,9 @@ The emitters, when a book enables them:
 #### 2.3.1 The design
 
 - **Vanilla's electricity gate** (2026-10-26): every vanilla method that consumes electricity carries `required_input_goods = electricity`
-  (30 of 30 in 1.13), and `build.ps1` writes the same on our main methods from their recipes. `lint_pm_combos.mjs` check 9 holds the rule over
+  (30 of 30 in 1.13; 30 of 31 in 1.15, where `pm_automated_bakery` consumes 5 electricity ungated: `build.ps1` transform (4) adds the gate to
+  a vanilla method that consumes electricity without it and prints it, and `emit_secondaries` does the same on its copies), and `build.ps1`
+  writes the same on our main methods from their recipes. `lint_pm_combos.mjs` check 9 holds the rule over
   every method the game loads, vanilla's included, so a patch that adds a gated method fails nothing, while a patch that changes the rule (a
   consumer without the gate, another good gated) fails the build: re-read vanilla's methods and decide whether the rule moved.
 - **The electricity build condition** (§10.106; DEFERRED to mod 1.1, not emitted in 1.0 — the lines below apply once it is restored):
