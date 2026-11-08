@@ -994,8 +994,8 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
   a rung with no technology. Status: current. Refs: §10.91.2.
 - **`tools/make_trade_config.mjs`** — adds `goods_traded_quantity` + `_trade`: the five-class table (bulk unchanged, semi-bulk ×√2,
   manufactures ×2, compact ×2√2, precious ×4, all × W 240) derived from the game's base prices; an unclassed tradeable good throws;
-  `merchant_marine` excluded; a classed good the game read lacks is skipped only when listed in `SINCE` (copper, new in 1.15: classed
-  semi-bulk beside lead PROVISIONALLY, GAME_UPDATE_1_15 U45). `--scale k` (all W × k, recorded as `_trade.scale`), `--ruled-by "…"`. Status: current (canon ×1). Refs: F159 §7, F163.
+  `merchant_marine` excluded; a classed good the game read lacks is skipped only when listed in `SINCE` (copper, new in 1.15: class C,
+  user-ruled 2026-11-08, BALANCE_FRAMEWORK §10.108.3). `--scale k` (all W × k, recorded as `_trade.scale`), `--ruled-by "…"`. Status: current (canon ×1). Refs: F159 §7, F163.
 - **`tools/make_dam_projects.mjs`** — `node tools/make_dam_projects.mjs config/dam_sites_research.json` writes `config/dam_projects.json`: the
   research rows per state + the irrigation `EFFECTS` table and the ruled `CUTS` table (both in the script; a cut naming a missing project or row
   throws). Status: current. Refs: §10.89.9–10.

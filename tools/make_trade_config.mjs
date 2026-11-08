@@ -39,11 +39,11 @@ const CLASSES = {
   B: { name: 'compact high-value (1.5-3%)', weight: 2 * Math.SQRT2,
        goods: ['tea', 'small_arms', 'telephones', 'radios', 'tanks'] },
   C: { name: 'manufactures & colonial staples (4-6%)', weight: 2,
-       goods: ['clothes', 'tools', 'engines', 'coffee', 'tobacco', 'liquor', 'porcelain', 'artillery', 'ammunition', 'automobiles', 'aeroplanes', 'luxury_furniture'] },
+       // copper: game 1.15's new good (vanilla prices it as lead and iron: cost 40, traded_quantity 5) — RULED class C by the user on
+       // 2026-11-08 (BALANCE_FRAMEWORK §10.108.3, GAME_UPDATE_1_15 Q2): its price gap fell 32.7% → ~0 by 1913, as cotton textiles' did (F159 §5).
+       goods: ['clothes', 'tools', 'engines', 'copper', 'coffee', 'tobacco', 'liquor', 'porcelain', 'artillery', 'ammunition', 'automobiles', 'aeroplanes', 'luxury_furniture'] },
   D: { name: 'semi-bulk (8-15%)', weight: Math.SQRT2,
-       // copper: game 1.15's new good (vanilla prices it as lead and iron: cost 40, traded_quantity 5) — classed beside lead
-       // PROVISIONALLY, so the 1.15 book can be generated; the class is an open question for the user (GAME_UPDATE_1_15 U45).
-       goods: ['fabric', 'sugar', 'lead', 'copper', 'steel', 'groceries', 'paper', 'wine', 'hardwood', 'glass', 'explosives'] },
+       goods: ['fabric', 'sugar', 'lead', 'steel', 'groceries', 'paper', 'wine', 'hardwood', 'glass', 'explosives'] },
   E: { name: 'bulk & perishable (>= 20%) - UNCHANGED, vanilla values', weight: null,
        goods: ['coal', 'wood', 'iron', 'fertilizer', 'meat', 'fruit', 'fish', 'sulfur', 'grain', 'oil', 'furniture'] },
 };

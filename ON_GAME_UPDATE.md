@@ -322,7 +322,7 @@ Tables and rules in our code that name vanilla keys or lean on vanilla's order; 
 - **`emit_secondaries.mjs`** — a copied `replacement_if_valid` must name its own copy (the Food Standardization 3 canning switch, 85 groceries,
   POLISH_1_0.md Q3); a new vanilla `replacement_if_valid` on a tiered building's secondary throws until it has a copy.
 - **Copper** (1.15): `tools/lib_dams.mjs` `BASE_PRICE` (copper 40, for the dams' profitability assertion; a good without a price throws as NaN),
-  `tools/make_trade_config.mjs` `CLASSES` (copper semi-bulk, PROVISIONAL, GAME_UPDATE_1_15 U45) and `SINCE` (a classed good the game read lacks is
+  `tools/make_trade_config.mjs` `CLASSES` (copper in class C, user-ruled 2026-11-08, BALANCE_FRAMEWORK §10.108.3) and `SINCE` (a classed good the game read lacks is
   skipped only when listed there), `tools/goods_prices.tsv` (§2.4). The dams' copper itself is a book field (`dams.inputs_per_50`, §10.108).
 - **`tools/lib_dams.mjs`** `tech_by_class` (electrical_generation, steam_turbine, arc_welding) and **`config/dam_projects.json`** (state keys, anchor
   provinces): `emit_dams` throws on a missing technology, state region or anchor province. The fix for a redrawn region is a new anchor province in

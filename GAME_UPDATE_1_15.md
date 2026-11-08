@@ -271,8 +271,9 @@ an intermediate one.
   method of its iron twin's building; the tier lint checks them (section 4b), the compatibility review covers them, the research entries count the
   host building whatever its method; no 1836 foundry runs bronze.
 - **U45** · N · copper's trade class · `make_trade_config` throws on a tradeable good in no class; F159 §5's historical wedge (32.7% falling to ~0)
-  puts it with B or C · OPEN: needs a ruling (Q2 below). Classed semi-bulk (D, beside lead) PROVISIONALLY on 2026-11-08 so the candidate could be
-  generated (`make_trade_config.mjs`; traded quantity 8.49 = √2 × 240 ÷ 40); vanilla prices copper as lead and iron (cost 40, traded quantity 5).
+  puts it with B or C · RULED 2026-11-08: class C (Q2, BALANCE_FRAMEWORK §10.108.3), traded quantity 12 = 2 × 240 ÷ 40, in `make_trade_config.mjs`; it
+  reaches a book at Q1's regeneration. The candidate keeps the provisional semi-bulk D it was generated and measured with (traded quantity 8.49 =
+  √2 × 240 ÷ 40); vanilla prices copper as lead and iron (cost 40, traded quantity 5).
 - **U46** · N · copper in `tools/goods_prices.tsv` (40) and in `GOOD_GROUPS` of `ui/builder.html` · DONE 2026-11-08 (the table matches 1.15's 54
   goods by ON_GAME_UPDATE §2.4's comparison; copper in the editor's raw-industrial group). Without it every reader priced copper at £0: the
   tier-rule lint (L31) read munition's and electrics' anchors £200 and £1,200 low and failed. With it L31 passes on the 1.0 book, so 1.15's copper
@@ -297,7 +298,8 @@ an intermediate one.
   ladder, desire, research levers, hydro traits (the four new traits are copper traits) and start rules; the PI, PP and war-goods baskets (copper
   is a raw input, like iron and lead, which are in none); the red flags, telemetry, misplaced-capital and sector readers (they read the goods and
   buildings from the game files); the other new laws, defines, on-actions, modifier types, government methods and ship armour. **Proposals:**
-  U54–U59. Once U45 is ruled, `lib_goods.mjs`'s `REF_TRADE_BOOK` (a 1.13 book without copper) is repointed, or `trade_fade.mjs` and
+  U54–U59. Once U45 is ruled, `lib_goods.mjs`'s `REF_TRADE_BOOK` (a 1.13 book without copper) is repointed — at Q1's regeneration, to the new
+  book (U45 ruled C; a book with its own `_trade` is read from it, so only vanilla readings use the fallback) — or `trade_fade.mjs` and
   `ladder_headlines.mjs` class copper `?`; six 1836 trade routes carry copper, so its class reaches the 1836 anchor. · DONE (the walk).
 - **U47 (the installed files)** · copper in 84 states, 603 levels (the third-party copy said 609); none in France, Belgium or the Netherlands;
   lead cut by 124 levels in nine states, mostly Japan; the 1836 tiered levels 1,045 → 1,044 (Russia −10, the new Poland +8, Turkey +1) · DONE.
@@ -362,7 +364,8 @@ measured (Q12).**
 **Q2 · copper's trade class (U45).** Vanilla prices copper as lead and iron (cost 40, traded quantity 5). The candidate classes it semi-bulk
 (D, √2 × 240 ÷ 40 = 8.49) beside lead, PROVISIONALLY. F159 §5's yardstick: copper's price gap fell from 32.7% to about 0 by 1913 (cotton
 textiles, class C, 13.7 → ~0), and copper's value per ton was ~4–5× lead's at similar freight. Options: D (as lead), C (manufactures and
-colonial staples, ×2), B (×2√2). **Recommended: C.**
+colonial staples, ×2), B (×2√2). **Recommended: C.** **RULED 2026-11-08 (user): C** — BALANCE_FRAMEWORK §10.108.3; built in
+`make_trade_config.mjs` (copper 12, checked on a scratch book); the candidate keeps D until Q1's regeneration. · CLOSED.
 
 **Q3 · rakaly cannot read 1.15 saves (U07) — needs your OK for a download.** Every save summary on 1.15 fails (`0d04`), so the register's
 GDP, W, U\*, H, T0–T3, misplaced capital and downsizing go dark; telemetry still works. rakaly compiles each game's tokens into its release;

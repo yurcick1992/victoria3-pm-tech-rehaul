@@ -75,7 +75,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.105 | why shipyards stay vanilla and the art academy is tiered | record of the reasons (no rule changed) | here |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (a power plant, a dam or electric streetlights) | ruled, built and seen working 2026-10-26; DEFERRED to mod 1.1 or later the same day (performance risk) — for 1.0 a known issue | here |
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
-| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value | ruled for mod 1.1 (game 1.15); built 2026-11-08 in the 1.15 candidate book `g115-canon-bz-dcu` (not canonised) | here |
+| 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | ruled for mod 1.1 (game 1.15); .1 and .2 built 2026-11-08 in the 1.15 candidate book `g115-canon-bz-dcu` (not canonised); .3 in the trade maker, reaching a book at the 1.15 regeneration | here |
 
 ---
 
@@ -4648,3 +4648,18 @@ hardwood = £1,920, the host's output, cost, staffing, tier and technology, reco
   linter does not count a variant as a second rung of its tier;
 - the 1836 converter needs nothing: no 1836 foundry runs a bronze method on 1.15 (no `DRIFT` line).
 The dry run on 1.15.0 passes (2026-11-08). The first 1.15 probe (`20261108_061520_g115-probe-1856`) runs this book.
+
+### §10.108.3 — COPPER TRADES AS A MANUFACTURE: CLASS C, ×2 (user-ruled 2026-11-08)
+
+The ruling (GAME_UPDATE_1_15.md Q2, the user's answer: "C"): copper, game 1.15's new good, joins class C of the per-good trade table (§10.88,
+F159 §7), "manufactures and colonial staples", where a unit of trade capacity moves 2 × £240 of the good. At copper's base price 40 that is a
+traded quantity of **12** (vanilla 5; class D, beside lead, would be 8.49; class B 16.97).
+
+- **Why C:** F159 §5's yardstick places every good by its historical trade cost per £ of value. Copper's price gap between markets fell from 32.7%
+  to about 0 by 1913, as cotton textiles' did (13.7 → ~0, class C), while pig iron and iron bars kept 19–21% and wheat 16%. Copper is worth
+  ~4–5× lead per ton at similar freight, so it does not belong with lead (class D).
+- **What it moves:** copper reaches the importers' copper-using rungs (textile t3, motor t2, munition t1 and t2, electrics t2), the bronze methods
+  (§10.108.2) and the dams' upkeep (§10.108) more cheaply. Six 1836 trade routes carry copper, so the class reaches the 1836 anchor; one good, so
+  the effect on world GDP is expected small (unmeasured).
+- **Built:** `tools/make_trade_config.mjs` `CLASSES` (2026-11-08). The 1.15 candidate book `g115-canon-bz-dcu` keeps the provisional D (8.49) it
+  was measured with; the class reaches a book at the regeneration that GAME_UPDATE_1_15.md Q1 rules.
