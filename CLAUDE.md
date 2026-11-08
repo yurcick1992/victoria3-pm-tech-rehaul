@@ -212,7 +212,8 @@ price decline and nothing else in the ladder can do the job. This ranks immediat
 
 - **The decline happens in WAGE UNITS, not in pounds** (F97). Vanilla holds every manufactured good within ~15% of base for the whole century,
   because pop wealth growth re-absorbs any glut; a pop good cannot be held below base in £. What does fall is its price relative to the wage.
-  The engine lays a building off once its workers fall under ~0.66× the expected standard of living, and a rung two tiers behind empties when it
+  The engine lays a building off once its workers fall under ~0.66× the expected standard of living (game 1.13.11; game 1.15 scales the wage
+  targets by 0.67 — ~0.44 read literally — and compares a building's productivity with its own type only, unmeasured: GAME_UPDATE_1_15 Q4), and a rung two tiers behind empties when it
   holds under ~0.2 of the frontier's value added per worker (vanilla's own recipes put two methods apart at ~1:2.7 — why vanilla's first method
   survives wherever the AI does not switch). The A/B ladder is designed on that ratio, not on a £ price path.
 - **Recipe margins buy PREFERENCE for the frontier; only a price decline buys DEATH of the old rung.** With flat prices, "the old tier dies"
@@ -448,7 +449,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.104 | the batch report is built on the criteria register; the goals table goes; what it measures that the register does not stays, as readings (.1: one four-column scorecard, the loss to the footer, world / shortlist views, nothing past the right edge; the canonical ledger form since 2026-10-29) | in force (§5.6) |
 | 10.106 | a building that runs only on electricity can be built only where the state produces some (power plant, dam, electric streetlights); nothing happens when a state loses it | deferred to mod 1.1 (performance risk); 1.0 known issue |
 | 10.108 | copper (mod 1.1): the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights stay exactly as in 1.0 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery: a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2) | in force (the canon since 2026-11-08) |
-| 10.109 | the game 1.15 pass rulings, one per question of GAME_UPDATE_1_15 phase 5: .1 the two new flat research adds ×1/3; .2 vanilla's journal-entry-conditional AI desire carried onto every non-craft rung (L47); .3 the contagious-ideas entries follow 1.15's laws; .4 crafts out of 1.15's new level counts, by native counts; .5 the 1.15 canon; canonisation declares the main line, not a quality stamp; .6 detectors L48 (level counts that see crafts) and L49 (dropped building fields), the negotiation promise crafts out | in force (the canon since 2026-11-08; .2 and .4 are build steps) |
+| 10.109 | the game 1.15 pass rulings, one per question of GAME_UPDATE_1_15 phase 5: .1 the two new flat research adds ×1/3; .2 vanilla's journal-entry-conditional AI desire carried onto every non-craft rung (L47); .3 the contagious-ideas entries follow 1.15's laws; .4 crafts out of 1.15's new level counts, by native counts; .5 the 1.15 canon; canonisation declares the main line, not a quality stamp; .6 detectors L48 (level counts that see crafts) and L49 (dropped building fields), the negotiation promise crafts out; .7 the 1.15 wage rebalance measured first | in force (the canon since 2026-11-08; .2 and .4 are build steps) |
 
 ---
 
@@ -684,7 +685,7 @@ What §1.2 and §1.3 leave out:
   - misplaced capital above vanilla's;
   - military technology behind vanilla's count (deferred to mod 1.1, with the user's AI-weight approach);
   - **game 1.15** (mod 1.1; installed 2026-11-08, 1.15.0): the pass is `GAME_UPDATE_1_15.md`, its phase-5 questions walked with the user one
-    at a time (Q0–Q3, Q6, Q7, Q9–Q11 ruled 2026-11-08; the canon moved to 1.15 with Q1). The hiring and wage rebalance moves the premise of
+    at a time (Q0–Q4, Q6, Q7, Q9–Q11 ruled 2026-11-08; the canon moved to 1.15 with Q1). The hiring and wage rebalance moves the premise of
     §2.1 (its ~0.66× line is game 1.13.11's until measured); rakaly melts a 1.15 save whole but for one unnamed key and a stop at its last
     token, which `save_state_summary.mjs` tolerates and the other readers avoid with `--unknown-key ignore` (U07, Q3; TESTBED_METRICS §7), so
     the register reads 1.15 runs; the vanilla references are all 1.13.11 until a 1.15 vanilla batch (Q12).

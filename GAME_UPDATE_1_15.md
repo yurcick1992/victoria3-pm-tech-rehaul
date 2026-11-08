@@ -225,7 +225,8 @@ an intermediate one.
   lower 0.10 (0.15), withdraw 0.10 (0.15); firing only beyond a 0.3 proportionality imbalance (new 0.2 tolerance); and the productivity comparison
   is now against the building's own type (0.5 → 0.75, U30) — vanilla keeps the pay gap between old and new methods inside one type, each of our
   rungs is its own type. `PEASANT_STARTING_WAGE_RATE_FACTOR` removed (1836 wages). `RADICALS_MAX_FROM_LOW_SOL` 0.15 → 0.075 (U37) · CLAUDE.md
-  §2.1's "~0.66×" and F97's ~0.2 line, `measured_base_wages.json`, the wage model's ~1% calibration, the crafts' 1836 fill · OPEN (Q4) · cost: U60 + U62.
+  §2.1's "~0.66×" and F97's ~0.2 line, `measured_base_wages.json`, the wage model's ~1% calibration, the crafts' 1836 fill · RULED 2026-11-08 (Q4):
+  measure first, no pre-emptive change (§10.109.7) · cost: U60 + U62.
 - **U35h** · T · the monopoly rule's built-in default on 1.15 (§10.102; the key is still registered) · OPEN · cost: F241's continuation A/B, two
   short deterministic continuations from one 1.15 save (a probe).
 - **U35i** · T · the engine's named hiring states (`HIRING_ANALYSIS_*` tooltips) · DONE 2026-11-08: a melted 1.15 save (the probe's 1837 autosave)
@@ -404,7 +405,7 @@ TESTBED_METRICS §7 says how to melt by hand. v0.8.19 stays vendored. · CLOSED.
 margin (was 25%); and a building now compares its productivity with its own type only — vanilla keeps the pay gap between old and new
 methods inside one building type, while each of our rungs is its own type, so the frontier's pull on the old rung's workers narrows. All
 three favour old rungs surviving (goal 2). Options: (a) change nothing until the 1.15 batch measures it (the laggard test, the old-rung census,
-T0, W, U\*), and mark CLAUDE.md §2.1's numbers as game 1.13.11's; (b) pre-emptively steepen the ladder. **Recommended: (a).**
+T0, W, U\*), and mark CLAUDE.md §2.1's numbers as game 1.13.11's; (b) pre-emptively steepen the ladder. **Recommended: (a).** **RULED 2026-11-08 (user): (a)** — *"A for now. We'll go an n=1 vs n=1 today and will see. I'm a bit skeptical of PDS ability to go where they need with balance, they seem to be less systematic and thorough than us with a one part-time human one AI workforce."* No pre-emptive change (BALANCE_FRAMEWORK §10.109.7); CLAUDE.md §2.1's ~0.66× marked as game 1.13.11's; a first canon-vs-vanilla century on 1.15, n=1 each, reads it (its schedule carries the predictions). · CLOSED.
 
 **Q5 · literacy grows four times faster (U35a).** `state_literacy_growth_add` 0.0005 → 0.002 in the owned static-modifier file (not in the
 notes). It moves the research entries' literacy gates (25–65%), the cap's literacy term (x = 25), tech spread and vanilla's own research
