@@ -385,3 +385,8 @@ tools/testbed/no_new_runs_at.log
 # g115_probe_1856 schedule; NOT the canon. Its intermediate books (g115-*) are regenerable and stay ignored.
 !config/mod_config.g115-canon-bz-dcu.json
 !config/tech_tree_options.g115-canon-bz-dcu.json
+# The 1.15 book with the walk's rulings (2026-11-08): the replay (--prefix g115c, copper in trade class C, Q2) + bronze + dam copper + the two
+# flat research adds x1/3 (make_value_overrides_config, Q6) + the idea entries' 1.15 laws (make_research_conditions_config, Q9). Proposed for
+# canonisation (GAME_UPDATE_1_15 Q1); its intermediates (g115c-*) stay ignored.
+!config/mod_config.g115c-canon-bz-dcu-ra-il.json
+!config/tech_tree_options.g115c-canon-bz-dcu-ra-il.json

@@ -368,7 +368,12 @@ prerequisite, no urban-centre key. **Recommended: yes, regenerated with Q2's cla
 measured (Q12).** *The regeneration as the walk has ruled so far:* `node tools/replay_canon_chain.mjs --prefix <p>` (its trade step now classes
 copper C, Q2) → `make_variant_config` and `make_dam_inputs_config` (the candidate's recorded commands) → `make_value_overrides_config --set
 g115-research-adds` (Q6) → `make_research_conditions_config --set g115-idea-laws` (Q9) → the later rulings' steps; field-diff against the
-canon and against the candidate. (Q7 is a build step, not a book change.)
+canon and against the candidate. (Q7 is a build step, not a book change.) **Regenerated 2026-11-08 after Q11:**
+`config/mod_config.g115c-canon-bz-dcu-ra-il.json` (sha256 `a52b0acacd6b6b6e`, its tree twin `db96307af17c22ee`, identical to the candidate's
+but for the timestamp; committed, NOT the canon). Field diff against the candidate, in full: `goods_traded_quantity.copper` 8.49 → 12 (Q2); two
+`vanilla_value_overrides` entries (Q6); the socialism and political-agitation labels and the monthly global effect (Q9) — nothing else.
+Against the canon: that plus the candidate's own diff above. A dry build on 1.15.0 passes every lint, the DLC-gate check (145 files) and the
+preflight (L47 included).
 
 **Q2 · copper's trade class (U45).** Vanilla prices copper as lead and iron (cost 40, traded quantity 5). The candidate classes it semi-bulk
 (D, √2 × 240 ÷ 40 = 8.49) beside lead, PROVISIONALLY. F159 §5's yardstick: copper's price gap fell from 32.7% to about 0 by 1913 (cotton
