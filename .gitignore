@@ -5,6 +5,39 @@ desktop.ini
 *.swp
 *~
 
+# Secrets and credentials - never committed (the repo is public). The mod needs none: the build, the
+# testbed and the editor run without any key, token or password. If a tool ever needs one, read it from an
+# environment variable or a file matching these patterns; never from a tracked file. An .env.example with
+# placeholder values only may be committed. A full-history scan (gitleaks + a pattern sweep of every blob,
+# 2026-11-10) found no secret in the repo.
+.env
+.env.*
+*.env
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+*.keystore
+*.jks
+*.kdbx
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+.npmrc
+.pypirc
+.netrc
+_netrc
+.git-credentials
+credentials*.json
+*credentials*.json
+service-account*.json
+*secret*
+*.secret
+# Claude Code's per-machine settings (may hold local permission rules or env values); the shared .claude/ files stay tracked
+.claude/settings.local.json
+
 # Generated dev artifact (rebuilt by tools/extract_start.ps1 each build)
 config/start_baseline.json
 
