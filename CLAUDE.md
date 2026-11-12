@@ -666,7 +666,8 @@ What §1.2 and §1.3 leave out:
 ## 4.2 Where it stands (2026-11-12)
 
 - **The 1.15.1 canon** (mod 1.1.1, `697d4869`, since 2026-11-12) has not been measured yet: its 10 vs 10 batch against vanilla 1.15.1,
-  vanilla first, launched 2026-11-12 (`tools/testbed/schedules/g1151_alt_vanilla_canon10.json`; ends around 2026-11-15). The first launch,
+  vanilla first, launched 2026-11-12 11:34 as session `20261112_113429_g1151-alt-vanilla10-canon10`
+  (`tools/testbed/schedules/g1151_alt_vanilla_canon10.json`; ends around 2026-11-15 03:00). The first launch,
   on `c1274f15`, was stopped at its run 1 when Q8 changed the build.
 - **The 1.15 canon on game 1.15.0** (mod 1.1): ten alternating centuries against ten of vanilla 1.15.0 (F269; `20261109_005943` runs 1–20, the
   48-run batch cut short by the 1.15.1 update; the report is the ledger artifact `YZzc1yM9aa8gSzxWevfDh1`).

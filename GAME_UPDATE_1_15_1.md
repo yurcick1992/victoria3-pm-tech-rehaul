@@ -180,7 +180,8 @@ follows Paradox).
 - **Q11** · the Armed Forces' asset count over the tier split (V22c) · RULED (*"ignore, leave new vanilla"*) · DROPPED (§10.111.6).
 - **Q3**, re-ruled after Q8 (2026-11-12): the first launch, `20261112_013516_g1151-alt-canon-vanilla` (mod first, to Sunday 06:00), was
   stopped at its run 1 (1845, discarded) because Q8 changed the build. The user: *"launch the 10vs10, starting vanilla"* — 20 runs, odd runs
-  vanilla 1.15.1, even runs the canon; run 22 of `20261109_005943` glued to the vanilla arm without its wall clock (V27).
+  vanilla 1.15.1, even runs the canon; run 22 of `20261109_005943` glued to the vanilla arm without its wall clock (V27). Launched
+  2026-11-12 11:34 as `20261112_113429_g1151-alt-vanilla10-canon10` (`g1151_alt_vanilla_canon10.json`, the canon `697d4869`).
 
 ## Phase 6 — re-measure
 
