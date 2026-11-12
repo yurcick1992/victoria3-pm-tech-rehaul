@@ -62,6 +62,15 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
   Status: superseded by `TIER_REFERENCE_AUDIT.md` (stale: lists railway and shipyard methods, old paths).
 - **`MISSING_BUILDING_CONDITIONS.md`** — conditional fields inside vanilla buildings we regenerate that our emitted building drops; hand-
   maintained, directly fixable, deferred. Still accurate.
+- **`CHANGELOG.md`** — the public list of changes per release, newest first, against vanilla (1.0.0: the full list at PDS granularity; 1.1.0:
+  what changed from 1.0, against vanilla 1.15). **`CHANGELOG_WORKSHOP/<version>.txt`** — each release's Steam Workshop change note as
+  published, in Steam's BBCode, one file per note, so the whole file is what is pasted. Steam's limit is 8,000 bytes
+  (`k_cchPublishedDocumentChangeDescriptionMax`). Tags count, and so does the CRLF a browser submits for every line break, so the size Steam
+  counts is the file's bytes plus its line breaks: 1.0.0 is 7,856, trimmed from the 10,645 of its CHANGELOG entry, and 1.1.0 is 4,781. A
+  note can point to the fuller text on the Paradox forum. The two published notes were read back from the Workshop page on 2026-11-12,
+  and 1.0.0 matched its draft byte for byte. Steam's 1.1.0 note sends readers to the Workshop item's discussions for known issues;
+  CHANGELOG.md's sends them to `KNOWN_ISSUES.md`. **`KNOWN_ISSUES.md`** — the public list of issues a player would notice in the current
+  release.
 - **`LICENSE`** — the repository's own work is dedicated to the public domain under CC0 1.0 Universal (the user, 2026-10-26: as permissive as
   possible, no attribution required); Victoria 3's material in the mod stays Paradox Interactive's. A short header, then the CC0 legal code
   verbatim from creativecommons.org.

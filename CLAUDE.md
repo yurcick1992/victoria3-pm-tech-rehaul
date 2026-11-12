@@ -859,6 +859,7 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 | `TIER_REFERENCE_AUDIT.md`, `MISSING_BUILDING_CONDITIONS.md` | vanilla references the tier split affects; dropped building conditionals | a new case is found (catalogue, do not fix inline) |
 | `tools/testbed/SESSION_VERDICTS.md` | one committed line per session's verdict | every session |
 | `KNOWN_ISSUES.md` | the public list of issues a player would notice in the current release, mechanical and balance | a noticeable issue is deferred or accepted (same pass), or a release fixes one |
+| `CHANGELOG.md`, `CHANGELOG_WORKSHOP/<version>.txt` | each release's changes: the full entry, and the Workshop change note as published (Steam BBCode, under 8,000 bytes as Steam counts them; REPO_GUIDE) | a release is prepared; a published note is never rewritten |
 | `README.md` | building and editing the mod (players come from the Steam Workshop): what it changes, the vanilla files it replaces, the build, the editor | the build, the editor or the replaced files change |
 
 **Not committed, by design:** the **handover** (a baton for the next session: the user's next tasks in order, their motivating measurements and the
