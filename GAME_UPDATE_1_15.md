@@ -492,7 +492,9 @@ made to reproduce the committed file (U22: the five proofread names and Saratov 
   OPEN (needs the go-ahead).
 - **U61** · B · the fleet path loop (F218, the one listed bug of wall-clock cluster 3) is plausibly fixed by *"fleet repair progress"* and the
   return of beaten fleets to their mission · `fleet_loop_runs.mjs` over the 1.15 vanilla batch: no signature empties cluster 3's list; one opens
-  a fix again (the user, 2026-10-15) · OPEN. The final notes add more: the travel network rebuilt for consistent pathfinding, the AI no longer
+  a fix again (the user, 2026-10-15) · DONE 2026-11-12 (F270): no loop in any of 81 kept or quarantined saves of `20261109_005943`
+  (both arms, the six slowdown episodes included), read directly — the summaries' formation reader is blind on 1.15 (landmine L52), so
+  `fleet_loop_runs.mjs` and `wall_clusters.mjs` could not have answered it; no fix owed. The final notes add more: the travel network rebuilt for consistent pathfinding, the AI no longer
   sends fleets out of port while they repair, a docked fleet can be recalled for repairs. The notes also list engine speed-ups (building-modifier
   re-evaluation, company availability by state, cached sway / laws / legitimacy, faster late naval battles) that touch our many rungs and
   companies: `VANILLA_WALL_REF` is re-measured in any case (U60).

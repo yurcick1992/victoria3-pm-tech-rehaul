@@ -114,6 +114,8 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L48 | a count of a building group's LEVELS that sees the crafts (light industry, manufacturing or a variable group), each craft level a tenth of a factory's workers and nearly free (1.15; IP4's promise since 1.13) | `Test-LmL48` (`tools/lint_group_levels.mjs`) | every build | AUTO, proven; fixed |
 | L49 | a field of a tiered industry's vanilla building that the tier split drops or changes (1.15's conditional ai_value was one) | `Test-LmL49` (`tools/lint_building_blocks.mjs`) | every build | AUTO, proven; clean |
 | L50 | a launch whose store lookup failed lists every DLC, mounts none, and plays on without any DLC content | `Test-LmL50` (`tools/testbed/dlc_mounts.mjs`); the heartbeat's `DLC (L50)` line | session; the smoke check | AUTO, proven; the harness remedy open (BACKLOG) |
+| L51 | a data-system function the installed engine no longer registers: the telemetry line or loc string prints with the field empty (1.15.1's `GetCountryTradeCapacity`) | `Test-LmL51` (`tools/lint_data_functions.mjs`) | every build, repo-side | AUTO, proven; fixed |
+| L52 | a save field a game update re-tokenised melts under rakaly's older token table as `slava_token_N` / `__unknown_0x…`, and the summary reader counts zero without a warning (1.15's formation travel paths, F270) | owed: a post-run check that a run's summaries see moving formations at all | session | OPEN — the reader fix and the detector wait for the 10 vs 10's end (`tools/testbed/**` frozen) |
 
 ---
 
@@ -1201,3 +1203,22 @@ Proven 2026-11-12:
   kept 1.13.11 exe;
 - v17 PASSES against 1.15.1 (1,254 names), and so does the 1.1.1 build's loc and script (13,573 names);
 - inside preflight, the TRADE line reverted for one run gives `L51 FAIL` / `PREFLIGHT FAILED`, and the restored file passes.
+
+### L52 — a save field a game update re-tokenised, read as nothing
+
+**Defect.** `rakaly` 0.8.19 melts a save with the token table it was compiled for (1.13). A key that a later game version introduces or
+re-tokenises melts as `slava_token_<n>` or `__unknown_0x<hex>` (`--unknown-key stringify`), and a reader that looks for the key by name
+finds nothing and counts zero, with no warning. The save summary's whole-section check (`WARN: no military_formation_manager records
+parsed`) does not fire, because the formations themselves still parse.
+
+**How it was found.** 2026-11-12, checking whether 1.15 still has the fleet path loop (F270): every 1.15 summary of `20261109_005943`
+(23 runs, ~2,300 saves) read 0 moving formations and 0 moves, against 15–19 moving formations a save on 1.13.11. In 1.15's
+`travel_progress.path.moves` blocks the move's `to_node` melts as `slava_token_25775` and its `distance` as `__unknown_0xd04`; the reader
+counts moves by `to_node`. `wall_clusters.mjs` then printed "no listed bug observed" for six episodes from a channel that could not see
+one. Found by a positive-control comparison, not by a detector.
+
+**Detector (owed).** A post-run check (`Test-LmL52`, with `-Session`): a run of ≥ 20 summaries whose `world.formations.moving` is 0 in
+every one fails. Prove it on `20261109_005943` (fails) and `20261030_233342` (passes). **The fix** (owed): count a travel path's moves
+structurally — every `{` directly inside a `moves={` — as the F270 parser does (`fleet_paths_115.mjs` in that session's scratchpad), and
+keep `to_node`-free fields only. Both wait for the 10 vs 10 batch `20261112_113429` to end: `tools/testbed/**` and `preflight.ps1` are not
+edited while a batch plays (CLAUDE.md §5.1 rule 7). Other 1.15 keys the readers use were not audited (BACKLOG G).

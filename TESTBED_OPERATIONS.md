@@ -5,7 +5,7 @@ This is the procedure. It does not repeat what other documents own:
 | topic | lives in |
 |---|---|
 | engine behaviour of headless runs: launch arguments, `content_load.json`, the log ring and its mirror, the per-run token, crash detection by minidump, `-continuelastsave`, autosave enums, the per-decade timing curves | MODDING_NOTES → *Automated headless runs (the testbed)* |
-| every guardrail where nothing fails (IDs L1–L41), its story and its detector | TESTBED_LANDMINES.md |
+| every guardrail where nothing fails (IDs L1–L52), its story and its detector | TESTBED_LANDMINES.md |
 | what telemetry and the save summaries can log; the wall-clock data sources | TESTBED_METRICS.md (§7⅜ wall clock, §7½ the save harvest) |
 | what each tool is and how it is invoked | REPO_GUIDE.md (tools are referred to here by path only) |
 | how a config is judged (aim / soft / hard, the loss, the consensus) | BALANCE_FRAMEWORK §10.83 and CLAUDE.md §3.2 |
@@ -13,6 +13,35 @@ This is the procedure. It does not repeat what other documents own:
 | results | FINDINGS.md (F-numbers); per-session status in `tools/testbed/SESSION_VERDICTS.md` |
 
 The batch machine is Windows; paths and commands below are written as they are typed there. Commands are run from the repo root.
+
+---
+
+## 0. The two modes of testing
+
+Every batch belongs to one of two modes, and the mode decides most of what follows: the schedule's shape, whether runs alternate, the stop
+rule, the reports and what a result decides. Name the mode in the go-ahead request (§1.1) and in the schedule's `_why`.
+
+| | **Iterative mode** — the config search | **Fixed-setup mode** — the measurement batch |
+|---|---|---|
+| **the question** | which of several books is better on the register; where a lever moves things | what one book (usually the canon) does against vanilla, in full |
+| **the arms** | one config per schedule; the next config is proposed only after this one is read and the user confirms it | fixed in advance, usually the canon and vanilla + telemetry |
+| **n and span** | the 2+1 test: two full runs, a third only on divergence (§6.2) | set in advance (n=16, n=48, 10 vs 10 …); full runs; every run plays |
+| **alternation** | never: one config's runs back to back, decided between schedules (§6.1) | the arms alternate run by run, so the wall clock is read against vanilla of the same days (§7.3) |
+| **the stop** | one run broken on a hard register line ends the config; the stop watcher (§3.3, §6.3) | none: no stop watcher, no deadline unless the user sets one |
+| **reports** | after each config: the register (`criteria.mjs`) and its loss, beside the incumbent; the alignment check | the two first-run reports (first vanilla, first mod), smoke checks, then the ledger at full n (§8) |
+| **what decides** | the register's reading, directional (CLAUDE.md §2.9), plus the user's judgement; a winner may be canonised | nothing is chosen: the batch is the record of what the book does (FINDINGS, the ledger) |
+| **used** | 2026-09 to 2026-10-16 (the last configs: F234, F239) | since 2026-10-21 (F249, F264, F268, F269, the 10 vs 10 of 2026-11-12) |
+
+**Choosing between two exclusive designs** belongs to the iterative mode. When a design question has two mutually exclusive answers,
+build both as books rather than choosing by argument, and record the loser's numbers where the ruling lives (BALANCE_FRAMEWORK, FINDINGS),
+so it is never re-tried blind. First look for something cheaper that decides it: a probe of a few in-game years, a recipe model on realised
+prices (§2.7 of CLAUDE.md), or a pooled reading over a lever axis from runs that already exist (CLAUDE.md §2.9). Only when nothing cheaper
+decides does each book go through its own 2+1. (The rule dates from August 2026, when an "arm" was a solver variant scored in minutes; a
+2+1 now costs 2–3 centuries of ~3 h each, which is why the cheaper discriminators come first.) A fixed-setup batch is not the place for such
+a choice: a third arm in an alternating batch costs a third more machine time and answers a design question the iterative mode answers better.
+
+A batch that changes mode halfway (a 2+1 config that turns into a long measurement, a measurement batch asked to pick a winner) is
+re-stated as the new mode before the next run, with the user's go-ahead.
 
 ---
 
@@ -27,7 +56,8 @@ A request to "run X" is not a specification. Before a launch, state back and get
 2. **The base book** a new config branches from. A lever change ("try C 1.8 and cost1 1.2") names what moves, not what it moves
    from. Say explicitly whether it branches from the canon or from the latest hypothesis under test, and which of each one's levers
    carry over. (Ruled 2026-10-14 after a 3 × 1836→1936 batch was built on the canon while the latest hypothesis was meant — F234.)
-3. **The span** (start and `until`), **n**, and whether the batch is a 2+1 test (§6.2) or a fixed-n / full-run batch.
+3. **The mode** (§0: iterative, a 2+1 test of one config, §6.2; or fixed-setup, a predetermined batch), **the span** (start and
+   `until`) and **n**.
 4. **The metrics** (the telemetry spec) and the dump dates.
 5. **What is compared against what** — which reference (§6.4) and which reading decides.
 
@@ -395,7 +425,7 @@ The mechanics are engine behaviour (MODDING_NOTES → *Surviving a crash* and *R
 
 ---
 
-## 6. Deciding between configs
+## 6. Deciding between configs (the iterative mode, §0)
 
 ### 6.1 One config per schedule; do not alternate
 
@@ -436,10 +466,11 @@ capital-abundance hard line (§10.83); the script stays as a diagnostic printer.
 ### 6.4 References
 
 - **Economic readings:** `lib_runs.VANILLA_REF` in `tools/testbed/ledger/lib_runs.mjs` — the summer n=18 + the October n=6 + the alternating batch's
-  n=16 = n=40 (since 2026-10-26);
-  the default of `criteria.mjs`, `fill_ledger.sh` and the other readers. Where a job needs a market only the eleven-tag n=3 vanilla
+  n=16 + the n=48 batch's n=16 = n=56 (since 2026-11-08; n=40 before);
+  the default of `criteria.mjs`, `fill_ledger.sh` and the other readers. ⚠ All of them are game 1.13.11: a run on 1.15 reads against
+  vanilla runs of its own game version (CLAUDE.md §3.5), named per invocation. Where a job needs a market only the eleven-tag n=3 vanilla
   carries, say so where the number is quoted (CLAUDE.md, the instrumented-tags section).
-- **Wall clock:** `lib_runs.VANILLA_WALL_REF` — the alternating batch's vanilla n=16 (2026-10-26). ⚠ It is a reference of its own days: the
+- **Wall clock:** `lib_runs.VANILLA_WALL_REF` — the n=48 batch's own vanilla n=16 (F264; the alternating batch's n=16 before 2026-11-08). ⚠ It is a reference of its own days: the
   batch's two sessions disagree by ×1.11 against ×0.996 for the same book (F249), so only a run that alternated with vanilla in the same session
   is a reliable wall-clock reading.
 - Absolute figures do not travel between sessions; ratios do.

@@ -110,7 +110,9 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **arm** | one thing under test in a batch: `{kind: control}` (vanilla + telemetry, nothing else, ever) or `{kind: config, config: …}` |
 | **setup** | the schedule's name for an arm |
 | **run** | one 1836 → 1936 campaign. **session** — one scheduler invocation's folder. **batch** — the runs a schedule was written for |
-| **the 2+1 rule** | two runs, `alignment_check.mjs`, a third only if they diverge; the config read as the median |
+| **iterative mode** | testing to choose between configs: one config per schedule through the 2+1 rule, never alternated, the stop watcher armed, the next config proposed only after the user confirms (TESTBED_OPERATIONS §0) |
+| **fixed-setup mode** | a measurement batch whose arms and n are set in advance (usually the canon against vanilla, alternating run by run): every run plays, two first-run reports, the ledger at full n (TESTBED_OPERATIONS §0) |
+| **the 2+1 rule** | two runs, `alignment_check.mjs`, a third only if they diverge; the config read as the median (iterative mode only) |
 | **the run-level stop** | a run of a 2+1 batch that breaks a hard register line is that config's last run (the stop watcher drops the STOP file); ×1.3 of vanilla's 1936 world GDP survives only as the watcher's fallback threshold (CLAUDE.md §3.2) |
 | **usable** | a run that reached its own `until` date with no `abandoned_reason` (landmine L17) — `lib_runs.usableRuns` is the only definition |
 

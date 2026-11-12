@@ -584,7 +584,9 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 - **Three run clusters** (user-ruled 2026-10-07): (1) normal; (2) inexplicably slowed — a slowdown episode with no listed bug observed; (3) a LISTED
   vanilla bug directly observed in the run's saves. Main reports use clusters 1 + 2 combined; cluster 3 is reported as a count and the bug's name. The
   list holds one bug: **the fleet path loop** (a fleet recalled for repairs whose travel path the engine keeps extending; ≥ 200 path moves and ≥ 125k
-  distance, gone once the slowdown ends — F218). No tick pattern is accepted as proof of a listed bug.
+  distance, gone once the slowdown ends — F218). No tick pattern is accepted as proof of a listed bug. On game 1.15 the loop is absent
+  (F270: none in 81 kept or quarantined saves), and the save summaries cannot see fleet paths there (landmine L52, fix owed after the
+  10 vs 10), so `wall_clusters.mjs`'s "no listed bug observed" on a 1.15 run is not an observation.
 - `tools/testbed/ledger/wall_clusters.mjs` reads it; slowdown episodes and the save quarantine that keeps saves for debug-mode inspection, the machine
   monitor and the per-tick profile are in `TESTBED_OPERATIONS.md`.
 
@@ -629,12 +631,13 @@ copper (§10.108) + copper in trade class C (§10.108.3) + game 1.15's two new f
 (§10.109.3). Its field diff against the 1.0 canon: copper in the five rungs where vanilla 1.15 puts it, value for value; the two bronze variants;
 copper's traded quantity 12; `dams.inputs_per_50`; two `vanilla_value_overrides`; two idea-entry labels and the monthly global effect — nothing
 else. Measured by F268 (n=1 each) and by `20261109_005943` runs 1–20 (10 + 10 centuries on 1.15.0); its release build, mod 1.1.0, is commit
-`8cbe4a0`. The first 1.15 probe (F265, n=1 to 1856) ran its candidate before Q2/Q6/Q9, and without any DLC (F266).
+`8cbe4a0` (tag `v1.1.0`). The first 1.15 probe (F265, n=1 to 1856) ran its candidate before Q2/Q6/Q9, and without any DLC (F266).
 
 **The 1.0 canon** (mod 1.0, game 1.13.11; canonised 2026-10-21, kept as the record) is `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`,
 sha256 **`9a05d36da42c1511`** (tree twin `04ac513168388956`): the polish rulings (§10.102), the R4 proofread's text and the urban-centre entries'
 live figure (by field diff). F249 and F250 measured `728f2c7f84e6f467` (the same book but for those records); **F264 measured its build**
-(48 centuries, 2026-10-30 → 11-08). Its release build is commit `796ce9f`.
+(48 centuries, 2026-10-30 → 11-08). Its release build is commit `796ce9f`, rebuilt after the player rename as `4186eff`, the Workshop
+upload of 2026-10-30 (tag `v1.0.0`).
 
 **The canon build** (since 2026-11-08 on game 1.15): the book above, built by today's emitters, which carry everything not in the book — the art
 (`art/`: the square and the 16:9 thumbnail, three technology icons, three method icons; POLISH R2, R5, R10), vanilla's electricity gate on our
@@ -825,7 +828,9 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 10. **Keep the docs in sync with reality, in the same pass as the change** — behaviour, structure, numbers, conventions. A new coupling to a vanilla
     file or number goes into `ON_GAME_UPDATE.md`. The one exception: a proposal the user is still weighing may lag briefly, with the divergence called out.
 11. **Commit with explicit paths; never `git add -A` / `git add .`.** Other sessions write in this repo (FINDINGS above all); check `git status --short`
-    before committing and account for every staged path. Never amend or force-push shared history to clean up.
+    before committing and account for every staged path. Never amend or force-push shared history to clean up. Work goes straight to `main`;
+    every Workshop release is an annotated tag `vX.Y.Z` on the commit of its release build (`v1.0.0`, `v1.1.0`); a release branch is cut only
+    when a released version needs a fix around newer work on `main`, and never checked out in the checkout a batch builds from (rule 7).
 12. **Write prose with the Write/Edit tools, never through bash** — backticks are command substitution and Windows paths lose their backslashes, with
     exit code 0. Read a doc back after editing it.
 13. **Ask when a decision is the user's.** Rulings are the user's; a recommendation of yours is recorded as a proposal until ruled.
@@ -970,10 +975,12 @@ Other flags: `-NoDeploy`, `-NoLint`, `-ControlOnly` (vanilla + telemetry; requir
 catalogue · §5 while it runs · §6 deciding between configs · §7 the wall clock · §8 after a batch · §9 changing the harness). Engine behaviour of
 headless runs: MODDING_NOTES §"Automated headless runs".
 
-1. **Plan:** agree arm, base book, span, n, metrics and comparison (§5.1 rule 3); write the predictions into the schedule (§2.8); get the go-ahead.
-2. **Batches are decision-driven:** the **2+1 quick config test** — two runs of one config, a third only where the two diverge, then the next config as its
-   own schedule. Configs are never alternated — except to measure the WALL CLOCK, where both arms must run in the same days (the alternating batch). A run of
-   a 2+1 batch that breaks a hard register line is that config's last run (the stop watcher); a long predetermined batch plays every run.
+1. **Plan:** agree the mode, arm, base book, span, n, metrics and comparison (§5.1 rule 3); write the predictions into the schedule (§2.8); get the go-ahead.
+2. **Two modes** (TESTBED_OPERATIONS §0): **iterative** — choosing between configs, each its own schedule through the **2+1 quick config test** (two runs, a
+   third only where the two diverge), never alternated, a run that breaks a hard register line ends the config (the stop watcher); and **fixed-setup** — a
+   predetermined measurement batch (usually the canon against vanilla), alternating run by run so the WALL CLOCK compares the same days, every run played, two
+   first-run reports and the ledger at full n. A choice between two exclusive designs is iterative work: build both books, try a cheaper discriminator first
+   (a probe, a recipe model, a pooled lever axis), run both through 2+1 only if nothing cheaper decides, and record the loser.
 3. **Launch** detached, start the waiter, arm the stop watcher where it applies, and smoke-check at ~5 minutes (§5.1 rules 5–6).
 4. **While it runs:** touch nothing it rebuilds from (§5.1 rule 7). Reading its files is fine. Keys in its console: `p` pause · `r` resume · `s` stop after
    this run · `x` stop now; `tools/testbed/STOP` and `tools/testbed/NO_NEW_RUNS` are the file twins. A crashed run resumes from its own autosaves.

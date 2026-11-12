@@ -415,6 +415,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F267 | The 1.0 canon's USA against vanilla's pooled 56 runs: 0.89x vanilla's median USA GDP at 1935 over F264's 48 runs (11 under 0.6x, 19 at or above 1.0x), 0.74x over F249's 16; vanilla's own 56 runs put 11 under 0.6x of their median. F251's 0.58x was against F249's own 16 vanilla runs, whose median USA is 1.8x F264's 16: the "USA industrialises late" known issue of 1.0 does not hold at that size | canon, vanilla | reading | here |
 | F268 | The first 1.15 centuries (n=1 canon + n=1 vanilla, same day, all DLC mounted): vanilla 1.15 ends at world GDP 1.18x vanilla 1.13 (1.21x at base prices), W 1.15x, the shortlist's U* 4.1% against 1.13's 19%, so vanilla 1.15 ITSELF reads "broken by runoff" on the register's 10% hard line; literacy and the early shortlist hoard sit outside 1.13's 56-seed spread at every checkpoint. The canon against that vanilla: world GDP 1.11x (1.18x at base), the 1886 point 0.84 (the dip, inside 0.79-1.01), W 0.87x, pool U* 5.3% (1.29x vanilla's, under the >=2x aim), pool H 0.91x, PI 0.84 falling, PP 0.82, T0 ~0, T3 31.7% of tiered workers; "broken by runoff" on the same line vanilla breaks. Misplaced capital 19.7% vs 14.9%; play x1.11 (inflated by the agent's own load). The register's absolute lines need a 1.15 vanilla basis (Q12) | canon, vanilla | n=1 directional | here |
 | F269 | Mod 1.1 against vanilla 1.15.0, n=10 + 10 alternating (runs 1-20 of a 48-run batch cut short by the 1.15.1 update): ALL TEN vanilla runs cross the register's runoff line (9 with the shortlist's U* under 10%, median 2.65%) and six of ten mod runs do, so on 1.15 the line separates nothing; the mod's broken runs are its six richest worlds, and the intact-run consensus (n=4) leans poor: world GDP 0.98x (all ten 1.07x, 0.91-1.32), 1886 0.94x, shortlist U* 15.5% against 2.6% (all ten 7.7%), W 0.87x, PI 0.91 not falling every decade, PP 0.96, T0 1935 0.20 of the 1900s, T3 27.3%, loss 6.43; play x1.044; red flags 190 against 163.5 market-years (paper, the Dutch market); backward industries kept 104% of their workers in-market and 106% through trade against vanilla's 124% and 126%; misplaced capital 23.4% against 18.9%, the excess again all in the tiered industries; auto-downsizing loses about vanilla 1.15's levels (20,321 against 19,567 a run; vanilla 1.15 loses 3.1x vanilla 1.13's), 0.70x its jobs and 0.87x its construction points. Vanilla 1.15 itself ends at 1.285x vanilla 1.13's world GDP (median of its ten runs, 1.07-1.51) | canon, vanilla | n=10 directional | here |
+| F270 | The fleet path loop (F218, wall-clock cluster 3's one listed bug) is absent on game 1.15: no recalled fleet with a long travel path in any of 81 kept or quarantined saves of `20261109_005943` (23 endpoints, the 51 saves of all six slowdown episodes); 1.13.11 had one in 3 of 30 vanilla endpoints and in most episodes. The save summaries' formation reader is BLIND on 1.15 (0 moves in every save): 1.15 renamed the move fields to tokens rakaly 0.8.19 lacks | vanilla 1.15, canon | 81 saves of 23 runs, directional | here |
 
 ---
 
@@ -22793,3 +22794,45 @@ register's consensus at n=4 is a selected sample (the poorer runs) and should be
 - Not that the downsizing jobs and construction points of vanilla's infrastructure are exact (§4: 1.15.1 files, unchecked for those).
 - Not why vanilla 1.15 downsizes three times as many levels as 1.13 (the 1.15 hiring rebalance is the first hypothesis, unmeasured).
 - Not a reliable play time beyond its direction: the user worked on the machine while runs played.
+
+---
+
+## F270 — THE FLEET PATH LOOP IS ABSENT ON GAME 1.15: NO RECALLED FLEET CARRIES A LONG TRAVEL PATH IN ANY OF 81 KEPT OR QUARANTINED SAVES, THE SIX SLOWDOWN EPISODES INCLUDED; AND THE SAVE SUMMARIES' FORMATION READER IS BLIND ON 1.15 (2026-11-12; session `20261109_005943_g115-alt-canon24-vanilla24`, runs 1–23: mod 1.1 and vanilla 1.15.0, runs 21–23 partly on 1.15.1; read-only, no game time)
+
+**Why it ran.** The user's rule (2026-10-15): no fix for the vanilla fleet path loop (F218, the one listed bug of wall-clock cluster 3)
+unless vanilla 1.15 still has it. The 1.15.0 patch notes fix *fleet repair progress*, return beaten fleets to their mission once repaired,
+rebuild the travel network and stop the AI sending fleets out of port while they repair (GAME_UPDATE_1_15 U61). The user, 2026-11-12:
+*"Haven't the PDS claimed to have fixed this in 1.15.0? Check anyway."*
+
+**The reader is blind on 1.15.** The save summaries (v16+, `save_state_summary.mjs`) count a formation's travel path by its moves'
+`to_node`. In a 1.15 save the block is still `travel_progress={ path={ start_position target_position moves={ { from to from_province … cost } … } … } }`,
+but two move fields are 1.15 tokens that rakaly 0.8.19's 1.13 table lacks — the to-node melts as `slava_token_25775`, the distance as
+`__unknown_0xd04`. So every 1.15 summary reads 0 moving formations and 0 moves (all 2,300 saves of the 23 runs; a 1.13 run of
+`20261030_233342` reads 15–19 moving formations a save). `wall_clusters.mjs` therefore printed "no listed bug observed" for the six 1.15
+episodes from a channel that cannot see one — a silent instrument defect (CLAUDE.md §2.12).
+
+**The direct reading.** A scratchpad parser counts the `{` blocks directly inside each formation's `moves={` (any key names), checked first
+on the 1.13 positive control `20261005_154629_jex-n16/run003_jex/diag_saves/0066…`: it finds F218's two US torpedo-boat loops, recalled,
+4,556 and 4,346 moves (F218: 4,559 and 4,349). On the 1.15 saves:
+
+| saves | n | a travel path ≥ 200 moves | a RECALLED fleet with a travel path ≥ 200 moves | longest recalled fleet path |
+|---|---|---|---|---|
+| kept endpoints (1936; run 23 at 1923) | 23 | 0 | 0 | 24 moves |
+| quarantined episode saves (before / in / after), runs 1, 2, 4, 11, 14, 15 | 51 | 1 (run 14, 1894: a fleet of 250 moves, not recalled, gone a year later) | 0 | ≤ 22 moves |
+| resume sets | 7 | 0 | 0 | 0 |
+
+Recalled fleets are few (0–7 a save) and almost never carry a travel path at all (3 of 81 saves, at most 24 moves). For reference on
+1.13.11: a loop in 3 of 30 vanilla endpoints and 14 of 258 mod endpoints (F218), and most slowdown episodes were loops.
+
+**What it says.** The loop F218 described — a recalled fleet whose travel path the engine keeps appending to — does not occur in these 23
+runs on 1.15, in either arm, episodes included: consistent with Paradox's 1.15.0 fixes. The six 1.15 episodes (three per arm, F269) stay in
+cluster 2 (inexplicably slowed), now by direct observation rather than by the blind reader. No fleet fix is owed (the user's 2026-10-15
+condition is not met).
+
+**What it does NOT say.** Not that the loop can never occur on 1.15 (0 of 23 endpoints against a 1.13 rate near one in ten is
+directional; the episode saves are the stronger evidence). Not what the six 1.15 episodes are (wars are the first hypothesis, unmeasured).
+Not that the yearly summaries are right about anything else carrying 1.15 tokens: only the formation block was checked.
+
+**Follow-ups.** The reader fix (count moves structurally, as the parser does) and a landmine for a run whose saves read zero moving
+formations wait until the 10 vs 10 batch ends (`tools/testbed/**` is frozen while a batch plays, CLAUDE.md §5.1 rule 7) — BACKLOG G.
+The parser is the session scratchpad's `fleet_paths_115.mjs`.
