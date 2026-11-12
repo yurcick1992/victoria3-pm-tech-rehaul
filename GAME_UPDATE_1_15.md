@@ -169,7 +169,9 @@ an intermediate one.
   check that every new company's tiered industry gets all its rungs).
 - **U26** · N · Cossack Hosts, a subsistence-like building reserving up to 20% of a state's arable land (Russia at start) · every reader that
   excludes auto-scaling and subsistence buildings (`downsize_telemetry.mjs` §10.107.5, W and U\* by profession, misplaced capital's valid
-  benchmark of free land) · OPEN (classify it in the readers; U53 for the design side).
+  benchmark of free land) · OPEN (classify it in the readers; U53 for the design side). RULED (the user, 2026-11-05, on a cloud branch;
+  recorded 2026-11-12 as BALANCE_FRAMEWORK §10.112): the Hosts' workforce counts as peasants in U\* and is not productive in W; whether
+  `population_subsisting_workforce` already includes it is checked after the 10 vs 10 (BACKLOG G).
 
 ## Phase 3 — reconciliation: the mod's premises against 1.15
 

@@ -27,6 +27,9 @@ Mechanical
   has a power plant, a dam or electric streetlights. A build condition is planned for a later version.
 * The research journal entries share one group, "Tech Advancements and Inventions". The journal shows it above the other blocks, and it
   cannot be collapsed. Over a campaign it fills with possible and completed entries, so reaching the blocks below it takes a long scroll.
+* A research journal entry (other than the military and naval ones) appears only once the country's literacy reaches the line for its
+  technology's era: 25% for era 1, 35% for era 2, 45% for era 3, 55% for era 4 and 65% for era 5. Below that the entry is simply missing,
+  with nothing saying why; an entry already open pauses, and its progress bar gives the line.
 
 
 Balance

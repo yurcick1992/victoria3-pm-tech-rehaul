@@ -79,6 +79,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission); .4 crafts out of 1.15's three new level counts, by native counts (the group minus the craft group, never a loop); .5 the 1.15 canon (`a52b0aca`), and canonisation declares the main line, not a quality stamp; .6 detectors L48 / L49 and IP4's negotiation promise crafts out (G7); .7 1.15's wage and hiring rebalance: measure first, no pre-emptive ladder change | in force: the canon since 2026-11-08 (.1 and .3 in the book through their makers; .2 and .4 build steps — `emit_ai_value_adds.mjs`, L47; `emit_vanilla_refs.mjs` G4–G6 + an init tripwire) | here |
 | 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 ~20 December: major changes, extraction first, which revisits §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed; a bonus to hydro alone is allowed, none planned); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark (Mechanical Tools 25,000 → 75,000); .4 copper scarcity follows Paradox, no copper lever | .1 the plan (ROADMAP, BACKLOG); .2 and .4 in force; .3 ruled for 1.2, not built | here |
 | 10.111 | game 1.15.1, mod 1.1.1: .1 the 1.15.1 canon (`g1151-canon-bz-dcu-ra-il`, sha256 c1274f15; the 1.15 chain replayed on 1.15.1, field diff = the telephone rung's three inputs, value-neutral); .2 the dams stay `must_have` under 1.15.1's subsidy rule (now a ceiling; no subsidy for a profitable dam), measured; .3 the AI research weights back to 1.13.11 on six technologies with research entries, five content-tied pushes kept — the canon `g1151-canon-bz-dcu-ra-il-aw`, sha256 697d4869; .4 the AI's new goods stances kept; .5 the dams' `subsidized` flag follows vanilla, infrastructure subsidies watched; .6 the Armed Forces' asset count left as vanilla | in force: the canon (.3) since 2026-11-12 | here |
+| 10.112 | Cossack Hosts (game 1.15) count as peasants in U\* and leave W's productive workers (ruled 2026-11-05 in a cloud session, recorded 2026-11-12) | in force; whether the readers must change is checked after the 10 vs 10 | here |
 
 ---
 
@@ -4924,3 +4925,24 @@ per arm and year, the subsidised levels and the subsidy spending of railways, po
 
 1.15.1 draws capitalists to the Armed Forces by the military-industry buildings their financial district or headquarters owns, capped
 (V22c); the tier split can raise the count. The user: *"ignore, leave new vanilla"* — no rewrite, no catalogue entry.
+
+## §10.112 — COSSACK HOSTS COUNT AS PEASANTS IN U\*, NOT AS PRODUCTIVE WORKERS IN W (user-ruled 2026-11-05; recorded 2026-11-12)
+
+**Provenance.** Ruled in a cloud session before game 1.15 shipped, on its branch `claude/eloquent-faraday-f8pznt` (commit `82a3ed7`), which
+never reached `main`; found and brought in on 2026-11-12 (the user: *"OK"*). That branch numbered it §10.108, the number copper took on
+`main`. The rest of the branch — the 1.15 measurement plan of 2026-11-05 — was overtaken by the batches actually run and is dropped.
+
+**The question.** Game 1.15 adds Cossack Hosts: *"new subsistence-like buildings that are established in states through a new map
+interaction … available to Russia at game start. Cossack Hosts reserve up to 20% of arable land in any given state region and in return
+provide migration attraction and policing services."* (`bg_cossack_host` under `bg_ranching`, 4,500 laborers + 500 farmers a level, no
+inputs, not buildable; GAME_UPDATE_1_15 U53.) Russia is one of the eleven instrumented tags, so their workers enter U\* and W.
+
+**The ruling.** The user: *"cossacks are peasants in U\* terms."* A Cossack Host's workforce counts with the peasants in U\* = (unemployed +
+peasants) ÷ (salaried + unemployed + peasants), whatever profession or class the engine gives it. **And W** (proposed the same day, ruled:
+*"Yep, they should."*): the same workforce leaves W's productive workers, so a salaried Host worker does not count as productive in W while
+counting as a peasant in U\*.
+
+**Not yet known:** whether the engine's `population_subsisting_workforce`, which `criteria.mjs` reads for the peasants, already includes
+them. If it does, U\* needs no change and only W's productive count may; if not, the readers add the Hosts' employment to the peasants and
+take it out of the salaried. Checked on the 1.15 save summaries after the 10 vs 10 ends (`tools/testbed/**` is frozen while it plays;
+GAME_UPDATE_1_15 U26, BACKLOG G). Until then a 1.15 reading of Russia's U\* and W says it is unadjusted.
