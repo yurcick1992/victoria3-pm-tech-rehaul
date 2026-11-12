@@ -176,12 +176,14 @@ const V = p => `pmr_dam_${p.id}`;     // variable / key stem
 // below for why not a state trait). A per-project state trait (pmr_dam_<id>_site, added at the campaign start —
 // pmr_dam_add_caps; it shows in every split part of the region, user-accepted 2026-10-05) is the visible label. The scripted cap is gone. `stateregion_max_level` makes the cap count
 // the whole state REGION (vanilla's bg_infrastructure flag), so the split parts of a state can never add up past it.
+// `subsidized` follows vanilla's parent, bg_private_infrastructure: `yes` until game 1.15.0, `no` from 1.15.1 (user, 2026-11-12,
+// GAME_UPDATE_1_15_1 Q10). The flag acts only at the campaign start, when no dam exists, so it never changed a dam either way.
 W('common/building_groups/zzz_pm_rehaul_dams.txt', HDR +
 `bg_pmr_hydro_dams = {
 ${T}parent_group = bg_private_infrastructure
 ${T}lens = special
 ${T}is_government_funded = no
-${T}subsidized = yes
+${T}subsidized = no
 ${T}inheritable_construction = yes
 ${T}economy_of_scale = no
 ${T}urbanization = 10

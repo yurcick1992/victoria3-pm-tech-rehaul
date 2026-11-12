@@ -29,7 +29,10 @@ it, and the reconciliation and adoption walks (§5) after it.
    substantial hotfix). Check whether `binaries\victoria3.exe` changed: engine changes live there, and a count of touched script files cannot see
    them. If you can, keep the old version's `game\common`, `game\events` and `game\map_data` aside. Their diff against the new ones is the fastest map
    of what moved, and the save readers need the old good order to read pre-patch saves (§2.3.3).
-2. **Mark the version boundary** with an entry in §3. Steam can update the game between two launches with nothing announced; the heartbeat counts
+2. **Mark the version boundary** with an entry in §3. Steam can update the game between two launches with nothing announced, and even under a
+   running batch: the observer starts `victoria3.exe` itself, so Steam counts the game as not played and commits an update while a run plays
+   (1.15.1, 2026-11-11; Steam's per-game *Only update this game when I launch it* stops that). Keep a copy of every version as soon as it is
+   seen (`C:\claude-code\vic3_game_<version>`, as §3 lists). The heartbeat counts
    `does not match game version` lines. A batch that straddles a patch is two batches. Every vanilla reference — `VANILLA_REF`, `VANILLA_WALL_REF`,
    `config/measured_base_wages.json`, the error-noise catalogue, the fleet-loop calibration — is the old version's until step 10 replaces it. Until
    then compare only arms run on the new version, in one batch.
@@ -200,6 +203,11 @@ removes the pops files it wrote earlier, by their header.
 **`common/technology/technologies/{10_production,20_military,30_society}.txt`** (3) — `emit_techs.mjs`, then `emit_tech_finish.mjs`.
 - *What:* 10 moves vulcanization to tech era 4 (the spec's `ERA_MOVES`) and adds conveyors to compression_ignition's prerequisites (`PREREQ_ADDS`,
   §10.93). In all three, the finish boost is appended to every researchable technology's `ai_weight` (+10,000 at ≥ 0.99 progress, F160).
+  The book's `tech_ai_weights` (§10.111.3) replaces six technologies' `ai_weight` with game 1.13.11's block (combustion_engine,
+  electrical_generation, oil_turbine, percussion_cap, radio, telephone), each recorded beside the 1.15.1 block it replaces.
+- *Breaks (the AI weights):* `emit_tech_finish` throws when a listed technology's installed block is no longer the recorded one. On a patch,
+  re-run `make_tech_ai_weights_config.mjs` on the new game and put every change of an AI weight to the user as a question (memory
+  `update-pass-ai-changes-are-questions`): a technology with a research entry whose weight vanilla moved is a ruling, not a pass-through.
 - *Breaks:* every transform asserts its count. `emit_techs` throws if compression_ignition's vanilla prerequisites are no longer the tree's recorded
   `[combustion_engine]`; `emit_tech_finish` throws on a conditional `can_research`. A patch that moves any other technology's era or prerequisites
   does not throw: the game reads the new era and the tree twin keeps the old one (§2.2.2).
@@ -686,7 +694,17 @@ different versions are not comparable without saying so.
   calibration are 1.13.11 until a 1.15 vanilla batch replaces them (§1 step 10). Mod 1.1 follows the `game-update` skill; treaty ports are
   re-measured (§2.2.10). The pass's register is `GAME_UPDATE_1_15.md`. The first sessions on it are `20261108_061520_g115-probe-1856` and
   the n=1 + 1 century `20261108_163746_g115-alt-canon1-vanilla1` (F268). **Mod 1.1.0** (release build of the canon `a52b0aca` on 1.15.0,
-  `supported_game_version` "1.15.*") was built for the Workshop on 2026-11-08; its build is the commit that carries this line.
+  `supported_game_version` "1.15.*") was built for the Workshop on 2026-11-08; its build is the commit that carries this line. No copy of
+  1.15.0 was kept (it was replaced unannounced); its main depot's manifest is 529341 / `7727600027425614094` (Steam's content log) if a
+  full copy is ever wanted (`download_depot 529340 529341 7727600027425614094` in the Steam console). The last session on it is
+  `20261109_005943_g115-alt-canon24-vanilla24` runs 1–20.
+- **1.15.1** — committed by Steam **2026-11-11 17:19:33 local** (build 26591675, checksum `…f843`, exe sha256 `fb4ec0698afd3d3b…`; 438 files),
+  during run 21 of `20261109_005943`. Steam counted the game as "not played for 234835 seconds": the observer starts `victoria3.exe` itself,
+  so Steam never sees a batch as play and updates under it. Run 21 resumed on 1.15.1 at 1908 after its date froze; run 22 (vanilla) is the
+  first run on 1.15.1. A hotfix with a new exe: the AI's method choice (wages, multipliers, electrical methods), subsidies (no profitable
+  building subsidised), mobilisation, the copper pass (telephones, the stills, arc welding, 56 copper deposits), technologies' AI weights;
+  `Market.GetCountryTradeCapacity` removed. Kept at `C:\claude-code\vic3_game_1.15.1` (taken 2026-11-12 00:52). The pass's register is
+  `GAME_UPDATE_1_15_1.md` (mod 1.1.1).
 
 ---
 

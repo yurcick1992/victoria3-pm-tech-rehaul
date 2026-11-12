@@ -109,6 +109,7 @@ scheduler (L5).
 | **v13** | `state_access` (`SMA`) and `construction_queue` (`CQ`), §9 |
 | **v14** | `state_access` moves phase 1 → 3 (it pushed phase 1 past the ~1,500-line threshold late-century, §5.7); `wages` gains the spec key `wage_pop_endpoints` (`both` \| `first` \| `last` \| `none`, default `both`) choosing which dumps carry the heavy `PW` sweep — `none` for century batches |
 | **v15** | `downsizing` (§2.4¾): the monthly poll of auto-downsized levels, `DZ` / `DZX` / `DZM`, added to every telemetry run by the scheduler's downsize feed; `downsize_probe` for its diagnostics |
+| **v17** | (2026-11-12, game 1.15.1) the `TRADE` line's capacity field and the treasury probe's `capacity_mkt` read the country's whole market, `Market.GetTradeCapacity`, because 1.15.1 removed `Market.GetCountryTradeCapacity(Country)` (§3.6; GAME_UPDATE_1_15_1 V18). A v16 TRADE line on 1.15.1 has the field empty and logs two errors per country |
 | **v16** | (2026-11-08) the `DZX` line ends in `tag=` (the state owner's tag), and the downsizing read step tests `level >= 1` first (§2.4¾); unverified in game until the first v16 run. A v15 session's DZX lines carry no `tag=` — the reader places them by name, as before |
 
 ⚠ Sessions `20260803_014037` and `20260803_022027` stamp v9 while carrying early v10 content (both were stopped part-way and are the
@@ -704,9 +705,13 @@ GetPrincipal`, at analysis time.
 
 ### 3.6 Trade capacity — country-level, NO sub-country iteration
 
-**`Market.GetCountryTradeCapacity(<country>.Self)`** — VERIFIED, reached from a country as
+**`Market.GetCountryTradeCapacity(<country>.Self)`** — VERIFIED on 1.13.11 and 1.15.0, reached from a country as
 `THIS.GetCountry.GetMarket.GetCountryTradeCapacity(THIS.GetCountry.Self)`. Emitted on the `TRADE` line with trade-centre count and
-levels (`v3tb_bld_tradecenter`, `v3tb_lvl_tradecenter`).
+levels (`v3tb_bld_tradecenter`, `v3tb_lvl_tradecenter`). ⚠ **Game 1.15.1 removed it** (the exe no longer registers the name; its market
+panel reads `Market.GetTradeCapacity`, `State.GetTradeCapacity` and the world-market hubs' capacity instead), and every TRADE line then
+logged two `error.log` lines per country (`20261109_005943` runs 21–23). Since 2026-11-12 the TRADE line's second field and the probe's
+`capacity_mkt` are **the country's whole market's capacity**, `THIS.GetCountry.GetMarket.GetTradeCapacity`: a market member logs its
+leader's figure. A country's own capacity is in the save summaries (v10+: per state, summed per owner).
 
 | 1836 | centres | levels | capacity | capacity/level |
 |---|--:|--:|--:|--:|

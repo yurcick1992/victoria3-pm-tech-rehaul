@@ -754,6 +754,48 @@ pumpjacks = {
 			}
 			add = 2
 		}
+
+		if = {
+			limit = {
+				country_rank >= rank_value:unrecognized_major_power
+			}
+			add = 2
+		}
+
+		if = {
+			limit = {
+				has_technology_researched = battleship_tech
+			}
+			add = 4
+		}
+
+		if = {
+			limit = {
+				has_technology_researched = carrier_tech
+			}
+			add = 4
+		}
+
+		if = {
+			limit = {
+				has_technology_researched = destroyer
+			}
+			add = 4
+		}
+
+		if = {
+			limit = {
+				has_technology_researched = mobile_armor
+			}
+			add = 4
+		}
+
+		if = {
+			limit = {
+				has_technology_researched = submarine
+			}
+			add = 4
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = pumpjacks  progress >= 0.99 } }

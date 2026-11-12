@@ -8,8 +8,8 @@
 #   e.g. bash tools/testbed/ledger/fill_ledger.sh 20261002_120946_e1a12-ai1135-n2 e1a12-ai1135 config/mod_config.e1a12-ai1135-artmerge.json out_e1a12_ai1135
 #
 # ⚠ (superseded 2026-10-08: "ONE session per report") — analyse_gdp_gap, fill_tierchoice and fill_obsolescence now read the same group
-#   through lib_runs, so every panel is on the same runs. ⚠ input_price_flags takes whole sessions only (`a,b`): a group with single-run items
-#   reads its sessions' every run there — name whole sessions, or check its run count in the output.
+#   through lib_runs, so every panel is on the same runs. (input_price_flags and misplaced_capital read run-folder groups through lib_runs
+#   too, checked 2026-11-12; check their run counts in the output all the same.)
 # ⚠ A run counts when its meta.json says it reached its own until date with no abandoned_reason (landmine L17); a run BROKEN on the register is
 #   still complete and is reported, not dropped (the F161 / F209 precedent) — say so in the prose.
 #
@@ -76,7 +76,7 @@ step node $L/redflag_metrics.mjs $OUT
 #   same vanilla, each run on its own config, plus the readers whose lines the lede used to carry in prose — the backward-industry test
 #   (laggard_pressure, against the same vanilla), the technology census (tech_census, on the book's tree twin), misplaced capital (mod only, by
 #   ruling) — and the old-plant census; fill_scorecard renders the one table (it replaces fill_register + fill_goals).
-#   ⚠ misplaced_capital takes whole sessions: a group with single-run items reads those sessions' every run there.
+#   (misplaced_capital took whole sessions only until 2026-11-12: a `<session>/runNNN` group was cut at its last '/'. Fixed.)
 TREE=$(echo "$BOOK" | sed 's/mod_config\./tech_tree_options./')
 [ -f "$TREE" ] || TREE=config/tech_tree_options.json
 step node $L/criteria.mjs --arm "$SESSION:$SETUP" --van "$VANS:vanilla" --json $OUT/criteria.json --quiet
@@ -88,7 +88,9 @@ step node $L/fill_old_plants.mjs $OUT --mod $MOD --config $BOOK
 #   every VANS run that carried the downsizing poll (telemetry v15 on); a run without the poll is left out and printed, never read as zero.
 #   ⚠ The like-for-like measures read the runs' own built mod (the scheduler's build folder, overwritten by the next batch) and vanilla's
 #   files from VIC3_GAME: after a game patch, point VIC3_GAME at a copy of the version the batch ran on.
-step node $L/downsize_telemetry.mjs "$SETUP=$MOD" "vanilla=$VAN" --config $BOOK --types 0 --json $OUT/downsize.json
+#   ⚠ (2026-11-12) when that build folder is gone the reader throws; DOWNSIZE_MOD_PATH=<dir> names a build of the same book on the same game
+#   version to read instead (its --mod-path), and the prose says so.
+step node $L/downsize_telemetry.mjs "$SETUP=$MOD" "vanilla=$VAN" --config $BOOK --types 0 ${DOWNSIZE_MOD_PATH:+--mod-path "$DOWNSIZE_MOD_PATH"} --json $OUT/downsize.json
 step node $L/fill_downsizing.mjs $OUT
 step node $L/fill_scorecard.mjs $OUT --config $BOOK
 echo; echo "data filled in $OUT — now write lede.html incidents.html footer.html tokens.json title.txt, and redflags_summary.html with the"

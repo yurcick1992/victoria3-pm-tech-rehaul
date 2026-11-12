@@ -23,6 +23,7 @@ appended oldest first after the July ones); no entry's text changed.
 
 | date | entry | area | status | note |
 |---|---|---|---|---|
+| 2026-11-12 | the downsizing reader would have priced a mod run's lost levels with vanilla's files alone when its build folder was gone | testbed/ledger | live | downsize_telemetry.mjs --mod-path; misplaced_capital run-folder groups |
 | 2026-11-08 | "socialism: Inception": vanilla's loc line for Socialism ends in a comment, so the tree twin recorded the key as the name | build/emitters | live | emit_research_events.mjs techName; the extractors |
 | 2026-10-29 | the report gate's browser check left 45 headless Edge processes running: Edge's launched process hands off to another | testbed/ledger | live | fill_verify.mjs layout check cleanup |
 | 2026-10-28 | a new preflight check passed when run by hand and threw inside the scheduler: StrictMode 2.0 is inherited | testbed/preflight | live | every Test-Lm* run under the scheduler's StrictMode |
@@ -149,6 +150,24 @@ appended oldest first after the July ones); no entry's text changed.
    format numbers with `InvariantCulture`. Three separate bugs below share this one root.
 
 ---
+
+## 2026-11-12 — the downsizing reader would have priced a mod run's lost levels with vanilla's files alone
+
+**Symptom.** None published. Filling the ledger of `20261109_005943_g115-alt-canon24-vanilla24` (runs 1–20), the mod runs' build folder that
+`build_state.json` records (`mod_sched_canon`) no longer existed: the scheduler deletes it at the end of a schedule, and the next build
+overwrites it.
+
+**Root cause.** `downsize_telemetry.mjs` reads the jobs per level and the construction cost of every building from the run's built mod layered
+over vanilla's files. `scriptFiles()` skips a mod folder that does not exist (`existsSync(mdir) ? … : []`), so the reader went on with vanilla's
+files alone, which define none of the rungs: their methods' jobs count 0 (one summary warning line) and their costs are missing. The levels
+lost, which come from telemetry, stay right; the "possible workforce" and "capital destroyed" lines would have dropped the whole ladder.
+F264 met the same gap and rebuilt the folder by hand before reading.
+
+**Fix.** A config run whose recorded build folder is gone now throws, unless `--mod-path <dir>` names a build of the same book on the same game
+version (`fill_ledger.sh` passes `DOWNSIZE_MOD_PATH`); the substitution is printed. The same fill also fixed `misplaced_capital.mjs --batch`
+for a group of `<session>/runNNN` folders (its spec was path-joined and split back at the last `/`; a documented trap until then).
+
+**Next time.** A reader that layers two sources prints or throws when one is missing (CLAUDE.md §2.12): a skipped layer is a silent skip.
 
 ## 2026-11-08 — "socialism: Inception": a vanilla loc line that ends in a comment
 

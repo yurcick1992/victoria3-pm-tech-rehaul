@@ -63,8 +63,12 @@ console.log(`\nchain done: ${b('jex-dam4s-rs-x25-m10ac')}`);
 //   (three dam trait descriptions); the 2026-10-27 urban-centre script value (four condition entries, pmr_cv_urban) and the record rename.
 // ⚠ game_defines and vanilla_value_overrides carry vanilla anchors of the version the canon was built on: a new game version owes them a
 //   check against its own files (ON_GAME_UPDATE §1) — the replay copies the rulings, it does not re-read vanilla for them.
+// The hand steps come from the 1.0 canon, the book whose chain this replays (`--hand-from`). Until 2026-11-12 they were read from
+// config/mod_config.json, which was the 1.0 canon when g115c was replayed; since the 1.15 canon took its place, that file already
+// carries the 1.15 steps (vanilla_value_overrides with the research adds), and the 1.15 steps then refuse to apply twice.
 {
-  const canonRaw = readFileSync('config/mod_config.json');
+  const HAND_FROM = opt('--hand-from', 'config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json');
+  const canonRaw = readFileSync(HAND_FROM);
   const canon = JSON.parse(canonRaw.toString('utf8'));
   const j = JSON.parse(readFileSync(b('jex-dam4s-rs-x25-m10ac'), 'utf8'));
   j.dams.private = canon.dams.private;
@@ -81,7 +85,8 @@ console.log(`\nchain done: ${b('jex-dam4s-rs-x25-m10ac')}`);
     j[r] = canon[r];
   j._replay = { name: `${P}-canon`, command: `node tools/replay_canon_chain.mjs ${argv.join(' ')}`, game: GAME, game_version: gameVersion,
     canon_sha256: createHash('sha256').update(canonRaw).digest('hex').slice(0, 16),
-    rule: 'the canon\'s recorded chain re-run on this game; the hand steps copied from the canon (game_defines and vanilla_value_overrides unchecked against this game by the replay)',
+    hand_from: HAND_FROM,
+    rule: 'the canon\'s recorded chain re-run on this game; the hand steps copied from the 1.0 canon (game_defines and vanilla_value_overrides unchecked against this game by the replay)',
     generated: new Date().toISOString() };
   // keep the canon's key order, so the two books read side by side
   const ordered = {}; for (const k of Object.keys(canon)) if (k in j) ordered[k] = j[k]; for (const k of Object.keys(j)) if (!(k in ordered)) ordered[k] = j[k];

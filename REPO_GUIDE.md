@@ -620,6 +620,13 @@ All take `-Repo` / `-Game` / `-Config` where relevant and are run by `build.ps1`
   §10.97), or redefines one of its eight keys in a file of its own. `node tools/lint_protected_vanilla.mjs [--mod dir] [--game dir]`. Status:
   current (build step after `lint_vanilla_names`, 2026-11-08); proven on four sabotaged copies, one per check. Traps: a patch that moves the
   chain stops the build on purpose — re-read the chain, then update the lists at the top.
+- **`tools/lint_data_functions.mjs`** — landmine L51: every data-system function name in a `[...]` chain (the generated telemetry, the built
+  mod's English localization and `zzz_pm_rehaul` script) must be registered by the installed `victoria3.exe`.
+  `node tools/lint_data_functions.mjs --exe <victoria3.exe> [--text <file> …] [--mod <dir>]`. Run by `preflight.ps1` (`Test-LmL51`, repo-side) on the
+  telemetry batches use (every metric but `*_probe`) and on `mod/`. Traps: the exe inlines short names as 8-byte immediates, so a name is
+  matched whole or as its 8-character chunks in order; a removed name that lives on inside a longer one passes. Lint GENERATED telemetry, never
+  `telemetry_lib.ps1`'s source (its names are built from PowerShell variables; a `$` group is declined and counted). Written 2026-11-12
+  (GAME_UPDATE_1_15_1 V18).
 - **`tools/lint_vanilla_names.mjs`** — every vanilla name our emitted `zzz_pm_rehaul*` script and `01_pm_rehaul_defines.txt` use (laws,
   regions, building and ship types, technologies, on-actions, journal entries, triggers, effects, event targets, modifier types, icons)
   resolves against the game it is built for; an unresolved token prints with its first file and line, and the exit code is 1 unless it is
@@ -872,6 +879,17 @@ stale output except under `common/history`, which an emitter writing there must 
   fraction of the penalised cost). Appended last (ai_weight evaluates top to bottom), `add` not multiply (the ahead-of-time divisor applies
   outside it); owns all three vanilla technology files when on. Throws on a doubled or misnamed boost, a conditional `can_research`, the
   retired `diag` / `unresearchable` keys. `force_test` is a probe-only A/B (`testbed/ledger/finish_force.mjs`). Status: current. Refs: F160.
+  It also applies the book's `tech_ai_weights` (§10.111.3) in the same pass, before the boost: each listed technology's ai_weight block is
+  replaced by its recorded old block, after asserting the installed game's block is the recorded `vanilla` one; it throws on a listed
+  technology with no research entry, one the tree lacks, or a book that lists weights with the finish boost off.
+- **`tools/make_tech_ai_weights_config.mjs`** — `node tools/make_tech_ai_weights_config.mjs --base <book> --suffix <new> --old-game <old game
+  dir> [--game <game dir>] [--mod <base's build>] [--keep <tech,...>]`: writes `tech_ai_weights` (the old game's ai_weight block of every
+  technology with a research entry whose block changed, and the installed game's) and `_tech_ai_weights_variant` (command, restored, kept by
+  ruling, kept for want of an entry). Reads the research entries from the base book's BUILD (`mod/` only when the base is byte-identical to
+  the canon, else `--mod`), the blocks from both games' technology files. `--keep` names technologies with an entry kept at the installed
+  game's weight by ruling, and throws on one the rule would not restore. The canon's step: `--old-game C:/claude-code/vic3_game_1.13.11/game
+  --game C:/claude-code/vic3_game_1.15.1/game --keep central_archives,egalitarianism,general_staff,nationalism,rifling` (six restored).
+  Prints every declined technology. Status: current (GAME_UPDATE_1_15_1 Q8). Refs: BALANCE_FRAMEWORK §10.111.3.
 - **`tools/emit_companies.mjs`** — the company chain extension: every vanilla `company_types` reference to a tiered industry becomes the whole
   chain (type lists expanded, `is_building_type` / `has_building` formation tests OR-wrapped, game 1.15's `has_building_levels_in_state_region`
   formation tests copied once per rung inside an OR (each rung alone must hold the levels, as the `is_building_type` wrap reads; 59 on 1.15),
@@ -974,13 +992,18 @@ The canon's chain, read from its records: `tier4-e1` (make_tier4_config `--deriv
 hand: `dams.private = all`, `game_defines` (monopoly threshold 0.99), the 2026-10-21 polish keys. ⚠ Intermediate books on disk may carry
 stale tree twins; re-run the chain from its root rather than one step. **`tools/replay_canon_chain.mjs` runs exactly this chain** (below).
 
-- **`tools/replay_canon_chain.mjs`** — `node tools/replay_canon_chain.mjs --prefix <p> [--game <game dir>]`: re-runs the canon's chain above on
-  the named game (default `$VIC3_GAME` or the Steam path), every book under `config/mod_config.<p>-*.json`, then applies the canon's hand steps
-  copied from `config/mod_config.json` (dams.private, the dam trait descriptions, building_subsidies, game_defines, secondary_goods_override,
+- **`tools/replay_canon_chain.mjs`** — `node tools/replay_canon_chain.mjs --prefix <p> [--game <game dir>] [--hand-from <book>]`: re-runs the
+  1.0 canon's chain above on the named game (default `$VIC3_GAME` or the Steam path), every book under `config/mod_config.<p>-*.json`, then
+  applies the 1.0 canon's hand steps copied from `--hand-from` (default `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`, the 1.0
+  canon; until 2026-11-12 `config/mod_config.json`, which was that book when g115c was replayed — since the 1.15 canon replaced it, its
+  research adds made the 1.15 step refuse to apply twice) (dams.private, the dam trait descriptions, building_subsidies, game_defines, secondary_goods_override,
   vanilla_value_overrides, the four urban-centre condition entries, pmr_cv_urban, marks_whole_levels, the inherited records) and writes
   `config/mod_config.<p>-canon.json` + twin in the canon's key order with `_replay` (command, game version, the canon's sha256 prefix).
   ⭐ Proven 2026-11-08: `--prefix r113 --game C:\claude-code\vic3_game_1.13.11\game` reproduces the canon field for field (`book_diff --ignore _`:
-  0 differences). Traps: the hand steps COPY rulings, so `game_defines` and `vanilla_value_overrides` keep the canon's vanilla anchors — a new game
+  0 differences). **The 1.15 canon is this replay plus four recorded steps** (`_method_variants_variant`, `_dam_inputs_variant`,
+  `_value_overrides_variant`, `_research_conditions_variant`, run in that order on `<p>-canon`): the 1.15.1 regeneration of 2026-11-12 is
+  `--prefix g1151` and those four commands with `g1151` names (GAME_UPDATE_1_15_1 V19); **the 1.15.1 canon adds a fifth**,
+  `_tech_ai_weights_variant` (`make_tech_ai_weights_config.mjs`, which needs the fourth step's book BUILT first, §10.111.3). Traps: the hand steps COPY rulings, so `game_defines` and `vanilla_value_overrides` keep the canon's vanilla anchors — a new game
   version owes them a check (ON_GAME_UPDATE §1 step 5); a maker that changes breaks the proof, so re-prove on the old game after any maker edit.
   Status: current (the 1.15 pass). Refs: CLAUDE.md §4.4, GAME_UPDATE_1_15.md.
 - **`tools/book_diff.mjs`** — `node tools/book_diff.mjs <bookA> <bookB> [--ignore <prefix>] [--only <prefix>] [--max n] [--json]`: the field
@@ -1462,7 +1485,7 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   the quarterly count and the miss depends on how fast buildings empty; summaries do not carry the fields, and a batch deletes its saves
   once summarised, so past batches cannot be read (only kept saves: `saves_debut`, quarantined and newest saves). Refs: F260.
 - **`ledger/downsize_telemetry.mjs`** `<label>=<group>[:<setup>] [...] [--list] [--types N] [--from Y] [--to Y] [--config <book>]
-  [--json <out>]` — auto-downsizing read
+  [--mod-path <dir>] [--json <out>]` — auto-downsizing read
   from the telemetry poll (v15 `downsizing`, on in every telemetry run; TESTBED_METRICS §2.4¾): per run the VOLUME first (every level
   lost on a tracked building), then the auto-downsizing drops and their private levels, the polls read and the buildings tracked; every
   drop by reason (auto; government levels fell; no private level lost; too fast, > 5 levels between monthly polls), with the last-level
@@ -1475,7 +1498,9 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   method, mapped by `--config`), possible workforce and construction points beside them, world and shortlist, with gold fields, auto-scaling
   and non-economic buildings left out of every measure and a 1 January poll counted in the year before; `--json` feeds the ledger. Traps: the
   like-for-like measures read the runs' built mod (the scheduler's `mod_sched_*` folder, overwritten by the next batch) and vanilla's files from
-  `VIC3_GAME` (after a game patch, point it at a copy of the batch's version); a DZ line before 2026-11-08 names the country by display name,
+  `VIC3_GAME` (after a game patch, point it at a copy of the batch's version); since 2026-11-12 a config run whose recorded build folder is
+  gone THROWS unless `--mod-path <dir>` names a build of the same book on the same game version (`fill_ledger.sh` passes `DOWNSIZE_MOD_PATH`)
+  — before, it fell back to vanilla's files alone, which know none of the rungs, and printed only that their methods' jobs count 0; a DZ line before 2026-11-08 names the country by display name,
   placed in the shortlist by the game's name tables (base and dynamic names) — a revolution under a shortlist name counts with it, unplaced
   names are printed; a later line's `tag=` places it exactly. Refs: F261, §10.107.
 - **`ledger/fill_downsizing.mjs`** `<outDir>` — the ledger's downsizing section (§10.107.6): from `downsize.json` writes
@@ -1519,8 +1544,8 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   sector; in vanilla their vanilla buildings), the gross rate inside the tiered industries and inside mines + agriculture, and each
   side's gross capital as a share of ALL new capital (the two sum to the first); per decade as the median over runs, the century as the
   median and pooled (capital-weighted), and the like-for-like decade pooled; the same keys in the JSON under `split` (`decades`,
-  `century`, `century_pooled`, `like_for_like_pooled`). Traps: `--batch` takes whole sessions (a group of `<session>/runNNN` items breaks
-  the path join); decade labels read `1836-46` for the steps from 1836.1.1 to 1846.1.1 (F262's table printed the same decades as
+  `century`, `century_pooled`, `like_for_like_pooled`). Traps: until 2026-11-12 `--batch` took whole sessions only (a group of
+  `<session>/runNNN` items broke the path join); since then the group goes to `lib_runs` as given, so run-folder groups work; decade labels read `1836-46` for the steps from 1836.1.1 to 1846.1.1 (F262's table printed the same decades as
   `1836–45`). A reading, not a register term; the ledger shows it mod only (§10.104.1). Refs: §10.92, F206, F207, F262.
 - **`ledger/obsolete_construction.mjs`** — obsolete construction (GLOSSARY): the share of new tiered capacity (construction points,
   levels, job slots) added to a building while, at the start of that year, the same country holds the technology of a higher-tier

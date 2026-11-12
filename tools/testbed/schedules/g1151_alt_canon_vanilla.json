@@ -1,0 +1,54 @@
+{
+  "schedule_version": 1,
+  "label": "g1151-alt-canon-vanilla",
+  "_why": "MOD 1.1.1 AGAINST VANILLA 1.15.1, ALTERNATING 1:1 (odd runs mod, even runs vanilla, as the 24 vs 24 batch), 1836→1936, until Sunday morning 2026-11-15. The user, 2026-11-12: \"Prepare the mod 1.1.1 for 1.15.1 … After creating it, we'll start a new batch of 1.1.1 mod vs 1.15.1 vanilla, scheduled to end Sunday morning.\" Q1: \"yes, and let's start measuring it\". The run list is longer than the window: tools/testbed/no_new_runs_at.ps1 drops NO_NEW_RUNS at 2026-11-15 06:00 local, so the last run ends around 09:30 (about 12 + 12). Vanilla 1.15.1's run 22 of 20261109_005943 is glued to this batch's vanilla arm for every reading except the wall clock (the user, 2026-11-12). The first run's smoke check is the post-patch smoke test (ON_GAME_UPDATE §1 step 9; GAME_UPDATE_1_15_1 Q3).",
+  "_arms": {
+    "canon": "{kind: config, config: config/mod_config.g1151-canon-bz-dcu-ra-il.json} - the 1.15.1 canon's named copy (mod 1.1.1), sha256 c1274f151e69c630 (tree twin 2928a5bf79758281), byte-identical to config/mod_config.json; the DEBUG build by the emitters at launch; telemetry v17 (the market's trade capacity, GAME_UPDATE_1_15_1 V18); save summaries v20.",
+    "vanilla": "{kind: control} - vanilla 1.15.1 + telemetry v17 and nothing else."
+  },
+  "_comparison": "The canon against this batch's vanilla through criteria.mjs --van <this session>:vanilla plus 20261109_005943/run022_vanilla (glued; never in the wall clock), the register in full, its absolute lines read as they are (re-basing them on 1.15 is unruled, GAME_UPDATE_1_15 Q12). Vanilla 1.15.1 against vanilla 1.15.0 (20261109_005943 runs 2-20, n=10) as the version reading; the canon on 1.15.1 against the canon on 1.15.0 (the same runs, n=10, F269) for what the hotfix did to the mod. Readings: misplaced capital; downsizing in levels by tier; the dams (who builds, levels, subsidies paid: §10.111.2); the technology census; red flags (copper above all, after 1.15.1's copper pass); play time with wall_clusters, this session only.",
+  "_predictions": {
+    "vanilla_1151_vs_1150": "Vanilla's AI now picks methods counting new jobs' wages and goods multipliers, and no longer avoids electrical methods (GAME_UPDATE_1_15_1 V22): vanilla modernises by switching, so its world GDP ends at or above 1.15.0's (direction argued; magnitude unknown, within ±10% expected), with more electricity produced and a lower copper price (more deposits, less copper per telephone and still). Pooled U* stays under 10% in most vanilla runs.",
+    "canon_vs_vanilla": "The canon's world-GDP ratio to vanilla ends lower than on 1.15.0 (F269: 1.07× over all ten): vanilla gains more from a better method switch than the mod, whose modernisation is construction. Argued direction only; expected 0.95-1.05× over all runs. W stays under vanilla's; misplaced capital stays above vanilla's.",
+    "dams": "No profitable dam is subsidised now; subsidies do not drive the dams' construction, so dam levels built stay within the seed spread of 1.15.0's (direction: unchanged).",
+    "absolute_lines": "Most runs of both arms still cross the 1.13-calibrated runoff line, as in F269."
+  },
+  "_stop_rule": "None: a fixed-window batch plays every run it starts (no stop watcher).",
+  "_cost": "About 3 h 10 min a run (F269: 189 minutes canon, 181 vanilla, plus the build and the harvest): 24 runs or so between the launch on 2026-11-12 and the NO_NEW_RUNS deadline at 2026-11-15 06:00 local.",
+  "_launch_checklist": [
+    "The user's explicit go-ahead for this batch (CLAUDE.md §5.1 rule 4).",
+    "tools/testbed/STOP removed (left by the stop of 20261109_005943; it stops ANY session).",
+    "No game running (L19); no emitter, build.ps1 or tools/testbed/** edit while it plays (L10).",
+    "Launch through tools/testbed/launch_detached.ps1 called directly from the PowerShell tool (L30); confirm the session folder within a minute; start the background waiter; drop the deadline with no_new_runs_at.ps1 -At '2026-11-15 06:00' (detached, -Hidden).",
+    "Smoke check at about seven minutes into every run: the init marker and no WARN (canon), DLC (L50) ok, zero GetCountryTradeCapacity lines (V18 verified), the run's own error classes.",
+    "Remind the user on Sunday: Steam's per-game setting 'Only update this game when I launch it' (GAME_UPDATE_1_15_1 Q4)."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "canon": { "kind": "config", "config": "config/mod_config.g1151-canon-bz-dcu-ra-il.json" },
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "canon", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" }
+  ]
+}

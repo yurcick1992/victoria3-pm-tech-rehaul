@@ -1,7 +1,7 @@
 # PM & Tech Rehaul — Victoria 3 mod
 
 An economic-realism mod for **Victoria 3**. Mod 1.0 shipped on game 1.13 ("Matcha", 2026-10-30); mod 1.1 is built on game 1.15 ("Ivan-Chai"),
-where the canon has been since 2026-11-08 (Part 4). Players see it as **No Free Upgrades: An industrial realism overhaul** (the name in `mod/.metadata/metadata.json` and the public files'
+where the canon has been since 2026-11-08, and mod 1.1.1 on game 1.15.1 since 2026-11-12 (Part 4). Players see it as **No Free Upgrades: An industrial realism overhaul** (the name in `mod/.metadata/metadata.json` and the public files'
 titles since 2026-10-29; the Workshop item's title is set on its Steam page). "PM & Tech Rehaul" is the working name and lives on in every identifier — the folder
 `pm_tech_rehaul`, the id `com.yurcick.pm_tech_rehaul`, the `PM_TECH_REHAUL` log markers — which stay so subscribed playsets keep working. This repository holds the mod's generator (`config/` + `tools/`), the generated mod (`mod/`), a balance editor (`ui/`), a
 headless measurement harness (`tools/testbed/`) and the design record (the `.md` files).
@@ -80,8 +80,9 @@ Power becomes a real input with a supply that has to be built:
   Dam, Great Mountain Scheme, Great River Dam — of 300 or 600 electricity a level, each level built within five years, on the state's own dam
   slots. A site is surveyed first (a bureaucracy cost and the first level's technology): a survey by the owner's own family of countries opens
   it to that family, one by an outside investor only to that investor. Governments and private investors with construction rights (the owner,
-  its overlords, holders of investment rights) build; the AI always subsidises them (the building group's `subsidized` flag acts only at game
-  start, so a player's dams are not subsidised automatically); some add arable land or end an irrigation penalty. Vanilla's hydro-themed state
+  its overlords, holders of investment rights) build; every AI strategy lists them `must_have` for subsidies, which since game 1.15.1 is a
+  ceiling: the AI subsidises a dam only while it loses money and its electricity is needed (§10.111.2); like vanilla's infrastructure since
+  game 1.15.1, the dams' building group is not subsidised by default, so a player's dams are not subsidised automatically (§10.111.5); some add arable land or end an irrigation penalty. Vanilla's hydro-themed state
   traits lose their electricity bonuses, which the dams replace (Dalmatia's Krka Falls has no dam and gets nothing back: no state trait
   boosts every source of electricity, §10.110.2). (§10.89)
 
@@ -103,6 +104,9 @@ Power becomes a real input with a supply that has to be built:
   chemical industries (Antibiotics) each advance their own technologies. (§10.98)
 - **The AI schools its people like a player would, and finishes a technology it has nearly paid for.** With the entries, the technology majors
   still gain 0.94–0.97 of vanilla's technology by 1935 (F227, F247).
+- **The AI's research weights are vanilla's,** except on six technologies the research entries already pull (combustion engine, electrical
+  generation, oil turbine, percussion caps, radio, telephone): they keep game 1.13.11's weights, without the general pushes 1.15.1 added.
+  The pushes vanilla 1.15 tied to its own story content (Russia's Tsar-points entries, Italy) stay (§10.111.3).
 
 ### Trade
 
@@ -452,6 +456,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.108 | copper (mod 1.1): the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights stay exactly as in 1.0 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery: a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2) | in force (the canon since 2026-11-08) |
 | 10.109 | the game 1.15 pass rulings, one per question of GAME_UPDATE_1_15 phase 5: .1 the two new flat research adds ×1/3; .2 vanilla's journal-entry-conditional AI desire carried onto every non-craft rung (L47); .3 the contagious-ideas entries follow 1.15's laws; .4 crafts out of 1.15's new level counts, by native counts; .5 the 1.15 canon; canonisation declares the main line, not a quality stamp; .6 detectors L48 (level counts that see crafts) and L49 (dropped building fields), the negotiation promise crafts out; .7 the 1.15 wage rebalance measured first | in force (the canon since 2026-11-08; .2 and .4 are build steps) |
 | 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 around 2026-12-20: major changes, extraction first, revisiting §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed; a bonus to hydro alone is allowed, none planned); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark; .4 copper scarcity follows Paradox | .1 the plan (ROADMAP); .2 and .4 in force; .3 for 1.2, not built |
+| 10.111 | game 1.15.1, mod 1.1.1: .1 the 1.15 chain replayed on 1.15.1 (field diff = the telephone rung's three inputs, value-neutral); .2 the dams stay `must_have` for subsidies, a ceiling under 1.15.1's rule, measured; .3 the AI research weights back to 1.13.11 on six technologies with research entries, five content-tied pushes kept (the canon); .4 the AI's new goods stances kept; .5 the dams' `subsidized` flag follows vanilla, infrastructure subsidies watched; .6 the Armed Forces' asset count left as vanilla | in force (the canon since 2026-11-12) |
 
 ---
 
@@ -608,15 +613,23 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 ## 4.1 What it is
 
 **`config/mod_config.json` + `config/tech_tree_options.json` are verbatim copies of the named book
-`config/mod_config.g115c-canon-bz-dcu-ra-il.json` + `config/tech_tree_options.g115c-canon-bz-dcu-ra-il.json`** — sha256 prefix
-**`a52b0acacd6b6b6e`** (the tree twin `db96307af17c22ee`), canonised 2026-11-08 on game 1.15.0 (§10.109.5; GAME_UPDATE_1_15.md Q1): the 1.0
-canon's recorded chain replayed on game 1.15 (`tools/replay_canon_chain.mjs --prefix g115c`, proven to reproduce the 1.0 canon field for field on
-1.13.11) + bronze artillery (§10.108.2) + dam copper (§10.108) + copper in trade class C (§10.108.3) + game 1.15's two new flat research adds ×1/3
-(§10.109.1) + the idea entries' 1.15 laws (§10.109.3). Its field diff against the 1.0 canon: copper in the five rungs where vanilla 1.15 puts it,
-value for value; the two bronze variants; copper's traded quantity 12; `dams.inputs_per_50`; two `vanilla_value_overrides`; two idea-entry
-labels and the monthly global effect — nothing else. `mod/` and the deployed copy are its default (debug) build. Verify with
-`sha256sum config/mod_config.json`. One century so far, beside one vanilla 1.15 century (F268, n=1 each); the first 1.15 probe (F265, n=1
-to 1856) ran its candidate before Q2/Q6/Q9, and without any DLC (F266).
+`config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json` + `config/tech_tree_options.g1151-canon-bz-dcu-ra-il-aw.json`** — sha256 prefix
+**`697d4869aefc3225`** (the tree twin `2928a5bf79758281`), canonised 2026-11-12 on game 1.15.1 as **mod 1.1.1** (§10.111.1, §10.111.3;
+GAME_UPDATE_1_15_1.md Q1, Q8): the 1.15 canon's chain replayed on 1.15.1 (`tools/replay_canon_chain.mjs --prefix g1151`, then the four recorded 1.15
+steps, giving `g1151-canon-bz-dcu-ra-il`, `c1274f15`, never measured), then the AI-weights step (`tools/make_tech_ai_weights_config.mjs`, its
+record `_tech_ai_weights_variant`; it reads the research entries from the base book's build). Its field diff against the 1.15 canon: the electrics
+t2 rung's iron, copper and tools, following vanilla 1.15.1's telephone recipe, value-neutral, and `tech_ai_weights` (six technologies' 1.13.11
+weights) — nothing else. `mod/` and the deployed copy are its default (debug) build. Verify with `sha256sum config/mod_config.json`. Not yet
+measured; the Workshop still carries mod 1.1.0 until the user uploads the 1.1.1 release build.
+
+**The 1.15 canon** (mod 1.1, game 1.15.0; canonised 2026-11-08, kept as the record) is `config/mod_config.g115c-canon-bz-dcu-ra-il.json`, sha256
+**`a52b0acacd6b6b6e`** (tree twin `db96307af17c22ee`; §10.109.5; GAME_UPDATE_1_15.md Q1): the 1.0 canon's recorded chain replayed on game 1.15
+(`tools/replay_canon_chain.mjs --prefix g115c`, proven to reproduce the 1.0 canon field for field on 1.13.11) + bronze artillery (§10.108.2) + dam
+copper (§10.108) + copper in trade class C (§10.108.3) + game 1.15's two new flat research adds ×1/3 (§10.109.1) + the idea entries' 1.15 laws
+(§10.109.3). Its field diff against the 1.0 canon: copper in the five rungs where vanilla 1.15 puts it, value for value; the two bronze variants;
+copper's traded quantity 12; `dams.inputs_per_50`; two `vanilla_value_overrides`; two idea-entry labels and the monthly global effect — nothing
+else. Measured by F268 (n=1 each) and by `20261109_005943` runs 1–20 (10 + 10 centuries on 1.15.0); its release build, mod 1.1.0, is commit
+`8cbe4a0`. The first 1.15 probe (F265, n=1 to 1856) ran its candidate before Q2/Q6/Q9, and without any DLC (F266).
 
 **The 1.0 canon** (mod 1.0, game 1.13.11; canonised 2026-10-21, kept as the record) is `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`,
 sha256 **`9a05d36da42c1511`** (tree twin `04ac513168388956`): the polish rulings (§10.102), the R4 proofread's text and the urban-centre entries'
@@ -650,9 +663,23 @@ What §1.2 and §1.3 leave out:
   administrative strategy.
 - **Trade and defines:** the five-class traded-quantity table at ×1 (F159 §7), copper in class C (§10.108.3); `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99`.
 
-## 4.2 Where it stands (2026-11-08)
+## 4.2 Where it stands (2026-11-12)
 
-- **The 1.15 canon** (game 1.15.0, since 2026-11-08) has run ONE century, beside one vanilla 1.15 century the same evening (F268, session
+- **The 1.15.1 canon** (mod 1.1.1, `697d4869`, since 2026-11-12) has not been measured yet: its 10 vs 10 batch against vanilla 1.15.1,
+  vanilla first, launched 2026-11-12 (`tools/testbed/schedules/g1151_alt_vanilla_canon10.json`; ends around 2026-11-15). The first launch,
+  on `c1274f15`, was stopped at its run 1 when Q8 changed the build.
+- **The 1.15 canon on game 1.15.0** (mod 1.1): ten alternating centuries against ten of vanilla 1.15.0 (F269; `20261109_005943` runs 1–20, the
+  48-run batch cut short by the 1.15.1 update; the report is the ledger artifact `YZzc1yM9aa8gSzxWevfDh1`).
+  - **Every vanilla run and six of ten mod runs cross the register's 1.13-based runoff line** (pooled U* under 10%; vanilla's pooled U* is
+    2.6%), and the broken mod runs are its six richest worlds, so the consensus reads only the four poorer intact runs.
+  - **The canon against vanilla 1.15.0:** world GDP 0.98× on the consensus, 1.07× over all ten (0.91–1.32); the path bottoms at 0.84× in 1906
+    (1886: 0.94); W 0.85× (world) and 0.87× (shortlist); U* 39.9% against 30.0% (world) and 15.5% against 2.6% (shortlist; 7.7% over all ten);
+    PI 0.91× (not falling every decade), PP 0.96×; T0 at 1935 0.20 of its 1900s level; T3 27.3% of tiered workers; loss 6.43.
+  - **Readings:** play ×1.044 (189.2 against 181.3 minutes); misplaced capital 23.4% against vanilla's 18.9%; red flags 190 against 163.5
+    problem market-years; Britain 165 technologies against 170 (military 44 against 54).
+  - **Re-basing the register's absolute lines** on a 1.15 reference is unruled (GAME_UPDATE_1_15 Q12 / U60); vanilla 1.15 ends at 1.29× vanilla
+    1.13's world GDP.
+- **The 1.15 canon's first century** (game 1.15.0, 2026-11-08) ran beside one vanilla 1.15 century the same evening (F268, session
   `20261108_163746_g115-alt-canon1-vanilla1`; directional, n=1 each).
   - **Vanilla 1.15 against 1.13:** world GDP 1.18×; the shortlist's U* 4.1% against 19%, so vanilla 1.15 itself reads "broken by runoff" on the
     register's absolute 10% line; literacy and the early shortlist hoard sit outside the 1.13 seed spread.
@@ -727,7 +754,8 @@ One line per canon; the reasons are in the § named. The files of every former c
 | 10-16 | `jex-dam4s-rs-x25-dpriv` | + private dam construction | 10.89.14 |
 | 10-16 → 10-21 | `jex-dam4s-rs-x25-m10ac-dpriv` | engines unlifted, conditional merge-host desire | 10.101, 10.91.2 |
 | 10-21 → 11-08 | `jex-dam4s-rs-x25-m10ac-dpriv-wm99` | world-market monopoly threshold 0.99; the polish rulings — **mod 1.0** (game 1.13) | 10.102 |
-| 11-08 → | `g115c-canon-bz-dcu-ra-il` | the 1.0 chain replayed on game 1.15 (copper in five rungs, as vanilla) + bronze artillery + dam copper + copper trade class C + 1.15's research adds ×1/3 + the idea entries' 1.15 laws — **mod 1.1** (game 1.15) | 10.108, 10.109 |
+| 11-08 → 11-12 | `g115c-canon-bz-dcu-ra-il` | the 1.0 chain replayed on game 1.15 (copper in five rungs, as vanilla) + bronze artillery + dam copper + copper trade class C + 1.15's research adds ×1/3 + the idea entries' 1.15 laws — **mod 1.1** (game 1.15.0) | 10.108, 10.109 |
+| 11-12 → | `g1151-canon-bz-dcu-ra-il-aw` | the same chain replayed on game 1.15.1: the telephone rung follows vanilla's new recipe (value-neutral); the AI research weights of six technologies with research entries back to 1.13.11's — **mod 1.1.1** (game 1.15.1) | 10.111 |
 
 ⚠ **Returning to the pre-artmerge family would need the performance changes reimplemented** — those books carry neither tick-cost fix (resource-slot
 dams, `dams.layout = resource4`; trigger-placed research entries, `research_events.placement = script`; F220/F221).

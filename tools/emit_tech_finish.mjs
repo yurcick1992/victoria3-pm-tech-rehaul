@@ -44,6 +44,14 @@ const die = msg => { throw new Error('emit_tech_finish: ' + msg); };
 if (FB && ('diag' in FB || 'unresearchable' in FB))
   die(`finish_boost carries 'diag'/'unresearchable', keys of the RETIRED JE-stage form (commit 11a5b90, FINDINGS F160). ` +
     `The flat form takes { enabled, threshold, add } only — rebuild such a probe config from that commit if it must be reproduced.`);
+// THE RESTORED AI WEIGHTS (`tech_ai_weights`, BALANCE_FRAMEWORK §10.111.3; written by tools/make_tech_ai_weights_config.mjs): for each listed
+// technology the installed game's ai_weight block must still be the one the book recorded (else vanilla moved it since: re-run the maker and
+// re-rule), and it is replaced by the recorded old block (null = none: the engine's default weight 1). Only technologies with a research
+// entry may be listed (the rule is "where we have a JE"). Applied here because this pass already rewrites every technology's ai_weight in
+// all three vanilla files, after the research entries are emitted.
+const AWT = CFG.tech_ai_weights?.techs || {};
+if (Object.keys(AWT).length && (!FB || (!FB.enabled && !FB.force_test)))
+  die('tech_ai_weights is applied in the finish-boost pass, which is off in this book - enable research_events.finish_boost or move the restore');
 if (!FB || (!FB.enabled && !FB.force_test)) { console.log('tech finish: off (research_events.finish_boost absent or not enabled) - nothing emitted'); process.exit(0); }
 if (!(typeof FB.threshold === 'number' && FB.threshold > 0 && FB.threshold <= 1)) die(`finish_boost.threshold must be a fraction in (0, 1] (got ${FB.threshold})`);
 if (!(typeof FB.add === 'number' && FB.add > 0)) die(`finish_boost.add must be a positive number (got ${FB.add})`);
@@ -88,6 +96,28 @@ const files = {};
 for (const f of readdirSync(VDIR).filter(x => x.endsWith('.txt'))) files[f] = { text: read(join(VDIR, f)), owned: false };
 if (existsSync(MDIR)) for (const f of readdirSync(MDIR).filter(x => x.endsWith('.txt'))) files[f] = { text: read(join(MDIR, f)), owned: true };
 
+const RJE = join(MOD, 'common/journal_entries/zzz_pm_rehaul_research.txt');
+const withEntry = existsSync(RJE) ? new Set([...read(RJE).matchAll(/possible\s*=\s*\{\s*can_research\s*=\s*([a-z_0-9-]+)\s*\}/g)].map(m => m[1])) : new Set();
+const normAW = s => s == null ? null : s.replace(/#[^\n]*/g, '').replace(/\s+/g, ' ').trim();
+const awDone = [];
+function restoreAiWeight(txt, b) {              // returns the new text; b.close is moved by the length change
+  const rec = AWT[b.key];
+  if (!withEntry.has(b.key)) die(`tech_ai_weights restores ${b.key}, which has no research entry in ${RJE} - the rule is technologies with an entry only`);
+  const aws = children(mask(txt), b.open + 1, b.close).filter(c => c.key === 'ai_weight');
+  if (aws.length > 1) die(`${b.key} has ${aws.length} ai_weight blocks`);
+  const ls = aws.length ? txt.lastIndexOf('\n', aws[0].open) + 1 : -1, end = aws.length ? aws[0].close + 1 : -1;
+  const cur = aws.length ? txt.slice(ls, end) : null;
+  if (normAW(cur) !== normAW(rec.vanilla))
+    die(`${b.key}: the installed game's ai_weight is not the block tech_ai_weights recorded (vanilla moved it since, or tech_ai_weight_mult touched it) - re-run tools/make_tech_ai_weights_config.mjs and re-rule`);
+  let out;
+  if (aws.length) out = rec.old == null ? txt.slice(0, ls) + txt.slice(end).replace(/^\r?\n/, '') : txt.slice(0, ls) + rec.old + txt.slice(end);
+  else if (rec.old == null) out = txt;
+  else { const close = txt.lastIndexOf('\n', b.close) + 1; out = txt.slice(0, close) + rec.old + '\n' + txt.slice(close); }
+  b.close += out.length - txt.length;
+  awDone.push(b.key);
+  return out;
+}
+
 const seen = {};
 const researchable = new Set();
 let nBoost = 0, nSkip = 0;
@@ -97,7 +127,7 @@ for (const [f, F] of Object.entries(files)) {
   if (txt.includes(MARKER)) die(`${f} already carries the finish boost - it would be applied twice`);
   const m0 = mask(txt);
   const techs = children(m0, 0, m0.length).filter(b => b.key && /^[a-z_0-9-]+$/.test(b.key));
-  let n = 0;
+  let n = 0, r = 0;
   for (const b of techs.sort((a, c) => c.open - a.open)) {      // back to front, so earlier offsets stay valid
     if (seen[b.key]) die(`technology ${b.key} is defined in both ${seen[b.key]} and ${f}`);
     seen[b.key] = f;
@@ -108,6 +138,7 @@ for (const [f, F] of Object.entries(files)) {
       die(`${f}: ${b.key} has a CONDITIONAL can_research - decide whether it should be boosted before shipping`);
     if (cr && cr[1] === 'no') { nSkip++; skipped.push(b.key); continue; }
     researchable.add(b.key);
+    if (AWT[b.key]) { txt = restoreAiWeight(txt, b); r++; }
     if (!FB.enabled) continue;              // a force_test control arm: parse the tree, patch nothing
     const ins = `${T}${T}${MARKER} — its banked progress covers ${FB.threshold * 100}% of its cost: one tick of research completes it\n` +
       `${T}${T}if = {\n${T}${T}${T}limit = { has_technology_progress = { technology = ${b.key}  progress >= ${FB.threshold} } }\n` +
@@ -124,11 +155,16 @@ for (const [f, F] of Object.entries(files)) {
     txt = aw.length ? before(aw[0].close, ins, T) : before(b.close, `${T}ai_weight = {\n${T}${T}value = 1\n` + ins + `${T}}\n`, '');
     n++;
   }
-  if (n) {
+  if (n || r) {
     write(`common/technology/technologies/${f}`, txt);
-    console.log(`  ${f}: ${n} technologies boosted${F.owned ? '' : ' (file now OWNED - regenerated from vanilla)'}`);
+    console.log(`  ${f}: ${n} technologies boosted${r ? `, ${r} AI weight(s) restored` : ''}${F.owned ? '' : ' (file now OWNED - regenerated from vanilla)'}`);
     nBoost += n;
   }
+}
+{
+  const missing = Object.keys(AWT).filter(t => !awDone.includes(t));
+  if (missing.length) die(`tech_ai_weights lists ${missing.join(', ')}, which no researchable technology of the tree is`);
+  if (awDone.length) console.log(`tech AI weights: ${awDone.length} restored to ${CFG.tech_ai_weights.old_game} (${awDone.sort().join(', ')}); every other technology keeps ${CFG.tech_ai_weights.game}'s`);
 }
 const nTech = Object.keys(seen).length;
 if (nTech < 150) die(`only ${nTech} technologies parsed - the tree files moved or changed shape`);

@@ -72,7 +72,7 @@
 #       scope holds no variables); a level drop since the last poll prints DZ (levels and private levels before and after) +
 #       DZX (the engine's warning flag, the building id); DZM closes every poll. On by default through the scheduler's downsize
 #       feed (-NoDownsizeFeed drops it). `downsize_probe` = the same plus DZR, the memory's round trip (Get-DownsizeBlock).
-$script:TELEMETRY_VERSION = 16
+$script:TELEMETRY_VERSION = 17
 
 function Get-TelemetryVersion { return $script:TELEMETRY_VERSION }
 
@@ -1376,7 +1376,10 @@ $nm2 = {
 				debug_log = "V3TB|$Token|TEXP|$date|[THIS.GetCountry.GetNameNoFormatting]|$expL"
 				# Trade capacity comes off the MARKET, so no state/building iteration is needed.
 				# Trade-centre levels DO need it - that is the only sub-country scope here.
-				debug_log = "V3TB|$Token|TRADE|$date|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.GetMarket.GetCountryTradeCapacity(THIS.GetCountry.Self)]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_bld_tradecenter')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_lvl_tradecenter')]"
+				# Game 1.15.1 removed Market.GetCountryTradeCapacity(Country): the field is now the country's whole MARKET's
+				# capacity (Market.GetTradeCapacity, as 1.15.1's market panel reads it). A country's own capacity is in the
+				# save summaries (per state, summed per owner; TESTBED_METRICS 3.6).
+				debug_log = "V3TB|$Token|TRADE|$date|[THIS.GetCountry.GetNameNoFormatting]|[THIS.GetCountry.GetMarket.GetTradeCapacity]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_bld_tradecenter')]|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_lvl_tradecenter')]"
 			}
 "@
             $phaseBlocks[2] += $blocks; $blocks = ""   # treasury -> its own month
@@ -1426,9 +1429,9 @@ $nm2 = {
                 $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|TP|$date|$tag|TC|count|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_bld_tradecenter')]`""
                 $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|TP|$date|$tag|TC|capacity_sv|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_trade_capacity')]`""
                 $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|TP|$date|$tag|TC|employed_sv|[THIS.GetCountry.MakeScope.ScriptValue('v3tb_tc_employed')]`""
-                # Country-level trade capacity via the MARKET - no sub-country iteration at all.
-                # Form copied from gui/market_panel.gui: Market.GetCountryTradeCapacity(Country.Self)
-                $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|TP|$date|$tag|TC|capacity_mkt|[THIS.GetCountry.GetMarket.GetCountryTradeCapacity(THIS.GetCountry.Self)]`""
+                # The MARKET's trade capacity - no sub-country iteration at all. Game 1.15.1 removed the per-country
+                # Market.GetCountryTradeCapacity(Country); the form is now 1.15.1's gui/market_panel.gui: Market.GetTradeCapacity.
+                $lines += "`r`n`t`t`t`t`tdebug_log = `"V3TB|$Token|TP|$date|$tag|TC|capacity_mkt|[THIS.GetCountry.GetMarket.GetTradeCapacity]`""
                 # v6 population: the solid workforce sums plus the two speculative unemployed-count
                 # keywords, each on its own line so a bad guess only voids itself.
                 foreach ($pv in @('v3tb_wf_total','v3tb_wf_peasants','v3tb_wf_slaves','v3tb_dependents','v3tb_unemp_rate','v3tb_unemp_count_a','v3tb_unemp_count_b')) {

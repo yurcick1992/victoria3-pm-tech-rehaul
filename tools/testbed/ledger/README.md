@@ -85,8 +85,11 @@ writing prose, because `fill_assemble` stops on any missing output.
   `report_data2` and `fill_consts` refuse to run without `--mod` and `--van`, `analyse_gdp_gap` and the `analyse_ai_tier_*` tools without
   `--session`, and `fill_emp`, `fill_payback` and `fill_research` without `--mod` (they used to default to flatcost-n1, canon-n7 and the
   August vanilla n=4).
-- `input_price_flags` takes whole sessions only: a group with single-run items reads those sessions' every run there. Name whole sessions,
-  or check its run count in the output.
+- `input_price_flags` and `misplaced_capital` read the group through `lib_runs`, run folders included (checked 2026-11-12 on a group of
+  `<session>/runNNN` items: 10 + 10 runs read; `misplaced_capital --batch` cut such a group at its last `/` until that day). Check the run
+  count each prints all the same.
+- When the runs' build folder (`mod_sched_<setup>`) is gone, `downsize_telemetry` throws; pass `DOWNSIZE_MOD_PATH=<a build of the same book
+  on the same game version>` to the fill and say so in the footer.
 - `fill_research.mjs` (fixed 2026-10-26, POLISH A3–A6): it buckets technologies by the tech eras of the BOOK's own tree twin
   (`config/tech_tree_options.<suffix>.json`, required through `--config`) — the mod runs by the mod's eras, the vanilla runs by each
   technology's `vanillaEra` — and reads the vanilla runs `--van` names (default `lib_runs.VANILLA_REF`). Until then it bucketed by the

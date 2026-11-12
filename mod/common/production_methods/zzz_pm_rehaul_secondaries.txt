@@ -191,8 +191,8 @@ pm_pot_stills_food = {
 		workforce_scaled = {
 			# input goods
 			goods_input_sugar_add = 24.58				# x30 =  750
-			goods_input_glass_add = 2.95				# x40 =  120
-			goods_input_copper_add = 1.97				# x40 =  80
+			goods_input_glass_add = 3.93				# x40 =  160
+			goods_input_copper_add = 0.98				# x40 =  40
 
 			# output goods
 			goods_output_liquor_add = 71.5				# x30 = 1800
@@ -217,8 +217,8 @@ pm_patent_stills_food = {
 		workforce_scaled = {
 			# input goods
 			goods_input_sugar_add = 24.58				# x30 =   750
-			goods_input_glass_add = 5.9				# x40 =   240
-			goods_input_copper_add = 3.93				# x40 =   160
+			goods_input_glass_add = 6.89				# x40 =   280
+			goods_input_copper_add = 2.95				# x40 =   120
 
 			# output goods
 			goods_output_liquor_add = 119.17			# x30 =  3000

@@ -41,8 +41,10 @@ function indexRun(runDir) {
 }
 const readSum = f => JSON.parse(zlib.gunzipSync(fs.readFileSync(f)));
 // (2026-10-08) through lib_runs: L17/L34-usable runs only, and a session may be a GROUP (a comma list of sessions and/or session/run folders)
-const runsOf = (sessDir, setup) => { const root = path.dirname(sessDir), r = usableRuns(root, path.basename(sessDir), setup || '');
-  for (const d of r.dropped) console.error(`  EXCLUDED ${d.run}: ${d.reason}`); return r.runs.map(x => path.join(root, x)); };
+// ⚠ (fixed 2026-11-12) the spec is passed to lib_runs AS GIVEN, relative to the sessions root: it used to be path.join'ed onto the root and
+//   split back with dirname/basename, which worked for a comma list of whole sessions but cut a `<session>/runNNN_<setup>` group at its last '/'
+const runsOf = (spec, setup) => { const r = usableRuns(S, spec, setup || '');
+  for (const d of r.dropped) console.error(`  EXCLUDED ${d.run}: ${d.reason}`); return r.runs.map(x => path.join(S, x)); };
 const args = process.argv.slice(2);
 const argOf = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
 const all = n => args.flatMap((a, i) => a === n ? [args[i + 1]] : []);
@@ -160,7 +162,7 @@ if (SER) {
 const SNAP = argOf('--snap', null);
 if (SNAP) for (const a of all('--arm')) {
   const [l, s, st] = a.split(':'); const accs = [];
-  for (const r of runsOf(path.join(S, s), st || null)) {
+  for (const r of runsOf(s, st || null)) {
     const f = path.join(SNAP, `${s}__${path.basename(r)}.json.gz`); if (!fs.existsSync(f)) continue; const snap = readGz(f); const sy = +snap.provenance.date.split('.')[0];
     const VAL = validity(snap); const B = bookOf(r); const idx = indexRun(r); const acc = newAcc();
     const first = y => Object.keys(idx).filter(d => d.startsWith(y + '.')).sort((p, q) => toDay(p) - toDay(q))[0];
@@ -195,7 +197,7 @@ const splitOf = A => { const t = ss => ss.reduce((o, s) => { const x = A.val.sec
 const p1 = x => Number.isFinite(x) ? (100 * x).toFixed(1) + '%' : '-';
 for (const a of all('--batch')) {
   const [l, s, st] = a.split(':'); const runs = [];
-  for (const r of runsOf(path.join(S, s), st || null)) {
+  for (const r of runsOf(s, st || null)) {
     const idx = indexRun(r); const dates = Object.keys(idx).sort((p, q) => toDay(p) - toDay(q)); if (dates.length < 2) continue;
     const B = bookOf(r); const lastD = dates.at(-1); const last = readSum(idx[lastD]); const ly = +lastD.split('.')[0]; const VALlast = isV15(last) ? validity(last) : null;
     const first = y => dates.find(d => d.startsWith(y + '.'));

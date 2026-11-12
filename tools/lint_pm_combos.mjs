@@ -269,7 +269,7 @@ for (const [k, lbl] of Object.entries(labels)) {
   for (const x of list.slice(0, 40)) console.log('   ' + x);
   if (list.length > 40) console.log(`   … and ${list.length - 40} more`);
 }
-if (fails.elecWarn.length) console.log(`WARN  KNOWN ISSUE (deferred to mod 1.1, BALANCE_FRAMEWORK §10.106): ${fails.elecWarn.length} building(s) run only on electricity and can be built without it: ${fails.elecWarn.join('; ')}`);
+if (fails.elecWarn.length) console.log(`WARN  KNOWN ISSUE (deferred to mod 1.2 or 1.3, BALANCE_FRAMEWORK §10.106): ${fails.elecWarn.length} building(s) run only on electricity and can be built without it: ${fails.elecWarn.join('; ')}`);
 if (unreviewed.size) {
   console.log(`WARN  ${unreviewed.size} carried pair(s) the compatibility review never looked at — add them to REVIEWED (and NOT_BESIDE if incompatible) in tools/lib_secondary_compat.mjs:`);
   for (const x of [...unreviewed].slice(0, 30)) console.log('   ' + x);

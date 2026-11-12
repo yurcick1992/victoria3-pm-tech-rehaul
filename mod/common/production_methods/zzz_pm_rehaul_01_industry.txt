@@ -1056,10 +1056,10 @@ pm_main_electrics_telephones = {
 	texture = "gfx/interface/icons/production_method_icons/telephones.dds"
 	building_modifiers = {
 		workforce_scaled = {
-			goods_input_iron_add = 19.7
+			goods_input_iron_add = 39.4
 			goods_input_rubber_add = 39.4
-			goods_input_copper_add = 59
-			goods_input_tools_add = 19.7
+			goods_input_copper_add = 29.5
+			goods_input_tools_add = 29.5
 			goods_output_telephones_add = 132
 		}
 		level_scaled = {

@@ -414,6 +414,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F266 | The early Hungarian and Kazakh wars of the user's 1.15 playtest are vanilla 1.15's: the Twelve Points button opens to legitimacy >= 75 and a governing liberal / universalist / populist IG from 1836 (1.13: the springtime, or a radical-led IG), and an overlord's play against its own subject adds +25 liberty desire (new define); the playtest's Austria opened the Hungarian play 1836.2.25, Russia's reduce-autonomy play on the Junior Horde (1836.11.4) put it at 71 by 1837, and Pacify the Steppes failed on opening (1837.11.23); the mod replaces none of the chain's files but 03_russia.txt (one unrelated line). The 1.15 probe's canon run played WITHOUT ANY DLC (18 store misses, 0 mounted): F265's comparisons void; two more such first launches in the archive (release batch run 1, 1836-1860; an August run stopped at 1839); L50 | canon, vanilla | standing | here |
 | F267 | The 1.0 canon's USA against vanilla's pooled 56 runs: 0.89x vanilla's median USA GDP at 1935 over F264's 48 runs (11 under 0.6x, 19 at or above 1.0x), 0.74x over F249's 16; vanilla's own 56 runs put 11 under 0.6x of their median. F251's 0.58x was against F249's own 16 vanilla runs, whose median USA is 1.8x F264's 16: the "USA industrialises late" known issue of 1.0 does not hold at that size | canon, vanilla | reading | here |
 | F268 | The first 1.15 centuries (n=1 canon + n=1 vanilla, same day, all DLC mounted): vanilla 1.15 ends at world GDP 1.18x vanilla 1.13 (1.21x at base prices), W 1.15x, the shortlist's U* 4.1% against 1.13's 19%, so vanilla 1.15 ITSELF reads "broken by runoff" on the register's 10% hard line; literacy and the early shortlist hoard sit outside 1.13's 56-seed spread at every checkpoint. The canon against that vanilla: world GDP 1.11x (1.18x at base), the 1886 point 0.84 (the dip, inside 0.79-1.01), W 0.87x, pool U* 5.3% (1.29x vanilla's, under the >=2x aim), pool H 0.91x, PI 0.84 falling, PP 0.82, T0 ~0, T3 31.7% of tiered workers; "broken by runoff" on the same line vanilla breaks. Misplaced capital 19.7% vs 14.9%; play x1.11 (inflated by the agent's own load). The register's absolute lines need a 1.15 vanilla basis (Q12) | canon, vanilla | n=1 directional | here |
+| F269 | Mod 1.1 against vanilla 1.15.0, n=10 + 10 alternating (runs 1-20 of a 48-run batch cut short by the 1.15.1 update): ALL TEN vanilla runs cross the register's runoff line (9 with the shortlist's U* under 10%, median 2.65%) and six of ten mod runs do, so on 1.15 the line separates nothing; the mod's broken runs are its six richest worlds, and the intact-run consensus (n=4) leans poor: world GDP 0.98x (all ten 1.07x, 0.91-1.32), 1886 0.94x, shortlist U* 15.5% against 2.6% (all ten 7.7%), W 0.87x, PI 0.91 not falling every decade, PP 0.96, T0 1935 0.20 of the 1900s, T3 27.3%, loss 6.43; play x1.044; red flags 190 against 163.5 market-years (paper, the Dutch market); backward industries kept 104% of their workers in-market and 106% through trade against vanilla's 124% and 126%; misplaced capital 23.4% against 18.9%, the excess again all in the tiered industries; auto-downsizing loses about vanilla 1.15's levels (20,321 against 19,567 a run; vanilla 1.15 loses 3.1x vanilla 1.13's), 0.70x its jobs and 0.87x its construction points. Vanilla 1.15 itself ends at 1.285x vanilla 1.13's world GDP (median of its ten runs, 1.07-1.51) | canon, vanilla | n=10 directional | here |
 
 ---
 
@@ -22633,3 +22634,162 @@ lines in the canon's first minutes (in-game ~1839–41) against 702 in vanilla's
 
 The re-basing of the register's absolute lines (the 10% pooled-U* hard line, capital abundance) on a 1.15 vanilla reference is the user's to
 rule — GAME_UPDATE_1_15 Q12 / U60.
+
+## F269 — MOD 1.1 AGAINST VANILLA 1.15.0 OVER TEN ALTERNATING CENTURIES EACH: EVERY VANILLA RUN CROSSES THE REGISTER'S RUNOFF LINE AND SIX OF TEN MOD RUNS DO, SO ON 1.15 THAT LINE SEPARATES NOTHING; THE MOD'S WORLD ENDS AT 1.07× VANILLA'S (ALL TEN RUNS; 0.98× ON THE FOUR "INTACT" ONES), DIPS TO 0.84× BY 1906, AND KEEPS MORE PEOPLE OUT OF WORK (THE SHORTLIST'S U* 7.7% AGAINST 2.6%); PLAY ×1.044; BACKWARD INDUSTRIES ARE PUSHED OUT HARDER THAN IN VANILLA, IN MARKET AND THROUGH TRADE; MISPLACED CAPITAL 23.4% AGAINST 18.9% (2026-11-12; session `20261109_005943_g115-alt-canon24-vanilla24`, runs 1–20: mod 1.1 n=10 against vanilla 1.15.0 + telemetry n=10, alternating one to one, 1836→1936.1.1, game 1.15.0)
+
+**Why it ran.** The 1.15 vanilla reference and the canon re-measured against it (GAME_UPDATE_1_15 U60, U62 / Q12), after F268's n=1 + 1. The
+user, 2026-11-08: *"alternating mod 1.1 vs vanilla 1.15.0, starting tonight … 24 vs 24"*; odd runs mod, even runs vanilla (the user,
+2026-11-09). The schedule's `_predictions` were written before the launch (scored at the end).
+
+**Arms and runs.** Mod `{kind: config, config: config/mod_config.g115c-canon-bz-dcu-ra-il.json}`, sha256 `a52b0acacd6b6b6e` (the canon of
+CLAUDE.md §4.1, mod 1.1), its debug build with telemetry v16 at commit `f839686`, one config fingerprint (`9c50ced46bdb9eb4`) in all ten mod
+runs; vanilla `{kind: control}`. **Planned 24 + 24; read 10 + 10.** Steam updated the game to 1.15.1 on 2026-11-11: run 21 (mod) changed
+version at its 1908 resume, run 22 (vanilla) played on 1.15.1, run 23 (mod, 1.15.1, its own build `a6ad7d4e`) was stopped at 1923.11.21 with
+the STOP file. Those three are not read and not counted. Every run read reached 1936.1.1 and quit by itself on 1.15.0; 25 launches, all with
+every DLC mounted (L50); init OK and the crafts tripwire in every mod run; no error line in any run names a file of ours. Five game deaths,
+all vanilla (run 2 at 1930.3.1, run 8 at 1930.3.14, run 14 at 1910.3.1 twice and 1930.3.1), all resumed; none in the mod. **The reference
+for every line is this batch's own ten vanilla runs** (`criteria.mjs --van`, `VANS_OVERRIDE` / `VANW_OVERRIDE` in the fill), never
+`VANILLA_REF` (1.13.11).
+
+**1. The register** (`criteria.mjs`, the ruled defaults, end state 1932–36; vanilla n=10). The register's consensus is the median of the
+INTACT runs, here four of ten; the six broken runs are the six richest worlds, so the consensus is the poor, less employed half of the batch.
+Both readings are given:
+
+| line | consensus, 4 intact | all 10 mod runs (median) | vanilla 1.15 (n=10) | aim · soft |
+|---|---|---|---|---|
+| hard lines | 4 intact / 6 broken, all by runoff | — | **10 of 10 cross the same line** | — |
+| world GDP (displayed) ÷ vanilla | **0.98×** (1935 1.00×) | **1.07×** (0.91–1.32; 1935 1.09×) | £5,665M | 0.90–1.00 · 0.75–1.33 · hard 0.67–1.39 |
+| world GDP at base prices ÷ vanilla | 0.99× | 1.11× | — | secondary |
+| world W | 0.85× (0.145) | 0.88× (0.152) | 0.172 | 0.6–0.95 |
+| world U* | 39.9% | 35.7% | 30.0% | higher |
+| world H | 0.28 (0.90×) | 0.39 (1.26×) | 0.31 | < 1× |
+| shortlist GDP ÷ vanilla | 1.14× (W 0.87 × Y 1.23) | 1.26× | £1,765M | 1.1–1.9 |
+| shortlist W | 0.87× (0.206) | 0.92× (0.218) | 0.237 | 0.6–0.95 |
+| shortlist U* | **15.5%** | **7.7%** (1.3–23.5%) | **2.6%** | ≥ 2× (5.2%) |
+| shortlist H | 0.62 (0.92×) | 0.72 (1.06×) | 0.67 | < 1× |
+| PI (£ ÷ base, ÷ vanilla) | 0.91× (0.88 of base vs 0.97), not falling every decade | 0.90× | path 1.06 → 0.97 | ≤ 0.8 |
+| PP (wage units ÷ vanilla) | 0.96× (PM 0.88×) | 0.95× | — | ≤ 0.8 |
+| T0 | 1935 = 0.20 × the 1900s; 0.38 / 0.35 / 0.17 / 0.09M by decade; 0.07M of 27.91M tiered | — | — | falling |
+| T3 | 27.3% of tiered workers (T0…T3 0.07 / 4.17 / 15.76 / 7.91M) | — | — | more |
+| Germany (closed major) | G 1.58 in the lucky seed (run 15: 1927–36 mean e 0.66, a 0.23); hoard 0.76 GDP against vanilla's 0.01 | per run 0–3.73 | — | 0 |
+| **loss** | **6.43** = gerCM 2.37 + T3 1.47 + PI 1.41 + PP 1.03 + T0 0.15; intact runs 4.5–7.8 | — | — | — |
+
+- **The broken runs.** Mod runs 1, 3, 11, 15 and 19 end with the shortlist's pooled U* under 10% (1.3%, 4.0%, 2.0%, 1.4%, 5.4%); run 13
+  has the USA in capital abundance (U* under 5% in 1931–36 at a mean hoard of 1.54 GDP); runs 1, 15 and 19 also have a member in capital
+  abundance (Germany 1929–36 at 1.70 GDP; the USA 1921–36 at 1.95; Britain 1920–36 at 2.12). World GDP 1.07–1.32× in the broken runs,
+  0.91–1.05× in the intact ones.
+- **Vanilla 1.15 crosses the same lines in every run** (read as an arm against itself): 9 of 10 end with the shortlist's U* under 10%
+  (median 2.65%; 0.2–8.2%), and run 18 (18.1%) has Britain in capital abundance; Britain is also in capital abundance in runs 4 and 12, the
+  USA in run 20. On game 1.15 the runoff line no longer tells a broken mod economy from vanilla's own; the mod crosses it less often.
+- **The decade path** (median of all ten ÷ vanilla's per-run median): 1846 0.97 · 1856 0.98 · 1866 0.98 · 1876 0.95 · **1886 0.94** · 1896
+  0.88 · 1906 0.84 · 1916 0.92 · 1926 1.02 · 1936 1.10. The 1886 line (0.79–1.01) holds; the dip is deeper and later than 1.0's on 1.13
+  (F264: 0.93–0.95 over 1886–1916), bottoming at 0.84 in 1906, and the world ends above vanilla.
+- **Vanilla 1.15 against vanilla 1.13** (the ten vanilla runs as an arm against `VANILLA_REF`, n=56, game 1.13.11; a version reading, not
+  this report's comparison): world GDP 1.07–1.51× per run, median 1.285× (F268's single run 1.18×); the shortlist's U* median 2.65% against
+  1.13's 19.1%; all ten "broken by runoff" against the 1.13 reference too.
+
+**2. The wall clock** (play time from the tick lines; the ruled clusters; the arms alternated in the same days; the user worked on the machine
+while runs played, so directional): main (clusters 1 + 2) **189.2 min against 181.3, ×1.044**, inside the +10% budget; clusters 7 / 3 / 0 in
+each arm (cluster 2: mod runs 1, 11, 15; vanilla runs 2, 4, 14; no fleet loop seen). By decade ×0.97–1.04 to the 1920s and **×1.095 in the
+1930s** (F264 ×1.10 there too). Pop-matched per-unit +0.0% (13 of 14 bins, 0.929–1.043): the mod's world ended with ×1.08 the live pops and
+×0.95 the building levels, so the extra time is the bigger world. Crash overhead 0.68% of vanilla's play, 0.10% of the mod's.
+
+**3. The other readings of the scorecard.**
+- **Backward industries** (`laggard_pressure.mjs`; two tiers behind their market's frontier, without the next technology): workers kept over
+  ten years **in-market 103.7% against vanilla's 123.8%** (111 cases against 311; median case 84.0% against 100.0%; relative retention 0.75
+  against 0.88); **through trade alone 106.1% against 125.5%** (290 against 507). By chain in-market: consumer 92.7% against 126.7%; heavy
+  and war 122.9% against 116.1% (median case 62.8% against 97.6%; 51 cases against 117). Unlike 1.0 on 1.13 (F264: through trade 109.0%
+  against 115.8%), the trade-only pressure now separates from vanilla's as clearly as the in-market one.
+- **Old plants, world, 1935** (workers on a rung two or more tiers behind their market's frontier, share of the industry): textile 17.4% and
+  the art academy 11.4%, both at their peak; paper 10.3% (23% below its 1920 peak); furniture 9.6%; motor 6.6% (at its peak); arms 3.0% (87%
+  shed since 1890), artillery 2.5% (71% since 1890), explosives 2.9% (56% since 1910), food 2.1% (51% since 1900), steel 0.9% (46% since 1890).
+- **Tier-1 workers, world** 7.1 → 8.3 → 10.0 → 11.2 → 10.9M over 1900–1935: they stop growing after 1930 but do not fall from 1920.
+- **Paybacks at realised prices**: a t0 craft 16 years, a t0 factory 82 years; a t3 plant 10.8 years (aim 8–15).
+- **Construction delivered 1880–1935**: 1.04× vanilla's.
+- **New plants below the best tier their owner already runs** (a merged rung counted as its host): 29.0% unit-weighted, 38.3% raw; below-best
+  and earning less per level than a standing best rung 22.7%. By decade 92% (1830s) → 35% (1890s) → 34–38% (1900s–1930s), raw.
+- **Misplaced capital** (VALID benchmark, `misplaced_capital.mjs --batch` with the sector split; the vanilla figure read the same way on the
+  same session's vanilla runs, a reference and not like for like): **century pooled 23.4% against 18.9%** (medians 23.1% / 18.8%); 1926–36
+  23.4% against 20.8% by the median split. The tiered industries take 72.7% of the mod's new capital (vanilla 60.6%) and misplace 27.5% of
+  it (23.2%); mines and agriculture 12.5% (12.4%). As shares of ALL new capital: tiered 20.0% against 14.0%, mines + agriculture 3.4% against
+  4.9%. F262's and F264's reading holds on 1.15: the whole excess is in the tiered industries. Both arms read higher than on 1.13 (F264 18.5%
+  against 14.0%).
+- **Input-price red flags** (§10.94, order books, this batch's vanilla as the line): problem market-years **190 a run (143–321) against 163.5
+  (121–238), ×1.16**; chronic markets 3 against 2.5. Level before 1900 (80.5 against 77.5 in 1836–69, 47 against 48.5 in 1870–99), the
+  excess in 1900–35 (54 against 41.5). The Netherlands 51.5 against 21; Russia 23 against 41; Japan 61 against 59.5. Paper is the mod's own
+  (Japan 33.2 problem years a run against 11.3, the Netherlands 17.9, Russia 12.8 to 1878): staffed paper rungs behind government
+  administration's and universities' demand. Japanese hardwood (30.2 against 22.4) and engines in Japan and the Netherlands are supply
+  failures, the engines as bad or worse in vanilla. Copper, F268's top flagged good, is a SWING in both arms (the munition plant and bronze
+  cannons buying a few units a week), not a problem year on real demand: F268 counted flags, not problem years.
+- **Technology** (`tech_census.mjs`, vanilla n=10): Britain 165.0 against 169.7 (production 58.2 / military 44.0 / society 62.8 against
+  52.3 / 54.2 / 63.2); the USA 164.2 against 164.5; Germany 163.9 against 168.1; France 161.9 against 151.7. The anchor test: the leader
+  holds 42.5% of tech era 3 at 1875, 35.9% of tech era 4 at 1905, 57.7% of tech era 5 at 1936 (vanilla 1.15 57.5 / 56.4 / 65.4%): tier 2
+  late, as on 1.13. 34.0% of the majors' acquisitions had a research-entry stage. The military deficit (−10 against vanilla's count) is the
+  known one, planned for mod 1.2.
+
+**4. Auto-downsizing** (the monthly poll; `downsize_telemetry.mjs`, the §10.107 reading; vanilla = this batch's ten):
+
+| world, mean a run | levels | jobs | construction points |
+|---|---|---|---|
+| mod 1.1 | **20,321** (sd 2,194) | 57.9M | 7.87M |
+| vanilla 1.15 | 19,567 (sd 4,565) | 82.2M | 9.03M |
+| mod ÷ vanilla | 1.04× | **0.70×** | **0.87×** |
+
+| world, by tier class (mod / vanilla, a run) | t0 craft | t0 non-craft | t1 | t2 | t3 | outside the ladder |
+|---|---|---|---|---|---|---|
+| levels | 7,431 / 289 | 613 / 204 | 2,542 / 2,235 | 2,520 / 4,656 | 301 / 1,051 | 6,915 / 11,132 |
+| jobs (thousands) | 3,715 / 1,207 | 2,578 / 832 | 10,476 / 8,734 | 9,213 / 17,695 | 984 / 3,644 | 30,927 / 50,041 |
+| construction points (thousands) | 45 / 173 | 225 / 140 | 1,715 / 1,665 | 3,199 / 3,173 | 588 / 641 | 2,100 / 3,239 |
+
+(A vanilla building counts at the tier of the canon rung made from its active method.) **Vanilla 1.15 loses 3.1× vanilla 1.13's levels**
+(19,567 against F264's 6,230 a run) and the mod 1.84× 1.0's (20,321 against 11,052): the 1.15 hiring and wage rebalance moved downsizing in
+both arms (GAME_UPDATE_1_15 Q4), and on 1.15 the mod destroys LESS construction than vanilla (0.87×; on 1.13 1.22×). The mod's excess is
+still the crafts (7,431 levels of 500 jobs, settling in: 893 / 1,348 levels a run in the 1830s / 1840s against vanilla's 43 / 89) and the
+t0 factories; vanilla loses more at t2, t3 and outside the ladder. The shortlist: mod 3,777 levels (13.4M jobs, 2.63M points) against 5,397
+(21.2M, 2.94M). ⚠ **The jobs and points read game files** (the levels do not): the mod runs' build folder `mod_sched_canon` was gone, so the
+mod's files came from the committed 1.1.0 release build of the same book (built on 1.15.0; `--mod-path`, fixed in the reader the same day,
+BUGS_AND_FIXES 2026-11-12), and vanilla's from the installed game, now 1.15.1. The employment of all 112 industry methods is the same in
+the mod's 1.15.0-derived `01_industry.txt` and 1.15.1's; the 1.15.1 changes to `11_private_infrastructure`, `13_construction` and
+`15_special` were not compared, so the "outside the ladder" jobs and points (ports, railways, construction sectors) may carry 1.15.1 values.
+
+**5. The watch items** (each run's own `logs_live/error.log`, runs 1–20):
+- **"Failed to create battle in … due to 'land_battle_size' …"** comes in one-front bursts, in both arms, and is not ours: mod run 13 had
+  1,022 lines on the Punjab front around 1837 (in-game; wall 14:39 local, four minutes into the run), vanilla run 2 had **7,818** on the
+  Somaliland (4,800) and Eritrea (3,018) fronts around 1868, vanilla run 8 had 6 (North Madagascar), vanilla run 16 had 1 (Attica Thessaly);
+  the other 16 runs none. Each big burst is one or two fronts where the engine keeps declining to spawn a battle, within minutes of wall
+  time (run 13: 38 s; run 2: 3 min), then stops.
+- **"Event target link 'market' returned an invalid object"** is vanilla 1.15's, thousands of lines a run in both arms: mod median about
+  4,700 (604–13,982), vanilla about 2,800 (70–9,208). Over the ten runs of each arm: `treaty_articles/26_no_subventions` 16,956 against
+  12,582, `21_no_tariffs` 16,902 against 9,666, `17_prohibit_trade_with_global_market` 10,908 against 7,938, the Corn Laws entry 2,391
+  against 1,926, `trade_route_events` 2,305 against 2,957, `13_goods_transfer` 580 against 0, `01_silkworm_diseases` 334 against 21. The mod
+  replaces none of these files; the mod's total runs ×1.4 vanilla's, inside per-run spreads of ×23 (mod) and ×130 (vanilla).
+
+**6. The predictions** (the schedule's `_predictions`, written before the launch):
+- **register:** world GDP ÷ vanilla in 1.00–1.15 — RIGHT on all ten runs (1.07), just under on the intact four (0.98); the 1886 point under
+  0.95 — RIGHT (0.94); W below vanilla's — RIGHT (0.85–0.92); pooled U* at or above vanilla's but under 2× — WRONG on the upper side (7.7%
+  against 2.6%, ×2.9; vanilla 1.15's is that low); pool H under 1× — RIGHT on the intact four (0.92), WRONG on all ten (1.06).
+- **vanilla against 1.13:** world GDP 1.05–1.20× — WRONG, higher (1.285×); pooled U* under 10% in most vanilla runs — RIGHT (9 of 10).
+  Literacy and the early hoard were not read here.
+- **absolute lines:** most runs of both arms "broken by runoff" — RIGHT (6 of 10 mod, 10 of 10 vanilla).
+- **ladder:** T0 at 1935 under 0.3 of its 1900s mean — RIGHT (0.20); T3 above 25% — RIGHT (27.3%).
+- **misplaced capital:** mod 18–21% against vanilla 14–16% — WRONG on both levels (23.4% against 18.9%), the gap as predicted (+4.5 points).
+- **red flags:** copper the top red-flag good in both arms — WRONG on problem years (paper, hardwood and engines lead; copper is a SWING).
+- **play:** ×1.03–1.10 — RIGHT (×1.044).
+- **build:** init OK, the tripwire, no error line of ours, every launch with every DLC — RIGHT.
+- Literacy, Russia's educational reform and the scripted wars were not read for this report.
+
+**Report:** https://claude.ai/artifact/YZzc1yM9aa8gSzxWevfDh1 (copied into the session as `REPORT.html`, with `redflags_full.html`).
+
+**Confidence.** n=10 against n=10, alternating on one machine in the same days: directional (§2.9). Strongest where the two arms differ
+in every run or nearly (the runoff line, vanilla 10 of 10; the dip's depth; the backward-industry retention, many cases a run). The
+register's consensus at n=4 is a selected sample (the poorer runs) and should be read beside the all-run medians.
+
+**What it does NOT say.**
+- Not that mod 1.1 is broken on 1.15: its "runoff" is the 1.13-calibrated line that every vanilla 1.15 run also crosses; the re-basing is
+  the user's to rule (GAME_UPDATE_1_15 Q12).
+- Not that the world-GDP aim is met or missed: the consensus (0.98×) and the all-run median (1.07×) fall on either side of the aim's top, and
+  which one the register should read when most runs break is itself an open question.
+- Not what the remaining 28 planned runs would have read, nor anything about 1.15.1 (runs 21–23 are not read).
+- Not that the downsizing jobs and construction points of vanilla's infrastructure are exact (§4: 1.15.1 files, unchecked for those).
+- Not why vanilla 1.15 downsizes three times as many levels as 1.13 (the 1.15 hiring rebalance is the first hypothesis, unmeasured).
+- Not a reliable play time beyond its direction: the user worked on the machine while runs played.

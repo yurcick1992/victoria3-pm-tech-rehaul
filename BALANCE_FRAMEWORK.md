@@ -78,6 +78,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | in force: the canon since 2026-11-08 (§10.109.5) | here |
 | 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission); .4 crafts out of 1.15's three new level counts, by native counts (the group minus the craft group, never a loop); .5 the 1.15 canon (`a52b0aca`), and canonisation declares the main line, not a quality stamp; .6 detectors L48 / L49 and IP4's negotiation promise crafts out (G7); .7 1.15's wage and hiring rebalance: measure first, no pre-emptive ladder change | in force: the canon since 2026-11-08 (.1 and .3 in the book through their makers; .2 and .4 build steps — `emit_ai_value_adds.mjs`, L47; `emit_vanilla_refs.mjs` G4–G6 + an init tripwire) | here |
 | 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 ~20 December: major changes, extraction first, which revisits §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed; a bonus to hydro alone is allowed, none planned); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark (Mechanical Tools 25,000 → 75,000); .4 copper scarcity follows Paradox, no copper lever | .1 the plan (ROADMAP, BACKLOG); .2 and .4 in force; .3 ruled for 1.2, not built | here |
+| 10.111 | game 1.15.1, mod 1.1.1: .1 the 1.15.1 canon (`g1151-canon-bz-dcu-ra-il`, sha256 c1274f15; the 1.15 chain replayed on 1.15.1, field diff = the telephone rung's three inputs, value-neutral); .2 the dams stay `must_have` under 1.15.1's subsidy rule (now a ceiling; no subsidy for a profitable dam), measured; .3 the AI research weights back to 1.13.11 on six technologies with research entries, five content-tied pushes kept — the canon `g1151-canon-bz-dcu-ra-il-aw`, sha256 697d4869; .4 the AI's new goods stances kept; .5 the dams' `subsidized` flag follows vanilla, infrastructure subsidies watched; .6 the Armed Forces' asset count left as vanilla | in force: the canon (.3) since 2026-11-12 | here |
 
 ---
 
@@ -4850,3 +4851,76 @@ tier's mark (`a.era = Math.min(a.era, era)`). Ruled (the user agreed to the prop
 The user: *"Our approach to copper scarcity will depend on PDS own actions, and it's likely that we won't really touch it."* Copper is the top
 input-price red flag in both 1.15 arms (F268), vanilla's own included. The mod adds no copper lever in 1.2; vanilla's hotfixes are watched,
 and the 1.1 rulings on copper (§10.108) stand.
+
+## §10.111 — GAME 1.15.1: MOD 1.1.1 (user-ruled 2026-11-12, GAME_UPDATE_1_15_1.md)
+
+Steam moved the game from 1.15.0 to 1.15.1 on 2026-11-11, during the 24 vs 24 batch (GAME_UPDATE_1_15_1 V03). The user, 2026-11-12: the
+batch's runs on 1.15.0 are intact and all count; runs of mod 1.1 on 1.15.1 are discarded; vanilla 1.15.1's run 22 joins the next batch's
+results, except its wall clock; mod 1.1.1 is prepared for 1.15.1, and a batch of 1.1.1 against vanilla 1.15.1 runs to Sunday morning
+(re-ruled after Q8: 10 vs 10, vanilla first, GAME_UPDATE_1_15_1 Q3).
+
+### §10.111.1 — THE 1.15.1 CANON (user-ruled 2026-11-12, Q1)
+
+The user: *"yes, and let's start measuring it"*. ⚠ Superseded as the canon the same day by §10.111.3's step on this book
+(`g1151-canon-bz-dcu-ra-il-aw`, `697d4869`); nothing measured `c1274f15`.
+- **The canon:** `config/mod_config.g1151-canon-bz-dcu-ra-il.json` + its tree twin, copied verbatim over `config/mod_config.json` +
+  `config/tech_tree_options.json` — sha256 **`c1274f151e69c630`** (twin `2928a5bf79758281`). The same chain as §10.109.5 replayed on game
+  1.15.1 (`replay_canon_chain.mjs --prefix g1151`, its hand steps from the 1.0 canon by `--hand-from`) + the four recorded 1.15 steps. Field
+  diff against the 1.15 canon (`a52b0acacd6b6b6e`): **three fields, the electrics t2 rung's inputs** — iron 19.7 → 39.4, copper 59 → 29.5,
+  tools 19.7 → 29.5 — vanilla 1.15.1's telephone recipe (iron 10 → 20, copper 30 → 15, tools 10 → 15) through the formula, the input value
+  unchanged at base prices (3,936; all three goods £40). The twin: its timestamp and Socialism's name read live (the 1.1.0 playtest fix).
+- **Carried by any rebuild on 1.15.1, not by the book:** the still secondaries' copper (emitted live), the 56 changed copper deposits, the
+  technologies' AI weights, the AI strategies, the Russian 1836 history and content (the 31 owned files 1.15.1 changed).
+- **Mod 1.1.1:** `mod/.metadata/metadata.json` version 1.1.1 (`supported_game_version` "1.15.*"); telemetry v17 (the trade-capacity field,
+  TESTBED_METRICS §3.6). Built, linted (148 vanilla files replaced, 27 DLC-gated, every gate kept; vanilla names; every economic lint; the
+  preflight) and deployed 2026-11-12; `mod/` and the deployed copy are its debug build. The Workshop release waits for the user at the machine
+  (the release build and the upload; Q5).
+- **The 1.15 canon** (`g115c-canon-bz-dcu-ra-il`, mod 1.1 on game 1.15.0) stays as the record of what `20261109_005943` runs 1–20 measured.
+
+### §10.111.2 — THE DAMS UNDER 1.15.1'S SUBSIDY RULE: KEEP `must_have`, MEASURE (user-ruled 2026-11-12, Q2)
+
+1.15.1's AI no longer subsidises a profitable building or one it does not consider necessary; a strategy's `subsidies` entry is now "the
+maximum spending priority" (GAME_UPDATE_1_15_1 V13). The four dam types stay `must_have` in every administrative strategy, now a ceiling: a
+dam is subsidised only while it loses money and its electricity is needed. The user agreed to keep the entries and measure (who builds, how
+many levels, the subsidies paid, from the 1.15.1 batch). CLAUDE.md §1.2's "the AI always subsidises them" is replaced by vanilla's rule.
+
+### §10.111.3 — THE AI RESEARCH WEIGHTS: 1.13.11'S WHERE A RESEARCH ENTRY PULLS THE TECHNOLOGY (user-ruled 2026-11-12, Q8)
+
+1.15.0 changed the `ai_weight` of 11 technologies and 1.15.1 of seven more (GAME_UPDATE_1_15_1 V11); they reached the builds with the copied
+technology files, unraised. The user: *"I'm reasonably sure we'd want to override those, as our JEs affect the natural situation by a lot,
+extra pushes to AI are hardly needed"*, and the ruling: *"restore the weights to 1.13.11 on all techs that have our tech JEs. Leave them
+1.15.1 where we don't have a JE."* Of the 18, eleven have a research entry. Five of those eleven gained a push tied to vanilla's own story
+content (the Tsar-points entries: central_archives, general_staff, rifling; Russia: nationalism +10; Italy: egalitarianism +2), and the
+user kept them the same day: *"Let them keep their increased weights. Mostly because Russia is likely to have too low literacy to be
+affected by relevant JEs. If it was affected by them, they'd supercede. We will retune AI weighs for techs later anyway (perhaps 1.3)."*
+- **Restored to 1.13.11 (6):** combustion_engine, electrical_generation, oil_turbine, percussion_cap, radio, telephone — general pushes, from
+  rank and from military technologies held.
+- **Kept at 1.15.1:** the five content-tied above, and the seven with no research entry (logistics, mass_communication, modern_nursing,
+  pan-nationalism, pumpjacks, triage, wargaming).
+- **How it is built:** a book field, `tech_ai_weights` (`tools/make_tech_ai_weights_config.mjs --keep …`; the record
+  `_tech_ai_weights_variant`), carrying each restored technology's 1.13.11 block and the installed game's block; `emit_tech_finish.mjs`
+  asserts the installed block before it replaces it, so a patch that changes a listed technology's weight fails the build, and a listed
+  technology without a research entry fails it too.
+- **The canon moves:** `config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json` + twin, copied over `config/mod_config.json` +
+  `config/tech_tree_options.json` — sha256 **`697d4869aefc3225`** (twin `2928a5bf79758281`, unchanged). Field diff against
+  `c1274f151e69c630`: `tech_ai_weights` and its record, nothing else. Its build against the first (eleven-technology) build of the same
+  step: the five kept blocks only. The first launch on `c1274f15`, `20261112_013516_g1151-alt-canon-vanilla`, was stopped at its run 1
+  (1845) and measured nothing.
+- The tech AI weights are retuned later (mod 1.3, perhaps; BACKLOG C).
+
+### §10.111.4 — THE AI'S NEW GOODS STANCES KEPT (user-ruled 2026-11-12, Q9)
+
+1.15.1's default strategy sets radios, telephones and oil at `wants_high_supply`, which weighs construction, method choice and subsidies
+(V12c). The user: *"keep all three"* — vanilla's, though radios and telephones come from the tiered electrics industry (§2.4).
+
+### §10.111.5 — THE DAMS' `subsidized` FLAG FOLLOWS VANILLA; INFRASTRUCTURE SUBSIDIES WATCHED (user-ruled 2026-11-12, Q10)
+
+1.15.1 turned `bg_private_infrastructure` (railways, ports, power plants) to `subsidized = no`; our dam group, its child, follows
+(`emit_dams.mjs`). The flag acts only at the campaign start, when no dam exists, so it changes nothing measurable. The user: *"align with
+vanilla, and watch subsidy status of all infrastructure in the 1.15.1 runs, I'm curious how this will work"* — the 1.15.1 batch report reads,
+per arm and year, the subsidised levels and the subsidy spending of railways, ports, power plants and dams (the save summaries record both).
+
+### §10.111.6 — THE ARMED FORCES' ASSET COUNT LEFT AS VANILLA (user-ruled 2026-11-12, Q11)
+
+1.15.1 draws capitalists to the Armed Forces by the military-industry buildings their financial district or headquarters owns, capped
+(V22c); the tier split can raise the count. The user: *"ignore, leave new vanilla"* — no rewrite, no catalogue entry.

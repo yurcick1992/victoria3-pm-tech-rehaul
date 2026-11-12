@@ -2086,6 +2086,40 @@ function Invoke-ModLint([string]$Id, [string]$Title, [string]$ScriptName, [strin
     else { Add-Result $Id $Title 'FAIL' ($out.Trim() + [Environment]::NewLine + "FIX: $Fix") }
 }
 
+function Test-LmL51 {
+    <#
+      L51 - A DATA-SYSTEM FUNCTION THE INSTALLED ENGINE NO LONGER REGISTERS (found 2026-11-12, GAME_UPDATE_1_15_1 V18).
+      A loc string's [...] chain calls data functions by name; a name the engine dropped fails only at runtime ("Could not find data system
+      function" in error.log), the reading prints empty, and nothing in the build fails. Game 1.15.1 removed Market.GetCountryTradeCapacity
+      and the telemetry's TRADE line went empty for three runs before anyone saw it.
+      DETECTOR: tools/lint_data_functions.mjs reads the telemetry batches use (every metric but the *_probe ones, whose lines are guesses by
+      design), generated as the scheduler generates it, and the built mod's localization and own script, against the identifier strings of the
+      installed victoria3.exe (VIC3_GAME's ..\binaries). Repo-side: it gates a batch before anything is built.
+      Proven 2026-11-12: FAIL on the v16 telemetry (HEAD before the fix) against the 1.15.1 exe (GetCountryTradeCapacity), PASS on v16 against
+      the 1.13.11 exe, PASS on v17 against 1.15.1 (1,254 names); the 1.1.1 build's localization and script pass (13,573 names).
+    #>
+    $T = 'a data function the installed engine no longer registers'
+    $exe = Join-Path (Split-Path $GameDir -Parent) 'binaries\victoria3.exe'
+    if (-not (Test-Path $exe)) { Add-Result 'L51' $T 'WARN' "no exe at $exe - set VIC3_GAME"; return }
+    . (Join-Path $PSScriptRoot 'telemetry_lib.ps1')
+    $libSrc = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'telemetry_lib.ps1'))
+    $metrics = @([regex]::Matches($libSrc, '\$metrics -contains "([a-z_]+)"') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique | Sort-Object | Where-Object { $_ -notmatch '_probe$' })
+    $spec = [ordered]@{
+        dump_dates = @('1840.1.1'); tags = @('GBR', 'FRA'); metrics = $metrics; origin_goods = @('tools', 'steel')
+        breakdown_dates = @('1840.1.1'); breakdown_tags = @('GBR'); wide_dates = @('1840.1.1'); wide_tags = @('GBR', 'FRA')
+        wage_pop_markets = @{ deep = @('GBR') }; wage_pop_endpoints = 'both'
+    }
+    $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("pmr_l51_telemetry_{0}.txt" -f $PID)
+    [System.IO.File]::WriteAllText($tmp, (New-TelemetryScript -Spec $spec -Token 'L51' -BuildStamp 'L51'))
+    $lint = Join-Path $PSScriptRoot 'lint_data_functions.mjs'
+    $modArg = if (Test-Path (Join-Path $Mod 'localization')) { " --mod ""$Mod""" } else { '' }
+    $out = & cmd /c "node ""$lint"" --exe ""$exe"" --text ""$tmp""$modArg 2>&1" | Out-String
+    $code = $LASTEXITCODE
+    Remove-Item $tmp -ErrorAction SilentlyContinue
+    if ($code -eq 0) { Add-Result 'L51' $T 'PASS' (($out.Trim() -split "`r?`n")[-1]) }
+    else { Add-Result 'L51' $T 'FAIL' ($out.Trim() + [Environment]::NewLine + 'FIX: replace the call with the form the installed game''s own gui/ uses (TESTBED_METRICS; GAME_UPDATE_<version>), bump TELEMETRY_VERSION') }
+}
+
 function Test-LmL48 {
     <#
       L48 - A LEVEL COUNT THAT SEES THE CRAFTS (found 2026-11-08, GAME_UPDATE_1_15 Q10/Q11).
@@ -2181,7 +2215,9 @@ $CHECKS = @(
     # L48 / L49 read the BUILT mod: level counts that see the crafts; vanilla building fields the tier split drops.
     @{ Id = 'L48'; Artifact = $true;  Fn = { Test-LmL48 } },
     @{ Id = 'L49'; Artifact = $true;  Fn = { Test-LmL49 } },
-    @{ Id = 'L50'; Artifact = $false; Fn = { Test-LmL50 } }
+    @{ Id = 'L50'; Artifact = $false; Fn = { Test-LmL50 } },
+    # L51 reads the generated telemetry and the built mod's loc against the installed exe's names (repo-side, gates a batch before a build).
+    @{ Id = 'L51'; Artifact = $false; Fn = { Test-LmL51 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

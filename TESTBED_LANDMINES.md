@@ -1175,3 +1175,29 @@ relaunch it. Proven 2026-11-08 under StrictMode: FAIL on `20261108_061520_g115-p
 `20261030_233342_alt-canon48-vanilla16` (88 launches of 64 runs), N/A without `-Session`; `--all` names exactly the three launches above.
 **Open:** the observer could check the mount lines itself a few seconds after launch and relaunch on a miss (BACKLOG); until then the
 smoke check carries it.
+
+### L51 — a data-system function the installed engine no longer registers
+
+**Defect.** A loc string's `[...]` chain calls the engine's data-system functions by name: the telemetry's `debug_log` lines
+(`[THIS.GetCountry.GetMarket.GetTradeCapacity]`) and the mod's own localization. When a game update drops or renames a function, nothing
+fails at build or load: each call logs `Could not find data system function '<name>'` and `Failed converting statement` in `error.log`,
+the line prints with the field empty, and the reading is lost. The vanilla-name lint checks the script names we take from vanilla
+(triggers, effects, keys), not data functions.
+
+**How it was found.** 2026-11-12: Steam moved the game to 1.15.1 during `20261109_005943`, which removed
+`Market.GetCountryTradeCapacity(Country)`. Runs 21–23 logged 2 × 306 to 2 × 563 such lines in their first eight minutes, and the TRADE
+line's capacity went empty. It was seen at a smoke check as a new error class, not by any detector (GAME_UPDATE_1_15_1 V18).
+
+**Detector.** `tools/lint_data_functions.mjs --exe <victoria3.exe> [--text <file> …] [--mod <dir>]` takes every PascalCase function name
+in every `[...]` chain (quoted arguments and the `|` format suffix removed; all-caps scope words skipped), and fails on a name the exe does
+not contain. The exe holds long names as strings, but the compiler inlines short ones as 8-byte immediates, so a name of 9–16 characters is
+split across two (`48 B8` + "GetState"). A name counts as known when it appears whole, or as its 8-character chunks in order, each within
+48 bytes of the last. A removed name that survives inside a longer one therefore passes: the check errs toward silence, never toward a
+false alarm. `Test-LmL51` (repo-side, gating a batch before a build) generates the telemetry batches use, as the scheduler generates it,
+from every metric except the `*_probe` ones, whose lines are guesses by design (`route_probe`'s `GetTradeRoute` is in neither exe). It
+also reads the built mod's English localization and `zzz_pm_rehaul` script, against `VIC3_GAME`'s `..\binaries\victoria3.exe`.
+Proven 2026-11-12:
+- the v16 telemetry (HEAD before the fix) FAILS against the 1.15.1 exe (`GetCountryTradeCapacity`), and the same line PASSES against the
+  kept 1.13.11 exe;
+- v17 PASSES against 1.15.1 (1,254 names), and so does the 1.1.1 build's loc and script (13,573 names);
+- inside preflight, the TRADE line reverted for one run gives `L51 FAIL` / `PREFLIGHT FAILED`, and the restored file passes.

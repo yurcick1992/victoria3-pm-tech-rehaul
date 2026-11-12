@@ -53,9 +53,14 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const LIST = args.includes('--list'), TYPES = +opt('--types', 15), FROM = +opt('--from', 0), TO = +opt('--to', 9999);
 const BOOK = path.resolve(ROOT, opt('--config', 'config/mod_config.json')), JSON_OUT = opt('--json', null);
+// --mod-path <dir> (2026-11-12): the built mod to read a config run's jobs and costs from when the folder its build_state.json records is gone
+//   (the scheduler's build folder is overwritten or removed by the next build). Without it a missing folder THROWS: the reader used to fall
+//   back to vanilla's files alone, which know none of the rungs, and only warned that their methods' jobs count 0. Name a build of the same
+//   book on the same game version.
+const MOD_PATH = opt('--mod-path', null) ? path.resolve(ROOT, opt('--mod-path', null)) : null;
 const armArgs = args.filter((a, i) => a.includes('=') && !args[i - 1]?.startsWith('--'));
 if (!armArgs.length) {
-  console.error('usage: downsize_telemetry.mjs <label>=<group>[:<setup>] [...] [--list] [--types N] [--from Y] [--to Y] [--config <book>] [--json <out>]');
+  console.error('usage: downsize_telemetry.mjs <label>=<group>[:<setup>] [...] [--list] [--types N] [--from Y] [--to Y] [--config <book>] [--mod-path <dir>] [--json <out>]');
   process.exit(2);
 }
 
@@ -153,6 +158,7 @@ const scopeOf = country => {
 };
 
 // ---- one run
+const usedModPath = new Set();
 const SAMPLE = new Set([1935]); for (let y = 1836; y <= 1935; y += 3) SAMPLE.add(y);
 function readRun(rel) {
   const dir = path.join(SESSIONS, rel), log = path.join(dir, 'harness.log');
@@ -198,7 +204,13 @@ function readRun(rel) {
     d.reason = gov1 < gov0 ? 'government levels fell' : d.priv <= 0 ? 'no private level lost'
       : d.l0 - d.l1 > 5 ? 'too fast (> 5 levels a month)' : 'auto';
   }
-  return { rel, dir, control, modPath: control ? null : bs.mod_under_test?.path, L, polls, excluded, dupes,
+  let modPath = control ? null : bs.mod_under_test?.path;
+  if (modPath && !fs.existsSync(path.join(modPath, 'common'))) {
+    if (!MOD_PATH) throw new Error(`${rel}: its built mod ${modPath} is gone; pass --mod-path <a build of the same book on the same game version>`);
+    if (!usedModPath.has(modPath)) { usedModPath.add(modPath); console.log(`  ⚠ ${modPath} is gone: jobs and costs read from --mod-path ${path.relative(ROOT, MOD_PATH)}`); }
+    modPath = MOD_PATH;
+  }
+  return { rel, dir, control, modPath, L, polls, excluded, dupes,
     dz: dz.filter(d => d.year >= FROM && d.year < TO) };
 }
 
