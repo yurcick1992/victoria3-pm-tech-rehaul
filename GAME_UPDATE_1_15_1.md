@@ -169,6 +169,15 @@ follows Paradox).
   does not own included (1,142 lines, kept as `g1150/diff_of_diffs.txt` in the update session's scratchpad). It found V11's two missing
   technologies, V12b–V12d and V22b–V22c; no define changed value (only new keys), no building, good, era or prerequisite changed, the
   canals' strait definitions gained a grievance multiplier, and the rest is Russia, Favorites, Poland, regime change and art.
+- **The community digest** (2026-11-13): the Victoria 3 Modding Co-op's 1.15.1 digest (github.com/Victoria-3-Modding-Co-op/Modding-Digests,
+  `1.15.1/`) cross-checked against this register. It raises nothing new: its one added trigger, `num_building_assets_of_group`, is V22c;
+  `Market.GetCountryTradeCapacity*` → `Market.GetTradeCapacity*` is V18; `can_secede_during_revolution` is in Phase 4; the journal entries'
+  `dlc =` now takes a list, which is a badge, not a gate (the owned `03_russia.txt` carries `dlc = { dlc010 dlc019 }`; `check_dlc_gates.mjs`
+  counts the list form like the single one); diplomatic plays' `subject_join_initiator_trigger` and the new `common/map_mode_defaults` touch
+  nothing we own. Its 1.15.0 and 1.15.1 script docs diffed: 1.15.1 removes six data functions (the four `GetCountryTradeCapacity*`,
+  `GetDistanceToHomePortFormatted`, `GetMandatesLostToCap`), none used by our tools or the emitted mod; no effect or modifier changed. The
+  digest keeps the official script docs of every version, 1.15.0 included, a fallback for script-doc diffs where a game tree was not kept
+  (V01), not for the game files · DONE.
 - **Q8** · the AI research weights: 1.15.1's seven (V11) and 1.15.0's eleven — keep vanilla's, restore the earlier version's, or set our own ·
   RULED 2026-11-12 (*"restore the weights to 1.13.11 on all techs that have our tech JEs. Leave them 1.15.1 where we don't have a JE."*), then
   refined the same day for five content-tied pushes (*"Let them keep their increased weights. Mostly because Russia is likely to have too low
