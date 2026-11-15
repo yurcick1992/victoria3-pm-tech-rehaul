@@ -55,6 +55,13 @@
   `kind: release` (config optional, default config/mod_config.json) builds the PLAYER build
   (build.ps1 -Release) and runs it with no telemetry: a crash / stall / load check of what ships,
   never a measurement - it yields the save summaries, the wall clock and the error log, no markets.
+  `kind: external` (2026-11-15) is SOMEONE ELSE'S MOD as an arm: `{ "kind": "external", "mod": "C:/claude-code/pmr_0.4.0" }`.
+  The scheduler builds the telemetry-only control mod exactly as for `kind: control` and the observer loads the named
+  folder before it (run_observer -ExtraModPaths), so the arm is that mod + our instrument and nothing else of ours.
+  `mod` must be a FROZEN copy: a folder under steamapps\workshop is refused, because Steam can update it while the batch
+  plays. Its layout fingerprint (file names + sizes) is taken when the schedule starts and checked before every run; an
+  optional `layout_sha256` in the setup pins it to a known copy. Never a control, never a book of ours: build_state.json
+  records `arm: external+<mod id>` and the mod's metadata under `external_mods`.
 #>
 [CmdletBinding()]
 param(
@@ -200,6 +207,23 @@ if ($defaults) {
     }
 }
 
+# The layout fingerprint of a mod folder: sha256 over every file's relative path and size, first 16 hex digits. ⚠ A COPY of
+# run_observer.ps1's Get-DirFingerprint (the observer cannot be dot-sourced, see ConvertTo-DateNum above); the two must stay the
+# same algorithm, so the value checked here is the value build_state.json records.
+function Get-ModLayoutSha {
+    param([string]$Dir)
+    $sb = New-Object System.Text.StringBuilder
+    foreach ($f in (@(Get-ChildItem -LiteralPath $Dir -Recurse -File) | Sort-Object FullName)) {
+        $null = $sb.Append($f.FullName.Substring($Dir.Length)).Append(':').Append($f.Length).Append(';')
+    }
+    $sha  = [System.Security.Cryptography.SHA256]::Create()
+    $hash = ($sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($sb.ToString())) | ForEach-Object { $_.ToString("x2") }) -join ""
+    $sha.Dispose()
+    return $hash.Substring(0, 16)
+}
+# kind 'external': setup name -> @{ Path; Sha } as found when the schedule starts; Resolve-Setup re-checks the Sha before every run
+$ExternalMods = @{}
+
 # ---- validate everything BEFORE building or launching anything ----
 $setupNames = @($setups.PSObject.Properties | ForEach-Object { $_.Name })
 
@@ -224,6 +248,19 @@ foreach ($sn in $setupNames) {
         }
         "release" {
             if ($sc -and -not (Test-Path (RepoPath $sc))) { throw "setup '$sn': config not found: $(RepoPath $sc)" }
+        }
+        "external" {
+            # someone else's mod + our telemetry-only build (2026-11-15). No book of ours may ride along: that would be two treatments.
+            if ($sc) { throw "setup '$sn': kind 'external' takes no 'config' - the arm is the third-party mod + telemetry and nothing of ours" }
+            $sm = [string](Val $sp "mod" "")
+            if (-not $sm) { throw "setup '$sn': kind 'external' requires 'mod', the path of a frozen copy of the third-party mod" }
+            $smAbs = (RepoPath $sm).TrimEnd('\', '/') -replace '/', '\'
+            if (-not (Test-Path -LiteralPath (Join-Path $smAbs '.metadata\metadata.json'))) { throw "setup '$sn': no .metadata\metadata.json under $smAbs - not a Victoria 3 mod folder" }
+            if ($smAbs -match '(?i)\\steamapps\\workshop\\') { throw "setup '$sn': 'mod' points into the Steam Workshop folder ($smAbs). Steam can update a subscribed mod while the batch plays, splitting the arm; copy it to a frozen folder (e.g. C:\claude-code\<mod>_<version>) and name that." }
+            $smSha = Get-ModLayoutSha $smAbs
+            $want = [string](Val $sp "layout_sha256" "")
+            if ($want -and $want -ne $smSha) { throw "setup '$sn': the mod at $smAbs has layout fingerprint $smSha, the schedule pins $want - this is not the copy the schedule was written for" }
+            $ExternalMods[$sn] = @{ Path = $smAbs; Sha = $smSha }
         }
         "recipe"  { throw "setup '$sn': kind 'recipe' is not implemented yet - use kind 'config' with a prepared config file" }
         default   { throw "setup '$sn': unknown kind '$sk'" }
@@ -429,6 +466,7 @@ function Resolve-Setup {
     # a release build refuses telemetry (build.ps1 -Release); every other kind carries this run's spec and token
     if ($kind -ne "release") { $args += @("-Telemetry",$SpecFile,"-TelemetryToken",$Token) }
     $cfg = $null
+    $extra = @()   # kind 'external': the third-party mod folder(s) the observer loads before the built mod
     switch ($kind) {
         "control" {
             # PURE vanilla + telemetry, no gameplay content whatsoever. A config here is a mistake,
@@ -462,6 +500,19 @@ function Resolve-Setup {
             if (-not (Test-Path $cfg)) { throw "setup '$Id': config not found: $cfg" }
             $args += @("-Release", "-Config", $cfg)
         }
+        "external" {
+            # SOMEONE ELSE'S MOD + OUR INSTRUMENT (2026-11-15). What is BUILT is the control arm's mod, byte for byte the same recipe
+            # (telemetry and nothing else); the third-party folder is handed to the observer, which loads it first. The folder must be
+            # the one the schedule started with: a changed layout fingerprint means the arm changed mid-batch (the L10 failure, from outside).
+            $x = $ExternalMods[$Id]
+            $now = Get-ModLayoutSha $x.Path
+            if ($now -ne $x.Sha) {
+                Log "setup '$Id': the third-party mod at $($x.Path) CHANGED since the schedule started (layout $($x.Sha) -> $now) - the arm is no longer one arm; aborting" "ALERT"
+                throw "setup '$Id': third-party mod changed mid-batch: $($x.Path) ($($x.Sha) -> $now)"
+            }
+            $args += "-ControlOnly"
+            $extra = @($x.Path)
+        }
         "recipe"  {
             # Deliberately unimplemented. A recipe encodes BALANCE METHODOLOGY (solve BE, then
             # volumes, then costs), so its vocabulary dies with the next BE rework. Author the
@@ -476,7 +527,7 @@ function Resolve-Setup {
     # TESTBED_OPERATIONS.md section 2 requires to be machine-read, and precisely the two that would have caught the
     # 2026-08-05 wrong-arm day, where which arm each session ran had to be reconstructed by hand
     # from schedule.json. See run_observer.ps1's build_state block.
-    return @{ Args = $args; ModPath = (Join-Path $Repo "mod_$modName"); Kind = $kind; Config = $cfg }
+    return @{ Args = $args; ModPath = (Join-Path $Repo "mod_$modName"); Kind = $kind; Config = $cfg; ExtraMods = $extra }
 }
 
 # ---- L21 - THE BUILD IS BOUNDED, AND ITS VERDICT COMES FROM THE PROCESS, NOT THE PIPELINE.
@@ -634,6 +685,8 @@ foreach ($p in $plan) {
     # PROVENANCE: the arm this run was built from, machine-read into build_state.json. A control arm
     # with no config passes nothing, and build_state then reads as the pure-vanilla arm it is.
     if ($resolved.Config) { $obsArgs += @("-BuildConfig",$resolved.Config) }
+    # & powershell @obsArgs quotes each element itself, so the path goes in unquoted; several paths travel as one |-joined string
+    if (@($resolved.ExtraMods).Count) { $obsArgs += @("-ExtraModPaths", (@($resolved.ExtraMods) -join '|')); Log "run $($p.index) is a THIRD-PARTY arm: $(@($resolved.ExtraMods) -join ', ') + the telemetry-only build (layout $($ExternalMods[$p.setup].Sha))" }
     if ($resolved.Kind -eq "release") { $obsArgs += "-NoTelemetry"; Log "run $($p.index) is a RELEASE-BUILD run: no telemetry, so no markets.tsv - saves, wall clock and error log only" }
     if ($p.game_args -and $p.game_args.Trim()) { $obsArgs += @("-ExtraGameArgs","`"$($p.game_args.Trim())`"") }
     if ($null -ne $p.frozen_minutes) { $obsArgs += @("-FrozenMinutes","$([int]$p.frozen_minutes)") }

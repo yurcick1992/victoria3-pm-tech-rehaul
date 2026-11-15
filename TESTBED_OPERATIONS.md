@@ -52,7 +52,8 @@ re-stated as the new mode before the next run, with the user's go-ahead.
 A request to "run X" is not a specification. Before a launch, state back and get agreement on:
 
 1. **The arm(s)** — `{kind: control}` (vanilla + telemetry, nothing else), `{kind: overlay, config: …}` (vanilla + telemetry + one
-   declared overlay; not a control), or `{kind: config, config: <path>}` (a full modded build, and which book). §2.2 defines them.
+   declared overlay; not a control), `{kind: config, config: <path>}` (a full modded build, and which book), or
+   `{kind: external, mod: <path>}` (someone else's mod + telemetry; which mod, which version, which frozen copy). §2.2 defines them.
 2. **The base book** a new config branches from. A lever change ("try C 1.8 and cost1 1.2") names what moves, not what it moves
    from. Say explicitly whether it branches from the canon or from the latest hypothesis under test, and which of each one's levers
    carry over. (Ruled 2026-10-14 after a 3 × 1836→1936 batch was built on the canon while the latest hypothesis was meant — F234.)
@@ -161,6 +162,21 @@ identically. The one exception is the **release-build check** below the table, w
 | **control** | `{kind: control}` | `build.ps1 -ControlOnly` (needs `-SaveTo` or `-DryRun`, never writes `mod/`) | metadata + telemetry, nothing else | throws if handed a config with content, and the scheduler throws on `{kind: control}` with any `config`; L7 checks the emitted mod |
 | **overlay** | `{kind: overlay, config: X}` | `build.ps1 -Overlay -Config X` | vanilla + telemetry + one declared overlay (today only the pop-need weight rescaling) | throws if the config produces no overlay; own mod id `com.yurcick.v3_testbed_overlay`; a second overlay kind must be named and allow-listed |
 | **config** | `{kind: config, config: X}` | `build.ps1 -SaveTo …` | the full mod built from book X | the build's linters and preflight |
+| **external** | `{kind: external, mod: P}` (optional `layout_sha256`) | `build.ps1 -ControlOnly` (the control arm's build) + the observer's `-ExtraModPaths P` | a third-party mod as published, loaded first, + metadata and telemetry of ours, nothing else | the scheduler throws on a `config`, on a folder with no `.metadata\metadata.json`, on a path under `steamapps\workshop`, on a pinned fingerprint that does not match, and before any run whose folder changed since the schedule started; the observer throws unless the built mod reads as a clean control |
+
+**The third-party arm** (`{kind: external}`, 2026-11-15; first use: Salty's Production Method Rework 0.4.0 against vanilla and the canon,
+`schedules/g1151_alt_pmr15_vanilla5_canon5.json`) measures another author's mod with our instrument. Its rules:
+- **A frozen copy, never the Workshop folder.** Steam can update a subscribed mod while a batch plays, which splits the arm the way an
+  edit to an emitter does (L10). Copy the folder to `C:\claude-code\<mod>_<version>` and name that; the scheduler fingerprints it
+  (every file's relative path and size) when the schedule starts and again before each of its runs.
+- **What is recorded.** `build_state.json`: `arm: external+<mod id>` and `external_mods` (path, the mod's own metadata, fingerprint);
+  `meta.json`: `external_mods` and `external_mods_listed`, the paths the game's own mod list in `debug.log` named. A path missing from
+  the second list means the run played without that mod (the observer logs a WARN); the smoke check reads it.
+- **It is not a control and not a book of ours.** No register line is ruled for it: read it with `ledger/arm_compare.mjs`, which
+  prints quantities side by side without aims. The tier readings (T0–T3, old rungs, misplaced capital by tier) do not apply.
+- **Its error noise is its own.** A third-party mod logs its own error classes at start-up; take the baseline from a short probe
+  of that arm (`schedules/g1151_pmr_probe_1846.json`) before reading a century's smoke checks against vanilla's catalogue.
+- **Play time** compares only inside the session the arms alternated in (§7), like every other wall clock.
 
 **The release-build check** (`{kind: release, config: X}`, X defaulting to `config/mod_config.json`; 2026-10-29) runs the PLAYER build
 (`build.ps1 -Release -SaveTo …`, which refuses telemetry) through the observer with `-NoTelemetry`, the one waiver of the refusal above

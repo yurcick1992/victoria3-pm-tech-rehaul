@@ -1,0 +1,200 @@
+{
+  "schedule_version": 1,
+  "label": "g1151-alt-pmr15-vanilla5-canon5",
+  "_why": "THREE ARMS ON GAME 1.15.1, ALTERNATING: Salty's Production Method Rework 0.4.0 x 15, vanilla 1.15.1 x 5, No Free Upgrades 1.1.1 x 5, 1836->1936. The user, 2026-11-15: \"I want an alternating 5v5v5 run of vanilla 1.15.1 vs No Free Upgrades 1.1.1 vs PMR's latest version\", then \"n=5 might not be enough. Let's have it this way: n=15 PMR vs 5 vanilla vs 5 NFU. Wall clock speed comparisons are in-session only, but for measurements the latest vanilla vs NFU batch goes glued to this batch's results.\" The purpose, in the user's words: \"to measure world GDP, majors' GDP, depeasantation, hoarding and wall clock speed.\" Order: five rounds of pmr, vanilla, pmr, canon, pmr, so every vanilla and canon run has a PMR run on each side. A fixed-n batch: every run plays.",
+  "_arms": {
+    "pmr": "{kind: external, mod: C:/claude-code/pmr_0.4.0} - Production Method Rework 0.4.0 by Salty (Workshop item 3819399957, id org.prob32.pmr, for game 1.15.*, the Workshop's latest: published 2026-11-06, before game 1.15.1), a frozen copy taken 2026-11-15 from the Steam Workshop folder, layout fingerprint b5fe621e39bcfecf (223 files, 106,811,014 bytes) + telemetry v17 and nothing else of ours. NOT a control and not a book of ours. Salty's Discord beta branch is not this.",
+    "vanilla": "{kind: control} - vanilla 1.15.1 + telemetry v17 and nothing else.",
+    "canon": "{kind: config, config: config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json} - the 1.15.1 canon's named copy (mod 1.1.1), sha256 697d4869aefc3225 (tree twin 2928a5bf79758281), byte-identical to config/mod_config.json: the 1.15 chain replayed on 1.15.1 + six technologies' AI research weights back to 1.13.11 (§10.111.3); the DEBUG build by the emitters at launch, with the dams' subsidized = no (§10.111.5); telemetry v17 (the market's trade capacity, GAME_UPDATE_1_15_1 V18); save summaries v20."
+  },
+  "_comparison": "tools/testbed/ledger/arm_compare.mjs (a small three-arm reporter; not the ledger, by the user's ruling 2026-11-15). ECONOMY (world GDP, each major's GDP, U* and W, the investment pool / GDP): this session's runs GLUED to 20261112_113429_g1151-alt-vanilla10-canon10 (F271: the same vanilla and the same canon build, same game version), so vanilla n=15, canon n=15, PMR n=15, every usable run, medians with the run-to-run range. PLAY TIME: this session only, the three arms alternating.",
+  "_predictions": {
+    "_note": "The agent's, written before any PMR run. Directions are argued; no magnitude is.",
+    "world_gdp": "PMR ends below vanilla: a new recipe costs half a level's construction per level, where vanilla switches free, and that construction competes with new levels. Expected 0.80-1.00x vanilla at the end, with the gap widest mid-century.",
+    "majors_gdp": "The technology leaders (Britain, Germany, the USA, France) lose more against vanilla than the periphery, because they hold the most recipes to retool to.",
+    "depeasantation": "World U* at or slightly above vanilla's (construction spent on retooling creates no new jobs), far below the canon's gap to vanilla; the shortlist stays near full employment as in vanilla.",
+    "hoarding": "The investment pool / GDP at or below vanilla's: retooling is one more thing for private investors to buy.",
+    "play_time": "PMR slower than vanilla (its page: a monthly script runs per building) and slower than the canon; magnitude unknown, the reason for the 540-minute timeout on its runs.",
+    "ai_government": "Unknown, and a thing to read: whether AI governments retool the levels they own. If they do not, government-owned industry stays on its starting recipes for the century."
+  },
+  "_stop_rule": "None: a fixed-n batch plays every run (no stop watcher, no deadline).",
+  "_cost": "25 x 1836->1936: 5 vanilla at about 163 minutes and 5 canon at about 177 (F271), 15 PMR at an unknown pace; at vanilla's pace to x1.4 of it, 70 to 86 hours with builds and harvests, three to three and a half days.",
+  "_launch_checklist": [
+    "The user's explicit go-ahead for this batch (CLAUDE.md 5.1 rule 4).",
+    "The probe g1151_pmr_probe_1846.json has run and every check in it passed.",
+    "tools/testbed/STOP and NO_NEW_RUNS absent; no game running (L19); no emitter, build.ps1 or tools/testbed/** edit while it plays (L10); C:/claude-code/pmr_0.4.0 untouched (the scheduler checks its fingerprint before every PMR run).",
+    "Launch through tools/testbed/launch_detached.ps1 called directly from the PowerShell tool (L30); confirm the session folder within a minute; start the background waiter.",
+    "Smoke check about seven minutes into every run: PMR runs - external_mods listed, PMR's own LOADED line, telemetry BOOT, DLC (L50), the error classes against the probe's baseline; canon runs - the init marker and no WARN; all - the clock advancing.",
+    "Three and a half days is long enough for a Windows Update reboot (around 03:00) and for the desktop app to restart: a crashed run resumes from its autosaves, a dead scheduler does not restart itself."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "pmr": {
+      "kind": "external",
+      "mod": "C:/claude-code/pmr_0.4.0",
+      "layout_sha256": "b5fe621e39bcfecf"
+    },
+    "vanilla": {
+      "kind": "control"
+    },
+    "canon": {
+      "kind": "config",
+      "config": "config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    },
+    {
+      "setup": "canon",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "pmr",
+      "until": "1936.1.1",
+      "timeout_minutes": 540
+    }
+  ]
+}

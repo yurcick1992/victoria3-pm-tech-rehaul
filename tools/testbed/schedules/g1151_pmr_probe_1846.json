@@ -1,0 +1,40 @@
+{
+  "schedule_version": 1,
+  "label": "g1151-pmr-probe-1846",
+  "_why": "THE THIRD-PARTY ARM'S FIRST LOAD. Salty's Production Method Rework 0.4.0 (Workshop item 3819399957, frozen copy C:/claude-code/pmr_0.4.0, layout b5fe621e39bcfecf) + our telemetry-only build, ten years, then ten years of vanilla 1.15.1 beside it. It proves the new arm kind (run_schedule `kind: external`, run_observer -ExtraModPaths) before the 15 + 5 + 5 batch (g1151_alt_pmr15_vanilla5_canon5.json) spends three days on it. The user, 2026-11-15: \"I want an alternating ... run of vanilla 1.15.1 vs No Free Upgrades 1.1.1 vs PMR's latest version\".",
+  "_arms": {
+    "pmr": "{kind: external, mod: C:/claude-code/pmr_0.4.0} - Production Method Rework 0.4.0 by Salty (id org.prob32.pmr, for game 1.15.*, published 2026-11-06, before game 1.15.1) + telemetry v17 and nothing else of ours. Not a control and not a book of ours.",
+    "vanilla": "{kind: control} - vanilla 1.15.1 + telemetry v17 and nothing else."
+  },
+  "_checks": [
+    "meta.json external_mods_listed names C:/claude-code/pmr_0.4.0 (the game's own mod list), and build_state.json reads arm external+org.prob32.pmr.",
+    "PMR's own start marker in debug.log (PMR;rec=LOADED) and telemetry's BOOT / BEGIN lines under this run's token: both mods' on_actions fired.",
+    "DLC (L50): every DLC mounted, as in the vanilla run.",
+    "rakaly melts a PMR save and save_state_summary.mjs writes a summary with every country's gdp, pop_statistics, strata and investment_pool.",
+    "PMR's 192 building_pmr_retool_* types in the summaries: do they hold employees (staffing > 0) - if so, how they sit in the salaried workforce that W and U* are read from.",
+    "error.log: PMR's own start-up classes (its page says starting buildings ask for methods it merges), counted against the vanilla run beside it, as the noise baseline for the batch's smoke checks.",
+    "The pace of the first decade against the vanilla run beside it (directional, n=1, the cheap decade)."
+  ],
+  "_predictions": {
+    "load": "Both mods load and neither replaces the other's files: PMR hangs its effects on vanilla on_actions through on_actions lists of its own names, as telemetry does, and no file name is shared.",
+    "summaries": "The save summaries read as on vanilla (PMR keeps vanilla's building keys and adds only building_pmr_retool_* types).",
+    "pace": "PMR's first decade plays slower than vanilla's (its page: a monthly script runs per building); magnitude unknown."
+  },
+  "_stop_rule": "None; a probe. A failed check is fixed before the batch is launched.",
+  "_cost": "2 x 1836->1846, about 8 minutes a run plus builds and harvest: about 20 minutes.",
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1845.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "pmr": { "kind": "external", "mod": "C:/claude-code/pmr_0.4.0", "layout_sha256": "b5fe621e39bcfecf" },
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "pmr", "until": "1846.1.1" },
+    { "setup": "vanilla", "until": "1846.1.1" }
+  ]
+}

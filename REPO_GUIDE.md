@@ -1257,7 +1257,11 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   `no_dlc` (run or defaults, true/false) → observer `-DisableAllDlc` (the no-DLC load test, `schedules/no_dlc_load_test.json`);
   `frozen_minutes` (run or defaults) → observer `-FrozenMinutes` (L41). Setup `{kind: release}` builds the player build
   (`build.ps1 -Release`, no telemetry) and passes the observer `-NoTelemetry`: the release-build crash / stall check
-  (`schedules/release_century_n1.json`; TESTBED_OPERATIONS §2.2), never a measurement arm.
+  (`schedules/release_century_n1.json`; TESTBED_OPERATIONS §2.2), never a measurement arm. Setup `{kind: external, mod: <path>}`
+  (2026-11-15) is someone else's mod as an arm: the control build + the observer's `-ExtraModPaths <path>`, which loads that folder
+  first, records it in `build_state.json` (`arm: external+<mod id>`, `external_mods`) and in `meta.json` (`external_mods_listed`,
+  what the game's mod list named). The path must be a frozen copy outside `steamapps\workshop`; its layout fingerprint is checked
+  before every run (`schedules/g1151_pmr_probe_1846.json`, `g1151_alt_pmr15_vanilla5_canon5.json`; TESTBED_OPERATIONS §2.2).
   Status: current. Traps: the archiver's `Start-Process -ArgumentList` quotes nothing (paths hand-quoted) while the harvester's
   `& powershell @args` quotes each element itself (never pre-quote). Unthreaded spec keys are dropped (L5) or throw from `defaults`
   (L16); builds are time-bounded and a failed one aborts the schedule (L21). Refs: §10.94, L19, L29.
@@ -1558,6 +1562,14 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   real summary writer, which must read each at `(index − 1) mod n`. Run by `preflight.ps1` every build and before every batch. Refs: F257.
 - **`ledger/first_run_decomp.mjs`** `--arm <s>[:<setup>] [--arm …] --van <s> [--years …]` — GDP = population × productive workers per
   capita × GDP per productive worker, world and pool, every ratio with both terms; reported after each arm's first run.
+- **`ledger/arm_compare.mjs`** `--arm <label>=<group> [--arm …] [--wall <label>=<group> …] [--ref <label>] [--years …] [--majors …]`
+  (`<group>` = `<session>[,<session>][:<setup>]`, several joined with `+`) — any number of arms side by side, without aims: world and
+  shortlist GDP by decade, each major's GDP, U\*, peasants, W, GDP per productive worker, the investment pool ÷ GDP (world, shortlist,
+  majors; majors above 0.5 GDP in 1935–36; §10.113's 3-GDP flag) and, for the `--wall` groups only, play time and seconds per in-game
+  year by decade. Medians over usable runs with the lowest and highest run; the register's definitions (`criteria.mjs` `addC`).
+  Written 2026-11-15 for the three-arm batch with a third-party mod (TESTBED_OPERATIONS §2.2), in place of the ledger by the user's
+  ruling. Traps: `--arm` pools sessions, `--wall` must stay inside one session (it warns otherwise); a major under 5M people is left
+  out of the pool readings (a rump state); about 4 s a run. Checked against F271 (world GDP 1.18×, play ×1.087).
 - **`ledger/advanced_panel.mjs`** / **`tiered_panel.mjs`** `--arm <s>:<label> [--arm …] --van <s>:<label> [--year 1935] [--group …]`
   (`tiered_panel` + `--config-<n>` per arm) — productive share of the workforce and GDP per productive worker ÷ vanilla, whole economy /
   tiered industries (tiered workers modelled from staffed levels). Definitions: `ledger/README.md` §8.3; readings: F76, F78. Traps: the default

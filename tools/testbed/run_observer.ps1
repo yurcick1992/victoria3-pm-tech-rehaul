@@ -67,6 +67,13 @@ param(
     # It MUST carry telemetry (build.ps1 -Telemetry/-TelemetryOn), including the vanilla control
     # arm, which is a real mod built by build.ps1 -ControlOnly.
     [string]   $ModPath = "",
+    # ⭐ THIRD-PARTY MODS LOADED BESIDE THE MOD UNDER TEST (2026-11-15; run_schedule `kind: external`): each path is a complete mod
+    #   folder that is NOT ours (another author's mod, a frozen copy outside the Workshop folder), enabled in content_load.json BEFORE
+    #   -ModPath. -ModPath is then the telemetry-only control build, so the arm is "that mod + our instrument" and nothing of ours
+    #   touches its content. Several paths: separate with | (-File hands an array over as one string). build_state.json records each
+    #   one's metadata and layout fingerprint and names the arm `external+<mod id>`; meta.json records whether the game's own mod list
+    #   in debug.log named each path (`external_mods_listed`) - a path the game did not list means the run played without that mod.
+    [string[]] $ExtraModPaths = @(),
     # EXTRA game launch arguments, space-separated (2026-10-08, the tick-cost probes: e.g. "-script_profiling"). Appended
     # after the observer's own; recorded in meta.json with them. Empty = the standard launch.
     [string]   $ExtraGameArgs = "",
@@ -205,6 +212,13 @@ if ($FlatOut -and $Runs -ne 1) { throw "-FlatOut writes ONE run straight into -O
 # does not parse arrays, unlike -Command), so accept both forms.
 $DumpDates = @($DumpDates | ForEach-Object { $_ -split ',' } | Where-Object { $_ })
 $Tags      = @($Tags      | ForEach-Object { $_ -split ',' } | Where-Object { $_ })
+# third-party mods beside the mod under test (-ExtraModPaths): every one must be a real mod folder, and none may be the mod under test
+$ExtraModPaths = @($ExtraModPaths | ForEach-Object { $_ -split '\|' } | ForEach-Object { $_.Trim().TrimEnd('\', '/') } | Where-Object { $_ })
+foreach ($xm in $ExtraModPaths) {
+    if (-not (Test-Path -LiteralPath (Join-Path $xm ".metadata\metadata.json"))) { throw "-ExtraModPaths: no .metadata\metadata.json under $xm - not a Victoria 3 mod folder" }
+    if ((Resolve-Path -LiteralPath $xm).Path.TrimEnd('\') -eq (Resolve-Path -LiteralPath $ModPath).Path.TrimEnd('\')) { throw "-ExtraModPaths names the mod under test itself: $xm" }
+}
+if ($ExtraModPaths.Count -and $NoTelemetry) { throw "-ExtraModPaths with -NoTelemetry: a third-party arm is that mod + the telemetry-only control build; a release-build run takes no extra mods." }
 
 foreach ($d in $DumpDates) {
     if ($d -notmatch '^\d{3,4}\.\d{1,2}\.1$') { throw "dump date '$d' must be the 1st of a month (on_monthly_pulse fires then), e.g. 1886.1.1" }
@@ -650,6 +664,23 @@ function Write-BuildState {
                else { "control+UNEXPECTED" }   # a control carrying content: the builder should have thrown
     }
 
+    # ---- THIRD-PARTY MODS (-ExtraModPaths, 2026-11-15). The arm is then `external+<mod id>[+<mod id>]`: someone else's mod + our
+    # telemetry-only build. It is NEVER a control, and never `config` (no book of ours is in it). Anything but a clean control build
+    # under it is refused: our gameplay content beside a third-party mod is two treatments in one arm.
+    $external = @()
+    foreach ($xm in $ExtraModPaths) {
+        $xj = Get-Content (Join-Path $xm ".metadata\metadata.json") -Raw -Encoding UTF8 | ConvertFrom-Json
+        $external += [ordered]@{
+            path = $xm
+            metadata = [ordered]@{ name = $xj.name; id = $xj.id; version = $xj.version; supported_game_version = $xj.supported_game_version }
+            fingerprint = (Get-DirFingerprint $xm)
+        }
+    }
+    if ($external.Count) {
+        if ($arm -ne "control") { throw "-ExtraModPaths needs the telemetry-only control build as the mod under test (build.ps1 -ControlOnly); this one reads as arm '$arm'." }
+        $arm = "external+" + (($external | ForEach-Object { $_.metadata.id }) -join '+')
+    }
+
     $state = [ordered]@{
         schema_version = 2
         generated      = (Get-Date).ToString("s")
@@ -663,6 +694,7 @@ function Write-BuildState {
                                     built_from_config = $BuildConfig
                                     config_sha256 = (Get-FileSha $BuildConfig)
                                 } } else { $null })
+            external_mods  = $external   # third-party mods loaded before the mod under test (-ExtraModPaths); empty on every other arm
             repo    = $git
             game    = [ordered]@{ version = $gameVersion; exe = $Exe }
             harness = [ordered]@{
@@ -968,8 +1000,12 @@ try {
         $script:DisabledDlc = Get-InstalledDlcIds
         Write-Log "NO-DLC RUN: disabling $($script:DisabledDlc.Count) installed DLC(s): $($script:DisabledDlc -join ' ')"
     }
-    $cl = Set-ContentLoad -ModDirs @($ModPath) -DisabledDlc $script:DisabledDlc
+    # third-party mods first, the mod under test (their telemetry) last
+    $cl = Set-ContentLoad -ModDirs (@($ExtraModPaths) + @($ModPath)) -DisabledDlc $script:DisabledDlc
     Write-Log "content_load.json = $cl"
+    foreach ($xm in $ExtraModPaths) { Write-Log "THIRD-PARTY MOD loaded before the mod under test: $xm" }
+    # the form the game's own mod list prints a path in (debug.log: `<mod name>|<path with forward slashes>`)
+    $script:ExtraModFwd = @($ExtraModPaths | ForEach-Object { $_ -replace '\\', '/' })
     Set-RunSettings
     Write-Log "pdx_settings.json: display_mode=windowed, language=l_english"
 
@@ -1002,6 +1038,7 @@ try {
         $streamed = New-Object System.Collections.Generic.List[string]
         $lastTick = ""; $timedOut = $false; $modLoaded = $false; $modInit = $false
         $dlcMounted = New-Object 'System.Collections.Generic.HashSet[string]'   # "Mounted Data: ...\game\dlc\<folder>" lines (-DisableAllDlc's proof)
+        $extListed = New-Object 'System.Collections.Generic.HashSet[string]'    # third-party mod paths the game's own mod list named (-ExtraModPaths' proof)
         $targetNum = ConvertTo-DateNum $UntilDate
         $attempt = 0; $resumes = 0; $abandoned = ""; $frozenStops = 0
         $attemptLog = @()
@@ -1098,6 +1135,7 @@ try {
                 if ($line -match "successfully matched game version") { $modLoaded = $true }
                 if ($line -match "PM_TECH_REHAUL: init OK")           { $modInit = $true }
                 if ($line -match 'Mounted Data: .*[/\\]game[/\\]dlc[/\\]([^/\\\s]+)') { $null = $dlcMounted.Add($Matches[1]) }
+                foreach ($xm in $script:ExtraModFwd) { if ($line.TrimEnd().EndsWith("|$xm", [System.StringComparison]::OrdinalIgnoreCase)) { $null = $extListed.Add($xm) } }
             }
             foreach ($line in (Read-Tail $tailTick)) {
                 # L41: a pause by PLAYER input (PlayerID > 0; the engine's own toggles carry 0) - quoted if the date then freezes
@@ -1249,6 +1287,7 @@ try {
             if ($line -match "successfully matched game version") { $modLoaded = $true }
             if ($line -match "PM_TECH_REHAUL: init OK")           { $modInit = $true }
             if ($line -match 'Mounted Data: .*[/\\]game[/\\]dlc[/\\]([^/\\\s]+)') { $null = $dlcMounted.Add($Matches[1]) }
+                foreach ($xm in $script:ExtraModFwd) { if ($line.TrimEnd().EndsWith("|$xm", [System.StringComparison]::OrdinalIgnoreCase)) { $null = $extListed.Add($xm) } }
         }
         $null = Read-Tail $tailTick
         $null = Read-Tail $tailError
@@ -1537,6 +1576,8 @@ try {
             # -DisableAllDlc: asked to disable / mounted anyway / verified (null on an ordinary run, which mounts every DLC)
             disabled_dlc = @($script:DisabledDlc); dlc_mounted = @($dlcMounted | Sort-Object)
             no_dlc_verified = $(if ($DisableAllDlc) { $dlcMounted.Count -eq 0 } else { $null })
+            # -ExtraModPaths: the third-party mods asked for / the ones the game's own mod list named (both empty on every other arm)
+            external_mods = @($script:ExtraModFwd); external_mods_listed = @($extListed | Sort-Object)
             dump_complete = $sawEnd; dumps_seen = @($dumpsSeen.Keys | Sort-Object); dump_date_ingame = $ingameDate
             goods_rows = $rows.Count; markets = $markets; markets_not_found = $notFound
             error_log_lines = $errorLines; error_log_foreign_lines = $errForeign; autosaves_written = $savesAfter - $savesBefore
@@ -1547,6 +1588,10 @@ try {
         $session.runs += $meta
 
         Write-Log ("run ${run}: {0} goods rows, dump_complete={1}, mod_loaded={2}, error.log {3} lines" -f $rows.Count, $sawEnd, $modLoaded, $errorLines)
+        foreach ($xm in $script:ExtraModFwd) {
+            if ($extListed.Contains($xm)) { Write-Log "run ${run}: third-party mod listed by the game: $xm" }
+            else { Write-Log "run ${run}: WARN THIRD-PARTY MOD NOT LISTED - debug.log's mod list never named $xm - this run did not play that mod" "WARN" }
+        }
         if ($DisableAllDlc) {
             if ($dlcMounted.Count -eq 0) { Write-Log "run ${run}: NO-DLC VERIFIED - debug.log shows no DLC folder mounted" }
             else { Write-Log "run ${run}: WARN NO-DLC FAILED - the game still mounted $($dlcMounted.Count) DLC(s): $(@($dlcMounted | Sort-Object) -join ' ') - this run is no no-DLC test" }

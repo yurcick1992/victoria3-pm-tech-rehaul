@@ -817,7 +817,8 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 
 **Measurement**
 3. **A run's configuration is unambiguous before it launches.** State back, and get agreement on: which ARM (`{kind: control}` = vanilla + telemetry
-   and nothing else, ever; `{kind: config, config: <path>}` = which book; an overlay is not a control), **which book a new config branches from**
+   and nothing else, ever; `{kind: config, config: <path>}` = which book; an overlay is not a control; `{kind: external, mod: <path>}` = someone
+   else's mod from a frozen copy + telemetry, never a control and never read against the register), **which book a new config branches from**
    (never assume — a wrong base cost a whole century batch, F234), the span, n, the metrics and what is compared against what. A probe of how the
    ENGINE behaves belongs on vanilla + telemetry (our content would confound it); a probe of how OUR economy behaves belongs on the config. Write the
    arm and the prediction in the schedule's `_why`, and name the arm in every finding it produces.
