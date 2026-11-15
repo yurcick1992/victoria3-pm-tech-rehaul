@@ -69,22 +69,46 @@
       "means": "provenance: what was read, how many, on what build"
     },
     {
-      "name": "__ARMLABEL__",
-      "from": "tokens.json",
-      "required": true,
-      "means": "legend label of THIS arm's GDP line (was the literal 'flat 0.65×' in the shell: every report since flatcost-n1 labelled its own arm with the flatcost arm's name)"
-    },
-    {
       "name": "__NBLABEL__",
       "from": "tokens.json",
       "required": true,
       "means": "legend label of the reference (NB) series (was the literal '×1.5^era')"
     },
     {
-      "name": "__VANLABEL__",
+      "name": "__MODVER__",
       "from": "tokens.json",
       "required": true,
-      "means": "how the GDP chart names the vanilla baseline, e.g. 'n=16 median' (was 'n=4 mean')"
+      "means": "the mod version the arm is, as the line under every chart's title names it: '1.1.1', or a book's name for an unreleased arm (2026-11-15; replaces __ARMLABEL__, the GDP legend's version and n)"
+    },
+    {
+      "name": "__MODDATE__",
+      "from": "tokens.json",
+      "required": true,
+      "means": "the mod version's release date, yyyy-mm-dd (printed as '15 November 2026'); empty for an unreleased arm, which then shows no date"
+    },
+    {
+      "name": "__VANVER__",
+      "from": "tokens.json",
+      "required": true,
+      "means": "the vanilla game version the vanilla runs played, e.g. '1.15.1' (2026-11-15; replaces __VANLABEL__)"
+    },
+    {
+      "name": "__VANDATE__",
+      "from": "tokens.json",
+      "required": true,
+      "means": "that vanilla version's release date, yyyy-mm-dd (ON_GAME_UPDATE.md's version log)"
+    },
+    {
+      "name": "__NMOD__",
+      "from": "fill_assemble.mjs (the count of _mod.txt) unless tokens.json names it",
+      "required": true,
+      "means": "the arm's usable runs, for the chart headers"
+    },
+    {
+      "name": "__NVAN__",
+      "from": "fill_assemble.mjs (the count of _van.txt) unless tokens.json names it",
+      "required": true,
+      "means": "the vanilla reference runs, for the chart headers"
     },
     {
       "name": "__SPREAD__",
@@ -115,12 +139,6 @@
       "from": "fill_scorecard.mjs (scorecard_loss.html)",
       "required": true,
       "means": "the criteria register's loss and its parts, in the footer (out of the table by ruling, 2026-10-29)"
-    },
-    {
-      "name": "__FIRSTRUN__",
-      "from": "fill_assemble.mjs (the first run of _mod.txt), or tokens.json",
-      "required": true,
-      "means": "the run the one-run panels of the Shortlist page read"
     }
   ],
   "consts": [
@@ -165,6 +183,13 @@
       "required": true,
       "minKeys": 4,
       "means": "old rungs beside their replacement: workers on a rung 2+ eras behind the best rung their own country staffs in the industry, world + shortlist pool"
+    },
+    {
+      "name": "EMP_GRP",
+      "from": "fill_emp.mjs (emp_grp.json)",
+      "required": true,
+      "minKeys": 4,
+      "means": "the whole workforce outside the tier buildings in eleven groups, world, median over runs per group (lib_workforce_groups.mjs GROUP_LABELS; the whole-workforce view of Who works where, 2026-11-15)"
     },
     {
       "name": "PROD_FLAT",
@@ -366,9 +391,13 @@
     "sc-tier",
     "sc-all",
     "c2-abs",
+    "c2-grp",
     "c2-norm",
+    "c2-tier",
     "c4-abs",
+    "c4-grp",
     "c4-norm",
+    "c4-tier",
     "tab-watch",
     "tab-world",
     "sel-all",

@@ -63,7 +63,7 @@ writing prose, because `fill_assemble` stops on any missing output.
 | 5 | `wall_clusters.mjs "<setup>=<group>:<setup>" "vanilla=<wall ref>:vanilla" --json` | `wall_clusters.json` | the play-time clusters |
 | 6 | `fill_build_perf.mjs <out>` | `perf_panel.json` | `PERF` (with the per-session ratios), the scorecard's play-time line |
 | 7 | `fill_consts.mjs <out> --mod --van --nb none` | `consts.json` | `GDP_*`, `PROD_*`, `TRAJ`, `WORLD_*`, GDP per productive worker |
-| 8 | `fill_emp.mjs <out> --mod --config` | `emp.json`, `emp_cols.json`, `emp_b2.json` | `EMP`, `EMP_COLS`, `EMP_B2`, the tier-1 and anchors lines |
+| 8 | `fill_emp.mjs <out> --mod --config` | `emp.json`, `emp_cols.json`, `emp_b2.json`, `emp_grp.json` | `EMP`, `EMP_COLS`, `EMP_B2`, `EMP_GRP` (the whole workforce outside the tiers, in groups), the tier-1 and anchors lines |
 | 9 | `fill_payback.mjs <out> --mod --config` | `payback.json` | `LADDER`, the payback lines |
 | 10 | `fill_research.mjs <out> --mod --van --config` | `research.json` | `D2.techsT`, `D2.jeT` |
 | 11 | `fill_tierchoice.mjs <out> --session --setup --config` | `tierchoice.json` | the "built below the best tier" line |
@@ -111,7 +111,7 @@ derived by a `fill_*.mjs` (`fill_manifest.json`'s `_rule`). Write these into the
 | `footer.html` | `__FOOTER__` | provenance: what was read, how many runs, on what build and game version, which reader each line comes from |
 | `redflags_summary.html` | `__RF_SUMMARY__` | 3–15 sentences in one to three `<p>`, written with the **redflag-summary skill** (`.claude/skills/redflag-summary/SKILL.md`) from `redflags_digest.md`; without it the gate refuses the report |
 | `title.txt` | `<title>` | the page's title, one line (each batch is its own Artifact; absent, the template's title stands) |
-| `tokens.json` | the twelve below | `{"__SESSION__": "…", …}` |
+| `tokens.json` | the fourteen below | `{"__SESSION__": "…", …}` |
 
 `tokens.json` carries:
 
@@ -125,15 +125,29 @@ derived by a `fill_*.mjs` (`fill_manifest.json`'s `_rule`). Write these into the
 | `__GAME__` | the game build every run ran on (footer) |
 | `__DELTA__` | what the arm changes against the shipped canon (footer: "Changed against the shipped canon") |
 | `__BASE__` | the references (VANILLA_REF n=56; wall clock VANILLA_WALL_REF) and whether they ran in the same days (footer) |
-| `__ARMLABEL__` | the legend label of this arm's GDP line |
 | `__NBLABEL__` | the legend label of a reference series — fill it even when there is none (the token sits in the script either way) |
-| `__VANLABEL__` | how the GDP chart names vanilla, e.g. `n=24 median` (`GDP_VAN` is the median of the reference runs) |
+| `__MODVER__` | the mod version the arm is (`1.1.1`), or the book's name for an unreleased arm — the chart headers (below) |
+| `__MODDATE__` | its release date, `yyyy-mm-dd`; `""` for an unreleased arm, which then shows no date |
+| `__VANVER__` | the vanilla game version the vanilla runs played (`1.15.1`) |
+| `__VANDATE__` | that version's release date, `yyyy-mm-dd` (the version log in `ON_GAME_UPDATE.md`: the day Steam delivered it) |
 | `__SPREAD__` | the sentence after "A median hides the spread —": this batch's per-run GDP ratio range at 1935 and how to read it |
 
+`__ARMLABEL__` and `__VANLABEL__` (the GDP chart's legend and caption, with the version and the n in them) were retired on 2026-11-15: the
+chart headers carry both now, and a `tokens.json` that still holds them is harmless.
+
+**The chart headers** (user, 2026-11-15, for screenshots in promotional material). Under every chart's title one line names the mod version
+and its release date, the vanilla version and its release date where the chart reads vanilla, and how many runs of each it reads — "Mod
+1.1.1 (released 15 November 2026) vs vanilla 1.15.1 (released 11 November 2026) · 10 mod runs vs 11 vanilla runs". The versions and dates
+are the four tokens above; the counts come from what each chart draws: play time from `PERF.runs` outside cluster 3, the two charts above the
+pages from `INTRO`, world GDP from `_mod.txt` / `_van.txt` (`__NMOD__`, `__NVAN__`, filled by `fill_assemble`), the employment charts mod
+only, and the Shortlist page's GDP and employment charts "1 mod run (the first)". The legends and captions under a chart no longer repeat the
+versions or the n. A new chart gets the line by wrapping its `<h3>` as `<div><h3>…</h3><div class="figid" data-fig="<key>"></div></div>`
+and adding its counts to the script at the end of the template.
+
 **Token rules.**
-- **`__ARMLABEL__`, `__NBLABEL__`, `__VANLABEL__` and `__SPREAD__` land inside single-quoted JavaScript strings.** A straight `'` or a line
+- **`__NBLABEL__`, `__SPREAD__` and the four version tokens land inside single-quoted JavaScript strings.** A straight `'` or a line
   break in one ends the string, the script fails to parse, and every renderer after it stays blank. `fill_assemble` turns a word-internal
-  `'` into `’` in every token and warns about any straight quote left; keep these four on one line. The HTML fragments (`lede.html` …) are
+  `'` into `’` in every token and warns about any straight quote left; keep these on one line. The HTML fragments (`lede.html` …) are
   spliced into markup and may use either apostrophe.
 - **One configuration per report** (user-ruled 2026-09-13): the ledger compares its arm against vanilla and nothing else — no reference
   series on the GDP chart (`--nb none`), no `fill_tierchoice --baseline` rows (the scorecard reads the last row), no other batch's numbers
@@ -154,6 +168,7 @@ by relative path) writes `<outDir>/REPORT.html`.
 
 - **Reads** `consts.json`, `emp.json`, `emp_cols.json`, `emp_b2.json`, `perf_panel.json`, `report_data.json`, `report_data2.json`,
   `research.json`, `payback.json`, `indecomp.json`, `obsolescence.json`, `old_plants.json`, `intro.json`; any missing file stops it.
+  `emp_grp.json` is read when present (an out dir filled before 2026-11-15 has none; the gate then refuses the empty `EMP_GRP`).
 - **Splices every const** over the template's line (`const X=…;`); a missing anchor exits 1 (`ANCHOR MISSING`). It never leaves the
   template's shipped values in place, which would publish a previous batch's numbers under this title.
 - **Computes two consts itself:** `LADDER` (most-built tier and t0 share from the decade's additions summed over every run; frontier and
@@ -162,7 +177,7 @@ by relative path) writes `<outDir>/REPORT.html`.
   `research.json`'s `techsT` and `jeT` added; `OLDP` is `old_plants.json`, `INTRO` is `intro.json`. (`WATCH` and `TIERC` went with their
   panels on 2026-10-29.)
 - **Splices the tokens** from `tokens.json` plus `lede`, `scorecard` (→ `__SCORECARD__`), `scorecard_loss` (→ `__LOSS__`), `incidents`,
-  `footer` `.html`; `__FIRSTRUN__` is the first run of `_mod.txt` unless `tokens.json` names one. A `<table>` in the lede, incidents or
+  `footer` `.html`; `__NMOD__` and `__NVAN__` (the chart headers) are the counts of `_mod.txt` and `_van.txt` unless `tokens.json` names them. A `<table>` in the lede, incidents or
   footer is wrapped in a scrolling box (`tablewrap`). The red-flag card
   (`redflags_card.html`) gets `redflags_summary.html` spliced in before the token map is applied; without the summary it prints a warning
   and the gate will refuse. With no card at all the page says the red flags were not read. An out dir from before 2026-10-08 holding a
@@ -293,9 +308,26 @@ trajectory ÷ vanilla (without its GDP column: the decomposition table carries t
 2026-10-29 (user): the build-choice panel (its headline is a scorecard line), the tech edge, the next lever. **What gets cut is a duplicate at
 the same grain**; finer detail may sit in a collapsed section (user, 2026-10-29).
 
-- ⚠ **The Shortlist page reads the group's FIRST usable run** for most panels (`report_data2.json`'s `flat`; `__FIRSTRUN__` names it on the
-  page), and its per-tag anomaly flags (dissolution, a civil war or collapse — population −25% in a year —, an annexation-scale jump of +25%)
-  come from that run. The old-plant table reads every run.
+- **The Shortlist page reads every run of both arms** (user, 2026-11-15): per country, the mean over the arm's runs (`report_data2.json`'s
+  `mod` and `van`, one rule for both). An additive quantity (GDP, population, productive workers, workers by tier, the workforce groups) counts a
+  country ZERO in a run where it does not exist, so a selection's sum is the mean of its totals and a formation (PRU → NGF → GER; NET, BEL →
+  UNL) adds up when the whole chain is selected; the labour shares are population-weighted over the runs where the country exists. The per-tag
+  anomaly flags count runs ("civil war in 2 of 10 runs (1864, 1919)"; a formation, a dissolution, a −25% or +25% population year). From
+  2026-08-16 to 2026-11-15 the mod side was the group's FIRST run alone (`flat`, `__FIRSTRUN__`) against the mean of the vanilla runs, which in
+  turn counted each link of a formation chain in full: every Shortlist page refilled before that date carries both.
+- **"Who works where" has a second view, the whole workforce** (user, 2026-11-15), on both pages: the toggle **whole workforce** stacks every
+  other worker above the tier columns, in eleven groups — agriculture (farms, plantations, ranches), mines & extraction (the game's extraction
+  group: mines, gold fields, logging, fishing, whaling, oil, rubber), infrastructure (ports, railways, canals, power plants, dams), trade
+  centres, other buildings (shipyards, the industries left untiered, monuments), urban centres, rentiers (Financial Districts, Manor Houses,
+  company and regional company headquarters), government (administration, universities and the construction sector, as the save counts it),
+  military, peasants & Cossacks (everyone working in a subsistence building — the peasants and the farmers a law puts there — and the Cossack
+  Hosts) and the truly unemployed. `lib_workforce_groups.mjs` (its header has every source): unemployment, government, military and, from
+  `ig_by_workplace` (summary v14+), trade centres, urban centres and rentiers are the save's own counts; the rest are staffed levels × one
+  level's employment under the active methods, read live from the game folder (`VIC3_GAME`) and a mod build (`--mod-build`, default `mod/`
+  — the per-run builds are deleted after a batch, so pass the build of the book the runs played). Checked on F271's run 2: the modelled
+  urban centres match the save's count (7.37M against 7.36M), and the whole stack lands within 1–4% of the save's workforce. World from
+  `fill_emp.mjs`'s `emp_grp.json` (`EMP_GRP`, the median over runs per group like `EMP`), Shortlist from `report_data2.mjs`'s `grp` (the mean,
+  like the rest of that page). An older batch without `ig_by_workplace` says so on the legend.
 - ⚠ **A per-tag panel understates a colonial power.** Subjects are separate countries sharing the overlord's market, so their buildings and
   GDP sit on their own tags: in F67 the Dutch subjects held 238 port levels at 67% modern against the Netherlands' own 161 at 39%. Check a
   colonial power's development against its market (each country record in a save summary carries a numeric `market` id).
@@ -401,8 +433,9 @@ Each writes one or more files into the out dir; `fill_ledger.sh` runs them in th
   lines (2026-10-29; until then the prose quoted them by hand). `tech_census` keeps only the years it reads (the first, the anchors, the
   last): holding every year ran the heap out on the n=40 vanilla reference.
 - **`report_data2.mjs`** — the Shortlist page's dataset per tag: yearly GDP and population, labour, tier employment (`lib_era_cols` columns), old
-  rungs (`b2`), productive workers (`pw`), the tiered sector (workers and weekly value added, world and per tag), and the anomaly flags. All
-  runs are walked (`flatRuns`); the page reads `flat`, run 1.
+  rungs (`b2`), the whole workforce outside the tiers, in groups (`grp`), productive workers (`pw`), the tiered sector (workers and weekly value added,
+  world and per tag), and the anomaly flags. Every run of both arms is walked and aggregated by one rule (`agg`: the mean over all the arm's
+  runs, a missing country zero; `n` per tag and year = the runs holding it; `nMod`, `nVan`); see "The Shortlist page reads every run" above.
 - **`report_perf.mjs`** — the century's play time per run, rebuilt from the observer's tick lines (`lib_wall.mjs`; each crash-resume's
   reload and replay out; `--wall meta` restores `meta.json`'s `wall_seconds`), the naive total, per-decade rates and the pop-matched bins
   (`--bins`, default 14). A run is vanilla when `build_state.json`'s `deterministic.arm` is `control` or its setup name contains

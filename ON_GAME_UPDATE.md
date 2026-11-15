@@ -590,6 +590,17 @@ Notes to the table:
 - **Not in a 1.13.11 save:** trade advantage and local import or export prices. If a patch starts saving them, the importer premium can be read
   directly instead of through producer prices.
 - **rakaly** melts the saves (TESTBED_METRICS §7 records the release); a changed save format needs a rakaly that reads it.
+- **`ledger/lib_workforce_groups.mjs`** (2026-11-15, the ledger's "Who works where" whole-workforce view) models a building type's workers as its
+  staffing × one level's employment under its active methods, reading every method's `building_employment_*_add` and the building-group tree LIVE
+  from the game folder and a mod build — no number is copied. What a patch can break silently: the vanilla group names it buckets by
+  (`bg_subsistence_*`, `bg_cossack_host`, `bg_agriculture`, `bg_plantations`, `bg_ranching`, `bg_extraction`, `bg_infrastructure`, `bg_power`,
+  `bg_owner_buildings`, `bg_service`, `bg_trade`, `bg_military`, `bg_government`, `bg_technology`, `bg_construction`; a renamed one sends its
+  buildings to "other buildings"); employment set by anything but `building_employment_<profession>_add` in a method; the save's meaning of
+  `staffing` (headcount ÷ one level's employment, checked on 1.15.1); `population_government_workforce` including the construction sector (checked
+  on 1.15.1); and `ig_by_workplace`'s `urban_center`, `trade_center` and `owner` classes (save_state_summary's `WP_CLASS`: a building renamed out
+  of `building_financial_district`, `building_manor_house`, `building_company_*` or `building_regional_company_*` leaves the rentiers silently).
+  After a patch: rerun `fill_emp.mjs` on a fresh batch and check that it prints no "methods with no employment entry" and that the stack's
+  total stays within a few percent of the save's salaried + unemployed + peasants.
 - **`ledger/input_price_flags.mjs`** (§10.94) parses every vanilla building, group and method by brace depth. It throws if the coal, iron, lead and
   sulfur mines, the steel mill, the explosives factory or the tooling workshop stop being the one-good producers of their goods. A new
   production-methods file of a non-industry kind must join its `NOT_INDUSTRY` list, or its inputs count as industrially consumed.

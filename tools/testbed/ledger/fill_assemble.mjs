@@ -54,6 +54,9 @@ rep(/^const EMP_COLS=\[.*$/m, 'const EMP_COLS=' + JSON.stringify(J('emp_cols.jso
 // old rungs beside their replacement (fill_emp.mjs → emp_b2.json, 2026-10-02): the "Who works where" section's answer to how much of the
 // old-rung workforce is the ladder failing to retire a rung rather than a country with nothing newer
 rep(/^const EMP_B2=\{.*$/m, 'const EMP_B2=' + JSON.stringify(J('emp_b2.json')) + ';', 'EMP_B2');
+// the whole workforce outside the tier buildings, in groups (fill_emp.mjs → emp_grp.json, 2026-11-15): the second view of "Who works where". An out dir
+// filled before it has none — rerun fill_emp.mjs; the gate refuses an empty EMP_GRP
+rep(/^const EMP_GRP=\{.*$/m, 'const EMP_GRP=' + (existsSync(join(DIR, 'emp_grp.json')) ? readFileSync(join(DIR, 'emp_grp.json'), 'utf8') : '{}') + ';', 'EMP_GRP');
 rep(/^const PROD_FLAT=\{.*$/m,'const PROD_FLAT='+ JSON.stringify(C.PROD_FLAT)+ ';', 'PROD_FLAT');
 rep(/^const PROD_VAN=\{.*$/m, 'const PROD_VAN=' + JSON.stringify(C.PROD_VAN) + ';', 'PROD_VAN');
 rep(/^const TRAJ=\{.*$/m,     'const TRAJ='     + JSON.stringify(TRAJ)       + ';', 'TRAJ');
@@ -93,8 +96,12 @@ s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
   //   edge — the laggard table of F249's lede did (2026-10-29).
   for (const k of ['__LEDE__', '__INCIDENTS__', '__FOOTER__']) if (tok[k])
     tok[k] = tok[k].replace(/(<div class="tablewrap">\s*)?<table([\s\S]*?)<\/table>/g, (m, w, body) => w ? m : '<div class="tablewrap"><table' + body + '</table></div>');
-  // the run the one-run panels of the Shortlist page read (report_data2.mjs's `flat`): the group's first usable run
-  if (!tok.__FIRSTRUN__ && existsSync(join(DIR, '_mod.txt'))) tok.__FIRSTRUN__ = readFileSync(join(DIR, '_mod.txt'), 'utf8').trim().split(',')[0];
+  // (__FIRSTRUN__, the run the Shortlist page's one-run panels read, went on 2026-11-15: report_data2.mjs aggregates every run now)
+  // ⭐ 2026-11-15: the run counts under every chart's title (the figid line) — the group's usable runs, the same lists every step read
+  for (const [k, f] of [['__NMOD__', '_mod.txt'], ['__NVAN__', '_van.txt']]) if (!tok[k]) {
+    if (!existsSync(join(DIR, f))) { console.error('MISSING ' + f + ' — the chart headers need the run counts'); process.exit(1); }
+    tok[k] = String(readFileSync(join(DIR, f), 'utf8').trim().split(',').filter(Boolean).length);
+  }
   // ⭐ SINCE 2026-10-08 THE PAGE CARRIES THE RED FLAGS' HEADLINE AND A SUMMARY, NOT THE LISTING (user: "at least 100 times too large to be
   //   readable"): redflag_metrics.mjs writes redflags_card.html with a __RF_SUMMARY__ token, the redflag-summary skill writes
   //   redflags_summary.html (3–15 sentences), and the flag-by-flag listing stays in redflags_full.html beside the report. The card wins over a
@@ -113,7 +120,7 @@ s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
     tok.__REDFLAGS__ = '<p class="dim">⚑ Input-price red flags: not read for this report (no redflags_card.html — run <code>input_price_flags.mjs --json</code> then <code>redflag_metrics.mjs</code>, BALANCE_FRAMEWORK §10.94).</p>';
     console.log('  ⚠ redflags_card.html absent — the page says the red flags were not read');
   }
-  // ⚠ SEVERAL TOKENS LAND INSIDE SINGLE-QUOTED JS STRINGS (__ARMLABEL__, __SPREAD__, … in render1's chart labels and captions), so a
+  // ⚠ SEVERAL TOKENS LAND INSIDE SINGLE-QUOTED JS STRINGS (__SPREAD__, __MODVER__, … in render1's captions and the chart headers), so a
   //   straight apostrophe in one ("vanilla's path") is a SYNTAX ERROR that blanks every renderer after it — fill_verify caught it on
   //   2026-10-02. A word-internal ' becomes the typographic ’, which is what the shipped prose uses anyway; any other ' is reported.
   for (const k of Object.keys(tok)) {

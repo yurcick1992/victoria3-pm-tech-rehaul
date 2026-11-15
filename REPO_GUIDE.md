@@ -1502,6 +1502,12 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   `PRICE_TAGS`, `TELEMETRY_TAGS`. Traps: UNL replaces NET and BEL where it forms; a market name does not identify its leader. Refs: F152 §7, F153.
 - **`ledger/lib_goods.mjs`** — the goods table from `common/goods` (base price, traded quantity, local / tradeable, a save's positional
   index); `tradedQuantity(cfg)`, `tradeClasses(cfg)` (from the book's `_trade.classes`). Refs: F159.
+- **`ledger/lib_workforce_groups.mjs`** (2026-11-15) — `workforceModel({game, mod, tierKeys})` → `groups(country)`: the whole workforce outside
+  the tier buildings in eleven groups (`GROUP_LABELS`), for the ledger's "Who works where" whole-workforce view. The save's own counts where it
+  has them (unemployed, government, military; trade centres, urban centres and rentiers from `ig_by_workplace`, summary v14+, null before);
+  elsewhere staffing × one level's employment under the active methods, read live from the game folder and a mod build (couplings:
+  ON_GAME_UPDATE §2.3.3). `missing` collects methods with no employment entry. Read by `fill_emp.mjs` (world) and `report_data2.mjs` (per tag),
+  both taking `--mod-build <dir>` (default `mod/`).
 - **`ledger/lib_era_cols.mjs`** — the ledger's employment-by-tier columns: on a craft book t0 splits into artisans / other; a merge host is
   shared over its methods at each method's tier. `eraCols(cfg)`, `parts(key, building)` (readers key on labels, never indices);
   `countrySplit(buildings)` = workers on a rung ≥ 2 tiers behind the best rung their own country staffs in that industry.

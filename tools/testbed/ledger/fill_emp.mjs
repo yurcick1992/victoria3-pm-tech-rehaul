@@ -8,6 +8,7 @@ import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 import { eraCols } from './lib_era_cols.mjs';
 import { POOL } from './lib_markets.mjs';
+import { workforceModel, DEFAULT_GAME, GROUP_LABELS } from './lib_workforce_groups.mjs';
 // ⭐⭐ ERA-COUNT AGNOSTIC (2026-08-31). The ledger serves TWO semi-canonical books now — the six-rung
 //   canonical one and the four-rung vanilla-ladder arm — so nothing here may assume six eras or a
 //   particular config. The arm's OWN config comes in on `--config`; the era count is derived from it.
@@ -24,6 +25,12 @@ import { POOL } from './lib_markets.mjs';
 const CFGP = (() => { const i = process.argv.indexOf('--config'); return i > 0 && process.argv[i+1] ? process.argv[i+1] : 'config/mod_config.canon_n7.json'; })();
 const cfg = JSON.parse(readFileSync(CFGP, 'utf8'));
 const E = eraCols(cfg);
+
+// ⭐ 2026-11-15: the whole workforce outside the tier buildings, in groups (lib_workforce_groups.mjs) — method employment read live from the
+//   game folder (VIC3_GAME) and the build of the book the runs played (--mod-build, default mod/: the per-run builds are deleted after a batch)
+const MODBUILD = (() => { const i = process.argv.indexOf('--mod-build'); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : 'mod'; })();
+const WG = workforceModel({ game: DEFAULT_GAME, mod: MODBUILD, tierKeys: E.tier });
+console.log('workforce groups: game ' + DEFAULT_GAME + ' · mod build ' + MODBUILD);
 const SES = 'tools/testbed/sessions';
 // ⚠⚠ --mod IS REQUIRED. This used to hardcode canon-n7 while accepting other flags, so a fill for
 //   ANY other batch silently reported canon-n7’s numbers under the new batch’s title — the tier employment-by-era table
@@ -41,7 +48,7 @@ const YEARS = [1840,1850,1860,1870,1880,1890,1900,1910,1920,1930,1935];
 //   country staffs in the same industry (lib_era_cols countrySplit's b2), world-wide and in the register's shortlist POOL — the
 //   ladder failing to retire a rung, separated from backward countries that run nothing newer. → emp_b2.json → EMP_B2.
 const POOLSET = new Set(POOL);
-const per = {}, perB = {};
+const per = {}, perB = {}, perG = {};
 for (const r of RUNS) {
   const dir = join(SES, r, 'save_summaries'); if (!existsSync(dir)) continue;
   const seen = new Set();
@@ -50,9 +57,11 @@ for (const r of RUNS) {
     const y = +(j.provenance.date || '0').split('.')[0];
     if (!YEARS.includes(y) || seen.has(y)) continue;   // the save files sort chronologically: the first one of a year is its first summary
     seen.add(y);
+    const grp = new Array(GROUP_LABELS.length).fill(0);   // the groups outside the tier buildings (lib_workforce_groups), every country record
     const n = E.labels.length, cols = new Array(n).fill(0), wB2 = new Array(n).fill(0), pB2 = new Array(n).fill(0), pAll = new Array(n).fill(0);
     for (const [key, c] of Object.entries(j.countries)) {
       const s = E.countrySplit(c.buildings);
+      WG.groups(c).forEach((v, i) => { grp[i] = (v == null || grp[i] == null) ? null : grp[i] + v; });
       // a pool member is the plain TAG, i.e. the country's MAIN record (summary v12+ keys the others TAG@<id>; landmine L38)
       const inPool = POOLSET.has(key);
       for (let i = 0; i < n; i++) {
@@ -61,14 +70,18 @@ for (const r of RUNS) {
       }
     }
     (per[y] ||= []).push(cols);
+    (perG[y] ||= []).push(grp);
     (perB[y] ||= []).push({ wB2, pB2, pAll });
   }
 }
 const med = a => { const s = [...a].sort((x, y) => x - y); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m-1]+s[m])/2; };
-const EMP = {}, EMP_B2 = {};
+const EMP = {}, EMP_B2 = {}, EMP_GRP = {};
 const M2 = x => +(x / 1e6).toFixed(2);
 for (const y of YEARS) if (per[y]) {
   EMP[y] = E.labels.map((_, i) => M2(med(per[y].map(r => r[i]))));
+  // ⭐ 2026-11-15: the groups outside the tier buildings (the whole workforce), the median over runs per group like EMP's columns (a group a run cannot read —
+  //   a summary before v14 — is null for the year: the chart says it was not read rather than drawing zero)
+  EMP_GRP[y] = perG[y][0].map((_, i) => perG[y].some(r => r[i] == null) ? null : M2(med(perG[y].map(r => r[i]))));
   const B = perB[y];
   EMP_B2[y] = { w: E.labels.map((_, i) => M2(med(B.map(b => b.wB2[i])))),
                 p: E.labels.map((_, i) => M2(med(B.map(b => b.pB2[i])))),
@@ -77,6 +90,8 @@ for (const y of YEARS) if (per[y]) {
 writeFileSync(join(process.argv[2], 'emp.json'), JSON.stringify(EMP));
 writeFileSync(join(process.argv[2], 'emp_cols.json'), JSON.stringify(E.labels));
 writeFileSync(join(process.argv[2], 'emp_b2.json'), JSON.stringify(EMP_B2));
+writeFileSync(join(process.argv[2], 'emp_grp.json'), JSON.stringify(EMP_GRP));
+if (WG.missing.size) console.log('⚠ methods with no employment entry (counted as 0): ' + [...WG.missing].join(' '));
 console.log('tier types:', Object.keys(E.tier).length, '· columns:', E.labels.join(' / '), E.hasCraft ? '(e0 split: artisans / other)' : '');
 const sum = a => a.reduce((x, y) => x + y, 0);
 for (const y of YEARS) if (EMP[y]) console.log(y, EMP[y].join(' / '), ' total', sum(EMP[y]).toFixed(1) + 'M',
