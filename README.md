@@ -25,7 +25,7 @@ Players get the mod from the Steam Workshop; this README is for building and edi
 ## Compatibility with other mods
 
 <!-- replaced-files:start -->
-The mod replaces **163 vanilla files** whole, in 29 folders (generated from the 1.1.0 build by `tools/list_replaced_files.mjs`),
+The mod replaces **163 vanilla files** whole, in 29 folders (generated from the 1.1.1 build by `tools/list_replaced_files.mjs`),
 and the whole folder `common/history/buildings/` (the converted 1836 start). Another mod that changes
 any of these files conflicts with this one: the one loaded later wins the whole file.
 

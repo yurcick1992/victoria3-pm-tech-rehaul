@@ -16,7 +16,6 @@ pmr_research_place = {
 pmr_research_place_all = {
 	effect = {
 		every_country = { pmr_place_research_entries = yes }
-		debug_log = "PMR_JE|placed_all|-|-"
 	}
 }
 
