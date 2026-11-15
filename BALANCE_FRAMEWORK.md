@@ -81,6 +81,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.111 | game 1.15.1, mod 1.1.1: .1 the 1.15.1 canon (`g1151-canon-bz-dcu-ra-il`, sha256 c1274f15; the 1.15 chain replayed on 1.15.1, field diff = the telephone rung's three inputs, value-neutral); .2 the dams stay `must_have` under 1.15.1's subsidy rule (now a ceiling; no subsidy for a profitable dam), measured; .3 the AI research weights back to 1.13.11 on six technologies with research entries, five content-tied pushes kept — the canon `g1151-canon-bz-dcu-ra-il-aw`, sha256 697d4869; .4 the AI's new goods stances kept; .5 the dams' `subsidized` flag follows vanilla, infrastructure subsidies watched; .6 the Armed Forces' asset count left as vanilla | in force: the canon (.3) since 2026-11-12 | here |
 | 10.112 | Cossack Hosts (game 1.15) count as peasants in U\* and leave W's productive workers (ruled 2026-11-05 in a cloud session, recorded 2026-11-12) | in force; whether the readers must change is checked after the 10 vs 10 | here |
 | 10.113 | depeasantation and capital abundance are aimed at levels of their own, not ratios to vanilla: the world's U\* about 50%, as few majors as possible with a pool above 0.5 GDP in 1935–36, and a flag on a pool above 3 GDP for 5 years without falling at U\* under 5% (provisional); world GDP stays vanilla-referenced; a gap inside the seed spread is noise | in force; the aims' form and `criteria.mjs` open | here |
+| 10.114 | for mod 1.2 the world's U\* gives way to the world-GDP aim (0.90–1.00× vanilla), U\* still as high as that allows; infrastructure subsidies come back only if the countries short of infrastructure are the ones that hoard — read on mod 1.1.1: they are not, so game 1.15.1's rule stays | in force for 1.2; the subsidy reading is Claude's, directional | here |
 
 ---
 
@@ -4998,3 +4999,40 @@ flagged in 2 of 11 runs (Britain 1932–36, France 1931–35); mod 1.1 on 1.15.0
 **Open, not ruled:** the U\* aim's form (a point, a floor or a band) and whether the shortlist keeps a U\* aim of its own; which countries are
 "majors" (the nine above were used) and how a rump state with a tiny GDP is treated (the Netherlands' pool reached 81 times its GDP in one
 run); the flag's "non-decreasing" (a 2% yearly tolerance was used); the loss terms and weights. `criteria.mjs` still reads the relative form until these are settled and it is changed (BACKLOG G).
+
+## §10.114 — FOR MOD 1.2 THE WORLD-GDP AIM OUTRANKS THE WORLD'S U\* LEVEL; INFRASTRUCTURE SUBSIDIES STAY AS GAME 1.15.1'S (user-ruled 2026-11-15)
+
+**The occasion.** A reading of the existing centuries for the 1.2 retune (mod and vanilla on games 1.13.11, 1.15.0 and 1.15.1; 2026-11-15,
+session scripts, not yet a finding). Two things in it needed a ruling. (a) The corpus's lever rates (219 mod centuries on game 1.13) put the
+world's U\* at about 40–43% when world GDP is held inside 0.90–1.00× vanilla 1.15.1; §10.113's 50% would need world GDP near 0.72–0.75×.
+(b) Game 1.15.1 stopped the AI subsidising infrastructure (§10.111.5): states above their infrastructure rose from 4.9% to 11.7% of the
+world's states in the mod and from 4.1% to 12.7% in vanilla, and states above 80% of it from 15.0% to 24.8% and from 16.9% to 28.9%
+(1935, medians of 10–11 runs).
+
+**The rulings.**
+1. **For mod 1.2 the world's U\* gives way to world GDP.** The user: *"For 1.2, U\* gives way, although we still want it higher, when
+   possible."* The retune aims world GDP at 0.90–1.00× vanilla and takes the highest U\* that leaves it there. §10.113's 50% stays the
+   direction; it is not 1.2's target. Nothing is ruled for 1.3.
+2. **Infrastructure subsidies are brought back only if the countries short of infrastructure are the ones that hoard.** The user: *"Are
+   countries with infrastructure constraints also the one with the hoard? If so, we must fix it. If no, then we'll leave 1.15.1."*
+
+**The reading that applies ruling 2** (Claude's, mod 1.1.1 on game 1.15.1, ten runs, the 1932–36 mean of each run; directional): **no,
+so game 1.15.1's rule stays.**
+- Countries with a pool above 0.5 of their GDP have 6.4% of their infrastructure usage in states over their limit, the others 6.7%
+  (GDP-weighted; states above 80%: 27.9% against 24.0%).
+- Countries with at least a tenth of their usage in states over their limit hold 19.1% of the GDP and 14.4% of the pools (their pool
+  0.25 of GDP, the others' 0.38). Countries of at least 0.2% of world GDP.
+- Over country-runs of at least 0.5% of world GDP the hoard correlates +0.06 to +0.13 with the three infrastructure measures and −0.10
+  to −0.26 with U\*.
+- The hoarders are the fully employed: Britain (pool 1.56 GDP, U\* 0.3%, 27.8% of states above 80%), Germany (0.97, 3.9%, 23.9%), Belgium
+  (1.07, 0.4%, none). The most constrained do not hoard: the Netherlands (48.3% of states above 80%, pool 0.07), France (36.7%, 0.07),
+  China (33.7%, 0.08).
+- Between the versions the hoard did not follow the tightening: the USA's fell from 1.18 to 0.42 of GDP while its states above 80% rose
+  from 7.8% to 18.5%; Britain's rose from 0.59 to 1.56 with 24.2% and 27.8%.
+- **What it does not say.** Within Britain and within Germany the runs with more constrained states hoard more (r +0.69 and +0.79 over
+  10 and 9 runs, Britain's resting on one run with 69% of its states above 80% and a pool of 6.4 GDP); the sign is the opposite for the
+  USA and France and flips between arms, so it is read as noise, not excluded. In vanilla 1.15.1 the constrained countries do hold more
+  of the pool (42.0% of the GDP, 59.0% of the pools), which is Britain and the USA being both. No perturbation was run.
+
+**Open.** Whether the reading becomes a finding with its readers kept in `tools/testbed/ledger/` (asked, unanswered). The retune book
+itself is a proposal (general input lift 1.3, pop-good lift 1.4, cost step 2.0 from the 1.1.1 canon), not ruled.
