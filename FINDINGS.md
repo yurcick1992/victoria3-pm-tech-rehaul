@@ -416,6 +416,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F268 | The first 1.15 centuries (n=1 canon + n=1 vanilla, same day, all DLC mounted): vanilla 1.15 ends at world GDP 1.18x vanilla 1.13 (1.21x at base prices), W 1.15x, the shortlist's U* 4.1% against 1.13's 19%, so vanilla 1.15 ITSELF reads "broken by runoff" on the register's 10% hard line; literacy and the early shortlist hoard sit outside 1.13's 56-seed spread at every checkpoint. The canon against that vanilla: world GDP 1.11x (1.18x at base), the 1886 point 0.84 (the dip, inside 0.79-1.01), W 0.87x, pool U* 5.3% (1.29x vanilla's, under the >=2x aim), pool H 0.91x, PI 0.84 falling, PP 0.82, T0 ~0, T3 31.7% of tiered workers; "broken by runoff" on the same line vanilla breaks. Misplaced capital 19.7% vs 14.9%; play x1.11 (inflated by the agent's own load). The register's absolute lines need a 1.15 vanilla basis (Q12) | canon, vanilla | n=1 directional | here |
 | F269 | Mod 1.1 against vanilla 1.15.0, n=10 + 10 alternating (runs 1-20 of a 48-run batch cut short by the 1.15.1 update): ALL TEN vanilla runs cross the register's runoff line (9 with the shortlist's U* under 10%, median 2.65%) and six of ten mod runs do, so on 1.15 the line separates nothing; the mod's broken runs are its six richest worlds, and the intact-run consensus (n=4) leans poor: world GDP 0.98x (all ten 1.07x, 0.91-1.32), 1886 0.94x, shortlist U* 15.5% against 2.6% (all ten 7.7%), W 0.87x, PI 0.91 not falling every decade, PP 0.96, T0 1935 0.20 of the 1900s, T3 27.3%, loss 6.43; play x1.044; red flags 190 against 163.5 market-years (paper, the Dutch market); backward industries kept 104% of their workers in-market and 106% through trade against vanilla's 124% and 126%; misplaced capital 23.4% against 18.9%, the excess again all in the tiered industries; auto-downsizing loses about vanilla 1.15's levels (20,321 against 19,567 a run; vanilla 1.15 loses 3.1x vanilla 1.13's), 0.70x its jobs and 0.87x its construction points. Vanilla 1.15 itself ends at 1.285x vanilla 1.13's world GDP (median of its ten runs, 1.07-1.51) | canon, vanilla | n=10 directional | here |
 | F270 | The fleet path loop (F218, wall-clock cluster 3's one listed bug) is absent on game 1.15: no recalled fleet with a long travel path in any of 81 kept or quarantined saves of `20261109_005943` (23 endpoints, the 51 saves of all six slowdown episodes); 1.13.11 had one in 3 of 30 vanilla endpoints and in most episodes. The save summaries' formation reader is BLIND on 1.15 (0 moves in every save): 1.15 renamed the move fields to tokens rakaly 0.8.19 lacks | vanilla 1.15, canon | 81 saves of 23 runs, directional | here |
+| F271 | Mod 1.1.1 against vanilla 1.15.1, n=10 + 10 alternating (vanilla n=11 for the economy): EVERY run of both arms crosses the register's runoff line, so the ruled consensus is empty and the report reads all ten (`criteria.mjs --consensus all`, new, not the ruled form): world GDP 1.18× (1.02–1.36), 1886 0.87×; vanilla 1.15.1 ends at 0.91× vanilla 1.15.0 while the mod's world is the same size in £ on both versions; the shortlist MORE employed than vanilla's (U* 3.6% against 4.8%; on 1.15.0 7.7% against 2.6%); backward industries pushed out no harder than in vanilla (in-market 117.3% against 117.4%); play ×1.087; misplaced capital 22.9% against 17.1%; red flags 140.5 against 167; no tech-era-5 military technology in any mod run; infrastructure subsidies fall from every level (1.15.0) to a few percent in both arms | canon 697d4869, vanilla 1.15.1 | 10 + 10 (11), directional | here |
 
 ---
 
@@ -22836,3 +22837,144 @@ Not that the yearly summaries are right about anything else carrying 1.15 tokens
 **Follow-ups.** The reader fix (count moves structurally, as the parser does) and a landmine for a run whose saves read zero moving
 formations wait until the 10 vs 10 batch ends (`tools/testbed/**` is frozen while a batch plays, CLAUDE.md §5.1 rule 7) — BACKLOG G.
 The parser is the session scratchpad's `fleet_paths_115.mjs`.
+
+---
+
+## F271 — MOD 1.1.1 AGAINST VANILLA 1.15.1 OVER TEN ALTERNATING CENTURIES EACH: EVERY RUN OF BOTH ARMS CROSSES THE REGISTER'S RUNOFF LINE, SO ITS CONSENSUS IS EMPTY; OVER ALL TEN THE MOD'S WORLD ENDS AT 1.18× VANILLA'S (VANILLA 1.15.1 ITSELF ENDS AT 0.91× VANILLA 1.15.0, THE MOD'S WORLD THE SAME SIZE ON BOTH VERSIONS), THE SHORTLIST IS MORE EMPLOYED THAN VANILLA'S (U* 3.6% AGAINST 4.8%), BACKWARD INDUSTRIES ARE PUSHED OUT NO HARDER THAN IN VANILLA, PLAY ×1.087; INFRASTRUCTURE SUBSIDIES FALL FROM EVERY LEVEL ON 1.15.0 TO A FEW PERCENT IN BOTH ARMS (2026-11-14; session `20261112_113429_g1151-alt-vanilla10-canon10`, runs 1–20: mod 1.1.1 n=10 against vanilla 1.15.1 + telemetry n=10, alternating one to one, vanilla first, 1836→1936.1.1, game 1.15.1; the economic reference adds run 22 of `20261109_005943`, n=11)
+
+**Why it ran.** The mod 1.1.1 canon measured against vanilla on the game version it ships for (GAME_UPDATE_1_15_1 Q3; the user,
+2026-11-12: *"launch the 10vs10, starting vanilla"*). The schedule's `_predictions` were written before the launch (scored in §6).
+
+**Arms and runs.** Mod `{kind: config, config: config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json}`, sha256 `697d4869aefc3225` (CLAUDE.md
+§4.1, mod 1.1.1), its debug build with telemetry, one build fingerprint (`28d5353484c2f183`) in all ten mod runs; vanilla `{kind: control}`.
+Odd runs vanilla, even runs the canon. All twenty reached 1936.1.1 and quit by themselves on 1.15.1; 30 launches, every one with every DLC
+mounted (L50); init OK in every mod run, no `WARN`. Ten game deaths in seven runs, all resumed (mod 2, 6, 20 twice; vanilla 3 twice, 9, 13
+twice, 17; nine on 1 March of a dump year — BACKLOG G's treasury-crash item). **The reference for every economic line is vanilla 1.15.1,
+n=11**: this batch's ten vanilla runs and run 22 of `20261109_005943` (vanilla, played on 1.15.1; the user, 2026-11-12). Play time and the red
+flags read this batch's ten alone. `VANILLA_REF` (1.13.11) is not used.
+
+**1. The register** (`criteria.mjs`, the ruled defaults but for the consensus, end state 1932–36). **All ten mod runs are broken by runoff**
+(the shortlist's pooled U* under 10% in all ten, 0.8–9.3%; Britain in capital abundance in runs 2 and 16, at mean hoards of 4.26 and 4.02 of
+its GDP over 1920–36; Germany in run 12 over 1920–31 at 1.57; world GDP above the 1.29× hard ceiling in runs 2, 6, 16, 18). **All eleven
+vanilla runs read as broken by the same lines** (read as an arm against themselves; ten by the pooled-U* line, run 1 by Britain in capital
+abundance). The ruled consensus (the intact runs) is empty, so the report reads **the median of all ten** — `criteria.mjs --consensus all`,
+added 2026-11-14 as a non-default mode (proven on F269's batch: the default reproduces its consensus key for key, and `all` reproduces F269's
+hand-computed all-ten column). It is not the ruled form; re-basing the absolute lines on 1.15 stays the user's decision (GAME_UPDATE_1_15 Q12).
+
+| line | all 10 mod runs (median) | vanilla 1.15.1 (n=11) | aim · soft |
+|---|---|---|---|
+| world GDP (displayed) ÷ vanilla | **1.18×** (1.02–1.36; 1935 1.20×) | £5,148M | 0.90–1.00 · 0.75–1.33 · hard 0.68–1.29 |
+| world GDP at base prices ÷ vanilla | 1.19× (price level 0.97×) | £5,309M | secondary |
+| world W | 0.92× (0.155) | 0.169 | 0.6–0.95 |
+| world U* | 34.2% | 30.1% | higher |
+| world H | 0.41 (1.06×) | 0.39 | < 1× |
+| shortlist GDP ÷ vanilla | **1.43×** (W 0.95 × Y 1.45) | £1,637M | 1.1–1.9 |
+| shortlist W | 0.95× (0.221) | 0.233 | 0.6–0.95 |
+| shortlist U* | **3.6%** (0.8–9.3%) | **4.8%** | ≥ 2× · soft < 1× — beyond the soft line |
+| shortlist H | 0.82 (0.88×) | 0.93 | < 1× |
+| PI (£ ÷ base, ÷ vanilla) | 0.88× (0.84 of base vs 0.95), falling decade over decade | path 1.06 → 0.96 | ≤ 0.8 |
+| PP (wage units ÷ vanilla) | **0.66×** (PM 0.70×) | — | ≤ 0.8 |
+| T0 | 1935 = 0.14 × the 1900s; 0.29 / 0.18 / 0.11 / 0.04M by decade; 0.04M of 29.25M tiered | — | falling |
+| T3 | 32.8% of tiered workers (T0…T3 0.04 / 3.14 / 16.69 / 9.38M) | — | more |
+| Germany (closed major) | G 3.19 in the lucky seed (run 16: 1927–36 mean e 1.00, a 0.55); hoard 0.97 GDP against vanilla's 0.10; per run 0–4.08 | — | 0 |
+| **loss (all runs)** | **11.34** = gerCM 4.79 + poolU 2.73 + gdpW 1.58 + T3 1.07 + PI 1.03 + T0 0.09 + worldH 0.05; per run 4.10–17.91 | — | — |
+
+- **The decade path** (median of all ten ÷ vanilla 1.15.1's per-run median): 1846 1.00 · 1856 0.98 · 1866 0.99 · 1876 0.92 · **1886 0.87**
+  · 1896 0.98 · 1906 0.98 · 1916 1.03 · 1926 1.07 · 1936 1.24. The 1886 line (0.79–1.01) holds. The dip bottoms in 1886 and is over by 1896,
+  where on 1.15.0 it bottomed at 0.84 in 1906 (F269); part of the change is vanilla's own path (next point).
+- **Vanilla 1.15.1 against vanilla 1.15.0** (the eleven as an arm against F269's ten, all-run medians; a version reading): world GDP **0.91×**
+  at the end (£5,148M against £5,665M; at base prices 0.95×), level to 1866, **ahead in 1876 (1.05) and 1886 (1.10)**, behind from 1896 (0.95)
+  on; the shortlist's GDP 0.93×, its U* 4.8% against 2.6%, its hoard 0.93 of GDP against 0.67; W 0.985× in both scopes; PI 0.99×; PP 1.25×.
+  The mod's world GDP is the same in pounds on both versions (1.18 × £5,148M ≈ £6,075M on 1.15.1; 1.07 × £5,665M ≈ £6,079M for mod 1.1 on
+  1.15.0), so the ratio's rise from 1.07× to 1.18× is vanilla's fall, and the deeper 1886 point is vanilla running ahead there.
+- **Employment moved the other way from 1.15.0.** On 1.15.0 the mod's shortlist kept more people out of work than vanilla's (U* 7.7% against
+  2.6%, F269 all ten); here it keeps fewer (3.6% against 4.8%), with W 0.95× against 0.92× there. Goal 4 (depeasantation harder than vanilla)
+  is not met on the shortlist on 1.15.1; the world still reads it (U* 34.2% against 30.1%, W 0.92×).
+
+**2. The wall clock** (play time from the tick lines; the ruled clusters; the arms alternated in the same days; the user worked on the
+machine while runs played, so directional): main (clusters 1 + 2) **176.6 min against 162.5, ×1.087**, inside the +10% budget, up from F269's
+×1.044 on 1.15.0. Clusters 7 / 3 / 0 in each arm (cluster 2: mod runs 6, 16, 20; vanilla runs 1, 3, 13); on 1.15 the save summaries cannot
+see fleet paths (L52), so cluster 3 is not observable. The two batches' play times are not comparable with each other (different sessions;
+§3.4), and the earlier question whether 1.15.1 itself plays faster stays open: it needs vanilla 1.15.0 and 1.15.1 alternating in one session.
+
+**3. The other readings of the scorecard.**
+- **Backward industries** (`laggard_pressure.mjs`; two tiers behind their market's frontier, without the next technology): workers kept over
+  ten years **in-market 117.3% against vanilla's 117.4%** (149 cases against 261; median case 100.0% in both; relative retention 0.84 in
+  both); **through trade 116.4% against 114.4%** (282 against 504). By chain in-market: consumer 149.8% against 125.9% (67 against 149
+  cases); heavy and war 70.5% against 102.4% (82 against 112). On 1.15.0 the mod pushed backward industries out harder than vanilla in both
+  forms (F269: in-market 103.7% against 123.8%, through trade 106.1% against 125.5%); here only the heavy and war chains do, in-market.
+- **Old plants, world, 1935** (workers on a rung two or more tiers behind their market's frontier, share of the industry): the art academy
+  18.0%, textile 12.5%, furniture 12.1% and steel 2.0%, all at their peak; paper 8.1% (23% below its 1910 peak); motor 6.3% (at its peak); arms
+  4.3% (80% shed since 1890), artillery 2.8% (72% since 1890), explosives 3.8% (50% since 1900), food 2.2% (47% since 1890).
+- **Tier-1 workers, world** 7.2 → 8.8 → 10.3 → 11.8 → 12.5M over 1900–1935: still growing in the 1930s.
+- **Paybacks at realised prices**: a t0 craft 14 years, a t0 factory 67 years; a t3 plant 12.7 years (aim 8–15).
+- **Construction delivered 1880–1935**: 1.08× vanilla's. **New plants below the best tier their owner runs**: 30.0% (a craft a tenth).
+- **Misplaced capital** (VALID benchmark, `misplaced_capital.mjs --batch` with the sector split; vanilla read the same way on its eleven
+  runs, a reference and not like for like): **century pooled 22.9% against 17.1%** (medians 21.9% / 16.5%); 1926–36 25.7% against 19.8% by
+  the median split. The tiered industries take 72.6% of the mod's new capital (vanilla 58.8%) and misplace 26.5% of it (20.9%); mines and
+  agriculture 13.4% (11.6%). As shares of ALL new capital: tiered 19.2% against 12.3%, mines + agriculture 3.7% against 4.8%. The whole
+  excess is in the tiered industries, as on 1.13 (F262, F264) and 1.15.0 (F269).
+- **Input-price red flags** (§10.94, order books, this batch's ten vanilla runs as the line): problem market-years **140.5 a run (106–186)
+  against 167 (132–191), ×0.84**; chronic markets 3 against 2.5. More before 1870 (70.5 against 62), much less after 1900 (35 against 62);
+  F269's excess after 1900 on 1.15.0 is gone. Paper carries about 59 of the mod's ~143 a run (Japan 23.1, Russia 11.0, the Netherlands 10.2,
+  the USA 7.4 and Britain 4.4 before 1865): staffed paper rungs at half of government administration's and universities' demand. Japanese
+  hardwood (26.1, a supply failure, bought by the t0 artillery and arms rungs; vanilla 23.7 on cannons and muskets) and engines where no
+  motor rung is staffed (Japan 12.4; vanilla 31.7) are the others. The summary is the report's (`redflags_summary.html`).
+- **Technology** (`tech_census.mjs`, vanilla n=11): Britain 163.7 against 168.1 (production 58.2 / military 43.4 / society 62.1 against
+  52.4 / 53.8 / 61.9); the USA 160.3 against 167.2; Germany 163.7 against 166.0; France 162.4 against 148.5. The anchor test: the leader holds
+  45.0% of tech era 3 at 1875, 38.5% of tech era 4 at 1905, 57.7% of tech era 5 at 1936 (vanilla 1.15.1 60.0 / 51.3 / 57.7%): tier 2 late, as
+  before. 36.2% of the majors' acquisitions had a research-entry stage. **No country holds any tech-era-5 military technology in any mod
+  run** (vanilla: most of the ten in most runs, e.g. NCO training in 12.0 countries a run); the same zero on 1.15.0 (mod 1.1, re-read
+  2026-11-14) — the known military deficit, planned for mod 1.2.
+- **The six reweighted technologies** (§10.111.3; `tech_timing.mjs`, the year half the tech majors hold it, median of runs; vanilla
+  1.15.1 / mod 1.1 on 1.15.0 / vanilla 1.15.0 beside): telephone 1907 (1902 / 1912 / 1914), combustion engine 1909 (1903 / 1914 / 1905),
+  radio 1918 (1913 / 1924 / 1927), electrical generation 1880 (1890 / 1876 / 1885), oil turbine 1926 (1934 / 1929 / under half by 1936),
+  percussion caps 1837 everywhere. Against vanilla 1.15.1 three come 5–6 years later and two earlier; against mod 1.1 on 1.15.0, telephone,
+  combustion engine and radio come 5–6 years earlier.
+
+**4. Auto-downsizing** (the monthly poll; `downsize_telemetry.mjs`, the §10.107 reading; vanilla = the eleven): **20,880 levels a run against
+18,888 (1.11×), 59.6M jobs against 80.2M (0.74×), 8.33M construction points against 8.52M (0.98×)**. By tier class (mod / vanilla, levels
+a run): t0 craft 7,360 / 315, t0 non-craft 650 / 245, t1 2,601 / 2,206, t2 2,761 / 4,273, t3 238 / 772, outside the ladder 7,269 / 11,077.
+The pattern of F269 holds: the mod's excess levels are the crafts' (500 jobs each), and vanilla loses more at t2, t3 and outside the ladder.
+⚠ The jobs and points read game files: the mod's from `mod/` (the committed default build of the same book on 1.15.1; the runs' build folder
+was gone), vanilla's from the installed 1.15.1. The Cossack Hosts have no construction cost in the reader (§10.112's check, owed).
+
+**5. Infrastructure subsidies** (GAME_UPDATE_1_15_1 Q10, §10.111.5; subsidised levels ÷ levels per building type, world, summed over every
+country of each yearly summary, median of runs; the session's `subsidy_infra.txt`). **On 1.15.0 every railway, port, power-plant and dam
+level was subsidised in every year, in both arms** (F269's runs). On 1.15.1, 1935 (mod / vanilla): railways 8.2% / 7.5% of levels, ports
+18.4% / 26.0%, power plants 5.6% / 7.8%, dams 0.5% (one level in one run; 88 levels a run) / none built. Ports start at 21% / 19% in 1840,
+fall to about 6% by 1900 and rise again in the 1930s; railways and power plants rise slowly from zero. Mod and vanilla match, so it is
+vanilla's change; two changed together (the building group's `subsidized` flag, V12d, and the AI's new rule that a profitable or unneeded
+building gets nothing, V13), and these runs cannot tell them apart. Dam levels built: 88 a run by 1935 against 95 on 1.15.0.
+
+**6. The predictions** (the schedule's `_predictions`, written before the launch):
+- **vanilla 1.15.1 against 1.15.0:** world GDP at or above 1.15.0's — WRONG (0.91×, just inside the ±10% magnitude but the other way);
+  pooled U* under 10% in most vanilla runs — RIGHT (10 of 11). Electricity and the copper price were not read.
+- **the canon against vanilla:** the world-GDP ratio lower than F269's 1.07× (0.95–1.05×) — WRONG (1.18×; vanilla fell, the mod did not);
+  W under vanilla's — RIGHT (0.92× world, 0.95× shortlist); misplaced capital above vanilla's — RIGHT (22.9% against 17.1%).
+- **AI weights:** the six restored technologies a little later in the canon than in vanilla 1.15.1 — RIGHT for telephone, combustion engine
+  and radio (5–6 years), WRONG for electrical generation and oil turbine (10 and 8 years earlier); percussion caps level.
+- **subsidies:** infrastructure starts unsubsidised and is subsidised only where it loses money and is needed — RIGHT as a pattern (a few
+  percent of levels), the cause not separable; the mod's power plants subsidised more often than vanilla's — WRONG (5.6% against 7.8% in
+  1935; the mod higher only in 1900–1920); no profitable dam subsidised — RIGHT but for one level; dam levels within 1.15.0's spread — RIGHT on
+  the median (88 against 95).
+- **absolute lines:** most runs of both arms cross the runoff line — RIGHT (all of them).
+
+**Report:** https://claude.ai/artifact/6X7XzLmkgDmk3hEQDkJwxj (copied into the session as `REPORT.html`, with `redflags_full.html`).
+
+**Confidence.** n=10 against n=10 (11 for the economy), alternating on one machine in the same days: directional (§2.9). Strongest where the
+arms differ in every run or nearly (world GDP above vanilla's in all ten; the subsidy collapse, in every run of both arms; downsized jobs).
+The all-run medians include runs the register calls broken; they are the batch's centre, not a ruled consensus. The version comparisons
+(vanilla 1.15.1 against 1.15.0, the mod against mod 1.1) cross two sessions and two books and are readings, not tests.
+
+**What it does NOT say.**
+- Not that mod 1.1.1 is broken on 1.15.1: the runoff line every run crosses is the 1.13-calibrated one, which every vanilla 1.15.1 run
+  crosses too; re-basing it is the user's to rule (Q12).
+- Not that the world-GDP aim is missed by a design fault: 1.18× is mostly vanilla 1.15.1's lower world, and the aim itself was set against
+  vanilla 1.13.
+- Not why vanilla 1.15.1 ends poorer than 1.15.0, nor why it runs ahead around 1886 (Paradox's AI method-choice change, V22, is the first
+  hypothesis, unmeasured).
+- Not why the mod's shortlist is now more employed than vanilla's, where on 1.15.0 it was less (the AI-weights change and vanilla's own move
+  are confounded in these runs).
+- Not which of the two vanilla changes ended the infrastructure subsidies.
+- Not a reliable play time beyond its direction: the user worked on the machine while runs played.

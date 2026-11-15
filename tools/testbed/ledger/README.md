@@ -71,7 +71,7 @@ writing prose, because `fill_assemble` stops on any missing output.
 | 13 | `fill_obsolescence.mjs <out> --session --setup --config` | `obsolescence.json` | `OBS` (the collapsed in-market vs trade detail) |
 | 14 | `input_price_flags.mjs "<setup>=<group>:<setup>" --ref … --yearly --html redflags_full.html --json redflags.json --list 0` | `redflags_full.html`, `redflags.json` | the red-flag card (via 15) |
 | 15 | `redflag_metrics.mjs <out>` | `redflags_metrics.json`, `redflags_digest.md`, `redflags_card.html` | `__REDFLAGS__`, the scorecard's shortage line |
-| 16 | `criteria.mjs --arm "<group>:<setup>" --van "<VANS>:vanilla" --json <out>/criteria.json --quiet` | `criteria.json` | the register's lines, the two charts above the pages |
+| 16 | `criteria.mjs --arm "<group>:<setup>" --van "<VANS>:vanilla" --json <out>/criteria.json --quiet` | `criteria.json` | the register's lines, the two charts above the pages; with `CRITERIA_CONSENSUS=all` in the environment, `--consensus all` (every usable run, broken included — not the ruled form, only when no run is intact because the reference crosses the same hard line; the scorecard says so, F271) |
 | 17 | `laggard_pressure.mjs <book> "<setup>=<group>:<setup>" "vanilla=<VANS>:vanilla" --json <out>/laggards.json` | `laggards.json` | the two backward-industry lines |
 | 18 | `tech_census.mjs "<setup>=<group>:<setup>" "vanilla=<VANS>:vanilla" --tree <twin> --json <out>/tech.json` | `tech.json` | the technology lines |
 | 19 | `misplaced_capital.mjs --batch "<setup>:<group>:<setup>" --json <out>/misplaced.json` | `misplaced.json` | the misplaced-capital line (mod only) |

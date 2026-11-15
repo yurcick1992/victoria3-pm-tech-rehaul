@@ -493,7 +493,8 @@ state (the 1932–1936 mean) unless a date is given.
 
 User-ruled 2026-09-17 and amended since — §10.83 (+ .4–.8), §10.85, §10.86.1, §10.100. **Implementation: `tools/testbed/ledger/criteria.mjs`**,
 whose defaults ARE the ruled form (`--arm <session[,session]>[:<setup>] [--arm …] [--config <book>]`; several arms print a ranking). One rule set for
-the config iterator and for every batch report.
+the config iterator and for every batch report. ⚠ On game 1.15 every run of both arms crosses the runoff line (F269, F271), so the ruled consensus can be
+empty; `--consensus all` then reads every usable run, labelled as not the ruled form, until the lines are re-based (unruled, GAME_UPDATE_1_15 Q12).
 
 **Kinds.** An **AIM** is what config iteration tries to reach. A **SOFT** boundary is unacceptable but the economy is not broken: the run is read in
 full, and a soft breach never stops a batch (it marks the book "not final"). A **HARD** boundary means the economy is broken: the run records only
@@ -622,8 +623,8 @@ GAME_UPDATE_1_15_1.md Q1, Q8): the 1.15 canon's chain replayed on 1.15.1 (`tools
 steps, giving `g1151-canon-bz-dcu-ra-il`, `c1274f15`, never measured), then the AI-weights step (`tools/make_tech_ai_weights_config.mjs`, its
 record `_tech_ai_weights_variant`; it reads the research entries from the base book's build). Its field diff against the 1.15 canon: the electrics
 t2 rung's iron, copper and tools, following vanilla 1.15.1's telephone recipe, value-neutral, and `tech_ai_weights` (six technologies' 1.13.11
-weights) — nothing else. `mod/` and the deployed copy are its default (debug) build. Verify with `sha256sum config/mod_config.json`. Not yet
-measured; the Workshop still carries mod 1.1.0 until the user uploads the 1.1.1 release build.
+weights) — nothing else. `mod/` and the deployed copy are its default (debug) build. Verify with `sha256sum config/mod_config.json`. Measured by F271
+(10 + 10 centuries on 1.15.1, 2026-11-12 → 11-14); the Workshop still carries mod 1.1.0 until the user uploads the 1.1.1 release build.
 
 **The 1.15 canon** (mod 1.1, game 1.15.0; canonised 2026-11-08, kept as the record) is `config/mod_config.g115c-canon-bz-dcu-ra-il.json`, sha256
 **`a52b0acacd6b6b6e`** (tree twin `db96307af17c22ee`; §10.109.5; GAME_UPDATE_1_15.md Q1): the 1.0 canon's recorded chain replayed on game 1.15
@@ -667,12 +668,23 @@ What §1.2 and §1.3 leave out:
   administrative strategy.
 - **Trade and defines:** the five-class traded-quantity table at ×1 (F159 §7), copper in class C (§10.108.3); `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99`.
 
-## 4.2 Where it stands (2026-11-12)
+## 4.2 Where it stands (2026-11-14)
 
-- **The 1.15.1 canon** (mod 1.1.1, `697d4869`, since 2026-11-12) has not been measured yet: its 10 vs 10 batch against vanilla 1.15.1,
-  vanilla first, launched 2026-11-12 11:34 as session `20261112_113429_g1151-alt-vanilla10-canon10`
-  (`tools/testbed/schedules/g1151_alt_vanilla_canon10.json`; ends around 2026-11-15 03:00). The first launch,
-  on `c1274f15`, was stopped at its run 1 when Q8 changed the build.
+- **The 1.15.1 canon** (mod 1.1.1, `697d4869`, since 2026-11-12): ten alternating centuries against ten of vanilla 1.15.1, vanilla first
+  (F271; session `20261112_113429_g1151-alt-vanilla10-canon10`, ended 2026-11-14 20:36; vanilla n=11 for the economy with run 22 of
+  `20261109_005943`; the report is the ledger artifact `6X7XzLmkgDmk3hEQDkJwxj`).
+  - **Every run of both arms crosses the register's 1.13-based runoff line**, so the ruled consensus is empty and the report reads the
+    median of all ten (`criteria.mjs --consensus all`, not the ruled form).
+  - **The canon against vanilla 1.15.1, all ten runs:** world GDP 1.18× (1.02–1.36), the path bottoming at 0.87× in 1886 and over by 1896;
+    W 0.92× (world) and 0.95× (shortlist); U* 34.2% against 30.1% (world) and **3.6% against 4.8% (shortlist: more employed than vanilla,
+    where on 1.15.0 it was less)**; PI 0.88×, falling; PP 0.66×; T0 at 1935 0.14 of its 1900s level; T3 32.8% of tiered workers.
+  - **Vanilla 1.15.1 ends at 0.91× vanilla 1.15.0's world GDP** (ahead of it in 1876–86, behind from 1896), while the mod's world is the same
+    size in £ on both versions: the ratio's rise from 1.07× to 1.18× is vanilla's fall.
+  - **Readings:** play ×1.087 (176.6 against 162.5 minutes); misplaced capital 22.9% against 17.1%; red flags 140.5 against 167 problem
+    market-years; backward industries kept 117.3% of their workers over a decade in-market against vanilla's 117.4% (on 1.15.0 103.7%
+    against 123.8%); Britain 163.7 technologies against 168.1, and no tech-era-5 military technology in any mod run.
+  - **Infrastructure subsidies (Q10):** on 1.15.0 every railway, port, power-plant and dam level was subsidised, in both arms; on 1.15.1 a
+    few percent of railway and power-plant levels, a fifth to a quarter of port levels and almost no dam levels are, in both arms alike.
 - **The 1.15 canon on game 1.15.0** (mod 1.1): ten alternating centuries against ten of vanilla 1.15.0 (F269; `20261109_005943` runs 1–20, the
   48-run batch cut short by the 1.15.1 update; the report is the ledger artifact `YZzc1yM9aa8gSzxWevfDh1`).
   - **Every vanilla run and six of ten mod runs cross the register's 1.13-based runoff line** (pooled U* under 10%; vanilla's pooled U* is

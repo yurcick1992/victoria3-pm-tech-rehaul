@@ -185,12 +185,16 @@ follows Paradox).
   (perhaps 1.3)."*) · DONE: six restored (§10.111.3), the new canon `697d4869`.
 - **Q9** · the AI's new goods stances for radios, telephones and oil (V12c) · RULED (*"keep all three"*) · DONE (§10.111.4).
 - **Q10** · the dams' inert `subsidized = yes` (V12d) · RULED (*"align with vanilla, and watch subsidy status of all infrastructure in the
-  1.15.1 runs, I'm curious how this will work"*) · DONE (§10.111.5); the reading goes into the batch report.
+  1.15.1 runs, I'm curious how this will work"*) · DONE (§10.111.5); READ (F271 §5, 2026-11-14): on 1.15.0 every railway, port, power-plant
+  and dam level was subsidised in every year, in both arms; on 1.15.1, by 1935, railways 8% / 8% of levels (mod / vanilla), ports 18% / 26%,
+  power plants 6% / 8%, dams one level in one run. Both arms alike, so it is vanilla's change; the flag (V12d) and the subsidy rule (V13)
+  changed together and these runs cannot tell them apart — nor, therefore, confirm V12d's note that the flag acts only at the campaign start.
 - **Q11** · the Armed Forces' asset count over the tier split (V22c) · RULED (*"ignore, leave new vanilla"*) · DROPPED (§10.111.6).
 - **Q3**, re-ruled after Q8 (2026-11-12): the first launch, `20261112_013516_g1151-alt-canon-vanilla` (mod first, to Sunday 06:00), was
   stopped at its run 1 (1845, discarded) because Q8 changed the build. The user: *"launch the 10vs10, starting vanilla"* — 20 runs, odd runs
   vanilla 1.15.1, even runs the canon; run 22 of `20261109_005943` glued to the vanilla arm without its wall clock (V27). Launched
-  2026-11-12 11:34 as `20261112_113429_g1151-alt-vanilla10-canon10` (`g1151_alt_vanilla_canon10.json`, the canon `697d4869`).
+  2026-11-12 11:34 as `20261112_113429_g1151-alt-vanilla10-canon10` (`g1151_alt_vanilla_canon10.json`, the canon `697d4869`). Ended
+  2026-11-14 20:36, all 20 runs complete: FINDINGS F271, the ledger `6X7XzLmkgDmk3hEQDkJwxj`.
 
 ## Phase 6 — re-measure
 

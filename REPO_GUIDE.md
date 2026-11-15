@@ -1453,8 +1453,12 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   per run (broken by stall / runoff), the consensus of intact runs, the metrics of GLOSSARY §1 (T0–T3 by each rung's tier from the run's
   own config; merge hosts split by method), the loss, the ranking across `--arm`s, and GDP at base prices as a secondary reading (§10.90).
   `--arm <group> [--arm …] [--config <book>] [--van <sessions>] [--end 1932-1936] [--weights k=v,…] [--soft-pen 0] [--soft-slope 2]
-  [--sigma fixed|vanilla|runs] [--gdp-aim 0.90,1.00] [--gdp-hard ci|legacy] [--json] [--quiet]`. Read by the report, the iterator and
-  `stop_watch`. Lists from `lib_markets`; PI / PP on the arm's markets ∩ vanilla's by series, basis printed. Refs: §10.83–§10.86, §10.100.
+  [--sigma fixed|vanilla|runs] [--gdp-aim 0.90,1.00] [--gdp-hard ci|legacy] [--consensus intact|all] [--json] [--quiet]`. Read by the report,
+  the iterator and `stop_watch`. Lists from `lib_markets`; PI / PP on the arm's markets ∩ vanilla's by series, basis printed. ⚠ `--consensus
+  all` (2026-11-14, NOT the ruled form; default `intact`): the consensus, its loss and the per-run losses read every usable run, broken ones
+  included — for a batch whose every run crosses a hard line the reference crosses too (game 1.15's runoff line, F271); the note and the
+  JSON's `consensus.mode` say which form ran, and `fill_scorecard` words the scorecard and loss line accordingly (`CRITERIA_CONSENSUS=all`
+  in `fill_ledger.sh`). Proven on F269's batch: the default reproduces its consensus key for key. Refs: §10.83–§10.86, §10.100.
 - **`ledger/alignment_check.mjs`** `--arm <group> [--van] [--year 1935] [--stop-above 1.3]` — the 2+1 divergence test: world GDP and
   productive workers per capita at 1935 ÷ vanilla's per-run median, five bands each; a pair fails an axis only in different bands and
   ≥ 0.15 / ≥ 0.10 apart; also the run-level stop verdict (`--stop-above 0` = full runs). Exit 0 aligned · 2 run a third · 3 stop · 1

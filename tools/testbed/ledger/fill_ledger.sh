@@ -79,7 +79,9 @@ step node $L/redflag_metrics.mjs $OUT
 #   (misplaced_capital took whole sessions only until 2026-11-12: a `<session>/runNNN` group was cut at its last '/'. Fixed.)
 TREE=$(echo "$BOOK" | sed 's/mod_config\./tech_tree_options./')
 [ -f "$TREE" ] || TREE=config/tech_tree_options.json
-step node $L/criteria.mjs --arm "$SESSION:$SETUP" --van "$VANS:vanilla" --json $OUT/criteria.json --quiet
+# CRITERIA_CONSENSUS=all (2026-11-14, not the ruled form): the scorecard reads every usable run, broken ones included — only for a batch whose
+#   every run crosses a hard line the reference crosses too (game 1.15's runoff line); the scorecard and the loss line say so.
+step node $L/criteria.mjs --arm "$SESSION:$SETUP" --van "$VANS:vanilla" ${CRITERIA_CONSENSUS:+--consensus $CRITERIA_CONSENSUS} --json $OUT/criteria.json --quiet
 step node $L/laggard_pressure.mjs $BOOK "$SETUP=$SESSION:$SETUP" "vanilla=$VANS:vanilla" --json $OUT/laggards.json
 step node $L/tech_census.mjs "$SETUP=$SESSION:$SETUP" "vanilla=$VANS:vanilla" --tree $TREE --json $OUT/tech.json
 step node $L/misplaced_capital.mjs --batch "$SETUP:$SESSION:$SETUP" --json $OUT/misplaced.json

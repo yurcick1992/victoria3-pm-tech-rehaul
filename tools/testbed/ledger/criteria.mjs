@@ -74,8 +74,12 @@
 //   --weights gdpW=3,gdpP=2,poolW=2,worldW=1.5,poolU=1,T0=1,PI=1,PP=0.5,worldU=0.5,poolH=0.5,T3=0.3,worldH=0.25 --soft-pen 10 --soft-slope 0,
 //   apart from T0's form).
 // Not in the summaries: a civil war — a member-year whose population fell more than 15% year on year is exempt from the per-member lines.
+// `--consensus all` (2026-11-14, NOT the ruled form; default `intact`): the consensus and its loss read EVERY usable run, broken ones included,
+//   with the same n rules (n=3: the two closest on world GDP). For a batch where every run crosses a hard line that the reference itself
+//   crosses (game 1.15: the 1.13-calibrated pooled-U* runoff line breaks every vanilla run, F269 and the 1.15.1 10 vs 10), so that the
+//   ruled consensus is empty. The per-run verdicts are unchanged and still printed; the note and the JSON's `consensus.mode` say which form ran.
 //   node tools/testbed/ledger/criteria.mjs --arm <session[,session]>[:<setup>] [--arm …] [--config <path>] [--van <session>]
-//        [--end 1932-1936] [--big 50] [--weights k=v,…] [--sigma vanilla|mod] [--soft-slope 2] [--soft-pen 0] [--json <out.json>] [--quiet]
+//        [--end 1932-1936] [--big 50] [--weights k=v,…] [--sigma vanilla|mod] [--soft-slope 2] [--soft-pen 0] [--consensus intact|all] [--json <out.json>] [--quiet]
 import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join, dirname, resolve } from 'node:path';
@@ -91,6 +95,7 @@ const ARMS = []; for (let i = 0; i < argv.length; i++) if (argv[i] === '--arm') 
 // the reference holds two-arm sessions (the alternating batch): read its vanilla arm
 const VAN = argOf('--van', VANILLA_REF + ':vanilla'); const CONFIG = argOf('--config', ''); const BIG = +argOf('--big', '50') * 1e6;
 const [E0, E1] = argOf('--end', '1932-1936').split('-').map(Number); const JSON_OUT = argOf('--json', ''); const QUIET = argv.includes('--quiet'); const SIGMA = argOf('--sigma', 'fixed');
+const CONS_MODE = argOf('--consensus', 'intact'); if (!['intact', 'all'].includes(CONS_MODE)) { console.error('--consensus intact|all, got ' + CONS_MODE); process.exit(1); }
 // THE WEIGHTS (user-ruled 2026-09-18 morning: "balance weights more equally — reduce pool GDP, increase the now low-weighted options, especially
 // T3/rest and T0/rest"; AMENDED the same evening after FINDINGS F134: "drop world U*, but not the other things you propose dropping" and "all right
 // on restoring priority line"). So world U* is OUT of the loss — it is r = −0.99 with world W, the same statement twice — while staying a SOFT flag
@@ -364,18 +369,20 @@ function lossOf(o, sT) { // o: a run or a consensus object with the metrics; sT:
   let L = 0, n = 0; const parts = {}; for (const [k, w] of Object.entries(W)) { if (!(k in t) || !Number.isFinite(t[k])) continue; parts[k] = w * t[k]; L += parts[k]; n++; }
   return { L, parts, terms: t, n, soft: softList };
 }
-const consensusOf = runs => { // over intact runs
-  const ok = runs.filter(r => !r.broken); let cons = ok, note;
-  if (!ok.length) { note = 'no intact run — the config is out'; }
-  else if (ok.length === 1) note = 'n=1 intact — read as is';
-  else if (ok.length === 2) note = 'n=2 intact — the median (mean) of both';
-  else if (ok.length === 3) { let best = null; for (let i = 0; i < 3; i++) for (let j = i + 1; j < 3; j++) { const d = Math.abs(ok[i].gdpW - ok[j].gdpW); if (!best || d < best.d) best = { d, i, j }; } cons = [ok[best.i], ok[best.j]]; note = 'n=3 intact — the two closest on world GDP (' + cons.map(r => r.rel.split('/')[1]).join(' + ') + ')'; }
-  else note = 'n=' + ok.length + ' intact — the median of all';
+const consensusOf = runs => { // over intact runs (the ruled form); with --consensus all, over every usable run
+  const ok = runs.filter(r => !r.broken), pool = CONS_MODE === 'all' ? runs : ok, kind = CONS_MODE === 'all' ? 'usable, broken included' : 'intact';
+  let cons = pool, note;
+  if (!pool.length) { note = CONS_MODE === 'all' ? 'no usable run' : 'no intact run — the config is out'; }
+  else if (pool.length === 1) note = 'n=1 ' + kind + ' — read as is';
+  else if (pool.length === 2) note = 'n=2 ' + kind + ' — the median (mean) of both';
+  else if (pool.length === 3) { let best = null; for (let i = 0; i < 3; i++) for (let j = i + 1; j < 3; j++) { const d = Math.abs(pool[i].gdpW - pool[j].gdpW); if (!best || d < best.d) best = { d, i, j }; } cons = [pool[best.i], pool[best.j]]; note = 'n=3 ' + kind + ' — the two closest on world GDP (' + cons.map(r => r.rel.split('/')[1]).join(' + ') + ')'; }
+  else note = 'n=' + pool.length + ' ' + kind + ' — the median of all';
+  if (CONS_MODE === 'all') note += ' (--consensus all, NOT the ruled consensus, which reads the ' + ok.length + ' intact run(s))';
   const band = (v, e) => { const i = e.findIndex(x => v < x); return i === -1 ? e.length : i; };
   const diverges = (a, b) => (band(a.gdpW, [0.6, 0.9, 1.1, 1.5]) !== band(b.gdpW, [0.6, 0.9, 1.1, 1.5]) && Math.abs(a.gdpW - b.gdpW) >= 0.15) || (band(a.worldW, [0.4, 0.55, 0.72, 0.9]) !== band(b.worldW, [0.4, 0.55, 0.72, 0.9]) && Math.abs(a.worldW - b.worldW) >= 0.10);
   const divergent = cons.length === 2 && diverges(cons[0], cons[1]);
   if (divergent) note += ' — DIVERGENT under F114 (world GDP ' + cons.map(r => f2(r.gdpW)).join(' / ') + ', world W ' + cons.map(r => f2(r.worldW)).join(' / ') + '): no consensus, a third run is needed';
-  const C = { note, runs: cons.map(r => r.rel), intact: ok.length, broken: runs.length - ok.length, divergent, gerCM: luckySeed(runs) };
+  const C = { note, mode: CONS_MODE, runs: cons.map(r => r.rel), intact: ok.length, broken: runs.length - ok.length, divergent, gerCM: luckySeed(runs) };
   C.path = {}; for (const y of DECADES) { const v = runs.map(r => r.path && r.path[y]).filter(Number.isFinite); C.path[y] = { med: med(v), sd: sd(v), n: v.length }; }
   { const m = C.path[1886] && C.path[1886].med; C.line1886 = { lo: LINE1886[0], hi: LINE1886[1], med: m, beyond: Number.isFinite(m) && (r2(m) < LINE1886[0] || r2(m) > LINE1886[1]) }; }
   const keys = ['gdpW', 'gdp35', 'gdpP', 'poolW', 'poolU', 'poolH', 'poolY', 'worldW', 'worldU', 'worldH', 'worldY', 'poolW_abs', 'worldW_abs', 'poolU_abs', 'worldU_abs', 'poolH_abs', 'worldH_abs', 'gerH', 'gerH_abs', 'gerU', 'gerU_abs', 'PI', 'PI_abs', 'PP', 'PM', 'realW', 'realP', 'plW', 'plP'];
@@ -393,7 +400,7 @@ else if (SIGMA === 'runs' || SIGMA === 'mod') { // the spread of the INTACT runs
   const ok = allRuns.filter(r => !r.broken); const src = { 'world.gdp': 'gdpW', 'pool.gdp': 'gdpP', 'world.W': 'worldW', 'pool.W': 'poolW', 'world.U': 'worldU', 'pool.U': 'poolU', 'world.H': 'worldH', 'pool.H': 'poolH', PI: 'PI', PP: 'PP' };
   for (const [k, f] of Object.entries(src)) { const s = sd(ok.map(r => r[f])); if (Number.isFinite(s) && s > 0) sig[k] = s; }
 }
-for (const a of arms) { for (const r of a.runs) r.loss = r.broken ? null : lossOf(r, sT); a.C.loss = a.C.intact && !a.C.divergent ? lossOf(a.C, sT) : null; }
+for (const a of arms) { for (const r of a.runs) r.loss = r.broken && CONS_MODE !== 'all' ? null : lossOf(r, sT); a.C.loss = a.C.runs.length && !a.C.divergent ? lossOf(a.C, sT) : null; }
 
 // ---- print
 const verdict = (v, lo, hi, soft) => { const x = r2(v); if (soft && soft(x)) return 'BEYOND THE SOFT BOUNDARY'; if (x >= lo && x <= hi) return 'AT THE AIM'; return x < lo ? 'inside, below the aim' : 'inside, above the aim'; };
@@ -409,7 +416,7 @@ if (!QUIET) {
     console.log('\n' + '='.repeat(150) + '\n' + a.spec + ' · ' + a.runs.length + ' usable run(s) · ' + (a.cfg ? a.cfg.path : 'no config → T not read'));
     console.log('--- HARD, per run ---');
     for (const r of a.runs) { console.log('  ' + r.rel.split('/').slice(-2).join('/').padEnd(64) + (r.broken ? '⛔ BROKEN BY ' + r.broken.toUpperCase() : '✅ intact') + '  [anchor ' + r.anchor.viol + ' y out; pooled U* ' + pc(r.poolU_abs) + '; world GDP ' + f2(r.gdpW) + '× (' + f2(r.realW) + '× at base prices)' + (r.loss ? '; loss ' + f2(r.loss.L, 1) : '') + ']'); for (const h of r.hard) console.log('        ⛔ ' + h); for (const s of r.soft) console.log('        ⚠ soft: ' + s); }
-    const C = a.C; console.log('--- CONSENSUS: ' + C.note + ' ---'); if (!C.intact) continue;
+    const C = a.C; console.log('--- CONSENSUS: ' + C.note + ' ---'); if (!C.runs.length) continue;
     const b0 = a.runs.find(r => r.basis && r.basis.length);
     if (b0 && b0.famWarn && b0.famWarn.length) console.log('  ⚠ SUCCESSION ANOMALY — two forms of one state alive at once, the priority set picked the later: '
       + [...new Set(b0.famWarn)].join(' | ') + '  (rare by ruling, not corrected for — read the affected market with care)');

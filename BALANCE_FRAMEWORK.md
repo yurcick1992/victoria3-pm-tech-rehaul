@@ -4921,6 +4921,11 @@ affected by relevant JEs. If it was affected by them, they'd supercede. We will 
 vanilla, and watch subsidy status of all infrastructure in the 1.15.1 runs, I'm curious how this will work"* — the 1.15.1 batch report reads,
 per arm and year, the subsidised levels and the subsidy spending of railways, ports, power plants and dams (the save summaries record both).
 
+**Measured (2026-11-14, F271 §5).** The levels: on 1.15.0 every railway, port, power-plant and dam level was subsidised in every year, in
+both arms; on 1.15.1, by 1935, railways 8% / 8% of levels (mod / vanilla), ports 18% / 26%, power plants 6% / 8%, dams one level in one run.
+Both arms alike: vanilla's change. The flag and the AI's new subsidy rule (V13) changed together, so these runs cannot confirm that the flag
+acts only at the campaign start. The spending was not read by building type: the summaries carry subsidy spending per country only.
+
 ### §10.111.6 — THE ARMED FORCES' ASSET COUNT LEFT AS VANILLA (user-ruled 2026-11-12, Q11)
 
 1.15.1 draws capitalists to the Armed Forces by the military-industry buildings their financial district or headquarters owns, capped

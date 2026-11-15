@@ -209,7 +209,10 @@ grp('Do the tiers arrive on time?', 'A tier is defined by its anchor year: the t
     pill(cls, !miss.length ? 'on the anchors' : miss.every(r => r.late) ? 'old tiers linger' : miss.every(r => !r.late) ? 'tiers arrive early' : 'off the anchors')); }
 
 // the card's body: how to read it, then the table (the template wraps both in a scrolling card)
-writeFileSync(join(DIR, 'scorecard.html'), `<p class="small">Each figure reads this batch’s runs (${C.note}) over ${CR.end[0]}–${String(CR.end[1]).slice(2)} unless the line names a year, `
+const consWords = C.mode === 'all'
+  ? `the median of all ${C.runs.length} runs, the ones the register counts as broken included; the register’s own reading takes only unbroken runs, and ${C.intact ? 'only ' + C.intact + (C.intact === 1 ? ' is' : ' are') : 'none is'} unbroken here`
+  : C.note;
+writeFileSync(join(DIR, 'scorecard.html'), `<p class="small">Each figure reads this batch’s runs (${consWords}) over ${CR.end[0]}–${String(CR.end[1]).slice(2)} unless the line names a year, `
   + `against the median of ${CR.vanN} vanilla runs; × means this batch ÷ vanilla. The shortlist is Britain, the USA, France, the Low Countries and Prussia/Germany, read as one economy.</p>\n`
   + `<table class="score"><thead><tr><th>Line</th><th class="num">This batch / vanilla</th><th>Aim</th><th>Verdict</th></tr></thead><tbody>\n        `
   + rows.join('\n        ') + '\n</tbody></table>');
@@ -218,7 +221,7 @@ writeFileSync(join(DIR, 'scorecard.html'), `<p class="small">Each figure reads t
 { let s;
   if (C.loss) { const parts = Object.entries(C.loss.parts).filter(([, v]) => Math.abs(v) > 0.005).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
     const per = RUNS.filter(r => r.loss).map(r => r.loss.L).sort((a, b) => a - b);
-    s = `<p class="dim"><b>The criteria register’s loss</b> (the config search’s objective: the weighted distance from every aim, steeper past a soft line; lower is better; directional only, BALANCE_FRAMEWORK §10.83.7): <b>${f2(C.loss.L)}</b> = ${parts.map(([k, v]) => k + ' ' + f2(v)).join(' + ')}; per run ${f1(per[0])}–${f1(per[per.length - 1])}.`
+    s = `<p class="dim"><b>The criteria register’s loss</b>${C.mode === 'all' ? ' over all ' + C.runs.length + ' runs, broken ones included (not the ruled form, which reads only intact runs)' : ''} (the config search’s objective: the weighted distance from every aim, steeper past a soft line; lower is better; directional only, BALANCE_FRAMEWORK §10.83.7): <b>${f2(C.loss.L)}</b> = ${parts.map(([k, v]) => k + ' ' + f2(v)).join(' + ')}; per run ${f1(per[0])}–${f1(per[per.length - 1])}.`
       + (C.loss.soft.length ? ` Not final: beyond a soft line on ${C.loss.soft.join(', ')}.` : '') + ` Vanilla reference n=${CR.vanN ?? '?'}, the end state the ${CR.end[0]}–${CR.end[1]} mean.</p>`;
   } else s = `<p class="dim">No consensus loss: ${C.divergent ? 'the pair diverges' : 'no intact run'}.</p>`;
   writeFileSync(join(DIR, 'scorecard_loss.html'), s); }
