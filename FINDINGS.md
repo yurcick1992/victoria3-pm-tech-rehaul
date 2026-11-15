@@ -22890,6 +22890,16 @@ hand-computed all-ten column). It is not the ruled form; re-basing the absolute 
 - **Employment moved the other way from 1.15.0.** On 1.15.0 the mod's shortlist kept more people out of work than vanilla's (U* 7.7% against
   2.6%, F269 all ten); here it keeps fewer (3.6% against 4.8%), with W 0.95× against 0.92× there. Goal 4 (depeasantation harder than vanilla)
   is not met on the shortlist on 1.15.1; the world still reads it (U* 34.2% against 30.1%, W 0.92×).
+- **Read against §10.113** (ruled 2026-11-15, after this finding: depeasantation and capital abundance are levels of the mod's own, not
+  ratios to vanilla). The world's U* gap to vanilla (34.2% against 30.1%) is inside the seed spread — noise, not "the world still reads it".
+  Against the provisional aims: the world's U* 34.2% (27.7–37.9% per run) against about 50%. **Majors with a pool above 0.5 of their yearly
+  GDP in 1935–36** (the mean of the 1935 and 1936 summaries; the nine instrumented majors): per run 3 4 2 2 1 2 2 6 4 1, median 2 (Britain in
+  9 of 10 runs, the USA and Germany in 5; on the 1932–36 mean Britain's median pool is 1.56 of GDP, up to 6.43; the Netherlands, a rump in one
+  run, reached 81 times its tiny GDP). **The flag** (pool above 3 GDP in each of 5 consecutive years, no year more than 2% below the one
+  before, U* under 5%, as ruled; 2% flags the same runs): 2 of 10 runs — Britain 1924–28 in runs 2 and 16 (pool 3.2 → 3.6 and 3.1 → 4.4 GDP), the
+  Netherlands 1929–33 in run 16. Beside it: vanilla 1.15.1 median 2 majors (1–4), flagged in 2 of 11 (Britain 1932–36, France 1931–35); mod
+  1.1 on 1.15.0 median 2.5 (1–5), none flagged; vanilla 1.15.0 median 2, 1 of 10 flagged. Read from the save summaries' `investment_pool`,
+  `gdp` and workforce per country (GER continuing NGF and PRU; U* as `criteria.mjs`).
 
 **2. The wall clock** (play time from the tick lines; the ruled clusters; the arms alternated in the same days; the user worked on the
 machine while runs played, so directional): main (clusters 1 + 2) **176.6 min against 162.5, ×1.087**, inside the +10% budget, up from F269's

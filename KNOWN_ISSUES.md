@@ -40,13 +40,18 @@ Balance
 * Competition through trade is weak. A backward industry shrinks when a far better plant opens in its own market, but cheaper goods made in
   other markets hardly push it out, and many markets have little or no trade capacity. Prices do not even out between markets as much as
   intended.
-* Britain may reach near-full employment. In 30 of mod 1.0's 48 test campaigns, its unemployment (peasants included) stayed under 5% for 5 to
-  17 years.
+* Capital piles up unspent in the leading economies. The mod means capital to stay scarce, so that savings go into costly modern plants: as
+  few major powers as possible should end the game holding an unspent investment pool above half of their yearly GDP. Mod 1.1.1 played ten
+  automated campaigns on Victoria 3 1.15.1 (observer runs, no player); in a typical one two major powers ended above that (between one and
+  six), most often Britain (in 9 of the 10), the USA and Germany (5 each). In two campaigns Britain kept more than three times its yearly
+  GDP unspent for at least five years while almost no one there was left unemployed, which the mod treats as a fault.
+* Depeasantation is too easy. Because every modern job needs capital to build, the mod aims to keep about half of the world's workforce
+  unemployed or peasants into the 1930s. In mod 1.1.1's ten campaigns on Victoria 3 1.15.1 it was about a third (34%; 28–38% between
+  campaigns), and in the leading industrial economies, Britain, the USA, France, the Low Countries and Germany taken together, 3.6%
+  (0.8–9.3%). The balance was tuned on game 1.13, where about a quarter of those economies' workforce was still unemployed or peasants in
+  the 1930s; game 1.15 finds work for far more people. The retune for game 1.15 is planned for mod 1.2.
 * Research is uneven between the trees. Over half of the research journal entries cover the production tree, so that tree runs ahead of its
   intended pace while the military tree falls far behind. In mod 1.0's tests, by 1936 several countries held seven of the eight last-era
   production technologies, and no country held a single last-era military technology; the society tree ended about where vanilla's AI has
   it. The total number of technologies is acceptable. For reference, a great power ended with about as many as in vanilla (Britain 160,
   vanilla 162), with more production technologies and fewer military ones (Britain 42 military, vanilla 51).
-* Runaway growth can happen. In 4 of mod 1.0's 48 test campaigns, the leading industrial economies nearly ran out of unemployed workers and
-  peasants: under 10% of the workforce together, or Britain alone under 5% for nine years. Vanilla's own campaigns cross the same line more
-  often. None of the 48 stalled.

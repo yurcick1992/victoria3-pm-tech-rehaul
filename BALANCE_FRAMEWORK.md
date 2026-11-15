@@ -80,6 +80,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 ~20 December: major changes, extraction first, which revisits §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed; a bonus to hydro alone is allowed, none planned); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark (Mechanical Tools 25,000 → 75,000); .4 copper scarcity follows Paradox, no copper lever | .1 the plan (ROADMAP, BACKLOG); .2 and .4 in force; .3 ruled for 1.2, not built | here |
 | 10.111 | game 1.15.1, mod 1.1.1: .1 the 1.15.1 canon (`g1151-canon-bz-dcu-ra-il`, sha256 c1274f15; the 1.15 chain replayed on 1.15.1, field diff = the telephone rung's three inputs, value-neutral); .2 the dams stay `must_have` under 1.15.1's subsidy rule (now a ceiling; no subsidy for a profitable dam), measured; .3 the AI research weights back to 1.13.11 on six technologies with research entries, five content-tied pushes kept — the canon `g1151-canon-bz-dcu-ra-il-aw`, sha256 697d4869; .4 the AI's new goods stances kept; .5 the dams' `subsidized` flag follows vanilla, infrastructure subsidies watched; .6 the Armed Forces' asset count left as vanilla | in force: the canon (.3) since 2026-11-12 | here |
 | 10.112 | Cossack Hosts (game 1.15) count as peasants in U\* and leave W's productive workers (ruled 2026-11-05 in a cloud session, recorded 2026-11-12) | in force; whether the readers must change is checked after the 10 vs 10 | here |
+| 10.113 | depeasantation and capital abundance are aimed at levels of their own, not ratios to vanilla: the world's U\* about 50%, as few majors as possible with a pool above 0.5 GDP in 1935–36, and a flag on a pool above 3 GDP for 5 years without falling at U\* under 5% (provisional); world GDP stays vanilla-referenced; a gap inside the seed spread is noise | in force; the aims' form and `criteria.mjs` open | here |
 
 ---
 
@@ -4951,3 +4952,46 @@ counting as a peasant in U\*.
 them. If it does, U\* needs no change and only W's productive count may; if not, the readers add the Hosts' employment to the peasants and
 take it out of the salaried. Checked on the 1.15 save summaries after the 10 vs 10 ends (`tools/testbed/**` is frozen while it plays;
 GAME_UPDATE_1_15 U26, BACKLOG G). Until then a 1.15 reading of Russia's U\* and W says it is unadjusted.
+
+## §10.113 — DEPEASANTATION AND CAPITAL ABUNDANCE ARE AIMED AT LEVELS OF THEIR OWN, NOT AT RATIOS TO VANILLA (user-ruled 2026-11-15)
+
+**The occasion.** The mod 1.1.1 known-issue prose of 2026-11-15 (F271) compared the world's U\* with vanilla's (34% against 30%) and the
+shortlist's (3.6% against 4.8%). The user: *"34% against 30% is noise. However, we need to distinguish vanilla-referenced goals (e.g.
+GDP/vanilla) and goals on its own. For depeasantation and capital abundance, the aim is, let's say, 50% for world's U\* and not more than 0.5
+GDP hoard for any major. Vanilla seem to have improved this numbers independently (especially hoarding), this doesn't mean that we need to be
+as much stricter."*
+
+**The ruling.**
+1. **Two kinds of goal.** A vanilla-referenced goal is a ratio to vanilla because the game's own systems scale with vanilla's level: world
+   GDP ÷ vanilla's (government minting and prestige follow it, §10.90). A goal of the mod's own is a level, whatever vanilla does on a given
+   game version: **depeasantation and capital abundance** are of this kind (CLAUDE.md §1.1, goals 3–4; the closed-major term, §10.100).
+2. **The levels, provisional** ("let's say"), as aims, not pass/fail lines. Refined the same day (*"No need to be overly binary strict about
+   it. Let's just have an aim of 'as few as possible majors with over 0.5 hoard in 1935-1936', and a non-decreasing hoard of over 3 GDP in 5
+   years combined with near-zero U\* is a thing needing flagging."*):
+   - **the world's U\* about 50%** at the end state;
+   - **as few majors as possible with an investment pool above 0.5 of their yearly GDP in 1935–1936** — a count to minimise, not a line
+     every major must pass;
+   - **a FLAG** (not an aim): a major whose pool stays above 3 of its yearly GDP for 5 years without falling, while its U\* is near zero —
+     **under 5%** (the user, the same day: *"Make it 5%."*).
+3. **When vanilla moves on a game version, these aims do not move with it.** A vanilla that employs more people or hoards differently does
+   not make the mod's aims stricter (or looser).
+4. **A gap to vanilla inside the seed spread is noise**: it is not reported as the mod meeting or missing anything.
+
+**What it replaces.** The register's relative lines for these quantities (§10.83, §10.85; CLAUDE.md §3.1–§3.2): the shortlist's U\* ≥ 2×
+vanilla's (≈ 42% on game 1.13), the world's U\* "higher than vanilla" (soft < 1×), the shortlist's and the world's H < 1× vanilla's. The
+lines that were already levels stay: the runoff line (the shortlist's pooled U\* under 10%; a member of ≥ 50M with U\* under 5% for ≥ 5
+years on a mean hoard ≥ 1.5 GDP), the soft capital-abundance lines and the closed-major term (§10.100). It settles, for these two
+quantities, the part of GAME_UPDATE_1_15 Q12 that asked whether to re-base on a 1.15 vanilla: they are not re-based.
+
+**Where it stands** (F271: mod 1.1.1 on game 1.15.1, ten runs): the world's U\* 34.2% (27.7–37.9% per run, the 1932–36 end state) against
+an aim of about 50%. **Majors above 0.5 GDP in 1935–36** (the mean of the 1935 and 1936 summaries; the nine instrumented majors GBR, USA,
+FRA, GER, NET, BEL, UNL, RUS, JAP): per run 3 4 2 2 1 2 2 6 4 1, median 2 (Britain in 9 of 10 runs, the USA and Germany in 5). **The
+flag** (pool above 3 GDP in each of 5 consecutive years, no year more than 2% below the one before, U\* under 5%; read from 1900): 2 of 10
+runs — Britain 1924–28 in runs 2 and 16, the Netherlands 1929–33 in run 16. Beside it, not as targets: vanilla 1.15.1, median 2 majors (1–4),
+flagged in 2 of 11 runs (Britain 1932–36, France 1931–35); mod 1.1 on 1.15.0, median 2.5 (1–5), none flagged; vanilla 1.15.0, median 2,
+1 of 10 flagged. On the shortlist vanilla's U\* fell from 19.1% (1.13.11, n=56) to 4.8% (1.15.1, n=11) and its pool rose from 0.42 to
+0.93 of GDP.
+
+**Open, not ruled:** the U\* aim's form (a point, a floor or a band) and whether the shortlist keeps a U\* aim of its own; which countries are
+"majors" (the nine above were used) and how a rump state with a tiny GDP is treated (the Netherlands' pool reached 81 times its GDP in one
+run); the flag's "non-decreasing" (a 2% yearly tolerance was used); the loss terms and weights. `criteria.mjs` still reads the relative form until these are settled and it is changed (BACKLOG G).

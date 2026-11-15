@@ -458,6 +458,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 around 2026-12-20: major changes, extraction first, revisiting §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed; a bonus to hydro alone is allowed, none planned); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark; .4 copper scarcity follows Paradox | .1 the plan (ROADMAP); .2 and .4 in force; .3 for 1.2, not built |
 | 10.111 | game 1.15.1, mod 1.1.1: .1 the 1.15 chain replayed on 1.15.1 (field diff = the telephone rung's three inputs, value-neutral); .2 the dams stay `must_have` for subsidies, a ceiling under 1.15.1's rule, measured; .3 the AI research weights back to 1.13.11 on six technologies with research entries, five content-tied pushes kept (the canon); .4 the AI's new goods stances kept; .5 the dams' `subsidized` flag follows vanilla, infrastructure subsidies watched; .6 the Armed Forces' asset count left as vanilla | in force (the canon since 2026-11-12) |
 | 10.112 | Cossack Hosts (game 1.15) count as peasants in U\* and leave W's productive workers (ruled 2026-11-05 on a cloud branch, recorded 2026-11-12) | in force; the readers checked after the 10 vs 10 |
+| 10.113 | two kinds of goal: world GDP stays a ratio to vanilla; depeasantation and capital abundance are levels of the mod's own that do not move when vanilla does — the world's U\* about 50%, as few majors as possible with a pool above 0.5 GDP in 1935–36, a flag on a pool above 3 GDP for 5 years without falling at U\* under 5% (provisional); a gap inside the seed spread is noise | in force; the aims' form and `criteria.mjs` open (BACKLOG G) |
 
 ---
 
@@ -474,10 +475,10 @@ state (the 1932–1936 mean) unless a date is given.
 | the 1836 start: map, output, prices | — | the same, inside vanilla's seed spread | 1836 stays vanilla (§1.4); the crafts are seeded to vanilla's output; the input lift is the one ruled exception | register (the 1836–1845 anchor) |
 | world GDP, as displayed | 1.0 | 0.90–1.00× at the end; a dip around 1890–1910 is expected, 1886 inside 0.79–1.01× (centred on 0.90) | modernising costs capital, so the world ends slightly poorer; capital abundance must be hard to reach (§10.100) | register |
 | productive workers per capita (W), world and pool | 1.0 | 0.6–0.95× | goal 4: capital is scarce, so fewer people find productive work | register |
-| unemployment including peasants (U\*), the pool | ≈ 21% | ≥ 2× (≈ 42% or more); never under 10% pooled | goal 4, seen from the other side | register (10% is a hard line) |
+| unemployment including peasants (U\*), the world | — | **about 50% at the end, a level of the mod's own, not a ratio to vanilla** (provisional, §10.113); the shortlist's pooled U\* never under 10% | goal 4, seen from the other side | register (10% is a hard line); the 50% aim not yet in `criteria.mjs`, which still reads the shortlist's ≥ 2× vanilla |
 | GDP of the shortlist pool | 1.0 | 1.1–1.9× | those in work produce much more each (up to ~2× per productive worker) | register |
 | a closed major's capital abundance (Germany, 1927–1936) | — | none: German U\* stays ≥ 10%, and the hoard does not pile up | §10.100 | register (`gerCM`) |
-| the hoard (investment pool ÷ GDP) | 1.0 | under 1× | capital is spent on dear modern plants, not piled up | register (least important) |
+| the hoard (investment pool ÷ yearly GDP), each major | — | **as few majors as possible above 0.5 in 1935–36**, a level of the mod's own; **flag** a pool above 3 for 5 years without falling at U\* under 5% (provisional, §10.113) | capital is spent on dear modern plants, not piled up | not yet in `criteria.mjs`, which still reads H < 1× vanilla's (least important) |
 | building-input prices in £ ÷ base (PI) | 1.0 | ≤ 0.8×, falling decade over decade | the frontier floods the market (§2.1) | register |
 | pop-goods prices in wage units (PP) | 1.0 | ≤ 0.8× | obsolescence works through wages, not £ (F97) | register |
 | workers on tier-0 rungs (T0) | vanilla's first methods survive wherever the AI does not switch | zero by 1936, or falling decade over decade | goal 2: old plants lose their market | register |
@@ -495,6 +496,9 @@ User-ruled 2026-09-17 and amended since — §10.83 (+ .4–.8), §10.85, §10.8
 whose defaults ARE the ruled form (`--arm <session[,session]>[:<setup>] [--arm …] [--config <book>]`; several arms print a ranking). One rule set for
 the config iterator and for every batch report. ⚠ On game 1.15 every run of both arms crosses the runoff line (F269, F271), so the ruled consensus can be
 empty; `--consensus all` then reads every usable run, labelled as not the ruled form, until the lines are re-based (unruled, GAME_UPDATE_1_15 Q12).
+⚠ **§10.113 (2026-11-15) makes the U\* and H aims levels of the mod's own** — the world's U\* about 50%; as few majors as possible with a pool above
+0.5 GDP in 1935–36; a flag on a pool above 3 GDP for 5 years without falling at U\* under 5% — where the table below still shows ratios to vanilla;
+the table and `criteria.mjs` follow once the aims' form is settled (BACKLOG G). World GDP stays a ratio.
 
 **Kinds.** An **AIM** is what config iteration tries to reach. A **SOFT** boundary is unacceptable but the economy is not broken: the run is read in
 full, and a soft breach never stops a batch (it marks the book "not final"). A **HARD** boundary means the economy is broken: the run records only
