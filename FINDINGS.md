@@ -22957,6 +22957,26 @@ fall to about 6% by 1900 and rise again in the 1930s; railways and power plants 
 vanilla's change; two changed together (the building group's `subsidized` flag, V12d, and the AI's new rule that a profitable or unneeded
 building gets nothing, V13), and these runs cannot tell them apart. Dam levels built: 88 a run by 1935 against 95 on 1.15.0.
 
+*What it did* (read 2026-11-15; the four arms vanilla 1.15.0 n=10, vanilla 1.15.1 n=11, mod 1.1 on 1.15.0 n=10, mod 1.1.1 n=10; medians of
+runs, per-run ranges in brackets; yearly summaries' building `levels`, `staffing` (staffed levels) and `profit`, and each owned state's
+`infrastructure` and `infrastructure_usage`; two sessions and two books, and the subsidy change came with every other 1.15.1 change, so
+none of it isolates the subsidies):
+- **Dams (mod against mod): built later and somewhat fewer, briefly short of workers, never unprofitable.** Levels 28 / 48 / 95 in 1910 /
+  1920 / 1935 on 1.15.0 against 22 / 35 / 88 on 1.15.1 (1920: 29–67 against 19–42; 1935: 76–127 against 49–104) — a direction, the ranges
+  overlap. Staffed: 96–99% of dam levels over 1900–1930 on 1.15.0 against 83–90% on 1.15.1 (1920 per run 93–97% against 69–99%), 97%
+  against 94% in 1935. Dam levels in countries whose dams are under half staffed: none on 1.15.0; a median of 2–6 a run over 1900–1930 on
+  1.15.1, none by 1935. No country's dams make a loss in either (one country's in 1900 on 1.15.1), so a ceiling rule rarely pays them; the
+  shortlist's near-full employment on 1.15.1 is the other explanation of the staffing gap, and these data cannot tell the two apart.
+- **Infrastructure: about three times as many states run over their infrastructure** (usage above infrastructure; the engine then cuts
+  market access). Owned states over in 1935: vanilla 4.0% (2.9–6.7%) on 1.15.0 against **12.7% (9.8–18.0%)** on 1.15.1 — the ranges do not
+  overlap; mod 4.9% (2.6–8.8%) against **11.7% (6.6–18.1%)**. More than 10% over: 2.1% / 7.9% (vanilla), 3.2% / 7.4% (mod). Excess usage,
+  share of all usage: 0.32% / 2.38% (vanilla), 0.59% / 1.68% (mod). The shortlist's states over: 2.7% / 16.0% (vanilla), 5.4% / 9.5% (mod).
+  The gap opens after 1900 and widens every decade. The mod against vanilla on 1.15.1 is about the same (11.7% against 12.7%; the shortlist
+  9.5% against 16.0%, ranges overlapping); early in the century the mod has more constrained states than vanilla on both versions (about 8%
+  against 5% in 1860–1880), a mod trait, not a 1.15.1 one.
+- **Fewer infrastructure levels built on 1.15.1**, 1935 (1.15.0 → 1.15.1): railways vanilla 5,269 → 4,484 (−15%), mod 4,597 → 3,848
+  (−16%); power plants vanilla 1,612 → 999 (−38%), mod 1,301 → 1,078 (−17%); ports vanilla 2,317 → 2,178, mod 1,998 → 2,089.
+
 **6. The predictions** (the schedule's `_predictions`, written before the launch):
 - **vanilla 1.15.1 against 1.15.0:** world GDP at or above 1.15.0's — WRONG (0.91×, just inside the ±10% magnitude but the other way);
   pooled U* under 10% in most vanilla runs — RIGHT (10 of 11). Electricity and the copper price were not read.

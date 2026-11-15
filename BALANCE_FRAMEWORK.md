@@ -4926,6 +4926,9 @@ per arm and year, the subsidised levels and the subsidy spending of railways, po
 both arms; on 1.15.1, by 1935, railways 8% / 8% of levels (mod / vanilla), ports 18% / 26%, power plants 6% / 8%, dams one level in one run.
 Both arms alike: vanilla's change. The flag and the AI's new subsidy rule (V13) changed together, so these runs cannot confirm that the flag
 acts only at the campaign start. The spending was not read by building type: the summaries carry subsidy spending per country only.
+What it did (F271 §5): about three times as many states run over their infrastructure by 1935 (vanilla 4.0% → 12.7% of owned states, mod
+4.9% → 11.7%), with 15–16% fewer railway levels in both arms; the dams came later and somewhat fewer (95 → 88 levels by 1935), a little less
+staffed in 1900–1930, never unprofitable.
 
 ### §10.111.6 — THE ARMED FORCES' ASSET COUNT LEFT AS VANILLA (user-ruled 2026-11-12, Q11)
 
