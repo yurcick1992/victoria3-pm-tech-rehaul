@@ -34,7 +34,7 @@ of 2026-11-09 (§10.110.1): **mod 1.2 in late November**, the balance retune on 
 | 5a | company instrumentation | item (1) DONE (summary v7); item (2) OPEN | 2026-08-21 | BACKLOG D |
 | 6 | hydro-dam megaprojects | DONE; canon since 2026-09-27, redesigned to 2026-10-16 | 2026-10-16 | §10.89 (.1, .9–.14), F168–F177 |
 | 6½ | artisanal ownership | might make 1.3 (user, 2026-11-09) | 2026-10-21 | POLISH F1 |
-| 7 | visuals, proofreading, release | DONE — mod 1.0 released 2026-10-30, mod 1.1 2026-11-08 | 2026-11-08 | `POLISH_1_0.md`, `GAME_UPDATE_1_15.md` |
+| 7 | visuals, proofreading, release | DONE — mod 1.0 released 2026-10-30, mod 1.1 2026-11-08, mod 1.1.1 (game 1.15.1) 2026-11-15 | 2026-11-15 | `POLISH_1_0.md`, `GAME_UPDATE_1_15.md` |
 | — | the war and naval research channels | DONE; re-ruled 2026-09-03 and 2026-10-12 | 2026-10-12 | §10.69, §10.98 |
 | 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 CLOSED (F255, not an issue) · P9 DEFERRED to an unspecified later version | — | BACKLOG B, F137, F138 |
 | 9 | margin compression | CLOSED (batch 1 out; levelling closed) | 2026-09-19 | F139, §10.86.3–.4 |

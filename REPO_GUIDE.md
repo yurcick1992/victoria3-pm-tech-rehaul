@@ -66,7 +66,7 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
   what changed from 1.0, against vanilla 1.15). **`CHANGELOG_WORKSHOP/<version>.txt`** — each release's Steam Workshop change note as
   published, in Steam's BBCode, one file per note, so the whole file is what is pasted. Steam's limit is 8,000 bytes
   (`k_cchPublishedDocumentChangeDescriptionMax`). Tags count, and so does the CRLF a browser submits for every line break, so the size Steam
-  counts is the file's bytes plus its line breaks: 1.0.0 is 7,856, trimmed from the 10,645 of its CHANGELOG entry, and 1.1.0 is 4,781. A
+  counts is the file's bytes plus its line breaks: 1.0.0 is 7,856, trimmed from the 10,645 of its CHANGELOG entry, 1.1.0 is 4,781 and 1.1.1 is 2,727 (`check_release_notes.mjs`). A
   note can point to the fuller text on the Paradox forum. The two published notes were read back from the Workshop page on 2026-11-12,
   and 1.0.0 matched its draft byte for byte. Steam's 1.1.0 note sends readers to the Workshop item's discussions for known issues;
   CHANGELOG.md's sends them to `KNOWN_ISSUES.md`. **`KNOWN_ISSUES.md`** — the public list of issues a player would notice in the current
@@ -75,7 +75,7 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
   note, over the previous version), `steam_over_vanilla.txt` and `steam_known_issues.txt` (the Workshop discussions), `forum_post.txt` (the
   thread's changelog post, replaced whole: each changelog of the game line in full, in spoilers, then the one over vanilla) and
   `forum_known_issues.txt` (the forum thread's first post), plus `headline_check.md` (step 1½: the standing descriptions read against the
-  release) and, for 1.1.1, `workshop_description.txt` (the live description with its obsolete sentences updated, at the user's request). **`release_notes/published/`** holds what is live, exactly as read: `workshop_description.txt` (the user's own text, read from the
+  release) and, for 1.1.1, `workshop_description.txt` (the live description with its obsolete sentences updated, at the user's request). **`release_notes/published/`** holds what is live, exactly as read and in BBCode wherever it can be read so: `workshop_description.txt` (the user's own text, its BBCode rebuilt from the page's HTML and checked to round-trip; read from the
   Workshop page), `forum_changelog_post_<v>.txt` (as the user pasted it; 1.1.0's went out as an earlier draft) and, once pasted,
   `forum_first_post.txt`. The procedure is the `release` skill
   (`.claude/skills/release/SKILL.md`, 2026-11-15); `tools/check_release_notes.mjs` checks the folder. 1.1.0's folder predates the skill's
@@ -850,8 +850,8 @@ stale output except under `common/history`, which an emitter writing there must 
   failure; changes nothing. Status: current (2026-11-15: passes the 1.1.1 release build `43bade2`; proven to fail on the debug build
   `mod_g1151aw` and on a wrong `--version`).
 - **`tools/check_release_notes.mjs`** — the release's public texts (the `release` skill, step 4): per `release_notes/<v>/*.txt`, the dialect
-  from the name (`steam_*` Steam BBCode, `forum_*` the forum's), the size Steam counts (bytes + line breaks; any `steam_*` over 8,000 fails),
-  balanced paired tags, the other dialect's tags, and internal references a player must not see (§, F-numbers, landmine ids, backticks,
+  from the name (`steam_*` and `workshop_*` Steam BBCode, `forum_*` the forum's), the size Steam counts (bytes + line breaks; any `steam_*` over 8,000 fails),
+  that the text is BBCode at all (a plain-text paste fails), balanced paired tags, the other dialect's tags, and internal references a player must not see (§, F-numbers, landmine ids, backticks,
   Markdown, hashes). `node tools/check_release_notes.mjs release_notes/<v> [...]`; exit 1 on any failure. Status: current (2026-11-15: passes
   1.1.0's and 1.1.1's folders; proven on a planted text with an open list, a forum tag, a § and an F-number at 9,057 bytes). Its count reads
   1.1.0's note two bytes above REPO_GUIDE's 4,781 (the file's last line break).

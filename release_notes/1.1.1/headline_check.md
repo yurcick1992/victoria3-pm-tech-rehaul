@@ -5,9 +5,10 @@ The `release` skill's step 1½, run 2026-11-15. The measurement is mod 1.1.1 aga
 
 ## The Workshop item's description (the user's own text: listed, not reworded)
 
-Read from the public page on 2026-11-15; the copy is `release_notes/published/workshop_description.txt`. At the user's request
-(2026-11-15), `release_notes/1.1.1/workshop_description.txt` is that text with the five sentences below brought up to date (7,653
-characters against the live 7,248, plain text: the live page's formatting is re-applied by hand in Steam's editor). The rest is the user's
+Read from the public page on 2026-11-15; the copy is `release_notes/published/workshop_description.txt` (its BBCode, rebuilt from the page and checked
+to round-trip). At the user's request
+(2026-11-15), `release_notes/1.1.1/workshop_description.txt` is that text with the five sentences below brought up to date (BBCode,
+7,859 characters against the live 7,453; every tag kept, so it is pasted whole into Steam's editor). The rest is the user's
 text unchanged. Its last line says no part was written or edited by AI, and these five sentences now are.
 
 1. **No longer true.** "For mod 1.1 over vanilla 1.15, there was only one mod over one vanilla observer run so far … More significant

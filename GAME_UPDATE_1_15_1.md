@@ -119,7 +119,8 @@ open questions discussed with the user, then a batch of 1.1.1 against vanilla 1.
 - **V21** · T · version and release · `mod/.metadata/metadata.json` 1.1.0 → 1.1.1 (`supported_game_version` "1.15.*" already covers 1.15.1);
   the release build; KNOWN_ISSUES, CHANGELOG, the Workshop text · the release build DONE (`43bade2`, 2026-11-15; `verify_release_build.mjs
   --version 1.1.1` passes on `mod/` and the deployed copy); the texts drafted 2026-11-15 by the new `release` skill (`release_notes/1.1.1/`,
-  CHANGELOG 1.1.1, KNOWN_ISSUES for 1.1.1) · the upload, the posts and the tag `v1.1.1` wait on the user.
+  CHANGELOG 1.1.1, KNOWN_ISSUES for 1.1.1) · DONE 2026-11-15: uploaded by the user (12:05 local), tag `v1.1.1` on `43bade2`, the change note as
+  published `CHANGELOG_WORKSHOP/1.1.1.txt` (its text read back from the Workshop page matches the draft word for word).
 
 ## Phase 3 — reconciliation: our features against the new vanilla
 

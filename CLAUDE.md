@@ -629,7 +629,8 @@ record `_tech_ai_weights_variant`; it reads the research entries from the base b
 t2 rung's iron, copper and tools, following vanilla 1.15.1's telephone recipe, value-neutral, and `tech_ai_weights` (six technologies' 1.13.11
 weights) — nothing else. `mod/` and the deployed copy are its RELEASE build (commit `43bade2`, 2026-11-15, for the Workshop upload; the
 next default build turns them back into a debug build). Verify with `sha256sum config/mod_config.json`. Measured by F271 (10 + 10 centuries on
-1.15.1, 2026-11-12 → 11-14); the Workshop carries mod 1.1.0 until the user uploads 1.1.1, and the tag `v1.1.1` then goes on `43bade2`.
+1.15.1, 2026-11-12 → 11-14). **Released on the Workshop 2026-11-15** (the user's upload, 12:05 local; tag `v1.1.1` on `43bade2`; the change
+note as published is `CHANGELOG_WORKSHOP/1.1.1.txt`, its text the draft's word for word).
 
 **The 1.15 canon** (mod 1.1, game 1.15.0; canonised 2026-11-08, kept as the record) is `config/mod_config.g115c-canon-bz-dcu-ra-il.json`, sha256
 **`a52b0acacd6b6b6e`** (tree twin `db96307af17c22ee`; §10.109.5; GAME_UPDATE_1_15.md Q1): the 1.0 canon's recorded chain replayed on game 1.15
@@ -847,7 +848,7 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
     file or number goes into `ON_GAME_UPDATE.md`. The one exception: a proposal the user is still weighing may lag briefly, with the divergence called out.
 11. **Commit with explicit paths; never `git add -A` / `git add .`.** Other sessions write in this repo (FINDINGS above all); check `git status --short`
     before committing and account for every staged path. Never amend or force-push shared history to clean up. Work goes straight to `main`;
-    every Workshop release is an annotated tag `vX.Y.Z` on the commit of its release build (`v1.0.0`, `v1.1.0`); a release branch is cut only
+    every Workshop release is an annotated tag `vX.Y.Z` on the commit of its release build (`v1.0.0`, `v1.1.0`, `v1.1.1`); a release branch is cut only
     when a released version needs a fix around newer work on `main`, and never checked out in the checkout a batch builds from (rule 7).
 12. **Write prose with the Write/Edit tools, never through bash** — backticks are command substitution and Windows paths lose their backslashes, with
     exit code 0. Read a doc back after editing it.

@@ -1,70 +1,58 @@
-Why does this mod exist?
-Vanilla Victoria 3 suffers from capital abundance
+[h1]Why does this mod exist?[/h1]
+[h2]Vanilla Victoria 3 suffers from capital abundance[/h2]
 The reason for this is simple: IRL a huge share of the capital is put into machines and other stuff that gets obsolete and replaced, not being usable anymore. In vanilla, a factory that's built once just gets upgraded for free as soon as the country researches a tech. Essentially, there's almost no capital drain in vanilla, the constructed capital only gets accumulated. The only way that the invested capital can get destroyed, which is downsizing of unstaffed private industries, is negligible in practice because of other vanilla balance decisions.
 
 To compensate for that, vanilla productivity barely grows with time and techs. A factory in 1930s is more productive than a 1830s one by a factor of 2-4. What GDP per capita and SoL grows with is depeasantation, a major in 1936 is likely to have zero peasants left.
 
 A more realistic picture would have a 5-20 times increases in productivity for state-of-the-art factories in 1930s compared to those normal in 1830s. However, the overall world GDP shouldn't change much, 1930s should see the share of productive workers of 50-80% of the workforce, against vanilla 90-99%.
 
-
-In vanilla Victoria 3, obsolete factories can coexist with modern ones
+[h2]In vanilla Victoria 3, obsolete factories can coexist with modern ones[/h2]
 Even if in the same market there's a huge tech disparity, low productivity difference between PMs and stable prices on industrial goods means that even low-PM factories are not driven out of the market. For international trade, this is even worse, rendering protectionism useless.
 
-
-In vanilla Victoria 3, too much depends on country-level tech and player-led research
+[h2]In vanilla Victoria 3, too much depends on country-level tech and player-led research[/h2]
 With no capital costs to upgrade buildings, the fact that the country's universities researched a tech, whatever this means, has instant effects on the economy. While this is good for dopamine, this is hardly realistic.
 
-
-I believe that fixing those things will make the game both more realistic and more fun. This mod is my go at this
+[h2]I believe that fixing those things will make the game both more realistic and more fun. This mod is my go at this[/h2]
 After playtests, I believe I've achieved my goals. Tech domination is more organic and more impactful, and full employment, which throws the game off balance completely in vanilla pretty often, is harder to achieve.
 
+[hr][/hr]
 
+[h1]What does this mod do?[/h1]
+[h2]I. Most manufacturing industry PMs are now new, separate buildings. All manufacturing economics was heavily rebalanced[/h2]
+[list]
+[*]There are four in-game tiers: t0, t1, t2 and t3. Unless makes sense narratively for cases where upgrading was much cheaper than rebuilding, switching the PM is now done through building a new, improved industry. The outputs grow faster than inputs and productivity grows faster with tech and time, but requires actual investment in building the upgraded factories. By extension, this means that [b]an investor can construct modern buildings in foreign countries[/b] based on investor country's tech, and not local tech
+[*]The industrial output prices are expected to decrease during the course of the game. Late-game PMs are designed to stay profitable even at output prices significantly lower than base. 1830s factories cannot compete in this environment and die out.
+[*]Some pre-1830s t0 industries are declared "artisanal", have a ten times lower workforce and a much lower productivity per worker.
+[*]In AI-only observer runs, there tends to be significantly more peasants left in the late game. A skilled player on many countries or an AI Britain can still depeasant his country fairly easily, for the better or worse.
+[*]A couple of industry tiers or PMs is added together with new techs, where it made narrative sense.
+[/list]
 
-
-What does this mod do?
-I. Most manufacturing industry PMs are now new, separate buildings. All manufacturing economics was heavily rebalanced
-There are four in-game tiers: t0, t1, t2 and t3. Unless makes sense narratively for cases where upgrading was much cheaper than rebuilding, switching the PM is now done through building a new, improved industry. The outputs grow faster than inputs and productivity grows faster with tech and time, but requires actual investment in building the upgraded factories. By extension, this means that an investor can construct modern buildings in foreign countries based on investor country's tech, and not local tech
-
-The industrial output prices are expected to decrease during the course of the game. Late-game PMs are designed to stay profitable even at output prices significantly lower than base. 1830s factories cannot compete in this environment and die out.
-
-Some pre-1830s t0 industries are declared "artisanal", have a ten times lower workforce and a much lower productivity per worker.
-
-In AI-only observer runs, there tends to be significantly more peasants left in the late game. A skilled player on many countries or an AI Britain can still depeasant his country fairly easily, for the better or worse.
-
-A couple of industry tiers or PMs is added together with new techs, where it made narrative sense.
-
-
-II. Direct research is nerfed, and instead, significant employment in an industry type drives innovation
+[h2]II. Direct research is nerfed, and instead, significant employment in an industry type drives innovation[/h2]
 This is done through tech-related JEs that tick when a tech can be researched and there is a significant number of staffed factories that require the previous tech. Three years of ticks result in a JE completion and a tech grant of half of the tech's base cost. The JE is then restarted. This means that even a noticeable ahead-of-time penalty will be overcome sooner or later.
 
 For techs that unlock military units, the tick condition is fighting on a front against an enemy that has the tech, and the military JEs complete faster.
 
+[h2]III. Electricity is redone[/h2]
+[list]
+[*]The mod adds "dam" megaprojects, with mechanics close to canals. When you have the necessary techs and hold the relevant province (or your subject does), you can take a decision with a bureaucracy upkeep to survey a potential dam site. When the survey ends, you can build a dam there, it's a building with very low input or workforce, supplying a lot of electricity. Basically a capital sink and a money printer. Sometimes, when the dam is finished, it also has agricultural effects (adding bonuses, removing maluses, adding arable land directly).
+[*]Regular power plants are 4x times more expensive than vanilla, with no PM changes.
+[*]Urban centers now generate a token amount of electricity, and not demand it, under the latest streetlights PM.
+[*]All state traits that increased electricity outputs for all buildings in a state are removed.
+[/list]
 
-III. Electricity is redone
-The mod adds "dam" megaprojects, with mechanics close to canals. When you have the necessary techs and hold the relevant province (or your subject does), you can take a decision with a bureaucracy upkeep to survey a potential dam site. When the survey ends, you can build a dam there, it's a building with very low input or workforce, supplying a lot of electricity. Basically a capital sink and a money printer. Sometimes, when the dam is finished, it also has agricultural effects (adding bonuses, removing maluses, adding arable land directly).
+[hr][/hr]
 
-Regular power plants are 4x times more expensive than vanilla, with no PM changes.
+[h1]What doesn't the mod do?[/h1]
+[list]
+[*]The 1836 situation is barely changed. Expect 1836-1860s similar to vanilla.
+[*]It doesn't touch any industry except for power plants and factories. All mines, agriculture, most infrastructure is left vanilla.
+[*]The game performance (in in-game years per minute) doesn't meaningfully change, the game is about 2% slower on my machine (measured over dozens of alternating runs of mod vs vanilla).
+[*]The world GDP doesn't diverge from vanilla values that much, all parameters were specifically calibrated so that it was this way. The reason is simple: some in-game things like minting depend on that, and diverging would make balancing the system even harder. There is a GDP dip in mid-game, when the new tech is discovered and vanilla instantly upgrades, and in the mod the new buildings aren't yet built. But by 1920s this balances out.
+[/list]
 
-Urban centers now generate a token amount of electricity, and not demand it, under the latest streetlights PM.
+[hr][/hr]
 
-All state traits that increased electricity outputs for all buildings in a state are removed.
-
-
-
-
-What doesn't the mod do?
-The 1836 situation is barely changed. Expect 1836-1860s similar to vanilla.
-
-It doesn't touch any industry except for power plants and factories. All mines, agriculture, most infrastructure is left vanilla.
-
-The game performance (in in-game years per minute) doesn't meaningfully change, the game is about 2% slower on my machine (measured over dozens of alternating runs of mod vs vanilla).
-
-The world GDP doesn't diverge from vanilla values that much, all parameters were specifically calibrated so that it was this way. The reason is simple: some in-game things like minting depend on that, and diverging would make balancing the system even harder. There is a GDP dip in mid-game, when the new tech is discovered and vanilla instantly upgrades, and in the mod the new buildings aren't yet built. But by 1920s this balances out.
-
-
-
-
-How was this mod made? AI disclaimer
+[h1]How was this mod made? AI disclaimer[/h1]
 I am the only human on the project. Claude Opus was used for the mod itself and the testing harness. The actual tough job was the balance, so there were hundreds of full 100-year observer runs done to understand how changes to parameters affect the relevant metrics over the century. This necessitated creating an agentic+deterministic automation system for running and restarting the tests reliably and analysing the outcomes systematically, at scale.
 
 By October 26, there has been over 300 mod 100-year runs, over 60 vanilla 100-year runs. There has also been over 500 shorter probes, mostly to understand performance effects and syntax correctness. Overall, over 1000 machine hours for mod 1.0 over vanilla 1.13.
@@ -74,4 +62,4 @@ Total human work was about 200 hours between July and October 2026, not includin
 
 The in-mod text is also AI generated.
 
-No public communication, including this message in any part, was written or edited by AI. AI was used to do fact checking, between the initial draft and human editing.
+[b]No public communication, including this message in any part, was written or edited by AI. AI was used to do fact checking, between the initial draft and human editing.[/b]

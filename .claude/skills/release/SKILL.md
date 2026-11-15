@@ -64,20 +64,56 @@ against the build and the newest measurement, and list every statement that is n
 
 | description | where to read it | who changes it |
 |---|---|---|
-| the Workshop item's description | its public page, https://steamcommunity.com/sharedfiles/filedetails/?id=3829692484 (the built-in browser: `document.querySelector('.workshopItemDescription').innerText`); the last copy read is `release_notes/published/workshop_description.txt` | **the user only**: it is the user's own writing ("No public communication … was written or edited by AI"). Claude lists the obsolete statements and suggests no wording unless asked |
-| the forum thread's first post (the mod's description and its known-issues section) | https://forum.paradoxplaza.com/forum/threads/mod-no-free-upgrades-an-industrial-realism-overhaul.1947073/ — the forum shows automated browsers a verification check, which Claude never tries to get past: the user pastes the post, or passes the check in the built-in browser pane; the copy is `release_notes/published/forum_first_post.txt` | the user (the known-issues section is `forum_known_issues.txt`, replaced wholesale) |
+| the Workshop item's description | its public page, https://steamcommunity.com/sharedfiles/filedetails/?id=3829692484, read as BBCode with the snippet under **BBCode, always** below (never `innerText`); the last copy read is `release_notes/published/workshop_description.txt` | **the user only**: it is the user's own writing ("No public communication … was written or edited by AI"). Claude lists the obsolete statements and suggests no wording unless asked |
+| the forum thread's first post (the mod's description and its known-issues section) | https://forum.paradoxplaza.com/forum/threads/mod-no-free-upgrades-an-industrial-realism-overhaul.1947073/ — the forum shows automated browsers a verification check, which Claude never tries to get past: the user pastes the post from the editor's BBCode view, or passes the check in the built-in browser pane; the copy is `release_notes/published/forum_first_post.txt` | the user (the known-issues section is `forum_known_issues.txt`, replaced wholesale) |
 | `mod/.metadata/metadata.json` `short_description` (the launcher's, under 200 characters) | the repository | the user chose its wording (POLISH_1_0 R1): propose a change, never make one |
 | README's opening paragraph and scope (which game version, what the mod changes) | the repository | Claude, in the same pass |
 | CLAUDE.md §1.2 (the design record's list of changes) | the repository | Claude, in the same pass (CLAUDE.md §5.1 rule 10) |
 
-After the check, save what was read as the new copy in `release_notes/published/` (the text exactly as read), so the next release compares
-against it.
+After the check, save what was read as the new copy in `release_notes/published/` (its BBCode exactly as read), so the next release
+compares against it. When the user asks for an updated description, it is the published BBCode with only the obsolete sentences changed,
+every tag kept, in `release_notes/<v>/workshop_description.txt` (Steam dialect).
 
 ## 2. The texts — one folder per release
 
 All drafts live in **`release_notes/<v>/`** (committed), under these names. Two dialects: **Steam** BBCode (`[h1] [h2] [list] [*] [b] [i]
-[url=…]`, lowercase) and the **Paradox forum**'s XenForo BBCode (`[B] [I] [SIZE=5] [SIZE=4] [LIST] [*] [SPOILER="…"] [URL=…]`). Each file is
-pasted whole.
+[url=…] [hr][/hr]`, lowercase) and the **Paradox forum**'s XenForo BBCode (`[B] [I] [SIZE=5] [SIZE=4] [LIST] [*] [SPOILER="…"] [URL=…]`).
+Each file is pasted whole.
+
+**BBCode, always** (the user, 2026-11-15, after a plain-text draft of the Workshop description would have stripped its headings and lists):
+- Every text meant for Steam or the forum is written and saved in that site's BBCode, never as rendered text: the change note, the
+  discussion posts, the forum posts and the descriptions. A heading is a heading tag, a list a list tag, emphasis a bold tag, exactly as the
+  live page or the precedent has them.
+- **Read a live page as BBCode, never as rendered text.** `innerText` or a copy from the rendered page drops every tag. On the Workshop, rebuild
+  the BBCode from the page's HTML in the built-in browser and save it only after it round-trips (its length and a checksum match the
+  page's, as below). On the forum, the user copies the post from the editor's BBCode view (the `[ ]` toggle); a rendered copy, like the
+  1.1.0 changelog post in `release_notes/published/`, is a record of the words only and is never edited into a replacement.
+- Editing an existing text means editing its BBCode source: change the sentences, keep every tag, the blank lines and the order.
+- `check_release_notes.mjs` fails a Steam or forum text with no BBCode tag at all, unbalanced tags, or the other site's tags.
+
+The Workshop snippet (run on the item's page; Steam renders `[h1]` / `[h2]` as `div.bb_h1` / `div.bb_h2`, `[list]` as `ul.bb_ul`, and eats
+the line break after a block):
+```js
+const conv = n => [...n.childNodes].map(c => {
+  if (c.nodeType === 3) return c.textContent;
+  const t = c.tagName, k = c.className;
+  if (t === 'BR') return '\n';
+  if (t === 'HR') return '[hr][/hr]\n';
+  if (t === 'B') return '[b]' + conv(c) + '[/b]';
+  if (t === 'I') return '[i]' + conv(c) + '[/i]';
+  if (t === 'A') return '[url=' + c.href + ']' + conv(c) + '[/url]';
+  if (t === 'DIV' && k === 'bb_h1') return '[h1]' + conv(c) + '[/h1]\n';
+  if (t === 'DIV' && k === 'bb_h2') return '[h2]' + conv(c) + '[/h2]\n';
+  if (t === 'DIV' && k === 'bb_h3') return '[h3]' + conv(c) + '[/h3]\n';
+  if (t === 'UL') return '[list]\n' + [...c.children].map(li => '[*]' + conv(li).replace(/\n$/, '')).join('\n') + '\n[/list]\n';
+  return '<<UNKNOWN ' + t + '.' + k + '>>' + conv(c);   // teach the snippet before saving: never save a file with one of these
+}).join('');
+const bb = conv(document.querySelector('.workshopItemDescription'));
+({ len: bb.length, sum: [...bb].reduce((h, c) => (h * 31 + c.codePointAt(0)) >>> 0, 7), unknown: bb.match(/<<UNKNOWN[^>]*>>/g), bb })
+```
+After writing the file, recompute `len` and `sum` on it in Node (the same fold over its characters, the final line break removed): both
+must match before the copy counts as read. Steam's `[url]` links render with a `[domain]` suffix in the text and are rebuilt from `href`;
+check them against the precedent.
 
 | file | what | where the user puts it |
 |---|---|---|
@@ -170,9 +206,9 @@ Workshop length is the hardest to fit: cut sub-detail, never a feature.
 
 - **Tag:** `git tag -a v<v> <release-build commit> -m "Mod <v> for Victoria 3 <g> (Steam Workshop)"`, `git push origin v<v>` (memory
   `git-workflow-main-direct`). The commit is the one `verify_release_build.mjs` names, not HEAD if docs came after it.
-- **The change note as published:** read it back from the Workshop page's change notes (the built-in browser, or the user pastes it) and save
-  it as `CHANGELOG_WORKSHOP/<v>.txt`; note any difference from the draft. A published note is never rewritten (CLAUDE.md §5.2).
-- **The other texts as published:** the forum changelog post and first post (the user pastes them) and any Workshop discussion the user
+- **The change note as published:** read it back from the Workshop page's change notes (the built-in browser, or the user pastes it), compare
+  its words with the draft's, and save the draft's BBCode as `CHANGELOG_WORKSHOP/<v>.txt` when they match; note any difference from the draft. A published note is never rewritten (CLAUDE.md §5.2).
+- **The other texts as published:** the forum changelog post and first post (the user pastes them from the editor's BBCode view) and any Workshop discussion the user
   edited go into `release_notes/published/` as read (`forum_changelog_post_<v>.txt`, `forum_first_post.txt`, `workshop_description.txt`),
   replacing the older copy; a difference from the draft is named to the user.
 - **Docs, same pass:** CLAUDE.md §4.1 ("the Workshop carries mod <v>"; the tag) and §4.2 if the measurement is new; ROADMAP (the release done);

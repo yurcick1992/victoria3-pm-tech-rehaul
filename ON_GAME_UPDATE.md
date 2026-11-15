@@ -704,7 +704,7 @@ different versions are not comparable without saying so.
   first run on 1.15.1. A hotfix with a new exe: the AI's method choice (wages, multipliers, electrical methods), subsidies (no profitable
   building subsidised), mobilisation, the copper pass (telephones, the stills, arc welding, 56 copper deposits), technologies' AI weights;
   `Market.GetCountryTradeCapacity` removed. Kept at `C:\claude-code\vic3_game_1.15.1` (taken 2026-11-12 00:52). The pass's register is
-  `GAME_UPDATE_1_15_1.md` (mod 1.1.1).
+  `GAME_UPDATE_1_15_1.md` (mod 1.1.1, released on the Workshop 2026-11-15, tag `v1.1.1` on `43bade2`).
 
 ---
 
