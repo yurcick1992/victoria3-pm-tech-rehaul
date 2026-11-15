@@ -623,8 +623,9 @@ GAME_UPDATE_1_15_1.md Q1, Q8): the 1.15 canon's chain replayed on 1.15.1 (`tools
 steps, giving `g1151-canon-bz-dcu-ra-il`, `c1274f15`, never measured), then the AI-weights step (`tools/make_tech_ai_weights_config.mjs`, its
 record `_tech_ai_weights_variant`; it reads the research entries from the base book's build). Its field diff against the 1.15 canon: the electrics
 t2 rung's iron, copper and tools, following vanilla 1.15.1's telephone recipe, value-neutral, and `tech_ai_weights` (six technologies' 1.13.11
-weights) — nothing else. `mod/` and the deployed copy are its default (debug) build. Verify with `sha256sum config/mod_config.json`. Measured by F271
-(10 + 10 centuries on 1.15.1, 2026-11-12 → 11-14); the Workshop still carries mod 1.1.0 until the user uploads the 1.1.1 release build.
+weights) — nothing else. `mod/` and the deployed copy are its RELEASE build (commit `43bade2`, 2026-11-15, for the Workshop upload; the
+next default build turns them back into a debug build). Verify with `sha256sum config/mod_config.json`. Measured by F271 (10 + 10 centuries on
+1.15.1, 2026-11-12 → 11-14); the Workshop carries mod 1.1.0 until the user uploads 1.1.1, and the tag `v1.1.1` then goes on `43bade2`.
 
 **The 1.15 canon** (mod 1.1, game 1.15.0; canonised 2026-11-08, kept as the record) is `config/mod_config.g115c-canon-bz-dcu-ra-il.json`, sha256
 **`a52b0acacd6b6b6e`** (tree twin `db96307af17c22ee`; §10.109.5; GAME_UPDATE_1_15.md Q1): the 1.0 canon's recorded chain replayed on game 1.15
