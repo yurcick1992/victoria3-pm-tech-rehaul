@@ -981,7 +981,9 @@ left outside a file it transforms or its ACCEPTED list, so a patch that adds one
 `Test-LmL40` (`preflight.ps1 -Session`) FAILs on any `Invalid Production Method` line in a run's mirrored `error.log` (the run's own window)
 and prints the count, the methods and the script locations. `batch_heartbeat.sh` still files the `is_production_method_active` class as
 noise (TESTBED_OPERATIONS §4.2), which is why this half counts it on its own. Proven: FAIL on `20261013_110054_rs-m10-30y-n3` (44 lines a
-run, before the fix), PASS on the alternating batch's two sessions (0 in both arms).
+run, before the fix), PASS on the alternating batch's two sessions (0 in both arms). Since 2026-11-16 it declines a third-party arm's
+run (`build_state.json` arm `external+…`), naming it: such a run carries no file of ours but telemetry, and the other mod's invalid methods
+are its own (PMR 0.4.0 logs 2,708 at start; the detector FAILed on `20261116_002537_g1151-pmr-probe-1846` run 1 before the change).
 
 ### L41 — a game paused by input looks like a healthy run: the observer keeps writing a tick line every 20 s, so nothing goes silent
 

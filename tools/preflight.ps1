@@ -1729,9 +1729,13 @@ function Test-LmL40 {
     $T = 'vanilla script that names a method the tier split moved (Invalid Production Method in the run)'
     if (-not $Session) { Add-Result 'L40' $T 'N/A' 'no -Session given (half 2 is post-run; half 1 runs in every build)'; return }
     if (-not (Test-Path $Session)) { Add-Result 'L40' $T 'FAIL' "no such session: $Session"; return }
-    $bad = @(); $checked = 0
+    $bad = @(); $checked = 0; $declined = @()
     foreach ($run in @(Get-ChildItem $Session -Directory -Filter 'run*')) {
         $el = Join-Path $run.FullName 'logs_live\error.log'; if (-not (Test-Path $el)) { continue }
+        # A third-party arm (run_schedule kind: external) carries no file of ours but telemetry: its invalid methods are the other
+        # mod's own (PMR 0.4.0 logs ~2,700 at start, its starting buildings naming methods it merged), so the run is declined, by name.
+        $bs = Join-Path $run.FullName 'build_state.json'
+        if ((Test-Path $bs) -and ((Get-Content $bs -Raw -Encoding UTF8) -match '"arm"\s*:\s*"external\+')) { $declined += $run.Name; continue }
         $checked++
         $hits = @(Select-String -LiteralPath $el -SimpleMatch 'Invalid Production Method' -Context 0, 1 -ErrorAction SilentlyContinue)
         if (-not $hits.Count) { continue }
@@ -1741,8 +1745,8 @@ function Test-LmL40 {
                  $(if ($pms.Count -gt 6) { " (+$($pms.Count - 6))" } else { '' }), (($locs | Select-Object -First 4) -join ', '))
     }
     if ($bad.Count) { Add-Result 'L40' $T 'FAIL' ("$($bad.Count) run(s) logged invalid production methods - a vanilla reference the tier split moved (TIER_REFERENCE_AUDIT.md, emit_vanilla_refs.mjs): " + ($bad -join ' | ')) }
-    elseif ($checked -eq 0) { Add-Result 'L40' $T 'N/A' 'no mirrored error.log in this session yet' }
-    else { Add-Result 'L40' $T 'PASS' "$checked run(s), no Invalid Production Method line" }
+    elseif ($checked -eq 0) { Add-Result 'L40' $T 'N/A' ('no mirrored error.log of an arm of ours in this session yet' + $(if ($declined.Count) { "; declined $($declined.Count) third-party run(s): " + ($declined -join ', ') } else { '' })) }
+    else { Add-Result 'L40' $T 'PASS' ("$checked run(s), no Invalid Production Method line" + $(if ($declined.Count) { "; declined $($declined.Count) third-party run(s): " + ($declined -join ', ') } else { '' })) }
 }
 
 function Test-LmL41 {

@@ -14,11 +14,12 @@
     "majors_gdp": "The technology leaders (Britain, Germany, the USA, France) lose more against vanilla than the periphery, because they hold the most recipes to retool to.",
     "depeasantation": "World U* at or slightly above vanilla's (construction spent on retooling creates no new jobs), far below the canon's gap to vanilla; the shortlist stays near full employment as in vanilla.",
     "hoarding": "The investment pool / GDP at or below vanilla's: retooling is one more thing for private investors to buy.",
-    "play_time": "PMR slower than vanilla (its page: a monthly script runs per building) and slower than the canon; magnitude unknown, the reason for the 540-minute timeout on its runs.",
+    "play_time": "PMR slower than vanilla (its page: a monthly script runs per building) and slower than the canon; magnitude unknown, the reason for the 720-minute timeout on its runs.",
     "ai_government": "Unknown, and a thing to read: whether AI governments retool the levels they own. If they do not, government-owned industry stays on its starting recipes for the century."
   },
+  "_probe": "20261116_002537_g1151-pmr-probe-1846 (PMR then vanilla, 1836->1846, 2026-11-16): every check passed. The game's own mod list names C:/claude-code/pmr_0.4.0 and the arm is recorded external+org.prob32.pmr; PMR's LOADED line and telemetry's BOOT both fired; 18 of 18 DLC mounted in both runs; rakaly melts PMR's saves and arm_compare reads them. The 1836 start is intact (1837.1.1: 98,184 building levels and GBP 411M of world GDP against vanilla's 98,403 and 408M in F271's run 1); PMR's own start-up noise is 2,708 'Invalid production method' lines from its history blocks plus 'variable set but never used' warnings (error.log 11,870 lines against vanilla's 180) - the smoke checks' baseline. The retool buildings hold employees but are 78 of 101,320 levels at 1846 (0.08%), so W and U* read them as the handful of jobs they are. Pace, n = 1 each, the first decade: 76.7 against 67.0 seconds a year (x1.14), 14.4 against 12.1 minutes with the load (x1.19).",
   "_stop_rule": "None: a fixed-n batch plays every run (no stop watcher, no deadline).",
-  "_cost": "25 x 1836->1936: 5 vanilla at about 163 minutes and 5 canon at about 177 (F271), 15 PMR at an unknown pace; at vanilla's pace to x1.4 of it, 70 to 86 hours with builds and harvests, three to three and a half days.",
+  "_cost": "25 x 1836->1936: 5 vanilla at about 163 minutes and 5 canon at about 177 (F271), 15 PMR at an unknown pace (x1.14 a year in the probe's first decade; later decades unmeasured); at vanilla's pace to x1.4 of it, 70 to 86 hours with builds and harvests, three to three and a half days.",
   "_launch_checklist": [
     "The user's explicit go-ahead for this batch (CLAUDE.md 5.1 rule 4).",
     "The probe g1151_pmr_probe_1846.json has run and every check in it passed.",
@@ -84,7 +85,7 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "vanilla",
@@ -93,7 +94,7 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "canon",
@@ -102,12 +103,12 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "vanilla",
@@ -116,7 +117,7 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "canon",
@@ -125,12 +126,12 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "vanilla",
@@ -139,7 +140,7 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "canon",
@@ -148,12 +149,12 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "vanilla",
@@ -162,7 +163,7 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "canon",
@@ -171,12 +172,12 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "vanilla",
@@ -185,7 +186,7 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     },
     {
       "setup": "canon",
@@ -194,7 +195,7 @@
     {
       "setup": "pmr",
       "until": "1936.1.1",
-      "timeout_minutes": 540
+      "timeout_minutes": 720
     }
   ]
 }
