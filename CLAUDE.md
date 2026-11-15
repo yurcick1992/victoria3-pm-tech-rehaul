@@ -877,6 +877,7 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 | `tools/testbed/SESSION_VERDICTS.md` | one committed line per session's verdict | every session |
 | `KNOWN_ISSUES.md` | the public list of issues a player would notice in the current release, mechanical and balance | a noticeable issue is deferred or accepted (same pass), or a release fixes one |
 | `CHANGELOG.md`, `CHANGELOG_WORKSHOP/<version>.txt` | each release's changes: the full entry, and the Workshop change note as published (Steam BBCode, under 8,000 bytes as Steam counts them; REPO_GUIDE) | a release is prepared; a published note is never rewritten |
+| `release_notes/<version>/` | every public text of a release as drafted: the Workshop change note, the Workshop over-vanilla and known-issues posts, the forum post (both changelogs) and the forum known issues — the `release` skill's procedure | a release is prepared (the `release` skill) |
 | `README.md` | building and editing the mod (players come from the Steam Workshop): what it changes, the vanilla files it replaces, the build, the editor | the build, the editor or the replaced files change |
 
 **Not committed, by design:** the **handover** (a baton for the next session: the user's next tasks in order, their motivating measurements and the
@@ -1099,6 +1100,8 @@ Run from the repo root. `<group>` = a session, a comma list of sessions, or `<se
 | merged-rung levels by method | `node tools/testbed/ledger/merge_methods.mjs --session <stamp> [--setup <name>]` |
 | stitch a continued campaign | `node tools/testbed/stitch_session.mjs <continuation session> <new session name>` |
 | design a ladder / a recipe | `node tools/ladder_options.mjs --book "name:out=2.2,in=1.64,cost=1.9,in0=1.2"` · `node tools/era0_solvency.mjs` · `node tools/full_recipe_profit.mjs --mod mod_<name> --config <book> --economy GBR@1920` |
+| verify a release build (mod/ + deployed) | `node tools/verify_release_build.mjs --version <v>` (the `release` skill) |
+| check a release's public texts | `node tools/check_release_notes.mjs release_notes/<v>` |
 | generate a book | the recorded `_ab.command` (`node tools/make_ab_config.mjs …`) and the `make_*_config.mjs` makers in their recorded order (§4.4) |
 
 ## 5.10 Environment

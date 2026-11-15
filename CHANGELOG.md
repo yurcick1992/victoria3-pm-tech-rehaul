@@ -1,5 +1,43 @@
 # No Free Upgrades: An industrial realism overhaul — changelog
 
+## 1.1.1 (for Victoria 3 1.15.1)
+
+*Unlike all my other public communication, this changelog is AI-generated. Claude wrote it from the mod's repository and design record.*
+
+Mod 1.1.1 brings mod 1.1 to Victoria 3 1.15.1. The design, recipes, costs, research marks and AI values of 1.1 are unchanged, except where 1.15.1 changed something the mod takes from vanilla. Small adjustments that only follow vanilla 1.15.1's own renames and moves are not listed. Known issues are in `KNOWN_ISSUES.md`. The full changelog against vanilla 1.15.1 is on the [Paradox forum](https://forum.paradoxplaza.com/forum/threads/mod-no-free-upgrades-an-industrial-realism-overhaul.1947073/).
+
+Testing and balance
+
+* Mod 1.1.1 played ten automated 1836–1936 campaigns with full telemetry (observer runs, no player) against ten of vanilla 1.15.1, alternating on one machine in the same days.
+* The balance is still mod 1.0's, carried over to game 1.15 without retuning.
+* World GDP ended the 1930s at 1.18 times vanilla 1.15.1's (1.02 to 1.36 across the ten campaigns), where the mod aims for slightly less than vanilla's. Most of the gap is vanilla's own change: vanilla 1.15.1's world ends about 9% poorer than vanilla 1.15.0's, while the mod's ends the same size on both versions.
+* Britain, the USA, France, the Low Countries and Germany, taken together, had only 3.6% of their workforce unemployed or peasants in the 1930s (for reference, vanilla 1.15.1: 4.8%), where the mod aims for more than an unmodded game. The world as a whole kept 34% (vanilla 1.15.1: 30%). Capital piled up unspent in Britain or Germany in three of the ten campaigns. The known issues give the detail.
+* A century took 1.09 times as long to play as vanilla 1.15.1's (177 minutes against 163).
+* The retune for game 1.15 is planned for mod 1.2.
+
+Game 1.15.1
+
+* Built on vanilla 1.15.1. With mod 1.1.0, the 31 vanilla files the mod replaces that 1.15.1 changed still loaded as their 1.15.0 copies, so these 1.15.1 changes did not apply. They are now 1.15.1's copies with the mod's edits:
+   * the copper deposits of 1.15.1's map (48 raised, 8 new);
+   * the AI strategies (shipyard subsidies; radios, telephones and oil as goods the AI wants in high supply; mine subsidies in industrial expansion);
+   * Russia's 1836 history (Chelyabinsk's iron mine, financial district and pops), the communism, Russia and Tsar's points journal entries and buttons, and the progress bars;
+   * a higher AI research weight for Pumpjacks (see AI below).
+* Tier 2 Electrics Industries (Telephone Production) follows vanilla 1.15.1's recipe: 39.4 iron, 29.5 copper and 29.5 tools a level (1.1.0: 19.7 iron, 59 copper, 19.7 tools), at the same input value.
+* The food industries' Pot Stills and Patent Stills follow vanilla 1.15.1's: Pot Stills 3.93 glass and 0.98 copper a level (1.1.0: 2.95 and 1.97), Patent Stills 6.89 glass and 2.95 copper (5.9 and 3.93).
+
+AI
+
+* Vanilla 1.15.1 gives the AI more research priority for seven technologies, mostly once it holds late military or naval technologies. Six of them are ones the mod's research entries already advance by industry, so a further push is not needed, and they keep their earlier AI research weights (game 1.13's, as in mod 1.1): Combustion Engine, Electrical Generation, Oil Turbine, Percussion Cap, Radio and Telephone. Pumpjacks, which has no research entry, takes vanilla 1.15.1's.
+* The other technologies vanilla 1.15.0 reweighted keep vanilla's weights, as in mod 1.1.
+* Dams are no longer subsidised by default, as vanilla 1.15.1 did for railways, ports and power plants (their building group, Private Infrastructure), so a new dam starts without a subsidy.
+* Every AI strategy still lists the dams among its subsidies, but under vanilla 1.15.1's new rule that is a ceiling: the AI subsidises a dam only while the dam loses money and its electricity is needed. In mod 1.1.1's tests almost no dam was subsidised, and only a few percent of railway and power-plant levels and a fifth to a quarter of port levels were, the same as in vanilla 1.15.1. On 1.15.0 every level of all four was subsidised, in both.
+
+Not yet in 1.1.1
+
+* Four buildings run only on electricity, and they can still be built in a state without electricity (see the known issues). A build condition is still planned for a later version.
+* The balance has not been retuned for 1.15 (see Testing and balance above).
+
+
 ## 1.1.0 (for Victoria 3 1.15)
 
 *Unlike all my other public communication, this changelog is AI-generated. Claude wrote it from the mod's repository and design record.*

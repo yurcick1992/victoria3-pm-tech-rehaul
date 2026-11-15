@@ -3,7 +3,7 @@
 Its working name, PM & Tech Rehaul, survives in this repository and in every identifier (the mod folder `pm_tech_rehaul`, the id
 `com.yurcick.pm_tech_rehaul`, the `PM_TECH_REHAUL` log lines).
 
-For **Victoria 3 (1.13 "Matcha")**. It makes a technological edge actually matter. In seventeen
+For **Victoria 3 1.15 ("Ivan-Chai"; mod 1.1.1 is built on 1.15.1)**. It makes a technological edge actually matter. In seventeen
 manufacturing industries each of vanilla's main production methods becomes **its own tech-gated
 building** (a rung), and every newer rung makes more per worker and per unit of capital than the one
 before, so modern factories drive obsolete ones out of the market — and modernising costs **capital**

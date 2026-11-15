@@ -1,0 +1,30 @@
+[h1]1.1.1 (for Victoria 3 1.15.1)[/h1]
+[i]Unlike all my other public communication, this changelog is AI-generated. Claude wrote it from the mod's repository and design record.[/i]
+Mod 1.1.1 brings mod 1.1 to Victoria 3 1.15.1. The design, recipes, costs, research marks and AI values of 1.1 are unchanged, except where 1.15.1 changed something the mod takes from vanilla. Small adjustments that only follow vanilla 1.15.1's own renames and moves are not listed. Known issues are in the Workshop item's discussions.
+The full changelog against vanilla 1.15.1 is on the [url=https://forum.paradoxplaza.com/forum/threads/mod-no-free-upgrades-an-industrial-realism-overhaul.1947073/]Paradox forum[/url].
+
+[h2]Testing and balance[/h2]
+[list]
+[*]Mod 1.1.1 played ten automated 1836–1936 campaigns with full telemetry (observer runs, no player) against ten of vanilla 1.15.1, alternating on one machine in the same days.
+[*]The balance is still mod 1.0's, carried over to game 1.15 without retuning. On 1.15.1 the world economy ends larger than intended, and the leading industrial economies find work for more people than intended (see the known issues). The retune for game 1.15 is planned for mod 1.2.
+[*]A century took 1.09 times as long to play as vanilla 1.15.1's.
+[/list]
+
+[h2]Game 1.15.1[/h2]
+[list]
+[*]Built on vanilla 1.15.1. With mod 1.1.0, 31 vanilla files that 1.15.1 changed still loaded as their 1.15.0 copies. They are now 1.15.1's, with the mod's edits, so 1.15.1's copper deposits, AI strategies, Russia's 1836 history and journal entries come through.
+[*]Tier 2 Electrics Industries follows 1.15.1's Telephone Production: 39.4 iron, 29.5 copper and 29.5 tools a level (1.1.0: 19.7, 59 and 19.7), at the same input value.
+[*]Pot Stills and Patent Stills follow 1.15.1's: more glass, less copper.
+[/list]
+
+[h2]AI[/h2]
+[list]
+[*]Vanilla 1.15.1 gives the AI more research priority for seven technologies. Six of them, which the mod's research entries already advance by industry, keep their earlier AI research weights (game 1.13's, as in mod 1.1): Combustion Engine, Electrical Generation, Oil Turbine, Percussion Cap, Radio and Telephone. Pumpjacks takes vanilla 1.15.1's.
+[*]Dams are no longer subsidised by default, as vanilla 1.15.1 did for railways, ports and power plants, so a new dam starts without a subsidy. The AI still lists dams among its subsidies, but under 1.15.1's rule it subsidises one only while it loses money and its electricity is needed.
+[/list]
+
+[h2]Not yet in 1.1.1[/h2]
+[list]
+[*]Buildings that run only on electricity can still be built without it (see the known issues).
+[*]The balance has not been retuned for 1.15 (see Testing and balance above).
+[/list]

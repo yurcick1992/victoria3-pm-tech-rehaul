@@ -71,6 +71,15 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
   and 1.0.0 matched its draft byte for byte. Steam's 1.1.0 note sends readers to the Workshop item's discussions for known issues;
   CHANGELOG.md's sends them to `KNOWN_ISSUES.md`. **`KNOWN_ISSUES.md`** — the public list of issues a player would notice in the current
   release.
+- **`release_notes/<version>/`** — every public text of a release as drafted, each pasted whole: `steam_changenote.txt` (the Workshop change
+  note, over the previous version), `steam_over_vanilla.txt` and `steam_known_issues.txt` (the Workshop discussions), `forum_post.txt` (the
+  thread's changelog post, replaced whole: each changelog of the game line in full, in spoilers, then the one over vanilla) and
+  `forum_known_issues.txt` (the forum thread's first post), plus `headline_check.md` (step 1½: the standing descriptions read against the
+  release) and, for 1.1.1, `workshop_description.txt` (the live description with its obsolete sentences updated, at the user's request). **`release_notes/published/`** holds what is live, exactly as read: `workshop_description.txt` (the user's own text, read from the
+  Workshop page), `forum_changelog_post_<v>.txt` (as the user pasted it; 1.1.0's went out as an earlier draft) and, once pasted,
+  `forum_first_post.txt`. The procedure is the `release` skill
+  (`.claude/skills/release/SKILL.md`, 2026-11-15); `tools/check_release_notes.mjs` checks the folder. 1.1.0's folder predates the skill's
+  file names (`steam_1.1_over_1.0.txt`, `steam_1.1_over_vanilla_1.15.txt`).
 - **`LICENSE`** — the repository's own work is dedicated to the public domain under CC0 1.0 Universal (the user, 2026-10-26: as permissive as
   possible, no attribution required); Victoria 3's material in the mod stays Paradox Interactive's. A short header, then the CC0 legal code
   verbatim from creativecommons.org.
@@ -832,6 +841,20 @@ stale output except under `common/history`, which an emitter writing there must 
   [--mod mod] [--readme README.md] [--print]` (`--mod` is relative to the repo root). Needs the game folder (`VIC3_GAME`). Status: current;
   re-run on the build you ship (146 files in 26 folders, 8 defines, no redefined object, 34 localization keys per language on 2026-10-30).
   The redefined-object line was proven on a planted `building_steel_mill` in a throwaway `mod_*` folder.
+- **`tools/verify_release_build.mjs`** — the proof that a folder is a RELEASE build ready for the upload (the `release` skill, step 1):
+  on `mod/` AND the deployed copy (the shell's Documents folder, as `build.ps1` deploys), no build stamp in the name, `metadata.json`'s version
+  (`--version`), no `zzz_v3tb_*` telemetry file, exactly one manifest `debug_log` naming the name and version and no other `debug_log` in an
+  emitted `zzz_pm_rehaul*` script, no "Recipe BE" in the localization; the two folders identical (text files compared without line endings,
+  since git's autocrlf rewrites `mod/` on a checkout); the installed game covered by `supported_game_version`; `mod/` committed. Prints the
+  canon's sha256. `node tools/verify_release_build.mjs [--version 1.1.1] [--mod mod] [--deployed <folder>] [--game <root>]`; exit 1 on any
+  failure; changes nothing. Status: current (2026-11-15: passes the 1.1.1 release build `43bade2`; proven to fail on the debug build
+  `mod_g1151aw` and on a wrong `--version`).
+- **`tools/check_release_notes.mjs`** — the release's public texts (the `release` skill, step 4): per `release_notes/<v>/*.txt`, the dialect
+  from the name (`steam_*` Steam BBCode, `forum_*` the forum's), the size Steam counts (bytes + line breaks; any `steam_*` over 8,000 fails),
+  balanced paired tags, the other dialect's tags, and internal references a player must not see (§, F-numbers, landmine ids, backticks,
+  Markdown, hashes). `node tools/check_release_notes.mjs release_notes/<v> [...]`; exit 1 on any failure. Status: current (2026-11-15: passes
+  1.1.0's and 1.1.1's folders; proven on a planted text with an open list, a forum tag, a § and an F-number at 9,057 bytes). Its count reads
+  1.1.0's note two bytes above REPO_GUIDE's 4,781 (the file's last line break).
 - **`tools/strip_release_logging.mjs`** — the release build's logging pass (POLISH_1_0.md H8): in every `zzz_pm_rehaul*` script file under
   `common/` and `events/` but the diag manifest, removes each line that is only `debug_log = "…"` or only `<scope> = { debug_log = "…" }`;
   throws on any other `debug_log` left there and on a `zzz_v3tb_*` telemetry file. Blocks a removed line leaves empty stay (valid no-ops);

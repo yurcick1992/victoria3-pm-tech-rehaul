@@ -87,8 +87,9 @@ Write the predictions first (CLAUDE.md §2.8).
 
 ## Phase 7 — release and record
 
-`supported_game_version`, the release build, README's replaced-file list (`tools/list_replaced_files.mjs`), KNOWN_ISSUES, the changelog, the
-Workshop text; the §3 version-log entry; findings in FINDINGS.md; every new coupling into ON_GAME_UPDATE §2 and every new feature, relative
+Once the user decides to release, the `release` skill (`.claude/skills/release/SKILL.md`) does the publishing: `supported_game_version`, the
+release build and its verifier, README's replaced-file list, the five public texts, CHANGELOG and KNOWN_ISSUES, the tag after the upload.
+What stays here: the §3 version-log entry; findings in FINDINGS.md; every new coupling into ON_GAME_UPDATE §2 and every new feature, relative
 ruling or authored item into §5. Close the register.
 
 ## Traps
