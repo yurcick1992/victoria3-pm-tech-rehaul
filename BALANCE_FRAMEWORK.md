@@ -5144,7 +5144,8 @@ methods its own technology unlocks.
   canon reads as vanilla (world 1.55%). Weak points: half the historical figures are from memory or an estimate; a game tag includes its
   colonies; history's category includes quarrying. Its scripts are in the session scratchpad only. **What it means here:** a flat output
   holds a level at 40 where vanilla's late levels make 60–70, so the same ore takes 1.5–2 times vanilla's miners (argued, not measured),
-  on top of a count that is already above history. Whether the first book keeps 5,000 on the later rungs is asked back to the user.
+  on top of a count that is already above history. Asked back with the reading in hand, the user kept the ruling: *"Let's still keep
+  5k and see how it works."* The first book has 5,000 on every rung; mining employment is a thing the experiments read.
 - **Cost (open item 4):** Claude's defaults are accepted *"as starting points"*: the 1836-map rungs at vanilla's cost, the step above
   them at 1.3, 1.6 and 1.9 as the arms.
 - **The base book (open item 5):** *"The latest canon at the time we start building this. It's likely to be 1.1.1 canon, but it's possible
