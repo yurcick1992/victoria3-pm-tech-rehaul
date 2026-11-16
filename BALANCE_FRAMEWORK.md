@@ -5180,6 +5180,22 @@ book the latest canon when building starts.
   (b) 1855 is not dead in half the world: per country, GDP at 1855 against vanilla's median, "dead" taken from vanilla's own spread, and
   the share of the world held by countries dead in both runs. The threshold is set after reading how many vanilla's own runs call dead.
   Read beside them: slot fill by rung, a raw-material price index, the red flags on raw materials, mining employment.
+- **The "dead" reading on the existing runs** (Claude, 2026-11-16; session `20261112_113429`, ten vanilla 1.15.1 and ten canon runs,
+  the 1855.1.1 summaries; a session script, not a finding). A country is "dead" at k when its GDP is under k × vanilla's median for
+  the same tag (for a vanilla run, the median of the other nine); its weight is that median, so the shares are of vanilla's world GDP.
+  Tags absent from a run are not counted (84–98% of the world is present). Medians with the range; 45 pairs an arm:
+
+  | | vanilla, per run | canon, per run | vanilla, dead in BOTH runs of a pair | canon, both |
+  |---|---|---|---|---|
+  | k = 0.75 | 4.2% (2.8–12.6) | 4.6% (3.9–6.6) | 0.6%, at most 7.3% | 1.3%, at most 2.8% |
+  | k = 0.66 | 3.0% (0.9–9.6) | 2.9% (2.2–4.0) | 0.2%, at most 1.0% | 0.7%, at most 1.8% |
+  | k = 0.50 | 1.3% (0.4–2.4) | 1.3% (0.3–2.8) | 0.0%, at most 1.0% | 0.1%, at most 1.5% |
+
+  The big single readings are Britain at 0.61 and 0.75 of its median in two vanilla runs. World GDP at 1855 is 0.96–1.04 of vanilla's
+  median in vanilla's runs and 0.97–1.03 in the canon's.
+- **The thresholds Claude proposes from it, not ruled:** k = 0.66; countries dead in both runs of an arm holding more than 5% of the
+  world is a flag (vanilla and the canon never pass 1.8%), more than 20% fails the arm; and world GDP at 1855 outside 0.90–1.10 of
+  vanilla's median is a flag. The dead countries are listed by name in every reading.
 
 **Ruled on the proposals below** (the user, the same day): *"Gold gets tiered. Oil gets linked discovery. Explosives do get the half
 line."* The mechanisms for gold's depleted fields and oil's linked discovery still need their probe. Asked with it and open: *"maybe we
