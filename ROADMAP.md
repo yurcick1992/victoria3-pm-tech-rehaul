@@ -20,6 +20,7 @@ Mod 1.0 shipped on game 1.13 on **2026-10-30** (measured over 64 centuries: F249
 carrying 1.0's balance untuned (one automated century beside vanilla 1.15, F268, and several hours of manual play). Next, by the user's plan
 of 2026-11-09 (§10.110.1): **mod 1.2 in late November**, the balance retune on the 24 vs 24 batch plus minor changes; **mod 1.3 around
 2026-12-20**, the major changes, extraction first. What goes where is in "What is ahead"; everything below the table is per step.
+**Since 2026-11-16 (§10.115): the extraction overhaul is mod 1.2**, as tiered deposits; the two release sections below carry the change.
 
 | step | what | status | closed | pointers |
 |---|---|---|---|---|
@@ -117,7 +118,20 @@ feature only if it needs no iteration (step 7's timeline).
   "1.1 or later"); per-rung building art (R6, "1.1 or later"); the art academy's Austrian conditional desire, if the batch shows the canon's
   Austria building too few (BACKLOG E). Rubber in a rich late game is a watch item (Q7).
 
-### Mod 1.2 (game 1.15; late November 2026)
+### Mod 1.2 (game 1.15.1; the extraction overhaul since 2026-11-16, no date restated)
+
+**The extraction overhaul (§10.115, user-ruled 2026-11-16).** The user: *"I think we'll skip the smaller step of 1.2, and go with the
+extraction overhaul for 1.2 already (not 1.3)."*
+- **Tiered deposits:** each main method of a resource-capped building becomes a building with slots of its own (two methods → vanilla's
+  slots × 1.5, three or four → × 2, split equally). First design: flat output per tier, rising capital cost.
+- **Same-acre steps** (farms, plantations, ranches, rubber) stay methods, gated on the world's technology: the likely solution, deferred
+  pending probes after the three-arm batch.
+- **The order:** settle what is open before the first book (§10.115 "Open before the first book": inputs, secondary lines, labour, cost,
+  the base book, the experiment's shape) → the generator and two readers (slot fill by rung, a raw-material price index) → 1836–1855
+  runs → centuries. Every run needs the user's go-ahead.
+- An engine rebalance (what pumpjacks should mean for engines) is discussed in another session.
+
+**The list below is §10.110.1's 1.2, as planned on 2026-11-09.** Whether its items move into the new 1.2 or after it is open.
 
 The retune and the minor changes (§10.110.1). A change that moves the economy goes into the build that the re-measure plays.
 
@@ -152,8 +166,7 @@ Copper scarcity on 1.15 is not a 1.2 lever: it follows Paradox (§10.110.4).
 ### Mod 1.3 (around 2026-12-20)
 
 The major changes (§10.110.1):
-- **Extraction**: "tiering or otherwise ensuring foreign PMs". ⚠ It revisits §10.58's veto B, which rejected tiering extraction on narrative
-  grounds, so the approach needs a ruling first.
+- **Extraction** moved to mod 1.2 on 2026-11-16, ruled as tiered deposits (§10.115).
 - **Treaty ports** (§10.103, F243–F246): five layers built and probed on 1.13, none in the canon. Open on 1.15: whether the AI pursues
   recognised hosts by itself.
 - **Building groups per industry**, so a compatibility patch, and our own reference rewrites, can name one group (BACKLOG E). It touches

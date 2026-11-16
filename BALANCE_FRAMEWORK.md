@@ -25,7 +25,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.55 | the 1836 technology grant is derived from the 1836 map | in force | here |
 | 10.56 | eleven tech merges | superseded: the tree is vanilla's (§10.67.4, §10.72) | archive |
 | 10.57 | building cost in two bands off vanilla's cost book | superseded by §10.61, then by the cost step (§10.84, §10.101) | archive |
-| 10.58 | the productivity-divergence levers | partly: vetoes A (per-tier employment), B (tiered agriculture and extraction) and C (scripted obsolescence) stand; C is CLAUDE.md §1.4's no-penalty rule | here |
+| 10.58 | the productivity-divergence levers | partly: vetoes A (per-tier employment) and C (scripted obsolescence) stand; C is CLAUDE.md §1.4's no-penalty rule; veto B (tiered agriculture and extraction) is lifted for deposits by §10.115 and kept for same-acre steps | here |
 | 10.59 | the steamer wedge and the per-tier `solve_profit` override | record (the solver; the field survives for the six-rung book) | archive |
 | 10.60 | the port unit factorisation | record (the six-rung book; `effect_mult` and `workforce_mult` survive in the builder and the editor) | archive |
 | 10.61 | the flat vanilla cost book | superseded by the cost step C (§10.84, §10.101) | archive |
@@ -77,11 +77,12 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.107 | auto-downsizing is reported in LEVELS, kept apart by tier, the t0 crafts apart from the other t0 rungs; like-for-like comparisons with vanilla in possible workforce (jobs) and capital destroyed (construction points) beside them; gold fields, auto-scaling and non-economic buildings left out of every measure; .6 in the ledger as two scorecard lines (capital, workforce) and one section (levels by tier class) | in force (2026-10-31; .6 2026-11-07); `downsize_telemetry.mjs` still prints levels by type and decade, its tier split and the two measures queued until the alternating batch's `SCHEDULE DONE` | here |
 | 10.108 | copper in mod 1.1: the dams carry it in proportion, out of the engines — per 50 electricity 1 tools + 0.5 engines + 0.75 copper; .1 the streetlights unchanged in 1.1 (no copper, no engines), all their work deferred to 1.2 or later; .2 bronze artillery as a switchable second main method on the t0 and t1 rungs, at the same input value; .3 copper trades in class C (×2, traded quantity 12) | in force: the canon since 2026-11-08 (§10.109.5) | here |
 | 10.109 | the game 1.15 pass rulings (GAME_UPDATE_1_15 Q0–Q13, one at a time): .1 the two new flat research adds ×1/3 (Russo-Baltic company cap 15 → 5, social revolution cap 25 → 8.33); .2 vanilla's journal-entry-conditional ai_value carried onto every non-craft rung, flat; .3 the contagious-ideas entries follow 1.15's laws (factory councils as law or amendment, the extraordinary commission); .4 crafts out of 1.15's three new level counts, by native counts (the group minus the craft group, never a loop); .5 the 1.15 canon (`a52b0aca`), and canonisation declares the main line, not a quality stamp; .6 detectors L48 / L49 and IP4's negotiation promise crafts out (G7); .7 1.15's wage and hiring rebalance: measure first, no pre-emptive ladder change | in force: the canon since 2026-11-08 (.1 and .3 in the book through their makers; .2 and .4 build steps — `emit_ai_value_adds.mjs`, L47; `emit_vanilla_refs.mjs` G4–G6 + an init tripwire) | here |
-| 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 ~20 December: major changes, extraction first, which revisits §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed; a bonus to hydro alone is allowed, none planned); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark (Mechanical Tools 25,000 → 75,000); .4 copper scarcity follows Paradox, no copper lever | .1 the plan (ROADMAP, BACKLOG); .2 and .4 in force; .3 ruled for 1.2, not built | here |
+| 10.110 | after 1.1: .1 the release plan (1.2 late November: the retune on the 24 vs 24 batch + minor changes; 1.3 ~20 December: major changes, extraction first, which revisits §10.58's veto B); .2 no state trait gives a bonus to every source of electricity, ever (Krka Falls closed; a bonus to hydro alone is allowed, none planned); .3 a technology unlocking rungs of two tiers takes the higher tier's research mark (Mechanical Tools 25,000 → 75,000); .4 copper scarcity follows Paradox, no copper lever | .1 superseded by §10.115 (the extraction overhaul is mod 1.2); .2 and .4 in force; .3 ruled for 1.2, not built | here |
 | 10.111 | game 1.15.1, mod 1.1.1: .1 the 1.15.1 canon (`g1151-canon-bz-dcu-ra-il`, sha256 c1274f15; the 1.15 chain replayed on 1.15.1, field diff = the telephone rung's three inputs, value-neutral); .2 the dams stay `must_have` under 1.15.1's subsidy rule (now a ceiling; no subsidy for a profitable dam), measured; .3 the AI research weights back to 1.13.11 on six technologies with research entries, five content-tied pushes kept — the canon `g1151-canon-bz-dcu-ra-il-aw`, sha256 697d4869; .4 the AI's new goods stances kept; .5 the dams' `subsidized` flag follows vanilla, infrastructure subsidies watched; .6 the Armed Forces' asset count left as vanilla | in force: the canon (.3) since 2026-11-12 | here |
 | 10.112 | Cossack Hosts (game 1.15) count as peasants in U\* and leave W's productive workers (ruled 2026-11-05 in a cloud session, recorded 2026-11-12) | in force; whether the readers must change is checked after the 10 vs 10 | here |
 | 10.113 | depeasantation and capital abundance are aimed at levels of their own, not ratios to vanilla: the world's U\* about 50%, as few majors as possible with a pool above 0.5 GDP in 1935–36, and a flag on a pool above 3 GDP for 5 years without falling at U\* under 5% (provisional); world GDP stays vanilla-referenced; a gap inside the seed spread is noise | in force; the aims' form and `criteria.mjs` open | here |
 | 10.114 | for mod 1.2 the world's U\* gives way to the world-GDP aim (0.90–1.00× vanilla), U\* still as high as that allows; infrastructure subsidies come back only if the countries short of infrastructure are the ones that hoard — read on mod 1.1.1: they are not, so game 1.15.1's rule stays | in force for 1.2; the subsidy reading is Claude's, directional | here |
+| 10.115 | deposits are tiered (each main method of a resource-capped building a building with slots of its own: two methods → vanilla's slots × 1.5, three or four → × 2, split equally), first design flat output per tier with rising cost; the extraction overhaul is mod 1.2, superseding §10.110.1's split; nothing tiered for uniformity; same-acre steps (farms, plantations, ranches, rubber) stay methods, gated on the world's technology, deferred as the likely solution pending probes; §10.58's veto B lifted for deposits | in force (the plan and the design); the scope, gold, oil, rounding and the first book's numbers are proposals or open; the world gate unproven | here |
 
 ---
 
@@ -4828,6 +4829,7 @@ tiering or otherwise ensuring foreign PMs) for extraction will come in 1.3, arou
 - ⚠ **Extraction in 1.3 revisits §10.58's veto B**, which rejected tiering agriculture and extraction on narrative grounds (tiers stand for the
   rebuilding of a production process). The user named tiering only as one option ("or otherwise ensuring foreign PMs"); the approach needs a
   ruling of its own before work starts.
+- **Superseded 2026-11-16 by §10.115:** the approach is ruled (tiered deposits), and the extraction overhaul is mod 1.2.
 
 ### §10.110.2 — No state trait gives a bonus to every source of electricity
 
@@ -5036,3 +5038,92 @@ so game 1.15.1's rule stays.**
 
 **Open.** Whether the reading becomes a finding with its readers kept in `tools/testbed/ledger/` (asked, unanswered). The retune book
 itself is a proposal (general input lift 1.3, pop-good lift 1.4, cost step 2.0 from the 1.1.1 canon), not ruled.
+
+---
+
+## §10.115 — DEPOSITS ARE TIERED, AND THE EXTRACTION OVERHAUL IS MOD 1.2; SAME-ACRE STEPS STAY METHODS (user-ruled 2026-11-16)
+
+**The occasion.** While the three-arm batch played (Production Method Rework 0.4.0 × 15, vanilla 1.15.1 × 5, the canon × 5; session
+`20261116_005659`), the user asked how the mod could take that mod's advantages without its defects. Everything below was read from files
+and the web; no probe was run. The advantage that matters, in the user's words: *"a foreign investor should use whatever tech it has to
+build both manufacturing and extraction, not whatever tech the locals have. In NFU, this is true for industry, by design (as it's not a PM
+change but a building construction, which is gated by investor tech in vanilla as well). We simply must make it true for extraction and
+plantations as well, and why not other agriculture too."* In vanilla the country that owns the state chooses every method in it, from the
+methods its own technology unlocks.
+
+**The rulings.**
+1. **§10.58's veto B no longer stands for deposits.** The user: *"I'm prepared to be a bit more flexible, and the rulings might have been
+   obsolete anyway."* Veto B's narrative objection is kept where it fits (ruling 6).
+2. **Deposits are tiered: each main method of a resource-capped building becomes a building of its own, with slots of its own.** The user:
+   *"We'll go with the simplest option available, with tiered deposits. Where there are two PMs, add +50% to vanilla (round up). Where
+   there are three or four, double the numbers. Then divide between the PMs (now tiers) equally."*
+3. **The first design: flat output per tier, rising capital cost.** The user: *"Let's start with a flat output per tier and increasing
+   capital cost, to incentivise easier to reach deposits building up first. Maybe only with some penalty for hand picks and shovels, but
+   I'm not sure even of that."* The reason, also the user's: factory rungs are expected to die, so a newer rung carries the dead rungs'
+   output; deposit rungs are expected to coexist, so *"I'd expect a pretty linear (if not marginally decreasing, with the calculus meaning
+   of 'marginal') productivity ratio with tech raises."* A book that keeps vanilla's rising outputs on doubled slots was rejected as a
+   reference (*"materially wrong to the point of losing all meaning"*: it raises what a deposit can make).
+4. **The extraction overhaul is mod 1.2, not 1.3.** The user: *"I think we'll skip the smaller step of 1.2, and go with the extraction
+   overhaul for 1.2 already (not 1.3). Once the current batch finishes, I want to start a long set of experiments to settle on the numbers
+   (first 20-years ones, 1836-1855, then full 100-year runs)."* This supersedes §10.110.1's split. No date was restated, and where
+   §10.110.1's 1.2 items (the retune, military research, tier-scaled secondary lines, the minor fixes) now go is open.
+5. **The balance should be tight enough that a country does not usually run out of its deposits**, so that deleting old mines to make room
+   for new ones is a rare question.
+6. **Nothing is tiered for uniformity.** The reason to tier is the investor's technology. A step that reaches new ground (deeper workings,
+   farther waters) reads as a deposit of its own; a step that raises the yield of the same acre does not, and the user does not want its
+   obsolete farms and plantations to linger.
+7. **Same-acre steps stay production methods, gated on the world's technology instead of the host's: deferred as the likely solution,
+   pending probes after the batch.** The user: *"I like that. Defer as the likely solution, pending probes once the current batch ends."*
+   The field is `unlocking_global_technologies` (documented in the game's `production_methods.md`: "technologies that need to be invented
+   in the world to be able to activate this pm"; present in the 1.15.1 binary; vanilla never uses it, so it is unproven). The price of the
+   method's input in the host's market then decides. The user's caveat: it fits fertiliser (the fertiliser industry's technology becomes
+   the reward) better than irrigation (pumpjacks bring nothing to engines); **an engine rebalance is to be discussed in another session.**
+8. **Rejected in this session:** old levels dying by losing workers (*"This would only work if the old mines became unprofitable. With ore
+   prices, this isn't likely"*); displacement by trimming a cap or by depletion (script cannot choose which level goes); add-on buildings
+   (*"way too ugly"*); emulating one cap shared by several building types in script; a mechanism only the player can use (*"that's the
+   same as not working"*). Production Method Rework's own mechanism (shares of a building's levels per recipe, set by script) was kept
+   only as a fallback behind probes, because of its play time.
+
+**What was read** (game 1.15.1 files and the running batch; session scripts, not a finding).
+- **The engine.** A resource cap belongs to one building type; arable land is the only pool several types share, and a region's
+  `arable_resources` lists building types. No effect removes one level, lowers a level or transfers ownership. A method can be gated on the
+  host's technology, the world's technology, laws, another method of the same building, power-bloc principles and identity, religion or
+  geographic region, and on nothing about the building's owner.
+- **The 1836 map fits the slot rule.** In no region do the 1836 levels exceed one rung's share for coal, iron, lead, sulfur, copper,
+  fishing, whaling or logging (logging: 202 regions, 357 levels on saw mills and 110 on simple forestry, cap total 8,334 over 619
+  regions). Gold mines exceed it in 8 of 13 regions.
+- **Flat output reproduces vanilla's ceiling.** The 1836 map uses the first two methods, so those rungs keep vanilla's output and the
+  later rungs take the second's. Iron: 20 / 40 / 40 / 40 on ½N slots each makes 70N, vanilla's fully modernised 70N. Logging: 30 / 60 / 60
+  on ⅔N each makes 100N against 100N. Sulfur 70N against 80N, fishing 83N against 100N, oil (60 / 60 on ¾N each) 90N against 100N.
+- **Deposits at 1936 in vanilla 1.15.1** (two runs): coal 37–44% of the world's slots built, with 72–84 of 252 regions at least 95% full
+  and holding 57–59% of the levels; iron 42–43%, 81–85 of 288 regions, 51–56%; farms and plantations 39–43% of arable land, 38–44 of 660
+  regions full, 8–9% of the levels.
+- **Production Method Rework's play time** (n = 2 against one vanilla and one canon century at the time of reading; directional): ×1.13–1.21
+  of vanilla per in-game year to 1895, ×1.31 in 1896–1905, then ×1.59, ×1.98 and ×1.65; about ×1.40 over the century, the canon ×1.11.
+  Between 67% and 96% of the excess sits in one sub-tick a day with a 60-day period, its every-other-month state script; the world it
+  simulates is not larger than vanilla's. Its "own technology abroad" works for the human player only.
+
+**Proposed by Claude, not ruled.**
+- **Tiered as deposits:** coal, iron, lead, sulfur and copper mines, logging camps, fishing wharves, whaling stations, oil rigs (the user
+  accepted this family with ruling 7, without naming each).
+- **Gold mines and gold fields stay vanilla** in the first book (the 1836 map does not fit a rung's share; minting).
+- **Oil:** each rung its own discoverable deposit. **Rubber:** a vanilla building; its one step is a same-acre step.
+- **Rounding:** an uneven total goes up to the next multiple of the rung count, at least one slot a rung.
+- **The world gate only on steps whose technology is tech era 3 or later**, so the 1836 map stays vanilla's: fertilisation, automatic
+  irrigation, chemical fertiliser, mechanised slaughtering. Soil enriching, butchering tools, slaughterhouses and coffee's wet processes
+  stay host-gated.
+- **One lever for the experiments:** the cost step per rung above the 1836-map rungs, range 1.3–1.9.
+
+**Open before the first book** (none ruled).
+1. **What a flat rung consumes.** Vanilla's later pumps take more tools and coal, or oil (iron: 5 tools → 10 tools + 10 coal → 15 + 15 →
+   15 tools + 5 oil); at a flat output the rung's own inputs would make it worse than the one below.
+2. **The secondary methods' output lines.** Explosives add a fixed amount per level (iron +12 and +20), and the levels double: iron's
+   ceiling with dynamite would be 110N against vanilla's 90N unless the line is scaled by the slot ratio.
+3. **Labour.** A level keeps 5,000 workers and a full deposit has twice the levels, so the same ore takes about twice vanilla's miners
+   at the end of the century. That moves W and U\* the wrong way for §10.113 and makes ore dearer in wage units.
+4. **Cost:** the cost of the 1836-map rungs (vanilla's?), the first value of the step, and the AI desire by tier.
+5. **The base book** the first tiered book branches from, and whether a factory lever is moved with it to hold world GDP.
+6. **The experiment's shape:** arms, n, and what a 1836–1855 screen can read (only the first two rungs are built by then, so it reads
+   the start: each rung has half of vanilla's slots). Two readers are missing: slot fill by rung, and a raw-material price index.
+7. **The probes for ruling 7** (after the batch, with the user's go-ahead): that a world-gated method unlocks as documented, and how the
+   AI switches when the input is scarce.
