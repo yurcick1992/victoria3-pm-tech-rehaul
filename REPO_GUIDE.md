@@ -41,6 +41,11 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
   playtest's defect list, steps 10–14 the input penalty, trade and finishing, crafts, merges, the last tech rework).
 - **`BACKLOG.md`** — every open item, one line each with status (NOW / OPEN / RULING / DEFERRED / RESEARCH / DEFECT / WATCH) and a pointer to
   the doc with the detail; committed (unlike the handover) and kept true in the same pass as the change.
+- **`NEXT_BOOK_SPEC.md`** — the build specification of the next book: BALANCE_FRAMEWORK §10.115 (tiered deposits) and §10.116 (the
+  engine rebalance) put together in build order, with worked numbers to reproduce, the ruled and proposed variations, the open questions
+  with the default each assumes, the order of work and the build consequences nobody has ruled on. It rules nothing: the two sections
+  win where it disagrees. Written 2026-11-17 for the session that builds the book after the three-arm batch; retire it into the book's
+  own records once the book exists.
 - **`POLISH_1_0.md`** — the mod 1.0 polish register: each item's DONE / RULING / READY / VERIFY state, the rulings asked, the order (script and
   economics before the alternating batch, text and art after), and source notes on where the two subagent reports' items went (the
   appendices were collapsed 2026-10-24).

@@ -5324,7 +5324,7 @@ proposed.
    Irrigation's inputs go from £300 to £450 a level at base prices on the steam drive; bananas (+£300 of fruit a level) stop paying
    at base, cotton (+£700) and the others still do.
 7. **The top mine rung gets an electric drive beside the diesel one**: a switchable second main method with electricity in place of the
-   oil (5.9 electricity for 4.4 oil) and ruling 9's engines.
+   oil (5.8 electricity for 4.4 oil) and ruling 9's engines.
 8. **The factory power lines buy engines.** The water-tube boiler, rotary valve engine and assembly line methods already burn coal or
    electricity and pay for the machine in tools; those tools become engines, value for value. The mod's own line quantities were not
    read (the sizes below are vanilla's).
@@ -5357,6 +5357,15 @@ proposed.
 ("the electric engines may get a redo, with a new technology for a new t2 engine rung", likely 1.3 since 2026-11-09) is this section;
 its first sketch, a new technology for a new t2 rung, is replaced by the t1 rung on pumpjacks and the quarter of ruling 3. The user on
 the open items: *"Open questions will get rulings when the first book builds."*
+
+**Combined with §10.115 for the build** (the user, 2026-11-17: *"combine the rulings with the ones from the neighbouring session so
+that it'd be easier for the next one to create the 1.3 starting book and variations when the current batch ends"*): `NEXT_BOOK_SPEC.md`
+restates both sections in build order, with worked numbers, the variations and the open questions; it rules nothing. Two things it
+leaves for the user to confirm before the build: which release the combined book is (§10.115 ruling 4 says the extraction overhaul is
+mod 1.2; this section was asked *"for 1.3"*), and whether the engine rebalance joins the first tiered books, since §10.115 accepted
+that no factory lever moves with them so that tiering is seen alone. Worked there by the rules, and not in the user's rulings: the coal
+mine's pump rungs (no coal in the mix), and the canon's own factory power lines, read from the build (the tooling workshop's three
+lines carry no tools, so ruling 8 changes nothing there).
 
 **What was read** (session scripts, not a finding; directional). Demand is staffed levels × the base recipe from the save summaries
 of four runs an arm (vanilla 1.15.1 runs 1, 3, 5, 7; the canon runs 2, 4, 6, 8), world totals: buildings only, no throughput bonus,

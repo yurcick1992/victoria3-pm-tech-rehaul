@@ -760,6 +760,8 @@ What §1.2 and §1.3 leave out:
   overhaul** (tiered deposits), its numbers settled by experiments after the three-arm batch (1836–1855 runs first, then centuries); no date
   restated. Where §10.110.1's 1.2 items (the retune, minor changes) and its 1.3 items now go is open. **An engine rebalance is ruled
   for mod 1.3** (§10.116, 2026-11-17: energy paid where engines run, a t1 engine rung on pumpjacks, switchable drives); nothing is built.
+  **`NEXT_BOOK_SPEC.md` combines §10.115 and §10.116 in build order** for the session that builds the starting book after the three-arm
+  batch; which release that combined book is (the user called it "the 1.3 starting book", §10.115 says the overhaul is 1.2) is to confirm.
 
 ## 4.3 Lineage
 
@@ -877,6 +879,7 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 | `TESTBED_METRICS.md` | what telemetry and the save summaries can and cannot log | a metric is added or verified |
 | `MODDING_NOTES.md` | engine and tooling behaviour | an engine gotcha is found |
 | `ON_GAME_UPDATE.md` | the game-update skill's reference: every coupling to a vanilla file or number, what to re-run after a patch, the version log, the premises / relative-rulings / authored tables (§5) | a new coupling |
+| `NEXT_BOOK_SPEC.md` | the build specification of the next book: the rulings of §10.115 (tiered deposits) and §10.116 (the engine rebalance) in build order, worked numbers, variations, open questions with their assumed defaults; it rules nothing | a ruling on the next book lands in BALANCE_FRAMEWORK (same pass); retired once the book is built |
 | `GAME_UPDATE_<version>.md` | the version's update register: one line per change the update raises, with its class, what of ours it touches, the decision and its status (the game-update skill) | through each update pass; closed at release |
 | `BUGS_AND_FIXES.md` | root causes of non-obvious bugs, newest first under a dated index | a bug is fixed whose cause would surprise the next reader |
 | `*_ARCHIVE.md` (BALANCE_FRAMEWORK, FINDINGS, BUGS_AND_FIXES, `tools/testbed/SESSION_VERDICTS`) | the superseded sections and entries of the records, verbatim under their own numbers; a stub stays in the live file | never written to except to archive a block the user agrees is fully superseded |
@@ -1065,7 +1068,7 @@ to keep when changing it:
 ```
 CLAUDE.md, GLOSSARY.md, README.md, BALANCE_FRAMEWORK.md, FINDINGS.md, ROADMAP.md, BACKLOG.md, POLISH_1_0.md,
 REPO_GUIDE.md, TESTBED_OPERATIONS.md, TESTBED_LANDMINES.md, TESTBED_METRICS.md, MODDING_NOTES.md, ON_GAME_UPDATE.md,
-BUGS_AND_FIXES.md, TIER_REFERENCE_AUDIT.md, MISSING_*.md      the documents (§5.2)
+BUGS_AND_FIXES.md, TIER_REFERENCE_AUDIT.md, MISSING_*.md, NEXT_BOOK_SPEC.md      the documents (§5.2)
 balance-ui.cmd, balance-snapshot.cmd                         one-click editor launcher and snapshot
 config/      mod_config.json (the canon) + tech_tree_options.json (its tree twin); every named book mod_config.<name>.json with its twin;
              start rules, measured reference data (1836 professions, wages, pop identity, trade/SoL), the dam tables

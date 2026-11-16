@@ -135,6 +135,9 @@ extraction overhaul for 1.2 already (not 1.3)."*
   2+1, passing on a start like vanilla's and an 1855 that is not dead in half the world → centuries. Every run needs the user's go-ahead.
 - The engine rebalance (what pumpjacks should mean for engines) is ruled for mod 1.3: §10.116 (2026-11-17). Two of its pieces sit on
   these tiered deposits: engines on the condensing and diesel pump rungs, and an electric drive beside diesel on the top mine rung.
+- **`NEXT_BOOK_SPEC.md` is the build specification** (2026-11-17, at the user's word): §10.115 and §10.116 in build order, worked
+  numbers, the ruled and proposed variations, the open questions with their assumed defaults, the order of work. To confirm first:
+  which release the combined book is, and whether the engine rebalance joins the first tiered books.
 
 **The list below is §10.110.1's 1.2, as planned on 2026-11-09.** Whether its items move into the new 1.2 or after it is open.
 
