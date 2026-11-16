@@ -5127,3 +5127,41 @@ methods its own technology unlocks.
    the start: each rung has half of vanilla's slots). Two readers are missing: slot fill by rung, and a raw-material price index.
 7. **The probes for ruling 7** (after the batch, with the user's go-ahead): that a world-gated method unlocks as documented, and how the
    AI switches when the input is scarce.
+
+**Ruled later the same day** (the user's answers to the lists above).
+- **The tiered family is confirmed:** the five mines, logging, fishing, whaling and oil. Gold was asked back (*"why not gold too?"*): see
+  below.
+- **Labour: 5,000 a level to start with** (open item 3). A subagent reads whether vanilla's 1936 miners are a plausible share of the
+  population against history (the user suspects the game has too few); its result is not in this section.
+- **Cost (open item 4):** Claude's defaults are accepted *"as starting points"*: the 1836-map rungs at vanilla's cost, the step above
+  them at 1.3, 1.6 and 1.9 as the arms.
+- **The base book (open item 5):** *"The latest canon at the time we start building this. It's likely to be 1.1.1 canon, but it's possible
+  that we'll have some 1.1.2 for vanilla 1.15.2 or something else."*
+- **What a flat rung consumes (open item 1), the user's lean, not yet a ruling:** *"equal value-added at base prices with lower rungs,
+  with inputs scaled to match VA."* At a flat output this is the same rule as an equal input value. Iron at base prices: picks 20 iron −
+  5 tools = £600 a level; the atmospheric pump 40 iron − 10 tools − 10 coal = £900; the condensing rung at 40 iron takes £700 of inputs in
+  its own mix, which is 10 tools + 10 coal again; the diesel rung 13.1 tools + 4.4 oil. A later rung then differs from the pump rung only
+  in name, gate and cost; its return per construction point is the pump rung's ÷ the cost step per tier (at 1.9 the top rung has 28%, at
+  1.3 59%), and a new picks level beats a new condensing level wherever the step is above 1.5.
+- **What the 1836–1855 runs are for (open item 6), the user:** *"that 1836 situation is similar to vanilla in numbers, and 1855 situation
+  isn't reliably dead in half the world. The latter is NOT necessarily one check per book."* Claude's "one check per book" is withdrawn.
+
+**Gold and the deposits found mid-game** (read from the 1.15.1 files; Claude's proposals, not ruled).
+- **How the engine discovers.** A discoverable deposit is a `resource` block per region and building type (`undiscovered_amount`,
+  `discover_chance_mult`, optional `depleted_type`). Each day it rolls 0.02% × the multiplier; a success reveals 20–50% of the deposit and
+  fires `on_resource_discovered` (root: the state). Vanilla also forces the first oil discovery by script when a country acquires the
+  technology (`force_resource_discovery = building_oil_rig`), and the rubber events do the same for rubber.
+- **Oil, tiered:** two blocks a region, one per rung (60 slots → 45 + 45). Left alone the two would be found by separate rolls, in
+  either order. Proposed: the second rung's block never rolls (`discover_chance_mult = 0`) and is revealed by `force_resource_discovery`
+  from the `on_resource_discovered` hook whenever the first is, so one find opens both. The effect is vanilla's own; how much one forced
+  call reveals is unread, and vanilla's oil-rush events on that hook must not fire twice.
+- **Gold: three special cases.** (a) The 1836 map exceeds one rung's share in 8 of 13 regions (28 levels on picks, 5 on pumps; Bohemia's
+  5 pump levels against a share of 3), so a rung's share needs a floor at its 1836 levels. (b) A gold field depletes into ONE building
+  type (`depleted_type`), so the depleted slots must be spread over four rungs from the `on_resource_depleted` hook. (c) Caps are tiny
+  (2–6 a region; 91 in the world), so rounding moves them by a fifth or more, and a flat output (8 / 15 / 15 / 15) makes 26.5N of gold
+  against vanilla's 30N, which is minting. None is a blocker; (b) needs the same probe as oil.
+- **Explosives and the other secondary lines (open item 2).** A line that adds or converts output is scaled by vanilla's slots ÷ the
+  tiered slots (½ for three or four rungs, ⅔ for two), the same recipe on every rung: iron's dynamite becomes +10 iron − 5 explosives
+  + 125 workers a level, so a full deposit makes 70N + 20N as in vanilla and takes vanilla's 10N of explosives, and the line's return per
+  unit of explosives is unchanged. A line that only saves labour (steam donkey, rail transport) is left as it is: with twice the levels
+  it saves the same share of twice the workers.
