@@ -5123,8 +5123,10 @@ methods its own technology unlocks.
    at the end of the century. That moves W and U\* the wrong way for §10.113 and makes ore dearer in wage units.
 4. **Cost:** the cost of the 1836-map rungs (vanilla's?), the first value of the step, and the AI desire by tier.
 5. **The base book** the first tiered book branches from, and whether a factory lever is moved with it to hold world GDP.
-6. **The experiment's shape:** arms, n, and what a 1836–1855 screen can read (only the first two rungs are built by then, so it reads
-   the start: each rung has half of vanilla's slots). Two readers are missing: slot fill by rung, and a raw-material price index.
+6. **The experiment's shape:** arms, n, and what a 1836–1855 screen can read. ⚠ Corrected the same day: Claude first wrote that only the
+   first two rungs exist by 1855. The condensing pump's technology (watertube boiler) is tech era 2, like the atmospheric engine's and
+   nitroglycerin's (dynamite 3, compression ignition 5), so the leaders can build the third rung inside the window and the cost step acts
+   there. Two readers are missing: slot fill by rung, and a raw-material price index.
 7. **The probes for ruling 7** (after the batch, with the user's go-ahead): that a world-gated method unlocks as documented, and how the
    AI switches when the input is scarce.
 
@@ -5156,7 +5158,16 @@ methods its own technology unlocks.
 - **What the 1836–1855 runs are for (open item 6), the user:** *"that 1836 situation is similar to vanilla in numbers, and 1855 situation
   isn't reliably dead in half the world. The latter is NOT necessarily one check per book."* Claude's "one check per book" is withdrawn.
 
-**Gold and the deposits found mid-game** (read from the 1.15.1 files; Claude's proposals, not ruled).
+**Ruled on the proposals below** (the user, the same day): *"Gold gets tiered. Oil gets linked discovery. Explosives do get the half
+line."* The mechanisms for gold's depleted fields and oil's linked discovery still need their probe. Asked with it and open: *"maybe we
+should limit explosives usage for tier0 or tier1?"* Claude's reading at base prices, iron: with the half line on all four rungs a new
+picks level (£750 a level at vanilla's cost) outranks a new condensing level (£1,050 at the stepped cost) wherever the step is above 1.4;
+barred from t0 alone the line is ⅔ of vanilla's on three rungs for the same ceiling, and the cut-off is 1.83; barred from t0 and t1 the
+line is vanilla's own (+20 iron − 10 explosives + 250 workers) on t2 and t3, the ceiling is again vanilla's 90N, and a condensing level
+with dynamite (£1,200) outranks picks at every step up to 2.0. Against a limit: hand-worked mines did blast. Also open after the miners
+reading: the staffing of the later rungs.
+
+**Gold and the deposits found mid-game** (read from the 1.15.1 files; Claude's proposals, ruled as above).
 - **How the engine discovers.** A discoverable deposit is a `resource` block per region and building type (`undiscovered_amount`,
   `discover_chance_mult`, optional `depleted_type`). Each day it rolls 0.02% × the multiplier; a success reveals 20–50% of the deposit and
   fires `on_resource_discovered` (root: the state). Vanilla also forces the first oil discovery by script when a country acquires the
