@@ -5150,8 +5150,9 @@ methods its own technology unlocks.
   them at 1.3, 1.6 and 1.9 as the arms.
 - **The base book (open item 5):** *"The latest canon at the time we start building this. It's likely to be 1.1.1 canon, but it's possible
   that we'll have some 1.1.2 for vanilla 1.15.2 or something else."*
-- **What a flat rung consumes (open item 1), the user's lean, not yet a ruling:** *"equal value-added at base prices with lower rungs,
-  with inputs scaled to match VA."* At a flat output this is the same rule as an equal input value. Iron at base prices: picks 20 iron −
+- **What a flat rung consumes (open item 1): RULED, first as a lean and then confirmed (*"Yes, equal VA"*):** *"equal value-added at
+  base prices with lower rungs, with inputs scaled to match VA."* The reference is the highest rung on the 1836 map (the picks rung keeps
+  vanilla's lower figure); the inputs are spread over the rung's own vanilla mix. At a flat output this is the same rule as an equal input value. Iron at base prices: picks 20 iron −
   5 tools = £600 a level; the atmospheric pump 40 iron − 10 tools − 10 coal = £900; the condensing rung at 40 iron takes £700 of inputs in
   its own mix, which is 10 tools + 10 coal again; the diesel rung 13.1 tools + 4.4 oil. A later rung then differs from the pump rung only
   in name, gate and cost; its return per construction point is the pump rung's ÷ the cost step per tier (at 1.9 the top rung has 28%, at
