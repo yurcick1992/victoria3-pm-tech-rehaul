@@ -5160,6 +5160,27 @@ methods its own technology unlocks.
 - **What the 1836–1855 runs are for (open item 6), the user:** *"that 1836 situation is similar to vanilla in numbers, and 1855 situation
   isn't reliably dead in half the world. The latter is NOT necessarily one check per book."* Claude's "one check per book" is withdrawn.
 
+**The rounding rule: RULED** (*"Yes, round up"*): an uneven slot total goes up to the next multiple of the rung count, at least one
+slot a rung. Gold's floor at a rung's 1836 levels comes on top of it.
+
+**The first book's rules are now all ruled:** the family (five mines, gold, logging, fishing, whaling, oil); the slot rule and the
+rounding; flat output from the highest 1836-map rung; equal value added at base prices; 5,000 workers a level; output-adding secondary
+lines × the slot ratio on every rung, labour-saving lines unchanged; the 1836-map rungs at vanilla's cost and a step above them; the base
+book the latest canon when building starts.
+
+**Proposed by Claude for the experiments, not ruled.**
+- **AI desire:** every deposit rung takes its vanilla building's own desire, the same on all rungs (gold keeps vanilla's static 5000),
+  so profit alone orders the rungs (§10.92). The factory ladder's 1000 / 1000 / 3000 / 5000 is not carried over: it was calibrated for
+  rungs whose return rises with tier, and here it falls.
+- **No factory lever moves with the first tiered books.** They are read against their base canon, so what tiering does is seen alone;
+  the retune comes after, on the tiered base.
+- **The 1836–1855 runs:** three arms, the cost step at 1.3, 1.6 and 1.9, each through 2+1, read against the existing vanilla 1.15.1 and
+  canon runs over the same years (no new reference runs). Pass, in the user's two terms: (a) the start is vanilla's (the register's
+  1836–1845 anchor line; the 1837 mining levels and output by good; raw-material prices at the first dump inside vanilla's seed spread);
+  (b) 1855 is not dead in half the world: per country, GDP at 1855 against vanilla's median, "dead" taken from vanilla's own spread, and
+  the share of the world held by countries dead in both runs. The threshold is set after reading how many vanilla's own runs call dead.
+  Read beside them: slot fill by rung, a raw-material price index, the red flags on raw materials, mining employment.
+
 **Ruled on the proposals below** (the user, the same day): *"Gold gets tiered. Oil gets linked discovery. Explosives do get the half
 line."* The mechanisms for gold's depleted fields and oil's linked discovery still need their probe. Asked with it and open: *"maybe we
 should limit explosives usage for tier0 or tier1?"* Claude's reading at base prices, iron: with the half line on all four rungs a new
