@@ -126,9 +126,13 @@ extraction overhaul for 1.2 already (not 1.3)."*
   slots × 1.5, three or four → × 2, split equally). First design: flat output per tier, rising capital cost.
 - **Same-acre steps** (farms, plantations, ranches, rubber) stay methods, gated on the world's technology: the likely solution, deferred
   pending probes after the three-arm batch.
-- **The order:** settle what is open before the first book (§10.115 "Open before the first book": inputs, secondary lines, labour, cost,
-  the base book, the experiment's shape) → the generator and two readers (slot fill by rung, a raw-material price index) → 1836–1855
-  runs → centuries. Every run needs the user's go-ahead.
+- **The first book's rules are all ruled** (2026-11-16, §10.115): the family is the five mines, gold, logging, fishing, whaling and
+  oil; rounding up; equal value added at base prices; 5,000 workers a level; output-adding secondary lines × the slot ratio on every
+  rung; vanilla's cost on the 1836-map rungs and a step above; vanilla's AI desire on every rung; no factory lever moved; the base book
+  is the latest canon when building starts.
+- **The order, after the three-arm batch:** the probes (gold's depleted fields, oil's linked discovery, the world gate) → the generator
+  and two readers (slot fill by rung, a raw-material price index) → 1836–1855 runs, three cost-step arms (1.3 / 1.6 / 1.9) through
+  2+1, passing on a start like vanilla's and an 1855 that is not dead in half the world → centuries. Every run needs the user's go-ahead.
 - An engine rebalance (what pumpjacks should mean for engines) is discussed in another session.
 
 **The list below is §10.110.1's 1.2, as planned on 2026-11-09.** Whether its items move into the new 1.2 or after it is open.
