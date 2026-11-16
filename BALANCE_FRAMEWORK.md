@@ -5167,6 +5167,25 @@ line is vanilla's own (+20 iron − 10 explosives + 250 workers) on t2 and t3, t
 with dynamite (£1,200) outranks picks at every step up to 2.0. Against a limit: hand-worked mines did blast. Also open after the miners
 reading: the staffing of the later rungs.
 
+**The web check the user asked for** (2026-11-16; secondary sources, search summaries, not primary reading).
+- **Hand-worked mines blasted, with both kinds.** Black powder in mines from 1613 or 1627 (sources differ), general by 1700; every hole
+  was drilled by hand until the mid-1800s; dynamite had largely replaced black powder in metal mines by the mid-1870s, while hand
+  drilling lasted into the 1900s in places (Bisbee until 1905; over 85% of US copper ore already came from power-drill mines in 1902).
+  So a limit cannot rest on "they did not blast". Vanilla's line is the HIGH explosives; black powder belongs to the base recipe.
+- **A reason to keep nitroglycerin to large works:** the liquid could not be shipped safely (a San Francisco explosion killed 15 and
+  California banned its transport; Britain's Nitro-Glycerine Act of 1869), so it was made at the works: the Hoosac tunnel had its own
+  plant at the portal, up to 6,000 pounds a month.
+- **A reason to tie high explosives to deep workings:** black powder needs a dry hole; gelatine dynamites resist water and were valued
+  in shaft-sinking and wet ground, which is the ground the later pumps open. Weak for dynamite as a rule: shallow metal mines took it up
+  within a decade too.
+- **Coal is a case of its own:** black powder stayed its usual explosive into the 1900s, high explosives could fire the gas, and the
+  "permitted" explosives came from the 1890s.
+- **The user's idea, one kind per rung** (*"maybe we should only allow one"*, wanting more than "they weren't contemporaries"): the
+  evidence-true split is nitroglycerin on t2 and t3 only, dynamite on every rung. It breaks on the numbers: dynamite on four rungs must
+  be the half line (+10 iron), nitroglycerin on two can stay vanilla's (+12), and the deep rungs would then never move to dynamite; a
+  dynamite recipe per rung would break "one name — one recipe" (§10.93). Claude's recommendation stays both kinds on t2 and t3 only, at
+  vanilla's lines.
+
 **Gold and the deposits found mid-game** (read from the 1.15.1 files; Claude's proposals, ruled as above).
 - **How the engine discovers.** A discoverable deposit is a `resource` block per region and building type (`undiscovered_amount`,
   `discover_chance_mult`, optional `depleted_type`). Each day it rolls 0.02% × the multiplier; a success reveals 20–50% of the deposit and
