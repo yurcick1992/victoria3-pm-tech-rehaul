@@ -5132,7 +5132,17 @@ methods its own technology unlocks.
 - **The tiered family is confirmed:** the five mines, logging, fishing, whaling and oil. Gold was asked back (*"why not gold too?"*): see
   below.
 - **Labour: 5,000 a level to start with** (open item 3). A subagent reads whether vanilla's 1936 miners are a plausible share of the
-  population against history (the user suspects the game has too few); its result is not in this section.
+  population against history (the user suspects the game has too few). **Its reading (2026-11-16, a subagent's, not re-checked; not a
+  finding): the opposite.** Vanilla 1.15.1 at 1936, ten runs of session `20261112_113429`, miners = staffed levels × the active methods'
+  employment (coal, iron, lead, sulfur, copper, gold; oil apart): 32.0M in the world, 1.64% of the population (1.50–1.78) and 9.4% of
+  productive workers, on 10,706 levels at 3,016 employees a level; 0.93% in 1910. Per head of population against history: Britain 2.57%
+  against 2.44% (the 1931 census), the USA 4.02% with oil against 0.80% (1930), Germany 3.80% against 1.06–1.66% (1939, 1933), France
+  2.47% against 0.85% (1936), Belgium 2.15% against 2.56% (1930), Japan 0.65% against 0.49% (1930); Russia and the world total rest on
+  the subagent's own estimates (about 3.5× and 4–5×). Real mining shares peaked around 1913–1920 and fell; the game's keeps rising. The
+  canon reads as vanilla (world 1.55%). Weak points: half the historical figures are from memory or an estimate; a game tag includes its
+  colonies; history's category includes quarrying. Its scripts are in the session scratchpad only. **What it means here:** a flat output
+  holds a level at 40 where vanilla's late levels make 60–70, so the same ore takes 1.5–2 times vanilla's miners (argued, not measured),
+  on top of a count that is already above history. Whether the first book keeps 5,000 on the later rungs is asked back to the user.
 - **Cost (open item 4):** Claude's defaults are accepted *"as starting points"*: the 1836-map rungs at vanilla's cost, the step above
   them at 1.3, 1.6 and 1.9 as the arms.
 - **The base book (open item 5):** *"The latest canon at the time we start building this. It's likely to be 1.1.1 canon, but it's possible
