@@ -5185,6 +5185,9 @@ reading: the staffing of the later rungs.
   be the half line (+10 iron), nitroglycerin on two can stay vanilla's (+12), and the deep rungs would then never move to dynamite; a
   dynamite recipe per rung would break "one name — one recipe" (§10.93). Claude's recommendation stays both kinds on t2 and t3 only, at
   vanilla's lines.
+- **RULED after the check (the user): *"Half line everywhere."*** Both explosives stay on all four rungs at the slot-ratio line; no limit
+  by tier. The consequence stands for the experiments to read: at base prices a new picks level outranks a new condensing level wherever
+  the cost step is above 1.4.
 
 **Gold and the deposits found mid-game** (read from the 1.15.1 files; Claude's proposals, ruled as above).
 - **How the engine discovers.** A discoverable deposit is a `resource` block per region and building type (`undiscovered_amount`,
