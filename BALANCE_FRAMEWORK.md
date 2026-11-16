@@ -83,6 +83,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.113 | depeasantation and capital abundance are aimed at levels of their own, not ratios to vanilla: the world's U\* about 50%, as few majors as possible with a pool above 0.5 GDP in 1935–36, and a flag on a pool above 3 GDP for 5 years without falling at U\* under 5% (provisional); world GDP stays vanilla-referenced; a gap inside the seed spread is noise | in force; the aims' form and `criteria.mjs` open | here |
 | 10.114 | for mod 1.2 the world's U\* gives way to the world-GDP aim (0.90–1.00× vanilla), U\* still as high as that allows; infrastructure subsidies come back only if the countries short of infrastructure are the ones that hoard — read on mod 1.1.1: they are not, so game 1.15.1's rule stays | in force for 1.2; the subsidy reading is Claude's, directional | here |
 | 10.115 | deposits are tiered (each main method of a resource-capped building a building with slots of its own: two methods → vanilla's slots × 1.5, three or four → × 2, split equally), first design flat output per tier with rising cost; the extraction overhaul is mod 1.2, superseding §10.110.1's split; nothing tiered for uniformity; same-acre steps (farms, plantations, ranches, rubber) stay methods, gated on the world's technology, deferred as the likely solution pending probes; §10.58's veto B lifted for deposits | in force; every rule of the first book is ruled (the section's "first book's rules" paragraph); open: the 1855 thresholds (proposed), where §10.110.1's other items go; unproven until probes: the world gate, gold's depleted fields, oil's linked discovery; nothing built | here |
+| 10.116 | engines (for mod 1.3): operating energy is paid where the engine runs, and no second engine good; the Electric and Diesel Engines rungs keep a quarter of vanilla's electricity / oil, the rest of its value to steel and copper; the motor ladder becomes t0 Steam · t1 a new rung on pumpjacks · t2 Electric · t3 Diesel, t0 on vanilla's steam recipe and the anchor 1.5 × it; engines on the condensing and diesel pump rungs; irrigation gets three switchable drives (steam, electric, diesel) with the energy added; an electric drive beside diesel on the top mine rung; the factory power lines' tools become engines; the electric drive's edge is fewer engines, not less energy | in force; nothing built. Open: how many fewer engines (proposed: vanilla's railway ratio, 3.6 for 5), a diesel edge, the new rung's name, whose technology gates a drive, the engines' input lift, the base book and runs | here |
 
 ---
 
@@ -5247,3 +5248,167 @@ reading: the staffing of the later rungs.
   + 125 workers a level, so a full deposit makes 70N + 20N as in vanilla and takes vanilla's 10N of explosives, and the line's return per
   unit of explosives is unchanged. A line that only saves labour (steam donkey, rail transport) is left as it is: with twice the levels
   it saves the same share of twice the workers.
+
+---
+
+## §10.116 — ENGINES: OPERATING ENERGY IS PAID WHERE THE ENGINE RUNS; A T1 ENGINE RUNG ON PUMPJACKS; SWITCHABLE DRIVES (user-ruled 2026-11-17, for mod 1.3)
+
+**The occasion.** The session that §10.115 ruling 7 left open ("an engine rebalance is to be discussed in another session"). The user:
+*"I'm really annoyed how electric engines are made in game. They suffer the heaviest from mixing the capital input and per-output input
+problem: for some reason, you need electricity to make electric engines, but then they're just engines, and to use engines, you don't
+need electricity or fuel, usually (although you often need coal)."* On pumping: *"our recent decision to make plantations PMs based on
+worldwide tech devalued pumping tech by a lot, as unlike fertilizers, it doesn't unlock a better supply that would be applicable to all
+this new agriculture. Maybe we could shift steam engines to t0 and add another t1 on pumpjacks (maybe renamed)?"* The test the user set
+for every method: a good should be *"either an upstream capital requirement, or a downstream usage requirement, but not be on the level
+it is"*. Asked *"for 1.3"*. Everything below was read from the game 1.15.1 files and the existing 10 + 10 batch (session
+`20261112_113429`); no run was made and nothing is built.
+
+**The rulings.** Rulings 2 and 9 are the user's own words and ruling 3 was confirmed by name. The others are Claude's proposals,
+accepted together (*"OK on your all other suggestions above (e.g. "a quarter of fuel input stays")"*), and are recorded as they were
+proposed.
+
+1. **The principle: operating energy is paid where the machine runs.** A good in a recipe is a material of the product, the process's
+   own energy or feedstock, the upkeep of the machines the method uses, or the energy that runs those machines. The last is charged to
+   the machine's user, not stored in the machine at its maker. The user: *"I'm concerned about removing energy inputs from engines and
+   not adding it to where engines run"*, so what leaves the engine works is added where engines run (rulings 6–8).
+2. **No second engine good.** The user: *"Adding another engine good is strictly off limits."* Engines stay one good made three ways.
+3. **The engine works keep a quarter of vanilla's energy good.** On the Electric Engines and Diesel Engines rungs the energy good
+   (electricity, oil) stays at a quarter of vanilla's quantity in the rung's mix, as the works' own power and test running, and the rest
+   of its value goes to the mix's other goods pro rata; the rung's input value is the formula's, unchanged. The Electric Engines method
+   still requires electricity (`required_input_goods`), which with ruling 6's gate is how the rung keeps its name (the user: *"I'm also
+   very much unsure whether the electric engines earn their name, if they no longer need electricity for anything"*). A quarter is also
+   vanilla's own figure for an electrified factory level (its assembly line takes 5 electricity against the method's 20). This is a new
+   exception to CLAUDE.md §1.3's "split over the rung's own vanilla mix" when built.
+
+   | rung, per level | vanilla's mix | the ruled mix | on today's ladder (canon → ruled) |
+   |---|---|---|---|
+   | t2 Electric Engines | steel 40, electricity 20, copper 10 | steel 40, electricity 5, copper 10 | steel 32.8, electricity 16.4, copper 8.2 → steel 38.6, copper 9.6, electricity 4.8 |
+   | t3 Diesel Engines | steel 50, oil 50 | steel 50, oil 12.5 | steel 44.8, oil 44.8 → steel 67.2, oil 16.8 |
+
+4. **The motor ladder becomes t0 Steam Engines · t1 a new rung on pumpjacks · t2 Electric Engines · t3 Diesel Engines.**
+   - Steam Engines (atmospheric engine, tech era 2) moves to t0 by a placement ruling of the kind fertilizer and explosives have.
+   - The new t1 rung is minted on a VANILLA technology, pumpjacks (tech era 3, so t1 by the tier rule). Water-tube boiler and rotary
+     valve engine, the natural "better steam engine" technologies, gate the motor industry's own automation methods, which rule 3 on
+     additions bars. The rung takes the input mix and staffing of the rung below, as the minted top rungs do.
+   - **The anchor (the formula has no case for a minted t1):** t0 keeps vanilla's steam recipe, so 1836 stays vanilla's, and the t1
+     anchor is 1.5 × it (the non-craft down-step, inverted). The alternative that keeps steam's method as the t1 anchor (t0 at 26.7
+     engines) was rejected: it cuts 1836 engine output per level by a third and adds no supply in the decades engines are dearest.
+
+     | per level | t0 | t1 | t2 | t3 |
+     |---|---|---|---|---|
+     | today | — | 40 engines, 30 steel, 800 points | 88, £2,460 of inputs, 1,520 | 193.6, £4,034, 2,888 |
+     | ruled | 40 engines, 30 steel, 421 points | 60, 45 steel, 800 | 132, £3,690, 1,520 | 290.4, £6,052, 2,888 |
+
+     With ruling 3 on the ruled ladder: t2 steel 57.9, copper 14.5, electricity 7.2; t3 steel 100.9, oil 25.2.
+   - **Its known cost:** every rung from t1 up makes 1.5 × today's engines per level and per construction point (value added at base
+     prices: t1 £1,350 a week against £900, t2 £4,230 against £2,820). The routine counter-lever is the engines' own input lift
+     (today 1.0, §10.101); it was named, not moved.
+   - **What it is for:** pumpjacks then unlocks the oil rungs, irrigation, and an engine rung whose customers are the world's irrigated
+     plantations (42% of buildings' engine demand in 1936), which is the reward the world gate of §10.115 ruling 7 took away.
+   - The technology keeps vanilla's name: renaming it was ruled out on 2026-10-24 (POLISH R9), and the rung carries the new name.
+5. **Engines where the machine is an engine: the pump rungs of the tiered deposits.** On the condensing and diesel pump rungs the tools
+   above the picks rung's 5 become engines, value for value: condensing 10 tools + 10 coal → 5 tools + 3.3 engines + 10 coal; diesel
+   13.1 tools + 4.4 oil → 5 tools + 5.4 engines + 4.4 oil (§10.115's equal-value-added mixes for iron). The atmospheric rung is on the
+   1836 map and keeps vanilla's inputs.
+6. **Irrigation gets drives: three switchable main methods with the same output**, in the form bronze artillery has (§10.108.2). The
+   energy is ADDED to vanilla's engines 5, at the steam train's ratio (one coal per engine) and the same base value on each drive, so
+   local prices decide. Vanilla already pairs electric trains with the Electric Engines technology and diesel trains with the Diesel
+   Engines one; the drives follow it.
+
+   | drive | inputs per level | gate |
+   |---|---|---|
+   | steam | engines 5 + coal 5 | pumpjacks, as irrigation today |
+   | electric | fewer engines (ruling 9) + electricity 5 | electric railway (the Electric Engines technology) |
+   | diesel | engines 5 + oil 3.75 | compression ignition (the Diesel Engines technology) |
+
+   Irrigation's inputs go from £300 to £450 a level at base prices on the steam drive; bananas (+£300 of fruit a level) stop paying
+   at base, cotton (+£700) and the others still do.
+7. **The top mine rung gets an electric drive beside the diesel one**: a switchable second main method with electricity in place of the
+   oil (5.9 electricity for 4.4 oil) and ruling 9's engines.
+8. **The factory power lines buy engines.** The water-tube boiler, rotary valve engine and assembly line methods already burn coal or
+   electricity and pay for the machine in tools; those tools become engines, value for value. The mod's own line quantities were not
+   read (the sizes below are vanilla's).
+9. **The electric drive's edge is fewer engines, not less energy.** The user: *"Fewer engines."* History (below): electricity's energy
+   bill was the same as a small steam engine's or higher, and electric drive won on labour and capital, the motor being far cheaper
+   than an engine with its boiler. The energy stays at the steam drive's base value. How many fewer is open (below).
+10. **Left as vanilla, from the audit of all 450 methods:** radios (50 electricity and nothing else, but 24 staffed levels in the
+    canon's 1936 world, and the fix needs an authored mix); automobiles' oil; capital without operating energy on coffee's mechanical
+    methods and the public trams; and the odd materials (iron in fertilizer, crystal glass on lead alone, oil in bolt-action rifles and
+    recoiled barrels). Process energy (arc furnace, brine electrolysis, arc welding) and feedstock (plastics, nitrogen fixation) are at
+    the right level already.
+11. **For mod 1.3.** Rulings 5 and 7 sit on mod 1.2's tiered deposits; ruling 6 sits on irrigation as §10.115 ruling 7 leaves it.
+
+**Open (none ruled).**
+1. **How many fewer engines the electric drive takes.** Claude's proposal: vanilla's railway ratio (electric trains make 35
+   transportation on the engines that make 25 on steam), so 3.6 engines against 5 on irrigation and 3.9 against 5.4 on the mine rung.
+   At about the canon's late prices (engines 0.93 × base, coal 0.85, electricity 1.32) the two irrigation drives then cost the same,
+   £407 and £399 a level. The alternatives are rounder cuts (3, or 2.5).
+2. **Whether the diesel drive gets an edge too** (the same railway ratio would give 3.1 engines). Not asked.
+3. **The new rung's name:** "Compound Engines" or "Pumping Engines".
+4. **Whose technology gates a drive** (the host's or the world's): it follows irrigation's own gate, pending §10.115's probes.
+5. **The engines' input lift** against ruling 4's × 1.5.
+6. **The base book, the arms and the runs.** Nothing is agreed; each needs the user's go-ahead (CLAUDE.md §5.1 rules 3–4).
+7. **How the AI chooses a drive.** Vanilla's AI keeps 88% of its railway levels on steam in 1936 (the canon 72%, electric 10%, diesel
+   19%); the probe planned for the world-gated methods would show it.
+8. **Consequences to settle when built:** pumpjacks has no research entry today ("no precursor") and would take the standard one of a
+   t1 rung's technology; the new rung needs a method icon.
+
+**This is the electric engines redo** (the user, 2026-11-17: *"This is the electric engines redo."*). The backlog idea of 2026-10-28
+("the electric engines may get a redo, with a new technology for a new t2 engine rung", likely 1.3 since 2026-11-09) is this section;
+its first sketch, a new technology for a new t2 rung, is replaced by the t1 rung on pumpjacks and the quarter of ruling 3. The user on
+the open items: *"Open questions will get rulings when the first book builds."*
+
+**What was read** (session scripts, not a finding; directional). Demand is staffed levels × the base recipe from the save summaries
+of four runs an arm (vanilla 1.15.1 runs 1, 3, 5, 7; the canon runs 2, 4, 6, 8), world totals: buildings only, no throughput bonus,
+ships and mobilisation not counted (buildings cover about 70% of what countries buy). Prices are the instrumented markets', ten runs
+an arm.
+- **Who buys engines** (share of buildings' demand). 1900: railways 35% (vanilla) / 37% (canon), plantations 29% / 22%, mines (the
+  steam donkey) 11% / 13%, urban centres 10% / 12%, shipyards 7% / 7%. 1936: plantations 42% / 42%, railways 18% / 16%, automotive
+  6% / 10%, oil rigs 10% / 8%, mines 8% / 7%, power plants 3% / 5%. Plantations are automatic irrigation plus coffee's and sugar's
+  engine methods.
+- **Engine price ÷ base** (sell-weighted): 1880 1.34 / 1.37, 1900 1.32 / 1.25, 1920 1.29 / 1.07, 1930 1.27 / 0.93. The canon's world
+  staffs 320 steam levels and 1 electric level in 1900, and 775 steam, 586 electric and 216 diesel in 1936.
+- **The motor industry is the largest single buyer of electricity:** 16% of buildings' demand in 1936 in both arms (the canon 21% in
+  1920), and 11% of the canon's oil in 1936 (vanilla 5%).
+- **Mine pumps buy no engines:** vanilla's atmospheric, condensing and diesel pumps take tools and coal or oil. The canon's 1936 world
+  staffs 5,447 condensing and 3,599 diesel pump levels (diesel pumps take 17% of its oil), 9,150 irrigated levels, and 7,577 levels on
+  the three factory power lines.
+- **Sizes of the rulings, arithmetic on those 1936 levels and today's ladder, not predicted equilibria (§2.8):**
+
+  | | electricity | oil | coal | copper | steel | engines |
+  |---|---|---|---|---|---|---|
+  | ruling 3 (the quarter) | −9% | −6% | under −1% | +4% | +2% | |
+  | all energy removed (rejected) | −13% | −10% | under −1% | +6% | +3% | |
+  | ruling 6, at the canon's railway split, before ruling 9 | +6% | +6% | +12% | | | |
+  | ruling 6, all on one drive | +60% | +32% | +16% | | | |
+  | ruling 5, on untiered levels | | | | | | +32% |
+  | ruling 8, at vanilla's quantities | | | | | | +20% |
+
+- **Coal against electricity, state by state** (the ten canon end saves, 1936.1.1; a state's prices solved from its buildings' goods
+  cost, sales and quantities, which they reproduce to 0.02% in the median; median over runs, range in brackets). In states with at
+  least 50 electricity supply (about 217 a run) coal is dearer than electricity in 22% (16–32%), 28% (19–57%) weighted by irrigated
+  levels; coal is 0.85 × base (0.80–0.98) and electricity 1.32 (1.20–1.37) in the median; 29% of those states have electricity at
+  1.5 × base or more. Without a coal mine: 26% (19–35%). Where coal, electricity and oil are all priced, coal is the cheapest per £ of
+  base value in 67% of states, oil in 20%, electricity in 13%. Under 50 supply: coal dearer in 44%, the medians 1.01 and 1.13.
+- **By decade, the majors' markets with at least 50 electricity on sale:** coal is the dearer in 71% (1880), 91%, 88%, 55% (1910),
+  37%, 20% (1930) and 23% (1935); coal ÷ base 1.15 → 0.86, electricity 0.80, 0.61, 0.61, 0.88, 1.01, 1.10, 1.11. The canon's cheap
+  electricity before 1910 has no counterpart in history.
+- **Not read:** vanilla's state prices; any year but 1936 at state level; the mod's own secondary-line quantities; what the new demand
+  does to the prices it was sized on.
+
+**The history check** (2026-11-17; web search summaries for the first four items, Claude's memory for the rest, marked).
+- Coal burned per kWh at US central stations: 7.05 lb (1899), 4.5 (1913), 3.04 (1920), 1.62 (1930), 1.44 (1936) (Minerals Yearbook).
+  A small steam engine on site burned about 5–8 lb per horsepower-hour (memory), so by 1930 electric drive burned a quarter to a fifth
+  of its coal. The game's coal-fired plant (15 coal → 50 electricity) gives the same ratio at one electricity per engine.
+- Electricity's price: about 3.4 cents a kWh over all US sales in 1902 and 2.6 in 1912 (a garbled source), about 1.1 cents for large
+  industrial users in 1937. Coal at $1.5–4 a ton (memory) is 0.03–0.05 cents per kWh of heat. Per horsepower-hour a small steam
+  engine's fuel was about 0.9 cents and the electricity for the same work 0.9–2 cents.
+- Steam gave about 80% of mechanical drive in US manufacturing in 1900 and electricity had overtaken it by 1920 (Devine 1983); the
+  exact shares are from memory.
+- California's irrigation pumping in 1930: 83% of the horsepower electric, 11.5% internal combustion (a census bulletin, through a
+  1932 newspaper).
+- From memory: electric pumps replaced steam at mines from the 1890s, and diesel was rare underground, so vanilla's diesel pump is the
+  less historical successor; away from a grid, irrigation pumping went from steam to oil engines.
+
+**The scripts** are not in the repository (a batch may be playing, rule 7): a copy is in `C:\claude-code\engine_study_2026-11-17\`
+(the method dump, the demand and level readers, the state-price solver and its aggregate, with the ten runs' solved prices).
