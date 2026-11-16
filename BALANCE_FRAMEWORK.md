@@ -5168,7 +5168,7 @@ rounding; flat output from the highest 1836-map rung; equal value added at base 
 lines × the slot ratio on every rung, labour-saving lines unchanged; the 1836-map rungs at vanilla's cost and a step above them; the base
 book the latest canon when building starts.
 
-**Proposed by Claude for the experiments, not ruled.**
+**Proposed by Claude for the experiments; ACCEPTED by the user the same day (*"Accept all three"*).**
 - **AI desire:** every deposit rung takes its vanilla building's own desire, the same on all rungs (gold keeps vanilla's static 5000),
   so profit alone orders the rungs (§10.92). The factory ladder's 1000 / 1000 / 3000 / 5000 is not carried over: it was calibrated for
   rungs whose return rises with tier, and here it falls.
