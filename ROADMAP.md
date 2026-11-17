@@ -147,7 +147,8 @@ extraction overhaul for 1.2 already (not 1.3)."*
   numbers, the ruled and proposed variations, the open questions with their assumed defaults, the order of work. To confirm first:
   which release the combined book is, and whether the engine rebalance joins the first tiered books.
 
-**The list below is §10.110.1's 1.2, as planned on 2026-11-09.** Whether its items move into the new 1.2 or after it is open.
+**The list below is §10.110.1's 1.2, as planned on 2026-11-09.** Where each item goes is being ruled one by one since 2026-11-17
+(BALANCE_FRAMEWORK §10.119, which holds the rulings so far; an item not there is not yet placed).
 
 The retune and the minor changes (§10.110.1). A change that moves the economy goes into the build that the re-measure plays.
 
