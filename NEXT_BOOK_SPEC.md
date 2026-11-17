@@ -1,7 +1,8 @@
 # The next book — build specification
 
 **What this is.** One page that puts together the rulings of BALANCE_FRAMEWORK **§10.115** (tiered deposits, 2026-11-16) and **§10.116**
-(the engine rebalance, which is the electric engines redo, 2026-11-17), in the order a generator needs them, so the session that builds
+(the engine rebalance, which is the electric engines redo, 2026-11-17, as amended the morning after by **§10.116.1**: the drives are a
+succession, not a choice), in the order a generator needs them, so the session that builds
 the starting book and its variations can work from here. Written at the user's word (2026-11-17): *"combine the rulings with the ones from
 the neighbouring session so that it'd be easier for the next one to create the 1.3 starting book and variations when the current batch
 ends."*
@@ -64,19 +65,24 @@ technology, tech era 3; the rung takes the mix and staffing of the rung below) �
   `required_input_goods = electricity`.
 - Cost and AI desire by tier as the ladder gives them (421 / 800 / 1,520 / 2,888 points; 1000 / 1000 / 3000 / 5000).
 
-### 2.3 Engines on the pump rungs, and the top rung's electric drive (§10.116 rulings 5, 7, 9)
+### 2.3 Engines on the pump rungs (§10.116 ruling 5); the top rung's electric drive is suspended (§10.116.1)
 
 - On every mine's condensing and diesel pump rungs, after §2.1's mix is worked, the tools above 5 become engines, value for value
   (tools × 40 ÷ 60). The picks and atmospheric rungs keep vanilla's inputs.
-- The diesel pump rung gets a switchable second main method, the **electric drive**: electricity in place of the oil at the same base
-  value, and fewer engines (§5, item 1). It requires electricity.
+- **Suspended, do not build until ruled (§10.116.1 item 6):** the diesel pump rung's switchable second main method, the **electric
+  drive** (electricity in place of the oil at the same base value, and fewer engines). The user rejected choosing a fuel by price;
+  Claude's proposal is to drop it, the rung being the drive (§5, item 1).
 
-### 2.4 Irrigation drives and the factory power lines (§10.116 rulings 6, 8, 9)
+### 2.4 Irrigation's two drives and the factory power lines (§10.116.1; §10.116 ruling 8)
 
-- **Irrigation** (vanilla's automatic irrigation on the plantations, vineyards and rubber) becomes three switchable main methods with
-  the same output: steam = engines as vanilla + one coal per engine; diesel = the same engines + oil of the coal's base value; electric
-  = fewer engines (§5, item 1) + electricity of the coal's base value. Tea's vanilla method takes 4 engines, the others 5. Gates:
-  pumpjacks, compression ignition, electric railway.
+- **Irrigation** (vanilla's automatic irrigation on the plantations, vineyards and rubber) is a succession of two methods with the same
+  output, never a choice of fuel (the user: *"balance it the way that one method is clearly superior"*):
+  - **steam** = vanilla's engines + one coal per engine, on irrigation's own gate (pumpjacks; the world's technology once §10.115
+    ruling 7's probe passes, as fertilizers);
+  - **diesel** = fewer engines and less fuel for the same output (the user: *"Make it fewer engines and less fuel, same output"*): by
+    default engines × 0.8 and oil at two thirds of the steam drive's coal value (§5, item 2). Gated on the country's OWN compression
+    ignition, vanilla's ordinary `unlocking_technologies` (the user: *"Locked by tag tech, not worldwide"*);
+  - no electric drive. Tea's vanilla method takes 4 engines, the others 5.
 - **Factory power lines:** on every water-tube boiler, rotary valve engine and assembly line method of the tiered industries, the tools
   become engines, value for value. The tooling workshop's three lines carry no tools and do not change.
 
@@ -91,7 +97,7 @@ as the likely solution and is NOT part of the first book's rules (§10.115 rulin
 **Mines** — four rungs, slots × 2 (each rung half of vanilla's), vanilla cost 400. Iron, lead, sulfur, copper and gold share the input
 columns; their rung outputs are 20 / 40 / 40 / 40 (gold 8 / 15 / 15 / 15). The vanilla column is iron's.
 
-| rung | gate (tech era) | vanilla | §2.1 | with §2.3 | electric drive (at §5's default) | cost |
+| rung | gate (tech era) | vanilla | §2.1 | with §2.3 | electric drive (SUSPENDED, §10.116.1) | cost |
 |---|---|---|---|---|---|---|
 | picks | — | 20 from tools 5 | the same | the same | | 400 |
 | atmospheric pump | atmospheric engine (2) | 40 from tools 10 + coal 10 | the same | the same | | 400 |
@@ -99,7 +105,8 @@ columns; their rung outputs are 20 / 40 / 40 / 40 (gold 8 / 15 / 15 / 15). The v
 | diesel pump | compression ignition (5) | 70 (sulfur 80, gold 30) from tools 15 + oil 5 | 40 from tools 13.1 + oil 4.4 | tools 5 + engines 5.4 + oil 4.4 | tools 5 + engines 3.9 + electricity 5.8 | 400 × step² |
 
 **Coal mines** take no coal: picks 25 from tools 5; atmospheric 40 from tools 10; condensing 40 from tools 10 → tools 5 + engines 3.3;
-diesel 40 from tools 7.5 + oil 2.5 → tools 5 + engines 1.7 + oil 2.5, or electric tools 5 + engines 1.2 + electricity 3.3.
+diesel 40 from tools 7.5 + oil 2.5 → tools 5 + engines 1.7 + oil 2.5 (the suspended electric drive: tools 5 + engines 1.2 +
+electricity 3.3).
 
 | building | rungs, slots | rung outputs | later rungs' inputs under §2.1 | vanilla cost |
 |---|---|---|---|---|
@@ -121,8 +128,9 @@ A full deposit then makes, per vanilla slot at base prices: iron, lead, copper a
 | t2 Electric Engines | electric railway | 132 | steel 57.9 + copper 14.5 + electricity 7.2 | 1,520 |
 | t3 Diesel Engines | compression ignition | 290.4 | steel 100.9 + oil 25.2 | 2,888 |
 
-**Irrigation** (the 5-engine plantations): steam engines 5 + coal 5; diesel engines 5 + oil 3.75; electric engines 3.6 + electricity 5
-(at §5's default).
+**Irrigation** (the 5-engine plantations; tea in brackets): steam engines 5 + coal 5 (4 + 4), £450 a level at base prices; diesel, at
+§5's default, engines 4 + oil 2.5 (3.2 + 2), £340; vanilla's is engines 5, £300. On the ten canon end saves (1936 state prices) that
+diesel step is cheaper than steam in 99–100% of states; with the same engines and oil of the coal's value, as first ruled, in 36%.
 
 **The factory power lines today** (the canon's own methods; tools → engines at × ⅔): furniture boiler and rotary 6.15 tools, assembly
 4.92; paper 7.21; steel 5.6; motor 2.73 and 2.19; arms 2.4; artillery 3.08; munition 4.43; automotive's Mass Production line 5.62.
@@ -139,20 +147,21 @@ mining employment.
 
 **Proposed, none ruled** (each is another 2+1 on 1836–1855, so say which are wanted before any is built):
 - **Deposits only** — §2.1 without §2.2–§2.4, at one cost step: what tiering does alone (§1, item 2).
-- **The electric drive's engines** — 3.6 / 3 / 2.5 for 5. It acts only once electric railway is held, so centuries read it, not 1855.
+- **The diesel irrigation step's quantities** — 4 engines + 2.5 oil against 3 + 2 (more room for the oil price the new demand
+  raises). It acts only once compression ignition is held, so centuries read it, not 1855.
 - **The engines' input lift** — 1.0 against 1.2, the routine counter-lever to the motor anchor's × 1.5 (§10.101).
 
 A 1836–1855 run reads the deposit rungs up to the condensing pump (water-tube boiler is tech era 2), engines on that rung, the motor's
-t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks, tech era 3), the drives, or the diesel rungs.
+t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks, tech era 3), irrigation's drives, or the diesel rungs.
 
 ## 5. Open, to be ruled when the first book builds (with the default this page assumes)
 
 | # | question | default assumed above | from |
 |---|---|---|---|
-| 1 | how many fewer engines the electric drive takes | vanilla's railway ratio, × 25 ÷ 35: 3.6 for 5, 3.9 for 5.4 | §10.116 |
-| 2 | whether the diesel drive gets an edge too | none | §10.116 |
+| 1 | whether the top mine rung keeps an electric drive at all (suspended; Claude's proposal: drop it) | not built | §10.116.1 |
+| 2 | the diesel irrigation step's quantities (its form is ruled: fewer engines and less fuel, same output) | engines × 0.8 and oil at two thirds of the coal's base value: 4 + 2.5 | §10.116.1 |
 | 3 | the new t1 rung's name | "Compound Engines" (the other candidate: "Pumping Engines"); the technology keeps vanilla's name | §10.116 |
-| 4 | whose technology gates a drive | the host's, as vanilla's methods are, until the world-gate probe | §10.116, §10.115 |
+| 4 | whose technology gates a drive | RULED for the diesel step: the country's own. The steam drive follows irrigation's gate: the host's until the world-gate probe passes | §10.116.1, §10.115 |
 | 5 | the engines' input lift | 1.0, unchanged | §10.116 |
 | 6 | the 1855 thresholds | as proposed in §4 | §10.115 |
 | 7 | the staffing of the later deposit rungs | 5,000 on every rung (ruled to start with) | §10.115 |
@@ -167,7 +176,7 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 2. **The probes**, each on the arm that fits (an engine question on vanilla + telemetry), with the go-ahead: gold's depleted fields;
    oil's linked discovery (and that vanilla's oil events on the hook do not fire twice); the world-technology gate
    (`unlocking_global_technologies`, unused by vanilla) and how the AI switches a method when its input is scarce — the last also
-   tells how the AI will choose a drive (vanilla keeps 88% of its railway levels on steam in 1936).
+   tells how fast the AI moves to the diesel step (vanilla keeps 88% of its railway levels on steam in 1936).
 3. **The generator** for §2, and the readers that are missing: slot fill by rung, a raw-material price index, the 1855 reader.
 4. Confirm §1 and §5 with the user; state the arms, n, span and predictions back (rule 3); the named books and their field diffs.
 5. The 1836–1855 arms through 2+1; then centuries.
@@ -183,11 +192,12 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
   says is unruled.
 - **Research.** Whether the deposit rungs' technologies get research entries, and their marks; pumpjacks takes the standard entry of a
   t1 rung's technology (today it has none); a technology that unlocks rungs of two tiers takes the higher tier's mark (§10.110.3, ruled,
-  not built) — compression ignition now gates the motor's t3, the mines' top rung and the diesel drive.
+  not built) — compression ignition now gates the motor's t3, the mines' top rung and irrigation's diesel step.
 - **Linters:** `lint_tier_eras.mjs` recomputes every rung from the book's records, so the two new formula cases of §2.2 and the deposit
-  rules need their own records and checks; `lint_pm_combos.mjs` must pass with the drives (a method that consumes electricity requires
-  it) and with the scaled secondary lines; `lint_solvency.mjs` on every new rung.
+  rules need their own records and checks; `lint_pm_combos.mjs` must pass with irrigation's two drives and with the scaled secondary
+  lines; `lint_solvency.mjs` on every new rung.
 - **The method icon** for the new engine rung, and localisation in all 11 languages (new names stay English).
 - **Known sizes, arithmetic on the canon's 1936 levels, not predictions:** the quarter takes 9% off buildings' electricity demand and 6%
-  off oil; the irrigation drives add about 12% to coal and 6% each to electricity and oil at the canon's railway split; engines on the
+  off oil; irrigation adds about 16% to coal while every level is on steam, and about 21% to oil in place of that coal, with a fifth fewer
+  engines on irrigated levels, once every level is on the diesel step; engines on the
   pump rungs add about a third to engine demand on untiered levels, and the motor ladder makes 1.5 × today's engines per level.
