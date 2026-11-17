@@ -51,10 +51,13 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 - ⭐⭐ **"CI" IN THIS PROJECT MEANS THE PERCENTILE INTERVAL OF VANILLA'S SEEDS, NOT THE CONFIDENCE INTERVAL OF A MEAN.** "vanilla's 90% CI"
   is `p5 … p95` over the vanilla reference runs (`lib_runs.VANILLA_REF`, n=24 today; the older readings used the summer n=16); "95% CI" is
   `p2.5 … p97.5`. The interval of the *mean* would be ~4× narrower and is never what is meant.
-- **AIM / SOFT / HARD** — an AIM is what the iteration is trying to reach; a SOFT boundary is unacceptable but the economy is not broken, so the run
-  is still read in full; a HARD boundary means the economy IS broken, the run records only **broken by stall** or **broken by runoff**, and ONE
-  broken run ends the config.
-- **intact** — a run that broke no hard line. **the consensus** — what a config is read as: the median of the intact runs (with three, the two
+- **AIM / THE BARRIER** (since 2026-11-17, BALANCE_FRAMEWORK §10.120; CLAUDE.md §3.2) — an AIM is what the iteration is trying to reach, and
+  every aim is soft: one missed by a lot is as bad as it gets. The important aims are levels of the mod's own; of the ratios to vanilla only world
+  GDP is an important one. **The barrier** is the one line about validity, not severity: the investment loop broke (a shortlist member of at least
+  2% of world GDP whose pool ÷ GDP averages 1 or more over ten consecutive years). A run **past the barrier** reports that line and nothing else,
+  and ends its book in the 2+1 test. ⚠ Before that date: an AIM, a SOFT boundary (unacceptable, the run read in full) and HARD boundaries (the run
+  recorded only **broken by stall** or **broken by runoff**); `criteria.mjs` still prints those until it is changed.
+- **intact** — a run that is not past the barrier (before 2026-11-17: one that broke no hard line). **the consensus** — what a config is read as: the median of the intact runs (with three, the two
   closest on world GDP). **divergent** — a pair too far apart under F114's bands to have a consensus; it owes a third run.
 - **directional** — the standing ruling (§10.83.7): no two-book loss gap in this family is statistically real at n=2–3, so a lever is read for its
   DIRECTION, weighted by whether its mechanism is understood, and a pooled reading across a whole axis outranks any single pair.

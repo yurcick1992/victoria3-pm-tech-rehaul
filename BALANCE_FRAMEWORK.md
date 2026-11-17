@@ -87,7 +87,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.117 | mod 1.2 starts its centuries at cost slope C 2.0 (from 1.9), the cost level unchanged: mod 1.1.1 is overheated against the mod's own aims, and the tiered deposits as ruled are not a substitute (they add mining jobs); the per-tier ladder 1 / 2.1 / 4.0 was offered and declined | in force; nothing built. Open: the AI desire ladder at C 2.0, the staffing of the later deposit rungs (the 1836–1855 runs carry it too, §10.118) | here |
 | 10.118 | every measurement of our economy is made on the exact book its full runs play; only syntax and performance probes may differ, and a probe is never economy data; enforced by the harness: a short run on a book of ours is a probe or the checkpoint leg of a full run, a continuation inherits its parent's book by verified hash, the readers drop probes | in force; the machinery on branch `same-book-machinery`, merged after the three-arm batch | here |
 | 10.119 | where §10.110.1's older 1.2 and 1.3 items go, ruled one by one: 1 the retune is the iteration of the 1.2 book (C 2.0 its first move; F234's ladder superseded as a start; paper's lift stays 1.2 in the first book); 2 tier-scaled secondary lines and the crafts' lines are in the 1.2 book — a line takes the same share of its rung's own output on every rung (today's t2 share), each named "<line> (Tier N)", a merged building's line sized on its upper method, crafts carry the four handcraft lines, automation unchanged; 3 military research is in the 1.2 book as a lower AI weight on technologies a research entry can deliver (the user's form: −20% where the entry exists and literacy allows it, −90% while it is advancing for the country, the finish boost still winning), the figures settled after 10-year probes and a model, frontline entries never lowered and naval ones lowered; 4 the urban centres' streetlights stay as they are (no × 2 / × 3, no copper), closed; 5 the electricity build condition stays deferred, not in 1.2; 6 the higher tier's research mark for a technology unlocking two tiers is built into 1.2 as a general rule, and crafts stay research sources (POLISH P3 closed); 7 both craft seeding defects (Valencia, New York) are fixed in 1.2; 8 the register on game 1.15 is settled right after this list, before any 1.2 century, starting with which lines stay hard; 9 the five text and check items stay with 1.2 as release tasks; 10–13 treaty ports, building groups per industry, artisanal ownership and the wider AI research weight retune stay after 1.2, no release named; 14 mod 1.2's date is "December", no details | in force; nothing built; the list is complete | here |
-| 10.120 | the register redone: the important goals are absolute levels of the mod's own, and of the vanilla-referenced ones only world GDP matters; every aim is soft; there is ONE barrier, about validity and not severity — the investment loop broke (lack of labour and hoarding are two wordings of it), past which every other reading is unreliable; the numbers are calibrated on data; the barrier as it stands: a shortlist member of at least 2% of world GDP whose pool ÷ GDP averages at least 1 over ten consecutive years (no primary check on labour) ; the eight depeasantation aims, at 1913 and at the end of the game: the USA 25% and 15%, Britain 10% and 5%, Germany 20% and 20%, the world 60% and 50% | the principle, the barrier and the eight aims in force; the rest of the register, CLAUDE.md §3.1–§3.2 and `criteria.mjs` not yet | here |
+| 10.120 | the register redone: the important goals are absolute levels of the mod's own, and of the vanilla-referenced ones only world GDP matters; every aim is soft; there is ONE barrier, about validity and not severity — the investment loop broke (lack of labour and hoarding are two wordings of it), past which every other reading is unreliable; the numbers are calibrated on data; the barrier as it stands: a shortlist member of at least 2% of world GDP whose pool ÷ GDP averages at least 1 over ten consecutive years (no primary check on labour) ; the eight depeasantation aims, at 1913 and at the end of the game: the USA 25% and 15%, Britain 10% and 5%, Germany 20% and 20%, the world 60% and 50% ; PI and PP stay aims with the downward slope required; the rest accepted as one list (world GDP 0.90–1.00 soft, capital as a soft aim, Germany's closed-major term retired, the minor readings, the loss's weights, a run past the barrier ends its book) | in force; CLAUDE.md §3.1–§3.2 rewritten; `criteria.mjs`, the scorecard and the stop watcher not yet (after the three-arm batch) | here |
 
 ---
 
@@ -6032,6 +6032,33 @@ Even without vanilla references at all, they can stay (although hard to say just
 slope is a must)."* So PI and PP are aims of the mod's own (CLAUDE.md §2.1: falling prices are the core mechanism); the required
 part is the downward slope, which needs no reference to vanilla; where the level should end is not settled, and the ratio to
 vanilla is only today's way of stating it. "Only world GDP ÷ vanilla is an important target" (principle 1) does not demote them.
+
+**The rest of the register, accepted as one list** (the user: *"Accept all"*, to Claude's eight proposals with the fifth corrected as
+above):
+1. **World GDP:** the aim stays 0.90–1.00 of vanilla on the same game version, read against the vanilla 1.15.1 runs; soft; its hard
+   band is gone.
+2. **Capital, a soft aim beside the barrier:** as few majors as possible with a pool above half their GDP in 1935–36 (§10.113's
+   wording). §10.113's separate flag (above 3 GDP for five years) is dropped; the barrier covers it.
+3. **The closed-major term on Germany (§10.100) is retired**, with its lucky-seed consensus: Germany's two aims and the barrier do
+   that job.
+4. **Old plants:** T0 falling toward zero and T3's share stay soft aims of the mod's own; the O_shed replacement stays parked until
+   after 1.2.
+5. **PI and PP stay aims:** each falls decade over decade (required, and now required of PP too); the level, 0.8 of vanilla or
+   under, is provisional and secondary to the slope.
+6. **Minor readings, reported with no weight:** W of the world and the shortlist, the shortlist's GDP and H, each against vanilla;
+   the 1886 point of the GDP path; the 1836–1845 start; each still flagged when far out.
+7. **The loss:** one term per aim, the distance from the aim in units of that line's own spread between runs. Weights: world GDP 2;
+   each of the eight depeasantation aims 1; PI 1; PP 1; capital 1; T0 and T3 half each. The spreads are re-fitted on game 1.15 runs.
+8. **A run past the barrier ends its book in the 2+1 test,** recorded as past the barrier and not as worse than a missed aim.
+
+Dissolved with it, and closed: the shortlist's U\* aim against its W aim, GDP per capita or total for the shortlist, the four fixes
+to the old loss (§10.83.3–.8, §10.85), and which absolute lines take a 1.15 basis (GAME_UPDATE_1_15 Q12: none do; they are levels).
+Claude's own doubts, stated with the proposals: the weights are a judgement (eight depeasantation terms against two for world GDP),
+and point 8 will end many early 1.2 books after one run, seven of ten mod 1.1.1 runs being past the barrier.
+
+**CLAUDE.md §3.1–§3.2 are rewritten to this form** (2026-11-17). **Not done:** `criteria.mjs`, the ledger's scorecard and the stop
+watcher still implement the old register and are changed after the three-arm batch; the spreads for the loss; where PI and PP should
+end; a test of where readings stop being reliable past the barrier.
 
 At 1913 the mod sits near these levels; by 1935 it is far under all of them, which is the heat arriving after 1900 (§10.117).
 **Open:** which way of translating; whether the aims read the game's peasants alone or peasants with the unemployed (history's 1935
