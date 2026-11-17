@@ -110,7 +110,16 @@ Diesel Engines.
   merged 71.5; Precision Tools 71.5 → 157.3; Ceramics 8.8 → 4.0 / 8.8 / 19.4; Bone China 17.6 → t3 38.7; Aeroplanes 13.2 → t3 29.0;
   Tanks 26.4 → t3 58.1.
 
-### 2.6 Left as vanilla's (§10.116 ruling 10; §10.115 ruling 6)
+### 2.6 AI research weights: lower where a research entry can deliver (§10.119 item 3)
+
+- **The form (the user's):** a technology with a research entry whose literacy line the country meets takes −20% of its AI weight; a
+  technology whose entry is advancing for this country takes −90%, the finish boost's `add` still coming after it. Fallback if the
+  better form costs too much: −20% on every technology with an entry.
+- **The figures are NOT settled:** they come after several 10-year probes (declared `probe`, never economy data) and a run of the
+  research model. Whether the frontline and naval entries count for the −20% is open (§5, item 13).
+- Per-tree multipliers (`tech_ai_weight_mult`) are not the lever.
+
+### 2.7 Left as vanilla's (§10.116 ruling 10; §10.115 ruling 6)
 
 Radios, automobiles' oil, coffee's and the public trams' engines without fuel, iron in fertilizer, crystal glass, oil in rifles and
 recoiled barrels. Same-acre steps (farms, plantations, ranches, rubber) stay methods; their gate on the world's technology is deferred
@@ -199,6 +208,7 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 | 10 | whether the electric saw mills and steam trawler rungs want engines or a drive as the pump rungs do | no: §10.116 names the pump rungs only | this page's reading |
 | 11 | RULED, no longer open: the 1836–1855 runs carry C 2.0, being played on the exact book of the centuries | — | §10.118 |
 | 12 | the AI desire ladder at C 2.0 (calibrated per book; F228's C 2.0 book carried 3,200 / 5,600 on t2 / t3) | the canon's 1000 / 1000 / 3000 / 5000 | §10.117 |
+| 13 | the AI research weights: the two figures, and whether the frontline and naval entries count for the −20% | −20% / −90%, frontline and naval entries taking only the −90%; settled by the probes and the model | §10.119 item 3 |
 
 ## 6. The order of work
 
@@ -210,6 +220,9 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
    oil's linked discovery (and that vanilla's oil events on the hook do not fire twice); the world-technology gate
    (`unlocking_global_technologies`, unused by vanilla) and how the AI switches a method when its input is scarce — the last also
    tells how fast the AI moves to the diesel step (vanilla keeps 88% of its railway levels on steam in 1936).
+   **The research-weight probes** (§2.6), each of about ten in-game years with the go-ahead: a forced test on vanilla + telemetry
+   of pick odds against a weight ratio (the fourth-power fit of F223 was made on vanilla's near-flat weights), then the rule on
+   the book as a declared probe with its tick cost, then `tools/research_model/` run with the measured rule to choose the figures.
 3. **The generator** for §2, and the readers that are missing: slot fill by rung, a raw-material price index, the 1855 reader.
 4. Confirm §1 and §5 with the user; state the arms, n, span and predictions back (rule 3); the named books and their field diffs.
 5. The 1836–1855 arms through 2+1; then centuries.

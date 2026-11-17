@@ -159,7 +159,9 @@ The retune and the minor changes (§10.110.1). A change that moves the economy g
    capita or total, the reading-gate cut (§10.83.3–.8). The retune is scored by the register.
 3. **The retune** with the routine levers (§2.5), among them the cost ladder (C 1.8 × cost1 1.2, F234) and paper's own input lift, aimed at
    1.1's likely runoffs and at 1.15's wage and hiring rebalance (§10.109.7); then a re-measure.
-4. **Military research:** higher AI research weights for military technologies than for society, and for society than for most production
+4. **Military research — RULED into the 1.2 book on 2026-11-17 (§10.119 item 3)** in a simpler form: a lower AI weight on
+   technologies a research entry can deliver (−20% where the entry exists and literacy allows it, −90% while it advances for the
+   country), the figures after 10-year probes and a model. As planned on 2026-11-09: higher AI research weights for military technologies than for society, and for society than for most production
    technologies; production technologies without a research entry are raised too (POLISH Q5; the per-tree weights of §10.62).
 5. **Tier-scaled secondary lines — RULED into the 1.2 book on 2026-11-17 (§10.119 item 2):** every line the same share of its
    rung's own output, named with its tier, a merged building's line sized on its upper method, the crafts carrying the four
