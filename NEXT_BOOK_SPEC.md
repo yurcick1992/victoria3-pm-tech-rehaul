@@ -116,7 +116,9 @@ Diesel Engines.
   technology whose entry is advancing for this country takes −90%, the finish boost's `add` still coming after it. Fallback if the
   better form costs too much: −20% on every technology with an entry.
 - **The figures are NOT settled:** they come after several 10-year probes (declared `probe`, never economy data) and a run of the
-  research model. Whether the frontline and naval entries count for the −20% is open (§5, item 13).
+  research model (§5, item 13).
+- **Which entries (ruled):** a technology with a FRONTLINE entry is never lowered, not even while its entry advances; a technology
+  with a NAVAL entry is lowered like the production and society ones (it has no literacy line, so the −20% always applies).
 - Per-tree multipliers (`tech_ai_weight_mult`) are not the lever.
 
 ### 2.7 Left as vanilla's (§10.116 ruling 10; §10.115 ruling 6)
@@ -208,7 +210,7 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 | 10 | whether the electric saw mills and steam trawler rungs want engines or a drive as the pump rungs do | no: §10.116 names the pump rungs only | this page's reading |
 | 11 | RULED, no longer open: the 1836–1855 runs carry C 2.0, being played on the exact book of the centuries | — | §10.118 |
 | 12 | the AI desire ladder at C 2.0 (calibrated per book; F228's C 2.0 book carried 3,200 / 5,600 on t2 / t3) | the canon's 1000 / 1000 / 3000 / 5000 | §10.117 |
-| 13 | the AI research weights: the two figures, and whether the frontline and naval entries count for the −20% | −20% / −90%, frontline and naval entries taking only the −90%; settled by the probes and the model | §10.119 item 3 |
+| 13 | the AI research weights: the two figures (the scope is ruled: frontline entries never lowered, naval ones lowered) | −20% / −90%; settled by the probes and the model | §10.119 item 3 |
 
 ## 6. The order of work
 

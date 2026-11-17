@@ -5788,8 +5788,13 @@ not listed here is not yet placed.
    - **The cost of the better form** (argued, not measured): the list of technologies with an entry is static; the literacy line is
      one `literacy_rate` comparison; "advancing for this country" can be a country variable the entry's existing monthly effect sets
      when its bar moved; the finish boost's `add` is already appended after any `multiply`. A performance probe measures it.
-   - **Open:** whether the frontline and naval entries count for the −20% (Claude's reading of the user's words: no, they have no
-     literacy line, and they take only the −90% while advancing); the two figures; the probes (their arms, n and span need the
+   - **Which entries (ruled the same day).** Asked whether the frontline and naval entries count, the user: *"Frontline don't get
+     lowered at all, even if already ticking. Naval ones do."* So a technology with a FRONTLINE entry keeps its full weight always
+     (12 military technologies); a technology with a NAVAL entry is lowered like the rest (10 military technologies; having no
+     literacy line, it takes the −20% always and the −90% while advancing: Claude's reading of "do"). In the crude model that scope
+     at −20% puts military's share of picks at 43% / 36% / 69% / 37% in tech eras 2 / 3 / 4 / 5 (today 24 / 27 / 51 / 21), and at
+     −10% at 32% / 32% / 60% / 28%.
+   - **Open:** the two figures; the probes (their arms, n and span need the
      user's go-ahead after the three-arm batch): a forced test on vanilla + telemetry of pick odds against a weight ratio, since the
      fourth-power fit was made on vanilla's near-flat weights, then the rule on the book as a probe, with tick cost, then the
      research model (`tools/research_model/`) run with the measured rule.
