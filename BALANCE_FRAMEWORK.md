@@ -5950,6 +5950,26 @@ batch, `hoard*.mjs`):
   between 1916 and 1932.
 - Rump states fall out by the size condition (the Netherlands' pool reached 81 times its GDP in one run).
 
+**The measure: a ten-year average of pool ÷ GDP** (the user's, 2026-11-17, replacing "above a level for N consecutive years").
+Claude offered 1.5 GDP for ten consecutive years as a working barrier. The user: *"No, ten year's too much. A situation of 1931:
+0.5; 1932: 0.6; 1933: 1.2; 1934: 1.8; 1935: 3.4; 1936: 6.1 is definitely problematic. This implicitly highlights that hoard growth
+is a measure of its severity. Maybe something like "on average across 10 years, at least 1 GDP"?"* So the barrier reads a shortlist
+member of at least 2% of world GDP whose pool ÷ GDP, averaged over ten consecutive years, reaches a level; a fast-growing hoard is
+caught through its late years. On the game 1.15.1 batch (`hoard4.mjs`; the best ten-year window, which is 1927–1936 in nearly every
+case; runs of ten, vanilla | mod):
+
+| ten-year mean at least | vanilla | mod | who in the mod |
+|---|---|---|---|
+| 0.75 | 8 | 9 | Britain 7, Germany 5, the USA 2, France 1, Belgium 1 |
+| 1 | 6 | 7 | Britain 6, Germany 3, France 1, the USA 1 |
+| 1.25 | 5 | 6 | Britain 5, Germany 2, the USA 1 |
+| 1.5 | 4 | 6 | Britain 4, the USA 1, Germany 1 |
+| 2 | 3 | 3 | Britain 3 |
+
+The user's two examples under this measure, with 0.3 a year assumed for the years they did not give: the "definitely problematic"
+series averages 1.48; "3 GDP in 1935 but not in 1931, definitely fine", taken as 0.3 until 1931 then 0.6, 1.2, 2.0, 3.0, 3.0,
+averages 1.13. A level of 1 marks both; about 1.25 separates them. The level is not settled.
+
 **To calibrate** (none settled): the labour wording's level and how long it must hold; the hoarding wording's level and what "not
 falling" means; how much of the economy being read must be past the barrier before a reading is void (Britain is under 5% from
 1906–1925 on in every mod run and in nine vanilla runs of ten, so "any major" would void every run); and a test of the
