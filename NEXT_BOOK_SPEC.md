@@ -1,6 +1,7 @@
 # The next book — build specification
 
-**What this is.** One page that puts together the rulings of BALANCE_FRAMEWORK **§10.115** (tiered deposits, 2026-11-16), **§10.117** (the centuries start at cost slope 2.0, 2026-11-17) and **§10.116**
+**What this is.** One page that puts together the rulings of BALANCE_FRAMEWORK **§10.115** (tiered deposits, 2026-11-16), **§10.117** (the centuries start at cost slope 2.0, 2026-11-17), **§10.119** (the older
+1.2 items placed one by one; tier-scaled secondary lines are in) and **§10.116**
 (the engine rebalance, which is the electric engines redo, 2026-11-17, as amended the morning after by **§10.116.1**: the drives are a
 succession, not a choice), in the order a generator needs them, so the session that builds
 the starting book and its variations can work from here. Written at the user's word (2026-11-17): *"combine the rulings with the ones from
@@ -94,7 +95,22 @@ Diesel Engines.
 - **Factory power lines:** on every water-tube boiler, rotary valve engine and assembly line method of the tiered industries, the tools
   become engines, value for value. The tooling workshop's three lines carry no tools and do not change.
 
-### 2.5 Left as vanilla's (§10.116 ruling 10; §10.115 ruling 6)
+### 2.5 Secondary lines scale with their rung, and crafts carry lines (§10.119 item 2)
+
+- **The rule:** a line that makes or converts output takes the same share of its rung's own main output on every rung, the share
+  being today's on the t2 rung. So today's quantities on t2, ÷ A on t1, × A on t3, the whole line by one factor (inputs included);
+  employment unscaled (a craft's × 0.1). This replaces the `top` sizing of `emit_secondaries.mjs` (one recipe per line sized on t2).
+- **Names:** each scaled line is its own method, "<vanilla line name> (Tier N)", on vanilla's translation.
+- **A merged building:** one copy sized on its upper method, named for the span ("(Tier 2-3)"), left off the lower method where it
+  would take a good below zero (Elastics beside Electric Sewing Machines only; Precision Tools beside Spray Finishing only). Food's
+  merged building is already sized on its upper method and does not change.
+- **Crafts:** the handcraft-compatible first lines by the same rule: Pot Stills, Craftsman Sewing, Luxury Furniture, Ceramics.
+- **Automation lines:** one recipe per industry as today, with §2.4's tools → engines.
+- **Worked** (today → ruled): Craftsman Sewing 28.3 → t1 12.9, merged 62.2; Elastics 66 → 145.2; Luxury Furniture 32.5 → t1 14.8,
+  merged 71.5; Precision Tools 71.5 → 157.3; Ceramics 8.8 → 4.0 / 8.8 / 19.4; Bone China 17.6 → t3 38.7; Aeroplanes 13.2 → t3 29.0;
+  Tanks 26.4 → t3 58.1.
+
+### 2.6 Left as vanilla's (§10.116 ruling 10; §10.115 ruling 6)
 
 Radios, automobiles' oil, coffee's and the public trams' engines without fuel, iron in fertilizer, crystal glass, oil in rifles and
 recoiled barrels. Same-acre steps (farms, plantations, ranches, rubber) stay methods; their gate on the world's technology is deferred
@@ -214,6 +230,10 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
   rules need their own records and checks; `lint_pm_combos.mjs` must pass with irrigation's two drives and with the scaled secondary
   lines; `lint_solvency.mjs` on every new rung.
 - **The method icon** for the new engine rung, and localisation in all 11 languages (new names stay English).
+- **The scaled secondary lines** (§2.5): a third sizing rule in `emit_secondaries.mjs` beside `top` and `lowest` (the `lowest`
+  path already mints a method per tier); the tier in each line's name in all 11 languages; `lint_pm_combos.mjs` on every new
+  combination, the crafts' included; the compatibility review for each craft line; whether the 1836 conversion carries vanilla's
+  line choices onto the crafts, and the 1836 luxury and liquor output against vanilla's (unruled; report it when built).
 - **The technology's rename** (§10.116.2): an entry in `TECH_RENAMES_RULED` (`tools/lib_tier4_spec.mjs`, empty today), a new
   description, what the vanilla-name lint says to it, vanilla's icon (a pumpjack) unless replaced, and a patch-notes line.
 - **Known sizes, arithmetic on the canon's 1936 levels, not predictions:** the quarter takes 9% off buildings' electricity demand and 6%

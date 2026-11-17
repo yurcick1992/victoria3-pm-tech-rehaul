@@ -161,7 +161,9 @@ The retune and the minor changes (§10.110.1). A change that moves the economy g
    1.1's likely runoffs and at 1.15's wage and hiring rebalance (§10.109.7); then a re-measure.
 4. **Military research:** higher AI research weights for military technologies than for society, and for society than for most production
    technologies; production technologies without a research entry are raised too (POLISH Q5; the per-tree weights of §10.62).
-5. **Tier-scaled secondary lines** (F249 §4d): the textile and furniture old rungs live on luxury lines sized for t2. "One name — one recipe"
+5. **Tier-scaled secondary lines — RULED into the 1.2 book on 2026-11-17 (§10.119 item 2):** every line the same share of its
+   rung's own output, named with its tier, a merged building's line sized on its upper method, the crafts carrying the four
+   handcraft lines. As planned on 2026-11-09 (F249 §4d): the textile and furniture old rungs live on luxury lines sized for t2. "One name — one recipe"
    (§10.93) stands, so a strictly tiered line needs new names; a merged host, where one secondary serves two tiers, is the harder case.
    **The crafts' secondary lines** as well (today none, §10.91.2).
 6. **Possible for 1.2, depending on the 24 vs 24 batch:** the urban-centre electricity ×2 or ×3 and the streetlights' copper (§10.89.15,

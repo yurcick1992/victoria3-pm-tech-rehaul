@@ -86,7 +86,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.116 | engines (asked for mod 1.3; in the mod 1.2 book since .3): operating energy is paid where the engine runs, and no second engine good; the Electric and Diesel Engines rungs keep a quarter of vanilla's electricity / oil, the rest of its value to steel and copper; the motor ladder becomes t0 Steam · t1 a new rung on pumpjacks · t2 Electric · t3 Diesel, t0 on vanilla's steam recipe and the anchor 1.5 × it; engines on the condensing and diesel pump rungs; the factory power lines' tools become engines; **.1 (the morning after): the drives are a succession, not a choice** — irrigation runs on steam (engines 5 + coal 5, on irrigation's own gate), then on a clearly superior diesel step with fewer engines and less fuel for the same output (default 4 engines + 2.5 oil), gated on the country's own compression ignition; no electric drive anywhere (irrigation's and the top mine rung's both dropped: the rung is the drive); **.2 the names:** the technology `pumpjacks` is shown as "Pumping Engines" (POLISH R9 reversed for it), the t1 rung is "Compound Engines", t0 keeps "Steam Engines" | in force as amended by .1 and .2; nothing built. Open: the diesel step's quantities, the engines' input lift, the base book and runs | here |
 | 10.117 | mod 1.2 starts its centuries at cost slope C 2.0 (from 1.9), the cost level unchanged: mod 1.1.1 is overheated against the mod's own aims, and the tiered deposits as ruled are not a substitute (they add mining jobs); the per-tier ladder 1 / 2.1 / 4.0 was offered and declined | in force; nothing built. Open: the AI desire ladder at C 2.0, the staffing of the later deposit rungs (the 1836–1855 runs carry it too, §10.118) | here |
 | 10.118 | every measurement of our economy is made on the exact book its full runs play; only syntax and performance probes may differ, and a probe is never economy data; enforced by the harness: a short run on a book of ours is a probe or the checkpoint leg of a full run, a continuation inherits its parent's book by verified hash, the readers drop probes | in force; the machinery on branch `same-book-machinery`, merged after the three-arm batch | here |
-| 10.119 | where §10.110.1's older 1.2 and 1.3 items go, ruled one by one: 1 the retune is the iteration of the 1.2 book (C 2.0 its first move; F234's ladder superseded as a start; paper's lift stays 1.2 in the first book) | in force; the walk continues | here |
+| 10.119 | where §10.110.1's older 1.2 and 1.3 items go, ruled one by one: 1 the retune is the iteration of the 1.2 book (C 2.0 its first move; F234's ladder superseded as a start; paper's lift stays 1.2 in the first book); 2 tier-scaled secondary lines and the crafts' lines are in the 1.2 book — a line takes the same share of its rung's own output on every rung (today's t2 share), each named "<line> (Tier N)", a merged building's line sized on its upper method, crafts carry the four handcraft lines, automation unchanged | in force; nothing built; the walk continues | here |
 
 ---
 
@@ -5678,7 +5678,28 @@ merged into `main` only after its `SCHEDULE DONE`, CLAUDE.md §5.1 rule 7):
 - **The readers never return a probe run** (`lib_runs.usableRuns`), so a probe build cannot enter a register reading.
 - **A landmine with a detector** that proves in every build that the gate trips.
 
-Its state, deviations and proofs are recorded when the branch is reviewed and merged (BACKLOG).
+**Its state (2026-11-17).** Built by an agent as landmine **L53**, commit `15f8c64` on `same-book-machinery` (worktree
+`C:\claude-code\nfu_wt_samebook`); not merged, not pushed, and the main checkout untouched. The gate is a pure function in
+`tools/testbed/lib_same_book.ps1`, called by `run_schedule.ps1` before preflight and before the `-WhatIf` return; the continuation
+check runs at plan time, before the build and after it; `build_state.json` records `run_kind`, `full_until`, the tree twin's sha256
+and a content fingerprint that leaves the telemetry file out (its size differs between a leg and its continuation by design);
+`lib_runs.usableRuns` drops probe runs; the detector `Test-LmL53` walks fifteen fixture schedules.
+- **Proven without a game:** a short run on a book with no flag is refused, and the probe, checkpoint and full-span forms pass; a
+  continuation of the real `run002_canon` of session `20261112_113429` on its own book passes every comparison and on the mod 1.1
+  book is refused naming both sha256; the detector fails when the gate is disabled and when the scheduler's call is removed; the
+  readers keep the ten real mod runs and drop a run marked as a probe; the scheduler's run loop was walked end to end with the
+  build, observer and preflight stubbed (a leg, its continuation, a different book, a different build, a dirtied build path).
+- **Not proven, needing a real build and a game run:** the fingerprint comparison on a real build; the observer launched with the
+  new arguments; a continuation whose save the game loads; whether a leg ending off 1 January keeps a save at its date.
+- **Deviations from the design:** an unflagged short run on an arm that builds no book of ours is recorded as `short`; a
+  continuation's arm must equal its parent's; cleanliness is judged on the paths that build the mod, not the whole repository (the
+  main checkout holds uncommitted document edits most days); the mod's metadata file counts only beyond its build stamp.
+- **Holes it reported, being closed on the same branch:** a schedule could set `full_until` earlier and so call an 1855 run full;
+  a release arm, which builds a book, was not gated; an external arm's continuation did not compare the third-party mod.
+- **Also reported:** two checkouts of one commit can build different bytes through line endings, so a continuation should run from
+  the checkout that played its parent; `-WhatIf` cannot pass preflight while any game runs (L19, as before).
+
+What is closed, and the merge, are recorded when the batch ends (BACKLOG).
 
 ## §10.119 — WHERE THE OLDER 1.2 AND 1.3 ITEMS GO, ONE BY ONE (user-ruled from 2026-11-17)
 
@@ -5691,3 +5712,40 @@ not listed here is not yet placed.
    is its first move. The cost ladder C 1.8 × `cost1` 1.2 (F234) is superseded as a starting point; `cost1` stays a routine lever
    for later iterations. Paper's own input lift stays at 1.2 in the first book, and that book's paper red flags decide whether it
    moves (its wood now comes from tiered logging camps, which pushes paper's price the other way from an unlift).
+2. **Tier-scaled secondary lines, and secondary lines on the crafts, are in the 1.2 book.** Claude recommended the book after 1.2;
+   the user: *"In the 1.2 book. Let's decide on details now. Advise."*, and to the five points Claude then proposed: *"Accept all"*.
+   It replaces the sizing of §10.91.2 / §10.93 (one recipe per line per industry, sized on the t2 rung) and §10.91.2's "crafts
+   carry none"; "one name, one recipe" (§10.93) stands, and so does rule 8 (no per-method copies).
+   - **(a) The rule.** A line takes the same share of its rung's own main output on every rung. The share is today's on the t2
+     rung, so nothing changes there; on t1 the line is today's ÷ A (2.2) and on t3 today's × A. The whole line scales by that one
+     factor, inputs included, so it keeps vanilla's internal ratios. Employment does not scale (as ruled 2026-09-01; a craft's is
+     × 0.1 with its level).
+   - **(b) Names.** Each scaled line is a method of its own, named with vanilla's line name and its tier, "Craftsman Sewing
+     (Tier 1)", on vanilla's translation of the line name.
+   - **(c) A merged building's line is sized on its upper method**: one copy, named for the span ("Craftsman Sewing (Tier 2-3)"),
+     and left off the lower method where it would take a good below zero. Food's merged building is already sized so and does not
+     change. Declined: the geometric midpoint (the merged building's cost rule), which is exact for neither method and cuts food's
+     canning and liquor lines by a third; per-method copies, ruled out on 2026-10-26.
+   - **(d) Crafts carry lines by the same rule**, the handcraft-compatible first lines only: Pot Stills, Craftsman Sewing, Luxury
+     Furniture, Ceramics (the pair-by-pair review of `lib_secondary_compat.mjs` has the last word on each).
+   - **(e) Automation lines stay one recipe per industry** (§10.93), with their tools becoming engines (§10.116 ruling 8).
+
+   | line (converted or added, per level) | today, every rung | ruled |
+   |---|---|---|
+   | textile, Craftsman Sewing | 28.3 (47% of t1's 60 clothes, 21% of t2's 132, 10% of t3's 290) | t1 12.9 · merged t2-3 62.2 |
+   | textile, Elastics | 66 | merged t2-3 145.2, beside Electric Sewing Machines only |
+   | furniture, Luxury Furniture | 32.5 (50% of t1's 65, 23% of t2's 143) | t1 14.8 · merged t2-3 71.5 |
+   | furniture, Precision Tools | 71.5 | merged t2-3 157.3, beside Spray Finishing only |
+   | glass, Ceramics | 8.8 (22% of t1's 40, 10% of t2's 88, 4.5% of t3's 194) | t1 4.0 · t2 8.8 · t3 19.4 |
+   | glass, Bone China | 17.6 into 26.4 porcelain | t2 the same · t3 38.7 into 58.1 |
+   | automotive, Aeroplanes · Tanks | 13.2 · 26.4 (20% · 40% of t2's 66) | t2 the same · t3 29.0 · 58.1 |
+   | food, canning and stills | sized on Baking Powder, the upper method | unchanged |
+   | a craft, e.g. Craftsman Sewing on Handsewn Clothes | none | about 0.6 of its 2.7 clothes |
+
+   **Why** (F249 §4d): the main good's price falls and the luxury line's does not, because a line makes the same amount on every
+   rung; the old t1 textile and furniture buildings carry half their output as luxuries and live on it. Under (c) the lower method
+   of a merged building keeps a generous share (47–50%), but it is one free switch from the upper method, not an old plant.
+   **Not checked:** the 1836 luxury and liquor output once crafts carry lines (their share is below vanilla's under its first
+   method), and whether the 1836 conversion should carry vanilla's line choices onto the crafts; what twice the aeroplanes and tanks
+   per t3 level does, armies being their only buyers; anything in a run. The numbers are read from the mod 1.1.1 build and are
+   arithmetic.
