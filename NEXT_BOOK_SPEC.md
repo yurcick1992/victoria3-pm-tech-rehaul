@@ -18,16 +18,14 @@ builds."* They are collected in §5 with a proposed default each, so the first b
 
 ---
 
-## 1. Before anything: two things to confirm with the user
+## 1. What the book is (confirmed by the user, 2026-11-17)
 
-1. **The release this book is for.** §10.115 ruling 4 makes the extraction overhaul **mod 1.2**; the user asked for the engine rebalance
-   *"for 1.3"* and then called the combined book *"the 1.3 starting book"*. Either the combined book is mod 1.2, or the overhaul has
-   moved to 1.3. This page says "the next book" until that is said.
-2. **What the book contains.** Since §10.118 (2026-11-17) there is no separate book for the short runs: the 1836–1855 legs are played
-   on the exact book that plays the century, so §10.115's accepted *"No factory lever moves with the first tiered books … so what
-   tiering does is seen alone"* no longer holds, and the book carries C 2.0 from its first run (§10.117). What is left to confirm is
-   whether the engine rebalance (§2.2–§2.4; ruled *"for 1.3"*) is in the same book as the tiered deposits or in the next one. A
-   deposits-only reading exists only if a deposits-only book is also to play centuries (§4).
+1. **It is the mod 1.2 book.** §10.115 ruling 4 makes the extraction overhaul mod 1.2, and the engine rebalance, first asked *"for
+   1.3"*, is part of the same book (§10.116.3; the user: *"In the 1.2 book"*). "The next book" on this page is the mod 1.2 book.
+2. **What it contains, from its first run.** The tiered deposits (§2.1), the engine rebalance (§2.2–§2.4) and cost slope C 2.0
+   (§10.117). Since §10.118 there is no separate book for the short runs: the 1836–1855 legs are played on the exact book that plays
+   the century, so §10.115's accepted *"No factory lever moves with the first tiered books … so what tiering does is seen alone"* no
+   longer holds. A deposits-only reading exists only if a deposits-only book is also to play centuries (§4).
 3. **Every open item of §5 that changes the book is settled before its first run**, short or long (§10.118).
 
 ## 2. The starting book, in build order

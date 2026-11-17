@@ -140,8 +140,8 @@ extraction overhaul for 1.2 already (not 1.3)."*
 - **The order, after the three-arm batch:** the probes (gold's depleted fields, oil's linked discovery, the world gate) → the generator
   and two readers (slot fill by rung, a raw-material price index) → 1836–1855 runs, three cost-step arms (1.3 / 1.6 / 1.9) through
   2+1, passing on a start like vanilla's and an 1855 that is not dead in half the world → centuries. Every run needs the user's go-ahead.
-- The engine rebalance (what pumpjacks should mean for engines) is ruled for mod 1.3: §10.116 (2026-11-17). One of its pieces
-  sits on these tiered deposits: engines on the condensing and diesel pump rungs (the top mine rung's electric
+- **The engine rebalance (§10.116) is part of this 1.2 book** (§10.116.3, the user, 2026-11-17: *"In the 1.2 book"*; it was first
+  asked for mod 1.3 and is described under that heading below). One of its pieces sits on these tiered deposits: engines on the condensing and diesel pump rungs (the top mine rung's electric
   drive was dropped the next morning, §10.116.1).
 - **`NEXT_BOOK_SPEC.md` is the build specification** (2026-11-17, at the user's word): §10.115 and §10.116 in build order, worked
   numbers, the ruled and proposed variations, the open questions with their assumed defaults, the order of work. To confirm first:
@@ -187,7 +187,8 @@ The major changes (§10.110.1):
   recognised hosts by itself.
 - **Building groups per industry**, so a compatibility patch, and our own reference rewrites, can name one group (BACKLOG E). It touches
   vanilla's level counts (the L48 class).
-- **The engine rebalance** (§10.116, user-ruled 2026-11-17; it IS "the electric engines redo", the user's words): operating energy is paid
+- **The engine rebalance** (§10.116, user-ruled 2026-11-17; it IS "the electric engines redo", the user's words). ⚠ **Moved into the
+  mod 1.2 book on 2026-11-17 (§10.116.3); kept here as its description.** Operating energy is paid
   where the engine runs. The Electric and Diesel Engines rungs keep a quarter of vanilla's electricity and oil; the motor ladder becomes
   t0 Steam Engines · t1 a new rung on pumpjacks · t2 Electric · t3 Diesel; the pump rungs and the factory power lines buy engines;
   irrigation runs on steam (engines + coal) and then on a clearly superior diesel step (fewer engines and less fuel, same output, on

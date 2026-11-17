@@ -83,7 +83,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.113 | depeasantation and capital abundance are aimed at levels of their own, not ratios to vanilla: the world's U\* about 50%, as few majors as possible with a pool above 0.5 GDP in 1935–36, and a flag on a pool above 3 GDP for 5 years without falling at U\* under 5% (provisional); world GDP stays vanilla-referenced; a gap inside the seed spread is noise | in force; the aims' form and `criteria.mjs` open | here |
 | 10.114 | for mod 1.2 the world's U\* gives way to the world-GDP aim (0.90–1.00× vanilla), U\* still as high as that allows; infrastructure subsidies come back only if the countries short of infrastructure are the ones that hoard — read on mod 1.1.1: they are not, so game 1.15.1's rule stays | in force for 1.2; the subsidy reading is Claude's, directional | here |
 | 10.115 | deposits are tiered (each main method of a resource-capped building a building with slots of its own: two methods → vanilla's slots × 1.5, three or four → × 2, split equally), first design flat output per tier with rising cost; the extraction overhaul is mod 1.2, superseding §10.110.1's split; nothing tiered for uniformity; same-acre steps (farms, plantations, ranches, rubber) stay methods, gated on the world's technology, deferred as the likely solution pending probes; §10.58's veto B lifted for deposits | in force; every rule of the first book is ruled (the section's "first book's rules" paragraph); open: the 1855 thresholds (proposed), where §10.110.1's other items go; unproven until probes: the world gate, gold's depleted fields, oil's linked discovery; nothing built | here |
-| 10.116 | engines (for mod 1.3): operating energy is paid where the engine runs, and no second engine good; the Electric and Diesel Engines rungs keep a quarter of vanilla's electricity / oil, the rest of its value to steel and copper; the motor ladder becomes t0 Steam · t1 a new rung on pumpjacks · t2 Electric · t3 Diesel, t0 on vanilla's steam recipe and the anchor 1.5 × it; engines on the condensing and diesel pump rungs; the factory power lines' tools become engines; **.1 (the morning after): the drives are a succession, not a choice** — irrigation runs on steam (engines 5 + coal 5, on irrigation's own gate), then on a clearly superior diesel step with fewer engines and less fuel for the same output (default 4 engines + 2.5 oil), gated on the country's own compression ignition; no electric drive anywhere (irrigation's and the top mine rung's both dropped: the rung is the drive); **.2 the names:** the technology `pumpjacks` is shown as "Pumping Engines" (POLISH R9 reversed for it), the t1 rung is "Compound Engines", t0 keeps "Steam Engines" | in force as amended by .1 and .2; nothing built. Open: the diesel step's quantities, the engines' input lift, the base book and runs | here |
+| 10.116 | engines (asked for mod 1.3; in the mod 1.2 book since .3): operating energy is paid where the engine runs, and no second engine good; the Electric and Diesel Engines rungs keep a quarter of vanilla's electricity / oil, the rest of its value to steel and copper; the motor ladder becomes t0 Steam · t1 a new rung on pumpjacks · t2 Electric · t3 Diesel, t0 on vanilla's steam recipe and the anchor 1.5 × it; engines on the condensing and diesel pump rungs; the factory power lines' tools become engines; **.1 (the morning after): the drives are a succession, not a choice** — irrigation runs on steam (engines 5 + coal 5, on irrigation's own gate), then on a clearly superior diesel step with fewer engines and less fuel for the same output (default 4 engines + 2.5 oil), gated on the country's own compression ignition; no electric drive anywhere (irrigation's and the top mine rung's both dropped: the rung is the drive); **.2 the names:** the technology `pumpjacks` is shown as "Pumping Engines" (POLISH R9 reversed for it), the t1 rung is "Compound Engines", t0 keeps "Steam Engines" | in force as amended by .1 and .2; nothing built. Open: the diesel step's quantities, the engines' input lift, the base book and runs | here |
 | 10.117 | mod 1.2 starts its centuries at cost slope C 2.0 (from 1.9), the cost level unchanged: mod 1.1.1 is overheated against the mod's own aims, and the tiered deposits as ruled are not a substitute (they add mining jobs); the per-tier ladder 1 / 2.1 / 4.0 was offered and declined | in force; nothing built. Open: the AI desire ladder at C 2.0, the staffing of the later deposit rungs (the 1836–1855 runs carry it too, §10.118) | here |
 | 10.118 | every measurement of our economy is made on the exact book its full runs play; only syntax and performance probes may differ, and a probe is never economy data; enforced by the harness: a short run on a book of ours is a probe or the checkpoint leg of a full run, a continuation inherits its parent's book by verified hash, the readers drop probes | in force; the machinery on branch `same-book-machinery`, merged after the three-arm batch | here |
 
@@ -5258,7 +5258,8 @@ reading: the staffing of the later rungs.
 ⚠ **Amended the next morning by §10.116.1 (below, at the end of this section):** the switchable drives are gone. Irrigation's drives
 are a succession (steam, then a clearly superior diesel step on the country's own technology), there is no electric drive on
 irrigation, and the top mine rung's electric drive (rulings 7 and 9) is dropped. Rulings 6, 7 and 9 below are kept as they were
-recorded.
+recorded. **§10.116.2** names the new rung and renames the technology; **§10.116.3** puts the whole section in the mod 1.2 book, not
+mod 1.3.
 
 **The occasion.** The session that §10.115 ruling 7 left open ("an engine rebalance is to be discussed in another session"). The user:
 *"I'm really annoyed how electric engines are made in game. They suffer the heaviest from mixing the capital input and per-output input
@@ -5538,6 +5539,19 @@ additions bars.
 languages (new names stay English today, CLAUDE.md §5.4, where vanilla's name was translated); the icon, which still shows a
 pumpjack; the entry in `TECH_RENAMES_RULED` (`tools/lib_tier4_spec.mjs`, empty today, and not edited while a batch plays) and what the
 vanilla-name lint says to it; a patch-notes line, a rename of this kind being a major one.
+
+### §10.116.3 — THE ENGINE REBALANCE IS PART OF THE MOD 1.2 BOOK (user-ruled 2026-11-17)
+
+This section was asked *"for 1.3"* (ruling 11), and the user then called the combined book *"the 1.3 starting book"*, while §10.115
+ruling 4 makes the extraction overhaul mod 1.2. After §10.118 (a short run is played on the exact book of its full runs) the first
+book's contents had to be settled before any run; asked whether the engine rebalance is part of the 1.2 book with the tiered
+deposits or the book after it, the user: *"In the 1.2 book"*.
+
+1. **The mod 1.2 book carries both:** the tiered deposits of §10.115 and the engine rebalance of this section as amended by .1 and
+   .2, with the cost slope C 2.0 of §10.117, from its first run.
+2. Ruling 11's "for mod 1.3" and the heading's are superseded; nothing of this section is left for 1.3.
+3. **Not said:** a date for mod 1.2; where §10.110.1's other items go (the retune, military research, tier-scaled secondary lines,
+   treaty ports, building groups per industry).
 
 ## §10.117 — MOD 1.2 STARTS ITS CENTURIES AT COST SLOPE 2.0 (user-ruled 2026-11-17)
 
