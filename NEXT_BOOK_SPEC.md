@@ -235,6 +235,8 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
   modifier types, one per building key), company building lists and bonuses, decrees, events, journal entries, AI strategies, the 1.15
   level counts (L48) — must reach every rung or the ruled set (`emit_vanilla_refs.mjs`, `TIER_REFERENCE_AUDIT.md`, L40).
 - **The 1836 start:** every vanilla mine, camp, wharf and station lands on the rung of its active method (`convert_history.ps1`, L13).
+  Ruled into this book (§10.119 item 7): the two craft seeding defects of `emit_craft_start.mjs` are fixed (Valencia's doubled Pulp
+  Pressing; New York's Bakeries inside vanilla's DLC block).
 - **DLC gates** on every copied or generated block (L39).
 - **Names.** A deposit rung is not on the tier ladder of §2.3 of CLAUDE.md (its output does not rise with tier); what its in-game name
   says is unruled.
