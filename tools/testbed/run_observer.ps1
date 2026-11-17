@@ -79,6 +79,13 @@ param(
     [string]   $ExtraGameArgs = "",
     # the config the mod under test was built from; recorded (with its hash) in build_state.json
     [string]   $BuildConfig = "",
+    # L53, the same-book gate (2026-11-17; lib_same_book.ps1, BALANCE_FRAMEWORK 10.118): the book's other half - the tree twin
+    # the emitters paired with -BuildConfig - recorded with its hash beside the config's (build_state.json tree_sha256), and
+    # what kind of run this is: full | checkpoint | probe:syntax | probe:performance | continuation | short, against the
+    # schedule's full span. The scheduler passes all three; a hand run leaves them empty and build_state.json says so.
+    [string]   $BuildTree = "",
+    [string]   $RunKind = "",
+    [string]   $FullUntil = "",
     # short label for this batch, e.g. "vanilla-baseline"
     [string]   $Label = "",
     # path to a JSON file whose contents become build_state.json's "agentic" block
@@ -593,6 +600,10 @@ function Get-FileSha {
     return (Get-FileHash $Path -Algorithm SHA256).Hash.Substring(0, 16).ToLower()
 }
 
+# L53: the same-book functions (the content-layout fingerprint, which build inputs are uncommitted). Functions only - importing
+# the file runs nothing. Everything this script takes from it is wrapped below so that it can never cost a run its launch.
+. (Join-Path $PSScriptRoot 'lib_same_book.ps1')
+
 function Write-BuildState {
     $modMeta = $null
     if ($ModPath) {
@@ -614,6 +625,21 @@ function Write-BuildState {
         $git.commit = (git rev-parse --short HEAD 2>$null)
         $git.dirty  = @(git status --porcelain 2>$null).Count -gt 0
     } catch { } finally { Pop-Location -ErrorAction SilentlyContinue }
+    # L53: `dirty` above is the WHOLE repo, and other sessions edit documents in it all day, so it says little about the build.
+    # build_paths_dirty is the build's own inputs (lib_same_book.ps1 Get-SameBookBuildPaths): true = something that builds the
+    # mod was uncommitted when this run was built, and no continuation may inherit it; null = git could not say.
+    $git['build_paths_dirty'] = $null; $git['dirty_build_paths'] = @()
+    try {
+        $bp = Get-SameBookDirtyBuildPaths -Repo $RepoRoot
+        if ($bp.Ok) { $git['build_paths_dirty'] = (@($bp.Paths).Count -gt 0); $git['dirty_build_paths'] = @($bp.Paths) }
+    } catch { }
+    # L53: the fingerprint of the BOOK's files alone - every file but the zzz_v3tb_* instrument, whose size follows the run's
+    # telemetry spec - so a continuation with a later `until` can be compared with the run it continues. Null if it failed.
+    $modFingerprint = Get-DirFingerprint $ModPath
+    if ($modFingerprint) {
+        $modFingerprint['content_layout_sha256'] = $null
+        try { $cl = Get-SameBookLayoutSha -Dir $ModPath -ContentOnly; if ($cl) { $modFingerprint['content_layout_sha256'] = $cl } } catch { }
+    }
 
     $gameVersion = ""
     $ls = Join-Path (Split-Path -Parent $Game) "launcher\launcher-settings.json"
@@ -687,12 +713,18 @@ function Write-BuildState {
         session        = $Stamp
         deterministic  = [ordered]@{
             arm            = $arm
+            # L53: full | checkpoint | probe:syntax | probe:performance | continuation | short ("" on a hand run), and the span
+            # 'full' means. ledger/lib_runs.mjs reads run_kind here: a probe is never counted as economy data.
+            run_kind       = $RunKind
+            full_until     = $FullUntil
             deviates_from_vanilla = $deviates
             mod_under_test = $(if ($ModPath) { [ordered]@{
                                     path = $ModPath; metadata = $modMeta
-                                    fingerprint = (Get-DirFingerprint $ModPath)
+                                    fingerprint = $modFingerprint
                                     built_from_config = $BuildConfig
                                     config_sha256 = (Get-FileSha $BuildConfig)
+                                    built_from_tree = $BuildTree          # L53: the config's tree twin, the book's other half
+                                    tree_sha256 = (Get-FileSha $BuildTree)
                                 } } else { $null })
             external_mods  = $external   # third-party mods loaded before the mod under test (-ExtraModPaths); empty on every other arm
             repo    = $git

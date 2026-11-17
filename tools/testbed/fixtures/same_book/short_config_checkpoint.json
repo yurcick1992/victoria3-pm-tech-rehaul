@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-short-config-checkpoint",
+  "_why": "A FIXTURE of the same-book gate (landmine L53, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL53 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. A checkpoint leg: the first leg of a full-span run on this book, its last save kept.",
+  "_expect": "pass",
+  "_expect_kinds": [
+    "checkpoint"
+  ],
+  "defaults": {
+    "autosave_interval": "yearly"
+  },
+  "setups": {
+    "book": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "book",
+      "until": "1855.1.1",
+      "checkpoint": true
+    }
+  ]
+}

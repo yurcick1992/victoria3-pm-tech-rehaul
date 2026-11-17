@@ -1,0 +1,7 @@
+{
+  "schema_version": 2,
+  "_fixture": "same-book reader fixture (L53): not a run",
+  "deterministic": {
+    "arm": "config"
+  }
+}

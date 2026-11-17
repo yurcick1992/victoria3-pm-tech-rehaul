@@ -131,6 +131,22 @@ export function configGroups(sesRoot, runs) {
   return [...groups].map(([key, rs]) => ({ key, runs: rs }));
 }
 
+// ⭐ WHAT KIND OF RUN IS THIS? (2026-11-17, the same-book rule: BALANCE_FRAMEWORK §10.118, landmine L53.) The scheduler's gate
+//   (tools/testbed/lib_same_book.ps1) classes every run and the observer records it in the run's build_state.json as
+//   `deterministic.run_kind`: 'full' | 'checkpoint' | 'probe:syntax' | 'probe:performance' | 'continuation' | 'short'
+//   (short = stops before the full span on an arm that builds no book of ours). Returns that string, or null for a run that
+//   recorded none: every run before 2026-11-17, and a hand run of the observer. `run` is the run folder relative to sesRoot
+//   ('<session>/runNNN_<setup>').
+//   ⚠ A PROBE IS NEVER ECONOMY DATA: it may be built from any book, deliberately worsened ones included, so usableRuns() below
+//   drops every 'probe:*' run and says so. Nothing else about a run's kind changes whether it counts.
+export function runKind(sesRoot, run) {
+  try {
+    const k = JSON.parse(readFileSync(join(sesRoot, run, 'build_state.json'), 'utf8').replace(/^﻿/, '')).deterministic?.run_kind;
+    return typeof k === 'string' && k ? k : null;
+  } catch { return null; }
+}
+export const isProbeKind = k => typeof k === 'string' && k.startsWith('probe');
+
 export function usableRuns(sesRoot, session, setup = '') {
   if (String(session).includes(',') || String(session).includes('/')) return usableRunsPooled(sesRoot, session, setup);
   const root = join(sesRoot, session);
@@ -146,6 +162,12 @@ export function usableRuns(sesRoot, session, setup = '') {
   for (const d of all) {
     if (setup && d.replace(/^run\d+_/, '') !== setup) continue;
     const rel = `${session}/${d}`;
+    // L53: a probe run is dropped whatever else is true of it (it can be complete, with summaries, and still not be the book)
+    const kind = runKind(sesRoot, rel);
+    if (isProbeKind(kind)) {
+      dropped.push({ run: d, reached: '-', until: '-', reason: `a probe run (${kind}) - never economy data (the same-book rule, L53)` });
+      continue;
+    }
     if (!existsSync(join(root, d, 'save_summaries'))) {
       dropped.push({ run: d, reached: '-', until: '-', reason: 'no save_summaries' });
       continue;
@@ -175,6 +197,6 @@ export function usableRuns(sesRoot, session, setup = '') {
 
 export function reportDropped(dropped) {
   if (!dropped.length) return;
-  console.log(`\n⚠ ${dropped.length} run(s) EXCLUDED from n (landmine L17):`);
+  console.log(`\n⚠ ${dropped.length} run(s) EXCLUDED from n (landmine L17; a probe run: L53):`);
   for (const d of dropped) console.log(`    ${d.run}  reached ${d.reached} of ${d.until}  — ${d.reason}`);
 }

@@ -1,0 +1,22 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-continuation-middle-leg-no-checkpoint",
+  "_why": "A FIXTURE of the same-book gate (landmine L53, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL53 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. A continuation that stops before the full span is a middle leg and must say so.",
+  "_expect": "throw",
+  "_expect_message": "middle leg",
+  "setups": {
+    "book": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "book",
+      "until": "1900.1.1",
+      "continue_save": "tools/testbed/fixtures/same_book/README.md",
+      "continue_expect_after": "1855.1.1",
+      "parent": "no_such_session/run001_book"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-full-span",
+  "_why": "A FIXTURE of the same-book gate (landmine L53, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL53 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. A full run, and one past the full span.",
+  "_expect": "pass",
+  "_expect_kinds": [
+    "full",
+    "full"
+  ],
+  "setups": {
+    "book": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "book",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "book",
+      "until": "1936.6.1"
+    }
+  ]
+}

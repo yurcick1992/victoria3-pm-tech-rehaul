@@ -1,0 +1,25 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-short-control-no-flag",
+  "_why": "A FIXTURE of the same-book gate (landmine L53, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL53 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. The gate judges books: a short run on the control arm passes, recorded as short.",
+  "_expect": "pass",
+  "_expect_kinds": [
+    "short",
+    "full"
+  ],
+  "setups": {
+    "vanilla": {
+      "kind": "control"
+    }
+  },
+  "runs": [
+    {
+      "setup": "vanilla",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1936.1.1"
+    }
+  ]
+}
