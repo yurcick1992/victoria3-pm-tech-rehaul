@@ -87,7 +87,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.117 | mod 1.2 starts its centuries at cost slope C 2.0 (from 1.9), the cost level unchanged: mod 1.1.1 is overheated against the mod's own aims, and the tiered deposits as ruled are not a substitute (they add mining jobs); the per-tier ladder 1 / 2.1 / 4.0 was offered and declined | in force; nothing built. Open: the AI desire ladder at C 2.0, the staffing of the later deposit rungs (the 1836–1855 runs carry it too, §10.118) | here |
 | 10.118 | every measurement of our economy is made on the exact book its full runs play; only syntax and performance probes may differ, and a probe is never economy data; enforced by the harness: a short run on a book of ours is a probe or the checkpoint leg of a full run, a continuation inherits its parent's book by verified hash, the readers drop probes | in force; the machinery on branch `same-book-machinery`, merged after the three-arm batch | here |
 | 10.119 | where §10.110.1's older 1.2 and 1.3 items go, ruled one by one: 1 the retune is the iteration of the 1.2 book (C 2.0 its first move; F234's ladder superseded as a start; paper's lift stays 1.2 in the first book); 2 tier-scaled secondary lines and the crafts' lines are in the 1.2 book — a line takes the same share of its rung's own output on every rung (today's t2 share), each named "<line> (Tier N)", a merged building's line sized on its upper method, crafts carry the four handcraft lines, automation unchanged; 3 military research is in the 1.2 book as a lower AI weight on technologies a research entry can deliver (the user's form: −20% where the entry exists and literacy allows it, −90% while it is advancing for the country, the finish boost still winning), the figures settled after 10-year probes and a model, frontline entries never lowered and naval ones lowered; 4 the urban centres' streetlights stay as they are (no × 2 / × 3, no copper), closed; 5 the electricity build condition stays deferred, not in 1.2; 6 the higher tier's research mark for a technology unlocking two tiers is built into 1.2 as a general rule, and crafts stay research sources (POLISH P3 closed); 7 both craft seeding defects (Valencia, New York) are fixed in 1.2; 8 the register on game 1.15 is settled right after this list, before any 1.2 century, starting with which lines stay hard; 9 the five text and check items stay with 1.2 as release tasks; 10–13 treaty ports, building groups per industry, artisanal ownership and the wider AI research weight retune stay after 1.2, no release named; 14 mod 1.2's date is "December", no details | in force; nothing built; the list is complete | here |
-| 10.120 | the register redone: the important goals are absolute levels of the mod's own, and of the vanilla-referenced ones only world GDP matters; every aim is soft; there is ONE barrier, about validity and not severity — the investment loop broke (lack of labour and hoarding are two wordings of it), past which every other reading is unreliable; the numbers are calibrated on data; the barrier as it stands: a shortlist member of at least 2% of world GDP whose pool ÷ GDP averages at least 1 over ten consecutive years (no primary check on labour) | the principle and the barrier in force; the aims' levels, CLAUDE.md §3.1–§3.2 and `criteria.mjs` not yet | here |
+| 10.120 | the register redone: the important goals are absolute levels of the mod's own, and of the vanilla-referenced ones only world GDP matters; every aim is soft; there is ONE barrier, about validity and not severity — the investment loop broke (lack of labour and hoarding are two wordings of it), past which every other reading is unreliable; the numbers are calibrated on data; the barrier as it stands: a shortlist member of at least 2% of world GDP whose pool ÷ GDP averages at least 1 over ten consecutive years (no primary check on labour) ; the eight depeasantation aims, at 1913 and at the end of the game: the USA 25% and 15%, Britain 10% and 5%, Germany 20% and 20%, the world 60% and 50% | the principle, the barrier and the eight aims in force; the rest of the register, CLAUDE.md §3.1–§3.2 and `criteria.mjs` not yet | here |
 
 ---
 
@@ -6009,6 +6009,22 @@ productive. History's "agricultural employment" holds both.
 | Germany 1935 | about 29% in 1933 (memory) | about 70% (memory) | about 20% | 1.0% |
 | world 1913 | about 70% (memory; over 60% in 1950 by the ILO) | about 85% (an assumption) | about 60% | 53.6% in 1910 |
 | world 1935 | about 65% (interpolated) | the same | about 55% | 33.4% |
+
+**The eight levels, ruled** (the user, 2026-11-17, after the table above: *"All right. 1913 and end-of-game aims: USA: 25% and
+15%. GBR: 10% and 5%. GER: 20% and 20%. WORLD: 60% and 50%"*). They are soft aims and levels of the mod's own; Germany is GER, else
+NGF, else PRU.
+
+| | 1913: aim | mod 1.1.1 (median, range of ten runs) | end of game: aim | mod 1.1.1 |
+|---|---|---|---|---|
+| USA | 25% | 25.2% (2.4–53.5) | 15% | 3.6% (0.2–11.4) |
+| Britain | 10% | 5.1% (0.5–19.2) | 5% | 0.3% (0.1–1.8) |
+| Germany | 20% | 35.9% (3.7–73.2) | 20% | 3.9% (0.0–66.7) |
+| world | 60% | 50.5% (45.2–57.4) | 50% | 34.2% (27.7–37.9) |
+
+Read as U\* (peasants and unemployed), the end as the 1932–1936 mean (`aims8.mjs`). Vanilla 1.15.1 beside it, not as a yardstick:
+USA 29.5% and 1.4%, Britain 6.1% and 1.0%, Germany 33.6% and 0.5%, the world 50.6% and 30.9%. ⚠ Peasants ALONE read lower, and for
+the world much lower: 38.5% in 1913 and 25.3% at the end in the mod (the majors within a point or three). Which of the two the aims
+read is not ruled.
 
 At 1913 the mod sits near these levels; by 1935 it is far under all of them, which is the heat arriving after 1900 (§10.117).
 **Open:** which way of translating; whether the aims read the game's peasants alone or peasants with the unemployed (history's 1935
