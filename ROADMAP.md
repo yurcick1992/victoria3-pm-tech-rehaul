@@ -170,7 +170,7 @@ The retune and the minor changes (§10.110.1). A change that moves the economy g
    **The crafts' secondary lines** as well (today none, §10.91.2).
 6. **Possible for 1.2, depending on the 24 vs 24 batch:** the urban-centre electricity ×2 or ×3 and the streetlights' copper (§10.89.15,
    §10.108.1).
-7. **1.2 or 1.3, not yet decided:** the electricity build condition (§10.106). It is built and was deferred for its tick cost, which a
+7. **Not in 1.2 (the user, 2026-11-17, §10.119 item 5: "Keep deferring"); no release named:** the electricity build condition (§10.106). It is built and was deferred for its tick cost, which a
    continuation A/B from late-game saves can measure.
 8. **Minor fixes:**
    - the craft seeding defects: Valencia's doubled Pulp Pressing, and New York's Bakeries written inside a DLC block;
