@@ -5706,7 +5706,8 @@ and a content fingerprint that leaves the telemetry file out (its size differs b
 - **Also reported:** two checkouts of one commit can build different bytes through line endings, so a continuation should run from
   the checkout that played its parent; `-WhatIf` cannot pass preflight while any game runs (L19, as before).
 
-What is closed, and the merge, are recorded when the batch ends (BACKLOG).
+What is closed, and the merge, are recorded when the batch ends. The merge checklist is in BACKLOG section B; the agent's proof
+scripts are kept in `C:\claude-code\same_book_proofs_2026-11-17\` (they were written in a session's temporary folder).
 
 ## §10.119 — WHERE THE OLDER 1.2 AND 1.3 ITEMS GO, ONE BY ONE (user-ruled from 2026-11-17)
 

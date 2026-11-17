@@ -23,8 +23,10 @@ builds."* They are collected in §5 with a proposed default each, so the first b
 
 1. **It is the mod 1.2 book.** §10.115 ruling 4 makes the extraction overhaul mod 1.2, and the engine rebalance, first asked *"for
    1.3"*, is part of the same book (§10.116.3; the user: *"In the 1.2 book"*). "The next book" on this page is the mod 1.2 book.
-2. **What it contains, from its first run.** The tiered deposits (§2.1), the engine rebalance (§2.2–§2.4) and cost slope C 2.0
-   (§10.117). Since §10.118 there is no separate book for the short runs: the 1836–1855 legs are played on the exact book that plays
+2. **What it contains, from its first run.** The tiered deposits (§2.1), the engine rebalance (§2.2–§2.4), cost slope C 2.0
+   (§10.117), tier-scaled secondary lines and craft lines (§2.5), the AI research-weight rule once its figures are settled by probes
+   (§2.6), the higher tier's research mark as a general rule and the two craft seeding fixes (§7). The full placement of the older
+   1.2 and 1.3 items is BALANCE_FRAMEWORK §10.119; how a run of the book is judged is the register of §10.120 (CLAUDE.md §3.2). Since §10.118 there is no separate book for the short runs: the 1836–1855 legs are played on the exact book that plays
    the century, so §10.115's accepted *"No factory lever moves with the first tiered books … so what tiering does is seen alone"* no
    longer holds. A deposits-only reading exists only if a deposits-only book is also to play centuries (§4).
 3. **Every open item of §5 that changes the book is settled before its first run**, short or long (§10.118).
@@ -217,7 +219,10 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 1. `SCHEDULE DONE` of the three-arm batch; then commit the readers worth keeping from `C:\claude-code\extraction_study_2026-11-16\`,
    `C:\claude-code\engine_study_2026-11-17\` and `C:\claude-code\cost_start_study_2026-11-17\` (the session scripts of §10.115–§10.117,
    kept outside the repo meanwhile), and **review and merge branch `same-book-machinery`** (§10.118: the scheduler's gate on short
-   runs, checkpoint legs and verified continuations; worktree `C:\claude-code\nfu_wt_samebook`). No run of the new book before it is in.
+   runs, checkpoint legs and verified continuations; worktree `C:\claude-code\nfu_wt_samebook`; the merge checklist is in BACKLOG
+   section B). No run of the new book before it is in. In the same step, **bring the tools to the register of §10.120**:
+   `criteria.mjs`, the ledger's scorecard and the stop watcher still implement the old one (BACKLOG, the register item), and the
+   2+1 test of the book cannot be judged until they do.
 2. **The probes**, each on the arm that fits (an engine question on vanilla + telemetry), with the go-ahead: gold's depleted fields;
    oil's linked discovery (and that vanilla's oil events on the hook do not fire twice); the world-technology gate
    (`unlocking_global_technologies`, unused by vanilla) and how the AI switches a method when its input is scarce — the last also
