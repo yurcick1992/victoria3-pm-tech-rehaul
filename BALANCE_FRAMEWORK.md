@@ -84,7 +84,8 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.114 | for mod 1.2 the world's U\* gives way to the world-GDP aim (0.90–1.00× vanilla), U\* still as high as that allows; infrastructure subsidies come back only if the countries short of infrastructure are the ones that hoard — read on mod 1.1.1: they are not, so game 1.15.1's rule stays | in force for 1.2; the subsidy reading is Claude's, directional | here |
 | 10.115 | deposits are tiered (each main method of a resource-capped building a building with slots of its own: two methods → vanilla's slots × 1.5, three or four → × 2, split equally), first design flat output per tier with rising cost; the extraction overhaul is mod 1.2, superseding §10.110.1's split; nothing tiered for uniformity; same-acre steps (farms, plantations, ranches, rubber) stay methods, gated on the world's technology, deferred as the likely solution pending probes; §10.58's veto B lifted for deposits | in force; every rule of the first book is ruled (the section's "first book's rules" paragraph); open: the 1855 thresholds (proposed), where §10.110.1's other items go; unproven until probes: the world gate, gold's depleted fields, oil's linked discovery; nothing built | here |
 | 10.116 | engines (for mod 1.3): operating energy is paid where the engine runs, and no second engine good; the Electric and Diesel Engines rungs keep a quarter of vanilla's electricity / oil, the rest of its value to steel and copper; the motor ladder becomes t0 Steam · t1 a new rung on pumpjacks · t2 Electric · t3 Diesel, t0 on vanilla's steam recipe and the anchor 1.5 × it; engines on the condensing and diesel pump rungs; the factory power lines' tools become engines; **.1 (the morning after): the drives are a succession, not a choice** — irrigation runs on steam (engines 5 + coal 5, on irrigation's own gate), then on a clearly superior diesel step with fewer engines and less fuel for the same output (default 4 engines + 2.5 oil), gated on the country's own compression ignition; no electric drive anywhere (irrigation's and the top mine rung's both dropped: the rung is the drive); **.2 the names:** the technology `pumpjacks` is shown as "Pumping Engines" (POLISH R9 reversed for it), the t1 rung is "Compound Engines", t0 keeps "Steam Engines" | in force as amended by .1 and .2; nothing built. Open: the diesel step's quantities, the engines' input lift, the base book and runs | here |
-| 10.117 | mod 1.2 starts its centuries at cost slope C 2.0 (from 1.9), the cost level unchanged: mod 1.1.1 is overheated against the mod's own aims, and the tiered deposits as ruled are not a substitute (they add mining jobs); the per-tier ladder 1 / 2.1 / 4.0 was offered and declined | in force; nothing built. Open: whether the 1836–1855 arms carry it, the AI desire ladder at C 2.0, the staffing of the later deposit rungs | here |
+| 10.117 | mod 1.2 starts its centuries at cost slope C 2.0 (from 1.9), the cost level unchanged: mod 1.1.1 is overheated against the mod's own aims, and the tiered deposits as ruled are not a substitute (they add mining jobs); the per-tier ladder 1 / 2.1 / 4.0 was offered and declined | in force; nothing built. Open: the AI desire ladder at C 2.0, the staffing of the later deposit rungs (the 1836–1855 runs carry it too, §10.118) | here |
+| 10.118 | every measurement of our economy is made on the exact book its full runs play; only syntax and performance probes may differ, and a probe is never economy data; enforced by the harness: a short run on a book of ours is a probe or the checkpoint leg of a full run, a continuation inherits its parent's book by verified hash, the readers drop probes | in force; the machinery on branch `same-book-machinery`, merged after the three-arm batch | here |
 
 ---
 
@@ -5556,7 +5557,8 @@ we don't need to start with increased C? This will of course be iteration work a
    raw output and add mining jobs.
 
 **Open (none ruled).**
-1. **Whether the 1836–1855 arms carry C 2.0.** §10.115 accepted that no factory lever moves with the first tiered books, so tiering
+1. **Whether the 1836–1855 arms carry C 2.0.** *Ruled the same day, §10.118: they do, every short run being played on the exact
+   book of its full runs.* As first recorded: §10.115 accepted that no factory lever moves with the first tiered books, so tiering
    is seen alone, and those arms are read against the canon's runs over the same years. Before 1855 the slope acts only through the
    t0 cost and the merge hosts' midpoints. Default until ruled: the 1855 arms stay at C 1.9 and the slope enters with the centuries.
 2. **The AI desire ladder at C 2.0.** It is calibrated per book (CLAUDE.md §2.4); F228's C 2.0 book carried 3,200 / 5,600 on t2 /
@@ -5627,3 +5629,38 @@ game 1.15. The readings are static (§2.8): a dearer rung is built less, which m
 
 **The scripts** (`heat.mjs`, `capital.mjs`) are in `C:\claude-code\cost_start_study_2026-11-17\`, outside the repository while a
 batch plays.
+
+## §10.118 — A SHORT RUN IS PLAYED ON THE EXACT BOOK OF ITS FULL RUNS, AND THE HARNESS LEAVES NO OTHER WAY (user-ruled 2026-11-17)
+
+**The occasion.** Claude asked whether the 1836–1855 arms of the 1.2 book should stay at C 1.9, so that tiering would be read alone
+against the canon's runs, while the centuries carried C 2.0 (§10.117, open item 1). The user: *"What would the use be? Everything
+other than syntax-measuring or performance probes (where, for example, deliberate worsening is permissible to understand the impact)
+must be measured on the exact same books as the full runs."* And then: *"Ensure that this is so by machinery, that there's no
+separate "shorter run book" at all, so no room for mistakes."*
+
+**The ruling.**
+1. **Every measurement of our economy is made on the exact book its full runs play.** A run shorter than the full span is a first
+   reading of that book, not a book of its own. The only exceptions are probes of syntax and of performance, where a build may even
+   be worsened on purpose to see the effect; a probe is never economy data.
+2. **It is enforced by the harness, not by care.** A schedule has no way to state a short run on a book of ours except as a probe or
+   as the first leg of a full run.
+3. **So §10.117's open item 1 is closed: the 1836–1855 runs of the 1.2 book carry C 2.0**, and everything else the century book
+   carries. §10.115's accepted line "No factory lever moves with the first tiered books … so what tiering does is seen alone" no
+   longer holds: the first tiered book is the book that plays the century. (That line is left as recorded; the user stopped an edit
+   marking it.)
+4. **Every open item that changes the book is settled before its first run, short or long** (the consequence; the user had already
+   said the open questions are ruled when the first book builds).
+
+**The machinery** (Claude's design, built on branch `same-book-machinery` in a separate worktree while the three-arm batch plays;
+merged into `main` only after its `SCHEDULE DONE`, CLAUDE.md §5.1 rule 7):
+- **The full span** is a schedule key, `full_until`, 1936.1.1 unless stated.
+- **The gate.** On an arm that builds one of our books, a run that ends before the full span makes the scheduler throw before
+  anything is built, unless it is a **probe** (`probe: "syntax"` or `"performance"`) or a **checkpoint leg** (`checkpoint: true`):
+  the first leg of a full run, stopped early with its save kept.
+- **A continuation inherits its book.** A run that plays on from a save must name its parent run, and the scheduler refuses to
+  launch unless the book's sha256, its tree twin's, the game version, the files that build the mod and the built mod's fingerprint
+  all equal the parent's. A passing 1855 leg and its century are then one game on one book.
+- **The readers never return a probe run** (`lib_runs.usableRuns`), so a probe build cannot enter a register reading.
+- **A landmine with a detector** that proves in every build that the gate trips.
+
+Its state, deviations and proofs are recorded when the branch is reviewed and merged (BACKLOG).

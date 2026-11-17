@@ -23,10 +23,12 @@ builds."* They are collected in §5 with a proposed default each, so the first b
 1. **The release this book is for.** §10.115 ruling 4 makes the extraction overhaul **mod 1.2**; the user asked for the engine rebalance
    *"for 1.3"* and then called the combined book *"the 1.3 starting book"*. Either the combined book is mod 1.2, or the overhaul has
    moved to 1.3. This page says "the next book" until that is said.
-2. **Whether the engine rebalance joins the first tiered books.** §10.115 accepted *"No factory lever moves with the first tiered books.
-   They are read against their base canon, so what tiering does is seen alone."* The engine rebalance moves the motor ladder and the
-   factory power lines, so a combined starting book no longer shows tiering alone. §4 lists a deposits-only arm as the way to keep that
-   reading; whether it is wanted is the user's.
+2. **What the book contains.** Since §10.118 (2026-11-17) there is no separate book for the short runs: the 1836–1855 legs are played
+   on the exact book that plays the century, so §10.115's accepted *"No factory lever moves with the first tiered books … so what
+   tiering does is seen alone"* no longer holds, and the book carries C 2.0 from its first run (§10.117). What is left to confirm is
+   whether the engine rebalance (§2.2–§2.4; ruled *"for 1.3"*) is in the same book as the tiered deposits or in the next one. A
+   deposits-only reading exists only if a deposits-only book is also to play centuries (§4).
+3. **Every open item of §5 that changes the book is settled before its first run**, short or long (§10.118).
 
 ## 2. The starting book, in build order
 
@@ -36,7 +38,7 @@ ladder moves (A 2.2, B 1.64, C 1.9, input lift 1.2, engines 1.0) except what §2
 
 - **The century arms start at C 2.0** (§10.117, user-ruled 2026-11-17; `--cost-ratio 2.0` in the recorded chain, `cost1` unset): t2
   costs 5% more and t3 11% more, t1 the same, the non-craft t0 5% less. It is a start for iteration; C 2.1 is the next bracket.
-  Whether the 1836–1855 arms carry it is open (§5, item 11); this page assumes they stay at C 1.9.
+  Every run of the book carries it, the 1836–1855 legs included: a short run is played on the exact book of its full runs (§10.118).
 
 ### 2.1 Deposits become rungs (§10.115)
 
@@ -145,7 +147,10 @@ diesel step is cheaper than steam in 99–100% of states; with the same engines 
 ## 4. The variations
 
 **Ruled (§10.115):** the cost step per rung above the 1836-map rungs at **1.3, 1.6 and 1.9**, three arms, each through the 2+1 quick
-config test on **1836–1855** runs, read against the existing vanilla 1.15.1 and canon runs over the same years; centuries after. Pass:
+config test on **1836–1855** runs, read against the existing vanilla 1.15.1 and canon runs over the same years; centuries after.
+**Each arm is one book from its first run (§10.118):** its 1836–1855 runs are the checkpoint legs of century runs on that book
+(`checkpoint: true`), and an arm that passes plays its century on the same book, continued from the legs' saves or started fresh;
+the scheduler refuses a short run on any other terms once the gate is merged. Pass:
 (a) the start is vanilla's — the register's 1836–1845 anchor line, the 1837 mining levels and output by good, raw-material prices at
 the first dump inside vanilla's seed spread; (b) 1855 is not dead in half the world. The thresholds for (b) are a proposal the user left
 for later (a country dead under 0.66 × vanilla's median; dead in both runs holding over 5% of the world a flag, over 20% a fail; world
@@ -153,7 +158,8 @@ GDP at 1855 outside 0.90–1.10 a flag). Read beside them: slot fill by rung, a 
 mining employment.
 
 **Proposed, none ruled** (each is another 2+1 on 1836–1855, so say which are wanted before any is built):
-- **Deposits only** — §2.1 without §2.2–§2.4, at one cost step: what tiering does alone (§1, item 2).
+- **Deposits only** — §2.1 without §2.2–§2.4, at one cost step: what tiering does alone. Under §10.118 it is run only as a book that
+  also plays centuries (§1, item 2).
 - **The diesel irrigation step's quantities** — 4 engines + 2.5 oil against 3 + 2 (more room for the oil price the new demand
   raises). It acts only once compression ignition is held, so centuries read it, not 1855.
 - **The engines' input lift** — 1.0 against 1.2, the routine counter-lever to the motor anchor's × 1.5 (§10.101).
@@ -177,13 +183,15 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 | 8 | where §10.110.1's other items go (the retune, military research, tier-scaled secondary lines, the minor fixes) | not in this book | §10.115 |
 | 9 | the cost of oil's second rung | × step, as a rung above the first | this page's reading |
 | 10 | whether the electric saw mills and steam trawler rungs want engines or a drive as the pump rungs do | no: §10.116 names the pump rungs only | this page's reading |
-| 11 | whether the 1836–1855 arms carry C 2.0 (before 1855 the slope acts only through the t0 cost and the merge hosts' midpoints) | no: they stay at C 1.9, read against the canon, and the slope enters with the centuries | §10.117, §10.115 |
+| 11 | RULED, no longer open: the 1836–1855 runs carry C 2.0, being played on the exact book of the centuries | — | §10.118 |
 | 12 | the AI desire ladder at C 2.0 (calibrated per book; F228's C 2.0 book carried 3,200 / 5,600 on t2 / t3) | the canon's 1000 / 1000 / 3000 / 5000 | §10.117 |
 
 ## 6. The order of work
 
-1. `SCHEDULE DONE` of the three-arm batch; then commit the readers worth keeping from `C:\claude-code\extraction_study_2026-11-16\`
-   and `C:\claude-code\engine_study_2026-11-17\` (the session scripts of §10.115 and §10.116, kept outside the repo meanwhile).
+1. `SCHEDULE DONE` of the three-arm batch; then commit the readers worth keeping from `C:\claude-code\extraction_study_2026-11-16\`,
+   `C:\claude-code\engine_study_2026-11-17\` and `C:\claude-code\cost_start_study_2026-11-17\` (the session scripts of §10.115–§10.117,
+   kept outside the repo meanwhile), and **review and merge branch `same-book-machinery`** (§10.118: the scheduler's gate on short
+   runs, checkpoint legs and verified continuations; worktree `C:\claude-code\nfu_wt_samebook`). No run of the new book before it is in.
 2. **The probes**, each on the arm that fits (an engine question on vanilla + telemetry), with the go-ahead: gold's depleted fields;
    oil's linked discovery (and that vanilla's oil events on the hook do not fire twice); the world-technology gate
    (`unlocking_global_technologies`, unused by vanilla) and how the AI switches a method when its input is scarce — the last also
