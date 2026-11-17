@@ -5909,8 +5909,27 @@ GDP, every second year 1880–1936, economic buildings only):
 
 The four arm-and-version sets agree. Building slows steadily from about 15% down; the pool starts piling up at about twice its usual
 rate under 5% and steeply under 2%. There is no cliff above 5%. The empty share of building levels rises slowly (6.5% at 30–50%,
-10.6% under 1%) and shows no knee. Hoarding also begins in countries with plenty of peasants (of the country-runs whose pool ever
-passes 1.5 GDP, a quarter began at a U\* above 20–34%), so the two wordings do not always coincide.
+10.6% under 1%) and shows no knee.
+
+**Hoarding with peasants left is still a lack of labour.** Claude first read "of the country-runs whose pool ever passes 1.5 GDP, a
+quarter began hoarding above 20% U\*" as hoarding having other causes. The user: *"Several things can affect that, and they're
+broadly still described as "a lack of labour". Order is by increasing expected prevalence. 1) investment can be
+infrastructure-constrained on state level, not only labour-constrained. This shouldn't happen when railroads can be built, but maybe
+in rare cases it does 2) a country with no labour can have plenty of subjects and concessions with labour, which delays hoarding
+(and is arguably more or less OK, e.g. for GB) 3) certain laws prohibit full depeasantation, mandate that some peasants stay
+peasants regardless of opportunities. I think the extreme cases of "more than 20% are peasants and the hoard piles" are very likely
+all this"*. Checked on the game 1.15.1 batch (`onset*.mjs`; 63 country-runs whose pool ever passes 1.5 GDP, by U\* in the first year
+of the final spell above 0.5 GDP, with the country's laws that year):
+
+| U\* when the hoard began | country-runs | who they are |
+|---|---|---|
+| above 20% | 17 | 14 unrecognized countries; 12 under Traditionalism, 3 under Serfdom (China twice, Korea); 11 are subjects, nearly all Indian princely states under the East India Company (Awadh 5, Nagpur 2, Mysore 2, Hyderabad, Satara, Panjab). One shortlist member: the USA in one mod run (24%, 1911) |
+| 10–20% | 14 | Assam 9 (a subject); Britain 1, Germany 1; all under Tenant Farmers, 9 under Traditionalism |
+| under 10% | 32 | 26 recognized countries; Britain 11, the USA 2, the Netherlands 2, Germany 2, Belgium 2; Laissez-Faire 14, Interventionism 13 |
+
+So the extreme cases are law-bound countries outside the shortlist, as the user expected, and among the shortlist's members 19 of 22
+hoarding cases began under 10%: for the countries the register reads, the two wordings coincide. Not established: which law binds
+in each case (the summaries record the laws, not the mechanism), and how often cause 1 occurs.
 
 **To calibrate** (none settled): the labour wording's level and how long it must hold; the hoarding wording's level and what "not
 falling" means; how much of the economy being read must be past the barrier before a reading is void (Britain is under 5% from
