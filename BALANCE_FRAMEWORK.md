@@ -87,6 +87,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.117 | mod 1.2 starts its centuries at cost slope C 2.0 (from 1.9), the cost level unchanged: mod 1.1.1 is overheated against the mod's own aims, and the tiered deposits as ruled are not a substitute (they add mining jobs); the per-tier ladder 1 / 2.1 / 4.0 was offered and declined | in force; nothing built. Open: the AI desire ladder at C 2.0, the staffing of the later deposit rungs (the 1836–1855 runs carry it too, §10.118) | here |
 | 10.118 | every measurement of our economy is made on the exact book its full runs play; only syntax and performance probes may differ, and a probe is never economy data; enforced by the harness: a short run on a book of ours is a probe or the checkpoint leg of a full run, a continuation inherits its parent's book by verified hash, the readers drop probes | in force; the machinery on branch `same-book-machinery`, merged after the three-arm batch | here |
 | 10.119 | where §10.110.1's older 1.2 and 1.3 items go, ruled one by one: 1 the retune is the iteration of the 1.2 book (C 2.0 its first move; F234's ladder superseded as a start; paper's lift stays 1.2 in the first book); 2 tier-scaled secondary lines and the crafts' lines are in the 1.2 book — a line takes the same share of its rung's own output on every rung (today's t2 share), each named "<line> (Tier N)", a merged building's line sized on its upper method, crafts carry the four handcraft lines, automation unchanged; 3 military research is in the 1.2 book as a lower AI weight on technologies a research entry can deliver (the user's form: −20% where the entry exists and literacy allows it, −90% while it is advancing for the country, the finish boost still winning), the figures settled after 10-year probes and a model, frontline entries never lowered and naval ones lowered; 4 the urban centres' streetlights stay as they are (no × 2 / × 3, no copper), closed; 5 the electricity build condition stays deferred, not in 1.2; 6 the higher tier's research mark for a technology unlocking two tiers is built into 1.2 as a general rule, and crafts stay research sources (POLISH P3 closed); 7 both craft seeding defects (Valencia, New York) are fixed in 1.2; 8 the register on game 1.15 is settled right after this list, before any 1.2 century, starting with which lines stay hard; 9 the five text and check items stay with 1.2 as release tasks; 10–13 treaty ports, building groups per industry, artisanal ownership and the wider AI research weight retune stay after 1.2, no release named; 14 mod 1.2's date is "December", no details | in force; nothing built; the list is complete | here |
+| 10.120 | the register redone: the important goals are absolute levels of the mod's own, and of the vanilla-referenced ones only world GDP matters; every aim is soft; there is ONE barrier, about validity and not severity — the investment loop broke (lack of labour and hoarding are two wordings of it), past which every other reading is unreliable; the numbers are calibrated on data | the principle in force; the numbers, CLAUDE.md §3.1–§3.2 and `criteria.mjs` not yet | here |
 
 ---
 
@@ -5854,3 +5855,64 @@ rebalance (§10.116 as amended), cost slope C 2.0 (§10.117), tier-scaled second
 rule once its figures are settled (item 3), the general higher-tier research mark (item 6) and the craft seeding fixes (item 7).
 Outside it, with 1.2: the register's rulings (item 8) and the text and check items (item 9). Not in 1.2: the streetlights' changes
 (closed), the electricity build condition, items 10–13.
+
+## §10.120 — THE REGISTER REDONE: ABSOLUTE AIMS FIRST, ONE VALIDITY BARRIER (user-ruled 2026-11-17; the numbers not yet)
+
+**The occasion.** Opening the register's rulings (§10.119 item 8), Claude proposed keeping only the world-GDP band and the 1836–1845
+start as hard lines and making the 10% depeasantation line and capital abundance soft, on the argument that vanilla 1.15.1 itself
+breaks them. The user: *"Redo completely. But generally, capital abundance / full depeasantation should be hard barriers (as they
+break other readings), and others -- only soft. Remember the core approach: there are goals in reference to vanilla, and they are
+generally less important (only GDP/vanilla is an important target). And there are more important goals that are worded in absolute
+percentages (e.g. "shortlist major except GBR peasants of 20% by 1935", spitballing here. The numbers can vary greatly, but the
+principle is very important (and while I've recently asked you to document it thoroughly, I'm unsure how it now looks)."* And on
+Claude's redone table, which still listed two hard barriers as the worst lines: *"Hard barriers aren't the ones that are "worse" to
+break, in a way. They're equally bad to a soft barrier that's broken (aka an aim that's missed by a lot). Hard barriers are those
+which make all readings except the broken line unreliable, as the economy gets vastly unbalanced past that point. That's why there's
+only one principle barrier, with two wordings (hoarding / lack of labour mean the same: the investment loop broke). Numbers need
+calibrating on data."*
+
+**The principle** (it completes §10.113, which said the two kinds of goal but left the old hard lines standing and the register's
+table and tool on ratios).
+1. **Two kinds of goal, and their weight.** The important goals are levels of the mod's own, worded in absolute percentages. Goals
+   in reference to vanilla are generally less important; of them only world GDP ÷ vanilla is an important target.
+2. **Every aim is soft.** An aim missed by a lot is as bad as it gets; there is no worse grade.
+3. **There is one barrier, and it is about validity, not severity: the investment loop broke.** It has two wordings that mean the
+   same thing, a lack of labour to hire (full depeasantation) and capital piling up unspent (hoarding, capital abundance). Past it
+   the economy is so unbalanced that every reading except the broken line is unreliable, so a run past it reports that line and
+   nothing else as a result.
+4. **Vanilla is not the yardstick for an own-level goal or for the barrier.** That vanilla crosses a line says nothing about the line.
+5. **The numbers are calibrated on data**, not carried over and not argued.
+
+**The structure that follows** (Claude's, shown to the user before the second quote; the numbers are placeholders):
+the barrier · the main aims as absolute levels (the world's U\* at the end; each shortlist major's except Britain in 1935, the user's
+example 20%; as few majors as possible with a pool above half their GDP) · the one important aim against vanilla (world GDP,
+0.90–1.00) · minor readings against vanilla (productive workers, the shortlist's GDP, the price indices, the 1886 path, the
+1836–1845 start) · the readings of the mod's own about old plants (T0, T3). The world-GDP band and the 1836–1845 start are no longer
+hard.
+
+**A first calibration reading** (session scripts `loop*.mjs`, not a finding; 42 centuries: mod and vanilla on game 1.15.1, session
+`20261112_113429`, and on game 1.15.0, session `20261109_005943`; 43,003 country-years of countries holding at least 0.5% of world
+GDP, every second year 1880–1936, economic buildings only):
+
+| the country's U\* that year | its pool ÷ GDP rises by more than 0.25 over the next 4 years | levels built a year over the next 4 years (median) |
+|---|---|---|
+| 30–50% | 0.9% of country-years | 2.7% |
+| 20–30% | 1.7% | 2.9% |
+| 15–20% | 2.2% | 2.8% |
+| 10–15% | 1.9% | 2.8% |
+| 7.5–10% | 1.8% | 2.6% |
+| 5–7.5% | 2.7% | 2.4% |
+| 3–5% | 3.2% | 2.2% |
+| 2–3% | 3.7% | 2.1% |
+| 1–2% | 6.8% | 1.9% |
+| under 1% | 12.2% | 1.5% |
+
+The four arm-and-version sets agree. Building slows steadily from about 15% down; the pool starts piling up at about twice its usual
+rate under 5% and steeply under 2%. There is no cliff above 5%. The empty share of building levels rises slowly (6.5% at 30–50%,
+10.6% under 1%) and shows no knee. Hoarding also begins in countries with plenty of peasants (of the country-runs whose pool ever
+passes 1.5 GDP, a quarter began at a U\* above 20–34%), so the two wordings do not always coincide.
+
+**To calibrate** (none settled): the labour wording's level and how long it must hold; the hoarding wording's level and what "not
+falling" means; how much of the economy being read must be past the barrier before a reading is void (Britain is under 5% from
+1906–1925 on in every mod run and in nine vanilla runs of ten, so "any major" would void every run); and a test of the
+unreliability itself, the spread of the other readings past the barrier against before it. Then the levels of the aims.
