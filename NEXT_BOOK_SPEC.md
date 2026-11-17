@@ -238,7 +238,9 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 - **DLC gates** on every copied or generated block (L39).
 - **Names.** A deposit rung is not on the tier ladder of §2.3 of CLAUDE.md (its output does not rise with tier); what its in-game name
   says is unruled.
-- **Research.** Whether the deposit rungs' technologies get research entries, and their marks; pumpjacks takes the standard entry of a
+- **Research.** Ruled (§10.119 item 6): the higher tier's mark for a technology that unlocks rungs of two tiers is built as a
+  general rule in `emit_research_events.mjs` (today `Math.min`), and crafts stay research sources. Still unruled: whether the
+  deposit rungs' technologies get research entries, and their marks; pumpjacks takes the standard entry of a
   t1 rung's technology (today it has none); a technology that unlocks rungs of two tiers takes the higher tier's mark (§10.110.3, ruled,
   not built) — compression ignition now gates the motor's t3, the mines' top rung and irrigation's diesel step.
 - **Linters:** `lint_tier_eras.mjs` recomputes every rung from the book's records, so the two new formula cases of §2.2 and the deposit
