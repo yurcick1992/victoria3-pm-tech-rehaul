@@ -5931,6 +5931,25 @@ So the extreme cases are law-bound countries outside the shortlist, as the user 
 hoarding cases began under 10%: for the countries the register reads, the two wordings coincide. Not established: which law binds
 in each case (the summaries record the laws, not the mechanism), and how often cause 1 occurs.
 
+**The barrier's form: hoarders of a size that matters, sustained; no primary check on labour** (the user's direction, 2026-11-17;
+the levels still to be calibrated). Claude proposed counting a country's labour together with its subjects'; asked for the numbers,
+the user added: *"Maybe we don't need a primary check on labour at all. Basically check hoarders, and then exclude those too small
+to matter. Idk."* And: *"the "run is broken because the loop is broken by hoard" takes time. If GBR has a hoard of 3 GDP in 1935,
+but didn't have it in 1931, this is definitely fine. We shouldn't be too strict with hard barriers."* The numbers (game 1.15.1
+batch, `hoard*.mjs`):
+- **With subjects** (medians, own | with subjects): Britain 15.6% | 47.3% in 1900, 2.9% | 14.8% in 1920, 0.2% | 5.1% in 1935 in the
+  mod (vanilla 19.4 | 41.8, 1.8 | 21.5, 0.8 | 7.2); nobody else moves by more than a few points (France 1.6% | 2.4%, the Netherlands
+  0.9% | 2.4%, the USA and Germany unchanged in 1935).
+- **A shortlist member with labour does not hoard** (members of at least 2% of world GDP, member-years, both arms): at a U\* above
+  20% the pool is above 1 GDP in none of 2,705 member-years (99th percentile 0.35); at 10–20% in 1.8%; at 5–10% in 4.8%; at 2–5% in
+  5.7%; under 2% in 29.5% (median pool 0.53 GDP). Inside a spell above 1.5 GDP a member's U\* never passed 10.2%. So a check on
+  the hoard carries the labour condition with it.
+- **How strict each form is** (runs of ten in which a shortlist member of at least 2% of world GDP holds a pool above P for N
+  consecutive years; vanilla | mod): P 1: 6 | 7 at five years, 4 | 4 at ten, 2 | 4 at fifteen; P 1.5: 5 | 6, 2 | 2, 0 | 2; P 2:
+  3 | 3, 1 | 2, 0 | 2; P 3: 2 | 2, 0 | 2, 0 | 0. From P 1.5 and ten years it is Britain alone. The mod's spells above 1 GDP begin
+  between 1916 and 1932.
+- Rump states fall out by the size condition (the Netherlands' pool reached 81 times its GDP in one run).
+
 **To calibrate** (none settled): the labour wording's level and how long it must hold; the hoarding wording's level and what "not
 falling" means; how much of the economy being read must be past the barrier before a reading is void (Britain is under 5% from
 1906–1925 on in every mod run and in nine vanilla runs of ten, so "any major" would void every run); and a test of the
