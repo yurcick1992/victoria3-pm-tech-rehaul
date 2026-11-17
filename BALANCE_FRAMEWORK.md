@@ -5694,8 +5694,14 @@ and a content fingerprint that leaves the telemetry file out (its size differs b
 - **Deviations from the design:** an unflagged short run on an arm that builds no book of ours is recorded as `short`; a
   continuation's arm must equal its parent's; cleanliness is judged on the paths that build the mod, not the whole repository (the
   main checkout holds uncommitted document edits most days); the mod's metadata file counts only beyond its build stamp.
-- **Holes it reported, being closed on the same branch:** a schedule could set `full_until` earlier and so call an 1855 run full;
-  a release arm, which builds a book, was not gated; an external arm's continuation did not compare the third-party mod.
+- **Holes it reported, closed the same day in commit `4310191`:** the full span is now fixed (a schedule may state `full_until`
+  only as 1936.1.1; any other value is refused), so an 1855 run cannot be called full; a release arm, which builds a book, is gated
+  like a config arm (an overlay arm is vanilla plus one declared file and is not); a continuation on someone else's mod compares
+  that mod's fingerprint with its parent's. The detector fails when each of the three is broken on purpose.
+- **Still open after that:** two standing schedules hold a short run on a book with no flag and are now refused as written
+  (`no_dlc_load_test.json`, `polish_final_smoke.json`; each needs `probe: "syntax"` before its next launch); a fingerprint sees
+  file names and sizes, not contents (the book itself is compared by sha256); the game version is the number, so a hotfix that
+  keeps it is caught only by the fingerprint.
 - **Also reported:** two checkouts of one commit can build different bytes through line endings, so a continuation should run from
   the checkout that played its parent; `-WhatIf` cannot pass preflight while any game runs (L19, as before).
 
