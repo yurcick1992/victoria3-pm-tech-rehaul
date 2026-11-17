@@ -5978,6 +5978,43 @@ are Claude's and were not objected to. On the game 1.15.1 batch it marks 6 vanil
 test of where the other readings stop being reliable, which could still move the level; the change in `criteria.mjs` (under
 `tools/testbed/`, not edited while a batch plays).
 
+**The depeasantation aims: eight, at historical levels** (the user, 2026-11-17, in place of Claude's "the world about 50% and each
+of the USA, France and Germany at 20% or more in 1935"): *"8 aims at 2 points (1913 and 1935): world-level; GBR; USA; GER (or if
+lacking, NGF, or if lacking, PRU). Aim for historical levels. Advise on ways to translate the historical data (usually "all
+agricultural employment") into peasants / small-hold homesteaders only."* So: the world, Britain, the USA and Germany, each at 1913
+and at 1935, each aimed at its historical level. France is not among them.
+
+**The translation, advised (not ruled).** The game's peasants are the people on subsistence farms; the workers of farm buildings are
+productive. History's "agricultural employment" holds both.
+1. **By status in employment (Claude's recommendation):** count the holders (farmers, tenants, sharecroppers) and the unpaid family
+   members working with them; leave out hired labourers, farm servants and salaried staff. The censuses give it for all three
+   countries.
+2. **With a size cut on top:** count only the small holdings, since a large family farm is commercial agriculture in the game. It
+   needs the farm censuses by size of holding, which were not read.
+3. **By market orientation:** agricultural labour × the share of farm output consumed on the farm. Nearest to what "subsistence"
+   means, but it rests on estimates, not counts.
+4. **Not a level:** indexing history's decline to the game's own 1836 start. Mentioned because the game's early peasant shares are
+   far above historical farm employment (Britain about 52–55% in 1860 in both arms, against about a fifth to a quarter of the United
+   Kingdom's occupied population in agriculture), so the game's peasants are more than smallholders until that surplus is absorbed.
+
+**Candidate levels by way 1** (provisional; web search summaries except where marked as memory):
+
+| | farm share of the workforce | holders and family among them | candidate aim | the mod today (medians) |
+|---|---|---|---|---|
+| USA 1913 | 31.0% in 1910, 27.0% in 1920 | about three quarters (1930: 2.7M of 10.5M worked for wages) | about 22% | 29.7% in 1910 |
+| USA 1935 | 21.4% in 1930 | the same | about 15% | 2.1% |
+| Britain 1913 | United Kingdom 12.4%, England and Wales 8.4%, Ireland 44.1% (1901) | England and Wales 1911: 383 thousand farmers and relatives against 833 thousand farm workers, 31%; Ireland mostly holders (memory) | about 6% | 6.3% in 1910 |
+| Britain 1935 | Great Britain 7% (about 1931) | about a third | 2–3% without Ireland, 5–6% if the game's Britain still holds it | 0.2% |
+| Germany 1913 | 9.88M of 31.5M in 1907, 31% (29–35% by denominator) | 2.5M self-employed; family helpers about 3.9M of the 7.3M "workers" (memory) | about 21% | 38.5% in 1910 |
+| Germany 1935 | about 29% in 1933 (memory) | about 70% (memory) | about 20% | 1.0% |
+| world 1913 | about 70% (memory; over 60% in 1950 by the ILO) | about 85% (an assumption) | about 60% | 53.6% in 1910 |
+| world 1935 | about 65% (interpolated) | the same | about 55% | 33.4% |
+
+At 1913 the mod sits near these levels; by 1935 it is far under all of them, which is the heat arriving after 1900 (§10.117).
+**Open:** which way of translating; whether the aims read the game's peasants alone or peasants with the unemployed (history's 1935
+had mass unemployment the game does not have); Britain's 1935 level with or without Ireland; the figures marked as memory, which
+need their sources; the aims' form (a level read as the median of the runs, with its range).
+
 **To calibrate** (none settled): the labour wording's level and how long it must hold; the hoarding wording's level and what "not
 falling" means; how much of the economy being read must be past the barrier before a reading is void (Britain is under 5% from
 1906–1925 on in every mod run and in nine vanilla runs of ten, so "any major" would void every run); and a test of the
