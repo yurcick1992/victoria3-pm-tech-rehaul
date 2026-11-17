@@ -6023,8 +6023,8 @@ NGF, else PRU.
 
 Read as U\* (peasants and unemployed), the end as the 1932–1936 mean (`aims8.mjs`). Vanilla 1.15.1 beside it, not as a yardstick:
 USA 29.5% and 1.4%, Britain 6.1% and 1.0%, Germany 33.6% and 0.5%, the world 50.6% and 30.9%. ⚠ Peasants ALONE read lower, and for
-the world much lower: 38.5% in 1913 and 25.3% at the end in the mod (the majors within a point or three). Which of the two the aims
-read is not ruled.
+the world much lower: 38.5% in 1913 and 25.3% at the end in the mod (the majors within a point or three). **Ruled the same day: the
+aims read peasants together with the unemployed** (the user: *"With the unemployed"*), the register's U\* as it has always been.
 
 At 1913 the mod sits near these levels; by 1935 it is far under all of them, which is the heat arriving after 1900 (§10.117).
 **Open:** which way of translating; whether the aims read the game's peasants alone or peasants with the unemployed (history's 1935
