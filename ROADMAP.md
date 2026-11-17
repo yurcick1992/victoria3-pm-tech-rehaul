@@ -130,6 +130,11 @@ extraction overhaul for 1.2 already (not 1.3)."*
   oil; rounding up; equal value added at base prices; 5,000 workers a level; output-adding secondary lines × the slot ratio on every
   rung; vanilla's cost on the 1836-map rungs and a step above; vanilla's AI desire on every rung; no factory lever moved; the base book
   is the latest canon when building starts.
+- **The centuries start at cost slope C 2.0** (§10.117, user-ruled 2026-11-17), from the canon's 1.9, the cost level unchanged: mod
+  1.1.1 is overheated against the mod's own aims (the world's U\* 33% in 1935 against the 50% aim; France and Britain depeasanted), and
+  the heat arrives after 1900. A start for iteration; C 2.1 is the next bracket. The tiered deposits are not counted on for this: at
+  5,000 workers a level they need 1.5–2 × the miners for the same output. Whether the 1836–1855 arms carry the slope is open (default:
+  no, so "no factory lever moved" still holds for them).
 - **The order, after the three-arm batch:** the probes (gold's depleted fields, oil's linked discovery, the world gate) → the generator
   and two readers (slot fill by rung, a raw-material price index) → 1836–1855 runs, three cost-step arms (1.3 / 1.6 / 1.9) through
   2+1, passing on a start like vanilla's and an 1855 that is not dead in half the world → centuries. Every run needs the user's go-ahead.

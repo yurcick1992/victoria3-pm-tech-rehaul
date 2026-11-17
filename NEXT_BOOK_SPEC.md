@@ -1,6 +1,6 @@
 # The next book — build specification
 
-**What this is.** One page that puts together the rulings of BALANCE_FRAMEWORK **§10.115** (tiered deposits, 2026-11-16) and **§10.116**
+**What this is.** One page that puts together the rulings of BALANCE_FRAMEWORK **§10.115** (tiered deposits, 2026-11-16), **§10.117** (the centuries start at cost slope 2.0, 2026-11-17) and **§10.116**
 (the engine rebalance, which is the electric engines redo, 2026-11-17, as amended the morning after by **§10.116.1**: the drives are a
 succession, not a choice), in the order a generator needs them, so the session that builds
 the starting book and its variations can work from here. Written at the user's word (2026-11-17): *"combine the rulings with the ones from
@@ -32,7 +32,11 @@ builds."* They are collected in §5 with a proposed default each, so the first b
 
 **The base** is the latest canon when building starts (§10.115): today `config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json`
 (sha256 `697d4869aefc3225`, mod 1.1.1 on game 1.15.1). Agree it before building (CLAUDE.md §5.1 rule 3). Nothing of the base's factory
-ladder moves (A 2.2, B 1.64, C 1.9, input lift 1.2, engines 1.0) except what §2.2 and §2.4 say.
+ladder moves (A 2.2, B 1.64, C 1.9, input lift 1.2, engines 1.0) except what §2.2 and §2.4 say, and the cost slope:
+
+- **The century arms start at C 2.0** (§10.117, user-ruled 2026-11-17; `--cost-ratio 2.0` in the recorded chain, `cost1` unset): t2
+  costs 5% more and t3 11% more, t1 the same, the non-craft t0 5% less. It is a start for iteration; C 2.1 is the next bracket.
+  Whether the 1836–1855 arms carry it is open (§5, item 11); this page assumes they stay at C 1.9.
 
 ### 2.1 Deposits become rungs (§10.115)
 
@@ -153,6 +157,8 @@ mining employment.
 - **The diesel irrigation step's quantities** — 4 engines + 2.5 oil against 3 + 2 (more room for the oil price the new demand
   raises). It acts only once compression ignition is held, so centuries read it, not 1855.
 - **The engines' input lift** — 1.0 against 1.2, the routine counter-lever to the motor anchor's × 1.5 (§10.101).
+- **The cost slope beyond the ruled start** — C 2.1 after C 2.0 (§10.117), on centuries only. At the 1.1.1 batch's realised prices
+  t3 still pays back faster than t2 at C 2.0 in every decade and comes level with it by 1935 at C 2.1.
 
 A 1836–1855 run reads the deposit rungs up to the condensing pump (water-tube boiler is tech era 2), engines on that rung, the motor's
 t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks, tech era 3), irrigation's drives, or the diesel rungs.
@@ -167,10 +173,12 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 | 4 | whose technology gates a drive | RULED for the diesel step: the country's own. The steam drive follows irrigation's gate: the host's until the world-gate probe passes | §10.116.1, §10.115 |
 | 5 | the engines' input lift | 1.0, unchanged | §10.116 |
 | 6 | the 1855 thresholds | as proposed in §4 | §10.115 |
-| 7 | the staffing of the later deposit rungs | 5,000 on every rung (ruled to start with) | §10.115 |
+| 7 | the staffing of the later deposit rungs. ⚠ At 5,000 a level and output 40, the same raw output needs 1.5–1.75 × vanilla's miners (twice on a full deposit), so the overhaul adds productive workers where mod 1.2 wants fewer (§10.117) | 5,000 on every rung (ruled to start with) | §10.115, §10.117 |
 | 8 | where §10.110.1's other items go (the retune, military research, tier-scaled secondary lines, the minor fixes) | not in this book | §10.115 |
 | 9 | the cost of oil's second rung | × step, as a rung above the first | this page's reading |
 | 10 | whether the electric saw mills and steam trawler rungs want engines or a drive as the pump rungs do | no: §10.116 names the pump rungs only | this page's reading |
+| 11 | whether the 1836–1855 arms carry C 2.0 (before 1855 the slope acts only through the t0 cost and the merge hosts' midpoints) | no: they stay at C 1.9, read against the canon, and the slope enters with the centuries | §10.117, §10.115 |
+| 12 | the AI desire ladder at C 2.0 (calibrated per book; F228's C 2.0 book carried 3,200 / 5,600 on t2 / t3) | the canon's 1000 / 1000 / 3000 / 5000 | §10.117 |
 
 ## 6. The order of work
 

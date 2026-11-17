@@ -84,6 +84,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.114 | for mod 1.2 the world's U\* gives way to the world-GDP aim (0.90–1.00× vanilla), U\* still as high as that allows; infrastructure subsidies come back only if the countries short of infrastructure are the ones that hoard — read on mod 1.1.1: they are not, so game 1.15.1's rule stays | in force for 1.2; the subsidy reading is Claude's, directional | here |
 | 10.115 | deposits are tiered (each main method of a resource-capped building a building with slots of its own: two methods → vanilla's slots × 1.5, three or four → × 2, split equally), first design flat output per tier with rising cost; the extraction overhaul is mod 1.2, superseding §10.110.1's split; nothing tiered for uniformity; same-acre steps (farms, plantations, ranches, rubber) stay methods, gated on the world's technology, deferred as the likely solution pending probes; §10.58's veto B lifted for deposits | in force; every rule of the first book is ruled (the section's "first book's rules" paragraph); open: the 1855 thresholds (proposed), where §10.110.1's other items go; unproven until probes: the world gate, gold's depleted fields, oil's linked discovery; nothing built | here |
 | 10.116 | engines (for mod 1.3): operating energy is paid where the engine runs, and no second engine good; the Electric and Diesel Engines rungs keep a quarter of vanilla's electricity / oil, the rest of its value to steel and copper; the motor ladder becomes t0 Steam · t1 a new rung on pumpjacks · t2 Electric · t3 Diesel, t0 on vanilla's steam recipe and the anchor 1.5 × it; engines on the condensing and diesel pump rungs; the factory power lines' tools become engines; **.1 (the morning after): the drives are a succession, not a choice** — irrigation runs on steam (engines 5 + coal 5, on irrigation's own gate), then on a clearly superior diesel step with fewer engines and less fuel for the same output (default 4 engines + 2.5 oil), gated on the country's own compression ignition; no electric drive anywhere (irrigation's and the top mine rung's both dropped: the rung is the drive); **.2 the names:** the technology `pumpjacks` is shown as "Pumping Engines" (POLISH R9 reversed for it), the t1 rung is "Compound Engines", t0 keeps "Steam Engines" | in force as amended by .1 and .2; nothing built. Open: the diesel step's quantities, the engines' input lift, the base book and runs | here |
+| 10.117 | mod 1.2 starts its centuries at cost slope C 2.0 (from 1.9), the cost level unchanged: mod 1.1.1 is overheated against the mod's own aims, and the tiered deposits as ruled are not a substitute (they add mining jobs); the per-tier ladder 1 / 2.1 / 4.0 was offered and declined | in force; nothing built. Open: whether the 1836–1855 arms carry it, the AI desire ladder at C 2.0, the staffing of the later deposit rungs | here |
 
 ---
 
@@ -5536,3 +5537,93 @@ additions bars.
 languages (new names stay English today, CLAUDE.md §5.4, where vanilla's name was translated); the icon, which still shows a
 pumpjack; the entry in `TECH_RENAMES_RULED` (`tools/lib_tier4_spec.mjs`, empty today, and not edited while a batch plays) and what the
 vanilla-name lint says to it; a patch-notes line, a rename of this kind being a major one.
+
+## §10.117 — MOD 1.2 STARTS ITS CENTURIES AT COST SLOPE 2.0 (user-ruled 2026-11-17)
+
+**The occasion.** The user: *"The economy is clearly overheated in 1.1.1. Not only in GDP numbers (they're a bit fiddly, as they're
+anchored to changing vanilla situation), but also on peasants: France gets depeasanted by 1930s, Britain is depeasanted worse than
+vanilla for the whole game duration. At the same time, productivity per productive worker is probably acceptable, it's the number of
+productive workers that's too high. This begs for a capital cost push in 1.2 compared to 1.1.1. Where do you propose the starting C
+to be? Or do you think that with more capital now needed for rural industries (just how much more for roughly the same potential?),
+we don't need to start with increased C? This will of course be iteration work anyway. But still, where should we start?"*
+
+**The ruling.**
+1. **The century arms of the mod 1.2 book start at cost slope C 2.0**, from the canon's 1.9: t2 costs 5% more and t3 11% more; t1
+   is unchanged and the non-craft t0 (K₁ ÷ C) 5% less. The cost level (`cost1`) is not moved. Claude proposed it; asked about t3's
+   payback (below) Claude then offered the per-tier ladder 1 / 2.1 / 4.0 in its place, and the user: *"Keep C 2.0"*.
+2. **It is a start, not a target.** The user: *"This will of course be iteration work anyway."* C 2.1 is the next bracket.
+3. **The tiered deposits are not counted on to do this job** (Claude's reading, below; not a ruling): they raise capital per unit of
+   raw output and add mining jobs.
+
+**Open (none ruled).**
+1. **Whether the 1836–1855 arms carry C 2.0.** §10.115 accepted that no factory lever moves with the first tiered books, so tiering
+   is seen alone, and those arms are read against the canon's runs over the same years. Before 1855 the slope acts only through the
+   t0 cost and the merge hosts' midpoints. Default until ruled: the 1855 arms stay at C 1.9 and the slope enters with the centuries.
+2. **The AI desire ladder at C 2.0.** It is calibrated per book (CLAUDE.md §2.4); F228's C 2.0 book carried 3,200 / 5,600 on t2 /
+   t3. Default until ruled: the canon's 1000 / 1000 / 3000 / 5000.
+3. **The staffing of the later deposit rungs** (§10.115: 5,000 a level on every rung "to start with"), which decides whether the
+   overhaul adds or removes productive workers.
+
+**What was read** (session scripts, not a finding; directional; session `20261112_113429`, ten runs an arm, medians; vanilla 1.15.1
+| mod 1.1.1). U\* as `criteria.mjs` defines it, Cossack hosts not counted as peasants (§10.112; Russia only).
+
+| | 1900 | 1920 | 1935 |
+|---|---|---|---|
+| world U\* | 60.6% \| 60.8% | 43.6% \| 44.8% | 30.5% \| 33.4% |
+| world productive workers per capita, mod ÷ vanilla | 0.97 | 0.94 | 0.93 |
+| world GDP per productive worker, mod ÷ vanilla | 1.01 | 1.18 | 1.29 |
+| world GDP, mod ÷ vanilla | 0.96 | 1.07 | 1.20 |
+| shortlist U\* | 44.7% \| 39.9% | 21.0% \| 15.6% | 5.7% \| 2.8% |
+| shortlist GDP per productive worker, mod ÷ vanilla | 1.10 | 1.26 | 1.45 |
+| Britain U\* | 19.4% \| 15.6% | 1.8% \| 2.9% | 0.8% \| 0.2% |
+| France U\* | 61.9% \| 63.0% | 44.5% \| 32.3% | 15.3% \| 1.6% |
+
+- France is at 5.1% in 1930 against vanilla's 19.1%. Britain is below vanilla at 1860 (51.8% against 55.0%), 1900, 1910 (6.3%
+  against 10.6%), 1930 (0.4% against 2.1%) and 1935; level in 1880; above in 1920. Germany and the USA are fully employed by the
+  1930s in both arms. Russia is far less employed in the mod (49.6% against 32.1% in 1935).
+- **Against vanilla the excess is output per worker, not the number of workers:** the world has 0.91 × vanilla's productive workers
+  in 1935 (305M against 334M) and 1.29 × its GDP per worker. **Against the mod's own aims (§10.113) the workers are the term to
+  cut:** at that output per worker, world GDP at 0.95 × vanilla needs 0.74 × vanilla's productive workers per capita, a fifth fewer
+  than today, which puts the world's U\* near 47%.
+- **The heat arrives after 1900:** world GDP is 0.92 × vanilla in 1880, 0.96 in 1900, 1.02 in 1910, 1.11 in 1930.
+- **Standing capital in 1936** (levels × today's construction cost, world, median; power plants at vanilla's cost, urban centres and
+  ownership buildings left out): the mod 42.8M points, of them factories 27.7M (64%), the extraction family (mines, logging, fishing,
+  whaling, oil) 5.0M (11–12%), agriculture 4.3M, infrastructure 4.3M; vanilla 23.5M, factories 6.9M (29%), the extraction family 5.2M
+  (22%).
+- **What tiering the deposits costs for the same raw output** (arithmetic on §10.115's rules, mines): 1.5–1.75 × the points where
+  slots do not bind (a rung makes 40 a level against vanilla's 60–70), and 2.5 / 3.1 / 3.8 × on a fully used deposit at cost step
+  1.3 / 1.6 / 1.9; so 7% to 33% more of the world's standing capital. **And 1.5–1.75 × the miners** (twice on a full deposit), every
+  rung employing 5,000 a level, so capital per mining job rises 0–90%, nothing on the atmospheric rung. The extraction family is
+  roughly a fifth of productive workers (staffed levels × 5,000, before labour-saving methods). Farms and mines cost 5–6 times less
+  capital per job than factories and carry most of the depeasantation; a factory cost lever removes jobs only through less profit to
+  reinvest.
+- **What the cost levers have done before** (game 1.13.11, older books): C 1.8 × `cost1` 1.2 (every rung 8–27% dearer, about 8% of
+  world capital) took about 8% off world GDP with three runs intact (F234); C 2.0 alone gave 1.02 / 0.63 / 1.21 against the canon's
+  1.04 / 1.09 / 1.45 (F228); C 1.95 gave 1.17 / 0.92 / 0.68 (F133); the slope widens the seed spread (F108). Game 1.15.1 runs hotter
+  and no mod run stalled in the ten, so there is more room, of unknown size. +0.1 on the slope has read from −7% (F228's medians)
+  to about −24% of world GDP (the September books).
+- **Why the slope and not the level:** a multiplier on every rung deepens the early game, which is already under vanilla, against
+  the 1886 line's floor of 0.79.
+
+**Payback by tier at realised prices** (the user: *"At 2.0 and 2.1, assuming now-realised prices and current PM recipes, won't t3
+industries become worse in payback period than t2?"*; `payback_by_decade.mjs` on the ten mod runs, capital-weighted, £720 a point,
+profit per level held at what the runs recorded and only the cost rescaled; the merged rungs are methods of a host and are not in it).
+
+| year | t2 today | t3 today | t3 ÷ t2 today | at C 2.0 | at C 2.1 |
+|---|---|---|---|---|---|
+| 1900 | 12.4 y | 7.4 y | 0.60 | 0.63 | 0.66 |
+| 1910 | 12.9 | 8.8 | 0.68 | 0.72 | 0.75 |
+| 1920 | 13.6 | 9.5 | 0.70 | 0.74 | 0.77 |
+| 1930 | 15.2 | 11.9 | 0.78 | 0.82 | 0.87 |
+| 1935 | 14.9 | 13.2 | 0.89 | 0.93 | 0.98 |
+
+At C 2.0 t3 stays ahead in every decade (14.6 years against 15.7 in 1935); at C 2.1 the two are level by 1935, and parity at 1935
+prices is at C 2.14. By industry in 1935 only glass comes to parity at 2.1. t1 pays back in 19.9 years in 1935, so t2 ÷ t1 is 0.75
+(0.81–0.85 in 1910–1930). The declined alternative, the ladder 1 / 2.1 / 4.0, would have kept t3 ÷ t2 at today's and moved the
+squeeze to t2 against t1.
+
+**Not read:** per-run spreads of the paybacks; how slot-bound the world's deposits are; anything on a book with the slope moved on
+game 1.15. The readings are static (§2.8): a dearer rung is built less, which moves its price.
+
+**The scripts** (`heat.mjs`, `capital.mjs`) are in `C:\claude-code\cost_start_study_2026-11-17\`, outside the repository while a
+batch plays.
