@@ -65,13 +65,13 @@ technology, tech era 3; the rung takes the mix and staffing of the rung below) �
   `required_input_goods = electricity`.
 - Cost and AI desire by tier as the ladder gives them (421 / 800 / 1,520 / 2,888 points; 1000 / 1000 / 3000 / 5000).
 
-### 2.3 Engines on the pump rungs (§10.116 ruling 5); the top rung's electric drive is suspended (§10.116.1)
+### 2.3 Engines on the pump rungs (§10.116 ruling 5); no electric drive (§10.116.1)
 
 - On every mine's condensing and diesel pump rungs, after §2.1's mix is worked, the tools above 5 become engines, value for value
   (tools × 40 ÷ 60). The picks and atmospheric rungs keep vanilla's inputs.
-- **Suspended, do not build until ruled (§10.116.1 item 6):** the diesel pump rung's switchable second main method, the **electric
-  drive** (electricity in place of the oil at the same base value, and fewer engines). The user rejected choosing a fuel by price;
-  Claude's proposal is to drop it, the rung being the drive (§5, item 1).
+- **The rung is the drive.** The diesel pump rung gets no electric method beside it: the electric drive first ruled for it was
+  dropped with the switchable drives (§10.116.1 item 6; the user: *"Yes, drop it"*). The condensing rung burns coal and the diesel
+  rung oil, and the choice is what one builds.
 
 ### 2.4 Irrigation's two drives and the factory power lines (§10.116.1; §10.116 ruling 8)
 
@@ -97,16 +97,15 @@ as the likely solution and is NOT part of the first book's rules (§10.115 rulin
 **Mines** — four rungs, slots × 2 (each rung half of vanilla's), vanilla cost 400. Iron, lead, sulfur, copper and gold share the input
 columns; their rung outputs are 20 / 40 / 40 / 40 (gold 8 / 15 / 15 / 15). The vanilla column is iron's.
 
-| rung | gate (tech era) | vanilla | §2.1 | with §2.3 | electric drive (SUSPENDED, §10.116.1) | cost |
-|---|---|---|---|---|---|---|
-| picks | — | 20 from tools 5 | the same | the same | | 400 |
-| atmospheric pump | atmospheric engine (2) | 40 from tools 10 + coal 10 | the same | the same | | 400 |
-| condensing pump | water-tube boiler (2) | 60 from tools 15 + coal 15 | 40 from tools 10 + coal 10 | tools 5 + engines 3.3 + coal 10 | | 400 × step |
-| diesel pump | compression ignition (5) | 70 (sulfur 80, gold 30) from tools 15 + oil 5 | 40 from tools 13.1 + oil 4.4 | tools 5 + engines 5.4 + oil 4.4 | tools 5 + engines 3.9 + electricity 5.8 | 400 × step² |
+| rung | gate (tech era) | vanilla | §2.1 | with §2.3 | cost |
+|---|---|---|---|---|---|
+| picks | — | 20 from tools 5 | the same | the same | 400 |
+| atmospheric pump | atmospheric engine (2) | 40 from tools 10 + coal 10 | the same | the same | 400 |
+| condensing pump | water-tube boiler (2) | 60 from tools 15 + coal 15 | 40 from tools 10 + coal 10 | tools 5 + engines 3.3 + coal 10 | 400 × step |
+| diesel pump | compression ignition (5) | 70 (sulfur 80, gold 30) from tools 15 + oil 5 | 40 from tools 13.1 + oil 4.4 | tools 5 + engines 5.4 + oil 4.4 | 400 × step² |
 
 **Coal mines** take no coal: picks 25 from tools 5; atmospheric 40 from tools 10; condensing 40 from tools 10 → tools 5 + engines 3.3;
-diesel 40 from tools 7.5 + oil 2.5 → tools 5 + engines 1.7 + oil 2.5 (the suspended electric drive: tools 5 + engines 1.2 +
-electricity 3.3).
+diesel 40 from tools 7.5 + oil 2.5 → tools 5 + engines 1.7 + oil 2.5.
 
 | building | rungs, slots | rung outputs | later rungs' inputs under §2.1 | vanilla cost |
 |---|---|---|---|---|
@@ -158,7 +157,7 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 
 | # | question | default assumed above | from |
 |---|---|---|---|
-| 1 | whether the top mine rung keeps an electric drive at all (suspended; Claude's proposal: drop it) | not built | §10.116.1 |
+| 1 | RULED, no longer open: the top mine rung has no electric drive (the user: "Yes, drop it") | not built | §10.116.1 |
 | 2 | the diesel irrigation step's quantities (its form is ruled: fewer engines and less fuel, same output) | engines × 0.8 and oil at two thirds of the coal's base value: 4 + 2.5 | §10.116.1 |
 | 3 | the new t1 rung's name | "Compound Engines" (the other candidate: "Pumping Engines"); the technology keeps vanilla's name | §10.116 |
 | 4 | whose technology gates a drive | RULED for the diesel step: the country's own. The steam drive follows irrigation's gate: the host's until the world-gate probe passes | §10.116.1, §10.115 |

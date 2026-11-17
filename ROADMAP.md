@@ -133,9 +133,9 @@ extraction overhaul for 1.2 already (not 1.3)."*
 - **The order, after the three-arm batch:** the probes (gold's depleted fields, oil's linked discovery, the world gate) → the generator
   and two readers (slot fill by rung, a raw-material price index) → 1836–1855 runs, three cost-step arms (1.3 / 1.6 / 1.9) through
   2+1, passing on a start like vanilla's and an 1855 that is not dead in half the world → centuries. Every run needs the user's go-ahead.
-- The engine rebalance (what pumpjacks should mean for engines) is ruled for mod 1.3: §10.116 (2026-11-17). Two of its pieces sit on
-  these tiered deposits: engines on the condensing and diesel pump rungs, and an electric drive beside diesel on the top mine rung
-  (the second suspended by §10.116.1 until ruled; the proposal is to drop it).
+- The engine rebalance (what pumpjacks should mean for engines) is ruled for mod 1.3: §10.116 (2026-11-17). One of its pieces
+  sits on these tiered deposits: engines on the condensing and diesel pump rungs (the top mine rung's electric
+  drive was dropped the next morning, §10.116.1).
 - **`NEXT_BOOK_SPEC.md` is the build specification** (2026-11-17, at the user's word): §10.115 and §10.116 in build order, worked
   numbers, the ruled and proposed variations, the open questions with their assumed defaults, the order of work. To confirm first:
   which release the combined book is, and whether the engine rebalance joins the first tiered books.
@@ -185,7 +185,7 @@ The major changes (§10.110.1):
   t0 Steam Engines · t1 a new rung on pumpjacks · t2 Electric · t3 Diesel; the pump rungs and the factory power lines buy engines;
   irrigation runs on steam (engines + coal) and then on a clearly superior diesel step (fewer engines and less fuel, same output, on
   the country's own compression ignition), never a choice of fuel and with no electric drive (§10.116.1, the morning after: the user
-  rejected switchable drives). Nothing is built. Open: the top mine rung's electric drive (suspended; proposed: drop it), the diesel
+  rejected switchable drives, and dropped the top mine rung's electric drive with them). Nothing is built. Open: the diesel
   step's quantities, the new rung's name, the base book and the runs; they are ruled when the first book builds.
   The first sketch of the redo (a new technology for a new t2 engine rung) is replaced by it.
 - **Artisanal ownership** (step 6½) might make 1.3.
