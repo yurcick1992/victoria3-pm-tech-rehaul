@@ -118,7 +118,7 @@ feature only if it needs no iteration (step 7's timeline).
   "1.1 or later"); per-rung building art (R6, "1.1 or later"); the art academy's Austrian conditional desire, if the batch shows the canon's
   Austria building too few (BACKLOG E). Rubber in a rich late game is a watch item (Q7).
 
-### Mod 1.2 (game 1.15.1; the extraction overhaul since 2026-11-16, no date restated)
+### Mod 1.2 (game 1.15.1; the extraction overhaul since 2026-11-16; "December", no details, §10.119 item 14)
 
 **The extraction overhaul (§10.115, user-ruled 2026-11-16).** The user: *"I think we'll skip the smaller step of 1.2, and go with the
 extraction overhaul for 1.2 already (not 1.3)."*
