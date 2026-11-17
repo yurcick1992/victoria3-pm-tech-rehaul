@@ -6026,6 +6026,13 @@ USA 29.5% and 1.4%, Britain 6.1% and 1.0%, Germany 33.6% and 0.5%, the world 50.
 the world much lower: 38.5% in 1913 and 25.3% at the end in the mod (the majors within a point or three). **Ruled the same day: the
 aims read peasants together with the unemployed** (the user: *"With the unemployed"*), the register's U\* as it has always been.
 
+**The price indices stay aims** (the user, 2026-11-17, on Claude's proposal to make PI and PP minor readings because both are
+ratios to vanilla): *"You're wrong here. While there are vanilla references, they're the main obsolescence driver and should stay.
+Even without vanilla references at all, they can stay (although hard to say just where the price should end up, but the downward
+slope is a must)."* So PI and PP are aims of the mod's own (CLAUDE.md §2.1: falling prices are the core mechanism); the required
+part is the downward slope, which needs no reference to vanilla; where the level should end is not settled, and the ratio to
+vanilla is only today's way of stating it. "Only world GDP ÷ vanilla is an important target" (principle 1) does not demote them.
+
 At 1913 the mod sits near these levels; by 1935 it is far under all of them, which is the heat arriving after 1900 (§10.117).
 **Open:** which way of translating; whether the aims read the game's peasants alone or peasants with the unemployed (history's 1935
 had mass unemployment the game does not have); Britain's 1935 level with or without Ireland; the figures marked as memory, which
