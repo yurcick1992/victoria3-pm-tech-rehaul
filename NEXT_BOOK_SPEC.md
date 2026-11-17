@@ -56,8 +56,12 @@ ladder moves (A 2.2, B 1.64, C 1.9, input lift 1.2, engines 1.0) except what §2
 
 ### 2.2 The motor ladder (§10.116 rulings 3–4)
 
-t0 Steam Engines (atmospheric engine; a placement entry, as fertilizer and explosives have) · t1 a NEW rung gated on pumpjacks (a vanilla
-technology, tech era 3; the rung takes the mix and staffing of the rung below) · t2 Electric Engines · t3 Diesel Engines.
+t0 Steam Engines (atmospheric engine; a placement entry, as fertilizer and explosives have) · t1 a NEW rung, **Compound Engines**, gated
+on pumpjacks (a vanilla technology, tech era 3; the rung takes the mix and staffing of the rung below) · t2 Electric Engines · t3
+Diesel Engines.
+
+- **Names (§10.116.2):** the technology `pumpjacks` is shown as **"Pumping Engines"** (display name and description only; the key
+  stays; POLISH R9 reversed for it). The new rung is "Compound Engines"; t0 keeps vanilla's "Steam Engines".
 
 - **Anchor:** t0 keeps vanilla's steam recipe; the t1 anchor is 1.5 × it. A new case in the formula of CLAUDE.md §1.3.
 - **The quarter:** in the vanilla mix of Electric Engines and Diesel Engines the energy good is cut to a quarter (electricity 20 → 5,
@@ -123,7 +127,7 @@ A full deposit then makes, per vanilla slot at base prices: iron, lead, copper a
 | rung | gate | output | inputs | cost |
 |---|---|---|---|---|
 | t0 Steam Engines | atmospheric engine | 40 | steel 30 | 421 |
-| t1 (new) | pumpjacks | 60 | steel 45 | 800 |
+| t1 Compound Engines (new) | pumpjacks, shown as "Pumping Engines" | 60 | steel 45 | 800 |
 | t2 Electric Engines | electric railway | 132 | steel 57.9 + copper 14.5 + electricity 7.2 | 1,520 |
 | t3 Diesel Engines | compression ignition | 290.4 | steel 100.9 + oil 25.2 | 2,888 |
 
@@ -159,7 +163,7 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 |---|---|---|---|
 | 1 | RULED, no longer open: the top mine rung has no electric drive (the user: "Yes, drop it") | not built | §10.116.1 |
 | 2 | the diesel irrigation step's quantities (its form is ruled: fewer engines and less fuel, same output) | engines × 0.8 and oil at two thirds of the coal's base value: 4 + 2.5 | §10.116.1 |
-| 3 | the new t1 rung's name | "Compound Engines" (the other candidate: "Pumping Engines"); the technology keeps vanilla's name | §10.116 |
+| 3 | RULED, no longer open: the t1 rung is "Compound Engines" and the technology `pumpjacks` is shown as "Pumping Engines". Still to settle: its description, translation or English in the eleven languages, the icon | English, vanilla's icon | §10.116.2 |
 | 4 | whose technology gates a drive | RULED for the diesel step: the country's own. The steam drive follows irrigation's gate: the host's until the world-gate probe passes | §10.116.1, §10.115 |
 | 5 | the engines' input lift | 1.0, unchanged | §10.116 |
 | 6 | the 1855 thresholds | as proposed in §4 | §10.115 |
@@ -196,6 +200,8 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
   rules need their own records and checks; `lint_pm_combos.mjs` must pass with irrigation's two drives and with the scaled secondary
   lines; `lint_solvency.mjs` on every new rung.
 - **The method icon** for the new engine rung, and localisation in all 11 languages (new names stay English).
+- **The technology's rename** (§10.116.2): an entry in `TECH_RENAMES_RULED` (`tools/lib_tier4_spec.mjs`, empty today), a new
+  description, what the vanilla-name lint says to it, vanilla's icon (a pumpjack) unless replaced, and a patch-notes line.
 - **Known sizes, arithmetic on the canon's 1936 levels, not predictions:** the quarter takes 9% off buildings' electricity demand and 6%
   off oil; irrigation adds about 16% to coal while every level is on steam, and about 21% to oil in place of that coal, with a fifth fewer
   engines on irrigated levels, once every level is on the diesel step; engines on the

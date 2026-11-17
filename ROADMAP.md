@@ -186,7 +186,8 @@ The major changes (§10.110.1):
   irrigation runs on steam (engines + coal) and then on a clearly superior diesel step (fewer engines and less fuel, same output, on
   the country's own compression ignition), never a choice of fuel and with no electric drive (§10.116.1, the morning after: the user
   rejected switchable drives, and dropped the top mine rung's electric drive with them). Nothing is built. Open: the diesel
-  step's quantities, the new rung's name, the base book and the runs; they are ruled when the first book builds.
+  step's quantities, the base book and the runs; they are ruled when the first book builds. Named the same day (§10.116.2): the
+  new rung is "Compound Engines" and the technology `pumpjacks` is shown as "Pumping Engines".
   The first sketch of the redo (a new technology for a new t2 engine rung) is replaced by it.
 - **Artisanal ownership** (step 6½) might make 1.3.
 - Possibly the electricity build condition (1.2 item 7).

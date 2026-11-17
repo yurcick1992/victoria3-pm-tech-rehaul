@@ -83,7 +83,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.113 | depeasantation and capital abundance are aimed at levels of their own, not ratios to vanilla: the world's U\* about 50%, as few majors as possible with a pool above 0.5 GDP in 1935–36, and a flag on a pool above 3 GDP for 5 years without falling at U\* under 5% (provisional); world GDP stays vanilla-referenced; a gap inside the seed spread is noise | in force; the aims' form and `criteria.mjs` open | here |
 | 10.114 | for mod 1.2 the world's U\* gives way to the world-GDP aim (0.90–1.00× vanilla), U\* still as high as that allows; infrastructure subsidies come back only if the countries short of infrastructure are the ones that hoard — read on mod 1.1.1: they are not, so game 1.15.1's rule stays | in force for 1.2; the subsidy reading is Claude's, directional | here |
 | 10.115 | deposits are tiered (each main method of a resource-capped building a building with slots of its own: two methods → vanilla's slots × 1.5, three or four → × 2, split equally), first design flat output per tier with rising cost; the extraction overhaul is mod 1.2, superseding §10.110.1's split; nothing tiered for uniformity; same-acre steps (farms, plantations, ranches, rubber) stay methods, gated on the world's technology, deferred as the likely solution pending probes; §10.58's veto B lifted for deposits | in force; every rule of the first book is ruled (the section's "first book's rules" paragraph); open: the 1855 thresholds (proposed), where §10.110.1's other items go; unproven until probes: the world gate, gold's depleted fields, oil's linked discovery; nothing built | here |
-| 10.116 | engines (for mod 1.3): operating energy is paid where the engine runs, and no second engine good; the Electric and Diesel Engines rungs keep a quarter of vanilla's electricity / oil, the rest of its value to steel and copper; the motor ladder becomes t0 Steam · t1 a new rung on pumpjacks · t2 Electric · t3 Diesel, t0 on vanilla's steam recipe and the anchor 1.5 × it; engines on the condensing and diesel pump rungs; the factory power lines' tools become engines; **.1 (the morning after): the drives are a succession, not a choice** — irrigation runs on steam (engines 5 + coal 5, on irrigation's own gate), then on a clearly superior diesel step with fewer engines and less fuel for the same output (default 4 engines + 2.5 oil), gated on the country's own compression ignition; no electric drive anywhere (irrigation's and the top mine rung's both dropped: the rung is the drive) | in force as amended by .1; nothing built. Open: the diesel step's quantities, the new rung's name, the engines' input lift, the base book and runs | here |
+| 10.116 | engines (for mod 1.3): operating energy is paid where the engine runs, and no second engine good; the Electric and Diesel Engines rungs keep a quarter of vanilla's electricity / oil, the rest of its value to steel and copper; the motor ladder becomes t0 Steam · t1 a new rung on pumpjacks · t2 Electric · t3 Diesel, t0 on vanilla's steam recipe and the anchor 1.5 × it; engines on the condensing and diesel pump rungs; the factory power lines' tools become engines; **.1 (the morning after): the drives are a succession, not a choice** — irrigation runs on steam (engines 5 + coal 5, on irrigation's own gate), then on a clearly superior diesel step with fewer engines and less fuel for the same output (default 4 engines + 2.5 oil), gated on the country's own compression ignition; no electric drive anywhere (irrigation's and the top mine rung's both dropped: the rung is the drive); **.2 the names:** the technology `pumpjacks` is shown as "Pumping Engines" (POLISH R9 reversed for it), the t1 rung is "Compound Engines", t0 keeps "Steam Engines" | in force as amended by .1 and .2; nothing built. Open: the diesel step's quantities, the engines' input lift, the base book and runs | here |
 
 ---
 
@@ -5311,6 +5311,7 @@ proposed.
    - **What it is for:** pumpjacks then unlocks the oil rungs, irrigation, and an engine rung whose customers are the world's irrigated
      plantations (42% of buildings' engine demand in 1936), which is the reward the world gate of §10.115 ruling 7 took away.
    - The technology keeps vanilla's name: renaming it was ruled out on 2026-10-24 (POLISH R9), and the rung carries the new name.
+     ⚠ *Reversed by §10.116.2: the technology is renamed "Pumping Engines" and the rung is "Compound Engines".*
 5. **Engines where the machine is an engine: the pump rungs of the tiered deposits.** On the condensing and diesel pump rungs the tools
    above the picks rung's 5 become engines, value for value: condensing 10 tools + 10 coal → 5 tools + 3.3 engines + 10 coal; diesel
    13.1 tools + 4.4 oil → 5 tools + 5.4 engines + 4.4 oil (§10.115's equal-value-added mixes for iron). The atmospheric rung is on the
@@ -5352,7 +5353,7 @@ proposed.
    At about the canon's late prices (engines 0.93 × base, coal 0.85, electricity 1.32) the two irrigation drives then cost the same,
    £407 and £399 a level. The alternatives are rounder cuts (3, or 2.5).
 2. **Whether the diesel drive gets an edge too** (the same railway ratio would give 3.1 engines). Not asked.
-3. **The new rung's name:** "Compound Engines" or "Pumping Engines".
+3. **The new rung's name:** "Compound Engines" or "Pumping Engines". *Ruled in §10.116.2: "Compound Engines".*
 4. **Whose technology gates a drive** (the host's or the world's): it follows irrigation's own gate, pending §10.115's probes.
 5. **The engines' input lift** against ruling 4's × 1.5.
 6. **The base book, the arms and the runs.** Nothing is agreed; each needs the user's go-ahead (CLAUDE.md §5.1 rules 3–4).
@@ -5505,3 +5506,33 @@ state prices solved as above; median over runs, range in brackets; engines at 0.
   move the ruling: the game's irrigated buildings are mostly tropical plantations, and the state-by-state problem stands.
 
 **The scripts** (`drive_order.mjs`, `motor_split.mjs`) are with the others in `C:\claude-code\engine_study_2026-11-17\`.
+
+### §10.116.2 — THE NAMES: THE TECHNOLOGY BECOMES "PUMPING ENGINES", THE T1 RUNG IS "COMPOUND ENGINES" (user-ruled 2026-11-17)
+
+**The occasion.** The user, on the t1 rung: *"is t1 a well fit from naming PoV? It's "pumping engine" now? What does that even mean?
+If we simply name t0 "early steam engine" and t1 -- some "more modern steam engine", will there be enough justification to keep it on
+pumpjacks? Renaming pumpjacks is always an option, btw. The ruling that we shouldn't do that took into account the current
+circumstances, which changed."*
+
+**What Claude answered.** The rung's name had not been settled (open item 3). "Pumping Engines" is a poor rung name: a pumping engine
+is a steam engine built to drive pumps, a use and not a newer design, and the atmospheric engine at t0 was one. By name the gate is
+not justified, since vanilla's Pumpjacks is an oil technology (its description is about getting crude out of the ground). By function
+it is: what the technology unlocks is engine-driven pumping (oil rigs and automatic irrigation, the two large new buyers of engines),
+and the natural technologies (water-tube boiler, rotary valve engine) gate the engine works' own automation lines, which the rule on
+additions bars.
+
+**The ruling** (the user: *"Yes, both"*):
+1. **The technology `pumpjacks` is shown as "Pumping Engines".** Only its display name and description change; the key stays, so
+   vanilla script that names it is untouched. The name then covers the three things it unlocks: oil wells, irrigation, and the works
+   that build the engines.
+2. **The t1 rung of the engine works is "Compound Engines"** (the design advance of those decades: the steam expands in two or three
+   cylinders in turn; the size of its coal saving is from Claude's memory, not checked).
+3. **The t0 rung keeps vanilla's "Steam Engines"** (proposed with the two above and not objected to): "Early Steam Engines" would
+   lose vanilla's translations, and Steam Engines → Compound Engines → Electric Engines → Diesel Engines already reads as a sequence.
+4. **This reverses POLISH R9 (2026-10-24, "keep vanilla's names") for Pumpjacks only.** Threshing Machines keeps vanilla's name: it
+   was not raised.
+
+**To settle when built** (none ruled): the description's text; whether the new name is translated or stays English in the eleven
+languages (new names stay English today, CLAUDE.md §5.4, where vanilla's name was translated); the icon, which still shows a
+pumpjack; the entry in `TECH_RENAMES_RULED` (`tools/lib_tier4_spec.mjs`, empty today, and not edited while a batch plays) and what the
+vanilla-name lint says to it; a patch-notes line, a rename of this kind being a major one.
