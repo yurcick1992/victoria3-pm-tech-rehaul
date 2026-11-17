@@ -63,13 +63,15 @@
   optional `layout_sha256` in the setup pins it to a known copy. Never a control, never a book of ours: build_state.json
   records `arm: external+<mod id>` and the mod's metadata under `external_mods`.
 
-  THE SAME-BOOK GATE (2026-11-17; landmine L53, BALANCE_FRAMEWORK 10.118; tools\testbed\lib_same_book.ps1). A run on a
-  `kind: config` arm whose `until` is before the schedule key `full_until` (default 1936.1.1) THROWS at plan time - before
-  preflight, the estimate and any build, and under -WhatIf - unless it is a PROBE ("probe": "syntax" | "performance" on the
-  run or in defaults; any book; readers drop it) or a CHECKPOINT LEG ("checkpoint": true on the run: the first leg of a
-  full-span run on this book, its last save kept, to be continued to full_until). A CONTINUATION (continue_save) must name
-  its `parent` run and is verified to build the parent's book: config and tree-twin sha256, game version, nothing changed
-  among the paths the build reads since the parent's commit, and after the build the mod's layout fingerprint. Each run's
+  THE SAME-BOOK GATE (2026-11-17; landmine L53, BALANCE_FRAMEWORK 10.118; tools\testbed\lib_same_book.ps1). A run on an arm
+  that builds a book of ours (`kind: config` or `kind: release`) whose `until` is before the full span, 1936.1.1, THROWS at
+  plan time - before preflight, the estimate and any build, and under -WhatIf - unless it is a PROBE ("probe": "syntax" |
+  "performance" on the run or in defaults; any book; readers drop it) or a CHECKPOINT LEG ("checkpoint": true on the run: the
+  first leg of a full-span run on this book, its last save kept, to be continued to the full span). The schedule key
+  `full_until` may be absent or say 1936.1.1; any other value throws (the span is not a lever). A CONTINUATION
+  (continue_save) must name its `parent` run and is verified to build the parent's book: config and tree-twin sha256, game
+  version, nothing changed among the paths the build reads since the parent's commit, and after the build the mod's layout
+  fingerprint; on a `kind: external` arm, the third-party mod's layout fingerprint must be the parent's. Each run's
   build_state.json records `run_kind` (full | checkpoint | probe:syntax | probe:performance | continuation | short) and
   `full_until`.
 #>
@@ -376,9 +378,11 @@ foreach ($r in $runs) {
 # ---- L53: THE SAME-BOOK GATE (user-ruled 2026-11-17, BALANCE_FRAMEWORK 10.118) - BEFORE preflight, the estimate and any build,
 #      and before the -WhatIf return, so -WhatIf shows it. "Everything other than syntax-measuring or performance probes ... must be
 #      measured on the exact same books as the full runs", "by machinery, that there's no separate 'shorter run book' at all".
-#      Get-SameBookPlan THROWS on a run on a config arm that stops before full_until and is neither a probe nor a checkpoint leg;
-#      Assert-SameBookContinuation THROWS on a continuation that would not build its parent's book. Both live in lib_same_book.ps1,
-#      which preflight's Test-LmL53 runs against the fixture schedules - the same code, not a copy.
+#      Get-SameBookPlan THROWS on a run on an arm that builds a book of ours (kind config or release) that stops before the full
+#      span and is neither a probe nor a checkpoint leg, and on a `full_until` other than 1936.1.1 (the span is not a lever);
+#      Assert-SameBookContinuation THROWS on a continuation that would not build its parent's book - or, on a third-party arm,
+#      would not load the parent's copy of that mod. Both live in lib_same_book.ps1, which preflight's Test-LmL53 runs against
+#      the fixture schedules - the same code, not a copy.
 $sbPlan = @(Get-SameBookPlan -Sched $sched -NoSaveHarvest:$NoSaveHarvest -DefaultAutosave $defAutosave)
 if ($sbPlan.Count -ne $plan.Count) { throw "L53: the same-book gate judged $($sbPlan.Count) run(s) of a $($plan.Count)-run plan - lib_same_book.ps1 and the plan loop disagree" }
 $FullUntil = [string]$sbPlan[0].full_until
@@ -390,8 +394,14 @@ for ($k = 0; $k -lt $plan.Count; $k++) {
 $sbCount = @{}
 foreach ($p in $plan) { $sbCount[$p.run_kind] = 1 + [int]$sbCount[$p.run_kind] }
 Write-Host ("same-book gate (L53): {0} run(s) pass at full_until {1} - {2}" -f $plan.Count, $FullUntil, ((@($sbCount.Keys) | Sort-Object | ForEach-Object { "$_ x$($sbCount[$_])" }) -join ', '))
-if ($FullUntil -ne (Get-SameBookDefaultFullUntil)) { Write-Host "  NOTE: this schedule sets full_until = $FullUntil, not the default $(Get-SameBookDefaultFullUntil): 'full' means that span here, and every run's build_state.json records it" }
 $SessionsRoot = Join-Path $PSScriptRoot "sessions"
+function Get-SetupExternalMod {
+    # kind 'external': the third-party mod's path and the layout fingerprint taken when this schedule started ($ExternalMods, filled
+    # by the setup validation above and re-checked by Resolve-Setup before every run); empty for every other kind
+    param([string]$Id)
+    if ($ExternalMods.ContainsKey($Id)) { return $ExternalMods[$Id] }
+    return @{ Path = ""; Sha = "" }
+}
 function Get-SetupConfigPath {
     # the config a setup builds, as Resolve-Setup resolves it ('' for the arms that build no book of ours)
     param($Spec)
@@ -405,8 +415,10 @@ function Get-SetupConfigPath {
 foreach ($p in $plan) {
     if (-not $p.continue_save) { continue }
     $sp = $setups.$($p.setup)
+    $xm = Get-SetupExternalMod $p.setup
     $p['same_book'] = Assert-SameBookContinuation -Index $p.index -SetupId $p.setup -SetupKind ([string](Val $sp "kind" "config")) `
-                          -ConfigPath (Get-SetupConfigPath $sp) -Parent $p.parent -Repo $Repo -SessionsRoot $SessionsRoot
+                          -ConfigPath (Get-SetupConfigPath $sp) -Parent $p.parent -Repo $Repo -SessionsRoot $SessionsRoot `
+                          -ExternalPath $xm.Path -ExternalSha $xm.Sha
 }
 
 # ---- PREFLIGHT, repo half, BEFORE the estimate is printed ----
@@ -703,8 +715,10 @@ foreach ($p in $plan) {
         # L53: asked AGAIN at the build, hours after the plan-time check on a long schedule - the config, the commit and the
         # working tree can all have moved since (the L10 failure), and this is the last moment it costs nothing.
         try {
+            $xm = Get-SetupExternalMod $p.setup
             $p['same_book'] = Assert-SameBookContinuation -Index $p.index -SetupId $p.setup -SetupKind $resolved.Kind `
-                                  -ConfigPath ([string]$resolved.Config) -Parent $p.parent -Repo $Repo -SessionsRoot $SessionsRoot -Quiet
+                                  -ConfigPath ([string]$resolved.Config) -Parent $p.parent -Repo $Repo -SessionsRoot $SessionsRoot -Quiet `
+                                  -ExternalPath $xm.Path -ExternalSha $xm.Sha
         } catch {
             foreach ($ml in ("$($_.Exception.Message)" -split "`r?`n")) { Log $ml "ALERT" }
             Log "SAME-BOOK CHECK FAILED before the build of run $($p.index) - aborting schedule" "ALERT"

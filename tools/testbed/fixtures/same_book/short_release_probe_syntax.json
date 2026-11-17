@@ -1,0 +1,27 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-short-release-probe-syntax",
+  "_why": "A FIXTURE of the same-book gate (landmine L53, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL53 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. The legal form of a short release-build load check: a syntax probe (and a full-span release run beside it).",
+  "_expect": "pass",
+  "_expect_kinds": [
+    "probe:syntax",
+    "full"
+  ],
+  "setups": {
+    "release": {
+      "kind": "release",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "release",
+      "until": "1846.1.1",
+      "probe": "syntax"
+    },
+    {
+      "setup": "release",
+      "until": "1936.1.1"
+    }
+  ]
+}

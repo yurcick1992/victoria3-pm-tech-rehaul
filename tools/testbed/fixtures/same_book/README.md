@@ -24,7 +24,11 @@ every `*.json` here and fails the walk when one behaves otherwise than its `_exp
 | `probe_banana` | a probe kind that does not exist — throws |
 | `probe_and_checkpoint`, `checkpoint_full_span`, `checkpoint_autosave_never` | flags that contradict the run — throw |
 | `continuation_with_probe`, `continuation_without_parent`, `continuation_middle_leg_no_checkpoint` | a continuation's own rules — throw |
-| `full_until_1900` | a schedule that moves the full span: 1900 is full there, 1899 is not — throws |
+| `full_until_1900`, `full_until_1950` | a schedule that moves the full span, earlier (the way round the gate) or later — throw: the span is 1936.1.1 and not a lever |
+| `full_until_stated_default` | the key saying 1936.1.1 changes nothing — passes |
+| `short_release_no_flag` | a release build is a book of ours: a short run with no flag — throws |
+| `short_release_probe_syntax` | the legal short form of a release-build load check, and a full release century — pass |
+| `short_overlay_no_flag` | an overlay arm is vanilla + one declared file, not a book: a short run passes, recorded `short` |
 
 Any of them can be shown to a person through the scheduler, which stops at the gate before it builds or launches anything:
 `powershell -ExecutionPolicy Bypass -File tools\testbed\run_schedule.ps1 -Schedule tools\testbed\fixtures\same_book\<name>.json -WhatIf`
@@ -36,4 +40,6 @@ and the other three (a full run, a checkpoint leg, a run from before `run_kind` 
 continuation fixtures names this README only because the scheduler requires that file to exist.
 
 To add a case: one more `*.json` with its `_expect`. `Test-LmL53` refuses to pass with fewer than five throwing and five
-passing fixtures, so deleting them does not make it green.
+passing fixtures, and without `short_config_no_flag`, `short_release_no_flag` and `full_until_1900` each refused for its own
+reason, so deleting them does not make it green. The third-party arm's continuation rule (the mod's layout fingerprint must be
+the parent's) has no schedule here, because it needs a mod folder and a parent run: `Test-LmL53` checks it on synthetic parents.

@@ -17,8 +17,16 @@
   It must stay StrictMode-safe (run_schedule and run_observer run under Set-StrictMode 2.0) and ASCII-only (these
   scripts carry no BOM, and Windows PowerShell 5.1 reads a BOM-less file as ANSI).
 
-  THE THREE LEGAL FORMS of a run on a {kind: config} arm:
-    full span     `until` at or after the schedule's `full_until` (default 1936.1.1);
+  WHICH ARMS BUILD A BOOK OF OURS (Get-SameBookBookKinds): `config` and `release` (the player build of a book). Not
+  `control` (vanilla + telemetry), not `external` (someone else's mod + telemetry), and not `overlay`: build.ps1 -Overlay
+  writes vanilla + telemetry + one declared file (common/pop_needs/00_pop_needs.txt) and throws on anything else, so an
+  overlay arm carries no recipe, building or technology of a book.
+
+  THE FULL SPAN IS 1936.1.1 AND A SCHEDULE CANNOT MOVE IT: `full_until` may be absent or say exactly that. Any other value
+  throws - an earlier one would turn a short run on a book into a "full" run, the mistake the rule exists to prevent.
+
+  THE THREE LEGAL FORMS of a run on an arm that builds a book of ours:
+    full span     `until` at or after the full span (1936.1.1);
     probe         "probe": "syntax" | "performance" on the run or in `defaults`: any book, any span, never economy data
                   (ledger/lib_runs.mjs drops it from every usable-run list);
     checkpoint    "checkpoint": true on the run: the first leg of a full-span run on THIS book. It stops early, its last
@@ -28,6 +36,8 @@
 
 function Get-SameBookDefaultFullUntil { return '1936.1.1' }
 function Get-SameBookProbeKinds       { return @('syntax', 'performance') }
+# the setup kinds that build a book of ours, and are therefore gated (see the header for why overlay is not one)
+function Get-SameBookBookKinds        { return @('config', 'release') }
 
 # A property of a parsed-JSON object, or the default when the object or the property is absent or null. StrictMode-safe.
 # NOTE an empty JSON array comes back as nothing at all (PowerShell unrolls it): never test "present" on an array field.
@@ -51,9 +61,9 @@ function SbDateNum {
 function Get-SameBookRuleText {
     $s = [string][char]0xA7
     return ("THE SAME-BOOK RULE (BALANCE_FRAMEWORK ${s}10.118, landmine L53): everything other than a syntax or performance probe is " +
-            "measured on the exact same book as the full runs - there is no separate 'shorter run book'. A run on a {kind: config} " +
-            "arm that stops before the full span must be one of three legal forms: " +
-            "(1) FULL SPAN: 'until' at or after the schedule's full_until; " +
+            "measured on the exact same book as the full runs - there is no separate 'shorter run book'. A run on an arm that builds " +
+            "a book of ours ({kind: config} or {kind: release}) and stops before the full span must be one of three legal forms: " +
+            "(1) FULL SPAN: 'until' at or after full_until, which is $(Get-SameBookDefaultFullUntil) and cannot be moved by a schedule; " +
             "(2) a PROBE: `"probe`": `"syntax`" or `"probe`": `"performance`" on the run or in defaults - any book, and readers never count it as economy data; " +
             "(3) a CHECKPOINT LEG: `"checkpoint`": true on the run - the first leg of a full-span run on this book, whose last save is kept " +
             "and which a later run continues to full_until with continue_save + parent (verified to build the same book).")
@@ -63,9 +73,9 @@ function Get-SameBookRuleText {
   THE GATE. Pure: reads the parsed schedule, touches no file, no process. Returns one record per run, in schedule order:
     index, setup, setup_kind, until, full_until, run_kind, probe, checkpoint, continuation
   run_kind is one of  full | checkpoint | probe:syntax | probe:performance | continuation | short
-  ('short' = a run that stops before full_until on an arm that builds no book of ours: control, overlay, external,
-  release. The gate does not judge those; the record still says the run was not a full span).
-  THROWS on the first run that breaks the rule, naming the run.
+  ('short' = a run that stops before full_until on an arm that builds no book of ours: control, overlay, external.
+  The gate does not judge those; the record still says the run was not a full span).
+  THROWS on a `full_until` other than 1936.1.1, and on the first run that breaks the rule, naming the run.
     -NoSaveHarvest   the scheduler's switch: no archiver, so no save is kept in the session - a checkpoint leg throws.
     -DefaultAutosave the autosave interval a run gets when neither it nor `defaults` names one (the scheduler's default).
 #>
@@ -79,10 +89,18 @@ function Get-SameBookPlan {
     $defaults = SbProp $Sched 'defaults'
     $setups   = SbProp $Sched 'setups'
     $runs     = @(SbProp $Sched 'runs' @())
-    $fullUntil = [string](SbProp $Sched 'full_until' (Get-SameBookDefaultFullUntil))
-    if ($fullUntil -notmatch '^\d{3,4}\.\d{1,2}\.\d{1,2}$') { throw "schedule key 'full_until' is not a date: '$fullUntil' (default $(Get-SameBookDefaultFullUntil))" }
-    $fullNum  = SbDateNum $fullUntil
-    $kinds    = @(Get-SameBookProbeKinds)
+    # THE FULL SPAN IS FIXED. `full_until` exists so that every record states the span 'full' means; it is not a lever. An
+    # earlier value would make a short run on a book read as a full run - the way round the gate - and a later one would
+    # make every century a short run. So: absent, or exactly the default; anything else (a non-date included) throws.
+    $fullDef   = Get-SameBookDefaultFullUntil
+    $fullAsked = [string](SbProp $Sched 'full_until' $fullDef)
+    if ((SbDateNum $fullAsked) -ne (SbDateNum $fullDef)) {
+        throw "schedule key `"full_until`": `"$fullAsked`" - the full span is $fullDef and a schedule cannot move it: an earlier value would turn a short run on a book into a `"full`" run, which is the mistake the gate exists to prevent, and a later one measures nothing. Remove the key (or state $fullDef). $rule"
+    }
+    $fullUntil = $fullDef
+    $fullNum   = SbDateNum $fullUntil
+    $kinds     = @(Get-SameBookProbeKinds)
+    $bookKinds = @(Get-SameBookBookKinds)
     $defProbe = SbProp $defaults 'probe'
     if ($null -ne (SbProp $defaults 'checkpoint')) { throw "schedule 'defaults' carries 'checkpoint': it is a RUN-level key - each checkpoint leg names itself. $rule" }
     $defAuto  = [string](SbProp $defaults 'autosave_interval' $DefaultAutosave)
@@ -121,7 +139,7 @@ function Get-SameBookPlan {
             $auto = [string](SbProp $r 'autosave_interval' $defAuto)
             if ($auto -eq 'never') { throw "${where}: a checkpoint leg with autosave_interval 'never' - the game would write no save to continue from." }
         }
-        if ($kind -eq 'config' -and $short -and -not $probe -and -not $checkpoint) {
+        if ($bookKinds -contains $kind -and $short -and -not $probe -and -not $checkpoint) {
             $what = if ($continuation) { "a continuation that stops at $until, before full_until ($fullUntil), is a middle leg and must say `"checkpoint`": true" }
                     else { "it stops at $until, before full_until ($fullUntil), and is neither a probe nor a checkpoint leg" }
             throw "${where}: a SHORT RUN ON A BOOK - $what. $rule"
@@ -296,6 +314,7 @@ function Get-SameBookLayoutSha {
     arm           the parent's arm must be the arm this setup builds (config / control / overlay+... / external+...);
     book          this run's config sha256 must be the parent's recorded config_sha256 (16 hex digits recorded);
     tree twin     equal when the parent recorded tree_sha256 (runs from 2026-11-17 on); a note when it did not;
+    external mod  kind 'external': the third-party mod's layout fingerprint equals the one in the parent's external_mods;
     game version  equal, and known on both sides;
     parent build  a parent built from a dirty tree is refused: build_paths_dirty when recorded (the build's own inputs),
                   else the older whole-repo `dirty`.
@@ -306,7 +325,10 @@ function Test-SameBookContinuation {
         [string]$SetupKind,
         [string]$ConfigPath = '', [string]$ConfigSha = '',
         [string]$TreePath = '',   [string]$TreeSha = '',
-        [string]$GameVersion = ''
+        [string]$GameVersion = '',
+        # kind 'external': the third-party mod this run loads and its layout fingerprint, as run_schedule.ps1 took it when
+        # the schedule started (Get-ModLayoutSha: every file's relative path and size)
+        [string]$ExternalPath = '', [string]$ExternalSha = ''
     )
     $problems = @(); $notes = @()
     $det = SbProp $ParentState 'deterministic'
@@ -341,6 +363,21 @@ function Test-SameBookContinuation {
             } else { $notes += "tree twin: sha256 $pTree = the parent's" }
         } else {
             $notes += "tree twin: the parent recorded no tree_sha256 (a run from before 2026-11-17) - checked by commit where git tracks the twin, and by the built mod's layout after the build"
+        }
+    }
+
+    # A THIRD-PARTY ARM: the "book" is someone else's mod, and the built mod is only our telemetry, so nothing above or below
+    # sees the mod itself. Its layout fingerprint must be the one the parent recorded (build_state.json external_mods).
+    if ($SetupKind -eq 'external') {
+        $px = @(SbProp $det 'external_mods' @())
+        if ($px.Count -ne 1) { $problems += "EXTERNAL MOD: the parent recorded $($px.Count) third-party mod(s) in external_mods - exactly one is expected, the one this arm loads ($ExternalPath)" }
+        else {
+            $pxSha  = [string](SbProp (SbProp $px[0] 'fingerprint') 'layout_sha256' '')
+            $pxPath = [string](SbProp $px[0] 'path' '')
+            if (-not $pxSha) { $problems += "EXTERNAL MOD: the parent recorded no layout fingerprint for $pxPath - the third-party mod it ran cannot be verified" }
+            elseif (-not $ExternalSha) { $problems += "EXTERNAL MOD: this run's third-party mod was not fingerprinted ($ExternalPath)" }
+            elseif ($ExternalSha -ne $pxSha) { $problems += "EXTERNAL MOD: this run loads $ExternalPath (layout $ExternalSha), the parent ran $pxPath (layout $pxSha) - a different copy of the third-party mod" }
+            else { $notes += "third-party mod: layout $pxSha = the parent's ($(Split-Path $ExternalPath -Leaf))" }
         }
     }
 
@@ -383,7 +420,8 @@ function Assert-SameBookContinuation {
     param(
         [int]$Index, [string]$SetupId, [string]$SetupKind,
         [string]$ConfigPath = '', [string]$Parent, [string]$Repo, [string]$SessionsRoot,
-        [string]$Game = '', [switch]$Quiet
+        [string]$Game = '', [switch]$Quiet,
+        [string]$ExternalPath = '', [string]$ExternalSha = ''   # kind 'external': the third-party mod and its layout fingerprint
     )
     $s = [string][char]0xA7
     $head = "run #$Index (setup '$SetupId'): a continuation must build what its parent ran (the same-book rule, BALANCE_FRAMEWORK ${s}10.118, landmine L53)"
@@ -401,7 +439,8 @@ function Assert-SameBookContinuation {
     $gameVer  = Get-SameBookGameVersion -Game $Game
 
     $t = Test-SameBookContinuation -ParentState $state -SetupKind $SetupKind -ConfigPath $ConfigPath -ConfigSha $cfgSha `
-                                   -TreePath $treePath -TreeSha $treeSha -GameVersion $gameVer
+                                   -TreePath $treePath -TreeSha $treeSha -GameVersion $gameVer `
+                                   -ExternalPath $ExternalPath -ExternalSha $ExternalSha
     $problems = @($t.Problems); $notes = @($t.Notes)
 
     # the emitters read MOD_CONFIG before their argument when they name the tree twin: a redirected build is not this book

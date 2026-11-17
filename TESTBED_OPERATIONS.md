@@ -193,7 +193,8 @@ identically. The one exception is the **release-build check** below the table, w
 century", nothing else: no `markets.tsv`, so no PI/PP, red flags or anything else read from telemetry; the yearly save summaries, the
 tick lines (wall clock, the L41 freeze watch), the crash resumes and the run's own error window still come out. `meta.json` records
 `telemetry: false`; the arm reads `config` in `build_state.json` (the release build carries the real mod's id), so a release run is
-told apart by its setup kind (`save_provenance.json` `arm_kind: release`) and never pooled with the measurement arms.
+told apart by its setup kind (`save_provenance.json` `arm_kind: release`) and never pooled with the measurement arms. It builds a
+book, so the same-book gate applies to it as to a config arm (§2.3): a short load check is `"probe": "syntax"`.
 
 **The control rule is absolute: the only thing a control may vary is its telemetry.** Not one gameplay file, not one field. An arm
 that needs any gameplay change is an overlay or a config and must not be built by, named after or reported as a control.
@@ -235,16 +236,21 @@ the player's own `autosave*.v3` slots on the batch machine.
 Ruled by the user on 2026-11-17 (BALANCE_FRAMEWORK §10.118): *"Everything other than syntax-measuring or performance probes (where,
 for example, deliberate worsening is permissible to understand the impact) must be measured on the exact same books as the full
 runs."* and *"Ensure that this is so by machinery, that there's no separate 'shorter run book' at all, so no room for mistakes."*
-A book is `config/mod_config.<name>.json` with its tree twin; a full run plays to the schedule's `full_until`, `1936.1.1` unless the
-schedule says otherwise. The machinery is `tools/testbed/lib_same_book.ps1`, called by the scheduler; landmine L53 holds the proof.
+A book is `config/mod_config.<name>.json` with its tree twin; a full run plays to the full span, `1936.1.1`. The machinery is
+`tools/testbed/lib_same_book.ps1`, called by the scheduler; landmine L53 holds the proof.
 
-**A run on a `{kind: config}` arm is exactly one of three things.** Anything else is refused at plan time, before preflight, the
-estimate and any build, and `-WhatIf` shows the refusal.
+**The full span is not a lever.** The schedule key `full_until` may be absent or say `1936.1.1`; any other value, earlier or later,
+is refused at plan time. An earlier value would make a short run on a book read as a full run, which is the mistake the rule exists
+to prevent. Every `build_state.json` records the span beside the run's kind.
+
+**A run on an arm that builds a book of ours is exactly one of three things.** Those arms are `{kind: config}` and `{kind: release}`
+(the player build of a book). Anything else is refused at plan time, before preflight, the estimate and any build, and `-WhatIf`
+shows the refusal.
 
 | form | in the schedule | what it is | recorded `run_kind` |
 |---|---|---|---|
-| **full span** | `until` at or after `full_until` | the measurement | `full` |
-| **checkpoint leg** | `"checkpoint": true` on the run, `until` earlier | the first leg of a full-span run on this book: it stops early, its last save is kept, and it is continued to `full_until` | `checkpoint` |
+| **full span** | `until` at or after `1936.1.1` | the measurement | `full` |
+| **checkpoint leg** | `"checkpoint": true` on the run, `until` earlier | the first leg of a full-span run on this book: it stops early, its last save is kept, and it is continued to the full span | `checkpoint` |
 | **probe** | `"probe": "syntax"` or `"probe": "performance"` on the run or in `defaults` | a run that asks whether something loads or what something costs the tick; any book, deliberately worsened ones included | `probe:syntax`, `probe:performance` |
 
 - **A probe is never economy data.** `ledger/lib_runs.mjs` `usableRuns()` drops every probe run from every reader and prints it as
@@ -254,9 +260,15 @@ estimate and any build, and `-WhatIf` shows the refusal.
   save, and the gate refuses a checkpoint leg under `-NoSaveHarvest` or with `autosave_interval: never`. With yearly autosaves and an
   `until` on 1 January the kept save is that date's (run 2 of `20261112_113429` ended at 1936.1.1 with its 1936.1.1 save kept; the
   1900 finishes of 2026-10-11 continued from kept 1900.1.1 saves).
-- **Arms that build no book of ours** (control, external, overlay) are not gated: a short vanilla run needs no flag and is recorded
-  `short`. A release-build run is a load check, never a measurement (§2.2). The flags still work there (a vanilla checkpoint leg, a
-  vanilla performance probe) and mean the same.
+- **A release-build run is gated like a config run**: it builds a book. Its usual short form, the load check of a few in-game
+  years, is `"probe": "syntax"`; a century of the release build (`schedules/release_century_n1.json`) is a full run.
+- **Arms that build no book of ours** are not gated: a short run there needs no flag and is recorded `short`. They are `control`
+  (vanilla + telemetry), `external` (someone else's mod + telemetry) and `overlay`. An overlay is vanilla + telemetry + one declared
+  file, the pop-need weights (§2.2; `build.ps1 -Overlay` throws on anything else), so it carries no recipe, building or technology of
+  a book. The flags still work on these arms (a vanilla checkpoint leg, a vanilla performance probe) and mean the same.
+- **Schedules written before the gate** are records and are not walked. One that holds a short run on a book is refused if launched
+  again as it is: `schedules/no_dlc_load_test.json` and `schedules/polish_final_smoke.json` need `"probe": "syntax"` in `defaults`
+  before their next use.
 
 **Continuing a checkpoint leg.** A later schedule holds one run per leg to finish:
 
@@ -272,6 +284,8 @@ estimate and any build, and `-WhatIf` shows the refusal.
 the scheduler reads the parent's `build_state.json` and throws, listing every failed check with both values, unless:
 - the setup builds the parent's arm, and its config's sha256 is the parent's `config_sha256`;
 - the tree twin's sha256 is the parent's `tree_sha256` (recorded from 2026-11-17; an older parent's twin is checked by commit);
+- on a third-party arm (`{kind: external}`), the mod's layout fingerprint, taken when the schedule starts, is the one the parent
+  recorded in `external_mods`: a copy the author has since updated is a different arm;
 - the installed game's version is the parent's;
 - the parent was not built with uncommitted build inputs (`repo.build_paths_dirty`; for an older parent, the whole-repo `dirty`);
 - nothing a build reads differs between the parent's commit and HEAD, and none of it is uncommitted: `build.ps1`, `telemetry_lib.ps1`,
@@ -283,14 +297,11 @@ The same checks run again just before that run's build, and after the build the 
 parent's before the game is launched (`fingerprint.content_layout_sha256`, every file but the telemetry instrument; a parent from
 before 2026-11-17 has only the whole-mod fingerprint, which matches only when the continuation carries the parent's telemetry spec).
 A mismatch at either point aborts the schedule with the run recorded `same_book_mismatch`. A continuation must not carry `probe`, and
-one that stops before `full_until` again is a middle leg and says `"checkpoint": true`.
+one that stops before the full span again is a middle leg and says `"checkpoint": true`.
 
 **When a check fails, the remedy is never a flag.** Play the leg again on today's build, or bring the named files back to the state
 the parent was built from. Continue a run from the checkout that played its parent: two checkouts of one commit can differ in line
 endings, which changes what the emitters write (L53, limits).
-
-**What a schedule can still do that the rule does not want.** A schedule that sets `full_until` earlier makes a shorter span "full"
-for itself; the plan prints a NOTE and every `build_state.json` records the value, so it is visible, but it is not refused.
 
 ---
 

@@ -1261,8 +1261,10 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   every run. Continuation runs: run keys `continue_save`, `continue_expect_after` (required), `prior_wall_seconds`, `parent` (required
   since 2026-11-17) → observer `-ContinueSave` and `continuation.json`; read them through `stitch_session.mjs`. **The same-book gate**
   (2026-11-17, L53, §10.118; `lib_same_book.ps1` below): at plan time, before preflight and under `-WhatIf`, a run on a `{kind: config}`
-  arm that stops before the schedule key `full_until` (default `1936.1.1`) throws unless it carries `probe: "syntax" | "performance"`
-  (run or defaults) or `checkpoint: true` (run); a continuation is verified against its parent's `build_state.json` at plan time, before
+  or `{kind: release}` arm that stops before the full span, `1936.1.1`, throws unless it carries `probe: "syntax" | "performance"`
+  (run or defaults) or `checkpoint: true` (run); the schedule key `full_until` may only say `1936.1.1` (any other value throws); a
+  continuation is verified against its parent's `build_state.json` (on a `{kind: external}` arm also the third-party mod's layout
+  fingerprint against the parent's `external_mods`) at plan time, before
   its build and after it (status `same_book_mismatch`, exit 3, nothing launched). The plan prints each run's kind; the observer gets
   `-RunKind`, `-FullUntil`, `-BuildTree`; `session.json`'s index, `save_provenance.json` and `continuation.json` (`same_book`) carry
   them too. Schedule key `game_args` → observer `-ExtraGameArgs`;
@@ -1297,16 +1299,17 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
 - **`lib_same_book.ps1`** — the same-book gate (L53, BALANCE_FRAMEWORK §10.118; TESTBED_OPERATIONS §2.3): functions only, dot-sourced by
   `run_schedule.ps1`, `run_observer.ps1` and `preflight.ps1`'s `Test-LmL53`; StrictMode-safe and ASCII-only. `Get-SameBookPlan -Sched
   <parsed schedule> [-NoSaveHarvest]` classes every run (`full` · `checkpoint` · `probe:syntax` · `probe:performance` · `continuation` ·
-  `short`) and throws on a short run on a book with no flag; `Assert-SameBookContinuation` reads the parent's `build_state.json` and
-  throws one message listing every failed check (arm, config sha256, tree twin sha256, game version, a parent built from uncommitted
-  inputs, build-path drift since the parent's commit); `Test-SameBookContinuation` is its file-free half; `Test-SameBookLayout`
+  `short`) and throws on a short run on a book with no flag (the gated kinds are `Get-SameBookBookKinds`: `config`, `release`) and on
+  a `full_until` other than `1936.1.1`; `Assert-SameBookContinuation` reads the parent's `build_state.json` and
+  throws one message listing every failed check (arm, config sha256, tree twin sha256, a third-party mod's layout fingerprint, game
+  version, a parent built from uncommitted inputs, build-path drift since the parent's commit); `Test-SameBookContinuation` is its file-free half; `Test-SameBookLayout`
   compares a built mod with the parent's fingerprint; `Get-SameBookLayoutSha [-ContentOnly]` is the layout algorithm (a third copy of
   the observer's `Get-DirFingerprint` and the scheduler's `Get-ModLayoutSha`: keep them alike); `Get-SameBookBuildPaths` is the list of
   what a build reads besides the book, as git pathspecs. Status: current. Traps: a new input of the build must be added to
   `Get-SameBookBuildPaths` (the post-build layout check is the backstop when one is missed); an exclusion in a git pathspec wins over
   an inclusion beside it, so a book file checked by commit is asked in its own query; git runs through `cmd /c`, never `& git … 2>&1`;
   `mod/.metadata/metadata.json` is compared without its `(built …)` stamp, which every build rewrites.
-- **`fixtures/same_book/`** — the gate's fixtures, never launched: fifteen schedules, each with `_expect` (`throw` / `pass`),
+- **`fixtures/same_book/`** — the gate's fixtures, never launched: twenty schedules, each with `_expect` (`throw` / `pass`),
   `_expect_message` or `_expect_kinds`, run by `Test-LmL53`; `reader_session/` (five stub runs) and `check_readers.mjs`, which requires
   `usableRuns()` to drop the two probe stubs; `README.md` lists them. `run_schedule.ps1 -Schedule <fixture> -WhatIf` shows any of them
   to a person. This is where test fixtures of the harness live.
