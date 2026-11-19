@@ -47,26 +47,26 @@ What the notes say bears on something of ours; the diff will add what they do no
 **Files we own — mod 1.1.1 overrides these 1.15.2 fixes until 1.1.2 is built from the new game (the trap of ON_GAME_UPDATE §1 point 1):**
 - **W10** · C · companies (Bugfixes): MALAXA requires Motor Industries instead of Automotive Industries; Kharitonenko and Son is partly owned by
   Aristocrats · we own all 23 `common/company_types` files (`emit_companies.mjs`, the company chain extension §10.64); MALAXA's
-  `building_types` already list the motor rungs, the changed field is elsewhere in its block · OPEN (mechanical on rebuild; check that the
+  `building_types` already list the motor rungs, the changed field is elsewhere in its block · DONE (rebuilt from 1.15.2: MALAXA's formation test and its construction target follow vanilla to motor, W16; the
   formation requirement on motor reaches every motor rung, as GAME_UPDATE_1_15 line 40's rule does for `has_building_levels_in_state_region`).
 - **W11** · C · the 1836 map (Improvements, Bugfixes): Texas gets a port instead of its naval administration; Finland and Travancore start with a
-  naval administration · we own all 16 `common/history/buildings` files (the converted start, CLAUDE.md §5.4) · OPEN (mechanical on rebuild;
+  naval administration · we own all 16 `common/history/buildings` files (the converted start, CLAUDE.md §5.4) · DONE (rebuilt; W14 lists the whole 1836 change;
   neither building is tiered; `extract_start.ps1` and the start-conversion lint confirm).
 - **W12** · C · journal entries and events (Content, Bugfixes): Russia (the Holy Synod decision, the Ruler of the East treaties' infamy and
   tooltips, the Chinese treaty partner check, Maintain Russian Dominance, Empowered Ukase in subject states), Brazil's Populist Unrest, the
   Spectre Haunting the World, State and Revolution, King-in-Parliament, Re-establishing New Spain, Single-Party State, the Socialist World
-  Republic · we own 12 `common/journal_entries` files and 26 event files (TIER_REFERENCE_AUDIT; `emit_vanilla_refs.mjs`) · OPEN (which of the
+  Republic · we own 12 `common/journal_entries` files and 26 event files (TIER_REFERENCE_AUDIT; `emit_vanilla_refs.mjs`) · DONE (the diff: `00_communism` and `08_tsarpoints` of ours changed, now 1.15.2's with our edits, W04; which of the
   changed files are ours: the diff).
 - **W13** · C · laws, scripted effects/triggers/values, static modifiers (Improvements, Balance: Regime Change, Official Nationality, Single-Party
   State, the battle-casualty modifiers) · we own 2 law files, 4 scripted-effect, 2 scripted-trigger, 2 script-value and 21 static-modifier
-  files · OPEN (the diff).
+  files · DONE (the diff, W04: the changed owned files are 1.15.2's copies with our edits; every lint passes).
 
 **Removed and new script vocabulary (Modding):**
 - **W20** · R · the subject-type key `breaks_if_subject_not_protected` and the on_actions `on_diplo_play_subject_released` /
   `_overlord` are removed · neither appears in the built mod (grep of `mod/`, 2026-11-19); `save_state_summary.mjs` reads `common/subject_types`
-  live and does not use the key · DONE pending the diff (L40 and `lint_vanilla_names.mjs` on the 1.15.2 build confirm).
+  live and does not use the key · DONE (the reference scan L40 and the vanilla-name lint pass on the 1.15.2 build).
 - **W21** · N · a new effect `conclude_journal_entry` (concludes a journal entry with a given outcome) · a possible tool for the research
-  entries, which end on the technology's acquisition today · OPEN (an adoption question for 1.2, not for the compatch).
+  entries, which end on the technology's acquisition today · DEFERRED to mod 1.2 (an adoption question; BACKLOG already holds "concluded research entries out of the journal").
 
 **Engine behaviour that the mod's economy runs through (phase 3; measured by the 1.15.2 vanilla batch, not by the compatch):**
 - **W30** · B · AI company formation (AI: "an issue that was frequently preventing the AI from successfully forming companies") · companies
@@ -75,22 +75,22 @@ What the notes say bears on something of ours; the diff will add what they do no
   1936 against 24%, 0.20 slots unused against 0.26, almost always one short; the company-held share of goods producers' value added fell
   instead (world, 1936: 47.3% on 1.13.11, 43.7% on 1.15.0, 41.3% on 1.15.1). Capacity rebuilt as the five society technologies + Technocracy
   (base 0; 98% of country-years at or under it). Prediction for the 1.15.2 vanilla batch: company counts about unchanged; the company-held
-  share is the reading to watch · OPEN (read in the vanilla batch).
+  share is the reading to watch · DEFERRED to the vanilla 1.15.2 batch (W50).
 - **W31** · C · military goods (Balance): default frigate and ship-of-the-line templates no longer need copper; troopships take grain instead of
   groceries, less artillery and engines, and no copper or coal · copper is the top input-price red flag on 1.15 (canon ~100 flag-years,
-  vanilla ~62, F268); §10.110.4: our copper approach follows Paradox's · OPEN (read copper and the war goods in the vanilla batch).
+  vanilla ~62, F268); §10.110.4: our copper approach follows Paradox's · DEFERRED to the vanilla 1.15.2 batch (W50: copper and the war goods).
 - **W32** · B · the map's stability (AI, Bugfixes, Balance): subjects no longer break free when a war starts without their overlord defending
   them; AI naval invasions progress; Belgium no longer starts wanting to conquer France; AI Austria no longer grants Hungary autonomy early;
   the Spectre and State and Revolution more threatening; a civil war country no longer stays revolutionary · the shortlist's territory and
-  the seed spread; L38 (country records lost to civil wars) · OPEN (read in the vanilla batch).
+  the seed spread; L38 (country records lost to civil wars) · DEFERRED to the vanilla 1.15.2 batch (W50).
 - **W33** · B · casualties and conscription (Balance, Bugfixes): Recovery and Kill Rate shift a share of casualties between dead and wounded;
-  Peasant Levies can conscript protected peasants · U\* counts peasants (CLAUDE.md §3.2) · OPEN (small; read in the vanilla batch).
+  Peasant Levies can conscript protected peasants · U\* counts peasants (CLAUDE.md §3.2) · DEFERRED to the vanilla 1.15.2 batch (W50; small).
 - **W34** · B · trade (Improvements, Bugfixes): a lock and grace period on tariff and subvention switches; split states no longer border
   themselves (wrong "isolated state" trade blockers); ports and trade centres can auto-expand · trade weights (§10.88), treaty ports
-  (§10.103) · OPEN (read in the vanilla batch).
+  (§10.103) · DEFERRED to the vanilla 1.15.2 batch (W50).
 - **W35** · B · fleets (Features, Bugfixes): sunk ships can be replaced automatically (a per-fleet toggle); defeated fleets recover once
   repaired and crewed as far as their sailors allow · the fleet path loop is absent on 1.15 (F270) and the summaries cannot see fleet paths
-  (L52) · OPEN (play time in the vanilla batch).
+  (L52) · DEFERRED to the vanilla 1.15.2 batch (W50: play time).
 
 **Found by the diff, not in the notes:**
 - **W14** · C · the 1836 map, much more than Texas (`common/history/buildings`, 153 states; a content diff by state × owner × building, the
@@ -102,7 +102,7 @@ What the notes say bears on something of ours; the diff will add what they do no
   map in every build (CLAUDE.md §5.4), so the canon's 1836 follows; the craft rungs follow it (the dry run: 231 craft buildings in 156
   states, from 218 in 149; 3,481 seeded craft levels, from 3,448) · DONE for the build. The craft seeding's
   `config/measured_1836_pop_identity.json` is a 1.15.0 vanilla 1836.2.1 save's (the pops history did not change; spare infrastructure
-  and peasants at 1836.2.1 may, with the ports and buildings) · OPEN (refresh from the control smoke run's first save, W43).
+  and peasants at 1836.2.1 may, with the ports and buildings) · DONE (W45).
 - **W15** · C · `pm_pot_stills` glass 4 → 5, copper 1 → 0, liquor 60 → 50, groceries −25 → −15; `pm_patent_stills` glass 7 → 5, copper
   3 → 5, liquor 100 → 75, groceries −40 → −20 (the second still pass in two hotfixes, GAME_UPDATE_1_15_1 V07) · our food secondaries are
   emitted from vanilla's live; the only change in `ui/vanilla.js` (`extract_vanilla.ps1`) · DONE (no book field).
@@ -118,7 +118,7 @@ What the notes say bears on something of ours; the diff will add what they do no
   new · we set none of these keys (the book's `ai_defines` are seven others, all still present in 1.15.2); `00_default_strategy.txt` is
   ours and carries vanilla's changes on rebuild. The define touches us: our companies' `ai_construction_targets` list every rung of their
   industries, older ones included (`emit_companies`: "0 gated to the best unlocked rung"), and private investment now weighs those targets
-  four times as much as on 1.15.1 · OPEN (Q2).
+  four times as much as on 1.15.1 · RULED (Q2: passes through; read in the first 1.2 runs, W51).
 
 ## Phase 2 — breakage: the mod builds and is correct
 
@@ -153,6 +153,27 @@ What the notes say bears on something of ours; the diff will add what they do no
   states (467 before)**, as vanilla 1.15.2's 1836 leaves less spare infrastructure there · DONE (mechanical: the ruled seeding rule on
   vanilla's new data).
 - `supported_game_version` is "1.15.*" already; the mod's own `version` becomes 1.1.2 at release (the `release` skill).
+
+## Phase 6 — re-measure
+
+- **W50** · T · the vanilla 1.15.2 reference batch (routine step 10: `VANILLA_REF`, `VANILLA_WALL_REF`, `measured_base_wages.json`, the
+  error-noise catalogue) · DEFERRED to the next session, as five centuries of vanilla 1.15.2 (the user, 2026-11-19: "the vanilla 5 runs will go
+  in the next session, and the 1.2 work -- in the one further"); its go-ahead is asked there. The questions it answers for this pass: W30
+  (company formation; the prediction: counts about unchanged, the company-held share the reading to watch), W31 (copper and the war goods),
+  W32–W35 (the map's stability, casualties, trade, fleets and play time).
+- **W51** · T · what the company-target define does to our old rungs (W17, Q2) · DEFERRED to the first 1.2 runs (BACKLOG B).
+
+## Phase 7 — release and record
+
+- **W60** · T · mod 1.1.2 · DONE 2026-11-19: `metadata.json` version 1.1.2 and the name in the Workshop title's form (the user: "[1.15] No
+  Free Upgrades: An industrial realism overhaul. Version 1.1.2"); `build.ps1 -Release`; README's replaced-file list (163 files, 29 folders);
+  `verify_release_build.mjs --version 1.1.2` RELEASE BUILD VERIFIED on commit `5223be7`; the five texts in `release_notes/1.1.2/` (the checker:
+  all pass; one count corrected, 79 vanilla files transformed where 1.1.1's texts said 78); CHANGELOG 1.1.2, KNOWN_ISSUES for 1.1.2. Uploaded and
+  published by the user the same evening (the change note at 20:21 local; the Workshop title "… Version 1.1.2"); tag `v1.1.2` on `5223be7`; the
+  change note as published `CHANGELOG_WORKSHOP/1.1.2.txt`, the draft's word for word. Not read back: the forum posts and the Workshop
+  discussions as published (the user pastes the forum's from the editor's BBCode view if wanted).
+
+**The register is closed for 1.1.2**: every line is DONE, RULED-and-built, DEFERRED with its destination, or a question answered.
 
 ## Phase 5 — the questions (2026-11-19)
 

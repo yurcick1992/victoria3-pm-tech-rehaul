@@ -35,7 +35,7 @@ of 2026-11-09 (§10.110.1): **mod 1.2 in late November**, the balance retune on 
 | 5a | company instrumentation | item (1) DONE (summary v7); item (2) OPEN | 2026-08-21 | BACKLOG D |
 | 6 | hydro-dam megaprojects | DONE; canon since 2026-09-27, redesigned to 2026-10-16 | 2026-10-16 | §10.89 (.1, .9–.14), F168–F177 |
 | 6½ | artisanal ownership | might make 1.3 (user, 2026-11-09) | 2026-10-21 | POLISH F1 |
-| 7 | visuals, proofreading, release | DONE — mod 1.0 released 2026-10-30, mod 1.1 2026-11-08, mod 1.1.1 (game 1.15.1) 2026-11-15 | 2026-11-15 | `POLISH_1_0.md`, `GAME_UPDATE_1_15.md` |
+| 7 | visuals, proofreading, release | DONE — mod 1.0 released 2026-10-30, mod 1.1 2026-11-08, mod 1.1.1 (game 1.15.1) 2026-11-15, mod 1.1.2 (game 1.15.2) 2026-11-19 | 2026-11-19 | `POLISH_1_0.md`, `GAME_UPDATE_1_15.md` |
 | — | the war and naval research channels | DONE; re-ruled 2026-09-03 and 2026-10-12 | 2026-10-12 | §10.69, §10.98 |
 | 8 | the first playtest's defects P1–P9 | P1 P2 P3 P4 P6 P7 DONE (P1 and P6 closed by the user 2026-10-24) · P5 accepted · P8 CLOSED (F255, not an issue) · P9 DEFERRED to an unspecified later version | — | BACKLOG B, F137, F138 |
 | 9 | margin compression | CLOSED (batch 1 out; levelling closed) | 2026-09-19 | F139, §10.86.3–.4 |
@@ -118,7 +118,11 @@ feature only if it needs no iteration (step 7's timeline).
   "1.1 or later"); per-rung building art (R6, "1.1 or later"); the art academy's Austrian conditional desire, if the batch shows the canon's
   Austria building too few (BACKLOG E). Rubber in a rich late game is a watch item (Q7).
 
-### Mod 1.2 (game 1.15.1; the extraction overhaul since 2026-11-16; "December", no details, §10.119 item 14)
+### Mod 1.2 (the game version current when its iterations start, 1.15.2 today, §10.122; the extraction overhaul since 2026-11-16; "December", no details, §10.119 item 14)
+
+**The order from here (the user, 2026-11-19, §10.122):** mod 1.1.2, the compatibility patch for game 1.15.2, is released (2026-11-19); next
+session, a vanilla 1.15.2 reference batch of five centuries (it re-baselines `VANILLA_REF`, the wages, the error-noise catalogue; GAME_UPDATE_1_15_2
+phase 6); the session after, the 1.2 iterations, built on the game version current then.
 
 **The extraction overhaul (§10.115, user-ruled 2026-11-16).** The user: *"I think we'll skip the smaller step of 1.2, and go with the
 extraction overhaul for 1.2 already (not 1.3)."*

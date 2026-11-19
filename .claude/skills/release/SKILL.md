@@ -136,6 +136,13 @@ forum post's copper section is the model). *Workshop length* says the same in on
 dropping the per-good detail (the 1.1.0 Workshop vanilla post compresses the forum's 20 kB into under 8 kB). The over-vanilla changelog at
 Workshop length is the hardest to fit: cut sub-detail, never a feature.
 
+**A release that only follows a game hotfix is short** (the user, 2026-11-19, of 1.1.2's texts: "much wordier than is reasonable for its
+substance"). When the substance is *"incorporated <g>'s changes without corrections"* and *"tested it this much"*, the over-previous changelog
+says exactly that: the game version it follows, that vanilla's changes come through as they are, anything the mod itself had to correct
+(only if there was some), how it was tested, and the pointer to the known issues. No itemised list of what vanilla changed (it is vanilla's
+changelog, not ours), no per-method figures for vanilla's own recipe moves, no re-statement of the balance standing (the known issues carry
+it). A few lines, at Workshop and forum length alike. The 1.1.2 change note is the counter-example; 1.1.1's is the upper bound.
+
 **Sections, in this order** (drop an empty one; precedents for the wording of each):
 - *over the previous version:* the header `<v> (for Victoria 3 <g>)`; the AI disclaimer line; an opening paragraph (what the release is, what it
   requires, that the design is unchanged except where said, "Small adjustments that only follow vanilla <g>'s own renames and moves are not

@@ -1,7 +1,7 @@
 # PM & Tech Rehaul — Victoria 3 mod
 
 An economic-realism mod for **Victoria 3**. Mod 1.0 shipped on game 1.13 ("Matcha", 2026-10-30); mod 1.1 is built on game 1.15 ("Ivan-Chai"),
-where the canon has been since 2026-11-08, and mod 1.1.1 on game 1.15.1 since 2026-11-12 (Part 4). Players see it as **No Free Upgrades: An industrial realism overhaul** (the public files' titles since 2026-10-29). Since mod 1.1.2 the
+where the canon has been since 2026-11-08, mod 1.1.1 on game 1.15.1 since 2026-11-12, and mod 1.1.2 on game 1.15.2 since 2026-11-19 (Part 4). Players see it as **No Free Upgrades: An industrial realism overhaul** (the public files' titles since 2026-10-29). Since mod 1.1.2 the
 name in `mod/.metadata/metadata.json` takes the Workshop item's title form, `[<game macro version>] No Free Upgrades: An industrial realism
 overhaul. Version <mod version>` ("[1.15] … Version 1.1.2"), updated each release (the `release` skill); the Workshop item's title itself is
 set on its Steam page. "PM & Tech Rehaul" is the working name and lives on in every identifier — the folder
@@ -661,10 +661,13 @@ GAME_UPDATE_1_15_1.md Q1, Q8): the 1.15 canon's chain replayed on 1.15.1 (`tools
 steps, giving `g1151-canon-bz-dcu-ra-il`, `c1274f15`, never measured), then the AI-weights step (`tools/make_tech_ai_weights_config.mjs`, its
 record `_tech_ai_weights_variant`; it reads the research entries from the base book's build). Its field diff against the 1.15 canon: the electrics
 t2 rung's iron, copper and tools, following vanilla 1.15.1's telephone recipe, value-neutral, and `tech_ai_weights` (six technologies' 1.13.11
-weights) — nothing else. `mod/` and the deployed copy are its RELEASE build (commit `43bade2`, 2026-11-15, for the Workshop upload; the
-next default build turns them back into a debug build). Verify with `sha256sum config/mod_config.json`. Measured by F271 (10 + 10 centuries on
-1.15.1, 2026-11-12 → 11-14). **Released on the Workshop 2026-11-15** (the user's upload, 12:05 local; tag `v1.1.1` on `43bade2`; the change
-note as published is `CHANGELOG_WORKSHOP/1.1.1.txt`, its text the draft's word for word).
+weights) — nothing else. Measured by F271 (10 + 10 centuries on 1.15.1, 2026-11-12 → 11-14) and F272 (five + five more). **Released on the
+Workshop as mod 1.1.1** on 2026-11-15 (tag `v1.1.1` on `43bade2`; `CHANGELOG_WORKSHOP/1.1.1.txt`) and, **on game 1.15.2, as mod 1.1.2** on
+2026-11-19 (§10.122, GAME_UPDATE_1_15_2.md): the same book, its chain replayed on 1.15.2 reproducing it but for two record labels the build does
+not emit, so nothing was canonised; the release build is commit `5223be7` (tag `v1.1.2`), the change note as published
+`CHANGELOG_WORKSHOP/1.1.2.txt` (the draft's word for word). `mod/` and the deployed copy are that release build; the next default build
+turns them back into a debug build. Verify with `sha256sum config/mod_config.json`. Mod 1.1.2 on 1.15.2 is measured only by its smoke test
+(F273, a syntax probe); a vanilla 1.15.2 reference batch comes next (§10.122).
 
 **The 1.15 canon** (mod 1.1, game 1.15.0; canonised 2026-11-08, kept as the record) is `config/mod_config.g115c-canon-bz-dcu-ra-il.json`, sha256
 **`a52b0acacd6b6b6e`** (tree twin `db96307af17c22ee`; §10.109.5; GAME_UPDATE_1_15.md Q1): the 1.0 canon's recorded chain replayed on game 1.15
@@ -708,8 +711,13 @@ What §1.2 and §1.3 leave out:
   administrative strategy.
 - **Trade and defines:** the five-class traded-quantity table at ×1 (F159 §7), copper in class C (§10.108.3); `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99`.
 
-## 4.2 Where it stands (2026-11-14)
+## 4.2 Where it stands (2026-11-19)
 
+- **Game 1.15.2** (installed 2026-11-19; mod 1.1.2, the same canon, released the same day): measured only by the smoke test (F273: it loads
+  and runs; two error classes were ours, the BOM fixed as landmine L53). Every reading below is game 1.15.1's or older. Next, in this order
+  (the user, 2026-11-19): a vanilla 1.15.2 reference batch of five centuries, then the mod 1.2 iterations on the then-current game version.
+- **F272 adds five + five** centuries of mod 1.1.1 against vanilla 1.15.1 (beside fifteen of Production Method Rework, a third-party
+  mod): over all fifteen, world GDP 1.19 × vanilla's, world U\* 33.4% against 30.1%, the shortlist's 4.8% against 4.8%, play × 1.063.
 - **The 1.15.1 canon** (mod 1.1.1, `697d4869`, since 2026-11-12): ten alternating centuries against ten of vanilla 1.15.1, vanilla first
   (F271; session `20261112_113429_g1151-alt-vanilla10-canon10`, ended 2026-11-14 20:36; vanilla n=11 for the economy with run 22 of
   `20261109_005943`; the report is the ledger artifact `6X7XzLmkgDmk3hEQDkJwxj`).

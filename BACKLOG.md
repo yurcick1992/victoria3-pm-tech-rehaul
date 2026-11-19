@@ -13,6 +13,16 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
 
 ## The order (from ROADMAP and the user's rulings; updated 2026-11-09)
 
+**Now (the user, 2026-11-19, §10.122):** mod 1.1.2 is released (game 1.15.2, tag `v1.1.2`). **Next session:** a vanilla 1.15.2 reference batch of
+five centuries (go-ahead to be asked there; GAME_UPDATE_1_15_2 W50 lists what it answers; the schedule to be written, `g1152_smoke.json` and
+`g1151_alt_vanilla_canon10.json` are the patterns). **The session after:** the 1.2 iterations, on the game version current then. Waiting
+from 2026-11-19, small: three doc fixes to §10.121 found in review — (1) CLAUDE.md §2.5 and the §2.13 row state "the under-side rule is not
+applied to the misplaced-capital pass" as ruled, where §10.121 point 4 calls it Claude's reading (confirm or reword); (2) §10.121's
+candidate (c) says the old-rung census "mixes ladder failure with countries that run nothing newer", where it counts workers behind the best
+rung their own country staffs (CLAUDE.md §3.3 says it separates exactly that; its real gap is a backward country under another country's better
+plant in the same market); (3) CLAUDE.md §3.3's "Proposed and unruled: an obsolescence term in place of T0 … F136" is O_shed, parked until
+after 1.2 by §10.120 point 4 and §10.121.1.
+
 1. ✅ **The canon** is `jex-dam4s-rs-x25-m10ac-dpriv-wm99` with the 2026-10-21 polish rulings, the 2026-10-26 proofread's display text and the 2026-10-27 urban-centre live figure (sha256 `9a05d36da42c1511`, measured as `728f2c7f84e6f467`; CLAUDE.md §4.1,
    the lineage §4.3): the artmerge arm canonised 2026-10-12 (§10.99, F227) → one innovation parameter x = 25 (2026-10-13, §10.101.1) →
    private dam construction, engines unlifted and the conditional merge-host desire (2026-10-16; §10.89.14, §10.101, §10.91.2; F239, F240)

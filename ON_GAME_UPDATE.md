@@ -724,7 +724,8 @@ different versions are not comparable without saying so.
   subjects in wars, the 1836 map (153 states, far beyond the notes' Texas), the stills, companies' `possible` and `ai_will_do`, the
   company-target investment define 5 → 20. Kept at `C:\claude-code\vic3_game_1.15.2` (taken 2026-11-19 18:55), with 1.15.1 beside it: the
   first full diff of two kept versions. The same day the user set the game to *Only update this game when I launch it*. The pass's
-  register is `GAME_UPDATE_1_15_2.md` (mod 1.1.2, a compatibility patch; a 1.15.2 vanilla batch follows it as the new reference).
+  register is `GAME_UPDATE_1_15_2.md` (mod 1.1.2, a compatibility patch, released on the Workshop 2026-11-19, tag `v1.1.2` on `5223be7`; a
+  1.15.2 vanilla batch of five centuries follows it as the new reference). The first session on it is `20261119_191707_g1152-smoke` (F273).
 
 ---
 
