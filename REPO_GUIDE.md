@@ -1575,6 +1575,15 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   Written 2026-11-15 for the three-arm batch with a third-party mod (TESTBED_OPERATIONS §2.2), in place of the ledger by the user's
   ruling. Traps: `--arm` pools sessions, `--wall` must stay inside one session (it warns otherwise); a major under 5M people is left
   out of the pool readings (a rump state); about 4 s a run. Checked against F271 (world GDP 1.18×, play ×1.087).
+- **`ledger/pmr_charts/`** — the chart page of the three-arm batch of F272 (PMR 0.4.0 × 15, vanilla 1.15.1 × 5, mod 1.1.1 × 5), the
+  artifact `AVRgSM72MUDNLzkeiD7Lif` (a refill goes to the same link). `chart_data.mjs <repo root> <work dir>/data.json` reads every
+  run's yearly series with `arm_compare.mjs`'s definitions (the economy glued to the 10 + 10 batch `20261112_113429`, play time this
+  batch only; both session names are constants at its top); `build.mjs <work dir>` puts `data.json` into `template.html` (one
+  `/*DATA*/` slot; inline SVG, no libraries, median and per-game lines with switches) and writes `pmr_vanilla_nfu_charts.html` and
+  `preview.html` into the work dir, which is a scratch folder outside the repository. `retool_read.mjs <session dir>` reads, over a
+  session's `*_pmr` runs, how much of the government and private construction queues PMR's retool sites hold at ten dates, and the
+  standing retool-site levels by kind. Trap: it picks a year's summary by file position, so a run that resumed after a crash reads
+  one year early from the crash on (its last line prints the dates it read).
 - **`ledger/advanced_panel.mjs`** / **`tiered_panel.mjs`** `--arm <s>:<label> [--arm …] --van <s>:<label> [--year 1935] [--group …]`
   (`tiered_panel` + `--config-<n>` per arm) — productive share of the workforce and GDP per productive worker ÷ vanilla, whole economy /
   tiered industries (tiered workers modelled from staffed levels). Definitions: `ledger/README.md` §8.3; readings: F76, F78. Traps: the default

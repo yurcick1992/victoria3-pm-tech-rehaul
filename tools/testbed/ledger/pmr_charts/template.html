@@ -1,0 +1,290 @@
+<title>PMR, Vanilla and NFU Centuries</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a short preface, one sticky row of switches that is also the legend, then sections of charts on a shared grid;
+   every chart has a fixed axis drawn from all runs of all three mods, so switching a series off never rescales it. */
+:root {
+  --bg: #fbfbf9; --panel: #ffffff; --fg: #17181a; --fg2: #53555a; --fg3: #7d7f85; --rule: #e3e3de; --grid: #ecece7;
+  --vanilla: #1baf7a; --pmr: #eb6834; --nfu: #2a78d6;
+  --chip: #f1f1ec; --focus: #2a78d6;
+  --sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --num: "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #161718; --panel: #1d1e20; --fg: #eeeeea; --fg2: #bdbeb8; --fg3: #8f918c; --rule: #303235; --grid: #292b2e;
+  --vanilla: #199e70; --pmr: #d95926; --nfu: #3987e5; --chip: #26282b; --focus: #3987e5; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #161718; --panel: #1d1e20; --fg: #eeeeea; --fg2: #bdbeb8; --fg3: #8f918c; --rule: #303235; --grid: #292b2e;
+  --vanilla: #199e70; --pmr: #d95926; --nfu: #3987e5; --chip: #26282b; --focus: #3987e5; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1 { font-size: 28px; line-height: 1.15; margin: 0 0 6px; font-weight: 650; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-size: 19px; margin: 0; font-weight: 650; text-wrap: balance; }
+.lede { color: var(--fg2); max-width: 68ch; margin: 0 0 14px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px 22px; margin: 0 0 6px; padding: 14px 0 0; border-top: 1px solid var(--rule); }
+.fact { min-width: 0; }
+.fact b { display: flex; align-items: center; gap: 7px; font-weight: 650; }
+.fact span { color: var(--fg2); font-size: 13.5px; display: block; }
+.sw { width: 18px; height: 4px; border-radius: 2px; flex: none; }
+.stamp { color: var(--fg3); font-size: 13px; margin: 10px 0 0; }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--rule); margin: 18px 0 8px; padding: 9px 0; display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.grp { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.grp > span { color: var(--fg3); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; margin-right: 2px; }
+button.tg { font: inherit; font-size: 13.5px; color: var(--fg); background: var(--chip); border: 1px solid var(--rule); border-radius: 999px; padding: 4px 11px 4px 9px; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
+button.tg:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+button.tg[aria-pressed="false"] { background: transparent; color: var(--fg3); text-decoration: line-through; }
+button.tg[aria-pressed="false"] .sw, button.tg[aria-pressed="false"] .gl { opacity: 0.25; }
+.gl { width: 18px; height: 10px; flex: none; }
+section { margin-top: 30px; }
+.sech { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-bottom: 12px; }
+.sech p { margin: 0; color: var(--fg2); font-size: 13.5px; max-width: 80ch; }
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); }
+.grid.small { grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+.card { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 12px 8px; min-width: 0; position: relative; }
+.card h3 { font-size: 14.5px; margin: 0; font-weight: 650; text-wrap: balance; }
+.card .u { color: var(--fg3); font-size: 12.5px; margin: 1px 0 6px; }
+.plot { position: relative; }
+svg { display: block; width: 100%; overflow: visible; }
+svg text { font-family: var(--num); font-size: 10.5px; fill: var(--fg3); }
+svg text.lab { font-family: var(--sans); font-size: 11px; fill: var(--fg2); font-weight: 600; }
+.gridl { stroke: var(--grid); stroke-width: 1; }
+.axisl { stroke: var(--rule); stroke-width: 1; }
+.run { fill: none; stroke-width: 1; opacity: 0.38; }
+.med { fill: none; stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.halo { fill: none; stroke: var(--panel); stroke-width: 5; stroke-linejoin: round; }
+.c-vanilla { stroke: var(--vanilla); } .c-pmr { stroke: var(--pmr); } .c-nfu { stroke: var(--nfu); }
+.b-vanilla { background: var(--vanilla); } .b-pmr { background: var(--pmr); } .b-nfu { background: var(--nfu); }
+.off-vanilla .a-vanilla, .off-pmr .a-pmr, .off-nfu .a-nfu, .off-med .k-med, .off-runs .k-run { display: none; }
+.cross { stroke: var(--fg3); stroke-width: 1; stroke-dasharray: 3 3; }
+.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--rule); border-radius: 5px; padding: 6px 9px; font-size: 12.5px; box-shadow: 0 3px 12px rgba(0,0,0,0.14); white-space: nowrap; z-index: 3; }
+.tip b { font-family: var(--num); font-weight: 600; }
+.tip .r { display: flex; align-items: center; gap: 7px; }
+.tip .r span.v { margin-left: auto; padding-left: 14px; font-family: var(--num); }
+.tip .r span.n { color: var(--fg3); font-size: 11.5px; }
+details { margin-top: 30px; border-top: 1px solid var(--rule); padding-top: 12px; }
+summary { cursor: pointer; font-weight: 650; font-size: 16px; }
+.tw { overflow-x: auto; margin-top: 10px; }
+table { border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 5px 16px 5px 0; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { color: var(--fg3); font-weight: 600; font-size: 12px; }
+td.g { font-weight: 650; padding-top: 12px; border-bottom-color: var(--fg3); }
+td span { color: var(--fg3); }
+.wt { grid-column: 1; padding-bottom: 12px; }
+.wt table { width: 100%; }
+.wt th, .wt td { padding-right: 0; }
+.wt th.num, .wt td.num { text-align: right; padding-left: 12px; font-family: var(--num); }
+.wt th.num { font-family: inherit; }
+.wt td.nm { font-weight: 600; }
+.wt .sw { display: inline-block; vertical-align: middle; margin-right: 8px; }
+.wt .each { margin-top: 10px; font-size: 13px; }
+.wt .each .l { color: var(--fg3); font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+.wt .each .r { display: flex; gap: 0 10px; align-items: baseline; }
+.wt .each .r b { flex: none; width: 74px; font-weight: 600; }
+.wt .each .r span { font-family: var(--num); color: var(--fg2); min-width: 0; }
+.wt .u.foot { margin: 8px 0 0; }
+.notes { color: var(--fg2); font-size: 13.5px; max-width: 80ch; margin-top: 26px; }
+.notes p { margin: 0 0 8px; }
+</style>
+
+<div class="wrap" id="root">
+  <h1>PMR, vanilla and No Free Upgrades: a century each, run by run</h1>
+  <p class="lede">Victoria 3 version 1.15.1 played from 1836 to 1936 as observer games (every country run by the AI, no player), under three setups. Each thin line is one whole game; each bold line is the median of that setup's games in each year.</p>
+  <div class="facts" id="facts"></div>
+  <p class="stamp" id="stamp"></p>
+
+  <div class="bar" role="group" aria-label="What the charts show">
+    <div class="grp" id="armtg"><span>Setups</span></div>
+    <div class="grp"><span>Lines</span>
+      <button class="tg" id="tg-med" aria-pressed="true" type="button"><svg class="gl" viewBox="0 0 18 10" aria-hidden="true"><line x1="0" y1="5" x2="18" y2="5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>Medians</button>
+      <button class="tg" id="tg-runs" aria-pressed="true" type="button"><svg class="gl" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 7 L6 3 L12 6 L18 2 M0 4 L6 8 L12 3 L18 6" stroke="currentColor" stroke-width="1" fill="none"/></svg>Individual games</button>
+    </div>
+  </div>
+
+  <div id="sections"></div>
+
+  <details id="tbl"><summary>The end state as a table (1932–1936 mean of each game; median, lowest and highest game)</summary><div class="tw" id="tw"></div></details>
+
+  <div class="notes">
+    <p><b>How to read it.</b> The axes are fixed: switching a setup or a kind of line off never rescales a chart. Hover or tap a chart for the medians of one year.</p>
+    <p><b>Terms.</b> <i>GDP</i> is the figure the game displays. <i>Unemployment including peasants (U*)</i> is the share of the workforce that is unemployed or lives by subsistence farming: the lower it is, the further a country has moved its people into paid work. <i>Productive workers per capita (W)</i> counts salaried workers outside government and the military, per head of population. The <i>investment pool</i> is the private capital waiting to be spent on construction, shown in years of GDP: a pool that keeps growing is capital nobody finds a use for. The <i>shortlist</i> is Great Britain, the USA, France, the Netherlands and Belgium (or the United Netherlands) and Prussia / North Germany / Germany, read as one economy. A major's pool is left out in years when the country has under 5 million people.</p>
+    <p><b>Which games.</b> Vanilla and No Free Upgrades also count the ten games each of an earlier batch on the same game version (12–14 November 2026); play speed is shown only for the games of this batch, which alternate on one machine over the same days. A country's GDP moves with its territory from game to game; its shares (U*, the pool in years of GDP) compare better.</p>
+  </div>
+</div>
+
+<script type="application/json" id="data">/*DATA*/</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById('data').textContent);
+  var root = document.getElementById('root'), YEARS = D.years, NY = YEARS.length;
+  var ARMS = D.arms, NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent, text) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e; }
+  function h(tag, cls, parent, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e; }
+  function median(v) { var s = v.filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; }); if (!s.length) return null; return s.length % 2 ? s[s.length >> 1] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2; }
+  function fmt(v, f) {
+    if (v == null || !isFinite(v)) return '–';
+    if (f === 'int') return Math.round(v).toLocaleString('en-GB');
+    if (f === 'pct') return v.toFixed(1) + '%';
+    if (f === 'w') return v.toFixed(3);
+    if (f === 'f1') return v.toFixed(1);
+    return v.toFixed(2);
+  }
+  function tickFmt(v, f, step) {
+    if (f === 'pct') return v + '%';
+    if (f === 'int') return v >= 10000 ? (v / 1000) + 'k' : String(v);
+    var d = step >= 1 ? 0 : step >= 0.1 ? 1 : step >= 0.01 ? 2 : 3; return v.toFixed(d);
+  }
+  function niceStep(max, n) { var raw = max / n, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p; }
+
+  // ---- the preface
+  var facts = document.getElementById('facts');
+  ARMS.forEach(function (a) {
+    var f = h('div', 'fact', facts), b = h('b', '', f); h('i', 'sw b-' + a.key, b); b.appendChild(document.createTextNode(a.name));
+    var txt = a.key === 'vanilla' ? 'The unmodded game. ' : a.key === 'pmr' ? 'Salty’s mod, the Steam Workshop build of 6 November 2026. ' : 'The No Free Upgrades mod, version 1.1.1. ';
+    txt += a.n + (a.n === 1 ? ' game' : ' games') + ' so far';
+    if (a.n > a.nHere) txt += ': ' + a.nHere + ' of ' + a.planned + ' from this batch and ' + (a.n - a.nHere) + ' from the earlier one.';
+    else txt += ', of ' + a.planned + ' planned.';
+    h('span', '', f, txt);
+  });
+  var done = ARMS.reduce(function (s, a) { return s + a.nHere; }, 0), plan = ARMS.reduce(function (s, a) { return s + a.planned; }, 0);
+  document.getElementById('stamp').textContent = 'Data as of ' + D.stamp + ': ' + done + ' of this batch’s ' + plan + ' games finished.' + (done < plan ? ' The batch is still running; this page is refilled as it goes.' : '');
+
+  // ---- the switches
+  var armtg = document.getElementById('armtg');
+  ARMS.forEach(function (a) {
+    var b = h('button', 'tg', armtg); b.type = 'button'; b.id = 'tg-' + a.key; b.setAttribute('aria-pressed', 'true');
+    h('i', 'sw b-' + a.key, b); b.appendChild(document.createTextNode(a.short));
+    b.addEventListener('click', function () { flip(b, 'off-' + a.key); });
+  });
+  function flip(b, cls) { var on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); root.classList.toggle(cls, !on); }
+  document.getElementById('tg-med').addEventListener('click', function () { flip(this, 'off-med'); });
+  document.getElementById('tg-runs').addEventListener('click', function () { flip(this, 'off-runs'); });
+  function armOn(k) { return !root.classList.contains('off-' + k); }
+
+  // ---- the charts
+  var NOTES = {
+    'World': 'Every country together.',
+    'Shortlist': 'Great Britain, the USA, France, the Netherlands and Belgium (or the United Netherlands) and Prussia / North Germany / Germany, pooled as one economy.',
+    'Majors: GDP': '£M a year. Each chart has its own scale.',
+    'Majors: unemployment including peasants (U*)': '% of the country’s workforce unemployed or subsisting.',
+    'Majors: investment pool': 'In years of the country’s own GDP. Each chart has its own scale.',
+    'Play time': 'In-game years the machine plays in one minute of real time, with the game running unattended at full speed: higher is faster. Only this batch’s games: they alternate on one machine, so the three setups saw the same days.'
+  };
+  // the century's play time per game, under the play-speed chart
+  function wallTable(s) {
+    var box = h('div', 'card wt', s); h('h3', '', box, 'The whole century, in minutes of real time');
+    h('div', 'u', box, 'What a player would wait for 1836 to 1936 at full speed, loading included. One value per game of this batch.');
+    var twd = h('div', 'tw', box), tb = h('table', '', twd), hr = h('tr', '', h('thead', '', tb));
+    h('th', '', hr, 'Setup');
+    ['Games', 'Median', 'Average', 'Fastest', 'Slowest', 'Median ÷ vanilla’s'].forEach(function (t) { h('th', 'num', hr, t); });
+    var body = h('tbody', '', tb), any = false;
+    var each = h('div', 'each', box); h('div', 'l', each, 'Each game, in the order played');
+    var vm = median((D.wall.vanilla || []).map(function (x) { return x.min; }));
+    ARMS.forEach(function (a) {
+      var g = (D.wall[a.key] || []).filter(function (x) { return x.min != null; }), v = g.map(function (x) { return x.min; });
+      var tr = h('tr', '', body), td = h('td', 'nm', tr); h('i', 'sw b-' + a.key, td); td.appendChild(document.createTextNode(a.short));
+      h('td', 'num', tr, v.length + ' of ' + a.planned);
+      if (!v.length) { for (var k = 0; k < 5; k++) h('td', 'num', tr, '–'); return; }
+      var m = median(v), avg = v.reduce(function (p, q) { return p + q; }, 0) / v.length;
+      h('td', 'num', tr, m.toFixed(1)); h('td', 'num', tr, avg.toFixed(1));
+      h('td', 'num', tr, v.length > 1 ? Math.min.apply(null, v).toFixed(1) : '–'); h('td', 'num', tr, v.length > 1 ? Math.max.apply(null, v).toFixed(1) : '–');
+      h('td', 'num', tr, a.key === 'vanilla' || !vm ? '–' : '×' + (m / vm).toFixed(2));
+      var er = h('div', 'r', each), eb = h('b', '', er); h('i', 'sw b-' + a.key, eb); eb.appendChild(document.createTextNode(a.short));
+      h('span', '', er, g.map(function (x) { if (x.resumes) any = true; return Math.round(x.min) + (x.resumes ? '†' : ''); }).join(' · '));
+    });
+    if (any) h('div', 'u foot', box, '† This game stopped mid-century and was resumed from its last autosave; the stretch it replayed is not counted.');
+  }
+  var groups = [], byG = {};
+  D.charts.forEach(function (c) { if (!byG[c.group]) { byG[c.group] = []; groups.push(c.group); } byG[c.group].push(c); });
+  var charts = [];
+  var secs = document.getElementById('sections');
+  groups.forEach(function (g) {
+    var s = h('section', '', secs), sh = h('div', 'sech', s); h('h2', '', sh, g); if (NOTES[g]) h('p', '', sh, NOTES[g]);
+    var small = /^Majors/.test(g), grid = h('div', 'grid' + (small ? ' small' : ''), s);
+    byG[g].forEach(function (c) {
+      var card = h('div', 'card', grid); h('h3', '', card, c.title); if (!small) h('div', 'u', card, c.unit); else h('div', 'u', card, ' ');
+      var plot = h('div', 'plot', card);
+      // medians and the fixed domain, once
+      c.med = {}; var max = 0;
+      ARMS.forEach(function (a) {
+        var runs = c.series[a.key] || [];
+        c.med[a.key] = YEARS.map(function (_, i) { return median(runs.map(function (r) { return r[i]; })); });
+        c.cnt = c.cnt || {}; c.cnt[a.key] = YEARS.map(function (_, i) { return runs.filter(function (r) { return r[i] != null; }).length; });
+        runs.forEach(function (r) { r.forEach(function (v) { if (v != null && v > max) max = v; }); });
+      });
+      var step = niceStep(max || 1, small ? 3.2 : 4.2); c.step = step; c.top = Math.ceil((max || 1) / step - 1e-9) * step;
+      c.plot = plot; c.small = small; charts.push(c);
+    });
+    if (g === 'Play time' && D.wall) wallTable(grid);
+  });
+
+  function draw(c) {
+    var plot = c.plot, Wd = Math.max(240, Math.floor(plot.clientWidth)), Ht = c.small ? 168 : 232;
+    var mL = 40, mR = 54, mT = 8, mB = 20, pw = Wd - mL - mR, ph = Ht - mT - mB;
+    while (plot.firstChild) plot.removeChild(plot.firstChild);
+    var svg = el('svg', { viewBox: '0 0 ' + Wd + ' ' + Ht, height: Ht, role: 'img', 'aria-label': c.title + ', ' + c.unit }, plot);
+    var X = function (i) { return mL + pw * i / (NY - 1); }, Yf = function (v) { return mT + ph * (1 - v / c.top); };
+    for (var t = 0; t <= c.top + c.step / 2; t += c.step) {
+      var y = Math.round(Yf(t)) + 0.5; el('line', { x1: mL, x2: mL + pw, y1: y, y2: y, class: t === 0 ? 'axisl' : 'gridl' }, svg);
+      el('text', { x: mL - 6, y: y + 3.5, 'text-anchor': 'end' }, svg, tickFmt(+t.toPrecision(6), c.fmt, c.step));
+    }
+    var every = pw < 300 ? 40 : 20;
+    YEARS.forEach(function (yr, i) { if ((yr - 1840) % every === 0) el('text', { x: X(i), y: Ht - 5, 'text-anchor': 'middle' }, svg, yr); });
+    function path(vals) { var d = '', pen = false; for (var i = 0; i < NY; i++) { var v = vals[i]; if (v == null) { pen = false; continue; } d += (pen ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Yf(v).toFixed(1); pen = true; } return d; }
+    ARMS.forEach(function (a) { (c.series[a.key] || []).forEach(function (r) { var d = path(r); if (d) el('path', { d: d, class: 'run k-run a-' + a.key + ' c-' + a.key }, svg); }); });
+    var labs = [];
+    ARMS.forEach(function (a) {
+      var m = c.med[a.key], d = path(m); if (!d) return;
+      el('path', { d: d, class: 'halo k-med a-' + a.key }, svg); el('path', { d: d, class: 'med k-med a-' + a.key + ' c-' + a.key }, svg);
+      for (var i = NY - 1; i >= 0; i--) if (m[i] != null) { labs.push({ a: a, y: Yf(m[i]), x: X(i) }); break; }
+    });
+    labs.sort(function (p, q) { return p.y - q.y; });
+    for (var i = 1; i < labs.length; i++) if (labs[i].y - labs[i - 1].y < 12) labs[i].y = labs[i - 1].y + 12;
+    var over = labs.length ? labs[labs.length - 1].y - (mT + ph + 2) : 0; if (over > 0) labs.forEach(function (l) { l.y -= over; });
+    for (i = labs.length - 2; i >= 0; i--) if (labs[i + 1].y - labs[i].y < 12) labs[i].y = labs[i + 1].y - 12;
+    labs.forEach(function (l) { el('text', { x: mL + pw + 6, y: l.y + 3.5, class: 'lab k-med a-' + l.a.key }, svg, l.a.short); });
+    // hover: a crosshair and the medians of the year
+    var cross = el('line', { y1: mT, y2: mT + ph, class: 'cross' }, svg); cross.style.display = 'none';
+    var hit = el('rect', { x: mL, y: mT, width: pw, height: ph, fill: 'transparent' }, svg);
+    var tip = h('div', 'tip', plot); tip.hidden = true;
+    function move(ev) {
+      var r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * (Wd / r.width);
+      var i = Math.max(0, Math.min(NY - 1, Math.round((px - mL) / pw * (NY - 1))));
+      var x = X(i); cross.setAttribute('x1', x); cross.setAttribute('x2', x); cross.style.display = '';
+      while (tip.firstChild) tip.removeChild(tip.firstChild);
+      h('b', '', tip, String(YEARS[i]));
+      ARMS.forEach(function (a) {
+        if (!armOn(a.key) || !(c.series[a.key] || []).length) return;
+        var row = h('div', 'r', tip); h('i', 'sw b-' + a.key, row); h('span', '', row, a.short); h('span', 'v', row, fmt(c.med[a.key][i], c.fmt)); h('span', 'n', row, 'n=' + c.cnt[a.key][i]);
+      });
+      tip.hidden = false;
+      var tw = tip.offsetWidth, left = x * (r.width / Wd) + 12; if (left + tw > r.width) left = x * (r.width / Wd) - tw - 12; if (left < 0) left = 0;
+      tip.style.left = left + 'px'; tip.style.top = '6px';
+    }
+    hit.addEventListener('pointermove', move); hit.addEventListener('pointerdown', move);
+    hit.addEventListener('pointerleave', function () { cross.style.display = 'none'; tip.hidden = true; });
+  }
+  function drawAll() { charts.forEach(draw); }
+  drawAll();
+  var rt = null, lastW = root.clientWidth;
+  window.addEventListener('resize', function () { if (root.clientWidth === lastW) return; lastW = root.clientWidth; clearTimeout(rt); rt = setTimeout(drawAll, 120); });
+
+  // ---- the table view
+  var tw = document.getElementById('tw'), tb = h('table', '', tw), hr = h('tr', '', h('thead', '', tb));
+  h('th', '', hr, 'Metric'); ARMS.forEach(function (a) { h('th', '', hr, a.short + ' (n=' + a.n + ')'); });
+  var body = h('tbody', '', tb), lastG = null, i0 = YEARS.indexOf(1932);
+  D.charts.forEach(function (c) {
+    var isW = c.id === 'wall', f = isW ? 'f1' : c.fmt;
+    if (c.group !== lastG) { lastG = c.group; var gr = h('tr', '', body), gd = h('td', 'g', gr, c.group + (isW ? ' (this batch’s games only)' : '')); gd.colSpan = ARMS.length + 1; }
+    var tr = h('tr', '', body); h('td', '', tr, isW ? 'The whole century, minutes of real time' : c.title + (c.group === 'World' || c.group === 'Shortlist' ? ', ' + c.unit.replace(/, as the game displays it/, '') : ''));
+    ARMS.forEach(function (a) {
+      var ends = isW ? ((D.wall || {})[a.key] || []).map(function (x) { return x.min; }).filter(function (x) { return x != null; })
+        : (c.series[a.key] || []).map(function (r) { var v = r.slice(i0).filter(function (x) { return x != null; }); return v.length ? v.reduce(function (p, q) { return p + q; }, 0) / v.length : null; }).filter(function (x) { return x != null; });
+      var td = h('td', '', tr);
+      if (!ends.length) { td.textContent = '–'; return; }
+      td.appendChild(document.createTextNode(fmt(median(ends), f) + ' '));
+      if (ends.length > 1) h('span', '', td, '(' + fmt(Math.min.apply(null, ends), f) + ' to ' + fmt(Math.max.apply(null, ends), f) + ')');
+    });
+  });
+})();
+</script>

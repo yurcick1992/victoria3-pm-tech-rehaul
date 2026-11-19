@@ -417,6 +417,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F269 | Mod 1.1 against vanilla 1.15.0, n=10 + 10 alternating (runs 1-20 of a 48-run batch cut short by the 1.15.1 update): ALL TEN vanilla runs cross the register's runoff line (9 with the shortlist's U* under 10%, median 2.65%) and six of ten mod runs do, so on 1.15 the line separates nothing; the mod's broken runs are its six richest worlds, and the intact-run consensus (n=4) leans poor: world GDP 0.98x (all ten 1.07x, 0.91-1.32), 1886 0.94x, shortlist U* 15.5% against 2.6% (all ten 7.7%), W 0.87x, PI 0.91 not falling every decade, PP 0.96, T0 1935 0.20 of the 1900s, T3 27.3%, loss 6.43; play x1.044; red flags 190 against 163.5 market-years (paper, the Dutch market); backward industries kept 104% of their workers in-market and 106% through trade against vanilla's 124% and 126%; misplaced capital 23.4% against 18.9%, the excess again all in the tiered industries; auto-downsizing loses about vanilla 1.15's levels (20,321 against 19,567 a run; vanilla 1.15 loses 3.1x vanilla 1.13's), 0.70x its jobs and 0.87x its construction points. Vanilla 1.15 itself ends at 1.285x vanilla 1.13's world GDP (median of its ten runs, 1.07-1.51) | canon, vanilla | n=10 directional | here |
 | F270 | The fleet path loop (F218, wall-clock cluster 3's one listed bug) is absent on game 1.15: no recalled fleet with a long travel path in any of 81 kept or quarantined saves of `20261109_005943` (23 endpoints, the 51 saves of all six slowdown episodes); 1.13.11 had one in 3 of 30 vanilla endpoints and in most episodes. The save summaries' formation reader is BLIND on 1.15 (0 moves in every save): 1.15 renamed the move fields to tokens rakaly 0.8.19 lacks | vanilla 1.15, canon | 81 saves of 23 runs, directional | here |
 | F271 | Mod 1.1.1 against vanilla 1.15.1, n=10 + 10 alternating (vanilla n=11 for the economy): EVERY run of both arms crosses the register's runoff line, so the ruled consensus is empty and the report reads all ten (`criteria.mjs --consensus all`, new, not the ruled form): world GDP 1.18× (1.02–1.36), 1886 0.87×; vanilla 1.15.1 ends at 0.91× vanilla 1.15.0 while the mod's world is the same size in £ on both versions; the shortlist MORE employed than vanilla's (U* 3.6% against 4.8%; on 1.15.0 7.7% against 2.6%); backward industries pushed out no harder than in vanilla (in-market 117.3% against 117.4%); play ×1.087; misplaced capital 22.9% against 17.1%; red flags 140.5 against 167; no tech-era-5 military technology in any mod run; infrastructure subsidies fall from every level (1.15.0) to a few percent in both arms | canon 697d4869, vanilla 1.15.1 | 10 + 10 (11), directional | here |
+| F272 | A third-party mod, Production Method Rework 0.4.0 (retooling instead of free method switches), against vanilla 1.15.1 and mod 1.1.1, n=15 each for the economy (vanilla and the mod glued to F271's session): PMR's world ends at 1.41× vanilla's (the mod 1.19×), ahead from the 1870s and at 1.55× in 1906–16, its lowest run above vanilla's highest; the lead is GDP per productive worker (1.43×; W 1.01× at the end, 1.19× in 1906) and sits in the industrial leaders; world U* a decade ahead of vanilla mid-century (46.2% against 55.4% in 1906) and level at the end (28.2% against 30.1%; the mod 33.4%), the shortlist 1.1% against 4.8%; the investment pool ends at 1.64 of world GDP against 0.38 (the mod 0.41) and 3.73 against 0.60 on the shortlist, Britain's at 8 of its GDP; play ×1.40 of the same session's vanilla (the mod ×1.06), ×1.24 a year from the first decade to ×1.6–1.7 after 1916; the AI's private investors retool (8–12% of private queue points), its governments hardly (0.2–2.2%). Of the five predictions written before the runs three were wrong (world GDP, the majors and the pool, in direction), one half right (depeasantation) and one right (play time) | PMR 0.4.0 (external), canon 697d4869, vanilla 1.15.1 | 15 + 15 + 15 economy, 15 + 5 + 5 play time; GDP and pool far outside the seed spread, the rest directional | here |
 
 ---
 
@@ -23008,3 +23009,202 @@ The all-run medians include runs the register calls broken; they are the batch's
   are confounded in these runs).
 - Not which of the two vanilla changes ended the infrastructure subsidies.
 - Not a reliable play time beyond its direction: the user worked on the machine while runs played.
+
+---
+
+## F272 — PRODUCTION METHOD REWORK 0.4.0 (A THIRD-PARTY MOD) AGAINST VANILLA 1.15.1 AND MOD 1.1.1, FIFTEEN CENTURIES EACH: PMR'S WORLD ENDS AT 1.41× VANILLA'S (MOD 1.1.1 AT 1.19×), AHEAD FROM THE 1870s AND FURTHEST AHEAD AROUND 1906–1916 (1.55×); IT DEPEASANTS EARLIER (WORLD U* 46.2% AGAINST 55.4% IN 1906) AND ENDS LEVEL WITH VANILLA (28.2% AGAINST 30.1%); ITS INVESTMENT POOLS END AT 1.64 OF WORLD GDP AGAINST VANILLA'S 0.38 (THE SHORTLIST 3.73 AGAINST 0.60); PLAY ×1.40 OF THE SAME DAYS' VANILLA (MOD 1.1.1 ×1.06) (2026-11-19; session `20261116_005659_g1151-alt-pmr15-vanilla5-canon5`, 25 runs alternating: PMR 0.4.0 n=15, vanilla 1.15.1 + telemetry n=5, mod 1.1.1 n=5, 1836→1936.1.1, game 1.15.1; the economy of vanilla and of mod 1.1.1 glued to F271's session `20261112_113429`, n=15 each)
+
+**Why it ran.** The user, 2026-11-15: an alternating comparison of vanilla 1.15.1, No Free Upgrades 1.1.1 and the latest Production
+Method Rework, *"to measure world GDP, majors' GDP, depeasantation, hoarding and wall clock speed"*; *"n=15 PMR vs 5 vanilla vs 5 NFU.
+Wall clock speed comparisons are in-session only, but for measurements the latest vanilla vs NFU batch goes glued to this batch's
+results."* The reporter is `tools/testbed/ledger/arm_compare.mjs`, not the ledger (the user's ruling). PMR is a third-party arm: it is
+never a control and is not read against the register. The schedule's `_predictions` were written before any PMR run (scored in §8).
+
+**Arms and runs.**
+- `pmr` = `{kind: external, mod: C:/claude-code/pmr_0.4.0}`: Production Method Rework 0.4.0 by Salty (Workshop item 3819399957, id
+  `org.prob32.pmr`, for game 1.15.*), a frozen copy of 2026-11-15, layout fingerprint `b5fe621e39bcfecf` (223 files, 106,811,014 bytes)
+  in all fifteen runs, + this repository's telemetry-only build (`2aef1ed9363b841c`) and nothing else of ours.
+- `vanilla` = `{kind: control}`: vanilla 1.15.1 + telemetry (`2aef1ed9363b841c`, the same as in F271's session).
+- `canon` = `{kind: config, config: config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json}`, sha256 `697d4869aefc3225`, mod 1.1.1, its debug
+  build. One layout fingerprint in its five runs (`bb7749db5f402c74`, 298 files, 18,039,281 bytes). F271's session recorded
+  `28d5353484c2f183` (298 files, 18,039,267 bytes) for the same book: 14 bytes apart, with no emitter, `build.ps1`, telemetry or config
+  commit between the two sessions (`git log c34e9f2..dcf77e1 -- tools config` names only release-check tools, `preflight.ps1` and the
+  harness's third-party arm). The source of the 14 bytes is not identified.
+- Order: five rounds of pmr, vanilla, pmr, canon, pmr. Fixed n, no stop watcher. All 25 runs reached 1936.1.1 and quit by themselves,
+  `abandoned_reason` empty; every launch mounted 18 of 18 DLC (L50: 31 launches). Six game deaths, all resumed: vanilla run 2 at 1910.3.1
+  (no crash dump) and run 7 at 1905.11.28; PMR run 5 at 1911.2.21, run 10 at 1910.8.14, run 23 at 1897.9.13; the canon's run 19 at
+  1902.8.30. `PM_TECH_REHAUL: init OK` in every canon run, no `WARN`; `zzz_pm_rehaul` in `error.log` 17 times (runs 4 and 9), all F271's
+  class (vanilla's `00_ai_triggers.txt:564` reached through a research-entry placement). `preflight.ps1 -Session` passed (L20's standing
+  warning only).
+- **The economy reads n=15 per arm:** vanilla and the canon are this session's five + F271's ten of each (same game version, same book;
+  F271's own reference also held run 22 of `20261109_005943`, which is NOT in this glue). Play time reads this session alone.
+- In an observer game PMR's player-only parts never run (the global `pmr_player` is unset in the two final saves checked, runs 1 and 16;
+  `pmr_obs` is set): no retooling abroad on a player's technology, no investment sliders, no "Steer the Economy" card. Every country is
+  the AI.
+
+**1. World GDP, as displayed** (£M a year; median [lowest .. highest run]; ratio = the arm's median ÷ vanilla's median).
+
+| year | vanilla (n=15) | mod 1.1.1 (n=15) | ÷ vanilla | PMR (n=15) | ÷ vanilla |
+|---|---|---|---|---|---|
+| 1846 | 536 [519 .. 555] | 532 [522 .. 542] | 0.99× | 531 [515 .. 545] | 0.99× |
+| 1856 | 680 [636 .. 695] | 664 [650 .. 684] | 0.98× | 658 [648 .. 691] | 0.97× |
+| 1866 | 839 [747 .. 915] | 835 [765 .. 890] | 1.00× | 860 [771 .. 967] | 1.03× |
+| 1876 | 1,067 [943 .. 1,122] | 1,009 [948 .. 1,096] | 0.95× | 1,160 [950 .. 1,404] | 1.09× |
+| 1886 | 1,415 [1,212 .. 1,546] | 1,267 [1,173 .. 1,492] | 0.90× | 1,768 [1,226 .. 2,019] | 1.25× |
+| 1896 | 1,751 [1,518 .. 2,063] | 1,702 [1,454 .. 2,074] | 0.97× | 2,501 [1,635 .. 3,144] | 1.43× |
+| 1906 | 2,347 [1,989 .. 2,948] | 2,286 [1,837 .. 2,789] | 0.97× | 3,635 [2,381 .. 4,550] | 1.55× |
+| 1916 | 3,193 [2,791 .. 3,689] | 3,279 [2,417 .. 4,053] | 1.03× | 4,921 [3,541 .. 6,231] | 1.54× |
+| 1926 | 4,361 [3,757 .. 5,216] | 4,652 [3,590 .. 5,701] | 1.07× | 6,241 [5,346 .. 7,242] | 1.43× |
+| 1936 | 5,456 [4,420 .. 6,359] | 6,688 [5,557 .. 7,431] | 1.23× | 7,762 [6,337 .. 8,535] | 1.42× |
+| END (1932–36) | 5,279 [4,205 .. 6,040] | 6,280 [5,226 .. 7,144] | **1.19×** | 7,443 [6,214 .. 8,154] | **1.41×** |
+
+PMR's lowest run (6,214) ends above vanilla's highest (6,040). The shortlist's pooled GDP ends at 2,400 against vanilla's 1,641 (1.46×;
+the mod 2,336, 1.42×) and is furthest ahead in 1906 (1,356 against 680, 1.99×). The decomposition at the end: productive workers per
+capita (W) 0.1705 against 0.1693 (1.01×) and GDP per productive worker £22.2 against £15.6 (1.43×); in 1906 W 0.1309 against 0.1098
+(1.19×) and £17.5 against £12.7 (1.38×). So PMR's world employs people in productive work earlier and gets more from each; by the end
+only the second remains. The mod's end state is W 0.93× and £20.0 (1.28×).
+
+**2. The majors' GDP at the end** (£M; nK = the major exists in K of the arm's runs).
+
+| major | vanilla | mod 1.1.1 | ÷ vanilla | PMR | ÷ vanilla |
+|---|---|---|---|---|---|
+| Britain | 422 [269 .. 614] | 492 [350 .. 753] | 1.16× | 580 [394 .. 833] | 1.37× |
+| USA | 521 [345 .. 657] | 695 [311 .. 1,068] | 1.34× | 694 [327 .. 861] | 1.33× |
+| France | 299 [87 .. 428] | 498 [237 .. 796] | 1.67× | 480 [348 .. 742] | 1.61× |
+| Germany (GER, else NGF, else PRU) | 403 [22 .. 551] n14 | 542 [29 .. 790] n14 | 1.34× | 568 [28 .. 825] | 1.41× |
+| Russia | 485 [126 .. 737] | 375 [98 .. 922] | 0.77× | 752 [410 .. 1,149] | 1.55× |
+| Austria | 50 [2 .. 446] n12 | 45 [0 .. 441] n12 | 0.91× | 4 [0 .. 513] n9 | 0.09× |
+| Japan | 58 [27 .. 186] | 42 [20 .. 209] | 0.73× | 50 [20 .. 286] | 0.87× |
+| Low Countries (UNL + NET + BEL) | 58 [3 .. 114] | 77 [0 .. 157] | 1.33× | 115 [23 .. 422] | 1.98× |
+
+In 1906 PMR's lead is larger and sits in the industrial leaders: Britain 380 against 256 (1.49×), the USA 320 against 173 (1.85×),
+France 269 against 100 (2.69×), Germany 356 against 148 (2.41×), Russia 170 against 126 (1.35×), Japan 23 against 29 (0.78×). Russia is
+where the two mods part: 1.55× vanilla under PMR, 0.77× under mod 1.1.1. A country's level of GDP moves with its territory (weak).
+
+**3. Depeasantation.** U* = (unemployed + peasants) ÷ workforce, %.
+
+| year | world: vanilla | mod 1.1.1 | PMR | shortlist: vanilla | mod 1.1.1 | PMR |
+|---|---|---|---|---|---|---|
+| 1846 | 79.6 | 78.9 | 79.5 | 63.2 | 63.5 | 61.8 |
+| 1866 | 74.4 | 73.7 | 75.3 | 62.9 | 60.3 | 61.2 |
+| 1876 | 71.5 | 70.9 | 71.0 | 60.2 | 58.2 | 56.0 |
+| 1886 | 66.9 | 67.7 | 63.7 | 52.8 | 52.9 | 45.5 |
+| 1896 | 62.1 | 63.2 | 55.6 | 47.2 | 44.3 | 33.4 |
+| 1906 | 55.4 | 56.9 | 46.2 | 37.2 | 34.6 | 17.4 |
+| 1916 | 46.7 | 48.4 | 37.5 | 20.9 | 25.8 | 7.6 |
+| 1926 | 36.4 | 40.4 | 31.9 | 11.6 | 12.4 | 3.7 |
+| END | 30.1 [22.1 .. 35.0] | 33.4 [24.3 .. 37.9] | 28.2 [17.9 .. 34.5] | 4.8 [0.8 .. 14.4] | 4.8 [0.8 .. 12.8] | 1.1 [0.2 .. 7.7] |
+
+PMR depeasants about a decade ahead of vanilla from the 1880s to the 1910s (the world's 46.2% in 1906 is vanilla's 46.7% of 1916) and the
+gap closes to 2 points at the end, inside the run-to-run range. Its shortlist is at 17.4% in 1906 and under 8% from 1916. World peasants
+÷ workforce at the end: 21.2% vanilla, 24.3% the mod, 19.6% PMR. The majors' U* at the end (median): Britain 1.4 / 0.4 / 0.4, the USA
+1.2 / 3.6 / 0.5, France 13.8 / 6.0 / 1.0, Germany 0.4 / 1.5 / 0.1, Russia 31.8 / 49.6 / 11.2, Austria 16.2 / 18.9 / 16.3, Japan
+56.9 / 71.8 / 69.0, the Low Countries 0.7 / 2.9 / 0.2 (vanilla / mod 1.1.1 / PMR). In 1906: Britain 12.4 / 11.8 / 1.2, the USA
+38.1 / 41.1 / 14.4, France 59.5 / 60.7 / 37.6, Germany 34.1 / 38.9 / 20.6, Russia 62.1 / 69.2 / 62.3. Against the mod's own aims of
+§10.120 (the world 60% in 1913 and 50% at the end) all three arms are far more depeasanted, PMR the most.
+
+**4. Hoarding: the investment pool ÷ yearly GDP.**
+
+| year | world: vanilla | mod 1.1.1 | PMR | shortlist: vanilla | mod 1.1.1 | PMR |
+|---|---|---|---|---|---|---|
+| 1876 | 0.186 | 0.142 | 0.204 | 0.005 | 0.009 | 0.009 |
+| 1886 | 0.193 | 0.158 | 0.193 | 0.007 | 0.012 | 0.032 |
+| 1896 | 0.198 | 0.158 | 0.211 | 0.015 | 0.013 | 0.132 |
+| 1906 | 0.167 | 0.124 | 0.342 | 0.030 | 0.017 | 0.589 |
+| 1916 | 0.169 | 0.158 | 0.691 | 0.136 | 0.102 | 1.509 |
+| 1926 | 0.258 | 0.236 | 1.196 | 0.427 | 0.405 | 2.628 |
+| END | 0.380 [0.225 .. 0.682] | 0.408 [0.157 .. 1.010] | **1.641 [0.810 .. 2.292]** | 0.596 [0.305 .. 1.987] | 0.810 [0.266 .. 1.776] | **3.734 [1.855 .. 5.830]** |
+
+- PMR's pools leave vanilla's path around 1896–1906, as its shortlist runs out of people to hire (§3), and end at 4.3 × vanilla's share
+  of world GDP and 6.3 × on the shortlist. Its lowest run (0.810 of world GDP) is above vanilla's highest (0.682).
+- The majors at the end (median pool ÷ GDP, vanilla / mod 1.1.1 / PMR): Britain 1.25 / 1.24 / 8.06 [2.82 .. 17.83], the USA
+  0.61 / 0.50 / 1.67, France 0.28 / 0.10 / 1.68, Germany 0.11 / 0.66 / 2.03, Russia 0.00 / 0.01 / 0.18, Austria 0.01 / 0.03 / 1.04 (n4),
+  Japan 0.00 / 0.01 / 0.00, the Low Countries 0.18 / 0.07 / 2.78. Britain's median PMR pool is already 1.55 of its GDP in 1906.
+- Majors with a pool above 0.5 of GDP in 1935–36, per run: vanilla median 2 of 8 [1 .. 4], the mod 2 [1 .. 5], PMR 5 [3 .. 6] (Britain
+  15 of 15 runs, the USA 14, France 14, the Low Countries 12, Germany 11).
+- §10.113's provisional flag (a pool above 3 GDP for 5 or more years at a U* under 5%): 27 cases in PMR, at least one in every one of
+  its 15 runs (Britain in 13, from as early as 1891); 5 cases in 4 of vanilla's 15 runs; 2 in 2 of the mod's 15.
+- The barrier of §10.120 (a shortlist member of at least 2% of world GDP with a pool ÷ GDP averaging 1 or more over ten years) is NOT
+  read here: the tools still carry the old register, and a third-party arm is not read against it.
+
+**5. Play time** (this session only, the three arms alternating; minutes for the century, load + play, crash replays taken out;
+`wall_clusters.mjs`).
+
+| arm | n | median | range | ÷ vanilla | slowdown episodes |
+|---|---|---|---|---|---|
+| vanilla 1.15.1 | 5 | 165.3 | 160.0 .. 171.4 | — | 1 (run 7, 1920–22, +55%) |
+| mod 1.1.1 | 5 | 175.7 | 155.9 .. 184.7 | ×1.063 | 1 (run 4, 1927–30, +43%) |
+| PMR 0.4.0 | 15 | 231.7 | 218.3 .. 285.7 | ×1.402 | 0 |
+
+Per run: vanilla 165.3, 170.4, 160.0, 171.4, 160.9; the mod 184.7, 180.8, 168.4, 155.9, 175.7; PMR 233.4, 229.7, 250.6, 228.0, 218.3,
+246.7, 230.2, 250.1, 234.4, 231.7, 225.3, 285.7, 223.0, 230.4, 233.8. PMR's fastest game is slower than the slowest of the other two
+arms. Run 20 (285.7) is slow throughout with no episode; the monitor shows about 1.1 cores of other load against 0.7 during run 18.
+No listed bug can be observed on game 1.15 (L52), so every run counts. Seconds per in-game year by decade (median over runs; ÷ vanilla):
+
+| decade | vanilla | mod 1.1.1 | ÷ | PMR | ÷ |
+|---|---|---|---|---|---|
+| 1836–1845 | 63.6 | 66.8 | 1.05× | 78.9 | 1.24× |
+| 1846–1855 | 69.9 | 71.3 | 1.02× | 88.3 | 1.26× |
+| 1856–1865 | 73.9 | 75.8 | 1.03× | 92.3 | 1.25× |
+| 1866–1875 | 78.8 | 82.7 | 1.05× | 97.7 | 1.24× |
+| 1876–1885 | 84.2 | 85.1 | 1.01× | 107.8 | 1.28× |
+| 1886–1895 | 93.5 | 94.6 | 1.01× | 129.5 | 1.38× |
+| 1896–1905 | 104.8 | 105.1 | 1.00× | 149.8 | 1.43× |
+| 1906–1915 | 114.1 | 126.2 | 1.11× | 173.8 | 1.52× |
+| 1916–1925 | 123.9 | 138.3 | 1.12× | 210.9 | 1.70× |
+| 1926–1935 | 145.7 | 164.0 | 1.13× | 235.5 | 1.62× |
+
+PMR costs a quarter more per year from the first decade and its cost grows with the economy; the mod is level with vanilla to 1905 and
+×1.11–1.13 after.
+
+**6. How much the AI retools in PMR** (`tools/testbed/ledger/pmr_charts/retool_read.mjs`; the world's construction queues at 1 January,
+medians over the 15 runs; points left to build, and in brackets the queue's items).
+
+| year | government queue | of it retool sites | private queue | of it retool sites | countries with a retool item, government / private | standing private retool-site levels |
+|---|---|---|---|---|---|---|
+| 1846 | 45,424 [264] | 867, 1.9% [7] | 12,353 [67] | 1,357, 9.4% [13] | 7 / 12 | 75 |
+| 1866 | 42,473 [204] | 300, 0.7% [3] | 26,934 [113] | 3,129, 11.4% [24] | 3 / 19 | 76 |
+| 1886 | 63,408 [233] | 169, 0.2% [2] | 87,391 [322] | 6,164, 8.2% [46] | 2 / 27 | 161 |
+| 1906 | 124,009 [423] | 472, 0.4% [4] | 191,448 [643] | 15,206, 8.5% [87] | 2 / 32 | 378 |
+| 1926 | 127,755 [419] | 1,495, 1.6% [8] | 188,438 [685] | 21,906, 10.8% [130] | 4 / 31 | 743 |
+| 1935 | 142,330 [477] | 3,024, 2.2% [13] | 215,641 [748] | 23,463, 9.5% [131] | 4 / 33 | 896 |
+
+Private investors retool throughout: retool sites are 8–12% of the points in the world's private queues at every date, in about thirty
+countries from the 1880s. Governments hardly do: 0.2–2.2% of their queues, in two to seven countries. No site of the two "abroad" kinds
+stands in any run (they need a player). The reader takes a year's summary by file position, so the three PMR runs that resumed read one
+year early after their crash (1905, 1915, 1925 for 1906, 1916, 1926).
+
+**7. Mod 1.1.1 at n=15** (F271's ten + five). World GDP 1.19× vanilla (F271: 1.18×), the 1886 point 0.90×; world U* 33.4% against 30.1%;
+the shortlist's U* 4.8% against 4.8% (F271: 3.6% against 4.8%); W 0.93× (world) and 0.97× (shortlist); the pool 0.408 against 0.380 of
+world GDP, 0.810 against 0.596 on the shortlist; play ×1.063 (F271: ×1.087). This session's five alone, against its own five vanilla:
+world GDP 6,297 against 5,390 (1.17×), world U* 33.4% against 26.8%, shortlist U* 11.8% [3.8 .. 12.8] against 3.9% [1.3 .. 12.6], the
+world's pool 0.299 against 0.346. The shortlist's U* is the reading that moved (five runs).
+
+**8. The predictions** (the agent's, in the schedule before any PMR run; directions were argued, no magnitude).
+- *World GDP below vanilla, 0.80–1.00×, the gap widest mid-century:* **wrong in direction.** 1.41× at the end, 1.55× in 1906–16. The
+  argument (a retool level costs half a level's construction where vanilla switches free) said nothing of what PMR's recipes and its
+  profit-picked targets do to output per worker, which is where the lead sits (§1).
+- *The technology leaders lose more than the periphery:* **wrong.** They gain the most, above all mid-century (§2).
+- *World U* at or slightly above vanilla's; the shortlist near full employment as in vanilla:* the end state is level with vanilla
+  (28.2% against 30.1%), but the path is about a decade ahead of vanilla, not behind; the shortlist is nearer full employment than
+  vanilla's, and decades earlier.
+- *The pool at or below vanilla's:* **wrong, by the widest margin of the five** (1.64 against 0.38 of world GDP).
+- *PMR slower than vanilla and than the mod:* right; ×1.40 and ×1.32.
+- *Whether AI governments retool: unknown.* They hardly do (§6); private investors carry it.
+
+**Confidence.** n=15 per arm for the economy, with every PMR run outside vanilla's range on world GDP at the end and on the pool: these
+two are far outside the seed spread, the rest directional (§2.9). Play time is n=5 / 5 / 15 in one session on a machine in use: the
+PMR ratio is large against the spread (its fastest run slower than the others' slowest), the mod's ×1.063 is directional. The retool
+reading is a snapshot of queues, not a count of completed retool levels.
+
+**What it does NOT say.**
+- Not WHY PMR's world is richer or why its pools pile up. The readings are consistent with a faster build-out that reaches full
+  employment in the leaders by the 1900s and then has nothing to hire, but no mechanism was measured: not PMR's recipes against
+  vanilla's, not how much capital a retool level takes against a new level, not prices.
+- Not how PMR plays for a human: every player-only part of it is off in an observer game, the investment sliders and retooling abroad
+  among them.
+- Not a register verdict on PMR; and the barrier of §10.120 is not computed for any arm here.
+- Not PMR's beta branch or any later version: this is the Workshop's 0.4.0 of 2026-11-06, published before game 1.15.1.
+- Not a count of retooled levels, nor what share of government-owned levels stays on old recipes.
+- Not what the 14 bytes between the two sessions' builds of the canon are; the book and the emitters are the same by hash and by git.
+- Not a play time comparable with any other session's (§3.4).
