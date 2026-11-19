@@ -2150,6 +2150,19 @@ function Test-LmL49 {
     Invoke-ModLint 'L49' 'a vanilla building field the tier split drops' 'lint_building_blocks.mjs' 'carry the field in build.ps1''s building emitter, or list it in lint_building_blocks.mjs KNOWN and MISSING_BUILDING_CONDITIONS.md with its reason'
 }
 
+function Test-LmL53 {
+    <#
+      L53 - A SHIPPED FILE WITHOUT ITS UTF-8 BOM (found 2026-11-19, the game 1.15.2 smoke test).
+      The engine's lexer reads it anyway and logs "should be in utf8-bom encoding" once per load, so nothing fails. Twice a writer read a
+      file through a BOM-stripping helper and wrote it back without the mark: emit_secondaries (fixed 2026-09-24) and emit_ai_value_adds
+      (mods 1.1.0-1.1.1 shipped 01_industry.txt and 06_urban_center.txt so).
+      DETECTOR: tools/lint_bom.mjs on the BUILT mod: every .txt under common/ and events/ and every .yml under localization/ starts with
+      EF BB BF, unless vanilla's file at the same path has none either.
+      Proven 2026-11-19: FAIL on mod_g1152il and on the 1.1.1 release build (the two files), PASS on the build after the fix.
+    #>
+    Invoke-ModLint 'L53' 'a shipped file without its UTF-8 BOM' 'lint_bom.mjs' 'make the writer that last wrote the file write the UTF-8 BOM (see lint_bom.mjs)'
+}
+
 $CHECKS = @(
     @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
     @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
@@ -2221,7 +2234,9 @@ $CHECKS = @(
     @{ Id = 'L49'; Artifact = $true;  Fn = { Test-LmL49 } },
     @{ Id = 'L50'; Artifact = $false; Fn = { Test-LmL50 } },
     # L51 reads the generated telemetry and the built mod's loc against the installed exe's names (repo-side, gates a batch before a build).
-    @{ Id = 'L51'; Artifact = $false; Fn = { Test-LmL51 } }
+    @{ Id = 'L51'; Artifact = $false; Fn = { Test-LmL51 } },
+    # L53 reads the BUILT mod: every shipped script and localization file carries its UTF-8 BOM (an artifact check).
+    @{ Id = 'L53'; Artifact = $true;  Fn = { Test-LmL53 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

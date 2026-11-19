@@ -154,7 +154,9 @@ for (const x of INDS) {
     let out;
     if (a.block) { const ls = t.lastIndexOf('\n', a.end) + 1; out = t.slice(0, ls) + ins + t.slice(ls); }
     else out = t.slice(0, a.start) + `ai_value = {\n\t\tvalue = ${a.value}\n${ins}\t}` + t.slice(a.end + 1);
-    fs.writeFileSync(f, out);
+    // ⚠ rd() strips the BOM; write it back, or the engine's lexer logs `should be in utf8-bom encoding` for 01_industry.txt and
+    //   06_urban_center.txt on every load (shipped so in mods 1.1.0-1.1.1, found 2026-11-19; the same bug emit_secondaries fixed 2026-09-24)
+    fs.writeFileSync(f, '﻿' + out);
     carried++;
   }
   report.push(`  ${x.id}: ${x.vkey} (vanilla value ${v.base}, ${v.n} conditional block(s)) -> ${x.nc.join(', ')}`

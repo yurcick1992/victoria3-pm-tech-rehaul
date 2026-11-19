@@ -276,7 +276,7 @@
 					building={
 						type="building_food_industry"
 						country="c:RUS"
-						levels=25
+						levels=26
 						region="STATE_SAMARA"
 					}
 				}
@@ -341,7 +341,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:RUS"
-						levels=7
+						levels=8
 						region="STATE_SAMARA"
 					}
 				}
@@ -354,7 +354,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:RUS"
-						levels=7
+						levels=8
 						region="STATE_SAMARA"
 					}
 				}

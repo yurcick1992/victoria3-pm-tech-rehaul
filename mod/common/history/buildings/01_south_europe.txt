@@ -127,7 +127,7 @@
 					building={
 						type="building_glassworks"
 						country="c:AUS"
-						levels=5
+						levels=3
 						region="STATE_LOMBARDY"
 					}
 				}
@@ -140,7 +140,7 @@
 					building={
 						type="building_food_industry"
 						country="c:AUS"
-						levels=8
+						levels=9
 						region="STATE_LOMBARDY"
 					}
 				}
@@ -247,12 +247,12 @@
 				add_ownership={
 					country={
 						country="c:SAR"
-						levels=10
+						levels=20
 					}
 					building={
 						type="building_paper_mill"
 						country="c:SAR"
-						levels=5
+						levels=10
 						region="STATE_PIEDMONT"
 					}
 				}
@@ -336,7 +336,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SAR"
-						levels=2
+						levels=1
 						region="STATE_PIEDMONT"
 					}
 				}
@@ -463,19 +463,6 @@
 				activate_production_methods={ "pm_basic_port" }
 			}
 			create_building={
-				building="building_shipyard"
-				add_ownership={
-					building={
-						type="building_financial_district"
-						country="c:SAR"
-						levels=1
-						region="STATE_SARDINIA"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
-			}
-			create_building={
 				building="building_textile_mill"
 				add_ownership={
 					building={
@@ -494,7 +481,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SAR"
-						levels=1
+						levels=2
 						region="STATE_SARDINIA"
 					}
 				}
@@ -681,7 +668,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={  "pm_unrefrigerated" "pm_simple_fishing" }
+				activate_production_methods={  "pm_unrefrigerated" "pm_fishing_trawlers" }
 			}
 			create_building={
 				building="building_port"
@@ -691,6 +678,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -715,7 +703,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SIC"
-						levels=2
+						levels=1
 						region="STATE_CAMPANIA"
 					}
 				}
@@ -754,7 +742,7 @@
 					building={
 						type="building_trade_center"
 						country="c:SIC"
-						levels=3
+						levels=1
 						region="STATE_CAMPANIA"
 					}
 				}
@@ -783,7 +771,7 @@
 					building={
 						type="building_glassworks"
 						country="c:SIC"
-						levels=13
+						levels=12
 						region="STATE_CAMPANIA"
 					}
 				}
@@ -826,7 +814,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:SIC"
-						levels=40
+						levels=38
 						region="STATE_CAMPANIA"
 					}
 					building={
@@ -845,7 +833,7 @@
 					building={
 						type="building_manor_house"
 						country="c:SIC"
-						levels=2
+						levels=4
 						region="STATE_CAMPANIA"
 					}
 				}
@@ -884,7 +872,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SIC"
-						levels=2
+						levels=4
 						region="STATE_CAMPANIA"
 					}
 				}
@@ -907,12 +895,12 @@
 				add_ownership={
 					country={
 						country="c:SIC"
-						levels=10
+						levels=20
 					}
 					building={
 						type="building_paper_mill"
 						country="c:SIC"
-						levels=4
+						levels=6
 						region="STATE_CAMPANIA"
 					}
 				}
@@ -936,7 +924,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:SIC"
-						levels=4
+						levels=3
 						region="STATE_CAMPANIA"
 					}
 				}
@@ -949,7 +937,7 @@
 					building={
 						type="building_food_industry"
 						country="c:SIC"
-						levels=4
+						levels=3
 						region="STATE_CAMPANIA"
 					}
 				}
@@ -1059,6 +1047,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -1169,6 +1158,19 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:SIC"
+						levels=1
+						region="STATE_APULIA"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
 			}
 			create_building={
 				building="building_textile_mill"
@@ -1340,7 +1342,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SAR"
-						levels=2
+						levels=3
 						region="STATE_SAVOY"
 					}
 				}
@@ -2071,7 +2073,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:AUS"
-						levels=42
+						levels=41
 						region="STATE_VENETIA"
 					}
 				}
@@ -2084,7 +2086,7 @@
 					building={
 						type="building_glassworks"
 						country="c:AUS"
-						levels=56
+						levels=32
 						region="STATE_VENETIA"
 					}
 					building={
@@ -2103,7 +2105,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:AUS"
-						levels=100
+						levels=99
 						region="STATE_VENETIA"
 					}
 					building={
@@ -2172,9 +2174,10 @@
 				add_ownership={
 					country={
 						country="c:AUS"
-						levels=2
+						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -2195,7 +2198,7 @@
 					building={
 						type="building_food_industry"
 						country="c:AUS"
-						levels=12
+						levels=11
 						region="STATE_VENETIA"
 					}
 				}
@@ -2242,7 +2245,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SIC"
-						levels=5
+						levels=15
 						region="STATE_SICILY"
 					}
 				}
@@ -2282,7 +2285,7 @@
 					building={
 						type="building_trade_center"
 						country="c:SIC"
-						levels=3
+						levels=10
 						region="STATE_SICILY"
 					}
 				}
@@ -2305,7 +2308,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:SIC"
-						levels=1
+						levels=2
 						region="STATE_SICILY"
 					}
 				}
@@ -2318,7 +2321,7 @@
 					building={
 						type="building_food_industry"
 						country="c:SIC"
-						levels=1
+						levels=2
 						region="STATE_SICILY"
 					}
 				}
@@ -2331,7 +2334,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SIC"
-						levels=1
+						levels=4
 						region="STATE_SICILY"
 					}
 				}
@@ -2344,7 +2347,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:SIC"
-						levels=4
+						levels=6
 						region="STATE_SICILY"
 					}
 				}
@@ -2357,7 +2360,7 @@
 					building={
 						type="building_glassworks"
 						country="c:SIC"
-						levels=1
+						levels=2
 						region="STATE_SICILY"
 					}
 				}
@@ -2386,7 +2389,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SPA"
-						levels=1
+						levels=2
 						region="STATE_NEW_CASTILE"
 					}
 				}
@@ -2423,7 +2426,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SPA"
-						levels=22
+						levels=28
 						region="STATE_NEW_CASTILE"
 					}
 				}
@@ -2471,7 +2474,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:SPA"
-						levels=13
+						levels=15
 						region="STATE_NEW_CASTILE"
 					}
 				}
@@ -2517,7 +2520,7 @@
 				add_ownership={
 					country={
 						country="c:SPA"
-						levels=1
+						levels=4
 					}
 				}
 				reserves=1
@@ -2529,7 +2532,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:SPA"
-						levels=7
+						levels=11
 						region="STATE_NEW_CASTILE"
 					}
 				}
@@ -2626,6 +2629,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -2741,7 +2745,7 @@
 					building={
 						type="building_financial_district"
 						country="c:SPA"
-						levels=1
+						levels=3
 						region="STATE_ASTURIAS"
 					}
 				}
@@ -2767,8 +2771,22 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
+			}
+			create_building={
+				building="building_paper_mill"
+				add_ownership={
+					building={
+						type="building_paper_mill"
+						country="c:SPA"
+						levels=2
+						region="STATE_ASTURIAS"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_paper_pulp_pressing" }
 			}
 		}
 	}
@@ -2877,45 +2895,6 @@
 				activate_production_methods={ "pm_saw_mills" "pm_hardwood" "pm_no_equipment" "pm_road_carts"  }
 			}
 
-			create_building={
-				building="building_textile_mill"
-				add_ownership={
-					building={
-						type="building_textile_mill"
-						country="c:SPA"
-						levels=3
-						region="STATE_OLD_CASTILE"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
-			}
-			create_building={
-				building="building_furniture_manufactory"
-				add_ownership={
-					building={
-						type="building_furniture_manufactory"
-						country="c:SPA"
-						levels=1
-						region="STATE_OLD_CASTILE"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
-			}
-			create_building={
-				building="building_paper_mill"
-				add_ownership={
-					building={
-						type="building_paper_mill"
-						country="c:SPA"
-						levels=5
-						region="STATE_OLD_CASTILE"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" }
-			}
 		}
 	}
 	s:STATE_BASQUE_COUNTRY={
@@ -3299,7 +3278,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:SPA"
-						levels=13
+						levels=12
 						region="STATE_CATALONIA"
 					}
 				}
@@ -3318,7 +3297,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SPA"
-						levels=23
+						levels=22
 						region="STATE_CATALONIA"
 					}
 				}
@@ -3337,19 +3316,6 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
-			}
-			create_building={
-				building="building_shipyard"
-				add_ownership={
-					building={
-						type="building_financial_district"
-						country="c:SPA"
-						levels=1
-						region="STATE_CATALONIA"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -3389,7 +3355,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:SPA"
-						levels=35
+						levels=34
 						region="STATE_CATALONIA"
 					}
 					building={
@@ -3407,7 +3373,7 @@
 				add_ownership={
 					country={
 						country="c:SPA"
-						levels=2
+						levels=1
 					}
 				}
 				reserves=1
@@ -3593,6 +3559,7 @@
 						levels=3
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -3638,7 +3605,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SPA"
-						levels=7
+						levels=6
 						region="STATE_LOWER_ANDALUSIA"
 					}
 				}
@@ -3723,7 +3690,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_atmospheric_engine_pump_building_lead_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_picks_and_shovels_building_lead_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 		}
 		region_state:GBR={
@@ -3863,7 +3830,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_atmospheric_engine_pump_building_lead_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_picks_and_shovels_building_lead_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -3892,17 +3859,6 @@
 				activate_production_methods={ "default_building_silk_plantation" "pm_road_carts"  }
 			}
 			create_building={
-				building="building_shipyard"
-				add_ownership={
-					country={
-						country="c:SPA"
-						levels=1
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_basic_shipbuilding"  }
-			}
-			create_building={
 				building="building_port"
 				add_ownership={
 					country={
@@ -3910,6 +3866,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -3999,7 +3956,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SPA"
-						levels=41
+						levels=40
 						region="STATE_VALENCIA"
 					}
 				}
@@ -4037,7 +3994,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:SPA"
-						levels=23
+						levels=22
 						region="STATE_VALENCIA"
 					}
 				}
@@ -4104,6 +4061,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -4775,6 +4733,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -4948,7 +4907,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:TUR"
-						levels=17
+						levels=18
 						region="STATE_EASTERN_THRACE"
 					}
 				}
@@ -4971,7 +4930,7 @@
 				add_ownership={
 					country={
 						country="c:TUR"
-						levels=4
+						levels=3
 					}
 				}
 				reserves=1
@@ -4983,7 +4942,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:TUR"
-						levels=49
+						levels=50
 						region="STATE_EASTERN_THRACE"
 					}
 				}
@@ -5073,7 +5032,7 @@
 					building={
 						type="building_glassworks"
 						country="c:TUR"
-						levels=4
+						levels=6
 						region="STATE_EASTERN_THRACE"
 					}
 				}
@@ -5086,7 +5045,7 @@
 					building={
 						type="building_food_industry"
 						country="c:TUR"
-						levels=6
+						levels=12
 						region="STATE_EASTERN_THRACE"
 					}
 				}
@@ -5099,7 +5058,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:TUR"
-						levels=20
+						levels=21
 						region="STATE_EASTERN_THRACE"
 					}
 				}
@@ -5157,6 +5116,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -5182,6 +5142,7 @@
 						region="STATE_ALBANIA"
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
 			}
@@ -5225,6 +5186,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -5264,6 +5226,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_main_artillery_cannons" "pm_automation_disabled"  }
 			}
@@ -5318,7 +5281,7 @@
 					building={
 						type="building_glassworks"
 						country="c:TUR"
-						levels=3
+						levels=2
 						region="STATE_BOSNIA"
 					}
 				}
@@ -5331,7 +5294,7 @@
 					building={
 						type="building_food_industry"
 						country="c:TUR"
-						levels=2
+						levels=4
 						region="STATE_BOSNIA"
 					}
 				}
@@ -5527,6 +5490,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -5669,6 +5633,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -5787,6 +5752,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -5903,6 +5869,7 @@
 						levels=4
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -5959,9 +5926,10 @@
 				add_ownership={
 					country={
 						country="c:AUS"
-						levels=2
+						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -6392,7 +6360,7 @@
 					building={
 						type="building_food_industry"
 						country="c:TUR"
-						levels=20
+						levels=40
 						region="STATE_MACEDONIA"
 					}
 				}
@@ -6459,7 +6427,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:TUR"
-						levels=30
+						levels=29
 						region="STATE_WESTERN_THRACE"
 					}
 					building={
@@ -6478,7 +6446,7 @@
 					building={
 						type="building_glassworks"
 						country="c:TUR"
-						levels=52
+						levels=21
 						region="STATE_WESTERN_THRACE"
 					}
 					building={
@@ -6488,6 +6456,7 @@
 						region="STATE_WESTERN_THRACE"
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods = { "pm_main_glass_forest_glass" }
 			}
@@ -6538,6 +6507,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -6547,7 +6517,7 @@
 					building={
 						type="building_food_industry"
 						country="c:TUR"
-						levels=2
+						levels=4
 						region="STATE_WESTERN_THRACE"
 					}
 				}
@@ -6560,7 +6530,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:TUR"
-						levels=8
+						levels=7
 						region="STATE_WESTERN_THRACE"
 					}
 				}
@@ -6573,7 +6543,7 @@
 					building={
 						type="building_paper_mill"
 						country="c:TUR"
-						levels=7
+						levels=6
 						region="STATE_WESTERN_THRACE"
 					}
 				}

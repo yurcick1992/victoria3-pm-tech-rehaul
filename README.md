@@ -3,7 +3,7 @@
 Its working name, PM & Tech Rehaul, survives in this repository and in every identifier (the mod folder `pm_tech_rehaul`, the id
 `com.yurcick.pm_tech_rehaul`, the `PM_TECH_REHAUL` log lines).
 
-For **Victoria 3 1.15 ("Ivan-Chai"; mod 1.1.1 is built on 1.15.1)**. It makes a technological edge actually matter. In seventeen
+For **Victoria 3 1.15 ("Ivan-Chai"; mod 1.1.2 is built on 1.15.2)**. It makes a technological edge actually matter. In seventeen
 manufacturing industries each of vanilla's main production methods becomes **its own tech-gated
 building** (a rung), and every newer rung makes more per worker and per unit of capital than the one
 before, so modern factories drive obsolete ones out of the market — and modernising costs **capital**
@@ -25,7 +25,7 @@ Players get the mod from the Steam Workshop; this README is for building and edi
 ## Compatibility with other mods
 
 <!-- replaced-files:start -->
-The mod replaces **163 vanilla files** whole, in 29 folders (generated from the 1.1.1 build by `tools/list_replaced_files.mjs`),
+The mod replaces **163 vanilla files** whole, in 29 folders (generated from the 1.1.2 build by `tools/list_replaced_files.mjs`),
 and the whole folder `common/history/buildings/` (the converted 1836 start). Another mod that changes
 any of these files conflicts with this one: the one loaded later wins the whole file.
 

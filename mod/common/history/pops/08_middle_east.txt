@@ -1437,10 +1437,10 @@ POPS = {
 				culture = lacustrine_bantu
 				size = 3000
 			}
-			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 2400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 5600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 1200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 2800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 2400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 5600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 9800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 6000 }   # seeded craft workforce (emit_craft_start, F197)
@@ -1491,10 +1491,10 @@ POPS = {
 				culture = lacustrine_bantu
 				size = 6100
 			}
-			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 3600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = turkish religion = sunni size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = turkish religion = sunni size = 4800 }   # seeded craft workforce (emit_craft_start, F197)

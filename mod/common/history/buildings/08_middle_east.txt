@@ -827,6 +827,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -1745,9 +1746,10 @@
 				add_ownership={
 					country={
 						country="c:TUR"
-						levels=2
+						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -1768,7 +1770,7 @@
 					building={
 						type="building_glassworks"
 						country="c:TUR"
-						levels=4
+						levels=2
 						region="STATE_HUDAVENDIGAR"
 					}
 				}
@@ -1781,7 +1783,7 @@
 					building={
 						type="building_food_industry"
 						country="c:TUR"
-						levels=2
+						levels=4
 						region="STATE_HUDAVENDIGAR"
 					}
 				}
@@ -1927,9 +1929,10 @@
 				add_ownership={
 					country={
 						country="c:TUR"
-						levels=2
+						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}
@@ -1939,7 +1942,7 @@
 					building={
 						type="building_glassworks"
 						country="c:TUR"
-						levels=3
+						levels=1
 						region="STATE_AYDIN"
 					}
 				}
@@ -1952,7 +1955,7 @@
 					building={
 						type="building_food_industry"
 						country="c:TUR"
-						levels=1
+						levels=3
 						region="STATE_AYDIN"
 					}
 				}
@@ -2234,6 +2237,7 @@
 						levels=1
 					}
 				}
+				subsidized=yes
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
 			}

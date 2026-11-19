@@ -253,7 +253,7 @@ POPS = {
 		region_state:RUS = {
 			create_pop = {
 				culture = russian
-				size = 632000
+				size = 626000
 			}
 			create_pop = { pop_type = shopkeepers culture = russian size = 12000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
@@ -290,12 +290,12 @@ POPS = {
 			create_pop = { pop_type = laborers culture = russian religion = orthodox size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = russian religion = orthodox size = 600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = russian religion = orthodox size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = russian religion = orthodox size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = russian religion = orthodox size = 9800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = russian religion = orthodox size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = russian religion = orthodox size = 9800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = russian religion = orthodox size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = russian religion = orthodox size = 9800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = russian religion = orthodox size = 4800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = russian religion = orthodox size = 11200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = russian religion = orthodox size = 4800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = russian religion = orthodox size = 11200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = russian religion = orthodox size = 4800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = russian religion = orthodox size = 11200 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 		region_state:KZH = {
 			create_pop = {

@@ -93,19 +93,6 @@
 	s:STATE_GUAYANA={
 		region_state:NET={
 			create_building={
-				building="building_trade_center"
-				activate_production_methods={ "pm_trade_center_trade_quantity_normal" }
-				add_ownership={
-					building={
-						type="building_financial_district"
-						country="c:NET"
-						levels=1
-						region="STATE_HOLLAND"
-					}
-				}
-				reserves=1
-			}
-			create_building={
 				building="building_sugar_plantation"
 				add_ownership={
 					building={
@@ -129,19 +116,6 @@
 				reserves=1
 				activate_production_methods={ "pm_anchorage" }
 			}
-			create_building={
-				building="building_paper_mill"
-				add_ownership={
-					building={
-						type="building_paper_mill"
-						country="c:NET"
-						levels=1
-						region="STATE_GUAYANA"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_paper_pulp_pressing" }
-			}
 		}
 		region_state:FRA={
 			create_building={
@@ -157,19 +131,6 @@
 			}
 		}
 		region_state:GBR={
-			create_building={
-				building="building_trade_center"
-				activate_production_methods={ "pm_trade_center_trade_quantity_normal" }
-				add_ownership={
-					building={
-						type="building_financial_district"
-						country="c:GBR"
-						levels=1
-						region="STATE_HOME_COUNTIES"
-					}
-				}
-				reserves=1
-			}
 			create_building={
 				building="building_sugar_plantation"
 				add_ownership={
@@ -1054,7 +1015,7 @@
 					building={
 						type="building_textile_mill"
 						country="c:NPU"
-						levels=12
+						levels=17
 						region="STATE_CAJAMARCA"
 					}
 				}
@@ -1104,7 +1065,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:NPU"
-						levels=2
+						levels=7
 						region="STATE_CAJAMARCA"
 					}
 				}
@@ -1138,7 +1099,7 @@
 					building={
 						type="building_furniture_manufactory"
 						country="c:NPU"
-						levels=14
+						levels=9
 						region="STATE_LIMA"
 					}
 				}
@@ -1233,19 +1194,6 @@
 				}
 				reserves=1
 				activate_production_methods={ "pm_basic_port" }
-			}
-			create_building={
-				building="building_textile_mill"
-				add_ownership={
-					building={
-						type="building_textile_mill"
-						country="c:NPU"
-						levels=5
-						region="STATE_LIMA"
-					}
-				}
-				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
 			}
 		}
 	}

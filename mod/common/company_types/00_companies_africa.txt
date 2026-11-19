@@ -37,6 +37,10 @@ company_misr = {
 
 	possible = {
 		has_technology_researched = corporate_charters
+		any_scope_state = {
+			state_region = s:STATE_LOWER_EGYPT
+			is_incorporated = yes
+		}
 		OR = {
 			has_building_levels_in_state_region = {
 				region = STATE_LOWER_EGYPT
