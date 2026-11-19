@@ -88,6 +88,8 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.118 | every measurement of our economy is made on the exact book its full runs play; only syntax and performance probes may differ, and a probe is never economy data; enforced by the harness: a short run on a book of ours is a probe or the checkpoint leg of a full run, a continuation inherits its parent's book by verified hash, the readers drop probes | in force; the machinery on branch `same-book-machinery`, merged after the three-arm batch | here |
 | 10.119 | where §10.110.1's older 1.2 and 1.3 items go, ruled one by one: 1 the retune is the iteration of the 1.2 book (C 2.0 its first move; F234's ladder superseded as a start; paper's lift stays 1.2 in the first book); 2 tier-scaled secondary lines and the crafts' lines are in the 1.2 book — a line takes the same share of its rung's own output on every rung (today's t2 share), each named "<line> (Tier N)", a merged building's line sized on its upper method, crafts carry the four handcraft lines, automation unchanged; 3 military research is in the 1.2 book as a lower AI weight on technologies a research entry can deliver (the user's form: −20% where the entry exists and literacy allows it, −90% while it is advancing for the country, the finish boost still winning), the figures settled after 10-year probes and a model, frontline entries never lowered and naval ones lowered; 4 the urban centres' streetlights stay as they are (no × 2 / × 3, no copper), closed; 5 the electricity build condition stays deferred, not in 1.2; 6 the higher tier's research mark for a technology unlocking two tiers is built into 1.2 as a general rule, and crafts stay research sources (POLISH P3 closed); 7 both craft seeding defects (Valencia, New York) are fixed in 1.2; 8 the register on game 1.15 is settled right after this list, before any 1.2 century, starting with which lines stay hard; 9 the five text and check items stay with 1.2 as release tasks; 10–13 treaty ports, building groups per industry, artisanal ownership and the wider AI research weight retune stay after 1.2, no release named; 14 mod 1.2's date is "December", no details | in force; nothing built; the list is complete | here |
 | 10.120 | the register redone: the important goals are absolute levels of the mod's own, and of the vanilla-referenced ones only world GDP matters; every aim is soft; there is ONE barrier, about validity and not severity — the investment loop broke (lack of labour and hoarding are two wordings of it), past which every other reading is unreliable; the numbers are calibrated on data; the barrier as it stands: a shortlist member of at least 2% of world GDP whose pool ÷ GDP averages at least 1 over ten consecutive years (no primary check on labour) ; the eight depeasantation aims, at 1913 and at the end of the game: the USA 25% and 15%, Britain 10% and 5%, Germany 20% and 20%, the world 60% and 50% ; PI and PP stay aims with the downward slope required; the rest accepted as one list (world GDP 0.90–1.00 soft, capital as a soft aim, Germany's closed-major term retired, the minor readings, the loss's weights, a run past the barrier ends its book) | in force; CLAUDE.md §3.1–§3.2 rewritten; `criteria.mjs`, the scorecard and the stop watcher not yet (after the three-arm batch) | here |
+| 10.121 | old plants pushed out become a term of the loss, measured by the in-market backward-industry test beside T0 (.1, 2026-11-19), aim under 100% and shrinking, weight 0.5, manufacturing only: the motor's new t0 rung in, deposits never, agriculture not for now; research pace, misplaced capital and the rubber shortage stay outside the loss; misplaced capital may get an AI-value pass close to finalising the 1.2 balance, after the main iterations; no GDP leeway for it — the world-GDP aim stays 0.90–1.00 through the main iterations (the under-side rule not applied to that pass) | in force; the term ruled whole (.1); nothing built | here |
+| 10.122 | game 1.15.2, mod 1.1.2: the 1.1.1 canon rebuilt on 1.15.2, no balance change (the canon stays 697d4869: the 1.15.2 replay reproduces it); vanilla AI changes pass through unless they affect us; the company-target investment define 5 → 20 affects us (our targets list every rung) and passes through, read in the first 1.2 runs | in force; nothing to build | here |
 
 ---
 
@@ -6070,3 +6072,87 @@ need their sources; the aims' form (a level read as the median of the runs, with
 falling" means; how much of the economy being read must be past the barrier before a reading is void (Britain is under 5% from
 1906–1925 on in every mod run and in nine vanilla runs of ten, so "any major" would void every run); and a test of the
 unreliability itself, the spread of the other readings past the barrier against before it. Then the levels of the aims.
+
+## §10.121 — OLD PLANTS PUSHED OUT ENTER THE LOSS; MISPLACED CAPITAL LAST, WITH NO GDP LEEWAY (user-ruled 2026-11-18)
+
+**The occasion.** Claude was asked whether the loss of §10.120, as calibrated, would itself pull five balance facts of mod 1.1.1 toward a
+more reasonable place in the 1.2 iteration, the starting levers aside. The answer was read through four tests per fact: some term
+measures it; that term still has room to move; it carries weight; and nothing else pulls the other way. Only hoarding passed (the
+barrier and the capital aim). **Old plants not pushed out** failed on room: in F271 a backward industry in its own market kept 117.3%
+of its workers over a decade, against vanilla's 117.4%, yet T0 (0.04M, falling), PP (0.66, under its 0.8 level) and PI (falling) read
+at or near their aims. They measure the price mechanism and the t0 tail, not what happens to the old plants: the survivors are t1
+plants two tiers behind t3, which T0 does not count, and under game 1.15's own-type wage comparison (GAME_UPDATE_1_15 U30) a falling
+price no longer reliably empties them. **Research pace** (literacy grows four times faster on 1.15, the military tree lags),
+**misplaced capital** (22.9% against vanilla's 17.1%) and **the rubber shortage** (F242) are in no term; for research a cooler,
+slower world even scores better on world GDP and on seven of the eight depeasantation aims.
+
+**The rulings.** The user: *"Old plants pushed out gets into the loss function, others don't. We might iterate AI_values to lower
+misplaced capital close to finalizing 1.2 balance, after the main optimization iterations. However, we will not add leeway to the
+GDP/vanilla to make room for the improvements that are going to follow lowering misplaced capital."*
+1. **Old plants pushed out becomes a term of the loss.** Its form is not ruled: the measure, its aim, its weight, and whether it
+   replaces T0 or sits beside it.
+2. **Research pace, misplaced capital and the rubber shortage stay outside the loss**, read beside it as before (CLAUDE.md §3.3).
+3. **Misplaced capital may get a pass of its own close to finalising the 1.2 balance:** the AI values iterated to lower it, after the
+   main optimisation iterations. It is a possibility, not a commitment ("might"), and the pass follows §2.4 of CLAUDE.md (§10.92): the AI
+   values follow profit, and misplaced capital is their yardstick.
+4. **No GDP leeway for that pass.** The world-GDP aim stays 0.90–1.00 × vanilla through the main iterations; it is not set lower to
+   leave room for the GDP that better-placed capital will add. Claude's reading: the under-side rule (§10.79; CLAUDE.md §2.5) is
+   therefore not applied to the misplaced-capital pass. Not said: what is done if that pass then lifts world GDP above the band.
+
+**The term's form: candidates** (Claude's, none ruled):
+- **(a) The backward-industry test, in-market** (`tools/testbed/ledger/laggard_pressure.mjs`, the ledger's scorecard line and the
+  KNOWN_ISSUES figure): the workers an industry keeps over a decade when it is two tiers behind a far better producer in its own
+  market and does not yet hold the next tier's technology. An aim of the mod's own: under 100%, shrinking. It reads the outcome
+  directly and only where the cause is in the industry's own market (weak competition through trade is a separate reading). Few
+  industry-decades a run, so it is noisy per run. Claude's recommendation, beside T0 rather than in its place.
+- **(b) O_shed** (F136): per industry, the share of the old rung's century-peak workers shed by the end. §10.120 point 4 parked it
+  "until after 1.2"; choosing it brings that forward.
+- **(c) The old-rung census** (`old_rungs_by_industry.mjs`): the 1930s share of workers on a rung two or more tiers behind the best
+  rung their own country staffs. It mixes ladder failure with countries that run nothing newer, which (a) separates.
+
+Whichever is chosen, two things go with it: whether the deposit rungs and the motor's new t0 rung (the mod 1.2 book) count as old
+plants (ruled in .1: the motor's yes, the deposits' no); and its spread, fitted on game 1.15 runs with the others (§10.120 point 7).
+**Not built:** `criteria.mjs` and the scorecard get the term after the three-arm batch, with the rest of §10.120.
+
+### §10.121.1 — the term ruled: the in-market backward-industry test, under 100% and shrinking, weight 0.5, manufacturing only (user-ruled 2026-11-19)
+
+Asked which measure the old-plants term should use, the user chose **(a), the in-market backward-industry test**
+(`tools/testbed/ledger/laggard_pressure.mjs`): the share of its workers an industry keeps over a decade while it is two tiers behind a
+far better producer in its own market and does not yet hold the next tier's technology. O_shed stays parked until after 1.2 (§10.120
+point 4); the old-rung census stays a reading beside the register (CLAUDE.md §3.3).
+- **T0 stays a term.** The option chosen was offered as "beside T0 rather than in its place"; the user did not rule on T0 separately.
+- **The aim** (user-ruled 2026-11-19, the option offered): **under 100% and shrinking**, a level of the mod's own: a backward
+  industry in its own market loses workers over the decade, and loses more as the century goes on. Claude's reading of
+  "shrinking": the decade's share falls from decade to decade, read like PI and PP's slope; soft, like every aim.
+- **The weight** (user-ruled 2026-11-19): **0.5**, as T0's and T3's: the outcome of the price mechanism that PI and PP (weight 1 each)
+  carry, read beside T0.
+- **The scope** (user-ruled 2026-11-19): *"deposits -- no, not ever, unless we change the design by a lot. Agriculture -- not for now
+  definitely, unclear whether we do so in the future."* and *"Motor -- yes, on general terms with manufacturing."*
+  - **Manufacturing counts**, the motor's new t0 rung (Steam Engines, §10.116) with the rest of it: the tiered manufacturing
+    industries, crafts and merged rungs included as their tiers place them.
+  - **The deposit rungs never count** (§10.115), short of a large change to their design: their output does not rise with tier, so a
+    deposit rung behind its successor is not a backward producer in the ladder's sense.
+  - **Agriculture does not count, for now**; whether it ever does is open. (Its same-acre steps stay methods, §10.115.)
+- The term is now ruled whole. Its spread is fitted on game 1.15 runs with the others (§10.120 point 7). Because there are few
+  industry-decades in a run, the term is noisy per run; that is a reason to read it as a median over runs, like every aim, not a
+  reason against it.
+- **Not ruled, raised with it:** whether T0–T3 count the deposit rungs. `criteria.mjs` takes the tiers from `cfg.industries[].tiers[]`
+  by `era`, so deposit rungs generated there would enter T0–T3 unless excluded.
+
+## §10.122 — GAME 1.15.2: MOD 1.1.2, A COMPATIBILITY PATCH; VANILLA'S AI CHANGES PASS THROUGH (user-ruled 2026-11-19, GAME_UPDATE_1_15_2.md)
+
+Paradox released the hotfix 1.15.2 on 2026-11-19; Steam committed it at 18:54 local, after the three-arm batch had ended on 1.15.1
+(GAME_UPDATE_1_15_2 W02, W03). The user: *"we push a small compatch today (1.1.2), and then run a batch of 1.15.2 vanilla runs to get the
+reference points. After that, the balancing iterations start for 1.2, which will be built over 1.15.2, or whatever the current vanilla
+version will be at that moment."*
+1. **Mod 1.1.2 is the 1.1.1 canon rebuilt on game 1.15.2**, carrying vanilla's 1.15.2 changes into the 46 owned vanilla files it changed
+   (W04: the new Single-Party State amendments and effect and the regime-change trigger, missing from 1.1.1's 1.15.1 copies, among them),
+   with no balance change of our own. The canon stays `697d4869`: the chain replayed on 1.15.2 (`g1152-canon-bz-dcu-ra-il-aw`) reproduces it
+   but for two record labels that the build does not emit, so nothing is canonised (W42, Q1).
+2. **Vanilla's AI changes pass through.** The user's standing rule: *"It's always yes, unless they affect us, and discuss details if they
+   do."* Of 1.15.2's AI changes (W17) only one affects us: `NAI.AUTONOMOUS_INVESTMENT_COMPANY_TARGET_BUILDING_TYPE_CONSTRUCTION_FACTOR`
+   5 → 20, private investment's weight on a building type a company of the country targets. Our companies' `ai_construction_targets` list
+   every rung of their industries (`emit_companies.mjs`), and the ungated per-rung targets once kept the AI rebuilding old rungs in
+   companies' home states (the emitter's note of 2026-09-02); the opt-in gate that answered it stopped companies forming and is off.
+   Offered: (a) pass it through, (b) hold it at 5 in the book, (c) the gate back on. **The user chose (a):** 1.1.2 runs vanilla's 20, and
+   the first 1.2 runs read what it does to old rungs (§10.121's term) and to misplaced capital.

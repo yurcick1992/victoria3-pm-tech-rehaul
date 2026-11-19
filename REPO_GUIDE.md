@@ -1074,6 +1074,10 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
 - **`tools/lint_building_blocks.mjs`** — `<modDir> <config>`: landmine L49. Every top-level field of each tiered industry's vanilla building must
   reach every non-craft rung with vanilla's content (technology, method groups and cost per rung; `ai_value`'s adds by L47; `aliases` on the
   anchor only), or be in `KNOWN` with its reason; exit 1 otherwise. Status: current (preflight). Refs: §10.109.6, TESTBED_LANDMINES L49.
+- **`tools/lint_bom.mjs`** — `<modDir> [<config>]` (the config is accepted for preflight's `Invoke-ModLint` and not read): landmine L53. Every
+  `.txt` under `common/` and `events/` and every `.yml` under `localization/` of the built mod must start with the UTF-8 BOM, unless vanilla's
+  file at the same path (`VIC3_GAME`) has none either; exit 1 naming the files otherwise. Status: current (preflight). Refs: BUGS_AND_FIXES
+  2026-11-19, TESTBED_LANDMINES L53, MODDING_NOTES (encoding).
 
 - **`tools/make_artisan_config.mjs`** — turns the six light-industry t0 rungs into 500-worker craft rungs: per-level recipe, a 5,000-head
   staffing block × `workforce_mult` 0.1, cost ÷ 50, group `bg_pmr_crafts` (+ `building_groups_add`), `levels_per_mesh` 500, excluded

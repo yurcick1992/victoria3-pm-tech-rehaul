@@ -73,8 +73,9 @@ it, and the reconciliation and adoption walks (§5) after it.
 9. **The post-patch smoke test.** First the harness: the observer diagnostic (§2.3.2, about a minute). Then the content: one canon run and one control
    run of a few in-game years through `run_schedule.ps1` (patterns: `tools/testbed/schedules/polish_final_smoke.json`, `vanilla_baseline_smoke.json`).
    Both launch the game, so both need the user's go-ahead (CLAUDE.md §5.1 rule 4). Read: the init marker and the version line; `error.log` by
-   position, where nothing may name a `zzz_pm_rehaul` file or an owned path beyond the classes the control run also shows (re-baseline the
-   error-noise catalogue of TESTBED_OPERATIONS §4 from the control); the define lines of §2.2.1, through `preflight.ps1 -Session <session>`; the
+   position, every class judged by what it refers to and by its count in the control and in vanilla runs of the same version, never cleared by
+   its file path (CLAUDE.md §2.12: an owned file sits under vanilla's path, and a vanilla script can reach what we changed); nothing of ours
+   beyond the classes the control also shows (re-baseline the error-noise catalogue of TESTBED_OPERATIONS §4 from the control); the define lines of §2.2.1, through `preflight.ps1 -Session <session>`; the
    `PMR_` research and dam lines in `debug.log`.
 10. **Re-verify the engine behaviours the patch notes touch** (§2.3), then **re-baseline vanilla**: a vanilla batch on the new version (go-ahead), and
     from it `VANILLA_REF` / `VANILLA_WALL_REF` in `tools/testbed/ledger/lib_runs.mjs`, `measured_base_wages.json`, the fleet-loop calibration and the
@@ -715,7 +716,15 @@ different versions are not comparable without saying so.
   first run on 1.15.1. A hotfix with a new exe: the AI's method choice (wages, multipliers, electrical methods), subsidies (no profitable
   building subsidised), mobilisation, the copper pass (telephones, the stills, arc welding, 56 copper deposits), technologies' AI weights;
   `Market.GetCountryTradeCapacity` removed. Kept at `C:\claude-code\vic3_game_1.15.1` (taken 2026-11-12 00:52). The pass's register is
-  `GAME_UPDATE_1_15_1.md` (mod 1.1.1, released on the Workshop 2026-11-15, tag `v1.1.1` on `43bade2`).
+  `GAME_UPDATE_1_15_1.md` (mod 1.1.1, released on the Workshop 2026-11-15, tag `v1.1.1` on `43bade2`). The last session on it is
+  `20261116_005659_g1151-alt-pmr15-vanilla5-canon5` (`SCHEDULE DONE` 2026-11-19 17:43 local).
+- **1.15.2** — released 2026-11-19 (forum notes, checksum `fb14`); Steam delayed the auto-update ("Update delayed for 48888 secs") and the
+  user started it: committed **2026-11-19 18:54:45 local** (build 26763837, checksum `…fb14`, exe sha256 `57c4950e9f1046d6…`), after the
+  three-arm batch had ended, so no session straddles it. A hotfix with a new exe: AI company formation, regime change, Single-Party State,
+  subjects in wars, the 1836 map (153 states, far beyond the notes' Texas), the stills, companies' `possible` and `ai_will_do`, the
+  company-target investment define 5 → 20. Kept at `C:\claude-code\vic3_game_1.15.2` (taken 2026-11-19 18:55), with 1.15.1 beside it: the
+  first full diff of two kept versions. The same day the user set the game to *Only update this game when I launch it*. The pass's
+  register is `GAME_UPDATE_1_15_2.md` (mod 1.1.2, a compatibility patch; a 1.15.2 vanilla batch follows it as the new reference).
 
 ---
 

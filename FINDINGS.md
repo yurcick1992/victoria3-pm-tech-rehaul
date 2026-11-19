@@ -418,6 +418,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F270 | The fleet path loop (F218, wall-clock cluster 3's one listed bug) is absent on game 1.15: no recalled fleet with a long travel path in any of 81 kept or quarantined saves of `20261109_005943` (23 endpoints, the 51 saves of all six slowdown episodes); 1.13.11 had one in 3 of 30 vanilla endpoints and in most episodes. The save summaries' formation reader is BLIND on 1.15 (0 moves in every save): 1.15 renamed the move fields to tokens rakaly 0.8.19 lacks | vanilla 1.15, canon | 81 saves of 23 runs, directional | here |
 | F271 | Mod 1.1.1 against vanilla 1.15.1, n=10 + 10 alternating (vanilla n=11 for the economy): EVERY run of both arms crosses the register's runoff line, so the ruled consensus is empty and the report reads all ten (`criteria.mjs --consensus all`, new, not the ruled form): world GDP 1.18× (1.02–1.36), 1886 0.87×; vanilla 1.15.1 ends at 0.91× vanilla 1.15.0 while the mod's world is the same size in £ on both versions; the shortlist MORE employed than vanilla's (U* 3.6% against 4.8%; on 1.15.0 7.7% against 2.6%); backward industries pushed out no harder than in vanilla (in-market 117.3% against 117.4%); play ×1.087; misplaced capital 22.9% against 17.1%; red flags 140.5 against 167; no tech-era-5 military technology in any mod run; infrastructure subsidies fall from every level (1.15.0) to a few percent in both arms | canon 697d4869, vanilla 1.15.1 | 10 + 10 (11), directional | here |
 | F272 | A third-party mod, Production Method Rework 0.4.0 (retooling instead of free method switches), against vanilla 1.15.1 and mod 1.1.1, n=15 each for the economy (vanilla and the mod glued to F271's session): PMR's world ends at 1.41× vanilla's (the mod 1.19×), ahead from the 1870s and at 1.55× in 1906–16, its lowest run above vanilla's highest; the lead is GDP per productive worker (1.43×; W 1.01× at the end, 1.19× in 1906) and sits in the industrial leaders; world U* a decade ahead of vanilla mid-century (46.2% against 55.4% in 1906) and level at the end (28.2% against 30.1%; the mod 33.4%), the shortlist 1.1% against 4.8%; the investment pool ends at 1.64 of world GDP against 0.38 (the mod 0.41) and 3.73 against 0.60 on the shortlist, Britain's at 8 of its GDP; play ×1.40 of the same session's vanilla (the mod ×1.06), ×1.24 a year from the first decade to ×1.6–1.7 after 1916; the AI's private investors retool (8–12% of private queue points), its governments hardly (0.2–2.2%). Of the five predictions written before the runs three were wrong (world GDP, the majors and the pool, in direction), one half right (depeasantation) and one right (play time) | PMR 0.4.0 (external), canon 697d4869, vanilla 1.15.1 | 15 + 15 + 15 economy, 15 + 5 + 5 play time; GDP and pool far outside the seed spread, the rest directional | here |
+| F273 | The game 1.15.2 smoke test (a syntax probe, n=1+1 to 1846 + a 1836 control): mod 1.1.1's canon builds, loads and runs on 1.15.2; its error.log, judged class by class against vanilla 1.15.1 and not by file path, holds two classes of ours (a BOM regression in two owned building files since the 1.15 pass, fixed, landmine L53; the telemetry variable line) and one rare unexplained class |
 
 ---
 
@@ -23208,3 +23209,32 @@ reading is a snapshot of queues, not a count of completed retool levels.
 - Not a count of retooled levels, nor what share of government-owned levels stays on old recipes.
 - Not what the 14 bytes between the two sessions' builds of the canon are; the book and the emitters are the same by hash and by git.
 - Not a play time comparable with any other session's (§3.4).
+
+## F273 — GAME 1.15.2 SMOKE TEST: THE 1.1.1 CANON LOADS AND RUNS; TWO ERROR CLASSES ARE OURS, ONE UNEXPLAINED (2026-11-19; session `20261119_191707_g1152-smoke`, a syntax probe)
+
+**Why it ran.** The post-patch smoke test of the game 1.15.2 pass (ON_GAME_UPDATE §1 step 9; GAME_UPDATE_1_15_2 W43), before the mod 1.1.2
+compatibility patch (BALANCE_FRAMEWORK §10.122). A syntax probe in the sense of §10.118: never economy data.
+
+**Arms and runs.** The canon `697d4869` (debug build + telemetry) and `{kind: control}`, each 1836 → 1846.1.1, then a control 1836 → 1836.4.1
+on monthly autosaves for the 1836.2.1 save (it refreshed `config/measured_1836_pop_identity.json`). All three reached their dates; no death; every
+DLC mounted.
+
+**Result.**
+- The canon loads on 1.15.2 (the version line matches, `init OK`, no `WARN`) and its research entries fire (82 `PMR_` lines by 1846).
+- `error.log`: canon 187 lines, control 295. Judged class by class by what each refers to and by its count in vanilla 1.15.1's fifteen runs
+  (`20261112_113429`, `20261116_005659`), not by file path (TESTBED_OPERATIONS §4 item 3, ruled the same evening):
+  - **ours:** `lexer.cpp:285` "should be in utf8-bom encoding" for `common/buildings/01_industry.txt` and `06_urban_center.txt` — in 15 of 15 canon
+    runs on 1.15.1 and none of 15 vanilla runs; `emit_ai_value_adds.mjs` wrote both back without their BOM since 2026-11-08, so mods 1.1.0 and
+    1.1.1 shipped them so; fixed, landmine L53 (BUGS_AND_FIXES 2026-11-19);
+  - **ours, the harness:** the telemetry's `v3tb_dz_p1` "set but never used" line, in both arms;
+  - **unexplained:** `remove_lobby_member … not a member from lobby` at `events/soi_events/00_lobbies_events_04.txt:3275` (a file 1.15.2 did not
+    change): one line here, 2 lines in 2 of 30 modded runs on 1.15.1 (canon and PMR), none in 15 vanilla; its chain names nothing the mod changes;
+  - every other canon class appears in vanilla 1.15.1, mostly in all fifteen runs; several playthrough classes run about 1.2–1.3 × vanilla's
+    rate in our arm over fifteen runs (lobby events 5,011 lines against 3,909).
+- The 1836 seeding on the refreshed snapshot: 3,480 craft levels over 157 city states (3,481 over 159 on the 1.15.0 snapshot), 756 levels spilled
+  past each country's five most urbanised states (467), vanilla 1.15.2's 1836 leaving less spare infrastructure there.
+
+**What it does NOT say.**
+- Nothing about the economy on 1.15.2: ten years, one run per arm.
+- Not whether the unexplained class is ours: three lines in 31 modded runs is too few to tell.
+- Not whether the higher playthrough-class rates in our arm come from the mod's content or from its different playthroughs.

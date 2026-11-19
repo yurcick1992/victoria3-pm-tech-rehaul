@@ -116,6 +116,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L50 | a launch whose store lookup failed lists every DLC, mounts none, and plays on without any DLC content | `Test-LmL50` (`tools/testbed/dlc_mounts.mjs`); the heartbeat's `DLC (L50)` line | session; the smoke check | AUTO, proven; the harness remedy open (BACKLOG) |
 | L51 | a data-system function the installed engine no longer registers: the telemetry line or loc string prints with the field empty (1.15.1's `GetCountryTradeCapacity`) | `Test-LmL51` (`tools/lint_data_functions.mjs`) | every build, repo-side | AUTO, proven; fixed |
 | L52 | a save field a game update re-tokenised melts under rakaly's older token table as `slava_token_N` / `__unknown_0x…`, and the summary reader counts zero without a warning (1.15's formation travel paths, F270) | owed: a post-run check that a run's summaries see moving formations at all | session | OPEN — the reader fix and the detector wait for the 10 vs 10's end (`tools/testbed/**` frozen) |
+| L53 | a shipped script or localization file without its UTF-8 BOM: the engine reads it and logs `should be in utf8-bom encoding` on every load (mods 1.1.0–1.1.1: `01_industry.txt`, `06_urban_center.txt`, written back BOM-less by `emit_ai_value_adds.mjs`) | `Test-LmL53` (`tools/lint_bom.mjs`) | every build | AUTO, proven; fixed |
 
 ---
 
@@ -1224,3 +1225,14 @@ every one fails. Prove it on `20261109_005943` (fails) and `20261030_233342` (pa
 structurally — every `{` directly inside a `moves={` — as the F270 parser does (`fleet_paths_115.mjs` in that session's scratchpad), and
 keep `to_node`-free fields only. Both wait for the 10 vs 10 batch `20261112_113429` to end: `tools/testbed/**` and `preflight.ps1` are not
 edited while a batch plays (CLAUDE.md §5.1 rule 7). Other 1.15 keys the readers use were not audited (BACKLOG G).
+
+### L53 — a shipped file without its UTF-8 BOM
+
+Found 2026-11-19 in the game 1.15.2 smoke test (`20261119_191707_g1152-smoke`), after the user pointed out that an error is not cleared by
+its file path: `common/buildings/01_industry.txt` and `06_urban_center.txt` are owned vanilla files, and the lexer line naming them is ours. It
+was in every canon run on 1.15.1 (15 of 15) and in no vanilla run. **Cause:** `emit_ai_value_adds.mjs` (the 1.15 pass, §10.109.2) reads the
+built building files through a BOM-stripping `rd()` and wrote them back with `fs.writeFileSync(f, out)`; the same bug `emit_secondaries.mjs`
+fixed on 2026-09-24. Harmless in play (the engine reads the file anyway), one log line per file per load. **Fix:** the write prepends
+`﻿`. **Detector:** `tools/lint_bom.mjs` on the built mod (every `.txt` under `common/` and `events/`, every `.yml` under `localization/`;
+a file whose vanilla counterpart has no BOM either is allowed). Proven: FAIL on `mod_g1152il` and on the 1.1.1 release build, naming the two
+files; PASS on the build after the fix.

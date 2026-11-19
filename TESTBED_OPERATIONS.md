@@ -315,7 +315,11 @@ command (and gives L33's define rejection its own alarm).
 2. **Game version matches.** `does not match game version` in `error.log`. A Steam update between two runs makes them
    incomparable and is invisible unless looked for.
 3. **Errors from this run only** (procedure below), with the vanilla noise classes discarded, then `grep -c zzz_pm_rehaul` on the
-   window: our emitted files are all `zzz_pm_rehaul*`, so 0 means no error names anything we wrote.
+   window: our emitted files are all `zzz_pm_rehaul*`, so 0 means no error names a file we *emitted*. It does not mean no error is ours.
+   ⚠ **An error's file path is not evidence about its cause** (the user, 2026-11-19): a vanilla file the mod does not touch can refer,
+   directly or indirectly, to something the mod removed, split or changed, and an owned vanilla file (§2.1 of ON_GAME_UPDATE: 146+ of them,
+   under vanilla's own paths) is ours whatever its name says. So every class in the window is judged by what it refers to and by its count
+   against vanilla runs of the same game version (§4.1), never cleared by its path. "Nothing of ours" may be said only after that.
 4. **The clock advances** — the tail of `<run>/run.log` shows `in-game <date>` moving.
 4½. **Every DLC is mounted (L50)** — the heartbeat's `DLC (L50)` line (`node tools/testbed/dlc_mounts.mjs --live <runDir>`) must read
    `ok` with listed = mounted and no store misses. A `FAIL` means the store lookup failed at launch: the game lists every DLC, mounts
@@ -344,6 +348,10 @@ run can sit at line 12,639 of 12,675, the rest from a previous night. A raw line
 - Count distinct error shapes, not lines; the game repeats one line thousands of times.
 - Compare a class's count against the vanilla baseline, never a raw total. When a class is absent from the pinned vanilla sixteen,
   sweep every vanilla session before calling it ours.
+- Clear no class by its path (item 3's ⚠). For each: does it appear in vanilla runs of the same game version, in how many and how often;
+  does the script it points at name, or reach through a scope, anything the mod changes (a tiered industry, a moved method, a technology,
+  a company, an owned file); and is its rate in our arm far from vanilla's. A class in every vanilla run is vanilla's; a class only in our
+  arm is ours until shown otherwise; a class in both at a clearly higher rate in ours is reported as such, not as noise.
 
 ### 4.2 Known error classes that are not new defects
 
@@ -366,6 +374,8 @@ the first six rows.
 | AI chance in the wrong scope (1.15) | `has_journal_entry trigger [ Wrong scope for trigger: state, expected country ]` at `00_ai_triggers.txt:1304/1313` (`ai_avoids_radicals` / `ai_wants_radicals`, which test `je_divided_monarchists`), called from the options' `ai_chance` of `paralegal_discrimination_events.txt:115/163` (a state event) and `india_events/jail.txt:59/116/173/214` | vanilla 1.15's own bug; none of the chain is shipped or redefined by the mod. The same callers in both arms of `20261108_163746` (vanilla 144 lines, canon 166, one per event firing) |
 | treaty articles' market (1.15) | `Event target link 'market' returned an invalid object` at `treaty_articles/17_prohibit_trade_with_global_market.txt:82`, `21_no_tariffs.txt:117`, `26_no_subventions.txt:90` (+ `trade_route_events.txt:30`, `00_corn_laws.txt:22`) | vanilla 1.15, playthrough-dependent: a burst of ~6,300 lines in the first minutes of `20261108_163746` run 2 (canon), 702 over the vanilla run's century, none early in `20261109_005943` run 1; over a century of `20261109_005943` runs 13–16, 3,543–9,208 lines in each arm (vanilla 3,543 and 9,208, canon 9,021 and 3,650), and ~2,700 in the first eight minutes of its run 17 (canon) |
 | religious-trait concept | `concept_religious_trait` data-function failures | also in vanilla | (`20260803_030101_wages-n3` run002 130, `20260803_220658_vanilla-percapita-n3` run002 296, `20260807_005246_popsplit-debut-vanilla` run001 296) |
+| owned building files without a BOM | `lexer.cpp:285` `File 'common/buildings/01_industry.txt' should be in utf8-bom encoding (will try to use it anyways)`, and the same for `06_urban_center.txt` | **mod-caused**: two owned vanilla files the build writes without a byte-order mark; the engine reads them anyway. Once per launch, in every canon run on 1.15.1 (15 of 15, 40 lines) and in none of 15 vanilla runs; also in `20261119_191707_g1152-smoke` on 1.15.2 (BACKLOG) |
+| telemetry variable | `jomini_effect.cpp:1140` `Variable 'v3tb_dz_p1' is set but is never used` | **ours, the harness's**: the downsizing poll's telemetry, in every arm that carries telemetry, control included; never in a release build |
 
 **Game 1.15.0 additions** (2026-11-08, the first 1.15 probe `20261108_061520_g115-probe-1856`, one candidate run and one vanilla run of
 1836→1856, so a first reading, not a baseline — U60's vanilla batch re-baselines the catalogue): in BOTH arms `dlc.cpp` `Could not find item in

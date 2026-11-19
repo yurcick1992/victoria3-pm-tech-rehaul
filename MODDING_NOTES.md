@@ -104,7 +104,10 @@ So a German file reads `Tier 0 craft. Lebensmittelfabriken ($pm_bakery$). Recipe
 - **`error.log`** (`Documents\Paradox Interactive\Victoria 3\logs\error.log`) lists missing keys, unresolved references (bad
   technology / group / method names), brace and parse errors, missing textures. Read it after any in-game load: the build's linters check
   economics and structure, not engine errors. It is a shared ring full of vanilla's own noise — count against the vanilla baseline and
-  by the run's own position (TESTBED_OPERATIONS §4 has the noise catalogue; `grep -c zzz_pm_rehaul` finds lines naming our files).
+  by the run's own position (TESTBED_OPERATIONS §4 has the noise catalogue; `grep -c zzz_pm_rehaul` finds lines naming the files we emit).
+  ⚠ A path clears nothing: an owned vanilla file (`common/buildings/01_industry.txt`, the company files, the 1836 history …) sits under
+  vanilla's own path, and a vanilla file the mod does not touch can refer, directly or through a scope, to something the mod split or
+  changed. Judge each class by what it refers to and by its count in vanilla runs (CLAUDE.md §2.12, TESTBED_OPERATIONS §4.1).
 - **`debug.log`** carries every `debug_log` line, in a plain launch too (`debug_log` is not gated behind `-debug_mode`; verified 1.13.9).
 - **The log ring.** The game keeps the current `error.log` / `debug.log` plus **5 rotated backups** (`error.1.log` … `error.5.log`),
   512 KB each; it rotates **by size and again at every launch**. A long run overwrites its own early lines, and a log from more than

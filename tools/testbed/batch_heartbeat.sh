@@ -41,8 +41,15 @@ if [ -n "$RUN" ] && [ -f $RUN/run.log ]; then
       # pool factor at 1.0, which the validator excludes) — so it gets its own alarm, never a place in "top classes".
       DEF=$(grep -c "not valid with given value" $WIN)
       [ "$DEF" != "0" ] && { echo "    DEFINE REJECTED AT LOAD (L33) — each key below kept VANILLA's value. A key that preflight -Only L33 -Config WARNS about is an accepted residual; ANY OTHER key means this run is not the config:"; grep "not valid with given value" $WIN | sed -E 's/^\[[0-9:]+\]\[[^]]*\]: //' | sort -u | sed 's/^/      /'; }
-      OURS=$(grep -i -E "zzz_pm_rehaul|pm_rehaul|journal_entries/zzz|scripted_progress_bars/zzz|company_types" $WIN | grep -v "is_production_method_active\|utf8-bom" | wc -l)
-      [ "$OURS" != "0" ] && { echo "    ⚠ $OURS lines name OUR files:"; grep -i -E "zzz_pm_rehaul|pm_rehaul" $WIN | grep -v "utf8-bom" | cut -c1-140 | sort | uniq -c | sort -rn | head -3 | sed 's/^/      /'; }
+      # Lines naming a file we EMIT or a vanilla path we OWN (every non-zzz file under mod/common and mod/events: an owned file sits under
+      # vanilla's own path). Nothing is filtered out of this count: the BOM warning on two owned building files was filtered here as noise
+      # for two releases (F273, L53). ⚠ A zero clears nothing: a vanilla file we do not touch can still reach what we changed, so every class
+      # is judged by what it refers to and against vanilla (CLAUDE.md §2.12, TESTBED_OPERATIONS §4 item 3).
+      OWNED=$(mktemp); ( cd "$(dirname "$0")/../../mod" 2>/dev/null && find common events -type f 2>/dev/null | grep -v "zzz_pm_rehaul\|01_pm_rehaul_defines" ) > $OWNED
+      OURS=$( { grep -i -E "zzz_pm_rehaul|pm_rehaul" $WIN; [ -s $OWNED ] && grep -F -f $OWNED $WIN; } | sort -u | wc -l)
+      [ "$OURS" != "0" ] && { echo "    ⚠ $OURS lines name a file we emit or own (judge each class; a path is not the cause):"; { grep -i -E "zzz_pm_rehaul|pm_rehaul" $WIN; [ -s $OWNED ] && grep -F -f $OWNED $WIN; } | sed -E 's/^\[[0-9:]+\]\[[^]]*\]: //' | cut -c1-140 | sort | uniq -c | sort -rn | head -5 | sed 's/^/      /'; }
+      echo "    (this count reads paths only: a zero clears nothing — judge every class by what it refers to, CLAUDE.md §2.12)"
+      rm -f $OWNED
     else
       echo "    error window $START-$NOWT: 0 lines"
     fi

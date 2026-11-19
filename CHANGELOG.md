@@ -1,5 +1,43 @@
 # No Free Upgrades: An industrial realism overhaul — changelog
 
+## 1.1.2 (for Victoria 3 1.15.2)
+
+*Unlike all my other public communication, this changelog is AI-generated. Claude wrote it from the mod's repository and design record.*
+
+Mod 1.1.2 brings mod 1.1.1 to Victoria 3 1.15.2. The design, recipes, costs, research marks and AI values of 1.1.1 are unchanged, except where 1.15.2 changed something the mod takes from vanilla. Small adjustments that only follow vanilla 1.15.2's own renames and moves are not listed. Known issues are in `KNOWN_ISSUES.md`.
+
+Testing and balance
+
+* On Victoria 3 1.15.2, mod 1.1.2 played one automated 1836–1846 campaign (an observer run, no player) beside one of vanilla 1.15.2, to check that it loads and runs. It has not been measured over a century on 1.15.2 yet.
+* The balance is 1.1.1's. Mod 1.1.1 has now played fifteen automated 1836–1936 campaigns with full telemetry against fifteen of vanilla 1.15.1, alternating on one machine. World GDP ended the 1930s at 1.19 times vanilla 1.15.1's, where the mod aims for slightly less than vanilla's. Britain, the USA, France, the Low Countries and Germany, taken together, had 4.8% of their workforce unemployed or peasants in the 1930s (for reference, vanilla 1.15.1: 4.8%), where the mod aims for more; the world as a whole kept 33% (vanilla 1.15.1: 30%). The known issues give the detail.
+* The retune for game 1.15 is planned for mod 1.2.
+
+Game 1.15.2
+
+* Built on vanilla 1.15.2. With mod 1.1.1, the 46 vanilla files the mod replaces that 1.15.2 changed still loaded as their 1.15.1 copies, so these 1.15.2 changes did not apply. They are now 1.15.2's copies with the mod's edits:
+  * the companies (each historical company tied to its home state, the basic companies' AI condition, MALAXA on Motor Industries, Kharitonenko and Son partly owned by Aristocrats);
+  * the 1836 map (below);
+  * Single-Party State's new choice of the dominant party and its amendments, and the new regime-change rules;
+  * the communism and Tsar's points journal entries, Russia's events, script values and progress bars, the static modifiers;
+  * the AI strategies (see AI below).
+* On Victoria 3 1.15.2, mod 1.1.1 lacked the eleven new party-dominance amendments, the effect that sets the dominant party and the condition regime change now checks, so Single-Party State's choice of party and regime change could fail with it. 1.1.2 has them.
+* The 1836 start follows vanilla 1.15.2's map, which changed in 153 states: among the mod's industries, China's glassworks spread over more states, Britain's food industry grows (Leinster 4 to 16 levels), no food industry starts with Pot Stills, and paper, furniture, arms, steel and motor levels move in a few states. Each factory is on the rung its method belongs to, and the crafts follow the new map.
+* The food industries' Pot Stills and Patent Stills follow vanilla 1.15.2's: Pot Stills 4.92 glass and no copper, making 59.58 liquor and taking 17.87 groceries a level (1.1.1: 3.93 glass, 0.98 copper, 71.5 liquor, 29.79 groceries); Patent Stills 4.92 glass and 4.92 copper, making 89.38 liquor and taking 23.83 groceries (6.89 glass, 2.95 copper, 119.17 liquor, 47.66 groceries).
+
+AI
+
+* Vanilla 1.15.2's AI changes come through unchanged, among them its fix to company formation, a reordering of the AI's war targets and new limits on how far its political agendas roll back revolutionary laws.
+* Vanilla 1.15.2 makes private investment pull much harder toward the buildings a country's companies aim for (four times as hard). In the mod a company aims for every rung of its industries, older ones included, so this may draw investment into older plants in a company's home states. It will be measured for mod 1.2.
+
+Interface
+
+* The mod's name in the game's launcher now reads like its Workshop title, with the game and mod versions: [1.15] No Free Upgrades: An industrial realism overhaul. Version 1.1.2.
+
+Not yet in 1.1.2
+
+* Four buildings run only on electricity, and they can still be built in a state without electricity (see the known issues). A build condition is still planned for a later version.
+* The balance has not been retuned for 1.15 (see Testing and balance above).
+
 ## 1.1.1 (for Victoria 3 1.15.1)
 
 *Unlike all my other public communication, this changelog is AI-generated. Claude wrote it from the mod's repository and design record.*

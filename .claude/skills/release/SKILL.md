@@ -38,8 +38,11 @@ nothing changed in it afterwards. It carries no telemetry and no logging but the
 telemetry or debug build is not one, whatever it contains. The deployed copy (`Documents\Paradox Interactive\Victoria 3\mod\pm_tech_rehaul`,
 the shell's Documents folder) is what the user uploads.
 
-1. `mod/.metadata/metadata.json`: `version` → the release; `supported_game_version` covers the installed game (`"1.15.*"`); the
-   `short_description` still true. This file is the only hand-maintained one in `mod/`.
+1. `mod/.metadata/metadata.json`: `version` → the release; **`name` → `[<game macro version>] No Free Upgrades: An industrial realism
+   overhaul. Version <release>`**, the form of the Workshop item's title (the user, 2026-11-19; "[1.15] … Version 1.1.2"; the macro
+   version is the game's major.minor, as `supported_game_version` "1.15.*"); `supported_game_version` covers the installed game
+   (`"1.15.*"`); the `short_description` still true. This file is the only hand-maintained one in `mod/`. Remind the user that the Workshop
+   item's own title is set on its Steam page.
 2. `powershell -ExecutionPolicy Bypass -File tools\build.ps1 -Release` (it deploys). Every lint and the preflight must pass; the output names
    the debug_log lines it stripped and "RELEASE BUILD: no build stamp …".
 3. README's replaced-file list: `node tools/list_replaced_files.mjs` on the build, pasted into README's section, its label naming the version.

@@ -1,8 +1,10 @@
 # PM & Tech Rehaul — Victoria 3 mod
 
 An economic-realism mod for **Victoria 3**. Mod 1.0 shipped on game 1.13 ("Matcha", 2026-10-30); mod 1.1 is built on game 1.15 ("Ivan-Chai"),
-where the canon has been since 2026-11-08, and mod 1.1.1 on game 1.15.1 since 2026-11-12 (Part 4). Players see it as **No Free Upgrades: An industrial realism overhaul** (the name in `mod/.metadata/metadata.json` and the public files'
-titles since 2026-10-29; the Workshop item's title is set on its Steam page). "PM & Tech Rehaul" is the working name and lives on in every identifier — the folder
+where the canon has been since 2026-11-08, and mod 1.1.1 on game 1.15.1 since 2026-11-12 (Part 4). Players see it as **No Free Upgrades: An industrial realism overhaul** (the public files' titles since 2026-10-29). Since mod 1.1.2 the
+name in `mod/.metadata/metadata.json` takes the Workshop item's title form, `[<game macro version>] No Free Upgrades: An industrial realism
+overhaul. Version <mod version>` ("[1.15] … Version 1.1.2"), updated each release (the `release` skill); the Workshop item's title itself is
+set on its Steam page. "PM & Tech Rehaul" is the working name and lives on in every identifier — the folder
 `pm_tech_rehaul`, the id `com.yurcick.pm_tech_rehaul`, the `PM_TECH_REHAUL` log markers — which stay so subscribed playsets keep working. This repository holds the mod's generator (`config/` + `tools/`), the generated mod (`mod/`), a balance editor (`ui/`), a
 headless measurement harness (`tools/testbed/`) and the design record (the `.md` files).
 
@@ -319,7 +321,8 @@ slope is the lever that takes the hoard down together with W (F135). Britain's e
 1900 world GDP already ranks configs well (r ≈ 0.86, F165).
 
 **Two positioning rules.** (1) *The under-side rule* (§10.79): when a change that raises world GDP is going in for its own design reasons, the base
-it lands on should sit slightly BELOW the GDP / depeasantation target, not on it. (2) *Which book a change branches from* is never assumed —
+it lands on should sit slightly BELOW the GDP / depeasantation target, not on it. It is not applied to the misplaced-capital pass that may close
+the 1.2 balance: the main iterations aim at the world-GDP band itself (§10.121). (2) *Which book a change branches from* is never assumed —
 ask (§5.1 rule 3).
 
 ## 2.6 Vanilla is the reference and the material
@@ -399,6 +402,13 @@ the finding: a "transportation ÷ automobiles" collapse looked like displacement
 - **A shipped comment or document is a cheap hypothesis, not evidence.** Read the game's own files before theorising (`common/pop_needs` documents the
   pop-need split in a header comment) — and corroborate with a measurement before believing; a comment true when written rots silently after the code
   moves.
+- **An error's file path is not evidence about its cause** (the user, 2026-11-19). A vanilla file the mod does not touch can refer, directly or
+  through a scope, to something the mod removed, split or changed; an owned vanilla file (§5.4) sits under vanilla's own path; and
+  `grep -c zzz_pm_rehaul` = 0 says only that no line names a file we *emitted*. Every `error.log` class is judged by what its script refers to
+  and by its count in vanilla runs of the same game version (present in all of them → vanilla's; only in our arm → ours until shown
+  otherwise; in both at a clearly higher rate in ours → reported as such). "Nothing of ours" is said only after that walk, class by class
+  (TESTBED_OPERATIONS §4 item 3, §4.1). The 1.15.2 smoke test read the two owned building files' BOM warning as vanilla noise for two
+  releases until the user caught it (F273, landmine L53).
 - **A level cannot identify a rule; a perturbation can.** Every pop need shares a good with another need, so no need's budget is observable from the
   order book (F35) — change one input and watch what moves.
 - **A quantity that needs a special case everywhere it appears does not belong in the model** (gold, which has no buyer without a treasury, had four
@@ -467,6 +477,8 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.118 | every measurement of our economy is made on the exact book its full runs play; only syntax and performance probes may differ, and a probe is never economy data; the harness leaves no other way (a short run on a book of ours is a probe or the checkpoint leg of a full run; a continuation inherits its parent's book by verified hash; the readers drop probes) | in force; the machinery is on branch `same-book-machinery`, merged after the three-arm batch |
 | 10.119 | where §10.110.1's older 1.2 and 1.3 items go, ruled one by one: 1 the retune is the iteration of the 1.2 book (C 2.0 its first move; F234's ladder superseded as a start; paper's lift stays 1.2 in the first book); 2 tier-scaled secondary lines and the crafts' lines are in the 1.2 book — a line takes the same share of its rung's own output on every rung (today's t2 share), each named "<line> (Tier N)", a merged building's line sized on its upper method, crafts carry the four handcraft lines, automation unchanged; 3 military research is in the 1.2 book as a lower AI weight on technologies a research entry can deliver (−20% where the entry exists and literacy allows it, −90% while it is advancing for the country, the finish boost still winning), the figures settled after 10-year probes and a model, frontline entries never lowered and naval ones lowered; 4 the urban centres' streetlights stay as they are (no × 2 / × 3, no copper), closed; 5 the electricity build condition stays deferred, not in 1.2; 6 the higher tier's research mark for a technology unlocking two tiers is built into 1.2 as a general rule, and crafts stay research sources (POLISH P3 closed); 7 both craft seeding defects (Valencia, New York) are fixed in 1.2; 8 the register on game 1.15 is settled right after this list, before any 1.2 century, starting with which lines stay hard; 9 the five text and check items stay with 1.2 as release tasks; 10–13 treaty ports, building groups per industry, artisanal ownership and the wider AI research weight retune stay after 1.2, no release named; 14 mod 1.2's date is "December", no details | in force; nothing built; the list is complete |
 | 10.120 | the register redone: the important goals are absolute levels of the mod's own, and of the vanilla-referenced ones only world GDP matters; every aim is soft; there is ONE barrier, about validity and not severity — the investment loop broke (lack of labour and hoarding are two wordings of it), past which every other reading is unreliable; the numbers are calibrated on data; the barrier as it stands: a shortlist member of at least 2% of world GDP whose pool ÷ GDP averages at least 1 over ten consecutive years (no primary check on labour) ; the eight depeasantation aims, at 1913 and at the end of the game: the USA 25% and 15%, Britain 10% and 5%, Germany 20% and 20%, the world 60% and 50% ; PI and PP stay aims with the downward slope required; the rest accepted as one list | in force (§3.2 is this register); `criteria.mjs`, the scorecard and the stop watcher still on the old form until the three-arm batch ends |
+| 10.121 | old plants pushed out become a term of the loss, measured by the in-market backward-industry test beside T0 (.1), aim under 100% and shrinking, weight 0.5, manufacturing only (deposits never, agriculture not for now); research pace, misplaced capital and the rubber shortage stay outside it; misplaced capital may get an AI-value pass close to finalising the 1.2 balance, after the main iterations, with no GDP leeway for it (the under-side rule not applied to that pass) | in force; the term ruled whole; nothing built |
+| 10.122 | game 1.15.2, mod 1.1.2: the 1.1.1 canon rebuilt on 1.15.2, no balance change (the canon stays 697d4869: the 1.15.2 replay reproduces it); vanilla AI changes pass through unless they affect us; the company-target investment define 5 → 20 affects us (our targets list every rung) and passes through, read in the first 1.2 runs | in force |
 
 ---
 
@@ -543,9 +555,15 @@ batch 7 mod 1.1.1 runs of 10 and 6 vanilla runs of 10 are past it.
 | capital: majors with a pool above 0.5 of their GDP in 1935–1936 | as few as possible | own | 1 |
 | T0: workers on tier-0 rungs, by the rung's tier | 0 at 1936, or falling decade over decade | own | 0.5 |
 | T3 ÷ (T0 + T1 + T2) | the more the better | own | 0.5 |
+| old plants pushed out (§10.121): the in-market backward-industry test (`laggard_pressure.mjs`), the share of its workers an industry two tiers behind a far better producer in its own market keeps over a decade; beside T0 | **under 100% and shrinking** decade over decade; manufacturing only, the motor's new t0 rung included; the deposit rungs never, agriculture not for now | own | 0.5 |
 
 PI and PP are the main obsolescence driver (§2.1): the downward slope is the must, and where the level should end is not settled.
+They are not the outcome: on mod 1.1.1 T0, PI and PP read at or near their aims while a backward industry in its own market keeps
+117% of its workers over a decade, as in vanilla, which is why the old plants' fate is a term of its own (§10.121).
 For mod 1.2 the world's U\* still gives way to world GDP where the two conflict (§10.114).
+**Outside the loss by ruling** (§10.121): research pace, misplaced capital and the rubber shortage, read beside it (§3.3). Misplaced
+capital may get an AI-value pass of its own close to finalising the 1.2 balance, after the main iterations, and the world-GDP aim is
+not lowered to leave room for what that pass adds.
 
 **Minor readings** (reported, flagged when far out, no weight in the loss): productive workers per capita (W) of the world and the
 shortlist ÷ vanilla; the shortlist's GDP ÷ vanilla; the pool ÷ GDP (H) ÷ vanilla; the 1836–1845 start against vanilla's spread; war-goods
@@ -857,7 +875,7 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
    (`& 'tools\testbed\launch_detached.ps1' -File 'tools\testbed\run_schedule.ps1' -ArgumentList '-Schedule','<spec>' -NoExit`) — never
    `Start-Process`, never wrapped in `powershell -File` (L30) — and confirm the session folder appears within a minute.
 6. **Smoke-check every run about 5 minutes after it starts:** our init marker in `debug.log`, the game version, the run's OWN error lines (wrap-safe,
-   by position, against the vanilla noise catalogue), the clock advancing, the construction mix (`tools/testbed/batch_heartbeat.sh <stamp>`). Run the
+   by position, against the vanilla noise catalogue, each class judged by what it refers to and never cleared by its file path, §2.12), the clock advancing, the construction mix (`tools/testbed/batch_heartbeat.sh <stamp>`). Run the
    background waiter (`wait_for_session.ps1`) after every launch — never relaunch on DEAD alone, a long harvest looks dead — and on a 2+1 batch arm the
    stop watcher and confirm its `stop_watch.log` exists. Watch live files with short reads only. Details: `TESTBED_OPERATIONS.md` §3–§5.
 7. **Never edit `build.ps1`, `telemetry_lib.ps1`, an emitter, a setup's config or anything under `tools/testbed/` in the checkout a batch runs from** —
@@ -1037,8 +1055,9 @@ headless runs: MODDING_NOTES §"Automated headless runs".
    the wall-clock clusters, the VERDICT.md, the SESSION_VERDICTS row and the finding.
 
 ⚠ `error.log` is a shared ring with vanilla's own noise (navy-model laws on landlocked countries, interest-group leaders, invalid country handles,
-loc-string data errors, battle sizes …): count against the vanilla baseline, filter by the run's own POSITION in the file, and check
-`grep -c zzz_pm_rehaul` — every file we emit is named that way. The catalogue is in `TESTBED_OPERATIONS.md`.
+loc-string data errors, battle sizes …): count against the vanilla baseline and filter by the run's own POSITION in the file.
+`grep -c zzz_pm_rehaul` finds the lines naming a file we emit, and that is all it finds: an owned vanilla file sits under vanilla's path, and a
+vanilla script can reach what we changed, so no class is cleared by its path (§2.12). The catalogue is in `TESTBED_OPERATIONS.md` §4.
 
 ## 5.6 Analysing and reporting
 

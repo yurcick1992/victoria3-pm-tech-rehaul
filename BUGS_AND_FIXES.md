@@ -23,6 +23,7 @@ appended oldest first after the July ones); no entry's text changed.
 
 | date | entry | area | status | note |
 |---|---|---|---|---|
+| 2026-11-19 | two owned building files shipped without a BOM since the 1.15 pass, and the smoke check called the lexer line naming them vanilla noise | build/emitters | live | emit_ai_value_adds.mjs write; landmine L53 |
 | 2026-11-12 | the downsizing reader would have priced a mod run's lost levels with vanilla's files alone when its build folder was gone | testbed/ledger | live | downsize_telemetry.mjs --mod-path; misplaced_capital run-folder groups |
 | 2026-11-08 | "socialism: Inception": vanilla's loc line for Socialism ends in a comment, so the tree twin recorded the key as the name | build/emitters | live | emit_research_events.mjs techName; the extractors |
 | 2026-10-29 | the report gate's browser check left 45 headless Edge processes running: Edge's launched process hands off to another | testbed/ledger | live | fill_verify.mjs layout check cleanup |
@@ -150,6 +151,25 @@ appended oldest first after the July ones); no entry's text changed.
    format numbers with `InvariantCulture`. Three separate bugs below share this one root.
 
 ---
+
+## 2026-11-19 — two owned building files shipped without a BOM since the 1.15 pass
+
+**Symptom.** Every canon run since game 1.15 logs, once per load, `File 'common/buildings/01_industry.txt' should be in utf8-bom encoding (will
+try to use it anyways)` and the same for `06_urban_center.txt`: 15 of 15 canon runs on 1.15.1, none of 15 vanilla runs. Mods 1.1.0 and 1.1.1
+shipped both files without a BOM. Harmless in play. The line was read as a known class for two releases because both paths are vanilla's; the
+user caught that reading in the 1.15.2 smoke check (`20261119_191707_g1152-smoke`): an owned file sits under vanilla's own path, and a path
+clears nothing (TESTBED_OPERATIONS §4 item 3).
+
+**Root cause.** `emit_ai_value_adds.mjs` (2026-11-08, BALANCE_FRAMEWORK §10.109.2) runs after `build.ps1` has written the building files with
+their BOM. It reads them through `rd()`, which strips the mark for matching, and wrote them back with `fs.writeFileSync(f, out)`.
+`emit_secondaries.mjs` had the same bug and its fix on 2026-09-24 (MODDING_NOTES: a writer that reads through a BOM-stripping helper must write
+the BOM back); the new emitter repeated it, and no check looked at the bytes.
+
+**Fix.** The write prepends `﻿`.
+
+**Next time.** Landmine L53: `tools/lint_bom.mjs` checks every shipped `.txt` under `common/` and `events/` and every `.yml` under
+`localization/` in every build (a file whose vanilla counterpart has no BOM either is allowed). Proven to fail on `mod_g1152il` and on the 1.1.1
+release build, naming the two files, and to pass on the build after the fix.
 
 ## 2026-11-12 — the downsizing reader would have priced a mod run's lost levels with vanilla's files alone
 

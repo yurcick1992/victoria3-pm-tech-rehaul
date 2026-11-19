@@ -51,7 +51,9 @@ line per database ("N new events, none naming a tiered industry").
 
 ON_GAME_UPDATE §1, steps 2–9: mark the version boundary; refresh the extracts; dry-run; **regenerate the canon into a new named book and
 field-diff it** (never skipped: it is the only check on what the book stores); refresh the snapshots; bump the version; build; smoke test (needs
-the go-ahead). Then:
+the go-ahead). Read the smoke test's `error.log` class by class: each class by what its script refers to and by its count in the control and in
+vanilla runs of the same version, never cleared by its file path (CLAUDE.md §2.12: 146+ owned vanilla files sit under vanilla's own paths, and
+a vanilla script can reach what we split; the 1.15.2 pass first called two owned files' BOM warning noise). Then:
 - `node tools/lint_vanilla_names.mjs` on that build, against the new game: every name our own script takes from vanilla (laws, regions, building
   and ship types, technologies, on-actions, triggers, effects, icons, defines) must resolve. Run it on a build made from the same game.
 - re-read ON_GAME_UPDATE §5.2 (the rulings relative to a vanilla number) against the new numbers.

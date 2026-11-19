@@ -1,17 +1,20 @@
 # No Free Upgrades: An industrial realism overhaul — known issues
 
-Issues a player may notice in the current release, version 1.1.1 for Victoria 3 1.15.1. Each line goes when a release fixes it; the fix is
+Issues a player may notice in the current release, version 1.1.2 for Victoria 3 1.15.2. Each line goes when a release fixes it; the fix is
 then in `CHANGELOG.md`.
 
-*Like the 1.1.1 changelogs, this list is AI-generated. Claude wrote it from the mod's repository and test records.*
+*Like the 1.1.2 changelogs, this list is AI-generated. Claude wrote it from the mod's repository and test records.*
 
 
-How 1.1.1 was tested
+How 1.1.2 was tested
 
+* Mod 1.1.2 is mod 1.1.1 on Victoria 3 1.15.2, with no balance change. On 1.15.2 it played one automated ten-year campaign (an observer
+  run, no player) beside one of vanilla 1.15.2, to check that it loads and runs; it has not been measured there over a century yet.
 * Mod 1.1.1 played ten automated 1836–1936 campaigns with full telemetry (observer runs, no player) against ten of vanilla 1.15.1,
-  alternating on one machine in the same days. The figures below are from these campaigns.
+  alternating on one machine in the same days, and five more against five since; over all fifteen, world GDP ended at 1.19 times vanilla 1.15.1's (1.18 over the first ten). The figures
+  below are from the first ten, on Victoria 3 1.15.1.
 * The balance is still mod 1.0's. Mod 1.0 was tuned on Victoria 3 1.13 and confirmed there over 64 automated campaigns against 56 of
-  vanilla; mods 1.1 and 1.1.1 carry it over to game 1.15 without retuning. The retune for game 1.15 is planned for mod 1.2.
+  vanilla; mods 1.1, 1.1.1 and 1.1.2 carry it over to game 1.15 without retuning. The retune for game 1.15 is planned for mod 1.2.
 
 
 Mechanical

@@ -1,0 +1,34 @@
+[h1]1.1.2 (for Victoria 3 1.15.2)[/h1]
+[i]Unlike all my other public communication, this changelog is AI-generated. Claude wrote it from the mod's repository and design record.[/i]
+Mod 1.1.2 brings mod 1.1.1 to Victoria 3 1.15.2. The design, recipes, costs, research marks and AI values of 1.1.1 are unchanged, except where 1.15.2 changed something the mod takes from vanilla. Small adjustments that only follow vanilla 1.15.2's own renames and moves are not listed. Known issues are in the Workshop item's discussions.
+The full changelog against vanilla 1.15.2 is on the [url=https://forum.paradoxplaza.com/forum/threads/mod-no-free-upgrades-an-industrial-realism-overhaul.1947073/]Paradox forum[/url].
+
+[h2]Testing and balance[/h2]
+[list]
+[*]On Victoria 3 1.15.2, mod 1.1.2 played one automated ten-year campaign (an observer run, no player) beside one of vanilla 1.15.2, to check that it loads and runs.
+[*]The balance is 1.1.1's. Mod 1.1.1 played fifteen automated 1836–1936 campaigns against fifteen of vanilla 1.15.1: the world economy ends larger than intended, and the leading industrial economies find work for more people than intended (see the known issues). The retune is planned for mod 1.2.
+[/list]
+
+[h2]Game 1.15.2[/h2]
+[list]
+[*]Built on vanilla 1.15.2. With mod 1.1.1, 46 vanilla files the mod replaces that 1.15.2 changed still loaded as their 1.15.1 copies. They are now 1.15.2's, with the mod's edits, so 1.15.2's companies, 1836 map, Single-Party State and regime change, and Russia's journal entries come through.
+[*]On Victoria 3 1.15.2, mod 1.1.1 lacked the new party amendments, the Single-Party State effect and the regime-change condition, so Single-Party State's choice of party and regime change could fail with it. 1.1.2 has them.
+[*]The 1836 start follows 1.15.2's map (China's glassworks, Britain's food industry and more), with each factory on the rung its method belongs to.
+[*]Pot Stills and Patent Stills follow 1.15.2's: Pot Stills need no copper and Patent Stills more, and both make less liquor and take less of the groceries output.
+[/list]
+
+[h2]AI[/h2]
+[list]
+[*]Vanilla 1.15.2's AI changes come through unchanged, among them its fix to company formation and a stronger pull of private investment toward the buildings a country's companies aim for.
+[/list]
+
+[h2]Interface[/h2]
+[list]
+[*]The mod's name in the game's launcher now reads like its Workshop title, with the game and mod versions: [1.15] No Free Upgrades: An industrial realism overhaul. Version 1.1.2.
+[/list]
+
+[h2]Not yet in 1.1.2[/h2]
+[list]
+[*]Buildings that run only on electricity can still be built without it (see the known issues).
+[*]The balance has not been retuned for 1.15 (see Testing and balance above).
+[/list]

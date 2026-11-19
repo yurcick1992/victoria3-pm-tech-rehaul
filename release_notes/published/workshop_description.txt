@@ -13,9 +13,10 @@ Even if in the same market there's a huge tech disparity, low productivity diffe
 With no capital costs to upgrade buildings, the fact that the country's universities researched a tech, whatever this means, has instant effects on the economy. While this is good for dopamine, this is hardly realistic.
 
 [h2]I believe that fixing those things will make the game both more realistic and more fun. This mod is my go at this[/h2]
-After playtests, I believe I've achieved my goals. Tech domination is more organic and more impactful, and full employment, which throws the game off balance completely in vanilla pretty often, is harder to achieve.
+After playtests, I believe I've achieved my goals. Tech domination is more organic and more impactful, and full employment, which throws the game off balance completely in vanilla pretty often, was harder to achieve on game 1.13. On 1.15 the leading economies reach near-full employment in the mod too, until the retune planned for mod 1.2.
 
 [hr][/hr]
+
 
 [h1]What does this mod do?[/h1]
 [h2]I. Most manufacturing industry PMs are now new, separate buildings. All manufacturing economics was heavily rebalanced[/h2]
@@ -23,7 +24,7 @@ After playtests, I believe I've achieved my goals. Tech domination is more organ
 [*]There are four in-game tiers: t0, t1, t2 and t3. Unless makes sense narratively for cases where upgrading was much cheaper than rebuilding, switching the PM is now done through building a new, improved industry. The outputs grow faster than inputs and productivity grows faster with tech and time, but requires actual investment in building the upgraded factories. By extension, this means that [b]an investor can construct modern buildings in foreign countries[/b] based on investor country's tech, and not local tech
 [*]The industrial output prices are expected to decrease during the course of the game. Late-game PMs are designed to stay profitable even at output prices significantly lower than base. 1830s factories cannot compete in this environment and die out.
 [*]Some pre-1830s t0 industries are declared "artisanal", have a ten times lower workforce and a much lower productivity per worker.
-[*]In AI-only observer runs, there tends to be significantly more peasants left in the late game. A skilled player on many countries or an AI Britain can still depeasant his country fairly easily, for the better or worse.
+[*]In AI-only observer runs on 1.13, there tended to be significantly more peasants left in the late game. On 1.15.1 the world keeps slightly more unemployed and peasants than vanilla (34% against 30%), the leading economies fewer (4% against 5%). A skilled player on many countries or an AI Britain can still depeasant his country fairly easily, for the better or worse.
 [*]A couple of industry tiers or PMs is added together with new techs, where it made narrative sense.
 [/list]
 
@@ -42,24 +43,27 @@ For techs that unlock military units, the tick condition is fighting on a front 
 
 [hr][/hr]
 
+
 [h1]What doesn't the mod do?[/h1]
 [list]
 [*]The 1836 situation is barely changed. Expect 1836-1860s similar to vanilla.
 [*]It doesn't touch any industry except for power plants and factories. All mines, agriculture, most infrastructure is left vanilla.
-[*]The game performance (in in-game years per minute) doesn't meaningfully change, the game is about 2% slower on my machine (measured over dozens of alternating runs of mod vs vanilla).
-[*]The world GDP doesn't diverge from vanilla values that much, all parameters were specifically calibrated so that it was this way. The reason is simple: some in-game things like minting depend on that, and diverging would make balancing the system even harder. There is a GDP dip in mid-game, when the new tech is discovered and vanilla instantly upgrades, and in the mod the new buildings aren't yet built. But by 1920s this balances out.
+[*]The game performance (in in-game years per minute) doesn't meaningfully change, the game is about 9% slower on my machine on 1.15.1, 2% on 1.13 (measured over alternating runs of mod vs vanilla).
+[*]The world GDP doesn't diverge from vanilla values that much, all parameters were specifically calibrated so that it was this way. The reason is simple: some in-game things like minting depend on that, and diverging would make balancing the system even harder. There is a GDP dip in mid-game, when the new tech is discovered and vanilla instantly upgrades, and in the mod the new buildings aren't yet built. But by the 1920s this balances out (on 1.13; on 1.15.1 the mod's world ends about 18% richer, mostly because vanilla 1.15.1's own world ends about 9% poorer than 1.15.0's).
 [/list]
 
 [hr][/hr]
+
 
 [h1]How was this mod made? AI disclaimer[/h1]
 I am the only human on the project. Claude Opus was used for the mod itself and the testing harness. The actual tough job was the balance, so there were hundreds of full 100-year observer runs done to understand how changes to parameters affect the relevant metrics over the century. This necessitated creating an agentic+deterministic automation system for running and restarting the tests reliably and analysing the outcomes systematically, at scale.
 
 By October 26, there has been over 300 mod 100-year runs, over 60 vanilla 100-year runs. There has also been over 500 shorter probes, mostly to understand performance effects and syntax correctness. Overall, over 1000 machine hours for mod 1.0 over vanilla 1.13.
-For mod 1.1 over vanilla 1.15, there was only one mod over one vanilla observer run so far, together with several hours of playtesting. More significant measurement and balance retune for 1.15 will come in several weeks.
+For mods 1.1 and 1.1.1 there were ten mod runs against ten vanilla ones on each of 1.15.0 and 1.15.1, together with several hours of playtesting. The balance retune for 1.15 is planned for mod 1.2.
 
 Total human work was about 200 hours between July and October 2026, not including long playtesting sessions, which would add about +10%.
 
 The in-mod text is also AI generated.
 
 [b]No public communication, including this message in any part, was written or edited by AI. AI was used to do fact checking, between the initial draft and human editing.[/b]
+
