@@ -321,8 +321,8 @@ slope is the lever that takes the hoard down together with W (F135). Britain's e
 1900 world GDP already ranks configs well (r ≈ 0.86, F165).
 
 **Two positioning rules.** (1) *The under-side rule* (§10.79): when a change that raises world GDP is going in for its own design reasons, the base
-it lands on should sit slightly BELOW the GDP / depeasantation target, not on it. It is not applied to the misplaced-capital pass that may close
-the 1.2 balance: the main iterations aim at the world-GDP band itself (§10.121). (2) *Which book a change branches from* is never assumed —
+it lands on should sit slightly BELOW the GDP / depeasantation target, not on it. Separately, the misplaced-capital pass that may close the 1.2
+balance gets no extra leeway on world GDP: the 0.90–1.00 band, below vanilla, is the room (§10.121.2). (2) *Which book a change branches from* is never assumed —
 ask (§5.1 rule 3).
 
 ## 2.6 Vanilla is the reference and the material
@@ -477,7 +477,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.118 | every measurement of our economy is made on the exact book its full runs play; only syntax and performance probes may differ, and a probe is never economy data; the harness leaves no other way (a short run on a book of ours is a probe or the checkpoint leg of a full run; a continuation inherits its parent's book by verified hash; the readers drop probes) | in force; the machinery is on branch `same-book-machinery`, merged after the three-arm batch |
 | 10.119 | where §10.110.1's older 1.2 and 1.3 items go, ruled one by one: 1 the retune is the iteration of the 1.2 book (C 2.0 its first move; F234's ladder superseded as a start; paper's lift stays 1.2 in the first book); 2 tier-scaled secondary lines and the crafts' lines are in the 1.2 book — a line takes the same share of its rung's own output on every rung (today's t2 share), each named "<line> (Tier N)", a merged building's line sized on its upper method, crafts carry the four handcraft lines, automation unchanged; 3 military research is in the 1.2 book as a lower AI weight on technologies a research entry can deliver (−20% where the entry exists and literacy allows it, −90% while it is advancing for the country, the finish boost still winning), the figures settled after 10-year probes and a model, frontline entries never lowered and naval ones lowered; 4 the urban centres' streetlights stay as they are (no × 2 / × 3, no copper), closed; 5 the electricity build condition stays deferred, not in 1.2; 6 the higher tier's research mark for a technology unlocking two tiers is built into 1.2 as a general rule, and crafts stay research sources (POLISH P3 closed); 7 both craft seeding defects (Valencia, New York) are fixed in 1.2; 8 the register on game 1.15 is settled right after this list, before any 1.2 century, starting with which lines stay hard; 9 the five text and check items stay with 1.2 as release tasks; 10–13 treaty ports, building groups per industry, artisanal ownership and the wider AI research weight retune stay after 1.2, no release named; 14 mod 1.2's date is "December", no details | in force; nothing built; the list is complete |
 | 10.120 | the register redone: the important goals are absolute levels of the mod's own, and of the vanilla-referenced ones only world GDP matters; every aim is soft; there is ONE barrier, about validity and not severity — the investment loop broke (lack of labour and hoarding are two wordings of it), past which every other reading is unreliable; the numbers are calibrated on data; the barrier as it stands: a shortlist member of at least 2% of world GDP whose pool ÷ GDP averages at least 1 over ten consecutive years (no primary check on labour) ; the eight depeasantation aims, at 1913 and at the end of the game: the USA 25% and 15%, Britain 10% and 5%, Germany 20% and 20%, the world 60% and 50% ; PI and PP stay aims with the downward slope required; the rest accepted as one list | in force (§3.2 is this register); `criteria.mjs`, the scorecard and the stop watcher still on the old form until the three-arm batch ends |
-| 10.121 | old plants pushed out become a term of the loss, measured by the in-market backward-industry test beside T0 (.1), aim under 100% and shrinking, weight 0.5, manufacturing only (deposits never, agriculture not for now); research pace, misplaced capital and the rubber shortage stay outside it; misplaced capital may get an AI-value pass close to finalising the 1.2 balance, after the main iterations, with no GDP leeway for it (the under-side rule not applied to that pass) | in force; the term ruled whole; nothing built |
+| 10.121 | old plants pushed out become a term of the loss, measured by the in-market backward-industry test beside T0 (.1), aim under 100% and shrinking, weight 0.5, manufacturing only (deposits never, agriculture not for now); research pace, misplaced capital and the rubber shortage stay outside it; misplaced capital may get an AI-value pass close to finalising the 1.2 balance, after the main iterations, with no extra GDP leeway for it: the 0.90–1.00 band, below vanilla because a focused player can exploit the mod's economy better, is the room (.2) | in force; the term ruled whole; nothing built |
 | 10.122 | game 1.15.2, mod 1.1.2: the 1.1.1 canon rebuilt on 1.15.2, no balance change (the canon stays 697d4869: the 1.15.2 replay reproduces it); vanilla AI changes pass through unless they affect us; the company-target investment define 5 → 20 affects us (our targets list every rung) and passes through, read in the first 1.2 runs | in force |
 
 ---
@@ -562,8 +562,8 @@ They are not the outcome: on mod 1.1.1 T0, PI and PP read at or near their aims 
 117% of its workers over a decade, as in vanilla, which is why the old plants' fate is a term of its own (§10.121).
 For mod 1.2 the world's U\* still gives way to world GDP where the two conflict (§10.114).
 **Outside the loss by ruling** (§10.121): research pace, misplaced capital and the rubber shortage, read beside it (§3.3). Misplaced
-capital may get an AI-value pass of its own close to finalising the 1.2 balance, after the main iterations, and the world-GDP aim is
-not lowered to leave room for what that pass adds.
+capital may get an AI-value pass of its own close to finalising the 1.2 balance, after the main iterations, with no extra leeway on the world-GDP aim
+for what that pass adds: the 0.90–1.00 band, below vanilla because a focused player can exploit the mod's economy better, is the room (§10.121.2).
 
 **Minor readings** (reported, flagged when far out, no weight in the loss): productive workers per capita (W) of the world and the
 shortlist ÷ vanilla; the shortlist's GDP ÷ vanilla; the pool ÷ GDP (H) ÷ vanilla; the 1836–1845 start against vanilla's spread; war-goods
@@ -597,8 +597,10 @@ Not loss terms; each is read in every batch report.
 - **Misplaced capital** (§2.4, F206/F207) — `tools/testbed/ledger/misplaced_capital.mjs`; the yardstick of every AI-value change.
 - **The old rung beside its replacement** — per industry, workers on a rung two or more tiers behind the best rung their own country staffs
   (`old_rungs_by_industry.mjs`, the ledger's tables); the obsolescence census by regime, in-market vs trade (`trade_obsolescence.mjs`). This separates
-  the ladder failing to retire a rung from a country that runs nothing newer. Proposed and unruled: an obsolescence term in place of T0 (per industry,
-  the share of the old rung's century-peak workers shed by the end, F136).
+  the ladder failing to retire a rung from a country that runs nothing newer; it does not see a backward country under another country's better
+  plant in the same market, which the in-market backward-industry test reads (now a loss term, §3.2, §10.121.1). O_shed (per industry, the share
+  of the old rung's century-peak workers shed by the end, F136), once proposed in place of T0, is parked until after 1.2 (§10.120 point 4,
+  §10.121.1).
 - **Input-price red flags** (§10.94, a standing check on every batch and probe): HIGH = ≥ 1.70 × base at every reading of a ≥ 2-year stretch; SWING = a
   ≥ 0.5 × base range within 3 years on < 10 units/week of supply (a shortage in disguise); every industrially consumed good except the local goods
   (electricity, transportation, services); the eleven tags' major markets. Headline: **problem market-years** (of 800) and **chronic markets** (≥ 20
