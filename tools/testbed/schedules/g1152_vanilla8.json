@@ -1,0 +1,42 @@
+{
+  "schedule_version": 1,
+  "label": "g1152-vanilla8",
+  "_why": "THE VANILLA 1.15.2 REFERENCE BATCH (ON_GAME_UPDATE §1 step 10; GAME_UPDATE_1_15_2.md W50), 8 centuries of vanilla 1.15.2 + telemetry, 1836→1936. The user, 2026-11-19: \"A batch to measure vanilla 1.15.2. Go with n=8.\" (W50 had planned five.) It refreshes the 1.15.2 references: VANILLA_REF and VANILLA_WALL_REF candidates (lib_runs.mjs), config/measured_base_wages.json, the error-noise catalogue; and answers W30-W35 of the 1.15.2 pass. A fixed-n batch: every run plays, no stop watcher, no deadline. Next after it (the user, 2026-11-19): the mod 1.2 iterations on the then-current game version.",
+  "_arms": {
+    "vanilla": "{kind: control} - vanilla 1.15.2 + telemetry and nothing else (the scheduler's -ControlOnly build into mod_sched_*; the deployed pm_tech_rehaul is untouched)."
+  },
+  "_comparison": "Vanilla 1.15.2 (n=8) against vanilla 1.15.1 (20261112_113429_g1151-alt-vanilla10-canon10 vanilla arm + 20261109_005943/run022_vanilla, n=11; and 20261116_005659's vanilla arm, n=5) as the version reading: world GDP path, U* (world, shortlist, USA, GBR, GER), the pool, PI/PP inputs, companies, copper and war-goods prices, territory of the shortlist, play time. No mod arm: the register's mod-vs-vanilla lines are not read from this batch alone. The wall clock compares with 1.15.1 vanilla only directionally (different days, F248/F249).",
+  "_predictions": {
+    "economy": "Vanilla 1.15.2 is a hotfix with balance and AI fixes, no economic rework: world GDP at the end within ±5% of vanilla 1.15.1's median (direction not argued); world U* within 2 pp of 1.15.1's 30.1%; the shortlist's pooled U* still under 10% in most runs.",
+    "W30_companies": "Company counts about unchanged against 1.15.1; the company-held share of goods producers' value added (41.3% world, 1936, on 1.15.1) is the reading to watch - prediction: up a little (the formation fix), within 5 pp.",
+    "W31_copper_war_goods": "Copper's red flags fewer than 1.15.1 vanilla's (frigates, ships of the line and troopships stop consuming it); artillery, engines and groceries demand from troopships lower, grain higher - small, mostly in war years.",
+    "W32_map": "Fewer subjects breaking free in wars, fewer early losses of shortlist territory; L38 country-record drops no more frequent than on 1.15.1.",
+    "W33_W34_casualties_trade": "Below the seed spread on U* and trade volumes (direction only).",
+    "W35_play_time": "About the same as 1.15.1 vanilla's 162.5 minutes a century (no fleet path loop on 1.15, F270), directionally only; between 150 and 180 minutes."
+  },
+  "_stop_rule": "None: a fixed-n batch plays every run (no stop watcher, no deadline).",
+  "_cost": "8 × 1836→1936, about 2 h 45 min - 3 h 10 min a run (vanilla 1.15.1: 162.5 min of play, F271, plus build and harvest): about 23-25 hours from the launch on 2026-11-19 ~20:50 local, ending around Friday 2026-11-20 evening.",
+  "_launch_checklist": [
+    "The user's explicit go-ahead for this batch (CLAUDE.md §5.1 rule 4): given 2026-11-19, \"A batch to measure vanilla 1.15.2. Go with n=8.\"",
+    "tools/testbed/STOP and NO_NEW_RUNS absent (they stop ANY session).",
+    "No game running (L19); no emitter, build.ps1 or tools/testbed/** edit while it plays (L10).",
+    "Launch through tools/testbed/launch_detached.ps1 called directly from the PowerShell tool (L30); confirm the session folder within a minute; start the background waiter.",
+    "Smoke check at about five to seven minutes into the first run: game version 1.15.2, DLC (L50) ok, the clock advancing, the run's own error classes against the smoke test's control (20261119_191707 run 2)."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "vanilla": { "kind": "control" }
+  },
+  "runs": [
+    { "setup": "vanilla", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" },
+    { "setup": "vanilla", "until": "1936.1.1" }, { "setup": "vanilla", "until": "1936.1.1" }
+  ]
+}

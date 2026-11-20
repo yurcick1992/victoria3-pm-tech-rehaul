@@ -45,11 +45,20 @@ import { createHash } from 'node:crypto';
 //   by the same 2026-10-24 rule; they carry telemetry v15, the downsizing poll included, which F261 measured as costing nothing), and
 //   VANILLA_WALL_REF becomes that batch's vanilla. The F249 report and the "since 0.99" page read the n=40 reference: quote which.
 //   ⚠ ALL of it is game 1.13.11. From game 1.15 on (mod 1.1) every vanilla reference is re-measured (ON_GAME_UPDATE.md §1 step 2).
-export const VANILLA_REF = ['20260821_131149_vanilla-baseline-n16', '20260823_113218_vanilla-baseline-extra-n2',
+// ⭐ SINCE 2026-11-20 (the game 1.15.2 pass, ON_GAME_UPDATE §1 step 10; GAME_UPDATE_1_15_2 W50; FINDINGS F274): the default references are
+//   vanilla 1.15.2's own eight centuries (`20261119_210048_g1152-vanilla8`, n=8; runs pool only within one game version). The older ones stay
+//   under their game version's name, for re-reading a session on the game it ran on: VANILLA_REF_1_13_11 (n=56, the reference until now) and
+//   VANILLA_REF_1_15_1 (n=16: F271's ten, run 22 of 20261109_005943, F272's five; pass the vanilla setup). ⚠ The 1.15.2 batch alternated
+//   with no mod arm, so VANILLA_WALL_REF is its own days only: a mod run's wall clock against it is DIRECTIONAL (§3.4).
+export const VANILLA_REF_1_13_11 = ['20260821_131149_vanilla-baseline-n16', '20260823_113218_vanilla-baseline-extra-n2',
   '20261020_121619_vanilla-now-n8', '20261020_222433_vanilla-now-n8-rest',
   '20261021_224949_alt-vanilla-canon-n16', '20261023_161802_alt-vanilla-canon-rest20',
   '20261030_233342_alt-canon48-vanilla16'].join(',');
-export const VANILLA_WALL_REF = ['20261030_233342_alt-canon48-vanilla16'].join(',');
+export const VANILLA_WALL_REF_1_13_11 = ['20261030_233342_alt-canon48-vanilla16'].join(',');
+export const VANILLA_REF_1_15_1 = ['20261112_113429_g1151-alt-vanilla10-canon10', '20261109_005943_g115-alt-canon24-vanilla24/run022_vanilla',
+  '20261116_005659_g1151-alt-pmr15-vanilla5-canon5'].join(',');
+export const VANILLA_REF = ['20261119_210048_g1152-vanilla8'].join(',');
+export const VANILLA_WALL_REF = ['20261119_210048_g1152-vanilla8'].join(',');
 
 const parseDate = s => String(s || '').split('.').map(Number);
 const reached = (got, want) => {

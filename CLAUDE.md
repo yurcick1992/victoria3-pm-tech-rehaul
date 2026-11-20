@@ -634,10 +634,12 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 
 ## 3.5 References, pools and which runs count
 
-- **Vanilla references** (`tools/testbed/ledger/lib_runs.mjs`): `VANILLA_REF` = the summer n=18 + the October n=6 + the F249 batch's n=16 + the
-  n=48 batch's n=16 = **n=56** (since 2026-11-08; every vanilla run with full telemetry, pooled by ruling; n=40 before), the default for every
-  reading but the wall clock; `VANILLA_WALL_REF` = the n=48 batch's own vanilla n=16 (F264). ⚠ All of them are game 1.13.11: nothing measured on
-  1.15 compares with them until a 1.15 vanilla batch replaces them (ON_GAME_UPDATE §1 step 10).
+- **Vanilla references** (`tools/testbed/ledger/lib_runs.mjs`): since 2026-11-20 `VANILLA_REF` = `VANILLA_WALL_REF` = **vanilla 1.15.2's
+  eight centuries** (`20261119_210048_g1152-vanilla8`, F274; runs pool only within one game version), the default for every reading; the
+  batch alternated with no mod arm, so a mod run's wall clock against it is directional (§3.4). The older references keep their game version's
+  name for re-reading a session on the game it ran on: `VANILLA_REF_1_15_1` (n=16: F271's ten, run 22 of `20261109_005943`, F272's five) and
+  `VANILLA_REF_1_13_11` (n=56: the summer n=18 + the October n=6 + F249's n=16 + the n=48 batch's n=16) with `VANILLA_WALL_REF_1_13_11` (F264's
+  vanilla n=16). `config/measured_base_wages.json` is the same eight runs' wages since 2026-11-20.
 - **The instrumented tags are eleven:** GBR · FRA · USA · PRU · NGF · GER · NET · BEL · UNL · RUS · JAP. `tools/testbed/ledger/lib_markets.mjs` is the ONE
   definition of the shortlist pool, the majors, the per-country members and the price-tracked markets. UNL (the United Netherlands) replaces NET and
   BEL where it forms. A market is named after its leader's adjective, so prices are keyed by TAG and resolved per run.
@@ -715,9 +717,12 @@ What §1.2 and §1.3 leave out:
 
 ## 4.2 Where it stands (2026-11-19)
 
-- **Game 1.15.2** (installed 2026-11-19; mod 1.1.2, the same canon, released the same day): measured only by the smoke test (F273: it loads
-  and runs; two error classes were ours, the BOM fixed as landmine L53). Every reading below is game 1.15.1's or older. Next, in this order
-  (the user, 2026-11-19): a vanilla 1.15.2 reference batch of five centuries, then the mod 1.2 iterations on the then-current game version.
+- **Game 1.15.2** (installed 2026-11-19; mod 1.1.2, the same canon, released the same day): the mod is measured only by the smoke test
+  (F273: it loads and runs; two error classes were ours, the BOM fixed as landmine L53). **Vanilla 1.15.2's eight centuries** (F274,
+  2026-11-19 → 11-20) are the new reference: its world ends at 0.89× vanilla 1.15.1's (£4.68bn against 5.28; 0.83× 1.15.0's), less
+  depeasanted (world U\* 36.8% against 30.0%, the shortlist 9.2% against 4.5%) and hoarding less (the shortlist's pool 0.41 of GDP against
+  0.76); companies, prices, the map and trade show no change that explains it. Every mod reading below is game 1.15.1's or older. Next (the
+  user, 2026-11-19): the mod 1.2 iterations, on the then-current game version.
 - **F272 adds five + five** centuries of mod 1.1.1 against vanilla 1.15.1 (beside fifteen of Production Method Rework, a third-party
   mod): over all fifteen, world GDP 1.19 × vanilla's, world U\* 33.4% against 30.1%, the shortlist's 4.8% against 4.8%, play × 1.063.
 - **The 1.15.1 canon** (mod 1.1.1, `697d4869`, since 2026-11-12): ten alternating centuries against ten of vanilla 1.15.1, vanilla first

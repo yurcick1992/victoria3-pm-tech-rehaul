@@ -75,22 +75,22 @@ What the notes say bears on something of ours; the diff will add what they do no
   1936 against 24%, 0.20 slots unused against 0.26, almost always one short; the company-held share of goods producers' value added fell
   instead (world, 1936: 47.3% on 1.13.11, 43.7% on 1.15.0, 41.3% on 1.15.1). Capacity rebuilt as the five society technologies + Technocracy
   (base 0; 98% of country-years at or under it). Prediction for the 1.15.2 vanilla batch: company counts about unchanged; the company-held
-  share is the reading to watch · DEFERRED to the vanilla 1.15.2 batch (W50).
+  share is the reading to watch · DONE (F274 addendum): no change at a decade's grain, counts 3.87 against 4.00 non-minor companies in 1936, the company-held share of value added 41.6% against 40.7%.
 - **W31** · C · military goods (Balance): default frigate and ship-of-the-line templates no longer need copper; troopships take grain instead of
   groceries, less artillery and engines, and no copper or coal · copper is the top input-price red flag on 1.15 (canon ~100 flag-years,
-  vanilla ~62, F268); §10.110.4: our copper approach follows Paradox's · DEFERRED to the vanilla 1.15.2 batch (W50: copper and the war goods).
+  vanilla ~62, F268); §10.110.4: our copper approach follows Paradox's · DONE (F274 addendum): copper dearer early (1.16 × base in 1876 against 1.02), level later; the war goods unchanged.
 - **W32** · B · the map's stability (AI, Bugfixes, Balance): subjects no longer break free when a war starts without their overlord defending
   them; AI naval invasions progress; Belgium no longer starts wanting to conquer France; AI Austria no longer grants Hungary autonomy early;
   the Spectre and State and Revolution more threatening; a civil war country no longer stays revolutionary · the shortlist's territory and
-  the seed spread; L38 (country records lost to civil wars) · DEFERRED to the vanilla 1.15.2 batch (W50).
+  the seed spread; L38 (country records lost to civil wars) · DONE (F274 addendum): 74 subjects in 1936 against 65 (1.15.0: 75); countries and civil wars unchanged; the shortlist 16.6% of the world's people against 17.6%.
 - **W33** · B · casualties and conscription (Balance, Bugfixes): Recovery and Kill Rate shift a share of casualties between dead and wounded;
-  Peasant Levies can conscript protected peasants · U\* counts peasants (CLAUDE.md §3.2) · DEFERRED to the vanilla 1.15.2 batch (W50; small).
+  Peasant Levies can conscript protected peasants · U\* counts peasants (CLAUDE.md §3.2) · DONE as far as observable (F274 addendum): the summaries carry no battle losses; world population 1,978M against 1,983M.
 - **W34** · B · trade (Improvements, Bugfixes): a lock and grace period on tariff and subvention switches; split states no longer border
   themselves (wrong "isolated state" trade blockers); ports and trade centres can auto-expand · trade weights (§10.88), treaty ports
-  (§10.103) · DEFERRED to the vanilla 1.15.2 batch (W50).
+  (§10.103) · DONE (F274 addendum): trade moves with GDP (imports per £bn of world GDP 5,676 against 5,366 in 1936).
 - **W35** · B · fleets (Features, Bugfixes): sunk ships can be replaced automatically (a per-fleet toggle); defeated fleets recover once
   repaired and crewed as far as their sailors allow · the fleet path loop is absent on 1.15 (F270) and the summaries cannot see fleet paths
-  (L52) · DEFERRED to the vanilla 1.15.2 batch (W50: play time).
+  (L52) · DONE (F274): play 167.6 minutes a century against 162.5–165.3 on 1.15.1 (different days, directional).
 
 **Found by the diff, not in the notes:**
 - **W14** · C · the 1836 map, much more than Texas (`common/history/buildings`, 153 states; a content diff by state × owner × building, the
@@ -160,7 +160,15 @@ What the notes say bears on something of ours; the diff will add what they do no
   error-noise catalogue) · DEFERRED to the next session, as five centuries of vanilla 1.15.2 (the user, 2026-11-19: "the vanilla 5 runs will go
   in the next session, and the 1.2 work -- in the one further"); its go-ahead is asked there. The questions it answers for this pass: W30
   (company formation; the prediction: counts about unchanged, the company-held share the reading to watch), W31 (copper and the war goods),
-  W32–W35 (the map's stability, casualties, trade, fleets and play time).
+  W32–W35 (the map's stability, casualties, trade, fleets and play time). **RAN** 2026-11-19 → 11-20 as eight centuries (the user: "A batch
+  to measure vanilla 1.15.2. Go with n=8."), session `20261119_210048_g1152-vanilla8`, all eight usable (F274). The results:
+  - world GDP at the end is 0.89× vanilla 1.15.1's, with the world's U\* higher and the hoard lower;
+  - W35, play time: about 1.15.1's (167.6 minutes).
+
+  **Finished 2026-11-20** (the batch's owed work, done by a later session at the user's request): the readings W30–W34 (F274's addendum:
+  none explains the smaller world); `VANILLA_REF` and `VANILLA_WALL_REF` set to these eight runs, the older references kept under
+  `VANILLA_REF_1_13_11`, `VANILLA_WALL_REF_1_13_11` and `VANILLA_REF_1_15_1`; `measured_base_wages.json` regenerated from them; the 1.15.2
+  noise baseline in TESTBED_OPERATIONS §4.2. · DONE.
 - **W51** · T · what the company-target define does to our old rungs (W17, Q2) · DEFERRED to the first 1.2 runs (BACKLOG B).
 
 ## Phase 7 — release and record

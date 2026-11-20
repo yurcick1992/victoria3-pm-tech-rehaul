@@ -387,6 +387,20 @@ store backend.` (18 at load); `Invalid right side during comparison 'scope'` at 
 playthrough-dependent vanilla scripts. ⚠ A 1.15 build of ours before U27's fix also writes `Journal entry je_pmr_… is missing an
 activation_description trigger!` once per entry at load (461): mod-caused, fixed, and caught by L45.
 
+**Game 1.15.2 baseline** (2026-11-20, the reference batch `20261119_210048_g1152-vanilla8`, eight vanilla centuries; the full table, one
+line per class with its lines and the number of runs showing it, is `error_classes.tsv` in that session folder). 761,731 lines over eight
+runs (about 95k a run), 1,784 distinct shapes after normalising numbers and handles: 101 appear in all eight runs, 1,027 in one run only, so
+most shapes are playthrough-dependent and a class missing from a single control run says little. The large ones, by lines (runs of 8):
+`jomini_script_system.cpp` "Script system error!" 135,523 (8), with its `Script location:` lines (the journal entries `00_fascism` 31,040 (5)
+and `00_communism` 10,230 (8), `00_scripted_triggers.txt` 11,676 (8), the treaty articles `26_no_subventions:90` 9,720 (8), `21_no_tariffs`
+9,396 (7), `17_prohibit_trade_with_global_market:82` 5,832 (7), `00_diplomacy_values` with `has_law_or_variant … diplomatic_pact` 10,953 (6),
+`conservative_party` 5,278 (5), `00_corn_laws:22` 3,486 (7)); the spline flood 59,603 + 16,794 (6, 5); the landlocked navy law 53,236 (6);
+`Event target link 'leader' returned an unset scope` 33,016 (8) and `'market' returned an invalid object` 29,198 (8); the naval-battle
+loc quartet 12,646 each (8); the interest-group leaders in Bengal (4,455–6,201 each, 2–5 runs); `pdx_persistent_reader` "Failed to read key
+reference" 5,137 (3); the invalid country handle 5,076 (8); `range directive used, but no randomization` 3,774 (8). A canon run's class is
+judged against this table and against the same session's control (§4 item 3): present in many of the eight → vanilla's; absent from all eight
+and from the control → ours until shown otherwise.
+
 A watch item, not a noise class: `Failed to create battle in <Front> due to 'land_battle_size'` (`battle_manager.cpp`) runs 0–4 a run
 in vanilla but reached thousands in a few runs of the ai_value-3^tier books. Judge it per batch: recurring across many runs of an
 arm could mean the arm fields armies too small to spawn battles.
@@ -401,7 +415,8 @@ arm could mean the arm fields armies too small to spawn battles.
   and crash detection, so a paused session is never mistaken for a crash; it does not pause the game (do that in the game). On
   `[r]` the runner checks whether `victoria3.exe` is up: if so it keeps watching, if not it resumes the run from its last autosave.
   A hand-run observer takes `q` (finish this run, then stop) and `x`/`Esc` (close the game, stop now).
-- **`tools/testbed/STOP`** (or `STOP` in the session folder) is the file twin of `[x]` and the only control of a headless launch;
+- **`tools/testbed/STOP`** (or `STOP` in the RUN folder, `<session>\runNNN_<setup>\`: the observer's own "session" is the run folder, and a
+  `STOP` in the batch's session folder is polled by nothing — found 2026-11-19, `20261119_204533`) is the file twin of `[x]` and the only control of a headless launch;
   a keypress also writes it, which is how it reaches the scheduler from the observer.
 - **`tools/testbed/NO_NEW_RUNS`** is the file twin of `[s]`: checked before every run, it lets the running game finish and starts
   nothing further — the tool for a deadline on starting games. Drop it at a set local time with `tools/testbed/no_new_runs_at.ps1

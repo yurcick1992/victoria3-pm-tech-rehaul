@@ -371,7 +371,7 @@ yearly summaries; written for the stage design, F168). For yearly-save books use
   peasants, people and infrastructure, from the same 1836.2.1 melt (`melted_pop_identity.mjs`); the source of the craft seeding
   (`emit_craft_start.mjs`, §10.91.5).
 - **`config/measured_base_wages.json`** — the normal wage rate in £ per employee per week (a summary's `base_wage` ÷ 10,000) per tag per year,
-  median over the vanilla n=16 baseline with min / max / n; 17 tags including UNL. Written by `tools/measure_wage_share.mjs --write-wages`;
+  median over vanilla 1.15.2's eight centuries (`20261119_210048`, since 2026-11-20; before, game 1.13.11's n=16 baseline) with min / max / n. Written by `tools/measure_wage_share.mjs --write-wages`;
   read by `lib_wage_model.mjs` (`W = wage × wage units × staffed levels`, no premium, F152 §10). Trap: it is vanilla's path; a mod arm's own
   wages come from its summaries. Refs: §10.87.
 - **`config/dam_sites_research.json`** — the placement research, one object per state (159), user-reviewed; the input
@@ -1509,6 +1509,9 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   F249). Since 2026-10-28 every reader is on it, the last ones that held the summer n=16 included (`measure_wage_share`, `era0_solvency`,
   `stop_watch`'s fallback, `ladder_headlines`, `trade_vs_gdp`, `va_composition`, the corpus tools). Since 2026-11-08 `VANILLA_REF` adds the
   1.0 canon batch's 16 vanilla runs (`20261030_233342`, n=56) and `VANILLA_WALL_REF` is that batch's vanilla; all of it is game 1.13.11.
+  **Since 2026-11-20** `VANILLA_REF` = `VANILLA_WALL_REF` = vanilla 1.15.2's eight centuries (`20261119_210048_g1152-vanilla8`, F274); the
+  n=56 above is `VANILLA_REF_1_13_11` (wall clock `VANILLA_WALL_REF_1_13_11`) and 1.15.1's sixteen `VANILLA_REF_1_15_1` (setup `vanilla`), so
+  a session is re-read against its own game version by passing the matching constant (`--van`).
 - **`ledger/lib_markets.mjs`** — the shortlist, the majors and the price-tracked markets: `POOL` (GBR USA FRA NET BEL UNL PRU NGF GER),
   `MEMBER_FAMILY` / `resolveMembers()` (one row per state; the German one PRU → NGF → GER, UNL its own row), `MARKET_NAMES`,
   `MARKET_FAMILY` / `seriesOf()` / `groupBySeries()` (a state's market is one series across tag changes, the Commune included),

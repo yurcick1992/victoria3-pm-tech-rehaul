@@ -419,6 +419,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F271 | Mod 1.1.1 against vanilla 1.15.1, n=10 + 10 alternating (vanilla n=11 for the economy): EVERY run of both arms crosses the register's runoff line, so the ruled consensus is empty and the report reads all ten (`criteria.mjs --consensus all`, new, not the ruled form): world GDP 1.18× (1.02–1.36), 1886 0.87×; vanilla 1.15.1 ends at 0.91× vanilla 1.15.0 while the mod's world is the same size in £ on both versions; the shortlist MORE employed than vanilla's (U* 3.6% against 4.8%; on 1.15.0 7.7% against 2.6%); backward industries pushed out no harder than in vanilla (in-market 117.3% against 117.4%); play ×1.087; misplaced capital 22.9% against 17.1%; red flags 140.5 against 167; no tech-era-5 military technology in any mod run; infrastructure subsidies fall from every level (1.15.0) to a few percent in both arms | canon 697d4869, vanilla 1.15.1 | 10 + 10 (11), directional | here |
 | F272 | A third-party mod, Production Method Rework 0.4.0 (retooling instead of free method switches), against vanilla 1.15.1 and mod 1.1.1, n=15 each for the economy (vanilla and the mod glued to F271's session): PMR's world ends at 1.41× vanilla's (the mod 1.19×), ahead from the 1870s and at 1.55× in 1906–16, its lowest run above vanilla's highest; the lead is GDP per productive worker (1.43×; W 1.01× at the end, 1.19× in 1906) and sits in the industrial leaders; world U* a decade ahead of vanilla mid-century (46.2% against 55.4% in 1906) and level at the end (28.2% against 30.1%; the mod 33.4%), the shortlist 1.1% against 4.8%; the investment pool ends at 1.64 of world GDP against 0.38 (the mod 0.41) and 3.73 against 0.60 on the shortlist, Britain's at 8 of its GDP; play ×1.40 of the same session's vanilla (the mod ×1.06), ×1.24 a year from the first decade to ×1.6–1.7 after 1916; the AI's private investors retool (8–12% of private queue points), its governments hardly (0.2–2.2%). Of the five predictions written before the runs three were wrong (world GDP, the majors and the pool, in direction), one half right (depeasantation) and one right (play time) | PMR 0.4.0 (external), canon 697d4869, vanilla 1.15.1 | 15 + 15 + 15 economy, 15 + 5 + 5 play time; GDP and pool far outside the seed spread, the rest directional | here |
 | F273 | The game 1.15.2 smoke test (a syntax probe, n=1+1 to 1846 + a 1836 control): mod 1.1.1's canon builds, loads and runs on 1.15.2; its error.log, judged class by class against vanilla 1.15.1 and not by file path, holds two classes of ours (a BOM regression in two owned building files since the 1.15 pass, fixed, landmine L53; the telemetry variable line) and one rare unexplained class |
+| F274 | Vanilla 1.15.2 over eight centuries: world GDP at the end 0.89× vanilla 1.15.1 and 0.83× 1.15.0 (£4.68bn against 5.28 and 5.66; 7 of 8 runs under 1.15.1's median; the gap opens 1876–86); world U* 36.8% against 30.0%, the shortlist 9.2% against 4.5% (the USA, Britain and Germany near full employment); the hoard lower (shortlist pool ÷ GDP 0.41 against 0.76, Britain 1.11 against 1.34), the barrier in 4 of 8 runs, all Britain, against 9 of 16; play 167.6 min against 162.5 / 165.3 (different days); predictions: GDP and U* wrong, the shortlist half right, play time right; added 2026-11-20: W30–W34 (companies, copper and war goods, the map, trade) show no change that explains the smaller world; the references, wages and noise catalogue re-baselined on it | vanilla 1.15.2 | 8 (against 16 and 10); GDP a version effect, the rest directional | here |
 
 ---
 
@@ -23238,3 +23239,120 @@ DLC mounted.
 - Nothing about the economy on 1.15.2: ten years, one run per arm.
 - Not whether the unexplained class is ours: three lines in 31 modded runs is too few to tell.
 - Not whether the higher playthrough-class rates in our arm come from the mod's content or from its different playthroughs.
+
+## F274 — VANILLA 1.15.2 OVER EIGHT CENTURIES: ITS WORLD ENDS SMALLER STILL, AT 0.89× VANILLA 1.15.1'S AND 0.83× 1.15.0'S, THE GAP OPENING IN 1876–86; IT IS LESS DEPEASANTED (WORLD U* 36.8% AGAINST 30.0%) AND HOARDS LESS (THE SHORTLIST'S POOL 0.41 OF ITS GDP AGAINST 0.76), BRITAIN STILL CROSSING THE BARRIER IN HALF THE RUNS; PLAY ABOUT THE SAME (2026-11-20; session `20261119_210048_g1152-vanilla8`, vanilla 1.15.2 + telemetry n=8, 1836→1936.1.1, game 1.15.2)
+
+**Why it ran.** The vanilla reference batch of the game 1.15.2 pass (GAME_UPDATE_1_15_2 W50; ON_GAME_UPDATE §1 step 10). The user,
+2026-11-19: "A batch to measure vanilla 1.15.2. Go with n=8." (W50 had planned five.) No mod arm, so none of the register's
+mod-against-vanilla lines is read here.
+
+**Arms and runs.**
+- **Arm:** `{kind: control}` × 8, 1836 → 1936.1.1, yearly autosaves, fixed n.
+- **Runs:** all 8 usable. Three game deaths (runs 3, 6 and 8), each resumed once. All 11 launches mounted every DLC.
+- **Predecessor:** the first launch (`20261119_204533`) was void by L50 and was relaunched.
+- **References:**
+  - vanilla 1.15.1, n=16: `20261112_113429`'s vanilla arm (10), `20261109_005943` run 22, and `20261116_005659`'s vanilla arm (5);
+  - vanilla 1.15.0, n=10: `20261109_005943`'s vanilla runs other than run 22.
+- **Method:** read from the save summaries by a session script. Medians per arm; the end is the 1932–1936 mean.
+
+**Predictions** (written into the schedule before the run):
+- economy: world GDP within ±5% of 1.15.1, world U\* within 2 pp, the shortlist's U\* under 10% in most runs;
+- play time between 150 and 180 minutes, about 1.15.1's.
+
+**Result.**
+
+World GDP as displayed, £bn, the median of each arm:
+
+| year | 1.15.2 | 1.15.1 | 1.15.0 | 1.15.2 ÷ 1.15.1 | 1.15.2 ÷ 1.15.0 |
+|---|---|---|---|---|---|
+| 1846 | 0.55 | 0.54 | 0.54 | 1.02 | 1.01 |
+| 1866 | 0.82 | 0.84 | 0.84 | 0.98 | 0.98 |
+| 1876 | 1.01 | 1.07 | 1.03 | 0.94 | 0.98 |
+| 1886 | 1.25 | 1.43 | 1.32 | 0.88 | 0.95 |
+| 1906 | 2.14 | 2.37 | 2.55 | 0.90 | 0.84 |
+| 1926 | 3.78 | 4.38 | 4.67 | 0.86 | 0.81 |
+| 1936 | 5.01 | 5.45 | 5.88 | 0.92 | 0.85 |
+| end, 1932–36 | **4.68** (4.14–5.43) | 5.28 (4.20–6.04) | 5.66 (4.73–6.68) | **0.89** | **0.83** |
+
+- **The ends per run:** 5.43, 4.67, 4.23, 4.14, 4.93, 4.50, 4.69 and 5.00. Seven of the eight end under 1.15.1's median. On the same sets
+  1.15.1 ends at 0.93× 1.15.0 (F271 read 0.91×).
+- **U\* at 1913 and at the end, the medians of each arm:**
+
+  | | 1.15.2 | 1.15.1 | 1.15.0 |
+  |---|---|---|---|
+  | world, 1913 | 53.0% | 49.6% | 47.6% |
+  | world, end | 36.8% (25.3–41.8%) | 30.0% | 30.0% |
+  | shortlist, end | 9.2% (0.9–16.0%) | 4.5% | 2.6% |
+  | shortlist under 10% at the end | 4 of 8 runs | 13 of 16 | 9 of 10 |
+  | USA, 1913 · end | 28.8% · 1.1% | 26.0% · 1.4% | 17.7% · 0.3% |
+  | Britain, 1913 · end | 4.9% · 0.6% | 4.5% · 1.4% | 4.4% · 0.4% |
+  | Germany, 1913 · end | 38.3% · 2.8% | 23.2% · 0.4% | 24.7% · 0.5% |
+
+  The three largest members are near full employment at the end. The shortlist's higher U\* therefore sits in its other members.
+- **The hoard (investment pool ÷ GDP), 1932–36:**
+  - world 0.28 against 0.39 (1.15.1) and 0.31 (1.15.0);
+  - shortlist 0.41 (0.09–1.00) against 0.76 and 0.67;
+  - Britain 1.11 against 1.34 and 0.81;
+  - the USA 0.45 against 0.65 and 0.66 (1935–36);
+  - France 0.01 against 0.29 and 0.20.
+
+  The shortlist's hoard grows later: the median is 0.06 in 1916, 0.20 in 1926 and 0.50 in 1936, against 1.15.1's 0.12, 0.43 and 0.88. Majors
+  with a pool above 0.5 of GDP in 1935–36 number one or two a run (GBR in 7 of 8, the USA in 4, Russia in one). The barrier is crossed in 4 of 8
+  runs, every time by Britain (in 1922, 1925, 1926 and 1926), against 9 of 16 on 1.15.1 (Britain, the USA and Germany) and 4 of 10 on 1.15.0.
+- **Play time** (`wall_clusters.mjs`, clusters 1 + 2): 167.6 minutes, with 6 runs normal (166.4) and 2 slowed (180.1), against 1.15.1's 162.5
+  (`20261112_113429`) and 165.3 (`20261116_005659`). That is ×1.01–1.03 with a world about 11% smaller, read across different days.
+- **The predictions:**
+  - world GDP was wrong (−11%, not ±5%);
+  - world U\* was wrong (+6.8 pp, not ±2);
+  - the shortlist's U\* was half right (4 of 8 runs under 10%);
+  - play time was right.
+
+**Confidence.**
+- **World GDP:** the shift lies outside most of 1.15.1's run spread (seven of eight runs below its median, the lowest under all but one of its
+  sixteen runs), so it is a version effect, not a seed draw.
+- **U\* and the hoard:** directional at n=8. The three-run reading reported on 2026-11-20 (shortlist pool 0.99, Britain 2.18, "the hoard
+  higher") reversed at n=8, and that reversal shows how far single runs scatter.
+- **Play time:** directional only (F248/F249).
+
+**Added 2026-11-20: the 1.15.2 pass's own readings (GAME_UPDATE_1_15_2 W30–W34)**, from the save summaries of the same three sets (1.15.0
+n=10, 1.15.1 n=16, 1.15.2 n=8; medians of the runs at 1876 · 1906 · 1936 unless said; a session script, `v1152_readings.mjs`, not kept).
+- **W30, companies** (the AI's company-formation fix): no change visible at a decade's grain. Non-minors (≥ 1% of world GDP) hold 1.76 · 2.72
+  · 3.87 companies on average (1.15.1: 1.73 · 2.71 · 4.00); the company-held share of goods producers' base-priced value added is 24.6% ·
+  41.6% · 41.6% (1.15.1: 23.9% · 39.6% · 40.7%; 1.15.0: 27.4% · 43.6% · 44.3%). The prediction of W30 (counts about unchanged, the
+  share the reading to watch) holds for the counts; the share moved by about a point. The share of non-minors below their capacity (the five
+  society technologies + Technocracy) reads 16.7% · 15.8% · 24.3% against 24.3% · 20.9% · 17.4%: noise at n=8 either way.
+- **W31, copper and the war goods** (world-market price ÷ base, the last year's mean): copper 1.16 · 1.03 · 1.03 (1.15.1: 1.02 · 0.95 ·
+  1.05), so dearer early, not cheaper, despite the ships' templates dropping copper; artillery 0.98 · 0.84 · 0.85 (0.93 · 0.85 · 0.84);
+  small arms 0.92 · 0.81 · 0.79 (0.88 · 0.83 · 0.76); ammunition 1.51 · 1.27 · 1.15 (1.39 · 1.22 · 1.11); engines 1.36 · 1.34 · 1.30 (1.39
+  · 1.32 · 1.28). The industrial inputs run a few percent dearer in 1876 (iron 1.09 against 1.02, steel 1.32 against 1.22, tools 1.25 against
+  1.18) and close up later (tools still 1.05 against 0.98 in 1936); grain and groceries are unchanged.
+- **W32, the map:** 245 · 189 · 166 countries in 1856 · 1896 · 1936 (1.15.1: 244 · 191 · 169), 96 · 90 · 74 subjects (97 · 92 · 65; 1.15.0:
+  94 · 91 · 75), 4 · 4 · 5 civil wars standing at 1896 · 1916 · 1936 (4 · 6 · 5). More subjects survive to 1936 than on 1.15.1, which fits
+  "subjects no longer break free", but 1.15.0 kept as many. The shortlist holds 16.6% of the world's population in 1936 (1.15.1: 17.6%;
+  1.15.0: 17.1%). War goals added in the last save window of 1936: 31 against 22 (one year's window; weak).
+- **W33, casualties:** not observable in the summaries. World population ends at 1,978M (1.15.1: 1,983M; 1.15.0: 1,969M) and the military
+  workforce at 9.84M (9.79M): no sign of a population cost either way.
+- **W34, trade:** trade capacity in use 11.6k · 26.6k · 64.1k (10.5k · 28.7k · 65.4k), imports summed over goods 5.0k · 11.8k · 28.6k
+  units (4.8k · 12.5k · 29.5k); per £bn of world GDP 4,867 · 5,372 · 5,676 (4,484 · 5,668 · 5,366). Trade moves with the economy; the tariff
+  lock and the split-state fix leave no mark at this grain.
+- **None of W30–W34 explains the smaller world.** The likeliest place to look next is the leaders' own growth (the shortlist's smaller share
+  of the world's people, its higher U\*, its later hoard) rather than trade, prices or companies.
+
+**The report** (2026-11-20): https://claude.ai/artifact/NqDksSJncx9MkoStTdpZwu, copied into the session as `REPORT.html` (a vanilla-only batch,
+so not the ledger form: a scorecard of 1.15.2 against 1.15.1 and 1.15.0, the GDP path, W30–W34 and the re-baseline).
+
+**Added 2026-11-20: the re-baseline (ON_GAME_UPDATE §1 step 10).** `VANILLA_REF` and `VANILLA_WALL_REF` (`tools/testbed/ledger/lib_runs.mjs`)
+are now this session's eight runs; the 1.13.11 references stay as `VANILLA_REF_1_13_11` / `VANILLA_WALL_REF_1_13_11` and 1.15.1's sixteen as
+`VANILLA_REF_1_15_1`. `config/measured_base_wages.json` is regenerated from the eight runs (it was game 1.13.11's sixteen of
+`20260821_131149`): the leaders' late wages are much higher than the old table's (Britain 0.130 against 0.092 £ per employee a week in 1935,
+1.42×, and 1.81× in 1920; the USA 1.31× in 1935), others close (France 1.23× in 1935, Germany 1.04×, Russia 1.00×; the 1840s 0.94–0.98×).
+The error-noise catalogue (TESTBED_OPERATIONS §4.2) has a 1.15.2 baseline from the eight runs (`error_classes.tsv` in the session).
+
+**What it does NOT say.**
+- Nothing about mod 1.1.2 on 1.15.2: no mod arm ran. If the mod's world keeps its size in £ on 1.15.2, as it did from 1.15.0 to 1.15.1 (F271),
+  its world-GDP ratio rises again, but that is a hypothesis, not a reading.
+- Not which 1.15.2 change shrinks the world: the hotfix lists AI company formation, the map's stability, casualties, trade and fleets
+  (GAME_UPDATE_1_15_2 W30–W35), and none of them is read here.
+- Not casualties (W33): the summaries carry no battle losses; world population is a weak stand-in.
+- W30–W34 at a decade's grain only, medians at n=8: a change smaller than the run spread is not seen.
+- The wall-clock clusters say "no listed bug observed", but on 1.15 the summaries cannot see fleet paths (L52), so that is not an observation.

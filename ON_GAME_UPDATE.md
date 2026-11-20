@@ -725,7 +725,9 @@ different versions are not comparable without saying so.
   company-target investment define 5 → 20. Kept at `C:\claude-code\vic3_game_1.15.2` (taken 2026-11-19 18:55), with 1.15.1 beside it: the
   first full diff of two kept versions. The same day the user set the game to *Only update this game when I launch it*. The pass's
   register is `GAME_UPDATE_1_15_2.md` (mod 1.1.2, a compatibility patch, released on the Workshop 2026-11-19, tag `v1.1.2` on `5223be7`; a
-  1.15.2 vanilla batch of five centuries follows it as the new reference). The first session on it is `20261119_191707_g1152-smoke` (F273).
+  1.15.2 vanilla batch of five centuries follows it as the new reference). The first session on it is `20261119_191707_g1152-smoke` (F273). Its vanilla reference, eight centuries
+  `20261119_210048_g1152-vanilla8` (F274), replaced `VANILLA_REF`, `VANILLA_WALL_REF`, `measured_base_wages.json` and the noise catalogue on
+  2026-11-20 (step 10); the older references stay under their version's name in `lib_runs.mjs`.
 
 ---
 
