@@ -208,7 +208,7 @@ auto-activates); `grant_fraction` 0.5 of the tech-era base cost per stage; `indu
 a researchable first rung without one throws); `war_channel: 'unit_types'` (every technology unlocking a land combat unit, marines
 excluded), `war_gate` {`general_battalions_flat` 50, `front_casualties_min` 0 = clause omitted, `gate_variable_days` 40} computed in
 `on_monthly_pulse_country` into the expiring variable `pmr_wargate_<tech>`; `naval_channel`, `naval_any`; `consumption_thresholds` (the
-`good:<name>` anchor, implemented and unused); `finish_boost` {enabled, threshold 0.99, add 10000; `force_test` for probes}; `extra_entries`
+`good:<name>` anchor, implemented and unused); `finish_boost` {enabled, threshold 0.99, add 10000; `force_test` for probes}; `entry_weight_rule` {lowered, advancing} (emit_tech_finish, §10.119 item 3; unset in the canon); `extra_entries`
 (production technologies outside the ladder, §10.95); `era1_rule_a`; `placement: 'script'` (§10.89.13); the §10.97 rework —
 `sources_additive: false`, `literacy_by_era`, `follower_halving`, `implementation_repeats` 18, `repeat_all`, `exclude_techs`; the §10.98
 entries — `condition_entries`, `condition_values`, `monthly_global_effect`, `count_display`. Other books: `date_gate` (`canon-fdi-rgate`).
@@ -920,6 +920,13 @@ stale output except under `common/history`, which an emitter writing there must 
   It also applies the book's `tech_ai_weights` (§10.111.3) in the same pass, before the boost: each listed technology's ai_weight block is
   replaced by its recorded old block, after asserting the installed game's block is the recorded `vanilla` one; it throws on a listed
   technology with no research entry, one the tree lacks, or a book that lists weights with the finish boost off.
+  **The entry-weight rule** (`research_events.entry_weight_rule` {lowered, advancing}, 2026-11-20, BALANCE_FRAMEWORK §10.119 item 3; off when
+  absent, so the canon builds byte for byte as before): each researchable technology with a research entry gets, before the boost,
+  `multiply = advancing` while one of its entry's stages is open with progress on its bar (`je:<stage> ?= { "scripted_bar_progress(<bar>)" > 0 }`),
+  else `multiply = lowered` at the entry's literacy line (read off its bar; a naval entry has none and takes it always); a frontline entry
+  (its bar reads `pmr_wargate_<tech>`) is never lowered. On the 1.1.1 canon: 107 technologies (97 literacy-gated, 10 naval), 6 frontline kept.
+  Throws on a stage without a bar, an entry of mixed kinds or of none of the three, or a count off by one. First book:
+  `config/mod_config.g1151-canon-bz-dcu-ra-il-aw-ewr.json` (0.8 / 0.1, a performance probe's build, probe 5).
 - **`tools/make_tech_ai_weights_config.mjs`** — `node tools/make_tech_ai_weights_config.mjs --base <book> --suffix <new> --old-game <old game
   dir> [--game <game dir>] [--mod <base's build>] [--keep <tech,...>]`: writes `tech_ai_weights` (the old game's ai_weight block of every
   technology with a research entry whose block changed, and the installed game's) and `_tech_ai_weights_variant` (command, restored, kept by
@@ -1364,6 +1371,10 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   rotates slots by renaming (a per-name dedupe archives one save up to five times); a file is copied once size and mtime are stable, as
   `.v3.part` then renamed, so a live harvester never reads a half-copy. To capture a player's game, launch it detached with
   `-Dest tools\testbed\saves_<name>`.
+- **`probe_overlay.mjs`** — the content of the engine-probe overlay arms (2026-11-20; TESTBED_OPERATIONS §2.2): `--config <overlay cfg>
+  --mod <dir> --game <dir>`, called by `build.ps1 -Overlay` for a config with `probe_overlay.kind` = `tech_ai_weights` (a `design` writes
+  its group table beside the mod as `<mod>.probe_design.json`), `global_tech_gate` or `resource_hooks`; prints each file it writes and
+  throws on a technology, method, state or block it cannot find exactly once. The configs are `tools/testbed/overlays/probe*.json`.
 - **`stitch_session.mjs`** — joins a continuation session with its parents into a new session folder (copies only, `STITCHED.md`): one
   run folder per campaign, summaries renumbered, `debug.log` joined with the continuation's token rewritten to the parent's, tables and
   `meta.json` merged, abandoned resume branches dropped, so every reader works unchanged. `<continuation session> <new name> [--partial]`

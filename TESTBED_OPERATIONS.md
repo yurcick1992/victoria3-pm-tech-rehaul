@@ -169,7 +169,7 @@ identically. The one exception is the **release-build check** below the table, w
 | arm | schedule | built by | carries | guard |
 |---|---|---|---|---|
 | **control** | `{kind: control}` | `build.ps1 -ControlOnly` (needs `-SaveTo` or `-DryRun`, never writes `mod/`) | metadata + telemetry, nothing else | throws if handed a config with content, and the scheduler throws on `{kind: control}` with any `config`; L7 checks the emitted mod |
-| **overlay** | `{kind: overlay, config: X}` | `build.ps1 -Overlay -Config X` | vanilla + telemetry + one declared overlay (today only the pop-need weight rescaling) | throws if the config produces no overlay; own mod id `com.yurcick.v3_testbed_overlay`; a second overlay kind must be named and allow-listed |
+| **overlay** | `{kind: overlay, config: X}` | `build.ps1 -Overlay -Config X` | vanilla + telemetry + one declared overlay: the pop-need weight rescaling (`pop_need_weight_mult`), or one engine-probe kind (`probe_overlay.kind`: `tech_ai_weights`, `global_tech_gate`, `resource_hooks`; 2026-11-20) | throws if the config produces no overlay; own mod id `com.yurcick.v3_testbed_overlay`; a second overlay kind must be named and allow-listed |
 | **config** | `{kind: config, config: X}` | `build.ps1 -SaveTo …` | the full mod built from book X | the build's linters and preflight |
 | **external** | `{kind: external, mod: P}` (optional `layout_sha256`) | `build.ps1 -ControlOnly` (the control arm's build) + the observer's `-ExtraModPaths P` | a third-party mod as published, loaded first, + metadata and telemetry of ours, nothing else | the scheduler throws on a `config`, on a folder with no `.metadata\metadata.json`, on a path under `steamapps\workshop`, on a pinned fingerprint that does not match, and before any run whose folder changed since the schedule started; the observer throws unless the built mod reads as a clean control |
 
@@ -186,6 +186,15 @@ identically. The one exception is the **release-build check** below the table, w
 - **Its error noise is its own.** A third-party mod logs its own error classes at start-up; take the baseline from a short probe
   of that arm (`schedules/g1151_pmr_probe_1846.json`) before reading a century's smoke checks against vanilla's catalogue.
 - **Play time** compares only inside the session the arms alternated in (§7), like every other wall clock.
+
+**The engine-probe overlays** (2026-11-20, the pre-1.2 probes 2-4). An overlay config may carry `probe_overlay: { kind, ... }` in place of
+`pop_need_weight_mult` (never both): `tech_ai_weights` (vanilla's three technology files, a `multiply` appended to named technologies' ai_weight,
+or a round-robin `design` over whole tech eras), `global_tech_gate` (named methods' `unlocking_technologies` turned into
+`unlocking_global_technologies`), `resource_hooks` (a dated script that forces discoveries, depletions and potential changes and logs
+`PROBE_RH|…` lines, plus one state-region file). The content is written by `tools/testbed/probe_overlay.mjs`, which throws on anything it
+cannot do exactly; `build.ps1` declares each kind's paths in `$ARM_PARTS` like the other parts, so a stray file still fails the build.
+The configs are in `tools/testbed/overlays/`, outside the paths a continuation compares. Each is an engine probe on vanilla: never a
+control, never a book of ours, never economy data.
 
 **The release-build check** (`{kind: release, config: X}`, X defaulting to `config/mod_config.json`; 2026-10-29) runs the PLAYER build
 (`build.ps1 -Release -SaveTo …`, which refuses telemetry) through the observer with `-NoTelemetry`, the one waiver of the refusal above
@@ -264,7 +273,7 @@ shows the refusal.
   years, is `"probe": "syntax"`; a century of the release build (`schedules/release_century_n1.json`) is a full run.
 - **Arms that build no book of ours** are not gated: a short run there needs no flag and is recorded `short`. They are `control`
   (vanilla + telemetry), `external` (someone else's mod + telemetry) and `overlay`. An overlay is vanilla + telemetry + one declared
-  file, the pop-need weights (§2.2; `build.ps1 -Overlay` throws on anything else), so it carries no recipe, building or technology of
+  file set, the pop-need weights or one engine-probe kind (§2.2; `build.ps1 -Overlay` throws on anything else and on both at once), so it carries no recipe, building or technology of
   a book. The flags still work on these arms (a vanilla checkpoint leg, a vanilla performance probe) and mean the same.
 - **Schedules written before the gate** are records and are not walked. One that holds a short run on a book is refused if launched
   again as it is: `schedules/no_dlc_load_test.json` and `schedules/polish_final_smoke.json` need `"probe": "syntax"` in `defaults`
