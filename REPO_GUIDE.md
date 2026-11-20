@@ -422,7 +422,8 @@ yearly summaries; written for the stage design, F168). For yearly-save books use
   [-Session <dir>] [-UpdateFingerprint] [-WarnOnly] [-Quiet]`. Run by `build.ps1` (an early `-Only L20 -Config` gate before
   any file is emitted, again at the end, and before the control arm's early exit) and by `run_schedule.ps1` (`-RepoOnly`
   before a batch is estimated, `-Only L20 -Config` per setup); `-Session` walks the post-run entries (L12, L17, L26, L33,
-  L34 …). Status: current (build step). Adding a check: register entry → `Test-Lm<ID>` here → prove it trips by breaking
+  L34 …). `Test-LmL54` (repo-side) runs the same-book gate of `tools/testbed/lib_same_book.ps1` on the fixture schedules of
+  `tools/testbed/fixtures/same_book/` and checks that the scheduler, the observer and the readers still use it. Status: current (build step). Adding a check: register entry → `Test-Lm<ID>` here → prove it trips by breaking
   the thing on purpose (TESTBED_LANDMINES "How this is enforced").
 - **`tools/telemetry_fingerprint.json`** — committed sha256 of the canonical telemetry (every metric on, dates/tags/token/stamp
   pinned) beside the schema version it was taken at; rewritten by `preflight.ps1 -UpdateFingerprint`. If the hash moves and
@@ -1261,8 +1262,16 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   per session it starts `machine_monitor.ps1` (proven alive; a failed
   start only warns). It runs `archive_autosaves.ps1` → `<run>\saves\` and `harvest_saves.ps1 -Watch` → `<run>\save_summaries\`
   concurrently with the game, plus a final drain after each run (`-HarvestWorkers 0` = drain only), and checks `NO_NEW_RUNS` before
-  every run. Continuation runs: run keys `continue_save`, `continue_expect_after` (required), `prior_wall_seconds`, `parent` → observer
-  `-ContinueSave` and `continuation.json`; read them through `stitch_session.mjs`. Schedule key `game_args` → observer `-ExtraGameArgs`;
+  every run. Continuation runs: run keys `continue_save`, `continue_expect_after` (required), `prior_wall_seconds`, `parent` (required
+  since 2026-11-17) → observer `-ContinueSave` and `continuation.json`; read them through `stitch_session.mjs`. **The same-book gate**
+  (2026-11-17, L54, §10.118; `lib_same_book.ps1` below): at plan time, before preflight and under `-WhatIf`, a run on a `{kind: config}`
+  or `{kind: release}` arm that stops before the full span, `1936.1.1`, throws unless it carries `probe: "syntax" | "performance"`
+  (run or defaults) or `checkpoint: true` (run); the schedule key `full_until` may only say `1936.1.1` (any other value throws); a
+  continuation is verified against its parent's `build_state.json` (on a `{kind: external}` arm also the third-party mod's layout
+  fingerprint against the parent's `external_mods`) at plan time, before
+  its build and after it (status `same_book_mismatch`, exit 3, nothing launched). The plan prints each run's kind; the observer gets
+  `-RunKind`, `-FullUntil`, `-BuildTree`; `session.json`'s index, `save_provenance.json` and `continuation.json` (`same_book`) carry
+  them too. Schedule key `game_args` → observer `-ExtraGameArgs`;
   `no_dlc` (run or defaults, true/false) → observer `-DisableAllDlc` (the no-DLC load test, `schedules/no_dlc_load_test.json`);
   `frozen_minutes` (run or defaults) → observer `-FrozenMinutes` (L41). Setup `{kind: release}` builds the player build
   (`build.ps1 -Release`, no telemetry) and passes the observer `-NoTelemetry`: the release-build crash / stall check
@@ -1286,7 +1295,28 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   `-FrozenMinutes` (15) with the game running is stopped and resumed from the newest autosave (L41; meta.json `frozen_stops`). meta.json's `error_log_lines` counts
   only the mirrored error lines stamped inside the run's own window, `error_log_foreign_lines` the rest (L9, since 2026-10-28). Status:
   current; a hand run is a diagnostic. Traps: `-script_profiling` crashes a headless game. Refs: MODDING_NOTES (Automated headless runs),
-  L9, L17, L19, L26, L28, L32, L34.
+  L9, L17, L19, L26, L28, L32, L34. Since 2026-11-17 (L54) `build_state.json` also records `deterministic.run_kind` and `full_until`
+  (`-RunKind`, `-FullUntil`; empty on a hand run), the tree twin (`-BuildTree` → `built_from_tree`, `tree_sha256`),
+  `fingerprint.content_layout_sha256` (the layout without the `zzz_v3tb_*` instrument) and `repo.build_paths_dirty` /
+  `dirty_build_paths` (uncommitted build inputs, beside the whole-repo `dirty`); it dot-sources `lib_same_book.ps1` for the last two,
+  wrapped so that a failure there leaves the field null and never costs the launch.
+- **`lib_same_book.ps1`** — the same-book gate (L54, BALANCE_FRAMEWORK §10.118; TESTBED_OPERATIONS §2.3): functions only, dot-sourced by
+  `run_schedule.ps1`, `run_observer.ps1` and `preflight.ps1`'s `Test-LmL54`; StrictMode-safe and ASCII-only. `Get-SameBookPlan -Sched
+  <parsed schedule> [-NoSaveHarvest]` classes every run (`full` · `checkpoint` · `probe:syntax` · `probe:performance` · `continuation` ·
+  `short`) and throws on a short run on a book with no flag (the gated kinds are `Get-SameBookBookKinds`: `config`, `release`) and on
+  a `full_until` other than `1936.1.1`; `Assert-SameBookContinuation` reads the parent's `build_state.json` and
+  throws one message listing every failed check (arm, config sha256, tree twin sha256, a third-party mod's layout fingerprint, game
+  version, a parent built from uncommitted inputs, build-path drift since the parent's commit); `Test-SameBookContinuation` is its file-free half; `Test-SameBookLayout`
+  compares a built mod with the parent's fingerprint; `Get-SameBookLayoutSha [-ContentOnly]` is the layout algorithm (a third copy of
+  the observer's `Get-DirFingerprint` and the scheduler's `Get-ModLayoutSha`: keep them alike); `Get-SameBookBuildPaths` is the list of
+  what a build reads besides the book, as git pathspecs. Status: current. Traps: a new input of the build must be added to
+  `Get-SameBookBuildPaths` (the post-build layout check is the backstop when one is missed); an exclusion in a git pathspec wins over
+  an inclusion beside it, so a book file checked by commit is asked in its own query; git runs through `cmd /c`, never `& git … 2>&1`;
+  `mod/.metadata/metadata.json` is compared without its `(built …)` stamp, which every build rewrites.
+- **`fixtures/same_book/`** — the gate's fixtures, never launched: twenty schedules, each with `_expect` (`throw` / `pass`),
+  `_expect_message` or `_expect_kinds`, run by `Test-LmL54`; `reader_session/` (five stub runs) and `check_readers.mjs`, which requires
+  `usableRuns()` to drop the two probe stubs; `README.md` lists them. `run_schedule.ps1 -Schedule <fixture> -WhatIf` shows any of them
+  to a person. This is where test fixtures of the harness live.
 - **`launch_detached.ps1`** — creates a process through WMI `Win32_Process.Create`, in no job object of the caller (the agent's shells
   sit in the desktop app's kill-on-close jobs), and kills it if the kernel says it is in one.
   `& 'tools\testbed\launch_detached.ps1' -File <script.ps1> -ArgumentList '<a>','<b>' [-Hidden] [-NoExit] [-WorkingDirectory] [-VerifySeconds 4]`
@@ -1337,7 +1367,8 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
 - **`stitch_session.mjs`** — joins a continuation session with its parents into a new session folder (copies only, `STITCHED.md`): one
   run folder per campaign, summaries renumbered, `debug.log` joined with the continuation's token rewritten to the parent's, tables and
   `meta.json` merged, abandoned resume branches dropped, so every reader works unchanged. `<continuation session> <new name> [--partial]`
-  (an absolute output path = a test outside `sessions/`).
+  (an absolute output path = a test outside `sessions/`). A continuation's `parent` may be an absolute run folder since 2026-11-17
+  (not yet run on one). A stitched run carries the continuation's `build_state.json`, so its `run_kind` reads `continuation`.
 - **`probe_resume.ps1`** — diagnostic: a `-continuelastsave -handsoff` launch as the observer's resume does, reporting LOAD FAILED ·
   FRESH 1836 · LOADED <date>. `-ModDir <dir> [-Restore <save.v3>] [-RestoreAs autosave.v3]`; needs the game idle. Status: probe-only. Refs: L32.
 - **`test_log_tail.ps1`** — simulates the observer's log-mirror tail (loaded through the AST) on growth, single / double rotation,
@@ -1500,7 +1531,9 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   ≥ 0.15 / ≥ 0.10 apart; also the run-level stop verdict (`--stop-above 0` = full runs). Exit 0 aligned · 2 run a third · 3 stop · 1
   unreadable. Status: the divergence test only (the register judges the config). Refs: F114.
 - **`ledger/lib_runs.mjs`** — which runs count: `usableRuns(root, group, setup)` keeps runs that reached their own `until` with no
-  `abandoned_reason` (L17; `session.json`'s `ok` is not evidence) and drops L34's minutes-long "complete" runs; `reportDropped()` prints
+  `abandoned_reason` (L17; `session.json`'s `ok` is not evidence), drops L34's minutes-long "complete" runs and, since 2026-11-17,
+  every probe run (L54: `build_state.json` `deterministic.run_kind` starting `probe`; a run with no `run_kind` counts as before);
+  `runKind(root, '<session>/<run>')` returns a run's kind or null, `isProbeKind()` tests it; `reportDropped()` prints
   exclusions; a group is a comma list of sessions and/or `<session>/runNNN_<setup>` folders. `configFamilies()` says whether a group may
   pool (same tier/building structure from each run's own config; coefficients and minor-fix builds may differ and are printed).
   `VANILLA_REF` = the summer n=18 (`20260821_131149` + `20260823_113218`) + the October n=6 (`20261020_121619` + `20261020_222433`) + the

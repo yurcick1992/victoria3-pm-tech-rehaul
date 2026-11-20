@@ -2163,6 +2163,190 @@ function Test-LmL53 {
     Invoke-ModLint 'L53' 'a shipped file without its UTF-8 BOM' 'lint_bom.mjs' 'make the writer that last wrote the file write the UTF-8 BOM (see lint_bom.mjs)'
 }
 
+function Test-LmL54 {
+    <#
+      L54 - A SHORT RUN MEASURED ON ONE BOOK, THE CENTURY PLAYED ON ANOTHER (user-ruled 2026-11-17, BALANCE_FRAMEWORK 10.118).
+
+      "Everything other than syntax-measuring or performance probes ... must be measured on the exact same books as the full runs",
+      "by machinery, that there's no separate 'shorter run book' at all". Nothing fails when the rule is broken: a 1836-1855 run on
+      one config and a century on another both build, play and report, and the short run's reading is then quoted for the century's book.
+      THE GATE is tools\testbed\lib_same_book.ps1, called by run_schedule.ps1 at plan time: a run on an arm that builds a book of
+      ours (kind config or release) that stops before the full span throws unless it is a probe or a checkpoint leg; the full span
+      is 1936.1.1 and a schedule's `full_until` cannot move it; a continuation must build its parent's book, and on a third-party
+      arm load the parent's copy of that mod.
+
+      DETECTOR (repo-side; it gates every batch and every build). It does NOT walk tools\testbed\schedules - the old schedules hold
+      many short config runs, which are records, not plans. It proves the gate EXISTS AND TRIPS:
+        1. every fixture schedule of tools\testbed\fixtures\same_book\ through Get-SameBookPlan, the function the scheduler calls:
+           each must throw or pass as its _expect says (a throw with the expected text), and there must be at least five of each;
+           three must be there by name and refused: short_config_no_flag, short_release_no_flag and full_until_1900 (the way
+           round the gate: a schedule that moves the full span);
+        2. the headline error names the rule, 10.118 and the three legal forms; a checkpoint leg under -NoSaveHarvest throws;
+        3. the continuation comparisons on a synthetic parent: the same book passes, a different config / tree twin / game version /
+           arm and a dirty parent each fail, the book failure naming BOTH sha256 values; on a third-party arm the same copy of
+           the mod passes and a changed copy or a parent with none on record fails, naming BOTH layout fingerprints;
+        4. the layout comparison on a scratch folder: a changed book file fails, a changed telemetry file does not (content basis)
+           and does when only the whole-mod fingerprint is on record;
+        5. run_schedule.ps1 calls the gate and the continuation check on live lines BEFORE its preflight call and its -WhatIf return,
+           and the layout check before the launch; run_observer.ps1 records run_kind, tree_sha256 and content_layout_sha256;
+        6. the readers: fixtures\same_book\check_readers.mjs - lib_runs.mjs usableRuns() drops the probe runs of the stub session.
+      Proven 2026-11-17 by breaking it on purpose (the entry in TESTBED_LANDMINES.md has the outputs).
+    #>
+    $T = 'a short run measured on one book and the century played on another (the same-book gate)'
+    $lib = Join-Path $Repo 'tools\testbed\lib_same_book.ps1'
+    $fx  = Join-Path $Repo 'tools\testbed\fixtures\same_book'
+    $sch = Join-Path $Repo 'tools\testbed\run_schedule.ps1'
+    $obs = Join-Path $Repo 'tools\testbed\run_observer.ps1'
+    foreach ($need in @($lib, $fx, $sch, $obs)) {
+        if (-not (Test-Path $need)) { Add-Result 'L54' $T 'FAIL' "missing: $need - the same-book gate is not in place (BALANCE_FRAMEWORK 10.118)"; return }
+    }
+    . $lib
+    $bad = @()
+
+    # ---- 1. the fixture schedules
+    $nThrow = 0; $nPass = 0; $headline = ''; $refused = @{}
+    foreach ($f in @(Get-ChildItem $fx -Filter '*.json' -File | Sort-Object Name)) {
+        $j = $null
+        try { $j = Get-Content -LiteralPath $f.FullName -Raw -Encoding UTF8 | ConvertFrom-Json } catch { $bad += "$($f.Name): unreadable JSON"; continue }
+        $exp = [string](SbProp $j '_expect' '')
+        if (@('throw', 'pass') -notcontains $exp) { $bad += "$($f.Name): no _expect (throw | pass)"; continue }
+        $threw = $false; $msg = ''; $kinds = @()
+        try { $kinds = @(Get-SameBookPlan -Sched $j | ForEach-Object { [string]$_.run_kind }) } catch { $threw = $true; $msg = "$($_.Exception.Message)" }
+        if ($exp -eq 'throw') {
+            $wantMsg = [string](SbProp $j '_expect_message' '')
+            if (-not $threw) { $bad += "$($f.Name): the gate PASSED a schedule it must refuse (run kinds: $($kinds -join ', '))" }
+            elseif ($wantMsg -and -not $msg.Contains($wantMsg)) { $bad += "$($f.Name): threw, but not for its reason - expected '$wantMsg' in: $msg" }
+            else { $nThrow++; $refused[$f.BaseName] = $true }
+            if ($f.BaseName -eq 'short_config_no_flag') { $headline = $msg }
+        } else {
+            $wantKinds = @(SbProp $j '_expect_kinds' @())
+            if ($threw) { $bad += "$($f.Name): the gate REFUSED a legal schedule: $msg" }
+            elseif (($kinds -join '|') -ne ($wantKinds -join '|')) { $bad += "$($f.Name): run kinds '$($kinds -join ', ')', expected '$($wantKinds -join ', ')'" }
+            else { $nPass++ }
+        }
+    }
+    if ($nThrow -lt 5 -or $nPass -lt 5) { $bad += "only $nThrow throwing and $nPass passing fixture(s) behaved as expected in $fx - at least five of each are required (a detector over an empty population proves nothing)" }
+    # the three refusals the rule cannot do without, by name - deleting one of these fixtures must not leave the walk green
+    $mustRefuse = [ordered]@{
+        'short_config_no_flag'  = 'a short run on a config arm with no flag'
+        'short_release_no_flag' = 'a short run on a release-build arm with no flag (a release build is a book of ours)'
+        'full_until_1900'       = 'a schedule that moves the full span (full_until earlier than 1936.1.1): the way round the gate'
+    }
+    foreach ($name in $mustRefuse.Keys) { if (-not $refused.ContainsKey($name)) { $bad += "fixture $name.json is missing or was not refused for its reason - $($mustRefuse[$name])" } }
+
+    # ---- 2. the headline error says what the ruling requires; a checkpoint leg needs its save kept
+    if (-not $headline) { $bad += "fixture short_config_no_flag.json is missing or did not throw - it is the case the rule exists for" }
+    else { foreach ($w in @('10.118', 'L54', 'FULL SPAN', 'PROBE', 'CHECKPOINT LEG', 'full_until', 'release')) { if (-not $headline.Contains($w)) { $bad += "the gate's error does not name '$w' (the rule, its section and the three legal forms): $headline" } } }
+    $cpFile = Join-Path $fx 'short_config_checkpoint.json'
+    if (Test-Path $cpFile) {
+        $cp = Get-Content -LiteralPath $cpFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $threw = $false; try { $null = Get-SameBookPlan -Sched $cp -NoSaveHarvest } catch { $threw = $true }
+        if (-not $threw) { $bad += "a checkpoint leg under -NoSaveHarvest passed - its save would not be kept" }
+    } else { $bad += "fixture short_config_checkpoint.json is missing" }
+
+    # ---- 3. the continuation comparisons, on a synthetic parent (no file, no git)
+    $shaA = 'a' * 64; $shaB = 'b' * 64; $shaC = 'c' * 64
+    $mk = { param($dirtyField) ('{"deterministic":{"arm":"config","mod_under_test":{"built_from_config":"config/mod_config.parent.json","config_sha256":"' + ('a' * 16) +
+            '","built_from_tree":"config/tech_tree_options.parent.json","tree_sha256":"' + ('b' * 16) + '","fingerprint":{"layout_sha256":"x"}},"repo":{"commit":"abc1234",' + $dirtyField + '},"game":{"version":"1.15.1"}}}') | ConvertFrom-Json }
+    $parent = & $mk '"dirty":true,"build_paths_dirty":false'
+    # a THIRD-PARTY arm's parent: the built mod is the telemetry-only control build, the mod itself is on record in external_mods
+    $xA = '1' * 16; $xB = '2' * 16
+    $mkx = { param($mods) ('{"deterministic":{"arm":"external+com.someone.mod","mod_under_test":{"fingerprint":{"layout_sha256":"x"}},"external_mods":' + $mods +
+            ',"repo":{"commit":"abc1234","dirty":true,"build_paths_dirty":false},"game":{"version":"1.15.1"}}}') | ConvertFrom-Json }
+    $xParent = & $mkx ('[{"path":"C:/frozen/their_mod_1.0","fingerprint":{"layout_sha256":"' + $xA + '"}}]')
+    $cases = @(
+        @{ Name = 'the same book';            Kind = 'config';  Cfg = $shaA; Tree = $shaB; Game = '1.15.1'; X = ''; P = $parent; Want = '' },
+        @{ Name = 'a different config';       Kind = 'config';  Cfg = $shaC; Tree = $shaB; Game = '1.15.1'; X = ''; P = $parent; Want = 'BOOK:' },
+        @{ Name = 'a different tree twin';    Kind = 'config';  Cfg = $shaA; Tree = $shaC; Game = '1.15.1'; X = ''; P = $parent; Want = 'TREE TWIN:' },
+        @{ Name = 'a different game version'; Kind = 'config';  Cfg = $shaA; Tree = $shaB; Game = '1.15.2'; X = ''; P = $parent; Want = 'GAME VERSION:' },
+        @{ Name = 'a different arm';          Kind = 'control'; Cfg = '';    Tree = '';    Game = '1.15.1'; X = ''; P = $parent; Want = 'ARM:' },
+        @{ Name = 'a parent built dirty';     Kind = 'config';  Cfg = $shaA; Tree = $shaB; Game = '1.15.1'; X = ''; P = (& $mk '"dirty":true,"build_paths_dirty":true'); Want = 'PARENT BUILD:' },
+        @{ Name = 'an old parent, dirty';     Kind = 'config';  Cfg = $shaA; Tree = $shaB; Game = '1.15.1'; X = ''; P = (& $mk '"dirty":true'); Want = 'PARENT BUILD:' },
+        @{ Name = 'the release build of the same book'; Kind = 'release'; Cfg = $shaA; Tree = $shaB; Game = '1.15.1'; X = ''; P = $parent; Want = '' },
+        @{ Name = 'the same third-party mod';             Kind = 'external'; Cfg = ''; Tree = ''; Game = '1.15.1'; X = $xA; P = $xParent; Want = '' },
+        @{ Name = 'a changed third-party mod';            Kind = 'external'; Cfg = ''; Tree = ''; Game = '1.15.1'; X = $xB; P = $xParent; Want = 'EXTERNAL MOD:' },
+        @{ Name = 'a parent with no third-party mod on record'; Kind = 'external'; Cfg = ''; Tree = ''; Game = '1.15.1'; X = $xA; P = (& $mkx '[]'); Want = 'EXTERNAL MOD:' },
+        @{ Name = 'a third-party mod nobody fingerprinted';     Kind = 'external'; Cfg = ''; Tree = ''; Game = '1.15.1'; X = '';  P = $xParent; Want = 'EXTERNAL MOD:' }
+    )
+    $nCont = 0
+    foreach ($c in $cases) {
+        # not $t: PowerShell names are case-blind, and $T is the title
+        $cmp = Test-SameBookContinuation -ParentState $c.P -SetupKind $c.Kind -ConfigPath 'config\mod_config.mine.json' -ConfigSha $c.Cfg -TreePath 'config\tech_tree_options.mine.json' -TreeSha $c.Tree -GameVersion $c.Game `
+                                         -ExternalPath 'C:\frozen\their_mod_copy' -ExternalSha $c.X
+        $pr = @($cmp.Problems)
+        if (-not $c.Want) { if ($pr.Count) { $bad += "continuation, $($c.Name): refused - $($pr -join ' | ')" } else { $nCont++ } }
+        elseif ($pr.Count -ne 1 -or -not $pr[0].StartsWith($c.Want)) { $bad += "continuation, $($c.Name): expected exactly one '$($c.Want)' failure, got $($pr.Count): $($pr -join ' | ')" }
+        elseif ($c.Want -eq 'BOOK:' -and -not ($pr[0].Contains('c' * 16) -and $pr[0].Contains('a' * 16))) { $bad += "continuation, a different config: the failure does not name both sha256 values: $($pr[0])" }
+        elseif ($c.Name -eq 'a changed third-party mod' -and -not ($pr[0].Contains($xA) -and $pr[0].Contains($xB))) { $bad += "continuation, a changed third-party mod: the failure does not name both layout fingerprints: $($pr[0])" }
+        else { $nCont++ }
+    }
+
+    # ---- 4. the layout comparison, on a scratch folder
+    $nLay = 0
+    $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("pmr_l53_{0}" -f $PID)
+    try {
+        $onAct = Join-Path $tmp 'common\on_actions'
+        $null = New-Item -ItemType Directory -Force -Path $onAct
+        [System.IO.File]::WriteAllText((Join-Path $tmp 'common\book.txt'), 'the book')
+        [System.IO.File]::WriteAllText((Join-Path $onAct 'zzz_v3tb_telemetry.txt'), 'the instrument')
+        $content = Get-SameBookLayoutSha -Dir $tmp -ContentOnly
+        $whole   = Get-SameBookLayoutSha -Dir $tmp
+        $pNew = ('{"deterministic":{"mod_under_test":{"fingerprint":{"layout_sha256":"' + $whole + '","content_layout_sha256":"' + $content + '"}}}}') | ConvertFrom-Json
+        $pOld = ('{"deterministic":{"mod_under_test":{"fingerprint":{"layout_sha256":"' + $whole + '"}}}}') | ConvertFrom-Json
+        if ($content -eq $whole -or -not $content) { $bad += "layout: the content fingerprint ($content) does not differ from the whole-mod one ($whole) on a folder that holds a telemetry file" }
+        $a = Test-SameBookLayout -ModPath $tmp -ParentState $pNew; $b = Test-SameBookLayout -ModPath $tmp -ParentState $pOld
+        if ($a.Ok -and $a.Basis -eq 'content' -and $b.Ok -and $b.Basis -eq 'whole') { $nLay++ } else { $bad += "layout: an unchanged folder does not match its own fingerprints ($($a.Message) / $($b.Message))" }
+        [System.IO.File]::WriteAllText((Join-Path $onAct 'zzz_v3tb_telemetry.txt'), 'the instrument, with a longer telemetry spec')
+        $a = Test-SameBookLayout -ModPath $tmp -ParentState $pNew; $b = Test-SameBookLayout -ModPath $tmp -ParentState $pOld
+        if ($a.Ok) { $nLay++ } else { $bad += "layout: a changed TELEMETRY file failed the content comparison - a continuation with a later until could never pass" }
+        if (-not $b.Ok) { $nLay++ } else { $bad += "layout: a changed telemetry file passed the whole-mod comparison" }
+        [System.IO.File]::WriteAllText((Join-Path $tmp 'common\book.txt'), 'another book')
+        $a = Test-SameBookLayout -ModPath $tmp -ParentState $pNew
+        if (-not $a.Ok -and $a.Message.Contains($content)) { $nLay++ } else { $bad += "layout: a changed BOOK file passed the content comparison, or the failure does not name the parent's fingerprint: $($a.Message)" }
+    } finally { Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue }
+
+    # ---- 5. the callers: live lines (not comments), in the right order
+    $src = [System.IO.File]::ReadAllText($sch)
+    $at = { param($pattern) $m = [regex]::Match($src, $pattern); if ($m.Success) { $m.Index } else { -1 } }
+    $iLib  = & $at '(?m)^\s*\.\s*\(Join-Path \$PSScriptRoot ''lib_same_book\.ps1''\)'
+    $iGate = & $at '(?m)^\s*\$sbPlan\s*=\s*@\(Get-SameBookPlan -Sched \$sched\b'
+    $iCont = & $at '(?m)^\s*\$p\[''same_book''\]\s*=\s*Assert-SameBookContinuation\b'
+    $iPre  = & $at '(?m)^\s*&\s*\(Join-Path \(Split-Path \$PSScriptRoot -Parent\) ''preflight\.ps1''\) -RepoOnly -Quiet'
+    $iWhat = & $at '(?m)^\s*if \(\$WhatIf\)'
+    $iLay  = & $at '(?m)^\s*\$sbLayout\s*=\s*Test-SameBookLayout\b'
+    $iRun  = & $at '(?m)^\s*&\s*powershell @obsArgs'
+    if ($iLib -lt 0 -or $iGate -lt 0 -or $iCont -lt 0 -or $iLay -lt 0) { $bad += "run_schedule.ps1 does not call the gate on a live line (lib $iLib, Get-SameBookPlan $iGate, Assert-SameBookContinuation $iCont, Test-SameBookLayout $iLay; -1 = not found)" }
+    elseif ($iPre -lt 0 -or $iWhat -lt 0 -or $iRun -lt 0) { $bad += "run_schedule.ps1: its preflight call, -WhatIf return or observer launch was not found - this detector needs updating" }
+    else {
+        if (-not ($iLib -lt $iGate -and $iGate -lt $iPre -and $iGate -lt $iWhat)) { $bad += "run_schedule.ps1: the gate must run before the preflight call and the -WhatIf return" }
+        if (-not ($iCont -lt $iPre -and $iCont -lt $iWhat)) { $bad += "run_schedule.ps1: the continuation check must run before the preflight call and the -WhatIf return" }
+        if (-not ($iLay -lt $iRun)) { $bad += "run_schedule.ps1: the built mod's layout must be checked before the observer is launched" }
+    }
+    if ([regex]::Matches($src, '(?m)^\s*-ExternalPath \$xm\.Path -ExternalSha \$xm\.Sha\s*$').Count -lt 2) { $bad += "run_schedule.ps1 does not hand both continuation checks (plan time and before the build) the third-party mod's fingerprint (-ExternalPath / -ExternalSha) - an external-arm continuation would be refused or go unverified" }
+    if ($src -notmatch '(?m)^\s*\$obsArgs \+= @\("-RunKind",\$p\.run_kind,"-FullUntil",\$p\.full_until\)') { $bad += "run_schedule.ps1 does not hand the observer -RunKind / -FullUntil - build_state.json would record no run_kind" }
+    $osrc = [System.IO.File]::ReadAllText($obs)
+    foreach ($pat in @('(?m)^\s*run_kind\s*=\s*\$RunKind', '(?m)^\s*full_until\s*=\s*\$FullUntil', '(?m)^\s*tree_sha256\s*=\s*\(Get-FileSha \$BuildTree\)', 'content_layout_sha256''\]\s*=\s*\$cl', 'build_paths_dirty''\]\s*=\s*\(')) {
+        if ($osrc -notmatch $pat) { $bad += "run_observer.ps1 no longer records a same-book field in build_state.json (pattern not found: $pat)" }
+    }
+
+    # ---- 6. the readers (through cmd, never `& node ... 2>&1`: see L31)
+    $chk = Join-Path $fx 'check_readers.mjs'
+    $readers = ''
+    if (-not (Test-Path $chk)) { $bad += "missing: $chk" }
+    else {
+        $out = & cmd /c "node ""$chk"" 2>&1" | Out-String
+        if ($LASTEXITCODE -ne 0) { $bad += "readers: " + $out.Trim() } else { $readers = ($out.Trim() -split "`r?`n")[-1] }
+        $global:LASTEXITCODE = 0
+    }
+
+    if ($bad.Count) {
+        Add-Result 'L54' $T 'FAIL' ("THE SAME-BOOK GATE IS BROKEN OR MISSING ($($bad.Count)): " + [Environment]::NewLine + ($bad -join [Environment]::NewLine) + [Environment]::NewLine +
+            'FIX: restore tools\testbed\lib_same_book.ps1 and its calls in run_schedule.ps1 (BALANCE_FRAMEWORK 10.118, TESTBED_LANDMINES L54); a rule change needs a ruling first')
+    } else {
+        Add-Result 'L54' $T 'PASS' "$nThrow fixture(s) refused and $nPass passed as expected; continuation comparisons $nCont of $($cases.Count); layout $nLay of 4; the scheduler gates before preflight and -WhatIf; $readers"
+    }
+}
+
 $CHECKS = @(
     @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
     @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
@@ -2236,7 +2420,10 @@ $CHECKS = @(
     # L51 reads the generated telemetry and the built mod's loc against the installed exe's names (repo-side, gates a batch before a build).
     @{ Id = 'L51'; Artifact = $false; Fn = { Test-LmL51 } },
     # L53 reads the BUILT mod: every shipped script and localization file carries its UTF-8 BOM (an artifact check).
-    @{ Id = 'L53'; Artifact = $true;  Fn = { Test-LmL53 } }
+    @{ Id = 'L53'; Artifact = $true;  Fn = { Test-LmL53 } },
+    # L54 runs the same-book gate (tools\testbed\lib_same_book.ps1) on its fixture schedules and checks its callers and readers
+    # (repo-side: it gates every batch before anything is built). It walks no schedule under tools\testbed\schedules.
+    @{ Id = 'L54'; Artifact = $false; Fn = { Test-LmL54 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

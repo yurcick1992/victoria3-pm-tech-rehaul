@@ -1,0 +1,19 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-short-release-no-flag",
+  "_why": "A FIXTURE of the same-book gate (landmine L54, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL54 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. A release build is a book of ours in its player form, so it is gated like a config arm: a short run with no flag is refused.",
+  "_expect": "throw",
+  "_expect_message": "SHORT RUN ON A BOOK",
+  "setups": {
+    "release": {
+      "kind": "release",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "release",
+      "until": "1846.1.1"
+    }
+  ]
+}

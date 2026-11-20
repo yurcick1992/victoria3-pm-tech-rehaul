@@ -5,7 +5,7 @@ This is the procedure. It does not repeat what other documents own:
 | topic | lives in |
 |---|---|
 | engine behaviour of headless runs: launch arguments, `content_load.json`, the log ring and its mirror, the per-run token, crash detection by minidump, `-continuelastsave`, autosave enums, the per-decade timing curves | MODDING_NOTES → *Automated headless runs (the testbed)* |
-| every guardrail where nothing fails (IDs L1–L52), its story and its detector | TESTBED_LANDMINES.md |
+| every guardrail where nothing fails (IDs L1–L54), its story and its detector | TESTBED_LANDMINES.md |
 | what telemetry and the save summaries can log; the wall-clock data sources | TESTBED_METRICS.md (§7⅜ wall clock, §7½ the save harvest) |
 | what each tool is and how it is invoked | REPO_GUIDE.md (tools are referred to here by path only) |
 | how a config is judged (aim / soft / hard, the loss, the consensus) | BALANCE_FRAMEWORK §10.83 and CLAUDE.md §3.2 |
@@ -34,7 +34,8 @@ rule, the reports and what a result decides. Name the mode in the go-ahead reque
 
 **Choosing between two exclusive designs** belongs to the iterative mode. When a design question has two mutually exclusive answers,
 build both as books rather than choosing by argument, and record the loser's numbers where the ruling lives (BALANCE_FRAMEWORK, FINDINGS),
-so it is never re-tried blind. First look for something cheaper that decides it: a probe of a few in-game years, a recipe model on realised
+so it is never re-tried blind. First look for something cheaper that decides it: a checkpoint leg of a few in-game decades on each book
+itself (§2.3: a short run's economy reading is legal only as the first leg of a full run on that same book), a recipe model on realised
 prices (§2.7 of CLAUDE.md), or a pooled reading over a lever axis from runs that already exist (CLAUDE.md §2.9). Only when nothing cheaper
 decides does each book go through its own 2+1. (The rule dates from August 2026, when an "arm" was a solver variant scored in minutes; a
 2+1 now costs 2–3 centuries of ~3 h each, which is why the cheaper discriminators come first.) A fixed-setup batch is not the place for such
@@ -68,6 +69,11 @@ If any of these is unstated, ask. Do not infer it from what the previous batch u
 on_action merge or replace, does the AI re-pick a strategy) belongs on vanilla + telemetry: on the mod, our own content is a confound
 on the mechanism under test, and a null result cannot be told apart from our content suppressing it. A probe asking how *our economy*
 behaves belongs on the config. Decide which question is being asked before choosing the arm.
+
+**The same-book rule** (the user, 2026-11-17, BALANCE_FRAMEWORK §10.118; §2.3): a short run that reads the economy of a book is the
+first leg of a full run on that exact book, declared `"checkpoint": true`, never a run on a book of its own. The word "probe" has a
+strict meaning in a schedule since that ruling: `"probe": "syntax"` or `"probe": "performance"`, a run that may use any book and is
+never economy data. State which of the three forms each run is (full span, checkpoint leg, probe) when stating the span.
 
 **Write it down where it survives.** The schedule's `_why` / `_comparison` (and, for config iterations, a `_register` block with the
 predictions in the register's own terms) states the arm, the base, the hypothesis and the prediction **before** the run — that is
@@ -129,9 +135,9 @@ run has one identity across its folder, `build_state.json` and its telemetry tok
 - **The `runs` list is explicit and ordered**; each run carries its index. `-WhatIf` prints the plan, the builds it implies and a
   time estimate, and launches nothing.
 - **`defaults`** may carry `tags`, `metrics`, `autosave_interval`, `timeout_minutes`, `dump_dates`, `game_args`, `no_dlc`, `frozen_minutes`
-  (L41: minutes of an unmoving in-game date before the observer stops the game and resumes the run; default 15, 0 disables) and the
-  wage / breakdown / wide / origin telemetry keys; any other key (not prefixed `_`, which marks a comment) is refused with its name
-  (L16). A run's `dump_dates` default to 1 January of the year before `until`; each dump date must be the 1st of a month.
+  (L41: minutes of an unmoving in-game date before the observer stops the game and resumes the run; default 15, 0 disables), `probe`
+  (§2.3) and the wage / breakdown / wide / origin telemetry keys; any other key (not prefixed `_`, which marks a comment) is refused
+  with its name (L16). A run's `dump_dates` default to 1 January of the year before `until`; each dump date must be the 1st of a month.
 - **Setup shape is validated up front**, before the first run, so a malformed setup used only by the last run of an overnight
   schedule fails at launch, not hours in.
 - **The mod is rebuilt for every run, never cached.** Builds are deterministic (same config + same vanilla ⇒ same output; the only
@@ -144,8 +150,11 @@ run has one identity across its folder, `build_state.json` and its telemetry tok
 - **A run without DLC** (2026-10-26): schedule key `no_dlc: true` (run or defaults) → `run_observer -DisableAllDlc`; every installed DLC is
   written into `content_load.json`'s `disabledDLC`, and meta.json's `no_dlc_verified` says whether the game mounted none. `-WhatIf` marks such
   runs "NO DLC". The schedule for the release's no-DLC load test is `schedules/no_dlc_load_test.json`.
-- **Continuing a kept save**: run-level `continue_save` / `continue_expect_after` / `prior_wall_seconds` / `parent`; join the two
-  halves into whole campaigns with `tools/testbed/stitch_session.mjs` before reading them (REPO_GUIDE has both).
+- **Continuing a kept save**: run-level `continue_save` / `continue_expect_after` / `prior_wall_seconds` / `parent` (required: the
+  run whose save it is, so the scheduler can verify the continuation builds that run's book, §2.3); join the two halves into whole
+  campaigns with `tools/testbed/stitch_session.mjs` before reading them (REPO_GUIDE has both).
+- **The same-book gate** (§2.3) runs at plan time, before preflight and the estimate, and under `-WhatIf`: a run on a book that
+  stops before the full span is refused unless it is a probe or a checkpoint leg.
 
 ### 2.2 The three arms
 
@@ -184,7 +193,8 @@ identically. The one exception is the **release-build check** below the table, w
 century", nothing else: no `markets.tsv`, so no PI/PP, red flags or anything else read from telemetry; the yearly save summaries, the
 tick lines (wall clock, the L41 freeze watch), the crash resumes and the run's own error window still come out. `meta.json` records
 `telemetry: false`; the arm reads `config` in `build_state.json` (the release build carries the real mod's id), so a release run is
-told apart by its setup kind (`save_provenance.json` `arm_kind: release`) and never pooled with the measurement arms.
+told apart by its setup kind (`save_provenance.json` `arm_kind: release`) and never pooled with the measurement arms. It builds a
+book, so the same-book gate applies to it as to a config arm (§2.3): a short load check is `"probe": "syntax"`.
 
 **The control rule is absolute: the only thing a control may vary is its telemetry.** Not one gameplay file, not one field. An arm
 that needs any gameplay change is an overlay or a config and must not be built by, named after or reported as a control.
@@ -197,7 +207,10 @@ write added to the telemetry part failed the control build by name. Before this 
 that exits before the content emitters run; L7 still checks the emitted control on top.
 
 **The arm is recorded off the built mod.** Each run's `build_state.json` carries `deterministic.arm` (`control` / `overlay+<what>`
-/ `config`), `deviates_from_vanilla` (every gameplay directory the built mod carries), `built_from_config` and `config_sha256`, plus
+/ `config`), `deviates_from_vanilla` (every gameplay directory the built mod carries), `built_from_config` and `config_sha256`, and
+since 2026-11-17 (§2.3) `run_kind` and `full_until`, the tree twin (`built_from_tree`, `tree_sha256`), the book's own layout
+(`fingerprint.content_layout_sha256`, every file but the instrument) and whether the build's inputs were uncommitted
+(`repo.build_paths_dirty`, beside the whole-repo `dirty`), plus
 the git state, game version, harness arguments and the harness script's hash, plus the free-text `agentic` block (a stopgap for
 hand-driven experiments; anything moved into `deterministic` must be machine-read, never described). Sessions before 2026-08-06 record
 `control+pop_needs` for what is now `overlay+pop_needs`; read it as overlay and do not back-fill it (a session artifact is a
@@ -217,6 +230,78 @@ measures the wall clock must use yearly saves and compare like cadence with like
 with the save ticks removed (F217). The save stall itself is measured (~0.9 s vanilla / ~1.1 s mod per save, F217 §1, F218); what a whole
 cadence costs is not (TESTBED_METRICS §7½). Autosaves overwrite
 the player's own `autosave*.v3` slots on the batch machine.
+
+### 2.3 The same-book rule: the three legal forms of a run on a book
+
+Ruled by the user on 2026-11-17 (BALANCE_FRAMEWORK §10.118): *"Everything other than syntax-measuring or performance probes (where,
+for example, deliberate worsening is permissible to understand the impact) must be measured on the exact same books as the full
+runs."* and *"Ensure that this is so by machinery, that there's no separate 'shorter run book' at all, so no room for mistakes."*
+A book is `config/mod_config.<name>.json` with its tree twin; a full run plays to the full span, `1936.1.1`. The machinery is
+`tools/testbed/lib_same_book.ps1`, called by the scheduler; landmine L54 holds the proof.
+
+**The full span is not a lever.** The schedule key `full_until` may be absent or say `1936.1.1`; any other value, earlier or later,
+is refused at plan time. An earlier value would make a short run on a book read as a full run, which is the mistake the rule exists
+to prevent. Every `build_state.json` records the span beside the run's kind.
+
+**A run on an arm that builds a book of ours is exactly one of three things.** Those arms are `{kind: config}` and `{kind: release}`
+(the player build of a book). Anything else is refused at plan time, before preflight, the estimate and any build, and `-WhatIf`
+shows the refusal.
+
+| form | in the schedule | what it is | recorded `run_kind` |
+|---|---|---|---|
+| **full span** | `until` at or after `1936.1.1` | the measurement | `full` |
+| **checkpoint leg** | `"checkpoint": true` on the run, `until` earlier | the first leg of a full-span run on this book: it stops early, its last save is kept, and it is continued to the full span | `checkpoint` |
+| **probe** | `"probe": "syntax"` or `"probe": "performance"` on the run or in `defaults` | a run that asks whether something loads or what something costs the tick; any book, deliberately worsened ones included | `probe:syntax`, `probe:performance` |
+
+- **A probe is never economy data.** `ledger/lib_runs.mjs` `usableRuns()` drops every probe run from every reader and prints it as
+  dropped. Quote nothing about GDP, prices, workers or the register from a probe. Any other `probe` value throws.
+- **A checkpoint leg's reading is the book's own.** A reading at 1855 from a checkpoint leg is the first 19 years of the century that
+  book will play, so it may be read as economy data for that span. The leg must keep its last save: the harvest keeps each run's newest
+  save, and the gate refuses a checkpoint leg under `-NoSaveHarvest` or with `autosave_interval: never`. With yearly autosaves and an
+  `until` on 1 January the kept save is that date's (run 2 of `20261112_113429` ended at 1936.1.1 with its 1936.1.1 save kept; the
+  1900 finishes of 2026-10-11 continued from kept 1900.1.1 saves).
+- **A release-build run is gated like a config run**: it builds a book. Its usual short form, the load check of a few in-game
+  years, is `"probe": "syntax"`; a century of the release build (`schedules/release_century_n1.json`) is a full run.
+- **Arms that build no book of ours** are not gated: a short run there needs no flag and is recorded `short`. They are `control`
+  (vanilla + telemetry), `external` (someone else's mod + telemetry) and `overlay`. An overlay is vanilla + telemetry + one declared
+  file, the pop-need weights (§2.2; `build.ps1 -Overlay` throws on anything else), so it carries no recipe, building or technology of
+  a book. The flags still work on these arms (a vanilla checkpoint leg, a vanilla performance probe) and mean the same.
+- **Schedules written before the gate** are records and are not walked. One that holds a short run on a book is refused if launched
+  again as it is: `schedules/no_dlc_load_test.json` and `schedules/polish_final_smoke.json` need `"probe": "syntax"` in `defaults`
+  before their next use.
+
+**Continuing a checkpoint leg.** A later schedule holds one run per leg to finish:
+
+```json
+{ "setup": "book", "until": "1936.1.1",
+  "continue_save": "tools/testbed/sessions/<session>/run001_book/saves/<the kept save>.v3",
+  "continue_expect_after": "1854.12.1",
+  "prior_wall_seconds": 1830,
+  "parent": "<session>/run001_book" }
+```
+
+`parent` is required: `<session>/<runNNN_setup>` under `tools/testbed/sessions/`, or an absolute run folder. Before anything is built
+the scheduler reads the parent's `build_state.json` and throws, listing every failed check with both values, unless:
+- the setup builds the parent's arm, and its config's sha256 is the parent's `config_sha256`;
+- the tree twin's sha256 is the parent's `tree_sha256` (recorded from 2026-11-17; an older parent's twin is checked by commit);
+- on a third-party arm (`{kind: external}`), the mod's layout fingerprint, taken when the schedule starts, is the one the parent
+  recorded in `external_mods`: a copy the author has since updated is a different arm;
+- the installed game's version is the parent's;
+- the parent was not built with uncommitted build inputs (`repo.build_paths_dirty`; for an older parent, the whole-repo `dirty`);
+- nothing a build reads differs between the parent's commit and HEAD, and none of it is uncommitted: `build.ps1`, `telemetry_lib.ps1`,
+  the emitters and the libraries they import, the 1836 converter, `tools/goods_prices.tsv`, `art/`, `mod/.metadata/`, `ui/vanilla.js`,
+  `ui/econ.js` and every non-book file under `config/` (the list is `Get-SameBookBuildPaths`). `mod/.metadata/metadata.json` counts
+  only beyond the `(built …)` stamp every build rewrites.
+
+The same checks run again just before that run's build, and after the build the mod's layout fingerprint is compared with the
+parent's before the game is launched (`fingerprint.content_layout_sha256`, every file but the telemetry instrument; a parent from
+before 2026-11-17 has only the whole-mod fingerprint, which matches only when the continuation carries the parent's telemetry spec).
+A mismatch at either point aborts the schedule with the run recorded `same_book_mismatch`. A continuation must not carry `probe`, and
+one that stops before the full span again is a middle leg and says `"checkpoint": true`.
+
+**When a check fails, the remedy is never a flag.** Play the leg again on today's build, or bring the named files back to the state
+the parent was built from. Continue a run from the checkout that played its parent: two checkouts of one commit can differ in line
+endings, which changes what the emitters write (L54, limits).
 
 ---
 
@@ -636,8 +721,10 @@ diagnostic where it is computable; and any machine-load evidence used to set a r
 
 ### 8.2 Which runs count
 
-- **Usable** = a run that reached its own `until` date with no `abandoned_reason` and is not an L34 stub;
-  `tools/testbed/ledger/lib_runs.mjs` `usableRuns()` is the only definition, and every exclusion is printed with its reason.
+- **Usable** = a run that reached its own `until` date with no `abandoned_reason`, is not an L34 stub and is not a probe (§2.3: a
+  run whose `build_state.json` says `run_kind: probe:*` is never economy data; runs from before 2026-11-17 carry no `run_kind` and
+  count as they always did); `tools/testbed/ledger/lib_runs.mjs` `usableRuns()` is the only definition, and every exclusion is
+  printed with its reason. `runKind()` there returns a run's kind.
 - **Run counts in a session's name are not evidence; the run logs are.** Verdict-writing has found batches named n=3 holding n=2.
 - A group of runs may be pooled across sessions only within one config family (the same tier/building structure;
   `lib_runs.configFamilies`); `fill_ledger.sh` stops on more than one family.
@@ -710,7 +797,7 @@ session, or drop only `logs/`, `logs_live/` and `_settings_backup/` while keepin
 | … `saves/`, `save_summaries/` | archived autosaves (the newest kept), the yearly summaries (+ `save_provenance.json`) |
 | … `quarantine_saves/`, `slow_periods.json` | the slowdown quarantine (§7.6) |
 | … `quarantined_saves/`, `resume_set_<n>/`, `resume_attempts/` | crash-resume evidence and the resume feeder's sets (§5.3) |
-| … `continuation.json`, `criteria.json`, `STOP_RULE.txt`, `diag_saves/` | a continuation's parent; the stop watcher's register read and reason; hand-copied saves |
+| … `continuation.json`, `criteria.json`, `STOP_RULE.txt`, `diag_saves/` | a continuation's parent and what was verified against it (`same_book`, §2.3); the stop watcher's register read and reason; hand-copied saves |
 
 ---
 

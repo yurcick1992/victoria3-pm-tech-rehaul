@@ -43,8 +43,8 @@ N/A without `-Session`, so they cost a build nothing.
 **Checks outside preflight**, in `build.ps1`: the reference scan in `emit_vanilla_refs.mjs` (L40) and `check_dlc_gates.mjs` (L39) on every
 build; then the linter block — `lint.sh` (prints, never throws), `lint_solvency.mjs` (L18), `lint_tech_content.mjs`,
 `lint_start_conversion.mjs` (L13), `lint_tier_eras.mjs` (L31), `lint_pm_combos.mjs` — which `-NoLint`, or a schedule setup with
-`lint: false`, skips. The harness carries the rest: the scheduler (L16, L17, L19, L21, L29, L30), the observer (L19, L26, L28, L32, L34),
-the launcher (L30) and the waiter (L21).
+`lint: false`, skips. The harness carries the rest: the scheduler (L16, L17, L19, L21, L29, L30, L54), the observer (L19, L26, L28, L32,
+L34), the launcher (L30) and the waiter (L21).
 
 `-NoPreflight` exists for a broken detector, not for a hurry.
 
@@ -117,6 +117,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L51 | a data-system function the installed engine no longer registers: the telemetry line or loc string prints with the field empty (1.15.1's `GetCountryTradeCapacity`) | `Test-LmL51` (`tools/lint_data_functions.mjs`) | every build, repo-side | AUTO, proven; fixed |
 | L52 | a save field a game update re-tokenised melts under rakaly's older token table as `slava_token_N` / `__unknown_0x…`, and the summary reader counts zero without a warning (1.15's formation travel paths, F270) | owed: a post-run check that a run's summaries see moving formations at all | session | OPEN — the reader fix and the detector wait for the 10 vs 10's end (`tools/testbed/**` frozen) |
 | L53 | a shipped script or localization file without its UTF-8 BOM: the engine reads it and logs `should be in utf8-bom encoding` on every load (mods 1.1.0–1.1.1: `01_industry.txt`, `06_urban_center.txt`, written back BOM-less by `emit_ai_value_adds.mjs`) | `Test-LmL53` (`tools/lint_bom.mjs`) | every build | AUTO, proven; fixed |
+| L54 | a short run measured on one book and the century then played on another: both build, play and report, and the short run's reading is quoted for the century's book (the same-book rule, §10.118) | the gate in `tools/testbed/lib_same_book.ps1`, called by `run_schedule.ps1` at plan time and around a continuation's build (throws); `Test-LmL54` proves the gate exists and trips, on `tools/testbed/fixtures/same_book/` | harness; repo, every build | AUTO, proven (the run loop with a stubbed build and observer); not yet run with a real build and game |
 
 ---
 
@@ -1236,3 +1237,113 @@ fixed on 2026-09-24. Harmless in play (the engine reads the file anyway), one lo
 `﻿`. **Detector:** `tools/lint_bom.mjs` on the built mod (every `.txt` under `common/` and `events/`, every `.yml` under `localization/`;
 a file whose vanilla counterpart has no BOM either is allowed). Proven: FAIL on `mod_g1152il` and on the 1.1.1 release build, naming the two
 files; PASS on the build after the fix.
+### L54 — a short run measured on one book, the century played on another
+
+**Defect.** A config's economy is read on a short run (1836 to 1855, say) and the century is then played on a different book: a later
+copy, a sibling of the chain, the same name regenerated. Nothing fails. Both runs build, play and report, each `build_state.json` is
+correct about its own run, and the short run's reading is quoted for the century's book. The ruling (the user, 2026-11-17,
+BALANCE_FRAMEWORK §10.118): *"Everything other than syntax-measuring or performance probes (where, for example, deliberate worsening is
+permissible to understand the impact) must be measured on the exact same books as the full runs."* and *"Ensure that this is so by
+machinery, that there's no separate 'shorter run book' at all, so no room for mistakes."*
+
+**How it was found.** By ruling, before the 1836–1855 runs planned for the extraction book: the schedule format let any run name any
+config and any end date, and a continuation's `parent` was provenance text that nothing compared with what the continuation built.
+
+**The gate** is `tools/testbed/lib_same_book.ps1` (functions only), which `run_schedule.ps1` calls:
+- **At plan time** (`Get-SameBookPlan`), before preflight, the estimate and any build, and under `-WhatIf`: a run on an arm that
+  builds a book of ours, `{kind: config}` or `{kind: release}` (the player build of a book), whose `until` is before the full span
+  throws unless it is a **probe** (`"probe": "syntax"` or `"performance"`, run or `defaults`; any other value throws) or a
+  **checkpoint leg** (`"checkpoint": true` on the run). A checkpoint leg whose save would not be kept throws (`-NoSaveHarvest`, or
+  `autosave_interval: never`); so do a probe that is also a checkpoint or a continuation, a checkpoint flag on a full-span run, and a
+  continuation that stops before the full span without `"checkpoint": true`.
+- **The full span is `1936.1.1` and a schedule cannot move it.** The key `full_until` may be absent or say exactly that; any other
+  value throws, earlier or later. An earlier one would have been the way round the gate: a short run on a book read as "full".
+- **Not gated:** `control` (vanilla + telemetry), `external` (someone else's mod + telemetry) and `overlay`, which is vanilla +
+  telemetry + one declared file (`common/pop_needs/00_pop_needs.txt`; `build.ps1 -Overlay` throws on anything else), so it carries no
+  recipe, building or technology of a book. A short run there needs no flag and is recorded `short`.
+- **A continuation** (`continue_save`) must name its `parent` run, and `Assert-SameBookContinuation` compares, at plan time and again
+  before that run's build: the parent's arm; this run's config sha256 against the parent's `config_sha256`; the tree twin's sha256
+  against the parent's `tree_sha256` (recorded from 2026-11-17; for an older parent the twin is checked by commit where git tracks it);
+  on a third-party arm, the mod's layout fingerprint (the one the scheduler takes when the schedule starts) against the one in the
+  parent's `external_mods`;
+  the installed game's version; that the parent was not built from uncommitted build inputs; and that nothing among the paths a build
+  reads (`Get-SameBookBuildPaths`) differs between the parent's commit and HEAD or is uncommitted. Every failed check is listed in one
+  error. `mod/.metadata/metadata.json` counts only when it differs beyond the `(built …)` stamp every build writes into its name.
+- **After the build, before the launch** (`Test-SameBookLayout`): the built mod's layout fingerprint against the parent's. From
+  2026-11-17 a run records `fingerprint.content_layout_sha256`, every file but the `zzz_v3tb_*` instrument, so a continuation with a
+  later `until` (more red-flag dates, a larger telemetry file) compares exactly. For an older parent only the whole-mod `layout_sha256`
+  exists; it is compared as it is and a mismatch throws, the message saying whether the two `telemetry.json` specs differ.
+- **Records.** Each run's `build_state.json` carries `deterministic.run_kind` (`full` · `checkpoint` · `probe:syntax` ·
+  `probe:performance` · `continuation` · `short`, the last for a short run on an arm that builds no book of ours) and `full_until`;
+  `ledger/lib_runs.mjs` `usableRuns()` drops every `probe:*` run and prints it.
+
+**Detector.** `Test-LmL54` (repo-side: every build and the pre-batch gate). It does not walk `tools/testbed/schedules/`, whose old
+schedules hold many short config runs and are records. It proves the gate exists and trips:
+1. every fixture schedule of `tools/testbed/fixtures/same_book/` through `Get-SameBookPlan`, the function the scheduler calls, each
+   throwing (with its expected text) or passing (with its expected run kinds) as its `_expect` says, at least five of each; three
+   must be there by name and refused: `short_config_no_flag`, `short_release_no_flag` and `full_until_1900`;
+2. the headline error names the rule, §10.118 and the three legal forms; a checkpoint leg under `-NoSaveHarvest` throws;
+3. the continuation comparisons on a synthetic parent: the same book passes; a different config, tree twin, game version or arm and a
+   parent built dirty each fail, the book failure naming both sha256 values; on a third-party arm the same copy of the mod passes,
+   and a changed copy, a parent with none on record and a mod nobody fingerprinted each fail, naming both layout fingerprints;
+4. the layout comparison on a scratch folder: a changed book file fails; a changed telemetry file passes on the content fingerprint
+   and fails on the whole-mod one;
+5. `run_schedule.ps1` calls the gate and the continuation check on live lines before its preflight call and its `-WhatIf` return, and
+   the layout check before the observer launch; `run_observer.ps1` still records the fields;
+6. `fixtures/same_book/check_readers.mjs`: `usableRuns()` keeps three stub runs and drops the two probes.
+
+**Proven 2026-11-17** (in a worktree, while a batch played in the main checkout; nothing was built or launched):
+- through the scheduler, `run_schedule.ps1 -Schedule <fixture> -WhatIf`: a short config run with no flag throws (`run #1 (setup 'book',
+  kind config, until 1855.1.1): a SHORT RUN ON A BOOK …`); `probe: "banana"` throws (`is not a probe kind`); `probe: "syntax"`,
+  `checkpoint: true` and a full-span run pass the gate (`same-book gate (L54): 1 run(s) pass at full_until 1936.1.1 - checkpoint x1`);
+- a continuation of the real run `20261112_113429_g1151-alt-vanilla10-canon10/run002_canon` on its own book passes every check before
+  the build (`book: sha256 697d4869aefc3225 = the parent's`, game 1.15.1, nothing among the build paths changed since `4ff8e31`); on
+  the 1.15.0 canon it throws: `BOOK: this run builds …g115c-canon-bz-dcu-ra-il.json (sha256 a52b0acacd6b6b6e), the parent ran
+  …g1151-canon-bz-dcu-ra-il-aw.json (sha256 697d4869aefc3225) - a different book`;
+- against the 1.1.0 release commit `8cbe4a0` the build-path check lists six files (two emitters, `telemetry_lib.ps1`,
+  `ui/vanilla.js`, the tree twin, `metadata.json`'s version); an unknown commit is "cannot be verified", which also throws;
+- broken on purpose, twice. With the gate's condition disabled in the library: `L54 FAIL … short_config_no_flag.json: the gate PASSED
+  a schedule it must refuse (run kinds: short)` (four fixtures). With the scheduler's call commented out: `L54 FAIL … run_schedule.ps1
+  does not call the gate on a live line (… Get-SameBookPlan -1 …)`. Restored: `L54 PASS — 10 fixture(s) refused and 5 passed as
+  expected; continuation comparisons 7 of 7; layout 4 of 4`, also under StrictMode;
+- the observer's own `Write-BuildState`, lifted out through the AST and run on the tracked `mod/`, writes `run_kind`, `full_until`,
+  `tree_sha256` (`2928a5bf79758281`), `content_layout_sha256` and `build_paths_dirty`, and that file read back as a parent passes for
+  its own book and fails for another; the three copies of the layout algorithm agree on that folder;
+- the readers: the ten `canon` runs of `20261112_113429` are still ten; a copy of one with `run_kind: probe:performance` is dropped;
+- the scheduler's own run loop, end to end with STUBS: the real `run_schedule.ps1` and `lib_same_book.ps1` copied into a throwaway
+  git repository (a path with spaces, like the batch checkout's) whose `build.ps1`, `run_observer.ps1`, `preflight.ps1`, archiver and
+  harvester are stubs. (A) a checkpoint leg to 1855: `run 1 is a CHECKPOINT run`, the observer handed `-BuildTree … -RunKind
+  checkpoint -FullUntil 1936.1.1`, `session.json` index `run_kind=checkpoint`. (B) its continuation to 1936: every check passes,
+  `same-book (L54): the built mod's content layout cc7845626a11fdc4 = the parent's [content]` while the two whole-mod layouts differ
+  by the telemetry file, the observer handed `-RunKind continuation … -ContinueSave`, `continuation.json` carries `same_book`. (C) the
+  continuation on another book: refused at plan time (`BOOK`, `TREE TWIN`), exit 1, no session folder. (D) the same book with a build
+  that comes out different: `SAME-BOOK CHECK FAILED after the build of run 1`, exit 3, status `same_book_mismatch`, the observer never
+  launched. (E) two continuations, the first build leaving an untracked emitter behind: run 2 is refused before its build (`BUILD
+  PATHS: 1 uncommitted or untracked file(s) … ?? tools/emit_left_behind.mjs`), exit 3. (F) a third-party arm: a checkpoint leg, its
+  continuation on the same copy (`third-party mod: layout 148879eeddaf2e5d = the parent's`, played), then on a copy with one file
+  added: refused at plan time, `EXTERNAL MOD: this run loads … (layout bde30ab496bb7505), the parent ran … (layout
+  148879eeddaf2e5d) - a different copy of the third-party mod`, exit 1, no session folder;
+- the three holes closed the same day, each broken on purpose and seen to trip. The schedule's `full_until` honoured again: `L54 FAIL
+  … full_until_1900.json: the gate PASSED a schedule it must refuse (run kinds: full)`. `release` taken out of the gated kinds:
+  `short_release_no_flag.json: the gate PASSED a schedule it must refuse (run kinds: short)`. The third-party comparison disabled:
+  `continuation, a changed third-party mod: expected exactly one 'EXTERNAL MOD:' failure, got 0`. Restored: `L54 PASS — 12 fixture(s)
+  refused and 8 passed as expected; continuation comparisons 12 of 12; layout 4 of 4`. Through the scheduler, `-WhatIf`:
+  `schedule key "full_until": "1900.1.1" - the full span is 1936.1.1 and a schedule cannot move it …`; `run #1 (setup 'release',
+  kind release, until 1846.1.1): a SHORT RUN ON A BOOK …`.
+
+**Not yet executed** (a branch that has never run is not known to work): any of it with a real build and a real game. The post-build
+comparison has run on a stub build's three files, not on the 298 a real build writes; the real observer has not been launched with
+`-RunKind` / `-FullUntil` / `-BuildTree` (its `Write-BuildState` ran in isolation); no continuation has been played on a save the game
+then loaded; `stitch_session.mjs` has not met an absolute `parent`. The first checkpoint leg and its continuation are that proof:
+read the `same-book (L54)` lines of `session.log` and the two `build_state.json` files, and compare the two runs'
+`content_layout_sha256` by hand once.
+
+**Limits.** (1) The game's version is the launcher's `rawVersion`: a hotfix that keeps the number is caught only by the layout
+fingerprint. (2) Every layout fingerprint, the built mod's and a third-party mod's, sees file names and sizes, not contents: a change
+that keeps every file's size passes it. The book itself is compared by sha256; the fingerprint is the backstop for what the build
+reads besides. (3) Two checkouts of one commit can differ in line endings (a fresh worktree under `core.autocrlf` checks
+`tools/telemetry_lib.ps1` out with CRLF where the main checkout holds LF; L8 fails there for that reason alone), which `git status`
+does not show and which changes emitted sizes: continue a run from the checkout that played its parent. (4) Standing schedules written
+before the gate that hold a short run on a book are refused as they are: `schedules/no_dlc_load_test.json` and
+`schedules/polish_final_smoke.json` (both to 1841) need `"probe": "syntax"` in their `defaults` before their next launch. They were
+left as the records they are.

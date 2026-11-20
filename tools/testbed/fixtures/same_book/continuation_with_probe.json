@@ -1,0 +1,23 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-continuation-with-probe",
+  "_why": "A FIXTURE of the same-book gate (landmine L54, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL54 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. A continuation must not be a probe. (continue_save names a file that exists only so the scheduler gets as far as the gate.)",
+  "_expect": "throw",
+  "_expect_message": "must not carry",
+  "setups": {
+    "book": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "book",
+      "until": "1936.1.1",
+      "probe": "performance",
+      "continue_save": "tools/testbed/fixtures/same_book/README.md",
+      "continue_expect_after": "1855.1.1",
+      "parent": "no_such_session/run001_book"
+    }
+  ]
+}

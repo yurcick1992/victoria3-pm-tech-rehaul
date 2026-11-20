@@ -62,6 +62,18 @@
   plays. Its layout fingerprint (file names + sizes) is taken when the schedule starts and checked before every run; an
   optional `layout_sha256` in the setup pins it to a known copy. Never a control, never a book of ours: build_state.json
   records `arm: external+<mod id>` and the mod's metadata under `external_mods`.
+
+  THE SAME-BOOK GATE (2026-11-17; landmine L54, BALANCE_FRAMEWORK 10.118; tools\testbed\lib_same_book.ps1). A run on an arm
+  that builds a book of ours (`kind: config` or `kind: release`) whose `until` is before the full span, 1936.1.1, THROWS at
+  plan time - before preflight, the estimate and any build, and under -WhatIf - unless it is a PROBE ("probe": "syntax" |
+  "performance" on the run or in defaults; any book; readers drop it) or a CHECKPOINT LEG ("checkpoint": true on the run: the
+  first leg of a full-span run on this book, its last save kept, to be continued to the full span). The schedule key
+  `full_until` may be absent or say 1936.1.1; any other value throws (the span is not a lever). A CONTINUATION
+  (continue_save) must name its `parent` run and is verified to build the parent's book: config and tree-twin sha256, game
+  version, nothing changed among the paths the build reads since the parent's commit, and after the build the mod's layout
+  fingerprint; on a `kind: external` arm, the third-party mod's layout fingerprint must be the parent's. Each run's
+  build_state.json records `run_kind` (full | checkpoint | probe:syntax | probe:performance | continuation | short) and
+  `full_until`.
 #>
 [CmdletBinding()]
 param(
@@ -142,6 +154,8 @@ function RepoPath {
     if ([System.IO.Path]::IsPathRooted($P)) { return $P }
     return (Join-Path $Repo $P)
 }
+# L54, the same-book gate: functions only, nothing runs on import (see that file's header and the gate below the plan loop)
+. (Join-Path $PSScriptRoot 'lib_same_book.ps1')
 
 $label    = Val $sched "label" "schedule"
 $defaults = Val $sched "defaults" $null
@@ -196,7 +210,8 @@ function Get-RedFlagDates {
 # here despite working. Reconciled 2026-08-21; wage_pop_endpoints added with telemetry v14.
 $KNOWN_DEFAULT_KEYS = @('tags','metrics','autosave_interval','timeout_minutes','dump_dates',
                         'wage_pop_markets','wage_pop_endpoints','breakdown_dates','breakdown_tags',
-                        'wide_dates','wide_tags','origin_goods','game_args','no_dlc','frozen_minutes','downsize_feed')
+                        'wide_dates','wide_tags','origin_goods','game_args','no_dlc','frozen_minutes','downsize_feed',
+                        'probe')   # L54: read by Get-SameBookPlan (lib_same_book.ps1), run else defaults
 if ($defaults) {
     $unknown = @($defaults.PSObject.Properties | ForEach-Object { $_.Name } |
                  Where-Object { $KNOWN_DEFAULT_KEYS -notcontains $_ -and $_ -notlike '_*' })
@@ -347,6 +362,9 @@ foreach ($r in $runs) {
         continue_expect_after = [string](Val $r "continue_expect_after" "")
         prior_wall_seconds    = [double](Val $r "prior_wall_seconds" 0)
         parent                = [string](Val $r "parent" "")
+        # L54, the same-book gate: filled below the loop from Get-SameBookPlan (lib_same_book.ps1), which reads `probe` (run, else
+        # defaults), `checkpoint` (run) and the schedule's `full_until`. `same_book` holds a continuation's verified parent.
+        run_kind = ""; full_until = ""; checkpoint = $false; same_book = $null
     }
     $cs = $plan[-1].continue_save
     if ($cs) {
@@ -355,6 +373,52 @@ foreach ($r in $runs) {
         if ($plan[-1].continue_expect_after -notmatch '^\d{3,4}\.\d{1,2}\.\d{1,2}$') { throw "run #${i}: a continuation needs continue_expect_after (the landing guard)" }
         $plan[-1].continue_save = $abs
     }
+}
+
+# ---- L54: THE SAME-BOOK GATE (user-ruled 2026-11-17, BALANCE_FRAMEWORK 10.118) - BEFORE preflight, the estimate and any build,
+#      and before the -WhatIf return, so -WhatIf shows it. "Everything other than syntax-measuring or performance probes ... must be
+#      measured on the exact same books as the full runs", "by machinery, that there's no separate 'shorter run book' at all".
+#      Get-SameBookPlan THROWS on a run on an arm that builds a book of ours (kind config or release) that stops before the full
+#      span and is neither a probe nor a checkpoint leg, and on a `full_until` other than 1936.1.1 (the span is not a lever);
+#      Assert-SameBookContinuation THROWS on a continuation that would not build its parent's book - or, on a third-party arm,
+#      would not load the parent's copy of that mod. Both live in lib_same_book.ps1, which preflight's Test-LmL54 runs against
+#      the fixture schedules - the same code, not a copy.
+$sbPlan = @(Get-SameBookPlan -Sched $sched -NoSaveHarvest:$NoSaveHarvest -DefaultAutosave $defAutosave)
+if ($sbPlan.Count -ne $plan.Count) { throw "L54: the same-book gate judged $($sbPlan.Count) run(s) of a $($plan.Count)-run plan - lib_same_book.ps1 and the plan loop disagree" }
+$FullUntil = [string]$sbPlan[0].full_until
+for ($k = 0; $k -lt $plan.Count; $k++) {
+    $plan[$k]['run_kind']   = [string]$sbPlan[$k].run_kind
+    $plan[$k]['full_until'] = [string]$sbPlan[$k].full_until
+    $plan[$k]['checkpoint'] = [bool]$sbPlan[$k].checkpoint
+}
+$sbCount = @{}
+foreach ($p in $plan) { $sbCount[$p.run_kind] = 1 + [int]$sbCount[$p.run_kind] }
+Write-Host ("same-book gate (L54): {0} run(s) pass at full_until {1} - {2}" -f $plan.Count, $FullUntil, ((@($sbCount.Keys) | Sort-Object | ForEach-Object { "$_ x$($sbCount[$_])" }) -join ', '))
+$SessionsRoot = Join-Path $PSScriptRoot "sessions"
+function Get-SetupExternalMod {
+    # kind 'external': the third-party mod's path and the layout fingerprint taken when this schedule started ($ExternalMods, filled
+    # by the setup validation above and re-checked by Resolve-Setup before every run); empty for every other kind
+    param([string]$Id)
+    if ($ExternalMods.ContainsKey($Id)) { return $ExternalMods[$Id] }
+    return @{ Path = ""; Sha = "" }
+}
+function Get-SetupConfigPath {
+    # the config a setup builds, as Resolve-Setup resolves it ('' for the arms that build no book of ours)
+    param($Spec)
+    switch ([string](Val $Spec "kind" "config")) {
+        "config"  { return (RepoPath (Val $Spec "config" "config/mod_config.json")) }
+        "release" { return (RepoPath (Val $Spec "config" "config/mod_config.json")) }
+        "overlay" { return (RepoPath (Val $Spec "config" "")) }
+        default   { return "" }
+    }
+}
+foreach ($p in $plan) {
+    if (-not $p.continue_save) { continue }
+    $sp = $setups.$($p.setup)
+    $xm = Get-SetupExternalMod $p.setup
+    $p['same_book'] = Assert-SameBookContinuation -Index $p.index -SetupId $p.setup -SetupKind ([string](Val $sp "kind" "config")) `
+                          -ConfigPath (Get-SetupConfigPath $sp) -Parent $p.parent -Repo $Repo -SessionsRoot $SessionsRoot `
+                          -ExternalPath $xm.Path -ExternalSha $xm.Sha
 }
 
 # ---- PREFLIGHT, repo half, BEFORE the estimate is printed ----
@@ -390,7 +454,7 @@ $years = 0; foreach ($p in $plan) { $years += ([int]$p.until.Split('.')[0] - 183
 $estMin = [int]($years * 85 / 60)          # ~85 s per in-game year, measured on a 1836-1935 run
 Write-Host ""
 Write-Host "schedule '$label': $($plan.Count) run(s) over $($setupNames.Count) setup(s)"
-foreach ($p in $plan) { Write-Host ("  #{0,-3} {1,-12} -> {2}   dumps: {3}{4}" -f $p.index, $p.setup, $p.until, ($p.dump_dates -join ', '), $(if ($p.no_dlc) { "   NO DLC" } else { "" })) }
+foreach ($p in $plan) { Write-Host ("  #{0,-3} {1,-12} -> {2}   [{5}]   dumps: {3}{4}" -f $p.index, $p.setup, $p.until, ($p.dump_dates -join ', '), $(if ($p.no_dlc) { "   NO DLC" } else { "" }), $p.run_kind) }
 if ($NoRedFlagFeed) { Write-Host "red-flag feed: OFF (-NoRedFlagFeed) - the input-price red flags will read only the dump dates and the save summaries" }
 else { Write-Host ("red-flag feed: market_goods_wide on 1 July of every year on {0} tags ({1}); run #1 carries {2} reading date(s)" -f $RedFlagTags.Count, ($RedFlagTags -join ' '), $plan[0].red_flag_feed) }
 $dzRuns = @($plan | Where-Object { $_.downsize_feed }).Count
@@ -646,6 +710,23 @@ foreach ($p in $plan) {
     Log "downsize feed: $(if ($p.downsize_feed) { 'on' } elseif ($NoDownsizeFeed) { 'off (-NoDownsizeFeed)' } else { 'off (downsize_feed: false)' }); metrics [$($p.metrics -join ', ')]"
     $setupSpec = $setups.$($p.setup)
     $resolved = Resolve-Setup -Id $p.setup -Spec $setupSpec -SpecFile $specFile -Token $token
+    Log "run $($p.index) is a $($p.run_kind.ToUpper()) run (same-book gate, L54; full_until $($p.full_until))$(if ($p.run_kind -like 'probe:*') { ' - a PROBE: never economy data, the readers drop it' } elseif ($p.checkpoint) { ' - a CHECKPOINT LEG: its last save is kept, to be continued to full_until on this book' } else { '' })"
+    if ($p.continue_save) {
+        # L54: asked AGAIN at the build, hours after the plan-time check on a long schedule - the config, the commit and the
+        # working tree can all have moved since (the L10 failure), and this is the last moment it costs nothing.
+        try {
+            $xm = Get-SetupExternalMod $p.setup
+            $p['same_book'] = Assert-SameBookContinuation -Index $p.index -SetupId $p.setup -SetupKind $resolved.Kind `
+                                  -ConfigPath ([string]$resolved.Config) -Parent $p.parent -Repo $Repo -SessionsRoot $SessionsRoot -Quiet `
+                                  -ExternalPath $xm.Path -ExternalSha $xm.Sha
+        } catch {
+            foreach ($ml in ("$($_.Exception.Message)" -split "`r?`n")) { Log $ml "ALERT" }
+            Log "SAME-BOOK CHECK FAILED before the build of run $($p.index) - aborting schedule" "ALERT"
+            $abort = $true; $fatalExit = 3
+            $index += [ordered]@{ index = $p.index; setup = $p.setup; status = "same_book_mismatch"; run_kind = $p.run_kind; full_until = $p.full_until }
+            continue
+        }
+    }
 
     Log "building setup '$($p.setup)' (kind $($resolved.Kind))..."
     $t0 = Get-Date
@@ -667,6 +748,19 @@ foreach ($p in $plan) {
     Log ("build ok in {0:N0}s -> {1}" -f ((Get-Date)-$t0).TotalSeconds, (Split-Path $resolved.ModPath -Leaf))
     $modsBuilt[$resolved.ModPath] = $true
 
+    # ---- L54, the last check: a continuation's BUILT mod against its parent's recorded fingerprint, before anything launches.
+    $sbLayout = $null
+    if ($p.continue_save) {
+        $sbLayout = Test-SameBookLayout -ModPath $resolved.ModPath -ParentState $p.same_book.ParentState -ParentDir $p.same_book.ParentDir -SpecFile $specFile
+        if (-not $sbLayout.Ok) {
+            Log "SAME-BOOK CHECK FAILED after the build of run $($p.index) (L54, BALANCE_FRAMEWORK 10.118): $($sbLayout.Message). Parent: $($p.same_book.ParentDir). Nothing was launched - aborting schedule" "ALERT"
+            $abort = $true; $fatalExit = 3
+            $index += [ordered]@{ index = $p.index; setup = $p.setup; status = "same_book_mismatch"; run_kind = $p.run_kind; full_until = $p.full_until }
+            continue
+        }
+        Log "same-book (L54): $($sbLayout.Message) [$($sbLayout.Basis)]"
+    }
+
     # ---- run it. run_observer owns the game: launch, supervise, harvest, crash-resume. ----
     # -Stamp: the run inherits THIS schedule's identity, so build_state.json, the folder and the
     # telemetry token all say the same thing instead of three different timestamps.
@@ -685,6 +779,9 @@ foreach ($p in $plan) {
     # PROVENANCE: the arm this run was built from, machine-read into build_state.json. A control arm
     # with no config passes nothing, and build_state then reads as the pure-vanilla arm it is.
     if ($resolved.Config) { $obsArgs += @("-BuildConfig",$resolved.Config) }
+    # L54: the book's other half and what kind of run this is, into build_state.json (tree_sha256, run_kind, full_until)
+    if ($resolved.Config -and $resolved.Kind -ne "overlay") { $obsArgs += @("-BuildTree",(Get-SameBookTreeTwinPath -ConfigPath $resolved.Config -Repo $Repo)) }
+    $obsArgs += @("-RunKind",$p.run_kind,"-FullUntil",$p.full_until)
     # & powershell @obsArgs quotes each element itself, so the path goes in unquoted; several paths travel as one |-joined string
     if (@($resolved.ExtraMods).Count) { $obsArgs += @("-ExtraModPaths", (@($resolved.ExtraMods) -join '|')); Log "run $($p.index) is a THIRD-PARTY arm: $(@($resolved.ExtraMods) -join ', ') + the telemetry-only build (layout $($ExternalMods[$p.setup].Sha))" }
     if ($resolved.Kind -eq "release") { $obsArgs += "-NoTelemetry"; Log "run $($p.index) is a RELEASE-BUILD run: no telemetry, so no markets.tsv - saves, wall clock and error log only" }
@@ -697,7 +794,11 @@ foreach ($p in $plan) {
         if ($p.prior_wall_seconds -gt 0) { $obsArgs += @("-PriorWallSeconds","$($p.prior_wall_seconds)") }
         $null = New-Item -ItemType Directory -Force -Path $runDir
         ([ordered]@{ parent = $p.parent; continue_save = $p.continue_save; continue_expect_after = $p.continue_expect_after
-                     prior_wall_seconds = $p.prior_wall_seconds } | ConvertTo-Json) | Set-Content -Encoding utf8 (Join-Path $runDir "continuation.json")
+                     prior_wall_seconds = $p.prior_wall_seconds
+                     # L54: what was verified against the parent before this run launched
+                     same_book = [ordered]@{ parent_dir = $p.same_book.ParentDir; config_sha256 = $p.same_book.ConfigSha; tree_sha256 = $p.same_book.TreeSha
+                                             game_version = $p.same_book.GameVersion; layout_basis = $sbLayout.Basis; layout_sha256 = $sbLayout.Mine }
+                   } | ConvertTo-Json -Depth 4) | Set-Content -Encoding utf8 (Join-Path $runDir "continuation.json")
         Log "run $($p.index) CONTINUES $($p.parent) from $(Split-Path $p.continue_save -Leaf) (expect after $($p.continue_expect_after), prior play $($p.prior_wall_seconds) s)"
     }
 
@@ -745,7 +846,7 @@ foreach ($p in $plan) {
         [System.IO.File]::WriteAllText($prov, ([ordered]@{
             session = $stamp; label = $label; run_index = $p.index; setup = $p.setup
             arm_kind = $resolved.Kind; built_from_config = $resolved.Config
-            token = $token; until = $p.until
+            token = $token; until = $p.until; run_kind = $p.run_kind; full_until = $p.full_until
         } | ConvertTo-Json -Depth 4), $Utf8)
         $stopH = Join-Path $PSScriptRoot "STOP_HARVEST"
         if (Test-Path $stopH) { Remove-Item $stopH -Force }
@@ -805,7 +906,7 @@ foreach ($p in $plan) {
             [System.IO.File]::WriteAllText($prov, ([ordered]@{
                 session = $stamp; label = $label; run_index = $p.index; setup = $p.setup
                 arm_kind = $resolved.Kind; built_from_config = $resolved.Config
-                token = $token; until = $p.until
+                token = $token; until = $p.until; run_kind = $p.run_kind; full_until = $p.full_until
             } | ConvertTo-Json -Depth 4), $Utf8)
         }
         # ⚠ NOT pre-quoted, unlike the Start-Process calls above, and the difference is real: `& powershell
@@ -864,6 +965,7 @@ foreach ($p in $plan) {
         }
     } else { $instantFails = 0 }
     $index += [ordered]@{ index = $p.index; setup = $p.setup; until = $p.until
+                          run_kind = $p.run_kind; full_until = $p.full_until
                           dump_dates = $p.dump_dates; mod = (Split-Path $resolved.ModPath -Leaf)
                           token = $token; status = $status; dir = (Split-Path $runDir -Leaf) }
 }

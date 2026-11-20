@@ -11,6 +11,7 @@
   "_stop_rule": "none: two fixed short runs",
   "_cost": "2 x 1836 -> 1841, ~10 min each with the build (the smoke run played 1836->1841 in 7.3 min)",
   "defaults": {
+    "probe": "syntax",
     "dump_dates": [
       "1836.2.1",
       "1840.1.1"
@@ -45,5 +46,6 @@
       "setup": "canon",
       "until": "1841.1.1"
     }
-  ]
+  ],
+  "_probe_note": "probe: syntax added 2026-11-20 at the merge of same-book-machinery (BALANCE_FRAMEWORK 10.118, landmine L54): a short run on a book of ours must be a probe or a checkpoint leg; this one is a load test, never economy data."
 }

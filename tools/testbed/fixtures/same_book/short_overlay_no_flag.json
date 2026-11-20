@@ -1,0 +1,21 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-short-overlay-no-flag",
+  "_why": "A FIXTURE of the same-book gate (landmine L54, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL54 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. An overlay arm is vanilla + telemetry + one declared file (pop needs), not a book of ours: not gated, recorded short.",
+  "_expect": "pass",
+  "_expect_kinds": [
+    "short"
+  ],
+  "setups": {
+    "overlay": {
+      "kind": "overlay",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "overlay",
+      "until": "1846.1.1"
+    }
+  ]
+}

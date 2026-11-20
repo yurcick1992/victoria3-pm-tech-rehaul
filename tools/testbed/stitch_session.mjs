@@ -83,6 +83,8 @@ const runs = fs.readdirSync(CH).filter(d => /^run\d+_/.test(d)).sort().filter(d 
 fs.mkdirSync(OUT, { recursive: true });
 const notes = [], index = [];
 const isCont = rd => fs.existsSync(path.join(CH, rd, 'continuation.json'));
+// a continuation's `parent` is <session>/<runNNN_setup> under the sessions root, or (since 2026-11-17, L54) an absolute run folder
+const parentDir = p => (path.isAbsolute(p) ? p : path.join(SESS, p));
 for (const rd of runs) {
   // a run that is NOT a continuation (a batch mixing a continued probe with full runs, 2026-10-12) is already a whole campaign: copied as is
   if (!isCont(rd)) {
@@ -93,7 +95,7 @@ for (const rd of runs) {
     index.push({ index: +rd.slice(3, 6), setup: rd.replace(/^run\d+_/, ''), until: m.until_date, status: 'ok' });
     continue;
   }
-  const C = path.join(CH, rd), cont = J(path.join(C, 'continuation.json')); const P = path.join(SESS, cont.parent); const O = path.join(OUT, rd);
+  const C = path.join(CH, rd), cont = J(path.join(C, 'continuation.json')); const P = parentDir(cont.parent); const O = path.join(OUT, rd);
   const pm = J(path.join(P, 'meta.json')), cm = J(path.join(C, 'meta.json'));
   if (cm.abandoned_reason || cm.reached_ingame_date !== cm.until_date) throw new Error(`${rd}: the continuation did not complete (${cm.reached_ingame_date} of ${cm.until_date})`);
   fs.mkdirSync(path.join(O, 'save_summaries'), { recursive: true }); fs.mkdirSync(path.join(O, 'logs_live'), { recursive: true }); fs.mkdirSync(path.join(O, 'saves'), { recursive: true });
@@ -145,8 +147,8 @@ fs.writeFileSync(path.join(OUT, 'session.json'), JSON.stringify({ label: sch.lab
   for (const rd of runs) { const t = fs.readFileSync(path.join(OUT, rd, 'markets.tsv'), 'utf8').replace(/\r?\n$/, '').split(/\r?\n/); hdr ??= 'run_index\tsetup\t' + t[0].split('\t').slice(1).join('\t');
     for (const l of t.slice(1)) rows.push(`${+rd.slice(3, 6)}\t${rd.replace(/^run\d+_/, '')}\t${l.split('\t').slice(1).join('\t')}`); }
   fs.writeFileSync(path.join(OUT, 'markets_all.tsv'), [hdr, ...rows].join('\n') + '\n'); }
-{ const parents = [...new Set(runs.filter(isCont).map(rd => J(path.join(CH, rd, 'continuation.json')).parent.split('/')[0]))];
-  const parts = [...parents.map(p => path.join(SESS, p, 'machine_load.tsv')), path.join(CH, 'machine_load.tsv')].filter(f => fs.existsSync(f)).map(f => fs.readFileSync(f, 'utf8').replace(/\r?\n$/, '').split(/\r?\n/));
+{ const parents = [...new Set(runs.filter(isCont).map(rd => path.dirname(parentDir(J(path.join(CH, rd, 'continuation.json')).parent))))];
+  const parts = [...parents.map(p => path.join(p, 'machine_load.tsv')), path.join(CH, 'machine_load.tsv')].filter(f => fs.existsSync(f)).map(f => fs.readFileSync(f, 'utf8').replace(/\r?\n$/, '').split(/\r?\n/));
   if (parts.length) fs.writeFileSync(path.join(OUT, 'machine_load.tsv'), [parts[0][0], ...parts.flatMap(p => p.slice(1))].join('\n') + '\n'); }
 fs.writeFileSync(path.join(OUT, 'STITCHED.md'), `# STITCHED SESSION — not a batch of its own\n\nBuilt ${new Date().toISOString().slice(0, 16)} UTC by \`tools/testbed/stitch_session.mjs ${CHILD} ${NEWNAME}\`.\nEach run folder is one whole campaign: its parent run (1836 → the save) plus the continuation that played on from that save.\nEverything is a COPY; the source sessions are untouched. The continuation's telemetry token is REWRITTEN to the parent's in\nlogs_live/debug.log and save_provenance.json, so token-filtered readers see one run. run.log carries both halves (the reload reads as a\nresume attempt); meta.json's wall_seconds is the continuation's, which carries the parent's play (-PriorWallSeconds) plus one reload.\n\n${notes.join('\n')}\n`);
 console.log(`stitched ${runs.length} run(s) into ${OUT}\n${notes.join('\n')}`);

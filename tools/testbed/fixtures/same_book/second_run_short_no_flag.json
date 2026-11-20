@@ -1,0 +1,23 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-second-run-short-no-flag",
+  "_why": "A FIXTURE of the same-book gate (landmine L54, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL54 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. The offending run is not the first: a full run, then a short one on the same book.",
+  "_expect": "throw",
+  "_expect_message": "run #2",
+  "setups": {
+    "book": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "book",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "book",
+      "until": "1855.1.1"
+    }
+  ]
+}

@@ -5681,12 +5681,12 @@ merged into `main` only after its `SCHEDULE DONE`, CLAUDE.md §5.1 rule 7):
 - **The readers never return a probe run** (`lib_runs.usableRuns`), so a probe build cannot enter a register reading.
 - **A landmine with a detector** that proves in every build that the gate trips.
 
-**Its state (2026-11-17).** Built by an agent as landmine **L53**, commit `15f8c64` on `same-book-machinery` (worktree
+**Its state (2026-11-17).** Built by an agent as landmine **L54** (numbered L53 on the branch; renumbered at the merge, 2026-11-20, because main had taken L53 for the BOM lint), commit `15f8c64` on `same-book-machinery` (worktree
 `C:\claude-code\nfu_wt_samebook`); not merged, not pushed, and the main checkout untouched. The gate is a pure function in
 `tools/testbed/lib_same_book.ps1`, called by `run_schedule.ps1` before preflight and before the `-WhatIf` return; the continuation
 check runs at plan time, before the build and after it; `build_state.json` records `run_kind`, `full_until`, the tree twin's sha256
 and a content fingerprint that leaves the telemetry file out (its size differs between a leg and its continuation by design);
-`lib_runs.usableRuns` drops probe runs; the detector `Test-LmL53` walks fifteen fixture schedules.
+`lib_runs.usableRuns` drops probe runs; the detector `Test-LmL54` walks fifteen fixture schedules.
 - **Proven without a game:** a short run on a book with no flag is refused, and the probe, checkpoint and full-span forms pass; a
   continuation of the real `run002_canon` of session `20261112_113429` on its own book passes every comparison and on the mod 1.1
   book is refused naming both sha256; the detector fails when the gate is disabled and when the scheduler's call is removed; the

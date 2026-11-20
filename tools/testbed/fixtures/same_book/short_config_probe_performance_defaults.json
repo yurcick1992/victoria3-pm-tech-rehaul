@@ -1,0 +1,32 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-short-config-probe-performance-defaults",
+  "_why": "A FIXTURE of the same-book gate (landmine L54, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL54 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. A performance probe named once in defaults.",
+  "_expect": "pass",
+  "_expect_kinds": [
+    "probe:performance",
+    "probe:performance"
+  ],
+  "defaults": {
+    "probe": "performance"
+  },
+  "setups": {
+    "book": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    },
+    "vanilla": {
+      "kind": "control"
+    }
+  },
+  "runs": [
+    {
+      "setup": "book",
+      "until": "1846.1.1"
+    },
+    {
+      "setup": "vanilla",
+      "until": "1846.1.1"
+    }
+  ]
+}

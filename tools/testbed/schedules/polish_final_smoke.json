@@ -16,6 +16,7 @@
     "Filter error.log by POSITION from this run's own first line (CLAUDE.md smoke-check rule 3), and judge vanilla's noise classes against the canon's own run."
   ],
   "defaults": {
+    "probe": "syntax",
     "dump_dates": [
       "1836.2.1",
       "1838.1.1",
@@ -49,5 +50,6 @@
       "setup": "canon",
       "until": "1841.1.1"
     }
-  ]
+  ],
+  "_probe_note": "probe: syntax added 2026-11-20 at the merge of same-book-machinery (BALANCE_FRAMEWORK 10.118, landmine L54): a short run on a book of ours must be a probe or a checkpoint leg; this one is a load test, never economy data."
 }

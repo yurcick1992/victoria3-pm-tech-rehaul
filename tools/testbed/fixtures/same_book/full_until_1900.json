@@ -1,0 +1,20 @@
+{
+  "schedule_version": 1,
+  "label": "fixture-full-until-1900",
+  "_why": "A FIXTURE of the same-book gate (landmine L54, BALANCE_FRAMEWORK 10.118), read by preflight.ps1 Test-LmL54 through lib_same_book.ps1 Get-SameBookPlan. Never launched: _expect says what the gate must do with it, and for a pass _expect_kinds is the run_kind of each run in order. THE WAY ROUND THE GATE, CLOSED: a schedule that moves the full span to 1900 so that a run to 1900 reads as full. The full span is 1936.1.1 and a schedule cannot move it. (One run, at the moved span: were the check gone, this schedule would pass.)",
+  "_expect": "throw",
+  "_expect_message": "a schedule cannot move it",
+  "full_until": "1900.1.1",
+  "setups": {
+    "book": {
+      "kind": "config",
+      "config": "config/mod_config.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "book",
+      "until": "1900.1.1"
+    }
+  ]
+}

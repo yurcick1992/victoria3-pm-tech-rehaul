@@ -1,0 +1,9 @@
+{
+  "schema_version": 2,
+  "_fixture": "same-book reader fixture (L54): not a run",
+  "deterministic": {
+    "arm": "config",
+    "run_kind": "full",
+    "full_until": "1936.1.1"
+  }
+}
