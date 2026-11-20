@@ -286,7 +286,65 @@ probe_rh_driver = {
 	}
 }
 `;
-  put('common/on_actions/zzz_probe_resource_hooks.txt', oa);
+  // `cross_type: true` (the follow-up of 2026-11-21): the first probe showed the hook fires once for EVERY state of the region, inside
+  // the force, and a forced discovery reveals the whole block; its in-hook re-force used the same, already exhausted type, so it could not
+  // show whether a force of ANOTHER type from inside the hook fires the hook again (oil's linked discovery; vanilla's oil-rush events
+  // twice). This variant counts every hook firing per state (probe_rh_fires), forces building_oil_rig from inside the gold hook where
+  // the state has an oil potential, and tests a STATE-REGION variable as a once-per-region guard (+1 gold mine once per region).
+  const R = 'SCOPE.GetRootScope.GetState';
+  const oaX = `${header('the resource-hook probe, cross-type variant: an in-hook force of another type, firings counted, a region guard')}
+on_resource_discovered = { on_actions = { probe_rh_on_discovered } }
+on_monthly_pulse = { on_actions = { probe_rh_driver } }
+
+probe_rh_on_discovered = {
+	effect = {
+		if = { limit = { NOT = { has_variable = probe_rh_fires } } set_variable = { name = probe_rh_fires value = 0 } }
+		change_variable = { name = probe_rh_fires add = 1 }
+		debug_log = "PROBE_RH|HOOK_DISCOVERED|${date}|[${R}.GetNameNoFormatting]|[${R}.GetOwner.GetNameNoFormatting]|fires=[${R}.MakeScope.Var('probe_rh_fires').GetValue|0]|gold_field=[${R}.MakeScope.ScriptValue('probe_rh_gold_field_direct')]|oil_rig=[${R}.MakeScope.ScriptValue('probe_rh_oil_rig_direct')]|gold_mine=[${R}.MakeScope.ScriptValue('probe_rh_gold_mine_direct')]"
+		state_region = {
+			if = {
+				limit = { NOT = { has_variable = probe_rh_region_once } }
+				set_variable = probe_rh_region_once
+				change_resource_potential = { type = building_gold_mine amount = 1 }
+				debug_log = "PROBE_RH|REGION_ONCE|${date}"
+			}
+		}
+		if = {
+			limit = { has_variable = probe_rh_tracked  has_potential_resource = building_oil_rig  NOT = { has_variable = probe_rh_oil_forced } }
+			set_variable = probe_rh_oil_forced
+			debug_log = "PROBE_RH|HOOK_FORCE_OIL|${date}|[${R}.GetNameNoFormatting]|fires=[${R}.MakeScope.Var('probe_rh_fires').GetValue|0]"
+			force_resource_discovery = building_oil_rig
+			debug_log = "PROBE_RH|HOOK_AFTER_FORCE_OIL|${date}|[${R}.GetNameNoFormatting]|fires=[${R}.MakeScope.Var('probe_rh_fires').GetValue|0]"
+		}
+	}
+}
+
+probe_rh_driver = {
+	effect = {
+		if = {
+			limit = { NOT = { has_global_variable = probe_rh_step1 } }
+			set_global_variable = probe_rh_step1
+			every_state = {
+				limit = { has_potential_resource = building_gold_field }
+				set_variable = { name = probe_rh_tracked value = 1 }
+				${L('BEFORE_DISCOVERY', 'THIS.GetState', "|oil_potential=[THIS.GetState.MakeScope.ScriptValue('probe_rh_oil_rig_direct')]")}
+				force_resource_discovery = building_gold_field
+				${L('AFTER_DISCOVERY', 'THIS.GetState', "|fires=[THIS.GetState.MakeScope.Var('probe_rh_fires').GetValue|0]")}
+			}
+		}
+		else_if = {
+			limit = { NOT = { has_global_variable = probe_rh_step2 } }
+			set_global_variable = probe_rh_step2
+			every_state = {
+				limit = { has_variable = probe_rh_tracked }
+				${L('FINAL', 'THIS.GetState', "|fires=[THIS.GetState.MakeScope.Var('probe_rh_fires').GetValue|0]|oil_rush_state=[THIS.GetState.MakeScope.Var('oil_rush_state').GetValue|0]|gold_rush_state=[THIS.GetState.MakeScope.Var('gold_rush_state').GetValue|0]")}
+				if = { limit = { has_variable = oil_rush_state } debug_log = "PROBE_RH|VANILLA_OILRUSH_STATE|${date}|[THIS.GetState.GetNameNoFormatting]" }
+			}
+		}
+	}
+}
+`;
+  put('common/on_actions/zzz_probe_resource_hooks.txt', po.cross_type ? oaX : oa);
 } else {
   throw new Error(`unknown probe_overlay.kind '${po.kind}' (tech_ai_weights | global_tech_gate | resource_hooks)`);
 }

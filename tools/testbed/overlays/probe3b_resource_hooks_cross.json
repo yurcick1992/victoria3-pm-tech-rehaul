@@ -1,0 +1,8 @@
+{
+  "_why": "PROBE 3b, the follow-up of probe 3 (2026-11-21; within the go-ahead for probe 3, whose question it finishes). Probe 3 (session 20261121_000535 run 1) showed that on_resource_discovered fires once for every state of the region, inside the force effect, and that a forced discovery reveals the whole block (California's zero-chance gold field: discovered_amount 12 of 12). Its in-hook re-force used the same, already exhausted type, so it could not show whether a force of ANOTHER type from inside the hook fires the hook again. This variant forces building_oil_rig from inside the gold hook where the state has an oil potential (California: 80 undiscovered), counts every firing per state, reads vanilla's oil-rush variable, and tests a state-region variable as a once-per-region guard (+1 gold mine once per region, whatever the number of states).",
+  "probe_overlay": {
+    "kind": "resource_hooks",
+    "cross_type": true,
+    "zero_chance": { "file": "05_north_america.txt", "state": "STATE_CALIFORNIA" }
+  }
+}
