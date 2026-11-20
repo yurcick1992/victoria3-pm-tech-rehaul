@@ -1,0 +1,37 @@
+{
+  "schedule_version": 1,
+  "label": "g1152-canon-leg-continue-1857",
+  "_why": "PROBE 1, PART 2 (the pre-1.2 probes; the user's go-ahead 2026-11-20). The same-book machinery's first real continuation (BALANCE_FRAMEWORK 10.118, landmine L54; BACKLOG B merge-checklist step 5): run 1 of session 20261120_230717_g1152-canon-legs-1855 (a canon checkpoint leg to 1855.3.1, whose kept save is its 1855.1.1 autosave) continued as a MIDDLE LEG to 1857.1.1 (checkpoint: true). What it proves or refutes: the plan-time inheritance check against the parent's build_state.json (book and tree sha256, game version, the build paths at the parent's commit), the same check before the build, the post-build content-fingerprint comparison, the observer's continuation arguments, and that the game loads the kept save and plays on. It must run from the checkout that played its parent, before anything a build reads changes there.",
+  "_arms": "canon = {kind: config, config: config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json} (sha256 697d4869aefc3225), the parent's book.",
+  "_comparison": "the scheduler's same-book (L54) lines in session.log and the two build_state.json files (parent and continuation): config and tree sha256, the content layout fingerprint; the continuation's meta.json (continue_save, the in-game date it started at, resumes).",
+  "_predictions": {
+    "gate": "plan: 1 run, run_kind continuation, checkpoint, parent verified; before the build and after it the same-book checks pass; the content layout fingerprint equals the parent's while the whole-mod layout differs (the telemetry file differs by dump dates)",
+    "game": "the game loads the 1855.1.1 save, replays to 1857.1.1 in about 5 minutes, and keeps its 1857.1.1 autosave"
+  },
+  "_stop_rule": "none.",
+  "_cost": "1 x 1855.1.1 -> 1857.1.1, about 8 minutes with the build",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Run from the main checkout with nothing under the build paths changed since commit fb9b8cbd (the parent's)."
+  ],
+  "defaults": {
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 30
+  },
+  "setups": {
+    "canon": { "kind": "config", "config": "config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json" }
+  },
+  "runs": [
+    {
+      "setup": "canon",
+      "until": "1857.1.1",
+      "checkpoint": true,
+      "continue_save": "tools/testbed/sessions/20261120_230717_g1152-canon-legs-1855/run001_canon/saves/0019_20261120_233309_autosave.v3",
+      "continue_expect_after": "1854.12.1",
+      "prior_wall_seconds": 1488,
+      "parent": "20261120_230717_g1152-canon-legs-1855/run001_canon"
+    }
+  ]
+}

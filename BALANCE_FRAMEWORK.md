@@ -90,6 +90,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.120 | the register redone: the important goals are absolute levels of the mod's own, and of the vanilla-referenced ones only world GDP matters; every aim is soft; there is ONE barrier, about validity and not severity — the investment loop broke (lack of labour and hoarding are two wordings of it), past which every other reading is unreliable; the numbers are calibrated on data; the barrier as it stands: a shortlist member of at least 2% of world GDP whose pool ÷ GDP averages at least 1 over ten consecutive years (no primary check on labour) ; the eight depeasantation aims, at 1913 and at the end of the game: the USA 25% and 15%, Britain 10% and 5%, Germany 20% and 20%, the world 60% and 50% ; PI and PP stay aims with the downward slope required; the rest accepted as one list (world GDP 0.90–1.00 soft, capital as a soft aim, Germany's closed-major term retired, the minor readings, the loss's weights, a run past the barrier ends its book) | in force; CLAUDE.md §3.1–§3.2 rewritten; `criteria.mjs`, the scorecard and the stop watcher not yet (after the three-arm batch) | here |
 | 10.121 | old plants pushed out become a term of the loss, measured by the in-market backward-industry test beside T0 (.1, 2026-11-19), aim under 100% and shrinking, weight 0.5, manufacturing only: the motor's new t0 rung in, deposits never, agriculture not for now; research pace, misplaced capital and the rubber shortage stay outside the loss; misplaced capital may get an AI-value pass close to finalising the 1.2 balance, after the main iterations; no extra GDP leeway for it: the world-GDP aim stays 0.90–1.00, a band already below vanilla because a focused player can exploit the mod's economy better (.2) | in force; the term ruled whole (.1); nothing built | here |
 | 10.122 | game 1.15.2, mod 1.1.2: the 1.1.1 canon rebuilt on 1.15.2, no balance change (the canon stays 697d4869: the 1.15.2 replay reproduces it); vanilla AI changes pass through unless they affect us; the company-target investment define 5 → 20 affects us (our targets list every rung) and passes through, read in the first 1.2 runs | in force; nothing to build | here |
+| 10.123 | THE loss of the mod 1.2 calibration: §10.120's form and §10.121's old-plants term, with the eight depeasantation aims at 0.25 each (2 together, as world GDP), a second capital term (the shortlist's hoard above half its GDP, weight 0.5) beside the count of members above 0.5 (weight 1, members of at least 2% of world GDP), T0–T3 manufacturing only (no deposits, no agriculture), the spreads fixed from mod 1.1.1's 15 runs on 1.15.1, one rule for the falling-decade aims, the barrier's value printed for every run; play time not read during the iterations, covered in the polishing touches | in force; nothing built (`criteria.mjs`, the scorecard, the stop watcher) | here |
 
 ---
 
@@ -5798,6 +5799,13 @@ not listed here is not yet placed.
      literacy line, it takes the −20% always and the −90% while advancing: Claude's reading of "do"). In the crude model that scope
      at −20% puts military's share of picks at 43% / 36% / 69% / 37% in tech eras 2 / 3 / 4 / 5 (today 24 / 27 / 51 / 21), and at
      −10% at 32% / 32% / 60% / 28%.
+     ⚠ **Corrected 2026-11-20, when the rule was built** (`emit_tech_finish.mjs`, `research_events.entry_weight_rule`; the pre-1.2
+     probe 5): the built canon has **6** frontline entries (breech-loading artillery, defense in depth, general staff, mobile armor, NCO
+     training, trench works), not 12. The other 6 military technologies with an entry (rifling, percussion caps, shell guns, repeaters,
+     bolt-action rifles, automatic machine guns) have the literacy-gated INDUSTRY entries of the arms, artillery and munition rungs, so
+     the ruled scope lowers them like any production entry. So 107 technologies are lowered (97 literacy-gated, 10 naval) and 6 keep
+     their weight. The crude model's shares above kept 12 at full weight: under the ruled scope military's share is somewhat lower
+     than they say (not re-run; the research model with probe 4's measured response replaces them).
    - **Open:** the two figures; the probes (their arms, n and span need the
      user's go-ahead after the three-arm batch): a forced test on vanilla + telemetry of pick odds against a weight ratio, since the
      fourth-power fit was made on vanilla's near-flat weights, then the rule on the book as a probe, with tick cost, then the
@@ -6052,6 +6060,7 @@ above):
    the 1886 point of the GDP path; the 1836–1845 start; each still flagged when far out.
 7. **The loss:** one term per aim, the distance from the aim in units of that line's own spread between runs. Weights: world GDP 2;
    each of the eight depeasantation aims 1; PI 1; PP 1; capital 1; T0 and T3 half each. The spreads are re-fitted on game 1.15 runs.
+   (For the mod 1.2 calibration superseded by §10.123: the eight aims 0.25 each, a second capital term, the spreads fixed.)
 8. **A run past the barrier ends its book in the 2+1 test,** recorded as past the barrier and not as worse than a missed aim.
 
 Dissolved with it, and closed: the shortlist's U\* aim against its W aim, GDP per capita or total for the shortlist, the four fixes
@@ -6141,7 +6150,8 @@ point 4); the old-rung census stays a reading beside the register (CLAUDE.md §3
   industry-decades in a run, the term is noisy per run; that is a reason to read it as a median over runs, like every aim, not a
   reason against it.
 - **Not ruled, raised with it:** whether T0–T3 count the deposit rungs. `criteria.mjs` takes the tiers from `cfg.industries[].tiers[]`
-  by `era`, so deposit rungs generated there would enter T0–T3 unless excluded.
+  by `era`, so deposit rungs generated there would enter T0–T3 unless excluded. (Ruled 2026-11-20 by §10.123 point 4: no; T0–T3 count
+  manufacturing only, no agriculture either.)
 
 ### §10.121.2 — what "no GDP leeway" means: no EXTRA leeway, nothing more (user-ruled 2026-11-19)
 
@@ -6172,3 +6182,115 @@ version will be at that moment."*
    companies' home states (the emitter's note of 2026-09-02); the opt-in gate that answered it stopped companies forming and is off.
    Offered: (a) pass it through, (b) hold it at 5 in the book, (c) the gate back on. **The user chose (a):** 1.1.2 runs vanilla's 20, and
    the first 1.2 runs read what it does to old rungs (§10.121's term) and to misplaced capital.
+
+## §10.123 — THE LOSS FOR THE MOD 1.2 CALIBRATION (user-ruled 2026-11-20)
+
+**The occasion.** Before the 1.2 book is built and its first runs launched, the user called a last review of the loss: *"Is the loss
+function adjusted to correctly optimize total unreferenced hoard, total unreferenced U\* (both -- for shortlist and WW) and world
+GDP/vanilla? Anything unnecessary there, considering the mod's goals? Anything missing?"* Claude read the terms of §10.120 and §10.121
+on the 15 centuries of mod 1.1.1 on game 1.15.1 (F271's ten, F272's five), with world GDP ÷ vanilla 1.15.2's eight-run median (F274) and
+each line's spread the standard deviation over the 15 mod runs (session scripts `loss_probe.mjs`, `loss_read.mjs`, `loss_weights.mjs`,
+not a finding; directional, one book). Claude proposed six changes; the user: *"In general, I don't think it's that bad. Include a more
+flexible hoard measure with lower weight without removing the existing one (majors over 0.5). Lower combined U\* weights, they are too
+high compared to the hoard and world GDP. Otherwise it's probably fine. Push if you don't think I'm right."* On play time: *"I don't
+trust play time when we iterate on balance throughout. And also it's reasonably predictable. We don't need it, what we need is covering
+this on polishing touches."* On Claude's numbers (the U\* aims 0.25 each, the new hoard measure 0.5, the deposit rungs out of T0–T3):
+*"No, T0-T3 do NOT count deposit rungs or anything else except manufacturing (no agriculture either). Fine on all counts, record this as
+THE loss function for 1.2 calibration."*
+
+**The reading that sized the weights.** The ruled terms at mod 1.1.1's medians (the five price and old-plant terms not computed):
+
+| term | mod 1.1.1 median | aim | spread | weighted distance at §10.120's weights |
+|---|---|---|---|---|
+| world GDP ÷ vanilla 1.15.2 | 1.34 (1.12–1.53) | 0.90–1.00 | 0.139 | 4.90 |
+| U\* Britain, end | 0.4% | 5% | 0.8 pp | 5.91 |
+| U\* world, end · 1913 | 33.4% · 50.9% | 50% · 60% | 4.3 · 3.8 pp | 3.84 · 2.36 |
+| U\* USA, end · 1913 | 3.6% · 30.7% | 15% · 25% | 8.9 · 17.2 pp | 1.27 · 0.33 |
+| U\* Germany, end · 1913 | 1.5% · 32.8% | 20% · 20% | 17.5 · 21.0 pp | 1.05 · 0.61 |
+| U\* Britain, 1913 | 7.4% | 10% | 7.7 pp | 0.34 |
+| members above 0.5 GDP in 1935–36 | 2 | 0 | 1.36 (with Russia and Japan, §10.113's set) | 1.48 |
+
+The 1.34 assumes the mod's world is the same size in pounds on 1.15.2 as on 1.15.1, as it was from 1.15.0 to 1.15.1; mod 1.1.2 on game
+1.15.2 is measured only by its smoke test. Over the seed axis of the 15 runs (which F165 found follows the lever axis), each −0.10 of world
+GDP below the 0.90 floor costs the world-GDP term +1.44 and buys back, under each U\* weight, with the count at 1 and the new measure at 0.5:
+
+| each of the eight U\* aims (combined) | U\* + hoard gain | net |
+|---|---|---|
+| 1 (8), §10.120's | −1.91 | −0.48: the loss prefers a world under the band, against §10.114 |
+| 0.5 (4) | −1.24 | +0.19 |
+| 0.375 (3) | −1.07 | +0.36 |
+| **0.25 (2)** | −0.90 | **+0.53** |
+
+The hoard terms reward a cooler world too, so halving the U\* weights is not enough to keep world GDP first. At vanilla's spread of world
+GDP (0.09) the cost would be +2.21. Two more readings, both on these runs: the count above 0.5 GDP reads a median of 2 in mod 1.1.1 and
+in vanilla 1.15.2 on §10.113's set (2 against 1.5 on the set ruled below) while the shortlist's pooled pool ÷ GDP is 0.81 against 0.41, so
+the count barely sees the difference; and the barrier is passed in 9 of 15 mod 1.1.1 runs, 8 of 15 vanilla 1.15.1 runs and 4 of 8 vanilla
+1.15.2 runs (Britain, 1927–36, in all four).
+
+**The rulings.**
+1. **The loss below is the loss of the mod 1.2 calibration.** It keeps §10.120's form (L = Σ w · d, d the distance from the aim in units
+   of the line's own spread between runs, every aim soft, the barrier as §10.120 has it) and §10.121's old-plants term; points 2–6 are
+   what it changes or settles.
+2. **The eight depeasantation aims weigh 0.25 each**, 2 together, as much as world GDP (from 1 each, §10.120 point 7). The user's reason:
+   the U\* weights were too high against the hoard and world GDP; Claude's, from the table above: at 0.25 world GDP still wins below its
+   floor, as §10.114 asks for 1.2.
+3. **A second hoard term, beside the count:** the shortlist's hoard above half its GDP, weight 0.5. The count of members above 0.5 GDP
+   stays, weight 1.
+4. **T0–T3 count manufacturing only**: the tiered manufacturing industries, crafts and merged rungs by their tiers, the motor's new t0
+   rung included; never the deposit rungs, no agriculture, nothing else. The same scope as the old-plants term (§10.121.1). This settles
+   the question §10.121.1 left open.
+5. **Play time is not read during the 1.2 balance iterations.** An iterative run's wall clock is not trusted (it is not alternated against
+   a same-days vanilla, CLAUDE.md §3.4), and the cost is reasonably predictable; the +10% budget is covered in the polishing touches.
+6. **The building defaults Claude stated and the user accepted** ("fine on all counts"): the spreads fixed from the 15 runs; one rule for
+   every falling-decade aim; the barrier's value printed for every run.
+
+**THE LOSS** (the end of the game is the 1932–1936 mean of the yearly summaries; 1913 is the first summary of 1913; an aim is read on the
+median of the runs that are not past the barrier):
+
+| term | what it reads | aim | weight | spread |
+|---|---|---|---|---|
+| world GDP | displayed world GDP at the end ÷ vanilla's per-run median on the same game version (today vanilla 1.15.2's eight runs) | 0.90–1.00 | 2 | 0.139 |
+| U\* of the USA, 1913 · the end | (unemployed + peasants) ÷ the workforce | 25% · 15% | 0.25 each | 17.2 · 8.9 pp |
+| U\* of Britain, 1913 · the end | the same | 10% · 5% | 0.25 each | 7.7 · 0.8 pp |
+| U\* of Germany (GER, else NGF, else PRU), 1913 · the end | the same | 20% · 20% | 0.25 each | 21.0 · 17.5 pp |
+| U\* of the world, 1913 · the end | the same | 60% · 50% | 0.25 each | 3.8 · 4.3 pp |
+| PI | the building-input goods' price index, £ ÷ base | falling decade over decade (required); 0.8 of vanilla or under (provisional) | 1 | fitted at build |
+| PP | the pop goods' price index in wage units | the same | 1 | fitted at build |
+| capital: the count | shortlist members (GLOSSARY §2's per-country rows) holding at least 2% of world GDP, with a pool above 0.5 of their GDP, on the mean of the 1935 and 1936 summaries | as few as possible (0) | 1 | 0.88 |
+| capital: the hoard above half GDP | Σ over the shortlist's countries of max(0, pool − 0.5 × GDP) ÷ the shortlist's GDP, at the end | 0 | 0.5 | 0.37 |
+| T0 | workers on tier-0 manufacturing rungs | 0 at 1936, or falling decade over decade | 0.5 | fitted at build |
+| T3 ÷ (T0 + T1 + T2) | workers by tier, manufacturing only | the more the better | 0.5 | fitted at build |
+| old plants pushed out | the in-market backward-industry test (`laggard_pressure.mjs`), manufacturing only | under 100% and shrinking | 0.5 | fitted at build |
+
+The distances:
+- **A level or band:** the distance outside it ÷ the spread; zero inside.
+- **Falling decade over decade:** the positive part of the mean decade-to-decade change of the line's logarithm, ÷ that quantity's spread
+  between runs, added to the level distance where the aim has one (PI and PP's 0.8, the old plants' 100%). T0 at zero by 1936 has no
+  distance.
+- **T3, "the more the better":** −ln(T3 ÷ (T0 + T1 + T2)) ÷ the spread of that logarithm, zero once T3 holds as many workers as the other
+  three tiers together. Claude's form, not discussed (the old loss took −ln of the ratio without a spread).
+- **The spreads** are the standard deviation over the 15 mod 1.1.1 runs on game 1.15.1 (F271 + F272), held as fixed constants so losses
+  compare across books, re-fitted only by a decision recorded here. The world-GDP spread is the spread of the ratio to the reference in
+  use, so it is re-expressed when the reference changes. The five marked "fitted at build" need the markets and the tier readers on the
+  same 15 runs.
+
+**The barrier is unchanged** (§10.120: a shortlist member holding at least 2% of world GDP whose pool ÷ GDP averages at least 1 over ten
+consecutive years). Every run's value of that line, the worst such member's best ten-year mean, is printed, so two books that both end
+past it can still be compared on it, which is the line §10.120 point 3 says such a run reports.
+
+**The count's set, Claude's, not discussed:** the shortlist's members, as GLOSSARY §2 defines "the majors" (never Russia or Japan), holding
+at least 2% of world GDP, the barrier's size rule. Without a size rule a rump Netherlands of 0.0–0.4% of world GDP, with a pool of 3 to
+89 times its GDP, is counted in 4 of the 15 mod 1.1.1 runs and in 3 of vanilla 1.15.2's eight. §10.113's reading counted the nine
+instrumented majors, Russia and Japan among them; it settles §10.113's open "which countries are majors".
+
+**Outside the loss, as before:** research pace, misplaced capital and the rubber shortage (§10.121); the minor readings of §10.120 point 6;
+now also play time (point 5).
+
+**What it does not say.** The weights rest on one book's seed axis at n=15, which says the direction and roughly the size of the trade-off,
+not a precise one. The spreads of PI, PP, T0, T3 and the old plants are not yet computed. Germany's end-state spread (17.5 pp) rests on one
+run at 66.7%, and Britain's (0.8 pp) on a line pinned near zero, so per point of U\* Britain's end weighs about 22 times Germany's; Claude
+showed it, and the user kept the form.
+
+**Where it stands:** ruled; nothing built. `criteria.mjs`, `fill_scorecard.mjs` and the stop watcher still implement the old register and
+get this loss with the rest of §10.120 and §10.121 before the first 1.2 runs. Their T0–T3 and `laggard_pressure.mjs` must take an
+explicit list of the manufacturing industries, never every `cfg.industries` entry.
