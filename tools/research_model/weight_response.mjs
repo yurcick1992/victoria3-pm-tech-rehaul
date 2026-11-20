@@ -10,14 +10,15 @@
 // categorical terms (observed count = expected count for every technology and every class). The bootstrap resamples picks.
 // The ai_weight^4 reading of F223 predicts f(m) = m^4: 1.25 → 2.44, 0.8 → 0.41, 0.5 → 0.063, 0.1 → 0.0001.
 //
-// usage: node tools/research_model/weight_response.mjs --run <runDir>=<overlay config> [--run …] [--boot 200]
+// usage: node tools/research_model/weight_response.mjs --run <runDir>=<overlay config> [--run …] [--boot 200] [--until-year 1846]
 import fs from 'node:fs'; import path from 'node:path'; import zlib from 'node:zlib'; import { execFileSync } from 'node:child_process';
 import { loadTree, canResearch } from './lib_tree.mjs';
 const args = process.argv.slice(2);
-const runs = []; let BOOT = 200;
+const runs = []; let BOOT = 200, UNTIL = 9999;
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--run') { const [d, c] = args[++i].split('='); runs.push({ dir: d, cfg: c }); }
   else if (args[i] === '--boot') BOOT = +args[++i];
+  else if (args[i] === '--until-year') UNTIL = +args[++i];
 }
 if (!runs.length) { console.error('usage: --run <runDir>=<overlay config> [...]'); process.exit(2); }
 const REPO = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '../..');
@@ -28,7 +29,7 @@ for (const r of runs) {
   const des = JSON.parse(execFileSync('node', [path.join(REPO, 'tools/testbed/probe_overlay.mjs'), '--config', r.cfg, '--mod', '-', '--game', 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game', '--print-design'], { encoding: 'utf8' }));
   const mult = Object.fromEntries(des.table.map(x => [x.tech, x.mult]));
   const sd = path.join(r.dir, 'save_summaries');
-  const sums = fs.readdirSync(sd).filter(f => f.endsWith('.json.gz')).map(f => JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(sd, f)))));
+  const sums = fs.readdirSync(sd).filter(f => f.endsWith('.json.gz')).map(f => JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(sd, f))))).filter(s => +s.provenance.date.split('.')[0] <= UNTIL);
   for (const s of sums) s.date = s.provenance.date;
   sums.sort((a, b) => day(a.date) - day(b.date));
   let n = 0;
