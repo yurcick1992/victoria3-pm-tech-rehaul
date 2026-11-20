@@ -1,0 +1,27 @@
+{
+  "schedule_version": 1,
+  "label": "g1152-resource-hooks-cross",
+  "_why": "PROBE 3b of the pre-1.2 probes (the follow-up of probe 3, inside the user's go-ahead of 2026-11-20 for the probe list): an ENGINE probe on vanilla 1.15.2 + one declared overlay (tools/testbed/overlays/probe3b_resource_hooks_cross.json). Does a force_resource_discovery of another building type from inside on_resource_discovered fire the hook again (and vanilla's oil-rush events with it), and does a state-region variable guard an effect to once per region although the hook fires once per state.",
+  "_arms": "resource_hooks_cross = {kind: overlay, config: tools/testbed/overlays/probe3b_resource_hooks_cross.json} - vanilla + telemetry + the cross-type hook script",
+  "_comparison": "its PROBE_RH lines: each tracked state's firing count after the driver's gold force (1 = one firing; 2 where the in-hook oil force fired it again), the REGION_ONCE count against the number of gold regions (45), the FINAL gold-mine counts (+1 per region), vanilla's oil_rush_state; the kept save's oil block in California (discovered or not).",
+  "_predictions": {
+    "nested": "the in-hook oil force reveals California's oil block and fires the hook again inside it (fires = 2 in California's states), so vanilla's oil-rush event is evaluated once more there; if it does not fire again, fires stays 1 and the oil block is still revealed",
+    "guard": "REGION_ONCE logged 45 times, once per gold region",
+    "game": "about 2 minutes of play"
+  },
+  "_stop_rule": "none.",
+  "_cost": "1 x 1836 -> 1836.4.1, about 4 minutes with the build",
+  "_caveats": ["Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30)."],
+  "defaults": {
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "events"],
+    "autosave_interval": "monthly",
+    "timeout_minutes": 30
+  },
+  "setups": {
+    "resource_hooks_cross": { "kind": "overlay", "config": "tools/testbed/overlays/probe3b_resource_hooks_cross.json" }
+  },
+  "runs": [
+    { "setup": "resource_hooks_cross", "until": "1836.4.1", "dump_dates": ["1836.2.1"] }
+  ]
+}
