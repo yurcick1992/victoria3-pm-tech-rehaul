@@ -55,9 +55,22 @@ export function simulate(tree, paths, L0 = {}, { seed = 1, grants = null, from =
     } else {
       const low = {}; const cand = ids.filter(id => canResearch(tree, id, s.held));
       for (const id of cand) low[T[id].category] = Math.min(low[T[id].category] ?? 9, T[id].era);
-      for (const id of cand) if (T[id].era === low[T[id].category]) { const w = T[id].ai ** L.aiK; E.push([id, w]); tot += w; }
+      for (const id of cand) if (T[id].era === low[T[id].category]) { const w = (T[id].ai * ewrMult(s, id)) ** L.aiK; E.push([id, w]); tot += w; }
     }
     if (!E.length) return null; let r = R() * tot; for (const [id, w] of E) { r -= w; if (r <= 0) return id; } return E.at(-1)[0];
+  };
+  // THE ENTRY-WEIGHT RULE (BALANCE_FRAMEWORK §10.119 item 3; `research_events.entry_weight_rule`, the pre-1.2 probe 6, 2026-11-21):
+  // L.ewr = { lowered, advancing, kinds: { tech: { kind: 'literacy'|'naval'|'frontline', lit } }, horizon: 3 }. "Advancing" is read off the
+  // measured grant queue: a stage of the tech's entry comes due for this country within `horizon` years (a stage is a 36-month bar), so its
+  // bar is ticking now. ⚠ The grants are the book's run's own, made WITHOUT the rule: the model cannot see the rule change which entries tick.
+  let curYf = 0;
+  const ewrMult = (s, id) => {
+    const E = L.ewr; if (!E) return 1;
+    const e = E.kinds[id]; if (!e || e.kind === 'frontline') return 1;
+    const q = gq.get(s.key), h = E.horizon ?? 3;
+    if (q && q.some(g => g.tech === id && g.y > curYf && g.y <= curYf + h)) return E.advancing;
+    if (e.lit == null || (s.p.lit ?? 0) >= e.lit) return E.lowered;
+    return 1;
   };
   const pickSpread = (s, cat) => {
     let minE = 9, E = [];
@@ -82,7 +95,7 @@ export function simulate(tree, paths, L0 = {}, { seed = 1, grants = null, from =
     if (yi === years.length - 1) break;
     const weeks = Math.round((years[yi + 1] - y) * 52);
     for (let w = 0; w < weeks; w++) {
-      const yf = y + w / 52;
+      const yf = y + w / 52; curYf = yf;
       for (const [k, s] of C) {
         const p = s.p, lit = p.lit ?? 0;
         const cap = L.capBase + L.capLit * lit;
