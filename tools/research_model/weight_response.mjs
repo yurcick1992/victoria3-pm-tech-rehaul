@@ -11,7 +11,7 @@
 // The ai_weight^4 reading of F223 predicts f(m) = m^4: 1.25 → 2.44, 0.8 → 0.41, 0.5 → 0.063, 0.1 → 0.0001.
 //
 // usage: node tools/research_model/weight_response.mjs --run <runDir>=<overlay config> [--run …] [--boot 200] [--until-year 1846]
-import fs from 'node:fs'; import path from 'node:path'; import zlib from 'node:zlib'; import { execFileSync } from 'node:child_process';
+import fs from 'node:fs'; import path from 'node:path'; import zlib from 'node:zlib'; import { execFileSync } from 'node:child_process'; import { fileURLToPath } from 'node:url';
 import { loadTree, canResearch } from './lib_tree.mjs';
 const args = process.argv.slice(2);
 const runs = []; let BOOT = 200, UNTIL = 9999;
@@ -21,7 +21,7 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i] === '--until-year') UNTIL = +args[++i];
 }
 if (!runs.length) { console.error('usage: --run <runDir>=<overlay config> [...]'); process.exit(2); }
-const REPO = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '../..');
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');   // fileURLToPath: the repo path has a space (%20 in a URL)
 const tree = loadTree(null);                            // vanilla's tree: the overlay changes weights only
 const day = d => { const [y, m, dd] = d.split('.').map(Number); return Date.UTC(y, m - 1, dd) / 864e5; };
 const picks = [];
