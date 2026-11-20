@@ -1,0 +1,10 @@
+{
+  "_why": "PROBE 2 of the pre-1.2 probes (BALANCE_FRAMEWORK 10.115 ruling 7; the user's go-ahead 2026-11-20). An ENGINE probe on vanilla: the two grain-farm Soil-Enriching Farming methods (fertilizer 5 -> grain 30 a level, vanilla's own recipe) are gated on the WORLD's Intensive Agriculture (unlocking_global_technologies, documented in production_methods.md, never used by vanilla) instead of the host's. Intensive Agriculture is tech era 2: six countries hold it on the 1836 map (GBR, FRA, PRU, USA, BEL, BAV in vanilla 1.15.2's run 1) and about 100 of 425 by 1845, so most farms sit in countries without it while the world has it. Two questions: (1) does a country without the technology run the method; (2) how fast the AI takes it up while fertilizer is scarce (Intensive Agriculture also unlocks the chemical plants that make it). The sheep farms' method on the same technology stays host-gated: the in-run comparison.",
+  "probe_overlay": {
+    "kind": "global_tech_gate",
+    "methods": {
+      "pm_soil_enriching_farming": { "file": "02_agro.txt", "tech": "intensive_agriculture" },
+      "pm_soil_enriching_farming_building_rice_farm": { "file": "02_agro.txt", "tech": "intensive_agriculture" }
+    }
+  }
+}

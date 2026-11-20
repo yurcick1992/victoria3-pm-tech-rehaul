@@ -1,0 +1,46 @@
+{
+  "schedule_version": 1,
+  "label": "g1152-engine-probes",
+  "_why": "PROBES 2-4 OF THE PRE-1.2 PROBES (the user's go-ahead, 2026-11-20: \"Yep, go on and launch them whenever ready\", to the seven-probe proposal of the same evening). ENGINE probes on vanilla 1.15.2: each arm is vanilla + telemetry + ONE declared overlay (build.ps1 -Overlay with a probe_overlay config, written by tools/testbed/probe_overlay.mjs), so none is a control and none is a book of ours; nothing from them is economy data of a book. Probe 3 (resource hooks: gold's depleted fields, oil's linked discovery; BALANCE_FRAMEWORK 10.115) first, being 7 months; then probe 4 (the research-weight response; 10.119 item 3), two variants with the weight groups swapped, alternating, quarterly saves for the picks (F223's cadence); then probe 2 (the world-technology gate on Soil-Enriching Farming; 10.115 ruling 7), two runs to 1856.",
+  "_arms": {
+    "resource_hooks": "{kind: overlay, config: tools/testbed/overlays/probe3_resource_hooks.json} - vanilla + telemetry + the resource-hook probe script, its slot-count script values and California's gold block at discover_chance_mult = 0",
+    "aiw_a": "{kind: overlay, config: tools/testbed/overlays/probe4_ai_weights_a.json} - vanilla + telemetry + the 77 tech-era-1-2 technologies' ai_weight in five groups x 1 / 1.25 / 0.8 / 0.5 / 0.1 (rotate 0)",
+    "aiw_b": "{kind: overlay, config: tools/testbed/overlays/probe4_ai_weights_b.json} - the same groups with the multipliers rotated by 2, so no technology has the same multiplier in both",
+    "world_gate": "{kind: overlay, config: tools/testbed/overlays/probe2_world_gate.json} - vanilla + telemetry + the two grain-farm Soil-Enriching Farming methods on the WORLD's Intensive Agriculture"
+  },
+  "_comparison": "probe 3: its own PROBE_RH log lines (before / after each forced effect, every hook firing) and its last save. Probe 4: the picks in each variant's quarterly summaries against the multiplier, a term per technology, inside each tree's oldest researchable era; F223's weight^4 fit is the prior. Probe 2: farm levels on Soil-Enriching Farming in countries WITHOUT Intensive Agriculture, year by year, against the sheep farms' host-gated method in the same runs and against vanilla 1.15.2's eight centuries (where it is zero by construction outside the holders); fertilizer prices in the eleven markets (the red-flag feed, yearly).",
+  "_predictions": {
+    "resource_hooks": "on_resource_discovered fires on every forced discovery (root = the state) and reveals 20-50% of the block, also on the zero-chance block (argued: force ignores the roll); a force from inside the hook re-fires the hook (so the oil link needs a guard); force_resource_depletion turns the field's slots into gold-mine slots and fires on_resource_depleted; change_resource_potential moves the counts by its amount, negative too; the comparison form of the slot count works and the direct form logs an error or an empty field",
+    "ai_weights": "inside a choice set the odds follow ai_weight^4 near ratio 1 and saturate below: x 0.8 picked about 0.4 times as often as x 1, x 0.5 about 0.1 times, x 0.1 never while an alternative is open; x 1.25 about 2.4 times",
+    "world_gate": "countries without Intensive Agriculture run Soil-Enriching Farming once any country holds it (from the first months, six holders on the 1836 map); the AI switches large shares of grain farms by 1846 although fertilizer is scarce, so fertilizer prices sit near the 175% ceiling in markets without chemical plants and the method's farms run short of it",
+    "game": "probe 3 about 4 minutes of play, probe 4 four runs of about 12 minutes, probe 2 two runs of about 23 minutes; with builds about 2 h"
+  },
+  "_stop_rule": "none: every run plays to its date.",
+  "_cost": "1 x 1836 -> 1836.8.1 + 4 x 1836 -> 1846.1.1 + 2 x 1836 -> 1856.1.1, about 2 h with builds",
+  "_caveats": [
+    "Launch ONLY through tools/testbed/launch_detached.ps1 CALLED DIRECTLY from the PowerShell tool (landmine L30).",
+    "Overlay arms are not gated by the same-book rule (they build no book of ours): their short runs are recorded run_kind 'short'.",
+    "Filter error.log by POSITION from each run's own first line; the probe-3 script logs its own lines with the prefix PROBE_RH."
+  ],
+  "defaults": {
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 60
+  },
+  "setups": {
+    "resource_hooks": { "kind": "overlay", "config": "tools/testbed/overlays/probe3_resource_hooks.json" },
+    "aiw_a": { "kind": "overlay", "config": "tools/testbed/overlays/probe4_ai_weights_a.json" },
+    "aiw_b": { "kind": "overlay", "config": "tools/testbed/overlays/probe4_ai_weights_b.json" },
+    "world_gate": { "kind": "overlay", "config": "tools/testbed/overlays/probe2_world_gate.json" }
+  },
+  "runs": [
+    { "setup": "resource_hooks", "until": "1836.8.1", "dump_dates": ["1836.2.1"], "autosave_interval": "monthly", "timeout_minutes": 30 },
+    { "setup": "aiw_a", "until": "1846.1.1", "dump_dates": ["1836.2.1", "1840.1.1"], "autosave_interval": "quarteryear" },
+    { "setup": "aiw_b", "until": "1846.1.1", "dump_dates": ["1836.2.1", "1840.1.1"], "autosave_interval": "quarteryear" },
+    { "setup": "aiw_a", "until": "1846.1.1", "dump_dates": ["1836.2.1", "1840.1.1"], "autosave_interval": "quarteryear" },
+    { "setup": "aiw_b", "until": "1846.1.1", "dump_dates": ["1836.2.1", "1840.1.1"], "autosave_interval": "quarteryear" },
+    { "setup": "world_gate", "until": "1856.1.1", "dump_dates": ["1836.2.1", "1840.1.1", "1846.1.1", "1850.1.1", "1855.1.1"] },
+    { "setup": "world_gate", "until": "1856.1.1", "dump_dates": ["1836.2.1", "1840.1.1", "1846.1.1", "1850.1.1", "1855.1.1"] }
+  ]
+}

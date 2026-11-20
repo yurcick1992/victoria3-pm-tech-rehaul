@@ -1,0 +1,7 @@
+{
+  "_why": "PROBE 4 of the pre-1.2 probes, variant a (BALANCE_FRAMEWORK 10.119 item 3: the two figures of the research-weight rule; the user's go-ahead 2026-11-20). An ENGINE probe on vanilla: every technology of tech eras 1 and 2 that has an ai_weight, sorted by tree, era and key, is dealt round-robin into five groups, and each group's ai_weight is multiplied by one of 1, 1.25, 0.8, 0.5, 0.1 (rotate 0: group g takes mults[(g + 0) % 5]). Variants a (rotate 0) and b (rotate 2) give every technology two different multipliers, so its own pull cancels in a fit with a term per technology. Read with monthly saves 1836-1846: which technology each country starts researching, inside each tree's oldest researchable era (F223's choice set), against the multiplier, to test F223's P proportional to ai_weight^4 (fitted on vanilla's near-flat weights) at the ratios the rule will use (0.8 and 0.1).",
+  "probe_overlay": {
+    "kind": "tech_ai_weights",
+    "design": { "eras": [1, 2], "mults": [1, 1.25, 0.8, 0.5, 0.1], "rotate": 0 }
+  }
+}

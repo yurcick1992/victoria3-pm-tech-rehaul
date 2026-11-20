@@ -1,0 +1,7 @@
+{
+  "_why": "PROBE 3 of the pre-1.2 probes (BALANCE_FRAMEWORK 10.115: gold's depleted fields over four rungs, oil's linked discovery; the user's go-ahead 2026-11-20). An ENGINE probe on vanilla: on 1836.2.1 a script forces a gold-field discovery in every state with a gold-field potential, California's block carrying discover_chance_mult = 0; the hooks on_resource_discovered and on_resource_depleted log every firing with the state's slot counts, and the first firing in a tracked state forces a discovery again from inside the hook (at most twice), to see whether that re-fires the hook; 1836.3.1 a second plain force and vanilla's gold-rush variable; 1836.4.1 force_resource_depletion of the gold fields (where do the slots go: depleted_type = building_gold_mine); 1836.5.1 change_resource_potential (+3 gold mines, +2 coal, +2 oil where oil is) and add_resource_potential = building_lead_mine; 1836.6.1 a negative change (-1 gold mine); 1836.7.1 the final counts. Slot counts in two forms (by comparison, the form vanilla's AI strategies use, and the direct value), so the log also says which form works in a script value.",
+  "probe_overlay": {
+    "kind": "resource_hooks",
+    "zero_chance": { "file": "05_north_america.txt", "state": "STATE_CALIFORNIA" }
+  }
+}

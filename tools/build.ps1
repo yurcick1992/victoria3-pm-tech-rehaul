@@ -314,6 +314,9 @@ if ($ControlOnly -or $Overlay) {
     if ($ControlOnly -and $cfg -and $cfg.PSObject.Properties.Name -contains 'pop_need_weight_mult' -and $cfg.pop_need_weight_mult) {
         throw "-ControlOnly was given a config carrying pop_need_weight_mult ($(Split-Path $cfgPath -Leaf)). A control arm carries NO gameplay content - that is the whole guarantee. Use -Overlay for vanilla + one declared change."
     }
+    if ($ControlOnly -and $cfg -and $cfg.PSObject.Properties.Name -contains 'probe_overlay' -and $cfg.probe_overlay) {
+        throw "-ControlOnly was given a config carrying probe_overlay ($(Split-Path $cfgPath -Leaf)). A control arm carries NO gameplay content. Use -Overlay."
+    }
     $meta = Get-Content $dstMeta -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($Overlay) {
         $meta.name = "V3 Testbed Overlay (vanilla + telemetry + declared overlay, built $(Get-Date -Format 'yyyy-MM-dd HH:mm'))"
@@ -357,7 +360,40 @@ if ($ControlOnly -or $Overlay) {
             }
         }
     }
-    $ARMS = @{ '-ControlOnly' = @('telemetry'); '-Overlay' = @('telemetry', 'pop_needs') }
+    # THE ENGINE-PROBE OVERLAYS (2026-11-20, the pre-1.2 probes 2-4): a config's `probe_overlay.kind` names one of these; the content
+    # is written by tools\testbed\probe_overlay.mjs, which throws on anything it cannot do exactly. Each is vanilla + telemetry + one
+    # declared change, recorded by the observer as overlay+<the directories it writes>; none is a control and none is a book of ours.
+    $probeOverlayPaths = @{
+        tech_ai_weights  = @('common/technology/technologies/10_production.txt', 'common/technology/technologies/20_military.txt',
+                             'common/technology/technologies/30_society.txt')
+        global_tech_gate = @('common/production_methods/02_agro.txt')
+        resource_hooks   = @('common/on_actions/zzz_probe_resource_hooks.txt', 'common/script_values/zzz_probe_resource_values.txt',
+                             'map_data/state_regions/05_north_america.txt')
+    }
+    foreach ($kind in $probeOverlayPaths.Keys) {
+        $ARM_PARTS["probe_$kind"] = @{
+            paths = $probeOverlayPaths[$kind]
+            emit  = {
+                $po = Join-Path $PSScriptRoot 'testbed\probe_overlay.mjs'
+                $written = & node $po --config $cfgPath --mod $modAbs --game $Game
+                if ($LASTEXITCODE -ne 0) { $global:LASTEXITCODE = 0; throw "probe_overlay.mjs failed for $(Split-Path $cfgPath -Leaf)" }
+                if (-not @($written).Count) { throw "-Overlay: probe_overlay.mjs wrote nothing for $(Split-Path $cfgPath -Leaf) - an empty overlay is a control wearing the wrong name." }
+                foreach ($w in @($written)) { Write-Output "  probe overlay file: $w" }
+            }
+        }
+    }
+    $overlayPart = $null
+    if ($Overlay) {
+        $hasPn = ($cfg.PSObject.Properties.Name -contains 'pop_need_weight_mult' -and $cfg.pop_need_weight_mult)
+        $hasPo = ($cfg.PSObject.Properties.Name -contains 'probe_overlay' -and $cfg.probe_overlay)
+        if ($hasPn -and $hasPo) { throw "-Overlay: $(Split-Path $cfgPath -Leaf) declares both pop_need_weight_mult and probe_overlay - an overlay arm is vanilla + ONE declared change." }
+        if ($hasPo) {
+            $k = [string]$cfg.probe_overlay.kind
+            if (-not $probeOverlayPaths.ContainsKey($k)) { throw "-Overlay: probe_overlay.kind '$k' is not a declared overlay kind ($($probeOverlayPaths.Keys -join ', '))." }
+            $overlayPart = "probe_$k"
+        } else { $overlayPart = 'pop_needs' }
+    }
+    $ARMS = @{ '-ControlOnly' = @('telemetry'); '-Overlay' = @('telemetry', $overlayPart) }
     $armParts = $ARMS[$armFlag]
     foreach ($part in $armParts) { & $ARM_PARTS[$part].emit }
     $allowed = @{}; foreach ($part in $armParts) { foreach ($r in $ARM_PARTS[$part].paths) { $allowed[$r] = $part } }
@@ -381,6 +417,9 @@ if ($ControlOnly -or $Overlay) {
         # decodes UTF-8 as CP1251 on this machine, and a mangled warning is a warning nobody reads.
         Write-Output "  overlay: common/pop_needs/00_pop_needs.txt from $(Split-Path $cfgPath -Leaf)"
         Write-Output "  !! THIS IS NOT A CONTROL ARM - never report a result from it as one."
+    } elseif ($overlayPart -like "probe_*") {
+        Write-Output "  overlay: $overlayPart from $(Split-Path $cfgPath -Leaf) (tools	estbedprobe_overlay.mjs)"
+        Write-Output "  !! THIS IS NOT A CONTROL ARM - an engine probe; never report a result from it as a control or as a book."
     } else {
         Write-Output "  (no buildings, no production methods, no localization, no history, no pop needs)"
     }
