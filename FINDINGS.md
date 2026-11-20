@@ -23534,6 +23534,21 @@ percussion caps, shell guns, repeaters, bolt-action rifles, automatic machine gu
 - Probe 4 reads tech eras 1–2 over 1836–1846; that the exponent holds in later eras and at the AI's later choice sets is assumed.
 - Probe 5 (the rule's tick cost) is a separate performance probe; nothing here is a cost reading.
 
+**Addendum (2026-11-21, the same evening): a scope the user has not ruled, every MILITARY technology exempt** (`ewr_sweep.mjs` `milExempt=1`: the
+10 naval and the 6 military-industry entries kept at full weight with the 6 frontline ones; the same ten runs × 2 seeds):
+
+| model setting | military 1906 | military 1936 | production 1936 | leader e5 military | era-5 military any major holds |
+|---|---|---|---|---|---|
+| rule off | 37 | 48 | 58 | 0% | 0.0 |
+| 0.8 / 0.1, the ruled scope | 39 | 48 | 58 | 10% | 1.0 |
+| 0.8 / 0.1, military exempt | 39 | 49 | 57 | 10% | 2.0 |
+| 0.5 / 0.1, military exempt | 42 | 51 | 56 | 40% | 5.0 |
+| vanilla 1.15.1, observed | 41 | 53 | 52 | 55% | 7.0 |
+
+Only a deeper cut (−50%) with every military technology exempt moves the majors toward vanilla's military (+3 by 1936, five tech-era-5
+military technologies held), at two production technologies; the ruled −20% gains one at most in either scope. The model overstates the
+book's military by 5 with the rule off, so these are differences between settings, not levels.
+
 ## F279 — THE ENTRY-WEIGHT RULE COSTS NO VISIBLE PLAY TIME: 64.9 AGAINST 65.4 SECONDS PER IN-GAME YEAR, 1837–1846, INSIDE THE CANON'S OWN RUN-TO-RUN SPREAD (2026-11-21; session `20261121_015513_g1152-ewr-perf`, a performance probe, the canon against the canon + the rule, alternating 2 + 2, 1836→1846, game 1.15.2)
 
 Probe 5 of the pre-1.2 probes (BALANCE_FRAMEWORK §10.119 item 3: "if that's not too expensive, a better form…"). Arms:

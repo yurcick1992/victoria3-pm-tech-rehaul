@@ -47,7 +47,10 @@ const obsY = p => Object.fromEntries(p.years.map(y => [y, Object.fromEntries(Obj
 if (opt('--van', null)) console.log('VANILLA observed      ' + fmt(agg(opt('--van').split(',').map(d => score(obsY(loadPaths(d)))))));
 console.log('BOOK observed         ' + fmt(agg(runs.map(r => score(obsY(r.paths))))));
 for (const s of sets) {
-  const L = { resEff: EFF, aiK: K }; if (s.L.lowered != null) L.ewr = { lowered: s.L.lowered, advancing: s.L.advancing ?? s.L.lowered, kinds, horizon: s.L.horizon ?? 3 };
+  // milExempt=1: every MILITARY-tree technology keeps its full weight (a variant the user has not ruled: the ruled scope lowers naval and
+  // the military industry entries)
+  const K2 = s.L.milExempt ? Object.fromEntries(Object.entries(kinds).map(([id, e]) => [id, T[id]?.category === 'military' ? { ...e, kind: 'frontline' } : e])) : kinds;
+  const L = { resEff: EFF, aiK: K }; if (s.L.lowered != null) L.ewr = { lowered: s.L.lowered, advancing: s.L.advancing ?? s.L.lowered, kinds: K2, horizon: s.L.horizon ?? 3 };
   const res = []; const t0 = Date.now();
   for (const r of runs) for (let sd = 1; sd <= SEEDS; sd++) res.push(score(simulate(tree, r.paths, L, { seed: sd, grants: structuredClone(r.g) })));
   console.log(`${s.name.padEnd(21)} ${fmt(agg(res))}  [${((Date.now() - t0) / 1000).toFixed(0)} s]`);
