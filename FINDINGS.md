@@ -424,6 +424,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F276 | The world-technology gate works: a country without the technology runs a method gated on `unlocking_global_technologies` once another holds it; the AI takes it up slowly where the input is scarce (Soil-Enriching Farming on up to ~10% of the non-holders' grain farms against the holders' ~45%); the prediction of fast uptake wrong | vanilla 1.15.2 + overlay | 2 × 1836→1856, an engine probe | here |
 | F277 | The resource hooks: a forced discovery reveals the whole block, a zero-chance one too; on_resource_discovered fires once per state of the region inside the force, and a force of another type from inside it fires it again (vanilla's oil events react); depletion moves the whole potential; change_resource_potential changes a region's capacity at once, negative too, discovered capacity even on an undiscovered type; a state-region variable guards once per region | vanilla 1.15.2 + overlay | 1 + 1 short engine probes | here |
 | F278 | The AI's research picks follow ai_weight^3.7 (× 0.8 → odds × 0.33, × 0.5 → × 0.08, × 1.25 → × 2.1, × 0.1 → never); in the research model the ruled entry-weight rule buys ~2 military technologies by 1906 and none by 1936, whatever its figures | vanilla 1.15.2 + overlay; the model over the 1.1.1 canon | 2 + 2 × 1836→1846; model 10 runs × 2 seeds | here |
+| F279 | The entry-weight rule costs no visible play time: 64.9 against 65.4 s per in-game year over 1837–1846, inside the canon's own spread; the wall-clock reader cannot read a performance probe (usableRuns drops probes) | the canon and the canon + the rule | 2 + 2 × 1836→1846, a performance probe | here |
 
 ---
 
@@ -23532,3 +23533,28 @@ percussion caps, shell guns, repeaters, bolt-action rifles, automatic machine gu
   modelled uniform; the AI's strategy-dependent weight terms are not modelled (§10.96's stated limits). The +2 / 0 is directional.
 - Probe 4 reads tech eras 1–2 over 1836–1846; that the exponent holds in later eras and at the AI's later choice sets is assumed.
 - Probe 5 (the rule's tick cost) is a separate performance probe; nothing here is a cost reading.
+
+## F279 — THE ENTRY-WEIGHT RULE COSTS NO VISIBLE PLAY TIME: 64.9 AGAINST 65.4 SECONDS PER IN-GAME YEAR, 1837–1846, INSIDE THE CANON'S OWN RUN-TO-RUN SPREAD (2026-11-21; session `20261121_015513_g1152-ewr-perf`, a performance probe, the canon against the canon + the rule, alternating 2 + 2, 1836→1846, game 1.15.2)
+
+Probe 5 of the pre-1.2 probes (BALANCE_FRAMEWORK §10.119 item 3: "if that's not too expensive, a better form…"). Arms:
+`{kind: config}` on the canon (`697d4869aefc3225`) and on `config/mod_config.g1151-canon-bz-dcu-ra-il-aw-ewr.json` (`d1941a9fcec18099`: the
+canon + `research_events.entry_weight_rule` {lowered 0.8, advancing 0.1}, built by `emit_tech_finish.mjs`: 107 technologies lowered, 97
+literacy-gated and 10 naval, 6 frontline kept), `probe: performance`, alternating canon / ewr / canon / ewr.
+
+| run | arm | s per in-game year 1837–1841 | 1842–1846 | wall to 1846.1.1 |
+|---|---|---|---|---|
+| 1 | canon | 67.3 | 67.1 | 812.6 s (a crash at 1841.6.29, resumed: relaunch and replay included) |
+| 2 | ewr | 65.0 | 65.5 | 711.5 s |
+| 3 | canon | 64.2 | 63.1 | 699.7 s |
+| 4 | ewr | 62.2 | 67.0 | 706.2 s |
+
+Means 65.4 (canon) and 64.9 (ewr) seconds per in-game year: the rule is not visible against the canon's own spread (3–5% between its two
+runs). The prediction held. The cost was argued small because the rule's triggers are evaluated only when a country picks research.
+
+**What it does NOT say.**
+- Late-game cost: ten early years only, when few countries meet the entries' literacy lines and the majors' choice sets are small. The 1.2
+  book's centuries grade play time anyway.
+- The rule's effect on research: a performance probe is never economy data (§10.118); the picks of these runs are not read.
+- A bound below the noise: no ×10-worsened arm was run (the plan made it conditional on a visible difference).
+- The wall-clock reader cannot read a performance probe (`wall_clusters.mjs` takes usable runs, and `lib_runs.usableRuns` drops every probe):
+  the table was read by hand from each run's `run.log` tick lines, per attempt.
