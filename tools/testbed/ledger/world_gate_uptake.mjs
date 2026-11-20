@@ -15,7 +15,7 @@ for (const g of groups) {
   const byYear = {};
   for (const dir of g.dirs) {
     const sd = path.join(dir, 'save_summaries');
-    for (const f of fs.readdirSync(sd).filter(f => f.endsWith('.json.gz'))) {
+    for (const f of fs.readdirSync(sd).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.'))) {
       const j = JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(sd, f))));
       const d = j.provenance.date; if (!/\.1\.1$/.test(d)) continue;
       const y = +d.split('.')[0];

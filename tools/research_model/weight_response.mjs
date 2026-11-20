@@ -29,7 +29,7 @@ for (const r of runs) {
   const des = JSON.parse(execFileSync('node', [path.join(REPO, 'tools/testbed/probe_overlay.mjs'), '--config', r.cfg, '--mod', '-', '--game', 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game', '--print-design'], { encoding: 'utf8' }));
   const mult = Object.fromEntries(des.table.map(x => [x.tech, x.mult]));
   const sd = path.join(r.dir, 'save_summaries');
-  const sums = fs.readdirSync(sd).filter(f => f.endsWith('.json.gz')).map(f => JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(sd, f))))).filter(s => +s.provenance.date.split('.')[0] <= UNTIL);
+  const sums = fs.readdirSync(sd).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).map(f => JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(sd, f))))).filter(s => +s.provenance.date.split('.')[0] <= UNTIL);
   for (const s of sums) s.date = s.provenance.date;
   sums.sort((a, b) => day(a.date) - day(b.date));
   let n = 0;
