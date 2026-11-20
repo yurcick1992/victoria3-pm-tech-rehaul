@@ -1337,6 +1337,12 @@ comparison has run on a stub build's three files, not on the 298 a real build wr
 then loaded; `stitch_session.mjs` has not met an absolute `parent`. The first checkpoint leg and its continuation are that proof:
 read the `same-book (L54)` lines of `session.log` and the two `build_state.json` files, and compare the two runs'
 `content_layout_sha256` by hand once.
+**Executed 2026-11-20/21 (FINDINGS F275):** two canon checkpoint legs to 1855.3.1 (`20261120_230717`) and a continuation of run 1 to
+1857.1.1 (`20261120_235854`), a real build and a real game each. The post-build comparison passed on the real 298-file build
+(`content layout 67319da6d656dfe0 = the parent's`; the whole-mod layout differed by the telemetry file alone), the observer ran with the
+new arguments (`run_kind` checkpoint / continuation, `full_until` 1936.1.1 in both `build_state.json`), the game loaded the kept save
+and played on, compared by hand once. A leg that stops off 1 January keeps its last 1 January save (the game writes none at its stop date).
+Still not met: `stitch_session.mjs` with an absolute `parent`; a continuation from another checkout.
 
 **Limits.** (1) The game's version is the launcher's `rawVersion`: a hotfix that keeps the number is caught only by the layout
 fingerprint. (2) Every layout fingerprint, the built mod's and a third-party mod's, sees file names and sizes, not contents: a change

@@ -5712,6 +5712,13 @@ and a content fingerprint that leaves the telemetry file out (its size differs b
 What is closed, and the merge, are recorded when the batch ends. The merge checklist is in BACKLOG section B; the agent's proof
 scripts are kept in `C:\claude-code\same_book_proofs_2026-11-17\` (they were written in a session's temporary folder).
 
+**Merged and proven (2026-11-20/21).** Merged into `main` on 2026-11-20 as `63e3009`, renumbered **L54** (main had taken L53 for the BOM
+lint the day before); the two standing schedules carry `"probe": "syntax"`. The parts that needed a real build and game were run as probe 1
+of the pre-1.2 probes (FINDINGS F275): two canon checkpoint legs to 1855.3.1 and a continuation of one to 1857.1.1 passed every check, the
+post-build content fingerprint included, and the game loaded the kept save. Two facts for the 1.2 arms: a leg that stops off 1 January keeps
+its 1 January save, so legs should end on 1 January; and a leg stays continuable only while nothing a build reads changes in its checkout
+(these legs are not continuable any more: `build.ps1` changed after them).
+
 ## §10.119 — WHERE THE OLDER 1.2 AND 1.3 ITEMS GO, ONE BY ONE (user-ruled from 2026-11-17)
 
 §10.110.1 planned mod 1.2 as a retune plus minor changes and mod 1.3 as the major ones; §10.115 then made mod 1.2 the extraction

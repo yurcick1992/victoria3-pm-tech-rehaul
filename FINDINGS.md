@@ -420,6 +420,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F272 | A third-party mod, Production Method Rework 0.4.0 (retooling instead of free method switches), against vanilla 1.15.1 and mod 1.1.1, n=15 each for the economy (vanilla and the mod glued to F271's session): PMR's world ends at 1.41× vanilla's (the mod 1.19×), ahead from the 1870s and at 1.55× in 1906–16, its lowest run above vanilla's highest; the lead is GDP per productive worker (1.43×; W 1.01× at the end, 1.19× in 1906) and sits in the industrial leaders; world U* a decade ahead of vanilla mid-century (46.2% against 55.4% in 1906) and level at the end (28.2% against 30.1%; the mod 33.4%), the shortlist 1.1% against 4.8%; the investment pool ends at 1.64 of world GDP against 0.38 (the mod 0.41) and 3.73 against 0.60 on the shortlist, Britain's at 8 of its GDP; play ×1.40 of the same session's vanilla (the mod ×1.06), ×1.24 a year from the first decade to ×1.6–1.7 after 1916; the AI's private investors retool (8–12% of private queue points), its governments hardly (0.2–2.2%). Of the five predictions written before the runs three were wrong (world GDP, the majors and the pool, in direction), one half right (depeasantation) and one right (play time) | PMR 0.4.0 (external), canon 697d4869, vanilla 1.15.1 | 15 + 15 + 15 economy, 15 + 5 + 5 play time; GDP and pool far outside the seed spread, the rest directional | here |
 | F273 | The game 1.15.2 smoke test (a syntax probe, n=1+1 to 1846 + a 1836 control): mod 1.1.1's canon builds, loads and runs on 1.15.2; its error.log, judged class by class against vanilla 1.15.1 and not by file path, holds two classes of ours (a BOM regression in two owned building files since the 1.15 pass, fixed, landmine L53; the telemetry variable line) and one rare unexplained class |
 | F274 | Vanilla 1.15.2 over eight centuries: world GDP at the end 0.89× vanilla 1.15.1 and 0.83× 1.15.0 (£4.68bn against 5.28 and 5.66; 7 of 8 runs under 1.15.1's median; the gap opens 1876–86); world U* 36.8% against 30.0%, the shortlist 9.2% against 4.5% (the USA, Britain and Germany near full employment); the hoard lower (shortlist pool ÷ GDP 0.41 against 0.76, Britain 1.11 against 1.34), the barrier in 4 of 8 runs, all Britain, against 9 of 16; play 167.6 min against 162.5 / 165.3 (different days); predictions: GDP and U* wrong, the shortlist half right, play time right; added 2026-11-20: W30–W34 (companies, copper and war goods, the map, trade) show no change that explains the smaller world; the references, wages and noise catalogue re-baselined on it | vanilla 1.15.2 | 8 (against 16 and 10); GDP a version effect, the rest directional | here |
+| F275 | The same-book machinery in a real game, and the canon on 1.15.2 to 1855: two canon checkpoint legs to 1855.3.1 and a continuation of one to 1857.1.1 pass every check (the inheritance check, the post-build content fingerprint, a save the game loads); a leg ending off 1 January keeps its 1 January save; world GDP 0.98 / 1.025 of vanilla 1.15.2 at 1855; one error class of ours on a loaded save (the bracketed `[1.15]` in the mod name) | the canon `697d4869` | 2 legs + 1 continuation; the machinery a proof, the economy n = 2 | here |
 
 ---
 
@@ -23356,3 +23357,49 @@ The error-noise catalogue (TESTBED_OPERATIONS §4.2) has a 1.15.2 baseline from 
 - Not casualties (W33): the summaries carry no battle losses; world population is a weak stand-in.
 - W30–W34 at a decade's grain only, medians at n=8: a change smaller than the run spread is not seen.
 - The wall-clock clusters say "no listed bug observed", but on 1.15 the summaries cannot see fleet paths (L52), so that is not an observation.
+
+## F275 — THE SAME-BOOK MACHINERY WORKS IN A REAL GAME: TWO CANON CHECKPOINT LEGS TO 1855.3.1 AND A CONTINUATION OF ONE TO 1857.1.1 PASS EVERY CHECK, AND A LEG ENDING OFF 1 JANUARY KEEPS ITS 1 JANUARY SAVE; THE CANON ON 1.15.2 TRACKS VANILLA TO 1855 (WORLD GDP 0.98 / 1.025) (2026-11-21; sessions `20261120_230717_g1152-canon-legs-1855` and `20261120_235854_g1152-canon-leg-continue-1857`, the canon `697d4869` n = 2 legs + 1 continuation, game 1.15.2)
+
+Probe 1 of the pre-1.2 probes (the user's go-ahead 2026-11-20). The arm: `{kind: config, config: config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json}`
+(sha256 `697d4869aefc3225`), its debug build + telemetry, `checkpoint: true` (BALANCE_FRAMEWORK §10.118; landmine L54, merged into main the
+same evening, `63e3009`).
+
+**The machinery (a proof, not a measurement).**
+- The gate planned both legs as checkpoint legs at `full_until` 1936.1.1 and the continuation as `continuation` + `checkpoint`; nothing refused.
+- **The kept save of a leg that ends off 1 January is the last yearly autosave** (1855.1.1 for an `until` of 1855.3.1): the game writes no save
+  at its stop date. So a continuation replays the leg's last months; a leg meant to be continued should end on 1 January.
+- The continuation of run 1 (main at `51d7c92`, nothing a build reads changed since the parent's `fb9b8cb`) passed the inheritance check at
+  plan time and before its build, and after the build `the built mod's content layout 67319da6d656dfe0 = the parent's [content]` while the
+  whole-mod layout differed by the telemetry file alone (`a3fd2db4…` → `31b51f74…`, by design).
+- The game loaded the kept save (about 100 s of loading) and played 1855.1.1 → 1857.1.1 in 264 s; `wall_seconds` 1,752 = the parent's 1,488 s
+  to 1855.1.1 + 264; the research entries ran after the load (72 `PMR_JE` lines); the 1857.1.1 save is kept. No init marker on a loaded save
+  (it fires at game start).
+- **error.log on a loaded save.** 2,061 "Failed to read key reference" lines (`pdx_persistent_reader.cpp`) at load are vanilla's: 5,137 lines
+  in exactly the 3 runs of the vanilla 1.15.2 batch that resumed from a save. **One class is ours:** 7 × `Failed to find type '1' in '1.15'`,
+  `Could not find promote`, `Failed converting statement for '1.15'` and `Data error in loc string 'MISSING_DLC_ENTRY'` — the save lists the
+  mod under its earlier build stamp, the engine reports that entry as missing, and the `[1.15]` heading the mod's name (the Workshop title form
+  since mod 1.1.2) is read as a data expression. A player loading a save made with another version of the mod would likely meet the same; not
+  looked at on screen.
+- **A limit, measured:** the legs cannot be continued to 1936 on the main checkout any more, because `tools/build.ps1` changed after them
+  (the engine-probe overlays of the same evening, `cee5b28`), which the check refuses — the check working as designed. A leg is continuable
+  only until something a build reads changes.
+
+**The canon's 1836–1855 on game 1.15.2** (a checkpoint leg's reading is its book's own; n = 2). World GDP (displayed) ÷ vanilla 1.15.2's
+median at the same date (`20261119_210048`, n = 8):
+
+| date | canon (£bn, two legs) | vanilla 1.15.2 median (range) | canon ÷ vanilla |
+|---|---|---|---|
+| 1837.1.1 | 0.419 / 0.423 | 0.418 (0.412–0.422) | 1.004 / 1.013 |
+| 1840.1.1 | 0.444 / 0.443 | 0.448 (0.443–0.458) | 0.992 / 0.990 |
+| 1845.1.1 | 0.522 / 0.531 | 0.533 (0.520–0.540) | 0.978 / 0.996 |
+| 1850.1.1 | 0.571 / 0.602 | 0.595 (0.584–0.610) | 0.958 / 1.011 |
+| 1855.1.1 | 0.654 / 0.684 | 0.668 (0.642–0.680) | 0.980 / 1.025 |
+
+The prediction (inside the canon's 0.97–1.03 of 1.15.1, §10.115) held. Play: 1,504.7 s and 1,413.5 s to 1855.3.1.
+
+**What it does NOT say.**
+- Nothing about the 1855 "dead" shares, the 1836–1845 start line, prices or mining on 1.15.2: not read yet (the 1.2 book's arms will read them
+  against these legs and vanilla's eight).
+- n = 2: the canon's spread on 1.15.2 is not known from two legs; the 1.15.1 spread is the stand-in.
+- The play times are not a wall-clock comparison (no vanilla alternated beside them).
+- The continuation proves one continuation on one machine; a continuation from another checkout (line endings, L54's limits) is not tried.
