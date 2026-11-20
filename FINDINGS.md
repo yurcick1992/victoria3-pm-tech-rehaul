@@ -421,6 +421,9 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F273 | The game 1.15.2 smoke test (a syntax probe, n=1+1 to 1846 + a 1836 control): mod 1.1.1's canon builds, loads and runs on 1.15.2; its error.log, judged class by class against vanilla 1.15.1 and not by file path, holds two classes of ours (a BOM regression in two owned building files since the 1.15 pass, fixed, landmine L53; the telemetry variable line) and one rare unexplained class |
 | F274 | Vanilla 1.15.2 over eight centuries: world GDP at the end 0.89× vanilla 1.15.1 and 0.83× 1.15.0 (£4.68bn against 5.28 and 5.66; 7 of 8 runs under 1.15.1's median; the gap opens 1876–86); world U* 36.8% against 30.0%, the shortlist 9.2% against 4.5% (the USA, Britain and Germany near full employment); the hoard lower (shortlist pool ÷ GDP 0.41 against 0.76, Britain 1.11 against 1.34), the barrier in 4 of 8 runs, all Britain, against 9 of 16; play 167.6 min against 162.5 / 165.3 (different days); predictions: GDP and U* wrong, the shortlist half right, play time right; added 2026-11-20: W30–W34 (companies, copper and war goods, the map, trade) show no change that explains the smaller world; the references, wages and noise catalogue re-baselined on it | vanilla 1.15.2 | 8 (against 16 and 10); GDP a version effect, the rest directional | here |
 | F275 | The same-book machinery in a real game, and the canon on 1.15.2 to 1855: two canon checkpoint legs to 1855.3.1 and a continuation of one to 1857.1.1 pass every check (the inheritance check, the post-build content fingerprint, a save the game loads); a leg ending off 1 January keeps its 1 January save; world GDP 0.98 / 1.025 of vanilla 1.15.2 at 1855; one error class of ours on a loaded save (the bracketed `[1.15]` in the mod name) | the canon `697d4869` | 2 legs + 1 continuation; the machinery a proof, the economy n = 2 | here |
+| F276 | The world-technology gate works: a country without the technology runs a method gated on `unlocking_global_technologies` once another holds it; the AI takes it up slowly where the input is scarce (Soil-Enriching Farming on up to ~10% of the non-holders' grain farms against the holders' ~45%); the prediction of fast uptake wrong | vanilla 1.15.2 + overlay | 2 × 1836→1856, an engine probe | here |
+| F277 | The resource hooks: a forced discovery reveals the whole block, a zero-chance one too; on_resource_discovered fires once per state of the region inside the force, and a force of another type from inside it fires it again (vanilla's oil events react); depletion moves the whole potential; change_resource_potential changes a region's capacity at once, negative too, discovered capacity even on an undiscovered type; a state-region variable guards once per region | vanilla 1.15.2 + overlay | 1 + 1 short engine probes | here |
+| F278 | The AI's research picks follow ai_weight^3.7 (× 0.8 → odds × 0.33, × 0.5 → × 0.08, × 1.25 → × 2.1, × 0.1 → never); in the research model the ruled entry-weight rule buys ~2 military technologies by 1906 and none by 1936, whatever its figures | vanilla 1.15.2 + overlay; the model over the 1.1.1 canon | 2 + 2 × 1836→1846; model 10 runs × 2 seeds | here |
 
 ---
 
@@ -23403,3 +23406,129 @@ The prediction (inside the canon's 0.97–1.03 of 1.15.1, §10.115) held. Play: 
 - n = 2: the canon's spread on 1.15.2 is not known from two legs; the 1.15.1 spread is the stand-in.
 - The play times are not a wall-clock comparison (no vanilla alternated beside them).
 - The continuation proves one continuation on one machine; a continuation from another checkout (line endings, L54's limits) is not tried.
+
+## F276 — THE WORLD-TECHNOLOGY GATE WORKS: A COUNTRY WITHOUT THE TECHNOLOGY RUNS A METHOD GATED ON `unlocking_global_technologies` ONCE ANOTHER COUNTRY HOLDS IT; THE AI TAKES IT UP SLOWLY WHERE ITS INPUT IS SCARCE — SOIL-ENRICHING FARMING ON UP TO ~10% OF THE NON-HOLDERS' GRAIN FARMS AGAINST THE HOLDERS' ~45% (2026-11-21; session `20261121_000535_g1152-engine-probes` runs 6–7, an engine probe on vanilla 1.15.2, n = 2, 1836→1856)
+
+Probe 2 of the pre-1.2 probes (BALANCE_FRAMEWORK §10.115 ruling 7; the user's go-ahead 2026-11-20). The arm: `{kind: overlay, config:
+tools/testbed/overlays/probe2_world_gate.json}` = vanilla 1.15.2 + telemetry + the two grain-farm Soil-Enriching Farming methods
+(`pm_soil_enriching_farming`, `…_building_rice_farm`; fertilizer 5 → grain 30 a level) gated on the WORLD's Intensive Agriculture
+(`unlocking_global_technologies`, never used by vanilla) instead of the host's. The sheep-farm method on the same technology stays host-gated:
+the in-run control. Reader `tools/testbed/ledger/world_gate_uptake.mjs`; the comparison is vanilla 1.15.2 runs 1–2 of `20261119_210048`.
+
+| year | holders of Intensive Agriculture | holders: Soil-Enriching share of grain levels (probe / vanilla) | non-holders: grain levels | non-holders: Soil-Enriching share (probe; vanilla 0) | non-holder countries running it | non-holders: sheep-farm share (both arms) |
+|---|---|---|---|---|---|---|
+| 1838 | 8 | 68.8% / 67.4% | 857 | 1.0% | 3.0 | 0.0% |
+| 1840 | 31 | 49.2% / 47.2% | 766 | 2.6% | 7.5 | 0.0% |
+| 1842 | 55 | 42.8% / 45.8% | 674 | 4.5% | 11.5 | 0.0% |
+| 1846 | 103 | 47.2% / 44.8% | 571 | 9.8% | 14.5 | 0.0% |
+| 1848 | 121 | 44.5% / 41.5% | 522 | 10.5% | 13.0 | 0.0% |
+| 1852 | 192 | 40.1% / 37.6% | 285 | 1.6% | 1.5 | 0.0% |
+| 1856 | 194 | 39.3% / 38.4% | 240 | 5.8% | 2.0 | 0.0% |
+
+(Per-run means over the two runs; "holders" counts countries.)
+- **The gate works as documented**, from the first year: non-holders run the world-gated method, and the host-gated sheep method stays at
+  zero outside the holders in both arms, so nothing else changed.
+- **Uptake outside the holders is slow:** at most about a fifth of the holders' share, peaking 1846–48, then falling as the non-holders
+  shrink to the poorest countries. The prediction (large shares by 1846 although fertilizer is scarce) was **wrong**: the AI does not switch
+  a method on wholesale because it can.
+- The holders' own share is vanilla's within a few points.
+- Fertilizer in the eleven tracked markets sits at 0.6–1.5 × base (base 30) in both arms; those markets are holders' markets, so the
+  scarcity the non-holders meet is **not read** here.
+
+**What it does NOT say.** Why the non-holders take it up slowly (the fertilizer price in their own markets, the method's profit there, or
+the AI's switching rule): not separated. Anything about irrigation, fertilizer's later methods or the 1.2 book: this is vanilla's
+early-game farm method on vanilla's economy. n = 2, twenty years.
+
+## F277 — THE RESOURCE HOOKS, MEASURED: A FORCED DISCOVERY REVEALS THE WHOLE BLOCK (A ZERO-CHANCE ONE TOO); `on_resource_discovered` FIRES ONCE FOR EVERY STATE OF THE REGION, INSIDE THE FORCE, AND A FORCE OF ANOTHER TYPE FROM INSIDE THE HOOK FIRES IT AGAIN; DEPLETION MOVES THE WHOLE POTENTIAL, UNDISCOVERED INCLUDED; `change_resource_potential` CHANGES A REGION'S CAPACITY AT ONCE, NEGATIVE TOO (2026-11-21; sessions `20261121_000535_g1152-engine-probes` run 1 and `20261121_015154_g1152-resource-hooks-cross`, engine probes on vanilla 1.15.2, n = 1 each)
+
+Probe 3 (and its follow-up 3b) of the pre-1.2 probes (BALANCE_FRAMEWORK §10.115: gold's depleted fields over four rungs, oil's linked
+discovery). Arms: `{kind: overlay}` with `tools/testbed/overlays/probe3_resource_hooks.json` (forced discovery, a second force, forced
+depletion, `change_resource_potential` +3 gold mines / +2 coal / +2 oil, `add_resource_potential` lead, a −1 change, on 1836.2.1–7.1, in every
+state with a gold-field potential: 113 states of 45 regions; California's gold block at `discover_chance_mult = 0`) and
+`probe3b_resource_hooks_cross.json` (a force of `building_oil_rig` from inside the gold hook; firings counted per state; a once-per-region
+guard). The readings are the scripts' `PROBE_RH` lines and the kept saves' state-region blocks.
+
+1. **Slot counts are per state region**, shared by every state of it (Orta, Kishi and Russian Chelyabinsk read the same numbers), and the
+   effects act on the region (from a state, through `state_region = { … }`).
+2. **`num_potential_resources(bt:X)` counts discovered and undiscovered together** (a forced discovery leaves it unchanged); the direct
+   script-value form `value = "num_potential_resources(bt:X)"` works (iron 95, where an 80-step comparison form capped at 80).
+3. **A forced discovery reveals the whole block**, whatever its chance: California's gold field, `discover_chance_mult = 0`, reads
+   `discovered_amount=12` of 12 after one `force_resource_discovery`. A second force finds nothing and fires nothing.
+4. **`on_resource_discovered` fires once for EVERY state of the region**, each time with that state as root, synchronously inside the force
+   (113 firings for 113 tracked states; the in-hook re-force reached its 46 = region count). **A force of ANOTHER type from inside the hook
+   fires the hook again, nested** (3b: California's count went 1 → 2 inside the oil force), and vanilla's oil-rush events react to that linked
+   discovery (27 states set `oil_rush_state`). So an oil rung revealed by force from the first rung's hook is a second discovery to vanilla.
+5. **A state-region variable guards an effect to once per region**: 3b's `REGION_ONCE` (+1 gold mine) fired exactly 45 times, once per gold
+   region, although the hook fires once per state.
+6. **`force_resource_depletion` moves the whole potential**, undiscovered slots included, to the `depleted_type`: California's 12 undiscovered
+   gold-field slots became 12 gold-mine slots (`depleted_amount=12`); `on_resource_depleted` fires (once per state, as the discovery hook).
+7. **`change_resource_potential = { type amount }` changes a region's capacity at once**, negative amounts included (gold mines +3 then −1;
+   coal 0 → 2), and on a type that is still undiscovered it adds DISCOVERED capacity beside the undiscovered block (California's oil:
+   `amount=2` beside `undiscovered_amount=80`). `add_resource_potential = X` adds a missing type at 1 slot.
+8. Loc strings in the hooks must read the root through `SCOPE.GetRootScope.GetState…` (`ROOT.GetState…` fails there; the effects see the
+   state either way).
+
+**What it means for the 1.2 book's two open mechanisms** (proposals, not rulings): gold's depleted fields can be spread by
+`change_resource_potential` from `on_resource_depleted`, guarded per region by a state-region variable (the depleted rung − ¾ of the amount,
+each other rung + ¼); oil's second rung can take its slots from `change_resource_potential` in the first rung's discovery hook, guarded the
+same way, which reveals nothing and so fires neither the hook nor vanilla's oil events a second time — where a forced discovery of the second
+block would (item 4).
+
+**What it does NOT say.** Natural (rolled) discoveries: every discovery here was forced. Whether a depleted type that is already present
+merges or adds (California had none; Chelyabinsk's 3 gold mines + 9 = 12 suggests it adds). Anything about AI building on the changed slots.
+n = 1 each, seven and three months.
+
+## F278 — THE AI'S RESEARCH PICKS FOLLOW ai_weight^3.7: × 0.8 CUTS A TECHNOLOGY'S ODDS TO A THIRD, × 0.1 TO NEVER; IN THE RESEARCH MODEL THE RULED ENTRY-WEIGHT RULE BUYS ABOUT TWO MILITARY TECHNOLOGIES BY 1906 AND NONE BY 1936, WHATEVER ITS FIGURES (2026-11-21; session `20261121_000535_g1152-engine-probes` runs 2–5, an engine probe on vanilla 1.15.2, n = 2 + 2, 1836→1846; the research model over the 1.1.1 canon's ten runs of `20261112_113429`, no game time)
+
+Probes 4 and 6 of the pre-1.2 probes (BALANCE_FRAMEWORK §10.119 item 3: the two figures of the rule).
+
+**Probe 4, the response.** Arm: `{kind: overlay}` with `tools/testbed/overlays/probe4_ai_weights_{a,b}.json`: the 77 technologies of tech
+eras 1–2 with an `ai_weight`, dealt round-robin into five groups × 1 / 1.25 / 0.8 / 0.5 / 0.1, the two variants rotated so no technology has
+the same multiplier in both; quarterly saves. Reader `tools/research_model/weight_response.mjs`: every new research pick inside F223's choice
+set (each tree's oldest researchable era, the three together), a conditional logit with one term per technology and one per multiplier
+class. Null test first: on vanilla 1.15.2 runs 1–2 labelled a / b (no multiplier applied), every class factor 0.90–1.26 at 1,784 picks.
+
+| ai_weight × | picks in class | odds factor against × 1 (bootstrap 150, 5–95%) | ai_weight^4 predicts |
+|---|---|---|---|
+| 1.25 | 1,357 | 2.13 (1.95–2.34) | 2.44 |
+| 1 | 1,262 | 1 | 1 |
+| 0.8 | 640 | **0.33** (0.29–0.39) | 0.41 |
+| 0.5 | 370 | 0.080 (0.068–0.093) | 0.063 |
+| 0.1 | **0** | 0 | 0.0001 |
+
+3,629 picks (952 / 853 / 953 / 871 by run). The best single exponent over the classes is **3.73** (F223: 4, fitted on vanilla's near-flat
+weights). So the user's −20% cuts a lowered technology's odds to about a third of an unlowered peer's, and −90% takes it out of the AI's
+picks while any alternative of its choice set is open.
+
+**Probe 6, the model.** `tools/research_model/lib_sim.mjs` with the rule as an option (`L.ewr`) and the pick exponent 3.73; driver
+`tools/research_model/ewr_sweep.mjs`. Kinds read off the built bars: 113 technologies with an entry, 97 literacy-gated, 10 naval (lowered
+always), 6 frontline (never). "Advancing" = a stage of the entry comes due for the country within 36 months in the book's measured grants.
+Ten canon runs × 2 seeds, resEff 0.95; majors' median technologies held:
+
+| | 1906 p / m / s | 1936 p / m / s | leader's share of tech era 5, p / m / s | era-5 military technologies any major holds |
+|---|---|---|---|---|
+| vanilla 1.15.1, observed (10 runs) | 39 / 41 / 52 | 52 / 53 / 62 | 38 / 55 / 88% | 7.0 |
+| the canon 1.1.1, observed | 39 / 34 / 55 | 58 / 43 / 63 | 94 / 0 / 88% | 0.0 |
+| model, rule off | 41 / 37 / 58 | 58 / 48 / 64 | 100 / 0 / 100% | 0.0 |
+| model, 0.8 / 0.1 (the user's figures) | 41 / 39 / 57 | 58 / 48 / 64 | 100 / 10 / 100% | 1.0 |
+| model, 0.9 / 0.1 | 41 / 38 / 57 | 58 / 48 / 64 | 100 / 10 / 100% | 1.0 |
+| model, 0.8 / 0.5 | 40 / 38 / 56 | 58 / 49 / 64 | 100 / 10 / 100% | 1.0 |
+| model, 0.7 / 0.1 | 40 / 40 / 55 | 58 / 48 / 64 | 100 / 10 / 100% | 1.0 |
+| model, 0.5 / 0.1 | 40 / 40 / 55 | 58 / 48 / 64 | 100 / 0 / 100% | 0.0 |
+
+- The model with the rule off reproduces the book's 1936 production and society counts and overstates its military by 5 (48 against 43).
+- **Under the ruled scope the rule moves military by about +2 technologies at 1906 and by nothing at 1936**, against vanilla's lead of 10;
+  deeper figures saturate at +3 by 1906 and add nothing later; −90% against −50% for advancing entries makes no difference.
+- The book's majors hold vanilla's total by 1936 (164 against 167), more production (+6) and less military (−10): the gap is a split between
+  trees, not research capacity.
+
+**Why the model shows so little (hypotheses, not measured):** in the model the AI's weights steer only directed research, while spread (per
+tree, uniform among the oldest era, about 25 + 75 × literacy a week per tree) is the larger channel late; production technologies arrive by
+the entries' grants whatever their weight; and 16 of the 58 military technologies (the 10 naval, and 6 with industry entries: rifling,
+percussion caps, shell guns, repeaters, bolt-action rifles, automatic machine guns) are lowered with the rest under the ruled scope.
+
+**What it does NOT say.**
+- The model replays the book's own grants, made without the rule, so it cannot show the rule changing which entries tick; spread is
+  modelled uniform; the AI's strategy-dependent weight terms are not modelled (§10.96's stated limits). The +2 / 0 is directional.
+- Probe 4 reads tech eras 1–2 over 1836–1846; that the exponent holds in later eras and at the AI's later choice sets is assumed.
+- Probe 5 (the rule's tick cost) is a separate performance probe; nothing here is a cost reading.
