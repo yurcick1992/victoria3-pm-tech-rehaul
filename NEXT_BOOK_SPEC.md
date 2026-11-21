@@ -74,7 +74,8 @@ Diesel Engines.
 - **The quarter:** in the vanilla mix of Electric Engines and Diesel Engines the energy good is cut to a quarter (electricity 20 → 5,
   oil 50 → 12.5) before the rung's input value is spread over the mix. A second new exception to §1.3. Electric Engines keeps
   `required_input_goods = electricity`.
-- Cost and AI desire by tier as the ladder gives them (421 / 800 / 1,520 / 2,888 points; 1000 / 1000 / 3000 / 5000).
+- Cost and AI desire by tier as the ladder gives them: at C 2.0 400 / 800 / 1,600 / 3,200 points; desire 455 / 1000 / 2200 / 4840 (§10.124
+  item 9: desire ÷ cost 10% better a rung, Claude's reading with t1 = 1000; at C 1.9 the costs were 421 / 800 / 1,520 / 2,888).
 
 ### 2.3 Engines on the pump rungs (§10.116 ruling 5); no electric drive (§10.116.1)
 
@@ -90,8 +91,8 @@ Diesel Engines.
   output, never a choice of fuel (the user: *"balance it the way that one method is clearly superior"*):
   - **steam** = vanilla's engines + one coal per engine, on irrigation's own gate (pumpjacks; the world's technology once §10.115
     ruling 7's probe passes, as fertilizers);
-  - **diesel** = fewer engines and less fuel for the same output (the user: *"Make it fewer engines and less fuel, same output"*): by
-    default engines × 0.8 and oil at two thirds of the steam drive's coal value (§5, item 2). Gated on the country's OWN compression
+  - **diesel** = fewer engines and less fuel for the same output (the user: *"Make it fewer engines and less fuel, same output"*): RULED
+    (§10.124 item 3): half the steam drive's engines and oil worth half its coal at base prices, engines 2.5 + oil 1.9 (tea 2 + 1.5). Gated on the country's OWN compression
     ignition, vanilla's ordinary `unlocking_technologies` (the user: *"Locked by tag tech, not worldwide"*);
   - no electric drive. Tea's vanilla method takes 4 engines, the others 5.
 - **Factory power lines:** on every water-tube boiler, rotary valve engine and assembly line method of the tiered industries, the tools
@@ -151,7 +152,7 @@ diesel 40 from tools 7.5 + oil 2.5 → tools 5 + engines 1.7 + oil 2.5.
 | logging camp | 3, × 2 | wood 30 / 60 / 60 | electric saw mills: tools 3.6 + electricity 1.8 (the saw mills' £200) | 200, top × step |
 | fishing wharf | 3, × 2 | fish 25 / 50 / 50 | steam trawlers: steamers 1.9 + coal 5.6 (the trawlers' £300) | 200, top × step |
 | whaling station | 3, × 2 | meat 5 + oil 10 / 10 + 20 / 10 + 20 | steam whaling ships: steamers 1.6 + coal 6.3 (£300) | 200, top × step |
-| oil rig | 2, × 1.5 | oil 60 / 60 | combustion derricks: engines 10 (the steam derricks' £600) | 400, second × step |
+| oil rig | 2, × 1.5 | oil 60 / 60 | combustion derricks: engines 10 (the steam derricks' £600) | 200 (half vanilla's, §10.124 item 7, for now); the second "as much higher as the output": 200 at the flat 60, asked back |
 
 A full deposit then makes, per vanilla slot at base prices: iron, lead, copper and logging vanilla's own ceiling; coal £2,175 against
 £2,700; sulfur £3,500 against £4,000; gold £2,650 against £3,000; fishing £1,667 against £2,000; whaling £1,833 against £2,200; oil
@@ -166,9 +167,10 @@ A full deposit then makes, per vanilla slot at base prices: iron, lead, copper a
 | t2 Electric Engines | electric railway | 132 | steel 57.9 + copper 14.5 + electricity 7.2 | 1,520 |
 | t3 Diesel Engines | compression ignition | 290.4 | steel 100.9 + oil 25.2 | 2,888 |
 
-**Irrigation** (the 5-engine plantations; tea in brackets): steam engines 5 + coal 5 (4 + 4), £450 a level at base prices; diesel, at
-§5's default, engines 4 + oil 2.5 (3.2 + 2), £340; vanilla's is engines 5, £300. On the ten canon end saves (1936 state prices) that
-diesel step is cheaper than steam in 99–100% of states; with the same engines and oil of the coal's value, as first ruled, in 36%.
+**Irrigation** (the 5-engine plantations; tea in brackets): steam engines 5 + coal 5 (4 + 4), £450 a level at base prices; diesel, as
+ruled (§10.124 item 3), engines 2.5 + oil 1.9 (2 + 1.5), £226 (£180), half the steam drive; vanilla's is engines 5, £300. (The earlier
+default, engines 4 + oil 2.5, £340, was cheaper than steam in 99–100% of states on the ten canon end saves' 1936 state prices; the ruled step
+is cheaper still.)
 
 **The factory power lines today** (the canon's own methods; tools → engines at × ⅔): furniture boiler and rotary 6.15 tools, assembly
 4.92; paper 7.21; steel 5.6; motor 2.73 and 2.19; arms 2.4; artillery 3.08; munition 4.43; automotive's Mass Production line 5.62.
@@ -203,19 +205,19 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 | # | question | default assumed above | from |
 |---|---|---|---|
 | 1 | RULED, no longer open: the top mine rung has no electric drive (the user: "Yes, drop it") | not built | §10.116.1 |
-| 2 | the diesel irrigation step's quantities (its form is ruled: fewer engines and less fuel, same output) | engines × 0.8 and oil at two thirds of the coal's base value: 4 + 2.5 | §10.116.1 |
-| 3 | RULED, no longer open: the t1 rung is "Compound Engines" and the technology `pumpjacks` is shown as "Pumping Engines". Still to settle: its description, translation or English in the eleven languages, the icon | English, vanilla's icon | §10.116.2 |
-| 4 | whose technology gates a drive | RULED for the diesel step: the country's own. The steam drive follows irrigation's gate. **The world-gate probe passed** (F276, 2026-11-21: non-holders run a world-gated method; the user checked it in game: "Everything works"), so §10.115 ruling 7's "likely solution" waits only on the user's word and on item 14 | §10.116.1, §10.115 |
-| 5 | the engines' input lift | 1.0, unchanged | §10.116 |
-| 6 | the 1855 thresholds | as proposed in §4 | §10.115 |
-| 7 | the staffing of the later deposit rungs. ⚠ At 5,000 a level and output 40, the same raw output needs 1.5–1.75 × vanilla's miners (twice on a full deposit), so the overhaul adds productive workers where mod 1.2 wants fewer (§10.117) | 5,000 on every rung (ruled to start with) | §10.115, §10.117 |
-| 8 | where §10.110.1's other items go (the retune, military research, tier-scaled secondary lines, the minor fixes) | not in this book | §10.115 |
-| 9 | the cost of oil's second rung | × step, as a rung above the first | this page's reading |
-| 10 | whether the electric saw mills and steam trawler rungs want engines or a drive as the pump rungs do | no: §10.116 names the pump rungs only | this page's reading |
+| 2 | RULED 2026-11-21 (§10.124 item 3): the diesel irrigation step at half the steam drive's engines and oil worth half its coal at base prices — engines 2.5 + oil 1.9 (tea 2 + 1.5), £226 against £450 | — | §10.116.1, §10.124 |
+| 3 | RULED, no longer open: the t1 rung is "Compound Engines" and the technology `pumpjacks` is shown as "Pumping Engines"; its description, translations and icon DEFERRED TO THE RELEASE BUILD (§10.124 item 4) | English, vanilla's icon, until then | §10.116.2, §10.124 |
+| 4 | whose technology gates a drive | RULED: the diesel step on the country's own; the steam drive follows irrigation's gate, which is the WORLD's since §10.124 item 1 (the probe passed, F276; checked in game by the user) | §10.116.1, §10.115, §10.124 |
+| 5 | RULED 2026-11-21: the engines' input lift is 1.0 (§10.124 item 5) | — | §10.116, §10.124 |
+| 6 | the 1855 thresholds (the pass lines of the 1836–1855 2+1 screen proposed on 2026-11-16) | ASKED BACK 2026-11-21: what they are, and whether the screen stays now that the plan is one 100-year run, then iteration | §10.115, §10.124 |
+| 7 | RULED 2026-11-21: 5,000 workers on every deposit rung stays (§10.124 item 6); mining employment is read in the runs | — | §10.115, §10.117, §10.124 |
+| 8 | RULED, no longer open (§10.119): the retune is the iteration of this book; military research (the weight rule) and tier-scaled secondary lines are in it; the minor fixes are release tasks | — | §10.119 |
+| 9 | the cost of oil's rungs: RULED 2026-11-21 for now, subject to calibrating (§10.124 item 7) — the first rung at half vanilla's, 200; the second "as much higher as the output is higher": ASKED BACK, since under the flat output both make 60 (200), while vanilla's second method makes 100 (333) | 200 / 200 until answered | §10.124 |
+| 10 | RULED 2026-11-21: the electric saw mills' and steam trawlers' rungs stay vanilla's for now — no engines, no drive (§10.124 item 8) | — | §10.124 |
 | 11 | RULED, no longer open: the 1836–1855 runs carry C 2.0, being played on the exact book of the centuries | — | §10.118 |
-| 12 | the AI desire ladder at C 2.0 (calibrated per book; F228's C 2.0 book carried 3,200 / 5,600 on t2 / t3) | the canon's 1000 / 1000 / 3000 / 5000 | §10.117 |
-| 14 | which same-acre steps go on the WORLD's technology (§10.115 ruling 7, deferred until its probe passed — it has, F276) | Claude's proposal of 2026-11-16, not ruled: only steps whose technology is tech era 3 or later, so the 1836 map stays vanilla's — Fertilization, automatic irrigation (its steam drive), Chemical Fertilizer, Mechanized Slaughtering; the diesel irrigation step stays on the country's own technology (§10.116.1). Note F276: the AI takes a world-gated method up slowly where its input is scarce | §10.115, F276 |
-| 15 | the mechanisms of gold's depleted fields over four rungs and of oil's second rung | Claude's proposal from the probes, not ruled: `change_resource_potential` from `on_resource_depleted` / `on_resource_discovered`, guarded once per region by a state-region variable (the hooks fire once per STATE of the region); no second discovery, which would fire the hook again and vanilla's oil events with it (F277) | §10.115, F277 |
+| 12 | RULED 2026-11-21 (§10.124 item 9): manufacturing desire ÷ cost 10% better a rung (× 1.1 × C a tier): 455 / 1000 / 2200 / 4840 at C 2.0 (Claude's reading, t1 = 1000); crafts keep 800 (§10.91.1); deposit rungs vanilla's desire; the non-industry rulings stand | — | §10.117, §10.124 |
+| 14 | RULED 2026-11-21 (§10.124 item 1): the same-acre steps whose technology is tech era 3 or later go on the WORLD's technology — Fertilization, automatic irrigation (its steam drive), Chemical Fertilizer, Mechanized Slaughtering; the others stay on the host's, the diesel step on the country's own | — | §10.115, F276, §10.124 |
+| 15 | RULED 2026-11-21 (§10.124 item 2): gold's depleted fields and oil's second rung by `change_resource_potential` from the resource hooks, once per region through a state-region variable, no second discovery | — | §10.115, F277, §10.124 |
 | 13 | RULED 2026-11-21: the two figures −20% / −50%, "advancing" = the bar ticking (the cheap form); frontline never lowered, naval and every industry entry lowered | — | §10.119 item 3 |
 
 ## 6. The order of work

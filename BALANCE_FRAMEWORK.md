@@ -91,6 +91,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.121 | old plants pushed out become a term of the loss, measured by the in-market backward-industry test beside T0 (.1, 2026-11-19), aim under 100% and shrinking, weight 0.5, manufacturing only: the motor's new t0 rung in, deposits never, agriculture not for now; research pace, misplaced capital and the rubber shortage stay outside the loss; misplaced capital may get an AI-value pass close to finalising the 1.2 balance, after the main iterations; no extra GDP leeway for it: the world-GDP aim stays 0.90–1.00, a band already below vanilla because a focused player can exploit the mod's economy better (.2) | in force; the term ruled whole (.1); nothing built | here |
 | 10.122 | game 1.15.2, mod 1.1.2: the 1.1.1 canon rebuilt on 1.15.2, no balance change (the canon stays 697d4869: the 1.15.2 replay reproduces it); vanilla AI changes pass through unless they affect us; the company-target investment define 5 → 20 affects us (our targets list every rung) and passes through, read in the first 1.2 runs | in force; nothing to build | here |
 | 10.123 | THE loss of the mod 1.2 calibration: §10.120's form and §10.121's old-plants term, with the eight depeasantation aims at 0.25 each (2 together, as world GDP), a second capital term (the shortlist's hoard above half its GDP, weight 0.5) beside the count of members above 0.5 (weight 1, members of at least 2% of world GDP), T0–T3 manufacturing only (no deposits, no agriculture), the spreads fixed from mod 1.1.1's 15 runs on 1.15.1, one rule for the falling-decade aims, the barrier's value printed for every run; play time not read during the iterations, covered in the polishing touches | in force; built 2026-11-21 (`criteria.mjs`, the scorecard, the stop watcher; the five remaining spreads fitted) | here |
+| 10.124 | the 1.2 book's open items ruled after the probes: the world gate on tech-era-3+ same-acre steps; the deposit hooks by change_resource_potential, once per region; the diesel irrigation step at half the steam drive's engines and oil worth half its coal (2.5 + 1.9); Pumping Engines' text and icon deferred to the release build; the engines' lift 1.0; 5,000 on every deposit rung; oil's first rung at half vanilla's cost, the second by output (asked back); saw mills and steam trawlers vanilla; the manufacturing desire ladder at desire ÷ cost × 1.1 a rung (455 / 1000 / 2200 / 4840 at C 2.0), deposits on vanilla's desire | in force; nothing built; item 7 and the 1855 thresholds asked back |
 
 ---
 
@@ -6330,3 +6331,42 @@ session. On F271's ten runs every reading the new register shares with the old o
 - **Two things the numbers show.** PI's level part is large because PI barely varies between runs (0.88× against the provisional 0.8 is
   about three spreads). T3 is the largest or third-largest term with its zero point where tier 3 holds as many workers as the other tiers
   together (Claude's form, above): the term's size is mostly a constant at that zero point, and its pull on a ranking is the spread's.
+
+## §10.124 — THE 1.2 BOOK'S OPEN ITEMS, RULED AFTER THE PROBES (user-ruled 2026-11-21)
+
+**The occasion.** After the pre-1.2 probes (F275–F280) Claude listed what was still open before the mod 1.2 calibration
+(`NEXT_BOOK_SPEC.md` §5 with its assumed defaults, two items new from the probes). The user answered them one by one.
+
+**The rulings.**
+1. **The world-technology gate's scope (NEXT_BOOK_SPEC §5 item 14; §10.115 ruling 7 no longer deferred)** — the user: *"Agreed"*, to
+   Claude's proposal of 2026-11-16: only the same-acre steps whose technology is tech era 3 or later go on the WORLD's technology
+   (`unlocking_global_technologies`), so the 1836 map stays vanilla's — Fertilization, automatic irrigation (its steam drive), Chemical
+   Fertilizer, Mechanized Slaughtering; soil enriching, butchering tools, slaughterhouses and coffee's wet processes stay on the host's
+   technology, and the diesel irrigation step on the country's own (§10.116.1). The gate was proven by F276 and checked in game by the user.
+2. **The deposit hooks' mechanism (item 15)** — the user: *"Agreed"*: gold's depleted fields are spread over the four rungs, and oil's second
+   rung takes its slots, by `change_resource_potential` from `on_resource_depleted` / `on_resource_discovered`, applied once per region
+   through a state-region variable (the hooks fire once per STATE of the region), with no second forced discovery (which would fire the hook
+   again and vanilla's oil-rush events with it, F277).
+3. **The diesel irrigation step's quantities (item 2)** — the user: *"Something that will make it noticeably more effective than coal, at
+   least at base prices. Maybe half the value the coal option in engines, and half the base price in oil. Same output."* Claude's reading:
+   half the steam drive's engines and oil worth half its coal at base prices — engines 2.5 + oil 1.9 (£226 a level at base prices against
+   the steam drive's engines 5 + coal 5, £450); tea 2 + 1.5 (£180 against £360). Vanilla's drive is engines 5, £300.
+4. **The "Pumping Engines" description, translations and icon (item 3)** — *"Deferred to release build."*
+5. **The engines' input lift (item 5)** — *"Yes, now 1.0."*
+6. **The staffing of the later deposit rungs (item 7)** — 5,000 workers on every rung *"Stays."*
+7. **The cost of oil's rungs (item 9)** — *"Subject to calibrating. For the time, let's have the basic oil half of vanilla, and improved oil
+   -- as much higher as the output is higher."* The first rung costs 200 (vanilla 400). ⚠ Asked back the same day: under §10.115's flat
+   output both oil rungs make 60, which would give the second the same 200; vanilla's second method makes 100 against 60, which would give
+   333. Until answered, NEXT_BOOK_SPEC carries both.
+8. **The saw mills' and steam trawlers' rungs (item 10)** — *"Leave vanilla for now"*: no engines and no drive there.
+9. **The AI desire ladder at C 2.0 (item 12)** — the user: *"By default, for manufacturing AI desire ladder is calibrated so that the desire
+   divided by cost were 10% better for rung N than for N-1. For newly-tiered buildings that aren't manufacturing (deposits etc), leave
+   vanilla ai desire. Old rulings on non-industry buildings stay."* So a manufacturing rung's desire is the rung below's × 1.1 × the cost
+   step: at C 2.0, × 2.2 a tier. Claude's reading, the anchor kept at the canon's t1 = 1000: t0 455 · t1 1000 · t2 2200 · t3 4840 (the
+   canon's 1000 / 1000 / 3000 / 5000 at C 1.9). A merged host keeps its conditional rule (§10.91.2) on these values. The crafts keep their
+   own ruled 800 (§10.91.1: a craft costs K(0) ÷ 50 by design, so the 10% rule would put its desire near 9). The deposit rungs keep
+   vanilla's desire (as §10.115 accepted); §10.92.1's exemptions and gold's static 5000 stand.
+
+**Asked back the same day:** what "the 1855 thresholds" are (item 6: the pass lines Claude proposed on 2026-11-16 for the 1836–1855 2+1
+screen, §10.115) and whether that screen still exists now that the plan is one 100-year run and then iteration; and the oil reading of
+item 7.
