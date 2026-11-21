@@ -152,7 +152,7 @@ diesel 40 from tools 7.5 + oil 2.5 → tools 5 + engines 1.7 + oil 2.5.
 | logging camp | 3, × 2 | wood 30 / 60 / 60 | electric saw mills: tools 3.6 + electricity 1.8 (the saw mills' £200) | 200, top × step |
 | fishing wharf | 3, × 2 | fish 25 / 50 / 50 | steam trawlers: steamers 1.9 + coal 5.6 (the trawlers' £300) | 200, top × step |
 | whaling station | 3, × 2 | meat 5 + oil 10 / 10 + 20 / 10 + 20 | steam whaling ships: steamers 1.6 + coal 6.3 (£300) | 200, top × step |
-| oil rig | 2, × 1.5 | oil 60 / 60 | combustion derricks: engines 10 (the steam derricks' £600) | 200 (half vanilla's, §10.124 item 7, for now); the second "as much higher as the output": 200 at the flat 60, asked back |
+| oil rig | 2, × 1.5 | oil 60 / 60 | combustion derricks: engines 10 (the steam derricks' £600) | 200 and 200 (half vanilla's, at the flat 60; §10.124 item 7, for now) |
 
 A full deposit then makes, per vanilla slot at base prices: iron, lead, copper and logging vanilla's own ceiling; coal £2,175 against
 £2,700; sulfur £3,500 against £4,000; gold £2,650 against £3,000; fishing £1,667 against £2,000; whaling £1,833 against £2,200; oil
@@ -212,7 +212,7 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 | 6 | the 1855 thresholds (the pass lines of the 1836–1855 screen proposed on 2026-11-16) | MEASURED 2026-11-21 (F281, `ledger/screen_1855.mjs`): vanilla 1.15.2 reads 3.3% dead per run at 0.66 and 0.1% dead in both runs of a pair; the canon's start sits outside vanilla's eight-run min–max on six raw lines; a civil-war split reads as death. The user: the rotation's design, and with it the lines, comes later | §10.115, F281 |
 | 7 | RULED 2026-11-21: 5,000 workers on every deposit rung stays (§10.124 item 6); mining employment is read in the runs | — | §10.115, §10.117, §10.124 |
 | 8 | RULED, no longer open (§10.119): the retune is the iteration of this book; military research (the weight rule) and tier-scaled secondary lines are in it; the minor fixes are release tasks | — | §10.119 |
-| 9 | the cost of oil's rungs: RULED 2026-11-21 for now, subject to calibrating (§10.124 item 7) — the first rung at half vanilla's, 200; the second "as much higher as the output is higher": ASKED BACK, since under the flat output both make 60 (200), while vanilla's second method makes 100 (333) | 200 / 200 until answered | §10.124 |
+| 9 | RULED 2026-11-21, for now, subject to calibrating (§10.124 item 7): both oil rungs cost 200, half vanilla's 400, at the flat output of 60 (the user: "Oil second rung: 200, flat output.") | — | §10.124 |
 | 10 | RULED 2026-11-21: the electric saw mills' and steam trawlers' rungs stay vanilla's for now — no engines, no drive (§10.124 item 8) | — | §10.124 |
 | 11 | RULED, no longer open: the 1836–1855 runs carry C 2.0, being played on the exact book of the centuries | — | §10.118 |
 | 12 | RULED 2026-11-21 (§10.124 item 9): manufacturing desire ÷ cost 10% better a rung (× 1.1 × C a tier): 455 / 1000 / 2200 / 4840 at C 2.0 (Claude's reading, t1 = 1000); crafts keep 800 (§10.91.1); deposit rungs vanilla's desire; the non-industry rulings stand | — | §10.117, §10.124 |
