@@ -423,3 +423,7 @@ tools/testbed/no_new_runs_at.log
 # canonisation (GAME_UPDATE_1_15 Q1); its intermediates (g115c-*) stay ignored.
 !config/mod_config.g115c-canon-bz-dcu-ra-il.json
 !config/tech_tree_options.g115c-canon-bz-dcu-ra-il.json
+# THE MOD 1.2 BOOK (2026-11-21, BALANCE_FRAMEWORK §10.125): tools/make_book12.mjs on game 1.15.2 - the book the user's player check and its
+# first century play. Its intermediates (m12-*) are regenerable and stay ignored.
+!config/mod_config.m12-first.json
+!config/tech_tree_options.m12-first.json

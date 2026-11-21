@@ -772,6 +772,7 @@ every `node` step throws the build on a non-zero exit unless noted. Order as of 
 9. Canonical build only: `ui/data.js` (config, prices, tech index, `basic_secondaries.mjs --options`, the era_inverse subset, start rules),
    then `extract_vanilla.ps1`, `extract_icons.ps1`, `extract_presets.ps1`.
 10. `convert_history.ps1` — the 1836 start into `common/history/buildings`.
+    Then `emit_deposit_slots.mjs` (the mod 1.2 book: the deposits' slots in `map_data/state_regions`, gold's 1836 floor read from the converted history, the gold and oil resource hooks, a rung's copy of a group without a dead method; a book without `_deposits` emits nothing).
 11. `emit_secondaries` → `emit_craft_start` → `emit_vanilla_refs` → `emit_ai_value_adds` → `emit_value_overrides` (last content emitter) → `check_dlc_gates` (on the final state).
 12. Linters, all skipped by `-NoLint`: `lint.sh` (bash; prints, never fails the build), then `lint_solvency` → `lint_tech_content` →
     `lint_start_conversion` → `lint_tier_eras` → `lint_pm_combos` (each throws).
@@ -1014,6 +1015,8 @@ stale output except under `common/history`, which an emitter writing there must 
   and `emit_dams.mjs`'s surveys sit in it (GAME_UPDATE_1_15 U77). Every snippet and token count asserted; DLC gates counted per file; a scan of the game tree throws on any tiered
   reference left in an unowned file not on its ACCEPTED list. After a patch: `REFS_LEARN=1 node tools/emit_vanilla_refs.mjs <modDir> [config]`
   prints the counts without dying. Status: current (build step). Refs: POLISH_1_0.md §2, TIER_REFERENCE_AUDIT.md, ON_GAME_UPDATE.md.
+- **`tools/emit_deposit_slots.mjs`** (2026-11-21, §10.115, §10.124 item 2) — `<modDir> <config>`: from the book's `_deposits` and vanilla's map, rewrites every state-region file holding a deposit (each capped entry split over the rungs: ceil(N × slot multiplier ÷ rungs), gold floored at its 1836 levels per region, any other deposit THROWS if its 1836 levels exceed a rung's share; oil's discoverable block at the first rung's share), writes `common/on_actions/zzz_pm_rehaul_deposits.txt` (on_resource_depleted spreads a region's depleted gold fields over the four gold rungs; on_resource_discovered gives oil's second rung the first rung's share; both once per region by a state-region variable, each region's numbers written in), and gives a deposit rung a copy of a secondary group without the methods gated on main methods it does not run (the Simple Forestry rung's hardwood group). ⚠ The discovery hook cannot tell which resource was found (BALANCE_FRAMEWORK §10.125).
+- **`tools/emit_agri_steps.mjs`** (2026-11-21, §10.124 items 1 and 3, §10.116.1) — `<modDir> <config>`, run by build.ps1 after it owns the production-method files: config `agri_steps` — the listed vanilla methods' `unlocking_technologies` become `unlocking_global_technologies` (the world's technology); irrigation's steam drive takes one coal per engine; a diesel step `pmr_diesel_irrigation_<building>` (half the engines, oil worth half the steam drive's coal, on the country's own compression ignition) joins each irrigation method's group. Edits this build's owned copy of a file where one exists, vanilla's otherwise; English names in all languages.
 - **`tools/emit_ai_value_adds.mjs`** — `<modDir> <config> [--check]`: appends the if / else_if blocks of each tiered industry's vanilla
   `ai_value` (journal-entry-conditional adds: the five-year plan, the Tsar's reforms, Metternich, the renaissances) to every NON-CRAFT rung's
   ai_value on top of its tier value — a scalar becomes a block, a merge host's conditional block receives them before its close. A vanilla key
@@ -1040,6 +1043,35 @@ The canon's chain, read from its records: `tier4-e1` (make_tier4_config `--deriv
 hand: `dams.private = all`, `game_defines` (monopoly threshold 0.99), the 2026-10-21 polish keys. ⚠ Intermediate books on disk may carry
 stale tree twins; re-run the chain from its root rather than one step. **`tools/replay_canon_chain.mjs` runs exactly this chain** (below).
 
+- **`tools/make_book12.mjs`** (2026-11-21, BALANCE_FRAMEWORK §10.125) — `node tools/make_book12.mjs [--prefix m12] [--name m12-first]`: THE
+  MOD 1.2 BOOK. The canon's chain (as `replay_canon_chain.mjs`, then the 1.15 steps of the 1.1.1 canon) with `make_tier4_config --insert
+  motor` in place of `--derive motor`, `make_ab_config --cost-ratio 2.0 --ai-ladder 455,1000,2200,4840 --mix-scale
+  pm_electric_engines:electricity:0.25,pm_diesel_engines:oil:0.25`; then `make_deposit_config.mjs --cost-step 1.3`; then the 1.2 book fields
+  (`research_events.mark_rule`, `entry_weight_rule`, `secondary_sizing`, `power_lines_engines`, `craft_seed_fixes`, `agri_steps`, the record
+  `_book12`); then a build (`build.ps1 -SaveTo <prefix>pre -NoDeploy`) and the AI-weights step LAST on it (the deposit and Compound Engines
+  entries change which technologies have one). Needs the installed game's snapshot at `C:/claude-code/vic3_game_<version>/game` and the
+  1.13.11 one. Writes `config/mod_config.<name>.json` + twin; every intermediate `config/mod_config.<prefix>-*.json` (gitignored).
+- **`tools/make_deposit_config.mjs`** (2026-11-21, §10.115, §10.116 ruling 5, §10.124, §10.125) — `--base <book> --suffix <sfx> --cost-step <s>`:
+  adds the tiered deposits (`lib_tier4_spec.mjs` DEPOSITS) to a book as industries with `deposit: true`, `clone_from_vanilla`, `no_mass_be`:
+  one rung per vanilla main method, its tier by the era rule, flat output from the highest 1836-map rung, equal value added at base prices
+  over the rung's own vanilla mix, the mine pump rungs' tools above 5 as engines, 5,000 workers, vanilla's cost on the 1836-map rungs and ×
+  the step above (a DEPOSITS `cost` list overrides: oil 200 / 200), `extra_outputs` for a second good (whaling's meat), vanilla's AI desire
+  (nothing set: the clone keeps vanilla's block); the output-adding secondary lines × vanilla slots ÷ tiered slots through `pm_goods` /
+  `pm_employment` (throws on a line another building shares); a research anchor naming a deposit key → every rung. Records `_deposits`
+  (the rule, per industry the slot multiplier and the rungs), which `lint_tier_eras.mjs` checks and `emit_deposit_slots.mjs` reads.
+- **What the mod 1.2 book added to the existing tools** (2026-11-21; every addition inert on a book that does not carry it — the canon
+  builds byte for byte as before, and `make_tier4_config --derive motor` still reproduces the replay's structure): `make_tier4_config.mjs
+  --insert <ind>` (lib_tier4_spec INSERTIONS: a rung inside a ladder on a vanilla technology, its placement, `anchor_from` = the rung below's
+  vanilla method × anchor_scale; records `_inserted`, whose renames `make_tier4_techs.mjs` applies); `make_ab_config.mjs` (an inserted anchor
+  rung's scaled recipe; `--mix-scale <pm>:<good>:<mult>` recorded as `_ab.mix_scale`; deposit industries skipped); `lint_tier_eras.mjs` (the
+  inserted anchor, the scaled mix's share, section 5 for deposits against `_deposits`); `build.ps1` (the clone path with no technology,
+  `extra_outputs`, the calls to `emit_deposit_slots.mjs` and `emit_agri_steps.mjs`); `emit_secondaries.mjs` (`secondary_sizing: 'tier'`,
+  `power_lines_engines`); `emit_research_events.mjs` (`research_events.mark_rule: 'higher'`; an extra entry merged into a deposit rung's
+  entry; a deposit's first rung takes no necessity source); `emit_craft_start.mjs` (`craft_seed_fixes`); `emit_companies.mjs` (a resource
+  potential naming a deposit key left as written); `emit_vanilla_refs.mjs` (the deposit mode: every file naming a deposit key in a
+  rewritable form transformed to every rung, counted apart from the audit); `emit_ai_value_adds.mjs` (a cloned industry carries vanilla's
+  block whole); `lint_pm_combos.mjs` (deposit pairs counted, not warned); `lint_tech_content.mjs` (deposit rungs on their building's gate);
+  `lib_secondary_compat.mjs` (canning not beside the Bakeries craft).
 - **`tools/replay_canon_chain.mjs`** — `node tools/replay_canon_chain.mjs --prefix <p> [--game <game dir>] [--hand-from <book>]`: re-runs the
   1.0 canon's chain above on the named game (default `$VIC3_GAME` or the Steam path), every book under `config/mod_config.<p>-*.json`, then
   applies the 1.0 canon's hand steps copied from `--hand-from` (default `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json`, the 1.0

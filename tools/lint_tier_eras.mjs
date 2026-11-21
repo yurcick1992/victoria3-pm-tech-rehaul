@@ -86,6 +86,30 @@ for (const ind of cfg.industries || []) {
     rows.push({ ind: ind.id, era: e, tech: t.tech || '(none)', ge, imp, d, out: t.output_qty, cost: t.building_cost, aiv: t.ai_value });
     if (Math.abs(d) > TOL) faults.push(`${ind.id} ${t.key}: sits at e${e} but its technology ${t.tech} is game era ${ge} → e${imp}, ${Math.abs(d)} eras off (tolerance ±${TOL})`);
   });
+  // ---- 5. THE DEPOSIT RUNGS (`deposit: true`, make_deposit_config.mjs, the mod 1.2 book; BALANCE_FRAMEWORK §10.115) -----------------
+  //   Not on the A/B ladder and not "more effective with era" by design: output is FLAT from the highest 1836-map rung up, inputs give equal
+  //   value added at base prices, cost is vanilla's on the 1836-map rungs and × the cost step above them. Checked against the `_deposits`
+  //   record (a hand edit fails) and against those three rules; placement (section 1) applies as to any rung.
+  if (ind.deposit) {
+    const DR = cfg._deposits || {}, R = (DR.industries || {})[ind.id];
+    if (!R) { faults.push(`${ind.id}: a deposit industry with no _deposits record — regenerate with make_deposit_config`); continue; }
+    const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    ladder.forEach((t, k) => {
+      const r = R.rungs[k];
+      if (!r || r.key !== t.key) { faults.push(`${ind.id} ${t.key}: not the _deposits record's rung ${k}`); return; }
+      if (t.output_qty !== r.output_qty || !same(t.inputs, r.inputs) || t.building_cost !== r.building_cost) faults.push(`${ind.id} ${t.key}: output/inputs/cost differ from the _deposits record — hand-edited?`);
+      const emp = Object.values(t.employment || {}).reduce((s, x) => s + x, 0);
+      if (emp !== +DR.workers_per_level) faults.push(`${ind.id} ${t.key}: ${emp} workers a level, the ruling says ${DR.workers_per_level} (§10.115, §10.124 item 6)`);
+      if (k >= R.map_rungs) {
+        const top = ladder[R.map_rungs - 1], g = t.output_good || ind.output_good;
+        if (t.output_qty !== top.output_qty) faults.push(`${ind.id} ${t.key}: output ${t.output_qty}, flat output says the highest 1836-map rung's ${top.output_qty}`);
+        const vaT = t.output_qty * (PRICE[g] || 0) - val(t.inputs), vaTop = top.output_qty * (PRICE[g] || 0) - val(top.inputs);
+        if (Math.abs(vaT - vaTop) > 0.03 * Math.abs(vaTop) + 2) faults.push(`${ind.id} ${t.key}: value added £${vaT.toFixed(0)} a level, equal value added says £${vaTop.toFixed(0)}`);
+      }
+    });
+    notes.push(`${ind.id}: a deposit (${ladder.length} rungs, ${R.map_rungs} on the 1836 map, slots × ${R.slot_mult}) — checked against its _deposits record, flat output and equal value added`);
+    continue;
+  }
   // ---- 3. uniform effectiveness --------------------------------------------------------------------------------
   for (let k = 1; k < ladder.length; k++) {
     const a = ladder[k - 1], b = ladder[k];
@@ -149,8 +173,12 @@ for (const ind of cfg.industries || []) {
   //   ⭐ The anchor era may name a rung the industry does not have (user-ruled 2026-09-19): the origin is the named era either
   //   way, and the anchor RECIPE falls back to the first rung's vanilla method — the generator's own rule, mirrored here.
   const aEra = (AB.anchor_for && AB.anchor_for[ind.id] != null) ? +AB.anchor_for[ind.id] : null;
-  const first = (aEra != null && tiers.find(t => t.era === aEra)) || tiers[0]; const r0 = vanillaRec(first.vanilla_pm);
-  if (!r0) { notes.push(`${ind.id}: vanilla recipe for ${first.vanilla_pm} unreadable (game files absent?) — book multipliers not checked`); continue; }
+  const first = (aEra != null && tiers.find(t => t.era === aEra)) || tiers[0];
+  // an INSERTED anchor rung (make_tier4_config --insert): the rung below's vanilla method × anchor_scale, the generator's own rule
+  const r0 = first.anchor_from ? (() => { const q = vanillaRec(first.anchor_from.vanilla_pm), s = +first.anchor_from.scale; if (!q) return null;
+    return { in: Object.fromEntries(Object.entries(q.in).map(([g, x]) => [g, x * s])), out: Object.fromEntries(Object.entries(q.out).map(([g, x]) => [g, x * s])) }; })() : vanillaRec(first.vanilla_pm);
+  if (first.anchor_from) notes.push(`${ind.id}: anchored on an inserted rung (${first.key}) — its anchor recipe is ${first.anchor_from.vanilla_pm} × ${first.anchor_from.scale}`);
+  if (!r0) { notes.push(`${ind.id}: vanilla recipe for ${first.vanilla_pm || (first.anchor_from || {}).vanilla_pm} unreadable (game files absent?) — book multipliers not checked`); continue; }
   // ⚠⚠ 0 unless --anchor-for names it — NOT `first.era`: the four industries with no e0 rung are keyed on the absolute era
   //   (the era rule, §10.78 rule 3; keying them on their own first rung is the F111 bug).
   const ORIGIN = aEra != null ? aEra : 0;
@@ -194,6 +222,14 @@ for (const ind of cfg.industries || []) {
     const liftI = forI != null ? forI : popLow ? +AB.in1_pop : perInd && perInd[ind.id] != null ? +perInd[ind.id] : ((AB.in0_anchored != null && aEra != null) ? +AB.in0_anchored : lift);
     const wantIn = I0 * (in0only ? (k === 0 ? liftI : 1) : liftI) * (down != null ? down : inMul(k)); const gotIn = val(t.inputs);
     if (Math.abs(gotIn - wantIn) > 0.03 * wantIn + 1) faults.push(`${ind.id} e${e}: input value £${gotIn.toFixed(0)}, the era rule says £${wantIn.toFixed(0)} (vanilla £${I0.toFixed(0)} × ${liftI}${forI != null ? ' (--in0-for)' : popLow ? ' (--in1-pop)' : ''} × ${down != null ? AB.down_step + '^' + k + ' (--down-step)' : inL ? inMul(k).toFixed(3) + ' at ladder index ' + k : B + '^' + k})`);
+    // ⭐ --mix-scale (the quarter, §10.116 ruling 3): a scaled good's share of the rung's input value is the scaled mix's share, not vanilla's
+    if (AB.mix_scale && t.vanilla_pm && AB.mix_scale[t.vanilla_pm]) {
+      const q = vanillaRec(t.vanilla_pm), sc = AB.mix_scale[t.vanilla_pm];
+      if (q) { const mix = Object.fromEntries(Object.entries(q.in).map(([g, x]) => [g, x * (sc[g] ?? 1)])); const mv = val(mix);
+        for (const g of Object.keys(sc)) { const want = mix[g] * (PRICE[g] || 0) / mv, got = ((t.inputs || {})[g] || 0) * (PRICE[g] || 0) / (gotIn || 1);
+          if (Math.abs(want - got) > 0.01) faults.push(`${ind.id} e${e}: ${g} is ${(got * 100).toFixed(1)}% of the input value, the scaled mix (× ${sc[g]}, --mix-scale) says ${(want * 100).toFixed(1)}%`); } }
+      notes.push(`${ind.id} e${e}: ${t.vanilla_pm}'s mix scaled (${Object.entries(sc).map(([g, m]) => g + ' × ' + m).join(', ')}) before the value is spread — checked`);
+    }
     // cost: flat (§10.61), or anchor × C^era where C is the book's own cost ratio (`_ab.cost_ratio`, the cost-slope books of
     // 2026-09-14) and A by default (capacity-priced, the canon)
     // ... or anchor × m_era from an explicit per-era list (`_ab.cost_ladder`, 2026-09-16 — one era's cost moved on its own, or a changed A/B gain-matched per era)

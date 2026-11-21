@@ -103,6 +103,22 @@ before. `tools/check_dlc_gates.mjs` fails the build if a copy under `common/` or
 build, so a file whose emitter stops writing it does not linger; `convert_history.ps1` clears `history/buildings` itself, and `emit_craft_start.mjs`
 removes the pops files it wrote earlier, by their header.
 
+**The mod 1.2 book (`m12-first`, 2026-11-21, BALANCE_FRAMEWORK §10.125) owns more**, all regenerated from the installed game each build and
+none owned by a book without the fields that ask for them:
+- `common/buildings/03_mines.txt`, `09_misc_resource.txt` — `build.ps1`'s clone path: every deposit's vanilla block replaced by its rungs, each a
+  copy of vanilla's block (terrain, potential, AI desire with its conditionals) with its own key, technology, groups and cost; gold fields and the
+  rubber plantation verbatim. A patch that changes a deposit's methods, staffing or groups moves the rungs through `make_deposit_config.mjs` (a
+  re-run of the chain), and a fifth main method THROWS.
+- `map_data/state_regions/*.txt` (16 files) — `emit_deposit_slots.mjs`: verbatim but the deposit entries (each split over its rungs) and oil's
+  discoverable block (its first rung's share). Vanilla's per-region numbers are read each build; the gold and oil hooks carry each region's
+  numbers written in, so a patch that moves a region's deposits moves them too on the next build.
+- the production-method and group files of the same-acre steps (`02_agro.txt`, `04_plantations.txt`, `09_misc_resource.txt`) —
+  `emit_agri_steps.mjs`: the world gate on 15 methods (it THROWS on a method without exactly one technology block), one coal per engine on the
+  10 irrigation methods, the diesel step added to each irrigation method's group.
+- every vanilla file that names a deposit key in a rewritable form (32 on 1.15.2, 20 outside the factory audit: state traits, decrees, the
+  production technology events, the scripted triggers, the terrain's mine count, the resource strategy's subsidy lines) — `emit_vanilla_refs.mjs`'s
+  deposit mode, counted apart from the audit; a new form THROWS (the residue and the whole-game scan).
+
 **`common/buildings/01_industry.txt`, `06_urban_center.txt`** (2) — `build.ps1`; the power plant's cost by `emit_building_costs.mjs`.
 - *What:* each tiered industry's vanilla building block is replaced by its rungs (16 industries in 01, the art academy in 06); every other block is
   copied verbatim. In 06 the power plant's `required_construction` becomes 1,600 (§10.89.1: 4 × vanilla's `construction_cost_medium`, 400); the

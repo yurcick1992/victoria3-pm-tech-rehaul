@@ -171,10 +171,16 @@ for (const [bk, b] of Object.entries(VAN.buildings))
 // tier-3 building, so it gets both, and a country holding either fills its bar — the "several
 // industries work towards one technology" case (user, 2026-08-11).
 const anchors = {};
+// ⭐ A TECHNOLOGY THAT UNLOCKS RUNGS OF TWO TIERS (BALANCE_FRAMEWORK §10.110.3, built for the mod 1.2 book by §10.119 item 6a): its mark is
+//   the HIGHER tier's with `research_events.mark_rule = 'higher'`; the canon's books (no field) keep the lower tier's, as they were measured.
+const MARK_RULE = RE.mark_rule || 'lower';
+if (!['lower', 'higher'].includes(MARK_RULE)) throw new Error(`research_events.mark_rule must be 'lower' or 'higher' (got ${MARK_RULE})`);
+const markTwoTiers = [];
 function addSource(tech, era, rule, src) {
   const a = anchors[tech] = anchors[tech] || { rule, era, sources: [] };
   if (rule === 'improvement') a.rule = 'improvement';        // improvement outranks a weaker rule
-  a.era = Math.min(a.era, era);
+  if (a.era !== era && !markTwoTiers.includes(tech)) markTwoTiers.push(tech);
+  a.era = MARK_RULE === 'higher' ? Math.max(a.era, era) : Math.min(a.era, era);
   if (!a.sources.some(s => s.building === src.building && s.group === src.group && s.good === src.good)) a.sources.push(src);
 }
 
@@ -213,6 +219,10 @@ for (const ind of CFG.industries) {
       // meant percussion_cap had NO sources at all and therefore no journal entry; after them it had one,
       // for artillery only, and the munition half of the same technology contributed nothing. Nothing
       // failed at any point.
+      // ⭐ A DEPOSIT'S FIRST RUNG (the mod 1.2 book; oil's steam derricks on pumpjacks is the one researchable case) takes no necessity
+      //   source: the ruling gives the deposit technologies the standard RUNG entries (the rung below's workers, §10.125), and a first rung has
+      //   none below it — its technology keeps whatever other sources it has (pumpjacks: the motor's Steam Engines rung, for Compound Engines)
+      if (ind.deposit) return;
       const list = (RE.necessity_anchors || {})[ind.id];
       if (!list) throw new Error(
         `research_events: ${ind.id}'s first rung (${t.key}) is gated on '${t.tech}', which is era ${T.era} ` +
@@ -284,12 +294,19 @@ if (JE_SCOPE === 'all') {
 //   · `mark` is in PEOPLE and must be a whole number of fully staffed levels of every building it counts (the user's rounding rule);
 //   · `requires` = technologies the country must HOLD for the bar to advance; visibility stays gated on the technology's own researchability.
 const EXTRA = RE.extra_entries || {};
+const extraMerged = [];
 const PMGS_OF = k => new Set(((VAN.buildings[k] || {}).pmgs || []).flatMap(g => ((VAN.pmgs[g] || {}).pms || [])));
 for (const [tech, e] of Object.entries(EXTRA)) {
   if (tech.startsWith('_')) continue;
   const T0 = TECH[tech];
   if (!T0) throw new Error(`extra_entries: '${tech}' is not in the shipping tree`);
-  if (anchors[tech]) throw new Error(`extra_entries: '${tech}' already has an entry (rule ${anchors[tech].rule}) — an extra entry is for a technology the ladder does not cover`);
+  // ⭐ A DEPOSIT RUNG'S TECHNOLOGY THAT ALREADY HAD AN EXTRA ENTRY (the mod 1.2 book: water-tube boiler gates the condensing pump, electrical
+  //   generation the electric saw mills): both rulings stand — the entry keeps its extra sources at their own mark (§10.95) and the rung's
+  //   source at the tier mark (§10.125's standard rung entries); any one source ticks the bar (the entries are non-additive). Any other
+  //   collision still throws.
+  const mergeInto = anchors[tech] && anchors[tech].rule !== 'extra' && anchors[tech].sources.length > 0
+    && anchors[tech].sources.every(s => s.building && CFG.industries.some(x => x.deposit && (x.tiers || []).some(t => t.key === s.building)));
+  if (anchors[tech] && !mergeInto) throw new Error(`extra_entries: '${tech}' already has an entry (rule ${anchors[tech].rule}) — an extra entry is for a technology the ladder does not cover`);
   for (const r of (e.requires || [])) if (!TECH[r]) throw new Error(`extra_entries[${tech}].requires names unknown technology '${r}'`);
   if (!(e.mark > 0)) throw new Error(`extra_entries[${tech}]: no mark`);
   const sources = (e.sources || []).map((src, si) => {
@@ -314,8 +331,14 @@ for (const [tech, e] of Object.entries(EXTRA)) {
     return { extra: true, types, label: src.label || null };
   });
   if (!sources.length) throw new Error(`extra_entries[${tech}]: no sources`);
+  if (mergeInto) {
+    const a = anchors[tech]; a.sources.push(...sources); a.mark = e.mark; a.requires = e.requires || [];
+    extraMerged.push(`${tech} (deposit rung source at the e${a.era} mark + ${sources.length} extra source(s) at ${e.mark})`);
+    continue;
+  }
   anchors[tech] = { rule: 'extra', era: narrativeEraOf(T0.era), sources, mark: e.mark, requires: e.requires || [] };
 }
+if (extraMerged.length) console.log(`research events: extra entries merged into a deposit rung's entry: ${extraMerged.join('; ')}`);
 
 // ⭐⭐ §10.98 (user-ruled 2026-10-12) — entries beyond production, and the art chain left to vanilla.
 //   `research_events.exclude_techs` = technologies that get NO entry of ours (vanilla's own universal entries advance them: the art chain —
@@ -1338,3 +1361,4 @@ for (const lang of (CFG.languages || ['english']))
 
 console.log(`research events: ${Object.keys(anchors).length} technologies (${nInd} industry, ${nWar} war) -> ` +
   `${jes.length} journal entries, ${bars.length} bars, ${sv.length} script values, ${loc.length} loc keys x ${(CFG.languages || ['english']).length} languages`);
+if (markTwoTiers.length) console.log(`research events: ${markTwoTiers.length} technologies unlock rungs of two tiers, marked by the ${MARK_RULE} tier (mark_rule): ${markTwoTiers.map(t => t + ' e' + anchors[t].era).join(', ')}`);

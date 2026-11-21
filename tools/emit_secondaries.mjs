@@ -102,6 +102,33 @@ const cfg = JSON.parse(rd(CFGP));
 const RULE = cfg.secondary_rule || ((cfg._merge || cfg._artisan) ? 'top' : 'lowest');
 if (!['top', 'lowest'].includes(RULE)) throw new Error(`emit_secondaries: secondary_rule "${RULE}" is neither top nor lowest`);
 const TOP = RULE === 'top';
+// ⭐⭐ TIER-SCALED LINES (the mod 1.2 book, BALANCE_FRAMEWORK §10.119 item 2, ruled 2026-11-17; `secondary_sizing: 'tier'` in the config, on
+//   top of the `top` rule): a line that makes or converts output takes the SAME SHARE OF ITS RUNG'S OWN MAIN OUTPUT on every rung — the share
+//   the `top` rule gives it on the industry's t2 anchor — so the whole line (inputs included) is the `top` recipe × the rung's output ÷ the
+//   anchor's; employment unscaled, a craft's × its workforce_mult. Each scaled line is a method of its own, "<vanilla line> (Tier N)"; a merged
+//   building carries ONE copy sized on its UPPER method, named for its span ("(Tier 2-3)"), left off the lower method where it would take a
+//   good below zero; the crafts carry their handcraft-compatible lines by the same rule. Automation (labour-saving) lines stay one recipe per
+//   industry. Why (F249 §4d): a line that makes the same amount on every rung kept the old t1 textile and furniture buildings alive on it.
+const TIER = TOP && cfg.secondary_sizing === 'tier';
+if (cfg.secondary_sizing != null && !TIER) throw new Error(`emit_secondaries: secondary_sizing "${cfg.secondary_sizing}" needs the top rule and must be "tier"`);
+const tierName = new Map();   // a tier-scaled line's key -> its tier label ("Tier 1", "Tier 2-3")
+// ⭐⭐ THE FACTORY POWER LINES BUY ENGINES (the mod 1.2 book, BALANCE_FRAMEWORK §10.116 ruling 8; `power_lines_engines: true`): on every
+//   water-tube boiler, rotary valve engine and assembly line method of the tiered industries the tools become engines, value for value (the
+//   machine is an engine; the coal or electricity it burns stays where it is).
+const ENGINES = !!cfg.power_lines_engines;
+const POWER_LINE = /^(pm_assembly_lines_|pm_rotary_valve_engine_|pm_watertube_boiler_)/;
+const enginesConverted = [];
+const toEngines = (nb, src) => {
+  if (!ENGINES || !POWER_LINE.test(src)) return nb;
+  const m = nb.match(/goods_input_tools_add\s*=\s*(-?[0-9.]+)/); if (!m) return nb;
+  const eng = +(+m[1] * (PRICE.tools / PRICE.engines)).toFixed(2);
+  let out = nb.replace(/\n?[ \t]*goods_input_tools_add\s*=\s*-?[0-9.]+[^\n]*/, '');
+  if (/goods_input_engines_add/.test(out)) out = out.replace(/(goods_input_engines_add\s*=\s*)(-?[0-9.]+)/, (_, a, q) => a + (+q + eng).toFixed(2));
+  else out = out.replace(/(workforce_scaled\s*=\s*\{)/, `$1\n\t\t\tgoods_input_engines_add = ${eng}`);
+  if (!/goods_input_engines_add/.test(out)) throw new Error(`emit_secondaries: ${src}: tools → engines found no workforce_scaled block to write into`);
+  enginesConverted.push(`${src}: tools ${m[1]} → engines ${eng}`);
+  return out;
+};
 
 // ⭐⭐ NARRATIVE COMPATIBILITY, PAIR BY PAIR (user-ruled 2026-10-02, BALANCE_FRAMEWORK §10.93): "ensure that all secondary and automation
 //   PMs are narratively compatible with the primary PMs of our tiered industries" — and, the same evening, "No, no universal rule. Go through
@@ -245,7 +272,7 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
       const at = tiers.filter(x => (x.era ?? 0) <= anchorEra).sort((a, b) => (b.era ?? 0) - (a.era ?? 0))[0];
       return at || tiers.reduce((a, b) => ((b.era ?? 0) < (a.era ?? 0) ? b : a), t);
     })();
-    const lsScale = (body, a) => scaleGoods(body, vanTop(a), indTop, indTop.output_good || industry.output_good || industry.good).nb;
+    const lsScale = (body, a) => toEngines(scaleGoods(body, vanTop(a), indTop, indTop.output_good || industry.output_good || industry.good).nb, a);
     // vanilla's main group for this industry, in its listed order (the last member is vanilla's most advanced main method)
     const vanMainGroup = (() => { const vp = (industry.tiers || []).map(x => x.vanilla_pm).find(Boolean); return vp ? GROUP_OF[vp] : null; })();
     const vanMains = vanMainGroup ? listOf(PMG[vanMainGroup], 'production_methods').filter(x => PM[x]) : [];
@@ -450,6 +477,21 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
           const ref = vanTop(p);
           const { nb: scaled, Rout, Rin } = scaleGoods(pb, ref, indTop, indTop.output_good || industry.output_good || industry.good);
           let nb = scaled;
+          // ⭐ THE `tier` SIZING (secondary_sizing, §10.119 item 2): the `top` recipe × this building's own (upper) main output ÷ the anchor's,
+          //   every good of the line by that one factor; a craft's employment × its workforce_mult; the key and the name carry the tier
+          let tierKeyInd = industry.id;
+          if (TIER) {
+            const f = (indTop.output_qty > 0) ? (topV.output_qty || 0) / indTop.output_qty : 1;
+            nb = nb.replace(/goods_(input|output)_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, io, g2, q) => `goods_${io}_${g2}_add = ${r2(+q * f)}`);
+            if (wmT < 1) nb = nb.replace(/building_employment_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g, (_, pr, q) => {
+              const e = +q * wmT;
+              if (e < 0) throw new Error(`emit_secondaries: ${bkey} would carry ${p}, which REMOVES ${pr} — a craft rung must not carry labour-saving methods`);
+              if (Math.abs(e - Math.round(e)) > 1e-9) throw new Error(`emit_secondaries: ${bkey} ${p}: ${pr} ${q} × ${wmT} is not whole`);
+              return `building_employment_${pr}_add = ${Math.round(e)}`; });
+            const eras = variants.map(v => v.era ?? 0); const lo = Math.min(...eras), hi = Math.max(...eras);
+            tierKeyInd = `${industry.id}_t${lo}${hi !== lo ? '_' + hi : ''}`;
+            tierName.set(`${p}_${tierKeyInd}`, `Tier ${lo}${hi !== lo ? '-' + hi : ''}`);
+          }
           const allowed = variants.filter(v => {
             if (!vanGateOk(v, gatedOn)) return false;
             if (!compatOk(industry, p, v)) { DROPPED.push([bkey, g, p, `beside ${v.pm_key}: ${notBeside(vanillaMainOf(industry, v), p)}`]); return false; }
@@ -462,7 +504,7 @@ for (const bfile of ['01_industry.txt', '06_urban_center.txt', '11_private_infra
             continue;
           }
           nb = stripGate(nb);
-          const nk = share(industry.id, p, nb, allowed.map(v => v.pm_key), gatedOn.length > 0 || allowed.length < variants.length);
+          const nk = share(tierKeyInd, p, nb, allowed.map(v => v.pm_key), gatedOn.length > 0 || allowed.length < variants.length);
           regs.push({ key: nk, body: nb, g, off: offOf(members), allowed });
           const rg = {};
           for (const m of nb.matchAll(/goods_input_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)) (rg.in ||= {})[m[1]] = +m[2];
@@ -742,7 +784,12 @@ const repointed = [];
 const overridden = [];
 for (const [k, lines] of Object.entries(cfg.secondary_goods_override || {})) {
   if (k.startsWith('_')) continue;
-  const i = outPMs.findIndex(s => keyOf(s) === k);
+  let i = outPMs.findIndex(s => keyOf(s) === k);
+  // under the `tier` sizing a line's key carries its tier ("<line>_<industry>_t1_2"): an override ruled on the industry's line applies to its
+  // one tier copy — exactly one, or the build stops (the ruling would have to say which tier)
+  if (i < 0 && TIER) { const c = outPMs.map((s, j) => [keyOf(s), j]).filter(([kk]) => kk.startsWith(k + '_t'));
+    if (c.length === 1) { i = c[0][1]; overridden.push(`${k} → re-keyed under the tier sizing to ${c[0][0]}`); }
+    else if (c.length > 1) throw new Error(`emit_secondaries: secondary_goods_override names ${k}, which the tier sizing mints on ${c.length} tiers (${c.map(x => x[0]).join(', ')}) — rule which`); }
   if (i < 0) throw new Error(`emit_secondaries: secondary_goods_override names ${k}, which this build does not mint`);
   for (const [line, v] of Object.entries(lines)) {
     if (typeof v !== 'number') throw new Error(`emit_secondaries: secondary_goods_override.${k}.${line} must be a number`);
@@ -777,7 +824,8 @@ if (minted) {
   //   Emitted into replace/ like the rest of the mod's loc, one file per language, UTF-8 BOM.
   const LANGS = cfg.languages || ['english'];
   const seenLoc = new Set(); const locLines = [];
-  for (const [nk, src] of locPairs) { if (seenLoc.has(nk)) continue; seenLoc.add(nk); locLines.push(copyName.has(nk) ? ` ${nk}:0 "$${src}$ ($${copyName.get(nk)}$)"` : ` ${nk}:0 "$${src}$"`); }
+  // a tier-scaled line (secondary_sizing 'tier') is named "<vanilla line> (Tier N)": vanilla's translation of the line, the tier in the mod's words
+  for (const [nk, src] of locPairs) { if (seenLoc.has(nk)) continue; seenLoc.add(nk); locLines.push(copyName.has(nk) ? ` ${nk}:0 "$${src}$ ($${copyName.get(nk)}$)"` : tierName.has(nk) ? ` ${nk}:0 "$${src}$ (${tierName.get(nk)})"` : ` ${nk}:0 "$${src}$"`); }
   for (const lang of LANGS) {
     const dir = join(MOD, 'localization', lang, 'replace'); if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, `zzz_pm_rehaul_secondaries_l_${lang}.yml`), BOM + `l_${lang}:\n# GENERATED by tools/emit_secondaries.mjs - names of the per-tier secondary copies (each references its vanilla source).\n` + locLines.join('\n') + '\n');
@@ -790,6 +838,9 @@ console.log('secondaries: ' + minted + ' per-tier method(s) in ' + groupsMinted 
   (namedCopies ? `; ${namedCopies} per-main-method copies on merged buildings named after their main method` : ''));
 for (const r of repointed) console.log('  replacement_if_valid re-pointed: ' + r);
 for (const o of overridden) console.log('  secondary_goods_override: ' + o);
+if (TIER) console.log(`  tier-scaled lines (secondary_sizing tier, §10.119 item 2): ${tierName.size} method(s) — ${[...tierName].map(([k, n]) => k + ' (' + n + ')').join(', ')}`);
+if (ENGINES) console.log(`  power lines buy engines (power_lines_engines, §10.116 ruling 8): ${[...new Set(enginesConverted)].join('; ') || 'NONE converted — check the rule'}`);
+if (ENGINES && !enginesConverted.length) throw new Error('emit_secondaries: power_lines_engines is set and no power line was converted');
 // what a building no longer carries (or carries beside one of its main methods only): the vanilla gate, or the compatibility table
 if (DROPPED.length) {
   console.log('  not carried, or mandated (' + DROPPED.length + '):');

@@ -19,6 +19,13 @@ import { readFileSync, readdirSync } from 'node:fs';
 
 // main vanilla method -> { secondary vanilla method: why it may not run beside it }
 export const NOT_BESIDE = {
+  // the Bakeries craft (the mod 1.2 book's craft lines, BALANCE_FRAMEWORK §10.119 item 2(d), ruled 2026-11-17: the crafts carry the
+  // handcraft-compatible first lines only — Pot Stills, Craftsman Sewing, Luxury Furniture, Ceramics). Before the tier sizing a craft carried no
+  // line at all (each took a good below zero), so these pairs never came up.
+  pm_bakery: {
+    pm_cannery: 'a sealed-tin cannery is a factory works beside a bakery shop; the crafts carry the handcraft lines only (§10.119 item 2(d))',
+    pm_cannery_fish: 'a sealed-tin cannery is a factory works beside a bakery shop; the crafts carry the handcraft lines only (§10.119 item 2(d))',
+  },
   pm_handsewn_clothes: {
     pm_automatic_power_looms: 'electric automatic looms arrive around 1900, half a century after the sewing machine ended hand-sewing as a factory method',
   },

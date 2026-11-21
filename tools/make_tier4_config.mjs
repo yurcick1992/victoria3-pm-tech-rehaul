@@ -26,7 +26,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { blocks } from './lib_vanilla_ladder.mjs';
-import { N, ERA_YEARS, LOC, INDUSTRIES, PLACEMENT, ADDITIONS, ERA_MOVES, RESEARCH_EVENTS, CANON, PM_GOODS_RULED, PM_EMPLOYMENT_RULED, VARIANTS, bldName, slug,
+import { N, ERA_YEARS, LOC, INDUSTRIES, PLACEMENT, ADDITIONS, INSERTIONS, ERA_MOVES, RESEARCH_EVENTS, CANON, PM_GOODS_RULED, PM_EMPLOYMENT_RULED, VARIANTS, bldName, slug,
          GAME_ERA_OF_ERA, ERA_TOLERANCE, eraOfGameEra, gameEraOfYear, derivePlacement, placementFaults } from './lib_tier4_spec.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -39,6 +39,11 @@ const rd = p => readFileSync(p, 'utf8').replace(/^\uFEFF/, '');
 //   `_placement_derived`. Write the result under its own TIER4_SUFFIX (e.g. tier4-e1).
 const DERIVE = (() => { const i = process.argv.indexOf('--derive'); return new Set(i > 0 && process.argv[i + 1] ? process.argv[i + 1].split(',').map(s => s.trim()).filter(Boolean) : []); })();
 for (const id of DERIVE) if (!PLACEMENT[id]) throw new Error(`--derive ${id}: no PLACEMENT entry to ignore \u2014 it is already derived`);
+// \u2b50 --insert <ind,ind> (the mod 1.2 book, BALANCE_FRAMEWORK \u00a710.116 ruling 4): the named industries take their ruled INSERTION (lib_tier4_spec
+//   INSERTIONS) \u2014 a rung inside the ladder on a vanilla technology, with the insertion's own placement. A flag, so the canon's regeneration
+//   (no flag) still reproduces the canon; the book records `_inserted`, which make_tier4_techs.mjs reads for the insertion's renames.
+const INSERT = (() => { const i = process.argv.indexOf('--insert'); return new Set(i > 0 && process.argv[i + 1] ? process.argv[i + 1].split(',').map(s => s.trim()).filter(Boolean) : []); })();
+for (const id of INSERT) { if (!INSERTIONS.some(x => x.industry === id)) throw new Error(`--insert ${id}: no INSERTIONS entry for it`); if (DERIVE.has(id)) throw new Error(`--insert ${id} with --derive ${id}: an insertion carries its own placement`); }
 
 // ---- the game -------------------------------------------------------------------------------------------------
 const BLD = {}, BLDFILE = {}, PMG = {}, PM = {};
@@ -90,10 +95,17 @@ for (const { id, building } of INDUSTRIES) {
   //   the derivation for the industries it names, and every placement is checked against ERA_TOLERANCE.
   const adds = ADDITIONS.filter(x => x.industry === id);
   const gateOf = pm => list(PM[pm] || '', 'unlocking_technologies')[0] || bldGate;
-  const gameEras = [...methods.map(pm => { const g = gateOf(pm); if (!g) return 1; if (TECH_ERA[g] == null) throw new Error(`${id}: ${pm} is gated on ${g}, not a vanilla technology`); return TECH_ERA[g]; }),
-                    ...adds.map(a => gameEraOfYear(a.year))];
+  // an insertion (--insert) is a slot inside the ladder, right after its `after` method, on its vanilla technology
+  const ins = INSERT.has(id) ? INSERTIONS.find(x => x.industry === id) : null;
+  const insAt = ins ? methods.indexOf(ins.after) + 1 : -1;
+  if (ins && insAt < 1) throw new Error(`${id}: insertion after ${ins.after}, which is not a main method of ${base}`);
+  if (ins && TECH_ERA[ins.tech] == null) throw new Error(`${id}: insertion on ${ins.tech}, not a vanilla technology`);
+  if (ins && methods.length + adds.length + 1 > N) throw new Error(`${id}: insertion ${ins.key} has no free slot (${methods.length} vanilla methods + ${adds.length} additions)`);
+  const methodEras = methods.map(pm => { const g = gateOf(pm); if (!g) return 1; if (TECH_ERA[g] == null) throw new Error(`${id}: ${pm} is gated on ${g}, not a vanilla technology`); return TECH_ERA[g]; });
+  if (ins) methodEras.splice(insAt, 0, TECH_ERA[ins.tech]);
+  const gameEras = [...methodEras, ...adds.map(a => gameEraOfYear(a.year))];
   const derived = derivePlacement(gameEras);
-  let eras = DERIVE.has(id) ? null : PLACEMENT[id];
+  let eras = ins ? ins.placement : DERIVE.has(id) ? null : PLACEMENT[id];
   if (eras) {
     if (eras.length !== gameEras.length) throw new Error(`${id}: PLACEMENT has ${eras.length} eras for ${gameEras.length} rungs (${methods.length} vanilla methods + ${adds.length} additions)`);
   } else if (derived.overflow) {
@@ -102,11 +114,13 @@ for (const { id, building } of INDUSTRIES) {
   } else eras = derived.eras;
   const faults = placementFaults(id, eras, gameEras);
   if (faults.length) throw new Error(`THE ERA RULE (2026-09-13) is broken:\n  ${faults.join('\n  ')}`);
-  const placed = (PLACEMENT[id] && !DERIVE.has(id)) ? 'ruled' : DERIVE.has(id) ? 'derived (--derive)' : 'derived';
+  const placed = ins ? 'inserted' : (PLACEMENT[id] && !DERIVE.has(id)) ? 'ruled' : DERIVE.has(id) ? 'derived (--derive)' : 'derived';
+  const slotOf = k => (ins && k >= insAt) ? k + 1 : k;   // a vanilla method's index in the full slot list (the insertion takes slot insAt)
   const tiers = methods.map((pm, k) => {
     const body = PM[pm]; if (body == null) throw new Error(`${id}: method ${pm} not found`);
     const tech = gateOf(pm);
-    if (!tech && eras[k] > 0) throw new Error(`${id}: ${pm} has no gate and neither has ${building}`);
+    const era = eras[slotOf(k)];
+    if (!tech && era > 0) throw new Error(`${id}: ${pm} has no gate and neither has ${building}`);
     const g = goodsOf(body);
     const s = slug(pm);
     return {
@@ -117,7 +131,7 @@ for (const { id, building } of INDUSTRIES) {
       output_qty: null, inputs: g.in, output_good: null,
       employment: employmentOf(body), pollution: pollutionOf(body),
       texture: scalar(body, 'texture'),
-      era: eras[k], tech_year: (tech && ONSET[tech]) || null, natural_year: ERA_YEARS[eras[k]],
+      era, tech_year: (tech && ONSET[tech]) || null, natural_year: ERA_YEARS[era],
       _out: g.out,
     };
   });
@@ -125,6 +139,17 @@ for (const { id, building } of INDUSTRIES) {
   const outGood = Object.entries(tiers[0]._out).sort((a, b) => b[1] - a[1])[0];
   if (!outGood) throw new Error(`${id}: ${tiers[0].vanilla_pm} outputs nothing`);
   for (const t of tiers) { t.output_qty = t._out[outGood[0]] ?? 0; t.output_good = outGood[0]; delete t._out; }
+  // ⭐ THE INSERTION (--insert): the rung below's mix, staffing, pollution and icon, its own key, name, gate and era; `anchor_from` tells
+  //   make_ab_config what this rung's anchor recipe is when the ladder is anchored on it (the rung below's vanilla method × anchor_scale)
+  if (ins) {
+    const below = tiers[insAt - 1];
+    tiers.splice(insAt, 0, { key: ins.key, name: bldName(vb, ins.pm_name), pm_key: `pm_main_${id}_${slug(ins.key.replace(building + '_', ''))}`,
+      pmg_key: `pmg_main_${id}_${slug(ins.key.replace(building + '_', ''))}`, pm_name: ins.pm_name, tech: ins.tech,
+      output_qty: below.output_qty, inputs: { ...below.inputs }, output_good: below.output_good,
+      employment: { ...below.employment }, pollution: below.pollution, texture: below.texture,
+      era: eras[insAt], tech_year: ONSET[ins.tech] || null, natural_year: ERA_YEARS[eras[insAt]],
+      anchor_from: { vanilla_pm: below.vanilla_pm, scale: ins.anchor_scale }, inserted: true });
+  }
   // the vanilla building block, the fields the builder emits
   const bld = {};
   const al = list(bb, 'aliases'); if (al.length) bld.aliases = al;
@@ -182,6 +207,7 @@ const cfg = {
   // the four-rung canon's 1836 start is vanilla's, converted; the six-rung chain seed does not apply
   start_exceptions_file: 'config/start_exceptions.vanilla.json',
   ...(DERIVE.size ? { _placement_derived: [...DERIVE].sort() } : {}),
+  ...(INSERT.size ? { _inserted: INSERTIONS.filter(x => INSERT.has(x.industry)).map(x => ({ industry: x.industry, key: x.key, tech: x.tech, after: x.after, anchor_scale: x.anchor_scale, placement: x.placement, renames: x.renames || null, ruled_by: 'BALANCE_FRAMEWORK §10.116 ruling 4, §10.116.2, §10.116.3' })) } : {}),
   // the ruled research-event parameters (§10.69) live in the spec — validated here against the industries that exist
   // ⭐ the per-PM overrides on VANILLA's own methods that are ruled but are not about our rungs — today the urban centre's
   //   electric streetlights, which §10.43 rules an electricity SOURCE (+1 out, 2 coal in, 250 engineers) against vanilla's

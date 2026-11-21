@@ -442,6 +442,9 @@ const ACCEPTED = {
   'common/static_modifiers/00_ep2_03_modifiers.txt': 'D5: ukiyo-e is traditional art, rung 0 by ruling',
   'events/agitators_events/land_ownership_law_events.txt': 'A35: "an ad hoc steel mill" starts the e0 rung on purpose',
   'common/ai_strategies/01_admin_strategies.txt': 'R2.3: the tooling and explosives subsidies are the config\'s building_subsidies (the coordinator\'s step), not this emitter\'s',
+  // the mod 1.2 book's deposit rungs (§10.125):
+  'common/modifier_type_definitions/99_todo_sort_into_other_files.txt': "vanilla's own declaration of building_fishing_wharf_throughput_add (the rungs' types are declared by emit_companies.mjs)",
+  'common/objective_subgoals/00_subgoals_tutorial.txt': "the tutorial's 'switch a logging camp to saw mills' suggestion: can_activate_production_method reads false once saw mills is a rung of its own, so the tutorial offers its other suggestions (one alternative of an else_if chain)",
 };
 
 // ------------------------------------------------------------------------------------------------ helper bodies needing the game
@@ -478,6 +481,20 @@ function vanillaPms(rel, block) {
 // ------------------------------------------------------------------------------------------------ the transform
 const stats = { files: 0, tokens: 0, snips: 0, tp: 0, collisions: [] };
 const TP_KEYS = new Set();
+// ⭐ THE DEPOSIT RUNGS (the mod 1.2 book; ruled 2026-11-21, §10.125: "a reference to a deposit's vanilla key reaches every rung of it"). A
+//   deposit's rewrites are counted APART from the audited factory counts (`spec.n` / `spec.tpn` stay the audit's), printed per file, and a
+//   file that names a deposit key in a rewritable form is transformed whether or not the audit lists it (`depositOnly`: its factory
+//   references, if any, are left exactly as the audit left them). Two deposit-only line rules, both "every rung": an AI preference line
+//   (`building_coal_mine = wants_to_have`, the resource strategy's subsidies) becomes one line per rung, and the terrain's mine count
+//   (`if = { limit = { exists = state.b:<deposit> } add = state.b:<deposit>.level }`) one block per rung. LEFT AS WRITTEN, because the first
+//   rung keeps slots wherever vanilla has the deposit (emit_deposit_slots.mjs) so the form means what it meant: has_potential_resource,
+//   num_potential_resources(…), force_resource_discovery, `type = <deposit>` (remaining_undepleted, an achievement), a building group's
+//   default_building, and the tutorial's `b:building_logging_camp` link.
+const DEP_IDS = new Set((cfg.industries || []).filter(i => i.deposit && !i.disabled).map(i => i.id));
+const isDepKey = k => R0.has(k) && DEP_IDS.has(R0.get(k));
+const DEP_KEEP_LINE = /has_potential_resource\s*=|num_potential_resources\s*\(|force_resource_discovery\s*=|^\s*type\s*=|default_building\s*=|\bb:building_[a-z_0-9]+\s*=\s*\{\s*save_scope_as\s*=\s*tutorial_building_target/;
+const depStats = { files: [], keptForms: 0 };
+const AI_PREF = /^(\s*)(building_[a-z_0-9]+)(\s*=\s*)(must_have|wants_to_have|nice_to_have|should_have|dont_want)(\s*)$/;
 function transform(rel, spec) {
   const src = srcOf(rel);
   if (src.startsWith(join(MOD))) stats.collisions.push(rel);
@@ -486,6 +503,18 @@ function transform(rel, spec) {
   let t = unbom(raw);
   const before = countDlc(t);
   if (spec.crafts && !HAS_CRAFTS) spec = { ...spec, snips: [] };
+  let depN = 0, depTp = 0, depTok = 0;   // a deposit's rewrites: all (depN), of them the token rules' (depTok), and its throughput lines
+  // the deposit-only line rules (every rung): the terrain's per-deposit mine count, and an AI preference line
+  if (DEP_IDS.size) {
+    t = t.replace(/(\n[ \t]*)if\s*=\s*\{\s*limit\s*=\s*\{\s*exists\s*=\s*state\.b:(building_[a-z_0-9]+)\s*\}\s*add\s*=\s*state\.b:\2\.level\s*\}/g, (whole, nl, k, off) => {
+      if (!isDepKey(k) || inComment(t, off + nl.length)) return whole;
+      depN++;
+      return ind(R0.get(k)).rungs.filter(r => !r.merged).map(r => `${nl}if = { limit = { exists = state.b:${r.key} } add = state.b:${r.key}.level }`).join('');
+    });
+    t = t.split('\n').map(l => { const h = l.indexOf('#'); const code = h < 0 ? l : l.slice(0, h), rest = h < 0 ? '' : l.slice(h);
+      const m = AI_PREF.exec(code); if (!m || !isDepKey(m[2])) return l;
+      depN++; return ind(R0.get(m[2])).rungs.filter(r => !r.merged).map(r => `${m[1]}${r.key}${m[3]}${m[4]}`).join('\n') + (rest ? ' ' + rest : ''); }).join('\n');
+  }
   // 1. snippets
   for (const s of spec.snips || []) {
     if (s.block) {
@@ -541,14 +570,15 @@ function transform(rel, spec) {
     const h = line.indexOf('#');
     let code = h < 0 ? line : line.slice(0, h);
     const rest = h < 0 ? '' : line.slice(h);
-    const modeOf = x => (spec.byBlock && blk && spec.byBlock[blk] && spec.byBlock[blk][x]) || (spec.mode && spec.mode[x]) || 'all';
+    const modeOf = x => (spec.depositOnly && !DEP_IDS.has(x)) ? 'keep' : (spec.byBlock && blk && spec.byBlock[blk] && spec.byBlock[blk][x]) || (spec.mode && spec.mode[x]) || 'all';
     // throughput lines: one line per ruled rung key
     const tm = /^(\s*)(building_[a-z_0-9]+)_throughput_add(\s*=\s*)(\S+)\s*$/.exec(code);
     if (!tm) for (const m of code.matchAll(/\b(building_[a-z_0-9]+)_throughput_add\b/g))
       if (R0.has(m[1])) die(`${rel}:${i + 1}: ${m[1]}_throughput_add in a line form the throughput rule cannot rewrite: "${line.trim()}"`);
     if (tm && R0.has(tm[2])) {
       const x = R0.get(tm[2]);
-      const rule = (spec.tp && blk && spec.tp[blk] && spec.tp[blk][x]) || 'all';
+      const rule = (spec.depositOnly && !DEP_IDS.has(x)) ? 'keep' : (spec.tp && blk && spec.tp[blk] && spec.tp[blk][x]) || 'all';
+      if (DEP_IDS.has(x) && rule !== 'keep') depTp++;
       if (spec.tp && blk && spec.tp[blk]) tpUsed.add(blk);
       if (rule !== 'keep') {
         const keys = bTerms(x, rungSet(x, rule)).whole;
@@ -563,13 +593,13 @@ function transform(rel, spec) {
       if (!R0.has(k)) return whole;
       const x = R0.get(k), mode = modeOf(x);
       if (mode === 'keep') return whole;
-      n++;
+      n++; if (DEP_IDS.has(x)) { depN++; depTok++; }
       const name = op === 'is_building_type' ? isH(x, mode) : op === 'has_building' ? hasH(x, mode) : hasActiveH(x, mode);
       return `${name} = yes`;
     });
     code = code.replace(/\bhas_active_production_method(\s*=\s*)(pm_[\w-]+)/g, (whole, eq, pm) => {
       if (SEC.has(pm)) { n++; return `${runsSecH(pm)} = yes`; }
-      if (MAIN.has(pm)) { const x = MAIN.get(pm).ind; if (modeOf(x) === 'keep') return whole; n++; return `${runsMainH(pm)} = yes`; }
+      if (MAIN.has(pm)) { const x = MAIN.get(pm).ind; if (modeOf(x) === 'keep') return whole; n++; if (DEP_IDS.has(x)) { depN++; depTok++; } return `${runsMainH(pm)} = yes`; }
       return whole;
     });
     lines[i] = code + rest;
@@ -579,10 +609,19 @@ function transform(rel, spec) {
   for (const b of Object.keys(spec.tp || {})) if (!tpUsed.has(b)) die(`${rel}: throughput rule for ${b} matched no line — the vanilla modifier moved`);
   // residue: a b:/bt: link to a rung-0 key means a form the rules missed (a throughput line in an odd form dies in the loop above)
   for (const m of t.matchAll(/\b(?:b|bt):(building_[a-z_0-9]+)\b/g))
-    if (R0.has(m[1]) && !inComment(t, m.index)) die(`${rel}: ${m[0]} left — a link to rung 0 needs a snippet`);
-  if (process.env.REFS_LEARN) console.log(`  learn: ${rel} n=${n} (spec ${spec.n}) tpn=${tpc} (spec ${spec.tpn})`);
-  else if (tpc !== (spec.tpn || 0)) die(`${rel}: ${tpc} throughput line(s) expanded, expected ${spec.tpn || 0} — a vanilla modifier was added or moved; rule it (TIER_REFERENCE_AUDIT.md table D) and update the count`);
-  else if (n !== (spec.n || 0)) die(`${rel}: ${n} token rewrite(s), expected ${spec.n} — the vanilla text changed; re-read the audit row and update the count`);
+    if (R0.has(m[1]) && !inComment(t, m.index)) {
+      // a deposit's link in a form that stays right on the first rung (DEP_KEEP_LINE) is left; anything else still needs a snippet
+      const ls = t.lastIndexOf('\n', m.index) + 1, le = t.indexOf('\n', m.index); const line = t.slice(ls, le < 0 ? t.length : le);
+      if (isDepKey(m[1]) && DEP_KEEP_LINE.test(line)) { depStats.keptForms++; continue; }
+      // the per-rung mine count this emitter wrote above (the first rung's line names the vanilla key, as it should)
+      if (isDepKey(m[1]) && /exists\s*=\s*state\.b:(building_[a-z_0-9]+)\s*\}\s*add\s*=\s*state\.b:\1\.level/.test(line)) continue;
+      die(`${rel}: ${m[0]} left — a link to rung 0 needs a snippet`);
+    }
+  if (process.env.REFS_LEARN) console.log(`  learn: ${rel} n=${n} (spec ${spec.n}) tpn=${tpc} (spec ${spec.tpn}) deposits n=${depN} tp=${depTp}`);
+  else if (tpc - depTp !== (spec.tpn || 0)) die(`${rel}: ${tpc - depTp} factory throughput line(s) expanded, expected ${spec.tpn || 0} — a vanilla modifier was added or moved; rule it (TIER_REFERENCE_AUDIT.md table D) and update the count`);
+  else if (n - depTok !== (spec.n || 0)) die(`${rel}: ${n - depTok} factory token rewrite(s), expected ${spec.n} — the vanilla text changed; re-read the audit row and update the count`);
+  if (depN || depTp) depStats.files.push(`${rel} (${depN} rewrite(s), ${depTp} throughput line(s))`);
+  if (spec.depositOnly && !depN && !depTp) die(`${rel}: transformed for its deposit references and none was rewritten`);
   stats.tokens += n;
   // guards: DLC gates survive, braces balance, nothing tiered left in a form the rules missed
   const after = countDlc(t);
@@ -596,7 +635,25 @@ function transform(rel, spec) {
 const W = (rel, text) => { const p = join(MOD, rel); mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, text); };
 
 const perFile = {};
+// ⭐ the deposit files: every game file outside the audit that names a deposit key (or a deposit's vanilla main method) in a REWRITABLE form
+//   is transformed deposit-only; the Russian name forms and vanilla's modifier declarations stay as the audit accepted them
+const DEP_SPEC = {};
+if (DEP_IDS.size) {
+  const DEP_SKIP = /^(common\/(history|production_methods|production_method_groups|buildings|company_types|customizable_localization|modifier_type_definitions)|localization|gfx|map_data|dlc|tests)\//;
+  const depKeys = [...R0.keys()].filter(isDepKey), depMains = [...MAIN].filter(([, v]) => DEP_IDS.has(v.ind)).map(([k]) => k);
+  const kre = depKeys.join('|'), mre = depMains.join('|');
+  const rewritable = new RegExp(`\\b(is_building_type|has_building|has_active_building)\\s*=\\s*(${kre})\\b|\\b(${kre})_throughput_add\\b|^\\s*(${kre})\\s*=\\s*(must_have|wants_to_have|nice_to_have|should_have|dont_want)\\s*$|exists\\s*=\\s*state\\.b:(${kre})\\b` + (mre ? `|has_active_production_method\\s*=\\s*(${mre})\\b` : ''), 'm');
+  const walk0 = d => readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk0(join(d, e.name)) : [join(d, e.name)]);
+  for (const root of ['common', 'events']) for (const f of walk0(join(GAME, root)).filter(x => x.endsWith('.txt'))) {
+    const rel = relative(GAME, f).split(sep).join('/');
+    if (SPEC[rel] || DEP_SKIP.test(rel)) continue;
+    const code = unbom(rd(f)).split('\n').map(l => l.replace(/#.*/, '')).join('\n');
+    if (code.split('\n').some(l => rewritable.test(l))) DEP_SPEC[rel] = { depositOnly: true };
+  }
+}
 for (const [rel, spec] of Object.entries(SPEC)) perFile[rel] = transform(rel, spec);
+for (const [rel, spec] of Object.entries(DEP_SPEC)) perFile[rel] = transform(rel, spec);
+if (DEP_IDS.size) console.log(`emit_vanilla_refs: deposit references (every rung) in ${depStats.files.length} file(s), ${Object.keys(DEP_SPEC).length} of them outside the audit: ${depStats.files.join('; ')}`);
 
 // ------------------------------------------------------------------------------------------------ additive files
 const GEN = '# GENERATED by tools/emit_vanilla_refs.mjs from the config — the tier-reference fix (TIER_REFERENCE_AUDIT.md). Do not hand-edit.\n';
@@ -708,6 +765,8 @@ for (const root of ['common', 'events']) for (const f of walk(join(GAME, root)).
     const c = l.replace(/#.*/, '');
     for (const m of c.matchAll(/\b(building_[a-z_0-9]+|pm_[\w-]+)\b/g)) {
       const tok = m[1];
+      // a deposit key in a form that stays right on the first rung (has_potential_resource, num_potential_resources, …) is no hit
+      if (isDepKey(tok) && DEP_KEEP_LINE.test(c)) { depStats.keptForms++; continue; }
       const k = KEYS.has(tok) ? 'key' : [...KEYS].some(x => tok.startsWith(x + '_') && !Object.values(IND).some(I => I.buildings.has(tok))) ? 'modifier' : MAINS.has(tok) ? 'main method' : SECS.has(tok) ? 'secondary' : null;
       if (k) hits.push(`${i + 1} ${k} ${tok}`);
     }
@@ -719,6 +778,7 @@ for (const root of ['common', 'events']) for (const f of walk(join(GAME, root)).
 if (left.length) die(`${left.length} file(s) still reference a tiered industry and are neither transformed nor ACCEPTED:\n  ` + left.join('\n  '));
 for (const a of Object.keys(ACCEPTED)) if (!acceptedHit.has(a) && !existsSync(join(MOD, a))) console.log(`  note: ACCEPTED ${a} no longer references a tiered industry — drop it from the list`);
 
+if (DEP_IDS.size) console.log(`emit_vanilla_refs: ${depStats.keptForms} deposit reference(s) left on the first rung by form (resource potential, forced discovery, building-group default, the tutorial's link)`);
 console.log(`emit_vanilla_refs: ${stats.files} vanilla file(s) transformed, ${stats.tokens} token rewrite(s), ${stats.snips} snippet(s), ` +
   `${stats.tp} throughput line(s) expanded; ${TRIG.size} trigger(s), ${EFF.size} effect(s), ${VAL.size} script value(s), ${newTypes.length} new modifier type(s); ` +
   `${acceptedHit.size} ACCEPTED file(s) left as vanilla wrote them` + (stats.collisions.length ? `; transformed the build's own copy of ${stats.collisions.join(', ')}` : '') + '.');

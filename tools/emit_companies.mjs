@@ -81,6 +81,8 @@ const combinedShipyard = [...(chains.get('shipyard') || []), ...(chains.get('shi
 // building, not a building, so its key names no building type in game. The host stays in every list, which covers both methods.
 const EXCLUDE = new Set();
 for (const ind of CFG.industries) { if (ind.disabled) continue; for (const t of ind.tiers || []) if (t.craft || t.method_of) EXCLUDE.add(t.key); }
+// the deposit rungs' keys (the mod 1.2 book): a resource-potential trigger naming one stays as written (the catch-all below)
+const DEPOSIT_KEYS = new Set(CFG.industries.filter(i => i.deposit && !i.disabled).flatMap(i => (i.tiers || []).map(t => t.key)));
 
 // expand: any tier key -> the full chain a vanilla reference to it should become (craft and merged keys filtered out)
 const expand = new Map();
@@ -330,6 +332,9 @@ for (const f of readdirSync(CDIR).sort()) {
       if (!resolveKey(tok)) continue;
       const ok = handled.has(i2) ||                                             // a rung line of a levels-in-region OR (1.15)
         /^\s*(is_building_type|has_building)\s*=/.test(c) ||          // wrapped or single-tier chains
+        // a state's resource potential, named by a deposit's vanilla key (the mod 1.2 book): the first rung keeps slots in every region where
+        // vanilla has the deposit (emit_deposit_slots.mjs), so the trigger means what it meant — left as written
+        (/^\s*has_potential_resource\s*=\s*building_[a-z_0-9]+\s*$/.test(c) && DEPOSIT_KEYS.has(tok)) ||
         /^\s*building_[a-z_0-9]+\s*=\s*\{/.test(c) ||                          // ai_construction_targets entry
         /^\s*building_[a-z_0-9]+\s*$/.test(c);                                 // token list member
       if (!ok) throw new Error(`emit_companies: unhandled reference to ${tok} at ${f}:${i2 + 1}: "${ls[i2].trim()}"`);

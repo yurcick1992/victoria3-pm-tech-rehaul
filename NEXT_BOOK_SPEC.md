@@ -12,7 +12,15 @@ ends."*
 disagree, the section wins and this page is wrong. Every number in §3 was worked from the rules by a session script and is there to be
 reproduced by the generator, not copied.
 
-**Status (2026-11-17).** Nothing is built and nothing has run. The three-arm batch (session `20261116_005659`) may still be playing:
+**Status (2026-11-21): BUILT.** The book is `config/mod_config.m12-first.json` (+ twin), made by `node tools/make_book12.mjs` (the canon's
+recorded chain with `--insert motor`, C 2.0, the desire ladder, the quarter; then `make_deposit_config.mjs`, the 1.2 book fields, a build,
+and the AI-weights step last). The four items still unruled at build time were ruled the same day (BALANCE_FRAMEWORK §10.125: the deposit
+cost step 1.3, "Tier N." names on deposit rungs, references to every rung, the standard rung entries for deposit technologies); §10.125 also
+records what the build decided by itself. Every linter and preflight pass; the canon builds byte for byte as before with the changed tools.
+Not yet loaded in the game: the user's 15-minute check is next, then one 100-year run (go-ahead). The rest of this page is the
+specification as it was written; where it and §10.125 disagree, §10.125 wins.
+
+**Status (2026-11-17, kept as written).** Nothing is built and nothing has run. The three-arm batch (session `20261116_005659`) may still be playing:
 until its `SCHEDULE DONE`, no emitter, `build.ps1` or `tools/testbed/**` file is edited in the checkout (CLAUDE.md §5.1 rule 7). Every
 run below needs the user's go-ahead (rules 3–4). The user on the open items: *"Open questions will get rulings when the first book
 builds."* They are collected in §5 with a proposed default each, so the first build can raise them in one pass.

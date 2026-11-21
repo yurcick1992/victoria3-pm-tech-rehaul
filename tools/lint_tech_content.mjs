@@ -56,13 +56,18 @@ for (const dir of [`${GAME}/common/technology/technologies`, `${MOD}/common/tech
     for (const [k, body] of Object.entries(b)) TECHS[k] = body; }
 
 const cfg = JSON.parse(rd(CFGP));
-const tierTech = {}, perIndustry = {};
+const tierTech = {}, perIndustry = {}, sharedGate = [];
 for (const i of cfg.industries) { if (i.disabled) continue;
   for (const t of i.tiers || []) if (t.tech) {
     tierTech[t.tech] = true;
     // a variant (§10.108.2) is a second main method of its rung at the rung's own step, no rung of its own: rule 2 counts rungs only
     if (t.variant) continue;
+    // ⭐ a DEPOSIT rung (the mod 1.2 book) whose vanilla method has no technology of its own stands on its building's gate, as vanilla's
+    //   method did (the whaling station's wooden ships on navigation, beside simple whaling): such rungs share the gate by construction,
+    //   and are printed instead of failing rule 2
+    if (i.deposit && t.vanilla_pm && !(PMTECH[t.vanilla_pm] || []).length) { sharedGate.push(`${i.id} e${t.era} (${t.vanilla_pm}) on its building's ${t.tech}`); continue; }
     (perIndustry[i.id] = perIndustry[i.id] || {})[t.tech] = ((perIndustry[i.id] || {})[t.tech] || []).concat(`e${t.era}`); } }
+if (sharedGate.length) console.log(`deposit rungs on their building's gate (no technology of their own in vanilla): ${sharedGate.join('; ')}`);
 
 // every vanilla script line that names a technology, EXCLUDING the technology files themselves (so a
 // prerequisite reference can never make a technology look useful) — built once, walked recursively.

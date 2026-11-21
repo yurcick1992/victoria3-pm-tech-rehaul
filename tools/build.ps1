@@ -89,9 +89,15 @@ function QtyMul($v, $m) {
 function New-ClonedBuilding($vanLines, $tierKey, $baseKey, $tech, $pmgTokens, $reqCon) {
     $s = ($vanLines -join "`n")
     $s = [regex]::Replace($s, '^\s*' + [regex]::Escape($baseKey) + '\s*=\s*\{', "$tierKey = {")
-    $utech = "unlocking_technologies = { $tech }"
-    if ($s -match 'unlocking_technologies\s*=\s*\{[^{}]*\}') { $s = [regex]::Replace($s, 'unlocking_technologies\s*=\s*\{[^{}]*\}', $utech) }
-    else { $s = [regex]::Replace($s, '^(' + [regex]::Escape($tierKey) + '\s*=\s*\{)', "`$1`n`t$utech") }
+    # a rung with NO technology (a deposit's first rungs: simple forestry, simple fishing, fishing trawlers - the mod 1.2 book) is ungated like
+    # vanilla's own building: its block keeps no unlocking_technologies at all (an empty `{ }` would be a list of nothing)
+    if ($null -eq $tech -or "$tech" -eq '') {
+        $s = [regex]::Replace($s, '\n?[ \t]*unlocking_technologies\s*=\s*\{[^{}]*\}', '')
+    } else {
+        $utech = "unlocking_technologies = { $tech }"
+        if ($s -match 'unlocking_technologies\s*=\s*\{[^{}]*\}') { $s = [regex]::Replace($s, 'unlocking_technologies\s*=\s*\{[^{}]*\}', $utech) }
+        else { $s = [regex]::Replace($s, '^(' + [regex]::Escape($tierKey) + '\s*=\s*\{)', "`$1`n`t$utech") }
+    }
     $pmgBlock = "production_method_groups = {`n`t`t" + ($pmgTokens -join "`n`t`t") + "`n`t}"
     $s = [regex]::Replace($s, 'production_method_groups\s*=\s*\{[^{}]*\}', $pmgBlock)
     if ($null -ne $reqCon) { $s = [regex]::Replace($s, 'required_construction\s*=\s*\S+', "required_construction = $reqCon") }
@@ -660,6 +666,8 @@ foreach ($ind in $cfg.industries) {
         # inputs/output_qty are actual volumes; the builder emits them directly.
         $outGood = if ($t.output_good) { $t.output_good } else { $ind.output_good }
         $Oval = [double]$t.output_qty * $prices[$outGood]
+        # a rung may make more than one good (a deposit rung of the mod 1.2 book: the whaling station's meat beside its oil): `extra_outputs`
+        if ($null -ne $t.extra_outputs) { foreach ($xo in $t.extra_outputs.PSObject.Properties) { $Oval += [double]$xo.Value * $prices[$xo.Name] } }
         $wage = if ($null -ne $t.wage_pct) { [double]$t.wage_pct } else { 0.25 }   # wages as fraction of TOTAL cost (input goods + wages); default 0.25 (BALANCE_FRAMEWORK §1) - a simplistic convention, not a realistic wage (see the header)
 
         # ---- PM ----
@@ -704,7 +712,9 @@ foreach ($ind in $cfg.industries) {
             $actualI += [double]$p.Value * $prices[$p.Name]
             $pm += "`t`t`tgoods_input_$($p.Name)_add = $(QtyMul $p.Value 1)"
         }
-        $pm += "`t`t`tgoods_output_$($outGood)_add = $(QtyMul $t.output_qty 1)","`t`t}"
+        $pm += "`t`t`tgoods_output_$($outGood)_add = $(QtyMul $t.output_qty 1)"
+        if ($null -ne $t.extra_outputs) { foreach ($xo in $t.extra_outputs.PSObject.Properties) { $pm += "`t`t`tgoods_output_$($xo.Name)_add = $(QtyMul $xo.Value 1)" } }
+        $pm += "`t`t}"
         # employment (level_scaled). Some buildings carry NO base-PM employment (e.g. the art academy: jobs live
         # in its ownership PMG, kept as a secondary), so omit the block entirely when employment is empty.
         $empProps = if ($null -ne $t.employment) { @($t.employment.PSObject.Properties) } else { @() }
@@ -1609,6 +1619,11 @@ foreach ($pm in @($pmGoods.Keys) + @($pmEmp.Keys) | Select-Object -Unique) {
     if (-not $pmOverridden.Contains($pm)) { throw "pm_goods/pm_employment override names '$pm', which no vanilla production_methods file defines" }
 }
 Write-Output ("production_methods: owning {0} file(s) [{1}]; {2} left vanilla (unchanged); {3} PM override(s) applied" -f $pmEmitted.Count, ($pmEmitted -join ', '), $pmSkipped, $pmOverridden.Count)
+# ⭐ THE SAME-ACRE STEPS (the mod 1.2 book: the world-technology gate, §10.115 ruling 7 / §10.124 item 1; irrigation's steam drive and diesel
+#   step, §10.116.1 / §10.124 item 3). AFTER the ownership above: it edits this build's owned copy of a file where one was written, vanilla's
+#   otherwise. A book without `agri_steps` emits nothing (the tool says so).
+& node (Join-Path $PSScriptRoot 'emit_agri_steps.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_agri_steps.mjs failed" }
 if ($elecGated.Count) { Write-Output ("production_methods: the electricity gate added to {0} vanilla method(s) that consume electricity without it: {1}" -f $elecGated.Count, ($elecGated -join ', ')) }
 
 # --- localization for every language (UTF-8 WITH BOM), in a replace/ folder so our building-name
@@ -1872,6 +1887,12 @@ $summary | Format-Table -AutoSize | Out-String | Write-Output
 
 # --- convert the 1836 start (the baseline it reads was refreshed BEFORE emit_techs, above) ---
 & (Join-Path $PSScriptRoot 'convert_history.ps1') -Repo $repo -Config $cfgPath -ModDir $modRel
+
+# ⭐ THE TIERED DEPOSITS ON THE MAP (the mod 1.2 book, BALANCE_FRAMEWORK §10.115, §10.124 item 2): each deposit's slots split over its rungs in
+#   the state regions, gold's 1836 floor read from the history just converted, and the gold and oil resource hooks. A book without `_deposits`
+#   emits nothing (the tool says so). After convert_history.ps1: it reads the converted 1836 levels.
+& node (Join-Path $PSScriptRoot 'emit_deposit_slots.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_deposit_slots.mjs failed - the deposit rungs would have no slots" }
 
 #    factories, with every linter green (2026-09-01).
 #    engine rejected the whole create_building: 130 "Invalid production method" errors, 130 lost

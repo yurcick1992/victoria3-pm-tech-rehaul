@@ -91,7 +91,8 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.121 | old plants pushed out become a term of the loss, measured by the in-market backward-industry test beside T0 (.1, 2026-11-19), aim under 100% and shrinking, weight 0.5, manufacturing only: the motor's new t0 rung in, deposits never, agriculture not for now; research pace, misplaced capital and the rubber shortage stay outside the loss; misplaced capital may get an AI-value pass close to finalising the 1.2 balance, after the main iterations; no extra GDP leeway for it: the world-GDP aim stays 0.90–1.00, a band already below vanilla because a focused player can exploit the mod's economy better (.2) | in force; the term ruled whole (.1); nothing built | here |
 | 10.122 | game 1.15.2, mod 1.1.2: the 1.1.1 canon rebuilt on 1.15.2, no balance change (the canon stays 697d4869: the 1.15.2 replay reproduces it); vanilla AI changes pass through unless they affect us; the company-target investment define 5 → 20 affects us (our targets list every rung) and passes through, read in the first 1.2 runs | in force; nothing to build | here |
 | 10.123 | THE loss of the mod 1.2 calibration: §10.120's form and §10.121's old-plants term, with the eight depeasantation aims at 0.25 each (2 together, as world GDP), a second capital term (the shortlist's hoard above half its GDP, weight 0.5) beside the count of members above 0.5 (weight 1, members of at least 2% of world GDP), T0–T3 manufacturing only (no deposits, no agriculture), the spreads fixed from mod 1.1.1's 15 runs on 1.15.1, one rule for the falling-decade aims, the barrier's value printed for every run; play time not read during the iterations, covered in the polishing touches | in force; built 2026-11-21 (`criteria.mjs`, the scorecard, the stop watcher; the five remaining spreads fitted) | here |
-| 10.124 | the 1.2 book's open items ruled after the probes: the world gate on tech-era-3+ same-acre steps; the deposit hooks by change_resource_potential, once per region; the diesel irrigation step at half the steam drive's engines and oil worth half its coal (2.5 + 1.9); Pumping Engines' text and icon deferred to the release build; the engines' lift 1.0; 5,000 on every deposit rung; both oil rungs at 200, half vanilla's cost, at the flat output of 60; saw mills and steam trawlers vanilla; the manufacturing desire ladder at desire ÷ cost × 1.1 a rung (455 / 1000 / 2200 / 4840 at C 2.0), deposits on vanilla's desire | in force; nothing built; the 1855 thresholds measured (F281), their design later |
+| 10.124 | the 1.2 book's open items ruled after the probes: the world gate on tech-era-3+ same-acre steps; the deposit hooks by change_resource_potential, once per region; the diesel irrigation step at half the steam drive's engines and oil worth half its coal (2.5 + 1.9); Pumping Engines' text and icon deferred to the release build; the engines' lift 1.0; 5,000 on every deposit rung; both oil rungs at 200, half vanilla's cost, at the flat output of 60; saw mills and steam trawlers vanilla; the manufacturing desire ladder at desire ÷ cost × 1.1 a rung (455 / 1000 / 2200 / 4840 at C 2.0), deposits on vanilla's desire | in force; built 2026-11-21 into the 1.2 book (§10.125); the 1855 thresholds measured (F281), their design later |
+| 10.125 | the 1.2 book built (`m12-first`, `tools/make_book12.mjs`): the deposits' cost step 1.3 above the 1836-map rungs; deposit rungs named "Tier N." like factory rungs; a reference to a deposit's vanilla key reaches every rung; the deposit technologies take the standard rung entries; the build's own consequences recorded (extra entries merged, gold spread by the slot rule, the oil link's guard, pumpjacks' weight restored, Precision Tools on t1, no canning on the Bakeries craft) | in force; built and deployed for the user's check; not loaded in game by Claude | here |
 
 ---
 
@@ -6373,3 +6374,63 @@ session. On F271's ten runs every reading the new register shares with the old o
 **Asked back the same day** (oil answered, above; the 1855 measurements made the same day, F281, the thresholds and the rotation to be designed later — the user: *"Let's have the 1855 measurements now. But the design of actual rotation comes later."*): what "the 1855 thresholds" are (item 6: the pass lines Claude proposed on 2026-11-16 for the 1836–1855 2+1
 screen, §10.115) and whether that screen still exists now that the plan is one 100-year run and then iteration; and the oil reading of
 item 7.
+
+## §10.125 — THE MOD 1.2 BOOK BUILT: THE DEPOSITS' COST STEP, NAMES, REFERENCES AND RESEARCH (user-ruled 2026-11-21)
+
+**The occasion.** The user: *"Build the 1.2 book for my manual testing."* Building it from `NEXT_BOOK_SPEC.md`, four things were still
+unruled, and Claude asked them in one pass. The book is `config/mod_config.m12-first.json` (+ twin), made by `tools/make_book12.mjs` on game
+1.15.2; what it carries and how it was checked is at the end.
+
+**The rulings.**
+1. **The deposit rungs' cost step above the 1836-map rungs is 1.3** (the iron mine's condensing pump 520 points, its diesel pump 676). The
+   user first asked Claude to find it in the transcript of the session that ruled §10.115 (2026-11-16): *"We already discussed that … But it
+   was along the line of 'with flat output, we want the earlier rungs to be slightly more cost-effective'."* That session ruled the three
+   arms 1.3 / 1.6 / 1.9 "as starting points" and the motive in the user's words (*"increasing capital cost, to incentivise easier to reach
+   deposits building up first"*), never one value; the three later 1.2 sessions did not either, and no other of their rulings is missing
+   from §10.115–§10.124. Asked again with the numbers (per construction point the condensing pump keeps 1 ÷ step and the diesel pump
+   1 ÷ step² of the atmospheric pump's return; picks 67%), the user chose 1.3, Claude's recommendation for "slightly". Oil keeps 200 / 200
+   (§10.124 item 7).
+2. **A deposit rung is named like a factory rung, "Tier N. <vanilla building> (<vanilla method>)"**, its tier derived from its method's
+   technology by the era rule (the iron mine's rungs Tier 0–3, logging, fishing and whaling 0–2, oil 1–2). Claude recommended no tier label
+   (the output does not rise with tier); the user chose the label.
+3. **A reference to a deposit's vanilla key reaches every rung of it** (Claude's recommendation): companies' building lists and throughput
+   bonuses, state traits' throughput modifiers, vanilla's journal entries, events, decrees and AI strategies, the motor research entry's
+   "Workers in Coal Mines and Iron Mines" — the factory rule of §10.64 and `emit_vanilla_refs.mjs`.
+4. **The deposit rungs' technologies get the standard rung entries**: a rung's technology advances while the country staffs enough levels of
+   the rung below (25k / 75k / 235k by the unlocked rung's tier). Claude recommended no new entries; the user chose the standard ones.
+
+**What the build decided by itself (Claude's; each a consequence of a ruling, recorded so it can be overruled):**
+- **Water-tube boiler and electrical generation** had extra entries of their own (§10.95: the motor industry, power plants); as the
+  condensing pump's and the electric saw mills' technologies they now also have a rung entry. Both stand: one entry, the extra sources at
+  their own mark (30,000 / 15,000) and the rung source at the tier mark (75,000), any one ticking it (`emit_research_events.mjs`).
+- **A deposit's first rung has no necessity source** (oil's steam derricks on pumpjacks is the one researchable case): the standard entry
+  counts the rung below, and there is none. Pumpjacks keeps the motor industry's Steam Engines rung as its source (for Compound Engines).
+- **Gold's depleted fields are spread by the slot rule**: a region's gold-field potential G arrives on the first rung (F277) and the hook
+  leaves every rung ceil(2G ÷ 4) — F277's note proposed a quarter of G per rung, which would have kept the total at G, not § 10.115's × 2.
+- **Oil's second rung opens on a discovery in its region**, guarded as vanilla's own oil-rush event is (an oil potential and
+  `remaining_undepleted` of oil above 0) and once per region: the game's script documentation gives the hook no way to tell which resource
+  was found, so a gold or rubber find in a region that also holds undiscovered oil may open it first (it still needs combustion engine).
+- **The AI research weights step (§10.111.3) runs last**, on a build of the book: every technology with a research entry gets 1.13.11's
+  weight. The deposit and Compound Engines entries add pumpjacks to the canon's six restored technologies (seven).
+- **Tier-scaled lines put Precision Tools on the t1 Lathes rung** (32.5 of its 65 furniture): vanilla allows it beside Lathes, and at t2's
+  share it now fits (in the canon the t2-sized line took furniture below zero there and was left off). The Bakeries craft would have taken
+  vanilla's two canning lines by the same arithmetic; ruling 2(d) of §10.119 names the craft lines (Pot Stills, Craftsman Sewing, Luxury
+  Furniture, Ceramics), so the two pairs went into the compatibility table as not beside Bakeries.
+- **Forms left on the first rung** (they mean what they meant, because the first rung keeps slots wherever vanilla has the deposit):
+  `has_potential_resource`, `num_potential_resources(…)`, `force_resource_discovery`, a building group's `default_building`, the tutorial's
+  `b:building_logging_camp`. The tutorial's "switch a logging camp to saw mills" suggestion reads false and the tutorial offers its others.
+- **A deposit rung shows no method gated on main methods it does not run**: the Simple Forestry rung carries a copy of the hardwood group
+  without Increased Hardwood.
+
+**The book** (`config/mod_config.m12-first.json`, sha256 `8b808c66daf50293`, tree twin `f87e4c3361baafc7`, game 1.15.2; the chain and every
+intermediate book `config/mod_config.m12-*.json`; `node tools/make_book12.mjs` run end to end reproduces it field for field outside its dated
+records; with the changed tools the canon still builds byte for byte as before, and its structure step still reproduces the 1.15.2 replay's):
+the canon's recorded chain replayed with `--insert motor` (t0 Steam Engines 40 engines from 30 steel at 400 points, t1 Compound Engines on
+pumpjacks 60 / 45 / 800, t2 Electric Engines 132 from steel 57.9 + copper 14.5 + electricity 7.2 / 1,600, t3 Diesel Engines 290.4 from steel
+100.9 + oil 25.2 / 3,200), C 2.0, the desire ladder 455 / 1000 / 2200 / 4840, the quarter, the engines' lift 1.0; the canon's hand steps and
+1.15 steps; ten deposit industries (36 rungs; 6,983 slot entries in 16 state-region files; gold floors bind in 8 regions; the scaled
+explosives and hardwood lines); the higher tier's research mark (mechanical tools and atmospheric engine are the two technologies it moves);
+the weight rule −20% / −50% with the ticking signal; tier-scaled lines and craft lines (35 tier methods); engines on the power lines; the two
+craft seeding fixes; 15 same-acre methods on the world's technology and 10 diesel irrigation steps (engines 2.5 + oil 1.9, tea 2 + 1.5, on
+compression ignition); pumpjacks shown as "Pumping Engines". Every linter, the DLC-gate check and preflight pass on its build; it has not
+been loaded in the game by Claude. Deployed to the local mod folder as "Version 1.2 TEST BOOK m12-first" for the user's 15-minute check.

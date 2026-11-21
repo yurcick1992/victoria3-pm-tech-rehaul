@@ -116,6 +116,7 @@ for (const ind of cfg.industries || []) { if (ind.disabled) continue;
 
 const fails = { neg: [], dead: [], hist: [], compat: [], mandate: [], craft: [], missing: [], cap: [] };
 const unreviewed = new Set();
+let depositPairs = 0;   // deposit rungs' vanilla pairs (printed below, not warned)
 // a rung's VANILLA main method: its own, or (a minted addition) the vanilla method of the nearest rung below it
 const vanillaMain = pmKey => { const r = TIER_BY_PM[pmKey]; if (!r) return null; const { ind, t } = r;
   return t.vanilla_pm || ((ind.tiers || []).filter(x => (x.era ?? 0) <= (t.era ?? 0) && x.vanilla_pm).slice(-1)[0] || {}).vanilla_pm || null; };
@@ -185,6 +186,9 @@ for (const [bk, body] of Object.entries(BLD)) {
       const vm = vanillaMain(m.key);
       const why = notBeside(vm, sec);
       if (why) fails.compat.push(`${bk}: ${p.key} can run beside ${m.key} — ${vm} x ${sec} was reviewed incompatible: ${why}`);
+      // a DEPOSIT rung (the mod 1.2 book) carries vanilla's own secondary groups unchanged, beside the vanilla method it is: every pair is one
+      // vanilla offers on one building, so the factory review (§10.93) does not apply — counted, not warned
+      else if (!offMethod && rec.ind.deposit) depositPairs++;
       else if (!offMethod && !reviewed(vm, sec)) unreviewed.add(`${vm} x ${sec} (${bk})`);
     }
   }
@@ -270,6 +274,7 @@ for (const [k, lbl] of Object.entries(labels)) {
   if (list.length > 40) console.log(`   … and ${list.length - 40} more`);
 }
 if (fails.elecWarn.length) console.log(`WARN  KNOWN ISSUE (deferred to mod 1.2 or 1.3, BALANCE_FRAMEWORK §10.106): ${fails.elecWarn.length} building(s) run only on electricity and can be built without it: ${fails.elecWarn.join('; ')}`);
+if (depositPairs) console.log(`note  ${depositPairs} deposit-rung pair(s) carried as vanilla offers them on the vanilla building (not the factory review's scope)`);
 if (unreviewed.size) {
   console.log(`WARN  ${unreviewed.size} carried pair(s) the compatibility review never looked at — add them to REVIEWED (and NOT_BESIDE if incompatible) in tools/lib_secondary_compat.mjs:`);
   for (const x of [...unreviewed].slice(0, 30)) console.log('   ' + x);

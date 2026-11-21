@@ -87,7 +87,11 @@ for (const ind of cfg.industries || []) {
   const blds = tiers.filter(t => !t.method_of);    // merged rungs and variants are methods of a host, not buildings
   if (!blds.length) continue;
   const x = { id: ind.id, vkey: blds[0].key, nc: blds.filter(t => !t.craft).map(t => t.key), crafts: blds.filter(t => t.craft).map(t => t.key),
-    cond: new Set(tiers.filter(t => t.ai_value_cond).map(t => t.key)) };
+    cond: new Set(tiers.filter(t => t.ai_value_cond).map(t => t.key)),
+    // ⭐ a CLONED industry (the mod 1.2 book's deposit rungs, `clone_from_vanilla`): every rung is vanilla's building block with its whole
+    //   ai_value kept (§10.124 item 9: deposit rungs keep vanilla's desire), so vanilla's conditional adds are already there — nothing is
+    //   appended (it would count them twice); the check reads them as the clone's own
+    clone: !!ind.clone_from_vanilla };
   INDS.push(x); VKEY.set(x.vkey, x); for (const t of tiers) RUNGKEY.add(t.key);
 }
 
@@ -136,6 +140,15 @@ for (const x of INDS) {
     const body = t.slice(b[1], b[2] + 1);
     const marks = body.split(MARK).length - 1;
     const craft = x.crafts.includes(key);
+    if (x.clone) {
+      // a clone carries vanilla's block as vanilla wrote it: no appended copy, and at least vanilla's count of conditional children
+      const aiv = children(t, b[1] + 1, b[2]).filter(c => c.key === 'ai_value');
+      const n = aiv.length === 1 && aiv[0].block ? children(t, aiv[0].open + 1, aiv[0].end).filter(c => ['if', 'else_if', 'else'].includes(c.key)).length : 0;
+      const bad = marks ? `${key}: a cloned rung carries an appended copy of vanilla's adds`
+        : n < v.n ? `${key}: ${n} conditional children, vanilla ${x.vkey} has ${v.n} — the clone lost them` : null;
+      if (bad) { if (CHECK) faults.push(bad); else die(bad); }
+      carried++; continue;
+    }
     if (CHECK) {
       if (craft) { if (marks) faults.push(`${key}: a craft carries vanilla's adds`); continue; }
       if (marks !== 1) { faults.push(`${key}: carries vanilla's adds ${marks} times, not once`); continue; }
@@ -159,7 +172,7 @@ for (const x of INDS) {
     fs.writeFileSync(f, '﻿' + out);
     carried++;
   }
-  report.push(`  ${x.id}: ${x.vkey} (vanilla value ${v.base}, ${v.n} conditional block(s)) -> ${x.nc.join(', ')}`
+  report.push(`  ${x.id}: ${x.vkey} (vanilla value ${v.base}, ${v.n} conditional block(s)) -> ${x.nc.join(', ')}${x.clone ? ' (cloned: vanilla\'s block kept whole, nothing appended)' : ''}`
     + (x.crafts.length ? `; left out (craft): ${x.crafts.join(', ')}` : '') + (v.rewrites.length ? `; rewritten: ${v.rewrites.join('; ')}` : ''));
 }
 if (CHECK) {

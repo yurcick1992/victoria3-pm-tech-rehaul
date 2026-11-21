@@ -57,8 +57,15 @@ for (const [id, a] of Object.entries(PREREQ_ADDS)) {
     if (VT[id].prereqs.includes(q)) throw new Error(`PREREQ_ADDS: ${q} is already a vanilla prerequisite of ${id} - the entry is stale`);
   }
 }
+// ⭐ an INSERTION's ruled renames (lib_tier4_spec INSERTIONS, the mod 1.2 book: pumpjacks → "Pumping Engines", §10.116.2) — only on a
+//   structure that carries the insertion (`_inserted`, make_tier4_config --insert), so the canon's tree stays vanilla-named
+const INSERT_RENAMES = {};
+for (const x of cfg._inserted || []) for (const [id, r] of Object.entries(x.renames || {})) {
+  if (!VT[id]) throw new Error(`insertion ${x.key}: renames ${id}, which is not a vanilla technology`);
+  INSERT_RENAMES[id] = r;
+}
 const techs = Object.entries(VT).map(([id, v]) => {
-  const vname = ENLOC[id] || id; const ruled = TECH_RENAMES_RULED[id];
+  const vname = ENLOC[id] || id; const ruled = TECH_RENAMES_RULED[id] || INSERT_RENAMES[id];
   const era = ERA_MOVES[id] != null && ERA_MOVES[id] > v.era ? ERA_MOVES[id] : v.era;
   const added = (PREREQ_ADDS[id] || {}).add || [];
   return { id, name: ruled ? ruled[0] : vname, vanillaName: vname, renamed: ruled ? ruled[1] : null, desc: null,

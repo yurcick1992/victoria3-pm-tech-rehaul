@@ -438,15 +438,26 @@ if (SEED && seedPlan.some(r => r.levels > 0)) {
     const reps = [];
     const want = new Map(rows.map(r => [`${r.st}|${r.tag}|${r.key}`, r]));
     const rsClose = new Map();
+    // ⭐ THE TWO SEEDING DEFECTS (fixed for the mod 1.2 book, BALANCE_FRAMEWORK §10.119 item 7; `craft_seed_fixes` in the config, so the
+    //   canon's books still build as released): (1) a state with TWO blocks of the craft's building (Valencia's two paper mills) took the
+    //   seeded levels in BOTH — 88 levels where 74 were planned, 14 without typed workforce; now only the first takes them. (2) a block inside
+    //   an `if` (New York's whole state block behind vanilla's American Buildings DLC trigger) took them, so without the DLC the levels were
+    //   never built while their workers were typed; now a block or region_state inside an `if` is never a target, and the seed is appended
+    //   to the state's ungated region_state instead.
+    const FIX = !!CFG.craft_seed_fixes;
     walk(text, (b, stack, end) => {
+      const inIf = FIX && stack.some(x => x.name === 'if');
       if (b.name && b.name.startsWith('region_state:')) { const { st } = ctx(stack); const tag = b.name.slice(13);
+        if (inIf) return;
         const ind = (text.slice(text.lastIndexOf('\n', b.start) + 1, b.start).match(/^\s*/) || [''])[0];
         const ls = text.lastIndexOf('\n', end - 1) + 1; const at = /^\s*$/.test(text.slice(ls, end - 1)) ? ls : end - 1;
         rsClose.set(`${st}|${tag}`, { at, ind }); return; }
       if (b.name !== 'create_building') return;
+      if (inIf) return;
       const { st, tag } = ctx(stack); const body = text.slice(b.open, end - 1);
       const km = /building\s*=\s*"([a-z_0-9-]+)"/.exec(body); if (!km) return;
       const r = want.get(`${st}|${tag}|${km[1]}`); if (!r) return;
+      if (FIX && r.placed) return;
       // merge: add to the self-owned entry of this state, else append one
       let done2 = false;
       let nb = body.replace(/(building\s*=\s*\{)([^{}]*)(\})/g, (whole, a, e, z) => {

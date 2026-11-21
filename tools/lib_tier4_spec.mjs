@@ -161,6 +161,43 @@ export const ADDITIONS = [
   //   launches and generators rather than one at a time for ships."
 ];
 
+// ⭐ THE INSERTIONS (BALANCE_FRAMEWORK §10.116 ruling 4, §10.116.2; the mod 1.2 book, §10.116.3): a rung vanilla does not have, placed
+//   INSIDE a ladder rather than on top of it, on a VANILLA technology. Applied only when make_tier4_config.mjs is given `--insert <industry>`
+//   (the book records `_inserted`), so the canon's own regeneration (no flag) still reproduces the canon. An insertion:
+//   - sits right after the vanilla method `after`, on the technology `tech`, and takes `placement` (the industry's full era list, checked
+//     against the era rule's tolerance like any PLACEMENT entry);
+//   - takes the input mix, staffing, pollution and icon of the rung below (the minted top rungs' rule);
+//   - carries `anchor_scale`: when the A/B book anchors the industry ON this rung (`--anchor-for <industry>:<its era>`), the anchor recipe is
+//     the rung below's vanilla method × anchor_scale (inputs and output alike) — the formula's new case for a minted t1 (§10.116 ruling 4:
+//     "t0 keeps vanilla's steam recipe, the t1 anchor is 1.5 × it"; with --down-step 1.5 t0 comes back to vanilla's recipe exactly);
+//   - may rename a vanilla technology (`renames`, display name only, the key kept — §10.116.2 reverses POLISH R9 for pumpjacks alone).
+export const INSERTIONS = [
+  { industry: 'motor', after: 'pm_steam_engines', tech: 'pumpjacks', key: 'building_motor_industry_compound_engines', pm_name: 'Compound Engines',
+    placement: [0, 1, 2, 3], anchor_scale: 1.5,
+    renames: { pumpjacks: ['Pumping Engines', 'BALANCE_FRAMEWORK §10.116.2 (user-ruled 2026-11-17): the technology unlocks oil wells, irrigation and the works that build the engines; its description, translations and icon are deferred to the release build (§10.124 item 4)'] },
+    why: '§10.116 ruling 4: steam engines move to t0 and a t1 engine rung on pumpjacks rewards the technology the world gate of §10.115 ruling 7 took from irrigation' },
+];
+
+// ⭐ THE TIERED DEPOSITS (BALANCE_FRAMEWORK §10.115, §10.124; the mod 1.2 book): each main method of a resource-capped building becomes a
+//   building with resource slots of its own. make_deposit_config.mjs reads this list and the game; the rules are §10.115's (the slot rule,
+//   flat output from the highest 1836-map rung, equal value added at base prices, 5,000 workers, vanilla's cost on the 1836-map rungs and a
+//   cost step above them, vanilla's AI desire, output-adding secondary lines × the slot ratio). `map_rungs` = how many of the building's
+//   methods stand on the 1836 map (the first two; oil, which has no 1836 levels, its first). `cost` overrides the cost rule per rung where
+//   ruled (oil: both rungs 200, §10.124 item 7). `discover`: the deposit is found mid-game (oil: the second rung's slots follow the first's
+//   discovery; gold: the gold fields deplete into the first rung, spread over all four by the hook, §10.124 item 2).
+export const DEPOSITS = [
+  { id: 'coal_mine',       building: 'building_coal_mine',       map_rungs: 2 },
+  { id: 'iron_mine',       building: 'building_iron_mine',       map_rungs: 2 },
+  { id: 'lead_mine',       building: 'building_lead_mine',       map_rungs: 2 },
+  { id: 'sulfur_mine',     building: 'building_sulfur_mine',     map_rungs: 2 },
+  { id: 'copper_mine',     building: 'building_copper_mine',     map_rungs: 2 },
+  { id: 'gold_mine',       building: 'building_gold_mine',       map_rungs: 2, discover: 'depleted_from_gold_fields', floor_1836: true },
+  { id: 'logging_camp',    building: 'building_logging_camp',    map_rungs: 2 },
+  { id: 'fishing_wharf',   building: 'building_fishing_wharf',   map_rungs: 2 },
+  { id: 'whaling_station', building: 'building_whaling_station', map_rungs: 2 },
+  { id: 'oil_rig',         building: 'building_oil_rig',         map_rungs: 1, discover: 'linked_second_rung', cost: [200, 200] },
+];
+
 // ⭐ MAIN-METHOD VARIANTS (game 1.15; BALANCE_FRAMEWORK §10.108.2, user-ruled 2026-11-07): a vanilla main method that is the SAME step
 //   as another in a different material is not a rung. It becomes a switchable second main method of that method's rung, at the rung's own
 //   tier, output and input value, its input mix and staffing its own vanilla method's (make_variant_config.mjs adds it after the chain;
@@ -194,6 +231,8 @@ export const PREREQ_ADDS = {
 // Rule 1 for TECHNOLOGY names: vanilla's, unless ruled here as { id: [name, why] }. Empty. (The six-rung tree renamed
 // fourteen; none is ruled for this line. The two dating corrections — pumpjacks "Oil Drilling", threshing_machine "Steam
 // Threshing" — were ruled out 2026-10-24: vanilla's names stay, POLISH R9.)
+// ⭐ The mod 1.2 book's one rename (pumpjacks → "Pumping Engines", §10.116.2) rides on its INSERTION (`renames` above), applied by
+//   make_tier4_techs.mjs only to a structure that carries `_inserted`, so this table stays the canon's (empty).
 export const TECH_RENAMES_RULED = {};
 
 // ⭐⭐ PER-PM OVERRIDES ON VANILLA'S OWN METHODS — the four-rung book's copy of the rulings that are NOT about our rungs.

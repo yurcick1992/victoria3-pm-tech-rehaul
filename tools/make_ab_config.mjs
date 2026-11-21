@@ -250,6 +250,14 @@ const IN1_POP = (() => { const v = arg('--in1-pop', ''); if (v === '') return nu
 const IN0_FOR = (() => { const v = arg('--in0-for', ''); if (v === '') return null; const o = {};
   for (const p of v.split(',')) { const [id, m] = p.split(':'); if (!id || !(+m > 0)) throw new Error('--in0-for <industry>:<mult>[,…], mult > 0'); o[id] = +m; }
   return o; })();
+// ⭐⭐ --mix-scale <vanilla_pm>:<good>:<mult>[,…] (the mod 1.2 book, BALANCE_FRAMEWORK §10.116 ruling 3, "the quarter"): in the named vanilla
+//   method's input MIX the good is scaled by mult BEFORE the rung's input value is spread over the mix — so the rung's input VALUE is the
+//   formula's, unchanged, and the good's share of it falls (Electric Engines' electricity 20 → 5, Diesel Engines' oil 50 → 12.5; the rest of
+//   its value goes to the mix's other goods pro rata). A new exception to CLAUDE.md §1.3's "split over the rung's own vanilla mix".
+//   Recorded as `_ab.mix_scale` ONLY WHEN SET, so every earlier book regenerates byte for byte; tools/lint_tier_eras.mjs (L31) reads it.
+const MIX_SCALE = (() => { const v = arg('--mix-scale', ''); if (v === '') return null; const o = {};
+  for (const p of v.split(',')) { const [pm, g, m] = p.split(':'); if (!pm || !g || !(+m > 0)) throw new Error('--mix-scale <vanilla_pm>:<good>:<mult>[,…], mult > 0'); (o[pm] ||= {})[g] = +m; }
+  return o; })();
 // --bar-months N (2026-09-13): research_events.industry_bar_months — the 24-month bar of canon-je24 and every book since
 //   (§10.76) used to be a hand edit after generation; a book is regenerable by ONE command or it is not regenerable.
 const BAR_MONTHS = (() => { const v = arg('--bar-months', ''); if (!v) return null; if (!(+v > 0)) throw new Error('--bar-months <months>'); return +v; })();
@@ -360,8 +368,11 @@ if (IN0_SUPPLIER != null) {
 const effStage = id => Math.max(0, Math.min(2, (IND_STAGE[id] || 0) + (IN0_SUPPLIER != null ? IN0_SUPPLIER * (DOWNSTREAM[id] || 0) : 0)));
 const stageLift = id => { const m = effStage(id), i = Math.floor(m), f = m - i;
   return i >= 2 ? IN0_STAGE[2] : IN0_STAGE[i] + f * (IN0_STAGE[i + 1] - IN0_STAGE[i]); };
+// ⭐ THE DEPOSIT RUNGS (`deposit: true`, make_deposit_config.mjs, the mod 1.2 book) are not on the A/B ladder: their recipes, costs and AI
+//   desire are §10.115's (flat output, equal value added, vanilla's cost and desire), so this generator leaves them exactly as it finds them.
+const DEPOSIT_SKIPPED = cfg.industries.filter(i => i.deposit && !i.disabled).map(i => i.id);
 for (const ind of cfg.industries) {
-  if (ind.disabled) continue;
+  if (ind.disabled || ind.deposit) continue;
   ind.tiers.sort((a, b) => a.era - b.era);
   // --anchor-for: the rung that IS the ×1 of this industry's ladder (the exponent's origin); by default its first rung.
   //   ⭐ THE ANCHOR ERA MAY NAME A RUNG THE INDUSTRY DOES NOT HAVE (user-ruled 2026-09-19: "automotive and electrics are not
@@ -370,7 +381,12 @@ for (const ind of cfg.industries) {
   //   default. So the rule is uniformly "this industry's whole ladder slides to start at era a", not "anchor on whatever rung
   //   it happens to begin with", which is what makes it one rule rather than a per-industry re-keying.
   const aEra = ANCHOR_FOR[ind.id];
-  const first = (aEra != null && ind.tiers.find(t => t.era === aEra)) || ind.tiers[0], r0 = rec(first.vanilla_pm);
+  const first = (aEra != null && ind.tiers.find(t => t.era === aEra)) || ind.tiers[0];
+  // ⭐ an INSERTED anchor rung (make_tier4_config --insert, §10.116 ruling 4) has no vanilla method of its own: its anchor recipe is the rung
+  //   below's vanilla method × anchor_scale, inputs and output alike (motor: steam × 1.5 — t1 makes 60 engines from 45 steel, and --down-step
+  //   1.5 brings t0 back to vanilla's 40 from 30)
+  const r0 = first.anchor_from ? (() => { const q = rec(first.anchor_from.vanilla_pm), s = +first.anchor_from.scale; if (!q || !(s > 0)) return null;
+    return { in: Object.fromEntries(Object.entries(q.in).map(([g, x]) => [g, x * s])), out: Object.fromEntries(Object.entries(q.out).map(([g, x]) => [g, x * s])) }; })() : rec(first.vanilla_pm);
   // ⚠⚠ ORIGIN IS 0 UNLESS --anchor-for NAMES THIS INDUSTRY — never `first.era`. munition, synthetics, automotive and electrics
   //   have no e0 rung, and keying them on (era − their own first era) is exactly the rung-index bug F111 measured and the era
   //   rule (§10.78 rule 3) forbids: it priced automotive's e2 rung as an 1836 rung.
@@ -392,8 +408,11 @@ for (const ind of cfg.industries) {
     const e = t.era;
     if (!Number.isInteger(e) || e < 0) throw new Error(`${ind.id}: rung ${t.key} has no era`);
     // mix: the rung's own vanilla method, else the nearest lower vanilla rung's, else the first rung's
-    let mixRec = null;
-    for (let j = pos; j >= 0; j--) { const q = rec(ind.tiers[j].vanilla_pm); if (q && Object.keys(q.in).length) { mixRec = q; break; } }
+    let mixRec = null, mixPm = null;
+    for (let j = pos; j >= 0; j--) { const q = rec(ind.tiers[j].vanilla_pm); if (q && Object.keys(q.in).length) { mixRec = q; mixPm = ind.tiers[j].vanilla_pm; break; } }
+    // --mix-scale: the energy good of the named vanilla method's mix scaled before the value is spread (the quarter, §10.116 ruling 3)
+    if (MIX_SCALE && MIX_SCALE[mixPm]) { const sc = MIX_SCALE[mixPm]; for (const g of Object.keys(sc)) if (mixRec.in[g] == null) throw new Error(`--mix-scale ${mixPm}:${g}: ${mixPm} takes no ${g}`);
+      mixRec = { ...mixRec, in: Object.fromEntries(Object.entries(mixRec.in).map(([g, q]) => [g, q * (sc[g] ?? 1)])) }; }
     const mixVal = val(mixRec.in);
     const TF = TIERS_FOR[ind.id];   // explicit per-ERA multipliers (--tiers-for), else the A/B rule
     if (TF && (TF.out.length <= e || TF.in.length <= e || TF.cost.length <= e)) throw new Error(`--tiers-for ${ind.id}: its rungs reach e${e}, so out/in/cost need ${e + 1} multipliers each (indexed by ERA, era 0 first)`);
@@ -486,6 +505,12 @@ cfg._ab.anchor_cost = ANCHOR_COST || null;
 if (COST1 != null) cfg._ab.cost1 = COST1;
 cfg._ab.anchor_for = Object.keys(ANCHOR_FOR).length ? ANCHOR_FOR : null;
 if (IN0_FOR) { for (const id of Object.keys(IN0_FOR)) if (!cfg.industries.some(i => i.id === id && !i.disabled)) throw new Error(`--in0-for: unknown or disabled industry ${id}`); cfg._ab.in0_for = IN0_FOR; }
+if (MIX_SCALE) {
+  const used = new Set(cfg.industries.flatMap(i => (i.tiers || []).map(t => t.vanilla_pm)).filter(Boolean));
+  for (const pm of Object.keys(MIX_SCALE)) if (!used.has(pm)) throw new Error(`--mix-scale ${pm}: no rung of this book stands on that vanilla method`);
+  cfg._ab.mix_scale = MIX_SCALE;
+}
+if (DEPOSIT_SKIPPED.length) cfg._ab.deposits_skipped = DEPOSIT_SKIPPED;
 cfg._ab.keyed_by = 'era'; cfg._ab.era_rule = '2026-09-13';
 cfg._ab.command = 'node tools/make_ab_config.mjs ' + process.argv.slice(2).map(a => /[\s|"]/.test(a) ? JSON.stringify(a) : a).join(' ');
 if (VARIANT) cfg._variant = { ...VARIANT, declared: new Date().toISOString().slice(0, 10), regenerate: cfg._ab.command };
