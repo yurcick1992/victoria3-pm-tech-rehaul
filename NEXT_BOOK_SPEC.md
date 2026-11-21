@@ -247,8 +247,9 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
   says is unruled.
 - **The readers.** The register's old-plants term (the in-market backward-industry test, §10.121.1) counts manufacturing only, the
   motor's new t0 rung included, and never the deposit rungs: `laggard_pressure.mjs` reads every `cfg.industries` entry, so if the
-  deposit rungs are generated there it must skip them. Unruled: whether T0–T3 (`criteria.mjs`, every `cfg.industries` tier by `era`)
-  count them.
+  deposit rungs are generated there it must skip them. T0–T3 (`criteria.mjs`, today every `cfg.industries` tier by `era`) count
+  manufacturing only too, never the deposit rungs and no agriculture (ruled 2026-11-20, BALANCE_FRAMEWORK §10.123 point 4), so the
+  readers take an explicit list of the manufacturing industries.
 - **Research.** Ruled (§10.119 item 6): the higher tier's mark for a technology that unlocks rungs of two tiers is built as a
   general rule in `emit_research_events.mjs` (today `Math.min`), and crafts stay research sources. Still unruled: whether the
   deposit rungs' technologies get research entries, and their marks; pumpjacks takes the standard entry of a

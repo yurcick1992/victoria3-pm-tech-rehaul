@@ -18,13 +18,14 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **W** | **productive workers per capita** = (salaried − government − military) ÷ Σ strata population | the depeasantation axis. NOT "workers", NOT "workforce". From game 1.15 a Cossack Host's workforce is not productive (BALANCE_FRAMEWORK §10.112) |
 | **U\*** | **total unemployment INCLUDING peasants** = (unemployed + peasants) ÷ (salaried + unemployed + peasants) | from game 1.15 a Cossack Host's workforce counts with the peasants (§10.112). The star is part of the name: plain "U" would read as the strict figure, which is a different number (world 16.3% against U\* 41.7% in vanilla) |
 | **H** | the **investment-pool hoard ÷ GDP** | a stock over a flow. ⚠ vanilla's own H spans 0.56–1.93× between seeds, so it is *"hardly comparable with vanilla"* (user, 2026-09-19) and carries no vanilla-derived bound |
+| **the hoard above half GDP** | Σ over the shortlist's countries of max(0, investment pool − 0.5 × GDP) ÷ the shortlist's GDP, at the end state | a loss term since 2026-11-20 (BALANCE_FRAMEWORK §10.123), aim 0, beside the count of members above 0.5. Zero exactly when no country of the shortlist holds a pool above half its GDP; it grows with how far over and how big. NO LETTER |
 | **Y** | **GDP ÷ productive worker** | so that `W × Y` = GDP per capita. The productivity axis |
-| **T0 … T3** | **workers in the tiered industries' tier-0 … tier-3 rungs** = Σ staffed levels × per-level employment × workforce_mult | keyed by the rung's TIER, from the run's own config. An industry starting at t2 contributes nothing to T0 |
+| **T0 … T3** | **workers in the tiered industries' tier-0 … tier-3 rungs** = Σ staffed levels × per-level employment × workforce_mult | keyed by the rung's TIER, from the run's own config. An industry starting at t2 contributes nothing to T0. Manufacturing only: never the deposit rungs, no agriculture (§10.123) |
 | **PI** | the **building-input price index**: steel / tools / engines / fertilizer / explosives / dye / paper, median over the scoped markets of price ÷ base, ÷ vanilla's | falling = the design working |
 | **PP** | the **pop-goods price index IN WAGE UNITS**: groceries / clothes / furniture / glass / fine art / automobiles / telephones / radios, ÷ the owner's base wage, ÷ vanilla's | wage units because pop goods stay near base in pounds (F97) |
 | **PM** | the **war-goods** index (small arms / artillery / ammunition) | read only — the army's demand is exogenous |
-| **the loss**, **L** | the register's single objective, Σ w · d over the terms above | §10.83.5/.7. Lower is better |
-| **σ** | the spread a distance is measured in | FIXED CONSTANTS since 2026-09-18: the pooled WITHIN-CONFIG spread over the 2026-09-13→18 runs, not vanilla's seed spread |
+| **the loss**, **L** | the register's single objective, Σ w · d over the terms above | §10.83.5/.7; for the mod 1.2 calibration §10.123 (CLAUDE.md §3.2). Lower is better |
+| **σ** | the spread a distance is measured in | FIXED CONSTANTS since 2026-09-18: the pooled WITHIN-CONFIG spread over the 2026-09-13→18 runs, not vanilla's seed spread. For the mod 1.2 calibration (§10.123): the standard deviation over mod 1.1.1's 15 runs on game 1.15.1 |
 
 ## 2. THE SCOPES — who is being counted
 

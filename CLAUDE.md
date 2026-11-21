@@ -479,6 +479,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.120 | the register redone: the important goals are absolute levels of the mod's own, and of the vanilla-referenced ones only world GDP matters; every aim is soft; there is ONE barrier, about validity and not severity — the investment loop broke (lack of labour and hoarding are two wordings of it), past which every other reading is unreliable; the numbers are calibrated on data; the barrier as it stands: a shortlist member of at least 2% of world GDP whose pool ÷ GDP averages at least 1 over ten consecutive years (no primary check on labour) ; the eight depeasantation aims, at 1913 and at the end of the game: the USA 25% and 15%, Britain 10% and 5%, Germany 20% and 20%, the world 60% and 50% ; PI and PP stay aims with the downward slope required; the rest accepted as one list | in force (§3.2 is this register); `criteria.mjs`, the scorecard and the stop watcher still on the old form until the three-arm batch ends |
 | 10.121 | old plants pushed out become a term of the loss, measured by the in-market backward-industry test beside T0 (.1), aim under 100% and shrinking, weight 0.5, manufacturing only (deposits never, agriculture not for now); research pace, misplaced capital and the rubber shortage stay outside it; misplaced capital may get an AI-value pass close to finalising the 1.2 balance, after the main iterations, with no extra GDP leeway for it: the 0.90–1.00 band, below vanilla because a focused player can exploit the mod's economy better, is the room (.2) | in force; the term ruled whole; nothing built |
 | 10.122 | game 1.15.2, mod 1.1.2: the 1.1.1 canon rebuilt on 1.15.2, no balance change (the canon stays 697d4869: the 1.15.2 replay reproduces it); vanilla AI changes pass through unless they affect us; the company-target investment define 5 → 20 affects us (our targets list every rung) and passes through, read in the first 1.2 runs | in force |
+| 10.123 | THE loss of the mod 1.2 calibration (§3.2): the eight depeasantation aims 0.25 each, a second capital term (the shortlist's hoard above half its GDP, 0.5) beside the count, T0–T3 manufacturing only, the spreads fixed from mod 1.1.1's 15 runs on 1.15.1; play time not read during the iterations, covered in the polishing touches | in force; nothing built |
 
 ---
 
@@ -496,7 +497,7 @@ state (the 1932–1936 mean) unless a date is given.
 | world GDP, as displayed | 1.0 | 0.90–1.00× at the end; a dip around 1890–1910 is expected, 1886 inside 0.79–1.01× (centred on 0.90) | modernising costs capital, so the world ends slightly poorer | register: the one important aim against vanilla |
 | unemployment including peasants (U\*) | — | **levels of the mod's own (§10.120): the USA 25% in 1913 and 15% at the end; Britain 10% and 5%; Germany 20% and 20%; the world 60% and 50%** | goal 4: capital is scarce, so fewer people find productive work | register: the eight depeasantation aims |
 | the investment loop | — | **never broken: no shortlist member of at least 2% of world GDP with a pool ÷ GDP averaging 1 or more over ten years** | past that point every other reading is unreliable (§10.120) | register: the barrier |
-| the hoard (investment pool ÷ yearly GDP), each major | — | as few majors as possible above 0.5 in 1935–36, a level of the mod's own | capital is spent on dear modern plants, not piled up | register |
+| the hoard (investment pool ÷ yearly GDP), each major | — | as few majors as possible above 0.5 in 1935–36, and the shortlist's hoard above half its GDP as low as possible, levels of the mod's own | capital is spent on dear modern plants, not piled up | register |
 | building-input prices in £ ÷ base (PI) | 1.0 | **falling decade over decade**; ≤ 0.8× (a provisional level) | the frontier floods the market (§2.1); the main obsolescence driver | register |
 | pop-goods prices in wage units (PP) | 1.0 | **falling decade over decade**; ≤ 0.8× (a provisional level) | obsolescence works through wages, not £ (F97) | register |
 | productive workers per capita (W), world and shortlist; GDP of the shortlist | 1.0 | fewer workers per capita than vanilla, more output each | goal 4 seen against vanilla | minor readings, no weight |
@@ -513,6 +514,7 @@ state (the 1932–1936 mean) unless a date is given.
 
 User-ruled 2026-11-17 as **§10.120**, which redoes the register of §10.83 (+ .4–.8), §10.85, §10.86.1 and §10.100 on the principle of
 §10.113; those sections are now the record of the form before it. One rule set for the config iterator and for every batch report.
+Its weights, its second capital term, T0–T3's scope and the spreads are **§10.123's, THE loss of the mod 1.2 calibration** (2026-11-20).
 
 ⚠ **The tools lag the ruling.** `tools/testbed/ledger/criteria.mjs` and the ledger's scorecard still implement the OLD register: ratios
 to vanilla for U\* and the pool, and hard lines on world GDP, the 1836–1845 start, the shortlist's pooled U\* under 10% and capital
@@ -546,22 +548,24 @@ batch 7 mod 1.1.1 runs of 10 and 6 vanilla runs of 10 are past it.
 | aim | level | of the mod's own, or against vanilla | weight in the loss |
 |---|---|---|---|
 | world GDP, displayed (`world.gdp`), at the end | 0.90–1.00 × vanilla | against vanilla: the one important ratio | 2 |
-| U\* of the USA, 1913 · the end | 25% · 15% | own | 1 each |
-| U\* of Britain, 1913 · the end | 10% · 5% | own | 1 each |
-| U\* of Germany (GER, else NGF, else PRU), 1913 · the end | 20% · 20% | own | 1 each |
-| U\* of the world, 1913 · the end | 60% · 50% | own | 1 each |
+| U\* of the USA, 1913 · the end | 25% · 15% | own | 0.25 each |
+| U\* of Britain, 1913 · the end | 10% · 5% | own | 0.25 each |
+| U\* of Germany (GER, else NGF, else PRU), 1913 · the end | 20% · 20% | own | 0.25 each |
+| U\* of the world, 1913 · the end | 60% · 50% | own | 0.25 each |
 | PI: building-input prices (steel, tools, engines, fertilizer, explosives, dye, paper), £ ÷ base | **falling decade over decade** (required); 0.8 of vanilla or under (a provisional level) | own; stated against vanilla for now | 1 |
 | PP: pop-goods prices (groceries, clothes, furniture, glass, fine art, automobiles, telephones, radios) in wage units | **falling decade over decade** (required); 0.8 of vanilla or under (a provisional level) | own; stated against vanilla for now | 1 |
-| capital: majors with a pool above 0.5 of their GDP in 1935–1936 | as few as possible | own | 1 |
-| T0: workers on tier-0 rungs, by the rung's tier | 0 at 1936, or falling decade over decade | own | 0.5 |
-| T3 ÷ (T0 + T1 + T2) | the more the better | own | 0.5 |
+| capital: shortlist members holding at least 2% of world GDP with a pool above 0.5 of their GDP in 1935–1936 (the mean of the two summaries) | as few as possible | own | 1 |
+| capital: the shortlist's hoard above half its GDP = Σ max(0, pool − 0.5 × GDP) over its countries ÷ its GDP, at the end | 0 | own | 0.5 |
+| T0: workers on tier-0 rungs, by the rung's tier; manufacturing only (never the deposit rungs, no agriculture) | 0 at 1936, or falling decade over decade | own | 0.5 |
+| T3 ÷ (T0 + T1 + T2), manufacturing only | the more the better | own | 0.5 |
 | old plants pushed out (§10.121): the in-market backward-industry test (`laggard_pressure.mjs`), the share of its workers an industry two tiers behind a far better producer in its own market keeps over a decade; beside T0 | **under 100% and shrinking** decade over decade; manufacturing only, the motor's new t0 rung included; the deposit rungs never, agriculture not for now | own | 0.5 |
 
 PI and PP are the main obsolescence driver (§2.1): the downward slope is the must, and where the level should end is not settled.
 They are not the outcome: on mod 1.1.1 T0, PI and PP read at or near their aims while a backward industry in its own market keeps
 117% of its workers over a decade, as in vanilla, which is why the old plants' fate is a term of its own (§10.121).
 For mod 1.2 the world's U\* still gives way to world GDP where the two conflict (§10.114).
-**Outside the loss by ruling** (§10.121): research pace, misplaced capital and the rubber shortage, read beside it (§3.3). Misplaced
+**Outside the loss by ruling** (§10.121): research pace, misplaced capital and the rubber shortage, read beside it (§3.3); and play
+time, not read at all during the 1.2 iterations (§10.123, §3.4). Misplaced
 capital may get an AI-value pass of its own close to finalising the 1.2 balance, after the main iterations, with no extra leeway on the world-GDP aim
 for what that pass adds: the 0.90–1.00 band, below vanilla because a focused player can exploit the mod's economy better, is the room (§10.121.2).
 
@@ -575,9 +579,13 @@ canon's own spread, §10.96.1) says something has likely broken.
 industrialised keeps its peasants by identity. Quote U\* with world GDP beside it whenever world GDP is far from its aim. Per-country
 SHARES stand as evidence; per-country LEVELS move with territory and are weak.
 
-**The loss** (the iterator's objective): L = Σ w · d, where d is the distance from the aim in units of that line's own spread between
-runs, with the weights of the table. The spreads are to be re-fitted on game 1.15 runs (the old ones were the 2026-09 books', F134).
-⚠ It describes a book's residual; at n=2–3 it does not rank (§2.9).
+**The loss** (the iterator's objective; THE loss of the mod 1.2 calibration, §10.123): L = Σ w · d, where d is the distance from the
+aim in units of that line's own spread between runs, with the weights of the table. The spreads are fixed constants: the standard
+deviation over mod 1.1.1's 15 runs on game 1.15.1 (F271 + F272), re-fitted only by a recorded decision. A falling-decade aim's distance
+is the positive part of the mean decade-to-decade change of its logarithm in units of its spread, added to its level distance; T3's is
+−ln(T3 ÷ (T0 + T1 + T2)) in units of its spread. The barrier's value is printed for every run, so books that both end past it still
+compare on that line. At these weights world GDP still wins below its floor (§10.114): each −0.10 under 0.90 costs +1.44 against −0.90
+from the U\* and capital terms on mod 1.1.1's seed axis. ⚠ It describes a book's residual; at n=2–3 it does not rank (§2.9).
 
 **Retired by §10.120** (records, and still what `criteria.mjs` prints until it is changed): the hard band on world GDP and the hard line
 on the 1836–1845 start (now minor readings); the shortlist's pooled-U\* 10% line and the capital-abundance thresholds (replaced by the
@@ -629,6 +637,8 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
   distance, gone once the slowdown ends — F218). No tick pattern is accepted as proof of a listed bug. On game 1.15 the loop is absent
   (F270: none in 81 kept or quarantined saves), and the save summaries cannot see fleet paths there (landmine L52, fix owed after the
   10 vs 10), so `wall_clusters.mjs`'s "no listed bug observed" on a 1.15 run is not an observation.
+- **During the 1.2 balance iterations play time is not read** (user-ruled 2026-11-20, §10.123): an iterative run is not alternated against
+  a same-days vanilla, and the cost is reasonably predictable. The budget is covered in the polishing touches, on an alternating batch.
 - `tools/testbed/ledger/wall_clusters.mjs` reads it; slowdown episodes and the save quarantine that keeps saves for debug-mode inspection, the machine
   monitor and the per-tick profile are in `TESTBED_OPERATIONS.md`.
 
