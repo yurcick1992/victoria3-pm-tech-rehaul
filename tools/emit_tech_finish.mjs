@@ -114,6 +114,7 @@ const normAW = s => s == null ? null : s.replace(/#[^\n]*/g, '').replace(/\s+/g,
 const EWR = CFG.research_events?.entry_weight_rule || null;
 const ewrKind = {};                               // tech -> { kind: 'literacy'|'naval'|'frontline', lit, stages: [[je, bar]] }
 if (EWR) {
+  if (EWR.signal != null && !['tick', 'stage'].includes(EWR.signal)) die(`entry_weight_rule.signal must be 'tick' or 'stage' (got ${EWR.signal})`);
   for (const k of ['lowered', 'advancing']) if (!(typeof EWR[k] === 'number' && EWR[k] > 0 && EWR[k] <= 1)) die(`entry_weight_rule.${k} must be a multiplier in (0, 1] (got ${EWR[k]})`);
   if (!existsSync(RJE)) die('entry_weight_rule needs the research entries (no ' + RJE + ')');
   const BARS = join(MOD, 'common/scripted_progress_bars/zzz_pm_rehaul_research_bars.txt');
@@ -146,9 +147,12 @@ if (EWR) {
 const ewrText = (tech) => {
   const e = ewrKind[tech];
   if (!EWR || !e || e.kind === 'frontline') return '';
-  const or = e.stages.map(([je, bar]) => `je:${je} ?= { "scripted_bar_progress(${bar})" > 0 }`).join(' ');
+  // 'tick' (ruled 2026-11-21): the bar actually ticking, read off the expiring country flag emit_research_events.mjs sets in each stage's
+  // monthly pulse; 'stage' (the first build, the probe-5 book): a stage open with progress on its bar
+  const adv = EWR.signal === 'tick' ? `has_variable = pmr_adv_${tech}`
+    : `OR = { ${e.stages.map(([je, bar]) => `je:${je} ?= { "scripted_bar_progress(${bar})" > 0 }`).join(' ')} }`;
   return `${T}${T}# pmr_entry_weight - a research entry can deliver this technology (${e.kind}${e.lit != null ? `, literacy ${e.lit}` : ''})\n` +
-    `${T}${T}if = {\n${T}${T}${T}limit = { OR = { ${or} } }\n${T}${T}${T}multiply = ${EWR.advancing}\n${T}${T}}\n` +
+    `${T}${T}if = {\n${T}${T}${T}limit = { ${adv} }\n${T}${T}${T}multiply = ${EWR.advancing}\n${T}${T}}\n` +
     (e.lit != null ? `${T}${T}else_if = {\n${T}${T}${T}limit = { literacy_rate >= ${e.lit} }\n${T}${T}${T}multiply = ${EWR.lowered}\n${T}${T}}\n`
                    : `${T}${T}else = {\n${T}${T}${T}multiply = ${EWR.lowered}\n${T}${T}}\n`);
 };
@@ -244,7 +248,7 @@ if (EWR) {
   if (!FB.enabled) die('entry_weight_rule is written in the finish-boost pass, which is a force_test control arm here');
   if (nEwr !== want) die(`entry_weight_rule: ${nEwr} technologies lowered, ${want} expected (every researchable technology with a non-frontline entry)`);
   const by = k => Object.entries(ewrKind).filter(([, e]) => e.kind === k).map(([t]) => t);
-  console.log(`entry weight rule: x${EWR.lowered} (x${EWR.advancing} while a stage has progress) on ${nEwr} technologies - literacy-gated ${by('literacy').length}, naval ${by('naval').length} (always); frontline kept at full weight: ${by('frontline').join(', ')}`);
+  console.log(`entry weight rule: x${EWR.lowered} (x${EWR.advancing} while ${EWR.signal === 'tick' ? 'its bar ticks' : 'a stage has progress'}) on ${nEwr} technologies - literacy-gated ${by('literacy').length}, naval ${by('naval').length} (always); frontline kept at full weight: ${by('frontline').join(', ')}`);
 }
 if (FB.enabled) console.log(`tech finish: +${FB.add} AI weight at has_technology_progress >= ${FB.threshold} on all ${nBoost} researchable technologies ` +
   `(of ${nTech}; skipped as unresearchable: ${skipped.join(', ') || 'none'})`);

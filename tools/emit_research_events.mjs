@@ -377,6 +377,19 @@ const NONADD = RE.sources_additive === false;
 const LIT = RE.literacy_by_era || null;
 const HALF = RE.follower_halving || null;
 const REPEAT = +(RE.implementation_repeats || 0);
+// THE TICKING SIGNAL of the entry-weight rule (BALANCE_FRAMEWORK §10.119 item 3, ruled 2026-11-21: "advancing" is the bar actually
+// ticking, by the cheap form): with `research_events.entry_weight_rule.signal = 'tick'` every stage entry's monthly pulse compares its
+// bar with the value it stored on itself last month (`pmr_bp`, a journal-entry variable) and, when the bar rose, sets the expiring
+// country flag `pmr_adv_<tech>` (45 days, so it holds between monthly pulses), which emit_tech_finish.mjs's weight reads. Off when the
+// key is absent (the canon builds byte for byte as before). Nothing re-evaluates the bar's terms: the pulse reads its stored value.
+const EWR_TICK = RE.entry_weight_rule?.signal === 'tick';
+if (RE.entry_weight_rule?.signal != null && !['tick', 'stage'].includes(RE.entry_weight_rule.signal)) throw new Error(`research_events.entry_weight_rule.signal must be 'tick' or 'stage' (got ${RE.entry_weight_rule.signal})`);
+const advVar = (tech) => `pmr_adv_${tech}`;
+const tickTrack = (key, bar, tech, ind) => !EWR_TICK ? '' :
+  `${ind}je:${key} ?= {\n` +
+  `${ind}${T}if = {\n${ind}${T}${T}limit = { has_variable = pmr_bp  "scripted_bar_progress(${bar})" > var:pmr_bp }\n` +
+  `${ind}${T}${T}root = { set_variable = { name = ${advVar(tech)}  days = 45 } }\n${ind}${T}}\n` +
+  `${ind}${T}set_variable = { name = pmr_bp  value = "scripted_bar_progress(${bar})" }\n${ind}}\n`;
 if ((LIT || HALF) && !NONADD) throw new Error('research_events: literacy_by_era / follower_halving are expressed in the any-source bar - they need sources_additive: false');
 if (REPEAT && COMPRESS) throw new Error('research_events: implementation_repeats is not designed with compress');
 if (REPEAT && !(Number.isInteger(REPEAT) && REPEAT >= 1 && REPEAT <= 50)) throw new Error(`research_events.implementation_repeats ${RE.implementation_repeats}: an integer 1-50`);
@@ -928,7 +941,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         `${T}${T}${T}${T}else = { set_variable = { name = ${implVar(tech)}  value = 1 } }\n` +
         `${T}${T}${T}${T}debug_log = "PMR_JE|${stage}[THIS.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n` +
         `${T}${T}${T}${T}je:${key} ?= { add_progress = { value = -${span}  name = ${barName(tech)} } }\n` +
-        `${T}${T}${T}}\n${T}${T}}\n${T}}\n\n` +
+        `${T}${T}${T}}\n` + tickTrack(key, barName(tech), tech, T + T + T) + `${T}${T}}\n${T}}\n\n` +
         outcomeEnd(`${T}${T}${T}OR = {\n${T}${T}${T}${T}has_technology_researched = ${tech}\n${T}${T}${T}${T}AND = { has_variable = ${implVar(tech)}  var:${implVar(tech)} >= ${REP} }\n${T}${T}${T}}\n`) +
         `${T}weight = 1\n${T}transferable = no\n${T}can_revolution_inherit = yes\n` +
         `${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
@@ -947,6 +960,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       // on_acquired_technology instead (below), so the engine has no inactive entry type to check every month
       (first ? (PLACE ? '' : `${T}is_shown_when_inactive = { can_research = ${tech} }\n`) + `${T}possible = { can_research = ${tech} }\n\n` : '') +
       `${T}scripted_progress_bar = ${barName(tech)}\n\n` +
+      (EWR_TICK ? `${T}on_monthly_pulse = {\n${T}${T}effect = {\n` + tickTrack(key, barName(tech), tech, T + T + T) + `${T}${T}}\n${T}}\n\n` : '') +
       outcomeDone(`${T}${T}${T}scope:journal_entry ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} }\n`, tab(
         grantBlock + halfLog +
         // the next stage only where it is not already there (a country holding two stages at once — ~30 a run on F227's batch)
