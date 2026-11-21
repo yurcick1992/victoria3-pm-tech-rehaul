@@ -28,79 +28,32 @@ const GAP = +opt('--gap', 15), MINPOP = +opt('--minpop', 1e6), TAGS = opt('--tag
 const STUCK = opt('--stuck', 'y'); if (!['y', 'y10', 'none'].includes(STUCK)) throw new Error('--stuck y|y10|none');
 const cfg = JSON.parse(readFileSync(join(REPO, args[0]), 'utf8'));
 const groups = args.slice(1).filter(a => a.includes('=') && !a.startsWith('--')).map(a => { const [label, rest] = a.split('='); const [s, setup] = rest.split(':'); return { label, s, setup, vanilla: /vanilla/.test(setup) }; });
-const YEARS = [1850, 1860, 1870, 1880, 1890, 1900, 1910, 1920, 1930, 1935];
+// ⭐ Section A lives in lib_laggard.mjs since 2026-11-21 (one computation with the register's old-plants term, criteria.mjs), MANUFACTURING ONLY
+//   (lib_industries.mjs; BALANCE_FRAMEWORK §10.121.1, §10.123 point 4): the deposit rungs never, agriculture not for now. Sections B–D read
+//   the same per-country records, so their tiered workers are manufacturing's too.
+const { LAG_YEARS: YEARS, laggardMaps, readLaggardRun, marketFrontiers, stuckCases } = await import('./lib_laggard.mjs');
 const BIG = new Set(['GBR', 'FRA', 'USA', 'PRU', 'NGF', 'GER', 'NET', 'BEL', 'UNL']);
-const MOD = {}, VAN = {}, NEXT = {}, TIERKEYS = new Set(), INDNAME = {};
-for (const [id, ind] of Object.entries(cfg.industries)) {
-  if (ind.disabled) continue; INDNAME[id] = (ind.tiers[0].key || id).replace(/^building_/, '');
-  const byEra = {}; for (const t of ind.tiers) { byEra[t.era] = t; TIERKEYS.add(t.key); }
-  for (const t of ind.tiers) {
-    const base = Object.values(t.employment || {}).reduce((a, b) => a + b, 0) || 5000;
-    if (t.pm_key) MOD[t.pm_key] = { ind: id, era: t.era, emp: base * (t.workforce_mult || 1) };
-    if (t.vanilla_pm) VAN[t.vanilla_pm] = { ind: id, era: t.era, emp: base };
-  }
-  const eras = Object.keys(byEra).map(Number).sort((a, b) => a - b);
-  NEXT[id] = {}; eras.forEach((e, i) => { const n = eras[i + 1]; NEXT[id][e] = n == null ? null : byEra[n].tech; });
-}
+const { MOD, VAN, NEXT, TIERKEYS, INDNAME, skipped: SKIPPED } = laggardMaps(cfg);
+if (SKIPPED.length) console.log('not manufacturing, left out (lib_industries.mjs): ' + SKIPPED.join(', '));
 const med = a => { a = a.filter(Number.isFinite).sort((x, y) => x - y); if (!a.length) return NaN; const m = a.length >> 1; return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; };
 const sum = a => a.reduce((x, y) => x + y, 0);
-function readRun(runDir, map) {
-  const sd = join(runDir, 'save_summaries'); if (!existsSync(sd)) return {};
-  const byYear = {};
-  for (const f of readdirSync(sd).filter(f => f.endsWith('.json.gz') && !f.includes('.partial.')).sort()) {
-    let j; try { j = JSON.parse(gunzipSync(readFileSync(join(sd, f))).toString()); } catch { continue; }
-    const p = String(j.provenance && j.provenance.date || '').split('.').map(Number); if (p[1] !== 1 || p[2] !== 1 || !YEARS.includes(p[0])) continue;
-    const C = {};
-    for (const [ck, c] of Object.entries(j.countries || {})) {
-      const W = {}; let va = 0, prof = {}, pop = Object.values(c.strata || {}).reduce((a, b) => a + b, 0);
-      for (const [bk, b] of Object.entries(c.buildings || {})) {
-        const lv = b.levels || 0; if (!lv) continue; const sf = Math.min(1, (b.staffing || 0) / lv);
-        let indOf = null;
-        for (const [pm, l] of Object.entries(b.pms || {})) { const r = map[pm]; if (!r) continue; indOf = r.ind;
-          const w = l * sf * r.emp; if (w > 0) ((W[r.ind] ||= {})[r.era] = (W[r.ind][r.era] || 0) + w); }
-        if (TIERKEYS.has(bk) || indOf) { if (b.va_out != null) va += 52 * ((+b.va_out || 0) - (+b.va_in || 0));
-          if (indOf) prof[indOf] = (prof[indOf] || 0) + (+b.profit || 0); }
-      }
-      const ps = c.pop_statistics || {}; const sal = +ps.population_salaried_workforce || 0, un = +ps.population_unemployed_workforce || 0, pe = (+ps.population_subsisting_workforce || 0) * 1e5;
-      C[ck] = { tag: c.tag || ck.split('@')[0], m: c.market, gdp: +c.gdp || 0, pop, sol: +c.avg_sol, techs: new Set(c.technologies_held || []), ntech: (c.technologies_held || []).length,
-        U: (sal + un + pe) > 0 ? (un + pe) / (sal + un + pe) : NaN, W, va, prof, overlord: c.overlord };
-    }
-    byYear[p[0]] = C;                      // the LAST summary of a year (a replayed branch overwrites the abandoned one)
-  }
-  return byYear;
-}
-function frontier(byEra) { const tot = sum(Object.values(byEra)); if (tot <= 0) return -1; let f = -1; for (const [e, w] of Object.entries(byEra)) if (w >= 0.1 * tot && +e > f) f = +e; return f; }
 const res = {};
 for (const g of groups) {
   const runs = usableRuns(SES, g.s, g.setup).runs; const map = g.vanilla ? VAN : MOD;
   const A = { stuck: [], ctrl: [], stuckW: [0, 0], ctrlW: [0, 0], stuckP: [], ctrlP: [] }; const AX = {};
   const B = {}; const Cc = {}; const D = {};               // B[year] = [{...per market}], C[tag][year] = [...], D[year][type] = [...per country]
   for (const rel of runs) {
-    const Y = readRun(join(SES, rel), map);
+    const Y = readLaggardRun(join(SES, rel), map, TIERKEYS);
     for (const y of YEARS) { const d = Y[y]; if (!d) continue;
-      // markets: members, leader (most technologies; ties by GDP)
-      const mk = {}; for (const [ck, c] of Object.entries(d)) (mk[c.m] ||= []).push(ck);
+      // markets: members, leader (most technologies; ties by GDP); the frontier per market and industry
+      const { mk, F, GF } = marketFrontiers(d);
       const leaderOf = {}; for (const [m, ks] of Object.entries(mk)) leaderOf[m] = ks.slice().sort((a, b) => (d[b].ntech - d[a].ntech) || (d[b].gdp - d[a].gdp))[0];
-      // frontier per market and industry
-      const GW = {}; for (const c of Object.values(d)) for (const [i, eras] of Object.entries(c.W)) for (const [e, w] of Object.entries(eras)) ((GW[i] ||= {})[e] = (GW[i][e] || 0) + w); const GF = {}; for (const [i, eras] of Object.entries(GW)) GF[i] = frontier(eras);
-      const F = {}; for (const [m, ks] of Object.entries(mk)) { const M = {}; for (const k of ks) for (const [i, eras] of Object.entries(d[k].W)) for (const [e, w] of Object.entries(eras)) ((M[i] ||= {})[e] = (M[i][e] || 0) + w); F[m] = {}; for (const [i, eras] of Object.entries(M)) F[m][i] = frontier(eras); }
       // A: stuck laggards (y -> y+10)
       const d2 = Y[y + 10];
-      if (d2) for (const [ck, c] of Object.entries(d)) { if (!d2[ck]) continue;
-        for (const [i, eras] of Object.entries(c.W)) { const w = sum(Object.values(eras)); if (w < 5000) continue;
-          const best = Math.max(...Object.entries(eras).filter(([, x]) => x > 0.05 * w).map(([e]) => +e)); const nx = NEXT[i][best];
-          if (!nx) continue;                                          // no rung above: nothing to be stuck under
-          if (STUCK === 'y' && c.techs.has(nx)) continue;             // it could switch / build up already at y
-          if (STUCK === 'y10' && d2[ck].techs.has(nx)) continue;      // it could within the decade (the size-filtered first version)
-          const got = d2[ck].techs.has(nx) ? 'got' : 'not';           // acquired the next rung's technology within the decade
-          const fm = F[c.m][i]; const w2 = sum(Object.values(d2[ck].W[i] || {}));
-          const p = (c.prof[i] || 0) / w * 1000;                      // weekly profit per 1,000 workers
-          { const st = fm >= best + 2 ? 'inm' : GF[i] >= best + 2 ? 'trade' : fm <= best ? 'ctrl' : null;
-            if (st) { const ch = ['food_industry', 'textile_mill', 'furniture_manufactory', 'glassworks', 'paper_mill', 'art_academy'].includes(INDNAME[i]) ? 'consumer' : 'heavy+war';
-              const has = c.techs.has(nx) ? 'holds' : 'lacks';           // the next rung's technology at y
-              for (const k of [st, st + '|' + ch, st + '|' + got, st + '|' + has]) { const o = (AX[k] ||= { a: [], w: [0, 0], p: [] }); o.a.push(w2 / w); o.w[0] += w; o.w[1] += w2; o.p.push(p); } } }
-          if (fm >= best + 2) { A.stuck.push(w2 / w); A.stuckW[0] += w; A.stuckW[1] += w2; A.stuckP.push(p); }
-          else if (fm <= best) { A.ctrl.push(w2 / w); A.ctrlW[0] += w; A.ctrlW[1] += w2; A.ctrlP.push(p); } } }
+      if (d2) for (const cs of stuckCases(y, d, d2, F, GF, NEXT, INDNAME, STUCK)) { const { w, w2, p } = cs;
+        if (cs.st) for (const k of [cs.st, cs.st + '|' + cs.chain, cs.st + '|' + cs.got, cs.st + '|' + cs.has]) { const o = (AX[k] ||= { a: [], w: [0, 0], p: [] }); o.a.push(w2 / w); o.w[0] += w; o.w[1] += w2; o.p.push(p); }
+        if (cs.legacy === 'stuck') { A.stuck.push(w2 / w); A.stuckW[0] += w; A.stuckW[1] += w2; A.stuckP.push(p); }
+        else if (cs.legacy === 'ctrl') { A.ctrl.push(w2 / w); A.ctrlW[0] += w; A.ctrlW[1] += w2; A.ctrlP.push(p); } }
       // B: backward members of markets led by an advanced (shortlist) country
       for (const [m, ks] of Object.entries(mk)) { const L = d[leaderOf[m]]; if (!BIG.has(L.tag)) continue;
         const fol = ks.filter(k => k !== leaderOf[m] && d[k].pop >= MINPOP && L.ntech - d[k].ntech >= GAP); if (!fol.length) continue;

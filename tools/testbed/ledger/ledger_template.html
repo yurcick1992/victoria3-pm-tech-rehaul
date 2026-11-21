@@ -432,7 +432,7 @@ const INTRO={"pi":{"years":[],"mod":[],"lo":[],"hi":[],"van":[]},"runs":{"gdp":[
     s+='<line x1="'+cx+'" x2="'+cx+'" y1="'+(T-6)+'" y2="'+(H-B)+'" stroke="'+css('--ink')+'" stroke-width="1.5" stroke-dasharray="3 2"/>'+
        '<text x="'+(cx+(right?-5:5))+'" y="'+(T-10)+'" text-anchor="'+(right?'end':'start')+'" font-size="12" font-weight="600" fill="'+css('--ink')+'">consensus '+Rn.consensus.toFixed(2)+'×</text>'; }
   h2.innerHTML=s+'</svg>';
-  document.getElementById('runs-legend').innerHTML=sw(css('--accent'),'one run')+(g.some(o=>o.broken)?sw(css('--bad'),'a broken run'):'')+
+  document.getElementById('runs-legend').innerHTML=sw(css('--accent'),'one run')+(g.some(o=>o.broken)?sw(css('--bad'),'a run past the barrier'):'')+
     '<span><span class="sw" style="background:'+css('--okbg')+';border:1px solid '+css('--ok')+'"></span>aim</span>'+(Rn.van95?'<span><span class="sw" style="background:'+css('--panel2')+';border:1px solid '+css('--line')+'"></span>vanilla’s own runs, central 95%</span>':'');
   const vs=g.map(o=>o.v), below=vs.filter(v=>Rn.aim&&v<Rn.aim[0]).length, above=vs.filter(v=>Rn.aim&&v>Rn.aim[1]).length;
   document.getElementById('runs-cap').innerHTML='World GDP as displayed, '+(Rn.end?Rn.end[0]+'–'+String(Rn.end[1]).slice(2)+' mean, ':'')+'each run ÷ vanilla’s median. '+

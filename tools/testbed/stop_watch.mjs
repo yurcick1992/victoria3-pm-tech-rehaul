@@ -1,7 +1,8 @@
-// THE RUN-LEVEL STOP WATCHER — since 2026-09-17 THE CRITERIA REGISTER'S HARD BREAK (BALANCE_FRAMEWORK §10.83, user-ruled: "one run can be
-// sufficient if a hard boundary is broken"; a SOFT breach never stops a batch): polls a running 2+1 session; when a run COMPLETES, runs
-// tools/testbed/ledger/criteria.mjs on the session and, if that run is BROKEN (by stall or by runoff), drops tools/testbed/STOP. The
-// 2026-09-14 rule (a 1936 GDP above --threshold × vanilla's median) is only the FALLBACK when criteria.mjs cannot be run.
+// THE RUN-LEVEL STOP WATCHER — since 2026-11-21 THE REGISTER'S BARRIER (BALANCE_FRAMEWORK §10.120 point 8: "a run past the barrier ends its
+// book in the 2+1 test"; a missed aim never stops a batch): polls a running 2+1 session; when a run COMPLETES, runs
+// tools/testbed/ledger/criteria.mjs on the session and, if that run is PAST THE BARRIER (`broken: 'barrier'`), drops tools/testbed/STOP. The
+// 2026-09-14 rule (a 1936 GDP above --threshold × vanilla's median) is only the FALLBACK when criteria.mjs cannot be run. (From 2026-09-17
+// to 2026-11-20 it stopped on §10.83's hard lines, a run "broken by stall" or "by runoff".)
 // (Superseded wording:) polls a running 2+1 session; when a run COMPLETES with a 1936 GDP above
 // the threshold × vanilla's 1936 median, drops tools/testbed/STOP so the scheduler's next run is abandoned at 1836 (the
 // phase-2 run-11 precedent; L17 excludes the stub) and the config stops there. Never acts mid-run. Removes the STOP file once
@@ -53,11 +54,11 @@ const tick = () => {
       // L37: the run's own setup, from its folder name (runNNN_<setup>) — on a multi-setup schedule usableRuns refuses a bare session name
       const out = join(ROOT, d, 'criteria.json'), setup = d.replace(/^run\d+_/, '');
       const r = spawnSync(process.execPath, [join(REPO, 'tools/testbed/ledger/criteria.mjs'), '--arm', `${NAME}:${setup}`, '--quiet', '--json', out], { cwd: REPO, encoding: 'utf8', timeout: 600000 });
-      if (r.status === 0 && existsSync(out)) { const j = JSON.parse(readFileSync(out, 'utf8')); const run = ((j.arms[0] && j.arms[0].runs) || []).find(x => x.rel.endsWith('/' + d)); if (run) { viaRegister = true; broken = run.broken; if (broken) log(`${d}: THE REGISTER — BROKEN BY ${String(broken).toUpperCase()}: ${run.hard.join(' | ')}`); else log(`${d}: the register — intact (${run.hard.length} hard, ${run.soft.length} soft line(s))`); } }
+      if (r.status === 0 && existsSync(out)) { const j = JSON.parse(readFileSync(out, 'utf8')); const run = ((j.arms[0] && j.arms[0].runs) || []).find(x => x.rel.endsWith('/' + d)); if (run) { viaRegister = true; broken = run.broken; if (broken) log(`${d}: THE REGISTER — ${broken === 'barrier' ? 'PAST THE BARRIER' : 'BROKEN BY ' + String(broken).toUpperCase()}: ${run.hard.join(' | ')}`); else log(`${d}: the register — not past the barrier (the line ${run.barrier ? run.barrier.value.toFixed(2) : '?'}, past at 1)`); } }
       else log(`${d}: criteria.mjs failed (status ${r.status}): ${(r.stderr || '').slice(-300)} — falling back to the 1936 GDP rule`);
     } catch (e) { log(`${d}: criteria.mjs threw ${e.message} — falling back to the 1936 GDP rule`); }
     if (viaRegister ? broken : ratio > THRESHOLD) {
-      const reason = viaRegister ? `STOP RULE (THE CRITERIA REGISTER, §10.83, user-ruled 2026-09-17): ${d} is BROKEN BY ${String(broken).toUpperCase()} — one broken run ends the config; the schedule's next run, if any, is abandoned at 1836 and L17-excluded` : `STOP RULE (user-ruled 2026-09-14, the fallback): ${d} ended at ${ratio.toFixed(3)}× vanilla's 1936 GDP (> ${THRESHOLD}×) — the config's last run; the schedule's next run, if any, is abandoned at 1836 by the STOP file and excluded (L17).`;
+      const reason = viaRegister ? `STOP RULE (THE CRITERIA REGISTER, BALANCE_FRAMEWORK §10.120 point 8): ${d} is ${broken === 'barrier' ? 'PAST THE BARRIER' : 'BROKEN BY ' + String(broken).toUpperCase()} — a run past the barrier ends its book in the 2+1 test (recorded as past the barrier, not as worse than a missed aim); the schedule's next run, if any, is abandoned at 1836 and L17-excluded` : `STOP RULE (user-ruled 2026-09-14, the fallback): ${d} ended at ${ratio.toFixed(3)}× vanilla's 1936 GDP (> ${THRESHOLD}×) — the config's last run; the schedule's next run, if any, is abandoned at 1836 by the STOP file and excluded (L17).`;
       writeFileSync(join(ROOT, d, 'STOP_RULE.txt'), reason + '\n'); writeFileSync(STOP, reason + '\n'); log(reason);
       const wait = () => { const s = existsSync(join(ROOT, 'session.log')) ? readFileSync(join(ROOT, 'session.log'), 'utf8').slice(-4000) : ''; if (/SCHEDULE DONE|ABORTED - see the ALERT|stopped by user - not continuing/.test(s)) { try { unlinkSync(STOP); } catch { } log('scheduler has exited; STOP file removed; done'); process.exit(0); } setTimeout(wait, 10000); };
       return wait();

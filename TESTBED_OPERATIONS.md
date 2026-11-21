@@ -27,7 +27,7 @@ rule, the reports and what a result decides. Name the mode in the go-ahead reque
 | **the arms** | one config per schedule; the next config is proposed only after this one is read and the user confirms it | fixed in advance, usually the canon and vanilla + telemetry |
 | **n and span** | the 2+1 test: two full runs, a third only on divergence (§6.2) | set in advance (n=16, n=48, 10 vs 10 …); full runs; every run plays |
 | **alternation** | never: one config's runs back to back, decided between schedules (§6.1) | the arms alternate run by run, so the wall clock is read against vanilla of the same days (§7.3) |
-| **the stop** | one run broken on a hard register line ends the config; the stop watcher (§3.3, §6.3) | none: no stop watcher, no deadline unless the user sets one |
+| **the stop** | one run past the register's barrier ends the config; the stop watcher (§3.3, §6.3) | none: no stop watcher, no deadline unless the user sets one |
 | **reports** | after each config: the register (`criteria.mjs`) and its loss, beside the incumbent; the alignment check | the two first-run reports (first vanilla, first mod), smoke checks, then the ledger at full n (§8) |
 | **what decides** | the register's reading, directional (CLAUDE.md §2.9), plus the user's judgement; a winner may be canonised | nothing is chosen: the batch is the record of what the book does (FINDINGS, the ledger) |
 | **used** | 2026-09 to 2026-10-16 (the last configs: F234, F239) | since 2026-10-21 (F249, F264, F268, F269, the 10 vs 10 of 2026-11-12) |
@@ -382,14 +382,15 @@ For a 2+1 test (§6.2), arm the run-level stop watcher right after launch:
 & 'tools\testbed\launch_detached.ps1' -File 'tools\testbed\stop_watch.ps1' -ArgumentList '-Session','<stamp>','-Poll','30' -Hidden
 ```
 
-- When a run completes it runs `tools/testbed/ledger/criteria.mjs` on the session; a run **broken by stall or by runoff** (a hard
-  line of the criteria register) makes it write `tools/testbed/STOP` (and `<run>\STOP_RULE.txt`), so the next run is abandoned at
-  1836 and excluded by L17. If the register cannot be read it falls back to a 1936 world GDP above 1.3× vanilla's median. It never
+- When a run completes it runs `tools/testbed/ledger/criteria.mjs` on the session; a run **past the barrier** (the register's one
+  validity line, BALANCE_FRAMEWORK §10.120: a shortlist member of at least 2% of world GDP whose pool ÷ GDP averages 1 or more over ten
+  consecutive years; until 2026-11-20 a run broken by stall or by runoff on §10.83's hard lines) makes it write `tools/testbed/STOP`
+  (and `<run>\STOP_RULE.txt`), so the next run is abandoned at 1836 and excluded by L17. If the register cannot be read it falls back to a 1936 world GDP above 1.3× vanilla's median. It never
   acts mid-run and removes the STOP file once the scheduler has exited.
 - **`-Session` takes the session name.** A path is normalised, and a session that does not exist is refused with exit 2.
   **Confirm `tools/testbed/sessions/<stamp>/stop_watch.log` exists** (~90 s after arming) — it is the only proof the watcher is on.
 - **Each run is scored on its own setup** (taken from the run's folder name), so a schedule with several setups is read by the register
-  too (L37, repaired 2026-10-28). A broken run still drops `STOP`, which abandons the schedule's NEXT run whatever its setup: on a
+  too (L37, repaired 2026-10-28). A run past the barrier still drops `STOP`, which abandons the schedule's NEXT run whatever its setup: on a
   multi-setup schedule whose configs should not stop one another, do not arm the watcher. `criteria.mjs failed` in `stop_watch.log`
   means that run was judged on the GDP fallback; `preflight.ps1 -Session` flags it (L37).
 - A running watcher keeps the code it loaded: re-arm it after the register or the watcher changes.
@@ -586,15 +587,17 @@ the config is read as the consensus of its intact runs (GLOSSARY §4).
   bands and their calibration are F114; the third run is the norm for this family's seed spread, by choice.
 - Exit codes: 0 aligned, 2 divergent (run the third), 3 the run-level stop. The tie-breaker schedule is usually prepared beside the
   pair (`<name>_n2.json` + `<name>_tb.json`).
-- **What a config is judged by is the criteria register** (`tools/testbed/ledger/criteria.mjs`; BALANCE_FRAMEWORK §10.83 and
-  CLAUDE.md §3.2, including the reading gate on world GDP). The bands only decide whether a third run is owed.
+- **What a config is judged by is the criteria register** (`tools/testbed/ledger/criteria.mjs`; BALANCE_FRAMEWORK §10.120, §10.121 and
+  §10.123, THE loss of the mod 1.2 calibration; CLAUDE.md §3.2, including the reading gate on world GDP). The bands only decide whether a
+  third run is owed.
 
 ### 6.3 The run-level stop
 
-In a 2+1 batch, **one run broken by a hard line of the register ends the config** — that run is its last, be it run 1, 2 or 3.
-The stop watcher (§3.3) enforces it between runs; the fallback (the register unreadable) is a 1936 world GDP above 1.3× vanilla's
-median. Never mid-run: a stopped config still leaves a comparable 1836→1936 result. Being far below stops nothing by itself (a stall
-is a hard break only below the world-product floor). **Scope: 2+1 batches only.** A fixed-n, full-run or long-sequence batch is not
+In a 2+1 batch, **one run past the register's barrier ends the config** — that run is its last, be it run 1, 2 or 3 (§10.120 point 8:
+recorded as *past the barrier*, not as worse than a missed aim). The stop watcher (§3.3) enforces it between runs; the fallback (the
+register unreadable) is a 1936 world GDP above 1.3× vanilla's median. Never mid-run: a stopped config still leaves a comparable
+1836→1936 result. A missed aim stops nothing, however far it is missed (every aim is soft); two books that both end past the barrier
+compare on the barrier line, which `criteria.mjs` prints for every run. **Scope: 2+1 batches only.** A fixed-n, full-run or long-sequence batch is not
 subject to it — every run plays; do not arm the watcher, and `alignment_check.mjs --stop-above 0` is the "full runs" switch.
 
 The 2026-09-15 capital-abundance flag (`tools/testbed/ledger/capital_flags.mjs`) is superseded as a criterion by the register's

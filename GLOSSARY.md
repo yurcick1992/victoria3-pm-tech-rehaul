@@ -9,7 +9,7 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 
 ---
 
-## 1. THE MEASURED QUANTITIES (the criteria register, `tools/testbed/ledger/criteria.mjs`, BALANCE_FRAMEWORK §10.83)
+## 1. THE MEASURED QUANTITIES (the criteria register, `tools/testbed/ledger/criteria.mjs`, BALANCE_FRAMEWORK §10.83; since 2026-11-21 the §10.120 / §10.123 form)
 
 | name | what it is | notes |
 |---|---|---|
@@ -57,7 +57,8 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
   GDP is an important one. **The barrier** is the one line about validity, not severity: the investment loop broke (a shortlist member of at least
   2% of world GDP whose pool ÷ GDP averages 1 or more over ten consecutive years). A run **past the barrier** reports that line and nothing else,
   and ends its book in the 2+1 test. ⚠ Before that date: an AIM, a SOFT boundary (unacceptable, the run read in full) and HARD boundaries (the run
-  recorded only **broken by stall** or **broken by runoff**); `criteria.mjs` still prints those until it is changed.
+  recorded only **broken by stall** or **broken by runoff**), which `criteria.mjs` printed until 2026-11-21; it reads the barrier and
+  the §10.123 loss since.
 - **intact** — a run that is not past the barrier (before 2026-11-17: one that broke no hard line). **the consensus** — what a config is read as: the median of the intact runs (with three, the two
   closest on world GDP). **divergent** — a pair too far apart under F114's bands to have a consensus; it owes a third run.
 - **directional** — the standing ruling (§10.83.7): no two-book loss gap in this family is statistically real at n=2–3, so a lever is read for its
@@ -118,7 +119,7 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **iterative mode** | testing to choose between configs: one config per schedule through the 2+1 rule, never alternated, the stop watcher armed, the next config proposed only after the user confirms (TESTBED_OPERATIONS §0) |
 | **fixed-setup mode** | a measurement batch whose arms and n are set in advance (usually the canon against vanilla, alternating run by run): every run plays, two first-run reports, the ledger at full n (TESTBED_OPERATIONS §0) |
 | **the 2+1 rule** | two runs, `alignment_check.mjs`, a third only if they diverge; the config read as the median (iterative mode only) |
-| **the run-level stop** | a run of a 2+1 batch that breaks a hard register line is that config's last run (the stop watcher drops the STOP file); ×1.3 of vanilla's 1936 world GDP survives only as the watcher's fallback threshold (CLAUDE.md §3.2) |
+| **the run-level stop** | a run of a 2+1 batch past the register's barrier is that config's last run (the stop watcher drops the STOP file; until 2026-11-20, a run that broke a hard line of §10.83); ×1.3 of vanilla's 1936 world GDP survives only as the watcher's fallback threshold (CLAUDE.md §3.2) |
 | **usable** | a run that reached its own `until` date with no `abandoned_reason` (landmine L17) — `lib_runs.usableRuns` is the only definition |
 
 ---

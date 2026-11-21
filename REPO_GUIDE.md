@@ -1351,12 +1351,13 @@ runs through `ledger/lib_runs.mjs`, and print the runs they dropped.
   <session|run> [...]`, `--all` (every session), `--live <run>` (the newest launch: the smoke check). Streams the log (a mirror can pass
   512 MB). Exit 1 on a failed launch. `Test-LmL50` runs it on `preflight.ps1 -Session`.
 - **`stop_watch.ps1` + `stop_watch.mjs`** — the run-level stop of a 2+1 batch: on each completed run it runs `ledger/criteria.mjs` and
-  drops `STOP` when the run is broken; fallback when the register cannot be read: 1936 world GDP > `-Threshold` (1.3) × vanilla's
-  median. Never mid-run; removes `STOP` after the scheduler exits.
+  drops `STOP` when the run is past the barrier (`broken: 'barrier'`, §10.120 point 8; until 2026-11-20 a run broken on §10.83's hard
+  lines); fallback when the register cannot be read: 1936 world GDP > `-Threshold` (1.3) × vanilla's median. Never mid-run; removes
+  `STOP` after the scheduler exits.
   `launch_detached.ps1 -File 'tools\testbed\stop_watch.ps1' -ArgumentList '-Session','<session-name>','-Poll','30' -Hidden`.
   Status: current, 2+1 batches only. Traps: `-Session` is the name (a path is cut to its last segment; an unknown session exits 2); the
   proof it is armed is `sessions/<stamp>/stop_watch.log` (~90 s); a running watcher keeps the code it loaded. Each run is scored on its
-  own setup (`--arm <session>:<setup>`, the setup from the run's folder name; L37, repaired 2026-10-28). Refs: §10.83.
+  own setup (`--arm <session>:<setup>`, the setup from the run's folder name; L37, repaired 2026-10-28). Refs: §10.120, §10.123.
 - **`NO_NEW_RUNS`, `STOP`, `no_new_runs_at.ps1`** — flag files the scheduler reads (gitignored): `NO_NEW_RUNS` = `[s]` (the running game
   finishes, nothing new starts), `STOP` = `[x]` (the running game is closed). `no_new_runs_at.ps1 -At 'yyyy-MM-dd HH:mm'` (detached,
   `-Hidden`) drops `NO_NEW_RUNS` at a local time, logging to `no_new_runs_at.log`. Traps: while `NO_NEW_RUNS` exists every schedule
@@ -1526,20 +1527,36 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
 - **`ledger/fill_scorecard.mjs`** `<outDir> [--config <book>]` → `scorecard.html` (`__SCORECARD__`), `scorecard_loss.html` (`__LOSS__`),
   `intro.json` (`INTRO`), 2026-10-29: the report's one four-column table (line · this batch / vanilla · aim · verdict) grouped by goal, from
   `criteria.json` and the other fill outputs; the register's loss for the footer; the price-path and run-by-run charts' data. Replaces
-  `fill_register.mjs` and `fill_goals.mjs` (removed). Refs: §10.104.1, ledger README §6.
+  `fill_register.mjs` and `fill_goals.mjs` (removed). On the §10.123 register since 2026-11-21: the barrier heads the table; a register
+  line's verdict is its distance in spreads, as the loss reads it (0 at the aim, ≤ 1 within a spread, ≤ 2 off the aim, beyond far from
+  it); the former ratio aims (W, H, the shortlist's U\* and GDP) are readings; vanilla's figure is a reference beside a level of the mod's
+  own. Refuses a `criteria.json` that is not the §10.123 register. Refs: §10.104.1, §10.123, ledger README §6.
 
 ### Register, run selection and market definitions
 
-- **`ledger/criteria.mjs`** — the criteria register (§10.83): aim / soft / hard per scope (pool, world), end state 1932–1936, hard lines
-  per run (broken by stall / runoff), the consensus of intact runs, the metrics of GLOSSARY §1 (T0–T3 by each rung's tier from the run's
-  own config; merge hosts split by method), the loss, the ranking across `--arm`s, and GDP at base prices as a secondary reading (§10.90).
-  `--arm <group> [--arm …] [--config <book>] [--van <sessions>] [--end 1932-1936] [--weights k=v,…] [--soft-pen 0] [--soft-slope 2]
-  [--sigma fixed|vanilla|runs] [--gdp-aim 0.90,1.00] [--gdp-hard ci|legacy] [--consensus intact|all] [--json] [--quiet]`. Read by the report,
-  the iterator and `stop_watch`. Lists from `lib_markets`; PI / PP on the arm's markets ∩ vanilla's by series, basis printed. ⚠ `--consensus
-  all` (2026-11-14, NOT the ruled form; default `intact`): the consensus, its loss and the per-run losses read every usable run, broken ones
-  included — for a batch whose every run crosses a hard line the reference crosses too (game 1.15's runoff line, F271); the note and the
-  JSON's `consensus.mode` say which form ran, and `fill_scorecard` words the scorecard and loss line accordingly (`CRITERIA_CONSENSUS=all`
-  in `fill_ledger.sh`). Proven on F269's batch: the default reproduces its consensus key for key. Refs: §10.83–§10.86, §10.100.
+- **`ledger/criteria.mjs`** — the criteria register, THE loss of the mod 1.2 calibration (§10.120 the form, §10.121 the old-plants term,
+  §10.123 the weights and spreads; CLAUDE.md §3.2; rewritten 2026-11-21 from the §10.83 register, which is in git history up to `4e65135e`):
+  per run THE BARRIER (a shortlist member of ≥ 2% of world GDP whose pool ÷ GDP averages ≥ 1 over ten consecutive years: `broken:
+  'barrier'`, no loss, its value printed for every run); the consensus of the runs not past it; the aims and the loss L = Σ w · d, each
+  distance in the line's own spread (`SPREAD`, fixed constants fitted on mod 1.1.1's 15 runs on 1.15.1); the minor readings against
+  vanilla (W, H, the shortlist's GDP and U\*, the 1836–1845 start, the decade path and its 1886 line, PM, GDP at base prices, §10.90);
+  vanilla's own readings of the same lines (`vanReading`, a reference); the ranking across `--arm`s (a book with every run past the barrier
+  ranks by the barrier line). T0–T3 and the old plants read MANUFACTURING only (`lib_industries.mjs`), merge hosts split by method; the old
+  plants through `lib_laggard.mjs` (vanilla's through the first arm's book's `vanilla_pm` map). `--arm <group> [--arm …] [--config <book>]
+  [--van <sessions>[:setup]] [--end 1932-1936] [--weights k=v,…] [--consensus intact|all] [--json] [--quiet] [--fit-spreads]`. Read by the
+  report (`fill_scorecard`), the iterator and `stop_watch`. Lists from `lib_markets`; PI / PP on the arm's markets ∩ vanilla's by series,
+  basis printed. ⚠ `--consensus all` (2026-11-14, NOT the ruled form; default `intact`): the consensus and the per-run losses read every
+  usable run, past the barrier included; the note and `consensus.mode` say so (`CRITERIA_CONSENSUS=all` in `fill_ledger.sh`).
+  `--fit-spreads` prints the spreads of the runs read as the `SPREAD` literal and exits; a re-fit is a recorded decision (§10.123). Proven
+  2026-11-21: on F271's ten runs every reading it shares with the §10.83 version (world GDP, W, U\*, H, PI, PP, PM, T0–T3, the decade
+  path) is identical. Refs: §10.120, §10.121, §10.123.
+- **`ledger/lib_industries.mjs`** — `MANUFACTURING` (the seventeen tiered manufacturing industries by `cfg.industries[].id`) and
+  `manufacturing(cfg)` → the kept industries and the skipped ids (printed by every caller): ONE definition for T0–T3 and the old plants,
+  so tiered deposit rungs in the same array are never counted (§10.123 point 4). A new manufacturing industry must be added to the list.
+- **`ledger/lib_laggard.mjs`** — the in-market backward-industry test as a library (2026-11-21, section A of `laggard_pressure.mjs` moved
+  unchanged in substance; proven by `laggard_pressure`'s output and JSON reproduced byte for byte on F271's session): `laggardMaps(cfg)`,
+  `laggardCountries`, `readLaggardRun`, `marketFrontiers`, `stuckCases`, and `inMarketByDecade` (a run's in-market cases summed by decade,
+  the register's old-plants term). Manufacturing only.
 - **`ledger/alignment_check.mjs`** `--arm <group> [--van] [--year 1935] [--stop-above 1.3]` — the 2+1 divergence test: world GDP and
   productive workers per capita at 1935 ÷ vanilla's per-run median, five bands each; a pair fails an axis only in different bands and
   ≥ 0.15 / ≥ 0.10 apart; also the run-level stop verdict (`--stop-above 0` = full runs). Exit 0 aligned · 2 run a third · 3 stop · 1
@@ -1690,7 +1707,8 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
 - **`ledger/old_rungs_by_industry.mjs`** `<year> <label>=<group> [...]` — `countrySplit`'s old-rung share per industry, pool and world, each
   run on its own book. Traps: different ladders compare what each calls two tiers behind.
 - **`ledger/laggard_pressure.mjs`** `<book> <label>=<group> [...] [--stuck y|y10|none] [--gap 15] [--minpop 1e6] [--tags POR,…] [--json <file>]`
-  (the JSON: section A per class — cases, workers kept, median case, profit — the ledger's two backward-industry lines) — competitive
+  (the JSON: section A per class — cases, workers kept, median case, profit — the ledger's trade-only backward-industry line; the in-market
+  line is the register's term, from `criteria.json`) — section A from `lib_laggard.mjs`, manufacturing only (`lib_industries.mjs`) — competitive
   pressure on backward industry where vanilla CANNOT switch (FINDINGS F249 §4a): A. stuck laggards (a country's industry whose best rung is ≥ 2 tiers
   under its own market's frontier and that lacks the next rung's technology at the start of the decade — `--stuck y`, the default), in-market and
   trade-only, by chain and by whether the technology arrived within the decade; ten-year retention of the INDUSTRY's workers on every rung (a switch

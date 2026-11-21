@@ -71,8 +71,8 @@ writing prose, because `fill_assemble` stops on any missing output.
 | 13 | `fill_obsolescence.mjs <out> --session --setup --config` | `obsolescence.json` | `OBS` (the collapsed in-market vs trade detail) |
 | 14 | `input_price_flags.mjs "<setup>=<group>:<setup>" --ref … --yearly --html redflags_full.html --json redflags.json --list 0` | `redflags_full.html`, `redflags.json` | the red-flag card (via 15) |
 | 15 | `redflag_metrics.mjs <out>` | `redflags_metrics.json`, `redflags_digest.md`, `redflags_card.html` | `__REDFLAGS__`, the scorecard's shortage line |
-| 16 | `criteria.mjs --arm "<group>:<setup>" --van "<VANS>:vanilla" --json <out>/criteria.json --quiet` | `criteria.json` | the register's lines, the two charts above the pages; with `CRITERIA_CONSENSUS=all` in the environment, `--consensus all` (every usable run, broken included — not the ruled form, only when no run is intact because the reference crosses the same hard line; the scorecard says so, F271) |
-| 17 | `laggard_pressure.mjs <book> "<setup>=<group>:<setup>" "vanilla=<VANS>:vanilla" --json <out>/laggards.json` | `laggards.json` | the two backward-industry lines |
+| 16 | `criteria.mjs --arm "<group>:<setup>" --van "<VANS>:vanilla" --json <out>/criteria.json --quiet` | `criteria.json` | the register's lines (the §10.123 loss: the barrier, the aims, their distances, the minor readings, vanilla's own readings), the two charts above the pages; with `CRITERIA_CONSENSUS=all` in the environment, `--consensus all` (every usable run, past the barrier included — not the ruled form; the scorecard says so) |
+| 17 | `laggard_pressure.mjs <book> "<setup>=<group>:<setup>" "vanilla=<VANS>:vanilla" --json <out>/laggards.json` | `laggards.json` | the trade-only backward-industry line (the in-market one is the register's term, in `criteria.json`) |
 | 18 | `tech_census.mjs "<setup>=<group>:<setup>" "vanilla=<VANS>:vanilla" --tree <twin> --json <out>/tech.json` | `tech.json` | the technology lines |
 | 19 | `misplaced_capital.mjs --batch "<setup>:<group>:<setup>" --json <out>/misplaced.json` | `misplaced.json` | the misplaced-capital line (mod only) |
 | 20 | `fill_old_plants.mjs <out> --mod --config` | `old_plants.json` | `OLDP` (the old-plant table, both pages) |
@@ -256,15 +256,18 @@ country (user, 2026-10-29):
 
 | group | lines | source |
 |---|---|---|
-| Are the runs sound? | runs broken · play time against the same sessions' vanilla (with the per-session ratios) · market-years short of an industrial input against this batch's own vanilla (of 800 = 8 major markets × 100 years, the markets named) | `criteria.json` · `perf_panel.json` · `redflags_metrics.json` |
-| Does the world economy stay near vanilla's size? | world GDP 1932–36 (with the per-run range) · world GDP in 1886, the expected dip | `criteria.json` |
-| Does a technological edge win markets, and do efficient producers push out the rest? | backward industries (two tiers behind the best producer, without the technology to upgrade yet) with a far better producer in the same market, and with the better producers all abroad: the ten-year change in their workers against vanilla's · T0 · T3 · tier-1 workers 1900 → 1935 · tier-0 paybacks (crafts, factories) · new plants built below the best tier · PI · PP | `laggards.json` · `criteria.json` · `emp.json` · `payback.json` · `tierchoice.json` |
-| Does modernising cost capital? | construction 1880–1935 · the newest tier's payback · capital abundance (unspent investment pool ÷ GDP): world, shortlist, Germany (`gerH`; the register's closed-major term is in the loss, its full-employment half the note) · misplaced capital (MOD ONLY, by ruling) | `report_data.json` · `payback.json` · `criteria.json` · `misplaced.json` |
-| Do fewer people find productive work, each producing more? | W world and shortlist · U\* world and shortlist (as %) · GDP per productive worker · the shortlist's GDP | `criteria.json` · `consts.json` |
+| Are the runs sound? | runs past the barrier (vanilla's beside it; the highest ten-year mean and who) · play time against the same sessions' vanilla (with the per-session ratios) · market-years short of an industrial input against this batch's own vanilla (of 800 = 8 major markets × 100 years, the markets named) | `criteria.json` · `perf_panel.json` · `redflags_metrics.json` |
+| Does the world economy stay near vanilla's size? | world GDP 1932–36 (with the per-run range) · world GDP in 1886, the expected dip · the 1836–1845 start (runs flagged) | `criteria.json` |
+| Does a technological edge win markets, and do efficient producers push out the rest? | backward industries (two tiers behind the best producer, without the technology to upgrade yet; manufacturing) with a far better producer in the same market (the register's old-plants term, vanilla's beside it) and with the better producers all abroad (a reading against vanilla's) · T0 · T3 · tier-1 workers 1900 → 1935 · tier-0 paybacks (crafts, factories) · new plants built below the best tier · PI · PP | `criteria.json` · `laggards.json` · `emp.json` · `payback.json` · `tierchoice.json` |
+| Does modernising cost capital, and is the capital spent? | construction 1880–1935 · the newest tier's payback · the shortlist countries of ≥ 2% of world GDP with a pool above half their GDP, 1935–36 · the shortlist's hoard above half its GDP · unspent pool ÷ GDP, world and shortlist (readings) · misplaced capital (MOD ONLY, by ruling) | `report_data.json` · `payback.json` · `criteria.json` · `misplaced.json` |
+| Do fewer people find productive work, each producing more? | U\* of the USA, Britain, Germany and the world, 1913 · the end (the eight aims, vanilla's beside them) · the shortlist's U\* · W world and shortlist · GDP per productive worker · the shortlist's GDP (readings) | `criteria.json` · `consts.json` |
 | Do the tiers arrive on time? | the leader's share of a tier's technologies at its anchor · Britain's technology count (military beside it) · the tiers holding half the tiered workers | `tech.json` · `emp.json` |
 
-**Verdicts.** A register line's verdict is `criteria.mjs`'s bands (§10.83 and amendments; the world-GDP aim and the 1886 line come from
-`criteria.json`): at the aim · above / below the aim (inside the soft band) · beyond the soft line. The readings keep the bands the goals table
+**Verdicts.** A register line's verdict is its distance from its aim in the line's own spreads, as the loss reads it (`criteria.json`'s
+`terms`; the §10.123 register since 2026-11-21): 0 at the aim · up to 1 within a spread · up to 2 off the aim · beyond, far from it, with
+the side named (above / below, rising, above 100% kept). Every aim is soft; the barrier is the one line about validity, and when every run is
+past it the aims are "not read". The former ratio aims (W, H, the shortlist's U\* and GDP) are readings, graded no more, and vanilla's figure
+beside a level of the mod's own is a reference, never its yardstick (§10.120 point 4). The readings keep the bands the goals table
 had (§10.104): built below the best tier < 35% (bad > 45%); tier 1 falling from 1920; tier-0 paybacks ≥ 30 y; construction ≥ 1× (bad < 0.9);
 newest-tier payback 8–15 y (warn 6–8 or 15–20); GDP per productive worker > 1×; the tiers on the anchors (one year off warn). The lines added
 on 2026-10-29 carry no ruled band and say what they are graded on: the backward industries against vanilla's change (±5 points = "about
@@ -412,8 +415,8 @@ Each writes one or more files into the out dir; `fill_ledger.sh` runs them in th
   (`INTRO`), §6 (2026-10-29; it replaces `fill_register.mjs` and `fill_goals.mjs`). Reads `criteria.json` (ONE arm, or it exits 1),
   `consts.json`, `payback.json`, `emp.json`, `emp_cols.json`, `tierchoice.json`, `report_data.json`, and where present `perf_panel.json`,
   `redflags_metrics.json`, `laggards.json`, `tech.json`, `misplaced.json` (a missing one prints its line as "not read"). Without
-  `--config` the anchors line assumes 1836 / 1875 / 1905 / 1940. It grades nothing the register grades: the register's bands are §10.83's,
-  restated, and move with `criteria.mjs`.
+  `--config` the anchors line assumes 1836 / 1875 / 1905 / 1940. It grades nothing the register grades: a register line's verdict is the
+  loss's own distance from `criteria.json`, and it refuses a `criteria.json` that is not the §10.123 register.
 - **`fill_assemble.mjs`, `fill_verify.mjs`** — §3, §4. **`fill_manifest.json`** — the contract between shell and batch: every token
   (`name`, `from`, `required`, `means`), every const (`minKeys`), every table (`minRows`), every control, and the staleness list.
 ---
@@ -455,7 +458,7 @@ These print to stdout and the prose quotes them; nothing in the fill reads them.
 
 | reader | what it reads | status |
 |---|---|---|
-| `criteria.mjs --arm <group>` | the criteria register: consensus, loss, soft and hard lines, the decade path | the register (CLAUDE.md §3.2); the fill runs it (step 16) and the scorecard shows it; run it by hand for the per-run detail |
+| `criteria.mjs --arm <group>` | the criteria register (§10.123): the barrier per run, the consensus, the aims and the loss, the minor readings, the decade path | the register (CLAUDE.md §3.2); the fill runs it (step 16) and the scorecard shows it; run it by hand for the per-run detail |
 | `misplaced_capital.mjs`, `tech_census.mjs`, `laggard_pressure.mjs` | §8.1 | the fill runs them (steps 17–19); by hand for their full printouts (per run, per tree, sections B–D) |
 | `old_rungs_by_industry.mjs <year> <label>=<group>`, `trade_obsolescence.mjs` | old rungs per industry; the obsolescence census by regime | read in every batch report (§3.3) |
 | `dam_slots.mjs <session>[:<setup>]` | dam slot breaches (must be 0), who builds | read in every batch report (§3.3) |
