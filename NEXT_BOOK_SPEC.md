@@ -114,13 +114,15 @@ Diesel Engines.
 
 ### 2.6 AI research weights: lower where a research entry can deliver (§10.119 item 3)
 
-- **The form (the user's):** a technology with a research entry whose literacy line the country meets takes −20% of its AI weight; a
-  technology whose entry is advancing for this country takes −90%, the finish boost's `add` still coming after it. Fallback if the
-  better form costs too much: −20% on every technology with an entry.
-- **The figures are NOT settled:** they come after several 10-year probes (declared `probe`, never economy data) and a run of the
-  research model (§5, item 13).
+- **The form (the user's), RULED 2026-11-21 with its figures:** a technology with a research entry whose literacy line the country
+  meets takes **−20%** of its AI weight; while its entry is TICKING for this country, **−50%** instead; the finish boost's `add` still
+  comes after both (`research_events.entry_weight_rule` { lowered 0.8, advancing 0.5 }, written by `emit_tech_finish.mjs`).
+- **"Ticking" is read by the cheap form** (ruled the same day): each open stage compares its bar with the value it stored last month and,
+  when it rose, sets an expiring country flag `pmr_adv_<tech>`, which the weight reads (`emit_research_events.mjs`); its tick cost is
+  measured by a 2 + 2 performance probe. The measured response (F278): odds × 0.33 at × 0.8.
 - **Which entries (ruled):** a technology with a FRONTLINE entry is never lowered, not even while its entry advances; a technology
-  with a NAVAL entry is lowered like the production and society ones (it has no literacy line, so the −20% always applies).
+  with a NAVAL entry is lowered like the production and society ones (it has no literacy line, so the −20% always applies); an
+  INDUSTRY (workforce-gated) entry takes it in any tree, the six military ones included (the user, 2026-11-21).
 - Per-tree multipliers (`tech_ai_weight_mult`) are not the lever.
 
 ### 2.7 Left as vanilla's (§10.116 ruling 10; §10.115 ruling 6)
@@ -212,7 +214,7 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 | 10 | whether the electric saw mills and steam trawler rungs want engines or a drive as the pump rungs do | no: §10.116 names the pump rungs only | this page's reading |
 | 11 | RULED, no longer open: the 1836–1855 runs carry C 2.0, being played on the exact book of the centuries | — | §10.118 |
 | 12 | the AI desire ladder at C 2.0 (calibrated per book; F228's C 2.0 book carried 3,200 / 5,600 on t2 / t3) | the canon's 1000 / 1000 / 3000 / 5000 | §10.117 |
-| 13 | the AI research weights: the two figures (the scope is ruled: frontline entries never lowered, naval ones lowered) | −20% / −90%; settled by the probes and the model | §10.119 item 3 |
+| 13 | RULED 2026-11-21: the two figures −20% / −50%, "advancing" = the bar ticking (the cheap form); frontline never lowered, naval and every industry entry lowered | — | §10.119 item 3 |
 
 ## 6. The order of work
 
@@ -220,9 +222,8 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
    `C:\claude-code\engine_study_2026-11-17\` and `C:\claude-code\cost_start_study_2026-11-17\` (the session scripts of §10.115–§10.117,
    kept outside the repo meanwhile), and **review and merge branch `same-book-machinery`** (§10.118: the scheduler's gate on short
    runs, checkpoint legs and verified continuations; worktree `C:\claude-code\nfu_wt_samebook`; the merge checklist is in BACKLOG
-   section B). No run of the new book before it is in. In the same step, **bring the tools to the register of §10.120**:
-   `criteria.mjs`, the ledger's scorecard and the stop watcher still implement the old one (BACKLOG, the register item), and the
-   2+1 test of the book cannot be judged until they do.
+   section B). No run of the new book before it is in. **The tools are on the register of §10.120 / §10.123 since 2026-11-21**
+   (`criteria.mjs`, the ledger's scorecard and the stop watcher), so the 2+1 test of the book can be judged.
 2. **The probes**, each on the arm that fits (an engine question on vanilla + telemetry), with the go-ahead: gold's depleted fields;
    oil's linked discovery (and that vanilla's oil events on the hook do not fire twice); the world-technology gate
    (`unlocking_global_technologies`, unused by vanilla) and how the AI switches a method when its input is scarce — the last also
@@ -246,10 +247,10 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 - **Names.** A deposit rung is not on the tier ladder of §2.3 of CLAUDE.md (its output does not rise with tier); what its in-game name
   says is unruled.
 - **The readers.** The register's old-plants term (the in-market backward-industry test, §10.121.1) counts manufacturing only, the
-  motor's new t0 rung included, and never the deposit rungs: `laggard_pressure.mjs` reads every `cfg.industries` entry, so if the
-  deposit rungs are generated there it must skip them. T0–T3 (`criteria.mjs`, today every `cfg.industries` tier by `era`) count
-  manufacturing only too, never the deposit rungs and no agriculture (ruled 2026-11-20, BALANCE_FRAMEWORK §10.123 point 4), so the
-  readers take an explicit list of the manufacturing industries.
+  motor's new t0 rung included, and never the deposit rungs; T0–T3 count manufacturing only too, never the deposit rungs and no
+  agriculture (ruled 2026-11-20, BALANCE_FRAMEWORK §10.123 point 4). Built 2026-11-21: `criteria.mjs` and `laggard_pressure.mjs` take
+  the explicit list `tools/testbed/ledger/lib_industries.mjs` (`MANUFACTURING`, by `cfg.industries[].id`) and print every industry they
+  leave out — so the deposit rungs may sit in `cfg.industries` under ids of their own, and a new manufacturing id must be added there.
 - **Research.** Ruled (§10.119 item 6): the higher tier's mark for a technology that unlocks rungs of two tiers is built as a
   general rule in `emit_research_events.mjs` (today `Math.min`), and crafts stay research sources. Still unruled: whether the
   deposit rungs' technologies get research entries, and their marks; pumpjacks takes the standard entry of a
