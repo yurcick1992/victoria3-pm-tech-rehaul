@@ -205,7 +205,7 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 | 1 | RULED, no longer open: the top mine rung has no electric drive (the user: "Yes, drop it") | not built | §10.116.1 |
 | 2 | the diesel irrigation step's quantities (its form is ruled: fewer engines and less fuel, same output) | engines × 0.8 and oil at two thirds of the coal's base value: 4 + 2.5 | §10.116.1 |
 | 3 | RULED, no longer open: the t1 rung is "Compound Engines" and the technology `pumpjacks` is shown as "Pumping Engines". Still to settle: its description, translation or English in the eleven languages, the icon | English, vanilla's icon | §10.116.2 |
-| 4 | whose technology gates a drive | RULED for the diesel step: the country's own. The steam drive follows irrigation's gate: the host's until the world-gate probe passes | §10.116.1, §10.115 |
+| 4 | whose technology gates a drive | RULED for the diesel step: the country's own. The steam drive follows irrigation's gate. **The world-gate probe passed** (F276, 2026-11-21: non-holders run a world-gated method; the user checked it in game: "Everything works"), so §10.115 ruling 7's "likely solution" waits only on the user's word and on item 14 | §10.116.1, §10.115 |
 | 5 | the engines' input lift | 1.0, unchanged | §10.116 |
 | 6 | the 1855 thresholds | as proposed in §4 | §10.115 |
 | 7 | the staffing of the later deposit rungs. ⚠ At 5,000 a level and output 40, the same raw output needs 1.5–1.75 × vanilla's miners (twice on a full deposit), so the overhaul adds productive workers where mod 1.2 wants fewer (§10.117) | 5,000 on every rung (ruled to start with) | §10.115, §10.117 |
@@ -214,6 +214,8 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 | 10 | whether the electric saw mills and steam trawler rungs want engines or a drive as the pump rungs do | no: §10.116 names the pump rungs only | this page's reading |
 | 11 | RULED, no longer open: the 1836–1855 runs carry C 2.0, being played on the exact book of the centuries | — | §10.118 |
 | 12 | the AI desire ladder at C 2.0 (calibrated per book; F228's C 2.0 book carried 3,200 / 5,600 on t2 / t3) | the canon's 1000 / 1000 / 3000 / 5000 | §10.117 |
+| 14 | which same-acre steps go on the WORLD's technology (§10.115 ruling 7, deferred until its probe passed — it has, F276) | Claude's proposal of 2026-11-16, not ruled: only steps whose technology is tech era 3 or later, so the 1836 map stays vanilla's — Fertilization, automatic irrigation (its steam drive), Chemical Fertilizer, Mechanized Slaughtering; the diesel irrigation step stays on the country's own technology (§10.116.1). Note F276: the AI takes a world-gated method up slowly where its input is scarce | §10.115, F276 |
+| 15 | the mechanisms of gold's depleted fields over four rungs and of oil's second rung | Claude's proposal from the probes, not ruled: `change_resource_potential` from `on_resource_depleted` / `on_resource_discovered`, guarded once per region by a state-region variable (the hooks fire once per STATE of the region); no second discovery, which would fire the hook again and vanilla's oil events with it (F277) | §10.115, F277 |
 | 13 | RULED 2026-11-21: the two figures −20% / −50%, "advancing" = the bar ticking (the cheap form); frontline never lowered, naval and every industry entry lowered | — | §10.119 item 3 |
 
 ## 6. The order of work
@@ -224,7 +226,11 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
    runs, checkpoint legs and verified continuations; worktree `C:\claude-code\nfu_wt_samebook`; the merge checklist is in BACKLOG
    section B). No run of the new book before it is in. **The tools are on the register of §10.120 / §10.123 since 2026-11-21**
    (`criteria.mjs`, the ledger's scorecard and the stop watcher), so the 2+1 test of the book can be judged.
-2. **The probes**, each on the arm that fits (an engine question on vanilla + telemetry), with the go-ahead: gold's depleted fields;
+2. ✅ **DONE 2026-11-20/21 (F275–F280):** the same-book machinery in a real game (a leg should end on 1 January: one that stops on
+   another date keeps only its last 1 January save; a leg is continuable only while nothing a build reads changes in its checkout), the
+   world gate (F276, checked in game by the user), the resource hooks (F277: items 14 and 15 above follow from them), the research-weight
+   response, rule and model (F278: the figures ruled −20% / −50%), the rule's tick cost (F279, F280: not visible). As planned:
+   **The probes**, each on the arm that fits (an engine question on vanilla + telemetry), with the go-ahead: gold's depleted fields;
    oil's linked discovery (and that vanilla's oil events on the hook do not fire twice); the world-technology gate
    (`unlocking_global_technologies`, unused by vanilla) and how the AI switches a method when its input is scarce — the last also
    tells how fast the AI moves to the diesel step (vanilla keeps 88% of its railway levels on steam in 1936).
@@ -233,7 +239,8 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
    the book as a declared probe with its tick cost, then `tools/research_model/` run with the measured rule to choose the figures.
 3. **The generator** for §2, and the readers that are missing: slot fill by rung, a raw-material price index, the 1855 reader.
 4. Confirm §1 and §5 with the user; state the arms, n, span and predictions back (rule 3); the named books and their field diffs.
-5. The 1836–1855 arms through 2+1; then centuries.
+5. The 1836–1855 arms through 2+1; then centuries. **Re-planned by the user on 2026-11-21:** the next session builds the 1.2 book for a
+   15-minute player check in game, then plays ONE 100-year run of it; the session after starts iterating on the values.
 
 ## 7. What the build must carry (consequences nobody has ruled on; raise them, do not decide them)
 
