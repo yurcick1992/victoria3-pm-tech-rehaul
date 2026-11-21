@@ -208,7 +208,7 @@ auto-activates); `grant_fraction` 0.5 of the tech-era base cost per stage; `indu
 a researchable first rung without one throws); `war_channel: 'unit_types'` (every technology unlocking a land combat unit, marines
 excluded), `war_gate` {`general_battalions_flat` 50, `front_casualties_min` 0 = clause omitted, `gate_variable_days` 40} computed in
 `on_monthly_pulse_country` into the expiring variable `pmr_wargate_<tech>`; `naval_channel`, `naval_any`; `consumption_thresholds` (the
-`good:<name>` anchor, implemented and unused); `finish_boost` {enabled, threshold 0.99, add 10000; `force_test` for probes}; `entry_weight_rule` {lowered, advancing} (emit_tech_finish, §10.119 item 3; unset in the canon); `extra_entries`
+`good:<name>` anchor, implemented and unused); `finish_boost` {enabled, threshold 0.99, add 10000; `force_test` for probes}; `entry_weight_rule` {lowered, advancing, signal} (emit_tech_finish, and with `signal: 'tick'` emit_research_events's ticking flag; §10.119 item 3, ruled 0.8 / 0.5 / tick on 2026-11-21; unset in the canon); `extra_entries`
 (production technologies outside the ladder, §10.95); `era1_rule_a`; `placement: 'script'` (§10.89.13); the §10.97 rework —
 `sources_additive: false`, `literacy_by_era`, `follower_halving`, `implementation_repeats` 18, `repeat_all`, `exclude_techs`; the §10.98
 entries — `condition_entries`, `condition_values`, `monthly_global_effect`, `count_display`. Other books: `date_gate` (`canon-fdi-rgate`).
@@ -925,6 +925,9 @@ stale output except under `common/history`, which an emitter writing there must 
   `multiply = advancing` while one of its entry's stages is open with progress on its bar (`je:<stage> ?= { "scripted_bar_progress(<bar>)" > 0 }`),
   else `multiply = lowered` at the entry's literacy line (read off its bar; a naval entry has none and takes it always); a frontline entry
   (its bar reads `pmr_wargate_<tech>`) is never lowered. On the 1.1.1 canon: 107 technologies (97 literacy-gated, 10 naval), 6 frontline kept.
+  `signal` (2026-11-21, the ruled form): `'tick'` reads the expiring country flag `pmr_adv_<tech>` that `emit_research_events.mjs` sets in every
+  stage entry's monthly pulse when its bar rose since the value it stored on itself (`pmr_bp`) last month; `'stage'` or absent is the first
+  build's stand-in (a stage open with progress). Book of the ruled form: `config/mod_config.g1151-canon-bz-dcu-ra-il-aw-ewr2.json`.
   Throws on a stage without a bar, an entry of mixed kinds or of none of the three, or a count off by one. First book:
   `config/mod_config.g1151-canon-bz-dcu-ra-il-aw-ewr.json` (0.8 / 0.1, a performance probe's build, probe 5).
 - **`tools/make_tech_ai_weights_config.mjs`** — `node tools/make_tech_ai_weights_config.mjs --base <book> --suffix <new> --old-game <old game
